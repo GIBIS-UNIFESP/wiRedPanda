@@ -14,7 +14,7 @@
    id="svg2985"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="sr-latch nand.svg">
+   sodipodi:docname="D-latch.svg">
   <defs
      id="defs2987">
     <filter
@@ -58,8 +58,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="11.313708"
-     inkscape:cx="24.419772"
-     inkscape:cy="38.307107"
+     inkscape:cx="6.3443541"
+     inkscape:cy="27.700505"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
@@ -67,9 +67,9 @@
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:window-width="1920"
-     inkscape:window-height="1029"
+     inkscape:window-height="1022"
      inkscape:window-x="0"
-     inkscape:window-y="24"
+     inkscape:window-y="22"
      inkscape:window-maximized="1">
     <sodipodi:guide
        orientation="1,0"
@@ -87,7 +87,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -96,7 +96,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
     <rect
-       style="fill:#a59290;fill-opacity:1;stroke:#a59290;stroke-width:3.31250000000000000;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:#343740;fill-opacity:1;stroke:#343740;stroke-width:3.31250000000000000;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="rect4044"
        width="49.6875"
        height="49.6875"
@@ -126,7 +126,7 @@
          y="26.249998"
          id="tspan4054" /></text>
     <rect
-       style="fill:#e1dada;fill-opacity:1;stroke:#e1dada;stroke-width:3.3125;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:#505462;fill-opacity:1;stroke:#505462;stroke-width:3.31250000000000000;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="rect4044-6"
        width="49.6875"
        height="49.6875"
@@ -135,7 +135,7 @@
        ry="2.6350775" />
     <text
        xml:space="preserve"
-       style="font-size:22.52252197px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#f06c59;fill-opacity:1;stroke:none;font-family:Raleway;-inkscape-font-specification:Sans"
+       style="font-size:22.52252196999999967px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Raleway;-inkscape-font-specification:Sans"
        x="38.986488"
        y="24.022387"
        id="text4072-7"
@@ -146,23 +146,23 @@
          y="24.022387">Q</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:22.52252197px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#f06c59;fill-opacity:1;stroke:none;font-family:Raleway;-inkscape-font-specification:Sans"
+       style="font-size:22.52252197px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Raleway;-inkscape-font-specification:Sans"
        x="38.986488"
-       y="48.887386"
+       y="49.506104"
        id="text4072-7-1"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4074-0-4"
          x="38.986488"
-         y="48.887386">Q</tspan></text>
+         y="49.506104">Q</tspan></text>
     <path
-       style="fill:none;stroke:#f06c59;stroke-width:2.14793061999999990px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 41.073965,30.58958 14.08914,0"
+       style="fill:none;stroke:#fffdfd;stroke-width:2.14793062px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 40.897188,31.65024 14.08914,0"
        id="path4196"
        inkscape:connector-curvature="0" />
     <text
        xml:space="preserve"
-       style="font-size:22.83943748000000085px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#f06c59;fill-opacity:1;stroke:none;font-family:Raleway;-inkscape-font-specification:Sans"
+       style="font-size:22.83943748000000085px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Raleway;-inkscape-font-specification:Sans"
        x="6.9444509"
        y="24.135"
        id="text4269"
@@ -173,7 +173,7 @@
          y="24.135">D</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:22.83943748000000085px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#f06c59;fill-opacity:1;stroke:none;font-family:Raleway;-inkscape-font-specification:Sans"
+       style="font-size:22.83943748000000085px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Raleway;-inkscape-font-specification:Sans"
        x="6.9444509"
        y="49"
        id="text4273"
