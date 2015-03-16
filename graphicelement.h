@@ -16,6 +16,14 @@ private:
 public:
   virtual QRectF boundingRect() const;
   virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
+
+  // QGraphicsItem interface
+  protected:
+  virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *);
+
+  // QGraphicsItem interface
+  protected:
+  virtual void keyPressEvent(QKeyEvent * event);
 };
 
 #endif // GRAPHICELEMENT_H
