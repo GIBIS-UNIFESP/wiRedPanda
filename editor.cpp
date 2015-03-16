@@ -25,8 +25,8 @@ QGraphicsItem *Editor::itemAt(const QPointF & pos) {
   QList<QGraphicsItem*> items = scene->items(QRectF(pos - QPointF(1,1), QSize(3,3)));
 
   foreach(QGraphicsItem *item, items)
-    if (item->type() > QGraphicsItem::UserType)
-      return item;
+  if (item->type() > QGraphicsItem::UserType)
+    return item;
 
   return 0;
 }

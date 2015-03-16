@@ -3,14 +3,13 @@
 
 #include <QLabel>
 
-class Label : public QLabel
-{
-    Q_OBJECT
+class Label : public QLabel {
+  Q_OBJECT
 public:
-    explicit Label(QWidget *parent = 0);
+  explicit Label(QWidget *parent = 0);
 
 protected:
-    void mousePressEvent(QMouseEvent *event);
+  void mousePressEvent(QMouseEvent *event);
 
 signals:
 
