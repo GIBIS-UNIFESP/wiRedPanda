@@ -4,6 +4,8 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsItem>
 
+#include "connection.h"
+
 class GraphicElement : public QGraphicsItem {
 public:
   explicit GraphicElement(QPixmap pixmap, QGraphicsItem * parent = 0);
@@ -11,7 +13,8 @@ public:
 
 private:
   QGraphicsPixmapItem *pixmapItem;
-
+  QVector<Connection*> inputs;
+  QVector<Connection*> outputs;
   // QGraphicsItem interface
 public:
   virtual QRectF boundingRect() const;

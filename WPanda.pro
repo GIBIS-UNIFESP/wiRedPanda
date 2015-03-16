@@ -16,12 +16,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     label.cpp \
     editor.cpp \
-    graphicelement.cpp
+    graphicelement.cpp \
+    connection.cpp
 
 HEADERS  += mainwindow.h \
     label.h \
     editor.h \
-    graphicelement.h
+    graphicelement.h \
+    connection.h
 
 FORMS    += mainwindow.ui
 
