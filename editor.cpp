@@ -6,7 +6,7 @@
 #include <QMimeData>
 #include <QDebug>
 #include <QLabel>
-
+#include <QtMath>
 #include <iostream>
 
 Editor::Editor(QObject *parent) : QObject(parent), scene(NULL) {
@@ -34,8 +34,8 @@ QGraphicsItem *Editor::itemAt(const QPointF & pos) {
 QPointF roundTo(QPointF point, int multiple) {
   int x = static_cast<int>(point.x()) - 32;
   int y = static_cast<int>(point.y()) - 32;
-  int nx = multiple * (x/multiple);
-  int ny = multiple * (y/multiple);
+  int nx = multiple * qFloor(x/multiple);
+  int ny = multiple * qFloor(y/multiple);
   return( QPointF(nx,ny));
 }
 
@@ -49,11 +49,9 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
       break;
     }
   case QEvent::GraphicsSceneMouseMove: {
-
       break;
     }
   case QEvent::GraphicsSceneMouseRelease: {
-
       break;
     }
   case QEvent::GraphicsSceneDrop: {
@@ -71,7 +69,7 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
         QGraphicsPixmapItem * item = new QGraphicsPixmapItem(pixmap);
         scene->addItem(item);
         item->setPos(pos);
-
+        item->setFlag(QGraphicsItem::ItemIsMovable, true);
         return true;
       }
       break;
