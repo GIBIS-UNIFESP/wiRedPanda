@@ -20,10 +20,6 @@ public:
   // QGraphicsItem interface
   protected:
   virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *);
-
-  // QGraphicsItem interface
-  protected:
-  virtual void keyPressEvent(QKeyEvent * event);
 };
 
 #endif // GRAPHICELEMENT_H

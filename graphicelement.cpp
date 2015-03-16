@@ -1,11 +1,12 @@
 #include "graphicelement.h"
 
 #include <QKeyEvent>
+#include <QMessageBox>
 
 GraphicElement::GraphicElement(QPixmap pixmap, QGraphicsItem *parent) : QGraphicsItem(parent), pixmapItem(new QGraphicsPixmapItem(pixmap, ( QGraphicsItem * ) this)) {
   setFlag(QGraphicsItem::ItemIsMovable, true);
   setFlag(QGraphicsItem::ItemIsSelectable, true);
-  setFlag(QGraphicsItem::ItemIsFocusable, true);
+//  setFlag(QGraphicsItem::ItemIsFocusable, true);
 }
 
 GraphicElement::~GraphicElement() {
@@ -21,12 +22,5 @@ void GraphicElement::paint(QPainter * painter, const QStyleOptionGraphicsItem * 
 }
 
 void GraphicElement::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * ) {
-}
-
-
-void GraphicElement::keyPressEvent(QKeyEvent * event) {
-  if(event->key() == Qt::Key_R) {
-    setTransformOriginPoint(32,32);
-    setRotation(rotation()+90.0);
-  }
+  QMessageBox::information(0,"WPANDA","<strong>Item double clicked!</strong><br>Menu enters here.",QMessageBox::Ok, QMessageBox::NoButton);
 }
