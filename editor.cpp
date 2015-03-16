@@ -58,12 +58,19 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
           break;
         }
       case Qt::Key_R: {
-          int cx = 0, cy = 0, sz = 0;
+          double cx = 0, cy = 0;
+          int sz = 0;
           QList<QGraphicsItem *> list = scene->selectedItems();
           foreach(QGraphicsItem * item, list) {
-            qDebug() << item->scenePos();
-            cx += item->scenePos().x();
-            cy += item->scenePos().y();
+            qDebug() <<"Before: " << item->scenePos();
+            qDebug() <<"Before: " << item->pos();
+            item->setTransformOriginPoint(32,32);
+            qDebug() << "After: " << item->scenePos();
+            qDebug() << "After: " << item->pos();
+
+            cx += item->pos().x();
+            cy += item->pos().y();
+
             sz ++;
           }
           cx /= sz;
@@ -75,8 +82,10 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
             transform.rotate( 90 );
             transform.translate( -cx , -cy );
             item->resetTransform();
-            item->setPos(transform.map(item->scenePos()));
             item->setRotation(item->rotation()+90.0);
+            item->resetTransform();
+            item->setPos(transform.map(item->pos()));
+            qDebug() << item->transformOriginPoint();
           }
           break;
         }
