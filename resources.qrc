@@ -60,4 +60,7 @@
         <file>resources/toolbar/save.svg</file>
         <file>resources/toolbar/stop.svg</file>
     </qresource>
+    <qresource prefix="/">
+        <file>resources/pandaLogo.png</file>
+    </qresource>
 </RCC>
