@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     label.cpp \
-    editor.cpp
+    editor.cpp \
+    graphicelement.cpp
 
 HEADERS  += mainwindow.h \
     label.h \
-    editor.h
+    editor.h \
+    graphicelement.h
 
 FORMS    += mainwindow.ui
 

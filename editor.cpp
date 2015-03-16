@@ -1,4 +1,5 @@
 #include "editor.h"
+#include "graphicelement.h"
 
 #include <QGraphicsItem>
 #include <QGraphicsSceneMouseEvent>
@@ -66,10 +67,9 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
         QPointF pos = dde->scenePos() - offset;
         pos = roundTo(pos,64);
         qDebug() << pos << roundTo(pos,64);
-        QGraphicsPixmapItem * item = new QGraphicsPixmapItem(pixmap);
+        GraphicElement * item = new GraphicElement(pixmap);
         scene->addItem(item);
         item->setPos(pos);
-        item->setFlag(QGraphicsItem::ItemIsMovable, true);
         return true;
       }
       break;
