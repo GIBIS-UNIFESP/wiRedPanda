@@ -56,6 +56,7 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
       case Qt::Key_Backspace: {
           foreach(QGraphicsItem * item, scene->selectedItems()) {
             scene->removeItem(item);
+            delete item;
           }
           return true;
           break;

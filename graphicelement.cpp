@@ -25,7 +25,7 @@ void GraphicElement::paint(QPainter * painter, const QStyleOptionGraphicsItem * 
   Q_UNUSED(option)
   Q_UNUSED(widget)
   if(isSelected()){
-    painter->drawRect(boundingRect());
+    painter->drawRoundedRect(boundingRect(),12,12);
   }
 }
 
@@ -49,7 +49,6 @@ void GraphicElement::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * ) {
 }
 
 QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant & value) {
-  qDebug() << change;
   if(change == ItemScenePositionHasChanged ||  change == ItemRotationHasChanged ||  change == ItemTransformHasChanged){
     foreach (QNEPort * port, outputs) {
       port->updateConnections();

@@ -30,9 +30,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #include <QBrush>
 #include <QPen>
 #include <QGraphicsScene>
+#include <QDebug>
 
 QNEConnection::QNEConnection(QGraphicsItem *parent) : QGraphicsPathItem(parent) {
-  setPen(QPen(Qt::black, 2));
+  setPen(QPen(Qt::darkGray, 3));
   setBrush(Qt::NoBrush);
   setZValue(-1);
   m_port1 = 0;
@@ -99,7 +100,16 @@ QNEPort* QNEConnection::port2() const {
 }
 
 void QNEConnection::split(QPointF point) {
+  qDebug() << "Split!";
+//  QNEPort * port = new QNEPort(this);
+//  port->setPos(point);
+//  port->show();
+//  port2()->connections().removeOne(this);
+//  QNEConnection * conn = new QNEConnection(this);
+//  conn->setPort1(port);
+//  conn->setPort2(m_port2);
 
+//  setPort2(port);
 }
 
 void QNEConnection::save(QDataStream &ds) {
