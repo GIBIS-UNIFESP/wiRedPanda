@@ -17,13 +17,17 @@ SOURCES += main.cpp\
     label.cpp \
     editor.cpp \
     graphicelement.cpp \
-    connection.cpp
+    nodes/qneport.cpp \
+    nodes/qneconnection.cpp \
+    nodes/qneblock.cpp
 
 HEADERS  += mainwindow.h \
     label.h \
     editor.h \
     graphicelement.h \
-    connection.h
+    nodes/qneport.h \
+    nodes/qneconnection.h \
+    nodes/qneblock.h
 
 FORMS    += mainwindow.ui
 

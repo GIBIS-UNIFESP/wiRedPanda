@@ -4,6 +4,8 @@
 #include <QGraphicsScene>
 #include <QObject>
 
+#include <nodes/qneconnection.h>
+
 class Editor : public QObject {
   Q_OBJECT
 public:
@@ -17,7 +19,7 @@ public slots:
 private:
   QGraphicsScene * scene;
   QGraphicsItem * itemAt( const QPointF & pos );
-
+  QNEConnection * conn;
   // QObject interface
 public:
   bool eventFilter(QObject *o, QEvent *e);

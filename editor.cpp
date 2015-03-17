@@ -11,7 +11,9 @@
 #include <iostream>
 #include <QKeyEvent>
 
-Editor::Editor(QObject *parent) : QObject(parent), scene(NULL) {
+#include <nodes/qneconnection.h>
+
+Editor::Editor(QObject *parent) : QObject(parent), scene(NULL), conn(NULL) {
 }
 
 Editor::~Editor() {
@@ -26,9 +28,10 @@ void Editor::install(QGraphicsScene * s) {
 QGraphicsItem *Editor::itemAt(const QPointF & pos) {
   QList<QGraphicsItem*> items = scene->items(QRectF(pos - QPointF(1,1), QSize(3,3)));
 
-  foreach(QGraphicsItem *item, items)
-  if (item->type() > QGraphicsItem::UserType)
-    return item;
+  foreach(QGraphicsItem *item, items) {
+    if (item->type() > QGraphicsItem::UserType)
+      return item;
+  }
 
   return 0;
 }
@@ -43,7 +46,7 @@ QPointF roundTo(QPointF point, int multiple) {
 
 bool Editor::eventFilter(QObject * o, QEvent * e) {
   QGraphicsSceneDragDropEvent * dde = dynamic_cast<QGraphicsSceneDragDropEvent *>(e);
-//  QGraphicsSceneMouseEvent *me = dynamic_cast<QGraphicsSceneMouseEvent*>(e);
+  QGraphicsSceneMouseEvent *me = dynamic_cast<QGraphicsSceneMouseEvent*>(e);
   QKeyEvent * keyEvt = dynamic_cast<QKeyEvent *>(e);
   switch ((int) e->type()) {
   case QEvent::KeyPress: {
@@ -93,13 +96,53 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
       break;
     }
   case QEvent::GraphicsSceneMousePress: {
-
+      QGraphicsItem * item = itemAt(me->scenePos());
+      if( item && item->type()== QNEPort::Type) {
+        conn = new QNEConnection();
+        scene->addItem(conn);
+        conn->setPort1((QNEPort*) item);
+        conn->setPos1(me->scenePos());
+        conn->setPos2(me->scenePos());
+        conn->updatePath();
+      }else if( item && item->type() == QNEConnection::Type){
+        QNEConnection * connection = dynamic_cast<QNEConnection*>(item);
+        if(connection){
+          connection->split(me->scenePos());
+        }
+      }
       break;
     }
   case QEvent::GraphicsSceneMouseMove: {
+      if (conn) {
+        conn->setPos2(me->scenePos());
+        conn->updatePath();
+        return true;
+      }
       break;
     }
   case QEvent::GraphicsSceneMouseRelease: {
+      if (conn && me->button() == Qt::LeftButton) {
+        QNEPort *item = dynamic_cast<QNEPort*>(itemAt(me->scenePos()));
+        if (item && item->type() == QNEPort::Type) {
+          qDebug() << item->type() << QNEPort::Type;
+          QNEPort *port1 = conn->port1();
+          QNEPort *port2 = dynamic_cast<QNEPort*> (item);
+          if(!port2) {
+            return true;
+          }
+          if (port1->graphicElement() != port2->graphicElement() && !port1->isConnected(port2)) {
+            conn->setPos2(port2->scenePos());
+            conn->setPort2(port2);
+            conn->updatePath();
+            conn = 0;
+            return true;
+          }
+        }
+
+        delete conn;
+        conn = NULL;
+        return true;
+      }
       break;
     }
   case QEvent::GraphicsSceneDrop: {
