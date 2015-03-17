@@ -32,13 +32,13 @@ class QNEBlock;
 class QNEConnection;
 class GraphicElement;
 
-class QNEPort : public QGraphicsPathItem
-{
+class QNEPort : public QGraphicsPathItem {
 public:
   enum { Type = QGraphicsItem::UserType + 1 };
   enum { NamePort = 1, TypePort = 2 };
+  enum {Input = 0, Output = 1};
 
-    QNEPort(QGraphicsItem *parent = 0);
+  QNEPort(QGraphicsItem *parent = 0);
   ~QNEPort();
 
   void setNEBlock(QNEBlock*);
@@ -49,10 +49,16 @@ public:
   QVector<QNEConnection*>& connections();
   void setPortFlags(int);
 
-  const QString& portName() const { return name; }
-  int portFlags() const { return m_portFlags; }
+  const QString& portName() const {
+    return name;
+  }
+  int portFlags() const {
+    return m_portFlags;
+  }
 
-  int type() const { return Type; }
+  int type() const {
+    return Type;
+  }
 
   QNEBlock* block() const;
 
@@ -65,10 +71,10 @@ public:
   void setGraphicElement(GraphicElement * graphicElement);
 
   void updateConnections();
-    protected:
+protected:
   QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
-  private:
+private:
   QNEBlock *m_block;
   QString name;
   bool isOutput_;

@@ -1,6 +1,7 @@
 #include "graphicelement.h"
 
 #include <QDebug>
+#include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QPainter>
@@ -10,12 +11,32 @@ GraphicElement::GraphicElement(QPixmap pixmap, QGraphicsItem *parent) : QGraphic
   setFlag(QGraphicsItem::ItemIsSelectable);
   setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
   setFlag(QGraphicsItem::ItemSendsGeometryChanges);
-
+  m_topPosition = 0;
+  m_bottomPosition = 64;
+  m_maxInputSz = 3;
+  m_maxOutputSz = 1;
+  m_outputsOnTop = true;
 }
 
 GraphicElement::~GraphicElement() {
 
 }
+QVector<QNEPort *> GraphicElement::outputs() const {
+  return m_outputs;
+}
+
+void GraphicElement::setOutputs(const QVector<QNEPort *> & outputs) {
+  m_outputs = outputs;
+}
+
+QVector<QNEPort *> GraphicElement::inputs() const {
+  return m_inputs;
+}
+
+void GraphicElement::setInputs(const QVector<QNEPort *> & inputs) {
+  m_inputs = inputs;
+}
+
 
 QRectF GraphicElement::boundingRect() const {
   return (pixmapItem->boundingRect());
@@ -32,21 +53,35 @@ void GraphicElement::paint(QPainter * painter, const QStyleOptionGraphicsItem * 
 }
 
 QNEPort *GraphicElement::addPort(bool isOutput) {
+  if(isOutput && m_outputs.size() >= m_maxOutputSz) {
+    return 0;
+  } else if(!isOutput && m_inputs.size() >= m_maxInputSz) {
+    return 0;
+  }
   QNEPort *port = new QNEPort(this);
   port->setIsOutput(isOutput);
   port->setGraphicElement(this);
+  int inputPos;
+  int outputPos;
+  if(m_outputsOnTop) {
+    inputPos = m_bottomPosition;
+    outputPos = m_topPosition;
+  } else {
+    inputPos = m_topPosition;
+    outputPos = m_bottomPosition;
+  }
   if(isOutput) {
-    outputs.push_back(port);
-    int x = 32 - outputs.size()*6 + 6;
-    foreach (QNEPort * port, outputs) {
-      port->setPos(x,64);
+    m_outputs.push_back(port);
+    int x = 32 - m_outputs.size()*6 + 6;
+    foreach (QNEPort * port, m_outputs) {
+      port->setPos(x,outputPos);
       x+= 12;
     }
   } else {
-    inputs.push_back(port);
-    int x = 32 - inputs.size()*6 + 6;
-    foreach (QNEPort * port, inputs) {
-      port->setPos(x,0);
+    m_inputs.push_back(port);
+    int x = 32 - m_inputs.size()*6 + 6;
+    foreach (QNEPort * port, m_inputs) {
+      port->setPos(x,inputPos);
       x+= 12;
     }
   }
@@ -54,19 +89,62 @@ QNEPort *GraphicElement::addPort(bool isOutput) {
   return port;
 }
 
-void GraphicElement::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * ) {
-//  addPort(true);
-  addPort(false);
+void GraphicElement::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * e) {
+  if(e->button() == Qt::LeftButton) {
+    addPort(QNEPort::Output);
+  }else{
+    addPort(QNEPort::Input);
+  }
 }
 
 QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant & value) {
   if(change == ItemScenePositionHasChanged ||  change == ItemRotationHasChanged ||  change == ItemTransformHasChanged) {
-    foreach (QNEPort * port, outputs) {
+    foreach (QNEPort * port, m_outputs) {
       port->updateConnections();
     }
-    foreach (QNEPort * port, inputs) {
+    foreach (QNEPort * port, m_inputs) {
       port->updateConnections();
     }
   }
   return value;
+}
+
+int GraphicElement::maxOutputSz() const {
+  return m_maxOutputSz;
+}
+
+void GraphicElement::setMaxOutputSz(int maxOutputSz) {
+  m_maxOutputSz = maxOutputSz;
+}
+
+int GraphicElement::maxInputSz() const {
+  return m_maxInputSz;
+}
+
+void GraphicElement::setMaxInputSz(int maxInputSz) {
+  m_maxInputSz = maxInputSz;
+}
+
+int GraphicElement::bottomPosition() const {
+  return m_bottomPosition;
+}
+
+void GraphicElement::setBottomPosition(int bottomPosition) {
+  m_bottomPosition = bottomPosition;
+}
+
+int GraphicElement::topPosition() const {
+  return m_topPosition;
+}
+
+void GraphicElement::setTopPosition(int topPosition) {
+  m_topPosition = topPosition;
+}
+
+bool GraphicElement::outputsOnTop() const {
+  return m_outputsOnTop;
+}
+
+void GraphicElement::setOutputsOnTop(bool outputsOnTop) {
+  m_outputsOnTop = outputsOnTop;
 }

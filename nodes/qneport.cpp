@@ -67,7 +67,10 @@ void QNEPort::setName(const QString &n) {
 
 void QNEPort::setIsOutput(bool o) {
   isOutput_ = o;
-
+  if(!isOutput()){
+    setPen(QPen(Qt::black));
+    setBrush(QColor(0x333333));
+  }
   QFontMetrics fm(scene()->font());
   QRect r = fm.boundingRect(name);
 
