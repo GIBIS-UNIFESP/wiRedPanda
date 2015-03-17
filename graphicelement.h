@@ -22,6 +22,7 @@ public:
   QNEPort * addPort(bool isOutput);
   // QGraphicsItem interface
 
+  int type() const { return Type; }
 
   int topPosition() const;
   void setTopPosition(int topPosition);

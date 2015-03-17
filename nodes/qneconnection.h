@@ -30,12 +30,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 class QNEPort;
 
-class QNEConnection : public QGraphicsPathItem
-{
+class QNEConnection : public QGraphicsPathItem {
 public:
   enum { Type = QGraphicsItem::UserType + 2 };
 
-    QNEConnection(QGraphicsItem *parent = 0);
+  QNEConnection(QGraphicsItem *parent = 0);
   ~QNEConnection();
 
   void setPos1(const QPointF &p);
@@ -52,13 +51,19 @@ public:
   void save(QDataStream&);
   void load(QDataStream&, const QMap<quint64, QNEPort*> &portMap);
 
-  int type() const { return Type; }
+  int type() const {
+    return Type;
+  }
 
 private:
   QPointF pos1;
   QPointF pos2;
   QNEPort *m_port1;
   QNEPort *m_port2;
+
+  // QGraphicsItem interface
+  protected:
+  virtual QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 };
 
 #endif // QNECONNECTION_H

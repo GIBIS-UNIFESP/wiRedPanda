@@ -66,30 +66,35 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
           int sz = 0;
           QList<QGraphicsItem *> list = scene->selectedItems();
           foreach(QGraphicsItem * item, list) {
-            qDebug() <<"Before: " << item->scenePos();
-            qDebug() <<"Before: " << item->pos();
-            item->setTransformOriginPoint(32,32);
-            qDebug() << "After: " << item->scenePos();
-            qDebug() << "After: " << item->pos();
+            qDebug() << item->type();
+            if(item->type() == GraphicElement::Type) {
+              qDebug() <<"Before: " << item->scenePos();
+              qDebug() <<"Before: " << item->pos();
+              item->setTransformOriginPoint(32,32);
+              qDebug() << "After: " << item->scenePos();
+              qDebug() << "After: " << item->pos();
 
-            cx += item->pos().x();
-            cy += item->pos().y();
+              cx += item->pos().x();
+              cy += item->pos().y();
 
-            sz ++;
+              sz ++;
+            }
           }
           cx /= sz;
           cy /= sz;
           qDebug() << cx << cy;
           foreach(QGraphicsItem * item, list) {
-            QTransform transform;
-            transform.translate( cx , cy  );
-            transform.rotate( 90 );
-            transform.translate( -cx , -cy );
-            item->resetTransform();
-            item->setRotation(item->rotation()+90.0);
-            item->resetTransform();
-            item->setPos(transform.map(item->pos()));
-            qDebug() << item->transformOriginPoint();
+            if(item->type() == GraphicElement::Type) {
+              QTransform transform;
+              transform.translate( cx , cy  );
+              transform.rotate( 90 );
+              transform.translate( -cx , -cy );
+              item->resetTransform();
+              item->setRotation(item->rotation()+90.0);
+              item->resetTransform();
+              item->setPos(transform.map(item->pos()));
+              qDebug() << item->transformOriginPoint();
+            }
           }
           break;
         }

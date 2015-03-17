@@ -13,7 +13,7 @@ GraphicElement::GraphicElement(QPixmap pixmap, QGraphicsItem *parent) : QGraphic
   setFlag(QGraphicsItem::ItemSendsGeometryChanges);
   m_topPosition = 0;
   m_bottomPosition = 64;
-  m_maxInputSz = 3;
+  m_maxInputSz = 8;
   m_maxOutputSz = 1;
   m_outputsOnTop = true;
 }
@@ -72,17 +72,19 @@ QNEPort *GraphicElement::addPort(bool isOutput) {
   }
   if(isOutput) {
     m_outputs.push_back(port);
-    int x = 32 - m_outputs.size()*6 + 6;
+    int step = qMax(32/m_outputs.size(), 6);
+    int x = 32 - m_outputs.size()*step + step;
     foreach (QNEPort * port, m_outputs) {
       port->setPos(x,outputPos);
-      x+= 12;
+      x+= step * 2;
     }
   } else {
     m_inputs.push_back(port);
-    int x = 32 - m_inputs.size()*6 + 6;
+    int step = qMax(32/m_inputs.size(),6);
+    int x = 32 - m_inputs.size()*step + step;
     foreach (QNEPort * port, m_inputs) {
       port->setPos(x,inputPos);
-      x+= 12;
+      x+= step * 2;
     }
   }
   port->show();
@@ -92,7 +94,7 @@ QNEPort *GraphicElement::addPort(bool isOutput) {
 void GraphicElement::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * e) {
   if(e->button() == Qt::LeftButton) {
     addPort(QNEPort::Output);
-  }else{
+  } else {
     addPort(QNEPort::Input);
   }
 }

@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #include <QDebug>
 
 QNEConnection::QNEConnection(QGraphicsItem *parent) : QGraphicsPathItem(parent) {
+  setFlag(QGraphicsItem::ItemIsSelectable);
   setPen(QPen(Qt::darkRed, 3));
   setBrush(Qt::NoBrush);
   setZValue(-1);
@@ -127,4 +128,16 @@ void QNEConnection::load(QDataStream &ds, const QMap<quint64, QNEPort*> &portMap
   setPort2(portMap[ptr2]);
   updatePosFromPorts();
   updatePath();
+}
+
+
+QVariant QNEConnection::itemChange(GraphicsItemChange change, const QVariant & value) {
+  if(change == ItemSelectedChange){
+    if(value.toBool()){
+      setPen(QPen(Qt::darkGreen, 5));
+    }else{
+      setPen(QPen(Qt::darkRed, 3));
+    }
+  }
+  return value;
 }
