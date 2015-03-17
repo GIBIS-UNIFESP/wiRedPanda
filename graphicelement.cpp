@@ -6,8 +6,10 @@
 #include <QPainter>
 
 GraphicElement::GraphicElement(QPixmap pixmap, QGraphicsItem *parent) : QGraphicsItem(parent), pixmapItem(new QGraphicsPixmapItem(pixmap, ( QGraphicsItem * ) this)) {
-  setFlag(QGraphicsItem::ItemIsMovable, true);
-  setFlag(QGraphicsItem::ItemIsSelectable, true);
+  setFlag(QGraphicsItem::ItemIsMovable);
+  setFlag(QGraphicsItem::ItemIsSelectable);
+  setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
+  setFlag(QGraphicsItem::ItemSendsGeometryChanges);
 
 }
 
@@ -22,8 +24,9 @@ QRectF GraphicElement::boundingRect() const {
 void GraphicElement::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget) {
   Q_UNUSED(option)
   Q_UNUSED(widget)
-  Q_UNUSED(painter)
-
+  if(isSelected()){
+    painter->drawRect(boundingRect());
+  }
 }
 
 QNEPort *GraphicElement::addPort(bool isOutput) {
@@ -46,7 +49,11 @@ void GraphicElement::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * ) {
 }
 
 QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant & value) {
-  Q_UNUSED(change);
-
+  qDebug() << change;
+  if(change == ItemScenePositionHasChanged ||  change == ItemRotationHasChanged ||  change == ItemTransformHasChanged){
+    foreach (QNEPort * port, outputs) {
+      port->updateConnections();
+    }
+  }
   return value;
 }

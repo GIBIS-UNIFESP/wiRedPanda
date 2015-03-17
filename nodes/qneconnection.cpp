@@ -100,7 +100,6 @@ QNEPort* QNEConnection::port2() const {
 
 void QNEConnection::split(QPointF point) {
 
-
 }
 
 void QNEConnection::save(QDataStream &ds) {

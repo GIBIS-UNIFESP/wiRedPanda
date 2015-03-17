@@ -104,9 +104,9 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
         conn->setPos1(me->scenePos());
         conn->setPos2(me->scenePos());
         conn->updatePath();
-      }else if( item && item->type() == QNEConnection::Type){
+      } else if( item && item->type() == QNEConnection::Type) {
         QNEConnection * connection = dynamic_cast<QNEConnection*>(item);
-        if(connection){
+        if(connection) {
           connection->split(me->scenePos());
         }
       }

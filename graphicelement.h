@@ -8,7 +8,7 @@
 
 class GraphicElement : public QGraphicsItem {
 public:
-  enum { Type = QGraphicsItem::UserType + 2 };
+  enum { Type = QGraphicsItem::UserType + 3 };
 
   explicit GraphicElement(QPixmap pixmap, QGraphicsItem * parent = 0);
   ~GraphicElement();

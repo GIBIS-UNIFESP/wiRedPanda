@@ -64,7 +64,8 @@ public:
   GraphicElement * graphicElement() const;
   void setGraphicElement(GraphicElement * graphicElement);
 
-  protected:
+  void updateConnections();
+    protected:
   QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
   private:
