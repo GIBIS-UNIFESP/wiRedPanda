@@ -87,6 +87,7 @@ private:
 
   //WPanda
   GraphicElement * m_graphicElement;
+
 };
 
 #endif // QNEPORT_H

@@ -67,7 +67,7 @@ void QNEPort::setName(const QString &n) {
 
 void QNEPort::setIsOutput(bool o) {
   isOutput_ = o;
-  if(!isOutput()){
+  if(!isOutput()) {
     setPen(QPen(Qt::black));
     setBrush(QColor(0x333333));
   }
@@ -148,4 +148,3 @@ GraphicElement * QNEPort::graphicElement() const {
 void QNEPort::setGraphicElement(GraphicElement * graphicElement) {
   m_graphicElement = graphicElement;
 }
-

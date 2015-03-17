@@ -22,3 +22,11 @@ MainWindow::~MainWindow() {
 void MainWindow::on_actionExit_triggered() {
   close();
 }
+
+void MainWindow::on_actionNew_triggered() {
+  editor->clear();
+}
+
+void MainWindow::on_actionWires_triggered(bool checked) {
+  editor->showWires(checked);
+}

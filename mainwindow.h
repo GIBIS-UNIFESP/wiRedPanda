@@ -20,7 +20,11 @@ public:
 private slots:
   void on_actionExit_triggered();
 
-private:
+  void on_actionNew_triggered();
+
+  void on_actionWires_triggered(bool checked);
+
+  private:
   Ui::MainWindow *ui;
   Editor * editor;
   QGraphicsScene * scene;

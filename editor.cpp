@@ -25,6 +25,19 @@ void Editor::install(QGraphicsScene * s) {
   scene = s;
 }
 
+void Editor::clear() {
+  scene->clear();
+}
+
+void Editor::showWires(bool checked) {
+
+  foreach( QGraphicsItem * c, scene->items()) {
+    if(c->type() == QNEConnection::Type){
+      c->setVisible(checked);
+    }
+  }
+}
+
 QGraphicsItem *Editor::itemAt(const QPointF & pos) {
   QList<QGraphicsItem*> items = scene->items(QRectF(pos - QPointF(1,1), QSize(3,3)));
 
@@ -50,11 +63,12 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
   QKeyEvent * keyEvt = dynamic_cast<QKeyEvent *>(e);
   switch ((int) e->type()) {
   case QEvent::KeyPress: {
-      qDebug() << "KeyPress";
       switch ((int) keyEvt->key()) {
       case Qt::Key_Delete:
       case Qt::Key_Backspace: {
           foreach(QGraphicsItem * item, scene->selectedItems()) {
+            if(!scene->items().contains(item))
+              continue;
             scene->removeItem(item);
             delete item;
           }
@@ -66,13 +80,9 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
           int sz = 0;
           QList<QGraphicsItem *> list = scene->selectedItems();
           foreach(QGraphicsItem * item, list) {
-            qDebug() << item->type();
+
             if(item->type() == GraphicElement::Type) {
-              qDebug() <<"Before: " << item->scenePos();
-              qDebug() <<"Before: " << item->pos();
               item->setTransformOriginPoint(32,32);
-              qDebug() << "After: " << item->scenePos();
-              qDebug() << "After: " << item->pos();
 
               cx += item->pos().x();
               cy += item->pos().y();
@@ -82,7 +92,6 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
           }
           cx /= sz;
           cy /= sz;
-          qDebug() << cx << cy;
           foreach(QGraphicsItem * item, list) {
             if(item->type() == GraphicElement::Type) {
               QTransform transform;
@@ -93,7 +102,6 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
               item->setRotation(item->rotation()+90.0);
               item->resetTransform();
               item->setPos(transform.map(item->pos()));
-              qDebug() << item->transformOriginPoint();
             }
           }
           break;
@@ -130,7 +138,6 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
       if (conn && me->button() == Qt::LeftButton) {
         QNEPort *item = dynamic_cast<QNEPort*>(itemAt(me->scenePos()));
         if (item && item->type() == QNEPort::Type) {
-          qDebug() << item->type() << QNEPort::Type;
           QNEPort *port1 = conn->port1();
           QNEPort *port2 = dynamic_cast<QNEPort*> (item);
           if(!port2) {
@@ -153,7 +160,6 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
     }
   case QEvent::GraphicsSceneDrop: {
       if(dde->mimeData()->hasFormat("application/x-dnditemdata")) {
-        qDebug() << "Drop Event";
         QByteArray itemData = dde->mimeData()->data("application/x-dnditemdata");
         QDataStream dataStream(&itemData, QIODevice::ReadOnly);
 
