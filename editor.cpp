@@ -131,7 +131,7 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
           if(!port2) {
             return true;
           }
-          if (port1->graphicElement() != port2->graphicElement() && !port1->isConnected(port2)) {
+          if (port1->isOutput() != port2->isOutput() && port1->graphicElement() != port2->graphicElement() && !port1->isConnected(port2)) {
             conn->setPos2(port2->scenePos());
             conn->setPort2(port2);
             conn->updatePath();

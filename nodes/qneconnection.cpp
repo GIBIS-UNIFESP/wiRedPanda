@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #include <QDebug>
 
 QNEConnection::QNEConnection(QGraphicsItem *parent) : QGraphicsPathItem(parent) {
-  setPen(QPen(Qt::darkGray, 3));
+  setPen(QPen(Qt::darkRed, 3));
   setBrush(Qt::NoBrush);
   setZValue(-1);
   m_port1 = 0;
