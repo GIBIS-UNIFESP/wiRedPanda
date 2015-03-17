@@ -33,6 +33,7 @@ class QNEPort;
 class QNEConnection : public QGraphicsPathItem {
 public:
   enum { Type = QGraphicsItem::UserType + 2 };
+  enum Status { Active, Inactive, Invalid, Selected };
 
   QNEConnection(QGraphicsItem *parent = 0);
   ~QNEConnection();
@@ -55,14 +56,17 @@ public:
     return Type;
   }
 
-private:
+  Status status() const;
+  void setStatus(const Status & status);
+
+  private:
   QPointF pos1;
   QPointF pos2;
   QNEPort *m_port1;
   QNEPort *m_port2;
-
+  Status m_status;
   // QGraphicsItem interface
-  protected:
+protected:
   virtual QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 };
 

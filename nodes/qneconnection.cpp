@@ -31,11 +31,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #include <QPen>
 #include <QGraphicsScene>
 #include <QDebug>
+#include <QMessageBox>
 
 QNEConnection::QNEConnection(QGraphicsItem *parent) : QGraphicsPathItem(parent) {
   setFlag(QGraphicsItem::ItemIsSelectable);
-  setPen(QPen(Qt::darkRed, 3));
   setBrush(Qt::NoBrush);
+  setStatus(Inactive);
   setZValue(-1);
   m_port1 = 0;
   m_port2 = 0;
@@ -89,6 +90,7 @@ void QNEConnection::updatePath() {
 
   p.cubicTo(ctr1, ctr2, pos2);
 
+//  p.lineTo(pos2);
   setPath(p);
 }
 
@@ -101,7 +103,6 @@ QNEPort* QNEConnection::port2() const {
 }
 
 void QNEConnection::split(QPointF point) {
-  qDebug() << "Split!";
 //  QNEPort * port = new QNEPort(this);
 //  port->setPos(point);
 //  port->show();
@@ -130,13 +131,31 @@ void QNEConnection::load(QDataStream &ds, const QMap<quint64, QNEPort*> &portMap
   updatePath();
 }
 
+QNEConnection::Status QNEConnection::status() const {
+  return m_status;
+}
+
+void QNEConnection::setStatus(const Status & status) {
+  m_status = status;
+  switch (status) {
+  case Inactive:
+    setPen(QPen(Qt::black, 3));
+    break;
+  case Active:
+    setPen(QPen(Qt::green,3));
+    break;
+  case Selected:
+    setPen(QPen(Qt::darkGreen,5));
+    break;
+  }
+}
 
 QVariant QNEConnection::itemChange(GraphicsItemChange change, const QVariant & value) {
-  if(change == ItemSelectedChange){
-    if(value.toBool()){
-      setPen(QPen(Qt::darkGreen, 5));
-    }else{
-      setPen(QPen(Qt::darkRed, 3));
+  if(change == ItemSelectedChange) {
+    if(value.toBool()) {
+      setStatus(Selected);
+    } else {
+      setStatus(Inactive);
     }
   }
   return value;
