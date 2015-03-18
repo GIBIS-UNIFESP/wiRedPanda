@@ -32,6 +32,10 @@ private slots:
 
   void on_actionSave_triggered();
 
+  void on_actionAbout_triggered();
+
+  void on_actionAbout_Qt_triggered();
+
 private:
   Ui::MainWindow *ui;
   Editor * editor;
