@@ -178,7 +178,8 @@
        y1="38"
        x2="57.5"
        y2="38"
-       gradientUnits="userSpaceOnUse" />
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.78786797,0,0,1.1111111,9.4975932,-9.722222)" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient5358-4"
@@ -215,9 +216,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.6568543"
-     inkscape:cx="39.904176"
-     inkscape:cy="37.984743"
+     inkscape:zoom="22.627417"
+     inkscape:cx="33.690819"
+     inkscape:cy="40.438687"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
@@ -270,6 +271,14 @@
        inkscape:connector-curvature="0"
        transform="matrix(0.85066115,0,0,0.85962149,4.8535125,4.4219232)" />
     <rect
+       style="color:#000000;fill:#fefefe;fill-opacity:1;fill-rule:nonzero;stroke:#fefefe;stroke-width:0.39767542000000000;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect3023"
+       width="44.379242"
+       height="30.685755"
+       x="10.25"
+       y="14.689246"
+       ry="0.024602868" />
+    <rect
        style="fill:#b92711;fill-opacity:1;stroke:none"
        id="rect5330"
        width="50"
@@ -279,13 +288,14 @@
        rx="0.87392539"
        ry="1.0925255" />
     <rect
-       style="fill:url(#linearGradient5364);fill-opacity:1;stroke:none;"
+       style="fill:url(#linearGradient5364);fill-opacity:1;stroke:none"
        id="rect5330-5"
-       width="50"
-       height="45"
-       x="7.5"
-       y="15.5"
-       rx="0.87392539"
-       ry="1.0925255" />
+       width="39.393398"
+       height="50"
+       x="15.406602"
+       y="7.5"
+       rx="0.68853784"
+       ry="1.2139173"
+       transform="matrix(0,1,1,0,0,0)" />
   </g>
 </svg>
