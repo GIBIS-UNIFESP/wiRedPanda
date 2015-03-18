@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QFileDialog>
+
 MainWindow::MainWindow(QWidget *parent) :
   QMainWindow(parent),
   ui(new Ui::MainWindow) {
@@ -37,4 +39,12 @@ void MainWindow::on_actionRotate_right_triggered() {
 
 void MainWindow::on_actionRotate_left_triggered() {
   editor->rotate(false);
+}
+
+void MainWindow::on_actionOpen_triggered() {
+  QFileDialog::getOpenFileName(this, tr("Open File"), QDir::homePath(),tr("Panda files (*.panda)"));
+}
+
+void MainWindow::on_actionSave_triggered() {
+  QFileDialog::getSaveFileName(this, tr("Save File"), QDir::homePath(), tr("Panda files (*.panda)"));
 }

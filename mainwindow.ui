@@ -80,7 +80,7 @@
                <x>0</x>
                <y>0</y>
                <width>198</width>
-               <height>578</height>
+               <height>548</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout">
@@ -284,7 +284,7 @@
                <x>0</x>
                <y>0</y>
                <width>198</width>
-               <height>578</height>
+               <height>548</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -485,7 +485,7 @@
                <x>0</x>
                <y>0</y>
                <width>198</width>
-               <height>578</height>
+               <height>548</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -686,7 +686,7 @@
                <x>0</x>
                <y>0</y>
                <width>198</width>
-               <height>578</height>
+               <height>548</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -738,13 +738,28 @@
     </item>
    </layout>
   </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionNew"/>
+   <addaction name="actionOpen"/>
+   <addaction name="actionSave"/>
+   <addaction name="separator"/>
+   <addaction name="actionRotate_left"/>
+   <addaction name="actionRotate_right"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>20</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -774,6 +789,9 @@
     <addaction name="actionCopy"/>
     <addaction name="actionPaste"/>
     <addaction name="actionDelete"/>
+    <addaction name="separator"/>
+    <addaction name="actionRotate_left"/>
+    <addaction name="actionRotate_right"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
@@ -805,34 +823,12 @@
     <addaction name="separator"/>
     <addaction name="menuShow"/>
    </widget>
-   <widget class="QMenu" name="menuElement">
-    <property name="title">
-     <string>Element</string>
-    </property>
-    <addaction name="actionRotate_right"/>
-   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
-   <addaction name="menuElement"/>
    <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
   </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="actionNew"/>
-   <addaction name="actionOpen"/>
-   <addaction name="actionSave"/>
-   <addaction name="separator"/>
-   <addaction name="actionRotate_left"/>
-   <addaction name="actionRotate_right"/>
-  </widget>
-  <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen">
    <property name="icon">
     <iconset resource="resources.qrc">
