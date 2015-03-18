@@ -34,22 +34,6 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <spacer name="verticalSpacer_5">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>0</width>
-          <height>4</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
       <item row="0" column="1" colspan="2">
        <widget class="QLineEdit" name="lineEdit">
         <property name="sizePolicy">
@@ -114,7 +98,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap>:/input/resources/input/1.svg</pixmap>
+                   <pixmap resource="resources.qrc">:/input/resources/input/1.svg</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -138,7 +122,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap>:/input/resources/input/0.svg</pixmap>
+                   <pixmap resource="resources.qrc">:/input/resources/input/0.svg</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -159,7 +143,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap>:/input/resources/input/button off.svg</pixmap>
+                   <pixmap resource="resources.qrc">:/input/resources/input/button off.svg</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -180,7 +164,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap>:/input/resources/input/switch off.svg</pixmap>
+                   <pixmap resource="resources.qrc">:/input/resources/input/switch off.svg</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -201,7 +185,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap>:/input/resources/input/clock 0.svg</pixmap>
+                   <pixmap resource="resources.qrc">:/input/resources/input/clock 0.svg</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -727,6 +711,22 @@
         </widget>
        </widget>
       </item>
+      <item row="1" column="1">
+       <spacer name="verticalSpacer_5">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>4</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
      </layout>
     </item>
     <item row="1" column="1">
@@ -805,9 +805,16 @@
     <addaction name="separator"/>
     <addaction name="menuShow"/>
    </widget>
+   <widget class="QMenu" name="menuElement">
+    <property name="title">
+     <string>Element</string>
+    </property>
+    <addaction name="actionRotate_right"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
+   <addaction name="menuElement"/>
    <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -821,12 +828,15 @@
    <addaction name="actionNew"/>
    <addaction name="actionOpen"/>
    <addaction name="actionSave"/>
+   <addaction name="separator"/>
+   <addaction name="actionRotate_left"/>
+   <addaction name="actionRotate_right"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/output/counter/resources/toolbar/folder.svg</normaloff>:/output/counter/resources/toolbar/folder.svg</iconset>
+     <normaloff>:/toolbar/resources/toolbar/folder.svg</normaloff>:/toolbar/resources/toolbar/folder.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Open...</string>
@@ -841,7 +851,7 @@
   <action name="actionSave">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/output/counter/resources/toolbar/save.svg</normaloff>:/output/counter/resources/toolbar/save.svg</iconset>
+     <normaloff>:/toolbar/resources/toolbar/save.svg</normaloff>:/toolbar/resources/toolbar/save.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Save</string>
@@ -906,7 +916,7 @@
   <action name="actionNew">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/output/counter/resources/toolbar/new.svg</normaloff>:/output/counter/resources/toolbar/new.svg</iconset>
+     <normaloff>:/toolbar/resources/toolbar/new.svg</normaloff>:/toolbar/resources/toolbar/new.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;New</string>
@@ -991,6 +1001,30 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionRotate_right">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/toolbar/resources/toolbar/rotateR.svg</normaloff>:/toolbar/resources/toolbar/rotateR.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Rotate right</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionRotate_left">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/toolbar/resources/toolbar/rotateL.svg</normaloff>:/toolbar/resources/toolbar/rotateL.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Rotate left</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+R</string>
    </property>
   </action>
  </widget>

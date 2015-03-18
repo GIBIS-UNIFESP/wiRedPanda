@@ -24,6 +24,10 @@ private slots:
 
   void on_actionWires_triggered(bool checked);
 
+  void on_actionRotate_right_triggered();
+
+  void on_actionRotate_left_triggered();
+
   private:
   Ui::MainWindow *ui;
   Editor * editor;

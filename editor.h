@@ -17,6 +17,7 @@ signals:
 public slots:
   void clear();
   void showWires(bool checked);
+  void rotate(bool rotateRight);
 private:
   QGraphicsScene * scene;
   QGraphicsItem * itemAt( const QPointF & pos );

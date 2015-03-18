@@ -32,8 +32,43 @@ void Editor::clear() {
 void Editor::showWires(bool checked) {
 
   foreach( QGraphicsItem * c, scene->items()) {
-    if(c->type() == QNEConnection::Type){
+    if(c->type() == QNEConnection::Type) {
       c->setVisible(checked);
+    }
+  }
+}
+
+void Editor::rotate(bool rotateRight) {
+  double angle = 90.0;
+  if(!rotateRight){
+    angle = -angle;
+  }
+  double cx = 0, cy = 0;
+  int sz = 0;
+  QList<QGraphicsItem *> list = scene->selectedItems();
+  foreach(QGraphicsItem * item, list) {
+
+    if(item->type() == GraphicElement::Type) {
+      item->setTransformOriginPoint(32,32);
+
+      cx += item->pos().x();
+      cy += item->pos().y();
+
+      sz ++;
+    }
+  }
+  cx /= sz;
+  cy /= sz;
+  foreach(QGraphicsItem * item, list) {
+    if(item->type() == GraphicElement::Type) {
+      QTransform transform;
+      transform.translate( cx , cy  );
+      transform.rotate( angle );
+      transform.translate( -cx , -cy );
+      item->resetTransform();
+      item->setRotation(item->rotation()+angle);
+      item->resetTransform();
+      item->setPos(transform.map(item->pos()));
     }
   }
 }
@@ -75,41 +110,13 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
           return true;
           break;
         }
-      case Qt::Key_R: {
-          double cx = 0, cy = 0;
-          int sz = 0;
-          QList<QGraphicsItem *> list = scene->selectedItems();
-          foreach(QGraphicsItem * item, list) {
-
-            if(item->type() == GraphicElement::Type) {
-              item->setTransformOriginPoint(32,32);
-
-              cx += item->pos().x();
-              cy += item->pos().y();
-
-              sz ++;
-            }
-          }
-          cx /= sz;
-          cy /= sz;
-          foreach(QGraphicsItem * item, list) {
-            if(item->type() == GraphicElement::Type) {
-              QTransform transform;
-              transform.translate( cx , cy  );
-              transform.rotate( 90 );
-              transform.translate( -cx , -cy );
-              item->resetTransform();
-              item->setRotation(item->rotation()+90.0);
-              item->resetTransform();
-              item->setPos(transform.map(item->pos()));
-            }
-          }
-          break;
-        }
+        break;
       }
-      break;
     }
   case QEvent::GraphicsSceneMousePress: {
+      if(!me) {
+        break;
+      }
       QGraphicsItem * item = itemAt(me->scenePos());
       if( item && item->type()== QNEPort::Type) {
         conn = new QNEConnection();

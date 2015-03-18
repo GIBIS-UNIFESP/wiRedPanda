@@ -30,3 +30,11 @@ void MainWindow::on_actionNew_triggered() {
 void MainWindow::on_actionWires_triggered(bool checked) {
   editor->showWires(checked);
 }
+
+void MainWindow::on_actionRotate_right_triggered() {
+  editor->rotate(true);
+}
+
+void MainWindow::on_actionRotate_left_triggered() {
+  editor->rotate(false);
+}
