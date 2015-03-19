@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     nodes/qneconnection.cpp \
     nodes/qneblock.cpp \
     elementfactory.cpp \
-    element/input.cpp
+    element/inputbutton.cpp \
+    element/led.cpp
 
 HEADERS  += mainwindow.h \
     label.h \
@@ -32,7 +33,8 @@ HEADERS  += mainwindow.h \
     nodes/qneconnection.h \
     nodes/qneblock.h \
     elementfactory.h \
-    element/input.h
+    element/inputbutton.h \
+    element/led.h
 
 FORMS    += mainwindow.ui
 

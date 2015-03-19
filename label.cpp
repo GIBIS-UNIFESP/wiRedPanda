@@ -20,8 +20,11 @@ void Label::mousePressEvent(QMouseEvent *event) {
   QDataStream dataStream(&itemData, QIODevice::WriteOnly);
   ElementType type = ElementType::UNKNOWN;
   qDebug() << objectName();
-  if(objectName().endsWith("button"))
-    type = ElementType::INPUT;
+  if(objectName().endsWith("_button")){
+    type = ElementType::BUTTON;
+  }else if(objectName().endsWith("_led")){
+    type = ElementType::LED;
+  }
   dataStream << pixmap << QPointF(event->pos()) << (qint32) type;
 
   QMimeData *mimeData = new QMimeData;

@@ -7,7 +7,7 @@
 #include "nodes/qneport.h"
 
 enum class ElementType {
-  EMPTY, UNKNOWN, INPUT, OUTPUT, NOT, AND, OR, NAND, NOR, CLOCK,
+  EMPTY, UNKNOWN, BUTTON, LED, NOT, AND, OR, NAND, NOR, CLOCK,
   WIRE, DLATCH, SRLATCH, SCRLATCH
 };
 
@@ -65,6 +65,7 @@ public:
 
   void setPixmap(const QPixmap &pixmap);
 
+  void updatePorts();
   protected:
   virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e);
   QVariant itemChange(GraphicsItemChange change, const QVariant &value);

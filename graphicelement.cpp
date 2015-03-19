@@ -94,25 +94,32 @@ QNEPort *GraphicElement::addPort(bool isOutput) {
   QNEPort *port = new QNEPort(this);
   port->setIsOutput(isOutput);
   port->setGraphicElement(this);
-  int inputPos;
-  int outputPos;
+  if(isOutput) {
+    m_outputs.push_back(port);
+  } else {
+    m_inputs.push_back(port);
+  }
+  updatePorts();
+  port->show();
+  return port;
+}
+
+void GraphicElement::updatePorts() {
+  int inputPos = m_topPosition;
+  int outputPos = m_bottomPosition;
   if(m_outputsOnTop) {
     inputPos = m_bottomPosition;
     outputPos = m_topPosition;
-  } else {
-    inputPos = m_topPosition;
-    outputPos = m_bottomPosition;
   }
-  if(isOutput) {
-    m_outputs.push_back(port);
+  if(!m_outputs.isEmpty()){
     int step = qMax(32/m_outputs.size(), 6);
     int x = 32 - m_outputs.size()*step + step;
     foreach (QNEPort * port, m_outputs) {
       port->setPos(x,outputPos);
       x+= step * 2;
     }
-  } else {
-    m_inputs.push_back(port);
+  }
+  if(!m_inputs.isEmpty()){
     int step = qMax(32/m_inputs.size(),6);
     int x = 32 - m_inputs.size()*step + step;
     foreach (QNEPort * port, m_inputs) {
@@ -120,8 +127,6 @@ QNEPort *GraphicElement::addPort(bool isOutput) {
       x+= step * 2;
     }
   }
-  port->show();
-  return port;
 }
 
 void GraphicElement::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * e) {
@@ -182,6 +187,7 @@ int GraphicElement::bottomPosition() const {
 
 void GraphicElement::setBottomPosition(int bottomPosition) {
   m_bottomPosition = bottomPosition;
+  updatePorts();
 }
 
 int GraphicElement::topPosition() const {
@@ -190,6 +196,7 @@ int GraphicElement::topPosition() const {
 
 void GraphicElement::setTopPosition(int topPosition) {
   m_topPosition = topPosition;
+  updatePorts();
 }
 
 bool GraphicElement::outputsOnTop() const {
@@ -198,4 +205,5 @@ bool GraphicElement::outputsOnTop() const {
 
 void GraphicElement::setOutputsOnTop(bool outputsOnTop) {
   m_outputsOnTop = outputsOnTop;
+  updatePorts();
 }

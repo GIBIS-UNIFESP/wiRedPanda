@@ -1,18 +1,17 @@
+#ifndef LED_H
+#define LED_H
+
 #include "graphicelement.h"
 
-#ifndef INPUT_H
-#define INPUT_H
-
-
-class Input : public GraphicElement {
+class Led : public GraphicElement {
 public:
-  Input(QGraphicsItem * parent);
-  ~Input();
-
+  Led(QGraphicsItem * parent);
+  ~Led();
   // QGraphicsItem interface
 protected:
   void mousePressEvent(QGraphicsSceneMouseEvent * event);
   void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
+
 };
 
-#endif // INPUT_H
+#endif // LED_H
