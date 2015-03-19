@@ -52,12 +52,18 @@
         <file>resources/output/counter/counter g.svg</file>
         <file>resources/output/counter/counter h.svg</file>
         <file>resources/output/counter/counter off.svg</file>
-        <file>resources/toolbar/folder.png</file>
-        <file>resources/toolbar/folder.svg</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>resources/pandaLogo.png</file>
+    </qresource>
+    <qresource prefix="/toolbar">
         <file>resources/toolbar/new.svg</file>
-        <file>resources/toolbar/pause.svg</file>
         <file>resources/toolbar/play.svg</file>
-        <file>resources/toolbar/save.svg</file>
         <file>resources/toolbar/stop.svg</file>
+        <file>resources/toolbar/pause.svg</file>
+        <file>resources/toolbar/folder.svg</file>
+        <file>resources/toolbar/rotateR.svg</file>
+        <file>resources/toolbar/save.svg</file>
+        <file>resources/toolbar/rotateL.svg</file>
     </qresource>
 </RCC>

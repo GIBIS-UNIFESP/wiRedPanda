@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>WiRED Panda</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/resources/pandaLogo.png</normaloff>:/resources/pandaLogo.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_3">
@@ -29,22 +33,6 @@
          <string>Search:</string>
         </property>
        </widget>
-      </item>
-      <item row="1" column="1">
-       <spacer name="verticalSpacer_5">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>0</width>
-          <height>4</height>
-         </size>
-        </property>
-       </spacer>
       </item>
       <item row="0" column="1" colspan="2">
        <widget class="QLineEdit" name="lineEdit">
@@ -723,10 +711,26 @@
         </widget>
        </widget>
       </item>
+      <item row="1" column="1">
+       <spacer name="verticalSpacer_5">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>4</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
      </layout>
     </item>
     <item row="1" column="1">
-     <widget class="GraphicsView" name="graphicsView">
+     <widget class="QGraphicsView" name="graphicsView">
       <property name="acceptDrops">
        <bool>true</bool>
       </property>
@@ -734,6 +738,21 @@
     </item>
    </layout>
   </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionNew"/>
+   <addaction name="actionOpen"/>
+   <addaction name="actionSave"/>
+   <addaction name="separator"/>
+   <addaction name="actionRotate_left"/>
+   <addaction name="actionRotate_right"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
@@ -756,6 +775,7 @@
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
     <addaction name="separator"/>
+    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -769,6 +789,9 @@
     <addaction name="actionCopy"/>
     <addaction name="actionPaste"/>
     <addaction name="actionDelete"/>
+    <addaction name="separator"/>
+    <addaction name="actionRotate_left"/>
+    <addaction name="actionRotate_right"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
@@ -781,6 +804,7 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="actionAbout"/>
+    <addaction name="actionAbout_Qt"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -806,22 +830,10 @@
    <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
   </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>true</bool>
-   </attribute>
-   <addaction name="actionNew"/>
-   <addaction name="actionOpen"/>
-   <addaction name="actionSave"/>
-  </widget>
-  <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/output/counter/resources/toolbar/folder.svg</normaloff>:/output/counter/resources/toolbar/folder.svg</iconset>
+     <normaloff>:/toolbar/resources/toolbar/folder.svg</normaloff>:/toolbar/resources/toolbar/folder.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Open...</string>
@@ -836,7 +848,7 @@
   <action name="actionSave">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/output/counter/resources/toolbar/save.svg</normaloff>:/output/counter/resources/toolbar/save.svg</iconset>
+     <normaloff>:/toolbar/resources/toolbar/save.svg</normaloff>:/toolbar/resources/toolbar/save.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Save</string>
@@ -901,7 +913,7 @@
   <action name="actionNew">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/output/counter/resources/toolbar/new.svg</normaloff>:/output/counter/resources/toolbar/new.svg</iconset>
+     <normaloff>:/toolbar/resources/toolbar/new.svg</normaloff>:/toolbar/resources/toolbar/new.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;New</string>
@@ -988,6 +1000,35 @@
     <string>Ctrl+Q</string>
    </property>
   </action>
+  <action name="actionRotate_right">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/toolbar/resources/toolbar/rotateR.svg</normaloff>:/toolbar/resources/toolbar/rotateR.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Rotate right</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionRotate_left">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/toolbar/resources/toolbar/rotateL.svg</normaloff>:/toolbar/resources/toolbar/rotateL.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Rotate left</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+R</string>
+   </property>
+  </action>
+  <action name="actionAbout_Qt">
+   <property name="text">
+    <string>About Qt</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -995,11 +1036,6 @@
    <class>Label</class>
    <extends>QLabel</extends>
    <header>label.h</header>
-  </customwidget>
-  <customwidget>
-   <class>GraphicsView</class>
-   <extends>QGraphicsView</extends>
-   <header>graphicsview.h</header>
   </customwidget>
  </customwidgets>
  <resources>

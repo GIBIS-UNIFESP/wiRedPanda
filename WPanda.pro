@@ -8,20 +8,26 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = Latest
+TARGET = WPanda
 TEMPLATE = app
 
 
 SOURCES += main.cpp\
         mainwindow.cpp \
     label.cpp \
-    graphicsscene.cpp \
-    graphicsview.cpp
+    editor.cpp \
+    graphicelement.cpp \
+    nodes/qneport.cpp \
+    nodes/qneconnection.cpp \
+    nodes/qneblock.cpp
 
 HEADERS  += mainwindow.h \
     label.h \
-    graphicsscene.h \
-    graphicsview.h
+    editor.h \
+    graphicelement.h \
+    nodes/qneport.h \
+    nodes/qneconnection.h \
+    nodes/qneblock.h
 
 FORMS    += mainwindow.ui
 
