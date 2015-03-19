@@ -23,7 +23,9 @@ SOURCES += main.cpp\
     nodes/qneblock.cpp \
     elementfactory.cpp \
     element/inputbutton.cpp \
-    element/led.cpp
+    element/led.cpp \
+    element/and.cpp \
+    element/or.cpp
 
 HEADERS  += mainwindow.h \
     label.h \
@@ -34,7 +36,9 @@ HEADERS  += mainwindow.h \
     nodes/qneblock.h \
     elementfactory.h \
     element/inputbutton.h \
-    element/led.h
+    element/led.h \
+    element/and.h \
+    element/or.h
 
 FORMS    += mainwindow.ui
 

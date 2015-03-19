@@ -5,12 +5,12 @@
 
 class Led : public GraphicElement {
 public:
-  Led(QGraphicsItem * parent);
+  explicit Led(QGraphicsItem * parent);
   ~Led();
   // QGraphicsItem interface
 protected:
-  void mousePressEvent(QGraphicsSceneMouseEvent * event);
-  void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
+//  void mousePressEvent(QGraphicsSceneMouseEvent * event);
+//  void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
 
 };
 

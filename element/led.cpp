@@ -12,14 +12,14 @@ Led::~Led() {
 
 }
 
-void Led::mousePressEvent(QGraphicsSceneMouseEvent * event) {
-  if(event->button() == Qt::LeftButton) {
-    setPixmap(QPixmap(":/output/resources/output/blue led on.svg"));
-  }
-}
+//void Led::mousePressEvent(QGraphicsSceneMouseEvent * event) {
+//  if(event->button() == Qt::LeftButton) {
+//    setPixmap(QPixmap(":/output/resources/output/blue led on.svg"));
+//  }
+//}
 
-void Led::mouseReleaseEvent(QGraphicsSceneMouseEvent * event) {
-  if(event->button() == Qt::LeftButton) {
-    setPixmap(QPixmap(":/output/resources/output/blue led off.svg"));
-  }
-}
+//void Led::mouseReleaseEvent(QGraphicsSceneMouseEvent * event) {
+//  if(event->button() == Qt::LeftButton) {
+//    setPixmap(QPixmap(":/output/resources/output/blue led off.svg"));
+//  }
+//}

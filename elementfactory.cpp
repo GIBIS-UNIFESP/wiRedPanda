@@ -1,6 +1,8 @@
 #include "elementfactory.h"
 #include "element/inputbutton.h"
 #include "element/led.h"
+#include "element/and.h"
+#include "element/or.h"
 
 #include <QDebug>
 size_t ElementFactory::getLastId() const {
@@ -30,12 +32,12 @@ GraphicElement *ElementFactory::buildElement(ElementType type, QGraphicsItem * p
 //  case ElementType::NOT:
 //    elm = new Not();
 //    break;
-//  case ElementType::AND:
-//    elm = new And();
-//    break;
-//  case ElementType::OR:
-//    elm = new Or();
-//    break;
+  case ElementType::AND:
+    elm = new And(parent);
+    break;
+  case ElementType::OR:
+    elm = new Or(parent);
+    break;
 //  case ElementType::NAND:
 //    elm = new Nand();
 //    break;

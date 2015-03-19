@@ -170,7 +170,7 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
 //        pos = roundTo(pos,64);
 //        qDebug() << pos << roundTo(pos,64);
         GraphicElement * item = factory.buildElement((ElementType)type);
-        if(!item){
+        if(!item) {
           item = new GraphicElement(pixmap);
         }
         scene->addItem(item);

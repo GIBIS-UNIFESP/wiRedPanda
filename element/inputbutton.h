@@ -1,12 +1,11 @@
-#include "graphicelement.h"
-
 #ifndef INPUT_H
 #define INPUT_H
 
+#include "graphicelement.h"
 
 class InputButton : public GraphicElement {
 public:
-  InputButton(QGraphicsItem * parent);
+  explicit InputButton(QGraphicsItem * parent);
   ~InputButton();
 
   // QGraphicsItem interface

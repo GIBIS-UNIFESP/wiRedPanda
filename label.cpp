@@ -24,6 +24,10 @@ void Label::mousePressEvent(QMouseEvent *event) {
     type = ElementType::BUTTON;
   }else if(objectName().endsWith("_led")){
     type = ElementType::LED;
+  }else if(objectName().endsWith("_and")){
+    type = ElementType::AND;
+  }else if(objectName().endsWith("_or")){
+    type = ElementType::OR;
   }
   dataStream << pixmap << QPointF(event->pos()) << (qint32) type;
 
