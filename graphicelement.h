@@ -7,7 +7,7 @@
 #include "nodes/qneport.h"
 
 enum class ElementType {
-  EMPTY, UNKNOWN, BUTTON, LED, NOT, AND, OR, NAND, NOR, CLOCK,
+  EMPTY, UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK,
   WIRE, DLATCH, SRLATCH, SCRLATCH
 };
 

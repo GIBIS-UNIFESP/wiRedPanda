@@ -1,6 +1,6 @@
 #include "inputbutton.h"
 
-#include <QGraphicsSceneDragDropEvent>
+#include <QGraphicsSceneMouseEvent>
 
 InputButton::InputButton(QGraphicsItem * parent) : GraphicElement(0,0,1,1,parent) {
   setOutputsOnTop(false);

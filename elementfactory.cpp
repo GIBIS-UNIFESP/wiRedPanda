@@ -4,6 +4,7 @@
 #include "element/inputbutton.h"
 #include "element/led.h"
 #include "element/or.h"
+#include "element/inputswitch.h"
 
 #include <QDebug>
 size_t ElementFactory::getLastId() const {
@@ -26,6 +27,9 @@ GraphicElement *ElementFactory::buildElement(ElementType type, QGraphicsItem * p
 //    break;
   case ElementType::BUTTON:
     elm = new InputButton(parent);
+    break;
+  case ElementType::SWITCH:
+    elm = new InputSwitch(parent);
     break;
   case ElementType::LED:
     elm = new Led(parent);

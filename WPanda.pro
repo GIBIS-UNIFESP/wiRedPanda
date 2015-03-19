@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     element/led.cpp \
     element/and.cpp \
     element/or.cpp \
-    element/clock.cpp
+    element/clock.cpp \
+    element/inputswitch.cpp
 
 HEADERS  += mainwindow.h \
     label.h \
@@ -40,7 +41,8 @@ HEADERS  += mainwindow.h \
     element/led.h \
     element/and.h \
     element/or.h \
-    element/clock.h
+    element/clock.h \
+    element/inputswitch.h
 
 FORMS    += mainwindow.ui
 
