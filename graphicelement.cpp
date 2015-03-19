@@ -16,6 +16,7 @@ GraphicElement::GraphicElement(QPixmap pixmap, QGraphicsItem *parent) : QGraphic
   m_maxInputSz = 8;
   m_maxOutputSz = 1;
   m_outputsOnTop = true;
+  m_rotatable = true;
 }
 
 GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem * parent) : QGraphicsItem(parent), pixmapItem(new QGraphicsPixmapItem( ( QGraphicsItem * ) this)) {
@@ -29,6 +30,7 @@ GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, 
   m_minOutputSz = minOutputSz;
   m_maxInputSz = maxInputSz;
   m_maxOutputSz = maxOutputSz;
+  m_rotatable = true;
   for(int i = 0; i < minInputSz; i++){
     addPort(false);
   }
@@ -42,12 +44,12 @@ GraphicElement::~GraphicElement() {
 
 }
 
-int GraphicElement::getId() const {
-  return id;
+int GraphicElement::id() const {
+  return m_id;
 }
 
 void GraphicElement::setId(int value) {
-  id = value;
+  m_id = value;
 }
 
 void GraphicElement::setPixmap(const QPixmap & pixmap) {
@@ -148,6 +150,16 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
   }
   return value;
 }
+bool GraphicElement::rotatable() const
+{
+  return m_rotatable;
+}
+
+void GraphicElement::setRotatable(bool rotatable)
+{
+  m_rotatable = rotatable;
+}
+
 int GraphicElement::minOutputSz() const {
   return m_minOutputSz;
 }

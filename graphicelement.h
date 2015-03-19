@@ -12,7 +12,7 @@ enum class ElementType {
 };
 
 class GraphicElement : public QObject, public QGraphicsItem {
-    Q_OBJECT
+  Q_OBJECT
 public:
   enum { Type = QGraphicsItem::UserType + 3 };
 
@@ -22,7 +22,7 @@ public:
 
 private:
   QGraphicsPixmapItem *pixmapItem;
-  int id;
+  int m_id;
   // QGraphicsItem interface
 public:
   virtual QRectF boundingRect() const;
@@ -61,12 +61,16 @@ public:
   int minOutputSz() const;
   void setMinOutputSz(int minOutputSz);
 
-  int getId() const;
+  int id() const;
   void setId(int value);
 
   void setPixmap(const QPixmap &pixmap);
 
   void updatePorts();
+
+  bool rotatable() const;
+  void setRotatable(bool rotatable);
+
   protected:
   virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e);
   QVariant itemChange(GraphicsItemChange change, const QVariant &value);
@@ -77,6 +81,7 @@ public:
   int m_minInputSz;
   int m_minOutputSz;
   bool m_outputsOnTop;
+  bool m_rotatable;
   QVector<QNEPort*> m_inputs;
   QVector<QNEPort*> m_outputs;
 };

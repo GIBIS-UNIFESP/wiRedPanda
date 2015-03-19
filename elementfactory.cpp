@@ -71,7 +71,7 @@ GraphicElement *ElementFactory::buildElement(ElementType type, QGraphicsItem * p
     break;
   }
   elm->setId( next_id() );
-  qDebug() << "Building element " << elm->getId();
+  qDebug() << "Building element " << elm->id();
   return( elm );
 }
 

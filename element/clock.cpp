@@ -2,6 +2,7 @@
 
 Clock::Clock(QGraphicsItem * parent) : GraphicElement(0,0,1,1,parent) {
   setOutputsOnTop(false);
+  setRotatable(false);
   setPixmap(QPixmap(":/input/resources/input/clock 0.svg"));
   connect(&timer,&QTimer::timeout,this,&Clock::updateClock);
   timer.start(500);

@@ -70,13 +70,16 @@ void Editor::rotate(bool rotateRight) {
   cy /= sz;
   foreach(QGraphicsItem * item, list) {
     if(item->type() == GraphicElement::Type) {
+      GraphicElement * elm = qgraphicsitem_cast<GraphicElement *>(item);
       QTransform transform;
       transform.translate( cx , cy  );
       transform.rotate( angle );
       transform.translate( -cx , -cy );
-      item->resetTransform();
-      item->setRotation(item->rotation()+angle);
-      item->resetTransform();
+      if(elm) {
+        if(elm->rotatable()) {
+          elm->setRotation(item->rotation()+angle);
+        }
+      }
       item->setPos(transform.map(item->pos()));
     }
   }

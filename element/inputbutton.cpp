@@ -5,6 +5,7 @@
 InputButton::InputButton(QGraphicsItem * parent) : GraphicElement(0,0,1,1,parent) {
   setOutputsOnTop(false);
   setPixmap(QPixmap(":/input/resources/input/button off.svg"));
+  setRotatable(false);
 }
 
 InputButton::~InputButton() {
