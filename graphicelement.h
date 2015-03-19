@@ -6,15 +6,22 @@
 
 #include "nodes/qneport.h"
 
+enum class ElementType {
+  EMPTY, UNKNOWN, INPUT, OUTPUT, NOT, AND, OR, NAND, NOR, CLOCK,
+  WIRE, DLATCH, SRLATCH, SCRLATCH
+};
+
 class GraphicElement : public QGraphicsItem {
 public:
   enum { Type = QGraphicsItem::UserType + 3 };
 
   explicit GraphicElement(QPixmap pixmap, QGraphicsItem * parent = 0);
+  explicit GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem * parent = 0);
   ~GraphicElement();
 
 private:
   QGraphicsPixmapItem *pixmapItem;
+  int id;
   // QGraphicsItem interface
 public:
   virtual QRectF boundingRect() const;
@@ -22,7 +29,9 @@ public:
   QNEPort * addPort(bool isOutput);
   // QGraphicsItem interface
 
-  int type() const { return Type; }
+  int type() const {
+    return Type;
+  }
 
   int topPosition() const;
   void setTopPosition(int topPosition);
@@ -45,6 +54,17 @@ public:
   QVector<QNEPort *> outputs() const;
   void setOutputs(const QVector<QNEPort *> & outputs);
 
+  int minInputSz() const;
+  void setMinInputSz(int minInputSz);
+
+  int minOutputSz() const;
+  void setMinOutputSz(int minOutputSz);
+
+  int getId() const;
+  void setId(int value);
+
+  void setPixmap(const QPixmap &pixmap);
+
   protected:
   virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e);
   QVariant itemChange(GraphicsItemChange change, const QVariant &value);
@@ -52,6 +72,8 @@ public:
   int m_bottomPosition;
   int m_maxInputSz;
   int m_maxOutputSz;
+  int m_minInputSz;
+  int m_minOutputSz;
   bool m_outputsOnTop;
   QVector<QNEPort*> m_inputs;
   QVector<QNEPort*> m_outputs;

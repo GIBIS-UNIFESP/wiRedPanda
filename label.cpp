@@ -1,8 +1,16 @@
 #include <QtWidgets>
 #include "label.h"
-
+#include "graphicelement.h"
 Label::Label(QWidget *parent) :
   QLabel(parent) {
+}
+
+QString Label::elementType() {
+  return m_elementType;
+}
+
+void Label::setElementType(QString elementType) {
+  m_elementType = elementType;
 }
 
 void Label::mousePressEvent(QMouseEvent *event) {
@@ -10,7 +18,11 @@ void Label::mousePressEvent(QMouseEvent *event) {
 
   QByteArray itemData;
   QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-  dataStream << pixmap << QPointF(event->pos());
+  ElementType type = ElementType::UNKNOWN;
+  qDebug() << objectName();
+  if(objectName().endsWith("button"))
+    type = ElementType::INPUT;
+  dataStream << pixmap << QPointF(event->pos()) << (qint32) type;
 
   QMimeData *mimeData = new QMimeData;
   mimeData->setData("application/x-dnditemdata", itemData);
@@ -35,3 +47,4 @@ void Label::mousePressEvent(QMouseEvent *event) {
     setPixmap(pixmap);
   }
 }
+

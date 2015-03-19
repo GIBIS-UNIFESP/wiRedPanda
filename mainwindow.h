@@ -36,7 +36,9 @@ private slots:
 
   void on_actionAbout_Qt_triggered();
 
-private:
+  void on_actionDelete_triggered();
+
+  private:
   Ui::MainWindow *ui;
   Editor * editor;
   QGraphicsScene * scene;
