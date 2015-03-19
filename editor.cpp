@@ -29,6 +29,15 @@ void Editor::clear() {
   scene->clear();
 }
 
+void Editor::deleteElements() {
+  foreach(QGraphicsItem * item, scene->selectedItems()) {
+    if(!scene->items().contains(item))
+      continue;
+    scene->removeItem(item);
+    delete item;
+  }
+}
+
 void Editor::showWires(bool checked) {
 
   foreach( QGraphicsItem * c, scene->items()) {
@@ -40,7 +49,7 @@ void Editor::showWires(bool checked) {
 
 void Editor::rotate(bool rotateRight) {
   double angle = 90.0;
-  if(!rotateRight){
+  if(!rotateRight) {
     angle = -angle;
   }
   double cx = 0, cy = 0;
@@ -95,24 +104,7 @@ QPointF roundTo(QPointF point, int multiple) {
 bool Editor::eventFilter(QObject * o, QEvent * e) {
   QGraphicsSceneDragDropEvent * dde = dynamic_cast<QGraphicsSceneDragDropEvent *>(e);
   QGraphicsSceneMouseEvent *me = dynamic_cast<QGraphicsSceneMouseEvent*>(e);
-  QKeyEvent * keyEvt = dynamic_cast<QKeyEvent *>(e);
   switch ((int) e->type()) {
-  case QEvent::KeyPress: {
-      switch ((int) keyEvt->key()) {
-      case Qt::Key_Delete:
-      case Qt::Key_Backspace: {
-          foreach(QGraphicsItem * item, scene->selectedItems()) {
-            if(!scene->items().contains(item))
-              continue;
-            scene->removeItem(item);
-            delete item;
-          }
-          return true;
-          break;
-        }
-        break;
-      }
-    }
   case QEvent::GraphicsSceneMousePress: {
       if(!me) {
         break;

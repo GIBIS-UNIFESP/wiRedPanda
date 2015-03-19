@@ -103,6 +103,7 @@ QNEPort* QNEConnection::port2() const {
 }
 
 void QNEConnection::split(QPointF point) {
+
 //  QNEPort * port = new QNEPort(this);
 //  port->setPos(point);
 //  port->show();
@@ -146,6 +147,9 @@ void QNEConnection::setStatus(const Status & status) {
     break;
   case Selected:
     setPen(QPen(Qt::darkGreen,5));
+    break;
+  case Invalid:
+    setPen(QPen(Qt::red,5));
     break;
   }
 }

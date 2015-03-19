@@ -5,12 +5,13 @@
 
 class Label : public QLabel {
   Q_OBJECT
+  Q_PROPERTY(int type READ type)
 public:
   explicit Label(QWidget *parent = 0);
 
 protected:
   void mousePressEvent(QMouseEvent *event);
-
+  int type();
 signals:
 
 public slots:

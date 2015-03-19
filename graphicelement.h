@@ -6,6 +6,11 @@
 
 #include "nodes/qneport.h"
 
+enum class ElementType {
+  EMPTY, UNKNOWN, INPUT, OUTPUT, NOT, AND, OR, NAND, NOR, CLOCK,
+  WIRE, DLATCH, SRLATCH, SCRLATCH
+};
+
 class GraphicElement : public QGraphicsItem {
 public:
   enum { Type = QGraphicsItem::UserType + 3 };
@@ -22,7 +27,9 @@ public:
   QNEPort * addPort(bool isOutput);
   // QGraphicsItem interface
 
-  int type() const { return Type; }
+  int type() const {
+    return Type;
+  }
 
   int topPosition() const;
   void setTopPosition(int topPosition);
@@ -45,7 +52,7 @@ public:
   QVector<QNEPort *> outputs() const;
   void setOutputs(const QVector<QNEPort *> & outputs);
 
-  protected:
+protected:
   virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e);
   QVariant itemChange(GraphicsItemChange change, const QVariant &value);
   int m_topPosition;

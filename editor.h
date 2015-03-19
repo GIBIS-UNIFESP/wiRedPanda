@@ -25,6 +25,7 @@ private:
   // QObject interface
 public:
   bool eventFilter(QObject *o, QEvent *e);
+  void deleteElements();
 };
 
 #endif // EDITOR_H

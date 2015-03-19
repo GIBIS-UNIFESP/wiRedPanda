@@ -35,3 +35,7 @@ void Label::mousePressEvent(QMouseEvent *event) {
     setPixmap(pixmap);
   }
 }
+
+int Label::type() {
+
+}
