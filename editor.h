@@ -5,6 +5,7 @@
 #include <QObject>
 
 #include <nodes/qneconnection.h>
+#include <elementfactory.h>
 
 class Editor : public QObject {
   Q_OBJECT
@@ -22,6 +23,7 @@ private:
   QGraphicsScene * scene;
   QGraphicsItem * itemAt( const QPointF & pos );
   QNEConnection * conn;
+  ElementFactory factory;
   // QObject interface
 public:
   bool eventFilter(QObject *o, QEvent *e);

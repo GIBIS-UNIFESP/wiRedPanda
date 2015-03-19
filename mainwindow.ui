@@ -80,7 +80,7 @@
                <x>0</x>
                <y>0</y>
                <width>198</width>
-               <height>578</height>
+               <height>581</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout">
@@ -90,7 +90,7 @@
                  <enum>QLayout::SetFixedSize</enum>
                 </property>
                 <item>
-                 <widget class="Label" name="label_6">
+                 <widget class="Label" name="label_vcc">
                   <property name="toolTip">
                    <string>vcc</string>
                   </property>
@@ -117,7 +117,7 @@
                  <enum>QLayout::SetFixedSize</enum>
                 </property>
                 <item>
-                 <widget class="Label" name="label_2">
+                 <widget class="Label" name="label_gnd">
                   <property name="text">
                    <string/>
                   </property>
@@ -138,7 +138,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_2">
                 <item>
-                 <widget class="Label" name="label_3">
+                 <widget class="Label" name="label_button">
                   <property name="text">
                    <string/>
                   </property>
@@ -159,7 +159,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_5">
                 <item>
-                 <widget class="Label" name="label_4">
+                 <widget class="Label" name="label_switch">
                   <property name="text">
                    <string/>
                   </property>
@@ -180,7 +180,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_3">
                 <item>
-                 <widget class="Label" name="label_5">
+                 <widget class="Label" name="label_clock">
                   <property name="text">
                    <string/>
                   </property>
@@ -204,7 +204,7 @@
                  <enum>QLayout::SetFixedSize</enum>
                 </property>
                 <item>
-                 <widget class="Label" name="label_40">
+                 <widget class="Label" name="label_led">
                   <property name="text">
                    <string/>
                   </property>
@@ -228,7 +228,7 @@
                  <enum>QLayout::SetFixedSize</enum>
                 </property>
                 <item>
-                 <widget class="Label" name="label_42">
+                 <widget class="Label" name="label_counter">
                   <property name="text">
                    <string/>
                   </property>
@@ -284,7 +284,7 @@
                <x>0</x>
                <y>0</y>
                <width>198</width>
-               <height>578</height>
+               <height>581</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -294,7 +294,7 @@
                  <enum>QLayout::SetFixedSize</enum>
                 </property>
                 <item>
-                 <widget class="Label" name="label_26">
+                 <widget class="Label" name="label_and">
                   <property name="text">
                    <string/>
                   </property>
@@ -318,7 +318,7 @@
                  <enum>QLayout::SetFixedSize</enum>
                 </property>
                 <item>
-                 <widget class="Label" name="label_28">
+                 <widget class="Label" name="label_or">
                   <property name="text">
                    <string/>
                   </property>
@@ -339,7 +339,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_17">
                 <item>
-                 <widget class="Label" name="label_30">
+                 <widget class="Label" name="label_not">
                   <property name="text">
                    <string/>
                   </property>
@@ -360,7 +360,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_18">
                 <item>
-                 <widget class="Label" name="label_32">
+                 <widget class="Label" name="label_nand">
                   <property name="text">
                    <string/>
                   </property>
@@ -381,7 +381,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_19">
                 <item>
-                 <widget class="Label" name="label_34">
+                 <widget class="Label" name="label_nor">
                   <property name="text">
                    <string/>
                   </property>
@@ -405,7 +405,7 @@
                  <enum>QLayout::SetFixedSize</enum>
                 </property>
                 <item>
-                 <widget class="Label" name="label_44">
+                 <widget class="Label" name="label_xor">
                   <property name="text">
                    <string/>
                   </property>
@@ -429,7 +429,7 @@
                  <enum>QLayout::SetFixedSize</enum>
                 </property>
                 <item>
-                 <widget class="Label" name="label_38">
+                 <widget class="Label" name="label_xnor">
                   <property name="text">
                    <string/>
                   </property>
@@ -485,7 +485,7 @@
                <x>0</x>
                <y>0</y>
                <width>198</width>
-               <height>578</height>
+               <height>581</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -495,7 +495,7 @@
                  <enum>QLayout::SetFixedSize</enum>
                 </property>
                 <item>
-                 <widget class="Label" name="label_16">
+                 <widget class="Label" name="label_dflipflop">
                   <property name="text">
                    <string/>
                   </property>
@@ -529,7 +529,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="label_19">
+                 <widget class="QLabel" name="label_dlatch">
                   <property name="text">
                    <string>D-Latch</string>
                   </property>
@@ -540,7 +540,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_12">
                 <item>
-                 <widget class="Label" name="label_20">
+                 <widget class="Label" name="label_jkflipflop">
                   <property name="text">
                    <string/>
                   </property>
@@ -561,7 +561,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_13">
                 <item>
-                 <widget class="Label" name="label_22">
+                 <widget class="Label" name="label_jklatch">
                   <property name="text">
                    <string/>
                   </property>
@@ -582,7 +582,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_14">
                 <item>
-                 <widget class="Label" name="label_24">
+                 <widget class="Label" name="label_srflipflop">
                   <property name="text">
                    <string/>
                   </property>
@@ -606,7 +606,7 @@
                  <enum>QLayout::SetFixedSize</enum>
                 </property>
                 <item>
-                 <widget class="Label" name="label_46">
+                 <widget class="Label" name="label_tflipflop">
                   <property name="text">
                    <string/>
                   </property>
@@ -630,7 +630,7 @@
                  <enum>QLayout::SetFixedSize</enum>
                 </property>
                 <item>
-                 <widget class="Label" name="label_48">
+                 <widget class="Label" name="label_tlatch">
                   <property name="text">
                    <string/>
                   </property>
@@ -686,7 +686,7 @@
                <x>0</x>
                <y>0</y>
                <width>198</width>
-               <height>578</height>
+               <height>581</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -759,7 +759,7 @@
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>20</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

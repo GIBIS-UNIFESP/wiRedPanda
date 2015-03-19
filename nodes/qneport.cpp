@@ -71,7 +71,8 @@ void QNEPort::setIsOutput(bool o) {
     setPen(QPen(Qt::black));
     setBrush(QColor(0x333333));
   }
-  QFontMetrics fm(scene()->font());
+  if(scene())
+    QFontMetrics fm(scene()->font());
 //  QRect r = fm.boundingRect(name);
 
   if (isOutput_)

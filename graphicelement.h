@@ -16,10 +16,12 @@ public:
   enum { Type = QGraphicsItem::UserType + 3 };
 
   explicit GraphicElement(QPixmap pixmap, QGraphicsItem * parent = 0);
+  explicit GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem * parent = 0);
   ~GraphicElement();
 
 private:
   QGraphicsPixmapItem *pixmapItem;
+  int id;
   // QGraphicsItem interface
 public:
   virtual QRectF boundingRect() const;
@@ -52,13 +54,26 @@ public:
   QVector<QNEPort *> outputs() const;
   void setOutputs(const QVector<QNEPort *> & outputs);
 
-protected:
+  int minInputSz() const;
+  void setMinInputSz(int minInputSz);
+
+  int minOutputSz() const;
+  void setMinOutputSz(int minOutputSz);
+
+  int getId() const;
+  void setId(int value);
+
+  void setPixmap(const QPixmap &pixmap);
+
+  protected:
   virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e);
   QVariant itemChange(GraphicsItemChange change, const QVariant &value);
   int m_topPosition;
   int m_bottomPosition;
   int m_maxInputSz;
   int m_maxOutputSz;
+  int m_minInputSz;
+  int m_minOutputSz;
   bool m_outputsOnTop;
   QVector<QNEPort*> m_inputs;
   QVector<QNEPort*> m_outputs;

@@ -18,9 +18,42 @@ GraphicElement::GraphicElement(QPixmap pixmap, QGraphicsItem *parent) : QGraphic
   m_outputsOnTop = true;
 }
 
+GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem * parent) : QGraphicsItem(parent), pixmapItem(new QGraphicsPixmapItem( ( QGraphicsItem * ) this)) {
+  setFlag(QGraphicsItem::ItemIsMovable);
+  setFlag(QGraphicsItem::ItemIsSelectable);
+  setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
+  setFlag(QGraphicsItem::ItemSendsGeometryChanges);
+  m_bottomPosition = 64;
+  m_topPosition = 0;
+  m_minInputSz = minInputSz;
+  m_minOutputSz = minOutputSz;
+  m_maxInputSz = maxInputSz;
+  m_maxOutputSz = maxOutputSz;
+  for(int i = 0; i < minInputSz; i++){
+    addPort(false);
+  }
+  for(int i = 0; i < minOutputSz; i++){
+    addPort(true);
+  }
+  m_outputsOnTop = true;
+}
+
 GraphicElement::~GraphicElement() {
 
 }
+
+int GraphicElement::getId() const {
+  return id;
+}
+
+void GraphicElement::setId(int value) {
+  id = value;
+}
+
+void GraphicElement::setPixmap(const QPixmap & pixmap) {
+  pixmapItem->setPixmap(pixmap);
+}
+
 QVector<QNEPort *> GraphicElement::outputs() const {
   return m_outputs;
 }
@@ -110,6 +143,22 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
   }
   return value;
 }
+int GraphicElement::minOutputSz() const {
+  return m_minOutputSz;
+}
+
+void GraphicElement::setMinOutputSz(int minOutputSz) {
+  m_minOutputSz = minOutputSz;
+}
+
+int GraphicElement::minInputSz() const {
+  return m_minInputSz;
+}
+
+void GraphicElement::setMinInputSz(int minInputSz) {
+  m_minInputSz = minInputSz;
+}
+
 
 int GraphicElement::maxOutputSz() const {
   return m_maxOutputSz;

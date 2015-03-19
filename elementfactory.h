@@ -1,0 +1,20 @@
+#ifndef ELEMENTFACTORY_H
+#define ELEMENTFACTORY_H
+#include "graphicelement.h"
+#include <deque>
+class ElementFactory {
+  std::deque< size_t > available_id;
+  size_t lastId;
+
+public:
+  ElementFactory();
+  void giveBackId( size_t id );
+  GraphicElement * buildElement(ElementType type , QGraphicsItem * parent = 0);
+  size_t getLastId() const;
+
+private:
+  size_t next_id();
+
+};
+
+#endif // ELEMENTFACTORY_H

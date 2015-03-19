@@ -164,11 +164,15 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
 
         QPixmap pixmap;
         QPointF offset;
-        dataStream >> pixmap >> offset;
+        qint32 type;
+        dataStream >> pixmap >> offset >> type;
         QPointF pos = dde->scenePos() - offset;
 //        pos = roundTo(pos,64);
 //        qDebug() << pos << roundTo(pos,64);
-        GraphicElement * item = new GraphicElement(pixmap);
+        GraphicElement * item = factory.buildElement((ElementType)type);
+        if(!item){
+          item = new GraphicElement(pixmap);
+        }
         scene->addItem(item);
         scene->clearSelection();
         item->setSelected(true);

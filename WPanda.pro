@@ -20,7 +20,9 @@ SOURCES += main.cpp\
     graphicelement.cpp \
     nodes/qneport.cpp \
     nodes/qneconnection.cpp \
-    nodes/qneblock.cpp
+    nodes/qneblock.cpp \
+    elementfactory.cpp \
+    element/input.cpp
 
 HEADERS  += mainwindow.h \
     label.h \
@@ -28,7 +30,9 @@ HEADERS  += mainwindow.h \
     graphicelement.h \
     nodes/qneport.h \
     nodes/qneconnection.h \
-    nodes/qneblock.h
+    nodes/qneblock.h \
+    elementfactory.h \
+    element/input.h
 
 FORMS    += mainwindow.ui
 

@@ -5,16 +5,17 @@
 
 class Label : public QLabel {
   Q_OBJECT
-  Q_PROPERTY(int type READ type)
 public:
+  Q_PROPERTY(QString elementType READ elementType WRITE setElementType DESIGNABLE true)
   explicit Label(QWidget *parent = 0);
 
+  QString elementType();
+  void setElementType(QString elementType);
 protected:
   void mousePressEvent(QMouseEvent *event);
-  int type();
-signals:
 
-public slots:
+private:
+  QString m_elementType;
 
 };
 
