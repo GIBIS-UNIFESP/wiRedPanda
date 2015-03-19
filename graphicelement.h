@@ -11,7 +11,8 @@ enum class ElementType {
   WIRE, DLATCH, SRLATCH, SCRLATCH
 };
 
-class GraphicElement : public QGraphicsItem {
+class GraphicElement : public QObject, public QGraphicsItem {
+    Q_OBJECT
 public:
   enum { Type = QGraphicsItem::UserType + 3 };
 

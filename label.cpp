@@ -28,6 +28,8 @@ void Label::mousePressEvent(QMouseEvent *event) {
     type = ElementType::AND;
   }else if(objectName().endsWith("_or")){
     type = ElementType::OR;
+  }else if(objectName().endsWith("_clock")){
+    type = ElementType::CLOCK;
   }
   dataStream << pixmap << QPointF(event->pos()) << (qint32) type;
 

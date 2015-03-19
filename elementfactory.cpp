@@ -1,7 +1,8 @@
 #include "elementfactory.h"
+#include "element/and.h"
+#include "element/clock.h"
 #include "element/inputbutton.h"
 #include "element/led.h"
-#include "element/and.h"
 #include "element/or.h"
 
 #include <QDebug>
@@ -44,9 +45,9 @@ GraphicElement *ElementFactory::buildElement(ElementType type, QGraphicsItem * p
 //  case ElementType::NOR:
 //    elm = new Nor();
 //    break;
-//  case ElementType::CLOCK:
-//    elm = new Clock();
-//    break;
+  case ElementType::CLOCK:
+    elm = new Clock(parent);
+    break;
 //  case ElementType::DLATCH:
 //    elm = new DLatch();
 //    break;
