@@ -13,7 +13,7 @@
    height="64px"
    id="svg3852"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
+   inkscape:version="0.48.4 r9939"
    sodipodi:docname="or.svg">
   <defs
      id="defs3854">
@@ -24,30 +24,6 @@
        inkscape:vp_z="64 : 32 : 1"
        inkscape:persp3d-origin="32 : 21.333333 : 1"
        id="perspective3837" />
-    <filter
-       inkscape:collect="always"
-       id="filter4118"
-       x="-0.3154202"
-       width="1.6308404"
-       y="-0.16032367"
-       height="1.3206473">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="2.5727765"
-         id="feGaussianBlur4120" />
-    </filter>
-    <filter
-       inkscape:collect="always"
-       id="filter4122"
-       x="-0.31542264"
-       width="1.6308453"
-       y="-0.16032364"
-       height="1.3206473">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="2.5727765"
-         id="feGaussianBlur4124" />
-    </filter>
     <filter
        inkscape:collect="always"
        id="filter4126"
@@ -77,10 +53,10 @@
      inkscape:grid-bbox="true"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1440"
-     inkscape:window-height="834"
+     inkscape:window-width="1920"
+     inkscape:window-height="1022"
      inkscape:window-x="0"
-     inkscape:window-y="27"
+     inkscape:window-y="22"
      inkscape:window-maximized="1">
     <sodipodi:guide
        orientation="1,0"
@@ -135,14 +111,5 @@
        y="39.625168"
        rx="0.82101333"
        ry="0" />
-    <rect
-       style="opacity:0.62999998;fill:#262626;fill-opacity:1;stroke:#262626;stroke-width:2.29853082;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4126)"
-       id="rect3810-5"
-       width="3.551713"
-       height="26.628805"
-       x="30.484167"
-       y="17.859818"
-       rx="2.0145462"
-       transform="matrix(0.98027027,0,0,1.0003715,1.7686366,-0.01365886)" />
   </g>
 </svg>
