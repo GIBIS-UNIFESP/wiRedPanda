@@ -5,6 +5,9 @@
 #include "element/led.h"
 #include "element/or.h"
 #include "element/inputswitch.h"
+#include "element/not.h"
+#include "element/nand.h"
+#include "element/nor.h"
 
 #include <QDebug>
 size_t ElementFactory::getLastId() const {
@@ -34,21 +37,21 @@ GraphicElement *ElementFactory::buildElement(ElementType type, QGraphicsItem * p
   case ElementType::LED:
     elm = new Led(parent);
     break;
-//  case ElementType::NOT:
-//    elm = new Not();
-//    break;
+  case ElementType::NOT:
+    elm = new Not(parent);
+    break;
   case ElementType::AND:
     elm = new And(parent);
     break;
   case ElementType::OR:
     elm = new Or(parent);
     break;
-//  case ElementType::NAND:
-//    elm = new Nand();
-//    break;
-//  case ElementType::NOR:
-//    elm = new Nor();
-//    break;
+  case ElementType::NAND:
+    elm = new Nand(parent);
+    break;
+  case ElementType::NOR:
+    elm = new Nor(parent);
+    break;
   case ElementType::CLOCK:
     elm = new Clock(parent);
     break;

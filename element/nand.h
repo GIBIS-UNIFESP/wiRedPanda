@@ -1,12 +1,14 @@
 #ifndef NAND_H
 #define NAND_H
 
+#include "graphicelement.h"
 
-class Nand
-{
+
+class Nand : public GraphicElement{
 public:
-    Nand();
+    explicit Nand(QGraphicsItem *parent = 0);
     ~Nand();
 };
 
 #endif // NAND_H
+

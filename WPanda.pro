@@ -27,7 +27,10 @@ SOURCES += main.cpp\
     element/and.cpp \
     element/or.cpp \
     element/clock.cpp \
-    element/inputswitch.cpp
+    element/inputswitch.cpp \
+    element/not.cpp \
+    element/nand.cpp \
+    element/nor.cpp
 
 HEADERS  += mainwindow.h \
     label.h \
@@ -42,7 +45,10 @@ HEADERS  += mainwindow.h \
     element/and.h \
     element/or.h \
     element/clock.h \
-    element/inputswitch.h
+    element/inputswitch.h \
+    element/not.h \
+    element/nand.h \
+    element/nor.h
 
 FORMS    += mainwindow.ui
 
@@ -61,3 +67,5 @@ CONFIG += c++11
 
 RESOURCES += \
     resources.qrc
+
+DISTFILES +=

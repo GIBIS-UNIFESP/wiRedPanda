@@ -1,12 +1,13 @@
 #ifndef NOT_H
 #define NOT_H
 
+#include "graphicelement.h"
 
-class Not
-{
+class Not : public GraphicElement{
 public:
-    Not();
+    explicit Not(QGraphicsItem * parent);
     ~Not();
 };
 
 #endif // NOT_H
+

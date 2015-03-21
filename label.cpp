@@ -34,7 +34,12 @@ void Label::mousePressEvent(QMouseEvent *event) {
     type = ElementType::SWITCH;
   }else if(objectName().endsWith("_not")){
     type = ElementType::NOT;
-  }
+  }else if(objectName().endsWith("_nand")){
+    type = ElementType::NAND;
+  }else if(objectName().endsWith("_nor")){
+      type = ElementType::NOR;
+    }
+
   dataStream << pixmap << QPointF(event->pos()) << (qint32) type;
 
   QMimeData *mimeData = new QMimeData;

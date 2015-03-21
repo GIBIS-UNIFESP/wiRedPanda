@@ -1,12 +1,13 @@
 #ifndef NOR_H
 #define NOR_H
 
+#include "graphicelement.h"
 
-class Nor
-{
+class Nor : public GraphicElement{
 public:
-    Nor();
+    explicit Nor(QGraphicsItem * parent);
     ~Nor();
 };
 
 #endif // NOR_H
+

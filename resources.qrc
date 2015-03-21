@@ -22,6 +22,7 @@
         <file>resources/output/red led on.svg</file>
         <file>resources/output/yellow led off.svg</file>
         <file>resources/output/yellow led on.svg</file>
+        <file>resources/output/WhiteLedOff.svg</file>
     </qresource>
     <qresource prefix="/basic">
         <file>resources/basic/and.svg</file>
