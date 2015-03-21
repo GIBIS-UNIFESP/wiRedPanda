@@ -2,11 +2,11 @@
 #define NOT_H
 
 
-class not
+class Not
 {
 public:
-    not();
-    ~not();
+    Not();
+    ~Not();
 };
 
 #endif // NOT_H

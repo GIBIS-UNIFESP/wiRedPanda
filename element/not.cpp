@@ -1,11 +1,11 @@
 #include "not.h"
 
-not::not()
+Not::Not()
 {
 
 }
 
-not::~not()
+Not::~Not()
 {
 
 }
