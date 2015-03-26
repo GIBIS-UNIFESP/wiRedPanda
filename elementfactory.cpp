@@ -8,6 +8,9 @@
 #include "element/not.h"
 #include "element/nand.h"
 #include "element/nor.h"
+#include "element/xor.h"
+#include "element/xnor.h"
+
 
 #include <QDebug>
 size_t ElementFactory::getLastId() const {
@@ -54,6 +57,12 @@ GraphicElement *ElementFactory::buildElement(ElementType type, QGraphicsItem * p
     break;
   case ElementType::CLOCK:
     elm = new Clock(parent);
+    break;
+  case ElementType::XOR:
+    elm = new Xor(parent);
+    break;
+  case ElementType::XNOR:
+    elm = new Xnor(parent);
     break;
 //  case ElementType::DLATCH:
 //    elm = new DLatch();

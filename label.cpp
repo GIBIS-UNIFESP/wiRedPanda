@@ -38,7 +38,11 @@ void Label::mousePressEvent(QMouseEvent *event) {
     type = ElementType::NAND;
   }else if(objectName().endsWith("_nor")){
       type = ElementType::NOR;
-    }
+    }else if(objectName().endsWith("_xor")){
+    type = ElementType::XOR;
+  }else if(objectName().endsWith("_xnor")){
+        type = ElementType::XNOR;
+      }
 
   dataStream << pixmap << QPointF(event->pos()) << (qint32) type;
 

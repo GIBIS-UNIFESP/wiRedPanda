@@ -30,7 +30,9 @@ SOURCES += main.cpp\
     element/inputswitch.cpp \
     element/not.cpp \
     element/nand.cpp \
-    element/nor.cpp
+    element/nor.cpp \
+    element/xor.cpp \
+    element/xnor.cpp
 
 HEADERS  += mainwindow.h \
     label.h \
@@ -48,7 +50,9 @@ HEADERS  += mainwindow.h \
     element/inputswitch.h \
     element/not.h \
     element/nand.h \
-    element/nor.h
+    element/nor.h \
+    element/xor.h \
+    element/xnor.h
 
 FORMS    += mainwindow.ui
 
