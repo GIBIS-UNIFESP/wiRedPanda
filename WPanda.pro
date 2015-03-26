@@ -32,7 +32,9 @@ SOURCES += main.cpp\
     element/nand.cpp \
     element/nor.cpp \
     element/xor.cpp \
-    element/xnor.cpp
+    element/xnor.cpp \
+    element/inputvcc.cpp \
+    element/inputgnd.cpp
 
 HEADERS  += mainwindow.h \
     label.h \
@@ -52,7 +54,9 @@ HEADERS  += mainwindow.h \
     element/nand.h \
     element/nor.h \
     element/xor.h \
-    element/xnor.h
+    element/xnor.h \
+    element/inputvcc.h \
+    element/inputgnd.h
 
 FORMS    += mainwindow.ui
 

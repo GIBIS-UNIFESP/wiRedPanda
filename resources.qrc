@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/input">
-        <file>resources/input/0.svg</file>
         <file>resources/input/1.svg</file>
         <file>resources/input/button off.svg</file>
         <file>resources/input/button on.svg</file>
@@ -8,6 +7,7 @@
         <file>resources/input/clock 1.svg</file>
         <file>resources/input/switch off.svg</file>
         <file>resources/input/switch on.svg</file>
+        <file>resources/input/0.svg</file>
     </qresource>
     <qresource prefix="/output">
         <file>resources/output/blue led off.svg</file>
