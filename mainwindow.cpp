@@ -61,3 +61,7 @@ void MainWindow::on_actionAbout_Qt_triggered() {
 void MainWindow::on_actionDelete_triggered() {
   editor->deleteElements();
 }
+
+void MainWindow::on_lineEdit_textEdited(const QString &arg1) {
+
+}

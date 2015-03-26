@@ -38,6 +38,8 @@ private slots:
 
   void on_actionDelete_triggered();
 
+  void on_lineEdit_textEdited(const QString &arg1);
+
   private:
   Ui::MainWindow *ui;
   Editor * editor;

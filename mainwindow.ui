@@ -59,7 +59,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="io">
          <attribute name="title">
@@ -80,7 +80,7 @@
                <x>0</x>
                <y>0</y>
                <width>198</width>
-               <height>568</height>
+               <height>548</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout">
@@ -284,7 +284,7 @@
                <x>0</x>
                <y>0</y>
                <width>198</width>
-               <height>568</height>
+               <height>548</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -485,7 +485,7 @@
                <x>0</x>
                <y>0</y>
                <width>198</width>
-               <height>568</height>
+               <height>548</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -686,7 +686,7 @@
                <x>0</x>
                <y>0</y>
                <width>198</width>
-               <height>568</height>
+               <height>548</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -759,7 +759,7 @@
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>23</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
