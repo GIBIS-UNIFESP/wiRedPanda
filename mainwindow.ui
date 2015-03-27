@@ -150,17 +150,42 @@
              <widget class="QComboBox" name="comboBox">
               <item>
                <property name="text">
-                <string>Red</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
                 <string>Blue</string>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normalon>:/output/resources/output/BlueLedOff.svg</normalon>
+                </iconset>
                </property>
               </item>
               <item>
                <property name="text">
                 <string>Green</string>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normalon>:/output/resources/output/GreenLedOff.svg</normalon>
+                </iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Purple</string>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normalon>:/output/resources/output/PurpleLedOff.svg</normalon>
+                </iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Red</string>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normalon>:/output/resources/output/RedLedOff.svg</normalon>
+                </iconset>
                </property>
               </item>
               <item>
@@ -179,10 +204,6 @@
           </widget>
          </item>
         </layout>
-        <zorder>pushButton</zorder>
-        <zorder>pushButton_2</zorder>
-        <zorder>widget_2</zorder>
-        <zorder>verticalSpacer_6</zorder>
        </widget>
       </item>
       <item row="0" column="0">
@@ -437,8 +458,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>230</width>
-               <height>522</height>
+               <width>244</width>
+               <height>259</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -638,8 +659,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>230</width>
-               <height>522</height>
+               <width>244</width>
+               <height>259</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
