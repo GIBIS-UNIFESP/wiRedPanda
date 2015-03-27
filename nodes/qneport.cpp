@@ -40,7 +40,7 @@ QNEPort::QNEPort(QGraphicsItem *parent):
   margin = 2;
 
   QPainterPath p;
-  p.addEllipse(-radius_, -radius_, 2*radius_, 2*radius_);
+  p.addRect(-radius_, -radius_, 2*radius_, 2*radius_);
   setPath(p);
 
   setPen(QPen(Qt::darkRed));
