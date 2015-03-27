@@ -10,6 +10,8 @@
 #include "element/nor.h"
 #include "element/xor.h"
 #include "element/xnor.h"
+#include "element/inputvcc.h"
+#include "element/inputgnd.h"
 
 
 #include <QDebug>
@@ -64,6 +66,14 @@ GraphicElement *ElementFactory::buildElement(ElementType type, QGraphicsItem * p
   case ElementType::XNOR:
     elm = new Xnor(parent);
     break;
+  case ElementType::VCC:
+    elm = new InputVcc(parent);
+    break;
+  case ElementType::GND:
+    elm = new InputGnd(parent);
+    break;
+
+
 //  case ElementType::DLATCH:
 //    elm = new DLatch();
 //    break;
