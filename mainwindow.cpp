@@ -16,8 +16,8 @@ MainWindow::MainWindow(QWidget *parent) :
   editor = new  Editor(this);
   editor->install(scene);
   scene->setSceneRect(ui->graphicsView->rect());
-  ui->tabWidget->setTabEnabled(2,false);
-  ui->tabWidget->setTabEnabled(3,false);
+//  ui->tabWidget->setTabEnabled(2,false);
+//  ui->tabWidget->setTabEnabled(3,false);
 }
 
 MainWindow::~MainWindow() {
