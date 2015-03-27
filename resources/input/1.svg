@@ -13,7 +13,7 @@
    height="64px"
    id="svg2985"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
+   inkscape:version="0.48.5 r10040"
    sodipodi:docname="1.svg">
   <defs
      id="defs2987">
@@ -60,18 +60,6 @@
     </filter>
     <filter
        inkscape:collect="always"
-       id="filter3901"
-       x="-0.13189167"
-       width="1.2637833"
-       y="-0.083154116"
-       height="1.1663082">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="1.3738715"
-         id="feGaussianBlur3903" />
-    </filter>
-    <filter
-       inkscape:collect="always"
        id="filter3926"
        x="-0.13965"
        width="1.2793"
@@ -82,6 +70,30 @@
          stdDeviation="1.16375"
          id="feGaussianBlur3928" />
     </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter3783"
+       x="-0.10376328"
+       width="1.2075266"
+       y="-0.066907476"
+       height="1.133815">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.9018608"
+         id="feGaussianBlur3785" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter3823"
+       x="-0.2181356"
+       width="1.4362712"
+       y="-0.13633474"
+       height="1.2726695">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="1.7673925"
+         id="feGaussianBlur3825" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -90,23 +102,23 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="7.9999996"
-     inkscape:cx="15.281564"
-     inkscape:cy="31.840273"
+     inkscape:zoom="2.828427"
+     inkscape:cx="61.772927"
+     inkscape:cy="69.428075"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1920"
-     inkscape:window-height="1022"
+     inkscape:window-width="1440"
+     inkscape:window-height="834"
      inkscape:window-x="0"
-     inkscape:window-y="22"
+     inkscape:window-y="27"
      inkscape:window-maximized="1">
     <sodipodi:guide
        orientation="1,0"
-       position="32.003906,43.21875"
+       position="-62.750003,43.750002"
        id="guide2993" />
   </sodipodi:namedview>
   <metadata
@@ -117,7 +129,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -174,25 +186,19 @@
        rx="5.4872456" />
     <text
        xml:space="preserve"
-       style="font-size:55.55555725px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffff00;fill-opacity:1;stroke:none;display:inline;font-family:Raleway;-inkscape-font-specification:Raleway"
-       x="19.444445"
-       y="38"
-       id="text3003-1"
+       style="font-size:45px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffff00;fill-opacity:1;stroke:none;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans"
+       x="18.871338"
+       y="38.163479"
+       id="text3005"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         id="tspan3005-6"
-         x="19.444445"
-         y="38">1</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:55.55555724999999256px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffff00;fill-opacity:1;stroke:none;display:inline;font-family:Raleway;-inkscape-font-specification:Raleway;filter:url(#filter3926)"
-       x="19.444445"
-       y="38"
-       id="text3003-1-4"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         id="tspan3005-6-0"
-         x="19.444445"
-         y="38">1</tspan></text>
+         id="tspan3007"
+         x="18.871338"
+         y="38.163479">1</tspan></text>
+    <path
+       style="fill:#ffff00;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1;opacity:0.80172414000000003;filter:url(#filter3823)"
+       d="m 22.892583,12.646367 7.336233,-5.391689 3.889088,-0.088388 0.08839,27.665554 7.513008,0.08839 0,3.358756 -19.445437,0 0,-3.535535 7.778175,0.08839 0.08839,-23.953245 -7.07107,5.303302 z"
+       id="path3787"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>
