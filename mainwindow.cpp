@@ -16,6 +16,8 @@ MainWindow::MainWindow(QWidget *parent) :
   editor = new  Editor(this);
   editor->install(scene);
   scene->setSceneRect(ui->graphicsView->rect());
+  ui->tabWidget->setTabEnabled(2,false);
+  ui->tabWidget->setTabEnabled(3,false);
 }
 
 MainWindow::~MainWindow() {
@@ -62,6 +64,6 @@ void MainWindow::on_actionDelete_triggered() {
   editor->deleteElements();
 }
 
-void MainWindow::on_lineEdit_textEdited(const QString &arg1) {
+void MainWindow::on_lineEdit_textEdited(const QString &) {
 
 }
