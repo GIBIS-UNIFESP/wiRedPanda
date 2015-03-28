@@ -15,6 +15,11 @@
         <file>resources/output/GreenLedOff.svg</file>
         <file>resources/output/PurpleLedOff.svg</file>
         <file>resources/output/RedLedOff.svg</file>
+        <file>resources/output/BlueLedOn.svg</file>
+        <file>resources/output/WhiteLedOn.svg</file>
+        <file>resources/output/RedLedOn.svg</file>
+        <file>resources/output/PurpleLedOn.svg</file>
+        <file>resources/output/GreenLedOn.svg</file>
     </qresource>
     <qresource prefix="/basic">
         <file>resources/basic/and.svg</file>

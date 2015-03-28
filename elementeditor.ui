@@ -58,9 +58,8 @@
        <string>Blue</string>
       </property>
       <property name="icon">
-       <iconset>
-        <normalon>:/output/resources/output/BlueLedOff.svg</normalon>
-       </iconset>
+       <iconset resource="resources.qrc">
+        <normaloff>:/output/resources/output/BlueLedOff.svg</normaloff>:/output/resources/output/BlueLedOff.svg</iconset>
       </property>
      </item>
      <item>
@@ -138,6 +137,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>
