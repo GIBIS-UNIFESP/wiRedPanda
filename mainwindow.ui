@@ -10,6 +10,12 @@
     <height>765</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>150</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>WiRED Panda</string>
   </property>
@@ -21,6 +27,16 @@
    <layout class="QGridLayout" name="gridLayout_3">
     <item row="1" column="0">
      <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="1" colspan="2">
+       <widget class="QLineEdit" name="lineEdit">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="1">
        <spacer name="verticalSpacer_5">
         <property name="orientation">
@@ -36,168 +52,6 @@
          </size>
         </property>
        </spacer>
-      </item>
-      <item row="0" column="1" colspan="2">
-       <widget class="QLineEdit" name="lineEdit">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0" colspan="3">
-       <widget class="QWidget" name="widget" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_7">
-         <item row="0" column="1">
-          <layout class="QVBoxLayout" name="verticalLayout_5">
-           <item>
-            <widget class="QPushButton" name="pushButton">
-             <property name="text">
-              <string>Apply</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButton_2">
-             <property name="text">
-              <string>Cancel</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_6">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </item>
-         <item row="0" column="0">
-          <widget class="QWidget" name="widget_2" native="true">
-           <layout class="QGridLayout" name="gridLayout_8">
-            <item row="7" column="0">
-             <widget class="QComboBox" name="comboBox">
-              <item>
-               <property name="text">
-                <string>Blue</string>
-               </property>
-               <property name="icon">
-                <iconset>
-                 <normalon>:/output/resources/output/BlueLedOff.svg</normalon>
-                </iconset>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Green</string>
-               </property>
-               <property name="icon">
-                <iconset>
-                 <normalon>:/output/resources/output/GreenLedOff.svg</normalon>
-                </iconset>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Purple</string>
-               </property>
-               <property name="icon">
-                <iconset>
-                 <normalon>:/output/resources/output/PurpleLedOff.svg</normalon>
-                </iconset>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Red</string>
-               </property>
-               <property name="icon">
-                <iconset>
-                 <normalon>:/output/resources/output/RedLedOff.svg</normalon>
-                </iconset>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>White</string>
-               </property>
-               <property name="icon">
-                <iconset>
-                 <normalon>:/output/resources/output/WhiteLedOff.svg</normalon>
-                </iconset>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_2">
-              <property name="text">
-               <string>Label:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="label_5">
-              <property name="text">
-               <string>Frequency:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="0">
-             <widget class="QLabel" name="label_6">
-              <property name="text">
-               <string>Color:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0">
-             <widget class="QDoubleSpinBox" name="doubleSpinBoxFrequency"/>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>Input Ports:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QSpinBox" name="spinBox"/>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLineEdit" name="lineEditElementLabel"/>
-            </item>
-           </layout>
-          </widget>
-         </item>
-        </layout>
-       </widget>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label">
@@ -247,7 +101,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>196</width>
+               <width>184</width>
                <height>522</height>
               </rect>
              </property>
@@ -451,8 +305,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>98</width>
-               <height>172</height>
+               <width>123</width>
+               <height>522</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -652,8 +506,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>98</width>
-               <height>172</height>
+               <width>147</width>
+               <height>522</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -853,8 +707,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>100</width>
-               <height>30</height>
+               <width>68</width>
+               <height>18</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -877,6 +731,28 @@
           </item>
          </layout>
         </widget>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="3">
+       <widget class="ElementEditor" name="widgetElementEditor" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>150</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
        </widget>
       </item>
      </layout>
@@ -1189,17 +1065,17 @@
    <extends>QLabel</extends>
    <header>label.h</header>
   </customwidget>
+  <customwidget>
+   <class>ElementEditor</class>
+   <extends>QWidget</extends>
+   <header>elementeditor.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>lineEdit</tabstop>
   <tabstop>tabWidget</tabstop>
   <tabstop>scrollArea</tabstop>
-  <tabstop>lineEditElementLabel</tabstop>
-  <tabstop>spinBox</tabstop>
-  <tabstop>doubleSpinBoxFrequency</tabstop>
-  <tabstop>comboBox</tabstop>
-  <tabstop>pushButton</tabstop>
-  <tabstop>pushButton_2</tabstop>
   <tabstop>graphicsView</tabstop>
   <tabstop>scrollArea_5</tabstop>
   <tabstop>scrollArea_2</tabstop>

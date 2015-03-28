@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     element/xor.cpp \
     element/xnor.cpp \
     element/inputvcc.cpp \
-    element/inputgnd.cpp
+    element/inputgnd.cpp \
+    elementeditor.cpp
 
 HEADERS  += mainwindow.h \
     label.h \
@@ -56,9 +57,11 @@ HEADERS  += mainwindow.h \
     element/xor.h \
     element/xnor.h \
     element/inputvcc.h \
-    element/inputgnd.h
+    element/inputgnd.h \
+    elementeditor.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    elementeditor.ui
 
 mac {
 TEMPLATE = app

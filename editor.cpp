@@ -14,6 +14,10 @@
 #include <nodes/qneconnection.h>
 
 Editor::Editor(QObject *parent) : QObject(parent), scene(NULL), conn(NULL) {
+  markingSelectionBox = false;
+  selectionRect = new QGraphicsRectItem();
+  selectionRect->setBrush(Qt::NoBrush);
+  selectionRect->setPen(QPen(Qt::darkGray,1.5,Qt::DotLine));
 }
 
 Editor::~Editor() {
@@ -23,6 +27,7 @@ Editor::~Editor() {
 void Editor::install(QGraphicsScene * s) {
   s->installEventFilter(this);
   scene = s;
+  scene->addItem(selectionRect);
 }
 
 void Editor::clear() {
@@ -96,6 +101,10 @@ QGraphicsItem *Editor::itemAt(const QPointF & pos) {
   return 0;
 }
 
+void Editor::setElementEditor(ElementEditor * value) {
+  elementEditor = value;
+}
+
 QPointF roundTo(QPointF point, int multiple) {
   int x = static_cast<int>(point.x());
   int y = static_cast<int>(point.y());
@@ -125,6 +134,12 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
         if(connection) {
           connection->split(me->scenePos());
         }
+      }else{
+        selectionStartPoint = me->scenePos();
+        markingSelectionBox = true;
+        selectionRect->setRect(QRectF(selectionStartPoint,selectionStartPoint));
+        selectionRect->show();
+
       }
       break;
     }
@@ -133,10 +148,19 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
         conn->setPos2(me->scenePos());
         conn->updatePath();
         return true;
+      } else if(markingSelectionBox) {
+        QPainterPath selectionBox;
+        selectionBox.addRect(QRectF(selectionStartPoint,me->scenePos()));
+        scene->setSelectionArea(selectionBox);
+        selectionRect->setRect(QRectF(selectionStartPoint,me->scenePos()));
+      } else if(!markingSelectionBox){
+        selectionRect->hide();
       }
       break;
     }
   case QEvent::GraphicsSceneMouseRelease: {
+      selectionRect->hide();
+      markingSelectionBox = false;
       if (conn && me->button() == Qt::LeftButton) {
         QNEPort *item = dynamic_cast<QNEPort*>(itemAt(me->scenePos()));
         if (item && item->type() == QNEPort::Type) {

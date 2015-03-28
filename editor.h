@@ -6,6 +6,7 @@
 
 #include <nodes/qneconnection.h>
 #include <elementfactory.h>
+#include <elementeditor.h>
 
 class Editor : public QObject {
   Q_OBJECT
@@ -24,10 +25,15 @@ private:
   QGraphicsItem * itemAt( const QPointF & pos );
   QNEConnection * conn;
   ElementFactory factory;
+  ElementEditor * elementEditor;
+  bool markingSelectionBox;
+  QGraphicsRectItem * selectionRect;
+  QPointF selectionStartPoint;
   // QObject interface
 public:
   bool eventFilter(QObject *o, QEvent *e);
   void deleteElements();
+  void setElementEditor(ElementEditor * value);
 };
 
 #endif // EDITOR_H

@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
   ui->graphicsView->setAcceptDrops(true);
   editor = new  Editor(this);
   editor->install(scene);
+  editor->setElementEditor(ui->widgetElementEditor);
   scene->setSceneRect(ui->graphicsView->rect());
 //  ui->tabWidget->setTabEnabled(2,false);
 //  ui->tabWidget->setTabEnabled(3,false);

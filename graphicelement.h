@@ -35,19 +35,14 @@ public:
   }
 
   int topPosition() const;
-  void setTopPosition(int topPosition);
 
   int bottomPosition() const;
-  void setBottomPosition(int bottomPosition);
 
   int maxInputSz() const;
-  void setMaxInputSz(int maxInputSz);
 
   int maxOutputSz() const;
-  void setMaxOutputSz(int maxOutputSz);
 
   bool outputsOnTop() const;
-  void setOutputsOnTop(bool outputsOnTop);
 
   QVector<QNEPort *> inputs() const;
   void setInputs(const QVector<QNEPort *> & inputs);
@@ -56,10 +51,8 @@ public:
   void setOutputs(const QVector<QNEPort *> & outputs);
 
   int minInputSz() const;
-  void setMinInputSz(int minInputSz);
 
   int minOutputSz() const;
-  void setMinOutputSz(int minOutputSz);
 
   int id() const;
   void setId(int value);
@@ -69,11 +62,29 @@ public:
   void updatePorts();
 
   bool rotatable() const;
-  void setRotatable(bool rotatable);
 
-  protected:
+  bool hasLabel() const;
+
+  bool hasFrequency() const;
+
+  bool hasColors() const;
+
+protected:
+  void setRotatable(bool rotatable);
+  void setHasLabel(bool hasLabel);
+  void setHasFrequency(bool hasFrequency);
+  void setHasColors(bool hasColors);
+  void setMinInputSz(int minInputSz);
+  void setMinOutputSz(int minOutputSz);
+  void setOutputsOnTop(bool outputsOnTop);
+  void setMaxOutputSz(int maxOutputSz);
+  void setMaxInputSz(int maxInputSz);
+  void setTopPosition(int topPosition);
+  void setBottomPosition(int bottomPosition);
+
   virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e);
   QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+private:
   int m_topPosition;
   int m_bottomPosition;
   int m_maxInputSz;
@@ -82,6 +93,9 @@ public:
   int m_minOutputSz;
   bool m_outputsOnTop;
   bool m_rotatable;
+  bool m_hasLabel;
+  bool m_hasFrequency;
+  bool m_hasColors;
   QVector<QNEPort*> m_inputs;
   QVector<QNEPort*> m_outputs;
 };

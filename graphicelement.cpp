@@ -150,6 +150,36 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
   }
   return value;
 }
+bool GraphicElement::hasColors() const
+{
+  return m_hasColors;
+}
+
+void GraphicElement::setHasColors(bool hasColors)
+{
+  m_hasColors = hasColors;
+}
+
+bool GraphicElement::hasFrequency() const
+{
+  return m_hasFrequency;
+}
+
+void GraphicElement::setHasFrequency(bool hasFrequency)
+{
+  m_hasFrequency = hasFrequency;
+}
+
+bool GraphicElement::hasLabel() const
+{
+  return m_hasLabel;
+}
+
+void GraphicElement::setHasLabel(bool hasLabel)
+{
+  m_hasLabel = hasLabel;
+}
+
 bool GraphicElement::rotatable() const {
   return m_rotatable;
 }
