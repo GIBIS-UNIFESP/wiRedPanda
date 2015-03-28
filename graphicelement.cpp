@@ -31,10 +31,10 @@ GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, 
   m_maxInputSz = maxInputSz;
   m_maxOutputSz = maxOutputSz;
   m_rotatable = true;
-  for(int i = 0; i < minInputSz; i++){
+  for(int i = 0; i < minInputSz; i++) {
     addPort(false);
   }
-  for(int i = 0; i < minOutputSz; i++){
+  for(int i = 0; i < minOutputSz; i++) {
     addPort(true);
   }
   m_outputsOnTop = true;
@@ -113,7 +113,7 @@ void GraphicElement::updatePorts() {
     inputPos = m_bottomPosition;
     outputPos = m_topPosition;
   }
-  if(!m_outputs.isEmpty()){
+  if(!m_outputs.isEmpty()) {
     int step = qMax(32/m_outputs.size(), 6);
     int x = 32 - m_outputs.size()*step + step;
     foreach (QNEPort * port, m_outputs) {
@@ -121,7 +121,7 @@ void GraphicElement::updatePorts() {
       x+= step * 2;
     }
   }
-  if(!m_inputs.isEmpty()){
+  if(!m_inputs.isEmpty()) {
     int step = qMax(32/m_inputs.size(),6);
     int x = 32 - m_inputs.size()*step + step;
     foreach (QNEPort * port, m_inputs) {
@@ -150,13 +150,11 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
   }
   return value;
 }
-bool GraphicElement::rotatable() const
-{
+bool GraphicElement::rotatable() const {
   return m_rotatable;
 }
 
-void GraphicElement::setRotatable(bool rotatable)
-{
+void GraphicElement::setRotatable(bool rotatable) {
   m_rotatable = rotatable;
 }
 
