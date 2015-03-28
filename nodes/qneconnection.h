@@ -71,7 +71,7 @@ protected:
 
   // QGraphicsItem interface
   public:
-  void paint(QPainter * painter, const QStyleOptionGraphicsItem *, QWidget * widget);
+  void paint(QPainter * painter, const QStyleOptionGraphicsItem *, QWidget *);
 };
 
 #endif // QNECONNECTION_H

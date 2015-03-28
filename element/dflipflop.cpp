@@ -2,7 +2,7 @@
 
 #include <QDebug>
 
-DFlipFlop::DFlipFlop(QGraphicsItem * parent) : GraphicElement(4,4,2,2) {
+DFlipFlop::DFlipFlop(QGraphicsItem * parent) : GraphicElement(4,4,2,2, parent) {
   setPixmap(QPixmap(":/memory/resources/memory/D-flipflop.svg"));
   setRotatable(false);
   updatePorts();

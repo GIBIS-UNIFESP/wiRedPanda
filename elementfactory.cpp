@@ -14,6 +14,8 @@
 #include "element/inputgnd.h"
 #include <element/dflipflop.h>
 #include <element/dlatch.h>
+#include <element/jklatch.h>
+#include <element/jkflipflop.h>
 
 #include <QDebug>
 
@@ -80,6 +82,12 @@ GraphicElement *ElementFactory::buildElement(ElementType type, QGraphicsItem * p
     break;
   case ElementType::DFLIPFLOP:
     elm = new DFlipFlop(parent);
+    break;
+  case ElementType::JKLATCH:
+    elm = new JKLatch(parent);
+    break;
+  case ElementType::JKFLIPFLOP:
+    elm = new JKFlipFlop(parent);
     break;
   //  case ElementType::DLATCH:
   //    elm = new DLatch();

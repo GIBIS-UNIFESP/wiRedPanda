@@ -37,7 +37,9 @@ SOURCES += main.cpp\
     element/inputgnd.cpp \
     elementeditor.cpp \
     element/dflipflop.cpp \
-    element/dlatch.cpp
+    element/dlatch.cpp \
+    element/jkflipflop.cpp \
+    element/jklatch.cpp
 
 HEADERS  += mainwindow.h \
     label.h \
@@ -62,7 +64,9 @@ HEADERS  += mainwindow.h \
     element/inputgnd.h \
     elementeditor.h \
     element/dflipflop.h \
-    element/dlatch.h
+    element/dlatch.h \
+    element/jkflipflop.h \
+    element/jklatch.h
 
 FORMS    += mainwindow.ui \
     elementeditor.ui

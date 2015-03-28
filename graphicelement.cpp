@@ -6,7 +6,7 @@
 #include <QMessageBox>
 #include <QPainter>
 
-GraphicElement::GraphicElement(QPixmap pixmap, QGraphicsItem *parent) : QGraphicsItem(parent), pixmapItem(new QGraphicsPixmapItem(pixmap, ( QGraphicsItem * ) this)) {
+GraphicElement::GraphicElement(QPixmap pixmap, QGraphicsItem *parent) : QGraphicsObject(parent), pixmapItem(new QGraphicsPixmapItem(pixmap, ( QGraphicsItem * ) this)) {
   setFlag(QGraphicsItem::ItemIsMovable);
   setFlag(QGraphicsItem::ItemIsSelectable);
   setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
@@ -19,7 +19,7 @@ GraphicElement::GraphicElement(QPixmap pixmap, QGraphicsItem *parent) : QGraphic
   m_rotatable = true;
 }
 
-GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem * parent) : QGraphicsItem(parent), pixmapItem(new QGraphicsPixmapItem( ( QGraphicsItem * ) this)) {
+GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem * parent) : QGraphicsObject(parent), pixmapItem(new QGraphicsPixmapItem( ( QGraphicsItem * ) this)) {
   setFlag(QGraphicsItem::ItemIsMovable);
   setFlag(QGraphicsItem::ItemIsSelectable);
   setFlag(QGraphicsItem::ItemSendsScenePositionChanges);

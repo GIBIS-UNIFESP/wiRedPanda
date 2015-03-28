@@ -166,7 +166,7 @@ QVariant QNEConnection::itemChange(GraphicsItemChange change, const QVariant & v
   return value;
 }
 
-void QNEConnection::paint(QPainter * painter, const QStyleOptionGraphicsItem *, QWidget * widget) {
+void QNEConnection::paint(QPainter * painter, const QStyleOptionGraphicsItem *, QWidget * ) {
   QPainterPath p;
 
   //QPointF pos1(m_port1->scenePos());

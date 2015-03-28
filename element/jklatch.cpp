@@ -1,17 +1,16 @@
-#include "dlatch.h"
+#include "jklatch.h"
 
-DLatch::DLatch(QGraphicsItem * parent) : GraphicElement(2,2,2,2,parent) {
-  setPixmap(QPixmap(":/memory/resources/memory/D-latch.svg"));
+JKLatch::JKLatch(QGraphicsItem * parent) : GraphicElement(2,2,2,2, parent) {
+  setPixmap(QPixmap(":/memory/resources/memory/JK-latch.svg"));
   setRotatable(false);
   updatePorts();
+}
+
+JKLatch::~JKLatch() {
 
 }
 
-DLatch::~DLatch() {
-
-}
-
-void DLatch::updatePorts() {
+void JKLatch::updatePorts() {
   inputs().at(0)->setPos(topPosition(),13);
   inputs().at(1)->setPos(topPosition(),45);
 
