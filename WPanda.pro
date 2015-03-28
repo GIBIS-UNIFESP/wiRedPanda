@@ -36,7 +36,8 @@ SOURCES += main.cpp\
     element/inputvcc.cpp \
     element/inputgnd.cpp \
     elementeditor.cpp \
-    element/dflipflop.cpp
+    element/dflipflop.cpp \
+    element/dlatch.cpp
 
 HEADERS  += mainwindow.h \
     label.h \
@@ -60,7 +61,8 @@ HEADERS  += mainwindow.h \
     element/inputvcc.h \
     element/inputgnd.h \
     elementeditor.h \
-    element/dflipflop.h
+    element/dflipflop.h \
+    element/dlatch.h
 
 FORMS    += mainwindow.ui \
     elementeditor.ui

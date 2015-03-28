@@ -81,7 +81,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="io">
          <attribute name="title">
@@ -101,8 +101,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>184</width>
-               <height>522</height>
+               <width>98</width>
+               <height>172</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout">
@@ -305,8 +305,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>123</width>
-               <height>522</height>
+               <width>98</width>
+               <height>172</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -506,7 +506,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>147</width>
+               <width>184</width>
                <height>522</height>
               </rect>
              </property>
@@ -541,7 +541,7 @@
                  <enum>QLayout::SetFixedSize</enum>
                 </property>
                 <item>
-                 <widget class="Label" name="label_18">
+                 <widget class="Label" name="label_dlatch">
                   <property name="text">
                    <string/>
                   </property>
@@ -551,7 +551,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="label_dlatch">
+                 <widget class="QLabel" name="label_18">
                   <property name="text">
                    <string>D-Latch</string>
                   </property>
@@ -707,8 +707,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>68</width>
-               <height>18</height>
+               <width>100</width>
+               <height>30</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">

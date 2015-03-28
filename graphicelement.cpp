@@ -134,8 +134,7 @@ void GraphicElement::updatePorts() {
 void GraphicElement::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * e) {
   if(e->button() == Qt::LeftButton) {
     addPort(QNEPort::Output);
-  } else {
-    addPort(QNEPort::Input);
+  } else { addPort(QNEPort::Input);
   }
 }
 

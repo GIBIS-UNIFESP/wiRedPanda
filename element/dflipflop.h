@@ -8,9 +8,9 @@ public:
   explicit DFlipFlop(QGraphicsItem * parent);
   ~DFlipFlop();
 
-    // GraphicElement interface
-  public:
-    virtual void updatePorts();
+  // GraphicElement interface
+public:
+  virtual void updatePorts();
 };
 
 #endif // DFLIPFLOP_H

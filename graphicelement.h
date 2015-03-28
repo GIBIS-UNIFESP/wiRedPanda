@@ -8,7 +8,7 @@
 
 enum class ElementType {
   EMPTY, UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND,
-  WIRE, DLATCH, SRLATCH, SCRLATCH, DFLIPFLOP
+  WIRE, DLATCH, JKLATCH, SCRLATCH, DFLIPFLOP, JKFLIPFLOP
 };
 
 class GraphicElement : public QObject, public QGraphicsItem {
