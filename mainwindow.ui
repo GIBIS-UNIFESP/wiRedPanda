@@ -27,6 +27,19 @@
    <layout class="QGridLayout" name="gridLayout_3">
     <item row="1" column="0">
      <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Search:</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="1" colspan="2">
        <widget class="QLineEdit" name="lineEdit">
         <property name="sizePolicy">
@@ -34,6 +47,28 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="3">
+       <widget class="ElementEditor" name="widgetElementEditor" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>150</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
         </property>
        </widget>
       </item>
@@ -53,19 +88,6 @@
         </property>
        </spacer>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Search:</string>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="0" colspan="3">
        <widget class="QTabWidget" name="tabWidget">
         <property name="sizePolicy">
@@ -81,7 +103,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="io">
          <attribute name="title">
@@ -101,8 +123,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>98</width>
-               <height>172</height>
+               <width>184</width>
+               <height>522</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout">
@@ -305,8 +327,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>98</width>
-               <height>172</height>
+               <width>184</width>
+               <height>522</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -707,8 +729,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>100</width>
-               <height>30</height>
+               <width>198</width>
+               <height>425</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -731,28 +753,6 @@
           </item>
          </layout>
         </widget>
-       </widget>
-      </item>
-      <item row="3" column="0" colspan="3">
-       <widget class="ElementEditor" name="widgetElementEditor" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>150</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
        </widget>
       </item>
      </layout>

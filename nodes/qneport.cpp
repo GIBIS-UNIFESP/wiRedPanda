@@ -93,6 +93,18 @@ QVector<QNEConnection*>& QNEPort::connections() {
   return m_connections;
 }
 
+void QNEPort::connect(QNEConnection * conn) {
+  if(!m_connections.contains(conn))
+    m_connections.append(conn);
+  updateConnections();
+}
+
+void QNEPort::disconnect(QNEConnection * conn) {
+  if(m_connections.contains(conn))
+    m_connections.remove(m_connections.indexOf(conn));
+  updateConnections();
+}
+
 void QNEPort::setPortFlags(int f) {
   m_portFlags = f;
 

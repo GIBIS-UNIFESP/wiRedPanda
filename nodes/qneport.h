@@ -46,7 +46,9 @@ public:
   void setIsOutput(bool o);
   int radius();
   bool isOutput();
-  QVector<QNEConnection*>& connections();
+  void connect(QNEConnection * conn);
+  void disconnect(QNEConnection * conn);
+  bool isConnected(QNEPort*);
   void setPortFlags(int);
 
   const QString& portName() const {
@@ -65,13 +67,13 @@ public:
   quint64 ptr();
   void setPtr(quint64);
 
-  bool isConnected(QNEPort*);
 
   GraphicElement * graphicElement() const;
   void setGraphicElement(GraphicElement * graphicElement);
 
   void updateConnections();
-protected:
+  protected:
+  QVector<QNEConnection*>& connections();
   QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
