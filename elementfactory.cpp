@@ -12,9 +12,10 @@
 #include "element/xnor.h"
 #include "element/inputvcc.h"
 #include "element/inputgnd.h"
-
+#include <element/dflipflop.h>
 
 #include <QDebug>
+
 size_t ElementFactory::getLastId() const {
   return lastId;
 }
@@ -72,11 +73,12 @@ GraphicElement *ElementFactory::buildElement(ElementType type, QGraphicsItem * p
   case ElementType::GND:
     elm = new InputGnd(parent);
     break;
-
-
-//  case ElementType::DLATCH:
-//    elm = new DLatch();
-//    break;
+  case ElementType::DFLIPFLOP:
+    elm = new DFlipFlop(parent);
+    break;
+  //  case ElementType::DLATCH:
+  //    elm = new DLatch();
+  //    break;
 //  case ElementType::SRLATCH:
 //    elm = new SRLatch();
 //    break;

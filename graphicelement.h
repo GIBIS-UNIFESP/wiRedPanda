@@ -8,7 +8,7 @@
 
 enum class ElementType {
   EMPTY, UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND,
-  WIRE, DLATCH, SRLATCH, SCRLATCH
+  WIRE, DLATCH, SRLATCH, SCRLATCH, DFLIPFLOP
 };
 
 class GraphicElement : public QObject, public QGraphicsItem {
@@ -59,7 +59,7 @@ public:
 
   void setPixmap(const QPixmap &pixmap);
 
-  void updatePorts();
+  virtual void updatePorts();
 
   bool rotatable() const;
 

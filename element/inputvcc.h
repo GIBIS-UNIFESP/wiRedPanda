@@ -3,10 +3,10 @@
 
 #include "graphicelement.h"
 
-class InputVcc : public GraphicElement{
+class InputVcc : public GraphicElement {
 public:
-    explicit InputVcc(QGraphicsItem * parent);
-    ~InputVcc();
+  explicit InputVcc(QGraphicsItem * parent);
+  ~InputVcc();
 };
 
 #endif // INPUTVCC_H

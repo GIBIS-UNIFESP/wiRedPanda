@@ -35,7 +35,8 @@ SOURCES += main.cpp\
     element/xnor.cpp \
     element/inputvcc.cpp \
     element/inputgnd.cpp \
-    elementeditor.cpp
+    elementeditor.cpp \
+    element/dflipflop.cpp
 
 HEADERS  += mainwindow.h \
     label.h \
@@ -58,7 +59,8 @@ HEADERS  += mainwindow.h \
     element/xnor.h \
     element/inputvcc.h \
     element/inputgnd.h \
-    elementeditor.h
+    elementeditor.h \
+    element/dflipflop.h
 
 FORMS    += mainwindow.ui \
     elementeditor.ui
