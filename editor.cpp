@@ -134,12 +134,11 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
         if(connection) {
           connection->split(me->scenePos());
         }
-      }else{
+      }else if(!item){
         selectionStartPoint = me->scenePos();
         markingSelectionBox = true;
         selectionRect->setRect(QRectF(selectionStartPoint,selectionStartPoint));
         selectionRect->show();
-
       }
       break;
     }
@@ -149,10 +148,11 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
         conn->updatePath();
         return true;
       } else if(markingSelectionBox) {
+        QRectF rect = QRectF(selectionStartPoint,me->scenePos()).normalized();
+        selectionRect->setRect(rect);
         QPainterPath selectionBox;
-        selectionBox.addRect(QRectF(selectionStartPoint,me->scenePos()));
+        selectionBox.addRect(rect);
         scene->setSelectionArea(selectionBox);
-        selectionRect->setRect(QRectF(selectionStartPoint,me->scenePos()));
       } else if(!markingSelectionBox){
         selectionRect->hide();
       }
