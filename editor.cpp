@@ -172,14 +172,21 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
         QPointF pos = dde->scenePos() - offset;
 //        pos = roundTo(pos,64);
 //        qDebug() << pos << roundTo(pos,64);
-        GraphicElement * item = factory.buildElement((ElementType)type);
-        if(!item) {
-          item = new GraphicElement(pixmap);
+        GraphicElement * elm = factory.buildElement((ElementType)type);
+        if(!elm) {
+          elm = new GraphicElement(pixmap);
         }
-        scene->addItem(item);
+
+
+        QList<QGraphicsItem *> list = scene->selectedItems();
+        elm->setTransformOriginPoint(32,32);
+        if(elm->rotatable()) {
+          elm->setRotation(90);
+        }
+        scene->addItem(elm);
         scene->clearSelection();
-        item->setSelected(true);
-        item->setPos(pos);
+        elm->setSelected(true);
+        elm->setPos(pos);
         return true;
       }
       break;
