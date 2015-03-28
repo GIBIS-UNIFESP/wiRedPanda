@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #include <QGraphicsScene>
 #include <QDebug>
 #include <QMessageBox>
+#include <QPainter>
 
 QNEConnection::QNEConnection(QGraphicsItem *parent) : QGraphicsPathItem(parent) {
   setFlag(QGraphicsItem::ItemIsSelectable);
@@ -164,3 +165,27 @@ QVariant QNEConnection::itemChange(GraphicsItemChange change, const QVariant & v
   }
   return value;
 }
+
+void QNEConnection::paint(QPainter * painter, const QStyleOptionGraphicsItem *, QWidget * widget) {
+  QPainterPath p;
+
+  //QPointF pos1(m_port1->scenePos());
+  //QPointF pos2(m_port2->scenePos());
+
+  p.moveTo(pos1);
+  qreal dx = pos2.x() - pos1.x();
+  qreal dy = pos2.y() - pos1.y();
+
+  QPointF ctr1(pos1.x() + dx * 0.25, pos1.y() + dy * 0.1);
+  QPointF ctr2(pos1.x() + dx * 0.75, pos1.y() + dy * 0.9);
+
+  p.cubicTo(ctr1, ctr2, pos2);
+
+  painter->setPen(pen());
+  painter->drawPath(p);
+  //  p.lineTo(pos2);
+  setPath(p);
+}
+
+
+

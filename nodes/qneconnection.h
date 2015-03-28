@@ -68,6 +68,10 @@ public:
   // QGraphicsItem interface
 protected:
   virtual QVariant itemChange(GraphicsItemChange change, const QVariant & value);
+
+  // QGraphicsItem interface
+  public:
+  void paint(QPainter * painter, const QStyleOptionGraphicsItem *, QWidget * widget);
 };
 
 #endif // QNECONNECTION_H
