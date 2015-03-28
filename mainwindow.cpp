@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include <QFileDialog>
+#include <QKeyEvent>
 #include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -28,8 +29,29 @@ void MainWindow::on_actionExit_triggered() {
   close();
 }
 
+bool MainWindow::save() {
+  QFileDialog::getSaveFileName(this, tr("Save File"), QDir::homePath(), tr("Panda files (*.panda)"));
+  return true;
+}
+
 void MainWindow::on_actionNew_triggered() {
-  editor->clear();
+  QMessageBox msgBox;
+  msgBox.setParent(this);
+  msgBox.setLocale(QLocale::Portuguese);
+  msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+  msgBox.setText(tr("Do you want to save your changes?"));
+  msgBox.setWindowModality(Qt::WindowModal);
+  msgBox.setDefaultButton(QMessageBox::Save);
+  int ret = msgBox.exec();
+  if (ret == QMessageBox::Save) {
+    if(save()) {
+      editor->clear();
+    }
+  } else if( ret == QMessageBox::Discard) {
+    editor->clear();
+  } else if (ret == QMessageBox::Cancel) {
+    return;
+  }
 }
 
 void MainWindow::on_actionWires_triggered(bool checked) {
@@ -49,7 +71,7 @@ void MainWindow::on_actionOpen_triggered() {
 }
 
 void MainWindow::on_actionSave_triggered() {
-  QFileDialog::getSaveFileName(this, tr("Save File"), QDir::homePath(), tr("Panda files (*.panda)"));
+  save();
 }
 
 void MainWindow::on_actionAbout_triggered() {
@@ -66,4 +88,24 @@ void MainWindow::on_actionDelete_triggered() {
 
 void MainWindow::on_lineEdit_textEdited(const QString &) {
 
+}
+
+void MainWindow::closeEvent(QCloseEvent * e) {
+  QMessageBox msgBox;
+  msgBox.setParent(this);
+  msgBox.setLocale(QLocale::Portuguese);
+  msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+  msgBox.setText(tr("Do you want to save your changes?"));
+  msgBox.setWindowModality(Qt::WindowModal);
+  msgBox.setDefaultButton(QMessageBox::Save);
+  int ret = msgBox.exec();
+  if (ret == QMessageBox::Save) {
+    if(save()) {
+      close();
+    }
+  } else if( ret == QMessageBox::Discard) {
+    close();
+  } else if (ret == QMessageBox::Cancel) {
+    e->ignore();
+  }
 }

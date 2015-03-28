@@ -17,6 +17,7 @@ public:
   explicit MainWindow(QWidget *parent = 0);
   ~MainWindow();
 
+  bool save();
 private slots:
   void on_actionExit_triggered();
 
@@ -40,10 +41,14 @@ private slots:
 
   void on_lineEdit_textEdited(const QString &);
 
-  private:
+private:
   Ui::MainWindow *ui;
   Editor * editor;
   QGraphicsScene * scene;
+
+  // QWidget interface
+protected:
+  void closeEvent(QCloseEvent *e);
 };
 
 #endif // MAINWINDOW_H
