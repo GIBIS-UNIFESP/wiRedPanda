@@ -10,3 +10,7 @@ InputVcc::~InputVcc() {
 
 }
 
+void InputVcc::updateLogic() {
+  outputs().first()->setValue(true);
+}
+

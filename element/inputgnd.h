@@ -3,10 +3,13 @@
 
 #include "graphicelement.h"
 
-class InputGnd : public GraphicElement{
+class InputGnd : public GraphicElement {
 public:
-    explicit InputGnd(QGraphicsItem * parent);
-    ~InputGnd();
+  explicit InputGnd(QGraphicsItem * parent);
+  ~InputGnd();
+  // GraphicElement interface
+public:
+  void updateLogic();
 };
 
 #endif // INPUTGND_H
