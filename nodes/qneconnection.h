@@ -33,7 +33,7 @@ class QNEPort;
 class QNEConnection : public QGraphicsPathItem {
 public:
   enum { Type = QGraphicsItem::UserType + 2 };
-  enum Status { Active, Inactive, Invalid, Selected };
+  enum Status { Invalid = -1, Inactive = 0, Active = 1, Selected = 2};
 
   QNEConnection(QGraphicsItem *parent = 0);
   ~QNEConnection();

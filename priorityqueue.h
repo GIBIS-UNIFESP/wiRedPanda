@@ -16,6 +16,7 @@ public:
   PriorityElement *pop();
   int size();
   bool isEmpty();
+  bool isValid();
   void print();
   void build();
   void clear();

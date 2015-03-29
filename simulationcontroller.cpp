@@ -19,15 +19,15 @@ SimulationController::~SimulationController() {
 
 }
 
-int SimulationController::calculatePriority(GraphicElement * elm){
+int SimulationController::calculatePriority(GraphicElement * elm) {
   if(!elm)
     return 0;
-  if(elm->beingVisited()){
+  if(elm->beingVisited()) {
     elm->setChanged(true);
     qDebug() << elm->objectName() << " being visited";
     return 0;
   }
-  if(elm->visited()){
+  if(elm->visited()) {
     qDebug() << elm->objectName() << " is visited";
     return elm->priority();
   }
@@ -35,7 +35,7 @@ int SimulationController::calculatePriority(GraphicElement * elm){
   foreach (QNEPort * port, elm->outputs()) {
     foreach (QNEConnection * conn, port->connections()) {
       QNEPort * sucessor = conn->port1();
-      if(sucessor == port){
+      if(sucessor == port) {
         sucessor = conn->port2();
       }
       if(sucessor)
@@ -55,34 +55,38 @@ void SimulationController::update() {
   QVector<GraphicElement *> elements;
   foreach (QGraphicsItem * item, items) {
     GraphicElement * elm = qgraphicsitem_cast<GraphicElement *>(item);
-    if(elm){
+    if(elm) {
       elements.append(elm);
     }
   }
   QVector<GraphicElement*> changed;
   foreach (GraphicElement * elm, elements) {
-    if(elm->changed()){
+    if(elm->changed()) {
       changed.append(elm);
     }
   }
 
-  if(changed.isEmpty()){
+  if(changed.isEmpty()) {
     return;
   }
 
   foreach (GraphicElement * elm, changed) {
-    if(elm)
+    if(elm) {
       calculatePriority(elm);
+    }
   }
 
   PriorityQueue queue (elements);
   while (! queue.isEmpty()) {
     GraphicElement * elm = (GraphicElement *) queue.pop();
-    elm->updateLogic();
-    elm->setChanged(false);
-    elm->setBeingVisited(false);
-    elm->setVisited(false);
-    qDebug() << elm->objectName() << ", " << elm->priority();
+    queue.print();
+    if(elm) {
+      elm->updateLogic();
+      elm->setChanged(false);
+      elm->setBeingVisited(false);
+      elm->setVisited(false);
+      qDebug() << elm->objectName() << ", " << elm->priority();
+    }
   }
 }
 

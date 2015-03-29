@@ -101,15 +101,14 @@ QVector<QNEConnection*>& QNEPort::connections() {
 
 void QNEPort::connect(QNEConnection * conn) {
   graphicElement()->setChanged(true);
-  if(!m_connections.contains(conn))
+  if(conn && !m_connections.contains(conn))
     m_connections.append(conn);
   updateConnections();
 }
 
 void QNEPort::disconnect(QNEConnection * conn) {
   graphicElement()->setChanged(true);
-  if(m_connections.contains(conn))
-    m_connections.remove(m_connections.indexOf(conn));
+  m_connections.removeOne(conn);
   updateConnections();
 }
 

@@ -36,7 +36,9 @@ PriorityQueue::PriorityQueue(QVector<PriorityElement *> elements) {
 
 PriorityQueue::PriorityQueue(QVector<GraphicElement *> elements) {
   foreach (GraphicElement * elm, elements) {
-    heap.append(dynamic_cast<PriorityElement *>(elm));
+    PriorityElement * p_elm = dynamic_cast<PriorityElement *>(elm);
+    if(p_elm)
+      heap.append(p_elm);
   }
   build();
 }
@@ -50,17 +52,17 @@ int PriorityQueue::parent(int i) {
 }
 
 int PriorityQueue::left(int i) {
-  return( 2*i );
+  return( 2*i + 1 );
 }
 
 int PriorityQueue::right(int i) {
-  return( 2*i+1 );
+  return( 2*i + 2 );
 }
 
 void PriorityQueue::maxHeapify(int l, int r) {
   int i = l;
-  int j = right(i);
-  PriorityElement * aux = heap[l];
+  int j = left(i);
+  PriorityElement * aux = heap[i];
   while (j <= r) {
     if((j < r) && (heap[j]->priority() < heap[j+1]->priority())) {
       j++;
@@ -70,7 +72,7 @@ void PriorityQueue::maxHeapify(int l, int r) {
     }
     heap[i] = heap[j];
     i = j;
-    j = right(i);
+    j = left(i);
   }
   heap[i] = aux;
 }
@@ -80,29 +82,13 @@ void PriorityQueue::print() {
 }
 
 PriorityElement * PriorityQueue::pop() {
-  if(heap.isEmpty()){
+  if(heap.isEmpty()) {
     return nullptr;
   }
   PriorityElement * elm  = heap.front();
-  heap.first() = heap.back();
+  heap.front() = heap.back();
   heap.pop_back();
-  for( int i = 0; i < size();) {
-    int l = left(i);
-    int r = right(i);
-    if(r >= size()){
-      break;
-    }
-    int max = r;
-    if(heap[l] >= heap[r]){
-      max = l;
-    }
-    if(heap[i] <= heap[max]) {
-      std::swap(heap[i], heap[max]);
-      i = max;
-    }else{
-      break;
-    }
-  }
+  build();
   return (elm);
 }
 
@@ -114,3 +100,13 @@ bool PriorityQueue::isEmpty() {
   return heap.isEmpty();
 }
 
+bool PriorityQueue::isValid() {
+  for(int i = 0; i < (size()/2); i++) {
+    if(heap[i]->priority() < heap[left(i)]->priority()) {
+      return false;
+    } else if( (right(i) < size()) && (heap[i]->priority() < heap[right(i)]->priority())) {
+      return false;
+    }
+  }
+  return true;
+}

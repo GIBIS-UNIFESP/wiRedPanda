@@ -30,6 +30,7 @@ void TestPriorityQueue::testSize() {
 void TestPriorityQueue::testBuild() {
   PriorityQueue queue(elements);
   QCOMPARE(queue.toString() , QString("( 99, 65, 55, 40, 50, 35, 38, 20, 10, 44, 25 )"));
+  QCOMPARE(queue.isValid(),true);
 }
 
 void TestPriorityQueue::testEmpty() {
@@ -47,19 +48,18 @@ void TestPriorityQueue::testPop() {
 
   elm = queue.pop();
   QCOMPARE(elm->priority(), 65);
+  int sz = queue.size();
+  while (queue.isEmpty()) {
+    queue.pop();
+    queue.print();
+    QCOMPARE(queue.size(),--sz);
+  }
 }
 
 void TestPriorityQueue::testHeapify() {
   PriorityQueue queue(elements);
   queue.pop();
-//  queue.pop();
+  queue.pop();
 
-  QVector<int> values = {25,40,55,20,44,35,38,10, 65, 50};
-  elements.clear();
-  foreach (int i , values) {
-    elements.append(new PriorityElement(i));
-  }
-  PriorityQueue queue2(elements);
-
-  QCOMPARE(queue.toString(),queue2.toString());
+  QCOMPARE(queue.isValid(),true);
 }

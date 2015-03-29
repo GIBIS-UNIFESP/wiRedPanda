@@ -65,7 +65,6 @@ void QNEConnection::setPort1(QNEPort *p) {
 
 void QNEConnection::setPort2(QNEPort *p) {
   m_port2 = p;
-
   m_port2->connect(this);
 }
 
@@ -161,7 +160,11 @@ QVariant QNEConnection::itemChange(GraphicsItemChange change, const QVariant & v
     if(value.toBool()) {
       setStatus(Selected);
     } else {
-      setStatus(Inactive);
+      if(m_port1 && m_port1->isOutput()) {
+        setStatus((QNEConnection::Status)m_port1->value());
+      }else if(m_port2 && m_port2->isOutput()) {
+        setStatus((QNEConnection::Status)m_port2->value());
+      }
     }
   }
   return value;
