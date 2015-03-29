@@ -6,12 +6,14 @@
 
 #include "nodes/qneport.h"
 
+#include "priorityelement.h"
+
 enum class ElementType {
   EMPTY, UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND,
   WIRE, DLATCH, JKLATCH, SCRLATCH, DFLIPFLOP, JKFLIPFLOP
 };
 
-class GraphicElement : public QGraphicsObject {
+class GraphicElement : public QGraphicsObject, public PriorityElement {
   Q_OBJECT
 public:
   enum { Type = QGraphicsItem::UserType + 3 };
@@ -69,6 +71,9 @@ public:
 
   bool hasColors() const;
 
+  virtual void updateLogic();
+
+
   bool changed() const;
   void setChanged(bool changed);
 
@@ -77,11 +82,6 @@ public:
 
   bool visited() const;
   void setVisited(bool visited);
-
-  int priority() const;
-  void setPriority(int priority);
-
-  virtual void updateLogic();
 
   protected:
   void setRotatable(bool rotatable);
@@ -110,12 +110,11 @@ private:
   bool m_hasLabel;
   bool m_hasFrequency;
   bool m_hasColors;
-  QVector<QNEPort*> m_inputs;
-  QVector<QNEPort*> m_outputs;
   bool m_changed;
   bool m_beingVisited;
   bool m_visited;
-  int m_priority;
+  QVector<QNEPort*> m_inputs;
+  QVector<QNEPort*> m_outputs;
 };
 
 #endif // GRAPHICELEMENT_H

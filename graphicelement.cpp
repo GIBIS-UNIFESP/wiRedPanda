@@ -33,10 +33,10 @@ GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, 
   m_minOutputSz = minOutputSz;
   m_maxInputSz = maxInputSz;
   m_maxOutputSz = maxOutputSz;
-  m_rotatable = true;
   m_changed = true;
   m_visited = false;
   m_beingVisited = false;
+  m_rotatable = true;
   for(int i = 0; i < minInputSz; i++) {
     addPort(false);
   }
@@ -156,13 +156,6 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
   }
   return value;
 }
-int GraphicElement::priority() const {
-  return m_priority;
-}
-
-void GraphicElement::setPriority(int priority) {
-  m_priority = priority;
-}
 
 void GraphicElement::updateLogic() {
 
@@ -191,7 +184,6 @@ bool GraphicElement::changed() const {
 void GraphicElement::setChanged(bool changed) {
   m_changed = changed;
 }
-
 
 bool GraphicElement::hasColors() const {
   return m_hasColors;

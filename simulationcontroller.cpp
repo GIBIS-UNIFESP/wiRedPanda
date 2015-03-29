@@ -76,14 +76,14 @@ void SimulationController::update() {
   }
 
   PriorityQueue queue (elements);
-  while (! queue.isEmpty()) {
-    GraphicElement * elm = queue.pop();
-    elm->updateLogic();
-    elm->setChanged(false);
-    elm->setBeingVisited(false);
-    elm->setVisited(false);
-    qDebug() << elm->objectName() << ", " << elm->priority();
-  }
+//  while (! queue.isEmpty()) {
+//    GraphicElement * elm = queue.pop();
+//    elm->updateLogic();
+//    elm->setChanged(false);
+//    elm->setBeingVisited(false);
+//    elm->setVisited(false);
+//    qDebug() << elm->objectName() << ", " << elm->priority();
+//  }
 }
 
 

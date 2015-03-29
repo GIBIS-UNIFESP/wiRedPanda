@@ -1,62 +1,81 @@
 #include "priorityqueue.h"
-
+#include "priorityelement.h"
+#include "graphicelement.h"
 #include <QDebug>
 #include <iostream>
+
+
+void PriorityQueue::build() {
+  std::cout << "Before: ";
+  print();
+  int l = (list.size()/2)-1;
+  while (l >= 0) {
+    maxHeapify(l,list.size()-1);
+    l--;
+  }
+  std::cout << "After: ";
+  print();
+}
+
+PriorityQueue::PriorityQueue(QVector<PriorityElement *> elements) {
+  list = elements.toList();
+  build();
+}
+
 PriorityQueue::PriorityQueue(QVector<GraphicElement *> elements) {
   foreach (GraphicElement * elm, elements) {
-    push(elm);
+    list.append(dynamic_cast<PriorityElement *>(elm));
   }
-  std::cout << "Piority queue : ";
-  foreach (GraphicElement * elm, list) {
-    std::cout << elm->priority() << " ";
-  }
-  std::cout << std::endl;
+  build();
 }
 
 PriorityQueue::~PriorityQueue() {
 
 }
 
-void PriorityQueue::push(GraphicElement * elm) {
-  if(!elm)
-    return;
-  list.append(elm);
-  int i = list.count() -1;
-  int parent = (i-1)/2;
-  while (parent >= 0 && list[i]->priority() > list[parent]->priority()) {
-    std::swap(list[parent],list[i]);
-    i = parent;
-    parent = (i-1)/2;
-  }
+int PriorityQueue::parent(int i) {
+  return( i/2 );
 }
 
-GraphicElement * PriorityQueue::pop() {
-  if(list.isEmpty()) {
-    return nullptr;
-  }
-  GraphicElement * elm = list[0];
-  qDebug() << "POP " << elm->objectName() << elm->priority();
-  int i = 0;
-  list[0] = list.back();
-  list.removeLast();
-  while (i < size()) {
-    int left = 2*i + 1;
-    int right = left + 1;
-    if(right >= list.size()) {
+int PriorityQueue::left(int i) {
+  return( 2*i );
+}
+
+int PriorityQueue::right(int i) {
+  return( 2*i+1 );
+}
+
+void PriorityQueue::maxHeapify(int l, int r) {
+  int i = l;
+  int j = right(i);
+  PriorityElement * aux = list[l];
+  while (j <= r) {
+    if((j < r) && (list[j]->priority() < list[j+1]->priority())) {
+      j++;
+    }
+    if(aux->priority() >= list[j]->priority()) {
       break;
     }
-    int min = left;
-    if(list[right]->priority() > list[left]->priority()) {
-      min = right;
-    }
-    if(list[i]->priority() < list[min]->priority()) {
-      std::swap(list[min],list[i]);
-      i = min;
-    } else {
-      break;
+    list[i] = list[j];
+    i = j;
+    j = right(i);
+  }
+  list[i] = aux;
+}
+
+void PriorityQueue::print() {
+  std::cout << "Priority queue : ( ";
+  if(!list.isEmpty()) {
+    std::cout << list[0]->priority();
+    for(int i = 1; i< list.size(); i++) {
+      std::cout << ", " << list[i]->priority();
     }
   }
-  return elm;
+  std::cout << " )" << std::endl;
+}
+
+PriorityElement * PriorityQueue::pop() {
+
 }
 
 int PriorityQueue::size() {
