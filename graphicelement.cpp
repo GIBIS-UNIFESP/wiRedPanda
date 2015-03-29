@@ -17,6 +17,7 @@ GraphicElement::GraphicElement(QPixmap pixmap, QGraphicsItem *parent) : QGraphic
   m_maxOutputSz = 1;
   m_outputsOnTop = true;
   m_rotatable = true;
+  m_changed = true;
 }
 
 GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem * parent) : QGraphicsObject(parent), pixmapItem(new QGraphicsPixmapItem( ( QGraphicsItem * ) this)) {
@@ -31,6 +32,7 @@ GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, 
   m_maxInputSz = maxInputSz;
   m_maxOutputSz = maxOutputSz;
   m_rotatable = true;
+  m_changed = true;
   for(int i = 0; i < minInputSz; i++) {
     addPort(false);
   }
@@ -134,7 +136,8 @@ void GraphicElement::updatePorts() {
 void GraphicElement::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * e) {
   if(e->button() == Qt::LeftButton) {
     addPort(QNEPort::Output);
-  } else { addPort(QNEPort::Input);
+  } else {
+    addPort(QNEPort::Input);
   }
 }
 
@@ -149,6 +152,42 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
   }
   return value;
 }
+int GraphicElement::priority() const {
+  return m_priority;
+}
+
+void GraphicElement::setPriority(int priority) {
+  m_priority = priority;
+}
+
+void GraphicElement::updateLogic() {
+
+}
+
+bool GraphicElement::visited() const {
+  return m_visited;
+}
+
+void GraphicElement::setVisited(bool visited) {
+  m_visited = visited;
+}
+
+bool GraphicElement::beingVisited() const {
+  return m_beingVisited;
+}
+
+void GraphicElement::setBeingVisited(bool beingVisited) {
+  m_beingVisited = beingVisited;
+}
+
+bool GraphicElement::changed() const {
+  return m_changed;
+}
+
+void GraphicElement::setChanged(bool changed) {
+  m_changed = changed;
+}
+
 
 bool GraphicElement::hasColors() const {
   return m_hasColors;

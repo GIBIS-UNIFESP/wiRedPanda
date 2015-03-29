@@ -22,5 +22,6 @@ void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent * event) {
       on = true;
       setPixmap(QPixmap(":/input/resources/input/switch on.svg"));
     }
+    setChanged(true);
   }
 }

@@ -28,6 +28,7 @@ void Editor::install(QGraphicsScene * s) {
   s->installEventFilter(this);
   scene = s;
   scene->addItem(selectionRect);
+  simulationController = new SimulationController(s);
 }
 
 void Editor::clear() {

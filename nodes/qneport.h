@@ -46,6 +46,8 @@ public:
   void setIsOutput(bool o);
   int radius();
   bool isOutput();
+  bool isInput();
+  QVector<QNEConnection*>& connections();
   void connect(QNEConnection * conn);
   void disconnect(QNEConnection * conn);
   bool isConnected(QNEPort*);
@@ -73,7 +75,6 @@ public:
 
   void updateConnections();
   protected:
-  QVector<QNEConnection*>& connections();
   QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:

@@ -69,7 +69,21 @@ public:
 
   bool hasColors() const;
 
-protected:
+  bool changed() const;
+  void setChanged(bool changed);
+
+  bool beingVisited() const;
+  void setBeingVisited(bool beingVisited);
+
+  bool visited() const;
+  void setVisited(bool visited);
+
+  int priority() const;
+  void setPriority(int priority);
+
+  void updateLogic();
+
+  protected:
   void setRotatable(bool rotatable);
   void setHasLabel(bool hasLabel);
   void setHasFrequency(bool hasFrequency);
@@ -98,6 +112,10 @@ private:
   bool m_hasColors;
   QVector<QNEPort*> m_inputs;
   QVector<QNEPort*> m_outputs;
+  bool m_changed;
+  bool m_beingVisited;
+  bool m_visited;
+  int m_priority;
 };
 
 #endif // GRAPHICELEMENT_H

@@ -39,7 +39,9 @@ SOURCES += main.cpp\
     element/dflipflop.cpp \
     element/dlatch.cpp \
     element/jkflipflop.cpp \
-    element/jklatch.cpp
+    element/jklatch.cpp \
+    simulationcontroller.cpp \
+    priorityqueue.cpp
 
 HEADERS  += mainwindow.h \
     label.h \
@@ -66,7 +68,9 @@ HEADERS  += mainwindow.h \
     element/dflipflop.h \
     element/dlatch.h \
     element/jkflipflop.h \
-    element/jklatch.h
+    element/jklatch.h \
+    simulationcontroller.h \
+    priorityqueue.h
 
 FORMS    += mainwindow.ui \
     elementeditor.ui

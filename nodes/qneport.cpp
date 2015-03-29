@@ -27,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #include <QGraphicsScene>
 #include <QFontMetrics>
+#include <graphicelement.h>
 
 #include <QPen>
 
@@ -67,7 +68,7 @@ void QNEPort::setName(const QString &n) {
 
 void QNEPort::setIsOutput(bool o) {
   isOutput_ = o;
-  if(!isOutput()) {
+  if(isInput()) {
     setPen(QPen(Qt::black));
     setBrush(QColor(0x333333));
   }
@@ -89,6 +90,10 @@ bool QNEPort::isOutput() {
   return isOutput_;
 }
 
+bool QNEPort::isInput() {
+  return !isOutput_;
+}
+
 QVector<QNEConnection*>& QNEPort::connections() {
   return m_connections;
 }
@@ -97,12 +102,18 @@ void QNEPort::connect(QNEConnection * conn) {
   if(!m_connections.contains(conn))
     m_connections.append(conn);
   updateConnections();
+  if(isInput()) {
+    graphicElement()->setChanged(true);
+  }
 }
 
 void QNEPort::disconnect(QNEConnection * conn) {
   if(m_connections.contains(conn))
     m_connections.remove(m_connections.indexOf(conn));
   updateConnections();
+  if(isInput()) {
+    graphicElement()->setChanged(true);
+  }
 }
 
 void QNEPort::setPortFlags(int f) {

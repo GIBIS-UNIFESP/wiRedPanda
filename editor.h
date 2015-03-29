@@ -1,9 +1,11 @@
 #ifndef EDITOR_H
 #define EDITOR_H
 
+
 #include <QGraphicsScene>
 #include <QObject>
 
+#include "simulationcontroller.h"
 #include <nodes/qneconnection.h>
 #include <elementfactory.h>
 #include <elementeditor.h>
@@ -29,6 +31,7 @@ private:
   bool markingSelectionBox;
   QGraphicsRectItem * selectionRect;
   QPointF selectionStartPoint;
+  SimulationController * simulationController;
   // QObject interface
 public:
   bool eventFilter(QObject *o, QEvent *e);
