@@ -174,7 +174,7 @@ void GraphicElement::setVisited(bool visited) {
 bool GraphicElement::isValid() {
   bool valid = true;
   foreach (QNEPort * input, inputs()) {
-    if((input->connections().size() != 1) || (input->value()==-1)) {
+    if((input->connections().size() != 1)) {
       foreach (QNEConnection *conn, input->connections()) {
         conn->setStatus(QNEConnection::Invalid);
       }

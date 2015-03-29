@@ -3,10 +3,14 @@
 
 #include "graphicelement.h"
 
-class Not : public GraphicElement{
+class Not : public GraphicElement {
 public:
-    explicit Not(QGraphicsItem * parent);
-    ~Not();
+  explicit Not(QGraphicsItem * parent);
+  ~Not();
+
+  // GraphicElement interface
+public:
+  void updateLogic();
 };
 
 #endif // NOT_H

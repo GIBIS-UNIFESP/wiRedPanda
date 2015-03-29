@@ -31,6 +31,7 @@ int SimulationController::calculatePriority(GraphicElement * elm) {
     qDebug() << elm->objectName() << " is visited";
     return elm->priority();
   }
+  elm->setBeingVisited(true);
   int max = 0;
   foreach (QNEPort * port, elm->outputs()) {
     foreach (QNEConnection * conn, port->connections()) {
@@ -61,9 +62,9 @@ void SimulationController::update() {
   }
   QVector<GraphicElement*> changed;
   foreach (GraphicElement * elm, elements) {
-    if(elm->changed()) {
+//    if(elm->changed()) {
       changed.append(elm);
-    }
+//    }
   }
 
   if(changed.isEmpty()) {
