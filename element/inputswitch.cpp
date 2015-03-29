@@ -14,14 +14,18 @@ InputSwitch::~InputSwitch() {
 }
 
 void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent * event) {
-  if(event->button() == Qt::LeftButton){
-    if(on){
+  if(event->button() == Qt::LeftButton) {
+    if(on) {
       on = false;
       setPixmap(QPixmap(":/input/resources/input/switch off.svg"));
-    }else{
+    } else {
       on = true;
       setPixmap(QPixmap(":/input/resources/input/switch on.svg"));
     }
     setChanged(true);
   }
+}
+
+void InputSwitch::updateLogic() {
+  outputs().first()->setValue(on);
 }

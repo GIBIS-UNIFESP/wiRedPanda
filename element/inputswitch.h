@@ -9,9 +9,14 @@ public:
   ~InputSwitch();
 
   bool on;
-    // QGraphicsItem interface
-  protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent * event);
+  // QGraphicsItem interface
+protected:
+  void mousePressEvent(QGraphicsSceneMouseEvent * event);
+
+  // GraphicElement interface
+public:
+  void updateLogic();
+
 };
 
 #endif // INPUTSWITCH_H

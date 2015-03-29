@@ -9,7 +9,6 @@ InputButton::InputButton(QGraphicsItem * parent) : GraphicElement(0,0,1,1,parent
   outputs().first()->setValue(0);
   setBottomPosition(72);
   on = false;
-  setObjectName("inputButton");
 }
 
 InputButton::~InputButton() {
@@ -33,6 +32,5 @@ void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent * event) {
 }
 
 void InputButton::updateLogic() {
-  qDebug() << "Updating input with value = " << on;
   outputs().first()->setValue(on);
 }
