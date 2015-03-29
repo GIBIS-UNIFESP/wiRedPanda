@@ -11,7 +11,7 @@
 
 SimulationController::SimulationController(QGraphicsScene * scn) : QObject(dynamic_cast<QObject *>(scn)), timer(this) {
   scene = scn;
-  timer.start(10);
+  timer.start(100);
   connect(&timer,&QTimer::timeout,this,&SimulationController::update);
 }
 
