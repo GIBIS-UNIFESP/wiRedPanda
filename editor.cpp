@@ -199,6 +199,7 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
 //        qDebug() << pos << roundTo(pos,64);
         GraphicElement * elm = factory.buildElement((ElementType)type);
         if(!elm) {
+          break;
           elm = new GraphicElement(pixmap);
         }
 

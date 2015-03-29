@@ -44,9 +44,9 @@ public:
   void setNEBlock(QNEBlock*);
   void setName(const QString &n);
   void setIsOutput(bool o);
-  int radius();
-  bool isOutput();
-  bool isInput();
+  int radius() const;
+  bool isOutput() const;
+  bool isInput() const;
   QVector<QNEConnection*>& connections();
   void connect(QNEConnection * conn);
   void disconnect(QNEConnection * conn);
@@ -74,6 +74,9 @@ public:
   void setGraphicElement(GraphicElement * graphicElement);
 
   void updateConnections();
+  char value() const;
+  void setValue(char value);
+
   protected:
   QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
@@ -87,6 +90,7 @@ private:
   QVector<QNEConnection*> m_connections;
   int m_portFlags;
   quint64 m_ptr;
+  char m_value;
 
   //WPanda
   GraphicElement * m_graphicElement;

@@ -50,6 +50,7 @@ QNEPort::QNEPort(QGraphicsItem *parent):
   setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
 
   m_portFlags = 0;
+  m_value = false;
 }
 
 QNEPort::~QNEPort() {
@@ -82,15 +83,15 @@ void QNEPort::setIsOutput(bool o) {
     label->setPos(radius_ + margin, -label->boundingRect().height()/2);
 }
 
-int QNEPort::radius() {
+int QNEPort::radius() const {
   return radius_;
 }
 
-bool QNEPort::isOutput() {
+bool QNEPort::isOutput() const {
   return isOutput_;
 }
 
-bool QNEPort::isInput() {
+bool QNEPort::isInput() const {
   return !isOutput_;
 }
 
@@ -99,21 +100,17 @@ QVector<QNEConnection*>& QNEPort::connections() {
 }
 
 void QNEPort::connect(QNEConnection * conn) {
+  graphicElement()->setChanged(true);
   if(!m_connections.contains(conn))
     m_connections.append(conn);
   updateConnections();
-  if(isInput()) {
-    graphicElement()->setChanged(true);
-  }
 }
 
 void QNEPort::disconnect(QNEConnection * conn) {
+  graphicElement()->setChanged(true);
   if(m_connections.contains(conn))
     m_connections.remove(m_connections.indexOf(conn));
   updateConnections();
-  if(isInput()) {
-    graphicElement()->setChanged(true);
-  }
 }
 
 void QNEPort::setPortFlags(int f) {
@@ -165,6 +162,33 @@ QVariant QNEPort::itemChange(GraphicsItemChange change, const QVariant &value) {
   }
   return value;
 }
+
+char QNEPort::value() const {
+  return m_value;
+}
+
+void QNEPort::setValue(char value) {
+  m_value = value;
+  if(isOutput()) {
+    foreach (QNEConnection * conn, connections()) {
+      if(value == -1) {
+        conn->setStatus(QNEConnection::Invalid);
+      } else if(value == 0) {
+        conn->setStatus(QNEConnection::Inactive);
+      } else {
+        conn->setStatus(QNEConnection::Active);
+      }
+      QNEPort * port = conn->port1();
+      if(port == this) {
+        port = conn->port2();
+      }
+      if(port)
+        port->setValue(value);
+    }
+  }
+  update();
+}
+
 GraphicElement * QNEPort::graphicElement() const {
   return m_graphicElement;
 }

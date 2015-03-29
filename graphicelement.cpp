@@ -18,6 +18,8 @@ GraphicElement::GraphicElement(QPixmap pixmap, QGraphicsItem *parent) : QGraphic
   m_outputsOnTop = true;
   m_rotatable = true;
   m_changed = true;
+  m_visited = false;
+  m_beingVisited = false;
 }
 
 GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem * parent) : QGraphicsObject(parent), pixmapItem(new QGraphicsPixmapItem( ( QGraphicsItem * ) this)) {
@@ -33,6 +35,8 @@ GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, 
   m_maxOutputSz = maxOutputSz;
   m_rotatable = true;
   m_changed = true;
+  m_visited = false;
+  m_beingVisited = false;
   for(int i = 0; i < minInputSz; i++) {
     addPort(false);
   }

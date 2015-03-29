@@ -20,11 +20,15 @@ SimulationController::~SimulationController() {
 }
 
 int SimulationController::calculatePriority(GraphicElement * elm){
+  if(!elm)
+    return 0;
   if(elm->beingVisited()){
     elm->setChanged(true);
+    qDebug() << elm->objectName() << " being visited";
     return 0;
   }
   if(elm->visited()){
+    qDebug() << elm->objectName() << " is visited";
     return elm->priority();
   }
   int max = 0;
@@ -34,9 +38,12 @@ int SimulationController::calculatePriority(GraphicElement * elm){
       if(sucessor == port){
         sucessor = conn->port2();
       }
-      max = qMax(calculatePriority(sucessor->graphicElement()),max);
+      if(sucessor)
+        max = qMax(calculatePriority(sucessor->graphicElement()),max);
+      qDebug() << elm->objectName() << " max = " << max;
     }
   }
+  qDebug() << elm->objectName() << " priority set to " << max + 1;
   elm->setPriority(max + 1);
   elm->setBeingVisited(false);
   elm->setVisited(true);
@@ -55,27 +62,27 @@ void SimulationController::update() {
   QVector<GraphicElement*> changed;
   foreach (GraphicElement * elm, elements) {
     if(elm->changed()){
-      elm->setChanged(false);
-      elm->setBeingVisited(false);
-      elm->setVisited(false);
-      elm->setPriority(-1);
       changed.append(elm);
     }
   }
-  qDebug() << changed.size();
 
   if(changed.isEmpty()){
     return;
   }
 
   foreach (GraphicElement * elm, changed) {
-    calculatePriority(elm);
+    if(elm)
+      calculatePriority(elm);
   }
 
   PriorityQueue queue (elements);
   while (! queue.isEmpty()) {
     GraphicElement * elm = queue.pop();
     elm->updateLogic();
+    elm->setChanged(false);
+    elm->setBeingVisited(false);
+    elm->setVisited(false);
+    qDebug() << elm->objectName() << ", " << elm->priority();
   }
 }
 

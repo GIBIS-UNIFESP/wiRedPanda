@@ -81,7 +81,7 @@ public:
   int priority() const;
   void setPriority(int priority);
 
-  void updateLogic();
+  virtual void updateLogic();
 
   protected:
   void setRotatable(bool rotatable);

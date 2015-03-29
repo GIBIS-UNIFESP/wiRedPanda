@@ -10,3 +10,8 @@ And::~And() {
 
 }
 
+void And::updateLogic() {
+  foreach (QNEPort * input, inputs()) {
+
+  }
+}

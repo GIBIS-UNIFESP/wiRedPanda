@@ -9,6 +9,10 @@ public:
   ~Led();
 protected:
 
+
+    // GraphicElement interface
+  public:
+    void updateLogic();
 };
 
 #endif // LED_H
