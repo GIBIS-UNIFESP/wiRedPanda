@@ -92,7 +92,7 @@ void Editor::rotate(bool rotateRight) {
 }
 
 QGraphicsItem *Editor::itemAt(const QPointF & pos) {
-  QList<QGraphicsItem*> items = scene->items(QRectF(pos - QPointF(1,1), QSize(3,3)));
+  QList<QGraphicsItem*> items = scene->items(QRectF(pos - QPointF(1,1), QSize(3,3)).normalized());
 
   foreach(QGraphicsItem *item, items) {
     if (item->type() > QGraphicsItem::UserType)
@@ -202,9 +202,6 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
           break;
           elm = new GraphicElement(pixmap);
         }
-
-
-        QList<QGraphicsItem *> list = scene->selectedItems();
         elm->setTransformOriginPoint(32,32);
         if(elm->rotatable()) {
           elm->setRotation(90);
