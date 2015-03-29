@@ -20,5 +20,7 @@ void Clock::updateClock() {
     on = true;
     setPixmap(QPixmap(":/input/resources/input/clock 1.svg"));
   }
+  setChanged(true);
+  outputs().first()->setValue(on);
 }
 

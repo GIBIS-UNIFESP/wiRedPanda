@@ -137,13 +137,13 @@ void GraphicElement::updatePorts() {
   }
 }
 
-void GraphicElement::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * e) {
-  if(e->button() == Qt::LeftButton) {
-    addPort(QNEPort::Output);
-  } else {
-    addPort(QNEPort::Input);
-  }
-}
+//void GraphicElement::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * e) {
+//  if(e->button() == Qt::LeftButton) {
+//    addPort(QNEPort::Output);
+//  } else {
+//    addPort(QNEPort::Input);
+//  }
+//}
 
 QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant & value) {
   if(change == ItemScenePositionHasChanged ||  change == ItemRotationHasChanged ||  change == ItemTransformHasChanged) {

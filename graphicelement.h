@@ -96,7 +96,7 @@ public:
   void setTopPosition(int topPosition);
   void setBottomPosition(int bottomPosition);
 
-  virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e);
+//  virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e);
   QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 private:
   int m_topPosition;
