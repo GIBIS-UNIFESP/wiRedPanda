@@ -4,7 +4,7 @@
 
 class PriorityElement {
 public:
-  PriorityElement();
+  PriorityElement(int priority = -1);
   ~PriorityElement();
   int priority() const;
   void setPriority(int priority);

@@ -1,6 +1,7 @@
 #include "priorityelement.h"
 
-PriorityElement::PriorityElement() {
+PriorityElement::PriorityElement(int priority) : m_priority(priority) {
+
 }
 
 PriorityElement::~PriorityElement() {

@@ -6,25 +6,37 @@
 
 
 void PriorityQueue::build() {
-  std::cout << "Before: ";
-  print();
-  int l = (list.size()/2)-1;
+  int l = (heap.size()/2)-1;
   while (l >= 0) {
-    maxHeapify(l,list.size()-1);
+    maxHeapify(l,heap.size()-1);
     l--;
   }
-  std::cout << "After: ";
-  print();
+}
+
+void PriorityQueue::clear() {
+  heap.clear();
+}
+
+QString PriorityQueue::toString() {
+  QString str = "( ";
+  if(!heap.isEmpty()) {
+    str += QString::number(heap[0]->priority());
+    for(int i = 1; i< heap.size(); i++) {
+      str += ", " + QString::number(heap[i]->priority());
+    }
+  }
+  str += " )";
+  return str;
 }
 
 PriorityQueue::PriorityQueue(QVector<PriorityElement *> elements) {
-  list = elements.toList();
+  heap = elements.toList();
   build();
 }
 
 PriorityQueue::PriorityQueue(QVector<GraphicElement *> elements) {
   foreach (GraphicElement * elm, elements) {
-    list.append(dynamic_cast<PriorityElement *>(elm));
+    heap.append(dynamic_cast<PriorityElement *>(elm));
   }
   build();
 }
@@ -48,41 +60,57 @@ int PriorityQueue::right(int i) {
 void PriorityQueue::maxHeapify(int l, int r) {
   int i = l;
   int j = right(i);
-  PriorityElement * aux = list[l];
+  PriorityElement * aux = heap[l];
   while (j <= r) {
-    if((j < r) && (list[j]->priority() < list[j+1]->priority())) {
+    if((j < r) && (heap[j]->priority() < heap[j+1]->priority())) {
       j++;
     }
-    if(aux->priority() >= list[j]->priority()) {
+    if(aux->priority() >= heap[j]->priority()) {
       break;
     }
-    list[i] = list[j];
+    heap[i] = heap[j];
     i = j;
     j = right(i);
   }
-  list[i] = aux;
+  heap[i] = aux;
 }
 
 void PriorityQueue::print() {
-  std::cout << "Priority queue : ( ";
-  if(!list.isEmpty()) {
-    std::cout << list[0]->priority();
-    for(int i = 1; i< list.size(); i++) {
-      std::cout << ", " << list[i]->priority();
-    }
-  }
-  std::cout << " )" << std::endl;
+  qDebug() << "Priority queue: " << toString();
 }
 
 PriorityElement * PriorityQueue::pop() {
-
+  if(heap.isEmpty()){
+    return nullptr;
+  }
+  PriorityElement * elm  = heap.front();
+  heap.first() = heap.back();
+  heap.pop_back();
+  for( int i = 0; i < size();) {
+    int l = left(i);
+    int r = right(i);
+    if(r >= size()){
+      break;
+    }
+    int max = r;
+    if(heap[l] >= heap[r]){
+      max = l;
+    }
+    if(heap[i] <= heap[max]) {
+      std::swap(heap[i], heap[max]);
+      i = max;
+    }else{
+      break;
+    }
+  }
+  return (elm);
 }
 
 int PriorityQueue::size() {
-  return list.size();
+  return heap.size();
 }
 
 bool PriorityQueue::isEmpty() {
-  return list.isEmpty();
+  return heap.isEmpty();
 }
 

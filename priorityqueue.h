@@ -12,12 +12,14 @@ public:
   PriorityQueue(QVector<PriorityElement *> elements);
   ~PriorityQueue();
 
-  QList <PriorityElement * >list;
+  QList <PriorityElement * >heap;
   PriorityElement *pop();
   int size();
   bool isEmpty();
   void print();
   void build();
+  void clear();
+  QString toString();
   private:
   int parent(int i);
   int left(int i);

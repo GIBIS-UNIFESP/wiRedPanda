@@ -11,7 +11,7 @@
 
 SimulationController::SimulationController(QGraphicsScene * scn) : QObject(dynamic_cast<QObject *>(scn)), timer(this) {
   scene = scn;
-  timer.start(500);
+  timer.start(10);
   connect(&timer,&QTimer::timeout,this,&SimulationController::update);
 }
 
@@ -76,14 +76,14 @@ void SimulationController::update() {
   }
 
   PriorityQueue queue (elements);
-//  while (! queue.isEmpty()) {
-//    GraphicElement * elm = queue.pop();
-//    elm->updateLogic();
-//    elm->setChanged(false);
-//    elm->setBeingVisited(false);
-//    elm->setVisited(false);
-//    qDebug() << elm->objectName() << ", " << elm->priority();
-//  }
+  while (! queue.isEmpty()) {
+    GraphicElement * elm = (GraphicElement *) queue.pop();
+    elm->updateLogic();
+    elm->setChanged(false);
+    elm->setBeingVisited(false);
+    elm->setVisited(false);
+    qDebug() << elm->objectName() << ", " << elm->priority();
+  }
 }
 
 

@@ -11,7 +11,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = WPanda
 TEMPLATE = app
 CONFIG += c++11
-
+CONFIG(debug, debug|release) {
+    CONFIG += console
+}
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -43,7 +45,6 @@ SOURCES += main.cpp\
     simulationcontroller.cpp \
     priorityqueue.cpp \
     priorityelement.cpp
-
 HEADERS  += mainwindow.h \
     label.h \
     editor.h \
@@ -94,3 +95,16 @@ RESOURCES += \
     resources.qrc
 
 DISTFILES +=
+
+
+test {
+message(Test build)
+QT += testlib
+TARGET = WPanda-test
+SOURCES -= main.cpp
+SOURCES += test/main.cpp \
+    test/testpriorityqueue.cpp
+HEADERS += test/testpriorityqueue.h
+} else {
+    message(Normal build)
+}
