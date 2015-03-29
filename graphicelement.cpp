@@ -6,6 +6,8 @@
 #include <QMessageBox>
 #include <QPainter>
 
+#include <nodes/qneconnection.h>
+
 GraphicElement::GraphicElement(QPixmap pixmap, QGraphicsItem *parent) : QGraphicsObject(parent), pixmapItem(new QGraphicsPixmapItem(pixmap, ( QGraphicsItem * ) this)) {
   setFlag(QGraphicsItem::ItemIsMovable);
   setFlag(QGraphicsItem::ItemIsSelectable);
@@ -167,6 +169,19 @@ bool GraphicElement::visited() const {
 
 void GraphicElement::setVisited(bool visited) {
   m_visited = visited;
+}
+
+bool GraphicElement::isValid() {
+  bool valid = true;
+  foreach (QNEPort * input, inputs()) {
+    if((input->connections().size() != 1) || (input->value()==-1)) {
+      foreach (QNEConnection *conn, input->connections()) {
+        conn->setStatus(QNEConnection::Invalid);
+      }
+      valid = false;
+    }
+  }
+  return valid;
 }
 
 bool GraphicElement::beingVisited() const {

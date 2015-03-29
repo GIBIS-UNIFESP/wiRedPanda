@@ -146,28 +146,10 @@ void QNEConnection::setStatus(const Status & status) {
   case Active:
     setPen(QPen(Qt::green,3));
     break;
-  case Selected:
-    setPen(QPen(Qt::darkGreen,5));
-    break;
   case Invalid:
     setPen(QPen(Qt::red,5));
     break;
   }
-}
-
-QVariant QNEConnection::itemChange(GraphicsItemChange change, const QVariant & value) {
-  if(change == ItemSelectedChange) {
-    if(value.toBool()) {
-      setStatus(Selected);
-    } else {
-      if(m_port1 && m_port1->isOutput()) {
-        setStatus((QNEConnection::Status)m_port1->value());
-      }else if(m_port2 && m_port2->isOutput()) {
-        setStatus((QNEConnection::Status)m_port2->value());
-      }
-    }
-  }
-  return value;
 }
 
 void QNEConnection::paint(QPainter * painter, const QStyleOptionGraphicsItem *, QWidget * ) {
@@ -184,8 +166,11 @@ void QNEConnection::paint(QPainter * painter, const QStyleOptionGraphicsItem *, 
   QPointF ctr2(pos1.x() + dx * 0.75, pos1.y() + dy * 0.9);
 
   p.cubicTo(ctr1, ctr2, pos2);
-
-  painter->setPen(pen());
+  if(isSelected()) {
+    painter->setPen(QPen(Qt::darkGreen,5));
+  }else{
+    painter->setPen(pen());
+  }
   painter->drawPath(p);
   //  p.lineTo(pos2);
   setPath(p);

@@ -9,9 +9,9 @@ public:
   ~And();
 
 
-    // GraphicElement interface
-  public:
-    void updateLogic();
+  // GraphicElement interface
+public:
+  void updateLogic();
 };
 
 #endif // AND_H

@@ -11,7 +11,16 @@ And::~And() {
 }
 
 void And::updateLogic() {
-  foreach (QNEPort * input, inputs()) {
-
+  char res = true;
+  if(!isValid()) {
+    res = -1;
+  } else {
+    foreach (QNEPort * input, inputs()) {
+      if(input->value() != true) {
+        res = false;
+        break;
+      }
+    }
   }
+  outputs().first()->setValue(res);
 }

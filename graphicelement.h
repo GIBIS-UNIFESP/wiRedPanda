@@ -73,7 +73,6 @@ public:
 
   virtual void updateLogic();
 
-
   bool changed() const;
   void setChanged(bool changed);
 
@@ -82,6 +81,8 @@ public:
 
   bool visited() const;
   void setVisited(bool visited);
+
+  bool isValid();
 
   protected:
   void setRotatable(bool rotatable);

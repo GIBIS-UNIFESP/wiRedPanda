@@ -10,3 +10,18 @@ Or::~Or() {
 
 }
 
+void Or::updateLogic() {
+  char res = false;
+
+  if(!isValid()) {
+    res = -1;
+  } else {
+    foreach (QNEPort * input, inputs()) {
+      if(input->value() == true) {
+        res = true;
+        break;
+      }
+    }
+  }
+  outputs().first()->setValue(res);
+}

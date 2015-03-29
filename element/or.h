@@ -7,6 +7,9 @@ class Or : public GraphicElement {
 public:
   Or(QGraphicsItem * parent);
   ~Or();
+  // GraphicElement interface
+public:
+  void updateLogic();
 };
 
 #endif // OR_H

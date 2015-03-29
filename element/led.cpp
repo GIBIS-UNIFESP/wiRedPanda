@@ -15,10 +15,13 @@ Led::~Led() {
 }
 
 void Led::updateLogic() {
-  bool value = inputs().first()->value();
-  if(value == 1 ) {
-    setPixmap(QPixmap(":/output/resources/output/WhiteLedOn.svg"));
-  }else{
-    setPixmap(QPixmap(":/output/resources/output/WhiteLedOff.svg"));
+
+  if(isValid()) {
+    bool value = inputs().first()->value();
+    if(value == 1 ) {
+      setPixmap(QPixmap(":/output/resources/output/WhiteLedOn.svg"));
+    }else{
+      setPixmap(QPixmap(":/output/resources/output/WhiteLedOff.svg"));
+    }
   }
 }
