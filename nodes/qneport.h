@@ -47,7 +47,7 @@ public:
   int radius() const;
   bool isOutput() const;
   bool isInput() const;
-  QVector<QNEConnection*>& connections();
+  QList<QNEConnection*>& connections();
   void connect(QNEConnection * conn);
   void disconnect(QNEConnection * conn);
   bool isConnected(QNEPort*);
@@ -87,7 +87,7 @@ private:
   QGraphicsTextItem *label;
   int radius_;
   int margin;
-  QVector<QNEConnection*> m_connections;
+  QList<QNEConnection*> m_connections;
   int m_portFlags;
   quint64 m_ptr;
   char m_value;

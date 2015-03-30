@@ -95,7 +95,7 @@ bool QNEPort::isInput() const {
   return !isOutput_;
 }
 
-QVector<QNEConnection*>& QNEPort::connections() {
+QList<QNEConnection *> & QNEPort::connections() {
   return m_connections;
 }
 
@@ -108,7 +108,7 @@ void QNEPort::connect(QNEConnection * conn) {
 
 void QNEPort::disconnect(QNEConnection * conn) {
   graphicElement()->setChanged(true);
-  m_connections.removeOne(conn);
+  m_connections.removeAll(conn);
   updateConnections();
 }
 
