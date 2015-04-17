@@ -16,6 +16,7 @@
 #include <element/dlatch.h>
 #include <element/jklatch.h>
 #include <element/jkflipflop.h>
+#include <element/tlatch.h>
 
 #include <QDebug>
 
