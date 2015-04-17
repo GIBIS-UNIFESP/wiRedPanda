@@ -24,23 +24,20 @@ void DFlipFlop::updatePorts() {
 }
 
 void DFlipFlop::updateLogic() {
-    char res = true; //Output 1
-    char res2= false; //Output 2
+    char res = outputs().first()->value(); //Output 1
     if(!isValid()) {
       res = -1;
-      res2 = res;
     } else {
       if(inputs().at(1)->value() == true){    //If Clock
         res = inputs().at(0)->value(); //Output = Data
-        res2 = !res;
       }
       if (inputs().at(2)->value() == true){
-          res = true; res2 = false;
+          res = true;
       }
       if (inputs().at(3)->value() == true){
-          res = false; res2 = true;
+          res = false;
       }
     }
     outputs().first()->setValue(res);
-    outputs().last()->setValue(res2);
+    outputs().last()->setValue(!res);
 }

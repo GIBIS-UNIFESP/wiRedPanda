@@ -44,7 +44,8 @@ SOURCES += main.cpp\
     element/jklatch.cpp \
     simulationcontroller.cpp \
     priorityqueue.cpp \
-    priorityelement.cpp
+    priorityelement.cpp \
+    element/tlatch.cpp
 HEADERS  += mainwindow.h \
     label.h \
     editor.h \
@@ -73,7 +74,8 @@ HEADERS  += mainwindow.h \
     element/jklatch.h \
     simulationcontroller.h \
     priorityqueue.h \
-    priorityelement.h
+    priorityelement.h \
+    element/tlatch.h
 
 FORMS    += mainwindow.ui \
     elementeditor.ui

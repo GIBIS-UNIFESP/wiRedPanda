@@ -11,6 +11,7 @@ public:
   // GraphicElement interface
 public:
   virtual void updatePorts();
+  void updateLogic();
 };
 
 #endif // DLATCH_H

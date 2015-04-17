@@ -19,3 +19,15 @@ void DLatch::updatePorts() {
   outputs().at(1)->setPos(bottomPosition(),45);
 }
 
+void DLatch::updateLogic(){
+    char res = true; //Output 1
+    if(!isValid()) {
+      res = -1;
+    } else {
+        if(inputs().at(1)->value() == true){    //If Clock
+            res = inputs().at(0)->value(); //Output = Data
+        }
+    }
+    outputs().first()->setValue(res);
+    outputs().last()->setValue(!res);
+}
