@@ -10,7 +10,7 @@ Xor::~Xor() {
 
 }
 
-void Xnor::updateLogic() {
+void Xor::updateLogic() {
   char res = true;
   if(!isValid()) {
     res = -1;
