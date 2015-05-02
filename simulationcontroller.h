@@ -16,6 +16,9 @@ public:
 
 public slots:
   void update();
+  void stop();
+  void start();
+
 
 private:
   QGraphicsScene * scene;

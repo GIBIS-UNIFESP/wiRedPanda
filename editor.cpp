@@ -17,6 +17,7 @@ Editor::Editor(QObject *parent) : QObject(parent), scene(NULL), conn(NULL) {
   markingSelectionBox = false;
   selectionRect = new QGraphicsRectItem();
   selectionRect->setBrush(Qt::NoBrush);
+  selectionRect->setFlag(QGraphicsItem::ItemIsSelectable, false);
   selectionRect->setPen(QPen(Qt::darkGray,1.5,Qt::DotLine));
 }
 
@@ -29,10 +30,18 @@ void Editor::install(QGraphicsScene * s) {
   scene = s;
   scene->addItem(selectionRect);
   simulationController = new SimulationController(s);
+  simulationController->start();
 }
 
 void Editor::clear() {
+  foreach (QGraphicsItem * item, scene->items()) {
+    if(!scene->items().contains(item))
+      continue;
+    scene->removeItem(item);
+//    delete item;
+  }
   scene->clear();
+  scene->addItem(selectionRect);
 }
 
 void Editor::deleteElements() {
