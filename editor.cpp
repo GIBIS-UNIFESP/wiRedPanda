@@ -111,6 +111,62 @@ QGraphicsItem *Editor::itemAt(const QPointF & pos) {
   return 0;
 }
 
+void Editor::save(QDataStream & ds) {
+  ds << QString("WiredPanda 1.0");
+  foreach(QGraphicsItem *item, scene->items()) {
+    if (item->type() == GraphicElement::Type) {
+      ds << item->type();
+      ds << (quint64) ( (GraphicElement*) item)->elementType();
+      ((GraphicElement*) item)->save(ds);
+    }
+  }
+
+  foreach(QGraphicsItem *item, scene->items()) {
+    if (item->type() == QNEConnection::Type) {
+      ds << item->type();
+      ((QNEConnection*) item)->save(ds);
+    }
+  }
+}
+
+void Editor::load(QDataStream & ds) {
+  clear();
+  QString str;
+  ds >> str;
+  if(str != QString("WiredPanda 1.0")) {
+    throw (std::runtime_error("Invalid file."));
+  }else{
+    qDebug() << str;
+  }
+  QMap< quint64, QNEPort *> portMap;
+  while( !ds.atEnd() ) {
+    int type;
+    ds >> type;
+    qDebug() << "Type: " << type;
+    if( type == GraphicElement::Type ) {
+      qDebug() << "GraphicElement.";
+      quint64 elmType;
+      ds >> elmType;
+      qDebug() << "Element type: " << elmType;
+      GraphicElement *elm = factory.buildElement((ElementType)elmType);
+      if(elm){
+        scene->addItem(elm);
+        elm->load(ds, portMap);
+        qDebug() << elm->objectName();
+      }else{
+        throw( std::runtime_error("Could not build element."));
+      }
+    } else if ( type == QNEConnection::Type ) {
+      qDebug() << "QNEConnection.";
+      QNEConnection *conn = new QNEConnection(0);
+      scene->addItem(conn);
+      conn->load(ds, portMap);
+    } else {
+      throw (std::runtime_error("Invalid element type. Data is possibly corrupted."));
+    }
+  }
+}
+
 void Editor::setElementEditor(ElementEditor * value) {
   elementEditor = value;
 }
@@ -127,7 +183,7 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
   QGraphicsSceneDragDropEvent * dde = dynamic_cast<QGraphicsSceneDragDropEvent *>(e);
   QGraphicsSceneMouseEvent *me = dynamic_cast<QGraphicsSceneMouseEvent*>(e);
   switch ((int) e->type()) {
-    //Mouse press event
+  //Mouse press event
   case QEvent::GraphicsSceneMousePress: {
       if(!me) {
         break;
@@ -156,7 +212,7 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
       }
       break;
     }
-    //Mouse move event.
+  //Mouse move event.
   case QEvent::GraphicsSceneMouseMove: {
       if (conn) {
         //If a connection is being created, the ending coordinate follows the mouse position.
@@ -176,7 +232,7 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
       }
       break;
     }
-    //Mouse release event.
+  //Mouse release event.
   case QEvent::GraphicsSceneMouseRelease: {
       //When mouse is released the selection rect is hidden.
       selectionRect->hide();
@@ -209,7 +265,7 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
       }
       break;
     }
-    //Drop event.
+  //Drop event.
   case QEvent::GraphicsSceneDrop: {
       //Verify if mimetype is compatible.
       if(dde->mimeData()->hasFormat("application/x-dnditemdata")) {

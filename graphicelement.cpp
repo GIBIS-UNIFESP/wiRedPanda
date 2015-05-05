@@ -73,7 +73,6 @@ void GraphicElement::setOutputs(const QVector<QNEPort *> & outputs) {
 }
 
 void GraphicElement::save(QDataStream &ds) {
-  ds << (quint64) elementType();
   ds << pos();
   ds << (quint64) m_inputs.size();
   foreach (QNEPort * port, m_inputs) {

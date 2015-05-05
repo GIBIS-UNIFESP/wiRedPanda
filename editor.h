@@ -16,6 +16,8 @@ public:
   explicit Editor(QObject *parent = 0);
   ~Editor();
   void install(QGraphicsScene * s);
+  void save(QDataStream &ds);
+  void load(QDataStream &ds);
 signals:
 
 public slots:
@@ -32,6 +34,8 @@ private:
   QGraphicsRectItem * selectionRect;
   QPointF selectionStartPoint;
   SimulationController * simulationController;
+
+
   // QObject interface
 public:
   bool eventFilter(QObject *o, QEvent *e);

@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) :
   QMainWindow(parent),
@@ -31,7 +32,22 @@ void MainWindow::on_actionExit_triggered() {
 }
 
 bool MainWindow::save() {
-  QFileDialog::getSaveFileName(this, tr("Save File"), QDir::homePath(), tr("Panda files (*.panda)"));
+  QString fname = QFileDialog::getSaveFileName(this, tr("Save File"), QDir::homePath(), tr("Panda files (*.panda)"));
+  if( fname.isEmpty() ) {
+    return false;
+  }
+  QFile fl(fname);
+  if( fl.open(QFile::WriteOnly) ) {
+    QDataStream ds( &fl );
+    try{
+      editor->save(ds);
+    } catch ( std::runtime_error &e ) {
+      std::cerr << "Error saving project: " << e.what() << std::endl;
+    }
+  } else {
+    std::cerr << "Could not open file in WriteOnly mode : " << fname.toStdString() << "." << std::endl;
+    return false;
+  }
   return true;
 }
 
@@ -68,7 +84,27 @@ void MainWindow::on_actionRotate_left_triggered() {
 }
 
 void MainWindow::on_actionOpen_triggered() {
-  QFileDialog::getOpenFileName(this, tr("Open File"), QDir::homePath(),tr("Panda files (*.panda)"));
+  QString fname = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::homePath(),tr("Panda files (*.panda)"));
+  if( fname.isEmpty() ) {
+    return;
+  }
+  QFile fl(fname);
+  if( !fl.exists() ) {
+    std::cerr << "Error: This file does not exists: " << fname.toStdString() << std::endl;
+    return;
+  }
+  if( fl.open(QFile::ReadOnly) ) {
+    QDataStream ds( &fl );
+    try{
+      editor->load(ds);
+    } catch ( std::runtime_error &e ) {
+      std::cerr << "Error loading project: " << e.what() << std::endl;
+    }
+  } else {
+    std::cerr << "Could not open file in ReadOnly mode : " << fname.toStdString() << "." << std::endl;
+    return;
+  }
+  return;
 }
 
 void MainWindow::on_actionSave_triggered() {
