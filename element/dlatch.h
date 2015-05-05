@@ -5,7 +5,7 @@
 
 class DLatch : public GraphicElement {
 public:
-  DLatch(QGraphicsItem * parent);
+  explicit DLatch(QGraphicsItem * parent);
   ~DLatch();
 
   // GraphicElement interface

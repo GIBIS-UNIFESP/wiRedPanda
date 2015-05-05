@@ -3,15 +3,14 @@
 
 #include "graphicelement.h"
 
-class Xnor : public GraphicElement{
+class Xnor : public GraphicElement {
 public:
-  Xnor(QGraphicsItem * parent);
+  explicit Xnor(QGraphicsItem * parent);
   ~Xnor();
 
 // GraphicElement interface
 public:
-void updateLogic();
+  void updateLogic();
 };
-
 
 #endif // Xnor_H

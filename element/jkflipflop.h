@@ -5,7 +5,7 @@
 
 class JKFlipFlop : public GraphicElement {
 public:
-  JKFlipFlop(QGraphicsItem * parent);
+  explicit JKFlipFlop(QGraphicsItem * parent);
   ~JKFlipFlop();
 
   // GraphicElement interface

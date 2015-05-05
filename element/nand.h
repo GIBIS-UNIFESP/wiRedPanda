@@ -3,7 +3,6 @@
 
 #include "graphicelement.h"
 
-
 class Nand : public GraphicElement {
 public:
   explicit Nand(QGraphicsItem *parent = 0);

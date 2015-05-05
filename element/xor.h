@@ -3,14 +3,14 @@
 
 #include "graphicelement.h"
 
-class Xor : public GraphicElement{
+class Xor : public GraphicElement {
 public:
-  Xor(QGraphicsItem * parent);
+  explicit Xor(QGraphicsItem * parent);
   ~Xor();
 
 // GraphicElement interface
 public:
-void updateLogic();
+  void updateLogic();
 };
 
 #endif // XOR_H

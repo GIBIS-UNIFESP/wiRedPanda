@@ -8,6 +8,7 @@ public:
   explicit InputButton(QGraphicsItem * parent);
   ~InputButton();
   bool on;
+
   // QGraphicsItem interface
 protected:
   void mousePressEvent(QGraphicsSceneMouseEvent * event);

@@ -7,12 +7,10 @@ class Led : public GraphicElement {
 public:
   explicit Led(QGraphicsItem * parent);
   ~Led();
-protected:
 
-
-    // GraphicElement interface
-  public:
-    void updateLogic();
+  // GraphicElement interface
+public:
+  void updateLogic();
 };
 
 #endif // LED_H

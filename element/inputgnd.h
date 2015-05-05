@@ -7,6 +7,7 @@ class InputGnd : public GraphicElement {
 public:
   explicit InputGnd(QGraphicsItem * parent);
   ~InputGnd();
+
   // GraphicElement interface
 public:
   void updateLogic();
