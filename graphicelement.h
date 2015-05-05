@@ -29,7 +29,10 @@ private:
 public:
   virtual QRectF boundingRect() const;
   virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
-  QNEPort * addPort(bool isOutput);
+//  QNEPort* addPort(bool isOutput);
+  QNEPort* addPort(const QString &name , bool isOutput, int flags = 0, int ptr = 0);
+  void addInputPort(const QString &name = QString());
+  void addOutputPort(const QString &name = QString());
   // QGraphicsItem interface
 
   int type() const {
@@ -51,6 +54,9 @@ public:
 
   QVector<QNEPort *> outputs() const;
   void setOutputs(const QVector<QNEPort *> & outputs);
+
+  void save(QDataStream&);
+  void load(QDataStream&, QMap<quint64, QNEPort*> &portMap);
 
   int minInputSz() const;
 

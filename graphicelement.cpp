@@ -40,10 +40,10 @@ GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, 
   m_beingVisited = false;
   m_rotatable = true;
   for(int i = 0; i < minInputSz; i++) {
-    addPort(false);
+    addInputPort();
   }
   for(int i = 0; i < minOutputSz; i++) {
-    addPort(true);
+    addOutputPort();
   }
   m_outputsOnTop = true;
 }
@@ -72,6 +72,14 @@ void GraphicElement::setOutputs(const QVector<QNEPort *> & outputs) {
   m_outputs = outputs;
 }
 
+void GraphicElement::save(QDataStream &) {
+
+}
+
+void GraphicElement::load(QDataStream &, QMap<quint64, QNEPort *> & portMap) {
+
+}
+
 QVector<QNEPort *> GraphicElement::inputs() const {
   return m_inputs;
 }
@@ -95,15 +103,18 @@ void GraphicElement::paint(QPainter * painter, const QStyleOptionGraphicsItem * 
   }
 }
 
-QNEPort *GraphicElement::addPort(bool isOutput) {
+QNEPort *GraphicElement::addPort(const QString & name, bool isOutput, int flags, int ptr) {
   if(isOutput && m_outputs.size() >= m_maxOutputSz) {
-    return 0;
+    return NULL;
   } else if(!isOutput && m_inputs.size() >= m_maxInputSz) {
-    return 0;
+    return NULL;
   }
   QNEPort *port = new QNEPort(this);
+  port->setName(name);
   port->setIsOutput(isOutput);
   port->setGraphicElement(this);
+  port->setPortFlags(flags);
+  port->setPtr(ptr);
   if(isOutput) {
     m_outputs.push_back(port);
   } else {
@@ -112,6 +123,14 @@ QNEPort *GraphicElement::addPort(bool isOutput) {
   this->updatePorts();
   port->show();
   return port;
+}
+
+void GraphicElement::addInputPort(const QString & name ) {
+  addPort(name, false);
+}
+
+void GraphicElement::addOutputPort(const QString & name) {
+  addPort(name, true);
 }
 
 void GraphicElement::updatePorts() {
@@ -141,9 +160,9 @@ void GraphicElement::updatePorts() {
 
 void GraphicElement::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * e) {
   if(e->button() == Qt::LeftButton) {
-    addPort(QNEPort::Output);
+    addOutputPort();
   } else {
-    addPort(QNEPort::Input);
+    addInputPort();
   }
 }
 

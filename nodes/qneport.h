@@ -36,7 +36,6 @@ class QNEPort : public QGraphicsPathItem {
 public:
   enum { Type = QGraphicsItem::UserType + 1 };
   enum { NamePort = 1, TypePort = 2 };
-  enum {Input = 0, Output = 1};
 
   QNEPort(QGraphicsItem *parent = 0);
   ~QNEPort();
