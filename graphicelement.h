@@ -39,6 +39,10 @@ public:
     return Type;
   }
 
+  ElementType elementType() {
+    return ElementType::UNKNOWN;
+  }
+
   int topPosition() const;
 
   int bottomPosition() const;
@@ -55,8 +59,8 @@ public:
   QVector<QNEPort *> outputs() const;
   void setOutputs(const QVector<QNEPort *> & outputs);
 
-  void save(QDataStream&);
-  void load(QDataStream&, QMap<quint64, QNEPort*> &portMap);
+  void save(QDataStream&ds);
+  void load(QDataStream&ds, QMap<quint64, QNEPort*> &portMap);
 
   int minInputSz() const;
 

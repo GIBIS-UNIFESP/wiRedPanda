@@ -72,12 +72,50 @@ void GraphicElement::setOutputs(const QVector<QNEPort *> & outputs) {
   m_outputs = outputs;
 }
 
-void GraphicElement::save(QDataStream &) {
-
+void GraphicElement::save(QDataStream &ds) {
+  ds << (quint64) elementType();
+  ds << pos();
+  ds << (quint64) m_inputs.size();
+  foreach (QNEPort * port, m_inputs) {
+    ds << (quint64) port;
+    ds << port->portName();
+    ds << port->portFlags();
+  }
+  ds << (quint64) m_outputs.size();
+  foreach (QNEPort * port, m_outputs) {
+    ds << (quint64) port;
+    ds << port->portName();
+    ds << port->portFlags();
+  }
 }
 
-void GraphicElement::load(QDataStream &, QMap<quint64, QNEPort *> & portMap) {
+void GraphicElement::load(QDataStream &ds, QMap<quint64, QNEPort *> & portMap) {
+  QPointF p;
+  ds >> p;
+  setPos(p);
+  quint64 inputSz, outputSz;
+  ds >> inputSz;
+  for( size_t port = 0; port < inputSz; ++port ) {
+    QString name;
+    int flags;
 
+    quint64 ptr;
+    ds >> ptr;
+    ds >> name;
+    ds >> flags;
+    portMap[ptr] = addPort(name,false,flags,ptr);
+  }
+  ds >> outputSz;
+  for( size_t port = 0; port < outputSz; ++port ) {
+    QString name;
+    int flags;
+
+    quint64 ptr;
+    ds >> ptr;
+    ds >> name;
+    ds >> flags;
+    portMap[ptr] = addPort(name,true,flags,ptr);
+  }
 }
 
 QVector<QNEPort *> GraphicElement::inputs() const {
