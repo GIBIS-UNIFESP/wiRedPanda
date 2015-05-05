@@ -8,8 +8,8 @@ class GraphicElement;
 
 class PriorityQueue {
 public:
-  PriorityQueue(QVector<GraphicElement *> elements);
-  PriorityQueue(QVector<PriorityElement *> elements);
+  explicit PriorityQueue(QVector<GraphicElement *> elements);
+  explicit PriorityQueue(QVector<PriorityElement *> elements);
   ~PriorityQueue();
 
   QList <PriorityElement * >heap;
