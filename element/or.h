@@ -5,7 +5,7 @@
 
 class Or : public GraphicElement {
 public:
-  Or(QGraphicsItem * parent);
+  explicit Or(QGraphicsItem * parent);
   ~Or();
   // GraphicElement interface
 public:
