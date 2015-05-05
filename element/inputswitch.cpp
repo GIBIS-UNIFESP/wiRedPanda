@@ -29,3 +29,17 @@ void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent * event) {
 void InputSwitch::updateLogic() {
   outputs().first()->setValue(on);
 }
+
+
+void InputSwitch::save(QDataStream & ds) {
+  GraphicElement::save(ds);
+  ds << on;
+}
+
+void InputSwitch::load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap) {
+  GraphicElement::load(ds,portMap);
+  ds >> on;
+  if(on) {
+    setPixmap(QPixmap(":/input/resources/input/switch on.svg"));
+  }
+}

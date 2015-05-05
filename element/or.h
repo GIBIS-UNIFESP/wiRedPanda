@@ -7,8 +7,12 @@ class Or : public GraphicElement {
 public:
   explicit Or(QGraphicsItem * parent);
   ~Or();
+
   // GraphicElement interface
 public:
+  virtual ElementType elementType() {
+    return ElementType::OR;
+  }
   void updateLogic();
 };
 

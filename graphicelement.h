@@ -9,8 +9,8 @@
 #include "priorityelement.h"
 
 enum class ElementType {
-  EMPTY, UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND,
-  WIRE, DLATCH, JKLATCH, SCRLATCH, DFLIPFLOP, JKFLIPFLOP
+  UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND,
+  DLATCH, JKLATCH, SCRLATCH, DFLIPFLOP, JKFLIPFLOP
 };
 
 class GraphicElement : public QGraphicsObject, public PriorityElement {

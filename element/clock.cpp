@@ -24,3 +24,10 @@ void Clock::updateClock() {
   outputs().first()->setValue(on);
 }
 
+void Clock::save(QDataStream & ds) {
+  GraphicElement::save(ds);
+}
+
+void Clock::load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap) {
+  GraphicElement::load(ds,portMap);
+}

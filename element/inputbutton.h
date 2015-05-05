@@ -16,6 +16,9 @@ protected:
 
   // GraphicElement interface
   public:
+  virtual ElementType elementType() {
+    return ElementType::BUTTON;
+  }
   void updateLogic();
 };
 

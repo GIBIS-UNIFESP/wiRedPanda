@@ -15,8 +15,16 @@ protected:
 
   // GraphicElement interface
 public:
+  virtual ElementType elementType() {
+    return ElementType::SWITCH;
+  }
   void updateLogic();
 
+
+  // GraphicElement interface
+public:
+  void save(QDataStream & ds);
+  void load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap);
 };
 
 #endif // INPUTSWITCH_H

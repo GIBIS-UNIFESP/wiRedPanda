@@ -8,7 +8,6 @@ public:
   explicit And(QGraphicsItem *parent = 0);
   ~And();
 
-
   // GraphicElement interface
 public:
   virtual ElementType elementType() {

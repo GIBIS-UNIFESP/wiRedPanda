@@ -12,7 +12,15 @@ public:
   explicit Clock(QGraphicsItem * parent);
   ~Clock();
 public slots:
+  virtual ElementType elementType() {
+    return ElementType::CLOCK;
+  }
   void updateClock();
+
+  // GraphicElement interface
+public:
+  void save(QDataStream & ds);
+  void load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap);
 };
 
 #endif // CLOCK_H

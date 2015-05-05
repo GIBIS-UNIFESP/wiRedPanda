@@ -9,6 +9,9 @@ public:
   ~InputVcc();
   // GraphicElement interface
 public:
+  virtual ElementType elementType() {
+    return ElementType::VCC;
+  }
   void updateLogic();
 };
 

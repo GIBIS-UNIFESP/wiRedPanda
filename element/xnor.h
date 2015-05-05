@@ -10,6 +10,9 @@ public:
 
 // GraphicElement interface
 public:
+  virtual ElementType elementType() {
+    return ElementType::XNOR;
+  }
   void updateLogic();
 };
 
