@@ -25,23 +25,38 @@ public:
 private:
   QGraphicsPixmapItem *pixmapItem;
   int m_id;
+
+  //GraphicElement interface.
+public:
+  virtual ElementType elementType() {
+    return ElementType::UNKNOWN;
+  }
+
+  virtual void save(QDataStream&ds);
+
+  virtual void load(QDataStream&ds, QMap<quint64, QNEPort*> &portMap);
+
+  virtual void updatePorts();
+
+  virtual void updateLogic();
+
   // QGraphicsItem interface
 public:
-  virtual QRectF boundingRect() const;
-  virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
-//  QNEPort* addPort(bool isOutput);
-  QNEPort* addPort(const QString &name , bool isOutput, int flags = 0, int ptr = 0);
-  void addInputPort(const QString &name = QString());
-  void addOutputPort(const QString &name = QString());
-  // QGraphicsItem interface
 
   int type() const {
     return Type;
   }
 
-  ElementType elementType() {
-    return ElementType::UNKNOWN;
-  }
+  virtual QRectF boundingRect() const;
+
+  virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
+
+  QNEPort* addPort(const QString &name , bool isOutput, int flags = 0, int ptr = 0);
+
+  void addInputPort(const QString &name = QString());
+
+  void addOutputPort(const QString &name = QString());
+
 
   int topPosition() const;
 
@@ -59,9 +74,6 @@ public:
   QVector<QNEPort *> outputs() const;
   void setOutputs(const QVector<QNEPort *> & outputs);
 
-  void save(QDataStream&ds);
-  void load(QDataStream&ds, QMap<quint64, QNEPort*> &portMap);
-
   int minInputSz() const;
 
   int minOutputSz() const;
@@ -71,8 +83,6 @@ public:
 
   void setPixmap(const QPixmap &pixmap);
 
-  virtual void updatePorts();
-
   bool rotatable() const;
 
   bool hasLabel() const;
@@ -80,8 +90,6 @@ public:
   bool hasFrequency() const;
 
   bool hasColors() const;
-
-  virtual void updateLogic();
 
   bool changed() const;
   void setChanged(bool changed);
@@ -94,7 +102,7 @@ public:
 
   bool isValid();
 
-  protected:
+protected:
   void setRotatable(bool rotatable);
   void setHasLabel(bool hasLabel);
   void setHasFrequency(bool hasFrequency);

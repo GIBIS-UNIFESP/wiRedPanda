@@ -11,6 +11,9 @@ public:
 
   // GraphicElement interface
 public:
+  virtual ElementType elementType() {
+    return ElementType::AND;
+  }
   void updateLogic();
 };
 

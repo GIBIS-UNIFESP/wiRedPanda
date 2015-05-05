@@ -74,6 +74,7 @@ void GraphicElement::setOutputs(const QVector<QNEPort *> & outputs) {
 
 void GraphicElement::save(QDataStream &ds) {
   ds << pos();
+  ds << rotation();
   ds << (quint64) m_inputs.size();
   foreach (QNEPort * port, m_inputs) {
     ds << (quint64) port;
@@ -91,6 +92,9 @@ void GraphicElement::save(QDataStream &ds) {
 void GraphicElement::load(QDataStream &ds, QMap<quint64, QNEPort *> & portMap) {
   QPointF p;
   ds >> p;
+  qreal angle;
+  ds >> angle;
+  setRotation(angle);
   setPos(p);
   quint64 inputSz, outputSz;
   ds >> inputSz;
@@ -102,18 +106,31 @@ void GraphicElement::load(QDataStream &ds, QMap<quint64, QNEPort *> & portMap) {
     ds >> ptr;
     ds >> name;
     ds >> flags;
-    portMap[ptr] = addPort(name,false,flags,ptr);
+    if( port < (size_t) minInputSz() ) {
+      portMap[ptr] = m_inputs[port];
+      m_inputs[port]->setName(name);
+      m_inputs[port]->setPortFlags(flags);
+      m_inputs[port]->setPtr(ptr);
+    } else {
+      portMap[ptr] = addPort(name,false,flags,ptr);
+    }
   }
   ds >> outputSz;
   for( size_t port = 0; port < outputSz; ++port ) {
     QString name;
     int flags;
-
     quint64 ptr;
     ds >> ptr;
     ds >> name;
     ds >> flags;
-    portMap[ptr] = addPort(name,true,flags,ptr);
+    if( port < (size_t) minOutputSz() ) {
+      portMap[ptr] = m_outputs[port];
+      m_outputs[port]->setName(name);
+      m_outputs[port]->setPortFlags(flags);
+      m_outputs[port]->setPtr(ptr);
+    } else {
+      portMap[ptr] = addPort(name,true,flags,ptr);
+    }
   }
 }
 
