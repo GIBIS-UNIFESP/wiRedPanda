@@ -62,6 +62,7 @@ void GraphicElement::setId(int value) {
 
 void GraphicElement::setPixmap(const QPixmap & pixmap) {
   pixmapItem->setPixmap(pixmap);
+  setTransformOriginPoint(32,32);
 }
 
 QVector<QNEPort *> GraphicElement::outputs() const {

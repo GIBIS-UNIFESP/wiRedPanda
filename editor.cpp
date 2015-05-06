@@ -290,7 +290,7 @@ bool Editor::eventFilter(QObject * obj, QEvent * evt) {
           qDebug() << "Unknown port type. Building default element.";
           elm = new GraphicElement(pixmap);
         }
-        elm->setTransformOriginPoint(32,32);
+//        elm->setTransformOriginPoint(32,32);
         //TODO: Rotate all element icons, remake the port position logic, and remove the code below.
         //Rotating element in 90 degrees.
         if(elm->rotatable()) {
