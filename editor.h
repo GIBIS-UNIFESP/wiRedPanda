@@ -38,7 +38,7 @@ private:
 
   // QObject interface
 public:
-  bool eventFilter(QObject *o, QEvent *e);
+  bool eventFilter(QObject *obj, QEvent *evt);
   void deleteElements();
   void setElementEditor(ElementEditor * value);
 };

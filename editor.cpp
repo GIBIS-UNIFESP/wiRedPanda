@@ -179,10 +179,10 @@ QPointF roundTo(QPointF point, int multiple) {
   return( QPointF(nx,ny));
 }
 
-bool Editor::eventFilter(QObject * o, QEvent * e) {
-  QGraphicsSceneDragDropEvent * dde = dynamic_cast<QGraphicsSceneDragDropEvent *>(e);
-  QGraphicsSceneMouseEvent *me = dynamic_cast<QGraphicsSceneMouseEvent*>(e);
-  switch ((int) e->type()) {
+bool Editor::eventFilter(QObject * obj, QEvent * evt) {
+  QGraphicsSceneDragDropEvent * dde = dynamic_cast<QGraphicsSceneDragDropEvent *>(evt);
+  QGraphicsSceneMouseEvent *me = dynamic_cast<QGraphicsSceneMouseEvent*>(evt);
+  switch ((int) evt->type()) {
   //Mouse press event
   case QEvent::GraphicsSceneMousePress: {
       if(!me) {
@@ -317,5 +317,5 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
       break;
     }
   }
-  return QObject::eventFilter(o, e);
+  return QObject::eventFilter(obj, evt);
 }
