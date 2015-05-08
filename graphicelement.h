@@ -10,7 +10,7 @@
 
 enum class ElementType {
   UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND,
-  DLATCH, JKLATCH, SCRLATCH, DFLIPFLOP, JKFLIPFLOP
+  DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, TLATCH
 };
 
 class GraphicElement : public QGraphicsObject, public PriorityElement {

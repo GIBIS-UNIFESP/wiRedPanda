@@ -1,7 +1,5 @@
 #include "dflipflop.h"
 
-#include <QDebug>
-
 DFlipFlop::DFlipFlop(QGraphicsItem * parent) : GraphicElement(4,4,2,2, parent) {
   setPixmap(QPixmap(":/memory/resources/memory/D-flipflop.svg"));
   setRotatable(false);
@@ -31,10 +29,10 @@ void DFlipFlop::updateLogic() {
       if(inputs().at(1)->value() == true){    //If Clock
         res = inputs().at(0)->value(); //Output = Data
       }
-      if (inputs().at(2)->value() == true){
+      if (inputs().at(2)->value() == true){ //Set
           res = true;
       }
-      if (inputs().at(3)->value() == true){
+      if (inputs().at(3)->value() == true){ //Reset
           res = false;
       }
     }

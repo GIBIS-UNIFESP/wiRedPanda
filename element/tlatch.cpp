@@ -23,7 +23,7 @@ void TLatch::updateLogic(){
     if(!isValid()) {
       res = -1;
     } else {
-      if(inputs().at(1)->value() == true){    //If Clock
+      if(inputs().at(1)->value() == true){    //If Enable
         if (inputs().at(0)->value() == true){ //And T
             res = !(outputs().at(0)->value());
         }
