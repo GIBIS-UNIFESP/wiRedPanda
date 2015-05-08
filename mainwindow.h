@@ -41,6 +41,10 @@ private slots:
 
   void on_lineEdit_textEdited(const QString &);
 
+  void on_actionCopy_triggered();
+
+  void on_actionPaste_triggered();
+
 private:
   Ui::MainWindow *ui;
   Editor * editor;

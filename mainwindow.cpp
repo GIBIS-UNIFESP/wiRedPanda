@@ -1,9 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QClipboard>
 #include <QFileDialog>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <QMimeData>
 #include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -39,7 +41,7 @@ bool MainWindow::save() {
   QFile fl(fname);
   if( fl.open(QFile::WriteOnly) ) {
     QDataStream ds( &fl );
-    try{
+    try {
       editor->save(ds);
     } catch ( std::runtime_error &e ) {
       std::cerr << "Error saving project: " << e.what() << std::endl;
@@ -95,7 +97,7 @@ void MainWindow::on_actionOpen_triggered() {
   }
   if( fl.open(QFile::ReadOnly) ) {
     QDataStream ds( &fl );
-    try{
+    try {
       editor->load(ds);
     } catch ( std::runtime_error &e ) {
       std::cerr << "Error loading project: " << e.what() << std::endl;
@@ -144,5 +146,26 @@ void MainWindow::closeEvent(QCloseEvent * e) {
     close();
   } else if (ret == QMessageBox::Cancel) {
     e->ignore();
+  }
+}
+
+void MainWindow::on_actionCopy_triggered() {
+  QClipboard *clipboard = QApplication::clipboard();
+  QMimeData *mimeData = new QMimeData;
+  QByteArray itemData;
+  QDataStream dataStream(&itemData, QIODevice::WriteOnly);
+  editor->save(dataStream);
+  mimeData->setData("application/copydata", itemData);
+  clipboard->setMimeData(mimeData);
+}
+
+void MainWindow::on_actionPaste_triggered() {
+  const QClipboard *clipboard = QApplication::clipboard();
+  const QMimeData *mimeData = clipboard->mimeData();
+  if(mimeData->hasFormat("application/copydata")){
+    QByteArray itemData = mimeData->data("application/copydata");
+    QDataStream dataStream(&itemData, QIODevice::ReadOnly);
+    editor->clear();
+    editor->load(dataStream);
   }
 }
