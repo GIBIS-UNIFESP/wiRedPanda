@@ -16,6 +16,7 @@ void TLatch::updatePorts() {
   inputs().at(1)->setPos(topPosition(),45); //Clock
 
   outputs().at(0)->setPos(bottomPosition(),15); //Q
+  outputs().at(0)->setPos(bottomPosition(),45); //!Q
 }
 
 void TLatch::updateLogic(){
