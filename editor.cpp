@@ -111,6 +111,28 @@ QGraphicsItem *Editor::itemAt(const QPointF & pos) {
   return 0;
 }
 
+void Editor::copy(QDataStream & ds) {
+  ds << QString("WiredPanda 1.0");
+  foreach(QGraphicsItem *item, scene->selectedItems()) {
+    if (item->type() == GraphicElement::Type) {
+      ds << item->type();
+      ds << (quint64) ( (GraphicElement*) item)->elementType();
+      ((GraphicElement*) item)->save(ds);
+    }
+  }
+
+  foreach(QGraphicsItem *item, scene->selectedItems()) {
+    if (item->type() == QNEConnection::Type) {
+      ds << item->type();
+      ((QNEConnection*) item)->save(ds);
+    }
+  }
+}
+
+void Editor::paste(QDataStream & ds) {
+
+}
+
 void Editor::save(QDataStream & ds) {
   ds << QString("WiredPanda 1.0");
   foreach(QGraphicsItem *item, scene->items()) {
@@ -135,7 +157,7 @@ void Editor::load(QDataStream & ds) {
   ds >> str;
   if(str != QString("WiredPanda 1.0")) {
     throw (std::runtime_error("Invalid file."));
-  }else{
+  } else {
     qDebug() << str;
   }
   QMap< quint64, QNEPort *> portMap;
@@ -149,11 +171,11 @@ void Editor::load(QDataStream & ds) {
       ds >> elmType;
       qDebug() << "Element type: " << elmType;
       GraphicElement *elm = factory.buildElement((ElementType)elmType);
-      if(elm){
+      if(elm) {
         scene->addItem(elm);
         elm->load(ds, portMap);
         qDebug() << elm->objectName();
-      }else{
+      } else {
         throw( std::runtime_error("Could not build element."));
       }
     } else if ( type == QNEConnection::Type ) {

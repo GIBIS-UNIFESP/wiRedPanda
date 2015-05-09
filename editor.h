@@ -18,6 +18,8 @@ public:
   void install(QGraphicsScene * s);
   void save(QDataStream &ds);
   void load(QDataStream &ds);
+  void copy(QDataStream & ds);
+  void paste(QDataStream & ds);
 signals:
 
 public slots:

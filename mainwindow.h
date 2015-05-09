@@ -6,6 +6,7 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QFileInfo>
+#include <QDir>
 
 namespace Ui {
   class MainWindow;
@@ -23,6 +24,7 @@ public:
   QFileInfo getCurrentFile() const;
   void setCurrentFile(const QFileInfo & value);
 
+  void open(const QString & fname);
 private slots:
   void on_actionExit_triggered();
 
