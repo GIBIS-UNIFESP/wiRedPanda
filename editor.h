@@ -36,7 +36,7 @@ private:
   QGraphicsRectItem * selectionRect;
   QPointF selectionStartPoint;
   SimulationController * simulationController;
-
+  QPointF mousePos;
 
   // QObject interface
 public:

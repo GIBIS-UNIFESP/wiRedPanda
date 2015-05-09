@@ -112,6 +112,15 @@ QGraphicsItem *Editor::itemAt(const QPointF & pos) {
 }
 
 void Editor::copy(QDataStream & ds) {
+  QPointF center(0.0f,0.0f);
+  float elm = 0;
+  foreach(QGraphicsItem *item, scene->selectedItems()) {
+    if (item->type() == GraphicElement::Type) {
+      center += item->pos();
+      elm++;
+    }
+  }
+  ds << center/elm;
   foreach(QGraphicsItem *item, scene->selectedItems()) {
     if (item->type() == GraphicElement::Type) {
       ds << item->type();
@@ -119,7 +128,6 @@ void Editor::copy(QDataStream & ds) {
       ((GraphicElement*) item)->save(ds);
     }
   }
-
   foreach(QGraphicsItem *item, scene->selectedItems()) {
     if (item->type() == QNEConnection::Type) {
       ds << item->type();
@@ -129,7 +137,10 @@ void Editor::copy(QDataStream & ds) {
 }
 
 void Editor::paste(QDataStream & ds) {
+  QPointF ctr;
+  ds >> ctr;
   QMap< quint64, QNEPort *> portMap;
+  QPointF offset = mousePos - ctr - QPointF( 32.0f, 32.0f );
   while( !ds.atEnd() ) {
     int type;
     ds >> type;
@@ -140,6 +151,8 @@ void Editor::paste(QDataStream & ds) {
       if(elm) {
         scene->addItem(elm);
         elm->load(ds, portMap);
+        qDebug() << "New pos = " << elm->pos() + offset;
+        elm->setPos((elm->pos()+offset));
       } else {
         throw( std::runtime_error("Could not build element."));
       }
@@ -227,6 +240,9 @@ QPointF roundTo(QPointF point, int multiple) {
 bool Editor::eventFilter(QObject * obj, QEvent * evt) {
   QGraphicsSceneDragDropEvent * dde = dynamic_cast<QGraphicsSceneDragDropEvent *>(evt);
   QGraphicsSceneMouseEvent *me = dynamic_cast<QGraphicsSceneMouseEvent*>(evt);
+  if(me) {
+    mousePos = me->scenePos();
+  }
   switch ((int) evt->type()) {
   //Mouse press event
   case QEvent::GraphicsSceneMousePress: {
