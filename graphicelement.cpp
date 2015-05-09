@@ -8,7 +8,7 @@
 
 #include <nodes/qneconnection.h>
 
-GraphicElement::GraphicElement(QPixmap pixmap, QGraphicsItem *parent) : QGraphicsObject(parent), pixmapItem(new QGraphicsPixmapItem(pixmap, ( QGraphicsItem * ) this)) {
+GraphicElement::GraphicElement(QPixmap pixmap, QGraphicsItem *parent) : QGraphicsObject(parent), pixmap(pixmap) {
   setFlag(QGraphicsItem::ItemIsMovable);
   setFlag(QGraphicsItem::ItemIsSelectable);
   setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
@@ -24,7 +24,7 @@ GraphicElement::GraphicElement(QPixmap pixmap, QGraphicsItem *parent) : QGraphic
   m_beingVisited = false;
 }
 
-GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem * parent) : QGraphicsObject(parent), pixmapItem(new QGraphicsPixmapItem( ( QGraphicsItem * ) this)) {
+GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem * parent) : QGraphicsObject(parent) {
   setFlag(QGraphicsItem::ItemIsMovable);
   setFlag(QGraphicsItem::ItemIsSelectable);
   setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
@@ -61,8 +61,8 @@ void GraphicElement::setId(int value) {
 }
 
 void GraphicElement::setPixmap(const QPixmap & pixmap) {
-  pixmapItem->setPixmap(pixmap);
   setTransformOriginPoint(32,32);
+  this->pixmap = pixmap;
 }
 
 QVector<QNEPort *> GraphicElement::outputs() const {
@@ -145,7 +145,7 @@ void GraphicElement::setInputs(const QVector<QNEPort *> & inputs) {
 
 
 QRectF GraphicElement::boundingRect() const {
-  return (pixmapItem->boundingRect());
+  return QRectF(0,0,64,64);
 }
 
 void GraphicElement::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget) {
@@ -156,6 +156,7 @@ void GraphicElement::paint(QPainter * painter, const QStyleOptionGraphicsItem * 
     painter->setPen(QPen(Qt::black));
     painter->drawRoundedRect(boundingRect(),16,16);
   }
+  painter->drawPixmap(QPoint(0,0),pixmap);
 }
 
 QNEPort *GraphicElement::addPort(const QString & name, bool isOutput, int flags, int ptr) {

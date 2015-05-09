@@ -15,7 +15,13 @@ public:
   virtual ElementType elementType() {
     return ElementType::DISPLAY;
   }
-  void updateLogic();
+  virtual void updateLogic();
+  void updatePorts();
+  QPixmap bkg, a, b, c, d, e, f, g, h;
+
+  // QGraphicsItem interface
+public:
+  void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
 };
 #endif // DISPLAY_H
 

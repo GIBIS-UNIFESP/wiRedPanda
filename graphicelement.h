@@ -23,7 +23,7 @@ public:
   ~GraphicElement();
 
 private:
-  QGraphicsPixmapItem *pixmapItem;
+  QPixmap pixmap;
   int m_id;
 
   //GraphicElement interface.
