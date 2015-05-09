@@ -63,5 +63,8 @@
         <file>resources/toolbar/rotateR.svg</file>
         <file>resources/toolbar/save.svg</file>
         <file>resources/toolbar/rotateL.svg</file>
+        <file>resources/toolbar/copy.svg</file>
+        <file>resources/toolbar/cut.svg</file>
+        <file>resources/toolbar/paste.svg</file>
     </qresource>
 </RCC>
