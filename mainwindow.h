@@ -56,6 +56,8 @@ private slots:
 
   void on_actionCut_triggered();
 
+  void on_actionSelect_all_triggered();
+
 private:
   Ui::MainWindow *ui;
   Editor * editor;

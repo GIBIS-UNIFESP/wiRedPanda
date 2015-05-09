@@ -173,6 +173,12 @@ void Editor::paste(QDataStream & ds) {
   }
 }
 
+void Editor::selectAll() {
+  foreach(QGraphicsItem *item, scene->items()) {
+    item->setSelected(true);
+  }
+}
+
 void Editor::save(QDataStream & ds) {
   ds << QString("WiredPanda 1.0");
   foreach(QGraphicsItem *item, scene->items()) {

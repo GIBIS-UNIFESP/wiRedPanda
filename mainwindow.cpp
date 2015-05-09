@@ -239,3 +239,6 @@ void MainWindow::setCurrentFile(const QFileInfo & value) {
   }
 }
 
+void MainWindow::on_actionSelect_all_triggered() {
+  editor->selectAll();
+}

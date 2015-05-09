@@ -327,7 +327,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>123</width>
+               <width>184</width>
                <height>522</height>
               </rect>
              </property>
@@ -528,7 +528,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>147</width>
+               <width>184</width>
                <height>522</height>
               </rect>
              </property>
@@ -729,8 +729,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>68</width>
-               <height>18</height>
+               <width>198</width>
+               <height>425</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -820,6 +820,8 @@
     <addaction name="separator"/>
     <addaction name="actionRotate_left"/>
     <addaction name="actionRotate_right"/>
+    <addaction name="separator"/>
+    <addaction name="actionSelect_all"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
@@ -1058,6 +1060,14 @@
   <action name="actionAbout_Qt">
    <property name="text">
     <string>About Qt</string>
+   </property>
+  </action>
+  <action name="actionSelect_all">
+   <property name="text">
+    <string>Select all</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
    </property>
   </action>
  </widget>

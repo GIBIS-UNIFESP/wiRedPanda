@@ -21,6 +21,7 @@ public:
   void cut(QDataStream & ds);
   void copy(QDataStream & ds);
   void paste(QDataStream & ds);
+  void selectAll();
 signals:
 
 public slots:
