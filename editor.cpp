@@ -111,6 +111,11 @@ QGraphicsItem *Editor::itemAt(const QPointF & pos) {
   return 0;
 }
 
+void Editor::cut(QDataStream & ds) {
+  copy(ds);
+  deleteElements();
+}
+
 void Editor::copy(QDataStream & ds) {
   QPointF center(0.0f,0.0f);
   float elm = 0;
@@ -151,7 +156,6 @@ void Editor::paste(QDataStream & ds) {
       if(elm) {
         scene->addItem(elm);
         elm->load(ds, portMap);
-        qDebug() << "New pos = " << elm->pos() + offset;
         elm->setPos((elm->pos()+offset));
       } else {
         throw( std::runtime_error("Could not build element."));

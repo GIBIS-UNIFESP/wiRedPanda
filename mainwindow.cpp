@@ -180,6 +180,16 @@ void MainWindow::on_actionCopy_triggered() {
   clipboard->setMimeData(mimeData);
 }
 
+void MainWindow::on_actionCut_triggered() {
+  QClipboard *clipboard = QApplication::clipboard();
+  QMimeData *mimeData = new QMimeData;
+  QByteArray itemData;
+  QDataStream dataStream(&itemData, QIODevice::WriteOnly);
+  editor->cut(dataStream);
+  mimeData->setData("application/copydata", itemData);
+  clipboard->setMimeData(mimeData);
+}
+
 void MainWindow::on_actionPaste_triggered() {
   const QClipboard *clipboard = QApplication::clipboard();
   const QMimeData *mimeData = clipboard->mimeData();
