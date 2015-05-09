@@ -5,6 +5,7 @@
 
 #include <QMainWindow>
 #include <QGraphicsScene>
+#include <QFileInfo>
 
 namespace Ui {
   class MainWindow;
@@ -18,6 +19,10 @@ public:
   ~MainWindow();
 
   bool save();
+  void clear();
+  QFileInfo getCurrentFile() const;
+  void setCurrentFile(const QFileInfo & value);
+
 private slots:
   void on_actionExit_triggered();
 
@@ -45,11 +50,14 @@ private slots:
 
   void on_actionPaste_triggered();
 
+  void on_actionSave_As_triggered();
+
 private:
   Ui::MainWindow *ui;
   Editor * editor;
   QGraphicsScene * scene;
-
+  QFileInfo currentFile;
+  QDir defaultDirectory;
   // QWidget interface
 protected:
   void closeEvent(QCloseEvent *e);

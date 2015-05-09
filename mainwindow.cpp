@@ -34,7 +34,10 @@ void MainWindow::on_actionExit_triggered() {
 }
 
 bool MainWindow::save() {
-  QString fname = QFileDialog::getSaveFileName(this, tr("Save File"), QDir::homePath(), tr("Panda files (*.panda)"));
+  QString fname = currentFile.absolutePath();
+  if(!currentFile.exists()) {
+    fname = QFileDialog::getSaveFileName(this, tr("Save File"), defaultDirectory.absolutePath(), tr("Panda files (*.panda)"));
+  }
   if( fname.isEmpty() ) {
     return false;
   }
@@ -45,12 +48,19 @@ bool MainWindow::save() {
       editor->save(ds);
     } catch ( std::runtime_error &e ) {
       std::cerr << "Error saving project: " << e.what() << std::endl;
+      return false;
     }
   } else {
     std::cerr << "Could not open file in WriteOnly mode : " << fname.toStdString() << "." << std::endl;
     return false;
   }
+  setCurrentFile(QFileInfo(fname));
   return true;
+}
+
+void MainWindow::clear() {
+  editor->clear();
+  fileName.clear();
 }
 
 void MainWindow::on_actionNew_triggered() {
@@ -64,10 +74,10 @@ void MainWindow::on_actionNew_triggered() {
   int ret = msgBox.exec();
   if (ret == QMessageBox::Save) {
     if(save()) {
-      editor->clear();
+      clear();
     }
   } else if( ret == QMessageBox::Discard) {
-    editor->clear();
+    clear();
   } else if (ret == QMessageBox::Cancel) {
     return;
   }
@@ -86,7 +96,7 @@ void MainWindow::on_actionRotate_left_triggered() {
 }
 
 void MainWindow::on_actionOpen_triggered() {
-  QString fname = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::homePath(),tr("Panda files (*.panda)"));
+  QString fname = QFileDialog::getOpenFileName(this, tr("Open File"), defaultDirectory.absolutePath(),tr("Panda files (*.panda)"));
   if( fname.isEmpty() ) {
     return;
   }
@@ -106,6 +116,7 @@ void MainWindow::on_actionOpen_triggered() {
     std::cerr << "Could not open file in ReadOnly mode : " << fname.toStdString() << "." << std::endl;
     return;
   }
+  setCurrentFile(QFileInfo(fname));
   return;
 }
 
@@ -162,10 +173,46 @@ void MainWindow::on_actionCopy_triggered() {
 void MainWindow::on_actionPaste_triggered() {
   const QClipboard *clipboard = QApplication::clipboard();
   const QMimeData *mimeData = clipboard->mimeData();
-  if(mimeData->hasFormat("application/copydata")){
+  if(mimeData->hasFormat("application/copydata")) {
     QByteArray itemData = mimeData->data("application/copydata");
     QDataStream dataStream(&itemData, QIODevice::ReadOnly);
-    editor->clear();
     editor->load(dataStream);
   }
 }
+
+void MainWindow::on_actionSave_As_triggered() {
+  QString fname = currentFile.absolutePath();
+  fname = QFileDialog::getSaveFileName(this, tr("Save File as ..."), defaultDirectory.absolutePath(), tr("Panda files (*.panda)"));
+  if( fname.isEmpty() ) {
+    return false;
+  }
+  QFile fl(fname);
+  if( fl.open(QFile::WriteOnly) ) {
+    QDataStream ds( &fl );
+    try {
+      editor->save(ds);
+    } catch ( std::runtime_error &e ) {
+      std::cerr << "Error saving project: " << e.what() << std::endl;
+      return false;
+    }
+  } else {
+    std::cerr << "Could not open file in WriteOnly mode : " << fname.toStdString() << "." << std::endl;
+    return false;
+  }
+  setCurrentFile(QFileInfo(fname));
+  return true;
+}
+
+QFileInfo MainWindow::getCurrentFile() const {
+  return currentFile;
+}
+
+void MainWindow::setCurrentFile(const QFileInfo & value) {
+  currentFile = value;
+  if(currentFile.exists()){
+    defaultDirectory = currentFile.dir();
+  }else{
+    defaultDirectory = QDir::home();
+  }
+}
+
