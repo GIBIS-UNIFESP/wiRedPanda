@@ -122,7 +122,7 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
+               <y>-122</y>
                <width>184</width>
                <height>522</height>
               </rect>
@@ -272,7 +272,7 @@
                  <enum>QLayout::SetFixedSize</enum>
                 </property>
                 <item>
-                 <widget class="Label" name="label_counter">
+                 <widget class="Label" name="label_display">
                   <property name="text">
                    <string/>
                   </property>

@@ -61,6 +61,9 @@ void Label::mousePressEvent(QMouseEvent *event) {
   } else if(objectName().endsWith("_tflipflop")) {
     type = ElementType::TFLIPFLOP;
   }
+  else if(objectName().endsWith("_display")) {
+  type = ElementType::DISPLAY;
+  }
 
   dataStream << pixmap << QPointF(event->pos()) << (qint32) type;
 
