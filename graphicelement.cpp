@@ -25,7 +25,7 @@ GraphicElement::GraphicElement(QPixmap pixmap, QGraphicsItem *parent) : QGraphic
 }
 
 GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem * parent) : QGraphicsObject(parent), pixmapItem(new QGraphicsPixmapItem( ( QGraphicsItem * ) this)) {
-//  setFlag(QGraphicsItem::ItemIsMovable);
+  setFlag(QGraphicsItem::ItemIsMovable);
   setFlag(QGraphicsItem::ItemIsSelectable);
   setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
   setFlag(QGraphicsItem::ItemSendsGeometryChanges);
@@ -62,6 +62,7 @@ void GraphicElement::setId(int value) {
 
 void GraphicElement::setPixmap(const QPixmap & pixmap) {
   pixmapItem->setPixmap(pixmap);
+  setTransformOriginPoint(32,32);
 }
 
 QVector<QNEPort *> GraphicElement::outputs() const {

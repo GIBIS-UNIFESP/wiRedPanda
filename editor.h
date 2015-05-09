@@ -18,6 +18,10 @@ public:
   void install(QGraphicsScene * s);
   void save(QDataStream &ds);
   void load(QDataStream &ds);
+  void cut(QDataStream & ds);
+  void copy(QDataStream & ds);
+  void paste(QDataStream & ds);
+  void selectAll();
 signals:
 
 public slots:
@@ -34,11 +38,11 @@ private:
   QGraphicsRectItem * selectionRect;
   QPointF selectionStartPoint;
   SimulationController * simulationController;
-
+  QPointF mousePos;
 
   // QObject interface
 public:
-  bool eventFilter(QObject *o, QEvent *e);
+  bool eventFilter(QObject *obj, QEvent *evt);
   void deleteElements();
   void setElementEditor(ElementEditor * value);
 };

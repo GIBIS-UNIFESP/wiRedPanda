@@ -14,6 +14,7 @@ public:
     return ElementType::JKFLIPFLOP;
   }
   virtual void updatePorts();
+  void updateLogic();
 };
 
 #endif // JKFLIPFLOP_H

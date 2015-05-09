@@ -50,7 +50,7 @@ public:
   void split(QPointF point);
 
   void save(QDataStream&);
-  void load(QDataStream&, const QMap<quint64, QNEPort*> &portMap);
+  bool load(QDataStream&, const QMap<quint64, QNEPort*> &portMap);
 
   int type() const {
     return Type;

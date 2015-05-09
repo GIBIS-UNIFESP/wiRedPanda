@@ -45,7 +45,9 @@ SOURCES += main.cpp\
     simulationcontroller.cpp \
     priorityqueue.cpp \
     priorityelement.cpp \
-    element/tlatch.cpp
+    element/tlatch.cpp \
+    element/srflipflop.cpp \
+    element/tflipflop.cpp
 HEADERS  += mainwindow.h \
     label.h \
     editor.h \
@@ -75,7 +77,9 @@ HEADERS  += mainwindow.h \
     simulationcontroller.h \
     priorityqueue.h \
     priorityelement.h \
-    element/tlatch.h
+    element/tlatch.h \
+    element/srflipflop.h \
+    element/tflipflop.h
 
 FORMS    += mainwindow.ui \
     elementeditor.ui

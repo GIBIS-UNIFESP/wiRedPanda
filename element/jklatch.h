@@ -14,6 +14,7 @@ public:
     return ElementType::JKLATCH;
   }
   virtual void updatePorts();
+  void updateLogic();
 };
 
 #endif // JKLATCH_H

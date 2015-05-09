@@ -121,16 +121,19 @@ void QNEConnection::save(QDataStream &ds) {
   ds << (quint64) m_port2;
 }
 
-void QNEConnection::load(QDataStream &ds, const QMap<quint64, QNEPort*> &portMap) {
+bool QNEConnection::load(QDataStream &ds, const QMap<quint64, QNEPort*> &portMap) {
   quint64 ptr1;
   quint64 ptr2;
   ds >> ptr1;
   ds >> ptr2;
-
+  if(!portMap.contains(ptr1) || !portMap.contains(ptr2) ){
+    return false;
+  }
   setPort1(portMap[ptr1]);
   setPort2(portMap[ptr2]);
   updatePosFromPorts();
   updatePath();
+  return true;
 }
 
 QNEConnection::Status QNEConnection::status() const {

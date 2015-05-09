@@ -54,6 +54,12 @@ void Label::mousePressEvent(QMouseEvent *event) {
     type = ElementType::JKFLIPFLOP;
   } else if(objectName().endsWith("_jklatch")) {
     type = ElementType::JKLATCH;
+  } else if(objectName().endsWith("_srflipflop")) {
+    type = ElementType::SRFLIPFLOP;
+  } else if(objectName().endsWith("_tlatch")) {
+    type = ElementType::TLATCH;
+  } else if(objectName().endsWith("_tflipflop")) {
+    type = ElementType::TFLIPFLOP;
   }
 
   dataStream << pixmap << QPointF(event->pos()) << (qint32) type;

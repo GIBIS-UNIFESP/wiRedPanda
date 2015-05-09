@@ -111,6 +111,74 @@ QGraphicsItem *Editor::itemAt(const QPointF & pos) {
   return 0;
 }
 
+void Editor::cut(QDataStream & ds) {
+  copy(ds);
+  deleteElements();
+}
+
+void Editor::copy(QDataStream & ds) {
+  QPointF center(0.0f,0.0f);
+  float elm = 0;
+  foreach(QGraphicsItem *item, scene->selectedItems()) {
+    if (item->type() == GraphicElement::Type) {
+      center += item->pos();
+      elm++;
+    }
+  }
+  ds << center/elm;
+  foreach(QGraphicsItem *item, scene->selectedItems()) {
+    if (item->type() == GraphicElement::Type) {
+      ds << item->type();
+      ds << (quint64) ( (GraphicElement*) item)->elementType();
+      ((GraphicElement*) item)->save(ds);
+    }
+  }
+  foreach(QGraphicsItem *item, scene->selectedItems()) {
+    if (item->type() == QNEConnection::Type) {
+      ds << item->type();
+      ((QNEConnection*) item)->save(ds);
+    }
+  }
+}
+
+void Editor::paste(QDataStream & ds) {
+  QPointF ctr;
+  ds >> ctr;
+  QMap< quint64, QNEPort *> portMap;
+  QPointF offset = mousePos - ctr - QPointF( 32.0f, 32.0f );
+  while( !ds.atEnd() ) {
+    int type;
+    ds >> type;
+    if( type == GraphicElement::Type ) {
+      quint64 elmType;
+      ds >> elmType;
+      GraphicElement *elm = factory.buildElement((ElementType)elmType);
+      if(elm) {
+        scene->addItem(elm);
+        elm->load(ds, portMap);
+        elm->setPos((elm->pos()+offset));
+      } else {
+        throw( std::runtime_error("Could not build element."));
+      }
+    } else if ( type == QNEConnection::Type ) {
+      QNEConnection *conn = new QNEConnection(0);
+      scene->addItem(conn);
+      if( !conn->load(ds, portMap) ) {
+        scene->removeItem(conn);
+        delete conn;
+      }
+    } else {
+      throw (std::runtime_error("Invalid element type. Data is possibly corrupted."));
+    }
+  }
+}
+
+void Editor::selectAll() {
+  foreach(QGraphicsItem *item, scene->items()) {
+    item->setSelected(true);
+  }
+}
+
 void Editor::save(QDataStream & ds) {
   ds << QString("WiredPanda 1.0");
   foreach(QGraphicsItem *item, scene->items()) {
@@ -135,7 +203,7 @@ void Editor::load(QDataStream & ds) {
   ds >> str;
   if(str != QString("WiredPanda 1.0")) {
     throw (std::runtime_error("Invalid file."));
-  }else{
+  } else {
     qDebug() << str;
   }
   QMap< quint64, QNEPort *> portMap;
@@ -149,11 +217,11 @@ void Editor::load(QDataStream & ds) {
       ds >> elmType;
       qDebug() << "Element type: " << elmType;
       GraphicElement *elm = factory.buildElement((ElementType)elmType);
-      if(elm){
+      if(elm) {
         scene->addItem(elm);
         elm->load(ds, portMap);
         qDebug() << elm->objectName();
-      }else{
+      } else {
         throw( std::runtime_error("Could not build element."));
       }
     } else if ( type == QNEConnection::Type ) {
@@ -179,10 +247,13 @@ QPointF roundTo(QPointF point, int multiple) {
   return( QPointF(nx,ny));
 }
 
-bool Editor::eventFilter(QObject * o, QEvent * e) {
-  QGraphicsSceneDragDropEvent * dde = dynamic_cast<QGraphicsSceneDragDropEvent *>(e);
-  QGraphicsSceneMouseEvent *me = dynamic_cast<QGraphicsSceneMouseEvent*>(e);
-  switch ((int) e->type()) {
+bool Editor::eventFilter(QObject * obj, QEvent * evt) {
+  QGraphicsSceneDragDropEvent * dde = dynamic_cast<QGraphicsSceneDragDropEvent *>(evt);
+  QGraphicsSceneMouseEvent *me = dynamic_cast<QGraphicsSceneMouseEvent*>(evt);
+  if(me) {
+    mousePos = me->scenePos();
+  }
+  switch ((int) evt->type()) {
   //Mouse press event
   case QEvent::GraphicsSceneMousePress: {
       if(!me) {
@@ -290,7 +361,7 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
           qDebug() << "Unknown port type. Building default element.";
           elm = new GraphicElement(pixmap);
         }
-        elm->setTransformOriginPoint(32,32);
+//        elm->setTransformOriginPoint(32,32);
         //TODO: Rotate all element icons, remake the port position logic, and remove the code below.
         //Rotating element in 90 degrees.
         if(elm->rotatable()) {
@@ -317,5 +388,5 @@ bool Editor::eventFilter(QObject * o, QEvent * e) {
       break;
     }
   }
-  return QObject::eventFilter(o, e);
+  return QObject::eventFilter(obj, evt);
 }

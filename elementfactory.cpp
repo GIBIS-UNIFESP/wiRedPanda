@@ -16,7 +16,10 @@
 #include <element/dlatch.h>
 #include <element/jklatch.h>
 #include <element/jkflipflop.h>
+#include <element/srflipflop.h>
+#include <element/tflipflop.h>
 #include <element/tlatch.h>
+
 
 #include <QDebug>
 
@@ -89,6 +92,15 @@ GraphicElement *ElementFactory::buildElement(ElementType type, QGraphicsItem * p
     break;
   case ElementType::JKFLIPFLOP:
     elm = new JKFlipFlop(parent);
+    break;
+  case ElementType::SRFLIPFLOP:
+    elm = new SRFlipFlop(parent);
+    break;
+  case ElementType::TFLIPFLOP:
+    elm = new TFlipFlop(parent);
+    break;
+  case ElementType::TLATCH:
+    elm = new TLatch(parent);
     break;
   //  case ElementType::DLATCH:
   //    elm = new DLatch();

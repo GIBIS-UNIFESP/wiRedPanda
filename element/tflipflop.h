@@ -1,11 +1,20 @@
 #ifndef TFLIPFLOP_H
 #define TFLIPFLOP_H
 
+#include <graphicelement.h>
 
-class TFlipFlop
-{
+class TFlipFlop : public GraphicElement {
 public:
-    TFlipFlop();
+  explicit TFlipFlop(QGraphicsItem * parent);
+  ~TFlipFlop();
+
+  // GraphicElement interface
+public:
+  virtual ElementType elementType() {
+    return ElementType::TFLIPFLOP;
+  }
+  virtual void updatePorts();
+  void updateLogic();
 };
 
 #endif // TFLIPFLOP_H

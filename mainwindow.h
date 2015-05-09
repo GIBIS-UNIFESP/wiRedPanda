@@ -5,6 +5,8 @@
 
 #include <QMainWindow>
 #include <QGraphicsScene>
+#include <QFileInfo>
+#include <QDir>
 
 namespace Ui {
   class MainWindow;
@@ -18,6 +20,11 @@ public:
   ~MainWindow();
 
   bool save();
+  void clear();
+  QFileInfo getCurrentFile() const;
+  void setCurrentFile(const QFileInfo & value);
+
+  void open(const QString & fname);
 private slots:
   void on_actionExit_triggered();
 
@@ -41,11 +48,22 @@ private slots:
 
   void on_lineEdit_textEdited(const QString &);
 
+  void on_actionCopy_triggered();
+
+  void on_actionPaste_triggered();
+
+  void on_actionSave_As_triggered();
+
+  void on_actionCut_triggered();
+
+  void on_actionSelect_all_triggered();
+
 private:
   Ui::MainWindow *ui;
   Editor * editor;
   QGraphicsScene * scene;
-
+  QFileInfo currentFile;
+  QDir defaultDirectory;
   // QWidget interface
 protected:
   void closeEvent(QCloseEvent *e);
