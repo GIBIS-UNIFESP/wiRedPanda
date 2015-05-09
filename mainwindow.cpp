@@ -64,7 +64,7 @@ bool MainWindow::save() {
 
 void MainWindow::clear() {
   editor->clear();
-  currentFile = QFileInfo();
+  setCurrentFile(QFileInfo(fname));
 }
 
 void MainWindow::on_actionNew_triggered() {
@@ -222,9 +222,9 @@ QFileInfo MainWindow::getCurrentFile() const {
 void MainWindow::setCurrentFile(const QFileInfo & value) {
   qDebug() << "Setting current file to: " << value.absoluteFilePath();
   currentFile = value;
-  if(currentFile.exists()){
+  if(currentFile.exists()) {
     defaultDirectory = currentFile.dir();
-  }else{
+  } else {
     defaultDirectory = QDir::home();
   }
 }
