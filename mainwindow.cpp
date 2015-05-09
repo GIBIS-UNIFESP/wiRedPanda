@@ -64,7 +64,7 @@ bool MainWindow::save() {
 
 void MainWindow::clear() {
   editor->clear();
-  setCurrentFile(QFileInfo(fname));
+  setCurrentFile(QFileInfo());
 }
 
 void MainWindow::on_actionNew_triggered() {
