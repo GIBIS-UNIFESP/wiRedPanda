@@ -112,7 +112,6 @@ QGraphicsItem *Editor::itemAt(const QPointF & pos) {
 }
 
 void Editor::copy(QDataStream & ds) {
-  ds << QString("WiredPanda 1.0");
   foreach(QGraphicsItem *item, scene->selectedItems()) {
     if (item->type() == GraphicElement::Type) {
       ds << item->type();
@@ -130,7 +129,31 @@ void Editor::copy(QDataStream & ds) {
 }
 
 void Editor::paste(QDataStream & ds) {
-
+  QMap< quint64, QNEPort *> portMap;
+  while( !ds.atEnd() ) {
+    int type;
+    ds >> type;
+    if( type == GraphicElement::Type ) {
+      quint64 elmType;
+      ds >> elmType;
+      GraphicElement *elm = factory.buildElement((ElementType)elmType);
+      if(elm) {
+        scene->addItem(elm);
+        elm->load(ds, portMap);
+      } else {
+        throw( std::runtime_error("Could not build element."));
+      }
+    } else if ( type == QNEConnection::Type ) {
+      QNEConnection *conn = new QNEConnection(0);
+      scene->addItem(conn);
+      if( !conn->load(ds, portMap) ) {
+        scene->removeItem(conn);
+        delete conn;
+      }
+    } else {
+      throw (std::runtime_error("Invalid element type. Data is possibly corrupted."));
+    }
+  }
 }
 
 void Editor::save(QDataStream & ds) {

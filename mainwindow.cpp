@@ -186,7 +186,7 @@ void MainWindow::on_actionPaste_triggered() {
   if(mimeData->hasFormat("application/copydata")) {
     QByteArray itemData = mimeData->data("application/copydata");
     QDataStream dataStream(&itemData, QIODevice::ReadOnly);
-    editor->load(dataStream);
+    editor->paste(dataStream);
   }
 }
 
