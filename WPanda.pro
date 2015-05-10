@@ -49,6 +49,7 @@ SOURCES += main.cpp\
     element/srflipflop.cpp \
     element/tflipflop.cpp \
     element/display.cpp
+
 HEADERS  += mainwindow.h \
     label.h \
     editor.h \

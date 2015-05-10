@@ -24,8 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
   scene->setSceneRect(ui->graphicsView->rect());
   setCurrentFile(QFileInfo());
 
-  connect(editor,&Editor::scrollHorizontally,this,&MainWindow::scrollHorizontally);
-  connect(editor,&Editor::scrollVertically,this,&MainWindow::scrollVertically);
+  connect(editor,&Editor::scroll,this,&MainWindow::scrollView);
 //  ui->tabWidget->setTabEnabled(2,false);
 //  ui->tabWidget->setTabEnabled(3,false);
 }
@@ -124,12 +123,8 @@ void MainWindow::open(const QString &fname ) {
   ui->statusBar->showMessage("Loaded file sucessfully.",2000);
 }
 
-void MainWindow::scrollHorizontally(int numSteps) {
-  ui->graphicsView->scroll(numSteps,0);
-}
-
-void MainWindow::scrollVertically(int numSteps) {
-  ui->graphicsView->scroll(0,numSteps);
+void MainWindow::scrollView(int dx, int dy) {
+  ui->graphicsView->scroll(dx, dy);
 }
 
 void MainWindow::on_actionOpen_triggered() {

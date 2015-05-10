@@ -10,7 +10,7 @@
 #include <QtMath>
 #include <iostream>
 #include <QKeyEvent>
-
+#include <QApplication>
 #include <nodes/qneconnection.h>
 
 Editor::Editor(QObject *parent) : QObject(parent), scene(NULL), conn(NULL) {
@@ -258,37 +258,46 @@ QPointF roundTo(QPointF point, int multiple) {
 
 bool Editor::eventFilter(QObject * obj, QEvent * evt) {
   QGraphicsSceneDragDropEvent * dde = dynamic_cast<QGraphicsSceneDragDropEvent *>(evt);
-  QGraphicsSceneMouseEvent *me = dynamic_cast<QGraphicsSceneMouseEvent*>(evt);
-  if(me) {
-    mousePos = me->scenePos();
+  QGraphicsSceneMouseEvent * mouseEvt = dynamic_cast<QGraphicsSceneMouseEvent*>(evt);
+  if(mouseEvt) {
+    lastPos = mousePos;
+    mousePos = mouseEvt->scenePos();
+    if(mouseEvt->buttons() & Qt::MidButton ) {
+      QApplication::setOverrideCursor(QCursor(Qt::SizeAllCursor));
+      QPoint delta = mousePos.toPoint() - lastPos.toPoint();
+      //FIXME: Fix scroll with mid button.
+      emit scroll(delta.x(), delta.y());
+      return true;
+    }
   }
   switch ((int) evt->type()) {
   //Mouse press event
   case QEvent::GraphicsSceneMousePress: {
-      if(!me) {
-        break;
-      }
-      QGraphicsItem * item = itemAt(me->scenePos());
-      if( item && item->type()== QNEPort::Type) {
-        //Mouse pressed over an item.
-        conn = new QNEConnection();
-        scene->addItem(conn);
-        conn->setPort1((QNEPort*) item);
-        conn->setPos1(me->scenePos());
-        conn->setPos2(me->scenePos());
-        conn->updatePath();
-      } else if( item && item->type() == QNEConnection::Type) {
-        //Mouse pressed over a connections.
-        QNEConnection * connection = dynamic_cast<QNEConnection*>(item);
-        if(connection) {
-          connection->split(me->scenePos());
+      if(mouseEvt) {
+        QGraphicsItem * item = itemAt(mousePos);
+        if( item && item->type()== QNEPort::Type) {
+          //Mouse pressed over an item.
+          conn = new QNEConnection();
+          scene->addItem(conn);
+          conn->setPort1((QNEPort*) item);
+          conn->setPos1(mousePos);
+          conn->setPos2(mousePos);
+          conn->updatePath();
+        } else if( item && item->type() == QNEConnection::Type) {
+          //Mouse pressed over a connections.
+          QNEConnection * connection = dynamic_cast<QNEConnection*>(item);
+          if(connection) {
+            connection->split(mousePos);
+          }
+        } else if(!item) {
+          if(mouseEvt->button() == Qt::LeftButton ) {
+            //Mouse pressed over boar (Selection box).
+            selectionStartPoint = mousePos;
+            markingSelectionBox = true;
+            selectionRect->setRect(QRectF(selectionStartPoint,selectionStartPoint));
+            selectionRect->show();
+          }
         }
-      } else if(!item) {
-        //Mouse pressed over boar (Selection box).
-        selectionStartPoint = me->scenePos();
-        markingSelectionBox = true;
-        selectionRect->setRect(QRectF(selectionStartPoint,selectionStartPoint));
-        selectionRect->show();
       }
       break;
     }
@@ -296,12 +305,12 @@ bool Editor::eventFilter(QObject * obj, QEvent * evt) {
   case QEvent::GraphicsSceneMouseMove: {
       if (conn) {
         //If a connection is being created, the ending coordinate follows the mouse position.
-        conn->setPos2(me->scenePos());
+        conn->setPos2(mousePos);
         conn->updatePath();
         return true;
       } else if(markingSelectionBox) {
         //If is marking the selectionBox, the last coordinate follows the mouse position.
-        QRectF rect = QRectF(selectionStartPoint,me->scenePos()).normalized();
+        QRectF rect = QRectF(selectionStartPoint,mousePos).normalized();
         selectionRect->setRect(rect);
         QPainterPath selectionBox;
         selectionBox.addRect(rect);
@@ -317,10 +326,12 @@ bool Editor::eventFilter(QObject * obj, QEvent * evt) {
       //When mouse is released the selection rect is hidden.
       selectionRect->hide();
       markingSelectionBox = false;
-
-      if (conn && me->button() == Qt::LeftButton) {
+      if( QApplication::overrideCursor()->shape() == Qt::SizeAllCursor) {
+        QApplication::setOverrideCursor(Qt::ArrowCursor);
+      }
+      if (conn && mouseEvt->button() == Qt::LeftButton) {
         //A connection is being created, and left button was released.
-        QNEPort *item = dynamic_cast<QNEPort*>(itemAt(me->scenePos()));
+        QNEPort *item = dynamic_cast<QNEPort*>(itemAt(mousePos));
         if (item && item->type() == QNEPort::Type) {
           //The mouse is released over a QNEPort.
           QNEPort *port1 = conn->port1();
@@ -402,9 +413,9 @@ bool Editor::eventFilter(QObject * obj, QEvent * evt) {
         int numDegrees = wheelEvt->delta() / 8;
         int numSteps = numDegrees / 15;
         if( wheelEvt->orientation() == Qt::Horizontal ) {
-          scrollHorizontally(numSteps);
+          emit scroll(numSteps,0);
         } else {
-          scrollVertically(numSteps);
+          emit scroll(0,numSteps);
         }
         wheelEvt->accept();
         return true;

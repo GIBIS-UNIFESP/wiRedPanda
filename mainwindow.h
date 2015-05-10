@@ -26,9 +26,7 @@ public:
 
   void open(const QString & fname);
 private slots:
-  void scrollHorizontally( int numSteps );
-
-  void scrollVertically( int numSteps );
+  void scrollView(int dx , int dy);
 
   void on_actionExit_triggered();
 
