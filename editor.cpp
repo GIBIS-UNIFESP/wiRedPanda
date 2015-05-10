@@ -31,6 +31,7 @@ void Editor::install(QGraphicsScene * s) {
   scene->addItem(selectionRect);
   simulationController = new SimulationController(s);
   simulationController->start();
+  scene->setSceneRect(scene->itemsBoundingRect());
 }
 
 void Editor::clear() {
@@ -42,6 +43,7 @@ void Editor::clear() {
   }
   scene->clear();
   scene->addItem(selectionRect);
+  scene->setSceneRect(scene->itemsBoundingRect());
 }
 
 void Editor::deleteElements() {
@@ -51,6 +53,7 @@ void Editor::deleteElements() {
     scene->removeItem(item);
     delete item;
   }
+  scene->setSceneRect(scene->itemsBoundingRect());
 }
 
 void Editor::showWires(bool checked) {
@@ -98,6 +101,7 @@ void Editor::rotate(bool rotateRight) {
       item->setPos(transform.map(item->pos()));
     }
   }
+  scene->setSceneRect(scene->itemsBoundingRect());
 }
 
 QGraphicsItem *Editor::itemAt(const QPointF & pos) {
@@ -174,6 +178,7 @@ void Editor::paste(QDataStream & ds) {
       throw (std::runtime_error("Invalid element type. Data is possibly corrupted."));
     }
   }
+  scene->setSceneRect(scene->itemsBoundingRect());
 }
 
 void Editor::selectAll() {
@@ -236,6 +241,7 @@ void Editor::load(QDataStream & ds) {
       throw (std::runtime_error("Invalid element type. Data is possibly corrupted."));
     }
   }
+  scene->setSceneRect(scene->itemsBoundingRect());
 }
 
 void Editor::setElementEditor(ElementEditor * value) {
