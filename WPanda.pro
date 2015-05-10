@@ -47,7 +47,8 @@ SOURCES += main.cpp\
     priorityelement.cpp \
     element/tlatch.cpp \
     element/srflipflop.cpp \
-    element/tflipflop.cpp
+    element/tflipflop.cpp \
+    element/display.cpp
 HEADERS  += mainwindow.h \
     label.h \
     editor.h \
@@ -79,7 +80,8 @@ HEADERS  += mainwindow.h \
     priorityelement.h \
     element/tlatch.h \
     element/srflipflop.h \
-    element/tflipflop.h
+    element/tflipflop.h \
+    element/display.h
 
 FORMS    += mainwindow.ui \
     elementeditor.ui

@@ -14,6 +14,7 @@ public:
     return ElementType::LED;
   }
   void updateLogic();
+
 };
 
 #endif // LED_H

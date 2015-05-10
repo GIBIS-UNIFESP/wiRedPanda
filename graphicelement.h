@@ -9,7 +9,7 @@
 #include "priorityelement.h"
 
 enum class ElementType {
-  UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND,
+  UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND, DISPLAY,
   DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, TLATCH
 };
 
@@ -23,7 +23,7 @@ public:
   ~GraphicElement();
 
 private:
-  QGraphicsPixmapItem *pixmapItem;
+  QPixmap pixmap;
   int m_id;
 
   //GraphicElement interface.

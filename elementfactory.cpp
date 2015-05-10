@@ -19,6 +19,7 @@
 #include <element/srflipflop.h>
 #include <element/tflipflop.h>
 #include <element/tlatch.h>
+#include <element/display.h>
 
 
 #include <QDebug>
@@ -102,6 +103,9 @@ GraphicElement *ElementFactory::buildElement(ElementType type, QGraphicsItem * p
   case ElementType::TLATCH:
     elm = new TLatch(parent);
     break;
+  case ElementType::DISPLAY:
+      elm = new Display(parent);
+      break;
   //  case ElementType::DLATCH:
   //    elm = new DLatch();
   //    break;
