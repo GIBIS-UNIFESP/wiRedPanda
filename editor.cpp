@@ -326,7 +326,7 @@ bool Editor::eventFilter(QObject * obj, QEvent * evt) {
       //When mouse is released the selection rect is hidden.
       selectionRect->hide();
       markingSelectionBox = false;
-      if( QApplication::overrideCursor()->shape() == Qt::SizeAllCursor) {
+      if( QApplication::overrideCursor()) {
         QApplication::setOverrideCursor(Qt::ArrowCursor);
       }
       if (conn && mouseEvt->button() == Qt::LeftButton) {
