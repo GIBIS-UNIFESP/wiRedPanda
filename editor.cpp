@@ -396,6 +396,21 @@ bool Editor::eventFilter(QObject * obj, QEvent * evt) {
       }
       break;
     }
+  case QEvent::GraphicsSceneWheel: {
+      QWheelEvent * wheelEvt = dynamic_cast<QWheelEvent *> ( evt );
+      if(wheelEvt) {
+        int numDegrees = wheelEvt->delta() / 8;
+        int numSteps = numDegrees / 15;
+        if( wheelEvt->orientation() == Qt::Horizontal ) {
+          scrollHorizontally(numSteps);
+        } else {
+          scrollVertically(numSteps);
+        }
+        wheelEvt->accept();
+        return true;
+      }
+      break;
+    }
   }
   return QObject::eventFilter(obj, evt);
 }

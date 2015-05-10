@@ -23,6 +23,8 @@ public:
   void paste(QDataStream & ds);
   void selectAll();
 signals:
+  void scrollHorizontally( int numSteps );
+  void scrollVertically( int numSteps );
 
 public slots:
   void clear();
@@ -39,7 +41,6 @@ private:
   QPointF selectionStartPoint;
   SimulationController * simulationController;
   QPointF mousePos;
-
   // QObject interface
 public:
   bool eventFilter(QObject *obj, QEvent *evt);
