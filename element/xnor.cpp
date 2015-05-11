@@ -19,13 +19,13 @@ void Xnor::updateLogic() {
     foreach (QNEPort * input, inputs()) {
       if(input->value() != true) {
         res++;
-        break;
       }
     }
   }
-  if (res%2==0 || res==0)
-      res = true;
-  else
-      res = false;
+  if (res%2==0 || res==0) {
+    res = true;
+  } else {
+    res = false;
+  }
   outputs().first()->setValue(res);
 }
