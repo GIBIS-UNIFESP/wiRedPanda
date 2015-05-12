@@ -19,7 +19,6 @@ void Xor::updateLogic() {
     foreach (QNEPort * input, inputs()) {
       if(input->value() != true) {
         res++;
-        break;
       }
     }
   }
