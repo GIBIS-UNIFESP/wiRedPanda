@@ -39,7 +39,7 @@ void Editor::clear() {
     if(!scene->items().contains(item))
       continue;
     scene->removeItem(item);
-//    delete item;
+    //    delete item;
   }
   scene->clear();
   scene->addItem(selectionRect);
@@ -57,7 +57,6 @@ void Editor::deleteElements() {
 }
 
 void Editor::showWires(bool checked) {
-
   foreach( QGraphicsItem * c, scene->items()) {
     if(c->type() == QNEConnection::Type) {
       c->setVisible(checked);
@@ -246,6 +245,7 @@ void Editor::load(QDataStream & ds) {
 
 void Editor::setElementEditor(ElementEditor * value) {
   elementEditor = value;
+  elementEditor->setScene(scene);
 }
 
 QPointF roundTo(QPointF point, int multiple) {
