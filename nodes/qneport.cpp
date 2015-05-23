@@ -51,6 +51,7 @@ QNEPort::QNEPort(QGraphicsItem *parent):
 
   m_portFlags = 0;
   m_value = false;
+  m_graphicElement = NULL;
 }
 
 QNEPort::~QNEPort() {

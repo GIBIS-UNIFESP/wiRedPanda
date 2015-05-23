@@ -257,9 +257,11 @@ bool GraphicElement::isValid() {
         if(port == input) {
           port = conn->port2();
         }
-        if( port->graphicElement()->isValid() == false ) {
-          valid = false;
-          break;
+        if(port) {
+          if( !port->graphicElement() || port->graphicElement()->isValid() == false ) {
+            valid = false;
+            break;
+          }
         }
       }
     }
