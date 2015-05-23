@@ -11,6 +11,7 @@
 #include <iostream>
 #include <QKeyEvent>
 #include <QApplication>
+#include <QMessageBox>
 #include <nodes/qneconnection.h>
 
 Editor::Editor(QObject *parent) : QObject(parent), scene(NULL), conn(NULL) {
@@ -193,7 +194,7 @@ void Editor::selectAll() {
 }
 
 void Editor::save(QDataStream & ds) {
-  ds << QString("WiredPanda 1.0");
+  ds << QApplication::applicationName() + " " + QApplication::applicationVersion();
   foreach(QGraphicsItem *item, scene->items()) {
     if (item->type() == GraphicElement::Type) {
       ds << item->type();
@@ -214,9 +215,11 @@ void Editor::load(QDataStream & ds) {
   clear();
   QString str;
   ds >> str;
-  if(str != QString("WiredPanda 1.0")) {
-    throw (std::runtime_error("Invalid file."));
-  } else {
+  if(!str.startsWith(QApplication::applicationName())) {
+    throw (std::runtime_error("Invalid file format."));
+  } else if(!str.endsWith(QApplication::applicationVersion()) ) {
+    QMessageBox::warning(dynamic_cast<QWidget *>(parent()),"Warning!","File could be opened with errors.\nIt's from an older version of the application.",QMessageBox::Ok,QMessageBox::NoButton);
+  }else {
     qDebug() << str;
   }
   QMap< quint64, QNEPort *> portMap;

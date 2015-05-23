@@ -19,6 +19,11 @@ public:
 private:
   QString m_color;
 
+
+  // GraphicElement interface
+public:
+  void save(QDataStream & ds);
+  void load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap);
 };
 
 #endif // LED_H

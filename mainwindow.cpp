@@ -118,6 +118,9 @@ void MainWindow::open(const QString &fname ) {
       editor->load(ds);
     } catch ( std::runtime_error &e ) {
       std::cerr << "Error loading project: " << e.what() << std::endl;
+      QMessageBox::warning(this,"Error!","Could not open file.\nError: " + QString(e.what()),QMessageBox::Ok,QMessageBox::NoButton);
+      clear();
+      return;
     }
   } else {
     std::cerr << "Could not open file in ReadOnly mode : " << fname.toStdString() << "." << std::endl;

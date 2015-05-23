@@ -15,6 +15,7 @@ public:
   const static int simulationInterval = 10;
   explicit Clock(QGraphicsItem * parent);
   ~Clock();
+  static bool reset;
 public slots:
   virtual ElementType elementType() {
     return ElementType::CLOCK;

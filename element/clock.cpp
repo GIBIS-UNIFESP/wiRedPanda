@@ -2,6 +2,8 @@
 
 #include <QDebug>
 
+bool Clock::reset = false;
+
 Clock::Clock(QGraphicsItem * parent) : GraphicElement(0,0,1,1,parent) {
   setOutputsOnTop(false);
   setRotatable(false);
@@ -10,6 +12,7 @@ Clock::Clock(QGraphicsItem * parent) : GraphicElement(0,0,1,1,parent) {
   setFrequency(1.0);
   setHasFrequency(true);
   on = false;
+  Clock::reset = true;
 }
 
 Clock::~Clock() {
@@ -54,9 +57,16 @@ void Clock::setFrequency(float freq) {
 }
 
 void Clock::updateLogic() {
-  elapsed++;
-  setChanged(true);
-  if( (elapsed%interval) == 0) {
+  if(reset){
+    on = true;
     updateClock();
+    reset = false;
+    elapsed = 0;
+  }else{
+    elapsed++;
+    setChanged(true);
+    if( (elapsed%interval) == 0) {
+      updateClock();
+    }
   }
 }

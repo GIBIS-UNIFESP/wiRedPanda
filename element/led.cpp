@@ -24,7 +24,7 @@ void Led::updateLogic() {
     } else {
       setPixmap(QPixmap(":/output/resources/output/"  + color() + "LedOff.svg"));
     }
-  }else {
+  } else {
     setPixmap(QPixmap(":/output/resources/output/"  + color() + "LedOff.svg"));
   }
 }
@@ -37,4 +37,17 @@ void Led::setColor(QString color) {
 
 QString Led::color() {
   return m_color;
+}
+
+
+void Led::save(QDataStream & ds) {
+  GraphicElement::save(ds);
+  ds << color();
+}
+
+void Led::load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap) {
+  GraphicElement::load(ds,portMap);
+  QString clr;
+  ds >> clr;
+  setColor(clr);
 }
