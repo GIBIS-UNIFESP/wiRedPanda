@@ -279,6 +279,14 @@ bool GraphicElement::hasColors() const {
   return m_hasColors;
 }
 
+void GraphicElement::setColor(QString) {
+
+}
+
+QString GraphicElement::color() {
+  return QString();
+}
+
 void GraphicElement::setHasColors(bool hasColors) {
   m_hasColors = hasColors;
 }

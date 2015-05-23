@@ -91,6 +91,10 @@ public:
 
   bool hasColors() const;
 
+
+  virtual void setColor(QString color );
+  virtual QString color();
+
   bool changed() const;
   void setChanged(bool changed);
 

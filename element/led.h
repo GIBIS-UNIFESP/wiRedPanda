@@ -9,11 +9,15 @@ public:
   ~Led();
 
   // GraphicElement interface
-public:
   virtual ElementType elementType() {
     return ElementType::LED;
   }
   void updateLogic();
+  void setColor(QString color);
+  QString color();
+
+private:
+  QString m_color;
 
 };
 
