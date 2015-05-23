@@ -78,6 +78,15 @@ public:
 
   int minOutputSz() const;
 
+  int inputSize();
+  void setInputSize(int size);
+
+  int outputSize();
+  void setOutputSize(int size);
+
+  virtual float frequency();
+  virtual void setFrequency(float freq);
+
   int id() const;
   void setId(int value);
 
@@ -90,7 +99,6 @@ public:
   bool hasFrequency() const;
 
   bool hasColors() const;
-
 
   virtual void setColor(QString color );
   virtual QString color();
@@ -119,7 +127,7 @@ protected:
   void setTopPosition(int topPosition);
   void setBottomPosition(int bottomPosition);
 
-  virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e);
+//  virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e);
   QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 private:
   int m_topPosition;

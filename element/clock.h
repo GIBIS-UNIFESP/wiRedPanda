@@ -21,6 +21,12 @@ public slots:
 public:
   void save(QDataStream & ds);
   void load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap);
+  float frequency();
+  void setFrequency(float freq);
+
+private:
+  double m_frequency;
+
 };
 
 #endif // CLOCK_H

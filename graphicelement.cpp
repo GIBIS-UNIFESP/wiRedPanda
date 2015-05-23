@@ -214,13 +214,13 @@ void GraphicElement::updatePorts() {
   }
 }
 
-void GraphicElement::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * e) {
-  if(e->button() == Qt::LeftButton) {
-    addOutputPort();
-  } else {
-    addInputPort();
-  }
-}
+//void GraphicElement::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * e) {
+//  if(e->button() == Qt::LeftButton) {
+//    addOutputPort();
+//  } else {
+//    addInputPort();
+//  }
+//}
 
 QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant & value) {
   if(change == ItemScenePositionHasChanged ||  change == ItemRotationHasChanged ||  change == ItemTransformHasChanged) {
@@ -250,10 +250,29 @@ bool GraphicElement::isValid() {
   bool valid = true;
   foreach (QNEPort * input, inputs()) {
     if((input->connections().size() != 1)) {
+      valid = false;
+    } else {
+      foreach (QNEConnection * conn, input->connections()) {
+        QNEPort * port = conn->port1();
+        if(port == input) {
+          port = conn->port2();
+        }
+        if( port->graphicElement()->isValid() == false ) {
+          valid = false;
+          break;
+        }
+      }
+    }
+    if(valid == false) {
+      break;
+    }
+  }
+  if(valid == false) {
+    foreach (QNEPort * input, inputs()) {
       foreach (QNEConnection *conn, input->connections()) {
         conn->setStatus(QNEConnection::Invalid);
+
       }
-      valid = false;
     }
   }
   return valid;
@@ -317,6 +336,53 @@ void GraphicElement::setRotatable(bool rotatable) {
 
 int GraphicElement::minOutputSz() const {
   return m_minOutputSz;
+}
+
+int GraphicElement::inputSize() {
+  return m_inputs.size();
+}
+
+void GraphicElement::setInputSize(int size) {
+  if( size >= minInputSz() && size <= maxInputSz()) {
+    qDebug() << "Setting inputSize to " << size << ".";
+    if(inputSize() < size ) {
+      while(inputSize() < size) {
+        addInputPort();
+      }
+    } else {
+      while(inputSize() > size) {
+        delete m_inputs.back();
+        m_inputs.pop_back();
+      }
+      updatePorts();
+    }
+  }
+}
+
+int GraphicElement::outputSize() {
+  return m_outputs.size();
+}
+
+void GraphicElement::setOutputSize(int size) {
+  if( size >= minOutputSz() && size <= maxOutputSz()) {
+    if(outputSize() < size ) {
+      for( int port = outputSize(); port < size; ++port ) {
+        addOutputPort();
+      }
+    } else {
+      while(outputSize() > size) {
+        m_outputs.pop_back();
+      }
+    }
+  }
+}
+
+float GraphicElement::frequency() {
+  return 0.0;
+}
+
+void GraphicElement::setFrequency(float ) {
+
 }
 
 void GraphicElement::setMinOutputSz(int minOutputSz) {

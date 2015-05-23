@@ -20,11 +20,11 @@ public:
 
 private slots:
 
-  void on_comboBoxColor_currentIndexChanged(int index);
-
-  void on_comboBoxInputSz_currentIndexChanged(int index);
-
   void selectionChanged();
+
+  void on_pushButtonApply_clicked();
+
+  void on_pushButtonCancel_clicked();
 
 private:
   void setCurrentElement( GraphicElement *element );

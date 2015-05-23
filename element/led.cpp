@@ -17,7 +17,6 @@ Led::~Led() {
 }
 
 void Led::updateLogic() {
-
   if(isValid()) {
     bool value = inputs().first()->value();
     if(value == 1 ) {
