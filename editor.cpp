@@ -100,8 +100,13 @@ void Editor::rotate(bool rotateRight) {
 }
 
 QGraphicsItem *Editor::itemAt(const QPointF & pos) {
-  QList<QGraphicsItem*> items = scene->items(QRectF(pos - QPointF(1,1), QSize(3,3)).normalized());
+  QList<QGraphicsItem*> items = scene->items(QRectF(pos - QPointF(10,10), QSize(19,19)).normalized());
 
+  foreach(QGraphicsItem *item, items) {
+    if (item->type() == QNEPort::Type) {
+      return item;
+    }
+  }
   foreach(QGraphicsItem *item, items) {
     if (item->type() > QGraphicsItem::UserType)
       return item;
