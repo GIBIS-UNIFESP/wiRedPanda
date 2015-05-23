@@ -52,6 +52,7 @@ QNEPort::QNEPort(QGraphicsItem *parent):
   m_portFlags = 0;
   m_value = false;
   m_graphicElement = NULL;
+  m_required = true;
 }
 
 QNEPort::~QNEPort() {
@@ -163,8 +164,20 @@ QVariant QNEPort::itemChange(GraphicsItemChange change, const QVariant &value) {
   return value;
 }
 
+bool QNEPort::required() const {
+  return m_required;
+}
+
+void QNEPort::setRequired(bool required) {
+  m_required = required;
+}
+
 char QNEPort::value() const {
-  return m_value;
+  if(!required() && m_connections.size() == 0) {
+    return 0;
+  } else {
+    return m_value;
+  }
 }
 
 void QNEPort::setValue(char value) {

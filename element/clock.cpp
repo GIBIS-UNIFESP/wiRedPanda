@@ -6,7 +6,7 @@ Clock::Clock(QGraphicsItem * parent) : GraphicElement(0,0,1,1,parent) {
   setOutputsOnTop(false);
   setRotatable(false);
   setPixmap(QPixmap(":/input/resources/input/clock 0.svg"));
-  connect(&timer,&QTimer::timeout,this,&Clock::updateClock);
+//  connect(&timer,&QTimer::timeout,this,&Clock::updateClock);
   setFrequency(1.0);
   setHasFrequency(true);
   on = false;
@@ -16,6 +16,7 @@ Clock::~Clock() {
 }
 
 void Clock::updateClock() {
+  elapsed = 0;
   if(on) {
     on = false;
     setPixmap(QPixmap(":/input/resources/input/clock 0.svg"));
@@ -23,16 +24,19 @@ void Clock::updateClock() {
     on = true;
     setPixmap(QPixmap(":/input/resources/input/clock 1.svg"));
   }
-  setChanged(true);
   outputs().first()->setValue(on);
 }
 
 void Clock::save(QDataStream & ds) {
   GraphicElement::save(ds);
+  ds << frequency();
 }
 
 void Clock::load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap) {
   GraphicElement::load(ds,portMap);
+  float freq;
+  ds >> freq;
+  setFrequency(freq);
 }
 
 float Clock::frequency() {
@@ -43,6 +47,16 @@ void Clock::setFrequency(float freq) {
   qDebug() << "Clock frequency set to " << freq;
   if( freq > 0 && m_frequency != freq) {
     m_frequency = freq;
-    timer.start( static_cast< int >(1000.0/freq) );
+    interval = static_cast< int >(frequencyMultiplier/freq);
+    elapsed = 0;
+    //    timer.start( static_cast< int >(1000.0/freq) );
+  }
+}
+
+void Clock::updateLogic() {
+  elapsed++;
+  setChanged(true);
+  if( (elapsed%interval) == 0) {
+    updateClock();
   }
 }

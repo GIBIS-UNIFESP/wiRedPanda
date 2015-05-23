@@ -3,19 +3,23 @@
 
 #include "graphicelement.h"
 
-#include <QTimer>
+#include <QTime>
 
 class Clock : public GraphicElement {
-  QTimer timer;
+  int interval;
+  int elapsed;
   bool on;
+  double m_frequency;
+
 public:
+  const static int simulationInterval = 10;
   explicit Clock(QGraphicsItem * parent);
   ~Clock();
 public slots:
   virtual ElementType elementType() {
     return ElementType::CLOCK;
   }
-  void updateClock();
+//  void updateClock();
 
   // GraphicElement interface
 public:
@@ -23,10 +27,10 @@ public:
   void load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap);
   float frequency();
   void setFrequency(float freq);
-
+  void updateLogic();
 private:
-  double m_frequency;
-
+  constexpr static float frequencyMultiplier = 1000.0/simulationInterval;
+  void updateClock();
 };
 
 #endif // CLOCK_H

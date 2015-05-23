@@ -4,6 +4,7 @@
 #include "graphicelement.h"
 
 class JKFlipFlop : public GraphicElement {
+  bool lastClk;
 public:
   explicit JKFlipFlop(QGraphicsItem * parent);
   ~JKFlipFlop();

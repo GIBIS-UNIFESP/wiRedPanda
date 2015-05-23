@@ -248,8 +248,8 @@ void GraphicElement::setVisited(bool visited) {
 
 bool GraphicElement::isValid() {
   bool valid = true;
-  foreach (QNEPort * input, inputs()) {
-    if((input->connections().size() != 1)) {
+  foreach (QNEPort * input, m_inputs) {
+    if((input->required() && input->connections().size() == 0) || (input->connections().size() > 1)) {
       valid = false;
     } else {
       foreach (QNEConnection * conn, input->connections()) {
@@ -258,7 +258,7 @@ bool GraphicElement::isValid() {
           port = conn->port2();
         }
         if(port) {
-          if( !port->graphicElement() || port->graphicElement()->isValid() == false ) {
+          if( !port->graphicElement() ) {
             valid = false;
             break;
           }
@@ -270,10 +270,16 @@ bool GraphicElement::isValid() {
     }
   }
   if(valid == false) {
-    foreach (QNEPort * input, inputs()) {
-      foreach (QNEConnection *conn, input->connections()) {
+    foreach (QNEPort * output, outputs()) {
+      foreach (QNEConnection *conn, output->connections()) {
         conn->setStatus(QNEConnection::Invalid);
-
+        QNEPort * port = conn->port1();
+        if(port == output) {
+          port = conn->port2();
+        }
+        if(port) {
+          port->setValue(-1);
+        }
       }
     }
   }

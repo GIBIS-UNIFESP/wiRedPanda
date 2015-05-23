@@ -76,7 +76,10 @@ public:
   char value() const;
   void setValue(char value);
 
-  protected:
+  bool required() const;
+  void setRequired(bool required);
+
+protected:
   QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
@@ -90,6 +93,7 @@ private:
   int m_portFlags;
   quint64 m_ptr;
   char m_value;
+  bool m_required;
 
   //WPanda
   GraphicElement * m_graphicElement;
