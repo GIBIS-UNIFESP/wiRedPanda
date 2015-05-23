@@ -34,11 +34,11 @@ public:
 
   virtual void save(QDataStream&ds);
 
-  virtual void load(QDataStream&ds, QMap<quint64, QNEPort*> &portMap);
+  virtual void load(QDataStream&ds, QMap<quint64, QNEPort*> &portMap, double version);
 
   virtual void updatePorts();
 
-  virtual void updateLogic();
+  virtual void updateLogic() = 0;
 
   // QGraphicsItem interface
 public:

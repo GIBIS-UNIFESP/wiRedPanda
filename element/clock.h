@@ -25,7 +25,7 @@ public slots:
   // GraphicElement interface
 public:
   void save(QDataStream & ds);
-  void load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap);
+  void load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap, double version);
   float frequency();
   void setFrequency(float freq);
   void updateLogic();

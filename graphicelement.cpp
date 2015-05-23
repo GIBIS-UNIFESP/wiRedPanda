@@ -90,7 +90,7 @@ void GraphicElement::save(QDataStream &ds) {
   }
 }
 
-void GraphicElement::load(QDataStream &ds, QMap<quint64, QNEPort *> & portMap) {
+void GraphicElement::load(QDataStream &ds, QMap<quint64, QNEPort *> & portMap, double version) {
   QPointF p;
   ds >> p;
   qreal angle;
@@ -234,9 +234,9 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
   return value;
 }
 
-void GraphicElement::updateLogic() {
+//void GraphicElement::updateLogic() {
 
-}
+//}
 
 bool GraphicElement::visited() const {
   return m_visited;

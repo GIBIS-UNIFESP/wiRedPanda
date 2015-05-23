@@ -167,7 +167,7 @@ void Editor::paste(QDataStream & ds) {
       GraphicElement *elm = factory.buildElement((ElementType)elmType);
       if(elm) {
         addItem(elm);
-        elm->load(ds, portMap);
+        elm->load(ds, portMap, QApplication::applicationVersion().toDouble());
         elm->setPos((elm->pos()+offset));
         elm->setSelected(true);
       } else {
@@ -218,7 +218,7 @@ void Editor::load(QDataStream & ds) {
   if(!str.startsWith(QApplication::applicationName())) {
     throw (std::runtime_error("Invalid file format."));
   } else if(!str.endsWith(QApplication::applicationVersion()) ) {
-    QMessageBox::warning(dynamic_cast<QWidget *>(parent()),"Warning!","File could be opened with errors.\nIt's from an older version of the application.",QMessageBox::Ok,QMessageBox::NoButton);
+    QMessageBox::warning(dynamic_cast<QWidget *>(parent()),"Warning!","File opened in compatibility mode.",QMessageBox::Ok,QMessageBox::NoButton);
   }else {
     qDebug() << str;
   }
@@ -235,7 +235,7 @@ void Editor::load(QDataStream & ds) {
       GraphicElement *elm = factory.buildElement((ElementType)elmType);
       if(elm) {
         addItem(elm);
-        elm->load(ds, portMap);
+        elm->load(ds, portMap,QApplication::applicationVersion().toDouble());
         qDebug() << elm->objectName();
       } else {
         throw( std::runtime_error("Could not build element."));
@@ -246,7 +246,10 @@ void Editor::load(QDataStream & ds) {
       addItem(conn);
       conn->load(ds, portMap);
     } else {
-      throw (std::runtime_error("Invalid element type. Data is possibly corrupted."));
+      if( QMessageBox::warning(dynamic_cast<QWidget *>(parent()),"Warning!","File opened with errors.\nDo you want to proceed?",QMessageBox::Ok,QMessageBox::Cancel) == QMessageBox::Cancel) {
+        clear();
+      }
+      return;
     }
   }
 }
@@ -388,7 +391,7 @@ bool Editor::eventFilter(QObject * obj, QEvent * evt) {
         if(!elm) {
 //          break;
           qDebug() << "Unknown port type. Building default element.";
-          elm = new GraphicElement(pixmap);
+          return false;
         }
 //        elm->setTransformOriginPoint(32,32);
         //TODO: Rotate all element icons, remake the port position logic, and remove the code below.

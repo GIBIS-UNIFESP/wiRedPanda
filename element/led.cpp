@@ -45,9 +45,11 @@ void Led::save(QDataStream & ds) {
   ds << color();
 }
 
-void Led::load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap) {
-  GraphicElement::load(ds,portMap);
-  QString clr;
-  ds >> clr;
-  setColor(clr);
+void Led::load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap, double version) {
+  GraphicElement::load(ds,portMap,version);
+  if(version >= 1.1) {
+    QString clr;
+    ds >> clr;
+    setColor(clr);
+  }
 }

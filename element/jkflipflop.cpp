@@ -6,7 +6,7 @@ JKFlipFlop::JKFlipFlop(QGraphicsItem * parent) : GraphicElement(5,5,2,2,parent) 
   setPixmap(QPixmap(":/memory/resources/memory/JK-flipflop.svg"));
   setRotatable(false);
   updatePorts();
-  lastClk == false;
+  lastClk = false;
 }
 
 JKFlipFlop::~JKFlipFlop() {
@@ -33,7 +33,6 @@ void JKFlipFlop::updateLogic() {
   char res = qMax( (int) outputs().first()->value(), 0 ); //Output 1
   if(!isValid()) {
     res = -1;
-    qDebug() << "Invalid port.";
   } else {
     bool j = inputs().at(2)->value();
     bool k = inputs().at(3)->value();

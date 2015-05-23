@@ -35,11 +35,13 @@ void Clock::save(QDataStream & ds) {
   ds << frequency();
 }
 
-void Clock::load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap) {
-  GraphicElement::load(ds,portMap);
-  float freq;
-  ds >> freq;
-  setFrequency(freq);
+void Clock::load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap, double version) {
+  GraphicElement::load(ds,portMap,version);
+  if(version >= 1.1) {
+    float freq;
+    ds >> freq;
+    setFrequency(freq);
+  }
 }
 
 float Clock::frequency() {
@@ -57,12 +59,12 @@ void Clock::setFrequency(float freq) {
 }
 
 void Clock::updateLogic() {
-  if(reset){
+  if(reset) {
     on = true;
     updateClock();
     reset = false;
     elapsed = 0;
-  }else{
+  } else {
     elapsed++;
     setChanged(true);
     if( (elapsed%interval) == 0) {

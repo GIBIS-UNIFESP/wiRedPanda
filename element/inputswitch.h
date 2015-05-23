@@ -24,7 +24,7 @@ public:
   // GraphicElement interface
 public:
   void save(QDataStream & ds);
-  void load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap);
+  void load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap, double version);
 };
 
 #endif // INPUTSWITCH_H
