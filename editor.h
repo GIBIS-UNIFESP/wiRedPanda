@@ -41,6 +41,7 @@ private:
   SimulationController * simulationController;
   QPointF mousePos;
   QPointF lastPos;
+  void addItem(QGraphicsItem * item);
   // QObject interface
 public:
   bool eventFilter(QObject *obj, QEvent *evt);

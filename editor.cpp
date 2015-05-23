@@ -28,10 +28,9 @@ Editor::~Editor() {
 void Editor::install(QGraphicsScene * s) {
   s->installEventFilter(this);
   scene = s;
-  scene->addItem(selectionRect);
+  addItem(selectionRect);
   simulationController = new SimulationController(s);
   simulationController->start();
-  scene->setSceneRect(scene->itemsBoundingRect());
 }
 
 void Editor::clear() {
@@ -42,8 +41,7 @@ void Editor::clear() {
     //    delete item;
   }
   scene->clear();
-  scene->addItem(selectionRect);
-  scene->setSceneRect(scene->itemsBoundingRect());
+  addItem(selectionRect);
 }
 
 void Editor::deleteElements() {
@@ -53,7 +51,6 @@ void Editor::deleteElements() {
     scene->removeItem(item);
     delete item;
   }
-  scene->setSceneRect(scene->itemsBoundingRect());
 }
 
 void Editor::showWires(bool checked) {
@@ -100,7 +97,6 @@ void Editor::rotate(bool rotateRight) {
       item->setPos(transform.map(item->pos()));
     }
   }
-  scene->setSceneRect(scene->itemsBoundingRect());
 }
 
 QGraphicsItem *Editor::itemAt(const QPointF & pos) {
@@ -112,6 +108,10 @@ QGraphicsItem *Editor::itemAt(const QPointF & pos) {
   }
 
   return 0;
+}
+
+void Editor::addItem(QGraphicsItem * item) {
+  scene->addItem(item);
 }
 
 void Editor::cut(QDataStream & ds) {
@@ -158,7 +158,7 @@ void Editor::paste(QDataStream & ds) {
       ds >> elmType;
       GraphicElement *elm = factory.buildElement((ElementType)elmType);
       if(elm) {
-        scene->addItem(elm);
+        addItem(elm);
         elm->load(ds, portMap);
         elm->setPos((elm->pos()+offset));
         elm->setSelected(true);
@@ -167,7 +167,7 @@ void Editor::paste(QDataStream & ds) {
       }
     } else if ( type == QNEConnection::Type ) {
       QNEConnection *conn = new QNEConnection(0);
-      scene->addItem(conn);
+      addItem(conn);
       conn->setSelected(true);
       if( !conn->load(ds, portMap) ) {
         scene->removeItem(conn);
@@ -177,7 +177,6 @@ void Editor::paste(QDataStream & ds) {
       throw (std::runtime_error("Invalid element type. Data is possibly corrupted."));
     }
   }
-  scene->setSceneRect(scene->itemsBoundingRect());
 }
 
 void Editor::selectAll() {
@@ -225,7 +224,7 @@ void Editor::load(QDataStream & ds) {
       qDebug() << "Element type: " << elmType;
       GraphicElement *elm = factory.buildElement((ElementType)elmType);
       if(elm) {
-        scene->addItem(elm);
+        addItem(elm);
         elm->load(ds, portMap);
         qDebug() << elm->objectName();
       } else {
@@ -234,13 +233,12 @@ void Editor::load(QDataStream & ds) {
     } else if ( type == QNEConnection::Type ) {
       qDebug() << "QNEConnection.";
       QNEConnection *conn = new QNEConnection(0);
-      scene->addItem(conn);
+      addItem(conn);
       conn->load(ds, portMap);
     } else {
       throw (std::runtime_error("Invalid element type. Data is possibly corrupted."));
     }
   }
-  scene->setSceneRect(scene->itemsBoundingRect());
 }
 
 void Editor::setElementEditor(ElementEditor * value) {
@@ -278,7 +276,7 @@ bool Editor::eventFilter(QObject * obj, QEvent * evt) {
         if( item && item->type()== QNEPort::Type) {
           //Mouse pressed over an item.
           conn = new QNEConnection();
-          scene->addItem(conn);
+          addItem(conn);
           conn->setPort1((QNEPort*) item);
           conn->setPos1(mousePos);
           conn->setPos2(mousePos);
@@ -388,7 +386,7 @@ bool Editor::eventFilter(QObject * obj, QEvent * evt) {
           elm->setRotation(90);
         }
         //Adding the element to the scene.
-        scene->addItem(elm);
+        addItem(elm);
         //Cleaning the selection.
         scene->clearSelection();
         //Setting created element as selected.
