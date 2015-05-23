@@ -31,6 +31,7 @@ void Editor::install(QGraphicsScene * s) {
   addItem(selectionRect);
   simulationController = new SimulationController(s);
   simulationController->start();
+  clear();
 }
 
 void Editor::clear() {
@@ -42,6 +43,7 @@ void Editor::clear() {
   }
   scene->clear();
   addItem(selectionRect);
+  scene->setSceneRect(0,0,4000,4000);
 }
 
 void Editor::deleteElements() {
@@ -263,13 +265,14 @@ bool Editor::eventFilter(QObject * obj, QEvent * evt) {
   QGraphicsSceneDragDropEvent * dde = dynamic_cast<QGraphicsSceneDragDropEvent *>(evt);
   QGraphicsSceneMouseEvent * mouseEvt = dynamic_cast<QGraphicsSceneMouseEvent*>(evt);
   if(mouseEvt) {
-    lastPos = mousePos;
     mousePos = mouseEvt->scenePos();
     if(mouseEvt->buttons() & Qt::MidButton ) {
       QApplication::setOverrideCursor(QCursor(Qt::SizeAllCursor));
-      QPoint delta = mousePos.toPoint() - lastPos.toPoint();
+      QPoint delta = (mousePos.toPoint() - lastPos.toPoint());
       //FIXME: Fix scroll with mid button.
-      emit scroll(delta.x(), delta.y());
+
+//      emit scroll(delta.x(), delta.y());
+      lastPos = mousePos;
       return true;
     }
   }

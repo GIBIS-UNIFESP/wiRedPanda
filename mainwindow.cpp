@@ -64,6 +64,11 @@ bool MainWindow::save() {
   return true;
 }
 
+void MainWindow::show() {
+  QMainWindow::show();
+  editor->clear();
+}
+
 void MainWindow::clear() {
   editor->clear();
   setCurrentFile(QFileInfo());

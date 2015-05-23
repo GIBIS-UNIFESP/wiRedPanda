@@ -20,6 +20,7 @@ public:
   ~MainWindow();
 
   bool save();
+  void show();
   void clear();
   QFileInfo getCurrentFile() const;
   void setCurrentFile(const QFileInfo & value);
