@@ -6,6 +6,7 @@
 Led::Led(QGraphicsItem * parent) : GraphicElement(1,1,0,0,parent){
   setOutputsOnTop(true);
   setRotatable(false);
+  setHasColors(true);
   setPixmap(QPixmap(":/output/resources/output/WhiteLedOff.svg"));
   updatePorts();
 }

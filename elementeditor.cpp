@@ -19,13 +19,17 @@ void ElementEditor::setScene(QGraphicsScene * s) {
 
 void ElementEditor::setCurrentElement(GraphicElement * elm) {
   element = elm;
-  ui->comboBoxColor->setVisible(element->hasColors());
-  if(element->maxInputSz() != element->minInputSz()) {
-    for( int port = element->minInputSz(); port <= element->maxInputSz(); ++port) {
-      ui->comboBoxInputSz->addItem(QString::number(port), port);
-    }
+
+  ui->comboBoxColor->setEnabled(element->hasColors());
+  ui->label_color->setEnabled(element->hasColors());
+  ui->doubleSpinBoxFrequency->setEnabled(element->hasFrequency());
+  ui->label_frequency->setEnabled(element->hasFrequency());
+  ui->comboBoxInputSz->clear();
+  for( int port = element->minInputSz(); port <= element->maxInputSz(); ++port) {
+    ui->comboBoxInputSz->addItem(QString::number(port), port);
   }
-//  ui->comboBox->setVisible(element->hasColors());
+  ui->comboBoxInputSz->setDisabled(ui->comboBoxInputSz->count() < 2);
+  ui->label_inputs->setDisabled(ui->comboBoxInputSz->count() < 2);
 }
 
 void ElementEditor::on_comboBoxColor_currentIndexChanged(int) {
