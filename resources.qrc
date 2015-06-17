@@ -53,6 +53,7 @@
     </qresource>
     <qresource prefix="/">
         <file>resources/pandaLogo.png</file>
+        <file>resources/wpanda.desktop</file>
     </qresource>
     <qresource prefix="/toolbar">
         <file>resources/toolbar/new.svg</file>
