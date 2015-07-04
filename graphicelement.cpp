@@ -22,6 +22,9 @@ GraphicElement::GraphicElement(QPixmap pixmap, QGraphicsItem *parent) : QGraphic
   m_changed = true;
   m_visited = false;
   m_beingVisited = false;
+  m_hasColors = false;
+  m_hasFrequency = false;
+  m_hasLabel = false;
 }
 
 GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem * parent) : QGraphicsObject(parent) {
@@ -39,6 +42,10 @@ GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, 
   m_visited = false;
   m_beingVisited = false;
   m_rotatable = true;
+  m_hasColors = false;
+  m_hasFrequency = false;
+  m_hasLabel = false;
+
   for(int i = 0; i < minInputSz; i++) {
     addInputPort();
   }
