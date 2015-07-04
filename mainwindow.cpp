@@ -165,6 +165,9 @@ void MainWindow::on_lineEdit_textEdited(const QString &) {
 }
 
 void MainWindow::closeEvent(QCloseEvent * e) {
+#ifdef DEBUG
+  return;
+#endif
   QMessageBox msgBox;
   msgBox.setParent(this);
   msgBox.setLocale(QLocale::Portuguese);

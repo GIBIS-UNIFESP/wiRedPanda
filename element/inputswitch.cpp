@@ -7,6 +7,7 @@ InputSwitch::InputSwitch(QGraphicsItem * parent) : GraphicElement(0,0,1,1,parent
   setRotatable(false);
   setPixmap(QPixmap(":/input/resources/input/switch off.svg"));
   on = false;
+  setHasLabel(true);
 }
 
 InputSwitch::~InputSwitch() {

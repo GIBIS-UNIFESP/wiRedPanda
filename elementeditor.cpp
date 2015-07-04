@@ -26,6 +26,7 @@ void ElementEditor::setCurrentElement(GraphicElement * elm) {
     //Label
     ui->lineEditElementLabel->setEnabled(element->hasLabel());
     ui->label_labels->setEnabled(element->hasLabel());
+    ui->lineEditElementLabel->setText(element->getLabel());
     //Color
     ui->label_color->setEnabled(element->hasColors());
     ui->comboBoxColor->setEnabled(element->hasColors());
@@ -48,6 +49,7 @@ void ElementEditor::setCurrentElement(GraphicElement * elm) {
     }
   } else {
     setEnabled(false);
+    ui->lineEditElementLabel->setText("");
   }
 }
 
@@ -74,9 +76,9 @@ void ElementEditor::on_pushButtonApply_clicked() {
   if(element->hasColors()) {
     element->setColor(ui->comboBoxColor->currentText());
   }
-//  if(element->hasLabel()) {
-
-//  }
+  if(element->hasLabel()) {
+    element->setLabel(ui->lineEditElementLabel->text());
+  }
   if(element->hasFrequency()) {
     element->setFrequency(ui->doubleSpinBoxFrequency->value());
   }

@@ -13,6 +13,7 @@ Clock::Clock(QGraphicsItem * parent) : GraphicElement(0,0,1,1,parent) {
   setHasFrequency(true);
   on = false;
   Clock::reset = true;
+  setHasLabel(true);
 }
 
 Clock::~Clock() {

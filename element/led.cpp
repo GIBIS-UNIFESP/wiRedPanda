@@ -10,6 +10,7 @@ Led::Led(QGraphicsItem * parent) : GraphicElement(1,1,0,0,parent) {
   setColor("White");
   setPixmap(QPixmap(":/output/resources/output/" + color() + "LedOff.svg"));
   updatePorts();
+  setHasLabel(true);
 }
 
 Led::~Led() {

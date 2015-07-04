@@ -105,6 +105,9 @@ RESOURCES += \
 
 DISTFILES +=
 
+debug{
+DEFINES += DEBUG
+}
 unix{
   #VARIABLES
   isEmpty(PREFIX) {

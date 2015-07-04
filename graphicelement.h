@@ -18,7 +18,6 @@ class GraphicElement : public QGraphicsObject, public PriorityElement {
 public:
   enum { Type = QGraphicsItem::UserType + 3 };
 
-  explicit GraphicElement(QPixmap pixmap, QGraphicsItem * parent = 0);
   explicit GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem * parent = 0);
   ~GraphicElement();
 
@@ -114,6 +113,8 @@ public:
 
   bool isValid();
 
+  void setLabel(QString label);
+  QString getLabel();
 protected:
   void setRotatable(bool rotatable);
   void setHasLabel(bool hasLabel);
@@ -130,6 +131,7 @@ protected:
 //  virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e);
   QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 private:
+  QGraphicsTextItem *label;
   int m_topPosition;
   int m_bottomPosition;
   int m_maxInputSz;

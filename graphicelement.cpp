@@ -8,30 +8,17 @@
 
 #include <nodes/qneconnection.h>
 
-GraphicElement::GraphicElement(QPixmap pixmap, QGraphicsItem *parent) : QGraphicsObject(parent), pixmap(pixmap) {
+GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem * parent) : QGraphicsObject(parent), label(new QGraphicsTextItem(this)) {
   setFlag(QGraphicsItem::ItemIsMovable);
   setFlag(QGraphicsItem::ItemIsSelectable);
   setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
   setFlag(QGraphicsItem::ItemSendsGeometryChanges);
-  m_topPosition = 0;
-  m_bottomPosition = 64;
-  m_maxInputSz = 8;
-  m_maxOutputSz = 1;
-  m_outputsOnTop = true;
-  m_rotatable = true;
-  m_changed = true;
-  m_visited = false;
-  m_beingVisited = false;
-  m_hasColors = false;
-  m_hasFrequency = false;
-  m_hasLabel = false;
-}
-
-GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem * parent) : QGraphicsObject(parent) {
-  setFlag(QGraphicsItem::ItemIsMovable);
-  setFlag(QGraphicsItem::ItemIsSelectable);
-  setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
-  setFlag(QGraphicsItem::ItemSendsGeometryChanges);
+  label->hide();
+  QFont font("SansSerif");
+  font.setBold(true);
+  label->setFont(font);
+  label->setPos(64,30);
+  label->setParentItem(this);
   m_bottomPosition = 64;
   m_topPosition = 0;
   m_minInputSz = minInputSz;
@@ -241,9 +228,13 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
   return value;
 }
 
-//void GraphicElement::updateLogic() {
+void GraphicElement::setLabel(QString label) {
+  this->label->setPlainText(label);
+}
 
-//}
+QString GraphicElement::getLabel() {
+  return label->toPlainText();
+}
 
 bool GraphicElement::visited() const {
   return m_visited;
@@ -339,6 +330,7 @@ bool GraphicElement::hasLabel() const {
 
 void GraphicElement::setHasLabel(bool hasLabel) {
   m_hasLabel = hasLabel;
+  label->setVisible(hasLabel);
 }
 
 bool GraphicElement::rotatable() const {
