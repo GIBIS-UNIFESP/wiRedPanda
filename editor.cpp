@@ -219,9 +219,11 @@ void Editor::load(QDataStream & ds) {
     throw (std::runtime_error("Invalid file format."));
   } else if(!str.endsWith(QApplication::applicationVersion()) ) {
     QMessageBox::warning(dynamic_cast<QWidget *>(parent()),"Warning!","File opened in compatibility mode.",QMessageBox::Ok,QMessageBox::NoButton);
-  }else {
-    qDebug() << str;
   }
+
+  double version = str.split(" ").at(1).toDouble();
+//  std::cout << "INPUT = \"" << str.toStdString() << "\", version = \"" << version << "\""<< std::endl;
+
   QMap< quint64, QNEPort *> portMap;
   while( !ds.atEnd() ) {
     int type;
@@ -235,7 +237,7 @@ void Editor::load(QDataStream & ds) {
       GraphicElement *elm = factory.buildElement((ElementType)elmType);
       if(elm) {
         addItem(elm);
-        elm->load(ds, portMap,QApplication::applicationVersion().toDouble());
+        elm->load(ds, portMap,version);
         qDebug() << elm->objectName();
       } else {
         throw( std::runtime_error("Could not build element."));

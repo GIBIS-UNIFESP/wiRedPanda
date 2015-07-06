@@ -5,7 +5,7 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QPainter>
-
+#include <iostream>
 #include <nodes/qneconnection.h>
 
 GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem * parent) : QGraphicsObject(parent), label(new QGraphicsTextItem(this)) {
@@ -70,6 +70,11 @@ void GraphicElement::setOutputs(const QVector<QNEPort *> & outputs) {
 void GraphicElement::save(QDataStream &ds) {
   ds << pos();
   ds << rotation();
+
+  // <Version1.2>
+  ds << label->toPlainText();
+  // <\Version1.2>
+
   ds << (quint64) m_inputs.size();
   foreach (QNEPort * port, m_inputs) {
     ds << (quint64) port;
@@ -89,14 +94,23 @@ void GraphicElement::load(QDataStream &ds, QMap<quint64, QNEPort *> & portMap, d
   ds >> p;
   qreal angle;
   ds >> angle;
-  setRotation(angle);
   setPos(p);
+  setRotation(angle);
+
+  // <Version1.2>
+  if( version >= 1.2 ) {
+    QString label_text;
+    ds >> label_text;
+    std::cout << "Label: " << label_text.toStdString() << ", Version = " << version << std::endl;
+    setLabel(label_text);
+  }
+  // <\Version1.2>
+
   quint64 inputSz, outputSz;
   ds >> inputSz;
   for( size_t port = 0; port < inputSz; ++port ) {
     QString name;
     int flags;
-
     quint64 ptr;
     ds >> ptr;
     ds >> name;
