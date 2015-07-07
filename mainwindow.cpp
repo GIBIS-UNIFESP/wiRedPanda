@@ -152,7 +152,7 @@ void MainWindow::on_actionSave_triggered() {
 }
 
 void MainWindow::on_actionAbout_triggered() {
-  QMessageBox::about(this, "Wired Panda", tr("Wired Panda is a software built to help students to learn about logic circuits.\n\nCreators:\nDavi Morales\nHéctor Castelli\nLucas Lellis\nRodrigo Torres\nSupervised by: Fábio Cappabianco."));
+  QMessageBox::about(this, "Wired Panda", tr("Wired Panda is a software built to help students to learn about logic circuits.\nVersion: %1\n\nCreators:\nDavi Morales\nHéctor Castelli\nLucas Lellis\nRodrigo Torres\nSupervised by: Fábio Cappabianco.").arg(QApplication::applicationVersion()));
 }
 
 void MainWindow::on_actionAbout_Qt_triggered() {

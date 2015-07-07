@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=WiRED Panda
 Comment=A good option to learn about Digital Circuits
-Exec=/usr/local/bin/wpanda %f
+Exec=/usr/bin/wpanda %f
 Icon=wpanda
 Type=Application
 Categories=Science;
