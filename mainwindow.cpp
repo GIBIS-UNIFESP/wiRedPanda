@@ -226,6 +226,9 @@ void MainWindow::on_actionSave_As_triggered() {
   if( fname.isEmpty() ) {
     return;
   }
+  if(!fname.endsWith(".panda")){
+    fname.append(".panda");
+  }
   QFile fl(fname);
   if( fl.open(QFile::WriteOnly) ) {
     QDataStream ds( &fl );
