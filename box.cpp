@@ -60,7 +60,8 @@ void Box::updateLogic() {
 
 void Box::loadFile(QString fname) {
   QFileInfo fileInfo( fname );
-  setLabel(fileInfo.baseName().toUpper());
+  if(getLabel().isEmpty())
+    setLabel(fileInfo.baseName().toUpper());
   m_file = fileInfo.absoluteFilePath();
 
   QFile file(fname);
