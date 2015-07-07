@@ -45,6 +45,9 @@ bool MainWindow::save() {
   if( fname.isEmpty() ) {
     return false;
   }
+  if(!fname.endsWith(".panda")){
+    fname.append(".panda");
+  }
   QFile fl(fname);
   if( fl.open(QFile::WriteOnly) ) {
     QDataStream ds( &fl );
