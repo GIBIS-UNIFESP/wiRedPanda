@@ -5,7 +5,7 @@
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <iostream>
-
+#include <QPointF>
 #include <nodes/qneconnection.h>
 
 Box::Box(ElementFactory * factory, QGraphicsItem * parent) : GraphicElement(0,0,0,0,parent), simulationController(&myScene) {
@@ -138,6 +138,34 @@ void Box::loadFile(QString fname) {
 
     for( int outputPort = outputSize(); outputPort < minOutputSz(); ++outputPort) {
       addOutputPort();
+    }
+
+    sortMap(inputMap);
+    sortMap(outputMap);
+  }
+}
+
+void Box::sortMap(QVector<QNEPort *> & map) {
+  //BubbleSort
+  for( int i = map.size() -1; i >= 1; i--  ) {
+    for( int j = 0; j < i; j++ ) {
+      QPointF p1 = map[j  ]->graphicElement()->pos();
+      QPointF p2 = map[j+1]->graphicElement()->pos();
+      if(p1 != p2){
+        if( p1.y() > p2.y()) {
+          std::swap(map[j], map[j+1]);
+        } else if(( p1.y() == p2.y()) && (p1.x() > p2.x())) {
+          std::swap(map[j], map[j+1]);
+        }
+      }else{
+        p1 = map[j  ]->pos();
+        p1 = map[j+1]->pos();
+        if( p1.x() > p2.x()) {
+          std::swap(map[j], map[j+1]);
+        } else if(( p1.x() == p2.x()) && (p1.y() > p2.y())) {
+          std::swap(map[j], map[j+1]);
+        }
+      }
     }
   }
 }

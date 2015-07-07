@@ -24,6 +24,8 @@ private:
   QVector <QNEPort *> outputMap;
   QGraphicsScene myScene;
   SimulationController simulationController;
+
+  void sortMap( QVector< QNEPort * > & map);
 };
 
 #endif // BOX_H
