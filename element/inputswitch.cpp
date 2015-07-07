@@ -28,7 +28,9 @@ void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent * event) {
 }
 
 void InputSwitch::updateLogic() {
-  outputs().first()->setValue(on);
+  if(!disabled()){
+    outputs().first()->setValue(on);
+  }
 }
 
 

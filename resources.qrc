@@ -29,6 +29,7 @@
         <file>resources/basic/or.svg</file>
         <file>resources/basic/xnor.svg</file>
         <file>resources/basic/xor.svg</file>
+        <file>resources/basic/box.svg</file>
     </qresource>
     <qresource prefix="/memory">
         <file>resources/memory/D-flipflop.svg</file>

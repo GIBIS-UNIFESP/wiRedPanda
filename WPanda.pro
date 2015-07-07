@@ -48,7 +48,8 @@ SOURCES += main.cpp\
     element/tlatch.cpp \
     element/srflipflop.cpp \
     element/tflipflop.cpp \
-    element/display.cpp
+    element/display.cpp \
+    box.cpp
 
 HEADERS  += mainwindow.h \
     label.h \
@@ -82,7 +83,8 @@ HEADERS  += mainwindow.h \
     element/tlatch.h \
     element/srflipflop.h \
     element/tflipflop.h \
-    element/display.h
+    element/display.h \
+    box.h
 
 FORMS    += mainwindow.ui \
     elementeditor.ui

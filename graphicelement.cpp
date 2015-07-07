@@ -32,7 +32,7 @@ GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, 
   m_hasColors = false;
   m_hasFrequency = false;
   m_hasLabel = false;
-
+  m_disabled = false;
   for(int i = 0; i < minInputSz; i++) {
     addInputPort();
   }
@@ -44,6 +44,14 @@ GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, 
 
 GraphicElement::~GraphicElement() {
 
+}
+
+void GraphicElement::disable() {
+  m_disabled = true;
+}
+
+void GraphicElement::enable() {
+  m_disabled = false;
 }
 
 int GraphicElement::id() const {
@@ -75,6 +83,13 @@ void GraphicElement::save(QDataStream &ds) {
   ds << label->toPlainText();
   // <\Version1.2>
 
+  // <Version1.3>
+  ds << m_minInputSz;
+  ds << m_maxInputSz;
+  ds << m_minOutputSz;
+  ds << m_maxOutputSz;
+  // <\Version1.3>
+
   ds << (quint64) m_inputs.size();
   foreach (QNEPort * port, m_inputs) {
     ds << (quint64) port;
@@ -101,11 +116,18 @@ void GraphicElement::load(QDataStream &ds, QMap<quint64, QNEPort *> & portMap, d
   if( version >= 1.2 ) {
     QString label_text;
     ds >> label_text;
-    std::cout << "Label: " << label_text.toStdString() << ", Version = " << version << std::endl;
     setLabel(label_text);
   }
   // <\Version1.2>
 
+  // <Version1.3>
+  if( version >= 1.3 ) {
+    ds >> m_minInputSz;
+    ds >> m_maxInputSz;
+    ds >> m_minOutputSz;
+    ds >> m_maxOutputSz;
+  }
+  // <\Version1.3>
   quint64 inputSz, outputSz;
   ds >> inputSz;
   for( size_t port = 0; port < inputSz; ++port ) {
@@ -115,7 +137,7 @@ void GraphicElement::load(QDataStream &ds, QMap<quint64, QNEPort *> & portMap, d
     ds >> ptr;
     ds >> name;
     ds >> flags;
-    if( port < (size_t) minInputSz() ) {
+    if( port < (size_t) m_inputs.size() ) {
       portMap[ptr] = m_inputs[port];
       m_inputs[port]->setName(name);
       m_inputs[port]->setPortFlags(flags);
@@ -132,7 +154,7 @@ void GraphicElement::load(QDataStream &ds, QMap<quint64, QNEPort *> & portMap, d
     ds >> ptr;
     ds >> name;
     ds >> flags;
-    if( port < (size_t) minOutputSz() ) {
+    if( port < (size_t) m_outputs.size() ) {
       portMap[ptr] = m_outputs[port];
       m_outputs[port]->setName(name);
       m_outputs[port]->setPortFlags(flags);
@@ -460,4 +482,9 @@ bool GraphicElement::outputsOnTop() const {
 void GraphicElement::setOutputsOnTop(bool outputsOnTop) {
   m_outputsOnTop = outputsOnTop;
   updatePorts();
+}
+
+
+bool GraphicElement::disabled() {
+  return m_disabled;
 }

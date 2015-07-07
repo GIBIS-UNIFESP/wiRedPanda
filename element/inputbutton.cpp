@@ -35,5 +35,7 @@ void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent * event) {
 }
 
 void InputButton::updateLogic() {
-  outputs().first()->setValue(on);
+  if(!disabled()){
+    outputs().first()->setValue(on);
+  }
 }

@@ -10,7 +10,7 @@
 
 enum class ElementType {
   UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND, DISPLAY,
-  DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, TLATCH
+  DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, TLATCH, BOX
 };
 
 class GraphicElement : public QGraphicsObject, public PriorityElement {
@@ -115,6 +115,10 @@ public:
 
   void setLabel(QString label);
   QString getLabel();
+  void disable();
+  void enable();
+  bool disabled();
+
 protected:
   void setRotatable(bool rotatable);
   void setHasLabel(bool hasLabel);
@@ -134,10 +138,10 @@ private:
   QGraphicsTextItem *label;
   int m_topPosition;
   int m_bottomPosition;
-  int m_maxInputSz;
-  int m_maxOutputSz;
-  int m_minInputSz;
-  int m_minOutputSz;
+  quint64 m_maxInputSz;
+  quint64 m_maxOutputSz;
+  quint64 m_minInputSz;
+  quint64 m_minOutputSz;
   bool m_outputsOnTop;
   bool m_rotatable;
   bool m_hasLabel;
@@ -146,8 +150,11 @@ private:
   bool m_changed;
   bool m_beingVisited;
   bool m_visited;
+  bool m_disabled;
   QVector<QNEPort*> m_inputs;
   QVector<QNEPort*> m_outputs;
 };
+
+
 
 #endif // GRAPHICELEMENT_H

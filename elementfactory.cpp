@@ -1,3 +1,4 @@
+#include "box.h"
 #include "elementfactory.h"
 #include "element/and.h"
 #include "element/clock.h"
@@ -104,8 +105,11 @@ GraphicElement *ElementFactory::buildElement(ElementType type, QGraphicsItem * p
     elm = new TLatch(parent);
     break;
   case ElementType::DISPLAY:
-      elm = new Display(parent);
-      break;
+    elm = new Display(parent);
+    break;
+  case ElementType::BOX:
+    elm = new Box(this, parent);
+    break;
   //  case ElementType::DLATCH:
   //    elm = new DLatch();
   //    break;

@@ -60,12 +60,13 @@ void Label::mousePressEvent(QMouseEvent *event) {
     type = ElementType::TLATCH;
   } else if(objectName().endsWith("_tflipflop")) {
     type = ElementType::TFLIPFLOP;
-  }
-  else if(objectName().endsWith("_display")) {
-  type = ElementType::DISPLAY;
+  } else if(objectName().endsWith("_display")) {
+    type = ElementType::DISPLAY;
+  } else if (objectName().endsWith("_box")) {
+    type = ElementType::BOX;
   }
 
-  dataStream << pixmap << QPointF(event->pos()) << (qint32) type;
+  dataStream << QPointF(event->pos()) << (qint32) type << m_auxData;
 
   QMimeData *mimeData = new QMimeData;
   mimeData->setData("application/x-dnditemdata", itemData);
@@ -90,4 +91,13 @@ void Label::mousePressEvent(QMouseEvent *event) {
     setPixmap(pixmap);
   }
 }
+
+QString Label::auxData() const {
+  return m_auxData;
+}
+
+void Label::setAuxData(const QString & auxData) {
+  m_auxData = auxData;
+}
+
 

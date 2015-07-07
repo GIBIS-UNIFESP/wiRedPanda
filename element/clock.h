@@ -29,6 +29,7 @@ public:
   float frequency();
   void setFrequency(float freq);
   void updateLogic();
+  void resetClock();
 private:
   constexpr static float frequencyMultiplier = 1000.0/simulationInterval;
   void updateClock();

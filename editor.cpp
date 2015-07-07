@@ -1,3 +1,4 @@
+#include "box.h"
 #include "editor.h"
 #include "graphicelement.h"
 
@@ -212,6 +213,7 @@ void Editor::save(QDataStream & ds) {
 }
 
 void Editor::load(QDataStream & ds) {
+  //Any change here must be made in box implementation!!!
   clear();
   QString str;
   ds >> str;
@@ -222,7 +224,6 @@ void Editor::load(QDataStream & ds) {
   }
 
   double version = str.split(" ").at(1).toDouble();
-//  std::cout << "INPUT = \"" << str.toStdString() << "\", version = \"" << version << "\""<< std::endl;
 
   QMap< quint64, QNEPort *> portMap;
   while( !ds.atEnd() ) {
@@ -254,6 +255,7 @@ void Editor::load(QDataStream & ds) {
       return;
     }
   }
+  //Any change here must be made in box implementation!!!
 }
 
 void Editor::setElementEditor(ElementEditor * value) {
@@ -377,12 +379,12 @@ bool Editor::eventFilter(QObject * obj, QEvent * evt) {
         //Extracting mimedata from drop event.
         QByteArray itemData = dde->mimeData()->data("application/x-dnditemdata");
         QDataStream dataStream(&itemData, QIODevice::ReadOnly);
-        QPixmap pixmap;
         QPointF offset;
+        QString label_auxData;
         qint32 type;
-        dataStream >> pixmap >> offset >> type;
+        dataStream >> offset >> type >> label_auxData;
         QPointF pos = dde->scenePos() - offset;
-        qDebug() << "Drop event: " << pixmap << " , " << offset << " , " << type;
+        qDebug() << "Drop event: " << " , " << offset << " , " << type;
 
         //        pos = roundTo(pos,64);
         //        qDebug() << pos << roundTo(pos,64);
@@ -394,6 +396,13 @@ bool Editor::eventFilter(QObject * obj, QEvent * evt) {
 //          break;
           qDebug() << "Unknown port type. Building default element.";
           return false;
+        }
+
+        if( elm->elementType() == ElementType::BOX) {
+          Box * box = dynamic_cast<Box * >( elm );
+          if(box) {
+            box->loadFile(label_auxData);
+          }
         }
 //        elm->setTransformOriginPoint(32,32);
         //TODO: Rotate all element icons, remake the port position logic, and remove the code below.

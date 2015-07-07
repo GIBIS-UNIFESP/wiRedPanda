@@ -61,6 +61,8 @@ private slots:
 
   void on_actionSelect_all_triggered();
 
+  void on_actionOpen_Box_triggered();
+
 private:
   Ui::MainWindow *ui;
   Editor * editor;

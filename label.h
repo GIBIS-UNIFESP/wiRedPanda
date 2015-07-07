@@ -11,11 +11,15 @@ public:
 
   QString elementType();
   void setElementType(QString elementType);
+  QString auxData() const;
+  void setAuxData(const QString & auxData);
+
 protected:
   void mousePressEvent(QMouseEvent *event);
 
 private:
   QString m_elementType;
+  QString m_auxData;
 
 };
 

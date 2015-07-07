@@ -60,6 +60,16 @@ void SimulationController::update() {
       elements.append(elm);
     }
   }
+  if( Clock::reset ) {
+    foreach (GraphicElement * elm, elements) {
+      if( elm->elementType() == ElementType::CLOCK){
+        Clock * clk = dynamic_cast<Clock *> ( elm );
+        if(clk)
+          clk->resetClock();
+      }
+    }
+    Clock::reset = false;
+  }
   QVector<GraphicElement*> changed;
   foreach (GraphicElement * elm, elements) {
 //    if(elm->changed()) {

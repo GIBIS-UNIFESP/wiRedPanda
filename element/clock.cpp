@@ -55,21 +55,23 @@ void Clock::setFrequency(float freq) {
     m_frequency = freq;
     interval = static_cast< int >(frequencyMultiplier/freq);
     elapsed = 0;
+    Clock::reset = true;
     //    timer.start( static_cast< int >(1000.0/freq) );
   }
 }
 
 void Clock::updateLogic() {
-  if(reset) {
-    on = true;
-    updateClock();
-    reset = false;
-    elapsed = 0;
-  } else {
+  if(!disabled()){
     elapsed++;
     setChanged(true);
     if( (elapsed%interval) == 0) {
       updateClock();
     }
   }
+}
+
+void Clock::resetClock() {
+  on = true;
+  updateClock();
+  elapsed = 0;
 }

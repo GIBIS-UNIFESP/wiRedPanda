@@ -259,3 +259,48 @@ void MainWindow::setCurrentFile(const QFileInfo & value) {
 void MainWindow::on_actionSelect_all_triggered() {
   editor->selectAll();
 }
+
+void MainWindow::on_actionOpen_Box_triggered() {
+  QString fname = QFileDialog::getOpenFileName(this, tr("Open File as Box"), defaultDirectory.absolutePath(),tr("Panda files (*.panda)"));
+  if( fname.isEmpty() ) {
+    return;
+  }
+  QFile fl(fname);
+  if( !fl.exists() ) {
+    std::cerr << "Error: This file does not exists: " << fname.toStdString() << std::endl;
+    return;
+  }
+  if( fl.open(QFile::ReadOnly) ) {
+    try {
+      QHBoxLayout * horizontalLayout_BOX = new QHBoxLayout();
+      horizontalLayout_BOX->setSpacing(6);
+      horizontalLayout_BOX->setObjectName(QStringLiteral("horizontalLayout_BOX"));
+      horizontalLayout_BOX->setSizeConstraint(QLayout::SetFixedSize);
+      QPixmap pixmap(QString::fromUtf8(":/basic/resources/basic/box.svg"));
+      Label * label_BOX_ICON = new Label(ui->scrollAreaWidgetContents_Box);
+      label_BOX_ICON->setObjectName(QStringLiteral("label_box"));
+      label_BOX_ICON->setPixmap(pixmap);
+      label_BOX_ICON->setAuxData(fname);
+
+      horizontalLayout_BOX->addWidget(label_BOX_ICON);
+
+      QLabel * label_BOX = new QLabel(ui->scrollAreaWidgetContents_Box);
+      label_BOX->setObjectName(QStringLiteral("label_BOX"));
+      label_BOX->setText(QFileInfo(fname).baseName().toUpper());
+      horizontalLayout_BOX->addWidget(label_BOX);
+      ui->verticalLayout_4->removeItem(ui->verticalSpacer_BOX);
+      ui->verticalLayout_4->addLayout(horizontalLayout_BOX);
+      ui->verticalLayout_4->addItem(ui->verticalSpacer_BOX);
+    } catch ( std::runtime_error &e ) {
+      std::cerr << "Error loading project as box: " << e.what() << std::endl;
+      QMessageBox::warning(this,"Error!","Could not open file.\nError: " + QString(e.what()),QMessageBox::Ok,QMessageBox::NoButton);
+      clear();
+      return;
+    }
+  } else {
+    std::cerr << "Could not open file in ReadOnly mode : " << fname.toStdString() << "." << std::endl;
+    return;
+  }
+  fl.close();
+  ui->statusBar->showMessage("Loaded box sucessfully.",2000);
+}

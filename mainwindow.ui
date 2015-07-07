@@ -103,7 +103,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="io">
          <attribute name="title">
@@ -123,8 +123,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>184</width>
-               <height>522</height>
+               <width>98</width>
+               <height>172</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout">
@@ -328,7 +328,7 @@
                <x>0</x>
                <y>0</y>
                <width>98</width>
-               <height>165</height>
+               <height>172</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -529,7 +529,7 @@
                <x>0</x>
                <y>0</y>
                <width>98</width>
-               <height>165</height>
+               <height>172</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -717,25 +717,25 @@
          </attribute>
          <layout class="QGridLayout" name="gridLayout_4">
           <item row="0" column="0">
-           <widget class="QScrollArea" name="scrollArea_2">
+           <widget class="QScrollArea" name="scrollArea_Box">
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
             <property name="widgetResizable">
              <bool>true</bool>
             </property>
-            <widget class="QWidget" name="scrollAreaWidgetContents_2">
+            <widget class="QWidget" name="scrollAreaWidgetContents_Box">
              <property name="geometry">
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>100</width>
-               <height>30</height>
+               <width>198</width>
+               <height>427</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
               <item>
-               <spacer name="verticalSpacer">
+               <spacer name="verticalSpacer_BOX">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
                 </property>
@@ -790,7 +790,7 @@
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>20</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -802,6 +802,7 @@
     </property>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
+    <addaction name="actionOpen_Box"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
@@ -1085,6 +1086,14 @@
     <string>Ctrl+A</string>
    </property>
   </action>
+  <action name="actionOpen_Box">
+   <property name="text">
+    <string>Open file as a Box</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+O</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1106,7 +1115,7 @@
   <tabstop>scrollArea</tabstop>
   <tabstop>graphicsView</tabstop>
   <tabstop>scrollArea_5</tabstop>
-  <tabstop>scrollArea_2</tabstop>
+  <tabstop>scrollArea_Box</tabstop>
   <tabstop>scrollArea_6</tabstop>
  </tabstops>
  <resources>
