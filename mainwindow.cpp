@@ -249,6 +249,11 @@ QFileInfo MainWindow::getCurrentFile() const {
 void MainWindow::setCurrentFile(const QFileInfo & value) {
   qDebug() << "Setting current file to: " << value.absoluteFilePath();
   currentFile = value;
+  if(value.fileName().isEmpty()) {
+    setWindowTitle("WiRED PANDA");
+  } else {
+    setWindowTitle(QString("WiRED PANDA ( %1 )").arg(value.fileName()));
+  }
   if(currentFile.exists()) {
     defaultDirectory = currentFile.dir();
   } else {
