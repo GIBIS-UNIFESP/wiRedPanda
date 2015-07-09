@@ -1,4 +1,5 @@
 #include "graphicelement.h"
+#include "scene.h"
 
 #include <QDebug>
 #include <QGraphicsSceneMouseEvent>
@@ -11,7 +12,7 @@
 GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem * parent) : QGraphicsObject(parent), label(new QGraphicsTextItem(this)) {
   setFlag(QGraphicsItem::ItemIsMovable);
   setFlag(QGraphicsItem::ItemIsSelectable);
-  setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
+//  setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
   setFlag(QGraphicsItem::ItemSendsGeometryChanges);
   label->hide();
   QFont font("SansSerif");
@@ -253,6 +254,21 @@ void GraphicElement::updatePorts() {
 //}
 
 QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant & value) {
+  //Align to grid
+  if(change == ItemPositionChange && scene()) {
+    QPointF newPos = value.toPointF();
+    Scene * customScene = dynamic_cast<Scene*>(scene());
+    if(customScene) {
+      int gridSize = customScene->gridSize();
+      qreal xV = qRound(newPos.x()/gridSize)*gridSize;
+      qreal yV = qRound(newPos.y()/gridSize)*gridSize;
+      return QPointF(xV, yV);
+    }else{
+      return newPos;
+    }
+  }
+
+  //Moves wires
   if(change == ItemScenePositionHasChanged ||  change == ItemRotationHasChanged ||  change == ItemTransformHasChanged) {
     foreach (QNEPort * port, m_outputs) {
       port->updateConnections();
@@ -261,6 +277,7 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
       port->updateConnections();
     }
   }
+
   return value;
 }
 
@@ -483,7 +500,6 @@ void GraphicElement::setOutputsOnTop(bool outputsOnTop) {
   m_outputsOnTop = outputsOnTop;
   updatePorts();
 }
-
 
 bool GraphicElement::disabled() {
   return m_disabled;

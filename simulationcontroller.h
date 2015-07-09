@@ -2,6 +2,7 @@
 #define SIMULATIONCONTROLLER_H
 
 #include "graphicelement.h"
+#include "scene.h"
 
 #include <QGraphicsScene>
 #include <QObject>
@@ -10,7 +11,7 @@
 class SimulationController : public QObject {
   Q_OBJECT
 public:
-  explicit SimulationController(QGraphicsScene * scn);
+  explicit SimulationController(Scene * scn);
     ~SimulationController();
   signals:
 
@@ -21,7 +22,7 @@ public slots:
 
 
 private:
-  QGraphicsScene * scene;
+  Scene * scene;
   QTimer timer;
 
   int calculatePriority(GraphicElement * elm);

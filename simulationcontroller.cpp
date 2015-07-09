@@ -9,7 +9,7 @@
 
 #include <priorityqueue.h>
 
-SimulationController::SimulationController(QGraphicsScene * scn) : QObject(dynamic_cast<QObject *>(scn)), timer(this) {
+SimulationController::SimulationController(Scene * scn) : QObject(dynamic_cast<QObject *>(scn)), timer(this) {
   scene = scn;
   timer.setInterval(10);
   connect(&timer,&QTimer::timeout,this,&SimulationController::update);

@@ -27,7 +27,7 @@ Editor::~Editor() {
 
 }
 
-void Editor::install(QGraphicsScene * s) {
+void Editor::install(Scene * s) {
   s->installEventFilter(this);
   scene = s;
   addItem(selectionRect);

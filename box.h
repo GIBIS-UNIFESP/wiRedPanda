@@ -3,6 +3,7 @@
 
 #include "elementfactory.h"
 #include "graphicelement.h"
+#include "scene.h"
 #include "simulationcontroller.h"
 
 class Box : public GraphicElement {
@@ -22,7 +23,7 @@ private:
   QString m_file;
   QVector <QNEPort *> inputMap;
   QVector <QNEPort *> outputMap;
-  QGraphicsScene myScene;
+  Scene myScene;
   SimulationController simulationController;
 
   void sortMap( QVector< QNEPort * > & map);

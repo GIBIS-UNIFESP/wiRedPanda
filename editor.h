@@ -2,7 +2,7 @@
 #define EDITOR_H
 
 
-#include <QGraphicsScene>
+#include <scene.h>
 #include <QObject>
 
 #include "simulationcontroller.h"
@@ -15,7 +15,7 @@ class Editor : public QObject {
 public:
   explicit Editor(QObject *parent = 0);
   ~Editor();
-  void install(QGraphicsScene * s);
+  void install(Scene * s);
   void save(QDataStream &ds);
   void load(QDataStream &ds);
   void cut(QDataStream & ds);
@@ -30,7 +30,7 @@ public slots:
   void showWires(bool checked);
   void rotate(bool rotateRight);
 private:
-  QGraphicsScene * scene;
+  Scene * scene;
   QGraphicsItem * itemAt( const QPointF & pos );
   QNEConnection * conn;
   ElementFactory factory;

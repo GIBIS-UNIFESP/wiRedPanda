@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "editor.h"
+#include "scene.h"
 
 #include <QMainWindow>
 #include <QGraphicsScene>
@@ -66,7 +67,7 @@ private slots:
 private:
   Ui::MainWindow *ui;
   Editor * editor;
-  QGraphicsScene * scene;
+  Scene * scene;
   QFileInfo currentFile;
   QDir defaultDirectory;
   // QWidget interface
