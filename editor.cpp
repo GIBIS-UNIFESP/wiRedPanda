@@ -276,15 +276,6 @@ bool Editor::eventFilter(QObject * obj, QEvent * evt) {
   QGraphicsSceneMouseEvent * mouseEvt = dynamic_cast<QGraphicsSceneMouseEvent*>(evt);
   if(mouseEvt) {
     mousePos = mouseEvt->scenePos();
-    if(mouseEvt->buttons() & Qt::MidButton ) {
-      QApplication::setOverrideCursor(QCursor(Qt::SizeAllCursor));
-      QPoint delta = (mousePos.toPoint() - lastPos.toPoint());
-      //FIXME: Fix scroll with mid button.
-
-//      emit scroll(delta.x(), delta.y());
-      lastPos = mousePos;
-      return true;
-    }
   }
   switch ((int) evt->type()) {
   //Mouse press event
@@ -391,10 +382,7 @@ bool Editor::eventFilter(QObject * obj, QEvent * evt) {
         //Send element type to element factory. Returns NULL if type is unknown.
         GraphicElement * elm = factory.buildElement((ElementType)type);
         //If element type is unknown, a default element is created with the pixmap received from mimedata
-        //TODO: Remove this option once all the ports are implemented.
         if(!elm) {
-//          break;
-          qDebug() << "Unknown port type. Building default element.";
           return false;
         }
 
@@ -404,7 +392,6 @@ bool Editor::eventFilter(QObject * obj, QEvent * evt) {
             box->loadFile(label_auxData);
           }
         }
-//        elm->setTransformOriginPoint(32,32);
         //TODO: Rotate all element icons, remake the port position logic, and remove the code below.
         //Rotating element in 90 degrees.
         if(elm->rotatable()) {

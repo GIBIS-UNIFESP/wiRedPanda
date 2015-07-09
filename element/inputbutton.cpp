@@ -7,7 +7,6 @@ InputButton::InputButton(QGraphicsItem * parent) : GraphicElement(0,0,1,1,parent
   setPixmap(QPixmap(":/input/resources/input/button off.svg"));
   setRotatable(false);
   outputs().first()->setValue(0);
-  setBottomPosition(72);
   on = false;
   setHasLabel(true);
 }

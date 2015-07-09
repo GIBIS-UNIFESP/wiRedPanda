@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #include <QDebug>
 #include <QMessageBox>
 #include <QPainter>
+#include <QStyleOptionGraphicsItem>
 
 QNEConnection::QNEConnection(QGraphicsItem *parent) : QGraphicsPathItem(parent) {
   setFlag(QGraphicsItem::ItemIsSelectable);
@@ -126,7 +127,7 @@ bool QNEConnection::load(QDataStream &ds, const QMap<quint64, QNEPort*> &portMap
   quint64 ptr2;
   ds >> ptr1;
   ds >> ptr2;
-  if(!portMap.contains(ptr1) || !portMap.contains(ptr2) ){
+  if(!portMap.contains(ptr1) || !portMap.contains(ptr2) ) {
     return false;
   }
   setPort1(portMap[ptr1]);
@@ -155,7 +156,9 @@ void QNEConnection::setStatus(const Status & status) {
   }
 }
 
-void QNEConnection::paint(QPainter * painter, const QStyleOptionGraphicsItem *, QWidget * ) {
+void QNEConnection::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * ) {
+  painter->setClipRect( option->exposedRect );
+
   QPainterPath p;
 
   //QPointF pos1(m_port1->scenePos());
@@ -171,7 +174,7 @@ void QNEConnection::paint(QPainter * painter, const QStyleOptionGraphicsItem *, 
   p.cubicTo(ctr1, ctr2, pos2);
   if(isSelected()) {
     painter->setPen(QPen(Qt::darkGreen,5));
-  }else{
+  } else {
     painter->setPen(pen());
   }
   painter->drawPath(p);

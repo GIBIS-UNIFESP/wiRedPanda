@@ -59,7 +59,7 @@ public:
   Status status() const;
   void setStatus(const Status & status);
 
-  private:
+private:
   QPointF pos1;
   QPointF pos2;
   QNEPort *m_port1;
@@ -69,8 +69,8 @@ public:
 protected:
 
   // QGraphicsItem interface
-  public:
-  void paint(QPainter * painter, const QStyleOptionGraphicsItem *, QWidget *);
+public:
+  void paint(QPainter * painter, const QStyleOptionGraphicsItem *option, QWidget *);
 };
 
 #endif // QNECONNECTION_H

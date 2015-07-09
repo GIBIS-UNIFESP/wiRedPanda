@@ -6,6 +6,7 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QPainter>
+#include <QStyleOptionGraphicsItem>
 #include <iostream>
 #include <nodes/qneconnection.h>
 
@@ -180,8 +181,8 @@ QRectF GraphicElement::boundingRect() const {
 }
 
 void GraphicElement::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget) {
-  Q_UNUSED(option)
   Q_UNUSED(widget)
+  painter->setClipRect( option->exposedRect );
   if(isSelected()) {
     painter->setBrush(Qt::darkGray);
     painter->setPen(QPen(Qt::black));
@@ -191,9 +192,9 @@ void GraphicElement::paint(QPainter * painter, const QStyleOptionGraphicsItem * 
 }
 
 QNEPort *GraphicElement::addPort(const QString & name, bool isOutput, int flags, int ptr) {
-  if(isOutput && m_outputs.size() >= m_maxOutputSz) {
+  if(isOutput && ( quint64 ) m_outputs.size() >= m_maxOutputSz) {
     return NULL;
-  } else if(!isOutput && m_inputs.size() >= m_maxInputSz) {
+  } else if(!isOutput && ( quint64 ) m_inputs.size() >= m_maxInputSz) {
     return NULL;
   }
   QNEPort *port = new QNEPort(this);
@@ -236,7 +237,7 @@ void GraphicElement::updatePorts() {
     }
   }
   if(!m_inputs.isEmpty()) {
-    int step = qMax(32/m_inputs.size(),6);
+    int step = qMax(32/m_inputs.size(), 6);
     int x = 32 - m_inputs.size()*step + step;
     foreach (QNEPort * port, m_inputs) {
       port->setPos(x,inputPos);
@@ -263,7 +264,7 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
       qreal xV = qRound(newPos.x()/gridSize)*gridSize;
       qreal yV = qRound(newPos.y()/gridSize)*gridSize;
       return QPointF(xV, yV);
-    }else{
+    } else {
       return newPos;
     }
   }
@@ -278,7 +279,7 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
     }
   }
 
-  return value;
+  return QGraphicsItem::itemChange(change, value);
 }
 
 void GraphicElement::setLabel(QString label) {

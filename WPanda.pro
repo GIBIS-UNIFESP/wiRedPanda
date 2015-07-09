@@ -50,7 +50,8 @@ SOURCES += main.cpp\
     element/tflipflop.cpp \
     element/display.cpp \
     box.cpp \
-    scene.cpp
+    scene.cpp \
+    graphicsview.cpp
 
 HEADERS  += mainwindow.h \
     label.h \
@@ -86,7 +87,8 @@ HEADERS  += mainwindow.h \
     element/tflipflop.h \
     element/display.h \
     box.h \
-    scene.h
+    scene.h \
+    graphicsview.h
 
 FORMS    += mainwindow.ui \
     elementeditor.ui
