@@ -15,7 +15,7 @@
 #include <QMessageBox>
 #include <nodes/qneconnection.h>
 
-Editor::Editor(QObject *parent) : QObject(parent), scene(NULL), conn(NULL) {
+Editor::Editor(QObject *parent) : QObject(parent), scene(NULL), conn(NULL), m_hoverPort( NULL ) {
   markingSelectionBox = false;
   selectionRect = new QGraphicsRectItem();
   selectionRect->setBrush(Qt::NoBrush);
@@ -275,16 +275,37 @@ bool Editor::eventFilter(QObject * obj, QEvent * evt) {
   switch ((int) evt->type()) {
   //Mouse press event
   case QEvent::GraphicsSceneMousePress: {
+      if(m_hoverPort) {
+        m_hoverPort->hoverLeave();
+        m_hoverPort = NULL;
+        QApplication::setOverrideCursor(QCursor());
+      }
       if(mouseEvt) {
         QGraphicsItem * item = itemAt(mousePos);
         if( item && item->type()== QNEPort::Type) {
           //Mouse pressed over an item.
-          conn = new QNEConnection();
-          addItem(conn);
-          conn->setPort1((QNEPort*) item);
-          conn->setPos1(mousePos);
-          conn->setPos2(mousePos);
-          conn->updatePath();
+          QNEPort* port2 = (QNEPort*) item;
+          if(port2->isInput() && ! port2->connections().empty()) {
+            conn = port2->connections().last();
+            conn->setFocus();
+            QNEPort * port1 = conn->otherPort(port2);
+            if(port1){
+              port2->disconnect(conn);
+              conn->setPort2(NULL);
+              conn->setPort1(port1);
+              conn->setPos1(port1->scenePos());
+              conn->setPos2(mousePos);
+            }else{
+              conn = NULL;
+            }
+          } else {
+            conn = new QNEConnection();
+            addItem(conn);
+            conn->setPort1((QNEPort*) item);
+            conn->setPos1(mousePos);
+            conn->setPos2(mousePos);
+            conn->updatePath();
+          }
         } else if( item && item->type() == QNEConnection::Type) {
           //Mouse pressed over a connections.
           QNEConnection * connection = dynamic_cast<QNEConnection*>(item);
@@ -305,6 +326,19 @@ bool Editor::eventFilter(QObject * obj, QEvent * evt) {
     }
   //Mouse move event.
   case QEvent::GraphicsSceneMouseMove: {
+      QNEPort *item = dynamic_cast<QNEPort*>(itemAt(mousePos));
+      if(m_hoverPort && item != m_hoverPort) {
+        m_hoverPort->hoverLeave();
+        m_hoverPort = NULL;
+        QApplication::setOverrideCursor(QCursor());
+      } else if (item && item->type() == QNEPort::Type) {
+        m_hoverPort = item;
+        if(conn && conn->port1() && conn->port1()->isOutput() == item->isOutput()) {
+          QApplication::setOverrideCursor(QCursor(Qt::ForbiddenCursor));
+        } else {
+          m_hoverPort->hoverEnter();
+        }
+      }
       if (conn) {
         //If a connection is being created, the ending coordinate follows the mouse position.
         conn->setPos2(mousePos);
@@ -325,6 +359,11 @@ bool Editor::eventFilter(QObject * obj, QEvent * evt) {
     }
   //Mouse release event.
   case QEvent::GraphicsSceneMouseRelease: {
+      if(m_hoverPort) {
+        m_hoverPort->hoverLeave();
+        m_hoverPort = NULL;
+        QApplication::setOverrideCursor(QCursor());
+      }
       //When mouse is released the selection rect is hidden.
       selectionRect->hide();
       markingSelectionBox = false;

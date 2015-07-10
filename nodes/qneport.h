@@ -27,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #define QNEPORT_H
 
 #include <QGraphicsPathItem>
+#include <qpen.h>
 
 class QNEBlock;
 class QNEConnection;
@@ -79,6 +80,12 @@ public:
   bool required() const;
   void setRequired(bool required);
 
+  QBrush currentBrush() const;
+  void setCurrentBrush(const QBrush & currentBrush);
+
+  void hoverEnter();
+  void hoverLeave();
+
 protected:
   QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
@@ -97,7 +104,7 @@ private:
 
   //WPanda
   GraphicElement * m_graphicElement;
-
+  QBrush _currentBrush;
 };
 
 #endif // QNEPORT_H

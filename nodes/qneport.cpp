@@ -29,14 +29,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #include <QFontMetrics>
 #include <graphicelement.h>
 
+#include <iostream>
 #include <QPen>
+#include <QCursor>
 
 #include "qneconnection.h"
 
 QNEPort::QNEPort(QGraphicsItem *parent):
   QGraphicsPathItem(parent) {
   label = new QGraphicsTextItem(this);
-
+  setAcceptHoverEvents(true);
   radius_ = 5;
   margin = 2;
 
@@ -45,7 +47,7 @@ QNEPort::QNEPort(QGraphicsItem *parent):
   setPath(p);
 
   setPen(QPen(Qt::darkRed));
-  setBrush(Qt::red);
+  setCurrentBrush(Qt::red);
 
   setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
 
@@ -57,7 +59,7 @@ QNEPort::QNEPort(QGraphicsItem *parent):
 
 QNEPort::~QNEPort() {
   foreach(QNEConnection *conn, m_connections)
-  delete conn;
+    delete conn;
 }
 
 void QNEPort::setNEBlock(QNEBlock *b) {
@@ -73,7 +75,7 @@ void QNEPort::setIsOutput(bool o) {
   isOutput_ = o;
   if(isInput()) {
     setPen(QPen(Qt::black));
-    setBrush(QColor(0x333333));
+    setCurrentBrush(QColor(0x333333));
   }
   if(scene())
     QFontMetrics fm(scene()->font());
@@ -144,8 +146,8 @@ void QNEPort::setPtr(quint64 p) {
 
 bool QNEPort::isConnected(QNEPort *other) {
   foreach(QNEConnection *conn, m_connections)
-  if (conn->port1() == other || conn->port2() == other)
-    return true;
+    if (conn->port1() == other || conn->port2() == other)
+      return true;
 
   return false;
 }
@@ -163,6 +165,16 @@ QVariant QNEPort::itemChange(GraphicsItemChange change, const QVariant &value) {
   }
   return value;
 }
+
+QBrush QNEPort::currentBrush() const {
+  return _currentBrush;
+}
+
+void QNEPort::setCurrentBrush(const QBrush & currentBrush) {
+  _currentBrush = currentBrush;
+  setBrush(currentBrush);
+}
+
 
 bool QNEPort::required() const {
   return m_required;
@@ -191,10 +203,7 @@ void QNEPort::setValue(char value) {
       } else {
         conn->setStatus(QNEConnection::Active);
       }
-      QNEPort * port = conn->port1();
-      if(port == this) {
-        port = conn->port2();
-      }
+      QNEPort * port = conn->otherPort(this);
       if(port)
         port->setValue(value);
     }
@@ -208,4 +217,14 @@ GraphicElement * QNEPort::graphicElement() const {
 
 void QNEPort::setGraphicElement(GraphicElement * graphicElement) {
   m_graphicElement = graphicElement;
+}
+
+void QNEPort::hoverEnter() {
+  setBrush(QBrush(Qt::green));
+  update();
+}
+
+void QNEPort::hoverLeave() {
+  setBrush(currentBrush());
+  update();
 }

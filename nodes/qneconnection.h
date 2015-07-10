@@ -46,6 +46,7 @@ public:
   void updatePath();
   QNEPort* port1() const;
   QNEPort* port2() const;
+  QNEPort* otherPort(QNEPort * port);
 
   void split(QPointF point);
 

@@ -61,12 +61,16 @@ void QNEConnection::setPos2(const QPointF &p) {
 
 void QNEConnection::setPort1(QNEPort *p) {
   m_port1 = p;
-  m_port1->connect(this);
+  if(p){
+    m_port1->connect(this);
+  }
 }
 
 void QNEConnection::setPort2(QNEPort *p) {
   m_port2 = p;
-  m_port2->connect(this);
+  if(p){
+    m_port2->connect(this);
+  }
 }
 
 void QNEConnection::updatePosFromPorts() {
@@ -102,6 +106,14 @@ QNEPort* QNEConnection::port1() const {
 
 QNEPort* QNEConnection::port2() const {
   return m_port2;
+}
+
+QNEPort *QNEConnection::otherPort(QNEPort * port) {
+  if(port == m_port1 ){
+    return m_port2;
+  }else{
+    return m_port1;
+  }
 }
 
 void QNEConnection::split(QPointF point) {

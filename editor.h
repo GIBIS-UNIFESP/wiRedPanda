@@ -42,6 +42,7 @@ private:
   QPointF mousePos;
   QPointF lastPos;
   void addItem(QGraphicsItem * item);
+  QNEPort * m_hoverPort;
   // QObject interface
 public:
   bool eventFilter(QObject *obj, QEvent *evt);

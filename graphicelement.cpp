@@ -305,10 +305,7 @@ bool GraphicElement::isValid() {
       valid = false;
     } else {
       foreach (QNEConnection * conn, input->connections()) {
-        QNEPort * port = conn->port1();
-        if(port == input) {
-          port = conn->port2();
-        }
+        QNEPort * port = conn->otherPort(input);
         if(port) {
           if( !port->graphicElement() ) {
             valid = false;
@@ -325,10 +322,7 @@ bool GraphicElement::isValid() {
     foreach (QNEPort * output, outputs()) {
       foreach (QNEConnection *conn, output->connections()) {
         conn->setStatus(QNEConnection::Invalid);
-        QNEPort * port = conn->port1();
-        if(port == output) {
-          port = conn->port2();
-        }
+        QNEPort * port = conn->otherPort(output);
         if(port) {
           port->setValue(-1);
         }
