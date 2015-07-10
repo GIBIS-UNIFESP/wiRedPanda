@@ -327,8 +327,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>184</width>
-               <height>522</height>
+               <width>198</width>
+               <height>425</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -528,8 +528,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>98</width>
-               <height>172</height>
+               <width>198</width>
+               <height>425</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -730,7 +730,7 @@
                <x>0</x>
                <y>0</y>
                <width>198</width>
-               <height>427</height>
+               <height>425</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -790,7 +790,7 @@
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>19</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -802,11 +802,12 @@
     </property>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
+    <addaction name="separator"/>
+    <addaction name="actionReload_File"/>
     <addaction name="actionOpen_Box"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
-    <addaction name="separator"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -1092,6 +1093,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+O</string>
+   </property>
+  </action>
+  <action name="actionReload_File">
+   <property name="text">
+    <string>Reload File</string>
    </property>
   </action>
  </widget>

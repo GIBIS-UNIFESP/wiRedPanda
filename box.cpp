@@ -1,4 +1,5 @@
 #include "box.h"
+#include "globalproperties.h"
 
 #include <QApplication>
 #include <QDebug>
@@ -6,6 +7,7 @@
 #include <QGraphicsScene>
 #include <iostream>
 #include <QPointF>
+#include <QDir>
 #include <nodes/qneconnection.h>
 
 Box::Box(ElementFactory * factory, QGraphicsItem * parent) : GraphicElement(0,0,0,0,parent), simulationController(&myScene) {
@@ -60,17 +62,28 @@ void Box::updateLogic() {
 
 void Box::loadFile(QString fname) {
   QFileInfo fileInfo( fname );
+  if( !fileInfo.exists()) {
+    qDebug() << "Could not open file " << fileInfo.absoluteFilePath() << ". Trying to find on current folder.";
+    fileInfo.setFile(QDir::current(), fileInfo.fileName());
+    if( !fileInfo.exists() ) {
+      qDebug() << "Could not open file " << fileInfo.absoluteFilePath() << ". Trying to find on current file folder.";
+      QFileInfo currentFile(GlobalProperties::currentFile);
+      qDebug() << "Current file is: " << GlobalProperties::currentFile;
+      fileInfo.setFile(currentFile.absoluteDir(),fileInfo.fileName());
+      if( !fileInfo.exists() ) {
+//        qDebug() << "Could not open file " << fileInfo.absoluteFilePath() << ". Sending error.";
+        std::cerr << "Error: This file does not exists: " << fname.toStdString() << std::endl;
+        throw (std::runtime_error(QString("Box linked file \"%1\" could not be found!\nTry to put this file in the same folder of \"%2.\"").arg(fname).arg(currentFile.fileName()).toStdString()));
+        return;
+      }
+    }
+  }
+  qDebug() << "Successfully opened box file \"" << fileInfo.absoluteFilePath() << "\"!";
   if(getLabel().isEmpty())
     setLabel(fileInfo.baseName().toUpper());
   m_file = fileInfo.absoluteFilePath();
 
-  QFile file(fname);
-  if( !file.exists() ) {
-    throw (std::runtime_error(QString("Box linked file \"%1\" does not exists!").arg(fname).toStdString()));
-
-    std::cerr << "Error: This file does not exists: " << fname.toStdString() << std::endl;
-    return;
-  }
+  QFile file(fileInfo.absoluteFilePath());
   if( file.open(QFile::ReadOnly) ) {
 
     QDataStream ds( &file );
@@ -134,11 +147,11 @@ void Box::loadFile(QString fname) {
     setMinOutputSz(outputMap.size());
     setMaxOutputSz(outputMap.size());
 
-    for( int inputPort = inputSize(); inputPort < minInputSz(); ++inputPort) {
+    for( int inputPort = inputSize(); inputPort < inputMap.size(); ++inputPort) {
       addInputPort();
     }
 
-    for( int outputPort = outputSize(); outputPort < minOutputSz(); ++outputPort) {
+    for( int outputPort = outputSize(); outputPort < outputMap.size(); ++outputPort) {
       addOutputPort();
     }
 
@@ -153,13 +166,13 @@ void Box::sortMap(QVector<QNEPort *> & map) {
     for( int j = 0; j < i; j++ ) {
       QPointF p1 = map[j  ]->graphicElement()->pos();
       QPointF p2 = map[j+1]->graphicElement()->pos();
-      if(p1 != p2){
+      if(p1 != p2) {
         if( p1.y() > p2.y()) {
           std::swap(map[j], map[j+1]);
         } else if(( p1.y() == p2.y()) && (p1.x() > p2.x())) {
           std::swap(map[j], map[j+1]);
         }
-      }else{
+      } else {
         p1 = map[j  ]->pos();
         p1 = map[j+1]->pos();
         if( p1.x() > p2.x()) {

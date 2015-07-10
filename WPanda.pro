@@ -51,7 +51,8 @@ SOURCES += main.cpp\
     element/display.cpp \
     box.cpp \
     scene.cpp \
-    graphicsview.cpp
+    graphicsview.cpp \
+    globalproperties.cpp
 
 HEADERS  += mainwindow.h \
     label.h \
@@ -88,7 +89,8 @@ HEADERS  += mainwindow.h \
     element/display.h \
     box.h \
     scene.h \
-    graphicsview.h
+    graphicsview.h \
+    globalproperties.h
 
 FORMS    += mainwindow.ui \
     elementeditor.ui

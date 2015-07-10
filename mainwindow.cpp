@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include "globalproperties.h"
 #include <QClipboard>
 #include <QDebug>
 #include <QFileDialog>
@@ -120,6 +120,7 @@ void MainWindow::open(const QString &fname ) {
   }
   if( fl.open(QFile::ReadOnly) ) {
     QDataStream ds( &fl );
+    setCurrentFile(QFileInfo(fname));
     try {
       editor->load(ds);
     } catch ( std::runtime_error &e ) {
@@ -133,7 +134,6 @@ void MainWindow::open(const QString &fname ) {
     return;
   }
   fl.close();
-  setCurrentFile(QFileInfo(fname));
   ui->statusBar->showMessage("Loaded file sucessfully.",2000);
 }
 
@@ -263,6 +263,7 @@ void MainWindow::setCurrentFile(const QFileInfo & value) {
   } else {
     setWindowTitle(QString("WiRED PANDA ( %1 )").arg(value.fileName()));
   }
+  GlobalProperties::currentFile = currentFile.absoluteFilePath();
   if(currentFile.exists()) {
     defaultDirectory = currentFile.dir();
   } else {

@@ -229,22 +229,17 @@ void Editor::load(QDataStream & ds) {
   while( !ds.atEnd() ) {
     int type;
     ds >> type;
-    qDebug() << "Type: " << type;
     if( type == GraphicElement::Type ) {
-      qDebug() << "GraphicElement.";
       quint64 elmType;
       ds >> elmType;
-      qDebug() << "Element type: " << elmType;
       GraphicElement *elm = factory.buildElement((ElementType)elmType);
       if(elm) {
         addItem(elm);
         elm->load(ds, portMap,version);
-        qDebug() << elm->objectName();
       } else {
         throw( std::runtime_error("Could not build element."));
       }
     } else if ( type == QNEConnection::Type ) {
-      qDebug() << "QNEConnection.";
       QNEConnection *conn = new QNEConnection(0);
       addItem(conn);
       conn->load(ds, portMap);
