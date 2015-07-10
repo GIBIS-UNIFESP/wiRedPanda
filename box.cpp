@@ -66,6 +66,8 @@ void Box::loadFile(QString fname) {
 
   QFile file(fname);
   if( !file.exists() ) {
+    throw (std::runtime_error(QString("Box linked file \"%1\" does not exists!").arg(fname).toStdString()));
+
     std::cerr << "Error: This file does not exists: " << fname.toStdString() << std::endl;
     return;
   }
