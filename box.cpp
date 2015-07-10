@@ -47,13 +47,13 @@ void Box::load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap, double vers
 }
 
 void Box::updateLogic() {
-  for( int inputPort = 0; inputPort < minInputSz(); ++inputPort) {
+  for( int inputPort = 0; inputPort < inputMap.size(); ++inputPort) {
     inputMap.at(inputPort)->setValue(inputs().at(inputPort)->value());
   }
 
   simulationController.update();
 
-  for( int outputPort = 0; outputPort < minOutputSz(); ++outputPort) {
+  for( int outputPort = 0; outputPort < outputMap.size(); ++outputPort) {
     outputs().at(outputPort)->setValue(outputMap.at(outputPort)->value());
   }
 }

@@ -114,6 +114,7 @@ void MainWindow::on_actionRotate_left_triggered() {
 void MainWindow::open(const QString &fname ) {
   QFile fl(fname);
   if( !fl.exists() ) {
+    QMessageBox::warning(this,"Error!",QString("File \"%1\" does not exists!").arg(fname),QMessageBox::Ok,QMessageBox::NoButton);
     std::cerr << "Error: This file does not exists: " << fname.toStdString() << std::endl;
     return;
   }
