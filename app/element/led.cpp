@@ -8,7 +8,7 @@ Led::Led(QGraphicsItem * parent) : GraphicElement(1,1,0,0,parent) {
   setRotatable(false);
   setHasColors(true);
   setColor("White");
-  setPixmap(QPixmap(":/output/resources/output/" + color() + "LedOff.svg"));
+  setPixmap(QPixmap(":/output/" + color() + "LedOff.png"));
   updatePorts();
   setHasLabel(true);
 }
@@ -21,12 +21,12 @@ void Led::updateLogic() {
   if(isValid()) {
     bool value = inputs().first()->value();
     if(value == 1 ) {
-      setPixmap(QPixmap(":/output/resources/output/" + color() + "LedOn.svg"));
+      setPixmap(QPixmap(":/output/" + color() + "LedOn.png"));
     } else {
-      setPixmap(QPixmap(":/output/resources/output/"  + color() + "LedOff.svg"));
+      setPixmap(QPixmap(":/output/"  + color() + "LedOff.png"));
     }
   } else {
-    setPixmap(QPixmap(":/output/resources/output/"  + color() + "LedOff.svg"));
+    setPixmap(QPixmap(":/output/"  + color() + "LedOff.png"));
   }
 }
 

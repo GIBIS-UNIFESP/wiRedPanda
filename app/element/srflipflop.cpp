@@ -1,7 +1,7 @@
 #include "srflipflop.h"
 
 SRFlipFlop::SRFlipFlop(QGraphicsItem * parent) : GraphicElement(5,5,2,2,parent) {
-    setPixmap(QPixmap(":/memory/resources/memory/SR-flipflop.svg"));
+    setPixmap(QPixmap(":/memory/SR-flipflop.png"));
     setRotatable(false);
     updatePorts();
   }

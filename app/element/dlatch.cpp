@@ -1,7 +1,7 @@
 #include "dlatch.h"
 
 DLatch::DLatch(QGraphicsItem * parent) : GraphicElement(2,2,2,2,parent) {
-  setPixmap(QPixmap(":/memory/resources/memory/D-latch.svg"));
+  setPixmap(QPixmap(":/memory/D-latch.png"));
   setRotatable(false);
   updatePorts();
 

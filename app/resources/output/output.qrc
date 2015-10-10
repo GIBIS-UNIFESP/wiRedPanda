@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/output">
         <file>WhiteLedOff.png</file>
         <file>BlueLedOff.png</file>
         <file>GreenLedOff.png</file>
@@ -10,8 +10,6 @@
         <file>RedLedOn.png</file>
         <file>PurpleLedOn.png</file>
         <file>GreenLedOn.png</file>
-    </qresource>
-    <qresource prefix="/counter">
         <file>counter/counter a.png</file>
         <file>counter/counter b.png</file>
         <file>counter/counter c.png</file>

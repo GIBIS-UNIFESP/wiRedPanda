@@ -65,8 +65,10 @@
        <string>Blue</string>
       </property>
       <property name="icon">
-       <iconset resource="resources.qrc">
-        <normaloff>:/output/resources/output/BlueLedOff.svg</normaloff>:/output/resources/output/BlueLedOff.svg</iconset>
+       <iconset>
+        <activeoff>:/output/BlueLedOff.png</activeoff>
+        <activeon>:/output/BlueLedOn.png</activeon>
+       </iconset>
       </property>
      </item>
      <item>
@@ -75,7 +77,8 @@
       </property>
       <property name="icon">
        <iconset>
-        <normalon>:/output/resources/output/GreenLedOff.svg</normalon>
+        <activeoff>:/output/GreenLedOff.png</activeoff>
+        <activeon>:/output/GreenLedOn.png</activeon>
        </iconset>
       </property>
      </item>
@@ -85,7 +88,8 @@
       </property>
       <property name="icon">
        <iconset>
-        <normalon>:/output/resources/output/PurpleLedOff.svg</normalon>
+        <activeoff>:/output/PurpleLedOff.png</activeoff>
+        <activeon>:/output/PurpleLedOn.png</activeon>
        </iconset>
       </property>
      </item>
@@ -95,7 +99,8 @@
       </property>
       <property name="icon">
        <iconset>
-        <normalon>:/output/resources/output/RedLedOff.svg</normalon>
+        <activeoff>:/output/RedLedOff.png</activeoff>
+        <activeon>:/output/RedLedOn.png</activeon>
        </iconset>
       </property>
      </item>
@@ -105,7 +110,8 @@
       </property>
       <property name="icon">
        <iconset>
-        <normalon>:/output/resources/output/WhiteLedOff.svg</normalon>
+        <activeoff>:/output/WhiteLedOff.png</activeoff>
+        <activeon>:/output/WhiteLedOn.png</activeon>
        </iconset>
       </property>
      </item>
@@ -147,8 +153,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

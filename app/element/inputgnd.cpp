@@ -2,7 +2,7 @@
 
 InputGnd::InputGnd(QGraphicsItem * parent) : GraphicElement(0,0,1,1,parent) {
   setOutputsOnTop(false);
-  setPixmap(QPixmap(":/input/resources/input/0.svg"));
+  setPixmap(QPixmap(":/input/0.png"));
   setRotatable(false);
 }
 

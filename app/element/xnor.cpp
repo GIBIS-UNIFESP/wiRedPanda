@@ -2,7 +2,7 @@
 
 Xnor::Xnor(QGraphicsItem * parent) : GraphicElement(2,8,1,1,parent) {
   setOutputsOnTop(true);
-  setPixmap(QPixmap(":/basic/resources/basic/xnor.svg"));
+  setPixmap(QPixmap(":/basic/xnor.png"));
   updatePorts();
 }
 

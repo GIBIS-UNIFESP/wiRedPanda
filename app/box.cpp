@@ -13,7 +13,7 @@
 Box::Box(ElementFactory * factory, QGraphicsItem * parent) : GraphicElement(0,0,0,0,parent), simulationController(&myScene) {
   this->factory = factory;
   setHasLabel(true);
-  QPixmap pixmap(":/basic/resources/basic/box.svg");
+  QPixmap pixmap(":/basic/box.png");
 //  QTransform transform;
 //  transform.translate(pixmap.size().width() / 2, pixmap.size().height() / 2);
 //  transform.rotate(-90);

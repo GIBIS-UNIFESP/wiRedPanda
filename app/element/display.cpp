@@ -9,15 +9,15 @@ Display::Display(QGraphicsItem * parent) : GraphicElement(8,8,0,0,parent) {
   setBottomPosition(58);
   setTopPosition(6);
 
-  setPixmap(QPixmap(":/output/counter/resources/output/counter/counter off.svg"));
-  a = QPixmap(":/output/counter/resources/output/counter/counter c.svg");
-  b = QPixmap(":/output/counter/resources/output/counter/counter d.svg");
-  c = QPixmap(":/output/counter/resources/output/counter/counter f.svg");
-  d = QPixmap(":/output/counter/resources/output/counter/counter g.svg");
-  e = QPixmap(":/output/counter/resources/output/counter/counter a.svg");
-  f = QPixmap(":/output/counter/resources/output/counter/counter b.svg");
-  g = QPixmap(":/output/counter/resources/output/counter/counter e.svg");
-  h = QPixmap(":/output/counter/resources/output/counter/counter h.svg");
+  setPixmap(QPixmap(":/output/counter/counter off.png"));
+  a = QPixmap(":/output/counter/counter c.png");
+  b = QPixmap(":/output/counter/counter d.png");
+  c = QPixmap(":/output/counter/counter f.png");
+  d = QPixmap(":/output/counter/counter g.png");
+  e = QPixmap(":/output/counter/counter a.png");
+  f = QPixmap(":/output/counter/counter b.png");
+  g = QPixmap(":/output/counter/counter e.png");
+  h = QPixmap(":/output/counter/counter h.png");
 }
 
 Display::~Display() {

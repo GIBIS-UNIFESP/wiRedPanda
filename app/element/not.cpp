@@ -2,7 +2,7 @@
 
 Not::Not(QGraphicsItem *parent) : GraphicElement(1,1,1,1,parent) {
   setOutputsOnTop(true);
-  setPixmap(QPixmap(":/basic/resources/basic/not.svg"));
+  setPixmap(QPixmap(":/basic/not.png"));
   updatePorts();
 }
 

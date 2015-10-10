@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/input">
         <file>1.png</file>
         <file>button off.png</file>
         <file>button on.png</file>

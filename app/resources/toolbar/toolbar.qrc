@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/toolbar">
         <file>new.png</file>
         <file>play.png</file>
         <file>stop.png</file>

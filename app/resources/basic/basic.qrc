@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/basic">
         <file>and.png</file>
         <file>nand.png</file>
         <file>nor.png</file>

@@ -20,7 +20,7 @@
    <string>WiRED Panda</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset>
     <normaloff>:/resources/pandaLogo.png</normaloff>:/resources/pandaLogo.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -122,7 +122,7 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
+               <y>-45</y>
                <width>184</width>
                <height>522</height>
               </rect>
@@ -142,7 +142,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/input/resources/input/1.svg</pixmap>
+                   <pixmap resource="resources/input/input.qrc">:/input/1.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -166,7 +166,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/input/resources/input/0.svg</pixmap>
+                   <pixmap resource="resources/input/input.qrc">:/input/0.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -187,7 +187,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/input/resources/input/button off.svg</pixmap>
+                   <pixmap resource="resources/input/input.qrc">:/input/button off.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -208,7 +208,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/input/resources/input/switch off.svg</pixmap>
+                   <pixmap resource="resources/input/input.qrc">:/input/switch off.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -229,7 +229,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/input/resources/input/clock 0.svg</pixmap>
+                   <pixmap resource="resources/input/input.qrc">:/input/clock 0.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -253,7 +253,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/output/resources/output/WhiteLedOff.svg</pixmap>
+                   <pixmap resource="resources/output/output.qrc">:/output/WhiteLedOff.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -277,7 +277,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/output/counter/resources/output/counter/counter off.svg</pixmap>
+                   <pixmap resource="resources/output/output.qrc">:/output/counter/counter off.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -327,8 +327,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>198</width>
-               <height>425</height>
+               <width>98</width>
+               <height>172</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -343,7 +343,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/basic/resources/basic/and.svg</pixmap>
+                   <pixmap resource="resources/basic/basic.qrc">:/basic/and.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -367,7 +367,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/basic/resources/basic/or.svg</pixmap>
+                   <pixmap resource="resources/basic/basic.qrc">:/basic/or.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -388,7 +388,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/basic/resources/basic/not.svg</pixmap>
+                   <pixmap resource="resources/basic/basic.qrc">:/basic/not.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -409,7 +409,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/basic/resources/basic/nand.svg</pixmap>
+                   <pixmap resource="resources/basic/basic.qrc">:/basic/nand.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -430,7 +430,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/basic/resources/basic/nor.svg</pixmap>
+                   <pixmap resource="resources/basic/basic.qrc">:/basic/nor.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -454,7 +454,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/basic/resources/basic/xor.svg</pixmap>
+                   <pixmap resource="resources/basic/basic.qrc">:/basic/xor.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -478,7 +478,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/basic/resources/basic/xnor.svg</pixmap>
+                   <pixmap resource="resources/basic/basic.qrc">:/basic/xnor.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -528,8 +528,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>198</width>
-               <height>425</height>
+               <width>98</width>
+               <height>172</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -544,7 +544,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/memory/resources/memory/D-flipflop.svg</pixmap>
+                   <pixmap resource="resources/memory/memory.qrc">:/memory/D-flipflop.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -568,7 +568,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/memory/resources/memory/D-latch.svg</pixmap>
+                   <pixmap resource="resources/memory/memory.qrc">:/memory/D-latch.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -589,7 +589,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/memory/resources/memory/JK-flipflop.svg</pixmap>
+                   <pixmap resource="resources/memory/memory.qrc">:/memory/JK-flipflop.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -610,7 +610,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/memory/resources/memory/JK-latch.svg</pixmap>
+                   <pixmap resource="resources/memory/memory.qrc">:/memory/JK-latch.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -631,7 +631,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/memory/resources/memory/SR-flipflop.svg</pixmap>
+                   <pixmap resource="resources/memory/memory.qrc">:/memory/SR-flipflop.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -655,7 +655,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/memory/resources/memory/T-flipflop.svg</pixmap>
+                   <pixmap resource="resources/memory/memory.qrc">:/memory/T-flipflop.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -679,7 +679,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="resources.qrc">:/memory/resources/memory/T-latch.svg</pixmap>
+                   <pixmap resource="resources/memory/memory.qrc">:/memory/T-latch.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -729,8 +729,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>198</width>
-               <height>425</height>
+               <width>100</width>
+               <height>30</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -790,7 +790,7 @@
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>20</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -867,8 +867,8 @@
   </widget>
   <action name="actionOpen">
    <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/toolbar/resources/toolbar/folder.svg</normaloff>:/toolbar/resources/toolbar/folder.svg</iconset>
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/folder.png</normaloff>:/toolbar/folder.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Open...</string>
@@ -882,8 +882,8 @@
   </action>
   <action name="actionSave">
    <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/toolbar/resources/toolbar/save.svg</normaloff>:/toolbar/resources/toolbar/save.svg</iconset>
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/save.png</normaloff>:/toolbar/save.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Save</string>
@@ -918,8 +918,8 @@
   </action>
   <action name="actionCut">
    <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/toolbar/resources/toolbar/cut.svg</normaloff>:/toolbar/resources/toolbar/cut.svg</iconset>
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/cut.png</normaloff>:/toolbar/cut.png</iconset>
    </property>
    <property name="text">
     <string>Cu&amp;t</string>
@@ -930,8 +930,8 @@
   </action>
   <action name="actionCopy">
    <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/toolbar/resources/toolbar/copy.svg</normaloff>:/toolbar/resources/toolbar/copy.svg</iconset>
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/copy.png</normaloff>:/toolbar/copy.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Copy</string>
@@ -942,8 +942,8 @@
   </action>
   <action name="actionPaste">
    <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/toolbar/resources/toolbar/paste.svg</normaloff>:/toolbar/resources/toolbar/paste.svg</iconset>
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/paste.png</normaloff>:/toolbar/paste.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Paste</string>
@@ -962,8 +962,8 @@
   </action>
   <action name="actionNew">
    <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/toolbar/resources/toolbar/new.svg</normaloff>:/toolbar/resources/toolbar/new.svg</iconset>
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/new.png</normaloff>:/toolbar/new.png</iconset>
    </property>
    <property name="text">
     <string>&amp;New</string>
@@ -1052,8 +1052,8 @@
   </action>
   <action name="actionRotate_right">
    <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/toolbar/resources/toolbar/rotateR.svg</normaloff>:/toolbar/resources/toolbar/rotateR.svg</iconset>
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/rotateR.png</normaloff>:/toolbar/rotateR.png</iconset>
    </property>
    <property name="text">
     <string>Rotate right</string>
@@ -1064,8 +1064,8 @@
   </action>
   <action name="actionRotate_left">
    <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/toolbar/resources/toolbar/rotateL.svg</normaloff>:/toolbar/resources/toolbar/rotateL.svg</iconset>
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/rotateL.png</normaloff>:/toolbar/rotateL.png</iconset>
    </property>
    <property name="text">
     <string>Rotate left</string>
@@ -1130,7 +1130,16 @@
   <tabstop>scrollArea_6</tabstop>
  </tabstops>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/memory/memory.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/memory/memory.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>
 </ui>

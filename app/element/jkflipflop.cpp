@@ -3,7 +3,7 @@
 #include <QDebug>
 
 JKFlipFlop::JKFlipFlop(QGraphicsItem * parent) : GraphicElement(5,5,2,2,parent) {
-  setPixmap(QPixmap(":/memory/resources/memory/JK-flipflop.svg"));
+  setPixmap(QPixmap(":/memory/JK-flipflop.png"));
   setRotatable(false);
   updatePorts();
   lastClk = false;

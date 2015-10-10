@@ -1,7 +1,7 @@
 #include "jklatch.h"
 
 JKLatch::JKLatch(QGraphicsItem * parent) : GraphicElement(2,2,2,2, parent) {
-  setPixmap(QPixmap(":/memory/resources/memory/JK-latch.svg"));
+  setPixmap(QPixmap(":/memory/JK-latch.png"));
   setRotatable(false);
   updatePorts();
 }

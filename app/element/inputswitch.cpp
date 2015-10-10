@@ -5,7 +5,7 @@
 InputSwitch::InputSwitch(QGraphicsItem * parent) : GraphicElement(0,0,1,1,parent) {
   setOutputsOnTop(false);
   setRotatable(false);
-  setPixmap(QPixmap(":/input/resources/input/switch off.svg"));
+  setPixmap(QPixmap(":/input/switch off.png"));
   on = false;
   setHasLabel(true);
 }
@@ -18,10 +18,10 @@ void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent * event) {
   if(event->button() == Qt::LeftButton) {
     if(on) {
       on = false;
-      setPixmap(QPixmap(":/input/resources/input/switch off.svg"));
+      setPixmap(QPixmap(":/input/switch off.png"));
     } else {
       on = true;
-      setPixmap(QPixmap(":/input/resources/input/switch on.svg"));
+      setPixmap(QPixmap(":/input/switch on.png"));
     }
     setChanged(true);
     event->accept();
@@ -45,6 +45,6 @@ void InputSwitch::load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap, dou
   GraphicElement::load(ds,portMap,version);
   ds >> on;
   if(on) {
-    setPixmap(QPixmap(":/input/resources/input/switch on.svg"));
+    setPixmap(QPixmap(":/input/switch on.png"));
   }
 }

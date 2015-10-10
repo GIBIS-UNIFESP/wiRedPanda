@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/memory">
         <file>D-flipflop.png</file>
         <file>D-latch.png</file>
         <file>JK-flipflop.png</file>
