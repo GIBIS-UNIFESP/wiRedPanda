@@ -56,8 +56,13 @@ void Editor::deleteElements( ) {
     if( !scene->items( ).contains( item ) ) {
       continue;
     }
-    scene->removeItem( item );
-    delete item;
+    GraphicElement * elm = qgraphicsitem_cast<GraphicElement *>(item);
+    if(elm){
+      undoStack->push( new DeleteElementCommand(elm, scene) );
+    }else{
+      scene->removeItem( item );
+      delete item;
+    }
   }
 }
 
@@ -462,7 +467,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
           elm->setRotation( 90 );
         }
         /* Adding the element to the scene. */
-        undoStack->push( new AddCommand(elm, scene) );
+        undoStack->push( new AddElementCommand(elm, scene) );
         /* Cleaning the selection. */
         scene->clearSelection( );
         /* Setting created element as selected. */
