@@ -11,6 +11,7 @@ CONFIG(debug, debug|release) {
 
 SOURCES += \
     $$PWD/app/box.cpp \
+    $$PWD/app/commands.cpp \
     $$PWD/app/editor.cpp \
     $$PWD/app/element/and.cpp \
     $$PWD/app/element/clock.cpp \
@@ -51,6 +52,7 @@ SOURCES += \
 
 HEADERS  +=  \
     $$PWD/app/box.h \
+    $$PWD/app/commands.h \
     $$PWD/app/editor.h \
     $$PWD/app/element/and.h \
     $$PWD/app/element/clock.h \

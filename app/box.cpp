@@ -25,6 +25,7 @@ Box::Box(ElementFactory * factory, QGraphicsItem * parent) : GraphicElement(0,0,
 //  setPixmap(pixmap.transformed(transform));
   setPixmap(pixmap);
   setOutputsOnTop(true);
+  setObjectName("BOX");
 }
 
 Box::~Box() {

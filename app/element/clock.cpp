@@ -14,6 +14,7 @@ Clock::Clock(QGraphicsItem * parent) : GraphicElement(0,0,1,1,parent) {
   on = false;
   Clock::reset = true;
   setHasLabel(true);
+  setObjectName("Clock");
 }
 
 Clock::~Clock() {

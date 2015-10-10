@@ -11,5 +11,3 @@ include(../includes.pri)
 include(install.pri)
 
 SOURCES += main.cpp
-
-

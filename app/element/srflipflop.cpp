@@ -4,6 +4,7 @@ SRFlipFlop::SRFlipFlop(QGraphicsItem * parent) : GraphicElement(5,5,2,2,parent) 
     setPixmap(QPixmap(":/memory/SR-flipflop.png"));
     setRotatable(false);
     updatePorts();
+    setObjectName("FlipFlop SR");
   }
 
   SRFlipFlop::~SRFlipFlop() {

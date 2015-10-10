@@ -11,6 +11,7 @@ Led::Led(QGraphicsItem * parent) : GraphicElement(1,1,0,0,parent) {
   setPixmap(QPixmap(":/output/" + color() + "LedOff.png"));
   updatePorts();
   setHasLabel(true);
+  setObjectName("Led");
 }
 
 Led::~Led() {

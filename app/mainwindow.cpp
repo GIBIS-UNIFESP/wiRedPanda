@@ -26,6 +26,14 @@ MainWindow::MainWindow(QWidget *parent) :
   scene->setSceneRect(ui->graphicsView->rect());
   setCurrentFile(QFileInfo());
 
+  undoView = new QUndoView(editor->getUndoStack());
+  undoView->setWindowTitle(tr("Command List"));
+  undoView->show();
+  undoView->setAttribute(Qt::WA_QuitOnClose, false);
+
+  connect(ui->actionUndo, &QAction::triggered, editor->getUndoStack(), &QUndoStack::undo);
+  connect(ui->actionRedo, &QAction::triggered, editor->getUndoStack(), &QUndoStack::redo);
+
   connect(editor,&Editor::scroll,this,&MainWindow::scrollView);
 //  ui->tabWidget->setTabEnabled(2,false);
 //  ui->tabWidget->setTabEnabled(3,false);

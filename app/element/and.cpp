@@ -4,6 +4,7 @@ And::And(QGraphicsItem * parent) : GraphicElement(2,8,1,1,parent) {
   setOutputsOnTop(true);
   setPixmap(QPixmap(":/basic/and.png"));
   updatePorts();
+  setObjectName("AND");
 }
 
 And::~And() {

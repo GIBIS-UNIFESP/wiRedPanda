@@ -4,6 +4,7 @@
 
 #include <scene.h>
 #include <QObject>
+#include <QUndoCommand>
 
 #include "simulationcontroller.h"
 #include <nodes/qneconnection.h>
@@ -43,11 +44,16 @@ private:
   QPointF lastPos;
   void addItem(QGraphicsItem * item);
   QNEPort * m_hoverPort;
+  QUndoStack *undoStack;
+
   // QObject interface
 public:
   bool eventFilter(QObject *obj, QEvent *evt);
   void deleteElements();
   void setElementEditor(ElementEditor * value);
+  QUndoStack * getUndoStack() const;
+  ElementFactory &getFactory();
+  Scene * getScene() const;
 };
 
 #endif // EDITOR_H

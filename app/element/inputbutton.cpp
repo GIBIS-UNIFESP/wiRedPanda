@@ -9,6 +9,7 @@ InputButton::InputButton(QGraphicsItem * parent) : GraphicElement(0,0,1,1,parent
   outputs().first()->setValue(0);
   on = false;
   setHasLabel(true);
+  setObjectName("Button");
 }
 
 InputButton::~InputButton() {

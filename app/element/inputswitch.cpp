@@ -8,6 +8,7 @@ InputSwitch::InputSwitch(QGraphicsItem * parent) : GraphicElement(0,0,1,1,parent
   setPixmap(QPixmap(":/input/switchOff.png"));
   on = false;
   setHasLabel(true);
+  setObjectName("Switch");
 }
 
 InputSwitch::~InputSwitch() {

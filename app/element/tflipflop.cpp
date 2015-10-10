@@ -4,6 +4,7 @@ TFlipFlop::TFlipFlop(QGraphicsItem * parent) : GraphicElement(4,4,2,2,parent) {
     setPixmap(QPixmap(":/memory/T-flipflop.png"));
     setRotatable(false);
     updatePorts();
+    setObjectName("FlipFlop T");
   }
 
   TFlipFlop::~TFlipFlop() {

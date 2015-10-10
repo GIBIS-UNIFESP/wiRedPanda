@@ -18,6 +18,8 @@ Display::Display(QGraphicsItem * parent) : GraphicElement(8,8,0,0,parent) {
   f = QPixmap(":/output/counter/counter_b.png");
   g = QPixmap(":/output/counter/counter_e.png");
   h = QPixmap(":/output/counter/counter_h.png");
+
+  setObjectName("Display");
 }
 
 Display::~Display() {

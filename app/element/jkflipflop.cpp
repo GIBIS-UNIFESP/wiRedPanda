@@ -7,6 +7,7 @@ JKFlipFlop::JKFlipFlop(QGraphicsItem * parent) : GraphicElement(5,5,2,2,parent) 
   setRotatable(false);
   updatePorts();
   lastClk = false;
+  setObjectName("FlipFlop JK");
 }
 
 JKFlipFlop::~JKFlipFlop() {
