@@ -10,14 +10,14 @@
         <file>RedLedOn.png</file>
         <file>PurpleLedOn.png</file>
         <file>GreenLedOn.png</file>
-        <file>counter/counter a.png</file>
-        <file>counter/counter b.png</file>
-        <file>counter/counter c.png</file>
-        <file>counter/counter d.png</file>
-        <file>counter/counter e.png</file>
-        <file>counter/counter f.png</file>
-        <file>counter/counter g.png</file>
-        <file>counter/counter h.png</file>
-        <file>counter/counter off.png</file>
+        <file>counter/counter_a.png</file>
+        <file>counter/counter_b.png</file>
+        <file>counter/counter_c.png</file>
+        <file>counter/counter_d.png</file>
+        <file>counter/counter_e.png</file>
+        <file>counter/counter_f.png</file>
+        <file>counter/counter_g.png</file>
+        <file>counter/counter_h.png</file>
+        <file>counter/counter_off.png</file>
     </qresource>
 </RCC>

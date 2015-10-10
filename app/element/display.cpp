@@ -9,15 +9,15 @@ Display::Display(QGraphicsItem * parent) : GraphicElement(8,8,0,0,parent) {
   setBottomPosition(58);
   setTopPosition(6);
 
-  setPixmap(QPixmap(":/output/counter/counter off.png"));
-  a = QPixmap(":/output/counter/counter c.png");
-  b = QPixmap(":/output/counter/counter d.png");
-  c = QPixmap(":/output/counter/counter f.png");
-  d = QPixmap(":/output/counter/counter g.png");
-  e = QPixmap(":/output/counter/counter a.png");
-  f = QPixmap(":/output/counter/counter b.png");
-  g = QPixmap(":/output/counter/counter e.png");
-  h = QPixmap(":/output/counter/counter h.png");
+  setPixmap(QPixmap(":/output/counter/counter_off.png"));
+  a = QPixmap(":/output/counter/counter_c.png");
+  b = QPixmap(":/output/counter/counter_d.png");
+  c = QPixmap(":/output/counter/counter_f.png");
+  d = QPixmap(":/output/counter/counter_g.png");
+  e = QPixmap(":/output/counter/counter_a.png");
+  f = QPixmap(":/output/counter/counter_b.png");
+  g = QPixmap(":/output/counter/counter_e.png");
+  h = QPixmap(":/output/counter/counter_h.png");
 }
 
 Display::~Display() {

@@ -291,7 +291,7 @@ void MainWindow::on_actionOpen_Box_triggered() {
       horizontalLayout_BOX->setSpacing(6);
       horizontalLayout_BOX->setObjectName(QStringLiteral("horizontalLayout_BOX"));
       horizontalLayout_BOX->setSizeConstraint(QLayout::SetFixedSize);
-      QPixmap pixmap(QString::fromUtf8(":/basic/resources/basic/box.svg"));
+      QPixmap pixmap(QString::fromUtf8(":/basic/box.png"));
       Label * label_BOX_ICON = new Label(ui->scrollAreaWidgetContents_Box);
       label_BOX_ICON->setObjectName(QStringLiteral("label_box"));
       label_BOX_ICON->setPixmap(pixmap);
