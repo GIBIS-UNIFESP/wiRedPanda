@@ -7,4 +7,4 @@ The main features of the software are:
   - User-friendly interface.
   - Its intuitive and easy to use.
 
-
+![Alt text](images/wpanda.png?raw=true "WiRed Panda Screenshot")
