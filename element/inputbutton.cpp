@@ -20,8 +20,9 @@ void InputButton::mousePressEvent(QGraphicsSceneMouseEvent * event) {
     setPixmap(QPixmap(":/input/resources/input/button on.svg"));
     on = true;
     setChanged(true);
-    setSelected(false);
+    event->accept();
   }
+  QGraphicsItem::mousePressEvent(event);
 }
 
 void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent * event) {
@@ -29,8 +30,9 @@ void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent * event) {
     setPixmap(QPixmap(":/input/resources/input/button off.svg"));
     on = false;
     setChanged(true);
-    setSelected(false);
+    event->accept();
   }
+  QGraphicsItem::mouseReleaseEvent(event);
 }
 
 void InputButton::updateLogic() {

@@ -409,7 +409,7 @@ bool Editor::eventFilter(QObject * obj, QEvent * evt) {
         qint32 type;
         dataStream >> offset >> type >> label_auxData;
         QPointF pos = dde->scenePos() - offset;
-        qDebug() << "Drop event: " << " , " << offset << " , " << type;
+//        qDebug() << "Drop event: " << " , " << offset << " , " << type;
 
         //        pos = roundTo(pos,64);
         //        qDebug() << pos << roundTo(pos,64);

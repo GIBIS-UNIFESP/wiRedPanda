@@ -19,7 +19,7 @@ void Label::mousePressEvent(QMouseEvent *event) {
   QByteArray itemData;
   QDataStream dataStream(&itemData, QIODevice::WriteOnly);
   ElementType type = ElementType::UNKNOWN;
-  qDebug() << objectName();
+//  qDebug() << objectName();
   if(objectName().endsWith("_button")) {
     type = ElementType::BUTTON;
   } else if(objectName().endsWith("_led")) {

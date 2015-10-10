@@ -50,7 +50,7 @@ float Clock::frequency() {
 }
 
 void Clock::setFrequency(float freq) {
-  qDebug() << "Clock frequency set to " << freq;
+//  qDebug() << "Clock frequency set to " << freq;
   if( freq > 0 && m_frequency != freq) {
     m_frequency = freq;
     interval = static_cast< int >(frequencyMultiplier/freq);
