@@ -98,8 +98,12 @@ FORMS    += \
     $$PWD/app/elementeditor.ui
 
 RESOURCES += \
-    $$PWD/app/resources.qrc
-
+    $$PWD/app/resources/resources.qrc\
+    $$PWD/app/resources/basic/basic.qrc\
+    $$PWD/app/resources/input/input.qrc\
+    $$PWD/app/resources/memory/memory.qrc\
+    $$PWD/app/resources/output/output.qrc\
+    $$PWD/app/resources/toolbar/toolbar.qrc
 
 debug{
 DEFINES += DEBUG

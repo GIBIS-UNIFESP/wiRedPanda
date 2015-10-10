@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>and.png</file>
+        <file>nand.png</file>
+        <file>nor.png</file>
+        <file>not.png</file>
+        <file>or.png</file>
+        <file>xnor.png</file>
+        <file>xor.png</file>
+        <file>box.png</file>
+    </qresource>
+</RCC>

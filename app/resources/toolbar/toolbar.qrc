@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file>new.png</file>
+        <file>play.png</file>
+        <file>stop.png</file>
+        <file>pause.png</file>
+        <file>folder.png</file>
+        <file>rotateR.png</file>
+        <file>save.png</file>
+        <file>rotateL.png</file>
+        <file>copy.png</file>
+        <file>cut.png</file>
+        <file>paste.png</file>
+    </qresource>
+</RCC>
