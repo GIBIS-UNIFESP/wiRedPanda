@@ -7,6 +7,7 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QShortcut>
 #include <iostream>
 
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
@@ -18,9 +19,8 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->graphicsView->setAcceptDrops( true );
   editor->setElementEditor( ui->widgetElementEditor );
   editor->getScene( )->setSceneRect( ui->graphicsView->rect( ) );
-
+  ui->searchScrollArea->hide( );
   setCurrentFile( QFileInfo( ) );
-
 #ifdef DEBUG
   createUndoView( );
 #endif
@@ -29,6 +29,9 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   connect( ui->actionRedo, &QAction::triggered, editor->getUndoStack( ), &QUndoStack::redo );
 
   connect( editor, &Editor::scroll, this, &MainWindow::scrollView );
+
+  QShortcut *shortcut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
+  connect( shortcut, SIGNAL( activated( ) ), ui->lineEdit, SLOT( setFocus( ) ) );
 /*
  *  ui->tabWidget->setTabEnabled(2,false);
  *  ui->tabWidget->setTabEnabled(3,false);
@@ -356,4 +359,45 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
   }
   fl.close( );
   ui->statusBar->showMessage( "Loaded box sucessfully.", 2000 );
+}
+
+void MainWindow::on_lineEdit_textChanged( const QString &text ) {
+  ui->searchLayout->removeItem( ui->VSpacer );
+  while (QLayoutItem* item = ui->searchLayout->takeAt(0)){
+    if (QWidget* widget = item->widget())
+      delete widget;
+  }
+  if( text.isEmpty( ) ) {
+    ui->searchScrollArea->hide( );
+    ui->tabWidget->show( );
+  }
+  else {
+    ui->searchScrollArea->show( );
+    ui->tabWidget->hide( );
+    QList< Label* > searchResults =
+      ui->tabWidget->findChildren< Label* >( QRegularExpression( QString( "^label_.*%1.*" ).arg( text ) ) );
+    foreach( Label * label, searchResults ) {
+      QHBoxLayout *itemLayout = new QHBoxLayout( );
+      itemLayout->setSpacing( 6 );
+      itemLayout->setObjectName( QStringLiteral( "itemLayout" ) );
+      itemLayout->setSizeConstraint( QLayout::SetFixedSize );
+
+      QFrame *searchResult = new QFrame( );
+      searchResult->setObjectName( "searchResult" );
+      searchResult->setLayout( itemLayout );
+
+      Label *copy = new Label( this );
+      copy->setObjectName( label->objectName( ) );
+      copy->setPixmap( *label->pixmap( ) );
+
+      QString name = label->objectName( ).remove( "label_" ).toUpper( );
+      QLabel *nameLabel = new QLabel( name );
+
+      itemLayout->addWidget( copy );
+      itemLayout->addWidget( nameLabel );
+
+      ui->searchLayout->addWidget( searchResult );
+    }
+  }
+  ui->searchLayout->addItem( ui->VSpacer );
 }
