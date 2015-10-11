@@ -6,6 +6,7 @@
 #include <QPointF>
 #include <QUndoCommand>
 #include <qneconnection.h>
+#include <memory>
 
 class Scene;
 class Editor;
@@ -30,7 +31,7 @@ private:
 class DeleteItemsCommand : public QUndoCommand {
 public:
   DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor, QUndoCommand *parent = 0 );
-//  virtual ~DeleteItemsCommand( );
+/*  virtual ~DeleteItemsCommand( ); */
   void undo( ) Q_DECL_OVERRIDE;
   void redo( ) Q_DECL_OVERRIDE;
 
@@ -40,6 +41,5 @@ private:
   QList< QNEConnection* > connections;
   Editor *editor;
 };
-
 
 #endif /* COMMANDS_H */

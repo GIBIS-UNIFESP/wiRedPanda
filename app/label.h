@@ -21,7 +21,6 @@ protected:
 private:
   QString m_elementType;
   QString m_auxData;
-
 };
 
 #endif /* LABEL_H */

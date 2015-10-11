@@ -40,8 +40,8 @@ QNEConnection::QNEConnection( QGraphicsItem *parent ) : QGraphicsPathItem( paren
   setBrush( Qt::NoBrush );
   setStatus( Inactive );
   setZValue( -1 );
-  m_port1 = 0;
-  m_port2 = 0;
+  m_port1 = nullptr;
+  m_port2 = nullptr;
 }
 
 QNEConnection::~QNEConnection( ) {

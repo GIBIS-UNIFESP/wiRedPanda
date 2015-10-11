@@ -26,7 +26,7 @@ void Editor::buildSelectionRect( ) {
 
 }
 
-Editor::Editor( QObject *parent ) : QObject( parent ), scene( NULL ), conn( NULL ), m_hoverPort( NULL ) {
+Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ), conn( nullptr ), m_hoverPort( nullptr ) {
   markingSelectionBox = false;
   undoStack = new QUndoStack( this );
   scene = new Scene( this );
@@ -104,7 +104,7 @@ void Editor::rotate( bool rotateRight ) {
       }
       item->setPos( transform.map( item->pos( ) ) );
     }
-    item->update();
+    item->update( );
   }
 }
 
@@ -169,7 +169,7 @@ void Editor::paste( QDataStream &ds ) {
   foreach( QGraphicsItem * item, itemList ) {
     if( item->type( ) == GraphicElement::Type ) {
       item->setPos( ( item->pos( ) + offset ) );
-      item->update();
+      item->update( );
     }
   }
 }
@@ -270,32 +270,41 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
       case QEvent::GraphicsSceneMousePress: {
       if( m_hoverPort ) {
         m_hoverPort->hoverLeave( );
-        m_hoverPort = NULL;
+        m_hoverPort = nullptr;
         QApplication::setOverrideCursor( QCursor( ) );
       }
       if( mouseEvt ) {
         QGraphicsItem *item = itemAt( mousePos );
         if( item && ( item->type( ) == QNEPort::Type ) ) {
-          /* Mouse pressed over an item. */
+          /* When the mouse pressed over an connected input port, the line
+           * is disconnected and can be connected in an other port. */
           QNEPort *port2 = ( QNEPort* ) item;
           if( port2->isInput( ) && !port2->connections( ).empty( ) ) {
+            /* The last connected line is detached */
             conn = port2->connections( ).last( );
             conn->setFocus( );
+
             QNEPort *port1 = conn->otherPort( port2 );
             if( port1 ) {
               port2->disconnect( conn );
-              conn->setPort2( NULL );
+              QList< QGraphicsItem* > itemList;
+              itemList.append( conn );
+              undoStack->push( new DeleteItemsCommand( itemList, this ) );
+              conn = nullptr;
+              conn = new QNEConnection();
               conn->setPort1( port1 );
-              conn->setPos1( port1->scenePos( ) );
-              conn->setPos2( mousePos );
+              conn->setPort2( nullptr );
+              conn->updatePosFromPorts( );
+              conn->setPos2(mousePos);
               conn->updatePath( );
+              addItem( conn );
             }
             else {
-              conn = NULL;
+              conn = nullptr;
             }
           }
           else {
-            conn = new QNEConnection( );
+            conn = new QNEConnection();
             addItem( conn );
             conn->setPort1( ( QNEPort* ) item );
             conn->setPos1( mousePos );
@@ -317,7 +326,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
             markingSelectionBox = true;
             selectionRect->setRect( QRectF( selectionStartPoint, selectionStartPoint ) );
             selectionRect->show( );
-            selectionRect->update();
+            selectionRect->update( );
           }
         }
       }
@@ -328,7 +337,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
       QNEPort *item = dynamic_cast< QNEPort* >( itemAt( mousePos ) );
       if( m_hoverPort && ( item != m_hoverPort ) ) {
         m_hoverPort->hoverLeave( );
-        m_hoverPort = NULL;
+        m_hoverPort = nullptr;
         QApplication::setOverrideCursor( QCursor( ) );
       }
       else if( item && ( item->type( ) == QNEPort::Type ) ) {
@@ -364,7 +373,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
       case QEvent::GraphicsSceneMouseRelease: {
       if( m_hoverPort ) {
         m_hoverPort->hoverLeave( );
-        m_hoverPort = NULL;
+        m_hoverPort = nullptr;
         QApplication::setOverrideCursor( QCursor( ) );
       }
       /* When mouse is released the selection rect is hidden. */
@@ -386,6 +395,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
           /* Verifying if the connection is valid. */
           if( ( port1->isOutput( ) != port2->isOutput( ) ) &&
               ( port1->graphicElement( ) != port2->graphicElement( ) ) && !port1->isConnected( port2 ) ) {
+            qDebug( ) << "Finalizing connection.";
             /* Finalizing connection. */
             conn->setPos2( port2->scenePos( ) );
             conn->setPort2( port2 );
@@ -396,8 +406,11 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
           }
         }
         /* When mouse is released away from a QNEPort, the connection is discarded. */
-        delete conn;
-        conn = NULL;
+        scene->removeItem( conn );
+        if( conn->port1( ) ) {
+          conn->port1( )->disconnect( conn );
+        }
+        conn = nullptr;
         return( true );
       }
       break;
@@ -419,7 +432,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
         /*
          *        pos = roundTo(pos,64);
          *        qDebug() << pos << roundTo(pos,64);
-         * Send element type to element factory. Returns NULL if type is unknown.
+         * Send element type to element factory. Returns nullptr if type is unknown.
          */
         GraphicElement *elm = factory.buildElement( ( ElementType ) type );
         /* If element type is unknown, a default element is created with the pixmap received from mimedata */

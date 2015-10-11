@@ -2,14 +2,14 @@
 #define EDITOR_H
 
 
+#include "simulationcontroller.h"
 #include <QObject>
 #include <QUndoCommand>
-#include <scene.h>
-
-#include "simulationcontroller.h"
 #include <elementeditor.h>
 #include <elementfactory.h>
+#include <memory>
 #include <nodes/qneconnection.h>
+#include <scene.h>
 
 class Editor : public QObject {
   Q_OBJECT
@@ -34,7 +34,7 @@ private:
   QUndoStack *undoStack;
   Scene *scene;
   QGraphicsItem* itemAt( const QPointF &pos );
-  QNEConnection *conn;
+  QNEConnection * conn;
   ElementFactory factory;
   ElementEditor *elementEditor;
   bool markingSelectionBox;
