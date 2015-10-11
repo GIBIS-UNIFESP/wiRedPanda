@@ -52,11 +52,14 @@ void Editor::clear( ) {
     scene->clear( );
   }
   buildSelectionRect( );
-  undoStack->clear();
+  undoStack->clear( );
 }
 
 void Editor::deleteElements( ) {
-  undoStack->push( new DeleteElementsCommand( scene->selectedItems( ), this ) );
+  const QList< QGraphicsItem* > &items = scene->selectedItems( );
+  if( !items.isEmpty( ) ) {
+    undoStack->push( new DeleteItemsCommand( items, this ) );
+  }
 }
 
 void Editor::showWires( bool checked ) {
@@ -161,6 +164,7 @@ void Editor::paste( QDataStream &ds ) {
   ds >> ctr;
   QPointF offset = mousePos - ctr - QPointF( 32.0f, 32.0f );
   QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( this, ds );
+  undoStack->push( new AddItemsCommand( itemList, this ) );
   foreach( QGraphicsItem * item, itemList ) {
     if( item->type( ) == GraphicElement::Type ) {
       item->setPos( ( item->pos( ) + offset ) );
@@ -382,7 +386,8 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
             conn->setPos2( port2->scenePos( ) );
             conn->setPort2( port2 );
             conn->updatePath( );
-            conn = 0;
+            undoStack->push( new AddItemsCommand( conn, this ) );
+            conn = nullptr;
             return( true );
           }
         }
@@ -431,7 +436,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
           elm->setRotation( 90 );
         }
         /* Adding the element to the scene. */
-        undoStack->push( new AddElementCommand( elm, scene ) );
+        undoStack->push( new AddItemsCommand( elm, this ) );
         /* Cleaning the selection. */
         scene->clearSelection( );
         /* Setting created element as selected. */

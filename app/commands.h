@@ -5,35 +5,39 @@
 #include <QList>
 #include <QPointF>
 #include <QUndoCommand>
+#include <qneconnection.h>
 
 class Scene;
 class Editor;
 class GraphicElement;
 
-class AddElementCommand : public QUndoCommand {
+class AddItemsCommand : public QUndoCommand {
 public:
-  AddElementCommand( GraphicElement *aItem, Scene *aScene, QUndoCommand *parent = 0 );
-  virtual ~AddElementCommand( );
+  AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoCommand *parent = 0 );
+  AddItemsCommand( QNEConnection *aItem, Editor *aEditor, QUndoCommand *parent = 0 );
+  AddItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor, QUndoCommand *parent = 0 );
+  virtual ~AddItemsCommand( );
 
   void undo( ) Q_DECL_OVERRIDE;
   void redo( ) Q_DECL_OVERRIDE;
 
 private:
-  GraphicElement *item;
+  QList< QGraphicsItem* > items;
   QDataStream storedData;
-  Scene *scene;
+  Editor *editor;
 };
 
-class DeleteElementsCommand : public QUndoCommand {
+class DeleteItemsCommand : public QUndoCommand {
 public:
-  DeleteElementsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor, QUndoCommand *parent = 0 );
-  virtual ~DeleteElementsCommand();
+  DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor, QUndoCommand *parent = 0 );
+//  virtual ~DeleteItemsCommand( );
   void undo( ) Q_DECL_OVERRIDE;
   void redo( ) Q_DECL_OVERRIDE;
 
 private:
   QByteArray itemData;
-  QList< QGraphicsItem* > items;
+  QList< GraphicElement* > elements;
+  QList< QNEConnection* > connections;
   Editor *editor;
 };
 

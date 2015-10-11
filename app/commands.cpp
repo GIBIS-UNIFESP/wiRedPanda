@@ -7,70 +7,68 @@
 
 /* TODO Criar comandos usando mesma técnica do copy n' paste. */
 
-AddElementCommand::AddElementCommand( GraphicElement *aItem, Scene *aScene, QUndoCommand *parent ) : QUndoCommand(
+AddItemsCommand::AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
     parent ) {
-  item = aItem;
-  scene = aScene;
-  setText( QString( "Add %1 element" ).arg( item->objectName( ) ) );
-}
-
-AddElementCommand::~AddElementCommand( ) {
-  if( qgraphicsitem_cast<GraphicElement * >(item) ) {
-    delete item;
-  }
-}
-
-void AddElementCommand::undo( ) {
-  scene->removeItem( item );
-}
-
-void AddElementCommand::redo( ) {
-  scene->addItem( item );
-  scene->clearSelection( );
-  scene->update( );
-}
-
-DeleteElementsCommand::DeleteElementsCommand( const QList< QGraphicsItem* > &aItems,
-                                              Editor *aEditor,
-                                              QUndoCommand *parent ) : QUndoCommand( parent ) {
+  items.append( aItem );
   editor = aEditor;
-  items = aItems;
-  setText( QString( "Delete %1 elements" ).arg( items.size( ) ) );
+  setText( QString( "Add %1 element" ).arg( aItem->objectName( ) ) );
 }
 
-DeleteElementsCommand::~DeleteElementsCommand( ) {
+AddItemsCommand::AddItemsCommand( QNEConnection *aItem, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
+    parent ) {
+  items.append( aItem );
+  editor = aEditor;
+  setText( QString( "Add connection" ) );
+}
+
+AddItemsCommand::AddItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor,
+                                  QUndoCommand *parent ) : QUndoCommand( parent ) {
+  items = aItems;
+  editor = aEditor;
+  setText( QString( "Add %1 elements" ).arg( items.size( ) ) );
+}
+
+AddItemsCommand::~AddItemsCommand( ) {
   foreach( QGraphicsItem * item, items ) {
-    if( qgraphicsitem_cast<GraphicElement * >(item) ) {
+    if( item->type( ) == QNEConnection::Type ) {
+      delete item;
+      items.removeAll( item );
+    }
+  }
+
+  foreach( QGraphicsItem * item, items ) {
+    if( !item->scene( ) ) {
       delete item;
     }
   }
 }
 
-void DeleteElementsCommand::undo( ) {
-  QDataStream storedData( &itemData, QIODevice::ReadOnly );
-  Scene *scene = editor->getScene( );
+void AddItemsCommand::undo( ) {
   foreach( QGraphicsItem * item, items ) {
-    scene->addItem( item );
+    if( item->scene( ) ) {
+      editor->getScene( )->removeItem( item );
+    }
   }
-  while( !storedData.atEnd( ) ) {
-    QNEConnection *conn = new QNEConnection( 0 );
-    scene->addItem( conn );
-    conn->load( storedData );
-  }
-  itemData.clear( );
 }
 
-void DeleteElementsCommand::redo( ) {
-  itemData.clear( );
-  QDataStream storedData( &itemData, QIODevice::WriteOnly );
-  Scene *scene = editor->getScene( );
-  QList< QGraphicsItem* > savedItems;
-  QList< QNEConnection* > connections;
+void AddItemsCommand::redo( ) {
   foreach( QGraphicsItem * item, items ) {
-    scene->removeItem( item );
+    if( !item->scene( ) ) {
+      editor->getScene( )->addItem( item );
+    }
+    item->setSelected( true );
+  }
+  editor->getScene( )->clearSelection( );
+  editor->getScene( )->update( );
+}
+
+DeleteItemsCommand::DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor,
+                                        QUndoCommand *parent ) : QUndoCommand( parent ) {
+  editor = aEditor;
+  foreach( QGraphicsItem * item, aItems ) {
     if( item->type( ) == GraphicElement::Type ) {
-      savedItems.append( item );
       GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+      elements.append( elm );
       QVector< QNEPort* > ports = elm->inputs( );
       ports.append( elm->outputs( ) );
       foreach( QNEPort * port, ports ) {
@@ -88,9 +86,41 @@ void DeleteElementsCommand::redo( ) {
       }
     }
   }
+
+  setText( QString( "Delete %1 elements" ).arg( elements.size( ) ) );
+}
+
+void DeleteItemsCommand::undo( ) {
+  QDataStream storedData( &itemData, QIODevice::ReadOnly );
+  foreach( QGraphicsItem * item, elements ) {
+    editor->getScene( )->addItem( item );
+  }
+  foreach( QNEConnection * conn, connections ) {
+    editor->getScene( )->addItem( conn );
+    conn->load( storedData );
+  }
+  itemData.clear( );
+  editor->getScene( )->update( );
+}
+
+void DeleteItemsCommand::redo( ) {
+  itemData.clear( );
+  QDataStream storedData( &itemData, QIODevice::WriteOnly );
   foreach( QNEConnection * conn, connections ) {
     conn->save( storedData );
-    delete conn;
+    QNEPort *p1 = conn->port1( );
+    if( p1 ) {
+      p1->disconnect( conn );
+    }
+    QNEPort *p2 = conn->port2( );
+    if( p2 ) {
+      p2->disconnect( conn );
+    }
+    editor->getScene( )->removeItem( conn );
   }
-  items.swap( savedItems );
+
+  foreach( GraphicElement * elm, elements ) {
+    editor->getScene( )->removeItem( elm );
+  }
+
 }

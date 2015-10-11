@@ -28,6 +28,7 @@ public:
   void setCurrentFile( const QFileInfo &value );
 
   void open( const QString &fname );
+  void createUndoView();
 private slots:
   void scrollView( int dx, int dy );
 

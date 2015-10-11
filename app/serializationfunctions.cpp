@@ -46,11 +46,13 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDa
     else if( type == QNEConnection::Type ) {
       QNEConnection *conn = new QNEConnection( 0 );
       scene->addItem( conn );
-      itemList.append( conn );
       conn->setSelected( true );
       if( !conn->load( ds, portMap ) ) {
         scene->removeItem( conn );
         delete conn;
+      }
+      else {
+        itemList.append( conn );
       }
     }
     else {
