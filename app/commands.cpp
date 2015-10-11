@@ -15,7 +15,7 @@ AddElementCommand::AddElementCommand( GraphicElement *aItem, Scene *aScene, QUnd
 }
 
 AddElementCommand::~AddElementCommand( ) {
-  if( !scene->items( ).contains( item ) ) {
+  if( qgraphicsitem_cast<GraphicElement * >(item) ) {
     delete item;
   }
 }
@@ -38,6 +38,14 @@ DeleteElementsCommand::DeleteElementsCommand( const QList< QGraphicsItem* > &aIt
   setText( QString( "Delete %1 elements" ).arg( items.size( ) ) );
 }
 
+DeleteElementsCommand::~DeleteElementsCommand( ) {
+  foreach( QGraphicsItem * item, items ) {
+    if( qgraphicsitem_cast<GraphicElement * >(item) ) {
+      delete item;
+    }
+  }
+}
+
 void DeleteElementsCommand::undo( ) {
   QDataStream storedData( &itemData, QIODevice::ReadOnly );
   Scene *scene = editor->getScene( );
@@ -49,10 +57,11 @@ void DeleteElementsCommand::undo( ) {
     scene->addItem( conn );
     conn->load( storedData );
   }
+  itemData.clear( );
 }
 
 void DeleteElementsCommand::redo( ) {
-  itemData.clear();
+  itemData.clear( );
   QDataStream storedData( &itemData, QIODevice::WriteOnly );
   Scene *scene = editor->getScene( );
   QList< QGraphicsItem* > savedItems;

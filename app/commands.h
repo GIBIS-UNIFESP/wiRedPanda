@@ -13,7 +13,7 @@ class GraphicElement;
 class AddElementCommand : public QUndoCommand {
 public:
   AddElementCommand( GraphicElement *aItem, Scene *aScene, QUndoCommand *parent = 0 );
-  ~AddElementCommand( );
+  virtual ~AddElementCommand( );
 
   void undo( ) Q_DECL_OVERRIDE;
   void redo( ) Q_DECL_OVERRIDE;
@@ -27,7 +27,7 @@ private:
 class DeleteElementsCommand : public QUndoCommand {
 public:
   DeleteElementsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor, QUndoCommand *parent = 0 );
-
+  virtual ~DeleteElementsCommand();
   void undo( ) Q_DECL_OVERRIDE;
   void redo( ) Q_DECL_OVERRIDE;
 
