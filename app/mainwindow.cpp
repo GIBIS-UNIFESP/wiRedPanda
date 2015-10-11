@@ -32,6 +32,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 
   QShortcut *shortcut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
   connect( shortcut, SIGNAL( activated( ) ), ui->lineEdit, SLOT( setFocus( ) ) );
+  ui->graphicsView->setCacheMode(QGraphicsView::CacheBackground);
 /*
  *  ui->tabWidget->setTabEnabled(2,false);
  *  ui->tabWidget->setTabEnabled(3,false);

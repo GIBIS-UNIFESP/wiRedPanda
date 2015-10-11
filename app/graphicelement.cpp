@@ -15,6 +15,8 @@ GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, 
   setFlag(QGraphicsItem::ItemIsSelectable);
 //  setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
   setFlag(QGraphicsItem::ItemSendsGeometryChanges);
+
+
   label->hide();
   QFont font("SansSerif");
   font.setBold(true);
@@ -67,6 +69,7 @@ void GraphicElement::setId(int value) {
 void GraphicElement::setPixmap(const QPixmap & pixmap) {
   setTransformOriginPoint(32,32);
   this->pixmap = pixmap;
+  update(boundingRect());
 }
 
 QVector<QNEPort *> GraphicElement::outputs() const {
@@ -233,6 +236,7 @@ void GraphicElement::updatePorts() {
     int x = 32 - m_outputs.size()*step + step;
     foreach (QNEPort * port, m_outputs) {
       port->setPos(x,outputPos);
+      port->update();
       x+= step * 2;
     }
   }
@@ -241,6 +245,7 @@ void GraphicElement::updatePorts() {
     int x = 32 - m_inputs.size()*step + step;
     foreach (QNEPort * port, m_inputs) {
       port->setPos(x,inputPos);
+      port->update();
       x+= step * 2;
     }
   }
@@ -278,7 +283,7 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
       port->updateConnections();
     }
   }
-
+  update();
   return QGraphicsItem::itemChange(change, value);
 }
 

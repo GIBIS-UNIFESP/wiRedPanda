@@ -104,6 +104,7 @@ void Editor::rotate( bool rotateRight ) {
       }
       item->setPos( transform.map( item->pos( ) ) );
     }
+    item->update();
   }
 }
 
@@ -168,6 +169,7 @@ void Editor::paste( QDataStream &ds ) {
   foreach( QGraphicsItem * item, itemList ) {
     if( item->type( ) == GraphicElement::Type ) {
       item->setPos( ( item->pos( ) + offset ) );
+      item->update();
     }
   }
 }
@@ -286,6 +288,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
               conn->setPort1( port1 );
               conn->setPos1( port1->scenePos( ) );
               conn->setPos2( mousePos );
+              conn->updatePath( );
             }
             else {
               conn = NULL;
@@ -314,6 +317,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
             markingSelectionBox = true;
             selectionRect->setRect( QRectF( selectionStartPoint, selectionStartPoint ) );
             selectionRect->show( );
+            selectionRect->update();
           }
         }
       }
