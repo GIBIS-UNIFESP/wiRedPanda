@@ -5,8 +5,8 @@
 #include <QList>
 #include <QPointF>
 #include <QUndoCommand>
-#include <qneconnection.h>
 #include <memory>
+#include <qneconnection.h>
 
 class Scene;
 class Editor;
@@ -40,5 +40,20 @@ private:
   QList< QNEConnection* > connections;
   Editor *editor;
 };
+
+class RotateCommand : public QUndoCommand {
+public:
+  RotateCommand(const QList< GraphicElement* > &aItems, int angle, QUndoCommand *parent = 0 );
+  void undo( ) Q_DECL_OVERRIDE;
+  void redo( ) Q_DECL_OVERRIDE;
+
+private:
+  int angle;
+  QList< GraphicElement* > list;
+  QList< QPointF > positions;
+};
+
+
+
 
 #endif /* COMMANDS_H */

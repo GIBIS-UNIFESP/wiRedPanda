@@ -5,6 +5,8 @@
 #include "scene.h"
 #include "serializationfunctions.h"
 
+#include <QDebug>
+
 /* TODO Criar comandos usando mesma técnica do copy n' paste. */
 
 AddItemsCommand::AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
@@ -30,7 +32,7 @@ AddItemsCommand::AddItemsCommand( const QList< QGraphicsItem* > &aItems, Editor 
 
 AddItemsCommand::~AddItemsCommand( ) {
   foreach( QGraphicsItem * item, items ) {
-    if( item->type( ) == QNEConnection::Type && ! item->scene() ) {
+    if( ( item->type( ) == QNEConnection::Type ) && !item->scene( ) ) {
       items.removeAll( item );
       delete item;
     }
@@ -123,4 +125,47 @@ void DeleteItemsCommand::redo( ) {
     editor->getScene( )->removeItem( elm );
   }
 
+}
+
+
+RotateCommand::RotateCommand( const QList< GraphicElement* > &aItems, int aAngle, QUndoCommand *parent ) : QUndoCommand(
+    parent ) {
+  list = aItems;
+  angle = aAngle;
+  setText( QString( "Rotate %1 degrees" ).arg( angle ) );
+}
+
+void RotateCommand::undo( ) {
+  for( size_t i = 0; i < list.size(); ++i ) {
+    GraphicElement *elm = list[i];
+    if( elm->rotatable( ) ) {
+      elm->setRotation( elm->rotation( ) - angle );
+    }
+    elm->setPos(positions[i]);
+  }
+}
+
+void RotateCommand::redo( ) {
+  double cx = 0, cy = 0;
+  int sz = 0;
+  positions.clear( );
+  foreach( GraphicElement * item, list ) {
+    positions.append( item->pos( ) );
+    cx += item->pos( ).x( );
+    cy += item->pos( ).y( );
+    sz++;
+  }
+  cx /= sz;
+  cy /= sz;
+  foreach( GraphicElement *elm, list ) {
+    QTransform transform;
+    transform.translate( cx, cy );
+    transform.rotate( angle );
+    transform.translate( -cx, -cy );
+    if( elm->rotatable( ) ) {
+      elm->setRotation( elm->rotation( ) + angle );
+    }
+    elm->setPos( transform.map( elm->pos( ) ) );
+    elm->update( );
+  }
 }

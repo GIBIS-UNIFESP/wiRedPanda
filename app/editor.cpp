@@ -75,36 +75,16 @@ void Editor::rotate( bool rotateRight ) {
   if( !rotateRight ) {
     angle = -angle;
   }
-  double cx = 0, cy = 0;
-  int sz = 0;
   QList< QGraphicsItem* > list = scene->selectedItems( );
+  QList< GraphicElement * > elms;
   foreach( QGraphicsItem * item, list ) {
-    if( item->type( ) == GraphicElement::Type ) {
-      item->setTransformOriginPoint( 32, 32 );
-
-      cx += item->pos( ).x( );
-      cy += item->pos( ).y( );
-
-      sz++;
+    GraphicElement * elm = qgraphicsitem_cast<GraphicElement *>(item);
+    if(elm && elm->type() == GraphicElement::Type) {
+      elms.append( elm );
     }
   }
-  cx /= sz;
-  cy /= sz;
-  foreach( QGraphicsItem * item, list ) {
-    if( item->type( ) == GraphicElement::Type ) {
-      GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
-      QTransform transform;
-      transform.translate( cx, cy );
-      transform.rotate( angle );
-      transform.translate( -cx, -cy );
-      if( elm ) {
-        if( elm->rotatable( ) ) {
-          elm->setRotation( item->rotation( ) + angle );
-        }
-      }
-      item->setPos( transform.map( item->pos( ) ) );
-    }
-    item->update( );
+  if(elms.size() > 1 || (elms.size() == 1 && elms.front()->rotatable() )){
+    undoStack->push( new RotateCommand( elms, angle ) );
   }
 }
 
@@ -291,11 +271,11 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
               itemList.append( conn );
               undoStack->push( new DeleteItemsCommand( itemList, this ) );
               conn = nullptr;
-              conn = new QNEConnection();
+              conn = new QNEConnection( );
               conn->setPort1( port1 );
               conn->setPort2( nullptr );
               conn->updatePosFromPorts( );
-              conn->setPos2(mousePos);
+              conn->setPos2( mousePos );
               conn->updatePath( );
               addItem( conn );
             }
@@ -304,7 +284,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
             }
           }
           else {
-            conn = new QNEConnection();
+            conn = new QNEConnection( );
             addItem( conn );
             conn->setPort1( ( QNEPort* ) item );
             conn->setPos1( mousePos );
