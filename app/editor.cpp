@@ -52,10 +52,11 @@ void Editor::clear( ) {
     scene->clear( );
   }
   buildSelectionRect( );
+  undoStack->clear();
 }
 
 void Editor::deleteElements( ) {
-  undoStack->push( new DeleteElementsCommand( scene->selectedItems( ), scene ) );
+  undoStack->push( new DeleteElementsCommand( scene->selectedItems( ), this ) );
 }
 
 void Editor::showWires( bool checked ) {
@@ -128,8 +129,12 @@ QUndoStack* Editor::getUndoStack( ) const {
   return( undoStack );
 }
 
+ElementFactory &Editor::getFactory( ) {
+  return( factory );
+}
+
 Scene* Editor::getScene( ) const {
-  return scene;
+  return( scene );
 }
 
 void Editor::cut( QDataStream &ds ) {
@@ -154,36 +159,11 @@ void Editor::paste( QDataStream &ds ) {
   scene->clearSelection( );
   QPointF ctr;
   ds >> ctr;
-  QMap< quint64, QNEPort* > portMap;
   QPointF offset = mousePos - ctr - QPointF( 32.0f, 32.0f );
-  while( !ds.atEnd( ) ) {
-    int type;
-    ds >> type;
-    if( type == GraphicElement::Type ) {
-      quint64 elmType;
-      ds >> elmType;
-      GraphicElement *elm = factory.buildElement( ( ElementType ) elmType );
-      if( elm ) {
-        addItem( elm );
-        elm->load( ds, portMap, QApplication::applicationVersion( ).toDouble( ) );
-        elm->setPos( ( elm->pos( ) + offset ) );
-        elm->setSelected( true );
-      }
-      else {
-        throw( std::runtime_error( "Could not build element." ) );
-      }
-    }
-    else if( type == QNEConnection::Type ) {
-      QNEConnection *conn = new QNEConnection( 0 );
-      addItem( conn );
-      conn->setSelected( true );
-      if( !conn->load( ds, portMap ) ) {
-        scene->removeItem( conn );
-        delete conn;
-      }
-    }
-    else {
-      throw( std::runtime_error( "Invalid element type. Data is possibly corrupted." ) );
+  QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( this, ds );
+  foreach( QGraphicsItem * item, itemList ) {
+    if( item->type( ) == GraphicElement::Type ) {
+      item->setPos( ( item->pos( ) + offset ) );
     }
   }
 }
