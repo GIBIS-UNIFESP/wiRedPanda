@@ -68,7 +68,6 @@ private slots:
 private:
   Ui::MainWindow *ui;
   Editor *editor;
-  Scene *scene;
   QFileInfo currentFile;
   QDir defaultDirectory;
   QUndoView *undoView;

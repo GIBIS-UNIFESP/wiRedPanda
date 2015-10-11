@@ -4,6 +4,7 @@
 #include <QGraphicsItem>
 #include <QPointF>
 #include <QUndoCommand>
+#include <QList>
 
 class Scene;
 class GraphicElement;
@@ -18,19 +19,20 @@ public:
 
 private:
   GraphicElement *item;
+  QDataStream storedData;
   Scene *scene;
 };
 
-class DeleteElementCommand : public QUndoCommand {
+class DeleteElementsCommand : public QUndoCommand {
 public:
-  DeleteElementCommand(GraphicElement * aItem, Scene * aScene, QUndoCommand * parent = 0);
-  ~DeleteElementCommand( );
+  DeleteElementsCommand(const QList<QGraphicsItem *> & aItems, Scene * aScene, QUndoCommand * parent = 0);
 
   void undo( ) Q_DECL_OVERRIDE;
   void redo( ) Q_DECL_OVERRIDE;
 
 private:
-  GraphicElement *item;
+  QDataStream storedData;
+  QList<QGraphicsItem *> items;
   Scene *scene;
 };
 

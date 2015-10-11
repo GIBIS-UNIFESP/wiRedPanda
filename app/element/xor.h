@@ -6,7 +6,7 @@
 class Xor : public GraphicElement {
 public:
   explicit Xor(QGraphicsItem * parent);
-  ~Xor();
+  virtual ~Xor();
 
 // GraphicElement interface
 public:

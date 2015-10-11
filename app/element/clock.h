@@ -14,7 +14,7 @@ class Clock : public GraphicElement {
 public:
   const static int simulationInterval = 10;
   explicit Clock(QGraphicsItem * parent);
-  ~Clock();
+  virtual ~Clock();
   static bool reset;
 public slots:
   virtual ElementType elementType() {

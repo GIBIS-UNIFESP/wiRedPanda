@@ -2,6 +2,10 @@
 #include "commands.h"
 #include "editor.h"
 #include "graphicelement.h"
+#include "serializationfunctions.h"
+#include "scene.h"
+
+//TODO Criar comandos usando mesma técnica do copy n' paste.
 
 AddElementCommand::AddElementCommand( GraphicElement *aItem, Scene *aScene, QUndoCommand *parent ) : QUndoCommand( parent ) {
   item = aItem;
@@ -10,7 +14,7 @@ AddElementCommand::AddElementCommand( GraphicElement *aItem, Scene *aScene, QUnd
 }
 
 AddElementCommand::~AddElementCommand( ) {
-  if( !item->scene( ) ) {
+  if( !scene->items().contains(item) ) {
     delete item;
   }
 }
@@ -25,24 +29,24 @@ void AddElementCommand::redo( ) {
   scene->update( );
 }
 
-DeleteElementCommand::DeleteElementCommand( GraphicElement *aItem, Scene *aScene, QUndoCommand *parent ) : QUndoCommand( parent ) {
-  item = aItem;
+DeleteElementsCommand::DeleteElementsCommand(const QList<QGraphicsItem *> & aItems, Scene *aScene, QUndoCommand *parent ) : QUndoCommand( parent ) {
   scene = aScene;
-  setText( QString( "Delete %1 element" ).arg(item->objectName()) );
+  items = aItems;
+  setText( QString( "Delete %1 elements" ).arg(items.size()) );
 }
 
-DeleteElementCommand::~DeleteElementCommand( ) {
-  if( !item->scene( ) ) {
+void DeleteElementsCommand::undo( ) {
+
+}
+
+void DeleteElementsCommand::redo( ) {
+  SerializationFunctions::serialize(items, storedData);
+  foreach( QGraphicsItem * item, items ) {
+    if( !scene->items( ).contains( item ) ) {
+      continue;
+    }
+    scene->removeItem( item );
     delete item;
   }
-}
-
-void DeleteElementCommand::undo( ) {
-  scene->addItem( item );
-  scene->clearSelection( );
-  scene->update( );
-}
-
-void DeleteElementCommand::redo( ) {
-  scene->removeItem( item );
+  items.clear();
 }

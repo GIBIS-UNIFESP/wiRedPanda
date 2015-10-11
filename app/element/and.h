@@ -6,7 +6,7 @@
 class And : public GraphicElement {
 public:
   explicit And(QGraphicsItem *parent = 0);
-  ~And();
+  virtual ~And();
 
   // GraphicElement interface
 public:

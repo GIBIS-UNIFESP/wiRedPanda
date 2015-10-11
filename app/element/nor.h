@@ -6,7 +6,7 @@
 class Nor : public GraphicElement {
 public:
   explicit Nor(QGraphicsItem * parent);
-  ~Nor();
+  virtual ~Nor();
 
   // GraphicElement interface
 public:

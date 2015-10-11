@@ -6,7 +6,7 @@
 class DFlipFlop : public GraphicElement {
 public:
   explicit DFlipFlop(QGraphicsItem * parent);
-  ~DFlipFlop();
+  virtual ~DFlipFlop();
 
   // GraphicElement interface
 public:

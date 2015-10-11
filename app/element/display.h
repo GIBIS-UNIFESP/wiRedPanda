@@ -9,7 +9,7 @@
 class Display : public GraphicElement {
 public:
   explicit Display(QGraphicsItem * parent);
-  ~Display();
+  virtual ~Display();
 
 public:
   virtual ElementType elementType() {

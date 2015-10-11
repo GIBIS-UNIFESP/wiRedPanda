@@ -6,7 +6,7 @@
 class InputSwitch : public GraphicElement {
 public:
   explicit InputSwitch(QGraphicsItem * parent);
-  ~InputSwitch();
+  virtual ~InputSwitch();
 
   bool on;
   // QGraphicsItem interface

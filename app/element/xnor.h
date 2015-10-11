@@ -6,7 +6,7 @@
 class Xnor : public GraphicElement {
 public:
   explicit Xnor(QGraphicsItem * parent);
-  ~Xnor();
+  virtual ~Xnor();
 
 // GraphicElement interface
 public:

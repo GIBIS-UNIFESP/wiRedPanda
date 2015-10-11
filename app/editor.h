@@ -31,6 +31,7 @@ public slots:
   void showWires(bool checked);
   void rotate(bool rotateRight);
 private:
+  QUndoStack *undoStack;
   Scene * scene;
   QGraphicsItem * itemAt( const QPointF & pos );
   QNEConnection * conn;
@@ -44,7 +45,6 @@ private:
   QPointF lastPos;
   void addItem(QGraphicsItem * item);
   QNEPort * m_hoverPort;
-  QUndoStack *undoStack;
 
   // QObject interface
 public:
@@ -54,6 +54,7 @@ public:
   QUndoStack * getUndoStack() const;
   ElementFactory &getFactory();
   Scene * getScene() const;
+  void buildSelectionRect();
 };
 
 #endif // EDITOR_H

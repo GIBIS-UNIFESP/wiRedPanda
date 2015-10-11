@@ -6,7 +6,7 @@
 class SRFlipFlop : public GraphicElement {
 public:
   explicit SRFlipFlop(QGraphicsItem * parent);
-  ~SRFlipFlop();
+  virtual ~SRFlipFlop();
 
   // GraphicElement interface
 public:

@@ -6,7 +6,7 @@
 class Not : public GraphicElement {
 public:
   explicit Not(QGraphicsItem * parent);
-  ~Not();
+  virtual ~Not();
 
   // GraphicElement interface
 public:

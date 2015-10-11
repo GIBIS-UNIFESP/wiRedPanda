@@ -47,6 +47,7 @@ SOURCES += \
     $$PWD/app/priorityelement.cpp \
     $$PWD/app/priorityqueue.cpp \
     $$PWD/app/scene.cpp \
+    $$PWD/app/serializationfunctions.cpp \
     $$PWD/app/simulationcontroller.cpp \
 
 
@@ -88,6 +89,7 @@ HEADERS  +=  \
     $$PWD/app/priorityelement.h \
     $$PWD/app/priorityqueue.h \
     $$PWD/app/scene.h \
+    $$PWD/app/serializationfunctions.h \
     $$PWD/app/simulationcontroller.h \
 
 INCLUDEPATH += \

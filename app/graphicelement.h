@@ -19,7 +19,7 @@ public:
   enum { Type = QGraphicsItem::UserType + 3 };
 
   explicit GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem * parent = 0);
-  ~GraphicElement();
+  virtual ~GraphicElement();
 
 private:
   QPixmap pixmap;

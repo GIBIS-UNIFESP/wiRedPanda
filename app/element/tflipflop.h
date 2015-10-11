@@ -6,7 +6,7 @@
 class TFlipFlop : public GraphicElement {
 public:
   explicit TFlipFlop(QGraphicsItem * parent);
-  ~TFlipFlop();
+  virtual ~TFlipFlop();
 
   // GraphicElement interface
 public:

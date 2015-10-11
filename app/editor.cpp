@@ -2,6 +2,7 @@
 #include "commands.h"
 #include "editor.h"
 #include "graphicelement.h"
+#include "serializationfunctions.h"
 
 #include <QApplication>
 #include <QDebug>
@@ -16,22 +17,30 @@
 #include <iostream>
 #include <nodes/qneconnection.h>
 
-Editor::Editor( QObject *parent ) : QObject( parent ), scene( NULL ), conn( NULL ), m_hoverPort( NULL ) {
-  markingSelectionBox = false;
+void Editor::buildSelectionRect( ) {
   selectionRect = new QGraphicsRectItem( );
   selectionRect->setBrush( Qt::NoBrush );
   selectionRect->setFlag( QGraphicsItem::ItemIsSelectable, false );
   selectionRect->setPen( QPen( Qt::darkGray, 1.5, Qt::DotLine ) );
+  scene->addItem( selectionRect );
+
+}
+
+Editor::Editor( QObject *parent ) : QObject( parent ), scene( NULL ), conn( NULL ), m_hoverPort( NULL ) {
+  markingSelectionBox = false;
   undoStack = new QUndoStack( this );
+  scene = new Scene( this );
+  scene->setBackgroundBrush( QBrush( QColor( Qt::gray ) ) );
+  scene->setGridSize( 16 );
+  install( scene );
+  buildSelectionRect( );
 }
 
 Editor::~Editor( ) {
-
 }
 
 void Editor::install( Scene *s ) {
   s->installEventFilter( this );
-  scene = s;
   addItem( selectionRect );
   simulationController = new SimulationController( s );
   simulationController->start( );
@@ -39,31 +48,14 @@ void Editor::install( Scene *s ) {
 }
 
 void Editor::clear( ) {
-  foreach( QGraphicsItem * item, scene->items( ) ) {
-    if( !scene->items( ).contains( item ) ) {
-      continue;
-    }
-    scene->removeItem( item );
-    /*    delete item; */
+  if( scene ) {
+    scene->clear( );
   }
-  scene->clear( );
-  addItem( selectionRect );
-  scene->setSceneRect( 0, 0, 4000, 4000 );
+  buildSelectionRect( );
 }
 
 void Editor::deleteElements( ) {
-  foreach( QGraphicsItem * item, scene->selectedItems( ) ) {
-    if( !scene->items( ).contains( item ) ) {
-      continue;
-    }
-    GraphicElement * elm = qgraphicsitem_cast<GraphicElement *>(item);
-    if(elm){
-      undoStack->push( new DeleteElementCommand(elm, scene) );
-    }else{
-      scene->removeItem( item );
-      delete item;
-    }
-  }
+  undoStack->push( new DeleteElementsCommand( scene->selectedItems( ), scene ) );
 }
 
 void Editor::showWires( bool checked ) {
@@ -128,12 +120,16 @@ QGraphicsItem* Editor::itemAt( const QPointF &pos ) {
   return( 0 );
 }
 
-void Editor::addItem(QGraphicsItem *item) {
-  scene->addItem(item);
+void Editor::addItem( QGraphicsItem *item ) {
+  scene->addItem( item );
 }
 
 QUndoStack* Editor::getUndoStack( ) const {
   return( undoStack );
+}
+
+Scene* Editor::getScene( ) const {
+  return scene;
 }
 
 void Editor::cut( QDataStream &ds ) {
@@ -151,19 +147,7 @@ void Editor::copy( QDataStream &ds ) {
     }
   }
   ds << center / elm;
-  foreach( QGraphicsItem * item, scene->selectedItems( ) ) {
-    if( item->type( ) == GraphicElement::Type ) {
-      ds << item->type( );
-      ds << ( quint64 ) ( ( GraphicElement* ) item )->elementType( );
-      ( ( GraphicElement* ) item )->save( ds );
-    }
-  }
-  foreach( QGraphicsItem * item, scene->selectedItems( ) ) {
-    if( item->type( ) == QNEConnection::Type ) {
-      ds << item->type( );
-      ( ( QNEConnection* ) item )->save( ds );
-    }
-  }
+  SerializationFunctions::serialize( scene->selectedItems( ), ds );
 }
 
 void Editor::paste( QDataStream &ds ) {
@@ -467,7 +451,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
           elm->setRotation( 90 );
         }
         /* Adding the element to the scene. */
-        undoStack->push( new AddElementCommand(elm, scene) );
+        undoStack->push( new AddElementCommand( elm, scene ) );
         /* Cleaning the selection. */
         scene->clearSelection( );
         /* Setting created element as selected. */
