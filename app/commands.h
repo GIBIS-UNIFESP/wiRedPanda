@@ -31,7 +31,6 @@ private:
 class DeleteItemsCommand : public QUndoCommand {
 public:
   DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor, QUndoCommand *parent = 0 );
-/*  virtual ~DeleteItemsCommand( ); */
   void undo( ) Q_DECL_OVERRIDE;
   void redo( ) Q_DECL_OVERRIDE;
 

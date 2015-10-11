@@ -30,9 +30,9 @@ AddItemsCommand::AddItemsCommand( const QList< QGraphicsItem* > &aItems, Editor 
 
 AddItemsCommand::~AddItemsCommand( ) {
   foreach( QGraphicsItem * item, items ) {
-    if( item->type( ) == QNEConnection::Type ) {
-      delete item;
+    if( item->type( ) == QNEConnection::Type && ! item->scene() ) {
       items.removeAll( item );
+      delete item;
     }
   }
 
