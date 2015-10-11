@@ -180,6 +180,9 @@
                   <property name="pixmap">
                    <pixmap resource="resources/input/input.qrc">:/input/1.png</pixmap>
                   </property>
+                  <property name="Name" stdset="0">
+                   <string notr="true">VCC</string>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -204,6 +207,9 @@
                   <property name="pixmap">
                    <pixmap resource="resources/input/input.qrc">:/input/0.png</pixmap>
                   </property>
+                  <property name="Name" stdset="0">
+                   <string>GND</string>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -224,6 +230,9 @@
                   </property>
                   <property name="pixmap">
                    <pixmap resource="resources/input/input.qrc">:/input/buttonOff.png</pixmap>
+                  </property>
+                  <property name="Name" stdset="0">
+                   <string>Button</string>
                   </property>
                  </widget>
                 </item>
@@ -246,6 +255,9 @@
                   <property name="pixmap">
                    <pixmap resource="resources/input/input.qrc">:/input/switchOff.png</pixmap>
                   </property>
+                  <property name="Name" stdset="0">
+                   <string>Switch</string>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -266,6 +278,9 @@
                   </property>
                   <property name="pixmap">
                    <pixmap resource="resources/input/input.qrc">:/input/clock0.png</pixmap>
+                  </property>
+                  <property name="Name" stdset="0">
+                   <string>Clock</string>
                   </property>
                  </widget>
                 </item>
@@ -291,12 +306,15 @@
                   <property name="pixmap">
                    <pixmap resource="resources/output/output.qrc">:/output/WhiteLedOff.png</pixmap>
                   </property>
+                  <property name="Name" stdset="0">
+                   <string>Led</string>
+                  </property>
                  </widget>
                 </item>
                 <item>
                  <widget class="QLabel" name="label_41">
                   <property name="text">
-                   <string>LED</string>
+                   <string>Led</string>
                   </property>
                  </widget>
                 </item>
@@ -315,12 +333,15 @@
                   <property name="pixmap">
                    <pixmap resource="resources/output/output.qrc">:/output/counter/counter_off.png</pixmap>
                   </property>
+                  <property name="Name" stdset="0">
+                   <string>Display</string>
+                  </property>
                  </widget>
                 </item>
                 <item>
                  <widget class="QLabel" name="label_43">
                   <property name="text">
-                   <string>DISPLAY</string>
+                   <string>Display</string>
                   </property>
                  </widget>
                 </item>
@@ -362,7 +383,7 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
+               <y>-308</y>
                <width>184</width>
                <height>522</height>
               </rect>
@@ -380,6 +401,9 @@
                   </property>
                   <property name="pixmap">
                    <pixmap resource="resources/basic/basic.qrc">:/basic/and.png</pixmap>
+                  </property>
+                  <property name="Name" stdset="0">
+                   <string>AND</string>
                   </property>
                  </widget>
                 </item>
@@ -405,6 +429,9 @@
                   <property name="pixmap">
                    <pixmap resource="resources/basic/basic.qrc">:/basic/or.png</pixmap>
                   </property>
+                  <property name="Name" stdset="0">
+                   <string>OR</string>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -425,6 +452,9 @@
                   </property>
                   <property name="pixmap">
                    <pixmap resource="resources/basic/basic.qrc">:/basic/not.png</pixmap>
+                  </property>
+                  <property name="Name" stdset="0">
+                   <string>NOT</string>
                   </property>
                  </widget>
                 </item>
@@ -447,6 +477,9 @@
                   <property name="pixmap">
                    <pixmap resource="resources/basic/basic.qrc">:/basic/nand.png</pixmap>
                   </property>
+                  <property name="Name" stdset="0">
+                   <string>NAND</string>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -467,6 +500,9 @@
                   </property>
                   <property name="pixmap">
                    <pixmap resource="resources/basic/basic.qrc">:/basic/nor.png</pixmap>
+                  </property>
+                  <property name="Name" stdset="0">
+                   <string>NOR</string>
                   </property>
                  </widget>
                 </item>
@@ -492,6 +528,9 @@
                   <property name="pixmap">
                    <pixmap resource="resources/basic/basic.qrc">:/basic/xor.png</pixmap>
                   </property>
+                  <property name="Name" stdset="0">
+                   <string>XOR</string>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -515,6 +554,9 @@
                   </property>
                   <property name="pixmap">
                    <pixmap resource="resources/basic/basic.qrc">:/basic/xnor.png</pixmap>
+                  </property>
+                  <property name="Name" stdset="0">
+                   <string>XNOR</string>
                   </property>
                  </widget>
                 </item>
@@ -582,6 +624,9 @@
                   <property name="pixmap">
                    <pixmap resource="resources/memory/memory.qrc">:/memory/D-flipflop.png</pixmap>
                   </property>
+                  <property name="Name" stdset="0">
+                   <string>D-flipflop</string>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -606,6 +651,9 @@
                   <property name="pixmap">
                    <pixmap resource="resources/memory/memory.qrc">:/memory/D-latch.png</pixmap>
                   </property>
+                  <property name="Name" stdset="0">
+                   <string>D-Latch</string>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -626,6 +674,9 @@
                   </property>
                   <property name="pixmap">
                    <pixmap resource="resources/memory/memory.qrc">:/memory/JK-flipflop.png</pixmap>
+                  </property>
+                  <property name="Name" stdset="0">
+                   <string>JK-flipflop</string>
                   </property>
                  </widget>
                 </item>
@@ -648,6 +699,9 @@
                   <property name="pixmap">
                    <pixmap resource="resources/memory/memory.qrc">:/memory/JK-latch.png</pixmap>
                   </property>
+                  <property name="Name" stdset="0">
+                   <string>JK-latch</string>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -668,6 +722,9 @@
                   </property>
                   <property name="pixmap">
                    <pixmap resource="resources/memory/memory.qrc">:/memory/SR-flipflop.png</pixmap>
+                  </property>
+                  <property name="Name" stdset="0">
+                   <string>SR-Flipflop</string>
                   </property>
                  </widget>
                 </item>
@@ -693,6 +750,9 @@
                   <property name="pixmap">
                    <pixmap resource="resources/memory/memory.qrc">:/memory/T-flipflop.png</pixmap>
                   </property>
+                  <property name="Name" stdset="0">
+                   <string>T-Flipflop</string>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -716,6 +776,9 @@
                   </property>
                   <property name="pixmap">
                    <pixmap resource="resources/memory/memory.qrc">:/memory/T-latch.png</pixmap>
+                  </property>
+                  <property name="Name" stdset="0">
+                   <string>T-Latch</string>
                   </property>
                  </widget>
                 </item>
@@ -1166,16 +1229,16 @@
   <tabstop>scrollArea_6</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/input/input.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/basic/basic.qrc"/>
+  <include location="resources/memory/memory.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
   <include location="resources/output/output.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/memory/memory.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/memory/memory.qrc"/>
-  <include location="resources/output/output.qrc"/>
   <include location="resources/basic/basic.qrc"/>
-  <include location="resources/input/input.qrc"/>
  </resources>
  <connections/>
 </ui>

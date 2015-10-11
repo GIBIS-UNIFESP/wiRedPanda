@@ -1,4 +1,5 @@
 #include "globalproperties.h"
+#include "listitemwidget.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QClipboard>
@@ -32,7 +33,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 
   QShortcut *shortcut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
   connect( shortcut, SIGNAL( activated( ) ), ui->lineEdit, SLOT( setFocus( ) ) );
-  ui->graphicsView->setCacheMode(QGraphicsView::CacheBackground);
+  ui->graphicsView->setCacheMode( QGraphicsView::CacheBackground );
 /*
  *  ui->tabWidget->setTabEnabled(2,false);
  *  ui->tabWidget->setTabEnabled(3,false);
@@ -325,34 +326,12 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
     return;
   }
   if( fl.open( QFile::ReadOnly ) ) {
-    try {
-      QHBoxLayout *horizontalLayout_BOX = new QHBoxLayout( );
-      horizontalLayout_BOX->setSpacing( 6 );
-      horizontalLayout_BOX->setObjectName( QStringLiteral( "horizontalLayout_BOX" ) );
-      horizontalLayout_BOX->setSizeConstraint( QLayout::SetFixedSize );
-      QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
-      Label *label_BOX_ICON = new Label( ui->scrollAreaWidgetContents_Box );
-      label_BOX_ICON->setObjectName( QStringLiteral( "label_box" ) );
-      label_BOX_ICON->setPixmap( pixmap );
-      label_BOX_ICON->setAuxData( fname );
-
-      horizontalLayout_BOX->addWidget( label_BOX_ICON );
-
-      QLabel *label_BOX = new QLabel( ui->scrollAreaWidgetContents_Box );
-      label_BOX->setObjectName( QStringLiteral( "label_BOX" ) );
-      label_BOX->setText( QFileInfo( fname ).baseName( ).toUpper( ) );
-      horizontalLayout_BOX->addWidget( label_BOX );
-      ui->verticalLayout_4->removeItem( ui->verticalSpacer_BOX );
-      ui->verticalLayout_4->addLayout( horizontalLayout_BOX );
-      ui->verticalLayout_4->addItem( ui->verticalSpacer_BOX );
-    }
-    catch( std::runtime_error &e ) {
-      std::cerr << "Error loading project as box: " << e.what( ) << std::endl;
-      QMessageBox::warning( this, "Error!", "Could not open file.\nError: " + QString(
-                              e.what( ) ), QMessageBox::Ok, QMessageBox::NoButton );
-      clear( );
-      return;
-    }
+    QString name = QFileInfo( fname ).baseName( ).toUpper( );
+    QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
+    ListItemWidget *item = new ListItemWidget( pixmap, name, "label_box", fname );
+    ui->verticalLayout_4->removeItem( ui->verticalSpacer_BOX );
+    ui->verticalLayout_4->addWidget( item );
+    ui->verticalLayout_4->addItem( ui->verticalSpacer_BOX );
   }
   else {
     std::cerr << "Could not open file in ReadOnly mode : " << fname.toStdString( ) << "." << std::endl;
@@ -364,9 +343,10 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
 
 void MainWindow::on_lineEdit_textChanged( const QString &text ) {
   ui->searchLayout->removeItem( ui->VSpacer );
-  while (QLayoutItem* item = ui->searchLayout->takeAt(0)){
-    if (QWidget* widget = item->widget())
+  while( QLayoutItem * item = ui->searchLayout->takeAt( 0 ) ) {
+    if( QWidget * widget = item->widget( ) ) {
       delete widget;
+    }
   }
   if( text.isEmpty( ) ) {
     ui->searchScrollArea->hide( );
@@ -378,26 +358,11 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
     QList< Label* > searchResults =
       ui->tabWidget->findChildren< Label* >( QRegularExpression( QString( "^label_.*%1.*" ).arg( text ) ) );
     foreach( Label * label, searchResults ) {
-      QHBoxLayout *itemLayout = new QHBoxLayout( );
-      itemLayout->setSpacing( 6 );
-      itemLayout->setObjectName( QStringLiteral( "itemLayout" ) );
-      itemLayout->setSizeConstraint( QLayout::SetFixedSize );
 
-      QFrame *searchResult = new QFrame( );
-      searchResult->setObjectName( "searchResult" );
-      searchResult->setLayout( itemLayout );
+      ListItemWidget * item = new ListItemWidget(*label->pixmap(),label->property("Name").toString(),
+                                                 label->objectName());
 
-      Label *copy = new Label( this );
-      copy->setObjectName( label->objectName( ) );
-      copy->setPixmap( *label->pixmap( ) );
-
-      QString name = label->objectName( ).remove( "label_" ).toUpper( );
-      QLabel *nameLabel = new QLabel( name );
-
-      itemLayout->addWidget( copy );
-      itemLayout->addWidget( nameLabel );
-
-      ui->searchLayout->addWidget( searchResult );
+      ui->searchLayout->addWidget( item );
     }
   }
   ui->searchLayout->addItem( ui->VSpacer );

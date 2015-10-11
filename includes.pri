@@ -40,6 +40,7 @@ SOURCES += \
     $$PWD/app/graphicelement.cpp \
     $$PWD/app/graphicsview.cpp \
     $$PWD/app/label.cpp \
+    $$PWD/app/listitemwidget.cpp \
     $$PWD/app/mainwindow.cpp \
     $$PWD/app/nodes/qneblock.cpp \
     $$PWD/app/nodes/qneconnection.cpp \
@@ -82,6 +83,7 @@ HEADERS  +=  \
     $$PWD/app/graphicelement.h \
     $$PWD/app/graphicsview.h \
     $$PWD/app/label.h \
+    $$PWD/app/listitemwidget.h \
     $$PWD/app/mainwindow.h \
     $$PWD/app/nodes/qneblock.h \
     $$PWD/app/nodes/qneconnection.h \
