@@ -6,16 +6,17 @@
 class Label : public QLabel {
   Q_OBJECT
 public:
-  Q_PROPERTY(QString elementType READ elementType WRITE setElementType DESIGNABLE true)
-  explicit Label(QWidget *parent = 0);
+  Q_PROPERTY( QString elementType READ elementType WRITE setElementType DESIGNABLE true )
+  explicit Label( QWidget *parent = 0 );
 
-  QString elementType();
-  void setElementType(QString elementType);
-  QString auxData() const;
-  void setAuxData(const QString & auxData);
+  QString elementType( );
+  void setElementType( QString elementType );
+  QString auxData( ) const;
+  void setAuxData( const QString &auxData );
+  void startDrag( QPoint pos = QPoint( 32, 32 ) );
 
 protected:
-  void mousePressEvent(QMouseEvent *event);
+  void mousePressEvent( QMouseEvent *event );
 
 private:
   QString m_elementType;
@@ -23,4 +24,4 @@ private:
 
 };
 
-#endif // LABEL_H
+#endif /* LABEL_H */

@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "editor.h"
+#include "label.h"
 #include "scene.h"
 
 #include <QDir>
@@ -68,12 +69,15 @@ private slots:
 
   void on_lineEdit_textChanged(const QString &arg1);
 
+  void on_lineEdit_returnPressed();
+
 private:
   Ui::MainWindow *ui;
   Editor *editor;
   QFileInfo currentFile;
   QDir defaultDirectory;
   QUndoView *undoView;
+  Label *firstResult;
   /* QWidget interface */
 protected:
   void closeEvent( QCloseEvent *e );

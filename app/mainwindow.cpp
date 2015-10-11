@@ -34,6 +34,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   QShortcut *shortcut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
   connect( shortcut, SIGNAL( activated( ) ), ui->lineEdit, SLOT( setFocus( ) ) );
   ui->graphicsView->setCacheMode( QGraphicsView::CacheBackground );
+  firstResult = nullptr;
 /*
  *  ui->tabWidget->setTabEnabled(2,false);
  *  ui->tabWidget->setTabEnabled(3,false);
@@ -348,6 +349,7 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
       delete widget;
     }
   }
+  firstResult = nullptr;
   if( text.isEmpty( ) ) {
     ui->searchScrollArea->hide( );
     ui->tabWidget->show( );
@@ -358,12 +360,20 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
     QList< Label* > searchResults =
       ui->tabWidget->findChildren< Label* >( QRegularExpression( QString( "^label_.*%1.*" ).arg( text ) ) );
     foreach( Label * label, searchResults ) {
-
-      ListItemWidget * item = new ListItemWidget(*label->pixmap(),label->property("Name").toString(),
-                                                 label->objectName());
+      ListItemWidget *item = new ListItemWidget( *label->pixmap( ), label->property( "Name" ).toString( ),
+                                                 label->objectName( ) );
+      if(!firstResult){
+        firstResult = item->getLabel();
+      }
 
       ui->searchLayout->addWidget( item );
     }
   }
   ui->searchLayout->addItem( ui->VSpacer );
+}
+
+void MainWindow::on_lineEdit_returnPressed( ) {
+  if(firstResult){
+    firstResult->startDrag();
+  }
 }

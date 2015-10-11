@@ -4,6 +4,11 @@
 #include <QFrame>
 #include <QHBoxLayout>
 
+
+Label * ListItemWidget::getLabel() const
+{
+  return label;
+}
 ListItemWidget::ListItemWidget(const QPixmap & pixmap, QString name, QString pixName,  QString auxData, QWidget *parent ) : QWidget( parent ) {
   QHBoxLayout *itemLayout = new QHBoxLayout( );
   itemLayout->setSpacing( 6 );
@@ -13,7 +18,7 @@ ListItemWidget::ListItemWidget(const QPixmap & pixmap, QString name, QString pix
   setObjectName( QString( "_listItem_" ) + name );
   setLayout( itemLayout );
 
-  Label *label = new Label( this );
+  label = new Label( this );
   label->setObjectName( pixName );
   label->setPixmap( pixmap );
   label->setAuxData( auxData );
