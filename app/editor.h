@@ -48,6 +48,14 @@ private:
   QList< GraphicElement* > movedElements;
   QList< QPointF > oldPositions;
 
+
+  bool mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt );
+  bool mouseMoveEvt( QGraphicsSceneMouseEvent *mouseEvt );
+  bool mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt );
+  bool dropEvt( QGraphicsSceneDragDropEvent *dde );
+  bool dragMoveEvt( QGraphicsSceneDragDropEvent *dde );
+  bool wheelEvt(QWheelEvent *wEvt );
+
   /* QObject interface */
 public:
   bool eventFilter( QObject *obj, QEvent *evt );
