@@ -266,8 +266,8 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
     Scene * customScene = dynamic_cast<Scene*>(scene());
     if(customScene) {
       int gridSize = customScene->gridSize();
-      qreal xV = qRound((newPos.x() - 16)/gridSize)*gridSize;
-      qreal yV = qRound((newPos.y() - 16)/gridSize)*gridSize;
+      qreal xV = qRound(newPos.x()/gridSize)*gridSize;
+      qreal yV = qRound(newPos.y()/gridSize)*gridSize;
       return QPointF(xV, yV);
     } else {
       return newPos;

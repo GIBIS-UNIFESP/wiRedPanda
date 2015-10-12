@@ -133,31 +133,34 @@ RotateCommand::RotateCommand( const QList< GraphicElement* > &aItems, int aAngle
   list = aItems;
   angle = aAngle;
   setText( QString( "Rotate %1 degrees" ).arg( angle ) );
+  foreach( GraphicElement * item, list ) {
+    positions.append( item->pos( ) );
+    item->setPos(item->pos());
+  }
 }
 
 void RotateCommand::undo( ) {
-  for( size_t i = 0; i < list.size(); ++i ) {
-    GraphicElement *elm = list[i];
+  for( int i = 0; i < list.size( ); ++i ) {
+    GraphicElement *elm = list[ i ];
     if( elm->rotatable( ) ) {
       elm->setRotation( elm->rotation( ) - angle );
     }
-    elm->setPos(positions[i]);
+    elm->setPos( positions[ i ] );
+    elm->update( );
   }
 }
 
 void RotateCommand::redo( ) {
   double cx = 0, cy = 0;
   int sz = 0;
-  positions.clear( );
   foreach( GraphicElement * item, list ) {
-    positions.append( item->pos( ) );
     cx += item->pos( ).x( );
     cy += item->pos( ).y( );
     sz++;
   }
   cx /= sz;
   cy /= sz;
-  foreach( GraphicElement *elm, list ) {
+  foreach( GraphicElement * elm, list ) {
     QTransform transform;
     transform.translate( cx, cy );
     transform.rotate( angle );
@@ -165,7 +168,24 @@ void RotateCommand::redo( ) {
     if( elm->rotatable( ) ) {
       elm->setRotation( elm->rotation( ) + angle );
     }
-    elm->setPos( transform.map( elm->pos( ) ) );
+    elm->setPos( transform.map( elm->pos() ) );
     elm->update( );
   }
+}
+
+bool RotateCommand::mergeWith( const QUndoCommand *command ) {
+  const RotateCommand *rotateCommand = static_cast< const RotateCommand* >( command );
+  if( !rotateCommand ) {
+    return( false );
+  }
+  angle = ( angle + rotateCommand->angle ) % 360;
+  setText( QString( "Rotate  AA %1 degrees" ).arg( angle ) );
+  undo();
+  redo();
+  return( true );
+}
+
+
+int RotateCommand::id( ) const {
+  return( Id );
 }
