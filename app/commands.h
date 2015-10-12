@@ -60,7 +60,7 @@ class MoveCommand : public QUndoCommand {
 public:
   enum { Id = 1234 };
 
-  MoveCommand( const QList< GraphicElement* > &list, const QList< QPointF > &aOldPositions, QUndoCommand *parent = 0 );
+  MoveCommand(const QList<GraphicElement *> & list, const QList<QPointF> & aOldPositions, QUndoCommand * parent);
 
   void undo( ) Q_DECL_OVERRIDE;
   void redo( ) Q_DECL_OVERRIDE;

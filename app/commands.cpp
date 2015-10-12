@@ -175,8 +175,13 @@ void RotateCommand::redo( ) {
 
 bool RotateCommand::mergeWith( const QUndoCommand *command ) {
   const RotateCommand *rotateCommand = static_cast< const RotateCommand* >( command );
-  if( !rotateCommand ) {
+  if( list.size( ) != rotateCommand->list.size( ) ) {
     return( false );
+  }
+  for( int i = 0; i < list.size( ); ++i ) {
+    if( list[ i ] != rotateCommand->list[ i ] ) {
+      return( false );
+    }
   }
   angle = ( angle + rotateCommand->angle ) % 360;
   setText( QString( "Rotate  AA %1 degrees" ).arg( angle ) );
