@@ -23,7 +23,6 @@ void Editor::buildSelectionRect( ) {
   selectionRect->setFlag( QGraphicsItem::ItemIsSelectable, false );
   selectionRect->setPen( QPen( Qt::darkGray, 1.5, Qt::DotLine ) );
   scene->addItem( selectionRect );
-
 }
 
 Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ), conn( nullptr ), m_hoverPort( nullptr ) {
@@ -34,6 +33,7 @@ Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ), conn( n
   scene->setGridSize( 16 );
   install( scene );
   buildSelectionRect( );
+  draggingElement = false;
 }
 
 Editor::~Editor( ) {
@@ -76,14 +76,14 @@ void Editor::rotate( bool rotateRight ) {
     angle = -angle;
   }
   QList< QGraphicsItem* > list = scene->selectedItems( );
-  QList< GraphicElement * > elms;
+  QList< GraphicElement* > elms;
   foreach( QGraphicsItem * item, list ) {
-    GraphicElement * elm = qgraphicsitem_cast<GraphicElement *>(item);
-    if(elm && elm->type() == GraphicElement::Type) {
+    GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+    if( elm && ( elm->type( ) == GraphicElement::Type ) ) {
       elms.append( elm );
     }
   }
-  if(elms.size() > 1 || (elms.size() == 1 && elms.front()->rotatable() )){
+  if( ( elms.size( ) > 1 ) || ( ( elms.size( ) == 1 ) && elms.front( )->rotatable( ) ) ) {
     undoStack->push( new RotateCommand( elms, angle ) );
   }
 }
@@ -255,7 +255,21 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
       }
       if( mouseEvt ) {
         QGraphicsItem *item = itemAt( mousePos );
-        if( item && ( item->type( ) == QNEPort::Type ) ) {
+        if( item && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
+          /* STARTING MOVING ELEMENT */
+          draggingElement = true;
+          QList< QGraphicsItem* > list = scene->selectedItems( );
+//          qDebug() << "Selected items = " << list.size();
+          movedElements.clear( );
+          oldPositions.clear();
+          foreach( QGraphicsItem * item, list ) {
+            GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+            if( elm ) {
+              movedElements.append( elm );
+              oldPositions.append(elm->pos());
+            }
+          }
+        }else if( item && ( item->type( ) == QNEPort::Type ) ) {
           /* When the mouse pressed over an connected input port, the line
            * is disconnected and can be connected in an other port. */
           QNEPort *port2 = ( QNEPort* ) item;
@@ -361,6 +375,13 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
       markingSelectionBox = false;
       if( QApplication::overrideCursor( ) ) {
         QApplication::setOverrideCursor( Qt::ArrowCursor );
+      }
+      if( draggingElement && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
+        if( !movedElements.empty( ) ) {
+          undoStack->push( new MoveCommand( movedElements, oldPositions ) );
+        }
+        draggingElement = false;
+        movedElements.clear( );
       }
       if( conn && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
         /* A connection is being created, and left button was released. */

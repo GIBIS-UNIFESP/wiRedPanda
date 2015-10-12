@@ -34,17 +34,19 @@ private:
   QUndoStack *undoStack;
   Scene *scene;
   QGraphicsItem* itemAt( const QPointF &pos );
-  QNEConnection * conn;
+  QNEConnection *conn;
   ElementFactory factory;
   ElementEditor *elementEditor;
   bool markingSelectionBox;
   QGraphicsRectItem *selectionRect;
   QPointF selectionStartPoint;
   SimulationController *simulationController;
-  QPointF mousePos;
-  QPointF lastPos;
+  QPointF mousePos, lastPos;
   void addItem( QGraphicsItem *item );
   QNEPort *m_hoverPort;
+  bool draggingElement;
+  QList< GraphicElement* > movedElements;
+  QList< QPointF > oldPositions;
 
   /* QObject interface */
 public:
