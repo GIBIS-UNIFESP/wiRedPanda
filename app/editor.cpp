@@ -88,6 +88,10 @@ void Editor::rotate( bool rotateRight ) {
   }
 }
 
+void Editor::elementUpdated( GraphicElement *element, QByteArray oldData ) {
+  undoStack->push( new UpdateCommand( element, oldData ) );
+}
+
 QList< QGraphicsItem* > Editor::itemsAt( const QPointF &pos ) {
   return( scene->items( QRectF( pos - QPointF( 7, 7 ), QSize( 13, 13 ) ).normalized( ) ) );
 }
@@ -169,7 +173,8 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
       selectionRect->show( );
       selectionRect->update( );
     }
-  } else if( item && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
+  }
+  else if( item && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
     /* STARTING MOVING ELEMENT */
     draggingElement = true;
     QList< QGraphicsItem* > list = scene->selectedItems( );
@@ -471,6 +476,7 @@ void Editor::load( QDataStream &ds ) {
 void Editor::setElementEditor( ElementEditor *value ) {
   elementEditor = value;
   elementEditor->setScene( scene );
+  connect(elementEditor,&ElementEditor::elementUpdated,this,&Editor::elementUpdated);
 }
 
 QPointF roundTo( QPointF point, int multiple ) {

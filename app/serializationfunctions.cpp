@@ -25,6 +25,7 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDa
 
   QList< QGraphicsItem* > itemList;
   QMap< quint64, QNEPort* > portMap;
+  double version = QApplication::applicationVersion( ).toDouble( );
   while( !ds.atEnd( ) ) {
     int type;
     ds >> type;
@@ -35,7 +36,7 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDa
       if( elm ) {
         scene->addItem( elm );
         itemList.append( elm );
-        elm->load( ds, portMap, QApplication::applicationVersion( ).toDouble( ) );
+        elm->load( ds, portMap, version );
         elm->setPos( ( elm->pos( ) ) );
         elm->setSelected( true );
       }

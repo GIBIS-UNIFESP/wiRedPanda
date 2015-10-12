@@ -30,10 +30,12 @@ public slots:
   void clear( );
   void showWires( bool checked );
   void rotate( bool rotateRight );
+  void elementUpdated( GraphicElement *element, QByteArray itemData );
+
 private:
   QUndoStack *undoStack;
   Scene *scene;
-  QList<QGraphicsItem *> itemsAt(const QPointF & pos);
+  QList< QGraphicsItem* > itemsAt( const QPointF &pos );
   QGraphicsItem* itemAt( const QPointF &pos );
   QNEConnection *editedConn;
   ElementFactory factory;
@@ -49,13 +51,12 @@ private:
   QList< GraphicElement* > movedElements;
   QList< QPointF > oldPositions;
 
-
   bool mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt );
   bool mouseMoveEvt( QGraphicsSceneMouseEvent *mouseEvt );
   bool mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt );
   bool dropEvt( QGraphicsSceneDragDropEvent *dde );
   bool dragMoveEvt( QGraphicsSceneDragDropEvent *dde );
-  bool wheelEvt(QWheelEvent *wEvt );
+  bool wheelEvt( QWheelEvent *wEvt );
 
   /* QObject interface */
 public:
@@ -66,8 +67,8 @@ public:
   ElementFactory &getFactory( );
   Scene* getScene( ) const;
   void buildSelectionRect( );
-  void handleHoverPort(QNEPort* port);
-  void releaseHoverPort();
+  void handleHoverPort( QNEPort *port );
+  void releaseHoverPort( );
 };
 
 #endif /* EDITOR_H */

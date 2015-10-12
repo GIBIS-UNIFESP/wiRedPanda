@@ -70,6 +70,9 @@ void ElementEditor::selectionChanged() {
 }
 
 void ElementEditor::on_pushButtonApply_clicked() {
+  QByteArray itemData;
+  QDataStream dataStream( &itemData, QIODevice::WriteOnly );
+  element->save(dataStream);
   if(element->minInputSz() != element->maxInputSz()) {
     element->setInputSize(ui->comboBoxInputSz->currentData().toInt());
   }
@@ -82,6 +85,7 @@ void ElementEditor::on_pushButtonApply_clicked() {
   if(element->hasFrequency()) {
     element->setFrequency(ui->doubleSpinBoxFrequency->value());
   }
+  emit elementUpdated(element, itemData);
 }
 
 void ElementEditor::on_pushButtonCancel_clicked() {

@@ -18,6 +18,9 @@ public:
 
   void setScene( QGraphicsScene * s );
 
+signals:
+  void elementUpdated( GraphicElement *element, QByteArray itemData );
+
 private slots:
 
   void selectionChanged();

@@ -6,7 +6,7 @@
 #include "serializationfunctions.h"
 
 #include <QDebug>
-
+#include <QApplication>
 /* TODO Criar comandos usando mesma técnica do copy n' paste. */
 
 AddItemsCommand::AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
@@ -219,4 +219,30 @@ void MoveCommand::redo( ) {
   for( int i = 0; i < myList.size( ); ++i ) {
     myList[ i ]->setPos( newPositions[ i ] );
   }
+}
+
+
+UpdateCommand::UpdateCommand( GraphicElement *element, QByteArray oldData,
+                              QUndoCommand *parent ) : QUndoCommand( parent ) {
+  m_element = element;
+  m_oldData = oldData;
+  QDataStream dataStream( &m_newData, QIODevice::WriteOnly );
+  m_element->save( dataStream );
+  setText( QString( "Update %1 element" ).arg( element->objectName() ) );
+
+}
+
+void UpdateCommand::undo( ) {
+  loadData( m_oldData );
+}
+
+void UpdateCommand::redo( ) {
+  loadData( m_newData );
+}
+
+void UpdateCommand::loadData( QByteArray itemData ) {
+  QDataStream dataStream( &itemData, QIODevice::ReadOnly );
+  QMap< quint64, QNEPort* > portMap;
+  double version = QApplication::applicationVersion( ).toDouble( );
+  m_element->load( dataStream, portMap, version );
 }

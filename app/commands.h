@@ -62,7 +62,7 @@ class MoveCommand : public QUndoCommand {
 public:
   enum { Id = 1234 };
 
-  MoveCommand( const QList< GraphicElement* > &list, const QList< QPointF > &aOldPositions, QUndoCommand *parent  = 0);
+  MoveCommand( const QList< GraphicElement* > &list, const QList< QPointF > &aOldPositions, QUndoCommand *parent = 0 );
 
   void undo( ) Q_DECL_OVERRIDE;
   void redo( ) Q_DECL_OVERRIDE;
@@ -76,6 +76,26 @@ private:
   QList< QPointF > newPositions;
 
   QPointF offset;
+};
+
+class UpdateCommand : public QUndoCommand {
+public:
+  enum { Id = 42 };
+
+  UpdateCommand( GraphicElement *element, QByteArray oldData, QUndoCommand *parent = 0);
+
+  void undo( ) Q_DECL_OVERRIDE;
+  void redo( ) Q_DECL_OVERRIDE;
+  int id( ) const Q_DECL_OVERRIDE {
+    return( Id );
+  }
+
+private:
+  GraphicElement *m_element;
+  QByteArray m_oldData;
+  QByteArray m_newData;
+
+  void loadData( QByteArray itemData );
 };
 
 #endif /* COMMANDS_H */
