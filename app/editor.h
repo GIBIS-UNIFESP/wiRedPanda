@@ -33,8 +33,9 @@ public slots:
 private:
   QUndoStack *undoStack;
   Scene *scene;
+  QList<QGraphicsItem *> itemsAt(const QPointF & pos);
   QGraphicsItem* itemAt( const QPointF &pos );
-  QNEConnection *conn;
+  QNEConnection *editedConn;
   ElementFactory factory;
   ElementEditor *elementEditor;
   bool markingSelectionBox;
@@ -65,6 +66,8 @@ public:
   ElementFactory &getFactory( );
   Scene* getScene( ) const;
   void buildSelectionRect( );
+  void handleHoverPort(QNEPort* port);
+  void releaseHoverPort();
 };
 
 #endif /* EDITOR_H */
