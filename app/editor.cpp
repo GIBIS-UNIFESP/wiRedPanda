@@ -116,21 +116,7 @@ void Editor::addItem( QGraphicsItem *item ) {
 
 bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
   QGraphicsItem *item = itemAt( mousePos );
-  if( item && ( mouseEvt->button( ) == Qt::LeftButton ) && ( item->type( ) == GraphicElement::Type ) ) {
-    /* STARTING MOVING ELEMENT */
-    draggingElement = true;
-    QList< QGraphicsItem* > list = scene->selectedItems( );
-    movedElements.clear( );
-    oldPositions.clear( );
-    foreach( QGraphicsItem * item, list ) {
-      GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
-      if( elm ) {
-        movedElements.append( elm );
-        oldPositions.append( elm->pos( ) );
-      }
-    }
-  }
-  else if( item && ( item->type( ) == QNEPort::Type ) ) {
+  if( item && ( item->type( ) == QNEPort::Type ) ) {
     /* When the mouse pressed over an connected input port, the line
      * is disconnected and can be connected in an other port. */
     QNEPort *port2 = ( QNEPort* ) item;
@@ -182,6 +168,20 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
       selectionRect->setRect( QRectF( selectionStartPoint, selectionStartPoint ) );
       selectionRect->show( );
       selectionRect->update( );
+    }
+  } else if( item && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
+    /* STARTING MOVING ELEMENT */
+    draggingElement = true;
+    QList< QGraphicsItem* > list = scene->selectedItems( );
+    list.append( itemsAt( mousePos ) );
+    movedElements.clear( );
+    oldPositions.clear( );
+    foreach( QGraphicsItem * item, list ) {
+      GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+      if( elm ) {
+        movedElements.append( elm );
+        oldPositions.append( elm->pos( ) );
+      }
     }
   }
   return( false );
@@ -246,18 +246,18 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
   if( draggingElement && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
     if( !movedElements.empty( ) ) {
       /* FIXME asdusdhuiahdiuashahduis */
-/*      undoStack->push( new MoveCommand( movedElements, oldPositions ) ); */
+      undoStack->push( new MoveCommand( movedElements, oldPositions ) );
     }
     draggingElement = false;
     movedElements.clear( );
   }
   if( editedConn && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
     /* A connection is being created, and left button was released. */
-    QNEPort *item = dynamic_cast< QNEPort* >( itemAt( mousePos ) );
-    if( item && ( item->type( ) == QNEPort::Type ) ) {
+    QNEPort *port = dynamic_cast< QNEPort* >( itemAt( mousePos ) );
+    if( port && ( port->type( ) == QNEPort::Type ) ) {
       /* The mouse is released over a QNEPort. */
       QNEPort *port1 = editedConn->port1( );
-      QNEPort *port2 = dynamic_cast< QNEPort* >( item );
+      QNEPort *port2 = dynamic_cast< QNEPort* >( port );
       if( !port2 ) {
         return( true );
       }
@@ -296,13 +296,6 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
     qint32 type;
     dataStream >> offset >> type >> label_auxData;
     QPointF pos = dde->scenePos( ) - offset;
-/*        qDebug() << "Drop event: " << " , " << offset << " , " << type; */
-
-    /*
-     *        pos = roundTo(pos,64);
-     *        qDebug() << pos << roundTo(pos,64);
-     * Send element type to element factory. Returns nullptr if type is unknown.
-     */
     GraphicElement *elm = factory.buildElement( ( ElementType ) type );
     /* If element type is unknown, a default element is created with the pixmap received from mimedata */
     if( !elm ) {
@@ -339,6 +332,7 @@ bool Editor::dragMoveEvt( QGraphicsSceneDragDropEvent *dde ) {
   if( dde->mimeData( )->hasFormat( "application/x-dnditemdata" ) ) {
     return( true );
   }
+  return( false );
 }
 
 bool Editor::wheelEvt( QWheelEvent *wEvt ) {
