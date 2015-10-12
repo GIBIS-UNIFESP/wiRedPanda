@@ -13,6 +13,7 @@ class Editor;
 class GraphicElement;
 
 class AddItemsCommand : public QUndoCommand {
+  enum { Id = 123 };
 public:
   AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoCommand *parent = 0 );
   AddItemsCommand( QNEConnection *aItem, Editor *aEditor, QUndoCommand *parent = 0 );
@@ -29,6 +30,7 @@ private:
 };
 
 class DeleteItemsCommand : public QUndoCommand {
+  enum { Id = 123 };
 public:
   DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor, QUndoCommand *parent = 0 );
   void undo( ) Q_DECL_OVERRIDE;
@@ -48,11 +50,11 @@ public:
   void undo( ) Q_DECL_OVERRIDE;
   void redo( ) Q_DECL_OVERRIDE;
   bool mergeWith( const QUndoCommand *command ) Q_DECL_OVERRIDE;
+  int id( ) const;
 private:
   int angle;
   QList< GraphicElement* > list;
   QList< QPointF > positions;
-  int id( ) const;
 };
 
 
