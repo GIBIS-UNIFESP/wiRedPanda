@@ -170,10 +170,18 @@ void Box::loadFile( QString fname ) {
     sortMap( inputMap );
     sortMap( outputMap );
     for(int port = 0; port < inputSize(); ++port){
-      inputs().at(port)->setName(inputMap.at(port)->graphicElement()->getLabel());
+      QString lb = inputMap.at(port)->graphicElement()->getLabel();
+      if(lb.isEmpty()){
+        lb = inputMap.at(port)->graphicElement()->objectName();
+      }
+      inputs().at(port)->setName(lb);
     }
     for(int port = 0; port < outputSize(); ++port){
-      outputs().at(port)->setName(outputMap.at(port)->graphicElement()->getLabel());
+      QString lb = outputMap.at(port)->graphicElement()->getLabel();
+      if(lb.isEmpty()){
+        lb = outputMap.at(port)->graphicElement()->objectName();
+      }
+      outputs().at(port)->setName(lb);
     }
   }
 }
