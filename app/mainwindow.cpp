@@ -428,5 +428,6 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
 void MainWindow::on_lineEdit_returnPressed( ) {
   if( firstResult ) {
     firstResult->startDrag( );
+    ui->lineEdit->clear();
   }
 }
