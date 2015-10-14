@@ -206,7 +206,7 @@ MoveCommand::MoveCommand( const QList< GraphicElement* > &list,
     newPositions.append( elm->pos( ) );
   }
   undo( );
-  setText( QString( "Move %1 elements" ).arg( list.size( ) ) );
+  setText( QString( "Move elements" ) );
 }
 
 void MoveCommand::undo( ) {

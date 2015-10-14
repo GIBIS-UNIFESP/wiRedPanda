@@ -25,9 +25,19 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 #ifdef DEBUG
   createUndoView( );
 #endif
+/*  connect( ui->actionUndo, &QAction::triggered, editor->getUndoStack( ), &QUndoStack::undo ); */
+/*  connect( ui->actionRedo, &QAction::triggered, editor->getUndoStack( ), &QUndoStack::redo ); */
 
-  connect( ui->actionUndo, &QAction::triggered, editor->getUndoStack( ), &QUndoStack::undo );
-  connect( ui->actionRedo, &QAction::triggered, editor->getUndoStack( ), &QUndoStack::redo );
+  undoAction = editor->getUndoStack( )->createUndoAction( this, tr( "&Undo" ) );
+  undoAction->setShortcuts( QKeySequence::Undo );
+
+  redoAction = editor->getUndoStack( )->createRedoAction( this, tr( "&Redo" ) );
+  redoAction->setShortcuts( QKeySequence::Redo );
+
+  ui->menuEdit->insertAction( ui->actionUndo , undoAction );
+  ui->menuEdit->insertAction( ui->actionRedo , redoAction );
+  ui->menuEdit->removeAction(ui->actionUndo);
+  ui->menuEdit->removeAction(ui->actionRedo);
 
   connect( editor, &Editor::scroll, this, &MainWindow::scrollView );
 

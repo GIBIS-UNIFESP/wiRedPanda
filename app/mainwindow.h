@@ -79,6 +79,10 @@ private:
   QDir defaultDirectory;
   QUndoView *undoView;
   Label *firstResult;
+
+  QAction *undoAction;
+  QAction *redoAction;
+
   /* QWidget interface */
 protected:
   void closeEvent( QCloseEvent *e );
