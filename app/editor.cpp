@@ -33,7 +33,6 @@ Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ), editedC
   scene->setBackgroundBrush( QBrush( QColor( "#404552" ) ) );
   scene->setGridSize( 16 );
   install( scene );
-  buildSelectionRect( );
   draggingElement = false;
 }
 
@@ -42,9 +41,9 @@ Editor::~Editor( ) {
 
 void Editor::install( Scene *s ) {
   s->installEventFilter( this );
-  addItem( selectionRect );
   simulationController = new SimulationController( s );
   simulationController->start( );
+  buildSelectionRect();
   clear( );
 }
 
