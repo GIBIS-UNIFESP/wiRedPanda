@@ -527,7 +527,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
   if( mouseEvt ) {
     mousePos = mouseEvt->scenePos( );
   }
-  bool ret;
+  bool ret = false;
   switch( ( int ) evt->type( ) ) {
       case QEvent::GraphicsSceneMousePress: {
       ret = mousePressEvt( mouseEvt );

@@ -18,19 +18,19 @@ Box::Box( ElementFactory *factory, QGraphicsItem *parent ) : GraphicElement( 0, 
   this->factory = factory;
   setHasLabel( true );
   QPixmap pixmap( ":/basic/box.png" );
-/*
- *  QTransform transform;
- *  transform.translate(pixmap.size().width() / 2, pixmap.size().height() / 2);
- *  transform.rotate(-90);
- *  transform.translate(-pixmap.size().width() / 2, -pixmap.size().height() / 2);
- */
+  /*
+   *  QTransform transform;
+   *  transform.translate(pixmap.size().width() / 2, pixmap.size().height() / 2);
+   *  transform.rotate(-90);
+   *  transform.translate(-pixmap.size().width() / 2, -pixmap.size().height() / 2);
+   */
 
-/*
- *  setRotatable(false);
- *  setRotation(90);
- */
+  /*
+   *  setRotatable(false);
+   *  setRotation(90);
+   */
 
-/*  setPixmap(pixmap.transformed(transform)); */
+  /*  setPixmap(pixmap.transformed(transform)); */
   setPixmap( pixmap );
   setOutputsOnTop( true );
   setObjectName( "BOX" );
@@ -75,21 +75,26 @@ void Box::loadFile( QString fname ) {
   QMutexLocker locker( &mutex );
   watcher.addPath( fname );
   QFileInfo fileInfo( fname );
+  QString myFile = fileInfo.fileName();
+//  qDebug( ) << "Trying to load (1): " << fileInfo.absoluteFilePath( );
   if( !fileInfo.exists( ) ) {
-    qDebug( ) << "Could not open file " << fileInfo.absoluteFilePath( ) << ". Trying to find on current folder.";
     fileInfo.setFile( QDir::current( ), fileInfo.fileName( ) );
+//    qDebug( ) << "Trying to load (2): " << fileInfo.absoluteFilePath( );
     if( !fileInfo.exists( ) ) {
-      qDebug( ) << "Could not open file " << fileInfo.absoluteFilePath( ) << ". Trying to find on current file folder.";
-      fileInfo.setFile( QFileInfo( parentFile ).absoluteDir( ), fileInfo.fileName( ) );
-      qDebug( ) << "Trying to load : " << fileInfo.absoluteFilePath( );
+      fileInfo.setFile( QFileInfo( parentFile ).absoluteDir( ), myFile );
+//      qDebug() << "Parent file: " << parentFile;
+//      qDebug( ) << "Trying to load (3): " << fileInfo.absoluteFilePath( );
       if( !fileInfo.exists( ) ) {
-/*        qDebug() << "Could not open file " << fileInfo.absoluteFilePath() << ". Sending error."; */
-        std::cerr << "Error: This file does not exists: " << fname.toStdString( ) << std::endl;
-        throw( std::runtime_error( QString(
-                                     "Box linked file \"%1\" could not be found!\n"
-                                     "Do you want to find this file?" )
-                                   .arg( fname ).toStdString( ) ) );
-        return;
+        QFileInfo currentFile( GlobalProperties::currentFile );
+        fileInfo.setFile( currentFile.absoluteDir(), myFile);
+        if( !fileInfo.exists( ) ) {
+          std::cerr << "Error: This file does not exists: " << fname.toStdString( ) << std::endl;
+          throw( std::runtime_error( QString(
+                                       "Box linked file \"%1\" could not be found!\n"
+                                       "Do you want to find this file?" )
+                                     .arg( fname ).toStdString( ) ) );
+          return;
+        }
       }
     }
   }
@@ -124,44 +129,41 @@ void Box::loadFile( QString fname ) {
         ds >> elmType;
         GraphicElement *elm = factory->buildElement( ( ElementType ) elmType );
         if( elm ) {
+          if(elm->elementType() == ElementType::BOX) {
+            Box *childBox = ( Box* ) elm;
+            childBox->setParentFile( fname );
+            break;
+          }
           elm->load( ds, portMap, version );
           myScene.addItem( elm );
           switch( elm->elementType( ) ) {
-              case ElementType::BUTTON:
-              case ElementType::SWITCH:
-              case ElementType::CLOCK: {
+          case ElementType::BUTTON:
+          case ElementType::SWITCH:
+          case ElementType::CLOCK: {
               foreach( QNEPort * port, elm->outputs( ) ) {
                 inputMap.append( port );
               }
               elm->disable( );
               break;
             }
-              case ElementType::DISPLAY:
-              case ElementType::LED: {
+          case ElementType::DISPLAY:
+          case ElementType::LED: {
               foreach( QNEPort * port, elm->inputs( ) ) {
                 outputMap.append( port );
               }
               break;
-                case ElementType::BOX: {
-                Box *childBox = ( Box* ) elm;
-                childBox->setParentFile( fname );
-                break;
-              }
-                default:
-                break;
+            default:
+              break;
             }
           }
-        }
-        else {
+        } else {
           throw( std::runtime_error( "Could not build element." ) );
         }
-      }
-      else if( type == QNEConnection::Type ) {
+      } else if( type == QNEConnection::Type ) {
         QNEConnection *conn = new QNEConnection( 0 );
         conn->load( ds, portMap );
         myScene.addItem( conn );
-      }
-      else {
+      } else {
         throw( std::runtime_error( "Box opened with errors." ) );
         return;
       }
@@ -208,18 +210,15 @@ void Box::sortMap( QVector< QNEPort* > &map ) {
       if( p1 != p2 ) {
         if( p1.y( ) > p2.y( ) ) {
           std::swap( map[ j ], map[ j + 1 ] );
-        }
-        else if( ( p1.y( ) == p2.y( ) ) && ( p1.x( ) > p2.x( ) ) ) {
+        } else if( ( p1.y( ) == p2.y( ) ) && ( p1.x( ) > p2.x( ) ) ) {
           std::swap( map[ j ], map[ j + 1 ] );
         }
-      }
-      else {
+      } else {
         p1 = map[ j ]->pos( );
         p1 = map[ j + 1 ]->pos( );
         if( p1.x( ) > p2.x( ) ) {
           std::swap( map[ j ], map[ j + 1 ] );
-        }
-        else if( ( p1.x( ) == p2.x( ) ) && ( p1.y( ) > p2.y( ) ) ) {
+        } else if( ( p1.x( ) == p2.x( ) ) && ( p1.y( ) > p2.y( ) ) ) {
           std::swap( map[ j ], map[ j + 1 ] );
         }
       }
@@ -233,7 +232,7 @@ void Box::fileChanged( QString file ) {
   }
   isAskingToReload = true;
   QMessageBox msgBox;
-/*    msgBox.setParent(  ); */
+  /*    msgBox.setParent(  ); */
   msgBox.setLocale( QLocale::Portuguese );
   msgBox.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
   msgBox.setText( tr( "The file %1 changed, do you want to reload?" ).arg( file ) );
@@ -248,7 +247,7 @@ void Box::fileChanged( QString file ) {
 void Box::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) {
   if( event->button( ) == Qt::LeftButton ) {
     QMessageBox msgBox;
-/*    msgBox.setParent(  ); */
+    /*    msgBox.setParent(  ); */
     msgBox.setLocale( QLocale::Portuguese );
     msgBox.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
     msgBox.setText( tr( "Do you want to load this file?<br>%1" ).arg( m_file ) );
