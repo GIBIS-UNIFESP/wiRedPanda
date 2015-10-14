@@ -36,7 +36,7 @@ public:
   enum Status { Invalid = -1, Inactive = 0, Active = 1};
 
   QNEConnection(QGraphicsItem *parent = 0);
-  ~QNEConnection();
+  virtual ~QNEConnection();
 
   void setPos1(const QPointF &p);
   void setPos2(const QPointF &p);

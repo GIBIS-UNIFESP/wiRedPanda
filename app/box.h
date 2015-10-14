@@ -6,6 +6,9 @@
 #include "scene.h"
 #include "simulationcontroller.h"
 
+#include <QFileSystemWatcher>
+#include <QMutex>
+
 class Box : public GraphicElement {
 
 public:
@@ -25,8 +28,14 @@ private:
   QVector< QNEPort* > outputMap;
   Scene myScene;
   SimulationController simulationController;
+  QFileSystemWatcher watcher;
+  QMutex mutex;
+  bool isAskingToReload;
 
   void sortMap( QVector< QNEPort* > &map );
+
+public slots:
+  void fileChanged( QString file );
 
   /* QGraphicsItem interface */
 protected:

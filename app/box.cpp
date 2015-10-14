@@ -34,6 +34,8 @@ Box::Box( ElementFactory *factory, QGraphicsItem *parent ) : GraphicElement( 0, 
   setPixmap( pixmap );
   setOutputsOnTop( true );
   setObjectName( "BOX" );
+  connect( &watcher, &QFileSystemWatcher::fileChanged, this, &Box::fileChanged );
+  isAskingToReload = false;
 }
 
 Box::~Box( ) {
@@ -58,6 +60,7 @@ void Box::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double vers
 }
 
 void Box::updateLogic( ) {
+  QMutexLocker locker( &mutex );
   for( int inputPort = 0; inputPort < inputMap.size( ); ++inputPort ) {
     inputMap.at( inputPort )->setValue( inputs( ).at( inputPort )->value( ) );
   }
@@ -68,6 +71,9 @@ void Box::updateLogic( ) {
 }
 
 void Box::loadFile( QString fname ) {
+  setToolTip(fname);
+  QMutexLocker locker( &mutex );
+  watcher.addPath( fname );
   QFileInfo fileInfo( fname );
   if( !fileInfo.exists( ) ) {
     qDebug( ) << "Could not open file " << fileInfo.absoluteFilePath( ) << ". Trying to find on current folder.";
@@ -94,6 +100,10 @@ void Box::loadFile( QString fname ) {
   }
   m_file = fileInfo.absoluteFilePath( );
 
+  inputMap.clear( );
+  outputMap.clear( );
+  myScene.clear( );
+
   QFile file( fileInfo.absoluteFilePath( ) );
   if( file.open( QFile::ReadOnly ) ) {
 
@@ -105,7 +115,6 @@ void Box::loadFile( QString fname ) {
       throw( std::runtime_error( "Invalid file format. (BOX)" ) );
     }
     double version = str.split( " " ).at( 1 ).toDouble( );
-
     QMap< quint64, QNEPort* > portMap;
     while( !ds.atEnd( ) ) {
       int type;
@@ -133,10 +142,8 @@ void Box::loadFile( QString fname ) {
                 outputMap.append( port );
               }
               break;
-            }
-              default: {
-
-              break;
+          default:
+                break;
             }
           }
         }
@@ -158,14 +165,16 @@ void Box::loadFile( QString fname ) {
     setMaxInputSz( inputMap.size( ) );
     setMinOutputSz( outputMap.size( ) );
     setMaxOutputSz( outputMap.size( ) );
-    for( int inputPort = inputSize( ); inputPort < inputMap.size( ); ++inputPort ) {
-      addInputPort( );
-    }
-    for( int outputPort = outputSize( ); outputPort < outputMap.size( ); ++outputPort ) {
-      addOutputPort( );
-    }
+    setInputSize( inputMap.size( ) );
+    setOutputSize( outputMap.size( ) );
     sortMap( inputMap );
     sortMap( outputMap );
+    for(int port = 0; port < inputSize(); ++port){
+      inputs().at(port)->setName(inputMap.at(port)->graphicElement()->getLabel());
+    }
+    for(int port = 0; port < outputSize(); ++port){
+      outputs().at(port)->setName(outputMap.at(port)->graphicElement()->getLabel());
+    }
   }
 }
 
@@ -197,11 +206,28 @@ void Box::sortMap( QVector< QNEPort* > &map ) {
   }
 }
 
+void Box::fileChanged( QString file ) {
+  if( isAskingToReload ) {
+    return;
+  }
+  isAskingToReload = true;
+  QMessageBox msgBox;
+/*    msgBox.setParent(  ); */
+  msgBox.setLocale( QLocale::Portuguese );
+  msgBox.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
+  msgBox.setText( tr( "The file %1 changed, do you want to reload?" ).arg( file ) );
+  msgBox.setWindowModality( Qt::ApplicationModal );
+  msgBox.setDefaultButton( QMessageBox::Yes );
+  if( msgBox.exec( ) == QMessageBox::Yes ) {
+    loadFile( file );
+  }
+  isAskingToReload = false;
+}
 
 void Box::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) {
   if( event->button( ) == Qt::LeftButton ) {
     QMessageBox msgBox;
-//    msgBox.setParent(  );
+/*    msgBox.setParent(  ); */
     msgBox.setLocale( QLocale::Portuguese );
     msgBox.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
     msgBox.setText( tr( "Do you want to load this file?<br>%1" ).arg( m_file ) );

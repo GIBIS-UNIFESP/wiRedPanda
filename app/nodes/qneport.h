@@ -39,7 +39,7 @@ public:
   enum { NamePort = 1, TypePort = 2 };
 
   QNEPort(QGraphicsItem *parent = 0);
-  ~QNEPort();
+  virtual ~QNEPort();
 
   void setNEBlock(QNEBlock*);
   void setName(const QString &n);

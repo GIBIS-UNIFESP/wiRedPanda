@@ -93,10 +93,12 @@ bool MainWindow::save( ) {
     std::cerr << "Could not open file in WriteOnly mode : " << fname.toStdString( ) << "." << std::endl;
     return( false );
   }
+  fl.flush();
   fl.close( );
   setCurrentFile( QFileInfo( fname ) );
   ui->statusBar->showMessage( "Saved file sucessfully.", 2000 );
   editor->getUndoStack( )->setClean( );
+  qDebug() << "Saved file successfully!";
   return( true );
 }
 
@@ -294,6 +296,7 @@ void MainWindow::on_actionSave_As_triggered( ) {
   }
   fl.close( );
   ui->statusBar->showMessage( "Saved file sucessfully.", 2000 );
+  qDebug() << "Saving as ... ";
   setCurrentFile( QFileInfo( fname ) );
 }
 

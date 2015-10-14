@@ -29,7 +29,7 @@ Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ), editedC
   markingSelectionBox = false;
   undoStack = new QUndoStack( this );
   scene = new Scene( this );
-  //404552
+  /* 404552 */
   scene->setBackgroundBrush( QBrush( QColor( "#404552" ) ) );
   scene->setGridSize( 16 );
   install( scene );
@@ -43,7 +43,7 @@ void Editor::install( Scene *s ) {
   s->installEventFilter( this );
   simulationController = new SimulationController( s );
   simulationController->start( );
-  buildSelectionRect();
+  buildSelectionRect( );
   clear( );
 }
 
@@ -98,7 +98,8 @@ QList< QGraphicsItem* > Editor::itemsAt( const QPointF &pos ) {
 
 
 QGraphicsItem* Editor::itemAt( const QPointF &pos ) {
-  const QList< QGraphicsItem* > &items = itemsAt( pos );
+  QList< QGraphicsItem* > items = scene->items( pos );
+  items.append( itemsAt( pos ) );
 
   foreach( QGraphicsItem * item, items ) {
     if( item->type( ) == QNEPort::Type ) {
