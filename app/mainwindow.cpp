@@ -1,3 +1,4 @@
+#include "globalproperties.h"
 #include "listitemwidget.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -10,7 +11,6 @@
 #include <QSettings>
 #include <QShortcut>
 #include <iostream>
-#include "globalproperties.h"
 
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
   ui->setupUi( this );
@@ -125,17 +125,19 @@ int MainWindow::confirmSave( ) {
 }
 
 void MainWindow::on_actionNew_triggered( ) {
-  int ret = confirmSave( );
-  if( ret == QMessageBox::Save ) {
-    if( save( ) ) {
+  if( !editor->getUndoStack( )->isClean( ) ) {
+    int ret = confirmSave( );
+    if( ret == QMessageBox::Save ) {
+      if( save( ) ) {
+        clear( );
+      }
+    }
+    else if( ret == QMessageBox::Discard ) {
       clear( );
     }
-  }
-  else if( ret == QMessageBox::Discard ) {
-    clear( );
-  }
-  else if( ret == QMessageBox::Cancel ) {
-    return;
+    else if( ret == QMessageBox::Cancel ) {
+      return;
+    }
   }
 }
 
@@ -428,6 +430,6 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
 void MainWindow::on_lineEdit_returnPressed( ) {
   if( firstResult ) {
     firstResult->startDrag( );
-    ui->lineEdit->clear();
+    ui->lineEdit->clear( );
   }
 }

@@ -53,11 +53,11 @@ void Editor::install( Scene *s ) {
 }
 
 void Editor::clear( ) {
+  undoStack->clear( );
   if( scene ) {
     scene->clear( );
   }
   buildSelectionRect( );
-  undoStack->clear( );
 }
 
 void Editor::deleteElements( ) {
