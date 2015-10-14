@@ -3,6 +3,7 @@
 
 #include <QFrame>
 #include <QHBoxLayout>
+#include <QVariant>
 
 
 Label * ListItemWidget::getLabel() const
@@ -22,6 +23,7 @@ ListItemWidget::ListItemWidget(const QPixmap & pixmap, QString name, QString pix
   label->setObjectName( pixName );
   label->setPixmap( pixmap );
   label->setAuxData( auxData );
+  label->setProperty("Name", name );
 
   QLabel *nameLabel = new QLabel( name );
   nameLabel->setText(name);

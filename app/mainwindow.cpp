@@ -34,10 +34,10 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   redoAction = editor->getUndoStack( )->createRedoAction( this, tr( "&Redo" ) );
   redoAction->setShortcuts( QKeySequence::Redo );
 
-  ui->menuEdit->insertAction( ui->actionUndo , undoAction );
-  ui->menuEdit->insertAction( ui->actionRedo , redoAction );
-  ui->menuEdit->removeAction(ui->actionUndo);
-  ui->menuEdit->removeAction(ui->actionRedo);
+  ui->menuEdit->insertAction( ui->actionUndo, undoAction );
+  ui->menuEdit->insertAction( ui->actionRedo, redoAction );
+  ui->menuEdit->removeAction( ui->actionUndo );
+  ui->menuEdit->removeAction( ui->actionRedo );
 
   connect( editor, &Editor::scroll, this, &MainWindow::scrollView );
 
@@ -368,11 +368,19 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
   else {
     ui->searchScrollArea->show( );
     ui->tabWidget->hide( );
-    QList< Label* > searchResults =
-      ui->tabWidget->findChildren< Label* >( QRegularExpression( QString( "^label_.*%1.*" ).arg( text ) ) );
+    QList< Label* > boxes = ui->tabWidget->findChildren< Label* >( "label_box" );
+    QRegularExpression regex( QString( ".*%1.*" ).arg( text ) );
+    QList< Label* > searchResults;
+    foreach( Label * box, boxes ) {
+      if( regex.match( box->auxData( ) ).hasMatch() ) {
+        searchResults.append( box );
+      }
+    }
+    searchResults.append( ui->tabWidget->findChildren< Label* >( QRegularExpression( QString( "^label_.*%1.*" ).arg(
+                                                                                       text ) ) ) );
     foreach( Label * label, searchResults ) {
       ListItemWidget *item = new ListItemWidget( *label->pixmap( ), label->property( "Name" ).toString( ),
-                                                 label->objectName( ) );
+                                                 label->objectName( ), label->auxData() );
       if( !firstResult ) {
         firstResult = item->getLabel( );
       }

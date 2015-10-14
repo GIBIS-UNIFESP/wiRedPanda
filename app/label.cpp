@@ -22,6 +22,7 @@ QString Label::auxData( ) const {
 
 void Label::setAuxData( const QString &auxData ) {
   m_auxData = auxData;
+  setProperty("Name", auxData);
 }
 
 void Label::startDrag( QPoint pos ) {
