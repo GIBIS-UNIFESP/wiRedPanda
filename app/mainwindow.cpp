@@ -369,6 +369,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
     ui->verticalLayout_4->removeItem( ui->verticalSpacer_BOX );
     ui->verticalLayout_4->addWidget( item );
     ui->verticalLayout_4->addItem( ui->verticalSpacer_BOX );
+    item->getLabel()->startDrag();
   }
   else {
     std::cerr << "Could not open file in ReadOnly mode : " << fname.toStdString( ) << "." << std::endl;
