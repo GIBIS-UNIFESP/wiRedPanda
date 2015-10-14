@@ -11,10 +11,13 @@
 #include <nodes/qneconnection.h>
 #include <scene.h>
 
+class Box;
+class MainWindow;
+
 class Editor : public QObject {
   Q_OBJECT
 public:
-  explicit Editor( QObject *parent = 0 );
+  explicit Editor( MainWindow *parent = 0 );
   virtual ~Editor( );
   void install( Scene *s );
   void save( QDataStream &ds );
@@ -50,6 +53,7 @@ private:
   bool draggingElement;
   QList< GraphicElement* > movedElements;
   QList< QPointF > oldPositions;
+  MainWindow *mainWindow;
 
   bool mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt );
   bool mouseMoveEvt( QGraphicsSceneMouseEvent *mouseEvt );
@@ -69,6 +73,7 @@ public:
   void buildSelectionRect( );
   void handleHoverPort( QNEPort *port );
   void releaseHoverPort( );
+  bool loadBox(Box * box, QString fname);
 };
 
 #endif /* EDITOR_H */

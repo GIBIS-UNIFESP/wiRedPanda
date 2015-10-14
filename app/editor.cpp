@@ -2,10 +2,12 @@
 #include "commands.h"
 #include "editor.h"
 #include "graphicelement.h"
+#include "mainwindow.h"
 #include "serializationfunctions.h"
 
 #include <QApplication>
 #include <QDebug>
+#include <QFileDialog>
 #include <QGraphicsItem>
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsSceneMouseEvent>
@@ -25,7 +27,8 @@ void Editor::buildSelectionRect( ) {
   scene->addItem( selectionRect );
 }
 
-Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ), editedConn( nullptr ), m_hoverPort( nullptr ) {
+Editor::Editor(MainWindow * parent ) : QObject( parent ), scene( nullptr ), editedConn( nullptr ), m_hoverPort( nullptr ) {
+  mainWindow = parent;
   markingSelectionBox = false;
   undoStack = new QUndoStack( this );
   scene = new Scene( this );
@@ -291,6 +294,29 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
   return( false );
 }
 
+bool Editor::loadBox( Box *box, QString fname ) {
+  try {
+    box->loadFile( fname );
+  }
+  catch( std::runtime_error err ) {
+    int ret = QMessageBox::warning( mainWindow, "Error", QString::fromStdString(
+                                      err.what( ) ), QMessageBox::Ok, QMessageBox::Cancel );
+    if( ret == QMessageBox::Cancel ) {
+      return( false );
+    }
+    else {
+      fname = mainWindow->getOpenBoxFile( );
+      if( fname.isEmpty( ) ) {
+        return( false );
+      }
+      else {
+        return( loadBox( box, fname ) );
+      }
+    }
+  }
+  return( true );
+}
+
 bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
   /* Verify if mimetype is compatible. */
   if( dde->mimeData( )->hasFormat( "application/x-dnditemdata" ) ) {
@@ -310,7 +336,10 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
     if( elm->elementType( ) == ElementType::BOX ) {
       Box *box = dynamic_cast< Box* >( elm );
       if( box ) {
-        box->loadFile( label_auxData );
+        QString fname = label_auxData;
+        if( !loadBox( box, fname ) ) {
+          return( false );
+        }
       }
     }
     /*

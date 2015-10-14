@@ -87,7 +87,8 @@ void Box::loadFile( QString fname ) {
 /*        qDebug() << "Could not open file " << fileInfo.absoluteFilePath() << ". Sending error."; */
         std::cerr << "Error: This file does not exists: " << fname.toStdString( ) << std::endl;
         throw( std::runtime_error( QString(
-                                     "Box linked file \"%1\" could not be found!\nTry to put this file in the same folder of \"%2.\"" )
+                                     "Box linked file \"%1\" could not be found!\n"
+                                     "Do you want to find this file?" )
                                    .arg( fname ).
                                    arg( currentFile.fileName( ) ).toStdString( ) ) );
         return;

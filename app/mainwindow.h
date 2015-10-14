@@ -29,9 +29,11 @@ public:
   void setCurrentFile( const QFileInfo &value );
 
   void open( const QString &fname );
-  void createUndoView();
-  int confirmSave();
-  void updateRecentBoxes();
+  void createUndoView( );
+  int confirmSave( );
+  void updateRecentBoxes( );
+  QString getOpenBoxFile( );
+
 private slots:
   void scrollView( int dx, int dy );
 
@@ -69,9 +71,9 @@ private slots:
 
   void on_actionOpen_Box_triggered( );
 
-  void on_lineEdit_textChanged(const QString &arg1);
+  void on_lineEdit_textChanged( const QString &arg1 );
 
-  void on_lineEdit_returnPressed();
+  void on_lineEdit_returnPressed( );
 
 private:
   Ui::MainWindow *ui;

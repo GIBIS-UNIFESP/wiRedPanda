@@ -46,7 +46,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   connect( shortcut, SIGNAL( activated( ) ), ui->lineEdit, SLOT( setFocus( ) ) );
   ui->graphicsView->setCacheMode( QGraphicsView::CacheBackground );
   firstResult = nullptr;
-  updateRecentBoxes();
+  updateRecentBoxes( );
 }
 
 void MainWindow::createUndoView( ) {
@@ -93,12 +93,12 @@ bool MainWindow::save( ) {
     std::cerr << "Could not open file in WriteOnly mode : " << fname.toStdString( ) << "." << std::endl;
     return( false );
   }
-  fl.flush();
+  fl.flush( );
   fl.close( );
   setCurrentFile( QFileInfo( fname ) );
   ui->statusBar->showMessage( "Saved file sucessfully.", 2000 );
   editor->getUndoStack( )->setClean( );
-  qDebug() << "Saved file successfully!";
+  qDebug( ) << "Saved file successfully!";
   return( true );
 }
 
@@ -296,7 +296,7 @@ void MainWindow::on_actionSave_As_triggered( ) {
   }
   fl.close( );
   ui->statusBar->showMessage( "Saved file sucessfully.", 2000 );
-  qDebug() << "Saving as ... ";
+  qDebug( ) << "Saving as ... ";
   setCurrentFile( QFileInfo( fname ) );
 }
 
@@ -335,7 +335,7 @@ void MainWindow::updateRecentBoxes( ) {
   }
   QSettings settings;
   QStringList files = settings.value( "recentBoxes" ).toStringList( );
-  foreach (QString file, files) {
+  foreach( QString file, files ) {
     QString name = QFileInfo( file ).baseName( ).toUpper( );
     QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
     ListItemWidget *item = new ListItemWidget( pixmap, name, "label_box", file );
@@ -344,11 +344,14 @@ void MainWindow::updateRecentBoxes( ) {
   ui->verticalLayout_4->addItem( ui->verticalSpacer_BOX );
 }
 
+QString MainWindow::getOpenBoxFile( ) {
+  return( QFileDialog::getOpenFileName( this, tr( "Open File as Box" ), defaultDirectory.absolutePath( ), tr(
+                                          "Panda files (*.panda)" ) ) );
+}
+
 void MainWindow::on_actionOpen_Box_triggered( ) {
   /* LOAD FILE AS BOX */
-  QString fname =
-    QFileDialog::getOpenFileName( this, tr( "Open File as Box" ), defaultDirectory.absolutePath( ), tr(
-                                    "Panda files (*.panda)" ) );
+  QString fname = getOpenBoxFile( );
   if( fname.isEmpty( ) ) {
     return;
   }
