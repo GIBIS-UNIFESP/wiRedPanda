@@ -29,7 +29,8 @@ Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ), editedC
   markingSelectionBox = false;
   undoStack = new QUndoStack( this );
   scene = new Scene( this );
-  scene->setBackgroundBrush( QBrush( QColor( Qt::gray ) ) );
+  //404552
+  scene->setBackgroundBrush( QBrush( QColor( "#404552" ) ) );
   scene->setGridSize( 16 );
   install( scene );
   buildSelectionRect( );
@@ -476,7 +477,7 @@ void Editor::load( QDataStream &ds ) {
 void Editor::setElementEditor( ElementEditor *value ) {
   elementEditor = value;
   elementEditor->setScene( scene );
-  connect(elementEditor,&ElementEditor::elementUpdated,this,&Editor::elementUpdated);
+  connect( elementEditor, &ElementEditor::elementUpdated, this, &Editor::elementUpdated );
 }
 
 QPointF roundTo( QPointF point, int multiple ) {

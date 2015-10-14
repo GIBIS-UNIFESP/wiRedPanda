@@ -111,18 +111,17 @@ RESOURCES += \
     $$PWD/app/resources/output/output.qrc\
     $$PWD/app/resources/toolbar/toolbar.qrc
 
-debug{
-DEFINES += DEBUG
-}
 
-mac {
-TEMPLATE = app
-QMAKE_MAC_SDK = macosx10.10
-QMAKE_LFLAGS += -mmacosx-version-min=10.10 -v
-QMAKE_CXXFLAGS += -stdlib=libc++
-QMAKE_CXXFLAGS += -mmacosx-version-min=10.10
-QMAKE_CXXFLAGS_DEBUG = -O
-QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.10
-LIBS += -stdlib=libc++
-CONFIG += app_bundle
-}
+#mac {
+#TEMPLATE = app
+#QMAKE_MAC_SDK = macosx10.10
+#QMAKE_LFLAGS += -mmacosx-version-min=10.10 -v
+#QMAKE_CXXFLAGS += -stdlib=libc++
+#QMAKE_CXXFLAGS += -mmacosx-version-min=10.10
+#QMAKE_CXXFLAGS_DEBUG = -O
+#QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.10
+#LIBS += -stdlib=libc++
+#CONFIG += app_bundle
+#}
+
+QMAKE_CXXFLAGS_DEBUG = -DDEBUG

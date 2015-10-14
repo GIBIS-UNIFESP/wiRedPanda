@@ -88,6 +88,7 @@ bool MainWindow::save( ) {
   fl.close( );
   setCurrentFile( QFileInfo( fname ) );
   ui->statusBar->showMessage( "Saved file sucessfully.", 2000 );
+  editor->getUndoStack( )->setClean( );
   return( true );
 }
 
@@ -101,7 +102,7 @@ void MainWindow::clear( ) {
   setCurrentFile( QFileInfo( ) );
 }
 
-void MainWindow::on_actionNew_triggered( ) {
+int MainWindow::confirmSave( ) {
   QMessageBox msgBox;
   msgBox.setParent( this );
   msgBox.setLocale( QLocale::Portuguese );
@@ -109,7 +110,12 @@ void MainWindow::on_actionNew_triggered( ) {
   msgBox.setText( tr( "Do you want to save your changes?" ) );
   msgBox.setWindowModality( Qt::WindowModal );
   msgBox.setDefaultButton( QMessageBox::Save );
-  int ret = msgBox.exec( );
+
+  return( msgBox.exec( ) );
+}
+
+void MainWindow::on_actionNew_triggered( ) {
+  int ret = confirmSave( );
   if( ret == QMessageBox::Save ) {
     if( save( ) ) {
       clear( );
@@ -206,24 +212,19 @@ void MainWindow::closeEvent( QCloseEvent *e ) {
 #ifdef DEBUG
   return;
 #endif
-  QMessageBox msgBox;
-  msgBox.setParent( this );
-  msgBox.setLocale( QLocale::Portuguese );
-  msgBox.setStandardButtons( QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel );
-  msgBox.setText( tr( "Do you want to save your changes?" ) );
-  msgBox.setWindowModality( Qt::WindowModal );
-  msgBox.setDefaultButton( QMessageBox::Save );
-  int ret = msgBox.exec( );
-  if( ret == QMessageBox::Save ) {
-    if( save( ) ) {
+  if( !editor->getUndoStack( )->isClean( ) ) {
+    int ret = confirmSave( );
+    if( ret == QMessageBox::Save ) {
+      if( save( ) ) {
+        close( );
+      }
+    }
+    else if( ret == QMessageBox::Discard ) {
       close( );
     }
-  }
-  else if( ret == QMessageBox::Discard ) {
-    close( );
-  }
-  else if( ret == QMessageBox::Cancel ) {
-    e->ignore( );
+    else if( ret == QMessageBox::Cancel ) {
+      e->ignore( );
+    }
   }
 }
 
@@ -362,10 +363,9 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
     foreach( Label * label, searchResults ) {
       ListItemWidget *item = new ListItemWidget( *label->pixmap( ), label->property( "Name" ).toString( ),
                                                  label->objectName( ) );
-      if(!firstResult){
-        firstResult = item->getLabel();
+      if( !firstResult ) {
+        firstResult = item->getLabel( );
       }
-
       ui->searchLayout->addWidget( item );
     }
   }
@@ -373,7 +373,7 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
 }
 
 void MainWindow::on_lineEdit_returnPressed( ) {
-  if(firstResult){
-    firstResult->startDrag();
+  if( firstResult ) {
+    firstResult->startDrag( );
   }
 }

@@ -30,6 +30,7 @@ public:
 
   void open( const QString &fname );
   void createUndoView();
+  int confirmSave();
 private slots:
   void scrollView( int dx, int dy );
 
