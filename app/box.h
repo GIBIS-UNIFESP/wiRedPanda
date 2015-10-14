@@ -9,24 +9,28 @@
 class Box : public GraphicElement {
 
 public:
-  Box(ElementFactory * factory, QGraphicsItem * parent = 0);
-  ~Box();
-  // GraphicElement interface
-  ElementType elementType();
-  void save(QDataStream & ds);
-  void load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap, double version);
-  void updateLogic();
-  void loadFile(QString fname);
+  Box( ElementFactory *factory, QGraphicsItem *parent = 0 );
+  ~Box( );
+  /* GraphicElement interface */
+  ElementType elementType( );
+  void save( QDataStream &ds );
+  void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
+  void updateLogic( );
+  void loadFile( QString fname );
 
 private:
-  ElementFactory * factory;
+  ElementFactory *factory;
   QString m_file;
-  QVector <QNEPort *> inputMap;
-  QVector <QNEPort *> outputMap;
+  QVector< QNEPort* > inputMap;
+  QVector< QNEPort* > outputMap;
   Scene myScene;
   SimulationController simulationController;
 
-  void sortMap( QVector< QNEPort * > & map);
+  void sortMap( QVector< QNEPort* > &map );
+
+  /* QGraphicsItem interface */
+protected:
+  void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event );
 };
 
-#endif // BOX_H
+#endif /* BOX_H */
