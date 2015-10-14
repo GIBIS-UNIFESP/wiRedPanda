@@ -8,6 +8,7 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QSettings>
 #include <QShortcut>
 #include <iostream>
 
@@ -45,10 +46,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   connect( shortcut, SIGNAL( activated( ) ), ui->lineEdit, SLOT( setFocus( ) ) );
   ui->graphicsView->setCacheMode( QGraphicsView::CacheBackground );
   firstResult = nullptr;
-/*
- *  ui->tabWidget->setTabEnabled(2,false);
- *  ui->tabWidget->setTabEnabled(3,false);
- */
+  updateRecentBoxes();
 }
 
 void MainWindow::createUndoView( ) {
@@ -325,7 +323,26 @@ void MainWindow::on_actionSelect_all_triggered( ) {
   editor->selectAll( );
 }
 
+void MainWindow::updateRecentBoxes( ) {
+  ui->verticalLayout_4->removeItem( ui->verticalSpacer_BOX );
+  while( QLayoutItem * item = ui->verticalLayout_4->takeAt( 0 ) ) {
+    if( QWidget * widget = item->widget( ) ) {
+      delete widget;
+    }
+  }
+  QSettings settings;
+  QStringList files = settings.value( "recentBoxes" ).toStringList( );
+  foreach (QString file, files) {
+    QString name = QFileInfo( file ).baseName( ).toUpper( );
+    QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
+    ListItemWidget *item = new ListItemWidget( pixmap, name, "label_box", file );
+    ui->verticalLayout_4->addWidget( item );
+  }
+  ui->verticalLayout_4->addItem( ui->verticalSpacer_BOX );
+}
+
 void MainWindow::on_actionOpen_Box_triggered( ) {
+  /* LOAD FILE AS BOX */
   QString fname =
     QFileDialog::getOpenFileName( this, tr( "Open File as Box" ), defaultDirectory.absolutePath( ), tr(
                                     "Panda files (*.panda)" ) );
@@ -350,6 +367,18 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
     return;
   }
   fl.close( );
+
+  QSettings settings;
+  QStringList files = settings.value( "recentBoxes" ).toStringList( );
+  files.removeAll( fname );
+  files.prepend( fname );
+  while( files.size( ) > 5 ) {
+    files.removeLast( );
+  }
+  settings.setValue( "recentBoxes", files );
+
+  updateRecentBoxes( );
+
   ui->statusBar->showMessage( "Loaded box sucessfully.", 2000 );
 }
 
@@ -372,7 +401,7 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
     QRegularExpression regex( QString( ".*%1.*" ).arg( text ) );
     QList< Label* > searchResults;
     foreach( Label * box, boxes ) {
-      if( regex.match( box->auxData( ) ).hasMatch() ) {
+      if( regex.match( box->auxData( ) ).hasMatch( ) ) {
         searchResults.append( box );
       }
     }
@@ -380,7 +409,7 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
                                                                                        text ) ) ) );
     foreach( Label * label, searchResults ) {
       ListItemWidget *item = new ListItemWidget( *label->pixmap( ), label->property( "Name" ).toString( ),
-                                                 label->objectName( ), label->auxData() );
+                                                 label->objectName( ), label->auxData( ) );
       if( !firstResult ) {
         firstResult = item->getLabel( );
       }

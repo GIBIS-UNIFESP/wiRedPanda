@@ -31,6 +31,7 @@ public:
   void open( const QString &fname );
   void createUndoView();
   int confirmSave();
+  void updateRecentBoxes();
 private slots:
   void scrollView( int dx, int dy );
 
