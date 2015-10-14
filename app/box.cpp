@@ -71,7 +71,7 @@ void Box::updateLogic( ) {
 }
 
 void Box::loadFile( QString fname ) {
-  setToolTip(fname);
+  setToolTip( fname );
   QMutexLocker locker( &mutex );
   watcher.addPath( fname );
   QFileInfo fileInfo( fname );
@@ -80,21 +80,20 @@ void Box::loadFile( QString fname ) {
     fileInfo.setFile( QDir::current( ), fileInfo.fileName( ) );
     if( !fileInfo.exists( ) ) {
       qDebug( ) << "Could not open file " << fileInfo.absoluteFilePath( ) << ". Trying to find on current file folder.";
-      QFileInfo currentFile( GlobalProperties::currentFile );
-      qDebug( ) << "Current file is: " << GlobalProperties::currentFile;
-      fileInfo.setFile( currentFile.absoluteDir( ), fileInfo.fileName( ) );
+      fileInfo.setFile( QFileInfo( parentFile ).absoluteDir( ), fileInfo.fileName( ) );
+      qDebug( ) << "Trying to load : " << fileInfo.absoluteFilePath( );
       if( !fileInfo.exists( ) ) {
 /*        qDebug() << "Could not open file " << fileInfo.absoluteFilePath() << ". Sending error."; */
         std::cerr << "Error: This file does not exists: " << fname.toStdString( ) << std::endl;
         throw( std::runtime_error( QString(
                                      "Box linked file \"%1\" could not be found!\n"
                                      "Do you want to find this file?" )
-                                   .arg( fname ).
-                                   arg( currentFile.fileName( ) ).toStdString( ) ) );
+                                   .arg( fname ).toStdString( ) ) );
         return;
       }
     }
   }
+  fname = fileInfo.absoluteFilePath( );
   qDebug( ) << "Successfully opened box file \"" << fileInfo.absoluteFilePath( ) << "\"!";
   if( getLabel( ).isEmpty( ) ) {
     setLabel( fileInfo.baseName( ).toUpper( ) );
@@ -143,7 +142,12 @@ void Box::loadFile( QString fname ) {
                 outputMap.append( port );
               }
               break;
-          default:
+                case ElementType::BOX: {
+                Box *childBox = ( Box* ) elm;
+                childBox->setParentFile( fname );
+                break;
+              }
+                default:
                 break;
             }
           }
@@ -170,21 +174,29 @@ void Box::loadFile( QString fname ) {
     setOutputSize( outputMap.size( ) );
     sortMap( inputMap );
     sortMap( outputMap );
-    for(int port = 0; port < inputSize(); ++port){
-      QString lb = inputMap.at(port)->graphicElement()->getLabel();
-      if(lb.isEmpty()){
-        lb = inputMap.at(port)->graphicElement()->objectName();
+    for( int port = 0; port < inputSize( ); ++port ) {
+      QString lb = inputMap.at( port )->graphicElement( )->getLabel( );
+      if( lb.isEmpty( ) ) {
+        lb = inputMap.at( port )->graphicElement( )->objectName( );
       }
-      inputs().at(port)->setName(lb);
+      inputs( ).at( port )->setName( lb );
     }
-    for(int port = 0; port < outputSize(); ++port){
-      QString lb = outputMap.at(port)->graphicElement()->getLabel();
-      if(lb.isEmpty()){
-        lb = outputMap.at(port)->graphicElement()->objectName();
+    for( int port = 0; port < outputSize( ); ++port ) {
+      QString lb = outputMap.at( port )->graphicElement( )->getLabel( );
+      if( lb.isEmpty( ) ) {
+        lb = outputMap.at( port )->graphicElement( )->objectName( );
       }
-      outputs().at(port)->setName(lb);
+      outputs( ).at( port )->setName( lb );
     }
   }
+}
+
+QString Box::getParentFile( ) const {
+  return( parentFile );
+}
+
+void Box::setParentFile( const QString &value ) {
+  parentFile = value;
 }
 
 void Box::sortMap( QVector< QNEPort* > &map ) {

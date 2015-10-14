@@ -1,6 +1,7 @@
 #include "box.h"
 #include "commands.h"
 #include "editor.h"
+#include "globalproperties.h"
 #include "graphicelement.h"
 #include "mainwindow.h"
 #include "serializationfunctions.h"
@@ -27,7 +28,8 @@ void Editor::buildSelectionRect( ) {
   scene->addItem( selectionRect );
 }
 
-Editor::Editor(MainWindow * parent ) : QObject( parent ), scene( nullptr ), editedConn( nullptr ), m_hoverPort( nullptr ) {
+Editor::Editor( MainWindow *parent ) : QObject( parent ), scene( nullptr ), editedConn( nullptr ),
+  m_hoverPort( nullptr ) {
   mainWindow = parent;
   markingSelectionBox = false;
   undoStack = new QUndoStack( this );
@@ -296,6 +298,7 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
 
 bool Editor::loadBox( Box *box, QString fname ) {
   try {
+    box->setParentFile( GlobalProperties::currentFile );
     box->loadFile( fname );
   }
   catch( std::runtime_error err ) {

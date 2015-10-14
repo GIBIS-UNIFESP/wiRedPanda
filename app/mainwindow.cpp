@@ -1,4 +1,3 @@
-#include "globalproperties.h"
 #include "listitemwidget.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -11,6 +10,7 @@
 #include <QSettings>
 #include <QShortcut>
 #include <iostream>
+#include "globalproperties.h"
 
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
   ui->setupUi( this );

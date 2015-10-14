@@ -21,6 +21,9 @@ public:
   void updateLogic( );
   void loadFile( QString fname );
 
+  QString getParentFile( ) const;
+  void setParentFile( const QString &value );
+
 private:
   ElementFactory *factory;
   QString m_file;
@@ -31,7 +34,7 @@ private:
   QFileSystemWatcher watcher;
   QMutex mutex;
   bool isAskingToReload;
-
+  QString parentFile;
   void sortMap( QVector< QNEPort* > &map );
 
 public slots:
