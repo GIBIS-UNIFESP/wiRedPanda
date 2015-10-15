@@ -9,6 +9,7 @@
 #include <elementfactory.h>
 #include <memory>
 #include <nodes/qneconnection.h>
+#include <QTime>
 #include <scene.h>
 
 class Box;
@@ -16,6 +17,7 @@ class MainWindow;
 
 class Editor : public QObject {
   Q_OBJECT
+  QTime timer;
 public:
   explicit Editor( MainWindow *parent = 0 );
   virtual ~Editor( );
@@ -73,7 +75,8 @@ public:
   void buildSelectionRect( );
   void handleHoverPort( QNEPort *port );
   void releaseHoverPort( );
-  bool loadBox(Box * box, QString fname);
+  bool loadBox( Box *box, QString fname );
+  void resizeScene();
 };
 
 #endif /* EDITOR_H */

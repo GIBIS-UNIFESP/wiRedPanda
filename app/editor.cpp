@@ -12,6 +12,7 @@
 #include <QGraphicsItem>
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsView>
 #include <QKeyEvent>
 #include <QLabel>
 #include <QMessageBox>
@@ -39,6 +40,8 @@ Editor::Editor( MainWindow *parent ) : QObject( parent ), scene( nullptr ), edit
   scene->setGridSize( 16 );
   install( scene );
   draggingElement = false;
+  clear( );
+  timer.start( );
 }
 
 Editor::~Editor( ) {
@@ -58,6 +61,9 @@ void Editor::clear( ) {
     scene->clear( );
   }
   buildSelectionRect( );
+  if( !scene->views( ).isEmpty( ) ) {
+    scene->setSceneRect( scene->views( ).front( )->rect( ) );
+  }
 }
 
 void Editor::deleteElements( ) {
@@ -149,10 +155,12 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
         editedConn->setPos2( mousePos );
         editedConn->updatePath( );
         addItem( editedConn );
-      } else {
+      }
+      else {
         editedConn = nullptr;
       }
-    } else {
+    }
+    else {
       editedConn = new QNEConnection( );
       addItem( editedConn );
       editedConn->setPort1( ( QNEPort* ) item );
@@ -160,13 +168,15 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
       editedConn->setPos2( mousePos );
       editedConn->updatePath( );
     }
-  } else if( item && ( item->type( ) == QNEConnection::Type ) ) {
+  }
+  else if( item && ( item->type( ) == QNEConnection::Type ) ) {
     /* Mouse pressed over a connections. */
     QNEConnection *connection = dynamic_cast< QNEConnection* >( item );
     if( connection ) {
       connection->split( mousePos );
     }
-  } else if( !item ) {
+  }
+  else if( !item ) {
     if( mouseEvt->button( ) == Qt::LeftButton ) {
       /* Mouse pressed over boar (Selection box). */
       selectionStartPoint = mousePos;
@@ -175,7 +185,8 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
       selectionRect->show( );
       selectionRect->update( );
     }
-  } else if( item && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
+  }
+  else if( item && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
     /* STARTING MOVING ELEMENT */
     draggingElement = true;
     QList< QGraphicsItem* > list = scene->selectedItems( );
@@ -196,11 +207,13 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
 void Editor::handleHoverPort( QNEPort *port ) {
   if( m_hoverPort && ( port != m_hoverPort ) ) {
     releaseHoverPort( );
-  } else if( port && ( port->type( ) == QNEPort::Type ) ) {
+  }
+  else if( port && ( port->type( ) == QNEPort::Type ) ) {
     m_hoverPort = port;
     if( editedConn && editedConn->port1( ) && ( editedConn->port1( )->isOutput( ) == port->isOutput( ) ) ) {
       QApplication::setOverrideCursor( QCursor( Qt::ForbiddenCursor ) );
-    } else {
+    }
+    else {
       m_hoverPort->hoverEnter( );
     }
   }
@@ -214,7 +227,22 @@ void Editor::releaseHoverPort( ) {
   }
 }
 
+void Editor::resizeScene( ) {
+  QGraphicsItem *item = itemAt( mousePos );
+  if( item ) {
+    QRectF itemRect = item->boundingRect( );
+    itemRect.translate( item->pos( ) );
+    QRectF rect = scene->sceneRect( ).united( itemRect.adjusted( -10, -10, 10, 10 ) );
+    scene->setSceneRect( rect );
+    if( !scene->views( ).isEmpty( ) ) {
+      QGraphicsView *view = scene->views( ).front( );
+      view->ensureVisible( item );
+    }
+  }
+}
+
 bool Editor::mouseMoveEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
+  resizeScene( );
   Q_UNUSED( mouseEvt )
   QNEPort * port = dynamic_cast< QNEPort* >( itemAt( mousePos ) );
   handleHoverPort( port );
@@ -223,14 +251,16 @@ bool Editor::mouseMoveEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
     editedConn->setPos2( mousePos );
     editedConn->updatePath( );
     return( true );
-  } else if( markingSelectionBox ) {
+  }
+  else if( markingSelectionBox ) {
     /* If is marking the selectionBox, the last coordinate follows the mouse position. */
     QRectF rect = QRectF( selectionStartPoint, mousePos ).normalized( );
     selectionRect->setRect( rect );
     QPainterPath selectionBox;
     selectionBox.addRect( rect );
     scene->setSelectionArea( selectionBox );
-  } else if( !markingSelectionBox ) {
+  }
+  else if( !markingSelectionBox ) {
     /* Else, the selectionRect is hidden. */
     selectionRect->hide( );
   }
@@ -291,16 +321,19 @@ bool Editor::loadBox( Box *box, QString fname ) {
   try {
     box->setParentFile( GlobalProperties::currentFile );
     box->loadFile( fname );
-  } catch( std::runtime_error err ) {
+  }
+  catch( std::runtime_error err ) {
     int ret = QMessageBox::warning( mainWindow, "Error", QString::fromStdString(
                                       err.what( ) ), QMessageBox::Ok, QMessageBox::Cancel );
     if( ret == QMessageBox::Cancel ) {
       return( false );
-    } else {
+    }
+    else {
       fname = mainWindow->getOpenBoxFile( );
       if( fname.isEmpty( ) ) {
         return( false );
-      } else {
+      }
+      else {
         return( loadBox( box, fname ) );
       }
     }
@@ -367,7 +400,8 @@ bool Editor::wheelEvt( QWheelEvent *wEvt ) {
     int numSteps = numDegrees / 15;
     if( wEvt->orientation( ) == Qt::Horizontal ) {
       emit scroll( numSteps, 0 );
-    } else {
+    }
+    else {
       emit scroll( 0, numSteps );
     }
     wEvt->accept( );
@@ -452,7 +486,8 @@ void Editor::load( QDataStream &ds ) {
   ds >> str;
   if( !str.startsWith( QApplication::applicationName( ) ) ) {
     throw( std::runtime_error( "Invalid file format." ) );
-  } else if( !str.endsWith( QApplication::applicationVersion( ) ) ) {
+  }
+  else if( !str.endsWith( QApplication::applicationVersion( ) ) ) {
     QMessageBox::warning(
       dynamic_cast< QWidget* >( parent( ) ), "Warning!", "File opened in compatibility mode.", QMessageBox::Ok,
       QMessageBox::NoButton );
@@ -470,14 +505,17 @@ void Editor::load( QDataStream &ds ) {
       if( elm ) {
         addItem( elm );
         elm->load( ds, portMap, version );
-      } else {
+      }
+      else {
         throw( std::runtime_error( "Could not build element." ) );
       }
-    } else if( type == QNEConnection::Type ) {
+    }
+    else if( type == QNEConnection::Type ) {
       QNEConnection *conn = new QNEConnection( 0 );
       addItem( conn );
       conn->load( ds, portMap );
-    } else {
+    }
+    else {
       if( QMessageBox::warning( dynamic_cast< QWidget* >( parent( ) ), "Warning!",
                                 "File opened with errors.\nDo you want to proceed?", QMessageBox::Ok,
                                 QMessageBox::Cancel ) == QMessageBox::Cancel ) {
@@ -485,6 +523,13 @@ void Editor::load( QDataStream &ds ) {
       }
       return;
     }
+  }
+  scene->setSceneRect( scene->itemsBoundingRect( ) );
+  if( !scene->views( ).empty( ) ) {
+    QGraphicsView *view = scene->views( ).first( );
+    QRectF rect = view->rect( );
+    rect.moveCenter( QPointF( 0, 0 ) );
+    scene->setSceneRect( scene->sceneRect( ).united( rect ) );
   }
   /* Any change here must be made in box implementation!!! */
 }
@@ -504,7 +549,7 @@ QPointF roundTo( QPointF point, int multiple ) {
 }
 
 bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
-  if (obj == scene ) {
+  if( obj == scene ) {
     QGraphicsSceneDragDropEvent *dde = dynamic_cast< QGraphicsSceneDragDropEvent* >( evt );
     QGraphicsSceneMouseEvent *mouseEvt = dynamic_cast< QGraphicsSceneMouseEvent* >( evt );
     QWheelEvent *wEvt = dynamic_cast< QWheelEvent* >( evt );
@@ -513,28 +558,28 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
     }
     bool ret = false;
     switch( ( int ) evt->type( ) ) {
-    case QEvent::GraphicsSceneMousePress: {
+        case QEvent::GraphicsSceneMousePress: {
         ret = mousePressEvt( mouseEvt );
         break;
       }
-    case QEvent::GraphicsSceneMouseMove: {
+        case QEvent::GraphicsSceneMouseMove: {
         ret = mouseMoveEvt( mouseEvt );
         break;
       }
-    case QEvent::GraphicsSceneMouseRelease: {
+        case QEvent::GraphicsSceneMouseRelease: {
         ret = mouseReleaseEvt( mouseEvt );
         break;
       }
-    case QEvent::GraphicsSceneDrop: {
+        case QEvent::GraphicsSceneDrop: {
         ret = dropEvt( dde );
         break;
       }
-    case QEvent::GraphicsSceneDragMove:
-    case QEvent::GraphicsSceneDragEnter: {
+        case QEvent::GraphicsSceneDragMove:
+        case QEvent::GraphicsSceneDragEnter: {
         ret = dragMoveEvt( dde );
         break;
       }
-    case QEvent::GraphicsSceneWheel: {
+        case QEvent::GraphicsSceneWheel: {
         ret = wheelEvt( wEvt );
         break;
       }

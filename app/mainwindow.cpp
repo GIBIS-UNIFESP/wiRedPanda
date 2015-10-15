@@ -20,7 +20,6 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->graphicsView->setRenderHint( QPainter::Antialiasing, true );
   ui->graphicsView->setAcceptDrops( true );
   editor->setElementEditor( ui->widgetElementEditor );
-  editor->getScene( )->setSceneRect( ui->graphicsView->rect( ) );
   ui->searchScrollArea->hide( );
   setCurrentFile( QFileInfo( ) );
 #ifdef DEBUG
