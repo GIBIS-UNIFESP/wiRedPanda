@@ -229,7 +229,7 @@ void Editor::releaseHoverPort( ) {
 
 void Editor::resizeScene( ) {
   QGraphicsItem *item = itemAt( mousePos );
-  if( item && ( timer.elapsed( ) > 50 ) ) {
+  if( item && ( timer.elapsed( ) > 50 ) && draggingElement ) {
     QRectF itemRect = item->boundingRect( );
     itemRect.translate( item->pos( ) );
     QRectF rect = scene->sceneRect( ).united( itemRect.adjusted( -10, -10, 10, 10 ) );

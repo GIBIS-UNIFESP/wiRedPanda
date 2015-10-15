@@ -137,6 +137,8 @@ void MainWindow::on_actionNew_triggered( ) {
     else if( ret == QMessageBox::Cancel ) {
       return;
     }
+  }else{
+    clear();
   }
 }
 
