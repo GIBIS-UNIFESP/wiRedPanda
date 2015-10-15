@@ -277,8 +277,19 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
   }
   if( draggingElement && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
     if( !movedElements.empty( ) ) {
-      /* FIXME asdusdhuiahdiuashahduis */
-      undoStack->push( new MoveCommand( movedElements, oldPositions ) );
+      if( movedElements.size( ) != oldPositions.size( ) ) {
+        throw std::runtime_error( "Invalid coordinates." );
+      }
+      bool valid = false;
+      for( int elm = 0; elm < movedElements.size( ); ++elm ) {
+        if( movedElements[ elm ]->pos( ) != oldPositions[ elm ] ) {
+          valid = true;
+          break;
+        }
+      }
+      if( movedElements.front( )->pos( ) != oldPositions.front( ) && valid) {
+        undoStack->push( new MoveCommand( movedElements, oldPositions ) );
+      }
     }
     draggingElement = false;
     movedElements.clear( );
