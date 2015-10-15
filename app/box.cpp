@@ -1,7 +1,7 @@
 #include "box.h"
 #include "editor.h"
 #include "globalproperties.h"
-
+#include "boxnotfoundexception.h"
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
@@ -91,10 +91,10 @@ void Box::loadFile( QString fname ) {
         fileInfo.setFile( currentFile.absoluteDir( ), myFile );
         if( !fileInfo.exists( ) ) {
           std::cerr << "Error: This file does not exists: " << fname.toStdString( ) << std::endl;
-          throw( std::runtime_error( QString(
+          throw( BoxNotFoundException( QString(
                                        "Box linked file \"%1\" could not be found!\n"
                                        "Do you want to find this file?" )
-                                     .arg( fname ).toStdString( ) ) );
+                                     .arg( fname ).toStdString( ), this ) );
           return;
         }
       }

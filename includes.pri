@@ -50,6 +50,7 @@ SOURCES += \
     $$PWD/app/scene.cpp \
     $$PWD/app/serializationfunctions.cpp \
     $$PWD/app/simulationcontroller.cpp \
+    $$PWD/app/boxnotfoundexception.cpp
 
 
 HEADERS  +=  \
@@ -93,6 +94,7 @@ HEADERS  +=  \
     $$PWD/app/scene.h \
     $$PWD/app/serializationfunctions.h \
     $$PWD/app/simulationcontroller.h \
+    $$PWD/app/boxnotfoundexception.h
 
 INCLUDEPATH += \
     $$PWD/app \

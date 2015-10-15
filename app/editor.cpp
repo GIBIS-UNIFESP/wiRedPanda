@@ -5,7 +5,7 @@
 #include "graphicelement.h"
 #include "mainwindow.h"
 #include "serializationfunctions.h"
-
+#include "boxnotfoundexception.h"
 #include <QApplication>
 #include <QDebug>
 #include <QFileDialog>
@@ -339,7 +339,7 @@ bool Editor::loadBox( Box *box, QString fname ) {
     box->setParentFile( GlobalProperties::currentFile );
     box->loadFile( fname );
   }
-  catch( std::runtime_error err ) {
+  catch( BoxNotFoundException err ) {
     int ret = QMessageBox::warning( mainWindow, "Error", QString::fromStdString(
                                       err.what( ) ), QMessageBox::Ok, QMessageBox::Cancel );
     if( ret == QMessageBox::Cancel ) {
@@ -351,7 +351,7 @@ bool Editor::loadBox( Box *box, QString fname ) {
         return( false );
       }
       else {
-        return( loadBox( box, fname ) );
+        return( loadBox( err.getBox(), fname ) );
       }
     }
   }
