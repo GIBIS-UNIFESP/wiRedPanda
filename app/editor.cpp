@@ -21,14 +21,6 @@
 #include <iostream>
 #include <nodes/qneconnection.h>
 
-void Editor::buildSelectionRect( ) {
-  selectionRect = new QGraphicsRectItem( );
-  selectionRect->setBrush( Qt::NoBrush );
-  selectionRect->setFlag( QGraphicsItem::ItemIsSelectable, false );
-  selectionRect->setPen( QPen( Qt::darkGray, 1.5, Qt::DotLine ) );
-  scene->addItem( selectionRect );
-}
-
 Editor::Editor( MainWindow *parent ) : QObject( parent ), scene( nullptr ), editedConn( nullptr ),
   m_hoverPort( nullptr ) {
   mainWindow = parent;
@@ -53,6 +45,15 @@ void Editor::install( Scene *s ) {
   simulationController->start( );
   buildSelectionRect( );
   clear( );
+}
+
+
+void Editor::buildSelectionRect( ) {
+  selectionRect = new QGraphicsRectItem( );
+  selectionRect->setBrush( Qt::NoBrush );
+  selectionRect->setFlag( QGraphicsItem::ItemIsSelectable, false );
+  selectionRect->setPen( QPen( Qt::darkGray, 1.5, Qt::DotLine ) );
+  scene->addItem( selectionRect );
 }
 
 void Editor::clear( ) {
@@ -228,17 +229,22 @@ void Editor::releaseHoverPort( ) {
 }
 
 void Editor::resizeScene( ) {
-  QGraphicsItem *item = itemAt( mousePos );
-  if( item && ( timer.elapsed( ) > 50 ) && draggingElement ) {
-    QRectF itemRect = item->boundingRect( );
-    itemRect.translate( item->pos( ) );
-    QRectF rect = scene->sceneRect( ).united( itemRect.adjusted( -10, -10, 10, 10 ) );
-    scene->setSceneRect( rect );
-    if( !scene->views( ).isEmpty( ) ) {
-      QGraphicsView *view = scene->views( ).front( );
-      view->ensureVisible( item );
+  if( !movedElements.isEmpty( ) ) {
+    QRectF rect = scene->sceneRect( );
+    foreach( GraphicElement * elm, movedElements ) {
+      QRectF itemRect = elm->boundingRect( ).translated( elm->pos( ) );
+      rect = rect.united( itemRect.adjusted( -10, -10, 10, 10 ) );
     }
-    timer.restart( );
+    scene->setSceneRect( rect );
+
+    QGraphicsItem *item = itemAt( mousePos );
+    if( item && ( timer.elapsed( ) > 50 ) && draggingElement ) {
+      if( !scene->views( ).isEmpty( ) ) {
+        QGraphicsView *view = scene->views( ).front( );
+        view->ensureVisible( item );
+      }
+      timer.restart( );
+    }
   }
 }
 
@@ -287,7 +293,7 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
           break;
         }
       }
-      if( movedElements.front( )->pos( ) != oldPositions.front( ) && valid) {
+      if( ( movedElements.front( )->pos( ) != oldPositions.front( ) ) && valid ) {
         undoStack->push( new MoveCommand( movedElements, oldPositions ) );
       }
     }
@@ -474,6 +480,9 @@ void Editor::selectAll( ) {
 
 void Editor::save( QDataStream &ds ) {
   ds << QApplication::applicationName( ) + " " + QApplication::applicationVersion( );
+  if(QApplication::applicationVersion( ).toDouble() >= 1.4){
+    ds << scene->sceneRect();
+  }
   foreach( QGraphicsItem * item, scene->items( ) ) {
     if( item->type( ) == GraphicElement::Type ) {
       ds << item->type( );
@@ -504,7 +513,10 @@ void Editor::load( QDataStream &ds ) {
       QMessageBox::NoButton );
   }
   double version = str.split( " " ).at( 1 ).toDouble( );
-
+  QRectF rect;
+  if(version >= 1.4){
+    ds >> rect;
+  }
   QMap< quint64, QNEPort* > portMap;
   while( !ds.atEnd( ) ) {
     int type;
@@ -538,9 +550,10 @@ void Editor::load( QDataStream &ds ) {
   scene->setSceneRect( scene->itemsBoundingRect( ) );
   if( !scene->views( ).empty( ) ) {
     QGraphicsView *view = scene->views( ).first( );
-    QRectF rect = view->rect( );
+    rect = rect.united(view->rect( ));
     rect.moveCenter( QPointF( 0, 0 ) );
     scene->setSceneRect( scene->sceneRect( ).united( rect ) );
+    view->ensureVisible(scene->itemsBoundingRect());
   }
   /* Any change here must be made in box implementation!!! */
 }
