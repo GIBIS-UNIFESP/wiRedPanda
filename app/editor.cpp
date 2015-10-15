@@ -229,7 +229,7 @@ void Editor::releaseHoverPort( ) {
 
 void Editor::resizeScene( ) {
   QGraphicsItem *item = itemAt( mousePos );
-  if( item ) {
+  if( item && ( timer.elapsed( ) > 50 ) ) {
     QRectF itemRect = item->boundingRect( );
     itemRect.translate( item->pos( ) );
     QRectF rect = scene->sceneRect( ).united( itemRect.adjusted( -10, -10, 10, 10 ) );
@@ -238,11 +238,11 @@ void Editor::resizeScene( ) {
       QGraphicsView *view = scene->views( ).front( );
       view->ensureVisible( item );
     }
+    timer.restart( );
   }
 }
 
 bool Editor::mouseMoveEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
-  resizeScene( );
   Q_UNUSED( mouseEvt )
   QNEPort * port = dynamic_cast< QNEPort* >( itemAt( mousePos ) );
   handleHoverPort( port );
@@ -555,6 +555,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
     QWheelEvent *wEvt = dynamic_cast< QWheelEvent* >( evt );
     if( mouseEvt ) {
       mousePos = mouseEvt->scenePos( );
+      resizeScene( );
     }
     bool ret = false;
     switch( ( int ) evt->type( ) ) {

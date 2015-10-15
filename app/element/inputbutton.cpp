@@ -33,7 +33,7 @@ void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent * event) {
     setChanged(true);
     event->accept();
   }
-  QGraphicsItem::mouseReleaseEvent(event);
+  GraphicElement::mouseReleaseEvent(event);
 }
 
 void InputButton::updateLogic() {

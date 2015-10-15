@@ -154,6 +154,10 @@ private:
 protected:
   QVector<QNEPort*> m_inputs;
   QVector<QNEPort*> m_outputs;
+
+  // QGraphicsItem interface
+  protected:
+  virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
 };
 
 
