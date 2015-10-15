@@ -480,8 +480,8 @@ void Editor::selectAll( ) {
 
 void Editor::save( QDataStream &ds ) {
   ds << QApplication::applicationName( ) + " " + QApplication::applicationVersion( );
-  if(QApplication::applicationVersion( ).toDouble() >= 1.4){
-    ds << scene->sceneRect();
+  if( QApplication::applicationVersion( ).toDouble( ) >= 1.4 ) {
+    ds << scene->sceneRect( );
   }
   foreach( QGraphicsItem * item, scene->items( ) ) {
     if( item->type( ) == GraphicElement::Type ) {
@@ -514,7 +514,7 @@ void Editor::load( QDataStream &ds ) {
   }
   double version = str.split( " " ).at( 1 ).toDouble( );
   QRectF rect;
-  if(version >= 1.4){
+  if( version >= 1.4 ) {
     ds >> rect;
   }
   QMap< quint64, QNEPort* > portMap;
@@ -528,6 +528,10 @@ void Editor::load( QDataStream &ds ) {
       if( elm ) {
         addItem( elm );
         elm->load( ds, portMap, version );
+        if( elm->elementType( ) == ElementType::BOX ) {
+          Box* box = qgraphicsitem_cast<Box *>(elm);
+          loadBox( box, box->getFile() );
+        }
       }
       else {
         throw( std::runtime_error( "Could not build element." ) );
@@ -550,10 +554,10 @@ void Editor::load( QDataStream &ds ) {
   scene->setSceneRect( scene->itemsBoundingRect( ) );
   if( !scene->views( ).empty( ) ) {
     QGraphicsView *view = scene->views( ).first( );
-    rect = rect.united(view->rect( ));
+    rect = rect.united( view->rect( ) );
     rect.moveCenter( QPointF( 0, 0 ) );
     scene->setSceneRect( scene->sceneRect( ).united( rect ) );
-    view->ensureVisible(scene->itemsBoundingRect());
+    view->ensureVisible( scene->itemsBoundingRect( ) );
   }
   /* Any change here must be made in box implementation!!! */
 }

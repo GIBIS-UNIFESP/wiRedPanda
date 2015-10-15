@@ -8,10 +8,10 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QRectF>
 #include <QSettings>
 #include <QShortcut>
 #include <iostream>
-#include <QRectF>
 
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
   ui->setupUi( this );
@@ -125,21 +125,8 @@ int MainWindow::confirmSave( ) {
 }
 
 void MainWindow::on_actionNew_triggered( ) {
-  if( !editor->getUndoStack( )->isClean( ) ) {
-    int ret = confirmSave( );
-    if( ret == QMessageBox::Save ) {
-      if( save( ) ) {
-        clear( );
-      }
-    }
-    else if( ret == QMessageBox::Discard ) {
-      clear( );
-    }
-    else if( ret == QMessageBox::Cancel ) {
-      return;
-    }
-  }else{
-    clear();
+  if( closeFile( ) ) {
+    clear( );
   }
 }
 
@@ -222,23 +209,29 @@ void MainWindow::on_lineEdit_textEdited( const QString & ) {
 
 }
 
+bool MainWindow::closeFile( ) {
+  bool ok = true;
+  if( !editor->getUndoStack( )->isClean( ) ) {
+    int ret = confirmSave( );
+    if( ret == QMessageBox::Save ) {
+      ok = save( );
+    }
+    else if( ret == QMessageBox::Cancel ) {
+      ok = false;
+    }
+  }
+  return( ok );
+}
+
 void MainWindow::closeEvent( QCloseEvent *e ) {
 #ifdef DEBUG
   return;
 #endif
-  if( !editor->getUndoStack( )->isClean( ) ) {
-    int ret = confirmSave( );
-    if( ret == QMessageBox::Save ) {
-      if( save( ) ) {
-        close( );
-      }
-    }
-    else if( ret == QMessageBox::Discard ) {
-      close( );
-    }
-    else if( ret == QMessageBox::Cancel ) {
-      e->ignore( );
-    }
+  if( closeFile( ) ) {
+    close( );
+  }
+  else {
+    e->ignore( );
   }
 }
 
@@ -371,7 +364,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
     ui->verticalLayout_4->removeItem( ui->verticalSpacer_BOX );
     ui->verticalLayout_4->addWidget( item );
     ui->verticalLayout_4->addItem( ui->verticalSpacer_BOX );
-    item->getLabel()->startDrag();
+    item->getLabel( )->startDrag( );
   }
   else {
     std::cerr << "Could not open file in ReadOnly mode : " << fname.toStdString( ) << "." << std::endl;
@@ -438,8 +431,16 @@ void MainWindow::on_lineEdit_returnPressed( ) {
 }
 
 
-void MainWindow::resizeEvent(QResizeEvent *){
-  QRectF rect = editor->getScene()->sceneRect();
-  rect = rect.united(ui->graphicsView->rect());
-  editor->getScene()->setSceneRect(rect);
+void MainWindow::resizeEvent( QResizeEvent* ) {
+  QRectF rect = editor->getScene( )->sceneRect( );
+  rect = rect.united( ui->graphicsView->rect( ) );
+  editor->getScene( )->setSceneRect( rect );
+}
+
+void MainWindow::on_actionReload_File_triggered( ) {
+  if( currentFile.exists( ) ) {
+    if( closeFile( ) ) {
+      open( currentFile.absoluteFilePath( ) );
+    }
+  }
 }

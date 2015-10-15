@@ -20,11 +20,13 @@ public:
   void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
   void updateLogic( );
   void loadFile( QString fname );
+  QString getFile() const;
 
   QString getParentFile( ) const;
   void setParentFile( const QString &value );
 
-private:
+
+  private:
   ElementFactory *factory;
   QString m_file;
   QVector< QNEPort* > inputMap;

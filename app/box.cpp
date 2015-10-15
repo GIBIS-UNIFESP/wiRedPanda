@@ -55,7 +55,6 @@ void Box::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double vers
   GraphicElement::load( ds, portMap, version );
   if( version >= 1.2 ) {
     ds >> m_file;
-    loadFile( m_file );
   }
 }
 
@@ -75,18 +74,20 @@ void Box::loadFile( QString fname ) {
   QMutexLocker locker( &mutex );
   watcher.addPath( fname );
   QFileInfo fileInfo( fname );
-  QString myFile = fileInfo.fileName();
-//  qDebug( ) << "Trying to load (1): " << fileInfo.absoluteFilePath( );
+  QString myFile = fileInfo.fileName( );
+/*  qDebug( ) << "Trying to load (1): " << fileInfo.absoluteFilePath( ); */
   if( !fileInfo.exists( ) ) {
     fileInfo.setFile( QDir::current( ), fileInfo.fileName( ) );
-//    qDebug( ) << "Trying to load (2): " << fileInfo.absoluteFilePath( );
+/*    qDebug( ) << "Trying to load (2): " << fileInfo.absoluteFilePath( ); */
     if( !fileInfo.exists( ) ) {
       fileInfo.setFile( QFileInfo( parentFile ).absoluteDir( ), myFile );
-//      qDebug() << "Parent file: " << parentFile;
-//      qDebug( ) << "Trying to load (3): " << fileInfo.absoluteFilePath( );
+/*
+ *      qDebug() << "Parent file: " << parentFile;
+ *      qDebug( ) << "Trying to load (3): " << fileInfo.absoluteFilePath( );
+ */
       if( !fileInfo.exists( ) ) {
         QFileInfo currentFile( GlobalProperties::currentFile );
-        fileInfo.setFile( currentFile.absoluteDir(), myFile);
+        fileInfo.setFile( currentFile.absoluteDir( ), myFile );
         if( !fileInfo.exists( ) ) {
           std::cerr << "Error: This file does not exists: " << fname.toStdString( ) << std::endl;
           throw( std::runtime_error( QString(
@@ -120,6 +121,10 @@ void Box::loadFile( QString fname ) {
       throw( std::runtime_error( "Invalid file format. (BOX)" ) );
     }
     double version = str.split( " " ).at( 1 ).toDouble( );
+    QRectF rect;
+    if( version >= 1.4 ) {
+      ds >> rect;
+    }
     QMap< quint64, QNEPort* > portMap;
     while( !ds.atEnd( ) ) {
       int type;
@@ -129,7 +134,7 @@ void Box::loadFile( QString fname ) {
         ds >> elmType;
         GraphicElement *elm = factory->buildElement( ( ElementType ) elmType );
         if( elm ) {
-          if(elm->elementType() == ElementType::BOX) {
+          if( elm->elementType( ) == ElementType::BOX ) {
             Box *childBox = ( Box* ) elm;
             childBox->setParentFile( fname );
             break;
@@ -137,33 +142,36 @@ void Box::loadFile( QString fname ) {
           elm->load( ds, portMap, version );
           myScene.addItem( elm );
           switch( elm->elementType( ) ) {
-          case ElementType::BUTTON:
-          case ElementType::SWITCH:
-          case ElementType::CLOCK: {
+              case ElementType::BUTTON:
+              case ElementType::SWITCH:
+              case ElementType::CLOCK: {
               foreach( QNEPort * port, elm->outputs( ) ) {
                 inputMap.append( port );
               }
               elm->disable( );
               break;
             }
-          case ElementType::DISPLAY:
-          case ElementType::LED: {
+              case ElementType::DISPLAY:
+              case ElementType::LED: {
               foreach( QNEPort * port, elm->inputs( ) ) {
                 outputMap.append( port );
               }
               break;
-            default:
-              break;
+                default:
+                break;
             }
           }
-        } else {
+        }
+        else {
           throw( std::runtime_error( "Could not build element." ) );
         }
-      } else if( type == QNEConnection::Type ) {
+      }
+      else if( type == QNEConnection::Type ) {
         QNEConnection *conn = new QNEConnection( 0 );
         conn->load( ds, portMap );
         myScene.addItem( conn );
-      } else {
+      }
+      else {
         throw( std::runtime_error( "Box opened with errors." ) );
         return;
       }
@@ -201,6 +209,10 @@ void Box::setParentFile( const QString &value ) {
   parentFile = value;
 }
 
+QString Box::getFile( ) const {
+  return( m_file );
+}
+
 void Box::sortMap( QVector< QNEPort* > &map ) {
   /* BubbleSort */
   for( int i = map.size( ) - 1; i >= 1; i-- ) {
@@ -210,15 +222,18 @@ void Box::sortMap( QVector< QNEPort* > &map ) {
       if( p1 != p2 ) {
         if( p1.y( ) > p2.y( ) ) {
           std::swap( map[ j ], map[ j + 1 ] );
-        } else if( ( p1.y( ) == p2.y( ) ) && ( p1.x( ) > p2.x( ) ) ) {
+        }
+        else if( ( p1.y( ) == p2.y( ) ) && ( p1.x( ) > p2.x( ) ) ) {
           std::swap( map[ j ], map[ j + 1 ] );
         }
-      } else {
+      }
+      else {
         p1 = map[ j ]->pos( );
         p1 = map[ j + 1 ]->pos( );
         if( p1.x( ) > p2.x( ) ) {
           std::swap( map[ j ], map[ j + 1 ] );
-        } else if( ( p1.x( ) == p2.x( ) ) && ( p1.y( ) > p2.y( ) ) ) {
+        }
+        else if( ( p1.x( ) == p2.x( ) ) && ( p1.y( ) > p2.y( ) ) ) {
           std::swap( map[ j ], map[ j + 1 ] );
         }
       }

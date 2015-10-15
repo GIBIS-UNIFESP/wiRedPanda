@@ -34,6 +34,8 @@ public:
   void updateRecentBoxes( );
   QString getOpenBoxFile( );
 
+  bool closeFile( );
+
 private slots:
   void scrollView( int dx, int dy );
 
@@ -75,6 +77,8 @@ private slots:
 
   void on_lineEdit_returnPressed( );
 
+  void on_actionReload_File_triggered( );
+
 private:
   Ui::MainWindow *ui;
   Editor *editor;
@@ -89,7 +93,7 @@ private:
   /* QWidget interface */
 protected:
   void closeEvent( QCloseEvent *e );
-  void resizeEvent(QResizeEvent *);
+  void resizeEvent( QResizeEvent* );
 };
 
 #endif /* MAINWINDOW_H */
