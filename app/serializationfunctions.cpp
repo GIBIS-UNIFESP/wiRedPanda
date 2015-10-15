@@ -32,7 +32,7 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDa
     if( type == GraphicElement::Type ) {
       quint64 elmType;
       ds >> elmType;
-      GraphicElement *elm = editor->getFactory( ).buildElement( ( ElementType ) elmType );
+      GraphicElement *elm = editor->getFactory( ).buildElement( ( ElementType ) elmType, editor );
       if( elm ) {
         scene->addItem( elm );
         itemList.append( elm );

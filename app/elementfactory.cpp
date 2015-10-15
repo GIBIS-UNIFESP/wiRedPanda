@@ -38,7 +38,7 @@ void ElementFactory::giveBackId(size_t id) {
   available_id.push_back(id);
 }
 
-GraphicElement *ElementFactory::buildElement(ElementType type, QGraphicsItem * parent) {
+GraphicElement *ElementFactory::buildElement(ElementType type, Editor * editor, QGraphicsItem * parent) {
   GraphicElement * elm;
   switch (type) {
 //  case ElementType::EMPTY:
@@ -108,7 +108,7 @@ GraphicElement *ElementFactory::buildElement(ElementType type, QGraphicsItem * p
     elm = new Display(parent);
     break;
   case ElementType::BOX:
-    elm = new Box(this, parent);
+    elm = new Box(editor, parent);
     break;
   //  case ElementType::DLATCH:
   //    elm = new DLatch();

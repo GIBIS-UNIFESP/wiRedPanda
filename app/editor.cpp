@@ -369,7 +369,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
     qint32 type;
     dataStream >> offset >> type >> label_auxData;
     QPointF pos = dde->scenePos( ) - offset;
-    GraphicElement *elm = factory.buildElement( ( ElementType ) type );
+    GraphicElement *elm = factory.buildElement( ( ElementType ) type, this );
     /* If element type is unknown, a default element is created with the pixmap received from mimedata */
     if( !elm ) {
       return( false );
@@ -524,7 +524,7 @@ void Editor::load( QDataStream &ds ) {
     if( type == GraphicElement::Type ) {
       quint64 elmType;
       ds >> elmType;
-      GraphicElement *elm = factory.buildElement( ( ElementType ) elmType );
+      GraphicElement *elm = factory.buildElement( ( ElementType ) elmType, this );
       if( elm ) {
         addItem( elm );
         elm->load( ds, portMap, version );

@@ -1,4 +1,5 @@
 #include "box.h"
+#include "editor.h"
 #include "globalproperties.h"
 
 #include <QApplication>
@@ -13,9 +14,9 @@
 #include <iostream>
 #include <nodes/qneconnection.h>
 
-Box::Box( ElementFactory *factory, QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, parent ), simulationController(
+Box::Box(Editor * editor, QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, parent ), simulationController(
     &myScene ) {
-  this->factory = factory;
+  this->editor = editor;
   setHasLabel( true );
   QPixmap pixmap( ":/basic/box.png" );
   /*
@@ -132,14 +133,17 @@ void Box::loadFile( QString fname ) {
       if( type == GraphicElement::Type ) {
         quint64 elmType;
         ds >> elmType;
-        GraphicElement *elm = factory->buildElement( ( ElementType ) elmType );
+        GraphicElement *elm = editor->getFactory().buildElement( ( ElementType ) elmType, editor );
         if( elm ) {
+          elm->load( ds, portMap, version );
           if( elm->elementType( ) == ElementType::BOX ) {
             Box *childBox = ( Box* ) elm;
             childBox->setParentFile( fname );
+            if(!editor->loadBox(childBox, childBox->getFile())){
+              throw( std::runtime_error( "Failed to load box element." ) );
+            }
             break;
           }
-          elm->load( ds, portMap, version );
           myScene.addItem( elm );
           switch( elm->elementType( ) ) {
               case ElementType::BUTTON:
