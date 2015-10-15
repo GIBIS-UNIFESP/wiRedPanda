@@ -89,6 +89,7 @@ private:
   /* QWidget interface */
 protected:
   void closeEvent( QCloseEvent *e );
+  void resizeEvent(QResizeEvent *);
 };
 
 #endif /* MAINWINDOW_H */

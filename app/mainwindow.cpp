@@ -11,6 +11,7 @@
 #include <QSettings>
 #include <QShortcut>
 #include <iostream>
+#include <QRectF>
 
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
   ui->setupUi( this );
@@ -434,4 +435,11 @@ void MainWindow::on_lineEdit_returnPressed( ) {
     firstResult->startDrag( );
     ui->lineEdit->clear( );
   }
+}
+
+
+void MainWindow::resizeEvent(QResizeEvent *){
+  QRectF rect = editor->getScene()->sceneRect();
+  rect = rect.united(ui->graphicsView->rect());
+  editor->getScene()->setSceneRect(rect);
 }
