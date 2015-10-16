@@ -17,20 +17,20 @@ The main features of the software are:
 - [ ] Add keyboard shortcuts to inputs. [link](https://github.com/lellisls/wiRedPanda/issues/11)
 - [ ] Line Split.
 - [ ] Zoom.
-- [ ] Scene-Auto zoom.
+- [x] Dynamic scene resizing 
 - [x] Align to grid [link](https://github.com/lellisls/wiRedPanda/issues/14).
-- [ ] Align lines to grid (?)
+- [ ] ~~Align lines to grid ()~~
 - [ ] Hide Lines, Wires and Ports.
 - [ ] Show Lines with issues.
 - [x] Search.
 - [ ] Flip Elements in the latteral pannel.
 - [ ] 16-seg Display.
-- [ ] Allow ports with more than 8 in/out.
+- [ ] ~~Allow gates with more than 8 in/out.~~
 - [ ] Labels always in horizontal.
 - [ ] Verify if file changed outside.
 - [ ] MUX and DEMUX.
 - [ ] Ctrl + Drag copy.
-- [ ] Lauch in new instance.
+- [x] Lauch box in new instance.
 
 ## Features we have yet to implement
 - [ ] Karnaught Map or Truth Table.
@@ -39,7 +39,6 @@ The main features of the software are:
 - [ ] Labels as separate elements.
 - [ ] Verilog Script Generator.
 - [ ] Add support to custom image backgrounds..
-- [ ] Add lines in empty ports.
-- [ ] Create separate modules for execution and edition.
+- [ ] ~~Create separate modules for execution and edition.~~
 - [ ] Bugs and Warnings highlights.
 
