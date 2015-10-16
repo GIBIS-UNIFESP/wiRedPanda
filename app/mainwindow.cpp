@@ -411,13 +411,13 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
     QList< Label* > boxes = ui->tabWidget->findChildren< Label* >( "label_box" );
     QRegularExpression regex( QString( ".*%1.*" ).arg( text ) );
     QList< Label* > searchResults;
+    searchResults.append( ui->tabWidget->findChildren< Label* >( QRegularExpression( QString( "^label_.*%1.*" ).arg(
+                                                                                       text ) ) ) );
     foreach( Label * box, boxes ) {
       if( regex.match( box->auxData( ) ).hasMatch( ) ) {
         searchResults.append( box );
       }
     }
-    searchResults.append( ui->tabWidget->findChildren< Label* >( QRegularExpression( QString( "^label_.*%1.*" ).arg(
-                                                                                       text ) ) ) );
     foreach( Label * label, searchResults ) {
       ListItemWidget *item = new ListItemWidget( *label->pixmap( ), label->property( "Name" ).toString( ),
                                                  label->objectName( ), label->auxData( ) );
