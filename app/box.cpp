@@ -125,7 +125,7 @@ void Box::loadFile( QString fname ) {
               Box *childBox = qgraphicsitem_cast< Box* >( elm );
               if( childBox ) {
                 childBox->setParentBox( this );
-                if( editor->loadBox( childBox, childBox->getFile( ) ) ) {
+                if( !editor->loadBox( childBox, childBox->getFile( ) ) ) {
                   throw( std::runtime_error( "Failed to load box element." ) );
                 }
               }
