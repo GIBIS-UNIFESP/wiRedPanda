@@ -70,10 +70,10 @@ QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStrea
   if( !str.startsWith( QApplication::applicationName( ) ) ) {
     throw( std::runtime_error( "Invalid file format." ) );
   }
-  else if( !str.endsWith( QApplication::applicationVersion( ) ) ) {
-    QMessageBox::warning( nullptr, "Warning!", "File opened in compatibility mode.", QMessageBox::Ok,
-      QMessageBox::NoButton );
-  }
+//  else if( !str.endsWith( QApplication::applicationVersion( ) ) ) {
+//    QMessageBox::warning( nullptr, "Warning!", "File opened in compatibility mode.", QMessageBox::Ok,
+//      QMessageBox::NoButton );
+//  }
   double version = str.split( " " ).at( 1 ).toDouble( );
   QRectF rect;
   if( version >= 1.4 ) {
@@ -86,7 +86,6 @@ QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStrea
       rect = rect.united( view->rect( ) );
       rect.moveCenter( QPointF( 0, 0 ) );
       scene->setSceneRect( scene->sceneRect( ).united( rect ) );
-      view->ensureVisible( scene->itemsBoundingRect( ) );
     }
   }
   return( deserialize( editor, ds ) );

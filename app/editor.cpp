@@ -1,11 +1,11 @@
 #include "box.h"
+#include "boxnotfoundexception.h"
 #include "commands.h"
 #include "editor.h"
 #include "globalproperties.h"
 #include "graphicelement.h"
 #include "mainwindow.h"
 #include "serializationfunctions.h"
-#include "boxnotfoundexception.h"
 #include <QApplication>
 #include <QDebug>
 #include <QFileDialog>
@@ -351,7 +351,7 @@ bool Editor::loadBox( Box *box, QString fname ) {
         return( false );
       }
       else {
-        return( loadBox( err.getBox(), fname ) );
+        return( loadBox( err.getBox( ), fname ) );
       }
     }
   }
@@ -483,15 +483,19 @@ void Editor::save( QDataStream &ds ) {
   if( QApplication::applicationVersion( ).toDouble( ) >= 1.4 ) {
     ds << scene->sceneRect( );
   }
-  SerializationFunctions::serialize(scene->items(), ds);
+  SerializationFunctions::serialize( scene->items( ), ds );
 }
 
 void Editor::load( QDataStream &ds ) {
   /* Any change here must be made in box implementation!!! */
   clear( );
-  QList< QGraphicsItem* > items = SerializationFunctions::load(this, ds, scene);
-  foreach (QGraphicsItem* item, items) {
-    scene->addItem(item);
+  QList< QGraphicsItem* > items = SerializationFunctions::load( this, ds, scene );
+  foreach( QGraphicsItem * item, items ) {
+    scene->addItem( item );
+  }
+  if( !scene->views( ).empty( ) ) {
+    QGraphicsView *view = scene->views( ).first( );
+    view->ensureVisible( scene->itemsBoundingRect( ) );
   }
 }
 
