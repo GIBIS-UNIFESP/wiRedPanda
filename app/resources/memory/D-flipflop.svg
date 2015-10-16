@@ -14,7 +14,10 @@
    id="svg2985"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="D-flipflop.svg">
+   sodipodi:docname="D-flipflop.svg"
+   inkscape:export-filename="/home/lellis/projetos/wpanda/app/resources/memory/D-flipflop.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs2987">
     <filter
@@ -58,7 +61,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.656854"
-     inkscape:cx="2.5941672"
+     inkscape:cx="2.4173905"
      inkscape:cy="25.98976"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -217,24 +220,24 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18px;line-height:125%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
-       x="27.284668"
+       x="26.401367"
        y="18.824219"
        id="text3785"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3787"
-         x="27.284668"
+         x="26.401367"
          y="18.824219">P</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18px;line-height:125%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
-       x="25.922363"
+       x="26.282715"
        y="52"
        id="text3789"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3791"
-         x="25.922363"
+         x="26.282715"
          y="52">C</tspan></text>
     <text
        xml:space="preserve"
@@ -247,5 +250,15 @@
          id="tspan3849"
          x="8.2509766"
          y="19">D</tspan></text>
+    <path
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none"
+       d="m 26.421874,4.779804 0,-0.609375 5.578125,0 5.578126,0 0,0.609375 0,0.609375 -5.578126,0 -5.578125,0 0,-0.609375 z"
+       id="path3058-8"
+       inkscape:connector-curvature="0" />
+    <path
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none"
+       d="m 26.421874,37.129941 0,-0.609375 5.578125,0 5.578126,0 0,0.609375 0,0.609375 -5.578126,0 -5.578125,0 0,-0.609375 z"
+       id="path3058-4"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>

@@ -25,6 +25,7 @@ private slots:
   void testGND( );
 
   void testDFlipFlop( );
+  void testDLatch();
 };
 
 #endif /* TESTELEMENTS_H */

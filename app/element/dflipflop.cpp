@@ -8,8 +8,8 @@ DFlipFlop::DFlipFlop( QGraphicsItem *parent ) : GraphicElement( 4, 4, 2, 2, pare
   lastClk = false;
   inputs( ).at( 0 )->setName( "Data" );
   inputs( ).at( 1 )->setName( "Clock" );
-  inputs( ).at( 2 )->setName( "Preset" );
-  inputs( ).at( 3 )->setName( "Clear" );
+  inputs( ).at( 2 )->setName( "~Preset" );
+  inputs( ).at( 3 )->setName( "~Clear" );
   outputs( ).at( 0 )->setName( "Q" );
   outputs( ).at( 1 )->setName( "~Q" );
   inputs( ).at( 2 )->setRequired( false );

@@ -5,16 +5,16 @@
 
 class DLatch : public GraphicElement {
 public:
-  explicit DLatch(QGraphicsItem * parent);
-  virtual ~DLatch();
+  explicit DLatch( QGraphicsItem *parent = 0 );
+  virtual ~DLatch( );
 
-  // GraphicElement interface
+  /* GraphicElement interface */
 public:
-  virtual ElementType elementType() {
-    return ElementType::DLATCH;
+  virtual ElementType elementType( ) {
+    return( ElementType::DLATCH );
   }
-  virtual void updatePorts();
-  void updateLogic();
+  virtual void updatePorts( );
+  void updateLogic( );
 };
 
-#endif // DLATCH_H
+#endif /* DLATCH_H */
