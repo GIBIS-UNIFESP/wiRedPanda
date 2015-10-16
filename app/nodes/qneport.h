@@ -86,10 +86,14 @@ public:
   void hoverEnter();
   void hoverLeave();
 
+  int defaultValue() const;
+  void setDefaultValue(int defaultValue);
+
 protected:
   QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
+  int m_defaultValue;
   QNEBlock *m_block;
   QString name;
   bool isOutput_;

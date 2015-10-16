@@ -54,6 +54,7 @@ QNEPort::QNEPort( QGraphicsItem *parent ) : QGraphicsPathItem( parent ) {
   m_value = false;
   m_graphicElement = NULL;
   m_required = true;
+  m_defaultValue = -1;
 }
 
 QNEPort::~QNEPort( ) {
@@ -122,12 +123,13 @@ void QNEPort::connect( QNEConnection *conn ) {
 }
 
 void QNEPort::disconnect( QNEConnection *conn ) {
-  if(graphicElement())
+  if( graphicElement( ) ) {
     graphicElement( )->setChanged( true );
+  }
   m_connections.removeAll( conn );
   updateConnections( );
   if( isInput( ) && ( connections( ).size( ) == 0 ) ) {
-    setValue( -1 * required() );
+    setValue( defaultValue( ) );
   }
 }
 
@@ -180,6 +182,14 @@ QVariant QNEPort::itemChange( GraphicsItemChange change, const QVariant &value )
   }
   return( value );
 }
+int QNEPort::defaultValue( ) const {
+  return( m_defaultValue );
+}
+
+void QNEPort::setDefaultValue( int defaultValue ) {
+  m_defaultValue = defaultValue;
+}
+
 
 QBrush QNEPort::currentBrush( ) const {
   return( _currentBrush );
@@ -197,6 +207,7 @@ bool QNEPort::required( ) const {
 
 void QNEPort::setRequired( bool required ) {
   m_required = required;
+  setDefaultValue( -1 * required );
 }
 
 char QNEPort::value( ) const {

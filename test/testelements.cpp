@@ -147,4 +147,9 @@ void TestElements::testDFlipFlop( ) {
     QCOMPARE( ( int ) elm.outputs( ).at( 0 )->value( ), truthTable[ test ][ 5 ] );
     QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), truthTable[ test ][ 6 ] );
   }
+  sw[ 2 ]->outputs( ).front( )->disconnect( conn[ 2 ] );
+  elm.inputs( ).at( 2 )->disconnect( conn[ 2 ] );
+  elm.updateLogic( );
+  QVERIFY( ( int ) elm.outputs( ).at( 0 )->value( ) != -1 );
+  QVERIFY( ( int ) elm.outputs( ).at( 1 )->value( ) != -1 );
 }
