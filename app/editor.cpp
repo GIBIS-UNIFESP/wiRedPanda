@@ -338,7 +338,7 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
 bool Editor::loadBox( Box *box, QString fname ) {
   QSettings settings;
   QStringList files = settings.value( "recentBoxes" ).toStringList( );
-  qDebug() << "Loading box" << fname;
+  qDebug( ) << "Loading box" << fname;
   files.removeAll( fname );
   try {
     box->setParentFile( GlobalProperties::currentFile );
@@ -362,7 +362,7 @@ bool Editor::loadBox( Box *box, QString fname ) {
   }
   files.prepend( fname );
   settings.setValue( "recentBoxes", files );
-  mainWindow->updateRecentBoxes();
+  mainWindow->updateRecentBoxes( );
   return( true );
 }
 
@@ -383,12 +383,18 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
       return( false );
     }
     if( elm->elementType( ) == ElementType::BOX ) {
-      Box *box = dynamic_cast< Box* >( elm );
-      if( box ) {
-        QString fname = label_auxData;
-        if( !loadBox( box, fname ) ) {
-          return( false );
+      try {
+        Box *box = dynamic_cast< Box* >( elm );
+        if( box ) {
+          QString fname = label_auxData;
+          if( !loadBox( box, fname ) ) {
+            return( false );
+          }
         }
+      }
+      catch( std::runtime_error err ) {
+        QMessageBox::warning( mainWindow, "Error", QString::fromStdString( err.what( ) ) );
+        return( false );
       }
     }
     /*

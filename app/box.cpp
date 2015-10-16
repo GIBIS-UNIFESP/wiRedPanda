@@ -38,6 +38,7 @@ Box::Box( Editor *editor, QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, 
   setObjectName( "BOX" );
   connect( &watcher, &QFileSystemWatcher::fileChanged, this, &Box::fileChanged );
   isAskingToReload = false;
+  parentBox = nullptr;
 }
 
 Box::~Box( ) {
@@ -70,39 +71,24 @@ void Box::updateLogic( ) {
   }
 }
 
-void Box::loadFile( QString fname ) {
-  setToolTip( fname );
-  watcher.addPath( fname );
-  QFileInfo fileInfo( fname );
-  QString myFile = fileInfo.fileName( );
-/*  qDebug( ) << "Trying to load (1): " << fileInfo.absoluteFilePath( ); */
-  if( !fileInfo.exists( ) ) {
-    fileInfo.setFile( QDir::current( ), fileInfo.fileName( ) );
-/*    qDebug( ) << "Trying to load (2): " << fileInfo.absoluteFilePath( ); */
-    if( !fileInfo.exists( ) ) {
-      fileInfo.setFile( QFileInfo( parentFile ).absoluteDir( ), myFile );
-/*
- *      qDebug() << "Parent file: " << parentFile;
- *      qDebug( ) << "Trying to load (3): " << fileInfo.absoluteFilePath( );
- */
-      if( !fileInfo.exists( ) ) {
-        QFileInfo currentFile( GlobalProperties::currentFile );
-        fileInfo.setFile( currentFile.absoluteDir( ), myFile );
-        if( !fileInfo.exists( ) ) {
-          std::cerr << "Error: This file does not exists: " << fname.toStdString( ) << std::endl;
-          throw( BoxNotFoundException( QString(
-                                         "Box linked file \"%1\" could not be found!\n"
-                                         "Do you want to find this file?" )
-                                       .arg( fname ).toStdString( ), this ) );
-          return;
-        }
-      }
+void Box::verifyRecursion( QString fname ) {
+  for( Box *box = parentBox; box != nullptr; box = box->getParentBox( ) ) {
+    if( box->getFile( ) == fname ) {
+      throw( std::runtime_error( "Oh no! I'm my own parent.\nSomething is not ok..." ) );
     }
   }
-  fname = fileInfo.absoluteFilePath( );
+}
+
+
+void Box::loadFile( QString fname ) {
+  QFileInfo fileInfo = findFile( fname );
+  setToolTip( fname );
+  watcher.addPath( fname );
   if( getLabel( ).isEmpty( ) ) {
     setLabel( fileInfo.baseName( ).toUpper( ) );
   }
+  verifyRecursion( fname );
+
   m_file = fname;
 
 
@@ -138,8 +124,8 @@ void Box::loadFile( QString fname ) {
               case ElementType::BOX: {
               Box *childBox = qgraphicsitem_cast< Box* >( elm );
               if( childBox ) {
-                childBox->setParentFile( fname );
-                if( ( childBox->getFile( ) == fname ) || !editor->loadBox( childBox, childBox->getFile( ) ) ) {
+                childBox->setParentBox( this );
+                if( editor->loadBox( childBox, childBox->getFile( ) ) ) {
                   throw( std::runtime_error( "Failed to load box element." ) );
                 }
               }
@@ -185,6 +171,36 @@ void Box::setParentFile( const QString &value ) {
   parentFile = value;
 }
 
+QFileInfo Box::findFile( QString fname ) {
+  QFileInfo fileInfo( fname );
+
+  QString myFile = fileInfo.fileName( );
+/*  qDebug( ) << "Trying to load (1): " << fileInfo.absoluteFilePath( ); */
+  if( !fileInfo.exists( ) ) {
+    fileInfo.setFile( QDir::current( ), fileInfo.fileName( ) );
+/*    qDebug( ) << "Trying to load (2): " << fileInfo.absoluteFilePath( ); */
+    if( !fileInfo.exists( ) ) {
+      fileInfo.setFile( QFileInfo( parentFile ).absoluteDir( ), myFile );
+/*
+ *      qDebug() << "Parent file: " << parentFile;
+ *      qDebug( ) << "Trying to load (3): " << fileInfo.absoluteFilePath( );
+ */
+      if( !fileInfo.exists( ) ) {
+        QFileInfo currentFile( GlobalProperties::currentFile );
+        fileInfo.setFile( currentFile.absoluteDir( ), myFile );
+        if( !fileInfo.exists( ) ) {
+          std::cerr << "Error: This file does not exists: " << fname.toStdString( ) << std::endl;
+          throw( BoxNotFoundException( QString(
+                                         "Box linked file \"%1\" could not be found!\n"
+                                         "Do you want to find this file?" )
+                                       .arg( fname ).toStdString( ), this ) );
+        }
+      }
+    }
+  }
+  return( fileInfo );
+}
+
 QString Box::getFile( ) const {
   return( m_file );
 }
@@ -216,6 +232,15 @@ void Box::sortMap( QVector< QNEPort* > &map ) {
     }
   }
 }
+Box* Box::getParentBox( ) const {
+  return( parentBox );
+}
+
+void Box::setParentBox( Box *value ) {
+  setParentFile( value->getFile( ) );
+  parentBox = value;
+}
+
 
 void Box::fileChanged( QString file ) {
   if( isAskingToReload ) {

@@ -6,6 +6,7 @@
 #include "scene.h"
 #include "simulationcontroller.h"
 
+#include <QFileInfo>
 #include <QFileSystemWatcher>
 
 class Editor;
@@ -27,6 +28,12 @@ public:
   void setParentFile( const QString &value );
 
 
+  QFileInfo findFile(QString fname);
+
+  Box * getParentBox() const;
+  void setParentBox(Box * value);
+
+  void verifyRecursion(QString fname);
 private:
   Editor *editor;
   QString m_file;
@@ -38,7 +45,7 @@ private:
   bool isAskingToReload;
   QString parentFile;
   void sortMap( QVector< QNEPort* > &map );
-
+  Box * parentBox;
 public slots:
   void fileChanged( QString file );
 
