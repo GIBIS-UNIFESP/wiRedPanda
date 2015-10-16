@@ -115,11 +115,5 @@ void Label::startDrag( QPoint pos ) {
   painter.end( );
 
   setPixmap( tempPixmap );
-  if( drag->exec( Qt::CopyAction | Qt::MoveAction, Qt::CopyAction ) == Qt::MoveAction ) {
-    close( );
-  }
-  else {
-    show( );
-    setPixmap( pixmap );
-  }
+  drag->exec( Qt::CopyAction | Qt::MoveAction, Qt::CopyAction );
 }

@@ -151,7 +151,6 @@ void Box::loadFile( QString fname ) {
           }
         }
       }
-      myScene.addItem( item );
     }
   }
   setMinInputSz( inputMap.size( ) );

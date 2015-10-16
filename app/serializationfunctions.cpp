@@ -38,8 +38,8 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDa
         itemList.append( elm );
         elm->load( ds, portMap, version );
         if( elm->elementType( ) == ElementType::BOX ) {
-          Box* box = qgraphicsitem_cast<Box *>(elm);
-          editor->loadBox( box, box->getFile() );
+          Box *box = qgraphicsitem_cast< Box* >( elm );
+          editor->loadBox( box, box->getFile( ) );
         }
         elm->setSelected( true );
       }
@@ -64,29 +64,36 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDa
   return( itemList );
 }
 
-QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStream &ds, Scene * scene ) {
+QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStream &ds, Scene *scene ) {
   QString str;
   ds >> str;
   if( !str.startsWith( QApplication::applicationName( ) ) ) {
     throw( std::runtime_error( "Invalid file format." ) );
   }
-//  else if( !str.endsWith( QApplication::applicationVersion( ) ) ) {
-//    QMessageBox::warning( nullptr, "Warning!", "File opened in compatibility mode.", QMessageBox::Ok,
-//      QMessageBox::NoButton );
-//  }
+/*
+ *  else if( !str.endsWith( QApplication::applicationVersion( ) ) ) {
+ *    QMessageBox::warning( nullptr, "Warning!", "File opened in compatibility mode.", QMessageBox::Ok,
+ *      QMessageBox::NoButton );
+ *  }
+ */
   double version = str.split( " " ).at( 1 ).toDouble( );
   QRectF rect;
   if( version >= 1.4 ) {
     ds >> rect;
   }
-  if(scene){
+  QList< QGraphicsItem* > items = deserialize( editor, ds );
+  if( scene ) {
+    foreach( QGraphicsItem * item, items ) {
+      scene->addItem( item );
+    }
     scene->setSceneRect( scene->itemsBoundingRect( ) );
     if( !scene->views( ).empty( ) ) {
       QGraphicsView *view = scene->views( ).first( );
       rect = rect.united( view->rect( ) );
       rect.moveCenter( QPointF( 0, 0 ) );
       scene->setSceneRect( scene->sceneRect( ).united( rect ) );
+      view->ensureVisible( scene->itemsBoundingRect( ) );
     }
   }
-  return( deserialize( editor, ds ) );
+  return( items );
 }

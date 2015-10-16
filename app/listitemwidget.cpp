@@ -6,11 +6,11 @@
 #include <QVariant>
 
 
-Label * ListItemWidget::getLabel() const
-{
-  return label;
+Label* ListItemWidget::getLabel( ) const {
+  return( label );
 }
-ListItemWidget::ListItemWidget(const QPixmap & pixmap, QString name, QString pixName,  QString auxData, QWidget *parent ) : QWidget( parent ) {
+ListItemWidget::ListItemWidget( const QPixmap &pixmap, QString name, QString pixName, QString auxData,
+                                QWidget *parent ) : QWidget( parent ) {
   QHBoxLayout *itemLayout = new QHBoxLayout( );
   itemLayout->setSpacing( 6 );
   itemLayout->setObjectName( QStringLiteral( "itemLayout" ) );
@@ -23,10 +23,10 @@ ListItemWidget::ListItemWidget(const QPixmap & pixmap, QString name, QString pix
   label->setObjectName( pixName );
   label->setPixmap( pixmap );
   label->setAuxData( auxData );
-  label->setProperty("Name", name );
+  label->setProperty( "Name", name );
 
   QLabel *nameLabel = new QLabel( name );
-  nameLabel->setText(name);
+  nameLabel->setText( name );
   itemLayout->addWidget( label );
   itemLayout->addWidget( nameLabel );
 }

@@ -332,10 +332,20 @@ void MainWindow::updateRecentBoxes( ) {
   }
   QSettings settings;
   QStringList files = settings.value( "recentBoxes" ).toStringList( );
+  foreach (QString file, files) {
+    QFileInfo fileInfo(file);
+    if(!fileInfo.exists()){
+      files.removeAll(file);
+    }
+  }
+  while( files.size( ) > 10 ) {
+    files.removeLast( );
+  }
+  settings.setValue( "recentBoxes", files );
   foreach( QString file, files ) {
     QString name = QFileInfo( file ).baseName( ).toUpper( );
     QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
-    ListItemWidget *item = new ListItemWidget( pixmap, name, "label_box", file );
+    ListItemWidget *item = new ListItemWidget( pixmap, name, "label_box", file, this );
     ui->verticalLayout_4->addWidget( item );
   }
   ui->verticalLayout_4->addItem( ui->verticalSpacer_BOX );
@@ -376,9 +386,6 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
   QStringList files = settings.value( "recentBoxes" ).toStringList( );
   files.removeAll( fname );
   files.prepend( fname );
-  while( files.size( ) > 5 ) {
-    files.removeLast( );
-  }
   settings.setValue( "recentBoxes", files );
 
   updateRecentBoxes( );

@@ -428,7 +428,6 @@ int GraphicElement::inputSize( ) {
 
 void GraphicElement::setInputSize( int size ) {
   if( ( size >= minInputSz( ) ) && ( size <= maxInputSz( ) ) ) {
-    qDebug( ) << "Setting inputSize to " << size << ".";
     if( inputSize( ) < size ) {
       while( inputSize( ) < size ) {
         addInputPort( );

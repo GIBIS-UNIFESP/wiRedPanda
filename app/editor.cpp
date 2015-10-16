@@ -17,6 +17,7 @@
 #include <QLabel>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QSettings>
 #include <QtMath>
 #include <iostream>
 #include <nodes/qneconnection.h>
@@ -335,6 +336,9 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
 }
 
 bool Editor::loadBox( Box *box, QString fname ) {
+  QSettings settings;
+  QStringList files = settings.value( "recentBoxes" ).toStringList( );
+  files.removeAll( fname );
   try {
     box->setParentFile( GlobalProperties::currentFile );
     box->loadFile( fname );
@@ -355,6 +359,9 @@ bool Editor::loadBox( Box *box, QString fname ) {
       }
     }
   }
+  files.prepend( fname );
+  settings.setValue( "recentBoxes", files );
+  mainWindow->updateRecentBoxes();
   return( true );
 }
 
@@ -489,14 +496,7 @@ void Editor::save( QDataStream &ds ) {
 void Editor::load( QDataStream &ds ) {
   /* Any change here must be made in box implementation!!! */
   clear( );
-  QList< QGraphicsItem* > items = SerializationFunctions::load( this, ds, scene );
-  foreach( QGraphicsItem * item, items ) {
-    scene->addItem( item );
-  }
-  if( !scene->views( ).empty( ) ) {
-    QGraphicsView *view = scene->views( ).first( );
-    view->ensureVisible( scene->itemsBoundingRect( ) );
-  }
+  SerializationFunctions::load( this, ds, scene );
 }
 
 void Editor::setElementEditor( ElementEditor *value ) {
