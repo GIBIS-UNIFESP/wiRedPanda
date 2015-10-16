@@ -327,7 +327,7 @@ void MainWindow::updateRecentBoxes( ) {
   ui->verticalLayout_4->removeItem( ui->verticalSpacer_BOX );
   while( QLayoutItem * item = ui->verticalLayout_4->takeAt( 0 ) ) {
     if( QWidget * widget = item->widget( ) ) {
-      delete widget;
+      widget->deleteLater();
     }
   }
   QSettings settings;

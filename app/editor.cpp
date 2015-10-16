@@ -362,7 +362,7 @@ bool Editor::loadBox( Box *box, QString fname ) {
   }
   files.prepend( fname );
   settings.setValue( "recentBoxes", files );
-  mainWindow->updateRecentBoxes( );
+  mainWindow->updateRecentBoxes();
   return( true );
 }
 
@@ -412,6 +412,8 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
     elm->setSelected( true );
     /* Adjusting the position of the element. */
     elm->setPos( pos );
+
+    dde->accept( );
     return( true );
   }
   return( false );
