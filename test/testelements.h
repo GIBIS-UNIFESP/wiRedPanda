@@ -2,13 +2,14 @@
 #define TESTELEMENTS_H
 
 #include <QTest>
+#include <array>
 #include <inputswitch.h>
 #include <qneconnection.h>
 
 class TestElements : public QObject {
   Q_OBJECT
-  QNEConnection *conn[ 4 ];
-  InputSwitch *sw[ 4 ];
+  std::array< QNEConnection*, 5 > conn;
+  std::array< InputSwitch*, 4 > sw;
 public:
   explicit TestElements( QObject *parent = 0 );
 

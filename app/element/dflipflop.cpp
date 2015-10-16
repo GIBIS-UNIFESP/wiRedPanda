@@ -33,8 +33,8 @@ void DFlipFlop::updatePorts( ) {
 }
 
 void DFlipFlop::updateLogic( ) {
-  char res1 = outputs( ).at( 0 )->value( ); /* Output 1 */
-  char res2 = outputs( ).at( 1 )->value( );
+  char res1 = outputs( ).at( 0 )->value( ); /* Q */
+  char res2 = outputs( ).at( 1 )->value( ); /* ~Q */
   if( !isValid( ) ) {
     res1 = -1;
     res2 = -1;

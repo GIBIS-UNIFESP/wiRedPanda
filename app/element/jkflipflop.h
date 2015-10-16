@@ -6,7 +6,7 @@
 class JKFlipFlop : public GraphicElement {
   bool lastClk;
 public:
-  explicit JKFlipFlop(QGraphicsItem * parent);
+  explicit JKFlipFlop(QGraphicsItem * parent = 0);
   virtual ~JKFlipFlop();
 
   // GraphicElement interface
