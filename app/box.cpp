@@ -1,7 +1,8 @@
 #include "box.h"
+#include "boxnotfoundexception.h"
 #include "editor.h"
 #include "globalproperties.h"
-#include "boxnotfoundexception.h"
+#include "serializationfunctions.h"
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
@@ -14,7 +15,7 @@
 #include <iostream>
 #include <nodes/qneconnection.h>
 
-Box::Box(Editor * editor, QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, parent ), simulationController(
+Box::Box( Editor *editor, QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, parent ), simulationController(
     &myScene ) {
   this->editor = editor;
   setHasLabel( true );
@@ -60,7 +61,6 @@ void Box::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double vers
 }
 
 void Box::updateLogic( ) {
-  QMutexLocker locker( &mutex );
   for( int inputPort = 0; inputPort < inputMap.size( ); ++inputPort ) {
     inputMap.at( inputPort )->setValue( inputs( ).at( inputPort )->value( ) );
   }
@@ -72,7 +72,6 @@ void Box::updateLogic( ) {
 
 void Box::loadFile( QString fname ) {
   setToolTip( fname );
-  QMutexLocker locker( &mutex );
   watcher.addPath( fname );
   QFileInfo fileInfo( fname );
   QString myFile = fileInfo.fileName( );
@@ -92,59 +91,32 @@ void Box::loadFile( QString fname ) {
         if( !fileInfo.exists( ) ) {
           std::cerr << "Error: This file does not exists: " << fname.toStdString( ) << std::endl;
           throw( BoxNotFoundException( QString(
-                                       "Box linked file \"%1\" could not be found!\n"
-                                       "Do you want to find this file?" )
-                                     .arg( fname ).toStdString( ), this ) );
+                                         "Box linked file \"%1\" could not be found!\n"
+                                         "Do you want to find this file?" )
+                                       .arg( fname ).toStdString( ), this ) );
           return;
         }
       }
     }
   }
   fname = fileInfo.absoluteFilePath( );
-  qDebug( ) << "Successfully opened box file \"" << fileInfo.absoluteFilePath( ) << "\"!";
   if( getLabel( ).isEmpty( ) ) {
     setLabel( fileInfo.baseName( ).toUpper( ) );
   }
-  m_file = fileInfo.absoluteFilePath( );
+  m_file = fname;
 
-  inputMap.clear( );
-  outputMap.clear( );
-  myScene.clear( );
 
   QFile file( fileInfo.absoluteFilePath( ) );
   if( file.open( QFile::ReadOnly ) ) {
-
+    inputMap.clear( );
+    outputMap.clear( );
+    myScene.clear( );
     QDataStream ds( &file );
-
-    QString str;
-    ds >> str;
-    if( !str.startsWith( QApplication::applicationName( ) ) ) {
-      throw( std::runtime_error( "Invalid file format. (BOX)" ) );
-    }
-    double version = str.split( " " ).at( 1 ).toDouble( );
-    QRectF rect;
-    if( version >= 1.4 ) {
-      ds >> rect;
-    }
-    QMap< quint64, QNEPort* > portMap;
-    while( !ds.atEnd( ) ) {
-      int type;
-      ds >> type;
-      if( type == GraphicElement::Type ) {
-        quint64 elmType;
-        ds >> elmType;
-        GraphicElement *elm = editor->getFactory().buildElement( ( ElementType ) elmType, editor );
+    QList< QGraphicsItem* > items = SerializationFunctions::load( editor, ds, &myScene );
+    foreach( QGraphicsItem * item, items ) {
+      if( item->type( ) == GraphicElement::Type ) {
+        GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
         if( elm ) {
-          elm->load( ds, portMap, version );
-          if( elm->elementType( ) == ElementType::BOX ) {
-            Box *childBox = ( Box* ) elm;
-            childBox->setParentFile( fname );
-            if(!editor->loadBox(childBox, childBox->getFile())){
-              throw( std::runtime_error( "Failed to load box element." ) );
-            }
-            break;
-          }
-          myScene.addItem( elm );
           switch( elm->elementType( ) ) {
               case ElementType::BUTTON:
               case ElementType::SWITCH:
@@ -161,47 +133,48 @@ void Box::loadFile( QString fname ) {
                 outputMap.append( port );
               }
               break;
-                default:
-                break;
+            }
+
+              case ElementType::BOX: {
+              Box *childBox = qgraphicsitem_cast< Box* >( elm );
+              if( childBox ) {
+                childBox->setParentFile( fname );
+                if( !editor->loadBox( childBox, childBox->getFile( ) ) ) {
+                  throw( std::runtime_error( "Failed to load box element." ) );
+                }
+              }
+              break;
+            }
+              default: {
+              break;
             }
           }
         }
-        else {
-          throw( std::runtime_error( "Could not build element." ) );
-        }
       }
-      else if( type == QNEConnection::Type ) {
-        QNEConnection *conn = new QNEConnection( 0 );
-        conn->load( ds, portMap );
-        myScene.addItem( conn );
-      }
-      else {
-        throw( std::runtime_error( "Box opened with errors." ) );
-        return;
-      }
+      myScene.addItem( item );
     }
-    setMinInputSz( inputMap.size( ) );
-    setMaxInputSz( inputMap.size( ) );
-    setMinOutputSz( outputMap.size( ) );
-    setMaxOutputSz( outputMap.size( ) );
-    setInputSize( inputMap.size( ) );
-    setOutputSize( outputMap.size( ) );
-    sortMap( inputMap );
-    sortMap( outputMap );
-    for( int port = 0; port < inputSize( ); ++port ) {
-      QString lb = inputMap.at( port )->graphicElement( )->getLabel( );
-      if( lb.isEmpty( ) ) {
-        lb = inputMap.at( port )->graphicElement( )->objectName( );
-      }
-      inputs( ).at( port )->setName( lb );
+  }
+  setMinInputSz( inputMap.size( ) );
+  setMaxInputSz( inputMap.size( ) );
+  setMinOutputSz( outputMap.size( ) );
+  setMaxOutputSz( outputMap.size( ) );
+  setInputSize( inputMap.size( ) );
+  setOutputSize( outputMap.size( ) );
+  sortMap( inputMap );
+  sortMap( outputMap );
+  for( int port = 0; port < inputSize( ); ++port ) {
+    QString lb = inputMap.at( port )->graphicElement( )->getLabel( );
+    if( lb.isEmpty( ) ) {
+      lb = inputMap.at( port )->graphicElement( )->objectName( );
     }
-    for( int port = 0; port < outputSize( ); ++port ) {
-      QString lb = outputMap.at( port )->graphicElement( )->getLabel( );
-      if( lb.isEmpty( ) ) {
-        lb = outputMap.at( port )->graphicElement( )->objectName( );
-      }
-      outputs( ).at( port )->setName( lb );
+    inputs( ).at( port )->setName( lb );
+  }
+  for( int port = 0; port < outputSize( ); ++port ) {
+    QString lb = outputMap.at( port )->graphicElement( )->getLabel( );
+    if( lb.isEmpty( ) ) {
+      lb = outputMap.at( port )->graphicElement( )->objectName( );
     }
+    outputs( ).at( port )->setName( lb );
   }
 }
 

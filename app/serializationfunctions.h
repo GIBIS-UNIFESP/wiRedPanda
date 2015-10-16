@@ -4,11 +4,13 @@
 #include <QGraphicsItem>
 
 class Editor;
+class Scene;
 
 class SerializationFunctions {
 public:
   static void serialize( const QList< QGraphicsItem* > &items, QDataStream &ds );
   static QList< QGraphicsItem* > deserialize(Editor * editor, QDataStream &ds );
+  static QList< QGraphicsItem* > load(Editor * editor, QDataStream &ds , Scene * scene = nullptr);
 };
 
 #endif /* SERIALIZATIONFUNCTIONS_H */

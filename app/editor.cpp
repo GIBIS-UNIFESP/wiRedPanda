@@ -483,83 +483,16 @@ void Editor::save( QDataStream &ds ) {
   if( QApplication::applicationVersion( ).toDouble( ) >= 1.4 ) {
     ds << scene->sceneRect( );
   }
-  foreach( QGraphicsItem * item, scene->items( ) ) {
-    if( item->type( ) == GraphicElement::Type ) {
-      ds << item->type( );
-      ds << ( quint64 ) ( ( GraphicElement* ) item )->elementType( );
-      ( ( GraphicElement* ) item )->save( ds );
-    }
-  }
-
-  foreach( QGraphicsItem * item, scene->items( ) ) {
-    if( item->type( ) == QNEConnection::Type ) {
-      ds << item->type( );
-      ( ( QNEConnection* ) item )->save( ds );
-    }
-  }
+  SerializationFunctions::serialize(scene->items(), ds);
 }
 
 void Editor::load( QDataStream &ds ) {
   /* Any change here must be made in box implementation!!! */
   clear( );
-  QString str;
-  ds >> str;
-  if( !str.startsWith( QApplication::applicationName( ) ) ) {
-    throw( std::runtime_error( "Invalid file format." ) );
+  QList< QGraphicsItem* > items = SerializationFunctions::load(this, ds, scene);
+  foreach (QGraphicsItem* item, items) {
+    scene->addItem(item);
   }
-  else if( !str.endsWith( QApplication::applicationVersion( ) ) ) {
-    QMessageBox::warning(
-      dynamic_cast< QWidget* >( parent( ) ), "Warning!", "File opened in compatibility mode.", QMessageBox::Ok,
-      QMessageBox::NoButton );
-  }
-  double version = str.split( " " ).at( 1 ).toDouble( );
-  QRectF rect;
-  if( version >= 1.4 ) {
-    ds >> rect;
-  }
-  QMap< quint64, QNEPort* > portMap;
-  while( !ds.atEnd( ) ) {
-    int type;
-    ds >> type;
-    if( type == GraphicElement::Type ) {
-      quint64 elmType;
-      ds >> elmType;
-      GraphicElement *elm = factory.buildElement( ( ElementType ) elmType, this );
-      if( elm ) {
-        addItem( elm );
-        elm->load( ds, portMap, version );
-        if( elm->elementType( ) == ElementType::BOX ) {
-          Box* box = qgraphicsitem_cast<Box *>(elm);
-          loadBox( box, box->getFile() );
-        }
-      }
-      else {
-        throw( std::runtime_error( "Could not build element." ) );
-      }
-    }
-    else if( type == QNEConnection::Type ) {
-      QNEConnection *conn = new QNEConnection( 0 );
-      addItem( conn );
-      conn->load( ds, portMap );
-    }
-    else {
-      if( QMessageBox::warning( dynamic_cast< QWidget* >( parent( ) ), "Warning!",
-                                "File opened with errors.\nDo you want to proceed?", QMessageBox::Ok,
-                                QMessageBox::Cancel ) == QMessageBox::Cancel ) {
-        clear( );
-      }
-      return;
-    }
-  }
-  scene->setSceneRect( scene->itemsBoundingRect( ) );
-  if( !scene->views( ).empty( ) ) {
-    QGraphicsView *view = scene->views( ).first( );
-    rect = rect.united( view->rect( ) );
-    rect.moveCenter( QPointF( 0, 0 ) );
-    scene->setSceneRect( scene->sceneRect( ).united( rect ) );
-    view->ensureVisible( scene->itemsBoundingRect( ) );
-  }
-  /* Any change here must be made in box implementation!!! */
 }
 
 void Editor::setElementEditor( ElementEditor *value ) {

@@ -1,8 +1,11 @@
+#include "box.h"
 #include "editor.h"
 #include "graphicelement.h"
 #include "qneconnection.h"
 #include "serializationfunctions.h"
 #include <QApplication>
+#include <QGraphicsView>
+#include <QMessageBox>
 
 void SerializationFunctions::serialize( const QList< QGraphicsItem* > &items, QDataStream &ds ) {
   foreach( QGraphicsItem * item, items ) {
@@ -21,8 +24,6 @@ void SerializationFunctions::serialize( const QList< QGraphicsItem* > &items, QD
 }
 
 QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDataStream &ds ) {
-  Scene *scene = editor->getScene( );
-
   QList< QGraphicsItem* > itemList;
   QMap< quint64, QNEPort* > portMap;
   double version = QApplication::applicationVersion( ).toDouble( );
@@ -34,10 +35,12 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDa
       ds >> elmType;
       GraphicElement *elm = editor->getFactory( ).buildElement( ( ElementType ) elmType, editor );
       if( elm ) {
-        scene->addItem( elm );
         itemList.append( elm );
         elm->load( ds, portMap, version );
-        elm->setPos( ( elm->pos( ) ) );
+        if( elm->elementType( ) == ElementType::BOX ) {
+          Box* box = qgraphicsitem_cast<Box *>(elm);
+          editor->loadBox( box, box->getFile() );
+        }
         elm->setSelected( true );
       }
       else {
@@ -46,10 +49,8 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDa
     }
     else if( type == QNEConnection::Type ) {
       QNEConnection *conn = new QNEConnection( 0 );
-      scene->addItem( conn );
       conn->setSelected( true );
       if( !conn->load( ds, portMap ) ) {
-        scene->removeItem( conn );
         delete conn;
       }
       else {
@@ -61,4 +62,32 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDa
     }
   }
   return( itemList );
+}
+
+QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStream &ds, Scene * scene ) {
+  QString str;
+  ds >> str;
+  if( !str.startsWith( QApplication::applicationName( ) ) ) {
+    throw( std::runtime_error( "Invalid file format." ) );
+  }
+  else if( !str.endsWith( QApplication::applicationVersion( ) ) ) {
+    QMessageBox::warning( nullptr, "Warning!", "File opened in compatibility mode.", QMessageBox::Ok,
+      QMessageBox::NoButton );
+  }
+  double version = str.split( " " ).at( 1 ).toDouble( );
+  QRectF rect;
+  if( version >= 1.4 ) {
+    ds >> rect;
+  }
+  if(scene){
+    scene->setSceneRect( scene->itemsBoundingRect( ) );
+    if( !scene->views( ).empty( ) ) {
+      QGraphicsView *view = scene->views( ).first( );
+      rect = rect.united( view->rect( ) );
+      rect.moveCenter( QPointF( 0, 0 ) );
+      scene->setSceneRect( scene->sceneRect( ).united( rect ) );
+      view->ensureVisible( scene->itemsBoundingRect( ) );
+    }
+  }
+  return( deserialize( editor, ds ) );
 }

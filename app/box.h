@@ -7,7 +7,6 @@
 #include "simulationcontroller.h"
 
 #include <QFileSystemWatcher>
-#include <QMutex>
 
 class Editor;
 
@@ -36,7 +35,6 @@ private:
   Scene myScene;
   SimulationController simulationController;
   QFileSystemWatcher watcher;
-  QMutex mutex;
   bool isAskingToReload;
   QString parentFile;
   void sortMap( QVector< QNEPort* > &map );
