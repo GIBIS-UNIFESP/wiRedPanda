@@ -108,12 +108,5 @@ void Label::startDrag( QPoint pos ) {
   drag->setPixmap( pixmap );
   drag->setHotSpot( pos );
 
-  QPixmap tempPixmap = pixmap;
-  QPainter painter;
-  painter.begin( &tempPixmap );
-  painter.fillRect( pixmap.rect( ), QColor( 127, 127, 127, 127 ) );
-  painter.end( );
-
-  setPixmap( tempPixmap );
   drag->exec( Qt::CopyAction | Qt::MoveAction, Qt::CopyAction );
 }
