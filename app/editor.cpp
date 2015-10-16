@@ -338,6 +338,7 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
 bool Editor::loadBox( Box *box, QString fname ) {
   QSettings settings;
   QStringList files = settings.value( "recentBoxes" ).toStringList( );
+  qDebug() << "Loading box" << fname;
   files.removeAll( fname );
   try {
     box->setParentFile( GlobalProperties::currentFile );
