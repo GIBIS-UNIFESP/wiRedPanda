@@ -187,16 +187,17 @@ void TestElements::testDLatch( ) {
   for( size_t test = 0; test < truthTable.size( ); ++test ) {
     elm.outputs( ).at( 0 )->setValue( truthTable[ test ][ 3 ] );
     elm.outputs( ).at( 1 )->setValue( !truthTable[ test ][ 3 ] );
-//    std::cout << truthTable[ test ][ 3 ] << " -> ";
     for( int port = 0; port < 2; ++port ) {
       sw[ port ]->setOn( truthTable[ test ][ port ] );
       sw[ port ]->updateLogic( );
-//      std::cout << truthTable[ test ][ port ] << " ";
     }
     elm.updateLogic( );
-//    std::cout << "-> "
-//              << ( int ) elm.outputs( ).at( 0 )->value( ) << std::endl;
+
     QCOMPARE( ( int ) elm.outputs( ).at( 0 )->value( ), truthTable[ test ][ 2 ] );
-/*    QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), truthTable[ test ][ 2 ] ); */
+    QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), (int)!truthTable[ test ][ 2 ] );
   }
+}
+
+void TestElements::testJKFlipFlop( ) {
+
 }

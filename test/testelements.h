@@ -7,8 +7,8 @@
 
 class TestElements : public QObject {
   Q_OBJECT
-  QNEConnection *conn[4];
-  InputSwitch *sw[4];
+  QNEConnection *conn[ 4 ];
+  InputSwitch *sw[ 4 ];
 public:
   explicit TestElements( QObject *parent = 0 );
 
@@ -25,7 +25,8 @@ private slots:
   void testGND( );
 
   void testDFlipFlop( );
-  void testDLatch();
+  void testDLatch( );
+  void testJKFlipFlop( );
 };
 
 #endif /* TESTELEMENTS_H */
