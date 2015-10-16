@@ -12,10 +12,10 @@ DFlipFlop::DFlipFlop( QGraphicsItem *parent ) : GraphicElement( 4, 4, 2, 2, pare
   inputs( ).at( 3 )->setName( "Clear" );
   outputs( ).at( 0 )->setName( "Q" );
   outputs( ).at( 1 )->setName( "~Q" );
-  inputs( ).at( 2 )->setRequired(false);
-  inputs( ).at( 3 )->setRequired(false);
-  inputs( ).at( 2 )->setDefaultValue(1);
-  inputs( ).at( 3 )->setDefaultValue(1);
+  inputs( ).at( 2 )->setRequired( false );
+  inputs( ).at( 3 )->setRequired( false );
+  inputs( ).at( 2 )->setDefaultValue( 1 );
+  inputs( ).at( 3 )->setDefaultValue( 1 );
 
 }
 

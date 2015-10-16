@@ -138,17 +138,19 @@ void TestElements::testDFlipFlop( ) {
     for( int port = 0; port < 4; ++port ) {
       sw[ port ]->setOn( truthTable[ test ][ port + 1 ] );
       sw[ port ]->updateLogic( );
-      std::cout << truthTable[ test ][ port + 1 ] << " ";
+//      std::cout << truthTable[ test ][ port + 1 ] << " ";
     }
     elm.updateLogic( );
-    std::cout << "-> "
-              << ( int ) elm.outputs( ).at( 0 )->value( ) << " "
-              << ( int ) elm.outputs( ).at( 1 )->value( ) << std::endl;
+//    std::cout << "-> "
+//              << ( int ) elm.outputs( ).at( 0 )->value( ) << " "
+//              << ( int ) elm.outputs( ).at( 1 )->value( ) << std::endl;
     QCOMPARE( ( int ) elm.outputs( ).at( 0 )->value( ), truthTable[ test ][ 5 ] );
     QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), truthTable[ test ][ 6 ] );
   }
-  sw[ 2 ]->outputs( ).front( )->disconnect( conn[ 2 ] );
   elm.inputs( ).at( 2 )->disconnect( conn[ 2 ] );
+  elm.inputs( ).at( 3 )->disconnect( conn[ 3 ] );
+  QCOMPARE( ( int ) elm.inputs( ).at( 2 )->value( ), 1 );
+  QCOMPARE( ( int ) elm.inputs( ).at( 3 )->value( ), 1 );
   elm.updateLogic( );
   QVERIFY( ( int ) elm.outputs( ).at( 0 )->value( ) != -1 );
   QVERIFY( ( int ) elm.outputs( ).at( 1 )->value( ) != -1 );

@@ -128,9 +128,6 @@ void QNEPort::disconnect( QNEConnection *conn ) {
   }
   m_connections.removeAll( conn );
   updateConnections( );
-  if( isInput( ) && ( connections( ).size( ) == 0 ) ) {
-    setValue( defaultValue( ) );
-  }
 }
 
 void QNEPort::setPortFlags( int f ) {
@@ -211,8 +208,12 @@ void QNEPort::setRequired( bool required ) {
 }
 
 char QNEPort::value( ) const {
-  if( !required( ) && ( m_connections.size( ) == 0 ) ) {
-    return( 0 );
+  if( m_connections.size( ) == 0 && !isOutput()) {
+    if(required()){
+      return -1;
+    }else{
+      return( defaultValue() );
+    }
   }
   else {
     return( m_value );
