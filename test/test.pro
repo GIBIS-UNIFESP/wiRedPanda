@@ -5,7 +5,9 @@ QT += testlib
 TARGET = WPanda-test
 SOURCES += \
       main.cpp \
-      testpriorityqueue.cpp
+      testpriorityqueue.cpp \
+    testelements.cpp
 
 HEADERS += \
-      testpriorityqueue.h
+      testpriorityqueue.h \
+    testelements.h

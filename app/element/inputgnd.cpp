@@ -5,6 +5,7 @@ InputGnd::InputGnd(QGraphicsItem * parent) : GraphicElement(0,0,1,1,parent) {
   setPixmap(QPixmap(":/input/0.png"));
   setRotatable(false);
   setObjectName("GND");
+  updateLogic();
 }
 
 

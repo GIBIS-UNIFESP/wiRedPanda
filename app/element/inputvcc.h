@@ -5,7 +5,7 @@
 
 class InputVcc : public GraphicElement {
 public:
-  explicit InputVcc(QGraphicsItem * parent);
+  explicit InputVcc(QGraphicsItem * parent = 0);
   virtual ~InputVcc();
   // GraphicElement interface
 public:

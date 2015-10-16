@@ -336,7 +336,7 @@ bool GraphicElement::isValid( ) {
       foreach( QNEConnection * conn, input->connections( ) ) {
         QNEPort *port = conn->otherPort( input );
         if( port ) {
-          if( !port->graphicElement( ) ) {
+          if( !port->graphicElement( ) || port->value() == -1 ) {
             valid = false;
             break;
           }

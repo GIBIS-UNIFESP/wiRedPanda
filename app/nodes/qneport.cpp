@@ -67,8 +67,8 @@ void QNEPort::setNEBlock( QNEBlock *b ) {
 
 void QNEPort::setName( const QString &n ) {
   name = n;
-//  label->setPlainText( n );
-  setToolTip(n);
+/*  label->setPlainText( n ); */
+  setToolTip( n );
 }
 
 void QNEPort::setIsOutput( bool o ) {
@@ -106,17 +106,25 @@ QList< QNEConnection* > &QNEPort::connections( ) {
 }
 
 void QNEPort::connect( QNEConnection *conn ) {
-  graphicElement( )->setChanged( true );
-  if( conn && !m_connections.contains( conn ) ) {
-    m_connections.append( conn );
+  if( conn ) {
+    graphicElement( )->setChanged( true );
+    if( conn && !m_connections.contains( conn ) ) {
+      m_connections.append( conn );
+    }
+    if( isOutput( ) ) {
+      graphicElement( )->updateLogic( );
+    }
+    updateConnections( );
   }
-  updateConnections( );
 }
 
 void QNEPort::disconnect( QNEConnection *conn ) {
   graphicElement( )->setChanged( true );
   m_connections.removeAll( conn );
   updateConnections( );
+  if( isInput( ) && ( connections( ).size( ) == 0 ) ) {
+    setValue( -1 );
+  }
 }
 
 void QNEPort::setPortFlags( int f ) {

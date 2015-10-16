@@ -5,7 +5,7 @@
 
 class InputGnd : public GraphicElement {
 public:
-  explicit InputGnd(QGraphicsItem * parent);
+  explicit InputGnd(QGraphicsItem * parent = 0);
   virtual ~InputGnd();
 
   // GraphicElement interface
