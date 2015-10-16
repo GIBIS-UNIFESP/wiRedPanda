@@ -57,8 +57,9 @@ QNEPort::QNEPort( QGraphicsItem *parent ) : QGraphicsPathItem( parent ) {
 }
 
 QNEPort::~QNEPort( ) {
-  foreach( QNEConnection * conn, m_connections )
-  delete conn;
+  foreach( QNEConnection * conn, m_connections ) {
+    delete conn;
+  }
 }
 
 void QNEPort::setNEBlock( QNEBlock *b ) {
@@ -107,23 +108,26 @@ QList< QNEConnection* > &QNEPort::connections( ) {
 
 void QNEPort::connect( QNEConnection *conn ) {
   if( conn ) {
-    graphicElement( )->setChanged( true );
+    if( graphicElement( ) ) {
+      graphicElement( )->setChanged( true );
+      if( isOutput( ) ) {
+        graphicElement( )->updateLogic( );
+      }
+    }
     if( conn && !m_connections.contains( conn ) ) {
       m_connections.append( conn );
-    }
-    if( isOutput( ) ) {
-      graphicElement( )->updateLogic( );
     }
     updateConnections( );
   }
 }
 
 void QNEPort::disconnect( QNEConnection *conn ) {
-  graphicElement( )->setChanged( true );
+  if(graphicElement())
+    graphicElement( )->setChanged( true );
   m_connections.removeAll( conn );
   updateConnections( );
   if( isInput( ) && ( connections( ).size( ) == 0 ) ) {
-    setValue( -1 );
+    setValue( -1 * required() );
   }
 }
 

@@ -332,10 +332,10 @@ void MainWindow::updateRecentBoxes( ) {
   }
   QSettings settings;
   QStringList files = settings.value( "recentBoxes" ).toStringList( );
-  foreach (QString file, files) {
-    QFileInfo fileInfo(file);
-    if(!fileInfo.exists()){
-      files.removeAll(file);
+  foreach( QString file, files ) {
+    QFileInfo fileInfo( file );
+    if( !fileInfo.exists( ) ) {
+      files.removeAll( file );
     }
   }
   while( files.size( ) > 10 ) {

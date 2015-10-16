@@ -1,42 +1,54 @@
 #include "dflipflop.h"
 
-DFlipFlop::DFlipFlop(QGraphicsItem * parent) : GraphicElement(4,4,2,2, parent) {
-  setPixmap(QPixmap(":/memory/D-flipflop.png"));
-  setRotatable(false);
-  updatePorts();
-  setObjectName("FlipFlop D");
+DFlipFlop::DFlipFlop( QGraphicsItem *parent ) : GraphicElement( 4, 4, 2, 2, parent ) {
+  setPixmap( QPixmap( ":/memory/D-flipflop.png" ) );
+  setRotatable( false );
+  updatePorts( );
+  setObjectName( "FlipFlop D" );
+  lastClk = false;
 }
 
-DFlipFlop::~DFlipFlop() {
+DFlipFlop::~DFlipFlop( ) {
 
 }
 
-void DFlipFlop::updatePorts() {
-  inputs().at(0)->setPos(topPosition(),13); //D
-  inputs().at(1)->setPos(topPosition(),45); //Clock
-
-  inputs().at(2)->setPos(32,topPosition()); //S
-  inputs().at(3)->setPos(32,bottomPosition()); //R
-
-  outputs().at(0)->setPos(bottomPosition(),15); //Q
-  outputs().at(1)->setPos(bottomPosition(),45); //Q'
+void DFlipFlop::updatePorts( ) {
+  inputs( ).at( 0 )->setPos( topPosition( ), 13 ); /* Data */
+  inputs( ).at( 0 )->setName( "Data" );
+  inputs( ).at( 1 )->setPos( topPosition( ), 45 ); /* Clock */
+  inputs( ).at( 1 )->setName( "Clock" );
+  inputs( ).at( 2 )->setPos( 32, topPosition( ) ); /* Preset */
+  inputs( ).at( 2 )->setName( "Preset" );
+  inputs( ).at( 3 )->setPos( 32, bottomPosition( ) ); /* Clear */
+  inputs( ).at( 3 )->setName( "Clear" );
+  outputs( ).at( 0 )->setPos( bottomPosition( ), 15 ); /* Q */
+  outputs( ).at( 0 )->setName( "Q" );
+  outputs( ).at( 1 )->setPos( bottomPosition( ), 45 ); /* ~Q */
+  outputs( ).at( 1 )->setName( "~Q" );
 }
 
-void DFlipFlop::updateLogic() {
-    char res = outputs().first()->value(); //Output 1
-    if(!isValid()) {
-      res = -1;
-    } else {
-      if(inputs().at(1)->value() == true){    //If Clock
-        res = inputs().at(0)->value(); //Output = Data
-      }
-      if (inputs().at(2)->value() == true){ //Set
-          res = true;
-      }
-      if (inputs().at(3)->value() == true){ //Reset
-          res = false;
-      }
+void DFlipFlop::updateLogic( ) {
+  char res1 = outputs( ).at( 0 )->value( ); /* Output 1 */
+  char res2 = outputs( ).at( 1 )->value( );
+  if( !isValid( ) ) {
+    res1 = -1;
+    res2 = -1;
+  }
+  else {
+    char d = inputs( ).at( 0 )->value( );
+    bool clk = inputs( ).at( 1 )->value( ); /* Current lock */
+    char prst = inputs( ).at( 2 )->value( );
+    char clr = inputs( ).at( 3 )->value( );
+    if( ( clk == true ) && ( lastClk == false ) ) { /* If Clock up */
+      res1 = d; /* Output = Data */
+      res2 = !res1;
     }
-    outputs().first()->setValue(res);
-    outputs().last()->setValue(!res);
+    if( ( prst == false ) || ( clr == false ) ) {
+      res1 = !prst;
+      res2 = !clr;
+    }
+    lastClk = clk;
+  }
+  outputs( ).first( )->setValue( res1 );
+  outputs( ).last( )->setValue( res2 );
 }

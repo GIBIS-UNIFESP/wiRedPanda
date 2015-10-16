@@ -5,26 +5,28 @@
 
 class InputSwitch : public GraphicElement {
 public:
-  explicit InputSwitch(QGraphicsItem * parent);
-  virtual ~InputSwitch();
+  explicit InputSwitch( QGraphicsItem *parent = 0);
+  virtual ~InputSwitch( );
 
   bool on;
-  // QGraphicsItem interface
+  /* QGraphicsItem interface */
 protected:
-  void mousePressEvent(QGraphicsSceneMouseEvent * event);
+  void mousePressEvent( QGraphicsSceneMouseEvent *event );
 
-  // GraphicElement interface
+  /* GraphicElement interface */
 public:
-  virtual ElementType elementType() {
-    return ElementType::SWITCH;
+  virtual ElementType elementType( ) {
+    return( ElementType::SWITCH );
   }
-  void updateLogic();
+  void updateLogic( );
 
 
-  // GraphicElement interface
+  /* GraphicElement interface */
 public:
-  void save(QDataStream & ds);
-  void load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap, double version);
+  void save( QDataStream &ds );
+  void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
+  bool getOn( ) const;
+  void setOn( bool value );
 };
 
-#endif // INPUTSWITCH_H
+#endif /* INPUTSWITCH_H */

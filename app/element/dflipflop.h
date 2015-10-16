@@ -4,8 +4,9 @@
 #include <graphicelement.h>
 
 class DFlipFlop : public GraphicElement {
+  bool lastClk;
 public:
-  explicit DFlipFlop(QGraphicsItem * parent);
+  explicit DFlipFlop(QGraphicsItem * parent = 0);
   virtual ~DFlipFlop();
 
   // GraphicElement interface
@@ -15,6 +16,7 @@ public:
   }
   virtual void updatePorts();
   void updateLogic();
+
 };
 
 #endif // DFLIPFLOP_H
