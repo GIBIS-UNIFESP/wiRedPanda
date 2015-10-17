@@ -53,6 +53,17 @@ void JKFlipFlop::updateLogic( ) {
     char prst = inputs( ).at( 3 )->value( );
     char clr = inputs( ).at( 4 )->value( );
     if( ( clk == true ) && ( lastClk == false ) ) { /* If Clock up */
+      if( j == k ) { /* IF J=K */
+        std::swap( res1, res2 );
+      }
+      else if( j && !k ) { /* J */
+        res1 = true;
+        res2 = false;
+      }
+      else if( !j && k ) { /* K */
+        res1 = false;
+        res2 = true;
+      }
       res1 = ( j && res2 ) || ( !k && res1 );
       res2 = !res1;
     }
