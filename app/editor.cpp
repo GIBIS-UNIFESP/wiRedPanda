@@ -484,6 +484,7 @@ void Editor::paste( QDataStream &ds ) {
     if( item->type( ) == GraphicElement::Type ) {
       item->setPos( ( item->pos( ) + offset ) );
       item->update( );
+      item->setSelected(true);
     }
   }
 }
