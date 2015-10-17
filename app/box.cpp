@@ -72,9 +72,14 @@ void Box::updateLogic( ) {
 }
 
 void Box::verifyRecursion( QString fname ) {
+  std::string msg = "Oh no! I'm my own parent.\nSomething is not ok...";
+  if( !parentFile.isEmpty( ) && ( fname == parentFile ) ) {
+    throw( std::runtime_error( msg ) );
+  }
   for( Box *box = parentBox; box != nullptr; box = box->getParentBox( ) ) {
+    qDebug( ) << "File: " << box->getFile( );
     if( box->getFile( ) == fname ) {
-      throw( std::runtime_error( "Oh no! I'm my own parent.\nSomething is not ok..." ) );
+      throw( std::runtime_error( msg ) );
     }
   }
 }
