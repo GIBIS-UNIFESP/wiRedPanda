@@ -67,7 +67,7 @@ void MainWindow::on_actionExit_triggered( ) {
 
 bool MainWindow::save( ) {
   QString fname = currentFile.absoluteFilePath( );
-  if( !currentFile.exists( ) ) {
+  if( currentFile.fileName().isEmpty() ) {
     fname =
       QFileDialog::getSaveFileName( this, tr( "Save File" ), defaultDirectory.absolutePath( ), tr(
                                       "Panda files (*.panda)" ) );
@@ -276,25 +276,8 @@ void MainWindow::on_actionSave_As_triggered( ) {
   if( !fname.endsWith( ".panda" ) ) {
     fname.append( ".panda" );
   }
-  QFile fl( fname );
-  if( fl.open( QFile::WriteOnly ) ) {
-    QDataStream ds( &fl );
-    try {
-      editor->save( ds );
-    }
-    catch( std::runtime_error &e ) {
-      std::cerr << "Error saving project: " << e.what( ) << std::endl;
-      return;
-    }
-  }
-  else {
-    std::cerr << "Could not open file in WriteOnly mode : " << fname.toStdString( ) << "." << std::endl;
-    return;
-  }
-  fl.close( );
-  ui->statusBar->showMessage( "Saved file sucessfully.", 2000 );
-  qDebug( ) << "Saving as ... ";
   setCurrentFile( QFileInfo( fname ) );
+  save();
 }
 
 QFileInfo MainWindow::getCurrentFile( ) const {
