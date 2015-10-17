@@ -190,8 +190,10 @@ void TestElements::testDLatch( ) {
     for( int port = 0; port < 2; ++port ) {
       sw[ port ]->setOn( truthTable[ test ][ port ] );
       sw[ port ]->updateLogic( );
+      std::cout << truthTable[ test ][ port ] << " ";
     }
     elm.updateLogic( );
+    std::cout << "-> " << ( int ) elm.outputs( ).at( 0 )->value( ) << std::endl;
 
     QCOMPARE( ( int ) elm.outputs( ).at( 0 )->value( ), truthTable[ test ][ 2 ] );
     QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), ( int ) !truthTable[ test ][ 2 ] );
@@ -214,18 +216,22 @@ void TestElements::testJKFlipFlop( ) {
   conn[ 2 ]->setPort2( elm.inputs( ).at( 2 ) );
   conn[ 3 ]->setPort2( elm.inputs( ).at( 3 ) );
 
-  std::array< std::array< int, 8 >, 6 > truthTable = {
+  std::array< std::array< int, 8 >, 13 > truthTable = {
     {
       /* L J  C  K  p  c  Q  A */
       { 0, 0, 0, 0, 0, 1, 1, 0 }, /* Preset = false */
       { 0, 0, 0, 0, 1, 0, 0, 0 }, /* Clear = false */
       { 0, 0, 0, 1, 0, 0, 1, 0 }, /* Clear and Preset = false */
-
       { 1, 1, 0, 0, 1, 1, 0, 0 }, /* Clk dwn and J = 0 ( must mantain current state )*/
       { 1, 1, 0, 0, 1, 1, 0, 0 }, /* Clk dwn and J = 1 ( must mantain current state )*/
-
       { 0, 0, 1, 0, 1, 1, 1, 0 }, /* Clk up J = 0 K = 0 ( must swap Q and ~Q )*/
-//      { 0, 1, 1, 1, 1, 1, 1, 0 }, /* Clk up J = 0 K = 0 */
+      { 0, 0, 1, 0, 1, 1, 0, 1 }, /* Clk up J = 0 K = 0 ( must swap Q and ~Q )*/
+      { 0, 0, 1, 1, 1, 1, 0, 0 }, /* Clk up J = 0 K = 1 */
+      { 0, 0, 1, 1, 1, 1, 0, 1 }, /* Clk up J = 0 K = 1 */
+      { 0, 1, 1, 0, 1, 1, 1, 0 }, /* Clk up J = 1 K = 0 */
+      { 0, 1, 1, 0, 1, 1, 1, 1 }, /* Clk up J = 1 K = 0 */
+      { 0, 1, 1, 1, 1, 1, 0, 0 }, /* Clk up J = 1 K = 0 */
+      { 0, 1, 1, 1, 1, 1, 1, 1 }, /* Clk up J = 1 K = 0 */
 
     }
   };
@@ -235,6 +241,7 @@ void TestElements::testJKFlipFlop( ) {
     sw[ 1 ]->setOn( truthTable[ test ][ 0 ] );
     sw[ 2 ]->setOn( false );
     sw[ 3 ]->setOn( false );
+    sw[ 4 ]->setOn( false );
     for( int port = 0; port < 4; ++port ) {
       sw[ port ]->updateLogic( );
     }
@@ -251,12 +258,12 @@ void TestElements::testJKFlipFlop( ) {
     std::cout << "-> " << ( int ) elm.outputs( ).at( 0 )->value( ) << std::endl;
 
     QCOMPARE( ( int ) elm.outputs( ).at( 0 )->value( ), truthTable[ test ][ 6 ] );
-    QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), (int) !truthTable[ test ][ 6 ] );
+    QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), ( int ) !truthTable[ test ][ 6 ] );
   }
-  elm.inputs( ).at( 2 )->disconnect( conn[ 2 ] );
   elm.inputs( ).at( 3 )->disconnect( conn[ 3 ] );
-  QCOMPARE( ( int ) elm.inputs( ).at( 2 )->value( ), 1 );
+  elm.inputs( ).at( 4 )->disconnect( conn[ 4 ] );
   QCOMPARE( ( int ) elm.inputs( ).at( 3 )->value( ), 1 );
+  QCOMPARE( ( int ) elm.inputs( ).at( 4 )->value( ), 1 );
   elm.updateLogic( );
   QVERIFY( ( int ) elm.outputs( ).at( 0 )->value( ) != -1 );
   QVERIFY( ( int ) elm.outputs( ).at( 1 )->value( ) != -1 );
