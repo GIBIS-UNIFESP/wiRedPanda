@@ -11,7 +11,7 @@
 
 SimulationController::SimulationController(Scene * scn) : QObject(dynamic_cast<QObject *>(scn)), timer(this) {
   scene = scn;
-  timer.setInterval(10);
+  timer.setInterval(20);
   connect(&timer,&QTimer::timeout,this,&SimulationController::update);
 }
 
@@ -70,18 +70,12 @@ void SimulationController::update() {
     }
     Clock::reset = false;
   }
-  QVector<GraphicElement*> changed;
-  foreach (GraphicElement * elm, elements) {
-//    if(elm->changed()) {
-    changed.append(elm);
-//    }
-  }
 
-  if(changed.isEmpty()) {
+  if(elements.isEmpty()) {
     return;
   }
 
-  foreach (GraphicElement * elm, changed) {
+  foreach (GraphicElement * elm, elements) {
     if(elm) {
       calculatePriority(elm);
     }
