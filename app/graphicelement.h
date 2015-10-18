@@ -10,7 +10,7 @@
 
 enum class ElementType {
   UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND, DISPLAY,
-  DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, TLATCH, BOX
+  DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, TLATCH, BOX, NODE
 };
 
 class GraphicElement : public QGraphicsObject, public PriorityElement {
@@ -27,9 +27,7 @@ private:
 
   //GraphicElement interface.
 public:
-  virtual ElementType elementType() {
-    return ElementType::UNKNOWN;
-  }
+  virtual ElementType elementType() = 0;
 
   virtual void save(QDataStream&ds);
 

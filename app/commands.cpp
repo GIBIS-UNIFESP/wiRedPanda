@@ -5,8 +5,8 @@
 #include "scene.h"
 #include "serializationfunctions.h"
 
-#include <QDebug>
 #include <QApplication>
+#include <QDebug>
 /* TODO Criar comandos usando mesma técnica do copy n' paste. */
 
 AddItemsCommand::AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
@@ -228,7 +228,7 @@ UpdateCommand::UpdateCommand( GraphicElement *element, QByteArray oldData,
   m_oldData = oldData;
   QDataStream dataStream( &m_newData, QIODevice::WriteOnly );
   m_element->save( dataStream );
-  setText( QString( "Update %1 element" ).arg( element->objectName() ) );
+  setText( QString( "Update %1 element" ).arg( element->objectName( ) ) );
 
 }
 
@@ -245,4 +245,65 @@ void UpdateCommand::loadData( QByteArray itemData ) {
   QMap< quint64, QNEPort* > portMap;
   double version = QApplication::applicationVersion( ).toDouble( );
   m_element->load( dataStream, portMap, version );
+}
+
+
+SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, QUndoCommand *parent ) : QUndoCommand( parent ) {
+  node = new Node( );
+  node->setPos( point - QPointF( node->boundingRect( ).center( ) ) );
+  p1 = conn->port1( );
+  p2 = conn->port2( );
+  trueP1 = p1;
+  trueP2 = p2;
+  if( p2->isOutput( ) ) {
+    std::swap( p1, p2 );
+  }
+  c1 = conn;
+  c2 = new QNEConnection( );
+  setText( QString( "Wire split" ) );
+
+}
+
+SplitCommand::~SplitCommand( ) {
+  if( !c2->scene( ) ) {
+    delete c2;
+  }
+  if( !node->scene( ) ) {
+    delete node;
+  }
+}
+
+void SplitCommand::undo( ) {
+
+  node->inputs( ).front( )->disconnect( c1 );
+  node->outputs( ).front( )->disconnect( c2 );
+  c1->scene( )->removeItem( node );
+
+  p2->disconnect( c2 );
+  c1->scene( )->removeItem( c2 );
+
+  c1->setPort1( trueP1 );
+  c1->setPort2( trueP2 );
+
+  c1->updatePosFromPorts( );
+  c1->updatePath( );
+}
+
+void SplitCommand::redo( ) {
+  p1->disconnect( c1 );
+  p2->disconnect( c1 );
+  c1->setPort1( p1 );
+  c1->setPort2( node->inputs( ).front( ) );
+
+  c2->setPort1( node->outputs( ).front( ) );
+  c2->setPort2( p2 );
+
+  c1->scene( )->addItem( node );
+  c1->scene( )->addItem( c2 );
+
+  c1->updatePosFromPorts( );
+  c1->updatePath( );
+
+  c2->updatePosFromPorts( );
+  c2->updatePath( );
 }

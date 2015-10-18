@@ -24,10 +24,6 @@ JKFlipFlop::JKFlipFlop( QGraphicsItem *parent ) : GraphicElement( 5, 5, 2, 2, pa
   inputs( ).at( 4 )->setDefaultValue( 1 );
 }
 
-JKFlipFlop::~JKFlipFlop( ) {
-
-}
-
 void JKFlipFlop::updatePorts( ) {
   inputs( ).at( 0 )->setPos( topPosition( ), 13 ); /* J */
   inputs( ).at( 1 )->setPos( topPosition( ), 29 ); /* Clk */

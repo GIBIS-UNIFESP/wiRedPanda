@@ -28,6 +28,7 @@ SOURCES += \
     $$PWD/app/element/jklatch.cpp \
     $$PWD/app/element/led.cpp \
     $$PWD/app/element/nand.cpp \
+    $$PWD/app/element/node.cpp \
     $$PWD/app/element/nor.cpp \
     $$PWD/app/element/not.cpp \
     $$PWD/app/element/or.cpp \
@@ -72,6 +73,7 @@ HEADERS  +=  \
     $$PWD/app/element/jklatch.h \
     $$PWD/app/element/led.h \
     $$PWD/app/element/nand.h \
+    $$PWD/app/element/node.h \
     $$PWD/app/element/nor.h \
     $$PWD/app/element/not.h \
     $$PWD/app/element/or.h \

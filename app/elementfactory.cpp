@@ -24,6 +24,7 @@
 
 
 #include <QDebug>
+#include <node.h>
 
 
 size_t ElementFactory::getLastId() const {
@@ -109,6 +110,9 @@ GraphicElement *ElementFactory::buildElement(ElementType type, Editor * editor, 
     break;
   case ElementType::BOX:
     elm = new Box(editor, parent);
+    break;
+  case ElementType::NODE:
+    elm = new Node(parent);
     break;
   //  case ElementType::DLATCH:
   //    elm = new DLatch();

@@ -133,7 +133,7 @@ void Editor::elementUpdated( GraphicElement *element, QByteArray oldData ) {
 }
 
 QList< QGraphicsItem* > Editor::itemsAt( const QPointF &pos ) {
-  return( scene->items( QRectF( pos - QPointF( 7, 7 ), QSize( 13, 13 ) ).normalized( ) ) );
+  return( scene->items( QRectF( pos - QPointF( 4, 4 ), QSize( 9, 9 ) ).normalized( ) ) );
 }
 
 
@@ -197,15 +197,6 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
       editedConn->setPos2( mousePos );
       editedConn->updatePath( );
     }
-    return( true );
-  }
-  else if( item && ( item->type( ) == QNEConnection::Type ) ) {
-    /* Mouse pressed over a connections. */
-    QNEConnection *connection = dynamic_cast< QNEConnection* >( item );
-    if( connection ) {
-      connection->split( mousePos );
-    }
-    return( true );
   }
   else if( !item ) {
     if( mouseEvt->button( ) == Qt::LeftButton ) {
@@ -215,7 +206,6 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
       selectionRect->setRect( QRectF( selectionStartPoint, selectionStartPoint ) );
       selectionRect->show( );
       selectionRect->update( );
-      return( true );
     }
   }
   else if( item && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
@@ -232,7 +222,6 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
         oldPositions.append( elm->pos( ) );
       }
     }
-    return( true );
   }
   return( false );
 }
@@ -588,6 +577,20 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
       }
         case QEvent::GraphicsSceneWheel: {
         ret = wheelEvt( wEvt );
+        break;
+      }
+        case QEvent::GraphicsSceneMouseDoubleClick: {
+        QNEConnection *connection = dynamic_cast< QNEConnection* >( itemAt( mousePos ) );
+        if( connection && ( connection->type( ) == QNEConnection::Type ) ) {
+          /* Mouse pressed over a connection. */
+          if( connection ) {
+            if( connection->port1( ) && connection->port2( ) ) {
+              undoStack->push( new SplitCommand( connection, mousePos ) );
+            }
+          }
+          evt->accept( );
+          return( true );
+        }
         break;
       }
     }

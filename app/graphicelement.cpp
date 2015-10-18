@@ -70,7 +70,7 @@ void GraphicElement::setId( int value ) {
 }
 
 void GraphicElement::setPixmap( const QPixmap &pixmap ) {
-  setTransformOriginPoint( 32, 32 );
+  setTransformOriginPoint( pixmap.width()/2, pixmap.height()/2 );
   this->pixmap = pixmap;
   update( boundingRect( ) );
 }
@@ -185,7 +185,7 @@ void GraphicElement::setInputs( const QVector< QNEPort* > &inputs ) {
 
 
 QRectF GraphicElement::boundingRect( ) const {
-  return( QRectF( 0, 0, 64, 64 ) );
+  return( pixmap.rect() );
 }
 
 void GraphicElement::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget ) {
@@ -269,20 +269,20 @@ void GraphicElement::updatePorts( ) {
  */
 
 QVariant GraphicElement::itemChange( QGraphicsItem::GraphicsItemChange change, const QVariant &value ) {
-  //Align to grid
-  if(change == ItemPositionChange && scene()) {
-    QPointF newPos = value.toPointF();
-    Scene * customScene = dynamic_cast<Scene*>(scene());
-    if(customScene) {
-      int gridSize = customScene->gridSize();
-      qreal xV = qRound(newPos.x()/gridSize)*gridSize;
-      qreal yV = qRound(newPos.y()/gridSize)*gridSize;
-      return QPointF(xV, yV);
-    } else {
-      return newPos;
+  /* Align to grid */
+  if( ( change == ItemPositionChange ) && scene( ) ) {
+    QPointF newPos = value.toPointF( );
+    Scene *customScene = dynamic_cast< Scene* >( scene( ) );
+    if( customScene ) {
+      int gridSize = customScene->gridSize( );
+      qreal xV = qRound( newPos.x( ) / gridSize ) * gridSize;
+      qreal yV = qRound( newPos.y( ) / gridSize ) * gridSize;
+      return( QPointF( xV, yV ) );
+    }
+    else {
+      return( newPos );
     }
   }
-
   /* Moves wires */
   if( ( change == ItemScenePositionHasChanged ) || ( change == ItemRotationHasChanged ) ||
       ( change == ItemTransformHasChanged ) ) {
@@ -297,18 +297,20 @@ QVariant GraphicElement::itemChange( QGraphicsItem::GraphicsItemChange change, c
   return( QGraphicsItem::itemChange( change, value ) );
 }
 
-//void GraphicElement::mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) {
-//  /* Align to grid */
-//  QPointF newPos = this->pos();
-//  Scene *customScene = dynamic_cast< Scene* >( scene( ) );
-//  if( customScene ) {
-//    int gridSize = customScene->gridSize( );
-//    qreal xV = qRound( newPos.x( ) / gridSize ) * gridSize;
-//    qreal yV = qRound( newPos.y( ) / gridSize ) * gridSize;
-//    setPos(QPointF( xV, yV ) );
-//  }
-//  QGraphicsObject::mouseReleaseEvent( event );
-//}
+/*
+ * void GraphicElement::mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) {
+ *  / * Align to grid * /
+ *  QPointF newPos = this->pos();
+ *  Scene *customScene = dynamic_cast< Scene* >( scene( ) );
+ *  if( customScene ) {
+ *    int gridSize = customScene->gridSize( );
+ *    qreal xV = qRound( newPos.x( ) / gridSize ) * gridSize;
+ *    qreal yV = qRound( newPos.y( ) / gridSize ) * gridSize;
+ *    setPos(QPointF( xV, yV ) );
+ *  }
+ *  QGraphicsObject::mouseReleaseEvent( event );
+ * }
+ */
 
 void GraphicElement::setLabel( QString label ) {
   this->label->setPlainText( label );
@@ -336,7 +338,7 @@ bool GraphicElement::isValid( ) {
       foreach( QNEConnection * conn, input->connections( ) ) {
         QNEPort *port = conn->otherPort( input );
         if( port ) {
-          if( !port->graphicElement( ) || port->value() == -1 ) {
+          if( !port->graphicElement( ) || ( port->value( ) == -1 ) ) {
             valid = false;
             break;
           }

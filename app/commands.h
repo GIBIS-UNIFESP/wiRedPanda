@@ -6,6 +6,7 @@
 #include <QPointF>
 #include <QUndoCommand>
 #include <memory>
+#include <node.h>
 #include <qneconnection.h>
 
 class Scene;
@@ -82,7 +83,7 @@ class UpdateCommand : public QUndoCommand {
 public:
   enum { Id = 42 };
 
-  UpdateCommand( GraphicElement *element, QByteArray oldData, QUndoCommand *parent = 0);
+  UpdateCommand( GraphicElement *element, QByteArray oldData, QUndoCommand *parent = 0 );
 
   void undo( ) Q_DECL_OVERRIDE;
   void redo( ) Q_DECL_OVERRIDE;
@@ -97,5 +98,23 @@ private:
 
   void loadData( QByteArray itemData );
 };
+
+class SplitCommand : public QUndoCommand {
+public:
+
+  SplitCommand( QNEConnection *conn, QPointF point, QUndoCommand *parent = 0 );
+  virtual ~SplitCommand();
+  void undo( ) Q_DECL_OVERRIDE;
+  void redo( ) Q_DECL_OVERRIDE;
+
+private:
+  QNEConnection *c1;
+  QNEConnection *c2;
+  QNEPort *p1, *p2;
+  QNEPort *trueP1, *trueP2;
+
+  Node *node;
+};
+
 
 #endif /* COMMANDS_H */

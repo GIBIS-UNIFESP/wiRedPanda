@@ -48,8 +48,6 @@ public:
   QNEPort* port2() const;
   QNEPort* otherPort(QNEPort * port);
 
-  void split(QPointF point);
-
   void save(QDataStream&);
   bool load(QDataStream&, const QMap<quint64, QNEPort*> &portMap = QMap<quint64, QNEPort*>());
 
@@ -66,9 +64,6 @@ private:
   QNEPort *m_port1;
   QNEPort *m_port2;
   Status m_status;
-  // QGraphicsItem interface
-protected:
-
   // QGraphicsItem interface
 public:
   void paint(QPainter * painter, const QStyleOptionGraphicsItem *option, QWidget *);

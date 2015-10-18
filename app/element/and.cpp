@@ -7,10 +7,6 @@ And::And(QGraphicsItem * parent) : GraphicElement(2,8,1,1,parent) {
   setObjectName("AND");
 }
 
-And::~And() {
-
-}
-
 void And::updateLogic() {
   char res = true;
   if(!isValid()) {
