@@ -79,6 +79,8 @@ private slots:
 
   void on_actionReload_File_triggered( );
 
+  void on_actionGates_triggered(bool checked);
+
 private:
   Ui::MainWindow *ui;
   Editor *editor;

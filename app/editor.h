@@ -34,6 +34,7 @@ signals:
 public slots:
   void clear( );
   void showWires( bool checked );
+  void showGates( bool checked );
   void rotate( bool rotateRight );
   void elementUpdated( GraphicElement *element, QByteArray itemData );
 

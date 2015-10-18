@@ -76,9 +76,36 @@ void Editor::deleteElements( ) {
 }
 
 void Editor::showWires( bool checked ) {
-  foreach( QGraphicsItem * c, scene->items( ) ) {
-    if( c->type( ) == QNEConnection::Type ) {
-      c->setVisible( checked );
+  foreach( QGraphicsItem * item, scene->items( ) ) {
+    GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+    if( ( item->type( ) == QNEConnection::Type ) ) {
+      item->setVisible( checked );
+    }
+    else if( ( item->type( ) == GraphicElement::Type ) && elm ) {
+      foreach( QNEPort * in, elm->inputs( ) ) {
+        in->setVisible( checked );
+      }
+      foreach( QNEPort * out, elm->outputs( ) ) {
+        out->setVisible( checked );
+      }
+    }
+  }
+}
+
+void Editor::showGates( bool checked ) {
+  foreach( QGraphicsItem * item, scene->items( ) ) {
+    GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+    if( ( item->type( ) == GraphicElement::Type ) && elm ) {
+      switch( elm->elementType( ) ) {
+          case ElementType::SWITCH:
+          case ElementType::BUTTON:
+          case ElementType::LED:
+          case ElementType::DISPLAY:
+          break;
+          default:
+          item->setVisible( checked );
+          break;
+      }
     }
   }
 }
@@ -170,6 +197,7 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
       editedConn->setPos2( mousePos );
       editedConn->updatePath( );
     }
+    return( true );
   }
   else if( item && ( item->type( ) == QNEConnection::Type ) ) {
     /* Mouse pressed over a connections. */
@@ -177,6 +205,7 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
     if( connection ) {
       connection->split( mousePos );
     }
+    return( true );
   }
   else if( !item ) {
     if( mouseEvt->button( ) == Qt::LeftButton ) {
@@ -186,6 +215,7 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
       selectionRect->setRect( QRectF( selectionStartPoint, selectionStartPoint ) );
       selectionRect->show( );
       selectionRect->update( );
+      return( true );
     }
   }
   else if( item && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
@@ -202,6 +232,7 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
         oldPositions.append( elm->pos( ) );
       }
     }
+    return( true );
   }
   return( false );
 }
@@ -314,8 +345,7 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
       /* Verifying if the connection is valid. */
       if( ( port1->isOutput( ) != port2->isOutput( ) ) &&
           ( port1->graphicElement( ) != port2->graphicElement( ) ) && !port1->isConnected( port2 ) ) {
-        qDebug( ) << "Finalizing connection.";
-        /* Finalizing connection. */
+        /* Making connection. */
         editedConn->setPos2( port2->scenePos( ) );
         editedConn->setPort2( port2 );
         editedConn->updatePath( );
@@ -362,7 +392,7 @@ bool Editor::loadBox( Box *box, QString fname ) {
   }
   files.prepend( fname );
   settings.setValue( "recentBoxes", files );
-  mainWindow->updateRecentBoxes();
+  mainWindow->updateRecentBoxes( );
   return( true );
 }
 
@@ -484,7 +514,7 @@ void Editor::paste( QDataStream &ds ) {
     if( item->type( ) == GraphicElement::Type ) {
       item->setPos( ( item->pos( ) + offset ) );
       item->update( );
-      item->setSelected(true);
+      item->setSelected( true );
     }
   }
 }
@@ -507,6 +537,7 @@ void Editor::load( QDataStream &ds ) {
   /* Any change here must be made in box implementation!!! */
   clear( );
   SerializationFunctions::load( this, ds, scene );
+  scene->clearSelection( );
 }
 
 void Editor::setElementEditor( ElementEditor *value ) {

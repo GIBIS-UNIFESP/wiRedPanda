@@ -67,7 +67,7 @@ void MainWindow::on_actionExit_triggered( ) {
 
 bool MainWindow::save( ) {
   QString fname = currentFile.absoluteFilePath( );
-  if( currentFile.fileName().isEmpty() ) {
+  if( currentFile.fileName( ).isEmpty( ) ) {
     fname =
       QFileDialog::getSaveFileName( this, tr( "Save File" ), defaultDirectory.absolutePath( ), tr(
                                       "Panda files (*.panda)" ) );
@@ -277,7 +277,7 @@ void MainWindow::on_actionSave_As_triggered( ) {
     fname.append( ".panda" );
   }
   setCurrentFile( QFileInfo( fname ) );
-  save();
+  save( );
 }
 
 QFileInfo MainWindow::getCurrentFile( ) const {
@@ -310,7 +310,7 @@ void MainWindow::updateRecentBoxes( ) {
   ui->verticalLayout_4->removeItem( ui->verticalSpacer_BOX );
   while( QLayoutItem * item = ui->verticalLayout_4->takeAt( 0 ) ) {
     if( QWidget * widget = item->widget( ) ) {
-      widget->deleteLater();
+      widget->deleteLater( );
     }
   }
   QSettings settings;
@@ -433,4 +433,10 @@ void MainWindow::on_actionReload_File_triggered( ) {
       open( currentFile.absoluteFilePath( ) );
     }
   }
+}
+
+void MainWindow::on_actionGates_triggered( bool checked ) {
+  ui->actionWires->setEnabled(checked);
+  editor->showWires( checked );
+  editor->showGates( checked );
 }
