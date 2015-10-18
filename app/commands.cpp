@@ -234,10 +234,14 @@ UpdateCommand::UpdateCommand( GraphicElement *element, QByteArray oldData,
 
 void UpdateCommand::undo( ) {
   loadData( m_oldData );
+  m_element->scene()->clearSelection( );
+  m_element->setSelected(true);
 }
 
 void UpdateCommand::redo( ) {
   loadData( m_newData );
+  m_element->scene()->clearSelection( );
+  m_element->setSelected(true);
 }
 
 void UpdateCommand::loadData( QByteArray itemData ) {
