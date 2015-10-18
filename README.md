@@ -15,13 +15,13 @@ The main features of the software are:
 - [x] Boxes.  [link](https://github.com/lellisls/wiRedPanda/issues/9)
 - [ ] QtInstaller. [link](https://github.com/lellisls/wiRedPanda/issues/3)
 - [ ] Add keyboard shortcuts to inputs. [link](https://github.com/lellisls/wiRedPanda/issues/11)
-- [ ] Line Split.
+- [x] Line Split.
 - [ ] Zoom.
 - [x] Dynamic scene resizing 
 - [x] Align to grid [link](https://github.com/lellisls/wiRedPanda/issues/14).
 - [ ] ~~Align lines to grid ()~~
-- [ ] Hide Lines, Wires and Ports.
-- [ ] Show Lines with issues.
+- [x] Hide Lines, Wires and Ports.
+- [x] Show Lines with issues.
 - [x] Search.
 - [ ] Flip Elements in the latteral pannel.
 - [ ] 16-seg Display.
