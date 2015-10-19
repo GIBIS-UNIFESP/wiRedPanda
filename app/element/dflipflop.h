@@ -5,6 +5,8 @@
 
 class DFlipFlop : public GraphicElement {
   bool lastClk;
+  bool lastValue;
+
 public:
   explicit DFlipFlop(QGraphicsItem * parent = 0);
   virtual ~DFlipFlop();

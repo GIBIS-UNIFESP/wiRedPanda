@@ -21,7 +21,6 @@ private slots:
 
   void testAnd( );
   void testOr( );
-
   void testVCC( );
   void testGND( );
 

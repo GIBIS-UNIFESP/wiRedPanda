@@ -40,19 +40,20 @@ void DFlipFlop::updateLogic( ) {
     res2 = -1;
   }
   else {
-    char d = inputs( ).at( 0 )->value( );
+    char data = inputs( ).at( 0 )->value( );
     bool clk = inputs( ).at( 1 )->value( ); /* Current lock */
     char prst = inputs( ).at( 2 )->value( );
     char clr = inputs( ).at( 3 )->value( );
     if( ( clk == true ) && ( lastClk == false ) ) { /* If Clock up */
-      res1 = d; /* Output = Data */
-      res2 = !res1;
+      res1 = lastValue; /* Output = Data */
+      res2 = !lastValue;
     }
     if( ( prst == false ) || ( clr == false ) ) {
       res1 = !prst;
       res2 = !clr;
     }
     lastClk = clk;
+    lastValue = data;
   }
   outputs( ).first( )->setValue( res1 );
   outputs( ).last( )->setValue( res2 );
