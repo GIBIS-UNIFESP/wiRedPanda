@@ -88,13 +88,13 @@ void Box::verifyRecursion( QString fname ) {
 void Box::loadFile( QString fname ) {
   QFileInfo fileInfo = findFile( fname );
   setToolTip( fname );
-  watcher.addPath( fname );
   if( getLabel( ).isEmpty( ) ) {
     setLabel( fileInfo.baseName( ).toUpper( ) );
   }
   verifyRecursion( fname );
 
   m_file = fname;
+  watcher.addPath( fname );
 
 
   QFile file( fileInfo.absoluteFilePath( ) );
