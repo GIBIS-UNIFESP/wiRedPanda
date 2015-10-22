@@ -87,17 +87,17 @@ void Box::verifyRecursion( QString fname ) {
 
 void Box::loadFile( QString fname ) {
   QFileInfo fileInfo = findFile( fname );
+  fname = fileInfo.absoluteFilePath();
   setToolTip( fname );
   if( getLabel( ).isEmpty( ) ) {
     setLabel( fileInfo.baseName( ).toUpper( ) );
   }
   verifyRecursion( fname );
-
   m_file = fname;
   watcher.addPath( fname );
 
 
-  QFile file( fileInfo.absoluteFilePath( ) );
+  QFile file( fname );
   if( file.open( QFile::ReadOnly ) ) {
     inputMap.clear( );
     outputMap.clear( );
