@@ -12,7 +12,6 @@ class Clock : public GraphicElement {
   double m_frequency;
 
 public:
-  const static int simulationInterval = GLOBALCLK;
   explicit Clock(QGraphicsItem * parent);
   virtual ~Clock();
   static bool reset;
@@ -31,7 +30,6 @@ public:
   void updateLogic();
   void resetClock();
 private:
-  constexpr static float frequencyMultiplier = 1000.0/simulationInterval;
   void updateClock();
 };
 

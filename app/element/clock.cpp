@@ -54,9 +54,10 @@ void Clock::setFrequency(float freq) {
 //  qDebug() << "Clock frequency set to " << freq;
   if( freq > 0 && m_frequency != freq) {
     m_frequency = freq;
-    interval = static_cast< int >(frequencyMultiplier/freq);
+    interval = 1000/(freq*GLOBALCLK);
     elapsed = 0;
     Clock::reset = true;
+    qDebug() << "Freq = " << freq <<  " interval = " << interval;
     //    timer.start( static_cast< int >(1000.0/freq) );
   }
 }
