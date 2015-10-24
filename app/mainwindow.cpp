@@ -267,9 +267,13 @@ void MainWindow::on_actionPaste_triggered( ) {
 
 void MainWindow::on_actionSave_As_triggered( ) {
   QString fname = currentFile.absoluteFilePath( );
+  QString path = defaultDirectory.absolutePath( );
+  if(!currentFile.fileName().isEmpty()){
+    path = currentFile.absoluteFilePath();
+  }
   fname =
-    QFileDialog::getSaveFileName( this, tr( "Save File as ..." ), defaultDirectory.absolutePath( ), tr(
-                                    "Panda files (*.panda)" ) );
+      QFileDialog::getSaveFileName( this, tr( "Save File as ..." ), path, tr(
+                                      "Panda files (*.panda)" ) );
   if( fname.isEmpty( ) ) {
     return;
   }
