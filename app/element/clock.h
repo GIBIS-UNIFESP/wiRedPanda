@@ -2,7 +2,7 @@
 #define CLOCK_H
 
 #include "graphicelement.h"
-
+#include "globalproperties.h"
 #include <QTime>
 
 class Clock : public GraphicElement {
@@ -12,7 +12,7 @@ class Clock : public GraphicElement {
   double m_frequency;
 
 public:
-  const static int simulationInterval = 10;
+  const static int simulationInterval = GLOBALCLK;
   explicit Clock(QGraphicsItem * parent);
   virtual ~Clock();
   static bool reset;

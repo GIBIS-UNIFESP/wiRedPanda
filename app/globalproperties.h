@@ -2,6 +2,7 @@
 #define GLOBALPROPERTIES_H
 
 #include <QString>
+#define GLOBALCLK 20
 
 class GlobalProperties {
 public:

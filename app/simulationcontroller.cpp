@@ -11,7 +11,7 @@
 
 SimulationController::SimulationController(Scene * scn) : QObject(dynamic_cast<QObject *>(scn)), timer(this) {
   scene = scn;
-  timer.setInterval(20);
+  timer.setInterval(GLOBALCLK);
   connect(&timer,&QTimer::timeout,this,&SimulationController::update);
 }
 
