@@ -5,7 +5,7 @@ WiRed Panda is a software designed to help students to learn about logic circuit
 The main features of the software are:
   - Real time logic simulation.
   - User-friendly interface.
-  - Its intuitive and easy to use.
+  - It's intuitive and easy to use.
 
 ![Alt text](images/wpanda.png?raw=true "WiRed Panda Screenshot")
 
