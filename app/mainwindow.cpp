@@ -43,7 +43,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   connect( editor, &Editor::scroll, this, &MainWindow::scrollView );
 
   QShortcut *shortcut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
-  connect( shortcut, SIGNAL( activated( ) ), ui->lineEdit, SLOT( setFocus( ) ) );
+  connect(shortcut, SIGNAL(activated()), ui->lineEdit, SLOT(setFocus()));
   ui->graphicsView->setCacheMode( QGraphicsView::CacheBackground );
   firstResult = nullptr;
   updateRecentBoxes( );
@@ -319,7 +319,7 @@ void MainWindow::updateRecentBoxes( ) {
   }
   QSettings settings;
   QStringList files = settings.value( "recentBoxes" ).toStringList( );
-  foreach( QString file, files ) {
+  for( auto file : files ) {
     QFileInfo fileInfo( file );
     if( !fileInfo.exists( ) ) {
       files.removeAll( file );
@@ -329,7 +329,7 @@ void MainWindow::updateRecentBoxes( ) {
     files.removeLast( );
   }
   settings.setValue( "recentBoxes", files );
-  foreach( QString file, files ) {
+  for( auto file : files ) {
     QString name = QFileInfo( file ).baseName( ).toUpper( );
     QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
     ListItemWidget *item = new ListItemWidget( pixmap, name, "label_box", file, this );
@@ -400,12 +400,12 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
     QList< Label* > searchResults;
     searchResults.append( ui->tabWidget->findChildren< Label* >( QRegularExpression( QString( "^label_.*%1.*" ).arg(
                                                                                        text ) ) ) );
-    foreach( Label * box, boxes ) {
+    for( auto * box : boxes ) {
       if( regex.match( box->auxData( ) ).hasMatch( ) ) {
         searchResults.append( box );
       }
     }
-    foreach( Label * label, searchResults ) {
+    for( auto * label: searchResults ) {
       ListItemWidget *item = new ListItemWidget( *label->pixmap( ), label->property( "Name" ).toString( ),
                                                  label->objectName( ), label->auxData( ) );
       if( !firstResult ) {
@@ -426,9 +426,7 @@ void MainWindow::on_lineEdit_returnPressed( ) {
 
 
 void MainWindow::resizeEvent( QResizeEvent* ) {
-  QRectF rect = editor->getScene( )->sceneRect( );
-  rect = rect.united( ui->graphicsView->rect( ) );
-  editor->getScene( )->setSceneRect( rect );
+  editor->getScene( )->setSceneRect( editor->getScene( )->sceneRect( ).united(ui->graphicsView->rect()) );
 }
 
 void MainWindow::on_actionReload_File_triggered( ) {
