@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>214</width>
+    <width>202</width>
     <height>215</height>
    </rect>
   </property>
@@ -31,13 +31,6 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_frequency">
-     <property name="text">
-      <string>Frequency:</string>
-     </property>
-    </widget>
-   </item>
    <item row="6" column="0">
     <widget class="QLabel" name="label_color">
      <property name="text">
@@ -55,6 +48,13 @@
      </property>
      <property name="maximum">
       <double>30.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_frequency">
+     <property name="text">
+      <string>Frequency:</string>
      </property>
     </widget>
    </item>
@@ -116,37 +116,6 @@
       </property>
      </item>
     </widget>
-   </item>
-   <item row="0" column="1" rowspan="8">
-    <layout class="QVBoxLayout" name="verticalLayout_5">
-     <item>
-      <widget class="QPushButton" name="pushButtonApply">
-       <property name="text">
-        <string>Apply</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButtonCancel">
-       <property name="text">
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="verticalSpacer_6">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
    </item>
    <item row="3" column="0">
     <widget class="QComboBox" name="comboBoxInputSz"/>

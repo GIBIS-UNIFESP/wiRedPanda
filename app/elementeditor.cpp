@@ -22,7 +22,7 @@ void ElementEditor::setScene(QGraphicsScene * s) {
 void ElementEditor::setCurrentElement(GraphicElement * elm) {
   element = elm;
   if(elm != NULL) {
-    setEnabled(true);
+    setEnabled(false);
     //Label
     ui->lineEditElementLabel->setEnabled(element->hasLabel());
     ui->label_labels->setEnabled(element->hasLabel());
@@ -47,6 +47,7 @@ void ElementEditor::setCurrentElement(GraphicElement * elm) {
     if(element->hasColors()) {
       ui->comboBoxColor->setCurrentText(element->color());
     }
+    setEnabled(true);
   } else {
     setEnabled(false);
     ui->lineEditElementLabel->setText("");
@@ -69,7 +70,10 @@ void ElementEditor::selectionChanged() {
   setCurrentElement(elm);
 }
 
-void ElementEditor::on_pushButtonApply_clicked() {
+void ElementEditor::apply() {
+  if(element == NULL || isEnabled() == false) {
+    return;
+  }
   QByteArray itemData;
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );
   element->save(dataStream);
@@ -88,6 +92,20 @@ void ElementEditor::on_pushButtonApply_clicked() {
   emit elementUpdated(element, itemData);
 }
 
-void ElementEditor::on_pushButtonCancel_clicked() {
-  setCurrentElement(element);
+void ElementEditor::on_lineEditElementLabel_editingFinished() {
+  apply();
+}
+
+void ElementEditor::on_comboBoxInputSz_currentIndexChanged(int index) {
+  Q_UNUSED(index);
+  apply();
+}
+
+void ElementEditor::on_doubleSpinBoxFrequency_editingFinished() {
+  apply();
+}
+
+void ElementEditor::on_comboBoxColor_currentIndexChanged(int index) {
+  Q_UNUSED(index);
+  apply();
 }

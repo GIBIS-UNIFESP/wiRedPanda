@@ -25,12 +25,17 @@ private slots:
 
   void selectionChanged();
 
-  void on_pushButtonApply_clicked();
+  void on_lineEditElementLabel_editingFinished();
 
-  void on_pushButtonCancel_clicked();
+  void on_comboBoxInputSz_currentIndexChanged(int index);
+
+  void on_doubleSpinBoxFrequency_editingFinished();
+
+  void on_comboBoxColor_currentIndexChanged(int index);
 
 private:
   void setCurrentElement( GraphicElement *element );
+  void apply();
 
   Ui::ElementEditor *ui;
   GraphicElement * element;
