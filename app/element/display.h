@@ -22,6 +22,10 @@ public:
   // QGraphicsItem interface
 public:
   void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
+
+  // GraphicElement interface
+public:
+  void load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap, double version);
 };
 #endif // DISPLAY_H
 

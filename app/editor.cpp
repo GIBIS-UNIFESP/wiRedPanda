@@ -497,7 +497,8 @@ void Editor::paste( QDataStream &ds ) {
   QPointF ctr;
   ds >> ctr;
   QPointF offset = mousePos - ctr - QPointF( 32.0f, 32.0f );
-  QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( this, ds );
+  double version = QApplication::applicationVersion( ).toDouble( );
+  QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( this, ds, version);
   undoStack->push( new AddItemsCommand( itemList, this ) );
   foreach( QGraphicsItem * item, itemList ) {
     if( item->type( ) == GraphicElement::Type ) {

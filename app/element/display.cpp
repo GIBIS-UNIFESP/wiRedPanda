@@ -1,6 +1,8 @@
 #include "display.h"
+#include <QDebug>
 #include <QPainter>
 #include <QPixmap>
+#include <qneconnection.h>
 
 Display::Display(QGraphicsItem * parent) : GraphicElement(8,8,0,0,parent) {
   setRotatable(false);
@@ -76,4 +78,20 @@ void Display::paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
     painter->drawPixmap(QPoint(0,0), c);
   }
 
+}
+
+void Display::load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap, double version) {
+  GraphicElement::load(ds, portMap, version);
+  qDebug () << "Version: " << version;
+  if( version < 1.6 ){
+    qDebug() << "Remapping inputs";
+    QVector< int > order = {2,1,4,5,0,7,3,6};
+    QVector< QNEPort* > aux = inputs();
+    for (int i = 0; i < aux.size(); ++i) {
+      qDebug() << i << " -> " << order[i];
+      aux[order[i]] = inputs()[i];
+    }
+    setInputs(aux);
+    updatePorts();
+  }
 }

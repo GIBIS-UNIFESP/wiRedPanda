@@ -4,6 +4,7 @@
 #include "qneconnection.h"
 #include "serializationfunctions.h"
 #include <QApplication>
+#include <QDebug>
 #include <QGraphicsView>
 #include <QMessageBox>
 
@@ -23,10 +24,9 @@ void SerializationFunctions::serialize( const QList< QGraphicsItem* > &items, QD
   }
 }
 
-QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDataStream &ds ) {
+QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDataStream &ds, int version ) {
   QList< QGraphicsItem* > itemList;
   QMap< quint64, QNEPort* > portMap;
-  double version = QApplication::applicationVersion( ).toDouble( );
   while( !ds.atEnd( ) ) {
     int type;
     ds >> type;
@@ -35,6 +35,9 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDa
       ds >> elmType;
       GraphicElement *elm = editor->getFactory( ).buildElement( ( ElementType ) elmType, editor );
       if( elm ) {
+#ifdef DEBUG
+        qDebug() << "Loaded " << elm->objectName() << " : " << elm->getLabel();
+#endif
         itemList.append( elm );
         elm->load( ds, portMap, version );
         if( elm->elementType( ) == ElementType::BOX ) {
@@ -42,6 +45,7 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDa
           editor->loadBox( box, box->getFile( ) );
         }
         elm->setSelected( true );
+        qDebug() << "Bacon";
       }
       else {
         throw( std::runtime_error( "Could not build element." ) );
@@ -70,18 +74,18 @@ QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStrea
   if( !str.startsWith( QApplication::applicationName( ) ) ) {
     throw( std::runtime_error( "Invalid file format." ) );
   }
-/*
- *  else if( !str.endsWith( QApplication::applicationVersion( ) ) ) {
- *    QMessageBox::warning( nullptr, "Warning!", "File opened in compatibility mode.", QMessageBox::Ok,
- *      QMessageBox::NoButton );
- *  }
- */
+
+ else if( !str.endsWith( QApplication::applicationVersion( ) ) ) {
+    QMessageBox::warning( nullptr, "Warning!", "File opened in compatibility mode.", QMessageBox::Ok,
+    QMessageBox::NoButton );
+ }
+
   double version = str.split( " " ).at( 1 ).toDouble( );
   QRectF rect;
   if( version >= 1.4 ) {
     ds >> rect;
   }
-  QList< QGraphicsItem* > items = deserialize( editor, ds );
+  QList< QGraphicsItem* > items = deserialize( editor, ds, version );
   if( scene ) {
     foreach( QGraphicsItem * item, items ) {
       scene->addItem( item );
