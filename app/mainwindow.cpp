@@ -12,6 +12,7 @@
 #include <QSettings>
 #include <QShortcut>
 #include <iostream>
+#include <QStyleFactory>
 
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
   ui->setupUi( this );
@@ -47,6 +48,9 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->graphicsView->setCacheMode( QGraphicsView::CacheBackground );
   firstResult = nullptr;
   updateRecentBoxes( );
+
+  QApplication::setStyle(QStyleFactory::create("Fusion"));
+
 }
 
 void MainWindow::createUndoView( ) {
@@ -439,6 +443,10 @@ void MainWindow::on_actionReload_File_triggered( ) {
 
 void MainWindow::on_actionGates_triggered( bool checked ) {
   ui->actionWires->setEnabled(checked);
-  editor->showWires( checked );
+  if(checked == false){
+    editor->showWires( checked );
+  }else{
+    editor->showWires(ui->actionWires->isChecked());
+  }
   editor->showGates( checked );
 }

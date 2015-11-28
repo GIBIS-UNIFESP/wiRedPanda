@@ -23,6 +23,9 @@
    <iconset>
     <normaloff>:/resources/pandaLogo.png</normaloff>:/resources/pandaLogo.png</iconset>
   </property>
+  <property name="unifiedTitleAndToolBarOnMac">
+   <bool>true</bool>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_3">
     <item row="1" column="0">
@@ -102,7 +105,7 @@
            <x>0</x>
            <y>0</y>
            <width>218</width>
-           <height>205</height>
+           <height>210</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_7">
@@ -387,8 +390,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>184</width>
-               <height>522</height>
+               <width>98</width>
+               <height>165</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -609,8 +612,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>184</width>
-               <height>522</height>
+               <width>98</width>
+               <height>165</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -831,8 +834,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>198</width>
-               <height>214</height>
+               <width>100</width>
+               <height>30</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -892,7 +895,7 @@
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>19</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1098,7 +1101,7 @@
     <string>&amp;Wires</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Alt+1</string>
+    <string>Ctrl+1</string>
    </property>
   </action>
   <action name="actionGates">
@@ -1112,7 +1115,7 @@
     <string>&amp;Gates</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Alt+2</string>
+    <string>Ctrl+2</string>
    </property>
   </action>
   <action name="actionAbout">
@@ -1208,14 +1211,14 @@
   <tabstop>scrollArea_6</tabstop>
  </tabstops>
  <resources>
+  <include location="resources/memory/memory.qrc"/>
   <include location="resources/output/output.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/basic/basic.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/memory/memory.qrc"/>
-  <include location="resources/input/input.qrc"/>
   <include location="resources/output/output.qrc"/>
-  <include location="resources/memory/memory.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/basic/basic.qrc"/>
   <include location="resources/input/input.qrc"/>
  </resources>
