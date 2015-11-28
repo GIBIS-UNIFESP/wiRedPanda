@@ -14,7 +14,7 @@
    id="svg2985"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="counter a.svg">
+   sodipodi:docname="counter b.svg">
   <defs
      id="defs2987">
     <filter
@@ -94,12 +94,11 @@
      inkscape:groupmode="layer">
     <rect
        style="fill:#fc3426;fill-opacity:0.98823529;stroke:none"
-       id="rect3921-4"
+       id="rect3921"
        width="20"
-       height="4.7729998"
-       x="31.6"
-       y="-18.772999"
-       ry="2.3864999"
-       transform="matrix(0,1,-1,0,0,0)" />
+       height="4.7729707"
+       x="18"
+       y="7.6320295"
+       ry="2.3864853" />
   </g>
 </svg>
