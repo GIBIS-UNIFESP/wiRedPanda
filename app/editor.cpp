@@ -82,11 +82,15 @@ void Editor::showWires( bool checked ) {
       item->setVisible( checked );
     }
     else if( ( item->type( ) == GraphicElement::Type ) && elm ) {
-      foreach( QNEPort * in, elm->inputs( ) ) {
-        in->setVisible( checked );
-      }
-      foreach( QNEPort * out, elm->outputs( ) ) {
-        out->setVisible( checked );
+      if(elm->elementType() == ElementType::NODE){
+        elm->setVisible(checked);
+      }else{
+        foreach( QNEPort * in, elm->inputs( ) ) {
+          in->setVisible( checked );
+        }
+        foreach( QNEPort * out, elm->outputs( ) ) {
+          out->setVisible( checked );
+        }
       }
     }
   }
