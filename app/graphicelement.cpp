@@ -138,6 +138,9 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
   /* <\Version1.3> */
   quint64 inputSz, outputSz;
   ds >> inputSz;
+  if(inputSz > MAXIMUMVALIDINPUTSIZE ){
+    throw std::runtime_error("Corrupted file!");
+  }
   for( size_t port = 0; port < inputSz; ++port ) {
     QString name;
     int flags;
@@ -157,6 +160,9 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
     }
   }
   ds >> outputSz;
+  if(outputSz > MAXIMUMVALIDINPUTSIZE ){
+    throw std::runtime_error("Corrupted file!");
+  }
   for( size_t port = 0; port < outputSz; ++port ) {
     QString name;
     int flags;

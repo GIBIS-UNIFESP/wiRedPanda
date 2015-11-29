@@ -24,7 +24,7 @@ void SerializationFunctions::serialize( const QList< QGraphicsItem* > &items, QD
   }
 }
 
-QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDataStream &ds, int version ) {
+QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDataStream &ds, double version ) {
   QList< QGraphicsItem* > itemList;
   QMap< quint64, QNEPort* > portMap;
   while( !ds.atEnd( ) ) {
@@ -36,7 +36,7 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDa
       GraphicElement *elm = editor->getFactory( ).buildElement( ( ElementType ) elmType, editor );
       if( elm ) {
 #ifdef DEBUG
-        qDebug() << "Loaded " << elm->objectName() << " : " << elm->getLabel();
+//        qDebug() << "Loaded " << elm->objectName() << " : " << elm->getLabel();
 #endif
         itemList.append( elm );
         elm->load( ds, portMap, version );
@@ -45,7 +45,6 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDa
           editor->loadBox( box, box->getFile( ) );
         }
         elm->setSelected( true );
-        qDebug() << "Bacon";
       }
       else {
         throw( std::runtime_error( "Could not build element." ) );
@@ -71,16 +70,18 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDa
 QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStream &ds, Scene *scene ) {
   QString str;
   ds >> str;
+  qDebug() << "Header: " << str;
   if( !str.startsWith( QApplication::applicationName( ) ) ) {
     throw( std::runtime_error( "Invalid file format." ) );
   }
 
- else if( !str.endsWith( QApplication::applicationVersion( ) ) ) {
-    QMessageBox::warning( nullptr, "Warning!", "File opened in compatibility mode.", QMessageBox::Ok,
-    QMessageBox::NoButton );
- }
+// else if( !str.endsWith( QApplication::applicationVersion( ) ) ) {
+//    QMessageBox::warning( nullptr, "Warning!", "File opened in compatibility mode.", QMessageBox::Ok,
+//    QMessageBox::NoButton );
+// }
 
   double version = str.split( " " ).at( 1 ).toDouble( );
+
   QRectF rect;
   if( version >= 1.4 ) {
     ds >> rect;

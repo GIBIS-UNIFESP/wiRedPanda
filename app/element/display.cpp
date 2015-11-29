@@ -88,7 +88,6 @@ void Display::load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap, double 
     QVector< int > order = {2,1,4,5,0,7,3,6};
     QVector< QNEPort* > aux = inputs();
     for (int i = 0; i < aux.size(); ++i) {
-      qDebug() << i << " -> " << order[i];
       aux[order[i]] = inputs()[i];
     }
     setInputs(aux);

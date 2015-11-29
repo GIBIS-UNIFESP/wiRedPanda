@@ -13,6 +13,8 @@ enum class ElementType {
   DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, TLATCH, BOX, NODE
 };
 
+#define MAXIMUMVALIDINPUTSIZE 256
+
 class GraphicElement : public QGraphicsObject, public PriorityElement {
   Q_OBJECT
 public:

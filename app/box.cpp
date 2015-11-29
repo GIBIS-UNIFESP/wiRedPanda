@@ -157,12 +157,20 @@ void Box::loadFile( QString fname ) {
     if( lb.isEmpty( ) ) {
       lb = inputMap.at( port )->graphicElement( )->objectName( );
     }
+    if(!inputMap.at( port )->portName().isEmpty()){
+      lb += " ";
+      lb += inputMap.at( port )->portName();
+    }
     inputs( ).at( port )->setName( lb );
   }
   for( int port = 0; port < outputSize( ); ++port ) {
     QString lb = outputMap.at( port )->graphicElement( )->getLabel( );
     if( lb.isEmpty( ) ) {
       lb = outputMap.at( port )->graphicElement( )->objectName( );
+    }
+    if(!outputMap.at( port )->portName().isEmpty()){
+      lb += " ";
+      lb += outputMap.at( port )->portName();
     }
     outputs( ).at( port )->setName( lb );
   }
