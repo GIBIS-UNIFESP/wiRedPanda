@@ -11,8 +11,8 @@
 #include <QRectF>
 #include <QSettings>
 #include <QShortcut>
-#include <iostream>
 #include <QStyleFactory>
+#include <iostream>
 
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
   ui->setupUi( this );
@@ -44,12 +44,12 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   connect( editor, &Editor::scroll, this, &MainWindow::scrollView );
 
   QShortcut *shortcut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
-  connect(shortcut, SIGNAL(activated()), ui->lineEdit, SLOT(setFocus()));
+  connect( shortcut, SIGNAL( activated( ) ), ui->lineEdit, SLOT( setFocus( ) ) );
   ui->graphicsView->setCacheMode( QGraphicsView::CacheBackground );
   firstResult = nullptr;
   updateRecentBoxes( );
 
-  QApplication::setStyle(QStyleFactory::create("Fusion"));
+  QApplication::setStyle( QStyleFactory::create( "Fusion" ) );
 
 }
 
@@ -272,12 +272,12 @@ void MainWindow::on_actionPaste_triggered( ) {
 void MainWindow::on_actionSave_As_triggered( ) {
   QString fname = currentFile.absoluteFilePath( );
   QString path = defaultDirectory.absolutePath( );
-  if(!currentFile.fileName().isEmpty()){
-    path = currentFile.absoluteFilePath();
+  if( !currentFile.fileName( ).isEmpty( ) ) {
+    path = currentFile.absoluteFilePath( );
   }
   fname =
-      QFileDialog::getSaveFileName( this, tr( "Save File as ..." ), path, tr(
-                                      "Panda files (*.panda)" ) );
+    QFileDialog::getSaveFileName( this, tr( "Save File as ..." ), path, tr(
+                                    "Panda files (*.panda)" ) );
   if( fname.isEmpty( ) ) {
     return;
   }
@@ -404,12 +404,12 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
     QList< Label* > searchResults;
     searchResults.append( ui->tabWidget->findChildren< Label* >( QRegularExpression( QString( "^label_.*%1.*" ).arg(
                                                                                        text ) ) ) );
-    for( auto * box : boxes ) {
+    for( auto *box : boxes ) {
       if( regex.match( box->auxData( ) ).hasMatch( ) ) {
         searchResults.append( box );
       }
     }
-    for( auto * label: searchResults ) {
+    for( auto *label : searchResults ) {
       ListItemWidget *item = new ListItemWidget( *label->pixmap( ), label->property( "Name" ).toString( ),
                                                  label->objectName( ), label->auxData( ) );
       if( !firstResult ) {
@@ -430,7 +430,7 @@ void MainWindow::on_lineEdit_returnPressed( ) {
 
 
 void MainWindow::resizeEvent( QResizeEvent* ) {
-  editor->getScene( )->setSceneRect( editor->getScene( )->sceneRect( ).united(ui->graphicsView->rect()) );
+  editor->getScene( )->setSceneRect( editor->getScene( )->sceneRect( ).united( ui->graphicsView->rect( ) ) );
 }
 
 void MainWindow::on_actionReload_File_triggered( ) {
@@ -442,11 +442,25 @@ void MainWindow::on_actionReload_File_triggered( ) {
 }
 
 void MainWindow::on_actionGates_triggered( bool checked ) {
-  ui->actionWires->setEnabled(checked);
-  if(checked == false){
+  ui->actionWires->setEnabled( checked );
+  if( checked == false ) {
     editor->showWires( checked );
-  }else{
-    editor->showWires(ui->actionWires->isChecked());
+  }
+  else {
+    editor->showWires( ui->actionWires->isChecked( ) );
   }
   editor->showGates( checked );
+}
+
+
+void MainWindow::keyPressEvent( QKeyEvent *evt ) {
+  if( evt->key( ) == Qt::Key_Control ) {
+    editor->setControlKeyPressed( true );
+  }
+}
+
+void MainWindow::keyReleaseEvent( QKeyEvent *evt ) {
+  if( evt->key( ) == Qt::Key_Control ) {
+    editor->setControlKeyPressed( false );
+  }
 }

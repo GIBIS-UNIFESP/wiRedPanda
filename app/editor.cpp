@@ -162,6 +162,16 @@ QGraphicsItem* Editor::itemAt( const QPointF &pos ) {
 void Editor::addItem( QGraphicsItem *item ) {
   scene->addItem( item );
 }
+bool Editor::getControlKeyPressed() const
+{
+  return mControlKeyPressed;
+}
+
+void Editor::setControlKeyPressed(bool controlKeyPressed)
+{
+  mControlKeyPressed = controlKeyPressed;
+}
+
 
 bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
   QGraphicsItem *item = itemAt( mousePos );

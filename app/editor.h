@@ -4,12 +4,12 @@
 
 #include "simulationcontroller.h"
 #include <QObject>
+#include <QTime>
 #include <QUndoCommand>
 #include <elementeditor.h>
 #include <elementfactory.h>
 #include <memory>
 #include <nodes/qneconnection.h>
-#include <QTime>
 #include <scene.h>
 
 class Box;
@@ -66,7 +66,7 @@ private:
   bool dragMoveEvt( QGraphicsSceneDragDropEvent *dde );
   bool wheelEvt( QWheelEvent *wEvt );
 
-  void ctrlDrag(GraphicElement * elm, QPointF pos);
+  void ctrlDrag( GraphicElement *elm, QPointF pos );
 
   /* QObject interface */
 public:
@@ -80,7 +80,9 @@ public:
   void handleHoverPort( QNEPort *port );
   void releaseHoverPort( );
   bool loadBox( Box *box, QString fname );
-  void resizeScene();
+  void resizeScene( );
+  bool getControlKeyPressed( ) const;
+  void setControlKeyPressed( bool controlKeyPressed );
 };
 
 #endif /* EDITOR_H */

@@ -79,7 +79,7 @@ private slots:
 
   void on_actionReload_File_triggered( );
 
-  void on_actionGates_triggered(bool checked);
+  void on_actionGates_triggered( bool checked );
 
 private:
   Ui::MainWindow *ui;
@@ -96,6 +96,11 @@ private:
 protected:
   void closeEvent( QCloseEvent *e );
   void resizeEvent( QResizeEvent* );
+
+  /* QWidget interface */
+protected:
+  void keyPressEvent( QKeyEvent* );
+  void keyReleaseEvent( QKeyEvent* );
 };
 
 #endif /* MAINWINDOW_H */
