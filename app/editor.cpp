@@ -290,25 +290,6 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
   if( QApplication::overrideCursor( ) ) {
     QApplication::setOverrideCursor( Qt::ArrowCursor );
   }
-  if( draggingElement && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
-    if( !movedElements.empty( ) ) {
-      if( movedElements.size( ) != oldPositions.size( ) ) {
-        throw std::runtime_error( "Invalid coordinates." );
-      }
-      bool valid = false;
-      for( int elm = 0; elm < movedElements.size( ); ++elm ) {
-        if( movedElements[ elm ]->pos( ) != oldPositions[ elm ] ) {
-          valid = true;
-          break;
-        }
-      }
-      if( ( movedElements.front( )->pos( ) != oldPositions.front( ) ) && valid ) {
-        undoStack->push( new MoveCommand( movedElements, oldPositions ) );
-      }
-    }
-    draggingElement = false;
-    movedElements.clear( );
-  }
   if( editedConn && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
     /* A connection is being created, and left button was released. */
     QNEPort *port = dynamic_cast< QNEPort* >( itemAt( mousePos ) );
@@ -560,6 +541,27 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
             oldPositions.append( elm->pos( ) );
           }
         }
+      }
+    }
+    if( evt->type( ) == QEvent::GraphicsSceneMouseRelease ) {
+      if( draggingElement && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
+        if( !movedElements.empty( ) ) {
+          if( movedElements.size( ) != oldPositions.size( ) ) {
+            throw std::runtime_error( "Invalid coordinates." );
+          }
+          bool valid = false;
+          for( int elm = 0; elm < movedElements.size( ); ++elm ) {
+            if( movedElements[ elm ]->pos( ) != oldPositions[ elm ] ) {
+              valid = true;
+              break;
+            }
+          }
+          if( ( movedElements.front( )->pos( ) != oldPositions.front( ) ) && valid ) {
+            undoStack->push( new MoveCommand( movedElements, oldPositions ) );
+          }
+        }
+        draggingElement = false;
+        movedElements.clear( );
       }
     }
     switch( ( int ) evt->type( ) ) {
