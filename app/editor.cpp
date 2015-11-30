@@ -76,19 +76,20 @@ void Editor::deleteElements( ) {
 }
 
 void Editor::showWires( bool checked ) {
-  for( QGraphicsItem * item: scene->items( ) ) {
+  for( QGraphicsItem *item : scene->items( ) ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     if( ( item->type( ) == QNEConnection::Type ) ) {
       item->setVisible( checked );
     }
     else if( ( item->type( ) == GraphicElement::Type ) && elm ) {
-      if(elm->elementType() == ElementType::NODE){
-        elm->setVisible(checked);
-      }else{
-        for( QNEPort * in: elm->inputs( ) ) {
+      if( elm->elementType( ) == ElementType::NODE ) {
+        elm->setVisible( checked );
+      }
+      else {
+        for( QNEPort *in : elm->inputs( ) ) {
           in->setVisible( checked );
         }
-        for( QNEPort * out: elm->outputs( ) ) {
+        for( QNEPort *out : elm->outputs( ) ) {
           out->setVisible( checked );
         }
       }
@@ -97,7 +98,7 @@ void Editor::showWires( bool checked ) {
 }
 
 void Editor::showGates( bool checked ) {
-  for( QGraphicsItem * item: scene->items( ) ) {
+  for( QGraphicsItem *item : scene->items( ) ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     if( ( item->type( ) == GraphicElement::Type ) && elm ) {
       switch( elm->elementType( ) ) {
@@ -121,7 +122,7 @@ void Editor::rotate( bool rotateRight ) {
   }
   QList< QGraphicsItem* > list = scene->selectedItems( );
   QList< GraphicElement* > elms;
-  for( QGraphicsItem * item: list ) {
+  for( QGraphicsItem *item : list ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     if( elm && ( elm->type( ) == GraphicElement::Type ) ) {
       elms.append( elm );
@@ -144,18 +145,16 @@ QList< QGraphicsItem* > Editor::itemsAt( const QPointF &pos ) {
 QGraphicsItem* Editor::itemAt( const QPointF &pos ) {
   QList< QGraphicsItem* > items = scene->items( pos );
   items.append( itemsAt( pos ) );
-
-  for( QGraphicsItem * item: items ) {
+  for( QGraphicsItem *item : items ) {
     if( item->type( ) == QNEPort::Type ) {
       return( item );
     }
   }
-  for( QGraphicsItem * item: items ) {
+  for( QGraphicsItem *item : items ) {
     if( item->type( ) > QGraphicsItem::UserType ) {
       return( item );
     }
   }
-
   return( nullptr );
 }
 
@@ -212,21 +211,6 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
       selectionRect->update( );
     }
   }
-  else if( item && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
-    /* STARTING MOVING ELEMENT */
-    draggingElement = true;
-    QList< QGraphicsItem* > list = scene->selectedItems( );
-    list.append( itemsAt( mousePos ) );
-    movedElements.clear( );
-    oldPositions.clear( );
-    for( QGraphicsItem * item: list ) {
-      GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
-      if( elm ) {
-        movedElements.append( elm );
-        oldPositions.append( elm->pos( ) );
-      }
-    }
-  }
   return( false );
 }
 
@@ -256,7 +240,7 @@ void Editor::releaseHoverPort( ) {
 void Editor::resizeScene( ) {
   if( !movedElements.isEmpty( ) ) {
     QRectF rect = scene->sceneRect( );
-    for( GraphicElement * elm: movedElements ) {
+    for( GraphicElement *elm : movedElements ) {
       QRectF itemRect = elm->boundingRect( ).translated( elm->pos( ) );
       rect = rect.united( itemRect.adjusted( -10, -10, 10, 10 ) );
     }
@@ -486,7 +470,7 @@ void Editor::cut( QDataStream &ds ) {
 void Editor::copy( QDataStream &ds ) {
   QPointF center( 0.0f, 0.0f );
   float elm = 0;
-  for( QGraphicsItem * item: scene->selectedItems( ) ) {
+  for( QGraphicsItem *item : scene->selectedItems( ) ) {
     if( item->type( ) == GraphicElement::Type ) {
       center += item->pos( );
       elm++;
@@ -502,9 +486,9 @@ void Editor::paste( QDataStream &ds ) {
   ds >> ctr;
   QPointF offset = mousePos - ctr - QPointF( 32.0f, 32.0f );
   double version = QApplication::applicationVersion( ).toDouble( );
-  QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( this, ds, version);
+  QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( this, ds, version );
   undoStack->push( new AddItemsCommand( itemList, this ) );
-  for( QGraphicsItem * item: itemList ) {
+  for( QGraphicsItem *item : itemList ) {
     if( item->type( ) == GraphicElement::Type ) {
       item->setPos( ( item->pos( ) + offset ) );
       item->update( );
@@ -514,7 +498,7 @@ void Editor::paste( QDataStream &ds ) {
 }
 
 void Editor::selectAll( ) {
-  for( QGraphicsItem * item: scene->items( ) ) {
+  for( QGraphicsItem *item : scene->items( ) ) {
     item->setSelected( true );
   }
 }
@@ -553,11 +537,31 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
     QGraphicsSceneDragDropEvent *dde = dynamic_cast< QGraphicsSceneDragDropEvent* >( evt );
     QGraphicsSceneMouseEvent *mouseEvt = dynamic_cast< QGraphicsSceneMouseEvent* >( evt );
     QWheelEvent *wEvt = dynamic_cast< QWheelEvent* >( evt );
+    QKeyEvent *keyEvt = dynamic_cast< QKeyEvent* >( evt );
     if( mouseEvt ) {
       mousePos = mouseEvt->scenePos( );
       resizeScene( );
     }
     bool ret = false;
+    if( ( evt->type( ) == QEvent::GraphicsSceneMousePress )
+        || ( evt->type( ) == QEvent::GraphicsSceneMouseDoubleClick ) ) {
+      QGraphicsItem *item = itemAt( mousePos );
+      if( item && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
+        /* STARTING MOVING ELEMENT */
+        draggingElement = true;
+        QList< QGraphicsItem* > list = scene->selectedItems( );
+        list.append( itemsAt( mousePos ) );
+        movedElements.clear( );
+        oldPositions.clear( );
+        for( QGraphicsItem *item : list ) {
+          GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+          if( elm ) {
+            movedElements.append( elm );
+            oldPositions.append( elm->pos( ) );
+          }
+        }
+      }
+    }
     switch( ( int ) evt->type( ) ) {
         case QEvent::GraphicsSceneMousePress: {
         ret = mousePressEvt( mouseEvt );
@@ -595,6 +599,18 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
           }
           evt->accept( );
           return( true );
+        }
+        break;
+      }
+        case QEvent::KeyPress: {
+        if( keyEvt && ( keyEvt->key( ) == Qt::Key_Control ) ) {
+          mControlKeyPressed = true;
+        }
+        break;
+      }
+        case QEvent::KeyRelease: {
+        if( keyEvt && ( keyEvt->key( ) == Qt::Key_Control ) ) {
+          mControlKeyPressed = false;
         }
         break;
       }
