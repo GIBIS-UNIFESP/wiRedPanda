@@ -409,8 +409,8 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
     QDataStream dataStream( &itemData, QIODevice::ReadOnly );
     QPointF offset;
     qint32 type;
-    dataStream >> type;
-    QPointF pos = dde->scenePos( ) - QPointF(32,32);
+    dataStream >> type >>offset;
+    QPointF pos = dde->scenePos( ) - offset;
     GraphicElement *elm = factory.buildElement( ( ElementType ) type, this );
     /* If element type is unknown, a default element is created with the pixmap received from mimedata */
     if( !elm ) {
@@ -480,6 +480,7 @@ void Editor::ctrlDrag( GraphicElement *elm, QPointF pos) {
     QByteArray itemData;
     QDataStream dataStream( &itemData, QIODevice::WriteOnly );
     dataStream << (qint32) elm->elementType();
+    dataStream << elm->boundingRect().center();
     elm->save(dataStream);
     QMimeData *mimeData = new QMimeData;
     mimeData->setData( "application/ctrlDragData", itemData );
