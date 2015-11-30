@@ -66,6 +66,8 @@ private:
   bool dragMoveEvt( QGraphicsSceneDragDropEvent *dde );
   bool wheelEvt( QWheelEvent *wEvt );
 
+  void ctrlDrag(GraphicElement * elm, QPointF pos);
+
   /* QObject interface */
 public:
   bool eventFilter( QObject *obj, QEvent *evt );

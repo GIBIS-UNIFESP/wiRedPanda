@@ -119,6 +119,8 @@ public:
   void enable();
   bool disabled();
 
+  QPixmap getPixmap() const;
+
 protected:
   void setRotatable(bool rotatable);
   void setHasLabel(bool hasLabel);

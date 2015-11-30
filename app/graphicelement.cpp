@@ -52,9 +52,14 @@ GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz,
 GraphicElement::~GraphicElement( ) {
 
 }
+QPixmap GraphicElement::getPixmap() const
+{
+    return pixmap;
+}
+
 
 void GraphicElement::disable( ) {
-  m_disabled = true;
+    m_disabled = true;
 }
 
 void GraphicElement::enable( ) {

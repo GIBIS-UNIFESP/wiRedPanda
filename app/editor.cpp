@@ -8,6 +8,7 @@
 #include "serializationfunctions.h"
 #include <QApplication>
 #include <QDebug>
+#include <QDrag>
 #include <QFileDialog>
 #include <QGraphicsItem>
 #include <QGraphicsSceneDragDropEvent>
@@ -403,6 +404,46 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
 
     dde->accept( );
     return( true );
+  }else if( dde->mimeData( )->hasFormat( "application/ctrlDragData" ) ) {
+    QByteArray itemData = dde->mimeData( )->data( "application/ctrlDragData" );
+    QDataStream dataStream( &itemData, QIODevice::ReadOnly );
+    QPointF offset;
+    qint32 type;
+    dataStream >> type;
+    QPointF pos = dde->scenePos( ) - QPointF(32,32);
+    GraphicElement *elm = factory.buildElement( ( ElementType ) type, this );
+    /* If element type is unknown, a default element is created with the pixmap received from mimedata */
+    if( !elm ) {
+      return( false );
+    }
+    QMap< quint64, QNEPort* > portMap;
+    double version = QApplication::applicationVersion().toDouble();
+    elm->load(dataStream, portMap, version);
+    if( elm->elementType( ) == ElementType::BOX ) {
+      try {
+        Box *box = dynamic_cast< Box* >( elm );
+        if( box ) {
+          if( !loadBox( box, box->getFile() ) ) {
+            return( false );
+          }
+        }
+      }
+      catch( std::runtime_error err ) {
+        QMessageBox::warning( mainWindow, "Error", QString::fromStdString( err.what( ) ) );
+        return( false );
+      }
+    }
+    /* Adding the element to the scene. */
+    undoStack->push( new AddItemsCommand( elm, this ) );
+    /* Cleaning the selection. */
+    scene->clearSelection( );
+    /* Setting created element as selected. */
+    elm->setSelected( true );
+    /* Adjusting the position of the element. */
+    elm->setPos( pos );
+
+    dde->accept( );
+    return( true );
   }
   return( false );
 }
@@ -411,6 +452,9 @@ bool Editor::dragMoveEvt( QGraphicsSceneDragDropEvent *dde ) {
   /* Accepting drag/drop event of the following mimedata format. */
   if( dde->mimeData( )->hasFormat( "application/x-dnditemdata" ) ) {
     return( true );
+  }
+  if( dde->mimeData( )->hasFormat( "application/ctrlDragData" ) ) {
+    return(true);
   }
   return( false );
 }
@@ -429,6 +473,24 @@ bool Editor::wheelEvt( QWheelEvent *wEvt ) {
     return( true );
   }
   return( false );
+}
+
+void Editor::ctrlDrag( GraphicElement *elm, QPointF pos) {
+  if(elm){
+    QByteArray itemData;
+    QDataStream dataStream( &itemData, QIODevice::WriteOnly );
+    dataStream << (qint32) elm->elementType();
+    elm->save(dataStream);
+    QMimeData *mimeData = new QMimeData;
+    mimeData->setData( "application/ctrlDragData", itemData );
+
+    QDrag *drag = new QDrag( elm );
+    drag->setMimeData( mimeData );
+    drag->setPixmap( elm->getPixmap() );
+    pos = pos + elm->boundingRect().center();
+    drag->setHotSpot( pos.toPoint() );
+    drag->exec( Qt::CopyAction, Qt::CopyAction );
+  }
 }
 
 QUndoStack* Editor::getUndoStack( ) const {
@@ -528,14 +590,19 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
         || ( evt->type( ) == QEvent::GraphicsSceneMouseDoubleClick ) ) {
       QGraphicsItem *item = itemAt( mousePos );
       if( item && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
+        if( mControlKeyPressed && ( item->type( ) == GraphicElement::Type ) ) {
+          scene->clearSelection( );
+          ctrlDrag( qgraphicsitem_cast< GraphicElement* >( item ), mouseEvt->pos());
+          return( true );
+        }
         /* STARTING MOVING ELEMENT */
         draggingElement = true;
         QList< QGraphicsItem* > list = scene->selectedItems( );
         list.append( itemsAt( mousePos ) );
         movedElements.clear( );
         oldPositions.clear( );
-        for( QGraphicsItem *item : list ) {
-          GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+        for( QGraphicsItem *it : list ) {
+          GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( it );
           if( elm ) {
             movedElements.append( elm );
             oldPositions.append( elm->pos( ) );
