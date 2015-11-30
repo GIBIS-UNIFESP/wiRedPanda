@@ -29,7 +29,7 @@ The main features of the software are:
 - [ ] Labels always in horizontal.
 - [ ] Verify if file changed outside.
 - [ ] MUX and DEMUX.
-- [ ] Ctrl + Drag copy.
+- [x] Ctrl + Drag copy.
 - [x] Lauch box in new instance.
 
 ## Features we have yet to implement
