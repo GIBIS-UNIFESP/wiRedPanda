@@ -16,7 +16,7 @@ void Nand::updateLogic() {
   if(!isValid()) {
     res = -1;
   } else {
-    foreach (QNEPort * input, inputs()) {
+    for (QNEPort * input: inputs()) {
       if(input->value() == false) {
         res = true;
         break;

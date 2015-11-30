@@ -57,7 +57,7 @@ void ElementEditor::setCurrentElement(GraphicElement * elm) {
 void ElementEditor::selectionChanged() {
   QList<QGraphicsItem *> items = scene->selectedItems();
   GraphicElement * elm = NULL;
-  foreach (QGraphicsItem * item, items) {
+  for (QGraphicsItem * item: items) {
     if( item->type() == GraphicElement::Type) {
       if(elm != NULL) {
         setCurrentElement(NULL);

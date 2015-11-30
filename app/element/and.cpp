@@ -12,7 +12,7 @@ void And::updateLogic() {
   if(!isValid()) {
     res = -1;
   } else {
-    foreach (QNEPort * input, inputs()) {
+    for (QNEPort * input: inputs()) {
       if(input->value() != true) {
         res = false;
         break;

@@ -54,7 +54,7 @@ int SimulationController::calculatePriority(GraphicElement * elm) {
 void SimulationController::update() {
   QList<QGraphicsItem*> items = scene->items();
   QVector<GraphicElement *> elements;
-  foreach (QGraphicsItem * item, items) {
+  for (QGraphicsItem * item: items) {
     GraphicElement * elm = qgraphicsitem_cast<GraphicElement *>(item);
     if(elm) {
       elements.append(elm);

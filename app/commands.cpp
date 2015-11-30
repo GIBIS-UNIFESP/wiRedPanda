@@ -31,14 +31,14 @@ AddItemsCommand::AddItemsCommand( const QList< QGraphicsItem* > &aItems, Editor 
 }
 
 AddItemsCommand::~AddItemsCommand( ) {
-  foreach( QGraphicsItem * item, items ) {
+  for( QGraphicsItem * item : items ) {
     if( ( item->type( ) == QNEConnection::Type ) && !item->scene( ) ) {
       items.removeAll( item );
       delete item;
     }
   }
 
-  foreach( QGraphicsItem * item, items ) {
+  for( QGraphicsItem * item : items ) {
     if( !item->scene( ) ) {
       delete item;
     }
@@ -46,7 +46,7 @@ AddItemsCommand::~AddItemsCommand( ) {
 }
 
 void AddItemsCommand::undo( ) {
-  foreach( QGraphicsItem * item, items ) {
+  for( QGraphicsItem * item : items ) {
     if( item->scene( ) ) {
       editor->getScene( )->removeItem( item );
     }
@@ -54,7 +54,7 @@ void AddItemsCommand::undo( ) {
 }
 
 void AddItemsCommand::redo( ) {
-  foreach( QGraphicsItem * item, items ) {
+  for( QGraphicsItem * item : items ) {
     if( !item->scene( ) ) {
       editor->getScene( )->addItem( item );
     }
@@ -67,14 +67,14 @@ void AddItemsCommand::redo( ) {
 DeleteItemsCommand::DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor,
                                         QUndoCommand *parent ) : QUndoCommand( parent ) {
   editor = aEditor;
-  foreach( QGraphicsItem * item, aItems ) {
+  for( QGraphicsItem * item: aItems ) {
     if( item->type( ) == GraphicElement::Type ) {
       GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
       elements.append( elm );
       QVector< QNEPort* > ports = elm->inputs( );
       ports.append( elm->outputs( ) );
-      foreach( QNEPort * port, ports ) {
-        foreach( QNEConnection * conn, port->connections( ) ) {
+      for( QNEPort * port: ports ) {
+        for( QNEConnection * conn: port->connections( ) ) {
           if( !connections.contains( conn ) ) {
             connections.append( conn );
           }
@@ -94,10 +94,10 @@ DeleteItemsCommand::DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, E
 
 void DeleteItemsCommand::undo( ) {
   QDataStream storedData( &itemData, QIODevice::ReadOnly );
-  foreach( QGraphicsItem * item, elements ) {
+  for( QGraphicsItem * item: elements ) {
     editor->getScene( )->addItem( item );
   }
-  foreach( QNEConnection * conn, connections ) {
+  for( QNEConnection * conn: connections ) {
     editor->getScene( )->addItem( conn );
     conn->load( storedData );
   }
@@ -108,7 +108,7 @@ void DeleteItemsCommand::undo( ) {
 void DeleteItemsCommand::redo( ) {
   itemData.clear( );
   QDataStream storedData( &itemData, QIODevice::WriteOnly );
-  foreach( QNEConnection * conn, connections ) {
+  for( QNEConnection * conn: connections ) {
     conn->save( storedData );
     QNEPort *p1 = conn->port1( );
     if( p1 ) {
@@ -121,7 +121,7 @@ void DeleteItemsCommand::redo( ) {
     editor->getScene( )->removeItem( conn );
   }
 
-  foreach( GraphicElement * elm, elements ) {
+  for( GraphicElement * elm: elements ) {
     editor->getScene( )->removeItem( elm );
   }
 
@@ -133,7 +133,7 @@ RotateCommand::RotateCommand( const QList< GraphicElement* > &aItems, int aAngle
   list = aItems;
   angle = aAngle;
   setText( QString( "Rotate %1 degrees" ).arg( angle ) );
-  foreach( GraphicElement * item, list ) {
+  for( GraphicElement * item: list ) {
     positions.append( item->pos( ) );
     item->setPos( item->pos( ) );
   }
@@ -153,14 +153,14 @@ void RotateCommand::undo( ) {
 void RotateCommand::redo( ) {
   double cx = 0, cy = 0;
   int sz = 0;
-  foreach( GraphicElement * item, list ) {
+  for( GraphicElement * item: list ) {
     cx += item->pos( ).x( );
     cy += item->pos( ).y( );
     sz++;
   }
   cx /= sz;
   cy /= sz;
-  foreach( GraphicElement * elm, list ) {
+  for( GraphicElement * elm: list ) {
     QTransform transform;
     transform.translate( cx, cy );
     transform.rotate( angle );
@@ -202,7 +202,7 @@ MoveCommand::MoveCommand( const QList< GraphicElement* > &list,
     parent ) {
   myList = list;
   oldPositions = aOldPositions;
-  foreach( GraphicElement * elm, list ) {
+  for( GraphicElement * elm: list ) {
     newPositions.append( elm->pos( ) );
   }
   undo( );
@@ -265,7 +265,6 @@ SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, QUndoCommand *pa
   c1 = conn;
   c2 = new QNEConnection( );
   setText( QString( "Wire split" ) );
-
 }
 
 SplitCommand::~SplitCommand( ) {

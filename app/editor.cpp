@@ -76,7 +76,7 @@ void Editor::deleteElements( ) {
 }
 
 void Editor::showWires( bool checked ) {
-  foreach( QGraphicsItem * item, scene->items( ) ) {
+  for( QGraphicsItem * item: scene->items( ) ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     if( ( item->type( ) == QNEConnection::Type ) ) {
       item->setVisible( checked );
@@ -85,10 +85,10 @@ void Editor::showWires( bool checked ) {
       if(elm->elementType() == ElementType::NODE){
         elm->setVisible(checked);
       }else{
-        foreach( QNEPort * in, elm->inputs( ) ) {
+        for( QNEPort * in: elm->inputs( ) ) {
           in->setVisible( checked );
         }
-        foreach( QNEPort * out, elm->outputs( ) ) {
+        for( QNEPort * out: elm->outputs( ) ) {
           out->setVisible( checked );
         }
       }
@@ -97,7 +97,7 @@ void Editor::showWires( bool checked ) {
 }
 
 void Editor::showGates( bool checked ) {
-  foreach( QGraphicsItem * item, scene->items( ) ) {
+  for( QGraphicsItem * item: scene->items( ) ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     if( ( item->type( ) == GraphicElement::Type ) && elm ) {
       switch( elm->elementType( ) ) {
@@ -121,7 +121,7 @@ void Editor::rotate( bool rotateRight ) {
   }
   QList< QGraphicsItem* > list = scene->selectedItems( );
   QList< GraphicElement* > elms;
-  foreach( QGraphicsItem * item, list ) {
+  for( QGraphicsItem * item: list ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     if( elm && ( elm->type( ) == GraphicElement::Type ) ) {
       elms.append( elm );
@@ -145,12 +145,12 @@ QGraphicsItem* Editor::itemAt( const QPointF &pos ) {
   QList< QGraphicsItem* > items = scene->items( pos );
   items.append( itemsAt( pos ) );
 
-  foreach( QGraphicsItem * item, items ) {
+  for( QGraphicsItem * item: items ) {
     if( item->type( ) == QNEPort::Type ) {
       return( item );
     }
   }
-  foreach( QGraphicsItem * item, items ) {
+  for( QGraphicsItem * item: items ) {
     if( item->type( ) > QGraphicsItem::UserType ) {
       return( item );
     }
@@ -219,7 +219,7 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
     list.append( itemsAt( mousePos ) );
     movedElements.clear( );
     oldPositions.clear( );
-    foreach( QGraphicsItem * item, list ) {
+    for( QGraphicsItem * item: list ) {
       GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
       if( elm ) {
         movedElements.append( elm );
@@ -256,7 +256,7 @@ void Editor::releaseHoverPort( ) {
 void Editor::resizeScene( ) {
   if( !movedElements.isEmpty( ) ) {
     QRectF rect = scene->sceneRect( );
-    foreach( GraphicElement * elm, movedElements ) {
+    for( GraphicElement * elm: movedElements ) {
       QRectF itemRect = elm->boundingRect( ).translated( elm->pos( ) );
       rect = rect.united( itemRect.adjusted( -10, -10, 10, 10 ) );
     }
@@ -486,7 +486,7 @@ void Editor::cut( QDataStream &ds ) {
 void Editor::copy( QDataStream &ds ) {
   QPointF center( 0.0f, 0.0f );
   float elm = 0;
-  foreach( QGraphicsItem * item, scene->selectedItems( ) ) {
+  for( QGraphicsItem * item: scene->selectedItems( ) ) {
     if( item->type( ) == GraphicElement::Type ) {
       center += item->pos( );
       elm++;
@@ -504,7 +504,7 @@ void Editor::paste( QDataStream &ds ) {
   double version = QApplication::applicationVersion( ).toDouble( );
   QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( this, ds, version);
   undoStack->push( new AddItemsCommand( itemList, this ) );
-  foreach( QGraphicsItem * item, itemList ) {
+  for( QGraphicsItem * item: itemList ) {
     if( item->type( ) == GraphicElement::Type ) {
       item->setPos( ( item->pos( ) + offset ) );
       item->update( );
@@ -514,7 +514,7 @@ void Editor::paste( QDataStream &ds ) {
 }
 
 void Editor::selectAll( ) {
-  foreach( QGraphicsItem * item, scene->items( ) ) {
+  for( QGraphicsItem * item: scene->items( ) ) {
     item->setSelected( true );
   }
 }

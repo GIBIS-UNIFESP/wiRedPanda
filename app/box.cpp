@@ -104,7 +104,7 @@ void Box::loadFile( QString fname ) {
     myScene.clear( );
     QDataStream ds( &file );
     QList< QGraphicsItem* > items = SerializationFunctions::load( editor, ds, &myScene );
-    foreach( QGraphicsItem * item, items ) {
+    for( QGraphicsItem * item: items ) {
       if( item->type( ) == GraphicElement::Type ) {
         GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
         if( elm ) {
@@ -112,7 +112,7 @@ void Box::loadFile( QString fname ) {
               case ElementType::BUTTON:
               case ElementType::SWITCH:
               case ElementType::CLOCK: {
-              foreach( QNEPort * port, elm->outputs( ) ) {
+              for( QNEPort * port: elm->outputs( ) ) {
                 inputMap.append( port );
               }
               elm->disable( );
@@ -120,7 +120,7 @@ void Box::loadFile( QString fname ) {
             }
               case ElementType::DISPLAY:
               case ElementType::LED: {
-              foreach( QNEPort * port, elm->inputs( ) ) {
+              for( QNEPort * port: elm->inputs( ) ) {
                 outputMap.append( port );
               }
               break;
