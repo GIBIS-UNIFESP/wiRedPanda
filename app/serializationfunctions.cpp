@@ -97,7 +97,7 @@ QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStrea
       rect = rect.united( view->rect( ) );
       rect.moveCenter( QPointF( 0, 0 ) );
       scene->setSceneRect( scene->sceneRect( ).united( rect ) );
-      view->ensureVisible( scene->itemsBoundingRect( ) );
+      view->centerOn( scene->itemsBoundingRect( ).center() );
     }
   }
   return( items );
