@@ -1,6 +1,6 @@
 # WiRed Panda
 
-WiRed Panda is a software designed to help students to learn about logic circuits and simulate them in an easy and friendly way.
+WiRed Panda is a free software designed to help students to learn about logic circuits and simulate them in an easy and friendly way.
 
 The main features of the software are:
   - Real time logic simulation.
@@ -9,15 +9,30 @@ The main features of the software are:
 
 ![Alt text](images/wpanda.png?raw=true "WiRed Panda Screenshot")
 
+Copyright (C) 2015 - WiRed Panda Team.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 ## TODO List
 - [x] Add `.panda` to files when saving.  [link](https://github.com/lellisls/wiRedPanda/issues/10)
 - [x] Undo/Redo. [link](https://github.com/lellisls/wiRedPanda/issues/1)
 - [x] Boxes.  [link](https://github.com/lellisls/wiRedPanda/issues/9)
-- [ ] QtInstaller. [link](https://github.com/lellisls/wiRedPanda/issues/3)
+- [ ] Installer. [link](https://github.com/lellisls/wiRedPanda/issues/3)
 - [ ] Add keyboard shortcuts to inputs. [link](https://github.com/lellisls/wiRedPanda/issues/11)
 - [x] Line Split.
 - [ ] Zoom.
-- [x] Dynamic scene resizing 
+- [x] Dynamic scene resizing
 - [x] Align to grid [link](https://github.com/lellisls/wiRedPanda/issues/14).
 - [ ] ~~Align lines to grid ()~~
 - [x] Hide Lines, Wires and Ports.
@@ -41,4 +56,3 @@ The main features of the software are:
 - [ ] Add support to custom image backgrounds..
 - [ ] ~~Create separate modules for execution and edition.~~
 - [ ] Bugs and Warnings highlights.
-

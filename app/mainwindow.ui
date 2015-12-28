@@ -20,8 +20,8 @@
    <string>WiRED Panda</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>:/resources/pandaLogo.png</normaloff>:/resources/pandaLogo.png</iconset>
+   <iconset resource="resources/resources.qrc">
+    <normaloff>:/pandaLogo.png</normaloff>:/pandaLogo.png</iconset>
   </property>
   <property name="unifiedTitleAndToolBarOnMac">
    <bool>true</bool>
@@ -1211,16 +1211,18 @@
   <tabstop>scrollArea_6</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/memory/memory.qrc"/>
-  <include location="resources/output/output.qrc"/>
   <include location="resources/input/input.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/basic/basic.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/resources.qrc"/>
   <include location="resources/memory/memory.qrc"/>
   <include location="resources/output/output.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/resources.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/memory/memory.qrc"/>
   <include location="resources/input/input.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
  </resources>
  <connections/>
 </ui>
