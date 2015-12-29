@@ -64,6 +64,7 @@ script:
       && CPPFLAGS=-I$QTDIR/include
       ;
     fi
+  - g++ -v
   - qmake -v
   - qmake ./app/app.pro
   - make
