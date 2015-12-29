@@ -20,7 +20,7 @@ before_install:
       && if [ "$QT" = "qt55" ]; then sudo add-apt-repository ppa:beineri/opt-qt551 -y; fi
       && sudo apt-get update -qq;
     else
-      brew update;
+      brew update > /dev/null;
     fi
 
 install:
@@ -40,9 +40,9 @@ script:
       ls $QTDIR/bin
       && clang --version
       && QTDIR="/usr/local/opt/qt5"
-      && PATH="$QTDIR/bin:$PATH"
-      && LDFLAGS=-L$QTDIR/lib
-      && CPPFLAGS=-I$QTDIR/include;
+      && PATH="${QTDIR}/bin:$PATH"
+      && LDFLAGS=-L${QTDIR}/lib
+      && CPPFLAGS=-I${QTDIR}/include;
     fi
   - qmake -v
   - qmake ./app/app.pro
