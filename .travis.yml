@@ -44,5 +44,8 @@ script:
       && CPPFLAGS=-I${QTDIR}/include;
     fi
   - qmake -v
-  - qmake ./app/app.pro
+  - qmake ./app/app.pro -r
+  - make -j4
+  - make clean
+  - qmake ./test/test.pro -r CONFIG+=debug
   - make -j4
