@@ -9,7 +9,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <iostream>
 #include <nodes/qneconnection.h>
-
+#include <stdexcept>
 GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz,
                                 QGraphicsItem *parent ) : QGraphicsObject( parent ), label( new QGraphicsTextItem(
                                                                                               this ) )
