@@ -15,7 +15,7 @@ before_install:
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - if [ "$QT" = "qt55" ]; then sudo add-apt-repository ppa:beineri/opt-qt551 -y; fi
   - sudo apt-get update -qq
-  
+
 install:
   # - sudo apt-get -qq install libssl-dev pkg-config libhunspell-dev
   - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
@@ -27,7 +27,7 @@ script:
   - qmake ./app/app.pro
 #   - make
 #  - $QMAKE QMAKE_CXXFLAGS+="-Wextra -Werror"
-  - make
+  - make -j4
 #  - cd scripts && ./run_tests.sh $QMAKE
 
 # sudo: required
@@ -87,7 +87,7 @@ script:
 #   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
 #         QTDIR="/opt/qt54"
 #       && PATH="$QTDIR/bin:$PATH"
-#       && qt54-env.sh 
+#       && qt54-env.sh
 #       ;
 #     else
 #         QTDIR="/usr/local/opt/qt5"
