@@ -49,3 +49,4 @@ script:
   - make clean
   - qmake ./test/test.pro -r CONFIG+=debug
   - make -j4
+  - ./WPanda-test
