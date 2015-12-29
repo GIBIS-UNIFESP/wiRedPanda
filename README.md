@@ -1,5 +1,7 @@
 # WiRed Panda
 
+[![Build Status](https://travis-ci.org/GIBIS-UNIFESP/wiRedPanda.svg?branch=master)](https://travis-ci.org/GIBIS-UNIFESP/wiRedPanda)
+
 WiRed Panda is a free software designed to help students to learn about logic circuits and simulate them in an easy and friendly way.
 
 The main features of the software are:
