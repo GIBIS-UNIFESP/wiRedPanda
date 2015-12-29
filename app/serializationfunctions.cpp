@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QGraphicsView>
 #include <QMessageBox>
+#include <stdexcept>
 
 void SerializationFunctions::serialize( const QList< QGraphicsItem* > &items, QDataStream &ds ) {
   foreach( QGraphicsItem * item, items ) {
