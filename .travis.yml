@@ -19,7 +19,7 @@ install:
   - sudo apt-get update -qq
   - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
-  - if [[ "$QT" == "qt55" ]]; then sudo apt-add-repository -y ppa:beineri/opt-qt55; sudo apt-get update -qq; sudo apt-get install -qq qt55tools; fi
+  - if [[ "$QT" == "qt55" ]]; then sudo apt-add-repository -y ppa:beineri/opt-qt55; sudo apt-get update -qq; sudo apt-get install -qq qt-latest; fi
 
 script:
   - QMAKE="qmake"
