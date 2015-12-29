@@ -11,9 +11,9 @@ The main features of the software are:
 ![Alt text](images/wpanda.png?raw=true "WiRed Panda Screenshot")
 
 ##Install
-To run WiRed Panda on any platform you can clone this repository and build the software using Qt 5.5 or later.
-Or else, you can:
+To install and run WiRed Panda on your platform you can:
  - Download the [windows installer] (https://github.com/GIBIS-UNIFESP/wiRedPanda/raw/master/installer/wpanda17_32.exe) of the latest version of WiRed Panda.
+ - Clone this repository and build the software using Qt 5.5 or later.
 
 ##License
 This software is licensed under the [GNU General Public License, Version 3.0](http://www.gnu.org/licenses/).
