@@ -1,7 +1,7 @@
 #include "scene.h"
 
 #include <QPainter>
-
+#include <QColor>
 Scene::Scene(QObject * parent) : QGraphicsScene(parent) {
 
 }
