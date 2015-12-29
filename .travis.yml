@@ -16,23 +16,23 @@ branches:
 #   - sh -e /etc/init.d/xvfb start
 before_install:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-  - if [ "$QT" = "qt55" ]; then sudo add-apt-repository ppa:beineri/opt-qt551 -y; fi
-  - sudo apt-get update -qq
-  - else
-  - brew update > /dev/null
-  - fi
+      sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+      && if [ "$QT" = "qt55" ]; then sudo add-apt-repository ppa:beineri/opt-qt551 -y; fi
+      && sudo apt-get update -qq;
+    else
+      brew update > /dev/null;
+    fi
 
 install:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
-  - if [ "$QT" = "qt55" ]; then sudo apt-get install -qq qt55base; source /opt/qt55/bin/qt55-env.sh; fi
-  - else
-  - cd `brew --prefix`
-  - brew install qt5
-  - chmod -R 755 /usr/local/opt/qt5/*
-  -fi
+      if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
+      && if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+      && if [ "$QT" = "qt55" ]; then sudo apt-get install -qq qt55base; source /opt/qt55/bin/qt55-env.sh; fi;
+    else
+      cd `brew --prefix`
+      && brew install qt5
+      && chmod -R 755 /usr/local/opt/qt5/*;
+    fi
 
 script:
   - qmake -v
