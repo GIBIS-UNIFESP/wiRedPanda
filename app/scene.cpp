@@ -24,7 +24,8 @@ void Scene::setGridSize(int gridSize) {
 
 void Scene::drawBackground(QPainter * painter, const QRectF & rect) {
   QGraphicsScene::drawBackground(painter,rect);
-  QPen pen(QColor(Qt::black));
+  QColor blackColor(Qt::black);
+  QPen pen(blackColor);
   painter->setPen(pen);
   qreal left = int(rect.left()) - (int(rect.left()) % m_gridSize);
   qreal top = int(rect.top()) - (int(rect.top()) % m_gridSize);
