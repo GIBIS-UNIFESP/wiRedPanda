@@ -57,7 +57,7 @@ private:
   QList< GraphicElement* > movedElements;
   QList< QPointF > oldPositions;
   MainWindow *mainWindow;
-  bool mControlKeyPressed = false;
+  bool mControlKeyPressed;
 
   bool mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt );
   bool mouseMoveEvt( QGraphicsSceneMouseEvent *mouseEvt );
