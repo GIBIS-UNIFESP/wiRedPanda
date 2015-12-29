@@ -56,6 +56,4 @@ script:
   - make clean
   - qmake ./test/test.pro -r CONFIG+=debug
   - make -j4
-  if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-    - ./WPanda-test;
-  fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then ./WPanda-test; fi
