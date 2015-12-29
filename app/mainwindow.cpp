@@ -13,6 +13,7 @@
 #include <QShortcut>
 #include <QStyleFactory>
 #include <iostream>
+#include <stdexcept>
 
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
   ui->setupUi( this );
@@ -88,7 +89,7 @@ bool MainWindow::save( ) {
     try {
       editor->save( ds );
     }
-    catch( std::runtime_error &e ) {
+    catch( std::runtime_error e ) {
       std::cerr << "Error saving project: " << e.what( ) << std::endl;
       return( false );
     }
@@ -160,7 +161,7 @@ void MainWindow::open( const QString &fname ) {
     try {
       editor->load( ds );
     }
-    catch( std::runtime_error &e ) {
+    catch( std::runtime_error e ) {
       std::cerr << "Error loading project: " << e.what( ) << std::endl;
       QMessageBox::warning( this, "Error!", "Could not open file.\nError: " + QString(
                               e.what( ) ), QMessageBox::Ok, QMessageBox::NoButton );
