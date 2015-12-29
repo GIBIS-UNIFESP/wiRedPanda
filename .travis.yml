@@ -32,7 +32,14 @@ install:
       brew install qt5
       && chmod -R 755 /usr/local/opt/qt5/*;
     fi
-
+    
+before_script:
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
+      export DISPLAY=:99.0
+      && sh -e /etc/init.d/xvfb start
+      && sleep 3; # give xvfb some time to start
+    fi
+  
 script:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
       g++ -v;
@@ -49,4 +56,6 @@ script:
   - make clean
   - qmake ./test/test.pro -r CONFIG+=debug
   - make -j4
-  - ./WPanda-test
+  if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
+    - ./WPanda-test;
+  fi
