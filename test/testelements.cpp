@@ -117,15 +117,15 @@ void TestElements::testDFlipFlop( ) {
   std::array< std::array< int, 7 >, 7 > truthTable = {
     {
       /* L  D  C  p  c  Q ~Q */
-      { 0, 0, 1, 1, 1, 0, 1 }, /* Clk up and D = 0 */
-      { 0, 1, 1, 1, 1, 1, 0 }, /* Clk up and D = 1 */
+      {{ 0, 0, 1, 1, 1, 0, 1 }}, /* Clk up and D = 0 */
+      {{ 0, 1, 1, 1, 1, 1, 0 }}, /* Clk up and D = 1 */
 
-      { 0, 0, 0, 0, 1, 1, 0 }, /* Preset = false */
-      { 0, 0, 1, 1, 0, 0, 1 }, /* Clear = false */
-      { 0, 0, 1, 0, 0, 1, 1 }, /* Clear and Preset = false */
+      {{ 0, 0, 0, 0, 1, 1, 0 }}, /* Preset = false */
+      {{ 0, 0, 1, 1, 0, 0, 1 }}, /* Clear = false */
+      {{ 0, 0, 1, 0, 0, 1, 1 }}, /* Clear and Preset = false */
 
-      { 1, 0, 0, 1, 1, 1, 1 }, /* Clk dwn and D = 0 ( must mantain current state )*/
-      { 1, 1, 0, 1, 1, 1, 1 }, /* Clk dwn and D = 1 ( must mantain current state )*/
+      {{ 1, 0, 0, 1, 1, 1, 1 }}, /* Clk dwn and D = 0 ( must mantain current state )*/
+      {{ 1, 1, 0, 1, 1, 1, 1 }}, /* Clk dwn and D = 1 ( must mantain current state )*/
     }
   };
   for( size_t test = 0; test < truthTable.size( ); ++test ) {
@@ -176,12 +176,12 @@ void TestElements::testDLatch( ) {
   std::array< std::array< int, 4 >, 6 > truthTable = {
     {
       /*D  E  Q  A */
-      { 0, 0, 0, 0 },
-      { 0, 0, 1, 1 },
-      { 1, 0, 0, 0 },
-      { 1, 0, 1, 1 },
-      { 0, 1, 0, 1 },
-      { 1, 1, 1, 0 },
+      {{ 0, 0, 0, 0 }},
+      {{ 0, 0, 1, 1 }},
+      {{ 1, 0, 0, 0 }},
+      {{ 1, 0, 1, 1 }},
+      {{ 0, 1, 0, 1 }},
+      {{ 1, 1, 1, 0 }},
     }
   };
   for( size_t test = 0; test < truthTable.size( ); ++test ) {
@@ -219,19 +219,19 @@ void TestElements::testJKFlipFlop( ) {
   std::array< std::array< int, 8 >, 13 > truthTable = {
     {
       /* L J  C  K  p  c  Q  A */
-      { 0, 0, 0, 0, 0, 1, 1, 0 }, /* Preset = false */
-      { 0, 0, 0, 0, 1, 0, 0, 0 }, /* Clear = false */
-      { 0, 0, 0, 1, 0, 0, 1, 0 }, /* Clear and Preset = false */
-      { 1, 1, 0, 0, 1, 1, 0, 0 }, /* Clk dwn and J = 0 ( must mantain current state )*/
-      { 1, 1, 0, 0, 1, 1, 0, 0 }, /* Clk dwn and J = 1 ( must mantain current state )*/
-      { 0, 0, 1, 0, 1, 1, 1, 0 }, /* Clk up J = 0 K = 0 ( must swap Q and ~Q )*/
-      { 0, 0, 1, 0, 1, 1, 0, 1 }, /* Clk up J = 0 K = 0 ( must swap Q and ~Q )*/
-      { 0, 0, 1, 1, 1, 1, 0, 0 }, /* Clk up J = 0 K = 1 */
-      { 0, 0, 1, 1, 1, 1, 0, 1 }, /* Clk up J = 0 K = 1 */
-      { 0, 1, 1, 0, 1, 1, 1, 0 }, /* Clk up J = 1 K = 0 */
-      { 0, 1, 1, 0, 1, 1, 1, 1 }, /* Clk up J = 1 K = 0 */
-      { 0, 1, 1, 1, 1, 1, 0, 0 }, /* Clk up J = 1 K = 0 */
-      { 0, 1, 1, 1, 1, 1, 1, 1 }, /* Clk up J = 1 K = 0 */
+      {{ 0, 0, 0, 0, 0, 1, 1, 0 }}, /* Preset = false */
+      {{ 0, 0, 0, 0, 1, 0, 0, 0 }}, /* Clear = false */
+      {{ 0, 0, 0, 1, 0, 0, 1, 0 }}, /* Clear and Preset = false */
+      {{ 1, 1, 0, 0, 1, 1, 0, 0 }}, /* Clk dwn and J = 0 ( must mantain current state )*/
+      {{ 1, 1, 0, 0, 1, 1, 0, 0 }}, /* Clk dwn and J = 1 ( must mantain current state )*/
+      {{ 0, 0, 1, 0, 1, 1, 1, 0 }}, /* Clk up J = 0 K = 0 ( must swap Q and ~Q )*/
+      {{ 0, 0, 1, 0, 1, 1, 0, 1 }}, /* Clk up J = 0 K = 0 ( must swap Q and ~Q )*/
+      {{ 0, 0, 1, 1, 1, 1, 0, 0 }}, /* Clk up J = 0 K = 1 */
+      {{ 0, 0, 1, 1, 1, 1, 0, 1 }}, /* Clk up J = 0 K = 1 */
+      {{ 0, 1, 1, 0, 1, 1, 1, 0 }}, /* Clk up J = 1 K = 0 */
+      {{ 0, 1, 1, 0, 1, 1, 1, 1 }}, /* Clk up J = 1 K = 0 */
+      {{ 0, 1, 1, 1, 1, 1, 0, 0 }}, /* Clk up J = 1 K = 0 */
+      {{ 0, 1, 1, 1, 1, 1, 1, 1 }}, /* Clk up J = 1 K = 0 */
 
     }
   };
