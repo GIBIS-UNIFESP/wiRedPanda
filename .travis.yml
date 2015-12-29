@@ -37,8 +37,7 @@ script:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
       g++ -v;
     else
-      ls $QTDIR/bin
-      && clang --version
+      clang --version
       && QTDIR="/usr/local/opt/qt5"
       && PATH="${QTDIR}/bin:$PATH"
       && LDFLAGS=-L${QTDIR}/lib
