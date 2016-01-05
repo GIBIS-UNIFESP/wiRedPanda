@@ -64,22 +64,33 @@
 </head>
 
 <body>
+  <!-- Always shows a header, even in smaller screens. -->
+
   <div class="demo-layout mdl-layout mdl-layout--fixed-header mdl-js-layout mdl-color--grey-100">
     <header class="demo-header mdl-layout__header mdl-layout__header--scroll mdl-color--grey-100 mdl-color-text--grey-800">
       <div class="mdl-layout__header-row">
-        <span class="mdl-layout-title">WiRed Panda</span>
-        <!-- <div class="mdl-layout-spacer"></div>
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
-          <label class="mdl-button mdl-js-button mdl-button--icon" for="search">
-            <i class="material-icons">search</i>
-          </label>
-          <div class="mdl-textfield__expandable-holder">
-            <input class="mdl-textfield__input" type="text" id="search">
-            <label class="mdl-textfield__label" for="search">Enter your query...</label>
-          </div>
-        </div> -->
+        <!-- Title -->
+        <span class="mdl-layout-title">WiRED Panda</span>
+        <!-- Add spacer, to align navigation to the right -->
+        <div class="mdl-layout-spacer"></div>
+        <!-- Navigation. We hide it in small screens. -->
+        <nav class="mdl-navigation mdl-layout--large-screen-only">
+          <a class="mdl-navigation__link  mdl-color-text--grey-800" href="https://github.com/GIBIS-UNIFESP/wiRedPanda/">Github</a>
+          <a class="mdl-navigation__link  mdl-color-text--grey-800" href="#downloads">Downloads</a>
+          <!-- <a class="mdl-navigation__link  mdl-color-text--grey-800" href="">Link</a> -->
+          <!-- <a class="mdl-navigation__link  mdl-color-text--grey-800" href="">Link</a> -->
+        </nav>
       </div>
     </header>
+    <!-- <div class="mdl-layout__drawer">
+      <span class="mdl-layout-title">Title</span>
+      <nav class="mdl-navigation">
+        <a class="mdl-navigation__link" href="">Link</a>
+        <a class="mdl-navigation__link" href="">Link</a>
+        <a class="mdl-navigation__link" href="">Link</a>
+        <a class="mdl-navigation__link" href="">Link</a>
+      </nav>
+    </div> -->
     <div class="demo-ribbon"></div>
     <main class="demo-main mdl-layout__content">
       <div class="demo-container mdl-grid">
@@ -119,6 +130,14 @@
               <span class="demo-card-image__filename">WiRED Panda user interface.</span>
             </div>
           </div>
+
+          <h3 id="downloads">Downloads</h3>
+          To install and run WiRed Panda on your platform you can:
+
+          <ul>
+            <li>Download the <a href="https://github.com/GIBIS-UNIFESP/wiRedPanda/raw/master/installer/wpanda17_32.exe">windows installer</a> of the latest version of WiRed Panda.</li>
+            <li>Clone the <a href="https://github.com/GIBIS-UNIFESP/wiRedPanda/">github repository</a> and build the software using Qt 5.5 or later.</li>
+          </ul>
         </div>
       </div>
       <footer class="demo-footer mdl-mini-footer">
