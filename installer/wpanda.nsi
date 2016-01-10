@@ -7,6 +7,9 @@
 
   !include "MUI2.nsh"
 
+;Include File Association Library
+  !include "FileAssociation.nsh"
+
 ;--------------------------------
 ;General
 
@@ -114,6 +117,11 @@ Section "Wired Panda" Installationinfo
   CreateShortCut "$SMPROGRAMS\${MUI_PRODUCT}\Uninstall.lnk" "$INSTDIR\Uninstall.exe" "" "$INSTDIR\Uninstall.exe" 0
   CreateShortCut "$SMPROGRAMS\${MUI_PRODUCT}\${MUI_PRODUCT}.lnk" "$INSTDIR\${MUI_FILE}.exe" "" "$INSTDIR\logo.ico" 0
 
+
+;Register .panda File Association
+  ${registerExtension} "$INSTDIR\${MUI_FILE}.exe" ".panda" "WiRED Panda File"
+
+
 ;write uninstall information to the registry
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}" "DisplayName" "${MUI_PRODUCT} (remove only)"
 	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}" "UninstallString" "$INSTDIR\uninstall.exe"
@@ -169,7 +177,7 @@ Section "Uninstall"
 ;Delete Uninstaller And Unistall Registry Entries
   DeleteRegKey HKEY_LOCAL_MACHINE "SOFTWARE\${MUI_PRODUCT}"
   DeleteRegKey HKEY_LOCAL_MACHINE "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}"
-
+  ${unregisterExtension} ".panda" "WiRED Panda File"
 SectionEnd
 
 

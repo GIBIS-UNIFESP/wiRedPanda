@@ -10,6 +10,11 @@ TEMPLATE = app
 include(../includes.pri)
 include(install.pri)
 
+win32{
+RC_FILE = windows.rc
+DISTFILES += windows.rc
+}
+
 SOURCES += main.cpp
 
 
