@@ -70,3 +70,16 @@ background-color:#fffbfb;
 .head{
     background-color: #333;
 }
+
+
+/* Layout mobile */
+@media (max-width: 900px) {
+    .titulo {
+        display: block !important;
+        left: calc(50% - 70px);
+        transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .large-nav{
+        display: none !important;
+    }
+}
