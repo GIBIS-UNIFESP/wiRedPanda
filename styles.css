@@ -25,10 +25,6 @@ background-color:#fffbfb;
           flex-shrink: 0;
 }
 
-.demo-header .mdl-layout__header-row {
-  padding-left: 40px;
-}
-
 .demo-container {
   max-width: 1600px;
   width: calc(100% - 16px);
@@ -67,15 +63,27 @@ background-color:#fffbfb;
     color: #dc3e3e;
 }
 
+.titulo-white{
+    font-family: evia;
+    color: #fff;
+    bottom: 16px;
+    position: absolute;
+}
+
+.wpanda-drawer .mdl-layout-title {
+    position: relative;
+    background: #dc3e3e;
+    height: 160px;
+}
+
 .head{
     background-color: #333;
 }
 
-
 /* Layout mobile */
 @media (max-width: 900px) {
     .titulo {
-        display: block !important;
+        display: block;
         left: calc(50% - 80px);
         transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }

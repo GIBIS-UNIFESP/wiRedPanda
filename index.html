@@ -51,46 +51,38 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="material.min.css">
   <link rel="stylesheet" href="styles.css">
-  <style>
-    #view-source {
-      position: fixed;
-      display: block;
-      right: 0;
-      bottom: 0;
-      margin-right: 40px;
-      margin-bottom: 40px;
-      z-index: 900;
-    }
-  </style>
 </head>
 
 <body>
   <!-- Always shows a header, even in smaller screens. -->
 
-  <div class="demo-layout mdl-layout mdl-layout--fixed-header mdl-js-layout mdl-color--grey-100">
-    <header class="demo-header mdl-layout__header mdl-layout__header--waterfall head">
+  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-color--grey-100">
+    <header class="mdl-layout__header head">
       <div class="mdl-layout__header-row">
         <!-- Title -->
-        <span class="mdl-layout-title titulo" >wired panda</span>
+        <span href="index.html" class="mdl-layout-title titulo">wired panda</span>
         <!-- Add spacer, to align navigation to the right -->
         <div class="mdl-layout-spacer"></div>
         <!-- Navigation. We hide it in small screens. -->
         <nav class="mdl-navigation large-nav">
           <a class="mdl-navigation__link  mdl-color-text--grey-200" href="https://github.com/GIBIS-UNIFESP/wiRedPanda/">Github</a>
-          <a class="mdl-navigation__link  mdl-color-text--grey-200" href="https://github.com/GIBIS-UNIFESP/wiRedPanda/">Features</a>
+          <a class="mdl-navigation__link  mdl-color-text--grey-200" href="#features">Features</a>
           <a class="mdl-navigation__link  mdl-color-text--grey-200" href="#downloads">Downloads</a>
           <!-- <a class="mdl-navigation__link  mdl-color-text--grey-800" href="">Link</a> -->
           <!-- <a class="mdl-navigation__link  mdl-color-text--grey-800" href="">Link</a> -->
         </nav>
       </div>
     </header>
-     <div class="mdl-layout__drawer">
-      <span class="mdl-layout-title">Title</span>
+    <div class="wpanda-drawer mdl-layout__drawer">
+      <span href="index.html" class="mdl-layout-title">
+          <div class="titulo-white">
+              wired panda
+          </div>
+      </span>
       <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a>
+          <a class="mdl-navigation__link" href="https://github.com/GIBIS-UNIFESP/wiRedPanda/">Github</a>
+          <a class="mdl-navigation__link" href="#features">Features</a>
+          <a class="mdl-navigation__link" href="#downloads">Downloads</a>
       </nav>
     </div>
     <div class="demo-ribbon"></div>
@@ -154,7 +146,7 @@
       </footer>
     </main>
   </div>
-  <script src="../../material.min.js"></script>
+  <script src="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"></script>
 </body>
 
 </html>
