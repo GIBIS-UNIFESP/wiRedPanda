@@ -76,7 +76,7 @@ background-color:#fffbfb;
 @media (max-width: 900px) {
     .titulo {
         display: block !important;
-        left: calc(50% - 70px);
+        left: calc(50% - 80px);
         transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .large-nav{
