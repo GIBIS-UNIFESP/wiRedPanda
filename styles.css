@@ -89,13 +89,17 @@ background-color:#fffafa;
 }
 
 .banner{
+    opacity: 0.5;
     padding-top: 12em;
     padding-bottom: 12em;
     font-family: sans-serif;
     color: #333;
+/*    http://i.huffpost.com/gen/1741175/images/o-JOB-STUDENT-facebook.jpg*/
+    background-image: url(https://upload.wikimedia.org/wikipedia/en/0/07/International_students,_Sheridan_College.jpg)
 }
 
 .banner-title{
+    opacity: 1.0;
     font-size: 4em;
 }
 
