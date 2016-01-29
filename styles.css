@@ -88,18 +88,31 @@ background-color:#fffafa;
     background-color: #333;
 }
 
-.banner{
+.banner:before{
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: url(images/torres.jpg) no-repeat 50% 50%;
+    background-size: 100% auto;
     opacity: 0.5;
+}
+
+.banner{
+    position: relative;
     padding-top: 12em;
     padding-bottom: 12em;
     font-family: sans-serif;
     color: #333;
+    opacity: 0.99;
 /*    http://i.huffpost.com/gen/1741175/images/o-JOB-STUDENT-facebook.jpg*/
-    background-image: url(https://upload.wikimedia.org/wikipedia/en/0/07/International_students,_Sheridan_College.jpg)
+/*   https://upload.wikimedia.org/wikipedia/en/0/07/International_students,_Sheridan_College.jpg*/
 }
 
 .banner-title{
-    opacity: 1.0;
     font-size: 4em;
 }
 
