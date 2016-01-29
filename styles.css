@@ -66,7 +66,7 @@ background-color:#fffafa;
     height: 100%;
     z-index: -1;
     background: url(images/torres.jpg) no-repeat 50% 50%;
-    background-size: 100% auto;
+    background-size: auto auto;
     opacity: 0.5;
 }
 
