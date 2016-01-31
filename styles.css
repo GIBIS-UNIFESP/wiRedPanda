@@ -53,6 +53,9 @@ background-color:#fffafa;
     background-color: #333;
 }
 
+.mdl-layout-title {
+    text-decoration: none;
+}
 .banner:before{
     content: "";
     position: absolute;
@@ -66,7 +69,14 @@ background-color:#fffafa;
     opacity: 0.5;
 }
 
+.active {
+    font-weight: 800;
+    background-color: #222;
+/*    box-shadow: inset 0px 0px 25px 5px #333;*/
+}
+
 .banner{
+    text-shadow: 1px 1px 5px #777;
     position: relative;
     padding-top: 12em;
     padding-bottom: 12em;
