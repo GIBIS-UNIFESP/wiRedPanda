@@ -14,6 +14,7 @@
 #include <QStyleFactory>
 #include <iostream>
 #include <stdexcept>
+#include <arduino/codegenerator.h>
 
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
   ui->setupUi( this );
@@ -174,7 +175,18 @@ void MainWindow::open( const QString &fname ) {
     return;
   }
   fl.close( );
-  ui->statusBar->showMessage( "Loaded file sucessfully.", 2000 );
+  ui->statusBar->showMessage( "File loaded sucessfully.", 2000 );
+  QList<QGraphicsItem*> items = editor->getScene()->items();
+  QVector<GraphicElement *> elements;
+  for (QGraphicsItem * item: items) {
+    GraphicElement * elm = qgraphicsitem_cast<GraphicElement *>(item);
+    if(elm) {
+      elements.append(elm);
+    }
+  }
+  CodeGenerator arduino(QDir::home().absoluteFilePath("teste.c"), elements);
+  arduino.generate();
+  close();
 }
 
 void MainWindow::scrollView( int dx, int dy ) {
