@@ -51,7 +51,8 @@ SOURCES += \
     $$PWD/app/scene.cpp \
     $$PWD/app/serializationfunctions.cpp \
     $$PWD/app/simulationcontroller.cpp \
-    $$PWD/app/boxnotfoundexception.cpp
+    $$PWD/app/boxnotfoundexception.cpp \
+    $$PWD/app/arduino/codegenerator.cpp
 
 
 HEADERS  +=  \
@@ -96,7 +97,8 @@ HEADERS  +=  \
     $$PWD/app/scene.h \
     $$PWD/app/serializationfunctions.h \
     $$PWD/app/simulationcontroller.h \
-    $$PWD/app/boxnotfoundexception.h
+    $$PWD/app/boxnotfoundexception.h \
+    $$PWD/app/arduino/codegenerator.h
 
 INCLUDEPATH += \
     $$PWD/app \
