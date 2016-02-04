@@ -160,8 +160,13 @@ QGraphicsItem* Editor::itemAt( const QPointF &pos ) {
   return( nullptr );
 }
 
+SimulationController * Editor::getSimulationController() const
+{
+    return simulationController;
+}
+
 void Editor::addItem( QGraphicsItem *item ) {
-  scene->addItem( item );
+    scene->addItem( item );
 }
 bool Editor::getControlKeyPressed() const
 {
