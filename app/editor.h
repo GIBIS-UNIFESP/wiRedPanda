@@ -83,6 +83,7 @@ public:
   void resizeScene( );
   bool getControlKeyPressed( ) const;
   void setControlKeyPressed( bool controlKeyPressed );
+  SimulationController * getSimulationController() const;
 };
 
 #endif /* EDITOR_H */

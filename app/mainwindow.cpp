@@ -1,6 +1,7 @@
 #include "globalproperties.h"
 #include "listitemwidget.h"
 #include "mainwindow.h"
+#include "priorityqueue.h"
 #include "ui_mainwindow.h"
 #include <QClipboard>
 #include <QDebug>
@@ -12,9 +13,9 @@
 #include <QSettings>
 #include <QShortcut>
 #include <QStyleFactory>
+#include <arduino/codegenerator.h>
 #include <iostream>
 #include <stdexcept>
-#include <arduino/codegenerator.h>
 
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
   ui->setupUi( this );
@@ -148,6 +149,10 @@ void MainWindow::on_actionRotate_left_triggered( ) {
   editor->rotate( false );
 }
 
+bool lessThan( const GraphicElement *e1, const GraphicElement *e2 ) {
+  return( e1->priority( ) > e2->priority( ) );
+}
+
 void MainWindow::open( const QString &fname ) {
   QFile fl( fname );
   if( !fl.exists( ) ) {
@@ -176,17 +181,36 @@ void MainWindow::open( const QString &fname ) {
   }
   fl.close( );
   ui->statusBar->showMessage( "File loaded sucessfully.", 2000 );
-  QList<QGraphicsItem*> items = editor->getScene()->items();
-  QVector<GraphicElement *> elements;
-  for (QGraphicsItem * item: items) {
-    GraphicElement * elm = qgraphicsitem_cast<GraphicElement *>(item);
-    if(elm) {
-      elements.append(elm);
+  QList< QGraphicsItem* > items = editor->getScene( )->items( );
+  QVector< GraphicElement* > elements;
+  SimulationController *sc = editor->getSimulationController( );
+  sc->stop( );
+  for( QGraphicsItem *item: items ) {
+    GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+    if( elm ) {
+      elements.append( elm );
     }
   }
-  CodeGenerator arduino(QDir::home().absoluteFilePath("teste.c"), elements);
-  arduino.generate();
-  close();
+  if( elements.isEmpty( ) ) {
+    return;
+  }
+  for( GraphicElement *elm: elements ) {
+    elm->setChanged( false );
+    elm->setBeingVisited( false );
+    elm->setVisited( false );
+  }
+  for( GraphicElement *elm: elements ) {
+    if( elm ) {
+      sc->calculatePriority( elm );
+    }
+  }
+  qSort( elements.begin( ), elements.end( ), lessThan );
+
+  CodeGenerator arduino( QDir::home( ).absoluteFilePath( "teste.c" ), elements );
+  arduino.generate( );
+  sc->start( );
+  qDebug( ) << "Arduino code successfully generated.";
+  close( );
 }
 
 void MainWindow::scrollView( int dx, int dy ) {
@@ -329,8 +353,8 @@ void MainWindow::on_actionSelect_all_triggered( ) {
 
 void MainWindow::updateRecentBoxes( ) {
   ui->verticalLayout_4->removeItem( ui->verticalSpacer_BOX );
-  while( QLayoutItem * item = ui->verticalLayout_4->takeAt( 0 ) ) {
-    if( QWidget * widget = item->widget( ) ) {
+  while( QLayoutItem *item = ui->verticalLayout_4->takeAt( 0 ) ) {
+    if( QWidget *widget = item->widget( ) ) {
       widget->deleteLater( );
     }
   }
@@ -399,8 +423,8 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
 
 void MainWindow::on_lineEdit_textChanged( const QString &text ) {
   ui->searchLayout->removeItem( ui->VSpacer );
-  while( QLayoutItem * item = ui->searchLayout->takeAt( 0 ) ) {
-    if( QWidget * widget = item->widget( ) ) {
+  while( QLayoutItem *item = ui->searchLayout->takeAt( 0 ) ) {
+    if( QWidget *widget = item->widget( ) ) {
       delete widget;
     }
   }

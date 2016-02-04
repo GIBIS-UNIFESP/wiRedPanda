@@ -1,5 +1,7 @@
 #include "codegenerator.h"
 
+#include <qneconnection.h>
+
 CodeGenerator::CodeGenerator( QString fileName, const QVector< GraphicElement* > &elements ) : file( fileName ),
   elements( elements ) {
   if( !file.open( QIODevice::WriteOnly | QIODevice::Text ) ) {
@@ -7,8 +9,9 @@ CodeGenerator::CodeGenerator( QString fileName, const QVector< GraphicElement* >
   }
   out.setDevice( &file );
   availblePins = { "A0", "A1", "A2", "A3", "A4", "A5",
-                   "0", "1", "2", "3", "4", "5", "6",
+                   /*"0", "1",*/ "2", "3", "4", "5", "6",
                    "7", "8", "9", "10", "11", "12", "13" };
+
 }
 
 bool CodeGenerator::generate( ) {
@@ -36,13 +39,23 @@ void CodeGenerator::declareInputs( ) {
     if( ( elm->elementType( ) == ElementType::BUTTON ) ||
         ( elm->elementType( ) == ElementType::SWITCH ) ) {
       QString varName = elm->objectName( ).toLower( ).trimmed( ) + QString::number( counter );
-      out << QString( "const int %1 = %2;" ).arg( varName ).arg( availblePins.back( ) ) << endl;
-      inputMap.append( MappedPin( elm, availblePins.back( ), varName ) );
-      availblePins.pop_back( );
+      QString label = elm->getLabel( ).toLower( ).trimmed( );
+      if( !label.isEmpty( ) ) {
+        varName = QString( "%1_%2" ).arg( varName ).arg( label );
+      }
+      out << QString( "const int %1 = %2;" ).arg( varName ).arg( availblePins.front( ) ) << endl;
+      inputMap.append( MappedPin( elm, availblePins.front( ), varName, elm->outputs( ).at( 0 ), 0 ) );
+      availblePins.pop_front( );
+      varMap[ elm->outputs( ).front( ) ] = varName + QString( "_val" );
+/*      varMap[ elm->outputs( ).front( ) ] = QString( "auxVar%1" ).arg( globalCounter++ ); */
       counter++;
     }
   }
   out << endl;
+}
+
+QString clearString( QString input ) {
+  return( input.toLower( ).trimmed( ).replace( " ", "_" ).replace( QRegExp( "\\W" ), "" ) );
 }
 
 void CodeGenerator::declareOutputs( ) {
@@ -51,11 +64,19 @@ void CodeGenerator::declareOutputs( ) {
   for( GraphicElement *elm: elements ) {
     if( ( elm->elementType( ) == ElementType::LED ) ||
         ( elm->elementType( ) == ElementType::DISPLAY ) ) {
+      QString label = clearString( elm->getLabel( ) );
       for( int i = 0; i < elm->inputs( ).size( ); ++i ) {
-        QString varName = elm->objectName( ).toLower( ).trimmed( ) + QString::number( counter );
-        out << QString( "const int %1 = %2;" ).arg( varName ).arg( availblePins.back( ) ) << endl;
-        outputMap.append( MappedPin( elm, availblePins.back( ), varName, i ) );
-        availblePins.pop_back( );
+        QString varName = clearString( elm->objectName( ) ) + QString::number( counter );
+        if( !label.isEmpty( ) ) {
+          varName = QString( "%1_%2" ).arg( varName ).arg( label );
+        }
+        QNEPort *port = elm->inputs( ).at( i );
+        if( !port->getName( ).isEmpty( ) ) {
+          varName = QString( "%1_%2" ).arg( varName ).arg( clearString( port->getName( ) ) );
+        }
+        out << QString( "const int %1 = %2;" ).arg( varName ).arg( availblePins.front( ) ) << endl;
+        outputMap.append( MappedPin( elm, availblePins.front( ), varName, port, i ) );
+        availblePins.pop_front( );
         counter++;
       }
     }
@@ -76,16 +97,75 @@ void CodeGenerator::setup( ) {
 
 void CodeGenerator::loop( ) {
   out << "void loop( ) {" << endl;
+  out << "    // Reading input data." << endl;
   for( MappedPin pin: inputMap ) {
     out << QString( "    int %1_val = digitalRead( %1 );" ).arg( pin.varName ) << endl;
   }
-  out << endl;
-  for( MappedPin pin: outputMap ) {
-    out << QString( "    int %1_val = LOW;" ).arg( pin.varName ) << endl;
+/*
+ *  out << endl;
+ *  out << "    // Initializing output variables." << endl;
+ *  for( MappedPin pin: outputMap ) {
+ *    out << QString( "    int %1_val = LOW;" ).arg( pin.varName ) << endl;
+ *  }
+ */
+/* Aux variables. */
+  for( GraphicElement *elm: elements ) {
+    QString varName = QString( "aux_%1_%2" ).arg( elm->objectName( ) ).arg( globalCounter++ );
+    if( !elm->outputs( ).isEmpty( ) ) {
+      QNEPort *port = elm->outputs( )[ 0 ];
+      if( elm->elementType( ) == ElementType::VCC ) {
+        varMap[ port ] = "HIGH";
+      }
+      else if( elm->elementType( ) == ElementType::GND ) {
+        varMap[ port ] = "LOW";
+      }
+      else if( varMap[ port ].isEmpty( ) ) {
+        varMap[ port ] = varName;
+      }
+    }
+  }
+  for( GraphicElement *elm: elements ) {
+    QString varName = varMap[ elm->outputs( ).first( ) ];
+    switch( elm->elementType( ) ) {
+        case ElementType::OR: {
+        QNEPort *inPort = elm->inputs( ).front( );
+        out << "    int " << varName << " = " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
+        for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
+          inPort = elm->inputs( )[ i ];
+          out << " || " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
+        }
+        out << ";" << endl;
+        break;
+      }
+        case ElementType::AND: {
+        QNEPort *inPort = elm->inputs( ).front( );
+        out << "    int " << varName << " = " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
+        for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
+          inPort = elm->inputs( )[ i ];
+          out << " && " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
+        }
+        out << ";" << endl;
+        break;
+      }
+        case ElementType::NOT: {
+        QNEPort *inPort = elm->inputs( ).front( );
+        out << "    int " << varName << " = !" << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ] <<
+          ";" << endl;
+        break;
+      }
+        default:
+        break;
+    }
   }
   out << endl;
+  out << "    // Writing output data." << endl;
   for( MappedPin pin: outputMap ) {
-    out << QString( "    digitalWrite( %1, %1_val );" ).arg( pin.varName ) << endl;
+    QNEPort *otherPort = pin.port->connections( ).first( )->otherPort( pin.port );
+    QString varName = varMap.value( otherPort );
+    if( varName.isEmpty( ) ) {
+      varName = "LOW";
+    }
+    out << QString( "    digitalWrite( %1, %2 );" ).arg( pin.varName ).arg( varName ) << endl;
   }
   out << "}" << endl;
 }
