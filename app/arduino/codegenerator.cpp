@@ -37,7 +37,8 @@ void CodeGenerator::declareInputs( ) {
   out << "/* ========= Inputs ========== */" << endl;
   for( GraphicElement *elm: elements ) {
     if( ( elm->elementType( ) == ElementType::BUTTON ) ||
-        ( elm->elementType( ) == ElementType::SWITCH ) ) {
+        ( elm->elementType( ) == ElementType::SWITCH ) ||
+        ( elm->elementType( ) == ElementType::CLOCK ) ) {
       QString varName = elm->objectName( ).toLower( ).trimmed( ) + QString::number( counter );
       QString label = elm->getLabel( ).toLower( ).trimmed( );
       if( !label.isEmpty( ) ) {
@@ -81,6 +82,28 @@ void CodeGenerator::declareOutputs( ) {
       }
     }
   }
+  for( GraphicElement *elm: elements ) {
+    QString varName = QString( "aux_%1_%2" ).arg( elm->objectName( ) ).arg( globalCounter++ );
+    if( !elm->outputs( ).isEmpty( ) ) {
+      QNEPort *port = elm->outputs( )[ 0 ];
+      if( elm->elementType( ) == ElementType::VCC ) {
+        varMap[ port ] = "HIGH";
+      }
+      else if( elm->elementType( ) == ElementType::GND ) {
+        varMap[ port ] = "LOW";
+      }
+      else if( varMap[ port ].isEmpty( ) ) {
+        varMap[ port ] = varName;
+      }
+    }
+  }
+  out << "/* ====== Aux. Variables ====== */" << endl;
+  for( GraphicElement *elm: elements ) {
+    if( !elm->outputs( ).isEmpty( ) ) {
+      QString varName = varMap[ elm->outputs( ).first( ) ];
+      out << "int " << varName << ";" << endl;
+    }
+  }
   out << endl;
 }
 
@@ -101,35 +124,13 @@ void CodeGenerator::loop( ) {
   for( MappedPin pin: inputMap ) {
     out << QString( "    int %1_val = digitalRead( %1 );" ).arg( pin.varName ) << endl;
   }
-/*
- *  out << endl;
- *  out << "    // Initializing output variables." << endl;
- *  for( MappedPin pin: outputMap ) {
- *    out << QString( "    int %1_val = LOW;" ).arg( pin.varName ) << endl;
- *  }
- */
 /* Aux variables. */
-  for( GraphicElement *elm: elements ) {
-    QString varName = QString( "aux_%1_%2" ).arg( elm->objectName( ) ).arg( globalCounter++ );
-    if( !elm->outputs( ).isEmpty( ) ) {
-      QNEPort *port = elm->outputs( )[ 0 ];
-      if( elm->elementType( ) == ElementType::VCC ) {
-        varMap[ port ] = "HIGH";
-      }
-      else if( elm->elementType( ) == ElementType::GND ) {
-        varMap[ port ] = "LOW";
-      }
-      else if( varMap[ port ].isEmpty( ) ) {
-        varMap[ port ] = varName;
-      }
-    }
-  }
   for( GraphicElement *elm: elements ) {
     QString varName = varMap[ elm->outputs( ).first( ) ];
     switch( elm->elementType( ) ) {
-    case ElementType::AND: {
+        case ElementType::AND: {
         QNEPort *inPort = elm->inputs( ).front( );
-        out << "    int " << varName << " = " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
+        out << "    " << varName << " = " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
         for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
           inPort = elm->inputs( )[ i ];
           out << " && " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
@@ -137,9 +138,9 @@ void CodeGenerator::loop( ) {
         out << ";" << endl;
         break;
       }
-    case ElementType::OR: {
+        case ElementType::OR: {
         QNEPort *inPort = elm->inputs( ).front( );
-        out << "    int " << varName << " = " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
+        out << "    " << varName << " = " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
         for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
           inPort = elm->inputs( )[ i ];
           out << " || " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
@@ -147,9 +148,9 @@ void CodeGenerator::loop( ) {
         out << ";" << endl;
         break;
       }
-    case ElementType::NAND: {
+        case ElementType::NAND: {
         QNEPort *inPort = elm->inputs( ).front( );
-        out << "    int " << varName << " = ! ( " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
+        out << "    " << varName << " = ! ( " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
         for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
           inPort = elm->inputs( )[ i ];
           out << " && " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
@@ -157,9 +158,9 @@ void CodeGenerator::loop( ) {
         out << " );" << endl;
         break;
       }
-    case ElementType::NOR: {
+        case ElementType::NOR: {
         QNEPort *inPort = elm->inputs( ).front( );
-        out << "    int " << varName << " = ! ( " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
+        out << "    " << varName << " = ! ( " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
         for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
           inPort = elm->inputs( )[ i ];
           out << " || " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
@@ -167,9 +168,9 @@ void CodeGenerator::loop( ) {
         out << " );" << endl;
         break;
       }
-    case ElementType::XOR: {
+        case ElementType::XOR: {
         QNEPort *inPort = elm->inputs( ).front( );
-        out << "    int " << varName << " = " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
+        out << "    " << varName << " = " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
         for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
           inPort = elm->inputs( )[ i ];
           out << " ^ " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
@@ -177,9 +178,9 @@ void CodeGenerator::loop( ) {
         out << ";" << endl;
         break;
       }
-    case ElementType::XNOR: {
+        case ElementType::XNOR: {
         QNEPort *inPort = elm->inputs( ).front( );
-        out << "    int " << varName << " = ! ( " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
+        out << "    " << varName << " = ! ( " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
         for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
           inPort = elm->inputs( )[ i ];
           out << " ^ " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
@@ -187,14 +188,14 @@ void CodeGenerator::loop( ) {
         out << " );" << endl;
         break;
       }
-    case ElementType::NOT: {
+        case ElementType::NOT: {
         QNEPort *inPort = elm->inputs( ).front( );
-        out << "    int " << varName << " = !" << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ] <<
-               ";" << endl;
+        out << "    " << varName << " = !" << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ] <<
+          ";" << endl;
         break;
       }
-    default:
-      break;
+        default:
+        break;
     }
   }
   out << endl;

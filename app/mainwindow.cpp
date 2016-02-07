@@ -206,7 +206,7 @@ void MainWindow::open( const QString &fname ) {
   }
   qSort( elements.begin( ), elements.end( ), lessThan );
 
-  CodeGenerator arduino( QDir::home( ).absoluteFilePath( "teste.c" ), elements );
+  CodeGenerator arduino( QDir::home( ).absoluteFilePath( "teste/teste.ino" ), elements );
   arduino.generate( );
   sc->start( );
   qDebug( ) << "Arduino code successfully generated.";
