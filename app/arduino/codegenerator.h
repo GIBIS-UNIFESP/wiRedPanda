@@ -25,6 +25,8 @@ class CodeGenerator {
 public:
   CodeGenerator( QString fileName, const QVector< GraphicElement* > &elements );
   bool generate( );
+  void declareAuxVariables();
+  
 private:
   void declareInputs( );
   void declareOutputs( );
