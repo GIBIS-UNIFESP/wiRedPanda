@@ -1,5 +1,6 @@
 #include "codegenerator.h"
 
+#include <clock.h>
 #include <qneconnection.h>
 
 CodeGenerator::CodeGenerator( QString fileName, const QVector< GraphicElement* > &elements ) : file( fileName ),
@@ -14,16 +15,20 @@ CodeGenerator::CodeGenerator( QString fileName, const QVector< GraphicElement* >
 
 }
 
+QString clearString( QString input ) {
+  return( input.toLower( ).trimmed( ).replace( " ", "_" ).replace( QRegExp( "\\W" ), "" ) );
+}
+
 bool CodeGenerator::generate( ) {
   out << "// ==================================================================== //" << endl;
   out << "// ======= This code was generated automatically by WiRED PANDA ======= //" << endl;
   out << "// ==================================================================== //" << endl;
   out << endl << endl;
-
+  out << "#include <elapsedMillis.h>" << endl;
   /* Declaring input and output pins; */
   declareInputs( );
   declareOutputs( );
-
+  declareAuxVariables( );
   /* Setup section */
   setup( );
 
@@ -37,8 +42,7 @@ void CodeGenerator::declareInputs( ) {
   out << "/* ========= Inputs ========== */" << endl;
   for( GraphicElement *elm: elements ) {
     if( ( elm->elementType( ) == ElementType::BUTTON ) ||
-        ( elm->elementType( ) == ElementType::SWITCH ) ||
-        ( elm->elementType( ) == ElementType::CLOCK ) ) {
+        ( elm->elementType( ) == ElementType::SWITCH ) ) {
       QString varName = elm->objectName( ).toLower( ).trimmed( ) + QString::number( counter );
       QString label = elm->getLabel( ).toLower( ).trimmed( );
       if( !label.isEmpty( ) ) {
@@ -53,10 +57,6 @@ void CodeGenerator::declareInputs( ) {
     }
   }
   out << endl;
-}
-
-QString clearString( QString input ) {
-  return( input.toLower( ).trimmed( ).replace( " ", "_" ).replace( QRegExp( "\\W" ), "" ) );
 }
 
 void CodeGenerator::declareOutputs( ) {
@@ -82,10 +82,15 @@ void CodeGenerator::declareOutputs( ) {
       }
     }
   }
+  out << endl;
+}
+
+
+void CodeGenerator::declareAuxVariables( ) {
   for( GraphicElement *elm: elements ) {
     QString varName = QString( "aux_%1_%2" ).arg( elm->objectName( ) ).arg( globalCounter++ );
     if( !elm->outputs( ).isEmpty( ) ) {
-      QNEPort *port = elm->outputs( )[ 0 ];
+      QNEPort *port = elm->outputs( ).first( );
       if( elm->elementType( ) == ElementType::VCC ) {
         varMap[ port ] = "HIGH";
       }
@@ -97,12 +102,19 @@ void CodeGenerator::declareOutputs( ) {
       }
     }
   }
-  out << endl;
   out << "/* ====== Aux. Variables ====== */" << endl;
   for( GraphicElement *elm: elements ) {
-    if( !elm->outputs( ).isEmpty( ) ) {
+    if( elm->outputs( ).size( ) > 0 ) {
       QString varName = varMap[ elm->outputs( ).first( ) ];
-      out << "int " << varName << ";" << endl;
+      if(varName == "HIGH" || varName == "LOW"){
+        continue;
+      }
+      out << "int " << varName << " = 0;" << endl;
+      if( elm->elementType( ) == ElementType::CLOCK ) {
+        Clock *clk = qgraphicsitem_cast< Clock* >( elm );
+        out << "elapsedMillis " << varName << "_elapsed = 0;" << endl;
+        out << "int " << varName << "_interval = " << 1000 / clk->frequency( ) << ";" << endl;
+      }
     }
   }
   out << endl;
@@ -125,11 +137,23 @@ void CodeGenerator::loop( ) {
   for( MappedPin pin: inputMap ) {
     out << QString( "    int %1_val = digitalRead( %1 );" ).arg( pin.varName ) << endl;
   }
+  out << endl;
+  out << "    // Updating clocks. //" << endl;
+  for( GraphicElement *elm: elements ) {
+    if( elm->elementType( ) == ElementType::CLOCK ) {
+      QString varName = varMap[ elm->outputs( ).first( ) ];
+      Clock *clk = qgraphicsitem_cast< Clock* >( elm );
+      out << QString( "    if( %1_elapsed > %1_interval ){" ).arg( varName ) << endl;
+      out << QString( "        %1_elapsed = 0;" ).arg( varName ) << endl;
+      out << QString( "        %1 = ! %1;" ).arg( varName ) << endl;
+      out << QString( "    }" ) << endl;
+    }
+  }
 /* Aux variables. */
   out << endl;
   out << "    // Assigning aux variables. //" << endl;
   for( GraphicElement *elm: elements ) {
-    if( elm->inputs( ).isEmpty( ) || elm->outputs().isEmpty() ) {
+    if( elm->inputs( ).isEmpty( ) || elm->outputs( ).isEmpty( ) ) {
       continue;
     }
     bool negate = false;
@@ -177,7 +201,7 @@ void CodeGenerator::loop( ) {
     if( negate ) {
       out << "!";
     }
-    if( parentheses && negate) {
+    if( parentheses && negate ) {
       out << "( ";
     }
     out << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
@@ -186,7 +210,7 @@ void CodeGenerator::loop( ) {
       out << " " << logicOperator << " ";
       out << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
     }
-    if( parentheses && negate) {
+    if( parentheses && negate ) {
       out << " )";
     }
     out << ";" << endl;
