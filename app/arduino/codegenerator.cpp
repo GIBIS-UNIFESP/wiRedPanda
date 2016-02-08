@@ -97,6 +97,7 @@ void CodeGenerator::declareOutputs( ) {
       }
     }
   }
+  out << endl;
   out << "/* ====== Aux. Variables ====== */" << endl;
   for( GraphicElement *elm: elements ) {
     if( !elm->outputs( ).isEmpty( ) ) {
@@ -125,78 +126,70 @@ void CodeGenerator::loop( ) {
     out << QString( "    int %1_val = digitalRead( %1 );" ).arg( pin.varName ) << endl;
   }
 /* Aux variables. */
+  out << endl;
+  out << "    // Assigning aux variables. //" << endl;
   for( GraphicElement *elm: elements ) {
-    QString varName = varMap[ elm->outputs( ).first( ) ];
+    if( elm->inputs( ).isEmpty( ) || elm->outputs().isEmpty() ) {
+      continue;
+    }
+    bool negate = false;
+    bool parentheses = true;
+    QString logicOperator;
     switch( elm->elementType( ) ) {
         case ElementType::AND: {
-        QNEPort *inPort = elm->inputs( ).front( );
-        out << "    " << varName << " = " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
-        for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
-          inPort = elm->inputs( )[ i ];
-          out << " && " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
-        }
-        out << ";" << endl;
+        logicOperator = "&&";
         break;
       }
         case ElementType::OR: {
-        QNEPort *inPort = elm->inputs( ).front( );
-        out << "    " << varName << " = " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
-        for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
-          inPort = elm->inputs( )[ i ];
-          out << " || " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
-        }
-        out << ";" << endl;
+        logicOperator = "||";
         break;
       }
         case ElementType::NAND: {
-        QNEPort *inPort = elm->inputs( ).front( );
-        out << "    " << varName << " = ! ( " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
-        for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
-          inPort = elm->inputs( )[ i ];
-          out << " && " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
-        }
-        out << " );" << endl;
+        logicOperator = "&&";
+        negate = true;
         break;
       }
         case ElementType::NOR: {
-        QNEPort *inPort = elm->inputs( ).front( );
-        out << "    " << varName << " = ! ( " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
-        for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
-          inPort = elm->inputs( )[ i ];
-          out << " || " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
-        }
-        out << " );" << endl;
+        logicOperator = "||";
+        negate = true;
         break;
       }
         case ElementType::XOR: {
-        QNEPort *inPort = elm->inputs( ).front( );
-        out << "    " << varName << " = " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
-        for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
-          inPort = elm->inputs( )[ i ];
-          out << " ^ " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
-        }
-        out << ";" << endl;
+        logicOperator = "^";
         break;
       }
         case ElementType::XNOR: {
-        QNEPort *inPort = elm->inputs( ).front( );
-        out << "    " << varName << " = ! ( " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
-        for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
-          inPort = elm->inputs( )[ i ];
-          out << " ^ " << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
-        }
-        out << " );" << endl;
+        logicOperator = "^";
+        negate = true;
         break;
       }
         case ElementType::NOT: {
-        QNEPort *inPort = elm->inputs( ).front( );
-        out << "    " << varName << " = !" << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ] <<
-          ";" << endl;
+        negate = true;
+        parentheses = false;
         break;
       }
         default:
         break;
     }
+    QString varName = varMap[ elm->outputs( ).first( ) ];
+    QNEPort *inPort = elm->inputs( ).front( );
+    out << "    " << varName << " = ";
+    if( negate ) {
+      out << "!";
+    }
+    if( parentheses && negate) {
+      out << "( ";
+    }
+    out << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
+    for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
+      inPort = elm->inputs( )[ i ];
+      out << " " << logicOperator << " ";
+      out << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
+    }
+    if( parentheses && negate) {
+      out << " )";
+    }
+    out << ";" << endl;
   }
   out << endl;
   out << "    // Writing output data." << endl;
