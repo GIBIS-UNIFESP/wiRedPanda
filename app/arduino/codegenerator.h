@@ -40,6 +40,8 @@ private:
   void setup( );
   void loop( );
   unsigned int globalCounter = 1;
+  void declareAuxVariablesRec(const QVector<GraphicElement *> & elms, bool isBox = false);
+  void assignVariablesRec(const QVector<GraphicElement *> & elms);
 };
 
 #endif /* CODEGENERATOR_H */

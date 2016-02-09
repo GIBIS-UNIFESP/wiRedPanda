@@ -1,39 +1,55 @@
 #include "scene.h"
 
-#include <QPainter>
 #include <QColor>
-Scene::Scene(QObject * parent) : QGraphicsScene(parent) {
+#include <QPainter>
+Scene::Scene( QObject *parent ) : QGraphicsScene( parent ) {
 
 }
 
-Scene::Scene(const QRectF &sceneRect, QObject *parent) : QGraphicsScene( sceneRect, parent) {
+Scene::Scene( const QRectF &sceneRect, QObject *parent ) : QGraphicsScene( sceneRect, parent ) {
 
 }
 
-Scene::Scene(qreal x, qreal y, qreal width, qreal height, QObject *parent ) : QGraphicsScene( x, y, width, height, parent) {
+Scene::Scene( qreal x, qreal y, qreal width, qreal height, QObject *parent ) : QGraphicsScene( x,
+                                                                                               y,
+                                                                                               width,
+                                                                                               height,
+                                                                                               parent ) {
 
 }
 
-int Scene::gridSize() const {
-  return m_gridSize;
+int Scene::gridSize( ) const {
+  return( m_gridSize );
 }
 
-void Scene::setGridSize(int gridSize) {
+void Scene::setGridSize( int gridSize ) {
   m_gridSize = gridSize;
 }
 
-void Scene::drawBackground(QPainter * painter, const QRectF & rect) {
-  QGraphicsScene::drawBackground(painter,rect);
-  QColor blackColor(Qt::black);
-  QPen pen(blackColor);
-  painter->setPen(pen);
-  qreal left = int(rect.left()) - (int(rect.left()) % m_gridSize);
-  qreal top = int(rect.top()) - (int(rect.top()) % m_gridSize);
-  QVector<QPointF> points;
-  for (qreal x = left; x < rect.right(); x += m_gridSize) {
-    for (qreal y = top; y < rect.bottom(); y += m_gridSize) {
-      points.append(QPointF(x,y));
+void Scene::drawBackground( QPainter *painter, const QRectF &rect ) {
+  QGraphicsScene::drawBackground( painter, rect );
+  QColor blackColor( Qt::black );
+  QPen pen( blackColor );
+  painter->setPen( pen );
+  qreal left = int( rect.left( ) ) - ( int( rect.left( ) ) % m_gridSize );
+  qreal top = int( rect.top( ) ) - ( int( rect.top( ) ) % m_gridSize );
+  QVector< QPointF > points;
+  for( qreal x = left; x < rect.right( ); x += m_gridSize ) {
+    for( qreal y = top; y < rect.bottom( ); y += m_gridSize ) {
+      points.append( QPointF( x, y ) );
     }
   }
-  painter->drawPoints(points.data(), points.size());
+  painter->drawPoints( points.data( ), points.size( ) );
+}
+
+QVector< GraphicElement* > Scene::getElements( ) {
+  QVector< GraphicElement* > elements;
+  QList< QGraphicsItem* > myItems = items( );
+  for( QGraphicsItem *item: myItems ) {
+    GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+    if( elm ) {
+      elements.append( elm );
+    }
+  }
+  return( elements );
 }

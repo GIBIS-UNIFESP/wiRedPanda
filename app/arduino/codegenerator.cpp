@@ -1,6 +1,8 @@
 #include "codegenerator.h"
 
+#include <box.h>
 #include <clock.h>
+#include <editor.h>
 #include <qneconnection.h>
 
 CodeGenerator::CodeGenerator( QString fileName, const QVector< GraphicElement* > &elements ) : file( fileName ),
@@ -86,48 +88,69 @@ void CodeGenerator::declareOutputs( ) {
 }
 
 
-void CodeGenerator::declareAuxVariables( ) {
-  for( GraphicElement *elm: elements ) {
-    QString varName = QString( "aux_%1_%2" ).arg( clearString( elm->objectName( ) ) ).arg( globalCounter++ );
-    if( elm->outputs( ).size( ) == 1 ) {
-      QNEPort *port = elm->outputs( ).first( );
-      if( elm->elementType( ) == ElementType::VCC ) {
-        varMap[ port ] = "HIGH";
-      }
-      else if( elm->elementType( ) == ElementType::GND ) {
-        varMap[ port ] = "LOW";
-      }
-      else if( varMap[ port ].isEmpty( ) ) {
-        varMap[ port ] = varName;
+void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &elms, bool isBox ) {
+  for( GraphicElement *elm: elms ) {
+    if( elm->elementType( ) == ElementType::BOX ) {
+      Box *box = qgraphicsitem_cast< Box* >( elm );
+      if( box ) {
+        out << "// " << box->getLabel( ) << endl;
+        declareAuxVariablesRec( box->myScene.getElements( ), true );
+        out << "// END of " << box->getLabel( ) << endl;
+        for( int i = 0; i < box->outputSize( ); ++i ) {
+          QNEPort *port = box->outputMap.at( i );
+          QNEPort *otherPort = port->connections( ).first( )->otherPort( port );
+          if( varMap[ otherPort ].isEmpty( ) ) {
+            varMap[ box->outputs( ).at( i ) ] = "LOW";
+          }
+          else {
+            varMap[ box->outputs( ).at( i ) ] = varMap[ otherPort ];
+          }
+        }
       }
     }
     else {
-      int portCounter = 0;
-      for( QNEPort *port : elm->outputs( ) ) {
-        QString portName = varName;
-        portName.append( QString( "_%1" ).arg( portCounter++ ) );
-        if( !port->getName( ).isEmpty( ) ) {
-          portName.append( QString( "_%1" ).arg( clearString( port->getName( ) ) ) );
+      QString varName = QString( "aux_%1_%2" ).arg( clearString( elm->objectName( ) ) ).arg( globalCounter++ );
+      if( elm->outputs( ).size( ) == 1 ) {
+        QNEPort *port = elm->outputs( ).first( );
+        if( elm->elementType( ) == ElementType::VCC ) {
+          varMap[ port ] = "HIGH";
+          continue;
         }
-        varMap[ port ] = portName;
+        else if( elm->elementType( ) == ElementType::GND ) {
+          varMap[ port ] = "LOW";
+          continue;
+        }
+        else if( varMap[ port ].isEmpty( ) ) {
+          varMap[ port ] = varName;
+        }
+      }
+      else {
+        int portCounter = 0;
+        for( QNEPort *port : elm->outputs( ) ) {
+          QString portName = varName;
+          portName.append( QString( "_%1" ).arg( portCounter++ ) );
+          if( !port->getName( ).isEmpty( ) ) {
+            portName.append( QString( "_%1" ).arg( clearString( port->getName( ) ) ) );
+          }
+          varMap[ port ] = portName;
+        }
+      }
+      for( QNEPort *port : elm->outputs( ) ) {
+        QString varName = varMap[ port ];
+        out << "int " << varName << " = 0;" << endl;
+        if( ( elm->elementType( ) == ElementType::CLOCK ) && !isBox ) {
+          Clock *clk = qgraphicsitem_cast< Clock* >( elm );
+          out << "elapsedMillis " << varName << "_elapsed = 0;" << endl;
+          out << "int " << varName << "_interval = " << 1000 / clk->frequency( ) << ";" << endl;
+        }
       }
     }
   }
+}
+
+void CodeGenerator::declareAuxVariables( ) {
   out << "/* ====== Aux. Variables ====== */" << endl;
-  for( GraphicElement *elm: elements ) {
-    for( QNEPort *port : elm->outputs( ) ) {
-      QString varName = varMap[ port ];
-      if( ( varName == "HIGH" ) || ( varName == "LOW" ) ) {
-        continue;
-      }
-      out << "int " << varName << " = 0;" << endl;
-      if( elm->elementType( ) == ElementType::CLOCK ) {
-        Clock *clk = qgraphicsitem_cast< Clock* >( elm );
-        out << "elapsedMillis " << varName << "_elapsed = 0;" << endl;
-        out << "int " << varName << "_interval = " << 1000 / clk->frequency( ) << ";" << endl;
-      }
-    }
-  }
+  declareAuxVariablesRec( elements );
   out << endl;
 }
 
@@ -142,27 +165,40 @@ void CodeGenerator::setup( ) {
   out << "}" << endl << endl;
 }
 
-void CodeGenerator::loop( ) {
-  out << "void loop( ) {" << endl;
-  out << "    // Reading input data //." << endl;
-  for( MappedPin pin: inputMap ) {
-    out << QString( "    int %1_val = digitalRead( %1 );" ).arg( pin.varName ) << endl;
-  }
-  out << endl;
-  out << "    // Updating clocks. //" << endl;
-  for( GraphicElement *elm: elements ) {
-    if( elm->elementType( ) == ElementType::CLOCK ) {
-      QString varName = varMap[ elm->outputs( ).first( ) ];
-      out << QString( "    if( %1_elapsed > %1_interval ){" ).arg( varName ) << endl;
-      out << QString( "        %1_elapsed = 0;" ).arg( varName ) << endl;
-      out << QString( "        %1 = ! %1;" ).arg( varName ) << endl;
-      out << QString( "    }" ) << endl;
+void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms ) {
+  for( GraphicElement *elm: elms ) {
+    if( elm->elementType( ) == ElementType::BOX ) {
+      Box *box = qgraphicsitem_cast< Box* >( elm );
+      out << "    // " << box->getLabel( ) << endl;
+      for( int i = 0; i < box->inputSize( ); ++i ) {
+        QNEPort *port = box->inputs( ).at( i );
+        QNEPort *otherPort = port->connections( ).first( )->otherPort( port );
+        QString value = "LOW";
+        if( !varMap[ otherPort ].isEmpty( ) ) {
+          value = varMap[ otherPort ];
+        }
+        out << "    " << varMap[ box->inputMap.at( i ) ] << " = " << value << ";" << endl;
+      }
+      QVector< GraphicElement* > boxElms = box->myScene.getElements( );
+      SimulationController *sc = box->editor->getSimulationController( );
+      sc->stop( );
+      if( boxElms.isEmpty( ) ) {
+        continue;
+      }
+      for( GraphicElement *bxelm: boxElms ) {
+        bxelm->setChanged( false );
+        bxelm->setBeingVisited( false );
+        bxelm->setVisited( false );
+      }
+      for( GraphicElement *bxelm: boxElms ) {
+        if( bxelm ) {
+          sc->calculatePriority( bxelm );
+        }
+      }
+      qSort( boxElms.begin( ), boxElms.end( ), PriorityElement::lessThan );
+      assignVariablesRec( boxElms );
+      out << "    // End of " << box->getLabel( ) << endl;
     }
-  }
-/* Aux variables. */
-  out << endl;
-  out << "    // Assigning aux variables. //" << endl;
-  for( GraphicElement *elm: elements ) {
     if( elm->inputs( ).isEmpty( ) || elm->outputs( ).isEmpty( ) ) {
       continue;
     }
@@ -205,26 +241,54 @@ void CodeGenerator::loop( ) {
         default:
         break;
     }
-    QString varName = varMap[ elm->outputs( ).first( ) ];
-    QNEPort *inPort = elm->inputs( ).front( );
-    out << "    " << varName << " = ";
-    if( negate ) {
-      out << "!";
-    }
-    if( parentheses && negate ) {
-      out << "( ";
-    }
-    out << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
-    for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
-      inPort = elm->inputs( )[ i ];
-      out << " " << logicOperator << " ";
+    if( elm->outputs( ).size( ) == 1 ) {
+      QString varName = varMap[ elm->outputs( ).first( ) ];
+      QNEPort *inPort = elm->inputs( ).front( );
+      out << "    " << varName << " = ";
+      if( negate ) {
+        out << "!";
+      }
+      if( parentheses && negate ) {
+        out << "( ";
+      }
       out << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
+      for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
+        inPort = elm->inputs( )[ i ];
+        out << " " << logicOperator << " ";
+        out << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
+      }
+      if( parentheses && negate ) {
+        out << " )";
+      }
+      out << ";" << endl;
     }
-    if( parentheses && negate ) {
-      out << " )";
+    else {
+      /* ... */
     }
-    out << ";" << endl;
   }
+}
+
+void CodeGenerator::loop( ) {
+  out << "void loop( ) {" << endl;
+  out << "    // Reading input data //." << endl;
+  for( MappedPin pin: inputMap ) {
+    out << QString( "    int %1_val = digitalRead( %1 );" ).arg( pin.varName ) << endl;
+  }
+  out << endl;
+  out << "    // Updating clocks. //" << endl;
+  for( GraphicElement *elm: elements ) {
+    if( elm->elementType( ) == ElementType::CLOCK ) {
+      QString varName = varMap[ elm->outputs( ).first( ) ];
+      out << QString( "    if( %1_elapsed > %1_interval ){" ).arg( varName ) << endl;
+      out << QString( "        %1_elapsed = 0;" ).arg( varName ) << endl;
+      out << QString( "        %1 = ! %1;" ).arg( varName ) << endl;
+      out << QString( "    }" ) << endl;
+    }
+  }
+/* Aux variables. */
+  out << endl;
+  out << "    // Assigning aux variables. //" << endl;
+  assignVariablesRec( elements );
   out << endl;
   out << "    // Writing output data. //" << endl;
   for( MappedPin pin: outputMap ) {
