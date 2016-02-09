@@ -137,7 +137,7 @@ void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &el
       }
       for( QNEPort *port : elm->outputs( ) ) {
         QString varName = varMap[ port ];
-        out << "int " << varName << " = 0;" << endl;
+        out << "boolean " << varName << " = 0;" << endl;
         if( ( elm->elementType( ) == ElementType::CLOCK ) && !isBox ) {
           Clock *clk = qgraphicsitem_cast< Clock* >( elm );
           out << "elapsedMillis " << varName << "_elapsed = 0;" << endl;
