@@ -78,9 +78,9 @@ void CodeGenerator::declareOutputs( ) {
         out << QString( "const int %1 = %2;" ).arg( varName ).arg( availblePins.front( ) ) << endl;
         outputMap.append( MappedPin( elm, availblePins.front( ), varName, port, i ) );
         availblePins.pop_front( );
-        counter++;
       }
     }
+    counter++;
   }
   out << endl;
 }
@@ -133,7 +133,7 @@ void CodeGenerator::setup( ) {
 
 void CodeGenerator::loop( ) {
   out << "void loop( ) {" << endl;
-  out << "    // Reading input data." << endl;
+  out << "    // Reading input data //." << endl;
   for( MappedPin pin: inputMap ) {
     out << QString( "    int %1_val = digitalRead( %1 );" ).arg( pin.varName ) << endl;
   }
@@ -216,7 +216,7 @@ void CodeGenerator::loop( ) {
     out << ";" << endl;
   }
   out << endl;
-  out << "    // Writing output data." << endl;
+  out << "    // Writing output data. //" << endl;
   for( MappedPin pin: outputMap ) {
     QNEPort *otherPort = pin.port->connections( ).first( )->otherPort( pin.port );
     QString varName = varMap.value( otherPort );
