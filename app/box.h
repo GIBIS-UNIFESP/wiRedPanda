@@ -12,7 +12,7 @@
 class Editor;
 
 class Box : public GraphicElement {
-
+  friend class CodeGenerator;
 public:
   Box( Editor *editor, QGraphicsItem *parent = 0 );
   ~Box( );

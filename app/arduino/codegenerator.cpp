@@ -88,8 +88,8 @@ void CodeGenerator::declareOutputs( ) {
 
 void CodeGenerator::declareAuxVariables( ) {
   for( GraphicElement *elm: elements ) {
-    QString varName = QString( "aux_%1_%2" ).arg( elm->objectName( ) ).arg( globalCounter++ );
-    if( !elm->outputs( ).isEmpty( ) ) {
+    QString varName = QString( "aux_%1_%2" ).arg( clearString( elm->objectName( ) ) ).arg( globalCounter++ );
+    if( elm->outputs( ).size( ) == 1 ) {
       QNEPort *port = elm->outputs( ).first( );
       if( elm->elementType( ) == ElementType::VCC ) {
         varMap[ port ] = "HIGH";
@@ -101,12 +101,23 @@ void CodeGenerator::declareAuxVariables( ) {
         varMap[ port ] = varName;
       }
     }
+    else {
+      int portCounter = 0;
+      for( QNEPort *port : elm->outputs( ) ) {
+        QString portName = varName;
+        portName.append( QString( "_%1" ).arg( portCounter++ ) );
+        if( !port->getName( ).isEmpty( ) ) {
+          portName.append( QString( "_%1" ).arg( clearString( port->getName( ) ) ) );
+        }
+        varMap[ port ] = portName;
+      }
+    }
   }
   out << "/* ====== Aux. Variables ====== */" << endl;
   for( GraphicElement *elm: elements ) {
-    if( elm->outputs( ).size( ) > 0 ) {
-      QString varName = varMap[ elm->outputs( ).first( ) ];
-      if(varName == "HIGH" || varName == "LOW"){
+    for( QNEPort *port : elm->outputs( ) ) {
+      QString varName = varMap[ port ];
+      if( ( varName == "HIGH" ) || ( varName == "LOW" ) ) {
         continue;
       }
       out << "int " << varName << " = 0;" << endl;
@@ -142,7 +153,6 @@ void CodeGenerator::loop( ) {
   for( GraphicElement *elm: elements ) {
     if( elm->elementType( ) == ElementType::CLOCK ) {
       QString varName = varMap[ elm->outputs( ).first( ) ];
-      Clock *clk = qgraphicsitem_cast< Clock* >( elm );
       out << QString( "    if( %1_elapsed > %1_interval ){" ).arg( varName ) << endl;
       out << QString( "        %1_elapsed = 0;" ).arg( varName ) << endl;
       out << QString( "        %1 = ! %1;" ).arg( varName ) << endl;

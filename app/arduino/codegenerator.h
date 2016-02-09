@@ -23,13 +23,13 @@ public:
 
 class CodeGenerator {
 public:
-  CodeGenerator( QString fileName, const QVector< GraphicElement* > &elements );
+  CodeGenerator(QString fileName, const QVector< GraphicElement* > &aElements );
   bool generate( );
-  void declareAuxVariables();
-  
+
 private:
   void declareInputs( );
   void declareOutputs( );
+  void declareAuxVariables( );
 
   QFile file;
   QTextStream out;
