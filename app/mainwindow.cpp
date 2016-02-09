@@ -149,10 +149,6 @@ void MainWindow::on_actionRotate_left_triggered( ) {
   editor->rotate( false );
 }
 
-bool lessThan( const GraphicElement *e1, const GraphicElement *e2 ) {
-  return( e1->priority( ) > e2->priority( ) );
-}
-
 void MainWindow::open( const QString &fname ) {
   QFile fl( fname );
   if( !fl.exists( ) ) {
@@ -181,16 +177,9 @@ void MainWindow::open( const QString &fname ) {
   }
   fl.close( );
   ui->statusBar->showMessage( "File loaded sucessfully.", 2000 );
-  QList< QGraphicsItem* > items = editor->getScene( )->items( );
-  QVector< GraphicElement* > elements;
+  QVector< GraphicElement* > elements = editor->getScene()->getElements();
   SimulationController *sc = editor->getSimulationController( );
   sc->stop( );
-  for( QGraphicsItem *item: items ) {
-    GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
-    if( elm ) {
-      elements.append( elm );
-    }
-  }
   if( elements.isEmpty( ) ) {
     return;
   }
@@ -204,7 +193,7 @@ void MainWindow::open( const QString &fname ) {
       sc->calculatePriority( elm );
     }
   }
-  qSort( elements.begin( ), elements.end( ), lessThan );
+  qSort( elements.begin( ), elements.end( ), PriorityElement::lessThan );
 
   CodeGenerator arduino( QDir::home( ).absoluteFilePath( "teste/teste.ino" ), elements );
   arduino.generate( );
