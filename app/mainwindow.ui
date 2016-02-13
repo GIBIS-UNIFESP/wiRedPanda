@@ -390,8 +390,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>98</width>
-               <height>165</height>
+               <width>184</width>
+               <height>522</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -612,8 +612,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>98</width>
-               <height>165</height>
+               <width>184</width>
+               <height>522</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -834,8 +834,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>100</width>
-               <height>30</height>
+               <width>198</width>
+               <height>207</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -913,6 +913,7 @@
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
+    <addaction name="actionExport_to_Arduino"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -1181,6 +1182,11 @@
     <string>Reload File</string>
    </property>
   </action>
+  <action name="actionExport_to_Arduino">
+   <property name="text">
+    <string>Export to Arduino</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1213,16 +1219,16 @@
  <resources>
   <include location="resources/input/input.qrc"/>
   <include location="resources/basic/basic.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/memory/memory.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/resources.qrc"/>
-  <include location="resources/memory/memory.qrc"/>
-  <include location="resources/output/output.qrc"/>
-  <include location="resources/resources.qrc"/>
-  <include location="resources/output/output.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/memory/memory.qrc"/>
   <include location="resources/input/input.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

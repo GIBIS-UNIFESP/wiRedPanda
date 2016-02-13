@@ -160,16 +160,18 @@ QGraphicsItem* Editor::itemAt( const QPointF &pos ) {
   return( nullptr );
 }
 
+SimulationController* Editor::getSimulationController( ) const {
+  return( simulationController );
+}
+
 void Editor::addItem( QGraphicsItem *item ) {
   scene->addItem( item );
 }
-bool Editor::getControlKeyPressed() const
-{
-  return mControlKeyPressed;
+bool Editor::getControlKeyPressed( ) const {
+  return( mControlKeyPressed );
 }
 
-void Editor::setControlKeyPressed(bool controlKeyPressed)
-{
+void Editor::setControlKeyPressed( bool controlKeyPressed ) {
   mControlKeyPressed = controlKeyPressed;
 }
 
@@ -415,12 +417,13 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
 
     dde->accept( );
     return( true );
-  }else if( dde->mimeData( )->hasFormat( "application/ctrlDragData" ) ) {
+  }
+  else if( dde->mimeData( )->hasFormat( "application/ctrlDragData" ) ) {
     QByteArray itemData = dde->mimeData( )->data( "application/ctrlDragData" );
     QDataStream dataStream( &itemData, QIODevice::ReadOnly );
     QPointF offset;
     qint32 type;
-    dataStream >> type >>offset;
+    dataStream >> type >> offset;
     QPointF pos = dde->scenePos( ) - offset;
     GraphicElement *elm = factory.buildElement( ( ElementType ) type, this );
     /* If element type is unknown, a default element is created with the pixmap received from mimedata */
@@ -428,13 +431,13 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
       return( false );
     }
     QMap< quint64, QNEPort* > portMap;
-    double version = QApplication::applicationVersion().toDouble();
-    elm->load(dataStream, portMap, version);
+    double version = QApplication::applicationVersion( ).toDouble( );
+    elm->load( dataStream, portMap, version );
     if( elm->elementType( ) == ElementType::BOX ) {
       try {
         Box *box = dynamic_cast< Box* >( elm );
         if( box ) {
-          if( !loadBox( box, box->getFile() ) ) {
+          if( !loadBox( box, box->getFile( ) ) ) {
             return( false );
           }
         }
@@ -465,7 +468,7 @@ bool Editor::dragMoveEvt( QGraphicsSceneDragDropEvent *dde ) {
     return( true );
   }
   if( dde->mimeData( )->hasFormat( "application/ctrlDragData" ) ) {
-    return(true);
+    return( true );
   }
   return( false );
 }
@@ -486,21 +489,21 @@ bool Editor::wheelEvt( QWheelEvent *wEvt ) {
   return( false );
 }
 
-void Editor::ctrlDrag( GraphicElement *elm, QPointF pos) {
-  if(elm){
+void Editor::ctrlDrag( GraphicElement *elm, QPointF pos ) {
+  if( elm ) {
     QByteArray itemData;
     QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-    dataStream << (qint32) elm->elementType();
-    dataStream << elm->boundingRect().center();
-    elm->save(dataStream);
+    dataStream << ( qint32 ) elm->elementType( );
+    dataStream << elm->boundingRect( ).center( );
+    elm->save( dataStream );
     QMimeData *mimeData = new QMimeData;
     mimeData->setData( "application/ctrlDragData", itemData );
 
     QDrag *drag = new QDrag( elm );
     drag->setMimeData( mimeData );
-    drag->setPixmap( elm->getPixmap() );
-    pos = pos + elm->boundingRect().center();
-    drag->setHotSpot( pos.toPoint() );
+    drag->setPixmap( elm->getPixmap( ) );
+    pos = pos + elm->boundingRect( ).center( );
+    drag->setHotSpot( pos.toPoint( ) );
     drag->exec( Qt::CopyAction, Qt::CopyAction );
   }
 }
@@ -604,7 +607,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
       if( item && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
         if( mControlKeyPressed && ( item->type( ) == GraphicElement::Type ) ) {
           scene->clearSelection( );
-          ctrlDrag( qgraphicsitem_cast< GraphicElement* >( item ), mouseEvt->pos());
+          ctrlDrag( qgraphicsitem_cast< GraphicElement* >( item ), mouseEvt->pos( ) );
           return( true );
         }
         /* STARTING MOVING ELEMENT */

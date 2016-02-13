@@ -1,6 +1,7 @@
 #include "globalproperties.h"
 #include "listitemwidget.h"
 #include "mainwindow.h"
+#include "priorityqueue.h"
 #include "ui_mainwindow.h"
 #include <QClipboard>
 #include <QDebug>
@@ -12,6 +13,7 @@
 #include <QSettings>
 #include <QShortcut>
 #include <QStyleFactory>
+#include <arduino/codegenerator.h>
 #include <iostream>
 #include <stdexcept>
 
@@ -174,7 +176,7 @@ void MainWindow::open( const QString &fname ) {
     return;
   }
   fl.close( );
-  ui->statusBar->showMessage( "Loaded file sucessfully.", 2000 );
+  ui->statusBar->showMessage( "File loaded successfully.", 2000 );
 }
 
 void MainWindow::scrollView( int dx, int dy ) {
@@ -317,8 +319,8 @@ void MainWindow::on_actionSelect_all_triggered( ) {
 
 void MainWindow::updateRecentBoxes( ) {
   ui->verticalLayout_4->removeItem( ui->verticalSpacer_BOX );
-  while( QLayoutItem * item = ui->verticalLayout_4->takeAt( 0 ) ) {
-    if( QWidget * widget = item->widget( ) ) {
+  while( QLayoutItem *item = ui->verticalLayout_4->takeAt( 0 ) ) {
+    if( QWidget *widget = item->widget( ) ) {
       widget->deleteLater( );
     }
   }
@@ -387,8 +389,8 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
 
 void MainWindow::on_lineEdit_textChanged( const QString &text ) {
   ui->searchLayout->removeItem( ui->VSpacer );
-  while( QLayoutItem * item = ui->searchLayout->takeAt( 0 ) ) {
-    if( QWidget * widget = item->widget( ) ) {
+  while( QLayoutItem *item = ui->searchLayout->takeAt( 0 ) ) {
+    if( QWidget *widget = item->widget( ) ) {
       delete widget;
     }
   }
@@ -464,4 +466,42 @@ void MainWindow::keyReleaseEvent( QKeyEvent *evt ) {
   if( evt->key( ) == Qt::Key_Control ) {
     editor->setControlKeyPressed( false );
   }
+}
+
+bool MainWindow::on_actionExport_to_Arduino_triggered( ) {
+
+  QString fname = QFileDialog::getSaveFileName( this, tr( "Generate Arduino Code" ),
+                                                defaultDirectory.absolutePath( ), tr(
+                                                  "Arduino file (*.ino)" ) );
+  if( fname.isEmpty( ) ) {
+    return( false );
+  }
+  QVector< GraphicElement* > elements = editor->getScene( )->getElements( );
+  SimulationController *sc = editor->getSimulationController( );
+  sc->stop( );
+  if( elements.isEmpty( ) ) {
+    return( false );
+  }
+  if( !fname.endsWith( ".ino" ) ) {
+    fname.append( ".ino" );
+  }
+  for( GraphicElement *elm: elements ) {
+    elm->setChanged( false );
+    elm->setBeingVisited( false );
+    elm->setVisited( false );
+  }
+  for( GraphicElement *elm: elements ) {
+    if( elm ) {
+      sc->calculatePriority( elm );
+    }
+  }
+  qSort( elements.begin( ), elements.end( ), PriorityElement::lessThan );
+
+  CodeGenerator arduino( QDir::home( ).absoluteFilePath( fname ), elements );
+  arduino.generate( );
+  sc->start( );
+  ui->statusBar->showMessage( "Arduino code successfully generated.", 2000 );
+
+  qDebug( ) << "Arduino code successfully generated.";
+  return( true );
 }

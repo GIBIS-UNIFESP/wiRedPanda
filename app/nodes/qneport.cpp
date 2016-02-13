@@ -179,8 +179,13 @@ QVariant QNEPort::itemChange( GraphicsItemChange change, const QVariant &value )
   }
   return( value );
 }
+
+QString QNEPort::getName() const
+{
+    return name;
+}
 int QNEPort::defaultValue( ) const {
-  return( m_defaultValue );
+    return( m_defaultValue );
 }
 
 void QNEPort::setDefaultValue( int defaultValue ) {
