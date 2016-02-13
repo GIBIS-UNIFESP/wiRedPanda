@@ -10,6 +10,7 @@ CodeGenerator::CodeGenerator( QString fileName, const QVector< GraphicElement* >
   if( !file.open( QIODevice::WriteOnly | QIODevice::Text ) ) {
     return;
   }
+  globalCounter = 1;
   out.setDevice( &file );
   availblePins = { "A0", "A1", "A2", "A3", "A4", "A5",
                    /*"0", "1",*/ "2", "3", "4", "5", "6",
