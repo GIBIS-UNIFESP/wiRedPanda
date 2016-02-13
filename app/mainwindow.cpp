@@ -176,30 +176,7 @@ void MainWindow::open( const QString &fname ) {
     return;
   }
   fl.close( );
-  ui->statusBar->showMessage( "File loaded sucessfully.", 2000 );
-  QVector< GraphicElement* > elements = editor->getScene()->getElements();
-  SimulationController *sc = editor->getSimulationController( );
-  sc->stop( );
-  if( elements.isEmpty( ) ) {
-    return;
-  }
-  for( GraphicElement *elm: elements ) {
-    elm->setChanged( false );
-    elm->setBeingVisited( false );
-    elm->setVisited( false );
-  }
-  for( GraphicElement *elm: elements ) {
-    if( elm ) {
-      sc->calculatePriority( elm );
-    }
-  }
-  qSort( elements.begin( ), elements.end( ), PriorityElement::lessThan );
-
-  CodeGenerator arduino( QDir::home( ).absoluteFilePath( "teste/teste.ino" ), elements );
-  arduino.generate( );
-  sc->start( );
-  qDebug( ) << "Arduino code successfully generated.";
-  close( );
+  ui->statusBar->showMessage( "File loaded successfully.", 2000 );
 }
 
 void MainWindow::scrollView( int dx, int dy ) {
@@ -489,4 +466,43 @@ void MainWindow::keyReleaseEvent( QKeyEvent *evt ) {
   if( evt->key( ) == Qt::Key_Control ) {
     editor->setControlKeyPressed( false );
   }
+}
+
+bool MainWindow::on_actionExport_to_Arduino_triggered( ) {
+
+  QString fname = QFileDialog::getSaveFileName( this, tr( "Generate Arduino Code" ), defaultDirectory.absolutePath( ), tr(
+                                  "Arduino file (*.ino)" ) );
+  if( fname.isEmpty( ) ) {
+    return( false );
+  }
+
+
+  QVector< GraphicElement* > elements = editor->getScene( )->getElements( );
+  SimulationController *sc = editor->getSimulationController( );
+  sc->stop( );
+  if( elements.isEmpty( ) ) {
+    return false;
+  }
+  if( !fname.endsWith( ".ino" ) ) {
+    fname.append( ".ino" );
+  }
+  for( GraphicElement *elm: elements ) {
+    elm->setChanged( false );
+    elm->setBeingVisited( false );
+    elm->setVisited( false );
+  }
+  for( GraphicElement *elm: elements ) {
+    if( elm ) {
+      sc->calculatePriority( elm );
+    }
+  }
+  qSort( elements.begin( ), elements.end( ), PriorityElement::lessThan );
+
+  CodeGenerator arduino( QDir::home( ).absoluteFilePath( fname ), elements );
+  arduino.generate( );
+  sc->start( );
+  ui->statusBar->showMessage( "Arduino code successfully generated.", 2000 );
+
+  qDebug( ) << "Arduino code successfully generated.";
+  return true;
 }
