@@ -9,6 +9,7 @@ The main features of the software are:
   - Real time logic simulation.
   - User-friendly interface.
   - It's intuitive and easy to use.
+  - [**new**] Export your projects to Arduino!
 
 ![Alt text](images/wpanda.png?raw=true "WiRed Panda Screenshot")
 
