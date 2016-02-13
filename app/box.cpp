@@ -87,7 +87,7 @@ void Box::verifyRecursion( QString fname ) {
 
 void Box::loadFile( QString fname ) {
   QFileInfo fileInfo = findFile( fname );
-  fname = fileInfo.absoluteFilePath();
+  fname = fileInfo.absoluteFilePath( );
   setToolTip( fname );
   if( getLabel( ).isEmpty( ) ) {
     setLabel( fileInfo.baseName( ).toUpper( ) );
@@ -104,7 +104,7 @@ void Box::loadFile( QString fname ) {
     myScene.clear( );
     QDataStream ds( &file );
     QList< QGraphicsItem* > items = SerializationFunctions::load( editor, ds, &myScene );
-    for( QGraphicsItem * item: items ) {
+    for( QGraphicsItem *item: items ) {
       if( item->type( ) == GraphicElement::Type ) {
         GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
         if( elm ) {
@@ -112,7 +112,7 @@ void Box::loadFile( QString fname ) {
               case ElementType::BUTTON:
               case ElementType::SWITCH:
               case ElementType::CLOCK: {
-              for( QNEPort * port: elm->outputs( ) ) {
+              for( QNEPort *port: elm->outputs( ) ) {
                 inputMap.append( port );
               }
               elm->disable( );
@@ -120,7 +120,7 @@ void Box::loadFile( QString fname ) {
             }
               case ElementType::DISPLAY:
               case ElementType::LED: {
-              for( QNEPort * port: elm->inputs( ) ) {
+              for( QNEPort *port: elm->inputs( ) ) {
                 outputMap.append( port );
               }
               break;
@@ -157,9 +157,9 @@ void Box::loadFile( QString fname ) {
     if( lb.isEmpty( ) ) {
       lb = inputMap.at( port )->graphicElement( )->objectName( );
     }
-    if(!inputMap.at( port )->portName().isEmpty()){
+    if( !inputMap.at( port )->portName( ).isEmpty( ) ) {
       lb += " ";
-      lb += inputMap.at( port )->portName();
+      lb += inputMap.at( port )->portName( );
     }
     inputs( ).at( port )->setName( lb );
   }
@@ -168,9 +168,9 @@ void Box::loadFile( QString fname ) {
     if( lb.isEmpty( ) ) {
       lb = outputMap.at( port )->graphicElement( )->objectName( );
     }
-    if(!outputMap.at( port )->portName().isEmpty()){
+    if( !outputMap.at( port )->portName( ).isEmpty( ) ) {
       lb += " ";
-      lb += outputMap.at( port )->portName();
+      lb += outputMap.at( port )->portName( );
     }
     outputs( ).at( port )->setName( lb );
   }

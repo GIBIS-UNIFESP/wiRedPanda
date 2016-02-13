@@ -81,6 +81,8 @@ private slots:
 
   void on_actionGates_triggered( bool checked );
 
+  bool on_actionExport_to_Arduino_triggered();
+
 private:
   Ui::MainWindow *ui;
   Editor *editor;
