@@ -39,7 +39,7 @@ private:
   QVector< QString > availblePins;
   void setup( );
   void loop( );
-  unsigned int globalCounter = 1;
+  unsigned int globalCounter;
   void declareAuxVariablesRec(const QVector<GraphicElement *> & elms, bool isBox = false);
   void assignVariablesRec(const QVector<GraphicElement *> & elms);
 };
