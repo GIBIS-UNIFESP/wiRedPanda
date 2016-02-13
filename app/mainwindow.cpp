@@ -470,18 +470,17 @@ void MainWindow::keyReleaseEvent( QKeyEvent *evt ) {
 
 bool MainWindow::on_actionExport_to_Arduino_triggered( ) {
 
-  QString fname = QFileDialog::getSaveFileName( this, tr( "Generate Arduino Code" ), defaultDirectory.absolutePath( ), tr(
-                                  "Arduino file (*.ino)" ) );
+  QString fname = QFileDialog::getSaveFileName( this, tr( "Generate Arduino Code" ),
+                                                defaultDirectory.absolutePath( ), tr(
+                                                  "Arduino file (*.ino)" ) );
   if( fname.isEmpty( ) ) {
     return( false );
   }
-
-
   QVector< GraphicElement* > elements = editor->getScene( )->getElements( );
   SimulationController *sc = editor->getSimulationController( );
   sc->stop( );
   if( elements.isEmpty( ) ) {
-    return false;
+    return( false );
   }
   if( !fname.endsWith( ".ino" ) ) {
     fname.append( ".ino" );
@@ -504,5 +503,5 @@ bool MainWindow::on_actionExport_to_Arduino_triggered( ) {
   ui->statusBar->showMessage( "Arduino code successfully generated.", 2000 );
 
   qDebug( ) << "Arduino code successfully generated.";
-  return true;
+  return( true );
 }
