@@ -32,3 +32,6 @@ Makefile*
 *.qmlproject.user.*
 /.project
 *.db
+
+.sass-cache
+_site
