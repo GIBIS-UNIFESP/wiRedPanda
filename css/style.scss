@@ -4,7 +4,7 @@
 @import '../_sass/syntax-highlighting';
 
 
-$scotch-primary: rgb(255, 69, 69);
+$scotch-primary: #dc3e3e;
 $scotch-secondary: #FF7B7B;
 
 @font-face {
@@ -34,7 +34,7 @@ a {
     transition: all 225ms ease;
     color: $scotch-secondary;
 
-    &:hover { color: #6165FF; }
+    &:hover { color: #dc3e3e; }
 }
 .btn {
     text-transform: uppercase;
