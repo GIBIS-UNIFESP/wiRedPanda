@@ -4,6 +4,7 @@ description: 'Learn about logic circuits and simulate them in an easy and friend
 url: 'http://gibis-unifesp.github.io/wiRedPanda/' # the base hostname & protocol for your site
 #url: 'http://127.0.0.1:4000/wiRedPanda/' # the base hostname & protocol for your site
 footer_text: 'Copyright &copy; WiRED Panda Team - 2015'
+keywords: "WiRED Panda,Logic Circuits,Arduino"
 
 # Admin Settings
 admin_name: 'Lucas Santana Lellis'
