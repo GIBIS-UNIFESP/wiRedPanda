@@ -1,0 +1,5 @@
+main:
+    - { url: '/', text: 'Home' }
+    - { url: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/', text: 'GitHub' }
+    - { url: '/features', text: 'Features' }
+    - { url: '/downloads', text: 'Downloads' }
