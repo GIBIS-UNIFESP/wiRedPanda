@@ -329,13 +329,17 @@ pre {
         height: 100%;
         z-index: -1;
         background: url(../images/torres.jpg) no-repeat 50% 50%;
+        background-color: red;
         background-size: cover;
         opacity: 0.5;
     }
     .banner-title {
         font-size: 4em;
+        padding: 0px 10px;
     }
-
+    .banner-subtitle{
+        padding: 0px 10px;
+    }
 }
 
 .features {
@@ -343,6 +347,7 @@ pre {
     padding-bottom: 10em;
 
     h4 {
+      padding: 0px 100px;
       text-align: center;
     }
 }
