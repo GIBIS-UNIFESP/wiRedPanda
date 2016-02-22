@@ -342,11 +342,30 @@ pre {
 }
 
 .features {
-    padding-top: 10em;
-    padding-bottom: 10em;
-
-    h4 {
+    padding-top: 5em;
+    padding-bottom: 5em;
+    
+    h2, h4, p {
       padding: 0px 100px;
       text-align: center;
+    }
+}
+
+.main{
+    position: relative;
+    color: #333;
+    opacity: 0.99;
+    text-align: center;
+    padding: 10em 0px;
+
+    .banner-title {
+        @extend %evia;
+        color: $scotch-primary;
+        font-size: 4em;
+        padding: 0px 10px;
+        text-shadow: 1px 1px 5px #777;
+    }
+    .banner-subtitle{
+        padding: 0px 10px;
     }
 }
