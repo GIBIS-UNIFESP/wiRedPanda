@@ -25,8 +25,8 @@
 
 Editor::Editor( MainWindow *parent ) : QObject( parent ), scene( nullptr ), editedConn( nullptr ),
   m_hoverPort( nullptr ) {
-  mControlKeyPressed = false;
   mainWindow = parent;
+  mControlKeyPressed = false;
   markingSelectionBox = false;
   undoStack = new QUndoStack( this );
   scene = new Scene( this );
