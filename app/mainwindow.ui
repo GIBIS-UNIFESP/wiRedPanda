@@ -105,7 +105,7 @@
            <x>0</x>
            <y>0</y>
            <width>218</width>
-           <height>210</height>
+           <height>203</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_7">
@@ -390,8 +390,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>184</width>
-               <height>522</height>
+               <width>198</width>
+               <height>214</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -612,8 +612,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>184</width>
-               <height>522</height>
+               <width>198</width>
+               <height>214</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -835,7 +835,7 @@
                <x>0</x>
                <y>0</y>
                <width>198</width>
-               <height>207</height>
+               <height>214</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -895,7 +895,7 @@
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>20</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -934,11 +934,6 @@
     <addaction name="separator"/>
     <addaction name="actionSelect_all"/>
    </widget>
-   <widget class="QMenu" name="menuTools">
-    <property name="title">
-     <string>&amp;Tools</string>
-    </property>
-   </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
      <string>&amp;Help</string>
@@ -965,7 +960,6 @@
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
-   <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionOpen">
@@ -1217,18 +1211,18 @@
   <tabstop>scrollArea_6</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
-  <include location="resources/output/output.qrc"/>
-  <include location="resources/memory/memory.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/resources.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/memory/memory.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/input/input.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/output/output.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/memory/memory.qrc"/>
   <include location="resources/resources.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
  </resources>
  <connections/>
 </ui>
