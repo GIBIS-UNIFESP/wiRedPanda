@@ -15,8 +15,23 @@ The main features of the software are:
 
 ##Install
 To install and run WiRed Panda on your platform you can:
- - Download the [windows installer] (https://github.com/GIBIS-UNIFESP/wiRedPanda/raw/master/installer/wpanda17_32.exe) of the latest version of WiRed Panda.
- - Clone this repository and build the software using Qt 5.5 or later.
+
+### Windows:
+ Download the [windows installer] (https://github.com/GIBIS-UNIFESP/wiRedPanda/raw/master/installer/wpanda17_32.exe) of the latest version of WiRed Panda.
+ 
+### Linux:
+ To compile and install this software on a gnome-shell based linux distro, please use the following commands:
+ 
+```sh
+git clone https://github.com/GIBIS-UNIFESP/wiRedPanda/
+mkdir wiRedPanda/build
+cd wiRedPanda/build
+qmake ../WPanda.pro
+make install
+```
+ 
+Or else you can clone this repository and build the software using Qt 5.5 or later.
+
 
 ##License
 This software is licensed under the [GNU General Public License, Version 3.0](http://www.gnu.org/licenses/).
