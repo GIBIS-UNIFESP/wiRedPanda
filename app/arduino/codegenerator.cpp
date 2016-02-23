@@ -5,8 +5,8 @@
 #include <editor.h>
 #include <qneconnection.h>
 
-CodeGenerator::CodeGenerator( QString fileName, const QVector< GraphicElement* > &elements ) : file( fileName ),
-  elements( elements ) {
+CodeGenerator::CodeGenerator( QString fileName,
+                              const QVector< GraphicElement* > &elements ) : file( fileName ), elements( elements ) {
   if( !file.open( QIODevice::WriteOnly | QIODevice::Text ) ) {
     return;
   }
@@ -43,7 +43,7 @@ bool CodeGenerator::generate( ) {
 void CodeGenerator::declareInputs( ) {
   int counter = 1;
   out << "/* ========= Inputs ========== */" << endl;
-  for( GraphicElement *elm: elements ) {
+  for( GraphicElement *elm : elements ) {
     if( ( elm->elementType( ) == ElementType::BUTTON ) ||
         ( elm->elementType( ) == ElementType::SWITCH ) ) {
       QString varName = elm->objectName( ).toLower( ).trimmed( ) + QString::number( counter );
@@ -65,7 +65,7 @@ void CodeGenerator::declareInputs( ) {
 void CodeGenerator::declareOutputs( ) {
   int counter = 1;
   out << "/* ========= Outputs ========== */" << endl;
-  for( GraphicElement *elm: elements ) {
+  for( GraphicElement *elm : elements ) {
     if( ( elm->elementType( ) == ElementType::LED ) ||
         ( elm->elementType( ) == ElementType::DISPLAY ) ) {
       QString label = clearString( elm->getLabel( ) );
@@ -90,7 +90,7 @@ void CodeGenerator::declareOutputs( ) {
 
 
 void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &elms, bool isBox ) {
-  for( GraphicElement *elm: elms ) {
+  for( GraphicElement *elm : elms ) {
     if( elm->elementType( ) == ElementType::BOX ) {
       Box *box = qgraphicsitem_cast< Box* >( elm );
       if( box ) {
@@ -167,7 +167,7 @@ void CodeGenerator::setup( ) {
 }
 
 void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms ) {
-  for( GraphicElement *elm: elms ) {
+  for( GraphicElement *elm : elms ) {
     if( elm->elementType( ) == ElementType::BOX ) {
       Box *box = qgraphicsitem_cast< Box* >( elm );
       out << "    // " << box->getLabel( ) << endl;
@@ -186,12 +186,12 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
       if( boxElms.isEmpty( ) ) {
         continue;
       }
-      for( GraphicElement *bxelm: boxElms ) {
+      for( GraphicElement *bxelm : boxElms ) {
         bxelm->setChanged( false );
         bxelm->setBeingVisited( false );
         bxelm->setVisited( false );
       }
-      for( GraphicElement *bxelm: boxElms ) {
+      for( GraphicElement *bxelm : boxElms ) {
         if( bxelm ) {
           sc->calculatePriority( bxelm );
         }
@@ -272,12 +272,12 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
 void CodeGenerator::loop( ) {
   out << "void loop( ) {" << endl;
   out << "    // Reading input data //." << endl;
-  for( MappedPin pin: inputMap ) {
-    out << QString( "    int %1_val = digitalRead( %1 );" ).arg( pin.varName ) << endl;
+  for( MappedPin pin : inputMap ) {
+    out << QString( "    %1_val = digitalRead( %1 );" ).arg( pin.varName ) << endl;
   }
   out << endl;
   out << "    // Updating clocks. //" << endl;
-  for( GraphicElement *elm: elements ) {
+  for( GraphicElement *elm : elements ) {
     if( elm->elementType( ) == ElementType::CLOCK ) {
       QString varName = varMap[ elm->outputs( ).first( ) ];
       out << QString( "    if( %1_elapsed > %1_interval ){" ).arg( varName ) << endl;
@@ -292,7 +292,7 @@ void CodeGenerator::loop( ) {
   assignVariablesRec( elements );
   out << endl;
   out << "    // Writing output data. //" << endl;
-  for( MappedPin pin: outputMap ) {
+  for( MappedPin pin : outputMap ) {
     QNEPort *otherPort = pin.port->connections( ).first( )->otherPort( pin.port );
     QString varName = varMap.value( otherPort );
     if( varName.isEmpty( ) ) {

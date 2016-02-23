@@ -35,7 +35,7 @@ private:
   QTextStream out;
   const QVector< GraphicElement* > elements;
   QVector< MappedPin > inputMap, outputMap;
-  QMap< QNEPort*, QString > varMap;
+  QHash< QNEPort*, QString > varMap;
   QVector< QString > availblePins;
   void setup( );
   void loop( );
