@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+ <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
+   <mime-type type="application/x-wpanda">
+   <comment>WiRED Panda circuit file</comment>
+   <comment xml:lang="pt">Arquivo de circuito WiRED Panda</comment>
+   <glob pattern="*.panda"/>
+  </mime-type>
+ </mime-info>
