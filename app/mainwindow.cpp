@@ -149,13 +149,13 @@ void MainWindow::on_actionRotate_left_triggered( ) {
   editor->rotate( false );
 }
 
-void MainWindow::open( const QString &fname ) {
+bool MainWindow::open( const QString &fname ) {
   QFile fl( fname );
   if( !fl.exists( ) ) {
     QMessageBox::warning( this, "Error!", QString( "File \"%1\" does not exists!" ).arg(
                             fname ), QMessageBox::Ok, QMessageBox::NoButton );
     std::cerr << "Error: This file does not exists: " << fname.toStdString( ) << std::endl;
-    return;
+    return false;
   }
   if( fl.open( QFile::ReadOnly ) ) {
     QDataStream ds( &fl );
@@ -168,17 +168,16 @@ void MainWindow::open( const QString &fname ) {
       QMessageBox::warning( this, "Error!", "Could not open file.\nError: " + QString(
                               e.what( ) ), QMessageBox::Ok, QMessageBox::NoButton );
       clear( );
-      return;
+      return false;
     }
   }
   else {
     std::cerr << "Could not open file in ReadOnly mode : " << fname.toStdString( ) << "." << std::endl;
-    return;
+    return false;
   }
   fl.close( );
-//  ExportToArduino("/home/lellis/teste123/teste123.ino");
   ui->statusBar->showMessage( "File loaded successfully.", 2000 );
-//  exit(1);
+  return true;
 }
 
 void MainWindow::scrollView( int dx, int dy ) {
