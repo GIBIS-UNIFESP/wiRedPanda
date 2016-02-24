@@ -501,7 +501,9 @@ void Editor::ctrlDrag( GraphicElement *elm, QPointF pos ) {
 
     QDrag *drag = new QDrag( elm );
     drag->setMimeData( mimeData );
-    drag->setPixmap( elm->getPixmap( ) );
+    QTransform transf;
+    transf.rotate(elm->rotation());
+    drag->setPixmap( elm->getPixmap( ).transformed(transf) );
     pos = pos + elm->boundingRect( ).center( );
     drag->setHotSpot( pos.toPoint( ) );
     drag->exec( Qt::CopyAction, Qt::CopyAction );
