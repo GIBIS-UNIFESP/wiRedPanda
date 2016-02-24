@@ -7,6 +7,7 @@
 
 #include <QApplication>
 #include <QDebug>
+#include <cmath>
 /* TODO Criar comandos usando mesma técnica do copy n' paste. */
 
 AddItemsCommand::AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
@@ -262,7 +263,6 @@ SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, QUndoCommand *pa
   node->setPos( newPos );
   int angle = conn->angle( );
   angle = 360 - 90 * ( std::round( angle / 90.0 ) );
-  qDebug( ) << "ANGLE: " << conn->angle( ) << " -> " << angle;
   node->setRotation( angle );
   p1 = conn->port1( );
   p2 = conn->port2( );
