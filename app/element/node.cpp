@@ -21,7 +21,7 @@ void Node::updatePorts( ) {
 }
 
 void Node::updateLogic( ) {
-  outputs( ).front( )->setValue( inputs( ).front( )->value( ) );
+  outputs( ).front( )->setValue( inputs( ).first()->value( ) );
 }
 
 
