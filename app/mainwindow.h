@@ -81,7 +81,7 @@ private slots:
 
   void on_actionGates_triggered( bool checked );
 
-  bool on_actionExport_to_Arduino_triggered();
+  bool on_actionExport_to_Arduino_triggered( );
 
 private:
   Ui::MainWindow *ui;
@@ -95,6 +95,7 @@ private:
   QAction *redoAction;
 
   /* QWidget interface */
+  bool ExportToArduino(QString fname );
 protected:
   void closeEvent( QCloseEvent *e );
   void resizeEvent( QResizeEvent* );

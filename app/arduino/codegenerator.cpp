@@ -18,14 +18,44 @@ CodeGenerator::CodeGenerator( QString fileName,
 
 }
 
+QString highLow( int val ) {
+  if( val == 1 ) {
+    return( "HIGH" );
+  }
+  else {
+    return( "LOW" );
+  }
+}
+
 QString clearString( QString input ) {
   return( input.toLower( ).trimmed( ).replace( " ", "_" ).replace( QRegExp( "\\W" ), "" ) );
 }
 
+
+QString CodeGenerator::otherPortName( QNEPort *port ) {
+  if( port ) {
+    if( port->connections( ).isEmpty( ) ) {
+      return( highLow( port->defaultValue( ) ) );
+    }
+    else {
+      QNEPort *other = port->connections( ).front( )->otherPort( port );
+      if( other ) {
+        return( varMap[ other ] );
+      }
+      else {
+        return( highLow( port->defaultValue( ) ) );
+      }
+    }
+  }
+  else {
+    return( "LOW" );
+  }
+}
+
 bool CodeGenerator::generate( ) {
-  out << "// ==================================================================== //" << endl;
+  out << "// ================================================= //" << endl;
   out << "// ======= This code was generated automatically by WiRED PANDA ======= //" << endl;
-  out << "// ==================================================================== //" << endl;
+  out << "// ================================================= //" << endl;
   out << endl << endl;
   out << "#include <elapsedMillis.h>" << endl;
   /* Declaring input and output pins; */
@@ -99,13 +129,7 @@ void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &el
         out << "// END of " << box->getLabel( ) << endl;
         for( int i = 0; i < box->outputSize( ); ++i ) {
           QNEPort *port = box->outputMap.at( i );
-          QNEPort *otherPort = port->connections( ).first( )->otherPort( port );
-          if( varMap[ otherPort ].isEmpty( ) ) {
-            varMap[ box->outputs( ).at( i ) ] = "LOW";
-          }
-          else {
-            varMap[ box->outputs( ).at( i ) ] = varMap[ otherPort ];
-          }
+          varMap[ box->outputs( ).at( i ) ] = otherPortName( port );
         }
       }
     }
@@ -138,11 +162,24 @@ void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &el
       }
       for( QNEPort *port : elm->outputs( ) ) {
         QString varName = varMap[ port ];
-        out << "boolean " << varName << " = 0;" << endl;
-        if( ( elm->elementType( ) == ElementType::CLOCK ) && !isBox ) {
-          Clock *clk = qgraphicsitem_cast< Clock* >( elm );
-          out << "elapsedMillis " << varName << "_elapsed = 0;" << endl;
-          out << "int " << varName << "_interval = " << 1000 / clk->frequency( ) << ";" << endl;
+        out << "boolean " << varName << " = LOW;" << endl;
+        switch( elm->elementType( ) ) {
+            case ElementType::CLOCK: {
+            if( !isBox ) {
+              Clock *clk = qgraphicsitem_cast< Clock* >( elm );
+              out << "elapsedMillis " << varName << "_elapsed = 0;" << endl;
+              out << "int " << varName << "_interval = " << 1000 / clk->frequency( ) << ";" << endl;
+            }
+            break;
+          }
+            case ElementType::DFLIPFLOP: {
+            out << "boolean " << varName << "_inclk = LOW;" << endl;
+            out << "boolean " << varName << "_last = LOW;" << endl;
+            break;
+          }
+
+            default:
+            break;
         }
       }
     }
@@ -174,7 +211,7 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
       for( int i = 0; i < box->inputSize( ); ++i ) {
         QNEPort *port = box->inputs( ).at( i );
         QNEPort *otherPort = port->connections( ).first( )->otherPort( port );
-        QString value = "LOW";
+        QString value = highLow( port->defaultValue( ) );
         if( !varMap[ otherPort ].isEmpty( ) ) {
           value = varMap[ otherPort ];
         }
@@ -200,74 +237,121 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
       assignVariablesRec( boxElms );
       out << "    // End of " << box->getLabel( ) << endl;
     }
-    if( elm->inputs( ).isEmpty( ) || elm->outputs( ).isEmpty( ) ) {
+    else if( elm->inputs( ).isEmpty( ) || elm->outputs( ).isEmpty( ) ) {
       continue;
     }
-    bool negate = false;
-    bool parentheses = true;
-    QString logicOperator;
-    switch( elm->elementType( ) ) {
-        case ElementType::AND: {
-        logicOperator = "&&";
-        break;
-      }
-        case ElementType::OR: {
-        logicOperator = "||";
-        break;
-      }
-        case ElementType::NAND: {
-        logicOperator = "&&";
-        negate = true;
-        break;
-      }
-        case ElementType::NOR: {
-        logicOperator = "||";
-        negate = true;
-        break;
-      }
-        case ElementType::XOR: {
-        logicOperator = "^";
-        break;
-      }
-        case ElementType::XNOR: {
-        logicOperator = "^";
-        negate = true;
-        break;
-      }
-        case ElementType::NOT: {
-        negate = true;
-        parentheses = false;
-        break;
-      }
-        default:
-        break;
-    }
-    if( elm->outputs( ).size( ) == 1 ) {
-      QString varName = varMap[ elm->outputs( ).first( ) ];
-      QNEPort *inPort = elm->inputs( ).front( );
-      out << "    " << varName << " = ";
-      if( negate ) {
-        out << "!";
-      }
-      if( parentheses && negate ) {
-        out << "( ";
-      }
-      out << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
-      for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
-        inPort = elm->inputs( )[ i ];
-        out << " " << logicOperator << " ";
-        out << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
-      }
-      if( parentheses && negate ) {
-        out << " )";
-      }
-      out << ";" << endl;
-    }
     else {
-      /* ... */
+      QString firstOut = varMap[ elm->outputs( ).at( 0 ) ];
+      switch( elm->elementType( ) ) {
+          case ElementType::DFLIPFLOP: {
+          QString secondOut = varMap[ elm->outputs( ).at( 1 ) ];
+          QString data = otherPortName( elm->inputs( ).at( 0 ) );
+          QString clk = otherPortName( elm->inputs( ).at( 1 ) );
+          QString inclk = firstOut + "_inclk";
+          QString last = firstOut + "_last";
+          out << QString( "    //DFlipFlop" ) << endl;
+          out << QString( "    if( %1 && !%2) { " ).arg( clk ).arg( inclk ) << endl;
+          out << QString( "        %1 = %2;" ).arg( firstOut ).arg( last ) << endl;
+          out << QString( "        %1 = !%2;" ).arg( secondOut ).arg( last ) << endl;
+          out << QString( "    }" ) << endl;
+          QString prst = otherPortName( elm->inputs( ).at( 2 ) );
+          QString clr = otherPortName( elm->inputs( ).at( 3 ) );
+          out << QString( "    if( !%1 || !%2) { " ).arg( prst ).arg( clr ) << endl;
+          out << QString( "        %1 = !%2; //Preset" ).arg( firstOut ).arg( prst ) << endl;
+          out << QString( "        %1 = !%2; //Clear" ).arg( secondOut ).arg( clr ) << endl;
+          out << QString( "    }" ) << endl;
+
+          /* Updating internal clock. */
+          out << "    " << inclk << " = " << clk << ";" << endl;
+          out << "    " << last << " = " << data << ";" << endl;
+
+          break;
+        }
+          case ElementType::AND:
+          case ElementType::OR:
+          case ElementType::NAND:
+          case ElementType::NOR:
+          case ElementType::XOR:
+          case ElementType::XNOR:
+          case ElementType::NOT:
+          case ElementType::NODE:
+          assignLogicOperator( elm );
+          break;
+          default:
+          throw std::runtime_error( QString( "Element type not supported : %1" ).arg(
+                                      elm->objectName( ) ).toStdString( ) );
+          break;
+      }
     }
   }
 }
+
+void CodeGenerator::assignLogicOperator( GraphicElement *elm ) {
+  bool negate = false;
+  bool parentheses = true;
+  QString logicOperator;
+  switch( elm->elementType( ) ) {
+      case ElementType::AND: {
+      logicOperator = "&&";
+      break;
+    }
+      case ElementType::OR: {
+      logicOperator = "||";
+      break;
+    }
+      case ElementType::NAND: {
+      logicOperator = "&&";
+      negate = true;
+      break;
+    }
+      case ElementType::NOR: {
+      logicOperator = "||";
+      negate = true;
+      break;
+    }
+      case ElementType::XOR: {
+      logicOperator = "^";
+      break;
+    }
+      case ElementType::XNOR: {
+      logicOperator = "^";
+      negate = true;
+      break;
+    }
+      case ElementType::NOT: {
+      negate = true;
+      parentheses = false;
+      break;
+    }
+      default:
+      break;
+  }
+  if( elm->outputs( ).size( ) == 1 ) {
+    QString varName = varMap[ elm->outputs( ).first( ) ];
+    QNEPort *inPort = elm->inputs( ).front( );
+    out << "    " << varName << " = ";
+    if( negate ) {
+      out << "!";
+    }
+    if( parentheses && negate ) {
+      out << "( ";
+    }
+    out << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
+    for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
+      inPort = elm->inputs( )[ i ];
+      out << " " << logicOperator << " ";
+      out << otherPortName( inPort );
+    }
+    if( parentheses && negate ) {
+      out << " )";
+    }
+    out << ";" << endl;
+  }
+  else {
+    /* ... */
+  }
+}
+
 
 void CodeGenerator::loop( ) {
   out << "void loop( ) {" << endl;
@@ -293,10 +377,9 @@ void CodeGenerator::loop( ) {
   out << endl;
   out << "    // Writing output data. //" << endl;
   for( MappedPin pin : outputMap ) {
-    QNEPort *otherPort = pin.port->connections( ).first( )->otherPort( pin.port );
-    QString varName = varMap.value( otherPort );
+    QString varName = otherPortName( pin.port );
     if( varName.isEmpty( ) ) {
-      varName = "LOW";
+      varName = highLow( pin.port->defaultValue( ) );
     }
     out << QString( "    digitalWrite( %1, %2 );" ).arg( pin.varName ).arg( varName ) << endl;
   }

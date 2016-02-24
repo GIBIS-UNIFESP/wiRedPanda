@@ -12,8 +12,8 @@ public:
   QString varName;
   QNEPort *port;
   int portNbr;
-  MappedPin( GraphicElement *elm, QString pin, QString varName, QNEPort *port, int portNbr = 0 ) :
-    elm( elm ), pin( pin ), varName( varName ), port( port ), portNbr( portNbr ) {
+  MappedPin( GraphicElement *elm, QString pin, QString varName, QNEPort *port,
+             int portNbr = 0 ) : elm( elm ), pin( pin ), varName( varName ), port( port ), portNbr( portNbr ) {
   }
 
   MappedPin( ) {
@@ -23,7 +23,7 @@ public:
 
 class CodeGenerator {
 public:
-  CodeGenerator(QString fileName, const QVector< GraphicElement* > &aElements );
+  CodeGenerator( QString fileName, const QVector< GraphicElement* > &aElements );
   bool generate( );
 
 private:
@@ -40,8 +40,10 @@ private:
   void setup( );
   void loop( );
   unsigned int globalCounter;
-  void declareAuxVariablesRec(const QVector<GraphicElement *> & elms, bool isBox = false);
-  void assignVariablesRec(const QVector<GraphicElement *> & elms);
+  void declareAuxVariablesRec( const QVector< GraphicElement* > &elms, bool isBox = false );
+  void assignVariablesRec( const QVector< GraphicElement* > &elms );
+  void assignLogicOperator( GraphicElement *elm );
+  QString otherPortName(QNEPort * port);
 };
 
 #endif /* CODEGENERATOR_H */
