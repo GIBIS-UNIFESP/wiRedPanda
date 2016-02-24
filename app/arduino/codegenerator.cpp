@@ -4,7 +4,7 @@
 #include <clock.h>
 #include <editor.h>
 #include <qneconnection.h>
-
+#include <stdexcept>
 CodeGenerator::CodeGenerator( QString fileName,
                               const QVector< GraphicElement* > &elements ) : file( fileName ), elements( elements ) {
   if( !file.open( QIODevice::WriteOnly | QIODevice::Text ) ) {
