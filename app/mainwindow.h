@@ -27,8 +27,9 @@ public:
   void clear( );
   QFileInfo getCurrentFile( ) const;
   void setCurrentFile( const QFileInfo &value );
+  bool ExportToArduino(QString fname );
 
-  void open( const QString &fname );
+  bool open( const QString &fname );
   void createUndoView( );
   int confirmSave( );
   void updateRecentBoxes( );
@@ -95,7 +96,6 @@ private:
   QAction *redoAction;
 
   /* QWidget interface */
-  bool ExportToArduino(QString fname );
 protected:
   void closeEvent( QCloseEvent *e );
   void resizeEvent( QResizeEvent* );
