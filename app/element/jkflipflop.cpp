@@ -52,13 +52,9 @@ void JKFlipFlop::updateLogic( ) {
       if( j == k ) { /* IF J=K */
         std::swap( res1, res2 );
       }
-      else if( j && !k ) { /* J */
-        res1 = true;
-        res2 = false;
-      }
-      else if( !j && k ) { /* K */
-        res1 = false;
-        res2 = true;
+      else {
+        res1 = j;
+        res2 = k;
       }
       res1 = ( j && res2 ) || ( !k && res1 );
       res2 = !res1;
