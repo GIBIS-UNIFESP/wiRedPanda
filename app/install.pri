@@ -1,7 +1,8 @@
 unix{
   #VARIABLES
   isEmpty(PREFIX) {
-    PREFIX = ~/.local
+#    PREFIX = $$(HOME)/local
+    PREFIX = /usr/local
   }
   BINDIR = $$PREFIX/bin
   DATADIR =$$PREFIX/share
@@ -12,6 +13,7 @@ unix{
   INSTALLS += target desktop icon26 icon32 icon48 icon64 icon128
 
   target.path =$$BINDIR
+  target.files = ./wpanda
 
   desktop.path = $$DATADIR/applications
   desktop.files += resources/$${TARGET}.desktop
