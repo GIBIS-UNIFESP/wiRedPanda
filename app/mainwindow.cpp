@@ -176,7 +176,9 @@ void MainWindow::open( const QString &fname ) {
     return;
   }
   fl.close( );
+//  ExportToArduino("/home/lellis/teste123/teste123.ino");
   ui->statusBar->showMessage( "File loaded successfully.", 2000 );
+//  exit(1);
 }
 
 void MainWindow::scrollView( int dx, int dy ) {
@@ -319,8 +321,8 @@ void MainWindow::on_actionSelect_all_triggered( ) {
 
 void MainWindow::updateRecentBoxes( ) {
   ui->verticalLayout_4->removeItem( ui->verticalSpacer_BOX );
-  while( QLayoutItem *item = ui->verticalLayout_4->takeAt( 0 ) ) {
-    if( QWidget *widget = item->widget( ) ) {
+  while( QLayoutItem * item = ui->verticalLayout_4->takeAt( 0 ) ) {
+    if( QWidget * widget = item->widget( ) ) {
       widget->deleteLater( );
     }
   }
@@ -389,8 +391,8 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
 
 void MainWindow::on_lineEdit_textChanged( const QString &text ) {
   ui->searchLayout->removeItem( ui->VSpacer );
-  while( QLayoutItem *item = ui->searchLayout->takeAt( 0 ) ) {
-    if( QWidget *widget = item->widget( ) ) {
+  while( QLayoutItem * item = ui->searchLayout->takeAt( 0 ) ) {
+    if( QWidget * widget = item->widget( ) ) {
       delete widget;
     }
   }
@@ -468,11 +470,7 @@ void MainWindow::keyReleaseEvent( QKeyEvent *evt ) {
   }
 }
 
-bool MainWindow::on_actionExport_to_Arduino_triggered( ) {
-
-  QString fname = QFileDialog::getSaveFileName( this, tr( "Generate Arduino Code" ),
-                                                defaultDirectory.absolutePath( ), tr(
-                                                  "Arduino file (*.ino)" ) );
+bool MainWindow::ExportToArduino( QString fname ) {
   if( fname.isEmpty( ) ) {
     return( false );
   }
@@ -485,12 +483,12 @@ bool MainWindow::on_actionExport_to_Arduino_triggered( ) {
   if( !fname.endsWith( ".ino" ) ) {
     fname.append( ".ino" );
   }
-  for( GraphicElement *elm: elements ) {
+  for( GraphicElement *elm : elements ) {
     elm->setChanged( false );
     elm->setBeingVisited( false );
     elm->setVisited( false );
   }
-  for( GraphicElement *elm: elements ) {
+  for( GraphicElement *elm : elements ) {
     if( elm ) {
       sc->calculatePriority( elm );
     }
@@ -504,4 +502,13 @@ bool MainWindow::on_actionExport_to_Arduino_triggered( ) {
 
   qDebug( ) << "Arduino code successfully generated.";
   return( true );
+}
+
+bool MainWindow::on_actionExport_to_Arduino_triggered( ) {
+
+  QString fname = QFileDialog::getSaveFileName( this, tr( "Generate Arduino Code" ),
+                                                defaultDirectory.absolutePath( ), tr(
+                                                  "Arduino file (*.ino)" ) );
+
+  return( ExportToArduino( fname ) );
 }
