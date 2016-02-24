@@ -124,6 +124,19 @@ QNEPort* QNEConnection::otherPort( QNEPort *port ) {
   }
 }
 
+double QNEConnection::angle( ) {
+  QNEPort *p1 = m_port1;
+  QNEPort *p2 = m_port2;
+  if( p1 && p2 ) {
+    if( p2->isOutput( ) ) {
+      std::swap( p1, p2 );
+    }
+    QLineF line( p1->scenePos( ), p2->scenePos( ) );
+    return( line.angle( ) );
+  }
+  return( 0.0 );
+}
+
 void QNEConnection::save( QDataStream &ds ) {
   ds << ( quint64 ) m_port1;
   ds << ( quint64 ) m_port2;

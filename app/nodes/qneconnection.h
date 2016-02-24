@@ -47,6 +47,7 @@ public:
   QNEPort* port1() const;
   QNEPort* port2() const;
   QNEPort* otherPort(QNEPort * port);
+  double angle();
 
   void save(QDataStream&);
   bool load(QDataStream&, const QMap<quint64, QNEPort*> &portMap = QMap<quint64, QNEPort*>());

@@ -250,8 +250,9 @@ void UpdateCommand::loadData( QByteArray itemData ) {
 
 SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, QUndoCommand *parent ) : QUndoCommand( parent ) {
   node = new Node( );
+
   QPointF newPos = point - QPointF( node->boundingRect( ).center( ) );
-  Scene * customScene = dynamic_cast< Scene* >( conn->scene() );
+  Scene *customScene = dynamic_cast< Scene* >( conn->scene( ) );
   if( customScene ) {
     int gridSize = customScene->gridSize( );
     qreal xV = qRound( newPos.x( ) / gridSize ) * gridSize;
@@ -259,6 +260,10 @@ SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, QUndoCommand *pa
     newPos = QPointF( xV, yV );
   }
   node->setPos( newPos );
+  int angle = conn->angle( );
+  angle = 360 - 90 * ( std::round( angle / 90.0 ) );
+  qDebug( ) << "ANGLE: " << conn->angle( ) << " -> " << angle;
+  node->setRotation( angle );
   p1 = conn->port1( );
   p2 = conn->port2( );
   trueP1 = p1;
