@@ -15,7 +15,7 @@
    version="1.1"
    inkscape:version="0.91 r13725"
    sodipodi:docname="JK-flipflop.svg"
-   inkscape:export-filename="/home/lellis/projetos/wpanda/app/resources/memory/JK-flipflop.png"
+   inkscape:export-filename="/home/lellis/projetos/wpanda-app/app/resources/memory/JK-flipflop.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -61,7 +61,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.656854"
-     inkscape:cx="13.593058"
+     inkscape:cx="-14.95638"
      inkscape:cy="32.863543"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -70,7 +70,7 @@
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:window-width="1920"
-     inkscape:window-height="1028"
+     inkscape:window-height="1026"
      inkscape:window-x="0"
      inkscape:window-y="26"
      inkscape:window-maximized="1">
@@ -176,7 +176,7 @@
          y="35.804115" /></text>
     <text
        xml:space="preserve"
-       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Droid Sans;-inkscape-font-specification:Droid Sans"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18px;line-height:125%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
        x="11.617188"
        y="19"
        id="text3013"
@@ -209,15 +209,15 @@
          y="51.941406">Q</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Droid Sans;-inkscape-font-specification:Droid Sans"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18px;line-height:125%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
        x="42.901367"
-       y="18.941406"
+       y="20.941406"
        id="text3021-2"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3023-6"
          x="42.901367"
-         y="18.941406">Q</tspan></text>
+         y="20.941406">Q</tspan></text>
     <path
        style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none"
        d="m 43.959876,37.661408 0,-0.609375 5.578125,0 5.578126,0 0,0.609375 0,0.609375 -5.578126,0 -5.578125,0 0,-0.609375 z"
@@ -243,13 +243,13 @@
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18px;line-height:125%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
        x="26.401367"
-       y="18.824219"
+       y="21.410006"
        id="text3785"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3787"
          x="26.401367"
-         y="18.824219">P</tspan></text>
+         y="21.410006">P</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18px;line-height:125%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
@@ -263,7 +263,7 @@
          y="52">C</tspan></text>
     <path
        style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none"
-       d="m 26.421874,4.779804 0,-0.609375 5.578125,0 5.578126,0 0,0.609375 0,0.609375 -5.578126,0 -5.578125,0 0,-0.609375 z"
+       d="m 26.421874,6.779804 0,-0.609375 5.578125,0 5.578126,0 0,0.609375 0,0.609375 -5.578126,0 -5.578125,0 0,-0.609375 z"
        id="path3058-8"
        inkscape:connector-curvature="0" />
     <path
