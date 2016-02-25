@@ -40,13 +40,14 @@ GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz,
   m_hasFrequency = false;
   m_hasLabel = false;
   m_disabled = false;
+  m_outputsOnTop = true;
   for( int i = 0; i < minInputSz; i++ ) {
     addInputPort( );
   }
   for( int i = 0; i < minOutputSz; i++ ) {
     addOutputPort( );
   }
-  m_outputsOnTop = true;
+
 }
 
 GraphicElement::~GraphicElement( ) {
