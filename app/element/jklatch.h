@@ -5,7 +5,7 @@
 
 class JKLatch : public GraphicElement {
 public:
-  explicit JKLatch(QGraphicsItem * parent);
+  explicit JKLatch(QGraphicsItem * parent = 0);
   virtual ~JKLatch();
 
   // GraphicElement interface
