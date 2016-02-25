@@ -27,12 +27,12 @@ void DLatch::updateLogic( ) {
   char res1 = outputs( ).at( 0 )->value( ); /* Q */
   char res2 = outputs( ).at( 1 )->value( ); /* ~Q */
   char data = inputs( ).at( 0 )->value( );
-  char clk = inputs( ).at( 1 )->value( );
+  char enable = inputs( ).at( 1 )->value( );
   if( !isValid( ) ) {
     res1 = res2 = -1;
   }
   else {
-    if( clk == true ) { /* If Enabled */
+    if( enable == true ) { /* If Enabled */
       res1 = data; /* Output = Data */
       res2 = !data; /* Output = Data */
     }
