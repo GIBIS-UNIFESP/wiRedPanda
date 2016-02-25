@@ -30,6 +30,7 @@ private slots:
   void testJKLatch( );
   void testSRFlipFlop();
   void testTFlipFlop();
+  void testTLatch();
 
 };
 

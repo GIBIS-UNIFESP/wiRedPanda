@@ -7,6 +7,7 @@
 #include <jklatch.h>
 #include <srflipflop.h>
 #include <tflipflop.h>
+#include <tlatch.h>
 
 #include "and.h"
 #include "dflipflop.h"
@@ -460,4 +461,45 @@ void TestElements::testTFlipFlop( ) {
   elm.updateLogic( );
   QVERIFY( ( int ) elm.outputs( ).at( 0 )->value( ) != -1 );
   QVERIFY( ( int ) elm.outputs( ).at( 1 )->value( ) != -1 );
+}
+
+void TestElements::testTLatch( ) {
+  TLatch elm;
+  QCOMPARE( elm.inputSize( ), elm.inputs( ).size( ) );
+  QCOMPARE( elm.inputSize( ), 2 );
+  QCOMPARE( elm.outputSize( ), elm.outputs( ).size( ) );
+  QCOMPARE( elm.outputSize( ), 2 );
+  QCOMPARE( elm.minInputSz( ), 2 );
+  QCOMPARE( elm.maxInputSz( ), 2 );
+  QCOMPARE( elm.minOutputSz( ), 2 );
+  QCOMPARE( elm.maxOutputSz( ), 2 );
+  QCOMPARE( elm.elementType( ), ElementType::TLATCH );
+  conn[ 0 ]->setPort2( elm.inputs( ).at( 0 ) );
+  conn[ 1 ]->setPort2( elm.inputs( ).at( 1 ) );
+
+  std::array< std::array< int, 4 >, 6 > truthTable = {
+    {
+      /*T  E  Q  A */
+      { { 0, 0, 0, 0 } }, /* No change */
+      { { 0, 0, 1, 1 } }, /* No change */
+      { { 1, 1, 1, 0 } },
+      { { 1, 1, 0, 1 } },
+      { { 0, 1, 1, 1 } },
+      { { 0, 1, 0, 0 } },
+    }
+  };
+  for( size_t test = 0; test < truthTable.size( ); ++test ) {
+    elm.outputs( ).at( 0 )->setValue( truthTable[ test ][ 3 ] );
+    elm.outputs( ).at( 1 )->setValue( !truthTable[ test ][ 3 ] );
+    for( int port = 0; port < 2; ++port ) {
+      sw[ port ]->setOn( truthTable[ test ][ port ] );
+      sw[ port ]->updateLogic( );
+/*      std::cout << truthTable[ test ][ port ] << " "; */
+    }
+    elm.updateLogic( );
+/*    std::cout << "-> " << ( int ) elm.outputs( ).at( 0 )->value( ) << std::endl; */
+
+    QCOMPARE( ( int ) elm.outputs( ).at( 0 )->value( ), truthTable[ test ][ 2 ] );
+    QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), ( int ) !truthTable[ test ][ 2 ] );
+  }
 }
