@@ -29,6 +29,7 @@ private slots:
   void testJKFlipFlop( );
   void testJKLatch( );
   void testSRFlipFlop();
+  void testTFlipFlop();
 
 };
 

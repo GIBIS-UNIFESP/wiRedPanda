@@ -6,6 +6,7 @@
 #include <jkflipflop.h>
 #include <jklatch.h>
 #include <srflipflop.h>
+#include <tflipflop.h>
 
 #include "and.h"
 #include "dflipflop.h"
@@ -369,17 +370,94 @@ void TestElements::testSRFlipFlop( ) {
     elm.updateLogic( );
     elm.outputs( ).at( 0 )->setValue( truthTable[ test ][ 6 ] );
     elm.outputs( ).at( 1 )->setValue( !truthTable[ test ][ 6 ] );
-    std::cout << ( int ) elm.outputs( ).at( 0 )->value( ) << " " << ( int ) elm.outputs( ).at( 1 )->value( ) << " -> ";
+/*    std::cout << ( int ) elm.outputs( ).at( 0 )->value( ) << " " << ( int ) elm.outputs( ).at( 1 )->value( ) << " ->
+ * "; */
     for( int port = 0; port < 3; ++port ) {
       sw[ port ]->setOn( truthTable[ test ][ port + 1 ] );
       sw[ port ]->updateLogic( );
-      std::cout << truthTable[ test ][ port + 1 ] << " ";
+/*      std::cout << truthTable[ test ][ port + 1 ] << " "; */
     }
     elm.updateLogic( );
-    std::cout << "-> " << ( int ) elm.outputs( ).at( 0 )->value( ) << " " << ( int ) elm.outputs( ).at( 1 )->value( ) <<
-      std::endl;
+/*
+ *    std::cout << "-> " << ( int ) elm.outputs( ).at( 0 )->value( ) << " " << ( int ) elm.outputs( ).at( 1 )->value( )
+ * <<
+ *      std::endl;
+ */
 
     QCOMPARE( ( int ) elm.outputs( ).at( 0 )->value( ), truthTable[ test ][ 4 ] );
     QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), truthTable[ test ][ 5 ] );
   }
+}
+
+void TestElements::testTFlipFlop( ) {
+  TFlipFlop elm;
+  QCOMPARE( elm.inputSize( ), elm.inputs( ).size( ) );
+  QCOMPARE( elm.inputSize( ), 4 );
+  QCOMPARE( elm.outputSize( ), elm.outputs( ).size( ) );
+  QCOMPARE( elm.outputSize( ), 2 );
+  QCOMPARE( elm.minInputSz( ), 4 );
+  QCOMPARE( elm.maxInputSz( ), 4 );
+  QCOMPARE( elm.minOutputSz( ), 2 );
+  QCOMPARE( elm.maxOutputSz( ), 2 );
+  QCOMPARE( elm.elementType( ), ElementType::TFLIPFLOP );
+  conn[ 0 ]->setPort2( elm.inputs( ).at( 0 ) ); /* T */
+  conn[ 1 ]->setPort2( elm.inputs( ).at( 1 ) ); /* Clk */
+  conn[ 2 ]->setPort2( elm.inputs( ).at( 2 ) ); /* Prst */
+  conn[ 3 ]->setPort2( elm.inputs( ).at( 3 ) ); /* Clr */
+
+  std::array< std::array< int, 8 >, 11 > truthTable = {
+    {
+      /*    L  T  C  p  c  Q Q A */
+      { { 0, 0, 0, 1, 1, 0, 1, 0 } }, /* No change */
+      { { 0, 1, 0, 1, 1, 0, 1, 0 } }, /* No change */
+      { { 0, 0, 0, 1, 1, 1, 0, 1 } }, /* No change */
+      { { 0, 1, 0, 1, 1, 1, 0, 1 } }, /* No change */
+
+      { { 0, 0, 1, 1, 1, 0, 1, 0 } }, /* No change */
+      { { 0, 0, 1, 1, 1, 1, 0, 1 } }, /* No change */
+
+      { { 0, 1, 1, 1, 1, 1, 0, 0 } }, /* Toggle */
+      { { 0, 1, 1, 1, 1, 0, 1, 1 } }, /* Toggle */
+
+
+      { { 0, 0, 0, 0, 1, 1, 0, 0 } }, /* Preset = false */
+      { { 0, 0, 0, 1, 0, 0, 1, 1 } }, /* Clear = false */
+      { { 0, 0, 0, 0, 0, 1, 1, 1 } }, /* Clear and Preset = false */
+
+      /* Test Prst and clr */
+    }
+  };
+  elm.updateLogic( );
+  for( size_t test = 0; test < truthTable.size( ); ++test ) {
+    sw[ 0 ]->setOn( false );
+    sw[ 1 ]->setOn( truthTable[ test ][ 0 ] );
+    sw[ 2 ]->setOn( false );
+    sw[ 3 ]->setOn( false );
+    for( int port = 0; port < 4; ++port ) {
+      sw[ port ]->updateLogic( );
+    }
+    elm.updateLogic( );
+    elm.outputs( ).at( 0 )->setValue( truthTable[ test ][ 7 ] );
+    elm.outputs( ).at( 1 )->setValue( !truthTable[ test ][ 7 ] );
+/*    std::cout << ( int ) elm.outputs( ).at( 0 )->value( ) << " " << ( int ) elm.outputs( ).at( 1 )->value( ) << " ->
+ * "; */
+    for( int port = 0; port < 4; ++port ) {
+      sw[ port ]->setOn( truthTable[ test ][ port + 1 ] );
+      sw[ port ]->updateLogic( );
+/*      std::cout << truthTable[ test ][ port + 1 ] << " "; */
+    }
+    elm.updateLogic( );
+/*    std::cout << "-> " << ( int ) elm.outputs( ).at( 0 )->value( ) << " " << ( int ) elm.outputs( ).at( 1 )->value( )
+ * << std::endl; */
+
+    QCOMPARE( ( int ) elm.outputs( ).at( 0 )->value( ), truthTable[ test ][ 5 ] );
+    QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), truthTable[ test ][ 6 ] );
+  }
+  elm.inputs( ).at( 2 )->disconnect( conn[ 2 ] );
+  elm.inputs( ).at( 3 )->disconnect( conn[ 3 ] );
+  QCOMPARE( ( int ) elm.inputs( ).at( 2 )->value( ), 1 );
+  QCOMPARE( ( int ) elm.inputs( ).at( 3 )->value( ), 1 );
+  elm.updateLogic( );
+  QVERIFY( ( int ) elm.outputs( ).at( 0 )->value( ) != -1 );
+  QVERIFY( ( int ) elm.outputs( ).at( 1 )->value( ) != -1 );
 }
