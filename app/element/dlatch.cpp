@@ -24,15 +24,17 @@ void DLatch::updatePorts( ) {
 }
 
 void DLatch::updateLogic( ) {
-  char res1 = outputs( ).at( 0 )->value( ); /* Output 1 */
-  char res2 = outputs( ).at( 1 )->value( ); /* Output 1 */
+  char res1 = outputs( ).at( 0 )->value( ); /* Q */
+  char res2 = outputs( ).at( 1 )->value( ); /* ~Q */
+  char data = inputs( ).at( 0 )->value( );
+  char clk = inputs( ).at( 1 )->value( );
   if( !isValid( ) ) {
     res1 = res2 = -1;
   }
   else {
-    if( inputs( ).at( 1 )->value( ) == true ) { /* If Enabled */
-      res1 = inputs( ).at( 0 )->value( ); /* Output = Data */
-      res2 = !inputs( ).at( 0 )->value( ); /* Output = Data */
+    if( clk == true ) { /* If Enabled */
+      res1 = data; /* Output = Data */
+      res2 = !data; /* Output = Data */
     }
   }
   outputs( ).at( 0 )->setValue( res1 );

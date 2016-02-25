@@ -27,6 +27,8 @@ private slots:
   void testDFlipFlop( );
   void testDLatch( );
   void testJKFlipFlop( );
+  void testJKLatch( );
+
 };
 
 #endif /* TESTELEMENTS_H */
