@@ -4,17 +4,19 @@
 #include <graphicelement.h>
 
 class SRFlipFlop : public GraphicElement {
-public:
-  explicit SRFlipFlop(QGraphicsItem * parent);
-  virtual ~SRFlipFlop();
+  bool lastClk;
 
-  // GraphicElement interface
 public:
-  virtual ElementType elementType() {
-    return ElementType::SRFLIPFLOP;
+  explicit SRFlipFlop( QGraphicsItem *parent = 0 );
+  virtual ~SRFlipFlop( );
+
+  /* GraphicElement interface */
+public:
+  virtual ElementType elementType( ) {
+    return( ElementType::SRFLIPFLOP );
   }
-  virtual void updatePorts();
-  void updateLogic();
+  virtual void updatePorts( );
+  void updateLogic( );
 };
 
-#endif // SRFLIPFLOP_H
+#endif /* SRFLIPFLOP_H */
