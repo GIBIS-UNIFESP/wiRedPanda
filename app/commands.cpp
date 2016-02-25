@@ -8,7 +8,6 @@
 #include <QApplication>
 #include <QDebug>
 #include <cmath>
-/* TODO Criar comandos usando mesma técnica do copy n' paste. */
 
 AddItemsCommand::AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
     parent ) {

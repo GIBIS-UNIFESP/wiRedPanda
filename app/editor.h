@@ -41,8 +41,8 @@ public slots:
 private:
   QUndoStack *undoStack;
   Scene *scene;
-  QList< QGraphicsItem* > itemsAt( const QPointF &pos );
-  QGraphicsItem* itemAt( const QPointF &pos );
+  QList< QGraphicsItem* > itemsAt( QPointF pos );
+  QGraphicsItem* itemAt(QPointF pos );
   QNEConnection *editedConn;
   ElementFactory factory;
   ElementEditor *elementEditor;
@@ -58,6 +58,7 @@ private:
   QList< QPointF > oldPositions;
   MainWindow *mainWindow;
   bool mControlKeyPressed;
+
 
   bool mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt );
   bool mouseMoveEvt( QGraphicsSceneMouseEvent *mouseEvt );

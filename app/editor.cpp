@@ -139,12 +139,13 @@ void Editor::elementUpdated( GraphicElement *element, QByteArray oldData ) {
   undoStack->push( new UpdateCommand( element, oldData ) );
 }
 
-QList< QGraphicsItem* > Editor::itemsAt( const QPointF &pos ) {
-  return( scene->items( QRectF( pos - QPointF( 4, 4 ), QSize( 9, 9 ) ).normalized( ) ) );
+QList< QGraphicsItem* > Editor::itemsAt( QPointF pos ) {
+  QRectF rect( pos - QPointF( 4, 4 ), QSize( 9, 9 ) );
+  return( scene->items( rect.normalized( ) ) );
 }
 
 
-QGraphicsItem* Editor::itemAt( const QPointF &pos ) {
+QGraphicsItem* Editor::itemAt( QPointF pos ) {
   QList< QGraphicsItem* > items = scene->items( pos );
   items.append( itemsAt( pos ) );
   for( QGraphicsItem *item : items ) {
@@ -259,15 +260,19 @@ void Editor::resizeScene( ) {
       rect = rect.united( itemRect.adjusted( -10, -10, 10, 10 ) );
     }
     scene->setSceneRect( rect );
-
-    QGraphicsItem *item = itemAt( mousePos );
-    if( item && ( timer.elapsed( ) > 50 ) && draggingElement ) {
-      if( !scene->views( ).isEmpty( ) ) {
-        QGraphicsView *view = scene->views( ).front( );
+  }
+  QGraphicsItem *item = itemAt( mousePos );
+  if( item && ( timer.elapsed( ) > 100 ) && draggingElement ) {
+    if( !scene->views( ).isEmpty( ) ) {
+      QGraphicsView *view = scene->views( ).front( );
+      if( item->type( ) != QNEConnection::Type ) {
         view->ensureVisible( item );
       }
-      timer.restart( );
+      else {
+        view->ensureVisible( QRectF( mousePos - QPointF( 4, 4 ), QSize( 9, 9 ) ).normalized( ) );
+      }
     }
+    timer.restart( );
   }
 }
 
@@ -502,8 +507,8 @@ void Editor::ctrlDrag( GraphicElement *elm, QPointF pos ) {
     QDrag *drag = new QDrag( elm );
     drag->setMimeData( mimeData );
     QTransform transf;
-    transf.rotate(elm->rotation());
-    drag->setPixmap( elm->getPixmap( ).transformed(transf) );
+    transf.rotate( elm->rotation( ) );
+    drag->setPixmap( elm->getPixmap( ).transformed( transf ) );
     pos = pos + elm->boundingRect( ).center( );
     drag->setHotSpot( pos.toPoint( ) );
     drag->exec( Qt::CopyAction, Qt::CopyAction );
