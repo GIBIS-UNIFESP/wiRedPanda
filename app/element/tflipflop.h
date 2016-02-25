@@ -4,17 +4,18 @@
 #include <graphicelement.h>
 
 class TFlipFlop : public GraphicElement {
+  bool lastClk;
 public:
-  explicit TFlipFlop(QGraphicsItem * parent);
-  virtual ~TFlipFlop();
+  explicit TFlipFlop( QGraphicsItem *parent = 0 );
+  virtual ~TFlipFlop( );
 
-  // GraphicElement interface
+  /* GraphicElement interface */
 public:
-  virtual ElementType elementType() {
-    return ElementType::TFLIPFLOP;
+  virtual ElementType elementType( ) {
+    return( ElementType::TFLIPFLOP );
   }
-  virtual void updatePorts();
-  void updateLogic();
+  virtual void updatePorts( );
+  void updateLogic( );
 };
 
-#endif // TFLIPFLOP_H
+#endif /* TFLIPFLOP_H */
