@@ -1,49 +1,51 @@
 #include "srflipflop.h"
 
-SRFlipFlop::SRFlipFlop(QGraphicsItem * parent) : GraphicElement(5,5,2,2,parent) {
-    setPixmap(QPixmap(":/memory/SR-flipflop.png"));
-    setRotatable(false);
-    updatePorts();
-    setObjectName("FlipFlop SR");
+SRFlipFlop::SRFlipFlop( QGraphicsItem *parent ) : GraphicElement( 3, 3, 2, 2, parent ) {
+  setPixmap( QPixmap( ":/memory/SR-flipflop.png" ) );
+  setRotatable( false );
+  updatePorts( );
+  lastClk = false;
+  setObjectName( "FlipFlop SR" );
+
+  inputs( ).at( 0 )->setName( "S" );
+  inputs( ).at( 1 )->setName( "Clock" );
+  inputs( ).at( 2 )->setName( "R" );
+  outputs( ).at( 0 )->setName( "Q" );
+  outputs( ).at( 1 )->setName( "~Q" );
+  inputs( ).at( 0 )->setRequired( false );
+  inputs( ).at( 2 )->setRequired( false );
+
+
+}
+
+SRFlipFlop::~SRFlipFlop( ) {
+
+}
+
+void SRFlipFlop::updatePorts( ) {
+  inputs( ).at( 0 )->setPos( topPosition( ), 13 ); /* S */
+  inputs( ).at( 1 )->setPos( topPosition( ), 29 ); /* Clk */
+  inputs( ).at( 2 )->setPos( topPosition( ), 45 ); /* R */
+  inputs( ).at( 3 )->setPos( 32, topPosition( ) );
+  inputs( ).at( 4 )->setPos( 32, bottomPosition( ) );
+}
+
+void SRFlipFlop::updateLogic( ) {
+  char res1 = outputs( ).first( )->value( ); /* Q */
+  char res2 = outputs( ).first( )->value( ); /* Q */
+  if( !isValid( ) ) {
+    res1 = -1;
+    res2 = -1;
   }
+  else {
+    char s = inputs( ).at( 0 )->value( );
+    char clk = inputs( ).at( 1 )->value( );
+    char r = inputs( ).at( 2 )->value( );
+    if( clk == true ) { /* If Clock up */
 
-  SRFlipFlop::~SRFlipFlop() {
-
+    }
   }
-
-  void SRFlipFlop::updatePorts() {
-    inputs().at(0)->setPos(topPosition(),13);
-    inputs().at(1)->setPos(topPosition(),29);
-    inputs().at(2)->setPos(topPosition(),45);
-    inputs().at(3)->setPos(32,topPosition());
-    inputs().at(4)->setPos(32,bottomPosition());
-
-    outputs().at(0)->setPos(bottomPosition(),15);
-    outputs().at(1)->setPos(bottomPosition(),45);
-  }
-
-  void SRFlipFlop::updateLogic() {
-      char res = outputs().first()->value(); //Output 1
-      if(!isValid()) {
-          res = -1;
-      } else {
-          if(inputs().at(1)->value() == true){    //If Clock
-              //JK Logic
-              if (inputs().at(2)->value() == false && inputs().at(3)->value() == false){ //S!R
-                  res = true;
-              } else if (inputs().at(3)->value() == false && inputs().at(2)->value() == false){ //!SR
-                  res = false;
-              }
-              //ELSE INVALID (IMPLEMENT ERROR)
-          }
-          if (inputs().at(2)->value() == true){ //Set
-              res = true;
-          }
-          if (inputs().at(3)->value() == true){ //Reset
-              res = false;
-          }
-      }
-      outputs().first()->setValue(res);
-      outputs().last()->setValue(!res);
-  }
-
+  outputs( ).first( )->setValue( res1 );
+  outputs( ).last( )->setValue( !res2 );
+  /* Reference: https://pt.wikipedia.org/wiki/Flip-flop#Flip-flop_SR_Sincrono */
+}
