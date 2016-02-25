@@ -163,7 +163,7 @@ void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &el
       }
       for( QNEPort *port : elm->outputs( ) ) {
         QString varName = varMap[ port ];
-        out << "boolean " << varName << " = LOW;" << endl;
+        out << "boolean " << varName << " = " << highLow(port->defaultValue()) << ";" << endl;
         switch( elm->elementType( ) ) {
             case ElementType::CLOCK: {
             if( !isBox ) {
@@ -316,6 +316,19 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
 
           break;
         }
+      case ElementType::JKLATCH: {
+          QString secondOut = varMap[ elm->outputs( ).at( 1 ) ];
+          QString j = otherPortName( elm->inputs( ).at( 0 ) );
+          QString k = otherPortName( elm->inputs( ).at( 1 ) );
+          out << QString( "    //JK Latch" ) << endl;
+          out << QString( "    if( %1 && %2 ) { " ).arg( j).arg(k) << endl;
+          out << QString( "        %1 = !%2;" ).arg( firstOut ).arg( firstOut ) << endl;
+          out << QString( "    }else if ( %1 != %2 ) {" ).arg(j).arg( k ) << endl;
+          out << QString( "        %1 = %2;" ).arg( firstOut ).arg(j) << endl;
+          out << QString( "    }" ) << endl;
+          out << QString( "    %1 = !%2;" ).arg( secondOut ).arg( firstOut ) << endl;
+          break;
+        }
           case ElementType::AND:
           case ElementType::OR:
           case ElementType::NAND:
@@ -385,11 +398,13 @@ void CodeGenerator::assignLogicOperator( GraphicElement *elm ) {
     if( parentheses && negate ) {
       out << "( ";
     }
-    out << varMap[ inPort->connections( ).front( )->otherPort( inPort ) ];
-    for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
-      inPort = elm->inputs( )[ i ];
-      out << " " << logicOperator << " ";
-      out << otherPortName( inPort );
+    if( inPort->connections( ).isEmpty()){
+      out << otherPortName(inPort);
+      for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
+        inPort = elm->inputs( )[ i ];
+        out << " " << logicOperator << " ";
+        out << otherPortName( inPort );
+      }
     }
     if( parentheses && negate ) {
       out << " )";

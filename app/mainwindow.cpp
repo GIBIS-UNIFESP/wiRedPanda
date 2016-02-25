@@ -470,6 +470,7 @@ void MainWindow::keyReleaseEvent( QKeyEvent *evt ) {
 }
 
 bool MainWindow::ExportToArduino( QString fname ) {
+  try{
   if( fname.isEmpty( ) ) {
     return( false );
   }
@@ -497,9 +498,14 @@ bool MainWindow::ExportToArduino( QString fname ) {
   CodeGenerator arduino( QDir::home( ).absoluteFilePath( fname ), elements );
   arduino.generate( );
   sc->start( );
-  ui->statusBar->showMessage( "Arduino code successfully generated.", 2000 );
+  ui->statusBar->showMessage( tr("Arduino code successfully generated."), 2000 );
 
   qDebug( ) << "Arduino code successfully generated.";
+  }catch(std::runtime_error e){
+    QMessageBox::warning(this,tr("Error"),tr("<strong>Error while exporting to arduino code:</strong><br>%1").arg(e.what()));
+    return false;
+  }
+
   return( true );
 }
 

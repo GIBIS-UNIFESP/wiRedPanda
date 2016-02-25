@@ -28,10 +28,8 @@ void JKLatch::updateLogic() {
   } else {
     if( j == true &&  k == true) { //IF J=K
       res = !res;
-    } else if (j== true) { //J
-      res = true;
-    } else if (k == true) { //K
-      res = false;
+    } else if (j != k) { //J
+      res = j;
     } //else nothing happens
   }
   outputs().first()->setValue(res);
