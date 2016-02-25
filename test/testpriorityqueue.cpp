@@ -13,12 +13,13 @@
 
 void TestPriorityQueue::init() {
   QVector<int> values = {25,40,55,20,44,35,38,99,10,65,50};
-  foreach (int i , values) {
+  for (int i  : values) {
     elements.append(new PriorityElement(i));
   }
 }
 
 void TestPriorityQueue::cleanup() {
+  qDeleteAll(elements);
   elements.clear();
 }
 
