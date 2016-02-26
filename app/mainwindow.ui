@@ -30,107 +30,7 @@
    <layout class="QGridLayout" name="gridLayout_3">
     <item row="1" column="0">
      <layout class="QGridLayout" name="gridLayout">
-      <item row="2" column="1">
-       <spacer name="verticalSpacer_5">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>0</width>
-          <height>4</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="0" column="1" colspan="2">
-       <widget class="QLineEdit" name="lineEdit">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="clearButtonEnabled">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
       <item row="4" column="0" colspan="3">
-       <widget class="ElementEditor" name="widgetElementEditor" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>150</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Search:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="3">
-       <widget class="QScrollArea" name="searchScrollArea">
-        <property name="widgetResizable">
-         <bool>true</bool>
-        </property>
-        <widget class="QWidget" name="searchContents">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>0</y>
-           <width>218</width>
-           <height>203</height>
-          </rect>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_7">
-          <item row="0" column="0">
-           <layout class="QVBoxLayout" name="searchLayout">
-            <item>
-             <spacer name="VSpacer">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>184</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </widget>
-      </item>
-      <item row="3" column="0" colspan="3">
        <widget class="QTabWidget" name="tabWidget">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -145,7 +45,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="io">
          <attribute name="title">
@@ -165,8 +65,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>184</width>
-               <height>522</height>
+               <width>68</width>
+               <height>165</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout">
@@ -389,9 +289,9 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
-               <width>198</width>
-               <height>214</height>
+               <y>-373</y>
+               <width>184</width>
+               <height>594</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -576,6 +476,33 @@
                </layout>
               </item>
               <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_27">
+                <property name="sizeConstraint">
+                 <enum>QLayout::SetFixedSize</enum>
+                </property>
+                <item>
+                 <widget class="Label" name="label_mux">
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="pixmap">
+                   <pixmap resource="resources/basic/basic.qrc">:/basic/mux.png</pixmap>
+                  </property>
+                  <property name="Name" stdset="0">
+                   <string>XNOR</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_40">
+                  <property name="text">
+                   <string>MUX</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
                <spacer name="verticalSpacer_3">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
@@ -612,8 +539,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>198</width>
-               <height>214</height>
+               <width>82</width>
+               <height>165</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -834,8 +761,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>198</width>
-               <height>214</height>
+               <width>82</width>
+               <height>18</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -855,6 +782,106 @@
              </layout>
             </widget>
            </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <spacer name="verticalSpacer_5">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>4</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="5" column="0" colspan="3">
+       <widget class="ElementEditor" name="widgetElementEditor" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>150</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Search:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <widget class="QLineEdit" name="lineEdit">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="clearButtonEnabled">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="3">
+       <widget class="QScrollArea" name="searchScrollArea">
+        <property name="widgetResizable">
+         <bool>true</bool>
+        </property>
+        <widget class="QWidget" name="searchContents">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>218</width>
+           <height>196</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_7">
+          <item row="0" column="0">
+           <layout class="QVBoxLayout" name="searchLayout">
+            <item>
+             <spacer name="VSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>184</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -895,7 +922,7 @@
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>19</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1211,18 +1238,18 @@
   <tabstop>scrollArea_6</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/resources.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/memory/memory.qrc"/>
   <include location="resources/basic/basic.qrc"/>
-  <include location="resources/output/output.qrc"/>
   <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
+  <include location="resources/resources.qrc"/>
   <include location="resources/output/output.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/memory/memory.qrc"/>
   <include location="resources/resources.qrc"/>
+  <include location="resources/memory/memory.qrc"/>
+  <include location="resources/output/output.qrc"/>
   <include location="resources/basic/basic.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>
 </ui>

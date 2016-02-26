@@ -5,6 +5,7 @@
 #include <iostream>
 #include <jkflipflop.h>
 #include <jklatch.h>
+#include <mux.h>
 #include <srflipflop.h>
 #include <tflipflop.h>
 #include <tlatch.h>
@@ -100,6 +101,42 @@ void TestElements::testGND( ) {
   InputGnd gnd;
   QCOMPARE( ( int ) gnd.outputs( ).front( )->value( ), 0 );
 
+}
+
+void TestElements::testMux( ) {
+  Mux elm;
+  QCOMPARE( elm.inputSize( ), elm.inputs( ).size( ) );
+  QCOMPARE( elm.inputSize( ), 3 );
+  QCOMPARE( elm.outputSize( ), elm.outputs( ).size( ) );
+  QCOMPARE( elm.outputSize( ), 1 );
+  QCOMPARE( elm.minInputSz( ), 3 );
+  QCOMPARE( elm.elementType( ), ElementType::MUX );
+  conn[ 0 ]->setPort2( elm.inputs( ).at( 0 ) );
+  conn[ 1 ]->setPort2( elm.inputs( ).at( 1 ) );
+  conn[ 2 ]->setPort2( elm.inputs( ).at( 2 ) );
+
+  std::array< std::array< int, 4 >, 8 > truthTable = {
+    {
+      { { 0, 0, 0, 0 } },
+      { { 0, 0, 1, 0 } },
+      { { 0, 1, 0, 0 } },
+      { { 0, 1, 1, 1 } },
+      { { 1, 0, 0, 1 } },
+      { { 1, 0, 1, 0 } },
+      { { 1, 1, 0, 1 } },
+      { { 1, 1, 1, 1 } },
+    }
+  };
+  for( int test = 0; test < 4; ++test ) {
+    sw[ 0 ]->setOn( truthTable[ test ][ 0 ] );
+    sw[ 1 ]->setOn( truthTable[ test ][ 1 ] );
+    sw[ 2 ]->setOn( truthTable[ test ][ 2 ] );
+    sw[ 0 ]->updateLogic( );
+    sw[ 1 ]->updateLogic( );
+    sw[ 2 ]->updateLogic( );
+    elm.updateLogic( );
+    QCOMPARE( ( int ) elm.outputs( ).front( )->value( ), truthTable[ test ][ 3 ] );
+  }
 }
 
 void TestElements::testDFlipFlop( ) {

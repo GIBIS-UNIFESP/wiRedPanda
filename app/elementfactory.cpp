@@ -24,6 +24,7 @@
 
 
 #include <QDebug>
+#include <mux.h>
 #include <node.h>
 
 
@@ -114,15 +115,10 @@ GraphicElement *ElementFactory::buildElement(ElementType type, Editor * editor, 
   case ElementType::NODE:
     elm = new Node(parent);
     break;
-  //  case ElementType::DLATCH:
-  //    elm = new DLatch();
-  //    break;
-//  case ElementType::SRLATCH:
-//    elm = new SRLatch();
-//    break;
-//  case ElementType::SCRLATCH:
-//    elm = new SCRLatch();
-//    break;
+  case ElementType::MUX:
+    elm = new Mux(parent);
+    break;
+
   default:
 //    std::string msg ( std::string(__FILE__) + ": " + std::to_string(__LINE__)
 //                      + ": " + "Elementfactory" + "::" + std::string(__FUNCTION__)

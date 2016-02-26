@@ -16,4 +16,3 @@ DISTFILES += windows.rc
 }
 
 SOURCES += main.cpp
-

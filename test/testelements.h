@@ -24,6 +24,8 @@ private slots:
   void testVCC( );
   void testGND( );
 
+  void testMux( );
+
   void testDFlipFlop( );
   void testDLatch( );
   void testJKFlipFlop( );
