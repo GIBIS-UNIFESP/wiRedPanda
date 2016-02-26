@@ -20,6 +20,7 @@ void Label::setElementType( QString elementType ) {
 void Label::mousePressEvent( QMouseEvent *event ) {
   startDrag( event->pos( ) );
 }
+
 bool Label::busy( ) const {
   return( m_busy );
 }
@@ -110,6 +111,9 @@ void Label::startDrag( QPoint pos ) {
   }
   else if( objectName( ).endsWith( "_box" ) ) {
     type = ElementType::BOX;
+  }
+  else if( objectName( ).endsWith( "_mux" ) ) {
+    type = ElementType::MUX;
   }
   dataStream << QPointF( pos ) << ( qint32 ) type << m_auxData;
 

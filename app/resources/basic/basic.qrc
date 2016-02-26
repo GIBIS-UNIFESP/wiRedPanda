@@ -8,5 +8,6 @@
         <file>xnor.png</file>
         <file>xor.png</file>
         <file>box.png</file>
+        <file>mux.png</file>
     </qresource>
 </RCC>

@@ -10,7 +10,9 @@ CONFIG(debug, debug|release) {
 
 
 SOURCES += \
+    $$PWD/app/arduino/codegenerator.cpp \
     $$PWD/app/box.cpp \
+    $$PWD/app/boxnotfoundexception.cpp \
     $$PWD/app/commands.cpp \
     $$PWD/app/editor.cpp \
     $$PWD/app/element/and.cpp \
@@ -18,8 +20,6 @@ SOURCES += \
     $$PWD/app/element/dflipflop.cpp \
     $$PWD/app/element/display.cpp \
     $$PWD/app/element/dlatch.cpp \
-    $$PWD/app/elementeditor.cpp \
-    $$PWD/app/elementfactory.cpp \
     $$PWD/app/element/inputbutton.cpp \
     $$PWD/app/element/inputgnd.cpp \
     $$PWD/app/element/inputswitch.cpp \
@@ -27,6 +27,7 @@ SOURCES += \
     $$PWD/app/element/jkflipflop.cpp \
     $$PWD/app/element/jklatch.cpp \
     $$PWD/app/element/led.cpp \
+    $$PWD/app/element/mux.cpp \
     $$PWD/app/element/nand.cpp \
     $$PWD/app/element/node.cpp \
     $$PWD/app/element/nor.cpp \
@@ -37,6 +38,8 @@ SOURCES += \
     $$PWD/app/element/tlatch.cpp \
     $$PWD/app/element/xnor.cpp \
     $$PWD/app/element/xor.cpp \
+    $$PWD/app/elementeditor.cpp \
+    $$PWD/app/elementfactory.cpp \
     $$PWD/app/globalproperties.cpp \
     $$PWD/app/graphicelement.cpp \
     $$PWD/app/graphicsview.cpp \
@@ -50,13 +53,14 @@ SOURCES += \
     $$PWD/app/priorityqueue.cpp \
     $$PWD/app/scene.cpp \
     $$PWD/app/serializationfunctions.cpp \
-    $$PWD/app/simulationcontroller.cpp \
-    $$PWD/app/boxnotfoundexception.cpp \
-    $$PWD/app/arduino/codegenerator.cpp
+    $$PWD/app/simulationcontroller.cpp
+
 
 
 HEADERS  +=  \
+    $$PWD/app/arduino/codegenerator.h\
     $$PWD/app/box.h \
+    $$PWD/app/boxnotfoundexception.h \
     $$PWD/app/commands.h \
     $$PWD/app/editor.h \
     $$PWD/app/element/and.h \
@@ -64,8 +68,6 @@ HEADERS  +=  \
     $$PWD/app/element/dflipflop.h \
     $$PWD/app/element/display.h \
     $$PWD/app/element/dlatch.h \
-    $$PWD/app/elementeditor.h \
-    $$PWD/app/elementfactory.h \
     $$PWD/app/element/inputbutton.h \
     $$PWD/app/element/inputgnd.h \
     $$PWD/app/element/inputswitch.h \
@@ -73,6 +75,7 @@ HEADERS  +=  \
     $$PWD/app/element/jkflipflop.h \
     $$PWD/app/element/jklatch.h \
     $$PWD/app/element/led.h \
+    $$PWD/app/element/mux.h \
     $$PWD/app/element/nand.h \
     $$PWD/app/element/node.h \
     $$PWD/app/element/nor.h \
@@ -83,6 +86,8 @@ HEADERS  +=  \
     $$PWD/app/element/tlatch.h \
     $$PWD/app/element/xnor.h \
     $$PWD/app/element/xor.h \
+    $$PWD/app/elementeditor.h \
+    $$PWD/app/elementfactory.h \
     $$PWD/app/globalproperties.h \
     $$PWD/app/graphicelement.h \
     $$PWD/app/graphicsview.h \
@@ -96,9 +101,12 @@ HEADERS  +=  \
     $$PWD/app/priorityqueue.h \
     $$PWD/app/scene.h \
     $$PWD/app/serializationfunctions.h \
-    $$PWD/app/simulationcontroller.h \
-    $$PWD/app/boxnotfoundexception.h \
-    $$PWD/app/arduino/codegenerator.h
+    $$PWD/app/simulationcontroller.h
+
+
+HEADERS += \
+
+
 
 INCLUDEPATH += \
     $$PWD/app \
