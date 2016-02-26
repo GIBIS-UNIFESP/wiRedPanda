@@ -18,14 +18,14 @@
   !define MUI_FILE "wpanda"
   # These three must be integers
   !define VERSIONMAJOR 1
-  !define VERSIONMINOR 7
+  !define VERSIONMINOR 8
   !define VERSIONBUILD 0001
   !define MUI_VERSION "${VERSIONMAJOR}.{VERSIONMINOR}"
   !define MUI_BRANDINGTEXT "${MUI_PRODUCT} ${MUI_VERSION}"
   !define COMPANYNAME "UNIFESP"
   !define DESCRIPTION "WiRed Panda is a software designed to help students to learn about logic circuits and simulate them in an easy and friendly way."
 
-  !define BUILD_DIR "C:\Build\build-WPanda-Desktop_Qt_5_5_0_MinGW_32bit-Release\app\release"
+  !define BUILD_DIR "C:\Build\build-WPanda-Desktop_Qt_5_5_1_MinGW_32bit-Release\app\release"
   CRCCheck On
   Name "${MUI_PRODUCT}"
   Icon "logo.ico"
@@ -43,7 +43,7 @@
   ;Request application privileges for Windows Vista
   RequestExecutionLevel admin
 
-  OutFile "wpanda17_32.exe"
+  OutFile "wpanda_32.exe"
   ShowInstDetails "nevershow"
   ShowUninstDetails "nevershow"
   ;SetCompressor "bzip2"
