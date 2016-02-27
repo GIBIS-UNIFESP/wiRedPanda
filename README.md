@@ -17,10 +17,12 @@ The main features of the software are:
 To install and run WiRed Panda on your platform you can:
 
 ### Windows:
- Download the [windows installer] (https://github.com/GIBIS-UNIFESP/wiRedPanda/raw/master/installer/wpanda17_32.exe) of the latest version of WiRed Panda.
+ Extract the [portable version](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.8-beta/wpanda_portable_32.zip) or download the [windows installer] (https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.8-beta/wpanda_32.exe) of the [latest release](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/tag/v1.8-beta) of WiRed Panda.
  
 ### Linux:
- To compile and install this software on a gnome-shell based linux distro, please use the following commands:
+ Try to download and execute the [portable version](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.8-beta/wpanda_linux64_portable.tar.gz) of the [latest release](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/tag/v1.8-beta) of WiRed Panda, or else download the source code and build on you computer:
+
+ To compile and install this software on a gnome-shell based linux distro with the Qt5.5.1 development environment, please use the following commands:
  
 ```sh
 git clone https://github.com/GIBIS-UNIFESP/wiRedPanda/
