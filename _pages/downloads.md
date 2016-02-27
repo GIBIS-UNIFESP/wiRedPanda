@@ -6,7 +6,7 @@ permalink: /downloads/
 To install and run WiRed Panda on your platform you can:
 
 ### Windows:
- Extract the [portable version](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.8-beta/wpanda_portable_32.zip) or download the [windows installer] (https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.8-beta/wpanda_32.exe) of the [latest release](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/tag/v1.8-beta) of WiRed Panda.
+ Extract the [portable version](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.8-beta/wpanda_portable_32.zip) or download the [windows installer](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.8-beta/wpanda_32.exe) of the [latest release](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/tag/v1.8-beta) of WiRed Panda.
  
 ### Linux:
  Try to download and execute the [portable version](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.8-beta/wpanda_linux64_portable.tar.gz) of the [latest release](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/tag/v1.8-beta) of WiRed Panda, or else download the source code and build on you computer.
