@@ -3,7 +3,8 @@ layout: inner
 title: Downloads
 permalink: /downloads/
 ---
-##Install
+## Install
+
 To install and run WiRed Panda on your platform you can:
 
 ### Windows:
