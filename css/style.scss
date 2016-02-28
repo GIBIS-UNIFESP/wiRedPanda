@@ -349,6 +349,9 @@ pre {
       padding: 0px 100px;
       text-align: center;
     }
+    .img-responsive {
+        width: 50%;
+    }
 }
 
 .main{
@@ -368,4 +371,24 @@ pre {
     .banner-subtitle{
         padding: 0px 10px;
     }
+}
+
+@media only screen and (max-width : 480px) {
+   .main {
+       .banner-title {
+           font-size: 3em;
+       }
+   }
+    
+   .features {
+        padding-top: 3em;
+        padding-bottom: 3em;
+        
+        h2, h4, p {
+        padding: 0px 20px;
+        }
+        .img-responsive {
+            width: 80%;
+        }
+    }    
 }
