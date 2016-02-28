@@ -13,14 +13,14 @@ The main features of the software are:
 
 ![Alt text](images/wpanda.png?raw=true "WiRed Panda Screenshot")
 
-##Install
-To install and run WiRed Panda on your platform you can:
+## Downloads
+To run WiRed Panda on your platform you can:
 
 ### Windows:
  Extract the [portable version](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.8-beta/WiRedPanda_Portable_Windows_x86_64.zip) or download the [windows installer](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.8-beta/WiRedPanda_Installer_Windows_x86_64.exe) of the [latest release](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/tag/v1.8-beta) of WiRed Panda.
  
 ### Linux:
- Try the [portable version for Fedora 23 x64](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.8-beta/WiredPanda_Portable_Fedora23_x64.gz) of the [latest release](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/tag/v1.8-beta) of WiRed Panda, or else download the [source code](https://github.com/GIBIS-UNIFESP/wiRedPanda/archive/v1.8-beta.tar.gz) and build on you computer.
+ Try the [portable version for Fedora 23 x64](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.8-beta/WiredPanda_Portable_Fedora23_x64.tar.gz) or the [portable version for Ubuntu 14.04](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.8-beta/WiredPanda_Portable_Ubuntu1404_x64.tar.gz) of the [latest release](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/tag/v1.8-beta) of WiRed Panda, or else download the [source code](https://github.com/GIBIS-UNIFESP/wiRedPanda/archive/v1.8-beta.tar.gz) and build on you computer.
 
 ### Building WiRED Panda on your computer:
 
