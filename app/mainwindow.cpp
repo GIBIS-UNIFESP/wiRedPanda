@@ -202,9 +202,20 @@ void MainWindow::on_actionSave_triggered( ) {
 }
 
 void MainWindow::on_actionAbout_triggered( ) {
-  QMessageBox::about( this, "Wired Panda",
+  QMessageBox::about( this, "wiRED Panda",
                       tr(
-                        "Wired Panda is a software built to help students to learn about logic circuits.\nVersion: %1\n\nCreators:\nDavi Morales\nHéctor Castelli\nLucas Lellis\nRodrigo Torres\nSupervised by: Fábio Cappabianco." )
+                        "<p>wiRED Panda is a software developed by the students of the Federal University of São Paulo."
+                        " This project was created in order to help students to learn about logic circuits.</p>"
+                        "<p>Software version: %1</p>"
+                        "<p><strong>Creators:</strong></p>"
+                        "<ul>"
+                        "<li> Davi Morales </li>"
+                        "<li> Héctor Castelli </li>"
+                        "<li> Lucas Lellis </li>"
+                        "<li> Rodrigo Torres </li>"
+                        "<li> Prof. Fábio Cappabianco, Ph.D. </li>"
+                        "</ul>"
+                        "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
                       .arg(
                         QApplication::applicationVersion( ) ) );
 }
@@ -304,10 +315,10 @@ void MainWindow::setCurrentFile( const QFileInfo &value ) {
   qDebug( ) << "Setting current file to: " << value.absoluteFilePath( );
   currentFile = value;
   if( value.fileName( ).isEmpty( ) ) {
-    setWindowTitle( "WiRED PANDA" );
+    setWindowTitle( "wiRED PANDA" );
   }
   else {
-    setWindowTitle( QString( "WiRED PANDA ( %1 )" ).arg( value.fileName( ) ) );
+    setWindowTitle( QString( "wiRED PANDA ( %1 )" ).arg( value.fileName( ) ) );
   }
   GlobalProperties::currentFile = currentFile.absoluteFilePath( );
   if( currentFile.exists( ) ) {

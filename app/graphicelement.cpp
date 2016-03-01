@@ -93,7 +93,7 @@ void GraphicElement::save( QDataStream &ds ) {
   ds << rotation( );
 
   /* <Version1.2> */
-  ds << label->toPlainText( );
+  ds << getLabel();
   /* <\Version1.2> */
 
   /* <Version1.3> */
@@ -121,6 +121,7 @@ void GraphicElement::save( QDataStream &ds ) {
 
 void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) {
   QPointF p;
+  QString label_text;
   ds >> p;
   qreal angle;
   ds >> angle;
@@ -128,7 +129,6 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
   setRotation( angle );
   /* <Version1.2> */
   if( version >= 1.2 ) {
-    QString label_text;
     ds >> label_text;
     setLabel( label_text );
   }
@@ -144,6 +144,7 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
   /* <Version1.9> */
   if( version >= 1.9 ) {
     ds >> m_trigger;
+    setLabel( label_text );
   }
   /* <\Version1.9> */
 
@@ -342,11 +343,16 @@ void GraphicElement::setTrigger( const QKeySequence &trigger ) {
  */
 
 void GraphicElement::setLabel( QString label ) {
-  this->label->setPlainText( label );
+  m_labelText = label;
+  if(!hasTrigger() || getTrigger().isEmpty()){
+    this->label->setPlainText( label );
+  }else{
+    this->label->setPlainText( label  + QString(" (%1)").arg(getTrigger().toString()));
+  }
 }
 
 QString GraphicElement::getLabel( ) {
-  return( label->toPlainText( ) );
+  return( m_labelText );
 }
 
 bool GraphicElement::visited( ) const {

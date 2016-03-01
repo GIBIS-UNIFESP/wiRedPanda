@@ -161,6 +161,7 @@ private:
   bool m_beingVisited;
   bool m_visited;
   bool m_disabled;
+  QString m_labelText;
   QKeySequence m_trigger;
 protected:
   QVector< QNEPort* > m_inputs;
