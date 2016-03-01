@@ -703,7 +703,12 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
             if( elm->hasTrigger( ) && !elm->getTrigger( ).isEmpty( ) ) {
               Input *in = dynamic_cast< Input* >( elm );
               if( in && elm->getTrigger( ).matches( keyEvt->key( ) ) ) {
-                in->setOn( true );
+                if( elm->elementType( ) == ElementType::SWITCH ) {
+                  in->setOn( !in->getOn( ) );
+                }
+                else {
+                  in->setOn( true );
+                }
               }
             }
           }
@@ -718,8 +723,10 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
           for( GraphicElement *elm : scene->getElements( ) ) {
             if( elm->hasTrigger( ) && !elm->getTrigger( ).isEmpty( ) ) {
               Input *in = dynamic_cast< Input* >( elm );
-              if( in && elm->getTrigger( ).matches( keyEvt->key( ) ) == QKeySequence::ExactMatch ) {
-                in->setOn( false );
+              if( in && ( elm->getTrigger( ).matches( keyEvt->key( ) ) == QKeySequence::ExactMatch ) ) {
+                if( elm->elementType( ) != ElementType::SWITCH ) {
+                  in->setOn( false );
+                }
               }
             }
           }

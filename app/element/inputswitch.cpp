@@ -22,19 +22,18 @@ bool InputSwitch::getOn( ) const {
 
 void InputSwitch::setOn( bool value ) {
   on = value;
-  updateLogic();
+  updateLogic( );
+  if( on ) {
+    setPixmap( QPixmap( ":/input/switchOn.png" ) );
+  }
+  else {
+    setPixmap( QPixmap( ":/input/switchOff.png" ) );
+  }
 }
 
 void InputSwitch::mousePressEvent( QGraphicsSceneMouseEvent *event ) {
   if( event->button( ) == Qt::LeftButton ) {
-    if( on ) {
-      on = false;
-      setPixmap( QPixmap( ":/input/switchOff.png" ) );
-    }
-    else {
-      on = true;
-      setPixmap( QPixmap( ":/input/switchOn.png" ) );
-    }
+    setOn( !on );
     setChanged( true );
     event->accept( );
   }
