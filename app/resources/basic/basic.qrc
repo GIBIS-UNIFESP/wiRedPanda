@@ -9,5 +9,6 @@
         <file>xor.png</file>
         <file>box.png</file>
         <file>mux.png</file>
+        <file>demux.png</file>
     </qresource>
 </RCC>

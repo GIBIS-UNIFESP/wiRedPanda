@@ -45,7 +45,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="io">
          <attribute name="title">
@@ -65,8 +65,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>68</width>
-               <height>165</height>
+               <width>184</width>
+               <height>522</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout">
@@ -289,9 +289,9 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>-373</y>
+               <y>-439</y>
                <width>184</width>
-               <height>594</height>
+               <height>666</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -489,7 +489,7 @@
                    <pixmap resource="resources/basic/basic.qrc">:/basic/mux.png</pixmap>
                   </property>
                   <property name="Name" stdset="0">
-                   <string>XNOR</string>
+                   <string>MUX</string>
                   </property>
                  </widget>
                 </item>
@@ -497,6 +497,33 @@
                  <widget class="QLabel" name="label_40">
                   <property name="text">
                    <string>MUX</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_28">
+                <property name="sizeConstraint">
+                 <enum>QLayout::SetFixedSize</enum>
+                </property>
+                <item>
+                 <widget class="Label" name="label_demux">
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="pixmap">
+                   <pixmap resource="resources/basic/basic.qrc">:/basic/demux.png</pixmap>
+                  </property>
+                  <property name="Name" stdset="0">
+                   <string>DEMUX</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_42">
+                  <property name="text">
+                   <string>DEMUX</string>
                   </property>
                  </widget>
                 </item>
@@ -539,8 +566,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>82</width>
-               <height>165</height>
+               <width>184</width>
+               <height>522</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -761,8 +788,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>82</width>
-               <height>18</height>
+               <width>198</width>
+               <height>227</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -862,7 +889,7 @@
            <x>0</x>
            <y>0</y>
            <width>218</width>
-           <height>196</height>
+           <height>187</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_7">
@@ -1238,18 +1265,18 @@
   <tabstop>scrollArea_6</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/basic/basic.qrc"/>
   <include location="resources/input/input.qrc"/>
-  <include location="resources/resources.qrc"/>
   <include location="resources/output/output.qrc"/>
+  <include location="resources/resources.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
   <include location="resources/memory/memory.qrc"/>
   <include location="resources/resources.qrc"/>
   <include location="resources/memory/memory.qrc"/>
-  <include location="resources/output/output.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
-  <include location="resources/input/input.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
  </resources>
  <connections/>
 </ui>

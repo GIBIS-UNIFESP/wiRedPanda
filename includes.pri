@@ -17,6 +17,7 @@ SOURCES += \
     $$PWD/app/editor.cpp \
     $$PWD/app/element/and.cpp \
     $$PWD/app/element/clock.cpp \
+    $$PWD/app/element/demux.cpp \
     $$PWD/app/element/dflipflop.cpp \
     $$PWD/app/element/display.cpp \
     $$PWD/app/element/dlatch.cpp \
@@ -65,6 +66,7 @@ HEADERS  +=  \
     $$PWD/app/editor.h \
     $$PWD/app/element/and.h \
     $$PWD/app/element/clock.h \
+    $$PWD/app/element/demux.h \
     $$PWD/app/element/dflipflop.h \
     $$PWD/app/element/display.h \
     $$PWD/app/element/dlatch.h \
