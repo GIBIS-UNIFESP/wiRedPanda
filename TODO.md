@@ -3,7 +3,7 @@
 - [x] Undo/Redo. [link](https://github.com/lellisls/wiRedPanda/issues/1)
 - [x] Boxes.  [link](https://github.com/lellisls/wiRedPanda/issues/9)
 - [ ] Installer. [link](https://github.com/lellisls/wiRedPanda/issues/3)
-- [ ] Add keyboard shortcuts to inputs. [link](https://github.com/lellisls/wiRedPanda/issues/11)
+- [x] Add keyboard shortcuts to inputs. [link](https://github.com/lellisls/wiRedPanda/issues/11)
 - [x] Line Split.
 - [ ] Zoom.
 - [x] Dynamic scene resizing
@@ -17,7 +17,7 @@
 - [ ] ~~Allow gates with more than 8 in/out.~~
 - [ ] Labels always in horizontal.
 - [ ] Verify if file changed outside.
-- [ ] MUX and DEMUX.
+- [x] MUX and DEMUX.
 - [x] Ctrl + Drag copy.
 - [x] Lauch box in new instance.
 
