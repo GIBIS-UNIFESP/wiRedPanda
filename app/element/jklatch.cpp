@@ -26,7 +26,7 @@ void JKLatch::updateLogic() {
   if(!isValid()) {
     res = -1;
   } else {
-    if( j == true &&  k == true) { //IF J=K
+    if( j == 1 &&  k == 1) { //IF J=K
       res = !res;
     } else if (j != k) { //J
       res = j;

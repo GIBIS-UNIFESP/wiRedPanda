@@ -6,6 +6,8 @@
 
 GraphicsView::GraphicsView( QWidget *parent ) : QGraphicsView( parent ) {
   _pan = false;
+  _panStartX = 0;
+  _panStartY = 0;
 }
 
 void GraphicsView::mousePressEvent( QMouseEvent *e ) {
@@ -23,7 +25,7 @@ void GraphicsView::mousePressEvent( QMouseEvent *e ) {
 void GraphicsView::mouseReleaseEvent( QMouseEvent *e ) {
   if( e->button( ) == Qt::MiddleButton ) {
     _pan = false;
-    QApplication::restoreOverrideCursor();
+    QApplication::restoreOverrideCursor( );
     e->accept( );
     return;
   }

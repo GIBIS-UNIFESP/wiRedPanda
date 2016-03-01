@@ -31,8 +31,8 @@ void TLatch::updateLogic( ) {
   else {
     char toggle = inputs( ).at( 0 )->value( );
     char enable = inputs( ).at( 1 )->value( );
-    if( enable == true ) { /* If Enable */
-      if( toggle == true ) { /* And T */
+    if( enable == 1 ) { /* If Enable */
+      if( toggle == 1 ) { /* And T */
         res = !res;
       }
     }

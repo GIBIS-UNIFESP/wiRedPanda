@@ -4,7 +4,7 @@ TFlipFlop::TFlipFlop( QGraphicsItem *parent ) : GraphicElement( 4, 4, 2, 2, pare
   setPixmap( QPixmap( ":/memory/T-flipflop.png" ) );
   setRotatable( false );
   updatePorts( );
-  lastClk = false;
+  lastClk = 0;
   setObjectName( "FlipFlop T" );
 
   inputs( ).at( 0 )->setName( "T" );
@@ -43,16 +43,16 @@ void TFlipFlop::updateLogic( ) {
   }
   else {
     char T = inputs( ).at( 0 )->value( );
-    bool clk = inputs( ).at( 1 )->value( ); /* Current lock */
+    char clk = inputs( ).at( 1 )->value( ); /* Current lock */
     char prst = inputs( ).at( 2 )->value( );
     char clr = inputs( ).at( 3 )->value( );
-    if( ( clk == true ) && ( lastClk == false ) ) { /* If Clock up*/
-      if( T == true ) { /* And T */
+    if( ( clk == 1 ) && ( lastClk == 0 ) ) { /* If Clock up*/
+      if( T == 1 ) { /* And T */
         res1 = !res1;
         res2 = !res1;
       }
     }
-    if( ( prst == false ) || ( clr == false ) ) {
+    if( ( prst == 0 ) || ( clr == 0 ) ) {
       res1 = !prst;
       res2 = !clr;
     }

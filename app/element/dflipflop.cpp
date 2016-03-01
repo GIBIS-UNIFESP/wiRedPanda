@@ -48,7 +48,7 @@ void DFlipFlop::updateLogic( ) {
       res1 = lastValue; /* Output = Data */
       res2 = !lastValue;
     }
-    if( ( prst == false ) || ( clr == false ) ) {
+    if( ( prst == 0 ) || ( clr == 0 ) ) {
       res1 = !prst;
       res2 = !clr;
     }

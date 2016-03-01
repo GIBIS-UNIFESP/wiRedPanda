@@ -1,6 +1,7 @@
 #include "graphicelement.h"
 #include "label.h"
 #include <QtWidgets>
+
 Label::Label( QWidget *parent ) : QLabel( parent ) {
   setBusy( false );
 }

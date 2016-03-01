@@ -6,8 +6,11 @@
 class Label : public QLabel {
   Q_OBJECT
 public:
-  Q_PROPERTY( QString elementType READ elementType WRITE setElementType DESIGNABLE true )
   explicit Label( QWidget *parent = 0 );
+
+  Q_PROPERTY( QString elementType READ elementType WRITE setElementType DESIGNABLE true )
+
+
   virtual ~Label( );
   QString elementType( );
   void setElementType( QString elementType );

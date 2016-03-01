@@ -8,13 +8,12 @@
 
 class Scene : public QGraphicsScene {
 public:
-  Scene( QObject *parent = 0 );
+  explicit Scene( QObject *parent = 0 );
   Scene( const QRectF &sceneRect, QObject *parent = 0 );
   Scene( qreal x, qreal y, qreal width, qreal height, QObject *parent = 0 );
 
   /* QGraphicsScene interface */
   int gridSize( ) const;
-  void setGridSize( int gridSize );
   QVector< GraphicElement* > getElements( );
 
 protected:

@@ -40,7 +40,7 @@ void SRFlipFlop::updateLogic( ) {
     char s = inputs( ).at( 0 )->value( );
     char clk = inputs( ).at( 1 )->value( );
     char r = inputs( ).at( 2 )->value( );
-    if( ( clk == true ) && ( lastClk == false ) ) { /* If Clock up */
+    if( ( clk == 1 ) && ( lastClk == 0 ) ) { /* If Clock up */
       if( s && r ) { /* Not permitted */
         res1 = 1;
         res2 = 1;

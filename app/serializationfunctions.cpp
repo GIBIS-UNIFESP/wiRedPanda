@@ -12,15 +12,17 @@
 void SerializationFunctions::serialize( const QList< QGraphicsItem* > &items, QDataStream &ds ) {
   foreach( QGraphicsItem * item, items ) {
     if( item->type( ) == GraphicElement::Type ) {
+      GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
       ds << item->type( );
-      ds << ( quint64 ) ( ( GraphicElement* ) item )->elementType( );
-      ( ( GraphicElement* ) item )->save( ds );
+      ds << static_cast< quint64 >( elm->elementType( ) );
+      elm->save( ds );
     }
   }
   foreach( QGraphicsItem * item, items ) {
     if( item->type( ) == QNEConnection::Type ) {
+      QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
       ds << item->type( );
-      ( ( QNEConnection* ) item )->save( ds );
+      conn->save( ds );
     }
   }
 }
@@ -36,9 +38,6 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDa
       ds >> elmType;
       GraphicElement *elm = editor->getFactory( ).buildElement( ( ElementType ) elmType, editor );
       if( elm ) {
-#ifdef DEBUG
-//        qDebug() << "Loaded " << elm->objectName() << " : " << elm->getLabel();
-#endif
         itemList.append( elm );
         elm->load( ds, portMap, version );
         if( elm->elementType( ) == ElementType::BOX ) {
@@ -71,15 +70,16 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDa
 QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStream &ds, Scene *scene ) {
   QString str;
   ds >> str;
-  qDebug() << "Header: " << str;
+  qDebug( ) << "Header: " << str;
   if( !str.startsWith( QApplication::applicationName( ) ) ) {
     throw( std::runtime_error( "Invalid file format." ) );
   }
-
-// else if( !str.endsWith( QApplication::applicationVersion( ) ) ) {
-//    QMessageBox::warning( nullptr, "Warning!", "File opened in compatibility mode.", QMessageBox::Ok,
-//    QMessageBox::NoButton );
-// }
+/*
+ * else if( !str.endsWith( QApplication::applicationVersion( ) ) ) {
+ *    QMessageBox::warning( nullptr, "Warning!", "File opened in compatibility mode.", QMessageBox::Ok,
+ *    QMessageBox::NoButton );
+ * }
+ */
 
   double version = str.split( " " ).at( 1 ).toDouble( );
 
@@ -98,7 +98,7 @@ QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStrea
       rect = rect.united( view->rect( ) );
       rect.moveCenter( QPointF( 0, 0 ) );
       scene->setSceneRect( scene->sceneRect( ).united( rect ) );
-      view->centerOn( scene->itemsBoundingRect( ).center() );
+      view->centerOn( scene->itemsBoundingRect( ).center( ) );
     }
   }
   return( items );

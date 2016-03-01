@@ -29,7 +29,7 @@ void Demux::updateLogic( ) {
   char out0 = -1;
   char out1 = -1;
   if( isValid( ) ) {
-    if( choice == false ) {
+    if( choice == 0 ) {
       out0 = in;
       out1 = false;
     }

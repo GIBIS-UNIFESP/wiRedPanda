@@ -4,8 +4,11 @@
 #include "editor.h"
 #include "globalproperties.h"
 #include "graphicelement.h"
+#include "input.h"
 #include "mainwindow.h"
+#include "nodes/qneconnection.h"
 #include "serializationfunctions.h"
+
 #include <QApplication>
 #include <QDebug>
 #include <QDrag>
@@ -20,9 +23,7 @@
 #include <QMimeData>
 #include <QSettings>
 #include <QtMath>
-#include <input.h>
 #include <iostream>
-#include <nodes/qneconnection.h>
 
 Editor::Editor( MainWindow *parent ) : QObject( parent ), scene( nullptr ), editedConn( nullptr ),
   m_hoverPort( nullptr ) {
@@ -33,7 +34,6 @@ Editor::Editor( MainWindow *parent ) : QObject( parent ), scene( nullptr ), edit
   scene = new Scene( this );
   /* 404552 */
   scene->setBackgroundBrush( QBrush( QColor( "#404552" ) ) );
-  scene->setGridSize( 16 );
   install( scene );
   draggingElement = false;
   clear( );
@@ -183,15 +183,15 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
   if( item && ( item->type( ) == QNEPort::Type ) ) {
     /* When the mouse pressed over an connected input port, the line
      * is disconnected and can be connected in an other port. */
-    QNEPort *port2 = ( QNEPort* ) item;
-    if( port2->isInput( ) && !port2->connections( ).empty( ) ) {
+    QNEPort *pressedPort = qgraphicsitem_cast< QNEPort* >( item );
+    if( pressedPort->isInput( ) && !pressedPort->connections( ).empty( ) ) {
       /* The last connected line is detached */
-      editedConn = port2->connections( ).last( );
+      editedConn = pressedPort->connections( ).last( );
       editedConn->setFocus( );
 
-      QNEPort *port1 = editedConn->otherPort( port2 );
+      QNEPort *port1 = editedConn->otherPort( pressedPort );
       if( port1 ) {
-        port2->disconnect( editedConn );
+        pressedPort->disconnect( editedConn );
         QList< QGraphicsItem* > itemList;
         itemList.append( editedConn );
         undoStack->push( new DeleteItemsCommand( itemList, this ) );
@@ -211,7 +211,7 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
     else {
       editedConn = new QNEConnection( );
       addItem( editedConn );
-      editedConn->setPort1( ( QNEPort* ) item );
+      editedConn->setPort1( pressedPort );
       editedConn->setPos1( mousePos );
       editedConn->setPos2( mousePos );
       editedConn->updatePath( );
@@ -352,7 +352,7 @@ bool Editor::loadBox( Box *box, QString fname ) {
     box->setParentFile( GlobalProperties::currentFile );
     box->loadFile( fname );
   }
-  catch( BoxNotFoundException err ) {
+  catch( BoxNotFoundException &err ) {
     int ret = QMessageBox::warning( mainWindow, "Error", QString::fromStdString(
                                       err.what( ) ), QMessageBox::Ok, QMessageBox::Cancel );
     if( ret == QMessageBox::Cancel ) {
@@ -400,7 +400,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
           }
         }
       }
-      catch( std::runtime_error err ) {
+      catch( std::runtime_error &err ) {
         QMessageBox::warning( mainWindow, "Error", QString::fromStdString( err.what( ) ) );
         return( false );
       }
@@ -448,7 +448,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
           }
         }
       }
-      catch( std::runtime_error err ) {
+      catch( std::runtime_error &err ) {
         QMessageBox::warning( mainWindow, "Error", QString::fromStdString( err.what( ) ) );
         return( false );
       }

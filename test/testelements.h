@@ -9,7 +9,7 @@
 class TestElements : public QObject {
   Q_OBJECT
   std::array< QNEConnection*, 5 > conn;
-  std::array< InputSwitch*, 4 > sw;
+  std::array< InputSwitch*, 5 > sw;
 public:
   explicit TestElements( QObject *parent = 0 );
 
@@ -31,9 +31,9 @@ private slots:
   void testDLatch( );
   void testJKFlipFlop( );
   void testJKLatch( );
-  void testSRFlipFlop();
-  void testTFlipFlop();
-  void testTLatch();
+  void testSRFlipFlop( );
+  void testTFlipFlop( );
+  void testTLatch( );
 
 };
 

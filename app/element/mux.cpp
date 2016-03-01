@@ -25,7 +25,7 @@ void Mux::updateLogic( ) {
   char choice = inputs( ).at( 2 )->value( );
   char res = -1;
   if( isValid( ) ) {
-    if( choice == false ) {
+    if( choice == 0 ) {
       res = data1;
     }
     else {

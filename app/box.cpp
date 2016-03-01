@@ -234,7 +234,7 @@ void Box::sortMap( QVector< QNEPort* > &map ) {
       }
       else {
         p1 = map[ j ]->pos( );
-        p1 = map[ j + 1 ]->pos( );
+        p2 = map[ j + 1 ]->pos( );
         if( p1.x( ) > p2.x( ) ) {
           std::swap( map[ j ], map[ j + 1 ] );
         }
