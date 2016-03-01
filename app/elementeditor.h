@@ -33,6 +33,8 @@ private slots:
 
   void on_comboBoxColor_currentIndexChanged(int index);
 
+  void on_trigger_currentIndexChanged(const QString &arg1);
+
 private:
   void setCurrentElement( GraphicElement *element );
   void apply();

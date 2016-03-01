@@ -2,8 +2,9 @@
 #define INPUTSWITCH_H
 
 #include "graphicelement.h"
+#include "input.h"
 
-class InputSwitch : public GraphicElement {
+class InputSwitch : public GraphicElement, public Input {
 public:
   explicit InputSwitch( QGraphicsItem *parent = 0);
   virtual ~InputSwitch( );
@@ -25,8 +26,8 @@ public:
 public:
   void save( QDataStream &ds );
   void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
-  bool getOn( ) const;
-  void setOn( bool value );
+  virtual bool getOn( ) const;
+  virtual void setOn( bool value );
 };
 
 #endif /* INPUTSWITCH_H */

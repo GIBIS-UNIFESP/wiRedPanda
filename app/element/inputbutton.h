@@ -1,25 +1,31 @@
-#ifndef INPUT_H
-#define INPUT_H
+#ifndef INPUTBUTTON_H
+#define INPUTBUTTON_H
 
 #include "graphicelement.h"
+#include "input.h"
 
-class InputButton : public GraphicElement {
+class InputButton : public GraphicElement, public Input {
 public:
-  explicit InputButton(QGraphicsItem * parent);
-  virtual ~InputButton();
+  explicit InputButton( QGraphicsItem *parent );
+  virtual ~InputButton( );
   bool on;
 
-  // QGraphicsItem interface
+  /* QGraphicsItem interface */
 protected:
-  void mousePressEvent(QGraphicsSceneMouseEvent * event);
-  void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
+  void mousePressEvent( QGraphicsSceneMouseEvent *event );
+  void mouseReleaseEvent( QGraphicsSceneMouseEvent *event );
 
-  // GraphicElement interface
-  public:
-  virtual ElementType elementType() {
-    return ElementType::BUTTON;
+  /* GraphicElement interface */
+public:
+  virtual ElementType elementType( ) {
+    return( ElementType::BUTTON );
   }
-  void updateLogic();
+  void updateLogic( );
+
+  // Input interface
+public:
+  bool getOn() const;
+  void setOn(bool value);
 };
 
-#endif // INPUT_H
+#endif /* INPUTBUTTON_H */

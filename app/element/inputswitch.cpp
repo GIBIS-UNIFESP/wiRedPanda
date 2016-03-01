@@ -8,6 +8,7 @@ InputSwitch::InputSwitch( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, 
   setPixmap( QPixmap( ":/input/switchOff.png" ) );
   on = false;
   setHasLabel( true );
+  setHasTrigger( true );
   setObjectName( "Switch" );
 }
 
@@ -21,6 +22,7 @@ bool InputSwitch::getOn( ) const {
 
 void InputSwitch::setOn( bool value ) {
   on = value;
+  updateLogic();
 }
 
 void InputSwitch::mousePressEvent( QGraphicsSceneMouseEvent *event ) {

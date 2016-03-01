@@ -2,42 +2,57 @@
 
 #include <QDebug>
 #include <QGraphicsSceneMouseEvent>
-InputButton::InputButton(QGraphicsItem * parent) : GraphicElement(0,0,1,1,parent) {
-  setOutputsOnTop(false);
-  setPixmap(QPixmap(":/input/buttonOff.png"));
-  setRotatable(false);
-  outputs().first()->setValue(0);
-  on = false;
-  setHasLabel(true);
-  setObjectName("Button");
+InputButton::InputButton( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent ) {
+  setOutputsOnTop( false );
+  setPixmap( QPixmap( ":/input/buttonOff.png" ) );
+  setRotatable( false );
+  outputs( ).first( )->setValue( 0 );
+  setOn( false );
+  setHasLabel( true );
+  setHasTrigger( true );
+  setObjectName( "Button" );
 }
 
-InputButton::~InputButton() {
+InputButton::~InputButton( ) {
 
 }
 
-void InputButton::mousePressEvent(QGraphicsSceneMouseEvent * event) {
-  if(event->button() == Qt::LeftButton) {
-    setPixmap(QPixmap(":/input/buttonOn.png"));
-    on = true;
-    setChanged(true);
-    event->accept();
+void InputButton::mousePressEvent( QGraphicsSceneMouseEvent *event ) {
+  if( event->button( ) == Qt::LeftButton ) {
+    setOn( true );
+    setChanged( true );
+    event->accept( );
   }
-  QGraphicsItem::mousePressEvent(event);
+  QGraphicsItem::mousePressEvent( event );
 }
 
-void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent * event) {
-  if(event->button() == Qt::LeftButton) {
-    setPixmap(QPixmap(":/input/buttonOff.png"));
-    on = false;
-    setChanged(true);
-    event->accept();
+void InputButton::mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) {
+  if( event->button( ) == Qt::LeftButton ) {
+
+    setOn( false );
+    setChanged( true );
+    event->accept( );
   }
-  GraphicElement::mouseReleaseEvent(event);
+  GraphicElement::mouseReleaseEvent( event );
 }
 
-void InputButton::updateLogic() {
-  if(!disabled()){
-    outputs().first()->setValue(on);
+void InputButton::updateLogic( ) {
+  if( !disabled( ) ) {
+    outputs( ).first( )->setValue( on );
   }
+}
+
+bool InputButton::getOn( ) const {
+  return( on );
+}
+
+void InputButton::setOn( bool value ) {
+  on = value;
+  if( on ) {
+    setPixmap( QPixmap( ":/input/buttonOn.png" ) );
+  }
+  else {
+    setPixmap( QPixmap( ":/input/buttonOff.png" ) );
+  }
+  updateLogic( );
 }

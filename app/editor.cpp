@@ -20,6 +20,7 @@
 #include <QMimeData>
 #include <QSettings>
 #include <QtMath>
+#include <input.h>
 #include <iostream>
 #include <nodes/qneconnection.h>
 
@@ -697,11 +698,31 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
         if( keyEvt && ( keyEvt->key( ) == Qt::Key_Control ) ) {
           mControlKeyPressed = true;
         }
+        else {
+          for( GraphicElement *elm : scene->getElements( ) ) {
+            if( elm->hasTrigger( ) && !elm->getTrigger( ).isEmpty( ) ) {
+              Input *in = dynamic_cast< Input* >( elm );
+              if( in && elm->getTrigger( ).matches( keyEvt->key( ) ) ) {
+                in->setOn( true );
+              }
+            }
+          }
+        }
         break;
       }
         case QEvent::KeyRelease: {
         if( keyEvt && ( keyEvt->key( ) == Qt::Key_Control ) ) {
           mControlKeyPressed = false;
+        }
+        else {
+          for( GraphicElement *elm : scene->getElements( ) ) {
+            if( elm->hasTrigger( ) && !elm->getTrigger( ).isEmpty( ) ) {
+              Input *in = dynamic_cast< Input* >( elm );
+              if( in && elm->getTrigger( ).matches( keyEvt->key( ) ) == QKeySequence::ExactMatch ) {
+                in->setOn( false );
+              }
+            }
+          }
         }
         break;
       }
