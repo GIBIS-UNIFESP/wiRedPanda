@@ -51,7 +51,6 @@ script:
       && CPPFLAGS=-I${QTDIR}/include;
     fi
   - qmake -v
-  - make clean
   - qmake ./test/test.pro -r
   - make -j4
   - if [ "${TRAVIS_OS_NAME}" = "linux" ];
