@@ -99,6 +99,8 @@ public:
 
   bool hasColors() const;
 
+  bool hasTrigger() const;
+
   virtual void setColor(QString color );
   virtual QString color();
 
@@ -126,6 +128,7 @@ protected:
   void setHasLabel(bool hasLabel);
   void setHasFrequency(bool hasFrequency);
   void setHasColors(bool hasColors);
+  void setHasTrigger(bool hasTrigger);
   void setMinInputSz(int minInputSz);
   void setMinOutputSz(int minOutputSz);
   void setOutputsOnTop(bool outputsOnTop);
@@ -149,6 +152,7 @@ private:
   bool m_hasLabel;
   bool m_hasFrequency;
   bool m_hasColors;
+  bool m_hasTrigger;
   bool m_changed;
   bool m_beingVisited;
   bool m_visited;

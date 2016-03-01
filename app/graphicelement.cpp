@@ -47,20 +47,18 @@ GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz,
   for( int i = 0; i < minOutputSz; i++ ) {
     addOutputPort( );
   }
-
 }
 
 GraphicElement::~GraphicElement( ) {
 
 }
-QPixmap GraphicElement::getPixmap() const
-{
-    return pixmap;
+QPixmap GraphicElement::getPixmap( ) const {
+  return( pixmap );
 }
 
 
 void GraphicElement::disable( ) {
-    m_disabled = true;
+  m_disabled = true;
 }
 
 void GraphicElement::enable( ) {
@@ -76,7 +74,7 @@ void GraphicElement::setId( int value ) {
 }
 
 void GraphicElement::setPixmap( const QPixmap &pixmap ) {
-  setTransformOriginPoint( pixmap.width()/2, pixmap.height()/2 );
+  setTransformOriginPoint( pixmap.width( ) / 2, pixmap.height( ) / 2 );
   this->pixmap = pixmap;
   update( boundingRect( ) );
 }
@@ -144,8 +142,8 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
   /* <\Version1.3> */
   quint64 inputSz, outputSz;
   ds >> inputSz;
-  if(inputSz > MAXIMUMVALIDINPUTSIZE ){
-    throw std::runtime_error("Corrupted file!");
+  if( inputSz > MAXIMUMVALIDINPUTSIZE ) {
+    throw std::runtime_error( "Corrupted file!" );
   }
   for( size_t port = 0; port < inputSz; ++port ) {
     QString name;
@@ -156,8 +154,9 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
     ds >> flags;
     if( port < ( size_t ) m_inputs.size( ) ) {
       portMap[ ptr ] = m_inputs[ port ];
-      if(elementType() == ElementType::BOX)
+      if( elementType( ) == ElementType::BOX ) {
         m_inputs[ port ]->setName( name );
+      }
       m_inputs[ port ]->setPortFlags( flags );
       m_inputs[ port ]->setPtr( ptr );
     }
@@ -166,8 +165,8 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
     }
   }
   ds >> outputSz;
-  if(outputSz > MAXIMUMVALIDINPUTSIZE ){
-    throw std::runtime_error("Corrupted file!");
+  if( outputSz > MAXIMUMVALIDINPUTSIZE ) {
+    throw std::runtime_error( "Corrupted file!" );
   }
   for( size_t port = 0; port < outputSz; ++port ) {
     QString name;
@@ -178,8 +177,9 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
     ds >> flags;
     if( port < ( size_t ) m_outputs.size( ) ) {
       portMap[ ptr ] = m_outputs[ port ];
-      if(elementType() == ElementType::BOX)
+      if( elementType( ) == ElementType::BOX ) {
         m_outputs[ port ]->setName( name );
+      }
       m_outputs[ port ]->setPortFlags( flags );
       m_outputs[ port ]->setPtr( ptr );
     }
@@ -199,7 +199,7 @@ void GraphicElement::setInputs( const QVector< QNEPort* > &inputs ) {
 
 
 QRectF GraphicElement::boundingRect( ) const {
-  return( pixmap.rect() );
+  return( pixmap.rect( ) );
 }
 
 void GraphicElement::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget ) {
@@ -345,25 +345,27 @@ void GraphicElement::setVisited( bool visited ) {
 bool GraphicElement::isValid( ) {
   bool valid = true;
   foreach( QNEPort * input, m_inputs ) {
-    // Required inputs must have exactly one connection.
+    /* Required inputs must have exactly one connection. */
     if( ( input->required( ) && ( input->connections( ).size( ) == 0 ) ) || ( input->connections( ).size( ) > 1 ) ) {
       valid = false;
       break;
     }
-//    else {
-//      foreach( QNEConnection * conn, input->connections( ) ) {
-//        QNEPort *port = conn->otherPort( input );
-//        if( port ) {
-//          if( !port->graphicElement( ) || ( port->value( ) == -1 ) ) {
-//            valid = false;
-//            break;
-//          }
-//        }
-//      }
-//    }
-//    if( valid == false ) {
-//      break;
-//    }
+/*
+ *    else {
+ *      foreach( QNEConnection * conn, input->connections( ) ) {
+ *        QNEPort *port = conn->otherPort( input );
+ *        if( port ) {
+ *          if( !port->graphicElement( ) || ( port->value( ) == -1 ) ) {
+ *            valid = false;
+ *            break;
+ *          }
+ *        }
+ *      }
+ *    }
+ *    if( valid == false ) {
+ *      break;
+ *    }
+ */
   }
   if( valid == false ) {
     foreach( QNEPort * output, outputs( ) ) {
@@ -399,6 +401,10 @@ bool GraphicElement::hasColors( ) const {
   return( m_hasColors );
 }
 
+bool GraphicElement::hasTrigger( ) const {
+  return( m_hasTrigger );
+}
+
 void GraphicElement::setColor( QString ) {
 
 }
@@ -409,6 +415,10 @@ QString GraphicElement::color( ) {
 
 void GraphicElement::setHasColors( bool hasColors ) {
   m_hasColors = hasColors;
+}
+
+void GraphicElement::setHasTrigger( bool hasTrigger ) {
+  m_hasTrigger = hasTrigger;
 }
 
 bool GraphicElement::hasFrequency( ) const {
