@@ -51,10 +51,8 @@ script:
       && CPPFLAGS=-I${QTDIR}/include;
     fi
   - qmake -v
-  - qmake ./app/app.pro -r
-  - make -j4
   - make clean
-  - qmake ./test/test.pro -r CONFIG+=debug
+  - qmake ./test/test.pro -r
   - make -j4
   - if [ "${TRAVIS_OS_NAME}" = "linux" ];
       then ./WPanda-test;

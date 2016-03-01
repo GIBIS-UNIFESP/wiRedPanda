@@ -1,6 +1,7 @@
 #include "testelements.h"
 #include <QDebug>
 
+#include <demux.h>
 #include <dlatch.h>
 #include <iostream>
 #include <jkflipflop.h>
@@ -136,6 +137,37 @@ void TestElements::testMux( ) {
     sw[ 2 ]->updateLogic( );
     elm.updateLogic( );
     QCOMPARE( ( int ) elm.outputs( ).front( )->value( ), truthTable[ test ][ 3 ] );
+  }
+}
+
+void TestElements::testDemux( ) {
+  Demux elm;
+  QCOMPARE( elm.inputSize( ), elm.inputs( ).size( ) );
+  QCOMPARE( elm.inputSize( ), 2 );
+  QCOMPARE( elm.outputSize( ), elm.outputs( ).size( ) );
+  QCOMPARE( elm.outputSize( ), 2 );
+  QCOMPARE( elm.minInputSz( ), 2 );
+  QCOMPARE( elm.elementType( ), ElementType::DEMUX );
+  conn[ 0 ]->setPort2( elm.inputs( ).at( 0 ) );
+  conn[ 1 ]->setPort2( elm.inputs( ).at( 1 ) );
+
+  std::array< std::array< int, 4 >, 8 > truthTable = {
+    {
+      /*  i  S  o0 o1 */
+      { { 0, 0, 0, 0 } },
+      { { 0, 1, 0, 0 } },
+      { { 1, 0, 1, 0 } },
+      { { 1, 1, 0, 1 } },
+    }
+  };
+  for( int test = 0; test < 4; ++test ) {
+    sw[ 0 ]->setOn( truthTable[ test ][ 0 ] );
+    sw[ 1 ]->setOn( truthTable[ test ][ 1 ] );
+    sw[ 0 ]->updateLogic( );
+    sw[ 1 ]->updateLogic( );
+    elm.updateLogic( );
+    QCOMPARE( ( int ) elm.outputs( ).at( 0 )->value( ), truthTable[ test ][ 2 ] );
+    QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), truthTable[ test ][ 3 ] );
   }
 }
 
