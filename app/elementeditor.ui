@@ -14,13 +14,40 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="3" column="0">
-    <widget class="QComboBox" name="comboBoxInputSz"/>
+   <item row="5" column="0">
+    <widget class="QDoubleSpinBox" name="doubleSpinBoxFrequency">
+     <property name="decimals">
+      <number>1</number>
+     </property>
+     <property name="minimum">
+      <double>0.500000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>30.000000000000000</double>
+     </property>
+    </widget>
    </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="label_color">
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_frequency">
      <property name="text">
-      <string>Color:</string>
+      <string>Frequency:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLineEdit" name="lineEditElementLabel"/>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="label_trigger">
+     <property name="text">
+      <string>Trigger</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_inputs">
+     <property name="text">
+      <string>Input Ports:</string>
      </property>
     </widget>
    </item>
@@ -30,12 +57,6 @@
       <string>Label:</string>
      </property>
     </widget>
-   </item>
-   <item row="9" column="0">
-    <widget class="QKeySequenceEdit" name="keySequenceEdit"/>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLineEdit" name="lineEditElementLabel"/>
    </item>
    <item row="7" column="0">
     <widget class="QComboBox" name="comboBoxColor">
@@ -96,39 +117,18 @@
      </item>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QDoubleSpinBox" name="doubleSpinBoxFrequency">
-     <property name="decimals">
-      <number>1</number>
-     </property>
-     <property name="minimum">
-      <double>0.500000000000000</double>
-     </property>
-     <property name="maximum">
-      <double>30.000000000000000</double>
+   <item row="3" column="0">
+    <widget class="QComboBox" name="comboBoxInputSz"/>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="label_color">
+     <property name="text">
+      <string>Color:</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_frequency">
-     <property name="text">
-      <string>Frequency:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_inputs">
-     <property name="text">
-      <string>Input Ports:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="label_trigger">
-     <property name="text">
-      <string>Trigger</string>
-     </property>
-    </widget>
+   <item row="9" column="0">
+    <widget class="QComboBox" name="trigger"/>
    </item>
   </layout>
  </widget>

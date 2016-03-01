@@ -37,6 +37,7 @@ GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz,
   m_beingVisited = false;
   m_rotatable = true;
   m_hasColors = false;
+  m_hasTrigger = false;
   m_hasFrequency = false;
   m_hasLabel = false;
   m_disabled = false;
@@ -101,7 +102,9 @@ void GraphicElement::save( QDataStream &ds ) {
   ds << m_minOutputSz;
   ds << m_maxOutputSz;
   /* <\Version1.3> */
-
+  /* <Version1.9> */
+  ds << m_trigger;
+  /* <\Version1.9> */
   ds << ( quint64 ) m_inputs.size( );
   foreach( QNEPort * port, m_inputs ) {
     ds << ( quint64 ) port;
@@ -129,10 +132,8 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
     ds >> label_text;
     setLabel( label_text );
   }
-  /*
-   * <\Version1.2>
-   * <Version1.3>
-   */
+  /* <\Version1.2> */
+  /* <Version1.3> */
   if( version >= 1.3 ) {
     ds >> m_minInputSz;
     ds >> m_maxInputSz;
@@ -140,6 +141,12 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
     ds >> m_maxOutputSz;
   }
   /* <\Version1.3> */
+  /* <Version1.9> */
+  if( version >= 1.9 ) {
+    ds >> m_trigger;
+  }
+  /* <\Version1.9> */
+
   quint64 inputSz, outputSz;
   ds >> inputSz;
   if( inputSz > MAXIMUMVALIDINPUTSIZE ) {
@@ -309,6 +316,14 @@ QVariant GraphicElement::itemChange( QGraphicsItem::GraphicsItemChange change, c
   }
   update( );
   return( QGraphicsItem::itemChange( change, value ) );
+}
+
+QKeySequence GraphicElement::getTrigger( ) const {
+  return( m_trigger );
+}
+
+void GraphicElement::setTrigger( const QKeySequence &trigger ) {
+  m_trigger = trigger;
 }
 
 /*

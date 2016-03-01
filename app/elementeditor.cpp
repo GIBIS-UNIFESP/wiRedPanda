@@ -7,6 +7,14 @@ ElementEditor::ElementEditor( QWidget *parent ) : QWidget( parent ), ui( new Ui:
   ui->setupUi( this );
   setEnabled( false );
   setVisible( false );
+
+  ui->trigger->addItem( QString( tr( "None" ) ) );
+  for( int i = 0; i < 5; i++ ) {
+    ui->trigger->addItem( QKeySequence( QString( "%1" ).arg( i ) ).toString( ) );
+  }
+  for( char i = 'A'; i < 'F'; i++ ) {
+    ui->trigger->addItem( QKeySequence( QString( "%1" ).arg( i ) ).toString( ) );
+  }
 }
 
 ElementEditor::~ElementEditor( ) {
@@ -52,10 +60,16 @@ void ElementEditor::setCurrentElement( GraphicElement *elm ) {
     ui->comboBoxInputSz->setCurrentText( inputSz );
     hasSomething |= ( ui->comboBoxInputSz->count( ) >= 2 );
     /* Trigger */
-    ui->keySequenceEdit->setVisible( element->hasTrigger( ) );
+    ui->trigger->setVisible( element->hasTrigger( ) );
     ui->label_trigger->setVisible( element->hasTrigger( ) );
+
+    ui->trigger->setCurrentIndex( 0 );
+    if( element->hasTrigger( ) ) {
+      ui->trigger->setCurrentText( element->getTrigger( ).toString( ) );
+    }
     hasSomething |= ( element->hasTrigger( ) );
-    setEnabled( true );
+    setEnabled( hasSomething );
+    setVisible( hasSomething );
   }
   else {
     setVisible( false );
@@ -99,6 +113,9 @@ void ElementEditor::apply( ) {
   if( element->hasFrequency( ) ) {
     element->setFrequency( ui->doubleSpinBoxFrequency->value( ) );
   }
+  if( element->hasTrigger( ) ) {
+    element->setTrigger( QKeySequence( ui->trigger->currentText() ) );
+  }
   emit elementUpdated( element, itemData );
 }
 
@@ -118,4 +135,8 @@ void ElementEditor::on_doubleSpinBoxFrequency_editingFinished( ) {
 void ElementEditor::on_comboBoxColor_currentIndexChanged( int index ) {
   Q_UNUSED( index );
   apply( );
+}
+
+void ElementEditor::on_trigger_currentIndexChanged(const QString &){
+  apply();
 }

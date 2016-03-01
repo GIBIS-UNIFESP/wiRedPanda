@@ -21,6 +21,8 @@ SOURCES += \
     $$PWD/app/element/dflipflop.cpp \
     $$PWD/app/element/display.cpp \
     $$PWD/app/element/dlatch.cpp \
+    $$PWD/app/elementeditor.cpp \
+    $$PWD/app/elementfactory.cpp \
     $$PWD/app/element/inputbutton.cpp \
     $$PWD/app/element/inputgnd.cpp \
     $$PWD/app/element/inputswitch.cpp \
@@ -39,8 +41,6 @@ SOURCES += \
     $$PWD/app/element/tlatch.cpp \
     $$PWD/app/element/xnor.cpp \
     $$PWD/app/element/xor.cpp \
-    $$PWD/app/elementeditor.cpp \
-    $$PWD/app/elementfactory.cpp \
     $$PWD/app/globalproperties.cpp \
     $$PWD/app/graphicelement.cpp \
     $$PWD/app/graphicsview.cpp \
@@ -54,7 +54,8 @@ SOURCES += \
     $$PWD/app/priorityqueue.cpp \
     $$PWD/app/scene.cpp \
     $$PWD/app/serializationfunctions.cpp \
-    $$PWD/app/simulationcontroller.cpp
+    $$PWD/app/simulationcontroller.cpp \
+
 
 
 
@@ -70,8 +71,11 @@ HEADERS  +=  \
     $$PWD/app/element/dflipflop.h \
     $$PWD/app/element/display.h \
     $$PWD/app/element/dlatch.h \
+    $$PWD/app/elementeditor.h \
+    $$PWD/app/elementfactory.h \
     $$PWD/app/element/inputbutton.h \
     $$PWD/app/element/inputgnd.h \
+    $$PWD/app/element/input.h \
     $$PWD/app/element/inputswitch.h \
     $$PWD/app/element/inputvcc.h \
     $$PWD/app/element/jkflipflop.h \
@@ -88,8 +92,6 @@ HEADERS  +=  \
     $$PWD/app/element/tlatch.h \
     $$PWD/app/element/xnor.h \
     $$PWD/app/element/xor.h \
-    $$PWD/app/elementeditor.h \
-    $$PWD/app/elementfactory.h \
     $$PWD/app/globalproperties.h \
     $$PWD/app/graphicelement.h \
     $$PWD/app/graphicsview.h \
@@ -103,7 +105,7 @@ HEADERS  +=  \
     $$PWD/app/priorityqueue.h \
     $$PWD/app/scene.h \
     $$PWD/app/serializationfunctions.h \
-    $$PWD/app/simulationcontroller.h
+    $$PWD/app/simulationcontroller.h \
 
 
 HEADERS += \

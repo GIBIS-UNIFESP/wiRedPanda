@@ -44,6 +44,9 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->menuEdit->removeAction( ui->actionUndo );
   ui->menuEdit->removeAction( ui->actionRedo );
 
+  ui->actionZoom_in->setVisible( false );
+  ui->actionZoom_out->setVisible( false );
+
   connect( editor, &Editor::scroll, this, &MainWindow::scrollView );
 
   QShortcut *shortcut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
@@ -155,7 +158,7 @@ bool MainWindow::open( const QString &fname ) {
     QMessageBox::warning( this, "Error!", QString( "File \"%1\" does not exists!" ).arg(
                             fname ), QMessageBox::Ok, QMessageBox::NoButton );
     std::cerr << "Error: This file does not exists: " << fname.toStdString( ) << std::endl;
-    return false;
+    return( false );
   }
   if( fl.open( QFile::ReadOnly ) ) {
     QDataStream ds( &fl );
@@ -168,16 +171,16 @@ bool MainWindow::open( const QString &fname ) {
       QMessageBox::warning( this, "Error!", "Could not open file.\nError: " + QString(
                               e.what( ) ), QMessageBox::Ok, QMessageBox::NoButton );
       clear( );
-      return false;
+      return( false );
     }
   }
   else {
     std::cerr << "Could not open file in ReadOnly mode : " << fname.toStdString( ) << "." << std::endl;
-    return false;
+    return( false );
   }
   fl.close( );
   ui->statusBar->showMessage( "File loaded successfully.", 2000 );
-  return true;
+  return( true );
 }
 
 void MainWindow::scrollView( int dx, int dy ) {
@@ -201,7 +204,8 @@ void MainWindow::on_actionSave_triggered( ) {
 void MainWindow::on_actionAbout_triggered( ) {
   QMessageBox::about( this, "Wired Panda",
                       tr(
-                        "Wired Panda is a software built to help students to learn about logic circuits.\nVersion: %1\n\nCreators:\nDavi Morales\nHéctor Castelli\nLucas Lellis\nRodrigo Torres\nSupervised by: Fábio Cappabianco." ).arg(
+                        "Wired Panda is a software built to help students to learn about logic circuits.\nVersion: %1\n\nCreators:\nDavi Morales\nHéctor Castelli\nLucas Lellis\nRodrigo Torres\nSupervised by: Fábio Cappabianco." )
+                      .arg(
                         QApplication::applicationVersion( ) ) );
 }
 
@@ -470,40 +474,42 @@ void MainWindow::keyReleaseEvent( QKeyEvent *evt ) {
 }
 
 bool MainWindow::ExportToArduino( QString fname ) {
-  try{
-  if( fname.isEmpty( ) ) {
-    return( false );
-  }
-  QVector< GraphicElement* > elements = editor->getScene( )->getElements( );
-  SimulationController *sc = editor->getSimulationController( );
-  sc->stop( );
-  if( elements.isEmpty( ) ) {
-    return( false );
-  }
-  if( !fname.endsWith( ".ino" ) ) {
-    fname.append( ".ino" );
-  }
-  for( GraphicElement *elm : elements ) {
-    elm->setChanged( false );
-    elm->setBeingVisited( false );
-    elm->setVisited( false );
-  }
-  for( GraphicElement *elm : elements ) {
-    if( elm ) {
-      sc->calculatePriority( elm );
+  try {
+    if( fname.isEmpty( ) ) {
+      return( false );
     }
+    QVector< GraphicElement* > elements = editor->getScene( )->getElements( );
+    SimulationController *sc = editor->getSimulationController( );
+    sc->stop( );
+    if( elements.isEmpty( ) ) {
+      return( false );
+    }
+    if( !fname.endsWith( ".ino" ) ) {
+      fname.append( ".ino" );
+    }
+    for( GraphicElement *elm : elements ) {
+      elm->setChanged( false );
+      elm->setBeingVisited( false );
+      elm->setVisited( false );
+    }
+    for( GraphicElement *elm : elements ) {
+      if( elm ) {
+        sc->calculatePriority( elm );
+      }
+    }
+    qSort( elements.begin( ), elements.end( ), PriorityElement::lessThan );
+
+    CodeGenerator arduino( QDir::home( ).absoluteFilePath( fname ), elements );
+    arduino.generate( );
+    sc->start( );
+    ui->statusBar->showMessage( tr( "Arduino code successfully generated." ), 2000 );
+
+    qDebug( ) << "Arduino code successfully generated.";
   }
-  qSort( elements.begin( ), elements.end( ), PriorityElement::lessThan );
-
-  CodeGenerator arduino( QDir::home( ).absoluteFilePath( fname ), elements );
-  arduino.generate( );
-  sc->start( );
-  ui->statusBar->showMessage( tr("Arduino code successfully generated."), 2000 );
-
-  qDebug( ) << "Arduino code successfully generated.";
-  }catch(std::runtime_error e){
-    QMessageBox::warning(this,tr("Error"),tr("<strong>Error while exporting to arduino code:</strong><br>%1").arg(e.what()));
-    return false;
+  catch( std::runtime_error e ) {
+    QMessageBox::warning( this, tr( "Error" ), tr(
+                            "<strong>Error while exporting to arduino code:</strong><br>%1" ).arg( e.what( ) ) );
+    return( false );
   }
 
   return( true );

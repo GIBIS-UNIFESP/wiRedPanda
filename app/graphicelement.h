@@ -1,8 +1,9 @@
 #ifndef GRAPHICELEMENT_H
 #define GRAPHICELEMENT_H
 
-#include <QGraphicsPixmapItem>
 #include <QGraphicsItem>
+#include <QGraphicsPixmapItem>
+#include <QKeySequence>
 
 #include "nodes/qneport.h"
 
@@ -20,125 +21,128 @@ class GraphicElement : public QGraphicsObject, public PriorityElement {
 public:
   enum { Type = QGraphicsItem::UserType + 3 };
 
-  explicit GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem * parent = 0);
-  virtual ~GraphicElement();
+  explicit GraphicElement( int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent = 0 );
+  virtual ~GraphicElement( );
 
 private:
   QPixmap pixmap;
   int m_id;
 
-  //GraphicElement interface.
+  /* GraphicElement interface. */
 public:
-  virtual ElementType elementType() = 0;
+  virtual ElementType elementType( ) = 0;
 
-  virtual void save(QDataStream&ds);
+  virtual void save( QDataStream &ds );
 
-  virtual void load(QDataStream&ds, QMap<quint64, QNEPort*> &portMap, double version);
+  virtual void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
 
-  virtual void updatePorts();
+  virtual void updatePorts( );
 
-  virtual void updateLogic() = 0;
+  virtual void updateLogic( ) = 0;
 
-  // QGraphicsItem interface
+  /* QGraphicsItem interface */
 public:
 
-  int type() const {
-    return Type;
+  int type( ) const {
+    return( Type );
   }
 
-  virtual QRectF boundingRect() const;
+  virtual QRectF boundingRect( ) const;
 
-  virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
+  virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
 
-  QNEPort* addPort(const QString &name , bool isOutput, int flags = 0, int ptr = 0);
+  QNEPort* addPort( const QString &name, bool isOutput, int flags = 0, int ptr = 0 );
 
-  void addInputPort(const QString &name = QString());
+  void addInputPort( const QString &name = QString( ) );
 
-  void addOutputPort(const QString &name = QString());
+  void addOutputPort( const QString &name = QString( ) );
 
 
-  int topPosition() const;
+  int topPosition( ) const;
 
-  int bottomPosition() const;
+  int bottomPosition( ) const;
 
-  int maxInputSz() const;
+  int maxInputSz( ) const;
 
-  int maxOutputSz() const;
+  int maxOutputSz( ) const;
 
-  bool outputsOnTop() const;
+  bool outputsOnTop( ) const;
 
-  QVector<QNEPort *> inputs() const;
-  void setInputs(const QVector<QNEPort *> & inputs);
+  QVector< QNEPort* > inputs( ) const;
+  void setInputs( const QVector< QNEPort* > &inputs );
 
-  QVector<QNEPort *> outputs() const;
-  void setOutputs(const QVector<QNEPort *> & outputs);
+  QVector< QNEPort* > outputs( ) const;
+  void setOutputs( const QVector< QNEPort* > &outputs );
 
-  int minInputSz() const;
+  int minInputSz( ) const;
 
-  int minOutputSz() const;
+  int minOutputSz( ) const;
 
-  int inputSize();
-  void setInputSize(int size);
+  int inputSize( );
+  void setInputSize( int size );
 
-  int outputSize();
-  void setOutputSize(int size);
+  int outputSize( );
+  void setOutputSize( int size );
 
-  virtual float frequency();
-  virtual void setFrequency(float freq);
+  virtual float frequency( );
+  virtual void setFrequency( float freq );
 
-  int id() const;
-  void setId(int value);
+  int id( ) const;
+  void setId( int value );
 
-  void setPixmap(const QPixmap &pixmap);
+  void setPixmap( const QPixmap &pixmap );
 
-  bool rotatable() const;
+  bool rotatable( ) const;
 
-  bool hasLabel() const;
+  bool hasLabel( ) const;
 
-  bool hasFrequency() const;
+  bool hasFrequency( ) const;
 
-  bool hasColors() const;
+  bool hasColors( ) const;
 
-  bool hasTrigger() const;
+  bool hasTrigger( ) const;
 
-  virtual void setColor(QString color );
-  virtual QString color();
+  virtual void setColor( QString color );
+  virtual QString color( );
 
-  bool changed() const;
-  void setChanged(bool changed);
+  bool changed( ) const;
+  void setChanged( bool changed );
 
-  bool beingVisited() const;
-  void setBeingVisited(bool beingVisited);
+  bool beingVisited( ) const;
+  void setBeingVisited( bool beingVisited );
 
-  bool visited() const;
-  void setVisited(bool visited);
+  bool visited( ) const;
+  void setVisited( bool visited );
 
-  bool isValid();
+  bool isValid( );
 
-  void setLabel(QString label);
-  QString getLabel();
-  void disable();
-  void enable();
-  bool disabled();
+  void setLabel( QString label );
+  QString getLabel( );
+  void disable( );
+  void enable( );
+  bool disabled( );
 
-  QPixmap getPixmap() const;
+  QPixmap getPixmap( ) const;
+
+  QKeySequence getTrigger( ) const;
+  void setTrigger( const QKeySequence &trigger );
 
 protected:
-  void setRotatable(bool rotatable);
-  void setHasLabel(bool hasLabel);
-  void setHasFrequency(bool hasFrequency);
-  void setHasColors(bool hasColors);
-  void setHasTrigger(bool hasTrigger);
-  void setMinInputSz(int minInputSz);
-  void setMinOutputSz(int minOutputSz);
-  void setOutputsOnTop(bool outputsOnTop);
-  void setMaxOutputSz(int maxOutputSz);
-  void setMaxInputSz(int maxInputSz);
-  void setTopPosition(int topPosition);
-  void setBottomPosition(int bottomPosition);
+  void setRotatable( bool rotatable );
+  void setHasLabel( bool hasLabel );
+  void setHasFrequency( bool hasFrequency );
+  void setHasColors( bool hasColors );
+  void setHasTrigger( bool hasTrigger );
+  void setMinInputSz( int minInputSz );
+  void setMinOutputSz( int minOutputSz );
+  void setOutputsOnTop( bool outputsOnTop );
+  void setMaxOutputSz( int maxOutputSz );
+  void setMaxInputSz( int maxInputSz );
+  void setTopPosition( int topPosition );
+  void setBottomPosition( int bottomPosition );
 
-//  virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e);
-  QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+/*  virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e); */
+  QVariant itemChange( GraphicsItemChange change, const QVariant &value );
 private:
   QGraphicsTextItem *label;
   int m_topPosition;
@@ -157,15 +161,15 @@ private:
   bool m_beingVisited;
   bool m_visited;
   bool m_disabled;
+  QKeySequence m_trigger;
 protected:
-  QVector<QNEPort*> m_inputs;
-  QVector<QNEPort*> m_outputs;
+  QVector< QNEPort* > m_inputs;
+  QVector< QNEPort* > m_outputs;
 
-  // QGraphicsItem interface
-  protected:
-//  virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
+  /* QGraphicsItem interface */
+protected:
+/*  virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent * event); */
 };
 
 
-
-#endif // GRAPHICELEMENT_H
+#endif /* GRAPHICELEMENT_H */
