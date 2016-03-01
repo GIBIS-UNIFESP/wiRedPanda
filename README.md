@@ -24,7 +24,7 @@ To run WiRed Panda on your platform you can:
 
 ### Building WiRED Panda on your computer:
 
- To compile and install this software on a gnome-shell based linux distro with the Qt5.5.1 development environment, please use the following commands:
+ To compile and install this software on a gnome-shell based linux distro with the Qt5.5 development environment, please use the following commands:
  
 ```sh
 git clone https://github.com/GIBIS-UNIFESP/wiRedPanda/
