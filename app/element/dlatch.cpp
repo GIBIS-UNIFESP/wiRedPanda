@@ -32,7 +32,7 @@ void DLatch::updateLogic( ) {
     res1 = res2 = -1;
   }
   else {
-    if( enable == true ) { /* If Enabled */
+    if( enable == 1 ) { /* If Enabled */
       res1 = data; /* Output = Data */
       res2 = !data; /* Output = Data */
     }

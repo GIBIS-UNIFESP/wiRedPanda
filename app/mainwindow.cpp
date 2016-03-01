@@ -94,7 +94,7 @@ bool MainWindow::save( ) {
     try {
       editor->save( ds );
     }
-    catch( std::runtime_error e ) {
+    catch( std::runtime_error &e ) {
       std::cerr << "Error saving project: " << e.what( ) << std::endl;
       return( false );
     }
@@ -166,7 +166,7 @@ bool MainWindow::open( const QString &fname ) {
     try {
       editor->load( ds );
     }
-    catch( std::runtime_error e ) {
+    catch( std::runtime_error &e ) {
       std::cerr << "Error loading project: " << e.what( ) << std::endl;
       QMessageBox::warning( this, "Error!", "Could not open file.\nError: " + QString(
                               e.what( ) ), QMessageBox::Ok, QMessageBox::NoButton );
@@ -517,7 +517,7 @@ bool MainWindow::ExportToArduino( QString fname ) {
 
     qDebug( ) << "Arduino code successfully generated.";
   }
-  catch( std::runtime_error e ) {
+  catch( std::runtime_error &e ) {
     QMessageBox::warning( this, tr( "Error" ), tr(
                             "<strong>Error while exporting to arduino code:</strong><br>%1" ).arg( e.what( ) ) );
     return( false );

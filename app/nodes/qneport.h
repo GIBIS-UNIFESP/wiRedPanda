@@ -38,7 +38,7 @@ public:
   enum { Type = QGraphicsItem::UserType + 1 };
   enum { NamePort = 1, TypePort = 2 };
 
-  QNEPort(QGraphicsItem *parent = 0);
+  explicit QNEPort(QGraphicsItem *parent = 0);
   virtual ~QNEPort();
 
   void setNEBlock(QNEBlock*);

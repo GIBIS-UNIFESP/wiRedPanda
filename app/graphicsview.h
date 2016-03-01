@@ -6,18 +6,19 @@
 class GraphicsView : public QGraphicsView {
   Q_OBJECT
 public:
-  explicit GraphicsView(QWidget *parent = 0);
+  explicit GraphicsView( QWidget *parent = 0 );
 
 
-  // QWidget interface
+  /* QWidget interface */
 protected:
-  void mousePressEvent(QMouseEvent *e);
-  void mouseReleaseEvent(QMouseEvent *e);
-  void mouseMoveEvent(QMouseEvent *e);
+  void mousePressEvent( QMouseEvent *e );
+  void mouseReleaseEvent( QMouseEvent *e );
+  void mouseMoveEvent( QMouseEvent *e );
 
 private:
   bool _pan;
-  int _panStartX, _panStartY;
+  int _panStartX;
+  int _panStartY;
 };
 
-#endif // GRAPHICSVIEW_H
+#endif /* GRAPHICSVIEW_H */

@@ -3,11 +3,11 @@
 #include <QColor>
 #include <QPainter>
 Scene::Scene( QObject *parent ) : QGraphicsScene( parent ) {
-
+  m_gridSize = 16;
 }
 
 Scene::Scene( const QRectF &sceneRect, QObject *parent ) : QGraphicsScene( sceneRect, parent ) {
-
+  m_gridSize = 16;
 }
 
 Scene::Scene( qreal x, qreal y, qreal width, qreal height, QObject *parent ) : QGraphicsScene( x,
@@ -15,15 +15,11 @@ Scene::Scene( qreal x, qreal y, qreal width, qreal height, QObject *parent ) : Q
                                                                                                width,
                                                                                                height,
                                                                                                parent ) {
-
+  m_gridSize = 16;
 }
 
 int Scene::gridSize( ) const {
   return( m_gridSize );
-}
-
-void Scene::setGridSize( int gridSize ) {
-  m_gridSize = gridSize;
 }
 
 void Scene::drawBackground( QPainter *painter, const QRectF &rect ) {
@@ -45,7 +41,7 @@ void Scene::drawBackground( QPainter *painter, const QRectF &rect ) {
 QVector< GraphicElement* > Scene::getElements( ) {
   QVector< GraphicElement* > elements;
   QList< QGraphicsItem* > myItems = items( );
-  for( QGraphicsItem *item: myItems ) {
+  for( QGraphicsItem *item : myItems ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     if( elm ) {
       elements.append( elm );
