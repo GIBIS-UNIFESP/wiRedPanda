@@ -227,8 +227,10 @@ void TestElements::testDFlipFlop( ) {
     QCOMPARE( ( int ) elm.outputs( ).at( 0 )->value( ), truthTable.at( test ).at( 5 ) );
     QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), truthTable.at( test ).at( 6 ) );
   }
-  elm.inputs( ).at( 2 )->disconnect( conn.at( 2 ) );
-  elm.inputs( ).at( 3 )->disconnect( conn.at( 3 ) );
+//  elm.inputs( ).at( 2 )->disconnect( conn.at( 2 ) );
+//  elm.inputs( ).at( 3 )->disconnect( conn.at( 3 ) );
+  delete conn.at( 2 );
+  delete conn.at( 3 );
   QCOMPARE( ( int ) elm.inputs( ).at( 2 )->value( ), 1 );
   QCOMPARE( ( int ) elm.inputs( ).at( 3 )->value( ), 1 );
   elm.updateLogic( );
@@ -338,8 +340,12 @@ void TestElements::testJKFlipFlop( ) {
     QCOMPARE( ( int ) elm.outputs( ).at( 0 )->value( ), truthTable.at( test ).at( 6 ) );
     QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), truthTable.at( test ).at( 7 ) );
   }
-  elm.inputs( ).at( 3 )->disconnect( conn.at( 3 ) );
-  elm.inputs( ).at( 4 )->disconnect( conn.at( 4 ) );
+//  elm.inputs( ).at( 3 )->disconnect( conn.at( 3 ) );
+//  elm.inputs( ).at( 4 )->disconnect( conn.at( 4 ) );
+
+  delete conn.at(3);
+  delete conn.at(4);
+
   QCOMPARE( ( int ) elm.inputs( ).at( 3 )->value( ), 1 );
   QCOMPARE( ( int ) elm.inputs( ).at( 4 )->value( ), 1 );
   elm.updateLogic( );
@@ -527,8 +533,14 @@ void TestElements::testTFlipFlop( ) {
     QCOMPARE( ( int ) elm.outputs( ).at( 0 )->value( ), truthTable.at( test ).at( 5 ) );
     QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), truthTable.at( test ).at( 6 ) );
   }
-  elm.inputs( ).at( 2 )->disconnect( conn.at( 2 ) );
-  elm.inputs( ).at( 3 )->disconnect( conn.at( 3 ) );
+//  elm.inputs( ).at( 2 )->disconnect( conn.at( 2 ) );
+//  elm.inputs( ).at( 3 )->disconnect( conn.at( 3 ) );
+
+
+  delete conn.at(2);
+  delete conn.at(3);
+
+
   QCOMPARE( ( int ) elm.inputs( ).at( 2 )->value( ), 1 );
   QCOMPARE( ( int ) elm.inputs( ).at( 3 )->value( ), 1 );
   elm.updateLogic( );

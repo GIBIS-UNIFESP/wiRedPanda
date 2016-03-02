@@ -128,6 +128,12 @@ void QNEPort::disconnect( QNEConnection *conn ) {
   }
   m_connections.removeAll( conn );
   updateConnections( );
+  if( conn->port1( ) == this ) {
+    conn->setPort1( nullptr );
+  }
+  if( conn->port2( ) == this ) {
+    conn->setPort2( nullptr );
+  }
 }
 
 void QNEPort::setPortFlags( int f ) {
@@ -180,12 +186,11 @@ QVariant QNEPort::itemChange( GraphicsItemChange change, const QVariant &value )
   return( value );
 }
 
-QString QNEPort::getName() const
-{
-    return name;
+QString QNEPort::getName( ) const {
+  return( name );
 }
 int QNEPort::defaultValue( ) const {
-    return( m_defaultValue );
+  return( m_defaultValue );
 }
 
 void QNEPort::setDefaultValue( int defaultValue ) {
@@ -213,11 +218,12 @@ void QNEPort::setRequired( bool required ) {
 }
 
 char QNEPort::value( ) const {
-  if( m_connections.size( ) == 0 && !isOutput()) {
-    if(required()){
-      return -1;
-    }else{
-      return( defaultValue() );
+  if( ( m_connections.size( ) == 0 ) && !isOutput( ) ) {
+    if( required( ) ) {
+      return( -1 );
+    }
+    else {
+      return( defaultValue( ) );
     }
   }
   else {
