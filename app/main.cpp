@@ -5,7 +5,7 @@ int main( int argc, char *argv[] ) {
   QApplication a( argc, argv );
   a.setOrganizationName( "WPanda" );
   a.setApplicationName( "WiredPanda" );
-  a.setApplicationVersion( "1.9" );
+  a.setApplicationVersion( APP_VERSION );
   MainWindow w;
   w.show( );
   if( argc == 2 ) {
