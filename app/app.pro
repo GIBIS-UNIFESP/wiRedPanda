@@ -5,6 +5,8 @@
 #-------------------------------------------------
 
 TARGET = wpanda
+VERSION = 1.9
+
 TEMPLATE = app
 
 include(../includes.pri)
@@ -16,3 +18,11 @@ DISTFILES += windows.rc
 }
 
 SOURCES += main.cpp
+
+
+DEFINES += APP_VERSION=\\\"$$VERSION\\\"
+
+DISTFILES += \
+    resources/postinst
+
+
