@@ -14,6 +14,7 @@ wiRed Panda is also compatible with OSX and many linux distributions, but we don
 
 ### Building WiRED Panda on your computer:
  To compile this software you will need the [Qt5.5 Development Environment ](http://www.qt.io/download-open-source/) and the [source code](https://github.com/GIBIS-UNIFESP/wiRedPanda/archive/v1.9-beta.tar.gz) of the software.
+ 
  To compile and install this software on linux, please use the following commands:
 
 
