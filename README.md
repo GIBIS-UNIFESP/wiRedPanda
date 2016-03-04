@@ -14,7 +14,7 @@ The main features of the software are:
 ![Alt text](images/wpanda.png?raw=true "WiRed Panda Screenshot")
 
 ## Downloads
-The binaries of the [latest release](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/tag/v1.9-beta) of wiRED Panda is availble in the following platforms:
+The binaries of the [latest release](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/tag/v1.9-beta) of wiRED Panda are availble in the following platforms:
 
 - [Windows x86_64 Portable](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.9-beta/WiredPanda_1_9_Windows_Portable_x86_64.zip)
 - [Windows x86_64 Installer](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.9-beta/WiredPanda_1_9_Windows_Installer_x86_64.exe)
