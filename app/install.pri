@@ -42,11 +42,12 @@ unix{
     INSTALLS += mime postinst builddeb
     mime.path = $$DATADIR/xml/misc
     mime.files = $${PWD}/resources/$${TARGET}-mime.xml
-    postinst.path = /tmp/$$PKGNAME/DEBIAN
+    postinst.path = /tmp/$$PKGNAME/debian
     postinst.files = resources/postinst
-    builddeb.path = /tmp/$$PKGNAME/DEBIAN/
-    builddeb.extra = echo \"Package: $${TARGET}\nVersion: $${VERSION}\nSection: base\nPriority: optional\nArchitecture: amd64\nMaintainer: github.com/GIBIS-UNIFESP/wiRedPanda/\nDescription: Wired Panda logic circuits simulator.\" > /tmp/$${PKGNAME}/DEBIAN/control ;\
-                     cd /tmp && dpkg-deb --build $$PKGNAME
+    builddeb.path = /tmp/$$PKGNAME/debian/
+    builddeb.extra = echo \"Package: $${TARGET}\nSource: $${TARGET}\nVersion: $${VERSION}\nSection: base\nPriority: optional\nArchitecture: amd64\nMaintainer: github.com/GIBIS-UNIFESP/wiRedPanda/\nDescription: Wired Panda logic circuits simulator.\" > /tmp/$${PKGNAME}/debian/control ;\
+                     cd /tmp/$${PKGNAME} && dpkg-shlibdeps ./usr/local/bin/wpanda;\
+                     cd /tmp && dpkg-deb --build $$PKGNAME;
   }
 
   !deb{
