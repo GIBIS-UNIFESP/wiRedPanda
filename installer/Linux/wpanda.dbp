@@ -25,14 +25,9 @@ Description: Learn about logic circuits and simulate them in an easy and friendl
 /home/lellis/projetos/wiRedPanda/app/resources/wpanda-mime.xml -> wpanda-mime.xml -> /usr/local/share/xml/misc
 /home/lellis/projetos/wiRedPanda/app/resources/wpanda.desktop -> wpanda.desktop -> /usr/local/share/applications
 /opt/Qt/5.5/gcc_64/plugins/platforms/libqxcb.so* -> libqxcb.so -> /usr/local/lib/wpanda/
-/opt/Qt/5.5/gcc_64/lib/libicudata.so.54* -> libicudata.so.54 -> /usr/local/lib/wpanda/
-/opt/Qt/5.5/gcc_64/lib/libicuuc.so.54* -> libicuuc.so.54 -> /usr/local/lib/wpanda/
-/opt/Qt/5.5/gcc_64/lib/libicui18n.so.54* -> libicui18n.so.54 -> /usr/local/lib/wpanda/
-/opt/Qt/5.5/gcc_64/lib/libQt5DBus.so.5* -> libQt5DBus.so.5 -> /usr/local/lib/wpanda/
-/opt/Qt/5.5/gcc_64/lib/libQt5Core.so.5* -> libQt5Core.so.5 -> /usr/local/lib/wpanda/
-/opt/Qt/5.5/gcc_64/lib/libQt5Gui.so.5* -> libQt5Gui.so.5 -> /usr/local/lib/wpanda/
-/opt/Qt/5.5/gcc_64/lib/libQt5Widgets.so.5* -> libQt5Widgets.so.5 -> /usr/local/lib/wpanda/
-/opt/Qt/5.5/gcc_64/lib/libQt5XcbQpa.so.5* -> libQt5XcbQpa.so.5 -> /usr/local/lib/wpanda/
+/usr/lib/x86_64-linux-gnu/libicudata.so.52* -> libicudata.so.52 -> /usr/local/lib/wpanda/
+/usr/lib/x86_64-linux-gnu/libicuuc.so.52* -> libicuuc.so.52 -> /usr/local/lib/wpanda/
+/usr/lib/x86_64-linux-gnu/libicui18n.so.52* -> libicui18n.so.52 -> /usr/local/lib/wpanda/
 <</FILES>>
 <<SCRIPTS>>
 <<PREINST>>
