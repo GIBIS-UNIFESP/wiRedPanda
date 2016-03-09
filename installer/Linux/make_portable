@@ -1,0 +1,24 @@
+#!/bin/sh
+echo "Extracting deb package"
+dpkg-deb -x *.deb /tmp/extract/
+echo "Copying Files"
+PKGDIR=wpanda_portable_linux
+DATADIR=${PKGDIR}/files
+mkdir -p $DATADIR
+cp /tmp/extract/usr/local/bin/wpanda $DATADIR
+cp portable_files/shared_qt.sh ${DATADIR}/wpanda.sh
+cp portable_files/wpanda.svg ${DATADIR}/wpanda.svg
+cp portable_files/wpanda.desktop ${PKGDIR}/wpanda.desktop
+
+chmod +x ${DATADIR}/wpanda
+chmod +x ${DATADIR}/wpanda.sh
+chmod +x ${PKGDIR}/wpanda.desktop
+
+
+cp /tmp/extract/usr/local/lib/wpanda/* $DATADIR
+echo "Generating ${PKGDIR}.tar.gz"
+tar -zcvf ${PKGDIR}.tar.gz $PKGDIR
+
+echo "Removing temporary files"
+rm -rf $PKGDIR
+rm -rf /tmp/extract/
