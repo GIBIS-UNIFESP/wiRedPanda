@@ -28,6 +28,7 @@ Description: Learn about logic circuits and simulate them in an easy and friendl
 /usr/lib/x86_64-linux-gnu/libicudata.so.52* -> libicudata.so.52 -> /usr/local/lib/wpanda/
 /usr/lib/x86_64-linux-gnu/libicuuc.so.52* -> libicuuc.so.52 -> /usr/local/lib/wpanda/
 /usr/lib/x86_64-linux-gnu/libicui18n.so.52* -> libicui18n.so.52 -> /usr/local/lib/wpanda/
+/usr/lib/x86_64-linux-gnu/libjpeg.so.8* -> libjpeg.so.8 -> /usr/local/lib/wpanda/
 <</FILES>>
 <<SCRIPTS>>
 <<PREINST>>
