@@ -8,7 +8,7 @@ The binaries of the [latest release](https://github.com/GIBIS-UNIFESP/wiRedPanda
 - [Windows x86_64 Portable](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.9-beta/WiredPanda_1_9_Windows_Portable_x86_64.zip)
 - [Windows x86_64 Installer](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.9-beta/WiredPanda_1_9_Windows_Installer_x86_64.exe)
 - [Ubuntu 12.04+ Installer](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.9-beta/WiredPanda_1_9_Ubuntu_Installer_x64.deb)
-- [Ubuntu 12.04+ Portable](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.9-beta/WiredPanda_1_9_Ubuntu_Portable_x64.tar.gz)
+- [Linux Portable](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.9-beta/WiredPanda_1_9_Ubuntu_Portable_x64.tar.gz) (Tested on Ubuntu 12.04+ and fedora 23)
 
 wiRed Panda is also compatible with OSX and many linux distributions, but we don't have compiled versions availble for download. We are planning to release the OSX version in the following months, for now the software can be compiled on your own computer. 
 
