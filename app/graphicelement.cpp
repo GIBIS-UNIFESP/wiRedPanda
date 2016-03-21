@@ -344,10 +344,13 @@ void GraphicElement::setTrigger( const QKeySequence &trigger ) {
 
 void GraphicElement::setLabel( QString label ) {
   m_labelText = label;
-  if(!hasTrigger() || getTrigger().isEmpty()){
+  if(!hasTrigger() || getTrigger().toString().isEmpty()){
     this->label->setPlainText( label );
   }else{
-    this->label->setPlainText( label  + QString(" (%1)").arg(getTrigger().toString()));
+    if(!label.isEmpty()){
+      label += " ";
+    }
+    this->label->setPlainText( label  + QString("(%1)").arg(getTrigger().toString()));
   }
 }
 
