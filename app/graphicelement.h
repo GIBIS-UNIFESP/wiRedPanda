@@ -173,6 +173,7 @@ protected:
   /* QGraphicsItem interface */
 protected:
 /*  virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent * event); */
+
 };
 
 

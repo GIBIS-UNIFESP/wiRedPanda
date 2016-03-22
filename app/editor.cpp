@@ -19,6 +19,7 @@
 #include <QGraphicsView>
 #include <QKeyEvent>
 #include <QLabel>
+#include <QMenu>
 #include <QMessageBox>
 #include <QMimeData>
 #include <QSettings>
@@ -629,6 +630,32 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
           if( elm ) {
             movedElements.append( elm );
             oldPositions.append( elm->pos( ) );
+          }
+        }
+      }
+      else if( item && ( mouseEvt->button( ) == Qt::RightButton ) ) {
+        QGraphicsItem *item = itemAt( mousePos );
+        if( item && ( item->type( ) == GraphicElement::Type ) ) {
+          GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+          QMenu menu;
+          menu.addAction( "Delete" );
+//          if( elm->hasLabel( ) ) {
+//            menu.addAction( "Rename" );
+//          }
+          if( elm->rotatable( ) ) {
+            menu.addAction( "Rotate" );
+          }
+          QAction *a = menu.exec( mouseEvt->screenPos( ) );
+          if( a ) {
+            if( a->text( ) == "Delete" ) {
+              QList< QGraphicsItem* > items;
+              items << item;
+              undoStack->push( new DeleteItemsCommand( items, this ) );
+            }else if (a->text() == "Rotate"){
+              QList< GraphicElement* > items;
+              items << elm;
+              undoStack->push( new RotateCommand( items, 90.0 ) );
+            }
           }
         }
       }
