@@ -4,7 +4,7 @@ Nand::Nand(QGraphicsItem * parent) : GraphicElement(2,8,1,1,parent) {
   setOutputsOnTop(true);
   setPixmap(QPixmap(":/basic/nand.png"));
   updatePorts();
-  setObjectName("NAND");
+  setPortName("NAND");
 }
 
 Nand::~Nand() {

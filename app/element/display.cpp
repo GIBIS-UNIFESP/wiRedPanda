@@ -22,7 +22,7 @@ Display::Display(QGraphicsItem * parent) : GraphicElement(8,8,0,0,parent) {
   g = QPixmap(":/output/counter/counter_g.png");
   h = QPixmap(":/output/counter/counter_h.png");
 
-  setObjectName("Display");
+  setPortName("Display");
 }
 
 Display::~Display() {

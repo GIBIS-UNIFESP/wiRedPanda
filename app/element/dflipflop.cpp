@@ -4,7 +4,7 @@ DFlipFlop::DFlipFlop( QGraphicsItem *parent ) : GraphicElement( 4, 4, 2, 2, pare
   setPixmap( QPixmap( ":/memory/D-flipflop.png" ) );
   setRotatable( false );
   updatePorts( );
-  setObjectName( "FlipFlop D" );
+  setPortName( "FlipFlop D" );
   lastClk = false;
   inputs( ).at( 0 )->setName( "Data" );
   inputs( ).at( 1 )->setName( "Clock" );
@@ -16,7 +16,6 @@ DFlipFlop::DFlipFlop( QGraphicsItem *parent ) : GraphicElement( 4, 4, 2, 2, pare
   inputs( ).at( 3 )->setRequired( false );
   inputs( ).at( 2 )->setDefaultValue( 1 );
   inputs( ).at( 3 )->setDefaultValue( 1 );
-
 }
 
 DFlipFlop::~DFlipFlop( ) {
@@ -40,6 +39,10 @@ void DFlipFlop::updateLogic( ) {
     res2 = -1;
   }
   else {
+    if( res1 == -1 ) {
+      res1 = 0;
+      res2 = 0;
+    }
     char data = inputs( ).at( 0 )->value( );
     bool clk = inputs( ).at( 1 )->value( ); /* Current lock */
     char prst = inputs( ).at( 2 )->value( );

@@ -12,6 +12,7 @@
 #include <QMessageBox>
 #include <QPointF>
 #include <QProcess>
+#include <inputswitch.h>
 #include <iostream>
 #include <nodes/qneconnection.h>
 
@@ -35,7 +36,7 @@ Box::Box( Editor *editor, QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, 
   /*  setPixmap(pixmap.transformed(transform)); */
   setPixmap( pixmap );
   setOutputsOnTop( true );
-  setObjectName( "BOX" );
+  setPortName( "BOX" );
   connect( &watcher, &QFileSystemWatcher::fileChanged, this, &Box::fileChanged );
   isAskingToReload = false;
   parentBox = nullptr;
@@ -104,7 +105,7 @@ void Box::loadFile( QString fname ) {
     myScene.clear( );
     QDataStream ds( &file );
     QList< QGraphicsItem* > items = SerializationFunctions::load( editor, ds, &myScene );
-    for( QGraphicsItem *item: items ) {
+    for( QGraphicsItem *item : items ) {
       if( item->type( ) == GraphicElement::Type ) {
         GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
         if( elm ) {
@@ -112,7 +113,7 @@ void Box::loadFile( QString fname ) {
               case ElementType::BUTTON:
               case ElementType::SWITCH:
               case ElementType::CLOCK: {
-              for( QNEPort *port: elm->outputs( ) ) {
+              for( QNEPort *port : elm->outputs( ) ) {
                 inputMap.append( port );
               }
               elm->disable( );
@@ -120,7 +121,7 @@ void Box::loadFile( QString fname ) {
             }
               case ElementType::DISPLAY:
               case ElementType::LED: {
-              for( QNEPort *port: elm->inputs( ) ) {
+              for( QNEPort *port : elm->inputs( ) ) {
                 outputMap.append( port );
               }
               break;
@@ -153,26 +154,40 @@ void Box::loadFile( QString fname ) {
   sortMap( inputMap );
   sortMap( outputMap );
   for( int port = 0; port < inputSize( ); ++port ) {
-    QString lb = inputMap.at( port )->graphicElement( )->getLabel( );
+    GraphicElement *elm = inputMap.at( port )->graphicElement( );
+    QString lb = elm->getLabel( );
     if( lb.isEmpty( ) ) {
-      lb = inputMap.at( port )->graphicElement( )->objectName( );
+      lb = elm->objectName( );
     }
     if( !inputMap.at( port )->portName( ).isEmpty( ) ) {
       lb += " ";
       lb += inputMap.at( port )->portName( );
     }
+    if( !elm->genericProperties( ).isEmpty( ) ) {
+      lb += " [" + elm->genericProperties( ) + "]";
+    }
     inputs( ).at( port )->setName( lb );
+    if( elm->elementType( ) != ElementType::CLOCK ) {
+      inputs( ).at( port )->setRequired( false );
+      inputs( ).at( port )->setDefaultValue( inputMap.at( port )->value( ) );
+      inputs( ).at( port )->setValue( inputMap.at( port )->value( ) );
+    }
   }
   for( int port = 0; port < outputSize( ); ++port ) {
-    QString lb = outputMap.at( port )->graphicElement( )->getLabel( );
+    GraphicElement *elm = outputMap.at( port )->graphicElement( );
+    QString lb = elm->getLabel( );
     if( lb.isEmpty( ) ) {
-      lb = outputMap.at( port )->graphicElement( )->objectName( );
+      lb = elm->objectName( );
     }
     if( !outputMap.at( port )->portName( ).isEmpty( ) ) {
       lb += " ";
       lb += outputMap.at( port )->portName( );
     }
+    if( !elm->genericProperties( ).isEmpty( ) ) {
+      lb += " [" + elm->genericProperties( ) + "]";
+    }
     outputs( ).at( port )->setName( lb );
+    outputs( ).at( port )->setValue( outputMap.at( port )->value( ) );
   }
 }
 
@@ -245,6 +260,7 @@ void Box::sortMap( QVector< QNEPort* > &map ) {
     }
   }
 }
+
 Box* Box::getParentBox( ) const {
   return( parentBox );
 }

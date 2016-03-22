@@ -4,7 +4,7 @@ DLatch::DLatch( QGraphicsItem *parent ) : GraphicElement( 2, 2, 2, 2, parent ) {
   setPixmap( QPixmap( ":/memory/D-latch.png" ) );
   setRotatable( false );
   updatePorts( );
-  setObjectName( "D Latch" );
+  setPortName( "D Latch" );
   inputs( ).at( 0 )->setName( "Data" );
   inputs( ).at( 1 )->setName( "Enable" );
   outputs( ).at( 0 )->setName( "Q" );
@@ -32,6 +32,10 @@ void DLatch::updateLogic( ) {
     res1 = res2 = -1;
   }
   else {
+    if( res1 == -1 ) {
+      res1 = 0;
+      res2 = 0;
+    }
     if( enable == 1 ) { /* If Enabled */
       res1 = data; /* Output = Data */
       res2 = !data; /* Output = Data */

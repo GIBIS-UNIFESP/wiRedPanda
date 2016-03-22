@@ -5,7 +5,7 @@ SRFlipFlop::SRFlipFlop( QGraphicsItem *parent ) : GraphicElement( 3, 3, 2, 2, pa
   setRotatable( false );
   updatePorts( );
   lastClk = false;
-  setObjectName( "FlipFlop SR" );
+  setPortName( "FlipFlop SR" );
 
   inputs( ).at( 0 )->setName( "S" );
   inputs( ).at( 1 )->setName( "Clock" );
@@ -37,6 +37,10 @@ void SRFlipFlop::updateLogic( ) {
     res2 = -1;
   }
   else {
+    if( res1 == -1 ) {
+      res1 = 0;
+      res2 = 0;
+    }
     char s = inputs( ).at( 0 )->value( );
     char clk = inputs( ).at( 1 )->value( );
     char r = inputs( ).at( 2 )->value( );

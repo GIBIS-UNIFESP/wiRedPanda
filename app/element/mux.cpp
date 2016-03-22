@@ -4,7 +4,7 @@ Mux::Mux( QGraphicsItem *parent ) : GraphicElement( 3, 3, 1, 1, parent ) {
   setPixmap( QPixmap( ":/basic/mux.png" ) );
   setRotatable( false );
   updatePorts( );
-  setObjectName( "MUX" );
+  setPortName( "MUX" );
 
   inputs( ).at( 0 )->setName( "0" );
   inputs( ).at( 1 )->setName( "1" );
