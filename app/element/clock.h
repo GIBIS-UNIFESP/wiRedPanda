@@ -29,8 +29,10 @@ public:
   void setFrequency(float freq);
   void updateLogic();
   void resetClock();
+  QString genericProperties();
 private:
   void updateClock();
+
 };
 
 #endif // CLOCK_H

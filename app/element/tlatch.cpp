@@ -4,7 +4,7 @@ TLatch::TLatch( QGraphicsItem *parent ) : GraphicElement( 2, 2, 2, 2, parent ) {
   setPixmap( QPixmap( ":/memory/T-latch.png" ) );
   setRotatable( false );
   updatePorts( );
-  setObjectName( "T Latch" );
+  setPortName( "T Latch" );
   inputs( ).at( 0 )->setName( "Toggle" );
   inputs( ).at( 1 )->setName( "Enable" );
   outputs( ).at( 0 )->setName( "Q" );
@@ -29,6 +29,9 @@ void TLatch::updateLogic( ) {
     res = -1;
   }
   else {
+    if( res == -1 ) {
+      res = 0;
+    }
     char toggle = inputs( ).at( 0 )->value( );
     char enable = inputs( ).at( 1 )->value( );
     if( enable == 1 ) { /* If Enable */

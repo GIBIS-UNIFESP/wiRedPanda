@@ -4,7 +4,7 @@ Demux::Demux( QGraphicsItem *parent ) : GraphicElement( 2, 2, 2, 2, parent ) {
   setPixmap( QPixmap( ":/basic/demux.png" ) );
   setRotatable( false );
   updatePorts( );
-  setObjectName( "DEMUX" );
+  setPortName( "DEMUX" );
 
   inputs( ).at( 0 )->setName( "in" );
   inputs( ).at( 1 )->setName( "S" );

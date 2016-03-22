@@ -7,7 +7,7 @@ JKFlipFlop::JKFlipFlop( QGraphicsItem *parent ) : GraphicElement( 5, 5, 2, 2, pa
   setRotatable( false );
   updatePorts( );
   lastClk = false;
-  setObjectName( "FlipFlop JK" );
+  setPortName( "FlipFlop JK" );
 
   inputs( ).at( 0 )->setName( "J" );
   inputs( ).at( 1 )->setName( "Clock" );
@@ -38,11 +38,15 @@ void JKFlipFlop::updatePorts( ) {
 void JKFlipFlop::updateLogic( ) {
   char res1 = outputs( ).at( 0 )->value( ); /* Q */
   char res2 = outputs( ).at( 1 )->value( ); /* ~Q */
-  if( !isValid( ) ) {
+  if( isValid( ) == false ) {
     res1 = -1;
     res2 = -1;
   }
   else {
+    if( res1 == -1 ) {
+      res1 = 0;
+      res2 = 0;
+    }
     char j = inputs( ).at( 0 )->value( );
     char clk = inputs( ).at( 1 )->value( ); /* Current lock */
     char k = inputs( ).at( 2 )->value( );

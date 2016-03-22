@@ -12,7 +12,7 @@ Node::Node( QGraphicsItem *parent ) : GraphicElement( 1, 1, 1, 1, parent ) {
   delete paint;
   setPixmap( pix );
   updatePorts( );
-  setObjectName( "NODE" );
+  setPortName( "NODE" );
 }
 
 void Node::updatePorts( ) {
@@ -21,10 +21,10 @@ void Node::updatePorts( ) {
 }
 
 void Node::updateLogic( ) {
-  outputs( ).front( )->setValue( inputs( ).first()->value( ) );
+  outputs( ).front( )->setValue( inputs( ).first( )->value( ) );
 }
 
 
 ElementType Node::elementType( ) {
-  return ElementType::NODE;
+  return( ElementType::NODE );
 }

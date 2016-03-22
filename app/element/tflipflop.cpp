@@ -5,7 +5,7 @@ TFlipFlop::TFlipFlop( QGraphicsItem *parent ) : GraphicElement( 4, 4, 2, 2, pare
   setRotatable( false );
   updatePorts( );
   lastClk = 0;
-  setObjectName( "FlipFlop T" );
+  setPortName( "FlipFlop T" );
 
   inputs( ).at( 0 )->setName( "T" );
   inputs( ).at( 1 )->setName( "Clock" );
@@ -42,6 +42,10 @@ void TFlipFlop::updateLogic( ) {
     res2 = -1;
   }
   else {
+    if( res1 == -1 ) {
+      res1 = 0;
+      res2 = 0;
+    }
     char T = inputs( ).at( 0 )->value( );
     char clk = inputs( ).at( 1 )->value( ); /* Current lock */
     char prst = inputs( ).at( 2 )->value( );

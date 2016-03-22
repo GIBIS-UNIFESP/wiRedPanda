@@ -24,6 +24,7 @@ private:
 public:
   void save(QDataStream & ds);
   void load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap, double version);
+  QString genericProperties();
 };
 
 #endif // LED_H

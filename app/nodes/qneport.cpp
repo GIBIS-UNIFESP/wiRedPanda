@@ -42,7 +42,7 @@ QNEPort::QNEPort( QGraphicsItem *parent ) : QGraphicsPathItem( parent ) {
   margin = 2;
 
   QPainterPath p;
-  p.addRect( -radius_, -radius_, 2 * radius_, 2 * radius_ );
+  p.addPolygon( QRectF( QPointF( -radius_, -radius_ ), QPointF( radius_, radius_ ) ) );
   setPath( p );
 
   setPen( QPen( Qt::darkRed ) );
@@ -75,10 +75,6 @@ void QNEPort::setName( const QString &n ) {
 
 void QNEPort::setIsOutput( bool o ) {
   isOutput_ = o;
-  if( isInput( ) ) {
-    setPen( QPen( Qt::black ) );
-    setCurrentBrush( QColor( 0x333333 ) );
-  }
   if( scene( ) ) {
     QFontMetrics fm( scene( )->font( ) );
   }
@@ -127,13 +123,13 @@ void QNEPort::disconnect( QNEConnection *conn ) {
     graphicElement( )->setChanged( true );
   }
   m_connections.removeAll( conn );
-  updateConnections( );
   if( conn->port1( ) == this ) {
     conn->setPort1( nullptr );
   }
   if( conn->port2( ) == this ) {
     conn->setPort2( nullptr );
   }
+  updateConnections( );
 }
 
 void QNEPort::setPortFlags( int f ) {
@@ -150,10 +146,6 @@ void QNEPort::setPortFlags( int f ) {
     label->setFont( font );
     setPath( QPainterPath( ) );
   }
-}
-
-QNEBlock* QNEPort::block( ) const {
-  return( m_block );
 }
 
 quint64 QNEPort::ptr( ) {
@@ -177,6 +169,14 @@ void QNEPort::updateConnections( ) {
     conn->updatePosFromPorts( );
     conn->updatePath( );
   }
+  if( isValid( ) ) {
+    if( ( m_connections.size( ) == 0 ) && isInput( ) ) {
+      setValue( defaultValue( ) );
+    }
+  }
+  else {
+    setValue( -1 );
+  }
 }
 
 QVariant QNEPort::itemChange( GraphicsItemChange change, const QVariant &value ) {
@@ -189,12 +189,25 @@ QVariant QNEPort::itemChange( GraphicsItemChange change, const QVariant &value )
 QString QNEPort::getName( ) const {
   return( name );
 }
+
+bool QNEPort::isValid( ) const {
+  if( isOutput( ) ) {
+    return( m_value != -1 );
+  }
+  if( m_connections.isEmpty( ) ) {
+    return( !required( ) );
+  }
+  return( m_connections.size( ) == 1 );
+}
+
+
 int QNEPort::defaultValue( ) const {
   return( m_defaultValue );
 }
 
 void QNEPort::setDefaultValue( int defaultValue ) {
   m_defaultValue = defaultValue;
+  setValue( defaultValue );
 }
 
 
@@ -204,7 +217,9 @@ QBrush QNEPort::currentBrush( ) const {
 
 void QNEPort::setCurrentBrush( const QBrush &currentBrush ) {
   _currentBrush = currentBrush;
-  setBrush( currentBrush );
+  if( brush( ).color( ) != Qt::yellow ) {
+    setBrush( currentBrush );
+  }
 }
 
 
@@ -218,21 +233,23 @@ void QNEPort::setRequired( bool required ) {
 }
 
 char QNEPort::value( ) const {
-  if( ( m_connections.size( ) == 0 ) && !isOutput( ) ) {
-    if( required( ) ) {
-      return( -1 );
-    }
-    else {
-      return( defaultValue( ) );
-    }
-  }
-  else {
-    return( m_value );
-  }
+  return( m_value );
 }
 
 void QNEPort::setValue( char value ) {
   m_value = value;
+  if( m_value == -1 ) {
+    setPen( QPen( Qt::darkRed ) );
+    setCurrentBrush( Qt::red );
+  }
+  else if( m_value == 1 ) {
+    setPen( QPen( Qt::darkGreen ) );
+    setCurrentBrush( Qt::green );
+  }
+  else {
+    setPen( QPen( Qt::black ) );
+    setCurrentBrush( QColor( 0x333333 ) );
+  }
   if( isOutput( ) ) {
     foreach( QNEConnection * conn, connections( ) ) {
       if( value == -1 ) {
@@ -262,7 +279,7 @@ void QNEPort::setGraphicElement( GraphicElement *graphicElement ) {
 }
 
 void QNEPort::hoverEnter( ) {
-  setBrush( QBrush( Qt::green ) );
+  setBrush( QBrush( Qt::yellow ) );
   update( );
 }
 

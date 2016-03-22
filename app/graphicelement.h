@@ -57,6 +57,7 @@ public:
 
   void addOutputPort( const QString &name = QString( ) );
 
+  virtual void setPortName( QString name);
 
   int topPosition( ) const;
 
@@ -126,6 +127,8 @@ public:
 
   QKeySequence getTrigger( ) const;
   void setTrigger( const QKeySequence &trigger );
+
+  virtual QString genericProperties();
 
 protected:
   void setRotatable( bool rotatable );

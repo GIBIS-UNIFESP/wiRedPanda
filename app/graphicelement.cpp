@@ -93,7 +93,7 @@ void GraphicElement::save( QDataStream &ds ) {
   ds << rotation( );
 
   /* <Version1.2> */
-  ds << getLabel();
+  ds << getLabel( );
   /* <\Version1.2> */
 
   /* <Version1.3> */
@@ -253,6 +253,11 @@ void GraphicElement::addOutputPort( const QString &name ) {
   addPort( name, true );
 }
 
+void GraphicElement::setPortName( QString name ) {
+  setObjectName( name );
+  setToolTip( name );
+}
+
 void GraphicElement::updatePorts( ) {
   int inputPos = m_topPosition;
   int outputPos = m_bottomPosition;
@@ -327,6 +332,10 @@ void GraphicElement::setTrigger( const QKeySequence &trigger ) {
   m_trigger = trigger;
 }
 
+QString GraphicElement::genericProperties( ) {
+  return( QString( ) );
+}
+
 /*
  * void GraphicElement::mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) {
  *  / * Align to grid * /
@@ -344,13 +353,14 @@ void GraphicElement::setTrigger( const QKeySequence &trigger ) {
 
 void GraphicElement::setLabel( QString label ) {
   m_labelText = label;
-  if(!hasTrigger() || getTrigger().toString().isEmpty()){
+  if( !hasTrigger( ) || getTrigger( ).toString( ).isEmpty( ) ) {
     this->label->setPlainText( label );
-  }else{
-    if(!label.isEmpty()){
+  }
+  else {
+    if( !label.isEmpty( ) ) {
       label += " ";
     }
-    this->label->setPlainText( label  + QString("(%1)").arg(getTrigger().toString()));
+    this->label->setPlainText( label + QString( "(%1)" ).arg( getTrigger( ).toString( ) ) );
   }
 }
 
@@ -368,28 +378,12 @@ void GraphicElement::setVisited( bool visited ) {
 
 bool GraphicElement::isValid( ) {
   bool valid = true;
-  foreach( QNEPort * input, m_inputs ) {
+  for( QNEPort *input  : m_inputs ) {
     /* Required inputs must have exactly one connection. */
-    if( ( input->required( ) && ( input->connections( ).size( ) == 0 ) ) || ( input->connections( ).size( ) > 1 ) ) {
+    if( !input->isValid( ) ) {
       valid = false;
       break;
     }
-/*
- *    else {
- *      foreach( QNEConnection * conn, input->connections( ) ) {
- *        QNEPort *port = conn->otherPort( input );
- *        if( port ) {
- *          if( !port->graphicElement( ) || ( port->value( ) == -1 ) ) {
- *            valid = false;
- *            break;
- *          }
- *        }
- *      }
- *    }
- *    if( valid == false ) {
- *      break;
- *    }
- */
   }
   if( valid == false ) {
     foreach( QNEPort * output, outputs( ) ) {
