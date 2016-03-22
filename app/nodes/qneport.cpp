@@ -80,9 +80,14 @@ void QNEPort::setIsOutput( bool o ) {
   }
 /*  QRect r = fm.boundingRect(name); */
   if( isOutput_ ) {
+    setPen( QPen( Qt::darkRed ) );
+    setCurrentBrush( Qt::red );
+
     label->setPos( -radius_ - margin - label->boundingRect( ).width( ), -label->boundingRect( ).height( ) / 2 );
   }
   else {
+    setPen( QPen( Qt::black ) );
+    setCurrentBrush( Qt::darkRed );
     label->setPos( radius_ + margin, -label->boundingRect( ).height( ) / 2 );
   }
 }
@@ -238,18 +243,6 @@ char QNEPort::value( ) const {
 
 void QNEPort::setValue( char value ) {
   m_value = value;
-  if( m_value == -1 ) {
-    setPen( QPen( Qt::darkRed ) );
-    setCurrentBrush( Qt::red );
-  }
-  else if( m_value == 1 ) {
-    setPen( QPen( Qt::darkGreen ) );
-    setCurrentBrush( Qt::green );
-  }
-  else {
-    setPen( QPen( Qt::black ) );
-    setCurrentBrush( QColor( 0x333333 ) );
-  }
   if( isOutput( ) ) {
     foreach( QNEConnection * conn, connections( ) ) {
       if( value == -1 ) {
@@ -265,6 +258,20 @@ void QNEPort::setValue( char value ) {
       if( port ) {
         port->setValue( value );
       }
+    }
+  }
+  else {
+    if( m_value == -1 ) {
+      setPen( QPen( Qt::black ) );
+      setCurrentBrush( Qt::darkRed );
+    }
+    else if( m_value == 1 ) {
+      setPen( QPen( Qt::black ) );
+      setCurrentBrush( Qt::green );
+    }
+    else {
+      setPen( QPen( Qt::black ) );
+      setCurrentBrush( QColor( 0x333333 ) );
     }
   }
   update( );
