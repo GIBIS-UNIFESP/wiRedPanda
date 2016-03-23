@@ -347,14 +347,14 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
 bool Editor::loadBox( Box *box, QString fname ) {
   QSettings settings;
   QStringList files = settings.value( "recentBoxes" ).toStringList( );
-  qDebug( ) << "Loading box" << fname;
+//  qDebug( ) << "Loading box" << fname;
   files.removeAll( fname );
   try {
     box->setParentFile( GlobalProperties::currentFile );
     box->loadFile( fname );
   }
   catch( BoxNotFoundException &err ) {
-    int ret = QMessageBox::warning( mainWindow, "Error", QString::fromStdString(
+    int ret = QMessageBox::warning( mainWindow, tr("Error"), QString::fromStdString(
                                       err.what( ) ), QMessageBox::Ok, QMessageBox::Cancel );
     if( ret == QMessageBox::Cancel ) {
       return( false );
@@ -402,7 +402,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
         }
       }
       catch( std::runtime_error &err ) {
-        QMessageBox::warning( mainWindow, "Error", QString::fromStdString( err.what( ) ) );
+        QMessageBox::warning( mainWindow, tr("Error"), QString::fromStdString( err.what( ) ) );
         return( false );
       }
     }
@@ -450,7 +450,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
         }
       }
       catch( std::runtime_error &err ) {
-        QMessageBox::warning( mainWindow, "Error", QString::fromStdString( err.what( ) ) );
+        QMessageBox::warning( mainWindow, tr("Error"), QString::fromStdString( err.what( ) ) );
         return( false );
       }
     }
@@ -599,6 +599,46 @@ QPointF roundTo( QPointF point, int multiple ) {
   return( QPointF( nx, ny ) );
 }
 
+void Editor::contextMenu( QGraphicsItem *item, QGraphicsSceneMouseEvent *mouseEvt ) {
+  if( item && ( item->type( ) == GraphicElement::Type ) ) {
+    GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+    QMenu menu;
+    QString renameAction( tr("Rename") );
+    QString rotateAction( tr("Rotate") );
+    QString changeColorAction( tr("Change Color") );
+    QString deleteAction( tr("Delete") );
+    if( elm->hasLabel( ) ) {
+      menu.addAction( renameAction );
+    }
+    if( elm->rotatable( ) ) {
+      menu.addAction( rotateAction );
+    }
+    if( elm->hasColors( ) ) {
+      menu.addAction( changeColorAction );
+    }
+    menu.addAction( deleteAction );
+    QAction *a = menu.exec( mouseEvt->screenPos( ) );
+    if( a ) {
+      if( a->text( ) == deleteAction ) {
+        QList< QGraphicsItem* > items;
+        items << item;
+        undoStack->push( new DeleteItemsCommand( items, this ) );
+      }
+      else if( a->text( ) == renameAction ) {
+        elementEditor->renameAction( elm );
+      }
+      else if( a->text( ) == rotateAction ) {
+        QList< GraphicElement* > items;
+        items << elm;
+        undoStack->push( new RotateCommand( items, 90.0 ) );
+      }
+      else if( a->text( ) == changeColorAction ) {
+        elementEditor->changeColorAction( elm );
+      }
+    }
+  }
+}
+
 bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
   if( obj == scene ) {
     QGraphicsSceneDragDropEvent *dde = dynamic_cast< QGraphicsSceneDragDropEvent* >( evt );
@@ -635,36 +675,14 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
       }
       else if( item && ( mouseEvt->button( ) == Qt::RightButton ) ) {
         QGraphicsItem *item = itemAt( mousePos );
-        if( item && ( item->type( ) == GraphicElement::Type ) ) {
-          GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
-          QMenu menu;
-          menu.addAction( "Delete" );
-//          if( elm->hasLabel( ) ) {
-//            menu.addAction( "Rename" );
-//          }
-          if( elm->rotatable( ) ) {
-            menu.addAction( "Rotate" );
-          }
-          QAction *a = menu.exec( mouseEvt->screenPos( ) );
-          if( a ) {
-            if( a->text( ) == "Delete" ) {
-              QList< QGraphicsItem* > items;
-              items << item;
-              undoStack->push( new DeleteItemsCommand( items, this ) );
-            }else if (a->text() == "Rotate"){
-              QList< GraphicElement* > items;
-              items << elm;
-              undoStack->push( new RotateCommand( items, 90.0 ) );
-            }
-          }
-        }
+        contextMenu( item, mouseEvt );
       }
     }
     if( evt->type( ) == QEvent::GraphicsSceneMouseRelease ) {
       if( draggingElement && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
         if( !movedElements.empty( ) ) {
           if( movedElements.size( ) != oldPositions.size( ) ) {
-            throw std::runtime_error( "Invalid coordinates." );
+            throw std::runtime_error( tr("Invalid coordinates.").toStdString() );
           }
           bool valid = false;
           for( int elm = 0; elm < movedElements.size( ); ++elm ) {
