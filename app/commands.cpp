@@ -61,6 +61,7 @@ void AddItemsCommand::redo( ) {
   }
   editor->getScene( )->clearSelection( );
   editor->getScene( )->update( );
+  editor->updateVisibility();
 }
 
 DeleteItemsCommand::DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor,

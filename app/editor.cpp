@@ -80,6 +80,7 @@ void Editor::deleteElements( ) {
 }
 
 void Editor::showWires( bool checked ) {
+  mShowWires = checked;
   for( QGraphicsItem *item : scene->items( ) ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     if( ( item->type( ) == QNEConnection::Type ) ) {
@@ -102,6 +103,7 @@ void Editor::showWires( bool checked ) {
 }
 
 void Editor::showGates( bool checked ) {
+  mShowGates = checked;
   for( QGraphicsItem *item : scene->items( ) ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     if( ( item->type( ) == GraphicElement::Type ) && elm ) {
@@ -347,14 +349,14 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
 bool Editor::loadBox( Box *box, QString fname ) {
   QSettings settings;
   QStringList files = settings.value( "recentBoxes" ).toStringList( );
-//  qDebug( ) << "Loading box" << fname;
+/*  qDebug( ) << "Loading box" << fname; */
   files.removeAll( fname );
   try {
     box->setParentFile( GlobalProperties::currentFile );
     box->loadFile( fname );
   }
   catch( BoxNotFoundException &err ) {
-    int ret = QMessageBox::warning( mainWindow, tr("Error"), QString::fromStdString(
+    int ret = QMessageBox::warning( mainWindow, tr( "Error" ), QString::fromStdString(
                                       err.what( ) ), QMessageBox::Ok, QMessageBox::Cancel );
     if( ret == QMessageBox::Cancel ) {
       return( false );
@@ -402,7 +404,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
         }
       }
       catch( std::runtime_error &err ) {
-        QMessageBox::warning( mainWindow, tr("Error"), QString::fromStdString( err.what( ) ) );
+        QMessageBox::warning( mainWindow, tr( "Error" ), QString::fromStdString( err.what( ) ) );
         return( false );
       }
     }
@@ -450,7 +452,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
         }
       }
       catch( std::runtime_error &err ) {
-        QMessageBox::warning( mainWindow, tr("Error"), QString::fromStdString( err.what( ) ) );
+        QMessageBox::warning( mainWindow, tr( "Error" ), QString::fromStdString( err.what( ) ) );
         return( false );
       }
     }
@@ -603,10 +605,10 @@ void Editor::contextMenu( QGraphicsItem *item, QGraphicsSceneMouseEvent *mouseEv
   if( item && ( item->type( ) == GraphicElement::Type ) ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     QMenu menu;
-    QString renameAction( tr("Rename") );
-    QString rotateAction( tr("Rotate") );
-    QString changeColorAction( tr("Change Color") );
-    QString deleteAction( tr("Delete") );
+    QString renameAction( tr( "Rename" ) );
+    QString rotateAction( tr( "Rotate" ) );
+    QString changeColorAction( tr( "Change Color" ) );
+    QString deleteAction( tr( "Delete" ) );
     if( elm->hasLabel( ) ) {
       menu.addAction( renameAction );
     }
@@ -637,6 +639,11 @@ void Editor::contextMenu( QGraphicsItem *item, QGraphicsSceneMouseEvent *mouseEv
       }
     }
   }
+}
+
+void Editor::updateVisibility( ) {
+  showGates( mShowGates );
+  showWires( mShowWires );
 }
 
 bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
@@ -682,7 +689,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
       if( draggingElement && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
         if( !movedElements.empty( ) ) {
           if( movedElements.size( ) != oldPositions.size( ) ) {
-            throw std::runtime_error( tr("Invalid coordinates.").toStdString() );
+            throw std::runtime_error( tr( "Invalid coordinates." ).toStdString( ) );
           }
           bool valid = false;
           for( int elm = 0; elm < movedElements.size( ); ++elm ) {

@@ -58,7 +58,8 @@ private:
   QList< QPointF > oldPositions;
   MainWindow *mainWindow;
   bool mControlKeyPressed;
-
+  bool mShowWires;
+  bool mShowGates;
 
   bool mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt );
   bool mouseMoveEvt( QGraphicsSceneMouseEvent *mouseEvt );
@@ -85,8 +86,8 @@ public:
   bool getControlKeyPressed( ) const;
   void setControlKeyPressed( bool controlKeyPressed );
   SimulationController * getSimulationController() const;
-  void contextMenu(GraphicElement *elm, QGraphicsSceneMouseEvent *mouseEvt);
   void contextMenu(QGraphicsItem *item, QGraphicsSceneMouseEvent *mouseEvt);
+  void updateVisibility();
 };
 
 #endif /* EDITOR_H */
