@@ -318,7 +318,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>194</width>
+                   <width>130</width>
                    <height>666</height>
                   </rect>
                  </property>
@@ -594,7 +594,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>194</width>
+                   <width>148</width>
                    <height>522</height>
                   </rect>
                  </property>
@@ -816,8 +816,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>208</width>
-                   <height>352</height>
+                   <width>68</width>
+                   <height>18</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -917,7 +917,7 @@
                <x>0</x>
                <y>0</y>
                <width>228</width>
-               <height>194</height>
+               <height>279</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
@@ -1035,17 +1035,12 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
-    <widget class="QMenu" name="menuShow">
-     <property name="title">
-      <string>&amp;Show</string>
-     </property>
-     <addaction name="actionWires"/>
-     <addaction name="actionGates"/>
-    </widget>
     <addaction name="actionZoom_in"/>
     <addaction name="actionZoom_out"/>
     <addaction name="separator"/>
-    <addaction name="menuShow"/>
+    <addaction name="actionWires"/>
+    <addaction name="actionGates"/>
+    <addaction name="separator"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -1301,18 +1296,18 @@
   <tabstop>scrollArea_6</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/output/output.qrc"/>
-  <include location="resources/resources.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
-  <include location="resources/memory/memory.qrc"/>
-  <include location="resources/resources.qrc"/>
-  <include location="resources/memory/memory.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/output/output.qrc"/>
-  <include location="resources/input/input.qrc"/>
   <include location="resources/basic/basic.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/memory/memory.qrc"/>
+  <include location="resources/resources.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/resources.qrc"/>
+  <include location="resources/memory/memory.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>
 </ui>
