@@ -26,6 +26,17 @@ void ElementEditor::setScene( QGraphicsScene *s ) {
   connect( s, &QGraphicsScene::selectionChanged, this, &ElementEditor::selectionChanged );
 }
 
+void ElementEditor::renameAction( GraphicElement *element ) {
+  setCurrentElement( element );
+  ui->lineEditElementLabel->setFocus( );
+}
+
+void ElementEditor::changeColorAction( GraphicElement *element ) {
+  setCurrentElement( element );
+  int nxtIdx = ( ui->comboBoxColor->currentIndex( ) + 1 ) % ui->comboBoxColor->count( );
+  ui->comboBoxColor->setCurrentIndex( nxtIdx );
+}
+
 void ElementEditor::setCurrentElement( GraphicElement *elm ) {
   element = elm;
   if( elm != NULL ) {
@@ -114,7 +125,7 @@ void ElementEditor::apply( ) {
     element->setFrequency( ui->doubleSpinBoxFrequency->value( ) );
   }
   if( element->hasTrigger( ) ) {
-    element->setTrigger( QKeySequence( ui->trigger->currentText() ) );
+    element->setTrigger( QKeySequence( ui->trigger->currentText( ) ) );
   }
   emit elementUpdated( element, itemData );
 }
@@ -137,6 +148,6 @@ void ElementEditor::on_comboBoxColor_currentIndexChanged( int index ) {
   apply( );
 }
 
-void ElementEditor::on_trigger_currentIndexChanged(const QString &){
-  apply();
+void ElementEditor::on_trigger_currentIndexChanged( const QString & ) {
+  apply( );
 }

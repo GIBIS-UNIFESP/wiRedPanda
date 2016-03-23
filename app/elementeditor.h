@@ -18,6 +18,9 @@ public:
 
   void setScene( QGraphicsScene * s );
 
+  void renameAction( GraphicElement *element );
+  void changeColorAction( GraphicElement * element );
+
 signals:
   void elementUpdated( GraphicElement *element, QByteArray itemData );
 
