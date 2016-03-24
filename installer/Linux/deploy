@@ -1,4 +1,13 @@
-#!/bin/sh
+#!/bin/bash
+PROJECTPATH=${PWD}/../../app
+export PATH=/opt/qt-static/qtbase/bin:$PATH
+mkdir -p /tmp/wpanda-build
+pushd /tmp/wpanda-build
+qmake $PROJECTPATH
+make -j12
+popd
+
+debreate wpanda.dbp
 echo "Extracting deb package"
 dpkg-deb -x *.deb /tmp/extract/
 echo "Copying Files"
