@@ -1,7 +1,7 @@
 [DEBREATE-0.7.10]
 <<CTRL>>
 Package: wpanda
-Version: 1.9-2
+Version: 1.9.2-1
 Source: https://github.com/GIBIS-UNIFESP/wiRedPanda/archive/v1.9-beta.tar.gz
 Maintainer: Lucas Santana Lellis <lucaslellis777@gmail.com>
 Section: utils
@@ -16,12 +16,17 @@ Description: Learn about logic circuits and simulate them in an easy and friendl
 <<FILES>>
 1
 /home/lellis/projetos/wiRedPanda/app/resources/wpanda.sh* -> wpanda.sh -> /usr/local/bin
-/home/lellis/projetos/wiRedPanda/build/app/wpanda* -> wpanda -> /usr/local/bin
+/tmp/wpanda-build/wpanda* -> wpanda -> /usr/local/bin
 /home/lellis/projetos/wiRedPanda/app/resources/icons/26x26/wpanda.png -> wpanda.png -> /usr/local/share/icons/hicolor/26x26/apps
 /home/lellis/projetos/wiRedPanda/app/resources/icons/32x32/wpanda.png -> wpanda.png -> /usr/local/share/icons/hicolor/32x32/apps
 /home/lellis/projetos/wiRedPanda/app/resources/icons/48x48/wpanda.png -> wpanda.png -> /usr/local/share/icons/hicolor/48x48/apps
 /home/lellis/projetos/wiRedPanda/app/resources/icons/64x64/wpanda.png -> wpanda.png -> /usr/local/share/icons/hicolor/64x64/apps
 /home/lellis/projetos/wiRedPanda/app/resources/icons/128x128/wpanda.png -> wpanda.png -> /usr/local/share/icons/hicolor/128x128/apps
+/home/lellis/projetos/wiRedPanda/app/resources/icons/26x26/wpanda-file.png -> wpanda-file.png -> /usr/local/share/icons/hicolor/26x26/apps
+/home/lellis/projetos/wiRedPanda/app/resources/icons/32x32/wpanda-file.png -> wpanda-file.png -> /usr/local/share/icons/hicolor/32x32/apps
+/home/lellis/projetos/wiRedPanda/app/resources/icons/48x48/wpanda-file.png -> wpanda-file.png -> /usr/local/share/icons/hicolor/48x48/apps
+/home/lellis/projetos/wiRedPanda/app/resources/icons/64x64/wpanda-file.png -> wpanda-file.png -> /usr/local/share/icons/hicolor/64x64/apps
+/home/lellis/projetos/wiRedPanda/app/resources/icons/128x128/wpanda-file.png -> wpanda-file.png -> /usr/local/share/icons/hicolor/128x128/apps
 /home/lellis/projetos/wiRedPanda/app/resources/wpanda-mime.xml -> wpanda-mime.xml -> /usr/local/share/xml/misc
 /home/lellis/projetos/wiRedPanda/app/resources/wpanda.desktop -> wpanda.desktop -> /usr/local/share/applications
 /opt/Qt/5.5/gcc_64/plugins/platforms/libqxcb.so* -> libqxcb.so -> /usr/local/lib/wpanda/
@@ -45,11 +50,11 @@ configure)
 desktop-file-install /usr/local/share/applications/wpanda.desktop
 xdg-mime install --mode system /usr/local/share/xml/misc/wpanda-mime.xml
 xdg-mime default /usr/local/share/applications/wpanda.desktop application/x-wpanda
-xdg-icon-resource install --context mimetypes --size 128  /usr/local/share/icons/hicolor/128x128/apps/wpanda.png application-x-wpanda
-xdg-icon-resource install --context mimetypes --size 64  /usr/local/share/icons/hicolor/64x64/apps/wpanda.png application-x-wpanda
-xdg-icon-resource install --context mimetypes --size 48  /usr/local/share/icons/hicolor/48x48/apps/wpanda.png application-x-wpanda
-xdg-icon-resource install --context mimetypes --size 32  /usr/local/share/icons/hicolor/32x32/apps/wpanda.png application-x-wpanda
-xdg-icon-resource install --context mimetypes --size 26  /usr/local/share/icons/hicolor/26x26/apps/wpanda.png application-x-wpanda
+xdg-icon-resource install --context mimetypes --size 128  /usr/local/share/icons/hicolor/128x128/apps/wpanda-file.png application-x-wpanda
+xdg-icon-resource install --context mimetypes --size 64  /usr/local/share/icons/hicolor/64x64/apps/wpanda-file.png application-x-wpanda
+xdg-icon-resource install --context mimetypes --size 48  /usr/local/share/icons/hicolor/48x48/apps/wpanda-file.png application-x-wpanda
+xdg-icon-resource install --context mimetypes --size 32  /usr/local/share/icons/hicolor/32x32/apps/wpanda-file.png application-x-wpanda
+xdg-icon-resource install --context mimetypes --size 26  /usr/local/share/icons/hicolor/26x26/apps/wpanda-file.png application-x-wpanda
 ;;
 esac
 
