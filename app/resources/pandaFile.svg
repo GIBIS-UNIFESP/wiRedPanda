@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64"
+   height="64"
+   id="svg4700"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   viewBox="0 0 64 64"
+   sodipodi:docname="pandaSombra.svg">
+  <defs
+     id="defs4702">
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter5321"
+       x="-0.028124445"
+       width="1.0562489"
+       y="-0.02093054"
+       height="1.0418611">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.47965821"
+         id="feGaussianBlur5323" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter6002"
+       x="-0.025333333"
+       width="1.0506667"
+       y="-0.0228"
+       height="1.0456">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.19"
+         id="feGaussianBlur6004" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="11.313708"
+     inkscape:cx="4.740921"
+     inkscape:cy="26.245195"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:document-units="px"
+     inkscape:grid-bbox="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid5248" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata4705">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer">
+    <path
+       inkscape:connector-curvature="0"
+       style="opacity:0.73000004;fill:#000000;fill-opacity:1;stroke:none;stroke-width:4.23600006;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter5321)"
+       d="m 13.886719,4.348821 c -1.007833,0 -1.81836,0.892 -1.81836,2 l 0,51.000001 c 0,1.108 0.810527,2 1.81836,2 l 37.294922,0 c 1.007832,0 1.818359,-0.892 1.818359,-2 l 0,-33 L 52.412109,23.694525 35.630859,5.0480398 35,4.348821 l -21.113281,0 z"
+       id="rect5250-5"
+       transform="matrix(1.0121747,0,0,1.0121747,-0.55009273,-0.23656984)" />
+    <path
+       style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-width:4.23600006;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 13.886719 4 C 12.878886 4 12.068359 4.892 12.068359 6 L 12.068359 57 C 12.068359 58.108 12.878886 59 13.886719 59 L 51.181641 59 C 52.189473 59 53 58.108 53 57 L 53 24 L 52.412109 23.345703 L 35.630859 4.6992188 L 35 4 L 13.886719 4 z "
+       id="rect5250" />
+    <path
+       inkscape:connector-curvature="0"
+       style="opacity:0.87999998;fill:#979797;fill-opacity:1;stroke:none;stroke-width:4.23600006;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter6002)"
+       d="M 52.956,24.543999 52.325141,23.84478 35.543891,5.1982956 34.956,4.5439986 l 0,2.058594 0,2.9414062 0,13.0058592 c 0,1.104439 0.905994,1.994141 2.03125,1.994141 l 11.96875,0 1.833984,0 2.166016,0 z"
+       id="rect5258-9-5" />
+    <path
+       inkscape:connector-curvature="0"
+       style="opacity:1;fill:#ff2f2f;fill-opacity:1;stroke:none;stroke-width:4.23600006;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 53,24 52.369141,23.300781 35.587891,4.654297 35,4 35,6.058594 35,9 35,22.005859 C 35,23.110298 35.905994,24 37.03125,24 L 49,24 50.833984,24 53,24 Z"
+       id="rect5258-9" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:75px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#6b6b6b;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
+       x="15.801855"
+       y="41.25"
+       id="text5979"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan5981"
+         x="15.801855"
+         y="41.25"
+         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:8.75px;font-family:'URW Gothic L';-inkscape-font-specification:'URW Gothic L Semi-Bold';fill:#6b6b6b;fill-opacity:1;">.PANDA</tspan></text>
+  </g>
+</svg>
