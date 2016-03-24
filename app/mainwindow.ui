@@ -318,8 +318,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>225</height>
+                   <width>194</width>
+                   <height>666</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -594,8 +594,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>179</height>
+                   <width>194</width>
+                   <height>522</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -816,8 +816,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>100</width>
-                   <height>30</height>
+                   <width>208</width>
+                   <height>267</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -962,6 +962,18 @@
    </layout>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonFollowStyle</enum>
+   </property>
+   <property name="floatable">
+    <bool>false</bool>
+   </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
@@ -1302,18 +1314,18 @@
   <tabstop>scrollArea_6</tabstop>
  </tabstops>
  <resources>
+  <include location="resources/resources.qrc"/>
+  <include location="resources/input/input.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/memory/memory.qrc"/>
   <include location="resources/output/output.qrc"/>
   <include location="resources/basic/basic.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/memory/memory.qrc"/>
-  <include location="resources/resources.qrc"/>
-  <include location="resources/output/output.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/resources.qrc"/>
   <include location="resources/memory/memory.qrc"/>
   <include location="resources/basic/basic.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/output/output.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

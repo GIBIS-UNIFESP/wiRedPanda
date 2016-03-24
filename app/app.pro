@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 TARGET = wpanda
-VERSION = 1.9
+VERSION = 1.91
 
 TEMPLATE = app
 
