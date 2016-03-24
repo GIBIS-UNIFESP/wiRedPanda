@@ -678,7 +678,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
         }
         draggingElement = true;
         /* STARTING MOVING ELEMENT */
-        qDebug() << "IN";
+//        qDebug() << "IN";
         QList< QGraphicsItem* > list = scene->selectedItems( );
         list.append( itemsAt( mousePos ) );
         movedElements.clear( );
@@ -701,7 +701,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
 //          if( movedElements.size( ) != oldPositions.size( ) ) {
 //            throw std::runtime_error( tr( "Invalid coordinates." ).toStdString( ) );
 //          }
-          qDebug() << "OUT";
+//          qDebug() << "OUT";
           bool valid = false;
           for( int elm = 0; elm < movedElements.size( ); ++elm ) {
             if( movedElements[ elm ]->pos( ) != oldPositions[ elm ] ) {
