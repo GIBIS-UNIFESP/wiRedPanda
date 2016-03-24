@@ -50,6 +50,7 @@ Editor::~Editor( ) {
 
 void Editor::install( Scene *s ) {
   s->installEventFilter( this );
+  connect( scene, &QGraphicsScene::selectionChanged, this, &Editor::selectionChanged );
   simulationController = new SimulationController( s );
   simulationController->start( );
   buildSelectionRect( );
@@ -145,6 +146,10 @@ void Editor::rotate( bool rotateRight ) {
 
 void Editor::elementUpdated( GraphicElement *element, QByteArray oldData ) {
   undoStack->push( new UpdateCommand( element, oldData ) );
+}
+
+void Editor::selectionChanged( ) {
+
 }
 
 QList< QGraphicsItem* > Editor::itemsAt( QPointF pos ) {
@@ -605,7 +610,8 @@ QPointF roundTo( QPointF point, int multiple ) {
   return( QPointF( nx, ny ) );
 }
 
-void Editor::contextMenu( QGraphicsItem *item, QGraphicsSceneMouseEvent *mouseEvt ) {
+void Editor::contextMenu( QPoint screenPos ) {
+  QGraphicsItem *item = itemAt( mousePos );
   if( item && ( item->type( ) == GraphicElement::Type ) ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     QMenu menu;
@@ -623,7 +629,7 @@ void Editor::contextMenu( QGraphicsItem *item, QGraphicsSceneMouseEvent *mouseEv
       menu.addAction( changeColorAction );
     }
     menu.addAction( deleteAction );
-    QAction *a = menu.exec( mouseEvt->screenPos( ) );
+    QAction *a = menu.exec( screenPos );
     if( a ) {
       if( a->text( ) == deleteAction ) {
         QList< QGraphicsItem* > items;
@@ -670,8 +676,9 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
           ctrlDrag( qgraphicsitem_cast< GraphicElement* >( item ), mouseEvt->pos( ) );
           return( true );
         }
-        /* STARTING MOVING ELEMENT */
         draggingElement = true;
+        /* STARTING MOVING ELEMENT */
+        qDebug() << "IN";
         QList< QGraphicsItem* > list = scene->selectedItems( );
         list.append( itemsAt( mousePos ) );
         movedElements.clear( );
@@ -684,17 +691,17 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
           }
         }
       }
-      else if( item && ( mouseEvt->button( ) == Qt::RightButton ) ) {
-        QGraphicsItem *item = itemAt( mousePos );
-        contextMenu( item, mouseEvt );
+      else {
+        contextMenu( mouseEvt->screenPos( ) );
       }
     }
     if( evt->type( ) == QEvent::GraphicsSceneMouseRelease ) {
       if( draggingElement && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
         if( !movedElements.empty( ) ) {
-          if( movedElements.size( ) != oldPositions.size( ) ) {
-            throw std::runtime_error( tr( "Invalid coordinates." ).toStdString( ) );
-          }
+//          if( movedElements.size( ) != oldPositions.size( ) ) {
+//            throw std::runtime_error( tr( "Invalid coordinates." ).toStdString( ) );
+//          }
+          qDebug() << "OUT";
           bool valid = false;
           for( int elm = 0; elm < movedElements.size( ); ++elm ) {
             if( movedElements[ elm ]->pos( ) != oldPositions[ elm ] ) {
@@ -702,7 +709,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
               break;
             }
           }
-          if( ( movedElements.front( )->pos( ) != oldPositions.front( ) ) && valid ) {
+          if( valid ) {
             undoStack->push( new MoveCommand( movedElements, oldPositions ) );
           }
         }

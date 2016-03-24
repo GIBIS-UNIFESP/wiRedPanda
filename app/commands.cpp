@@ -202,17 +202,18 @@ MoveCommand::MoveCommand( const QList< GraphicElement* > &list,
   for( GraphicElement *elm : list ) {
     newPositions.append( elm->pos( ) );
   }
-  undo( );
   setText( QString( "Move elements" ) );
 }
 
 void MoveCommand::undo( ) {
+  qDebug() << "UNDO!!!" << myList.size();
   for( int i = 0; i < myList.size( ); ++i ) {
     myList[ i ]->setPos( oldPositions[ i ] );
   }
 }
 
 void MoveCommand::redo( ) {
+  qDebug() << "REDO!!!" << myList.size();
   for( int i = 0; i < myList.size( ); ++i ) {
     myList[ i ]->setPos( newPositions[ i ] );
   }
