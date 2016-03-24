@@ -318,8 +318,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>130</width>
-                   <height>666</height>
+                   <width>98</width>
+                   <height>225</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -594,8 +594,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>148</width>
-                   <height>522</height>
+                   <width>98</width>
+                   <height>179</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -816,8 +816,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>68</width>
-                   <height>18</height>
+                   <width>100</width>
+                   <height>30</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -977,6 +977,7 @@
    <addaction name="actionCut"/>
    <addaction name="actionCopy"/>
    <addaction name="actionPaste"/>
+   <addaction name="actionDelete"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QMenuBar" name="menuBar">
@@ -1135,6 +1136,11 @@
    </property>
   </action>
   <action name="actionDelete">
+   <property name="icon">
+    <iconset>
+     <normalon>:/toolbar/delete.png</normalon>
+    </iconset>
+   </property>
    <property name="text">
     <string>&amp;Delete</string>
    </property>
