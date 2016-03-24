@@ -3,5 +3,8 @@
 # done;
 
 for size in 26 32 48 64 128; do
+  mkdir -p icons/${size}x${size}
   inkscape -z wpanda.svg -e icons/${size}x${size}/wpanda.png -h ${size};
+  mkdir -p fileIcons/${size}x${size}
+  inkscape -z pandaFile.svg -e fileIcons/${size}x${size}/wpanda.png -h ${size};
 done;
