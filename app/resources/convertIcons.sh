@@ -1,6 +1,6 @@
-# find . -type f -name '*.svg' | while read file; do
-#   inkscape -z $file -e ${file%.*}.png;
-# done;
+find . -type f -name '*.svg' | while read file; do
+  inkscape -z $file -e ${file%.*}.png;
+done;
 
 for size in 26 32 48 64 128; do
   mkdir -p icons/${size}x${size}
