@@ -39,4 +39,24 @@ unix{
   icon26.path = $$DATADIR/icons/hicolor/26x26/apps
   icon26.files += resources/icons/26x26/$${TARGET}.png
   icon26.extra += xdg-icon-resource install --context mimetypes --size 26  $${PWD}/resources/icons/26x26/$${TARGET}.png application-x-wpanda
+
+  fileIcon128.path = $$DATADIR/icons/hicolor/128x128/apps
+  fileIcon128.files += resources/icons/128x128/$${TARGET}.png
+  fileIcon128.extra += xdg-icon-resource install --context mimetypes --size 128  $${PWD}/resources/icons/128x128/$${TARGET}.png application-x-wpanda
+
+  fileIcon64.path = $$DATADIR/icons/hicolor/64x64/apps
+  fileIcon64.files += resources/icons/64x64/$${TARGET}.png
+  fileIcon64.extra += xdg-icon-resource install --context mimetypes --size 64  $${PWD}/resources/icons/64x64/$${TARGET}.png application-x-wpanda
+
+  fileIcon48.path = $$DATADIR/icons/hicolor/48x48/apps
+  fileIcon48.files += resources/icons/48x48/$${TARGET}.png
+  fileIcon48.extra += xdg-icon-resource install --context mimetypes --size 48  $${PWD}/resources/icons/48x48/$${TARGET}.png application-x-wpanda
+
+  fileIcon32.path = $$DATADIR/icons/hicolor/32x32/apps
+  fileIcon32.files += resources/icons/32x32/$${TARGET}.png
+  fileIcon32.extra += xdg-icon-resource install --context mimetypes --size 32  $${PWD}/resources/icons/32x32/$${TARGET}.png application-x-wpanda
+
+  fileIcon26.path = $$DATADIR/icons/hicolor/26x26/apps
+  fileIcon26.files += resources/icons/26x26/$${TARGET}.png
+  fileIcon26.extra += xdg-icon-resource install --context mimetypes --size 26  $${PWD}/resources/icons/26x26/$${TARGET}.png application-x-wpanda
 }

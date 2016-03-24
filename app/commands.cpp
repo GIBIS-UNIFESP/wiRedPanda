@@ -206,14 +206,14 @@ MoveCommand::MoveCommand( const QList< GraphicElement* > &list,
 }
 
 void MoveCommand::undo( ) {
-  qDebug() << "UNDO!!!" << myList.size();
+//  qDebug() << "UNDO!!!" << myList.size();
   for( int i = 0; i < myList.size( ); ++i ) {
     myList[ i ]->setPos( oldPositions[ i ] );
   }
 }
 
 void MoveCommand::redo( ) {
-  qDebug() << "REDO!!!" << myList.size();
+//  qDebug() << "REDO!!!" << myList.size();
   for( int i = 0; i < myList.size( ); ++i ) {
     myList[ i ]->setPos( newPositions[ i ] );
   }
