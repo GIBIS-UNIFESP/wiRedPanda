@@ -39,6 +39,10 @@ Editor::Editor( MainWindow *parent ) : QObject( parent ), scene( nullptr ), edit
   draggingElement = false;
   clear( );
   timer.start( );
+  mShowWires = true;
+  mShowGates = true;
+
+
 }
 
 Editor::~Editor( ) {
