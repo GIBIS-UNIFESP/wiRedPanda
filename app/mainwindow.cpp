@@ -95,18 +95,19 @@ bool MainWindow::save( ) {
       editor->save( ds );
     }
     catch( std::runtime_error &e ) {
-      std::cerr << tr("Error saving project: ").toStdString() << e.what( ) << std::endl;
+      std::cerr << tr( "Error saving project: " ).toStdString( ) << e.what( ) << std::endl;
       return( false );
     }
   }
   else {
-    std::cerr << tr("Could not open file in WriteOnly mode : ").toStdString() << fname.toStdString( ) << "." << std::endl;
+    std::cerr << tr( "Could not open file in WriteOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
+    std::endl;
     return( false );
   }
   fl.flush( );
   fl.close( );
   setCurrentFile( QFileInfo( fname ) );
-  ui->statusBar->showMessage( tr("Saved file sucessfully."), 2000 );
+  ui->statusBar->showMessage( tr( "Saved file sucessfully." ), 2000 );
   editor->getUndoStack( )->setClean( );
   return( true );
 }
@@ -154,9 +155,9 @@ void MainWindow::on_actionRotate_left_triggered( ) {
 bool MainWindow::open( const QString &fname ) {
   QFile fl( fname );
   if( !fl.exists( ) ) {
-    QMessageBox::warning( this, tr("Error!"), tr( "File \"%1\" does not exists!" ).arg(
+    QMessageBox::warning( this, tr( "Error!" ), tr( "File \"%1\" does not exists!" ).arg(
                             fname ), QMessageBox::Ok, QMessageBox::NoButton );
-    std::cerr << tr("Error: This file does not exists: ").toStdString() << fname.toStdString( ) << std::endl;
+    std::cerr << tr( "Error: This file does not exists: " ).toStdString( ) << fname.toStdString( ) << std::endl;
     return( false );
   }
   if( fl.open( QFile::ReadOnly ) ) {
@@ -166,19 +167,20 @@ bool MainWindow::open( const QString &fname ) {
       editor->load( ds );
     }
     catch( std::runtime_error &e ) {
-      std::cerr << tr("Error loading project: ").toStdString() << e.what( ) << std::endl;
-      QMessageBox::warning( this, tr("Error!"), tr("Could not open file.\nError: %1").arg(
+      std::cerr << tr( "Error loading project: " ).toStdString( ) << e.what( ) << std::endl;
+      QMessageBox::warning( this, tr( "Error!" ), tr( "Could not open file.\nError: %1" ).arg(
                               e.what( ) ), QMessageBox::Ok, QMessageBox::NoButton );
       clear( );
       return( false );
     }
   }
   else {
-    std::cerr << tr("Could not open file in ReadOnly mode : ").toStdString() << fname.toStdString( ) << "." << std::endl;
+    std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
+    std::endl;
     return( false );
   }
   fl.close( );
-  ui->statusBar->showMessage( tr("File loaded successfully."), 2000 );
+  ui->statusBar->showMessage( tr( "File loaded successfully." ), 2000 );
   return( true );
 }
 
@@ -214,7 +216,7 @@ void MainWindow::on_actionAbout_triggered( ) {
                         "<li> Rodrigo Torres </li>"
                         "<li> Prof. Fábio Cappabianco, Ph.D. </li>"
                         "</ul>"
-                        "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
+                        "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>" )
                       .arg(
                         QApplication::applicationVersion( ) ) );
 }
@@ -373,7 +375,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
   }
   QFile fl( fname );
   if( !fl.exists( ) ) {
-    std::cerr << tr("Error: This file does not exists: ").toStdString() << fname.toStdString( ) << std::endl;
+    std::cerr << tr( "Error: This file does not exists: " ).toStdString( ) << fname.toStdString( ) << std::endl;
     return;
   }
   if( fl.open( QFile::ReadOnly ) ) {
@@ -386,7 +388,8 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
     item->getLabel( )->startDrag( );
   }
   else {
-    std::cerr << tr("Could not open file in ReadOnly mode : ").toStdString() << fname.toStdString( ) << "." << std::endl;
+    std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
+    std::endl;
     return;
   }
   fl.close( );
@@ -399,7 +402,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
 
   updateRecentBoxes( );
 
-  ui->statusBar->showMessage( tr("Loaded box sucessfully."), 2000 );
+  ui->statusBar->showMessage( tr( "Loaded box sucessfully." ), 2000 );
 }
 
 void MainWindow::on_lineEdit_textChanged( const QString &text ) {
@@ -418,10 +421,10 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
     ui->searchScrollArea->show( );
     ui->tabWidget->hide( );
     QList< Label* > boxes = ui->tabWidget->findChildren< Label* >( "label_box" );
-    QRegularExpression regex( QString( ".*%1.*" ).arg( text ) );
+    QRegularExpression regex( QString( ".*%1.*" ).arg( text ), QRegularExpression::CaseInsensitiveOption );
     QList< Label* > searchResults;
-    searchResults.append( ui->tabWidget->findChildren< Label* >( QRegularExpression( QString( "^label_.*%1.*" ).arg(
-                                                                                       text ) ) ) );
+    QRegularExpression regex2( QString( "^label_.*%1.*" ).arg( text ), QRegularExpression::CaseInsensitiveOption );
+    searchResults.append( ui->tabWidget->findChildren< Label* >( regex2 ) );
     for( auto *box : boxes ) {
       if( regex.match( box->auxData( ) ).hasMatch( ) ) {
         searchResults.append( box );
@@ -529,7 +532,7 @@ bool MainWindow::on_actionExport_to_Arduino_triggered( ) {
 
   QString fname = QFileDialog::getSaveFileName( this, tr( "Generate Arduino Code" ),
                                                 defaultDirectory.absolutePath( ), tr(
-                                                  "Arduino file (*.ino)") );
+                                                  "Arduino file (*.ino)" ) );
 
   return( ExportToArduino( fname ) );
 }
