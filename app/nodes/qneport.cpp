@@ -202,7 +202,7 @@ bool QNEPort::isValid( ) const {
   if( m_connections.isEmpty( ) ) {
     return( !required( ) );
   }
-  return( m_connections.size( ) == 1 );
+  return(  m_connections.size( ) == 1 );
 }
 
 

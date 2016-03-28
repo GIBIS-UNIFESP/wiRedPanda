@@ -3,6 +3,10 @@ QT       += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 
+VERSION = 1.91
+
+DEFINES += APP_VERSION=\\\"$$VERSION\\\"
+
 CONFIG += c++11
 CONFIG(debug, debug|release) {
     CONFIG += console

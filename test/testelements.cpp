@@ -1,12 +1,17 @@
 #include "testelements.h"
 #include <QDebug>
 
+#include <box.h>
 #include <demux.h>
 #include <dlatch.h>
+#include <editor.h>
+#include <inputbutton.h>
 #include <iostream>
 #include <jkflipflop.h>
 #include <jklatch.h>
+#include <led.h>
 #include <mux.h>
+#include <node.h>
 #include <srflipflop.h>
 #include <tflipflop.h>
 #include <tlatch.h>
@@ -16,7 +21,7 @@
 #include "inputgnd.h"
 #include "inputvcc.h"
 #include "or.h"
-
+#include <iostream>
 TestElements::TestElements( QObject *parent ) : QObject( parent ) {
 
 }
@@ -37,6 +42,30 @@ void TestElements::cleanup( ) {
   }
 }
 
+void TestElements::testNode( ) {
+  Node elm;
+  QCOMPARE( elm.inputSize( ), elm.inputs( ).size( ) );
+  QCOMPARE( elm.inputSize( ), 1 );
+  QCOMPARE( elm.outputSize( ), elm.outputs( ).size( ) );
+  QCOMPARE( elm.outputSize( ), 1 );
+  QCOMPARE( elm.minInputSz( ), 1 );
+  QCOMPARE( elm.elementType( ), ElementType::NODE );
+  conn.at( 0 )->setPort2( elm.input( 0 ) );
+
+  std::array< std::array< int, 2 >, 2 > truthTable = {
+    {
+      { { 1, 1 } },
+      { { 0, 0 } }
+    }
+  };
+  for(  size_t test = 0; test < truthTable.size(); ++test ) {
+    sw.at( 0 )->setOn( truthTable.at( test ).at( 0 ) );
+    sw.at( 0 )->updateLogic( );
+    elm.updateLogic( );
+    QCOMPARE( ( int ) elm.output()->value( ), truthTable.at( test ).at( 1 ) );
+  }
+}
+
 
 void TestElements::testAnd( ) {
   And elm;
@@ -46,8 +75,8 @@ void TestElements::testAnd( ) {
   QCOMPARE( elm.outputSize( ), 1 );
   QCOMPARE( elm.minInputSz( ), 2 );
   QCOMPARE( elm.elementType( ), ElementType::AND );
-  conn.at( 0 )->setPort2( elm.inputs( ).at( 0 ) );
-  conn.at( 1 )->setPort2( elm.inputs( ).at( 1 ) );
+  conn.at( 0 )->setPort2( elm.input( 0 ) );
+  conn.at( 1 )->setPort2( elm.input( 1 ) );
 
   std::array< std::array< int, 3 >, 4 > truthTable = {
     {
@@ -63,7 +92,7 @@ void TestElements::testAnd( ) {
     sw.at( 0 )->updateLogic( );
     sw.at( 1 )->updateLogic( );
     elm.updateLogic( );
-    QCOMPARE( ( int ) elm.outputs( ).front( )->value( ), truthTable.at( test ).at( 2 ) );
+    QCOMPARE( ( int ) elm.output()->value( ), truthTable.at( test ).at( 2 ) );
   }
 }
 
@@ -75,8 +104,8 @@ void TestElements::testOr( ) {
   QCOMPARE( elm.outputSize( ), 1 );
   QCOMPARE( elm.minInputSz( ), 2 );
   QCOMPARE( elm.elementType( ), ElementType::OR );
-  conn.at( 0 )->setPort2( elm.inputs( ).at( 0 ) );
-  conn.at( 1 )->setPort2( elm.inputs( ).at( 1 ) );
+  conn.at( 0 )->setPort2( elm.input( 0 ) );
+  conn.at( 1 )->setPort2( elm.input( 1 ) );
 
   std::array< std::array< int, 3 >, 4 > truthTable = {
     {
@@ -92,19 +121,19 @@ void TestElements::testOr( ) {
     sw.at( 0 )->updateLogic( );
     sw.at( 1 )->updateLogic( );
     elm.updateLogic( );
-    QCOMPARE( ( int ) elm.outputs( ).front( )->value( ), truthTable.at( test ).at( 2 ) );
+    QCOMPARE( ( int ) elm.output()->value( ), truthTable.at( test ).at( 2 ) );
   }
 }
 
 void TestElements::testVCC( ) {
   InputVcc vcc;
-  QCOMPARE( ( int ) vcc.outputs( ).front( )->value( ), 1 );
+  QCOMPARE( ( int ) vcc.output()->value( ), 1 );
 }
 
 
 void TestElements::testGND( ) {
   InputGnd gnd;
-  QCOMPARE( ( int ) gnd.outputs( ).front( )->value( ), 0 );
+  QCOMPARE( ( int ) gnd.output()->value( ), 0 );
 
 }
 
@@ -116,9 +145,9 @@ void TestElements::testMux( ) {
   QCOMPARE( elm.outputSize( ), 1 );
   QCOMPARE( elm.minInputSz( ), 3 );
   QCOMPARE( elm.elementType( ), ElementType::MUX );
-  conn.at( 0 )->setPort2( elm.inputs( ).at( 0 ) );
-  conn.at( 1 )->setPort2( elm.inputs( ).at( 1 ) );
-  conn.at( 2 )->setPort2( elm.inputs( ).at( 2 ) );
+  conn.at( 0 )->setPort2( elm.input( 0 ) );
+  conn.at( 1 )->setPort2( elm.input( 1 ) );
+  conn.at( 2 )->setPort2( elm.input( 2 ) );
 
   std::array< std::array< int, 4 >, 8 > truthTable = {
     {
@@ -140,7 +169,7 @@ void TestElements::testMux( ) {
     sw.at( 1 )->updateLogic( );
     sw.at( 2 )->updateLogic( );
     elm.updateLogic( );
-    QCOMPARE( ( int ) elm.outputs( ).front( )->value( ), truthTable.at( test ).at( 3 ) );
+    QCOMPARE( ( int ) elm.output()->value( ), truthTable.at( test ).at( 3 ) );
   }
 }
 
@@ -152,8 +181,8 @@ void TestElements::testDemux( ) {
   QCOMPARE( elm.outputSize( ), 2 );
   QCOMPARE( elm.minInputSz( ), 2 );
   QCOMPARE( elm.elementType( ), ElementType::DEMUX );
-  conn.at( 0 )->setPort2( elm.inputs( ).at( 0 ) );
-  conn.at( 1 )->setPort2( elm.inputs( ).at( 1 ) );
+  conn.at( 0 )->setPort2( elm.input( 0 ) );
+  conn.at( 1 )->setPort2( elm.input( 1 ) );
 
   std::array< std::array< int, 4 >, 8 > truthTable = {
     {
@@ -170,8 +199,8 @@ void TestElements::testDemux( ) {
     sw.at( 0 )->updateLogic( );
     sw.at( 1 )->updateLogic( );
     elm.updateLogic( );
-    QCOMPARE( ( int ) elm.outputs( ).at( 0 )->value( ), truthTable.at( test ).at( 2 ) );
-    QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), truthTable.at( test ).at( 3 ) );
+    QCOMPARE( ( int ) elm.output( 0 )->value( ), truthTable.at( test ).at( 2 ) );
+    QCOMPARE( ( int ) elm.output( 1 )->value( ), truthTable.at( test ).at( 3 ) );
   }
 }
 
@@ -186,10 +215,10 @@ void TestElements::testDFlipFlop( ) {
   QCOMPARE( elm.minOutputSz( ), 2 );
   QCOMPARE( elm.maxOutputSz( ), 2 );
   QCOMPARE( elm.elementType( ), ElementType::DFLIPFLOP );
-  conn.at( 0 )->setPort2( elm.inputs( ).at( 0 ) );
-  conn.at( 1 )->setPort2( elm.inputs( ).at( 1 ) );
-  conn.at( 2 )->setPort2( elm.inputs( ).at( 2 ) );
-  conn.at( 3 )->setPort2( elm.inputs( ).at( 3 ) );
+  conn.at( 0 )->setPort2( elm.input( 0 ) );
+  conn.at( 1 )->setPort2( elm.input( 1 ) );
+  conn.at( 2 )->setPort2( elm.input( 2 ) );
+  conn.at( 3 )->setPort2( elm.input( 3 ) );
 
   std::array< std::array< int, 7 >, 7 > truthTable = {
     {
@@ -206,7 +235,7 @@ void TestElements::testDFlipFlop( ) {
     }
   };
   for( size_t test = 0; test < truthTable.size( ); ++test ) {
-    elm.outputs( ).at( 0 )->setValue( truthTable.at( test ).at( 0 ) );
+    elm.output( 0 )->setValue( truthTable.at( test ).at( 0 ) );
     sw.at( 0 )->setOn( truthTable.at( test ).at( 1 ) ); /* DATA */
     sw.at( 1 )->setOn( truthTable.at( test ).at( 0 ) ); /* CLK */
     sw.at( 2 )->setOn( false ); /* PRST */
@@ -215,27 +244,29 @@ void TestElements::testDFlipFlop( ) {
       sw.at( port )->updateLogic( );
     }
     elm.updateLogic( );
-/*    std::cout << ( int ) elm.outputs( ).at( 0 )->value( ) << " -> "; */
+/*    std::cout << ( int ) elm.output( 0 )->value( ) << " -> "; */
     for( int port = 0; port < 4; ++port ) {
       sw.at( port )->setOn( truthTable.at( test ).at( port + 1 ) );
       sw.at( port )->updateLogic( );
 /*      std::cout << truthTable.at(test).at( port + 1 ) << " "; */
     }
     elm.updateLogic( );
-/*    std::cout << "-> " << ( int ) elm.outputs( ).at( 0 )->value( ) << std::endl; */
+/*    std::cout << "-> " << ( int ) elm.output( 0 )->value( ) << std::endl; */
 
-    QCOMPARE( ( int ) elm.outputs( ).at( 0 )->value( ), truthTable.at( test ).at( 5 ) );
-    QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), truthTable.at( test ).at( 6 ) );
+    QCOMPARE( ( int ) elm.output( 0 )->value( ), truthTable.at( test ).at( 5 ) );
+    QCOMPARE( ( int ) elm.output( 1 )->value( ), truthTable.at( test ).at( 6 ) );
   }
-//  elm.inputs( ).at( 2 )->disconnect( conn.at( 2 ) );
-//  elm.inputs( ).at( 3 )->disconnect( conn.at( 3 ) );
+/*
+ *  elm.input( 2 )->disconnect( conn.at( 2 ) );
+ *  elm.input( 3 )->disconnect( conn.at( 3 ) );
+ */
   delete conn.at( 2 );
   delete conn.at( 3 );
-  QCOMPARE( ( int ) elm.inputs( ).at( 2 )->value( ), 1 );
-  QCOMPARE( ( int ) elm.inputs( ).at( 3 )->value( ), 1 );
+  QCOMPARE( ( int ) elm.input( 2 )->value( ), 1 );
+  QCOMPARE( ( int ) elm.input( 3 )->value( ), 1 );
   elm.updateLogic( );
-  QVERIFY( ( int ) elm.outputs( ).at( 0 )->value( ) != -1 );
-  QVERIFY( ( int ) elm.outputs( ).at( 1 )->value( ) != -1 );
+  QVERIFY( ( int ) elm.output( 0 )->value( ) != -1 );
+  QVERIFY( ( int ) elm.output( 1 )->value( ) != -1 );
 }
 
 void TestElements::testDLatch( ) {
@@ -249,8 +280,8 @@ void TestElements::testDLatch( ) {
   QCOMPARE( elm.minOutputSz( ), 2 );
   QCOMPARE( elm.maxOutputSz( ), 2 );
   QCOMPARE( elm.elementType( ), ElementType::DLATCH );
-  conn.at( 0 )->setPort2( elm.inputs( ).at( 0 ) );
-  conn.at( 1 )->setPort2( elm.inputs( ).at( 1 ) );
+  conn.at( 0 )->setPort2( elm.input( 0 ) );
+  conn.at( 1 )->setPort2( elm.input( 1 ) );
 
   std::array< std::array< int, 4 >, 6 > truthTable = {
     {
@@ -264,18 +295,18 @@ void TestElements::testDLatch( ) {
     }
   };
   for( size_t test = 0; test < truthTable.size( ); ++test ) {
-    elm.outputs( ).at( 0 )->setValue( truthTable.at( test ).at( 3 ) );
-    elm.outputs( ).at( 1 )->setValue( !truthTable.at( test ).at( 3 ) );
+    elm.output( 0 )->setValue( truthTable.at( test ).at( 3 ) );
+    elm.output( 1 )->setValue( !truthTable.at( test ).at( 3 ) );
     for( int port = 0; port < 2; ++port ) {
       sw.at( port )->setOn( truthTable.at( test ).at( port ) );
       sw.at( port )->updateLogic( );
 /*      std::cout << truthTable.at(test).at( port ) << " "; */
     }
     elm.updateLogic( );
-/*    std::cout << "-> " << ( int ) elm.outputs( ).at( 0 )->value( ) << std::endl; */
+/*    std::cout << "-> " << ( int ) elm.output( 0 )->value( ) << std::endl; */
 
-    QCOMPARE( ( int ) elm.outputs( ).at( 0 )->value( ), truthTable.at( test ).at( 2 ) );
-    QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), ( int ) !truthTable.at( test ).at( 2 ) );
+    QCOMPARE( ( int ) elm.output( 0 )->value( ), truthTable.at( test ).at( 2 ) );
+    QCOMPARE( ( int ) elm.output( 1 )->value( ), ( int ) !truthTable.at( test ).at( 2 ) );
   }
 }
 
@@ -290,11 +321,11 @@ void TestElements::testJKFlipFlop( ) {
   QCOMPARE( elm.minOutputSz( ), 2 );
   QCOMPARE( elm.maxOutputSz( ), 2 );
   QCOMPARE( elm.elementType( ), ElementType::JKFLIPFLOP );
-  conn.at( 0 )->setPort2( elm.inputs( ).at( 0 ) ); /* J */
-  conn.at( 1 )->setPort2( elm.inputs( ).at( 1 ) ); /* Clk */
-  conn.at( 2 )->setPort2( elm.inputs( ).at( 2 ) ); /* K */
-  conn.at( 3 )->setPort2( elm.inputs( ).at( 3 ) ); /* Prst */
-  conn.at( 4 )->setPort2( elm.inputs( ).at( 4 ) ); /* Clr */
+  conn.at( 0 )->setPort2( elm.input( 0 ) ); /* J */
+  conn.at( 1 )->setPort2( elm.input( 1 ) ); /* Clk */
+  conn.at( 2 )->setPort2( elm.input( 2 ) ); /* K */
+  conn.at( 3 )->setPort2( elm.input( 3 ) ); /* Prst */
+  conn.at( 4 )->setPort2( elm.input( 4 ) ); /* Clr */
 
   std::array< std::array< int, 9 >, 13 > truthTable = {
     {
@@ -326,31 +357,33 @@ void TestElements::testJKFlipFlop( ) {
       sw.at( port )->updateLogic( );
     }
     elm.updateLogic( );
-    elm.outputs( ).at( 0 )->setValue( truthTable.at( test ).at( 8 ) );
-    elm.outputs( ).at( 1 )->setValue( !truthTable.at( test ).at( 8 ) );
-/*    std::cout << ( int ) elm.outputs( ).at( 0 )->value( ) << " -> "; */
+    elm.output( 0 )->setValue( truthTable.at( test ).at( 8 ) );
+    elm.output( 1 )->setValue( !truthTable.at( test ).at( 8 ) );
+/*    std::cout << ( int ) elm.output( 0 )->value( ) << " -> "; */
     for( int port = 0; port < 5; ++port ) {
       sw.at( port )->setOn( truthTable.at( test ).at( port + 1 ) );
       sw.at( port )->updateLogic( );
 /*      std::cout << truthTable.at(test).at( port + 1 ) << " "; */
     }
     elm.updateLogic( );
-/*    std::cout << "-> " << ( int ) elm.outputs( ).at( 0 )->value( ) << std::endl; */
+/*    std::cout << "-> " << ( int ) elm.output( 0 )->value( ) << std::endl; */
 
-    QCOMPARE( ( int ) elm.outputs( ).at( 0 )->value( ), truthTable.at( test ).at( 6 ) );
-    QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), truthTable.at( test ).at( 7 ) );
+    QCOMPARE( ( int ) elm.output( 0 )->value( ), truthTable.at( test ).at( 6 ) );
+    QCOMPARE( ( int ) elm.output( 1 )->value( ), truthTable.at( test ).at( 7 ) );
   }
-//  elm.inputs( ).at( 3 )->disconnect( conn.at( 3 ) );
-//  elm.inputs( ).at( 4 )->disconnect( conn.at( 4 ) );
+/*
+ *  elm.input( 3 )->disconnect( conn.at( 3 ) );
+ *  elm.input( 4 )->disconnect( conn.at( 4 ) );
+ */
 
-  delete conn.at(3);
-  delete conn.at(4);
+  delete conn.at( 3 );
+  delete conn.at( 4 );
 
-  QCOMPARE( ( int ) elm.inputs( ).at( 3 )->value( ), 1 );
-  QCOMPARE( ( int ) elm.inputs( ).at( 4 )->value( ), 1 );
+  QCOMPARE( ( int ) elm.input( 3 )->value( ), 1 );
+  QCOMPARE( ( int ) elm.input( 4 )->value( ), 1 );
   elm.updateLogic( );
-  QVERIFY( ( int ) elm.outputs( ).at( 0 )->value( ) != -1 );
-  QVERIFY( ( int ) elm.outputs( ).at( 1 )->value( ) != -1 );
+  QVERIFY( ( int ) elm.output( 0 )->value( ) != -1 );
+  QVERIFY( ( int ) elm.output( 1 )->value( ) != -1 );
 }
 
 void TestElements::testJKLatch( ) {
@@ -364,8 +397,8 @@ void TestElements::testJKLatch( ) {
   QCOMPARE( elm.minOutputSz( ), 2 );
   QCOMPARE( elm.maxOutputSz( ), 2 );
   QCOMPARE( elm.elementType( ), ElementType::JKLATCH );
-  conn.at( 0 )->setPort2( elm.inputs( ).at( 0 ) );
-  conn.at( 1 )->setPort2( elm.inputs( ).at( 1 ) );
+  conn.at( 0 )->setPort2( elm.input( 0 ) );
+  conn.at( 1 )->setPort2( elm.input( 1 ) );
 
   std::array< std::array< int, 4 >, 8 > truthTable = {
     {
@@ -381,17 +414,17 @@ void TestElements::testJKLatch( ) {
     }
   };
   for( size_t test = 0; test < truthTable.size( ); ++test ) {
-    elm.outputs( ).at( 0 )->setValue( truthTable.at( test ).at( 3 ) );
-    elm.outputs( ).at( 1 )->setValue( !truthTable.at( test ).at( 3 ) );
+    elm.output( 0 )->setValue( truthTable.at( test ).at( 3 ) );
+    elm.output( 1 )->setValue( !truthTable.at( test ).at( 3 ) );
     for( int port = 0; port < 2; ++port ) {
       sw.at( port )->setOn( truthTable.at( test ).at( port ) );
       sw.at( port )->updateLogic( );
 /*      std::cout << truthTable.at(test).at( port ) << " "; */
     }
     elm.updateLogic( );
-/*    std::cout << "-> " << ( int ) elm.outputs( ).at( 0 )->value( ) << std::endl; */
-    QCOMPARE( ( int ) elm.outputs( ).at( 0 )->value( ), truthTable.at( test ).at( 2 ) );
-    QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), ( int ) !truthTable.at( test ).at( 2 ) );
+/*    std::cout << "-> " << ( int ) elm.output( 0 )->value( ) << std::endl; */
+    QCOMPARE( ( int ) elm.output( 0 )->value( ), truthTable.at( test ).at( 2 ) );
+    QCOMPARE( ( int ) elm.output( 1 )->value( ), ( int ) !truthTable.at( test ).at( 2 ) );
   }
 }
 
@@ -406,9 +439,9 @@ void TestElements::testSRFlipFlop( ) {
   QCOMPARE( elm.minOutputSz( ), 2 );
   QCOMPARE( elm.maxOutputSz( ), 2 );
   QCOMPARE( elm.elementType( ), ElementType::SRFLIPFLOP );
-  conn.at( 0 )->setPort2( elm.inputs( ).at( 0 ) ); /* S */
-  conn.at( 1 )->setPort2( elm.inputs( ).at( 1 ) ); /* Clk */
-  conn.at( 2 )->setPort2( elm.inputs( ).at( 2 ) ); /* R */
+  conn.at( 0 )->setPort2( elm.input( 0 ) ); /* S */
+  conn.at( 1 )->setPort2( elm.input( 1 ) ); /* Clk */
+  conn.at( 2 )->setPort2( elm.input( 2 ) ); /* R */
 
   std::array< std::array< int, 7 >, 20 > truthTable = {
     {
@@ -448,9 +481,9 @@ void TestElements::testSRFlipFlop( ) {
       sw.at( port )->updateLogic( );
     }
     elm.updateLogic( );
-    elm.outputs( ).at( 0 )->setValue( truthTable.at( test ).at( 6 ) );
-    elm.outputs( ).at( 1 )->setValue( !truthTable.at( test ).at( 6 ) );
-/*    std::cout << ( int ) elm.outputs( ).at( 0 )->value( ) << " " << ( int ) elm.outputs( ).at( 1 )->value( ) << " ->
+    elm.output( 0 )->setValue( truthTable.at( test ).at( 6 ) );
+    elm.output( 1 )->setValue( !truthTable.at( test ).at( 6 ) );
+/*    std::cout << ( int ) elm.output( 0 )->value( ) << " " << ( int ) elm.output( 1 )->value( ) << " ->
  * "; */
     for( int port = 0; port < 3; ++port ) {
       sw.at( port )->setOn( truthTable.at( test ).at( port + 1 ) );
@@ -459,13 +492,13 @@ void TestElements::testSRFlipFlop( ) {
     }
     elm.updateLogic( );
 /*
- *    std::cout << "-> " << ( int ) elm.outputs( ).at( 0 )->value( ) << " " << ( int ) elm.outputs( ).at( 1 )->value( )
+ *    std::cout << "-> " << ( int ) elm.output( 0 )->value( ) << " " << ( int ) elm.output( 1 )->value( )
  * <<
  *      std::endl;
  */
 
-    QCOMPARE( ( int ) elm.outputs( ).at( 0 )->value( ), truthTable.at( test ).at( 4 ) );
-    QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), truthTable.at( test ).at( 5 ) );
+    QCOMPARE( ( int ) elm.output( 0 )->value( ), truthTable.at( test ).at( 4 ) );
+    QCOMPARE( ( int ) elm.output( 1 )->value( ), truthTable.at( test ).at( 5 ) );
   }
 }
 
@@ -480,10 +513,10 @@ void TestElements::testTFlipFlop( ) {
   QCOMPARE( elm.minOutputSz( ), 2 );
   QCOMPARE( elm.maxOutputSz( ), 2 );
   QCOMPARE( elm.elementType( ), ElementType::TFLIPFLOP );
-  conn.at( 0 )->setPort2( elm.inputs( ).at( 0 ) ); /* T */
-  conn.at( 1 )->setPort2( elm.inputs( ).at( 1 ) ); /* Clk */
-  conn.at( 2 )->setPort2( elm.inputs( ).at( 2 ) ); /* Prst */
-  conn.at( 3 )->setPort2( elm.inputs( ).at( 3 ) ); /* Clr */
+  conn.at( 0 )->setPort2( elm.input( 0 ) ); /* T */
+  conn.at( 1 )->setPort2( elm.input( 1 ) ); /* Clk */
+  conn.at( 2 )->setPort2( elm.input( 2 ) ); /* Prst */
+  conn.at( 3 )->setPort2( elm.input( 3 ) ); /* Clr */
 
   std::array< std::array< int, 8 >, 11 > truthTable = {
     {
@@ -517,9 +550,9 @@ void TestElements::testTFlipFlop( ) {
       sw.at( port )->updateLogic( );
     }
     elm.updateLogic( );
-    elm.outputs( ).at( 0 )->setValue( truthTable.at( test ).at( 7 ) );
-    elm.outputs( ).at( 1 )->setValue( !truthTable.at( test ).at( 7 ) );
-/*    std::cout << ( int ) elm.outputs( ).at( 0 )->value( ) << " " << ( int ) elm.outputs( ).at( 1 )->value( ) << " ->
+    elm.output( 0 )->setValue( truthTable.at( test ).at( 7 ) );
+    elm.output( 1 )->setValue( !truthTable.at( test ).at( 7 ) );
+/*    std::cout << ( int ) elm.output( 0 )->value( ) << " " << ( int ) elm.output( 1 )->value( ) << " ->
  * "; */
     for( int port = 0; port < 4; ++port ) {
       sw.at( port )->setOn( truthTable.at( test ).at( port + 1 ) );
@@ -527,25 +560,27 @@ void TestElements::testTFlipFlop( ) {
 /*      std::cout << truthTable.at(test).at( port + 1 ) << " "; */
     }
     elm.updateLogic( );
-/*    std::cout << "-> " << ( int ) elm.outputs( ).at( 0 )->value( ) << " " << ( int ) elm.outputs( ).at( 1 )->value( )
+/*    std::cout << "-> " << ( int ) elm.output( 0 )->value( ) << " " << ( int ) elm.output( 1 )->value( )
  * << std::endl; */
 
-    QCOMPARE( ( int ) elm.outputs( ).at( 0 )->value( ), truthTable.at( test ).at( 5 ) );
-    QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), truthTable.at( test ).at( 6 ) );
+    QCOMPARE( ( int ) elm.output( 0 )->value( ), truthTable.at( test ).at( 5 ) );
+    QCOMPARE( ( int ) elm.output( 1 )->value( ), truthTable.at( test ).at( 6 ) );
   }
-//  elm.inputs( ).at( 2 )->disconnect( conn.at( 2 ) );
-//  elm.inputs( ).at( 3 )->disconnect( conn.at( 3 ) );
+/*
+ *  elm.input( 2 )->disconnect( conn.at( 2 ) );
+ *  elm.input( 3 )->disconnect( conn.at( 3 ) );
+ */
 
 
-  delete conn.at(2);
-  delete conn.at(3);
+  delete conn.at( 2 );
+  delete conn.at( 3 );
 
 
-  QCOMPARE( ( int ) elm.inputs( ).at( 2 )->value( ), 1 );
-  QCOMPARE( ( int ) elm.inputs( ).at( 3 )->value( ), 1 );
+  QCOMPARE( ( int ) elm.input( 2 )->value( ), 1 );
+  QCOMPARE( ( int ) elm.input( 3 )->value( ), 1 );
   elm.updateLogic( );
-  QVERIFY( ( int ) elm.outputs( ).at( 0 )->value( ) != -1 );
-  QVERIFY( ( int ) elm.outputs( ).at( 1 )->value( ) != -1 );
+  QVERIFY( ( int ) elm.output( 0 )->value( ) != -1 );
+  QVERIFY( ( int ) elm.output( 1 )->value( ) != -1 );
 }
 
 void TestElements::testTLatch( ) {
@@ -559,8 +594,8 @@ void TestElements::testTLatch( ) {
   QCOMPARE( elm.minOutputSz( ), 2 );
   QCOMPARE( elm.maxOutputSz( ), 2 );
   QCOMPARE( elm.elementType( ), ElementType::TLATCH );
-  conn.at( 0 )->setPort2( elm.inputs( ).at( 0 ) );
-  conn.at( 1 )->setPort2( elm.inputs( ).at( 1 ) );
+  conn.at( 0 )->setPort2( elm.input( 0 ) );
+  conn.at( 1 )->setPort2( elm.input( 1 ) );
 
   std::array< std::array< int, 4 >, 6 > truthTable = {
     {
@@ -574,17 +609,86 @@ void TestElements::testTLatch( ) {
     }
   };
   for( size_t test = 0; test < truthTable.size( ); ++test ) {
-    elm.outputs( ).at( 0 )->setValue( truthTable.at( test ).at( 3 ) );
-    elm.outputs( ).at( 1 )->setValue( !truthTable.at( test ).at( 3 ) );
+    elm.output( 0 )->setValue( truthTable.at( test ).at( 3 ) );
+    elm.output( 1 )->setValue( !truthTable.at( test ).at( 3 ) );
     for( int port = 0; port < 2; ++port ) {
       sw.at( port )->setOn( truthTable.at( test ).at( port ) );
       sw.at( port )->updateLogic( );
 /*      std::cout << truthTable.at(test).at( port ) << " "; */
     }
     elm.updateLogic( );
-/*    std::cout << "-> " << ( int ) elm.outputs( ).at( 0 )->value( ) << std::endl; */
+/*    std::cout << "-> " << ( int ) elm.output( 0 )->value( ) << std::endl; */
 
-    QCOMPARE( ( int ) elm.outputs( ).at( 0 )->value( ), truthTable.at( test ).at( 2 ) );
-    QCOMPARE( ( int ) elm.outputs( ).at( 1 )->value( ), ( int ) !truthTable.at( test ).at( 2 ) );
+    QCOMPARE( ( int ) elm.output( 0 )->value( ), truthTable.at( test ).at( 2 ) );
+    QCOMPARE( ( int ) elm.output( 1 )->value( ), ( int ) !truthTable.at( test ).at( 2 ) );
   }
+}
+
+QString testFile( QString fname ) {
+  return( QString( "%1/../examples/%2" ).arg( CURRENTDIR, fname ) );
+}
+
+void TestElements::testBox( ) {
+  Editor *editor = new Editor( this );
+  InputButton *btn = new InputButton( );
+  Led *led = new Led( );
+  Box *box = new Box( editor );
+  editor->getScene( )->addItem( btn );
+  editor->getScene( )->addItem( led );
+  editor->getScene( )->addItem( box );
+  box->loadFile( testFile( "jkflipflop.panda" ) );
+  box->updateLogic( );
+
+  QCOMPARE( ( int ) box->inputSize( ), 5 );
+  QCOMPARE( ( int ) box->outputSize( ), 2 );
+
+
+  QCOMPARE( box->input( 0 )->required( ), 0 );
+  QCOMPARE( box->input( 1 )->required( ), 0 );
+  QCOMPARE( box->input( 2 )->required( ), 1 );
+  QCOMPARE( box->input( 3 )->required( ), 0 );
+  QCOMPARE( box->input( 4 )->required( ), 0 );
+
+  QCOMPARE( ( int ) box->input( 0 )->value( ), 1 );
+  QCOMPARE( ( int ) box->input( 1 )->value( ), 0 );
+  QCOMPARE( ( int ) box->input( 2 )->value( ), -1 );
+  QCOMPARE( ( int ) box->input( 3 )->value( ), 0 );
+  QCOMPARE( ( int ) box->input( 4 )->value( ), 1 );
+
+  QNEConnection *conn = new QNEConnection( );
+  conn->setPort1( btn->output( ) );
+  conn->setPort2( box->input( 2 ) );
+  QNEConnection *conn2 = new QNEConnection( );
+  conn2->setPort2( led->input( ) );
+  conn2->setPort2( box->output( ) );
+
+  btn->updateLogic( );
+  box->updateLogic( );
+  led->updateLogic( );
+
+  QCOMPARE( ( int ) box->input( 2 )->value( ), 0 );
+
+  QCOMPARE( ( int ) box->output( 0 )->value( ), 0 );
+  QCOMPARE( ( int ) box->output( 1 )->value( ), 1 );
+
+  btn->setOn( false );
+  btn->updateLogic( );
+  box->updateLogic( );
+  led->updateLogic( );
+
+  QCOMPARE( ( int ) box->input( 2 )->value( ), 0);
+
+  QCOMPARE( ( int ) box->output( 0 )->value( ), 0 );
+  QCOMPARE( ( int ) box->output( 1 )->value( ), 1 );
+
+  btn->setOn( true );
+  btn->updateLogic( );
+  box->updateLogic( );
+  led->updateLogic( );
+
+  QCOMPARE( ( int ) btn->output( )->value( ), 1 );
+  QCOMPARE( ( int ) box->input( 2 )->value( ), 1 );
+
+  QCOMPARE( ( int ) box->output( 0 )->value( ), 1 );
+  QCOMPARE( ( int ) box->output( 1 )->value( ), 0 );
 }

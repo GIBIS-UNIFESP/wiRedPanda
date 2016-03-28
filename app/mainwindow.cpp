@@ -500,17 +500,9 @@ bool MainWindow::ExportToArduino( QString fname ) {
     if( !fname.endsWith( ".ino" ) ) {
       fname.append( ".ino" );
     }
-    for( GraphicElement *elm : elements ) {
-      elm->setChanged( false );
-      elm->setBeingVisited( false );
-      elm->setVisited( false );
-    }
-    for( GraphicElement *elm : elements ) {
-      if( elm ) {
-        sc->calculatePriority( elm );
-      }
-    }
-    qSort( elements.begin( ), elements.end( ), PriorityElement::lessThan );
+
+    elements = SimulationController::sortElements(elements);
+
 
     CodeGenerator arduino( QDir::home( ).absoluteFilePath( fname ), elements );
     arduino.generate( );

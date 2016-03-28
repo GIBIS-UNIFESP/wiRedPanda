@@ -16,7 +16,7 @@ void Mux::updatePorts( ) {
   inputs( ).at( 0 )->setPos( 16, 32 - 12 ); /* 0 */
   inputs( ).at( 1 )->setPos( 16, 32 + 12 ); /* 1 */
   inputs( ).at( 2 )->setPos( 32, 58 ); /* S */
-  outputs( ).at( 0 )->setPos( 48, 32 ); /* Out */
+  output( 0 )->setPos( 48, 32 ); /* Out */
 }
 
 void Mux::updateLogic( ) {
@@ -32,5 +32,5 @@ void Mux::updateLogic( ) {
       res = data2;
     }
   }
-  outputs( ).at( 0 )->setValue( res );
+  output( 0 )->setValue( res );
 }

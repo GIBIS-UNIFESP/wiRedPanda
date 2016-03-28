@@ -15,8 +15,8 @@ void JKLatch::updatePorts( ) {
   inputs( ).at( 0 )->setPos( topPosition( ), 13 );
   inputs( ).at( 1 )->setPos( topPosition( ), 45 );
 
-  outputs( ).at( 0 )->setPos( bottomPosition( ), 15 );
-  outputs( ).at( 1 )->setPos( bottomPosition( ), 45 );
+  output( 0 )->setPos( bottomPosition( ), 15 );
+  output( 1 )->setPos( bottomPosition( ), 45 );
 }
 
 void JKLatch::updateLogic( ) {

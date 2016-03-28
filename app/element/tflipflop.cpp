@@ -11,8 +11,8 @@ TFlipFlop::TFlipFlop( QGraphicsItem *parent ) : GraphicElement( 4, 4, 2, 2, pare
   inputs( ).at( 1 )->setName( "Clock" );
   inputs( ).at( 2 )->setName( "~Preset" );
   inputs( ).at( 3 )->setName( "~Clear" );
-  outputs( ).at( 0 )->setName( "Q" );
-  outputs( ).at( 1 )->setName( "~Q" );
+  output( 0 )->setName( "Q" );
+  output( 1 )->setName( "~Q" );
   inputs( ).at( 0 )->setRequired( false );
   inputs( ).at( 2 )->setRequired( false );
   inputs( ).at( 3 )->setRequired( false );
@@ -30,13 +30,13 @@ void TFlipFlop::updatePorts( ) {
   inputs( ).at( 2 )->setPos( 32, topPosition( ) ); /* Preset */
   inputs( ).at( 3 )->setPos( 32, bottomPosition( ) ); /* Clear */
 
-  outputs( ).at( 0 )->setPos( bottomPosition( ), 15 ); /* Q */
-  outputs( ).at( 1 )->setPos( bottomPosition( ), 45 ); /* ~Q */
+  output( 0 )->setPos( bottomPosition( ), 15 ); /* Q */
+  output( 1 )->setPos( bottomPosition( ), 45 ); /* ~Q */
 }
 
 void TFlipFlop::updateLogic( ) {
-  char res1 = outputs( ).at( 0 )->value( ); /* Q */
-  char res2 = outputs( ).at( 1 )->value( ); /* Q */
+  char res1 = output( 0 )->value( ); /* Q */
+  char res2 = output( 1 )->value( ); /* Q */
   if( !isValid( ) ) {
     res1 = -1;
     res2 = -1;
@@ -62,8 +62,8 @@ void TFlipFlop::updateLogic( ) {
     }
     lastClk = clk;
   }
-  outputs( ).at( 0 )->setValue( res1 );
-  outputs( ).at( 1 )->setValue( res2 );
+  output( 0 )->setValue( res1 );
+  output( 1 )->setValue( res2 );
 }
 
 /* Reference: https://en.wikipedia.org/wiki/Flip-flop_(electronics)#T_flip-flop */

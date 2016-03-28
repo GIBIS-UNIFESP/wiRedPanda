@@ -16,8 +16,7 @@
 #include <iostream>
 #include <nodes/qneconnection.h>
 
-Box::Box( Editor *editor, QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, parent ), simulationController(
-    &myScene ) {
+Box::Box( Editor *editor, QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, parent ) {
   this->editor = editor;
   setHasLabel( true );
   QPixmap pixmap( ":/basic/box.png" );
@@ -62,13 +61,29 @@ void Box::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double vers
   }
 }
 
+#include <iostream>
 void Box::updateLogic( ) {
   for( int inputPort = 0; inputPort < inputMap.size( ); ++inputPort ) {
-    inputMap.at( inputPort )->setValue( inputs( ).at( inputPort )->value( ) );
+    inputMap.at( inputPort )->setValue( input( inputPort )->value( ) );
   }
-  simulationController.update( );
+  QVector< GraphicElement* > elms( myScene.getElements( ) );
+  elms = SimulationController::sortElements( elms );
+  for( GraphicElement *elm : elms ) {
+    if(!elm->disabled()){
+      elm->updateLogic( );
+    }
+//    std::cout << elm->objectName().toStdString() <<  " : ";
+//    for( QNEPort * in : elm->inputs()) {
+//      std::cout << ( int ) in->value( ) << " ";
+//    }
+//    std::cout << " => ";
+//    for( QNEPort * out : elm->outputs()) {
+//      std::cout << ( int ) out->value( ) << " ";
+//    }
+//    std::cout <<  std::endl;
+  }
   for( int outputPort = 0; outputPort < outputMap.size( ); ++outputPort ) {
-    outputs( ).at( outputPort )->setValue( outputMap.at( outputPort )->value( ) );
+    output( outputPort )->setValue( outputMap.at( outputPort )->value( ) );
   }
 }
 
@@ -166,11 +181,11 @@ void Box::loadFile( QString fname ) {
     if( !elm->genericProperties( ).isEmpty( ) ) {
       lb += " [" + elm->genericProperties( ) + "]";
     }
-    inputs( ).at( port )->setName( lb );
+    input( port )->setName( lb );
     if( elm->elementType( ) != ElementType::CLOCK ) {
-      inputs( ).at( port )->setRequired( false );
-      inputs( ).at( port )->setDefaultValue( inputMap.at( port )->value( ) );
-      inputs( ).at( port )->setValue( inputMap.at( port )->value( ) );
+      input( port )->setRequired( false );
+      input( port )->setDefaultValue( inputMap.at( port )->value( ) );
+      input( port )->setValue( inputMap.at( port )->value( ) );
     }
   }
   for( int port = 0; port < outputSize( ); ++port ) {
@@ -186,8 +201,8 @@ void Box::loadFile( QString fname ) {
     if( !elm->genericProperties( ).isEmpty( ) ) {
       lb += " [" + elm->genericProperties( ) + "]";
     }
-    outputs( ).at( port )->setName( lb );
-    outputs( ).at( port )->setValue( outputMap.at( port )->value( ) );
+    output( port )->setName( lb );
+    output( port )->setValue( outputMap.at( port )->value( ) );
   }
 }
 

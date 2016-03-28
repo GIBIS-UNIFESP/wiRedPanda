@@ -13,7 +13,7 @@ class SimulationController : public QObject {
 public:
   explicit SimulationController(Scene * scn);
     ~SimulationController();
-  int calculatePriority(GraphicElement * elm);
+  static QVector<GraphicElement *> sortElements(QVector<GraphicElement *>elms);
 signals:
 
 public slots:
@@ -26,6 +26,7 @@ private:
   Scene * scene;
   QTimer timer;
 
+  static int calculatePriority(GraphicElement * elm);
 };
 
 #endif // SIMULATIONCONTROLLER_H

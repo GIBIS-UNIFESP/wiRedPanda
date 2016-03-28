@@ -6,7 +6,7 @@
 
 class InputButton : public GraphicElement, public Input {
 public:
-  explicit InputButton( QGraphicsItem *parent );
+  explicit InputButton( QGraphicsItem *parent = 0);
   virtual ~InputButton( );
   bool on;
 

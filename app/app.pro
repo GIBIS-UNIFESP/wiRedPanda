@@ -5,7 +5,6 @@
 #-------------------------------------------------
 
 TARGET = wpanda
-VERSION = 1.91
 
 TEMPLATE = app
 
@@ -20,7 +19,6 @@ DISTFILES += windows.rc
 SOURCES += main.cpp
 
 
-DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
 DISTFILES += \
     resources/postinst

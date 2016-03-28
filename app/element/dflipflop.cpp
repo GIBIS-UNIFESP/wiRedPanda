@@ -10,12 +10,14 @@ DFlipFlop::DFlipFlop( QGraphicsItem *parent ) : GraphicElement( 4, 4, 2, 2, pare
   inputs( ).at( 1 )->setName( "Clock" );
   inputs( ).at( 2 )->setName( "~Preset" );
   inputs( ).at( 3 )->setName( "~Clear" );
-  outputs( ).at( 0 )->setName( "Q" );
-  outputs( ).at( 1 )->setName( "~Q" );
+  output( 0 )->setName( "Q" );
+  output( 1 )->setName( "~Q" );
   inputs( ).at( 2 )->setRequired( false );
   inputs( ).at( 3 )->setRequired( false );
   inputs( ).at( 2 )->setDefaultValue( 1 );
   inputs( ).at( 3 )->setDefaultValue( 1 );
+  lastValue = false;
+  lastClk = false;
 }
 
 DFlipFlop::~DFlipFlop( ) {
@@ -27,13 +29,13 @@ void DFlipFlop::updatePorts( ) {
   inputs( ).at( 1 )->setPos( topPosition( ), 45 ); /* Clock */
   inputs( ).at( 2 )->setPos( 32, topPosition( ) ); /* Preset */
   inputs( ).at( 3 )->setPos( 32, bottomPosition( ) ); /* Clear */
-  outputs( ).at( 0 )->setPos( bottomPosition( ), 15 ); /* Q */
-  outputs( ).at( 1 )->setPos( bottomPosition( ), 45 ); /* ~Q */
+  output( 0 )->setPos( bottomPosition( ), 15 ); /* Q */
+  output( 1 )->setPos( bottomPosition( ), 45 ); /* ~Q */
 }
 
 void DFlipFlop::updateLogic( ) {
-  char res1 = outputs( ).at( 0 )->value( ); /* Q */
-  char res2 = outputs( ).at( 1 )->value( ); /* ~Q */
+  char res1 = output( 0 )->value( ); /* Q */
+  char res2 = output( 1 )->value( ); /* ~Q */
   if( !isValid( ) ) {
     res1 = -1;
     res2 = -1;
