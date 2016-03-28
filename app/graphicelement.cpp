@@ -33,8 +33,8 @@ GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz,
   m_maxInputSz = maxInputSz;
   m_maxOutputSz = maxOutputSz;
   m_changed = true;
-  m_visited = false;
-  m_beingVisited = false;
+//  m_visited = false;
+//  m_beingVisited = false;
   m_rotatable = true;
   m_hasColors = false;
   m_hasTrigger = false;
@@ -376,13 +376,13 @@ QString GraphicElement::getLabel( ) {
   return( m_labelText );
 }
 
-bool GraphicElement::visited( ) const {
-  return( m_visited );
-}
+//bool GraphicElement::visited( ) const {
+//  return( m_visited );
+//}
 
-void GraphicElement::setVisited( bool visited ) {
-  m_visited = visited;
-}
+//void GraphicElement::setVisited( bool visited ) {
+//  m_visited = visited;
+//}
 
 bool GraphicElement::isValid( ) {
   bool valid = true;
@@ -407,13 +407,13 @@ bool GraphicElement::isValid( ) {
   return( valid );
 }
 
-bool GraphicElement::beingVisited( ) const {
-  return( m_beingVisited );
-}
+//bool GraphicElement::beingVisited( ) const {
+//  return( m_beingVisited );
+//}
 
-void GraphicElement::setBeingVisited( bool beingVisited ) {
-  m_beingVisited = beingVisited;
-}
+//void GraphicElement::setBeingVisited( bool beingVisited ) {
+//  m_beingVisited = beingVisited;
+//}
 
 bool GraphicElement::changed( ) const {
   return( m_changed );

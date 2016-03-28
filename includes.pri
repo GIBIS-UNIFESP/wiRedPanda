@@ -54,8 +54,6 @@ SOURCES += \
     $$PWD/app/nodes/qneblock.cpp \
     $$PWD/app/nodes/qneconnection.cpp \
     $$PWD/app/nodes/qneport.cpp \
-    $$PWD/app/priorityelement.cpp \
-    $$PWD/app/priorityqueue.cpp \
     $$PWD/app/scene.cpp \
     $$PWD/app/serializationfunctions.cpp \
     $$PWD/app/simulationcontroller.cpp \
@@ -105,8 +103,6 @@ HEADERS  +=  \
     $$PWD/app/nodes/qneblock.h \
     $$PWD/app/nodes/qneconnection.h \
     $$PWD/app/nodes/qneport.h \
-    $$PWD/app/priorityelement.h \
-    $$PWD/app/priorityqueue.h \
     $$PWD/app/scene.h \
     $$PWD/app/serializationfunctions.h \
     $$PWD/app/simulationcontroller.h \
