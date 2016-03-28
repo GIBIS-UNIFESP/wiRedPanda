@@ -7,7 +7,7 @@
 
 #include <nodes/qneconnection.h>
 
-#include <priorityqueue.h>
+#include <QStack>
 
 SimulationController::SimulationController( Scene *scn ) : QObject( dynamic_cast< QObject* >( scn ) ), timer( this ) {
   scene = scn;
@@ -19,64 +19,50 @@ SimulationController::~SimulationController( ) {
 
 }
 
-int SimulationController::calculatePriority( GraphicElement *elm ) {
+int SimulationController::calculatePriority( GraphicElement *elm,
+                                             QMap< GraphicElement*, bool > &beingvisited,
+                                             QMap< GraphicElement*, int > &priority ) {
   if( !elm ) {
     return( 0 );
   }
-  if( elm->beingVisited( ) ) {
+  if( beingvisited.contains( elm ) && ( beingvisited[ elm ] == true ) ) {
     elm->setChanged( true );
-/*    qDebug() << elm->objectName() << " being visited"; */
     return( 0 );
   }
-  if( elm->visited( ) ) {
-/*    qDebug() << elm->objectName() << " is visited"; */
-    return( elm->priority( ) );
+  if( priority.contains( elm ) ) {
+    return( priority[ elm ] );
   }
-  elm->setBeingVisited( true );
+  beingvisited[elm] = true;
   int max = 0;
-  foreach( QNEPort * port, elm->outputs( ) ) {
-    foreach( QNEConnection * conn, port->connections( ) ) {
-      QNEPort *sucessor = conn->port1( );
-      if( sucessor == port ) {
-        sucessor = conn->port2( );
-      }
+  for( QNEPort *port : elm->outputs( ) ) {
+    for( QNEConnection *conn : port->connections( ) ) {
+      QNEPort *sucessor = conn->otherPort( port );
       if( sucessor ) {
-        max = qMax( calculatePriority( sucessor->graphicElement( ) ), max );
+        max = qMax( calculatePriority( sucessor->graphicElement( ), beingvisited, priority ), max );
       }
-/*      qDebug() << elm->objectName() << " max = " << max; */
     }
   }
-/*  qDebug() << elm->objectName() << " priority set to " << max + 1; */
-  elm->setPriority( max + 1 );
-  elm->setBeingVisited( false );
-  elm->setVisited( true );
-  return( elm->priority( ) );
+  int p = max + 1;
+  priority[ elm ] = p;
+  beingvisited[ elm ] = false;
+  return(  p );
 }
 
 QVector< GraphicElement* > SimulationController::sortElements( QVector< GraphicElement* > elms ) {
-  for( GraphicElement *bxelm : elms ) {
-    bxelm->setChanged( false );
-    bxelm->setBeingVisited( false );
-    bxelm->setVisited( false );
+  QMap< GraphicElement*, bool > beingvisited;
+  QMap< GraphicElement*, int > priority;
+
+  for( GraphicElement *elm : elms ) {
+    calculatePriority( elm, beingvisited, priority );
   }
-  for( GraphicElement *bxelm : elms ) {
-    if( bxelm ) {
-      SimulationController::calculatePriority( bxelm );
-    }
-  }
-  qSort( elms.begin( ), elms.end( ), PriorityElement::lessThan );
-  return elms;
+
+  std::sort(elms.begin(), elms.end(), [priority](GraphicElement * e1, GraphicElement * e2) {return priority[e2] < priority[e1];});
+
+  return( elms );
 }
 
 void SimulationController::update( ) {
-  QList< QGraphicsItem* > items = scene->items( );
-  QVector< GraphicElement* > elements;
-  for( QGraphicsItem *item : items ) {
-    GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
-    if( elm ) {
-      elements.append( elm );
-    }
-  }
+  QVector< GraphicElement* > elements = scene->getElements( );
   if( Clock::reset ) {
     foreach( GraphicElement * elm, elements ) {
       if( elm->elementType( ) == ElementType::CLOCK ) {
@@ -91,23 +77,10 @@ void SimulationController::update( ) {
   if( elements.isEmpty( ) ) {
     return;
   }
-  foreach( GraphicElement * elm, elements ) {
-    if( elm ) {
-      calculatePriority( elm );
-    }
-  }
-
-  PriorityQueue queue( elements );
-  while( !queue.isEmpty( ) ) {
-    GraphicElement *elm = dynamic_cast< GraphicElement* >( queue.pop( ) );
-/*    queue.print(); */
-    if( elm ) {
-      elm->updateLogic( );
-      elm->setChanged( false );
-      elm->setBeingVisited( false );
-      elm->setVisited( false );
-/*      qDebug() << elm->objectName() << ", " << elm->priority(); */
-    }
+  QVector< GraphicElement* > sorted = sortElements( elements );
+  for( GraphicElement *elm : sorted ) {
+    elm->updateLogic( );
+    elm->setChanged( false );
   }
 }
 

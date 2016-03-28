@@ -1,7 +1,6 @@
 #include "globalproperties.h"
 #include "listitemwidget.h"
 #include "mainwindow.h"
-#include "priorityqueue.h"
 #include "ui_mainwindow.h"
 #include <QClipboard>
 #include <QDebug>

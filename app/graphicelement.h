@@ -7,8 +7,6 @@
 
 #include "nodes/qneport.h"
 
-#include "priorityelement.h"
-
 enum class ElementType {
   UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND, DISPLAY,
   DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, TLATCH, BOX, NODE, MUX, DEMUX
@@ -16,7 +14,7 @@ enum class ElementType {
 
 #define MAXIMUMVALIDINPUTSIZE 256
 
-class GraphicElement : public QGraphicsObject, public PriorityElement {
+class GraphicElement : public QGraphicsObject {
   Q_OBJECT
 public:
   enum { Type = QGraphicsItem::UserType + 3 };
@@ -113,11 +111,11 @@ public:
   bool changed( ) const;
   void setChanged( bool changed );
 
-  bool beingVisited( ) const;
-  void setBeingVisited( bool beingVisited );
+//  bool beingVisited( ) const;
+//  void setBeingVisited( bool beingVisited );
 
-  bool visited( ) const;
-  void setVisited( bool visited );
+//  bool visited( ) const;
+//  void setVisited( bool visited );
 
   bool isValid( );
 
@@ -165,8 +163,8 @@ private:
   bool m_hasColors;
   bool m_hasTrigger;
   bool m_changed;
-  bool m_beingVisited;
-  bool m_visited;
+//  bool m_beingVisited;
+//  bool m_visited;
   bool m_disabled;
   QString m_labelText;
   QKeySequence m_trigger;
