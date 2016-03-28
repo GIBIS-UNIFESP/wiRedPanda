@@ -26,9 +26,9 @@
 #include <QtMath>
 #include <iostream>
 
-Editor::Editor( MainWindow *parent ) : QObject( parent ), scene( nullptr ), editedConn( nullptr ),
+Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ), editedConn( nullptr ),
   m_hoverPort( nullptr ) {
-  mainWindow = parent;
+  mainWindow = qobject_cast<MainWindow *> ( parent );
   mControlKeyPressed = false;
   markingSelectionBox = false;
   undoStack = new QUndoStack( this );

@@ -53,6 +53,21 @@ int SimulationController::calculatePriority( GraphicElement *elm ) {
   return( elm->priority( ) );
 }
 
+QVector< GraphicElement* > SimulationController::sortElements( QVector< GraphicElement* > elms ) {
+  for( GraphicElement *bxelm : elms ) {
+    bxelm->setChanged( false );
+    bxelm->setBeingVisited( false );
+    bxelm->setVisited( false );
+  }
+  for( GraphicElement *bxelm : elms ) {
+    if( bxelm ) {
+      SimulationController::calculatePriority( bxelm );
+    }
+  }
+  qSort( elms.begin( ), elms.end( ), PriorityElement::lessThan );
+  return elms;
+}
+
 void SimulationController::update( ) {
   QList< QGraphicsItem* > items = scene->items( );
   QVector< GraphicElement* > elements;

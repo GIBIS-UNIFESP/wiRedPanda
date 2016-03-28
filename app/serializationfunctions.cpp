@@ -66,11 +66,12 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDa
   }
   return( itemList );
 }
+#include<iostream>
 
 QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStream &ds, Scene *scene ) {
   QString str;
   ds >> str;
-  qDebug( ) << "Header: " << str;
+//  std::cout << "Header: " << str.toStdString() << std::endl;
   if( !str.startsWith( QApplication::applicationName( ) ) ) {
     throw( std::runtime_error( "Invalid file format." ) );
   }

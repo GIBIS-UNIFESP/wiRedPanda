@@ -76,14 +76,14 @@ void CodeGenerator::declareInputs( ) {
   for( GraphicElement *elm : elements ) {
     if( ( elm->elementType( ) == ElementType::BUTTON ) ||
         ( elm->elementType( ) == ElementType::SWITCH ) ) {
-      QString varName = elm->objectName( )+ QString::number( counter );
+      QString varName = elm->objectName( ) + QString::number( counter );
       QString label = elm->getLabel( );
       if( !label.isEmpty( ) ) {
         varName = QString( "%1_%2" ).arg( varName ).arg( label );
       }
-      varName = clearString(varName);
+      varName = clearString( varName );
       out << QString( "const int %1 = %2;" ).arg( varName ).arg( availblePins.front( ) ) << endl;
-      inputMap.append( MappedPin( elm, availblePins.front( ), varName, elm->outputs( ).at( 0 ), 0 ) );
+      inputMap.append( MappedPin( elm, availblePins.front( ), varName, elm->output( 0 ), 0 ) );
       availblePins.pop_front( );
       varMap[ elm->outputs( ).front( ) ] = varName + QString( "_val" );
       counter++;
@@ -98,7 +98,7 @@ void CodeGenerator::declareOutputs( ) {
   for( GraphicElement *elm : elements ) {
     if( ( elm->elementType( ) == ElementType::LED ) ||
         ( elm->elementType( ) == ElementType::DISPLAY ) ) {
-      QString label = elm->getLabel( ) ;
+      QString label = elm->getLabel( );
       for( int i = 0; i < elm->inputs( ).size( ); ++i ) {
         QString varName = elm->objectName( ) + QString::number( counter );
         if( !label.isEmpty( ) ) {
@@ -108,7 +108,7 @@ void CodeGenerator::declareOutputs( ) {
         if( !port->getName( ).isEmpty( ) ) {
           varName = QString( "%1_%2" ).arg( varName ).arg( port->getName( ) );
         }
-        varName = clearString(varName);
+        varName = clearString( varName );
         out << QString( "const int %1 = %2;" ).arg( varName ).arg( availblePins.front( ) ) << endl;
         outputMap.append( MappedPin( elm, availblePins.front( ), varName, port, i ) );
         availblePins.pop_front( );
@@ -130,7 +130,7 @@ void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &el
         out << "// END of " << box->getLabel( ) << endl;
         for( int i = 0; i < box->outputSize( ); ++i ) {
           QNEPort *port = box->outputMap.at( i );
-          varMap[ box->outputs( ).at( i ) ] = otherPortName( port );
+          varMap[ box->output( i ) ] = otherPortName( port );
         }
       }
     }
@@ -163,7 +163,7 @@ void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &el
       }
       for( QNEPort *port : elm->outputs( ) ) {
         QString varName = varMap[ port ];
-        out << "boolean " << varName << " = " << highLow(port->defaultValue()) << ";" << endl;
+        out << "boolean " << varName << " = " << highLow( port->defaultValue( ) ) << ";" << endl;
         switch( elm->elementType( ) ) {
             case ElementType::CLOCK: {
             if( !isBox ) {
@@ -223,22 +223,10 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
         out << "    " << varMap[ box->inputMap.at( i ) ] << " = " << value << ";" << endl;
       }
       QVector< GraphicElement* > boxElms = box->myScene.getElements( );
-      SimulationController *sc = box->editor->getSimulationController( );
-      sc->stop( );
       if( boxElms.isEmpty( ) ) {
         continue;
       }
-      for( GraphicElement *bxelm : boxElms ) {
-        bxelm->setChanged( false );
-        bxelm->setBeingVisited( false );
-        bxelm->setVisited( false );
-      }
-      for( GraphicElement *bxelm : boxElms ) {
-        if( bxelm ) {
-          sc->calculatePriority( bxelm );
-        }
-      }
-      qSort( boxElms.begin( ), boxElms.end( ), PriorityElement::lessThan );
+      boxElms = SimulationController::sortElements( boxElms );
       assignVariablesRec( boxElms );
       out << "    // End of " << box->getLabel( ) << endl;
     }
@@ -246,10 +234,10 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
       continue;
     }
     else {
-      QString firstOut = varMap[ elm->outputs( ).at( 0 ) ];
+      QString firstOut = varMap[ elm->output( 0 ) ];
       switch( elm->elementType( ) ) {
           case ElementType::DFLIPFLOP: {
-          QString secondOut = varMap[ elm->outputs( ).at( 1 ) ];
+          QString secondOut = varMap[ elm->output( 1 ) ];
           QString data = otherPortName( elm->inputs( ).at( 0 ) );
           QString clk = otherPortName( elm->inputs( ).at( 1 ) );
           QString inclk = firstOut + "_inclk";
@@ -273,7 +261,7 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
           break;
         }
           case ElementType::DLATCH: {
-          QString secondOut = varMap[ elm->outputs( ).at( 1 ) ];
+          QString secondOut = varMap[ elm->output( 1 ) ];
           QString data = otherPortName( elm->inputs( ).at( 0 ) );
           QString clk = otherPortName( elm->inputs( ).at( 1 ) );
           out << QString( "    //D Latch" ) << endl;
@@ -284,7 +272,7 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
           break;
         }
           case ElementType::JKFLIPFLOP: {
-          QString secondOut = varMap[ elm->outputs( ).at( 1 ) ];
+          QString secondOut = varMap[ elm->output( 1 ) ];
           QString j = otherPortName( elm->inputs( ).at( 0 ) );
           QString clk = otherPortName( elm->inputs( ).at( 1 ) );
           QString k = otherPortName( elm->inputs( ).at( 2 ) );
@@ -316,15 +304,15 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
 
           break;
         }
-      case ElementType::JKLATCH: {
-          QString secondOut = varMap[ elm->outputs( ).at( 1 ) ];
+          case ElementType::JKLATCH: {
+          QString secondOut = varMap[ elm->output( 1 ) ];
           QString j = otherPortName( elm->inputs( ).at( 0 ) );
           QString k = otherPortName( elm->inputs( ).at( 1 ) );
           out << QString( "    //JK Latch" ) << endl;
-          out << QString( "    if( %1 && %2 ) { " ).arg( j).arg(k) << endl;
+          out << QString( "    if( %1 && %2 ) { " ).arg( j ).arg( k ) << endl;
           out << QString( "        %1 = !%2;" ).arg( firstOut ).arg( firstOut ) << endl;
-          out << QString( "    }else if ( %1 != %2 ) {" ).arg(j).arg( k ) << endl;
-          out << QString( "        %1 = %2;" ).arg( firstOut ).arg(j) << endl;
+          out << QString( "    }else if ( %1 != %2 ) {" ).arg( j ).arg( k ) << endl;
+          out << QString( "        %1 = %2;" ).arg( firstOut ).arg( j ) << endl;
           out << QString( "    }" ) << endl;
           out << QString( "    %1 = !%2;" ).arg( secondOut ).arg( firstOut ) << endl;
           break;
@@ -398,8 +386,8 @@ void CodeGenerator::assignLogicOperator( GraphicElement *elm ) {
     if( parentheses && negate ) {
       out << "( ";
     }
-    if( inPort->connections( ).isEmpty()){
-      out << otherPortName(inPort);
+    if( inPort->connections( ).isEmpty( ) ) {
+      out << otherPortName( inPort );
       for( int i = 1; i < elm->inputs( ).size( ); ++i ) {
         inPort = elm->inputs( )[ i ];
         out << " " << logicOperator << " ";

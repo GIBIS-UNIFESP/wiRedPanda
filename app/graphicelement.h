@@ -73,6 +73,10 @@ public:
   void setInputs( const QVector< QNEPort* > &inputs );
 
   QVector< QNEPort* > outputs( ) const;
+
+  QNEPort* input( int pos = 0 ) const;
+  QNEPort* output( int pos = 0 ) const;
+
   void setOutputs( const QVector< QNEPort* > &outputs );
 
   int minInputSz( ) const;

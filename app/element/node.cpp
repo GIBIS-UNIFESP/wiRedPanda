@@ -13,15 +13,16 @@ Node::Node( QGraphicsItem *parent ) : GraphicElement( 1, 1, 1, 1, parent ) {
   setPixmap( pix );
   updatePorts( );
   setPortName( "NODE" );
+  input()->setRequired(true);
 }
 
 void Node::updatePorts( ) {
-  inputs( ).front( )->setPos( 0, 16 );
-  outputs( ).front( )->setPos( 32, 16 );
+  input()->setPos( 0, 16 );
+  output()->setPos( 32, 16 );
 }
 
 void Node::updateLogic( ) {
-  outputs( ).front( )->setValue( inputs( ).first( )->value( ) );
+  output()->setValue( inputs( ).first( )->value( ) );
 }
 
 

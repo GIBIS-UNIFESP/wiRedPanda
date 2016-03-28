@@ -5,7 +5,7 @@
 
 class Led : public GraphicElement {
 public:
-  explicit Led(QGraphicsItem * parent);
+  explicit Led(QGraphicsItem * parent = 0);
   virtual ~Led();
 
   // GraphicElement interface

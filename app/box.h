@@ -40,7 +40,6 @@ private:
   QVector< QNEPort* > inputMap;
   QVector< QNEPort* > outputMap;
   Scene myScene;
-  SimulationController simulationController;
   QFileSystemWatcher watcher;
   bool isAskingToReload;
   QString parentFile;
