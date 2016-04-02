@@ -133,7 +133,7 @@ public:
 private:
   QVector< GraphicElement * > old_elements;
   QVector< GraphicElement * > new_elements;
-
+  QGraphicsScene * scene;
   void transferConnections(QVector< GraphicElement * > from, QVector< GraphicElement * > to );
 };
 
