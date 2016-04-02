@@ -119,6 +119,9 @@ void Label::startDrag( QPoint pos ) {
   else if( objectName( ).endsWith( "_demux" ) ) {
     type = ElementType::DEMUX;
   }
+  else if( objectName( ).endsWith( "_node" ) ) {
+    type = ElementType::NODE;
+  }
   dataStream << QPointF( pos ) << ( qint32 ) type << m_auxData;
 
   QMimeData *mimeData = new QMimeData;

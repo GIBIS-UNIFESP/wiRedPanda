@@ -416,11 +416,16 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
         return( false );
       }
     }
+    int wdtOffset =  ( 64 - elm->boundingRect().width() )/2;
+    if(wdtOffset > 0){
+      pos = pos + QPointF(wdtOffset, wdtOffset);
+    }
+
     /*
      * TODO: Rotate all element icons, remake the port position logic, and remove the code below.
      * Rotating element in 90 degrees.
      */
-    if( elm->rotatable( ) ) {
+    if( elm->rotatable( )  && elm->elementType() != ElementType::NODE ) {
       elm->setRotation( 90 );
     }
     /* Adding the element to the scene. */

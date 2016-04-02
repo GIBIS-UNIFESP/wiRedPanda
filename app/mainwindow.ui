@@ -319,7 +319,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>194</width>
-                   <height>666</height>
+                   <height>738</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -558,6 +558,33 @@
                    </layout>
                   </item>
                   <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_29">
+                    <property name="sizeConstraint">
+                     <enum>QLayout::SetFixedSize</enum>
+                    </property>
+                    <item>
+                     <widget class="Label" name="label_node">
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="pixmap">
+                       <pixmap resource="resources/basic/basic.qrc">:/basic/node.png</pixmap>
+                      </property>
+                      <property name="Name" stdset="0">
+                       <string>DEMUX</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_44">
+                      <property name="text">
+                       <string>NODE</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
                    <spacer name="verticalSpacer_3">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
@@ -594,8 +621,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>194</width>
-                   <height>522</height>
+                   <width>98</width>
+                   <height>172</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -816,8 +843,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>208</width>
-                   <height>267</height>
+                   <width>100</width>
+                   <height>30</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -917,7 +944,7 @@
                <x>0</x>
                <y>0</y>
                <width>228</width>
-               <height>279</height>
+               <height>271</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
@@ -998,7 +1025,7 @@
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>20</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1315,17 +1342,17 @@
  </tabstops>
  <resources>
   <include location="resources/resources.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/memory/memory.qrc"/>
-  <include location="resources/output/output.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
-  <include location="resources/memory/memory.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
-  <include location="resources/input/input.qrc"/>
   <include location="resources/output/output.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/memory/memory.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/memory/memory.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
   <include location="resources/resources.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/input/input.qrc"/>
  </resources>
  <connections/>
 </ui>
