@@ -344,21 +344,6 @@ QString GraphicElement::genericProperties( ) {
   return( QString( ) );
 }
 
-/*
- * void GraphicElement::mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) {
- *  / * Align to grid * /
- *  QPointF newPos = this->pos();
- *  Scene *customScene = dynamic_cast< Scene* >( scene( ) );
- *  if( customScene ) {
- *    int gridSize = customScene->gridSize( );
- *    qreal xV = qRound( newPos.x( ) / gridSize ) * gridSize;
- *    qreal yV = qRound( newPos.y( ) / gridSize ) * gridSize;
- *    setPos(QPointF( xV, yV ) );
- *  }
- *  QGraphicsObject::mouseReleaseEvent( event );
- * }
- */
-
 void GraphicElement::setLabel( QString label ) {
   m_labelText = label;
   if( !hasTrigger( ) || getTrigger( ).toString( ).isEmpty( ) ) {
@@ -375,14 +360,6 @@ void GraphicElement::setLabel( QString label ) {
 QString GraphicElement::getLabel( ) {
   return( m_labelText );
 }
-
-//bool GraphicElement::visited( ) const {
-//  return( m_visited );
-//}
-
-//void GraphicElement::setVisited( bool visited ) {
-//  m_visited = visited;
-//}
 
 bool GraphicElement::isValid( ) {
   bool valid = true;
