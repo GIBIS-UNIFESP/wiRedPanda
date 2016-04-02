@@ -122,7 +122,7 @@ class MorphCommand : public QUndoCommand {
 public:
   enum { Id = 4567 };
 
-  MorphCommand(const QVector<GraphicElement *> & elements, ElementType type, Editor * editor, QUndoCommand *parent = 0 );
+  MorphCommand(const QVector<GraphicElement *> & elements, ElementType type, Editor * editor, QUndoCommand * parent = 0);
 
   void undo( ) Q_DECL_OVERRIDE;
   void redo( ) Q_DECL_OVERRIDE;

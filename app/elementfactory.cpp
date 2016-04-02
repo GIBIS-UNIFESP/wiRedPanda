@@ -36,31 +36,31 @@ size_t ElementFactory::getLastId( ) const {
 ElementType ElementFactory::textToType( QString text ) {
   text = text.toUpper( );
   ElementType type;
-  type = text == "BUTTON" ? ElementType::BUTTON:
-         text == "LED" ? ElementType::LED:
-         text == "AND" ? ElementType::AND:
-         text == "OR" ? ElementType::OR:
-         text == "CLOCK" ? ElementType::CLOCK:
-         text == "SWITCH" ? ElementType::SWITCH:
-         text == "NOT" ? ElementType::NOT:
-         text == "NAND" ? ElementType::NAND:
-         text == "NOR" ? ElementType::NOR:
-         text == "XOR" ? ElementType::XOR:
-         text == "XNOR" ? ElementType::XNOR:
-         text == "VCC" ? ElementType::VCC:
-         text == "GND" ? ElementType::GND:
-         text == "DFLIPFLOP" ? ElementType::DFLIPFLOP:
-         text == "DLATCH" ? ElementType::DLATCH:
-         text == "JKFLIPFLOP" ? ElementType::JKFLIPFLOP:
-         text == "JKLATCH" ? ElementType::JKLATCH:
-         text == "SRFLIPFLOP" ? ElementType::SRFLIPFLOP:
-         text == "TLATCH" ? ElementType::TLATCH:
-         text == "TFLIPFLOP" ? ElementType::TFLIPFLOP:
-         text == "DISPLAY" ? ElementType::DISPLAY:
-         text == "BOX" ? ElementType::BOX:
-         text == "MUX" ? ElementType::MUX:
-         text == "DEMUX" ? ElementType::DEMUX:
-         text == "NODE" ? ElementType::NODE:
+  type = text == "BUTTON" ? ElementType::BUTTON :
+         text == "LED" ? ElementType::LED :
+         text == "AND" ? ElementType::AND :
+         text == "OR" ? ElementType::OR :
+         text == "CLOCK" ? ElementType::CLOCK :
+         text == "SWITCH" ? ElementType::SWITCH :
+         text == "NOT" ? ElementType::NOT :
+         text == "NAND" ? ElementType::NAND :
+         text == "NOR" ? ElementType::NOR :
+         text == "XOR" ? ElementType::XOR :
+         text == "XNOR" ? ElementType::XNOR :
+         text == "VCC" ? ElementType::VCC :
+         text == "GND" ? ElementType::GND :
+         text == "DFLIPFLOP" ? ElementType::DFLIPFLOP :
+         text == "DLATCH" ? ElementType::DLATCH :
+         text == "JKFLIPFLOP" ? ElementType::JKFLIPFLOP :
+         text == "JKLATCH" ? ElementType::JKLATCH :
+         text == "SRFLIPFLOP" ? ElementType::SRFLIPFLOP :
+         text == "TLATCH" ? ElementType::TLATCH :
+         text == "TFLIPFLOP" ? ElementType::TFLIPFLOP :
+         text == "DISPLAY" ? ElementType::DISPLAY :
+         text == "BOX" ? ElementType::BOX :
+         text == "MUX" ? ElementType::MUX :
+         text == "DEMUX" ? ElementType::DEMUX :
+         text == "NODE" ? ElementType::NODE :
          ElementType::UNKNOWN;
   return( type );
 }
@@ -75,33 +75,33 @@ void ElementFactory::giveBackId( size_t id ) {
 
 GraphicElement* ElementFactory::buildElement( ElementType type, Editor *editor, QGraphicsItem *parent ) {
   GraphicElement *elm;
-  elm = type == ElementType::BUTTON? new InputButton( parent ):
-      type == ElementType::SWITCH? new InputSwitch( parent ):
-      type == ElementType::LED? new Led( parent ):
-      type == ElementType::NOT? new Not( parent ):
-      type == ElementType::AND? new And( parent ):
-      type == ElementType::OR? new Or( parent ):
-      type == ElementType::NAND? new Nand( parent ):
-      type == ElementType::NOR? new Nor( parent ):
-      type == ElementType::CLOCK? new Clock( parent ):
-      type == ElementType::XOR? new Xor( parent ):
-      type == ElementType::XNOR? new Xnor( parent ):
-      type == ElementType::VCC? new InputVcc( parent ):
-      type == ElementType::GND? new InputGnd( parent ):
-      type == ElementType::DLATCH? new DLatch( parent ):
-      type == ElementType::DFLIPFLOP? new DFlipFlop( parent ):
-      type == ElementType::JKLATCH? new JKLatch( parent ):
-      type == ElementType::JKFLIPFLOP? new JKFlipFlop( parent ):
-      type == ElementType::SRFLIPFLOP? new SRFlipFlop( parent ):
-      type == ElementType::TFLIPFLOP? new TFlipFlop( parent ):
-      type == ElementType::TLATCH? new TLatch( parent ):
-      type == ElementType::DISPLAY? new Display( parent ):
-      type == ElementType::BOX? new Box( editor, parent ):
-      type == ElementType::NODE? new Node( parent ):
-      type == ElementType::MUX? new Mux( parent ):
-      type == ElementType::DEMUX? new Demux( parent ) :
-      (GraphicElement *) nullptr;
-  if(elm){
+  elm = type == ElementType::BUTTON ? new InputButton( parent ) :
+        type == ElementType::SWITCH ? new InputSwitch( parent ) :
+        type == ElementType::LED ? new Led( parent ) :
+        type == ElementType::NOT ? new Not( parent ) :
+        type == ElementType::AND ? new And( parent ) :
+        type == ElementType::OR ? new Or( parent ) :
+        type == ElementType::NAND ? new Nand( parent ) :
+        type == ElementType::NOR ? new Nor( parent ) :
+        type == ElementType::CLOCK ? new Clock( parent ) :
+        type == ElementType::XOR ? new Xor( parent ) :
+        type == ElementType::XNOR ? new Xnor( parent ) :
+        type == ElementType::VCC ? new InputVcc( parent ) :
+        type == ElementType::GND ? new InputGnd( parent ) :
+        type == ElementType::DLATCH ? new DLatch( parent ) :
+        type == ElementType::DFLIPFLOP ? new DFlipFlop( parent ) :
+        type == ElementType::JKLATCH ? new JKLatch( parent ) :
+        type == ElementType::JKFLIPFLOP ? new JKFlipFlop( parent ) :
+        type == ElementType::SRFLIPFLOP ? new SRFlipFlop( parent ) :
+        type == ElementType::TFLIPFLOP ? new TFlipFlop( parent ) :
+        type == ElementType::TLATCH ? new TLatch( parent ) :
+        type == ElementType::DISPLAY ? new Display( parent ) :
+        type == ElementType::BOX ? new Box( editor, parent ) :
+        type == ElementType::NODE ? new Node( parent ) :
+        type == ElementType::MUX ? new Mux( parent ) :
+        type == ElementType::DEMUX ? new Demux( parent ) :
+        ( GraphicElement* ) nullptr;
+  if( elm ) {
     elm->setId( next_id( ) );
   }
   return( elm );
