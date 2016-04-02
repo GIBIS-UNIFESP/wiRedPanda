@@ -332,17 +332,17 @@ void SplitCommand::redo( ) {
 MorphCommand::MorphCommand( const QVector< GraphicElement* > &elements,
                             ElementType type,
                             Editor *editor,
-                            QUndoCommand *parent )  : QUndoCommand(parent){
+                            QUndoCommand *parent )  : QUndoCommand( parent ) {
   old_elements = elements;
+  scene = editor->getScene( );
   for( GraphicElement *elm : elements ) {
     GraphicElement *newElm = editor->getFactory( ).buildElement( type, editor );
     newElm->setInputSize( elm->inputSize( ) );
     new_elements.append( newElm );
-    newElm->setPos(elm->pos());
-    if(newElm->rotatable() && elm->rotatable() ){
-      newElm->setRotation(elm->rotation());
+    newElm->setPos( elm->pos( ) );
+    if( newElm->rotatable( ) && elm->rotatable( ) ) {
+      newElm->setRotation( elm->rotation( ) );
     }
-    editor->getScene()->addItem(newElm);
   }
 }
 
@@ -380,7 +380,7 @@ void MorphCommand::transferConnections( QVector< GraphicElement* > from, QVector
         }
       }
     }
-    oldElm->setVisible( false );
-    newElm->setVisible( true );
+    scene->removeItem( oldElm );
+    scene->addItem( newElm );
   }
 }

@@ -44,20 +44,22 @@ void ElementEditor::setScene( QGraphicsScene *s ) {
 }
 
 void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
+  int nxtIdx = ( ui->comboBoxColor->currentIndex( ) + 1 ) % ui->comboBoxColor->count( );
+
   QMenu menu;
   QString renameAction( tr( "Rename" ) );
   QString rotateAction( tr( "Rotate" ) );
-  QString changeColorAction( tr( "Change Color" ) );
+  QString changeColorAction( tr( "Change Color to %1" ).arg( ui->comboBoxColor->itemText( nxtIdx ) ) );
   QString deleteAction( tr( "Delete" ) );
   QString morphMenu( tr( "Morph to..." ) );
   if( hasLabel ) {
-    menu.addAction( renameAction );
+    menu.addAction( QIcon( QPixmap( ":/toolbar/rename.png" ) ), renameAction );
   }
   if( hasRotation ) {
-    menu.addAction( rotateAction );
+    menu.addAction( QIcon( QPixmap( ":/toolbar/rotateR.png" ) ), rotateAction );
   }
   if( hasColors ) {
-    menu.addAction( changeColorAction );
+    menu.addAction( ui->comboBoxColor->itemIcon( nxtIdx ), changeColorAction );
   }
   if( canMorph ) {
     QMenu *submenu = menu.addMenu( morphMenu );
@@ -86,12 +88,12 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
         break;
       }
         default: {
-        submenu->setVisible( false );
+        menu.removeAction( submenu->menuAction( ) );
         break;
       }
     }
   }
-  menu.addAction( deleteAction );
+  menu.addAction( QIcon( QPixmap( ":/toolbar/delete.png" ) ), deleteAction );
   QAction *a = menu.exec( screenPos );
   if( a ) {
     if( a->text( ) == deleteAction ) {
@@ -107,7 +109,6 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
       if( !hasSameColors ) {
         ui->comboBoxColor->removeItem( ui->comboBoxColor->findText( manyColors ) );
       }
-      int nxtIdx = ( ui->comboBoxColor->currentIndex( ) + 1 ) % ui->comboBoxColor->count( );
       ui->comboBoxColor->setCurrentIndex( nxtIdx );
     }
     else if( ElementFactory::textToType( a->text( ) ) != ElementType::UNKNOWN ) {
