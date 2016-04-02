@@ -43,7 +43,7 @@ void ElementEditor::setScene( QGraphicsScene *s ) {
   connect( s, &QGraphicsScene::selectionChanged, this, &ElementEditor::selectionChanged );
 }
 
-void ElementEditor::contextMenu( QPoint screenPos, Editor * editor ) {
+void ElementEditor::contextMenu( QPoint screenPos ) {
   QMenu menu;
   QString renameAction( tr( "Rename" ) );
   QString rotateAction( tr( "Rotate" ) );
@@ -62,13 +62,13 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor * editor ) {
   QAction *a = menu.exec( screenPos );
   if( a ) {
     if( a->text( ) == deleteAction ) {
-      editor->pushCommand( new DeleteItemsCommand( scene->selectedItems(), editor ) );
+      emit sendCommand( new DeleteItemsCommand( scene->selectedItems() ) );
     }
     else if( a->text( ) == renameAction ) {
       ui->lineEditElementLabel->setFocus( );
     }
     else if( a->text( ) == rotateAction ) {
-      editor->pushCommand( new RotateCommand( elements.toList(), 90.0 ) );
+      emit sendCommand( new RotateCommand( elements.toList(), 90.0 ) );
     }
     else if( a->text( ) == changeColorAction ) {
       if(!hasSameColors){
@@ -168,10 +168,8 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
         QString inputSz = QString::number( elements.front( )->inputSize( ) );
         ui->comboBoxInputSz->removeItem( ui->comboBoxInputSz->findText( manyIS ) );
         ui->comboBoxInputSz->setCurrentText( inputSz );
-        qDebug () << "SAME VALUES!!";
       }
       else {
-        qDebug () << "MANY VALUES!!";
         ui->comboBoxInputSz->setCurrentText( manyIS );
       }
     }
@@ -242,7 +240,7 @@ void ElementEditor::apply( ) {
       elm->setTrigger( QKeySequence( ui->trigger->currentText( ) ) );
     }
   }
-  emit elementUpdated( elements, itemData );
+  emit sendCommand( new UpdateCommand( elements, itemData ) );
 }
 
 void ElementEditor::on_lineEditElementLabel_editingFinished( ) {

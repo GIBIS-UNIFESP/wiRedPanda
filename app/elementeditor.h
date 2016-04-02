@@ -3,6 +3,7 @@
 
 #include "graphicelement.h"
 #include <QGraphicsScene>
+#include <QUndoCommand>
 #include <QWidget>
 
 namespace Ui {
@@ -19,12 +20,12 @@ public:
   ~ElementEditor();
 
   void setScene( QGraphicsScene * s );
-  void contextMenu(QPoint screenPos , Editor * editor);
+  void contextMenu(QPoint screenPos );
 //  void renameAction( const QVector< GraphicElement *> &element );
 //  void changeColorAction( const QVector<GraphicElement *> &element );
 
 signals:
-  void elementUpdated( const QVector< GraphicElement *> &elements, QByteArray itemData );
+  void sendCommand( QUndoCommand * cmd );
 
 private slots:
 
