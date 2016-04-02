@@ -8,10 +8,12 @@ public:
   explicit Node( QGraphicsItem *parent = 0 );
   virtual void updatePorts( );
   virtual void updateLogic( );
-
-  // GraphicElement interface
+  virtual ElementGroup elementGroup( ) {
+    return( ElementGroup::GATE );
+  }
+  /* GraphicElement interface */
 public:
-  ElementType elementType();
+  ElementType elementType( );
 };
 
 #endif /* NODE_H */

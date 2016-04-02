@@ -5,16 +5,18 @@
 
 class Nor : public GraphicElement {
 public:
-  explicit Nor(QGraphicsItem * parent);
-  virtual ~Nor();
+  explicit Nor( QGraphicsItem *parent );
+  virtual ~Nor( );
 
-  // GraphicElement interface
+  /* GraphicElement interface */
 public:
-  virtual ElementType elementType() {
-    return ElementType::NOR;
+  virtual ElementType elementType( ) {
+    return( ElementType::NOR );
   }
-  void updateLogic();
+  virtual ElementGroup elementGroup( ) {
+    return( ElementGroup::GATE );
+  }
+  void updateLogic( );
 };
 
-#endif // NOR_H
-
+#endif /* NOR_H */

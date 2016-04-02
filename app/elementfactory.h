@@ -12,6 +12,7 @@ public:
   void giveBackId( size_t id );
   GraphicElement * buildElement(ElementType type , Editor * editor, QGraphicsItem * parent = 0);
   size_t getLastId() const;
+  static ElementType textToType( QString text );
 
 private:
   size_t next_id();
