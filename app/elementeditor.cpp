@@ -168,9 +168,11 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
         QString inputSz = QString::number( elements.front( )->inputSize( ) );
         ui->comboBoxInputSz->removeItem( ui->comboBoxInputSz->findText( manyIS ) );
         ui->comboBoxInputSz->setCurrentText( inputSz );
+        qDebug () << "SAME VALUES!!";
       }
       else {
-        ui->comboBoxColor->setCurrentText( manyIS );
+        qDebug () << "MANY VALUES!!";
+        ui->comboBoxInputSz->setCurrentText( manyIS );
       }
     }
     /* Trigger */
