@@ -13,21 +13,21 @@ AddItemsCommand::AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoC
     parent ) {
   items.append( aItem );
   editor = aEditor;
-  setText( QString( "Add %1 element" ).arg( aItem->objectName( ) ) );
+  setText( tr( "Add %1 element" ).arg( aItem->objectName( ) ) );
 }
 
 AddItemsCommand::AddItemsCommand( QNEConnection *aItem, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
     parent ) {
   items.append( aItem );
   editor = aEditor;
-  setText( QString( "Add connection" ) );
+  setText( tr( "Add connection" ) );
 }
 
 AddItemsCommand::AddItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor,
                                   QUndoCommand *parent ) : QUndoCommand( parent ) {
   items = aItems;
   editor = aEditor;
-  setText( QString( "Add %1 elements" ).arg( items.size( ) ) );
+  setText( tr( "Add %1 elements" ).arg( items.size( ) ) );
 }
 
 AddItemsCommand::~AddItemsCommand( ) {
@@ -90,7 +90,7 @@ DeleteItemsCommand::DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, Q
       }
     }
   }
-  setText( QString( "Delete %1 elements" ).arg( elements.size( ) ) );
+  setText( tr( "Delete %1 elements" ).arg( elements.size( ) ) );
 }
 
 void DeleteItemsCommand::undo( ) {
@@ -131,7 +131,7 @@ RotateCommand::RotateCommand( const QList< GraphicElement* > &aItems, int aAngle
     parent ) {
   list = aItems;
   angle = aAngle;
-  setText( QString( "Rotate %1 degrees" ).arg( angle ) );
+  setText( tr( "Rotate %1 degrees" ).arg( angle ) );
   for( GraphicElement *item : list ) {
     positions.append( item->pos( ) );
     item->setPos( item->pos( ) );
@@ -183,7 +183,7 @@ bool RotateCommand::mergeWith( const QUndoCommand *command ) {
     }
   }
   angle = ( angle + rotateCommand->angle ) % 360;
-  setText( QString( "Rotate  AA %1 degrees" ).arg( angle ) );
+  setText( tr( "Rotate  AA %1 degrees" ).arg( angle ) );
   undo( );
   redo( );
   return( true );
@@ -204,7 +204,7 @@ MoveCommand::MoveCommand( const QList< GraphicElement* > &list,
   for( GraphicElement *elm : list ) {
     newPositions.append( elm->pos( ) );
   }
-  setText( QString( "Move elements" ) );
+  setText( tr( "Move elements" ) );
 }
 
 void MoveCommand::undo( ) {
@@ -230,7 +230,7 @@ UpdateCommand::UpdateCommand( const QVector< GraphicElement* > &elements, QByteA
   for( GraphicElement *elm : elements ) {
     elm->save( dataStream );
   }
-  setText( QString( "Update %1 elements" ).arg( elements.size( ) ) );
+  setText( tr( "Update %1 elements" ).arg( elements.size( ) ) );
 
 }
 
@@ -282,7 +282,7 @@ SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, QUndoCommand *pa
   }
   c1 = conn;
   c2 = new QNEConnection( );
-  setText( QString( "Wire split" ) );
+  setText( tr( "Wire split" ) );
 }
 
 SplitCommand::~SplitCommand( ) {
