@@ -138,25 +138,6 @@ private:
   void transferConnections( QVector< GraphicElement* > from, QVector< GraphicElement* > to );
 };
 
-class StoredConnection {
-public:
-  StoredConnection() {
-    this->conn = nullptr;
-    this->elm = nullptr;
-    this->portNbr = 0;
-  }
-
-  StoredConnection( QNEConnection * conn, GraphicElement * elm, int portNbr ) {
-    this->conn = conn;
-    this->elm = elm;
-    this->portNbr = portNbr;
-  }
-
-  QNEConnection * conn;
-  GraphicElement * elm;
-  int portNbr;
-};
-
 class ChangeInputSZCommand : public QUndoCommand {
 public:
   enum { Id = 9999 };
@@ -171,10 +152,11 @@ public:
 
 private:
   QVector< GraphicElement* > m_elements;
+  QVector< GraphicElement* > serializationOrder;
   QGraphicsScene *scene;
-  QVector< int > m_oldInputSize;
-  QVector< StoredConnection > m_connections;
+  QByteArray m_oldData;
   int m_newInputSize;
+
 };
 
 #endif /* COMMANDS_H */
