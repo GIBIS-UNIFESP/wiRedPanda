@@ -174,7 +174,12 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
       }
       if( hasSameTrigger ) {
         ui->trigger->removeItem( ui->trigger->findText( manyTriggers ) );
-        ui->trigger->setCurrentText( elements.front( )->getTrigger( ).toString( ) );
+        QString tg = elements.front( )->getTrigger( ).toString( );
+        if( tg.isEmpty() ){
+          ui->trigger->setCurrentText("None");
+        }else{
+          ui->trigger->setCurrentText( tg );
+        }
       }
       else {
         ui->trigger->setCurrentText( manyTriggers );
