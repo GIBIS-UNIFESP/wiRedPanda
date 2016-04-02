@@ -26,8 +26,10 @@ public:
 
 private:
   QList< QGraphicsItem* > items;
-  QDataStream storedData;
+  QByteArray itemData;
   Editor *editor;
+  int nConnections;
+  QVector< GraphicElement* > serializationOrder;
 };
 
 class DeleteItemsCommand : public QUndoCommand {
@@ -153,6 +155,7 @@ public:
 private:
   QVector< GraphicElement* > m_elements;
   QVector< GraphicElement* > serializationOrder;
+  QVector< QNEConnection * > storedConnections;
   QGraphicsScene *scene;
   QByteArray m_oldData;
   int m_newInputSize;
