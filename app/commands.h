@@ -33,7 +33,7 @@ private:
 class DeleteItemsCommand : public QUndoCommand {
   enum { Id = 123 };
 public:
-  DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor, QUndoCommand *parent = 0 );
+  DeleteItemsCommand(const QList< QGraphicsItem* > &aItems, QUndoCommand *parent = 0 );
   void undo( ) Q_DECL_OVERRIDE;
   void redo( ) Q_DECL_OVERRIDE;
 
@@ -41,7 +41,7 @@ private:
   QByteArray itemData;
   QList< GraphicElement* > elements;
   QList< QNEConnection* > connections;
-  Editor *editor;
+  QGraphicsScene *scene;
 };
 
 class RotateCommand : public QUndoCommand {

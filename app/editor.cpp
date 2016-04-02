@@ -79,7 +79,7 @@ void Editor::clear( ) {
 void Editor::deleteElements( ) {
   const QList< QGraphicsItem* > &items = scene->selectedItems( );
   if( !items.isEmpty( ) ) {
-    pushCommand( new DeleteItemsCommand( items, this ) );
+    receiveCommand( new DeleteItemsCommand( items ) );
   }
 }
 
@@ -139,12 +139,8 @@ void Editor::rotate( bool rotateRight ) {
     }
   }
   if( ( elms.size( ) > 1 ) || ( ( elms.size( ) == 1 ) && elms.front( )->rotatable( ) ) ) {
-    pushCommand( new RotateCommand( elms, angle ) );
+    receiveCommand( new RotateCommand( elms, angle ) );
   }
-}
-
-void Editor::elementUpdated( const QVector< GraphicElement* > &element, QByteArray oldData ) {
-  pushCommand( new UpdateCommand( element, oldData ) );
 }
 
 void Editor::selectionChanged( ) {
@@ -205,7 +201,7 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
         pressedPort->disconnect( editedConn );
         QList< QGraphicsItem* > itemList;
         itemList.append( editedConn );
-        pushCommand( new DeleteItemsCommand( itemList, this ) );
+        receiveCommand( new DeleteItemsCommand( itemList ) );
         editedConn = nullptr;
         editedConn = new QNEConnection( );
         editedConn->setPort1( port1 );
@@ -338,7 +334,7 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
         editedConn->setPos2( port2->scenePos( ) );
         editedConn->setPort2( port2 );
         editedConn->updatePath( );
-        pushCommand( new AddItemsCommand( editedConn, this ) );
+        receiveCommand( new AddItemsCommand( editedConn, this ) );
         editedConn = nullptr;
         return( true );
       }
@@ -429,7 +425,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
       elm->setRotation( 90 );
     }
     /* Adding the element to the scene. */
-    pushCommand( new AddItemsCommand( elm, this ) );
+    receiveCommand( new AddItemsCommand( elm, this ) );
     /* Cleaning the selection. */
     scene->clearSelection( );
     /* Setting created element as selected. */
@@ -470,7 +466,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
       }
     }
     /* Adding the element to the scene. */
-    pushCommand( new AddItemsCommand( elm, this ) );
+    receiveCommand( new AddItemsCommand( elm, this ) );
     /* Cleaning the selection. */
     scene->clearSelection( );
     /* Setting created element as selected. */
@@ -569,7 +565,7 @@ void Editor::paste( QDataStream &ds ) {
   QPointF offset = mousePos - ctr - QPointF( 32.0f, 32.0f );
   double version = QApplication::applicationVersion( ).toDouble( );
   QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( this, ds, version );
-  pushCommand( new AddItemsCommand( itemList, this ) );
+  receiveCommand( new AddItemsCommand( itemList, this ) );
   for( QGraphicsItem *item : itemList ) {
     if( item->type( ) == GraphicElement::Type ) {
       item->setPos( ( item->pos( ) + offset ) );
@@ -603,7 +599,7 @@ void Editor::load( QDataStream &ds ) {
 void Editor::setElementEditor( ElementEditor *value ) {
   elementEditor = value;
   elementEditor->setScene( scene );
-  connect( elementEditor, &ElementEditor::elementUpdated, this, &Editor::elementUpdated );
+  connect( elementEditor, &ElementEditor::sendCommand, this, &Editor::receiveCommand );
 }
 
 QPointF roundTo( QPointF point, int multiple ) {
@@ -618,12 +614,12 @@ void Editor::contextMenu( QPoint screenPos ) {
   QGraphicsItem *item = itemAt( mousePos );
   if( item ) {
     if( scene->selectedItems( ).contains( item ) ) {
-      elementEditor->contextMenu( screenPos, this );
+      elementEditor->contextMenu( screenPos );
     }
     else if( ( item->type( ) == GraphicElement::Type ) ) {
       scene->clearSelection( );
       item->setSelected( true );
-      elementEditor->contextMenu( screenPos, this );
+      elementEditor->contextMenu( screenPos );
     }
   }
 }
@@ -633,7 +629,7 @@ void Editor::updateVisibility( ) {
   showWires( mShowWires );
 }
 
-void Editor::pushCommand( QUndoCommand *cmd ) {
+void Editor::receiveCommand( QUndoCommand *cmd ) {
   undoStack->push(cmd);
 }
 
@@ -693,7 +689,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
             }
           }
           if( valid ) {
-            pushCommand( new MoveCommand( movedElements, oldPositions ) );
+            receiveCommand( new MoveCommand( movedElements, oldPositions ) );
           }
         }
         draggingElement = false;
@@ -732,7 +728,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
           /* Mouse pressed over a connection. */
           if( connection ) {
             if( connection->port1( ) && connection->port2( ) ) {
-              pushCommand( new SplitCommand( connection, mousePos ) );
+              receiveCommand( new SplitCommand( connection, mousePos ) );
             }
           }
           evt->accept( );

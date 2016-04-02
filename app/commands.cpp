@@ -64,9 +64,11 @@ void AddItemsCommand::redo( ) {
   editor->updateVisibility( );
 }
 
-DeleteItemsCommand::DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor,
+DeleteItemsCommand::DeleteItemsCommand( const QList< QGraphicsItem* > &aItems,
                                         QUndoCommand *parent ) : QUndoCommand( parent ) {
-  editor = aEditor;
+  if(!aItems.isEmpty()){
+    scene = aItems.front()->scene();
+  }
   for( QGraphicsItem *item : aItems ) {
     if( item->type( ) == GraphicElement::Type ) {
       GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
@@ -94,14 +96,14 @@ DeleteItemsCommand::DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, E
 void DeleteItemsCommand::undo( ) {
   QDataStream storedData( &itemData, QIODevice::ReadOnly );
   for( QGraphicsItem *item : elements ) {
-    editor->getScene( )->addItem( item );
+    scene->addItem( item );
   }
   for( QNEConnection *conn : connections ) {
-    editor->getScene( )->addItem( conn );
+    scene->addItem( conn );
     conn->load( storedData );
   }
   itemData.clear( );
-  editor->getScene( )->update( );
+  scene->update( );
 }
 
 void DeleteItemsCommand::redo( ) {
@@ -117,10 +119,10 @@ void DeleteItemsCommand::redo( ) {
     if( p2 ) {
       p2->disconnect( conn );
     }
-    editor->getScene( )->removeItem( conn );
+    scene->removeItem( conn );
   }
   for( GraphicElement *elm : elements ) {
-    editor->getScene( )->removeItem( elm );
+    scene->removeItem( elm );
   }
 }
 

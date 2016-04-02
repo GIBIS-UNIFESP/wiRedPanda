@@ -35,8 +35,8 @@ public slots:
   void showWires( bool checked );
   void showGates( bool checked );
   void rotate( bool rotateRight );
-  void elementUpdated(const QVector<GraphicElement *> & element, QByteArray itemData );
   void selectionChanged( );
+  void receiveCommand( QUndoCommand * cmd );
 private:
   QUndoStack *undoStack;
   Scene *scene;
@@ -87,8 +87,7 @@ public:
   void setControlKeyPressed( bool controlKeyPressed );
   SimulationController* getSimulationController( ) const;
   void contextMenu( QPoint screenPos );
-  void updateVisibility( );
-  void pushCommand( QUndoCommand * cmd );
+  void updateVisibility( );  
 };
 
 #endif /* EDITOR_H */
