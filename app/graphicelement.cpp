@@ -53,6 +53,7 @@ GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz,
 GraphicElement::~GraphicElement( ) {
 
 }
+
 QPixmap GraphicElement::getPixmap( ) const {
   return( pixmap );
 }

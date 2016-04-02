@@ -5,16 +5,18 @@
 
 class InputGnd : public GraphicElement {
 public:
-  explicit InputGnd(QGraphicsItem * parent = 0);
-  virtual ~InputGnd();
+  explicit InputGnd( QGraphicsItem *parent = 0 );
+  virtual ~InputGnd( );
 
-  // GraphicElement interface
+  /* GraphicElement interface */
 public:
-  virtual ElementType elementType() {
-    return ElementType::GND;
+  virtual ElementType elementType( ) {
+    return( ElementType::GND );
   }
-  void updateLogic();
+  virtual ElementGroup elementGroup( ) {
+    return( ElementGroup::INPUT );
+  }
+  void updateLogic( );
 };
 
-#endif // INPUTGND_H
-
+#endif /* INPUTGND_H */

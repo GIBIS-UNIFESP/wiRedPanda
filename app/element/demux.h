@@ -7,7 +7,9 @@
 class Demux : public GraphicElement {
 public:
   explicit Demux( QGraphicsItem *parent = 0 );
-
+    virtual ElementGroup elementGroup( ) {
+      return( ElementGroup::MUX );
+    }
 
   /* GraphicElement interface */
 public:

@@ -6,15 +6,18 @@
 class JKFlipFlop : public GraphicElement {
   bool lastClk;
 public:
-  explicit JKFlipFlop(QGraphicsItem * parent = 0);
+  explicit JKFlipFlop( QGraphicsItem *parent = 0 );
 
-  // GraphicElement interface
+  /* GraphicElement interface */
 public:
-  virtual ElementType elementType() {
-    return ElementType::JKFLIPFLOP;
+  virtual ElementType elementType( ) {
+    return( ElementType::JKFLIPFLOP );
   }
-  virtual void updatePorts();
-  void updateLogic();
+  virtual ElementGroup elementGroup( ) {
+    return( ElementGroup::MEMORY );
+  }
+  virtual void updatePorts( );
+  void updateLogic( );
 };
 
-#endif // JKFLIPFLOP_H
+#endif /* JKFLIPFLOP_H */

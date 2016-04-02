@@ -17,7 +17,12 @@ public:
   Box( Editor *editor, QGraphicsItem *parent = 0 );
   ~Box( );
   /* GraphicElement interface */
-  ElementType elementType( );
+  virtual ElementType elementType( ) {
+    return( ElementType::BOX );
+  }
+  virtual ElementGroup elementGroup( ) {
+    return( ElementGroup::BOX );
+  }
   void save( QDataStream &ds );
   void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
   void updateLogic( );

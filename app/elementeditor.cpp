@@ -7,10 +7,10 @@
 #include <cmath>
 
 ElementEditor::ElementEditor( QWidget *parent ) : QWidget( parent ), ui( new Ui::ElementEditor ) {
-  manyLabels = tr( "<Many labels>");
+  manyLabels = tr( "<Many labels>" );
   manyColors = tr( "<Many colors>" );
   manyIS = tr( "<Many values>" );
-  manyFreq = tr( "<Many values>");
+  manyFreq = tr( "<Many values>" );
   manyTriggers = tr( "<Many triggers>" );
 
   ui->setupUi( this );
@@ -24,13 +24,13 @@ ElementEditor::ElementEditor( QWidget *parent ) : QWidget( parent ), ui( new Ui:
   for( char i = 'A'; i < 'F'; i++ ) {
     ui->trigger->addItem( QKeySequence( QString( "%1" ).arg( i ) ).toString( ) );
   }
-  ui->trigger->addItem( QKeySequence( 'W' ).toString() );
-  ui->trigger->addItem( QKeySequence( "S" ).toString() );
-  ui->trigger->addItem( QKeySequence( "D" ).toString() );
-  ui->trigger->addItem( QKeySequence( 'Q' ).toString() );
-  ui->trigger->addItem( QKeySequence( "R" ).toString() );
-  ui->trigger->addItem( QKeySequence( "T" ).toString() );
-  ui->trigger->addItem( QKeySequence( "Y" ).toString() );
+  ui->trigger->addItem( QKeySequence( 'W' ).toString( ) );
+  ui->trigger->addItem( QKeySequence( "S" ).toString( ) );
+  ui->trigger->addItem( QKeySequence( "D" ).toString( ) );
+  ui->trigger->addItem( QKeySequence( 'Q' ).toString( ) );
+  ui->trigger->addItem( QKeySequence( "R" ).toString( ) );
+  ui->trigger->addItem( QKeySequence( "T" ).toString( ) );
+  ui->trigger->addItem( QKeySequence( "Y" ).toString( ) );
 
 }
 
@@ -49,6 +49,7 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
   QString rotateAction( tr( "Rotate" ) );
   QString changeColorAction( tr( "Change Color" ) );
   QString deleteAction( tr( "Delete" ) );
+  QString morphMenu( tr( "Morph to..." ) );
   if( hasLabel ) {
     menu.addAction( renameAction );
   }
@@ -58,21 +59,36 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
   if( hasColors ) {
     menu.addAction( changeColorAction );
   }
+  if( canMorph && ( elements.front( )->elementGroup( ) == ElementGroup::GATE ) ) {
+    QMenu *submenu = menu.addMenu( morphMenu );
+    if( elements.front( )->inputSize( ) == 1 ) {
+      submenu->addAction( "NOT" );
+      submenu->addAction( "NODE" );
+    }
+    else {
+      submenu->addAction( "AND" );
+      submenu->addAction( "OR" );
+      submenu->addAction( "NAND" );
+      submenu->addAction( "NOR" );
+      submenu->addAction( "XOR" );
+      submenu->addAction( "XNOR" );
+    }
+  }
   menu.addAction( deleteAction );
   QAction *a = menu.exec( screenPos );
   if( a ) {
     if( a->text( ) == deleteAction ) {
-      emit sendCommand( new DeleteItemsCommand( scene->selectedItems() ) );
+      emit sendCommand( new DeleteItemsCommand( scene->selectedItems( ) ) );
     }
     else if( a->text( ) == renameAction ) {
       ui->lineEditElementLabel->setFocus( );
     }
     else if( a->text( ) == rotateAction ) {
-      emit sendCommand( new RotateCommand( elements.toList(), 90.0 ) );
+      emit sendCommand( new RotateCommand( elements.toList( ), 90.0 ) );
     }
     else if( a->text( ) == changeColorAction ) {
-      if(!hasSameColors){
-        ui->comboBoxColor->removeItem(ui->comboBoxColor->findText(manyColors));
+      if( !hasSameColors ) {
+        ui->comboBoxColor->removeItem( ui->comboBoxColor->findText( manyColors ) );
       }
       int nxtIdx = ( ui->comboBoxColor->currentIndex( ) + 1 ) % ui->comboBoxColor->count( );
       ui->comboBoxColor->setCurrentIndex( nxtIdx );
@@ -91,7 +107,7 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
     setEnabled( false );
     int minimum = 0, maximum = 100000000;
     hasSameLabel = hasSameColors = hasSameFrequency = true;
-    hasSameInputSize = hasSameTrigger = true;
+    hasSameInputSize = hasSameTrigger = canMorph = true;
     for( GraphicElement *elm : elements ) {
       hasLabel &= elm->hasLabel( );
       hasColors &= elm->hasColors( );
@@ -106,6 +122,9 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
       hasSameFrequency &= elm->frequency( ) == elements.front( )->frequency( );
       hasSameInputSize &= elm->inputSize( ) == elements.front( )->inputSize( );
       hasSameTrigger &= elm->getTrigger( ) == elements.front( )->getTrigger( );
+      canMorph &= elm->elementGroup( ) == elements.front( )->elementGroup( );
+      canMorph &= elm->inputSize( ) == elements.front( )->inputSize( );
+      canMorph &= elm->outputSize( ) == elements.front( )->outputSize( );
     }
     canChangeInputSize = ( minimum < maximum );
     hasSomething |= hasLabel | hasColors | hasFrequency;
@@ -143,14 +162,14 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
     ui->label_frequency->setVisible( hasFrequency );
     if( hasFrequency ) {
       if( hasSameFrequency ) {
-        ui->doubleSpinBoxFrequency->setMinimum(0.5);
-        ui->doubleSpinBoxFrequency->setSpecialValueText( QString() );
+        ui->doubleSpinBoxFrequency->setMinimum( 0.5 );
+        ui->doubleSpinBoxFrequency->setSpecialValueText( QString( ) );
         ui->doubleSpinBoxFrequency->setValue( elements.front( )->frequency( ) );
       }
       else {
-        ui->doubleSpinBoxFrequency->setMinimum(0.0);
+        ui->doubleSpinBoxFrequency->setMinimum( 0.0 );
         ui->doubleSpinBoxFrequency->setSpecialValueText( manyFreq );
-        ui->doubleSpinBoxFrequency->setValue(0.0);
+        ui->doubleSpinBoxFrequency->setValue( 0.0 );
       }
     }
     /* Input size */
@@ -183,9 +202,10 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
       if( hasSameTrigger ) {
         ui->trigger->removeItem( ui->trigger->findText( manyTriggers ) );
         QString tg = elements.front( )->getTrigger( ).toString( );
-        if( tg.isEmpty() ){
-          ui->trigger->setCurrentText("None");
-        }else{
+        if( tg.isEmpty( ) ) {
+          ui->trigger->setCurrentText( "None" );
+        }
+        else {
           ui->trigger->setCurrentText( tg );
         }
       }

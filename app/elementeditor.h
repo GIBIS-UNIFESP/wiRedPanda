@@ -51,7 +51,7 @@ private:
   bool hasSomething, hasLabel, hasColors, hasFrequency;
   bool canChangeInputSize, hasTrigger, hasRotation;
   bool hasSameLabel, hasSameColors, hasSameFrequency;
-  bool hasSameInputSize, hasSameTrigger;
+  bool hasSameInputSize, hasSameTrigger, canMorph;
 
   QString manyLabels;
   QString manyColors;

@@ -1,3 +1,4 @@
+#include "elementfactory.h"
 #include "graphicelement.h"
 #include "label.h"
 #include <QtWidgets>
@@ -45,83 +46,9 @@ void Label::startDrag( QPoint pos ) {
 
   QByteArray itemData;
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-  ElementType type = ElementType::UNKNOWN;
+  ElementType type = ElementFactory::textToType(objectName().split("_").last());
 /*  qDebug() << objectName(); */
-  if( objectName( ).endsWith( "_button" ) ) {
-    type = ElementType::BUTTON;
-  }
-  else if( objectName( ).endsWith( "_led" ) ) {
-    type = ElementType::LED;
-  }
-  else if( objectName( ).endsWith( "_and" ) ) {
-    type = ElementType::AND;
-  }
-  else if( objectName( ).endsWith( "_or" ) ) {
-    type = ElementType::OR;
-  }
-  else if( objectName( ).endsWith( "_clock" ) ) {
-    type = ElementType::CLOCK;
-  }
-  else if( objectName( ).endsWith( "_switch" ) ) {
-    type = ElementType::SWITCH;
-  }
-  else if( objectName( ).endsWith( "_not" ) ) {
-    type = ElementType::NOT;
-  }
-  else if( objectName( ).endsWith( "_nand" ) ) {
-    type = ElementType::NAND;
-  }
-  else if( objectName( ).endsWith( "_nor" ) ) {
-    type = ElementType::NOR;
-  }
-  else if( objectName( ).endsWith( "_xor" ) ) {
-    type = ElementType::XOR;
-  }
-  else if( objectName( ).endsWith( "_xnor" ) ) {
-    type = ElementType::XNOR;
-  }
-  else if( objectName( ).endsWith( "_vcc" ) ) {
-    type = ElementType::VCC;
-  }
-  else if( objectName( ).endsWith( "_gnd" ) ) {
-    type = ElementType::GND;
-  }
-  else if( objectName( ).endsWith( "_dflipflop" ) ) {
-    type = ElementType::DFLIPFLOP;
-  }
-  else if( objectName( ).endsWith( "_dlatch" ) ) {
-    type = ElementType::DLATCH;
-  }
-  else if( objectName( ).endsWith( "_jkflipflop" ) ) {
-    type = ElementType::JKFLIPFLOP;
-  }
-  else if( objectName( ).endsWith( "_jklatch" ) ) {
-    type = ElementType::JKLATCH;
-  }
-  else if( objectName( ).endsWith( "_srflipflop" ) ) {
-    type = ElementType::SRFLIPFLOP;
-  }
-  else if( objectName( ).endsWith( "_tlatch" ) ) {
-    type = ElementType::TLATCH;
-  }
-  else if( objectName( ).endsWith( "_tflipflop" ) ) {
-    type = ElementType::TFLIPFLOP;
-  }
-  else if( objectName( ).endsWith( "_display" ) ) {
-    type = ElementType::DISPLAY;
-  }
-  else if( objectName( ).endsWith( "_box" ) ) {
-    type = ElementType::BOX;
-  }
-  else if( objectName( ).endsWith( "_mux" ) ) {
-    type = ElementType::MUX;
-  }
-  else if( objectName( ).endsWith( "_demux" ) ) {
-    type = ElementType::DEMUX;
-  }
-  else if( objectName( ).endsWith( "_node" ) ) {
-    type = ElementType::NODE;
-  }
+
   dataStream << QPointF( pos ) << ( qint32 ) type << m_auxData;
 
   QMimeData *mimeData = new QMimeData;
