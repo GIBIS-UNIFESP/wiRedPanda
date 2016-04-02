@@ -52,11 +52,11 @@ private:
   bool hasSameLabel, hasSameColors, hasSameFrequency;
   bool hasSameInputSize, hasSameTrigger;
 
-  const QString manyLabels = tr( "<Many labels>");
-  const QString manyColors = tr( "<Many colors>" );
-  const QString manyIS = tr( "<Many values>" );
-  const QString manyFreq = tr( "<Many values>");
-  const QString manyTriggers = tr( "<Many triggers>" );
+  QString manyLabels;
+  QString manyColors;
+  QString manyIS;
+  QString manyFreq;
+  QString manyTriggers;
 
 
 };
