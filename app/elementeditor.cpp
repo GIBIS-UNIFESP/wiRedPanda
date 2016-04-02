@@ -135,10 +135,14 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
     ui->label_frequency->setVisible( hasFrequency );
     if( hasFrequency ) {
       if( hasSameFrequency ) {
+        ui->doubleSpinBoxFrequency->setMinimum(0.5);
+        ui->doubleSpinBoxFrequency->setSpecialValueText( QString() );
         ui->doubleSpinBoxFrequency->setValue( elements.front( )->frequency( ) );
       }
       else {
+        ui->doubleSpinBoxFrequency->setMinimum(0.0);
         ui->doubleSpinBoxFrequency->setSpecialValueText( manyFreq );
+        ui->doubleSpinBoxFrequency->setValue(0.0);
       }
     }
     /* Input size */
