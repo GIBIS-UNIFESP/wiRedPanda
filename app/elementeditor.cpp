@@ -43,7 +43,7 @@ void ElementEditor::setScene( QGraphicsScene *s ) {
   connect( s, &QGraphicsScene::selectionChanged, this, &ElementEditor::selectionChanged );
 }
 
-void ElementEditor::contextMenu( QPoint screenPos, Editor * editor ) {
+void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
   QMenu menu;
   QString renameAction( tr( "Rename" ) );
   QString rotateAction( tr( "Rotate" ) );
@@ -59,19 +59,36 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor * editor ) {
   if( hasColors ) {
     menu.addAction( changeColorAction );
   }
-  if( canMorph && ( elements.front( )->elementGroup( ) == ElementGroup::GATE ) ) {
+  if( canMorph ) {
     QMenu *submenu = menu.addMenu( morphMenu );
-    if( elements.front( )->inputSize( ) == 1 ) {
-      submenu->addAction( "NOT" );
-      submenu->addAction( "NODE" );
-    }
-    else {
-      submenu->addAction( "AND" );
-      submenu->addAction( "OR" );
-      submenu->addAction( "NAND" );
-      submenu->addAction( "NOR" );
-      submenu->addAction( "XOR" );
-      submenu->addAction( "XNOR" );
+    switch( elements.front( )->elementGroup( ) ) {
+        case ElementGroup::GATE: {
+        if( elements.front( )->inputSize( ) == 1 ) {
+          submenu->addAction( "NOT" );
+          submenu->addAction( "NODE" );
+        }
+        else {
+          submenu->addAction( "AND" );
+          submenu->addAction( "OR" );
+          submenu->addAction( "NAND" );
+          submenu->addAction( "NOR" );
+          submenu->addAction( "XOR" );
+          submenu->addAction( "XNOR" );
+        }
+        break;
+      }
+        case ElementGroup::INPUT: {
+        submenu->addAction( "BUTTON" );
+        submenu->addAction( "SWITCH" );
+        submenu->addAction( "CLOCK" );
+        submenu->addAction( "VCC" );
+        submenu->addAction( "GND" );
+        break;
+      }
+        default: {
+        submenu->setVisible( false );
+        break;
+      }
     }
   }
   menu.addAction( deleteAction );
@@ -92,8 +109,9 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor * editor ) {
       }
       int nxtIdx = ( ui->comboBoxColor->currentIndex( ) + 1 ) % ui->comboBoxColor->count( );
       ui->comboBoxColor->setCurrentIndex( nxtIdx );
-    }else if ( ElementFactory::textToType(a->text()) != ElementType::UNKNOWN ){
-      sendCommand( new MorphCommand( elements, ElementFactory::textToType(a->text()), editor ));
+    }
+    else if( ElementFactory::textToType( a->text( ) ) != ElementType::UNKNOWN ) {
+      sendCommand( new MorphCommand( elements, ElementFactory::textToType( a->text( ) ), editor ) );
     }
   }
 }

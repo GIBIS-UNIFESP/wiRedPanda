@@ -339,7 +339,9 @@ MorphCommand::MorphCommand( const QVector< GraphicElement* > &elements,
     newElm->setInputSize( elm->inputSize( ) );
     new_elements.append( newElm );
     newElm->setPos(elm->pos());
-    newElm->setRotation(elm->rotation());
+    if(newElm->rotatable() && elm->rotatable() ){
+      newElm->setRotation(elm->rotation());
+    }
     editor->getScene()->addItem(newElm);
   }
 }
@@ -357,7 +359,7 @@ void MorphCommand::transferConnections( QVector< GraphicElement* > from, QVector
     GraphicElement *oldElm = from[ elm ];
     GraphicElement *newElm = to[ elm ];
     for( int in = 0; in < oldElm->inputSize( ); ++in ) {
-      for( QNEConnection *conn : oldElm[ elm ].input( in )->connections( ) ) {
+      for( QNEConnection *conn : oldElm->input( in )->connections( ) ) {
         oldElm->input( in )->disconnect( conn );
         if( conn->port1( ) == nullptr ) {
           conn->setPort1( newElm->input( in ) );
@@ -368,7 +370,7 @@ void MorphCommand::transferConnections( QVector< GraphicElement* > from, QVector
       }
     }
     for( int out = 0; out < oldElm->outputSize( ); ++out ) {
-      for( QNEConnection *conn : oldElm[ elm ].output( out )->connections( ) ) {
+      for( QNEConnection *conn : oldElm->output( out )->connections( ) ) {
         oldElm->output( out )->disconnect( conn );
         if( conn->port1( ) == nullptr ) {
           conn->setPort1( newElm->output( out ) );
