@@ -83,7 +83,7 @@ class UpdateCommand : public QUndoCommand {
 public:
   enum { Id = 42 };
 
-  UpdateCommand( GraphicElement *element, QByteArray oldData, QUndoCommand *parent = 0 );
+  UpdateCommand(const QVector<GraphicElement *> & elements, QByteArray oldData, QUndoCommand *parent = 0 );
 
   void undo( ) Q_DECL_OVERRIDE;
   void redo( ) Q_DECL_OVERRIDE;
@@ -92,7 +92,7 @@ public:
   }
 
 private:
-  GraphicElement *m_element;
+  QVector< GraphicElement * > m_elements;
   QByteArray m_oldData;
   QByteArray m_newData;
 

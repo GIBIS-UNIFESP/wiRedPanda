@@ -9,6 +9,8 @@ namespace Ui {
   class ElementEditor;
 }
 
+class Editor;
+
 class ElementEditor : public QWidget {
   Q_OBJECT
 
@@ -17,12 +19,12 @@ public:
   ~ElementEditor();
 
   void setScene( QGraphicsScene * s );
-
-  void renameAction( GraphicElement *element );
-  void changeColorAction( GraphicElement * element );
+  void contextMenu(QPoint screenPos , Editor * editor);
+//  void renameAction( const QVector< GraphicElement *> &element );
+//  void changeColorAction( const QVector<GraphicElement *> &element );
 
 signals:
-  void elementUpdated( GraphicElement *element, QByteArray itemData );
+  void elementUpdated( const QVector< GraphicElement *> &elements, QByteArray itemData );
 
 private slots:
 
@@ -39,12 +41,24 @@ private slots:
   void on_trigger_currentIndexChanged(const QString &arg1);
 
 private:
-  void setCurrentElement( GraphicElement *element );
+  void setCurrentElements(const QVector<GraphicElement *> & element );
   void apply();
 
   Ui::ElementEditor *ui;
-  GraphicElement * element;
+  QVector< GraphicElement *> elements;
   QGraphicsScene * scene;
+  bool hasSomething, hasLabel, hasColors, hasFrequency;
+  bool canChangeInputSize, hasTrigger, hasRotation;
+  bool hasSameLabel, hasSameColors, hasSameFrequency;
+  bool hasSameInputSize, hasSameTrigger;
+
+  const QString manyLabels = tr( "<Many labels>");
+  const QString manyColors = tr( "<Many colors>" );
+  const QString manyIS = tr( "<Many values>" );
+  const QString manyFreq = tr( "<Many values>");
+  const QString manyTriggers = tr( "<Many triggers>" );
+
+
 };
 
 #endif // ELEMENTEDITOR_H

@@ -61,7 +61,7 @@ void AddItemsCommand::redo( ) {
   }
   editor->getScene( )->clearSelection( );
   editor->getScene( )->update( );
-  editor->updateVisibility();
+  editor->updateVisibility( );
 }
 
 DeleteItemsCommand::DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor,
@@ -125,7 +125,7 @@ void DeleteItemsCommand::redo( ) {
 }
 
 
-RotateCommand::RotateCommand( const QList< GraphicElement* > &aItems, int aAngle, QUndoCommand *parent ) : QUndoCommand(
+RotateCommand::RotateCommand(const QList<GraphicElement *> & aItems, int aAngle, QUndoCommand *parent ) : QUndoCommand(
     parent ) {
   list = aItems;
   angle = aAngle;
@@ -206,47 +206,53 @@ MoveCommand::MoveCommand( const QList< GraphicElement* > &list,
 }
 
 void MoveCommand::undo( ) {
-//  qDebug() << "UNDO!!!" << myList.size();
+/*  qDebug() << "UNDO!!!" << myList.size(); */
   for( int i = 0; i < myList.size( ); ++i ) {
     myList[ i ]->setPos( oldPositions[ i ] );
   }
 }
 
 void MoveCommand::redo( ) {
-//  qDebug() << "REDO!!!" << myList.size();
+/*  qDebug() << "REDO!!!" << myList.size(); */
   for( int i = 0; i < myList.size( ); ++i ) {
     myList[ i ]->setPos( newPositions[ i ] );
   }
 }
 
 
-UpdateCommand::UpdateCommand( GraphicElement *element, QByteArray oldData,
+UpdateCommand::UpdateCommand( const QVector< GraphicElement* > &elements, QByteArray oldData,
                               QUndoCommand *parent ) : QUndoCommand( parent ) {
-  m_element = element;
+  m_elements = elements;
   m_oldData = oldData;
   QDataStream dataStream( &m_newData, QIODevice::WriteOnly );
-  m_element->save( dataStream );
-  setText( QString( "Update %1 element" ).arg( element->objectName( ) ) );
+  for( GraphicElement *elm : elements ) {
+    elm->save( dataStream );
+  }
+  setText( QString( "Update %1 elements" ).arg( elements.size( ) ) );
 
 }
 
 void UpdateCommand::undo( ) {
   loadData( m_oldData );
-  m_element->scene( )->clearSelection( );
-  m_element->setSelected( true );
 }
 
 void UpdateCommand::redo( ) {
   loadData( m_newData );
-  m_element->scene( )->clearSelection( );
-  m_element->setSelected( true );
 }
 
 void UpdateCommand::loadData( QByteArray itemData ) {
   QDataStream dataStream( &itemData, QIODevice::ReadOnly );
   QMap< quint64, QNEPort* > portMap;
+  if( !m_elements.isEmpty( ) && m_elements.front( )->scene( ) ) {
+    m_elements.front( )->scene( )->clearSelection( );
+  }
   double version = QApplication::applicationVersion( ).toDouble( );
-  m_element->load( dataStream, portMap, version );
+  if( !m_elements.isEmpty( ) ) {
+    for( GraphicElement *elm : m_elements ) {
+      elm->load( dataStream, portMap, version );
+      elm->setSelected( true );
+    }
+  }
 }
 
 
