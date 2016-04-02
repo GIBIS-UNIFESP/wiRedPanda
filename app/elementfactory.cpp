@@ -75,87 +75,35 @@ void ElementFactory::giveBackId( size_t id ) {
 
 GraphicElement* ElementFactory::buildElement( ElementType type, Editor *editor, QGraphicsItem *parent ) {
   GraphicElement *elm;
-  switch( type ) {
-      case ElementType::BUTTON:
-      elm = new InputButton( parent );
-      break;
-      case ElementType::SWITCH:
-      elm = new InputSwitch( parent );
-      break;
-      case ElementType::LED:
-      elm = new Led( parent );
-      break;
-      case ElementType::NOT:
-      elm = new Not( parent );
-      break;
-      case ElementType::AND:
-      elm = new And( parent );
-      break;
-      case ElementType::OR:
-      elm = new Or( parent );
-      break;
-      case ElementType::NAND:
-      elm = new Nand( parent );
-      break;
-      case ElementType::NOR:
-      elm = new Nor( parent );
-      break;
-      case ElementType::CLOCK:
-      elm = new Clock( parent );
-      break;
-      case ElementType::XOR:
-      elm = new Xor( parent );
-      break;
-      case ElementType::XNOR:
-      elm = new Xnor( parent );
-      break;
-      case ElementType::VCC:
-      elm = new InputVcc( parent );
-      break;
-      case ElementType::GND:
-      elm = new InputGnd( parent );
-      break;
-      case ElementType::DLATCH:
-      elm = new DLatch( parent );
-      break;
-      case ElementType::DFLIPFLOP:
-      elm = new DFlipFlop( parent );
-      break;
-      case ElementType::JKLATCH:
-      elm = new JKLatch( parent );
-      break;
-      case ElementType::JKFLIPFLOP:
-      elm = new JKFlipFlop( parent );
-      break;
-      case ElementType::SRFLIPFLOP:
-      elm = new SRFlipFlop( parent );
-      break;
-      case ElementType::TFLIPFLOP:
-      elm = new TFlipFlop( parent );
-      break;
-      case ElementType::TLATCH:
-      elm = new TLatch( parent );
-      break;
-      case ElementType::DISPLAY:
-      elm = new Display( parent );
-      break;
-      case ElementType::BOX:
-      elm = new Box( editor, parent );
-      break;
-      case ElementType::NODE:
-      elm = new Node( parent );
-      break;
-      case ElementType::MUX:
-      elm = new Mux( parent );
-      break;
-      case ElementType::DEMUX:
-      elm = new Demux( parent );
-      break;
-      default:
-      return( 0 );
-      break;
+  elm = type == ElementType::BUTTON? new InputButton( parent ):
+      type == ElementType::SWITCH? new InputSwitch( parent ):
+      type == ElementType::LED? new Led( parent ):
+      type == ElementType::NOT? new Not( parent ):
+      type == ElementType::AND? new And( parent ):
+      type == ElementType::OR? new Or( parent ):
+      type == ElementType::NAND? new Nand( parent ):
+      type == ElementType::NOR? new Nor( parent ):
+      type == ElementType::CLOCK? new Clock( parent ):
+      type == ElementType::XOR? new Xor( parent ):
+      type == ElementType::XNOR? new Xnor( parent ):
+      type == ElementType::VCC? new InputVcc( parent ):
+      type == ElementType::GND? new InputGnd( parent ):
+      type == ElementType::DLATCH? new DLatch( parent ):
+      type == ElementType::DFLIPFLOP? new DFlipFlop( parent ):
+      type == ElementType::JKLATCH? new JKLatch( parent ):
+      type == ElementType::JKFLIPFLOP? new JKFlipFlop( parent ):
+      type == ElementType::SRFLIPFLOP? new SRFlipFlop( parent ):
+      type == ElementType::TFLIPFLOP? new TFlipFlop( parent ):
+      type == ElementType::TLATCH? new TLatch( parent ):
+      type == ElementType::DISPLAY? new Display( parent ):
+      type == ElementType::BOX? new Box( editor, parent ):
+      type == ElementType::NODE? new Node( parent ):
+      type == ElementType::MUX? new Mux( parent ):
+      type == ElementType::DEMUX? new Demux( parent ) :
+      (GraphicElement *) nullptr;
+  if(elm){
+    elm->setId( next_id( ) );
   }
-  elm->setId( next_id( ) );
   return( elm );
 }
 
