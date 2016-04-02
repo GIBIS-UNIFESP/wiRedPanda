@@ -3,7 +3,7 @@ QT       += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 
-VERSION = 1.91
+VERSION = 2.0
 
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 

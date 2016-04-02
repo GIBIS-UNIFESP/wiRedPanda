@@ -100,6 +100,8 @@ private:
 };
 
 class SplitCommand : public QUndoCommand {
+    enum { Id = 2244 };
+
 public:
 
   SplitCommand( QNEConnection *conn, QPointF point, QUndoCommand *parent = 0 );
@@ -114,6 +116,25 @@ private:
   QNEPort *trueP1, *trueP2;
 
   Node *node;
+};
+
+class MorphCommand : public QUndoCommand {
+public:
+  enum { Id = 4567 };
+
+  MorphCommand(const QVector<GraphicElement *> & elements, ElementType type, Editor * editor, QUndoCommand *parent = 0 );
+
+  void undo( ) Q_DECL_OVERRIDE;
+  void redo( ) Q_DECL_OVERRIDE;
+  int id( ) const Q_DECL_OVERRIDE {
+    return( Id );
+  }
+
+private:
+  QVector< GraphicElement * > old_elements;
+  QVector< GraphicElement * > new_elements;
+
+  void transferConnections(QVector< GraphicElement * > from, QVector< GraphicElement * > to );
 };
 
 

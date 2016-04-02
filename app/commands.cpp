@@ -64,10 +64,10 @@ void AddItemsCommand::redo( ) {
   editor->updateVisibility( );
 }
 
-DeleteItemsCommand::DeleteItemsCommand( const QList< QGraphicsItem* > &aItems,
-                                        QUndoCommand *parent ) : QUndoCommand( parent ) {
-  if(!aItems.isEmpty()){
-    scene = aItems.front()->scene();
+DeleteItemsCommand::DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, QUndoCommand *parent ) : QUndoCommand(
+    parent ) {
+  if( !aItems.isEmpty( ) ) {
+    scene = aItems.front( )->scene( );
   }
   for( QGraphicsItem *item : aItems ) {
     if( item->type( ) == GraphicElement::Type ) {
@@ -127,7 +127,7 @@ void DeleteItemsCommand::redo( ) {
 }
 
 
-RotateCommand::RotateCommand(const QList<GraphicElement *> & aItems, int aAngle, QUndoCommand *parent ) : QUndoCommand(
+RotateCommand::RotateCommand( const QList< GraphicElement* > &aItems, int aAngle, QUndoCommand *parent ) : QUndoCommand(
     parent ) {
   list = aItems;
   angle = aAngle;
@@ -327,4 +327,46 @@ void SplitCommand::redo( ) {
 
   c2->updatePosFromPorts( );
   c2->updatePath( );
+}
+
+MorphCommand::MorphCommand( const QVector< GraphicElement* > &elements,
+                            ElementType type,
+                            Editor *editor,
+                            QUndoCommand *parent ) {
+  old_elements = elements;
+  for( GraphicElement *elm : elements ) {
+    GraphicElement *newElm = editor->getFactory( ).buildElement( type, editor );
+    newElm->setInputSize( elm->inputSize( ) );
+    new_elements.append( newElm );
+  }
+}
+
+void MorphCommand::undo( ) {
+  transferConnections(new_elements, old_elements);
+}
+
+void MorphCommand::redo( ) {
+  transferConnections(old_elements, new_elements);
+}
+
+void MorphCommand::transferConnections( QVector< GraphicElement* > from, QVector< GraphicElement* > to ) {
+  for( int elm = 0; elm < from.size( ); ++elm ) {
+    GraphicElement *oldElm = from[ elm ];
+    for( int in = 0; in < oldElm->inputSize( ); ++in ) {
+      for( QNEConnection *conn : oldElm[ elm ].input(in)->connections() ) {
+        oldElm->input( in )->disconnect( conn );
+        if( conn->port1( ) == nullptr ) {
+          conn->setPort1( to[ elm ]->input( in ) );
+        }
+      }
+    }
+    for( int out = 0; out < oldElm->outputSize( ); ++out ) {
+      for( QNEConnection *conn : oldElm[ elm ].output(out)->connections() ) {
+        oldElm->output( out )->disconnect( conn );
+        if( conn->port1( ) == nullptr ) {
+          conn->setPort1( to[ elm ]->output( out ) );
+        }
+      }
+    }
+  }
 }
