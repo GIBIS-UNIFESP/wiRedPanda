@@ -7,6 +7,12 @@
 #include <cmath>
 
 ElementEditor::ElementEditor( QWidget *parent ) : QWidget( parent ), ui( new Ui::ElementEditor ) {
+  manyLabels = tr( "<Many labels>");
+  manyColors = tr( "<Many colors>" );
+  manyIS = tr( "<Many values>" );
+  manyFreq = tr( "<Many values>");
+  manyTriggers = tr( "<Many triggers>" );
+
   ui->setupUi( this );
   setEnabled( false );
   setVisible( false );
