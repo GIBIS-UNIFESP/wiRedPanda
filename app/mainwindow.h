@@ -100,10 +100,6 @@ protected:
   void closeEvent( QCloseEvent *e );
   void resizeEvent( QResizeEvent* );
 
-  /* QWidget interface */
-protected:
-  void keyPressEvent( QKeyEvent* );
-  void keyReleaseEvent( QKeyEvent* );
 };
 
 #endif /* MAINWINDOW_H */
