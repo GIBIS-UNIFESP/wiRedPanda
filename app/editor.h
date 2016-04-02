@@ -35,7 +35,7 @@ public slots:
   void showWires( bool checked );
   void showGates( bool checked );
   void rotate( bool rotateRight );
-  void elementUpdated( GraphicElement *element, QByteArray itemData );
+  void elementUpdated(const QVector<GraphicElement *> & element, QByteArray itemData );
   void selectionChanged( );
 private:
   QUndoStack *undoStack;
@@ -88,6 +88,7 @@ public:
   SimulationController* getSimulationController( ) const;
   void contextMenu( QPoint screenPos );
   void updateVisibility( );
+  void pushCommand( QUndoCommand * cmd );
 };
 
 #endif /* EDITOR_H */
