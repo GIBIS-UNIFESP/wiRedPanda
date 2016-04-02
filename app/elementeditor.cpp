@@ -24,6 +24,14 @@ ElementEditor::ElementEditor( QWidget *parent ) : QWidget( parent ), ui( new Ui:
   for( char i = 'A'; i < 'F'; i++ ) {
     ui->trigger->addItem( QKeySequence( QString( "%1" ).arg( i ) ).toString( ) );
   }
+  ui->trigger->addItem( QKeySequence( 'W' ).toString() );
+  ui->trigger->addItem( QKeySequence( "S" ).toString() );
+  ui->trigger->addItem( QKeySequence( "D" ).toString() );
+  ui->trigger->addItem( QKeySequence( 'Q' ).toString() );
+  ui->trigger->addItem( QKeySequence( "R" ).toString() );
+  ui->trigger->addItem( QKeySequence( "T" ).toString() );
+  ui->trigger->addItem( QKeySequence( "Y" ).toString() );
+
 }
 
 ElementEditor::~ElementEditor( ) {
