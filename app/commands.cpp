@@ -332,7 +332,7 @@ void SplitCommand::redo( ) {
 MorphCommand::MorphCommand( const QVector< GraphicElement* > &elements,
                             ElementType type,
                             Editor *editor,
-                            QUndoCommand *parent )  : QUndoCommand( parent ) {
+                            QUndoCommand *parent ) : QUndoCommand( parent ) {
   old_elements = elements;
   scene = editor->getScene( );
   for( GraphicElement *elm : elements ) {
@@ -391,36 +391,8 @@ ChangeInputSZCommand::ChangeInputSZCommand( const QVector< GraphicElement* > &el
                                             QUndoCommand *parent ) : QUndoCommand( parent ) {
   m_elements = elements;
   m_newInputSize = newInputSize;
-  for( GraphicElement *elm : elements ) {
-    m_oldInputSize.append( elm->inputSize( ) );
-    if( newInputSize <= elm->inputSize() ){
-      for( int in = newInputSize; in <= elm->inputSize( ); ++in ) {
-        for( QNEConnection *conn : elm->input( in )->connections( ) ) {
-          m_connections.append( StoredConnection( conn, elm, in ) );
-        }
-      }
-    }
-  }
   if( !elements.isEmpty( ) ) {
     scene = elements.front( )->scene( );
-  }
-}
-
-void ChangeInputSZCommand::undo( ) {
-  if( !m_elements.isEmpty( ) && m_elements.front( )->scene( ) ) {
-    scene->clearSelection( );
-  }
-  for( int i = 0; i < m_elements.size( ); ++i ) {
-    m_elements[ i ]->setInputSize( m_oldInputSize[ i ] );
-    m_elements[ i ]->setSelected( true );
-  }
-  for( StoredConnection sc : m_connections ) {
-    if( sc.conn->port1( ) == nullptr ) {
-      sc.conn->setPort1( sc.elm->input( sc.portNbr ) );
-    }
-    else if( sc.conn->port2( ) == nullptr ) {
-      sc.conn->setPort2( sc.elm->input( sc.portNbr ) );
-    }
   }
 }
 
@@ -428,12 +400,53 @@ void ChangeInputSZCommand::redo( ) {
   if( !m_elements.isEmpty( ) && m_elements.front( )->scene( ) ) {
     scene->clearSelection( );
   }
-  for( StoredConnection sc : m_connections ) {
-    QNEPort * port = sc.elm->input( sc.portNbr );
-    port->disconnect(sc.conn);
+  serializationOrder.clear( );
+  m_oldData.clear( );
+  QDataStream dataStream( &m_oldData, QIODevice::WriteOnly );
+  for( int i = 0; i < m_elements.size( ); ++i ) {
+    GraphicElement *elm = m_elements[ i ];
+    elm->save( dataStream );
+    serializationOrder.append( elm );
+    for( int in = m_newInputSize; in < elm->inputSize( ); ++in ) {
+      for( QNEConnection *conn : elm->input( in )->connections( ) ) {
+        QNEPort *otherPort = conn->otherPort( elm->input( in ) );
+        otherPort->graphicElement( )->save( dataStream );
+        serializationOrder.append( otherPort->graphicElement( ) );
+      }
+    }
   }
   for( int i = 0; i < m_elements.size( ); ++i ) {
-    m_elements[ i ]->setInputSize( m_newInputSize );
-    m_elements[ i ]->setSelected( true );
+    GraphicElement *elm = m_elements[ i ];
+    for( int in = m_newInputSize; in < elm->inputSize( ); ++in ) {
+      for( QNEConnection *conn : elm->input( in )->connections( ) ) {
+        conn->save( dataStream );
+        scene->removeItem(conn);
+        delete conn;
+      }
+    }
+    elm->setInputSize( m_newInputSize );
+    elm->setSelected( true );
+  }
+}
+
+
+void ChangeInputSZCommand::undo( ) {
+  if( !m_elements.isEmpty( ) && m_elements.front( )->scene( ) ) {
+    scene->clearSelection( );
+  }
+  QDataStream dataStream( &m_oldData, QIODevice::ReadOnly );
+  double version = QApplication::applicationVersion( ).toDouble( );
+  QMap< quint64, QNEPort* > portMap;
+  for( GraphicElement *elm : serializationOrder ) {
+    elm->load( dataStream, portMap, version );
+  }
+  for( int i = 0; i < m_elements.size( ); ++i ) {
+    GraphicElement *elm = m_elements[ i ];
+    for( int in = m_newInputSize; in < elm->inputSize( ); ++in ) {
+      QNEConnection *conn = new QNEConnection( );
+      conn->load( dataStream, portMap );
+      scene->addItem(conn);
+    }
+    elm->setSelected( true );
   }
 }
