@@ -614,12 +614,12 @@ void Editor::contextMenu( QPoint screenPos ) {
   QGraphicsItem *item = itemAt( mousePos );
   if( item ) {
     if( scene->selectedItems( ).contains( item ) ) {
-      elementEditor->contextMenu( screenPos );
+      elementEditor->contextMenu( screenPos, this );
     }
     else if( ( item->type( ) == GraphicElement::Type ) ) {
       scene->clearSelection( );
       item->setSelected( true );
-      elementEditor->contextMenu( screenPos );
+      elementEditor->contextMenu( screenPos, this );
     }
   }
 }

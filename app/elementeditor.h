@@ -20,7 +20,7 @@ public:
   ~ElementEditor();
 
   void setScene( QGraphicsScene * s );
-  void contextMenu(QPoint screenPos );
+  void contextMenu(QPoint screenPos , Editor * editor);
 //  void renameAction( const QVector< GraphicElement *> &element );
 //  void changeColorAction( const QVector<GraphicElement *> &element );
 

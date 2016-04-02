@@ -332,41 +332,53 @@ void SplitCommand::redo( ) {
 MorphCommand::MorphCommand( const QVector< GraphicElement* > &elements,
                             ElementType type,
                             Editor *editor,
-                            QUndoCommand *parent ) {
+                            QUndoCommand *parent )  : QUndoCommand(parent){
   old_elements = elements;
   for( GraphicElement *elm : elements ) {
     GraphicElement *newElm = editor->getFactory( ).buildElement( type, editor );
     newElm->setInputSize( elm->inputSize( ) );
     new_elements.append( newElm );
+    newElm->setPos(elm->pos());
+    newElm->setRotation(elm->rotation());
+    editor->getScene()->addItem(newElm);
   }
 }
 
 void MorphCommand::undo( ) {
-  transferConnections(new_elements, old_elements);
+  transferConnections( new_elements, old_elements );
 }
 
 void MorphCommand::redo( ) {
-  transferConnections(old_elements, new_elements);
+  transferConnections( old_elements, new_elements );
 }
 
 void MorphCommand::transferConnections( QVector< GraphicElement* > from, QVector< GraphicElement* > to ) {
   for( int elm = 0; elm < from.size( ); ++elm ) {
     GraphicElement *oldElm = from[ elm ];
+    GraphicElement *newElm = to[ elm ];
     for( int in = 0; in < oldElm->inputSize( ); ++in ) {
-      for( QNEConnection *conn : oldElm[ elm ].input(in)->connections() ) {
+      for( QNEConnection *conn : oldElm[ elm ].input( in )->connections( ) ) {
         oldElm->input( in )->disconnect( conn );
         if( conn->port1( ) == nullptr ) {
-          conn->setPort1( to[ elm ]->input( in ) );
+          conn->setPort1( newElm->input( in ) );
+        }
+        else {
+          conn->setPort2( newElm->input( in ) );
         }
       }
     }
     for( int out = 0; out < oldElm->outputSize( ); ++out ) {
-      for( QNEConnection *conn : oldElm[ elm ].output(out)->connections() ) {
+      for( QNEConnection *conn : oldElm[ elm ].output( out )->connections( ) ) {
         oldElm->output( out )->disconnect( conn );
         if( conn->port1( ) == nullptr ) {
-          conn->setPort1( to[ elm ]->output( out ) );
+          conn->setPort1( newElm->output( out ) );
+        }
+        else {
+          conn->setPort2( newElm->output( out ) );
         }
       }
     }
+    oldElm->setVisible( false );
+    newElm->setVisible( true );
   }
 }

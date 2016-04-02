@@ -43,7 +43,7 @@ void ElementEditor::setScene( QGraphicsScene *s ) {
   connect( s, &QGraphicsScene::selectionChanged, this, &ElementEditor::selectionChanged );
 }
 
-void ElementEditor::contextMenu( QPoint screenPos ) {
+void ElementEditor::contextMenu( QPoint screenPos, Editor * editor ) {
   QMenu menu;
   QString renameAction( tr( "Rename" ) );
   QString rotateAction( tr( "Rotate" ) );
@@ -92,6 +92,8 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
       }
       int nxtIdx = ( ui->comboBoxColor->currentIndex( ) + 1 ) % ui->comboBoxColor->count( );
       ui->comboBoxColor->setCurrentIndex( nxtIdx );
+    }else if ( ElementFactory::textToType(a->text()) != ElementType::UNKNOWN ){
+      sendCommand( new MorphCommand( elements, ElementFactory::textToType(a->text()), editor ));
     }
   }
 }
