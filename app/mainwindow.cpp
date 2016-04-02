@@ -473,18 +473,6 @@ void MainWindow::on_actionGates_triggered( bool checked ) {
 }
 
 
-void MainWindow::keyPressEvent( QKeyEvent *evt ) {
-  if( evt->key( ) == Qt::Key_Control ) {
-    editor->setControlKeyPressed( true );
-  }
-}
-
-void MainWindow::keyReleaseEvent( QKeyEvent *evt ) {
-  if( evt->key( ) == Qt::Key_Control ) {
-    editor->setControlKeyPressed( false );
-  }
-}
-
 bool MainWindow::ExportToArduino( QString fname ) {
   try {
     if( fname.isEmpty( ) ) {

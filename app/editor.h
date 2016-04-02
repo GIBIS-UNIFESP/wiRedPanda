@@ -56,7 +56,7 @@ private:
   QList< GraphicElement* > movedElements;
   QList< QPointF > oldPositions;
   MainWindow *mainWindow;
-  bool mControlKeyPressed;
+//  bool mControlKeyPressed;
   bool mShowWires;
   bool mShowGates;
 
@@ -83,11 +83,9 @@ public:
   void releaseHoverPort( );
   bool loadBox( Box *box, QString fname );
   void resizeScene( );
-  bool getControlKeyPressed( ) const;
-  void setControlKeyPressed( bool controlKeyPressed );
   SimulationController* getSimulationController( ) const;
   void contextMenu( QPoint screenPos );
-  void updateVisibility( );  
+  void updateVisibility( );
 };
 
 #endif /* EDITOR_H */

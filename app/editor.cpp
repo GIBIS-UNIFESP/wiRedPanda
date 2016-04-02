@@ -28,7 +28,6 @@
 
 Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ), editedConn( nullptr ), m_hoverPort( nullptr ) {
   mainWindow = qobject_cast< MainWindow* >( parent );
-  mControlKeyPressed = false;
   markingSelectionBox = false;
   undoStack = new QUndoStack( this );
   scene = new Scene( this );
@@ -176,14 +175,6 @@ SimulationController* Editor::getSimulationController( ) const {
 void Editor::addItem( QGraphicsItem *item ) {
   scene->addItem( item );
 }
-bool Editor::getControlKeyPressed( ) const {
-  return( mControlKeyPressed );
-}
-
-void Editor::setControlKeyPressed( bool controlKeyPressed ) {
-  mControlKeyPressed = controlKeyPressed;
-}
-
 
 bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
   QGraphicsItem *item = itemAt( mousePos );
@@ -412,16 +403,15 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
         return( false );
       }
     }
-    int wdtOffset =  ( 64 - elm->boundingRect().width() )/2;
-    if(wdtOffset > 0){
-      pos = pos + QPointF(wdtOffset, wdtOffset);
+    int wdtOffset = ( 64 - elm->boundingRect( ).width( ) ) / 2;
+    if( wdtOffset > 0 ) {
+      pos = pos + QPointF( wdtOffset, wdtOffset );
     }
-
     /*
      * TODO: Rotate all element icons, remake the port position logic, and remove the code below.
      * Rotating element in 90 degrees.
      */
-    if( elm->rotatable( )  && elm->elementType() != ElementType::NODE ) {
+    if( elm->rotatable( ) && ( elm->elementType( ) != ElementType::NODE ) ) {
       elm->setRotation( 90 );
     }
     /* Adding the element to the scene. */
@@ -630,7 +620,7 @@ void Editor::updateVisibility( ) {
 }
 
 void Editor::receiveCommand( QUndoCommand *cmd ) {
-  undoStack->push(cmd);
+  undoStack->push( cmd );
 }
 
 bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
@@ -642,13 +632,17 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
     if( mouseEvt ) {
       mousePos = mouseEvt->scenePos( );
       resizeScene( );
+      if( mouseEvt->modifiers( ) & Qt::ShiftModifier ) {
+        mouseEvt->setModifiers( Qt::ControlModifier );
+        return( QObject::eventFilter( obj, evt ) );
+      }
     }
     bool ret = false;
     if( ( evt->type( ) == QEvent::GraphicsSceneMousePress )
         || ( evt->type( ) == QEvent::GraphicsSceneMouseDoubleClick ) ) {
       QGraphicsItem *item = itemAt( mousePos );
       if( item && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
-        if( mControlKeyPressed && ( item->type( ) == GraphicElement::Type ) ) {
+        if( ( mouseEvt->modifiers( ) & Qt::ControlModifier ) && ( item->type( ) == GraphicElement::Type ) ) {
           scene->clearSelection( );
           ctrlDrag( qgraphicsitem_cast< GraphicElement* >( item ), mouseEvt->pos( ) );
           return( true );
@@ -737,10 +731,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
         break;
       }
         case QEvent::KeyPress: {
-        if( keyEvt && ( keyEvt->key( ) == Qt::Key_Control ) ) {
-          mControlKeyPressed = true;
-        }
-        else {
+        if( keyEvt && !( keyEvt->modifiers( ) & Qt::ControlModifier ) ) {
           for( GraphicElement *elm : scene->getElements( ) ) {
             if( elm->hasTrigger( ) && !elm->getTrigger( ).isEmpty( ) ) {
               Input *in = dynamic_cast< Input* >( elm );
@@ -758,10 +749,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
         break;
       }
         case QEvent::KeyRelease: {
-        if( keyEvt && ( keyEvt->key( ) == Qt::Key_Control ) ) {
-          mControlKeyPressed = false;
-        }
-        else {
+        if( keyEvt && !( keyEvt->modifiers( ) & Qt::ControlModifier ) ) {
           for( GraphicElement *elm : scene->getElements( ) ) {
             if( elm->hasTrigger( ) && !elm->getTrigger( ).isEmpty( ) ) {
               Input *in = dynamic_cast< Input* >( elm );
