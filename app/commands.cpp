@@ -45,15 +45,51 @@ AddItemsCommand::~AddItemsCommand( ) {
 }
 
 void AddItemsCommand::undo( ) {
-  for( QGraphicsItem *item : items ) {
-    if( item->scene( ) ) {
-      editor->getScene( )->removeItem( item );
+  itemData.clear( );
+  serializationOrder.clear();
+  QDataStream dataStream( &itemData, QIODevice::WriteOnly );
+  for( QGraphicsItem *item  : items ) {
+    if( item->type( ) == QNEConnection::Type ) {
+      QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
+      GraphicElement *elm = conn->port1( )->graphicElement( );
+      serializationOrder.append( elm );
+      elm->save( dataStream );
+
+      GraphicElement *elm2 = conn->port2( )->graphicElement( );
+      serializationOrder.append( elm2 );
+      elm2->save( dataStream );
+    }
+  }
+  for( QGraphicsItem *item  : items ) {
+    if( item->type( ) == QNEConnection::Type ) {
+      QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
+      conn->save( dataStream );
+      QNEPort *p1 = conn->port1( );
+      QNEPort *p2 = conn->port2( );
+
+      p1->disconnect( conn );
+      p2->disconnect( conn );
+      editor->getScene( )->removeItem( conn );
     }
   }
 }
 
 void AddItemsCommand::redo( ) {
-  for( QGraphicsItem *item : items ) {
+  if( !itemData.isEmpty( ) ) {
+    QDataStream dataStream( &itemData, QIODevice::ReadOnly );
+    double version = QApplication::applicationVersion( ).toDouble( );
+    QMap< quint64, QNEPort* > portMap;
+    for( GraphicElement *elm: serializationOrder ) {
+      elm->load( dataStream, portMap, version );
+    }
+    for( QGraphicsItem *item  : items ) {
+      if( item->type( ) == QNEConnection::Type ) {
+        QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
+        conn->load( dataStream, portMap );
+      }
+    }
+  }
+  for( QGraphicsItem *item  : items ) {
     if( !item->scene( ) ) {
       editor->getScene( )->addItem( item );
     }
@@ -344,6 +380,7 @@ MorphCommand::MorphCommand( const QVector< GraphicElement* > &elements,
       newElm->setRotation( elm->rotation( ) );
     }
   }
+  setText( QString( "Morph %1 elements to %2" ).arg( elements.size( ) ).arg( new_elements.front( )->objectName( ) ) );
 }
 
 void MorphCommand::undo( ) {
@@ -394,6 +431,7 @@ ChangeInputSZCommand::ChangeInputSZCommand( const QVector< GraphicElement* > &el
   if( !elements.isEmpty( ) ) {
     scene = elements.front( )->scene( );
   }
+  setText( QString( "Change input size to %1" ).arg( newInputSize ) );
 }
 
 void ChangeInputSZCommand::redo( ) {
@@ -423,8 +461,8 @@ void ChangeInputSZCommand::redo( ) {
         scene->removeItem( conn );
         for( QNEConnection *conn : elm->input( in )->connections( ) ) {
           QNEPort *otherPort = conn->otherPort( elm->input( in ) );
-          elm->input(in)->disconnect(conn);
-          otherPort->disconnect(conn);
+          elm->input( in )->disconnect( conn );
+          otherPort->disconnect( conn );
         }
       }
     }
