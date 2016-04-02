@@ -33,7 +33,7 @@ private:
 class DeleteItemsCommand : public QUndoCommand {
   enum { Id = 123 };
 public:
-  DeleteItemsCommand(const QList< QGraphicsItem* > &aItems, QUndoCommand *parent = 0 );
+  DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, QUndoCommand *parent = 0 );
   void undo( ) Q_DECL_OVERRIDE;
   void redo( ) Q_DECL_OVERRIDE;
 
@@ -83,7 +83,7 @@ class UpdateCommand : public QUndoCommand {
 public:
   enum { Id = 42 };
 
-  UpdateCommand(const QVector<GraphicElement *> & elements, QByteArray oldData, QUndoCommand *parent = 0 );
+  UpdateCommand( const QVector< GraphicElement* > &elements, QByteArray oldData, QUndoCommand *parent = 0 );
 
   void undo( ) Q_DECL_OVERRIDE;
   void redo( ) Q_DECL_OVERRIDE;
@@ -92,7 +92,7 @@ public:
   }
 
 private:
-  QVector< GraphicElement * > m_elements;
+  QVector< GraphicElement* > m_elements;
   QByteArray m_oldData;
   QByteArray m_newData;
 
@@ -100,12 +100,12 @@ private:
 };
 
 class SplitCommand : public QUndoCommand {
-    enum { Id = 2244 };
+  enum { Id = 2244 };
 
 public:
 
   SplitCommand( QNEConnection *conn, QPointF point, QUndoCommand *parent = 0 );
-  virtual ~SplitCommand();
+  virtual ~SplitCommand( );
   void undo( ) Q_DECL_OVERRIDE;
   void redo( ) Q_DECL_OVERRIDE;
 
@@ -122,7 +122,8 @@ class MorphCommand : public QUndoCommand {
 public:
   enum { Id = 4567 };
 
-  MorphCommand(const QVector<GraphicElement *> & elements, ElementType type, Editor * editor, QUndoCommand * parent = 0);
+  MorphCommand( const QVector< GraphicElement* > &elements, ElementType type, Editor *editor,
+                QUndoCommand *parent = 0 );
 
   void undo( ) Q_DECL_OVERRIDE;
   void redo( ) Q_DECL_OVERRIDE;
@@ -131,11 +132,49 @@ public:
   }
 
 private:
-  QVector< GraphicElement * > old_elements;
-  QVector< GraphicElement * > new_elements;
-  QGraphicsScene * scene;
-  void transferConnections(QVector< GraphicElement * > from, QVector< GraphicElement * > to );
+  QVector< GraphicElement* > old_elements;
+  QVector< GraphicElement* > new_elements;
+  QGraphicsScene *scene;
+  void transferConnections( QVector< GraphicElement* > from, QVector< GraphicElement* > to );
 };
 
+class StoredConnection {
+public:
+  StoredConnection() {
+    this->conn = nullptr;
+    this->elm = nullptr;
+    this->portNbr = 0;
+  }
+
+  StoredConnection( QNEConnection * conn, GraphicElement * elm, int portNbr ) {
+    this->conn = conn;
+    this->elm = elm;
+    this->portNbr = portNbr;
+  }
+
+  QNEConnection * conn;
+  GraphicElement * elm;
+  int portNbr;
+};
+
+class ChangeInputSZCommand : public QUndoCommand {
+public:
+  enum { Id = 9999 };
+
+  ChangeInputSZCommand( const QVector< GraphicElement* > &elements, int newInputSize, QUndoCommand *parent = 0 );
+
+  void undo( ) Q_DECL_OVERRIDE;
+  void redo( ) Q_DECL_OVERRIDE;
+  int id( ) const Q_DECL_OVERRIDE {
+    return( Id );
+  }
+
+private:
+  QVector< GraphicElement* > m_elements;
+  QGraphicsScene *scene;
+  QVector< int > m_oldInputSize;
+  QVector< StoredConnection > m_connections;
+  int m_newInputSize;
+};
 
 #endif /* COMMANDS_H */
