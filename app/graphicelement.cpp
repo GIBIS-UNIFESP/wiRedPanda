@@ -181,6 +181,11 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
       portMap[ ptr ] = addPort( name, false, flags, ptr );
     }
   }
+  while( inputSize( ) > (int) inputSz ) {
+    delete m_inputs.back( );
+    m_inputs.pop_back( );
+  }
+  updatePorts();
   ds >> outputSz;
   if( outputSz > MAXIMUMVALIDINPUTSIZE ) {
     throw std::runtime_error( "Corrupted file!" );
