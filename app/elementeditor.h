@@ -3,11 +3,14 @@
 
 #include "graphicelement.h"
 #include <QGraphicsScene>
+#include <QUndoCommand>
 #include <QWidget>
 
 namespace Ui {
   class ElementEditor;
 }
+
+class Editor;
 
 class ElementEditor : public QWidget {
   Q_OBJECT
@@ -17,9 +20,12 @@ public:
   ~ElementEditor();
 
   void setScene( QGraphicsScene * s );
+  void contextMenu(QPoint screenPos , Editor * editor);
+//  void renameAction( const QVector< GraphicElement *> &element );
+//  void changeColorAction( const QVector<GraphicElement *> &element );
 
 signals:
-  void elementUpdated( GraphicElement *element, QByteArray itemData );
+  void sendCommand( QUndoCommand * cmd );
 
 private slots:
 
@@ -36,12 +42,24 @@ private slots:
   void on_trigger_currentIndexChanged(const QString &arg1);
 
 private:
-  void setCurrentElement( GraphicElement *element );
+  void setCurrentElements(const QVector<GraphicElement *> & element );
   void apply();
 
   Ui::ElementEditor *ui;
-  GraphicElement * element;
+  QVector< GraphicElement *> elements;
   QGraphicsScene * scene;
+  bool hasSomething, hasLabel, hasColors, hasFrequency;
+  bool canChangeInputSize, hasTrigger, hasRotation;
+  bool hasSameLabel, hasSameColors, hasSameFrequency;
+  bool hasSameInputSize, hasSameTrigger, canMorph;
+
+  QString manyLabels;
+  QString manyColors;
+  QString manyIS;
+  QString manyFreq;
+  QString manyTriggers;
+
+
 };
 
 #endif // ELEMENTEDITOR_H

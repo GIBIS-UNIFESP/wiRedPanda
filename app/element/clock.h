@@ -19,6 +19,9 @@ public slots:
   virtual ElementType elementType() {
     return ElementType::CLOCK;
   }
+  virtual ElementGroup elementGroup( ) {
+    return( ElementGroup::INPUT );
+  }
 //  void updateClock();
 
   // GraphicElement interface
@@ -29,8 +32,10 @@ public:
   void setFrequency(float freq);
   void updateLogic();
   void resetClock();
+  QString genericProperties();
 private:
   void updateClock();
+
 };
 
 #endif // CLOCK_H

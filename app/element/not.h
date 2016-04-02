@@ -5,16 +5,18 @@
 
 class Not : public GraphicElement {
 public:
-  explicit Not(QGraphicsItem * parent);
-  virtual ~Not();
+  explicit Not( QGraphicsItem *parent );
+  virtual ~Not( );
 
-  // GraphicElement interface
+  /* GraphicElement interface */
 public:
-  virtual ElementType elementType() {
-    return ElementType::NOT;
+  virtual ElementType elementType( ) {
+    return( ElementType::NOT );
   }
-  void updateLogic();
+  virtual ElementGroup elementGroup( ) {
+    return( ElementGroup::GATE );
+  }
+  void updateLogic( );
 };
 
-#endif // NOT_H
-
+#endif /* NOT_H */

@@ -10,7 +10,7 @@ InputButton::InputButton( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, 
   setOn( false );
   setHasLabel( true );
   setHasTrigger( true );
-  setObjectName( "Button" );
+  setPortName( "Button" );
 }
 
 InputButton::~InputButton( ) {

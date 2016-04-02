@@ -4,22 +4,22 @@ Demux::Demux( QGraphicsItem *parent ) : GraphicElement( 2, 2, 2, 2, parent ) {
   setPixmap( QPixmap( ":/basic/demux.png" ) );
   setRotatable( false );
   updatePorts( );
-  setObjectName( "DEMUX" );
+  setPortName( "DEMUX" );
 
   inputs( ).at( 0 )->setName( "in" );
   inputs( ).at( 1 )->setName( "S" );
 
 
-  outputs( ).at( 0 )->setName( "out0" );
-  outputs( ).at( 1 )->setName( "out1" );
+  output( 0 )->setName( "out0" );
+  output( 1 )->setName( "out1" );
 
 }
 
 void Demux::updatePorts( ) {
   inputs( ).at( 0 )->setPos( 16, 32 ); /* 0 */
   inputs( ).at( 1 )->setPos( 32, 58 ); /* S */
-  outputs( ).at( 0 )->setPos( 48, 32 - 12 ); /* Out */
-  outputs( ).at( 1 )->setPos( 48, 32 + 12 ); /* Out */
+  output( 0 )->setPos( 48, 32 - 12 ); /* Out */
+  output( 1 )->setPos( 48, 32 + 12 ); /* Out */
 }
 
 void Demux::updateLogic( ) {
@@ -38,6 +38,6 @@ void Demux::updateLogic( ) {
       out1 = in;
     }
   }
-  outputs( ).at( 0 )->setValue( out0 );
-  outputs( ).at( 1 )->setValue( out1 );
+  output( 0 )->setValue( out0 );
+  output( 1 )->setValue( out1 );
 }

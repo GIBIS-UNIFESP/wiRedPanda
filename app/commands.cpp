@@ -61,11 +61,14 @@ void AddItemsCommand::redo( ) {
   }
   editor->getScene( )->clearSelection( );
   editor->getScene( )->update( );
+  editor->updateVisibility( );
 }
 
-DeleteItemsCommand::DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor,
-                                        QUndoCommand *parent ) : QUndoCommand( parent ) {
-  editor = aEditor;
+DeleteItemsCommand::DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, QUndoCommand *parent ) : QUndoCommand(
+    parent ) {
+  if( !aItems.isEmpty( ) ) {
+    scene = aItems.front( )->scene( );
+  }
   for( QGraphicsItem *item : aItems ) {
     if( item->type( ) == GraphicElement::Type ) {
       GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
@@ -93,14 +96,14 @@ DeleteItemsCommand::DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, E
 void DeleteItemsCommand::undo( ) {
   QDataStream storedData( &itemData, QIODevice::ReadOnly );
   for( QGraphicsItem *item : elements ) {
-    editor->getScene( )->addItem( item );
+    scene->addItem( item );
   }
   for( QNEConnection *conn : connections ) {
-    editor->getScene( )->addItem( conn );
+    scene->addItem( conn );
     conn->load( storedData );
   }
   itemData.clear( );
-  editor->getScene( )->update( );
+  scene->update( );
 }
 
 void DeleteItemsCommand::redo( ) {
@@ -116,10 +119,10 @@ void DeleteItemsCommand::redo( ) {
     if( p2 ) {
       p2->disconnect( conn );
     }
-    editor->getScene( )->removeItem( conn );
+    scene->removeItem( conn );
   }
   for( GraphicElement *elm : elements ) {
-    editor->getScene( )->removeItem( elm );
+    scene->removeItem( elm );
   }
 }
 
@@ -201,50 +204,57 @@ MoveCommand::MoveCommand( const QList< GraphicElement* > &list,
   for( GraphicElement *elm : list ) {
     newPositions.append( elm->pos( ) );
   }
-  undo( );
   setText( QString( "Move elements" ) );
 }
 
 void MoveCommand::undo( ) {
+/*  qDebug() << "UNDO!!!" << myList.size(); */
   for( int i = 0; i < myList.size( ); ++i ) {
     myList[ i ]->setPos( oldPositions[ i ] );
   }
 }
 
 void MoveCommand::redo( ) {
+/*  qDebug() << "REDO!!!" << myList.size(); */
   for( int i = 0; i < myList.size( ); ++i ) {
     myList[ i ]->setPos( newPositions[ i ] );
   }
 }
 
 
-UpdateCommand::UpdateCommand( GraphicElement *element, QByteArray oldData,
+UpdateCommand::UpdateCommand( const QVector< GraphicElement* > &elements, QByteArray oldData,
                               QUndoCommand *parent ) : QUndoCommand( parent ) {
-  m_element = element;
+  m_elements = elements;
   m_oldData = oldData;
   QDataStream dataStream( &m_newData, QIODevice::WriteOnly );
-  m_element->save( dataStream );
-  setText( QString( "Update %1 element" ).arg( element->objectName( ) ) );
+  for( GraphicElement *elm : elements ) {
+    elm->save( dataStream );
+  }
+  setText( QString( "Update %1 elements" ).arg( elements.size( ) ) );
 
 }
 
 void UpdateCommand::undo( ) {
   loadData( m_oldData );
-  m_element->scene( )->clearSelection( );
-  m_element->setSelected( true );
 }
 
 void UpdateCommand::redo( ) {
   loadData( m_newData );
-  m_element->scene( )->clearSelection( );
-  m_element->setSelected( true );
 }
 
 void UpdateCommand::loadData( QByteArray itemData ) {
   QDataStream dataStream( &itemData, QIODevice::ReadOnly );
   QMap< quint64, QNEPort* > portMap;
+  if( !m_elements.isEmpty( ) && m_elements.front( )->scene( ) ) {
+    m_elements.front( )->scene( )->clearSelection( );
+  }
   double version = QApplication::applicationVersion( ).toDouble( );
-  m_element->load( dataStream, portMap, version );
+  if( !m_elements.isEmpty( ) ) {
+    for( GraphicElement *elm : m_elements ) {
+      elm->load( dataStream, portMap, version );
+      elm->setSelected( true );
+    }
+  }
 }
 
 
@@ -317,4 +327,60 @@ void SplitCommand::redo( ) {
 
   c2->updatePosFromPorts( );
   c2->updatePath( );
+}
+
+MorphCommand::MorphCommand( const QVector< GraphicElement* > &elements,
+                            ElementType type,
+                            Editor *editor,
+                            QUndoCommand *parent )  : QUndoCommand(parent){
+  old_elements = elements;
+  for( GraphicElement *elm : elements ) {
+    GraphicElement *newElm = editor->getFactory( ).buildElement( type, editor );
+    newElm->setInputSize( elm->inputSize( ) );
+    new_elements.append( newElm );
+    newElm->setPos(elm->pos());
+    if(newElm->rotatable() && elm->rotatable() ){
+      newElm->setRotation(elm->rotation());
+    }
+    editor->getScene()->addItem(newElm);
+  }
+}
+
+void MorphCommand::undo( ) {
+  transferConnections( new_elements, old_elements );
+}
+
+void MorphCommand::redo( ) {
+  transferConnections( old_elements, new_elements );
+}
+
+void MorphCommand::transferConnections( QVector< GraphicElement* > from, QVector< GraphicElement* > to ) {
+  for( int elm = 0; elm < from.size( ); ++elm ) {
+    GraphicElement *oldElm = from[ elm ];
+    GraphicElement *newElm = to[ elm ];
+    for( int in = 0; in < oldElm->inputSize( ); ++in ) {
+      for( QNEConnection *conn : oldElm->input( in )->connections( ) ) {
+        oldElm->input( in )->disconnect( conn );
+        if( conn->port1( ) == nullptr ) {
+          conn->setPort1( newElm->input( in ) );
+        }
+        else {
+          conn->setPort2( newElm->input( in ) );
+        }
+      }
+    }
+    for( int out = 0; out < oldElm->outputSize( ); ++out ) {
+      for( QNEConnection *conn : oldElm->output( out )->connections( ) ) {
+        oldElm->output( out )->disconnect( conn );
+        if( conn->port1( ) == nullptr ) {
+          conn->setPort1( newElm->output( out ) );
+        }
+        else {
+          conn->setPort2( newElm->output( out ) );
+        }
+      }
+    }
+    oldElm->setVisible( false );
+    newElm->setVisible( true );
+  }
 }

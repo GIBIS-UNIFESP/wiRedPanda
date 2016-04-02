@@ -115,7 +115,7 @@ QNEPort* QNEConnection::port2( ) const {
   return( m_port2 );
 }
 
-QNEPort* QNEConnection::otherPort( QNEPort *port ) {
+QNEPort* QNEConnection::otherPort( const QNEPort *port ) const {
   if( port == m_port1 ) {
     return( m_port2 );
   }

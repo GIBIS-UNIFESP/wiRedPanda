@@ -5,15 +5,17 @@
 
 class InputVcc : public GraphicElement {
 public:
-  explicit InputVcc(QGraphicsItem * parent = 0);
-  virtual ~InputVcc();
-  // GraphicElement interface
+  explicit InputVcc( QGraphicsItem *parent = 0 );
+  virtual ~InputVcc( );
+  /* GraphicElement interface */
 public:
-  virtual ElementType elementType() {
-    return ElementType::VCC;
+  virtual ElementType elementType( ) {
+    return( ElementType::VCC );
   }
-  void updateLogic();
+  virtual ElementGroup elementGroup( ) {
+    return( ElementGroup::INPUT );
+  }
+  void updateLogic( );
 };
 
-#endif // INPUTVCC_H
-
+#endif /* INPUTVCC_H */

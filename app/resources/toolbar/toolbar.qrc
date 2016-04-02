@@ -11,5 +11,6 @@
         <file>copy.png</file>
         <file>cut.png</file>
         <file>paste.png</file>
+        <file>delete.png</file>
     </qresource>
 </RCC>

@@ -9,7 +9,7 @@ InputSwitch::InputSwitch( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, 
   on = false;
   setHasLabel( true );
   setHasTrigger( true );
-  setObjectName( "Switch" );
+  setPortName( "Switch" );
 }
 
 InputSwitch::~InputSwitch( ) {
@@ -54,7 +54,6 @@ void InputSwitch::save( QDataStream &ds ) {
 void InputSwitch::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) {
   GraphicElement::load( ds, portMap, version );
   ds >> on;
-  if( on ) {
-    setPixmap( QPixmap( ":/input/switchOn.png" ) );
-  }
+  setOn(on);
+  outputs( ).first( )->setValue( on );
 }
