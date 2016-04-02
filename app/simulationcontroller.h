@@ -5,27 +5,31 @@
 #include "scene.h"
 
 #include <QGraphicsScene>
+#include <QMap>
 #include <QObject>
 #include <QTimer>
 
 class SimulationController : public QObject {
   Q_OBJECT
 public:
-  explicit SimulationController(Scene * scn);
-    ~SimulationController();
-  int calculatePriority(GraphicElement * elm);
+  explicit SimulationController( Scene *scn );
+  ~SimulationController( );
+  static QVector< GraphicElement* > sortElements( QVector< GraphicElement* > elms );
 signals:
 
 public slots:
-  void update();
-  void stop();
-  void start();
+  void update( );
+  void stop( );
+  void start( );
 
 
 private:
-  Scene * scene;
+  Scene *scene;
   QTimer timer;
 
+  static int calculatePriority( GraphicElement *elm,
+                                QMap< GraphicElement*, bool > &beingvisited,
+                                QMap< GraphicElement*, int > &priority );
 };
 
-#endif // SIMULATIONCONTROLLER_H
+#endif /* SIMULATIONCONTROLLER_H */

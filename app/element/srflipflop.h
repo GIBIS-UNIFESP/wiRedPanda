@@ -15,6 +15,9 @@ public:
   virtual ElementType elementType( ) {
     return( ElementType::SRFLIPFLOP );
   }
+  virtual ElementGroup elementGroup( ) {
+    return( ElementGroup::MEMORY );
+  }
   virtual void updatePorts( );
   void updateLogic( );
 };

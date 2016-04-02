@@ -14,18 +14,14 @@ The main features of the software are:
 ![Alt text](images/wpanda.png?raw=true "WiRed Panda Screenshot")
 
 ## Downloads
-To run WiRed Panda on your platform you can:
+Compiled binaries for Windows and Ubuntu are availble [here](http://gibis-unifesp.github.io/wiRedPanda/downloads/).
 
-### Windows:
- Extract the [portable version](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.8-beta/WiRedPanda_Portable_Windows_x86_64.zip) or download the [windows installer](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.8-beta/WiRedPanda_Installer_Windows_x86_64.exe) of the [latest release](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/tag/v1.8-beta) of WiRed Panda.
+## Building WiRED Panda on your computer:
+ To compile this software you will need the [Qt5.5 Development Environment ](http://www.qt.io/download-open-source/) and the [source code](https://github.com/GIBIS-UNIFESP/wiRedPanda/archive/v1.9-beta.tar.gz) of the software.
  
-### Linux:
- Try the [portable version for Fedora 23 x64](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.8-beta/WiredPanda_Portable_Fedora23_x64.tar.gz) or the [portable version for Ubuntu 14.04](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v1.8-beta/WiredPanda_Portable_Ubuntu1404_x64.tar.gz) of the [latest release](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/tag/v1.8-beta) of WiRed Panda, or else download the [source code](https://github.com/GIBIS-UNIFESP/wiRedPanda/archive/v1.8-beta.tar.gz) and build on you computer.
+ To compile and install this software on linux, please use the following commands:
 
-### Building WiRED Panda on your computer:
 
- To compile and install this software on a gnome-shell based linux distro with the Qt5.5 development environment, please use the following commands:
- 
 ```sh
 git clone https://github.com/GIBIS-UNIFESP/wiRedPanda/
 mkdir wiRedPanda/build
@@ -33,6 +29,7 @@ cd wiRedPanda/build
 qmake ../WPanda.pro
 sudo make install
 ```
+
 
 ##License
 This software is licensed under the [GNU General Public License, Version 3.0](http://www.gnu.org/licenses/).

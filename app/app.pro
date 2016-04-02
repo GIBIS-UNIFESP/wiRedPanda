@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 TARGET = wpanda
+
 TEMPLATE = app
 
 include(../includes.pri)
@@ -16,3 +17,10 @@ DISTFILES += windows.rc
 }
 
 SOURCES += main.cpp
+
+
+
+DISTFILES += \
+    resources/postinst
+
+

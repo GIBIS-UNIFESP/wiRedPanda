@@ -33,8 +33,8 @@ GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz,
   m_maxInputSz = maxInputSz;
   m_maxOutputSz = maxOutputSz;
   m_changed = true;
-  m_visited = false;
-  m_beingVisited = false;
+//  m_visited = false;
+//  m_beingVisited = false;
   m_rotatable = true;
   m_hasColors = false;
   m_hasTrigger = false;
@@ -53,6 +53,7 @@ GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz,
 GraphicElement::~GraphicElement( ) {
 
 }
+
 QPixmap GraphicElement::getPixmap( ) const {
   return( pixmap );
 }
@@ -84,6 +85,14 @@ QVector< QNEPort* > GraphicElement::outputs( ) const {
   return( m_outputs );
 }
 
+QNEPort* GraphicElement::input( int pos ) const {
+  return( m_inputs.at( pos ) );
+}
+
+QNEPort* GraphicElement::output( int pos ) const {
+  return( m_outputs.at( pos ) );
+}
+
 void GraphicElement::setOutputs( const QVector< QNEPort* > &outputs ) {
   m_outputs = outputs;
 }
@@ -93,7 +102,7 @@ void GraphicElement::save( QDataStream &ds ) {
   ds << rotation( );
 
   /* <Version1.2> */
-  ds << getLabel();
+  ds << getLabel( );
   /* <\Version1.2> */
 
   /* <Version1.3> */
@@ -253,6 +262,11 @@ void GraphicElement::addOutputPort( const QString &name ) {
   addPort( name, true );
 }
 
+void GraphicElement::setPortName( QString name ) {
+  setObjectName( name );
+  setToolTip( name );
+}
+
 void GraphicElement::updatePorts( ) {
   int inputPos = m_topPosition;
   int outputPos = m_bottomPosition;
@@ -327,27 +341,20 @@ void GraphicElement::setTrigger( const QKeySequence &trigger ) {
   m_trigger = trigger;
 }
 
-/*
- * void GraphicElement::mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) {
- *  / * Align to grid * /
- *  QPointF newPos = this->pos();
- *  Scene *customScene = dynamic_cast< Scene* >( scene( ) );
- *  if( customScene ) {
- *    int gridSize = customScene->gridSize( );
- *    qreal xV = qRound( newPos.x( ) / gridSize ) * gridSize;
- *    qreal yV = qRound( newPos.y( ) / gridSize ) * gridSize;
- *    setPos(QPointF( xV, yV ) );
- *  }
- *  QGraphicsObject::mouseReleaseEvent( event );
- * }
- */
+QString GraphicElement::genericProperties( ) {
+  return( QString( ) );
+}
 
 void GraphicElement::setLabel( QString label ) {
   m_labelText = label;
-  if(!hasTrigger() || getTrigger().isEmpty()){
+  if( !hasTrigger( ) || getTrigger( ).toString( ).isEmpty( ) ) {
     this->label->setPlainText( label );
-  }else{
-    this->label->setPlainText( label  + QString(" (%1)").arg(getTrigger().toString()));
+  }
+  else {
+    if( !label.isEmpty( ) ) {
+      label += " ";
+    }
+    this->label->setPlainText( label + QString( "(%1)" ).arg( getTrigger( ).toString( ) ) );
   }
 }
 
@@ -355,38 +362,14 @@ QString GraphicElement::getLabel( ) {
   return( m_labelText );
 }
 
-bool GraphicElement::visited( ) const {
-  return( m_visited );
-}
-
-void GraphicElement::setVisited( bool visited ) {
-  m_visited = visited;
-}
-
 bool GraphicElement::isValid( ) {
   bool valid = true;
-  foreach( QNEPort * input, m_inputs ) {
+  for( QNEPort *input  : m_inputs ) {
     /* Required inputs must have exactly one connection. */
-    if( ( input->required( ) && ( input->connections( ).size( ) == 0 ) ) || ( input->connections( ).size( ) > 1 ) ) {
+    if( !input->isValid( ) ) {
       valid = false;
       break;
     }
-/*
- *    else {
- *      foreach( QNEConnection * conn, input->connections( ) ) {
- *        QNEPort *port = conn->otherPort( input );
- *        if( port ) {
- *          if( !port->graphicElement( ) || ( port->value( ) == -1 ) ) {
- *            valid = false;
- *            break;
- *          }
- *        }
- *      }
- *    }
- *    if( valid == false ) {
- *      break;
- *    }
- */
   }
   if( valid == false ) {
     foreach( QNEPort * output, outputs( ) ) {
@@ -402,13 +385,13 @@ bool GraphicElement::isValid( ) {
   return( valid );
 }
 
-bool GraphicElement::beingVisited( ) const {
-  return( m_beingVisited );
-}
+//bool GraphicElement::beingVisited( ) const {
+//  return( m_beingVisited );
+//}
 
-void GraphicElement::setBeingVisited( bool beingVisited ) {
-  m_beingVisited = beingVisited;
-}
+//void GraphicElement::setBeingVisited( bool beingVisited ) {
+//  m_beingVisited = beingVisited;
+//}
 
 bool GraphicElement::changed( ) const {
   return( m_changed );

@@ -16,11 +16,14 @@
   <layout class="QGridLayout" name="gridLayout">
    <item row="5" column="0">
     <widget class="QDoubleSpinBox" name="doubleSpinBoxFrequency">
+     <property name="specialValueText">
+      <string/>
+     </property>
      <property name="decimals">
       <number>1</number>
      </property>
      <property name="minimum">
-      <double>0.500000000000000</double>
+      <double>0.000000000000000</double>
      </property>
      <property name="maximum">
       <double>30.000000000000000</double>
@@ -60,6 +63,9 @@
    </item>
    <item row="7" column="0">
     <widget class="QComboBox" name="comboBoxColor">
+     <property name="currentText">
+      <string>Blue</string>
+     </property>
      <item>
       <property name="text">
        <string>Blue</string>

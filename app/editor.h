@@ -19,9 +19,8 @@ class Editor : public QObject {
   Q_OBJECT
   QTime timer;
 public:
-  explicit Editor( MainWindow *parent = 0 );
+  explicit Editor( QObject *parent = 0 );
   virtual ~Editor( );
-  void install( Scene *s );
   void save( QDataStream &ds );
   void load( QDataStream &ds );
   void cut( QDataStream &ds );
@@ -36,13 +35,13 @@ public slots:
   void showWires( bool checked );
   void showGates( bool checked );
   void rotate( bool rotateRight );
-  void elementUpdated( GraphicElement *element, QByteArray itemData );
-
+  void selectionChanged( );
+  void receiveCommand( QUndoCommand * cmd );
 private:
   QUndoStack *undoStack;
   Scene *scene;
   QList< QGraphicsItem* > itemsAt( QPointF pos );
-  QGraphicsItem* itemAt(QPointF pos );
+  QGraphicsItem* itemAt( QPointF pos );
   QNEConnection *editedConn;
   ElementFactory factory;
   ElementEditor *elementEditor;
@@ -58,7 +57,8 @@ private:
   QList< QPointF > oldPositions;
   MainWindow *mainWindow;
   bool mControlKeyPressed;
-
+  bool mShowWires;
+  bool mShowGates;
 
   bool mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt );
   bool mouseMoveEvt( QGraphicsSceneMouseEvent *mouseEvt );
@@ -68,6 +68,7 @@ private:
   bool wheelEvt( QWheelEvent *wEvt );
 
   void ctrlDrag( GraphicElement *elm, QPointF pos );
+  void install( Scene *s );
 
   /* QObject interface */
 public:
@@ -84,7 +85,9 @@ public:
   void resizeScene( );
   bool getControlKeyPressed( ) const;
   void setControlKeyPressed( bool controlKeyPressed );
-  SimulationController * getSimulationController() const;
+  SimulationController* getSimulationController( ) const;
+  void contextMenu( QPoint screenPos );
+  void updateVisibility( );  
 };
 
 #endif /* EDITOR_H */

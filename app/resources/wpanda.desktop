@@ -1,9 +1,11 @@
 [Desktop Entry]
-Name=WiRED Panda
-Comment=A good option to learn about Digital Circuits
-Exec=wpanda %f
+GenericName=wiRED Panda
+Name=wiRED Panda
+Comment=Learn about logic circuits in an easy and friendly way.
+Exec=/bin/sh /usr/local/bin/wpanda.sh %f
 Icon=wpanda
 Type=Application
-Categories=Science;
+Categories=Utility;
 Terminal=false
+StartupNotify=false
 MimeType=application/x-wpanda;

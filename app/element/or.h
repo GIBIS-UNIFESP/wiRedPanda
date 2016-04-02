@@ -5,15 +5,18 @@
 
 class Or : public GraphicElement {
 public:
-  explicit Or(QGraphicsItem * parent = 0);
-  virtual ~Or();
+  explicit Or( QGraphicsItem *parent = 0 );
+  virtual ~Or( );
 
-  // GraphicElement interface
+  /* GraphicElement interface */
 public:
-  virtual ElementType elementType() {
-    return ElementType::OR;
+  virtual ElementType elementType( ) {
+    return( ElementType::OR );
   }
-  void updateLogic();
+  virtual ElementGroup elementGroup( ) {
+    return( ElementGroup::GATE );
+  }
+  void updateLogic( );
 };
 
-#endif // OR_H
+#endif /* OR_H */

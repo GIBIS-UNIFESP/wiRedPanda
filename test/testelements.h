@@ -19,6 +19,7 @@ private slots:
   void init( );
   void cleanup( );
 
+  void testNode( );
   void testAnd( );
   void testOr( );
   void testVCC( );
@@ -35,6 +36,7 @@ private slots:
   void testTFlipFlop( );
   void testTLatch( );
 
+  void testBox();
 };
 
 #endif /* TESTELEMENTS_H */

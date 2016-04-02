@@ -7,16 +7,19 @@
 
 #include "nodes/qneport.h"
 
-#include "priorityelement.h"
-
 enum class ElementType {
   UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND, DISPLAY,
   DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, TLATCH, BOX, NODE, MUX, DEMUX
 };
 
+enum class ElementGroup {
+  UNKNOWN, OTHER, BOX, INPUT, GATE, MEMORY, OUTPUT, MUX
+};
+
+
 #define MAXIMUMVALIDINPUTSIZE 256
 
-class GraphicElement : public QGraphicsObject, public PriorityElement {
+class GraphicElement : public QGraphicsObject {
   Q_OBJECT
 public:
   enum { Type = QGraphicsItem::UserType + 3 };
@@ -31,6 +34,8 @@ private:
   /* GraphicElement interface. */
 public:
   virtual ElementType elementType( ) = 0;
+
+  virtual ElementGroup elementGroup( ) = 0;
 
   virtual void save( QDataStream &ds );
 
@@ -57,6 +62,7 @@ public:
 
   void addOutputPort( const QString &name = QString( ) );
 
+  virtual void setPortName( QString name);
 
   int topPosition( ) const;
 
@@ -72,6 +78,10 @@ public:
   void setInputs( const QVector< QNEPort* > &inputs );
 
   QVector< QNEPort* > outputs( ) const;
+
+  QNEPort* input( int pos = 0 ) const;
+  QNEPort* output( int pos = 0 ) const;
+
   void setOutputs( const QVector< QNEPort* > &outputs );
 
   int minInputSz( ) const;
@@ -108,11 +118,11 @@ public:
   bool changed( ) const;
   void setChanged( bool changed );
 
-  bool beingVisited( ) const;
-  void setBeingVisited( bool beingVisited );
+//  bool beingVisited( ) const;
+//  void setBeingVisited( bool beingVisited );
 
-  bool visited( ) const;
-  void setVisited( bool visited );
+//  bool visited( ) const;
+//  void setVisited( bool visited );
 
   bool isValid( );
 
@@ -126,6 +136,8 @@ public:
 
   QKeySequence getTrigger( ) const;
   void setTrigger( const QKeySequence &trigger );
+
+  virtual QString genericProperties();
 
 protected:
   void setRotatable( bool rotatable );
@@ -158,8 +170,8 @@ private:
   bool m_hasColors;
   bool m_hasTrigger;
   bool m_changed;
-  bool m_beingVisited;
-  bool m_visited;
+//  bool m_beingVisited;
+//  bool m_visited;
   bool m_disabled;
   QString m_labelText;
   QKeySequence m_trigger;
@@ -170,6 +182,7 @@ protected:
   /* QGraphicsItem interface */
 protected:
 /*  virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent * event); */
+
 };
 
 

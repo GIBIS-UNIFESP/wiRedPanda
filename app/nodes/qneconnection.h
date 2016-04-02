@@ -46,7 +46,7 @@ public:
   void updatePath( );
   QNEPort* port1( ) const;
   QNEPort* port2( ) const;
-  QNEPort* otherPort( QNEPort *port );
+  QNEPort* otherPort( const QNEPort *port ) const;
   double angle( );
 
   void save( QDataStream & );

@@ -7,15 +7,15 @@ JKFlipFlop::JKFlipFlop( QGraphicsItem *parent ) : GraphicElement( 5, 5, 2, 2, pa
   setRotatable( false );
   updatePorts( );
   lastClk = false;
-  setObjectName( "FlipFlop JK" );
+  setPortName( "FlipFlop JK" );
 
   inputs( ).at( 0 )->setName( "J" );
   inputs( ).at( 1 )->setName( "Clock" );
   inputs( ).at( 2 )->setName( "K" );
   inputs( ).at( 3 )->setName( "~Preset" );
   inputs( ).at( 4 )->setName( "~Clear" );
-  outputs( ).at( 0 )->setName( "Q" );
-  outputs( ).at( 1 )->setName( "~Q" );
+  output( 0 )->setName( "Q" );
+  output( 1 )->setName( "~Q" );
   inputs( ).at( 0 )->setRequired( false );
   inputs( ).at( 2 )->setRequired( false );
   inputs( ).at( 3 )->setRequired( false );
@@ -31,18 +31,22 @@ void JKFlipFlop::updatePorts( ) {
   inputs( ).at( 3 )->setPos( 32, topPosition( ) ); /* Preset */
   inputs( ).at( 4 )->setPos( 32, bottomPosition( ) ); /* Clear */
 
-  outputs( ).at( 0 )->setPos( bottomPosition( ), 15 ); /* Q */
-  outputs( ).at( 1 )->setPos( bottomPosition( ), 45 ); /* ~Q */
+  output( 0 )->setPos( bottomPosition( ), 15 ); /* Q */
+  output( 1 )->setPos( bottomPosition( ), 45 ); /* ~Q */
 }
 
 void JKFlipFlop::updateLogic( ) {
-  char res1 = outputs( ).at( 0 )->value( ); /* Q */
-  char res2 = outputs( ).at( 1 )->value( ); /* ~Q */
-  if( !isValid( ) ) {
+  char res1 = output( 0 )->value( ); /* Q */
+  char res2 = output( 1 )->value( ); /* ~Q */
+  if( isValid( ) == false ) {
     res1 = -1;
     res2 = -1;
   }
   else {
+    if( res1 == -1 ) {
+      res1 = 0;
+      res2 = 0;
+    }
     char j = inputs( ).at( 0 )->value( );
     char clk = inputs( ).at( 1 )->value( ); /* Current lock */
     char k = inputs( ).at( 2 )->value( );
@@ -65,6 +69,6 @@ void JKFlipFlop::updateLogic( ) {
     }
     lastClk = clk;
   }
-  outputs( ).at( 0 )->setValue( res1 );
-  outputs( ).at( 1 )->setValue( res2 );
+  output( 0 )->setValue( res1 );
+  output( 1 )->setValue( res2 );
 }

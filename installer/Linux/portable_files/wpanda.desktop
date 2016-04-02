@@ -1,0 +1,11 @@
+[Desktop Entry]
+GenericName=wiRED Panda
+Name=wiRED Panda
+Comment=Learn about logic circuits in an easy and friendly way.
+Exec=bash -c '"$(dirname "$1")"/files/wpanda.sh' dummy %k
+Icon=wpanda.svg
+Type=Application
+Categories=Utility;
+Terminal=false
+StartupNotify=false
+MimeType=application/x-wpanda;
