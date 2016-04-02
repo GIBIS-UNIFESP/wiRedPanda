@@ -384,3 +384,56 @@ void MorphCommand::transferConnections( QVector< GraphicElement* > from, QVector
     scene->addItem( newElm );
   }
 }
+
+
+ChangeInputSZCommand::ChangeInputSZCommand( const QVector< GraphicElement* > &elements,
+                                            int newInputSize,
+                                            QUndoCommand *parent ) : QUndoCommand( parent ) {
+  m_elements = elements;
+  m_newInputSize = newInputSize;
+  for( GraphicElement *elm : elements ) {
+    m_oldInputSize.append( elm->inputSize( ) );
+    if( newInputSize <= elm->inputSize() ){
+      for( int in = newInputSize; in <= elm->inputSize( ); ++in ) {
+        for( QNEConnection *conn : elm->input( in )->connections( ) ) {
+          m_connections.append( StoredConnection( conn, elm, in ) );
+        }
+      }
+    }
+  }
+  if( !elements.isEmpty( ) ) {
+    scene = elements.front( )->scene( );
+  }
+}
+
+void ChangeInputSZCommand::undo( ) {
+  if( !m_elements.isEmpty( ) && m_elements.front( )->scene( ) ) {
+    scene->clearSelection( );
+  }
+  for( int i = 0; i < m_elements.size( ); ++i ) {
+    m_elements[ i ]->setInputSize( m_oldInputSize[ i ] );
+    m_elements[ i ]->setSelected( true );
+  }
+  for( StoredConnection sc : m_connections ) {
+    if( sc.conn->port1( ) == nullptr ) {
+      sc.conn->setPort1( sc.elm->input( sc.portNbr ) );
+    }
+    else if( sc.conn->port2( ) == nullptr ) {
+      sc.conn->setPort2( sc.elm->input( sc.portNbr ) );
+    }
+  }
+}
+
+void ChangeInputSZCommand::redo( ) {
+  if( !m_elements.isEmpty( ) && m_elements.front( )->scene( ) ) {
+    scene->clearSelection( );
+  }
+  for( StoredConnection sc : m_connections ) {
+    QNEPort * port = sc.elm->input( sc.portNbr );
+    port->disconnect(sc.conn);
+  }
+  for( int i = 0; i < m_elements.size( ); ++i ) {
+    m_elements[ i ]->setInputSize( m_newInputSize );
+    m_elements[ i ]->setSelected( true );
+  }
+}

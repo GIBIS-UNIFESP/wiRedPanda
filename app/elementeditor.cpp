@@ -265,9 +265,6 @@ void ElementEditor::apply( ) {
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );
   for( GraphicElement *elm : elements ) {
     elm->save( dataStream );
-    if( canChangeInputSize && ( ui->comboBoxInputSz->currentText( ) != manyIS ) ) {
-      elm->setInputSize( ui->comboBoxInputSz->currentData( ).toInt( ) );
-    }
     if( elm->hasColors( ) && ( ui->comboBoxColor->currentText( ) != manyColors ) ) {
       elm->setColor( ui->comboBoxColor->currentText( ) );
     }
@@ -290,7 +287,12 @@ void ElementEditor::on_lineEditElementLabel_editingFinished( ) {
 
 void ElementEditor::on_comboBoxInputSz_currentIndexChanged( int index ) {
   Q_UNUSED( index );
-  apply( );
+  if( ( elements.isEmpty( ) ) || ( isEnabled( ) == false ) ) {
+    return;
+  }
+  if( canChangeInputSize && ( ui->comboBoxInputSz->currentText( ) != manyIS ) ) {
+    emit sendCommand( new ChangeInputSZCommand( elements, ui->comboBoxInputSz->currentData( ).toInt( ) ) );
+  }
 }
 
 void ElementEditor::on_doubleSpinBoxFrequency_editingFinished( ) {

@@ -31,7 +31,6 @@ void Label::setBusy( bool busy ) {
   m_busy = busy;
 }
 
-
 QString Label::auxData( ) const {
   return( m_auxData );
 }
@@ -46,7 +45,11 @@ void Label::startDrag( QPoint pos ) {
 
   QByteArray itemData;
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-  ElementType type = ElementFactory::textToType(objectName().split("_").last());
+  QString text = objectName( );
+  if( text.contains( "_" ) ) {
+    text = text.split( "_" ).last( );
+  }
+  ElementType type = ElementFactory::textToType( text );
 /*  qDebug() << objectName(); */
 
   dataStream << QPointF( pos ) << ( qint32 ) type << m_auxData;
