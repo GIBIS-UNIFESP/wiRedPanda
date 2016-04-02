@@ -420,8 +420,12 @@ void ChangeInputSZCommand::redo( ) {
     for( int in = m_newInputSize; in < elm->inputSize( ); ++in ) {
       for( QNEConnection *conn : elm->input( in )->connections( ) ) {
         conn->save( dataStream );
-        scene->removeItem(conn);
-        delete conn;
+        scene->removeItem( conn );
+        for( QNEConnection *conn : elm->input( in )->connections( ) ) {
+          QNEPort *otherPort = conn->otherPort( elm->input( in ) );
+          elm->input(in)->disconnect(conn);
+          otherPort->disconnect(conn);
+        }
       }
     }
     elm->setInputSize( m_newInputSize );
@@ -445,7 +449,7 @@ void ChangeInputSZCommand::undo( ) {
     for( int in = m_newInputSize; in < elm->inputSize( ); ++in ) {
       QNEConnection *conn = new QNEConnection( );
       conn->load( dataStream, portMap );
-      scene->addItem(conn);
+      scene->addItem( conn );
     }
     elm->setSelected( true );
   }
