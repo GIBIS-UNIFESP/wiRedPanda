@@ -12,5 +12,6 @@
         <file>cut.png</file>
         <file>paste.png</file>
         <file>delete.png</file>
+        <file>panelBox.svg</file>
     </qresource>
 </RCC>
