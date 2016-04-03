@@ -5,16 +5,19 @@
 
 class JKLatch : public GraphicElement {
 public:
-  explicit JKLatch(QGraphicsItem * parent = 0);
-  virtual ~JKLatch();
+  explicit JKLatch( QGraphicsItem *parent = 0 );
+  virtual ~JKLatch( );
 
-  // GraphicElement interface
+  /* GraphicElement interface */
 public:
-  virtual ElementType elementType() {
-    return ElementType::JKLATCH;
+  virtual ElementType elementType( ) {
+    return( ElementType::JKLATCH );
   }
-  virtual void updatePorts();
-  void updateLogic();
+  virtual ElementGroup elementGroup( ) {
+    return( ElementGroup::MEMORY );
+  }
+  virtual void updatePorts( );
+  void updateLogic( );
 };
 
-#endif // JKLATCH_H
+#endif /* JKLATCH_H */

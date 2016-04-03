@@ -19,6 +19,9 @@ public:
   virtual ElementType elementType( ) {
     return( ElementType::SWITCH );
   }
+  virtual ElementGroup elementGroup( ) {
+    return( ElementGroup::INPUT );
+  }
   void updateLogic( );
 
 

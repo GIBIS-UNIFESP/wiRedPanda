@@ -19,6 +19,9 @@ public slots:
   virtual ElementType elementType() {
     return ElementType::CLOCK;
   }
+  virtual ElementGroup elementGroup( ) {
+    return( ElementGroup::INPUT );
+  }
 //  void updateClock();
 
   // GraphicElement interface

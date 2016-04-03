@@ -17,15 +17,15 @@
   !define MUI_PRODUCT "Wired Panda"
   !define MUI_FILE "wpanda"
   # These three must be integers
-  !define VERSIONMAJOR 1
-  !define VERSIONMINOR 9
+  !define VERSIONMAJOR 2
+  !define VERSIONMINOR 0
   !define VERSIONBUILD 0001
   !define MUI_VERSION "${VERSIONMAJOR}.{VERSIONMINOR}"
   !define MUI_BRANDINGTEXT "${MUI_PRODUCT} ${MUI_VERSION}"
   !define COMPANYNAME "UNIFESP"
   !define DESCRIPTION "WiRed Panda is a software designed to help students to learn about logic circuits and simulate them in an easy and friendly way."
 
-  !define BUILD_DIR "C:\Build\build-WPanda-Desktop_Qt_5_5_1_MinGW_32bit-Release\app\release"
+  !define BUILD_DIR "Build"
   CRCCheck On
   Name "${MUI_PRODUCT}"
   Icon "logo.ico"
@@ -65,7 +65,7 @@
 ;--------------------------------
 ;Pages
 
-  !insertmacro MUI_PAGE_LICENSE "..\LICENSE"
+  !insertmacro MUI_PAGE_LICENSE "..\..\LICENSE"
   !insertmacro MUI_PAGE_COMPONENTS
   !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
@@ -92,7 +92,7 @@ Section "Wired Panda" Installationinfo
   File "${BUILD_DIR}\${MUI_FILE}.exe"
   File "logo.ico"
   ; File "${MUI_FILE}.ini"
-  File "..\LICENSE"
+  File "..\..\LICENSE"
   File "${BUILD_DIR}\*.dll"
   SetOutPath "$INSTDIR\iconengines"
   File "${BUILD_DIR}\iconengines\qsvgicon.dll"

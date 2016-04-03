@@ -45,9 +45,7 @@ Box::~Box( ) {
 }
 
 
-ElementType Box::elementType( ) {
-  return( ElementType::BOX );
-}
+
 
 void Box::save( QDataStream &ds ) {
   GraphicElement::save( ds );

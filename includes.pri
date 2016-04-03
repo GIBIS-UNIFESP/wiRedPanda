@@ -3,9 +3,11 @@ QT       += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 
-VERSION = 1.91
+VERSION = 2.0
 
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
+
+TRANSLATIONS = $$PWD/app/resources/wpanda_en.ts  $$PWD/app/resources/wpanda_pt.ts
 
 CONFIG += c++11
 CONFIG(debug, debug|release) {

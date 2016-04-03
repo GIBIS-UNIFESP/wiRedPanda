@@ -5,26 +5,29 @@
 
 class Led : public GraphicElement {
 public:
-  explicit Led(QGraphicsItem * parent = 0);
-  virtual ~Led();
+  explicit Led( QGraphicsItem *parent = 0 );
+  virtual ~Led( );
 
-  // GraphicElement interface
-  virtual ElementType elementType() {
-    return ElementType::LED;
+  /* GraphicElement interface */
+  virtual ElementType elementType( ) {
+    return( ElementType::LED );
   }
-  void updateLogic();
-  void setColor(QString color);
-  QString color();
+  virtual ElementGroup elementGroup( ) {
+    return( ElementGroup::OUTPUT );
+  }
+  void updateLogic( );
+  void setColor( QString color );
+  QString color( );
 
 private:
   QString m_color;
 
 
-  // GraphicElement interface
+  /* GraphicElement interface */
 public:
-  void save(QDataStream & ds);
-  void load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap, double version);
-  QString genericProperties();
+  void save( QDataStream &ds );
+  void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
+  QString genericProperties( );
 };
 
-#endif // LED_H
+#endif /* LED_H */

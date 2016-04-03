@@ -5,27 +5,28 @@
 #include <graphicelement.h>
 
 
-
 class Display : public GraphicElement {
 public:
-  explicit Display(QGraphicsItem * parent);
-  virtual ~Display();
+  explicit Display( QGraphicsItem *parent );
+  virtual ~Display( );
 
 public:
-  virtual ElementType elementType() {
-    return ElementType::DISPLAY;
+  virtual ElementType elementType( ) {
+    return( ElementType::DISPLAY );
   }
-  virtual void updateLogic();
-  void updatePorts();
+  virtual ElementGroup elementGroup( ) {
+    return( ElementGroup::OUTPUT );
+  }
+  virtual void updateLogic( );
+  void updatePorts( );
   QPixmap bkg, a, b, c, d, e, f, g, h;
 
-  // QGraphicsItem interface
+  /* QGraphicsItem interface */
 public:
-  void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
+  void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
 
-  // GraphicElement interface
+  /* GraphicElement interface */
 public:
-  void load(QDataStream & ds, QMap<quint64, QNEPort *> & portMap, double version);
+  void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
 };
-#endif // DISPLAY_H
-
+#endif /* DISPLAY_H */
