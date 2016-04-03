@@ -6,6 +6,10 @@
 #include <QScrollBar>
 #include <qmath.h>
 
+const double GraphicsViewZoom::maxZoom = 1.5;
+const double GraphicsViewZoom::minZoom = 0.5;
+
+
 GraphicsViewZoom::GraphicsViewZoom( QGraphicsView *view ) : QObject( view ), _view( view ) {
   _view->viewport( )->installEventFilter( this );
   _view->setMouseTracking( true );
