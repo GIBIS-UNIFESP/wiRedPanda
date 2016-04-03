@@ -517,6 +517,8 @@ bool MainWindow::on_actionExport_to_Arduino_triggered( ) {
   return( ExportToArduino( fname ) );
 }
 
+
+#define ZOOMFAC 0.1
 void MainWindow::on_actionZoom_in_triggered( ) {
 /*  QPointF scenePos = editor->getMousePos(); */
 
@@ -524,7 +526,7 @@ void MainWindow::on_actionZoom_in_triggered( ) {
 
 
   ui->graphicsView->setTransformationAnchor( QGraphicsView::AnchorUnderMouse );
-  double newScale = std::round( gvzoom->scaleFactor( ) * 4 ) / 4.0 + 0.25;
+  double newScale = std::round( gvzoom->scaleFactor( ) * 10 ) / 10.0 + ZOOMFAC;
   if( newScale <= GraphicsViewZoom::maxZoom ) {
     gvzoom->setScaleFactor( newScale );
     zoomChanged( );
@@ -532,7 +534,7 @@ void MainWindow::on_actionZoom_in_triggered( ) {
 }
 
 void MainWindow::on_actionZoom_out_triggered( ) {
-  double newScale = std::round( gvzoom->scaleFactor( ) * 4 ) / 4.0 - 0.25;
+  double newScale = std::round( gvzoom->scaleFactor( ) * 10 ) / 10.0 - ZOOMFAC;
   if( newScale >= GraphicsViewZoom::minZoom ) {
     gvzoom->setScaleFactor( newScale );
     zoomChanged( );
@@ -544,6 +546,6 @@ void MainWindow::on_actionReset_Zoom_triggered( ) {
 }
 
 void MainWindow::zoomChanged( ) {
-  ui->actionZoom_in->setEnabled( gvzoom->scaleFactor( ) + 0.25 <= gvzoom->maxZoom );
-  ui->actionZoom_out->setEnabled( gvzoom->scaleFactor( ) - 0.25 >= gvzoom->minZoom );
+  ui->actionZoom_in->setEnabled( gvzoom->scaleFactor( ) + ZOOMFAC <= gvzoom->maxZoom );
+  ui->actionZoom_out->setEnabled( gvzoom->scaleFactor( ) - ZOOMFAC >= gvzoom->minZoom );
 }
