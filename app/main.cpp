@@ -24,4 +24,3 @@ int main( int argc, char *argv[] ) {
 
 //TODO Tests for all elements
 //TODO Create arduino version of all elements
-//TODO Sometimes the CTRL-Drag option is called even if the  Ctrl button is not pressed.

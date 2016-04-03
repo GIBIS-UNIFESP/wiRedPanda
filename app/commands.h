@@ -8,12 +8,14 @@
 #include <memory>
 #include <node.h>
 #include <qneconnection.h>
-
+#include <QApplication>
 class Scene;
 class Editor;
 class GraphicElement;
 
 class AddItemsCommand : public QUndoCommand {
+  Q_DECLARE_TR_FUNCTIONS( AddItemsCommand )
+
   enum { Id = 123 };
 public:
   AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoCommand *parent = 0 );
@@ -33,6 +35,7 @@ private:
 };
 
 class DeleteItemsCommand : public QUndoCommand {
+  Q_DECLARE_TR_FUNCTIONS( DeleteItemsCommand )
   enum { Id = 123 };
 public:
   DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, QUndoCommand *parent = 0 );
@@ -47,6 +50,8 @@ private:
 };
 
 class RotateCommand : public QUndoCommand {
+  Q_DECLARE_TR_FUNCTIONS( RotateCommand )
+
   enum { Id = 90 };
 public:
   RotateCommand( const QList< GraphicElement* > &aItems, int angle, QUndoCommand *parent = 0 );
@@ -62,6 +67,7 @@ private:
 
 
 class MoveCommand : public QUndoCommand {
+  Q_DECLARE_TR_FUNCTIONS( MoveCommand )
 public:
   enum { Id = 1234 };
 
@@ -82,6 +88,7 @@ private:
 };
 
 class UpdateCommand : public QUndoCommand {
+  Q_DECLARE_TR_FUNCTIONS( UpdateCommand )
 public:
   enum { Id = 42 };
 
@@ -102,6 +109,7 @@ private:
 };
 
 class SplitCommand : public QUndoCommand {
+  Q_DECLARE_TR_FUNCTIONS( SplitCommand )
   enum { Id = 2244 };
 
 public:
@@ -121,6 +129,7 @@ private:
 };
 
 class MorphCommand : public QUndoCommand {
+  Q_DECLARE_TR_FUNCTIONS( MorphCommand )
 public:
   enum { Id = 4567 };
 
@@ -141,6 +150,7 @@ private:
 };
 
 class ChangeInputSZCommand : public QUndoCommand {
+  Q_DECLARE_TR_FUNCTIONS( ChangeInputSZCommand )
 public:
   enum { Id = 9999 };
 
@@ -155,7 +165,7 @@ public:
 private:
   QVector< GraphicElement* > m_elements;
   QVector< GraphicElement* > serializationOrder;
-  QVector< QNEConnection * > storedConnections;
+  QVector< QNEConnection* > storedConnections;
   QGraphicsScene *scene;
   QByteArray m_oldData;
   int m_newInputSize;
