@@ -13,5 +13,7 @@
         <file>paste.png</file>
         <file>delete.png</file>
         <file>panelBox.svg</file>
+        <file>undo.svg</file>
+        <file>redo.svg</file>
     </qresource>
 </RCC>
