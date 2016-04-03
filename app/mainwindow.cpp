@@ -2,6 +2,7 @@
 #include "listitemwidget.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "graphicsviewzoom.h"
 #include <QClipboard>
 #include <QDebug>
 #include <QFileDialog>
@@ -16,8 +17,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <cmath>
-
-MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
+ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
   ui->setupUi( this );
   editor = new Editor( this );
   ui->graphicsView->setScene( editor->getScene( ) );

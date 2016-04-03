@@ -38,8 +38,8 @@
 class GraphicsViewZoom : public QObject {
   Q_OBJECT
 public:
-  static constexpr double maxZoom = 1.5;
-  static constexpr double minZoom = 0.5;
+  constexpr static const double maxZoom = 1.5;
+  constexpr static const double minZoom = 0.5;
   GraphicsViewZoom( QGraphicsView *view );
   void gentle_zoom( double factor );
   void set_modifiers( Qt::KeyboardModifiers modifiers );
