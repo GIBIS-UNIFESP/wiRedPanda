@@ -14,6 +14,7 @@ CONFIG(debug, debug|release) {
 
 
 SOURCES += \
+    $$PWD/app/graphicsviewzoom.cpp \
     $$PWD/app/arduino/codegenerator.cpp \
     $$PWD/app/box.cpp \
     $$PWD/app/boxnotfoundexception.cpp \
@@ -62,6 +63,7 @@ SOURCES += \
 
 
 HEADERS  +=  \
+    $$PWD/app/graphicsviewzoom.h \
     $$PWD/app/arduino/codegenerator.h\
     $$PWD/app/box.h \
     $$PWD/app/boxnotfoundexception.h \

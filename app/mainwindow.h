@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "editor.h"
+#include "graphicsviewzoom.h"
 #include "label.h"
 #include "scene.h"
 
@@ -84,6 +85,14 @@ private slots:
 
   bool on_actionExport_to_Arduino_triggered( );
 
+  void on_actionZoom_in_triggered();
+
+  void on_actionZoom_out_triggered();
+
+  void on_actionReset_Zoom_triggered();
+
+  void zoomChanged();
+
 private:
   Ui::MainWindow *ui;
   Editor *editor;
@@ -91,7 +100,7 @@ private:
   QDir defaultDirectory;
   QUndoView *undoView;
   Label *firstResult;
-
+  GraphicsViewZoom * gvzoom;
   QAction *undoAction;
   QAction *redoAction;
 
@@ -99,9 +108,6 @@ private:
 protected:
   void closeEvent( QCloseEvent *e );
   void resizeEvent( QResizeEvent* );
-
-  /* QWidget interface */
-protected:
   void keyPressEvent( QKeyEvent* );
   void keyReleaseEvent( QKeyEvent* );
 };

@@ -42,9 +42,12 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->menuEdit->insertAction( ui->actionRedo, redoAction );
   ui->menuEdit->removeAction( ui->actionUndo );
   ui->menuEdit->removeAction( ui->actionRedo );
-
-  ui->actionZoom_in->setVisible( false );
-  ui->actionZoom_out->setVisible( false );
+  gvzoom = new GraphicsViewZoom( ui->graphicsView );
+  connect( gvzoom, &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged );
+/*
+ *  ui->actionZoom_in->setVisible( false );
+ *  ui->actionZoom_out->setVisible( false );
+ */
 
   connect( editor, &Editor::scroll, this, &MainWindow::scrollView );
 
@@ -55,7 +58,6 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   updateRecentBoxes( );
 
   QApplication::setStyle( QStyleFactory::create( "Fusion" ) );
-
 }
 
 void MainWindow::createUndoView( ) {
@@ -100,7 +102,7 @@ bool MainWindow::save( ) {
   }
   else {
     std::cerr << tr( "Could not open file in WriteOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-    std::endl;
+      std::endl;
     return( false );
   }
   fl.flush( );
@@ -175,7 +177,7 @@ bool MainWindow::open( const QString &fname ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-    std::endl;
+      std::endl;
     return( false );
   }
   fl.close( );
@@ -388,7 +390,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-    std::endl;
+      std::endl;
     return;
   }
   fl.close( );
@@ -499,8 +501,7 @@ bool MainWindow::ExportToArduino( QString fname ) {
     if( !fname.endsWith( ".ino" ) ) {
       fname.append( ".ino" );
     }
-
-    elements = SimulationController::sortElements(elements);
+    elements = SimulationController::sortElements( elements );
 
 
     CodeGenerator arduino( QDir::home( ).absoluteFilePath( fname ), elements );
@@ -526,4 +527,35 @@ bool MainWindow::on_actionExport_to_Arduino_triggered( ) {
                                                   "Arduino file (*.ino)" ) );
 
   return( ExportToArduino( fname ) );
+}
+
+void MainWindow::on_actionZoom_in_triggered( ) {
+/*  QPointF scenePos = editor->getMousePos(); */
+
+/*  QPointF screenCtr = ui->graphicsView->rect().center(); */
+
+
+  ui->graphicsView->setTransformationAnchor( QGraphicsView::AnchorUnderMouse );
+  double newScale = std::round( gvzoom->scaleFactor( ) * 4 ) / 4.0 + 0.25;
+  if( newScale <= GraphicsViewZoom::maxZoom ) {
+    gvzoom->setScaleFactor( newScale );
+    zoomChanged( );
+  }
+}
+
+void MainWindow::on_actionZoom_out_triggered( ) {
+  double newScale = std::round( gvzoom->scaleFactor( ) * 4 ) / 4.0 - 0.25;
+  if( newScale >= GraphicsViewZoom::minZoom ) {
+    gvzoom->setScaleFactor( newScale );
+    zoomChanged( );
+  }
+}
+
+void MainWindow::on_actionReset_Zoom_triggered( ) {
+  gvzoom->setScaleFactor( 1.0 );
+}
+
+void MainWindow::zoomChanged( ) {
+  ui->actionZoom_in->setEnabled( gvzoom->scaleFactor( ) + 0.25 <= gvzoom->maxZoom );
+  ui->actionZoom_out->setEnabled( gvzoom->scaleFactor( ) - 0.25 >= gvzoom->minZoom );
 }
