@@ -5,15 +5,18 @@
 
 class Xnor : public GraphicElement {
 public:
-  explicit Xnor(QGraphicsItem * parent);
-  virtual ~Xnor();
+  explicit Xnor( QGraphicsItem *parent );
+  virtual ~Xnor( );
 
-// GraphicElement interface
+/* GraphicElement interface */
 public:
-  virtual ElementType elementType() {
-    return ElementType::XNOR;
+  virtual ElementType elementType( ) {
+    return( ElementType::XNOR );
   }
-  void updateLogic();
+  virtual ElementGroup elementGroup( ) {
+    return( ElementGroup::GATE );
+  }
+  void updateLogic( );
 };
 
-#endif // Xnor_H
+#endif /* Xnor_H */

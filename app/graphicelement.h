@@ -12,6 +12,11 @@ enum class ElementType {
   DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, TLATCH, BOX, NODE, MUX, DEMUX
 };
 
+enum class ElementGroup {
+  UNKNOWN, OTHER, BOX, INPUT, GATE, MEMORY, OUTPUT, MUX
+};
+
+
 #define MAXIMUMVALIDINPUTSIZE 256
 
 class GraphicElement : public QGraphicsObject {
@@ -29,6 +34,8 @@ private:
   /* GraphicElement interface. */
 public:
   virtual ElementType elementType( ) = 0;
+
+  virtual ElementGroup elementGroup( ) = 0;
 
   virtual void save( QDataStream &ds );
 

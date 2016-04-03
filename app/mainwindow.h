@@ -108,8 +108,6 @@ private:
 protected:
   void closeEvent( QCloseEvent *e );
   void resizeEvent( QResizeEvent* );
-  void keyPressEvent( QKeyEvent* );
-  void keyReleaseEvent( QKeyEvent* );
 };
 
 #endif /* MAINWINDOW_H */

@@ -5,16 +5,18 @@
 
 class Nand : public GraphicElement {
 public:
-  explicit Nand(QGraphicsItem *parent = 0);
-  virtual ~Nand();
+  explicit Nand( QGraphicsItem *parent = 0 );
+  virtual ~Nand( );
 
-  // GraphicElement interface
+  /* GraphicElement interface */
 public:
-  virtual ElementType elementType() {
-    return ElementType::NAND;
+  virtual ElementType elementType( ) {
+    return( ElementType::NAND );
   }
-  void updateLogic();
+  virtual ElementGroup elementGroup( ) {
+    return( ElementGroup::GATE );
+  }
+  void updateLogic( );
 };
 
-#endif // NAND_H
-
+#endif /* NAND_H */

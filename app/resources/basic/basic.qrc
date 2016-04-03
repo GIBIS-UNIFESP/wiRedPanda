@@ -10,5 +10,6 @@
         <file>box.png</file>
         <file>mux.png</file>
         <file>demux.png</file>
+        <file>node.png</file>
     </qresource>
 </RCC>

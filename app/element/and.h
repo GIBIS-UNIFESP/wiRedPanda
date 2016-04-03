@@ -5,14 +5,19 @@
 
 class And : public GraphicElement {
 public:
-  explicit And(QGraphicsItem *parent = 0);
+  explicit And( QGraphicsItem *parent = 0 );
 
-  // GraphicElement interface
+  /* GraphicElement interface */
 public:
-  virtual ElementType elementType() {
-    return ElementType::AND;
+  virtual ElementType elementType( ) {
+    return( ElementType::AND );
   }
-  void updateLogic();
+  virtual ElementGroup elementGroup( ) {
+    return( ElementGroup::GATE );
+  }
+  void updateLogic( );
+
+
 };
 
-#endif // AND_H
+#endif /* AND_H */

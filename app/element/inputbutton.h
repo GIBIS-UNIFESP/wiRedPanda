@@ -20,6 +20,9 @@ public:
   virtual ElementType elementType( ) {
     return( ElementType::BUTTON );
   }
+  virtual ElementGroup elementGroup( ) {
+    return( ElementGroup::INPUT );
+  }
   void updateLogic( );
 
   // Input interface

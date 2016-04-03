@@ -93,7 +93,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>194</width>
+                   <width>195</width>
                    <height>522</height>
                   </rect>
                  </property>
@@ -318,8 +318,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>216</height>
+                   <width>208</width>
+                   <height>328</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -552,6 +552,33 @@
                      <widget class="QLabel" name="label_42">
                       <property name="text">
                        <string>DEMUX</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_29">
+                    <property name="sizeConstraint">
+                     <enum>QLayout::SetFixedSize</enum>
+                    </property>
+                    <item>
+                     <widget class="Label" name="label_node">
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="pixmap">
+                       <pixmap resource="resources/basic/basic.qrc">:/basic/node.png</pixmap>
+                      </property>
+                      <property name="Name" stdset="0">
+                       <string>DEMUX</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_44">
+                      <property name="text">
+                       <string>NODE</string>
                       </property>
                      </widget>
                     </item>
@@ -982,10 +1009,13 @@
    </attribute>
    <addaction name="actionNew"/>
    <addaction name="actionOpen"/>
+   <addaction name="actionOpen_Box"/>
    <addaction name="actionSave"/>
    <addaction name="separator"/>
    <addaction name="actionRotate_left"/>
    <addaction name="actionRotate_right"/>
+   <addaction name="actionUndo"/>
+   <addaction name="actionRedo"/>
    <addaction name="actionCut"/>
    <addaction name="actionCopy"/>
    <addaction name="actionPaste"/>
@@ -1097,6 +1127,10 @@
    </property>
   </action>
   <action name="actionUndo">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/undo.svg</normaloff>:/toolbar/undo.svg</iconset>
+   </property>
    <property name="text">
     <string>Undo</string>
    </property>
@@ -1105,6 +1139,10 @@
    </property>
   </action>
   <action name="actionRedo">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/redo.svg</normaloff>:/toolbar/redo.svg</iconset>
+   </property>
    <property name="text">
     <string>Redo</string>
    </property>
@@ -1268,6 +1306,10 @@
    </property>
   </action>
   <action name="actionOpen_Box">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/panelBox.svg</normaloff>:/toolbar/panelBox.svg</iconset>
+   </property>
    <property name="text">
     <string>Open file as a Box</string>
    </property>
@@ -1325,6 +1367,7 @@
  <resources>
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/resources.qrc"/>
+  <include location="resources/memory/memory.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/basic/basic.qrc"/>
   <include location="resources/output/output.qrc"/>
@@ -1332,6 +1375,7 @@
   <include location="resources/resources.qrc"/>
   <include location="resources/memory/memory.qrc"/>
   <include location="resources/output/output.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/basic/basic.qrc"/>

@@ -13,6 +13,9 @@ public:
   virtual ElementType elementType( ) {
     return( ElementType::DLATCH );
   }
+  virtual ElementGroup elementGroup( ) {
+    return( ElementGroup::MEMORY );
+  }
   virtual void updatePorts( );
   void updateLogic( );
 };
