@@ -88,6 +88,7 @@ public:
   SimulationController* getSimulationController( ) const;
   void contextMenu( QPoint screenPos );
   void updateVisibility( );
+  QPointF getMousePos( ) const;
 };
 
 #endif /* EDITOR_H */

@@ -174,6 +174,11 @@ QGraphicsItem* Editor::itemAt( QPointF pos ) {
   return( nullptr );
 }
 
+QPointF Editor::getMousePos() const
+{
+  return mousePos;
+}
+
 SimulationController* Editor::getSimulationController( ) const {
   return( simulationController );
 }

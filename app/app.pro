@@ -19,7 +19,6 @@ DISTFILES += windows.rc
 SOURCES += main.cpp
 
 
-
 DISTFILES += \
     resources/postinst
 
