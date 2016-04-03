@@ -5,7 +5,7 @@
 - [ ] Installer. [link](https://github.com/lellisls/wiRedPanda/issues/3)
 - [x] Add keyboard shortcuts to inputs. [link](https://github.com/lellisls/wiRedPanda/issues/11)
 - [x] Line Split.
-- [ ] Zoom.
+- [x] Zoom.
 - [x] Dynamic scene resizing
 - [x] Align to grid [link](https://github.com/lellisls/wiRedPanda/issues/14).
 - [ ] ~~Align lines to grid ()~~
@@ -15,7 +15,7 @@
 - [ ] Flip Elements in the latteral pannel.
 - [ ] 16-seg Display.
 - [ ] ~~Allow gates with more than 8 in/out.~~
-- [ ] Labels always in horizontal.
+- [ ] ~~Labels always in horizontal.~~
 - [ ] Verify if file changed outside.
 - [x] MUX and DEMUX.
 - [x] Ctrl + Drag copy.
