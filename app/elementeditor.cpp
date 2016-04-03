@@ -70,21 +70,21 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
           submenu->addAction( "NODE" );
         }
         else {
-          submenu->addAction( "AND" );
-          submenu->addAction( "OR" );
-          submenu->addAction( "NAND" );
-          submenu->addAction( "NOR" );
-          submenu->addAction( "XOR" );
-          submenu->addAction( "XNOR" );
+          submenu->addAction( QIcon( QPixmap( ":/basic/and.png" ) ), "AND" );
+          submenu->addAction( QIcon( QPixmap( ":/basic/or.png" ) ), "OR" );
+          submenu->addAction( QIcon( QPixmap( ":/basic/nand.png" ) ), "NAND" );
+          submenu->addAction( QIcon( QPixmap( ":/basic/nor.png" ) ), "NOR" );
+          submenu->addAction( QIcon( QPixmap( ":/basic/xor.png" ) ), "XOR" );
+          submenu->addAction( QIcon( QPixmap( ":/basic/xnor.png" ) ), "XNOR" );
         }
         break;
       }
         case ElementGroup::INPUT: {
-        submenu->addAction( "BUTTON" );
-        submenu->addAction( "SWITCH" );
-        submenu->addAction( "CLOCK" );
-        submenu->addAction( "VCC" );
-        submenu->addAction( "GND" );
+        submenu->addAction( QIcon( QPixmap( ":/input/buttonOff.png" ) ), "BUTTON" );
+        submenu->addAction( QIcon( QPixmap( ":/input/switchOn.png" ) ), "SWITCH" );
+        submenu->addAction( QIcon( QPixmap( ":/input/clock1.png" ) ), "CLOCK" );
+        submenu->addAction( QIcon( QPixmap( ":/input/1.png" ) ), "VCC" );
+        submenu->addAction( QIcon( QPixmap( ":/input/0.png" ) ), "GND" );
         break;
       }
         default: {

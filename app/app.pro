@@ -22,5 +22,3 @@ SOURCES += main.cpp
 
 DISTFILES += \
     resources/postinst
-
-
