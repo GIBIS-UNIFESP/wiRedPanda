@@ -1,7 +1,7 @@
 [DEBREATE-0.7.10]
 <<CTRL>>
 Package: wpanda
-Version: 1.9.1-1
+Version: 2.0
 Source: https://github.com/GIBIS-UNIFESP/wiRedPanda/archive/v1.9-beta.tar.gz
 Maintainer: Lucas Santana Lellis <lucaslellis777@gmail.com>
 Section: utils
