@@ -34,21 +34,17 @@
 /*  connect( ui->actionRedo, &QAction::triggered, editor->getUndoStack( ), &QUndoStack::redo ); */
 
   undoAction = editor->getUndoStack( )->createUndoAction( this, tr( "&Undo" ) );
+  undoAction->setIcon(QIcon(QPixmap(":/toolbar/undo.svg")));
   undoAction->setShortcuts( QKeySequence::Undo );
 
   redoAction = editor->getUndoStack( )->createRedoAction( this, tr( "&Redo" ) );
+  redoAction->setIcon(QIcon(QPixmap(":/toolbar/redo.svg")));
   redoAction->setShortcuts( QKeySequence::Redo );
 
-  ui->menuEdit->insertAction( ui->actionUndo, undoAction );
-  ui->menuEdit->insertAction( ui->actionRedo, redoAction );
-  ui->menuEdit->removeAction( ui->actionUndo );
-  ui->menuEdit->removeAction( ui->actionRedo );
+  ui->menuEdit->insertAction( ui->menuEdit->actions().at(0), undoAction );
+  ui->menuEdit->insertAction( undoAction, redoAction );
   gvzoom = new GraphicsViewZoom( ui->graphicsView );
   connect( gvzoom, &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged );
-/*
- *  ui->actionZoom_in->setVisible( false );
- *  ui->actionZoom_out->setVisible( false );
- */
 
   connect( editor, &Editor::scroll, this, &MainWindow::scrollView );
 
