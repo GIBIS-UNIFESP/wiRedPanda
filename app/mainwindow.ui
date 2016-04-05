@@ -93,7 +93,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>195</width>
+                   <width>194</width>
                    <height>522</height>
                   </rect>
                  </property>
@@ -318,8 +318,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>208</width>
-                   <height>328</height>
+                   <width>194</width>
+                   <height>738</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -621,8 +621,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>172</height>
+                   <width>194</width>
+                   <height>522</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -843,8 +843,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>100</width>
-                   <height>30</height>
+                   <width>208</width>
+                   <height>290</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -944,7 +944,7 @@
                <x>0</x>
                <y>0</y>
                <width>228</width>
-               <height>291</height>
+               <height>256</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
@@ -1014,8 +1014,6 @@
    <addaction name="separator"/>
    <addaction name="actionRotate_left"/>
    <addaction name="actionRotate_right"/>
-   <addaction name="actionUndo"/>
-   <addaction name="actionRedo"/>
    <addaction name="actionCut"/>
    <addaction name="actionCopy"/>
    <addaction name="actionPaste"/>
@@ -1028,7 +1026,7 @@
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>19</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1054,8 +1052,6 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
-    <addaction name="actionUndo"/>
-    <addaction name="actionRedo"/>
     <addaction name="separator"/>
     <addaction name="actionCut"/>
     <addaction name="actionCopy"/>
@@ -1124,30 +1120,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
-   </property>
-  </action>
-  <action name="actionUndo">
-   <property name="icon">
-    <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/undo.svg</normaloff>:/toolbar/undo.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Undo</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Z</string>
-   </property>
-  </action>
-  <action name="actionRedo">
-   <property name="icon">
-    <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/redo.svg</normaloff>:/toolbar/redo.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Redo</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+Z</string>
    </property>
   </action>
   <action name="actionCut">
@@ -1365,19 +1337,17 @@
   <tabstop>scrollArea_6</tabstop>
  </tabstops>
  <resources>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/memory/memory.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/resources.qrc"/>
   <include location="resources/resources.qrc"/>
   <include location="resources/memory/memory.qrc"/>
   <include location="resources/input/input.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
-  <include location="resources/output/output.qrc"/>
-  <include location="resources/memory/memory.qrc"/>
-  <include location="resources/resources.qrc"/>
-  <include location="resources/memory/memory.qrc"/>
-  <include location="resources/output/output.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/input/input.qrc"/>
+  <include location="resources/output/output.qrc"/>
   <include location="resources/basic/basic.qrc"/>
  </resources>
  <connections/>

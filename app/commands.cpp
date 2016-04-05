@@ -175,6 +175,8 @@ RotateCommand::RotateCommand( const QList< GraphicElement* > &aItems, int aAngle
 }
 
 void RotateCommand::undo( ) {
+  QGraphicsScene  * scn = list[0]->scene();
+  scn->clearSelection();
   for( int i = 0; i < list.size( ); ++i ) {
     GraphicElement *elm = list[ i ];
     if( elm->rotatable( ) ) {
@@ -182,10 +184,13 @@ void RotateCommand::undo( ) {
     }
     elm->setPos( positions[ i ] );
     elm->update( );
+    elm->setSelected(true);
   }
 }
 
 void RotateCommand::redo( ) {
+  QGraphicsScene  * scn = list[0]->scene();
+  scn->clearSelection();
   double cx = 0, cy = 0;
   int sz = 0;
   for( GraphicElement *item : list ) {
@@ -205,6 +210,7 @@ void RotateCommand::redo( ) {
     }
     elm->setPos( transform.map( elm->pos( ) ) );
     elm->update( );
+    elm->setSelected(true);
   }
 }
 
