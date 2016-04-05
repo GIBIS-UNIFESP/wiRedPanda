@@ -318,8 +318,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>130</width>
-                   <height>738</height>
+                   <width>208</width>
+                   <height>290</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -621,8 +621,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>148</width>
-                   <height>522</height>
+                   <width>208</width>
+                   <height>290</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -843,8 +843,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>68</width>
-                   <height>18</height>
+                   <width>208</width>
+                   <height>290</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1194,6 +1194,10 @@
    </property>
   </action>
   <action name="actionZoom_in">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/zoomIn.png</normaloff>:/toolbar/zoomIn.png</iconset>
+   </property>
    <property name="text">
     <string>Zoom &amp;in</string>
    </property>
@@ -1202,6 +1206,10 @@
    </property>
   </action>
   <action name="actionZoom_out">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/zoomOut.png</normaloff>:/toolbar/zoomOut.png</iconset>
+   </property>
    <property name="text">
     <string>Zoom &amp;out</string>
    </property>
@@ -1290,7 +1298,7 @@
   <action name="actionOpen_Box">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/panelBox.svg</normaloff>:/toolbar/panelBox.svg</iconset>
+     <normaloff>:/toolbar/panelBox.png</normaloff>:/toolbar/panelBox.png</iconset>
    </property>
    <property name="text">
     <string>Open file as a Box</string>
