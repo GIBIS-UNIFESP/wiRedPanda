@@ -12,8 +12,10 @@
         <file>cut.png</file>
         <file>paste.png</file>
         <file>delete.png</file>
-        <file>panelBox.svg</file>
-        <file>undo.svg</file>
-        <file>redo.svg</file>
+        <file>undo.png</file>
+        <file>redo.png</file>
+        <file>panelBox.png</file>
+        <file>zoomOut.png</file>
+        <file>zoomIn.png</file>
     </qresource>
 </RCC>

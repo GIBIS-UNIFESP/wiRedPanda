@@ -35,11 +35,11 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 /*  connect( ui->actionRedo, &QAction::triggered, editor->getUndoStack( ), &QUndoStack::redo ); */
 
   undoAction = editor->getUndoStack( )->createUndoAction( this, tr( "&Undo" ) );
-  undoAction->setIcon( QIcon( QPixmap( ":/toolbar/undo.svg" ) ) );
+  undoAction->setIcon( QIcon( QPixmap( ":/toolbar/undo.png" ) ) );
   undoAction->setShortcuts( QKeySequence::Undo );
 
   redoAction = editor->getUndoStack( )->createRedoAction( this, tr( "&Redo" ) );
-  redoAction->setIcon( QIcon( QPixmap( ":/toolbar/redo.svg" ) ) );
+  redoAction->setIcon( QIcon( QPixmap( ":/toolbar/redo.png" ) ) );
   redoAction->setShortcuts( QKeySequence::Redo );
 
   ui->menuEdit->insertAction( ui->menuEdit->actions( ).at( 0 ), undoAction );
