@@ -4,6 +4,7 @@
 #include "editor.h"
 #include "graphicsviewzoom.h"
 #include "label.h"
+#include "recentfilescontroller.h"
 #include "scene.h"
 
 #include <QDir>
@@ -28,12 +29,13 @@ public:
   void clear( );
   QFileInfo getCurrentFile( ) const;
   void setCurrentFile( const QFileInfo &value );
-  bool ExportToArduino(QString fname );
+  bool ExportToArduino( QString fname );
 
   bool open( const QString &fname );
   void createUndoView( );
   int confirmSave( );
   void updateRecentBoxes( );
+
   QString getOpenBoxFile( );
 
   bool closeFile( );
@@ -85,13 +87,17 @@ private slots:
 
   bool on_actionExport_to_Arduino_triggered( );
 
-  void on_actionZoom_in_triggered();
+  void on_actionZoom_in_triggered( );
 
-  void on_actionZoom_out_triggered();
+  void on_actionZoom_out_triggered( );
 
-  void on_actionReset_Zoom_triggered();
+  void on_actionReset_Zoom_triggered( );
 
-  void zoomChanged();
+  void zoomChanged( );
+
+  void updateRecentFileActions( );
+
+  void openRecentFile( );
 
 private:
   Ui::MainWindow *ui;
@@ -100,10 +106,13 @@ private:
   QDir defaultDirectory;
   QUndoView *undoView;
   Label *firstResult;
-  GraphicsViewZoom * gvzoom;
+  GraphicsViewZoom *gvzoom;
   QAction *undoAction;
   QAction *redoAction;
+  RecentFilesController *rfController, *rboxController;
+  QAction *recentFileActs[ RecentFilesController::MaxRecentFiles ];
 
+  void createRecentFileActions( );
   /* QWidget interface */
 protected:
   void closeEvent( QCloseEvent *e );
