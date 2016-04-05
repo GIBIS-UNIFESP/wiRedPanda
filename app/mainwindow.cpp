@@ -1,8 +1,9 @@
 #include "globalproperties.h"
+#include "graphicsviewzoom.h"
 #include "listitemwidget.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "graphicsviewzoom.h"
+
 #include <QClipboard>
 #include <QDebug>
 #include <QFileDialog>
@@ -10,14 +11,14 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QRectF>
-#include <QSettings>
 #include <QShortcut>
 #include <QStyleFactory>
 #include <arduino/codegenerator.h>
+#include <cmath>
 #include <iostream>
 #include <stdexcept>
-#include <cmath>
- MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
+
+MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
   ui->setupUi( this );
   editor = new Editor( this );
   ui->graphicsView->setScene( editor->getScene( ) );
@@ -34,25 +35,32 @@
 /*  connect( ui->actionRedo, &QAction::triggered, editor->getUndoStack( ), &QUndoStack::redo ); */
 
   undoAction = editor->getUndoStack( )->createUndoAction( this, tr( "&Undo" ) );
-  undoAction->setIcon(QIcon(QPixmap(":/toolbar/undo.svg")));
+  undoAction->setIcon( QIcon( QPixmap( ":/toolbar/undo.svg" ) ) );
   undoAction->setShortcuts( QKeySequence::Undo );
 
   redoAction = editor->getUndoStack( )->createRedoAction( this, tr( "&Redo" ) );
-  redoAction->setIcon(QIcon(QPixmap(":/toolbar/redo.svg")));
+  redoAction->setIcon( QIcon( QPixmap( ":/toolbar/redo.svg" ) ) );
   redoAction->setShortcuts( QKeySequence::Redo );
 
-  ui->menuEdit->insertAction( ui->menuEdit->actions().at(0), undoAction );
+  ui->menuEdit->insertAction( ui->menuEdit->actions( ).at( 0 ), undoAction );
   ui->menuEdit->insertAction( undoAction, redoAction );
   gvzoom = new GraphicsViewZoom( ui->graphicsView );
   connect( gvzoom, &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged );
 
   connect( editor, &Editor::scroll, this, &MainWindow::scrollView );
 
+  rfController = new RecentFilesController( "recentFileList", this );
+  rboxController = new RecentFilesController( "recentBoxes", this );
+
   QShortcut *shortcut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
   connect( shortcut, SIGNAL( activated( ) ), ui->lineEdit, SLOT( setFocus( ) ) );
   ui->graphicsView->setCacheMode( QGraphicsView::CacheBackground );
   firstResult = nullptr;
   updateRecentBoxes( );
+  createRecentFileActions( );
+  updateRecentFileActions( );
+
+  connect( rfController, &RecentFilesController::recentFilesUpdated, this, &MainWindow::updateRecentFileActions );
 
   QApplication::setStyle( QStyleFactory::create( "Fusion" ) );
 }
@@ -99,7 +107,7 @@ bool MainWindow::save( ) {
   }
   else {
     std::cerr << tr( "Could not open file in WriteOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::endl;
     return( false );
   }
   fl.flush( );
@@ -174,10 +182,12 @@ bool MainWindow::open( const QString &fname ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::endl;
     return( false );
   }
   fl.close( );
+
+  rfController->addFile( fname );
   ui->statusBar->showMessage( tr( "File loaded successfully." ), 2000 );
   return( true );
 }
@@ -319,6 +329,7 @@ void MainWindow::setCurrentFile( const QFileInfo &value ) {
   else {
     setWindowTitle( QString( "wiRED PANDA ( %1 )" ).arg( value.fileName( ) ) );
   }
+  rfController->addFile(value.absoluteFilePath());
   GlobalProperties::currentFile = currentFile.absoluteFilePath( );
   if( currentFile.exists( ) ) {
     defaultDirectory = currentFile.dir( );
@@ -339,18 +350,7 @@ void MainWindow::updateRecentBoxes( ) {
       widget->deleteLater( );
     }
   }
-  QSettings settings;
-  QStringList files = settings.value( "recentBoxes" ).toStringList( );
-  for( auto file : files ) {
-    QFileInfo fileInfo( file );
-    if( !fileInfo.exists( ) ) {
-      files.removeAll( file );
-    }
-  }
-  while( files.size( ) > 10 ) {
-    files.removeLast( );
-  }
-  settings.setValue( "recentBoxes", files );
+  QStringList files = rboxController->getFiles( );
   for( auto file : files ) {
     QString name = QFileInfo( file ).baseName( ).toUpper( );
     QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
@@ -387,16 +387,12 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::endl;
     return;
   }
   fl.close( );
 
-  QSettings settings;
-  QStringList files = settings.value( "recentBoxes" ).toStringList( );
-  files.removeAll( fname );
-  files.prepend( fname );
-  settings.setValue( "recentBoxes", files );
+  rboxController->addFile( fname );
 
   updateRecentBoxes( );
 
@@ -545,4 +541,43 @@ void MainWindow::on_actionReset_Zoom_triggered( ) {
 void MainWindow::zoomChanged( ) {
   ui->actionZoom_in->setEnabled( gvzoom->scaleFactor( ) + ZOOMFAC <= gvzoom->maxZoom );
   ui->actionZoom_out->setEnabled( gvzoom->scaleFactor( ) - ZOOMFAC >= gvzoom->minZoom );
+}
+
+void MainWindow::updateRecentFileActions( ) {
+  QStringList files = rfController->getFiles( );
+
+  int numRecentFiles = qMin( files.size( ), ( int ) RecentFilesController::MaxRecentFiles );
+  if( numRecentFiles > 0 ) {
+    ui->menuRecent_files->setEnabled( true );
+  }
+  for( int i = 0; i < numRecentFiles; ++i ) {
+    QString text = QString( "&%1 %2" ).arg( i + 1 ).arg( QFileInfo( files[ i ] ).fileName( ) );
+    recentFileActs[ i ]->setText( text );
+    recentFileActs[ i ]->setData( files[ i ] );
+    recentFileActs[ i ]->setVisible( true );
+  }
+  for( int i = numRecentFiles; i < RecentFilesController::MaxRecentFiles; ++i ) {
+    recentFileActs[ i ]->setVisible( false );
+  }
+}
+
+void MainWindow::openRecentFile( ) {
+  QAction *action = qobject_cast< QAction* >( sender( ) );
+  if( action ) {
+    QString fileName = action->data( ).toString( );
+    open( fileName );
+  }
+}
+
+void MainWindow::createRecentFileActions( ) {
+  for( int i = 0; i < RecentFilesController::MaxRecentFiles; ++i ) {
+    recentFileActs[ i ] = new QAction( this );
+    recentFileActs[ i ]->setVisible( false );
+    connect( recentFileActs[ i ], &QAction::triggered, this, &MainWindow::openRecentFile );
+    ui->menuRecent_files->addAction( recentFileActs[ i ] );
+  }
+  updateRecentFileActions( );
+  for( int i = 0; i < RecentFilesController::MaxRecentFiles; ++i ) {
+    ui->menuRecent_files->addAction( recentFileActs[ i ] );
+  }
 }

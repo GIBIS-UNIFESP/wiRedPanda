@@ -16,7 +16,6 @@ CONFIG(debug, debug|release) {
 
 
 SOURCES += \
-    $$PWD/app/graphicsviewzoom.cpp \
     $$PWD/app/arduino/codegenerator.cpp \
     $$PWD/app/box.cpp \
     $$PWD/app/boxnotfoundexception.cpp \
@@ -51,15 +50,18 @@ SOURCES += \
     $$PWD/app/globalproperties.cpp \
     $$PWD/app/graphicelement.cpp \
     $$PWD/app/graphicsview.cpp \
+    $$PWD/app/graphicsviewzoom.cpp \
     $$PWD/app/label.cpp \
     $$PWD/app/listitemwidget.cpp \
     $$PWD/app/mainwindow.cpp \
     $$PWD/app/nodes/qneblock.cpp \
     $$PWD/app/nodes/qneconnection.cpp \
     $$PWD/app/nodes/qneport.cpp \
+    $$PWD/app/recentfilescontroller.cpp \
     $$PWD/app/scene.cpp \
     $$PWD/app/serializationfunctions.cpp \
     $$PWD/app/simulationcontroller.cpp \
+
 
 
 
@@ -107,6 +109,7 @@ HEADERS  +=  \
     $$PWD/app/nodes/qneblock.h \
     $$PWD/app/nodes/qneconnection.h \
     $$PWD/app/nodes/qneport.h \
+    $$PWD/app/recentfilescontroller.h \
     $$PWD/app/scene.h \
     $$PWD/app/serializationfunctions.h \
     $$PWD/app/simulationcontroller.h \
