@@ -1,7 +1,7 @@
 [DEBREATE-0.7.10]
 <<CTRL>>
 Package: wpanda
-Version: 2.0
+Version: 2.1
 Source: https://github.com/GIBIS-UNIFESP/wiRedPanda/archive/v1.9-beta.tar.gz
 Maintainer: Lucas Santana Lellis <lucaslellis777@gmail.com>
 Section: utils
@@ -15,6 +15,14 @@ Description: Learn about logic circuits and simulate them in an easy and friendl
 <</CTRL>>
 <<FILES>>
 1
+/usr/lib/x86_64-linux-gnu/libxcb-xkb.so.1 -> libxcb-xkb.so.1 -> /usr/local/lib/wpanda
+/usr/lib/x86_64-linux-gnu/libxcb-util.so.0 -> libxcb-util.so.0 -> /usr/local/lib/wpanda
+/usr/lib/x86_64-linux-gnu/libxcb-sync.so.1 -> libxcb-sync.so.1 -> /usr/local/lib/wpanda
+/usr/lib/x86_64-linux-gnu/libxcb-xfixes.so.0 -> libxcb-xfixes.so.0 -> /usr/local/lib/wpanda
+/usr/lib/x86_64-linux-gnu/libxcb-render.so.0 -> libxcb-render.so.0 -> /usr/local/lib/wpanda
+/usr/lib/x86_64-linux-gnu/libxcb-render-util.so.0 -> libxcb-render-util.so.0 -> /usr/local/lib/wpanda
+/usr/lib/x86_64-linux-gnu/libxcb-image.so.0 -> libxcb-image.so.0 -> /usr/local/lib/wpanda
+/usr/lib/x86_64-linux-gnu/libxcb-icccm.so.4 -> libxcb-icccm.so.4 -> /usr/local/lib/wpanda
 /home/lellis/projetos/wiRedPanda/app/resources/wpanda.sh* -> wpanda.sh -> /usr/local/bin
 /tmp/wpanda-build/wpanda* -> wpanda -> /usr/local/bin
 /home/lellis/projetos/wiRedPanda/app/resources/icons/26x26/wpanda.png -> wpanda.png -> /usr/local/share/icons/hicolor/26x26/apps
