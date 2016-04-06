@@ -5,6 +5,7 @@
 #include "scene.h"
 #include "serializationfunctions.h"
 
+#include <stdexcept>
 #include <QApplication>
 #include <QDebug>
 #include <cmath>
@@ -428,9 +429,6 @@ void MorphCommand::transferConnections( QVector< GraphicElement* > from, QVector
         else if( conn->port2( ) == oldElm->input( in ) ) {
           conn->setPort2( newElm->input( in ) );
         }
-        else {
-          throw std::runtime_error( "It shouldn't happen 1" );
-        }
       }
     }
     for( int out = 0; out < oldElm->outputSize( ); ++out ) {
@@ -442,11 +440,6 @@ void MorphCommand::transferConnections( QVector< GraphicElement* > from, QVector
         else if( conn->port2( ) == oldElm->output( out ) ) {
           conn->setPort2( newElm->output( out ) );
         }
-/*
- *        else {
- *          throw std::runtime_error( "It shouldn't happen 2" );
- *        }
- */
       }
     }
     scene->removeItem( oldElm );
