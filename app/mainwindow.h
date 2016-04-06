@@ -99,7 +99,9 @@ private slots:
 
   void openRecentFile( );
 
-private:
+  void on_actionPrint_triggered();
+
+  private:
   Ui::MainWindow *ui;
   Editor *editor;
   QFileInfo currentFile;

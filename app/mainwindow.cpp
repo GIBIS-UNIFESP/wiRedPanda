@@ -13,6 +13,7 @@
 #include <QRectF>
 #include <QShortcut>
 #include <QStyleFactory>
+#include <QtPrintSupport/QPrinter>
 #include <arduino/codegenerator.h>
 #include <cmath>
 #include <iostream>
@@ -24,8 +25,8 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->graphicsView->setScene( editor->getScene( ) );
 /*  ui->graphicsView->setBackgroundBrush(QBrush(QColor(Qt::gray))); */
   ui->graphicsView->setRenderHint( QPainter::Antialiasing, true );
-  ui->graphicsView->setRenderHint(QPainter::HighQualityAntialiasing, true);
-  ui->graphicsView->setRenderHint(QPainter::SmoothPixmapTransform, true);
+  ui->graphicsView->setRenderHint( QPainter::HighQualityAntialiasing, true );
+  ui->graphicsView->setRenderHint( QPainter::SmoothPixmapTransform, true );
 
   ui->graphicsView->setAcceptDrops( true );
   editor->setElementEditor( ui->widgetElementEditor );
@@ -110,7 +111,7 @@ bool MainWindow::save( ) {
   }
   else {
     std::cerr << tr( "Could not open file in WriteOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-    std::endl;
+      std::endl;
     return( false );
   }
   fl.flush( );
@@ -185,7 +186,7 @@ bool MainWindow::open( const QString &fname ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-    std::endl;
+      std::endl;
     return( false );
   }
   fl.close( );
@@ -332,7 +333,7 @@ void MainWindow::setCurrentFile( const QFileInfo &value ) {
   else {
     setWindowTitle( QString( "wiRED PANDA ( %1 )" ).arg( value.fileName( ) ) );
   }
-  rfController->addFile(value.absoluteFilePath());
+  rfController->addFile( value.absoluteFilePath( ) );
   GlobalProperties::currentFile = currentFile.absoluteFilePath( );
   if( currentFile.exists( ) ) {
     defaultDirectory = currentFile.dir( );
@@ -390,7 +391,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-    std::endl;
+      std::endl;
     return;
   }
   fl.close( );
@@ -583,4 +584,32 @@ void MainWindow::createRecentFileActions( ) {
   for( int i = 0; i < RecentFilesController::MaxRecentFiles; ++i ) {
     ui->menuRecent_files->addAction( recentFileActs[ i ] );
   }
+}
+
+void MainWindow::on_actionPrint_triggered( ) {
+
+  QString pdfFile =
+    QFileDialog::getSaveFileName( this, tr( "Export to PDF" ), defaultDirectory.absolutePath( ), tr(
+                                    "PDF files (*.pdf)" ) );
+  if( pdfFile.isEmpty( ) ) {
+    return;
+  }
+  if( !pdfFile.toLower( ).endsWith( ".pdf" ) ) {
+    pdfFile.append( ".pdf" );
+  }
+  QPrinter printer( QPrinter::HighResolution );
+  printer.setPageSize( QPrinter::A4 );
+  printer.setOrientation( QPrinter::Portrait );
+  printer.setOutputFormat( QPrinter::PdfFormat );
+  printer.setOutputFileName( pdfFile );
+
+
+  QPainter p;
+  if( !p.begin( &printer ) ) {
+
+    QMessageBox::warning( this, tr( "ERROR" ), tr( "Could not print this circuit to PDF." ), QMessageBox::Ok );
+    return;
+  }
+  editor->getScene( )->render( &p, QRectF( ), editor->getScene( )->itemsBoundingRect( ).adjusted( -64, -64, 64, 64 ) );
+  p.end( );
 }
