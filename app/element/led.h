@@ -16,8 +16,8 @@ public:
     return( ElementGroup::OUTPUT );
   }
   void updateLogic( );
-  void setColor( QString color );
-  QString color( );
+  void setColor( QString getColor );
+  QString getColor( );
 
 private:
   QString m_color;

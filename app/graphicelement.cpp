@@ -418,7 +418,7 @@ void GraphicElement::setColor( QString ) {
 
 }
 
-QString GraphicElement::color( ) {
+QString GraphicElement::getColor( ) {
   return( QString( ) );
 }
 
@@ -499,7 +499,7 @@ void GraphicElement::setOutputSize( int size ) {
   }
 }
 
-float GraphicElement::frequency( ) {
+float GraphicElement::getFrequency( ) {
   return( 0.0 );
 }
 

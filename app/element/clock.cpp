@@ -35,7 +35,7 @@ void Clock::updateClock( ) {
 
 void Clock::save( QDataStream &ds ) {
   GraphicElement::save( ds );
-  ds << frequency( );
+  ds << getFrequency( );
 }
 
 void Clock::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) {
@@ -47,7 +47,7 @@ void Clock::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double ve
   }
 }
 
-float Clock::frequency( ) {
+float Clock::getFrequency( ) {
   return( m_frequency );
 }
 
@@ -82,5 +82,5 @@ void Clock::resetClock( ) {
 
 
 QString Clock::genericProperties( ) {
-  return( QString( "%1 Hz" ).arg( frequency( ) ) );
+  return( QString( "%1 Hz" ).arg( getFrequency( ) ) );
 }

@@ -46,7 +46,7 @@ AddItemsCommand::~AddItemsCommand( ) {
 
 void AddItemsCommand::undo( ) {
   itemData.clear( );
-  serializationOrder.clear();
+  serializationOrder.clear( );
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );
   for( QGraphicsItem *item  : items ) {
     if( item->type( ) == QNEConnection::Type ) {
@@ -79,7 +79,7 @@ void AddItemsCommand::redo( ) {
     QDataStream dataStream( &itemData, QIODevice::ReadOnly );
     double version = QApplication::applicationVersion( ).toDouble( );
     QMap< quint64, QNEPort* > portMap;
-    for( GraphicElement *elm: serializationOrder ) {
+    for( GraphicElement *elm : serializationOrder ) {
       elm->load( dataStream, portMap, version );
     }
     for( QGraphicsItem *item  : items ) {
@@ -175,8 +175,8 @@ RotateCommand::RotateCommand( const QList< GraphicElement* > &aItems, int aAngle
 }
 
 void RotateCommand::undo( ) {
-  QGraphicsScene  * scn = list[0]->scene();
-  scn->clearSelection();
+  QGraphicsScene *scn = list[ 0 ]->scene( );
+  scn->clearSelection( );
   for( int i = 0; i < list.size( ); ++i ) {
     GraphicElement *elm = list[ i ];
     if( elm->rotatable( ) ) {
@@ -184,13 +184,13 @@ void RotateCommand::undo( ) {
     }
     elm->setPos( positions[ i ] );
     elm->update( );
-    elm->setSelected(true);
+    elm->setSelected( true );
   }
 }
 
 void RotateCommand::redo( ) {
-  QGraphicsScene  * scn = list[0]->scene();
-  scn->clearSelection();
+  QGraphicsScene *scn = list[ 0 ]->scene( );
+  scn->clearSelection( );
   double cx = 0, cy = 0;
   int sz = 0;
   for( GraphicElement *item : list ) {
@@ -210,7 +210,7 @@ void RotateCommand::redo( ) {
     }
     elm->setPos( transform.map( elm->pos( ) ) );
     elm->update( );
-    elm->setSelected(true);
+    elm->setSelected( true );
   }
 }
 
@@ -377,13 +377,31 @@ MorphCommand::MorphCommand( const QVector< GraphicElement* > &elements,
                             QUndoCommand *parent ) : QUndoCommand( parent ) {
   old_elements = elements;
   scene = editor->getScene( );
-  for( GraphicElement *elm : elements ) {
+  for( GraphicElement *oldElm : elements ) {
     GraphicElement *newElm = editor->getFactory( ).buildElement( type, editor );
-    newElm->setInputSize( elm->inputSize( ) );
+    newElm->setInputSize( oldElm->inputSize( ) );
     new_elements.append( newElm );
-    newElm->setPos( elm->pos( ) );
-    if( newElm->rotatable( ) && elm->rotatable( ) ) {
-      newElm->setRotation( elm->rotation( ) );
+    newElm->setPos( oldElm->pos( ) );
+    if( newElm->rotatable( ) && oldElm->rotatable( ) ) {
+      newElm->setRotation( oldElm->rotation( ) );
+    }
+    if( ( newElm->elementType( ) == ElementType::NOT ) && ( oldElm->elementType( ) == ElementType::NODE ) ) {
+      newElm->setRotation( oldElm->rotation( ) + 90.0 );
+    }
+    else if( ( newElm->elementType( ) == ElementType::NODE ) && ( oldElm->elementType( ) == ElementType::NOT ) ) {
+      newElm->setRotation( oldElm->rotation( ) - 90.0 );
+    }
+    if( newElm->hasLabel( ) && oldElm->hasLabel( ) ) {
+      newElm->setLabel( oldElm->getLabel( ) );
+    }
+    if( newElm->hasColors( ) && oldElm->hasColors( ) ) {
+      newElm->setColor( oldElm->getColor( ) );
+    }
+    if( newElm->hasFrequency( ) && oldElm->hasFrequency( ) ) {
+      newElm->setFrequency( oldElm->getFrequency( ) );
+    }
+    if( newElm->hasTrigger( ) && oldElm->hasTrigger( ) ) {
+      newElm->setTrigger( oldElm->getTrigger( ) );
     }
   }
   setText( tr( "Morph %1 elements to %2" ).arg( elements.size( ) ).arg( new_elements.front( )->objectName( ) ) );
@@ -402,29 +420,38 @@ void MorphCommand::transferConnections( QVector< GraphicElement* > from, QVector
     GraphicElement *oldElm = from[ elm ];
     GraphicElement *newElm = to[ elm ];
     for( int in = 0; in < oldElm->inputSize( ); ++in ) {
-      for( QNEConnection *conn : oldElm->input( in )->connections( ) ) {
-        oldElm->input( in )->disconnect( conn );
-        if( conn->port1( ) == nullptr ) {
+      while( !oldElm->input( in )->connections( ).isEmpty( ) ) {
+        QNEConnection *conn = oldElm->input( in )->connections( ).first( );
+        if( conn->port1( ) == oldElm->input( in ) ) {
           conn->setPort1( newElm->input( in ) );
         }
-        else {
+        else if( conn->port2( ) == oldElm->input( in ) ) {
           conn->setPort2( newElm->input( in ) );
+        }
+        else {
+          throw std::runtime_error( "It shouldn't happen 1" );
         }
       }
     }
     for( int out = 0; out < oldElm->outputSize( ); ++out ) {
-      for( QNEConnection *conn : oldElm->output( out )->connections( ) ) {
-        oldElm->output( out )->disconnect( conn );
-        if( conn->port1( ) == nullptr ) {
+      while( !oldElm->output( out )->connections( ).isEmpty( ) ) {
+        QNEConnection *conn = oldElm->output( out )->connections( ).first( );
+        if( conn->port1( ) == oldElm->output( out ) ) {
           conn->setPort1( newElm->output( out ) );
         }
-        else {
+        else if( conn->port2( ) == oldElm->output( out ) ) {
           conn->setPort2( newElm->output( out ) );
         }
+/*
+ *        else {
+ *          throw std::runtime_error( "It shouldn't happen 2" );
+ *        }
+ */
       }
     }
     scene->removeItem( oldElm );
     scene->addItem( newElm );
+    newElm->updatePorts( );
   }
 }
 
@@ -462,14 +489,13 @@ void ChangeInputSZCommand::redo( ) {
   for( int i = 0; i < m_elements.size( ); ++i ) {
     GraphicElement *elm = m_elements[ i ];
     for( int in = m_newInputSize; in < elm->inputSize( ); ++in ) {
-      for( QNEConnection *conn : elm->input( in )->connections( ) ) {
+      while( !elm->input( in )->connections( ).isEmpty( ) ) {
+        QNEConnection * conn = elm->input( in )->connections( ).front();
         conn->save( dataStream );
         scene->removeItem( conn );
-        for( QNEConnection *conn : elm->input( in )->connections( ) ) {
-          QNEPort *otherPort = conn->otherPort( elm->input( in ) );
-          elm->input( in )->disconnect( conn );
-          otherPort->disconnect( conn );
-        }
+        QNEPort *otherPort = conn->otherPort( elm->input( in ) );
+        elm->input( in )->disconnect( conn );
+        otherPort->disconnect( conn );
       }
     }
     elm->setInputSize( m_newInputSize );
