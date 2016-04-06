@@ -24,6 +24,9 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->graphicsView->setScene( editor->getScene( ) );
 /*  ui->graphicsView->setBackgroundBrush(QBrush(QColor(Qt::gray))); */
   ui->graphicsView->setRenderHint( QPainter::Antialiasing, true );
+  ui->graphicsView->setRenderHint(QPainter::HighQualityAntialiasing, true);
+  ui->graphicsView->setRenderHint(QPainter::SmoothPixmapTransform, true);
+
   ui->graphicsView->setAcceptDrops( true );
   editor->setElementEditor( ui->widgetElementEditor );
   ui->searchScrollArea->hide( );
