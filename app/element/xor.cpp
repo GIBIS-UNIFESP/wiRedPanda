@@ -12,22 +12,14 @@ Xor::~Xor( ) {
 }
 
 void Xor::updateLogic( ) {
-  char res = true;
+  char res = false;
   if( !isValid( ) ) {
     res = -1;
   }
   else {
     res = 0;
     for( QNEPort *input : inputs( ) ) {
-      if( input->value( ) != true ) {
-        res++;
-      }
-    }
-    if( ( res % 2 == 0 ) || ( res == 0 ) ) {
-      res = false;
-    }
-    else {
-      res = true;
+      res = res ^ input->value( );
     }
   }
   outputs( ).first( )->setValue( res );
