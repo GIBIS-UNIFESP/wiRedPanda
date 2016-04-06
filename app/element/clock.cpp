@@ -53,12 +53,15 @@ float Clock::getFrequency( ) {
 
 void Clock::setFrequency( float freq ) {
 /*  qDebug() << "Clock frequency set to " << freq; */
-  if( ( freq > 0 ) && ( m_frequency != freq ) ) {
-    m_frequency = freq;
-    interval = 1000 / ( freq * GLOBALCLK );
-    elapsed = 0;
-    Clock::reset = true;
-/*    qDebug() << "Freq = " << freq <<  " interval = " << interval; */
+  if( ( freq > 0.0 ) ) {
+    int auxinterval = 1000 / ( freq * GLOBALCLK );
+    if(auxinterval > 0){
+      interval = auxinterval;
+      m_frequency = freq;
+      elapsed = 0;
+      Clock::reset = true;
+      qDebug() << "Freq = " << freq <<  " interval = " << interval;
+    }
     /*    timer.start( static_cast< int >(1000.0/freq) ); */
   }
 }
