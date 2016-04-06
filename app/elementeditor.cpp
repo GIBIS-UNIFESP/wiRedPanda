@@ -17,21 +17,7 @@ ElementEditor::ElementEditor( QWidget *parent ) : QWidget( parent ), ui( new Ui:
   setEnabled( false );
   setVisible( false );
 
-  ui->trigger->addItem( QString( tr( "None" ) ) );
-  for( int i = 0; i < 5; i++ ) {
-    ui->trigger->addItem( QKeySequence( QString( "%1" ).arg( i ) ).toString( ) );
-  }
-  for( char i = 'A'; i < 'F'; i++ ) {
-    ui->trigger->addItem( QKeySequence( QString( "%1" ).arg( i ) ).toString( ) );
-  }
-  ui->trigger->addItem( QKeySequence( 'W' ).toString( ) );
-  ui->trigger->addItem( QKeySequence( "S" ).toString( ) );
-  ui->trigger->addItem( QKeySequence( "D" ).toString( ) );
-  ui->trigger->addItem( QKeySequence( 'Q' ).toString( ) );
-  ui->trigger->addItem( QKeySequence( "R" ).toString( ) );
-  ui->trigger->addItem( QKeySequence( "T" ).toString( ) );
-  ui->trigger->addItem( QKeySequence( "Y" ).toString( ) );
-
+ui->lineEditTrigger->setValidator(new QRegExpValidator(QRegExp("[a-z]| |[A-Z]|[0-9]"), this));
 }
 
 ElementEditor::~ElementEditor( ) {
@@ -55,17 +41,20 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
   QString rotateActionText( tr( "Rotate" ) );
   QString freqActionText( tr( "Change frequency" ) );
   QString colorMenuText( tr( "Change color to..." ) );
-  QString triggerMenuText( tr( "Change trigger to..." ) );
+  QString triggerActionText( tr( "Change trigger" ) );
   QString deleteActionText( tr( "Delete" ) );
   QString morphMenuText( tr( "Morph to..." ) );
   if( hasLabel ) {
     menu.addAction( QIcon( QPixmap( ":/toolbar/rename.png" ) ), renameActionText );
   }
+  if( hasTrigger ) {
+    menu.addAction( QIcon( ElementFactory::getPixmap(ElementType::BUTTON) ), triggerActionText );
+  }
   if( hasRotation ) {
     menu.addAction( QIcon( QPixmap( ":/toolbar/rotateR.png" ) ), rotateActionText );
   }
   if( hasFrequency ) {
-    menu.addAction( QIcon( QPixmap( ":/input/clock1.png" ) ), freqActionText );
+    menu.addAction( QIcon( ElementFactory::getPixmap(ElementType::CLOCK ) ), freqActionText );
   }
   QMenu *submenucolors = nullptr;
   if( hasColors ) {
@@ -121,15 +110,6 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
       menu.removeAction( submenumorph->menuAction( ) );
     }
   }
-  QMenu *submenutrigger = nullptr;
-  if( hasTrigger ) {
-    submenutrigger = menu.addMenu( triggerMenuText );
-    for( int i = 0; i < ui->trigger->count( ); ++i ) {
-      if( ui->trigger->currentIndex( ) != i ) {
-        submenutrigger->addAction( ui->trigger->itemText( i ) );
-      }
-    }
-  }
   menu.addAction( QIcon( QPixmap( ":/toolbar/delete.png" ) ), deleteActionText );
   QAction *a = menu.exec( screenPos );
   if( a ) {
@@ -138,9 +118,14 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
     }
     else if( a->text( ) == renameActionText ) {
       ui->lineEditElementLabel->setFocus( );
+      ui->lineEditElementLabel->selectAll();
     }
     else if( a->text( ) == rotateActionText ) {
       emit sendCommand( new RotateCommand( elements.toList( ), 90.0 ) );
+    }
+    else if( a->text( ) == triggerActionText ) {
+      ui->lineEditTrigger->setFocus( );
+      ui->lineEditTrigger->selectAll();
     }
     else if( a->text( ) == freqActionText ) {
       ui->doubleSpinBoxFrequency->setFocus( );
@@ -152,9 +137,6 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
     }
     else if( submenucolors && submenucolors->actions( ).contains( a ) ) {
       ui->comboBoxColor->setCurrentText( a->text( ) );
-    }
-    else if( submenutrigger && submenutrigger->actions( ).contains( a ) ) {
-      ui->trigger->setCurrentText( a->text( ) );
     }
   }
 }
@@ -259,24 +241,14 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
       }
     }
     /* Trigger */
-    ui->trigger->setVisible( hasTrigger );
+    ui->lineEditTrigger->setVisible( hasTrigger );
     ui->label_trigger->setVisible( hasTrigger );
     if( hasTrigger ) {
-      if( ui->trigger->findText( manyTriggers ) == -1 ) {
-        ui->trigger->addItem( manyTriggers );
-      }
       if( hasSameTrigger ) {
-        ui->trigger->removeItem( ui->trigger->findText( manyTriggers ) );
-        QString tg = firstElement->getTrigger( ).toString( );
-        if( tg.isEmpty( ) ) {
-          ui->trigger->setCurrentText( "None" );
-        }
-        else {
-          ui->trigger->setCurrentText( tg );
-        }
+        ui->lineEditTrigger->setText(firstElement->getTrigger().toString());
       }
       else {
-        ui->trigger->setCurrentText( manyTriggers );
+        ui->lineEditTrigger->setText( manyTriggers );
       }
     }
     setEnabled( hasSomething );
@@ -284,8 +256,7 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
   }
   else {
     setVisible( false );
-    ui->lineEditElementLabel->setText( "" );
-  }
+    ui->lineEditElementLabel->setText( "" );  }
 }
 
 void ElementEditor::selectionChanged( ) {
@@ -319,8 +290,8 @@ void ElementEditor::apply( ) {
     if( elm->hasFrequency( ) && ( ui->doubleSpinBoxFrequency->text( ) != manyFreq ) ) {
       elm->setFrequency( ui->doubleSpinBoxFrequency->value( ) );
     }
-    if( elm->hasTrigger( ) && ( ui->trigger->currentText( ) != manyTriggers ) ) {
-      elm->setTrigger( QKeySequence( ui->trigger->currentText( ) ) );
+    if( elm->hasTrigger( ) && ( ui->lineEditTrigger->text( ) != manyTriggers ) ) {
+      elm->setTrigger( QKeySequence( ui->lineEditTrigger->text( ) ) );
     }
   }
   emit sendCommand( new UpdateCommand( elements, itemData ) );
@@ -349,6 +320,10 @@ void ElementEditor::on_comboBoxColor_currentIndexChanged( int index ) {
   apply( );
 }
 
-void ElementEditor::on_trigger_currentIndexChanged( const QString & ) {
-  apply( );
+void ElementEditor::on_lineEditTrigger_textChanged( const QString &cmd ) {
+  ui->lineEditTrigger->setText(cmd.toUpper());
+}
+
+void ElementEditor::on_lineEditTrigger_editingFinished( ) {
+  apply();
 }

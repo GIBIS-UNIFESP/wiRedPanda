@@ -12,23 +12,14 @@ Xnor::~Xnor( ) {
 }
 
 void Xnor::updateLogic( ) {
-  char res = true;
+  char res = false;
   if( !isValid( ) ) {
     res = -1;
   }
   else {
-    res = 0;
     for( QNEPort *input : inputs( ) ) {
-      if( input->value( ) != true ) {
-        res++;
-      }
-    }
-    if( ( res % 2 == 0 ) || ( res == 0 ) ) {
-      res = true;
-    }
-    else {
-      res = false;
+      res = res ^ input->value( );
     }
   }
-  outputs( ).first( )->setValue( res );
+  outputs( ).first( )->setValue( !res );
 }
