@@ -318,8 +318,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>208</width>
-                   <height>290</height>
+                   <width>194</width>
+                   <height>738</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -621,8 +621,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>208</width>
-                   <height>290</height>
+                   <width>194</width>
+                   <height>522</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -844,7 +844,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>290</height>
+                   <height>280</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -944,7 +944,7 @@
                <x>0</x>
                <y>0</y>
                <width>228</width>
-               <height>256</height>
+               <height>271</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
@@ -1026,7 +1026,7 @@
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>20</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1055,8 +1055,10 @@
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
     <addaction name="actionExport_to_Arduino"/>
+    <addaction name="actionPrint"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -1325,6 +1327,11 @@
     <string>Ctrl+0</string>
    </property>
   </action>
+  <action name="actionPrint">
+   <property name="text">
+    <string>Export to PDF</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1355,17 +1362,17 @@
   <tabstop>scrollArea_6</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/output/output.qrc"/>
-  <include location="resources/memory/memory.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/resources.qrc"/>
   <include location="resources/basic/basic.qrc"/>
-  <include location="resources/resources.qrc"/>
-  <include location="resources/resources.qrc"/>
-  <include location="resources/memory/memory.qrc"/>
   <include location="resources/input/input.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/memory/memory.qrc"/>
   <include location="resources/output/output.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/resources.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/memory/memory.qrc"/>
   <include location="resources/basic/basic.qrc"/>
  </resources>
  <connections/>
