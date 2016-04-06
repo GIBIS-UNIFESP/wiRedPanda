@@ -24,7 +24,7 @@ public:
   explicit MainWindow( QWidget *parent = 0 );
   ~MainWindow( );
 
-  bool save( );
+  bool save(QString fname);
   void show( );
   void clear( );
   QFileInfo getCurrentFile( ) const;

@@ -85,12 +85,14 @@ void MainWindow::on_actionExit_triggered( ) {
   close( );
 }
 
-bool MainWindow::save( ) {
-  QString fname = currentFile.absoluteFilePath( );
-  if( currentFile.fileName( ).isEmpty( ) ) {
-    fname =
-      QFileDialog::getSaveFileName( this, tr( "Save File" ), defaultDirectory.absolutePath( ), tr(
-                                      "Panda files (*.panda)" ) );
+bool MainWindow::save( QString fname = QString( ) ) {
+  if( fname.isEmpty( ) ) {
+    fname = currentFile.absoluteFilePath( );
+    if( currentFile.fileName( ).isEmpty( ) ) {
+      fname =
+        QFileDialog::getSaveFileName( this, tr( "Save File" ), defaultDirectory.absolutePath( ), tr(
+                                        "Panda files (*.panda)" ) );
+    }
   }
   if( fname.isEmpty( ) ) {
     return( false );
@@ -111,7 +113,7 @@ bool MainWindow::save( ) {
   }
   else {
     std::cerr << tr( "Could not open file in WriteOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::endl;
     return( false );
   }
   fl.flush( );
@@ -164,6 +166,7 @@ void MainWindow::on_actionRotate_left_triggered( ) {
 
 bool MainWindow::open( const QString &fname ) {
   QFile fl( fname );
+  qDebug( ) << "Loading " << fname;
   if( !fl.exists( ) ) {
     QMessageBox::warning( this, tr( "Error!" ), tr( "File \"%1\" does not exists!" ).arg(
                             fname ), QMessageBox::Ok, QMessageBox::NoButton );
@@ -186,7 +189,7 @@ bool MainWindow::open( const QString &fname ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::endl;
     return( false );
   }
   fl.close( );
@@ -391,7 +394,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::endl;
     return;
   }
   fl.close( );
