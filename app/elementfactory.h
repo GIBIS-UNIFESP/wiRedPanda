@@ -13,6 +13,8 @@ public:
   GraphicElement * buildElement(ElementType type , Editor * editor, QGraphicsItem * parent = 0);
   size_t getLastId() const;
   static ElementType textToType( QString text );
+  static QString typeToText( ElementType type );
+  static QPixmap getPixmap( ElementType type );
 
 private:
   size_t next_id();
