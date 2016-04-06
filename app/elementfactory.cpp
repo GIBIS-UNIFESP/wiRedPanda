@@ -65,6 +65,69 @@ ElementType ElementFactory::textToType( QString text ) {
   return( type );
 }
 
+QString ElementFactory::typeToText( ElementType type ) {
+  switch( type ) {
+      case ElementType::BUTTON: return( "BUTTON" );
+      case ElementType::LED: return( "LED" );
+      case ElementType::AND: return( "AND" );
+      case ElementType::OR: return( "OR" );
+      case ElementType::CLOCK: return( "CLOCK" );
+      case ElementType::SWITCH: return( "SWITCH" );
+      case ElementType::NOT: return( "NOT" );
+      case ElementType::NAND: return( "NAND" );
+      case ElementType::NOR: return( "NOR" );
+      case ElementType::XOR: return( "XOR" );
+      case ElementType::XNOR: return( "XNOR" );
+      case ElementType::VCC: return( "VCC" );
+      case ElementType::GND: return( "GND" );
+      case ElementType::DFLIPFLOP: return( "DFLIPFLOP" );
+      case ElementType::DLATCH: return( "DLATCH" );
+      case ElementType::JKFLIPFLOP: return( "JKFLIPFLOP" );
+      case ElementType::JKLATCH: return( "JKLATCH" );
+      case ElementType::SRFLIPFLOP: return( "SRFLIPFLOP" );
+      case ElementType::TLATCH: return( "TLATCH" );
+      case ElementType::TFLIPFLOP: return( "TFLIPFLOP" );
+      case ElementType::DISPLAY: return( "DISPLAY" );
+      case ElementType::BOX: return( "BOX" );
+      case ElementType::MUX: return( "MUX" );
+      case ElementType::DEMUX: return( "DEMUX" );
+      case ElementType::NODE: return( "NODE" );
+      case ElementType::UNKNOWN: default: return( "UNKNOWN" );
+  }
+}
+
+QPixmap ElementFactory::getPixmap( ElementType type ) {
+  switch( type ) {
+      case ElementType::BUTTON: return( QPixmap( ":/input/buttonOff.png" ) );
+      case ElementType::LED: return( QPixmap( ":/output/WhiteLedOff.png" ) );
+      case ElementType::AND: return( QPixmap( ":/basic/and.png" ) );
+      case ElementType::OR: return( QPixmap( ":/basic/or.png" ) );
+      case ElementType::CLOCK: return( QPixmap( ":/input/clock1.png" ) );
+      case ElementType::SWITCH: return( QPixmap( ":/input/switchOn.png" ) );
+      case ElementType::NOT: return( QPixmap( ":/basic/not.png" ) );
+      case ElementType::NAND: return( QPixmap( ":/basic/nand.png" ) );
+      case ElementType::NOR: return( QPixmap( ":/basic/nor.png" ) );
+      case ElementType::XOR: return( QPixmap( ":/basic/xor.png" ) );
+      case ElementType::XNOR: return( QPixmap( ":/basic/xnor.png" ) );
+      case ElementType::VCC: return( QPixmap( ":/input/1.png" ) );
+      case ElementType::GND: return( QPixmap( ":/input/0.png" ) );
+      case ElementType::DFLIPFLOP: return( QPixmap( ":/memory/D-flipflop.png" ) );
+      case ElementType::DLATCH: return( QPixmap( ":/memory/D-latch.png" ) );
+      case ElementType::JKFLIPFLOP: return( QPixmap( ":/memory/JK-flipflop.png" ) );
+      case ElementType::JKLATCH: return( QPixmap( ":/memory/JK-latch.png" ) );
+      case ElementType::SRFLIPFLOP: return( QPixmap( ":/memory/SR-flipflop.png" ) );
+      case ElementType::TLATCH: return( QPixmap( ":/memory/T-latch.png" ) );
+      case ElementType::TFLIPFLOP: return( QPixmap( ":/memory/T-flipflop.png" ) );
+      case ElementType::DISPLAY: return( QPixmap( ":/output/counter/counter_off.png" ) );
+      case ElementType::BOX: return( QPixmap( ":/basic/box.png" ) );
+      case ElementType::MUX: return( QPixmap( ":/basic/mux.png" ) );
+      case ElementType::DEMUX: return( QPixmap( ":/basic/demux.png" ) );
+      case ElementType::NODE: return( QPixmap( ":/basic/node.png" ) );
+      case ElementType::UNKNOWN: return( QPixmap( ) );
+  }
+  return( QPixmap( ) );
+}
+
 ElementFactory::ElementFactory( ) {
   lastId = 0;
 }

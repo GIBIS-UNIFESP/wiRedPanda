@@ -43,6 +43,12 @@ void ElementEditor::setScene( QGraphicsScene *s ) {
   connect( s, &QGraphicsScene::selectionChanged, this, &ElementEditor::selectionChanged );
 }
 
+void addElementAction( QMenu *menu, GraphicElement *firstElm, ElementType type, bool hasSameType ) {
+  if( !hasSameType || ( hasSameType && ( firstElm->elementType( ) != type ) ) ) {
+    menu->addAction( QIcon( ElementFactory::getPixmap( type ) ), ElementFactory::typeToText( type ) );
+  }
+}
+
 void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
   QMenu menu;
   QString renameActionText( tr( "Rename" ) );
@@ -61,75 +67,63 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
   if( hasFrequency ) {
     menu.addAction( QIcon( QPixmap( ":/input/clock1.png" ) ), freqActionText );
   }
+  QMenu *submenucolors = nullptr;
   if( hasColors ) {
-    QMenu *submenucolors = menu.addMenu( colorMenuText );
+    submenucolors = menu.addMenu( colorMenuText );
     for( int i = 0; i < ui->comboBoxColor->count( ); ++i ) {
       if( ui->comboBoxColor->currentIndex( ) != i ) {
         submenucolors->addAction( ui->comboBoxColor->itemIcon( i ), ui->comboBoxColor->itemText( i ) );
       }
     }
   }
+  QMenu *submenumorph = nullptr;
   if( canMorph ) {
-    QMenu *submenumorph = menu.addMenu( morphMenuText );
+    submenumorph = menu.addMenu( morphMenuText );
     GraphicElement *firstElm = elements.front( );
     switch( firstElm->elementGroup( ) ) {
         case ElementGroup::GATE: {
         if( firstElm->inputSize( ) == 1 ) {
-          if( !hasSameType || ( hasSameType && ( firstElm->elementType( ) != ElementType::NOT ) ) ) {
-            submenumorph->addAction( QIcon( QPixmap( ":/basic/not.png" ) ), "NOT" );
-          }
-          if( !hasSameType || ( hasSameType && ( firstElm->elementType( ) != ElementType::NODE ) ) ) {
-            submenumorph->addAction( QIcon( QPixmap( ":/basic/node.png" ) ), "NODE" );
-          }
+          addElementAction( submenumorph, firstElm, ElementType::NOT, hasSameType );
+          addElementAction( submenumorph, firstElm, ElementType::NODE, hasSameType );
         }
         else {
-          if( !hasSameType || ( hasSameType && ( firstElm->elementType( ) != ElementType::AND ) ) ) {
-            submenumorph->addAction( QIcon( QPixmap( ":/basic/and.png" ) ), "AND" );
-          }
-          if( !hasSameType || ( hasSameType && ( firstElm->elementType( ) != ElementType::OR ) ) ) {
-            submenumorph->addAction( QIcon( QPixmap( ":/basic/or.png" ) ), "OR" );
-          }
-          if( !hasSameType || ( hasSameType && ( firstElm->elementType( ) != ElementType::NAND ) ) ) {
-            submenumorph->addAction( QIcon( QPixmap( ":/basic/nand.png" ) ), "NAND" );
-          }
-          if( !hasSameType || ( hasSameType && ( firstElm->elementType( ) != ElementType::NOR ) ) ) {
-            submenumorph->addAction( QIcon( QPixmap( ":/basic/nor.png" ) ), "NOR" );
-          }
-          if( !hasSameType || ( hasSameType && ( firstElm->elementType( ) != ElementType::XOR ) ) ) {
-            submenumorph->addAction( QIcon( QPixmap( ":/basic/xor.png" ) ), "XOR" );
-          }
-          if( !hasSameType || ( hasSameType && ( firstElm->elementType( ) != ElementType::XNOR ) ) ) {
-            submenumorph->addAction( QIcon( QPixmap( ":/basic/xnor.png" ) ), "XNOR" );
-          }
+          addElementAction( submenumorph, firstElm, ElementType::AND, hasSameType );
+          addElementAction( submenumorph, firstElm, ElementType::OR, hasSameType );
+          addElementAction( submenumorph, firstElm, ElementType::NAND, hasSameType );
+          addElementAction( submenumorph, firstElm, ElementType::NOR, hasSameType );
+          addElementAction( submenumorph, firstElm, ElementType::XOR, hasSameType );
+          addElementAction( submenumorph, firstElm, ElementType::XNOR, hasSameType );
         }
         break;
       }
         case ElementGroup::INPUT: {
-        if( !hasSameType || ( hasSameType && ( firstElm->elementType( ) != ElementType::BUTTON ) ) ) {
-          submenumorph->addAction( QIcon( QPixmap( ":/input/buttonOff.png" ) ), "BUTTON" );
-        }
-        if( !hasSameType || ( hasSameType && ( firstElm->elementType( ) != ElementType::SWITCH ) ) ) {
-          submenumorph->addAction( QIcon( QPixmap( ":/input/switchOn.png" ) ), "SWITCH" );
-        }
-        if( !hasSameType || ( hasSameType && ( firstElm->elementType( ) != ElementType::CLOCK ) ) ) {
-          submenumorph->addAction( QIcon( QPixmap( ":/input/clock1.png" ) ), "CLOCK" );
-        }
-        if( !hasSameType || ( hasSameType && ( firstElm->elementType( ) != ElementType::VCC ) ) ) {
-          submenumorph->addAction( QIcon( QPixmap( ":/input/1.png" ) ), "VCC" );
-        }
-        if( !hasSameType || ( hasSameType && ( firstElm->elementType( ) != ElementType::GND ) ) ) {
-          submenumorph->addAction( QIcon( QPixmap( ":/input/0.png" ) ), "GND" );
-        }
+        addElementAction( submenumorph, firstElm, ElementType::BUTTON, hasSameType );
+        addElementAction( submenumorph, firstElm, ElementType::SWITCH, hasSameType );
+        addElementAction( submenumorph, firstElm, ElementType::CLOCK, hasSameType );
+        addElementAction( submenumorph, firstElm, ElementType::VCC, hasSameType );
+        addElementAction( submenumorph, firstElm, ElementType::GND, hasSameType );
         break;
       }
-        default: {
-        menu.removeAction( submenumorph->menuAction( ) );
+        case ElementGroup::MEMORY: {
+        if( firstElm->inputSize( ) == 2 ) {
+          addElementAction( submenumorph, firstElm, ElementType::TLATCH, hasSameType );
+          addElementAction( submenumorph, firstElm, ElementType::DLATCH, hasSameType );
+          addElementAction( submenumorph, firstElm, ElementType::JKLATCH, hasSameType );
+        }
+        else if( firstElm->inputSize( ) == 4 ) {
+          addElementAction( submenumorph, firstElm, ElementType::DFLIPFLOP, hasSameType );
+          addElementAction( submenumorph, firstElm, ElementType::TFLIPFLOP, hasSameType );
+        }
         break;
       }
     }
+    if( submenumorph->actions( ).size( ) == 0 ) {
+      menu.removeAction( submenumorph->menuAction( ) );
+    }
   }
+  QMenu *submenutrigger = nullptr;
   if( hasTrigger ) {
-    QMenu *submenutrigger = menu.addMenu( triggerMenuText );
+    submenutrigger = menu.addMenu( triggerMenuText );
     for( int i = 0; i < ui->trigger->count( ); ++i ) {
       if( ui->trigger->currentIndex( ) != i ) {
         submenutrigger->addAction( ui->trigger->itemText( i ) );
@@ -149,13 +143,17 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
       emit sendCommand( new RotateCommand( elements.toList( ), 90.0 ) );
     }
     else if( a->text( ) == freqActionText ) {
-      ui->doubleSpinBoxFrequency->setFocus();
+      ui->doubleSpinBoxFrequency->setFocus( );
     }
-    else if( ElementFactory::textToType( a->text( ) ) != ElementType::UNKNOWN ) {
-      sendCommand( new MorphCommand( elements, ElementFactory::textToType( a->text( ) ), editor ) );
+    else if( submenumorph && submenumorph->actions( ).contains( a ) ) {
+      if( ElementFactory::textToType( a->text( ) ) != ElementType::UNKNOWN ) {
+        sendCommand( new MorphCommand( elements, ElementFactory::textToType( a->text( ) ), editor ) );
+      }
     }
-    else {
+    else if( submenucolors && submenucolors->actions( ).contains( a ) ) {
       ui->comboBoxColor->setCurrentText( a->text( ) );
+    }
+    else if( submenutrigger && submenutrigger->actions( ).contains( a ) ) {
       ui->trigger->setCurrentText( a->text( ) );
     }
   }
