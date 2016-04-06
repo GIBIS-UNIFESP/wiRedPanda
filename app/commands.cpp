@@ -46,6 +46,7 @@ AddItemsCommand::~AddItemsCommand( ) {
 }
 
 void AddItemsCommand::undo( ) {
+  qDebug() << "UNDO " << text();
   itemData.clear( );
   serializationOrder.clear( );
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );
@@ -70,8 +71,8 @@ void AddItemsCommand::undo( ) {
 
       p1->disconnect( conn );
       p2->disconnect( conn );
-      editor->getScene( )->removeItem( conn );
     }
+    editor->getScene( )->removeItem( item );
   }
 }
 
