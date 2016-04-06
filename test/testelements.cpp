@@ -58,11 +58,11 @@ void TestElements::testNode( ) {
       { { 0, 0 } }
     }
   };
-  for(  size_t test = 0; test < truthTable.size(); ++test ) {
+  for( size_t test = 0; test < truthTable.size( ); ++test ) {
     sw.at( 0 )->setOn( truthTable.at( test ).at( 0 ) );
     sw.at( 0 )->updateLogic( );
     elm.updateLogic( );
-    QCOMPARE( ( int ) elm.output()->value( ), truthTable.at( test ).at( 1 ) );
+    QCOMPARE( ( int ) elm.output( )->value( ), truthTable.at( test ).at( 1 ) );
   }
 }
 
@@ -92,7 +92,7 @@ void TestElements::testAnd( ) {
     sw.at( 0 )->updateLogic( );
     sw.at( 1 )->updateLogic( );
     elm.updateLogic( );
-    QCOMPARE( ( int ) elm.output()->value( ), truthTable.at( test ).at( 2 ) );
+    QCOMPARE( ( int ) elm.output( )->value( ), truthTable.at( test ).at( 2 ) );
   }
 }
 
@@ -121,19 +121,19 @@ void TestElements::testOr( ) {
     sw.at( 0 )->updateLogic( );
     sw.at( 1 )->updateLogic( );
     elm.updateLogic( );
-    QCOMPARE( ( int ) elm.output()->value( ), truthTable.at( test ).at( 2 ) );
+    QCOMPARE( ( int ) elm.output( )->value( ), truthTable.at( test ).at( 2 ) );
   }
 }
 
 void TestElements::testVCC( ) {
   InputVcc vcc;
-  QCOMPARE( ( int ) vcc.output()->value( ), 1 );
+  QCOMPARE( ( int ) vcc.output( )->value( ), 1 );
 }
 
 
 void TestElements::testGND( ) {
   InputGnd gnd;
-  QCOMPARE( ( int ) gnd.output()->value( ), 0 );
+  QCOMPARE( ( int ) gnd.output( )->value( ), 0 );
 
 }
 
@@ -169,7 +169,7 @@ void TestElements::testMux( ) {
     sw.at( 1 )->updateLogic( );
     sw.at( 2 )->updateLogic( );
     elm.updateLogic( );
-    QCOMPARE( ( int ) elm.output()->value( ), truthTable.at( test ).at( 3 ) );
+    QCOMPARE( ( int ) elm.output( )->value( ), truthTable.at( test ).at( 3 ) );
   }
 }
 
@@ -676,7 +676,7 @@ void TestElements::testBox( ) {
   box->updateLogic( );
   led->updateLogic( );
 
-  QCOMPARE( ( int ) box->input( 2 )->value( ), 0);
+  QCOMPARE( ( int ) box->input( 2 )->value( ), 0 );
 
   QCOMPARE( ( int ) box->output( 0 )->value( ), 0 );
   QCOMPARE( ( int ) box->output( 1 )->value( ), 1 );
@@ -691,4 +691,20 @@ void TestElements::testBox( ) {
 
   QCOMPARE( ( int ) box->output( 0 )->value( ), 1 );
   QCOMPARE( ( int ) box->output( 1 )->value( ), 0 );
+}
+
+void TestElements::testBoxes( ) {
+  Editor *editor = new Editor( this );
+
+  QDir examplesDir( QString( "%1/../examples/" ).arg( CURRENTDIR ) );
+  qDebug( ) << "Current dir: " << CURRENTDIR;
+  QStringList entries;
+  entries << "*.panda";
+  QFileInfoList files = examplesDir.entryInfoList( entries );
+  for( QFileInfo f : files ) {
+    qDebug( ) << "FILE: " << f.absoluteFilePath();
+    Box *box = new Box( editor );
+    box->loadFile(f.absoluteFilePath());
+    delete box;
+  }
 }

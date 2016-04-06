@@ -27,7 +27,10 @@ void SerializationFunctions::serialize( const QList< QGraphicsItem* > &items, QD
   }
 }
 
-QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDataStream &ds, double version ) {
+QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor,
+                                                             QDataStream &ds,
+                                                             double version,
+                                                             QString parentFile ) {
   QList< QGraphicsItem* > itemList;
   QMap< quint64, QNEPort* > portMap;
   while( !ds.atEnd( ) ) {
@@ -42,6 +45,7 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDa
         elm->load( ds, portMap, version );
         if( elm->elementType( ) == ElementType::BOX ) {
           Box *box = qgraphicsitem_cast< Box* >( elm );
+          box->setParentFile( parentFile );
           editor->loadBox( box, box->getFile( ) );
         }
         elm->setSelected( true );
@@ -66,12 +70,13 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor, QDa
   }
   return( itemList );
 }
-#include<iostream>
+#include <iostream>
 
-QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStream &ds, Scene *scene ) {
+QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStream &ds, QString parentFile,
+                                                      Scene *scene ) {
   QString str;
   ds >> str;
-//  std::cout << "Header: " << str.toStdString() << std::endl;
+/*  std::cout << "Header: " << str.toStdString() << std::endl; */
   if( !str.startsWith( QApplication::applicationName( ) ) ) {
     throw( std::runtime_error( "Invalid file format." ) );
   }
@@ -88,7 +93,7 @@ QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStrea
   if( version >= 1.4 ) {
     ds >> rect;
   }
-  QList< QGraphicsItem* > items = deserialize( editor, ds, version );
+  QList< QGraphicsItem* > items = deserialize( editor, ds, version, parentFile );
   if( scene ) {
     foreach( QGraphicsItem * item, items ) {
       scene->addItem( item );

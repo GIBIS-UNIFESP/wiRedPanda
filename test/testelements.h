@@ -37,6 +37,7 @@ private slots:
   void testTLatch( );
 
   void testBox();
+  void testBoxes();
 };
 
 #endif /* TESTELEMENTS_H */
