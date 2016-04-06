@@ -8,7 +8,7 @@ Led::Led( QGraphicsItem *parent ) : GraphicElement( 1, 1, 0, 0, parent ) {
   setRotatable( false );
   setHasColors( true );
   setColor( "White" );
-  setPixmap( QPixmap( ":/output/" + color( ) + "LedOff.png" ) );
+  setPixmap( QPixmap( ":/output/" + getColor( ) + "LedOff.png" ) );
   updatePorts( );
   setHasLabel( true );
   setPortName( "Led" );
@@ -25,14 +25,14 @@ void Led::updateLogic( ) {
   if( isValid( ) ) {
     bool value = inputs( ).first( )->value( );
     if( value == 1 ) {
-      setPixmap( QPixmap( ":/output/" + color( ) + "LedOn.png" ) );
+      setPixmap( QPixmap( ":/output/" + getColor( ) + "LedOn.png" ) );
     }
     else {
-      setPixmap( QPixmap( ":/output/" + color( ) + "LedOff.png" ) );
+      setPixmap( QPixmap( ":/output/" + getColor( ) + "LedOff.png" ) );
     }
   }
   else {
-    setPixmap( QPixmap( ":/output/" + color( ) + "LedOff.png" ) );
+    setPixmap( QPixmap( ":/output/" + getColor( ) + "LedOff.png" ) );
   }
 }
 
@@ -42,14 +42,14 @@ void Led::setColor( QString color ) {
   updateLogic( );
 }
 
-QString Led::color( ) {
+QString Led::getColor( ) {
   return( m_color );
 }
 
 
 void Led::save( QDataStream &ds ) {
   GraphicElement::save( ds );
-  ds << color( );
+  ds << getColor( );
 }
 
 void Led::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) {
@@ -62,5 +62,5 @@ void Led::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double vers
 }
 
 QString Led::genericProperties( ) {
-  return( color( ) );
+  return( getColor( ) );
 }

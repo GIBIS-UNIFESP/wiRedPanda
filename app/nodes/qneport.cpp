@@ -104,22 +104,23 @@ bool QNEPort::isInput( ) const {
   return( !isOutput_ );
 }
 
-QList< QNEConnection* > &QNEPort::connections( ) {
+const QList< QNEConnection* > &QNEPort::connections( ) const{
   return( m_connections );
 }
 
 void QNEPort::connect( QNEConnection *conn ) {
   if( conn ) {
-    if( graphicElement( ) ) {
-      graphicElement( )->setChanged( true );
-      if( isOutput( ) ) {
-        graphicElement( )->updateLogic( );
-      }
-    }
     if( conn && !m_connections.contains( conn ) ) {
       m_connections.append( conn );
     }
     updateConnections( );
+    if( graphicElement( ) ) {
+      graphicElement( )->setChanged( true );
+      graphicElement()->updatePorts();
+      if( isOutput( ) ) {
+        graphicElement( )->updateLogic( );
+      }
+    }
   }
 }
 
@@ -255,7 +256,7 @@ void QNEPort::setValue( char value ) {
         conn->setStatus( QNEConnection::Active );
       }
       QNEPort *port = conn->otherPort( this );
-      if( port ) {
+      if( port && port != this ) {
         port->setValue( value );
       }
     }

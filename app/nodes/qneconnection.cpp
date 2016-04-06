@@ -63,16 +63,24 @@ void QNEConnection::setPos2( const QPointF &p ) {
 }
 
 void QNEConnection::setPort1( QNEPort *p ) {
+  QNEPort *old = m_port1;
   m_port1 = p;
+  if( old ) {
+    old->disconnect( this );
+  }
   if( p ) {
-    m_port1->connect( this );
+    p->connect( this );
   }
 }
 
 void QNEConnection::setPort2( QNEPort *p ) {
+  QNEPort *old = m_port2;
   m_port2 = p;
+  if( old ) {
+    old->disconnect( this );
+  }
   if( p ) {
-    m_port2->connect( this );
+    p->connect( this );
   }
 }
 
@@ -137,7 +145,7 @@ double QNEConnection::angle( ) {
   return( 0.0 );
 }
 
-void QNEConnection::save( QDataStream &ds ) {
+void QNEConnection::save( QDataStream &ds ) const {
   ds << ( quint64 ) m_port1;
   ds << ( quint64 ) m_port2;
 }

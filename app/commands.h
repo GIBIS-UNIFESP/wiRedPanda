@@ -58,7 +58,7 @@ public:
   void undo( ) Q_DECL_OVERRIDE;
   void redo( ) Q_DECL_OVERRIDE;
   bool mergeWith( const QUndoCommand *command ) Q_DECL_OVERRIDE;
-  int id( ) const;
+  int id( ) const Q_DECL_OVERRIDE;
 private:
   int angle;
   QList< GraphicElement* > list;

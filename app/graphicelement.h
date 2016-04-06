@@ -94,7 +94,7 @@ public:
   int outputSize( );
   void setOutputSize( int size );
 
-  virtual float frequency( );
+  virtual float getFrequency( );
   virtual void setFrequency( float freq );
 
   int id( ) const;
@@ -112,8 +112,8 @@ public:
 
   bool hasTrigger( ) const;
 
-  virtual void setColor( QString color );
-  virtual QString color( );
+  virtual void setColor( QString getColor );
+  virtual QString getColor( );
 
   bool changed( ) const;
   void setChanged( bool changed );

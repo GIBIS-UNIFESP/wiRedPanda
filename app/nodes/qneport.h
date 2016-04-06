@@ -47,7 +47,7 @@ public:
   int radius( ) const;
   bool isOutput( ) const;
   bool isInput( ) const;
-  QList< QNEConnection* > &connections( );
+  const QList< QNEConnection* > &connections( ) const;
   void connect( QNEConnection *conn );
   void disconnect( QNEConnection *conn );
   bool isConnected( QNEPort* );

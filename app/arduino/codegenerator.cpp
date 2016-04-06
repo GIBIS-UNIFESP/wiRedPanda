@@ -169,7 +169,7 @@ void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &el
             if( !isBox ) {
               Clock *clk = qgraphicsitem_cast< Clock* >( elm );
               out << "elapsedMillis " << varName << "_elapsed = 0;" << endl;
-              out << "int " << varName << "_interval = " << 1000 / clk->frequency( ) << ";" << endl;
+              out << "int " << varName << "_interval = " << 1000 / clk->getFrequency( ) << ";" << endl;
             }
             break;
           }

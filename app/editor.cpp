@@ -168,9 +168,8 @@ QGraphicsItem* Editor::itemAt( QPointF pos ) {
   return( nullptr );
 }
 
-QPointF Editor::getMousePos() const
-{
-  return mousePos;
+QPointF Editor::getMousePos( ) const {
+  return( mousePos );
 }
 
 SimulationController* Editor::getSimulationController( ) const {
@@ -215,9 +214,10 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
       editedConn = new QNEConnection( );
       addItem( editedConn );
       editedConn->setPort1( pressedPort );
-      editedConn->setPos1( mousePos );
+      editedConn->updatePosFromPorts();
       editedConn->setPos2( mousePos );
       editedConn->updatePath( );
+      return true;
     }
   }
   else if( !item ) {
