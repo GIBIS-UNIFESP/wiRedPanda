@@ -166,7 +166,6 @@ void MainWindow::on_actionRotate_left_triggered( ) {
 
 bool MainWindow::open( const QString &fname ) {
   QFile fl( fname );
-  qDebug( ) << "Loading " << fname;
   if( !fl.exists( ) ) {
     QMessageBox::warning( this, tr( "Error!" ), tr( "File \"%1\" does not exists!" ).arg(
                             fname ), QMessageBox::Ok, QMessageBox::NoButton );

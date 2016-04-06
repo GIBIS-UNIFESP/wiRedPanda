@@ -26,7 +26,8 @@
 #include <QtMath>
 #include <iostream>
 
-Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ), editedConn( nullptr ), m_hoverPort( nullptr ) {
+Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ), editedConn( nullptr ),
+  m_hoverPort( nullptr ) {
   mainWindow = qobject_cast< MainWindow* >( parent );
   markingSelectionBox = false;
   undoStack = new QUndoStack( this );
@@ -39,8 +40,6 @@ Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ), editedC
   timer.start( );
   mShowWires = true;
   mShowGates = true;
-
-
 }
 
 Editor::~Editor( ) {
@@ -214,10 +213,10 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
       editedConn = new QNEConnection( );
       addItem( editedConn );
       editedConn->setPort1( pressedPort );
-      editedConn->updatePosFromPorts();
+      editedConn->updatePosFromPorts( );
       editedConn->setPos2( mousePos );
       editedConn->updatePath( );
-      return true;
+      return( true );
     }
   }
   else if( !item ) {
@@ -352,7 +351,9 @@ bool Editor::loadBox( Box *box, QString fname ) {
 /*  qDebug( ) << "Loading box" << fname; */
   files.removeAll( fname );
   try {
-    box->setParentFile( GlobalProperties::currentFile );
+    if( box->getParentFile( ).isEmpty( ) ) {
+      box->setParentFile( GlobalProperties::currentFile );
+    }
     box->loadFile( fname );
   }
   catch( BoxNotFoundException &err ) {
@@ -373,7 +374,9 @@ bool Editor::loadBox( Box *box, QString fname ) {
   }
   files.prepend( fname );
   settings.setValue( "recentBoxes", files );
-  mainWindow->updateRecentBoxes( );
+  if( mainWindow ) {
+    mainWindow->updateRecentBoxes( );
+  }
   return( true );
 }
 
@@ -559,7 +562,10 @@ void Editor::paste( QDataStream &ds ) {
   ds >> ctr;
   QPointF offset = mousePos - ctr - QPointF( 32.0f, 32.0f );
   double version = QApplication::applicationVersion( ).toDouble( );
-  QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( this, ds, version );
+  QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( this,
+                                                                          ds,
+                                                                          version,
+                                                                          GlobalProperties::currentFile );
   receiveCommand( new AddItemsCommand( itemList, this ) );
   for( QGraphicsItem *item : itemList ) {
     if( item->type( ) == GraphicElement::Type ) {
@@ -585,9 +591,8 @@ void Editor::save( QDataStream &ds ) {
 }
 
 void Editor::load( QDataStream &ds ) {
-  /* Any change here must be made in box implementation!!! */
   clear( );
-  SerializationFunctions::load( this, ds, scene );
+  SerializationFunctions::load( this, ds, GlobalProperties::currentFile, scene );
   scene->clearSelection( );
 }
 

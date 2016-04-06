@@ -15,6 +15,7 @@ private slots:
   void cleanup( );
 
   void testFiles( );
+
 };
 
 #endif /* TESTFILES_H */

@@ -45,8 +45,6 @@ Box::~Box( ) {
 }
 
 
-
-
 void Box::save( QDataStream &ds ) {
   GraphicElement::save( ds );
   ds << m_file;
@@ -67,18 +65,20 @@ void Box::updateLogic( ) {
   QVector< GraphicElement* > elms( myScene.getElements( ) );
   elms = SimulationController::sortElements( elms );
   for( GraphicElement *elm : elms ) {
-    if(!elm->disabled()){
+    if( !elm->disabled( ) ) {
       elm->updateLogic( );
     }
-//    std::cout << elm->objectName().toStdString() <<  " : ";
-//    for( QNEPort * in : elm->inputs()) {
-//      std::cout << ( int ) in->value( ) << " ";
-//    }
-//    std::cout << " => ";
-//    for( QNEPort * out : elm->outputs()) {
-//      std::cout << ( int ) out->value( ) << " ";
-//    }
-//    std::cout <<  std::endl;
+/*
+ *    std::cout << elm->objectName().toStdString() <<  " : ";
+ *    for( QNEPort * in : elm->inputs()) {
+ *      std::cout << ( int ) in->value( ) << " ";
+ *    }
+ *    std::cout << " => ";
+ *    for( QNEPort * out : elm->outputs()) {
+ *      std::cout << ( int ) out->value( ) << " ";
+ *    }
+ *    std::cout <<  std::endl;
+ */
   }
   for( int outputPort = 0; outputPort < outputMap.size( ); ++outputPort ) {
     output( outputPort )->setValue( outputMap.at( outputPort )->value( ) );
@@ -100,6 +100,7 @@ void Box::verifyRecursion( QString fname ) {
 
 
 void Box::loadFile( QString fname ) {
+  qDebug() << "Loading file:" << fname;
   QFileInfo fileInfo = findFile( fname );
   fname = fileInfo.absoluteFilePath( );
   setToolTip( fname );
@@ -117,7 +118,7 @@ void Box::loadFile( QString fname ) {
     outputMap.clear( );
     myScene.clear( );
     QDataStream ds( &file );
-    QList< QGraphicsItem* > items = SerializationFunctions::load( editor, ds, &myScene );
+    QList< QGraphicsItem* > items = SerializationFunctions::load( editor, ds, fname, &myScene );
     for( QGraphicsItem *item : items ) {
       if( item->type( ) == GraphicElement::Type ) {
         GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
@@ -136,17 +137,6 @@ void Box::loadFile( QString fname ) {
               case ElementType::LED: {
               for( QNEPort *port : elm->inputs( ) ) {
                 outputMap.append( port );
-              }
-              break;
-            }
-
-              case ElementType::BOX: {
-              Box *childBox = qgraphicsitem_cast< Box* >( elm );
-              if( childBox ) {
-                childBox->setParentBox( this );
-                if( !editor->loadBox( childBox, childBox->getFile( ) ) ) {
-                  throw( std::runtime_error( "Failed to load box element." ) );
-                }
               }
               break;
             }
@@ -213,23 +203,24 @@ void Box::setParentFile( const QString &value ) {
 }
 
 QFileInfo Box::findFile( QString fname ) {
-  QFileInfo fileInfo( fname );
-
+  QFileInfo fileInfo( fname);
   QString myFile = fileInfo.fileName( );
-/*  qDebug( ) << "Trying to load (1): " << fileInfo.absoluteFilePath( ); */
+  qDebug( ) << "Trying to load (1): " << fileInfo.absoluteFilePath( );
   if( !fileInfo.exists( ) ) {
     fileInfo.setFile( QDir::current( ), fileInfo.fileName( ) );
-/*    qDebug( ) << "Trying to load (2): " << fileInfo.absoluteFilePath( ); */
+    qDebug( ) << "Trying to load (2): " << fileInfo.absoluteFilePath( );
     if( !fileInfo.exists( ) ) {
       fileInfo.setFile( QFileInfo( parentFile ).absoluteDir( ), myFile );
-/*
- *      qDebug() << "Parent file: " << parentFile;
- *      qDebug( ) << "Trying to load (3): " << fileInfo.absoluteFilePath( );
- */
+
+      qDebug( ) << "Parent file: " << parentFile;
+      qDebug( ) << "Trying to load (3): " << fileInfo.absoluteFilePath( );
       if( !fileInfo.exists( ) ) {
         QFileInfo currentFile( GlobalProperties::currentFile );
+        qDebug( ) << "Current file: " << currentFile.absoluteFilePath();
+        qDebug( ) << "Trying to load (4): " << fileInfo.absoluteFilePath( );
         fileInfo.setFile( currentFile.absoluteDir( ), myFile );
         if( !fileInfo.exists( ) ) {
+
           std::cerr << "Error: This file does not exists: " << fname.toStdString( ) << std::endl;
           throw( BoxNotFoundException( QString(
                                          "Box linked file \"%1\" could not be found!\n"
