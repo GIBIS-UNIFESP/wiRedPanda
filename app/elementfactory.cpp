@@ -118,7 +118,7 @@ QPixmap ElementFactory::getPixmap( ElementType type ) {
       case ElementType::SRFLIPFLOP: return( QPixmap( ":/memory/SR-flipflop.png" ) );
       case ElementType::TLATCH: return( QPixmap( ":/memory/T-latch.png" ) );
       case ElementType::TFLIPFLOP: return( QPixmap( ":/memory/T-flipflop.png" ) );
-      case ElementType::DISPLAY: return( QPixmap( ":/output/counter/counter_off.png" ) );
+      case ElementType::DISPLAY: return( QPixmap( ":/output/counter/counter_on.png" ) );
       case ElementType::BOX: return( QPixmap( ":/basic/box.png" ) );
       case ElementType::MUX: return( QPixmap( ":/basic/mux.png" ) );
       case ElementType::DEMUX: return( QPixmap( ":/basic/demux.png" ) );

@@ -19,5 +19,6 @@
         <file>counter/counter_g.png</file>
         <file>counter/counter_h.png</file>
         <file>counter/counter_off.png</file>
+        <file>counter/counter_on.png</file>
     </qresource>
 </RCC>

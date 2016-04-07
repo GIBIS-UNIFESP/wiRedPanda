@@ -15,6 +15,7 @@ public:
   /* QGraphicsScene interface */
   int gridSize( ) const;
   QVector< GraphicElement* > getElements( );
+  QVector< GraphicElement* > selectedElements( );
 
 protected:
   void drawBackground( QPainter *painter, const QRectF &rect );
