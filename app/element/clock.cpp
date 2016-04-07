@@ -60,7 +60,7 @@ void Clock::setFrequency( float freq ) {
       m_frequency = freq;
       elapsed = 0;
       Clock::reset = true;
-      qDebug() << "Freq = " << freq <<  " interval = " << interval;
+//      qDebug() << "Freq = " << freq <<  " interval = " << interval;
     }
     /*    timer.start( static_cast< int >(1000.0/freq) ); */
   }

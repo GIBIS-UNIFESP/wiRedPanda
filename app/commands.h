@@ -30,7 +30,6 @@ private:
   QList< QGraphicsItem* > items;
   QByteArray itemData;
   Editor *editor;
-  int nConnections;
   QVector< GraphicElement* > serializationOrder;
 };
 
