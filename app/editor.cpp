@@ -258,9 +258,10 @@ void Editor::releaseHoverPort( ) {
 }
 
 void Editor::resizeScene( ) {
-  if( !movedElements.isEmpty( ) ) {
+  QVector< GraphicElement  * > elms = scene->getElements();
+  if( !elms.isEmpty( ) ) {
     QRectF rect = scene->sceneRect( );
-    for( GraphicElement *elm : movedElements ) {
+    for( GraphicElement *elm : elms ) {
       QRectF itemRect = elm->boundingRect( ).translated( elm->pos( ) );
       rect = rect.united( itemRect.adjusted( -10, -10, 10, 10 ) );
     }
@@ -270,12 +271,7 @@ void Editor::resizeScene( ) {
   if( item && ( timer.elapsed( ) > 100 ) && draggingElement ) {
     if( !scene->views( ).isEmpty( ) ) {
       QGraphicsView *view = scene->views( ).front( );
-      if( item->type( ) != QNEConnection::Type ) {
-        view->ensureVisible( item );
-      }
-      else {
-        view->ensureVisible( QRectF( mousePos - QPointF( 4, 4 ), QSize( 9, 9 ) ).normalized( ) );
-      }
+      view->ensureVisible( QRectF( mousePos - QPointF( 4, 4 ), QSize( 9, 9 ) ).normalized( ) );
     }
     timer.restart( );
   }
@@ -576,6 +572,7 @@ void Editor::paste( QDataStream &ds ) {
       item->setSelected( true );
     }
   }
+  resizeScene( );
 }
 
 void Editor::selectAll( ) {
