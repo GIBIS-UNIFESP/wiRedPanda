@@ -36,7 +36,12 @@ public slots:
   void showGates( bool checked );
   void rotate( bool rotateRight );
   void selectionChanged( );
-  void receiveCommand( QUndoCommand * cmd );
+  void receiveCommand( QUndoCommand *cmd );
+  void copyAction( );
+  void cutAction( );
+  void pasteAction( );
+  void deleteAction( );
+
 private:
   QUndoStack *undoStack;
   Scene *scene;
@@ -56,7 +61,7 @@ private:
   QList< GraphicElement* > movedElements;
   QList< QPointF > oldPositions;
   MainWindow *mainWindow;
-//  bool mControlKeyPressed;
+/*  bool mControlKeyPressed; */
   bool mShowWires;
   bool mShowGates;
 
@@ -73,7 +78,6 @@ private:
   /* QObject interface */
 public:
   bool eventFilter( QObject *obj, QEvent *evt );
-  void deleteElements( );
   void setElementEditor( ElementEditor *value );
   QUndoStack* getUndoStack( ) const;
   ElementFactory &getFactory( );
@@ -87,6 +91,7 @@ public:
   void contextMenu( QPoint screenPos );
   void updateVisibility( );
   QPointF getMousePos( ) const;
+
 };
 
 #endif /* EDITOR_H */
