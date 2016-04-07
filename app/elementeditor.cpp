@@ -272,7 +272,7 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
 }
 
 void ElementEditor::selectionChanged( ) {
-  QVector< GraphicElement* > elms = scene->getElements( );
+  QVector< GraphicElement* > elms = scene->selectedElements();
   setCurrentElements( elms );
 }
 
