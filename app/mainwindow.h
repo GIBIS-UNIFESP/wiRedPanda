@@ -61,17 +61,7 @@ private slots:
 
   void on_actionAbout_Qt_triggered( );
 
-  void on_actionDelete_triggered( );
-
-  void on_lineEdit_textEdited( const QString & );
-
-  void on_actionCopy_triggered( );
-
-  void on_actionPaste_triggered( );
-
   void on_actionSave_As_triggered( );
-
-  void on_actionCut_triggered( );
 
   void on_actionSelect_all_triggered( );
 

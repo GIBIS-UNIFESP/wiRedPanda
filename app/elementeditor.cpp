@@ -7,32 +7,33 @@
 #include <cmath>
 
 ElementEditor::ElementEditor( QWidget *parent ) : QWidget( parent ), ui( new Ui::ElementEditor ) {
-  manyLabels = tr( "<Many labels>" );
-  manyColors = tr( "<Many colors>" );
-  manyIS = tr( "<Many values>" );
-  manyFreq = tr( "<Many values>" );
-  manyTriggers = tr( "<Many triggers>" );
+  _manyLabels = tr( "<Many labels>" );
+  _manyColors = tr( "<Many colors>" );
+  _manyIS = tr( "<Many values>" );
+  _manyFreq = tr( "<Many values>" );
+  _manyTriggers = tr( "<Many triggers>" );
 
   ui->setupUi( this );
   setEnabled( false );
   setVisible( false );
 
-ui->lineEditTrigger->setValidator(new QRegExpValidator(QRegExp("[a-z]| |[A-Z]|[0-9]"), this));
+  ui->lineEditTrigger->setValidator( new QRegExpValidator( QRegExp( "[a-z]| |[A-Z]|[0-9]" ), this ) );
 }
 
 ElementEditor::~ElementEditor( ) {
   delete ui;
 }
 
-void ElementEditor::setScene( QGraphicsScene *s ) {
+void ElementEditor::setScene( Scene *s ) {
   scene = s;
   connect( s, &QGraphicsScene::selectionChanged, this, &ElementEditor::selectionChanged );
 }
 
-void addElementAction( QMenu *menu, GraphicElement *firstElm, ElementType type, bool hasSameType ) {
+QAction* addElementAction( QMenu *menu, GraphicElement *firstElm, ElementType type, bool hasSameType ) {
   if( !hasSameType || ( hasSameType && ( firstElm->elementType( ) != type ) ) ) {
-    menu->addAction( QIcon( ElementFactory::getPixmap( type ) ), ElementFactory::typeToText( type ) );
+    return( menu->addAction( QIcon( ElementFactory::getPixmap( type ) ), ElementFactory::typeToText( type ) ) );
   }
+  return( nullptr );
 }
 
 void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
@@ -42,19 +43,18 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
   QString freqActionText( tr( "Change frequency" ) );
   QString colorMenuText( tr( "Change color to..." ) );
   QString triggerActionText( tr( "Change trigger" ) );
-  QString deleteActionText( tr( "Delete" ) );
   QString morphMenuText( tr( "Morph to..." ) );
   if( hasLabel ) {
     menu.addAction( QIcon( QPixmap( ":/toolbar/rename.png" ) ), renameActionText );
   }
   if( hasTrigger ) {
-    menu.addAction( QIcon( ElementFactory::getPixmap(ElementType::BUTTON) ), triggerActionText );
+    menu.addAction( QIcon( ElementFactory::getPixmap( ElementType::BUTTON ) ), triggerActionText );
   }
   if( hasRotation ) {
     menu.addAction( QIcon( QPixmap( ":/toolbar/rotateR.png" ) ), rotateActionText );
   }
   if( hasFrequency ) {
-    menu.addAction( QIcon( ElementFactory::getPixmap(ElementType::CLOCK ) ), freqActionText );
+    menu.addAction( QIcon( ElementFactory::getPixmap( ElementType::CLOCK ) ), freqActionText );
   }
   QMenu *submenucolors = nullptr;
   if( hasColors ) {
@@ -68,7 +68,7 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
   QMenu *submenumorph = nullptr;
   if( canMorph ) {
     submenumorph = menu.addMenu( morphMenuText );
-    GraphicElement *firstElm = elements.front( );
+    GraphicElement *firstElm = m_elements.front( );
     switch( firstElm->elementGroup( ) ) {
         case ElementGroup::GATE: {
         if( firstElm->inputSize( ) == 1 ) {
@@ -105,34 +105,45 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
         }
         break;
       }
+        case ElementGroup::OUTPUT:
+        case ElementGroup::BOX:
+        case ElementGroup::MUX:
+        case ElementGroup::OTHER:
+        case ElementGroup::UNKNOWN:
+        break;
     }
     if( submenumorph->actions( ).size( ) == 0 ) {
       menu.removeAction( submenumorph->menuAction( ) );
     }
   }
-  menu.addAction( QIcon( QPixmap( ":/toolbar/delete.png" ) ), deleteActionText );
+  menu.addSeparator( );
+  QAction *copyAction = menu.addAction( QIcon( QPixmap( ":/toolbar/copy.png" ) ), tr("Copy") );
+  QAction *cutAction = menu.addAction( QIcon( QPixmap( ":/toolbar/cut.png" ) ), tr("Cut"));
+  QAction *deleteAction = menu.addAction( QIcon( QPixmap( ":/toolbar/delete.png" ) ), tr("Delete"));
+
+  connect( copyAction, &QAction::triggered, editor, &Editor::copyAction );
+  connect( cutAction, &QAction::triggered, editor, &Editor::cutAction );
+  connect( deleteAction, &QAction::triggered, editor, &Editor::deleteAction );
+
   QAction *a = menu.exec( screenPos );
   if( a ) {
-    if( a->text( ) == deleteActionText ) {
-      emit sendCommand( new DeleteItemsCommand( scene->selectedItems( ) ) );
-    }
-    else if( a->text( ) == renameActionText ) {
+    if( a->text( ) == renameActionText ) {
       ui->lineEditElementLabel->setFocus( );
-      ui->lineEditElementLabel->selectAll();
+      ui->lineEditElementLabel->selectAll( );
     }
     else if( a->text( ) == rotateActionText ) {
-      emit sendCommand( new RotateCommand( elements.toList( ), 90.0 ) );
+      emit sendCommand( new RotateCommand( m_elements.toList( ), 90.0 ) );
     }
     else if( a->text( ) == triggerActionText ) {
       ui->lineEditTrigger->setFocus( );
-      ui->lineEditTrigger->selectAll();
+      ui->lineEditTrigger->selectAll( );
     }
     else if( a->text( ) == freqActionText ) {
       ui->doubleSpinBoxFrequency->setFocus( );
     }
     else if( submenumorph && submenumorph->actions( ).contains( a ) ) {
       if( ElementFactory::textToType( a->text( ) ) != ElementType::UNKNOWN ) {
-        sendCommand( new MorphCommand( elements, ElementFactory::textToType( a->text( ) ), editor ) );
+        sendCommand( new MorphCommand( m_elements, ElementFactory::textToType( a->text( ) ), editor ) );
       }
     }
     else if( submenucolors && submenucolors->actions( ).contains( a ) ) {
@@ -143,7 +154,7 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
 
 
 void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms ) {
-  elements = elms;
+  m_elements = elms;
   if( !elms.isEmpty( ) ) {
     hasSomething = false;
     hasLabel = hasColors = hasFrequency = canChangeInputSize = hasTrigger = true;
@@ -154,8 +165,8 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
     hasSameLabel = hasSameColors = hasSameFrequency = true;
     hasSameInputSize = hasSameTrigger = canMorph = true;
     hasSameType = true;
-    GraphicElement *firstElement = elements.front( );
-    for( GraphicElement *elm : elements ) {
+    GraphicElement *firstElement = m_elements.front( );
+    for( GraphicElement *elm : m_elements ) {
       hasLabel &= elm->hasLabel( );
       hasColors &= elm->hasColors( );
       hasFrequency &= elm->hasFrequency( );
@@ -187,22 +198,22 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
         ui->lineEditElementLabel->setText( firstElement->getLabel( ) );
       }
       else {
-        ui->lineEditElementLabel->setText( manyLabels );
+        ui->lineEditElementLabel->setText( _manyLabels );
       }
     }
     /* Color */
     ui->label_color->setVisible( hasColors );
     ui->comboBoxColor->setVisible( hasColors );
-    if( ui->comboBoxColor->findText( manyColors ) == -1 ) {
-      ui->comboBoxColor->addItem( manyColors );
+    if( ui->comboBoxColor->findText( _manyColors ) == -1 ) {
+      ui->comboBoxColor->addItem( _manyColors );
     }
     if( hasColors ) {
       if( hasSameColors ) {
-        ui->comboBoxColor->removeItem( ui->comboBoxColor->findText( manyColors ) );
+        ui->comboBoxColor->removeItem( ui->comboBoxColor->findText( _manyColors ) );
         ui->comboBoxColor->setCurrentText( firstElement->getColor( ) );
       }
       else {
-        ui->comboBoxColor->setCurrentText( manyColors );
+        ui->comboBoxColor->setCurrentText( _manyColors );
       }
     }
     /* Frequency */
@@ -216,7 +227,7 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
       }
       else {
         ui->doubleSpinBoxFrequency->setMinimum( 0.0 );
-        ui->doubleSpinBoxFrequency->setSpecialValueText( manyFreq );
+        ui->doubleSpinBoxFrequency->setSpecialValueText( _manyFreq );
         ui->doubleSpinBoxFrequency->setValue( 0.0 );
       }
     }
@@ -227,17 +238,17 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
     for( int port = minimum; port <= maximum; ++port ) {
       ui->comboBoxInputSz->addItem( QString::number( port ), port );
     }
-    if( ui->comboBoxInputSz->findText( manyIS ) == -1 ) {
-      ui->comboBoxInputSz->addItem( manyIS );
+    if( ui->comboBoxInputSz->findText( _manyIS ) == -1 ) {
+      ui->comboBoxInputSz->addItem( _manyIS );
     }
     if( canChangeInputSize ) {
       if( hasSameInputSize ) {
         QString inputSz = QString::number( firstElement->inputSize( ) );
-        ui->comboBoxInputSz->removeItem( ui->comboBoxInputSz->findText( manyIS ) );
+        ui->comboBoxInputSz->removeItem( ui->comboBoxInputSz->findText( _manyIS ) );
         ui->comboBoxInputSz->setCurrentText( inputSz );
       }
       else {
-        ui->comboBoxInputSz->setCurrentText( manyIS );
+        ui->comboBoxInputSz->setCurrentText( _manyIS );
       }
     }
     /* Trigger */
@@ -245,10 +256,10 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
     ui->label_trigger->setVisible( hasTrigger );
     if( hasTrigger ) {
       if( hasSameTrigger ) {
-        ui->lineEditTrigger->setText(firstElement->getTrigger().toString());
+        ui->lineEditTrigger->setText( firstElement->getTrigger( ).toString( ) );
       }
       else {
-        ui->lineEditTrigger->setText( manyTriggers );
+        ui->lineEditTrigger->setText( _manyTriggers );
       }
     }
     setEnabled( hasSomething );
@@ -256,45 +267,37 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
   }
   else {
     setVisible( false );
-    ui->lineEditElementLabel->setText( "" );  }
+    ui->lineEditElementLabel->setText( "" );
+  }
 }
 
 void ElementEditor::selectionChanged( ) {
-  QList< QGraphicsItem* > items = scene->selectedItems( );
-  QVector< GraphicElement* > elms;
-  for( QGraphicsItem *item : items ) {
-    if( item->type( ) == GraphicElement::Type ) {
-      GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
-      if( elm != NULL ) {
-        elms.append( elm );
-      }
-    }
-  }
+  QVector< GraphicElement* > elms = scene->getElements( );
   setCurrentElements( elms );
 }
 
 void ElementEditor::apply( ) {
-  if( ( elements.isEmpty( ) ) || ( isEnabled( ) == false ) ) {
+  if( ( m_elements.isEmpty( ) ) || ( isEnabled( ) == false ) ) {
     return;
   }
   QByteArray itemData;
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-  for( GraphicElement *elm : elements ) {
+  for( GraphicElement *elm : m_elements ) {
     elm->save( dataStream );
-    if( elm->hasColors( ) && ( ui->comboBoxColor->currentText( ) != manyColors ) ) {
+    if( elm->hasColors( ) && ( ui->comboBoxColor->currentText( ) != _manyColors ) ) {
       elm->setColor( ui->comboBoxColor->currentText( ) );
     }
-    if( elm->hasLabel( ) && ( ui->lineEditElementLabel->text( ) != manyLabels ) ) {
+    if( elm->hasLabel( ) && ( ui->lineEditElementLabel->text( ) != _manyLabels ) ) {
       elm->setLabel( ui->lineEditElementLabel->text( ) );
     }
-    if( elm->hasFrequency( ) && ( ui->doubleSpinBoxFrequency->text( ) != manyFreq ) ) {
+    if( elm->hasFrequency( ) && ( ui->doubleSpinBoxFrequency->text( ) != _manyFreq ) ) {
       elm->setFrequency( ui->doubleSpinBoxFrequency->value( ) );
     }
-    if( elm->hasTrigger( ) && ( ui->lineEditTrigger->text( ) != manyTriggers ) ) {
+    if( elm->hasTrigger( ) && ( ui->lineEditTrigger->text( ) != _manyTriggers ) ) {
       elm->setTrigger( QKeySequence( ui->lineEditTrigger->text( ) ) );
     }
   }
-  emit sendCommand( new UpdateCommand( elements, itemData ) );
+  emit sendCommand( new UpdateCommand( m_elements, itemData ) );
 }
 
 void ElementEditor::on_lineEditElementLabel_editingFinished( ) {
@@ -303,11 +306,11 @@ void ElementEditor::on_lineEditElementLabel_editingFinished( ) {
 
 void ElementEditor::on_comboBoxInputSz_currentIndexChanged( int index ) {
   Q_UNUSED( index );
-  if( ( elements.isEmpty( ) ) || ( isEnabled( ) == false ) ) {
+  if( ( m_elements.isEmpty( ) ) || ( isEnabled( ) == false ) ) {
     return;
   }
-  if( canChangeInputSize && ( ui->comboBoxInputSz->currentText( ) != manyIS ) ) {
-    emit sendCommand( new ChangeInputSZCommand( elements, ui->comboBoxInputSz->currentData( ).toInt( ) ) );
+  if( canChangeInputSize && ( ui->comboBoxInputSz->currentText( ) != _manyIS ) ) {
+    emit sendCommand( new ChangeInputSZCommand( m_elements, ui->comboBoxInputSz->currentData( ).toInt( ) ) );
   }
 }
 
@@ -321,9 +324,9 @@ void ElementEditor::on_comboBoxColor_currentIndexChanged( int index ) {
 }
 
 void ElementEditor::on_lineEditTrigger_textChanged( const QString &cmd ) {
-  ui->lineEditTrigger->setText(cmd.toUpper());
+  ui->lineEditTrigger->setText( cmd.toUpper( ) );
 }
 
 void ElementEditor::on_lineEditTrigger_editingFinished( ) {
-  apply();
+  apply( );
 }

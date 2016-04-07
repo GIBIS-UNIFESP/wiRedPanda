@@ -10,6 +10,7 @@
 #include "serializationfunctions.h"
 
 #include <QApplication>
+#include <QClipboard>
 #include <QDebug>
 #include <QDrag>
 #include <QFileDialog>
@@ -22,12 +23,12 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QMimeData>
 #include <QSettings>
 #include <QtMath>
 #include <iostream>
 
-Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ), editedConn( nullptr ),
-  m_hoverPort( nullptr ) {
+Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ), editedConn( nullptr ), m_hoverPort( nullptr ) {
   mainWindow = qobject_cast< MainWindow* >( parent );
   markingSelectionBox = false;
   undoStack = new QUndoStack( this );
@@ -74,8 +75,9 @@ void Editor::clear( ) {
   }
 }
 
-void Editor::deleteElements( ) {
+void Editor::deleteAction( ) {
   const QList< QGraphicsItem* > &items = scene->selectedItems( );
+  scene->clearSelection( );
   if( !items.isEmpty( ) ) {
     receiveCommand( new DeleteItemsCommand( items ) );
   }
@@ -540,7 +542,7 @@ Scene* Editor::getScene( ) const {
 
 void Editor::cut( QDataStream &ds ) {
   copy( ds );
-  deleteElements( );
+  deleteAction( );
 }
 
 void Editor::copy( QDataStream &ds ) {
@@ -622,6 +624,19 @@ void Editor::contextMenu( QPoint screenPos ) {
       elementEditor->contextMenu( screenPos, this );
     }
   }
+  else {
+    QMenu menu;
+    QAction *pasteAction = menu.addAction( QIcon( QPixmap( ":/toolbar/paste.png" ) ), tr( "Paste" ) );
+    const QClipboard *clipboard = QApplication::clipboard( );
+    const QMimeData *mimeData = clipboard->mimeData( );
+    if( mimeData->hasFormat( "wpanda/copydata" ) ) {
+      connect( pasteAction, &QAction::triggered, this, &Editor::pasteAction );
+    }
+    else {
+      pasteAction->setEnabled( false );
+    }
+    menu.exec( screenPos );
+  }
 }
 
 void Editor::updateVisibility( ) {
@@ -631,6 +646,36 @@ void Editor::updateVisibility( ) {
 
 void Editor::receiveCommand( QUndoCommand *cmd ) {
   undoStack->push( cmd );
+}
+
+void Editor::copyAction( ) {
+  QClipboard *clipboard = QApplication::clipboard( );
+  QMimeData *mimeData = new QMimeData;
+  QByteArray itemData;
+  QDataStream dataStream( &itemData, QIODevice::WriteOnly );
+  copy( dataStream );
+  mimeData->setData( "wpanda/copydata", itemData );
+  clipboard->setMimeData( mimeData );
+}
+
+void Editor::cutAction( ) {
+  QClipboard *clipboard = QApplication::clipboard( );
+  QMimeData *mimeData = new QMimeData( );
+  QByteArray itemData;
+  QDataStream dataStream( &itemData, QIODevice::WriteOnly );
+  cut( dataStream );
+  mimeData->setData( "wpanda/copydata", itemData );
+  clipboard->setMimeData( mimeData );
+}
+
+void Editor::pasteAction( ) {
+  const QClipboard *clipboard = QApplication::clipboard( );
+  const QMimeData *mimeData = clipboard->mimeData( );
+  if( mimeData->hasFormat( "wpanda/copydata" ) ) {
+    QByteArray itemData = mimeData->data( "wpanda/copydata" );
+    QDataStream dataStream( &itemData, QIODevice::ReadOnly );
+    paste( dataStream );
+  }
 }
 
 bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
@@ -672,7 +717,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
           }
         }
       }
-      else {
+      else if( mouseEvt->button( ) == Qt::RightButton ) {
         contextMenu( mouseEvt->screenPos( ) );
       }
     }

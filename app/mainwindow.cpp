@@ -4,12 +4,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QClipboard>
 #include <QDebug>
 #include <QFileDialog>
 #include <QKeyEvent>
 #include <QMessageBox>
-#include <QMimeData>
 #include <QRectF>
 #include <QShortcut>
 #include <QStyleFactory>
@@ -35,8 +33,10 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 #ifdef DEBUG
   createUndoView( );
 #endif
-/*  connect( ui->actionUndo, &QAction::triggered, editor->getUndoStack( ), &QUndoStack::undo ); */
-/*  connect( ui->actionRedo, &QAction::triggered, editor->getUndoStack( ), &QUndoStack::redo ); */
+  connect( ui->actionCopy, &QAction::triggered, editor, &Editor::copyAction );
+  connect( ui->actionCut, &QAction::triggered, editor, &Editor::cutAction );
+  connect( ui->actionPaste, &QAction::triggered, editor, &Editor::pasteAction );
+  connect( ui->actionDelete, &QAction::triggered, editor, &Editor::deleteAction );
 
   undoAction = editor->getUndoStack( )->createUndoAction( this, tr( "&Undo" ) );
   undoAction->setIcon( QIcon( QPixmap( ":/toolbar/undo.png" ) ) );
@@ -113,7 +113,7 @@ bool MainWindow::save( QString fname = QString( ) ) {
   }
   else {
     std::cerr << tr( "Could not open file in WriteOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-    std::endl;
+      std::endl;
     return( false );
   }
   fl.flush( );
@@ -188,7 +188,7 @@ bool MainWindow::open( const QString &fname ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-    std::endl;
+      std::endl;
     return( false );
   }
   fl.close( );
@@ -239,14 +239,6 @@ void MainWindow::on_actionAbout_Qt_triggered( ) {
   QMessageBox::aboutQt( this );
 }
 
-void MainWindow::on_actionDelete_triggered( ) {
-  editor->deleteElements( );
-}
-
-void MainWindow::on_lineEdit_textEdited( const QString & ) {
-
-}
-
 bool MainWindow::closeFile( ) {
   bool ok = true;
   if( !editor->getUndoStack( )->isClean( ) ) {
@@ -270,36 +262,6 @@ void MainWindow::closeEvent( QCloseEvent *e ) {
   }
   else {
     e->ignore( );
-  }
-}
-
-void MainWindow::on_actionCopy_triggered( ) {
-  QClipboard *clipboard = QApplication::clipboard( );
-  QMimeData *mimeData = new QMimeData;
-  QByteArray itemData;
-  QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-  editor->copy( dataStream );
-  mimeData->setData( "application/copydata", itemData );
-  clipboard->setMimeData( mimeData );
-}
-
-void MainWindow::on_actionCut_triggered( ) {
-  QClipboard *clipboard = QApplication::clipboard( );
-  QMimeData *mimeData = new QMimeData;
-  QByteArray itemData;
-  QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-  editor->cut( dataStream );
-  mimeData->setData( "application/copydata", itemData );
-  clipboard->setMimeData( mimeData );
-}
-
-void MainWindow::on_actionPaste_triggered( ) {
-  const QClipboard *clipboard = QApplication::clipboard( );
-  const QMimeData *mimeData = clipboard->mimeData( );
-  if( mimeData->hasFormat( "application/copydata" ) ) {
-    QByteArray itemData = mimeData->data( "application/copydata" );
-    QDataStream dataStream( &itemData, QIODevice::ReadOnly );
-    editor->paste( dataStream );
   }
 }
 
@@ -393,7 +355,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-    std::endl;
+      std::endl;
     return;
   }
   fl.close( );

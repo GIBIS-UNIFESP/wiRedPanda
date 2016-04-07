@@ -2,6 +2,7 @@
 #define ELEMENTEDITOR_H
 
 #include "graphicelement.h"
+#include "scene.h"
 #include <QGraphicsScene>
 #include <QUndoCommand>
 #include <QWidget>
@@ -19,7 +20,7 @@ public:
   explicit ElementEditor( QWidget *parent = 0 );
   ~ElementEditor( );
 
-  void setScene( QGraphicsScene *s );
+  void setScene( Scene *s );
   void contextMenu( QPoint screenPos, Editor *editor );
 /*
  *  void renameAction( const QVector< GraphicElement *> &element );
@@ -50,18 +51,18 @@ private:
   void apply( );
 
   Ui::ElementEditor *ui;
-  QVector< GraphicElement* > elements;
-  QGraphicsScene *scene;
+  QVector< GraphicElement* > m_elements;
+  Scene *scene;
   bool hasSomething, hasLabel, hasColors, hasFrequency;
   bool canChangeInputSize, hasTrigger, hasRotation;
   bool hasSameLabel, hasSameColors, hasSameFrequency;
   bool hasSameInputSize, hasSameTrigger, canMorph, hasSameType;
 
-  QString manyLabels;
-  QString manyColors;
-  QString manyIS;
-  QString manyFreq;
-  QString manyTriggers;
+  QString _manyLabels;
+  QString _manyColors;
+  QString _manyIS;
+  QString _manyFreq;
+  QString _manyTriggers;
 
 
 };
