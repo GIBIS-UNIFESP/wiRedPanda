@@ -12,7 +12,7 @@
 
 QList< QGraphicsItem* > deletedItems;
 
-//TODO: Delete connections first;
+/* TODO: Delete connections first; */
 
 AddItemsCommand::AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
     parent ) {
@@ -36,7 +36,7 @@ AddItemsCommand::AddItemsCommand( const QList< QGraphicsItem* > &aItems, Editor 
 }
 
 AddItemsCommand::~AddItemsCommand( ) {
-  qDebug( ) << "Deleting AddItemsCommand!!";
+/*  qDebug( ) << "Deleting AddItemsCommand!!"; */
   while( !items.isEmpty( ) ) {
     QGraphicsItem *item = items.front( );
     items.removeAll( item );
@@ -48,7 +48,7 @@ AddItemsCommand::~AddItemsCommand( ) {
 }
 
 void AddItemsCommand::undo( ) {
-  qDebug( ) << "UNDO " << text( );
+/*  qDebug( ) << "UNDO " << text( ); */
   itemData.clear( );
   serializationOrder.clear( );
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );
@@ -178,11 +178,11 @@ void DeleteItemsCommand::redo( ) {
 }
 
 DeleteItemsCommand::~DeleteItemsCommand( ) {
-  qDebug( ) << "Deleting AddItemsCommand!!";
+/*  qDebug( ) << "Deleting AddItemsCommand!!"; */
   while( !connections.isEmpty( ) ) {
-    QNEConnection *conn = connections.front();
+    QNEConnection *conn = connections.front( );
     connections.removeAll( conn );
-    if( deletedItems.contains( conn ) && !conn->scene() ) {
+    if( deletedItems.contains( conn ) && !conn->scene( ) ) {
       deletedItems.removeAll( conn );
       delete conn;
     }
@@ -190,7 +190,7 @@ DeleteItemsCommand::~DeleteItemsCommand( ) {
   while( !elements.isEmpty( ) ) {
     GraphicElement *elm = elements.front( );
     elements.removeAll( elm );
-    if( deletedItems.contains( elm ) && !elm->scene() ) {
+    if( deletedItems.contains( elm ) && !elm->scene( ) ) {
       deletedItems.removeAll( elm );
       delete elm;
     }
