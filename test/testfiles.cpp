@@ -13,11 +13,15 @@ void TestFiles::cleanup( ) {
 
 void TestFiles::testFiles( ) {
   QDir examplesDir( QString( "%1/../examples/" ).arg( CURRENTDIR ) );
+  qDebug() << "Examples dir:" << examplesDir.absolutePath();
   QStringList entries;
   entries << "*.panda";
   QFileInfoList files = examplesDir.entryInfoList( entries );
   Q_ASSERT(files.size() > 0);
+  int counter = 0;
   for( QFileInfo f : files ) {
+    qDebug() << "File " << counter++ << " from " << files.size() << ": " << f.fileName();
+    Q_ASSERT( f.exists() );
     Q_ASSERT( w->open( f.absoluteFilePath( ) ) );
     QList< QGraphicsItem* > items = w->editor->getScene()->items( );
     for( QGraphicsItem *item : items ) {
