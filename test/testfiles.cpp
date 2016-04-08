@@ -23,8 +23,8 @@ void TestFiles::testFiles( ) {
   for( QFileInfo f : files ) {
     qDebug( ) << "File " << counter++ << " from " << files.size( ) << ": " << f.fileName( );
     Q_ASSERT( f.exists( ) );
-    QFile pandaFile( f.filePath( ) );
-    GlobalProperties::currentFile = f.filePath( );
+    QFile pandaFile( f.absoluteFilePath( ) );
+    GlobalProperties::currentFile = f.absoluteFilePath( );
     Q_ASSERT( pandaFile.exists( ) );
     Q_ASSERT( pandaFile.open( QFile::ReadOnly ) );
 
