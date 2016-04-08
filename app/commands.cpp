@@ -5,10 +5,10 @@
 #include "scene.h"
 #include "serializationfunctions.h"
 
-#include <stdexcept>
 #include <QApplication>
 #include <QDebug>
 #include <cmath>
+#include <stdexcept>
 
 AddItemsCommand::AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
     parent ) {
@@ -46,31 +46,36 @@ AddItemsCommand::~AddItemsCommand( ) {
 }
 
 void AddItemsCommand::undo( ) {
-  qDebug() << "UNDO " << text();
+  qDebug( ) << "UNDO " << text( );
   itemData.clear( );
   serializationOrder.clear( );
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );
   for( QGraphicsItem *item  : items ) {
     if( item->type( ) == QNEConnection::Type ) {
       QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
-      GraphicElement *elm = conn->port1( )->graphicElement( );
-      serializationOrder.append( elm );
-      elm->save( dataStream );
+      if( conn && conn->port1( ) && conn->port2( ) ) {
+        GraphicElement *elm = conn->port1( )->graphicElement( );
+        serializationOrder.append( elm );
+        elm->save( dataStream );
 
-      GraphicElement *elm2 = conn->port2( )->graphicElement( );
-      serializationOrder.append( elm2 );
-      elm2->save( dataStream );
+        GraphicElement *elm2 = conn->port2( )->graphicElement( );
+        serializationOrder.append( elm2 );
+        elm2->save( dataStream );
+      }
     }
   }
   for( QGraphicsItem *item  : items ) {
     if( item->type( ) == QNEConnection::Type ) {
       QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
-      conn->save( dataStream );
-      QNEPort *p1 = conn->port1( );
-      QNEPort *p2 = conn->port2( );
+      if( conn && conn->port1( ) && conn->port2( ) ) {
+        conn->save( dataStream );
+        QNEPort *p1 = conn->port1( );
+        QNEPort *p2 = conn->port2( );
 
-      p1->disconnect( conn );
-      p2->disconnect( conn );
+        p1->disconnect( conn );
+        p2->disconnect( conn );
+
+      }
     }
     editor->getScene( )->removeItem( item );
   }
@@ -484,7 +489,7 @@ void ChangeInputSZCommand::redo( ) {
     GraphicElement *elm = m_elements[ i ];
     for( int in = m_newInputSize; in < elm->inputSize( ); ++in ) {
       while( !elm->input( in )->connections( ).isEmpty( ) ) {
-        QNEConnection * conn = elm->input( in )->connections( ).front();
+        QNEConnection *conn = elm->input( in )->connections( ).front( );
         conn->save( dataStream );
         scene->removeItem( conn );
         QNEPort *otherPort = conn->otherPort( elm->input( in ) );
