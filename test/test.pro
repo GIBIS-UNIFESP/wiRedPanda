@@ -7,11 +7,13 @@ SOURCES += \
       main.cpp \
     testelements.cpp \
     testsimulationcontroller.cpp \
-    testfiles.cpp
+    testfiles.cpp \
+    testcommands.cpp
 
 HEADERS += \
     testelements.h \
     testsimulationcontroller.h \
-    testfiles.h
+    testfiles.h \
+    testcommands.h
 
 DEFINES += CURRENTDIR=\\\"$$PWD\\\"

@@ -69,6 +69,8 @@ void Editor::buildSelectionRect( ) {
 }
 
 void Editor::clear( ) {
+  extern QList< QGraphicsItem* > deletedItems;
+  deletedItems.clear();
   undoStack->clear( );
   if( scene ) {
     scene->clear( );
