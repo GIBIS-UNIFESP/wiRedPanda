@@ -18,15 +18,15 @@ void TestFiles::testFiles( ) {
   QStringList entries;
   entries << "*.panda";
   QFileInfoList files = examplesDir.entryInfoList( entries );
-  Q_ASSERT( files.size( ) > 0 );
+  QVERIFY( files.size( ) > 0 );
   int counter = 0;
   for( QFileInfo f : files ) {
     qDebug( ) << "File " << counter++ << " from " << files.size( ) << ": " << f.fileName( );
-    Q_ASSERT( f.exists( ) );
+    QVERIFY( f.exists( ) );
     QFile pandaFile( f.absoluteFilePath( ) );
     GlobalProperties::currentFile = f.absoluteFilePath( );
-    Q_ASSERT( pandaFile.exists( ) );
-    Q_ASSERT( pandaFile.open( QFile::ReadOnly ) );
+    QVERIFY( pandaFile.exists( ) );
+    QVERIFY( pandaFile.open( QFile::ReadOnly ) );
 
     QDataStream ds( &pandaFile );
     try {
@@ -40,9 +40,9 @@ void TestFiles::testFiles( ) {
     for( QGraphicsItem *item : items ) {
       if( item->type( ) == QNEConnection::Type ) {
         QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
-        Q_ASSERT( conn != nullptr );
-        Q_ASSERT( conn->port1( ) != nullptr );
-        Q_ASSERT( conn->port2( ) != nullptr );
+        QVERIFY( conn != nullptr );
+        QVERIFY( conn->port1( ) != nullptr );
+        QVERIFY( conn->port2( ) != nullptr );
       }
     }
   }
