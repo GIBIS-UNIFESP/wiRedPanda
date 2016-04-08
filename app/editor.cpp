@@ -28,7 +28,8 @@
 #include <QtMath>
 #include <iostream>
 
-Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ), editedConn( nullptr ), m_hoverPort( nullptr ) {
+Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ), editedConn( nullptr ),
+  m_hoverPort( nullptr ) {
   mainWindow = qobject_cast< MainWindow* >( parent );
   markingSelectionBox = false;
   undoStack = new QUndoStack( this );
@@ -42,7 +43,7 @@ Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ), editedC
   mShowWires = true;
   mShowGates = true;
 #ifdef DEBUG
-  undoStack->setUndoLimit(5);
+  undoStack->setUndoLimit( 5 );
 #endif
 }
 
@@ -261,7 +262,7 @@ void Editor::releaseHoverPort( ) {
 }
 
 void Editor::resizeScene( ) {
-  QVector< GraphicElement  * > elms = scene->getElements();
+  QVector< GraphicElement* > elms = scene->getElements( );
   if( !elms.isEmpty( ) ) {
     QRectF rect = scene->sceneRect( );
     for( GraphicElement *elm : elms ) {
