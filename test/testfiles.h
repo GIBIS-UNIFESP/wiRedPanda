@@ -6,8 +6,7 @@
 
 class TestFiles : public QObject {
   Q_OBJECT
-
-  MainWindow * w;
+  Editor * editor;
 private slots:
 
   /* functions executed by QtTest before and after each test */
