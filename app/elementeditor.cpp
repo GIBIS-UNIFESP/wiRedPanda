@@ -117,9 +117,9 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
     }
   }
   menu.addSeparator( );
-  QAction *copyAction = menu.addAction( QIcon( QPixmap( ":/toolbar/copy.png" ) ), tr("Copy") );
-  QAction *cutAction = menu.addAction( QIcon( QPixmap( ":/toolbar/cut.png" ) ), tr("Cut"));
-  QAction *deleteAction = menu.addAction( QIcon( QPixmap( ":/toolbar/delete.png" ) ), tr("Delete"));
+  QAction *copyAction = menu.addAction( QIcon( QPixmap( ":/toolbar/copy.png" ) ), tr( "Copy" ) );
+  QAction *cutAction = menu.addAction( QIcon( QPixmap( ":/toolbar/cut.png" ) ), tr( "Cut" ) );
+  QAction *deleteAction = menu.addAction( QIcon( QPixmap( ":/toolbar/delete.png" ) ), tr( "Delete" ) );
 
   connect( copyAction, &QAction::triggered, editor, &Editor::copyAction );
   connect( cutAction, &QAction::triggered, editor, &Editor::cutAction );
@@ -272,7 +272,7 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
 }
 
 void ElementEditor::selectionChanged( ) {
-  QVector< GraphicElement* > elms = scene->selectedElements();
+  QVector< GraphicElement* > elms = scene->selectedElements( );
   setCurrentElements( elms );
 }
 
@@ -294,7 +294,9 @@ void ElementEditor::apply( ) {
       elm->setFrequency( ui->doubleSpinBoxFrequency->value( ) );
     }
     if( elm->hasTrigger( ) && ( ui->lineEditTrigger->text( ) != _manyTriggers ) ) {
-      elm->setTrigger( QKeySequence( ui->lineEditTrigger->text( ) ) );
+      if( ui->lineEditTrigger->text( ).size( ) <= 1 ) {
+        elm->setTrigger( QKeySequence( ui->lineEditTrigger->text( ) ) );
+      }
     }
   }
   emit sendCommand( new UpdateCommand( m_elements, itemData ) );

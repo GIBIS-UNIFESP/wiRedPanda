@@ -128,7 +128,7 @@ DeleteItemsCommand::DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, Q
       }
     }
   }
-  setText( tr( "Delete %1 elements" ).arg( elements.size( ) ) );
+  setText( tr( "Delete %1 items" ).arg( aItems.size( ) ) );
 }
 
 void DeleteItemsCommand::undo( ) {
