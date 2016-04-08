@@ -12,6 +12,7 @@ void TestFiles::cleanup( ) {
 }
 
 void TestFiles::testFiles( ) {
+  qDebug() << "CURRENTDIR: " << CURRENTDIR;
   QDir examplesDir( QString( "%1/../examples/" ).arg( CURRENTDIR ) );
   qDebug() << "Examples dir:" << examplesDir.absolutePath();
   QStringList entries;
