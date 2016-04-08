@@ -37,14 +37,17 @@ AddItemsCommand::AddItemsCommand( const QList< QGraphicsItem* > &aItems, Editor 
 
 AddItemsCommand::~AddItemsCommand( ) {
 /*  qDebug( ) << "Deleting AddItemsCommand!!"; */
-  while( !items.isEmpty( ) ) {
-    QGraphicsItem *item = items.front( );
-    items.removeAll( item );
-    if( deletedItems.contains( item ) ) {
-      deletedItems.removeAll( item );
-      delete item;
-    }
-  }
+//  while( !items.isEmpty( ) ) {
+//    QGraphicsItem *item = items.front( );
+//    items.removeAll( item );
+//    int count = deletedItems.count( item );
+//    if( count > 0 ) {
+//      deletedItems.removeOne( item );
+//      if( count == 1 ) {
+//        delete item;
+//      }
+//    }
+//  }
 }
 
 void AddItemsCommand::undo( ) {
@@ -104,7 +107,7 @@ void AddItemsCommand::redo( ) {
       editor->getScene( )->addItem( item );
     }
     item->setSelected( true );
-    deletedItems.removeAll( item );
+    deletedItems.removeOne( item );
   }
   editor->getScene( )->clearSelection( );
   editor->getScene( )->update( );
@@ -144,12 +147,12 @@ void DeleteItemsCommand::undo( ) {
   QDataStream storedData( &itemData, QIODevice::ReadOnly );
   for( GraphicElement *item : elements ) {
     scene->addItem( item );
-    deletedItems.removeAll( item );
+    deletedItems.removeOne( item );
   }
   for( QNEConnection *conn : connections ) {
     scene->addItem( conn );
     conn->load( storedData );
-    deletedItems.removeAll( conn );
+    deletedItems.removeOne( conn );
   }
   itemData.clear( );
   scene->update( );
@@ -182,17 +185,23 @@ DeleteItemsCommand::~DeleteItemsCommand( ) {
   while( !connections.isEmpty( ) ) {
     QNEConnection *conn = connections.front( );
     connections.removeAll( conn );
-    if( deletedItems.contains( conn ) && !conn->scene( ) ) {
-      deletedItems.removeAll( conn );
-      delete conn;
+    int count = deletedItems.count( conn );
+    if( count > 0 ) {
+      deletedItems.removeOne( conn );
+      if( count == 1 ) {
+        delete conn;
+      }
     }
   }
   while( !elements.isEmpty( ) ) {
     GraphicElement *elm = elements.front( );
     elements.removeAll( elm );
-    if( deletedItems.contains( elm ) && !elm->scene( ) ) {
-      deletedItems.removeAll( elm );
-      delete elm;
+    int count = deletedItems.count( elm );
+    if( count > 0 ) {
+      deletedItems.removeOne( elm );
+      if( count == 1 ) {
+        delete elm;
+      }
     }
   }
 }
