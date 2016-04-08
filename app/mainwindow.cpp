@@ -533,6 +533,7 @@ void MainWindow::openRecentFile( ) {
   QAction *action = qobject_cast< QAction* >( sender( ) );
   if( action ) {
     QString fileName = action->data( ).toString( );
+
     open( fileName );
   }
 }

@@ -17,8 +17,12 @@ namespace Ui {
   class MainWindow;
 }
 
+class TestFiles;
+
 class MainWindow : public QMainWindow {
   Q_OBJECT
+
+  friend class TestFiles;
 
 public:
   explicit MainWindow( QWidget *parent = 0 );

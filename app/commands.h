@@ -40,6 +40,7 @@ public:
   DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, QUndoCommand *parent = 0 );
   void undo( ) Q_DECL_OVERRIDE;
   void redo( ) Q_DECL_OVERRIDE;
+  virtual ~DeleteItemsCommand();
 
 private:
   QByteArray itemData;
