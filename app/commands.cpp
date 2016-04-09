@@ -343,7 +343,7 @@ void UpdateCommand::loadData( QByteArray itemData ) {
 SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
     parent ) {
   Scene *customScene = aEditor->getScene( );
-  GraphicElement * node = ElementFactory::buildElement( ElementType::NODE, aEditor );
+  GraphicElement *node = ElementFactory::buildElement( ElementType::NODE, aEditor );
   QNEConnection *conn2 = ElementFactory::instance( )->buildConnection( );
 
   /* Align node to Grid */
@@ -354,7 +354,6 @@ SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, Editor *aEditor,
     qreal yV = qRound( nodePos.y( ) / gridSize ) * gridSize;
     nodePos = QPointF( xV, yV );
   }
-
   /* Rotate line according to angle between p1 and p2 */
   nodeAngle = conn->angle( );
   nodeAngle = 360 - 90 * ( std::round( nodeAngle / 90.0 ) );
@@ -424,7 +423,7 @@ void SplitCommand::undo( ) {
   GraphicElement *elm1 = findElm( elm1_id );
   GraphicElement *elm2 = findElm( elm2_id );
   if( c1 && c2 && elm1 && elm2 && node ) {
-    c1->setPort2(c2->port2());
+    c1->setPort2( c2->port2( ) );
 
     c1->updatePosFromPorts( );
     c1->updatePath( );
@@ -446,29 +445,29 @@ MorphCommand::MorphCommand( const QVector< GraphicElement* > &elements,
                             QUndoCommand *parent ) : QUndoCommand( parent ) {
   newtype = aType;
   editor = aEditor;
-  ids.reserve(elements.size());
-  types.reserve(elements.size());
+  ids.reserve( elements.size( ) );
+  types.reserve( elements.size( ) );
   for( GraphicElement *oldElm : elements ) {
-    ids.append(oldElm->id());
-    types.append(oldElm->elementType());
+    ids.append( oldElm->id( ) );
+    types.append( oldElm->elementType( ) );
   }
   setText( tr( "Morph %1 elements to %2" ).arg( elements.size( ) ).arg( elements.front( )->objectName( ) ) );
 }
 
 void MorphCommand::undo( ) {
-  QVector <GraphicElement *> newElms = findElements(ids).toVector();
-  QVector <GraphicElement *> oldElms( newElms.size() );
-  for( int i = 0; i < ids.size(); ++i ){
-    oldElms[i] = ElementFactory::buildElement(types[i], editor);
+  QVector< GraphicElement* > newElms = findElements( ids ).toVector( );
+  QVector< GraphicElement* > oldElms( newElms.size( ) );
+  for( int i = 0; i < ids.size( ); ++i ) {
+    oldElms[ i ] = ElementFactory::buildElement( types[ i ], editor );
   }
   transferConnections( newElms, oldElms );
 }
 
 void MorphCommand::redo( ) {
-  QVector <GraphicElement *> oldElms = findElements(ids).toVector();
-  QVector <GraphicElement *> newElms( oldElms.size() );
-  for( int i = 0; i < ids.size(); ++i ){
-    newElms[i] = ElementFactory::buildElement(newtype, editor);
+  QVector< GraphicElement* > oldElms = findElements( ids ).toVector( );
+  QVector< GraphicElement* > newElms( oldElms.size( ) );
+  for( int i = 0; i < ids.size( ); ++i ) {
+    newElms[ i ] = ElementFactory::buildElement( newtype, editor );
   }
   transferConnections( oldElms, newElms );
 }
@@ -501,7 +500,6 @@ void MorphCommand::transferConnections( QVector< GraphicElement* > from, QVector
     if( newElm->hasTrigger( ) && oldElm->hasTrigger( ) ) {
       newElm->setTrigger( oldElm->getTrigger( ) );
     }
-
     for( int in = 0; in < oldElm->inputSize( ); ++in ) {
       while( !oldElm->input( in )->connections( ).isEmpty( ) ) {
         QNEConnection *conn = oldElm->input( in )->connections( ).first( );
@@ -524,13 +522,12 @@ void MorphCommand::transferConnections( QVector< GraphicElement* > from, QVector
         }
       }
     }
-
-    int oldId = oldElm->id();
-    editor->getScene()->removeItem( oldElm );
+    int oldId = oldElm->id( );
+    editor->getScene( )->removeItem( oldElm );
     delete oldElm;
 
-    ElementFactory::updateItemId(newElm, oldId);
-    editor->getScene()->addItem( newElm );
+    ElementFactory::updateItemId( newElm, oldId );
+    editor->getScene( )->addItem( newElm );
     newElm->updatePorts( );
   }
 }
@@ -539,7 +536,9 @@ void MorphCommand::transferConnections( QVector< GraphicElement* > from, QVector
 ChangeInputSZCommand::ChangeInputSZCommand( const QVector< GraphicElement* > &elements,
                                             int newInputSize,
                                             QUndoCommand *parent ) : QUndoCommand( parent ) {
-  m_elements = elements;
+  for( GraphicElement *elm : elements ) {
+    elms.append( elm->id( ) );
+  }
   m_newInputSize = newInputSize;
   if( !elements.isEmpty( ) ) {
     scene = elements.front( )->scene( );
@@ -548,10 +547,11 @@ ChangeInputSZCommand::ChangeInputSZCommand( const QVector< GraphicElement* > &el
 }
 
 void ChangeInputSZCommand::redo( ) {
+  const QVector< GraphicElement* > m_elements = findElements( elms ).toVector( );
   if( !m_elements.isEmpty( ) && m_elements.front( )->scene( ) ) {
     scene->clearSelection( );
   }
-  serializationOrder.clear( );
+  QVector< GraphicElement* > serializationOrder;
   m_oldData.clear( );
   QDataStream dataStream( &m_oldData, QIODevice::WriteOnly );
   for( int i = 0; i < m_elements.size( ); ++i ) {
@@ -581,10 +581,15 @@ void ChangeInputSZCommand::redo( ) {
     elm->setInputSize( m_newInputSize );
     elm->setSelected( true );
   }
+  order.clear( );
+  for( GraphicElement *elm : serializationOrder ) {
+    order.append( elm->id( ) );
+  }
 }
 
-
 void ChangeInputSZCommand::undo( ) {
+  const QVector< GraphicElement* > m_elements = findElements( elms ).toVector( );
+  const QVector< GraphicElement* > serializationOrder = findElements( order ).toVector( );
   if( !m_elements.isEmpty( ) && m_elements.front( )->scene( ) ) {
     scene->clearSelection( );
   }

@@ -155,14 +155,15 @@ public:
 
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
+
   int id( ) const Q_DECL_OVERRIDE {
     return( Id );
   }
 
 private:
-  QVector< GraphicElement* > m_elements;
-  QVector< GraphicElement* > serializationOrder;
-  QVector< QNEConnection* > storedConnections;
+  QVector< int > elms;
+  QVector< int > order;
+
   QGraphicsScene *scene;
   QByteArray m_oldData;
   int m_newInputSize;
