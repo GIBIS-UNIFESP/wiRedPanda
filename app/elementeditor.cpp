@@ -30,7 +30,7 @@ void ElementEditor::setScene( Scene *s ) {
 }
 
 QAction* addElementAction( QMenu *menu, GraphicElement *firstElm, ElementType type, bool hasSameType ) {
-  if( !hasSameType || ( hasSameType && ( firstElm->elementType( ) != type ) ) ) {
+  if( !hasSameType || ( firstElm->elementType( ) != type ) ) {
     return( menu->addAction( QIcon( ElementFactory::getPixmap( type ) ), ElementFactory::typeToText( type ) ) );
   }
   return( nullptr );
