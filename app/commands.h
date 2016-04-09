@@ -28,7 +28,6 @@ public:
 private:
   QByteArray itemData;
   Editor *editor;
-  bool firstRun;
   QVector< int > ids;
 };
 

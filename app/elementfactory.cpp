@@ -126,7 +126,7 @@ QPixmap ElementFactory::getPixmap( ElementType type ) {
       case ElementType::MUX: return( QPixmap( ":/basic/mux.png" ) );
       case ElementType::DEMUX: return( QPixmap( ":/basic/demux.png" ) );
       case ElementType::NODE: return( QPixmap( ":/basic/node.png" ) );
-      case ElementType::UNKNOWN: return( QPixmap( ) );
+      case ElementType::UNKNOWN: default: return( QPixmap( ) );
   }
   return( QPixmap( ) );
 }
@@ -170,37 +170,35 @@ GraphicElement* ElementFactory::buildElement( ElementType type, Editor *editor, 
         type == ElementType::MUX ? new Mux( parent ) :
         type == ElementType::DEMUX ? new Demux( parent ) :
         ( GraphicElement* ) nullptr;
-  if( elm ) {
-    int newId = instance( )->next_id( );
-//    instance( )->map[ newId ] = elm;
-    elm->setId( newId );
-  }
   return( elm );
 }
 
 QNEConnection* ElementFactory::buildConnection( QGraphicsItem *parent ) {
-  QNEConnection *conn = new QNEConnection( parent );
-  int newId = instance( )->next_id( );
-//  instance( )->map[ newId ] = conn;
-  conn->setId( newId );
-  return( conn );
+  return( new QNEConnection( parent ) );
 }
 
-//ItemWithId* ElementFactory::getItemById( size_t id ) {
-//  if( instance( )->map.contains( id ) ) {
-//    return( instance( )->map[ id ] );
-//  }
-//  return( nullptr );
-//}
+ItemWithId* ElementFactory::getItemById( size_t id ) {
+  if( instance( )->map.contains( id ) ) {
+    return( instance( )->map[ id ] );
+  }
+  return( nullptr );
+}
 
-void ElementFactory::deleteItem( ItemWithId *item ) {
-//  instance( )->map.remove( item->id( ) );
-  delete item;
+void ElementFactory::addItem( ItemWithId *item ) {
+  if( item ) {
+    int newId = instance( )->next_id( );
+    instance( )->map[ newId ] = item;
+    item->setId( newId );
+  }
+}
+
+void ElementFactory::removeItem( ItemWithId *item ) {
+  instance( )->map.remove( item->id( ) );
 }
 
 void ElementFactory::updateItemId( ItemWithId *item, size_t newId ) {
-//  instance( )->map.remove( item->id( ) );
-//  instance( )->map[ newId ] = item;
+  instance( )->map.remove( item->id( ) );
+  instance( )->map[ newId ] = item;
   item->setId( newId );
 }
 
@@ -210,6 +208,6 @@ size_t ElementFactory::next_id( ) {
 }
 
 void ElementFactory::clear( ) {
-//  map.clear( );
+  map.clear( );
   _lastId = 1;
 }

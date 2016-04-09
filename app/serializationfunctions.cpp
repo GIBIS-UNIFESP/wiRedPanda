@@ -55,7 +55,7 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor,
       }
     }
     else if( type == QNEConnection::Type ) {
-      QNEConnection *conn = new QNEConnection( 0 );
+      QNEConnection *conn = ElementFactory::buildConnection();
       conn->setSelected( true );
       if( !conn->load( ds, portMap ) ) {
         delete conn;

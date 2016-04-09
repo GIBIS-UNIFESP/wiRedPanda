@@ -6,18 +6,10 @@ class ItemWithId {
   int m_id;
 
 public:
-  ItemWithId( ) {
-    m_id = 0;
-  }
-
-  int id( ) const {
-    return( m_id );
-  }
-  void setId( int id ) {
-    m_id = id;
-  }
-  virtual ~ItemWithId( ) {
-  }
+  ItemWithId( );
+  int id( ) const;
+  void setId( int id );
+  virtual ~ItemWithId( );
 };
 
 
