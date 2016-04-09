@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="pt_BR">
+<TS version="2.0" language="pt_BR">
 <context>
     <name>AddItemsCommand</name>
     <message>
@@ -38,7 +38,7 @@
     <name>DeleteItemsCommand</name>
     <message>
         <source>Delete %1 elements</source>
-        <translation type="vanished">Remover %1 portas(s)</translation>
+        <translation>Remover %1 portas(s)</translation>
     </message>
     <message>
         <source>Delete %1 items</source>
@@ -120,7 +120,7 @@
     </message>
     <message>
         <source>None</source>
-        <translation type="vanished">Nenhum</translation>
+        <translation>Nenhum</translation>
     </message>
     <message>
         <source>Rename</source>
@@ -132,7 +132,7 @@
     </message>
     <message>
         <source>Change Color to %1</source>
-        <translation type="vanished">Mudar cor para %1</translation>
+        <translation>Mudar cor para %1</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -148,19 +148,19 @@
     </message>
     <message>
         <source>Change color to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Mudar cor para ...</translation>
     </message>
     <message>
         <source>Change trigger</source>
-        <translation type="unfinished"></translation>
+        <translation>Mudar atalho</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Copiar</translation>
     </message>
     <message>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Recortar</translation>
     </message>
 </context>
 <context>
@@ -299,11 +299,11 @@
     </message>
     <message>
         <source>Undo</source>
-        <translation type="vanished">Desfazer</translation>
+        <translation>Desfazer</translation>
     </message>
     <message>
         <source>Redo</source>
-        <translation type="vanished">Refazer</translation>
+        <translation>Refazer</translation>
     </message>
     <message>
         <source>Cu&amp;t</source>
@@ -379,7 +379,7 @@
     </message>
     <message>
         <source>...</source>
-        <translation type="vanished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>&amp;Undo</source>
@@ -489,143 +489,143 @@ Errp: %1</translation>
     </message>
     <message>
         <source>Current Language changed to %1</source>
-        <translation type="vanished">Linguagem mudou para %1</translation>
+        <translation>Linguagem mudou para %1</translation>
     </message>
     <message>
         <source>D-flipflop</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>D-Latch</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>JK-flipflop</source>
-        <translation type="unfinished"></translation>
+        <translation>JK-Flipflop</translation>
     </message>
     <message>
         <source>JK-latch</source>
-        <translation type="unfinished"></translation>
+        <translation>JK-Latch</translation>
     </message>
     <message>
         <source>JK-Latch</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>SR-Flipflop</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>T-Flipflop</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>T-Latch</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Recent files:</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivos recentes:</translation>
     </message>
     <message>
         <source>Ctrl+O</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+X</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+C</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Del</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+N</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl++</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+-</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+R</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+Shift+R</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+A</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+Shift+O</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Reset Zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Restaurar Zoom</translation>
     </message>
     <message>
         <source>Ctrl+0</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Export to PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar para PDF</translation>
     </message>
     <message>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivos PDF(*.pdf)</translation>
     </message>
     <message>
         <source>ERROR</source>
-        <translation type="unfinished"></translation>
+        <translation>ERRO</translation>
     </message>
     <message>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível imprimir este circuito no PDF.</translation>
     </message>
     <message>
         <source>English</source>
-        <translation type="unfinished"></translation>
+        <translation>English</translation>
     </message>
     <message>
         <source>Portuguese</source>
-        <translation type="unfinished"></translation>
+        <translation>Português</translation>
     </message>
 </context>
 <context>
@@ -650,7 +650,7 @@ Errp: %1</translation>
     </message>
     <message>
         <source>Rotate  AA %1 degrees</source>
-        <translation type="vanished">Rotacionar %1 graus</translation>
+        <translation>Rotacionar %1 graus</translation>
     </message>
 </context>
 <context>
