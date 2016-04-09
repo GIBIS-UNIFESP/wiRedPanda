@@ -99,7 +99,7 @@ void loadItems( QByteArray &itemData, const QVector< int > &ids, Editor *editor 
   if( itemData.isEmpty( ) ) {
     return;
   }
-/*  qDebug( ) << "Loading Items"; */
+
 /*
  * Assuming that all connections are stored after the elements, we will deserialize the elements first.
  * We will store one additional information: The element IDs!

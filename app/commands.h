@@ -160,7 +160,7 @@ public:
     return( Id );
   }
 
-private:
+  private:
   QVector< int > elms;
   QVector< int > order;
 
