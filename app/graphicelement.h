@@ -7,6 +7,8 @@
 
 #include "nodes/qneport.h"
 
+#include "itemwithid.h"
+
 enum class ElementType {
   UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND, DISPLAY,
   DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, TLATCH, BOX, NODE, MUX, DEMUX
@@ -19,17 +21,17 @@ enum class ElementGroup {
 
 #define MAXIMUMVALIDINPUTSIZE 256
 
-class GraphicElement : public QGraphicsObject {
+class GraphicElement : public QGraphicsObject, public ItemWithId {
   Q_OBJECT
 public:
   enum { Type = QGraphicsItem::UserType + 3 };
 
-  explicit GraphicElement( int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent = 0 );
+  explicit GraphicElement( int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz,
+                           QGraphicsItem *parent = 0 );
   virtual ~GraphicElement( );
 
 private:
   QPixmap pixmap;
-  int m_id;
 
   /* GraphicElement interface. */
 public:
@@ -62,7 +64,7 @@ public:
 
   void addOutputPort( const QString &name = QString( ) );
 
-  virtual void setPortName( QString name);
+  virtual void setPortName( QString name );
 
   int topPosition( ) const;
 
@@ -97,9 +99,6 @@ public:
   virtual float getFrequency( );
   virtual void setFrequency( float freq );
 
-  int id( ) const;
-  void setId( int value );
-
   void setPixmap( const QPixmap &pixmap );
 
   bool rotatable( ) const;
@@ -118,11 +117,15 @@ public:
   bool changed( ) const;
   void setChanged( bool changed );
 
-//  bool beingVisited( ) const;
-//  void setBeingVisited( bool beingVisited );
+/*
+ *  bool beingVisited( ) const;
+ *  void setBeingVisited( bool beingVisited );
+ */
 
-//  bool visited( ) const;
-//  void setVisited( bool visited );
+/*
+ *  bool visited( ) const;
+ *  void setVisited( bool visited );
+ */
 
   bool isValid( );
 
@@ -137,7 +140,7 @@ public:
   QKeySequence getTrigger( ) const;
   void setTrigger( const QKeySequence &trigger );
 
-  virtual QString genericProperties();
+  virtual QString genericProperties( );
 
 protected:
   void setRotatable( bool rotatable );
@@ -170,8 +173,10 @@ private:
   bool m_hasColors;
   bool m_hasTrigger;
   bool m_changed;
-//  bool m_beingVisited;
-//  bool m_visited;
+/*
+ *  bool m_beingVisited;
+ *  bool m_visited;
+ */
   bool m_disabled;
   QString m_labelText;
   QKeySequence m_trigger;

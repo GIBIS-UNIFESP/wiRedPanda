@@ -48,7 +48,6 @@ private:
   QList< QGraphicsItem* > itemsAt( QPointF pos );
   QGraphicsItem* itemAt( QPointF pos );
   QNEConnection *editedConn;
-  ElementFactory factory;
   ElementEditor *elementEditor;
   bool markingSelectionBox;
   QGraphicsRectItem *selectionRect;
@@ -80,7 +79,6 @@ public:
   bool eventFilter( QObject *obj, QEvent *evt );
   void setElementEditor( ElementEditor *value );
   QUndoStack* getUndoStack( ) const;
-  ElementFactory &getFactory( );
   Scene* getScene( ) const;
   void buildSelectionRect( );
   void handleHoverPort( QNEPort *port );

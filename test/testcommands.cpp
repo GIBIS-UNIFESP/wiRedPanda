@@ -12,20 +12,33 @@ void TestCommands::cleanup( ) {
   delete editor;
 }
 
-extern QList< QGraphicsItem* > deletedItems;
-
 void TestCommands::testAddDeleteCommands( ) {
-  //FIXME: Implementar gerenciamento de memória inteligente.
+  /* FIXME: Implementar gerenciamento de memória inteligente. */
   editor->getUndoStack( )->setUndoLimit( 1 );
   QList< QGraphicsItem* > items;
   items << new And( ) << new And( ) << new And( ) << new And( );
+  int id = 0;
+  for( QGraphicsItem *item : items ) {
+    ItemWithId *iwid = dynamic_cast< ItemWithId* >( item );
+    if( iwid ) {
+      iwid->setId(id++);
+    }
+  }
   editor->receiveCommand( new AddItemsCommand( items, editor ) );
   QCOMPARE( editor->getScene( )->getElements( ).size( ), items.size( ) );
-  QCOMPARE( deletedItems.size( ), 0 );
-  editor->receiveCommand( new DeleteItemsCommand( items ) );
-  QCOMPARE( deletedItems.size( ), items.size( ) );
   editor->getUndoStack( )->undo( );
-  QCOMPARE( deletedItems.size( ), 0 );
+  editor->getUndoStack( )->redo( );
+  editor->getUndoStack( )->undo( );
+  editor->getUndoStack( )->redo( );
+  editor->getUndoStack( )->undo( );
+  editor->getUndoStack( )->redo( );
+  editor->receiveCommand( new DeleteItemsCommand( editor->getScene()->items(), editor ) );
+  editor->getUndoStack( )->undo( );
+  editor->getUndoStack( )->redo( );
+  editor->getUndoStack( )->undo( );
+  editor->getUndoStack( )->redo( );
+  editor->getUndoStack( )->undo( );
+  editor->getUndoStack( )->redo( );
   QCOMPARE( editor->getScene( )->getElements( ).size( ), 0 );
-  QVERIFY( editor->getUndoStack( )->index( ) == 0 );
+  QCOMPARE( editor->getUndoStack( )->index( ), 1 );
 }

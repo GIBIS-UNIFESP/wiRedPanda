@@ -39,7 +39,7 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor,
     if( type == GraphicElement::Type ) {
       quint64 elmType;
       ds >> elmType;
-      GraphicElement *elm = editor->getFactory( ).buildElement( ( ElementType ) elmType, editor );
+      GraphicElement *elm = ElementFactory::buildElement( ( ElementType ) elmType, editor );
       if( elm ) {
         itemList.append( elm );
         elm->load( ds, portMap, version );

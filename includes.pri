@@ -104,7 +104,8 @@ HEADERS  +=  \
     $$PWD/app/recentfilescontroller.h \
     $$PWD/app/scene.h \
     $$PWD/app/serializationfunctions.h \
-    $$PWD/app/simulationcontroller.h
+    $$PWD/app/simulationcontroller.h \
+    $$PWD/app/itemwithid.h
 
 INCLUDEPATH += \
     $$PWD/app \

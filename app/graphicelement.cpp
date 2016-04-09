@@ -10,6 +10,7 @@
 #include <iostream>
 #include <nodes/qneconnection.h>
 #include <stdexcept>
+
 GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz,
                                 QGraphicsItem *parent ) : QGraphicsObject( parent ), label( new QGraphicsTextItem(
                                                                                               this ) )
@@ -65,14 +66,6 @@ void GraphicElement::disable( ) {
 
 void GraphicElement::enable( ) {
   m_disabled = false;
-}
-
-int GraphicElement::id( ) const {
-  return( m_id );
-}
-
-void GraphicElement::setId( int value ) {
-  m_id = value;
 }
 
 void GraphicElement::setPixmap( const QPixmap &pixmap ) {
