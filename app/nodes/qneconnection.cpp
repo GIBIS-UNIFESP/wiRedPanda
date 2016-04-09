@@ -160,11 +160,12 @@ bool QNEConnection::load( QDataStream &ds, const QMap< quint64, QNEPort* > &port
     setPort2( ( QNEPort* ) ptr2 );
   }
   else {
-    if( !portMap.contains( ptr1 ) || !portMap.contains( ptr2 ) ) {
-      return( false );
+    if( portMap.contains( ptr1 ) ) {
+      setPort1( portMap[ ptr1 ] );
     }
-    setPort1( portMap[ ptr1 ] );
-    setPort2( portMap[ ptr2 ] );
+    if( portMap.contains( ptr2 ) ) {
+      setPort2( portMap[ ptr2 ] );
+    }
   }
   updatePosFromPorts( );
   updatePath( );

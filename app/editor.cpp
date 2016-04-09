@@ -772,7 +772,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
           /* Mouse pressed over a connection. */
           if( connection ) {
             if( connection->port1( ) && connection->port2( ) ) {
-              receiveCommand( new SplitCommand( connection, mousePos ) );
+              receiveCommand( new SplitCommand( connection, mousePos, this ) );
             }
           }
           evt->accept( );
