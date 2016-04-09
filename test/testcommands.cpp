@@ -17,13 +17,6 @@ void TestCommands::testAddDeleteCommands( ) {
   editor->getUndoStack( )->setUndoLimit( 1 );
   QList< QGraphicsItem* > items;
   items << new And( ) << new And( ) << new And( ) << new And( );
-  int id = 0;
-  for( QGraphicsItem *item : items ) {
-    ItemWithId *iwid = dynamic_cast< ItemWithId* >( item );
-    if( iwid ) {
-      iwid->setId(id++);
-    }
-  }
   editor->receiveCommand( new AddItemsCommand( items, editor ) );
   QCOMPARE( editor->getScene( )->getElements( ).size( ), items.size( ) );
   editor->getUndoStack( )->undo( );
