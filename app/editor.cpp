@@ -42,9 +42,6 @@ Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ), editedC
   timer.start( );
   mShowWires = true;
   mShowGates = true;
-#ifdef DEBUG
-  undoStack->setUndoLimit( 5 );
-#endif
 }
 
 Editor::~Editor( ) {

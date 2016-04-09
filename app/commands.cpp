@@ -15,7 +15,9 @@ QList< QGraphicsItem* > loadList( const QList< QGraphicsItem* > &aItems, QVector
   QList< QGraphicsItem* > items;
   for( QGraphicsItem *item : aItems ) {
     if( item->type( ) == GraphicElement::Type ) {
-      items.append( item );
+      if( !items.contains( item ) ) {
+        items.append( item );
+      }
     }
   }
   for( QGraphicsItem *item : aItems ) {
@@ -46,21 +48,29 @@ QList< QGraphicsItem* > loadList( const QList< QGraphicsItem* > &aItems, QVector
       ids.append( iwid->id( ) );
     }
   }
-  return items;
+  return( items );
 }
 
 
 QList< QGraphicsItem* > findItems( const QVector< int > &ids, Editor *editor ) {
   QList< QGraphicsItem* > items;
-  items.reserve( ids.size( ) );
-  for( QGraphicsItem *item : editor->getScene( )->items( ) ) {
-    ItemWithId *iwid = dynamic_cast< ItemWithId* >( item );
-    if( iwid && ids.contains( iwid->id( ) ) ) {
+/*
+ *  items.reserve( ids.size( ) );
+ *  for( QGraphicsItem *item : editor->getScene( )->items( ) ) {
+ *    ItemWithId *iwid = dynamic_cast< ItemWithId* >( item );
+ *    if( iwid && ids.contains( iwid->id( ) ) && !items.contains( item ) ) {
+ *      items.append( item );
+ *    }
+ *  }
+ */
+  for( int id : ids ) {
+    QGraphicsItem *item = dynamic_cast< QGraphicsItem* >( ElementFactory::getItemById( id ) );
+    if( item ) {
       items.append( item );
     }
   }
   if( items.size( ) != ids.size( ) ) {
-    throw std::runtime_error( "One or more elements was not found on scene." );
+    throw std::runtime_error( "One or more elements was not found on the scene." );
   }
   return( items );
 }
@@ -80,7 +90,7 @@ void addItems( Editor *editor, QList< QGraphicsItem* > items ) {
   }
 }
 
-void loadItems( QByteArray &itemData, const QVector<int> &ids, Editor *editor ) {
+void loadItems( QByteArray &itemData, const QVector< int > &ids, Editor *editor ) {
   if( itemData.isEmpty( ) ) {
     return;
   }
@@ -102,16 +112,18 @@ void loadItems( QByteArray &itemData, const QVector<int> &ids, Editor *editor ) 
   for( int i = 0; i < items.size( ); ++i ) {
     ItemWithId *iwid = dynamic_cast< ItemWithId* >( items[ i ] );
     if( iwid ) {
-      iwid->setId( ids[ i ] );
+      ElementFactory::updateItemId(iwid, ids[i]);
     }
   }
   addItems( editor, items );
 }
 
 void deleteItems( const QList< QGraphicsItem* > &items, Editor *editor ) {
-  for( QGraphicsItem *item : items ) {
-    editor->getScene( )->removeItem( item );
-    delete item;
+  QVector< QGraphicsItem* > itemsVec = items.toVector( );
+  /* Delete items on reverse order */
+  for( int i = itemsVec.size( ) - 1; i >= 0; --i ) {
+    editor->getScene( )->removeItem( itemsVec[ i ] );
+    delete itemsVec[ i ];
   }
 }
 
@@ -145,7 +157,7 @@ AddItemsCommand::AddItemsCommand( const QList< QGraphicsItem* > &aItems, Editor 
 }
 
 DeleteItemsCommand::DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor,
-                                        QUndoCommand *parent )  : QUndoCommand( parent ) {
+                                        QUndoCommand *parent ) : QUndoCommand( parent ) {
   QList< QGraphicsItem* > items = loadList( aItems, ids );
   editor = aEditor;
   setText( tr( "Delete %1 elements" ).arg( items.size( ) ) );
@@ -523,7 +535,7 @@ void ChangeInputSZCommand::undo( ) {
   for( int i = 0; i < m_elements.size( ); ++i ) {
     GraphicElement *elm = m_elements[ i ];
     for( int in = m_newInputSize; in < elm->inputSize( ); ++in ) {
-      QNEConnection *conn = ElementFactory::buildConnection();
+      QNEConnection *conn = ElementFactory::buildConnection( );
       conn->load( dataStream, portMap );
       scene->addItem( conn );
     }

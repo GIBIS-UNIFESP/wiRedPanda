@@ -56,7 +56,8 @@ SOURCES += \
     $$PWD/app/recentfilescontroller.cpp \
     $$PWD/app/scene.cpp \
     $$PWD/app/serializationfunctions.cpp \
-    $$PWD/app/simulationcontroller.cpp
+    $$PWD/app/simulationcontroller.cpp \
+    $$PWD/app/itemwithid.cpp
 
 HEADERS  +=  \
     $$PWD/app/graphicsviewzoom.h \
@@ -137,4 +138,4 @@ RESOURCES += \
 #CONFIG += app_bundle
 #}
 
-QMAKE_CXXFLAGS_DEBUG += -DDEBUG
+QMAKE_CXXFLAGS_DEBUG += -DDEBUG -Wall
