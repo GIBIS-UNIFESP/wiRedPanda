@@ -844,7 +844,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>280</height>
+                   <height>270</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -944,7 +944,7 @@
                <x>0</x>
                <y>0</y>
                <width>228</width>
-               <height>271</height>
+               <height>279</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
@@ -1026,7 +1026,7 @@
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>19</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1094,9 +1094,17 @@
     <addaction name="actionGates"/>
     <addaction name="separator"/>
    </widget>
+   <widget class="QMenu" name="menuLanguage">
+    <property name="title">
+     <string>Language</string>
+    </property>
+    <addaction name="actionEnglish"/>
+    <addaction name="actionPortuguese"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
+   <addaction name="menuLanguage"/>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionOpen">
@@ -1332,6 +1340,16 @@
     <string>Export to PDF</string>
    </property>
   </action>
+  <action name="actionEnglish">
+   <property name="text">
+    <string>English</string>
+   </property>
+  </action>
+  <action name="actionPortuguese">
+   <property name="text">
+    <string>Portuguese</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1362,6 +1380,11 @@
   <tabstop>scrollArea_6</tabstop>
  </tabstops>
  <resources>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/memory/memory.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/resources.qrc"/>
   <include location="resources/basic/basic.qrc"/>
   <include location="resources/input/input.qrc"/>
@@ -1369,11 +1392,6 @@
   <include location="resources/output/output.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/resources.qrc"/>
-  <include location="resources/output/output.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/memory/memory.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
  </resources>
  <connections/>
 </ui>

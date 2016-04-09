@@ -20,3 +20,6 @@ SOURCES += main.cpp
 
 DISTFILES += resources/postinst
 
+RESOURCES += \
+    resources/translations.qrc
+

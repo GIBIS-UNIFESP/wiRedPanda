@@ -578,3 +578,31 @@ void MainWindow::on_actionPrint_triggered( ) {
   editor->getScene( )->render( &p, QRectF( ), editor->getScene( )->itemsBoundingRect( ).adjusted( -64, -64, 64, 64 ) );
   p.end( );
 }
+
+void MainWindow::on_actionEnglish_triggered()
+{
+    if(translator) qApp->removeTranslator(translator);
+
+    translator = new QTranslator(this);
+
+    if(translator->load("://wpanda_en.qm")){
+     qApp->installTranslator(translator);
+     ui->retranslateUi(this);
+    } else{
+        QMessageBox::critical(this, "Error!", "Error loading translation!");
+    }
+}
+
+void MainWindow::on_actionPortuguese_triggered()
+{
+    if(translator) qApp->removeTranslator(translator);
+
+    translator = new QTranslator(this);
+
+    if(translator->load("://wpanda_pt.qm")){
+     qApp->installTranslator(translator);
+     ui->retranslateUi(this);
+    } else{
+        QMessageBox::critical(this, "Error!", "Error loading translation!");
+    }
+}

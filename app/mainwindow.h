@@ -11,6 +11,7 @@
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QMainWindow>
+#include <QTranslator>
 #include <QUndoView>
 
 namespace Ui {
@@ -41,57 +42,35 @@ public:
   bool closeFile( );
 
 private slots:
-  void scrollView( int dx, int dy );
-
-  void on_actionExit_triggered( );
-
-  void on_actionNew_triggered( );
-
-  void on_actionWires_triggered( bool checked );
-
-  void on_actionRotate_right_triggered( );
-
-  void on_actionRotate_left_triggered( );
-
-  void on_actionOpen_triggered( );
-
-  void on_actionSave_triggered( );
-
-  void on_actionAbout_triggered( );
-
-  void on_actionAbout_Qt_triggered( );
-
-  void on_actionSave_As_triggered( );
-
-  void on_actionSelect_all_triggered( );
-
-  void on_actionOpen_Box_triggered( );
-
-  void on_lineEdit_textChanged( const QString &arg1 );
-
-  void on_lineEdit_returnPressed( );
-
-  void on_actionReload_File_triggered( );
-
-  void on_actionGates_triggered( bool checked );
-
   bool on_actionExport_to_Arduino_triggered( );
-
-  void on_actionZoom_in_triggered( );
-
-  void on_actionZoom_out_triggered( );
-
+  void on_actionAbout_Qt_triggered( );
+  void on_actionAbout_triggered( );
+  void on_actionEnglish_triggered();
+  void on_actionExit_triggered( );
+  void on_actionGates_triggered( bool checked );
+  void on_actionNew_triggered( );
+  void on_actionOpen_Box_triggered( );
+  void on_actionOpen_triggered( );
+  void on_actionPortuguese_triggered();
+  void on_actionPrint_triggered();
+  void on_actionReload_File_triggered( );
   void on_actionReset_Zoom_triggered( );
-
+  void on_actionRotate_left_triggered( );
+  void on_actionRotate_right_triggered( );
+  void on_actionSave_As_triggered( );
+  void on_actionSave_triggered( );
+  void on_actionSelect_all_triggered( );
+  void on_actionWires_triggered( bool checked );
+  void on_actionZoom_in_triggered( );
+  void on_actionZoom_out_triggered( );
+  void on_lineEdit_returnPressed( );
+  void on_lineEdit_textChanged( const QString &arg1 );
+  void openRecentFile( );
+  void scrollView( int dx, int dy );
+  void updateRecentFileActions( );
   void zoomChanged( );
 
-  void updateRecentFileActions( );
-
-  void openRecentFile( );
-
-  void on_actionPrint_triggered();
-
-  private:
+private:
   Ui::MainWindow *ui;
   Editor *editor;
   QFileInfo currentFile;
@@ -103,6 +82,7 @@ private slots:
   QAction *redoAction;
   RecentFilesController *rfController, *rboxController;
   QAction *recentFileActs[ RecentFilesController::MaxRecentFiles ];
+  QTranslator *translator;
 
   void createRecentFileActions( );
   /* QWidget interface */
