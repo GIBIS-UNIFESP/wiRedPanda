@@ -115,7 +115,7 @@
                        <pixmap resource="resources/input/input.qrc">:/input/1.png</pixmap>
                       </property>
                       <property name="Name" stdset="0">
-                       <string notr="true">VCC</string>
+                       <string>VCC</string>
                       </property>
                      </widget>
                     </item>
@@ -571,7 +571,7 @@
                        <pixmap resource="resources/basic/basic.qrc">:/basic/node.png</pixmap>
                       </property>
                       <property name="Name" stdset="0">
-                       <string>DEMUX</string>
+                       <string>NODE</string>
                       </property>
                      </widget>
                     </item>
@@ -640,14 +640,14 @@
                        <pixmap resource="resources/memory/memory.qrc">:/memory/D-flipflop.png</pixmap>
                       </property>
                       <property name="Name" stdset="0">
-                       <string>D-flipflop</string>
+                       <string>D-Flipflop</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QLabel" name="label_17">
                       <property name="text">
-                       <string>D-flipflop</string>
+                       <string>D-Flipflop</string>
                       </property>
                      </widget>
                     </item>
@@ -691,14 +691,14 @@
                        <pixmap resource="resources/memory/memory.qrc">:/memory/JK-flipflop.png</pixmap>
                       </property>
                       <property name="Name" stdset="0">
-                       <string>JK-flipflop</string>
+                       <string>JK-Flipflop</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QLabel" name="label_21">
                       <property name="text">
-                       <string>JK-flipflop</string>
+                       <string>JK-Flipflop</string>
                       </property>
                      </widget>
                     </item>
@@ -715,7 +715,7 @@
                        <pixmap resource="resources/memory/memory.qrc">:/memory/JK-latch.png</pixmap>
                       </property>
                       <property name="Name" stdset="0">
-                       <string>JK-latch</string>
+                       <string>JK-Latch</string>
                       </property>
                      </widget>
                     </item>
@@ -844,7 +844,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>270</height>
+                   <height>280</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -944,7 +944,7 @@
                <x>0</x>
                <y>0</y>
                <width>228</width>
-               <height>279</height>
+               <height>271</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
@@ -1026,7 +1026,7 @@
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>20</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1380,18 +1380,18 @@
   <tabstop>scrollArea_6</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
   <include location="resources/output/output.qrc"/>
-  <include location="resources/memory/memory.qrc"/>
+  <include location="resources/input/input.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/resources.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
-  <include location="resources/input/input.qrc"/>
   <include location="resources/memory/memory.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/resources.qrc"/>
   <include location="resources/output/output.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/resources.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/memory/memory.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
  </resources>
  <connections/>
 </ui>

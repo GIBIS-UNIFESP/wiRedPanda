@@ -387,6 +387,14 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
     QList< Label* > searchResults;
     QRegularExpression regex2( QString( "^label_.*%1.*" ).arg( text ), QRegularExpression::CaseInsensitiveOption );
     searchResults.append( ui->tabWidget->findChildren< Label* >( regex2 ) );
+    QList< Label* > allLabels = ui->tabWidget->findChildren< Label* >( );
+    for( Label *lb : allLabels ) {
+      if( !lb->property( "Name" ).isNull( ) && regex.match( lb->property( "Name" ).toString( ) ).hasMatch() ) {
+        if( !searchResults.contains( lb ) ) {
+          searchResults.append( lb );
+        }
+      }
+    }
     for( auto *box : boxes ) {
       if( regex.match( box->auxData( ) ).hasMatch( ) ) {
         searchResults.append( box );
@@ -579,30 +587,30 @@ void MainWindow::on_actionPrint_triggered( ) {
   p.end( );
 }
 
-void MainWindow::on_actionEnglish_triggered()
-{
-    if(translator) qApp->removeTranslator(translator);
-
-    translator = new QTranslator(this);
-
-    if(translator->load("://wpanda_en.qm")){
-     qApp->installTranslator(translator);
-     ui->retranslateUi(this);
-    } else{
-        QMessageBox::critical(this, "Error!", "Error loading translation!");
-    }
+void MainWindow::on_actionEnglish_triggered( ) {
+  if( translator ) {
+    qApp->removeTranslator( translator );
+  }
+  translator = new QTranslator( this );
+  if( translator->load( "://wpanda_en.qm" ) ) {
+    qApp->installTranslator( translator );
+    ui->retranslateUi( this );
+  }
+  else {
+    QMessageBox::critical( this, "Error!", "Error loading translation!" );
+  }
 }
 
-void MainWindow::on_actionPortuguese_triggered()
-{
-    if(translator) qApp->removeTranslator(translator);
-
-    translator = new QTranslator(this);
-
-    if(translator->load("://wpanda_pt.qm")){
-     qApp->installTranslator(translator);
-     ui->retranslateUi(this);
-    } else{
-        QMessageBox::critical(this, "Error!", "Error loading translation!");
-    }
+void MainWindow::on_actionPortuguese_triggered( ) {
+  if( translator ) {
+    qApp->removeTranslator( translator );
+  }
+  translator = new QTranslator( this );
+  if( translator->load( "://wpanda_pt.qm" ) ) {
+    qApp->installTranslator( translator );
+    ui->retranslateUi( this );
+  }
+  else {
+    QMessageBox::critical( this, "Error!", "Error loading translation!" );
+  }
 }
