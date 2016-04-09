@@ -69,8 +69,7 @@ void Editor::buildSelectionRect( ) {
 }
 
 void Editor::clear( ) {
-  extern QList< QGraphicsItem* > deletedItems;
-  deletedItems.clear();
+  ElementFactory::instance()->clear();
   undoStack->clear( );
   if( scene ) {
     scene->clear( );
@@ -85,7 +84,7 @@ void Editor::deleteAction( ) {
   const QList< QGraphicsItem* > &items = scene->selectedItems( );
   scene->clearSelection( );
   if( !items.isEmpty( ) ) {
-    receiveCommand( new DeleteItemsCommand( items ) );
+    receiveCommand( new DeleteItemsCommand( items, this ) );
   }
 }
 
@@ -203,9 +202,9 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
         pressedPort->disconnect( editedConn );
         QList< QGraphicsItem* > itemList;
         itemList.append( editedConn );
-        receiveCommand( new DeleteItemsCommand( itemList ) );
+        receiveCommand( new DeleteItemsCommand( itemList, this ) );
         editedConn = nullptr;
-        editedConn = new QNEConnection( );
+        editedConn = ElementFactory::buildConnection();
         editedConn->setPort1( port1 );
         editedConn->setPort2( nullptr );
         editedConn->updatePosFromPorts( );
@@ -218,7 +217,7 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
       }
     }
     else {
-      editedConn = new QNEConnection( );
+      editedConn = ElementFactory::buildConnection();
       addItem( editedConn );
       editedConn->setPort1( pressedPort );
       editedConn->updatePosFromPorts( );
@@ -395,7 +394,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
     qint32 type;
     dataStream >> offset >> type >> label_auxData;
     QPointF pos = dde->scenePos( ) - offset;
-    GraphicElement *elm = factory.buildElement( ( ElementType ) type, this );
+    GraphicElement *elm = ElementFactory::buildElement( ( ElementType ) type, this );
     /* If element type is unknown, a default element is created with the pixmap received from mimedata */
     if( !elm ) {
       return( false );
@@ -445,7 +444,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
     qint32 type;
     dataStream >> type >> offset;
     QPointF pos = dde->scenePos( ) - offset;
-    GraphicElement *elm = factory.buildElement( ( ElementType ) type, this );
+    GraphicElement *elm = ElementFactory::buildElement( ( ElementType ) type, this );
     /* If element type is unknown, a default element is created with the pixmap received from mimedata */
     if( !elm ) {
       return( false );
@@ -532,10 +531,6 @@ void Editor::ctrlDrag( GraphicElement *elm, QPointF pos ) {
 
 QUndoStack* Editor::getUndoStack( ) const {
   return( undoStack );
-}
-
-ElementFactory &Editor::getFactory( ) {
-  return( factory );
 }
 
 Scene* Editor::getScene( ) const {

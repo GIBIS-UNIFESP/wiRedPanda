@@ -22,6 +22,7 @@
 #include "inputvcc.h"
 #include "or.h"
 #include <iostream>
+
 TestElements::TestElements( QObject *parent ) : QObject( parent ) {
 
 }

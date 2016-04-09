@@ -27,10 +27,13 @@
 #include <demux.h>
 #include <mux.h>
 #include <node.h>
+#include <qneconnection.h>
+
+ElementFactory*ElementFactory::_instance = nullptr;
 
 
 size_t ElementFactory::getLastId( ) const {
-  return( lastId );
+  return( _lastId );
 }
 
 ElementType ElementFactory::textToType( QString text ) {
@@ -129,11 +132,14 @@ QPixmap ElementFactory::getPixmap( ElementType type ) {
 }
 
 ElementFactory::ElementFactory( ) {
-  lastId = 0;
+  clear( );
 }
 
-void ElementFactory::giveBackId( size_t id ) {
-  available_id.push_back( id );
+ElementFactory* ElementFactory::instance( ) {
+  if( _instance == nullptr ) {
+    _instance = new ElementFactory( );
+  }
+  return( _instance );
 }
 
 GraphicElement* ElementFactory::buildElement( ElementType type, Editor *editor, QGraphicsItem *parent ) {
@@ -165,19 +171,45 @@ GraphicElement* ElementFactory::buildElement( ElementType type, Editor *editor, 
         type == ElementType::DEMUX ? new Demux( parent ) :
         ( GraphicElement* ) nullptr;
   if( elm ) {
-    elm->setId( next_id( ) );
+    int newId = instance( )->next_id( );
+//    instance( )->map[ newId ] = elm;
+    elm->setId( newId );
   }
   return( elm );
 }
 
+QNEConnection* ElementFactory::buildConnection( QGraphicsItem *parent ) {
+  QNEConnection *conn = new QNEConnection( parent );
+  int newId = instance( )->next_id( );
+//  instance( )->map[ newId ] = conn;
+  conn->setId( newId );
+  return( conn );
+}
+
+//ItemWithId* ElementFactory::getItemById( size_t id ) {
+//  if( instance( )->map.contains( id ) ) {
+//    return( instance( )->map[ id ] );
+//  }
+//  return( nullptr );
+//}
+
+void ElementFactory::deleteItem( ItemWithId *item ) {
+//  instance( )->map.remove( item->id( ) );
+  delete item;
+}
+
+void ElementFactory::updateItemId( ItemWithId *item, size_t newId ) {
+//  instance( )->map.remove( item->id( ) );
+//  instance( )->map[ newId ] = item;
+  item->setId( newId );
+}
+
+
 size_t ElementFactory::next_id( ) {
-  size_t nextId = lastId;
-  if( available_id.empty( ) ) {
-    lastId++;
-  }
-  else {
-    nextId = available_id.front( );
-    available_id.pop_front( );
-  }
-  return( nextId );
+  return( _lastId++ );
+}
+
+void ElementFactory::clear( ) {
+//  map.clear( );
+  _lastId = 1;
 }

@@ -2,23 +2,31 @@
 #define ELEMENTFACTORY_H
 #include "graphicelement.h"
 #include <deque>
+
 class Editor;
 class ElementFactory {
-  std::deque< size_t > available_id;
-  size_t lastId;
+  size_t _lastId;
+  static ElementFactory *_instance;
 
 public:
-  ElementFactory();
-  void giveBackId( size_t id );
-  GraphicElement * buildElement(ElementType type , Editor * editor, QGraphicsItem * parent = 0);
-  size_t getLastId() const;
+//  QMap< size_t, ItemWithId *> map;
+
+  static ElementFactory* instance( );
   static ElementType textToType( QString text );
   static QString typeToText( ElementType type );
   static QPixmap getPixmap( ElementType type );
+  static GraphicElement* buildElement( ElementType type, Editor *editor, QGraphicsItem *parent = 0 );
+  static QNEConnection* buildConnection( QGraphicsItem *parent = 0 );
+//  static ItemWithId * getItemById(size_t id);
+  static void deleteItem( ItemWithId * item );
+  static void updateItemId(ItemWithId * item, size_t newId );
+
+  size_t getLastId( ) const;
+  size_t next_id( );
+  void clear();
 
 private:
-  size_t next_id();
-
+  ElementFactory( );
 };
 
-#endif // ELEMENTFACTORY_H
+#endif /* ELEMENTFACTORY_H */

@@ -1,6 +1,7 @@
 #include "box.h"
 #include "commands.h"
 #include "editor.h"
+#include "globalproperties.h"
 #include "graphicelement.h"
 #include "scene.h"
 #include "serializationfunctions.h"
@@ -10,200 +11,169 @@
 #include <cmath>
 #include <stdexcept>
 
-QList< QGraphicsItem* > deletedItems;
+QList< QGraphicsItem* > loadList( const QList< QGraphicsItem* > &aItems, QVector< int > &ids ) {
+  QList< QGraphicsItem* > items;
+  for( QGraphicsItem *item : aItems ) {
+    if( item->type( ) == GraphicElement::Type ) {
+      items.append( item );
+    }
+  }
+  for( QGraphicsItem *item : aItems ) {
+    if( item->type( ) == GraphicElement::Type ) {
+      GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+      QVector< QNEPort* > portsList = elm->inputs( );
+      portsList.append( elm->outputs( ) );
+      for( QNEPort *port : portsList ) {
+        for( QNEConnection *conn : port->connections( ) ) {
+          if( !items.contains( conn ) ) {
+            items.append( conn );
+          }
+        }
+      }
+    }
+  }
+  for( QGraphicsItem *item : aItems ) {
+    if( item->type( ) == QNEConnection::Type ) {
+      if( !items.contains( item ) ) {
+        items.append( item );
+      }
+    }
+  }
+  ids.reserve( items.size( ) );
+  for( QGraphicsItem *item : items ) {
+    ItemWithId *iwid = dynamic_cast< ItemWithId* >( item );
+    if( iwid ) {
+      ids.append( iwid->id( ) );
+    }
+  }
+  return items;
+}
 
-/* TODO: Delete connections first; */
+
+QList< QGraphicsItem* > findItems( const QVector< int > &ids, Editor *editor ) {
+  QList< QGraphicsItem* > items;
+  items.reserve( ids.size( ) );
+  for( QGraphicsItem *item : editor->getScene( )->items( ) ) {
+    ItemWithId *iwid = dynamic_cast< ItemWithId* >( item );
+    if( iwid && ids.contains( iwid->id( ) ) ) {
+      items.append( item );
+    }
+  }
+  if( items.size( ) != ids.size( ) ) {
+    throw std::runtime_error( "One or more elements was not found on scene." );
+  }
+  return( items );
+}
+
+void saveitems( QByteArray &itemData, const QList< QGraphicsItem* > &items ) {
+/*  qDebug( ) << "Saving Items"; */
+  itemData.clear( );
+  /* We will store the elements before the connections. */
+  QDataStream dataStream( &itemData, QIODevice::WriteOnly );
+  SerializationFunctions::serialize( items, dataStream );
+}
+
+void addItems( Editor *editor, QList< QGraphicsItem* > items ) {
+  for( QGraphicsItem *item : items ) {
+    editor->getScene( )->addItem( item );
+    item->setSelected( true );
+  }
+}
+
+void loadItems( QByteArray &itemData, const QVector<int> &ids, Editor *editor ) {
+  if( itemData.isEmpty( ) ) {
+    return;
+  }
+/*  qDebug( ) << "Loading Items"; */
+/*
+ * Assuming that all connections are stored after the elements, we will deserialize the elements first.
+ * We will store one additional information: The element IDs!
+ */
+  QDataStream dataStream( &itemData, QIODevice::ReadOnly );
+  double version = QApplication::applicationVersion( ).toDouble( );
+  QList< QGraphicsItem* > items =
+    SerializationFunctions::deserialize( editor,
+                                         dataStream,
+                                         version,
+                                         GlobalProperties::currentFile );
+  if( items.size( ) != ids.size( ) ) {
+    throw std::runtime_error( "One or more elements was not found on scene." );
+  }
+  for( int i = 0; i < items.size( ); ++i ) {
+    ItemWithId *iwid = dynamic_cast< ItemWithId* >( items[ i ] );
+    if( iwid ) {
+      iwid->setId( ids[ i ] );
+    }
+  }
+  addItems( editor, items );
+}
+
+void deleteItems( const QList< QGraphicsItem* > &items, Editor *editor ) {
+  for( QGraphicsItem *item : items ) {
+    editor->getScene( )->removeItem( item );
+    delete item;
+  }
+}
+
 
 AddItemsCommand::AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
     parent ) {
+  QList< QGraphicsItem* > items;
   items.append( aItem );
+  items = loadList( items, ids );
   editor = aEditor;
+  addItems( editor, items );
   setText( tr( "Add %1 element" ).arg( aItem->objectName( ) ) );
 }
 
 AddItemsCommand::AddItemsCommand( QNEConnection *aItem, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
     parent ) {
+  QList< QGraphicsItem* > items;
   items.append( aItem );
+  items = loadList( items, ids );
   editor = aEditor;
+  addItems( editor, items );
   setText( tr( "Add connection" ) );
 }
 
 AddItemsCommand::AddItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor,
                                   QUndoCommand *parent ) : QUndoCommand( parent ) {
-  items = aItems;
+  QList< QGraphicsItem* > items = loadList( aItems, ids );
   editor = aEditor;
+  addItems( editor, items );
   setText( tr( "Add %1 elements" ).arg( items.size( ) ) );
 }
 
-AddItemsCommand::~AddItemsCommand( ) {
-/*  qDebug( ) << "Deleting AddItemsCommand!!"; */
-//  while( !items.isEmpty( ) ) {
-//    QGraphicsItem *item = items.front( );
-//    items.removeAll( item );
-//    int count = deletedItems.count( item );
-//    if( count > 0 ) {
-//      deletedItems.removeOne( item );
-//      if( count == 1 ) {
-//        delete item;
-//      }
-//    }
-//  }
+DeleteItemsCommand::DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor,
+                                        QUndoCommand *parent )  : QUndoCommand( parent ) {
+  QList< QGraphicsItem* > items = loadList( aItems, ids );
+  editor = aEditor;
+  setText( tr( "Delete %1 elements" ).arg( items.size( ) ) );
 }
 
 void AddItemsCommand::undo( ) {
-/*  qDebug( ) << "UNDO " << text( ); */
-  itemData.clear( );
-  serializationOrder.clear( );
-  QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-  for( QGraphicsItem *item  : items ) {
-    if( item->type( ) == QNEConnection::Type ) {
-      QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
-      if( conn && conn->port1( ) && conn->port2( ) ) {
-        GraphicElement *elm = conn->port1( )->graphicElement( );
-        serializationOrder.append( elm );
-        elm->save( dataStream );
-
-        GraphicElement *elm2 = conn->port2( )->graphicElement( );
-        serializationOrder.append( elm2 );
-        elm2->save( dataStream );
-      }
-    }
-  }
-  for( QGraphicsItem *item  : items ) {
-    if( item->type( ) == QNEConnection::Type ) {
-      QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
-      if( conn && conn->port1( ) && conn->port2( ) ) {
-        conn->save( dataStream );
-        QNEPort *p1 = conn->port1( );
-        QNEPort *p2 = conn->port2( );
-
-        p1->disconnect( conn );
-        p2->disconnect( conn );
-
-      }
-    }
-    deletedItems.append( item );
-    editor->getScene( )->removeItem( item );
-  }
-}
-
-void AddItemsCommand::redo( ) {
-  if( !itemData.isEmpty( ) ) {
-    QDataStream dataStream( &itemData, QIODevice::ReadOnly );
-    double version = QApplication::applicationVersion( ).toDouble( );
-    QMap< quint64, QNEPort* > portMap;
-    for( GraphicElement *elm : serializationOrder ) {
-      elm->load( dataStream, portMap, version );
-    }
-    for( QGraphicsItem *item  : items ) {
-      if( item->type( ) == QNEConnection::Type ) {
-        QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
-        Q_ASSERT( conn->load( dataStream, portMap ) );
-      }
-    }
-  }
-  for( QGraphicsItem *item  : items ) {
-    if( !item->scene( ) ) {
-      editor->getScene( )->addItem( item );
-    }
-    item->setSelected( true );
-    deletedItems.removeOne( item );
-  }
-  editor->getScene( )->clearSelection( );
-  editor->getScene( )->update( );
-  editor->updateVisibility( );
-}
-
-DeleteItemsCommand::DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, QUndoCommand *parent ) : QUndoCommand(
-    parent ) {
-  if( !aItems.isEmpty( ) ) {
-    scene = aItems.front( )->scene( );
-  }
-  for( QGraphicsItem *item : aItems ) {
-    if( item->type( ) == GraphicElement::Type ) {
-      GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
-      elements.append( elm );
-      QVector< QNEPort* > ports = elm->inputs( );
-      ports.append( elm->outputs( ) );
-      for( QNEPort *port : ports ) {
-        for( QNEConnection *conn : port->connections( ) ) {
-          if( !connections.contains( conn ) ) {
-            connections.append( conn );
-          }
-        }
-      }
-    }
-    else if( item->type( ) == QNEConnection::Type ) {
-      QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
-      if( !connections.contains( conn ) ) {
-        connections.append( conn );
-      }
-    }
-  }
-  setText( tr( "Delete %1 items" ).arg( aItems.size( ) ) );
+  qDebug( ) << "UNDO " << text( );
+  QList< QGraphicsItem* > items
+    = findItems( ids, editor );
+  saveitems( itemData, items );
+  deleteItems( items, editor );
 }
 
 void DeleteItemsCommand::undo( ) {
-  QDataStream storedData( &itemData, QIODevice::ReadOnly );
-  for( GraphicElement *item : elements ) {
-    scene->addItem( item );
-    deletedItems.removeOne( item );
-  }
-  for( QNEConnection *conn : connections ) {
-    scene->addItem( conn );
-    conn->load( storedData );
-    deletedItems.removeOne( conn );
-  }
-  itemData.clear( );
-  scene->update( );
+  qDebug( ) << "UNDO " << text( );
+  loadItems( itemData, ids, editor );
 }
 
+void AddItemsCommand::redo( ) {
+  qDebug( ) << "REDO " << text( );
+  loadItems( itemData, ids, editor );
+}
 void DeleteItemsCommand::redo( ) {
-  itemData.clear( );
-  QDataStream storedData( &itemData, QIODevice::WriteOnly );
-  for( QNEConnection *conn : connections ) {
-    conn->save( storedData );
-    QNEPort *p1 = conn->port1( );
-    if( p1 ) {
-      p1->disconnect( conn );
-    }
-    QNEPort *p2 = conn->port2( );
-    if( p2 ) {
-      p2->disconnect( conn );
-    }
-    scene->removeItem( conn );
-    deletedItems.append( conn );
-  }
-  for( GraphicElement *elm : elements ) {
-    scene->removeItem( elm );
-    deletedItems.append( elm );
-  }
-}
-
-DeleteItemsCommand::~DeleteItemsCommand( ) {
-/*  qDebug( ) << "Deleting AddItemsCommand!!"; */
-  while( !connections.isEmpty( ) ) {
-    QNEConnection *conn = connections.front( );
-    connections.removeAll( conn );
-    int count = deletedItems.count( conn );
-    if( count > 0 ) {
-      deletedItems.removeOne( conn );
-      if( count == 1 ) {
-        delete conn;
-      }
-    }
-  }
-  while( !elements.isEmpty( ) ) {
-    GraphicElement *elm = elements.front( );
-    elements.removeAll( elm );
-    int count = deletedItems.count( elm );
-    if( count > 0 ) {
-      deletedItems.removeOne( elm );
-      if( count == 1 ) {
-        delete elm;
-      }
-    }
-  }
+  qDebug( ) << "REDO " << text( );
+  QList< QGraphicsItem* > items
+    = findItems( ids, editor );
+  saveitems( itemData, items );
+  deleteItems( items, editor );
 }
 
 
@@ -367,7 +337,7 @@ SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, QUndoCommand *pa
     std::swap( p1, p2 );
   }
   c1 = conn;
-  c2 = new QNEConnection( );
+  c2 = ElementFactory::instance( )->buildConnection( );
   setText( tr( "Wire split" ) );
 }
 
@@ -422,7 +392,7 @@ MorphCommand::MorphCommand( const QVector< GraphicElement* > &elements,
   old_elements = elements;
   scene = editor->getScene( );
   for( GraphicElement *oldElm : elements ) {
-    GraphicElement *newElm = editor->getFactory( ).buildElement( type, editor );
+    GraphicElement *newElm = ElementFactory::buildElement( type, editor );
     newElm->setInputSize( oldElm->inputSize( ) );
     new_elements.append( newElm );
     newElm->setPos( oldElm->pos( ) );
@@ -553,7 +523,7 @@ void ChangeInputSZCommand::undo( ) {
   for( int i = 0; i < m_elements.size( ); ++i ) {
     GraphicElement *elm = m_elements[ i ];
     for( int in = m_newInputSize; in < elm->inputSize( ); ++in ) {
-      QNEConnection *conn = new QNEConnection( );
+      QNEConnection *conn = ElementFactory::buildConnection();
       conn->load( dataStream, portMap );
       scene->addItem( conn );
     }
