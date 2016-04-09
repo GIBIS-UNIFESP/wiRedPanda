@@ -58,8 +58,8 @@ public:
   int id( ) const Q_DECL_OVERRIDE;
 private:
   int angle;
-  QList< GraphicElement* > list;
-  QList< QPointF > positions;
+  QVector< int > ids;
+  QVector< QPointF > positions;
 };
 
 
@@ -77,7 +77,7 @@ public:
   }
 
 private:
-  QList< GraphicElement* > myList;
+  QVector< int > ids;
   QList< QPointF > oldPositions;
   QList< QPointF > newPositions;
 
@@ -98,7 +98,7 @@ public:
   }
 
 private:
-  QVector< GraphicElement* > m_elements;
+  QVector< int > ids;
   QByteArray m_oldData;
   QByteArray m_newData;
 
@@ -111,18 +111,17 @@ class SplitCommand : public QUndoCommand {
 
 public:
 
-  SplitCommand( QNEConnection *conn, QPointF point, QUndoCommand *parent = 0 );
-  virtual ~SplitCommand( );
+  SplitCommand( QNEConnection *conn, QPointF point, Editor *aEditor, QUndoCommand *parent = 0 );
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
 
 private:
-  QNEConnection *c1;
-  QNEConnection *c2;
-  QNEPort *p1, *p2;
-  QNEPort *trueP1, *trueP2;
-
-  Node *node;
+  Editor *editor;
+  QPointF nodePos;
+  int nodeAngle;
+  int elm1_id, elm2_id;
+  int c1_id, c2_id;
+  int node_id;
 };
 
 class MorphCommand : public QUndoCommand {
@@ -130,8 +129,8 @@ class MorphCommand : public QUndoCommand {
 public:
   enum { Id = 107 };
 
-  MorphCommand( const QVector< GraphicElement* > &elements, ElementType type, Editor *editor,
-                QUndoCommand *parent = 0 );
+  MorphCommand(const QVector< GraphicElement* > &elements, ElementType aType, Editor *aEditor, QUndoCommand *parent =
+                  0 );
 
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
@@ -140,9 +139,10 @@ public:
   }
 
 private:
-  QVector< GraphicElement* > old_elements;
-  QVector< GraphicElement* > new_elements;
-  QGraphicsScene *scene;
+  QVector<int> ids;
+  QVector<ElementType> types;
+  ElementType newtype;
+  Editor *editor;
   void transferConnections( QVector< GraphicElement* > from, QVector< GraphicElement* > to );
 };
 
