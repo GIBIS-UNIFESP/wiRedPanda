@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>wpanda_en.qm</file>
+        <file>wpanda_pt.qm</file>
+    </qresource>
+</RCC>

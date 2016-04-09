@@ -12,6 +12,8 @@
 class Editor;
 
 class Box : public GraphicElement {
+    Q_OBJECT
+
   friend class CodeGenerator;
 public:
   Box( Editor *editor, QGraphicsItem *parent = 0 );
