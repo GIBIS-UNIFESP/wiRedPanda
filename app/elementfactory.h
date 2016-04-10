@@ -18,6 +18,7 @@ public:
   static GraphicElement* buildElement( ElementType type, Editor *editor, QGraphicsItem *parent = 0 );
   static QNEConnection* buildConnection( QGraphicsItem *parent = 0 );
   static ItemWithId * getItemById(size_t id);
+  static bool contains( size_t id );
   static void updateItemId(ItemWithId * item, size_t newId );
   static void removeItem(ItemWithId * item);
   static void addItem(ItemWithId * item);
