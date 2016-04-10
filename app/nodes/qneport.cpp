@@ -298,3 +298,8 @@ void QNEPort::hoverLeave( ) {
   setBrush( currentBrush( ) );
   update( );
 }
+
+
+void QNEPort::hoverLeaveEvent( QGraphicsSceneHoverEvent *event ) {
+  hoverLeave( );
+}
