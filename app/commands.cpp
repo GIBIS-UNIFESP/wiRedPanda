@@ -98,10 +98,7 @@ QList< GraphicElement* > findElements( const QVector< int > &ids ) {
   return( items );
 }
 
-void saveitems( QByteArray &itemData,
-                const QList< QGraphicsItem* > &items,
-                const QVector< int > &ids,
-                const QVector< int > &otherIds ) {
+void saveitems( QByteArray &itemData, const QList< QGraphicsItem* > &items, const QVector< int > &otherIds ) {
   itemData.clear( );
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );
   QList< GraphicElement* > others = findElements( otherIds );
@@ -113,7 +110,9 @@ void saveitems( QByteArray &itemData,
 
 void addItems( Editor *editor, QList< QGraphicsItem* > items ) {
   for( QGraphicsItem *item : items ) {
-    editor->getScene( )->addItem( item );
+    if( item->scene( ) != editor->getScene( ) ) {
+      editor->getScene( )->addItem( item );
+    }
     item->setSelected( true );
   }
 }
@@ -200,7 +199,7 @@ void AddItemsCommand::undo( ) {
   qDebug( ) << "UNDO " << text( );
   QList< QGraphicsItem* > items
     = findItems( ids );
-    saveitems( itemData, items, ids, otherIds );
+  saveitems( itemData, items, otherIds );
 
   deleteItems( items, editor );
 }
@@ -218,7 +217,7 @@ void DeleteItemsCommand::redo( ) {
   qDebug( ) << "REDO " << text( );
   QList< QGraphicsItem* > items
     = findItems( ids );
-    saveitems( itemData, items, ids, otherIds );
+  saveitems( itemData, items, otherIds );
 
   deleteItems( items, editor );
 }
