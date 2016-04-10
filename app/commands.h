@@ -28,7 +28,7 @@ public:
 private:
   QByteArray itemData;
   Editor *editor;
-  QVector< int > ids;
+  QVector< int > ids, otherIds;
 };
 
 class DeleteItemsCommand : public QUndoCommand {
@@ -43,7 +43,7 @@ public:
 private:
   QByteArray itemData;
   Editor *editor;
-  QVector< int > ids;
+  QVector< int > ids, otherIds;
 };
 
 class RotateCommand : public QUndoCommand {
