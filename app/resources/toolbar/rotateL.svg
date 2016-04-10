@@ -14,8 +14,11 @@
    height="64px"
    id="svg2987"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
-   sodipodi:docname="rotateL.svg">
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="rotateL.svg"
+   inkscape:export-filename="/home/morales/git/wiRedPanda/app/resources/toolbar/rotateL.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300">
   <defs
      id="defs2989">
     <linearGradient
@@ -42,15 +45,6 @@
     </linearGradient>
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient4468"
-       id="linearGradient4474"
-       x1="10"
-       y1="33.998099"
-       x2="60"
-       y2="33.998099"
-       gradientUnits="userSpaceOnUse" />
-    <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient4468-9"
        id="linearGradient4474-2"
        x1="10"
@@ -69,22 +63,6 @@
          offset="1"
          id="stop4472-4" />
     </linearGradient>
-    <filter
-       inkscape:collect="always"
-       id="filter4548">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="1.000038"
-         id="feGaussianBlur4550" />
-    </filter>
-    <filter
-       inkscape:collect="always"
-       id="filter4560">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="1.7000647"
-         id="feGaussianBlur4562" />
-    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -94,17 +72,17 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="7.7781746"
-     inkscape:cx="43.038879"
+     inkscape:cx="-14.301053"
      inkscape:cy="24.732177"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
-     inkscape:window-width="1366"
-     inkscape:window-height="709"
+     inkscape:window-width="960"
+     inkscape:window-height="1023"
      inkscape:window-x="0"
-     inkscape:window-y="26"
-     inkscape:window-maximized="1">
+     inkscape:window-y="27"
+     inkscape:window-maximized="0">
     <inkscape:grid
        type="xygrid"
        id="grid2995" />
@@ -126,24 +104,16 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
     <path
-       style="opacity:0.57758622;fill:#000000;fill-opacity:1;stroke:none;filter:url(#filter4548)"
-       d="m 10.25713,10.414214 25,0 c 9.874032,-0.178863 14.851716,5.981629 15,12.259426 l 0,17.740575 10,0 -15,20 -15,-20 10,0 0,-14.85511 c 0,-5.14489 -4.966073,-5.14489 -4.966073,-5.14489 l -25.033927,0 z"
+       style="opacity:1;fill:#881c0c;fill-opacity:1;stroke:none"
+       d="m 53.871435,10.414214 -25,0 c -9.874032,-0.178863 -14.851716,5.981629 -15,12.259426 l 0,17.740575 -10,0 15,20 15,-20 -10,0 0,-14.85511 c 0,-5.14489 4.966073,-5.14489 4.966073,-5.14489 l 25.033927,0 z"
        id="path2997-5-7"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cccccccccccc"
-       transform="matrix(-1,0,0,1,64,0)" />
-    <path
-       style="fill:#bd2812;fill-opacity:1;stroke:none"
-       d="M 54,9 29,9 C 19.125968,8.8211369 14.148284,14.981629 14,21.259425 L 14,39 4,39 19,59 34,39 24,39 24,24.14489 C 24,19 28.966073,19 28.966073,19 L 54,19 z"
-       id="path2997"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccccccccccc" />
     <path
-       style="opacity:0.60975611;fill:url(#linearGradient4474);fill-opacity:1;stroke:none;filter:url(#filter4560)"
-       d="m 10,8.9999996 25,0 C 44.874032,8.8211365 49.851716,14.981629 50,21.259425 L 50,39 60,39 45,59 30,39 40,39 40,24.14489 C 40,19 35.033927,19 35.033927,19 L 10,19 z"
-       id="path2997-5"
+       style="fill:#bd2812;fill-opacity:1;stroke:none"
+       d="m 53.871435,9 -25,0 c -9.874032,-0.1788631 -14.851716,5.981629 -15,12.259425 l 0,17.740575 -10,0 15,20 15,-20 -10,0 0,-14.85511 C 23.871435,19 28.837508,19 28.837508,19 l 25.033927,0 z"
+       id="path2997"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cccccccccccc"
-       transform="matrix(-1,0,0,1,64,0)" />
+       sodipodi:nodetypes="cccccccccccc" />
   </g>
 </svg>

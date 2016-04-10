@@ -32,7 +32,7 @@ void TestFiles::testFiles( ) {
     try {
       editor->load( ds );
     }
-    catch( std::runtime_error e ) {
+    catch( std::runtime_error &e ) {
       QFAIL( QString( "Could not load the file! Error: %1" ).arg( QString::fromStdString( e.what( ) ) ).toUtf8( ) );
     }
     pandaFile.close( );
