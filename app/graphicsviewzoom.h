@@ -40,7 +40,7 @@ class GraphicsViewZoom : public QObject {
 public:
    static const double maxZoom;
    static const double minZoom;
-  GraphicsViewZoom( QGraphicsView *view );
+  explicit GraphicsViewZoom( QGraphicsView *view );
   void gentle_zoom( double factor );
   void set_modifiers( Qt::KeyboardModifiers modifiers );
   void set_zoom_factor_base( double value );
