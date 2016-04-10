@@ -15,9 +15,9 @@
    height="64px"
    id="svg2989"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
+   inkscape:version="0.91 r13725"
    sodipodi:docname="delete.svg"
-   inkscape:export-filename="/home/lellis/projetos/wiRedPanda/app/resources/toolbar/delete.png"
+   inkscape:export-filename="/home/morales/git/wiRedPanda/app/resources/toolbar/delete.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -161,18 +161,6 @@
        x2="55"
        y2="31.5"
        gradientUnits="userSpaceOnUse" />
-    <filter
-       inkscape:collect="always"
-       id="filter5326"
-       x="-0.15762712"
-       width="1.3152542"
-       y="-0.15762712"
-       height="1.3152542">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="2.9555085"
-         id="feGaussianBlur5328" />
-    </filter>
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient5358"
@@ -203,14 +191,6 @@
          offset="1"
          id="stop5362-2" />
     </linearGradient>
-    <filter
-       inkscape:collect="always"
-       id="filter5432">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.95"
-         id="feGaussianBlur5434" />
-    </filter>
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient4091-9"
@@ -255,31 +235,6 @@
          offset="1"
          id="stop4095" />
     </linearGradient>
-    <filter
-       inkscape:collect="always"
-       id="filter4481">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="1.2380568"
-         id="feGaussianBlur4483" />
-    </filter>
-    <filter
-       inkscape:collect="always"
-       id="filter4485">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="1.2380568"
-         id="feGaussianBlur4487" />
-    </filter>
-    <filter
-       color-interpolation-filters="sRGB"
-       inkscape:collect="always"
-       id="filter4481-0">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="1.2380568"
-         id="feGaussianBlur4483-3" />
-    </filter>
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient4091-7"
@@ -352,24 +307,6 @@
        y1="63"
        x2="94.875"
        y2="63" />
-    <filter
-       color-interpolation-filters="sRGB"
-       inkscape:collect="always"
-       id="filter4481-0-1">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="1.2380568"
-         id="feGaussianBlur4483-3-8" />
-    </filter>
-    <filter
-       color-interpolation-filters="sRGB"
-       inkscape:collect="always"
-       id="filter4481-9">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="1.2380568"
-         id="feGaussianBlur4483-5" />
-    </filter>
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient4091-4"
@@ -444,24 +381,6 @@
        y2="58.25"
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(23.75,-26.25)" />
-    <filter
-       inkscape:collect="always"
-       id="filter4707">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="1.375"
-         id="feGaussianBlur4709" />
-    </filter>
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient4091-7-1"
-       id="linearGradient4716"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(23.75,-26.25)"
-       x1="-19.875"
-       y1="58.25"
-       x2="36.375"
-       y2="58.25" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -470,19 +389,19 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4"
-     inkscape:cx="12.36974"
-     inkscape:cy="22.544622"
+     inkscape:zoom="5.6568542"
+     inkscape:cx="-1.2255101"
+     inkscape:cy="18.337513"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1440"
-     inkscape:window-height="841"
+     inkscape:window-width="1920"
+     inkscape:window-height="1023"
      inkscape:window-x="0"
-     inkscape:window-y="26"
+     inkscape:window-y="27"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
@@ -496,7 +415,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -504,24 +423,14 @@
      id="layer1"
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
-    <g
-       id="g4711"
-       transform="matrix(0.92044551,0,0,0.92044551,2.5457438,2.5457438)">
-      <path
-         id="path3248-9-5"
-         d="m 3.875,5.125 21.9375,27.25 -21.9375,26.5 13,0 L 32,40.0625 47.125,58.875 l 13,0 -21.9375,-26.5 21.9375,-27.25 -11.75,0 L 32,24.90625 15.625,5.125 l -11.75,0 z"
-         style="fill:#480f06;fill-opacity:0.96862955;stroke:none;filter:url(#filter4707)"
-         inkscape:connector-curvature="0" />
-      <path
-         id="path3248-9"
-         d="m 3.875,5.125 21.9375,27.25 -21.9375,26.5 13,0 L 32,40.0625 47.125,58.875 l 13,0 -21.9375,-26.5 21.9375,-27.25 -11.75,0 L 32,24.90625 15.625,5.125 l -11.75,0 z"
-         style="fill:#b92711;fill-opacity:1;stroke:none"
-         inkscape:connector-curvature="0" />
-      <path
-         id="path3248-9-6"
-         d="m 3.875,5.125 21.9375,27.25 -21.9375,26.5 13,0 L 32,40.0625 47.125,58.875 l 13,0 -21.9375,-26.5 21.9375,-27.25 -11.75,0 L 32,24.90625 15.625,5.125 l -11.75,0 z"
-         style="fill:url(#linearGradient4716);fill-opacity:1;stroke:none"
-         inkscape:connector-curvature="0" />
-    </g>
+    <path
+       inkscape:connector-curvature="0"
+       style="fill:#881c0c;fill-opacity:1;fill-rule:evenodd;stroke:#881c0c;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 8,9.5 18,24 -18,24 12,0 12,-16 12,16 12,0 -18,-24 18,-24 -12,0 -12,16 -12,-16 -12,0 z"
+       id="path4218-8" />
+    <path
+       style="fill:#bd2812;fill-rule:evenodd;stroke:#bd2812;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
+       d="M 8 8 L 26 32 L 8 56 L 20 56 L 32 40 L 44 56 L 56 56 L 38 32 L 56 8 L 44 8 L 32 24 L 20 8 L 8 8 z "
+       id="path4218" />
   </g>
 </svg>
