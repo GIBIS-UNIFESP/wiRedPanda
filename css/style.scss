@@ -344,7 +344,7 @@ pre {
 .features {
     padding-top: 5em;
     padding-bottom: 5em;
-    
+
     h2, h4, p {
       padding: 0px 100px;
       text-align: center;
@@ -379,16 +379,31 @@ pre {
            font-size: 3em;
        }
    }
-    
+
    .features {
         padding-top: 3em;
         padding-bottom: 3em;
-        
+
         h2, h4, p {
         padding: 0px 20px;
         }
         .img-responsive {
             width: 80%;
         }
-    }    
+    }
+}
+
+.brands {
+  svg {
+    width: 50%;
+    height: auto;
+    path, polygon { fill: #444444; }
+  }
+  a {
+    color: #222222;
+    &:hover {
+      color: #dc3e3e;
+      path, polygon { fill: #dc3e3e; }
+    }
+  }
 }
