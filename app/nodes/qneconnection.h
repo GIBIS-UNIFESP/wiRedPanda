@@ -27,10 +27,11 @@
 #define QNECONNECTION_H
 
 #include <QGraphicsPathItem>
+#include <itemwithid.h>
 
 class QNEPort;
 
-class QNEConnection : public QGraphicsPathItem {
+class QNEConnection : public QGraphicsPathItem, public ItemWithId {
 public:
   enum { Type = QGraphicsItem::UserType + 2 };
   enum Status { Invalid = -1, Inactive = 0, Active = 1 };
@@ -68,6 +69,7 @@ private:
   /* QGraphicsItem interface */
 public:
   void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* );
+
 };
 
 #endif /* QNECONNECTION_H */

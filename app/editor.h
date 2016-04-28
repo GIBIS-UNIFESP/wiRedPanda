@@ -47,16 +47,17 @@ private:
   Scene *scene;
   QList< QGraphicsItem* > itemsAt( QPointF pos );
   QGraphicsItem* itemAt( QPointF pos );
-  QNEConnection *editedConn;
-  ElementFactory factory;
+  int _editedConn_id;
+  int _hoverPortElm_id;
+  int _hoverPort_nbr;
   ElementEditor *elementEditor;
+
   bool markingSelectionBox;
   QGraphicsRectItem *selectionRect;
   QPointF selectionStartPoint;
   SimulationController *simulationController;
   QPointF mousePos, lastPos;
   void addItem( QGraphicsItem *item );
-  QNEPort *m_hoverPort;
   bool draggingElement;
   QList< GraphicElement* > movedElements;
   QList< QPointF > oldPositions;
@@ -75,17 +76,24 @@ private:
   void ctrlDrag( GraphicElement *elm, QPointF pos );
   void install( Scene *s );
 
+  QNEConnection * getEditedConn();
+  void setEditedConn(QNEConnection *editedConn);
+
   /* QObject interface */
 public:
   bool eventFilter( QObject *obj, QEvent *evt );
   void setElementEditor( ElementEditor *value );
   QUndoStack* getUndoStack( ) const;
-  ElementFactory &getFactory( );
   Scene* getScene( ) const;
   void buildSelectionRect( );
+  bool loadBox( Box *box, QString fname );
+
   void handleHoverPort( QNEPort *port );
   void releaseHoverPort( );
-  bool loadBox( Box *box, QString fname );
+
+  void setHoverPort( QNEPort *port );
+  QNEPort * getHoverPort();
+
   void resizeScene( );
   SimulationController* getSimulationController( ) const;
   void contextMenu( QPoint screenPos );

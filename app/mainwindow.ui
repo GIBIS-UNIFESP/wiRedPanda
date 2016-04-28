@@ -115,7 +115,7 @@
                        <pixmap resource="resources/input/input.qrc">:/input/1.png</pixmap>
                       </property>
                       <property name="Name" stdset="0">
-                       <string notr="true">VCC</string>
+                       <string>VCC</string>
                       </property>
                      </widget>
                     </item>
@@ -571,7 +571,7 @@
                        <pixmap resource="resources/basic/basic.qrc">:/basic/node.png</pixmap>
                       </property>
                       <property name="Name" stdset="0">
-                       <string>DEMUX</string>
+                       <string>NODE</string>
                       </property>
                      </widget>
                     </item>
@@ -620,7 +620,7 @@
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>0</y>
+                   <y>-242</y>
                    <width>194</width>
                    <height>522</height>
                   </rect>
@@ -640,14 +640,14 @@
                        <pixmap resource="resources/memory/memory.qrc">:/memory/D-flipflop.png</pixmap>
                       </property>
                       <property name="Name" stdset="0">
-                       <string>D-flipflop</string>
+                       <string>D-Flipflop</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QLabel" name="label_17">
                       <property name="text">
-                       <string>D-flipflop</string>
+                       <string>D-Flipflop</string>
                       </property>
                      </widget>
                     </item>
@@ -691,14 +691,14 @@
                        <pixmap resource="resources/memory/memory.qrc">:/memory/JK-flipflop.png</pixmap>
                       </property>
                       <property name="Name" stdset="0">
-                       <string>JK-flipflop</string>
+                       <string>JK-Flipflop</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QLabel" name="label_21">
                       <property name="text">
-                       <string>JK-flipflop</string>
+                       <string>JK-Flipflop</string>
                       </property>
                      </widget>
                     </item>
@@ -715,7 +715,7 @@
                        <pixmap resource="resources/memory/memory.qrc">:/memory/JK-latch.png</pixmap>
                       </property>
                       <property name="Name" stdset="0">
-                       <string>JK-latch</string>
+                       <string>JK-Latch</string>
                       </property>
                      </widget>
                     </item>
@@ -843,8 +843,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>208</width>
-                   <height>280</height>
+                   <width>100</width>
+                   <height>30</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1094,9 +1094,17 @@
     <addaction name="actionGates"/>
     <addaction name="separator"/>
    </widget>
+   <widget class="QMenu" name="menuLanguage">
+    <property name="title">
+     <string>Language</string>
+    </property>
+    <addaction name="actionEnglish"/>
+    <addaction name="actionPortuguese"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
+   <addaction name="menuLanguage"/>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionOpen">
@@ -1332,6 +1340,16 @@
     <string>Export to PDF</string>
    </property>
   </action>
+  <action name="actionEnglish">
+   <property name="text">
+    <string>English</string>
+   </property>
+  </action>
+  <action name="actionPortuguese">
+   <property name="text">
+    <string>Portuguese</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1362,12 +1380,12 @@
   <tabstop>scrollArea_6</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/resources.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/memory/memory.qrc"/>
   <include location="resources/output/output.qrc"/>
+  <include location="resources/input/input.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/resources.qrc"/>
+  <include location="resources/memory/memory.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
   <include location="resources/resources.qrc"/>
   <include location="resources/output/output.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>

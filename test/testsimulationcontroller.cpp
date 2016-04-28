@@ -34,8 +34,8 @@ void TestSimulationController::testCase1( ) {
   conn3->setPort1( andItem->output( ) );
   conn3->setPort2( led->input( ) );
   QVector< GraphicElement* > elms( SimulationController::sortElements( editor->getScene( )->getElements( ) ) );
-  Q_ASSERT( elms.at( 0 ) == btn1 || elms.at( 1 ) == btn1);
-  Q_ASSERT( elms.at( 0 ) == btn2 || elms.at( 1 ) == btn2);
-  Q_ASSERT( elms.at( 2 ) == andItem );
-  Q_ASSERT( elms.at( 3 ) == led );
+  QVERIFY( elms.at( 0 ) == btn1 || elms.at( 1 ) == btn1 );
+  QVERIFY( elms.at( 0 ) == btn2 || elms.at( 1 ) == btn2 );
+  QVERIFY( elms.at( 2 ) == andItem );
+  QVERIFY( elms.at( 3 ) == led );
 }

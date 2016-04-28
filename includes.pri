@@ -2,18 +2,14 @@ QT       += core gui printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-
 VERSION = 2.1
 
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
-
-TRANSLATIONS = $$PWD/app/resources/wpanda_en.ts  $$PWD/app/resources/wpanda_pt.ts
 
 CONFIG += c++11
 CONFIG(debug, debug|release) {
     CONFIG += console
 }
-
 
 SOURCES += \
     $$PWD/app/arduino/codegenerator.cpp \
@@ -61,10 +57,7 @@ SOURCES += \
     $$PWD/app/scene.cpp \
     $$PWD/app/serializationfunctions.cpp \
     $$PWD/app/simulationcontroller.cpp \
-
-
-
-
+    $$PWD/app/itemwithid.cpp
 
 HEADERS  +=  \
     $$PWD/app/graphicsviewzoom.h \
@@ -113,11 +106,7 @@ HEADERS  +=  \
     $$PWD/app/scene.h \
     $$PWD/app/serializationfunctions.h \
     $$PWD/app/simulationcontroller.h \
-
-
-HEADERS += \
-
-
+    $$PWD/app/itemwithid.h
 
 INCLUDEPATH += \
     $$PWD/app \
@@ -149,4 +138,4 @@ RESOURCES += \
 #CONFIG += app_bundle
 #}
 
-QMAKE_CXXFLAGS_DEBUG += -DDEBUG
+QMAKE_CXXFLAGS_DEBUG += -DDEBUG -Wall
