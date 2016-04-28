@@ -156,16 +156,15 @@ bool QNEConnection::load( QDataStream &ds, const QMap< quint64, QNEPort* > &port
   ds >> ptr1;
   ds >> ptr2;
   if( portMap.isEmpty( ) ) {
-    setPort1( reinterpret_cast< QNEPort* > ( ptr1 ) );
-    setPort2( reinterpret_cast< QNEPort* > ( ptr2 ) );
+    setPort1( reinterpret_cast< QNEPort* >( ptr1 ) );
+    setPort2( reinterpret_cast< QNEPort* >( ptr2 ) );
+  }
+  else if( portMap.contains( ptr1 ) && portMap.contains( ptr2 ) ) {
+    setPort1( portMap[ ptr1 ] );
+    setPort2( portMap[ ptr2 ] );
   }
   else {
-    if( portMap.contains( ptr1 ) ) {
-      setPort1( portMap[ ptr1 ] );
-    }
-    if( portMap.contains( ptr2 ) ) {
-      setPort2( portMap[ ptr2 ] );
-    }
+    return( false );
   }
   updatePosFromPorts( );
   updatePath( );
