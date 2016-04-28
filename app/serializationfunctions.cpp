@@ -30,16 +30,16 @@ void SerializationFunctions::serialize( const QList< QGraphicsItem* > &items, QD
 QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor,
                                                              QDataStream &ds,
                                                              double version,
-                                                             QString parentFile ) {
+                                                             QString parentFile,
+                                                             QMap< quint64, QNEPort* > portMap) {
   QList< QGraphicsItem* > itemList;
-  QMap< quint64, QNEPort* > portMap;
   while( !ds.atEnd( ) ) {
     int type;
     ds >> type;
     if( type == GraphicElement::Type ) {
       quint64 elmType;
       ds >> elmType;
-      GraphicElement *elm = editor->getFactory( ).buildElement( ( ElementType ) elmType, editor );
+      GraphicElement *elm = ElementFactory::buildElement( ( ElementType ) elmType, editor );
       if( elm ) {
         itemList.append( elm );
         elm->load( ds, portMap, version );
@@ -55,7 +55,7 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor,
       }
     }
     else if( type == QNEConnection::Type ) {
-      QNEConnection *conn = new QNEConnection( 0 );
+      QNEConnection *conn = ElementFactory::buildConnection();
       conn->setSelected( true );
       if( !conn->load( ds, portMap ) ) {
         delete conn;

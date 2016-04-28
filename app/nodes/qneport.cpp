@@ -104,7 +104,7 @@ bool QNEPort::isInput( ) const {
   return( !isOutput_ );
 }
 
-const QList< QNEConnection* > &QNEPort::connections( ) const{
+const QList< QNEConnection* > &QNEPort::connections( ) const {
   return( m_connections );
 }
 
@@ -116,7 +116,7 @@ void QNEPort::connect( QNEConnection *conn ) {
     updateConnections( );
     if( graphicElement( ) ) {
       graphicElement( )->setChanged( true );
-      graphicElement()->updatePorts();
+      graphicElement( )->updatePorts( );
       if( isOutput( ) ) {
         graphicElement( )->updateLogic( );
       }
@@ -203,7 +203,7 @@ bool QNEPort::isValid( ) const {
   if( m_connections.isEmpty( ) ) {
     return( !required( ) );
   }
-  return(  m_connections.size( ) == 1 );
+  return( m_connections.size( ) == 1 );
 }
 
 
@@ -244,6 +244,9 @@ char QNEPort::value( ) const {
 
 void QNEPort::setValue( char value ) {
   m_value = value;
+  if( isInput( ) && !isValid( ) ) {
+    m_value = -1;
+  }
   if( isOutput( ) ) {
     foreach( QNEConnection * conn, connections( ) ) {
       if( value == -1 ) {
@@ -256,7 +259,7 @@ void QNEPort::setValue( char value ) {
         conn->setStatus( QNEConnection::Active );
       }
       QNEPort *port = conn->otherPort( this );
-      if( port && port != this ) {
+      if( port && ( port != this ) ) {
         port->setValue( value );
       }
     }
@@ -294,4 +297,9 @@ void QNEPort::hoverEnter( ) {
 void QNEPort::hoverLeave( ) {
   setBrush( currentBrush( ) );
   update( );
+}
+
+
+void QNEPort::hoverLeaveEvent( QGraphicsSceneHoverEvent *event ) {
+  hoverLeave( );
 }
