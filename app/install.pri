@@ -10,15 +10,16 @@ unix{
   DEFINES += DATADIR=\\\"$$DATADIR\\\" PKGDATADIR=\\\"$$PKGDATADIR\\\"
 
   #MAKE INSTALL
-  INSTALLS += target desktop icon26 icon32 icon48 icon64 icon128 fileIcon26 fileIcon32 fileIcon48 fileIcon64 fileIcon128
+  INSTALLS += target desktop mime icon26 icon32 icon48 icon64 icon128 fileIcon26 fileIcon32 fileIcon48 fileIcon64 fileIcon128 postinst
 
   target.path = $$BINDIR
+  target.files += $${PWD}/resources/wpanda.sh
 
   desktop.path = $$DATADIR/applications
   desktop.files += resources/$${TARGET}.desktop
-  desktop.extra += desktop-file-install $${PWD}/resources/$${TARGET}.desktop --dir=$${DATADIR}/applications &&
-  desktop.extra += xdg-mime install --mode system $${PWD}/resources/$${TARGET}-mime.xml &&
-  desktop.extra += xdg-mime default $${TARGET}.desktop application/x-wpanda
+
+  mime.path = $$DATADIR/xml/misc
+  mime.files += $${PWD}/resources/$${TARGET}-mime.xml
 
   icon128.path = $$DATADIR/icons/hicolor/128x128/apps
   icon128.files += resources/icons/128x128/$${TARGET}.png
@@ -37,21 +38,28 @@ unix{
 
   fileIcon128.path = $$DATADIR/icons/hicolor/128x128/apps
   fileIcon128.files += resources/icons/128x128/$${TARGET}-file.png
-  fileIcon128.extra += xdg-icon-resource install --context mimetypes --size 128   $$DATADIR/icons/hicolor/128x128/apps/$${TARGET}-file.png application-x-wpanda
 
   fileIcon64.path = $$DATADIR/icons/hicolor/64x64/apps
   fileIcon64.files += resources/icons/64x64/$${TARGET}-file.png
-  fileIcon64.extra += xdg-icon-resource install --context mimetypes --size 64  $$DATADIR/icons/hicolor/64x64/apps/$${TARGET}-file.png application-x-wpanda
 
   fileIcon48.path = $$DATADIR/icons/hicolor/48x48/apps
   fileIcon48.files += resources/icons/48x48/$${TARGET}-file.png
-  fileIcon48.extra += xdg-icon-resource install --context mimetypes --size 48  $$DATADIR/icons/hicolor/48x48/apps/$${TARGET}-file.png application-x-wpanda
 
   fileIcon32.path = $$DATADIR/icons/hicolor/32x32/apps
   fileIcon32.files += resources/icons/32x32/$${TARGET}-file.png
-  fileIcon32.extra += xdg-icon-resource install --context mimetypes --size 32  $$DATADIR/icons/hicolor/32x32/apps/$${TARGET}-file.png application-x-wpanda
 
   fileIcon26.path = $$DATADIR/icons/hicolor/26x26/apps
   fileIcon26.files += resources/icons/26x26/$${TARGET}-file.png
-  fileIcon26.extra += xdg-icon-resource install --context mimetypes --size 26  $$DATADIR/icons/hicolor/26x26/apps//$${TARGET}-file.png application-x-wpanda
+
+  postinst.path += $$DATADIR
+  postinst.commands += desktop-file-install /usr/local/share/applications/wpanda.desktop ;
+  postinst.commands += xdg-mime install --mode system /usr/local/share/xml/misc/wpanda-mime.xml ;
+  #postinst.commands += xdg-mime default /usr/local/share/applications/wpanda.desktop application/x-wpanda ;
+  postinst.commands += xdg-icon-resource install --context mimetypes --size 128  /usr/local/share/icons/hicolor/128x128/apps/wpanda-file.png application-x-wpanda ;
+  postinst.commands += xdg-icon-resource install --context mimetypes --size 64  /usr/local/share/icons/hicolor/64x64/apps/wpanda-file.png application-x-wpanda ;
+  postinst.commands += xdg-icon-resource install --context mimetypes --size 48  /usr/local/share/icons/hicolor/48x48/apps/wpanda-file.png application-x-wpanda ;
+  postinst.commands += xdg-icon-resource install --context mimetypes --size 32  /usr/local/share/icons/hicolor/32x32/apps/wpanda-file.png application-x-wpanda ;
+  postinst.commands += xdg-icon-resource install --context mimetypes --size 26  /usr/local/share/icons/hicolor/26x26/apps/wpanda-file.png application-x-wpanda
+
+
 }
