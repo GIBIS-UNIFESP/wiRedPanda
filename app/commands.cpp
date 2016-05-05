@@ -139,7 +139,7 @@ void loadItems( QByteArray &itemData, const QVector< int > &ids, Editor *editor,
                                          GlobalProperties::currentFile,
                                          portMap );
   if( items.size( ) != ids.size( ) ) {
-    throw std::runtime_error( "One or more elements was not found on scene." );
+    throw std::runtime_error( QString("One or more elements was not found on scene. Expected %1, found %2.").arg(ids.size()).arg(items.size()).toStdString()  );
   }
   for( int i = 0; i < items.size( ); ++i ) {
     ItemWithId *iwid = dynamic_cast< ItemWithId* >( items[ i ] );
@@ -427,11 +427,18 @@ void SplitCommand::redo( ) {
     node->setPos( nodePos );
     node->setRotation( nodeAngle );
 
-    c2->setPort1( node->output( ) );
-    c2->setPort2( c1->port2( ) );
-    c1->setPort2( node->input( ) );
+    QNEPort * p1 = c1->port1();
+    QNEPort * p2 = c1->port2();
 
-
+    if(p1->isOutput()){
+      c2->setPort1( node->output( ) );
+      c2->setPort2( p2 );
+      c1->setPort2( node->input( ) );
+    } else {
+      c2->setPort1( node->output( ) );
+      c2->setPort2( p1 );
+      c1->setPort1( node->input( ) );
+    }
     editor->getScene( )->addItem( node );
     editor->getScene( )->addItem( c2 );
 
@@ -441,7 +448,7 @@ void SplitCommand::redo( ) {
     c2->updatePath( );
   }
   else {
-    throw std::runtime_error( QString( "Error tryng to undo %1" ).arg( text( ) ).toStdString( ) );
+    throw std::runtime_error( QString( "Error tryng to redo %1" ).arg( text( ) ).toStdString( ) );
   }
 }
 
