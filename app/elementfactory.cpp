@@ -184,6 +184,10 @@ ItemWithId* ElementFactory::getItemById( size_t id ) {
   return( nullptr );
 }
 
+bool ElementFactory::contains( size_t id ) {
+  return( instance()->map.contains( id ) );
+}
+
 void ElementFactory::addItem( ItemWithId *item ) {
   if( item ) {
     int newId = instance( )->next_id( );

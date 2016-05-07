@@ -4,8 +4,9 @@ cd Build
 qmake.exe ..\..\..\app\
 mingw32-make.exe -j4
 cd ..
-"windeployqt.exe" "Build\wpanda.exe"
+"windeployqt.exe" "Build\release\wpanda.exe"
 "makensis.exe" wpanda.nsi
 7z.exe x wpanda_32.exe -o"%cd%\wpanda_32"
 7z.exe a -tzip wpanda_portable.zip "%cd%\wpanda_32"
 RMDIR /S /Q "%cd%\wpanda_32"
+pause

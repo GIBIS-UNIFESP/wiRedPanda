@@ -111,6 +111,10 @@ private:
   /* WPanda */
   GraphicElement *m_graphicElement;
   QBrush _currentBrush;
+
+  /* QGraphicsItem interface */
+protected:
+  void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
 };
 
 #endif /* QNEPORT_H */

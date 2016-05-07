@@ -20,6 +20,7 @@ void Xnor::updateLogic( ) {
     for( QNEPort *input : inputs( ) ) {
       res = res ^ input->value( );
     }
+    res =  !res;
   }
-  outputs( ).first( )->setValue( !res );
+  outputs( ).first( )->setValue(res);
 }
