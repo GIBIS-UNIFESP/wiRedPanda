@@ -85,7 +85,7 @@ void MainWindow::on_actionExit_triggered( ) {
   close( );
 }
 
-bool MainWindow::save( QString fname = QString( ) ) {
+bool MainWindow::save( QString fname ) {
   if( fname.isEmpty( ) ) {
     fname = currentFile.absoluteFilePath( );
     if( currentFile.fileName( ).isEmpty( ) ) {
