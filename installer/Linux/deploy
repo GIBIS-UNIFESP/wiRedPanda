@@ -1,11 +1,13 @@
 #!/bin/bash
 PROJECTPATH=${PWD}/../../app
-export PATH=/opt/qt-static/qtbase/bin:$PATH
+export PATH=/opt/qt-static/qtbase/bin:$(getconf PATH)
 mkdir -p /tmp/wpanda-build
 pushd /tmp/wpanda-build
 qmake $PROJECTPATH
 make -j12
 popd
+
+rm *.deb *.lintian *.tar.gz
 
 debreate wpanda.dbp
 echo "Extracting deb package"
@@ -31,3 +33,5 @@ tar -zcvf ${PKGDIR}.tar.gz $PKGDIR
 echo "Removing temporary files"
 rm -rf $PKGDIR
 rm -rf /tmp/extract/
+
+rm *.lintian

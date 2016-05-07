@@ -30,9 +30,9 @@ void SerializationFunctions::serialize( const QList< QGraphicsItem* > &items, QD
 QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor,
                                                              QDataStream &ds,
                                                              double version,
-                                                             QString parentFile ) {
+                                                             QString parentFile,
+                                                             QMap< quint64, QNEPort* > portMap) {
   QList< QGraphicsItem* > itemList;
-  QMap< quint64, QNEPort* > portMap;
   while( !ds.atEnd( ) ) {
     int type;
     ds >> type;
