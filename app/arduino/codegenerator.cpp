@@ -126,7 +126,7 @@ void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &el
       Box *box = qgraphicsitem_cast< Box* >( elm );
       if( box ) {
         out << "// " << box->getLabel( ) << endl;
-        declareAuxVariablesRec( box->myScene.getElements( ), true );
+        declareAuxVariablesRec( box->getElements(), true );
         out << "// END of " << box->getLabel( ) << endl;
         for( int i = 0; i < box->outputSize( ); ++i ) {
           QNEPort *port = box->outputMap.at( i );
@@ -222,7 +222,7 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
         }
         out << "    " << varMap[ box->inputMap.at( i ) ] << " = " << value << ";" << endl;
       }
-      QVector< GraphicElement* > boxElms = box->myScene.getElements( );
+      QVector< GraphicElement* > boxElms = box->getElements();
       if( boxElms.isEmpty( ) ) {
         continue;
       }
