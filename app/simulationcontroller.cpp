@@ -64,7 +64,7 @@ QVector< GraphicElement* > SimulationController::sortElements( QVector< GraphicE
 void SimulationController::update( ) {
   QVector< GraphicElement* > elements = scene->getElements( );
   if( Clock::reset ) {
-    foreach( GraphicElement * elm, elements ) {
+    for( GraphicElement * elm : elements ) {
       if( elm->elementType( ) == ElementType::CLOCK ) {
         Clock *clk = dynamic_cast< Clock* >( elm );
         if( clk ) {

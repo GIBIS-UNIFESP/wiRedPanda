@@ -57,28 +57,15 @@ void Box::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double vers
   }
 }
 
-#include <iostream>
+
 void Box::updateLogic( ) {
   for( int inputPort = 0; inputPort < inputMap.size( ); ++inputPort ) {
     inputMap.at( inputPort )->setValue( input( inputPort )->value( ) );
   }
-  QVector< GraphicElement* > elms( myScene.getElements( ) );
-  elms = SimulationController::sortElements( elms );
-  for( GraphicElement *elm : elms ) {
+  for( GraphicElement *elm : elements ) {
     if( !elm->disabled( ) ) {
       elm->updateLogic( );
     }
-/*
- *    std::cout << elm->objectName().toStdString() <<  " : ";
- *    for( QNEPort * in : elm->inputs()) {
- *      std::cout << ( int ) in->value( ) << " ";
- *    }
- *    std::cout << " => ";
- *    for( QNEPort * out : elm->outputs()) {
- *      std::cout << ( int ) out->value( ) << " ";
- *    }
- *    std::cout <<  std::endl;
- */
   }
   for( int outputPort = 0; outputPort < outputMap.size( ); ++outputPort ) {
     output( outputPort )->setValue( outputMap.at( outputPort )->value( ) );
@@ -100,7 +87,7 @@ void Box::verifyRecursion( QString fname ) {
 
 
 void Box::loadFile( QString fname ) {
-  qDebug() << "Loading file:" << fname;
+  qDebug( ) << "Loading file:" << fname;
   QFileInfo fileInfo = findFile( fname );
   fname = fileInfo.absoluteFilePath( );
   setToolTip( fname );
@@ -116,12 +103,13 @@ void Box::loadFile( QString fname ) {
   if( file.open( QFile::ReadOnly ) ) {
     inputMap.clear( );
     outputMap.clear( );
-    myScene.clear( );
+    elements.clear( );
     QDataStream ds( &file );
-    QList< QGraphicsItem* > items = SerializationFunctions::load( editor, ds, fname, &myScene );
+    QList< QGraphicsItem* > items = SerializationFunctions::load( editor, ds, fname );
     for( QGraphicsItem *item : items ) {
       if( item->type( ) == GraphicElement::Type ) {
         GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+        elements.append( elm );
         if( elm ) {
           switch( elm->elementType( ) ) {
               case ElementType::BUTTON:
@@ -192,6 +180,7 @@ void Box::loadFile( QString fname ) {
     output( port )->setName( lb );
     output( port )->setValue( outputMap.at( port )->value( ) );
   }
+  elements = SimulationController::sortElements( elements );
 }
 
 QString Box::getParentFile( ) const {
@@ -203,7 +192,7 @@ void Box::setParentFile( const QString &value ) {
 }
 
 QFileInfo Box::findFile( QString fname ) {
-  QFileInfo fileInfo( fname);
+  QFileInfo fileInfo( fname );
   QString myFile = fileInfo.fileName( );
   qDebug( ) << "Trying to load (1): " << fileInfo.absoluteFilePath( );
   if( !fileInfo.exists( ) ) {
@@ -216,7 +205,7 @@ QFileInfo Box::findFile( QString fname ) {
       qDebug( ) << "Trying to load (3): " << fileInfo.absoluteFilePath( );
       if( !fileInfo.exists( ) ) {
         QFileInfo currentFile( GlobalProperties::currentFile );
-        qDebug( ) << "Current file: " << currentFile.absoluteFilePath();
+        qDebug( ) << "Current file: " << currentFile.absoluteFilePath( );
         qDebug( ) << "Trying to load (4): " << fileInfo.absoluteFilePath( );
         fileInfo.setFile( currentFile.absoluteDir( ), myFile );
         if( !fileInfo.exists( ) ) {
@@ -264,6 +253,11 @@ void Box::sortMap( QVector< QNEPort* > &map ) {
     }
   }
 }
+
+QVector< GraphicElement* > Box::getElements( ) const {
+  return( elements );
+}
+
 
 Box* Box::getParentBox( ) const {
   return( parentBox );

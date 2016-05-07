@@ -41,17 +41,19 @@ public:
   void setParentBox(Box * value);
 
   void verifyRecursion(QString fname);
-private:
+  QVector<GraphicElement *> getElements() const;
+
+  private:
   Editor *editor;
   QString m_file;
   QVector< QNEPort* > inputMap;
   QVector< QNEPort* > outputMap;
-  Scene myScene;
   QFileSystemWatcher watcher;
   bool isAskingToReload;
   QString parentFile;
   void sortMap( QVector< QNEPort* > &map );
   Box * parentBox;
+  QVector< GraphicElement* > elements;
 public slots:
   void fileChanged( QString file );
 
