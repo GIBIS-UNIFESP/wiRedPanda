@@ -42,6 +42,7 @@ Box::Box( Editor *editor, QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, 
 }
 
 Box::~Box( ) {
+  qDeleteAll(elements);
 }
 
 
@@ -103,6 +104,7 @@ void Box::loadFile( QString fname ) {
   if( file.open( QFile::ReadOnly ) ) {
     inputMap.clear( );
     outputMap.clear( );
+    qDeleteAll(elements);
     elements.clear( );
     QDataStream ds( &file );
     QList< QGraphicsItem* > items = SerializationFunctions::load( editor, ds, fname );
