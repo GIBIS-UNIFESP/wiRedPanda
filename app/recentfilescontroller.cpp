@@ -1,9 +1,9 @@
-#include "recentfilescontroller.h"
-
 #include <QDebug>
 #include <QFileInfo>
-#include <qfile.h>
-#include <qsettings.h>
+#include <QSettings>
+#include <QFile>
+
+#include "recentfilescontroller.h"
 
 RecentFilesController::RecentFilesController( QString attrName, QObject *parent ) : QObject( parent ) {
   this->attrName = attrName;
@@ -20,11 +20,13 @@ void RecentFilesController::addFile( QString fname ) {
   files.removeAll( fname );
 
   files.prepend( fname );
-  for( auto file : files ) {
-    QFileInfo fileInfo( file );
-    if( !fileInfo.exists( ) ) {
-      files.removeAll( file );
-    }
+  for(int i = 0; i < files.size();){
+      QFileInfo fileInfo(files.at(i));
+      if(!fileInfo.exists()){
+          files.removeAt(i);
+      } else {
+          ++i;
+      }
   }
   while( files.size( ) > MaxRecentFiles ) {
     files.removeLast( );
@@ -37,11 +39,13 @@ void RecentFilesController::addFile( QString fname ) {
 QStringList RecentFilesController::getFiles( ) {
   QSettings settings;
   QStringList files = settings.value( attrName ).toStringList( );
-  for( auto file : files ) {
-    QFileInfo fileInfo( file );
-    if( !fileInfo.exists( ) ) {
-      files.removeAll( file );
-    }
+  for(int i = 0; i < files.size();){
+      QFileInfo fileInfo(files.at(i));
+      if(!fileInfo.exists()){
+          files.removeAt(i);
+      } else {
+          ++i;
+      }
   }
   while( files.size( ) > MaxRecentFiles ) {
     files.removeLast( );
