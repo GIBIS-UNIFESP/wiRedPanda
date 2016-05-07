@@ -4,6 +4,7 @@
 #include "editor.h"
 #include "graphicsviewzoom.h"
 #include "label.h"
+#include "listitemwidget.h"
 #include "recentfilescontroller.h"
 #include "scene.h"
 
@@ -83,7 +84,7 @@ private:
   RecentFilesController *rfController, *rboxController;
   QAction *recentFileActs[ RecentFilesController::MaxRecentFiles ];
   QTranslator *translator;
-
+  QVector<ListItemWidget *> boxItemWidgets, searchItemWidgets;
   void createRecentFileActions( );
   /* QWidget interface */
 protected:

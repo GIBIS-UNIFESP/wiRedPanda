@@ -79,7 +79,7 @@ void Editor::buildSelectionRect( ) {
 }
 
 void Editor::clear( ) {
-  ElementFactory::instance( )->clear( );
+  ElementFactory::instance->clear( );
   undoStack->clear( );
   if( scene ) {
     scene->clear( );

@@ -14,9 +14,9 @@ int main( int argc, char **argv ) {
   TestFiles testFiles;
   TestCommands testCommands;
   int status = 0;
-//  status |= QTest::qExec( &testElements, argc, argv );
-//  status |= QTest::qExec( &testSC, argc, argv );
-//  status |= QTest::qExec( &testFiles, argc, argv );
+  status |= QTest::qExec( &testElements, argc, argv );
+  status |= QTest::qExec( &testSC, argc, argv );
+  status |= QTest::qExec( &testFiles, argc, argv );
   status |= QTest::qExec( &testCommands, argc, argv );
   return( status );
 }
