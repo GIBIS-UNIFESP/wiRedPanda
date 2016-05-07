@@ -6,12 +6,11 @@
 class Editor;
 class ElementFactory {
   size_t _lastId;
-  static ElementFactory *_instance;
 
 public:
+  static ElementFactory *instance;
   QMap< size_t, ItemWithId *> map;
 
-  static ElementFactory* instance( );
   static ElementType textToType( QString text );
   static QString typeToText( ElementType type );
   static QPixmap getPixmap( ElementType type );

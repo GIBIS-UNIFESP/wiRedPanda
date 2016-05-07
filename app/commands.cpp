@@ -373,7 +373,7 @@ SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, Editor *aEditor,
     parent ) {
   Scene *customScene = aEditor->getScene( );
   GraphicElement *node = ElementFactory::buildElement( ElementType::NODE, aEditor );
-  QNEConnection *conn2 = ElementFactory::instance( )->buildConnection( );
+  QNEConnection *conn2 = ElementFactory::instance->buildConnection( );
 
   /* Align node to Grid */
   nodePos = point - QPointF( node->boundingRect( ).center( ) );

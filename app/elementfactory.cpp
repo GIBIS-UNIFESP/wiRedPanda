@@ -29,7 +29,7 @@
 #include <node.h>
 #include <qneconnection.h>
 
-ElementFactory*ElementFactory::_instance = nullptr;
+ElementFactory*ElementFactory::instance = new ElementFactory( );
 
 
 size_t ElementFactory::getLastId( ) const {
@@ -135,13 +135,6 @@ ElementFactory::ElementFactory( ) {
   clear( );
 }
 
-ElementFactory* ElementFactory::instance( ) {
-  if( _instance == nullptr ) {
-    _instance = new ElementFactory( );
-  }
-  return( _instance );
-}
-
 GraphicElement* ElementFactory::buildElement( ElementType type, Editor *editor, QGraphicsItem *parent ) {
   GraphicElement *elm;
   elm = type == ElementType::BUTTON ? new InputButton( parent ) :
@@ -178,31 +171,31 @@ QNEConnection* ElementFactory::buildConnection( QGraphicsItem *parent ) {
 }
 
 ItemWithId* ElementFactory::getItemById( size_t id ) {
-  if( instance( )->map.contains( id ) ) {
-    return( instance( )->map[ id ] );
+  if( instance->map.contains( id ) ) {
+    return( instance->map[ id ] );
   }
   return( nullptr );
 }
 
 bool ElementFactory::contains( size_t id ) {
-  return( instance()->map.contains( id ) );
+  return( instance->map.contains( id ) );
 }
 
 void ElementFactory::addItem( ItemWithId *item ) {
   if( item ) {
-    int newId = instance( )->next_id( );
-    instance( )->map[ newId ] = item;
+    int newId = instance->next_id( );
+    instance->map[ newId ] = item;
     item->setId( newId );
   }
 }
 
 void ElementFactory::removeItem( ItemWithId *item ) {
-  instance( )->map.remove( item->id( ) );
+  instance->map.remove( item->id( ) );
 }
 
 void ElementFactory::updateItemId( ItemWithId *item, size_t newId ) {
-  instance( )->map.remove( item->id( ) );
-  instance( )->map[ newId ] = item;
+  instance->map.remove( item->id( ) );
+  instance->map[ newId ] = item;
   item->setId( newId );
 }
 

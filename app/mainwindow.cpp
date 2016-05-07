@@ -21,6 +21,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->setupUi( this );
   editor = new Editor( this );
   ui->graphicsView->setScene( editor->getScene( ) );
+  undoView = nullptr;
 /*  ui->graphicsView->setBackgroundBrush(QBrush(QColor(Qt::gray))); */
   ui->graphicsView->setRenderHint( QPainter::Antialiasing, true );
   ui->graphicsView->setRenderHint( QPainter::HighQualityAntialiasing, true );
@@ -78,6 +79,9 @@ void MainWindow::createUndoView( ) {
 
 
 MainWindow::~MainWindow( ) {
+  if( undoView ) {
+    delete undoView;
+  }
   delete ui;
 }
 
@@ -313,16 +317,15 @@ void MainWindow::on_actionSelect_all_triggered( ) {
 
 void MainWindow::updateRecentBoxes( ) {
   ui->verticalLayout_4->removeItem( ui->verticalSpacer_BOX );
-  while( QLayoutItem * item = ui->verticalLayout_4->takeAt( 0 ) ) {
-    if( QWidget * widget = item->widget( ) ) {
-      widget->deleteLater( );
-    }
-  }
+  qDeleteAll( boxItemWidgets );
+  boxItemWidgets.clear( );
+
   QStringList files = rboxController->getFiles( );
   for( auto file : files ) {
     QString name = QFileInfo( file ).baseName( ).toUpper( );
     QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
     ListItemWidget *item = new ListItemWidget( pixmap, name, "label_box", file, this );
+    boxItemWidgets.append( item );
     ui->verticalLayout_4->addWidget( item );
   }
   ui->verticalLayout_4->addItem( ui->verticalSpacer_BOX );
@@ -351,7 +354,6 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
     ui->verticalLayout_4->removeItem( ui->verticalSpacer_BOX );
     ui->verticalLayout_4->addWidget( item );
     ui->verticalLayout_4->addItem( ui->verticalSpacer_BOX );
-    item->getLabel( )->startDrag( );
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
@@ -369,11 +371,8 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
 
 void MainWindow::on_lineEdit_textChanged( const QString &text ) {
   ui->searchLayout->removeItem( ui->VSpacer );
-  while( QLayoutItem * item = ui->searchLayout->takeAt( 0 ) ) {
-    if( QWidget * widget = item->widget( ) ) {
-      delete widget;
-    }
-  }
+  qDeleteAll( searchItemWidgets );
+  searchItemWidgets.clear( );
   firstResult = nullptr;
   if( text.isEmpty( ) ) {
     ui->searchScrollArea->hide( );
@@ -389,7 +388,7 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
     searchResults.append( ui->tabWidget->findChildren< Label* >( regex2 ) );
     QList< Label* > allLabels = ui->tabWidget->findChildren< Label* >( );
     for( Label *lb : allLabels ) {
-      if( !lb->property( "Name" ).isNull( ) && regex.match( lb->property( "Name" ).toString( ) ).hasMatch() ) {
+      if( !lb->property( "Name" ).isNull( ) && regex.match( lb->property( "Name" ).toString( ) ).hasMatch( ) ) {
         if( !searchResults.contains( lb ) ) {
           searchResults.append( lb );
         }
@@ -407,6 +406,7 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
         firstResult = item->getLabel( );
       }
       ui->searchLayout->addWidget( item );
+      searchItemWidgets.append( item );
     }
   }
   ui->searchLayout->addItem( ui->VSpacer );
