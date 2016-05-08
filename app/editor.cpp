@@ -305,7 +305,7 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
   if( QApplication::overrideCursor( ) ) {
     QApplication::setOverrideCursor( Qt::ArrowCursor );
   }
-  QNEConnection *editedConn = getEditedConn();
+  QNEConnection *editedConn = getEditedConn( );
   if( editedConn && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
     /* A connection is being created, and left button was released. */
     QNEPort *port = dynamic_cast< QNEPort* >( itemAt( mousePos ) );
@@ -324,7 +324,7 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
         editedConn->setPort2( port2 );
         editedConn->updatePath( );
         receiveCommand( new AddItemsCommand( editedConn, this ) );
-        setEditedConn(nullptr);
+        setEditedConn( nullptr );
         return( true );
       }
     }
@@ -333,7 +333,7 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
     if( editedConn->port1( ) ) {
       editedConn->port1( )->disconnect( editedConn );
     }
-    setEditedConn( nullptr);
+    setEditedConn( nullptr );
     delete editedConn;
 
     return( true );
@@ -343,6 +343,9 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
 
 bool Editor::loadBox( Box *box, QString fname ) {
   QSettings settings;
+  if( !settings.contains( "recentBoxes" ) ) {
+    return( false );
+  }
   QStringList files = settings.value( "recentBoxes" ).toStringList( );
 /*  qDebug( ) << "Loading box" << fname; */
   files.removeAll( fname );
@@ -377,7 +380,7 @@ bool Editor::loadBox( Box *box, QString fname ) {
 }
 
 void Editor::handleHoverPort( QNEPort *port ) {
-  QNEConnection *editedConn = getEditedConn();
+  QNEConnection *editedConn = getEditedConn( );
   QNEPort *hoverPort = getHoverPort( );
   if( hoverPort && ( port != hoverPort ) ) {
     releaseHoverPort( );
@@ -453,6 +456,8 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
     qint32 type;
     dataStream >> offset >> type >> label_auxData;
     QPointF pos = dde->scenePos( ) - offset;
+    dde->accept( );
+
     GraphicElement *elm = ElementFactory::buildElement( ( ElementType ) type, this );
     /* If element type is unknown, a default element is created with the pixmap received from mimedata */
     if( !elm ) {
@@ -493,7 +498,6 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
     /* Adjusting the position of the element. */
     elm->setPos( pos );
 
-    dde->accept( );
     return( true );
   }
   else if( dde->mimeData( )->hasFormat( "application/ctrlDragData" ) ) {
@@ -503,6 +507,8 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
     qint32 type;
     dataStream >> type >> offset;
     QPointF pos = dde->scenePos( ) - offset;
+    dde->accept( );
+
     GraphicElement *elm = ElementFactory::buildElement( ( ElementType ) type, this );
     /* If element type is unknown, a default element is created with the pixmap received from mimedata */
     if( !elm ) {
@@ -534,7 +540,6 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
     /* Adjusting the position of the element. */
     elm->setPos( pos );
 
-    dde->accept( );
     return( true );
   }
   return( false );

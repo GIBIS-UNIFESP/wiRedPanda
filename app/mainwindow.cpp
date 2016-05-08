@@ -317,7 +317,10 @@ void MainWindow::on_actionSelect_all_triggered( ) {
 
 void MainWindow::updateRecentBoxes( ) {
   ui->verticalLayout_4->removeItem( ui->verticalSpacer_BOX );
-  qDeleteAll( boxItemWidgets );
+  for( ListItemWidget *item : boxItemWidgets ) {
+    item->deleteLater( );
+  }
+/*  qDeleteAll( boxItemWidgets ); */
   boxItemWidgets.clear( );
 
   QStringList files = rboxController->getFiles( );
@@ -371,7 +374,9 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
 
 void MainWindow::on_lineEdit_textChanged( const QString &text ) {
   ui->searchLayout->removeItem( ui->VSpacer );
-  qDeleteAll( searchItemWidgets );
+  for( ListItemWidget *item : searchItemWidgets ) {
+    item->deleteLater( );
+  }
   searchItemWidgets.clear( );
   firstResult = nullptr;
   if( text.isEmpty( ) ) {
