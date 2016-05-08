@@ -19,13 +19,13 @@ ListItemWidget::ListItemWidget( const QPixmap &pixmap, QString name, QString pix
   setObjectName( QString( "_listItem_" ) + name );
   setLayout( itemLayout );
 
-  label = new Label( this );
+  label = new Label( parent  );
   label->setObjectName( pixName );
   label->setPixmap( pixmap );
   label->setAuxData( auxData );
   label->setProperty( "Name", name );
 
-  QLabel *nameLabel = new QLabel( name );
+  QLabel *nameLabel = new QLabel( name, this );
   nameLabel->setText( name );
   itemLayout->addWidget( label );
   itemLayout->addWidget( nameLabel );

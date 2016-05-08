@@ -2,9 +2,9 @@
 #include "graphicelement.h"
 #include "label.h"
 #include <QtWidgets>
+#include <thread>
 
 Label::Label( QWidget *parent ) : QLabel( parent ) {
-  setBusy( false );
 }
 
 Label::~Label( ) {
@@ -21,14 +21,6 @@ void Label::setElementType( QString elementType ) {
 
 void Label::mousePressEvent( QMouseEvent *event ) {
   startDrag( event->pos( ) );
-}
-
-bool Label::busy( ) const {
-  return( m_busy );
-}
-
-void Label::setBusy( bool busy ) {
-  m_busy = busy;
 }
 
 QString Label::auxData( ) const {
@@ -56,11 +48,9 @@ void Label::startDrag( QPoint pos ) {
 
   QMimeData *mimeData = new QMimeData;
   mimeData->setData( "application/x-dnditemdata", itemData );
-
-  QDrag *drag = new QDrag( this );
+  QDrag *drag = new QDrag( parent() );
   drag->setMimeData( mimeData );
   drag->setPixmap( pixmap );
   drag->setHotSpot( pos );
   drag->exec( Qt::CopyAction, Qt::CopyAction );
-  setBusy( true );
 }
