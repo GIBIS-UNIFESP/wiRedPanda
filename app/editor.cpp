@@ -342,7 +342,7 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
 }
 
 bool Editor::loadBox( Box *box, QString fname ) {
-  QSettings settings;
+  QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
   if( !settings.contains( "recentBoxes" ) ) {
     return( false );
   }
