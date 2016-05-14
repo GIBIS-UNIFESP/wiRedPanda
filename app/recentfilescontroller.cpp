@@ -1,9 +1,9 @@
+#include "recentfilescontroller.h"
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>
 #include <QSettings>
-
-#include "recentfilescontroller.h"
+#include <QApplication>
 
 RecentFilesController::RecentFilesController( QString attrName, QObject *parent ) : QObject( parent ) {
   this->attrName = attrName;
@@ -14,7 +14,7 @@ void RecentFilesController::addFile( QString fname ) {
   if( !QFile( fname ).exists( ) ) {
     return;
   }
-  QSettings settings;
+  QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
   QStringList files = settings.value( attrName ).toStringList( );
 
   files.removeAll( fname );
@@ -38,7 +38,7 @@ void RecentFilesController::addFile( QString fname ) {
 }
 
 QStringList RecentFilesController::getFiles( ) {
-  QSettings settings;
+  QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
   if( !settings.contains( attrName ) ) {
     return( QStringList() );
   }
