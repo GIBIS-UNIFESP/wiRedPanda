@@ -1,0 +1,70 @@
+---
+permalink: /404.html
+---
+
+<!doctype html>
+<!--[if lt IE 7 ]><html itemscope itemtype="http://schema.org/{% if page.id or post.id %}Article{% else %}Organization{% endif %}" id="ie6" class="ie ie-old" lang="en-US"><![endif]-->
+<!--[if IE 7 ]>   <html itemscope itemtype="http://schema.org/{% if page.id or post.id %}Article{% else %}Organization{% endif %}" id="ie7" class="ie ie-old" lang="en-US"><![endif]-->
+<!--[if IE 8 ]>   <html itemscope itemtype="http://schema.org/{% if page.id or post.id %}Article{% else %}Organization{% endif %}" id="ie8" class="ie ie-old" lang="en-US"><![endif]-->
+<!--[if IE 9 ]>   <html itemscope itemtype="http://schema.org/{% if page.id or post.id %}Article{% else %}Organization{% endif %}" id="ie9" class="ie" lang="en-US"><![endif]-->
+<!--[if gt IE 9]><!--><html itemscope itemtype="http://schema.org/{% if page.id or post.id %}Article{% else %}Organization{% endif %}" lang="en-US"><!--<![endif]-->
+<head>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+
+    <title>{% if page.title %}{{ page.title }} - {{ site.data.global.title }}{% elsif post.title %}{{ post.title }} - {{ site.data.global.title }}{% else %}{{ site.data.global.title }} - {{ site.data.global.description }}{% endif %}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="{{ site.data.global.description }}">
+    <meta name="keywords" content="{{ site.data.global.keywords }}">
+    <meta name="author" content="{{ site.data.global.admin_name }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- RSS -->
+    <link rel="alternate" type="application/rss+xml" title="{{ site.data.global.title }} - {{ site.data.global.description }}" href="{{ site.data.global.url }}/feed.xml">
+    <link rel="alternate" type="application/atom+xml" title="{{ site.data.global.title }} - {{ site.data.global.description }}" href="{{ site.data.global.url }}/atom.xml">
+
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="{{ site.data.global.url }}/images/pandaLogo.png">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#333">
+    <meta name="apple-mobile-web-app-title" content="{{ site.data.global.title }}">
+    <link rel="apple-touch-icon-precomposed" href="{{ site.data.global.url }}/images/pandaLogo.png">
+
+    <!-- Tile icon for Win8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="{{ site.data.global.url }}/images/pandaLogo.png">
+    <meta name="msapplication-TileColor" content="#333">
+    <meta name="theme-color" content="#333">
+    <meta property="og:image" content="{{ site.data.global.url }}/images/dflipflop.png">
+
+    <link rel="shortcut icon" href="{{ site.data.global.url }}/images/pandaLogo.png">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto+Condensed:300,300italic,400,400italic,700,700italic|Oswald:300,400,700">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{ site.data.global.url }}/css/style.css">
+    <!--[if lt IE 9]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="{{ site.data.global.url }}/js/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body class="{{ post.title | downcase | replace:' ','-' | replace:',','' | strip_html }}{% if page.category %} category-{{ page.category }}{% endif %}{% if page.layout-class %} layout-{{ page.layout-class }}{% endif %}">
+  <div id="wrap">
+    <center>
+      <h1>404</h1>
+      <h2>Page not found</h2>
+
+      <a href="{{ site.data.global.url }}" class="btn btn-large">wiRed Panda website</a>
+      <a href="{{ site.data.global.url }}">
+      <img src="images/panda2.gif" class="image-responsive" alt="A red panda trying to open the door.">
+      </a>
+    </center>
+</body>
