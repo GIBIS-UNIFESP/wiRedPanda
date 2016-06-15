@@ -300,6 +300,6 @@ void QNEPort::hoverLeave( ) {
 }
 
 
-void QNEPort::hoverLeaveEvent( QGraphicsSceneHoverEvent *event ) {
+void QNEPort::hoverLeaveEvent( QGraphicsSceneHoverEvent * ) {
   hoverLeave( );
 }

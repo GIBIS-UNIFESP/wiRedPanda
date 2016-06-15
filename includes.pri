@@ -60,6 +60,7 @@ SOURCES += \
     $$PWD/app/itemwithid.cpp
 
 HEADERS  +=  \
+    $$PWD/app/common.h \
     $$PWD/app/graphicsviewzoom.h \
     $$PWD/app/arduino/codegenerator.h\
     $$PWD/app/box.h \
@@ -138,4 +139,4 @@ RESOURCES += \
 #CONFIG += app_bundle
 #}
 
-QMAKE_CXXFLAGS_DEBUG += -DDEBUG -Wall
+QMAKE_CXXFLAGS_DEBUG += -DDEBUG=1 -Wall

@@ -6,7 +6,7 @@
 #include <QKeySequence>
 
 #include "nodes/qneport.h"
-
+#include "common.h"
 #include "itemwithid.h"
 
 enum class ElementType {
