@@ -15,12 +15,13 @@ GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz,
                                 QGraphicsItem *parent ) : QGraphicsObject( parent ), label( new QGraphicsTextItem(
                                                                                               this ) )
 {
+  COMMENT( "Setting flags of elements. ", 4 );
   setFlag( QGraphicsItem::ItemIsMovable );
   setFlag( QGraphicsItem::ItemIsSelectable );
 /*  setFlag(QGraphicsItem::ItemSendsScenePositionChanges); */
   setFlag( QGraphicsItem::ItemSendsGeometryChanges );
 
-
+  COMMENT( "Setting attributes. ", 4 );
   label->hide( );
   QFont font( "SansSerif" );
   font.setBold( true );
@@ -43,6 +44,8 @@ GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz,
   m_hasLabel = false;
   m_disabled = false;
   m_outputsOnTop = true;
+
+  COMMENT( "Including input and output ports.", 4 );
   for( int i = 0; i < minInputSz; i++ ) {
     addInputPort( );
   }
@@ -91,6 +94,7 @@ void GraphicElement::setOutputs( const QVector< QNEPort* > &outputs ) {
 }
 
 void GraphicElement::save( QDataStream &ds ) {
+  COMMENT( "Saving element. Type: " << objectName( ).toStdString( ), 0 );
   ds << pos( );
   ds << rotation( );
 
@@ -119,9 +123,11 @@ void GraphicElement::save( QDataStream &ds ) {
     ds << port->portName( );
     ds << port->portFlags( );
   }
+  COMMENT( "Finished saving element.", 0 );
 }
 
 void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) {
+  COMMENT( "Loading element. Type: " << objectName( ).toStdString( ), 4 );
   QPointF p;
   QString label_text;
   ds >> p;
@@ -151,6 +157,8 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
   /* <\Version1.9> */
 
   quint64 inputSz, outputSz;
+
+  COMMENT( "Setting input ports.", 4 );
   ds >> inputSz;
   if( inputSz > MAXIMUMVALIDINPUTSIZE ) {
     throw std::runtime_error( "Corrupted file!" );
@@ -178,7 +186,8 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
     delete m_inputs.back( );
     m_inputs.pop_back( );
   }
-  updatePorts();
+
+  COMMENT( "Setting output ports.", 4 );
   ds >> outputSz;
   if( outputSz > MAXIMUMVALIDINPUTSIZE ) {
     throw std::runtime_error( "Corrupted file!" );
@@ -202,6 +211,10 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
       portMap[ ptr ] = addPort( name, true, flags, ptr );
     }
   }
+  COMMENT( "Updating port positions.", 4 );
+  updatePorts();
+
+  COMMENT( "Finished loading element.", 4 );
 }
 
 QVector< QNEPort* > GraphicElement::inputs( ) const {
@@ -229,6 +242,7 @@ void GraphicElement::paint( QPainter *painter, const QStyleOptionGraphicsItem *o
 }
 
 QNEPort* GraphicElement::addPort( const QString &name, bool isOutput, int flags, int ptr ) {
+  COMMENT( "Adding new port.", 4 );
   if( isOutput && ( ( quint64 ) m_outputs.size( ) >= m_maxOutputSz ) ) {
     return( NULL );
   }
@@ -247,6 +261,8 @@ QNEPort* GraphicElement::addPort( const QString &name, bool isOutput, int flags,
   else {
     m_inputs.push_back( port );
   }
+
+  COMMENT( "Updating new port.", 4 );
   this->updatePorts( );
   port->show( );
   return( port );
@@ -266,6 +282,7 @@ void GraphicElement::setPortName( QString name ) {
 }
 
 void GraphicElement::updatePorts( ) {
+  COMMENT( "Updating port positions that belong to the box.", 4 );
   int inputPos = m_topPosition;
   int outputPos = m_bottomPosition;
   if( m_outputsOnTop ) {
@@ -303,7 +320,7 @@ void GraphicElement::updatePorts( ) {
  */
 
 QVariant GraphicElement::itemChange( QGraphicsItem::GraphicsItemChange change, const QVariant &value ) {
-  /* Align to grid */
+  COMMENT( "Align to grid.", 4 );
   if( ( change == ItemPositionChange ) && scene( ) ) {
     QPointF newPos = value.toPointF( );
     Scene *customScene = dynamic_cast< Scene* >( scene( ) );
@@ -317,7 +334,7 @@ QVariant GraphicElement::itemChange( QGraphicsItem::GraphicsItemChange change, c
       return( newPos );
     }
   }
-  /* Moves wires */
+  COMMENT( "Moves wires.", 4 );
   if( ( change == ItemScenePositionHasChanged ) || ( change == ItemRotationHasChanged ) ||
       ( change == ItemTransformHasChanged ) ) {
     foreach( QNEPort * port, m_outputs ) {
@@ -361,6 +378,7 @@ QString GraphicElement::getLabel( ) {
 }
 
 bool GraphicElement::isValid( ) {
+  COMMENT( "Checking if the element has the required signals to comput its value.", 4 );
   bool valid = true;
   for( QNEPort *input  : m_inputs ) {
     /* Required inputs must have exactly one connection. */
