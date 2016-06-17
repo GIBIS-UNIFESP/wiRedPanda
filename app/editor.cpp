@@ -571,7 +571,7 @@ void Editor::ctrlDrag( QPointF pos ) {
     for( GraphicElement *elm : selectedElms ) {
       rect = rect.united( elm->boundingRect( ).translated( elm->pos( ) ) );
     }
-    rect = rect.adjusted( -16, -16, 16, 16 );
+    rect = rect.adjusted( -8, -8, 8, 8 );
     QImage image( rect.size( ).toSize( ), QImage::Format_ARGB32 );
     image.fill( Qt::transparent );
 
