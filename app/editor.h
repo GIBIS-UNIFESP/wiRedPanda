@@ -23,8 +23,8 @@ public:
   virtual ~Editor( );
   void save( QDataStream &ds );
   void load( QDataStream &ds );
-  void cut( QDataStream &ds );
-  void copy( QDataStream &ds );
+  void cut( const QList< QGraphicsItem* > &items, QDataStream &ds );
+  void copy( const QList< QGraphicsItem* > &items, QDataStream &ds );
   void paste( QDataStream &ds );
   void selectAll( );
 signals:
@@ -76,8 +76,8 @@ private:
   void ctrlDrag( GraphicElement *elm, QPointF pos );
   void install( Scene *s );
 
-  QNEConnection * getEditedConn();
-  void setEditedConn(QNEConnection *editedConn);
+  QNEConnection* getEditedConn( );
+  void setEditedConn( QNEConnection *editedConn );
 
   /* QObject interface */
 public:
@@ -92,13 +92,14 @@ public:
   void releaseHoverPort( );
 
   void setHoverPort( QNEPort *port );
-  QNEPort * getHoverPort();
+  QNEPort* getHoverPort( );
 
   void resizeScene( );
   SimulationController* getSimulationController( ) const;
   void contextMenu( QPoint screenPos );
   void updateVisibility( );
   QPointF getMousePos( ) const;
+
 
 };
 

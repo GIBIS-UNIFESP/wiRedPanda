@@ -342,7 +342,8 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
 }
 
 bool Editor::loadBox( Box *box, QString fname ) {
-  QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
   if( !settings.contains( "recentBoxes" ) ) {
     return( false );
   }
@@ -601,15 +602,15 @@ Scene* Editor::getScene( ) const {
   return( scene );
 }
 
-void Editor::cut( QDataStream &ds ) {
-  copy( ds );
+void Editor::cut( const QList< QGraphicsItem* > &items, QDataStream &ds ) {
+  copy( items, ds );
   deleteAction( );
 }
 
-void Editor::copy( QDataStream &ds ) {
+void Editor::copy( const QList< QGraphicsItem* > &items, QDataStream &ds ) {
   QPointF center( 0.0f, 0.0f );
   float elm = 0;
-  for( QGraphicsItem *item : scene->selectedItems( ) ) {
+  for( QGraphicsItem *item : items ) {
     if( item->type( ) == GraphicElement::Type ) {
       center += item->pos( );
       elm++;
@@ -711,13 +712,23 @@ void Editor::receiveCommand( QUndoCommand *cmd ) {
 }
 
 void Editor::copyAction( ) {
-  QClipboard *clipboard = QApplication::clipboard( );
-  QMimeData *mimeData = new QMimeData;
-  QByteArray itemData;
-  QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-  copy( dataStream );
-  mimeData->setData( "wpanda/copydata", itemData );
-  clipboard->setMimeData( mimeData );
+  QList< QGraphicsItem* > items = scene->selectedItems( );
+  int counter = 0;
+  for( QGraphicsItem *item : items ) {
+    counter += ( item->type( ) == GraphicElement::Type );
+  }
+  if( counter > 0 ) {
+    QClipboard *clipboard = QApplication::clipboard( );
+    QMimeData *mimeData = new QMimeData;
+    QByteArray itemData;
+    QDataStream dataStream( &itemData, QIODevice::WriteOnly );
+    copy( items, dataStream );
+    mimeData->setData( "wpanda/copydata", itemData );
+    clipboard->setMimeData( mimeData );
+  }else{
+    QClipboard *clipboard = QApplication::clipboard( );
+    clipboard->clear();
+  }
 }
 
 void Editor::cutAction( ) {
@@ -725,7 +736,7 @@ void Editor::cutAction( ) {
   QMimeData *mimeData = new QMimeData( );
   QByteArray itemData;
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-  cut( dataStream );
+  cut( scene->selectedItems( ), dataStream );
   mimeData->setData( "wpanda/copydata", itemData );
   clipboard->setMimeData( mimeData );
 }

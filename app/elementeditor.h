@@ -53,10 +53,11 @@ private:
   Ui::ElementEditor *ui;
   QVector< GraphicElement* > m_elements;
   Scene *scene;
-  bool hasSomething, hasLabel, hasColors, hasFrequency;
+  bool hasAnyProperty, hasLabel, hasColors, hasFrequency;
   bool canChangeInputSize, hasTrigger, hasRotation;
   bool hasSameLabel, hasSameColors, hasSameFrequency;
   bool hasSameInputSize, hasSameTrigger, canMorph, hasSameType;
+  bool hasElements;
 
   QString _manyLabels;
   QString _manyColors;
