@@ -349,7 +349,7 @@ bool Editor::loadBox( Box *box, QString fname ) {
     box->loadFile( fname );
   }
   catch( BoxNotFoundException &err ) {
-    qDebug() << "BoxNotFoundException thrown: " << err.what( );
+    qDebug( ) << "BoxNotFoundException thrown: " << err.what( );
     int ret = QMessageBox::warning( mainWindow, tr( "Error" ), QString::fromStdString(
                                       err.what( ) ), QMessageBox::Ok, QMessageBox::Cancel );
     if( ret == QMessageBox::Cancel ) {
@@ -373,7 +373,6 @@ bool Editor::loadBox( Box *box, QString fname ) {
     files = settings.value( "recentBoxes" ).toStringList( );
     files.removeAll( fname );
   }
-
   files.prepend( fname );
   settings.setValue( "recentBoxes", files );
   if( mainWindow ) {
@@ -504,45 +503,33 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
     return( true );
   }
   else if( dde->mimeData( )->hasFormat( "application/ctrlDragData" ) ) {
+
     QByteArray itemData = dde->mimeData( )->data( "application/ctrlDragData" );
-    QDataStream dataStream( &itemData, QIODevice::ReadOnly );
+    QDataStream ds( &itemData, QIODevice::ReadOnly );
+
     QPointF offset;
-    qint32 type;
-    dataStream >> type >> offset;
-    QPointF pos = dde->scenePos( ) - offset;
+    ds >> offset;
+    offset = dde->scenePos( ) - offset;
     dde->accept( );
 
-    GraphicElement *elm = ElementFactory::buildElement( ( ElementType ) type, this );
-    /* If element type is unknown, a default element is created with the pixmap received from mimedata */
-    if( !elm ) {
-      return( false );
-    }
-    QMap< quint64, QNEPort* > portMap;
-    double version = QApplication::applicationVersion( ).toDouble( );
-    elm->load( dataStream, portMap, version );
-    if( elm->elementType( ) == ElementType::BOX ) {
-      try {
-        Box *box = dynamic_cast< Box* >( elm );
-        if( box ) {
-          if( !loadBox( box, box->getFile( ) ) ) {
-            qDebug( ) << "Failed loading box on Ctrl+Drag";
-            return( false );
-          }
-        }
-      }
-      catch( std::runtime_error &err ) {
-        QMessageBox::warning( mainWindow, tr( "Error" ), QString::fromStdString( err.what( ) ) );
-        return( false );
-      }
-    }
-    /* Adding the element to the scene. */
-    receiveCommand( new AddItemsCommand( elm, this ) );
-    /* Cleaning the selection. */
     scene->clearSelection( );
-    /* Setting created element as selected. */
-    elm->setSelected( true );
-    /* Adjusting the position of the element. */
-    elm->setPos( pos );
+
+    QPointF ctr;
+    ds >> ctr;
+    double version = QApplication::applicationVersion( ).toDouble( );
+    QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( this,
+                                                                            ds,
+                                                                            version,
+                                                                            GlobalProperties::currentFile );
+    receiveCommand( new AddItemsCommand( itemList, this ) );
+    for( QGraphicsItem *item : itemList ) {
+      if( item->type( ) == GraphicElement::Type ) {
+        item->setPos( ( item->pos( ) + offset ) );
+        item->update( );
+        item->setSelected( true );
+      }
+    }
+    resizeScene( );
 
     return( true );
   }
@@ -576,25 +563,40 @@ bool Editor::wheelEvt( QWheelEvent *wEvt ) {
   return( false );
 }
 
-void Editor::ctrlDrag( GraphicElement *elm, QPointF pos ) {
-  if( elm ) {
+void Editor::ctrlDrag( QPointF pos ) {
+  COMMENT( "Ctrl + Drag action triggered.", 0 );
+  QVector< GraphicElement* > selectedElms = scene->selectedElements( );
+  if( !selectedElms.isEmpty( ) ) {
+    QRectF rect;
+    for( GraphicElement *elm : selectedElms ) {
+      rect = rect.united( elm->boundingRect( ).translated( elm->pos( ) ) );
+    }
+    rect = rect.adjusted( -32, -32, 32, 32 );
+    QImage image( rect.size( ).toSize( ), QImage::Format_ARGB32 );
+    image.fill( Qt::transparent );
+
+    QPainter painter( &image );
+    painter.setOpacity( 0.25 );
+    scene->render( &painter, image.rect( ), rect );
+
     QByteArray itemData;
     QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-    dataStream << ( qint32 ) elm->elementType( );
-    dataStream << elm->boundingRect( ).center( );
-    elm->save( dataStream );
+
+    QPointF offset = pos - rect.topLeft( );
+    dataStream << pos;
+
+    copy( scene->selectedItems( ), dataStream );
+
     QMimeData *mimeData = new QMimeData;
     mimeData->setData( "application/ctrlDragData", itemData );
 
-    QDrag *drag = new QDrag( elm );
+    QDrag *drag = new QDrag( this );
     drag->setMimeData( mimeData );
-    QTransform transf;
-    transf.rotate( elm->rotation( ) );
-    drag->setPixmap( elm->getPixmap( ).transformed( transf ) );
-    pos = pos + elm->boundingRect( ).center( );
-    drag->setHotSpot( pos.toPoint( ) );
+    drag->setPixmap( QPixmap::fromImage( image ) );
+    drag->setHotSpot( offset.toPoint( ) );
     drag->exec( Qt::CopyAction, Qt::CopyAction );
   }
+  scene->clearSelection( );
 }
 
 QUndoStack* Editor::getUndoStack( ) const {
@@ -715,23 +717,19 @@ void Editor::receiveCommand( QUndoCommand *cmd ) {
 }
 
 void Editor::copyAction( ) {
-  QList< QGraphicsItem* > items = scene->selectedItems( );
-  int counter = 0;
-  for( QGraphicsItem *item : items ) {
-    counter += ( item->type( ) == GraphicElement::Type );
+  QVector< GraphicElement* > elms = scene->selectedElements( );
+  if( elms.empty( ) ) {
+    QClipboard *clipboard = QApplication::clipboard( );
+    clipboard->clear( );
   }
-  if( counter > 0 ) {
+  else {
     QClipboard *clipboard = QApplication::clipboard( );
     QMimeData *mimeData = new QMimeData;
     QByteArray itemData;
     QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-    copy( items, dataStream );
+    copy( scene->selectedItems(), dataStream );
     mimeData->setData( "wpanda/copydata", itemData );
     clipboard->setMimeData( mimeData );
-  }
-  else {
-    QClipboard *clipboard = QApplication::clipboard( );
-    clipboard->clear( );
   }
 }
 
@@ -775,8 +773,8 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
       QGraphicsItem *item = itemAt( mousePos );
       if( item && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
         if( ( mouseEvt->modifiers( ) & Qt::ControlModifier ) && ( item->type( ) == GraphicElement::Type ) ) {
-          scene->clearSelection( );
-          ctrlDrag( qgraphicsitem_cast< GraphicElement* >( item ), mouseEvt->pos( ) );
+          item->setSelected( true );
+          ctrlDrag( mouseEvt->scenePos( ) );
           return( true );
         }
         draggingElement = true;
