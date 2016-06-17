@@ -342,14 +342,6 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
 }
 
 bool Editor::loadBox( Box *box, QString fname ) {
-  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
-                      QApplication::organizationName( ), QApplication::applicationName( ) );
-  if( !settings.contains( "recentBoxes" ) ) {
-    return( false );
-  }
-  QStringList files = settings.value( "recentBoxes" ).toStringList( );
-/*  qDebug( ) << "Loading box" << fname; */
-  files.removeAll( fname );
   try {
     if( box->getParentFile( ).isEmpty( ) ) {
       box->setParentFile( GlobalProperties::currentFile );
@@ -357,6 +349,7 @@ bool Editor::loadBox( Box *box, QString fname ) {
     box->loadFile( fname );
   }
   catch( BoxNotFoundException &err ) {
+    qDebug() << "BoxNotFoundException thrown: " << err.what( );
     int ret = QMessageBox::warning( mainWindow, tr( "Error" ), QString::fromStdString(
                                       err.what( ) ), QMessageBox::Ok, QMessageBox::Cancel );
     if( ret == QMessageBox::Cancel ) {
@@ -372,6 +365,15 @@ bool Editor::loadBox( Box *box, QString fname ) {
       }
     }
   }
+
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  QStringList files;
+  if( settings.contains( "recentBoxes" ) ) {
+    files = settings.value( "recentBoxes" ).toStringList( );
+    files.removeAll( fname );
+  }
+
   files.prepend( fname );
   settings.setValue( "recentBoxes", files );
   if( mainWindow ) {
@@ -523,6 +525,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
         Box *box = dynamic_cast< Box* >( elm );
         if( box ) {
           if( !loadBox( box, box->getFile( ) ) ) {
+            qDebug( ) << "Failed loading box on Ctrl+Drag";
             return( false );
           }
         }
@@ -725,9 +728,10 @@ void Editor::copyAction( ) {
     copy( items, dataStream );
     mimeData->setData( "wpanda/copydata", itemData );
     clipboard->setMimeData( mimeData );
-  }else{
+  }
+  else {
     QClipboard *clipboard = QApplication::clipboard( );
-    clipboard->clear();
+    clipboard->clear( );
   }
 }
 
