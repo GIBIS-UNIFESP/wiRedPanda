@@ -25,7 +25,7 @@ public:
   void load( QDataStream &ds );
   void cut( const QList< QGraphicsItem* > &items, QDataStream &ds );
   void copy( const QList< QGraphicsItem* > &items, QDataStream &ds );
-  void paste( QDataStream &ds );
+  void paste(QDataStream &ds);
   void selectAll( );
 signals:
   void scroll( int x, int y );
@@ -73,7 +73,7 @@ private:
   bool dragMoveEvt( QGraphicsSceneDragDropEvent *dde );
   bool wheelEvt( QWheelEvent *wEvt );
 
-  void ctrlDrag( GraphicElement *elm, QPointF pos );
+  void ctrlDrag(QPointF pos );
   void install( Scene *s );
 
   QNEConnection* getEditedConn( );
