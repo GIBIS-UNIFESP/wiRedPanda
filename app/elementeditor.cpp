@@ -117,12 +117,16 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
     }
   }
   menu.addSeparator( );
-  QAction *copyAction = menu.addAction( QIcon( QPixmap( ":/toolbar/copy.png" ) ), tr( "Copy" ) );
-  QAction *cutAction = menu.addAction( QIcon( QPixmap( ":/toolbar/cut.png" ) ), tr( "Cut" ) );
-  QAction *deleteAction = menu.addAction( QIcon( QPixmap( ":/toolbar/delete.png" ) ), tr( "Delete" ) );
 
-  connect( copyAction, &QAction::triggered, editor, &Editor::copyAction );
-  connect( cutAction, &QAction::triggered, editor, &Editor::cutAction );
+  if(hasElements){
+    QAction *copyAction = menu.addAction( QIcon( QPixmap( ":/toolbar/copy.png" ) ), tr( "Copy" ) );
+    QAction *cutAction = menu.addAction( QIcon( QPixmap( ":/toolbar/cut.png" ) ), tr( "Cut" ) );
+
+    connect( copyAction, &QAction::triggered, editor, &Editor::copyAction );
+    connect( cutAction, &QAction::triggered, editor, &Editor::cutAction );
+  }
+
+  QAction *deleteAction = menu.addAction( QIcon( QPixmap( ":/toolbar/delete.png" ) ), tr( "Delete" ) );
   connect( deleteAction, &QAction::triggered, editor, &Editor::deleteAction );
 
   QAction *a = menu.exec( screenPos );
@@ -155,8 +159,13 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
 
 void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms ) {
   m_elements = elms;
+  hasLabel = hasColors = hasFrequency = canChangeInputSize = hasTrigger = false;
+  hasRotation = hasSameLabel = hasSameColors = hasSameFrequency = false;
+  hasSameInputSize = hasSameTrigger = canMorph = hasSameType = hasAnyProperty = false;
+  hasElements = false;
+
   if( !elms.isEmpty( ) ) {
-    hasSomething = false;
+    hasAnyProperty = false;
     hasLabel = hasColors = hasFrequency = canChangeInputSize = hasTrigger = true;
     hasRotation = true;
     setVisible( true );
@@ -165,6 +174,7 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
     hasSameLabel = hasSameColors = hasSameFrequency = true;
     hasSameInputSize = hasSameTrigger = canMorph = true;
     hasSameType = true;
+    hasElements = true;
     GraphicElement *firstElement = m_elements.front( );
     for( GraphicElement *elm : m_elements ) {
       hasLabel &= elm->hasLabel( );
@@ -186,8 +196,8 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
       canMorph &= elm->outputSize( ) == firstElement->outputSize( );
     }
     canChangeInputSize = ( minimum < maximum );
-    hasSomething |= hasLabel | hasColors | hasFrequency;
-    hasSomething |= canChangeInputSize | hasTrigger;
+    hasAnyProperty |= hasLabel | hasColors | hasFrequency;
+    hasAnyProperty |= canChangeInputSize | hasTrigger;
 
 
     /* Labels */
@@ -262,10 +272,11 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
         ui->lineEditTrigger->setText( _manyTriggers );
       }
     }
-    setEnabled( hasSomething );
-    setVisible( hasSomething );
+    setEnabled( hasAnyProperty );
+    setVisible( hasAnyProperty );
   }
   else {
+    hasElements = false;
     setVisible( false );
     ui->lineEditElementLabel->setText( "" );
   }

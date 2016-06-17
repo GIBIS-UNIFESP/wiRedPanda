@@ -55,9 +55,11 @@ QVector< GraphicElement* > Scene::selectedElements( ) {
   QVector< GraphicElement* > elements;
   QList< QGraphicsItem* > myItems = selectedItems( );
   for( QGraphicsItem *item : myItems ) {
-    GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
-    if( elm ) {
-      elements.append( elm );
+    if( item->type( ) == GraphicElement::Type ) {
+      GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+      if( elm ) {
+        elements.append( elm );
+      }
     }
   }
   return( elements );
