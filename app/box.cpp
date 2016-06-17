@@ -91,6 +91,7 @@ void Box::loadFile( QString fname ) {
   qDebug( ) << "Loading file:" << fname;
   QFileInfo fileInfo = findFile( fname );
   fname = fileInfo.absoluteFilePath( );
+  m_file = fname;
   setToolTip( fname );
   if( getLabel( ).isEmpty( ) ) {
     setLabel( fileInfo.baseName( ).toUpper( ) );
