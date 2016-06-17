@@ -71,6 +71,8 @@ private slots:
   void updateRecentFileActions( );
   void zoomChanged( );
 
+  void on_actionPlay_triggered(bool checked);
+
 private:
   Ui::MainWindow *ui;
   Editor *editor;

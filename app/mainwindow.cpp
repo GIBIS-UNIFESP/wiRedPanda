@@ -68,6 +68,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   connect( rfController, &RecentFilesController::recentFilesUpdated, this, &MainWindow::updateRecentFileActions );
 
   QApplication::setStyle( QStyleFactory::create( "Fusion" ) );
+  ui->actionPlay->setChecked(true);
 }
 
 void MainWindow::createUndoView( ) {
@@ -117,7 +118,7 @@ bool MainWindow::save( QString fname ) {
   }
   else {
     std::cerr << tr( "Could not open file in WriteOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::endl;
     return( false );
   }
   fl.flush( );
@@ -192,7 +193,7 @@ bool MainWindow::open( const QString &fname ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::endl;
     return( false );
   }
   fl.close( );
@@ -360,7 +361,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::endl;
     return;
   }
   fl.close( );
@@ -617,5 +618,14 @@ void MainWindow::on_actionPortuguese_triggered( ) {
   }
   else {
     QMessageBox::critical( this, "Error!", "Error loading translation!" );
+  }
+}
+
+void MainWindow::on_actionPlay_triggered( bool checked ) {
+  if( checked ) {
+    editor->getSimulationController( )->start( );
+  }
+  else {
+    editor->getSimulationController( )->stop( );
   }
 }

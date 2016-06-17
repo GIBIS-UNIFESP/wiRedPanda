@@ -90,4 +90,5 @@ void SimulationController::stop( ) {
 
 void SimulationController::start( ) {
   timer.start( );
+  Clock::reset = true;
 }
