@@ -36,16 +36,16 @@ void JKFlipFlop::updatePorts( ) {
 }
 
 void JKFlipFlop::updateLogic( ) {
-  char res1 = output( 0 )->value( ); /* Q */
-  char res2 = output( 1 )->value( ); /* ~Q */
+  char q1 = output( 0 )->value( ); /* Q */
+  char q2 = output( 1 )->value( ); /* ~Q */
   if( isValid( ) == false ) {
-    res1 = -1;
-    res2 = -1;
+    q1 = -1;
+    q2 = -1;
   }
   else {
-    if( res1 == -1 ) {
-      res1 = 0;
-      res2 = 0;
+    if( q1 == -1 ) {
+      q1 = 0;
+      q2 = 0;
     }
     char j = inputs( ).at( 0 )->value( );
     char clk = inputs( ).at( 1 )->value( ); /* Current lock */
@@ -53,22 +53,24 @@ void JKFlipFlop::updateLogic( ) {
     char prst = inputs( ).at( 3 )->value( );
     char clr = inputs( ).at( 4 )->value( );
     if( ( clk == 1 ) && ( lastClk == 0 ) ) { /* If Clock up */
-      if( j == k ) { /* IF J=K */
-        std::swap( res1, res2 );
+      if( ( j == 1 ) && ( k == 1 ) ) { /* IF J=K */
+        std::swap( q1, q2 );
       }
-      else {
-        res1 = j;
-        res2 = k;
+      else if( j == 1 ) { /* If J == 1, set Q */
+        q1 = 1;
+        q2 = 0;
       }
-      res1 = ( j && res2 ) || ( !k && res1 );
-      res2 = !res1;
+      else if( k == 1 ) { /* If K == 1, reset Q */
+        q1 = 0;
+        q2 = 1;
+      }
     }
     if( ( prst == 0 ) || ( clr == 0 ) ) {
-      res1 = !prst;
-      res2 = !clr;
+      q1 = !prst;
+      q2 = !clr;
     }
     lastClk = clk;
   }
-  output( 0 )->setValue( res1 );
-  output( 1 )->setValue( res2 );
+  output( 0 )->setValue( q1 );
+  output( 1 )->setValue( q2 );
 }
