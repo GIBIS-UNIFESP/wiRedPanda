@@ -15,6 +15,11 @@ public:
 
   Label * getLabel() const;
 
+
+protected:
+  void mousePressEvent( QMouseEvent *event );
+
+
 signals:
 
 public slots:

@@ -9,6 +9,11 @@
 Label* ListItemWidget::getLabel( ) const {
   return( label );
 }
+
+void ListItemWidget::mousePressEvent( QMouseEvent *event ) {
+  label->startDrag();
+}
+
 ListItemWidget::ListItemWidget( const QPixmap &pixmap, QString name, QString pixName, QString auxData,
                                 QWidget *parent ) : QWidget( parent ) {
   QHBoxLayout *itemLayout = new QHBoxLayout( );
@@ -19,7 +24,7 @@ ListItemWidget::ListItemWidget( const QPixmap &pixmap, QString name, QString pix
   setObjectName( QString( "_listItem_" ) + name );
   setLayout( itemLayout );
 
-  label = new Label( parent  );
+  label = new Label( parent );
   label->setObjectName( pixName );
   label->setPixmap( pixmap );
   label->setAuxData( auxData );
