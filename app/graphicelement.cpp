@@ -72,7 +72,7 @@ void GraphicElement::enable( ) {
 }
 
 void GraphicElement::setPixmap( const QPixmap &pixmap ) {
-  setTransformOriginPoint( pixmap.width( ) / 2, pixmap.height( ) / 2 );
+  setTransformOriginPoint( pixmap.rect().center() );
   this->pixmap = pixmap;
   update( boundingRect( ) );
 }
