@@ -844,7 +844,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>290</height>
+                   <height>280</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -944,7 +944,7 @@
                <x>0</x>
                <y>0</y>
                <width>228</width>
-               <height>256</height>
+               <height>269</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
@@ -1019,6 +1019,10 @@
    <addaction name="actionPaste"/>
    <addaction name="actionDelete"/>
    <addaction name="separator"/>
+   <addaction name="actionZoom_in"/>
+   <addaction name="actionZoom_out"/>
+   <addaction name="actionReset_Zoom"/>
+   <addaction name="separator"/>
    <addaction name="actionPlay"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -1028,7 +1032,7 @@
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>20</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1398,18 +1402,18 @@
   <tabstop>scrollArea_6</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/output/output.qrc"/>
   <include location="resources/resources.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/memory/memory.qrc"/>
   <include location="resources/basic/basic.qrc"/>
-  <include location="resources/resources.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/memory/memory.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/memory/memory.qrc"/>
-  <include location="resources/output/output.qrc"/>
   <include location="resources/basic/basic.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/memory/memory.qrc"/>
+  <include location="resources/resources.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>
 </ui>
