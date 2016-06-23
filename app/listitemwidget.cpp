@@ -15,11 +15,11 @@ void ListItemWidget::mousePressEvent( QMouseEvent * ) {
 }
 
 ListItemWidget::ListItemWidget( const QPixmap &pixmap, QString name, QString pixName, QString auxData,
-                                QWidget *parent ) : QWidget( parent ) {
+                                QWidget *parent ) : QFrame( parent ) {
   QHBoxLayout *itemLayout = new QHBoxLayout( );
   itemLayout->setSpacing( 6 );
   itemLayout->setObjectName( QStringLiteral( "itemLayout" ) );
-  itemLayout->setSizeConstraint( QLayout::SetFixedSize );
+//  itemLayout->setSizeConstraint( QLayout::SetFixedSize );
 
   setObjectName( QString( "_listItem_" ) + name );
   setLayout( itemLayout );
@@ -33,7 +33,10 @@ ListItemWidget::ListItemWidget( const QPixmap &pixmap, QString name, QString pix
   QLabel *nameLabel = new QLabel( name, this );
   nameLabel->setText( name );
   itemLayout->addWidget( label );
+  itemLayout->addStretch();
   itemLayout->addWidget( nameLabel );
+  itemLayout->addStretch();
   itemLayout->setMargin(0);
-
+//  setFrameStyle(QFrame::Raised);
+//  setFrameShape(QFrame::StyledPanel);
 }

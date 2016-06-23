@@ -657,14 +657,13 @@ void MainWindow::populateMenu( QSpacerItem *spacer, QString names, QLayout *layo
     QPixmap pixmap( ElementFactory::getPixmap( ElementFactory::textToType( name ) ) );
     ListItemWidget *item = new ListItemWidget( pixmap, name, name, name, this );
     layout->addWidget( item );
-
   }
   layout->addItem( spacer );
+//  layout->setSpacing(10);
 }
 
 void MainWindow::populateLeftMenu( ) {
   populateMenu( ui->verticalSpacer_InOut, "VCC,GND,BUTTON,SWITCH,CLOCK,LED,DISPLAY", ui->scrollAreaWidgetContents_InOut->layout( ) );
   populateMenu( ui->verticalSpacer_Gates, "AND,OR,NOT,NAND,NOR,XOR,XNOR,MUX,DEMUX,NODE", ui->scrollAreaWidgetContents_Gates->layout() );
   populateMenu( ui->verticalSpacer_Memory, "DFLIPFLOP,DLATCH,JKFLIPFLOP,SRFLIPFLOP,TFLIPFLOP", ui->scrollAreaWidgetContents_Memory->layout() );
-
 }
