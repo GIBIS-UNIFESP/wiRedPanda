@@ -5,7 +5,7 @@
 
 #include <QWidget>
 
-class ListItemWidget : public QWidget {
+class ListItemWidget : public QFrame {
   Q_OBJECT
 private:
   Label * label;
