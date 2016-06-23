@@ -37,6 +37,4 @@ ListItemWidget::ListItemWidget( const QPixmap &pixmap, QString name, QString pix
   itemLayout->addWidget( nameLabel );
   itemLayout->addStretch();
   itemLayout->setMargin(0);
-//  setFrameStyle(QFrame::Raised);
-//  setFrameShape(QFrame::StyledPanel);
 }
