@@ -33,7 +33,7 @@ void GraphicsView::mouseReleaseEvent( QMouseEvent *e ) {
 }
 
 void GraphicsView::mouseMoveEvent( QMouseEvent *e ) {
-  if( _pan ) {
+  if( _pan || _space ) {
     horizontalScrollBar( )->setValue( horizontalScrollBar( )->value( ) - ( e->x( ) - _panStartX ) );
     verticalScrollBar( )->setValue( verticalScrollBar( )->value( ) - ( e->y( ) - _panStartY ) );
     _panStartX = e->x( );
@@ -41,5 +41,24 @@ void GraphicsView::mouseMoveEvent( QMouseEvent *e ) {
     e->accept( );
     return;
   }
+  _panStartX = e->x( );
+  _panStartY = e->y( );
   QGraphicsView::mouseMoveEvent( e );
+}
+
+void GraphicsView::keyPressEvent( QKeyEvent *e ) {
+  if( e->key( ) & Qt::Key_Space ) {
+    _space = true;
+    QApplication::setOverrideCursor( Qt::ClosedHandCursor );
+    e->accept( );
+  }
+}
+
+
+void GraphicsView::keyReleaseEvent( QKeyEvent *e ) {
+  if( e->key( ) & Qt::Key_Space ) {
+    _space = false;
+    QApplication::restoreOverrideCursor( );
+    e->accept( );
+  }
 }
