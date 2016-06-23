@@ -50,7 +50,7 @@ private:
   int _editedConn_id;
   int _hoverPortElm_id;
   int _hoverPort_nbr;
-  ElementEditor *elementEditor;
+  ElementEditor *_elementEditor;
 
   bool markingSelectionBox;
   QGraphicsRectItem *selectionRect;
@@ -101,6 +101,7 @@ public:
   QPointF getMousePos( ) const;
 
 
+  ElementEditor * getElementEditor() const;
 };
 
 #endif /* EDITOR_H */

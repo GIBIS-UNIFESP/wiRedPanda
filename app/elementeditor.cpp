@@ -117,30 +117,26 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
     }
   }
   menu.addSeparator( );
-
-  if(hasElements){
+  if( hasElements ) {
     QAction *copyAction = menu.addAction( QIcon( QPixmap( ":/toolbar/copy.png" ) ), tr( "Copy" ) );
     QAction *cutAction = menu.addAction( QIcon( QPixmap( ":/toolbar/cut.png" ) ), tr( "Cut" ) );
 
     connect( copyAction, &QAction::triggered, editor, &Editor::copyAction );
     connect( cutAction, &QAction::triggered, editor, &Editor::cutAction );
   }
-
   QAction *deleteAction = menu.addAction( QIcon( QPixmap( ":/toolbar/delete.png" ) ), tr( "Delete" ) );
   connect( deleteAction, &QAction::triggered, editor, &Editor::deleteAction );
 
   QAction *a = menu.exec( screenPos );
   if( a ) {
     if( a->text( ) == renameActionText ) {
-      ui->lineEditElementLabel->setFocus( );
-      ui->lineEditElementLabel->selectAll( );
+      renameAction( );
     }
     else if( a->text( ) == rotateActionText ) {
       emit sendCommand( new RotateCommand( m_elements.toList( ), 90.0 ) );
     }
     else if( a->text( ) == triggerActionText ) {
-      ui->lineEditTrigger->setFocus( );
-      ui->lineEditTrigger->selectAll( );
+      changeTriggerAction( );
     }
     else if( a->text( ) == freqActionText ) {
       ui->doubleSpinBoxFrequency->setFocus( );
@@ -156,6 +152,16 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
   }
 }
 
+void ElementEditor::renameAction( ) {
+  ui->lineEditElementLabel->setFocus( );
+  ui->lineEditElementLabel->selectAll( );
+}
+
+void ElementEditor::changeTriggerAction( ) {
+  ui->lineEditTrigger->setFocus( );
+  ui->lineEditTrigger->selectAll( );
+}
+
 
 void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms ) {
   m_elements = elms;
@@ -163,7 +169,6 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
   hasRotation = hasSameLabel = hasSameColors = hasSameFrequency = false;
   hasSameInputSize = hasSameTrigger = canMorph = hasSameType = hasAnyProperty = false;
   hasElements = false;
-
   if( !elms.isEmpty( ) ) {
     hasAnyProperty = false;
     hasLabel = hasColors = hasFrequency = canChangeInputSize = hasTrigger = true;

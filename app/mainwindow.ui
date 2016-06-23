@@ -318,7 +318,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>194</width>
+                   <width>208</width>
                    <height>738</height>
                   </rect>
                  </property>
@@ -621,7 +621,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>194</width>
+                   <width>208</width>
                    <height>522</height>
                   </rect>
                  </property>
@@ -1076,10 +1076,14 @@
     <addaction name="actionPaste"/>
     <addaction name="actionDelete"/>
     <addaction name="separator"/>
+    <addaction name="actionRename"/>
+    <addaction name="actionChange_Trigger"/>
+    <addaction name="separator"/>
     <addaction name="actionRotate_left"/>
     <addaction name="actionRotate_right"/>
     <addaction name="separator"/>
     <addaction name="actionSelect_all"/>
+    <addaction name="actionClear_selection"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -1265,6 +1269,9 @@
    <property name="text">
     <string>&amp;About</string>
    </property>
+   <property name="shortcut">
+    <string>F1</string>
+   </property>
   </action>
   <action name="actionExit">
    <property name="text">
@@ -1370,6 +1377,34 @@
    </property>
    <property name="toolTip">
     <string>Play or Pause simulation.</string>
+   </property>
+  </action>
+  <action name="actionRename">
+   <property name="text">
+    <string>Rename</string>
+   </property>
+   <property name="shortcut">
+    <string>F2</string>
+   </property>
+  </action>
+  <action name="actionChange_Trigger">
+   <property name="icon">
+    <iconset resource="resources/input/input.qrc">
+     <normaloff>:/input/buttonOff.png</normaloff>:/input/buttonOff.png</iconset>
+   </property>
+   <property name="text">
+    <string>Change Trigger</string>
+   </property>
+   <property name="shortcut">
+    <string>F3</string>
+   </property>
+  </action>
+  <action name="actionClear_selection">
+   <property name="text">
+    <string>Clear selection</string>
+   </property>
+   <property name="shortcut">
+    <string>Esc</string>
    </property>
   </action>
  </widget>

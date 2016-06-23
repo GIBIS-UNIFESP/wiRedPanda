@@ -48,12 +48,7 @@ void GraphicsView::mouseMoveEvent( QMouseEvent *e ) {
 }
 
 void GraphicsView::keyPressEvent( QKeyEvent *e ) {
-  if( e->key( ) & Qt::Key_Escape ) {
-    if( scene( ) ) {
-      scene( )->clearSelection( );
-    }
-  }
-  else if( e->key( ) & Qt::Key_Space ) {
+  if( e->key( ) & Qt::Key_Space ) {
     _space = true;
     QApplication::setOverrideCursor( Qt::ClosedHandCursor );
     e->accept( );

@@ -22,6 +22,8 @@ public:
 
   void setScene( Scene *s );
   void contextMenu( QPoint screenPos, Editor *editor );
+  void renameAction();
+  void changeTriggerAction();
 /*
  *  void renameAction( const QVector< GraphicElement *> &element );
  *  void changeColorAction( const QVector<GraphicElement *> &element );

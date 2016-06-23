@@ -73,6 +73,12 @@ private slots:
 
   void on_actionPlay_triggered(bool checked);
 
+  void on_actionRename_triggered();
+
+  void on_actionChange_Trigger_triggered();
+
+  void on_actionClear_selection_triggered();
+
 private:
   Ui::MainWindow *ui;
   Editor *editor;

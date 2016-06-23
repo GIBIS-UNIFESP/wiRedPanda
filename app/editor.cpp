@@ -184,6 +184,11 @@ QGraphicsItem* Editor::itemAt( QPointF pos ) {
   return( nullptr );
 }
 
+ElementEditor * Editor::getElementEditor() const
+{
+  return _elementEditor;
+}
+
 QPointF Editor::getMousePos( ) const {
   return( mousePos );
 }
@@ -667,9 +672,9 @@ void Editor::load( QDataStream &ds ) {
 }
 
 void Editor::setElementEditor( ElementEditor *value ) {
-  elementEditor = value;
-  elementEditor->setScene( scene );
-  connect( elementEditor, &ElementEditor::sendCommand, this, &Editor::receiveCommand );
+  _elementEditor = value;
+  _elementEditor->setScene( scene );
+  connect( _elementEditor, &ElementEditor::sendCommand, this, &Editor::receiveCommand );
 }
 
 QPointF roundTo( QPointF point, int multiple ) {
@@ -684,12 +689,12 @@ void Editor::contextMenu( QPoint screenPos ) {
   QGraphicsItem *item = itemAt( mousePos );
   if( item ) {
     if( scene->selectedItems( ).contains( item ) ) {
-      elementEditor->contextMenu( screenPos, this );
+      _elementEditor->contextMenu( screenPos, this );
     }
     else if( ( item->type( ) == GraphicElement::Type ) ) {
       scene->clearSelection( );
       item->setSelected( true );
-      elementEditor->contextMenu( screenPos, this );
+      _elementEditor->contextMenu( screenPos, this );
     }
   }
   else {
