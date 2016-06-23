@@ -81,208 +81,25 @@
              </attribute>
              <layout class="QGridLayout" name="gridLayout_2">
               <item row="0" column="0">
-               <widget class="QScrollArea" name="scrollArea">
+               <widget class="QScrollArea" name="scrollAreaInOut">
                 <property name="frameShape">
                  <enum>QFrame::NoFrame</enum>
                 </property>
                 <property name="widgetResizable">
                  <bool>true</bool>
                 </property>
-                <widget class="QWidget" name="scrollAreaWidgetContents">
+                <widget class="QWidget" name="scrollAreaWidgetContents_InOut">
                  <property name="geometry">
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>194</width>
-                   <height>522</height>
+                   <width>208</width>
+                   <height>252</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
                   <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout">
-                    <property name="sizeConstraint">
-                     <enum>QLayout::SetFixedSize</enum>
-                    </property>
-                    <item>
-                     <widget class="Label" name="label_vcc">
-                      <property name="toolTip">
-                       <string>vcc</string>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/input/input.qrc">:/input/1.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>VCC</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_7">
-                      <property name="text">
-                       <string>VCC</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_4">
-                    <property name="sizeConstraint">
-                     <enum>QLayout::SetFixedSize</enum>
-                    </property>
-                    <item>
-                     <widget class="Label" name="label_gnd">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/input/input.qrc">:/input/0.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>GND</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_10">
-                      <property name="text">
-                       <string>GND</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_2">
-                    <item>
-                     <widget class="Label" name="label_button">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/input/input.qrc">:/input/buttonOff.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>Button</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_8">
-                      <property name="text">
-                       <string>Button</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_5">
-                    <item>
-                     <widget class="Label" name="label_switch">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/input/input.qrc">:/input/switchOff.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>Switch</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_11">
-                      <property name="text">
-                       <string>Switch</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_3">
-                    <item>
-                     <widget class="Label" name="label_clock">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/input/input.qrc">:/input/clock0.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>Clock</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_9">
-                      <property name="text">
-                       <string>Clock</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_22">
-                    <property name="sizeConstraint">
-                     <enum>QLayout::SetFixedSize</enum>
-                    </property>
-                    <item>
-                     <widget class="Label" name="label_led">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/output/output.qrc">:/output/WhiteLedOff.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>Led</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_41">
-                      <property name="text">
-                       <string>Led</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_23">
-                    <property name="sizeConstraint">
-                     <enum>QLayout::SetFixedSize</enum>
-                    </property>
-                    <item>
-                     <widget class="Label" name="label_display">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/output/output.qrc">:/output/counter/counter_off.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>Display</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_43">
-                      <property name="text">
-                       <string>Display</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <spacer name="verticalSpacer_2">
+                   <spacer name="verticalSpacer_InOut">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
                     </property>
@@ -306,286 +123,25 @@
              </attribute>
              <layout class="QGridLayout" name="gridLayout_6">
               <item row="0" column="1">
-               <widget class="QScrollArea" name="scrollArea_6">
+               <widget class="QScrollArea" name="scrollAreaGates">
                 <property name="frameShape">
                  <enum>QFrame::NoFrame</enum>
                 </property>
                 <property name="widgetResizable">
                  <bool>true</bool>
                 </property>
-                <widget class="QWidget" name="scrollAreaWidgetContents_6">
+                <widget class="QWidget" name="scrollAreaWidgetContents_Gates">
                  <property name="geometry">
                   <rect>
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>738</height>
+                   <height>252</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
                   <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_15">
-                    <property name="sizeConstraint">
-                     <enum>QLayout::SetFixedSize</enum>
-                    </property>
-                    <item>
-                     <widget class="Label" name="label_and">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/basic/basic.qrc">:/basic/and.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>AND</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_27">
-                      <property name="text">
-                       <string>AND</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_16">
-                    <property name="sizeConstraint">
-                     <enum>QLayout::SetFixedSize</enum>
-                    </property>
-                    <item>
-                     <widget class="Label" name="label_or">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/basic/basic.qrc">:/basic/or.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>OR</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_29">
-                      <property name="text">
-                       <string>OR</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_17">
-                    <item>
-                     <widget class="Label" name="label_not">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/basic/basic.qrc">:/basic/not.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>NOT</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_31">
-                      <property name="text">
-                       <string>NOT</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_18">
-                    <item>
-                     <widget class="Label" name="label_nand">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/basic/basic.qrc">:/basic/nand.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>NAND</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_33">
-                      <property name="text">
-                       <string>NAND</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_19">
-                    <item>
-                     <widget class="Label" name="label_nor">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/basic/basic.qrc">:/basic/nor.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>NOR</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_35">
-                      <property name="text">
-                       <string>NOR</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_24">
-                    <property name="sizeConstraint">
-                     <enum>QLayout::SetFixedSize</enum>
-                    </property>
-                    <item>
-                     <widget class="Label" name="label_xor">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/basic/basic.qrc">:/basic/xor.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>XOR</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_45">
-                      <property name="text">
-                       <string>XOR</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_21">
-                    <property name="sizeConstraint">
-                     <enum>QLayout::SetFixedSize</enum>
-                    </property>
-                    <item>
-                     <widget class="Label" name="label_xnor">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/basic/basic.qrc">:/basic/xnor.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>XNOR</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_39">
-                      <property name="text">
-                       <string>XNOR</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_27">
-                    <property name="sizeConstraint">
-                     <enum>QLayout::SetFixedSize</enum>
-                    </property>
-                    <item>
-                     <widget class="Label" name="label_mux">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/basic/basic.qrc">:/basic/mux.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>MUX</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_40">
-                      <property name="text">
-                       <string>MUX</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_28">
-                    <property name="sizeConstraint">
-                     <enum>QLayout::SetFixedSize</enum>
-                    </property>
-                    <item>
-                     <widget class="Label" name="label_demux">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/basic/basic.qrc">:/basic/demux.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>DEMUX</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_42">
-                      <property name="text">
-                       <string>DEMUX</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_29">
-                    <property name="sizeConstraint">
-                     <enum>QLayout::SetFixedSize</enum>
-                    </property>
-                    <item>
-                     <widget class="Label" name="label_node">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/basic/basic.qrc">:/basic/node.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>NODE</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_44">
-                      <property name="text">
-                       <string>NODE</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <spacer name="verticalSpacer_3">
+                   <spacer name="verticalSpacer_Gates">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
                     </property>
@@ -609,205 +165,25 @@
              </attribute>
              <layout class="QGridLayout" name="gridLayout_5">
               <item row="0" column="1">
-               <widget class="QScrollArea" name="scrollArea_5">
+               <widget class="QScrollArea" name="scrollAreaMemory">
                 <property name="frameShape">
                  <enum>QFrame::NoFrame</enum>
                 </property>
                 <property name="widgetResizable">
                  <bool>true</bool>
                 </property>
-                <widget class="QWidget" name="scrollAreaWidgetContents_5">
+                <widget class="QWidget" name="scrollAreaWidgetContents_Memory">
                  <property name="geometry">
                   <rect>
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>522</height>
+                   <height>252</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
                   <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_10">
-                    <property name="sizeConstraint">
-                     <enum>QLayout::SetFixedSize</enum>
-                    </property>
-                    <item>
-                     <widget class="Label" name="label_dflipflop">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/memory/memory.qrc">:/memory/D-flipflop.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>D-Flipflop</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_17">
-                      <property name="text">
-                       <string>D-Flipflop</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_11">
-                    <property name="sizeConstraint">
-                     <enum>QLayout::SetFixedSize</enum>
-                    </property>
-                    <item>
-                     <widget class="Label" name="label_dlatch">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/memory/memory.qrc">:/memory/D-latch.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>D-Latch</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_18">
-                      <property name="text">
-                       <string>D-Latch</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_12">
-                    <item>
-                     <widget class="Label" name="label_jkflipflop">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/memory/memory.qrc">:/memory/JK-flipflop.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>JK-Flipflop</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_21">
-                      <property name="text">
-                       <string>JK-Flipflop</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_13">
-                    <item>
-                     <widget class="Label" name="label_jklatch">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/memory/memory.qrc">:/memory/JK-latch.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>JK-Latch</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_23">
-                      <property name="text">
-                       <string>JK-Latch</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_14">
-                    <item>
-                     <widget class="Label" name="label_srflipflop">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/memory/memory.qrc">:/memory/SR-flipflop.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>SR-Flipflop</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_25">
-                      <property name="text">
-                       <string>SR-Flipflop</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_25">
-                    <property name="sizeConstraint">
-                     <enum>QLayout::SetFixedSize</enum>
-                    </property>
-                    <item>
-                     <widget class="Label" name="label_tflipflop">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/memory/memory.qrc">:/memory/T-flipflop.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>T-Flipflop</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_47">
-                      <property name="text">
-                       <string>T-Flipflop</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_26">
-                    <property name="sizeConstraint">
-                     <enum>QLayout::SetFixedSize</enum>
-                    </property>
-                    <item>
-                     <widget class="Label" name="label_tlatch">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="resources/memory/memory.qrc">:/memory/T-latch.png</pixmap>
-                      </property>
-                      <property name="Name" stdset="0">
-                       <string>T-Latch</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_49">
-                      <property name="text">
-                       <string>T-Latch</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <spacer name="verticalSpacer_4">
+                   <spacer name="verticalSpacer_Memory">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
                     </property>
@@ -844,7 +220,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>280</height>
+                   <height>252</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -944,7 +320,7 @@
                <x>0</x>
                <y>0</y>
                <width>228</width>
-               <height>269</height>
+               <height>297</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
@@ -1411,11 +787,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>Label</class>
-   <extends>QLabel</extends>
-   <header>label.h</header>
-  </customwidget>
-  <customwidget>
    <class>ElementEditor</class>
    <extends>QWidget</extends>
    <header>elementeditor.h</header>
@@ -1430,24 +801,18 @@
  <tabstops>
   <tabstop>lineEdit</tabstop>
   <tabstop>tabWidget</tabstop>
-  <tabstop>scrollArea</tabstop>
+  <tabstop>scrollAreaInOut</tabstop>
   <tabstop>graphicsView</tabstop>
-  <tabstop>scrollArea_5</tabstop>
+  <tabstop>scrollAreaMemory</tabstop>
   <tabstop>scrollArea_Box</tabstop>
-  <tabstop>scrollArea_6</tabstop>
+  <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
   <include location="resources/resources.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
-  <include location="resources/output/output.qrc"/>
-  <include location="resources/memory/memory.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
   <include location="resources/input/input.qrc"/>
-  <include location="resources/memory/memory.qrc"/>
   <include location="resources/resources.qrc"/>
-  <include location="resources/output/output.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>

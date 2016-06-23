@@ -12,6 +12,7 @@
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QMainWindow>
+#include <QSpacerItem>
 #include <QTranslator>
 #include <QUndoView>
 
@@ -41,6 +42,9 @@ public:
   QString getOpenBoxFile( );
 
   bool closeFile( );
+
+
+  void populateMenu(QSpacerItem * spacer, QString names, QLayout* layout);
 
 private slots:
   bool on_actionExport_to_Arduino_triggered( );
@@ -94,6 +98,7 @@ private:
   QTranslator *translator;
   QVector<ListItemWidget *> boxItemWidgets, searchItemWidgets;
   void createRecentFileActions( );
+  void populateLeftMenu();
   /* QWidget interface */
 protected:
   void closeEvent( QCloseEvent *e );
