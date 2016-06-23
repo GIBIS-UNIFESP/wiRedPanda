@@ -10,7 +10,7 @@ Label* ListItemWidget::getLabel( ) const {
   return( label );
 }
 
-void ListItemWidget::mousePressEvent( QMouseEvent *event ) {
+void ListItemWidget::mousePressEvent( QMouseEvent * ) {
   label->startDrag();
 }
 
@@ -34,4 +34,6 @@ ListItemWidget::ListItemWidget( const QPixmap &pixmap, QString name, QString pix
   nameLabel->setText( name );
   itemLayout->addWidget( label );
   itemLayout->addWidget( nameLabel );
+  itemLayout->setMargin(0);
+
 }

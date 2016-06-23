@@ -31,9 +31,13 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   editor->setElementEditor( ui->widgetElementEditor );
   ui->searchScrollArea->hide( );
   setCurrentFile( QFileInfo( ) );
-#ifdef DEBUG
-  createUndoView( );
-#endif
+
+  /*
+   * #ifdef DEBUG
+   *  createUndoView( );
+   * #endif
+   */
+
   connect( ui->actionCopy, &QAction::triggered, editor, &Editor::copyAction );
   connect( ui->actionCut, &QAction::triggered, editor, &Editor::cutAction );
   connect( ui->actionPaste, &QAction::triggered, editor, &Editor::pasteAction );
@@ -68,7 +72,10 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   connect( rfController, &RecentFilesController::recentFilesUpdated, this, &MainWindow::updateRecentFileActions );
 
   QApplication::setStyle( QStyleFactory::create( "Fusion" ) );
+
   ui->actionPlay->setChecked( true );
+
+  populateLeftMenu( );
 }
 
 void MainWindow::createUndoView( ) {
@@ -317,7 +324,7 @@ void MainWindow::on_actionSelect_all_triggered( ) {
 }
 
 void MainWindow::updateRecentBoxes( ) {
-  ui->verticalLayout_4->removeItem( ui->verticalSpacer_BOX );
+  ui->scrollAreaWidgetContents_Box->layout( )->removeItem( ui->verticalSpacer_BOX );
   for( ListItemWidget *item : boxItemWidgets ) {
     item->deleteLater( );
   }
@@ -330,9 +337,9 @@ void MainWindow::updateRecentBoxes( ) {
     QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
     ListItemWidget *item = new ListItemWidget( pixmap, name, "label_box", file, this );
     boxItemWidgets.append( item );
-    ui->verticalLayout_4->addWidget( item );
+    ui->scrollAreaWidgetContents_Box->layout( )->addWidget( item );
   }
-  ui->verticalLayout_4->addItem( ui->verticalSpacer_BOX );
+  ui->scrollAreaWidgetContents_Box->layout( )->addItem( ui->verticalSpacer_BOX );
 }
 
 QString MainWindow::getOpenBoxFile( ) {
@@ -355,9 +362,9 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
     QString name = QFileInfo( fname ).baseName( ).toUpper( );
     QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
     ListItemWidget *item = new ListItemWidget( pixmap, name, "label_box", fname );
-    ui->verticalLayout_4->removeItem( ui->verticalSpacer_BOX );
-    ui->verticalLayout_4->addWidget( item );
-    ui->verticalLayout_4->addItem( ui->verticalSpacer_BOX );
+    ui->scrollAreaWidgetContents_Box->layout( )->removeItem( ui->verticalSpacer_BOX );
+    ui->scrollAreaWidgetContents_Box->layout( )->addWidget( item );
+    ui->scrollAreaWidgetContents_Box->layout( )->addItem( ui->verticalSpacer_BOX );
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
@@ -640,4 +647,24 @@ void MainWindow::on_actionChange_Trigger_triggered( ) {
 
 void MainWindow::on_actionClear_selection_triggered( ) {
   editor->getScene( )->clearSelection( );
+}
+
+void MainWindow::populateMenu( QSpacerItem *spacer, QString names, QLayout *layout ) {
+  QStringList list( names.split( "," ) );
+  layout->removeItem( spacer );
+  for( QString name : list ) {
+    name = name.trimmed( ).toUpper( );
+    QPixmap pixmap( ElementFactory::getPixmap( ElementFactory::textToType( name ) ) );
+    ListItemWidget *item = new ListItemWidget( pixmap, name, name, name, this );
+    layout->addWidget( item );
+
+  }
+  layout->addItem( spacer );
+}
+
+void MainWindow::populateLeftMenu( ) {
+  populateMenu( ui->verticalSpacer_InOut, "VCC,GND,BUTTON,SWITCH,CLOCK,LED,DISPLAY", ui->scrollAreaWidgetContents_InOut->layout( ) );
+  populateMenu( ui->verticalSpacer_Gates, "AND,OR,NOT,NAND,NOR,XOR,XNOR,MUX,DEMUX,NODE", ui->scrollAreaWidgetContents_Gates->layout() );
+  populateMenu( ui->verticalSpacer_Memory, "DFLIPFLOP,DLATCH,JKFLIPFLOP,SRFLIPFLOP,TFLIPFLOP", ui->scrollAreaWidgetContents_Memory->layout() );
+
 }
