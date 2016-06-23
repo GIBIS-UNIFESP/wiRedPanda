@@ -727,7 +727,7 @@ void Editor::copyAction( ) {
     QMimeData *mimeData = new QMimeData;
     QByteArray itemData;
     QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-    copy( scene->selectedItems(), dataStream );
+    copy( scene->selectedItems( ), dataStream );
     mimeData->setData( "wpanda/copydata", itemData );
     clipboard->setMimeData( mimeData );
   }
