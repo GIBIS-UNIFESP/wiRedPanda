@@ -34,7 +34,9 @@ void Label::setAuxData( const QString &auxData ) {
 
 void Label::startDrag( QPoint pos ) {
   QPixmap pixmap = *this->pixmap( );
-
+  if(pos.isNull()){
+    pos = this->pixmap()->rect().center();
+  }
   QByteArray itemData;
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );
   QString text = objectName( );

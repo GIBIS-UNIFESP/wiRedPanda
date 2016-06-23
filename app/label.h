@@ -17,7 +17,7 @@ public:
   void setElementType( QString elementType );
   QString auxData( ) const;
   void setAuxData( const QString &auxData );
-  void startDrag( QPoint pos = QPoint( 32, 32 ) );
+  void startDrag( QPoint pos = QPoint( ) );
 
 protected:
   void mousePressEvent( QMouseEvent *event );
