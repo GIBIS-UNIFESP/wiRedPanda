@@ -18,6 +18,7 @@ ElementEditor::ElementEditor( QWidget *parent ) : QWidget( parent ), ui( new Ui:
   setVisible( false );
 
   ui->lineEditTrigger->setValidator( new QRegExpValidator( QRegExp( "[a-z]| |[A-Z]|[0-9]" ), this ) );
+  fillColorComboBox( );
 }
 
 ElementEditor::~ElementEditor( ) {
@@ -165,8 +166,18 @@ void ElementEditor::changeTriggerAction( ) {
   ui->lineEditTrigger->selectAll( );
 }
 
+void ElementEditor::fillColorComboBox( ) {
+  ui->comboBoxColor->clear( );
+  ui->comboBoxColor->addItem( QIcon( QPixmap( ":/output/GreenLedOn.png" ) ), tr( "Green" ), "Green" );
+  ui->comboBoxColor->addItem( QIcon( QPixmap( ":/output/BlueLedOn.png" ) ), tr( "Blue" ), "Blue" );
+  ui->comboBoxColor->addItem( QIcon( QPixmap( ":/output/PurpleLedOn.png" ) ), tr( "Purple" ), "Purple" );
+  ui->comboBoxColor->addItem( QIcon( QPixmap( ":/output/RedLedOn.png" ) ), tr( "Red" ), "Red" );
+  ui->comboBoxColor->addItem( QIcon( QPixmap( ":/output/WhiteLedOn.png" ) ), tr( "White" ), "White" );
+}
+
 void ElementEditor::retranslateUi( ) {
-  ui->retranslateUi(this);
+  ui->retranslateUi( this );
+  fillColorComboBox( );
 }
 
 
@@ -307,8 +318,8 @@ void ElementEditor::apply( ) {
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );
   for( GraphicElement *elm : m_elements ) {
     elm->save( dataStream );
-    if( elm->hasColors( ) && ( ui->comboBoxColor->currentText( ) != _manyColors ) ) {
-      elm->setColor( ui->comboBoxColor->currentText( ) );
+    if( elm->hasColors( ) && ( ui->comboBoxColor->currentData().isValid() ) ) {
+      elm->setColor( ui->comboBoxColor->currentData().toString() );
     }
     if( elm->hasLabel( ) && ( ui->lineEditElementLabel->text( ) != _manyLabels ) ) {
       elm->setLabel( ui->lineEditElementLabel->text( ) );

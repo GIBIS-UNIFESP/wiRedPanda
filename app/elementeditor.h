@@ -30,6 +30,8 @@ public:
  *  void changeColorAction( const QVector<GraphicElement *> &element );
  */
 
+  void fillColorComboBox();
+  
 signals:
   void sendCommand( QUndoCommand *cmd );
 

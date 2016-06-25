@@ -9,6 +9,7 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QRectF>
+#include <QSettings>
 #include <QShortcut>
 #include <QStyleFactory>
 #include <QtPrintSupport/QPrinter>
@@ -19,6 +20,12 @@
 
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
   ui->setupUi( this );
+
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  if( settings.value( "language" ).isValid() ) {
+    loadTranslation(settings.value( "language" ).toString());
+  }
   editor = new Editor( this );
   ui->graphicsView->setScene( editor->getScene( ) );
   undoView = nullptr;
@@ -149,7 +156,7 @@ void MainWindow::clear( ) {
 int MainWindow::confirmSave( ) {
   QMessageBox msgBox;
   msgBox.setParent( this );
-  msgBox.setLocale( QLocale::Portuguese );
+/*  msgBox.setLocale( QLocale::Portuguese ); */
   msgBox.setStandardButtons( QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel );
   msgBox.setText( tr( "Do you want to save your changes?" ) );
   msgBox.setWindowModality( Qt::WindowModal );
@@ -599,7 +606,7 @@ void MainWindow::on_actionPrint_triggered( ) {
 
 void MainWindow::retranslateUi( ) {
   ui->retranslateUi( this );
-  ui->widgetElementEditor->retranslateUi();
+  ui->widgetElementEditor->retranslateUi( );
 
 
   QList< ListItemWidget* > items = ui->tabWidget->findChildren< ListItemWidget* >( );
@@ -608,12 +615,12 @@ void MainWindow::retranslateUi( ) {
   }
 }
 
-void MainWindow::on_actionEnglish_triggered( ) {
+void MainWindow::loadTranslation( QString language ) {
   if( translator ) {
     qApp->removeTranslator( translator );
   }
   translator = new QTranslator( this );
-  if( translator->load( "://wpanda_en.qm" ) ) {
+  if( translator->load( language ) ) {
     qApp->installTranslator( translator );
     retranslateUi( );
   }
@@ -622,18 +629,22 @@ void MainWindow::on_actionEnglish_triggered( ) {
   }
 }
 
+void MainWindow::on_actionEnglish_triggered( ) {
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  QString language = "://wpanda_en.qm";
+  settings.setValue( "language", language );
+
+  loadTranslation( language );
+}
+
 void MainWindow::on_actionPortuguese_triggered( ) {
-  if( translator ) {
-    qApp->removeTranslator( translator );
-  }
-  translator = new QTranslator( this );
-  if( translator->load( "://wpanda_pt.qm" ) ) {
-    qApp->installTranslator( translator );
-    retranslateUi( );
-  }
-  else {
-    QMessageBox::critical( this, "Error!", "Error loading translation!" );
-  }
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  QString language = "://wpanda_pt.qm";
+  settings.setValue( "language", language );
+
+  loadTranslation( language );
 }
 
 void MainWindow::on_actionPlay_triggered( bool checked ) {
