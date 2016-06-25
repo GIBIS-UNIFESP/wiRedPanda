@@ -335,7 +335,7 @@ void MainWindow::updateRecentBoxes( ) {
   for( auto file : files ) {
     QString name = QFileInfo( file ).baseName( ).toUpper( );
     QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
-    ListItemWidget *item = new ListItemWidget( pixmap, name, "label_box", file, this );
+    ListItemWidget *item = new ListItemWidget( pixmap, name, ElementType::BOX, file, this );
     boxItemWidgets.append( item );
     ui->scrollAreaWidgetContents_Box->layout( )->addWidget( item );
   }
@@ -361,7 +361,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
   if( fl.open( QFile::ReadOnly ) ) {
     QString name = QFileInfo( fname ).baseName( ).toUpper( );
     QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
-    ListItemWidget *item = new ListItemWidget( pixmap, name, "label_box", fname );
+    ListItemWidget *item = new ListItemWidget( pixmap, name, ElementType::BOX, fname, this );
     ui->scrollAreaWidgetContents_Box->layout( )->removeItem( ui->verticalSpacer_BOX );
     ui->scrollAreaWidgetContents_Box->layout( )->addWidget( item );
     ui->scrollAreaWidgetContents_Box->layout( )->addItem( ui->verticalSpacer_BOX );
@@ -401,7 +401,7 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
     searchResults.append( ui->tabWidget->findChildren< Label* >( regex2 ) );
     QList< Label* > allLabels = ui->tabWidget->findChildren< Label* >( );
     for( Label *lb : allLabels ) {
-      if( !lb->property( "Name" ).isNull( ) && regex.match( lb->property( "Name" ).toString( ) ).hasMatch( ) ) {
+      if( regex.match( lb->name() ).hasMatch( ) ) {
         if( !searchResults.contains( lb ) ) {
           searchResults.append( lb );
         }
@@ -413,8 +413,8 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
       }
     }
     for( auto *label : searchResults ) {
-      ListItemWidget *item = new ListItemWidget( *label->pixmap( ), label->property( "Name" ).toString( ),
-                                                 label->objectName( ), label->auxData( ) );
+      ListItemWidget *item = new ListItemWidget( *label->pixmap( ), label->name(),
+                                                 label->elementType(), label->auxData( ) );
       if( !firstResult ) {
         firstResult = item->getLabel( );
       }
@@ -654,8 +654,9 @@ void MainWindow::populateMenu( QSpacerItem *spacer, QString names, QLayout *layo
   layout->removeItem( spacer );
   for( QString name : list ) {
     name = name.trimmed( ).toUpper( );
-    QPixmap pixmap( ElementFactory::getPixmap( ElementFactory::textToType( name ) ) );
-    ListItemWidget *item = new ListItemWidget( pixmap, name, name, name, this );
+    ElementType type = ElementFactory::textToType( name ) ;
+    QPixmap pixmap( ElementFactory::getPixmap( type ) );
+    ListItemWidget *item = new ListItemWidget( pixmap, ElementFactory::translatedName(type), type, name, this );
     layout->addWidget( item );
   }
   layout->addItem( spacer );

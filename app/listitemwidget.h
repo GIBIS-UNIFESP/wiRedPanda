@@ -10,7 +10,7 @@ class ListItemWidget : public QFrame {
 private:
   Label * label;
 public:
-  explicit ListItemWidget(const QPixmap &pixmap, QString name, QString pixName, QString auxData = QString(), QWidget * parent = 0);
+  explicit ListItemWidget(const QPixmap & pixmap, QString name, ElementType elementType, QString auxData, QWidget * parent  = NULL);
 
 
   Label * getLabel() const;

@@ -17,5 +17,6 @@
         <file>panelBox.png</file>
         <file>zoomOut.png</file>
         <file>zoomIn.png</file>
+        <file>zoomReset.png</file>
     </qresource>
 </RCC>
