@@ -31,9 +31,10 @@ void ElementEditor::setScene( Scene *s ) {
 
 QAction* addElementAction( QMenu *menu, GraphicElement *firstElm, ElementType type, bool hasSameType ) {
   if( !hasSameType || ( firstElm->elementType( ) != type ) ) {
-    QAction * action = menu->addAction( QIcon( ElementFactory::getPixmap( type ) ), ElementFactory::translatedName( type ) );
-    action->setData(ElementFactory::typeToText(type));
-    return(  action );
+    QAction *action = menu->addAction( QIcon( ElementFactory::getPixmap( type ) ), ElementFactory::translatedName(
+                                         type ) );
+    action->setData( ElementFactory::typeToText( type ) );
+    return( action );
   }
   return( nullptr );
 }
@@ -131,21 +132,21 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
 
   QAction *a = menu.exec( screenPos );
   if( a ) {
-    if( a->data().toString() == renameActionText ) {
+    if( a->data( ).toString( ) == renameActionText ) {
       renameAction( );
     }
-    else if( a->data().toString() == rotateActionText ) {
+    else if( a->data( ).toString( ) == rotateActionText ) {
       emit sendCommand( new RotateCommand( m_elements.toList( ), 90.0 ) );
     }
-    else if( a->data().toString() == triggerActionText ) {
+    else if( a->data( ).toString( ) == triggerActionText ) {
       changeTriggerAction( );
     }
-    else if( a->data().toString() == freqActionText ) {
+    else if( a->data( ).toString( ) == freqActionText ) {
       ui->doubleSpinBoxFrequency->setFocus( );
     }
     else if( submenumorph && submenumorph->actions( ).contains( a ) ) {
-      if( ElementFactory::textToType( a->data().toString() ) != ElementType::UNKNOWN ) {
-        sendCommand( new MorphCommand( m_elements, ElementFactory::textToType( a->data().toString() ), editor ) );
+      if( ElementFactory::textToType( a->data( ).toString( ) ) != ElementType::UNKNOWN ) {
+        sendCommand( new MorphCommand( m_elements, ElementFactory::textToType( a->data( ).toString( ) ), editor ) );
       }
     }
     else if( submenucolors && submenucolors->actions( ).contains( a ) ) {
@@ -162,6 +163,10 @@ void ElementEditor::renameAction( ) {
 void ElementEditor::changeTriggerAction( ) {
   ui->lineEditTrigger->setFocus( );
   ui->lineEditTrigger->selectAll( );
+}
+
+void ElementEditor::retranslateUi( ) {
+  ui->retranslateUi(this);
 }
 
 
