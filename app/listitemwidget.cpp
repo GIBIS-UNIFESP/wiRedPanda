@@ -1,6 +1,6 @@
 #include "label.h"
 #include "listitemwidget.h"
-
+#include "graphicelement.h"
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QVariant>
@@ -14,7 +14,7 @@ void ListItemWidget::mousePressEvent( QMouseEvent * ) {
   label->startDrag();
 }
 
-ListItemWidget::ListItemWidget( const QPixmap &pixmap, QString name, QString pixName, QString auxData,
+ListItemWidget::ListItemWidget( const QPixmap &pixmap, QString name, ElementType elementType, QString auxData,
                                 QWidget *parent ) : QFrame( parent ) {
   QHBoxLayout *itemLayout = new QHBoxLayout( );
   itemLayout->setSpacing( 6 );
@@ -25,10 +25,11 @@ ListItemWidget::ListItemWidget( const QPixmap &pixmap, QString name, QString pix
   setLayout( itemLayout );
 
   label = new Label( parent );
-  label->setObjectName( pixName );
   label->setPixmap( pixmap );
+  label->setName(name);
   label->setAuxData( auxData );
-  label->setProperty( "Name", name );
+  label->setElementType(elementType);
+
 
   QLabel *nameLabel = new QLabel( name, this );
   nameLabel->setText( name );

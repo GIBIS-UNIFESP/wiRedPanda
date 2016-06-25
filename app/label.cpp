@@ -1,5 +1,4 @@
 #include "elementfactory.h"
-#include "graphicelement.h"
 #include "label.h"
 #include <QtWidgets>
 #include <thread>
@@ -11,16 +10,24 @@ Label::~Label( ) {
 
 }
 
-QString Label::elementType( ) {
+ElementType Label::elementType( ) {
   return( m_elementType );
 }
 
-void Label::setElementType( QString elementType ) {
+void Label::setElementType( ElementType elementType ) {
   m_elementType = elementType;
 }
 
 void Label::mousePressEvent( QMouseEvent *event ) {
   startDrag( event->pos( ) );
+}
+
+QString Label::name( ) const {
+  return( m_name );
+}
+
+void Label::setName( const QString &name ) {
+  m_name = name;
 }
 
 QString Label::auxData( ) const {
@@ -34,12 +41,12 @@ void Label::setAuxData( const QString &auxData ) {
 
 void Label::startDrag( QPoint pos ) {
   QPixmap pixmap = *this->pixmap( );
-  if(pos.isNull()){
-    pos = this->pixmap()->rect().center();
+  if( pos.isNull( ) ) {
+    pos = this->pixmap( )->rect( ).center( );
   }
   QByteArray itemData;
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-  QString text = objectName( );
+  QString text = ElementFactory::typeToText( m_elementType );
   if( text.contains( "_" ) ) {
     text = text.split( "_" ).last( );
   }
@@ -50,7 +57,7 @@ void Label::startDrag( QPoint pos ) {
 
   QMimeData *mimeData = new QMimeData;
   mimeData->setData( "application/x-dnditemdata", itemData );
-  QDrag *drag = new QDrag( parent() );
+  QDrag *drag = new QDrag( parent( ) );
   drag->setMimeData( mimeData );
   drag->setPixmap( pixmap );
   drag->setHotSpot( pos );
