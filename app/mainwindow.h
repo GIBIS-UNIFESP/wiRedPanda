@@ -48,6 +48,8 @@ public:
 
   void retranslateUi();
 
+  void loadTranslation(QString language);
+  
 private slots:
   bool on_actionExport_to_Arduino_triggered( );
   void on_actionAbout_Qt_triggered( );
