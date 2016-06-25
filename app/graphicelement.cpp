@@ -94,7 +94,7 @@ void GraphicElement::setOutputs( const QVector< QNEPort* > &outputs ) {
 }
 
 void GraphicElement::save( QDataStream &ds ) {
-  COMMENT( "Saving element. Type: " << objectName( ).toStdString( ), 0 );
+  COMMENT( "Saving element. Type: " << objectName( ).toStdString( ), 4 );
   ds << pos( );
   ds << rotation( );
 
@@ -123,7 +123,7 @@ void GraphicElement::save( QDataStream &ds ) {
     ds << port->portName( );
     ds << port->portFlags( );
   }
-  COMMENT( "Finished saving element.", 0 );
+  COMMENT( "Finished saving element.", 4 );
 }
 
 void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) {
