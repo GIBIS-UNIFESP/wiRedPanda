@@ -243,7 +243,7 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
     if( hasColors ) {
       if( hasSameColors ) {
         ui->comboBoxColor->removeItem( ui->comboBoxColor->findText( _manyColors ) );
-        ui->comboBoxColor->setCurrentText( firstElement->getColor( ) );
+        ui->comboBoxColor->setCurrentIndex( ui->comboBoxColor->findData(firstElement->getColor( ) ));
       }
       else {
         ui->comboBoxColor->setCurrentText( _manyColors );
