@@ -31,7 +31,9 @@ void ElementEditor::setScene( Scene *s ) {
 
 QAction* addElementAction( QMenu *menu, GraphicElement *firstElm, ElementType type, bool hasSameType ) {
   if( !hasSameType || ( firstElm->elementType( ) != type ) ) {
-    return( menu->addAction( QIcon( ElementFactory::getPixmap( type ) ), ElementFactory::typeToText( type ) ) );
+    QAction * action = menu->addAction( QIcon( ElementFactory::getPixmap( type ) ), ElementFactory::translatedName( type ) );
+    action->setData(ElementFactory::typeToText(type));
+    return(  action );
   }
   return( nullptr );
 }
@@ -129,21 +131,21 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
 
   QAction *a = menu.exec( screenPos );
   if( a ) {
-    if( a->text( ) == renameActionText ) {
+    if( a->data().toString() == renameActionText ) {
       renameAction( );
     }
-    else if( a->text( ) == rotateActionText ) {
+    else if( a->data().toString() == rotateActionText ) {
       emit sendCommand( new RotateCommand( m_elements.toList( ), 90.0 ) );
     }
-    else if( a->text( ) == triggerActionText ) {
+    else if( a->data().toString() == triggerActionText ) {
       changeTriggerAction( );
     }
-    else if( a->text( ) == freqActionText ) {
+    else if( a->data().toString() == freqActionText ) {
       ui->doubleSpinBoxFrequency->setFocus( );
     }
     else if( submenumorph && submenumorph->actions( ).contains( a ) ) {
-      if( ElementFactory::textToType( a->text( ) ) != ElementType::UNKNOWN ) {
-        sendCommand( new MorphCommand( m_elements, ElementFactory::textToType( a->text( ) ), editor ) );
+      if( ElementFactory::textToType( a->data().toString() ) != ElementType::UNKNOWN ) {
+        sendCommand( new MorphCommand( m_elements, ElementFactory::textToType( a->data().toString() ), editor ) );
       }
     }
     else if( submenucolors && submenucolors->actions( ).contains( a ) ) {
