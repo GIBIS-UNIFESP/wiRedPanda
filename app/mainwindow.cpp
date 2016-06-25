@@ -333,9 +333,8 @@ void MainWindow::updateRecentBoxes( ) {
 
   QStringList files = rboxController->getFiles( );
   for( auto file : files ) {
-    QString name = QFileInfo( file ).baseName( ).toUpper( );
     QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
-    ListItemWidget *item = new ListItemWidget( pixmap, name, ElementType::BOX, file, this );
+    ListItemWidget *item = new ListItemWidget( pixmap, ElementType::BOX, file, this );
     boxItemWidgets.append( item );
     ui->scrollAreaWidgetContents_Box->layout( )->addWidget( item );
   }
@@ -359,9 +358,8 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
     return;
   }
   if( fl.open( QFile::ReadOnly ) ) {
-    QString name = QFileInfo( fname ).baseName( ).toUpper( );
     QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
-    ListItemWidget *item = new ListItemWidget( pixmap, name, ElementType::BOX, fname, this );
+    ListItemWidget *item = new ListItemWidget( pixmap, ElementType::BOX, fname, this );
     ui->scrollAreaWidgetContents_Box->layout( )->removeItem( ui->verticalSpacer_BOX );
     ui->scrollAreaWidgetContents_Box->layout( )->addWidget( item );
     ui->scrollAreaWidgetContents_Box->layout( )->addItem( ui->verticalSpacer_BOX );
@@ -401,7 +399,7 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
     searchResults.append( ui->tabWidget->findChildren< Label* >( regex2 ) );
     QList< Label* > allLabels = ui->tabWidget->findChildren< Label* >( );
     for( Label *lb : allLabels ) {
-      if( regex.match( lb->name() ).hasMatch( ) ) {
+      if( regex.match( lb->name( ) ).hasMatch( ) ) {
         if( !searchResults.contains( lb ) ) {
           searchResults.append( lb );
         }
@@ -413,8 +411,7 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
       }
     }
     for( auto *label : searchResults ) {
-      ListItemWidget *item = new ListItemWidget( *label->pixmap( ), label->name(),
-                                                 label->elementType(), label->auxData( ) );
+      ListItemWidget *item = new ListItemWidget( *label->pixmap( ), label->elementType( ), label->auxData( ) );
       if( !firstResult ) {
         firstResult = item->getLabel( );
       }
@@ -600,6 +597,14 @@ void MainWindow::on_actionPrint_triggered( ) {
   p.end( );
 }
 
+void MainWindow::retranslateUi( ) {
+  ui->retranslateUi( this );
+  QList< ListItemWidget* > items = ui->tabWidget->findChildren< ListItemWidget* >( );
+  for( ListItemWidget *item : items ) {
+    item->updateName( );
+  }
+}
+
 void MainWindow::on_actionEnglish_triggered( ) {
   if( translator ) {
     qApp->removeTranslator( translator );
@@ -607,7 +612,7 @@ void MainWindow::on_actionEnglish_triggered( ) {
   translator = new QTranslator( this );
   if( translator->load( "://wpanda_en.qm" ) ) {
     qApp->installTranslator( translator );
-    ui->retranslateUi( this );
+    retranslateUi( );
   }
   else {
     QMessageBox::critical( this, "Error!", "Error loading translation!" );
@@ -621,7 +626,7 @@ void MainWindow::on_actionPortuguese_triggered( ) {
   translator = new QTranslator( this );
   if( translator->load( "://wpanda_pt.qm" ) ) {
     qApp->installTranslator( translator );
-    ui->retranslateUi( this );
+    retranslateUi( );
   }
   else {
     QMessageBox::critical( this, "Error!", "Error loading translation!" );
@@ -654,17 +659,23 @@ void MainWindow::populateMenu( QSpacerItem *spacer, QString names, QLayout *layo
   layout->removeItem( spacer );
   for( QString name : list ) {
     name = name.trimmed( ).toUpper( );
-    ElementType type = ElementFactory::textToType( name ) ;
+    ElementType type = ElementFactory::textToType( name );
     QPixmap pixmap( ElementFactory::getPixmap( type ) );
-    ListItemWidget *item = new ListItemWidget( pixmap, ElementFactory::translatedName(type), type, name, this );
+    ListItemWidget *item = new ListItemWidget( pixmap, type, name, this );
     layout->addWidget( item );
   }
   layout->addItem( spacer );
-//  layout->setSpacing(10);
+/*  layout->setSpacing(10); */
 }
 
 void MainWindow::populateLeftMenu( ) {
-  populateMenu( ui->verticalSpacer_InOut, "VCC,GND,BUTTON,SWITCH,CLOCK,LED,DISPLAY", ui->scrollAreaWidgetContents_InOut->layout( ) );
-  populateMenu( ui->verticalSpacer_Gates, "AND,OR,NOT,NAND,NOR,XOR,XNOR,MUX,DEMUX,NODE", ui->scrollAreaWidgetContents_Gates->layout() );
-  populateMenu( ui->verticalSpacer_Memory, "DFLIPFLOP,DLATCH,JKFLIPFLOP,SRFLIPFLOP,TFLIPFLOP", ui->scrollAreaWidgetContents_Memory->layout() );
+  populateMenu( ui->verticalSpacer_InOut,
+                "VCC,GND,BUTTON,SWITCH,CLOCK,LED,DISPLAY",
+                ui->scrollAreaWidgetContents_InOut->layout( ) );
+  populateMenu( ui->verticalSpacer_Gates,
+                "AND,OR,NOT,NAND,NOR,XOR,XNOR,MUX,DEMUX,NODE",
+                ui->scrollAreaWidgetContents_Gates->layout( ) );
+  populateMenu( ui->verticalSpacer_Memory,
+                "DFLIPFLOP,DLATCH,JKFLIPFLOP,SRFLIPFLOP,TFLIPFLOP",
+                ui->scrollAreaWidgetContents_Memory->layout( ) );
 }

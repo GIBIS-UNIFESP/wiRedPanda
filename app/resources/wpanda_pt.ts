@@ -42,7 +42,7 @@
     </message>
     <message>
         <source>Delete %1 items</source>
-        <translation>Remover %1 item(s)</translation>
+        <translation type="obsolete">Remover %1 item(s)</translation>
     </message>
 </context>
 <context>
@@ -120,7 +120,7 @@
     </message>
     <message>
         <source>None</source>
-        <translation>Nenhum</translation>
+        <translation type="obsolete">Nenhum</translation>
     </message>
     <message>
         <source>Rename</source>
@@ -132,7 +132,7 @@
     </message>
     <message>
         <source>Change Color to %1</source>
-        <translation>Mudar cor para %1</translation>
+        <translation type="obsolete">Mudar cor para %1</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -164,6 +164,113 @@
     </message>
 </context>
 <context>
+    <name>ElementFactory</name>
+    <message>
+        <source>Button</source>
+        <translation>Botão</translation>
+    </message>
+    <message>
+        <source>Led</source>
+        <translation>Led</translation>
+    </message>
+    <message>
+        <source>And</source>
+        <translation>And</translation>
+    </message>
+    <message>
+        <source>Or</source>
+        <translation>Or</translation>
+    </message>
+    <message>
+        <source>Clock</source>
+        <translation>Clock</translation>
+    </message>
+    <message>
+        <source>Switch</source>
+        <translation>Interruptor</translation>
+    </message>
+    <message>
+        <source>Not</source>
+        <translation>Not</translation>
+    </message>
+    <message>
+        <source>Nand</source>
+        <translation>Nand</translation>
+    </message>
+    <message>
+        <source>Nor</source>
+        <translation>Nor</translation>
+    </message>
+    <message>
+        <source>Xor</source>
+        <translation>Xor</translation>
+    </message>
+    <message>
+        <source>Xnor</source>
+        <translation>Xnor</translation>
+    </message>
+    <message>
+        <source>VCC</source>
+        <translation>VCC</translation>
+    </message>
+    <message>
+        <source>GND</source>
+        <translation>GND</translation>
+    </message>
+    <message>
+        <source>D-flipflop</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>D-latch</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>JK-flipflop</source>
+        <translation>JK-Flipflop</translation>
+    </message>
+    <message>
+        <source>JK-latch</source>
+        <translation>JK-Latch</translation>
+    </message>
+    <message>
+        <source>SR-flipflop</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>T-latch</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>T-flipflop</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Display</source>
+        <translation>Display</translation>
+    </message>
+    <message>
+        <source>Box</source>
+        <translation>Caixa</translation>
+    </message>
+    <message>
+        <source>Mux</source>
+        <translation>Mux</translation>
+    </message>
+    <message>
+        <source>Demux</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation>Nó</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Desconhecido</translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <source>WiRED Panda</source>
@@ -175,35 +282,35 @@
     </message>
     <message>
         <source>vcc</source>
-        <translation>VCC</translation>
+        <translation type="obsolete">VCC</translation>
     </message>
     <message>
         <source>VCC</source>
-        <translation>VCC</translation>
+        <translation type="obsolete">VCC</translation>
     </message>
     <message>
         <source>GND</source>
-        <translation>GND</translation>
+        <translation type="obsolete">GND</translation>
     </message>
     <message>
         <source>Button</source>
-        <translation>Botão</translation>
+        <translation type="obsolete">Botão</translation>
     </message>
     <message>
         <source>Switch</source>
-        <translation>Interruptor</translation>
+        <translation type="obsolete">Interruptor</translation>
     </message>
     <message>
         <source>Clock</source>
-        <translation>Clock</translation>
+        <translation type="obsolete">Clock</translation>
     </message>
     <message>
         <source>Led</source>
-        <translation>Led</translation>
+        <translation type="obsolete">Led</translation>
     </message>
     <message>
         <source>Display</source>
-        <translation>Display</translation>
+        <translation type="obsolete">Display</translation>
     </message>
     <message>
         <source>Gates</source>
@@ -211,43 +318,43 @@
     </message>
     <message>
         <source>AND</source>
-        <translation>AND</translation>
+        <translation type="obsolete">AND</translation>
     </message>
     <message>
         <source>OR</source>
-        <translation>OR</translation>
+        <translation type="obsolete">OR</translation>
     </message>
     <message>
         <source>NOT</source>
-        <translation>NOT</translation>
+        <translation type="obsolete">NOT</translation>
     </message>
     <message>
         <source>NAND</source>
-        <translation>NAND</translation>
+        <translation type="obsolete">NAND</translation>
     </message>
     <message>
         <source>NOR</source>
-        <translation>NOR</translation>
+        <translation type="obsolete">NOR</translation>
     </message>
     <message>
         <source>XOR</source>
-        <translation>XOR</translation>
+        <translation type="obsolete">XOR</translation>
     </message>
     <message>
         <source>XNOR</source>
-        <translation>XNOR</translation>
+        <translation type="obsolete">XNOR</translation>
     </message>
     <message>
         <source>MUX</source>
-        <translation>MUX</translation>
+        <translation type="obsolete">MUX</translation>
     </message>
     <message>
         <source>DEMUX</source>
-        <translation>DEMUX</translation>
+        <translation type="obsolete">DEMUX</translation>
     </message>
     <message>
         <source>NODE</source>
-        <translation>NODE</translation>
+        <translation type="obsolete">NODE</translation>
     </message>
     <message>
         <source>Memory</source>
@@ -299,11 +406,11 @@
     </message>
     <message>
         <source>Undo</source>
-        <translation>Desfazer</translation>
+        <translation type="obsolete">Desfazer</translation>
     </message>
     <message>
         <source>Redo</source>
-        <translation>Refazer</translation>
+        <translation type="obsolete">Refazer</translation>
     </message>
     <message>
         <source>Cu&amp;t</source>
@@ -379,7 +486,7 @@
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>&amp;Undo</source>
@@ -453,7 +560,7 @@ Errp: %1</translation>
     </message>
     <message>
         <source>&lt;p&gt;wiRED Panda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students to learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Héctor Castelli &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;wiRED Panda é um software desenvolvido por estudantes da Universidade Federal de São Paulo. Este projeto foi desenvolvido como uma ferramenta didática para auxiliar em disciplinas de Circuitos Digitais.&lt;/p&gt; &lt;p&gt;Versão: %1&lt;/p&gt; &lt;p&gt;&lt;strong&gt;Equipe:&lt;/strong&gt; &lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Héctor Castelli &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Dr. Fábio Cappabianco. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso website!&lt;/a&gt;&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;wiRED Panda é um software desenvolvido por estudantes da Universidade Federal de São Paulo. Este projeto foi desenvolvido como uma ferramenta didática para auxiliar em disciplinas de Circuitos Digitais.&lt;/p&gt; &lt;p&gt;Versão: %1&lt;/p&gt; &lt;p&gt;&lt;strong&gt;Equipe:&lt;/strong&gt; &lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Héctor Castelli &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Dr. Fábio Cappabianco. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso website!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Save File as ...</source>
@@ -489,39 +596,15 @@ Errp: %1</translation>
     </message>
     <message>
         <source>Current Language changed to %1</source>
-        <translation>Linguagem mudou para %1</translation>
-    </message>
-    <message>
-        <source>D-flipflop</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>D-Latch</source>
-        <translation></translation>
+        <translation type="obsolete">Linguagem mudou para %1</translation>
     </message>
     <message>
         <source>JK-flipflop</source>
-        <translation>JK-Flipflop</translation>
+        <translation type="obsolete">JK-Flipflop</translation>
     </message>
     <message>
         <source>JK-latch</source>
-        <translation>JK-Latch</translation>
-    </message>
-    <message>
-        <source>JK-Latch</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>SR-Flipflop</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>T-Flipflop</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>T-Latch</source>
-        <translation></translation>
+        <translation type="obsolete">JK-Latch</translation>
     </message>
     <message>
         <source>Recent files:</source>
@@ -627,6 +710,50 @@ Errp: %1</translation>
         <source>Portuguese</source>
         <translation>Português</translation>
     </message>
+    <message>
+        <source>F1</source>
+        <translation>F1</translation>
+    </message>
+    <message>
+        <source>PlayPause</source>
+        <translation>Iniciar/Pausar</translation>
+    </message>
+    <message>
+        <source>Play or Pause simulation.</source>
+        <translation>Iniciar ou Pausar simulação.</translation>
+    </message>
+    <message>
+        <source>F5</source>
+        <translation>F5</translation>
+    </message>
+    <message>
+        <source>Rename</source>
+        <translation>Renomear</translation>
+    </message>
+    <message>
+        <source>F2</source>
+        <translation>F2</translation>
+    </message>
+    <message>
+        <source>Change Trigger</source>
+        <translation>Mudar Atalho</translation>
+    </message>
+    <message>
+        <source>F3</source>
+        <translation>F3</translation>
+    </message>
+    <message>
+        <source>Clear selection</source>
+        <translation>Limpar seleção</translation>
+    </message>
+    <message>
+        <source>Esc</source>
+        <translation>Esc</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;wiRED Panda is a software developed by the students of the Federal University of SÃ£o Paulo. This project was created in order to help students to learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; HÃ©ctor Castelli &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. FÃ¡bio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;wiRED Panda é um software desenvolvido por estudantes da Universidade Federal de São Paulo. Este projeto foi desenvolvido como uma ferramenta didática para auxiliar em disciplinas de Circuitos Digitais.&lt;/p&gt; &lt;p&gt;Versão: %1&lt;/p&gt; &lt;p&gt;&lt;strong&gt;Equipe:&lt;/strong&gt; &lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Dr. Fábio Cappabianco. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso website!&lt;/a&gt;&lt;/p&gt;</translation>
+    </message>
 </context>
 <context>
     <name>MorphCommand</name>
@@ -650,7 +777,7 @@ Errp: %1</translation>
     </message>
     <message>
         <source>Rotate  AA %1 degrees</source>
-        <translation>Rotacionar %1 graus</translation>
+        <translation type="obsolete">Rotacionar %1 graus</translation>
     </message>
 </context>
 <context>

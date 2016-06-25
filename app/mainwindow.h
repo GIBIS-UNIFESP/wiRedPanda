@@ -46,6 +46,8 @@ public:
 
   void populateMenu(QSpacerItem * spacer, QString names, QLayout* layout);
 
+  void retranslateUi();
+
 private slots:
   bool on_actionExport_to_Arduino_triggered( );
   void on_actionAbout_Qt_triggered( );

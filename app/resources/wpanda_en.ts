@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="en_US">
+<TS version="2.0" language="en_US">
 <context>
     <name>AddItemsCommand</name>
     <message>
@@ -37,8 +37,8 @@
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <source>Delete %1 items</source>
-        <translation></translation>
+        <source>Delete %1 elements</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -152,6 +152,113 @@
     </message>
 </context>
 <context>
+    <name>ElementFactory</name>
+    <message>
+        <source>Button</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Led</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>And</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Or</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Switch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nand</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Xor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Xnor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VCC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GND</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>D-flipflop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>D-latch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>JK-flipflop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>JK-latch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SR-flipflop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>T-latch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>T-flipflop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mux</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Demux</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <source>WiRED Panda</source>
@@ -162,115 +269,11 @@
         <translation></translation>
     </message>
     <message>
-        <source>vcc</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>VCC</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>GND</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Button</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Clock</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Led</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Display</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Gates</source>
         <translation></translation>
     </message>
     <message>
-        <source>AND</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>OR</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>NOT</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>NAND</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>NOR</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>XOR</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>XNOR</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>MUX</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>DEMUX</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>NODE</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Memory</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>D-flipflop</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>D-Latch</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>JK-flipflop</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>JK-latch</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>JK-Latch</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>SR-Flipflop</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>T-Flipflop</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>T-Latch</source>
         <translation></translation>
     </message>
     <message>
@@ -539,10 +542,6 @@ Error: %1</source>
         <translation></translation>
     </message>
     <message>
-        <source>&lt;p&gt;wiRED Panda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students to learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Héctor Castelli &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Save File as ...</source>
         <translation></translation>
     </message>
@@ -597,6 +596,50 @@ Error: %1</source>
     <message>
         <source>Portuguese</source>
         <translation></translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PlayPause</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Play or Pause simulation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change Trigger</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Esc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;wiRED Panda is a software developed by the students of the Federal University of SÃ£o Paulo. This project was created in order to help students to learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; HÃ©ctor Castelli &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. FÃ¡bio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
