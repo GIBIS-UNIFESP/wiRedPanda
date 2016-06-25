@@ -866,6 +866,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
         break;
       }
         case QEvent::KeyPress: {
+
         if( keyEvt && !( keyEvt->modifiers( ) & Qt::ControlModifier ) ) {
           for( GraphicElement *elm : scene->getElements( ) ) {
             if( elm->hasTrigger( ) && !elm->getTrigger( ).isEmpty( ) ) {

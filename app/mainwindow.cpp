@@ -599,6 +599,9 @@ void MainWindow::on_actionPrint_triggered( ) {
 
 void MainWindow::retranslateUi( ) {
   ui->retranslateUi( this );
+  ui->widgetElementEditor->retranslateUi();
+
+
   QList< ListItemWidget* > items = ui->tabWidget->findChildren< ListItemWidget* >( );
   for( ListItemWidget *item : items ) {
     item->updateName( );

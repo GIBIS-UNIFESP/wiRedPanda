@@ -53,6 +53,7 @@ void GraphicsView::keyPressEvent( QKeyEvent *e ) {
     QApplication::setOverrideCursor( Qt::ClosedHandCursor );
     e->accept( );
   }
+  QGraphicsView::keyPressEvent(e);
 }
 
 
@@ -62,4 +63,5 @@ void GraphicsView::keyReleaseEvent( QKeyEvent *e ) {
     QApplication::restoreOverrideCursor( );
     e->accept( );
   }
+  QGraphicsView::keyReleaseEvent(e);
 }
