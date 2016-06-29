@@ -336,18 +336,19 @@ void TestElements::testJKFlipFlop( ) {
       { { 0, 0, 0, 1, 0, 0, 1, 1, 0 } }, /* Clear and Preset = false */
       { { 1, 1, 0, 0, 1, 1, 0, 1, 0 } }, /* Clk dwn and J = 0 ( must mantain current state )*/
       { { 1, 1, 0, 0, 1, 1, 0, 1, 0 } }, /* Clk dwn and J = 1 ( must mantain current state )*/
-      { { 0, 0, 1, 0, 1, 1, 1, 0, 0 } }, /* Clk up J = 0 K = 0 ( must swap Q and ~Q )*/
-      { { 0, 0, 1, 0, 1, 1, 0, 1, 1 } }, /* Clk up J = 0 K = 0 ( must swap Q and ~Q )*/
-      { { 0, 0, 1, 1, 1, 1, 0, 1, 0 } }, /* Clk up J = 0 K = 1 */
-      { { 0, 0, 1, 1, 1, 1, 0, 1, 1 } }, /* Clk up J = 0 K = 1 */
+      { { 0, 1, 1, 1, 1, 1, 1, 0, 0 } }, /* Clk up J = 1 K = 1 ( must swap Q and ~Q )*/
+      { { 0, 1, 1, 1, 1, 1, 0, 1, 1 } }, /* Clk up J = 1 K = 1 ( must swap Q and ~Q )*/
       { { 0, 1, 1, 0, 1, 1, 1, 0, 0 } }, /* Clk up J = 1 K = 0 */
       { { 0, 1, 1, 0, 1, 1, 1, 0, 1 } }, /* Clk up J = 1 K = 0 */
-      { { 0, 1, 1, 1, 1, 1, 0, 1, 0 } }, /* Clk up J = 1 K = 0 */
-      { { 0, 1, 1, 1, 1, 1, 1, 0, 1 } }, /* Clk up J = 1 K = 0 */
+      { { 0, 0, 1, 1, 1, 1, 0, 1, 0 } }, /* Clk up J = 0 K = 1 */
+      { { 0, 0, 1, 1, 1, 1, 0, 1, 1 } }, /* Clk up J = 0 K = 1 */
+      { { 0, 0, 1, 0, 1, 1, 0, 1, 0 } }, /* Clk up J = 0 K = 0 */
+      { { 0, 0, 1, 0, 1, 1, 1, 0, 1 } }, /* Clk up J = 0 K = 0 */
 
     }
   };
   elm.updateLogic( );
+//  std::cout << "            Q      J C K p c      Q" << std::endl;
   for( size_t test = 0; test < truthTable.size( ); ++test ) {
     sw.at( 0 )->setOn( false );
     sw.at( 1 )->setOn( truthTable.at( test ).at( 0 ) );
@@ -360,14 +361,14 @@ void TestElements::testJKFlipFlop( ) {
     elm.updateLogic( );
     elm.output( 0 )->setValue( truthTable.at( test ).at( 8 ) );
     elm.output( 1 )->setValue( !truthTable.at( test ).at( 8 ) );
-/*    std::cout << ( int ) elm.output( 0 )->value( ) << " -> "; */
+//    std::cout << "test " << test << " : " << ( int ) elm.output( 0 )->value( ) << " -> ";
     for( int port = 0; port < 5; ++port ) {
       sw.at( port )->setOn( truthTable.at( test ).at( port + 1 ) );
       sw.at( port )->updateLogic( );
-/*      std::cout << truthTable.at(test).at( port + 1 ) << " "; */
+//      std::cout << truthTable.at(test).at( port + 1 ) << " ";
     }
     elm.updateLogic( );
-/*    std::cout << "-> " << ( int ) elm.output( 0 )->value( ) << std::endl; */
+//    std::cout << "-> " << ( int ) elm.output( 0 )->value( )  << " == " << truthTable.at( test ).at( 6 ) << " ?"<< std::endl;
 
     QCOMPARE( ( int ) elm.output( 0 )->value( ), truthTable.at( test ).at( 6 ) );
     QCOMPARE( ( int ) elm.output( 1 )->value( ), truthTable.at( test ).at( 7 ) );

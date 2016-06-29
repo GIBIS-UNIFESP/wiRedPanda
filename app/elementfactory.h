@@ -2,9 +2,12 @@
 #define ELEMENTFACTORY_H
 #include "graphicelement.h"
 #include <deque>
+#include <QObject>
 
 class Editor;
-class ElementFactory {
+class ElementFactory : public QObject {
+  Q_OBJECT
+
   size_t _lastId;
 
 public:
@@ -13,6 +16,7 @@ public:
 
   static ElementType textToType( QString text );
   static QString typeToText( ElementType type );
+  static QString translatedName(ElementType type);
   static QPixmap getPixmap( ElementType type );
   static GraphicElement* buildElement( ElementType type, Editor *editor, QGraphicsItem *parent = 0 );
   static QNEConnection* buildConnection( QGraphicsItem *parent = 0 );
@@ -26,7 +30,7 @@ public:
   size_t next_id( );
   void clear();
 
-  private:
+private:
   ElementFactory( );
 };
 

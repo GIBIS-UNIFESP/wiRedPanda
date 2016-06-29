@@ -9,12 +9,14 @@ class ListItemWidget : public QFrame {
   Q_OBJECT
 private:
   Label * label;
+  QLabel *nameLabel;
 public:
-  explicit ListItemWidget(const QPixmap &pixmap, QString name, QString pixName, QString auxData = QString(), QWidget * parent = 0);
+  explicit ListItemWidget(const QPixmap & pixmap, ElementType elementType, QString boxFileName, QWidget * parent  = NULL);
 
 
   Label * getLabel() const;
 
+  void updateName();
 
 protected:
   void mousePressEvent( QMouseEvent *event );

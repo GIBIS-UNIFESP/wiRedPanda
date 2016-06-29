@@ -717,6 +717,10 @@
    </property>
   </action>
   <action name="actionReset_Zoom">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/zoomReset.png</normaloff>:/toolbar/zoomReset.png</iconset>
+   </property>
    <property name="text">
     <string>Reset Zoom</string>
    </property>
@@ -811,12 +815,12 @@
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/resources.qrc"/>
   <include location="resources/resources.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/resources.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/input/input.qrc"/>
  </resources>
  <connections/>
 </ui>
