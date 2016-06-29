@@ -24,11 +24,14 @@ public:
   void contextMenu( QPoint screenPos, Editor *editor );
   void renameAction();
   void changeTriggerAction();
+  void retranslateUi();
 /*
  *  void renameAction( const QVector< GraphicElement *> &element );
  *  void changeColorAction( const QVector<GraphicElement *> &element );
  */
 
+  void fillColorComboBox();
+  
 signals:
   void sendCommand( QUndoCommand *cmd );
 

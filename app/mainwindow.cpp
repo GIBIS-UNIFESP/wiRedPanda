@@ -9,6 +9,7 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QRectF>
+#include <QSettings>
 #include <QShortcut>
 #include <QStyleFactory>
 #include <QtPrintSupport/QPrinter>
@@ -19,6 +20,12 @@
 
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
   ui->setupUi( this );
+
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  if( settings.value( "language" ).isValid() ) {
+    loadTranslation(settings.value( "language" ).toString());
+  }
   editor = new Editor( this );
   ui->graphicsView->setScene( editor->getScene( ) );
   undoView = nullptr;
@@ -149,7 +156,7 @@ void MainWindow::clear( ) {
 int MainWindow::confirmSave( ) {
   QMessageBox msgBox;
   msgBox.setParent( this );
-  msgBox.setLocale( QLocale::Portuguese );
+/*  msgBox.setLocale( QLocale::Portuguese ); */
   msgBox.setStandardButtons( QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel );
   msgBox.setText( tr( "Do you want to save your changes?" ) );
   msgBox.setWindowModality( Qt::WindowModal );
@@ -333,9 +340,8 @@ void MainWindow::updateRecentBoxes( ) {
 
   QStringList files = rboxController->getFiles( );
   for( auto file : files ) {
-    QString name = QFileInfo( file ).baseName( ).toUpper( );
     QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
-    ListItemWidget *item = new ListItemWidget( pixmap, name, "label_box", file, this );
+    ListItemWidget *item = new ListItemWidget( pixmap, ElementType::BOX, file, this );
     boxItemWidgets.append( item );
     ui->scrollAreaWidgetContents_Box->layout( )->addWidget( item );
   }
@@ -359,9 +365,8 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
     return;
   }
   if( fl.open( QFile::ReadOnly ) ) {
-    QString name = QFileInfo( fname ).baseName( ).toUpper( );
     QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
-    ListItemWidget *item = new ListItemWidget( pixmap, name, "label_box", fname );
+    ListItemWidget *item = new ListItemWidget( pixmap, ElementType::BOX, fname, this );
     ui->scrollAreaWidgetContents_Box->layout( )->removeItem( ui->verticalSpacer_BOX );
     ui->scrollAreaWidgetContents_Box->layout( )->addWidget( item );
     ui->scrollAreaWidgetContents_Box->layout( )->addItem( ui->verticalSpacer_BOX );
@@ -401,7 +406,7 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
     searchResults.append( ui->tabWidget->findChildren< Label* >( regex2 ) );
     QList< Label* > allLabels = ui->tabWidget->findChildren< Label* >( );
     for( Label *lb : allLabels ) {
-      if( !lb->property( "Name" ).isNull( ) && regex.match( lb->property( "Name" ).toString( ) ).hasMatch( ) ) {
+      if( regex.match( lb->name( ) ).hasMatch( ) ) {
         if( !searchResults.contains( lb ) ) {
           searchResults.append( lb );
         }
@@ -413,8 +418,7 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
       }
     }
     for( auto *label : searchResults ) {
-      ListItemWidget *item = new ListItemWidget( *label->pixmap( ), label->property( "Name" ).toString( ),
-                                                 label->objectName( ), label->auxData( ) );
+      ListItemWidget *item = new ListItemWidget( *label->pixmap( ), label->elementType( ), label->auxData( ) );
       if( !firstResult ) {
         firstResult = item->getLabel( );
       }
@@ -600,32 +604,47 @@ void MainWindow::on_actionPrint_triggered( ) {
   p.end( );
 }
 
-void MainWindow::on_actionEnglish_triggered( ) {
+void MainWindow::retranslateUi( ) {
+  ui->retranslateUi( this );
+  ui->widgetElementEditor->retranslateUi( );
+
+
+  QList< ListItemWidget* > items = ui->tabWidget->findChildren< ListItemWidget* >( );
+  for( ListItemWidget *item : items ) {
+    item->updateName( );
+  }
+}
+
+void MainWindow::loadTranslation( QString language ) {
   if( translator ) {
     qApp->removeTranslator( translator );
   }
   translator = new QTranslator( this );
-  if( translator->load( "://wpanda_en.qm" ) ) {
+  if( translator->load( language ) ) {
     qApp->installTranslator( translator );
-    ui->retranslateUi( this );
+    retranslateUi( );
   }
   else {
     QMessageBox::critical( this, "Error!", "Error loading translation!" );
   }
 }
 
+void MainWindow::on_actionEnglish_triggered( ) {
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  QString language = "://wpanda_en.qm";
+  settings.setValue( "language", language );
+
+  loadTranslation( language );
+}
+
 void MainWindow::on_actionPortuguese_triggered( ) {
-  if( translator ) {
-    qApp->removeTranslator( translator );
-  }
-  translator = new QTranslator( this );
-  if( translator->load( "://wpanda_pt.qm" ) ) {
-    qApp->installTranslator( translator );
-    ui->retranslateUi( this );
-  }
-  else {
-    QMessageBox::critical( this, "Error!", "Error loading translation!" );
-  }
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  QString language = "://wpanda_pt.qm";
+  settings.setValue( "language", language );
+
+  loadTranslation( language );
 }
 
 void MainWindow::on_actionPlay_triggered( bool checked ) {
@@ -654,16 +673,23 @@ void MainWindow::populateMenu( QSpacerItem *spacer, QString names, QLayout *layo
   layout->removeItem( spacer );
   for( QString name : list ) {
     name = name.trimmed( ).toUpper( );
-    QPixmap pixmap( ElementFactory::getPixmap( ElementFactory::textToType( name ) ) );
-    ListItemWidget *item = new ListItemWidget( pixmap, name, name, name, this );
+    ElementType type = ElementFactory::textToType( name );
+    QPixmap pixmap( ElementFactory::getPixmap( type ) );
+    ListItemWidget *item = new ListItemWidget( pixmap, type, name, this );
     layout->addWidget( item );
   }
   layout->addItem( spacer );
-//  layout->setSpacing(10);
+/*  layout->setSpacing(10); */
 }
 
 void MainWindow::populateLeftMenu( ) {
-  populateMenu( ui->verticalSpacer_InOut, "VCC,GND,BUTTON,SWITCH,CLOCK,LED,DISPLAY", ui->scrollAreaWidgetContents_InOut->layout( ) );
-  populateMenu( ui->verticalSpacer_Gates, "AND,OR,NOT,NAND,NOR,XOR,XNOR,MUX,DEMUX,NODE", ui->scrollAreaWidgetContents_Gates->layout() );
-  populateMenu( ui->verticalSpacer_Memory, "DFLIPFLOP,DLATCH,JKFLIPFLOP,SRFLIPFLOP,TFLIPFLOP", ui->scrollAreaWidgetContents_Memory->layout() );
+  populateMenu( ui->verticalSpacer_InOut,
+                "VCC,GND,BUTTON,SWITCH,CLOCK,LED,DISPLAY",
+                ui->scrollAreaWidgetContents_InOut->layout( ) );
+  populateMenu( ui->verticalSpacer_Gates,
+                "AND,OR,NOT,NAND,NOR,XOR,XNOR,MUX,DEMUX,NODE",
+                ui->scrollAreaWidgetContents_Gates->layout( ) );
+  populateMenu( ui->verticalSpacer_Memory,
+                "DFLIPFLOP,DLATCH,JKFLIPFLOP,SRFLIPFLOP,TFLIPFLOP",
+                ui->scrollAreaWidgetContents_Memory->layout( ) );
 }

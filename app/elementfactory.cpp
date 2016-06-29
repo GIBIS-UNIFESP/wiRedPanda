@@ -99,6 +99,37 @@ QString ElementFactory::typeToText( ElementType type ) {
   }
 }
 
+QString ElementFactory::translatedName( ElementType type ) {
+  switch( type ) {
+      case ElementType::BUTTON: return( tr("Button") );
+      case ElementType::LED: return( tr("Led") );
+      case ElementType::AND: return( tr("And") );
+      case ElementType::OR: return( tr("Or") );
+      case ElementType::CLOCK: return( tr("Clock") );
+      case ElementType::SWITCH: return( tr("Switch") );
+      case ElementType::NOT: return( tr("Not") );
+      case ElementType::NAND: return( tr("Nand") );
+      case ElementType::NOR: return( tr("Nor") );
+      case ElementType::XOR: return( tr("Xor") );
+      case ElementType::XNOR: return( tr("Xnor") );
+      case ElementType::VCC: return( tr("VCC") );
+      case ElementType::GND: return( tr("GND") );
+      case ElementType::DFLIPFLOP: return( tr("D-flipflop") );
+      case ElementType::DLATCH: return( tr("D-latch") );
+      case ElementType::JKFLIPFLOP: return( tr("JK-flipflop") );
+      case ElementType::JKLATCH: return( tr("JK-latch") );
+      case ElementType::SRFLIPFLOP: return( tr("SR-flipflop") );
+      case ElementType::TLATCH: return( tr("T-latch") );
+      case ElementType::TFLIPFLOP: return( tr("T-flipflop") );
+      case ElementType::DISPLAY: return( tr("Display") );
+      case ElementType::BOX: return( tr("Box") );
+      case ElementType::MUX: return( tr("Mux") );
+      case ElementType::DEMUX: return( tr("Demux") );
+      case ElementType::NODE: return( tr("Node") );
+      case ElementType::UNKNOWN: default: return( tr("Unknown") );
+  }
+}
+
 QPixmap ElementFactory::getPixmap( ElementType type ) {
   switch( type ) {
       case ElementType::BUTTON: return( QPixmap( ":/input/buttonOff.png" ) );

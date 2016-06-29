@@ -18,6 +18,7 @@ ElementEditor::ElementEditor( QWidget *parent ) : QWidget( parent ), ui( new Ui:
   setVisible( false );
 
   ui->lineEditTrigger->setValidator( new QRegExpValidator( QRegExp( "[a-z]| |[A-Z]|[0-9]" ), this ) );
+  fillColorComboBox( );
 }
 
 ElementEditor::~ElementEditor( ) {
@@ -31,7 +32,10 @@ void ElementEditor::setScene( Scene *s ) {
 
 QAction* addElementAction( QMenu *menu, GraphicElement *firstElm, ElementType type, bool hasSameType ) {
   if( !hasSameType || ( firstElm->elementType( ) != type ) ) {
-    return( menu->addAction( QIcon( ElementFactory::getPixmap( type ) ), ElementFactory::typeToText( type ) ) );
+    QAction *action = menu->addAction( QIcon( ElementFactory::getPixmap( type ) ), ElementFactory::translatedName(
+                                         type ) );
+    action->setData( ElementFactory::typeToText( type ) );
+    return( action );
   }
   return( nullptr );
 }
@@ -129,21 +133,21 @@ void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
 
   QAction *a = menu.exec( screenPos );
   if( a ) {
-    if( a->text( ) == renameActionText ) {
+    if( a->data( ).toString( ) == renameActionText ) {
       renameAction( );
     }
-    else if( a->text( ) == rotateActionText ) {
+    else if( a->data( ).toString( ) == rotateActionText ) {
       emit sendCommand( new RotateCommand( m_elements.toList( ), 90.0 ) );
     }
-    else if( a->text( ) == triggerActionText ) {
+    else if( a->data( ).toString( ) == triggerActionText ) {
       changeTriggerAction( );
     }
-    else if( a->text( ) == freqActionText ) {
+    else if( a->data( ).toString( ) == freqActionText ) {
       ui->doubleSpinBoxFrequency->setFocus( );
     }
     else if( submenumorph && submenumorph->actions( ).contains( a ) ) {
-      if( ElementFactory::textToType( a->text( ) ) != ElementType::UNKNOWN ) {
-        sendCommand( new MorphCommand( m_elements, ElementFactory::textToType( a->text( ) ), editor ) );
+      if( ElementFactory::textToType( a->data( ).toString( ) ) != ElementType::UNKNOWN ) {
+        sendCommand( new MorphCommand( m_elements, ElementFactory::textToType( a->data( ).toString( ) ), editor ) );
       }
     }
     else if( submenucolors && submenucolors->actions( ).contains( a ) ) {
@@ -160,6 +164,20 @@ void ElementEditor::renameAction( ) {
 void ElementEditor::changeTriggerAction( ) {
   ui->lineEditTrigger->setFocus( );
   ui->lineEditTrigger->selectAll( );
+}
+
+void ElementEditor::fillColorComboBox( ) {
+  ui->comboBoxColor->clear( );
+  ui->comboBoxColor->addItem( QIcon( QPixmap( ":/output/GreenLedOn.png" ) ), tr( "Green" ), "Green" );
+  ui->comboBoxColor->addItem( QIcon( QPixmap( ":/output/BlueLedOn.png" ) ), tr( "Blue" ), "Blue" );
+  ui->comboBoxColor->addItem( QIcon( QPixmap( ":/output/PurpleLedOn.png" ) ), tr( "Purple" ), "Purple" );
+  ui->comboBoxColor->addItem( QIcon( QPixmap( ":/output/RedLedOn.png" ) ), tr( "Red" ), "Red" );
+  ui->comboBoxColor->addItem( QIcon( QPixmap( ":/output/WhiteLedOn.png" ) ), tr( "White" ), "White" );
+}
+
+void ElementEditor::retranslateUi( ) {
+  ui->retranslateUi( this );
+  fillColorComboBox( );
 }
 
 
@@ -225,7 +243,7 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
     if( hasColors ) {
       if( hasSameColors ) {
         ui->comboBoxColor->removeItem( ui->comboBoxColor->findText( _manyColors ) );
-        ui->comboBoxColor->setCurrentText( firstElement->getColor( ) );
+        ui->comboBoxColor->setCurrentIndex( ui->comboBoxColor->findData(firstElement->getColor( ) ));
       }
       else {
         ui->comboBoxColor->setCurrentText( _manyColors );
@@ -300,8 +318,8 @@ void ElementEditor::apply( ) {
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );
   for( GraphicElement *elm : m_elements ) {
     elm->save( dataStream );
-    if( elm->hasColors( ) && ( ui->comboBoxColor->currentText( ) != _manyColors ) ) {
-      elm->setColor( ui->comboBoxColor->currentText( ) );
+    if( elm->hasColors( ) && ( ui->comboBoxColor->currentData().isValid() ) ) {
+      elm->setColor( ui->comboBoxColor->currentData().toString() );
     }
     if( elm->hasLabel( ) && ( ui->lineEditElementLabel->text( ) != _manyLabels ) ) {
       elm->setLabel( ui->lineEditElementLabel->text( ) );

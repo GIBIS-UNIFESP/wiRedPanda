@@ -3,27 +3,29 @@
 
 #include <QDrag>
 #include <QLabel>
+#include "graphicelement.h"
 
 class Label : public QLabel {
   Q_OBJECT
 public:
   explicit Label( QWidget *parent = 0 );
 
-  Q_PROPERTY( QString elementType READ elementType WRITE setElementType DESIGNABLE true )
-
-
   virtual ~Label( );
-  QString elementType( );
-  void setElementType( QString elementType );
+  ElementType elementType( );
+  void setElementType(ElementType elementType );
   QString auxData( ) const;
   void setAuxData( const QString &auxData );
   void startDrag( QPoint pos = QPoint( ) );
+
+  QString name() const;
+  void setName(const QString & name);
 
 protected:
   void mousePressEvent( QMouseEvent *event );
 
 private:
-  QString m_elementType;
+  ElementType m_elementType;
+  QString m_name;
   QString m_auxData;
 };
 
