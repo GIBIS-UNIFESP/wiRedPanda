@@ -2,10 +2,10 @@
 <<CTRL>>
 Package: wpanda
 Version: 2.1
-Source: https://github.com/GIBIS-UNIFESP/wiRedPanda/archive/v1.9-beta.tar.gz
+Source: https://github.com/GIBIS-UNIFESP/wiRedPanda/archive/v2.1.tar.gz
 Maintainer: Lucas Santana Lellis <lucaslellis777@gmail.com>
 Section: utils
-Homepage: http://gibis-unifesp.github.io/wiRedPanda
+Homepage: gibis-unifesp.github.io/wiRedPanda
 Priority: standard
 Architecture: amd64
 Description: Learn about logic circuits and simulate them in an easy and friendly way.
