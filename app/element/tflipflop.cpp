@@ -4,7 +4,8 @@ TFlipFlop::TFlipFlop( QGraphicsItem *parent ) : GraphicElement( 4, 4, 2, 2, pare
   setPixmap( QPixmap( ":/memory/T-flipflop.png" ) );
   setRotatable( false );
   updatePorts( );
-  lastClk = 0;
+  lastClk = false;
+//  lastT = 0;
   setPortName( "FlipFlop T" );
 
   inputs( ).at( 0 )->setName( "T" );
@@ -44,7 +45,7 @@ void TFlipFlop::updateLogic( ) {
   else {
     if( res1 == -1 ) {
       res1 = 0;
-      res2 = 0;
+      res2 = 1;
     }
     char T = inputs( ).at( 0 )->value( );
     char clk = inputs( ).at( 1 )->value( ); /* Current lock */
@@ -61,7 +62,10 @@ void TFlipFlop::updateLogic( ) {
       res2 = !clr;
     }
     lastClk = clk;
+//    lastT = T;
   }
+
+
   output( 0 )->setValue( res1 );
   output( 1 )->setValue( res2 );
 }

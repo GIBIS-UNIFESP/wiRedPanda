@@ -39,7 +39,7 @@ void SRFlipFlop::updateLogic( ) {
   else {
     if( res1 == -1 ) {
       res1 = 0;
-      res2 = 0;
+      res2 = 1;
     }
     char s = inputs( ).at( 0 )->value( );
     char clk = inputs( ).at( 1 )->value( );
