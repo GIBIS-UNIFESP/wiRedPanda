@@ -11,10 +11,14 @@
 #include <nodes/qneconnection.h>
 #include <stdexcept>
 
+QMap<QString, QPixmap > loadedPixmaps;
+
+
 GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz,
                                 QGraphicsItem *parent ) : QGraphicsObject( parent ), label( new QGraphicsTextItem(
                                                                                               this ) )
 {
+  pixmap = NULL;
   COMMENT( "Setting flags of elements. ", 4 );
   setFlag( QGraphicsItem::ItemIsMovable );
   setFlag( QGraphicsItem::ItemIsSelectable );
@@ -61,7 +65,12 @@ GraphicElement::~GraphicElement( ) {
 }
 
 QPixmap GraphicElement::getPixmap( ) const {
-  return( pixmap );
+  if( pixmap ) {
+    return( *pixmap );
+  }
+  else {
+    return( QPixmap( ) );
+  }
 }
 
 
@@ -74,8 +83,11 @@ void GraphicElement::enable( ) {
 }
 
 void GraphicElement::setPixmap( const QString &pixmapPath, QRect size ) {
-  pixmap = QPixmap::fromImage( QImage( pixmapPath ) ).copy( size );
-  setTransformOriginPoint( pixmap.rect( ).center( ) );
+  if( !loadedPixmaps.contains( pixmapPath ) ) {
+    loadedPixmaps[ pixmapPath ] = QPixmap::fromImage( QImage( pixmapPath ) ).copy( size );
+  }
+  pixmap = &loadedPixmaps[ pixmapPath ];
+  setTransformOriginPoint( pixmap->rect( ).center( ) );
   update( boundingRect( ) );
 }
 
@@ -229,7 +241,7 @@ void GraphicElement::setInputs( const QVector< QNEPort* > &inputs ) {
 
 
 QRectF GraphicElement::boundingRect( ) const {
-  return( pixmap.rect( ) );
+  return( pixmap->rect( ) );
 }
 
 void GraphicElement::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget ) {
@@ -240,7 +252,7 @@ void GraphicElement::paint( QPainter *painter, const QStyleOptionGraphicsItem *o
     painter->setPen( QPen( Qt::black ) );
     painter->drawRoundedRect( boundingRect( ), 16, 16 );
   }
-  painter->drawPixmap( QPoint( 0, 0 ), pixmap );
+  painter->drawPixmap( QPoint( 0, 0 ), getPixmap() );
 }
 
 QNEPort* GraphicElement::addPort( const QString &name, bool isOutput, int flags, int ptr ) {
@@ -283,7 +295,7 @@ void GraphicElement::setPortName( QString name ) {
 }
 
 void GraphicElement::updatePorts( ) {
-//  qDebug() << "UpdatePorts";
+/*  qDebug() << "UpdatePorts"; */
   COMMENT( "Updating port positions that belong to the box.", 4 );
   int inputPos = m_topPosition;
   int outputPos = m_bottomPosition;
