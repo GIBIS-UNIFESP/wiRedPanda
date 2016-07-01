@@ -68,7 +68,7 @@ private:
   Status m_status;
   /* QGraphicsItem interface */
 public:
-  void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* );
+  void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* widget);
 
 };
 

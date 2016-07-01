@@ -96,11 +96,6 @@ void QNEConnection::updatePosFromPorts( ) {
 void QNEConnection::updatePath( ) {
   QPainterPath p;
 
-  /*
-   * QPointF pos1(m_port1->scenePos());
-   * QPointF pos2(m_port2->scenePos());
-   */
-
   p.moveTo( pos1 );
 
   qreal dx = pos2.x( ) - pos1.x( );
@@ -111,7 +106,7 @@ void QNEConnection::updatePath( ) {
 
   p.cubicTo( ctr1, ctr2, pos2 );
 
-/*  p.lineTo(pos2); */
+//  p.lineTo(pos2);
   setPath( p );
 }
 
@@ -196,28 +191,11 @@ void QNEConnection::setStatus( const Status &status ) {
 void QNEConnection::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* ) {
   painter->setClipRect( option->exposedRect );
 
-  QPainterPath p;
-
-  /*
-   * QPointF pos1(m_port1->scenePos());
-   * QPointF pos2(m_port2->scenePos());
-   */
-
-  p.moveTo( pos1 );
-  qreal dx = pos2.x( ) - pos1.x( );
-  qreal dy = pos2.y( ) - pos1.y( );
-
-  QPointF ctr1( pos1.x( ) + dx * 0.25, pos1.y( ) + dy * 0.1 );
-  QPointF ctr2( pos1.x( ) + dx * 0.75, pos1.y( ) + dy * 0.9 );
-
-  p.cubicTo( ctr1, ctr2, pos2 );
   if( isSelected( ) ) {
     painter->setPen( QPen( Qt::darkGreen, 5 ) );
   }
   else {
     painter->setPen( pen( ) );
   }
-  painter->drawPath( p );
-  /*  p.lineTo(pos2); */
-  setPath( p );
+  painter->drawPath( path() );
 }
