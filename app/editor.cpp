@@ -217,7 +217,6 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
 
       QNEPort *port1 = editedConn->otherPort( pressedPort );
       if( port1 ) {
-        pressedPort->disconnect( editedConn );
         QList< QGraphicsItem* > itemList;
         itemList.append( editedConn );
         receiveCommand( new DeleteItemsCommand( itemList, this ) );
