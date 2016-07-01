@@ -56,12 +56,9 @@ void TFlipFlop::updateLogic( ) {
         q2 = !q1;
       }
     }
-    if( ( prst == 0 ) && ( clr == 1 ) ) {
-      q1 = 1;
-      q2 = 0;
-    }else if( ( prst == 1 ) && ( clr == 0 ) ) {
-      q1 = 0;
-      q2 = 1;
+    if( ( prst == 0 ) || ( clr == 0 ) ) {
+      q1 = !prst;
+      q2 = !clr;
     }
     lastClk = clk;
   }
