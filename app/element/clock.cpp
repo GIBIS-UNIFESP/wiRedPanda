@@ -69,7 +69,7 @@ void Clock::setFrequency( float freq ) {
 void Clock::updateLogic( ) {
   if( !disabled( ) ) {
     elapsed++;
-    setChanged( true );
+
     if( ( elapsed % interval ) == 0 ) {
       updateClock( );
     }

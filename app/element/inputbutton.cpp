@@ -20,7 +20,7 @@ InputButton::~InputButton( ) {
 void InputButton::mousePressEvent( QGraphicsSceneMouseEvent *event ) {
   if( event->button( ) == Qt::LeftButton ) {
     setOn( true );
-    setChanged( true );
+
     event->accept( );
   }
   QGraphicsItem::mousePressEvent( event );
@@ -30,7 +30,7 @@ void InputButton::mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) {
   if( event->button( ) == Qt::LeftButton ) {
 
     setOn( false );
-    setChanged( true );
+
     event->accept( );
   }
   GraphicElement::mouseReleaseEvent( event );

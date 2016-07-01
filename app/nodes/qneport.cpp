@@ -115,7 +115,7 @@ void QNEPort::connect( QNEConnection *conn ) {
     }
     updateConnections( );
     if( graphicElement( ) ) {
-      graphicElement( )->setChanged( true );
+
       graphicElement( )->updatePorts( );
       if( isOutput( ) ) {
         graphicElement( )->updateLogic( );
@@ -126,7 +126,7 @@ void QNEPort::connect( QNEConnection *conn ) {
 
 void QNEPort::disconnect( QNEConnection *conn ) {
   if( graphicElement( ) ) {
-    graphicElement( )->setChanged( true );
+
   }
   m_connections.removeAll( conn );
   if( conn->port1( ) == this ) {

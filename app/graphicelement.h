@@ -32,6 +32,7 @@ public:
 
 private:
   QPixmap * pixmap;
+  QString currentPixmapPath;
 
   /* GraphicElement interface. */
 public:
@@ -113,10 +114,6 @@ public:
 
   virtual void setColor( QString getColor );
   virtual QString getColor( );
-
-  bool changed( ) const;
-  void setChanged( bool changed );
-
 /*
  *  bool beingVisited( ) const;
  *  void setBeingVisited( bool beingVisited );
@@ -172,11 +169,6 @@ private:
   bool m_hasFrequency;
   bool m_hasColors;
   bool m_hasTrigger;
-  bool m_changed;
-/*
- *  bool m_beingVisited;
- *  bool m_visited;
- */
   bool m_disabled;
   QString m_labelText;
   QKeySequence m_trigger;
