@@ -11,7 +11,7 @@
 #include <nodes/qneconnection.h>
 #include <stdexcept>
 
-QMap<QString, QPixmap > loadedPixmaps;
+QMap< QString, QPixmap > loadedPixmaps;
 
 
 GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz,
@@ -38,7 +38,6 @@ GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz,
   m_minOutputSz = minOutputSz;
   m_maxInputSz = maxInputSz;
   m_maxOutputSz = maxOutputSz;
-  m_changed = true;
 /*
  *  m_visited = false;
  *  m_beingVisited = false;
@@ -83,12 +82,14 @@ void GraphicElement::enable( ) {
 }
 
 void GraphicElement::setPixmap( const QString &pixmapPath, QRect size ) {
-  if( !loadedPixmaps.contains( pixmapPath ) ) {
-    loadedPixmaps[ pixmapPath ] = QPixmap::fromImage( QImage( pixmapPath ) ).copy( size );
+  if( pixmapPath != currentPixmapPath ) {
+    if( !loadedPixmaps.contains( pixmapPath ) ) {
+      loadedPixmaps[ pixmapPath ] = QPixmap::fromImage( QImage( pixmapPath ) ).copy( size );
+    }
+    pixmap = &loadedPixmaps[ pixmapPath ];
+    setTransformOriginPoint( pixmap->rect( ).center( ) );
+    update( boundingRect( ) );
   }
-  pixmap = &loadedPixmaps[ pixmapPath ];
-  setTransformOriginPoint( pixmap->rect( ).center( ) );
-  update( boundingRect( ) );
 }
 
 QVector< QNEPort* > GraphicElement::outputs( ) const {
@@ -252,7 +253,7 @@ void GraphicElement::paint( QPainter *painter, const QStyleOptionGraphicsItem *o
     painter->setPen( QPen( Qt::black ) );
     painter->drawRoundedRect( boundingRect( ), 16, 16 );
   }
-  painter->drawPixmap( QPoint( 0, 0 ), getPixmap() );
+  painter->drawPixmap( QPoint( 0, 0 ), getPixmap( ) );
 }
 
 QNEPort* GraphicElement::addPort( const QString &name, bool isOutput, int flags, int ptr ) {
@@ -413,26 +414,6 @@ bool GraphicElement::isValid( ) {
     }
   }
   return( valid );
-}
-
-/*
- * bool GraphicElement::beingVisited( ) const {
- *  return( m_beingVisited );
- * }
- */
-
-/*
- * void GraphicElement::setBeingVisited( bool beingVisited ) {
- *  m_beingVisited = beingVisited;
- * }
- */
-
-bool GraphicElement::changed( ) const {
-  return( m_changed );
-}
-
-void GraphicElement::setChanged( bool changed ) {
-  m_changed = changed;
 }
 
 bool GraphicElement::hasColors( ) const {

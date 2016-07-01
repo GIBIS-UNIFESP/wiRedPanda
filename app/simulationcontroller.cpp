@@ -26,7 +26,7 @@ int SimulationController::calculatePriority( GraphicElement *elm,
     return( 0 );
   }
   if( beingvisited.contains( elm ) && ( beingvisited[ elm ] == true ) ) {
-    elm->setChanged( true );
+
     return( 0 );
   }
   if( priority.contains( elm ) ) {
@@ -79,7 +79,6 @@ void SimulationController::update( ) {
   }
   for( GraphicElement *elm : sortedElements ) {
     elm->updateLogic( );
-    elm->setChanged( false );
   }
 }
 

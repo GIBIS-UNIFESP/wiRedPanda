@@ -34,7 +34,7 @@ void InputSwitch::setOn( bool value ) {
 void InputSwitch::mousePressEvent( QGraphicsSceneMouseEvent *event ) {
   if( event->button( ) == Qt::LeftButton ) {
     setOn( !on );
-    setChanged( true );
+
     event->accept( );
   }
   QGraphicsItem::mousePressEvent( event );
