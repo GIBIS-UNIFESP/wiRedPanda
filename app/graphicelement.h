@@ -31,7 +31,7 @@ public:
   virtual ~GraphicElement( );
 
 private:
-  QPixmap pixmap;
+  QPixmap * pixmap;
 
   /* GraphicElement interface. */
 public:
