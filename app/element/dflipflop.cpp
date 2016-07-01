@@ -34,32 +34,35 @@ void DFlipFlop::updatePorts( ) {
 }
 
 void DFlipFlop::updateLogic( ) {
-  char res1 = output( 0 )->value( ); /* Q */
-  char res2 = output( 1 )->value( ); /* ~Q */
+  char q1 = output( 0 )->value( ); /* Q */
+  char q2 = output( 1 )->value( ); /* ~Q */
   if( !isValid( ) ) {
-    res1 = -1;
-    res2 = -1;
+    q1 = -1;
+    q2 = -1;
   }
   else {
-    if( res1 == -1 ) {
-      res1 = 0;
-      res2 = 0;
+    if( q1 == -1 ) {
+      q1 = 0;
+      q2 = 1;
     }
     char data = inputs( ).at( 0 )->value( );
     bool clk = inputs( ).at( 1 )->value( ); /* Current lock */
     char prst = inputs( ).at( 2 )->value( );
     char clr = inputs( ).at( 3 )->value( );
     if( ( clk == true ) && ( lastClk == false ) ) { /* If Clock up */
-      res1 = lastValue; /* Output = Data */
-      res2 = !lastValue;
+      q1 = lastValue; /* Output = Data */
+      q2 = !lastValue;
     }
-    if( ( prst == 0 ) || ( clr == 0 ) ) {
-      res1 = !prst;
-      res2 = !clr;
+    if( ( prst == 0 ) && ( clr == 1 ) ) {
+      q1 = 1;
+      q2 = 0;
+    }else if( ( prst == 1 ) && ( clr == 0 ) ) {
+      q1 = 0;
+      q2 = 1;
     }
     lastClk = clk;
     lastValue = data;
   }
-  outputs( ).first( )->setValue( res1 );
-  outputs( ).last( )->setValue( res2 );
+  outputs( ).first( )->setValue( q1 );
+  outputs( ).last( )->setValue( q2 );
 }

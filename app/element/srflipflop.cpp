@@ -30,33 +30,34 @@ void SRFlipFlop::updatePorts( ) {
 }
 
 void SRFlipFlop::updateLogic( ) {
-  char res1 = output( 0 )->value( ); /* Q */
-  char res2 = output( 1 )->value( ); /* ~Q */
+  //TODO: Add set and preset options.
+  char q1 = output( 0 )->value( ); /* Q */
+  char q2 = output( 1 )->value( ); /* ~Q */
   if( !isValid( ) ) {
-    res1 = -1;
-    res2 = -1;
+    q1 = -1;
+    q2 = -1;
   }
   else {
-    if( res1 == -1 ) {
-      res1 = 0;
-      res2 = 0;
+    if( q1 == -1 ) {
+      q1 = 0;
+      q2 = 1;
     }
     char s = inputs( ).at( 0 )->value( );
     char clk = inputs( ).at( 1 )->value( );
     char r = inputs( ).at( 2 )->value( );
     if( ( clk == 1 ) && ( lastClk == 0 ) ) { /* If Clock up */
       if( s && r ) { /* Not permitted */
-        res1 = 1;
-        res2 = 1;
+        q1 = 1;
+        q2 = 1;
       }
       else if( s != r ) {
-        res1 = s;
-        res2 = r;
+        q1 = s;
+        q2 = r;
       }
     }
     lastClk = clk;
   }
-  output( 0 )->setValue( res1 );
-  output( 1 )->setValue( res2 );
+  output( 0 )->setValue( q1 );
+  output( 1 )->setValue( q2 );
   /* Reference: https://pt.wikipedia.org/wiki/Flip-flop#Flip-flop_SR_Sincrono */
 }
