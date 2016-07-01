@@ -22,6 +22,7 @@ void MainWindow::setFastMode( bool fastModeEnabled ) {
   ui->graphicsView->setRenderHint( QPainter::Antialiasing, !fastModeEnabled );
   ui->graphicsView->setRenderHint( QPainter::HighQualityAntialiasing, !fastModeEnabled );
   ui->graphicsView->setRenderHint( QPainter::SmoothPixmapTransform, !fastModeEnabled );
+  ui->actionFast_Mode->setChecked(fastModeEnabled);
 }
 
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
