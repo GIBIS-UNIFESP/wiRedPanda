@@ -86,7 +86,7 @@ void Display::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
 void Display::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) {
   GraphicElement::load( ds, portMap, version );
-  qDebug( ) << "Version: " << version;
+//  qDebug( ) << "Version: " << version;
 /*
  * 0,7,2,1,3,4,5,6
  * 7,5,4,2,1,4,6,3,0
@@ -94,7 +94,7 @@ void Display::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double 
  * 2,1,4,5,0,7,3,6
  */
   if( version < 1.6 ) {
-    qDebug( ) << "Remapping inputs";
+    COMMENT( "Remapping inputs", 0 );
     QVector< int > order = { 2, 1, 4, 5, 0, 7, 3, 6 };
     QVector< QNEPort* > aux = inputs( );
     for( int i = 0; i < aux.size( ); ++i ) {
@@ -104,7 +104,7 @@ void Display::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double 
     updatePorts( );
   }
   if( version < 1.7 ) {
-    qDebug( ) << "Remapping inputs";
+    COMMENT( "Remapping inputs", 0 );
     QVector< int > order = { 2, 5, 4, 0, 7, 3, 6, 1 };
     QVector< QNEPort* > aux = inputs( );
     for( int i = 0; i < aux.size( ); ++i ) {

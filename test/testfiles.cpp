@@ -12,16 +12,16 @@ void TestFiles::cleanup( ) {
 }
 
 void TestFiles::testFiles( ) {
-  qDebug( ) << "CURRENTDIR: " << CURRENTDIR;
+//  qDebug( ) << "CURRENTDIR: " << CURRENTDIR;
   QDir examplesDir( QString( "%1/../examples/" ).arg( CURRENTDIR ) );
-  qDebug( ) << "Examples dir:" << examplesDir.absolutePath( );
+//  qDebug( ) << "Examples dir:" << examplesDir.absolutePath( );
   QStringList entries;
   entries << "*.panda";
   QFileInfoList files = examplesDir.entryInfoList( entries );
   QVERIFY( files.size( ) > 0 );
-  int counter = 0;
+//  int counter = 0;
   for( QFileInfo f : files ) {
-    qDebug( ) << "File " << counter++ << " from " << files.size( ) << ": " << f.fileName( );
+//    qDebug( ) << "File " << counter++ << " from " << files.size( ) << ": " << f.fileName( );
     QVERIFY( f.exists( ) );
     QFile pandaFile( f.absoluteFilePath( ) );
     GlobalProperties::currentFile = f.absoluteFilePath( );

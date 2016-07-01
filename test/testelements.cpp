@@ -223,20 +223,19 @@ void TestElements::testDFlipFlop( ) {
 
   std::array< std::array< int, 7 >, 7 > truthTable = {
     {
-      /* L  D  C  p  c  Q ~Q */
+      /*  L  D  C  p  c  Q ~Q */
       { { 0, 0, 1, 1, 1, 0, 1 } }, /* Clk up and D = 0 */
       { { 0, 1, 1, 1, 1, 1, 0 } }, /* Clk up and D = 1 */
 
       { { 0, 0, 0, 0, 1, 1, 0 } }, /* Preset = false */
       { { 0, 0, 1, 1, 0, 0, 1 } }, /* Clear = false */
-      { { 0, 0, 1, 0, 0, 1, 1 } }, /* Clear and Preset = false */
+      { { 0, 0, 1, 0, 0, 0, 1 } }, /* Clear and Preset = false */
 
-      { { 1, 0, 0, 1, 1, 1, 1 } }, /* Clk dwn and D = 0 ( must mantain current state )*/
-      { { 1, 1, 0, 1, 1, 1, 1 } }, /* Clk dwn and D = 1 ( must mantain current state )*/
+      { { 1, 0, 0, 1, 1, 1, 0 } }, /* Clk dwn and D = 0 ( must mantain current state )*/
+      { { 1, 1, 0, 1, 1, 1, 0 } }, /* Clk dwn and D = 1 ( must mantain current state )*/
     }
   };
   for( size_t test = 0; test < truthTable.size( ); ++test ) {
-    elm.output( 0 )->setValue( truthTable.at( test ).at( 0 ) );
     sw.at( 0 )->setOn( truthTable.at( test ).at( 1 ) ); /* DATA */
     sw.at( 1 )->setOn( truthTable.at( test ).at( 0 ) ); /* CLK */
     sw.at( 2 )->setOn( false ); /* PRST */
@@ -245,6 +244,8 @@ void TestElements::testDFlipFlop( ) {
       sw.at( port )->updateLogic( );
     }
     elm.updateLogic( );
+    elm.output( 0 )->setValue( truthTable.at( test ).at( 0 ) );
+    elm.output( 1 )->setValue( !truthTable.at( test ).at( 0 ) );
 /*    std::cout << ( int ) elm.output( 0 )->value( ) << " -> "; */
     for( int port = 0; port < 4; ++port ) {
       sw.at( port )->setOn( truthTable.at( test ).at( port + 1 ) );
@@ -330,10 +331,10 @@ void TestElements::testJKFlipFlop( ) {
 
   std::array< std::array< int, 9 >, 13 > truthTable = {
     {
-      /*    L  J  C  K  p  c  Q Q A */
+      /*  L  J  C  K  p  c  Q  Q  A */
       { { 0, 0, 0, 0, 0, 1, 1, 0, 0 } }, /* Preset = false */
       { { 0, 0, 0, 0, 1, 0, 0, 1, 0 } }, /* Clear = false */
-      { { 0, 0, 0, 1, 0, 0, 1, 1, 0 } }, /* Clear and Preset = false */
+      { { 0, 0, 0, 1, 0, 0, 0, 1, 0 } }, /* Clear and Preset = false ( must mantain current state )*/
       { { 1, 1, 0, 0, 1, 1, 0, 1, 0 } }, /* Clk dwn and J = 0 ( must mantain current state )*/
       { { 1, 1, 0, 0, 1, 1, 0, 1, 0 } }, /* Clk dwn and J = 1 ( must mantain current state )*/
       { { 0, 1, 1, 1, 1, 1, 1, 0, 0 } }, /* Clk up J = 1 K = 1 ( must swap Q and ~Q )*/
@@ -348,7 +349,7 @@ void TestElements::testJKFlipFlop( ) {
     }
   };
   elm.updateLogic( );
-//  std::cout << "            Q      J C K p c      Q" << std::endl;
+/*  std::cout << "            Q      J C K p c      Q" << std::endl; */
   for( size_t test = 0; test < truthTable.size( ); ++test ) {
     sw.at( 0 )->setOn( false );
     sw.at( 1 )->setOn( truthTable.at( test ).at( 0 ) );
@@ -361,22 +362,19 @@ void TestElements::testJKFlipFlop( ) {
     elm.updateLogic( );
     elm.output( 0 )->setValue( truthTable.at( test ).at( 8 ) );
     elm.output( 1 )->setValue( !truthTable.at( test ).at( 8 ) );
-//    std::cout << "test " << test << " : " << ( int ) elm.output( 0 )->value( ) << " -> ";
+/*    std::cout << "test " << test << " : " << ( int ) elm.output( 0 )->value( ) << " -> "; */
     for( int port = 0; port < 5; ++port ) {
       sw.at( port )->setOn( truthTable.at( test ).at( port + 1 ) );
       sw.at( port )->updateLogic( );
-//      std::cout << truthTable.at(test).at( port + 1 ) << " ";
+/*      std::cout << truthTable.at(test).at( port + 1 ) << " "; */
     }
     elm.updateLogic( );
-//    std::cout << "-> " << ( int ) elm.output( 0 )->value( )  << " == " << truthTable.at( test ).at( 6 ) << " ?"<< std::endl;
+/*    std::cout << "-> " << ( int ) elm.output( 0 )->value( )  << " == " << truthTable.at( test ).at( 6 ) << " ?"<<
+ * std::endl; */
 
     QCOMPARE( ( int ) elm.output( 0 )->value( ), truthTable.at( test ).at( 6 ) );
     QCOMPARE( ( int ) elm.output( 1 )->value( ), truthTable.at( test ).at( 7 ) );
   }
-/*
- *  elm.input( 3 )->disconnect( conn.at( 3 ) );
- *  elm.input( 4 )->disconnect( conn.at( 4 ) );
- */
 
   delete conn.at( 3 );
   delete conn.at( 4 );
@@ -522,7 +520,7 @@ void TestElements::testTFlipFlop( ) {
 
   std::array< std::array< int, 8 >, 11 > truthTable = {
     {
-      /*    L  T  C  p  c  Q Q A */
+      /*  L  T  C  p  c  Q ~Q  A */
       { { 0, 0, 0, 1, 1, 0, 1, 0 } }, /* No change */
       { { 0, 1, 0, 1, 1, 0, 1, 0 } }, /* No change */
       { { 0, 0, 0, 1, 1, 1, 0, 1 } }, /* No change */
@@ -537,7 +535,7 @@ void TestElements::testTFlipFlop( ) {
 
       { { 0, 0, 0, 0, 1, 1, 0, 0 } }, /* Preset = false */
       { { 0, 0, 0, 1, 0, 0, 1, 1 } }, /* Clear = false */
-      { { 0, 0, 0, 0, 0, 1, 1, 1 } }, /* Clear and Preset = false */
+      { { 0, 0, 0, 0, 0, 1, 0, 1 } }, /* Clear and Preset = false */
 
       /* Test Prst and clr */
     }
@@ -554,25 +552,18 @@ void TestElements::testTFlipFlop( ) {
     elm.updateLogic( );
     elm.output( 0 )->setValue( truthTable.at( test ).at( 7 ) );
     elm.output( 1 )->setValue( !truthTable.at( test ).at( 7 ) );
-/*    std::cout << ( int ) elm.output( 0 )->value( ) << " " << ( int ) elm.output( 1 )->value( ) << " ->
- * "; */
+//    std::cout << ( int ) elm.output( 0 )->value( ) << " " << ( int ) elm.output( 1 )->value( ) << " -> ";
     for( int port = 0; port < 4; ++port ) {
       sw.at( port )->setOn( truthTable.at( test ).at( port + 1 ) );
       sw.at( port )->updateLogic( );
-/*      std::cout << truthTable.at(test).at( port + 1 ) << " "; */
+//      std::cout << truthTable.at(test).at( port + 1 ) << " ";
     }
     elm.updateLogic( );
-/*    std::cout << "-> " << ( int ) elm.output( 0 )->value( ) << " " << ( int ) elm.output( 1 )->value( )
- * << std::endl; */
+//    std::cout << "-> " << ( int ) elm.output( 0 )->value( ) << " " << ( int ) elm.output( 1 )->value( ) << std::endl;
 
     QCOMPARE( ( int ) elm.output( 0 )->value( ), truthTable.at( test ).at( 5 ) );
     QCOMPARE( ( int ) elm.output( 1 )->value( ), truthTable.at( test ).at( 6 ) );
   }
-/*
- *  elm.input( 2 )->disconnect( conn.at( 2 ) );
- *  elm.input( 3 )->disconnect( conn.at( 3 ) );
- */
-
 
   delete conn.at( 2 );
   delete conn.at( 3 );
@@ -699,14 +690,14 @@ void TestElements::testBoxes( ) {
   Editor *editor = new Editor( this );
 
   QDir examplesDir( QString( "%1/../examples/" ).arg( CURRENTDIR ) );
-  qDebug( ) << "Current dir: " << CURRENTDIR;
+/*  qDebug( ) << "Current dir: " << CURRENTDIR; */
   QStringList entries;
   entries << "*.panda";
   QFileInfoList files = examplesDir.entryInfoList( entries );
   for( QFileInfo f : files ) {
-    qDebug( ) << "FILE: " << f.absoluteFilePath();
+/*    qDebug( ) << "FILE: " << f.absoluteFilePath( ); */
     Box *box = new Box( editor );
-    box->loadFile(f.absoluteFilePath());
+    box->loadFile( f.absoluteFilePath( ) );
     delete box;
   }
 }
