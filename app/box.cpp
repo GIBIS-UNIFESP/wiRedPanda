@@ -197,19 +197,19 @@ void Box::setParentFile( const QString &value ) {
 QFileInfo Box::findFile( QString fname ) {
   QFileInfo fileInfo( fname );
   QString myFile = fileInfo.fileName( );
-  qDebug( ) << "Trying to load (1): " << fileInfo.absoluteFilePath( );
+//  COMMENT( "Trying to load (1): " << fileInfo.absoluteFilePath( ).toStdString(), 1 );
   if( !fileInfo.exists( ) ) {
     fileInfo.setFile( QDir::current( ), fileInfo.fileName( ) );
-    qDebug( ) << "Trying to load (2): " << fileInfo.absoluteFilePath( );
+//    qDebug( ) << "Trying to load (2): " << fileInfo.absoluteFilePath( );
     if( !fileInfo.exists( ) ) {
       fileInfo.setFile( QFileInfo( parentFile ).absoluteDir( ), myFile );
 
-      qDebug( ) << "Parent file: " << parentFile;
-      qDebug( ) << "Trying to load (3): " << fileInfo.absoluteFilePath( );
+//      qDebug( ) << "Parent file: " << parentFile;
+//      qDebug( ) << "Trying to load (3): " << fileInfo.absoluteFilePath( );
       if( !fileInfo.exists( ) ) {
         QFileInfo currentFile( GlobalProperties::currentFile );
-        qDebug( ) << "Current file: " << currentFile.absoluteFilePath( );
-        qDebug( ) << "Trying to load (4): " << fileInfo.absoluteFilePath( );
+//        qDebug( ) << "Current file: " << currentFile.absoluteFilePath( );
+//        qDebug( ) << "Trying to load (4): " << fileInfo.absoluteFilePath( );
         fileInfo.setFile( currentFile.absoluteDir( ), myFile );
         if( !fileInfo.exists( ) ) {
 
