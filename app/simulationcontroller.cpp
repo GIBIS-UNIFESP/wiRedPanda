@@ -94,7 +94,7 @@ void SimulationController::start( ) {
 }
 
 void SimulationController::reSortElms( ) {
-  qDebug() << "Re-sorting elements";
+  COMMENT( "Re-sorting elements", 0 );
   QVector< GraphicElement* > elements = scene->getElements( );
   sortedElements = sortElements( elements );
 }
