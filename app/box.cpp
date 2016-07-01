@@ -19,7 +19,6 @@
 Box::Box( Editor *editor, QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, parent ) {
   this->editor = editor;
   setHasLabel( true );
-  QPixmap pixmap( ":/basic/box.png" );
   /*
    *  QTransform transform;
    *  transform.translate(pixmap.size().width() / 2, pixmap.size().height() / 2);
@@ -33,7 +32,7 @@ Box::Box( Editor *editor, QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, 
    */
 
   /*  setPixmap(pixmap.transformed(transform)); */
-  setPixmap( pixmap );
+  setPixmap( ":/basic/box.png" );
   setOutputsOnTop( true );
   setPortName( "BOX" );
   connect( &watcher, &QFileSystemWatcher::fileChanged, this, &Box::fileChanged );

@@ -8,7 +8,7 @@ Led::Led( QGraphicsItem *parent ) : GraphicElement( 1, 1, 0, 0, parent ) {
   setRotatable( false );
   setHasColors( true );
   setColor( "White" );
-  setPixmap( QPixmap( ":/output/" + getColor( ) + "LedOff.png" ) );
+  setPixmap( ":/output/" + getColor( ) + "LedOff.png" );
   updatePorts( );
   setHasLabel( true );
   setPortName( "Led" );
@@ -25,14 +25,14 @@ void Led::updateLogic( ) {
   if( isValid( ) ) {
     bool value = inputs( ).first( )->value( );
     if( value == 1 ) {
-      setPixmap( QPixmap( ":/output/" + getColor( ) + "LedOn.png" ) );
+      setPixmap( ":/output/" + getColor( ) + "LedOn.png" );
     }
     else {
-      setPixmap( QPixmap( ":/output/" + getColor( ) + "LedOff.png" ) );
+      setPixmap( ":/output/" + getColor( ) + "LedOff.png" );
     }
   }
   else {
-    setPixmap( QPixmap( ":/output/" + getColor( ) + "LedOff.png" ) );
+    setPixmap( ":/output/" + getColor( ) + "LedOff.png" );
   }
 }
 

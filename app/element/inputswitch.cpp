@@ -5,7 +5,7 @@
 InputSwitch::InputSwitch( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent ) {
   setOutputsOnTop( false );
   setRotatable( false );
-  setPixmap( QPixmap( ":/input/switchOff.png" ) );
+  setPixmap( ":/input/switchOff.png" );
   on = false;
   setHasLabel( true );
   setHasTrigger( true );
@@ -24,10 +24,10 @@ void InputSwitch::setOn( bool value ) {
   on = value;
   updateLogic( );
   if( on ) {
-    setPixmap( QPixmap( ":/input/switchOn.png" ) );
+    setPixmap( ":/input/switchOn.png" );
   }
   else {
-    setPixmap( QPixmap( ":/input/switchOff.png" ) );
+    setPixmap( ":/input/switchOff.png" );
   }
 }
 

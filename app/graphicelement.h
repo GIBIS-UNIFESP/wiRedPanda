@@ -99,7 +99,7 @@ public:
   virtual float getFrequency( );
   virtual void setFrequency( float freq );
 
-  void setPixmap( const QPixmap &pixmap );
+  void setPixmap(const QString &pixmapPath , QRect size = QRect());
 
   bool rotatable( ) const;
 

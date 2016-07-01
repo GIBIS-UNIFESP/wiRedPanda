@@ -12,7 +12,7 @@ Display::Display( QGraphicsItem *parent ) : GraphicElement( 8, 8, 0, 0, parent )
   setTopPosition( 6 );
   setHasLabel( true );
 
-  setPixmap( QPixmap( ":/output/counter/counter_off.png" ) );
+  setPixmap( ":/output/counter/counter_off.png" );
   a = QPixmap( ":/output/counter/counter_a.png" );
   b = QPixmap( ":/output/counter/counter_b.png" );
   c = QPixmap( ":/output/counter/counter_c.png" );

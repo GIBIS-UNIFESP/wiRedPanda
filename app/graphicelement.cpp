@@ -35,8 +35,10 @@ GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz,
   m_maxInputSz = maxInputSz;
   m_maxOutputSz = maxOutputSz;
   m_changed = true;
-//  m_visited = false;
-//  m_beingVisited = false;
+/*
+ *  m_visited = false;
+ *  m_beingVisited = false;
+ */
   m_rotatable = true;
   m_hasColors = false;
   m_hasTrigger = false;
@@ -71,9 +73,9 @@ void GraphicElement::enable( ) {
   m_disabled = false;
 }
 
-void GraphicElement::setPixmap( const QPixmap &pixmap ) {
-  setTransformOriginPoint( pixmap.rect().center() );
-  this->pixmap = pixmap;
+void GraphicElement::setPixmap( const QString &pixmapPath, QRect size ) {
+  pixmap = QPixmap::fromImage( QImage( pixmapPath ) ).copy( size );
+  setTransformOriginPoint( pixmap.rect( ).center( ) );
   update( boundingRect( ) );
 }
 
@@ -143,7 +145,7 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
   /* <\Version1.2> */
   /* <Version1.3> */
   if( version >= 1.3 ) {
-    //FIXME: Was it a bad decision to store Min and Max input/ouput sizes?
+    /* FIXME: Was it a bad decision to store Min and Max input/ouput sizes? */
     ds >> m_minInputSz;
     ds >> m_maxInputSz;
     ds >> m_minOutputSz;
@@ -183,11 +185,10 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
       portMap[ ptr ] = addPort( name, false, flags, ptr );
     }
   }
-  while( inputSize( ) > (int) inputSz ) {
+  while( inputSize( ) > ( int ) inputSz ) {
     delete m_inputs.back( );
     m_inputs.pop_back( );
   }
-
   COMMENT( "Setting output ports.", 4 );
   ds >> outputSz;
   if( outputSz > MAXIMUMVALIDINPUTSIZE ) {
@@ -213,7 +214,7 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
     }
   }
   COMMENT( "Updating port positions.", 4 );
-  updatePorts();
+  updatePorts( );
 
   COMMENT( "Finished loading element.", 4 );
 }
@@ -262,7 +263,6 @@ QNEPort* GraphicElement::addPort( const QString &name, bool isOutput, int flags,
   else {
     m_inputs.push_back( port );
   }
-
   COMMENT( "Updating new port.", 4 );
   this->updatePorts( );
   port->show( );
@@ -283,6 +283,7 @@ void GraphicElement::setPortName( QString name ) {
 }
 
 void GraphicElement::updatePorts( ) {
+//  qDebug() << "UpdatePorts";
   COMMENT( "Updating port positions that belong to the box.", 4 );
   int inputPos = m_topPosition;
   int outputPos = m_bottomPosition;
@@ -402,13 +403,17 @@ bool GraphicElement::isValid( ) {
   return( valid );
 }
 
-//bool GraphicElement::beingVisited( ) const {
-//  return( m_beingVisited );
-//}
+/*
+ * bool GraphicElement::beingVisited( ) const {
+ *  return( m_beingVisited );
+ * }
+ */
 
-//void GraphicElement::setBeingVisited( bool beingVisited ) {
-//  m_beingVisited = beingVisited;
-//}
+/*
+ * void GraphicElement::setBeingVisited( bool beingVisited ) {
+ *  m_beingVisited = beingVisited;
+ * }
+ */
 
 bool GraphicElement::changed( ) const {
   return( m_changed );
