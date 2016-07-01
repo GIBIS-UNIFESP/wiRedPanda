@@ -34,7 +34,7 @@ void DLatch::updateLogic( ) {
   else {
     if( res1 == -1 ) {
       res1 = 0;
-      res2 = 0;
+      res2 = 1;
     }
     if( enable == 1 ) { /* If Enabled */
       res1 = data; /* Output = Data */

@@ -35,16 +35,16 @@ void TFlipFlop::updatePorts( ) {
 }
 
 void TFlipFlop::updateLogic( ) {
-  char res1 = output( 0 )->value( ); /* Q */
-  char res2 = output( 1 )->value( ); /* Q */
+  char q1 = output( 0 )->value( ); /* Q */
+  char q2 = output( 1 )->value( ); /* Q */
   if( !isValid( ) ) {
-    res1 = -1;
-    res2 = -1;
+    q1 = -1;
+    q2 = -1;
   }
   else {
-    if( res1 == -1 ) {
-      res1 = 0;
-      res2 = 0;
+    if( q1 == -1 ) {
+      q1 = 0;
+      q2 = 1;
     }
     char T = inputs( ).at( 0 )->value( );
     char clk = inputs( ).at( 1 )->value( ); /* Current lock */
@@ -52,18 +52,21 @@ void TFlipFlop::updateLogic( ) {
     char clr = inputs( ).at( 3 )->value( );
     if( ( clk == 1 ) && ( lastClk == 0 ) ) { /* If Clock up*/
       if( T == 1 ) { /* And T */
-        res1 = !res1;
-        res2 = !res1;
+        q1 = !q1;
+        q2 = !q1;
       }
     }
-    if( ( prst == 0 ) || ( clr == 0 ) ) {
-      res1 = !prst;
-      res2 = !clr;
+    if( ( prst == 0 ) && ( clr == 1 ) ) {
+      q1 = 1;
+      q2 = 0;
+    }else if( ( prst == 1 ) && ( clr == 0 ) ) {
+      q1 = 0;
+      q2 = 1;
     }
     lastClk = clk;
   }
-  output( 0 )->setValue( res1 );
-  output( 1 )->setValue( res2 );
+  output( 0 )->setValue( q1 );
+  output( 1 )->setValue( q2 );
 }
 
 /* Reference: https://en.wikipedia.org/wiki/Flip-flop_(electronics)#T_flip-flop */

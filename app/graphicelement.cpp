@@ -143,6 +143,7 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
   /* <\Version1.2> */
   /* <Version1.3> */
   if( version >= 1.3 ) {
+    //FIXME: Was it a bad decision to store Min and Max input/ouput sizes?
     ds >> m_minInputSz;
     ds >> m_maxInputSz;
     ds >> m_minOutputSz;
