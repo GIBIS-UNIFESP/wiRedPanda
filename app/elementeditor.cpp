@@ -40,7 +40,7 @@ QAction* addElementAction( QMenu *menu, GraphicElement *firstElm, ElementType ty
   return( nullptr );
 }
 
-void ElementEditor::contextMenu( QPoint screenPos, Editor *editor ) {
+void ElementEditor::contextMenu(QPoint screenPos) {
   QMenu menu;
   QString renameActionText( tr( "Rename" ) );
   QString rotateActionText( tr( "Rotate" ) );
@@ -333,7 +333,12 @@ void ElementEditor::apply( ) {
       }
     }
   }
-  emit sendCommand( new UpdateCommand( m_elements, itemData ) );
+  emit sendCommand( new UpdateCommand( m_elements, itemData, editor ) );
+}
+
+void ElementEditor::setEditor(Editor * value)
+{
+  editor = value;
 }
 
 void ElementEditor::on_lineEditElementLabel_editingFinished( ) {
@@ -346,7 +351,7 @@ void ElementEditor::on_comboBoxInputSz_currentIndexChanged( int index ) {
     return;
   }
   if( canChangeInputSize && ( ui->comboBoxInputSz->currentText( ) != _manyIS ) ) {
-    emit sendCommand( new ChangeInputSZCommand( m_elements, ui->comboBoxInputSz->currentData( ).toInt( ) ) );
+    emit sendCommand( new ChangeInputSZCommand( m_elements, ui->comboBoxInputSz->currentData( ).toInt( ), editor ) );
   }
 }
 

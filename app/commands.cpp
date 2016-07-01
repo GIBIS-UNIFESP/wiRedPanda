@@ -202,16 +202,19 @@ void AddItemsCommand::undo( ) {
   saveitems( itemData, items, otherIds );
 
   deleteItems( items, editor );
+  emit editor->circuitHasChanged();
 }
 
 void DeleteItemsCommand::undo( ) {
   qDebug( ) << "UNDO " << text( );
   loadItems( itemData, ids, editor, otherIds );
+  emit editor->circuitHasChanged();
 }
 
 void AddItemsCommand::redo( ) {
   qDebug( ) << "REDO " << text( );
   loadItems( itemData, ids, editor, otherIds );
+  emit editor->circuitHasChanged();
 }
 void DeleteItemsCommand::redo( ) {
   qDebug( ) << "REDO " << text( );
@@ -220,6 +223,7 @@ void DeleteItemsCommand::redo( ) {
   saveitems( itemData, items, otherIds );
 
   deleteItems( items, editor );
+  emit editor->circuitHasChanged();
 }
 
 
@@ -332,8 +336,8 @@ void MoveCommand::redo( ) {
 }
 
 
-UpdateCommand::UpdateCommand( const QVector< GraphicElement* > &elements, QByteArray oldData,
-                              QUndoCommand *parent ) : QUndoCommand( parent ) {
+UpdateCommand::UpdateCommand( const QVector< GraphicElement* > &elements, QByteArray oldData, Editor * editor,
+                              QUndoCommand *parent ) : QUndoCommand( parent ), editor(editor) {
   m_oldData = oldData;
   ids.reserve( elements.size( ) );
   QDataStream dataStream( &m_newData, QIODevice::WriteOnly );
@@ -346,10 +350,12 @@ UpdateCommand::UpdateCommand( const QVector< GraphicElement* > &elements, QByteA
 
 void UpdateCommand::undo( ) {
   loadData( m_oldData );
+  emit editor->circuitHasChanged();
 }
 
 void UpdateCommand::redo( ) {
   loadData( m_newData );
+  emit editor->circuitHasChanged();
 }
 
 void UpdateCommand::loadData( QByteArray itemData ) {
@@ -371,6 +377,7 @@ void UpdateCommand::loadData( QByteArray itemData ) {
 
 SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
     parent ) {
+  //TODO Reverse Split command...
   Scene *customScene = aEditor->getScene( );
   GraphicElement *node = ElementFactory::buildElement( ElementType::NODE, aEditor );
   QNEConnection *conn2 = ElementFactory::instance->buildConnection( );
@@ -450,6 +457,7 @@ void SplitCommand::redo( ) {
   else {
     throw std::runtime_error( QString( "Error tryng to redo %1" ).arg( text( ) ).toStdString( ) );
   }
+  emit editor->circuitHasChanged();
 }
 
 void SplitCommand::undo( ) {
@@ -473,6 +481,7 @@ void SplitCommand::undo( ) {
   else {
     throw std::runtime_error( QString( "Error tryng to undo %1" ).arg( text( ) ).toStdString( ) );
   }
+  emit editor->circuitHasChanged();
 }
 
 MorphCommand::MorphCommand( const QVector< GraphicElement* > &elements,
@@ -497,6 +506,7 @@ void MorphCommand::undo( ) {
     oldElms[ i ] = ElementFactory::buildElement( types[ i ], editor );
   }
   transferConnections( newElms, oldElms );
+  emit editor->circuitHasChanged();
 }
 
 void MorphCommand::redo( ) {
@@ -506,6 +516,7 @@ void MorphCommand::redo( ) {
     newElms[ i ] = ElementFactory::buildElement( newtype, editor );
   }
   transferConnections( oldElms, newElms );
+  emit editor->circuitHasChanged();
 }
 
 void MorphCommand::transferConnections( QVector< GraphicElement* > from, QVector< GraphicElement* > to ) {
@@ -570,8 +581,8 @@ void MorphCommand::transferConnections( QVector< GraphicElement* > from, QVector
 
 
 ChangeInputSZCommand::ChangeInputSZCommand( const QVector< GraphicElement* > &elements,
-                                            int newInputSize,
-                                            QUndoCommand *parent ) : QUndoCommand( parent ) {
+                                            int newInputSize, Editor * editor,
+                                            QUndoCommand *parent ) : QUndoCommand( parent ), editor(editor) {
   for( GraphicElement *elm : elements ) {
     elms.append( elm->id( ) );
   }
@@ -621,6 +632,7 @@ void ChangeInputSZCommand::redo( ) {
   for( GraphicElement *elm : serializationOrder ) {
     order.append( elm->id( ) );
   }
+  emit editor->circuitHasChanged();
 }
 
 void ChangeInputSZCommand::undo( ) {
@@ -644,4 +656,5 @@ void ChangeInputSZCommand::undo( ) {
     }
     elm->setSelected( true );
   }
+  emit editor->circuitHasChanged();
 }

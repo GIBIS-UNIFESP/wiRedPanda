@@ -1,7 +1,7 @@
 #include "demux.h"
 
 Demux::Demux( QGraphicsItem *parent ) : GraphicElement( 2, 2, 2, 2, parent ) {
-  setPixmap( QPixmap( ":/basic/demux.png" ) );
+  setPixmap( ":/basic/demux.png" );
   setRotatable( false );
   updatePorts( );
   setPortName( "DEMUX" );

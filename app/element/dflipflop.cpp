@@ -1,7 +1,7 @@
 #include "dflipflop.h"
 
 DFlipFlop::DFlipFlop( QGraphicsItem *parent ) : GraphicElement( 4, 4, 2, 2, parent ) {
-  setPixmap( QPixmap( ":/memory/D-flipflop.png" ) );
+  setPixmap( ":/memory/D-flipflop.png" );
   setRotatable( false );
   updatePorts( );
   setPortName( "FlipFlop D" );

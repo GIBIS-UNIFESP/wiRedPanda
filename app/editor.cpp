@@ -42,6 +42,7 @@ Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ) {
   timer.start( );
   mShowWires = true;
   mShowGates = true;
+  connect( this, &Editor::circuitHasChanged, simulationController, &SimulationController::reSortElms );
 }
 
 Editor::~Editor( ) {
@@ -88,6 +89,7 @@ void Editor::clear( ) {
   if( !scene->views( ).isEmpty( ) ) {
     scene->setSceneRect( scene->views( ).front( )->rect( ) );
   }
+  emit circuitHasChanged( );
 }
 
 void Editor::deleteAction( ) {
@@ -184,9 +186,8 @@ QGraphicsItem* Editor::itemAt( QPointF pos ) {
   return( nullptr );
 }
 
-ElementEditor * Editor::getElementEditor() const
-{
-  return _elementEditor;
+ElementEditor* Editor::getElementEditor( ) const {
+  return( _elementEditor );
 }
 
 QPointF Editor::getMousePos( ) const {
@@ -669,11 +670,13 @@ void Editor::load( QDataStream &ds ) {
   clear( );
   SerializationFunctions::load( this, ds, GlobalProperties::currentFile, scene );
   scene->clearSelection( );
+  emit circuitHasChanged( );
 }
 
 void Editor::setElementEditor( ElementEditor *value ) {
   _elementEditor = value;
   _elementEditor->setScene( scene );
+  _elementEditor->setEditor( this );
   connect( _elementEditor, &ElementEditor::sendCommand, this, &Editor::receiveCommand );
 }
 
@@ -689,12 +692,12 @@ void Editor::contextMenu( QPoint screenPos ) {
   QGraphicsItem *item = itemAt( mousePos );
   if( item ) {
     if( scene->selectedItems( ).contains( item ) ) {
-      _elementEditor->contextMenu( screenPos, this );
+      _elementEditor->contextMenu( screenPos );
     }
     else if( ( item->type( ) == GraphicElement::Type ) ) {
       scene->clearSelection( );
       item->setSelected( true );
-      _elementEditor->contextMenu( screenPos, this );
+      _elementEditor->contextMenu( screenPos );
     }
   }
   else {
@@ -866,7 +869,6 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
         break;
       }
         case QEvent::KeyPress: {
-
         if( keyEvt && !( keyEvt->modifiers( ) & Qt::ControlModifier ) ) {
           for( GraphicElement *elm : scene->getElements( ) ) {
             if( elm->hasTrigger( ) && !elm->getTrigger( ).isEmpty( ) ) {

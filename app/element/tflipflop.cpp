@@ -1,7 +1,7 @@
 #include "tflipflop.h"
 
 TFlipFlop::TFlipFlop( QGraphicsItem *parent ) : GraphicElement( 4, 4, 2, 2, parent ) {
-  setPixmap( QPixmap( ":/memory/T-flipflop.png" ) );
+  setPixmap( ":/memory/T-flipflop.png" );
   setRotatable( false );
   updatePorts( );
   lastClk = 0;

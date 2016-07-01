@@ -32,7 +32,7 @@ int SimulationController::calculatePriority( GraphicElement *elm,
   if( priority.contains( elm ) ) {
     return( priority[ elm ] );
   }
-  beingvisited[elm] = true;
+  beingvisited[ elm ] = true;
   int max = 0;
   for( QNEPort *port : elm->outputs( ) ) {
     for( QNEConnection *conn : port->connections( ) ) {
@@ -45,18 +45,18 @@ int SimulationController::calculatePriority( GraphicElement *elm,
   int p = max + 1;
   priority[ elm ] = p;
   beingvisited[ elm ] = false;
-  return(  p );
+  return( p );
 }
 
 QVector< GraphicElement* > SimulationController::sortElements( QVector< GraphicElement* > elms ) {
   QMap< GraphicElement*, bool > beingvisited;
   QMap< GraphicElement*, int > priority;
-
   for( GraphicElement *elm : elms ) {
     calculatePriority( elm, beingvisited, priority );
   }
-
-  std::sort(elms.begin(), elms.end(), [priority](GraphicElement * e1, GraphicElement * e2) {return priority[e2] < priority[e1];});
+  std::sort( elms.begin( ), elms.end( ), [ priority ]( GraphicElement *e1, GraphicElement *e2 ) {
+    return( priority[ e2 ] < priority[ e1 ] );
+  } );
 
   return( elms );
 }
@@ -64,7 +64,7 @@ QVector< GraphicElement* > SimulationController::sortElements( QVector< GraphicE
 void SimulationController::update( ) {
   QVector< GraphicElement* > elements = scene->getElements( );
   if( Clock::reset ) {
-    for( GraphicElement * elm : elements ) {
+    for( GraphicElement *elm : elements ) {
       if( elm->elementType( ) == ElementType::CLOCK ) {
         Clock *clk = dynamic_cast< Clock* >( elm );
         if( clk ) {
@@ -77,8 +77,7 @@ void SimulationController::update( ) {
   if( elements.isEmpty( ) ) {
     return;
   }
-  QVector< GraphicElement* > sorted = sortElements( elements );
-  for( GraphicElement *elm : sorted ) {
+  for( GraphicElement *elm : sortedElements ) {
     elm->updateLogic( );
     elm->setChanged( false );
   }
@@ -91,4 +90,11 @@ void SimulationController::stop( ) {
 void SimulationController::start( ) {
   timer.start( );
   Clock::reset = true;
+  reSortElms();
+}
+
+void SimulationController::reSortElms( ) {
+  qDebug() << "Re-sorting elements";
+  QVector< GraphicElement* > elements = scene->getElements( );
+  sortedElements = sortElements( elements );
 }

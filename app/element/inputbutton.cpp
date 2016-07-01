@@ -4,7 +4,7 @@
 #include <QGraphicsSceneMouseEvent>
 InputButton::InputButton( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent ) {
   setOutputsOnTop( false );
-  setPixmap( QPixmap( ":/input/buttonOff.png" ) );
+  setPixmap( ":/input/buttonOff.png" );
   setRotatable( false );
   outputs( ).first( )->setValue( 0 );
   setOn( false );
@@ -49,10 +49,10 @@ bool InputButton::getOn( ) const {
 void InputButton::setOn( bool value ) {
   on = value;
   if( on ) {
-    setPixmap( QPixmap( ":/input/buttonOn.png" ) );
+    setPixmap( ":/input/buttonOn.png" );
   }
   else {
-    setPixmap( QPixmap( ":/input/buttonOff.png" ) );
+    setPixmap( ":/input/buttonOff.png" );
   }
   updateLogic( );
 }
