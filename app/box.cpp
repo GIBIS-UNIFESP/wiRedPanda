@@ -79,7 +79,7 @@ void Box::verifyRecursion( QString fname ) {
     throw( std::runtime_error( msg ) );
   }
   for( Box *box = parentBox; box != nullptr; box = box->getParentBox( ) ) {
-    qDebug( ) << "File: " << box->getFile( );
+//    qDebug( ) << "File: " << box->getFile( );
     if( box->getFile( ) == fname ) {
       throw( std::runtime_error( msg ) );
     }
@@ -88,7 +88,7 @@ void Box::verifyRecursion( QString fname ) {
 
 
 void Box::loadFile( QString fname ) {
-  qDebug( ) << "Loading file:" << fname;
+//  qDebug( ) << "Loading file:" << fname;
   QFileInfo fileInfo = findFile( fname );
   fname = fileInfo.absoluteFilePath( );
   m_file = fname;
