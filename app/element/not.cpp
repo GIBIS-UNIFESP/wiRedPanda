@@ -2,7 +2,7 @@
 
 Not::Not(QGraphicsItem *parent) : GraphicElement(1,1,1,1,parent) {
   setOutputsOnTop(true);
-  setPixmap(QPixmap(":/basic/not.png"));
+  setPixmap( ":/basic/not.png" );
   updatePorts();
   setPortName("NOT");
 }

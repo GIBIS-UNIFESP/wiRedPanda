@@ -29,6 +29,7 @@ public:
   void selectAll( );
 signals:
   void scroll( int x, int y );
+  void circuitHasChanged();
 
 public slots:
   void clear( );

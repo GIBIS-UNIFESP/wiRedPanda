@@ -21,12 +21,12 @@ public slots:
   void update( );
   void stop( );
   void start( );
-
+  void reSortElms();
 
 private:
   Scene *scene;
   QTimer timer;
-
+  QVector< GraphicElement* > sortedElements;
   static int calculatePriority( GraphicElement *elm,
                                 QMap< GraphicElement*, bool > &beingvisited,
                                 QMap< GraphicElement*, int > &priority );

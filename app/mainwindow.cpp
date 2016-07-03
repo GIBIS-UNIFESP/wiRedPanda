@@ -18,22 +18,31 @@
 #include <iostream>
 #include <stdexcept>
 
+void MainWindow::setFastMode( bool fastModeEnabled ) {
+  ui->graphicsView->setRenderHint( QPainter::Antialiasing, !fastModeEnabled );
+  ui->graphicsView->setRenderHint( QPainter::HighQualityAntialiasing, !fastModeEnabled );
+  ui->graphicsView->setRenderHint( QPainter::SmoothPixmapTransform, !fastModeEnabled );
+  ui->actionFast_Mode->setChecked(fastModeEnabled);
+}
+
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
   ui->setupUi( this );
 
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
-  if( settings.value( "language" ).isValid() ) {
-    loadTranslation(settings.value( "language" ).toString());
+  if( settings.value( "language" ).isValid( ) ) {
+    loadTranslation( settings.value( "language" ).toString( ) );
   }
   editor = new Editor( this );
   ui->graphicsView->setScene( editor->getScene( ) );
   undoView = nullptr;
 /*  ui->graphicsView->setBackgroundBrush(QBrush(QColor(Qt::gray))); */
-  ui->graphicsView->setRenderHint( QPainter::Antialiasing, true );
-  ui->graphicsView->setRenderHint( QPainter::HighQualityAntialiasing, true );
-  ui->graphicsView->setRenderHint( QPainter::SmoothPixmapTransform, true );
-
+  if( settings.value( "fastMode" ).isValid( ) ) {
+    setFastMode( settings.value( "fastMode" ).toBool( ) );
+  }
+  else {
+    setFastMode( false );
+  }
   ui->graphicsView->setAcceptDrops( true );
   editor->setElementEditor( ui->widgetElementEditor );
   ui->searchScrollArea->hide( );
@@ -196,6 +205,7 @@ bool MainWindow::open( const QString &fname ) {
     setCurrentFile( QFileInfo( fname ) );
     try {
       editor->load( ds );
+      emit editor->circuitHasChanged( );
     }
     catch( std::runtime_error &e ) {
       std::cerr << tr( "Error loading project: " ).toStdString( ) << e.what( ) << std::endl;
@@ -692,4 +702,12 @@ void MainWindow::populateLeftMenu( ) {
   populateMenu( ui->verticalSpacer_Memory,
                 "DFLIPFLOP,DLATCH,JKFLIPFLOP,SRFLIPFLOP,TFLIPFLOP",
                 ui->scrollAreaWidgetContents_Memory->layout( ) );
+}
+
+
+void MainWindow::on_actionFast_Mode_triggered( bool checked ) {
+  setFastMode(checked);
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  settings.setValue( "fastMode", checked );
 }

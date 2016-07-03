@@ -13,8 +13,11 @@
    height="64px"
    id="svg2985"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
-   sodipodi:docname="WhiteLedOff.svg">
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="BlueLedOff.svg"
+   inkscape:export-filename="C:\Users\Lucas\Documents\GitHub\wiRedPanda\app\resources\output\BlueLedOff.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs2987">
     <filter
@@ -34,16 +37,16 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="7.7781746"
-     inkscape:cx="11.71833"
+     inkscape:cx="-8.3377896"
      inkscape:cy="31.479136"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
-     inkscape:window-width="1440"
-     inkscape:window-height="834"
-     inkscape:window-x="0"
-     inkscape:window-y="27"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
@@ -97,7 +100,7 @@
        transform="matrix(0.98181818,0,0,0.98181818,-2.3636364,2.5272726)" />
     <path
        sodipodi:type="arc"
-       style="opacity:0.45394737000000002;fill:#00788d;fill-opacity:1;stroke:none"
+       style="opacity:0.45394737000000002;fill:#003c46;fill-opacity:1;stroke:none"
        id="path2995-1-9"
        sodipodi:cx="35"
        sodipodi:cy="31.5"

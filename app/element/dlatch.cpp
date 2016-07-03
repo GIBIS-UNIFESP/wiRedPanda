@@ -1,7 +1,7 @@
 #include "dlatch.h"
 
 DLatch::DLatch( QGraphicsItem *parent ) : GraphicElement( 2, 2, 2, 2, parent ) {
-  setPixmap( QPixmap( ":/memory/D-latch.png" ) );
+  setPixmap( ":/memory/D-latch.png" );
   setRotatable( false );
   updatePorts( );
   setPortName( "D Latch" );
@@ -34,7 +34,7 @@ void DLatch::updateLogic( ) {
   else {
     if( res1 == -1 ) {
       res1 = 0;
-      res2 = 0;
+      res2 = 1;
     }
     if( enable == 1 ) { /* If Enabled */
       res1 = data; /* Output = Data */

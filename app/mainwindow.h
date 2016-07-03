@@ -49,7 +49,9 @@ public:
   void retranslateUi();
 
   void loadTranslation(QString language);
-  
+
+  void setFastMode(bool fastModeEnabled);
+
 private slots:
   bool on_actionExport_to_Arduino_triggered( );
   void on_actionAbout_Qt_triggered( );
@@ -86,6 +88,9 @@ private slots:
   void on_actionChange_Trigger_triggered();
 
   void on_actionClear_selection_triggered();
+
+
+  void on_actionFast_Mode_triggered(bool checked);
 
 private:
   Ui::MainWindow *ui;

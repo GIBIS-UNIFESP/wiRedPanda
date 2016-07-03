@@ -2,7 +2,7 @@
 
 Xor::Xor( QGraphicsItem *parent ) : GraphicElement( 2, 8, 1, 1, parent ) {
   setOutputsOnTop( true );
-  setPixmap( QPixmap( ":/basic/xor.png" ) );
+  setPixmap( ":/basic/xor.png" );
   updatePorts( );
   setPortName( "XOR" );
 }
