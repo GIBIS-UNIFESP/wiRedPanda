@@ -38,15 +38,9 @@ void SRFlipFlop::updateLogic( ) {
     q2 = -1;
   }
   else {
-<<<<<<< HEAD
-    if( res1 == -1 ) {
-      res1 = 0;
-      res2 = 1;
-=======
     if( q1 == -1 ) {
       q1 = 0;
       q2 = 1;
->>>>>>> adcb8f2078c1746dabd58a598bdd4604709eea96
     }
     char s = inputs( ).at( 0 )->value( );
     char clk = inputs( ).at( 1 )->value( );
