@@ -94,7 +94,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>252</height>
+                   <height>253</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -135,8 +135,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>100</width>
-                   <height>30</height>
+                   <width>208</width>
+                   <height>253</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -177,8 +177,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>100</width>
-                   <height>30</height>
+                   <width>208</width>
+                   <height>253</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -219,8 +219,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>100</width>
-                   <height>30</height>
+                   <width>208</width>
+                   <height>253</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -320,7 +320,7 @@
                <x>0</x>
                <y>0</y>
                <width>228</width>
-               <height>297</height>
+               <height>296</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
@@ -408,7 +408,7 @@
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>19</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -479,6 +479,7 @@
     <addaction name="actionWires"/>
     <addaction name="actionGates"/>
     <addaction name="separator"/>
+    <addaction name="actionFast_Mode"/>
    </widget>
    <widget class="QMenu" name="menuLanguage">
     <property name="title">
@@ -790,6 +791,14 @@
     <string>Esc</string>
    </property>
   </action>
+  <action name="actionFast_Mode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Fast Mode</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -815,12 +824,12 @@
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/resources.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/resources.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/resources.qrc"/>
   <include location="resources/input/input.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>
 </ui>

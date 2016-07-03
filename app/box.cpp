@@ -19,7 +19,6 @@
 Box::Box( Editor *editor, QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, parent ) {
   this->editor = editor;
   setHasLabel( true );
-  QPixmap pixmap( ":/basic/box.png" );
   /*
    *  QTransform transform;
    *  transform.translate(pixmap.size().width() / 2, pixmap.size().height() / 2);
@@ -33,7 +32,7 @@ Box::Box( Editor *editor, QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, 
    */
 
   /*  setPixmap(pixmap.transformed(transform)); */
-  setPixmap( pixmap );
+  setPixmap( ":/basic/box.png" );
   setOutputsOnTop( true );
   setPortName( "BOX" );
   connect( &watcher, &QFileSystemWatcher::fileChanged, this, &Box::fileChanged );
@@ -79,7 +78,7 @@ void Box::verifyRecursion( QString fname ) {
     throw( std::runtime_error( msg ) );
   }
   for( Box *box = parentBox; box != nullptr; box = box->getParentBox( ) ) {
-    qDebug( ) << "File: " << box->getFile( );
+//    qDebug( ) << "File: " << box->getFile( );
     if( box->getFile( ) == fname ) {
       throw( std::runtime_error( msg ) );
     }
@@ -88,7 +87,7 @@ void Box::verifyRecursion( QString fname ) {
 
 
 void Box::loadFile( QString fname ) {
-  qDebug( ) << "Loading file:" << fname;
+//  qDebug( ) << "Loading file:" << fname;
   QFileInfo fileInfo = findFile( fname );
   fname = fileInfo.absoluteFilePath( );
   m_file = fname;
@@ -197,19 +196,19 @@ void Box::setParentFile( const QString &value ) {
 QFileInfo Box::findFile( QString fname ) {
   QFileInfo fileInfo( fname );
   QString myFile = fileInfo.fileName( );
-  qDebug( ) << "Trying to load (1): " << fileInfo.absoluteFilePath( );
+//  COMMENT( "Trying to load (1): " << fileInfo.absoluteFilePath( ).toStdString(), 1 );
   if( !fileInfo.exists( ) ) {
     fileInfo.setFile( QDir::current( ), fileInfo.fileName( ) );
-    qDebug( ) << "Trying to load (2): " << fileInfo.absoluteFilePath( );
+//    qDebug( ) << "Trying to load (2): " << fileInfo.absoluteFilePath( );
     if( !fileInfo.exists( ) ) {
       fileInfo.setFile( QFileInfo( parentFile ).absoluteDir( ), myFile );
 
-      qDebug( ) << "Parent file: " << parentFile;
-      qDebug( ) << "Trying to load (3): " << fileInfo.absoluteFilePath( );
+//      qDebug( ) << "Parent file: " << parentFile;
+//      qDebug( ) << "Trying to load (3): " << fileInfo.absoluteFilePath( );
       if( !fileInfo.exists( ) ) {
         QFileInfo currentFile( GlobalProperties::currentFile );
-        qDebug( ) << "Current file: " << currentFile.absoluteFilePath( );
-        qDebug( ) << "Trying to load (4): " << fileInfo.absoluteFilePath( );
+//        qDebug( ) << "Current file: " << currentFile.absoluteFilePath( );
+//        qDebug( ) << "Trying to load (4): " << fileInfo.absoluteFilePath( );
         fileInfo.setFile( currentFile.absoluteDir( ), myFile );
         if( !fileInfo.exists( ) ) {
 

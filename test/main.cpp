@@ -18,5 +18,10 @@ int main( int argc, char **argv ) {
   status |= QTest::qExec( &testSC, argc, argv );
   status |= QTest::qExec( &testFiles, argc, argv );
   status |= QTest::qExec( &testCommands, argc, argv );
+  if(status == false){
+    std::cout << "All tests have passed!" << std::endl;
+  }else{
+    std::cout << "Some test failed!" << std::endl;
+  }
   return( status );
 }

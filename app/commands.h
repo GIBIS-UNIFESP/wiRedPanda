@@ -89,7 +89,7 @@ class UpdateCommand : public QUndoCommand {
 public:
   enum { Id = 105 };
 
-  UpdateCommand( const QVector< GraphicElement* > &elements, QByteArray oldData, QUndoCommand *parent = 0 );
+  UpdateCommand(const QVector< GraphicElement* > &elements, QByteArray oldData, Editor * editor, QUndoCommand *parent = 0 );
 
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
@@ -101,6 +101,7 @@ private:
   QVector< int > ids;
   QByteArray m_oldData;
   QByteArray m_newData;
+  Editor * editor;
 
   void loadData( QByteArray itemData );
 };
@@ -151,7 +152,7 @@ class ChangeInputSZCommand : public QUndoCommand {
 public:
   enum { Id = 108 };
 
-  ChangeInputSZCommand( const QVector< GraphicElement* > &elements, int newInputSize, QUndoCommand *parent = 0 );
+  ChangeInputSZCommand( const QVector< GraphicElement* > &elements, int newInputSize, Editor * editor, QUndoCommand *parent = 0 );
 
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
@@ -163,7 +164,7 @@ public:
   private:
   QVector< int > elms;
   QVector< int > order;
-
+  Editor * editor;
   QGraphicsScene *scene;
   QByteArray m_oldData;
   int m_newInputSize;

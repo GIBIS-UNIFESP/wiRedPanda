@@ -11,7 +11,7 @@ Node::Node( QGraphicsItem *parent ) : GraphicElement( 1, 1, 1, 1, parent ) {
 //  paint->drawEllipse( 4, 4, 24, 24 );
 //  delete paint;
 //  setPixmap( pix );
-  setPixmap(QPixmap(":/basic/node.png").copy(QRect(QPoint(16,16), QPoint(48,48))));
+  setPixmap(":/basic/node.png", QRect(QPoint(16,16), QPoint(48,48)));
   updatePorts( );
   setPortName( "NODE" );
   input()->setRequired(true);
