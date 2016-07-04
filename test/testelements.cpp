@@ -643,9 +643,9 @@ void TestElements::testBox( ) {
   QCOMPARE( box->input( 4 )->required( ), false );
 
   QCOMPARE( ( int ) box->input( 0 )->value( ), 1 );
-  QCOMPARE( ( int ) box->input( 1 )->value( ), 0 );
+  QCOMPARE( ( int ) box->input( 1 )->value( ), 1 );
   QCOMPARE( ( int ) box->input( 2 )->value( ), -1 );
-  QCOMPARE( ( int ) box->input( 3 )->value( ), 0 );
+  QCOMPARE( ( int ) box->input( 3 )->value( ), 1 );
   QCOMPARE( ( int ) box->input( 4 )->value( ), 1 );
 
   QNEConnection *conn = new QNEConnection( );

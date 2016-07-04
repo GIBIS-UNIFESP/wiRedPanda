@@ -16,10 +16,12 @@ JKFlipFlop::JKFlipFlop( QGraphicsItem *parent ) : GraphicElement( 5, 5, 2, 2, pa
   inputs( ).at( 4 )->setName( "~Clear" );
   output( 0 )->setName( "Q" );
   output( 1 )->setName( "~Q" );
-  inputs( ).at( 0 )->setRequired( false );
-  inputs( ).at( 2 )->setRequired( false );
-  inputs( ).at( 3 )->setRequired( false );
-  inputs( ).at( 4 )->setRequired( false );
+  inputs( ).at( 0 )->setRequired( false ); // J
+  inputs( ).at( 2 )->setRequired( false ); // K
+  inputs( ).at( 3 )->setRequired( false ); // p
+  inputs( ).at( 4 )->setRequired( false ); // c
+  inputs( ).at( 0 )->setDefaultValue( 1 );
+  inputs( ).at( 2 )->setDefaultValue( 1 );
   inputs( ).at( 3 )->setDefaultValue( 1 );
   inputs( ).at( 4 )->setDefaultValue( 1 );
 }
@@ -43,7 +45,7 @@ void JKFlipFlop::updateLogic( ) {
     q2 = -1;
   }
   else {
-    if( q1 == -1 ) {
+    if( q1 == -1  || q2 == -1) {
       q1 = 0;
       q2 = 1;
     }
