@@ -5,7 +5,6 @@ DFlipFlop::DFlipFlop( QGraphicsItem *parent ) : GraphicElement( 4, 4, 2, 2, pare
   setRotatable( false );
   updatePorts( );
   setPortName( "FlipFlop D" );
-  lastClk = false;
   inputs( ).at( 0 )->setName( "Data" );
   inputs( ).at( 1 )->setName( "Clock" );
   inputs( ).at( 2 )->setName( "~Preset" );
