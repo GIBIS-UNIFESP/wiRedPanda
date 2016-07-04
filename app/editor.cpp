@@ -521,7 +521,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
 
     QPointF ctr;
     ds >> ctr;
-    double version = QApplication::applicationVersion( ).toDouble( );
+    double version = GlobalProperties::version;
     QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( this,
                                                                             ds,
                                                                             version,
@@ -635,7 +635,7 @@ void Editor::paste( QDataStream &ds ) {
   QPointF ctr;
   ds >> ctr;
   QPointF offset = mousePos - ctr - QPointF( 32.0f, 32.0f );
-  double version = QApplication::applicationVersion( ).toDouble( );
+  double version = GlobalProperties::version;
   QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( this,
                                                                           ds,
                                                                           version,
@@ -658,10 +658,8 @@ void Editor::selectAll( ) {
 }
 
 void Editor::save( QDataStream &ds ) {
-  ds << QApplication::applicationName( ) + " " + QApplication::applicationVersion( );
-  if( QApplication::applicationVersion( ).toDouble( ) >= 1.4 ) {
-    ds << scene->sceneRect( );
-  }
+  ds << QApplication::applicationName( ) + " " + QApplication::applicationVersion( ).split("-").first();
+  ds << scene->sceneRect( );
   SerializationFunctions::serialize( scene->items( ), ds );
 }
 

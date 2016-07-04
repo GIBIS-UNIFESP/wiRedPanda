@@ -123,7 +123,7 @@ void loadItems( QByteArray &itemData, const QVector< int > &ids, Editor *editor,
   }
   QVector< GraphicElement* > otherElms = findElements( otherIds ).toVector( );
   QDataStream dataStream( &itemData, QIODevice::ReadOnly );
-  double version = QApplication::applicationVersion( ).toDouble( );
+  double version = GlobalProperties::version;
   QMap< quint64, QNEPort* > portMap;
   for( GraphicElement *elm : otherElms ) {
     elm->load( dataStream, portMap, version );
@@ -365,7 +365,7 @@ void UpdateCommand::loadData( QByteArray itemData ) {
   if( !elements.isEmpty( ) && elements.front( )->scene( ) ) {
     elements.front( )->scene( )->clearSelection( );
   }
-  double version = QApplication::applicationVersion( ).toDouble( );
+  double version = GlobalProperties::version;
   if( !elements.isEmpty( ) ) {
     for( GraphicElement *elm : elements ) {
       elm->load( dataStream, portMap, version );
@@ -642,7 +642,7 @@ void ChangeInputSZCommand::undo( ) {
     scene->clearSelection( );
   }
   QDataStream dataStream( &m_oldData, QIODevice::ReadOnly );
-  double version = QApplication::applicationVersion( ).toDouble( );
+  double version = GlobalProperties::version;
   QMap< quint64, QNEPort* > portMap;
   for( GraphicElement *elm : serializationOrder ) {
     elm->load( dataStream, portMap, version );

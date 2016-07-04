@@ -76,16 +76,9 @@ QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStrea
                                                       Scene *scene ) {
   QString str;
   ds >> str;
-/*  std::cout << "Header: " << str.toStdString() << std::endl; */
   if( !str.startsWith( QApplication::applicationName( ) ) ) {
     throw( std::runtime_error( "Invalid file format." ) );
   }
-/*
- * else if( !str.endsWith( QApplication::applicationVersion( ) ) ) {
- *    QMessageBox::warning( nullptr, "Warning!", "File opened in compatibility mode.", QMessageBox::Ok,
- *    QMessageBox::NoButton );
- * }
- */
 
   double version = str.split( " " ).at( 1 ).toDouble( );
 

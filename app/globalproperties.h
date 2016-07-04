@@ -7,6 +7,7 @@ class GlobalProperties {
 public:
 
   static QString currentFile;
+  static double version;
 };
 
 #endif // GLOBALPROPERTIES_H
