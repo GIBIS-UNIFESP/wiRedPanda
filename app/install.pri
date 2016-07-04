@@ -13,7 +13,7 @@ unix{
   INSTALLS += target desktop mime icon26 icon32 icon48 icon64 icon128 fileIcon26 fileIcon32 fileIcon48 fileIcon64 fileIcon128 postinst
 
   target.path = $$BINDIR
-  target.files += $${PWD}/resources/wpanda.sh
+  target.files += $${PWD}/resources/wpanda.sh $${TARGET}
 
   desktop.path = $$DATADIR/applications
   desktop.files += resources/$${TARGET}.desktop
