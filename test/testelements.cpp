@@ -431,11 +431,11 @@ void TestElements::testJKLatch( ) {
 void TestElements::testSRFlipFlop( ) {
   SRFlipFlop elm;
   QCOMPARE( elm.inputSize( ), elm.inputs( ).size( ) );
-  QCOMPARE( elm.inputSize( ), 3 );
+  QCOMPARE( elm.inputSize( ), 5 );
   QCOMPARE( elm.outputSize( ), elm.outputs( ).size( ) );
   QCOMPARE( elm.outputSize( ), 2 );
-  QCOMPARE( elm.minInputSz( ), 3 );
-  QCOMPARE( elm.maxInputSz( ), 3 );
+  QCOMPARE( elm.minInputSz( ), 5 );
+  QCOMPARE( elm.maxInputSz( ), 5 );
   QCOMPARE( elm.minOutputSz( ), 2 );
   QCOMPARE( elm.maxOutputSz( ), 2 );
   QCOMPARE( elm.elementType( ), ElementType::SRFLIPFLOP );
@@ -521,21 +521,21 @@ void TestElements::testTFlipFlop( ) {
   std::array< std::array< int, 8 >, 11 > truthTable = {
     {
       /*  L  T  C  p  c  Q ~Q  A */
-      { { 0, 0, 0, 1, 1, 0, 1, 0 } }, /* No change */
-      { { 0, 1, 0, 1, 1, 0, 1, 0 } }, /* No change */
-      { { 0, 0, 0, 1, 1, 1, 0, 1 } }, /* No change */
-      { { 0, 1, 0, 1, 1, 1, 0, 1 } }, /* No change */
+      { { 1, 0, 1, 1, 1, 0, 1, 0 } }, /* No change */
+      { { 1, 1, 1, 1, 1, 0, 1, 0 } }, /* No change */
+      { { 1, 0, 1, 1, 1, 1, 0, 1 } }, /* No change */
+      { { 1, 1, 1, 1, 1, 1, 0, 1 } }, /* No change */
 
-      { { 0, 0, 1, 1, 1, 0, 1, 0 } }, /* No change */
-      { { 0, 0, 1, 1, 1, 1, 0, 1 } }, /* No change */
+      { { 1, 0, 0, 1, 1, 0, 1, 0 } }, /* No change */
+      { { 1, 0, 0, 1, 1, 1, 0, 1 } }, /* No change */
 
-      { { 0, 1, 1, 1, 1, 1, 0, 0 } }, /* Toggle */
-      { { 0, 1, 1, 1, 1, 0, 1, 1 } }, /* Toggle */
+      { { 1, 1, 0, 1, 1, 1, 0, 0 } }, /* Toggle */
+      { { 1, 1, 0, 1, 1, 0, 1, 1 } }, /* Toggle */
 
 
-      { { 0, 0, 0, 0, 1, 1, 0, 0 } }, /* Preset = false */
-      { { 0, 0, 0, 1, 0, 0, 1, 1 } }, /* Clear = false */
-      { { 0, 0, 0, 0, 0, 1, 1, 1 } }, /* Clear and Preset = false */
+      { { 1, 0, 1, 0, 1, 1, 0, 0 } }, /* Preset = false */
+      { { 1, 0, 1, 1, 0, 0, 1, 1 } }, /* Clear = false */
+      { { 1, 0, 1, 0, 0, 1, 1, 1 } }, /* Clear and Preset = false */
 
       /* Test Prst and clr */
     }
