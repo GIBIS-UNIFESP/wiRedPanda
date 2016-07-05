@@ -158,11 +158,21 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
   /* <\Version1.2> */
   /* <Version1.3> */
   if( version >= 1.3 ) {
+    quint64 min_isz, max_isz, min_osz, max_osz;
+    ds >> min_isz;
+    ds >> max_isz;
+    ds >> min_osz;
+    ds >> max_osz;
     /* FIXME: Was it a bad decision to store Min and Max input/ouput sizes? */
-    ds >> m_minInputSz;
-    ds >> m_maxInputSz;
-    ds >> m_minOutputSz;
-    ds >> m_maxOutputSz;
+    /* Version 2.2 ?? fix ?? */
+    if( !( ( m_minInputSz == m_maxInputSz ) && ( m_minInputSz > max_isz ) ) ) {
+      m_minInputSz = min_isz;
+      m_maxInputSz = max_isz;
+    }
+    if( !( ( m_minOutputSz == m_maxOutputSz ) && ( m_minOutputSz > max_osz ) ) ) {
+      m_minOutputSz = min_osz;
+      m_maxOutputSz = max_osz;
+    }
   }
   /* <\Version1.3> */
   /* <Version1.9> */
@@ -198,7 +208,7 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
       portMap[ ptr ] = addPort( name, false, flags, ptr );
     }
   }
-  while( inputSize( ) > ( int ) inputSz ) {
+  while( inputSize( ) > ( int ) inputSz && inputSz >= m_minInputSz ) {
     delete m_inputs.back( );
     m_inputs.pop_back( );
   }

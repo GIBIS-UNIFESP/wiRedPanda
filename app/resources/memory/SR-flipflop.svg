@@ -61,7 +61,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.656854"
-     inkscape:cx="-14.249273"
+     inkscape:cx="-42.798711"
      inkscape:cy="32.156436"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -70,9 +70,9 @@
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:window-width="1920"
-     inkscape:window-height="1026"
+     inkscape:window-height="1020"
      inkscape:window-x="0"
-     inkscape:window-y="26"
+     inkscape:window-y="32"
      inkscape:window-maximized="1">
     <sodipodi:guide
        orientation="1,0"
@@ -239,5 +239,37 @@
          id="tspan3791"
          x="8.2509766"
          y="52">R</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18px;line-height:125%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
+       x="26.401367"
+       y="21.410006"
+       id="text3785-3"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3787-5"
+         x="26.401367"
+         y="21.410006">P</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18px;line-height:125%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
+       x="26.282715"
+       y="52"
+       id="text3789-6"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3791-2"
+         x="26.282715"
+         y="52">C</tspan></text>
+    <path
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none"
+       d="m 26.421874,6.779804 0,-0.609375 5.578125,0 5.578126,0 0,0.609375 0,0.609375 -5.578126,0 -5.578125,0 0,-0.609375 z"
+       id="path3058-8"
+       inkscape:connector-curvature="0" />
+    <path
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none"
+       d="m 26.421874,37.129941 0,-0.609375 5.578125,0 5.578126,0 0,0.609375 0,0.609375 -5.578126,0 -5.578125,0 0,-0.609375 z"
+       id="path3058-4"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>
