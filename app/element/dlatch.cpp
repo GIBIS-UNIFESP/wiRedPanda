@@ -9,6 +9,9 @@ DLatch::DLatch( QGraphicsItem *parent ) : GraphicElement( 2, 2, 2, 2, parent ) {
   input( 1 )->setName( "Enable" );
   output( 0 )->setName( "Q" );
   output( 1 )->setName( "~Q" );
+
+  output( 0 )->setDefaultValue( 0 );
+  output( 1 )->setDefaultValue( 1 );
 }
 
 DLatch::~DLatch( ) {

@@ -50,7 +50,7 @@ void SRFlipFlop::updateLogic( ) {
     q2 = -1;
   }
   else {
-    if( q1 == -1 ) {
+    if( ( q1 == -1 ) || ( q2 == -1 ) ) {
       q1 = output( 0 )->defaultValue( );
       q2 = output( 1 )->defaultValue( );
     }
