@@ -104,7 +104,7 @@ void CodeGenerator::declareOutputs( ) {
         if( !label.isEmpty( ) ) {
           varName = QString( "%1_%2" ).arg( varName ).arg( label );
         }
-        QNEPort *port = elm->inputs( ).at( i );
+        QNEPort *port = elm->input( i );
         if( !port->getName( ).isEmpty( ) ) {
           varName = QString( "%1_%2" ).arg( varName ).arg( port->getName( ) );
         }
@@ -178,6 +178,8 @@ void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &el
             out << "boolean " << varName << "_last = LOW;" << endl;
             break;
           }
+            case ElementType::TFLIPFLOP:
+            case ElementType::SRFLIPFLOP:
             case ElementType::JKFLIPFLOP: {
             out << "boolean " << varName << "_inclk = LOW;" << endl;
             break;
@@ -214,7 +216,7 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
       Box *box = qgraphicsitem_cast< Box* >( elm );
       out << "    // " << box->getLabel( ) << endl;
       for( int i = 0; i < box->inputSize( ); ++i ) {
-        QNEPort *port = box->inputs( ).at( i );
+        QNEPort *port = box->input( i );
         QNEPort *otherPort = port->connections( ).first( )->otherPort( port );
         QString value = highLow( port->defaultValue( ) );
         if( !varMap[ otherPort ].isEmpty( ) ) {
@@ -238,8 +240,8 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
       switch( elm->elementType( ) ) {
           case ElementType::DFLIPFLOP: {
           QString secondOut = varMap[ elm->output( 1 ) ];
-          QString data = otherPortName( elm->inputs( ).at( 0 ) );
-          QString clk = otherPortName( elm->inputs( ).at( 1 ) );
+          QString data = otherPortName( elm->input( 0 ) );
+          QString clk = otherPortName( elm->input( 1 ) );
           QString inclk = firstOut + "_inclk";
           QString last = firstOut + "_last";
           out << QString( "    //D FlipFlop" ) << endl;
@@ -247,8 +249,8 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
           out << QString( "        %1 = %2;" ).arg( firstOut ).arg( last ) << endl;
           out << QString( "        %1 = !%2;" ).arg( secondOut ).arg( last ) << endl;
           out << QString( "    }" ) << endl;
-          QString prst = otherPortName( elm->inputs( ).at( 2 ) );
-          QString clr = otherPortName( elm->inputs( ).at( 3 ) );
+          QString prst = otherPortName( elm->input( 2 ) );
+          QString clr = otherPortName( elm->input( 3 ) );
           out << QString( "    if( !%1 || !%2) { " ).arg( prst ).arg( clr ) << endl;
           out << QString( "        %1 = !%2; //Preset" ).arg( firstOut ).arg( prst ) << endl;
           out << QString( "        %1 = !%2; //Clear" ).arg( secondOut ).arg( clr ) << endl;
@@ -263,8 +265,8 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
         }
           case ElementType::DLATCH: {
           QString secondOut = varMap[ elm->output( 1 ) ];
-          QString data = otherPortName( elm->inputs( ).at( 0 ) );
-          QString clk = otherPortName( elm->inputs( ).at( 1 ) );
+          QString data = otherPortName( elm->input( 0 ) );
+          QString clk = otherPortName( elm->input( 1 ) );
           out << QString( "    //D Latch" ) << endl;
           out << QString( "    if( %1 ) { " ).arg( clk ) << endl;
           out << QString( "        %1 = %2;" ).arg( firstOut ).arg( data ) << endl;
@@ -275,9 +277,9 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
         }
           case ElementType::JKFLIPFLOP: {
           QString secondOut = varMap[ elm->output( 1 ) ];
-          QString j = otherPortName( elm->inputs( ).at( 0 ) );
-          QString clk = otherPortName( elm->inputs( ).at( 1 ) );
-          QString k = otherPortName( elm->inputs( ).at( 2 ) );
+          QString j = otherPortName( elm->input( 0 ) );
+          QString clk = otherPortName( elm->input( 1 ) );
+          QString k = otherPortName( elm->input( 2 ) );
           QString inclk = firstOut + "_inclk";
           out << QString( "    //JK FlipFlop" ) << endl;
           out << QString( "    if( %1 && !%2 ) { " ).arg( clk ).arg( inclk ) << endl;
@@ -293,8 +295,8 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
           out << QString( "            %1 = 1;" ).arg( secondOut ) << endl;
           out << QString( "        }" ) << endl;
           out << QString( "    }" ) << endl;
-          QString prst = otherPortName( elm->inputs( ).at( 3 ) );
-          QString clr = otherPortName( elm->inputs( ).at( 4 ) );
+          QString prst = otherPortName( elm->input( 3 ) );
+          QString clr = otherPortName( elm->input( 4 ) );
           out << QString( "    if( !%1 || !%2 ) { " ).arg( prst ).arg( clr ) << endl;
           out << QString( "        %1 = !%2; //Preset" ).arg( firstOut ).arg( prst ) << endl;
           out << QString( "        %1 = !%2; //Clear" ).arg( secondOut ).arg( clr ) << endl;
@@ -307,9 +309,9 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
         }
           case ElementType::SRFLIPFLOP: {
           QString secondOut = varMap[ elm->output( 1 ) ];
-          QString s = otherPortName( elm->inputs( ).at( 0 ) );
-          QString clk = otherPortName( elm->inputs( ).at( 1 ) );
-          QString r = otherPortName( elm->inputs( ).at( 2 ) );
+          QString s = otherPortName( elm->input( 0 ) );
+          QString clk = otherPortName( elm->input( 1 ) );
+          QString r = otherPortName( elm->input( 2 ) );
           QString inclk = firstOut + "_inclk";
           out << QString( "    //SR FlipFlop" ) << endl;
           out << QString( "    if( %1 && !%2 ) { " ).arg( clk ).arg( inclk ) << endl;
@@ -321,8 +323,8 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
           out << QString( "            %1 = %2;" ).arg( secondOut ).arg( r ) << endl;
           out << QString( "        }" ) << endl;
           out << QString( "    }" ) << endl;
-          QString prst = otherPortName( elm->inputs( ).at( 3 ) );
-          QString clr = otherPortName( elm->inputs( ).at( 4 ) );
+          QString prst = otherPortName( elm->input( 3 ) );
+          QString clr = otherPortName( elm->input( 4 ) );
           out << QString( "    if( !%1 || !%2 ) { " ).arg( prst ).arg( clr ) << endl;
           out << QString( "        %1 = !%2; //Preset" ).arg( firstOut ).arg( prst ) << endl;
           out << QString( "        %1 = !%2; //Clear" ).arg( secondOut ).arg( clr ) << endl;
@@ -335,8 +337,8 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
         }
           case ElementType::TFLIPFLOP: {
           QString secondOut = varMap[ elm->output( 1 ) ];
-          QString t = otherPortName( elm->inputs( ).at( 0 ) );
-          QString clk = otherPortName( elm->inputs( ).at( 1 ) );
+          QString t = otherPortName( elm->input( 0 ) );
+          QString clk = otherPortName( elm->input( 1 ) );
           QString inclk = firstOut + "_inclk";
 //          QString last = firstOut + "_last";
           out << QString( "    //T FlipFlop" ) << endl;
@@ -346,8 +348,8 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
           out << QString( "            %1 = !%2;" ).arg( secondOut ).arg( firstOut ) << endl;
           out << QString( "        }" ) << endl;
           out << QString( "    }" ) << endl;
-          QString prst = otherPortName( elm->inputs( ).at( 2 ) );
-          QString clr = otherPortName( elm->inputs( ).at( 3 ) );
+          QString prst = otherPortName( elm->input( 2 ) );
+          QString clr = otherPortName( elm->input( 3 ) );
           out << QString( "    if( !%1 || !%2) { " ).arg( prst ).arg( clr ) << endl;
           out << QString( "        %1 = !%2; //Preset" ).arg( firstOut ).arg( prst ) << endl;
           out << QString( "        %1 = !%2; //Clear" ).arg( secondOut ).arg( clr ) << endl;

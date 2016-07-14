@@ -6,8 +6,8 @@ Demux::Demux( QGraphicsItem *parent ) : GraphicElement( 2, 2, 2, 2, parent ) {
   updatePorts( );
   setPortName( "DEMUX" );
 
-  inputs( ).at( 0 )->setName( "in" );
-  inputs( ).at( 1 )->setName( "S" );
+  input( 0 )->setName( "in" );
+  input( 1 )->setName( "S" );
 
 
   output( 0 )->setName( "out0" );
@@ -16,15 +16,15 @@ Demux::Demux( QGraphicsItem *parent ) : GraphicElement( 2, 2, 2, 2, parent ) {
 }
 
 void Demux::updatePorts( ) {
-  inputs( ).at( 0 )->setPos( 16, 32 ); /* 0 */
-  inputs( ).at( 1 )->setPos( 32, 58 ); /* S */
+  input( 0 )->setPos( 16, 32 ); /* 0 */
+  input( 1 )->setPos( 32, 58 ); /* S */
   output( 0 )->setPos( 48, 32 - 12 ); /* Out */
   output( 1 )->setPos( 48, 32 + 12 ); /* Out */
 }
 
 void Demux::updateLogic( ) {
-  char in = inputs( ).at( 0 )->value( );
-  char choice = inputs( ).at( 1 )->value( );
+  char in = input( 0 )->value( );
+  char choice = input( 1 )->value( );
 
   char out0 = -1;
   char out1 = -1;

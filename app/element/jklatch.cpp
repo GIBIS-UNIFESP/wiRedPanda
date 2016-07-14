@@ -12,8 +12,8 @@ JKLatch::~JKLatch( ) {
 }
 
 void JKLatch::updatePorts( ) {
-  inputs( ).at( 0 )->setPos( topPosition( ), 13 );
-  inputs( ).at( 1 )->setPos( topPosition( ), 45 );
+  input( 0 )->setPos( topPosition( ), 13 );
+  input( 1 )->setPos( topPosition( ), 45 );
 
   output( 0 )->setPos( bottomPosition( ), 15 );
   output( 1 )->setPos( bottomPosition( ), 45 );
@@ -21,8 +21,8 @@ void JKLatch::updatePorts( ) {
 
 void JKLatch::updateLogic( ) {
   char res = outputs( ).first( )->value( );
-  char j = inputs( ).at( 0 )->value( );
-  char k = inputs( ).at( 1 )->value( );
+  char j = input( 0 )->value( );
+  char k = input( 1 )->value( );
   if( !isValid( ) ) {
     res = -1;
   }

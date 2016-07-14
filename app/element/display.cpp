@@ -38,48 +38,48 @@ void Display::updateLogic( ) {
 }
 
 void Display::updatePorts( ) {
-  inputs( ).at( 0 )->setPos( topPosition( ), 10 ); /* G */
-  inputs( ).at( 1 )->setPos( topPosition( ), 25 ); /* F */
-  inputs( ).at( 2 )->setPos( topPosition( ), 39 ); /* E */
-  inputs( ).at( 3 )->setPos( topPosition( ), 54 ); /* D */
-  inputs( ).at( 4 )->setPos( bottomPosition( ), 10 ); /* A */
-  inputs( ).at( 5 )->setPos( bottomPosition( ), 25 ); /* B */
-  inputs( ).at( 6 )->setPos( bottomPosition( ), 39 ); /* DP */
-  inputs( ).at( 7 )->setPos( bottomPosition( ), 54 ); /* C */
-  inputs( ).at( 0 )->setName( "G (mid)" );
-  inputs( ).at( 1 )->setName( "F (upper left)" );
-  inputs( ).at( 2 )->setName( "E (lower left)" );
-  inputs( ).at( 3 )->setName( "D (bottom)" );
-  inputs( ).at( 4 )->setName( "A (top)" );
-  inputs( ).at( 5 )->setName( "B (upper right)" );
-  inputs( ).at( 6 )->setName( "DP (dot)" );
-  inputs( ).at( 7 )->setName( "C (lower right)" );
+  input( 0 )->setPos( topPosition( ), 10 ); /* G */
+  input( 1 )->setPos( topPosition( ), 25 ); /* F */
+  input( 2 )->setPos( topPosition( ), 39 ); /* E */
+  input( 3 )->setPos( topPosition( ), 54 ); /* D */
+  input( 4 )->setPos( bottomPosition( ), 10 ); /* A */
+  input( 5 )->setPos( bottomPosition( ), 25 ); /* B */
+  input( 6 )->setPos( bottomPosition( ), 39 ); /* DP */
+  input( 7 )->setPos( bottomPosition( ), 54 ); /* C */
+  input( 0 )->setName( "G (mid)" );
+  input( 1 )->setName( "F (upper left)" );
+  input( 2 )->setName( "E (lower left)" );
+  input( 3 )->setName( "D (bottom)" );
+  input( 4 )->setName( "A (top)" );
+  input( 5 )->setName( "B (upper right)" );
+  input( 6 )->setName( "DP (dot)" );
+  input( 7 )->setName( "C (lower right)" );
 }
 
 void Display::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget ) {
   GraphicElement::paint( painter, option, widget );
-  if( inputs( ).at( 0 )->value( ) == true ) { /* G */
+  if( input( 0 )->value( ) == true ) { /* G */
     painter->drawPixmap( QPoint( 0, 0 ), g );
   }
-  if( inputs( ).at( 1 )->value( ) == true ) { /* F */
+  if( input( 1 )->value( ) == true ) { /* F */
     painter->drawPixmap( QPoint( 0, 0 ), f );
   }
-  if( inputs( ).at( 2 )->value( ) == true ) { /* E */
+  if( input( 2 )->value( ) == true ) { /* E */
     painter->drawPixmap( QPoint( 0, 0 ), e );
   }
-  if( inputs( ).at( 3 )->value( ) == true ) { /* D */
+  if( input( 3 )->value( ) == true ) { /* D */
     painter->drawPixmap( QPoint( 0, 0 ), d );
   }
-  if( inputs( ).at( 4 )->value( ) == true ) { /* A */
+  if( input( 4 )->value( ) == true ) { /* A */
     painter->drawPixmap( QPoint( 0, 0 ), a );
   }
-  if( inputs( ).at( 5 )->value( ) == true ) { /* B */
+  if( input( 5 )->value( ) == true ) { /* B */
     painter->drawPixmap( QPoint( 0, 0 ), b );
   }
-  if( inputs( ).at( 6 )->value( ) == true ) { /* DP (H) */
+  if( input( 6 )->value( ) == true ) { /* DP (H) */
     painter->drawPixmap( QPoint( 0, 0 ), h );
   }
-  if( inputs( ).at( 7 )->value( ) == true ) { /* C */
+  if( input( 7 )->value( ) == true ) { /* C */
     painter->drawPixmap( QPoint( 0, 0 ), c );
   }
 }

@@ -696,8 +696,7 @@ void TestElements::testBoxes( ) {
   QFileInfoList files = examplesDir.entryInfoList( entries );
   for( QFileInfo f : files ) {
 /*    qDebug( ) << "FILE: " << f.absoluteFilePath( ); */
-    Box *box = new Box( editor );
-    box->loadFile( f.absoluteFilePath( ) );
-    delete box;
+    Box box( editor );
+    box.loadFile( f.absoluteFilePath( ) );
   }
 }
