@@ -49,8 +49,8 @@ void JKFlipFlop::updateLogic( ) {
   }
   else {
     if( ( q1 == -1 ) || ( q2 == -1 ) ) {
-      q1 = 0;
-      q2 = 1;
+      q1 = output( 0 )->defaultValue( );
+      q2 = output( 1 )->defaultValue( );
     }
     char j = input( 0 )->value( );
     char clk = input( 1 )->value( ); /* Current lock */
