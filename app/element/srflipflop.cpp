@@ -7,19 +7,23 @@ SRFlipFlop::SRFlipFlop( QGraphicsItem *parent ) : GraphicElement( 5, 5, 2, 2, pa
   lastClk = false;
   setPortName( "FlipFlop SR" );
 
-  inputs( ).at( 0 )->setName( "S" );
-  inputs( ).at( 1 )->setName( "Clock" );
-  inputs( ).at( 2 )->setName( "R" );
-  inputs( ).at( 3 )->setName( "~Preset" );
-  inputs( ).at( 4 )->setName( "~Clear" );
+  input( 0 )->setName( "S" );
+  input( 1 )->setName( "Clock" );
+  input( 2 )->setName( "R" );
+  input( 3 )->setName( "~Preset" );
+  input( 4 )->setName( "~Clear" );
   output( 0 )->setName( "Q" );
   output( 1 )->setName( "~Q" );
-  inputs( ).at( 0 )->setRequired( false ); /* S */
-  inputs( ).at( 2 )->setRequired( false ); /* R */
-  inputs( ).at( 3 )->setRequired( false ); /* p */
-  inputs( ).at( 4 )->setRequired( false ); /* c */
-  inputs( ).at( 3 )->setDefaultValue( 1 );
-  inputs( ).at( 4 )->setDefaultValue( 1 );
+
+  output( 0 )->setDefaultValue( 0 );
+  output( 1 )->setDefaultValue( 1 );
+
+  input( 0 )->setRequired( false ); /* S */
+  input( 2 )->setRequired( false ); /* R */
+  input( 3 )->setRequired( false ); /* p */
+  input( 4 )->setRequired( false ); /* c */
+  input( 3 )->setDefaultValue( 1 );
+  input( 4 )->setDefaultValue( 1 );
 }
 
 SRFlipFlop::~SRFlipFlop( ) {
@@ -27,11 +31,11 @@ SRFlipFlop::~SRFlipFlop( ) {
 }
 
 void SRFlipFlop::updatePorts( ) {
-  inputs( ).at( 0 )->setPos( topPosition( ), 13 ); /* S */
-  inputs( ).at( 1 )->setPos( topPosition( ), 29 ); /* Clk */
-  inputs( ).at( 2 )->setPos( topPosition( ), 45 ); /* R */
-  inputs( ).at( 3 )->setPos( 32, topPosition( ) ); /* Preset */
-  inputs( ).at( 4 )->setPos( 32, bottomPosition( ) ); /* Clear */
+  input( 0 )->setPos( topPosition( ), 13 ); /* S */
+  input( 1 )->setPos( topPosition( ), 29 ); /* Clk */
+  input( 2 )->setPos( topPosition( ), 45 ); /* R */
+  input( 3 )->setPos( 32, topPosition( ) ); /* Preset */
+  input( 4 )->setPos( 32, bottomPosition( ) ); /* Clear */
 
   output( 0 )->setPos( bottomPosition( ), 15 ); /* Q */
   output( 1 )->setPos( bottomPosition( ), 45 ); /* ~Q */
@@ -47,14 +51,14 @@ void SRFlipFlop::updateLogic( ) {
   }
   else {
     if( q1 == -1 ) {
-      q1 = 0;
-      q2 = 1;
+      q1 = output( 0 )->defaultValue( );
+      q2 = output( 1 )->defaultValue( );
     }
-    char s = inputs( ).at( 0 )->value( );
-    char clk = inputs( ).at( 1 )->value( );
-    char r = inputs( ).at( 2 )->value( );
-    char prst = inputs( ).at( 3 )->value( );
-    char clr = inputs( ).at( 4 )->value( );
+    char s = input( 0 )->value( );
+    char clk = input( 1 )->value( );
+    char r = input( 2 )->value( );
+    char prst = input( 3 )->value( );
+    char clr = input( 4 )->value( );
     if( ( clk == 1 ) && ( lastClk == 0 ) ) { /* If Clock up */
       if( s && r ) { /* Not permitted */
         q1 = 1;

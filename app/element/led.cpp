@@ -13,8 +13,8 @@ Led::Led( QGraphicsItem *parent ) : GraphicElement( 1, 1, 0, 0, parent ) {
   setHasLabel( true );
   setPortName( "Led" );
 
-  inputs( ).at( 0 )->setRequired( false );
-  inputs( ).at( 0 )->setDefaultValue( 0 );
+  input( 0 )->setRequired( false );
+  input( 0 )->setDefaultValue( 0 );
 }
 
 Led::~Led( ) {

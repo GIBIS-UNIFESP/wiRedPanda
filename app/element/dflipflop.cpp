@@ -5,16 +5,20 @@ DFlipFlop::DFlipFlop( QGraphicsItem *parent ) : GraphicElement( 4, 4, 2, 2, pare
   setRotatable( false );
   updatePorts( );
   setPortName( "FlipFlop D" );
-  inputs( ).at( 0 )->setName( "Data" );
-  inputs( ).at( 1 )->setName( "Clock" );
-  inputs( ).at( 2 )->setName( "~Preset" );
-  inputs( ).at( 3 )->setName( "~Clear" );
+  input( 0 )->setName( "Data" );
+  input( 1 )->setName( "Clock" );
+  input( 2 )->setName( "~Preset" );
+  input( 3 )->setName( "~Clear" );
   output( 0 )->setName( "Q" );
   output( 1 )->setName( "~Q" );
-  inputs( ).at( 2 )->setRequired( false );
-  inputs( ).at( 3 )->setRequired( false );
-  inputs( ).at( 2 )->setDefaultValue( 1 );
-  inputs( ).at( 3 )->setDefaultValue( 1 );
+
+  output( 0 )->setDefaultValue( 0 );
+  output( 1 )->setDefaultValue( 1 );
+
+  input( 2 )->setRequired( false );
+  input( 3 )->setRequired( false );
+  input( 2 )->setDefaultValue( 1 );
+  input( 3 )->setDefaultValue( 1 );
   lastValue = false;
   lastClk = false;
 }
@@ -24,10 +28,10 @@ DFlipFlop::~DFlipFlop( ) {
 }
 
 void DFlipFlop::updatePorts( ) {
-  inputs( ).at( 0 )->setPos( topPosition( ), 13 ); /* Data */
-  inputs( ).at( 1 )->setPos( topPosition( ), 45 ); /* Clock */
-  inputs( ).at( 2 )->setPos( 32, topPosition( ) ); /* Preset */
-  inputs( ).at( 3 )->setPos( 32, bottomPosition( ) ); /* Clear */
+  input( 0 )->setPos( topPosition( ), 13 ); /* Data */
+  input( 1 )->setPos( topPosition( ), 45 ); /* Clock */
+  input( 2 )->setPos( 32, topPosition( ) ); /* Preset */
+  input( 3 )->setPos( 32, bottomPosition( ) ); /* Clear */
   output( 0 )->setPos( bottomPosition( ), 15 ); /* Q */
   output( 1 )->setPos( bottomPosition( ), 45 ); /* ~Q */
 }
@@ -41,13 +45,13 @@ void DFlipFlop::updateLogic( ) {
   }
   else {
     if( q1 == -1 ) {
-      q1 = 0;
-      q2 = 1;
+      q1 = output( 0 )->defaultValue( );
+      q2 = output( 1 )->defaultValue( );
     }
-    char data = inputs( ).at( 0 )->value( );
-    bool clk = inputs( ).at( 1 )->value( ); /* Current lock */
-    char prst = inputs( ).at( 2 )->value( );
-    char clr = inputs( ).at( 3 )->value( );
+    char data = input( 0 )->value( );
+    bool clk = input( 1 )->value( ); /* Current lock */
+    char prst = input( 2 )->value( );
+    char clr = input( 3 )->value( );
     if( ( clk == true ) && ( lastClk == false ) ) { /* If Clock up */
       q1 = lastValue; /* Output = Data */
       q2 = !lastValue;

@@ -5,8 +5,8 @@ TLatch::TLatch( QGraphicsItem *parent ) : GraphicElement( 2, 2, 2, 2, parent ) {
   setRotatable( false );
   updatePorts( );
   setPortName( "T Latch" );
-  inputs( ).at( 0 )->setName( "Toggle" );
-  inputs( ).at( 1 )->setName( "Enable" );
+  input( 0 )->setName( "Toggle" );
+  input( 1 )->setName( "Enable" );
   output( 0 )->setName( "Q" );
   output( 1 )->setName( "~Q" );
 }
@@ -16,8 +16,8 @@ TLatch::~TLatch( ) {
 }
 
 void TLatch::updatePorts( ) {
-  inputs( ).at( 0 )->setPos( topPosition( ), 13 ); /* T */
-  inputs( ).at( 1 )->setPos( topPosition( ), 45 ); /* Clock */
+  input( 0 )->setPos( topPosition( ), 13 ); /* T */
+  input( 1 )->setPos( topPosition( ), 45 ); /* Clock */
 
   output( 0 )->setPos( bottomPosition( ), 15 ); /* Q */
   output( 1 )->setPos( bottomPosition( ), 45 ); /* !Q */
@@ -32,8 +32,8 @@ void TLatch::updateLogic( ) {
     if( res == -1 ) {
       res = 0;
     }
-    char toggle = inputs( ).at( 0 )->value( );
-    char enable = inputs( ).at( 1 )->value( );
+    char toggle = input( 0 )->value( );
+    char enable = input( 1 )->value( );
     if( enable == 1 ) { /* If Enable */
       if( toggle == 1 ) { /* And T */
         res = !res;
