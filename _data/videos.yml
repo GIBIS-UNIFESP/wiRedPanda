@@ -1,5 +1,9 @@
 links:
-  - { url: '', title: ''}
-  - { url: '', title: '' }
-  - { url: '', title: '' }
-  - { url: '', title: '' }
+  - { id: '_VraeKXzxPY', title: 'Mastermind Game'}
+  - { id: 'lBwgb8nfnMI', title: 'Calculator' }
+  - { id: 'rgV-eJWG_1A', title: 'Elevator controller' }
+  - { id: '_zbECUEfMl4', title: 'Digital clock' }
+  - { id: 'Zwipcb2Y9LI', title: 'Genius Game' }
+  - { id: 'C_zxq3Rfgt4', title: 'Tetris Game' }
+  - { id: '7ZrzaaCME14', title: 'Guitar Panda Game' }
+  - { id: '5j_w0ku2ws8', title: 'Bowling Game' }
