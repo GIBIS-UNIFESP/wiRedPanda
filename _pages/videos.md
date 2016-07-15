@@ -2,6 +2,7 @@
 layout: inner
 title: Videos
 permalink: /videos/
+lead_text: There are some projects developed by the Digital Circuits class at UNIFESP
 ---
 {% for video in site.data.videos.links %}
 
