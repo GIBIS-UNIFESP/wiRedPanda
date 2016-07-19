@@ -13,18 +13,13 @@
    height="64px"
    id="svg2985"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
-   sodipodi:docname="WhiteLedOn.svg">
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="WhiteLedOn.svg"
+   inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/output/WhiteLedOn.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs2987">
-    <filter
-       inkscape:collect="always"
-       id="filter3892">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.475"
-         id="feGaussianBlur3894" />
-    </filter>
     <filter
        inkscape:collect="always"
        id="filter3764"
@@ -46,16 +41,16 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="7.7781746"
-     inkscape:cx="-14.894598"
-     inkscape:cy="31.993395"
+     inkscape:cx="22.774908"
+     inkscape:cy="41.764325"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      inkscape:window-width="1920"
-     inkscape:window-height="1017"
+     inkscape:window-height="1016"
      inkscape:window-x="0"
-     inkscape:window-y="22"
+     inkscape:window-y="28"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
@@ -79,17 +74,7 @@
      inkscape:groupmode="layer">
     <path
        sodipodi:type="arc"
-       style="opacity:0.81907893;fill:none;stroke:#856e6b;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3892)"
-       id="path2995-6"
-       sodipodi:cx="35"
-       sodipodi:cy="31.5"
-       sodipodi:rx="25"
-       sodipodi:ry="22.5"
-       d="m 60,31.5 a 25,22.5 0 1 1 -50,0 25,22.5 0 1 1 50,0 z"
-       transform="matrix(0.98181818,0,0,0.98181818,-2.3633636,6.4080001)" />
-    <path
-       sodipodi:type="arc"
-       style="opacity:0.81907893;fill:none;stroke:#a59290;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="opacity:0.81907893;fill:none;stroke:#9b9b9b;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="path2995"
        sodipodi:cx="35"
        sodipodi:cy="31.5"
@@ -99,7 +84,7 @@
        transform="matrix(0.98181818,0,0,0.98181818,-2.3636364,4.5272728)" />
     <path
        sodipodi:type="arc"
-       style="fill:#e1dada;fill-opacity:1;stroke:#e1dada;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:#dedede;fill-opacity:1;stroke:#e1dada;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="path2995-1"
        sodipodi:cx="35"
        sodipodi:cy="31.5"
@@ -107,25 +92,20 @@
        sodipodi:ry="22.5"
        d="m 60,31.5 a 25,22.5 0 1 1 -50,0 25,22.5 0 1 1 50,0 z"
        transform="matrix(0.98181818,0,0,0.98181818,-2.3636364,2.5272726)" />
-    <path
-       sodipodi:type="arc"
-       style="opacity:0.45394737000000002;fill:#e6e6e6;fill-opacity:1;stroke:none"
+    <ellipse
+       style="opacity:0.45394736;fill:#e6e6e6;fill-opacity:1;stroke:none"
        id="path2995-1-9"
-       sodipodi:cx="35"
-       sodipodi:cy="31.5"
-       sodipodi:rx="25"
-       sodipodi:ry="22.5"
-       d="m 60,31.5 a 25,22.5 0 1 1 -50,0 25,22.5 0 1 1 50,0 z"
-       transform="matrix(0.98181818,0,0,1.110383,-2.3636364,-4.4152303)" />
-    <path
-       sodipodi:type="arc"
+       cx="32"
+       cy="30.561834"
+       rx="24.545454"
+       ry="24.983618" />
+    <ellipse
        style="opacity:0.91118421;fill:#f7f7f7;fill-opacity:1;stroke:none;filter:url(#filter3764)"
        id="path2995-1-9-0"
-       sodipodi:cx="35"
-       sodipodi:cy="31.5"
-       sodipodi:rx="25"
-       sodipodi:ry="22.5"
-       d="m 60,31.5 a 25,22.5 0 1 1 -50,0 25,22.5 0 1 1 50,0 z"
-       transform="matrix(0.98181818,0,0,1.110383,-2.3693559,-3.2813404)" />
+       transform="matrix(0.98181818,0,0,1.110383,-2.3693559,-3.28134)"
+       cx="35"
+       cy="31.5"
+       rx="25"
+       ry="22.5" />
   </g>
 </svg>

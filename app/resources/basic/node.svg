@@ -15,7 +15,7 @@
    version="1.1"
    inkscape:version="0.91 r13725"
    sodipodi:docname="node.svg"
-   inkscape:export-filename="/home/lellis/projetos/wiRedPanda/app/resources/basic/node.png"
+   inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/basic/node.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -56,18 +56,18 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="6.7421875"
-     inkscape:cx="43.355799"
-     inkscape:cy="21.038421"
+     inkscape:cx="9.6872015"
+     inkscape:cy="32.310727"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1366"
-     inkscape:window-height="715"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
      inkscape:window-x="0"
-     inkscape:window-y="27"
+     inkscape:window-y="28"
      inkscape:window-maximized="1">
     <sodipodi:guide
        orientation="1,0"
@@ -91,16 +91,10 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
     <path
-       style="fill:#333333;stroke:none;stroke-opacity:1"
-       d="M 47.743424,31.933289 C 48.131236,42.14706 36.972595,50.356302 27.338982,46.979838 17.473313,44.330023 12.910785,31.248763 18.99439,23.040172 c 5.447121,-8.645377 19.291407,-9.135644 25.336433,-0.897238 2.198525,2.756234 3.421186,6.265187 3.412601,9.790355 z"
+       style="fill:#262626;fill-opacity:1;stroke:none;stroke-opacity:1"
+       d="m 41.993759,31.957645 c 0.246179,6.484708 -6.837208,11.696743 -12.952523,9.553031 -6.262622,-1.682363 -9.158867,-9.987635 -5.297059,-15.199257 3.457775,-5.488936 12.245981,-5.800206 16.083299,-0.569655 1.395601,1.749929 2.171733,3.977757 2.166283,6.215881 z"
        id="path3347"
        inkscape:connector-curvature="0" />
-    <circle
-       style="fill:#999999;stroke:none;stroke-opacity:1"
-       id="path4157"
-       cx="32"
-       cy="32"
-       r="10.679027" />
   </g>
   <g
      inkscape:groupmode="layer"

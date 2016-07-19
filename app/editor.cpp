@@ -35,7 +35,7 @@ Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ) {
   undoStack = new QUndoStack( this );
   scene = new Scene( this );
   /* 404552 */
-  scene->setBackgroundBrush( QBrush( QColor( "#404552" ) ) );
+  scene->setBackgroundBrush( QBrush( QColor( "#ffffe6" ) ) );
   install( scene );
   draggingElement = false;
   clear( );
@@ -73,9 +73,9 @@ void Editor::setEditedConn( QNEConnection *editedConn ) {
 
 void Editor::buildSelectionRect( ) {
   selectionRect = new QGraphicsRectItem( );
-  selectionRect->setBrush( Qt::NoBrush );
+  selectionRect->setBrush( QBrush( QColor(150, 120, 110, 80)) );
   selectionRect->setFlag( QGraphicsItem::ItemIsSelectable, false );
-  selectionRect->setPen( QPen( Qt::darkGray, 1.5, Qt::DotLine ) );
+  selectionRect->setPen( QPen( Qt::darkRed, 1.5, Qt::SolidLine ) );
   scene->addItem( selectionRect );
 }
 

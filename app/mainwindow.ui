@@ -94,7 +94,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>253</height>
+                   <height>252</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -136,7 +136,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>253</height>
+                   <height>252</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -178,7 +178,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>253</height>
+                   <height>252</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -220,7 +220,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>253</height>
+                   <height>252</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -320,7 +320,7 @@
                <x>0</x>
                <y>0</y>
                <width>228</width>
-               <height>296</height>
+               <height>297</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
@@ -408,7 +408,7 @@
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>20</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -824,11 +824,11 @@
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
+  <include location="resources/resources.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/resources.qrc"/>
-  <include location="resources/resources.qrc"/>
   <include location="resources/input/input.qrc"/>
+  <include location="resources/resources.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>

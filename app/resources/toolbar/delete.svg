@@ -17,7 +17,7 @@
    version="1.1"
    inkscape:version="0.91 r13725"
    sodipodi:docname="delete.svg"
-   inkscape:export-filename="/home/morales/git/wiRedPanda/app/resources/toolbar/delete.png"
+   inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/toolbar/delete.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -390,8 +390,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.6568542"
-     inkscape:cx="-1.2255101"
-     inkscape:cy="18.337513"
+     inkscape:cx="-38.967335"
+     inkscape:cy="17.98396"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
@@ -399,9 +399,9 @@
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:window-width="1920"
-     inkscape:window-height="1023"
+     inkscape:window-height="1016"
      inkscape:window-x="0"
-     inkscape:window-y="27"
+     inkscape:window-y="28"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
@@ -424,13 +424,9 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
     <path
-       inkscape:connector-curvature="0"
-       style="fill:#881c0c;fill-opacity:1;fill-rule:evenodd;stroke:#881c0c;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 8,9.5 18,24 -18,24 12,0 12,-16 12,16 12,0 -18,-24 18,-24 -12,0 -12,16 -12,-16 -12,0 z"
-       id="path4218-8" />
-    <path
-       style="fill:#bd2812;fill-rule:evenodd;stroke:#bd2812;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
-       d="M 8 8 L 26 32 L 8 56 L 20 56 L 32 40 L 44 56 L 56 56 L 38 32 L 56 8 L 44 8 L 32 24 L 20 8 L 8 8 z "
-       id="path4218" />
+       style="fill:#bd2812;fill-opacity:1;fill-rule:evenodd;stroke:#bd2812;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 8,8 26,32 8,56 20,56 32,40 44,56 56,56 38,32 56,8 44,8 32,24 20,8 8,8 Z"
+       id="path4218"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>
