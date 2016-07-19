@@ -13,31 +13,13 @@
    height="64px"
    id="svg2985"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
-   sodipodi:docname="WhiteLedOn.svg">
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="WhiteLedOff.svg"
+   inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/output/WhiteLedOff.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
-     id="defs2987">
-    <filter
-       inkscape:collect="always"
-       id="filter3892">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.475"
-         id="feGaussianBlur3894" />
-    </filter>
-    <filter
-       inkscape:collect="always"
-       id="filter3957"
-       x="-0.091077161"
-       width="1.1821543"
-       y="-0.10119685"
-       height="1.2023937">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="1.8974408"
-         id="feGaussianBlur3959" />
-    </filter>
-  </defs>
+     id="defs2987" />
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -45,17 +27,17 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="7.7781746"
-     inkscape:cx="8.3113613"
-     inkscape:cy="31.993395"
+     inkscape:zoom="5.5"
+     inkscape:cx="25.265719"
+     inkscape:cy="44.428348"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      inkscape:window-width="1920"
-     inkscape:window-height="1022"
+     inkscape:window-height="1016"
      inkscape:window-x="0"
-     inkscape:window-y="22"
+     inkscape:window-y="28"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
@@ -77,45 +59,26 @@
      id="layer1"
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
-    <path
-       sodipodi:type="arc"
-       style="opacity:0.81907893;fill:none;stroke:#856e6b;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3892)"
-       id="path2995-6"
-       sodipodi:cx="35"
-       sodipodi:cy="31.5"
-       sodipodi:rx="25"
-       sodipodi:ry="22.5"
-       d="m 60,31.5 a 25,22.5 0 1 1 -50,0 25,22.5 0 1 1 50,0 z"
-       transform="matrix(0.98181818,0,0,0.98181818,-2.3633636,6.4080001)" />
-    <path
-       sodipodi:type="arc"
-       style="opacity:0.81907893;fill:none;stroke:#a59290;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    <ellipse
+       style="opacity:1;fill:none;stroke:#1a1a1a;stroke-width:4.909091;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path2995"
-       sodipodi:cx="35"
-       sodipodi:cy="31.5"
-       sodipodi:rx="25"
-       sodipodi:ry="22.5"
-       d="m 60,31.5 a 25,22.5 0 1 1 -50,0 25,22.5 0 1 1 50,0 z"
-       transform="matrix(0.98181818,0,0,0.98181818,-2.3636364,4.5272728)" />
-    <path
-       sodipodi:type="arc"
-       style="fill:#e1dada;fill-opacity:1;stroke:#e1dada;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       cx="32"
+       cy="35.454544"
+       rx="24.545454"
+       ry="22.09091" />
+    <ellipse
+       style="opacity:0.99999999;fill:#323232;fill-opacity:1;stroke:#323232;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path2995-1"
-       sodipodi:cx="35"
-       sodipodi:cy="31.5"
-       sodipodi:rx="25"
-       sodipodi:ry="22.5"
-       d="m 60,31.5 a 25,22.5 0 1 1 -50,0 25,22.5 0 1 1 50,0 z"
-       transform="matrix(0.98181818,0,0,0.98181818,-2.3636364,2.5272726)" />
-    <path
-       sodipodi:type="arc"
-       style="opacity:0.45394737000000002;fill:#0b0b0b;fill-opacity:1;stroke:none"
+       cx="32"
+       cy="33.454544"
+       rx="24.545454"
+       ry="22.09091" />
+    <ellipse
+       style="opacity:0.99999999;fill:#585858;fill-opacity:1;stroke:none"
        id="path2995-1-9"
-       sodipodi:cx="35"
-       sodipodi:cy="31.5"
-       sodipodi:rx="25"
-       sodipodi:ry="22.5"
-       d="m 60,31.5 a 25,22.5 0 1 1 -50,0 25,22.5 0 1 1 50,0 z"
-       transform="matrix(0.98181818,0,0,1.110383,-2.3636364,-4.4152303)" />
+       cx="32"
+       cy="30.561834"
+       rx="24.545454"
+       ry="24.983618" />
   </g>
 </svg>

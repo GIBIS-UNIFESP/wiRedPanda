@@ -13,32 +13,13 @@
    height="64px"
    id="svg2985"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
-   sodipodi:docname="button off.svg">
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="buttonOff.svg"
+   inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/input/buttonOff.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
-     id="defs2987">
-    <filter
-       color-interpolation-filters="sRGB"
-       inkscape:collect="always"
-       id="filter3803"
-       x="-0.14888985"
-       width="1.2977797"
-       y="-0.16382276"
-       height="1.3276455">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="2.0453032"
-         id="feGaussianBlur3805" />
-    </filter>
-    <filter
-       inkscape:collect="always"
-       id="filter3806">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.50492194"
-         id="feGaussianBlur3808" />
-    </filter>
-  </defs>
+     id="defs2987" />
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -47,18 +28,18 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.6568545"
-     inkscape:cx="11.111143"
-     inkscape:cy="29.118363"
+     inkscape:cx="1.6535902"
+     inkscape:cy="28.76481"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1440"
-     inkscape:window-height="834"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
      inkscape:window-x="0"
-     inkscape:window-y="27"
+     inkscape:window-y="28"
      inkscape:window-maximized="1">
     <sodipodi:guide
        orientation="1,0"
@@ -73,7 +54,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -81,16 +62,6 @@
      id="layer1"
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
-    <path
-       sodipodi:type="arc"
-       style="opacity:0.80408164;fill:#060606;fill-opacity:1;stroke:none;filter:url(#filter3806)"
-       id="path3765-5"
-       sodipodi:cx="31.952387"
-       sodipodi:cy="49.018173"
-       sodipodi:rx="16.484426"
-       sodipodi:ry="14.981825"
-       d="m 48.436813,49.018173 a 16.484426,14.981825 0 1 1 -32.968853,0 16.484426,14.981825 0 1 1 32.968853,0 z"
-       transform="matrix(1.5227551,0,0,1.6484847,-16.651754,-43.500672)" />
     <path
        sodipodi:type="arc"
        style="fill:#a59290;fill-opacity:1;stroke:none"
@@ -140,15 +111,5 @@
        sodipodi:ry="14.981825"
        d="m 48.436813,49.018173 a 16.484426,14.981825 0 1 1 -32.968853,0 16.484426,14.981825 0 1 1 32.968853,0 z"
        transform="matrix(1.4569906,0,0,1.4560133,-14.556673,-49.184848)" />
-    <path
-       sodipodi:type="arc"
-       style="opacity:0.5;fill:#f65959;fill-opacity:1;stroke:none;filter:url(#filter3803)"
-       id="path3765-0"
-       sodipodi:cx="31.952387"
-       sodipodi:cy="49.018173"
-       sodipodi:rx="16.484426"
-       sodipodi:ry="14.981825"
-       d="m 48.436813,49.018173 a 16.484426,14.981825 0 1 1 -32.968853,0 16.484426,14.981825 0 1 1 32.968853,0 z"
-       transform="matrix(1.3358788,0,0,1.1552052,-10.707855,-31.75956)" />
   </g>
 </svg>

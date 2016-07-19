@@ -13,8 +13,11 @@
    height="64px"
    id="svg2985"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
-   sodipodi:docname="switch off.svg">
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="switchOff.svg"
+   inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/input/switchOff.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs2987">
     <filter
@@ -33,48 +36,6 @@
          in="SourceGraphic"
          operator="over" />
     </filter>
-    <filter
-       inkscape:collect="always"
-       id="filter3779"
-       x="-0.18417165"
-       width="1.3683433"
-       y="-0.13530343"
-       height="1.2706069">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="2.6009704"
-         id="feGaussianBlur3781" />
-    </filter>
-    <filter
-       color-interpolation-filters="sRGB"
-       inkscape:collect="always"
-       id="filter3779-9"
-       x="-0.18417165"
-       width="1.3683434"
-       y="-0.13530342"
-       height="1.2706069">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="2.6009704"
-         id="feGaussianBlur3781-6" />
-    </filter>
-    <filter
-       inkscape:collect="always"
-       id="filter3783">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.64108621"
-         id="feGaussianBlur3785" />
-    </filter>
-    <filter
-       color-interpolation-filters="sRGB"
-       inkscape:collect="always"
-       id="filter3783-4">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.64108621"
-         id="feGaussianBlur3785-1" />
-    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -83,19 +44,19 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="7.2329726"
-     inkscape:cx="5.9641934"
-     inkscape:cy="37.990282"
-     inkscape:current-layer="layer2"
+     inkscape:zoom="10.228968"
+     inkscape:cx="10.712915"
+     inkscape:cy="36.831699"
+     inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1440"
-     inkscape:window-height="900"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="28"
      inkscape:window-maximized="1">
     <sodipodi:guide
        orientation="1,0"
@@ -118,16 +79,7 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Layer"
-     style="display:inline">
-    <rect
-       style="opacity:0.80400002;fill:#060606;fill-opacity:1;stroke:none;filter:url(#filter3783-4)"
-       id="rect3901-8-4"
-       width="34"
-       height="46.135777"
-       x="15.038607"
-       y="13.325617"
-       rx="3.2608049" />
-  </g>
+     style="display:inline" />
   <g
      id="layer1"
      inkscape:label="Layer 1"
@@ -156,7 +108,7 @@
        height="19.098467"
        x="20.084112"
        y="33.204361"
-       rx="11.862928"
+       rx="0"
        ry="0" />
     <rect
        style="fill:#881c0c;fill-opacity:1;stroke:none"
@@ -165,7 +117,7 @@
        height="19.098492"
        x="20.084112"
        y="14.106295"
-       rx="4.6408911"
+       rx="0.14385965"
        ry="0" />
     <rect
        style="fill:#bd2812;fill-opacity:1;stroke:none"
@@ -174,7 +126,7 @@
        height="12.1673"
        x="20.084112"
        y="45.409023"
-       rx="4.6408911"
+       rx="0"
        ry="0" />
   </g>
 </svg>

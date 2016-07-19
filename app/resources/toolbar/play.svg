@@ -15,8 +15,11 @@
    height="64px"
    id="svg2989"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
-   sodipodi:docname="play.svg">
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="play.svg"
+   inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/toolbar/play.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs2991">
     <linearGradient
@@ -162,22 +165,6 @@
        r="14.760854"
        gradientTransform="matrix(1,0,0,0.79640729,0,-1.8881066)"
        gradientUnits="userSpaceOnUse" />
-    <filter
-       inkscape:collect="always"
-       id="filter3798">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.75047433"
-         id="feGaussianBlur3800" />
-    </filter>
-    <filter
-       inkscape:collect="always"
-       id="filter3799">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.63599518"
-         id="feGaussianBlur3801" />
-    </filter>
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient3803"
@@ -197,18 +184,18 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="8"
-     inkscape:cx="44.946143"
-     inkscape:cy="26.689597"
+     inkscape:cx="-3.428857"
+     inkscape:cy="26.189597"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1440"
-     inkscape:window-height="834"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
      inkscape:window-x="0"
-     inkscape:window-y="27"
+     inkscape:window-y="28"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
@@ -231,12 +218,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
     <path
-       style="opacity:0.8706896;fill:#400d06;fill-opacity:1;stroke:none;filter:url(#filter3798)"
-       d="m 7.125,31.476284 0,25.047432 50.000001,-25.047432"
-       id="path6319-2-2-1"
-       inkscape:connector-curvature="0" />
-    <path
-       style="fill:#ab311f;fill-opacity:1;stroke:none"
+       style="fill:#bd2812;fill-opacity:1;stroke:none"
        d="M 7,31.047431 7,6 57,31.047431"
        id="path6319-8"
        inkscape:connector-curvature="0" />

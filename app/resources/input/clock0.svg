@@ -13,8 +13,11 @@
    height="64px"
    id="svg2985"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
-   sodipodi:docname="clock 0.svg">
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="clock0.svg"
+   inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/input/clock0.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs2987">
     <filter
@@ -49,32 +52,6 @@
          in="SourceGraphic"
          operator="over" />
     </filter>
-    <filter
-       color-interpolation-filters="sRGB"
-       inkscape:collect="always"
-       id="filter3783-4">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.64108621"
-         id="feGaussianBlur3785-1" />
-    </filter>
-    <filter
-       inkscape:collect="always"
-       id="filter3795">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.54281195"
-         id="feGaussianBlur3797" />
-    </filter>
-    <filter
-       color-interpolation-filters="sRGB"
-       inkscape:collect="always"
-       id="filter3795-9">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.54281195"
-         id="feGaussianBlur3797-3" />
-    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -84,18 +61,18 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="7.9999996"
-     inkscape:cx="10.844064"
-     inkscape:cy="27.915966"
+     inkscape:cx="-7.5309369"
+     inkscape:cy="27.415966"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1440"
-     inkscape:window-height="834"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
      inkscape:window-x="0"
-     inkscape:window-y="27"
+     inkscape:window-y="28"
      inkscape:window-maximized="1">
     <sodipodi:guide
        orientation="1,0"
@@ -118,16 +95,7 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Layer"
-     style="display:inline">
-    <rect
-       style="opacity:0.80400002;fill:#060606;fill-opacity:1;stroke:#060606;stroke-width:2.32425332;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline;filter:url(#filter3795-9)"
-       id="rect3768-6-5"
-       width="50.675747"
-       height="17.175747"
-       x="6.787128"
-       y="44.287128"
-       rx="5.9730039" />
-  </g>
+     style="display:inline" />
   <g
      id="layer1"
      inkscape:label="Layer 1"
@@ -166,22 +134,22 @@
        y="1.6602486"
        rx="5.6005764" />
     <rect
-       style="fill:#ede53c;fill-opacity:1;stroke:#ede53c;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3892)"
+       style="fill:#ede53c;fill-opacity:1;stroke:#ede53c;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter3892)"
        id="rect3824"
        width="11.755651"
        height="10.606602"
        x="14.5"
        y="32.538948"
-       rx="5.4840212"
+       rx="0"
        ry="0" />
     <rect
-       style="fill:#3b380c;fill-opacity:1;stroke:#3b3805;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:#3b380c;fill-opacity:1;stroke:#3b3805;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect3824-0"
        width="11.755651"
        height="10.606602"
        x="37.743999"
        y="32.539394"
-       rx="5.4840212"
+       rx="0"
        ry="0" />
   </g>
 </svg>
