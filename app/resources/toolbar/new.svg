@@ -17,9 +17,9 @@
    version="1.1"
    inkscape:version="0.91 r13725"
    sodipodi:docname="new.svg"
-   inkscape:export-filename="/home/morales/git/wiRedPanda/app/resources/toolbar/new.png"
-   inkscape:export-xdpi="300"
-   inkscape:export-ydpi="300">
+   inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/toolbar/new.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs2991">
     <linearGradient
@@ -129,8 +129,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="8"
-     inkscape:cx="-8.546385"
-     inkscape:cy="33.847327"
+     inkscape:cx="14.766115"
+     inkscape:cy="33.597327"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
@@ -138,9 +138,9 @@
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:window-width="1920"
-     inkscape:window-height="1023"
+     inkscape:window-height="1016"
      inkscape:window-x="0"
-     inkscape:window-y="27"
+     inkscape:window-y="28"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"

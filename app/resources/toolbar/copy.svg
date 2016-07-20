@@ -15,8 +15,11 @@
    height="64px"
    id="svg2989"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
-   sodipodi:docname="copy.svg">
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="copy.svg"
+   inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/toolbar/copy.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs2991">
     <linearGradient
@@ -117,23 +120,6 @@
        y2="27.230448"
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(0.33330688,0,0,1,-68.434099,-8.2304478)" />
-    <filter
-       inkscape:collect="always"
-       id="filter3793">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="1.1211637"
-         id="feGaussianBlur3795" />
-    </filter>
-    <filter
-       color-interpolation-filters="sRGB"
-       inkscape:collect="always"
-       id="filter3793-1">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="1.1211637"
-         id="feGaussianBlur3795-8" />
-    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -142,9 +128,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4"
-     inkscape:cx="-7.1369368"
-     inkscape:cy="63.016667"
+     inkscape:zoom="5.6568542"
+     inkscape:cx="-34.509443"
+     inkscape:cy="66.553464"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
@@ -152,9 +138,9 @@
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:window-width="1920"
-     inkscape:window-height="1019"
+     inkscape:window-height="1016"
      inkscape:window-x="0"
-     inkscape:window-y="22"
+     inkscape:window-y="28"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
@@ -176,8 +162,31 @@
      id="layer1"
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
+    <path
+       style="fill:#ffffff;stroke:#4e4e4e;stroke-width:3.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;fill-opacity:1"
+       d="m 17.45,11.05 0,-4.0000005 35,0 0,46.0000005 -4,0"
+       id="path3783"
+       inkscape:connector-curvature="0" />
     <rect
-       style="fill:none;fill-opacity:1;stroke:#090201;stroke-width:3.59180570000000010;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4160"
+       width="8.9508905"
+       height="11.313708"
+       x="15.68"
+       y="10.778953"
+       rx="0"
+       ry="0" />
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4160-3"
+       width="8.9508905"
+       height="11.313708"
+       x="39.805805"
+       y="43.501293"
+       rx="0"
+       ry="0" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#4e4e4e;stroke-width:3.5918057;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="rect6220-0-5"
        width="34.882317"
        height="45.657734"
@@ -185,10 +194,5 @@
        y="13.242406"
        rx="0.19669275"
        ry="1.4325836" />
-    <path
-       style="fill:none;stroke:#000000;stroke-width:3.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 17.45,11.05 0,-4.0000005 35,0 0,46.0000005 -4,0"
-       id="path3783"
-       inkscape:connector-curvature="0" />
   </g>
 </svg>
