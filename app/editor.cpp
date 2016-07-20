@@ -73,9 +73,9 @@ void Editor::setEditedConn( QNEConnection *editedConn ) {
 
 void Editor::buildSelectionRect( ) {
   selectionRect = new QGraphicsRectItem( );
-  selectionRect->setBrush( QBrush( QColor(150, 120, 110, 80)) );
+  selectionRect->setBrush( QBrush( QColor(175, 0, 0, 80)) );
   selectionRect->setFlag( QGraphicsItem::ItemIsSelectable, false );
-  selectionRect->setPen( QPen( Qt::darkRed, 1.5, Qt::SolidLine ) );
+  selectionRect->setPen( QPen( QColor(175, 0, 0, 255), 1, Qt::SolidLine ) );
   scene->addItem( selectionRect );
 }
 
