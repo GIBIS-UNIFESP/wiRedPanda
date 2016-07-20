@@ -259,9 +259,9 @@ void GraphicElement::paint( QPainter *painter, const QStyleOptionGraphicsItem *o
   Q_UNUSED( widget )
   painter->setClipRect( option->exposedRect );
   if( isSelected( ) ) {
-    painter->setBrush( Qt::darkGray );
-    painter->setPen( QPen( Qt::black ) );
-    painter->drawRoundedRect( boundingRect( ), 16, 16 );
+    painter->setBrush(  QColor(175, 0, 0, 80) );
+    painter->setPen( QPen( QColor(175, 0, 0, 255), 0.5, Qt::SolidLine ) );
+    painter->drawRoundedRect( boundingRect( ), 5, 5 );
   }
   painter->drawPixmap( QPoint( 0, 0 ), getPixmap( ) );
 }
