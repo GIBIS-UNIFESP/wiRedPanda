@@ -15,7 +15,7 @@
    version="1.1"
    inkscape:version="0.91 r13725"
    sodipodi:docname="mux.svg"
-   inkscape:export-filename="C:\Users\Lucas\Documents\GitHub\wiRedPanda\app\resources\basic\mux.png"
+   inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/basic/mux.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -56,8 +56,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="8.1206794"
-     inkscape:cx="42.152658"
-     inkscape:cy="30.225247"
+     inkscape:cx="15.861754"
+     inkscape:cy="29.978962"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:document-units="px"
@@ -65,9 +65,9 @@
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:window-width="1920"
-     inkscape:window-height="1017"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:window-height="1016"
+     inkscape:window-x="0"
+     inkscape:window-y="28"
      inkscape:window-maximized="1">
     <sodipodi:guide
        orientation="1,0"
@@ -92,7 +92,7 @@
      inkscape:groupmode="layer">
     <g
        id="g4147"
-       transform="matrix(1.0308495,0,0,0.83276793,-0.98718394,5.3514267)">
+       transform="matrix(1.0308495,0,0,0.83276793,-0.9871849,5.4719193)">
       <path
          style="fill:#262626;fill-opacity:1;fill-rule:evenodd;stroke:#262626;stroke-width:5.0999999;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 21.935546,5.8749994 0.125,52.2499966 20.003907,-8.624999 0,-34.749998 z"
@@ -103,6 +103,23 @@
          style="fill:#fcfcfc;fill-opacity:1;fill-rule:evenodd;stroke:#fcfcfc;stroke-width:3.53897715;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 25.711297,12.4215 0.07811,39.157001 12.499295,-5.045811 0,-29.119008 z"
          id="path4159-8"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="ccccc" />
+    </g>
+    <g
+       id="g4147-3"
+       transform="matrix(0.83237854,0,0,0.67243391,5.3638861,10.602608)"
+       style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1">
+      <path
+         style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:5.0999999;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 21.935546,5.8749994 0.125,52.2499966 20.003907,-8.624999 0,-34.749998 z"
+         id="path4159-6"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="ccccc" />
+      <path
+         style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:3.53897715;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 25.711297,12.4215 0.07811,39.157001 12.499295,-5.045811 0,-29.119008 z"
+         id="path4159-8-7"
          inkscape:connector-curvature="0"
          sodipodi:nodetypes="ccccc" />
     </g>
