@@ -14,7 +14,10 @@
    id="svg2985"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="counter_on.svg">
+   sodipodi:docname="counter_on.svg"
+   inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/output/counter/counter_on.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs2987">
     <filter
@@ -49,14 +52,6 @@
          in="SourceGraphic"
          operator="over" />
     </filter>
-    <filter
-       inkscape:collect="always"
-       id="filter3817">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.87586823"
-         id="feGaussianBlur3819" />
-    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -66,18 +61,18 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="7.9999996"
-     inkscape:cx="4.602493"
-     inkscape:cy="35.353388"
+     inkscape:cx="-2.0850073"
+     inkscape:cy="35.103388"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1600"
-     inkscape:window-height="872"
-     inkscape:window-x="1920"
-     inkscape:window-y="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
+     inkscape:window-x="0"
+     inkscape:window-y="28"
      inkscape:window-maximized="1">
     <sodipodi:guide
        orientation="1,0"
@@ -92,7 +87,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -101,21 +96,12 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
     <rect
-       style="fill:#0a1404;fill-opacity:1;stroke:#0a1404;stroke-width:2.9146266;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3817)"
-       id="rect3917-7-2"
-       width="38.887859"
-       height="48.698963"
-       x="12.420071"
-       y="9.8861675"
-       rx="3.4471457"
-       ry="2.7400389" />
-    <rect
-       style="fill:#0a1404;fill-opacity:1;stroke:#0a1404;stroke-width:2.91462660000000007;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:#0a1404;fill-opacity:1;stroke:#0a1404;stroke-width:2.9146266;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect3917-7"
        width="38.887859"
        height="48.698963"
        x="12.420071"
-       y="9.8861685"
+       y="9.8861675"
        rx="3.4471457"
        ry="2.7400389" />
     <rect
