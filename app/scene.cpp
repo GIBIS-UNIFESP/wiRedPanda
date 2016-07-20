@@ -25,7 +25,7 @@ int Scene::gridSize( ) const {
 void Scene::drawBackground( QPainter *painter, const QRectF &rect ) {
   painter->setRenderHint( QPainter::Antialiasing, true );
   QGraphicsScene::drawBackground( painter, rect );
-  QColor blackColor( Qt::black );
+  QColor blackColor( Qt::darkGray );
   QPen pen( blackColor );
   painter->setPen( pen );
   qreal left = int( rect.left( ) ) - ( int( rect.left( ) ) % m_gridSize );
