@@ -15,7 +15,10 @@
    version="1.1"
    inkscape:version="0.91 r13725"
    viewBox="0 0 64 64"
-   sodipodi:docname="undo.svg">
+   sodipodi:docname="undo.svg"
+   inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/toolbar/undo.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs4960" />
   <sodipodi:namedview
@@ -26,16 +29,16 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="4.9202844"
-     inkscape:cx="-17.747691"
-     inkscape:cy="55.800561"
+     inkscape:cx="-36.750658"
+     inkscape:cy="55.39408"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      inkscape:window-width="1920"
-     inkscape:window-height="1023"
+     inkscape:window-height="1016"
      inkscape:window-x="0"
-     inkscape:window-y="27"
+     inkscape:window-y="28"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
@@ -58,7 +61,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
     <path
-       style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:8.2287569;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:1;fill:#4e4e4e;fill-opacity:1;stroke:none;stroke-width:8.2287569;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 7,8.7485766 0,23.7682594 23.768259,0 -8.445778,-8.445778 A 14.260955,14.260957 0 0 1 33.231741,18.970786 14.260955,14.260957 0 0 1 47.492696,33.231741 14.260955,14.260957 0 0 1 33.231741,47.492696 14.260955,14.260957 0 0 1 21.539489,41.364941 l -6.786952,6.786952 A 23.768259,23.768261 0 0 0 33.231741,57 23.768259,23.768261 0 0 0 57,33.231741 23.768259,23.768261 0 0 0 33.231741,9.4634812 23.768259,23.768261 0 0 0 15.600521,17.349096 L 7,8.7485766 Z"
        id="path5524"
        inkscape:connector-curvature="0" />
