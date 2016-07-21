@@ -17,9 +17,12 @@ public:
   QVector< GraphicElement* > getElements( );
   QVector< GraphicElement* > selectedElements( );
 
+  void setDots(const QPen & dots);
+
 protected:
   void drawBackground( QPainter *painter, const QRectF &rect );
   int m_gridSize;
+  QPen m_dots;
 };
 
 #endif /* SCENE_H */
