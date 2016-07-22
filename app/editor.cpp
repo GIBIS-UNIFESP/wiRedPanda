@@ -34,8 +34,13 @@ Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ) {
   _editedConn_id = 0;
   undoStack = new QUndoStack( this );
   scene = new Scene( this );
-  /* 404552 */
+
   scene->setBackgroundBrush( QBrush( QColor( "#ffffe6" ) ) );
+  scene->setDots(QPen( Qt::darkGray ));
+
+//  scene->setBackgroundBrush( QBrush( QColor( "#404552" ) ) );
+//  scene->setDots(QPen( Qt::black ));
+
   install( scene );
   draggingElement = false;
   clear( );
