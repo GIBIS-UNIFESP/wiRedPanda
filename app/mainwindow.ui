@@ -425,6 +425,10 @@
      <property name="title">
       <string>Recent files:</string>
      </property>
+     <property name="icon">
+      <iconset resource="resources/toolbar/toolbar.qrc">
+       <normaloff>:/toolbar/recentFiles.png</normaloff>:/toolbar/recentFiles.png</iconset>
+     </property>
      <addaction name="separator"/>
     </widget>
     <addaction name="actionNew"/>
@@ -522,6 +526,10 @@
    </property>
   </action>
   <action name="actionSave_As">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/save.png</normaloff>:/toolbar/save.png</iconset>
+   </property>
    <property name="text">
     <string>Save &amp;As...</string>
    </property>
@@ -621,6 +629,10 @@
    <property name="checked">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/wires.png</normaloff>:/toolbar/wires.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Wires</string>
    </property>
@@ -635,6 +647,10 @@
    <property name="checked">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="resources/basic/basic.qrc">
+     <normaloff>:/basic/nor.png</normaloff>:/basic/nor.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Gates</string>
    </property>
@@ -643,6 +659,10 @@
    </property>
   </action>
   <action name="actionAbout">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/help.png</normaloff>:/toolbar/help.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;About</string>
    </property>
@@ -683,11 +703,19 @@
    </property>
   </action>
   <action name="actionAbout_Qt">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/helpQt.png</normaloff>:/toolbar/helpQt.png</iconset>
+   </property>
    <property name="text">
     <string>About Qt</string>
    </property>
   </action>
   <action name="actionSelect_all">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/selectAll.png</normaloff>:/toolbar/selectAll.png</iconset>
+   </property>
    <property name="text">
     <string>Select all</string>
    </property>
@@ -708,11 +736,19 @@
    </property>
   </action>
   <action name="actionReload_File">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/reloadFile.png</normaloff>:/toolbar/reloadFile.png</iconset>
+   </property>
    <property name="text">
     <string>Reload File</string>
    </property>
   </action>
   <action name="actionExport_to_Arduino">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/arduino.png</normaloff>:/toolbar/arduino.png</iconset>
+   </property>
    <property name="text">
     <string>Export to Arduino</string>
    </property>
@@ -730,16 +766,28 @@
    </property>
   </action>
   <action name="actionPrint">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/pdf.png</normaloff>:/toolbar/pdf.png</iconset>
+   </property>
    <property name="text">
     <string>Export to PDF</string>
    </property>
   </action>
   <action name="actionEnglish">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/usa.png</normaloff>:/toolbar/usa.png</iconset>
+   </property>
    <property name="text">
     <string>English</string>
    </property>
   </action>
   <action name="actionPortuguese">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/brasil.png</normaloff>:/toolbar/brasil.png</iconset>
+   </property>
    <property name="text">
     <string>Portuguese</string>
    </property>
@@ -764,6 +812,10 @@
    </property>
   </action>
   <action name="actionRename">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/rename.png</normaloff>:/toolbar/rename.png</iconset>
+   </property>
    <property name="text">
     <string>Rename</string>
    </property>
@@ -784,6 +836,10 @@
    </property>
   </action>
   <action name="actionClear_selection">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/cleanSelection.png</normaloff>:/toolbar/cleanSelection.png</iconset>
+   </property>
    <property name="text">
     <string>Clear selection</string>
    </property>
@@ -794,6 +850,10 @@
   <action name="actionFast_Mode">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/fast.png</normaloff>:/toolbar/fast.png</iconset>
    </property>
    <property name="text">
     <string>Fast Mode</string>
@@ -825,11 +885,13 @@
  </tabstops>
  <resources>
   <include location="resources/resources.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
   <include location="resources/input/input.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/resources.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>
 </ui>
