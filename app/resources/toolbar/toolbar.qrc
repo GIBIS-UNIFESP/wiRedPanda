@@ -31,5 +31,6 @@
         <file>selectAll.png</file>
         <file>usa.png</file>
         <file>wires.png</file>
+        <file>exit.png</file>
     </qresource>
 </RCC>

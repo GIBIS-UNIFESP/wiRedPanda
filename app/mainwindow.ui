@@ -671,6 +671,10 @@
    </property>
   </action>
   <action name="actionExit">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/exit.png</normaloff>:/toolbar/exit.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Exit</string>
    </property>
@@ -884,14 +888,14 @@
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/resources.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/basic/basic.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/resources.qrc"/>
+  <include location="resources/resources.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>
 </ui>
