@@ -18,5 +18,18 @@
         <file>zoomOut.png</file>
         <file>zoomIn.png</file>
         <file>zoomReset.png</file>
+        <file>arduino.png</file>
+        <file>brasil.png</file>
+        <file>cleanSelection.png</file>
+        <file>fast.png</file>
+        <file>help.png</file>
+        <file>helpQt.png</file>
+        <file>pdf.png</file>
+        <file>recentFiles.png</file>
+        <file>reloadFile.png</file>
+        <file>rename.png</file>
+        <file>selectAll.png</file>
+        <file>usa.png</file>
+        <file>wires.png</file>
     </qresource>
 </RCC>
