@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg:svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64"
+   height="64"
+   id="svg4716"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   viewBox="0 0 64 64"
+   sodipodi:docname="arduino.svg"
+   inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/toolbar/arduino.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <svg:defs
+     id="defs4718" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="7.7781745"
+     inkscape:cx="-13.082183"
+     inkscape:cy="44.895129"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:document-units="px"
+     inkscape:grid-bbox="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
+     inkscape:window-x="0"
+     inkscape:window-y="28"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid6019" />
+  </sodipodi:namedview>
+  <svg:metadata
+     id="metadata4721">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </svg:metadata>
+  <svg:g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer">
+    <svg:g
+       transform="matrix(0.06656599,0,0,0.06656599,8.1028103,21.352172)"
+       style="fill:none;stroke:#00979c;stroke-width:60;stroke-opacity:1"
+       id="g4">
+      <svg:path
+         inkscape:connector-curvature="0"
+         d="m 174,30 a 145.54455,140 0 0 0 0,280 C 364,320 344,30 544,30 a 145.54455,140 0 0 1 0,280 C 354,320 374,30 174,30"
+         id="path6"
+         style="stroke:#00979c;stroke-opacity:1" />
+    </svg:g>
+    <svg:g
+       font-size="167"
+       id="g8"
+       transform="matrix(0.06656599,0,0,0.06656599,8.1028103,22.017822)"
+       style="font-size:167px;font-family:sans-serif;text-anchor:middle;fill:#00979c;stroke:#00979c;stroke-width:20;stroke-opacity:1">
+      <svg:g
+         id="text10"
+         style="stroke:#00979c;stroke-opacity:1">
+        <svg:path
+           inkscape:connector-curvature="0"
+           d="m 528.06885,194.67432 0,-32.78028 -32.53565,0 0,-13.69922 32.53565,0 0,-32.53564 13.8623,0 0,32.53564 32.53565,0 0,13.69922 -32.53565,0 0,32.78028 z"
+           id="path3075"
+           style="stroke:#00979c;stroke-opacity:1" />
+      </svg:g>
+      <svg:text
+         x="181"
+         y="218"
+         dy="0"
+         id="text12"
+         style="stroke:#00979c;stroke-opacity:1">
+        <ndash />
+      </svg:text>
+    </svg:g>
+    <svg:g
+       transform="matrix(0.06656599,0,0,0.06656599,8.1028103,21.352172)"
+       style="font-size:40px;font-family:Arial;text-anchor:middle;fill:#00979c;fill-opacity:1;stroke:#00979c;stroke-opacity:1"
+       font-size="40"
+       id="g14">
+      <svg:g
+         id="text16"
+         style="fill:#00979c;fill-opacity:1;stroke:#00979c;stroke-opacity:1">
+        <svg:path
+           inkscape:connector-curvature="0"
+           d="m 681.55078,29.285156 0,-13.554687 -5.15625,0 0,-2.363281 13.00781,0 0,2.363281 -5.19531,0 0,13.554687 z m 9.62891,0 0,-15.917968 3.90625,0 4.02343,12.714843 3.88672,-12.714843 3.82813,0 0,15.917968 -2.42188,0 0,-13.359375 -4.10156,13.359375 -2.40234,0 -4.27735,-13.554687 0,13.554687 z"
+           id="path3072"
+           style="fill:#00979c;fill-opacity:1;stroke:#00979c;stroke-opacity:1" />
+      </svg:g>
+    </svg:g>
+    <svg:g
+       font-size="167"
+       id="g8-1"
+       transform="matrix(0.06656599,0,0,0.06656599,-16.246661,21.387295)"
+       style="font-size:167px;font-family:sans-serif;text-anchor:middle;fill:#00979c;stroke:#00979c;stroke-width:20;stroke-opacity:1">
+      <svg:g
+         transform="scale(1.5645974,0.63914206)"
+         style="font-size:197.21893311px;stroke:#00979c;stroke-width:23.61903381;stroke-opacity:1"
+         id="text10-7">
+        <svg:path
+           inkscape:connector-curvature="0"
+           d="m 321.41756,266.30877 0,-17.43 53.25297,0 0,17.43 z"
+           style="font-size:197.21893311px;stroke:#00979c;stroke-width:23.61903381;stroke-opacity:1"
+           id="path3078" />
+      </svg:g>
+      <svg:g
+         id="text12-4"
+         style="stroke:#00979c;stroke-opacity:1" />
+    </svg:g>
+  </svg:g>
+</svg:svg>
