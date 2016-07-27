@@ -32,6 +32,7 @@ GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz,
   label->setFont( font );
   label->setPos( 64, 30 );
   label->setParentItem( this );
+  label->setDefaultTextColor(Qt::white);
   m_bottomPosition = 64;
   m_topPosition = 0;
   m_minInputSz = minInputSz;
