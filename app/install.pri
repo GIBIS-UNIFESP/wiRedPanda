@@ -10,10 +10,13 @@ unix{
   DEFINES += DATADIR=\\\"$$DATADIR\\\" PKGDATADIR=\\\"$$PKGDATADIR\\\"
 
   #MAKE INSTALL
-  INSTALLS += target desktop mime icon26 icon32 icon48 icon64 icon128 fileIcon26 fileIcon32 fileIcon48 fileIcon64 fileIcon128 postinst
+  INSTALLS += target shell desktop mime icon26 icon32 icon48 icon64 icon128 fileIcon26 fileIcon32 fileIcon48 fileIcon64 fileIcon128 postinst
 
   target.path = $$BINDIR
-  target.files += $${PWD}/resources/wpanda.sh $${TARGET}
+
+
+  shell.path = $$BINDIR
+  shell.files = $${PWD}/resources/wpanda.sh
 
   desktop.path = $$DATADIR/applications
   desktop.files += resources/$${TARGET}.desktop
