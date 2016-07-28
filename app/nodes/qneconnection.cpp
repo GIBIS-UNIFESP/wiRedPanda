@@ -174,7 +174,7 @@ void QNEConnection::setStatus( const Status &status ) {
   m_status = status;
   switch( status ) {
       case Inactive: {
-      setPen( QPen( Qt::black, 3 ) );
+      setPen( QPen( Qt::darkGreen, 3 ) );
       break;
     }
       case Active: {
@@ -192,7 +192,7 @@ void QNEConnection::paint( QPainter *painter, const QStyleOptionGraphicsItem *op
   painter->setClipRect( option->exposedRect );
 
   if( isSelected( ) ) {
-    painter->setPen( QPen( Qt::darkGreen, 5 ) );
+    painter->setPen( QPen( Qt::darkYellow, 5 ) );
   }
   else {
     painter->setPen( pen( ) );
