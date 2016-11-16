@@ -38,8 +38,8 @@ Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ) {
   scene->setBackgroundBrush( QBrush( QColor( "#ffffe6" ) ) );
   scene->setDots(QPen( Qt::darkGray ));
 
-  scene->setBackgroundBrush( QBrush( QColor( "#404552" ) ) );
-  scene->setDots(QPen( Qt::black ));
+//  scene->setBackgroundBrush( QBrush( QColor( "#404552" ) ) );
+//  scene->setDots(QPen( Qt::black ));
 
   install( scene );
   draggingElement = false;
