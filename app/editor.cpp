@@ -38,8 +38,8 @@ Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ) {
   scene->setBackgroundBrush( QBrush( QColor( "#ffffe6" ) ) );
   scene->setDots(QPen( Qt::darkGray ));
 
-  scene->setBackgroundBrush( QBrush( QColor( "#404552" ) ) );
-  scene->setDots(QPen( Qt::black ));
+//  scene->setBackgroundBrush( QBrush( QColor( "#404552" ) ) );
+//  scene->setDots(QPen( Qt::black ));
 
   install( scene );
   draggingElement = false;
@@ -402,16 +402,12 @@ void Editor::handleHoverPort( QNEPort *port ) {
     if( editedConn && editedConn->port1( ) && ( editedConn->port1( )->isOutput( ) == port->isOutput( ) ) ) {
       QApplication::setOverrideCursor( QCursor( Qt::ForbiddenCursor ) );
     }
-    else {
-      port->hoverEnter( );
-    }
   }
 }
 
 void Editor::releaseHoverPort( ) {
   QNEPort *hoverPort = getHoverPort( );
   if( hoverPort ) {
-    hoverPort->hoverLeave( );
     setHoverPort( nullptr );
     QApplication::setOverrideCursor( QCursor( ) );
   }
