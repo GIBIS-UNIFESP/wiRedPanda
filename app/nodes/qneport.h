@@ -81,9 +81,6 @@ public:
   QBrush currentBrush( ) const;
   void setCurrentBrush( const QBrush &currentBrush );
 
-  void hoverEnter( );
-  void hoverLeave( );
-
   int defaultValue( ) const;
   void setDefaultValue( int defaultValue );
 
@@ -115,6 +112,8 @@ private:
   /* QGraphicsItem interface */
 protected:
   void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
+  void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
+  void hoverMoveEvent(QGraphicsSceneHoverEvent * event);
 };
 
 #endif /* QNEPORT_H */

@@ -87,7 +87,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 
   connect( rfController, &RecentFilesController::recentFilesUpdated, this, &MainWindow::updateRecentFileActions );
 
-//  QApplication::setStyle( QStyleFactory::create( "Fusion" ) );
+  QApplication::setStyle( QStyleFactory::create( "Fusion" ) );
 
   ui->actionPlay->setChecked( true );
 

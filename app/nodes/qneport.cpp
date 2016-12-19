@@ -30,6 +30,7 @@
 #include <graphicelement.h>
 
 #include <QCursor>
+#include <QDebug>
 #include <QPen>
 #include <iostream>
 
@@ -289,17 +290,17 @@ void QNEPort::setGraphicElement( GraphicElement *graphicElement ) {
   m_graphicElement = graphicElement;
 }
 
-void QNEPort::hoverEnter( ) {
-  setBrush( QBrush( Qt::yellow ) );
-  update( );
-}
-
-void QNEPort::hoverLeave( ) {
+void QNEPort::hoverLeaveEvent( QGraphicsSceneHoverEvent* ) {
   setBrush( currentBrush( ) );
   update( );
 }
 
+void QNEPort::hoverEnterEvent( QGraphicsSceneHoverEvent *event ) {
+  setBrush( QBrush( Qt::yellow ) );
+  update( );
+}
 
-void QNEPort::hoverLeaveEvent( QGraphicsSceneHoverEvent * ) {
-  hoverLeave( );
+void QNEPort::hoverMoveEvent( QGraphicsSceneHoverEvent *event ) {
+  setBrush( QBrush( Qt::yellow ) );
+  update( );
 }
