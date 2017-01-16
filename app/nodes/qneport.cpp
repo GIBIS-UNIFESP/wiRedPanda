@@ -295,12 +295,12 @@ void QNEPort::hoverLeaveEvent( QGraphicsSceneHoverEvent* ) {
   update( );
 }
 
-void QNEPort::hoverEnterEvent( QGraphicsSceneHoverEvent *event ) {
+void QNEPort::hoverEnterEvent( QGraphicsSceneHoverEvent * ) {
   setBrush( QBrush( Qt::yellow ) );
   update( );
 }
 
-void QNEPort::hoverMoveEvent( QGraphicsSceneHoverEvent *event ) {
+void QNEPort::hoverMoveEvent( QGraphicsSceneHoverEvent * ) {
   setBrush( QBrush( Qt::yellow ) );
   update( );
 }
