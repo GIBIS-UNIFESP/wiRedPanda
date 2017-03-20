@@ -20,5 +20,22 @@
         <file>counter/counter_h.png</file>
         <file>counter/counter_off.png</file>
         <file>counter/counter_on.png</file>
+        <file>16colors/AquaLightLedOn.png</file>
+        <file>16colors/BlackLedOn.png</file>
+        <file>16colors/DarkGrayLedOn.png</file>
+        <file>16colors/DarkRedLedOn.png</file>
+        <file>16colors/GreenLedOn.png</file>
+        <file>16colors/HotPinkLedOn.png</file>
+        <file>16colors/LightGrayLedOn.png</file>
+        <file>16colors/LimeGreenLedOn.png</file>
+        <file>16colors/MagentaLedOn.png</file>
+        <file>16colors/NavyBlueLedOn.png</file>
+        <file>16colors/OrangeLedOn.png</file>
+        <file>16colors/PurpleLedOn.png</file>
+        <file>16colors/RedLedOn.png</file>
+        <file>16colors/RoyalLedOn.png</file>
+        <file>16colors/TealLedOn.png</file>
+        <file>16colors/WhiteLedOn.png</file>
+        <file>16colors/YellowLedOn.png</file>
     </qresource>
 </RCC>
