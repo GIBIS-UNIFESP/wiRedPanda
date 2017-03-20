@@ -92,7 +92,8 @@ private slots:
 
   void on_actionFast_Mode_triggered(bool checked);
 
-private:
+  void themeTriggered(QAction * action);
+  private:
   Ui::MainWindow *ui;
   Editor *editor;
   QFileInfo currentFile;
