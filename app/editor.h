@@ -103,6 +103,7 @@ public:
 
 
   ElementEditor * getElementEditor() const;
+  void setTheme(const QString & theme);
 };
 
 #endif /* EDITOR_H */

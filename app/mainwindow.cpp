@@ -91,7 +91,30 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 
   ui->actionPlay->setChecked( true );
 
+  // THEME
+  QActionGroup * themeGroup = new QActionGroup(this);
+  connect(themeGroup, &QActionGroup::triggered, this,  &MainWindow::themeTriggered);
+  for( QAction * action : ui->menuTheme->actions())
+    themeGroup->addAction(action);
+  if( settings.contains( "theme" ) ) {
+    editor->setTheme(settings.value("theme").toString());
+  }else{
+    editor->setTheme("Panda Light");
+  }
+
+  QString thm = settings.value("theme").toString();
+  if(thm == "Panda Light"){
+    ui->actionPanda_Light->setChecked(true);
+  }else{
+    ui->actionPanda_Dark->setChecked(true);
+  }
+
   populateLeftMenu( );
+}
+
+
+void MainWindow::themeTriggered(QAction * action){
+  editor->setTheme(action->text( ));
 }
 
 void MainWindow::createUndoView( ) {

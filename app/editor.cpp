@@ -35,11 +35,6 @@ Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ) {
   undoStack = new QUndoStack( this );
   scene = new Scene( this );
 
-  scene->setBackgroundBrush( QBrush( QColor( "#ffffe6" ) ) );
-  scene->setDots(QPen( Qt::darkGray ));
-
-//  scene->setBackgroundBrush( QBrush( QColor( "#404552" ) ) );
-//  scene->setDots(QPen( Qt::black ));
 
   install( scene );
   draggingElement = false;
@@ -51,6 +46,24 @@ Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ) {
 }
 
 Editor::~Editor( ) {
+}
+
+void Editor::setTheme(const QString &theme){
+  if( theme == "Panda Light" ){
+    scene->setBackgroundBrush( QBrush( QColor( "#ffffe6" ) ) );
+    scene->setDots(QPen( Qt::darkGray ));
+  }else if( theme == "Panda Dark"){
+    scene->setBackgroundBrush( QBrush( QColor( "#404552" ) ) );
+    scene->setDots(QPen( Qt::black ));
+  }else{
+    qWarning() << "Theme \"" << theme << "\" not found!\nSetting up default theme.";
+    setTheme("Panda Light");
+    return;
+  }
+
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  settings.setValue("theme", theme);
 }
 
 void Editor::install( Scene *s ) {
