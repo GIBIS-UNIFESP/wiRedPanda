@@ -2,7 +2,7 @@ QT       += core gui printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-VERSION = 2.2-alpha
+VERSION = 2.3-alpha
 
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
