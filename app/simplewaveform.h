@@ -16,14 +16,22 @@ class SimpleWaveform : public QDialog {
   Q_OBJECT
 
 public:
-  explicit SimpleWaveform( QWidget *parent = 0 );
+  explicit SimpleWaveform( Editor *editor, QWidget *parent = 0 );
   ~SimpleWaveform( );
 
-  void showWaveform( Editor *editor );
+  void showWaveform( );
+
+private slots:
+  void on_radioButton_Name_clicked( );
+
+  void on_radioButton_Position_clicked( );
 
 private:
   Ui::SimpleWaveform *ui;
   QChart chart;
+  Editor *editor;
+  enum class SortingType { STRING, POSITION };
+  SortingType sortingType;
 };
 
 #endif /* SIMPLEWAVEFORM_H */

@@ -32,5 +32,6 @@
         <file>usa.png</file>
         <file>wires.png</file>
         <file>exit.png</file>
+        <file>wavyIcon.png</file>
     </qresource>
 </RCC>
