@@ -76,9 +76,22 @@ void SimpleWaveform::showWaveform( ) {
         break;
     }
   }
-  std::sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
-    return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
-  } );
+  if(sortingType == SortingType::STRING){
+    std::sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
+      return strcasecmp( elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8() ) >= 0;
+    } );
+    std::sort( outputs.begin( ), outputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
+      return strcasecmp( elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8() ) >= 0;
+    } );
+  }else{
+    std::sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
+      return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
+    } );
+    std::sort( outputs.begin( ), outputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
+      return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
+    } );
+  }
+
 
   QVector< char > oldValues( inputs.size( ) );
   for( int in = 0; in < inputs.size( ); ++in ) {
@@ -86,9 +99,7 @@ void SimpleWaveform::showWaveform( ) {
     oldValues[ in ] = inputs[ in ]->output( )->value( );
     chart.addSeries( in_series[ in ] );
   }
-  std::sort( outputs.begin( ), outputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
-    return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
-  } );
+
   for( int out = 0; out < outputs.size( ); ++out ) {
     out_series[ out ]->setName( outputs[ out ]->getLabel( ) );
     chart.addSeries( out_series[ out ] );
