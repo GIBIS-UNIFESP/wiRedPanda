@@ -8,13 +8,15 @@
 #include <input.h>
 
 #include <QPointF>
+#include <QSettings>
 #include <QValueAxis>
 #include <bitset>
 
 using namespace QtCharts;
 
 
-SimpleWaveform::SimpleWaveform( QWidget *parent ) :
+SimpleWaveform::SimpleWaveform( Editor *editor, QWidget *parent ) :
+  editor(editor),
   QDialog( parent ),
   ui( new Ui::SimpleWaveform ) {
   ui->setupUi( this );
@@ -28,14 +30,26 @@ SimpleWaveform::SimpleWaveform( QWidget *parent ) :
   chartView->setRenderHint( QPainter::Antialiasing );
   ui->gridLayout->addWidget( chartView );
   setWindowTitle( "Simple WaveForm - WaveDolphin Beta" );
+
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  settings.beginGroup( "waveform" );
+  if( settings.contains( "sortingType" ) ) {
+    sortingType = ( SortingType ) settings.value( "sortingType" ).toInt( );
+  }
+  else {
+    sortingType = SortingType::STRING;
+    settings.setValue( "sortingType", ( int ) sortingType );
+  }
+  settings.endGroup( );
 }
 
 SimpleWaveform::~SimpleWaveform( ) {
   delete ui;
 }
 
-void SimpleWaveform::showWaveform( Editor *editor ) {
-
+void SimpleWaveform::showWaveform( ) {
+  chart.removeAllSeries();
   QVector< GraphicElement* > elements = editor->getScene( )->getElements( );
   SimulationController *sc = editor->getSimulationController( );
   sc->stop( );
@@ -85,16 +99,16 @@ void SimpleWaveform::showWaveform( Editor *editor ) {
     std::bitset< std::numeric_limits< unsigned int >::digits > bs( itr );
     for( int in = 0; in < inputs.size( ); ++in ) {
       dynamic_cast< Input* >( inputs[ in ] )->setOn( bs[ in ] );
-      int offset = ( inputs.size() - in - 1 ) * 2 + outputs.size( ) * 2 + 2;
-      in_series[ in ]->append( itr, offset + bs[ inputs.size() - in - 1 ] );
-      in_series[ in ]->append( itr + 1, offset + bs[ inputs.size() - in - 1 ] );
+      int offset = ( inputs.size( ) - in - 1 ) * 2 + outputs.size( ) * 2 + 2;
+      in_series[ in ]->append( itr, offset + bs[ inputs.size( ) - in - 1 ] );
+      in_series[ in ]->append( itr + 1, offset + bs[ inputs.size( ) - in - 1 ] );
     }
     for( GraphicElement *elm : elements ) {
       elm->updateLogic( );
     }
     for( int out = 0; out < outputs.size( ); ++out ) {
       int val = outputs[ out ]->input( )->value( );
-      int offset = ( outputs.size() - out - 1 ) * 2;
+      int offset = ( outputs.size( ) - out - 1 ) * 2;
       out_series[ out ]->append( itr, offset + val );
       out_series[ out ]->append( itr + 1, offset + val );
     }
@@ -109,10 +123,34 @@ void SimpleWaveform::showWaveform( Editor *editor ) {
   ay->setTickCount( inputs.size( ) * 2 + outputs.size( ) * 2 + 3 );
   ay->setRange( 0, inputs.size( ) * 2 + outputs.size( ) * 2 + 2 );
   ay->hide( );
+
   show( );
   for( int in = 0; in < inputs.size( ); ++in ) {
     dynamic_cast< Input* >( inputs[ in ] )->setOn( oldValues[ in ] );
 
   }
   sc->start( );
+}
+
+
+void SimpleWaveform::on_radioButton_Name_clicked( ) {
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  settings.beginGroup("waveform");
+  sortingType = SortingType::STRING;
+  settings.setValue("sortingType", (int) sortingType);
+  settings.endGroup();
+
+  showWaveform();
+}
+
+void SimpleWaveform::on_radioButton_Position_clicked( ) {
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  settings.beginGroup("waveform");
+  sortingType = SortingType::POSITION;
+  settings.setValue("sortingType", (int) sortingType);
+  settings.endGroup();
+
+  showWaveform();
 }

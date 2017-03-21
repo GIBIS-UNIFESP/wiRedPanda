@@ -35,6 +35,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
     loadTranslation( settings.value( "language" ).toString( ) );
   }
   editor = new Editor( this );
+
   ui->graphicsView->setScene( editor->getScene( ) );
   undoView = nullptr;
 /*  ui->graphicsView->setBackgroundBrush(QBrush(QColor(Qt::gray))); */
@@ -249,7 +250,6 @@ bool MainWindow::open( const QString &fname ) {
 
   rfController->addFile( fname );
   ui->statusBar->showMessage( tr( "File loaded successfully." ), 2000 );
-  on_actionWaveform_triggered( );
   return( true );
 }
 
@@ -739,7 +739,7 @@ void MainWindow::on_actionFast_Mode_triggered( bool checked ) {
 }
 
 void MainWindow::on_actionWaveform_triggered( ) {
-  SimpleWaveform *wf = new SimpleWaveform( this );
+  SimpleWaveform *wf = new SimpleWaveform( editor, this );
 
-  wf->showWaveform(editor);
+  wf->showWaveform();
 }
