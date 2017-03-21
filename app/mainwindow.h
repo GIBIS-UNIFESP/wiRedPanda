@@ -93,6 +93,8 @@ private slots:
   void on_actionFast_Mode_triggered(bool checked);
 
   void themeTriggered(QAction * action);
+  void on_actionWaveform_triggered();
+
   private:
   Ui::MainWindow *ui;
   Editor *editor;

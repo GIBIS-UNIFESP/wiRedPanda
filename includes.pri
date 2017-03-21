@@ -1,4 +1,4 @@
-QT       += core gui printsupport
+QT       += core gui printsupport charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -57,7 +57,8 @@ SOURCES += \
     $$PWD/app/scene.cpp \
     $$PWD/app/serializationfunctions.cpp \
     $$PWD/app/simulationcontroller.cpp \
-    $$PWD/app/itemwithid.cpp
+    $$PWD/app/itemwithid.cpp \
+    $$PWD/app/simplewaveform.cpp
 
 HEADERS  +=  \
     $$PWD/app/common.h \
@@ -107,7 +108,8 @@ HEADERS  +=  \
     $$PWD/app/scene.h \
     $$PWD/app/serializationfunctions.h \
     $$PWD/app/simulationcontroller.h \
-    $$PWD/app/itemwithid.h
+    $$PWD/app/itemwithid.h \
+    $$PWD/app/simplewaveform.h
 
 INCLUDEPATH += \
     $$PWD/app \
@@ -116,7 +118,8 @@ INCLUDEPATH += \
 
 FORMS    += \
     $$PWD/app/mainwindow.ui \
-    $$PWD/app/elementeditor.ui
+    $$PWD/app/elementeditor.ui \
+    $$PWD/app/simplewaveform.ui
 
 RESOURCES += \
     $$PWD/app/resources/resources.qrc\
