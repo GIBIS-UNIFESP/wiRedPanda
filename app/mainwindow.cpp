@@ -2,6 +2,7 @@
 #include "graphicsviewzoom.h"
 #include "listitemwidget.h"
 #include "mainwindow.h"
+#include "simplewaveform.h"
 #include "ui_mainwindow.h"
 
 #include <QDebug>
@@ -22,7 +23,7 @@ void MainWindow::setFastMode( bool fastModeEnabled ) {
   ui->graphicsView->setRenderHint( QPainter::Antialiasing, !fastModeEnabled );
   ui->graphicsView->setRenderHint( QPainter::HighQualityAntialiasing, !fastModeEnabled );
   ui->graphicsView->setRenderHint( QPainter::SmoothPixmapTransform, !fastModeEnabled );
-  ui->actionFast_Mode->setChecked(fastModeEnabled);
+  ui->actionFast_Mode->setChecked( fastModeEnabled );
 }
 
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
@@ -78,7 +79,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   rboxController = new RecentFilesController( "recentBoxes", this );
 
   QShortcut *shortcut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
-  connect( shortcut, SIGNAL( activated( ) ), ui->lineEdit, SLOT( setFocus( ) ) );
+  connect( shortcut, SIGNAL(activated()), ui->lineEdit, SLOT(setFocus()) );
   ui->graphicsView->setCacheMode( QGraphicsView::CacheBackground );
   firstResult = nullptr;
   updateRecentBoxes( );
@@ -91,30 +92,31 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 
   ui->actionPlay->setChecked( true );
 
-  // THEME
-  QActionGroup * themeGroup = new QActionGroup(this);
-  connect(themeGroup, &QActionGroup::triggered, this,  &MainWindow::themeTriggered);
-  for( QAction * action : ui->menuTheme->actions())
-    themeGroup->addAction(action);
+  /* THEME */
+  QActionGroup *themeGroup = new QActionGroup( this );
+  connect( themeGroup, &QActionGroup::triggered, this, &MainWindow::themeTriggered );
+  for( QAction *action : ui->menuTheme->actions( ) ) {
+    themeGroup->addAction( action );
+  }
   if( settings.contains( "theme" ) ) {
-    editor->setTheme(settings.value("theme").toString());
-  }else{
-    editor->setTheme("Panda Light");
+    editor->setTheme( settings.value( "theme" ).toString( ) );
   }
-
-  QString thm = settings.value("theme").toString();
-  if(thm == "Panda Light"){
-    ui->actionPanda_Light->setChecked(true);
-  }else{
-    ui->actionPanda_Dark->setChecked(true);
+  else {
+    editor->setTheme( "Panda Light" );
   }
-
+  QString thm = settings.value( "theme" ).toString( );
+  if( thm == "Panda Light" ) {
+    ui->actionPanda_Light->setChecked( true );
+  }
+  else {
+    ui->actionPanda_Dark->setChecked( true );
+  }
   populateLeftMenu( );
 }
 
 
-void MainWindow::themeTriggered(QAction * action){
-  editor->setTheme(action->text( ));
+void MainWindow::themeTriggered( QAction *action ) {
+  editor->setTheme( action->text( ) );
 }
 
 void MainWindow::createUndoView( ) {
@@ -247,6 +249,7 @@ bool MainWindow::open( const QString &fname ) {
 
   rfController->addFile( fname );
   ui->statusBar->showMessage( tr( "File loaded successfully." ), 2000 );
+  on_actionWaveform_triggered( );
   return( true );
 }
 
@@ -729,8 +732,14 @@ void MainWindow::populateLeftMenu( ) {
 
 
 void MainWindow::on_actionFast_Mode_triggered( bool checked ) {
-  setFastMode(checked);
+  setFastMode( checked );
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.setValue( "fastMode", checked );
+}
+
+void MainWindow::on_actionWaveform_triggered( ) {
+  SimpleWaveform *wf = new SimpleWaveform( this );
+
+  wf->showWaveform(editor);
 }
