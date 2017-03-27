@@ -80,7 +80,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   rboxController = new RecentFilesController( "recentBoxes", this );
 
   QShortcut *shortcut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
-  connect( shortcut, SIGNAL(activated()), ui->lineEdit, SLOT(setFocus()) );
+  connect( shortcut, SIGNAL( activated( ) ), ui->lineEdit, SLOT( setFocus( ) ) );
   ui->graphicsView->setCacheMode( QGraphicsView::CacheBackground );
   firstResult = nullptr;
   updateRecentBoxes( );
@@ -95,7 +95,6 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 
   /* THEME */
   QActionGroup *themeGroup = new QActionGroup( this );
-  connect( themeGroup, &QActionGroup::triggered, this, &MainWindow::themeTriggered );
   for( QAction *action : ui->menuTheme->actions( ) ) {
     themeGroup->addAction( action );
   }
@@ -113,11 +112,6 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
     ui->actionPanda_Dark->setChecked( true );
   }
   populateLeftMenu( );
-}
-
-
-void MainWindow::themeTriggered( QAction *action ) {
-  editor->setTheme( action->text( ) );
 }
 
 void MainWindow::createUndoView( ) {
@@ -167,7 +161,7 @@ bool MainWindow::save( QString fname ) {
   }
   else {
     std::cerr << tr( "Could not open file in WriteOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::endl;
     return( false );
   }
   fl.flush( );
@@ -243,7 +237,7 @@ bool MainWindow::open( const QString &fname ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::endl;
     return( false );
   }
   fl.close( );
@@ -409,7 +403,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::endl;
     return;
   }
   fl.close( );
@@ -741,5 +735,13 @@ void MainWindow::on_actionFast_Mode_triggered( bool checked ) {
 void MainWindow::on_actionWaveform_triggered( ) {
   SimpleWaveform *wf = new SimpleWaveform( editor, this );
 
-  wf->showWaveform();
+  wf->showWaveform( );
+}
+
+void MainWindow::on_actionPanda_Light_triggered( ) {
+  editor->setTheme( "Panda Light" );
+}
+
+void MainWindow::on_actionPanda_Dark_triggered( ) {
+  editor->setTheme( "Panda Dark" );
 }

@@ -27,7 +27,7 @@ public:
   explicit MainWindow( QWidget *parent = 0 );
   ~MainWindow( );
 
-  bool save(QString fname = QString());
+  bool save( QString fname = QString( ) );
   void show( );
   void clear( );
   QFileInfo getCurrentFile( ) const;
@@ -44,26 +44,26 @@ public:
   bool closeFile( );
 
 
-  void populateMenu(QSpacerItem * spacer, QString names, QLayout* layout);
+  void populateMenu( QSpacerItem *spacer, QString names, QLayout *layout );
 
-  void retranslateUi();
+  void retranslateUi( );
 
-  void loadTranslation(QString language);
+  void loadTranslation( QString language );
 
-  void setFastMode(bool fastModeEnabled);
+  void setFastMode( bool fastModeEnabled );
 
 private slots:
   bool on_actionExport_to_Arduino_triggered( );
   void on_actionAbout_Qt_triggered( );
   void on_actionAbout_triggered( );
-  void on_actionEnglish_triggered();
+  void on_actionEnglish_triggered( );
   void on_actionExit_triggered( );
   void on_actionGates_triggered( bool checked );
   void on_actionNew_triggered( );
   void on_actionOpen_Box_triggered( );
   void on_actionOpen_triggered( );
-  void on_actionPortuguese_triggered();
-  void on_actionPrint_triggered();
+  void on_actionPortuguese_triggered( );
+  void on_actionPrint_triggered( );
   void on_actionReload_File_triggered( );
   void on_actionReset_Zoom_triggered( );
   void on_actionRotate_left_triggered( );
@@ -81,21 +81,24 @@ private slots:
   void updateRecentFileActions( );
   void zoomChanged( );
 
-  void on_actionPlay_triggered(bool checked);
+  void on_actionPlay_triggered( bool checked );
 
-  void on_actionRename_triggered();
+  void on_actionRename_triggered( );
 
-  void on_actionChange_Trigger_triggered();
+  void on_actionChange_Trigger_triggered( );
 
-  void on_actionClear_selection_triggered();
+  void on_actionClear_selection_triggered( );
 
 
-  void on_actionFast_Mode_triggered(bool checked);
+  void on_actionFast_Mode_triggered( bool checked );
 
-  void themeTriggered(QAction * action);
-  void on_actionWaveform_triggered();
+  void on_actionWaveform_triggered( );
 
-  private:
+  void on_actionPanda_Light_triggered( );
+
+  void on_actionPanda_Dark_triggered( );
+
+private:
   Ui::MainWindow *ui;
   Editor *editor;
   QFileInfo currentFile;
@@ -108,9 +111,9 @@ private slots:
   RecentFilesController *rfController, *rboxController;
   QAction *recentFileActs[ RecentFilesController::MaxRecentFiles ];
   QTranslator *translator;
-  QVector<ListItemWidget *> boxItemWidgets, searchItemWidgets;
+  QVector< ListItemWidget* > boxItemWidgets, searchItemWidgets;
   void createRecentFileActions( );
-  void populateLeftMenu();
+  void populateLeftMenu( );
   /* QWidget interface */
 protected:
   void closeEvent( QCloseEvent *e );
