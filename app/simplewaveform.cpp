@@ -50,7 +50,12 @@ SimpleWaveform::~SimpleWaveform( ) {
 
 void SimpleWaveform::showWaveform( ) {
   chart.removeAllSeries();
+
   QVector< GraphicElement* > elements = editor->getScene( )->getElements( );
+
+  if(elements.isEmpty()) {
+    return;
+  }
   SimulationController *sc = editor->getSimulationController( );
   sc->stop( );
 
@@ -75,6 +80,9 @@ void SimpleWaveform::showWaveform( ) {
         default:
         break;
     }
+  }
+  if(inputs.isEmpty()){
+    return;
   }
   if(sortingType == SortingType::STRING){
     std::sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
