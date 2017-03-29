@@ -58,7 +58,8 @@ SOURCES += \
     $$PWD/app/serializationfunctions.cpp \
     $$PWD/app/simulationcontroller.cpp \
     $$PWD/app/itemwithid.cpp \
-    $$PWD/app/simplewaveform.cpp
+    $$PWD/app/simplewaveform.cpp \
+    $$PWD/app/thememanager.cpp
 
 HEADERS  +=  \
     $$PWD/app/common.h \
@@ -109,7 +110,8 @@ HEADERS  +=  \
     $$PWD/app/serializationfunctions.h \
     $$PWD/app/simulationcontroller.h \
     $$PWD/app/itemwithid.h \
-    $$PWD/app/simplewaveform.h
+    $$PWD/app/simplewaveform.h \
+    $$PWD/app/thememanager.h
 
 INCLUDEPATH += \
     $$PWD/app \

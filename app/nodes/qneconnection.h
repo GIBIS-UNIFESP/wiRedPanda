@@ -60,15 +60,22 @@ public:
   Status status( ) const;
   void setStatus( const Status &status );
 
+  void updateTheme( );
+
 private:
   QPointF pos1;
   QPointF pos2;
   QNEPort *m_port1;
   QNEPort *m_port2;
   Status m_status;
+
+  QColor m_invalidClr;
+  QColor m_activeClr;
+  QColor m_inactiveClr;
+  QColor m_selectedClr;
   /* QGraphicsItem interface */
 public:
-  void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* widget);
+  void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
 
 };
 

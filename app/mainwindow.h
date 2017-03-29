@@ -98,6 +98,8 @@ private slots:
 
   void on_actionPanda_Dark_triggered( );
 
+  void updateTheme();
+
 private:
   Ui::MainWindow *ui;
   Editor *editor;

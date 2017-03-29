@@ -1,5 +1,6 @@
 #include "graphicelement.h"
 #include "scene.h"
+#include "thememanager.h"
 
 #include <QDebug>
 #include <QGraphicsSceneMouseEvent>
@@ -32,7 +33,7 @@ GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz,
   label->setFont( font );
   label->setPos( 64, 30 );
   label->setParentItem( this );
-  label->setDefaultTextColor(Qt::black);
+  label->setDefaultTextColor( Qt::black );
   m_bottomPosition = 64;
   m_topPosition = 0;
   m_minInputSz = minInputSz;
@@ -58,6 +59,7 @@ GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz,
   for( int i = 0; i < minOutputSz; i++ ) {
     addOutputPort( );
   }
+  updateTheme( );
 }
 
 GraphicElement::~GraphicElement( ) {
@@ -260,8 +262,8 @@ void GraphicElement::paint( QPainter *painter, const QStyleOptionGraphicsItem *o
   Q_UNUSED( widget )
   painter->setClipRect( option->exposedRect );
   if( isSelected( ) ) {
-    painter->setBrush(  QColor(175, 0, 0, 80) );
-    painter->setPen( QPen( QColor(175, 0, 0, 255), 0.5, Qt::SolidLine ) );
+    painter->setBrush( m_selectionBrush );
+    painter->setPen( QPen( m_selectionPen, 0.5, Qt::SolidLine ) );
     painter->drawRoundedRect( boundingRect( ), 5, 5 );
   }
   painter->drawPixmap( QPoint( 0, 0 ), getPixmap( ) );
@@ -371,6 +373,7 @@ QVariant GraphicElement::itemChange( QGraphicsItem::GraphicsItemChange change, c
     }
   }
   update( );
+
   return( QGraphicsItem::itemChange( change, value ) );
 }
 
@@ -401,6 +404,29 @@ void GraphicElement::setLabel( QString label ) {
 
 QString GraphicElement::getLabel( ) {
   return( m_labelText );
+}
+
+void GraphicElement::updateTheme( ) {
+  switch( ThemeManager::globalMngr->theme( ) ) {
+      case Theme::Panda_Light:
+      label->setDefaultTextColor( Qt::black );
+      m_selectionBrush = QColor( 155, 0, 0, 80 );
+      m_selectionPen = QColor( 175, 0, 0, 255 );
+
+      break;
+      case Theme::Panda_Dark:
+      label->setDefaultTextColor( Qt::lightGray );
+      m_selectionBrush = QColor( 255, 255, 0, 80 );
+      m_selectionPen = QColor( 255, 255, 0, 255 );
+
+      break;
+  }
+  updateThemeLocal( );
+  update( );
+}
+
+void GraphicElement::updateThemeLocal( ) {
+
 }
 
 bool GraphicElement::isValid( ) {

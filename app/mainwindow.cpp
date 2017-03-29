@@ -3,6 +3,7 @@
 #include "listitemwidget.h"
 #include "mainwindow.h"
 #include "simplewaveform.h"
+#include "thememanager.h"
 #include "ui_mainwindow.h"
 
 #include <QDebug>
@@ -19,25 +20,30 @@
 #include <iostream>
 #include <stdexcept>
 
-void MainWindow::setFastMode( bool fastModeEnabled ) {
-  ui->graphicsView->setRenderHint( QPainter::Antialiasing, !fastModeEnabled );
-  ui->graphicsView->setRenderHint( QPainter::HighQualityAntialiasing, !fastModeEnabled );
-  ui->graphicsView->setRenderHint( QPainter::SmoothPixmapTransform, !fastModeEnabled );
-  ui->actionFast_Mode->setChecked( fastModeEnabled );
-}
 
-MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ) {
+MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ), undoView( nullptr ) {
+
   ui->setupUi( this );
+  ThemeManager::globalMngr = new ThemeManager( this );
+  editor = new Editor( this );
+  ui->graphicsView->setScene( editor->getScene( ) );
 
+  /* Translation */
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   if( settings.value( "language" ).isValid( ) ) {
     loadTranslation( settings.value( "language" ).toString( ) );
   }
-  editor = new Editor( this );
+  /* THEME */
+  QActionGroup *themeGroup = new QActionGroup( this );
+  for( QAction *action : ui->menuTheme->actions( ) ) {
+    themeGroup->addAction( action );
+  }
+  themeGroup->setExclusive( true );
 
-  ui->graphicsView->setScene( editor->getScene( ) );
-  undoView = nullptr;
+  connect( ThemeManager::globalMngr, &ThemeManager::themeChanged, this, &MainWindow::updateTheme );
+  connect( ThemeManager::globalMngr, &ThemeManager::themeChanged, editor, &Editor::updateTheme );
+  ThemeManager::globalMngr->initialize( );
 /*  ui->graphicsView->setBackgroundBrush(QBrush(QColor(Qt::gray))); */
   if( settings.value( "fastMode" ).isValid( ) ) {
     setFastMode( settings.value( "fastMode" ).toBool( ) );
@@ -48,6 +54,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->graphicsView->setAcceptDrops( true );
   editor->setElementEditor( ui->widgetElementEditor );
   ui->searchScrollArea->hide( );
+
   setCurrentFile( QFileInfo( ) );
 
   /*
@@ -73,14 +80,13 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->menuEdit->insertAction( undoAction, redoAction );
   gvzoom = new GraphicsViewZoom( ui->graphicsView );
   connect( gvzoom, &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged );
-
   connect( editor, &Editor::scroll, this, &MainWindow::scrollView );
 
   rfController = new RecentFilesController( "recentFileList", this );
   rboxController = new RecentFilesController( "recentBoxes", this );
 
   QShortcut *shortcut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
-  connect( shortcut, SIGNAL( activated( ) ), ui->lineEdit, SLOT( setFocus( ) ) );
+  connect( shortcut, SIGNAL(activated()), ui->lineEdit, SLOT(setFocus()) );
   ui->graphicsView->setCacheMode( QGraphicsView::CacheBackground );
   firstResult = nullptr;
   updateRecentBoxes( );
@@ -93,25 +99,14 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 
   ui->actionPlay->setChecked( true );
 
-  /* THEME */
-  QActionGroup *themeGroup = new QActionGroup( this );
-  for( QAction *action : ui->menuTheme->actions( ) ) {
-    themeGroup->addAction( action );
-  }
-  if( settings.contains( "theme" ) ) {
-    editor->setTheme( settings.value( "theme" ).toString( ) );
-  }
-  else {
-    editor->setTheme( "Panda Light" );
-  }
-  QString thm = settings.value( "theme" ).toString( );
-  if( thm == "Panda Light" ) {
-    ui->actionPanda_Light->setChecked( true );
-  }
-  else {
-    ui->actionPanda_Dark->setChecked( true );
-  }
   populateLeftMenu( );
+}
+
+void MainWindow::setFastMode( bool fastModeEnabled ) {
+  ui->graphicsView->setRenderHint( QPainter::Antialiasing, !fastModeEnabled );
+  ui->graphicsView->setRenderHint( QPainter::HighQualityAntialiasing, !fastModeEnabled );
+  ui->graphicsView->setRenderHint( QPainter::SmoothPixmapTransform, !fastModeEnabled );
+  ui->actionFast_Mode->setChecked( fastModeEnabled );
 }
 
 void MainWindow::createUndoView( ) {
@@ -161,7 +156,7 @@ bool MainWindow::save( QString fname ) {
   }
   else {
     std::cerr << tr( "Could not open file in WriteOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-    std::endl;
+      std::endl;
     return( false );
   }
   fl.flush( );
@@ -237,7 +232,7 @@ bool MainWindow::open( const QString &fname ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-    std::endl;
+      std::endl;
     return( false );
   }
   fl.close( );
@@ -403,7 +398,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-    std::endl;
+      std::endl;
     return;
   }
   fl.close( );
@@ -739,9 +734,20 @@ void MainWindow::on_actionWaveform_triggered( ) {
 }
 
 void MainWindow::on_actionPanda_Light_triggered( ) {
-  editor->setTheme( "Panda Light" );
+  ThemeManager::globalMngr->setTheme( Theme::Panda_Light );
 }
 
 void MainWindow::on_actionPanda_Dark_triggered( ) {
-  editor->setTheme( "Panda Dark" );
+  ThemeManager::globalMngr->setTheme( Theme::Panda_Dark );
+}
+
+void MainWindow::updateTheme( ) {
+  switch( ThemeManager::globalMngr->theme( ) ) {
+      case Theme::Panda_Dark:
+      ui->actionPanda_Dark->setChecked( true );
+      break;
+      case Theme::Panda_Light:
+      ui->actionPanda_Light->setChecked( true );
+      break;
+  }
 }

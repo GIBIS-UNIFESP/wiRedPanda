@@ -5,9 +5,9 @@
 #include <QGraphicsPixmapItem>
 #include <QKeySequence>
 
-#include "nodes/qneport.h"
 #include "common.h"
 #include "itemwithid.h"
+#include "nodes/qneport.h"
 
 enum class ElementType {
   UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND, DISPLAY,
@@ -31,8 +31,10 @@ public:
   virtual ~GraphicElement( );
 
 private:
-  QPixmap * pixmap;
+  QPixmap *pixmap;
   QString currentPixmapPath;
+  QColor m_selectionBrush;
+  QColor m_selectionPen;
 
   /* GraphicElement interface. */
 public:
@@ -100,7 +102,7 @@ public:
   virtual float getFrequency( );
   virtual void setFrequency( float freq );
 
-  void setPixmap(const QString &pixmapPath , QRect size = QRect());
+  void setPixmap( const QString &pixmapPath, QRect size = QRect( ) );
 
   bool rotatable( ) const;
 
@@ -128,6 +130,10 @@ public:
 
   void setLabel( QString label );
   QString getLabel( );
+
+  void updateTheme( );
+  virtual void updateThemeLocal( );
+
   void disable( );
   void enable( );
   bool disabled( );

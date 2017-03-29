@@ -16,7 +16,7 @@ using namespace QtCharts;
 
 
 SimpleWaveform::SimpleWaveform( Editor *editor, QWidget *parent ) :
-  editor(editor),
+  editor( editor ),
   QDialog( parent ),
   ui( new Ui::SimpleWaveform ) {
   ui->setupUi( this );
@@ -31,17 +31,8 @@ SimpleWaveform::SimpleWaveform( Editor *editor, QWidget *parent ) :
   ui->gridLayout->addWidget( chartView );
   setWindowTitle( "Simple WaveForm - WaveDolphin Beta" );
 
-  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
-                      QApplication::organizationName( ), QApplication::applicationName( ) );
-  settings.beginGroup( "waveform" );
-  if( settings.contains( "sortingType" ) ) {
-    sortingType = ( SortingType ) settings.value( "sortingType" ).toInt( );
-  }
-  else {
-    sortingType = SortingType::STRING;
-    settings.setValue( "sortingType", ( int ) sortingType );
-  }
-  settings.endGroup( );
+  sortingType = SortingType::INCREASING;
+
 }
 
 SimpleWaveform::~SimpleWaveform( ) {
@@ -49,11 +40,30 @@ SimpleWaveform::~SimpleWaveform( ) {
 }
 
 void SimpleWaveform::showWaveform( ) {
-  chart.removeAllSeries();
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  settings.beginGroup( "waveform" );
+  if( settings.contains( "sortingType" ) ) {
+    sortingType = ( SortingType ) settings.value( "sortingType" ).toInt( );
+  }
+  settings.endGroup( );
+  switch( sortingType ) {
+      case SortingType::DECREASING:
+      ui->radioButton_Decreasing->setChecked( true );
+      break;
+      case SortingType::INCREASING:
+      ui->radioButton_Increasing->setChecked( true );
+      break;
+      case SortingType::POSITION:
+      ui->radioButton_Position->setChecked( true );
+      break;
+  }
+  int gap = 3;
+
+  chart.removeAllSeries( );
 
   QVector< GraphicElement* > elements = editor->getScene( )->getElements( );
-
-  if(elements.isEmpty()) {
+  if( elements.isEmpty( ) ) {
     return;
   }
   SimulationController *sc = editor->getSimulationController( );
@@ -69,29 +79,36 @@ void SimpleWaveform::showWaveform( ) {
         case ElementType::BUTTON:
         case ElementType::SWITCH: {
         inputs.append( elm );
-        in_series.append( new QLineSeries( this ) );
         break;
       }
         case ElementType::LED: {
         outputs.append( elm );
-        out_series.append( new QLineSeries( this ) );
         break;
       }
         default:
         break;
     }
   }
-  if(inputs.isEmpty()){
+  if( inputs.isEmpty( ) ) {
     return;
   }
-  if(sortingType == SortingType::STRING){
+  if( sortingType == SortingType::INCREASING ) {
     std::sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
-      return strcasecmp( elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8() ) >= 0;
+      return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) <= 0 );
     } );
     std::sort( outputs.begin( ), outputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
-      return strcasecmp( elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8() ) >= 0;
+      return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) <= 0 );
     } );
-  }else{
+  }
+  else if( sortingType == SortingType::DECREASING ) {
+    std::sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
+      return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) >= 0 );
+    } );
+    std::sort( outputs.begin( ), outputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
+      return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) >= 0 );
+    } );
+  }
+  else {
     std::sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
       return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
     } );
@@ -99,16 +116,15 @@ void SimpleWaveform::showWaveform( ) {
       return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
     } );
   }
-
-
   QVector< char > oldValues( inputs.size( ) );
   for( int in = 0; in < inputs.size( ); ++in ) {
+    in_series.append( new QLineSeries( this ) );
     in_series[ in ]->setName( inputs[ in ]->getLabel( ) );
     oldValues[ in ] = inputs[ in ]->output( )->value( );
     chart.addSeries( in_series[ in ] );
   }
-
   for( int out = 0; out < outputs.size( ); ++out ) {
+    out_series.append( new QLineSeries( this ) );
     out_series[ out ]->setName( outputs[ out ]->getLabel( ) );
     chart.addSeries( out_series[ out ] );
   }
@@ -118,7 +134,7 @@ void SimpleWaveform::showWaveform( ) {
     std::bitset< std::numeric_limits< unsigned int >::digits > bs( itr );
     for( int in = 0; in < inputs.size( ); ++in ) {
       dynamic_cast< Input* >( inputs[ in ] )->setOn( bs[ in ] );
-      int offset = ( inputs.size( ) - in - 1 ) * 2 + outputs.size( ) * 2 + 2;
+      int offset = ( inputs.size( ) - in - 1 ) * 2 + outputs.size( ) * 2 + gap + 1;
       in_series[ in ]->append( itr, offset + bs[ inputs.size( ) - in - 1 ] );
       in_series[ in ]->append( itr + 1, offset + bs[ inputs.size( ) - in - 1 ] );
     }
@@ -127,7 +143,7 @@ void SimpleWaveform::showWaveform( ) {
     }
     for( int out = 0; out < outputs.size( ); ++out ) {
       int val = outputs[ out ]->input( )->value( );
-      int offset = ( outputs.size( ) - out - 1 ) * 2;
+      int offset = ( outputs.size( ) - out - 1 ) * 2 + 1;
       out_series[ out ]->append( itr, offset + val );
       out_series[ out ]->append( itr + 1, offset + val );
     }
@@ -139,8 +155,9 @@ void SimpleWaveform::showWaveform( ) {
   ax->setRange( 0, num_iter );
   ax->setTickCount( num_iter + 1 );
   QValueAxis *ay = dynamic_cast< QValueAxis* >( chart.axisY( ) );
-  ay->setTickCount( inputs.size( ) * 2 + outputs.size( ) * 2 + 3 );
-  ay->setRange( 0, inputs.size( ) * 2 + outputs.size( ) * 2 + 2 );
+  ay->setShadesBrush( QBrush( Qt::lightGray ) );
+  ay->setTickCount( inputs.size( ) * 2 + outputs.size( ) * 2 + gap + 1 );
+  ay->setRange( 0, inputs.size( ) * 2 + outputs.size( ) * 2 + gap + 1 );
   ay->hide( );
 
   show( );
@@ -151,25 +168,35 @@ void SimpleWaveform::showWaveform( ) {
   sc->start( );
 }
 
-
-void SimpleWaveform::on_radioButton_Name_clicked( ) {
-  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
-                      QApplication::organizationName( ), QApplication::applicationName( ) );
-  settings.beginGroup("waveform");
-  sortingType = SortingType::STRING;
-  settings.setValue("sortingType", (int) sortingType);
-  settings.endGroup();
-
-  showWaveform();
-}
-
 void SimpleWaveform::on_radioButton_Position_clicked( ) {
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
-  settings.beginGroup("waveform");
+  settings.beginGroup( "waveform" );
   sortingType = SortingType::POSITION;
-  settings.setValue("sortingType", (int) sortingType);
-  settings.endGroup();
+  settings.setValue( "sortingType", ( int ) sortingType );
+  settings.endGroup( );
 
-  showWaveform();
+  showWaveform( );
+}
+
+void SimpleWaveform::on_radioButton_Increasing_clicked( ) {
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  settings.beginGroup( "waveform" );
+  sortingType = SortingType::INCREASING;
+  settings.setValue( "sortingType", ( int ) sortingType );
+  settings.endGroup( );
+
+  showWaveform( );
+}
+
+void SimpleWaveform::on_radioButton_Decreasing_clicked( ) {
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  settings.beginGroup( "waveform" );
+  sortingType = SortingType::DECREASING;
+  settings.setValue( "sortingType", ( int ) sortingType );
+  settings.endGroup( );
+
+  showWaveform( );
 }
