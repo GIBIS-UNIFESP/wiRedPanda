@@ -25,11 +25,11 @@ public:
   void load( QDataStream &ds );
   void cut( const QList< QGraphicsItem* > &items, QDataStream &ds );
   void copy( const QList< QGraphicsItem* > &items, QDataStream &ds );
-  void paste(QDataStream &ds);
+  void paste( QDataStream &ds );
   void selectAll( );
 signals:
   void scroll( int x, int y );
-  void circuitHasChanged();
+  void circuitHasChanged( );
 
 public slots:
   void clear( );
@@ -43,6 +43,7 @@ public slots:
   void pasteAction( );
   void deleteAction( );
 
+  void updateTheme( );
 private:
   QUndoStack *undoStack;
   Scene *scene;
@@ -74,7 +75,7 @@ private:
   bool dragMoveEvt( QGraphicsSceneDragDropEvent *dde );
   bool wheelEvt( QWheelEvent *wEvt );
 
-  void ctrlDrag(QPointF pos );
+  void ctrlDrag( QPointF pos );
   void install( Scene *s );
 
   QNEConnection* getEditedConn( );
@@ -102,8 +103,8 @@ public:
   QPointF getMousePos( ) const;
 
 
-  ElementEditor * getElementEditor() const;
-  void setTheme(const QString & theme);
+  ElementEditor* getElementEditor( ) const;
+
 };
 
 #endif /* EDITOR_H */

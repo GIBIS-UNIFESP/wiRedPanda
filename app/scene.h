@@ -15,9 +15,10 @@ public:
   /* QGraphicsScene interface */
   int gridSize( ) const;
   QVector< GraphicElement* > getElements( );
+  QVector< QNEConnection* > getConnections( );
   QVector< GraphicElement* > selectedElements( );
 
-  void setDots(const QPen & dots);
+  void setDots( const QPen &dots );
 
 protected:
   void drawBackground( QPainter *painter, const QRectF &rect );

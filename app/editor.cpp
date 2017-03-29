@@ -8,6 +8,7 @@
 #include "mainwindow.h"
 #include "nodes/qneconnection.h"
 #include "serializationfunctions.h"
+#include "thememanager.h"
 
 #include <QApplication>
 #include <QClipboard>
@@ -48,22 +49,27 @@ Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ) {
 Editor::~Editor( ) {
 }
 
-void Editor::setTheme(const QString &theme){
-  if( theme == "Panda Light" ){
-    scene->setBackgroundBrush( QBrush( QColor( "#ffffe6" ) ) );
-    scene->setDots(QPen( Qt::darkGray ));
-  }else if( theme == "Panda Dark"){
-    scene->setBackgroundBrush( QBrush( QColor( "#404552" ) ) );
-    scene->setDots(QPen( Qt::black ));
-  }else{
-    qWarning() << "Theme \"" << theme << "\" not found!\nSetting up default theme.";
-    setTheme("Panda Light");
-    return;
+void Editor::updateTheme( ) {
+  switch( ThemeManager::globalMngr->theme( ) ) {
+      case Theme::Panda_Light:
+      scene->setBackgroundBrush( QBrush( QColor( "#ffffe6" ) ) );
+      scene->setDots( QPen( Qt::darkGray ) );
+      selectionRect->setBrush( QBrush( QColor( 175, 0, 0, 80 ) ) );
+      selectionRect->setPen( QPen( QColor( 175, 0, 0, 255 ), 1, Qt::SolidLine ) );
+      break;
+      case Theme::Panda_Dark:
+      scene->setBackgroundBrush( QBrush( QColor( "#404552" ) ) );
+      scene->setDots( QPen( Qt::black ) );
+      selectionRect->setBrush( QBrush( QColor( 255, 255, 0, 80 ) ) );
+      selectionRect->setPen( QPen( QColor( 255, 255, 0, 255 ), 1, Qt::SolidLine ) );
+      break;
   }
-
-  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
-                      QApplication::organizationName( ), QApplication::applicationName( ) );
-  settings.setValue("theme", theme);
+  for( GraphicElement *elm : scene->getElements( ) ) {
+    elm->updateTheme( );
+  }
+  for( QNEConnection *conn : scene->getConnections( ) ) {
+    conn->updateTheme( );
+  }
 }
 
 void Editor::install( Scene *s ) {
@@ -71,7 +77,6 @@ void Editor::install( Scene *s ) {
   connect( scene, &QGraphicsScene::selectionChanged, this, &Editor::selectionChanged );
   simulationController = new SimulationController( s );
   simulationController->start( );
-  buildSelectionRect( );
   clear( );
 }
 
@@ -91,9 +96,7 @@ void Editor::setEditedConn( QNEConnection *editedConn ) {
 
 void Editor::buildSelectionRect( ) {
   selectionRect = new QGraphicsRectItem( );
-  selectionRect->setBrush( QBrush( QColor(175, 0, 0, 80)) );
   selectionRect->setFlag( QGraphicsItem::ItemIsSelectable, false );
-  selectionRect->setPen( QPen( QColor(175, 0, 0, 255), 1, Qt::SolidLine ) );
   scene->addItem( selectionRect );
 }
 
@@ -107,6 +110,7 @@ void Editor::clear( ) {
   if( !scene->views( ).isEmpty( ) ) {
     scene->setSceneRect( scene->views( ).front( )->rect( ) );
   }
+  updateTheme( );
   emit circuitHasChanged( );
 }
 
@@ -672,7 +676,7 @@ void Editor::selectAll( ) {
 }
 
 void Editor::save( QDataStream &ds ) {
-  ds << QApplication::applicationName( ) + " " + QApplication::applicationVersion( ).split("-").first();
+  ds << QApplication::applicationName( ) + " " + QApplication::applicationVersion( ).split( "-" ).first( );
   ds << scene->sceneRect( );
   SerializationFunctions::serialize( scene->items( ), ds );
 }

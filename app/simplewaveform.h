@@ -22,15 +22,17 @@ public:
   void showWaveform( );
 
 private slots:
-  void on_radioButton_Name_clicked( );
-
   void on_radioButton_Position_clicked( );
+
+  void on_radioButton_Increasing_clicked( );
+
+  void on_radioButton_Decreasing_clicked( );
 
 private:
   Ui::SimpleWaveform *ui;
   QChart chart;
   Editor *editor;
-  enum class SortingType { STRING, POSITION };
+  enum class SortingType { INCREASING, DECREASING, POSITION };
   SortingType sortingType;
 };
 

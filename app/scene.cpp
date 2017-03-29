@@ -2,6 +2,7 @@
 
 #include <QColor>
 #include <QPainter>
+#include <qneconnection.h>
 Scene::Scene( QObject *parent ) : QGraphicsScene( parent ) {
   m_gridSize = 16;
 }
@@ -51,6 +52,18 @@ QVector< GraphicElement* > Scene::getElements( ) {
     }
   }
   return( elements );
+}
+
+QVector< QNEConnection* > Scene::getConnections( ) {
+  QVector< QNEConnection* > conns;
+  QList< QGraphicsItem* > myItems = items( );
+  for( QGraphicsItem *item : myItems ) {
+    QNEConnection *conn = dynamic_cast< QNEConnection* >( item );
+    if( conn ) {
+      conns.append( conn );
+    }
+  }
+  return( conns );
 }
 
 QVector< GraphicElement* > Scene::selectedElements( ) {

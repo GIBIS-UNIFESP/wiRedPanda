@@ -35,6 +35,7 @@
 #include <QPen>
 #include <QStyleOptionGraphicsItem>
 #include <node.h>
+#include <thememanager.h>
 
 QNEConnection::QNEConnection( QGraphicsItem *parent ) : QGraphicsPathItem( parent ) {
   setFlag( QGraphicsItem::ItemIsSelectable );
@@ -43,6 +44,7 @@ QNEConnection::QNEConnection( QGraphicsItem *parent ) : QGraphicsPathItem( paren
   setZValue( -1 );
   m_port1 = nullptr;
   m_port2 = nullptr;
+  updateTheme( );
 }
 
 QNEConnection::~QNEConnection( ) {
@@ -106,7 +108,7 @@ void QNEConnection::updatePath( ) {
 
   p.cubicTo( ctr1, ctr2, pos2 );
 
-//  p.lineTo(pos2);
+/*  p.lineTo(pos2); */
   setPath( p );
 }
 
@@ -174,15 +176,34 @@ void QNEConnection::setStatus( const Status &status ) {
   m_status = status;
   switch( status ) {
       case Inactive: {
-      setPen( QPen( Qt::darkGreen, 3 ) );
+      setPen( QPen( m_inactiveClr, 3 ) );
       break;
     }
       case Active: {
-      setPen( QPen( Qt::green, 3 ) );
+      setPen( QPen( m_activeClr, 3 ) );
       break;
     }
       case Invalid: {
-      setPen( QPen( Qt::red, 5 ) );
+      setPen( QPen( m_invalidClr, 5 ) );
+      break;
+    }
+  }
+}
+
+void QNEConnection::updateTheme( ) {
+  switch( ThemeManager::globalMngr->theme( ) ) {
+      case Theme::Panda_Light: {
+      m_inactiveClr = QColor( Qt::darkGreen );
+      m_activeClr = QColor( Qt::green );
+      m_invalidClr = QColor( Qt::red );
+      m_selectedClr = QColor( Qt::darkYellow );
+      break;
+    }
+      case Theme::Panda_Dark: {
+      m_inactiveClr = QColor( Qt::darkGreen );
+      m_activeClr = QColor( Qt::green );
+      m_invalidClr = QColor( Qt::red );
+      m_selectedClr = QColor( Qt::darkYellow );
       break;
     }
   }
@@ -190,12 +211,11 @@ void QNEConnection::setStatus( const Status &status ) {
 
 void QNEConnection::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* ) {
   painter->setClipRect( option->exposedRect );
-
   if( isSelected( ) ) {
-    painter->setPen( QPen( Qt::darkYellow, 5 ) );
+    painter->setPen( QPen( m_selectedClr, 5 ) );
   }
   else {
     painter->setPen( pen( ) );
   }
-  painter->drawPath( path() );
+  painter->drawPath( path( ) );
 }

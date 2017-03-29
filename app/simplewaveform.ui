@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>555</width>
+    <height>337</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,13 +19,30 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="1" column="2">
-    <widget class="QRadioButton" name="radioButton_Position">
+    <widget class="QRadioButton" name="radioButton_Increasing">
      <property name="text">
-      <string>Position</string>
+      <string>Increasing</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item row="1" column="3">
+   <item row="1" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Sorting</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="5">
+    <widget class="QPushButton" name="pushButton">
+     <property name="text">
+      <string>OK</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="4">
     <spacer name="horizontalSpacer">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -38,32 +55,25 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="1">
-    <widget class="QRadioButton" name="radioButton_Name">
+   <item row="1" column="3">
+    <widget class="QRadioButton" name="radioButton_Decreasing">
      <property name="text">
-      <string>Na&amp;me</string>
+      <string>Decreasing</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="6">
+    <layout class="QGridLayout" name="gridLayout"/>
+   </item>
+   <item row="1" column="1">
+    <widget class="QRadioButton" name="radioButton_Position">
+     <property name="text">
+      <string>Position</string>
      </property>
      <property name="checked">
       <bool>true</bool>
      </property>
     </widget>
-   </item>
-   <item row="1" column="4">
-    <widget class="QPushButton" name="pushButton">
-     <property name="text">
-      <string>OK</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Sorting</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="5">
-    <layout class="QGridLayout" name="gridLayout"/>
    </item>
   </layout>
  </widget>
