@@ -239,6 +239,7 @@ bool MainWindow::open( const QString &fname ) {
 
   rfController->addFile( fname );
   ui->statusBar->showMessage( tr( "File loaded successfully." ), 2000 );
+  on_actionWaveform_triggered( );
   return( true );
 }
 

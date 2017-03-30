@@ -58,7 +58,7 @@ void SimpleWaveform::showWaveform( ) {
       ui->radioButton_Position->setChecked( true );
       break;
   }
-  int gap = 3;
+  int gap = 2;
 
   chart.removeAllSeries( );
 
@@ -128,22 +128,24 @@ void SimpleWaveform::showWaveform( ) {
     out_series[ out ]->setName( outputs[ out ]->getLabel( ) );
     chart.addSeries( out_series[ out ] );
   }
+/*  gap += outputs.size( ) % 2; */
   int num_iter = pow( 2, inputs.size( ) );
 /*  qDebug( ) << "Num iter = " << num_iter; */
   for( int itr = 0; itr < num_iter; ++itr ) {
     std::bitset< std::numeric_limits< unsigned int >::digits > bs( itr );
     for( int in = 0; in < inputs.size( ); ++in ) {
       dynamic_cast< Input* >( inputs[ in ] )->setOn( bs[ in ] );
-      int offset = ( inputs.size( ) - in - 1 ) * 2 + outputs.size( ) * 2 + gap + 1;
-      in_series[ in ]->append( itr, offset + bs[ inputs.size( ) - in - 1 ] );
-      in_series[ in ]->append( itr + 1, offset + bs[ inputs.size( ) - in - 1 ] );
+      float val = bs[ inputs.size( ) - in - 1 ];
+      float offset = ( inputs.size( ) - in - 1 ) * 2 + outputs.size( ) * 2 + gap + 0.5;
+      in_series[ in ]->append( itr, offset + val );
+      in_series[ in ]->append( itr + 1, offset + val );
     }
     for( GraphicElement *elm : elements ) {
       elm->updateLogic( );
     }
     for( int out = 0; out < outputs.size( ); ++out ) {
-      int val = outputs[ out ]->input( )->value( );
-      int offset = ( outputs.size( ) - out - 1 ) * 2 + 1;
+      float val = outputs[ out ]->input( )->value( );
+      float offset = ( outputs.size( ) - out - 1 ) * 2 + 0.5;
       out_series[ out ]->append( itr, offset + val );
       out_series[ out ]->append( itr + 1, offset + val );
     }
@@ -154,11 +156,20 @@ void SimpleWaveform::showWaveform( ) {
   QValueAxis *ax = dynamic_cast< QValueAxis* >( chart.axisX( ) );
   ax->setRange( 0, num_iter );
   ax->setTickCount( num_iter + 1 );
+  ax->setLabelFormat( QString( "%i" ) );
   QValueAxis *ay = dynamic_cast< QValueAxis* >( chart.axisY( ) );
-  ay->setShadesBrush( QBrush( Qt::lightGray ) );
-  ay->setTickCount( inputs.size( ) * 2 + outputs.size( ) * 2 + gap + 1 );
-  ay->setRange( 0, inputs.size( ) * 2 + outputs.size( ) * 2 + gap + 1 );
-  ay->hide( );
+/*  ay->setShadesBrush( QBrush( Qt::lightGray ) ); */
+
+  ay->setShadesColor( QColor( 0, 0, 0, 8 ) );
+  ay->setShadesPen( QPen( QColor( 0, 0, 0, 0 ) ) );
+  ay->setShadesVisible( true );
+
+  ay->setGridLineVisible( false );
+  ay->setTickCount( ( inputs.size( ) + outputs.size( ) + gap / 2 + 1 ) );
+  ay->setRange( 0, inputs.size( ) * 2 + outputs.size( ) * 2 + gap );
+  ay->setGridLineColor( Qt::transparent );
+  ay->setLabelsVisible( false );
+/*  ay->hide( ); */
 
   show( );
   for( int in = 0; in < inputs.size( ); ++in ) {
