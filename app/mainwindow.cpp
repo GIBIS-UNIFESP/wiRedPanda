@@ -635,7 +635,7 @@ void MainWindow::on_actionExport_to_Image_triggered( ) {
 
   QString pngFile =
     QFileDialog::getSaveFileName( this, tr( "Export to Image" ), defaultDirectory.absolutePath( ), tr(
-                                    "PNG files (*.png);" ) );
+                                    "PNG files (*.png)" ) );
   if( pngFile.isEmpty( ) ) {
     return;
   }
@@ -648,7 +648,7 @@ void MainWindow::on_actionExport_to_Image_triggered( ) {
   painter.begin( &p );
   painter.setRenderHint( QPainter::Antialiasing );
 
-  editor->getScene( )->render( &painter, s, s );
+  editor->getScene( )->render( &painter, QRectF( ), s );
   painter.end( );
 
   QImage img = p.toImage( );
