@@ -94,7 +94,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>250</height>
+                   <height>239</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -135,8 +135,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>100</width>
-                   <height>30</height>
+                   <width>208</width>
+                   <height>239</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -177,8 +177,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>100</width>
-                   <height>30</height>
+                   <width>208</width>
+                   <height>239</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -219,8 +219,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>100</width>
-                   <height>30</height>
+                   <width>208</width>
+                   <height>239</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -320,7 +320,7 @@
                <x>0</x>
                <y>0</y>
                <width>228</width>
-               <height>296</height>
+               <height>289</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
@@ -409,7 +409,7 @@
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>20</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -443,6 +443,7 @@
     <addaction name="actionSave_As"/>
     <addaction name="actionExport_to_Arduino"/>
     <addaction name="actionPrint"/>
+    <addaction name="actionExport_to_Image"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
     <addaction name="separator"/>
@@ -904,6 +905,11 @@
     <string>Ctrl+W</string>
    </property>
   </action>
+  <action name="actionExport_to_Image">
+   <property name="text">
+    <string>Export to Image</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -929,13 +935,13 @@
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
+  <include location="resources/resources.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/resources.qrc"/>
   <include location="resources/basic/basic.qrc"/>
   <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/resources.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>
