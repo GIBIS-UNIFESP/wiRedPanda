@@ -89,11 +89,11 @@ void SimulationController::stop( ) {
 void SimulationController::start( ) {
   timer.start( );
   Clock::reset = true;
-  reSortElms();
+  reSortElms( );
 }
 
 void SimulationController::reSortElms( ) {
-  COMMENT( "Re-sorting elements", 0 );
+  COMMENT( "Re-sorting elements", 3 );
   QVector< GraphicElement* > elements = scene->getElements( );
   sortedElements = sortElements( elements );
 }
