@@ -54,6 +54,9 @@ public:
 
 private slots:
   bool on_actionExport_to_Arduino_triggered( );
+  void on_actionExport_to_Image_triggered( );
+  void on_actionPrint_triggered( );
+
   void on_actionAbout_Qt_triggered( );
   void on_actionAbout_triggered( );
   void on_actionEnglish_triggered( );
@@ -63,7 +66,6 @@ private slots:
   void on_actionOpen_Box_triggered( );
   void on_actionOpen_triggered( );
   void on_actionPortuguese_triggered( );
-  void on_actionPrint_triggered( );
   void on_actionReload_File_triggered( );
   void on_actionReset_Zoom_triggered( );
   void on_actionRotate_left_triggered( );
@@ -98,7 +100,8 @@ private slots:
 
   void on_actionPanda_Dark_triggered( );
 
-  void updateTheme();
+  void updateTheme( );
+
 
 private:
   Ui::MainWindow *ui;

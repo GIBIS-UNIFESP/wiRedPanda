@@ -239,7 +239,7 @@ bool MainWindow::open( const QString &fname ) {
 
   rfController->addFile( fname );
   ui->statusBar->showMessage( tr( "File loaded successfully." ), 2000 );
-  on_actionWaveform_triggered( );
+/*  on_actionWaveform_triggered( ); */
   return( true );
 }
 
@@ -628,6 +628,31 @@ void MainWindow::on_actionPrint_triggered( ) {
   }
   editor->getScene( )->render( &p, QRectF( ), editor->getScene( )->itemsBoundingRect( ).adjusted( -64, -64, 64, 64 ) );
   p.end( );
+}
+
+
+void MainWindow::on_actionExport_to_Image_triggered( ) {
+
+  QString pngFile =
+    QFileDialog::getSaveFileName( this, tr( "Export to Image" ), defaultDirectory.absolutePath( ), tr(
+                                    "PNG files (*.png);" ) );
+  if( pngFile.isEmpty( ) ) {
+    return;
+  }
+  if( !pngFile.toLower( ).endsWith( ".png" ) ) {
+    pngFile.append( ".png" );
+  }
+  QRectF s = editor->getScene( )->itemsBoundingRect( ).adjusted( -64, -64, 64, 64 );
+  QPixmap p( s.size( ).toSize( ) );
+  QPainter painter;
+  painter.begin( &p );
+  painter.setRenderHint( QPainter::Antialiasing );
+
+  editor->getScene( )->render( &painter, s, s );
+  painter.end( );
+
+  QImage img = p.toImage( );
+  img.save( pngFile );
 }
 
 void MainWindow::retranslateUi( ) {
