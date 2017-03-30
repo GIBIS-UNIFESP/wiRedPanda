@@ -4,6 +4,7 @@
 #include "editor.h"
 
 #include <QChart>
+#include <QChartView>
 #include <QDialog>
 
 using namespace QtCharts;
@@ -28,9 +29,12 @@ private slots:
 
   void on_radioButton_Decreasing_clicked( );
 
+  void on_pushButton_Copy_clicked( );
+
 private:
   Ui::SimpleWaveform *ui;
   QChart chart;
+  QChartView *chartView;
   Editor *editor;
   enum class SortingType { INCREASING, DECREASING, POSITION };
   SortingType sortingType;
