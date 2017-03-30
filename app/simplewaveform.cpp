@@ -7,8 +7,12 @@
 #include <cmath>
 #include <input.h>
 
+#include <QBuffer>
+#include <QClipboard>
+#include <QMimeData>
 #include <QPointF>
 #include <QSettings>
+/* #include <QSvgGenerator> */
 #include <QValueAxis>
 #include <bitset>
 
@@ -16,9 +20,9 @@ using namespace QtCharts;
 
 
 SimpleWaveform::SimpleWaveform( Editor *editor, QWidget *parent ) :
-  editor( editor ),
   QDialog( parent ),
-  ui( new Ui::SimpleWaveform ) {
+  ui( new Ui::SimpleWaveform ),
+  editor( editor ) {
   ui->setupUi( this );
   resize( 800, 500 );
 /*  chart.legend( )->hide( ); */
@@ -26,7 +30,7 @@ SimpleWaveform::SimpleWaveform( Editor *editor, QWidget *parent ) :
 
 /*  chart.setTitle( "Simple Waveform View." ); */
 
-  QChartView *chartView = new QChartView( &chart, this );
+  chartView = new QChartView( &chart, this );
   chartView->setRenderHint( QPainter::Antialiasing );
   ui->gridLayout->addWidget( chartView );
   setWindowTitle( "Simple WaveForm - WaveDolphin Beta" );
@@ -210,4 +214,20 @@ void SimpleWaveform::on_radioButton_Decreasing_clicked( ) {
   settings.endGroup( );
 
   showWaveform( );
+}
+
+void SimpleWaveform::on_pushButton_Copy_clicked( ) {
+  QSize s = chart.size( ).toSize( );
+  QPixmap p( s );
+  p.fill( Qt::white );
+  QPainter painter;
+  painter.begin( &p );
+  painter.setRenderHint( QPainter::Antialiasing );
+  chart.paint( &painter, 0, 0 ); /* This gives 0 items in 1 group */
+  chartView->render( &painter ); /* m_view has app->chart() in it, and this one gives right image */
+  qDebug( ) << "Copied";
+  painter.end( );
+  QMimeData *d = new QMimeData( );
+  d->setImageData( p );
+  QApplication::clipboard( )->setMimeData( d, QClipboard::Clipboard );
 }
