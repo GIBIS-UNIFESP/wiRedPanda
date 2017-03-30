@@ -25,6 +25,8 @@ SimpleWaveform::SimpleWaveform( Editor *editor, QWidget *parent ) :
   editor( editor ) {
   ui->setupUi( this );
   resize( 800, 500 );
+  chart.legend()->setAlignment(Qt::AlignLeft);
+
 /*  chart.legend( )->hide( ); */
 /*  chart->addSeries(series); */
 
