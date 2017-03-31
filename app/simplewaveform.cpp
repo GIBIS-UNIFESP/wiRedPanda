@@ -125,13 +125,21 @@ void SimpleWaveform::showWaveform( ) {
   QVector< char > oldValues( inputs.size( ) );
   for( int in = 0; in < inputs.size( ); ++in ) {
     in_series.append( new QLineSeries( this ) );
-    in_series[ in ]->setName( inputs[ in ]->getLabel( ) );
+    QString label = inputs[ in ]->getLabel( );
+    if(label.isEmpty()){
+      label = inputs[in]->objectName();
+    }
+    in_series[ in ]->setName( label );
     oldValues[ in ] = inputs[ in ]->output( )->value( );
     chart.addSeries( in_series[ in ] );
   }
   for( int out = 0; out < outputs.size( ); ++out ) {
+    QString label = outputs[ out ]->getLabel( );
+    if(label.isEmpty()){
+      label = outputs[out]->objectName();
+    }
     out_series.append( new QLineSeries( this ) );
-    out_series[ out ]->setName( outputs[ out ]->getLabel( ) );
+    out_series[ out ]->setName( label );
     chart.addSeries( out_series[ out ] );
   }
 /*  gap += outputs.size( ) % 2; */
