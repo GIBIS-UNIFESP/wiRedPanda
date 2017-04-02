@@ -2,12 +2,14 @@
 #define SIMULATIONCONTROLLER_H
 
 #include "graphicelement.h"
+#include "logicelement.h"
 #include "scene.h"
 
 #include <QGraphicsScene>
 #include <QMap>
 #include <QObject>
 #include <QTimer>
+#include <input.h>
 
 class SimulationController : public QObject {
   Q_OBJECT
@@ -21,12 +23,15 @@ public slots:
   void update( );
   void stop( );
   void start( );
-  void reSortElms();
+  void reSortElms( );
 
 private:
   Scene *scene;
   QTimer timer;
-  QVector< GraphicElement* > sortedElements;
+
+  QMap< GraphicElement*, LogicElement* > map;
+  QMap< Input*, LogicElement* > inputMap;
+  QVector< LogicElement* > logicElms;
   static int calculatePriority( GraphicElement *elm,
                                 QMap< GraphicElement*, bool > &beingvisited,
                                 QMap< GraphicElement*, int > &priority );

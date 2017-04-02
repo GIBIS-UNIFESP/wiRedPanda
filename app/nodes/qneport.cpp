@@ -193,6 +193,14 @@ QVariant QNEPort::itemChange( GraphicsItemChange change, const QVariant &value )
   return( value );
 }
 
+int QNEPort::index( ) const {
+  return( m_index );
+}
+
+void QNEPort::setIndex( int index ) {
+  m_index = index;
+}
+
 QString QNEPort::getName( ) const {
   return( name );
 }
@@ -295,12 +303,12 @@ void QNEPort::hoverLeaveEvent( QGraphicsSceneHoverEvent* ) {
   update( );
 }
 
-void QNEPort::hoverEnterEvent( QGraphicsSceneHoverEvent * ) {
+void QNEPort::hoverEnterEvent( QGraphicsSceneHoverEvent* ) {
   setBrush( QBrush( Qt::yellow ) );
   update( );
 }
 
-void QNEPort::hoverMoveEvent( QGraphicsSceneHoverEvent * ) {
+void QNEPort::hoverMoveEvent( QGraphicsSceneHoverEvent* ) {
   setBrush( QBrush( Qt::yellow ) );
   update( );
 }

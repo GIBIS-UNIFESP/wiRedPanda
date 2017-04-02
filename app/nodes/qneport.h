@@ -88,11 +88,15 @@ public:
 
   bool isValid( ) const;
 
+  int index( ) const;
+  void setIndex( int index );
+
 protected:
   QVariant itemChange( GraphicsItemChange change, const QVariant &value );
 
 private:
   int m_defaultValue;
+  int m_index;
   QNEBlock *m_block;
   QString name;
   bool isOutput_;
@@ -112,8 +116,8 @@ private:
   /* QGraphicsItem interface */
 protected:
   void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
-  void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
-  void hoverMoveEvent(QGraphicsSceneHoverEvent * event);
+  void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
+  void hoverMoveEvent( QGraphicsSceneHoverEvent *event );
 };
 
 #endif /* QNEPORT_H */

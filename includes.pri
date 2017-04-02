@@ -59,7 +59,8 @@ SOURCES += \
     $$PWD/app/simulationcontroller.cpp \
     $$PWD/app/itemwithid.cpp \
     $$PWD/app/simplewaveform.cpp \
-    $$PWD/app/thememanager.cpp
+    $$PWD/app/thememanager.cpp \
+    $$PWD/app/logicelement.cpp
 
 HEADERS  +=  \
     $$PWD/app/common.h \
@@ -111,7 +112,8 @@ HEADERS  +=  \
     $$PWD/app/simulationcontroller.h \
     $$PWD/app/itemwithid.h \
     $$PWD/app/simplewaveform.h \
-    $$PWD/app/thememanager.h
+    $$PWD/app/thememanager.h \
+    $$PWD/app/logicelement.h
 
 INCLUDEPATH += \
     $$PWD/app \

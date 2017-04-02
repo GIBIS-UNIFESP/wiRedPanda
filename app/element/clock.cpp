@@ -33,6 +33,15 @@ void Clock::updateClock( ) {
   outputs( ).first( )->setValue( on );
 }
 
+bool Clock::getOn( ) const {
+  return( on );
+}
+
+void Clock::setOn( bool value ) {
+  on = value;
+}
+
+
 void Clock::save( QDataStream &ds ) {
   GraphicElement::save( ds );
   ds << getFrequency( );
@@ -55,7 +64,7 @@ void Clock::setFrequency( float freq ) {
 /*  qDebug() << "Clock frequency set to " << freq; */
   if( ( freq > 0.0 ) ) {
     int auxinterval = 1000 / ( freq * GLOBALCLK );
-    if(auxinterval > 0){
+    if( auxinterval > 0 ) {
       interval = auxinterval;
       m_frequency = freq;
       elapsed = 0;
@@ -69,7 +78,6 @@ void Clock::setFrequency( float freq ) {
 void Clock::updateLogic( ) {
   if( !disabled( ) ) {
     elapsed++;
-
     if( ( elapsed % interval ) == 0 ) {
       updateClock( );
     }
