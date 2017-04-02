@@ -284,9 +284,11 @@ QNEPort* GraphicElement::addPort( const QString &name, bool isOutput, int flags,
   port->setPortFlags( flags );
   port->setPtr( ptr );
   if( isOutput ) {
+    port->setIndex( outputSize( ) );
     m_outputs.push_back( port );
   }
   else {
+    port->setIndex( inputSize( ) );
     m_inputs.push_back( port );
   }
   COMMENT( "Updating new port.", 4 );
