@@ -22,7 +22,7 @@ before_install:
       && if [ "$QT" = "qt58" ]; then sudo add-apt-repository ppa:beineri/opt-qt58-trusty -y; fi
       && sudo apt-get update;
     else
-      brew update > /dev/null;
+      brew update;
     fi
 
 install:
@@ -31,7 +31,7 @@ install:
       && if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
       && if [ "$QT" = "qt58" ]; then sudo apt-get install -y qt58base qt58charts-no-lgpl; source /opt/qt58/bin/qt58-env.sh; fi;
     else
-      brew install qt@5.7
+      brew install qt@5.8
       && chmod -R 755 /usr/local/opt/qt5/*;
     fi
 
