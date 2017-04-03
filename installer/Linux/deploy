@@ -1,41 +1,116 @@
 #!/bin/bash
-
 set -e
-PROJECTPATH=${PWD}/../../app
-if [ -d "/home/lellis/Qt5.7.1/5.7/gcc_64/bin/" ]; then
-export PATH=/home/lellis/Qt5.7.1/5.7/gcc_64/bin/:$(getconf PATH)\
-&& mkdir -p /tmp/wpanda-build\
-&& pushd /tmp/wpanda-build\
-&& qmake $PROJECTPATH\
-&& make -j12\
-&& popd;
-fi;
+VERSION=$(cat ~/projetos/wiRedPanda/includes.pri | grep "VERSION = " | awk '{split($0,a,"="); gsub (" ", "", a[2]); print a[2] }')
+DEBPKGTREE="wpanda-${VERSION}"
+PROJECTPATH=$(readlink -e "${PWD}/../../app/")
+QT_LIBRARY_PATH="/opt/qt58/gcc_64/lib/"
+QT_PLATFORMS_PATH="/opt/qt58/gcc_64/plugins/platforms/"
+DEPENDENCIES_PATH="/usr/lib/x86_64-linux-gnu/"
+WPANDA_BIN=$1
 
-rm -rf *.deb *.lintian *.tar.gz
+PTBDIR="wpanda-${VERSION}"
+DATADIR="${PTBDIR}/files"
 
-debreate wpanda.dbp
+CURRENTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+rm -rf $DEBPKGTREE
+
+echo "Generating build tree for ${DEBPKGTREE}.deb"
+echo "Project path is ${PROJECTPATH}"
+
+mkdir -p ${DEBPKGTREE}/DEBIAN
+mkdir -p ${DEBPKGTREE}/usr/local/bin
+mkdir -p ${DEBPKGTREE}/usr/local/lib/wpanda
+mkdir -p ${DEBPKGTREE}/usr/local/share/applications
+mkdir -p ${DEBPKGTREE}/usr/local/share/xml/misc
+mkdir -p ${DEBPKGTREE}/usr/local/share/doc
+
+for SIZE in 26x26 32x32 48x48 64x64 128x128; do
+  ICONDIR_SZ=${DEBPKGTREE}/usr/local/share/icons/hicolor/${SIZE}/apps/
+  mkdir -p ${ICONDIR_SZ}
+  cp ${PROJECTPATH}/resources/icons/${SIZE}/* ${ICONDIR_SZ}
+done;
+
+cp ${WPANDA_BIN}                              ${DEBPKGTREE}/usr/local/bin/
+cp ${PROJECTPATH}/resources/wpanda.desktop    ${DEBPKGTREE}/usr/local/share/applications/
+cp ${PROJECTPATH}/resources/wpanda.sh         ${DEBPKGTREE}/usr/local/bin/
+cp ${PROJECTPATH}/resources/wpanda.desktop    ${DEBPKGTREE}/usr/local/share/applications/
+cp ${PROJECTPATH}/resources/wpanda-mime.xml   ${DEBPKGTREE}/usr/local/share/xml/misc
+cp ${QT_LIBRARY_PATH}/libQt5PrintSupport.so.5 ${DEBPKGTREE}/usr/local/lib/wpanda
+cp ${QT_LIBRARY_PATH}/libQt5XcbQpa.so.5       ${DEBPKGTREE}/usr/local/lib/wpanda
+cp ${QT_LIBRARY_PATH}/libQt5DBus.so.5         ${DEBPKGTREE}/usr/local/lib/wpanda
+cp ${QT_LIBRARY_PATH}/libQt5Charts.so.5       ${DEBPKGTREE}/usr/local/lib/wpanda
+cp ${QT_LIBRARY_PATH}/libQt5Widgets.so.5      ${DEBPKGTREE}/usr/local/lib/wpanda
+cp ${QT_LIBRARY_PATH}/libQt5Gui.so.5          ${DEBPKGTREE}/usr/local/lib/wpanda
+cp ${QT_LIBRARY_PATH}/libQt5Core.so.5         ${DEBPKGTREE}/usr/local/lib/wpanda
+cp ${QT_LIBRARY_PATH}/libicui18n.so.56        ${DEBPKGTREE}/usr/local/lib/wpanda
+cp ${QT_LIBRARY_PATH}/libicuuc.so.56          ${DEBPKGTREE}/usr/local/lib/wpanda
+cp ${QT_LIBRARY_PATH}/libicudata.so.56        ${DEBPKGTREE}/usr/local/lib/wpanda
+cp ${QT_PLATFORMS_PATH}/libqxcb.so            ${DEBPKGTREE}/usr/local/lib/wpanda
+cp ${DEPENDENCIES_PATH}/libX11-xcb.so.1       ${DEBPKGTREE}/usr/local/lib/wpanda
+cp ${DEPENDENCIES_PATH}/libxcb.so.1           ${DEBPKGTREE}/usr/local/lib/wpanda
+cp ${DEPENDENCIES_PATH}/libxcb-dri2.so.0      ${DEBPKGTREE}/usr/local/lib/wpanda
+cp ${DEPENDENCIES_PATH}/libxcb-xfixes.so.0    ${DEBPKGTREE}/usr/local/lib/wpanda
+
+echo \
+"Package: wpanda
+Version: ${VERSION}
+Installed-Size: 53000
+Maintainer: Wired Panda Team <grupo-software-de-circuitos-digitais@googlegroups.com>
+Section: utils
+Source: https://github.com/GIBIS-UNIFESP/wiRedPanda/archive/v${VERSION}.tar.gz
+Homepage: gibis-unifesp.github.io/wiRedPanda
+Architecture: amd64
+Priority: standard
+Description: Learn about logic circuits and simulate them in an easy and friendly way.
+ wiRed Panda is a free software designed to help students to learn about logic circuits.
+ It was developed by the students of the Federal University of São Paulo.
+" > "${DEBPKGTREE}/DEBIAN/config"
+
+echo \
+"#!/bin/sh
+set -e
+
+case "$1" in
+configure)
+desktop-file-install /usr/local/share/applications/wpanda.desktop
+xdg-mime install --mode system /usr/local/share/xml/misc/wpanda-mime.xml
+xdg-mime default /usr/local/share/applications/wpanda.desktop application/x-wpanda
+xdg-icon-resource install --context mimetypes --size 128  /usr/local/share/icons/hicolor/128x128/apps/wpanda-file.png application-x-wpanda
+xdg-icon-resource install --context mimetypes --size 64  /usr/local/share/icons/hicolor/64x64/apps/wpanda-file.png application-x-wpanda
+xdg-icon-resource install --context mimetypes --size 48  /usr/local/share/icons/hicolor/48x48/apps/wpanda-file.png application-x-wpanda
+xdg-icon-resource install --context mimetypes --size 32  /usr/local/share/icons/hicolor/32x32/apps/wpanda-file.png application-x-wpanda
+xdg-icon-resource install --context mimetypes --size 26  /usr/local/share/icons/hicolor/26x26/apps/wpanda-file.png application-x-wpanda
+;;
+esac" > "${DEBPKGTREE}/DEBIAN/postinst"
+
+# tree ${DEBPKGTREE}
+
 echo "Extracting deb package"
-dpkg-deb -x *.deb /tmp/extract/
 echo "Copying Files"
-PKGDIR=wpanda_portable_linux
-DATADIR=${PKGDIR}/files
+
 mkdir -p $DATADIR
-cp /tmp/extract/usr/local/bin/wpanda $DATADIR
-cp portable_files/shared_qt.sh ${DATADIR}/wpanda.sh
-cp portable_files/wpanda.svg ${DATADIR}/wpanda.svg
-cp portable_files/wpanda.desktop ${PKGDIR}/wpanda.desktop
+
+cp ${DEBPKGTREE}/usr/local/bin/wpanda $DATADIR
+cp ${CURRENTDIR}/portable_files/shared_qt.sh ${DATADIR}/wpanda.sh
+cp ${CURRENTDIR}/portable_files/wpanda.svg ${DATADIR}/wpanda.svg
+cp ${CURRENTDIR}/portable_files/wpanda.desktop ${PTBDIR}/wpanda.desktop
 
 chmod +x ${DATADIR}/wpanda
 chmod +x ${DATADIR}/wpanda.sh
-chmod +x ${PKGDIR}/wpanda.desktop
+chmod +x ${PTBDIR}/wpanda.desktop
 
+cp ${DEBPKGTREE}/usr/local/lib/wpanda/* $DATADIR
+echo "Generating ${PTBDIR}.tar.gz"
+tar -zcvf ${PTBDIR}.tar.gz $PTBDIR
 
-cp /tmp/extract/usr/local/lib/wpanda/* $DATADIR
-echo "Generating ${PKGDIR}.tar.gz"
-tar -zcvf ${PKGDIR}.tar.gz $PKGDIR
+echo "Generating ${PKGDIR}.deb"
+dpkg-deb -b ${PKGDIR}.deb
+
+mkdir /tmp/packages
+cp ${PTBDIR}.tar.gz /tmp/packages
+cp ${DEBPKGTREE}.deb /tmp/packages
 
 echo "Removing temporary files"
-rm -rf $PKGDIR
-rm -rf /tmp/extract/
-
-rm *.lintian
+rm -rf ${PKGDIR}
+rm -rf ${DEBPKGTREE}
