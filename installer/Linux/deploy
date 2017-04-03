@@ -1,13 +1,16 @@
 #!/bin/bash
+set -e
 PROJECTPATH=${PWD}/../../app
-export PATH=/opt/qt-static/qtbase/bin:$(getconf PATH)
-mkdir -p /tmp/wpanda-build
-pushd /tmp/wpanda-build
-qmake $PROJECTPATH
-make -j12
-popd
+if [ -d "/home/lellis/Qt5.7.1/5.7/gcc_64/bin/" ]; then
+export PATH=/home/lellis/Qt5.7.1/5.7/gcc_64/bin/:$(getconf PATH)\
+&& mkdir -p /tmp/wpanda-build\
+&& pushd /tmp/wpanda-build\
+&& qmake $PROJECTPATH\
+&& make -j12\
+&& popd;
+fi;
 
-rm *.deb *.lintian *.tar.gz
+rm -rf *.deb *.lintian *.tar.gz
 
 debreate wpanda.dbp
 echo "Extracting deb package"
