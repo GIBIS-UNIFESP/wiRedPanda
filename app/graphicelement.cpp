@@ -407,22 +407,24 @@ QString GraphicElement::getLabel( ) {
 }
 
 void GraphicElement::updateTheme( ) {
-  switch( ThemeManager::globalMngr->theme( ) ) {
-      case Theme::Panda_Light:
-      label->setDefaultTextColor( Qt::black );
-      m_selectionBrush = QColor( 155, 0, 0, 80 );
-      m_selectionPen = QColor( 175, 0, 0, 255 );
+  if( ThemeManager::globalMngr ) {
+    switch( ThemeManager::globalMngr->theme( ) ) {
+        case Theme::Panda_Light:
+        label->setDefaultTextColor( Qt::black );
+        m_selectionBrush = QColor( 155, 0, 0, 80 );
+        m_selectionPen = QColor( 175, 0, 0, 255 );
 
-      break;
-      case Theme::Panda_Dark:
-      label->setDefaultTextColor( Qt::lightGray );
-      m_selectionBrush = QColor( 255, 255, 0, 80 );
-      m_selectionPen = QColor( 255, 255, 0, 255 );
+        break;
+        case Theme::Panda_Dark:
+        label->setDefaultTextColor( Qt::lightGray );
+        m_selectionBrush = QColor( 255, 255, 0, 80 );
+        m_selectionPen = QColor( 255, 255, 0, 255 );
 
-      break;
+        break;
+    }
+    updateThemeLocal( );
+    update( );
   }
-  updateThemeLocal( );
-  update( );
 }
 
 void GraphicElement::updateThemeLocal( ) {

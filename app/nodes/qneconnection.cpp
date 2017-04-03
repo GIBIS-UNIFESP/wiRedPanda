@@ -191,20 +191,22 @@ void QNEConnection::setStatus( const Status &status ) {
 }
 
 void QNEConnection::updateTheme( ) {
-  switch( ThemeManager::globalMngr->theme( ) ) {
-      case Theme::Panda_Light: {
-      m_inactiveClr = QColor( Qt::darkGreen );
-      m_activeClr = QColor( Qt::green );
-      m_invalidClr = QColor( Qt::red );
-      m_selectedClr = QColor( Qt::darkYellow );
-      break;
-    }
-      case Theme::Panda_Dark: {
-      m_inactiveClr = QColor( Qt::darkGreen );
-      m_activeClr = QColor( Qt::green );
-      m_invalidClr = QColor( Qt::red );
-      m_selectedClr = QColor( Qt::darkYellow );
-      break;
+  if( ThemeManager::globalMngr ) {
+    switch( ThemeManager::globalMngr->theme( ) ) {
+        case Theme::Panda_Light: {
+        m_inactiveClr = QColor( Qt::darkGreen );
+        m_activeClr = QColor( Qt::green );
+        m_invalidClr = QColor( Qt::red );
+        m_selectedClr = QColor( Qt::darkYellow );
+        break;
+      }
+        case Theme::Panda_Dark: {
+        m_inactiveClr = QColor( Qt::darkGreen );
+        m_activeClr = QColor( Qt::green );
+        m_invalidClr = QColor( Qt::red );
+        m_selectedClr = QColor( Qt::darkYellow );
+        break;
+      }
     }
   }
 }
