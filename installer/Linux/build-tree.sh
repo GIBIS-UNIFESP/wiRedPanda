@@ -1,10 +1,15 @@
 #!/bin/bash
+set -e
 VERSION=$(cat ~/projetos/wiRedPanda/includes.pri | grep "VERSION = " | awk '{split($0,a,"="); gsub (" ", "", a[2]); print a[2] }')
 BUILD_TREE="wpanda-${VERSION}"
+PROJECTPATH=$(readlink -e "${PWD}/../../app/")
+QT_LIBRARY_PATH="/opt/qt58/gcc_64/lib/"
+QT_PLATFORMS_PATH="/opt/qt58/gcc_64/plugins/platforms/"
+DEPENDENCIES_PATH="/usr/lib/x86_64-linux-gnu/"
 rm -rf $BUILD_TREE
 
 echo "Generating build tree for ${BUILD_TREE}.deb"
-
+echo "Project path is ${PROJECTPATH}"
 mkdir -p ${BUILD_TREE}/DEBIAN
 mkdir -p ${BUILD_TREE}/usr/local/bin
 mkdir -p ${BUILD_TREE}/usr/local/lib/wpanda
@@ -13,12 +18,31 @@ mkdir -p ${BUILD_TREE}/usr/local/share/xml/misc
 mkdir -p ${BUILD_TREE}/usr/local/share/doc
 
 for SIZE in 26x26 32x32 48x48 64x64 128x128; do
-  ICONDIR_SZ="${BUILD_TREE}/usr/local/share/icons/hicolor/${SIZE}/apps/"
+  ICONDIR_SZ=${BUILD_TREE}/usr/local/share/icons/hicolor/${SIZE}/apps/
   mkdir -p $ICONDIR_SZ
-  cp "${PWD}/../../app/resources/icons/${SIZE}/*" "$ICONDIR_SZ"
+  cp $PROJECTPATH/resources/icons/${SIZE}/* $ICONDIR_SZ
 done;
 
-tree ${BUILD_TREE}
+cp $PROJECTPATH/resources/wpanda.desktop  ${BUILD_TREE}/usr/local/share/applications/
+cp $PROJECTPATH/resources/wpanda.sh       ${BUILD_TREE}/usr/local/bin/
+cp $PROJECTPATH/resources/wpanda.desktop  ${BUILD_TREE}/usr/local/share/applications/
+cp $PROJECTPATH/resources/wpanda-mime.xml ${BUILD_TREE}/usr/local/share/xml/misc
+
+cp $QT_LIBRARY_PATH/libQt5PrintSupport.so.5 ${BUILD_TREE}/usr/local/lib/wpanda
+cp $QT_LIBRARY_PATH/libQt5XcbQpa.so.5       ${BUILD_TREE}/usr/local/lib/wpanda
+cp $QT_LIBRARY_PATH/libQt5DBus.so.5         ${BUILD_TREE}/usr/local/lib/wpanda
+cp $QT_LIBRARY_PATH/libQt5Charts.so.5       ${BUILD_TREE}/usr/local/lib/wpanda
+cp $QT_LIBRARY_PATH/libQt5Widgets.so.5      ${BUILD_TREE}/usr/local/lib/wpanda
+cp $QT_LIBRARY_PATH/libQt5Gui.so.5          ${BUILD_TREE}/usr/local/lib/wpanda
+cp $QT_LIBRARY_PATH/libQt5Core.so.5         ${BUILD_TREE}/usr/local/lib/wpanda
+cp $QT_LIBRARY_PATH/libicui18n.so.56        ${BUILD_TREE}/usr/local/lib/wpanda
+cp $QT_LIBRARY_PATH/libicuuc.so.56          ${BUILD_TREE}/usr/local/lib/wpanda
+cp $QT_LIBRARY_PATH/libicudata.so.56        ${BUILD_TREE}/usr/local/lib/wpanda
+cp $QT_PLATFORMS_PATH/libqxcb.so            ${BUILD_TREE}/usr/local/lib/wpanda
+cp $DEPENDENCIES_PATH/libX11-xcb.so.1       ${BUILD_TREE}/usr/local/lib/wpanda
+cp $DEPENDENCIES_PATH/libxcb.so.1           ${BUILD_TREE}/usr/local/lib/wpanda
+cp $DEPENDENCIES_PATH/libxcb-dri2.so.0      ${BUILD_TREE}/usr/local/lib/wpanda
+cp $DEPENDENCIES_PATH/libxcb-xfixes.so.0    ${BUILD_TREE}/usr/local/lib/wpanda
 
 echo \
 "Package: wpanda
@@ -52,3 +76,5 @@ xdg-icon-resource install --context mimetypes --size 32  /usr/local/share/icons/
 xdg-icon-resource install --context mimetypes --size 26  /usr/local/share/icons/hicolor/26x26/apps/wpanda-file.png application-x-wpanda
 ;;
 esac" > "${BUILD_TREE}/DEBIAN/postinst"
+
+tree ${BUILD_TREE}
