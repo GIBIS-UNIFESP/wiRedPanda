@@ -29,7 +29,7 @@ install:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
       if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
       && if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
-      && if [ "$QT" = "qt58" ]; then sudo apt-get install -qq qt58base qt58charts; source /opt/qt58/bin/qt58-env.sh; fi;
+      && if [ "$QT" = "qt58" ]; then sudo apt-get install -y qt58base qt58charts-no-lgpl; source /opt/qt58/bin/qt58-env.sh; fi;
     else
       brew install qt@5.7
       && chmod -R 755 /usr/local/opt/qt5/*;
