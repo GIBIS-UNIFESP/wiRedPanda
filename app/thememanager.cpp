@@ -28,6 +28,8 @@ ThemeManager::ThemeManager( QObject *parent ) : QObject( parent ) {
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   if( settings.contains( "theme" ) ) {
       setTheme((Theme) settings.value("theme").toInt());
+  }else{
+    setTheme(Theme::Panda_Light);
   }
 
 }
