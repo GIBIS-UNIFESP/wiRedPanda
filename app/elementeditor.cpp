@@ -32,9 +32,8 @@ void ElementEditor::setScene( Scene *s ) {
 
 QAction* addElementAction( QMenu *menu, GraphicElement *firstElm, ElementType type, bool hasSameType ) {
   if( !hasSameType || ( firstElm->elementType( ) != type ) ) {
-    QAction *action = menu->addAction( QIcon( ElementFactory::getPixmap( type ) ), ElementFactory::translatedName(
-                                         type ) );
-    action->setData( ElementFactory::typeToText( type ) );
+    QAction *action = menu->addAction( QIcon( ElementFactory::getPixmap( type ) ), ElementFactory::translatedName(type ) );
+    action->setData( (int) type );
     return( action );
   }
   return( nullptr );
@@ -49,16 +48,16 @@ void ElementEditor::contextMenu(QPoint screenPos) {
   QString triggerActionText( tr( "Change trigger" ) );
   QString morphMenuText( tr( "Morph to..." ) );
   if( hasLabel ) {
-    menu.addAction( QIcon( QPixmap( ":/toolbar/rename.png" ) ), renameActionText );
+    menu.addAction( QIcon( QPixmap( ":/toolbar/rename.png" ) ), renameActionText )->setData(renameActionText);
   }
   if( hasTrigger ) {
-    menu.addAction( QIcon( ElementFactory::getPixmap( ElementType::BUTTON ) ), triggerActionText );
+    menu.addAction( QIcon( ElementFactory::getPixmap( ElementType::BUTTON ) ), triggerActionText )->setData(triggerActionText);
   }
   if( hasRotation ) {
-    menu.addAction( QIcon( QPixmap( ":/toolbar/rotateR.png" ) ), rotateActionText );
+    menu.addAction( QIcon( QPixmap( ":/toolbar/rotateR.png" ) ), rotateActionText )->setData(rotateActionText);
   }
   if( hasFrequency ) {
-    menu.addAction( QIcon( ElementFactory::getPixmap( ElementType::CLOCK ) ), freqActionText );
+    menu.addAction( QIcon( ElementFactory::getPixmap( ElementType::CLOCK ) ), freqActionText )->setData(freqActionText);
   }
   QMenu *submenucolors = nullptr;
   if( hasColors ) {
@@ -146,8 +145,9 @@ void ElementEditor::contextMenu(QPoint screenPos) {
       ui->doubleSpinBoxFrequency->setFocus( );
     }
     else if( submenumorph && submenumorph->actions( ).contains( a ) ) {
-      if( ElementFactory::textToType( a->data( ).toString( ) ) != ElementType::UNKNOWN ) {
-        sendCommand( new MorphCommand( m_elements, ElementFactory::textToType( a->data( ).toString( ) ), editor ) );
+      ElementType type = static_cast<ElementType>( a->data( ).toInt( ) );
+      if( type != ElementType::UNKNOWN ) {
+        sendCommand( new MorphCommand( m_elements, type, editor ) );
       }
     }
     else if( submenucolors && submenucolors->actions( ).contains( a ) ) {
