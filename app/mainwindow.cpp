@@ -34,6 +34,11 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   if( settings.value( "language" ).isValid( ) ) {
     loadTranslation( settings.value( "language" ).toString( ) );
   }
+
+  QList< QKeySequence > zoom_in_shortcuts;
+  zoom_in_shortcuts << QKeySequence("Ctrl++") << QKeySequence("Ctrl+=");
+  ui->actionZoom_in->setShortcuts(zoom_in_shortcuts);
+
   /* THEME */
   QActionGroup *themeGroup = new QActionGroup( this );
   for( QAction *action : ui->menuTheme->actions( ) ) {
@@ -541,25 +546,26 @@ void MainWindow::on_actionZoom_in_triggered( ) {
   double newScale = std::round( gvzoom->scaleFactor( ) * 10 ) / 10.0 + ZOOMFAC;
   if( newScale <= GraphicsViewZoom::maxZoom ) {
     gvzoom->setScaleFactor( newScale );
-    zoomChanged( );
   }
+  zoomChanged( );
 }
 
 void MainWindow::on_actionZoom_out_triggered( ) {
   double newScale = std::round( gvzoom->scaleFactor( ) * 10 ) / 10.0 - ZOOMFAC;
   if( newScale >= GraphicsViewZoom::minZoom ) {
     gvzoom->setScaleFactor( newScale );
-    zoomChanged( );
   }
+  zoomChanged( );
 }
 
 void MainWindow::on_actionReset_Zoom_triggered( ) {
   gvzoom->setScaleFactor( 1.0 );
+  zoomChanged();
 }
 
 void MainWindow::zoomChanged( ) {
-  ui->actionZoom_in->setEnabled( gvzoom->scaleFactor( ) + ZOOMFAC <= gvzoom->maxZoom );
-  ui->actionZoom_out->setEnabled( gvzoom->scaleFactor( ) - ZOOMFAC >= gvzoom->minZoom );
+  ui->actionZoom_in->setEnabled( ( gvzoom->scaleFactor( ) + ZOOMFAC * 2) <= gvzoom->maxZoom );
+  ui->actionZoom_out->setEnabled( ( gvzoom->scaleFactor( ) - ZOOMFAC * 2)  >= gvzoom->minZoom );
 }
 
 void MainWindow::updateRecentFileActions( ) {
