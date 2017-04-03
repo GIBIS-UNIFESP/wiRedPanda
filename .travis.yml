@@ -39,13 +39,10 @@ before_install:
 
 install:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-     # if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
-      #&& if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
-      
       if [ "$QT" = "qt57" ] && [ ! -d /opt/qt57 ]; then
         sudo apt-get install -y qt57base qt57charts-no-lgpl
         && source /opt/qt57/bin/qt57-env.sh;
-      fi;
+      fi
     else
       brew install qt@5.7
       && ls /usr/local/opt/
