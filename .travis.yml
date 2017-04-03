@@ -4,6 +4,7 @@ cache:
   directories:
     - $HOME/Library/Caches/Homebrew
     - /usr/local/opt/qt5/
+    - /opt/qt58/
 os:
   - linux
   - osx
@@ -12,6 +13,14 @@ dist: trusty
 
 env:
   - QT=qt58
+  
+addons:
+apt:
+  sources:
+  - ubuntu-toolchain-r-test
+  packages:
+  - gcc-4.8
+  - g++-4.8
 
 branches:
   only:
@@ -22,8 +31,7 @@ branches:
 #   - sh -e /etc/init.d/xvfb start
 before_install:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-      sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-      && if [ "$QT" = "qt58" ]; then sudo add-apt-repository ppa:beineri/opt-qt58-trusty -y; fi
+      if [ "$QT" = "qt58" ]; then sudo add-apt-repository ppa:beineri/opt-qt58-trusty -y; fi
       && sudo apt-get update;
     else
       brew update;
@@ -31,11 +39,13 @@ before_install:
 
 install:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-      if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
-      && if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
-      && if [ "$QT" = "qt58" ]; then sudo apt-get install -y qt58base qt58charts-no-lgpl; source /opt/qt58/bin/qt58-env.sh; fi;
+     # if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
+      #&& if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+      
+      if [ "$QT" = "qt58" ] && [ ! -d /opt/qt58 ]; then sudo apt-get install -y qt58base qt58charts-no-lgpl; source /opt/qt58/bin/qt58-env.sh; fi;
     else
-      brew install qt@5.8
+      ls /usr/local/opt/
+      && brew install qt@5.8
       && chmod -R 755 /usr/local/opt/qt5/*;
     fi
 
