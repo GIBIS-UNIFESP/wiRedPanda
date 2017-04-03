@@ -68,7 +68,7 @@ script:
   - qmake ./WPanda.pro -r
   - make -j4
   - if [ "${TRAVIS_OS_NAME}" = "linux" ];
-      then ./test/WPanda-test;
+      then ./test/WPanda-test
       && bash installer/Linux/deploy
     else
       WPanda-test.app/Contents/MacOS/WPanda-test;
