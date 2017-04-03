@@ -1,5 +1,9 @@
 language: cpp
 cache: apt
+cache:
+  directories:
+    - $HOME/Library/Caches/Homebrew
+    - /usr/local/opt/qt5/
 os:
   - linux
   - osx
@@ -47,6 +51,8 @@ script:
       g++ -v;
     else
       clang --version
+      && locate qmake
+      && ls "/usr/local/opt/"
       && QTDIR="/usr/local/opt/qt5"
       && PATH="${QTDIR}/bin:$PATH"
       && LDFLAGS=-L${QTDIR}/lib
