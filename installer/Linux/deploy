@@ -1,4 +1,5 @@
 #!/bin/bash
+
 set -e
 PROJECTPATH=${PWD}/../../app
 if [ -d "/home/lellis/Qt5.7.1/5.7/gcc_64/bin/" ]; then
