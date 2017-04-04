@@ -41,7 +41,7 @@ before_install:
 install:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
       if [ "$QT" = "qt57" ]; then
-        sudo apt-get install -y qt57base qt57charts-no-lgpl;
+        sudo apt-get install -y qt57base qt57charts-no-lgpl dh_make;
       fi;
     else
       brew install qt@5.7 gdb
