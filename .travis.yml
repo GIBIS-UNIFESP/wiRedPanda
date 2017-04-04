@@ -1,10 +1,6 @@
 language: cpp
 cache: apt
-cache:
-  directories:
-    - $HOME/Library/Caches/Homebrew
-    - /usr/local/opt/qt@5.7/
-    - /opt/qt57/
+
 os:
   - linux
   - osx
