@@ -42,31 +42,31 @@ QNEConnection::QNEConnection( QGraphicsItem *parent ) : QGraphicsPathItem( paren
   setBrush( Qt::NoBrush );
   setStatus( Inactive );
   setZValue( -1 );
-  m_port1 = nullptr;
-  m_port2 = nullptr;
+  m_start = nullptr;
+  m_end = nullptr;
   updateTheme( );
 }
 
 QNEConnection::~QNEConnection( ) {
-  if( m_port1 ) {
-    m_port1->disconnect( this );
+  if( m_start ) {
+    m_start->disconnect( this );
   }
-  if( m_port2 ) {
-    m_port2->disconnect( this );
+  if( m_end ) {
+    m_end->disconnect( this );
   }
 }
 
-void QNEConnection::setPos1( const QPointF &p ) {
-  pos1 = p;
+void QNEConnection::setStartPos( const QPointF &p ) {
+  startPos = p;
 }
 
-void QNEConnection::setPos2( const QPointF &p ) {
-  pos2 = p;
+void QNEConnection::setEndPos( const QPointF &p ) {
+  endPos = p;
 }
 
-void QNEConnection::setPort1( QNEPort *p ) {
-  QNEPort *old = m_port1;
-  m_port1 = p;
+void QNEConnection::setStart( QNEOutputPort *p ) {
+  QNEOutputPort *old = m_start;
+  m_start = p;
   if( old ) {
     old->disconnect( this );
   }
@@ -75,9 +75,9 @@ void QNEConnection::setPort1( QNEPort *p ) {
   }
 }
 
-void QNEConnection::setPort2( QNEPort *p ) {
-  QNEPort *old = m_port2;
-  m_port2 = p;
+void QNEConnection::setEnd( QNEInputPort *p ) {
+  QNEInputPort *old = m_end;
+  m_end = p;
   if( old ) {
     old->disconnect( this );
   }
@@ -87,51 +87,42 @@ void QNEConnection::setPort2( QNEPort *p ) {
 }
 
 void QNEConnection::updatePosFromPorts( ) {
-  if( m_port1 ) {
-    pos1 = m_port1->scenePos( );
+  if( m_start ) {
+    startPos = m_start->scenePos( );
   }
-  if( m_port2 ) {
-    pos2 = m_port2->scenePos( );
+  if( m_end ) {
+    endPos = m_end->scenePos( );
   }
 }
 
 void QNEConnection::updatePath( ) {
   QPainterPath p;
 
-  p.moveTo( pos1 );
+  p.moveTo( startPos );
 
-  qreal dx = pos2.x( ) - pos1.x( );
-  qreal dy = pos2.y( ) - pos1.y( );
+  qreal dx = endPos.x( ) - startPos.x( );
+  qreal dy = endPos.y( ) - startPos.y( );
 
-  QPointF ctr1( pos1.x( ) + dx * 0.25, pos1.y( ) + dy * 0.1 );
-  QPointF ctr2( pos1.x( ) + dx * 0.75, pos1.y( ) + dy * 0.9 );
+  QPointF ctr1( startPos.x( ) + dx * 0.25, startPos.y( ) + dy * 0.1 );
+  QPointF ctr2( startPos.x( ) + dx * 0.75, startPos.y( ) + dy * 0.9 );
 
-  p.cubicTo( ctr1, ctr2, pos2 );
+  p.cubicTo( ctr1, ctr2, endPos );
 
 /*  p.lineTo(pos2); */
   setPath( p );
 }
 
-QNEPort* QNEConnection::port1( ) const {
-  return( m_port1 );
+QNEOutputPort* QNEConnection::start( ) const {
+  return( m_start );
 }
 
-QNEPort* QNEConnection::port2( ) const {
-  return( m_port2 );
-}
-
-QNEPort* QNEConnection::otherPort( const QNEPort *port ) const {
-  if( port == m_port1 ) {
-    return( m_port2 );
-  }
-  else {
-    return( m_port1 );
-  }
+QNEInputPort* QNEConnection::end( ) const {
+  return( m_end );
 }
 
 double QNEConnection::angle( ) {
-  QNEPort *p1 = m_port1;
-  QNEPort *p2 = m_port2;
+  QNEPort *p1 = m_start;
+  QNEPort *p2 = m_end;
   if( p1 && p2 ) {
     if( p2->isOutput( ) ) {
       std::swap( p1, p2 );
@@ -143,8 +134,8 @@ double QNEConnection::angle( ) {
 }
 
 void QNEConnection::save( QDataStream &ds ) const {
-  ds << ( quint64 ) m_port1;
-  ds << ( quint64 ) m_port2;
+  ds << ( quint64 ) m_start;
+  ds << ( quint64 ) m_end;
 }
 
 bool QNEConnection::load( QDataStream &ds, const QMap< quint64, QNEPort* > &portMap ) {
@@ -153,19 +144,59 @@ bool QNEConnection::load( QDataStream &ds, const QMap< quint64, QNEPort* > &port
   ds >> ptr1;
   ds >> ptr2;
   if( portMap.isEmpty( ) ) {
-    setPort1( reinterpret_cast< QNEPort* >( ptr1 ) );
-    setPort2( reinterpret_cast< QNEPort* >( ptr2 ) );
+    QNEPort *port1 = reinterpret_cast< QNEPort* >( ptr1 );
+    QNEPort *port2 = reinterpret_cast< QNEPort* >( ptr2 );
+    if( port2 && port1 ) {
+      if( !port1->isOutput( ) && port2->isOutput( ) ) {
+        setStart( dynamic_cast< QNEOutputPort* >( port2 ) );
+        setEnd( dynamic_cast< QNEInputPort* >( port1 ) );
+      }
+      else if( port1->isOutput( ) && !port2->isOutput( ) ) {
+        setStart( dynamic_cast< QNEOutputPort* >( port1 ) );
+        setEnd( dynamic_cast< QNEInputPort* >( port2 ) );
+      }
+    }
   }
   else if( portMap.contains( ptr1 ) && portMap.contains( ptr2 ) ) {
-    setPort1( portMap[ ptr1 ] );
-    setPort2( portMap[ ptr2 ] );
+    QNEPort *port1 = dynamic_cast< QNEPort* >( portMap[ ptr1 ] );
+    QNEPort *port2 = dynamic_cast< QNEPort* >( portMap[ ptr2 ] );
+    if( port1 && port2 ) {
+      if( !port1->isOutput( ) && port2->isOutput( ) ) {
+        setStart( dynamic_cast< QNEOutputPort* >( port2 ) );
+        setEnd( dynamic_cast< QNEInputPort* >( port1 ) );
+      }
+      else if( port1->isOutput( ) && !port2->isOutput( ) ) {
+        setStart( dynamic_cast< QNEOutputPort* >( port1 ) );
+        setEnd( dynamic_cast< QNEInputPort* >( port2 ) );
+      }
+    }
   }
   else {
     return( false );
   }
   updatePosFromPorts( );
   updatePath( );
+  if( !m_start || !m_end ) {
+    return( false );
+  }
   return( true );
+}
+
+QNEPort* QNEConnection::otherPort( const QNEPort *port ) const {
+  if( port == dynamic_cast< QNEPort* >( m_start ) ) {
+    return( dynamic_cast< QNEPort* >( m_end ) );
+  }
+  else {
+    return( dynamic_cast< QNEPort* >( m_start ) );
+  }
+}
+
+QNEOutputPort* QNEConnection::otherPort( const QNEInputPort* ) const {
+  return( m_start );
+}
+
+QNEInputPort* QNEConnection::otherPort( const QNEOutputPort* ) const {
+  return( m_end );
 }
 
 QNEConnection::Status QNEConnection::status( ) const {

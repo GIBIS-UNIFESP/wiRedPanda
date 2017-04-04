@@ -41,7 +41,7 @@ Box::Box( Editor *editor, QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, 
 }
 
 Box::~Box( ) {
-  qDeleteAll(elements);
+  qDeleteAll( elements );
 }
 
 
@@ -85,6 +85,35 @@ void Box::verifyRecursion( QString fname ) {
   }
 }
 
+template< class T >
+void sortMap( QVector< T* > &map ) {
+  // TODO: Benchmark
+  /* BubbleSort */
+  for( int i = map.size( ) - 1; i >= 1; i-- ) {
+    for( int j = 0; j < i; j++ ) {
+      QPointF p1 = map[ j ]->graphicElement( )->pos( );
+      QPointF p2 = map[ j + 1 ]->graphicElement( )->pos( );
+      if( p1 != p2 ) {
+        if( p1.y( ) > p2.y( ) ) {
+          std::swap( map[ j ], map[ j + 1 ] );
+        }
+        else if( ( p1.y( ) == p2.y( ) ) && ( p1.x( ) > p2.x( ) ) ) {
+          std::swap( map[ j ], map[ j + 1 ] );
+        }
+      }
+      else {
+        p1 = map[ j ]->pos( );
+        p2 = map[ j + 1 ]->pos( );
+        if( p1.x( ) > p2.x( ) ) {
+          std::swap( map[ j ], map[ j + 1 ] );
+        }
+        else if( ( p1.x( ) == p2.x( ) ) && ( p1.y( ) > p2.y( ) ) ) {
+          std::swap( map[ j ], map[ j + 1 ] );
+        }
+      }
+    }
+  }
+}
 
 void Box::loadFile( QString fname ) {
 //  qDebug( ) << "Loading file:" << fname;
@@ -104,7 +133,7 @@ void Box::loadFile( QString fname ) {
   if( file.open( QFile::ReadOnly ) ) {
     inputMap.clear( );
     outputMap.clear( );
-    qDeleteAll(elements);
+    qDeleteAll( elements );
     elements.clear( );
     QDataStream ds( &file );
     QList< QGraphicsItem* > items = SerializationFunctions::load( editor, ds, fname );
@@ -117,7 +146,7 @@ void Box::loadFile( QString fname ) {
               case ElementType::BUTTON:
               case ElementType::SWITCH:
               case ElementType::CLOCK: {
-              for( QNEPort *port : elm->outputs( ) ) {
+              for( QNEOutputPort *port : elm->outputs( ) ) {
                 inputMap.append( port );
               }
               elm->disable( );
@@ -125,7 +154,7 @@ void Box::loadFile( QString fname ) {
             }
               case ElementType::DISPLAY:
               case ElementType::LED: {
-              for( QNEPort *port : elm->inputs( ) ) {
+              for( QNEInputPort *port : elm->inputs( ) ) {
                 outputMap.append( port );
               }
               break;
@@ -202,7 +231,6 @@ QFileInfo Box::findFile( QString fname ) {
 //    qDebug( ) << "Trying to load (2): " << fileInfo.absoluteFilePath( );
     if( !fileInfo.exists( ) ) {
       fileInfo.setFile( QFileInfo( parentFile ).absoluteDir( ), myFile );
-
 //      qDebug( ) << "Parent file: " << parentFile;
 //      qDebug( ) << "Trying to load (3): " << fileInfo.absoluteFilePath( );
       if( !fileInfo.exists( ) ) {
@@ -226,34 +254,6 @@ QFileInfo Box::findFile( QString fname ) {
 
 QString Box::getFile( ) const {
   return( m_file );
-}
-
-void Box::sortMap( QVector< QNEPort* > &map ) {
-  /* BubbleSort */
-  for( int i = map.size( ) - 1; i >= 1; i-- ) {
-    for( int j = 0; j < i; j++ ) {
-      QPointF p1 = map[ j ]->graphicElement( )->pos( );
-      QPointF p2 = map[ j + 1 ]->graphicElement( )->pos( );
-      if( p1 != p2 ) {
-        if( p1.y( ) > p2.y( ) ) {
-          std::swap( map[ j ], map[ j + 1 ] );
-        }
-        else if( ( p1.y( ) == p2.y( ) ) && ( p1.x( ) > p2.x( ) ) ) {
-          std::swap( map[ j ], map[ j + 1 ] );
-        }
-      }
-      else {
-        p1 = map[ j ]->pos( );
-        p2 = map[ j + 1 ]->pos( );
-        if( p1.x( ) > p2.x( ) ) {
-          std::swap( map[ j ], map[ j + 1 ] );
-        }
-        else if( ( p1.x( ) == p2.x( ) ) && ( p1.y( ) > p2.y( ) ) ) {
-          std::swap( map[ j ], map[ j + 1 ] );
-        }
-      }
-    }
-  }
 }
 
 QVector< GraphicElement* > Box::getElements( ) const {

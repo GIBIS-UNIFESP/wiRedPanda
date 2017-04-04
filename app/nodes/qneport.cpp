@@ -58,12 +58,6 @@ QNEPort::QNEPort( QGraphicsItem *parent ) : QGraphicsPathItem( parent ) {
   m_defaultValue = -1;
 }
 
-QNEPort::~QNEPort( ) {
-  foreach( QNEConnection * conn, m_connections ) {
-    delete conn;
-  }
-}
-
 void QNEPort::setNEBlock( QNEBlock *b ) {
   m_block = b;
 }
@@ -74,35 +68,8 @@ void QNEPort::setName( const QString &n ) {
   setToolTip( n );
 }
 
-void QNEPort::setIsOutput( bool o ) {
-  isOutput_ = o;
-  if( scene( ) ) {
-    QFontMetrics fm( scene( )->font( ) );
-  }
-/*  QRect r = fm.boundingRect(name); */
-  if( isOutput_ ) {
-    setPen( QPen( Qt::darkRed ) );
-    setCurrentBrush( Qt::red );
-
-    label->setPos( -radius_ - margin - label->boundingRect( ).width( ), -label->boundingRect( ).height( ) / 2 );
-  }
-  else {
-    setPen( QPen( Qt::black ) );
-    setCurrentBrush( Qt::darkRed );
-    label->setPos( radius_ + margin, -label->boundingRect( ).height( ) / 2 );
-  }
-}
-
 int QNEPort::radius( ) const {
   return( radius_ );
-}
-
-bool QNEPort::isOutput( ) const {
-  return( isOutput_ );
-}
-
-bool QNEPort::isInput( ) const {
-  return( !isOutput_ );
 }
 
 const QList< QNEConnection* > &QNEPort::connections( ) const {
@@ -126,15 +93,12 @@ void QNEPort::connect( QNEConnection *conn ) {
 }
 
 void QNEPort::disconnect( QNEConnection *conn ) {
-  if( graphicElement( ) ) {
-
-  }
   m_connections.removeAll( conn );
-  if( conn->port1( ) == this ) {
-    conn->setPort1( nullptr );
+  if( conn->start( ) == this ) {
+    conn->setStart( nullptr );
   }
-  if( conn->port2( ) == this ) {
-    conn->setPort2( nullptr );
+  if( conn->end( ) == this ) {
+    conn->setEnd( nullptr );
   }
   updateConnections( );
 }
@@ -155,6 +119,18 @@ void QNEPort::setPortFlags( int f ) {
   }
 }
 
+const QString &QNEPort::portName( ) const {
+  return( name );
+}
+
+int QNEPort::portFlags( ) const {
+  return( m_portFlags );
+}
+
+int QNEPort::type( ) const {
+  return( Type );
+}
+
 quint64 QNEPort::ptr( ) {
   return( m_ptr );
 }
@@ -164,20 +140,21 @@ void QNEPort::setPtr( quint64 p ) {
 }
 
 bool QNEPort::isConnected( QNEPort *other ) {
-  foreach( QNEConnection * conn, m_connections )
-  if( ( conn->port1( ) == other ) || ( conn->port2( ) == other ) ) {
-    return( true );
+  for( QNEConnection *conn: m_connections ) {
+    if( ( conn->start( ) == other ) || ( conn->end( ) == other ) ) {
+      return( true );
+    }
   }
   return( false );
 }
 
 void QNEPort::updateConnections( ) {
-  foreach( QNEConnection * conn, m_connections ) {
+  for( QNEConnection *conn: m_connections ) {
     conn->updatePosFromPorts( );
     conn->updatePath( );
   }
   if( isValid( ) ) {
-    if( ( m_connections.size( ) == 0 ) && isInput( ) ) {
+    if( ( m_connections.size( ) == 0 ) && !isOutput( ) ) {
       setValue( defaultValue( ) );
     }
   }
@@ -195,16 +172,6 @@ QVariant QNEPort::itemChange( GraphicsItemChange change, const QVariant &value )
 
 QString QNEPort::getName( ) const {
   return( name );
-}
-
-bool QNEPort::isValid( ) const {
-  if( isOutput( ) ) {
-    return( m_value != -1 );
-  }
-  if( m_connections.isEmpty( ) ) {
-    return( !required( ) );
-  }
-  return( m_connections.size( ) == 1 );
 }
 
 
@@ -243,45 +210,6 @@ char QNEPort::value( ) const {
   return( m_value );
 }
 
-void QNEPort::setValue( char value ) {
-  m_value = value;
-  if( isInput( ) && !isValid( ) ) {
-    m_value = -1;
-  }
-  if( isOutput( ) ) {
-    foreach( QNEConnection * conn, connections( ) ) {
-      if( value == -1 ) {
-        conn->setStatus( QNEConnection::Invalid );
-      }
-      else if( value == 0 ) {
-        conn->setStatus( QNEConnection::Inactive );
-      }
-      else {
-        conn->setStatus( QNEConnection::Active );
-      }
-      QNEPort *port = conn->otherPort( this );
-      if( port && ( port != this ) ) {
-        port->setValue( value );
-      }
-    }
-  }
-  else {
-    if( m_value == -1 ) {
-      setPen( QPen( Qt::black ) );
-      setCurrentBrush( Qt::darkRed );
-    }
-    else if( m_value == 1 ) {
-      setPen( QPen( Qt::black ) );
-      setCurrentBrush( Qt::green );
-    }
-    else {
-      setPen( QPen( Qt::black ) );
-      setCurrentBrush( QColor( 0x333333 ) );
-    }
-  }
-  update( );
-}
-
 GraphicElement* QNEPort::graphicElement( ) const {
   return( m_graphicElement );
 }
@@ -295,12 +223,99 @@ void QNEPort::hoverLeaveEvent( QGraphicsSceneHoverEvent* ) {
   update( );
 }
 
-void QNEPort::hoverEnterEvent( QGraphicsSceneHoverEvent * ) {
+void QNEPort::hoverEnterEvent( QGraphicsSceneHoverEvent* ) {
   setBrush( QBrush( Qt::yellow ) );
   update( );
 }
 
-void QNEPort::hoverMoveEvent( QGraphicsSceneHoverEvent * ) {
+void QNEPort::hoverMoveEvent( QGraphicsSceneHoverEvent* ) {
   setBrush( QBrush( Qt::yellow ) );
   update( );
+}
+
+QNEInputPort::QNEInputPort( QGraphicsItem *parent ) : QNEPort( parent ) {
+  setPen( QPen( Qt::darkRed ) );
+  setCurrentBrush( Qt::red );
+
+  label->setPos( -radius_ - margin - label->boundingRect( ).width( ), -label->boundingRect( ).height( ) / 2 );
+}
+
+QNEInputPort::~QNEInputPort( ) {
+  for( QNEConnection *conn: m_connections ) {
+    conn->setEnd( nullptr );
+    delete conn;
+  }
+  m_connections.clear( );
+
+}
+
+void QNEInputPort::setValue( char value ) {
+  m_value = value;
+  if( !isValid( ) ) {
+    m_value = -1;
+  }
+  if( m_value == -1 ) {
+    setPen( QPen( Qt::black ) );
+    setCurrentBrush( Qt::darkRed );
+  }
+  else if( m_value == 1 ) {
+    setPen( QPen( Qt::black ) );
+    setCurrentBrush( Qt::green );
+  }
+  else {
+    setPen( QPen( Qt::black ) );
+    setCurrentBrush( QColor( 0x333333 ) );
+  }
+}
+
+bool QNEInputPort::isOutput( ) const {
+  return( false );
+}
+
+bool QNEInputPort::isValid( ) const {
+  if( m_connections.isEmpty( ) ) {
+    return( !required( ) );
+  }
+  return( m_connections.size( ) == 1 );
+}
+
+QNEOutputPort::QNEOutputPort( QGraphicsItem *parent ) : QNEPort( parent ) {
+  setPen( QPen( Qt::black ) );
+  setCurrentBrush( Qt::darkRed );
+  label->setPos( radius_ + margin, -label->boundingRect( ).height( ) / 2 );
+}
+
+QNEOutputPort::~QNEOutputPort( ) {
+  for( QNEConnection *conn: m_connections ) {
+    conn->setStart( nullptr );
+    delete conn;
+  }
+  m_connections.clear( );
+}
+
+void QNEOutputPort::setValue( char value ) {
+  m_value = value;
+  for( QNEConnection *conn: connections( ) ) {
+    if( value == -1 ) {
+      conn->setStatus( QNEConnection::Invalid );
+    }
+    else if( value == 0 ) {
+      conn->setStatus( QNEConnection::Inactive );
+    }
+    else {
+      conn->setStatus( QNEConnection::Active );
+    }
+    QNEInputPort *port = conn->otherPort( this );
+    if( port ) {
+      port->setValue( value );
+    }
+  }
+}
+
+bool QNEOutputPort::isOutput( ) const {
+  return( true );
+}
+
+bool QNEOutputPort::isValid( ) const {
+  return( m_value != -1 );
 }
