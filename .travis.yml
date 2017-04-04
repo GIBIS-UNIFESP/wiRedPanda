@@ -45,7 +45,9 @@ install:
       fi;
     else
       brew install qt@5.7
-      && chmod -R 755 /usr/local/opt/qt@5.7/*;
+      && ls /usr/local/opt/;
+      brew link --force qt57;
+      chmod -R 755 /usr/local/opt/qt@5.7/*;
     fi
 
 before_script:
@@ -66,8 +68,8 @@ script:
   - qmake ./WPanda.pro -r
   - make -j4
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-      ./test/WPanda-test
-      && bash installer/Linux/deploy;
+      ./test/WPanda-test;
+      bash installer/Linux/deploy;
     else
       test/WPanda-test.app/Contents/MacOS/WPanda-test;
     fi;
