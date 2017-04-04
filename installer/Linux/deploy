@@ -1,6 +1,6 @@
 #!/bin/bash
-# set -e
-
+set -e
+set -v
 
 dirname=`dirname "$0"`
 tmp="${dirname#?}"
@@ -17,63 +17,69 @@ echo DEBPKGTREE $DEBPKGTREE
 
 QT_LIBRARY_PATH="/opt/qt57/lib/"
 QT_PLATFORMS_PATH="/opt/qt57/plugins/platforms/"
-DEPENDENCIES_PATH="/usr/lib/x86_64-linux-gnu/"
+if [ !-f $QT_LIBRARY_PATH ]; then
+  QT_LIBRARY_PATH="/usr/lib64/";
+  QT_PLATFORMS_PATH="/usr/lib64/qt5/plugins/platforms/";
+fi;
+DEPENDENCIES_PATH="/usr/lib64/"
 
 WPANDA_BIN="${PROJECTPATH}/app/wpanda";
 
 if [ ! -e ${WPANDA_BIN} ]; then
   echo "ERROR: ${WPANDA_BIN} not found!";
-  exit 1
+  exit 1;
 fi
 
-PTBDIR="wpanda-${VERSION}"
-DATADIR="${PTBDIR}/files"
-CURRENTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PTBDIR="wpanda-${VERSION}";
+DATADIR="${PTBDIR}/files";
+CURRENTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
-rm -rf $DEBPKGTREE $PTBDIR
+rm -rf $DEBPKGTREE $PTBDIR;
 
-echo "Generating build tree for ${DEBPKGTREE}.deb"
-echo "Project path is ${PROJECTPATH}"
+echo "Generating build tree for ${DEBPKGTREE}.deb";
+echo "Project path is ${PROJECTPATH}";
 
-mkdir -p ${DEBPKGTREE}/DEBIAN
-mkdir -p ${DEBPKGTREE}/usr/local/bin
-mkdir -p ${DEBPKGTREE}/usr/local/lib/wpanda
-mkdir -p ${DEBPKGTREE}/usr/local/share/applications
-mkdir -p ${DEBPKGTREE}/usr/local/share/xml/misc
-mkdir -p ${DEBPKGTREE}/usr/local/share/doc
+mkdir -p ${DEBPKGTREE}/DEBIAN;
+mkdir -p ${DEBPKGTREE}/usr/local/bin;
+mkdir -p ${DEBPKGTREE}/usr/local/lib/wpanda;
+mkdir -p ${DEBPKGTREE}/usr/local/share/applications;
+mkdir -p ${DEBPKGTREE}/usr/local/share/xml/misc;
+mkdir -p ${DEBPKGTREE}/usr/local/share/doc;
 
-cp ${WPANDA_BIN} ${PROJECTPATH}/app/resources/wpanda.sh     ${DEBPKGTREE}/usr/local/bin/
-cp ${PROJECTPATH}/app/resources/wpanda.desktop    ${DEBPKGTREE}/usr/local/share/applications/
-cp ${PROJECTPATH}/app/resources/wpanda-mime.xml   ${DEBPKGTREE}/usr/local/share/xml/misc
+cp ${WPANDA_BIN} ${PROJECTPATH}/app/resources/wpanda.sh     ${DEBPKGTREE}/usr/local/bin/;
+cp ${PROJECTPATH}/app/resources/wpanda.desktop    ${DEBPKGTREE}/usr/local/share/applications/;
+cp ${PROJECTPATH}/app/resources/wpanda-mime.xml   ${DEBPKGTREE}/usr/local/share/xml/misc;
 
 for SIZE in 26x26 32x32 48x48 64x64 128x128; do
-  ICONDIR_SZ=${DEBPKGTREE}/usr/local/share/icons/hicolor/${SIZE}/apps/
-  mkdir -p ${ICONDIR_SZ}
-  cp ${PROJECTPATH}/app/resources/icons/${SIZE}/* ${ICONDIR_SZ}
+  ICONDIR_SZ=${DEBPKGTREE}/usr/local/share/icons/hicolor/${SIZE}/apps/;
+  mkdir -p ${ICONDIR_SZ};
+  cp ${PROJECTPATH}/app/resources/icons/${SIZE}/* ${ICONDIR_SZ};
 done;
 
 for lib in libQt5PrintSupport.so.5 libQt5XcbQpa.so.5 libQt5DBus.so.5\
            libQt5Charts.so.5 libQt5Widgets.so.5 libQt5Gui.so.5 \
            libQt5Core.so.5 libicui18n.so.56 libicuuc.so.56 libicudata.so.56;
   do
-  echo "Copying $lib"
+  echo "Copying $lib";
   if [ -f ${QT_LIBRARY_PATH}/$lib ]; then
     cp ${QT_LIBRARY_PATH}/$lib ${DEBPKGTREE}/usr/local/lib/wpanda;
   else
-    locate $lib;
+    echo "ERROR: $lib not found!";
+    locate "$lib";
   fi;
 done;
 
 for lib in libX11-xcb.so.1 libxcb.so.1 libxcb-dri2.so.0 libxcb-xfixes.so.0; do
-  echo "Copying $lib"
+  echo "Copying $lib";
   if [ -f ${DEPENDENCIES_PATH}/$lib ]; then
     cp ${DEPENDENCIES_PATH}/$lib ${DEBPKGTREE}/usr/local/lib/wpanda;
   else
+    echo "ERROR: $lib not found!";
     locate $lib;
   fi;
 done;
 
-cp ${QT_PLATFORMS_PATH}/libqxcb.so                ${DEBPKGTREE}/usr/local/lib/wpanda
+cp ${QT_PLATFORMS_PATH}/libqxcb.so ${DEBPKGTREE}/usr/local/lib/wpanda
 
 echo \
 "Package: wpanda
