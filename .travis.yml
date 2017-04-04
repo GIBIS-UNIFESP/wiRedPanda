@@ -70,7 +70,7 @@ script:
       && ls app
       && bash -x installer/Linux/deploy;
     else
-      test/WPanda-test.app/Contents/MacOS/WPanda-test;
+      echo $(test/WPanda-test.app/Contents/MacOS/WPanda-test);
     fi;
 
 deploy:
