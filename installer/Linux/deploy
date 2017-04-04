@@ -56,6 +56,7 @@ for lib in libQt5PrintSupport.so.5 libQt5XcbQpa.so.5 libQt5DBus.so.5\
            libQt5Charts.so.5 libQt5Widgets.so.5 libQt5Gui.so.5 \
            libQt5Core.so.5 libicui18n.so.56 libicuuc.so.56 libicudata.so.56;
   do
+  echo "Copying $lib"
   if [ -f ${QT_LIBRARY_PATH}/$lib ]; then
     cp ${QT_LIBRARY_PATH}/$lib ${DEBPKGTREE}/usr/local/lib/wpanda;
   else
@@ -64,6 +65,7 @@ for lib in libQt5PrintSupport.so.5 libQt5XcbQpa.so.5 libQt5DBus.so.5\
 done;
 
 for lib in libX11-xcb.so.1 libxcb.so.1 libxcb-dri2.so.0 libxcb-xfixes.so.0; do
+  echo "Copying $lib"
   if [ -f ${DEPENDENCIES_PATH}/$lib ]; then
     cp ${DEPENDENCIES_PATH}/$lib ${DEBPKGTREE}/usr/local/lib/wpanda;
   else
@@ -86,7 +88,7 @@ Priority: standard
 Description: Learn about logic circuits and simulate them in an easy and friendly way.
  wiRed Panda is a free software designed to help students to learn about logic circuits.
  It was developed by the students of the Federal University of São Paulo.
-" > "${DEBPKGTREE}/DEBIAN/config"
+" > "${DEBPKGTREE}/DEBIAN/control"
 
 echo \
 "#!/bin/sh
@@ -105,9 +107,6 @@ xdg-icon-resource install --context mimetypes --size 26  /usr/local/share/icons/
 ;;
 esac" > "${DEBPKGTREE}/DEBIAN/postinst"
 
-# tree ${DEBPKGTREE}
-
-echo "Extracting deb package"
 echo "Copying Files"
 
 mkdir -p $DATADIR
