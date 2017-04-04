@@ -70,7 +70,15 @@ script:
       && ls app
       && bash -x installer/Linux/deploy;
     else
-      echo $(test/WPanda-test.app/Contents/MacOS/WPanda-test);
+      PANDA_OSX=test/WPanda-test.app/Contents/MacOS/WPanda-test
+      if [[ $(PANDA_OSX) -ne 1 ]]; then
+          mkdir debug;
+          cd debug;
+          qmake ../Wpanda.pro CONFIG+=debug -r;
+          make -j4;
+          gdb -batch -ex "run" -ex "bt" ${PANDA_OSX} 2>&1 | grep -v ^"No stack."$
+          exit 1;
+      fi;
     fi;
 
 deploy:
