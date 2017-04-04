@@ -1,10 +1,13 @@
 #!/bin/bash
 set -e
 PROJECTPATH=$(readlink -e "${PWD}/../../app/")
+echo PROJECTPATH $PROJECTPATH
 VERSION=$(cat ${PROJECTPATH}/includes.pri | grep "VERSION = " | awk '{split($0,a,"="); gsub (" ", "", a[2]); print a[2] }')
+echo VERSION $VERSION
 DEBPKGTREE="wpanda-${VERSION}"
-QT_LIBRARY_PATH="/opt/qt58/gcc_64/lib/"
-QT_PLATFORMS_PATH="/opt/qt58/gcc_64/plugins/platforms/"
+echo DEBPKGTREE $DEBPKGTREE
+QT_LIBRARY_PATH="/opt/qt57/gcc_64/lib/"
+QT_PLATFORMS_PATH="/opt/qt57/gcc_64/plugins/platforms/"
 DEPENDENCIES_PATH="/usr/lib/x86_64-linux-gnu/"
 WPANDA_BIN=$1
 
