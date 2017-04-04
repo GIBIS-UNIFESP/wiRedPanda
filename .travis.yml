@@ -31,7 +31,7 @@ branches:
 #   - sh -e /etc/init.d/xvfb start
 before_install:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-      if [ "$QT" = "qt57" ] && [ ! -d /opt/qt57 ]; then
+      if [ "$QT" = "qt57" ]; then
         sudo add-apt-repository ppa:beineri/opt-qt571-trusty -y && sudo apt-get update;
       fi;
     else
@@ -40,7 +40,7 @@ before_install:
 
 install:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-      if [ "$QT" = "qt57" ] && [ ! -d /opt/qt57 ]; then
+      if [ "$QT" = "qt57" ]; then
         sudo apt-get install -y qt57base qt57charts-no-lgpl;
       fi;
     else
