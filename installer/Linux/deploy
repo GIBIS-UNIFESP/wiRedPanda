@@ -88,7 +88,7 @@ Priority: standard
 Description: Learn about logic circuits and simulate them in an easy and friendly way.
  wiRed Panda is a free software designed to help students to learn about logic circuits.
  It was developed by the students of the Federal University of São Paulo.
-" > "${DEBPKGTREE}/DEBIAN/control"
+" > "${DEBPKGTREE}/DEBIAN/config"
 
 echo \
 "#!/bin/sh
