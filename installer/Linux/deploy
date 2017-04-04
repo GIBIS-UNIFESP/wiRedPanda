@@ -1,6 +1,14 @@
 #!/bin/bash
 set -e
-PROJECTPATH=$(readlink -e "${PWD}/../../app/")
+
+dirname=`dirname "$0"`
+WPANDA_BIN=$1
+
+tmp="${dirname#?}"
+if [ "${dirname%$tmp}" != "/" ]; then
+dirname=$PWD/$dirname
+fi
+PROJECTPATH=$(readlink -e "${dirname}/../../")
 echo PROJECTPATH $PROJECTPATH
 VERSION=$(cat ${PROJECTPATH}/includes.pri | grep "VERSION = " | awk '{split($0,a,"="); gsub (" ", "", a[2]); print a[2] }')
 echo VERSION $VERSION
@@ -9,7 +17,13 @@ echo DEBPKGTREE $DEBPKGTREE
 QT_LIBRARY_PATH="/opt/qt57/gcc_64/lib/"
 QT_PLATFORMS_PATH="/opt/qt57/gcc_64/plugins/platforms/"
 DEPENDENCIES_PATH="/usr/lib/x86_64-linux-gnu/"
-WPANDA_BIN=$1
+
+if [! -f ${WPANDA_BIN} ]; then
+  WPANDA_BIN="${PROJECTPATH}/app/wpanda";
+fi
+if [! -f ${WPANDA_BIN} ]; then
+  echo "ERROR: wpanda binary not found!"
+fi
 
 PTBDIR="wpanda-${VERSION}"
 DATADIR="${PTBDIR}/files"
@@ -31,14 +45,14 @@ mkdir -p ${DEBPKGTREE}/usr/local/share/doc
 for SIZE in 26x26 32x32 48x48 64x64 128x128; do
   ICONDIR_SZ=${DEBPKGTREE}/usr/local/share/icons/hicolor/${SIZE}/apps/
   mkdir -p ${ICONDIR_SZ}
-  cp ${PROJECTPATH}/resources/icons/${SIZE}/* ${ICONDIR_SZ}
+  cp ${PROJECTPATH}/app/resources/icons/${SIZE}/* ${ICONDIR_SZ}
 done;
 
 cp ${WPANDA_BIN}                              ${DEBPKGTREE}/usr/local/bin/
-cp ${PROJECTPATH}/resources/wpanda.desktop    ${DEBPKGTREE}/usr/local/share/applications/
-cp ${PROJECTPATH}/resources/wpanda.sh         ${DEBPKGTREE}/usr/local/bin/
-cp ${PROJECTPATH}/resources/wpanda.desktop    ${DEBPKGTREE}/usr/local/share/applications/
-cp ${PROJECTPATH}/resources/wpanda-mime.xml   ${DEBPKGTREE}/usr/local/share/xml/misc
+cp ${PROJECTPATH}/app/resources/wpanda.desktop    ${DEBPKGTREE}/usr/local/share/applications/
+cp ${PROJECTPATH}/app/resources/wpanda.sh         ${DEBPKGTREE}/usr/local/bin/
+cp ${PROJECTPATH}/app/resources/wpanda.desktop    ${DEBPKGTREE}/usr/local/share/applications/
+cp ${PROJECTPATH}/app/resources/wpanda-mime.xml   ${DEBPKGTREE}/usr/local/share/xml/misc
 cp ${QT_LIBRARY_PATH}/libQt5PrintSupport.so.5 ${DEBPKGTREE}/usr/local/lib/wpanda
 cp ${QT_LIBRARY_PATH}/libQt5XcbQpa.so.5       ${DEBPKGTREE}/usr/local/lib/wpanda
 cp ${QT_LIBRARY_PATH}/libQt5DBus.so.5         ${DEBPKGTREE}/usr/local/lib/wpanda
