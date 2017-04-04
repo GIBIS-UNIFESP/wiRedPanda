@@ -44,7 +44,7 @@ install:
         sudo apt-get install -y qt57base qt57charts-no-lgpl;
       fi;
     else
-      brew install qt@5.7
+      brew install qt@5.7 gdb
       && chmod -R 755 /usr/local/opt/qt@5.7/*;
     fi
 
@@ -71,7 +71,7 @@ script:
       && bash -x installer/Linux/deploy;
     else
       PANDA_OSX=test/WPanda-test.app/Contents/MacOS/WPanda-test;
-      if [[ $(PANDA_OSX) -ne 1 ]]; then
+      if [[ $($PANDA_OSX) -ne 1 ]]; then
           mkdir debug;
           cd debug;
           qmake ../Wpanda.pro CONFIG+=debug -r;
