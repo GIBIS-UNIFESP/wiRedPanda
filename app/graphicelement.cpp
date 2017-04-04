@@ -195,7 +195,7 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
     ds >> ptr;
     ds >> name;
     ds >> flags;
-    if( port < ( size_t ) m_inputs.size( ) ) {
+    if( ( port < ( size_t ) m_inputs.size( ) ) && ( port < inputSz ) ) {
       portMap[ ptr ] = m_inputs[ port ];
       if( elementType( ) == ElementType::BOX ) {
         m_inputs[ port ]->setName( name );
@@ -223,7 +223,7 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
     ds >> ptr;
     ds >> name;
     ds >> flags;
-    if( port < ( size_t ) m_outputs.size( ) ) {
+    if( ( port < ( size_t ) m_outputs.size( ) ) && ( port < outputSz ) ) {
       portMap[ ptr ] = m_outputs[ port ];
       if( elementType( ) == ElementType::BOX ) {
         m_outputs[ port ]->setName( name );
