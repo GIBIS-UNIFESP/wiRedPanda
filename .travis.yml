@@ -3,7 +3,7 @@ cache: apt
 cache:
   directories:
     - $HOME/Library/Caches/Homebrew
-    - /usr/local/opt/qt5/
+    - /usr/local/opt/qt@5.7/
     - /opt/qt57/
 os:
   - linux
@@ -41,12 +41,10 @@ install:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
       if [ "$QT" = "qt57" ] && [ ! -d /opt/qt57 ]; then
         sudo apt-get install -y qt57base qt57charts-no-lgpl
-        && source /opt/qt57/bin/qt57-env.sh;
       fi
     else
       brew install qt@5.7
-      && ls /usr/local/opt/
-      && chmod -R 755 /usr/local/opt/qt5/*;
+      && chmod -R 755 /usr/local/opt/qt@5.7/*;
     fi
 
 before_script:
@@ -58,7 +56,7 @@ before_script:
 
 script:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-      g++ -v;
+      source /opt/qt57/bin/qt57-env.sh
     else
       QTDIR="/usr/local/opt/qt@5.7/"
       && PATH="${QTDIR}/bin:$PATH"
@@ -71,7 +69,7 @@ script:
       then ./test/WPanda-test
       && bash installer/Linux/deploy
     else
-      WPanda-test.app/Contents/MacOS/WPanda-test;
+      then test/WPanda-test.app/Contents/MacOS/WPanda-test;
     fi
 
 deploy:
