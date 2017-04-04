@@ -7,6 +7,6 @@
  if [ "${dirname%$tmp}" != "/" ]; then
  dirname=$PWD/$dirname
  fi
- export LD_LIBRARY_PATH=/usr/local/lib/wpanda:${LD_LIBRARY_PATH}
- export QT_QPA_PLATFORM_PLUGIN_PATH=/usr/local/lib/wpanda
+ export LD_LIBRARY_PATH=/usr/lib/wpanda:${LD_LIBRARY_PATH}
+ export QT_QPA_PLATFORM_PLUGIN_PATH=/usr/lib/wpanda
  $dirname/$appname "$@"
