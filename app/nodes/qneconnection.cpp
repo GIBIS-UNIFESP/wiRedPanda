@@ -158,8 +158,8 @@ bool QNEConnection::load( QDataStream &ds, const QMap< quint64, QNEPort* > &port
     }
   }
   else if( portMap.contains( ptr1 ) && portMap.contains( ptr2 ) ) {
-    QNEPort *port1 = dynamic_cast< QNEPort* >( portMap[ ptr1 ] );
-    QNEPort *port2 = dynamic_cast< QNEPort* >( portMap[ ptr2 ] );
+    QNEPort *port1 = portMap[ ptr1 ];
+    QNEPort *port2 = portMap[ ptr2 ];
     if( port1 && port2 ) {
       if( !port1->isOutput( ) && port2->isOutput( ) ) {
         setStart( dynamic_cast< QNEOutputPort* >( port2 ) );
