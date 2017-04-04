@@ -1,9 +1,8 @@
 #!/bin/bash
 set -e
 
-dirname=`dirname "$0"`
-WPANDA_BIN=$1
 
+dirname=`dirname "$0"`
 tmp="${dirname#?}"
 if [ "${dirname%$tmp}" != "/" ]; then
 dirname=$PWD/$dirname
@@ -14,16 +13,18 @@ VERSION=$(cat ${PROJECTPATH}/includes.pri | grep "VERSION = " | awk '{split($0,a
 echo VERSION $VERSION
 DEBPKGTREE="wpanda-${VERSION}"
 echo DEBPKGTREE $DEBPKGTREE
+
 QT_LIBRARY_PATH="/opt/qt57/gcc_64/lib/"
 QT_PLATFORMS_PATH="/opt/qt57/gcc_64/plugins/platforms/"
 DEPENDENCIES_PATH="/usr/lib/x86_64-linux-gnu/"
 
-if [! -f ${WPANDA_BIN} ]; then
-  WPANDA_BIN="${PROJECTPATH}/app/wpanda";
-fi
-if [! -f ${WPANDA_BIN} ]; then
+WPANDA_BIN="${PROJECTPATH}/app/wpanda";
+
+if [ ! -e ${WPANDA_BIN} ]; then
   echo "ERROR: wpanda binary not found!"
 fi
+
+ls $WPANDA_BIN
 
 PTBDIR="wpanda-${VERSION}"
 DATADIR="${PTBDIR}/files"
@@ -48,7 +49,7 @@ for SIZE in 26x26 32x32 48x48 64x64 128x128; do
   cp ${PROJECTPATH}/app/resources/icons/${SIZE}/* ${ICONDIR_SZ}
 done;
 
-cp ${WPANDA_BIN}                              ${DEBPKGTREE}/usr/local/bin/
+cp ${WPANDA_BIN}                                  ${DEBPKGTREE}/usr/local/bin/
 cp ${PROJECTPATH}/app/resources/wpanda.desktop    ${DEBPKGTREE}/usr/local/share/applications/
 cp ${PROJECTPATH}/app/resources/wpanda.sh         ${DEBPKGTREE}/usr/local/bin/
 cp ${PROJECTPATH}/app/resources/wpanda.desktop    ${DEBPKGTREE}/usr/local/share/applications/
