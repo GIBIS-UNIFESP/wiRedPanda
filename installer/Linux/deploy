@@ -14,8 +14,8 @@ echo VERSION $VERSION
 DEBPKGTREE="wpanda-${VERSION}"
 echo DEBPKGTREE $DEBPKGTREE
 
-QT_LIBRARY_PATH="/opt/qt57/gcc_64/lib/"
-QT_PLATFORMS_PATH="/opt/qt57/gcc_64/plugins/platforms/"
+QT_LIBRARY_PATH="/opt/qt57/lib/"
+QT_PLATFORMS_PATH="/opt/qt57/plugins/platforms/"
 DEPENDENCIES_PATH="/usr/lib/x86_64-linux-gnu/"
 
 WPANDA_BIN="${PROJECTPATH}/app/wpanda";
