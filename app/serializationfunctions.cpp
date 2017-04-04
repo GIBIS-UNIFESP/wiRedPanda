@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QGraphicsView>
 #include <QMessageBox>
+#include <iostream>
 #include <stdexcept>
 
 void SerializationFunctions::serialize( const QList< QGraphicsItem* > &items, QDataStream &ds ) {
@@ -70,7 +71,7 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor,
   }
   return( itemList );
 }
-#include <iostream>
+
 
 QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStream &ds, QString parentFile,
                                                       Scene *scene ) {
