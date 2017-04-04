@@ -39,30 +39,22 @@ public:
   enum { NamePort = 1, TypePort = 2 };
 
   explicit QNEPort( QGraphicsItem *parent = 0 );
-  virtual ~QNEPort( );
 
   void setNEBlock( QNEBlock* );
   void setName( const QString &n );
-  void setIsOutput( bool o );
   int radius( ) const;
-  bool isOutput( ) const;
-  bool isInput( ) const;
   const QList< QNEConnection* > &connections( ) const;
   void connect( QNEConnection *conn );
   void disconnect( QNEConnection *conn );
   bool isConnected( QNEPort* );
   void setPortFlags( int );
 
-  const QString &portName( ) const {
-    return( name );
-  }
-  int portFlags( ) const {
-    return( m_portFlags );
-  }
+  virtual bool isOutput( ) const = 0;
 
-  int type( ) const {
-    return( Type );
-  }
+  const QString &portName( ) const;
+  int portFlags( ) const;
+
+  int type( ) const;
 
   quint64 ptr( );
   void setPtr( quint64 );
@@ -73,7 +65,7 @@ public:
 
   void updateConnections( );
   char value( ) const;
-  void setValue( char value );
+  virtual void setValue( char value ) = 0;
 
   bool required( ) const;
   void setRequired( bool required );
@@ -86,23 +78,20 @@ public:
 
   QString getName( ) const;
 
-  bool isValid( ) const;
+  virtual bool isValid( ) const = 0;
 
 protected:
   QVariant itemChange( GraphicsItemChange change, const QVariant &value );
-
-private:
   int m_defaultValue;
   QNEBlock *m_block;
   QString name;
-  bool isOutput_;
   QGraphicsTextItem *label;
   int radius_;
   int margin;
   QList< QNEConnection* > m_connections;
   int m_portFlags;
   quint64 m_ptr;
-  char m_value;
+
   bool m_required;
 
   /* WPanda */
@@ -110,10 +99,33 @@ private:
   QBrush _currentBrush;
 
   /* QGraphicsItem interface */
-protected:
+  char m_value;
   void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
-  void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
-  void hoverMoveEvent(QGraphicsSceneHoverEvent * event);
+  void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
+  void hoverMoveEvent( QGraphicsSceneHoverEvent *event );
 };
+
+class QNEInputPort : public QNEPort {
+public:
+  explicit QNEInputPort( QGraphicsItem *parent );
+  virtual ~QNEInputPort( );
+  // QNEPort interface
+public:
+  void setValue( char value );
+  bool isOutput( ) const;
+  bool isValid( ) const;
+};
+
+class QNEOutputPort : public QNEPort {
+public:
+  explicit QNEOutputPort( QGraphicsItem *parent );
+  virtual ~QNEOutputPort( );
+  // QNEPort interface
+public:
+  void setValue( char value );
+  bool isOutput( ) const;
+  bool isValid( ) const;
+};
+
 
 #endif /* QNEPORT_H */

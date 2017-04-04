@@ -10,7 +10,7 @@
 #include <stdexcept>
 
 void SerializationFunctions::serialize( const QList< QGraphicsItem* > &items, QDataStream &ds ) {
-  foreach( QGraphicsItem * item, items ) {
+  for( QGraphicsItem *item: items ) {
     if( item->type( ) == GraphicElement::Type ) {
       GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
       ds << item->type( );
@@ -18,7 +18,7 @@ void SerializationFunctions::serialize( const QList< QGraphicsItem* > &items, QD
       elm->save( ds );
     }
   }
-  foreach( QGraphicsItem * item, items ) {
+  for( QGraphicsItem *item: items ) {
     if( item->type( ) == QNEConnection::Type ) {
       QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
       ds << item->type( );
@@ -31,7 +31,7 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor,
                                                              QDataStream &ds,
                                                              double version,
                                                              QString parentFile,
-                                                             QMap< quint64, QNEPort* > portMap) {
+                                                             QMap< quint64, QNEPort* > portMap ) {
   QList< QGraphicsItem* > itemList;
   while( !ds.atEnd( ) ) {
     int type;
@@ -55,7 +55,7 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor,
       }
     }
     else if( type == QNEConnection::Type ) {
-      QNEConnection *conn = ElementFactory::buildConnection();
+      QNEConnection *conn = ElementFactory::buildConnection( );
       conn->setSelected( true );
       if( !conn->load( ds, portMap ) ) {
         delete conn;
@@ -79,7 +79,6 @@ QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStrea
   if( !str.startsWith( QApplication::applicationName( ) ) ) {
     throw( std::runtime_error( "Invalid file format." ) );
   }
-
   double version = str.split( " " ).at( 1 ).toDouble( );
 
   QRectF rect;
@@ -88,7 +87,7 @@ QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStrea
   }
   QList< QGraphicsItem* > items = deserialize( editor, ds, version, parentFile );
   if( scene ) {
-    foreach( QGraphicsItem * item, items ) {
+    for( QGraphicsItem *item : items ) {
       scene->addItem( item );
     }
     scene->setSceneRect( scene->itemsBoundingRect( ) );

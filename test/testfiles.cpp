@@ -41,8 +41,8 @@ void TestFiles::testFiles( ) {
       if( item->type( ) == QNEConnection::Type ) {
         QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
         QVERIFY( conn != nullptr );
-        QVERIFY( conn->port1( ) != nullptr );
-        QVERIFY( conn->port2( ) != nullptr );
+        QVERIFY( conn->start( ) != nullptr );
+        QVERIFY( conn->end( ) != nullptr );
       }
     }
   }

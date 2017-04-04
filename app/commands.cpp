@@ -26,9 +26,16 @@ QList< QGraphicsItem* > loadList( const QList< QGraphicsItem* > &aItems, QVector
   /* Stores the wires linked to these elements */
   for( QGraphicsItem *item : items ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
-    QVector< QNEPort* > portsList = elm->inputs( );
-    portsList.append( elm->outputs( ) );
-    for( QNEPort *port : portsList ) {
+    QVector< QNEInputPort* > inputsList = elm->inputs( );
+    for( QNEInputPort *port : inputsList ) {
+      for( QNEConnection *conn : port->connections( ) ) {
+        if( !items.contains( conn ) ) {
+          items.append( conn );
+        }
+      }
+    }
+    QVector< QNEOutputPort* > outputsList = elm->outputs( );
+    for( QNEOutputPort *port : outputsList ) {
       for( QNEConnection *conn : port->connections( ) ) {
         if( !items.contains( conn ) ) {
           items.append( conn );
@@ -56,11 +63,11 @@ QList< QGraphicsItem* > loadList( const QList< QGraphicsItem* > &aItems, QVector
   for( QGraphicsItem *item : items ) {
     if( item->type( ) == QNEConnection::Type ) {
       QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
-      QNEPort *p1 = conn->port1( );
+      QNEOutputPort *p1 = conn->start( );
       if( p1 && p1->graphicElement( ) && !ids.contains( p1->graphicElement( )->id( ) ) ) {
         otherIds.append( p1->graphicElement( )->id( ) );
       }
-      QNEPort *p2 = conn->port2( );
+      QNEInputPort *p2 = conn->end( );
       if( p2 && p2->graphicElement( ) && !ids.contains( p2->graphicElement( )->id( ) ) ) {
         otherIds.append( p2->graphicElement( )->id( ) );
       }
@@ -139,7 +146,9 @@ void loadItems( QByteArray &itemData, const QVector< int > &ids, Editor *editor,
                                          GlobalProperties::currentFile,
                                          portMap );
   if( items.size( ) != ids.size( ) ) {
-    throw std::runtime_error( QString("One or more elements was not found on scene. Expected %1, found %2.").arg(ids.size()).arg(items.size()).toStdString()  );
+    throw std::runtime_error( QString( "One or more elements was not found on scene. Expected %1, found %2." ).arg( ids.
+                                                                                                                    size( ) ).arg(
+                                items.size( ) ).toStdString( ) );
   }
   for( int i = 0; i < items.size( ); ++i ) {
     ItemWithId *iwid = dynamic_cast< ItemWithId* >( items[ i ] );
@@ -202,19 +211,19 @@ void AddItemsCommand::undo( ) {
   saveitems( itemData, items, otherIds );
 
   deleteItems( items, editor );
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 
 void DeleteItemsCommand::undo( ) {
   qDebug( ) << "UNDO " << text( );
   loadItems( itemData, ids, editor, otherIds );
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 
 void AddItemsCommand::redo( ) {
   qDebug( ) << "REDO " << text( );
   loadItems( itemData, ids, editor, otherIds );
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 void DeleteItemsCommand::redo( ) {
   qDebug( ) << "REDO " << text( );
@@ -223,7 +232,7 @@ void DeleteItemsCommand::redo( ) {
   saveitems( itemData, items, otherIds );
 
   deleteItems( items, editor );
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 
 
@@ -336,8 +345,10 @@ void MoveCommand::redo( ) {
 }
 
 
-UpdateCommand::UpdateCommand( const QVector< GraphicElement* > &elements, QByteArray oldData, Editor * editor,
-                              QUndoCommand *parent ) : QUndoCommand( parent ), editor(editor) {
+UpdateCommand::UpdateCommand( const QVector< GraphicElement* > &elements,
+                              QByteArray oldData,
+                              Editor *editor,
+                              QUndoCommand *parent ) : QUndoCommand( parent ), editor( editor ) {
   m_oldData = oldData;
   ids.reserve( elements.size( ) );
   QDataStream dataStream( &m_newData, QIODevice::WriteOnly );
@@ -350,12 +361,12 @@ UpdateCommand::UpdateCommand( const QVector< GraphicElement* > &elements, QByteA
 
 void UpdateCommand::undo( ) {
   loadData( m_oldData );
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 
 void UpdateCommand::redo( ) {
   loadData( m_newData );
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 
 void UpdateCommand::loadData( QByteArray itemData ) {
@@ -397,8 +408,8 @@ SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, Editor *aEditor,
   /* Assingning class attributes */
   editor = aEditor;
 
-  elm1_id = conn->port1( )->graphicElement( )->id( );
-  elm2_id = conn->port2( )->graphicElement( )->id( );
+  elm1_id = conn->start( )->graphicElement( )->id( );
+  elm2_id = conn->end( )->graphicElement( )->id( );
 
   c1_id = conn->id( );
   c2_id = conn2->id( );
@@ -434,18 +445,12 @@ void SplitCommand::redo( ) {
     node->setPos( nodePos );
     node->setRotation( nodeAngle );
 
-    QNEPort * p1 = c1->port1();
-    QNEPort * p2 = c1->port2();
+//    QNEOutputPort *startPort = c1->start( );
+    QNEInputPort *endPort = c1->end( );
+    c2->setStart( node->output( ) );
+    c2->setEnd( endPort );
+    c1->setEnd( node->input( ) );
 
-    if(p1->isOutput()){
-      c2->setPort1( node->output( ) );
-      c2->setPort2( p2 );
-      c1->setPort2( node->input( ) );
-    } else {
-      c2->setPort1( node->output( ) );
-      c2->setPort2( p1 );
-      c1->setPort1( node->input( ) );
-    }
     editor->getScene( )->addItem( node );
     editor->getScene( )->addItem( c2 );
 
@@ -457,7 +462,7 @@ void SplitCommand::redo( ) {
   else {
     throw std::runtime_error( QString( "Error tryng to redo %1" ).arg( text( ) ).toStdString( ) );
   }
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 
 void SplitCommand::undo( ) {
@@ -467,7 +472,7 @@ void SplitCommand::undo( ) {
   GraphicElement *elm1 = findElm( elm1_id );
   GraphicElement *elm2 = findElm( elm2_id );
   if( c1 && c2 && elm1 && elm2 && node ) {
-    c1->setPort2( c2->port2( ) );
+    c1->setEnd( c2->end( ) );
 
     c1->updatePosFromPorts( );
     c1->updatePath( );
@@ -481,7 +486,7 @@ void SplitCommand::undo( ) {
   else {
     throw std::runtime_error( QString( "Error tryng to undo %1" ).arg( text( ) ).toStdString( ) );
   }
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 
 MorphCommand::MorphCommand( const QVector< GraphicElement* > &elements,
@@ -506,7 +511,7 @@ void MorphCommand::undo( ) {
     oldElms[ i ] = ElementFactory::buildElement( types[ i ], editor );
   }
   transferConnections( newElms, oldElms );
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 
 void MorphCommand::redo( ) {
@@ -516,7 +521,7 @@ void MorphCommand::redo( ) {
     newElms[ i ] = ElementFactory::buildElement( newtype, editor );
   }
   transferConnections( oldElms, newElms );
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 
 void MorphCommand::transferConnections( QVector< GraphicElement* > from, QVector< GraphicElement* > to ) {
@@ -550,22 +555,16 @@ void MorphCommand::transferConnections( QVector< GraphicElement* > from, QVector
     for( int in = 0; in < oldElm->inputSize( ); ++in ) {
       while( !oldElm->input( in )->connections( ).isEmpty( ) ) {
         QNEConnection *conn = oldElm->input( in )->connections( ).first( );
-        if( conn->port1( ) == oldElm->input( in ) ) {
-          conn->setPort1( newElm->input( in ) );
-        }
-        else if( conn->port2( ) == oldElm->input( in ) ) {
-          conn->setPort2( newElm->input( in ) );
+        if( conn->end( ) == oldElm->input( in ) ) {
+          conn->setEnd( newElm->input( in ) );
         }
       }
     }
     for( int out = 0; out < oldElm->outputSize( ); ++out ) {
       while( !oldElm->output( out )->connections( ).isEmpty( ) ) {
         QNEConnection *conn = oldElm->output( out )->connections( ).first( );
-        if( conn->port1( ) == oldElm->output( out ) ) {
-          conn->setPort1( newElm->output( out ) );
-        }
-        else if( conn->port2( ) == oldElm->output( out ) ) {
-          conn->setPort2( newElm->output( out ) );
+        if( conn->start( ) == oldElm->output( out ) ) {
+          conn->setStart( newElm->output( out ) );
         }
       }
     }
@@ -581,8 +580,9 @@ void MorphCommand::transferConnections( QVector< GraphicElement* > from, QVector
 
 
 ChangeInputSZCommand::ChangeInputSZCommand( const QVector< GraphicElement* > &elements,
-                                            int newInputSize, Editor * editor,
-                                            QUndoCommand *parent ) : QUndoCommand( parent ), editor(editor) {
+                                            int newInputSize,
+                                            Editor *editor,
+                                            QUndoCommand *parent ) : QUndoCommand( parent ), editor( editor ) {
   for( GraphicElement *elm : elements ) {
     elms.append( elm->id( ) );
   }
@@ -632,7 +632,7 @@ void ChangeInputSZCommand::redo( ) {
   for( GraphicElement *elm : serializationOrder ) {
     order.append( elm->id( ) );
   }
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 
 void ChangeInputSZCommand::undo( ) {
@@ -656,5 +656,5 @@ void ChangeInputSZCommand::undo( ) {
     }
     elm->setSelected( true );
   }
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }

@@ -50,7 +50,6 @@ SOURCES += \
     $$PWD/app/label.cpp \
     $$PWD/app/listitemwidget.cpp \
     $$PWD/app/mainwindow.cpp \
-    $$PWD/app/nodes/qneblock.cpp \
     $$PWD/app/nodes/qneconnection.cpp \
     $$PWD/app/nodes/qneport.cpp \
     $$PWD/app/recentfilescontroller.cpp \
@@ -102,7 +101,6 @@ HEADERS  +=  \
     $$PWD/app/label.h \
     $$PWD/app/listitemwidget.h \
     $$PWD/app/mainwindow.h \
-    $$PWD/app/nodes/qneblock.h \
     $$PWD/app/nodes/qneconnection.h \
     $$PWD/app/nodes/qneport.h \
     $$PWD/app/recentfilescontroller.h \

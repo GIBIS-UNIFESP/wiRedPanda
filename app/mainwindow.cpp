@@ -34,10 +34,9 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   if( settings.value( "language" ).isValid( ) ) {
     loadTranslation( settings.value( "language" ).toString( ) );
   }
-
   QList< QKeySequence > zoom_in_shortcuts;
-  zoom_in_shortcuts << QKeySequence("Ctrl++") << QKeySequence("Ctrl+=");
-  ui->actionZoom_in->setShortcuts(zoom_in_shortcuts);
+  zoom_in_shortcuts << QKeySequence( "Ctrl++" ) << QKeySequence( "Ctrl+=" );
+  ui->actionZoom_in->setShortcuts( zoom_in_shortcuts );
 
   /* THEME */
   QActionGroup *themeGroup = new QActionGroup( this );
@@ -275,7 +274,6 @@ void MainWindow::on_actionAbout_triggered( ) {
                         "<p><strong>Creators:</strong></p>"
                         "<ul>"
                         "<li> Davi Morales </li>"
-                        "<li> Héctor Castelli </li>"
                         "<li> Lucas Lellis </li>"
                         "<li> Rodrigo Torres </li>"
                         "<li> Prof. Fábio Cappabianco, Ph.D. </li>"
@@ -560,12 +558,12 @@ void MainWindow::on_actionZoom_out_triggered( ) {
 
 void MainWindow::on_actionReset_Zoom_triggered( ) {
   gvzoom->setScaleFactor( 1.0 );
-  zoomChanged();
+  zoomChanged( );
 }
 
 void MainWindow::zoomChanged( ) {
-  ui->actionZoom_in->setEnabled( ( gvzoom->scaleFactor( ) + ZOOMFAC * 2) <= gvzoom->maxZoom );
-  ui->actionZoom_out->setEnabled( ( gvzoom->scaleFactor( ) - ZOOMFAC * 2)  >= gvzoom->minZoom );
+  ui->actionZoom_in->setEnabled( ( gvzoom->scaleFactor( ) + ZOOMFAC * 2 ) <= gvzoom->maxZoom );
+  ui->actionZoom_out->setEnabled( ( gvzoom->scaleFactor( ) - ZOOMFAC * 2 ) >= gvzoom->minZoom );
 }
 
 void MainWindow::updateRecentFileActions( ) {

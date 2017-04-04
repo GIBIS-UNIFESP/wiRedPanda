@@ -28,7 +28,6 @@ public:
 
   explicit GraphicElement( int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz,
                            QGraphicsItem *parent = 0 );
-  virtual ~GraphicElement( );
 
 private:
   QPixmap *pixmap;
@@ -79,15 +78,15 @@ public:
 
   bool outputsOnTop( ) const;
 
-  QVector< QNEPort* > inputs( ) const;
-  void setInputs( const QVector< QNEPort* > &inputs );
+  QVector< QNEInputPort* > inputs( ) const;
+  void setInputs( const QVector< QNEInputPort* > &inputs );
 
-  QVector< QNEPort* > outputs( ) const;
+  QVector< QNEOutputPort* > outputs( ) const;
 
-  QNEPort* input( int pos = 0 ) const;
-  QNEPort* output( int pos = 0 ) const;
+  QNEInputPort* input( int pos = 0 ) const;
+  QNEOutputPort* output( int pos = 0 ) const;
 
-  void setOutputs( const QVector< QNEPort* > &outputs );
+  void setOutputs( const QVector< QNEOutputPort* > &outputs );
 
   int minInputSz( ) const;
 
@@ -179,8 +178,8 @@ private:
   QString m_labelText;
   QKeySequence m_trigger;
 protected:
-  QVector< QNEPort* > m_inputs;
-  QVector< QNEPort* > m_outputs;
+  QVector< QNEInputPort* > m_inputs;
+  QVector< QNEOutputPort* > m_outputs;
 
   /* QGraphicsItem interface */
 protected:
