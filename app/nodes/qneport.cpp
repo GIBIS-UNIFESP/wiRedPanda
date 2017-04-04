@@ -241,12 +241,11 @@ QNEInputPort::QNEInputPort( QGraphicsItem *parent ) : QNEPort( parent ) {
 }
 
 QNEInputPort::~QNEInputPort( ) {
-  for( QNEConnection *conn: m_connections ) {
-    conn->setEnd( nullptr );
+  while( !m_connections.isEmpty( ) ) {
+    QNEConnection *conn = m_connections.back( );
+    m_connections.removeAll( conn );
     delete conn;
   }
-  m_connections.clear( );
-
 }
 
 void QNEInputPort::setValue( char value ) {
