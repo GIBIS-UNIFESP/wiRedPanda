@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+# set -e
 
 
 dirname=`dirname "$0"`
@@ -7,6 +7,7 @@ tmp="${dirname#?}"
 if [ "${dirname%$tmp}" != "/" ]; then
 dirname=$PWD/$dirname
 fi
+
 PROJECTPATH=$(readlink -e "${dirname}/../../")
 echo PROJECTPATH $PROJECTPATH
 VERSION=$(cat ${PROJECTPATH}/includes.pri | grep "VERSION = " | awk '{split($0,a,"="); gsub (" ", "", a[2]); print a[2] }')
@@ -21,17 +22,15 @@ DEPENDENCIES_PATH="/usr/lib/x86_64-linux-gnu/"
 WPANDA_BIN="${PROJECTPATH}/app/wpanda";
 
 if [ ! -e ${WPANDA_BIN} ]; then
-  echo "ERROR: wpanda binary not found!"
+  echo "ERROR: ${WPANDA_BIN} not found!";
+  exit 1
 fi
-
-ls $WPANDA_BIN
 
 PTBDIR="wpanda-${VERSION}"
 DATADIR="${PTBDIR}/files"
-
 CURRENTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-rm -rf $DEBPKGTREE
+rm -rf $DEBPKGTREE $PTBDIR
 
 echo "Generating build tree for ${DEBPKGTREE}.deb"
 echo "Project path is ${PROJECTPATH}"
@@ -43,32 +42,36 @@ mkdir -p ${DEBPKGTREE}/usr/local/share/applications
 mkdir -p ${DEBPKGTREE}/usr/local/share/xml/misc
 mkdir -p ${DEBPKGTREE}/usr/local/share/doc
 
+cp ${WPANDA_BIN} ${PROJECTPATH}/app/resources/wpanda.sh     ${DEBPKGTREE}/usr/local/bin/
+cp ${PROJECTPATH}/app/resources/wpanda.desktop    ${DEBPKGTREE}/usr/local/share/applications/
+cp ${PROJECTPATH}/app/resources/wpanda-mime.xml   ${DEBPKGTREE}/usr/local/share/xml/misc
+
 for SIZE in 26x26 32x32 48x48 64x64 128x128; do
   ICONDIR_SZ=${DEBPKGTREE}/usr/local/share/icons/hicolor/${SIZE}/apps/
   mkdir -p ${ICONDIR_SZ}
   cp ${PROJECTPATH}/app/resources/icons/${SIZE}/* ${ICONDIR_SZ}
 done;
 
-cp ${WPANDA_BIN}                                  ${DEBPKGTREE}/usr/local/bin/
-cp ${PROJECTPATH}/app/resources/wpanda.desktop    ${DEBPKGTREE}/usr/local/share/applications/
-cp ${PROJECTPATH}/app/resources/wpanda.sh         ${DEBPKGTREE}/usr/local/bin/
-cp ${PROJECTPATH}/app/resources/wpanda.desktop    ${DEBPKGTREE}/usr/local/share/applications/
-cp ${PROJECTPATH}/app/resources/wpanda-mime.xml   ${DEBPKGTREE}/usr/local/share/xml/misc
-cp ${QT_LIBRARY_PATH}/libQt5PrintSupport.so.5 ${DEBPKGTREE}/usr/local/lib/wpanda
-cp ${QT_LIBRARY_PATH}/libQt5XcbQpa.so.5       ${DEBPKGTREE}/usr/local/lib/wpanda
-cp ${QT_LIBRARY_PATH}/libQt5DBus.so.5         ${DEBPKGTREE}/usr/local/lib/wpanda
-cp ${QT_LIBRARY_PATH}/libQt5Charts.so.5       ${DEBPKGTREE}/usr/local/lib/wpanda
-cp ${QT_LIBRARY_PATH}/libQt5Widgets.so.5      ${DEBPKGTREE}/usr/local/lib/wpanda
-cp ${QT_LIBRARY_PATH}/libQt5Gui.so.5          ${DEBPKGTREE}/usr/local/lib/wpanda
-cp ${QT_LIBRARY_PATH}/libQt5Core.so.5         ${DEBPKGTREE}/usr/local/lib/wpanda
-cp ${QT_LIBRARY_PATH}/libicui18n.so.56        ${DEBPKGTREE}/usr/local/lib/wpanda
-cp ${QT_LIBRARY_PATH}/libicuuc.so.56          ${DEBPKGTREE}/usr/local/lib/wpanda
-cp ${QT_LIBRARY_PATH}/libicudata.so.56        ${DEBPKGTREE}/usr/local/lib/wpanda
-cp ${QT_PLATFORMS_PATH}/libqxcb.so            ${DEBPKGTREE}/usr/local/lib/wpanda
-cp ${DEPENDENCIES_PATH}/libX11-xcb.so.1       ${DEBPKGTREE}/usr/local/lib/wpanda
-cp ${DEPENDENCIES_PATH}/libxcb.so.1           ${DEBPKGTREE}/usr/local/lib/wpanda
-cp ${DEPENDENCIES_PATH}/libxcb-dri2.so.0      ${DEBPKGTREE}/usr/local/lib/wpanda
-cp ${DEPENDENCIES_PATH}/libxcb-xfixes.so.0    ${DEBPKGTREE}/usr/local/lib/wpanda
+for lib in libQt5PrintSupport.so.5 libQt5XcbQpa.so.5 libQt5DBus.so.5\
+           libQt5Charts.so.5 libQt5Widgets.so.5 libQt5Gui.so.5 \
+           libQt5Core.so.5 libicui18n.so.56 libicuuc.so.56 libicudata.so.56;
+  do
+  if [ -f ${QT_LIBRARY_PATH}/$lib ]; then
+    cp ${QT_LIBRARY_PATH}/$lib ${DEBPKGTREE}/usr/local/lib/wpanda;
+  else
+    locate $lib;
+  fi;
+done;
+
+for lib in libX11-xcb.so.1 libxcb.so.1 libxcb-dri2.so.0 libxcb-xfixes.so.0; do
+  if [ -f ${DEPENDENCIES_PATH}/$lib ]; then
+    cp ${DEPENDENCIES_PATH}/$lib ${DEBPKGTREE}/usr/local/lib/wpanda;
+  else
+    locate $lib;
+  fi;
+done;
+
+cp ${QT_PLATFORMS_PATH}/libqxcb.so                ${DEBPKGTREE}/usr/local/lib/wpanda
 
 echo \
 "Package: wpanda
