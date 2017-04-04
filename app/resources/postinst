@@ -4,13 +4,13 @@ set -e
 
 case "$1" in
 configure)
-desktop-file-install /usr/local/share/applications/wpanda.desktop
-xdg-mime install --mode system /usr/local/share/xml/misc/wpanda-mime.xml
-xdg-mime default /usr/local/share/applications/wpanda.desktop application/x-wpanda
-xdg-icon-resource install --context mimetypes --size 128  /usr/local/share/icons/hicolor/128x128/apps/wpanda.png application-x-wpanda
-xdg-icon-resource install --context mimetypes --size 64  /usr/local/share/icons/hicolor/64x64/apps/wpanda.png application-x-wpanda
-xdg-icon-resource install --context mimetypes --size 48  /usr/local/share/icons/hicolor/48x48/apps/wpanda.png application-x-wpanda
-xdg-icon-resource install --context mimetypes --size 32  /usr/local/share/icons/hicolor/32x32/apps/wpanda.png application-x-wpanda
-xdg-icon-resource install --context mimetypes --size 26  /usr/local/share/icons/hicolor/26x26/apps/wpanda.png application-x-wpanda
+desktop-file-install /usr/share/applications/wpanda.desktop
+xdg-mime install --mode system /usr/share/xml/misc/wpanda-mime.xml
+xdg-mime default /usr/share/applications/wpanda.desktop application/x-wpanda
+xdg-icon-resource install --context mimetypes --size 128  /usr/share/icons/hicolor/128x128/apps/wpanda.png application-x-wpanda
+xdg-icon-resource install --context mimetypes --size 64  /usr/share/icons/hicolor/64x64/apps/wpanda.png application-x-wpanda
+xdg-icon-resource install --context mimetypes --size 48  /usr/share/icons/hicolor/48x48/apps/wpanda.png application-x-wpanda
+xdg-icon-resource install --context mimetypes --size 32  /usr/share/icons/hicolor/32x32/apps/wpanda.png application-x-wpanda
+xdg-icon-resource install --context mimetypes --size 26  /usr/share/icons/hicolor/26x26/apps/wpanda.png application-x-wpanda
 ;;
 esac
