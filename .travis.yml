@@ -45,8 +45,6 @@ install:
       fi;
     else
       brew install qt@5.7
-      && ls /usr/local/opt/
-      && brew link --force qt57
       && chmod -R 755 /usr/local/opt/qt@5.7/*;
     fi
 
