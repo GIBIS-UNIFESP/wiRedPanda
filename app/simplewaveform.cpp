@@ -25,7 +25,7 @@ SimpleWaveform::SimpleWaveform( Editor *editor, QWidget *parent ) :
   editor( editor ) {
   ui->setupUi( this );
   resize( 800, 500 );
-  chart.legend()->setAlignment(Qt::AlignLeft);
+  chart.legend( )->setAlignment( Qt::AlignLeft );
 
 /*  chart.legend( )->hide( ); */
 /*  chart->addSeries(series); */
@@ -81,18 +81,21 @@ void SimpleWaveform::showWaveform( ) {
   QVector< QLineSeries* > in_series;
   QVector< QLineSeries* > out_series;
   for( GraphicElement *elm : elements ) {
-    switch( elm->elementType( ) ) {
-        case ElementType::BUTTON:
-        case ElementType::SWITCH: {
-        inputs.append( elm );
-        break;
+    if( elm && ( elm->type( ) == GraphicElement::Type ) ) {
+      switch( elm->elementType( ) ) {
+          case ElementType::BUTTON:
+          case ElementType::SWITCH: {
+          inputs.append( elm );
+          break;
+        }
+          case ElementType::DISPLAY:
+          case ElementType::LED: {
+          outputs.append( elm );
+          break;
+        }
+          default:
+          break;
       }
-        case ElementType::LED: {
-        outputs.append( elm );
-        break;
-      }
-        default:
-        break;
     }
   }
   if( inputs.isEmpty( ) ) {
@@ -126,8 +129,8 @@ void SimpleWaveform::showWaveform( ) {
   for( int in = 0; in < inputs.size( ); ++in ) {
     in_series.append( new QLineSeries( this ) );
     QString label = inputs[ in ]->getLabel( );
-    if(label.isEmpty()){
-      label = inputs[in]->objectName();
+    if( label.isEmpty( ) ) {
+      label = inputs[ in ]->objectName( );
     }
     in_series[ in ]->setName( label );
     oldValues[ in ] = inputs[ in ]->output( )->value( );
@@ -135,33 +138,40 @@ void SimpleWaveform::showWaveform( ) {
   }
   for( int out = 0; out < outputs.size( ); ++out ) {
     QString label = outputs[ out ]->getLabel( );
-    if(label.isEmpty()){
-      label = outputs[out]->objectName();
+    if( label.isEmpty( ) ) {
+      label = outputs[ out ]->objectName( );
     }
-    out_series.append( new QLineSeries( this ) );
-    out_series[ out ]->setName( label );
-    chart.addSeries( out_series[ out ] );
+    for( int port = 0; port < outputs[ out ]->inputSize( ); ++port ) {
+      out_series.append( new QLineSeries( this ) );
+      out_series.last( )->setName( label + QString::number( port ) );
+      chart.addSeries( out_series.last( ) );
+    }
   }
 /*  gap += outputs.size( ) % 2; */
-  int num_iter = pow( 2, inputs.size( ) );
+  int num_iter = pow( 2, in_series.size( ) );
 /*  qDebug( ) << "Num iter = " << num_iter; */
   for( int itr = 0; itr < num_iter; ++itr ) {
     std::bitset< std::numeric_limits< unsigned int >::digits > bs( itr );
     for( int in = 0; in < inputs.size( ); ++in ) {
       dynamic_cast< Input* >( inputs[ in ] )->setOn( bs[ in ] );
-      float val = bs[ inputs.size( ) - in - 1 ];
-      float offset = ( inputs.size( ) - in - 1 ) * 2 + outputs.size( ) * 2 + gap + 0.5;
+      float val = bs[ in_series.size( ) - in - 1 ];
+      float offset = ( inputs.size( ) - in - 1 + out_series.size( ) )* 2 + gap + 0.5;
       in_series[ in ]->append( itr, offset + val );
       in_series[ in ]->append( itr + 1, offset + val );
     }
     for( GraphicElement *elm : elements ) {
       elm->updateLogic( );
     }
+    int counter = 0;
     for( int out = 0; out < outputs.size( ); ++out ) {
-      float val = outputs[ out ]->input( )->value( );
-      float offset = ( outputs.size( ) - out - 1 ) * 2 + 0.5;
-      out_series[ out ]->append( itr, offset + val );
-      out_series[ out ]->append( itr + 1, offset + val );
+      int inSz = outputs[ out ]->inputSize( );
+      for( int port = inSz - 1; port >= 0; --port ) {
+        float val = outputs[ out ]->input( port )->value( );
+        float offset = ( out_series.size( ) - counter - 1 ) * 2 + 0.5;
+        out_series[ counter ]->append( itr, offset + val );
+        out_series[ counter ]->append( itr + 1, offset + val );
+        counter++;
+      }
     }
   }
   chart.createDefaultAxes( );
@@ -179,8 +189,8 @@ void SimpleWaveform::showWaveform( ) {
   ay->setShadesVisible( true );
 
   ay->setGridLineVisible( false );
-  ay->setTickCount( ( inputs.size( ) + outputs.size( ) + gap / 2 + 1 ) );
-  ay->setRange( 0, inputs.size( ) * 2 + outputs.size( ) * 2 + gap );
+  ay->setTickCount( ( in_series.size( ) + out_series.size( ) + gap / 2 + 1 ) );
+  ay->setRange( 0, in_series.size( ) * 2 + out_series.size( ) * 2 + gap );
   ay->setGridLineColor( Qt::transparent );
   ay->setLabelsVisible( false );
 /*  ay->hide( ); */
