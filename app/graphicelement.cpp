@@ -141,7 +141,7 @@ void GraphicElement::save( QDataStream &ds ) {
 }
 
 void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) {
-  COMMENT( "Loading element. Type: " << objectName( ).toStdString( ), 0 );
+  COMMENT( "Loading element. Type: " << objectName( ).toStdString( ), 4 );
   QPointF p;
   QString label_text;
   ds >> p;
@@ -153,7 +153,6 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
   if( version >= 1.2 ) {
     ds >> label_text;
     setLabel( label_text );
-    COMMENT("LABEL = " << label_text.toStdString(), 0);
   }
   /* <\Version1.2> */
   /* <Version1.3> */
