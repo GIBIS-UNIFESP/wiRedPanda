@@ -183,4 +183,23 @@ private:
 
 };
 
+class FlipCommand : public QUndoCommand {
+  Q_DECLARE_TR_FUNCTIONS( FlipHCommand )
+
+  enum { Id = 109 };
+public:
+  explicit FlipCommand(const QList< GraphicElement* > &aItems, int aAxis, QUndoCommand *parent = 0 );
+  virtual void undo( ) Q_DECL_OVERRIDE;
+  virtual void redo( ) Q_DECL_OVERRIDE;
+
+  int id( ) const Q_DECL_OVERRIDE {
+    return( Id );
+  }
+private:
+  int axis;
+  QVector< int > ids;
+  QVector< QPointF > positions;
+  QPointF minPos, maxPos;
+};
+
 #endif /* COMMANDS_H */

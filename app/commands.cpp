@@ -672,3 +672,49 @@ void ChangeInputSZCommand::undo( ) {
   }
   emit editor->circuitHasChanged( );
 }
+
+FlipCommand::FlipCommand( const QList< GraphicElement* > &aItems, int aAxis, QUndoCommand *parent ) :
+  QUndoCommand( parent ) {
+  axis = aAxis;
+  setText( tr( "Flip %1 elements in axis %2" ).arg( aItems.size( ) ).arg( aAxis ) );
+  ids.reserve( aItems.size( ) );
+  positions.reserve( aItems.size( ) );
+  double xmin, xmax, ymin, ymax;
+  if( aItems.size( ) > 0 ) {
+    xmin = xmax = aItems.first( )->pos( ).rx( );
+    ymin = ymax = aItems.first( )->pos( ).ry( );
+    for( GraphicElement *item : aItems ) {
+      positions.append( item->pos( ) );
+      item->setPos( item->pos( ) );
+      ids.append( item->id( ) );
+      xmin = qMin( xmin, item->pos( ).rx( ) );
+      xmax = qMax( xmax, item->pos( ).rx( ) );
+      ymin = qMin( ymin, item->pos( ).ry( ) );
+      ymax = qMax( ymax, item->pos( ).ry( ) );
+    }
+    minPos = QPointF( xmin, ymin );
+    maxPos = QPointF( xmax, ymax );
+  }
+}
+
+void FlipCommand::undo( ) {
+  redo( );
+}
+
+void FlipCommand::redo( ) {
+  QList< GraphicElement* > list = findElements( ids );
+  QGraphicsScene *scn = list[ 0 ]->scene( );
+  scn->clearSelection( );
+  for( GraphicElement *elm : list ) {
+    QPointF pos = elm->pos( );
+    if( axis == 0 ) {
+      pos.setX( minPos.rx( ) + ( maxPos.rx( ) - pos.rx( ) ) );
+    }
+    else {
+      pos.setY( minPos.ry( ) + ( maxPos.ry( ) - pos.ry( ) ) );
+    }
+    elm->setPos( pos );
+    elm->update( );
+    elm->setSelected( true );
+  }
+}

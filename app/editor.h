@@ -36,7 +36,7 @@ public slots:
   void showWires( bool checked );
   void showGates( bool checked );
   void rotate( bool rotateRight );
-  void selectionChanged( );
+
   void receiveCommand( QUndoCommand *cmd );
   void copyAction( );
   void cutAction( );
@@ -113,6 +113,8 @@ public:
   ElementEditor* getElementEditor( ) const;
 
   void deleteEditedConn( );
+  void flipH( );
+  void flipV( );
 };
 
 #endif /* EDITOR_H */
