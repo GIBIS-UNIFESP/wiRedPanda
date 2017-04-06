@@ -66,26 +66,27 @@ script:
   - qmake ./WPanda.pro -r
   - make -j4
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-      ./test/WPanda-test
-      && ls app
-      && bash -x installer/Linux/deploy;
+      ./test/WPanda-test;
+#      && ls app
+#     && bash -x installer/Linux/deploy;
     else
       PANDA_OSX=test/WPanda-test.app/Contents/MacOS/WPanda-test;
-      if [[ $($PANDA_OSX) -ne 1 ]]; then
-          mkdir debug;
-          cd debug;
-          qmake ../Wpanda.pro CONFIG+=debug -r;
-          make -j4;
-          gdb -batch -ex "run" -ex "bt" ${PANDA_OSX} 2>&1 | grep -v ^"No stack."$;
-          exit 1;
+      $PANDA_OSX
+#      if [[ $TESTRESULT -ne 1 ]]; then
+#          mkdir debug;
+#          cd debug;
+#          qmake ../Wpanda.pro CONFIG+=debug -r;
+#          make -j4;
+#          gdb -batch -ex "run" -ex "bt" ${PANDA_OSX} 2>&1 | grep -v ^"No stack."$;
+#         exit $TESTRESULT;
       fi;
     fi;
 
-deploy:
-  provider: releases
-  api_key:
-    secure: YOUR_API_KEY_ENCRYPTED
-  file: /tmp/packages/*
-  skip_cleanup: true
-  on:
-    tags: true
+#deploy:
+#  provider: releases
+#  api_key:
+#    secure: YOUR_API_KEY_ENCRYPTED
+#  file: /tmp/packages/*
+#  skip_cleanup: true
+#  on:
+#    tags: true
