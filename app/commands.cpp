@@ -230,7 +230,6 @@ void AddItemsCommand::undo( ) {
   QList< QGraphicsItem* > items = findItems( ids );
 
   saveitems( itemData, items, otherIds );
-  COMMENT("Items = " << items.size() << ", ids = " << ids.size() << ", otherIds = " << otherIds.size(), 0 );
   deleteItems( items, editor );
   emit editor->circuitHasChanged( );
 }
@@ -238,7 +237,6 @@ void AddItemsCommand::undo( ) {
 void AddItemsCommand::redo( ) {
   COMMENT( "REDO " + text( ).toStdString( ), 0 );
   QList< QGraphicsItem* > items  = loadItems( itemData, ids, editor, otherIds );
-  COMMENT("Items = " << items.size() << ", ids = " << ids.size() << ", otherIds = " << otherIds.size(), 0 );
   emit editor->circuitHasChanged( );
 }
 

@@ -40,7 +40,7 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor,
     if( type == GraphicElement::Type ) {
       quint64 elmType;
       ds >> elmType;
-      COMMENT("Builting " << ElementFactory::typeToText((ElementType)elmType).toStdString() << " element.", 0);
+      COMMENT("Building " << ElementFactory::typeToText((ElementType)elmType).toStdString() << " element.", 4);
       GraphicElement *elm = ElementFactory::buildElement( ( ElementType ) elmType, editor );
       if( elm ) {
         itemList.append( elm );
