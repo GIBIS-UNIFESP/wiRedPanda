@@ -99,6 +99,7 @@ void Editor::setEditedConn( QNEConnection *editedConn ) {
 void Editor::buildSelectionRect( ) {
   selectionRect = new QGraphicsRectItem( );
   selectionRect->setFlag( QGraphicsItem::ItemIsSelectable, false );
+  if(scene)
   scene->addItem( selectionRect );
 }
 
@@ -421,6 +422,9 @@ void Editor::makeConnection( QNEConnection *editedConn ) {
 }
 
 bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
+  if(!mouseEvt){
+    return( false );
+  }
   /* When mouse is released the selection rect is hidden. */
   selectionRect->hide( );
   markingSelectionBox = false;
@@ -431,6 +435,7 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
   if( editedConn && !( mouseEvt->buttons( ) & Qt::LeftButton ) ) {
     /* A connection is being created, and left button was released. */
     makeConnection( editedConn );
+    return true;
   }
   return( false );
 }
@@ -863,7 +868,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
       }
     }
     bool ret = false;
-    if( ( evt->type( ) == QEvent::GraphicsSceneMousePress )
+    if( mouseEvt && ( evt->type( ) == QEvent::GraphicsSceneMousePress )
         || ( evt->type( ) == QEvent::GraphicsSceneMouseDoubleClick ) ) {
       QGraphicsItem *item = itemAt( mousePos );
       if( item && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
@@ -896,7 +901,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
         if( !movedElements.empty( ) ) {
 /*
  *          if( movedElements.size( ) != oldPositions.size( ) ) {
- *            throw std::runtime_error( tr( "Invalid coordinates." ).toStdString( ) );
+ *            throw std::runtime_error( ERRORMSG(tr( "Invalid coordinates." ).toStdString( ) ));
  *          }
  *          qDebug() << "OUT";
  */

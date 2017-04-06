@@ -685,7 +685,7 @@ void TestElements::testBox( ) {
 }
 
 void TestElements::testBoxes( ) {
-  Editor *editor = new Editor( this );
+  Editor editor( this );
 
   QDir examplesDir( QString( "%1/../examples/" ).arg( CURRENTDIR ) );
 /*  qDebug( ) << "Current dir: " << CURRENTDIR; */
@@ -694,8 +694,7 @@ void TestElements::testBoxes( ) {
   QFileInfoList files = examplesDir.entryInfoList( entries );
   for( QFileInfo f : files ) {
     qDebug( ) << "FILE: " << f.absoluteFilePath( );
-    Box *box = new Box( editor );
-    box->loadFile( f.absoluteFilePath( ) );
-    delete box;
+    Box box( &editor );
+    box.loadFile( f.absoluteFilePath( ) );
   }
 }

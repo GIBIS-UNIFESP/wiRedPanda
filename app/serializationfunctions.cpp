@@ -52,7 +52,7 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor,
         elm->setSelected( true );
       }
       else {
-        throw( std::runtime_error( "Could not build element." ) );
+        throw( std::runtime_error( ERRORMSG("Could not build element.") ) );
       }
     }
     else if( type == QNEConnection::Type ) {
@@ -66,7 +66,7 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor,
       }
     }
     else {
-      throw( std::runtime_error( "Invalid element type. Data is possibly corrupted." ) );
+      throw( std::runtime_error( ERRORMSG("Invalid element type. Data is possibly corrupted.") ) );
     }
   }
   return( itemList );
@@ -78,7 +78,7 @@ QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStrea
   QString str;
   ds >> str;
   if( !str.startsWith( QApplication::applicationName( ) ) ) {
-    throw( std::runtime_error( "Invalid file format." ) );
+    throw( std::runtime_error( ERRORMSG("Invalid file format.") ) );
   }
   double version = str.split( " " ).at( 1 ).toDouble( );
 

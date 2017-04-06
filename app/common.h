@@ -11,5 +11,9 @@
 #define COMMENT( exp, num )
 #endif
 
+#define ERRORMSG( exp )						\
+  std::string( __FILE__ ) + ": " + std::to_string( __LINE__ ) + ": " + std::string( __FUNCTION__ ) + ": Error: " + exp
+
+
 #endif // COMMON_H
 
