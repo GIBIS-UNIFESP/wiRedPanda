@@ -868,8 +868,8 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
       }
     }
     bool ret = false;
-    if( mouseEvt && ( evt->type( ) == QEvent::GraphicsSceneMousePress )
-        || ( evt->type( ) == QEvent::GraphicsSceneMouseDoubleClick ) ) {
+    if( mouseEvt && (( evt->type( ) == QEvent::GraphicsSceneMousePress )
+        || ( evt->type( ) == QEvent::GraphicsSceneMouseDoubleClick ) )) {
       QGraphicsItem *item = itemAt( mousePos );
       if( item && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
         if( ( mouseEvt->modifiers( ) & Qt::ControlModifier ) && ( item->type( ) == GraphicElement::Type ) ) {
