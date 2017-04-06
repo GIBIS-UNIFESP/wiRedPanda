@@ -2,7 +2,7 @@ QT       += core gui printsupport charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-VERSION = 2.3.1
+VERSION = 2.3
 
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 

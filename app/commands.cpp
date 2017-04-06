@@ -11,41 +11,6 @@
 #include <cmath>
 #include <stdexcept>
 
-QList< QGraphicsItem* > getConnections( const QList< QGraphicsItem* > &elements,
-                                        const QList< QGraphicsItem* > &aItems ) {
-  QList< QGraphicsItem* > connections;
-  /* Stores the wires linked to these elements */
-  for( QGraphicsItem *item : elements ) {
-    GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
-    if( elm ) {
-      QVector< QNEInputPort* > inputsList = elm->inputs( );
-      for( QNEInputPort *port : inputsList ) {
-        for( QNEConnection *conn : port->connections( ) ) {
-          if( !connections.contains( conn ) ) {
-            connections.append( conn );
-          }
-        }
-      }
-    }
-    QVector< QNEOutputPort* > outputsList = elm->outputs( );
-    for( QNEOutputPort *port : outputsList ) {
-      for( QNEConnection *conn : port->connections( ) ) {
-        if( !connections.contains( conn ) ) {
-          connections.append( conn );
-        }
-      }
-    }
-  }
-  /* Stores the other wires selected */
-  for( QGraphicsItem *item : aItems ) {
-    if( item->type( ) == QNEConnection::Type ) {
-      if( !connections.contains( item ) ) {
-        connections.append( item );
-      }
-    }
-  }
-  return( connections );
-}
 
 void storeIds( const QList< QGraphicsItem* > &items, QVector< int > &ids ) {
   ids.reserve( items.size( ) );
@@ -75,6 +40,7 @@ void storeOtherIds( const QList< QGraphicsItem* > &connections, const QVector< i
 
 QList< QGraphicsItem* > loadList( const QList< QGraphicsItem* > &aItems, QVector< int > &ids,
                                   QVector< int > &otherIds ) {
+
   QList< QGraphicsItem* > elements;
   /* Stores selected graphicElements */
   for( QGraphicsItem *item : aItems ) {
@@ -84,14 +50,44 @@ QList< QGraphicsItem* > loadList( const QList< QGraphicsItem* > &aItems, QVector
       }
     }
   }
-  QList< QGraphicsItem* > connections = getConnections( elements, aItems );
+
+
+  QList< QGraphicsItem* > connections;
+  /* Stores all the wires linked to these elements */
+  for( QGraphicsItem *item : elements ) {
+    GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+    if( elm ) {
+      for( QNEInputPort *port : elm->inputs( ) ) {
+        for( QNEConnection *conn : port->connections( ) ) {
+          if( !connections.contains( conn ) ) {
+            connections.append( conn );
+          }
+        }
+      }
+      for( QNEOutputPort *port : elm->outputs( )) {
+        for( QNEConnection *conn : port->connections( ) ) {
+          if( !connections.contains( conn ) ) {
+            connections.append( conn );
+          }
+        }
+      }
+    }
+  }
+  /* Stores the other wires selected */
+  for( QGraphicsItem *item : aItems ) {
+    if( item->type( ) == QNEConnection::Type ) {
+      if( !connections.contains( item ) ) {
+        connections.append( item );
+      }
+    }
+  }
+
   /* Stores the ids of all elements listed in items; */
   storeIds( elements + connections, ids );
   /* Stores all the elements linked to each connection that will not be deleted. */
   storeOtherIds( connections, ids, otherIds );
   return( elements + connections );
 }
-
 
 QList< QGraphicsItem* > findItems( const QVector< int > &ids ) {
   QList< QGraphicsItem* > items;
@@ -143,9 +139,9 @@ void addItems( Editor *editor, QList< QGraphicsItem* > items ) {
   }
 }
 
-void loadItems( QByteArray &itemData, const QVector< int > &ids, Editor *editor, QVector< int > &otherIds ) {
+QList<QGraphicsItem * > loadItems( QByteArray &itemData, const QVector< int > &ids, Editor *editor, QVector< int > &otherIds ) {
   if( itemData.isEmpty( ) ) {
-    return;
+    return QList<QGraphicsItem*>();
   }
   QVector< GraphicElement* > otherElms = findElements( otherIds ).toVector( );
   QDataStream dataStream( &itemData, QIODevice::ReadOnly );
@@ -176,6 +172,7 @@ void loadItems( QByteArray &itemData, const QVector< int > &ids, Editor *editor,
     }
   }
   addItems( editor, items );
+  return items;
 }
 
 void deleteItems( const QList< QGraphicsItem* > &items, Editor *editor ) {
@@ -190,8 +187,7 @@ void deleteItems( const QList< QGraphicsItem* > &items, Editor *editor ) {
 
 AddItemsCommand::AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
     parent ) {
-  QList< QGraphicsItem* > items;
-  items.append( aItem );
+  QList< QGraphicsItem* > items({aItem});
   items = loadList( items, ids, otherIds );
   editor = aEditor;
   addItems( editor, items );
@@ -200,8 +196,7 @@ AddItemsCommand::AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoC
 
 AddItemsCommand::AddItemsCommand( QNEConnection *aItem, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
     parent ) {
-  QList< QGraphicsItem* > items;
-  items.append( aItem );
+  QList< QGraphicsItem* > items({aItem});
   items = loadList( items, ids, otherIds );
   editor = aEditor;
   addItems( editor, items );
@@ -233,9 +228,17 @@ DeleteItemsCommand::DeleteItemsCommand( QGraphicsItem *item, Editor *aEditor, QU
 void AddItemsCommand::undo( ) {
   COMMENT( "UNDO " + text( ).toStdString( ), 0 );
   QList< QGraphicsItem* > items = findItems( ids );
-  saveitems( itemData, items, otherIds );
 
+  saveitems( itemData, items, otherIds );
+  COMMENT("Items = " << items.size() << ", ids = " << ids.size() << ", otherIds = " << otherIds.size(), 0 );
   deleteItems( items, editor );
+  emit editor->circuitHasChanged( );
+}
+
+void AddItemsCommand::redo( ) {
+  COMMENT( "REDO " + text( ).toStdString( ), 0 );
+  QList< QGraphicsItem* > items  = loadItems( itemData, ids, editor, otherIds );
+  COMMENT("Items = " << items.size() << ", ids = " << ids.size() << ", otherIds = " << otherIds.size(), 0 );
   emit editor->circuitHasChanged( );
 }
 
@@ -245,15 +248,10 @@ void DeleteItemsCommand::undo( ) {
   emit editor->circuitHasChanged( );
 }
 
-void AddItemsCommand::redo( ) {
-  COMMENT( "REDO " + text( ).toStdString( ), 0 );
-  loadItems( itemData, ids, editor, otherIds );
-  emit editor->circuitHasChanged( );
-}
 void DeleteItemsCommand::redo( ) {
   COMMENT( "REDO " + text( ).toStdString( ), 0 );
-  QList< QGraphicsItem* > items
-    = findItems( ids );
+  QList< QGraphicsItem* > items = findItems( ids );
+
   saveitems( itemData, items, otherIds );
 
   deleteItems( items, editor );
