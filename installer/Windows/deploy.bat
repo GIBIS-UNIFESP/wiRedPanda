@@ -1,4 +1,4 @@
-SET PATH=%PATH%;C:\Qt\5.5\mingw492_32\bin\;C:\Program Files\7-Zip;C:\Program Files (x86)\NSIS\
+SET PATH=%PATH%;C:\Qt\Tools\mingw530_32\bin;C:\Qt\5.8\mingw53_32\bin;C:\Program Files\7-Zip;C:\Program Files (x86)\NSIS\
 if not exist Build mkdir Build
 cd Build
 qmake.exe ..\..\..\app\
