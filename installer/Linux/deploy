@@ -17,22 +17,29 @@ DEBPKGROOT="$PROJECTPATH/Deploy/$PKGNAME"
 DEBPKGFILES="$PROJECTPATH/Deploy/$PKGNAME/files"
 echo DEBPKGFILES $DEBPKGFILES
 
-QT_LIBRARY_PATH="/opt/qt57/lib"
-QT_PLATFORMS_PATH="/opt/qt57/plugins/platforms/"
+
+QT_LIBRARY_PATH="/opt/Qt/5.8/gcc_64/lib"
+QT_PLATFORMS_PATH="/opt/Qt/5.8/gcc_64/plugins/platforms/"
 DEPENDENCIES_PATH="/usr/lib/x86_64-linux-gnu/"
 
-if [ ! -d $QT_LIBRARY_PATH ]; then
-  QT_LIBRARY_PATH="/usr/lib64/";
-  QT_PLATFORMS_PATH="/usr/lib64/qt5/plugins/platforms/";
-  DEPENDENCIES_PATH="/usr/lib64/"
-fi;
+export PATH=/opt/Qt/5.8/gcc_64/bin/:$PATH
+export LD_LIBRARY_PATH=/opt/Qt/5.8/gcc_64/lib:$LD_LIBRARY_PATH
+# QT_LIBRARY_PATH="/opt/qt57/lib"
+# QT_PLATFORMS_PATH="/opt/qt57/plugins/platforms/"
+# DEPENDENCIES_PATH="/usr/lib/x86_64-linux-gnu/"
+
+# if [ ! -d $QT_LIBRARY_PATH ]; then
+#   QT_LIBRARY_PATH="/usr/lib64/";
+#   QT_PLATFORMS_PATH="/usr/lib64/qt5/plugins/platforms/";
+#   DEPENDENCIES_PATH="/usr/lib64/"
+# fi;
 
 WPANDA_BIN="${PROJECTPATH}/app/wpanda";
 
 if [ ! -e ${WPANDA_BIN} ]; then
   pushd $PROJECTPATH/app;
-  qmake-qt5 -r app.pro config+=RELEASE;
-  make -j4;
+  qmake -r app.pro config+=RELEASE;
+  make -j12;
   popd;
 fi
 
@@ -117,7 +124,7 @@ done;
 
 for lib in libQt5PrintSupport.so.5 libQt5XcbQpa.so.5 libQt5DBus.so.5\
            libQt5Charts.so.5 libQt5Widgets.so.5 libQt5Gui.so.5 \
-           libQt5Core.so.5 libicui18n.so libicuuc.so libicudata.so;
+           libQt5Core.so.5 libicui18n.so libicuuc.so.56 libicudata.so.56;
   do
   echo "Copying $lib";
   if [ -f ${QT_LIBRARY_PATH}/$lib ]; then
@@ -129,7 +136,7 @@ for lib in libQt5PrintSupport.so.5 libQt5XcbQpa.so.5 libQt5DBus.so.5\
   fi;
 done;
 
-for lib in libX11-xcb.so.1 libxcb.so.1 libxcb-dri2.so.0 libxcb-xfixes.so.0; do
+for lib in libxcb-dri2.so.0 libxcb-xfixes.so.0; do
   echo "Copying $lib";
   if [ -f ${DEPENDENCIES_PATH}/$lib ]; then
     cp ${DEPENDENCIES_PATH}/$lib ${DEBPKGFILES}/usr/lib/wpanda;

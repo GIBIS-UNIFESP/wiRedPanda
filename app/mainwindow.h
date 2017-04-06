@@ -102,6 +102,9 @@ private slots:
 
   void updateTheme( );
 
+  void on_actionFlip_horizontally_triggered( );
+
+  void on_actionFlip_vertically_triggered( );
 
 private:
   Ui::MainWindow *ui;

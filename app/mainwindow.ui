@@ -463,6 +463,8 @@
     <addaction name="separator"/>
     <addaction name="actionRotate_left"/>
     <addaction name="actionRotate_right"/>
+    <addaction name="actionFlip_horizontally"/>
+    <addaction name="actionFlip_vertically"/>
     <addaction name="separator"/>
     <addaction name="actionSelect_all"/>
     <addaction name="actionClear_selection"/>
@@ -907,7 +909,23 @@
   </action>
   <action name="actionExport_to_Image">
    <property name="text">
-    <string>Export to Image</string>
+    <string>Export to &amp;Image</string>
+   </property>
+  </action>
+  <action name="actionFlip_horizontally">
+   <property name="text">
+    <string>Flip horizontally</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+H</string>
+   </property>
+  </action>
+  <action name="actionFlip_vertically">
+   <property name="text">
+    <string>Flip vertically</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
    </property>
   </action>
  </widget>
@@ -935,14 +953,14 @@
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/resources.qrc"/>
+  <include location="resources/input/input.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/resources.qrc"/>
   <include location="resources/basic/basic.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

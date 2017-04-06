@@ -76,7 +76,6 @@ void Editor::updateTheme( ) {
 
 void Editor::install( Scene *s ) {
   s->installEventFilter( this );
-  connect( scene, &QGraphicsScene::selectionChanged, this, &Editor::selectionChanged );
   simulationController = new SimulationController( s );
   simulationController->start( );
   clear( );
@@ -185,8 +184,33 @@ void Editor::rotate( bool rotateRight ) {
   }
 }
 
-void Editor::selectionChanged( ) {
+void Editor::flipH( ) {
+  QList< QGraphicsItem* > list = scene->selectedItems( );
+  QList< GraphicElement* > elms;
+  for( QGraphicsItem *item : list ) {
+    GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+    if( elm && ( elm->type( ) == GraphicElement::Type ) ) {
+      elms.append( elm );
+    }
+  }
+  if( ( elms.size( ) > 1 ) || ( ( elms.size( ) == 1 ) ) ) {
+    receiveCommand( new FlipCommand( elms, 0 ) );
+  }
+}
 
+
+void Editor::flipV( ) {
+  QList< QGraphicsItem* > list = scene->selectedItems( );
+  QList< GraphicElement* > elms;
+  for( QGraphicsItem *item : list ) {
+    GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+    if( elm && ( elm->type( ) == GraphicElement::Type ) ) {
+      elms.append( elm );
+    }
+  }
+  if( ( elms.size( ) > 1 ) || ( ( elms.size( ) == 1 ) ) ) {
+    receiveCommand( new FlipCommand( elms, 1 ) );
+  }
 }
 
 QList< QGraphicsItem* > Editor::itemsAt( QPointF pos ) {
@@ -389,8 +413,9 @@ void Editor::makeConnection( QNEConnection *editedConn ) {
       editedConn->setEnd( endPort );
       receiveCommand( new AddItemsCommand( editedConn, this ) );
       setEditedConn( nullptr );
-    }else{
-      deleteEditedConn();
+    }
+    else {
+      deleteEditedConn( );
     }
   }
 }
@@ -592,7 +617,6 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
                                                                             GlobalProperties::currentFile );
     receiveCommand( new AddItemsCommand( itemList, this ) );
     scene->clearSelection( );
-
     for( QGraphicsItem *item : itemList ) {
       if( item->type( ) == GraphicElement::Type ) {
         item->setPos( ( item->pos( ) + offset ) );

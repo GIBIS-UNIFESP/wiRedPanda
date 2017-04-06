@@ -781,3 +781,11 @@ void MainWindow::updateTheme( ) {
       break;
   }
 }
+
+void MainWindow::on_actionFlip_horizontally_triggered( ) {
+  editor->flipH( );
+}
+
+void MainWindow::on_actionFlip_vertically_triggered( ) {
+  editor->flipV( );
+}
