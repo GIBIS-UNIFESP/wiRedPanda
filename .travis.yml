@@ -30,7 +30,7 @@ branches:
 #   - export DISPLAY=:99.0
 #   - sh -e /etc/init.d/xvfb start
 before_install:
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; the
       if [ "$QT" = "qt57" ]; then
         sudo add-apt-repository ppa:beineri/opt-qt571-trusty -y && sudo apt-get update;
       fi;
@@ -62,15 +62,18 @@ script:
       && PATH="${QTDIR}/bin:$PATH"
       && LDFLAGS=-L${QTDIR}/lib
       && CPPFLAGS=-I${QTDIR}/include;
-    fi
+    fi;
   - qmake ./WPanda.pro -r
   - make -j4
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
       ./test/WPanda-test;
-#      && ls app
-#     && bash -x installer/Linux/deploy;
     else
       test/WPanda-test.app/Contents/MacOS/WPanda-test;
+    fi;
+
+
+#      && ls app
+#     && bash -x installer/Linux/deploy;
 #      $PANDA_OSX=...
 #      $TESTRESULT=$($PANDA_OSX)
 #      if [[ $TESTRESULT -ne 1 ]]; then
@@ -81,7 +84,6 @@ script:
 #          gdb -batch -ex "run" -ex "bt" ${PANDA_OSX} 2>&1 | grep -v ^"No stack."$;
 #         exit $TESTRESULT;
 #      fi;
-    fi;
 
 #deploy:
 #  provider: releases
