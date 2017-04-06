@@ -19,6 +19,7 @@ ElementEditor::ElementEditor( QWidget *parent ) : QWidget( parent ), ui( new Ui:
 
   ui->lineEditTrigger->setValidator( new QRegExpValidator( QRegExp( "[a-z]| |[A-Z]|[0-9]" ), this ) );
   fillColorComboBox( );
+
 }
 
 ElementEditor::~ElementEditor( ) {
@@ -32,14 +33,15 @@ void ElementEditor::setScene( Scene *s ) {
 
 QAction* addElementAction( QMenu *menu, GraphicElement *firstElm, ElementType type, bool hasSameType ) {
   if( !hasSameType || ( firstElm->elementType( ) != type ) ) {
-    QAction *action = menu->addAction( QIcon( ElementFactory::getPixmap( type ) ), ElementFactory::translatedName(type ) );
-    action->setData( (int) type );
+    QAction *action = menu->addAction( QIcon( ElementFactory::getPixmap( type ) ), ElementFactory::translatedName(
+                                         type ) );
+    action->setData( ( int ) type );
     return( action );
   }
   return( nullptr );
 }
 
-void ElementEditor::contextMenu(QPoint screenPos) {
+void ElementEditor::contextMenu( QPoint screenPos ) {
   QMenu menu;
   QString renameActionText( tr( "Rename" ) );
   QString rotateActionText( tr( "Rotate" ) );
@@ -48,16 +50,18 @@ void ElementEditor::contextMenu(QPoint screenPos) {
   QString triggerActionText( tr( "Change trigger" ) );
   QString morphMenuText( tr( "Morph to..." ) );
   if( hasLabel ) {
-    menu.addAction( QIcon( QPixmap( ":/toolbar/rename.png" ) ), renameActionText )->setData(renameActionText);
+    menu.addAction( QIcon( QPixmap( ":/toolbar/rename.png" ) ), renameActionText )->setData( renameActionText );
   }
   if( hasTrigger ) {
-    menu.addAction( QIcon( ElementFactory::getPixmap( ElementType::BUTTON ) ), triggerActionText )->setData(triggerActionText);
+    menu.addAction( QIcon( ElementFactory::getPixmap( ElementType::BUTTON ) ), triggerActionText )->setData(
+      triggerActionText );
   }
   if( hasRotation ) {
-    menu.addAction( QIcon( QPixmap( ":/toolbar/rotateR.png" ) ), rotateActionText )->setData(rotateActionText);
+    menu.addAction( QIcon( QPixmap( ":/toolbar/rotateR.png" ) ), rotateActionText )->setData( rotateActionText );
   }
   if( hasFrequency ) {
-    menu.addAction( QIcon( ElementFactory::getPixmap( ElementType::CLOCK ) ), freqActionText )->setData(freqActionText);
+    menu.addAction( QIcon( ElementFactory::getPixmap( ElementType::CLOCK ) ),
+                    freqActionText )->setData( freqActionText );
   }
   QMenu *submenucolors = nullptr;
   if( hasColors ) {
@@ -145,7 +149,7 @@ void ElementEditor::contextMenu(QPoint screenPos) {
       ui->doubleSpinBoxFrequency->setFocus( );
     }
     else if( submenumorph && submenumorph->actions( ).contains( a ) ) {
-      ElementType type = static_cast<ElementType>( a->data( ).toInt( ) );
+      ElementType type = static_cast< ElementType >( a->data( ).toInt( ) );
       if( type != ElementType::UNKNOWN ) {
         sendCommand( new MorphCommand( m_elements, type, editor ) );
       }
@@ -243,7 +247,7 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
     if( hasColors ) {
       if( hasSameColors ) {
         ui->comboBoxColor->removeItem( ui->comboBoxColor->findText( _manyColors ) );
-        ui->comboBoxColor->setCurrentIndex( ui->comboBoxColor->findData(firstElement->getColor( ) ));
+        ui->comboBoxColor->setCurrentIndex( ui->comboBoxColor->findData( firstElement->getColor( ) ) );
       }
       else {
         ui->comboBoxColor->setCurrentText( _manyColors );
@@ -318,8 +322,8 @@ void ElementEditor::apply( ) {
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );
   for( GraphicElement *elm : m_elements ) {
     elm->save( dataStream );
-    if( elm->hasColors( ) && ( ui->comboBoxColor->currentData().isValid() ) ) {
-      elm->setColor( ui->comboBoxColor->currentData().toString() );
+    if( elm->hasColors( ) && ( ui->comboBoxColor->currentData( ).isValid( ) ) ) {
+      elm->setColor( ui->comboBoxColor->currentData( ).toString( ) );
     }
     if( elm->hasLabel( ) && ( ui->lineEditElementLabel->text( ) != _manyLabels ) ) {
       elm->setLabel( ui->lineEditElementLabel->text( ) );
@@ -336,8 +340,7 @@ void ElementEditor::apply( ) {
   emit sendCommand( new UpdateCommand( m_elements, itemData, editor ) );
 }
 
-void ElementEditor::setEditor(Editor * value)
-{
+void ElementEditor::setEditor( Editor *value ) {
   editor = value;
 }
 

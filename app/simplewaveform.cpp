@@ -36,12 +36,22 @@ SimpleWaveform::SimpleWaveform( Editor *editor, QWidget *parent ) :
   chartView->setRenderHint( QPainter::Antialiasing );
   ui->gridLayout->addWidget( chartView );
   setWindowTitle( "Simple WaveForm - WaveDolphin Beta" );
-
+  setWindowFlags( Qt::Window );
+  setModal( true );
   sortingType = SortingType::INCREASING;
-
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  settings.beginGroup( "SimpleWaveform" );
+  restoreGeometry( settings.value( "geometry" ).toByteArray( ) );
+  settings.endGroup( );
 }
 
 SimpleWaveform::~SimpleWaveform( ) {
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  settings.beginGroup( "SimpleWaveform" );
+  settings.setValue( "geometry", saveGeometry() );
+  settings.endGroup( );
   delete ui;
 }
 
@@ -143,19 +153,26 @@ void SimpleWaveform::showWaveform( ) {
     }
     for( int port = 0; port < outputs[ out ]->inputSize( ); ++port ) {
       out_series.append( new QLineSeries( this ) );
-      out_series.last( )->setName( label + QString::number( port ) );
+      if( outputs[ out ]->inputSize( ) > 1 ) {
+        out_series.last( )->setName( QString( "%1_%2" ).arg( label ).arg( port ) );
+      }
+      else {
+        out_series.last( )->setName( label );
+      }
       chart.addSeries( out_series.last( ) );
     }
   }
+  qDebug( ) << in_series.size( ) << " inputs";
+  qDebug( ) << out_series.size( ) << " outputs";
 /*  gap += outputs.size( ) % 2; */
   int num_iter = pow( 2, in_series.size( ) );
-/*  qDebug( ) << "Num iter = " << num_iter; */
+  qDebug( ) << "Num iter = " << num_iter;
   for( int itr = 0; itr < num_iter; ++itr ) {
     std::bitset< std::numeric_limits< unsigned int >::digits > bs( itr );
     for( int in = 0; in < inputs.size( ); ++in ) {
       dynamic_cast< Input* >( inputs[ in ] )->setOn( bs[ in ] );
       float val = bs[ in_series.size( ) - in - 1 ];
-      float offset = ( inputs.size( ) - in - 1 + out_series.size( ) )* 2 + gap + 0.5;
+      float offset = ( inputs.size( ) - in - 1 + out_series.size( ) ) * 2 + gap + 0.5;
       in_series[ in ]->append( itr, offset + val );
       in_series[ in ]->append( itr + 1, offset + val );
     }
