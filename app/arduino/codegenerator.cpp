@@ -373,8 +373,8 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
           assignLogicOperator( elm );
           break;
           default:
-          throw std::runtime_error( QString( "Element type not supported : %1" ).arg(
-                                      elm->objectName( ) ).toStdString( ) );
+          throw std::runtime_error( ERRORMSG( QString( "Element type not supported : %1" ).arg(
+                                      elm->objectName( ) ).toStdString() ) );
           break;
       }
     }

@@ -52,7 +52,6 @@ QList< QGraphicsItem* > loadList( const QList< QGraphicsItem* > &aItems, QVector
       }
     }
   }
-  items.append( connections );
   ids.reserve( items.size( ) );
   /* Stores the ids of all elements listed in items; */
   for( QGraphicsItem *item : items ) {
@@ -88,7 +87,7 @@ QList< QGraphicsItem* > findItems( const QVector< int > &ids ) {
     }
   }
   if( items.size( ) != ids.size( ) ) {
-    throw std::runtime_error( "One or more items was not found on the scene." );
+    throw std::runtime_error( ERRORMSG("One or more items was not found on the scene.") );
   }
   return( items );
 }
@@ -102,7 +101,7 @@ QList< GraphicElement* > findElements( const QVector< int > &ids ) {
     }
   }
   if( items.size( ) != ids.size( ) ) {
-    throw std::runtime_error( "One or more elements was not found on the scene." );
+    throw std::runtime_error( ERRORMSG("One or more elements was not found on the scene.") );
   }
   return( items );
 }
@@ -151,12 +150,9 @@ void loadItems( QByteArray &itemData, const QVector< int > &ids, Editor *editor,
                                          GlobalProperties::currentFile,
                                          portMap );
   if( items.size( ) != ids.size( ) ) {
-    throw std::runtime_error( QString( "One or more elements was not found on scene. Expected %1, found %2." ).arg( ids
-                                                                                                                    .
-                                                                                                                    size(
-                                                                                                                      ) )
-                              .arg(
-                                items.size( ) ).toStdString( ) );
+    QString msg( "One or more elements was not found on scene. Expected %1, found %2." );
+    msg = msg.arg( ids.size( ) ).arg( items.size( ) );
+    throw std::runtime_error( ERRORMSG(msg.toStdString( )) );
   }
   for( int i = 0; i < items.size( ); ++i ) {
     ItemWithId *iwid = dynamic_cast< ItemWithId* >( items[ i ] );
@@ -474,7 +470,7 @@ void SplitCommand::redo( ) {
     c2->updatePath( );
   }
   else {
-    throw std::runtime_error( QString( "Error tryng to redo %1" ).arg( text( ) ).toStdString( ) );
+    throw std::runtime_error( ERRORMSG(QString( "Error tryng to redo %1" ).arg( text( ) ).toStdString( ) ));
   }
   emit editor->circuitHasChanged( );
 }
@@ -498,7 +494,7 @@ void SplitCommand::undo( ) {
     delete node;
   }
   else {
-    throw std::runtime_error( QString( "Error tryng to undo %1" ).arg( text( ) ).toStdString( ) );
+    throw std::runtime_error( ERRORMSG(QString( "Error tryng to undo %1" ).arg( text( ) ).toStdString( ) ));
   }
   emit editor->circuitHasChanged( );
 }

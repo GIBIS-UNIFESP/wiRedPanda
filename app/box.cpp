@@ -75,12 +75,12 @@ void Box::updateLogic( ) {
 void Box::verifyRecursion( QString fname ) {
   std::string msg = "Oh no! I'm my own parent.\nSomething is not ok...";
   if( !parentFile.isEmpty( ) && ( fname == parentFile ) ) {
-    throw( std::runtime_error( msg ) );
+    throw( std::runtime_error( ERRORMSG(msg) ) );
   }
   for( Box *box = parentBox; box != nullptr; box = box->getParentBox( ) ) {
 //    qDebug( ) << "File: " << box->getFile( );
     if( box->getFile( ) == fname ) {
-      throw( std::runtime_error( msg ) );
+      throw( std::runtime_error( ERRORMSG(msg) ) );
     }
   }
 }
@@ -241,10 +241,10 @@ QFileInfo Box::findFile( QString fname ) {
         if( !fileInfo.exists( ) ) {
 
           std::cerr << "Error: This file does not exists: " << fname.toStdString( ) << std::endl;
-          throw( BoxNotFoundException( QString(
+          throw( BoxNotFoundException( ERRORMSG(QString(
                                          "Box linked file \"%1\" could not be found!\n"
                                          "Do you want to find this file?" )
-                                       .arg( fname ).toStdString( ), this ) );
+                                       .arg( fname ).toStdString( )), this ) );
         }
       }
     }
