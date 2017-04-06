@@ -70,8 +70,9 @@ script:
 #      && ls app
 #     && bash -x installer/Linux/deploy;
     else
-      PANDA_OSX=test/WPanda-test.app/Contents/MacOS/WPanda-test;
-      $PANDA_OSX
+      test/WPanda-test.app/Contents/MacOS/WPanda-test;
+#      $PANDA_OSX=...
+#      $TESTRESULT=$($PANDA_OSX)
 #      if [[ $TESTRESULT -ne 1 ]]; then
 #          mkdir debug;
 #          cd debug;
