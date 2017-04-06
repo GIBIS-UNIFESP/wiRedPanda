@@ -23,22 +23,23 @@ QList< QGraphicsItem* > loadList( const QList< QGraphicsItem* > &aItems, QVector
       }
     }
   }
+  QList< QGraphicsItem* > connections;
   /* Stores the wires linked to these elements */
   for( QGraphicsItem *item : items ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     QVector< QNEInputPort* > inputsList = elm->inputs( );
     for( QNEInputPort *port : inputsList ) {
       for( QNEConnection *conn : port->connections( ) ) {
-        if( !items.contains( conn ) ) {
-          items.append( conn );
+        if( !connections.contains( conn ) ) {
+          connections.append( conn );
         }
       }
     }
     QVector< QNEOutputPort* > outputsList = elm->outputs( );
     for( QNEOutputPort *port : outputsList ) {
       for( QNEConnection *conn : port->connections( ) ) {
-        if( !items.contains( conn ) ) {
-          items.append( conn );
+        if( !connections.contains( conn ) ) {
+          connections.append( conn );
         }
       }
     }
@@ -46,11 +47,12 @@ QList< QGraphicsItem* > loadList( const QList< QGraphicsItem* > &aItems, QVector
   /* Stores the other wires selected */
   for( QGraphicsItem *item : aItems ) {
     if( item->type( ) == QNEConnection::Type ) {
-      if( !items.contains( item ) ) {
-        items.append( item );
+      if( !connections.contains( item ) ) {
+        connections.append( item );
       }
     }
   }
+  items.append( connections );
   ids.reserve( items.size( ) );
   /* Stores the ids of all elements listed in items; */
   for( QGraphicsItem *item : items ) {
@@ -116,11 +118,14 @@ void saveitems( QByteArray &itemData, const QList< QGraphicsItem* > &items, cons
 }
 
 void addItems( Editor *editor, QList< QGraphicsItem* > items ) {
+  editor->getScene( )->clearSelection( );
   for( QGraphicsItem *item : items ) {
     if( item->scene( ) != editor->getScene( ) ) {
       editor->getScene( )->addItem( item );
     }
-    item->setSelected( true );
+    if( item->type( ) == GraphicElement::Type ) {
+      item->setSelected( true );
+    }
   }
 }
 
@@ -146,8 +151,11 @@ void loadItems( QByteArray &itemData, const QVector< int > &ids, Editor *editor,
                                          GlobalProperties::currentFile,
                                          portMap );
   if( items.size( ) != ids.size( ) ) {
-    throw std::runtime_error( QString( "One or more elements was not found on scene. Expected %1, found %2." ).arg( ids.
-                                                                                                                    size( ) ).arg(
+    throw std::runtime_error( QString( "One or more elements was not found on scene. Expected %1, found %2." ).arg( ids
+                                                                                                                    .
+                                                                                                                    size(
+                                                                                                                      ) )
+                              .arg(
                                 items.size( ) ).toStdString( ) );
   }
   for( int i = 0; i < items.size( ); ++i ) {
@@ -204,10 +212,16 @@ DeleteItemsCommand::DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, E
   setText( tr( "Delete %1 elements" ).arg( items.size( ) ) );
 }
 
+DeleteItemsCommand::DeleteItemsCommand( QGraphicsItem *item, Editor *aEditor, QUndoCommand *parent ) :
+  DeleteItemsCommand( QList< QGraphicsItem* >( {
+  item
+} ), aEditor, parent ) {
+
+}
+
 void AddItemsCommand::undo( ) {
   qDebug( ) << "UNDO " << text( );
-  QList< QGraphicsItem* > items
-    = findItems( ids );
+  QList< QGraphicsItem* > items = findItems( ids );
   saveitems( itemData, items, otherIds );
 
   deleteItems( items, editor );
@@ -388,7 +402,7 @@ void UpdateCommand::loadData( QByteArray itemData ) {
 
 SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
     parent ) {
-  //TODO Reverse Split command...
+  /* TODO Reverse Split command... */
   Scene *customScene = aEditor->getScene( );
   GraphicElement *node = ElementFactory::buildElement( ElementType::NODE, aEditor );
   QNEConnection *conn2 = ElementFactory::instance->buildConnection( );
@@ -445,7 +459,7 @@ void SplitCommand::redo( ) {
     node->setPos( nodePos );
     node->setRotation( nodeAngle );
 
-//    QNEOutputPort *startPort = c1->start( );
+/*    QNEOutputPort *startPort = c1->start( ); */
     QNEInputPort *endPort = c1->end( );
     c2->setStart( node->output( ) );
     c2->setEnd( endPort );

@@ -38,7 +38,6 @@
 
 QNEPort::QNEPort( QGraphicsItem *parent ) : QGraphicsPathItem( parent ) {
   label = new QGraphicsTextItem( this );
-  setAcceptHoverEvents( true );
   radius_ = 5;
   margin = 2;
 
@@ -78,7 +77,7 @@ const QList< QNEConnection* > &QNEPort::connections( ) const {
 
 void QNEPort::connect( QNEConnection *conn ) {
   if( conn ) {
-    if( conn && !m_connections.contains( conn ) ) {
+    if( !m_connections.contains( conn ) ) {
       m_connections.append( conn );
     }
     updateConnections( );
@@ -140,7 +139,7 @@ void QNEPort::setPtr( quint64 p ) {
 }
 
 bool QNEPort::isConnected( QNEPort *other ) {
-  for( QNEConnection *conn: m_connections ) {
+  for( QNEConnection *conn : m_connections ) {
     if( ( conn->start( ) == other ) || ( conn->end( ) == other ) ) {
       return( true );
     }
@@ -149,7 +148,7 @@ bool QNEPort::isConnected( QNEPort *other ) {
 }
 
 void QNEPort::updateConnections( ) {
-  for( QNEConnection *conn: m_connections ) {
+  for( QNEConnection *conn : m_connections ) {
     conn->updatePosFromPorts( );
     conn->updatePath( );
   }
@@ -218,32 +217,27 @@ void QNEPort::setGraphicElement( GraphicElement *graphicElement ) {
   m_graphicElement = graphicElement;
 }
 
-void QNEPort::hoverLeaveEvent( QGraphicsSceneHoverEvent* ) {
+void QNEPort::hoverLeave( ) {
   setBrush( currentBrush( ) );
   update( );
 }
 
-void QNEPort::hoverEnterEvent( QGraphicsSceneHoverEvent* ) {
-  setBrush( QBrush( Qt::yellow ) );
-  update( );
-}
-
-void QNEPort::hoverMoveEvent( QGraphicsSceneHoverEvent* ) {
+void QNEPort::hoverEnter( ) {
   setBrush( QBrush( Qt::yellow ) );
   update( );
 }
 
 QNEInputPort::QNEInputPort( QGraphicsItem *parent ) : QNEPort( parent ) {
-  setPen( QPen( Qt::darkRed ) );
-  setCurrentBrush( Qt::red );
-
   label->setPos( -radius_ - margin - label->boundingRect( ).width( ), -label->boundingRect( ).height( ) / 2 );
+  setPen( QPen( Qt::black ) );
+  setCurrentBrush( Qt::darkRed );
 }
 
 QNEInputPort::~QNEInputPort( ) {
   while( !m_connections.isEmpty( ) ) {
     QNEConnection *conn = m_connections.back( );
     m_connections.removeAll( conn );
+    conn->setEnd( nullptr );
     delete conn;
   }
 }
@@ -279,8 +273,8 @@ bool QNEInputPort::isValid( ) const {
 }
 
 QNEOutputPort::QNEOutputPort( QGraphicsItem *parent ) : QNEPort( parent ) {
-  setPen( QPen( Qt::black ) );
-  setCurrentBrush( Qt::darkRed );
+  setPen( QPen( Qt::darkRed ) );
+  setCurrentBrush( Qt::red );
   label->setPos( radius_ + margin, -label->boundingRect( ).height( ) / 2 );
 }
 
@@ -288,13 +282,14 @@ QNEOutputPort::~QNEOutputPort( ) {
   while( !m_connections.isEmpty( ) ) {
     QNEConnection *conn = m_connections.back( );
     m_connections.removeAll( conn );
+    conn->setStart( nullptr );
     delete conn;
   }
 }
 
 void QNEOutputPort::setValue( char value ) {
   m_value = value;
-  for( QNEConnection *conn: connections( ) ) {
+  for( QNEConnection *conn : connections( ) ) {
     if( value == -1 ) {
       conn->setStatus( QNEConnection::Invalid );
     }

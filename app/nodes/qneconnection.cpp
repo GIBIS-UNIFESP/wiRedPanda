@@ -67,10 +67,11 @@ void QNEConnection::setEndPos( const QPointF &p ) {
 void QNEConnection::setStart( QNEOutputPort *p ) {
   QNEOutputPort *old = m_start;
   m_start = p;
-  if( old ) {
+  if( old && ( old != p ) ) {
     old->disconnect( this );
   }
   if( p ) {
+    setStartPos( p->scenePos( ) );
     p->connect( this );
   }
 }
@@ -78,11 +79,12 @@ void QNEConnection::setStart( QNEOutputPort *p ) {
 void QNEConnection::setEnd( QNEInputPort *p ) {
   QNEInputPort *old = m_end;
   m_end = p;
-  if( old ) {
+  if( old && ( old != p )) {
     old->disconnect( this );
   }
   if( p ) {
     p->connect( this );
+    setEndPos( p->scenePos( ) );
   }
 }
 
@@ -93,6 +95,7 @@ void QNEConnection::updatePosFromPorts( ) {
   if( m_end ) {
     endPos = m_end->scenePos( );
   }
+  updatePath( );
 }
 
 void QNEConnection::updatePath( ) {
