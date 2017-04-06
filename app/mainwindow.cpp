@@ -34,6 +34,14 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   if( settings.value( "language" ).isValid( ) ) {
     loadTranslation( settings.value( "language" ).toString( ) );
   }
+  settings.beginGroup("MainWindow");
+  restoreGeometry(settings.value("geometry").toByteArray());
+  restoreState(settings.value("windowState").toByteArray());
+  settings.beginGroup("splitter");
+  ui->splitter->restoreGeometry(settings.value("geometry").toByteArray());
+  ui->splitter->restoreState(settings.value("state").toByteArray());
+  settings.endGroup();
+  settings.endGroup();
   QList< QKeySequence > zoom_in_shortcuts;
   zoom_in_shortcuts << QKeySequence( "Ctrl++" ) << QKeySequence( "Ctrl+=" );
   ui->actionZoom_in->setShortcuts( zoom_in_shortcuts );
@@ -302,6 +310,16 @@ bool MainWindow::closeFile( ) {
 }
 
 void MainWindow::closeEvent( QCloseEvent *e ) {
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  settings.beginGroup("MainWindow");
+  settings.setValue("geometry", saveGeometry());
+  settings.setValue("windowState", saveState());
+  settings.beginGroup("splitter");
+  settings.setValue("geometry", ui->splitter->saveGeometry());
+  settings.setValue("state", ui->splitter->saveState());
+  settings.endGroup();
+  settings.endGroup();
 #ifdef DEBUG
   return;
 #endif
@@ -761,6 +779,8 @@ void MainWindow::on_actionWaveform_triggered( ) {
   SimpleWaveform *wf = new SimpleWaveform( editor, this );
 
   wf->showWaveform( );
+  wf->exec();
+  delete wf;
 }
 
 void MainWindow::on_actionPanda_Light_triggered( ) {

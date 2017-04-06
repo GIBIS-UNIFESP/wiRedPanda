@@ -30,11 +30,20 @@
    <layout class="QHBoxLayout" name="horizontalLayout_6">
     <item>
      <widget class="QSplitter" name="splitter">
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <property name="midLineWidth">
+       <number>2</number>
+      </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
       <property name="opaqueResize">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
       <property name="handleWidth">
        <number>8</number>
@@ -358,6 +367,9 @@
        </property>
        <property name="acceptDrops">
         <bool>true</bool>
+       </property>
+       <property name="midLineWidth">
+        <number>0</number>
        </property>
       </widget>
      </widget>
@@ -914,7 +926,7 @@
   </action>
   <action name="actionFlip_horizontally">
    <property name="text">
-    <string>Flip horizontally</string>
+    <string>&amp;Flip horizontally</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+H</string>
@@ -922,7 +934,7 @@
   </action>
   <action name="actionFlip_vertically">
    <property name="text">
-    <string>Flip vertically</string>
+    <string>Flip &amp;vertically</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Y</string>
@@ -953,10 +965,10 @@
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/basic/basic.qrc"/>
   <include location="resources/resources.qrc"/>
   <include location="resources/input/input.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/resources.qrc"/>
   <include location="resources/basic/basic.qrc"/>
