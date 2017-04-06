@@ -107,7 +107,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 
   connect( rfController, &RecentFilesController::recentFilesUpdated, this, &MainWindow::updateRecentFileActions );
 
-  QApplication::setStyle( QStyleFactory::create( "Fusion" ) );
+//  QApplication::setStyle( QStyleFactory::create( "Fusion" ) );
 
   ui->actionPlay->setChecked( true );
 
@@ -412,11 +412,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
     return;
   }
   if( fl.open( QFile::ReadOnly ) ) {
-    QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
-    ListItemWidget *item = new ListItemWidget( pixmap, ElementType::BOX, fname, this );
-    ui->scrollAreaWidgetContents_Box->layout( )->removeItem( ui->verticalSpacer_BOX );
-    ui->scrollAreaWidgetContents_Box->layout( )->addWidget( item );
-    ui->scrollAreaWidgetContents_Box->layout( )->addItem( ui->verticalSpacer_BOX );
+    rboxController->addFile(fname);
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
@@ -424,8 +420,6 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
     return;
   }
   fl.close( );
-
-  rboxController->addFile( fname );
 
   updateRecentBoxes( );
 
