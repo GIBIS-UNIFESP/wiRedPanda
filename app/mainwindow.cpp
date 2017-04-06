@@ -22,12 +22,11 @@
 
 
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ), undoView( nullptr ) {
-
+  COMMENT("WIRED PANDA Version = " << APP_VERSION << " OR " << GlobalProperties::version, 0);
   ui->setupUi( this );
   ThemeManager::globalMngr = new ThemeManager( this );
   editor = new Editor( this );
   ui->graphicsView->setScene( editor->getScene( ) );
-
   /* Translation */
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
