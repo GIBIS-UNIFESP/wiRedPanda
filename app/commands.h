@@ -18,9 +18,9 @@ class AddItemsCommand : public QUndoCommand {
 
   enum { Id = 101 };
 public:
-  AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoCommand *parent = 0 );
-  AddItemsCommand( QNEConnection *aItem, Editor *aEditor, QUndoCommand *parent = 0 );
-  AddItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor, QUndoCommand *parent = 0 );
+  explicit AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoCommand *parent = 0 );
+  explicit AddItemsCommand( QNEConnection *aItem, Editor *aEditor, QUndoCommand *parent = 0 );
+  explicit AddItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor, QUndoCommand *parent = 0 );
 
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
@@ -35,7 +35,8 @@ class DeleteItemsCommand : public QUndoCommand {
   Q_DECLARE_TR_FUNCTIONS( DeleteItemsCommand )
   enum { Id = 102 };
 public:
-  DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor, QUndoCommand *parent = 0 );
+  explicit DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor, QUndoCommand *parent = 0 );
+  explicit DeleteItemsCommand( QGraphicsItem *item, Editor *aEditor, QUndoCommand *parent = 0 );
 
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
@@ -51,7 +52,7 @@ class RotateCommand : public QUndoCommand {
 
   enum { Id = 103 };
 public:
-  RotateCommand( const QList< GraphicElement* > &aItems, int angle, QUndoCommand *parent = 0 );
+  explicit RotateCommand( const QList< GraphicElement* > &aItems, int angle, QUndoCommand *parent = 0 );
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
   bool mergeWith( const QUndoCommand *command ) Q_DECL_OVERRIDE;
@@ -68,7 +69,9 @@ class MoveCommand : public QUndoCommand {
 public:
   enum { Id = 104 };
 
-  MoveCommand( const QList< GraphicElement* > &list, const QList< QPointF > &aOldPositions, QUndoCommand *parent = 0 );
+  explicit MoveCommand( const QList< GraphicElement* > &list,
+                        const QList< QPointF > &aOldPositions,
+                        QUndoCommand *parent = 0 );
 
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
@@ -89,7 +92,10 @@ class UpdateCommand : public QUndoCommand {
 public:
   enum { Id = 105 };
 
-  UpdateCommand(const QVector< GraphicElement* > &elements, QByteArray oldData, Editor * editor, QUndoCommand *parent = 0 );
+  explicit UpdateCommand( const QVector< GraphicElement* > &elements,
+                          QByteArray oldData,
+                          Editor *editor,
+                          QUndoCommand *parent = 0 );
 
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
@@ -101,7 +107,7 @@ private:
   QVector< int > ids;
   QByteArray m_oldData;
   QByteArray m_newData;
-  Editor * editor;
+  Editor *editor;
 
   void loadData( QByteArray itemData );
 };
@@ -112,7 +118,7 @@ class SplitCommand : public QUndoCommand {
 
 public:
 
-  SplitCommand( QNEConnection *conn, QPointF point, Editor *aEditor, QUndoCommand *parent = 0 );
+  explicit SplitCommand( QNEConnection *conn, QPointF point, Editor *aEditor, QUndoCommand *parent = 0 );
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
 
@@ -130,8 +136,11 @@ class MorphCommand : public QUndoCommand {
 public:
   enum { Id = 107 };
 
-  MorphCommand(const QVector< GraphicElement* > &elements, ElementType aType, Editor *aEditor, QUndoCommand *parent =
-                  0 );
+  explicit MorphCommand( const QVector< GraphicElement* > &elements,
+                         ElementType aType,
+                         Editor *aEditor,
+                         QUndoCommand *parent =
+                           0 );
 
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
@@ -140,8 +149,8 @@ public:
   }
 
 private:
-  QVector<int> ids;
-  QVector<ElementType> types;
+  QVector< int > ids;
+  QVector< ElementType > types;
   ElementType newtype;
   Editor *editor;
   void transferConnections( QVector< GraphicElement* > from, QVector< GraphicElement* > to );
@@ -152,7 +161,10 @@ class ChangeInputSZCommand : public QUndoCommand {
 public:
   enum { Id = 108 };
 
-  ChangeInputSZCommand( const QVector< GraphicElement* > &elements, int newInputSize, Editor * editor, QUndoCommand *parent = 0 );
+  explicit ChangeInputSZCommand( const QVector< GraphicElement* > &elements,
+                                 int newInputSize,
+                                 Editor *editor,
+                                 QUndoCommand *parent = 0 );
 
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
@@ -161,10 +173,10 @@ public:
     return( Id );
   }
 
-  private:
+private:
   QVector< int > elms;
   QVector< int > order;
-  Editor * editor;
+  Editor *editor;
   QGraphicsScene *scene;
   QByteArray m_oldData;
   int m_newInputSize;

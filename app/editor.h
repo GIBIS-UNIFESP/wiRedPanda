@@ -82,6 +82,13 @@ private:
   void setEditedConn( QNEConnection *editedConn );
 
   /* QObject interface */
+  void detachConnection( QNEInputPort *endPort );
+  void startNewConnection( QNEOutputPort *startPort );
+  void startNewConnection( QNEInputPort *endPort );
+
+  void startSelectionRect( );
+
+  void makeConnection( QNEConnection *editedConn );
 public:
   bool eventFilter( QObject *obj, QEvent *evt );
   void setElementEditor( ElementEditor *value );
@@ -90,7 +97,7 @@ public:
   void buildSelectionRect( );
   bool loadBox( Box *box, QString fname );
 
-  void handleHoverPort( QNEPort *port );
+  void handleHoverPort( );
   void releaseHoverPort( );
 
   void setHoverPort( QNEPort *port );
@@ -105,6 +112,7 @@ public:
 
   ElementEditor* getElementEditor( ) const;
 
+  void deleteEditedConn( );
 };
 
 #endif /* EDITOR_H */

@@ -80,6 +80,9 @@ public:
 
   virtual bool isValid( ) const = 0;
 
+  void hoverLeave( );
+  void hoverEnter( );
+
 protected:
   QVariant itemChange( GraphicsItemChange change, const QVariant &value );
   int m_defaultValue;
@@ -100,16 +103,13 @@ protected:
 
   /* QGraphicsItem interface */
   char m_value;
-  void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
-  void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
-  void hoverMoveEvent( QGraphicsSceneHoverEvent *event );
 };
 
 class QNEInputPort : public QNEPort {
 public:
   explicit QNEInputPort( QGraphicsItem *parent );
   virtual ~QNEInputPort( );
-  // QNEPort interface
+  /* QNEPort interface */
 public:
   void setValue( char value );
   bool isOutput( ) const;
@@ -120,7 +120,7 @@ class QNEOutputPort : public QNEPort {
 public:
   explicit QNEOutputPort( QGraphicsItem *parent );
   virtual ~QNEOutputPort( );
-  // QNEPort interface
+  /* QNEPort interface */
 public:
   void setValue( char value );
   bool isOutput( ) const;

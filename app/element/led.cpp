@@ -95,11 +95,7 @@ void Led::updateLogic( ) {
 }
 void Led::setColor( QString color ) {
   m_color = color;
-  if( inputSize( ) == 1 ) {
-    input( 0 )->setRequired( false );
-  }
   updateLogic( );
-
 }
 
 QString Led::getColor( ) {
