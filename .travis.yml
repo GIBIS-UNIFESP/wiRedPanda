@@ -36,7 +36,7 @@ before_install:
       fi;
     else
       brew update;
-    fi
+    fi;
 
 install:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
@@ -46,7 +46,7 @@ install:
     else
       brew install qt@5.7 gdb
       && chmod -R 755 /usr/local/opt/qt@5.7/*;
-    fi
+    fi;
 
 before_script:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
