@@ -22,7 +22,7 @@
 
 
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ), undoView( nullptr ) {
-  COMMENT("WIRED PANDA Version = " << APP_VERSION << " OR " << GlobalProperties::version, 0);
+  COMMENT( "WIRED PANDA Version = " << APP_VERSION << " OR " << GlobalProperties::version, 0 );
   ui->setupUi( this );
   ThemeManager::globalMngr = new ThemeManager( this );
   editor = new Editor( this );
@@ -33,14 +33,14 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   if( settings.value( "language" ).isValid( ) ) {
     loadTranslation( settings.value( "language" ).toString( ) );
   }
-  settings.beginGroup("MainWindow");
-  restoreGeometry(settings.value("geometry").toByteArray());
-  restoreState(settings.value("windowState").toByteArray());
-  settings.beginGroup("splitter");
-  ui->splitter->restoreGeometry(settings.value("geometry").toByteArray());
-  ui->splitter->restoreState(settings.value("state").toByteArray());
-  settings.endGroup();
-  settings.endGroup();
+  settings.beginGroup( "MainWindow" );
+  restoreGeometry( settings.value( "geometry" ).toByteArray( ) );
+  restoreState( settings.value( "windowState" ).toByteArray( ) );
+  settings.beginGroup( "splitter" );
+  ui->splitter->restoreGeometry( settings.value( "geometry" ).toByteArray( ) );
+  ui->splitter->restoreState( settings.value( "state" ).toByteArray( ) );
+  settings.endGroup( );
+  settings.endGroup( );
   QList< QKeySequence > zoom_in_shortcuts;
   zoom_in_shortcuts << QKeySequence( "Ctrl++" ) << QKeySequence( "Ctrl+=" );
   ui->actionZoom_in->setShortcuts( zoom_in_shortcuts );
@@ -106,7 +106,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 
   connect( rfController, &RecentFilesController::recentFilesUpdated, this, &MainWindow::updateRecentFileActions );
 
-//  QApplication::setStyle( QStyleFactory::create( "Fusion" ) );
+/*  QApplication::setStyle( QStyleFactory::create( "Fusion" ) ); */
 
   ui->actionPlay->setChecked( true );
 
@@ -311,14 +311,14 @@ bool MainWindow::closeFile( ) {
 void MainWindow::closeEvent( QCloseEvent *e ) {
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
-  settings.beginGroup("MainWindow");
-  settings.setValue("geometry", saveGeometry());
-  settings.setValue("windowState", saveState());
-  settings.beginGroup("splitter");
-  settings.setValue("geometry", ui->splitter->saveGeometry());
-  settings.setValue("state", ui->splitter->saveState());
-  settings.endGroup();
-  settings.endGroup();
+  settings.beginGroup( "MainWindow" );
+  settings.setValue( "geometry", saveGeometry( ) );
+  settings.setValue( "windowState", saveState( ) );
+  settings.beginGroup( "splitter" );
+  settings.setValue( "geometry", ui->splitter->saveGeometry( ) );
+  settings.setValue( "state", ui->splitter->saveState( ) );
+  settings.endGroup( );
+  settings.endGroup( );
 #ifdef DEBUG
   return;
 #endif
@@ -411,7 +411,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
     return;
   }
   if( fl.open( QFile::ReadOnly ) ) {
-    rboxController->addFile(fname);
+    rboxController->addFile( fname );
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
@@ -769,11 +769,8 @@ void MainWindow::on_actionFast_Mode_triggered( bool checked ) {
 }
 
 void MainWindow::on_actionWaveform_triggered( ) {
-  SimpleWaveform *wf = new SimpleWaveform( editor, this );
-
-  wf->showWaveform( );
-  wf->exec();
-  delete wf;
+  SimpleWaveform wf( editor, this );
+  wf.showWaveform( );
 }
 
 void MainWindow::on_actionPanda_Light_triggered( ) {

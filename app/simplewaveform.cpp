@@ -50,7 +50,7 @@ SimpleWaveform::~SimpleWaveform( ) {
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "SimpleWaveform" );
-  settings.setValue( "geometry", saveGeometry() );
+  settings.setValue( "geometry", saveGeometry( ) );
   settings.endGroup( );
   delete ui;
 }
@@ -183,7 +183,7 @@ void SimpleWaveform::showWaveform( ) {
     for( int out = 0; out < outputs.size( ); ++out ) {
       int inSz = outputs[ out ]->inputSize( );
       for( int port = inSz - 1; port >= 0; --port ) {
-        float val = outputs[ out ]->input( port )->value( );
+        float val = outputs[ out ]->input( port )->value( ) > 0;
         float offset = ( out_series.size( ) - counter - 1 ) * 2 + 0.5;
         out_series[ counter ]->append( itr, offset + val );
         out_series[ counter ]->append( itr + 1, offset + val );
@@ -212,7 +212,7 @@ void SimpleWaveform::showWaveform( ) {
   ay->setLabelsVisible( false );
 /*  ay->hide( ); */
 
-  show( );
+  exec( );
   for( int in = 0; in < inputs.size( ); ++in ) {
     dynamic_cast< Input* >( inputs[ in ] )->setOn( oldValues[ in ] );
 
