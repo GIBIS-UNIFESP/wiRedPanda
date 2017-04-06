@@ -141,7 +141,7 @@ void GraphicElement::save( QDataStream &ds ) {
 }
 
 void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) {
-  COMMENT( "Loading element. Type: " << objectName( ).toStdString( ), 4 );
+  COMMENT( "Loading element. Type: " << objectName( ).toStdString( ), 0 );
   QPointF p;
   QString label_text;
   ds >> p;
@@ -216,7 +216,7 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
   COMMENT( "Setting output ports.", 4 );
   ds >> outputSz;
   if( outputSz > MAXIMUMVALIDINPUTSIZE ) {
-    throw std::runtime_error( ERRORMSG("Corrupted file!") );
+    throw std::runtime_error( ERRORMSG("Corrupted DataStream!") );
   }
   for( size_t port = 0; port < outputSz; ++port ) {
     QString name;
