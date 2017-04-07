@@ -175,10 +175,12 @@ chmod +x ${DATADIR}/wpanda
 chmod +x ${DATADIR}/wpanda.sh
 chmod +x ${PTBDIR}/wpanda.desktop
 
-cp ${DEBPKGFILES}/usr/lib/wpanda/* $DATADIR
-echo "Generating ${PTBDIR}.tar.xz"
-tar -cfJ ${PTBDIR}.tar.xz $PTBDIR
 
+cp ${DEBPKGFILES}/usr/lib/wpanda/* $DATADIR
+
+pushd $PROJECTPATH/Deploy
+echo "Generating ${PTBDIR}.tar.xz"
+tar -cvJf ${PTBDIR}.tar.xz $PTBDIR
 
 echo "Renaming to ${DEBPKGNAME}"
 mv $PKGNAMEDIR.deb $DEBPKGNAME
@@ -186,3 +188,4 @@ mv $PKGNAMEDIR.deb $DEBPKGNAME
 mkdir -p /tmp/packages
 cp $PTBDIR.tar.xz /tmp/packages
 cp $DEBPKGNAME /tmp/packages
+popd
