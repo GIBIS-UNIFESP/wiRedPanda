@@ -13,7 +13,7 @@ echo PROJECTPATH $PROJECTPATH
 VERSION=$(cat ${PROJECTPATH}/includes.pri | grep "VERSION = " | awk '{split($0,a,"="); gsub (" ", "", a[2]); gsub ("-alpha", "", a[2]); print a[2] }')
 FORMATEDVERSION=$(echo $VERSION |  awk '{gsub ("\\.", "_", $0); print $0}')
 echo VERSION $VERSION
-PKGNAMEDIR="wpanda-$VERSION"
+PKGNAMEDIR="wpanda"
 DEBPKGROOT="$PROJECTPATH/Deploy/$PKGNAMEDIR"
 DEBPKGFILES="$PROJECTPATH/Deploy/$PKGNAMEDIR/files"
 echo DEBPKGFILES $DEBPKGFILES
@@ -70,7 +70,8 @@ pushd ${DEBPKGROOT}
 dh_make -y\
   --native \
   --single \
-  --email lucaslellis777@gmail.com
+  --email lucaslellis777@gmail.com \
+  --packagename $PKGNAMEDIR
 popd
 
 echo \
