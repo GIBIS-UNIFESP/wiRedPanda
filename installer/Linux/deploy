@@ -17,7 +17,8 @@ PKGNAMEDIR="wpanda-$VERSION"
 DEBPKGROOT="$PROJECTPATH/Deploy/$PKGNAMEDIR"
 DEBPKGFILES="$PROJECTPATH/Deploy/$PKGNAMEDIR/files"
 echo DEBPKGFILES $DEBPKGFILES
-PTBDIR="$PROJECTPATH/Deploy/WiredPanda_${FORMATEDVERSION}_Linux_Portable_x64";
+PTBNAME="WiredPanda_${FORMATEDVERSION}_Linux_Portable_x64"
+PTBDIR="$PROJECTPATH/Deploy/$PTBNAME";
 echo PTBDIR $PTBDIR
 DEBPKGNAME="$PROJECTPATH/Deploy/WiredPanda_${FORMATEDVERSION}_Ubuntu_Installer_x64.deb";
 echo DEBPKGNAME $DEBPKGNAME
@@ -179,13 +180,13 @@ chmod +x ${PTBDIR}/wpanda.desktop
 cp ${DEBPKGFILES}/usr/lib/wpanda/* $DATADIR
 
 pushd $PROJECTPATH/Deploy
-echo "Generating ${PTBDIR}.tar.xz"
-tar -cvJf ${PTBDIR}.tar.xz $PTBDIR
+echo "Generating ${PTBNAME}.tar.xz"
+tar -cvJf ${PTBNAME}.tar.xz $PTBNAME
 
 echo "Renaming to ${DEBPKGNAME}"
-mv $PKGNAMEDIR.deb $DEBPKGNAME
+mv wpanda*.deb $DEBPKGNAME
 
 mkdir -p /tmp/packages
-cp $PTBDIR.tar.xz /tmp/packages
+cp $PTBNAME.tar.xz /tmp/packages
 cp $DEBPKGNAME /tmp/packages
 popd
