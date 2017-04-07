@@ -17,7 +17,7 @@ PKGNAMEDIR="wpanda-$VERSION"
 DEBPKGROOT="$PROJECTPATH/Deploy/$PKGNAMEDIR"
 DEBPKGFILES="$PROJECTPATH/Deploy/$PKGNAMEDIR/files"
 echo DEBPKGFILES $DEBPKGFILES
-PTBDIR="$PROJECTPATH/Deploy/WiredPanda_${FORMATEDVERSION}_Linux_Portable_x64.tar.xz";
+PTBDIR="$PROJECTPATH/Deploy/WiredPanda_${FORMATEDVERSION}_Linux_Portable_x64";
 echo PTBDIR $PTBDIR
 DEBPKGNAME="$PROJECTPATH/Deploy/WiredPanda_${FORMATEDVERSION}_Ubuntu_Installer_x64.deb";
 echo DEBPKGNAME $DEBPKGNAME
@@ -184,9 +184,5 @@ echo "Renaming to ${DEBPKGNAME}"
 mv $PKGNAMEDIR.deb $DEBPKGNAME
 
 mkdir -p /tmp/packages
-cp $PTBDIR /tmp/packages
+cp $PTBDIR.tar.xz /tmp/packages
 cp $DEBPKGNAME /tmp/packages
-
-echo "Removing temporary files"
-rm -rf ${PKGDIR}
-rm -rf ${DEBPKGFILES}
