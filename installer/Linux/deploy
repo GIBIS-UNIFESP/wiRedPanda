@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-set -v
+# set -v
 
 dirname=`dirname "$0"`
 tmp="${dirname#?}"
@@ -11,12 +11,20 @@ fi
 PROJECTPATH=$(readlink -e "${dirname}/../../")
 echo PROJECTPATH $PROJECTPATH
 VERSION=$(cat ${PROJECTPATH}/includes.pri | grep "VERSION = " | awk '{split($0,a,"="); gsub (" ", "", a[2]); gsub ("-alpha", "", a[2]); print a[2] }')
+FORMATEDVERSION=$(echo $VERSION |  awk '{gsub ("\\.", "_", $0); print $0}')
 echo VERSION $VERSION
-PKGNAME="wpanda-$VERSION"
-DEBPKGROOT="$PROJECTPATH/Deploy/$PKGNAME"
-DEBPKGFILES="$PROJECTPATH/Deploy/$PKGNAME/files"
+PKGNAMEDIR="wpanda-$VERSION"
+DEBPKGROOT="$PROJECTPATH/Deploy/$PKGNAMEDIR"
+DEBPKGFILES="$PROJECTPATH/Deploy/$PKGNAMEDIR/files"
 echo DEBPKGFILES $DEBPKGFILES
+PTBDIR="$PROJECTPATH/Deploy/WiredPanda_${FORMATEDVERSION}_Linux_Portable_x64.tar.xz";
+echo PTBDIR $PTBDIR
+DEBPKGNAME="$PROJECTPATH/Deploy/WiredPanda_${FORMATEDVERSION}_Ubuntu_Installer_x64.deb";
+echo DEBPKGNAME $DEBPKGNAME
 
+
+echo "CLEANING OLD FILES"
+rm -rf "${PROJECTPATH}/Deploy/"
 
 QT_LIBRARY_PATH="/opt/Qt/5.8/gcc_64/lib"
 QT_PLATFORMS_PATH="/opt/Qt/5.8/gcc_64/plugins/platforms/"
@@ -34,6 +42,8 @@ export LD_LIBRARY_PATH=/opt/Qt/5.8/gcc_64/lib:$LD_LIBRARY_PATH
 #   DEPENDENCIES_PATH="/usr/lib64/"
 # fi;
 
+
+
 WPANDA_BIN="${PROJECTPATH}/app/wpanda";
 
 if [ ! -e ${WPANDA_BIN} ]; then
@@ -48,14 +58,11 @@ if [ ! -e ${WPANDA_BIN} ]; then
   exit 1
 fi
 
-PTBDIR="wpanda-${VERSION}";
+
 DATADIR="${PTBDIR}/files";
 CURRENTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
-echo "CLEANING OLD FILES"
-rm -rf Deploy
-
-echo "Generating build tree for ${PKGNAME}.deb";
+echo "Generating build tree for ${PKGNAMEDIR}.deb";
 echo "Project path is ${PROJECTPATH}";
 
 mkdir -p ${DEBPKGROOT};
@@ -63,12 +70,11 @@ pushd ${DEBPKGROOT}
 dh_make -y\
   --native \
   --single \
-  --packagename $PKGNAME \
   --email lucaslellis777@gmail.com
 popd
 
 echo \
-"Source: wpanda-${VERSION}
+"Source: wpanda
 Section: utils
 Priority: standard
 Maintainer: Lucas Lellis <lucaslellis777@gmail.com>
@@ -79,7 +85,7 @@ Vcs-Git: https://github.com/gibis-unifesp/wiredpanda
 
 Package: wpanda-${VERSION}
 Architecture: amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: \${shlibs:Depends}, \${misc:Depends}
 Description: Learn about logic circuits and simulate them in an easy and friendly way.
  wiRed Panda is a free software designed to help students to learn about logic circuits.
  It was developed by the students of the Federal University of São Paulo." > $DEBPKGROOT/debian/control
@@ -88,7 +94,7 @@ echo \
 "#!/bin/sh
 set -e
 
-case "$1" in
+case "\$1" in
 configure)
 desktop-file-install /usr/share/applications/wpanda.desktop
 xdg-mime install --mode system /usr/share/xml/misc/wpanda-mime.xml
@@ -124,7 +130,7 @@ done;
 
 for lib in libQt5PrintSupport.so.5 libQt5XcbQpa.so.5 libQt5DBus.so.5\
            libQt5Charts.so.5 libQt5Widgets.so.5 libQt5Gui.so.5 \
-           libQt5Core.so.5 libicui18n.so libicuuc.so.56 libicudata.so.56;
+           libQt5Core.so.5 libicui18n.so.56 libicuuc.so.56 libicudata.so.56;
   do
   echo "Copying $lib";
   if [ -f ${QT_LIBRARY_PATH}/$lib ]; then
@@ -136,16 +142,16 @@ for lib in libQt5PrintSupport.so.5 libQt5XcbQpa.so.5 libQt5DBus.so.5\
   fi;
 done;
 
-for lib in libxcb-dri2.so.0 libxcb-xfixes.so.0; do
-  echo "Copying $lib";
-  if [ -f ${DEPENDENCIES_PATH}/$lib ]; then
-    cp ${DEPENDENCIES_PATH}/$lib ${DEBPKGFILES}/usr/lib/wpanda;
-  else
-    echo "ERROR: $lib not found!";
-    locate $lib;
-    exit 1;
-  fi;
-done;
+# for lib in libxcb-dri2.so.0 libxcb-xfixes.so.0; do
+#   echo "Copying $lib";
+#   if [ -f ${DEPENDENCIES_PATH}/$lib ]; then
+#     cp ${DEPENDENCIES_PATH}/$lib ${DEBPKGFILES}/usr/lib/wpanda;
+#   else
+#     echo "ERROR: $lib not found!";
+#     locate $lib;
+#     exit 1;
+#   fi;
+# done;
 
 cp ${QT_PLATFORMS_PATH}/libqxcb.so ${DEBPKGFILES}/usr/lib/wpanda
 
@@ -170,15 +176,16 @@ chmod +x ${DATADIR}/wpanda.sh
 chmod +x ${PTBDIR}/wpanda.desktop
 
 cp ${DEBPKGFILES}/usr/lib/wpanda/* $DATADIR
-echo "Generating ${PTBDIR}.tar.gz"
-tar -zcvf ${PTBDIR}.tar.gz $PTBDIR
+echo "Generating ${PTBDIR}.tar.xz"
+tar -cfJ ${PTBDIR}.tar.xz $PTBDIR
 
-echo "Generating ${PKGDIR}.deb"
-# dpkg-deb -b ${PKGDIR}.deb
+
+echo "Renaming to ${DEBPKGNAME}"
+mv $PKGNAMEDIR.deb $DEBPKGNAME
 
 mkdir -p /tmp/packages
-cp ${PTBDIR}.tar.gz /tmp/packages
-cp Deploy/*.deb /tmp/packages
+cp $PTBDIR /tmp/packages
+cp $DEBPKGNAME /tmp/packages
 
 echo "Removing temporary files"
 rm -rf ${PKGDIR}
