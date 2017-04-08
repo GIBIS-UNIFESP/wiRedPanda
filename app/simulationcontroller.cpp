@@ -98,21 +98,6 @@ void SimulationController::update( ) {
     }
   }
 }
-//  QVector< GraphicElement* > elements = scene->getElements( );
-//  if( Clock::reset ) {
-//    for( GraphicElement *elm : elements ) {
-//      if( elm->elementType( ) == ElementType::CLOCK ) {
-//        Clock *clk = dynamic_cast< Clock* >( elm );
-//        if( clk ) {
-//          clk->resetClock( );
-//        }
-//      }
-//    }
-//    Clock::reset = false;
-//  }
-//  for( GraphicElement *elm : sortedElements ) {
-//    elm->updateLogic( );
-//  }
 
 void SimulationController::stop( ) {
   timer.stop( );
