@@ -50,25 +50,27 @@ Editor::~Editor( ) {
 }
 
 void Editor::updateTheme( ) {
-  switch( ThemeManager::globalMngr->theme( ) ) {
-      case Theme::Panda_Light:
-      scene->setBackgroundBrush( QBrush( QColor( "#ffffe6" ) ) );
-      scene->setDots( QPen( Qt::darkGray ) );
-      selectionRect->setBrush( QBrush( QColor( 175, 0, 0, 80 ) ) );
-      selectionRect->setPen( QPen( QColor( 175, 0, 0, 255 ), 1, Qt::SolidLine ) );
-      break;
-      case Theme::Panda_Dark:
-      scene->setBackgroundBrush( QBrush( QColor( "#404552" ) ) );
-      scene->setDots( QPen( Qt::black ) );
-      selectionRect->setBrush( QBrush( QColor( 255, 255, 0, 80 ) ) );
-      selectionRect->setPen( QPen( QColor( 255, 255, 0, 255 ), 1, Qt::SolidLine ) );
-      break;
-  }
-  for( GraphicElement *elm : scene->getElements( ) ) {
-    elm->updateTheme( );
-  }
-  for( QNEConnection *conn : scene->getConnections( ) ) {
-    conn->updateTheme( );
+  if( ThemeManager::globalMngr ) {
+    switch( ThemeManager::globalMngr->theme( ) ) {
+        case Theme::Panda_Light:
+        scene->setBackgroundBrush( QBrush( QColor( "#ffffe6" ) ) );
+        scene->setDots( QPen( Qt::darkGray ) );
+        selectionRect->setBrush( QBrush( QColor( 175, 0, 0, 80 ) ) );
+        selectionRect->setPen( QPen( QColor( 175, 0, 0, 255 ), 1, Qt::SolidLine ) );
+        break;
+        case Theme::Panda_Dark:
+        scene->setBackgroundBrush( QBrush( QColor( "#404552" ) ) );
+        scene->setDots( QPen( Qt::black ) );
+        selectionRect->setBrush( QBrush( QColor( 255, 255, 0, 80 ) ) );
+        selectionRect->setPen( QPen( QColor( 255, 255, 0, 255 ), 1, Qt::SolidLine ) );
+        break;
+    }
+    for( GraphicElement *elm : scene->getElements( ) ) {
+      elm->updateTheme( );
+    }
+    for( QNEConnection *conn : scene->getConnections( ) ) {
+      conn->updateTheme( );
+    }
   }
 }
 
