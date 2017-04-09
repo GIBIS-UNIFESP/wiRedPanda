@@ -61,8 +61,8 @@ void Editor::updateTheme( ) {
         case Theme::Panda_Dark:
         scene->setBackgroundBrush( QBrush( QColor( "#404552" ) ) );
         scene->setDots( QPen( Qt::black ) );
-        selectionRect->setBrush( QBrush( QColor( 255, 255, 0, 80 ) ) );
-        selectionRect->setPen( QPen( QColor( 255, 255, 0, 255 ), 1, Qt::SolidLine ) );
+        selectionRect->setBrush( QBrush( QColor( 115, 255, 230, 150 ) ) );
+        selectionRect->setPen( QPen( QColor( 65, 255, 220, 255 ), 1, Qt::SolidLine ) );
         break;
     }
     for( GraphicElement *elm : scene->getElements( ) ) {
