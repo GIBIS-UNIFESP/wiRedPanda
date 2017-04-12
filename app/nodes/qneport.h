@@ -103,6 +103,8 @@ protected:
 
   /* QGraphicsItem interface */
   char m_value;
+
+  virtual void updateTheme() = 0;
 };
 
 class QNEInputPort : public QNEPort {
@@ -114,6 +116,7 @@ public:
   void setValue( char value );
   bool isOutput( ) const;
   bool isValid( ) const;
+  void updateTheme();
 };
 
 class QNEOutputPort : public QNEPort {
@@ -125,6 +128,7 @@ public:
   void setValue( char value );
   bool isOutput( ) const;
   bool isValid( ) const;
+  void updateTheme();
 };
 
 

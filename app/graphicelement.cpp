@@ -186,7 +186,7 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
   COMMENT( "Setting input ports.", 4 );
   ds >> inputSz;
   if( inputSz > MAXIMUMVALIDINPUTSIZE ) {
-    throw std::runtime_error( ERRORMSG("Corrupted DataStream!") );
+    throw std::runtime_error( ERRORMSG( "Corrupted DataStream!" ) );
   }
   for( size_t port = 0; port < inputSz; ++port ) {
     QString name;
@@ -216,7 +216,7 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
   COMMENT( "Setting output ports.", 4 );
   ds >> outputSz;
   if( outputSz > MAXIMUMVALIDINPUTSIZE ) {
-    throw std::runtime_error( ERRORMSG("Corrupted DataStream!") );
+    throw std::runtime_error( ERRORMSG( "Corrupted DataStream!" ) );
   }
   for( size_t port = 0; port < outputSz; ++port ) {
     QString name;
@@ -409,19 +409,16 @@ QString GraphicElement::getLabel( ) {
 
 void GraphicElement::updateTheme( ) {
   if( ThemeManager::globalMngr ) {
-    switch( ThemeManager::globalMngr->theme( ) ) {
-        case Theme::Panda_Light:
-        label->setDefaultTextColor( Qt::black );
-        m_selectionBrush = QColor( 155, 0, 0, 80 );
-        m_selectionPen = QColor( 175, 0, 0, 255 );
+    const ThemeAttrs attrs = ThemeManager::globalMngr->getAttrs( );
 
-        break;
-        case Theme::Panda_Dark:
-        label->setDefaultTextColor( Qt::lightGray );
-        m_selectionBrush = QColor( 255, 255, 0, 80 );
-        m_selectionPen = QColor( 255, 255, 0, 255 );
-
-        break;
+    label->setDefaultTextColor( attrs.graphicElement_labelColor );
+    m_selectionBrush = attrs.selectionBrush;
+    m_selectionPen = attrs.selectionPen;
+    for( QNEInputPort *input  : m_inputs ) {
+      input->updateTheme( );
+    }
+    for( QNEOutputPort *output : outputs( ) ) {
+      output->updateTheme( );
     }
     updateThemeLocal( );
     update( );
