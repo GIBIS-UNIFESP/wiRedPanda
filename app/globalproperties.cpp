@@ -7,6 +7,7 @@ double loadVersion(){
   if( txtVersion.contains("-") ){
     txtVersion = txtVersion.split("-").first();
   }
+  txtVersion = txtVersion.split(".")[0] + "." + txtVersion.split(".")[1];
   bool ok;
   version = txtVersion.toDouble( &ok);
   if( !ok || version == 0. ){
