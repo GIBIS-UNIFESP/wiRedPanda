@@ -14,7 +14,7 @@ public:
 
   /* QGraphicsScene interface */
   int gridSize( ) const;
-  QVector< GraphicElement* > getElements( );
+  QVector< GraphicElement* > getElements( QRectF rect = QRectF( ) );
   QVector< QNEConnection* > getConnections( );
   QVector< GraphicElement* > selectedElements( );
 

@@ -3,6 +3,7 @@
 #include "elementeditor.h"
 #include "ui_elementeditor.h"
 #include <QDebug>
+#include <QGraphicsView>
 #include <QKeyEvent>
 #include <QMenu>
 #include <cmath>
@@ -20,11 +21,11 @@ ElementEditor::ElementEditor( QWidget *parent ) : QWidget( parent ), ui( new Ui:
 
   ui->lineEditTrigger->setValidator( new QRegExpValidator( QRegExp( "[a-z]| |[A-Z]|[0-9]" ), this ) );
   fillColorComboBox( );
-  ui->lineEditElementLabel->installEventFilter(this);
-  ui->lineEditTrigger->installEventFilter(this);
-  ui->comboBoxColor->installEventFilter(this);
-  ui->comboBoxInputSz->installEventFilter(this);
-  ui->doubleSpinBoxFrequency->installEventFilter(this);
+  ui->lineEditElementLabel->installEventFilter( this );
+  ui->lineEditTrigger->installEventFilter( this );
+  ui->comboBoxColor->installEventFilter( this );
+  ui->comboBoxInputSz->installEventFilter( this );
+  ui->doubleSpinBoxFrequency->installEventFilter( this );
 }
 
 ElementEditor::~ElementEditor( ) {
@@ -234,6 +235,7 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
 
     /* Labels */
     ui->lineEditElementLabel->setVisible( hasLabel );
+    ui->lineEditElementLabel->setEnabled( hasLabel );
     ui->label_labels->setVisible( hasLabel );
     if( hasLabel ) {
       if( hasSameLabel ) {
@@ -246,6 +248,7 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
     /* Color */
     ui->label_color->setVisible( hasColors );
     ui->comboBoxColor->setVisible( hasColors );
+    ui->comboBoxColor->setEnabled( hasColors );
     if( ui->comboBoxColor->findText( _manyColors ) == -1 ) {
       ui->comboBoxColor->addItem( _manyColors );
     }
@@ -260,6 +263,7 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
     }
     /* Frequency */
     ui->doubleSpinBoxFrequency->setVisible( hasFrequency );
+    ui->doubleSpinBoxFrequency->setEnabled( hasFrequency );
     ui->label_frequency->setVisible( hasFrequency );
     if( hasFrequency ) {
       if( hasSameFrequency ) {
@@ -277,6 +281,7 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
     ui->comboBoxInputSz->clear( );
     ui->label_inputs->setVisible( canChangeInputSize );
     ui->comboBoxInputSz->setVisible( canChangeInputSize );
+    ui->comboBoxInputSz->setEnabled( canChangeInputSize );
     for( int port = minimum; port <= maximum; ++port ) {
       ui->comboBoxInputSz->addItem( QString::number( port ), port );
     }
@@ -295,6 +300,7 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
     }
     /* Trigger */
     ui->lineEditTrigger->setVisible( hasTrigger );
+    ui->lineEditTrigger->setEnabled( hasTrigger );
     ui->label_trigger->setVisible( hasTrigger );
     if( hasTrigger ) {
       if( hasSameTrigger ) {
@@ -381,33 +387,43 @@ void ElementEditor::on_lineEditTrigger_editingFinished( ) {
 }
 
 bool ElementEditor::eventFilter( QObject *obj, QEvent *event ) {
-  QWidget *wgt = dynamic_cast<QWidget *>(obj);
-  if( (event->type( ) == QEvent::KeyPress) && m_elements.size() == 1) {
-    QKeyEvent *keyEvent = static_cast< QKeyEvent* >( event );
-    if( keyEvent->key( ) == Qt::Key_Tab ) {
-      GraphicElement * elm = m_elements.first();
+  QWidget *wgt = dynamic_cast< QWidget* >( obj );
+  QKeyEvent *keyEvent = dynamic_cast< QKeyEvent* >( event );
+  if( ( event->type( ) == QEvent::KeyPress ) && keyEvent && ( m_elements.size( ) == 1 ) ) {
+    bool move_fwd = keyEvent->key( ) == Qt::Key_Tab;
+    bool move_back = keyEvent->key( ) == Qt::Key_Backtab;
+    if( move_back || move_fwd ) {
+      GraphicElement *elm = m_elements.first( );
+      QGraphicsView *graphicsView = scene->views( ).first( );
+      QRectF visibleRect = graphicsView->mapToScene( graphicsView->viewport( )->geometry( ) ).boundingRect( );
 
-      QVector< GraphicElement* > elms = scene->getElements();
-      std::stable_sort( elms .begin( ), elms .end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
+      QVector< GraphicElement* > elms = scene->getElements( visibleRect );
+      std::stable_sort( elms.begin( ), elms.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
         return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
       } );
-      std::stable_sort( elms .begin( ), elms .end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
+      std::stable_sort( elms.begin( ), elms.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
         return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
       } );
-      apply( );
-      int pos = elms.indexOf(elm);
-      do{
-        scene->clearSelection();
-        pos = (pos + 1) % elms.size();
-        elm = elms[pos];
-        elm->setSelected(true);
-        elm->ensureVisible();
-        wgt->setFocus();
-      }while (!wgt->isVisible());
 
+      apply( );
+      int pos = elms.indexOf( elm );
+      do {
+        scene->clearSelection( );
+        if( move_fwd ) {
+          pos = ( pos + 1 ) % elms.size( );
+        }
+        else {
+          pos = ( elms.size( ) + pos - 1 ) % elms.size( );
+        }
+        elm = elms[ pos ];
+        elm->setSelected( true );
+        elm->ensureVisible( );
+        wgt->setFocus( );
+      } while( !wgt->isEnabled( ) );
+      event->accept( );
       return( true );
     }
   }
-    /* pass the event on to the parent class */
+  /* pass the event on to the parent class */
   return( QWidget::eventFilter( obj, event ) );
 }
