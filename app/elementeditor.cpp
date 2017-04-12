@@ -3,6 +3,7 @@
 #include "elementeditor.h"
 #include "ui_elementeditor.h"
 #include <QDebug>
+#include <QKeyEvent>
 #include <QMenu>
 #include <cmath>
 
@@ -19,7 +20,11 @@ ElementEditor::ElementEditor( QWidget *parent ) : QWidget( parent ), ui( new Ui:
 
   ui->lineEditTrigger->setValidator( new QRegExpValidator( QRegExp( "[a-z]| |[A-Z]|[0-9]" ), this ) );
   fillColorComboBox( );
-
+  ui->lineEditElementLabel->installEventFilter(this);
+  ui->lineEditTrigger->installEventFilter(this);
+  ui->comboBoxColor->installEventFilter(this);
+  ui->comboBoxInputSz->installEventFilter(this);
+  ui->doubleSpinBoxFrequency->installEventFilter(this);
 }
 
 ElementEditor::~ElementEditor( ) {
@@ -373,4 +378,35 @@ void ElementEditor::on_lineEditTrigger_textChanged( const QString &cmd ) {
 
 void ElementEditor::on_lineEditTrigger_editingFinished( ) {
   apply( );
+}
+
+bool ElementEditor::eventFilter( QObject *obj, QEvent *event ) {
+  QWidget *wgt = dynamic_cast<QWidget *>(obj);
+  if( (event->type( ) == QEvent::KeyPress) && m_elements.size() == 1) {
+    QKeyEvent *keyEvent = static_cast< QKeyEvent* >( event );
+    if( keyEvent->key( ) == Qt::Key_Tab ) {
+      GraphicElement * elm = m_elements.first();
+
+      QVector< GraphicElement* > elms = scene->getElements();
+      std::stable_sort( elms .begin( ), elms .end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
+        return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
+      } );
+      std::stable_sort( elms .begin( ), elms .end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
+        return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
+      } );
+      int pos = elms.indexOf(elm);
+      do{
+        scene->clearSelection();
+        pos = (pos + 1) % elms.size();
+        elm = elms[pos];
+        elm->setSelected(true);
+        elm->ensureVisible();
+        wgt->setFocus();
+      }while (!wgt->isVisible());
+
+      return( true );
+    }
+  }
+    /* pass the event on to the parent class */
+  return( QWidget::eventFilter( obj, event ) );
 }
