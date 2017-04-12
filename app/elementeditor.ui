@@ -83,6 +83,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>lineEditElementLabel</tabstop>
+  <tabstop>comboBoxInputSz</tabstop>
+  <tabstop>doubleSpinBoxFrequency</tabstop>
+  <tabstop>comboBoxColor</tabstop>
+  <tabstop>lineEditTrigger</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
