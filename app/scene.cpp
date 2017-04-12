@@ -43,6 +43,10 @@ void Scene::setDots( const QPen &dots ) {
 }
 
 
+QVector< GraphicElement* > Scene::getElements( ) {
+  return( getElements( sceneRect( ) ) );
+}
+
 QVector< GraphicElement* > Scene::getElements( QRectF rect ) {
   QVector< GraphicElement* > elements;
   QList< QGraphicsItem* > myItems = items( rect );
