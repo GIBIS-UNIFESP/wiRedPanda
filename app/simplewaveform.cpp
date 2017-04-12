@@ -81,7 +81,7 @@ void SimpleWaveform::showWaveform( ) {
 
   QVector< GraphicElement* > elements = editor->getScene( )->getElements( );
   if( elements.isEmpty( ) ) {
-    QMessageBox::warning(parentWidget(), tr("Error"), tr("Could not find any input for the simulation"));
+    QMessageBox::warning( parentWidget( ), tr( "Error" ), tr( "Could not find any input for the simulation" ) );
     return;
   }
   SimulationController *sc = editor->getSimulationController( );
@@ -89,12 +89,12 @@ void SimpleWaveform::showWaveform( ) {
 
   QVector< GraphicElement* > inputs;
   QVector< GraphicElement* > outputs;
-
   for( GraphicElement *elm : elements ) {
     if( elm && ( elm->type( ) == GraphicElement::Type ) ) {
       switch( elm->elementType( ) ) {
           case ElementType::BUTTON:
-          case ElementType::SWITCH: {
+          case ElementType::SWITCH:
+          case ElementType::CLOCK: {
           inputs.append( elm );
           break;
         }
@@ -109,24 +109,18 @@ void SimpleWaveform::showWaveform( ) {
     }
   }
   if( inputs.isEmpty( ) ) {
-    QMessageBox::warning(parentWidget(), tr("Warning"), tr("Could not find any input for the simulation"));
+    QMessageBox::warning( parentWidget( ), tr( "Warning" ), tr( "Could not find any input for the simulation" ) );
     return;
   }
   if( outputs.isEmpty( ) ) {
-    QMessageBox::warning(parentWidget(), tr("Warning"), tr("Could not find any output for the simulation"));
+    QMessageBox::warning( parentWidget( ), tr( "Warning" ), tr( "Could not find any output for the simulation" ) );
     return;
   }
-
-  int num_iter = pow( 2, inputs.size( ) );
-  qDebug( ) << "Num iter = " << num_iter;
-  if(num_iter >= 256 ){
-    QString msg = tr( "The simulation will have %1 iterations, do you really want to continue?" ).arg(num_iter);
-    int ret = QMessageBox::warning( parentWidget(), tr( "Warning" ),msg, QMessageBox::Ok, QMessageBox::Cancel );
-    if( ret == QMessageBox::Cancel ) {
-      return;
-    }
+  if( inputs.size( ) > 8 ) {
+    QString msg = tr( "The simulation is limited to 8 inputs." );
+    QMessageBox::warning( parentWidget( ), tr( "ERROR" ), msg, QMessageBox::Ok );
+    return;
   }
-
   std::stable_sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
     return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
   } );
@@ -140,7 +134,6 @@ void SimpleWaveform::showWaveform( ) {
   std::stable_sort( outputs.begin( ), outputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
     return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
   } );
-
   if( sortingType == SortingType::INCREASING ) {
     std::stable_sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
       return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) <= 0 );
@@ -157,7 +150,6 @@ void SimpleWaveform::showWaveform( ) {
       return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) >= 0 );
     } );
   }
-
   QVector< QLineSeries* > in_series;
   QVector< QLineSeries* > out_series;
 
@@ -188,14 +180,16 @@ void SimpleWaveform::showWaveform( ) {
   }
   qDebug( ) << in_series.size( ) << " inputs";
   qDebug( ) << out_series.size( ) << " outputs";
-/*  gap += outputs.size( ) % 2; */
 
+  int num_iter = pow( 2, in_series.size( ) );
+  qDebug( ) << "Num iter = " << num_iter;
+/*  gap += outputs.size( ) % 2; */
   for( int itr = 0; itr < num_iter; ++itr ) {
     std::bitset< std::numeric_limits< unsigned int >::digits > bs( itr );
     for( int in = 0; in < inputs.size( ); ++in ) {
-      float val = bs[ in_series.size() - in - 1 ];
+      float val = bs[ in_series.size( ) - in - 1 ];
       dynamic_cast< Input* >( inputs[ in ] )->setOn( val );
-      float offset = ( in_series.size() - in - 1 + out_series.size( ) ) * 2 + gap + 0.5;
+      float offset = ( in_series.size( ) - in - 1 + out_series.size( ) ) * 2 + gap + 0.5;
       in_series[ in ]->append( itr, offset + val );
       in_series[ in ]->append( itr + 1, offset + val );
     }
@@ -207,7 +201,7 @@ void SimpleWaveform::showWaveform( ) {
       int inSz = outputs[ out ]->inputSize( );
       for( int port = inSz - 1; port >= 0; --port ) {
         float val = outputs[ out ]->input( port )->value( ) > 0;
-        float offset = ( out_series.size() -  counter - 1) * 2 + 0.5;
+        float offset = ( out_series.size( ) - counter - 1 ) * 2 + 0.5;
         out_series[ counter ]->append( itr, offset + val );
         out_series[ counter ]->append( itr + 1, offset + val );
 //        cout << counter << " " << out;
@@ -215,15 +209,12 @@ void SimpleWaveform::showWaveform( ) {
       }
     }
   }
-
-  for(QLineSeries* in : in_series){
-    chart.addSeries(in);
+  for( QLineSeries *in : in_series ) {
+    chart.addSeries( in );
   }
-
-  for(QLineSeries* out : out_series){
-    chart.addSeries(out);
+  for( QLineSeries *out : out_series ) {
+    chart.addSeries( out );
   }
-
   chart.createDefaultAxes( );
 
 /*  chart.axisY( )->hide( ); */
