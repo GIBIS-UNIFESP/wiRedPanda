@@ -1,10 +1,9 @@
 <RCC>
-    <qresource prefix="/memory">
+    <qresource prefix="/memory/dark">
         <file>D-flipflop.png</file>
         <file>D-latch.png</file>
         <file>JK-flipflop.png</file>
         <file>JK-latch.png</file>
-        <file>multiplex.png</file>
         <file>SR-flipflop.png</file>
         <file>T-flipflop.png</file>
         <file>T-latch.png</file>

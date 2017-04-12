@@ -168,12 +168,21 @@ echo "GENERATING PORTABLE PACKAGE"
 mkdir -p $DATADIR
 
 cp ${DEBPKGFILES}/usr/bin/wpanda $DATADIR
-cp ${CURRENTDIR}/portable_files/shared_qt.sh ${DATADIR}/wpanda.sh
-cp ${CURRENTDIR}/portable_files/wpanda.svg ${DATADIR}/wpanda.svg
+cp ${CURRENTDIR}/portable_files/wpanda.svg       ${DATADIR}
+cp ${CURRENTDIR}/portable_files/install.sh       ${DATADIR}
+cp ${PROJECTPATH}/app/resources/wpanda-mime.xml  ${DATADIR}
+cp ${CURRENTDIR}/portable_files/shared_qt.sh     ${DATADIR}/wpanda.sh
 cp ${CURRENTDIR}/portable_files/wpanda.desktop ${PTBDIR}/wpanda.desktop
+
+for SIZE in 26x26 32x32 48x48 64x64 128x128; do
+  ICONDIR_SZ=${DATADIR}/icons/${SIZE};
+  mkdir -p ${ICONDIR_SZ};
+  cp ${PROJECTPATH}/app/resources/icons/${SIZE}/* ${ICONDIR_SZ};
+done;
 
 chmod +x ${DATADIR}/wpanda
 chmod +x ${DATADIR}/wpanda.sh
+chmod +x ${DATADIR}/install.sh
 chmod +x ${PTBDIR}/wpanda.desktop
 
 

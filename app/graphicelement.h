@@ -31,7 +31,7 @@ public:
 
 private:
   QPixmap *pixmap;
-  QString currentPixmapPath;
+  QString currentPixmapName;
   QColor m_selectionBrush;
   QColor m_selectionPen;
 
@@ -101,7 +101,7 @@ public:
   virtual float getFrequency( );
   virtual void setFrequency( float freq );
 
-  void setPixmap( const QString &pixmapPath, QRect size = QRect( ) );
+  void setPixmap(const QString & pixmapName, QRect size = QRect( ) );
 
   bool rotatable( ) const;
 

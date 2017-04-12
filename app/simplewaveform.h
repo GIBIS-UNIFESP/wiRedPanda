@@ -21,8 +21,7 @@ public:
   ~SimpleWaveform( );
 
   void showWaveform( );
-
-private slots:
+    private slots:
   void on_radioButton_Position_clicked( );
 
   void on_radioButton_Increasing_clicked( );

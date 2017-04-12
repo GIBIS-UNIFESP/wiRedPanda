@@ -33,6 +33,7 @@
 #include <QDebug>
 #include <QPen>
 #include <iostream>
+#include <thememanager.h>
 
 #include "qneconnection.h"
 
@@ -229,8 +230,6 @@ void QNEPort::hoverEnter( ) {
 
 QNEInputPort::QNEInputPort( QGraphicsItem *parent ) : QNEPort( parent ) {
   label->setPos( -radius_ - margin - label->boundingRect( ).width( ), -label->boundingRect( ).height( ) / 2 );
-  setPen( QPen( Qt::black ) );
-  setCurrentBrush( Qt::darkRed );
 }
 
 QNEInputPort::~QNEInputPort( ) {
@@ -247,17 +246,20 @@ void QNEInputPort::setValue( char value ) {
   if( !isValid( ) ) {
     m_value = -1;
   }
-  if( m_value == -1 ) {
-    setPen( QPen( Qt::black ) );
-    setCurrentBrush( Qt::darkRed );
-  }
-  else if( m_value == 1 ) {
-    setPen( QPen( Qt::black ) );
-    setCurrentBrush( Qt::green );
-  }
-  else {
-    setPen( QPen( Qt::black ) );
-    setCurrentBrush( QColor( 0x333333 ) );
+  if( ThemeManager::globalMngr ) {
+    const ThemeAttrs &attrs = ThemeManager::globalMngr->getAttrs( );
+    if( m_value == -1 ) {
+      setPen( attrs.qnePort_invalid_pen );
+      setCurrentBrush( attrs.qnePort_invalid_brush );
+    }
+    else if( m_value == 1 ) {
+      setPen( attrs.qnePort_true_pen );
+      setCurrentBrush( attrs.qnePort_true_brush );
+    }
+    else {
+      setPen( attrs.qnePort_false_pen );
+      setCurrentBrush( attrs.qnePort_false_brush );
+    }
   }
 }
 
@@ -272,10 +274,14 @@ bool QNEInputPort::isValid( ) const {
   return( m_connections.size( ) == 1 );
 }
 
+void QNEInputPort::updateTheme( ) {
+
+}
+
+
 QNEOutputPort::QNEOutputPort( QGraphicsItem *parent ) : QNEPort( parent ) {
-  setPen( QPen( Qt::darkRed ) );
-  setCurrentBrush( Qt::red );
   label->setPos( radius_ + margin, -label->boundingRect( ).height( ) / 2 );
+  updateTheme( );
 }
 
 QNEOutputPort::~QNEOutputPort( ) {
@@ -312,4 +318,12 @@ bool QNEOutputPort::isOutput( ) const {
 
 bool QNEOutputPort::isValid( ) const {
   return( m_value != -1 );
+}
+
+void QNEOutputPort::updateTheme( ) {
+  if( ThemeManager::globalMngr ) {
+    const ThemeAttrs &attrs = ThemeManager::globalMngr->getAttrs( );
+    setPen( attrs.qnePort_output_pen );
+    setCurrentBrush( attrs.qnePort_output_brush );
+  }
 }

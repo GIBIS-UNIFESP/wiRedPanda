@@ -51,20 +51,12 @@ Editor::~Editor( ) {
 
 void Editor::updateTheme( ) {
   if( ThemeManager::globalMngr ) {
-    switch( ThemeManager::globalMngr->theme( ) ) {
-        case Theme::Panda_Light:
-        scene->setBackgroundBrush( QBrush( QColor( "#ffffe6" ) ) );
-        scene->setDots( QPen( Qt::darkGray ) );
-        selectionRect->setBrush( QBrush( QColor( 175, 0, 0, 80 ) ) );
-        selectionRect->setPen( QPen( QColor( 175, 0, 0, 255 ), 1, Qt::SolidLine ) );
-        break;
-        case Theme::Panda_Dark:
-        scene->setBackgroundBrush( QBrush( QColor( "#404552" ) ) );
-        scene->setDots( QPen( Qt::black ) );
-        selectionRect->setBrush( QBrush( QColor( 255, 255, 0, 80 ) ) );
-        selectionRect->setPen( QPen( QColor( 255, 255, 0, 255 ), 1, Qt::SolidLine ) );
-        break;
-    }
+    const ThemeAttrs attrs = ThemeManager::globalMngr->getAttrs();
+    scene->setBackgroundBrush( attrs.scene_bgBrush );
+    scene->setDots( QPen(attrs.scene_bgDots) );
+    selectionRect->setBrush( QBrush(attrs.selectionBrush) );
+    selectionRect->setPen( QPen(attrs.selectionPen, 1, Qt::SolidLine ));
+
     for( GraphicElement *elm : scene->getElements( ) ) {
       elm->updateTheme( );
     }

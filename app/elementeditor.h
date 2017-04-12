@@ -17,22 +17,22 @@ class ElementEditor : public QWidget {
   Q_OBJECT
 
 public:
-  explicit ElementEditor(QWidget *parent = 0 );
+  explicit ElementEditor( QWidget *parent = 0 );
   ~ElementEditor( );
 
   void setScene( Scene *s );
   void contextMenu( QPoint screenPos );
-  void renameAction();
-  void changeTriggerAction();
-  void retranslateUi();
+  void renameAction( );
+  void changeTriggerAction( );
+  void retranslateUi( );
 /*
  *  void renameAction( const QVector< GraphicElement *> &element );
  *  void changeColorAction( const QVector<GraphicElement *> &element );
  */
 
-  void fillColorComboBox();
+  void fillColorComboBox( );
 
-  void setEditor(Editor * value);
+  void setEditor( Editor *value );
 
 signals:
   void sendCommand( QUndoCommand *cmd );
@@ -53,6 +53,9 @@ private slots:
 
   void on_lineEditTrigger_editingFinished( );
 
+  bool eventFilter( QObject *obj, QEvent *event );
+
+
 private:
   void setCurrentElements( const QVector< GraphicElement* > &element );
   void apply( );
@@ -60,7 +63,7 @@ private:
   Ui::ElementEditor *ui;
   QVector< GraphicElement* > m_elements;
   Scene *scene;
-  Editor * editor;
+  Editor *editor;
   bool hasAnyProperty, hasLabel, hasColors, hasFrequency;
   bool canChangeInputSize, hasTrigger, hasRotation;
   bool hasSameLabel, hasSameColors, hasSameFrequency;
