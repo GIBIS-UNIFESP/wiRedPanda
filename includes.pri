@@ -125,9 +125,10 @@ RESOURCES += \
     $$PWD/app/resources/resources.qrc\
     $$PWD/app/resources/basic/basic.qrc\
     $$PWD/app/resources/input/input.qrc\
-    $$PWD/app/resources/memory/memory.qrc\
     $$PWD/app/resources/output/output.qrc\
-    $$PWD/app/resources/toolbar/toolbar.qrc
+    $$PWD/app/resources/toolbar/toolbar.qrc \
+    $$PWD/app/resources/memory/dark/memory_dark.qrc \
+    $$PWD/app/resources/memory/light/memory_light.qrc
 
 
 #mac {

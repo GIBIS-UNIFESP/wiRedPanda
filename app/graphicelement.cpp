@@ -80,8 +80,22 @@ void GraphicElement::enable( ) {
   m_disabled = false;
 }
 
-void GraphicElement::setPixmap( const QString &pixmapPath, QRect size ) {
-  if( pixmapPath != currentPixmapPath ) {
+void GraphicElement::setPixmap( const QString &pixmapName, QRect size ) {
+  QString pixmapPath = pixmapName;
+  if(ThemeManager::globalMngr){
+    if(pixmapPath.contains("memory")){
+      switch (ThemeManager::globalMngr->theme()) {
+      case Theme::Panda_Light:
+        pixmapPath.replace("memory", "memory/light");
+        break;
+      case Theme::Panda_Dark:
+        pixmapPath.replace("memory", "memory/dark");
+        break;
+      }
+    }
+  }
+
+  if( pixmapPath != currentPixmapName ) {
     if( !loadedPixmaps.contains( pixmapPath ) ) {
       loadedPixmaps[ pixmapPath ] = QPixmap::fromImage( QImage( pixmapPath ) ).copy( size );
     }
@@ -89,6 +103,8 @@ void GraphicElement::setPixmap( const QString &pixmapPath, QRect size ) {
     setTransformOriginPoint( pixmap->rect( ).center( ) );
     update( boundingRect( ) );
   }
+
+  currentPixmapName = pixmapName;
 }
 
 QVector< QNEOutputPort* > GraphicElement::outputs( ) const {
@@ -421,6 +437,8 @@ void GraphicElement::updateTheme( ) {
       output->updateTheme( );
     }
     updateThemeLocal( );
+
+    setPixmap(currentPixmapName);
     update( );
   }
 }
