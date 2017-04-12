@@ -47,12 +47,11 @@ export LD_LIBRARY_PATH=/opt/Qt/5.8/gcc_64/lib:$LD_LIBRARY_PATH
 
 WPANDA_BIN="${PROJECTPATH}/app/wpanda";
 
-if [ ! -e ${WPANDA_BIN} ]; then
-  pushd $PROJECTPATH/app;
-  qmake -r app.pro config+=RELEASE;
-  make -j12;
-  popd;
-fi
+pushd $PROJECTPATH/app;
+make clean;
+qmake -r config+=release;
+make -j12;
+popd;
 
 if [ ! -e ${WPANDA_BIN} ]; then
   echo "ERROR: ${WPANDA_BIN} not found!";

@@ -394,6 +394,7 @@ bool ElementEditor::eventFilter( QObject *obj, QEvent *event ) {
       std::stable_sort( elms .begin( ), elms .end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
         return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
       } );
+      apply( );
       int pos = elms.indexOf(elm);
       do{
         scene->clearSelection();
