@@ -80,6 +80,7 @@ void SimpleWaveform::showWaveform( ) {
   chart.removeAllSeries( );
 
   QVector< GraphicElement* > elements = editor->getScene( )->getElements( );
+  elements = SimulationController::sortElements( elements );
   if( elements.isEmpty( ) ) {
     QMessageBox::warning( parentWidget( ), tr( "Error" ), tr( "Could not find any input for the simulation" ) );
     return;
