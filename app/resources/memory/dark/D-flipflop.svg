@@ -15,7 +15,7 @@
    version="1.1"
    inkscape:version="0.91 r13725"
    sodipodi:docname="D-flipflop.svg"
-   inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/darktheme/memory/D-flipflop.png"
+   inkscape:export-filename="/home/davi/git/wpanda/wiRedPanda/app/resources/memory/dark/D-flipflop.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -61,8 +61,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.656854"
-     inkscape:cx="20.166211"
-     inkscape:cy="25.98976"
+     inkscape:cx="-21.287926"
+     inkscape:cy="18.918692"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
@@ -176,7 +176,7 @@
          y="35.804115" /></text>
     <text
        xml:space="preserve"
-       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#314165;fill-opacity:1;stroke:none;font-family:Droid Sans;-inkscape-font-specification:Droid Sans;"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none;font-family:Droid Sans;-inkscape-font-specification:Droid Sans;"
        x="42.901367"
        y="51.941406"
        id="text3021"
@@ -187,7 +187,7 @@
          y="51.941406">Q</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#314165;fill-opacity:1;stroke:none;font-family:Droid Sans;-inkscape-font-specification:Droid Sans;"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none;font-family:Droid Sans;-inkscape-font-specification:Droid Sans;"
        x="42.901367"
        y="18.941406"
        id="text3021-2"
@@ -197,7 +197,7 @@
          x="42.901367"
          y="18.941406">Q</tspan></text>
     <path
-       style="opacity:1;fill:#314165;fill-opacity:1;stroke:none"
+       style="opacity:1;fill:#004d41;fill-opacity:1;stroke:none"
        d="m 43.959876,37.661408 0,-0.609375 5.578125,0 5.578126,0 0,0.609375 0,0.609375 -5.578126,0 -5.578125,0 0,-0.609375 z"
        id="path3058"
        inkscape:connector-curvature="0" />
@@ -213,13 +213,13 @@
          x="-65.937714"
          y="77.611809" /></text>
     <path
-       style="fill:#314165;stroke:#314165;stroke-width:0.75534803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
+       style="fill:#004d41;stroke:#004d41;stroke-width:0.75534803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
        d="m 5.877674,40.877674 9.244653,4.314171 -9.244653,4.930481 0,-9.244652"
        id="path3015"
        inkscape:connector-curvature="0" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18px;line-height:125%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#314165;fill-opacity:1;stroke:none;"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18px;line-height:125%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none;"
        x="26.401367"
        y="20.824219"
        id="text3785"
@@ -230,7 +230,7 @@
          y="20.824219">P</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18px;line-height:125%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#314165;fill-opacity:1;stroke:none;"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18px;line-height:125%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none;"
        x="26.282715"
        y="52"
        id="text3789"
@@ -241,7 +241,7 @@
          y="52">C</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#314165;fill-opacity:1;stroke:none;font-family:Droid Sans;-inkscape-font-specification:Droid Sans;"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none;font-family:Droid Sans;-inkscape-font-specification:Droid Sans;"
        x="8.2509766"
        y="19"
        id="text3847"
@@ -251,12 +251,12 @@
          x="8.2509766"
          y="19">D</tspan></text>
     <path
-       style="opacity:1;fill:#314165;fill-opacity:1;stroke:none"
+       style="opacity:1;fill:#004d41;fill-opacity:1;stroke:none"
        d="m 26.421874,6.779804 0,-0.609375 5.578125,0 5.578126,0 0,0.609375 0,0.609375 -5.578126,0 -5.578125,0 0,-0.609375 z"
        id="path3058-8"
        inkscape:connector-curvature="0" />
     <path
-       style="opacity:1;fill:#314165;fill-opacity:1;stroke:none"
+       style="opacity:1;fill:#004d41;fill-opacity:1;stroke:none"
        d="m 26.421874,37.129941 0,-0.609375 5.578125,0 5.578126,0 0,0.609375 0,0.609375 -5.578126,0 -5.578125,0 0,-0.609375 z"
        id="path3058-4"
        inkscape:connector-curvature="0" />
