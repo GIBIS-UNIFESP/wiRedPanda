@@ -58,6 +58,14 @@ void ThemeAttrs::setTheme( Theme thm ) {
 
       graphicElement_labelColor = QColor(Qt::black);
 
+      qneConnection_selected = selectionPen;
+
+      qneConnection_true = QColor( Qt::green );
+      qneConnection_false = QColor( Qt::darkGreen );
+      qneConnection_invalid = QColor( Qt::red );
+
+
+
       break;
       case Theme::Panda_Dark:
       scene_bgBrush = QColor( "#404552" );
@@ -65,16 +73,17 @@ void ThemeAttrs::setTheme( Theme thm ) {
       selectionBrush = QColor( 115, 255, 230, 150);
       selectionPen = QColor( 65, 255, 220, 255 );
 
-      graphicElement_labelColor = QColor("#e0e0e0");
+      graphicElement_labelColor = QColor(Qt::white);
+
+
+      qneConnection_selected = selectionPen;
+
+      qneConnection_true = QColor( 250,85,255,255 );
+      qneConnection_false = QColor( 162,84,194,255 );
+      qneConnection_invalid = QColor( Qt::red );
 
       break;
   }
-
-  qneConnection_selected = selectionPen;
-
-  qneConnection_true = QColor( Qt::green );
-  qneConnection_false = QColor( Qt::darkGreen );
-  qneConnection_invalid = QColor( Qt::red );
 
   qnePort_true_pen = QColor( Qt::black );
   qnePort_false_pen = QColor( Qt::black );
