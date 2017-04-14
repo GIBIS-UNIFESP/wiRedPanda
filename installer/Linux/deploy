@@ -16,6 +16,7 @@ echo VERSION $VERSION
 PKGNAMEDIR="wpanda-$VERSION"
 DEBPKGROOT="$PROJECTPATH/Deploy/$PKGNAMEDIR"
 DEBPKGFILES="$PROJECTPATH/Deploy/$PKGNAMEDIR/files"
+BUILDDIR=$PROJECTPATH/build
 echo DEBPKGFILES $DEBPKGFILES
 PTBNAME="WiredPanda_${FORMATEDVERSION}_Linux_Portable_x64"
 PTBDIR="$PROJECTPATH/Deploy/$PTBNAME";
@@ -27,30 +28,25 @@ echo DEBPKGNAME $DEBPKGNAME
 echo "CLEANING OLD FILES"
 rm -rf "${PROJECTPATH}/Deploy/"
 
-QT_LIBRARY_PATH="/opt/Qt/5.8/gcc_64/lib"
-QT_PLATFORMS_PATH="/opt/Qt/5.8/gcc_64/plugins/platforms/"
-DEPENDENCIES_PATH="/usr/lib/x86_64-linux-gnu/"
+QT_PATH="/opt/Qt/5.8/gcc_64/";
+QT_LIBRARY_PATH="$QT_PATH/lib"
+QT_PLATFORMS_PATH="$QT_PATH/plugins/platforms/"
 
-export PATH=/opt/Qt/5.8/gcc_64/bin/:$PATH
-export LD_LIBRARY_PATH=/opt/Qt/5.8/gcc_64/lib:$LD_LIBRARY_PATH
-# QT_LIBRARY_PATH="/opt/qt57/lib"
-# QT_PLATFORMS_PATH="/opt/qt57/plugins/platforms/"
-# DEPENDENCIES_PATH="/usr/lib/x86_64-linux-gnu/"
+export PATH=$QT_PATH/bin/:$PATH
+export LD_LIBRARY_PATH=$QT_PATH/lib:$LD_LIBRARY_PATH
 
-# if [ ! -d $QT_LIBRARY_PATH ]; then
-#   QT_LIBRARY_PATH="/usr/lib64/";
-#   QT_PLATFORMS_PATH="/usr/lib64/qt5/plugins/platforms/";
-#   DEPENDENCIES_PATH="/usr/lib64/"
-# fi;
+WPANDA_BIN="$BUILDDIR/wpanda";
 
+#rm -rf $BUILDDIR
+mkdir -p $BUILDDIR 
+pushd $BUILDDIR
 
+qmake -r config+=release ../app;
 
-WPANDA_BIN="${PROJECTPATH}/app/wpanda";
+echo "Building WiredPanda..."
+make -j4;
 
-pushd $PROJECTPATH/app;
-make clean;
-qmake -r config+=release;
-make -j12;
+ldd $WPANDA_BIN
 popd;
 
 if [ ! -e ${WPANDA_BIN} ]; then
@@ -128,6 +124,7 @@ for SIZE in 26x26 32x32 48x48 64x64 128x128; do
   cp ${PROJECTPATH}/app/resources/icons/${SIZE}/* ${ICONDIR_SZ};
 done;
 
+
 for lib in libQt5PrintSupport.so.5 libQt5XcbQpa.so.5 libQt5DBus.so.5\
            libQt5Charts.so.5 libQt5Widgets.so.5 libQt5Gui.so.5 \
            libQt5Core.so.5 libicui18n.so.56 libicuuc.so.56 libicudata.so.56;
@@ -142,23 +139,13 @@ for lib in libQt5PrintSupport.so.5 libQt5XcbQpa.so.5 libQt5DBus.so.5\
   fi;
 done;
 
-# for lib in libxcb-dri2.so.0 libxcb-xfixes.so.0; do
-#   echo "Copying $lib";
-#   if [ -f ${DEPENDENCIES_PATH}/$lib ]; then
-#     cp ${DEPENDENCIES_PATH}/$lib ${DEBPKGFILES}/usr/lib/wpanda;
-#   else
-#     echo "ERROR: $lib not found!";
-#     locate $lib;
-#     exit 1;
-#   fi;
-# done;
-
 cp ${QT_PLATFORMS_PATH}/libqxcb.so ${DEBPKGFILES}/usr/lib/wpanda
+
 
 pushd $DEBPKGROOT
 
-dpkg-buildpackage -d
-tree .
+dpkg-buildpackage -d -uc -us
+#tree .
 
 popd
 
@@ -184,8 +171,7 @@ chmod +x ${DATADIR}/wpanda.sh
 chmod +x ${DATADIR}/install.sh
 chmod +x ${PTBDIR}/wpanda.desktop
 
-
-cp ${DEBPKGFILES}/usr/lib/wpanda/* $DATADIR
+cp ${DEBPKGFILES}/usr/lib/wpanda/* $DATADIR;
 
 pushd $PROJECTPATH/Deploy
 echo "Generating ${PTBNAME}.tar.xz"
