@@ -51,12 +51,11 @@ Editor::~Editor( ) {
 
 void Editor::updateTheme( ) {
   if( ThemeManager::globalMngr ) {
-    const ThemeAttrs attrs = ThemeManager::globalMngr->getAttrs();
+    const ThemeAttrs attrs = ThemeManager::globalMngr->getAttrs( );
     scene->setBackgroundBrush( attrs.scene_bgBrush );
-    scene->setDots( QPen(attrs.scene_bgDots) );
-    selectionRect->setBrush( QBrush(attrs.selectionBrush) );
-    selectionRect->setPen( QPen(attrs.selectionPen, 1, Qt::SolidLine ));
-
+    scene->setDots( QPen( attrs.scene_bgDots ) );
+    selectionRect->setBrush( QBrush( attrs.selectionBrush ) );
+    selectionRect->setPen( QPen( attrs.selectionPen, 1, Qt::SolidLine ) );
     for( GraphicElement *elm : scene->getElements( ) ) {
       elm->updateTheme( );
     }
@@ -91,8 +90,9 @@ void Editor::setEditedConn( QNEConnection *editedConn ) {
 void Editor::buildSelectionRect( ) {
   selectionRect = new QGraphicsRectItem( );
   selectionRect->setFlag( QGraphicsItem::ItemIsSelectable, false );
-  if(scene)
-  scene->addItem( selectionRect );
+  if( scene ) {
+    scene->addItem( selectionRect );
+  }
 }
 
 void Editor::clear( ) {
@@ -414,7 +414,7 @@ void Editor::makeConnection( QNEConnection *editedConn ) {
 }
 
 bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
-  if(!mouseEvt){
+  if( !mouseEvt ) {
     return( false );
   }
   /* When mouse is released the selection rect is hidden. */
@@ -427,7 +427,7 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
   if( editedConn && !( mouseEvt->buttons( ) & Qt::LeftButton ) ) {
     /* A connection is being created, and left button was released. */
     makeConnection( editedConn );
-    return true;
+    return( true );
   }
   return( false );
 }
@@ -860,8 +860,8 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
       }
     }
     bool ret = false;
-    if( mouseEvt && (( evt->type( ) == QEvent::GraphicsSceneMousePress )
-        || ( evt->type( ) == QEvent::GraphicsSceneMouseDoubleClick ) )) {
+    if( mouseEvt && ( ( evt->type( ) == QEvent::GraphicsSceneMousePress )
+                      || ( evt->type( ) == QEvent::GraphicsSceneMouseDoubleClick ) ) ) {
       QGraphicsItem *item = itemAt( mousePos );
       if( item && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
         if( ( mouseEvt->modifiers( ) & Qt::ControlModifier ) && ( item->type( ) == GraphicElement::Type ) ) {

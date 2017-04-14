@@ -50,8 +50,6 @@ QList< QGraphicsItem* > loadList( const QList< QGraphicsItem* > &aItems, QVector
       }
     }
   }
-
-
   QList< QGraphicsItem* > connections;
   /* Stores all the wires linked to these elements */
   for( QGraphicsItem *item : elements ) {
@@ -64,7 +62,7 @@ QList< QGraphicsItem* > loadList( const QList< QGraphicsItem* > &aItems, QVector
           }
         }
       }
-      for( QNEOutputPort *port : elm->outputs( )) {
+      for( QNEOutputPort *port : elm->outputs( ) ) {
         for( QNEConnection *conn : port->connections( ) ) {
           if( !connections.contains( conn ) ) {
             connections.append( conn );
@@ -81,7 +79,6 @@ QList< QGraphicsItem* > loadList( const QList< QGraphicsItem* > &aItems, QVector
       }
     }
   }
-
   /* Stores the ids of all elements listed in items; */
   storeIds( elements + connections, ids );
   /* Stores all the elements linked to each connection that will not be deleted. */
@@ -139,9 +136,12 @@ void addItems( Editor *editor, QList< QGraphicsItem* > items ) {
   }
 }
 
-QList<QGraphicsItem * > loadItems( QByteArray &itemData, const QVector< int > &ids, Editor *editor, QVector< int > &otherIds ) {
+QList< QGraphicsItem* > loadItems( QByteArray &itemData,
+                                   const QVector< int > &ids,
+                                   Editor *editor,
+                                   QVector< int > &otherIds ) {
   if( itemData.isEmpty( ) ) {
-    return QList<QGraphicsItem*>();
+    return( QList< QGraphicsItem* >( ) );
   }
   QVector< GraphicElement* > otherElms = findElements( otherIds ).toVector( );
   QDataStream dataStream( &itemData, QIODevice::ReadOnly );
@@ -172,7 +172,7 @@ QList<QGraphicsItem * > loadItems( QByteArray &itemData, const QVector< int > &i
     }
   }
   addItems( editor, items );
-  return items;
+  return( items );
 }
 
 void deleteItems( const QList< QGraphicsItem* > &items, Editor *editor ) {
@@ -187,7 +187,7 @@ void deleteItems( const QList< QGraphicsItem* > &items, Editor *editor ) {
 
 AddItemsCommand::AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
     parent ) {
-  QList< QGraphicsItem* > items({aItem});
+  QList< QGraphicsItem* > items( { aItem } );
   items = loadList( items, ids, otherIds );
   editor = aEditor;
   addItems( editor, items );
@@ -196,7 +196,7 @@ AddItemsCommand::AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoC
 
 AddItemsCommand::AddItemsCommand( QNEConnection *aItem, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
     parent ) {
-  QList< QGraphicsItem* > items({aItem});
+  QList< QGraphicsItem* > items( { aItem } );
   items = loadList( items, ids, otherIds );
   editor = aEditor;
   addItems( editor, items );
@@ -236,7 +236,7 @@ void AddItemsCommand::undo( ) {
 
 void AddItemsCommand::redo( ) {
   COMMENT( "REDO " + text( ).toStdString( ), 0 );
-  QList< QGraphicsItem* > items  = loadItems( itemData, ids, editor, otherIds );
+  QList< QGraphicsItem* > items = loadItems( itemData, ids, editor, otherIds );
   emit editor->circuitHasChanged( );
 }
 
@@ -737,5 +737,8 @@ void FlipCommand::redo( ) {
     elm->setPos( pos );
     elm->update( );
     elm->setSelected( true );
+    if( elm->rotatable( ) ) {
+      elm->setRotation( 180 );
+    }
   }
 }

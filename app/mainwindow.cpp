@@ -62,7 +62,6 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   else {
     setFastMode( false );
   }
-  ui->graphicsView->setAcceptDrops( true );
   editor->setElementEditor( ui->widgetElementEditor );
   ui->searchScrollArea->hide( );
 
@@ -89,8 +88,8 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 
   ui->menuEdit->insertAction( ui->menuEdit->actions( ).at( 0 ), undoAction );
   ui->menuEdit->insertAction( undoAction, redoAction );
-  gvzoom = new GraphicsViewZoom( ui->graphicsView );
-  connect( gvzoom, &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged );
+
+  connect( ui->graphicsView->gvzoom( ), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged );
   connect( editor, &Editor::scroll, this, &MainWindow::scrollView );
 
   rfController = new RecentFilesController( "recentFileList", this );
@@ -109,6 +108,8 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 /*  QApplication::setStyle( QStyleFactory::create( "Fusion" ) ); */
 
   ui->actionPlay->setChecked( true );
+
+  buildFullScreenDialog( );
 
   populateLeftMenu( );
 }
@@ -544,37 +545,24 @@ bool MainWindow::on_actionExport_to_Arduino_triggered( ) {
 }
 
 
-#define ZOOMFAC 0.1
 void MainWindow::on_actionZoom_in_triggered( ) {
 /*  QPointF scenePos = editor->getMousePos(); */
 
 /*  QPointF screenCtr = ui->graphicsView->rect().center(); */
 
-
-  ui->graphicsView->setTransformationAnchor( QGraphicsView::AnchorUnderMouse );
-  double newScale = std::round( gvzoom->scaleFactor( ) * 10 ) / 10.0 + ZOOMFAC;
-  if( newScale <= GraphicsViewZoom::maxZoom ) {
-    gvzoom->setScaleFactor( newScale );
-  }
-  zoomChanged( );
 }
 
 void MainWindow::on_actionZoom_out_triggered( ) {
-  double newScale = std::round( gvzoom->scaleFactor( ) * 10 ) / 10.0 - ZOOMFAC;
-  if( newScale >= GraphicsViewZoom::minZoom ) {
-    gvzoom->setScaleFactor( newScale );
-  }
-  zoomChanged( );
+  ui->graphicsView->gvzoom( )->zoomOut( );
 }
 
 void MainWindow::on_actionReset_Zoom_triggered( ) {
-  gvzoom->setScaleFactor( 1.0 );
-  zoomChanged( );
+  ui->graphicsView->gvzoom( )->resetZoom( );
 }
 
 void MainWindow::zoomChanged( ) {
-  ui->actionZoom_in->setEnabled( ( gvzoom->scaleFactor( ) + ZOOMFAC * 2 ) <= gvzoom->maxZoom );
-  ui->actionZoom_out->setEnabled( ( gvzoom->scaleFactor( ) - ZOOMFAC * 2 ) >= gvzoom->minZoom );
+  ui->actionZoom_in->setEnabled( ui->graphicsView->gvzoom( )->canZoomIn( ) );
+  ui->actionZoom_out->setEnabled( ui->graphicsView->gvzoom( )->canZoomOut( ) );
 }
 
 void MainWindow::updateRecentFileActions( ) {
@@ -731,6 +719,9 @@ void MainWindow::on_actionChange_Trigger_triggered( ) {
 }
 
 void MainWindow::on_actionClear_selection_triggered( ) {
+  if( fullscreenDlg->isVisible( ) && editor->getScene( )->selectedItems( ).isEmpty( ) ) {
+    fullscreenDlg->accept( );
+  }
   editor->getScene( )->clearSelection( );
 }
 
@@ -798,4 +789,31 @@ void MainWindow::on_actionFlip_horizontally_triggered( ) {
 
 void MainWindow::on_actionFlip_vertically_triggered( ) {
   editor->flipV( );
+}
+
+void MainWindow::buildFullScreenDialog( ) {
+  fullscreenDlg = new QDialog( this );
+  fullscreenView = new GraphicsView( this );
+  fullscreenDlg->setWindowFlags( Qt::Window );
+  QHBoxLayout *dlg_layout = new QHBoxLayout( fullscreenDlg );
+
+  fullscreenDlg->addActions( this->actions( ) );
+  fullscreenDlg->addActions( ui->menuBar->actions( ) );
+
+  dlg_layout->setContentsMargins( 0, 0, 0, 0 );
+  dlg_layout->setMargin( 0 );
+  dlg_layout->addWidget( fullscreenView );
+  fullscreenDlg->setLayout( dlg_layout );
+  fullscreenDlg->setStyleSheet( "QGraphicsView { border-style: none; }" );
+  fullscreenView->setScene( editor->getScene( ) );
+}
+
+void MainWindow::on_actionFullscreen_triggered( ) {
+  if( fullscreenDlg->isFullScreen( ) ) {
+    fullscreenDlg->accept( );
+  }
+  else {
+    fullscreenDlg->showFullScreen( );
+    fullscreenDlg->exec( );
+  }
 }
