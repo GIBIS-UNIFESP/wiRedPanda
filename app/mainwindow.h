@@ -2,12 +2,14 @@
 #define MAINWINDOW_H
 
 #include "editor.h"
+#include "graphicsview.h"
 #include "graphicsviewzoom.h"
 #include "label.h"
 #include "listitemwidget.h"
 #include "recentfilescontroller.h"
 #include "scene.h"
 
+#include <QDialog>
 #include <QDir>
 #include <QFileInfo>
 #include <QGraphicsScene>
@@ -51,6 +53,11 @@ public:
   void loadTranslation( QString language );
 
   void setFastMode( bool fastModeEnabled );
+
+  void buildFullScreenDialog( );
+
+  QDialog *fullscreenDlg;
+  GraphicsView *fullscreenView;
 
 private slots:
   bool on_actionExport_to_Arduino_triggered( );
@@ -106,6 +113,8 @@ private slots:
 
   void on_actionFlip_vertically_triggered( );
 
+  void on_actionFullscreen_triggered( );
+
 private:
   Ui::MainWindow *ui;
   Editor *editor;
@@ -113,7 +122,7 @@ private:
   QDir defaultDirectory;
   QUndoView *undoView;
   Label *firstResult;
-  GraphicsViewZoom *gvzoom;
+
   QAction *undoAction;
   QAction *redoAction;
   RecentFilesController *rfController, *rboxController;

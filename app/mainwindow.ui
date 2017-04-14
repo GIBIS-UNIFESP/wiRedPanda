@@ -102,8 +102,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>208</width>
-                   <height>250</height>
+                   <width>100</width>
+                   <height>30</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -145,7 +145,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>250</height>
+                   <height>239</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -186,8 +186,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>208</width>
-                   <height>250</height>
+                   <width>100</width>
+                   <height>30</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -228,8 +228,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>208</width>
-                   <height>250</height>
+                   <width>100</width>
+                   <height>30</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -329,7 +329,7 @@
                <x>0</x>
                <y>0</y>
                <width>228</width>
-               <height>296</height>
+               <height>289</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
@@ -421,7 +421,7 @@
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>20</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -509,6 +509,7 @@
     <addaction name="actionFast_Mode"/>
     <addaction name="separator"/>
     <addaction name="menuTheme"/>
+    <addaction name="actionFullscreen"/>
    </widget>
    <widget class="QMenu" name="menuLanguage">
     <property name="title">
@@ -517,9 +518,17 @@
     <addaction name="actionEnglish"/>
     <addaction name="actionPortuguese"/>
    </widget>
+   <widget class="QMenu" name="menuSimulation">
+    <property name="title">
+     <string>Sim&amp;ulation</string>
+    </property>
+    <addaction name="actionPlay"/>
+    <addaction name="actionWaveform"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
+   <addaction name="menuSimulation"/>
    <addaction name="menuLanguage"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -831,7 +840,7 @@
      <normalon>:/toolbar/pause.png</normalon>:/toolbar/play.png</iconset>
    </property>
    <property name="text">
-    <string>PlayPause</string>
+    <string>&amp;Play/Pause</string>
    </property>
    <property name="toolTip">
     <string>Play or Pause simulation.</string>
@@ -913,7 +922,7 @@
      <normaloff>:/toolbar/wavyIcon.png</normaloff>:/toolbar/wavyIcon.png</iconset>
    </property>
    <property name="text">
-    <string>Waveform</string>
+    <string>&amp;Waveform</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+W</string>
@@ -938,6 +947,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Y</string>
+   </property>
+  </action>
+  <action name="actionFullscreen">
+   <property name="text">
+    <string>F&amp;ullscreen</string>
+   </property>
+   <property name="shortcut">
+    <string>F11</string>
    </property>
   </action>
  </widget>
@@ -969,9 +986,9 @@
   <include location="resources/resources.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/input/input.qrc"/>
   <include location="resources/resources.qrc"/>
   <include location="resources/basic/basic.qrc"/>
+  <include location="resources/input/input.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>

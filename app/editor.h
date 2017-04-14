@@ -42,7 +42,6 @@ public slots:
   void cutAction( );
   void pasteAction( );
   void deleteAction( );
-
   void updateTheme( );
 private:
   QUndoStack *undoStack;
