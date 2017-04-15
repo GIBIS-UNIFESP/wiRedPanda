@@ -39,7 +39,7 @@ SimpleWaveform::SimpleWaveform( Editor *editor, QWidget *parent ) :
   setWindowTitle( "Simple WaveForm - WaveDolphin Beta" );
   setWindowFlags( Qt::Window );
   setModal( true );
-  sortingType = SortingType::INCREASING;
+  sortingKind = SortingKind::INCREASING;
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "SimpleWaveform" );
@@ -56,40 +56,14 @@ SimpleWaveform::~SimpleWaveform( ) {
   delete ui;
 }
 
-void SimpleWaveform::showWaveform( ) {
-  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
-                      QApplication::organizationName( ), QApplication::applicationName( ) );
-  settings.beginGroup( "waveform" );
-  if( settings.contains( "sortingType" ) ) {
-    sortingType = ( SortingType ) settings.value( "sortingType" ).toInt( );
-  }
-  settings.endGroup( );
-  switch( sortingType ) {
-      case SortingType::DECREASING:
-      ui->radioButton_Decreasing->setChecked( true );
-      break;
-      case SortingType::INCREASING:
-      ui->radioButton_Increasing->setChecked( true );
-      break;
-      case SortingType::POSITION:
-      ui->radioButton_Position->setChecked( true );
-      break;
-  }
-  int gap = 2;
-
-  chart.removeAllSeries( );
-
-  QVector< GraphicElement* > elements = editor->getScene( )->getElements( );
+void SimpleWaveform::sortElements( QVector< GraphicElement* > elements,
+                                   QVector< GraphicElement* > &inputs,
+                                   QVector< GraphicElement* > &outputs,
+                                   SortingKind sorting ) {
   elements = SimulationController::sortElements( elements );
   if( elements.isEmpty( ) ) {
-    QMessageBox::warning( parentWidget( ), tr( "Error" ), tr( "Could not find any input for the simulation" ) );
-    return;
+    throw std::runtime_error( tr( "Could not find any input for the simulation" ).toStdString( ) );
   }
-  SimulationController *sc = editor->getSimulationController( );
-  sc->stop( );
-
-  QVector< GraphicElement* > inputs;
-  QVector< GraphicElement* > outputs;
   for( GraphicElement *elm : elements ) {
     if( elm && ( elm->type( ) == GraphicElement::Type ) ) {
       switch( elm->elementType( ) ) {
@@ -110,17 +84,13 @@ void SimpleWaveform::showWaveform( ) {
     }
   }
   if( inputs.isEmpty( ) ) {
-    QMessageBox::warning( parentWidget( ), tr( "Warning" ), tr( "Could not find any input for the simulation" ) );
-    return;
+    throw std::runtime_error( tr( "Could not find any input for the simulation." ).toStdString( ) );
   }
   if( outputs.isEmpty( ) ) {
-    QMessageBox::warning( parentWidget( ), tr( "Warning" ), tr( "Could not find any output for the simulation" ) );
-    return;
+    throw std::runtime_error( tr( "Could not find any output for the simulation." ).toStdString( ) );
   }
   if( inputs.size( ) > 8 ) {
-    QString msg = tr( "The simulation is limited to 8 inputs." );
-    QMessageBox::warning( parentWidget( ), tr( "ERROR" ), msg, QMessageBox::Ok );
-    return;
+    throw std::runtime_error( tr( "The simulation is limited to 8 inputs." ).toStdString( ) );
   }
   std::stable_sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
     return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
@@ -135,7 +105,7 @@ void SimpleWaveform::showWaveform( ) {
   std::stable_sort( outputs.begin( ), outputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
     return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
   } );
-  if( sortingType == SortingType::INCREASING ) {
+  if( sorting == SortingKind::INCREASING ) {
     std::stable_sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
       return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) <= 0 );
     } );
@@ -143,7 +113,7 @@ void SimpleWaveform::showWaveform( ) {
       return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) <= 0 );
     } );
   }
-  else if( sortingType == SortingType::DECREASING ) {
+  else if( sorting == SortingKind::DECREASING ) {
     std::stable_sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
       return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) >= 0 );
     } );
@@ -151,6 +121,44 @@ void SimpleWaveform::showWaveform( ) {
       return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) >= 0 );
     } );
   }
+}
+
+void SimpleWaveform::showWaveform( ) {
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  settings.beginGroup( "waveform" );
+  if( settings.contains( "sortingType" ) ) {
+    sortingKind = ( SortingKind ) settings.value( "sortingType" ).toInt( );
+  }
+  settings.endGroup( );
+  switch( sortingKind ) {
+      case SortingKind::DECREASING:
+      ui->radioButton_Decreasing->setChecked( true );
+      break;
+      case SortingKind::INCREASING:
+      ui->radioButton_Increasing->setChecked( true );
+      break;
+      case SortingKind::POSITION:
+      ui->radioButton_Position->setChecked( true );
+      break;
+  }
+  int gap = 2;
+
+  chart.removeAllSeries( );
+
+  SimulationController *sc = editor->getSimulationController( );
+  sc->stop( );
+
+  QVector< GraphicElement* > elements = editor->getScene( )->getElements( );
+  QVector< GraphicElement* > inputs;
+  QVector< GraphicElement* > outputs;
+  try {
+    sortElements( elements, inputs, outputs, sortingKind );
+  }
+  catch( std::runtime_error &err ) {
+    QMessageBox::warning( parentWidget( ), tr( "Error" ), QString::fromUtf8( err.what( ) ) );
+  }
+
   QVector< QLineSeries* > in_series;
   QVector< QLineSeries* > out_series;
 
@@ -205,7 +213,7 @@ void SimpleWaveform::showWaveform( ) {
         float offset = ( out_series.size( ) - counter - 1 ) * 2 + 0.5;
         out_series[ counter ]->append( itr, offset + val );
         out_series[ counter ]->append( itr + 1, offset + val );
-//        cout << counter << " " << out;
+/*        cout << counter << " " << out; */
         counter++;
       }
     }
@@ -249,8 +257,8 @@ void SimpleWaveform::on_radioButton_Position_clicked( ) {
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "waveform" );
-  sortingType = SortingType::POSITION;
-  settings.setValue( "sortingType", ( int ) sortingType );
+  sortingKind = SortingKind::POSITION;
+  settings.setValue( "sortingType", ( int ) sortingKind );
   settings.endGroup( );
 
   showWaveform( );
@@ -260,8 +268,8 @@ void SimpleWaveform::on_radioButton_Increasing_clicked( ) {
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "waveform" );
-  sortingType = SortingType::INCREASING;
-  settings.setValue( "sortingType", ( int ) sortingType );
+  sortingKind = SortingKind::INCREASING;
+  settings.setValue( "sortingType", ( int ) sortingKind );
   settings.endGroup( );
 
   showWaveform( );
@@ -271,8 +279,8 @@ void SimpleWaveform::on_radioButton_Decreasing_clicked( ) {
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "waveform" );
-  sortingType = SortingType::DECREASING;
-  settings.setValue( "sortingType", ( int ) sortingType );
+  sortingKind = SortingKind::DECREASING;
+  settings.setValue( "sortingType", ( int ) sortingKind );
   settings.endGroup( );
 
   showWaveform( );

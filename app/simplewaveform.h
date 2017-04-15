@@ -15,13 +15,18 @@ namespace Ui {
 
 class SimpleWaveform : public QDialog {
   Q_OBJECT
+  enum class SortingKind { INCREASING, DECREASING, POSITION };
 
-public:
+  public:
   explicit SimpleWaveform( Editor *editor, QWidget *parent = 0 );
   ~SimpleWaveform( );
 
   void showWaveform( );
-    private slots:
+  static void sortElements(QVector<GraphicElement *> elements,
+                            QVector< GraphicElement* > &inputs,
+                            QVector< GraphicElement* > &outputs,
+                            SortingKind sorting);
+private slots:
   void on_radioButton_Position_clicked( );
 
   void on_radioButton_Increasing_clicked( );
@@ -35,8 +40,8 @@ private:
   QChart chart;
   QChartView *chartView;
   Editor *editor;
-  enum class SortingType { INCREASING, DECREASING, POSITION };
-  SortingType sortingType;
+
+  SortingKind sortingKind;
 };
 
 #endif /* SIMPLEWAVEFORM_H */
