@@ -61,9 +61,6 @@ void SimpleWaveform::sortElements( QVector< GraphicElement* > elements,
                                    QVector< GraphicElement* > &outputs,
                                    SortingKind sorting ) {
   elements = SimulationController::sortElements( elements );
-  if( elements.isEmpty( ) ) {
-    throw std::runtime_error( tr( "Could not find any input for the simulation" ).toStdString( ) );
-  }
   for( GraphicElement *elm : elements ) {
     if( elm && ( elm->type( ) == GraphicElement::Type ) ) {
       switch( elm->elementType( ) ) {
@@ -82,15 +79,6 @@ void SimpleWaveform::sortElements( QVector< GraphicElement* > elements,
           break;
       }
     }
-  }
-  if( inputs.isEmpty( ) ) {
-    throw std::runtime_error( tr( "Could not find any input for the simulation." ).toStdString( ) );
-  }
-  if( outputs.isEmpty( ) ) {
-    throw std::runtime_error( tr( "Could not find any output for the simulation." ).toStdString( ) );
-  }
-  if( inputs.size( ) > 8 ) {
-    throw std::runtime_error( tr( "The simulation is limited to 8 inputs." ).toStdString( ) );
   }
   std::stable_sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
     return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
@@ -123,6 +111,83 @@ void SimpleWaveform::sortElements( QVector< GraphicElement* > elements,
   }
 }
 
+bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
+  QVector< GraphicElement* > elements = editor->getScene( )->getElements( );
+  QVector< GraphicElement* > inputs;
+  QVector< GraphicElement* > outputs;
+
+  sortElements( elements, inputs, outputs, SortingKind::INCREASING );
+  if( elements.isEmpty( ) || inputs.isEmpty( ) || outputs.isEmpty( ) ) {
+    return( false );
+  }
+  SimulationController *sc = editor->getSimulationController( );
+  sc->stop( );
+
+
+  QVector< char > oldValues( inputs.size( ) );
+  for( int in = 0; in < inputs.size( ); ++in ) {
+    oldValues[ in ] = inputs[ in ]->output( )->value( );
+  }
+  int num_iter = pow( 2, inputs.size( ) );
+  int outputCount = 0;
+  for( GraphicElement *out : outputs ) {
+    outputCount += out->inputSize( );
+  }
+  QVector< QVector< uchar > > results( outputCount, QVector< uchar >( num_iter ) );
+  for( int itr = 0; itr < num_iter; ++itr ) {
+    std::bitset< std::numeric_limits< unsigned int >::digits > bs( itr );
+    for( int in = 0; in < inputs.size( ); ++in ) {
+      uchar val = bs[ inputs.size( ) - in - 1 ];
+      dynamic_cast< Input* >( inputs[ in ] )->setOn( val );
+    }
+    for( GraphicElement *elm : elements ) {
+      elm->updateLogic( );
+    }
+    int counter = 0;
+    for( int out = 0; out < outputs.size( ); ++out ) {
+      int inSz = outputs[ out ]->inputSize( );
+      for( int port = inSz - 1; port >= 0; --port ) {
+        uchar val = outputs[ out ]->input( port )->value( );
+        results[ counter ][ itr ] = val;
+        counter++;
+      }
+    }
+  }
+  for( int in = 0; in < inputs.size( ); ++in ) {
+    QString label = inputs[ in ]->getLabel( );
+    if( label.isEmpty( ) ) {
+      label = ElementFactory::translatedName( inputs[ in ]->elementType( ) );
+    }
+    outStream << "\"" << label << "\":";
+    for( int itr = 0; itr < num_iter; ++itr ) {
+      std::bitset< std::numeric_limits< unsigned int >::digits > bs( itr );
+      outStream << ( int ) bs[ inputs.size( ) - in - 1 ];
+    }
+    outStream << "\n";
+  }
+  int counter = 0;
+  for( int out = 0; out < outputs.size( ); ++out ) {
+    QString label = outputs[ out ]->getLabel( );
+    if( label.isEmpty( ) ) {
+      label = ElementFactory::translatedName( outputs[ out ]->elementType( ) );
+    }
+    int inSz = outputs[ out ]->inputSize( );
+    for( int port = inSz - 1; port >= 0; --port ) {
+      outStream << "\"" << label << "[" << port << "]\":";
+      for( int itr = 0; itr < num_iter; ++itr ) {
+        outStream << ( int ) results[ counter ][ itr ];
+      }
+      counter += 1;
+      outStream << "\n";
+    }
+  }
+  for( int in = 0; in < inputs.size( ); ++in ) {
+    dynamic_cast< Input* >( inputs[ in ] )->setOn( oldValues[ in ] );
+  }
+  sc->start( );
+  return( true );
+}
+
 void SimpleWaveform::showWaveform( ) {
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
@@ -152,13 +217,25 @@ void SimpleWaveform::showWaveform( ) {
   QVector< GraphicElement* > elements = editor->getScene( )->getElements( );
   QVector< GraphicElement* > inputs;
   QVector< GraphicElement* > outputs;
-  try {
-    sortElements( elements, inputs, outputs, sortingKind );
-  }
-  catch( std::runtime_error &err ) {
-    QMessageBox::warning( parentWidget( ), tr( "Error" ), QString::fromUtf8( err.what( ) ) );
-  }
 
+  sortElements( elements, inputs, outputs, sortingKind );
+
+  if( elements.isEmpty( ) ) {
+    QMessageBox::warning( parentWidget( ), tr( "Error" ), tr( "Could not find any input for the simulation" ) );
+    return;
+  }
+  if( inputs.isEmpty( ) ) {
+    QMessageBox::warning( parentWidget( ), tr( "Error" ), tr( "Could not find any input for the simulation." ) );
+    return;
+  }
+  if( outputs.isEmpty( ) ) {
+    QMessageBox::warning( parentWidget( ), tr( "Error" ), tr( "Could not find any output for the simulation." ) );
+    return;
+  }
+  if( inputs.size( ) > 8 ) {
+    QMessageBox::warning( parentWidget( ), tr( "Error" ), tr( "The simulation is limited to 8 inputs." ) );
+    return;
+  }
   QVector< QLineSeries* > in_series;
   QVector< QLineSeries* > out_series;
 
@@ -167,7 +244,7 @@ void SimpleWaveform::showWaveform( ) {
     in_series.append( new QLineSeries( this ) );
     QString label = inputs[ in ]->getLabel( );
     if( label.isEmpty( ) ) {
-      label = inputs[ in ]->objectName( );
+      label = ElementFactory::translatedName( inputs[ in ]->elementType( ) );
     }
     in_series[ in ]->setName( label );
     oldValues[ in ] = inputs[ in ]->output( )->value( );
@@ -175,7 +252,7 @@ void SimpleWaveform::showWaveform( ) {
   for( int out = 0; out < outputs.size( ); ++out ) {
     QString label = outputs[ out ]->getLabel( );
     if( label.isEmpty( ) ) {
-      label = outputs[ out ]->objectName( );
+      label = ElementFactory::translatedName( outputs[ out ]->elementType( ) );
     }
     for( int port = 0; port < outputs[ out ]->inputSize( ); ++port ) {
       out_series.append( new QLineSeries( this ) );

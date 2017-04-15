@@ -6,6 +6,7 @@
 #include <QChart>
 #include <QChartView>
 #include <QDialog>
+#include <QTextStream>
 
 using namespace QtCharts;
 
@@ -17,15 +18,17 @@ class SimpleWaveform : public QDialog {
   Q_OBJECT
   enum class SortingKind { INCREASING, DECREASING, POSITION };
 
-  public:
+public:
   explicit SimpleWaveform( Editor *editor, QWidget *parent = 0 );
   ~SimpleWaveform( );
 
   void showWaveform( );
-  static void sortElements(QVector<GraphicElement *> elements,
+  static void sortElements( QVector< GraphicElement* > elements,
                             QVector< GraphicElement* > &inputs,
                             QVector< GraphicElement* > &outputs,
-                            SortingKind sorting);
+                            SortingKind sorting );
+
+  static bool saveToTxt(QTextStream &outStream , Editor * editor);
 private slots:
   void on_radioButton_Position_clicked( );
 
