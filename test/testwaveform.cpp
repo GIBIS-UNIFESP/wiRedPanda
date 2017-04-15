@@ -1,6 +1,8 @@
 #include "simplewaveform.h"
 #include "testwaveform.h"
 
+#include <QTemporaryFile>
+
 void TestWaveForm::init( ) {
   editor = new Editor( this );
 }
@@ -22,16 +24,15 @@ void TestWaveForm::testDisplay4Bits( ) {
     QFAIL( QString( "Could not load the file! Error: %1" ).arg( QString::fromStdString( e.what( ) ) ).toUtf8( ) );
   }
 
-  QString generatedFile = QDir::temp( ).absoluteFilePath( "display.txt" );
-  QFile outFile( generatedFile );
-  QVERIFY( outFile.open( QFile::WriteOnly ) );
+  QTemporaryFile outFile;
+  QVERIFY( outFile.open( ) );
   QTextStream outStream( &outFile );
   QVERIFY( SimpleWaveform::saveToTxt( outStream, editor ) );
 
   outFile.flush( );
   outFile.close( );
 
-  QFile firstFile( generatedFile );
+  QFile firstFile( outFile.fileName( ) );
   QFile secndFile( examplesDir.absoluteFilePath( "display-4bits.txt" ) );
 
   QVERIFY( firstFile.open( QFile::ReadOnly ) );
@@ -41,4 +42,6 @@ void TestWaveForm::testDisplay4Bits( ) {
 
   firstFile.close( );
   secndFile.close( );
+
+  outFile.remove( );
 }
