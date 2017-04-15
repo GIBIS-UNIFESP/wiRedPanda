@@ -1,20 +1,27 @@
+#include "common.h"
 #include "globalproperties.h"
 #include <QStringList>
-#include "common.h"
-double loadVersion(){
+
+
+double GlobalProperties::toDouble( QString txtVersion, bool *ok ) {
   double version;
-  QString txtVersion(APP_VERSION);
-  if( txtVersion.contains("-") ){
-    txtVersion = txtVersion.split("-").first();
+  if( txtVersion.contains( "-" ) ) {
+    txtVersion = txtVersion.split( "-" ).first( );
   }
-  txtVersion = txtVersion.split(".")[0] + "." + txtVersion.split(".")[1];
+  txtVersion = txtVersion.split( "." )[ 0 ] + "." + txtVersion.split( "." )[ 1 ];
+  version = txtVersion.toDouble( ok );
+  return( version );
+}
+
+double loadVersion( ) {
+  QString txtVersion( APP_VERSION );
   bool ok;
-  version = txtVersion.toDouble( &ok);
-  if( !ok || version == 0. ){
-    throw std::runtime_error(ERRORMSG("INVALID VERSION NUMBER!"));
+  double version = GlobalProperties::toDouble( txtVersion, &ok );
+  if( !ok || ( version == 0. ) ) {
+    throw std::runtime_error( ERRORMSG( "INVALID VERSION NUMBER!" ) );
   }
   return version;
 }
 
-QString GlobalProperties::currentFile = QString();
-double GlobalProperties::version = loadVersion();
+QString GlobalProperties::currentFile = QString( );
+double GlobalProperties::version = loadVersion( );
