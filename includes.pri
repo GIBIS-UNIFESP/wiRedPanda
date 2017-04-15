@@ -130,6 +130,9 @@ RESOURCES += \
     $$PWD/app/resources/memory/dark/memory_dark.qrc \
     $$PWD/app/resources/memory/light/memory_light.qrc
 
+RESOURCES += $$PWD/app/resources/translations.qrc
+
+TRANSLATIONS = $$PWD/app/resources/wpanda_en.ts  $$PWD/app/resources/wpanda_pt.ts
 
 #mac {
 #TEMPLATE = app
