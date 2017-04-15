@@ -23,9 +23,13 @@
 
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ), undoView( nullptr ) {
   COMMENT( "WIRED PANDA Version = " << APP_VERSION << " OR " << GlobalProperties::version, 0 );
+
   ui->setupUi( this );
   ThemeManager::globalMngr = new ThemeManager( this );
   editor = new Editor( this );
+
+  buildFullScreenDialog( );
+
   ui->graphicsView->setScene( editor->getScene( ) );
   /* Translation */
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
@@ -109,8 +113,6 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 
   ui->actionPlay->setChecked( true );
 
-  buildFullScreenDialog( );
-
   populateLeftMenu( );
 }
 
@@ -118,6 +120,12 @@ void MainWindow::setFastMode( bool fastModeEnabled ) {
   ui->graphicsView->setRenderHint( QPainter::Antialiasing, !fastModeEnabled );
   ui->graphicsView->setRenderHint( QPainter::HighQualityAntialiasing, !fastModeEnabled );
   ui->graphicsView->setRenderHint( QPainter::SmoothPixmapTransform, !fastModeEnabled );
+
+  fullscreenView->setRenderHint( QPainter::Antialiasing, !fastModeEnabled );
+  fullscreenView->setRenderHint( QPainter::HighQualityAntialiasing, !fastModeEnabled );
+  fullscreenView->setRenderHint( QPainter::SmoothPixmapTransform, !fastModeEnabled );
+
+
   ui->actionFast_Mode->setChecked( fastModeEnabled );
 }
 
@@ -837,7 +845,7 @@ void MainWindow::buildFullScreenDialog( ) {
 }
 
 void MainWindow::on_actionFullscreen_triggered( ) {
-  if( fullscreenDlg->isFullScreen( ) ) {
+  if( fullscreenDlg->isVisible( ) ) {
     fullscreenDlg->accept( );
   }
   else {
