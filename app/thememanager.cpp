@@ -85,7 +85,7 @@ void ThemeAttrs::setTheme( Theme thm ) {
   }
   qnePort_true_pen = QColor( Qt::black );
   qnePort_false_pen = QColor( Qt::black );
-  qnePort_invalid_pen = QColor( Qt::black );
+  qnePort_invalid_pen = QColor( Qt::red );
 
   qnePort_true_brush = qneConnection_true;
   qnePort_false_brush = qneConnection_false;
@@ -94,6 +94,6 @@ void ThemeAttrs::setTheme( Theme thm ) {
   qnePort_hoverPort = QColor( Qt::yellow );
 
   qnePort_output_pen = QColor( Qt::darkRed );
-  qnePort_output_brush = QColor( Qt::red );
+  qnePort_output_brush = QColor( "#f35369" );
 
 }
