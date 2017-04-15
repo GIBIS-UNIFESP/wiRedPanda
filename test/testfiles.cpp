@@ -48,28 +48,25 @@ void TestFiles::testFiles( ) {
         QVERIFY( conn->end( ) != nullptr );
       }
     }
-
     pandaFile.close( );
-    QString outFileName = QDir::temp().absoluteFilePath(f.fileName());
-
-    qDebug() << outFileName;
-    QFile outfile( outFileName );
-    if( outfile.open( QFile::WriteOnly ) ) {
+    QTemporaryFile outfile;
+    if( outfile.open() ) {
+      qDebug( ) << outfile.fileName();
       QDataStream ds( &outfile );
       try {
         editor->save( ds );
       }
       catch( std::runtime_error &e ) {
-        QFAIL(QString("Error saving project: " + outFileName).toUtf8());
+        QFAIL( QString( "Error saving project: " + outfile.fileName() ).toUtf8( ) );
       }
     }
     else {
-      QFAIL(QString("Could not open file in WriteOnly mode : " + outFileName).toUtf8());
+      QFAIL( QString( "Could not open file in WriteOnly mode : " + outfile.fileName() ).toUtf8( ) );
     }
     outfile.flush( );
     outfile.close( );
 
-    QFile pandaFile2(outFileName);
+    QFile pandaFile2( outfile.fileName() );
     QVERIFY( pandaFile2.open( QFile::ReadOnly ) );
     QDataStream ds2( &pandaFile2 );
     try {
@@ -78,6 +75,6 @@ void TestFiles::testFiles( ) {
     catch( std::runtime_error &e ) {
       QFAIL( QString( "Could not load the file! Error: %1" ).arg( QString::fromStdString( e.what( ) ) ).toUtf8( ) );
     }
-
+    outfile.remove( );
   }
 }
