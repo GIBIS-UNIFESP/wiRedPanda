@@ -744,7 +744,7 @@ void Editor::selectAll( ) {
 }
 
 void Editor::save( QDataStream &ds ) {
-  ds << QApplication::applicationName( ) + " " + QApplication::applicationVersion( ).split( "-" ).first( );
+  ds << QApplication::applicationName( ) + " " + QString::number( GlobalProperties::version );
   ds << scene->sceneRect( );
   SerializationFunctions::serialize( scene->items( ), ds );
 }
