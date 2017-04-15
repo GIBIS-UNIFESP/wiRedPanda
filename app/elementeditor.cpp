@@ -394,10 +394,7 @@ bool ElementEditor::eventFilter( QObject *obj, QEvent *event ) {
     bool move_back = keyEvent->key( ) == Qt::Key_Backtab;
     if( move_back || move_fwd ) {
       GraphicElement *elm = m_elements.first( );
-      QGraphicsView *graphicsView = scene->views( ).first( );
-      QRectF visibleRect = graphicsView->mapToScene( graphicsView->viewport( )->geometry( ) ).boundingRect( );
-
-      QVector< GraphicElement* > elms = scene->getElements( visibleRect );
+      QVector< GraphicElement* > elms = scene->getVisibleElements( );
       std::stable_sort( elms.begin( ), elms.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
         return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
       } );
@@ -406,20 +403,30 @@ bool ElementEditor::eventFilter( QObject *obj, QEvent *event ) {
       } );
 
       apply( );
-      int pos = elms.indexOf( elm );
-      do {
-        scene->clearSelection( );
-        if( move_fwd ) {
-          pos = ( pos + 1 ) % elms.size( );
-        }
-        else {
-          pos = ( elms.size( ) + pos - 1 ) % elms.size( );
-        }
+      int elmPos = elms.indexOf( elm );
+      qDebug( ) << "Pos = " << elmPos << " from " << elms.size( );
+      int step = 1;
+      if( move_back ) {
+        step = -1;
+      }
+      int pos = ( elms.size( ) + elmPos + step ) % elms.size( );
+      for( ; pos != elmPos;
+           pos = ( ( elms.size( ) + pos + step ) % elms.size( ) ) ) {
+        qDebug( ) << "Pos = " << pos;
         elm = elms[ pos ];
-        elm->setSelected( true );
-        elm->ensureVisible( );
-        wgt->setFocus( );
-      } while( !wgt->isEnabled( ) );
+
+        setCurrentElements( QVector< GraphicElement* >( { elm } ) );
+        if( wgt->isEnabled( ) ) {
+          break;
+        }
+      }
+      scene->clearSelection( );
+      if( !wgt->isEnabled( ) ) {
+        elm = elms[ elmPos ];
+      }
+      elm->setSelected( true );
+      elm->ensureVisible( );
+      wgt->setFocus( );
       event->accept( );
       return( true );
     }

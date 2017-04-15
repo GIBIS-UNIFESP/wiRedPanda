@@ -1,6 +1,7 @@
 #include "scene.h"
 
 #include <QColor>
+#include <QGraphicsView>
 #include <QPainter>
 #include <qneconnection.h>
 Scene::Scene( QObject *parent ) : QGraphicsScene( parent ) {
@@ -42,6 +43,16 @@ void Scene::setDots( const QPen &dots ) {
   m_dots = dots;
 }
 
+
+QVector <GraphicElement *> Scene::getVisibleElements( ) {
+  QGraphicsView *graphicsView = views( ).first( );
+  if(!graphicsView->isActiveWindow()){
+    graphicsView = views().last();
+  }
+  QRectF visibleRect = graphicsView->mapToScene( graphicsView->viewport( )->geometry( ) ).boundingRect( );
+
+  return getElements( visibleRect );
+}
 
 QVector< GraphicElement* > Scene::getElements( ) {
   return( getElements( sceneRect( ) ) );

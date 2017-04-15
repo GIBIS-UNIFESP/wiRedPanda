@@ -165,6 +165,7 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
     }
     outStream << "\n";
   }
+  outStream << "\n";
   int counter = 0;
   for( int out = 0; out < outputs.size( ); ++out ) {
     QString label = outputs[ out ]->getLabel( );
