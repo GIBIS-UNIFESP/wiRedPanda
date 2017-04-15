@@ -12,7 +12,7 @@ Theme ThemeManager::theme( ) const {
 }
 
 void ThemeManager::setTheme( const Theme &theme ) {
-  attrs.setTheme(theme);
+  attrs.setTheme( theme );
   if( m_theme != theme ) {
     m_theme = theme;
     QSettings settings( QSettings::IniFormat, QSettings::UserScope,
@@ -48,7 +48,6 @@ ThemeAttrs::ThemeAttrs( ) {
 }
 
 void ThemeAttrs::setTheme( Theme thm ) {
-
   switch( thm ) {
       case Theme::Panda_Light:
       scene_bgBrush = QColor( "#ffffe6" );
@@ -56,7 +55,7 @@ void ThemeAttrs::setTheme( Theme thm ) {
       selectionBrush = QColor( 175, 0, 0, 80 );
       selectionPen = QColor( 175, 0, 0, 255 );
 
-      graphicElement_labelColor = QColor(Qt::black);
+      graphicElement_labelColor = QColor( Qt::black );
 
       qneConnection_selected = selectionPen;
 
@@ -65,37 +64,36 @@ void ThemeAttrs::setTheme( Theme thm ) {
       qneConnection_invalid = QColor( Qt::red );
 
 
-
       break;
       case Theme::Panda_Dark:
       scene_bgBrush = QColor( "#404552" );
       scene_bgDots = QColor( Qt::black );
-      selectionBrush = QColor( 115, 255, 230, 150);
-      selectionPen = QColor( 65, 255, 220, 255 );
+      selectionBrush = QColor( 230, 255, 85, 150 );
+      selectionPen = QColor( 230, 255, 85, 255 );
 
-      graphicElement_labelColor = QColor(Qt::white);
+      graphicElement_labelColor = QColor( Qt::white );
 
 
       qneConnection_selected = selectionPen;
 
-      qneConnection_true = QColor( 250,85,255,255 );
-      qneConnection_false = QColor( 162,84,194,255 );
+      qneConnection_true = QColor( 115, 255, 220, 255 );
+      qneConnection_false = QColor( 65, 150, 130, 255 );
+
       qneConnection_invalid = QColor( Qt::red );
 
       break;
   }
-
   qnePort_true_pen = QColor( Qt::black );
   qnePort_false_pen = QColor( Qt::black );
   qnePort_invalid_pen = QColor( Qt::black );
 
   qnePort_true_brush = qneConnection_true;
-  qnePort_false_brush = QColor( 0x333333 );
+  qnePort_false_brush = qneConnection_false;
   qnePort_invalid_brush = qneConnection_invalid;
 
   qnePort_hoverPort = QColor( Qt::yellow );
 
   qnePort_output_pen = QColor( Qt::darkRed );
-  qnePort_output_brush = QColor(  Qt::red );
+  qnePort_output_brush = QColor( Qt::red );
 
 }
