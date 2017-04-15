@@ -15,6 +15,7 @@
 #include <QGraphicsScene>
 #include <QMainWindow>
 #include <QSpacerItem>
+#include <QTemporaryFile>
 #include <QTranslator>
 #include <QUndoView>
 
@@ -35,7 +36,7 @@ public:
   QFileInfo getCurrentFile( ) const;
   void setCurrentFile( const QFileInfo &value );
   bool ExportToArduino( QString fname );
-  bool ExportToWaveFormFile(QString fname);
+  bool ExportToWaveFormFile( QString fname );
 
   bool open( const QString &fname );
   void createUndoView( );
@@ -116,6 +117,8 @@ private slots:
 
   void on_actionFullscreen_triggered( );
 
+  void autoSave();
+
 private:
   Ui::MainWindow *ui;
   Editor *editor;
@@ -123,6 +126,8 @@ private:
   QDir defaultDirectory;
   QUndoView *undoView;
   Label *firstResult;
+
+  QTemporaryFile autosaveFile;
 
   QAction *undoAction;
   QAction *redoAction;
