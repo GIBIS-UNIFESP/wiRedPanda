@@ -1,5 +1,6 @@
 #include "box.h"
 #include "editor.h"
+#include "globalproperties.h"
 #include "graphicelement.h"
 #include "qneconnection.h"
 #include "serializationfunctions.h"
@@ -67,7 +68,8 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor,
       }
     }
     else {
-      throw( std::runtime_error( ERRORMSG( "Invalid element type. Data is possibly corrupted." ) ) );
+      qDebug() << type;
+      throw( std::runtime_error( ERRORMSG( "Invalid type. Data is possibly corrupted." ) ) );
     }
   }
   return( itemList );
@@ -81,7 +83,11 @@ QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStrea
   if( !str.startsWith( QApplication::applicationName( ) ) ) {
     throw( std::runtime_error( ERRORMSG( "Invalid file format." ) ) );
   }
-  double version = str.split( " " ).at( 1 ).toDouble( );
+  bool ok;
+  double version = GlobalProperties::toDouble( str.split( " " ).at( 1 ),&ok );
+  if(!ok){
+    throw( std::runtime_error( ERRORMSG( "Invalid version number." ) ) );
+  }
 
   QRectF rect;
   if( version >= 1.4 ) {
