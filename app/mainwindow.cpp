@@ -11,9 +11,11 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QRectF>
+#include <QSaveFile>
 #include <QSettings>
 #include <QShortcut>
 #include <QStyleFactory>
+#include <QTemporaryFile>
 #include <QtPrintSupport/QPrinter>
 #include <arduino/codegenerator.h>
 #include <cmath>
@@ -23,7 +25,6 @@
 
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ), undoView( nullptr ) {
   COMMENT( "WIRED PANDA Version = " << APP_VERSION << " OR " << GlobalProperties::version, 0 );
-
   ui->setupUi( this );
   ThemeManager::globalMngr = new ThemeManager( this );
   editor = new Editor( this );
@@ -95,6 +96,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 
   connect( ui->graphicsView->gvzoom( ), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged );
   connect( editor, &Editor::scroll, this, &MainWindow::scrollView );
+  connect( editor, &Editor::circuitHasChanged, this, &MainWindow::autoSave );
 
   rfController = new RecentFilesController( "recentFileList", this );
   rboxController = new RecentFilesController( "recentBoxes", this );
@@ -163,7 +165,7 @@ bool MainWindow::save( QString fname ) {
   if( !fname.endsWith( ".panda" ) ) {
     fname.append( ".panda" );
   }
-  QFile fl( fname );
+  QSaveFile fl( fname );
   if( fl.open( QFile::WriteOnly ) ) {
     QDataStream ds( &fl );
     try {
@@ -174,17 +176,19 @@ bool MainWindow::save( QString fname ) {
       return( false );
     }
   }
+  if( fl.commit( ) ) {
+    setCurrentFile( QFileInfo( fname ) );
+    ui->statusBar->showMessage( tr( "Saved file sucessfully." ), 2000 );
+    editor->getUndoStack( )->setClean( );
+    if( autosaveFile.isOpen( ) ) {
+      autosaveFile.remove( );
+    }
+    return( true );
+  }
   else {
-    std::cerr << tr( "Could not open file in WriteOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::cerr << QString( tr( "Could not save file: " ) + fl.errorString( ) + "." ).toStdString( ) << std::endl;
     return( false );
   }
-  fl.flush( );
-  fl.close( );
-  setCurrentFile( QFileInfo( fname ) );
-  ui->statusBar->showMessage( tr( "Saved file sucessfully." ), 2000 );
-  editor->getUndoStack( )->setClean( );
-  return( true );
 }
 
 void MainWindow::show( ) {
@@ -337,6 +341,7 @@ void MainWindow::closeEvent( QCloseEvent *e ) {
   else {
     e->ignore( );
   }
+  autosaveFile.remove( );
 }
 
 void MainWindow::on_actionSave_As_triggered( ) {
@@ -363,6 +368,13 @@ QFileInfo MainWindow::getCurrentFile( ) const {
 }
 
 void MainWindow::setCurrentFile( const QFileInfo &value ) {
+  autosaveFile.remove( );
+  QDir autosavePath( QDir::temp( ) );
+  if( value.exists( ) ) {
+    autosavePath = value.dir( );
+  }
+  qDebug( ) << "AutosavePath = " << autosavePath.absolutePath( );
+  autosaveFile.setFileTemplate( autosavePath.absoluteFilePath( value.baseName( ) + "XXXXXX.panda" ) );
   qDebug( ) << "Setting current file to: " << value.absoluteFilePath( );
   currentFile = value;
   if( value.fileName( ).isEmpty( ) ) {
@@ -851,5 +863,24 @@ void MainWindow::on_actionFullscreen_triggered( ) {
   else {
     fullscreenDlg->showFullScreen( );
     fullscreenDlg->exec( );
+  }
+}
+
+void MainWindow::autoSave( ) {
+  autosaveFile.remove( );
+  if( !editor->getUndoStack( )->isClean( ) ) {
+    if( autosaveFile.open( ) ) {
+      QDataStream ds( &autosaveFile );
+      qDebug( ) << "File saved to " << autosaveFile.fileName( );
+      try {
+        editor->save( ds );
+      }
+      catch( std::runtime_error &e ) {
+        std::cerr << tr( "Error autosaving project: " ).toStdString( ) << e.what( ) << std::endl;
+        autosaveFile.close();
+        autosaveFile.remove( );
+      }
+      autosaveFile.close();
+    }
   }
 }
