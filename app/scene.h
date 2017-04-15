@@ -21,6 +21,7 @@ public:
 
   void setDots( const QPen &dots );
 
+  QVector< GraphicElement* > getVisibleElements( );
 protected:
   void drawBackground( QPainter *painter, const QRectF &rect );
   int m_gridSize;

@@ -868,7 +868,7 @@ void MainWindow::on_actionFullscreen_triggered( ) {
 
 void MainWindow::autoSave( ) {
   autosaveFile.remove( );
-  if( !editor->getUndoStack( )->isClean( ) ) {
+  if( !editor->getUndoStack( )->isClean( ) && ( editor->getUndoStack( )->count() % 5 == 0 ) ) {
     if( autosaveFile.open( ) ) {
       QDataStream ds( &autosaveFile );
       qDebug( ) << "File saved to " << autosaveFile.fileName( );
@@ -877,10 +877,10 @@ void MainWindow::autoSave( ) {
       }
       catch( std::runtime_error &e ) {
         std::cerr << tr( "Error autosaving project: " ).toStdString( ) << e.what( ) << std::endl;
-        autosaveFile.close();
+        autosaveFile.close( );
         autosaveFile.remove( );
       }
-      autosaveFile.close();
+      autosaveFile.close( );
     }
   }
 }
