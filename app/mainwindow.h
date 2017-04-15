@@ -35,6 +35,7 @@ public:
   QFileInfo getCurrentFile( ) const;
   void setCurrentFile( const QFileInfo &value );
   bool ExportToArduino( QString fname );
+  bool ExportToWaveFormFile(QString fname);
 
   bool open( const QString &fname );
   void createUndoView( );

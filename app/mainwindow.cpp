@@ -535,6 +535,34 @@ bool MainWindow::ExportToArduino( QString fname ) {
   return( true );
 }
 
+bool MainWindow::ExportToWaveFormFile( QString fname ) {
+  try {
+    if( fname.isEmpty( ) ) {
+      return( false );
+    }
+    QFile outFile( fname );
+    if( !outFile.open( QFile::WriteOnly ) ) {
+      std::cerr << ERRORMSG( tr( "Could not open %1 for write." ).arg( fname ).toStdString( ) ) << std::endl;
+      return( false );
+    }
+    QTextStream outStream( &outFile );
+    if( SimpleWaveform::saveToTxt( outStream, editor ) ) {
+      std::cout << "Waveform file saved to " << fname.toStdString( ) << std::endl;
+    }
+    else {
+      std::cerr << ERRORMSG( tr( "Could not generate waveform file for %1." ).arg(
+                               currentFile.fileName( ) ).toStdString( ) ) << std::endl;
+    }
+  }
+  catch( std::runtime_error &e ) {
+    QMessageBox::warning( this, tr( "Error" ), tr(
+                            "<strong>Error while exporting to waveform file:</strong><br>%1" ).arg( e.what( ) ) );
+    return( false );
+  }
+
+  return( true );
+}
+
 bool MainWindow::on_actionExport_to_Arduino_triggered( ) {
 
   QString fname = QFileDialog::getSaveFileName( this, tr( "Generate Arduino Code" ),
