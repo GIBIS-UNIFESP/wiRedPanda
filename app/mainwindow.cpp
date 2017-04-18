@@ -867,8 +867,9 @@ void MainWindow::on_actionFullscreen_triggered( ) {
 }
 
 void MainWindow::autoSave( ) {
-  autosaveFile.remove( );
-  if( !editor->getUndoStack( )->isClean( ) && ( editor->getUndoStack( )->count() % 5 == 0 ) ) {
+  if( editor->getUndoStack( )->isClean( ) ) {
+      autosaveFile.remove( );
+  }else{
     if( autosaveFile.open( ) ) {
       QDataStream ds( &autosaveFile );
       qDebug( ) << "File saved to " << autosaveFile.fileName( );
