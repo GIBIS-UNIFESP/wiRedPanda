@@ -38,7 +38,7 @@ export LD_LIBRARY_PATH=$QT_PATH/lib:$LD_LIBRARY_PATH
 WPANDA_BIN="$BUILDDIR/wpanda";
 
 #rm -rf $BUILDDIR
-mkdir -p $BUILDDIR 
+mkdir -p $BUILDDIR
 pushd $BUILDDIR
 
 qmake -r config+=release ../app;
@@ -154,8 +154,8 @@ echo "GENERATING PORTABLE PACKAGE"
 mkdir -p $DATADIR
 
 cp ${DEBPKGFILES}/usr/bin/wpanda $DATADIR
-cp ${CURRENTDIR}/portable_files/wpanda.svg       ${DATADIR}
 cp ${CURRENTDIR}/portable_files/install.sh       ${DATADIR}
+cp ${PROJECTPATH}/app/resources/wpanda.svg       ${DATADIR}
 cp ${PROJECTPATH}/app/resources/wpanda-mime.xml  ${DATADIR}
 cp ${CURRENTDIR}/portable_files/shared_qt.sh     ${DATADIR}/wpanda.sh
 cp ${CURRENTDIR}/portable_files/wpanda.desktop ${PTBDIR}/wpanda.desktop
