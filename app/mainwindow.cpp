@@ -102,7 +102,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   rboxController = new RecentFilesController( "recentBoxes", this );
 
   QShortcut *shortcut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
-  connect( shortcut, SIGNAL(activated()), ui->lineEdit, SLOT(setFocus()) );
+  connect( shortcut, SIGNAL( activated( ) ), ui->lineEdit, SLOT( setFocus( ) ) );
   ui->graphicsView->setCacheMode( QGraphicsView::CacheBackground );
   firstResult = nullptr;
   updateRecentBoxes( );
@@ -256,7 +256,7 @@ bool MainWindow::open( const QString &fname ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::endl;
     return( false );
   }
   fl.close( );
@@ -436,7 +436,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::endl;
     return;
   }
   fl.close( );
@@ -597,7 +597,7 @@ void MainWindow::on_actionZoom_in_triggered( ) {
 /*  QPointF scenePos = editor->getMousePos(); */
 
 /*  QPointF screenCtr = ui->graphicsView->rect().center(); */
-
+  ui->graphicsView->gvzoom( )->zoomIn( );
 }
 
 void MainWindow::on_actionZoom_out_triggered( ) {
@@ -868,8 +868,9 @@ void MainWindow::on_actionFullscreen_triggered( ) {
 
 void MainWindow::autoSave( ) {
   if( editor->getUndoStack( )->isClean( ) ) {
-      autosaveFile.remove( );
-  }else{
+    autosaveFile.remove( );
+  }
+  else {
     if( autosaveFile.open( ) ) {
       QDataStream ds( &autosaveFile );
       qDebug( ) << "File saved to " << autosaveFile.fileName( );
