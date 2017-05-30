@@ -20,4 +20,6 @@ SOURCES += main.cpp
 
 DISTFILES += resources/postinst
 
+RESOURCES +=
+
 

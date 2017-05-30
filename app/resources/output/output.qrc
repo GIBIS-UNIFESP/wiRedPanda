@@ -37,5 +37,15 @@
         <file>16colors/TealLedOn.png</file>
         <file>16colors/WhiteLedOn.png</file>
         <file>16colors/YellowLedOn.png</file>
+        <file>BuzzerOff.png</file>
+        <file>BuzzerOn.png</file>
+        <file>audio/A7.wav</file>
+        <file>audio/B7.wav</file>
+        <file>audio/C6.wav</file>
+        <file>audio/D6.wav</file>
+        <file>audio/E6.wav</file>
+        <file>audio/F6.wav</file>
+        <file>audio/G6.wav</file>
+        <file>audio/C7.wav</file>
     </qresource>
 </RCC>
