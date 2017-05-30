@@ -789,7 +789,7 @@ void MainWindow::populateMenu( QSpacerItem *spacer, QString names, QLayout *layo
 
 void MainWindow::populateLeftMenu( ) {
   populateMenu( ui->verticalSpacer_InOut,
-                "VCC,GND,BUTTON,SWITCH,CLOCK,LED,DISPLAY",
+                "VCC,GND,BUTTON,SWITCH,CLOCK,LED,DISPLAY,BUZZER",
                 ui->scrollAreaWidgetContents_InOut->layout( ) );
   populateMenu( ui->verticalSpacer_Gates,
                 "AND,OR,NOT,NAND,NOR,XOR,XNOR,MUX,DEMUX,NODE",
@@ -868,8 +868,9 @@ void MainWindow::on_actionFullscreen_triggered( ) {
 
 void MainWindow::autoSave( ) {
   if( editor->getUndoStack( )->isClean( ) ) {
-      autosaveFile.remove( );
-  }else{
+    autosaveFile.remove( );
+  }
+  else {
     if( autosaveFile.open( ) ) {
       QDataStream ds( &autosaveFile );
       qDebug( ) << "File saved to " << autosaveFile.fileName( );
@@ -884,4 +885,8 @@ void MainWindow::autoSave( ) {
       autosaveFile.close( );
     }
   }
+}
+
+void MainWindow::on_actionMute_triggered( ) {
+  editor->mute( ui->actionMute->isChecked( ) );
 }

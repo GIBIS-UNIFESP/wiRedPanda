@@ -117,7 +117,9 @@ private slots:
 
   void on_actionFullscreen_triggered( );
 
-  void autoSave();
+  void autoSave( );
+
+  void on_actionMute_triggered( );
 
 private:
   Ui::MainWindow *ui;
