@@ -102,8 +102,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>100</width>
-                   <height>30</height>
+                   <width>208</width>
+                   <height>239</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -186,8 +186,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>100</width>
-                   <height>30</height>
+                   <width>208</width>
+                   <height>239</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -228,8 +228,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>100</width>
-                   <height>30</height>
+                   <width>208</width>
+                   <height>239</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -524,6 +524,7 @@
     </property>
     <addaction name="actionPlay"/>
     <addaction name="actionWaveform"/>
+    <addaction name="actionMute"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -781,6 +782,9 @@
    <property name="text">
     <string>Re&amp;load File</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+F5</string>
+   </property>
   </action>
   <action name="actionExport_to_Arduino">
    <property name="icon">
@@ -789,6 +793,9 @@
    </property>
    <property name="text">
     <string>E&amp;xport to Arduino</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+I</string>
    </property>
   </action>
   <action name="actionReset_Zoom">
@@ -810,6 +817,9 @@
    </property>
    <property name="text">
     <string>Export to &amp;PDF</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+P</string>
    </property>
   </action>
   <action name="actionEnglish">
@@ -932,6 +942,9 @@
    <property name="text">
     <string>Export to &amp;Image</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
   </action>
   <action name="actionFlip_horizontally">
    <property name="text">
@@ -955,6 +968,17 @@
    </property>
    <property name="shortcut">
     <string>F11</string>
+   </property>
+  </action>
+  <action name="actionMute">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Mute</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
    </property>
   </action>
  </widget>
@@ -982,9 +1006,9 @@
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/basic/basic.qrc"/>
   <include location="resources/resources.qrc"/>
   <include location="resources/input/input.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/resources.qrc"/>
   <include location="resources/basic/basic.qrc"/>

@@ -43,6 +43,8 @@ public slots:
   void pasteAction( );
   void deleteAction( );
   void updateTheme( );
+
+  void mute( bool _mute = true );
 private:
   QUndoStack *undoStack;
   Scene *scene;

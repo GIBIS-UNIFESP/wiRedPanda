@@ -11,7 +11,8 @@
 
 enum class ElementType {
   UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND, DISPLAY,
-  DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, TLATCH, BOX, NODE, MUX, DEMUX
+  DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, TLATCH, BOX, NODE, MUX, DEMUX,
+  BUZZER
 };
 
 enum class ElementGroup {
@@ -101,7 +102,7 @@ public:
   virtual float getFrequency( );
   virtual void setFrequency( float freq );
 
-  void setPixmap(const QString & pixmapName, QRect size = QRect( ) );
+  void setPixmap( const QString &pixmapName, QRect size = QRect( ) );
 
   bool rotatable( ) const;
 
@@ -113,8 +114,14 @@ public:
 
   bool hasTrigger( ) const;
 
+  bool hasAudio( ) const;
+
+
   virtual void setColor( QString getColor );
   virtual QString getColor( );
+
+  virtual void setAudio( QString audio );
+  virtual QString getAudio( );
 /*
  *  bool beingVisited( ) const;
  *  void setBeingVisited( bool beingVisited );
@@ -152,6 +159,7 @@ protected:
   void setHasTrigger( bool hasTrigger );
   void setMinInputSz( int minInputSz );
   void setMinOutputSz( int minOutputSz );
+  void setHasAudio( bool hasAudio );
   void setOutputsOnTop( bool outputsOnTop );
   void setMaxOutputSz( int maxOutputSz );
   void setMaxInputSz( int maxInputSz );
@@ -174,6 +182,7 @@ private:
   bool m_hasFrequency;
   bool m_hasColors;
   bool m_hasTrigger;
+  bool m_hasAudio;
   bool m_disabled;
   QString m_labelText;
   QKeySequence m_trigger;
