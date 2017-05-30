@@ -21,7 +21,7 @@ public slots:
   void update( );
   void stop( );
   void start( );
-  void reSortElms();
+  void reSortElms( );
 
 private:
   Scene *scene;

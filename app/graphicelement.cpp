@@ -82,19 +82,18 @@ void GraphicElement::enable( ) {
 
 void GraphicElement::setPixmap( const QString &pixmapName, QRect size ) {
   QString pixmapPath = pixmapName;
-  if(ThemeManager::globalMngr){
-    if(pixmapPath.contains("memory")){
-      switch (ThemeManager::globalMngr->theme()) {
-      case Theme::Panda_Light:
-        pixmapPath.replace("memory", "memory/light");
-        break;
-      case Theme::Panda_Dark:
-        pixmapPath.replace("memory", "memory/dark");
-        break;
+  if( ThemeManager::globalMngr ) {
+    if( pixmapPath.contains( "memory" ) ) {
+      switch( ThemeManager::globalMngr->theme( ) ) {
+          case Theme::Panda_Light:
+          pixmapPath.replace( "memory", "memory/light" );
+          break;
+          case Theme::Panda_Dark:
+          pixmapPath.replace( "memory", "memory/dark" );
+          break;
       }
     }
   }
-
   if( pixmapPath != currentPixmapName ) {
     if( !loadedPixmaps.contains( pixmapPath ) ) {
       loadedPixmaps[ pixmapPath ] = QPixmap::fromImage( QImage( pixmapPath ) ).copy( size );
@@ -103,7 +102,6 @@ void GraphicElement::setPixmap( const QString &pixmapName, QRect size ) {
     setTransformOriginPoint( pixmap->rect( ).center( ) );
     update( boundingRect( ) );
   }
-
   currentPixmapName = pixmapName;
 }
 
@@ -394,6 +392,14 @@ QVariant GraphicElement::itemChange( QGraphicsItem::GraphicsItemChange change, c
   return( QGraphicsItem::itemChange( change, value ) );
 }
 
+bool GraphicElement::hasAudio( ) const {
+  return( m_hasAudio );
+}
+
+void GraphicElement::setHasAudio( bool hasaudio ) {
+  m_hasAudio = hasaudio;
+}
+
 QKeySequence GraphicElement::getTrigger( ) const {
   return( m_trigger );
 }
@@ -438,7 +444,7 @@ void GraphicElement::updateTheme( ) {
     }
     updateThemeLocal( );
 
-    setPixmap(currentPixmapName);
+    setPixmap( currentPixmapName );
     update( );
   }
 }
@@ -484,6 +490,14 @@ void GraphicElement::setColor( QString ) {
 }
 
 QString GraphicElement::getColor( ) {
+  return( QString( ) );
+}
+
+void GraphicElement::setAudio( QString ) {
+
+}
+
+QString GraphicElement::getAudio( ) {
   return( QString( ) );
 }
 

@@ -115,7 +115,6 @@ void Led::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double vers
     QString clr;
     ds >> clr;
     setColor( clr );
-
   }
 }
 

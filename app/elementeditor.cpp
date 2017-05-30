@@ -14,6 +14,7 @@ ElementEditor::ElementEditor( QWidget *parent ) : QWidget( parent ), ui( new Ui:
   _manyIS = tr( "<Many values>" );
   _manyFreq = tr( "<Many values>" );
   _manyTriggers = tr( "<Many triggers>" );
+  _manyAudios = tr( "<Many sounds>" );
 
   ui->setupUi( this );
   setEnabled( false );
@@ -26,6 +27,7 @@ ElementEditor::ElementEditor( QWidget *parent ) : QWidget( parent ), ui( new Ui:
   ui->comboBoxColor->installEventFilter( this );
   ui->comboBoxInputSz->installEventFilter( this );
   ui->doubleSpinBoxFrequency->installEventFilter( this );
+  ui->comboBoxAudio->installEventFilter( this );
 }
 
 ElementEditor::~ElementEditor( ) {
@@ -193,25 +195,27 @@ void ElementEditor::retranslateUi( ) {
 
 void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms ) {
   m_elements = elms;
-  hasLabel = hasColors = hasFrequency = canChangeInputSize = hasTrigger = false;
-  hasRotation = hasSameLabel = hasSameColors = hasSameFrequency = false;
+  hasLabel = hasColors = hasFrequency = canChangeInputSize = hasTrigger = hasAudio = false;
+  hasRotation = hasSameLabel = hasSameColors = hasSameFrequency = hasSameAudio = false;
   hasSameInputSize = hasSameTrigger = canMorph = hasSameType = hasAnyProperty = false;
   hasElements = false;
   if( !elms.isEmpty( ) ) {
     hasAnyProperty = false;
-    hasLabel = hasColors = hasFrequency = canChangeInputSize = hasTrigger = true;
+    hasLabel = hasColors = hasAudio = hasFrequency = canChangeInputSize = hasTrigger = true;
     hasRotation = true;
     setVisible( true );
     setEnabled( false );
     int minimum = 0, maximum = 100000000;
     hasSameLabel = hasSameColors = hasSameFrequency = true;
     hasSameInputSize = hasSameTrigger = canMorph = true;
+    hasSameAudio = true;
     hasSameType = true;
     hasElements = true;
     GraphicElement *firstElement = m_elements.front( );
     for( GraphicElement *elm : m_elements ) {
       hasLabel &= elm->hasLabel( );
       hasColors &= elm->hasColors( );
+      hasAudio &= elm->hasAudio( );
       hasFrequency &= elm->hasFrequency( );
       minimum = std::max( minimum, elm->minInputSz( ) );
       maximum = std::min( maximum, elm->maxInputSz( ) );
@@ -224,12 +228,13 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
       hasSameInputSize &= elm->inputSize( ) == firstElement->inputSize( );
       hasSameTrigger &= elm->getTrigger( ) == firstElement->getTrigger( );
       hasSameType &= elm->elementType( ) == firstElement->elementType( );
+      hasSameAudio &= elm->getAudio( ) == firstElement->getAudio( );
       canMorph &= elm->elementGroup( ) == firstElement->elementGroup( );
       canMorph &= elm->inputSize( ) == firstElement->inputSize( );
       canMorph &= elm->outputSize( ) == firstElement->outputSize( );
     }
     canChangeInputSize = ( minimum < maximum );
-    hasAnyProperty |= hasLabel | hasColors | hasFrequency;
+    hasAnyProperty |= hasLabel | hasColors | hasFrequency | hasAudio;
     hasAnyProperty |= canChangeInputSize | hasTrigger;
 
 
@@ -259,6 +264,22 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
       }
       else {
         ui->comboBoxColor->setCurrentText( _manyColors );
+      }
+    }
+    /* Sound */
+    ui->label_audio->setVisible( hasAudio );
+    ui->comboBoxAudio->setVisible( hasAudio );
+    ui->comboBoxAudio->setEnabled( hasAudio );
+    if( ui->comboBoxAudio->findText( _manyAudios ) == -1 ) {
+      ui->comboBoxAudio->addItem( _manyAudios );
+    }
+    if( hasAudio ) {
+      if( hasSameAudio ) {
+        ui->comboBoxAudio->removeItem( ui->comboBoxAudio->findText( _manyAudios ) );
+        ui->comboBoxAudio->setCurrentText( firstElement->getAudio( ) );
+      }
+      else {
+        ui->comboBoxAudio->setCurrentText( _manyAudios );
       }
     }
     /* Frequency */
@@ -336,6 +357,9 @@ void ElementEditor::apply( ) {
     if( elm->hasColors( ) && ( ui->comboBoxColor->currentData( ).isValid( ) ) ) {
       elm->setColor( ui->comboBoxColor->currentData( ).toString( ) );
     }
+    if( elm->hasAudio( ) && ( ui->comboBoxAudio->currentText( ) != _manyAudios ) ) {
+      elm->setAudio( ui->comboBoxAudio->currentText( ) );
+    }
     if( elm->hasLabel( ) && ( ui->lineEditElementLabel->text( ) != _manyLabels ) ) {
       elm->setLabel( ui->lineEditElementLabel->text( ) );
     }
@@ -359,8 +383,7 @@ void ElementEditor::on_lineEditElementLabel_editingFinished( ) {
   apply( );
 }
 
-void ElementEditor::on_comboBoxInputSz_currentIndexChanged( int index ) {
-  Q_UNUSED( index );
+void ElementEditor::on_comboBoxInputSz_currentIndexChanged( int ) {
   if( ( m_elements.isEmpty( ) ) || ( isEnabled( ) == false ) ) {
     return;
   }
@@ -373,8 +396,7 @@ void ElementEditor::on_doubleSpinBoxFrequency_editingFinished( ) {
   apply( );
 }
 
-void ElementEditor::on_comboBoxColor_currentIndexChanged( int index ) {
-  Q_UNUSED( index );
+void ElementEditor::on_comboBoxColor_currentIndexChanged( int ) {
   apply( );
 }
 
@@ -385,6 +407,7 @@ void ElementEditor::on_lineEditTrigger_textChanged( const QString &cmd ) {
 void ElementEditor::on_lineEditTrigger_editingFinished( ) {
   apply( );
 }
+
 
 bool ElementEditor::eventFilter( QObject *obj, QEvent *event ) {
   QWidget *wgt = dynamic_cast< QWidget* >( obj );
@@ -433,4 +456,8 @@ bool ElementEditor::eventFilter( QObject *obj, QEvent *event ) {
   }
   /* pass the event on to the parent class */
   return( QWidget::eventFilter( obj, event ) );
+}
+
+void ElementEditor::on_comboBoxAudio_currentIndexChanged( int index ) {
+  apply( );
 }
