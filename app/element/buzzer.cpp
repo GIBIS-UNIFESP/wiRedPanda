@@ -10,17 +10,12 @@ Buzzer::Buzzer( QGraphicsItem *parent ) : GraphicElement( 1, 1, 0, 0, parent ) {
   updatePorts( );
   setHasLabel( true );
   setPortName( "Buzzer" );
-  m_audio = nullptr;
-  m_muted = false;
   setAudio( "C6" );
   play = 0;
 }
 
 Buzzer::~Buzzer( ) {
-  if( m_audio ) {
-    m_audio->stop( );
-    delete m_audio;
-  }
+
 }
 
 void Buzzer::updateLogic( ) {
@@ -42,15 +37,9 @@ void Buzzer::updateLogic( ) {
 }
 
 void Buzzer::setAudio( QString note ) {
-  if( m_audio && ( m_note != note ) ) {
-    delete m_audio;
-    m_audio = nullptr;
-  }
+  m_audio.setSource( QUrl::fromLocalFile( QString( ":output/audio/%1.wav" ).arg( note ) ) );
+  m_audio.setVolume( 0.35 );
   m_note = note;
-  if( m_audio == nullptr ) {
-    m_audio = new QSound( QString( ":output/audio/%1.wav" ).arg( note ) );
-    m_audio->setLoops( -1 );
-  }
 }
 
 QString Buzzer::getAudio( ) {
@@ -58,27 +47,23 @@ QString Buzzer::getAudio( ) {
 }
 
 void Buzzer::mute( bool _mute ) {
-  if( m_audio && _mute ) {
-    m_audio->stop( );
-
-  }
-  m_muted = _mute;
+  m_audio.setMuted( _mute );
 }
 
 void Buzzer::playbuzzer( ) {
   if( ( play == 0 ) ) {
     setPixmap( ":/output/BuzzerOn.png" );
-    if( !m_muted ) {
-      m_audio->play( );
-    }
+    m_audio.play( );
   }
+  qDebug( ) << m_audio.status( );
+  qDebug( ) << m_audio.source( );
   play = 1;
 }
 
 void Buzzer::stopbuzzer( ) {
   setPixmap( ":/output/BuzzerOff.png" );
   play = 0;
-  m_audio->stop( );
+  m_audio.stop( );
 }
 
 void Buzzer::save( QDataStream &ds ) {
