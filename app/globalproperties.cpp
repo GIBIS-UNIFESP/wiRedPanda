@@ -20,8 +20,10 @@ double loadVersion( ) {
   if( !ok || ( version == 0. ) ) {
     throw std::runtime_error( ERRORMSG( "INVALID VERSION NUMBER!" ) );
   }
-  return version;
+  return( version );
 }
 
 QString GlobalProperties::currentFile = QString( );
 double GlobalProperties::version = loadVersion( );
+
+bool GlobalProperties::soundEnabled = true;

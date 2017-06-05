@@ -56,6 +56,8 @@ private slots:
   bool eventFilter( QObject *obj, QEvent *event );
 
 
+  void on_comboBoxAudio_currentIndexChanged( int index );
+
 private:
   void setCurrentElements( const QVector< GraphicElement* > &element );
   void apply( );
@@ -64,10 +66,11 @@ private:
   QVector< GraphicElement* > m_elements;
   Scene *scene;
   Editor *editor;
-  bool hasAnyProperty, hasLabel, hasColors, hasFrequency;
+  bool hasAnyProperty, hasLabel, hasColors, hasFrequency, hasAudio;
   bool canChangeInputSize, hasTrigger, hasRotation;
   bool hasSameLabel, hasSameColors, hasSameFrequency;
   bool hasSameInputSize, hasSameTrigger, canMorph, hasSameType;
+  bool hasSameAudio;
   bool hasElements;
 
   QString _manyLabels;
@@ -75,6 +78,7 @@ private:
   QString _manyIS;
   QString _manyFreq;
   QString _manyTriggers;
+  QString _manyAudios;
 
 
 };
