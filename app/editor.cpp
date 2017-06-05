@@ -27,6 +27,7 @@
 #include <QMimeData>
 #include <QSettings>
 #include <QtMath>
+#include <buzzer.h>
 #include <iostream>
 
 Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ) {
@@ -61,6 +62,15 @@ void Editor::updateTheme( ) {
     }
     for( QNEConnection *conn : scene->getConnections( ) ) {
       conn->updateTheme( );
+    }
+  }
+}
+
+void Editor::mute( bool _mute ) {
+  for( GraphicElement *elm : scene->getElements( ) ) {
+    Buzzer *bz = dynamic_cast< Buzzer* >( elm );
+    if( bz ) {
+      bz->mute( _mute );
     }
   }
 }
