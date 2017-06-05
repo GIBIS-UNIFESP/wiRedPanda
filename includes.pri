@@ -1,8 +1,8 @@
-QT       += core gui printsupport charts
+QT       += core gui printsupport charts multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-VERSION = 2.3.4
+VERSION = 2.4.0
 
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
@@ -58,7 +58,8 @@ SOURCES += \
     $$PWD/app/simulationcontroller.cpp \
     $$PWD/app/itemwithid.cpp \
     $$PWD/app/simplewaveform.cpp \
-    $$PWD/app/thememanager.cpp
+    $$PWD/app/thememanager.cpp \
+    $$PWD/app/element/buzzer.cpp
 
 HEADERS  +=  \
     $$PWD/app/common.h \
@@ -109,7 +110,8 @@ HEADERS  +=  \
     $$PWD/app/simulationcontroller.h \
     $$PWD/app/itemwithid.h \
     $$PWD/app/simplewaveform.h \
-    $$PWD/app/thememanager.h
+    $$PWD/app/thememanager.h \
+    $$PWD/app/element/buzzer.h
 
 INCLUDEPATH += \
     $$PWD/app \
