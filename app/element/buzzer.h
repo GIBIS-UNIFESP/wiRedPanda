@@ -3,6 +3,7 @@
 
 #include "graphicelement.h"
 #include <QSound>
+#include <QSoundEffect>
 
 class Buzzer : public GraphicElement {
 public:
@@ -27,11 +28,8 @@ private:
   void playbuzzer( );
   void stopbuzzer( );
   int play;
-  QSound *m_audio;
+  QSoundEffect m_audio;
   QString m_note;
-  bool m_muted;
-
-
   // GraphicElement interface
 public:
   void save( QDataStream &ds );
