@@ -458,6 +458,6 @@ bool ElementEditor::eventFilter( QObject *obj, QEvent *event ) {
   return( QWidget::eventFilter( obj, event ) );
 }
 
-void ElementEditor::on_comboBoxAudio_currentIndexChanged( int index ) {
+void ElementEditor::on_comboBoxAudio_currentIndexChanged( int ) {
   apply( );
 }

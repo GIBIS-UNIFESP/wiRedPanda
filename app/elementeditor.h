@@ -56,7 +56,7 @@ private slots:
   bool eventFilter( QObject *obj, QEvent *event );
 
 
-  void on_comboBoxAudio_currentIndexChanged( int index );
+  void on_comboBoxAudio_currentIndexChanged( int );
 
 private:
   void setCurrentElements( const QVector< GraphicElement* > &element );
