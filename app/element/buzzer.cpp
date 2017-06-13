@@ -39,6 +39,7 @@ void Buzzer::updateLogic( ) {
 void Buzzer::setAudio( QString note ) {
   m_audio.setSource( QUrl::fromLocalFile( QString( ":output/audio/%1.wav" ).arg( note ) ) );
   m_audio.setVolume( 0.35 );
+  m_audio.setLoopCount(QSoundEffect::Infinite);
   m_note = note;
 }
 
