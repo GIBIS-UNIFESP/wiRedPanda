@@ -37,13 +37,14 @@ export LD_LIBRARY_PATH=$QT_PATH/lib:$LD_LIBRARY_PATH
 
 WPANDA_BIN="$BUILDDIR/wpanda";
 
-#rm -rf $BUILDDIR
+rm -rf $BUILDDIR
 mkdir -p $BUILDDIR
 pushd $BUILDDIR
 
 qmake -r config+=release ../app;
 
-echo "Building WiredPanda..."
+echo "Building WiredPanda on $BUILDDIR ..."
+make clean;
 make -j4;
 
 ldd $WPANDA_BIN
