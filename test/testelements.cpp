@@ -351,9 +351,11 @@ void TestElements::testJKFlipFlop( ) {
   elm.updateLogic( );
 /*  std::cout << "            Q      J C K p c      Q" << std::endl; */
   for( size_t test = 0; test < truthTable.size( ); ++test ) {
-    sw.at( 0 )->setOn( false );
+/*    sw.at( 0 )->setOn( false ); */
+    sw.at( 0 )->setOn( truthTable.at( test ).at( 1 ) );
     sw.at( 1 )->setOn( truthTable.at( test ).at( 0 ) );
-    sw.at( 2 )->setOn( false );
+    sw.at( 2 )->setOn( truthTable.at( test ).at( 3 ) );
+/*    sw.at( 2 )->setOn( false ); */
     sw.at( 3 )->setOn( false );
     sw.at( 4 )->setOn( false );
     for( int port = 0; port < 5; ++port ) {
@@ -528,8 +530,8 @@ void TestElements::testTFlipFlop( ) {
       { { 1, 0, 0, 1, 1, 0, 1, 0 } }, /* No change */
       { { 1, 0, 0, 1, 1, 1, 0, 1 } }, /* No change */
 
-      { { 1, 1, 0, 1, 1, 1, 0, 0 } }, /* Toggle */
-      { { 1, 1, 0, 1, 1, 0, 1, 1 } }, /* Toggle */
+      { { 0, 1, 1, 1, 1, 1, 0, 0 } }, /* Toggle */
+      { { 0, 1, 1, 1, 1, 0, 1, 1 } }, /* Toggle */
 
 
       { { 1, 0, 1, 0, 1, 1, 0, 0 } }, /* Preset = false */
@@ -541,7 +543,7 @@ void TestElements::testTFlipFlop( ) {
   };
   elm.updateLogic( );
   for( size_t test = 0; test < truthTable.size( ); ++test ) {
-    sw.at( 0 )->setOn( false );
+    sw.at( 0 )->setOn( truthTable.at( test ).at( 1 ) );
     sw.at( 1 )->setOn( truthTable.at( test ).at( 0 ) );
     sw.at( 2 )->setOn( false );
     sw.at( 3 )->setOn( false );
@@ -551,14 +553,15 @@ void TestElements::testTFlipFlop( ) {
     elm.updateLogic( );
     elm.output( 0 )->setValue( truthTable.at( test ).at( 7 ) );
     elm.output( 1 )->setValue( !truthTable.at( test ).at( 7 ) );
-//    std::cout << ( int ) elm.output( 0 )->value( ) << " " << ( int ) elm.output( 1 )->value( ) << " -> ";
+/*    std::cout << ( int ) elm.output( 0 )->value( ) << " " << ( int ) elm.output( 1 )->value( ) << " -> "; */
     for( int port = 0; port < 4; ++port ) {
       sw.at( port )->setOn( truthTable.at( test ).at( port + 1 ) );
       sw.at( port )->updateLogic( );
-//      std::cout << truthTable.at(test).at( port + 1 ) << " ";
+/*      std::cout << truthTable.at(test).at( port + 1 ) << " "; */
     }
     elm.updateLogic( );
-//    std::cout << "-> " << ( int ) elm.output( 0 )->value( ) << " " << ( int ) elm.output( 1 )->value( ) << std::endl;
+/*    std::cout << "-> " << ( int ) elm.output( 0 )->value( ) << " " << ( int ) elm.output( 1 )->value( ) << std::endl;
+**/
 
     QCOMPARE( ( int ) elm.output( 0 )->value( ), truthTable.at( test ).at( 5 ) );
     QCOMPARE( ( int ) elm.output( 1 )->value( ), truthTable.at( test ).at( 6 ) );

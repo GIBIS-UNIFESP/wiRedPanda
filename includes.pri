@@ -136,6 +136,8 @@ RESOURCES += $$PWD/app/resources/translations.qrc
 
 TRANSLATIONS = $$PWD/app/resources/wpanda_en.ts  $$PWD/app/resources/wpanda_pt.ts
 
+QMAKE_CXXFLAGS += -Wl,-rpath,'${ORIGIN}/lib'
+
 #mac {
 #TEMPLATE = app
 #QMAKE_MAC_SDK = macosx10.10
