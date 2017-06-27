@@ -57,7 +57,7 @@ void TFlipFlop::updateLogic( ) {
     char clr = input( 3 )->value( );
     if( ( clk == 1 ) && ( lastClk == 0 ) ) { /* If Clock up*/
       if( lastT == 1 ) { /* And T */
-        q1 = !q2;
+        q1 = !q1;
         q2 = !q1;
       }
     }
