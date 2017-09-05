@@ -23,7 +23,7 @@ public:
   ~SimpleWaveform( );
 
   void showWaveform( );
-  static void sortElements( QVector< GraphicElement* > elements,
+  static void sortElements(QVector<GraphicElement *> &elements,
                             QVector< GraphicElement* > &inputs,
                             QVector< GraphicElement* > &outputs,
                             SortingKind sorting );
