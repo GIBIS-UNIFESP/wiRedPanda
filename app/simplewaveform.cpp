@@ -73,7 +73,7 @@ SimpleWaveform::~SimpleWaveform( ) {
   delete ui;
 }
 
-void SimpleWaveform::sortElements( QVector< GraphicElement* > elements,
+void SimpleWaveform::sortElements( QVector< GraphicElement* > &elements,
                                    QVector< GraphicElement* > &inputs,
                                    QVector< GraphicElement* > &outputs,
                                    SortingKind sorting ) {
