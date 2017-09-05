@@ -220,9 +220,8 @@ void SimpleWaveform::showWaveform( ) {
   QVector< GraphicElement* > outputs;
 
   sortElements( elements, inputs, outputs, sortingKind );
-
   if( elements.isEmpty( ) ) {
-    QMessageBox::warning( parentWidget( ), tr( "Error" ), tr( "Could not find any input for the simulation" ) );
+    QMessageBox::warning( parentWidget( ), tr( "Error" ), tr( "Could not find any port for the simulation" ) );
     return;
   }
   if( inputs.isEmpty( ) ) {
