@@ -553,15 +553,15 @@ void TestElements::testTFlipFlop( ) {
     elm.updateLogic( );
     elm.output( 0 )->setValue( truthTable.at( test ).at( 7 ) );
     elm.output( 1 )->setValue( !truthTable.at( test ).at( 7 ) );
-    std::cout << ( int ) elm.output( 0 )->value( ) << " " << ( int ) elm.output( 1 )->value( ) << "| T" << ( int )
-      elm.input( 0 )->value( ) << " " << ( int ) elm.input( 1 )->value( ) << " -> ";
+//    std::cout << ( int ) elm.output( 0 )->value( ) << " " << ( int ) elm.output( 1 )->value( ) << "| T" << ( int )
+    elm.input( 0 )->value( ) << " " << ( int ) elm.input( 1 )->value( ) << " -> ";
     for( int port = 0; port < 4; ++port ) {
       sw.at( port )->setOn( truthTable.at( test ).at( port + 1 ) );
       sw.at( port )->updateLogic( );
-      std::cout << truthTable.at( test ).at( port + 1 ) << " ";
+//      std::cout << truthTable.at( test ).at( port + 1 ) << " ";
     }
     elm.updateLogic( );
-    std::cout << "-> " << ( int ) elm.output( 0 )->value( ) << " " << ( int ) elm.output( 1 )->value( ) << std::endl;
+//    std::cout << "-> " << ( int ) elm.output( 0 )->value( ) << " " << ( int ) elm.output( 1 )->value( ) << std::endl;
 
 
     QCOMPARE( ( int ) elm.output( 0 )->value( ), truthTable.at( test ).at( 5 ) );
