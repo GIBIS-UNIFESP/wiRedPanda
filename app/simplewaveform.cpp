@@ -133,7 +133,7 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
   QVector< GraphicElement* > inputs;
   QVector< GraphicElement* > outputs;
 
-  sortElements( elements, inputs, outputs, SortingKind::INCREASING );
+  sortElements( elements, inputs, outputs, SortingKind::POSITION );
   if( elements.isEmpty( ) || inputs.isEmpty( ) || outputs.isEmpty( ) ) {
     return( false );
   }
@@ -154,7 +154,7 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
   for( int itr = 0; itr < num_iter; ++itr ) {
     std::bitset< std::numeric_limits< unsigned int >::digits > bs( itr );
     for( int in = 0; in < inputs.size( ); ++in ) {
-      uchar val = bs[ inputs.size( ) - in - 1 ];
+      uchar val = bs[ in ];
       dynamic_cast< Input* >( inputs[ in ] )->setOn( val );
     }
     for( GraphicElement *elm : elements ) {
@@ -175,12 +175,11 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
     if( label.isEmpty( ) ) {
       label = ElementFactory::translatedName( inputs[ in ]->elementType( ) );
     }
-    outStream << "\"" << label << "\":";
     for( int itr = 0; itr < num_iter; ++itr ) {
       std::bitset< std::numeric_limits< unsigned int >::digits > bs( itr );
-      outStream << ( int ) bs[ inputs.size( ) - in - 1 ];
+      outStream << ( int ) bs[ in ];
     }
-    outStream << "\n";
+    outStream << " : \"" << label << "\"\n";
   }
   outStream << "\n";
   int counter = 0;
@@ -191,12 +190,11 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
     }
     int inSz = outputs[ out ]->inputSize( );
     for( int port = inSz - 1; port >= 0; --port ) {
-      outStream << "\"" << label << "[" << port << "]\":";
       for( int itr = 0; itr < num_iter; ++itr ) {
         outStream << ( int ) results[ counter ][ itr ];
       }
       counter += 1;
-      outStream << "\n";
+      outStream << " : \"" << label << "[" << port << "]\"\n";
     }
   }
   for( int in = 0; in < inputs.size( ); ++in ) {
