@@ -554,7 +554,7 @@ void TestElements::testTFlipFlop( ) {
     elm.output( 0 )->setValue( truthTable.at( test ).at( 7 ) );
     elm.output( 1 )->setValue( !truthTable.at( test ).at( 7 ) );
 //    std::cout << ( int ) elm.output( 0 )->value( ) << " " << ( int ) elm.output( 1 )->value( ) << "| T" << ( int )
-    elm.input( 0 )->value( ) << " " << ( int ) elm.input( 1 )->value( ) << " -> ";
+//    elm.input( 0 )->value( ) << " " << ( int ) elm.input( 1 )->value( ) << " -> ";
     for( int port = 0; port < 4; ++port ) {
       sw.at( port )->setOn( truthTable.at( test ).at( port + 1 ) );
       sw.at( port )->updateLogic( );
