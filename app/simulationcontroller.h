@@ -15,6 +15,8 @@ public:
   explicit SimulationController( Scene *scn );
   ~SimulationController( );
   static QVector< GraphicElement* > sortElements( QVector< GraphicElement* > elms );
+
+  bool isRunning( );
 signals:
 
 public slots:
