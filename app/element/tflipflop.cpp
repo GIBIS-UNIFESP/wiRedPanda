@@ -6,6 +6,7 @@ TFlipFlop::TFlipFlop( QGraphicsItem *parent ) : GraphicElement( 4, 4, 2, 2, pare
   updatePorts( );
   lastClk = false;
   lastT = 0;
+  lastQ = 0;
   setPortName( "FlipFlop T" );
 
   input( 0 )->setName( "T" );
@@ -67,9 +68,8 @@ void TFlipFlop::updateLogic( ) {
     }
     lastClk = clk;
     lastT = T;
+    lastQ = q1;
   }
   output( 0 )->setValue( q1 );
   output( 1 )->setValue( q2 );
 }
-
-/* Reference: https://en.wikipedia.org/wiki/Flip-flop_(electronics)#T_flip-flop */

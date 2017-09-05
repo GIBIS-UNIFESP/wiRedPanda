@@ -6,6 +6,7 @@
 class TFlipFlop : public GraphicElement {
   bool lastClk;
   char lastT;
+  char lastQ;
 public:
   explicit TFlipFlop( QGraphicsItem *parent = 0 );
   virtual ~TFlipFlop( );
