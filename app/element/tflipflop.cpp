@@ -1,7 +1,5 @@
 #include "tflipflop.h"
 
-#include <QDebug>
-
 TFlipFlop::TFlipFlop( QGraphicsItem *parent ) : GraphicElement( 4, 4, 2, 2, parent ) {
   setPixmap( ":/memory/T-flipflop.png" );
   setRotatable( false );
@@ -60,7 +58,7 @@ void TFlipFlop::updateLogic( ) {
     if( ( clk == 1 ) && ( lastClk == 0 ) ) { /* If Clock up*/
       if( lastT == 1 ) { /* And T */
         q1 = !q1;
-        q2 = !q2;
+        q2 = !q1;
       }
     }
     if( ( prst == 0 ) || ( clr == 0 ) ) {
@@ -70,8 +68,6 @@ void TFlipFlop::updateLogic( ) {
     lastClk = clk;
     lastT = T;
   }
-  qDebug( ) << "q1'     = " << ( int ) q1;
-  qDebug( ) << "q2'     = " << ( int ) q2;
   output( 0 )->setValue( q1 );
   output( 1 )->setValue( q2 );
 }
