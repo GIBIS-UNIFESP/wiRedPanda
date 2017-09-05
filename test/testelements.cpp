@@ -237,7 +237,7 @@ void TestElements::testDFlipFlop( ) {
   };
   for( size_t test = 0; test < truthTable.size( ); ++test ) {
     sw.at( 0 )->setOn( truthTable.at( test ).at( 1 ) ); /* DATA */
-    sw.at( 1 )->setOn( truthTable.at( test ).at( 0 ) ); /* CLK */
+    sw.at( 1 )->setOn( truthTable.at( test ).at( 0 ) ); /*  CLK */
     sw.at( 2 )->setOn( false ); /* PRST */
     sw.at( 3 )->setOn( false ); /* CLR */
     for( int port = 0; port < 4; ++port ) {
@@ -543,25 +543,26 @@ void TestElements::testTFlipFlop( ) {
   };
   elm.updateLogic( );
   for( size_t test = 0; test < truthTable.size( ); ++test ) {
-    sw.at( 0 )->setOn( truthTable.at( test ).at( 1 ) );
-    sw.at( 1 )->setOn( truthTable.at( test ).at( 0 ) );
-    sw.at( 2 )->setOn( false );
-    sw.at( 3 )->setOn( false );
+    sw.at( 0 )->setOn( truthTable.at( test ).at( 1 ) ); // T
+    sw.at( 1 )->setOn( truthTable.at( test ).at( 0 ) ); // CLK
+    sw.at( 2 )->setOn( true );
+    sw.at( 3 )->setOn( true );
     for( int port = 0; port < 4; ++port ) {
       sw.at( port )->updateLogic( );
     }
     elm.updateLogic( );
     elm.output( 0 )->setValue( truthTable.at( test ).at( 7 ) );
     elm.output( 1 )->setValue( !truthTable.at( test ).at( 7 ) );
-/*    std::cout << ( int ) elm.output( 0 )->value( ) << " " << ( int ) elm.output( 1 )->value( ) << " -> "; */
+//    std::cout << ( int ) elm.output( 0 )->value( ) << " " << ( int ) elm.output( 1 )->value( ) << "| T" <<   ( int )
+// elm.input( 0 )->value( ) << " " << ( int ) elm.input( 1 )->value( ) << " -> ";
     for( int port = 0; port < 4; ++port ) {
       sw.at( port )->setOn( truthTable.at( test ).at( port + 1 ) );
       sw.at( port )->updateLogic( );
-/*      std::cout << truthTable.at(test).at( port + 1 ) << " "; */
+//      std::cout << truthTable.at( test ).at( port + 1 ) << " ";
     }
     elm.updateLogic( );
-/*    std::cout << "-> " << ( int ) elm.output( 0 )->value( ) << " " << ( int ) elm.output( 1 )->value( ) << std::endl;
-**/
+//    std::cout << "-> " << ( int ) elm.output( 0 )->value( ) << " " << ( int ) elm.output( 1 )->value( ) << std::endl;
+
 
     QCOMPARE( ( int ) elm.output( 0 )->value( ), truthTable.at( test ).at( 5 ) );
     QCOMPARE( ( int ) elm.output( 1 )->value( ), truthTable.at( test ).at( 6 ) );

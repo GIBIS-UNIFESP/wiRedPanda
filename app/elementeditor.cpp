@@ -120,7 +120,12 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
         }
         break;
       }
-        case ElementGroup::OUTPUT:
+        case ElementGroup::OUTPUT:{
+        addElementAction( submenumorph, firstElm, ElementType::LED, hasSameType );
+        addElementAction( submenumorph, firstElm, ElementType::BUZZER, hasSameType );
+        break;
+      }
+
         case ElementGroup::BOX:
         case ElementGroup::MUX:
         case ElementGroup::OTHER:
