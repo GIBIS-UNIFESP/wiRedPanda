@@ -20,6 +20,23 @@
 using namespace QtCharts;
 
 
+class SCStop {
+  SimulationController *sc;
+  bool restart = false;
+public:
+  SCStop( SimulationController *sc ) : sc( sc ) {
+    if( sc->isRunning( ) ) {
+      restart = true;
+      sc->stop( );
+    }
+  }
+  ~SCStop( ) {
+    if( restart ) {
+      sc->start( );
+    }
+  }
+};
+
 SimpleWaveform::SimpleWaveform( Editor *editor, QWidget *parent ) :
   QDialog( parent ),
   ui( new Ui::SimpleWaveform ),
@@ -121,7 +138,7 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
     return( false );
   }
   SimulationController *sc = editor->getSimulationController( );
-  sc->stop( );
+  SCStop scst( sc );
 
 
   QVector< char > oldValues( inputs.size( ) );
@@ -185,7 +202,6 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
   for( int in = 0; in < inputs.size( ); ++in ) {
     dynamic_cast< Input* >( inputs[ in ] )->setOn( oldValues[ in ] );
   }
-  sc->start( );
   return( true );
 }
 
@@ -213,7 +229,7 @@ void SimpleWaveform::showWaveform( ) {
   chart.removeAllSeries( );
 
   SimulationController *sc = editor->getSimulationController( );
-  sc->stop( );
+  SCStop scst( sc );
 
   QVector< GraphicElement* > elements = editor->getScene( )->getElements( );
   QVector< GraphicElement* > inputs;
@@ -272,6 +288,7 @@ void SimpleWaveform::showWaveform( ) {
 /*  gap += outputs.size( ) % 2; */
   for( int itr = 0; itr < num_iter; ++itr ) {
     std::bitset< std::numeric_limits< unsigned int >::digits > bs( itr );
+    qDebug( ) << itr;
     for( int in = 0; in < inputs.size( ); ++in ) {
       float val = bs[ in_series.size( ) - in - 1 ];
       dynamic_cast< Input* >( inputs[ in ] )->setOn( val );
@@ -327,7 +344,6 @@ void SimpleWaveform::showWaveform( ) {
     dynamic_cast< Input* >( inputs[ in ] )->setOn( oldValues[ in ] );
 
   }
-  sc->start( );
 }
 
 void SimpleWaveform::on_radioButton_Position_clicked( ) {

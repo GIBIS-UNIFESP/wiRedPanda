@@ -61,6 +61,10 @@ QVector< GraphicElement* > SimulationController::sortElements( QVector< GraphicE
   return( elms );
 }
 
+bool SimulationController::isRunning( ) {
+  return( this->timer.isActive( ) );
+}
+
 void SimulationController::update( ) {
   QVector< GraphicElement* > elements = scene->getElements( );
   if( Clock::reset ) {
