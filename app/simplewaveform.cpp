@@ -290,7 +290,7 @@ void SimpleWaveform::showWaveform( ) {
     std::bitset< std::numeric_limits< unsigned int >::digits > bs( itr );
     qDebug( ) << itr;
     for( int in = 0; in < inputs.size( ); ++in ) {
-      float val = bs[ in_series.size( ) - in - 1 ];
+      float val = bs[ in ];
       dynamic_cast< Input* >( inputs[ in ] )->setOn( val );
       float offset = ( in_series.size( ) - in - 1 + out_series.size( ) ) * 2 + gap + 0.5;
       in_series[ in ]->append( itr, offset + val );
