@@ -1,7 +1,7 @@
 # Site Settings
 title: 'WiRed Panda'
 description: 'Learn about logic circuits and simulate them in an easy and friendly way.'
-url: 'http://wiredpanda.org/' # the base hostname & protocol for your site
+url: '/wiRedPanda/' # the base hostname & protocol for your site
 footer_text: 'Copyright &copy; WiRED Panda Team - 2015'
 keywords: "WiRED Panda,Logic Circuits,Arduino"
 
