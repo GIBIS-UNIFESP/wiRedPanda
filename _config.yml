@@ -33,8 +33,8 @@ excerpt_separator: "\n\n"
 # Serving
 detach:  false
 port:    4000
-host:    "wiredpanda.org"
-baseurl: "/" # does not include hostname
+host:    "127.0.0.1"
+baseurl: "/wiRedPanda" # does not include hostname
 
 # Outputting
 permalink:     /:title.html
