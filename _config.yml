@@ -33,7 +33,7 @@ excerpt_separator: "\n\n"
 # Serving
 detach:  false
 port:    4000
-host:    wiredpanda.org
+host:    "wiredpanda.org"
 baseurl: "/" # does not include hostname
 
 # Outputting
