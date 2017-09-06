@@ -1,6 +1,6 @@
 main:
-    - { url: '/wiRedPanda/', text: 'Home' }
+    - { url: '/', text: 'Home' }
     - { url: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/', text: 'GitHub' }
-    - { url: '/wiRedPanda/features', text: 'Features' }
-    - { url: '/wiRedPanda/videos', text: 'Videos' }
-    - { url: '/wiRedPanda/downloads', text: 'Downloads' }
+    - { url: '/features', text: 'Features' }
+    - { url: '/videos', text: 'Videos' }
+    - { url: '/downloads', text: 'Downloads' }
