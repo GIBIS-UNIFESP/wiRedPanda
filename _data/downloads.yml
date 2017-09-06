@@ -1,10 +1,10 @@
 version: "2.4.2"
 version_txt: "2_4_2"
 links:
-  - { url: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v{{version}}/WiredPanda_{{version_txt}}_Windows_Installer_x86_64.exe', text: 'Windows x86_64 Installyer', logo: 'windows' }
-  - { url: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v{{version}}/WiredPanda_{{version_txt}}_Windows_Portable_x86_64.zip', text: 'Windows x86_64 Portable', logo: 'windows' }
-  - { url: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v{{version}}/WiredPanda_{{version_txt}}_Ubuntu_Installer_x64.deb', text: 'Ubuntu 12.04+ Installer', logo: 'ubuntu' }
-  - { url: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v{{version}}/WiredPanda_{{version_txt}}_Linux_Portable_x64.tar.xz', text: 'Linux Portable', logo: 'linux' }
+  - { url: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v%{version}/WiredPanda_%{version_txt}_Windows_Installer_x86_64.exe', text: 'Windows x86_64 Installyer', logo: 'windows' }
+  - { url: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v%{version}/WiredPanda_%{version_txt}_Windows_Portable_x86_64.zip', text: 'Windows x86_64 Portable', logo: 'windows' }
+  - { url: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v%{version}/WiredPanda_%{version_txt}_Ubuntu_Installer_x64.deb', text: 'Ubuntu 12.04+ Installer', logo: 'ubuntu' }
+  - { url: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v%{version}/WiredPanda_%{version_txt}_Linux_Portable_x64.tar.xz', text: 'Linux Portable', logo: 'linux' }
 
-release: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/tag/v{{version}}'
-source: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/archive/v{{version}}.tar.gz'
+release: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/tag/v%{version}'
+source: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/archive/v%{version}.tar.gz'
