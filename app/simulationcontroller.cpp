@@ -64,8 +64,7 @@ QVector< GraphicElement* > SimulationController::sortElements( QVector< GraphicE
 
 
 void SimulationController::update( ) {
-  QMap< Input*, LogicElement* >::iterator iter = inputMap.begin( );
-  for( ; iter != inputMap.end( ); ++iter ) {
+  for( auto iter = inputMap.begin( ); iter != inputMap.end( ); ++iter ) {
     iter.value( )->setOutputValue( iter.key( )->getOn( ) );
   }
   for( LogicElement *elm : logicElms ) {

@@ -60,7 +60,9 @@ SOURCES += \
     $$PWD/app/itemwithid.cpp \
     $$PWD/app/simplewaveform.cpp \
     $$PWD/app/thememanager.cpp \
-    $$PWD/app/logicelement.cpp
+    $$PWD/app/logicelement.cpp \
+    $$PWD/boxmanager.cpp \
+    $$PWD/logicbox.cpp
 
 HEADERS  +=  \
     $$PWD/app/common.h \
@@ -113,7 +115,9 @@ HEADERS  +=  \
     $$PWD/app/itemwithid.h \
     $$PWD/app/simplewaveform.h \
     $$PWD/app/thememanager.h \
-    $$PWD/app/logicelement.h
+    $$PWD/app/logicelement.h \
+    $$PWD/boxmanager.h \
+    $$PWD/logicbox.h
 
 INCLUDEPATH += \
     $$PWD/app \

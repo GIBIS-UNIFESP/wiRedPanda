@@ -4,7 +4,7 @@
 #include <QSet>
 #include <vector>
 
-#include <c++/6.3.1/functional>
+#include <functional>
 
 /**
  * @brief The LogicElement class was designed to represent logic
