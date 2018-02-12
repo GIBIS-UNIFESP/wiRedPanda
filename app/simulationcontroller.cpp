@@ -201,7 +201,6 @@ void SimulationController::reSortElms( ) {
   if( elements.size( ) == 0 ) {
     return;
   }
-  m_logicElms.resize( elements.size( ) );
   for( int idx = 0; idx < elements.size( ); ++idx ) {
     GraphicElement *elm = elements[ idx ];
     if( elm->elementType( ) == ElementType::CLOCK ) {
@@ -209,15 +208,26 @@ void SimulationController::reSortElms( ) {
       Q_ASSERT( clk != nullptr );
       m_clocks.append( clk );
     }
-    LogicElement *logicElm = buildLogicElement( elm );
-    m_logicElms[ idx ] = logicElm;
-    m_map.insert( elm, logicElm );
-    Input *in = dynamic_cast< Input* >( elm );
-    if( in ) {
-      m_inputMap[ in ] = logicElm;
+    if( elm->elementType( ) == ElementType::BOX ) {
+      qDebug( ) << "Cannot handle boxes yet";
+      // FIXME Cannot handle boxes yet
+    }
+    else {
+      LogicElement *logicElm = buildLogicElement( elm );
+      m_logicElms.append( logicElm );
+      m_map.insert( elm, logicElm );
+      Input *in = dynamic_cast< Input* >( elm );
+      if( in ) {
+        m_inputMap[ in ] = logicElm;
+      }
     }
   }
   for( GraphicElement *elm : elements ) {
+    if( elm->elementType( ) == ElementType::BOX ) {
+      qDebug( ) << "Cannot handle box element yet";
+      //FIXME Cannot handle box yet
+      continue;
+    }
     for( QNEPort *in : elm->inputs( ) ) {
       if( in->connections( ).size( ) == 1 ) {
         QNEPort *other_out = in->connections( ).first( )->otherPort( in );
