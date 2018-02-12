@@ -175,5 +175,13 @@ LogicInput::LogicInput( bool defaultValue ) : LogicElement( 0, 1 ) {
 }
 
 void LogicInput::_updateLogic( const std::vector< bool > & ) {
+  // Does nothing on update
+}
+
+LogicJKFlipFlop::LogicJKFlipFlop( ) : LogicElement( 5, 2 ) {
+
+}
+
+void LogicJKFlipFlop::_updateLogic( const std::vector< bool > &inputs ) {
 
 }

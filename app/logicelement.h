@@ -128,4 +128,13 @@ protected:
   virtual void _updateLogic( const std::vector< bool > &inputs );
 };
 
+class LogicJKFlipFlop : public LogicElement {
+public:
+  explicit LogicJKFlipFlop( );
+
+  /* LogicElement interface */
+protected:
+  virtual void _updateLogic( const std::vector< bool > &inputs );
+};
+
 #endif /* LOGICELEMENT_H */

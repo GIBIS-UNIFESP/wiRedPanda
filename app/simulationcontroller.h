@@ -17,6 +17,8 @@ public:
   explicit SimulationController( Scene *scn );
   ~SimulationController( );
   static QVector< GraphicElement* > sortElements( QVector< GraphicElement* > elms );
+
+  void updateScene( const QRectF &rect );
 signals:
 
 public slots:

@@ -1,3 +1,4 @@
+#include "elementfactory.h"
 #include "simulationcontroller.h"
 
 #include <QDebug>
@@ -63,14 +64,9 @@ QVector< GraphicElement* > SimulationController::sortElements( QVector< GraphicE
 }
 
 
-void SimulationController::update( ) {
-  for( auto iter = inputMap.begin( ); iter != inputMap.end( ); ++iter ) {
-    iter.value( )->setOutputValue( iter.key( )->getOn( ) );
-  }
-  for( LogicElement *elm : logicElms ) {
-    elm->updateLogic( );
-  }
-  const QList< QGraphicsItem* > &items = scene->items( scene->views( ).first( )->sceneRect( ) );
+void SimulationController::updateScene( const QRectF &rect ) {
+  const QList< QGraphicsItem* > &items = scene->items( rect );
+//    scene->items( scene->views( ).first( )->sceneRect( ) );
   for( QGraphicsItem *item: items ) {
     QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
     if( conn ) {
@@ -98,8 +94,19 @@ void SimulationController::update( ) {
   }
 }
 
+void SimulationController::update( ) {
+  for( auto iter = inputMap.begin( ); iter != inputMap.end( ); ++iter ) {
+    iter.value( )->setOutputValue( iter.key( )->getOn( ) );
+  }
+  for( LogicElement *elm : logicElms ) {
+    elm->updateLogic( );
+  }
+  updateScene( scene->views( ).first( )->sceneRect( ) );
+}
+
 void SimulationController::stop( ) {
   timer.stop( );
+  updateScene( scene->itemsBoundingRect( ) );
 }
 
 void SimulationController::start( ) {
@@ -135,8 +142,11 @@ LogicElement* buildLogicElement( GraphicElement *elm ) {
       return( new LogicXnor( elm->inputSize( ) ) );
       case ElementType::NOT:
       return( new LogicNot( ) );
+//      case ElementType::JKFLIPFLOP:
+//      return( new LogicJKFlipFlop( ) );
+
       default:
-      throw std::runtime_error( "Not implemented yet" );
+      throw std::runtime_error( "Not implemented yet: " + elm->objectName( ).toStdString( ) );
       break;
   }
   return( nullptr );
