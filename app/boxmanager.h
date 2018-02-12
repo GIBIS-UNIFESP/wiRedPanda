@@ -10,16 +10,18 @@ class BoxPrototype;
 
 class BoxManager : public QObject {
   Q_OBJECT
-  QMap< QString, BoxPrototype* > boxes;
-  MainWindow *mainWindow;
+  QMap< QString, BoxPrototype* > m_boxes;
+  MainWindow *m_mainWindow;
 
-  QFileSystemWatcher fileWatcher;
+  QFileSystemWatcher m_fileWatcher;
 public:
   BoxManager( MainWindow *mainWindow = 0, QObject *parent = 0 );
   virtual ~BoxManager( );
 
   void loadFile( QString fname );
   void clear( );
+
+  BoxPrototype* getPrototype( QString fname );
 
   static BoxManager* instance( );
 

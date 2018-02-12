@@ -14,11 +14,11 @@ void BoxPrototypeImpl::loadFile( QString fileName ) {
       loadItem( item );
     }
   }
-  sortMap( m_inputMap );
-  sortMap( m_outputMap );
+  setInputSize( inputMap.size( ) );
+  setOutputSize( outputMap.size( ) );
 
-  setInputSize( m_inputMap.size( ) );
-  setOutputSize( m_inputMap.size( ) );
+  sortMap( inputMap );
+  sortMap( outputMap );
 
   loadInputs( );
   loadOutputs( );
@@ -27,42 +27,42 @@ void BoxPrototypeImpl::loadFile( QString fileName ) {
 }
 
 void BoxPrototypeImpl::loadInputs( ) {
-  for( int portIndex = 0; portIndex < inputSize( ); ++portIndex ) {
-    GraphicElement *elm = m_inputMap.at( portIndex )->graphicElement( );
+  for( int portIndex = 0; portIndex < getInputSize( ); ++portIndex ) {
+    GraphicElement *elm = inputMap.at( portIndex )->graphicElement( );
     QString lb = elm->getLabel( );
     if( lb.isEmpty( ) ) {
       lb = elm->objectName( );
     }
-    if( !m_inputMap.at( portIndex )->portName( ).isEmpty( ) ) {
+    if( !inputMap.at( portIndex )->portName( ).isEmpty( ) ) {
       lb += " ";
-      lb += m_inputMap.at( portIndex )->portName( );
+      lb += inputMap.at( portIndex )->portName( );
     }
     if( !elm->genericProperties( ).isEmpty( ) ) {
       lb += " [" + elm->genericProperties( ) + "]";
     }
-    m_inputLabels[ portIndex ] = lb;
+    inputLabels[ portIndex ] = lb;
     if( elm->elementType( ) != ElementType::CLOCK ) {
-      m_requiredInputs[ portIndex ] = false;
-      m_defaultInputValues[ portIndex ] = m_inputMap.at( portIndex )->value( );
+      requiredInputs[ portIndex ] = false;
+      defaultInputValues[ portIndex ] = inputMap.at( portIndex )->value( );
     }
   }
 }
 
 void BoxPrototypeImpl::loadOutputs( ) {
-  for( int portIndex = 0; portIndex < outputSize( ); ++portIndex ) {
-    GraphicElement *elm = m_outputMap.at( portIndex )->graphicElement( );
+  for( int portIndex = 0; portIndex < getOutputSize( ); ++portIndex ) {
+    GraphicElement *elm = outputMap.at( portIndex )->graphicElement( );
     QString lb = elm->getLabel( );
     if( lb.isEmpty( ) ) {
       lb = elm->objectName( );
     }
-    if( !m_outputMap.at( portIndex )->portName( ).isEmpty( ) ) {
+    if( !outputMap.at( portIndex )->portName( ).isEmpty( ) ) {
       lb += " ";
-      lb += m_outputMap.at( portIndex )->portName( );
+      lb += outputMap.at( portIndex )->portName( );
     }
     if( !elm->genericProperties( ).isEmpty( ) ) {
       lb += " [" + elm->genericProperties( ) + "]";
     }
-    m_outputLabels[ portIndex ] = lb;
+    outputLabels[ portIndex ] = lb;
   }
 }
 
@@ -97,14 +97,14 @@ void BoxPrototypeImpl::sortMap( QVector< QNEPort* > &map ) {
 void BoxPrototypeImpl::loadItem( QGraphicsItem *item ) {
   if( item->type( ) == GraphicElement::Type ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
-    m_elements.append( elm );
+    elements.append( elm );
     if( elm ) {
       switch( elm->elementType( ) ) {
           case ElementType::BUTTON:
           case ElementType::SWITCH:
           case ElementType::CLOCK: {
           for( QNEPort *port : elm->outputs( ) ) {
-            m_inputMap.append( port );
+            inputMap.append( port );
           }
           elm->disable( );
           break;
@@ -112,7 +112,7 @@ void BoxPrototypeImpl::loadItem( QGraphicsItem *item ) {
           case ElementType::DISPLAY:
           case ElementType::LED: {
           for( QNEPort *port : elm->inputs( ) ) {
-            m_outputMap.append( port );
+            outputMap.append( port );
           }
           break;
         }
@@ -127,25 +127,24 @@ void BoxPrototypeImpl::loadItem( QGraphicsItem *item ) {
 void BoxPrototypeImpl::clear( ) {
   setInputSize( 0 );
   setOutputSize( 0 );
-  qDeleteAll( m_elements );
-  m_elements.clear( );
+  qDeleteAll( elements );
+  elements.clear( );
 }
 
-int BoxPrototypeImpl::inputSize( ) const {
-  return( m_inputSize );
+int BoxPrototypeImpl::getInputSize( ) const {
+  return( inputMap.size( ) );
 }
 
-int BoxPrototypeImpl::outputSize( ) const {
-  return( m_outputSize );
+int BoxPrototypeImpl::getOutputSize( ) const {
+  return( outputMap.size( ) );
 }
 
 void BoxPrototypeImpl::setOutputSize( int outputSize ) {
-  m_outputSize = outputSize;
+  outputLabels = QVector< QString >( outputSize );
 }
 
 void BoxPrototypeImpl::setInputSize( int inputSize ) {
-  Q_ASSERT( inputSize > 0 );
-  m_inputSize = inputSize;
-  m_defaultInputValues = QVector< bool >( inputSize, false );
-  m_requiredInputs = QVector< bool >( inputSize, false );
+  inputLabels = QVector< QString >( inputSize );
+  defaultInputValues = QVector< bool >( inputSize, false );
+  requiredInputs = QVector< bool >( inputSize, true );
 }
