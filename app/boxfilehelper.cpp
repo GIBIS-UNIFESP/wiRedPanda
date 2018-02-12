@@ -10,7 +10,7 @@ QFileInfo BoxFileHelper::findFile( QString fname ) {
   QString myFile = fileInfo.fileName( );
   if( !fileInfo.exists( ) ) {
     fileInfo.setFile( QDir::current( ), fileInfo.fileName( ) );
-//    if( !fileInfo.exists( ) ) {
+//    if( !fileInfo.exists( ) ) { // TODO
 //      fileInfo.setFile( QFileInfo( parentFile ).absoluteDir( ), myFile );
     if( !fileInfo.exists( ) ) {
       QFileInfo currentFile( GlobalProperties::currentFile );
@@ -29,5 +29,15 @@ QFileInfo BoxFileHelper::findFile( QString fname ) {
 }
 
 QString BoxFileHelper::verifyRecursion( QString fname ) {
-
+  // TODO
+//  std::string msg = "Oh no! I'm my own parent.\nSomething is not ok...";
+//  if( !parentFile.isEmpty( ) && ( fname == parentFile ) ) {
+//    throw( std::runtime_error( msg ) );
+//  }
+//  for( Box *box = parentBox; box != nullptr; box = box->getParentBox( ) ) {
+////    qDebug( ) << "File: " << box->getFile( );
+//    if( box->getFile( ) == fname ) {
+//      throw( std::runtime_error( msg ) );
+//    }
+//  }
 }
