@@ -29,7 +29,12 @@
 #include <QtMath>
 #include <iostream>
 
+Editor*Editor::globalEditor = nullptr;
+
 Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ) {
+  if( !globalEditor ) {
+    globalEditor = this;
+  }
   mainWindow = qobject_cast< MainWindow* >( parent );
   markingSelectionBox = false;
   _editedConn_id = 0;

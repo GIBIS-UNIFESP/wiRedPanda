@@ -41,7 +41,7 @@ Box::Box( Editor *editor, QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, 
 }
 
 Box::~Box( ) {
-  qDeleteAll(elements);
+  qDeleteAll( elements );
 }
 
 
@@ -104,7 +104,7 @@ void Box::loadFile( QString fname ) {
   if( file.open( QFile::ReadOnly ) ) {
     inputMap.clear( );
     outputMap.clear( );
-    qDeleteAll(elements);
+    qDeleteAll( elements );
     elements.clear( );
     QDataStream ds( &file );
     QList< QGraphicsItem* > items = SerializationFunctions::load( editor, ds, fname );
@@ -202,7 +202,6 @@ QFileInfo Box::findFile( QString fname ) {
 //    qDebug( ) << "Trying to load (2): " << fileInfo.absoluteFilePath( );
     if( !fileInfo.exists( ) ) {
       fileInfo.setFile( QFileInfo( parentFile ).absoluteDir( ), myFile );
-
 //      qDebug( ) << "Parent file: " << parentFile;
 //      qDebug( ) << "Trying to load (3): " << fileInfo.absoluteFilePath( );
       if( !fileInfo.exists( ) ) {
@@ -216,7 +215,7 @@ QFileInfo Box::findFile( QString fname ) {
           throw( BoxNotFoundException( QString(
                                          "Box linked file \"%1\" could not be found!\n"
                                          "Do you want to find this file?" )
-                                       .arg( fname ).toStdString( ), this ) );
+                                       .arg( fname ).toStdString( ), nullptr ) );
         }
       }
     }

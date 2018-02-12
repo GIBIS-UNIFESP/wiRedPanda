@@ -107,6 +107,7 @@ public:
 
   ElementEditor* getElementEditor( ) const;
 
+  static Editor *globalEditor;
 };
 
 #endif /* EDITOR_H */
