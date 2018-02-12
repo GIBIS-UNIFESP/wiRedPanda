@@ -161,6 +161,8 @@ LogicElement* buildLogicElement( GraphicElement *elm ) {
       return( new LogicNot( ) );
       case ElementType::JKFLIPFLOP:
       return( new LogicJKFlipFlop( ) );
+      case ElementType::SRFLIPFLOP:
+      return( new LogicSRFlipFlop( ) );
 
       default:
       throw std::runtime_error( "Not implemented yet: " + elm->objectName( ).toStdString( ) );

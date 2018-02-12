@@ -152,4 +152,15 @@ private:
   bool lastClk;
 };
 
+class LogicSRFlipFlop : public LogicElement {
+public:
+  explicit LogicSRFlipFlop( );
+
+  /* LogicElement interface */
+protected:
+  virtual void _updateLogic( const std::vector< bool > &inputs );
+
+private:
+  bool lastClk;
+};
 #endif /* LOGICELEMENT_H */
