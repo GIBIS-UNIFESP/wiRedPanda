@@ -295,9 +295,93 @@ void LogicTFlipFlop::_updateLogic( const std::vector< bool > &inputs ) {
     q0 = !prst;
     q1 = !clr;
   }
-  qDebug( ) << inputs;
   setOutputValue( 0, q0 );
   setOutputValue( 1, q1 );
   lastClk = clk;
   /* Reference: https://en.wikipedia.org/wiki/Flip-flop_(electronics)#T_flip-flop */
+}
+
+LogicDFlipFlop::LogicDFlipFlop( ) :
+  LogicElement( 4, 2 ),
+  lastClk( false ) {
+  setOutputValue( 0, false );
+  setOutputValue( 1, true );
+
+}
+
+void LogicDFlipFlop::_updateLogic( const std::vector< bool > &inputs ) {
+  bool q0 = getOutputValue( 0 );
+  bool q1 = getOutputValue( 1 );
+  bool D = inputs[ 0 ];
+  bool clk = inputs[ 1 ];
+  bool prst = inputs[ 2 ];
+  bool clr = inputs[ 3 ];
+  if( clk && !lastClk ) {
+    q0 = D;
+    q1 = !D;
+  }
+  if( ( !prst ) || ( !clr ) ) {
+    q0 = !prst;
+    q1 = !clr;
+  }
+  setOutputValue( 0, q0 );
+  setOutputValue( 1, q1 );
+  lastClk = clk;
+  lastValue = D;
+  /* Reference: https://en.wikipedia.org/wiki/Flip-flop_(electronics)#T_flip-flop */
+}
+
+LogicDLatch::LogicDLatch( ) :
+  LogicElement( 2, 2 ) {
+  setOutputValue( 0, false );
+  setOutputValue( 1, true );
+}
+
+void LogicDLatch::_updateLogic( const std::vector< bool > &inputs ) {
+  bool q0 = getOutputValue( 0 );
+  bool q1 = getOutputValue( 1 );
+  bool D = inputs[ 0 ];
+  bool enable = inputs[ 1 ];
+  if( enable ) {
+    q0 = D;
+    q1 = !D;
+  }
+  setOutputValue( 0, q0 );
+  setOutputValue( 1, q1 );
+}
+
+LogicMux::LogicMux( ) : LogicElement( 3, 1 ) {
+
+}
+
+void LogicMux::_updateLogic( const std::vector< bool > &inputs ) {
+  bool data1 = inputs[ 0 ];
+  bool data2 = inputs[ 1 ];
+  bool choice = inputs[ 2 ];
+  if( choice == false ) {
+    setOutputValue( data1 );
+  }
+  else {
+    setOutputValue( data2 );
+  }
+}
+
+LogicDemux::LogicDemux( ) : LogicElement( 2, 2 ) {
+
+}
+
+void LogicDemux::_updateLogic( const std::vector< bool > &inputs ) {
+  bool data = inputs[ 0 ];
+  bool choice = inputs[ 1 ];
+
+  bool out0 = false;
+  bool out1 = false;
+  if( choice == false ) {
+    out0 = data;
+  }
+  else {
+    out1 = data;
+  }
+  setOutputValue( 0, out0 );
+  setOutputValue( 1, out1 );
 }

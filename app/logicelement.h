@@ -175,4 +175,46 @@ protected:
 private:
   bool lastClk;
 };
+
+class LogicDFlipFlop : public LogicElement {
+public:
+  explicit LogicDFlipFlop( );
+
+  /* LogicElement interface */
+protected:
+  virtual void _updateLogic( const std::vector< bool > &inputs );
+
+private:
+  bool lastClk;
+  bool lastValue;
+};
+
+class LogicDLatch : public LogicElement {
+public:
+  explicit LogicDLatch( );
+
+  /* LogicElement interface */
+protected:
+  virtual void _updateLogic( const std::vector< bool > &inputs );
+};
+
+class LogicMux : public LogicElement {
+public:
+  explicit LogicMux( );
+
+  /* LogicElement interface */
+protected:
+  virtual void _updateLogic( const std::vector< bool > &inputs );
+};
+
+
+class LogicDemux : public LogicElement {
+public:
+  explicit LogicDemux( );
+
+  /* LogicElement interface */
+protected:
+  virtual void _updateLogic( const std::vector< bool > &inputs );
+};
+
 #endif /* LOGICELEMENT_H */
