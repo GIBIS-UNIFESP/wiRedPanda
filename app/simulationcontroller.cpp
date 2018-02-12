@@ -66,7 +66,6 @@ QVector< GraphicElement* > SimulationController::sortElements( QVector< GraphicE
 
 void SimulationController::updateScene( const QRectF &rect ) {
   const QList< QGraphicsItem* > &items = scene->items( rect );
-//    scene->items( scene->views( ).first( )->sceneRect( ) );
   for( QGraphicsItem *item: items ) {
     QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
     if( conn ) {
@@ -75,7 +74,13 @@ void SimulationController::updateScene( const QRectF &rect ) {
       if( p1 && p1->graphicElement( ) ) {
         GraphicElement *elm1 = p1->graphicElement( );
         if( p1->isOutput( ) ) {
-          p1->setValue( map[ elm1 ]->getOutputValue( p1->index( ) ) );
+          LogicElement *logElm1 = m_map[ elm1 ];
+          if( logElm1->isValid( ) ) {
+            p1->setValue( logElm1->getOutputValue( p1->index( ) ) );
+          }
+          else {
+            p1->setValue( -1 );
+          }
         }
         else if( elm1->elementGroup( ) == ElementGroup::OUTPUT ) {
           elm1->updateLogic( );
@@ -84,7 +89,7 @@ void SimulationController::updateScene( const QRectF &rect ) {
       if( p2 && p2->graphicElement( ) ) {
         GraphicElement *elm2 = p2->graphicElement( );
         if( p2->isOutput( ) ) {
-          p2->setValue( map[ elm2 ]->getOutputValue( p2->index( ) ) );
+          p2->setValue( m_map[ elm2 ]->getOutputValue( p2->index( ) ) );
         }
         else if( elm2->elementGroup( ) == ElementGroup::OUTPUT ) {
           elm2->updateLogic( );
@@ -95,10 +100,13 @@ void SimulationController::updateScene( const QRectF &rect ) {
 }
 
 void SimulationController::update( ) {
-  for( auto iter = inputMap.begin( ); iter != inputMap.end( ); ++iter ) {
+  for( Clock *clk : m_clocks ) {
+    clk->updateLogic( );
+  }
+  for( auto iter = m_inputMap.begin( ); iter != m_inputMap.end( ); ++iter ) {
     iter.value( )->setOutputValue( iter.key( )->getOn( ) );
   }
-  for( LogicElement *elm : logicElms ) {
+  for( LogicElement *elm : m_logicElms ) {
     elm->updateLogic( );
   }
   updateScene( scene->views( ).first( )->sceneRect( ) );
@@ -168,15 +176,20 @@ void SimulationController::reSortElms( ) {
   if( elements.size( ) == 0 ) {
     return;
   }
-  logicElms.resize( elements.size( ) );
+  m_logicElms.resize( elements.size( ) );
   for( int idx = 0; idx < elements.size( ); ++idx ) {
     GraphicElement *elm = elements[ idx ];
+    if( elm->elementType( ) == ElementType::CLOCK ) {
+      Clock *clk = dynamic_cast< Clock* >( elm );
+      Q_ASSERT( clk != nullptr );
+      m_clocks.append( clk );
+    }
     LogicElement *logicElm = buildLogicElement( elm );
-    logicElms[ idx ] = logicElm;
-    map.insert( elm, logicElm );
+    m_logicElms[ idx ] = logicElm;
+    m_map.insert( elm, logicElm );
     Input *in = dynamic_cast< Input* >( elm );
     if( in ) {
-      inputMap[ in ] = logicElm;
+      m_inputMap[ in ] = logicElm;
     }
   }
   for( GraphicElement *elm : elements ) {
@@ -186,21 +199,25 @@ void SimulationController::reSortElms( ) {
         if( other_out ) {
           GraphicElement *other_elm = other_out->graphicElement( );
           if( other_elm ) {
-            map[ elm ]->connectInput( in->index( ), map[ other_elm ], other_out->index( ) );
+            m_map[ elm ]->connectInput( in->index( ), m_map[ other_elm ], other_out->index( ) );
           }
         }
       }
     }
   }
-  sortLogicElements( logicElms );
-  for( LogicElement *elm : logicElms ) {
+  sortLogicElements( m_logicElms );
+  for( LogicElement *elm : m_logicElms ) {
     elm->validate( );
     elm->updateLogic( );
   }
 }
 
 void SimulationController::clear( ) {
-  this->map.clear( );
-  this->inputMap.clear( );
-  this->logicElms.clear( );
+  for( LogicElement *elm: m_logicElms ) {
+    delete elm;
+  }
+  m_logicElms.clear( );
+  m_map.clear( );
+  m_inputMap.clear( );
+  m_clocks.clear( );
 }

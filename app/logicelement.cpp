@@ -1,5 +1,11 @@
 #include "logicelement.h"
 
+#include <QDebug>
+
+bool LogicElement::isValid( ) const {
+  return( m_isValid );
+}
+
 LogicElement::LogicElement( size_t inputSize, size_t outputSize ) :
   m_isValid( true ),
   beingVisited( false ),
@@ -10,10 +16,15 @@ LogicElement::LogicElement( size_t inputSize, size_t outputSize ) :
 
 }
 
+LogicElement::~LogicElement( ) {
+
+}
+
 void LogicElement::updateLogic( ) {
   if( m_isValid ) {
     for( size_t idx = 0; idx < m_inputs.size( ); ++idx ) {
       LogicElement *pred = m_inputs[ idx ].first;
+      Q_ASSERT( pred != nullptr );
       int port = m_inputs[ idx ].second;
       m_inputvalues[ idx ] = pred->getOutputValue( port );
     }

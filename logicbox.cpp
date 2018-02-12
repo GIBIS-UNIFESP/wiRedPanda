@@ -9,6 +9,7 @@ QString LogicBox::getFilename( ) const {
 }
 
 void LogicBox::_updateLogic( const std::vector< bool > &inputs ) {
+  // FIXME
 //  setOutputValue( );
 }
 

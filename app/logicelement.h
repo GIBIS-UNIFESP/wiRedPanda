@@ -27,6 +27,9 @@ protected:
   virtual void _updateLogic( const std::vector< bool > &inputs ) = 0;
 public:
   explicit LogicElement( size_t inputSize, size_t outputSize );
+
+  virtual ~LogicElement( );
+
   void updateLogic( );
 
   void connectInput( int index, LogicElement *elm, int port );
@@ -42,6 +45,7 @@ public:
 
   int calculatePriority( );
 
+  bool isValid( ) const;
 };
 
 class LogicNode : public LogicElement {
