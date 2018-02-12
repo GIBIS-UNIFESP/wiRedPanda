@@ -1,3 +1,4 @@
+#include "box.h"
 #include "boxfilehelper.h"
 #include "boxprototype.h"
 
@@ -11,12 +12,44 @@ QString BoxPrototype::fileName( ) const {
   return( m_fileName );
 }
 
-int BoxPrototype::inputSize( ) const {
-  return( boxImpl.inputSize( ) );
+QString BoxPrototype::baseName( ) const {
+  return( QFileInfo( m_fileName ).baseName( ) );
 }
 
-int BoxPrototype::outputSize( ) const {
-  return( boxImpl.outputSize( ) );
+void BoxPrototype::insertBoxObserver( Box *box ) {
+  if( !boxObservers.contains( box ) ) {
+    boxObservers.append( box );
+  }
+}
+
+void BoxPrototype::removeBoxObserver( Box *box ) {
+  if( boxObservers.contains( box ) ) {
+    boxObservers.removeAll( box );
+  }
+}
+
+int BoxPrototype::inputSize( ) {
+  return( boxImpl.getInputSize( ) );
+}
+
+int BoxPrototype::outputSize( ) {
+  return( boxImpl.getOutputSize( ) );
+}
+
+QString BoxPrototype::inputLabel( int index ) {
+  return( boxImpl.inputLabels[ index ] );
+}
+
+QString BoxPrototype::outputLabel( int index ) {
+  return( boxImpl.outputLabels[ index ] );
+}
+
+bool BoxPrototype::defaultInputValue( int index ) {
+  return( boxImpl.defaultInputValues[ index ] );
+}
+
+bool BoxPrototype::isInputRequired( int index ) {
+  return( boxImpl.requiredInputs[ index ] );
 }
 
 void BoxPrototype::clear( ) {

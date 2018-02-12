@@ -1,5 +1,6 @@
 #include "box.h"
 #include "boxnotfoundexception.h"
+#include "boxprototype.h"
 #include "editor.h"
 #include "globalproperties.h"
 #include "serializationfunctions.h"
@@ -38,6 +39,8 @@ Box::Box( Editor *editor, QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, 
 }
 
 Box::~Box( ) {
+  BoxPrototype *prototype = BoxManager::instance( )->getPrototype( m_file );
+  prototype->removeBoxObserver( this );
 }
 
 
@@ -71,8 +74,31 @@ void Box::updateLogic( ) {
 
 
 void Box::loadFile( QString fname ) {
-  // TODO
-  BoxManager::instance( );
+  m_file = fname;
+  BoxPrototype *prototype = BoxManager::instance( )->getPrototype( fname );
+  prototype->insertBoxObserver( this );
+  if( getLabel( ).isEmpty( ) ) {
+    setLabel( prototype->baseName( ).toUpper( ) );
+  }
+  // Loading inputs
+  setMaxInputSz( prototype->inputSize( ) );
+  setMinInputSz( prototype->inputSize( ) );
+  setInputSize( prototype->inputSize( ) );
+  for( int inputIdx = 0; inputIdx < prototype->inputSize( ); ++inputIdx ) {
+    QNEPort *in = input( inputIdx );
+    in->setName( prototype->inputLabel( inputIdx ) );
+    in->setDefaultValue( prototype->defaultInputValue( inputIdx ) );
+    in->setRequired( prototype->isInputRequired( inputIdx ) );
+  }
+  // Loading outputs
+  setMaxOutputSz( prototype->outputSize( ) );
+  setMinOutputSz( prototype->outputSize( ) );
+  setOutputSize( prototype->outputSize( ) );
+  for( int outputIdx = 0; outputIdx < prototype->outputSize( ); ++outputIdx ) {
+    QNEPort *in = output( outputIdx );
+    in->setName( prototype->outputLabel( outputIdx ) );
+  }
+  updatePorts( );
 }
 
 QString Box::getFile( ) const {

@@ -12,26 +12,24 @@ class BoxPrototypeImpl {
 
 public:
 
-  QVector< GraphicElement* > m_elements;
-  QVector< QNEPort* > m_inputMap;
-  QVector< QNEPort* > m_outputMap;
-  QVector< bool > m_defaultInputValues;
-  QVector< bool > m_requiredInputs;
-  QVector< QString > m_inputLabels;
-  QVector< QString > m_outputLabels;
-
-  int m_outputSize;
-  int m_inputSize;
+  QVector< GraphicElement* > elements;
+  QVector< QNEPort* > inputMap;
+  QVector< QNEPort* > outputMap;
+  QVector< bool > defaultInputValues;
+  QVector< bool > requiredInputs;
+  QVector< QString > inputLabels;
+  QVector< QString > outputLabels;
 
   void loadFile( QString fileName );
   void clear( );
 
-  int inputSize( ) const;
-  int outputSize( ) const;
-  void setOutputSize( int outputSize );
-  void setInputSize( int inputSize );
+  int getInputSize( ) const;
+  int getOutputSize( ) const;
+  void setOutputSize( int outSize );
+  void setInputSize( int inSize );
 
 private:
+
   void sortMap( QVector< QNEPort* > &map );
   void loadItem( QGraphicsItem *item );
   void loadInputs( );
