@@ -163,7 +163,8 @@ LogicElement* buildLogicElement( GraphicElement *elm ) {
       return( new LogicJKFlipFlop( ) );
       case ElementType::SRFLIPFLOP:
       return( new LogicSRFlipFlop( ) );
-
+      case ElementType::TFLIPFLOP:
+      return( new LogicTFlipFlop( ) );
       default:
       throw std::runtime_error( "Not implemented yet: " + elm->objectName( ).toStdString( ) );
       break;
@@ -232,8 +233,8 @@ void SimulationController::reSortElms( ) {
   sortLogicElements( m_logicElms );
   for( LogicElement *elm : m_logicElms ) {
     elm->validate( );
-    elm->updateLogic( );
   }
+  update( );
 }
 
 void SimulationController::clear( ) {
