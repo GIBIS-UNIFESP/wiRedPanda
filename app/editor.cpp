@@ -381,10 +381,8 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
 }
 
 bool Editor::loadBox( Box *box, QString fname ) {
+  boxManager->loadFile( fname );
   try {
-    if( box->getParentFile( ).isEmpty( ) ) {
-      box->setParentFile( GlobalProperties::currentFile );
-    }
     box->loadFile( fname );
   }
   catch( BoxNotFoundException &err ) {
@@ -505,7 +503,6 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
         Box *box = dynamic_cast< Box* >( elm );
         if( box ) {
           QString fname = label_auxData;
-          boxManager->loadFile( fname );
           if( !loadBox( box, fname ) ) {
             return( false );
           }

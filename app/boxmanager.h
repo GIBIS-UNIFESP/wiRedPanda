@@ -21,11 +21,15 @@ public:
   void loadFile( QString fname );
   void clear( );
 
+  static BoxManager* instance( );
+
 private slots:
   void reloadFile( QString fname );
 
 private:
   bool warnAboutFileChange( const QString &fileName );
+
+  static BoxManager *globalBoxManager;
 };
 
 #endif // BOXMANAGER_H

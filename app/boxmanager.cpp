@@ -1,11 +1,18 @@
 #include "boxfilehelper.h"
 #include "boxmanager.h"
 #include "boxprototype.h"
+#include "mainwindow.h"
 
 #include <QDebug>
+#include <QMessageBox>
 #include <qfileinfo.h>
 
+BoxManager*BoxManager::globalBoxManager = nullptr;
+
 BoxManager::BoxManager( MainWindow *window, QObject *parent ) : QObject( parent ), mainWindow( window ) {
+  if( globalBoxManager == nullptr ) {
+    globalBoxManager = this;
+  }
   // Warning: Parent can be null!
 }
 
@@ -35,6 +42,10 @@ void BoxManager::clear( ) {
   fileWatcher.removePaths( fileWatcher.files( ) );
 }
 
+BoxManager* BoxManager::instance( ) {
+  return( globalBoxManager );
+}
+
 void BoxManager::reloadFile( QString fname ) {
   if( warnAboutFileChange( fname ) ) {
     if( boxes.contains( fname ) ) {
@@ -51,7 +62,15 @@ void BoxManager::reloadFile( QString fname ) {
 
 bool BoxManager::warnAboutFileChange( const QString &fileName ) {
   qDebug( ) << "File " << fileName << " has changed!";
-  //TODO Verify if box is used anywhere before asking
-  //FIXME: Unimplemented yet
-  return( true );
+  QFileInfo finfo( fileName );
+  QMessageBox msgBox;
+  if( mainWindow ) {
+    msgBox.setParent( mainWindow );
+  }
+  msgBox.setLocale( QLocale::Portuguese );
+  msgBox.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
+  msgBox.setText( tr( "The file %1 changed, do you want to reload?" ).arg( finfo.fileName( ) ) );
+  msgBox.setWindowModality( Qt::ApplicationModal );
+  msgBox.setDefaultButton( QMessageBox::Yes );
+  return( msgBox.exec( ) == QMessageBox::Yes );
 }

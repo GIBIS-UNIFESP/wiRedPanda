@@ -45,7 +45,7 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor,
         elm->load( ds, portMap, version );
         if( elm->elementType( ) == ElementType::BOX ) {
           Box *box = qgraphicsitem_cast< Box* >( elm );
-          box->setParentFile( parentFile );
+//          box->setParentFile( parentFile ); // TODO Parent file handling
           editor->loadBox( box, box->getFile( ) );
         }
         elm->setSelected( true );
