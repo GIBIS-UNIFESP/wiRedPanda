@@ -11,6 +11,8 @@
 #include <QTimer>
 #include <input.h>
 
+class Clock;
+
 class SimulationController : public QObject {
   Q_OBJECT
 public:
@@ -32,9 +34,10 @@ private:
   Scene *scene;
   QTimer timer;
 
-  QMap< GraphicElement*, LogicElement* > map;
-  QMap< Input*, LogicElement* > inputMap;
-  QVector< LogicElement* > logicElms;
+  QMap< GraphicElement*, LogicElement* > m_map;
+  QMap< Input*, LogicElement* > m_inputMap;
+  QVector< Clock* > m_clocks;
+  QVector< LogicElement* > m_logicElms;
   static int calculatePriority( GraphicElement *elm,
                                 QMap< GraphicElement*, bool > &beingvisited,
                                 QMap< GraphicElement*, int > &priority );
