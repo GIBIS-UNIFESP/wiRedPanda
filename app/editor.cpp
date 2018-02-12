@@ -36,6 +36,7 @@ Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ) {
   undoStack = new QUndoStack( this );
   scene = new Scene( this );
 
+  boxManager = new BoxManager( mainWindow, this );
 
   install( scene );
   draggingElement = false;
@@ -105,6 +106,7 @@ void Editor::buildSelectionRect( ) {
 void Editor::clear( ) {
   simulationController->stop( );
   simulationController->clear( );
+  boxManager->clear( );
   ElementFactory::instance->clear( );
   undoStack->clear( );
   if( scene ) {
@@ -498,6 +500,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
         Box *box = dynamic_cast< Box* >( elm );
         if( box ) {
           QString fname = label_auxData;
+          boxManager->loadFile( fname );
           if( !loadBox( box, fname ) ) {
             return( false );
           }
