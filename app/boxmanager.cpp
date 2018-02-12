@@ -1,3 +1,4 @@
+#include "boxfilehelper.h"
 #include "boxmanager.h"
 #include "boxprototype.h"
 
@@ -13,15 +14,15 @@ BoxManager::~BoxManager( ) {
 }
 
 void BoxManager::loadFile( QString fname ) {
-  QFileInfo finfo( fname );
+  QFileInfo finfo = BoxFileHelper::findFile( fname );
   if( boxes.contains( finfo.absoluteFilePath( ) ) ) {
+    qDebug( ) << "BoxManager: Box already inserted: " << finfo.baseName( );
     //FIXME: Missing implementation
-    qDebug( ) << "BoxManager: Box already inserted: " << fname;
   }
   else {
-    qDebug( ) << "BoxManager: Inserting Box: " << fname;
+    qDebug( ) << "BoxManager: Inserting Box: " << finfo.baseName( );
     fileWatcher.addPath( finfo.absoluteFilePath( ) );
-    boxes.insert( finfo.absoluteFilePath( ), new BoxPrototype( fname ) );
+    boxes.insert( finfo.absoluteFilePath( ), new BoxPrototype( finfo.absoluteFilePath( ) ) );
   }
 }
 
@@ -37,7 +38,12 @@ void BoxManager::clear( ) {
 void BoxManager::reloadFile( QString fname ) {
   if( warnAboutFileChange( fname ) ) {
     if( boxes.contains( fname ) ) {
-      boxes[ fname ]->reload( );
+      try {
+        boxes[ fname ]->reload( );
+      }
+      catch( std::runtime_error &e ) {
+        // TODO: Warn user reload didn't work
+      }
     }
     // TODO DO something
   }

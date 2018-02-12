@@ -12,7 +12,7 @@
 class Editor;
 
 class Box : public GraphicElement {
-    Q_OBJECT
+  Q_OBJECT
 
   friend class CodeGenerator;
 public:
@@ -35,15 +35,15 @@ public:
   void setParentFile( const QString &value );
 
 
-  QFileInfo findFile(QString fname);
+  QFileInfo findFile( QString fname );
 
-  Box * getParentBox() const;
-  void setParentBox(Box * value);
+  Box* getParentBox( ) const;
+  void setParentBox( Box *value );
 
-  void verifyRecursion(QString fname);
-  QVector<GraphicElement *> getElements() const;
+  void verifyRecursion( QString fname );
+  QVector< GraphicElement* > getElements( ) const;
 
-  private:
+private:
   Editor *editor;
   QString m_file;
   QVector< QNEPort* > inputMap;
@@ -52,7 +52,7 @@ public:
   bool isAskingToReload;
   QString parentFile;
   void sortMap( QVector< QNEPort* > &map );
-  Box * parentBox;
+  Box *parentBox;
   QVector< GraphicElement* > elements;
 public slots:
   void fileChanged( QString file );
