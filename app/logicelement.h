@@ -38,7 +38,6 @@ public:
   void setOutputValue( bool value );
   bool getOutputValue( size_t index = 0 ) const;
 
-
   void validate( );
 
   bool operator<( const LogicElement &other );
