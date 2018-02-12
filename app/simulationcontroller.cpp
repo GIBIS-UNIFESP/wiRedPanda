@@ -165,6 +165,14 @@ LogicElement* buildLogicElement( GraphicElement *elm ) {
       return( new LogicSRFlipFlop( ) );
       case ElementType::TFLIPFLOP:
       return( new LogicTFlipFlop( ) );
+      case ElementType::DFLIPFLOP:
+      return( new LogicDFlipFlop( ) );
+      case ElementType::DLATCH:
+      return( new LogicDLatch( ) );
+      case ElementType::MUX:
+      return( new LogicMux( ) );
+      case ElementType::DEMUX:
+      return( new LogicDemux( ) );
       default:
       throw std::runtime_error( "Not implemented yet: " + elm->objectName( ).toStdString( ) );
       break;
