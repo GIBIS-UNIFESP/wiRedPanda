@@ -89,7 +89,13 @@ void SimulationController::updateScene( const QRectF &rect ) {
       if( p2 && p2->graphicElement( ) ) {
         GraphicElement *elm2 = p2->graphicElement( );
         if( p2->isOutput( ) ) {
-          p2->setValue( m_map[ elm2 ]->getOutputValue( p2->index( ) ) );
+          LogicElement *logElm2 = m_map[ elm2 ];
+          if( logElm2->isValid( ) ) {
+            p2->setValue( logElm2->getOutputValue( p2->index( ) ) );
+          }
+          else {
+            p2->setValue( -1 );
+          }
         }
         else if( elm2->elementGroup( ) == ElementGroup::OUTPUT ) {
           elm2->updateLogic( );
