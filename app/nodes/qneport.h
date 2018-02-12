@@ -75,7 +75,7 @@ public:
   char value( ) const;
   void setValue( char value );
 
-  bool required( ) const;
+  bool isRequired( ) const;
   void setRequired( bool required );
 
   QBrush currentBrush( ) const;

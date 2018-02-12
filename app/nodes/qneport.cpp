@@ -210,7 +210,7 @@ bool QNEPort::isValid( ) const {
     return( m_value != -1 );
   }
   if( m_connections.isEmpty( ) ) {
-    return( !required( ) );
+    return( !isRequired( ) );
   }
   return( m_connections.size( ) == 1 );
 }
@@ -238,7 +238,7 @@ void QNEPort::setCurrentBrush( const QBrush &currentBrush ) {
 }
 
 
-bool QNEPort::required( ) const {
+bool QNEPort::isRequired( ) const {
   return( m_required );
 }
 

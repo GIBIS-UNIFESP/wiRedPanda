@@ -13,12 +13,14 @@
 
 SimulationController::SimulationController( Scene *scn ) : QObject( dynamic_cast< QObject* >( scn ) ), timer( this ) {
   scene = scn;
+  m_globalVCC = nullptr;
+  m_globalGND = nullptr;
   timer.setInterval( GLOBALCLK );
   connect( &timer, &QTimer::timeout, this, &SimulationController::update );
 }
 
 SimulationController::~SimulationController( ) {
-
+  clear( );
 }
 
 int SimulationController::calculatePriority( GraphicElement *elm,
@@ -178,6 +180,12 @@ void sortLogicElements( QVector< LogicElement* > &elms ) {
 void SimulationController::reSortElms( ) {
   COMMENT( "GENERATING SIMULATION LAYER", 0 );
   clear( );
+  if( m_globalGND == nullptr ) {
+    m_globalGND = new LogicInput( false );
+  }
+  if( m_globalVCC == nullptr ) {
+    m_globalVCC = new LogicInput( true );
+  }
   QVector< GraphicElement* > elements = scene->getElements( );
   if( elements.size( ) == 0 ) {
     return;
@@ -209,6 +217,14 @@ void SimulationController::reSortElms( ) {
           }
         }
       }
+      else if( ( in->connections( ).size( ) == 0 ) && !in->isRequired( ) ) {
+        if( in->defaultValue( ) == false ) {
+          m_map[ elm ]->connectInput( in->index( ), m_globalGND, 0 );
+        }
+        else {
+          m_map[ elm ]->connectInput( in->index( ), m_globalVCC, 0 );
+        }
+      }
     }
   }
   sortLogicElements( m_logicElms );
@@ -222,6 +238,15 @@ void SimulationController::clear( ) {
   for( LogicElement *elm: m_logicElms ) {
     delete elm;
   }
+  if( m_globalVCC ) {
+    delete m_globalVCC;
+    m_globalVCC = nullptr;
+  }
+  if( m_globalGND ) {
+    delete m_globalGND;
+    m_globalGND = nullptr;
+  }
+  delete m_globalGND;
   m_logicElms.clear( );
   m_map.clear( );
   m_inputMap.clear( );

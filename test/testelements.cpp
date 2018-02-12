@@ -636,11 +636,11 @@ void TestElements::testBox( ) {
   QCOMPARE( ( int ) box->outputSize( ), 2 );
 
 
-  QCOMPARE( box->input( 0 )->required( ), false );
-  QCOMPARE( box->input( 1 )->required( ), false );
-  QCOMPARE( box->input( 2 )->required( ), true );
-  QCOMPARE( box->input( 3 )->required( ), false );
-  QCOMPARE( box->input( 4 )->required( ), false );
+  QCOMPARE( box->input( 0 )->isRequired( ), false );
+  QCOMPARE( box->input( 1 )->isRequired( ), false );
+  QCOMPARE( box->input( 2 )->isRequired( ), true );
+  QCOMPARE( box->input( 3 )->isRequired( ), false );
+  QCOMPARE( box->input( 4 )->isRequired( ), false );
 
   QCOMPARE( ( int ) box->input( 0 )->value( ), 1 );
   QCOMPARE( ( int ) box->input( 1 )->value( ), 1 );

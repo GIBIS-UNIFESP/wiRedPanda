@@ -38,6 +38,8 @@ private:
   QMap< Input*, LogicElement* > m_inputMap;
   QVector< Clock* > m_clocks;
   QVector< LogicElement* > m_logicElms;
+  LogicInput *m_globalVCC;
+  LogicInput *m_globalGND;
   static int calculatePriority( GraphicElement *elm,
                                 QMap< GraphicElement*, bool > &beingvisited,
                                 QMap< GraphicElement*, int > &priority );
