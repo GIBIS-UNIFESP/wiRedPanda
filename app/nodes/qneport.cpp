@@ -117,10 +117,10 @@ void QNEPort::connect( QNEConnection *conn ) {
     updateConnections( );
     if( graphicElement( ) ) {
 
-      graphicElement( )->updatePorts( );
-      if( isOutput( ) ) {
-        graphicElement( )->updateLogic( );
-      }
+//      graphicElement( )->updatePorts( );
+//      if( isOutput( ) ) {
+//        graphicElement( )->updateLogic( );
+//      }
     }
   }
 }
@@ -257,7 +257,7 @@ void QNEPort::setValue( char value ) {
     m_value = -1;
   }
   if( isOutput( ) ) {
-    foreach( QNEConnection * conn, connections( ) ) {
+    for( QNEConnection *conn: connections( ) ) {
       if( value == -1 ) {
         conn->setStatus( QNEConnection::Invalid );
       }

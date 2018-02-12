@@ -685,7 +685,11 @@ void Editor::save( QDataStream &ds ) {
 
 void Editor::load( QDataStream &ds ) {
   clear( );
+  simulationController->stop( );
   SerializationFunctions::load( this, ds, GlobalProperties::currentFile, scene );
+  simulationController->reSortElms( );
+
+  simulationController->start( );
   scene->clearSelection( );
   emit circuitHasChanged( );
 }
