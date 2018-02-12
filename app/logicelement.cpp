@@ -200,7 +200,8 @@ void LogicInput::_updateLogic( const std::vector< bool > & ) {
 LogicJKFlipFlop::LogicJKFlipFlop( ) :
   LogicElement( 5, 2 ),
   lastClk( false ) {
-
+  setOutputValue( 0, false );
+  setOutputValue( 1, true );
 }
 
 void LogicJKFlipFlop::_updateLogic( const std::vector< bool > &inputs ) {
@@ -224,7 +225,7 @@ void LogicJKFlipFlop::_updateLogic( const std::vector< bool > &inputs ) {
       q1 = true;
     }
   }
-  if( !prst || !clr ) {
+  if( ( !prst ) || ( !clr ) ) {
     q0 = !prst;
     q1 = !clr;
   }
@@ -237,7 +238,8 @@ void LogicJKFlipFlop::_updateLogic( const std::vector< bool > &inputs ) {
 LogicSRFlipFlop::LogicSRFlipFlop( ) :
   LogicElement( 5, 2 ),
   lastClk( false ) {
-
+  setOutputValue( 0, false );
+  setOutputValue( 1, true );
 }
 
 void LogicSRFlipFlop::_updateLogic( const std::vector< bool > &inputs ) {
@@ -258,7 +260,7 @@ void LogicSRFlipFlop::_updateLogic( const std::vector< bool > &inputs ) {
       q1 = r;
     }
   }
-  if( !prst || !clr ) {
+  if( ( !prst ) || ( !clr ) ) {
     q0 = !prst;
     q1 = !clr;
   }
@@ -267,4 +269,35 @@ void LogicSRFlipFlop::_updateLogic( const std::vector< bool > &inputs ) {
   setOutputValue( 0, q0 );
   setOutputValue( 1, q1 );
   /* Reference: https://pt.wikipedia.org/wiki/Flip-flop#Flip-flop_SR_Sincrono */
+}
+
+LogicTFlipFlop::LogicTFlipFlop( ) :
+  LogicElement( 4, 2 ),
+  lastClk( false ) {
+  setOutputValue( 0, false );
+  setOutputValue( 1, true );
+}
+
+void LogicTFlipFlop::_updateLogic( const std::vector< bool > &inputs ) {
+  bool q0 = getOutputValue( 0 );
+  bool q1 = getOutputValue( 1 );
+  bool T = inputs[ 0 ];
+  bool clk = inputs[ 1 ];
+  bool prst = inputs[ 2 ];
+  bool clr = inputs[ 3 ];
+  if( clk && !lastClk ) {
+    if( T ) {
+      q0 = !q0;
+      q1 = !q0;
+    }
+  }
+  if( ( !prst ) || ( !clr ) ) {
+    q0 = !prst;
+    q1 = !clr;
+  }
+  qDebug( ) << inputs;
+  setOutputValue( 0, q0 );
+  setOutputValue( 1, q1 );
+  lastClk = clk;
+  /* Reference: https://en.wikipedia.org/wiki/Flip-flop_(electronics)#T_flip-flop */
 }

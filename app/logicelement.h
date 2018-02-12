@@ -163,4 +163,16 @@ protected:
 private:
   bool lastClk;
 };
+
+class LogicTFlipFlop : public LogicElement {
+public:
+  explicit LogicTFlipFlop( );
+
+  /* LogicElement interface */
+protected:
+  virtual void _updateLogic( const std::vector< bool > &inputs );
+
+private:
+  bool lastClk;
+};
 #endif /* LOGICELEMENT_H */
