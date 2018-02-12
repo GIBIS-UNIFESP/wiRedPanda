@@ -44,6 +44,16 @@ public:
 
 };
 
+class LogicNode : public LogicElement {
+public:
+
+  explicit LogicNode( );
+
+  /* LogicElement interface */
+protected:
+  virtual void _updateLogic( const std::vector< bool > & );
+};
+
 class LogicInput : public LogicElement {
 public:
 
@@ -53,7 +63,6 @@ public:
 protected:
   virtual void _updateLogic( const std::vector< bool > & );
 };
-
 
 class LogicOutput : public LogicElement {
 public:
@@ -135,6 +144,9 @@ public:
   /* LogicElement interface */
 protected:
   virtual void _updateLogic( const std::vector< bool > &inputs );
+
+private:
+  bool lastClk;
 };
 
 #endif /* LOGICELEMENT_H */

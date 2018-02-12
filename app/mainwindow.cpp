@@ -705,6 +705,7 @@ void MainWindow::on_actionPlay_triggered( bool checked ) {
   else {
     editor->getSimulationController( )->stop( );
   }
+  editor->getSimulationController( )->updateScene( editor->getScene( )->itemsBoundingRect( ) );
 }
 
 void MainWindow::on_actionRename_triggered( ) {

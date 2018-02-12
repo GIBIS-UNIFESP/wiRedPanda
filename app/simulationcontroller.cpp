@@ -106,13 +106,12 @@ void SimulationController::update( ) {
 
 void SimulationController::stop( ) {
   timer.stop( );
-  updateScene( scene->itemsBoundingRect( ) );
 }
 
 void SimulationController::start( ) {
-  timer.start( );
   Clock::reset = true;
   reSortElms( );
+  timer.start( );
 }
 
 LogicElement* buildLogicElement( GraphicElement *elm ) {
@@ -121,6 +120,8 @@ LogicElement* buildLogicElement( GraphicElement *elm ) {
       case ElementType::BUTTON:
       case ElementType::CLOCK:
       return( new LogicInput( ) );
+      case ElementType::NODE:
+      return( new LogicNode( ) );
       case ElementType::VCC:
       return( new LogicInput( true ) );
       case ElementType::GND:
@@ -142,8 +143,8 @@ LogicElement* buildLogicElement( GraphicElement *elm ) {
       return( new LogicXnor( elm->inputSize( ) ) );
       case ElementType::NOT:
       return( new LogicNot( ) );
-//      case ElementType::JKFLIPFLOP:
-//      return( new LogicJKFlipFlop( ) );
+      case ElementType::JKFLIPFLOP:
+      return( new LogicJKFlipFlop( ) );
 
       default:
       throw std::runtime_error( "Not implemented yet: " + elm->objectName( ).toStdString( ) );
@@ -162,7 +163,11 @@ void sortLogicElements( QVector< LogicElement* > &elms ) {
 
 void SimulationController::reSortElms( ) {
   COMMENT( "GENERATING SIMULATION LAYER", 0 );
+  clear( );
   QVector< GraphicElement* > elements = scene->getElements( );
+  if( elements.size( ) == 0 ) {
+    return;
+  }
   logicElms.resize( elements.size( ) );
   for( int idx = 0; idx < elements.size( ); ++idx ) {
     GraphicElement *elm = elements[ idx ];
@@ -192,4 +197,10 @@ void SimulationController::reSortElms( ) {
     elm->validate( );
     elm->updateLogic( );
   }
+}
+
+void SimulationController::clear( ) {
+  this->map.clear( );
+  this->inputMap.clear( );
+  this->logicElms.clear( );
 }

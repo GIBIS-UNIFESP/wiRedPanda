@@ -103,6 +103,8 @@ void Editor::buildSelectionRect( ) {
 }
 
 void Editor::clear( ) {
+  simulationController->stop( );
+  simulationController->clear( );
   ElementFactory::instance->clear( );
   undoStack->clear( );
   if( scene ) {
@@ -113,6 +115,7 @@ void Editor::clear( ) {
     scene->setSceneRect( scene->views( ).front( )->rect( ) );
   }
   updateTheme( );
+  simulationController->start( );
   emit circuitHasChanged( );
 }
 
@@ -687,8 +690,6 @@ void Editor::load( QDataStream &ds ) {
   clear( );
   simulationController->stop( );
   SerializationFunctions::load( this, ds, GlobalProperties::currentFile, scene );
-  simulationController->reSortElms( );
-
   simulationController->start( );
   scene->clearSelection( );
   emit circuitHasChanged( );
