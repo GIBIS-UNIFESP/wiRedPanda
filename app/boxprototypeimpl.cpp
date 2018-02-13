@@ -6,6 +6,8 @@
 #include <QFile>
 
 void BoxPrototypeImpl::loadFile( QString fileName ) {
+  clear( );
+
   QFile file( fileName );
   if( file.open( QFile::ReadOnly ) ) {
     QDataStream ds( &file );
@@ -125,6 +127,8 @@ void BoxPrototypeImpl::loadItem( QGraphicsItem *item ) {
 }
 
 void BoxPrototypeImpl::clear( ) {
+  inputMap.clear( );
+  outputMap.clear( );
   setInputSize( 0 );
   setOutputSize( 0 );
   qDeleteAll( elements );

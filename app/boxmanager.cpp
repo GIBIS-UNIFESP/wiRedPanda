@@ -13,7 +13,7 @@ BoxManager::BoxManager( MainWindow *mainWindow, QObject *parent ) : QObject( par
   if( globalBoxManager == nullptr ) {
     globalBoxManager = this;
   }
-  // Warning: Parent can be null!
+  connect( &m_fileWatcher, &QFileSystemWatcher::fileChanged, this, &BoxManager::reloadFile );
 }
 
 BoxManager::~BoxManager( ) {
@@ -53,11 +53,12 @@ BoxManager* BoxManager::instance( ) {
   return( globalBoxManager );
 }
 
-void BoxManager::reloadFile( QString fname ) {
-  if( warnAboutFileChange( fname ) ) {
-    if( m_boxes.contains( fname ) ) {
+void BoxManager::reloadFile( QString fileName ) {
+  QString bname = QFileInfo( fileName ).baseName( );
+  if( warnAboutFileChange( bname ) ) {
+    if( m_boxes.contains( bname ) ) {
       try {
-        m_boxes[ fname ]->reload( );
+        m_boxes[ bname ]->reload( );
       }
       catch( std::runtime_error &e ) {
         // TODO: Warn user reload didn't work
@@ -69,14 +70,13 @@ void BoxManager::reloadFile( QString fname ) {
 
 bool BoxManager::warnAboutFileChange( const QString &fileName ) {
   qDebug( ) << "File " << fileName << " has changed!";
-  QFileInfo finfo( fileName );
   QMessageBox msgBox;
   if( m_mainWindow ) {
     msgBox.setParent( m_mainWindow );
   }
   msgBox.setLocale( QLocale::Portuguese );
   msgBox.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
-  msgBox.setText( tr( "The file %1 changed, do you want to reload?" ).arg( finfo.fileName( ) ) );
+  msgBox.setText( tr( "The file %1 changed, do you want to reload?" ).arg( fileName ) );
   msgBox.setWindowModality( Qt::ApplicationModal );
   msgBox.setDefaultButton( QMessageBox::Yes );
   return( msgBox.exec( ) == QMessageBox::Yes );

@@ -26,7 +26,7 @@ public:
   static BoxManager* instance( );
 
 private slots:
-  void reloadFile( QString fname );
+  void reloadFile(QString bname );
 
 private:
   bool warnAboutFileChange( const QString &fileName );
