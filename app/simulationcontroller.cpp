@@ -76,12 +76,14 @@ void SimulationController::updateScene( const QRectF &rect ) {
       if( p1 && p1->graphicElement( ) ) {
         GraphicElement *elm1 = p1->graphicElement( );
         if( p1->isOutput( ) ) {
-          LogicElement *logElm1 = m_map[ elm1 ];
-          if( logElm1->isValid( ) ) {
-            p1->setValue( logElm1->getOutputValue( p1->index( ) ) );
-          }
-          else {
-            p1->setValue( -1 );
+          if( m_map.contains( elm1 ) ) {
+            LogicElement *logElm1 = m_map[ elm1 ];
+            if( logElm1->isValid( ) ) {
+              p1->setValue( logElm1->getOutputValue( p1->index( ) ) );
+            }
+            else {
+              p1->setValue( -1 );
+            }
           }
         }
         else if( elm1->elementGroup( ) == ElementGroup::OUTPUT ) {
@@ -90,17 +92,19 @@ void SimulationController::updateScene( const QRectF &rect ) {
       }
       if( p2 && p2->graphicElement( ) ) {
         GraphicElement *elm2 = p2->graphicElement( );
-        if( p2->isOutput( ) ) {
-          LogicElement *logElm2 = m_map[ elm2 ];
-          if( logElm2->isValid( ) ) {
-            p2->setValue( logElm2->getOutputValue( p2->index( ) ) );
+        if( m_map.contains( elm2 ) ) {
+          if( p2->isOutput( ) ) {
+            LogicElement *logElm2 = m_map[ elm2 ];
+            if( logElm2->isValid( ) ) {
+              p2->setValue( logElm2->getOutputValue( p2->index( ) ) );
+            }
+            else {
+              p2->setValue( -1 );
+            }
           }
-          else {
-            p2->setValue( -1 );
+          else if( elm2->elementGroup( ) == ElementGroup::OUTPUT ) {
+            elm2->updateLogic( );
           }
-        }
-        else if( elm2->elementGroup( ) == ElementGroup::OUTPUT ) {
-          elm2->updateLogic( );
         }
       }
     }

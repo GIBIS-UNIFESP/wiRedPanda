@@ -63,4 +63,7 @@ void BoxPrototype::reload( ) {
   clear( );
 
   boxImpl.loadFile( m_fileName );
+  for( Box *box : boxObservers ) {
+    box->loadFile( m_fileName );
+  }
 }
