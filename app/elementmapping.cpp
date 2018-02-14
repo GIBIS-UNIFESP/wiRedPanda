@@ -134,9 +134,6 @@ void ElementMapping::initialize( ) {
 }
 
 
-
-
-
 void ElementMapping::setDefaultValue( GraphicElement *elm, QNEPort *in ) {
   if( in->defaultValue( ) == false ) {
     map[ elm ]->connectInput( in->index( ), m_globalGND, 0 );
