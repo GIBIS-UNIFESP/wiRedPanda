@@ -64,7 +64,8 @@ SOURCES += \
     $$PWD/app/boxmanager.cpp \
     $$PWD/app/boxprototype.cpp \
     $$PWD/app/boxfilehelper.cpp \
-    $$PWD/app/boxprototypeimpl.cpp
+    $$PWD/app/boxprototypeimpl.cpp \
+    $$PWD/app/elementmapping.cpp
 
 HEADERS  +=  \
     $$PWD/app/common.h \
@@ -121,7 +122,8 @@ HEADERS  +=  \
     $$PWD/app/boxmanager.h \
     $$PWD/app/boxprototype.h \
     $$PWD/app/boxfilehelper.cpp \
-    $$PWD/app/boxprototypeimpl.h
+    $$PWD/app/boxprototypeimpl.h \
+    $$PWD/app/elementmapping.h
 
 INCLUDEPATH += \
     $$PWD/app \
