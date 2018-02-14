@@ -1,3 +1,4 @@
+#include "elementmapping.h"
 #include "globalproperties.h"
 #include "graphicsviewzoom.h"
 #include "listitemwidget.h"
@@ -501,7 +502,7 @@ bool MainWindow::ExportToArduino( QString fname ) {
     if( !fname.endsWith( ".ino" ) ) {
       fname.append( ".ino" );
     }
-    elements = SimulationController::sortElements( elements );
+    elements = ElementMapping::sortElements( elements );
 
 
     CodeGenerator arduino( QDir::home( ).absoluteFilePath( fname ), elements );
