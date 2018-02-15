@@ -5,6 +5,12 @@
 
 #include <QFile>
 
+BoxPrototypeImpl::~BoxPrototypeImpl( ) {
+  for( GraphicElement *elm: elements ) {
+    delete elm;
+  }
+}
+
 void BoxPrototypeImpl::loadFile( QString fileName ) {
   clear( );
 
@@ -16,11 +22,11 @@ void BoxPrototypeImpl::loadFile( QString fileName ) {
       loadItem( item );
     }
   }
-  setInputSize( inputMap.size( ) );
-  setOutputSize( outputMap.size( ) );
+  setInputSize( referenceInputs.size( ) );
+  setOutputSize( referenceOutputs.size( ) );
 
-  sortMap( inputMap );
-  sortMap( outputMap );
+  sortMap( referenceInputs );
+  sortMap( referenceOutputs );
 
   loadInputs( );
   loadOutputs( );
@@ -30,14 +36,14 @@ void BoxPrototypeImpl::loadFile( QString fileName ) {
 
 void BoxPrototypeImpl::loadInputs( ) {
   for( int portIndex = 0; portIndex < getInputSize( ); ++portIndex ) {
-    GraphicElement *elm = inputMap.at( portIndex )->graphicElement( );
+    GraphicElement *elm = referenceInputs.at( portIndex )->graphicElement( );
     QString lb = elm->getLabel( );
     if( lb.isEmpty( ) ) {
       lb = elm->objectName( );
     }
-    if( !inputMap.at( portIndex )->portName( ).isEmpty( ) ) {
+    if( !referenceInputs.at( portIndex )->portName( ).isEmpty( ) ) {
       lb += " ";
-      lb += inputMap.at( portIndex )->portName( );
+      lb += referenceInputs.at( portIndex )->portName( );
     }
     if( !elm->genericProperties( ).isEmpty( ) ) {
       lb += " [" + elm->genericProperties( ) + "]";
@@ -45,21 +51,21 @@ void BoxPrototypeImpl::loadInputs( ) {
     inputLabels[ portIndex ] = lb;
     if( elm->elementType( ) != ElementType::CLOCK ) {
       requiredInputs[ portIndex ] = false;
-      defaultInputValues[ portIndex ] = inputMap.at( portIndex )->value( );
+      defaultInputValues[ portIndex ] = referenceInputs.at( portIndex )->value( );
     }
   }
 }
 
 void BoxPrototypeImpl::loadOutputs( ) {
   for( int portIndex = 0; portIndex < getOutputSize( ); ++portIndex ) {
-    GraphicElement *elm = outputMap.at( portIndex )->graphicElement( );
+    GraphicElement *elm = referenceOutputs.at( portIndex )->graphicElement( );
     QString lb = elm->getLabel( );
     if( lb.isEmpty( ) ) {
       lb = elm->objectName( );
     }
-    if( !outputMap.at( portIndex )->portName( ).isEmpty( ) ) {
+    if( !referenceOutputs.at( portIndex )->portName( ).isEmpty( ) ) {
       lb += " ";
-      lb += outputMap.at( portIndex )->portName( );
+      lb += referenceOutputs.at( portIndex )->portName( );
     }
     if( !elm->genericProperties( ).isEmpty( ) ) {
       lb += " [" + elm->genericProperties( ) + "]";
@@ -96,29 +102,64 @@ void BoxPrototypeImpl::sortMap( QVector< QNEPort* > &map ) {
   }
 }
 
+void BoxPrototypeImpl::loadInput( GraphicElement *elm ) {
+  for( QNEPort *port : elm->outputs( ) ) {
+    referenceInputs.append( port );
+
+
+    Q_ASSERT( Editor::globalEditor );
+    GraphicElement *nodeElm = ElementFactory::buildElement( ElementType::NODE, Editor::globalEditor );
+    elements.append( nodeElm );
+    for( QNEConnection *conn: port->connections( ) ) {
+      if( conn->port1( ) == port ) {
+        conn->setPort1( nodeElm->output( ) );
+      }
+      else {
+        conn->setPort2( nodeElm->output( ) );
+      }
+    }
+    inputs.append( nodeElm );
+  }
+  elm->disable( );
+}
+
+void BoxPrototypeImpl::loadOutput( GraphicElement *elm ) {
+  for( QNEPort *port : elm->inputs( ) ) {
+    referenceOutputs.append( port );
+
+    Q_ASSERT( Editor::globalEditor );
+    GraphicElement *nodeElm = ElementFactory::buildElement( ElementType::NODE, Editor::globalEditor );
+    elements.append( nodeElm );
+    for( QNEConnection *conn: port->connections( ) ) {
+      if( conn->port1( ) == port ) {
+        conn->setPort1( nodeElm->input( ) );
+      }
+      else {
+        conn->setPort2( nodeElm->input( ) );
+      }
+    }
+    outputs.append( nodeElm );
+  }
+}
+
 void BoxPrototypeImpl::loadItem( QGraphicsItem *item ) {
   if( item->type( ) == GraphicElement::Type ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
-    elements.append( elm );
     if( elm ) {
       switch( elm->elementType( ) ) {
           case ElementType::BUTTON:
           case ElementType::SWITCH:
           case ElementType::CLOCK: {
-          for( QNEPort *port : elm->outputs( ) ) {
-            inputMap.append( port );
-          }
-          elm->disable( );
+          loadInput( elm );
           break;
         }
           case ElementType::DISPLAY:
           case ElementType::LED: {
-          for( QNEPort *port : elm->inputs( ) ) {
-            outputMap.append( port );
-          }
+          loadOutput( elm );
           break;
         }
           default: {
+          elements.append( elm );
           break;
         }
       }
@@ -127,8 +168,8 @@ void BoxPrototypeImpl::loadItem( QGraphicsItem *item ) {
 }
 
 void BoxPrototypeImpl::clear( ) {
-  inputMap.clear( );
-  outputMap.clear( );
+  referenceInputs.clear( );
+  referenceOutputs.clear( );
   setInputSize( 0 );
   setOutputSize( 0 );
   qDeleteAll( elements );
@@ -136,11 +177,11 @@ void BoxPrototypeImpl::clear( ) {
 }
 
 int BoxPrototypeImpl::getInputSize( ) const {
-  return( inputMap.size( ) );
+  return( referenceInputs.size( ) );
 }
 
 int BoxPrototypeImpl::getOutputSize( ) const {
-  return( outputMap.size( ) );
+  return( referenceOutputs.size( ) );
 }
 
 void BoxPrototypeImpl::setOutputSize( int outputSize ) {

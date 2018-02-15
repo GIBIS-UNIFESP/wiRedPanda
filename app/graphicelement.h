@@ -21,6 +21,10 @@ enum class ElementGroup {
 
 #define MAXIMUMVALIDINPUTSIZE 256
 
+class GraphicElement;
+
+typedef QVector< GraphicElement* > ElementVector;
+
 class GraphicElement : public QGraphicsObject, public ItemWithId {
   Q_OBJECT
 public:

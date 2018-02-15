@@ -1,6 +1,7 @@
 #ifndef BOX_H
 #define BOX_H
 
+#include "boxprototype.h"
 #include "elementfactory.h"
 #include "graphicelement.h"
 #include "scene.h"
@@ -10,6 +11,8 @@
 #include <QFileSystemWatcher>
 
 class Editor;
+
+class BoxPrototype;
 
 class Box : public GraphicElement {
   Q_OBJECT
@@ -32,11 +35,18 @@ public:
   void loadFile( QString fname );
   QString getFile( ) const;
 
+  BoxPrototype* getPrototype( );
+
   QVector< GraphicElement* > getElements( ) const;
 
 private:
   Editor *editor;
   QString m_file;
+
+
+  void loadInputs( BoxPrototype *prototype );
+
+  void loadOutputs( BoxPrototype *prototype );
 
   /* QGraphicsItem interface */
 protected:

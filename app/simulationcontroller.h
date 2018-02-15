@@ -22,12 +22,11 @@ public slots:
   void start( );
   void reSortElms( );
   void clear( );
-
 private:
   void updateGraphicElement( QNEPort *port );
   void updateConnection( QNEConnection *conn );
 
-  ElementMapping elMapping;
+  ElementMapping *elMapping;
   Scene *scene;
   QTimer timer;
 };

@@ -502,7 +502,7 @@ bool MainWindow::ExportToArduino( QString fname ) {
     if( !fname.endsWith( ".ino" ) ) {
       fname.append( ".ino" );
     }
-    elements = ElementMapping::sortElements( elements );
+    elements = ElementMapping::sortGraphicElements( elements );
 
 
     CodeGenerator arduino( QDir::home( ).absoluteFilePath( fname ), elements );

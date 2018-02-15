@@ -11,7 +11,11 @@
 #include <input.h>
 
 class Clock;
+class Box;
 
+
+class ElementMapping;
+class BoxMapping;
 typedef QMap< GraphicElement*, LogicElement* > ElementMap;
 typedef QMap< Input*, LogicElement* > InputMap;
 
@@ -21,35 +25,40 @@ public:
   ElementMap map;
   InputMap inputMap;
   QVector< Clock* > clocks;
-  QVector< LogicElement* > logicElms;
   QVector< GraphicElement* > elements;
+  QMap< Box*, BoxMapping* > boxMappings;
+  QVector< LogicElement* > logicElms;
 
-  LogicInput *m_globalVCC;
-  LogicInput *m_globalGND;
+  LogicInput globalGND;
+  LogicInput globalVCC;
 
-  ElementMapping( );
+  ElementMapping( const QVector< GraphicElement* > &elms );
+  virtual ~ElementMapping( );
 
   void clear( );
 
-  void resortElements( const QVector< GraphicElement* > &elements );
+  static QVector< GraphicElement* > sortGraphicElements( QVector< GraphicElement* > elms );
 
-  static QVector< GraphicElement* > sortElements( QVector< GraphicElement* > elms );
+  virtual void initialize( );
 
-private:
+  void sort( );
 
+protected:
+  QVector< LogicElement* > deletableElements;
 
   LogicElement* buildLogicElement( GraphicElement *elm );
 
-  void initialize( );
   void setDefaultValue( GraphicElement *elm, QNEPort *in );
   void applyConnection( GraphicElement *elm, QNEPort *in );
   void generateMap( );
-  void generateConnections( );
+  void connectElements( );
   void validateElements( );
   void sortLogicElements( );
   static int calculatePriority( GraphicElement *elm,
                                 QMap< GraphicElement*, bool > &beingvisited,
                                 QMap< GraphicElement*, int > &priority );
+  void insertElement( GraphicElement *elm );
+  void insertBox( Box *box );
 };
 
 #endif // ELEMENTMAPPING_H

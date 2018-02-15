@@ -7,6 +7,7 @@
 #include <QString>
 #include <QVector>
 
+class BoxMapping;
 class GraphicElement;
 class Box;
 
@@ -26,14 +27,16 @@ public:
   void insertBoxObserver( Box *box );
   void removeBoxObserver( Box *box );
 
-  int inputSize( );
-  int outputSize( );
+  int inputSize( ) const;
+  int outputSize( ) const;
 
-  QString inputLabel( int index );
-  QString outputLabel( int index );
+  QString inputLabel( int index ) const;
+  QString outputLabel( int index ) const;
 
   bool defaultInputValue( int index );
   bool isInputRequired( int index );
+
+  BoxMapping* generateMapping( ) const;
 
 private:
   void clear( );
