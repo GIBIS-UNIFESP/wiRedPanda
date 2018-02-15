@@ -45,7 +45,11 @@ void BoxManager::clear( ) {
 }
 
 BoxPrototype* BoxManager::getPrototype( QString fname ) {
+  qDebug( ) << "get prototype of " << fname;
   QFileInfo finfo = BoxFileHelper::findFile( fname );
+  if( !m_boxes.contains( finfo.baseName( ) ) ) {
+    return( nullptr );
+  }
   return( m_boxes[ finfo.baseName( ) ] );
 }
 

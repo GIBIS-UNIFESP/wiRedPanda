@@ -1,5 +1,6 @@
 #include "box.h"
 #include "boxfilehelper.h"
+#include "boxmapping.h"
 #include "boxprototype.h"
 
 #include <QFileInfo>
@@ -28,19 +29,19 @@ void BoxPrototype::removeBoxObserver( Box *box ) {
   }
 }
 
-int BoxPrototype::inputSize( ) {
+int BoxPrototype::inputSize( ) const {
   return( boxImpl.getInputSize( ) );
 }
 
-int BoxPrototype::outputSize( ) {
+int BoxPrototype::outputSize( ) const {
   return( boxImpl.getOutputSize( ) );
 }
 
-QString BoxPrototype::inputLabel( int index ) {
+QString BoxPrototype::inputLabel( int index ) const {
   return( boxImpl.inputLabels[ index ] );
 }
 
-QString BoxPrototype::outputLabel( int index ) {
+QString BoxPrototype::outputLabel( int index ) const {
   return( boxImpl.outputLabels[ index ] );
 }
 
@@ -50,6 +51,10 @@ bool BoxPrototype::defaultInputValue( int index ) {
 
 bool BoxPrototype::isInputRequired( int index ) {
   return( boxImpl.requiredInputs[ index ] );
+}
+
+BoxMapping* BoxPrototype::generateMapping( ) const {
+  return( new BoxMapping( boxImpl.elements, boxImpl.inputs, boxImpl.outputs ) );
 }
 
 void BoxPrototype::clear( ) {

@@ -40,7 +40,9 @@ Box::Box( Editor *editor, QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, 
 
 Box::~Box( ) {
   BoxPrototype *prototype = BoxManager::instance( )->getPrototype( m_file );
-  prototype->removeBoxObserver( this );
+  if( prototype ) {
+    prototype->removeBoxObserver( this );
+  }
 }
 
 
@@ -73,14 +75,7 @@ void Box::updateLogic( ) {
 }
 
 
-void Box::loadFile( QString fname ) {
-  m_file = fname;
-  BoxPrototype *prototype = BoxManager::instance( )->getPrototype( fname );
-  prototype->insertBoxObserver( this );
-  if( getLabel( ).isEmpty( ) ) {
-    setLabel( prototype->baseName( ).toUpper( ) );
-  }
-  // Loading inputs
+void Box::loadInputs( BoxPrototype *prototype ) {
   setMaxInputSz( prototype->inputSize( ) );
   setMinInputSz( prototype->inputSize( ) );
   setInputSize( prototype->inputSize( ) );
@@ -90,7 +85,9 @@ void Box::loadFile( QString fname ) {
     in->setDefaultValue( prototype->defaultInputValue( inputIdx ) );
     in->setRequired( prototype->isInputRequired( inputIdx ) );
   }
-  // Loading outputs
+}
+
+void Box::loadOutputs( BoxPrototype *prototype ) {
   setMaxOutputSz( prototype->outputSize( ) );
   setMinOutputSz( prototype->outputSize( ) );
   setOutputSize( prototype->outputSize( ) );
@@ -98,11 +95,28 @@ void Box::loadFile( QString fname ) {
     QNEPort *in = output( outputIdx );
     in->setName( prototype->outputLabel( outputIdx ) );
   }
+}
+
+void Box::loadFile( QString fname ) {
+  m_file = fname;
+  BoxPrototype *prototype = getPrototype( );
+  prototype->insertBoxObserver( this );
+  if( getLabel( ).isEmpty( ) ) {
+    setLabel( prototype->baseName( ).toUpper( ) );
+  }
+  // Loading inputs
+  loadInputs( prototype );
+  // Loading outputs
+  loadOutputs( prototype );
   updatePorts( );
 }
 
 QString Box::getFile( ) const {
   return( m_file );
+}
+
+BoxPrototype* Box::getPrototype( ) {
+  return( BoxManager::instance( )->getPrototype( m_file ) );
 }
 
 

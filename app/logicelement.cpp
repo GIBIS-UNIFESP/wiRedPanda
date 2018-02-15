@@ -6,6 +6,25 @@ bool LogicElement::isValid( ) const {
   return( m_isValid );
 }
 
+void LogicElement::clearPredecessors( ) {
+  for( auto input: m_inputs ) {
+    input.first = nullptr;
+    input.second = 0;
+  }
+}
+
+void LogicElement::clearSucessors( ) {
+  for( LogicElement *elm : m_sucessors ) {
+    for( auto input: elm->m_inputs ) {
+      if( input.first == this ) {
+        input.first = nullptr;
+        input.second = 0;
+      }
+    }
+  }
+  m_sucessors.clear( );
+}
+
 LogicElement::LogicElement( size_t inputSize, size_t outputSize ) :
   m_isValid( true ),
   beingVisited( false ),
@@ -32,7 +51,7 @@ void LogicElement::updateLogic( ) {
   }
 }
 
-void LogicElement::connectInput( int index, LogicElement *elm, int port ) {
+void LogicElement::connectPredecessor( int index, LogicElement *elm, int port ) {
   m_inputs.at( index ) = std::make_pair( elm, port );
   elm->m_sucessors.insert( this );
 }

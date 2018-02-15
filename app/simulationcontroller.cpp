@@ -1,3 +1,5 @@
+#include "box.h"
+#include "boxmapping.h"
 #include "elementfactory.h"
 #include "simulationcontroller.h"
 #include "simulationcontroller.h"
@@ -12,7 +14,8 @@
 #include <QGraphicsView>
 #include <QStack>
 
-SimulationController::SimulationController( Scene *scn ) : QObject( dynamic_cast< QObject* >( scn ) ), timer( this ) {
+SimulationController::SimulationController( Scene *scn ) : QObject( dynamic_cast< QObject* >( scn ) ), elMapping(
+    nullptr ), timer( this ) {
   scene = scn;
   timer.setInterval( GLOBALCLK );
   connect( &timer, &QTimer::timeout, this, &SimulationController::update );
@@ -21,9 +24,6 @@ SimulationController::SimulationController( Scene *scn ) : QObject( dynamic_cast
 SimulationController::~SimulationController( ) {
   clear( );
 }
-
-
-
 
 void SimulationController::updateScene( const QRectF &rect ) {
   const QList< QGraphicsItem* > &items = scene->items( rect );
@@ -34,16 +34,24 @@ void SimulationController::updateScene( const QRectF &rect ) {
 }
 
 void SimulationController::update( ) {
-  for( Clock *clk : elMapping.clocks ) {
-    clk->updateLogic( );
+  if( elMapping ) {
+    for( Clock *clk : elMapping->clocks ) {
+      if( Clock::reset ) {
+        clk->resetClock( );
+      }
+      else {
+        clk->updateLogic( );
+      }
+    }
+    Clock::reset = false;
+    for( auto iter = elMapping->inputMap.begin( ); iter != elMapping->inputMap.end( ); ++iter ) {
+      iter.value( )->setOutputValue( iter.key( )->getOn( ) );
+    }
+    for( LogicElement *elm : elMapping->logicElms ) {
+      elm->updateLogic( );
+    }
+    updateScene( scene->views( ).first( )->sceneRect( ) );
   }
-  for( auto iter = elMapping.inputMap.begin( ); iter != elMapping.inputMap.end( ); ++iter ) {
-    iter.value( )->setOutputValue( iter.key( )->getOn( ) );
-  }
-  for( LogicElement *elm : elMapping.logicElms ) {
-    elm->updateLogic( );
-  }
-  updateScene( scene->views( ).first( )->sceneRect( ) );
 }
 
 void SimulationController::stop( ) {
@@ -63,25 +71,42 @@ void SimulationController::reSortElms( ) {
   if( elements.size( ) == 0 ) {
     return;
   }
-  elMapping.resortElements( scene->getElements( ) );
+  if( elMapping ) {
+    delete elMapping;
+  }
+  elMapping = new ElementMapping( scene->getElements( ) );
+  elMapping->initialize( );
+  elMapping->sort( );
   update( );
 }
 
 void SimulationController::clear( ) {
+  if( elMapping ) {
+    delete elMapping;
+  }
+  elMapping = nullptr;
 }
 
 void SimulationController::updateGraphicElement( QNEPort *port ) {
   if( port && port->graphicElement( ) ) {
     GraphicElement *elm = port->graphicElement( );
     if( port->isOutput( ) ) {
-      if( elMapping.map.contains( elm ) ) {
-        LogicElement *logElm = elMapping.map[ elm ];
-        if( logElm->isValid( ) ) {
-          port->setValue( logElm->getOutputValue( port->index( ) ) );
-        }
-        else {
-          port->setValue( -1 );
-        }
+      LogicElement *logElm = nullptr;
+      int portIndex = 0;
+      if( elm->elementType( ) == ElementType::BOX ) {
+        Box *box = dynamic_cast< Box* >( elm );
+        logElm = elMapping->boxMappings[ box ]->getOutput( port->index( ) );
+      }
+      else {
+        logElm = elMapping->map[ elm ];
+        portIndex = port->index( );
+      }
+      Q_ASSERT( logElm );
+      if( logElm->isValid( ) ) {
+        port->setValue( logElm->getOutputValue( portIndex ) );
+      }
+      else {
+        port->setValue( -1 );
       }
     }
     else if( elm->elementGroup( ) == ElementGroup::OUTPUT ) {

@@ -32,7 +32,7 @@ public:
 
   void updateLogic( );
 
-  void connectInput( int index, LogicElement *elm, int port );
+  void connectPredecessor( int index, LogicElement *elm, int port );
 
   void setOutputValue( size_t index, bool value );
   void setOutputValue( bool value );
@@ -45,6 +45,10 @@ public:
   int calculatePriority( );
 
   bool isValid( ) const;
+
+  void clearPredecessors( );
+
+  void clearSucessors( );
 };
 
 class LogicNode : public LogicElement {

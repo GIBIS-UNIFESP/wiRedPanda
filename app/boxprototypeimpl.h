@@ -1,6 +1,5 @@
 #ifndef BOXPROTOTYPEIMPL_H
 #define BOXPROTOTYPEIMPL_H
-
 #include <QVector>
 
 class GraphicElement;
@@ -9,17 +8,22 @@ class QNEPort;
 
 
 class BoxPrototypeImpl {
+  QVector< QNEPort* > referenceInputs;
 
 public:
 
   QVector< GraphicElement* > elements;
-  QVector< QNEPort* > inputMap;
-  QVector< QNEPort* > outputMap;
+  QVector< QNEPort* > referenceOutputs;
   QVector< bool > defaultInputValues;
   QVector< bool > requiredInputs;
   QVector< QString > inputLabels;
   QVector< QString > outputLabels;
 
+  QVector< GraphicElement* > inputs;
+  QVector< GraphicElement* > outputs;
+
+
+  ~BoxPrototypeImpl( );
   void loadFile( QString fileName );
   void clear( );
 
@@ -27,6 +31,10 @@ public:
   int getOutputSize( ) const;
   void setOutputSize( int outSize );
   void setInputSize( int inSize );
+
+  void loadInput( GraphicElement *elm );
+
+  void loadOutput( GraphicElement *elm );
 
 private:
 
