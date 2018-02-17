@@ -7,7 +7,6 @@ bool Clock::reset = false;
 Clock::Clock( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent ) {
   setOutputsOnTop( false );
   setRotatable( false );
-  setPixmap( ":/input/clock0.png" );
 /*  connect(&timer,&QTimer::timeout,this,&Clock::updateClock); */
   setFrequency( 1.0 );
   setHasFrequency( true );
@@ -15,6 +14,7 @@ Clock::Clock( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent ) {
   Clock::reset = true;
   setHasLabel( true );
   setPortName( "Clock" );
+  setOn( 0 );
 }
 
 Clock::~Clock( ) {
@@ -22,15 +22,7 @@ Clock::~Clock( ) {
 
 void Clock::updateClock( ) {
   elapsed = 0;
-  if( on ) {
-    on = false;
-    setPixmap( ":/input/clock0.png" );
-  }
-  else {
-    on = true;
-    setPixmap( ":/input/clock1.png" );
-  }
-  outputs( ).first( )->setValue( on );
+  setOn( !on );
 }
 
 bool Clock::getOn( ) const {
@@ -39,6 +31,13 @@ bool Clock::getOn( ) const {
 
 void Clock::setOn( bool value ) {
   on = value;
+  if( on ) {
+    setPixmap( ":/input/clock1.png" );
+  }
+  else {
+    setPixmap( ":/input/clock0.png" );
+  }
+  outputs( ).first( )->setValue( on );
 }
 
 

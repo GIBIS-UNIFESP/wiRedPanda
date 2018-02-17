@@ -42,7 +42,7 @@ void InputSwitch::mousePressEvent( QGraphicsSceneMouseEvent *event ) {
 
 void InputSwitch::updateLogic( ) {
   if( !disabled( ) ) {
-    outputs( ).first( )->setValue( on );
+    output( )->setValue( on );
   }
 }
 
@@ -54,6 +54,6 @@ void InputSwitch::save( QDataStream &ds ) {
 void InputSwitch::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) {
   GraphicElement::load( ds, portMap, version );
   ds >> on;
-  setOn(on);
-  outputs( ).first( )->setValue( on );
+  setOn( on );
+  output( )->setValue( on );
 }

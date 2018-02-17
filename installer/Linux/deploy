@@ -1,37 +1,187 @@
 #!/bin/bash
-PROJECTPATH=${PWD}/../../app
-export PATH=/opt/qt-static/qtbase/bin:$(getconf PATH)
-mkdir -p /tmp/wpanda-build
-pushd /tmp/wpanda-build
-qmake $PROJECTPATH
-make -j12
+set -e
+# set -v
+
+dirname=`dirname "$0"`
+tmp="${dirname#?}"
+if [ "${dirname%$tmp}" != "/" ]; then
+dirname=$PWD/$dirname
+fi
+
+PROJECTPATH=$(readlink -e "${dirname}/../../")
+echo PROJECTPATH $PROJECTPATH
+VERSION=$(cat ${PROJECTPATH}/includes.pri | grep "VERSION = " | awk '{split($0,a,"="); gsub (" ", "", a[2]); gsub ("-alpha", "", a[2]); print a[2] }')
+FORMATEDVERSION=$(echo $VERSION |  awk '{gsub ("\\.", "_", $0); print $0}')
+echo VERSION $VERSION
+PKGNAMEDIR="wpanda-$VERSION"
+DEBPKGROOT="$PROJECTPATH/Deploy/$PKGNAMEDIR"
+DEBPKGFILES="$PROJECTPATH/Deploy/$PKGNAMEDIR/files"
+BUILDDIR=$PROJECTPATH/build
+echo DEBPKGFILES $DEBPKGFILES
+PTBNAME="WiredPanda_${FORMATEDVERSION}_Linux_Portable_x64"
+PTBDIR="$PROJECTPATH/Deploy/$PTBNAME";
+echo PTBDIR $PTBDIR
+DEBPKGNAME="$PROJECTPATH/Deploy/WiredPanda_${FORMATEDVERSION}_Ubuntu_Installer_x64.deb";
+echo DEBPKGNAME $DEBPKGNAME
+
+
+echo "CLEANING OLD FILES"
+rm -rf "${PROJECTPATH}/Deploy/"
+
+QT_PATH="/opt/Qt/5.8/gcc_64/";
+QT_LIBRARY_PATH="$QT_PATH/lib"
+QT_PLATFORMS_PATH="$QT_PATH/plugins/platforms/"
+
+export PATH=$QT_PATH/bin/:$PATH
+export LD_LIBRARY_PATH=$QT_PATH/lib:$LD_LIBRARY_PATH
+
+WPANDA_BIN="$BUILDDIR/wpanda";
+
+rm -rf $BUILDDIR
+mkdir -p $BUILDDIR
+pushd $BUILDDIR
+
+qmake -r config+=release ../app;
+
+echo "Building WiredPanda on $BUILDDIR ..."
+make clean;
+make -j4;
+
+ldd $WPANDA_BIN
+popd;
+
+if [ ! -e ${WPANDA_BIN} ]; then
+  echo "ERROR: ${WPANDA_BIN} not found!";
+  exit 1
+fi
+
+
+DATADIR="${PTBDIR}/files";
+CURRENTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
+
+echo "Generating build tree for ${PKGNAMEDIR}.deb";
+echo "Project path is ${PROJECTPATH}";
+
+mkdir -p ${DEBPKGROOT};
+pushd ${DEBPKGROOT}
+dh_make -y\
+  --native \
+  --single \
+  --email lucaslellis777@gmail.com
 popd
 
-rm *.deb *.lintian *.tar.gz
+echo \
+"Source: wpanda
+Section: utils
+Priority: standard
+Maintainer: Lucas Lellis <lucaslellis777@gmail.com>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.5
+Homepage: https://gibis-unifesp.github.io/wiRedPanda
+Vcs-Git: https://github.com/gibis-unifesp/wiredpanda
 
-debreate wpanda.dbp
-echo "Extracting deb package"
-dpkg-deb -x *.deb /tmp/extract/
-echo "Copying Files"
-PKGDIR=wpanda_portable_linux
-DATADIR=${PKGDIR}/files
+Package: wpanda-${VERSION}
+Architecture: amd64
+Depends: \${shlibs:Depends}, \${misc:Depends}
+Description: Learn about logic circuits and simulate them in an easy and friendly way.
+ wiRed Panda is a free software designed to help students to learn about logic circuits.
+ It was developed by the students of the Federal University of São Paulo." > $DEBPKGROOT/debian/control
+
+echo \
+"#!/bin/sh
+set -e
+
+case "\$1" in
+configure)
+desktop-file-install /usr/share/applications/wpanda.desktop
+xdg-mime install --mode system /usr/share/xml/misc/wpanda-mime.xml
+xdg-mime default /usr/share/applications/wpanda.desktop application/x-wpanda
+xdg-icon-resource install --context mimetypes --size 128  /usr/share/icons/hicolor/128x128/apps/wpanda-file.png application-x-wpanda
+xdg-icon-resource install --context mimetypes --size 64  /usr/share/icons/hicolor/64x64/apps/wpanda-file.png application-x-wpanda
+xdg-icon-resource install --context mimetypes --size 48  /usr/share/icons/hicolor/48x48/apps/wpanda-file.png application-x-wpanda
+xdg-icon-resource install --context mimetypes --size 32  /usr/share/icons/hicolor/32x32/apps/wpanda-file.png application-x-wpanda
+xdg-icon-resource install --context mimetypes --size 26  /usr/share/icons/hicolor/26x26/apps/wpanda-file.png application-x-wpanda
+;;
+esac" > "${DEBPKGROOT}/debian/postinst"
+
+echo "files/usr/* usr" > ${DEBPKGROOT}/debian/install
+echo -e "override_dh_shlibdeps:\n\tdh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info\n" >> ${DEBPKGROOT}/debian/rules
+echo -e "override_dh_clean:\n\t" >> ${DEBPKGROOT}/debian/rules
+
+mkdir -p ${DEBPKGFILES}/usr/bin;
+mkdir -p ${DEBPKGFILES}/usr/lib/wpanda;
+mkdir -p ${DEBPKGFILES}/usr/share/applications;
+mkdir -p ${DEBPKGFILES}/usr/share/xml/misc;
+mkdir -p ${DEBPKGFILES}/usr/share/doc;
+
+cp ${WPANDA_BIN} ${PROJECTPATH}/app/resources/wpanda.sh     ${DEBPKGFILES}/usr/bin/;
+cp ${PROJECTPATH}/app/resources/wpanda.desktop    ${DEBPKGFILES}/usr/share/applications/;
+cp ${PROJECTPATH}/app/resources/wpanda-mime.xml   ${DEBPKGFILES}/usr/share/xml/misc;
+chmod +x ${DEBPKGFILES}/usr/bin/*
+
+for SIZE in 26x26 32x32 48x48 64x64 128x128; do
+  ICONDIR_SZ=${DEBPKGFILES}/usr/share/icons/hicolor/${SIZE}/apps/;
+  mkdir -p ${ICONDIR_SZ};
+  cp ${PROJECTPATH}/app/resources/icons/${SIZE}/* ${ICONDIR_SZ};
+done;
+
+
+for lib in libQt5PrintSupport.so.5 libQt5XcbQpa.so.5 libQt5DBus.so.5\
+           libQt5Charts.so.5 libQt5Widgets.so.5 libQt5Gui.so.5 \
+           libQt5Core.so.5 libicui18n.so.56 libicuuc.so.56 libicudata.so.56;
+  do
+  echo "Copying $lib";
+  if [ -f ${QT_LIBRARY_PATH}/$lib ]; then
+    cp ${QT_LIBRARY_PATH}/$lib ${DEBPKGFILES}/usr/lib/wpanda;
+  else
+    echo "ERROR: $lib not found!";
+    locate "$lib";
+    exit 1;
+  fi;
+done;
+
+cp ${QT_PLATFORMS_PATH}/libqxcb.so ${DEBPKGFILES}/usr/lib/wpanda
+
+
+pushd $DEBPKGROOT
+
+dpkg-buildpackage -d -uc -us
+#tree .
+
+popd
+
+echo "GENERATING PORTABLE PACKAGE"
+
 mkdir -p $DATADIR
-cp /tmp/extract/usr/local/bin/wpanda $DATADIR
-cp portable_files/shared_qt.sh ${DATADIR}/wpanda.sh
-cp portable_files/wpanda.svg ${DATADIR}/wpanda.svg
-cp portable_files/wpanda.desktop ${PKGDIR}/wpanda.desktop
+
+cp ${DEBPKGFILES}/usr/bin/wpanda $DATADIR
+cp ${CURRENTDIR}/portable_files/install.sh       ${DATADIR}
+cp ${PROJECTPATH}/app/resources/wpanda.svg       ${DATADIR}
+cp ${PROJECTPATH}/app/resources/wpanda-mime.xml  ${DATADIR}
+cp ${CURRENTDIR}/portable_files/shared_qt.sh     ${DATADIR}/wpanda.sh
+cp ${CURRENTDIR}/portable_files/wpanda.desktop ${PTBDIR}/wpanda.desktop
+
+for SIZE in 26x26 32x32 48x48 64x64 128x128; do
+  ICONDIR_SZ=${DATADIR}/icons/${SIZE};
+  mkdir -p ${ICONDIR_SZ};
+  cp ${PROJECTPATH}/app/resources/icons/${SIZE}/* ${ICONDIR_SZ};
+done;
 
 chmod +x ${DATADIR}/wpanda
 chmod +x ${DATADIR}/wpanda.sh
-chmod +x ${PKGDIR}/wpanda.desktop
+chmod +x ${DATADIR}/install.sh
+chmod +x ${PTBDIR}/wpanda.desktop
 
+cp ${DEBPKGFILES}/usr/lib/wpanda/* $DATADIR;
 
-cp /tmp/extract/usr/local/lib/wpanda/* $DATADIR
-echo "Generating ${PKGDIR}.tar.gz"
-tar -zcvf ${PKGDIR}.tar.gz $PKGDIR
+pushd $PROJECTPATH/Deploy
+echo "Generating ${PTBNAME}.tar.xz"
+tar -cvJf ${PTBNAME}.tar.xz $PTBNAME
 
-echo "Removing temporary files"
-rm -rf $PKGDIR
-rm -rf /tmp/extract/
+echo "Renaming to ${DEBPKGNAME}"
+mv wpanda*.deb $DEBPKGNAME
 
-rm *.lintian
+mkdir -p /tmp/packages
+cp $PTBNAME.tar.xz /tmp/packages
+cp $DEBPKGNAME /tmp/packages
+popd

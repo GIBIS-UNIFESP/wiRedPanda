@@ -1,11 +1,26 @@
 language: cpp
 cache: apt
+# cache:
+#   directories:
+#     - $HOME/Library/Caches/Homebrew
+#     - /usr/local/opt/qt@5.7/
+#     - /opt/qt57/
 os:
   - linux
   - osx
 
+dist: trusty
+
 env:
   - QT=qt57
+
+addons:
+apt:
+  sources:
+  - ubuntu-toolchain-r-test
+  packages:
+  - gcc-4.8
+  - g++-4.8
 
 branches:
   only:
@@ -16,45 +31,65 @@ branches:
 #   - sh -e /etc/init.d/xvfb start
 before_install:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-      sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-      && if [ "$QT" = "qt57" ]; then sudo add-apt-repository ppa:beineri/opt-qt571-trusty -y; fi
-      && sudo apt-get update -qq;
+      if [ "$QT" = "qt57" ]; then
+        sudo add-apt-repository ppa:beineri/opt-qt571-trusty -y && sudo apt-get update;
+      fi;
     else
-      brew update > /dev/null;
-    fi
+      brew update;
+    fi;
 
 install:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-      if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
-      && if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
-      && if [ "$QT" = "qt55" ]; then sudo apt-get install -qq qt57base; source /opt/qt57/bin/qt57-env.sh; fi;
+      if [ "$QT" = "qt57" ]; then
+        sudo apt-get install -y qt57base qt57charts-no-lgpl qt57multimedia dh-make;
+      fi;
     else
-      brew install qt@5.7
-      && chmod -R 755 /usr/local/opt/qt5/*;
-    fi
+      brew install qt@5.7 gdb
+      && chmod -R 755 /usr/local/opt/qt@5.7/*;
+    fi;
 
 before_script:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
       export DISPLAY=:99.0
-      && sh -e /etc/init.d/xvfb start
-      && sleep 3;
-    fi
+      && sh -e /etc/init.d/xvfb start;
+    fi;
 
 script:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-      g++ -v;
+      source /opt/qt57/bin/qt57-env.sh;
     else
-      clang --version
-      && QTDIR="/usr/local/opt/qt5"
+      QTDIR="/usr/local/opt/qt@5.7/"
       && PATH="${QTDIR}/bin:$PATH"
       && LDFLAGS=-L${QTDIR}/lib
       && CPPFLAGS=-I${QTDIR}/include;
-    fi
-  - qmake -v
-  - qmake ./test/test.pro -r
+    fi;
+  - qmake ./WPanda.pro -r
   - make -j4
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ];
-      then ./WPanda-test;
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
+      ./test/WPanda-test;
     else
-      WPanda-test.app/Contents/MacOS/WPanda-test;
-    fi
+      test/WPanda-test.app/Contents/MacOS/WPanda-test;
+    fi;
+
+
+#      && ls app
+#     && bash -x installer/Linux/deploy;
+#      $PANDA_OSX=...
+#      $TESTRESULT=$($PANDA_OSX)
+#      if [[ $TESTRESULT -ne 1 ]]; then
+#          mkdir debug;
+#          cd debug;
+#          qmake ../Wpanda.pro CONFIG+=debug -r;
+#          make -j4;
+#          gdb -batch -ex "run" -ex "bt" ${PANDA_OSX} 2>&1 | grep -v ^"No stack."$;
+#         exit $TESTRESULT;
+#      fi;
+
+#deploy:
+#  provider: releases
+#  api_key:
+#    secure: YOUR_API_KEY_ENCRYPTED
+#  file: /tmp/packages/*
+#  skip_cleanup: true
+#  on:
+#    tags: true

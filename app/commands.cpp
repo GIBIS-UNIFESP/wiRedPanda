@@ -11,27 +11,62 @@
 #include <cmath>
 #include <stdexcept>
 
-QList< QGraphicsItem* > loadList( const QList< QGraphicsItem* > &aItems, QVector< int > &ids,
-                                  QVector< int > &otherIds ) {
 
-  QList< QGraphicsItem* > items;
-  /* Stores selected graphicElements */
-  for( QGraphicsItem *item : aItems ) {
-    if( item->type( ) == GraphicElement::Type ) {
-      if( !items.contains( item ) ) {
-        items.append( item );
+void storeIds( const QList< QGraphicsItem* > &items, QVector< int > &ids ) {
+  ids.reserve( items.size( ) );
+  for( QGraphicsItem *item : items ) {
+    ItemWithId *iwid = dynamic_cast< ItemWithId* >( item );
+    if( iwid ) {
+      ids.append( iwid->id( ) );
+    }
+  }
+}
+
+void storeOtherIds( const QList< QGraphicsItem* > &connections, const QVector< int > &ids, QVector< int > &otherIds ) {
+  for( QGraphicsItem *item : connections ) {
+    QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
+    if( ( item->type( ) == QNEConnection::Type ) && conn ) {
+      QNEOutputPort *p1 = conn->start( );
+      if( p1 && p1->graphicElement( ) && !ids.contains( p1->graphicElement( )->id( ) ) ) {
+        otherIds.append( p1->graphicElement( )->id( ) );
+      }
+      QNEInputPort *p2 = conn->end( );
+      if( p2 && p2->graphicElement( ) && !ids.contains( p2->graphicElement( )->id( ) ) ) {
+        otherIds.append( p2->graphicElement( )->id( ) );
       }
     }
   }
-  /* Stores the wires linked to these elements */
-  for( QGraphicsItem *item : items ) {
+}
+
+QList< QGraphicsItem* > loadList( const QList< QGraphicsItem* > &aItems, QVector< int > &ids,
+                                  QVector< int > &otherIds ) {
+
+  QList< QGraphicsItem* > elements;
+  /* Stores selected graphicElements */
+  for( QGraphicsItem *item : aItems ) {
+    if( item->type( ) == GraphicElement::Type ) {
+      if( !elements.contains( item ) ) {
+        elements.append( item );
+      }
+    }
+  }
+  QList< QGraphicsItem* > connections;
+  /* Stores all the wires linked to these elements */
+  for( QGraphicsItem *item : elements ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
-    QVector< QNEPort* > portsList = elm->inputs( );
-    portsList.append( elm->outputs( ) );
-    for( QNEPort *port : portsList ) {
-      for( QNEConnection *conn : port->connections( ) ) {
-        if( !items.contains( conn ) ) {
-          items.append( conn );
+    if( elm ) {
+      for( QNEInputPort *port : elm->inputs( ) ) {
+        for( QNEConnection *conn : port->connections( ) ) {
+          if( !connections.contains( conn ) ) {
+            connections.append( conn );
+          }
+        }
+      }
+      for( QNEOutputPort *port : elm->outputs( ) ) {
+        for( QNEConnection *conn : port->connections( ) ) {
+          if( !connections.contains( conn ) ) {
+            connections.append( conn );
+          }
         }
       }
     }
@@ -39,36 +74,17 @@ QList< QGraphicsItem* > loadList( const QList< QGraphicsItem* > &aItems, QVector
   /* Stores the other wires selected */
   for( QGraphicsItem *item : aItems ) {
     if( item->type( ) == QNEConnection::Type ) {
-      if( !items.contains( item ) ) {
-        items.append( item );
+      if( !connections.contains( item ) ) {
+        connections.append( item );
       }
     }
   }
-  ids.reserve( items.size( ) );
   /* Stores the ids of all elements listed in items; */
-  for( QGraphicsItem *item : items ) {
-    ItemWithId *iwid = dynamic_cast< ItemWithId* >( item );
-    if( iwid ) {
-      ids.append( iwid->id( ) );
-    }
-  }
+  storeIds( elements + connections, ids );
   /* Stores all the elements linked to each connection that will not be deleted. */
-  for( QGraphicsItem *item : items ) {
-    if( item->type( ) == QNEConnection::Type ) {
-      QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
-      QNEPort *p1 = conn->port1( );
-      if( p1 && p1->graphicElement( ) && !ids.contains( p1->graphicElement( )->id( ) ) ) {
-        otherIds.append( p1->graphicElement( )->id( ) );
-      }
-      QNEPort *p2 = conn->port2( );
-      if( p2 && p2->graphicElement( ) && !ids.contains( p2->graphicElement( )->id( ) ) ) {
-        otherIds.append( p2->graphicElement( )->id( ) );
-      }
-    }
-  }
-  return( items );
+  storeOtherIds( connections, ids, otherIds );
+  return( elements + connections );
 }
-
 
 QList< QGraphicsItem* > findItems( const QVector< int > &ids ) {
   QList< QGraphicsItem* > items;
@@ -79,7 +95,7 @@ QList< QGraphicsItem* > findItems( const QVector< int > &ids ) {
     }
   }
   if( items.size( ) != ids.size( ) ) {
-    throw std::runtime_error( "One or more items was not found on the scene." );
+    throw std::runtime_error( ERRORMSG( "One or more items was not found on the scene." ) );
   }
   return( items );
 }
@@ -93,7 +109,7 @@ QList< GraphicElement* > findElements( const QVector< int > &ids ) {
     }
   }
   if( items.size( ) != ids.size( ) ) {
-    throw std::runtime_error( "One or more elements was not found on the scene." );
+    throw std::runtime_error( ERRORMSG( "One or more elements was not found on the scene." ) );
   }
   return( items );
 }
@@ -109,17 +125,23 @@ void saveitems( QByteArray &itemData, const QList< QGraphicsItem* > &items, cons
 }
 
 void addItems( Editor *editor, QList< QGraphicsItem* > items ) {
+  editor->getScene( )->clearSelection( );
   for( QGraphicsItem *item : items ) {
     if( item->scene( ) != editor->getScene( ) ) {
       editor->getScene( )->addItem( item );
     }
-    item->setSelected( true );
+    if( item->type( ) == GraphicElement::Type ) {
+      item->setSelected( true );
+    }
   }
 }
 
-void loadItems( QByteArray &itemData, const QVector< int > &ids, Editor *editor, QVector< int > &otherIds ) {
+QList< QGraphicsItem* > loadItems( QByteArray &itemData,
+                                   const QVector< int > &ids,
+                                   Editor *editor,
+                                   QVector< int > &otherIds ) {
   if( itemData.isEmpty( ) ) {
-    return;
+    return( QList< QGraphicsItem* >( ) );
   }
   QVector< GraphicElement* > otherElms = findElements( otherIds ).toVector( );
   QDataStream dataStream( &itemData, QIODevice::ReadOnly );
@@ -139,9 +161,9 @@ void loadItems( QByteArray &itemData, const QVector< int > &ids, Editor *editor,
                                          GlobalProperties::currentFile,
                                          portMap );
   if( items.size( ) != ids.size( ) ) {
-    throw std::runtime_error( QString( "One or more elements was not found on scene. Expected %1, found %2." ).arg( ids.
-                                                                                                                    size( ) ).arg(
-                                items.size( ) ).toStdString( ) );
+    QString msg( "One or more elements was not found on scene. Expected %1, found %2." );
+    msg = msg.arg( ids.size( ) ).arg( items.size( ) );
+    throw std::runtime_error( ERRORMSG( msg.toStdString( ) ) );
   }
   for( int i = 0; i < items.size( ); ++i ) {
     ItemWithId *iwid = dynamic_cast< ItemWithId* >( items[ i ] );
@@ -150,6 +172,7 @@ void loadItems( QByteArray &itemData, const QVector< int > &ids, Editor *editor,
     }
   }
   addItems( editor, items );
+  return( items );
 }
 
 void deleteItems( const QList< QGraphicsItem* > &items, Editor *editor ) {
@@ -164,8 +187,7 @@ void deleteItems( const QList< QGraphicsItem* > &items, Editor *editor ) {
 
 AddItemsCommand::AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
     parent ) {
-  QList< QGraphicsItem* > items;
-  items.append( aItem );
+  QList< QGraphicsItem* > items( { aItem } );
   items = loadList( items, ids, otherIds );
   editor = aEditor;
   addItems( editor, items );
@@ -174,8 +196,7 @@ AddItemsCommand::AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoC
 
 AddItemsCommand::AddItemsCommand( QNEConnection *aItem, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
     parent ) {
-  QList< QGraphicsItem* > items;
-  items.append( aItem );
+  QList< QGraphicsItem* > items( { aItem } );
   items = loadList( items, ids, otherIds );
   editor = aEditor;
   addItems( editor, items );
@@ -197,31 +218,39 @@ DeleteItemsCommand::DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, E
   setText( tr( "Delete %1 elements" ).arg( items.size( ) ) );
 }
 
-void AddItemsCommand::undo( ) {
-  qDebug( ) << "UNDO " << text( );
-  QList< QGraphicsItem* > items
-    = findItems( ids );
-  saveitems( itemData, items, otherIds );
+DeleteItemsCommand::DeleteItemsCommand( QGraphicsItem *item, Editor *aEditor, QUndoCommand *parent ) :
+  DeleteItemsCommand( QList< QGraphicsItem* >( {
+  item
+} ), aEditor, parent ) {
 
+}
+
+void AddItemsCommand::undo( ) {
+  COMMENT( "UNDO " + text( ).toStdString( ), 0 );
+  QList< QGraphicsItem* > items = findItems( ids );
+
+  saveitems( itemData, items, otherIds );
   deleteItems( items, editor );
   emit editor->circuitHasChanged( );
 }
 
+
+void AddItemsCommand::redo( ) {
+  COMMENT( "REDO " + text( ).toStdString( ), 0 );
+  QList< QGraphicsItem* > items = loadItems( itemData, ids, editor, otherIds );
+  emit editor->circuitHasChanged( );
+}
+
 void DeleteItemsCommand::undo( ) {
-  qDebug( ) << "UNDO " << text( );
+  COMMENT( "UNDO " + text( ).toStdString( ), 0 );
   loadItems( itemData, ids, editor, otherIds );
   emit editor->circuitHasChanged( );
 }
 
-void AddItemsCommand::redo( ) {
-  qDebug( ) << "REDO " << text( );
-  loadItems( itemData, ids, editor, otherIds );
-  emit editor->circuitHasChanged( );
-}
 void DeleteItemsCommand::redo( ) {
-  qDebug( ) << "REDO " << text( );
-  QList< QGraphicsItem* > items
-    = findItems( ids );
+  COMMENT( "REDO " + text( ).toStdString( ), 0 );
+  QList< QGraphicsItem* > items = findItems( ids );
+
   saveitems( itemData, items, otherIds );
 
   deleteItems( items, editor );
@@ -243,6 +272,7 @@ RotateCommand::RotateCommand( const QList< GraphicElement* > &aItems, int aAngle
 }
 
 void RotateCommand::undo( ) {
+  COMMENT( "UNDO " + text( ).toStdString( ), 0 );
   QList< GraphicElement* > list = findElements( ids );
   QGraphicsScene *scn = list[ 0 ]->scene( );
   scn->clearSelection( );
@@ -258,6 +288,7 @@ void RotateCommand::undo( ) {
 }
 
 void RotateCommand::redo( ) {
+  COMMENT( "REDO " + text( ).toStdString( ), 0 );
   QList< GraphicElement* > list = findElements( ids );
   QGraphicsScene *scn = list[ 0 ]->scene( );
   scn->clearSelection( );
@@ -324,6 +355,7 @@ MoveCommand::MoveCommand( const QList< GraphicElement* > &list,
 }
 
 void MoveCommand::undo( ) {
+  COMMENT( "UNDO " + text( ).toStdString( ), 0 );
   QVector< GraphicElement* > elms = findElements( ids ).toVector( );
   for( int i = 0; i < elms.size( ); ++i ) {
     elms[ i ]->setPos( oldPositions[ i ] );
@@ -331,6 +363,7 @@ void MoveCommand::undo( ) {
 }
 
 void MoveCommand::redo( ) {
+  COMMENT( "REDO " + text( ).toStdString( ), 0 );
   QVector< GraphicElement* > elms = findElements( ids ).toVector( );
   for( int i = 0; i < elms.size( ); ++i ) {
     elms[ i ]->setPos( newPositions[ i ] );
@@ -353,11 +386,13 @@ UpdateCommand::UpdateCommand( const QVector< GraphicElement* > &elements,
 }
 
 void UpdateCommand::undo( ) {
+  COMMENT( "UNDO " + text( ).toStdString( ), 0 );
   loadData( m_oldData );
   emit editor->circuitHasChanged( );
 }
 
 void UpdateCommand::redo( ) {
+  COMMENT( "REDO " + text( ).toStdString( ), 0 );
   loadData( m_newData );
   emit editor->circuitHasChanged( );
 }
@@ -381,6 +416,7 @@ void UpdateCommand::loadData( QByteArray itemData ) {
 
 SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
     parent ) {
+  /* TODO Reverse Split command... */
   Scene *customScene = aEditor->getScene( );
   GraphicElement *node = ElementFactory::buildElement( ElementType::NODE, aEditor );
   QNEConnection *conn2 = ElementFactory::instance->buildConnection( );
@@ -400,8 +436,8 @@ SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, Editor *aEditor,
   /* Assingning class attributes */
   editor = aEditor;
 
-  elm1_id = conn->port1( )->graphicElement( )->id( );
-  elm2_id = conn->port2( )->graphicElement( )->id( );
+  elm1_id = conn->start( )->graphicElement( )->id( );
+  elm2_id = conn->end( )->graphicElement( )->id( );
 
   c1_id = conn->id( );
   c2_id = conn2->id( );
@@ -420,6 +456,7 @@ GraphicElement* findElm( int id ) {
 }
 
 void SplitCommand::redo( ) {
+  COMMENT( "REDO " + text( ).toStdString( ), 0 );
   QNEConnection *c1 = findConn( c1_id );
   QNEConnection *c2 = findConn( c2_id );
   GraphicElement *node = findElm( node_id );
@@ -437,18 +474,12 @@ void SplitCommand::redo( ) {
     node->setPos( nodePos );
     node->setRotation( nodeAngle );
 
-    QNEPort *p1 = c1->port1( );
-    QNEPort *p2 = c1->port2( );
-    if( p1->isOutput( ) ) {
-      c2->setPort1( node->output( ) );
-      c2->setPort2( p2 );
-      c1->setPort2( node->input( ) );
-    }
-    else {
-      c2->setPort1( node->output( ) );
-      c2->setPort2( p1 );
-      c1->setPort1( node->input( ) );
-    }
+/*    QNEOutputPort *startPort = c1->start( ); */
+    QNEInputPort *endPort = c1->end( );
+    c2->setStart( node->output( ) );
+    c2->setEnd( endPort );
+    c1->setEnd( node->input( ) );
+
     editor->getScene( )->addItem( node );
     editor->getScene( )->addItem( c2 );
 
@@ -458,19 +489,20 @@ void SplitCommand::redo( ) {
     c2->updatePath( );
   }
   else {
-    throw std::runtime_error( QString( "Error tryng to redo %1" ).arg( text( ) ).toStdString( ) );
+    throw std::runtime_error( ERRORMSG( QString( "Error tryng to redo %1" ).arg( text( ) ).toStdString( ) ) );
   }
   emit editor->circuitHasChanged( );
 }
 
 void SplitCommand::undo( ) {
+  COMMENT( "UNDO " + text( ).toStdString( ), 0 );
   QNEConnection *c1 = findConn( c1_id );
   QNEConnection *c2 = findConn( c2_id );
   GraphicElement *node = findElm( node_id );
   GraphicElement *elm1 = findElm( elm1_id );
   GraphicElement *elm2 = findElm( elm2_id );
   if( c1 && c2 && elm1 && elm2 && node ) {
-    c1->setPort2( c2->port2( ) );
+    c1->setEnd( c2->end( ) );
 
     c1->updatePosFromPorts( );
     c1->updatePath( );
@@ -482,7 +514,7 @@ void SplitCommand::undo( ) {
     delete node;
   }
   else {
-    throw std::runtime_error( QString( "Error tryng to undo %1" ).arg( text( ) ).toStdString( ) );
+    throw std::runtime_error( ERRORMSG( QString( "Error tryng to undo %1" ).arg( text( ) ).toStdString( ) ) );
   }
   emit editor->circuitHasChanged( );
 }
@@ -503,6 +535,7 @@ MorphCommand::MorphCommand( const QVector< GraphicElement* > &elements,
 }
 
 void MorphCommand::undo( ) {
+  COMMENT( "UNDO " + text( ).toStdString( ), 0 );
   QVector< GraphicElement* > newElms = findElements( ids ).toVector( );
   QVector< GraphicElement* > oldElms( newElms.size( ) );
   for( int i = 0; i < ids.size( ); ++i ) {
@@ -513,6 +546,7 @@ void MorphCommand::undo( ) {
 }
 
 void MorphCommand::redo( ) {
+  COMMENT( "REDO " + text( ).toStdString( ), 0 );
   QVector< GraphicElement* > oldElms = findElements( ids ).toVector( );
   QVector< GraphicElement* > newElms( oldElms.size( ) );
   for( int i = 0; i < ids.size( ); ++i ) {
@@ -553,22 +587,16 @@ void MorphCommand::transferConnections( QVector< GraphicElement* > from, QVector
     for( int in = 0; in < oldElm->inputSize( ); ++in ) {
       while( !oldElm->input( in )->connections( ).isEmpty( ) ) {
         QNEConnection *conn = oldElm->input( in )->connections( ).first( );
-        if( conn->port1( ) == oldElm->input( in ) ) {
-          conn->setPort1( newElm->input( in ) );
-        }
-        else if( conn->port2( ) == oldElm->input( in ) ) {
-          conn->setPort2( newElm->input( in ) );
+        if( conn->end( ) == oldElm->input( in ) ) {
+          conn->setEnd( newElm->input( in ) );
         }
       }
     }
     for( int out = 0; out < oldElm->outputSize( ); ++out ) {
       while( !oldElm->output( out )->connections( ).isEmpty( ) ) {
         QNEConnection *conn = oldElm->output( out )->connections( ).first( );
-        if( conn->port1( ) == oldElm->output( out ) ) {
-          conn->setPort1( newElm->output( out ) );
-        }
-        else if( conn->port2( ) == oldElm->output( out ) ) {
-          conn->setPort2( newElm->output( out ) );
+        if( conn->start( ) == oldElm->output( out ) ) {
+          conn->setStart( newElm->output( out ) );
         }
       }
     }
@@ -598,6 +626,7 @@ ChangeInputSZCommand::ChangeInputSZCommand( const QVector< GraphicElement* > &el
 }
 
 void ChangeInputSZCommand::redo( ) {
+  COMMENT( "REDO " + text( ).toStdString( ), 0 );
   const QVector< GraphicElement* > m_elements = findElements( elms ).toVector( );
   if( !m_elements.isEmpty( ) && m_elements.front( )->scene( ) ) {
     scene->clearSelection( );
@@ -640,6 +669,7 @@ void ChangeInputSZCommand::redo( ) {
 }
 
 void ChangeInputSZCommand::undo( ) {
+  COMMENT( "UNDO " + text( ).toStdString( ), 0 );
   const QVector< GraphicElement* > m_elements = findElements( elms ).toVector( );
   const QVector< GraphicElement* > serializationOrder = findElements( order ).toVector( );
   if( !m_elements.isEmpty( ) && m_elements.front( )->scene( ) ) {
@@ -661,4 +691,56 @@ void ChangeInputSZCommand::undo( ) {
     elm->setSelected( true );
   }
   emit editor->circuitHasChanged( );
+
+}
+
+FlipCommand::FlipCommand( const QList< GraphicElement* > &aItems, int aAxis, QUndoCommand *parent ) :
+  QUndoCommand( parent ) {
+  axis = aAxis;
+  setText( tr( "Flip %1 elements in axis %2" ).arg( aItems.size( ) ).arg( aAxis ) );
+  ids.reserve( aItems.size( ) );
+  positions.reserve( aItems.size( ) );
+  double xmin, xmax, ymin, ymax;
+  if( aItems.size( ) > 0 ) {
+    xmin = xmax = aItems.first( )->pos( ).rx( );
+    ymin = ymax = aItems.first( )->pos( ).ry( );
+    for( GraphicElement *item : aItems ) {
+      positions.append( item->pos( ) );
+      item->setPos( item->pos( ) );
+      ids.append( item->id( ) );
+      xmin = qMin( xmin, item->pos( ).rx( ) );
+      xmax = qMax( xmax, item->pos( ).rx( ) );
+      ymin = qMin( ymin, item->pos( ).ry( ) );
+      ymax = qMax( ymax, item->pos( ).ry( ) );
+    }
+    minPos = QPointF( xmin, ymin );
+    maxPos = QPointF( xmax, ymax );
+  }
+}
+
+void FlipCommand::undo( ) {
+  COMMENT( "UNDO " + text( ).toStdString( ), 0 );
+  redo( );
+}
+
+void FlipCommand::redo( ) {
+  COMMENT( "REDO " + text( ).toStdString( ), 0 );
+  QList< GraphicElement* > list = findElements( ids );
+  QGraphicsScene *scn = list[ 0 ]->scene( );
+  scn->clearSelection( );
+  for( GraphicElement *elm : list ) {
+    QPointF pos = elm->pos( );
+    if( axis == 0 ) {
+      pos.setX( minPos.rx( ) + ( maxPos.rx( ) - pos.rx( ) ) );
+    }
+    else {
+      pos.setY( minPos.ry( ) + ( maxPos.ry( ) - pos.ry( ) ) );
+    }
+    elm->setPos( pos );
+    elm->update( );
+    elm->setSelected( true );
+    if( elm->rotatable( ) ) {
+      elm->setRotation( elm->rotation( ) + 180 );
+    }
+  }
 }

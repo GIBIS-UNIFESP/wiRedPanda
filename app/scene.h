@@ -15,11 +15,13 @@ public:
   /* QGraphicsScene interface */
   int gridSize( ) const;
   QVector< GraphicElement* > getElements( );
+  QVector< GraphicElement* > getElements( QRectF rect );
   QVector< QNEConnection* > getConnections( );
   QVector< GraphicElement* > selectedElements( );
 
   void setDots( const QPen &dots );
 
+  QVector< GraphicElement* > getVisibleElements( );
 protected:
   void drawBackground( QPainter *painter, const QRectF &rect );
   int m_gridSize;

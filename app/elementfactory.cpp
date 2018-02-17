@@ -24,6 +24,7 @@
 
 
 #include <QDebug>
+#include <buzzer.h>
 #include <demux.h>
 #include <mux.h>
 #include <node.h>
@@ -64,6 +65,7 @@ ElementType ElementFactory::textToType( QString text ) {
          text == "MUX" ? ElementType::MUX :
          text == "DEMUX" ? ElementType::DEMUX :
          text == "NODE" ? ElementType::NODE :
+         text == "BUZZER" ? ElementType::BUZZER :
          ElementType::UNKNOWN;
   return( type );
 }
@@ -95,38 +97,40 @@ QString ElementFactory::typeToText( ElementType type ) {
       case ElementType::MUX: return( "MUX" );
       case ElementType::DEMUX: return( "DEMUX" );
       case ElementType::NODE: return( "NODE" );
+      case ElementType::BUZZER: return( "BUZZER" );
       case ElementType::UNKNOWN: default: return( "UNKNOWN" );
   }
 }
 
 QString ElementFactory::translatedName( ElementType type ) {
   switch( type ) {
-      case ElementType::BUTTON: return( tr("Button") );
-      case ElementType::LED: return( tr("Led") );
-      case ElementType::AND: return( tr("And") );
-      case ElementType::OR: return( tr("Or") );
-      case ElementType::CLOCK: return( tr("Clock") );
-      case ElementType::SWITCH: return( tr("Switch") );
-      case ElementType::NOT: return( tr("Not") );
-      case ElementType::NAND: return( tr("Nand") );
-      case ElementType::NOR: return( tr("Nor") );
-      case ElementType::XOR: return( tr("Xor") );
-      case ElementType::XNOR: return( tr("Xnor") );
-      case ElementType::VCC: return( tr("VCC") );
-      case ElementType::GND: return( tr("GND") );
-      case ElementType::DFLIPFLOP: return( tr("D-flipflop") );
-      case ElementType::DLATCH: return( tr("D-latch") );
-      case ElementType::JKFLIPFLOP: return( tr("JK-flipflop") );
-      case ElementType::JKLATCH: return( tr("JK-latch") );
-      case ElementType::SRFLIPFLOP: return( tr("SR-flipflop") );
-      case ElementType::TLATCH: return( tr("T-latch") );
-      case ElementType::TFLIPFLOP: return( tr("T-flipflop") );
-      case ElementType::DISPLAY: return( tr("Display") );
-      case ElementType::BOX: return( tr("Box") );
-      case ElementType::MUX: return( tr("Mux") );
-      case ElementType::DEMUX: return( tr("Demux") );
-      case ElementType::NODE: return( tr("Node") );
-      case ElementType::UNKNOWN: default: return( tr("Unknown") );
+      case ElementType::BUTTON: return( tr( "Button" ) );
+      case ElementType::LED: return( tr( "Led" ) );
+      case ElementType::AND: return( tr( "And" ) );
+      case ElementType::OR: return( tr( "Or" ) );
+      case ElementType::CLOCK: return( tr( "Clock" ) );
+      case ElementType::SWITCH: return( tr( "Switch" ) );
+      case ElementType::NOT: return( tr( "Not" ) );
+      case ElementType::NAND: return( tr( "Nand" ) );
+      case ElementType::NOR: return( tr( "Nor" ) );
+      case ElementType::XOR: return( tr( "Xor" ) );
+      case ElementType::XNOR: return( tr( "Xnor" ) );
+      case ElementType::VCC: return( tr( "VCC" ) );
+      case ElementType::GND: return( tr( "GND" ) );
+      case ElementType::DFLIPFLOP: return( tr( "D-flipflop" ) );
+      case ElementType::DLATCH: return( tr( "D-latch" ) );
+      case ElementType::JKFLIPFLOP: return( tr( "JK-flipflop" ) );
+      case ElementType::JKLATCH: return( tr( "JK-latch" ) );
+      case ElementType::SRFLIPFLOP: return( tr( "SR-flipflop" ) );
+      case ElementType::TLATCH: return( tr( "T-latch" ) );
+      case ElementType::TFLIPFLOP: return( tr( "T-flipflop" ) );
+      case ElementType::DISPLAY: return( tr( "Display" ) );
+      case ElementType::BOX: return( tr( "Box" ) );
+      case ElementType::MUX: return( tr( "Mux" ) );
+      case ElementType::DEMUX: return( tr( "Demux" ) );
+      case ElementType::NODE: return( tr( "Node" ) );
+      case ElementType::BUZZER: return( tr( "Buzzer" ) );
+      case ElementType::UNKNOWN: default: return( tr( "Unknown" ) );
   }
 }
 
@@ -145,18 +149,19 @@ QPixmap ElementFactory::getPixmap( ElementType type ) {
       case ElementType::XNOR: return( QPixmap( ":/basic/xnor.png" ) );
       case ElementType::VCC: return( QPixmap( ":/input/1.png" ) );
       case ElementType::GND: return( QPixmap( ":/input/0.png" ) );
-      case ElementType::DFLIPFLOP: return( QPixmap( ":/memory/D-flipflop.png" ) );
-      case ElementType::DLATCH: return( QPixmap( ":/memory/D-latch.png" ) );
-      case ElementType::JKFLIPFLOP: return( QPixmap( ":/memory/JK-flipflop.png" ) );
-      case ElementType::JKLATCH: return( QPixmap( ":/memory/JK-latch.png" ) );
-      case ElementType::SRFLIPFLOP: return( QPixmap( ":/memory/SR-flipflop.png" ) );
-      case ElementType::TLATCH: return( QPixmap( ":/memory/T-latch.png" ) );
-      case ElementType::TFLIPFLOP: return( QPixmap( ":/memory/T-flipflop.png" ) );
+      case ElementType::DFLIPFLOP: return( QPixmap( ":/memory/light/D-flipflop.png" ) );
+      case ElementType::DLATCH: return( QPixmap( ":/memory/light/D-latch.png" ) );
+      case ElementType::JKFLIPFLOP: return( QPixmap( ":/memory/light/JK-flipflop.png" ) );
+      case ElementType::JKLATCH: return( QPixmap( ":/memory/light/JK-latch.png" ) );
+      case ElementType::SRFLIPFLOP: return( QPixmap( ":/memory/light/SR-flipflop.png" ) );
+      case ElementType::TLATCH: return( QPixmap( ":/memory/light/T-latch.png" ) );
+      case ElementType::TFLIPFLOP: return( QPixmap( ":/memory/light/T-flipflop.png" ) );
       case ElementType::DISPLAY: return( QPixmap( ":/output/counter/counter_on.png" ) );
       case ElementType::BOX: return( QPixmap( ":/basic/box.png" ) );
       case ElementType::MUX: return( QPixmap( ":/basic/mux.png" ) );
       case ElementType::DEMUX: return( QPixmap( ":/basic/demux.png" ) );
       case ElementType::NODE: return( QPixmap( ":/basic/node.png" ) );
+      case ElementType::BUZZER: return( QPixmap( ":/output/BuzzerOff.png" ) );
       case ElementType::UNKNOWN: default: return( QPixmap( ) );
   }
   return( QPixmap( ) );
@@ -193,6 +198,7 @@ GraphicElement* ElementFactory::buildElement( ElementType type, Editor *editor, 
         type == ElementType::NODE ? new Node( parent ) :
         type == ElementType::MUX ? new Mux( parent ) :
         type == ElementType::DEMUX ? new Demux( parent ) :
+        type == ElementType::BUZZER ? new Buzzer( parent ) :
         ( GraphicElement* ) nullptr;
   return( elm );
 }

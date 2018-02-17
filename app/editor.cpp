@@ -27,6 +27,7 @@
 #include <QMimeData>
 #include <QSettings>
 #include <QtMath>
+#include <buzzer.h>
 #include <iostream>
 
 Editor*Editor::globalEditor = nullptr;
@@ -57,20 +58,11 @@ Editor::~Editor( ) {
 
 void Editor::updateTheme( ) {
   if( ThemeManager::globalMngr ) {
-    switch( ThemeManager::globalMngr->theme( ) ) {
-        case Theme::Panda_Light:
-        scene->setBackgroundBrush( QBrush( QColor( "#ffffe6" ) ) );
-        scene->setDots( QPen( Qt::darkGray ) );
-        selectionRect->setBrush( QBrush( QColor( 175, 0, 0, 80 ) ) );
-        selectionRect->setPen( QPen( QColor( 175, 0, 0, 255 ), 1, Qt::SolidLine ) );
-        break;
-        case Theme::Panda_Dark:
-        scene->setBackgroundBrush( QBrush( QColor( "#404552" ) ) );
-        scene->setDots( QPen( Qt::black ) );
-        selectionRect->setBrush( QBrush( QColor( 255, 255, 0, 80 ) ) );
-        selectionRect->setPen( QPen( QColor( 255, 255, 0, 255 ), 1, Qt::SolidLine ) );
-        break;
-    }
+    const ThemeAttrs attrs = ThemeManager::globalMngr->getAttrs( );
+    scene->setBackgroundBrush( attrs.scene_bgBrush );
+    scene->setDots( QPen( attrs.scene_bgDots ) );
+    selectionRect->setBrush( QBrush( attrs.selectionBrush ) );
+    selectionRect->setPen( QPen( attrs.selectionPen, 1, Qt::SolidLine ) );
     for( GraphicElement *elm : scene->getElements( ) ) {
       elm->updateTheme( );
     }
@@ -80,9 +72,17 @@ void Editor::updateTheme( ) {
   }
 }
 
+void Editor::mute( bool _mute ) {
+  for( GraphicElement *elm : scene->getElements( ) ) {
+    Buzzer *bz = dynamic_cast< Buzzer* >( elm );
+    if( bz ) {
+      bz->mute( _mute );
+    }
+  }
+}
+
 void Editor::install( Scene *s ) {
   s->installEventFilter( this );
-  connect( scene, &QGraphicsScene::selectionChanged, this, &Editor::selectionChanged );
   simulationController = new SimulationController( s );
   simulationController->start( );
   clear( );
@@ -94,6 +94,7 @@ QNEConnection* Editor::getEditedConn( ) {
 
 void Editor::setEditedConn( QNEConnection *editedConn ) {
   if( editedConn ) {
+    editedConn->setFocus( );
     _editedConn_id = editedConn->id( );
   }
   else {
@@ -105,7 +106,9 @@ void Editor::setEditedConn( QNEConnection *editedConn ) {
 void Editor::buildSelectionRect( ) {
   selectionRect = new QGraphicsRectItem( );
   selectionRect->setFlag( QGraphicsItem::ItemIsSelectable, false );
-  scene->addItem( selectionRect );
+  if( scene ) {
+    scene->addItem( selectionRect );
+  }
 }
 
 void Editor::clear( ) {
@@ -194,8 +197,33 @@ void Editor::rotate( bool rotateRight ) {
   }
 }
 
-void Editor::selectionChanged( ) {
+void Editor::flipH( ) {
+  QList< QGraphicsItem* > list = scene->selectedItems( );
+  QList< GraphicElement* > elms;
+  for( QGraphicsItem *item : list ) {
+    GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+    if( elm && ( elm->type( ) == GraphicElement::Type ) ) {
+      elms.append( elm );
+    }
+  }
+  if( ( elms.size( ) > 1 ) || ( ( elms.size( ) == 1 ) ) ) {
+    receiveCommand( new FlipCommand( elms, 0 ) );
+  }
+}
 
+
+void Editor::flipV( ) {
+  QList< QGraphicsItem* > list = scene->selectedItems( );
+  QList< GraphicElement* > elms;
+  for( QGraphicsItem *item : list ) {
+    GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+    if( elm && ( elm->type( ) == GraphicElement::Type ) ) {
+      elms.append( elm );
+    }
+  }
+  if( ( elms.size( ) > 1 ) || ( ( elms.size( ) == 1 ) ) ) {
+    receiveCommand( new FlipCommand( elms, 1 ) );
+  }
 }
 
 QList< QGraphicsItem* > Editor::itemsAt( QPointF pos ) {
@@ -236,56 +264,86 @@ void Editor::addItem( QGraphicsItem *item ) {
   scene->addItem( item );
 }
 
+void Editor::deleteEditedConn( ) {
+  QNEConnection *editedConn = getEditedConn( );
+  if( editedConn ) {
+    scene->removeItem( editedConn );
+    delete editedConn;
+  }
+  setEditedConn( nullptr );
+}
+
+void Editor::startNewConnection( QNEOutputPort *startPort ) {
+  QNEConnection *editedConn = ElementFactory::buildConnection( );
+  editedConn->setStart( startPort );
+  editedConn->setEndPos( mousePos );
+  addItem( editedConn );
+  setEditedConn( editedConn );
+  editedConn->updatePath( );
+}
+
+
+void Editor::startNewConnection( QNEInputPort *endPort ) {
+  QNEConnection *editedConn = ElementFactory::buildConnection( );
+  editedConn->setEnd( endPort );
+  editedConn->setStartPos( mousePos );
+  addItem( editedConn );
+  setEditedConn( editedConn );
+  editedConn->updatePath( );
+}
+
+
+void Editor::detachConnection( QNEInputPort *endPort ) {
+  QNEConnection *editedConn = endPort->connections( ).last( );
+  QNEOutputPort *startPort = editedConn->start( );
+  if( startPort ) {
+    receiveCommand( new DeleteItemsCommand( editedConn, this ) );
+    startNewConnection( startPort );
+  }
+}
+
+void Editor::startSelectionRect( ) {
+  selectionStartPoint = mousePos;
+  markingSelectionBox = true;
+  selectionRect->setRect( QRectF( selectionStartPoint, selectionStartPoint ) );
+  selectionRect->show( );
+  selectionRect->update( );
+}
+
 bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
   QGraphicsItem *item = itemAt( mousePos );
   if( item && ( item->type( ) == QNEPort::Type ) ) {
     /* When the mouse pressed over an connected input port, the line
      * is disconnected and can be connected in an other port. */
     QNEPort *pressedPort = qgraphicsitem_cast< QNEPort* >( item );
-    if( pressedPort->isInput( ) && !pressedPort->connections( ).empty( ) ) {
-      /* The last connected line is detached */
-      QNEConnection *editedConn = pressedPort->connections( ).last( );
-      setEditedConn( editedConn );
-
-      editedConn->setFocus( );
-
-      QNEPort *port1 = editedConn->otherPort( pressedPort );
-      if( port1 ) {
-        QList< QGraphicsItem* > itemList;
-        itemList.append( editedConn );
-        receiveCommand( new DeleteItemsCommand( itemList, this ) );
-        editedConn = ElementFactory::buildConnection( );
-        editedConn->setPort1( port1 );
-        editedConn->setPort2( nullptr );
-        editedConn->updatePosFromPorts( );
-        editedConn->setPos2( mousePos );
-        editedConn->updatePath( );
-        addItem( editedConn );
-        setEditedConn( editedConn );
-      }
-      else {
-        setEditedConn( nullptr );
-      }
+    QNEConnection *editedConn = getEditedConn( );
+    if( editedConn ) {
+      makeConnection( editedConn );
     }
     else {
-      QNEConnection *editedConn = ElementFactory::buildConnection( );
-      addItem( editedConn );
-      setEditedConn( editedConn );
-      editedConn->setPort1( pressedPort );
-      editedConn->updatePosFromPorts( );
-      editedConn->setPos2( mousePos );
-      editedConn->updatePath( );
-      return( true );
+      if( pressedPort->isOutput( ) ) {
+        QNEOutputPort *startPort = dynamic_cast< QNEOutputPort* >( pressedPort );
+        startNewConnection( startPort );
+      }
+      else {
+        QNEInputPort *endPort = dynamic_cast< QNEInputPort* >( pressedPort );
+        if( endPort->connections( ).size( ) > 0 ) {
+          detachConnection( endPort );
+        }
+        else {
+          startNewConnection( endPort );
+        }
+      }
     }
+    return( true );
   }
-  else if( !item ) {
-    if( mouseEvt->button( ) == Qt::LeftButton ) {
-      /* Mouse pressed over boar (Selection box). */
-      selectionStartPoint = mousePos;
-      markingSelectionBox = true;
-      selectionRect->setRect( QRectF( selectionStartPoint, selectionStartPoint ) );
-      selectionRect->show( );
-      selectionRect->update( );
+  else {
+    if( getEditedConn( ) ) {
+      deleteEditedConn( );
+    }
+    else if( !item && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
+      /* Mouse pressed over board (Selection box). */
+      startSelectionRect( );
     }
   }
   return( false );
@@ -313,13 +371,20 @@ void Editor::resizeScene( ) {
 
 bool Editor::mouseMoveEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
   Q_UNUSED( mouseEvt )
-  QNEPort * port = dynamic_cast< QNEPort* >( itemAt( mousePos ) );
-  handleHoverPort( port );
-  QNEConnection *editedConn = getEditedConn( );
+  QNEConnection * editedConn = getEditedConn( );
   if( editedConn ) {
     /* If a connection is being created, the ending coordinate follows the mouse position. */
-    editedConn->setPos2( mousePos );
-    editedConn->updatePath( );
+    if( editedConn->start( ) ) {
+      editedConn->setEndPos( mousePos );
+      editedConn->updatePath( );
+    }
+    else if( editedConn->end( ) ) {
+      editedConn->setStartPos( mousePos );
+      editedConn->updatePath( );
+    }
+    else {
+      deleteEditedConn( );
+    }
     return( true );
   }
   else if( markingSelectionBox ) {
@@ -337,7 +402,41 @@ bool Editor::mouseMoveEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
   return( false );
 }
 
+void Editor::makeConnection( QNEConnection *editedConn ) {
+  QNEPort *port = dynamic_cast< QNEPort* >( itemAt( mousePos ) );
+  if( port && editedConn ) {
+    /* The mouse is released over a QNEPort. */
+    QNEOutputPort *startPort = nullptr;
+    QNEInputPort *endPort = nullptr;
+    if( editedConn->start( ) != nullptr ) {
+      startPort = editedConn->start( );
+      endPort = dynamic_cast< QNEInputPort* >( port );
+    }
+    else if( editedConn->end( ) != nullptr ) {
+      startPort = dynamic_cast< QNEOutputPort* >( port );
+      endPort = editedConn->end( );
+    }
+    if( !startPort || !endPort ) {
+      return;
+    }
+    /* Verifying if the connection is valid. */
+    if( ( startPort->graphicElement( ) != endPort->graphicElement( ) ) && !startPort->isConnected( endPort ) ) {
+      /* Making connection. */
+      editedConn->setStart( startPort );
+      editedConn->setEnd( endPort );
+      receiveCommand( new AddItemsCommand( editedConn, this ) );
+      setEditedConn( nullptr );
+    }
+    else {
+      deleteEditedConn( );
+    }
+  }
+}
+
 bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
+  if( !mouseEvt ) {
+    return( false );
+  }
   /* When mouse is released the selection rect is hidden. */
   selectionRect->hide( );
   markingSelectionBox = false;
@@ -345,36 +444,9 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
     QApplication::setOverrideCursor( Qt::ArrowCursor );
   }
   QNEConnection *editedConn = getEditedConn( );
-  if( editedConn && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
+  if( editedConn && !( mouseEvt->buttons( ) & Qt::LeftButton ) ) {
     /* A connection is being created, and left button was released. */
-    QNEPort *port = dynamic_cast< QNEPort* >( itemAt( mousePos ) );
-    if( port && ( port->type( ) == QNEPort::Type ) ) {
-      /* The mouse is released over a QNEPort. */
-      QNEPort *port1 = editedConn->port1( );
-      QNEPort *port2 = dynamic_cast< QNEPort* >( port );
-      if( !port2 ) {
-        return( true );
-      }
-      /* Verifying if the connection is valid. */
-      if( ( port1->isOutput( ) != port2->isOutput( ) ) &&
-          ( port1->graphicElement( ) != port2->graphicElement( ) ) && !port1->isConnected( port2 ) ) {
-        /* Making connection. */
-        editedConn->setPos2( port2->scenePos( ) );
-        editedConn->setPort2( port2 );
-        editedConn->updatePath( );
-        receiveCommand( new AddItemsCommand( editedConn, this ) );
-        setEditedConn( nullptr );
-        return( true );
-      }
-    }
-    /* When mouse is released away from a QNEPort, the connection is discarded. */
-    scene->removeItem( editedConn );
-    if( editedConn->port1( ) ) {
-      editedConn->port1( )->disconnect( editedConn );
-    }
-    setEditedConn( nullptr );
-    delete editedConn;
-
+    makeConnection( editedConn );
     return( true );
   }
   return( false );
@@ -418,15 +490,17 @@ bool Editor::loadBox( Box *box, QString fname ) {
   return( true );
 }
 
-void Editor::handleHoverPort( QNEPort *port ) {
-  QNEConnection *editedConn = getEditedConn( );
+void Editor::handleHoverPort( ) {
+  QNEPort *port = dynamic_cast< QNEPort* >( itemAt( mousePos ) );
   QNEPort *hoverPort = getHoverPort( );
   if( hoverPort && ( port != hoverPort ) ) {
     releaseHoverPort( );
   }
-  else if( port && ( port->type( ) == QNEPort::Type ) ) {
+  if( port && ( port->type( ) == QNEPort::Type ) ) {
+    QNEConnection *editedConn = getEditedConn( );
+    releaseHoverPort( );
     setHoverPort( port );
-    if( editedConn && editedConn->port1( ) && ( editedConn->port1( )->isOutput( ) == port->isOutput( ) ) ) {
+    if( editedConn && editedConn->start( ) && ( editedConn->start( )->isOutput( ) == port->isOutput( ) ) ) {
       QApplication::setOverrideCursor( QCursor( Qt::ForbiddenCursor ) );
     }
   }
@@ -435,6 +509,7 @@ void Editor::handleHoverPort( QNEPort *port ) {
 void Editor::releaseHoverPort( ) {
   QNEPort *hoverPort = getHoverPort( );
   if( hoverPort ) {
+    hoverPort->hoverLeave( );
     setHoverPort( nullptr );
     QApplication::setOverrideCursor( QCursor( ) );
   }
@@ -443,9 +518,10 @@ void Editor::releaseHoverPort( ) {
 void Editor::setHoverPort( QNEPort *port ) {
   if( port ) {
     GraphicElement *hoverElm = port->graphicElement( );
+    port->hoverEnter( );
     if( hoverElm && ElementFactory::contains( hoverElm->id( ) ) ) {
       _hoverPortElm_id = hoverElm->id( );
-      for( int i = 0; i < ( hoverElm->inputSize( ) + hoverElm->outputSize( ) - 1 ); ++i ) {
+      for( int i = 0; i < ( hoverElm->inputSize( ) + hoverElm->outputSize( ) ); ++i ) {
         if( i < hoverElm->inputSize( ) ) {
           if( port == hoverElm->input( i ) ) {
             _hoverPort_nbr = i;
@@ -464,6 +540,7 @@ void Editor::setHoverPort( QNEPort *port ) {
 }
 
 QNEPort* Editor::getHoverPort( ) {
+  /* TODO remove loop on new version */
   GraphicElement *hoverElm = dynamic_cast< GraphicElement* >( ElementFactory::getItemById( _hoverPortElm_id ) );
   QNEPort *hoverPort = nullptr;
   if( hoverElm ) {
@@ -545,7 +622,6 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
     offset = dde->scenePos( ) - offset;
     dde->accept( );
 
-    scene->clearSelection( );
 
     QPointF ctr;
     ds >> ctr;
@@ -555,11 +631,12 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
                                                                             version,
                                                                             GlobalProperties::currentFile );
     receiveCommand( new AddItemsCommand( itemList, this ) );
+    scene->clearSelection( );
     for( QGraphicsItem *item : itemList ) {
       if( item->type( ) == GraphicElement::Type ) {
         item->setPos( ( item->pos( ) + offset ) );
-        item->update( );
         item->setSelected( true );
+        item->update( );
       }
     }
     resizeScene( );
@@ -629,7 +706,6 @@ void Editor::ctrlDrag( QPointF pos ) {
     drag->setHotSpot( offset.toPoint( ) );
     drag->exec( Qt::CopyAction, Qt::CopyAction );
   }
-  scene->clearSelection( );
 }
 
 QUndoStack* Editor::getUndoStack( ) const {
@@ -686,7 +762,7 @@ void Editor::selectAll( ) {
 }
 
 void Editor::save( QDataStream &ds ) {
-  ds << QApplication::applicationName( ) + " " + QApplication::applicationVersion( ).split( "-" ).first( );
+  ds << QApplication::applicationName( ) + " " + QString::number( GlobalProperties::version );
   ds << scene->sceneRect( );
   SerializationFunctions::serialize( scene->items( ), ds );
 }
@@ -797,14 +873,15 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
     if( mouseEvt ) {
       mousePos = mouseEvt->scenePos( );
       resizeScene( );
+      handleHoverPort( );
       if( mouseEvt->modifiers( ) & Qt::ShiftModifier ) {
         mouseEvt->setModifiers( Qt::ControlModifier );
         return( QObject::eventFilter( obj, evt ) );
       }
     }
     bool ret = false;
-    if( ( evt->type( ) == QEvent::GraphicsSceneMousePress )
-        || ( evt->type( ) == QEvent::GraphicsSceneMouseDoubleClick ) ) {
+    if( mouseEvt && ( ( evt->type( ) == QEvent::GraphicsSceneMousePress )
+                      || ( evt->type( ) == QEvent::GraphicsSceneMouseDoubleClick ) ) ) {
       QGraphicsItem *item = itemAt( mousePos );
       if( item && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
         if( ( mouseEvt->modifiers( ) & Qt::ControlModifier ) && ( item->type( ) == GraphicElement::Type ) ) {
@@ -836,7 +913,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
         if( !movedElements.empty( ) ) {
 /*
  *          if( movedElements.size( ) != oldPositions.size( ) ) {
- *            throw std::runtime_error( tr( "Invalid coordinates." ).toStdString( ) );
+ *            throw std::runtime_error( ERRORMSG(tr( "Invalid coordinates." ).toStdString( ) ));
  *          }
  *          qDebug() << "OUT";
  */
@@ -886,7 +963,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
         if( connection && ( connection->type( ) == QNEConnection::Type ) ) {
           /* Mouse pressed over a connection. */
           if( connection ) {
-            if( connection->port1( ) && connection->port2( ) ) {
+            if( connection->start( ) && connection->end( ) ) {
               receiveCommand( new SplitCommand( connection, mousePos, this ) );
             }
           }

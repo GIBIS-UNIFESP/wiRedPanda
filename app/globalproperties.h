@@ -8,6 +8,9 @@ public:
 
   static QString currentFile;
   static double version;
+  static bool soundEnabled;
+
+  static double toDouble( QString txtVersion, bool *ok );
 };
 
 #endif // GLOBALPROPERTIES_H

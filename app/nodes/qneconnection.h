@@ -30,6 +30,8 @@
 #include <itemwithid.h>
 
 class QNEPort;
+class QNEInputPort;
+class QNEOutputPort;
 
 class QNEConnection : public QGraphicsPathItem, public ItemWithId {
 public:
@@ -39,15 +41,15 @@ public:
   explicit QNEConnection( QGraphicsItem *parent = 0 );
   virtual ~QNEConnection( );
 
-  void setPos1( const QPointF &p );
-  void setPos2( const QPointF &p );
-  void setPort1( QNEPort *p );
-  void setPort2( QNEPort *p );
+  void setStartPos( const QPointF &p );
+  void setEndPos( const QPointF &p );
+  void setStart( QNEOutputPort *p );
+  void setEnd( QNEInputPort *p );
   void updatePosFromPorts( );
   void updatePath( );
-  QNEPort* port1( ) const;
-  QNEPort* port2( ) const;
-  QNEPort* otherPort( const QNEPort *port ) const;
+  QNEOutputPort* start( ) const;
+  QNEInputPort* end( ) const;
+
   double angle( );
 
   void save( QDataStream & ) const;
@@ -56,17 +58,19 @@ public:
   int type( ) const {
     return( Type );
   }
-
+  QNEPort* otherPort( const QNEPort *port ) const;
+  QNEOutputPort* otherPort( const QNEInputPort* ) const;
+  QNEInputPort* otherPort( const QNEOutputPort* ) const;
   Status status( ) const;
   void setStatus( const Status &status );
 
   void updateTheme( );
 
 private:
-  QPointF pos1;
-  QPointF pos2;
-  QNEPort *m_port1;
-  QNEPort *m_port2;
+  QPointF startPos;
+  QPointF endPos;
+  QNEOutputPort *m_start;
+  QNEInputPort *m_end;
   Status m_status;
 
   QColor m_invalidClr;
@@ -78,5 +82,6 @@ public:
   void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
 
 };
+
 
 #endif /* QNECONNECTION_H */

@@ -8,12 +8,16 @@ SOURCES += \
     testelements.cpp \
     testsimulationcontroller.cpp \
     testfiles.cpp \
-    testcommands.cpp
+    testcommands.cpp \
+    testwaveform.cpp \
+    testicons.cpp
 
 HEADERS += \
     testelements.h \
     testsimulationcontroller.h \
     testfiles.h \
-    testcommands.h
+    testcommands.h \
+    testwaveform.h \
+    testicons.h
 
 DEFINES += CURRENTDIR=\\\"$$PWD\\\"

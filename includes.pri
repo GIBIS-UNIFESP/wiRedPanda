@@ -1,8 +1,8 @@
-QT       += core gui printsupport charts
+QT       += core gui printsupport charts multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-VERSION = 2.3-alpha
+VERSION = 2.4.2
 
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
@@ -50,7 +50,6 @@ SOURCES += \
     $$PWD/app/label.cpp \
     $$PWD/app/listitemwidget.cpp \
     $$PWD/app/mainwindow.cpp \
-    $$PWD/app/nodes/qneblock.cpp \
     $$PWD/app/nodes/qneconnection.cpp \
     $$PWD/app/nodes/qneport.cpp \
     $$PWD/app/recentfilescontroller.cpp \
@@ -66,7 +65,8 @@ SOURCES += \
     $$PWD/app/boxfilehelper.cpp \
     $$PWD/app/boxprototypeimpl.cpp \
     $$PWD/app/elementmapping.cpp \
-    $$PWD/app/boxmapping.cpp
+    $$PWD/app/boxmapping.cpp \
+    $$PWD/app/element/buzzer.cpp
 
 HEADERS  +=  \
     $$PWD/app/common.h \
@@ -109,7 +109,6 @@ HEADERS  +=  \
     $$PWD/app/label.h \
     $$PWD/app/listitemwidget.h \
     $$PWD/app/mainwindow.h \
-    $$PWD/app/nodes/qneblock.h \
     $$PWD/app/nodes/qneconnection.h \
     $$PWD/app/nodes/qneport.h \
     $$PWD/app/recentfilescontroller.h \
@@ -125,7 +124,8 @@ HEADERS  +=  \
     $$PWD/app/boxfilehelper.cpp \
     $$PWD/app/boxprototypeimpl.h \
     $$PWD/app/elementmapping.h \
-    $$PWD/app/boxmapping.h
+    $$PWD/app/boxmapping.h \
+    $$PWD/app/element/buzzer.h
 
 INCLUDEPATH += \
     $$PWD/app \
@@ -141,10 +141,16 @@ RESOURCES += \
     $$PWD/app/resources/resources.qrc\
     $$PWD/app/resources/basic/basic.qrc\
     $$PWD/app/resources/input/input.qrc\
-    $$PWD/app/resources/memory/memory.qrc\
     $$PWD/app/resources/output/output.qrc\
-    $$PWD/app/resources/toolbar/toolbar.qrc
+    $$PWD/app/resources/toolbar/toolbar.qrc \
+    $$PWD/app/resources/memory/dark/memory_dark.qrc \
+    $$PWD/app/resources/memory/light/memory_light.qrc
 
+RESOURCES += $$PWD/app/resources/translations.qrc
+
+TRANSLATIONS = $$PWD/app/resources/wpanda_en.ts  $$PWD/app/resources/wpanda_pt.ts
+
+QMAKE_CXXFLAGS += -Wl,-rpath,'${ORIGIN}/lib'
 
 #mac {
 #TEMPLATE = app

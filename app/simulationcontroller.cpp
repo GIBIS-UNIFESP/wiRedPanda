@@ -33,6 +33,10 @@ void SimulationController::updateScene( const QRectF &rect ) {
   }
 }
 
+bool SimulationController::isRunning( ) {
+  return( this->timer.isActive( ) );
+}
+
 void SimulationController::update( ) {
   if( elMapping ) {
     for( Clock *clk : elMapping->clocks ) {
@@ -117,8 +121,8 @@ void SimulationController::updateGraphicElement( QNEPort *port ) {
 
 void SimulationController::updateConnection( QNEConnection *conn ) {
   if( conn ) {
-    QNEPort *p1 = conn->port1( );
-    QNEPort *p2 = conn->port2( );
+    QNEPort *p1 = dynamic_cast< QNEPort* >( conn->start( ) );
+    QNEPort *p2 = dynamic_cast< QNEPort* >( conn->end( ) );
     updateGraphicElement( p1 );
     updateGraphicElement( p2 );
   }
