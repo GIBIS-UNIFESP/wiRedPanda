@@ -70,8 +70,6 @@ void ElementMapping::insertBox( Box *box ) {
   boxMap->initialize( );
   boxMappings.insert( box, boxMap );
   logicElms.append( boxMap->logicElms );
-  qDebug( ) << "Cannot handle boxes yet";
-  // FIXME Cannot handle boxes yet
 }
 
 void ElementMapping::generateMap( ) {
@@ -181,7 +179,6 @@ void ElementMapping::applyConnection( GraphicElement *elm, QNEPort *in ) {
           predOutElm = map[ predecessor ];
           predOutIndex = other_out->index( );
         }
-        qDebug( ) << predecessor->objectName( );
         currentLogElm->connectPredecessor( inputIndex, predOutElm, predOutIndex );
       }
     }
