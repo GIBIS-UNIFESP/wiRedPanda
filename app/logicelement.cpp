@@ -335,9 +335,9 @@ void LogicDFlipFlop::_updateLogic( const std::vector< bool > &inputs ) {
   bool clk = inputs[ 1 ];
   bool prst = inputs[ 2 ];
   bool clr = inputs[ 3 ];
-  if( !clk && lastClk ) {
-    q0 = D;
-    q1 = !D;
+  if( clk && !lastClk ) {
+    q0 = lastValue;
+    q1 = !lastValue;
   }
   if( ( !prst ) || ( !clr ) ) {
     q0 = !prst;
