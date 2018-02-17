@@ -99,6 +99,7 @@ void Box::loadOutputs( BoxPrototype *prototype ) {
 
 void Box::loadFile( QString fname ) {
   m_file = fname;
+  setToolTip( fname );
   BoxPrototype *prototype = getPrototype( );
   prototype->insertBoxObserver( this );
   if( getLabel( ).isEmpty( ) ) {

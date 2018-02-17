@@ -5,13 +5,13 @@
 #include "graphicelement.h"
 
 class BoxMapping : public ElementMapping {
-  ElementVector boxInputs;
-  ElementVector boxOutputs;
+  QNEPortVector boxInputs;
+  QNEPortVector boxOutputs;
 
   QVector< LogicElement* > inputs;
   QVector< LogicElement* > outputs;
 public:
-  BoxMapping( const ElementVector &elms, const ElementVector &inputs, const ElementVector &outputs );
+  BoxMapping( const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs );
 
   virtual ~BoxMapping( );
 
