@@ -271,6 +271,13 @@
     </message>
 </context>
 <context>
+    <name>FlipHCommand</name>
+    <message>
+        <source>Flip %1 elements in axis %2</source>
+        <translation>Espelhando %1 portas no eixo %2</translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <source>WiRED Panda</source>
@@ -382,7 +389,7 @@
     </message>
     <message>
         <source>Language</source>
-        <translation>Linguagem</translation>
+        <translation type="obsolete">Linguagem</translation>
     </message>
     <message>
         <source>&amp;View</source>
@@ -458,31 +465,31 @@
     </message>
     <message>
         <source>Rotate right</source>
-        <translation>Rotacionar à Direita</translation>
+        <translation type="obsolete">Rotacionar à Direita</translation>
     </message>
     <message>
         <source>Rotate left</source>
-        <translation>Rotacionar à Esquerda</translation>
+        <translation type="obsolete">Rotacionar à Esquerda</translation>
     </message>
     <message>
         <source>About Qt</source>
-        <translation>Sobre o Qt</translation>
+        <translation type="obsolete">Sobre o Qt</translation>
     </message>
     <message>
         <source>Select all</source>
-        <translation>Selecionar Tudo</translation>
+        <translation type="obsolete">Selecionar Tudo</translation>
     </message>
     <message>
         <source>Open file as a Box</source>
-        <translation>Abrir arquivo como uma Caixa</translation>
+        <translation type="obsolete">Abrir arquivo como uma Caixa</translation>
     </message>
     <message>
         <source>Reload File</source>
-        <translation>Recarregar arquivo</translation>
+        <translation type="obsolete">Recarregar arquivo</translation>
     </message>
     <message>
         <source>Export to Arduino</source>
-        <translation>Exportar para Arduino</translation>
+        <translation type="obsolete">Exportar para Arduino</translation>
     </message>
     <message>
         <source>...</source>
@@ -608,7 +615,7 @@ Errp: %1</translation>
     </message>
     <message>
         <source>Recent files:</source>
-        <translation>Arquivos recentes:</translation>
+        <translation type="obsolete">Arquivos recentes:</translation>
     </message>
     <message>
         <source>Ctrl+O</source>
@@ -680,7 +687,7 @@ Errp: %1</translation>
     </message>
     <message>
         <source>Reset Zoom</source>
-        <translation>Restaurar Zoom</translation>
+        <translation type="obsolete">Restaurar Zoom</translation>
     </message>
     <message>
         <source>Ctrl+0</source>
@@ -704,11 +711,11 @@ Errp: %1</translation>
     </message>
     <message>
         <source>English</source>
-        <translation>English</translation>
+        <translation type="obsolete">English</translation>
     </message>
     <message>
         <source>Portuguese</source>
-        <translation>Português</translation>
+        <translation type="obsolete">Português</translation>
     </message>
     <message>
         <source>F1</source>
@@ -716,7 +723,7 @@ Errp: %1</translation>
     </message>
     <message>
         <source>PlayPause</source>
-        <translation>Iniciar/Pausar</translation>
+        <translation type="obsolete">Iniciar/Pausar</translation>
     </message>
     <message>
         <source>Play or Pause simulation.</source>
@@ -728,7 +735,7 @@ Errp: %1</translation>
     </message>
     <message>
         <source>Rename</source>
-        <translation>Renomear</translation>
+        <translation type="obsolete">Renomear</translation>
     </message>
     <message>
         <source>F2</source>
@@ -736,7 +743,7 @@ Errp: %1</translation>
     </message>
     <message>
         <source>Change Trigger</source>
-        <translation>Mudar Atalho</translation>
+        <translation type="obsolete">Mudar Atalho</translation>
     </message>
     <message>
         <source>F3</source>
@@ -744,7 +751,7 @@ Errp: %1</translation>
     </message>
     <message>
         <source>Clear selection</source>
-        <translation>Limpar seleção</translation>
+        <translation type="obsolete">Limpar seleção</translation>
     </message>
     <message>
         <source>Esc</source>
@@ -752,7 +759,155 @@ Errp: %1</translation>
     </message>
     <message>
         <source>&lt;p&gt;wiRED Panda is a software developed by the students of the Federal University of SÃ£o Paulo. This project was created in order to help students to learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; HÃ©ctor Castelli &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. FÃ¡bio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;wiRED Panda é um software desenvolvido por estudantes da Universidade Federal de São Paulo. Este projeto foi desenvolvido como uma ferramenta didática para auxiliar em disciplinas de Circuitos Digitais.&lt;/p&gt; &lt;p&gt;Versão: %1&lt;/p&gt; &lt;p&gt;&lt;strong&gt;Equipe:&lt;/strong&gt; &lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Dr. Fábio Cappabianco. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso website!&lt;/a&gt;&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;wiRED Panda é um software desenvolvido por estudantes da Universidade Federal de São Paulo. Este projeto foi desenvolvido como uma ferramenta didática para auxiliar em disciplinas de Circuitos Digitais.&lt;/p&gt; &lt;p&gt;Versão: %1&lt;/p&gt; &lt;p&gt;&lt;strong&gt;Equipe:&lt;/strong&gt; &lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Dr. Fábio Cappabianco. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso website!&lt;/a&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>&amp;Recent files:</source>
+        <translation>Arquivos recentes:</translation>
+    </message>
+    <message>
+        <source>&amp;Theme</source>
+        <translation>Tema</translation>
+    </message>
+    <message>
+        <source>&amp;Language</source>
+        <translation>Idioma</translation>
+    </message>
+    <message>
+        <source>Sim&amp;ulation</source>
+        <translation>Simulação</translation>
+    </message>
+    <message>
+        <source>R&amp;otate right</source>
+        <translation>Rotacionar à direita</translation>
+    </message>
+    <message>
+        <source>Rotate &amp;left</source>
+        <translation>Rotacionar à esquerda</translation>
+    </message>
+    <message>
+        <source>About &amp;Qt</source>
+        <translation>Sobre o Qt</translation>
+    </message>
+    <message>
+        <source>&amp;Select all</source>
+        <translation>Selecionar tudo</translation>
+    </message>
+    <message>
+        <source>Open &amp;file as a Box</source>
+        <translation>Abrir arquivo como módulo</translation>
+    </message>
+    <message>
+        <source>Re&amp;load File</source>
+        <translation>Recarregar Arquivo</translation>
+    </message>
+    <message>
+        <source>E&amp;xport to Arduino</source>
+        <translation>Exportar para Arduino</translation>
+    </message>
+    <message>
+        <source>&amp;Reset Zoom</source>
+        <translation>Redefinir Zoom</translation>
+    </message>
+    <message>
+        <source>Export to &amp;PDF</source>
+        <translation>Exportar para PDF</translation>
+    </message>
+    <message>
+        <source>&amp;English</source>
+        <translation>English</translation>
+    </message>
+    <message>
+        <source>&amp;Portuguese</source>
+        <translation>Português</translation>
+    </message>
+    <message>
+        <source>&amp;Play/Pause</source>
+        <translation>Play/Pause</translation>
+    </message>
+    <message>
+        <source>&amp;Rename</source>
+        <translation>Renomear</translation>
+    </message>
+    <message>
+        <source>Cha&amp;nge Trigger</source>
+        <translation>Alterar atalho</translation>
+    </message>
+    <message>
+        <source>Cl&amp;ear selection</source>
+        <translation>Limpar seleção</translation>
+    </message>
+    <message>
+        <source>&amp;Fast Mode</source>
+        <translation>Modo Rápido </translation>
+    </message>
+    <message>
+        <source>&amp;Panda Light</source>
+        <translation>Panda Claro</translation>
+    </message>
+    <message>
+        <source>Panda &amp;Dark</source>
+        <translation>Panda Escuro</translation>
+    </message>
+    <message>
+        <source>&amp;Waveform</source>
+        <translation>Forma de Onda</translation>
+    </message>
+    <message>
+        <source>Ctrl+W</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Export to &amp;Image</source>
+        <translation>Exportar para Imagem</translation>
+    </message>
+    <message>
+        <source>&amp;Flip horizontally</source>
+        <translation>Espelhar horizontalmente</translation>
+    </message>
+    <message>
+        <source>Ctrl+H</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Flip &amp;vertically</source>
+        <translation>Espelhar Verticalmente</translation>
+    </message>
+    <message>
+        <source>Ctrl+Y</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>F&amp;ullscreen</source>
+        <translation>Tela cheia</translation>
+    </message>
+    <message>
+        <source>F11</source>
+        <translation>F11</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;wiRED Panda is a software developed by the students of the Federal University of SÃ£o Paulo. This project was created in order to help students to learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. FÃ¡bio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;wiRED Panda é um software desenvolvido pelos estudantes da Universidade Federal de São Paulo. Este projeto foi criado com o objetivo de auxiliar no ensino de circuitos digitais.&lt;/p&gt;&lt;p&gt;Versão: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Criadores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Could not open %1 for write.</source>
+        <translation>Não foi possível abrir %1</translation>
+    </message>
+    <message>
+        <source>Could not generate waveform file for %1.</source>
+        <translation>Não foi possível gerar a forma de onda para %1.</translation>
+    </message>
+    <message>
+        <source>&lt;strong&gt;Error while exporting to waveform file:&lt;/strong&gt;&lt;br&gt;%1</source>
+        <translation>&lt;strong&gt;Erro ao exportar para forma de onda:&lt;/strong&gt;&lt;br&gt;%1</translation>
+    </message>
+    <message>
+        <source>Export to Image</source>
+        <translation>Exportar para Imagem</translation>
+    </message>
+    <message>
+        <source>PNG files (*.png)</source>
+        <translation>Arquivos PNG (*.png)</translation>
     </message>
 </context>
 <context>
@@ -781,6 +936,57 @@ Errp: %1</translation>
     </message>
 </context>
 <context>
+    <name>SimpleWaveform</name>
+    <message>
+        <source>Dialog</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Decreasing</source>
+        <translation>Decrescente</translation>
+    </message>
+    <message>
+        <source>Sorting</source>
+        <translation>Ordem</translation>
+    </message>
+    <message>
+        <source>Position</source>
+        <translation>Posição</translation>
+    </message>
+    <message>
+        <source>I&amp;ncreasing</source>
+        <translation>Crescente</translation>
+    </message>
+    <message>
+        <source>Copy to Clipboard</source>
+        <translation>Copiar imagem</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Erro</translation>
+    </message>
+    <message>
+        <source>Could not find any input for the simulation</source>
+        <translation>Não extstem entradas para a simulação</translation>
+    </message>
+    <message>
+        <source>Could not find any input for the simulation.</source>
+        <translation>Não existem entradas para a simulação.</translation>
+    </message>
+    <message>
+        <source>Could not find any output for the simulation.</source>
+        <translation>Não existem saídas para a simulação. </translation>
+    </message>
+    <message>
+        <source>The simulation is limited to 8 inputs.</source>
+        <translation>A simulação em forma de onda está limitada em 8 portas de entrada.</translation>
+    </message>
+</context>
+<context>
     <name>SplitCommand</name>
     <message>
         <source>Wire split</source>
@@ -792,6 +998,29 @@ Errp: %1</translation>
     <message>
         <source>Update %1 elements</source>
         <translation>Atualizar %1 porta(s)</translation>
+    </message>
+</context>
+<context>
+    <name>main</name>
+    <message>
+        <source>Circuit file to open.</source>
+        <translation>Arquivo .panda.</translation>
+    </message>
+    <message>
+        <source>Export circuit to &lt;arduino-file&gt;</source>
+        <translation>Exportar circuito para &lt;arduino-file&gt;</translation>
+    </message>
+    <message>
+        <source>arduino file</source>
+        <translation>Código fonte de arduino</translation>
+    </message>
+    <message>
+        <source>Export circuit to &lt;waveform&gt; text file</source>
+        <translation>Exportar circuito para arquivo de texto da &lt;waveform&gt;</translation>
+    </message>
+    <message>
+        <source>waveform text file</source>
+        <translation>Arquivo de forma de onda</translation>
     </message>
 </context>
 </TS>

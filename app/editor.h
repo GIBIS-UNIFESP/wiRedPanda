@@ -37,14 +37,15 @@ public slots:
   void showWires( bool checked );
   void showGates( bool checked );
   void rotate( bool rotateRight );
-  void selectionChanged( );
+
   void receiveCommand( QUndoCommand *cmd );
   void copyAction( );
   void cutAction( );
   void pasteAction( );
   void deleteAction( );
-
   void updateTheme( );
+
+  void mute( bool _mute = true );
 private:
   QUndoStack *undoStack;
   Scene *scene;
@@ -84,6 +85,13 @@ private:
   void setEditedConn( QNEConnection *editedConn );
 
   /* QObject interface */
+  void detachConnection( QNEInputPort *endPort );
+  void startNewConnection( QNEOutputPort *startPort );
+  void startNewConnection( QNEInputPort *endPort );
+
+  void startSelectionRect( );
+
+  void makeConnection( QNEConnection *editedConn );
 public:
   bool eventFilter( QObject *obj, QEvent *evt );
   void setElementEditor( ElementEditor *value );
@@ -92,7 +100,7 @@ public:
   void buildSelectionRect( );
   bool loadBox( Box *box, QString fname );
 
-  void handleHoverPort( QNEPort *port );
+  void handleHoverPort( );
   void releaseHoverPort( );
 
   void setHoverPort( QNEPort *port );
@@ -108,6 +116,10 @@ public:
   ElementEditor* getElementEditor( ) const;
 
   static Editor *globalEditor;
+
+  void deleteEditedConn( );
+  void flipH( );
+  void flipV( );
 };
 
 #endif /* EDITOR_H */

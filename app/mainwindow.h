@@ -2,17 +2,20 @@
 #define MAINWINDOW_H
 
 #include "editor.h"
+#include "graphicsview.h"
 #include "graphicsviewzoom.h"
 #include "label.h"
 #include "listitemwidget.h"
 #include "recentfilescontroller.h"
 #include "scene.h"
 
+#include <QDialog>
 #include <QDir>
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QMainWindow>
 #include <QSpacerItem>
+#include <QTemporaryFile>
 #include <QTranslator>
 #include <QUndoView>
 
@@ -33,6 +36,7 @@ public:
   QFileInfo getCurrentFile( ) const;
   void setCurrentFile( const QFileInfo &value );
   bool ExportToArduino( QString fname );
+  bool ExportToWaveFormFile( QString fname );
 
   bool open( const QString &fname );
   void createUndoView( );
@@ -51,6 +55,11 @@ public:
   void loadTranslation( QString language );
 
   void setFastMode( bool fastModeEnabled );
+
+  void buildFullScreenDialog( );
+
+  QDialog *fullscreenDlg;
+  GraphicsView *fullscreenView;
 
 private slots:
   bool on_actionExport_to_Arduino_triggered( );
@@ -102,6 +111,15 @@ private slots:
 
   void updateTheme( );
 
+  void on_actionFlip_horizontally_triggered( );
+
+  void on_actionFlip_vertically_triggered( );
+
+  void on_actionFullscreen_triggered( );
+
+  void autoSave( );
+
+  void on_actionMute_triggered( );
 
 private:
   Ui::MainWindow *ui;
@@ -110,7 +128,9 @@ private:
   QDir defaultDirectory;
   QUndoView *undoView;
   Label *firstResult;
-  GraphicsViewZoom *gvzoom;
+
+  QTemporaryFile autosaveFile;
+
   QAction *undoAction;
   QAction *redoAction;
   RecentFilesController *rfController, *rboxController;

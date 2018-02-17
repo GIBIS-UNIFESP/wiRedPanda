@@ -30,11 +30,20 @@
    <layout class="QHBoxLayout" name="horizontalLayout_6">
     <item>
      <widget class="QSplitter" name="splitter">
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <property name="midLineWidth">
+       <number>2</number>
+      </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
       <property name="opaqueResize">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
       <property name="handleWidth">
        <number>8</number>
@@ -51,7 +60,7 @@
        </property>
        <property name="maximumSize">
         <size>
-         <width>400</width>
+         <width>600</width>
          <height>16777215</height>
         </size>
        </property>
@@ -73,7 +82,7 @@
              </size>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="io">
              <attribute name="title">
@@ -359,6 +368,9 @@
        <property name="acceptDrops">
         <bool>true</bool>
        </property>
+       <property name="midLineWidth">
+        <number>0</number>
+       </property>
       </widget>
      </widget>
     </item>
@@ -463,6 +475,8 @@
     <addaction name="separator"/>
     <addaction name="actionRotate_left"/>
     <addaction name="actionRotate_right"/>
+    <addaction name="actionFlip_horizontally"/>
+    <addaction name="actionFlip_vertically"/>
     <addaction name="separator"/>
     <addaction name="actionSelect_all"/>
     <addaction name="actionClear_selection"/>
@@ -495,6 +509,7 @@
     <addaction name="actionFast_Mode"/>
     <addaction name="separator"/>
     <addaction name="menuTheme"/>
+    <addaction name="actionFullscreen"/>
    </widget>
    <widget class="QMenu" name="menuLanguage">
     <property name="title">
@@ -503,9 +518,18 @@
     <addaction name="actionEnglish"/>
     <addaction name="actionPortuguese"/>
    </widget>
+   <widget class="QMenu" name="menuSimulation">
+    <property name="title">
+     <string>Sim&amp;ulation</string>
+    </property>
+    <addaction name="actionPlay"/>
+    <addaction name="actionWaveform"/>
+    <addaction name="actionMute"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
+   <addaction name="menuSimulation"/>
    <addaction name="menuLanguage"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -758,6 +782,9 @@
    <property name="text">
     <string>Re&amp;load File</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+F5</string>
+   </property>
   </action>
   <action name="actionExport_to_Arduino">
    <property name="icon">
@@ -766,6 +793,9 @@
    </property>
    <property name="text">
     <string>E&amp;xport to Arduino</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+I</string>
    </property>
   </action>
   <action name="actionReset_Zoom">
@@ -787,6 +817,9 @@
    </property>
    <property name="text">
     <string>Export to &amp;PDF</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+P</string>
    </property>
   </action>
   <action name="actionEnglish">
@@ -817,7 +850,7 @@
      <normalon>:/toolbar/pause.png</normalon>:/toolbar/play.png</iconset>
    </property>
    <property name="text">
-    <string>PlayPause</string>
+    <string>&amp;Play/Pause</string>
    </property>
    <property name="toolTip">
     <string>Play or Pause simulation.</string>
@@ -899,7 +932,7 @@
      <normaloff>:/toolbar/wavyIcon.png</normaloff>:/toolbar/wavyIcon.png</iconset>
    </property>
    <property name="text">
-    <string>Waveform</string>
+    <string>&amp;Waveform</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+W</string>
@@ -907,7 +940,45 @@
   </action>
   <action name="actionExport_to_Image">
    <property name="text">
-    <string>Export to Image</string>
+    <string>Export to &amp;Image</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="actionFlip_horizontally">
+   <property name="text">
+    <string>&amp;Flip horizontally</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+H</string>
+   </property>
+  </action>
+  <action name="actionFlip_vertically">
+   <property name="text">
+    <string>Flip &amp;vertically</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
+   </property>
+  </action>
+  <action name="actionFullscreen">
+   <property name="text">
+    <string>F&amp;ullscreen</string>
+   </property>
+   <property name="shortcut">
+    <string>F11</string>
+   </property>
+  </action>
+  <action name="actionMute">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Mute</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
    </property>
   </action>
  </widget>

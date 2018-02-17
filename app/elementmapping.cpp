@@ -96,6 +96,7 @@ LogicElement* ElementMapping::buildLogicElement( GraphicElement *elm ) {
       case ElementType::CLOCK:
       return( new LogicInput( ) );
       case ElementType::LED:
+      case ElementType::BUZZER:
       case ElementType::DISPLAY:
       return( new LogicOutput( elm->inputSize( ) ) );
       case ElementType::NODE:

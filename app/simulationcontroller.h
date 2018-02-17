@@ -14,6 +14,9 @@ public:
   ~SimulationController( );
 
   void updateScene( const QRectF &rect );
+  static QVector< GraphicElement* > sortElements( QVector< GraphicElement* > elms );
+
+  bool isRunning( );
 signals:
 
 public slots:

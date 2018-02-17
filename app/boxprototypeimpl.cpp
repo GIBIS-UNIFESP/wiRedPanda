@@ -117,12 +117,12 @@ void BoxPrototypeImpl::loadOutputs( ) {
 }
 
 void BoxPrototypeImpl::loadInputElement( GraphicElement *elm ) {
-  for( QNEPort *port : elm->outputs( ) ) {
+  for( QNEOutputPort *port : elm->outputs( ) ) {
     Q_ASSERT( Editor::globalEditor );
     GraphicElement *nodeElm = ElementFactory::buildElement( ElementType::NODE, Editor::globalEditor );
     nodeElm->setPos( elm->pos( ) );
     nodeElm->setLabel( elm->getLabel( ) );
-    QNEPort *nodeInput = nodeElm->input( );
+    QNEInputPort *nodeInput = nodeElm->input( );
     nodeInput->setPos( port->pos( ) );
     nodeInput->setName( port->getName( ) );
     nodeInput->setRequired( false );
@@ -134,14 +134,8 @@ void BoxPrototypeImpl::loadInputElement( GraphicElement *elm ) {
     elements.append( nodeElm );
     QList< QNEConnection* > conns = port->connections( );
     for( QNEConnection *conn: conns ) {
-      if( conn->port1( ) == port ) {
-        conn->setPort1( nodeElm->output( ) );
-      }
-      else if( conn->port2( ) == port ) {
-        conn->setPort2( nodeElm->output( ) );
-      }
-      else {
-
+      if( port == conn->start( ) ) {
+        conn->setStart( nodeElm->output( ) );
       }
     }
   }
@@ -149,27 +143,21 @@ void BoxPrototypeImpl::loadInputElement( GraphicElement *elm ) {
 }
 
 void BoxPrototypeImpl::loadOutputElement( GraphicElement *elm ) {
-  for( QNEPort *port : elm->inputs( ) ) {
+  for( QNEInputPort *port : elm->inputs( ) ) {
 
     Q_ASSERT( Editor::globalEditor );
     GraphicElement *nodeElm = ElementFactory::buildElement( ElementType::NODE, Editor::globalEditor );
     nodeElm->setPos( elm->pos( ) );
     nodeElm->setLabel( elm->getLabel( ) );
-    QNEPort *nodeOutput = nodeElm->output( );
+    QNEOutputPort *nodeOutput = nodeElm->output( );
     nodeOutput->setPos( port->pos( ) );
     nodeOutput->setName( port->getName( ) );
     outputs.append( nodeOutput );
     elements.append( nodeElm );
     QList< QNEConnection* > conns = port->connections( );
     for( QNEConnection *conn: conns ) {
-      if( conn->port1( ) == port ) {
-        conn->setPort1( nodeElm->input( ) );
-      }
-      else if( conn->port2( ) == port ) {
-        conn->setPort2( nodeElm->input( ) );
-      }
-      else {
-
+      if( port == conn->end( ) ) {
+        conn->setEnd( nodeElm->input( ) );
       }
     }
   }
@@ -188,7 +176,8 @@ void BoxPrototypeImpl::loadItem( QGraphicsItem *item ) {
           break;
         }
           case ElementType::DISPLAY:
-          case ElementType::LED: {
+          case ElementType::LED:
+          case ElementType::BUZZER: {
           loadOutputElement( elm );
           break;
         }

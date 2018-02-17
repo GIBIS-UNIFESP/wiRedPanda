@@ -7,17 +7,64 @@
     <x>0</x>
     <y>0</y>
     <width>202</width>
-    <height>338</height>
+    <height>399</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="9" column="0">
+    <widget class="QComboBox" name="comboBoxAudio">
+     <item>
+      <property name="text">
+       <string>C6</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>D6</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>E6</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>F6</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>G6</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>A7</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>B7</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>C7</string>
+      </property>
+     </item>
+    </widget>
+   </item>
    <item row="5" column="0">
     <widget class="QDoubleSpinBox" name="doubleSpinBoxFrequency">
      <property name="specialValueText">
       <string/>
+     </property>
+     <property name="suffix">
+      <string> Hz</string>
      </property>
      <property name="decimals">
       <number>1</number>
@@ -26,7 +73,10 @@
       <double>0.000000000000000</double>
      </property>
      <property name="maximum">
-      <double>30.000000000000000</double>
+      <double>50.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
      </property>
     </widget>
    </item>
@@ -40,7 +90,7 @@
    <item row="1" column="0">
     <widget class="QLineEdit" name="lineEditElementLabel"/>
    </item>
-   <item row="8" column="0">
+   <item row="10" column="0">
     <widget class="QLabel" name="label_trigger">
      <property name="text">
       <string>Trigger</string>
@@ -78,11 +128,25 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="0">
+   <item row="11" column="0">
     <widget class="QLineEdit" name="lineEditTrigger"/>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="label_audio">
+     <property name="text">
+      <string>Audio</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>lineEditElementLabel</tabstop>
+  <tabstop>comboBoxInputSz</tabstop>
+  <tabstop>doubleSpinBoxFrequency</tabstop>
+  <tabstop>comboBoxColor</tabstop>
+  <tabstop>lineEditTrigger</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

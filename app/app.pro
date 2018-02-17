@@ -20,7 +20,6 @@ SOURCES += main.cpp
 
 DISTFILES += resources/postinst
 
-RESOURCES += \
-    resources/translations.qrc
+RESOURCES +=
 
-TRANSLATIONS = app/resources/wpanda_en.ts  app/resources/wpanda_pt.ts
+

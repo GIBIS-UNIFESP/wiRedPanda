@@ -36,8 +36,6 @@ public:
   QString genericProperties( );
 private:
   void updateClock( );
-
-
   // Input interface
 public:
   bool getOn( ) const;

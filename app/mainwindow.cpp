@@ -12,9 +12,11 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QRectF>
+#include <QSaveFile>
 #include <QSettings>
 #include <QShortcut>
 #include <QStyleFactory>
+#include <QTemporaryFile>
 #include <QtPrintSupport/QPrinter>
 #include <arduino/codegenerator.h>
 #include <cmath>
@@ -23,18 +25,32 @@
 
 
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ), undoView( nullptr ) {
-
+  COMMENT( "WIRED PANDA Version = " << APP_VERSION << " OR " << GlobalProperties::version, 0 );
   ui->setupUi( this );
   ThemeManager::globalMngr = new ThemeManager( this );
   editor = new Editor( this );
-  ui->graphicsView->setScene( editor->getScene( ) );
 
+  buildFullScreenDialog( );
+
+  ui->graphicsView->setScene( editor->getScene( ) );
   /* Translation */
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   if( settings.value( "language" ).isValid( ) ) {
     loadTranslation( settings.value( "language" ).toString( ) );
   }
+  settings.beginGroup( "MainWindow" );
+  restoreGeometry( settings.value( "geometry" ).toByteArray( ) );
+  restoreState( settings.value( "windowState" ).toByteArray( ) );
+  settings.beginGroup( "splitter" );
+  ui->splitter->restoreGeometry( settings.value( "geometry" ).toByteArray( ) );
+  ui->splitter->restoreState( settings.value( "state" ).toByteArray( ) );
+  settings.endGroup( );
+  settings.endGroup( );
+  QList< QKeySequence > zoom_in_shortcuts;
+  zoom_in_shortcuts << QKeySequence( "Ctrl++" ) << QKeySequence( "Ctrl+=" );
+  ui->actionZoom_in->setShortcuts( zoom_in_shortcuts );
+
   /* THEME */
   QActionGroup *themeGroup = new QActionGroup( this );
   for( QAction *action : ui->menuTheme->actions( ) ) {
@@ -52,7 +68,6 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   else {
     setFastMode( false );
   }
-  ui->graphicsView->setAcceptDrops( true );
   editor->setElementEditor( ui->widgetElementEditor );
   ui->searchScrollArea->hide( );
 
@@ -79,15 +94,16 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 
   ui->menuEdit->insertAction( ui->menuEdit->actions( ).at( 0 ), undoAction );
   ui->menuEdit->insertAction( undoAction, redoAction );
-  gvzoom = new GraphicsViewZoom( ui->graphicsView );
-  connect( gvzoom, &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged );
+
+  connect( ui->graphicsView->gvzoom( ), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged );
   connect( editor, &Editor::scroll, this, &MainWindow::scrollView );
+  connect( editor, &Editor::circuitHasChanged, this, &MainWindow::autoSave );
 
   rfController = new RecentFilesController( "recentFileList", this );
   rboxController = new RecentFilesController( "recentBoxes", this );
 
   QShortcut *shortcut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
-  connect( shortcut, SIGNAL(activated()), ui->lineEdit, SLOT(setFocus()) );
+  connect( shortcut, SIGNAL( activated( ) ), ui->lineEdit, SLOT( setFocus( ) ) );
   ui->graphicsView->setCacheMode( QGraphicsView::CacheBackground );
   firstResult = nullptr;
   updateRecentBoxes( );
@@ -96,7 +112,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 
   connect( rfController, &RecentFilesController::recentFilesUpdated, this, &MainWindow::updateRecentFileActions );
 
-  QApplication::setStyle( QStyleFactory::create( "Fusion" ) );
+/*  QApplication::setStyle( QStyleFactory::create( "Fusion" ) ); */
 
   ui->actionPlay->setChecked( true );
 
@@ -107,6 +123,12 @@ void MainWindow::setFastMode( bool fastModeEnabled ) {
   ui->graphicsView->setRenderHint( QPainter::Antialiasing, !fastModeEnabled );
   ui->graphicsView->setRenderHint( QPainter::HighQualityAntialiasing, !fastModeEnabled );
   ui->graphicsView->setRenderHint( QPainter::SmoothPixmapTransform, !fastModeEnabled );
+
+  fullscreenView->setRenderHint( QPainter::Antialiasing, !fastModeEnabled );
+  fullscreenView->setRenderHint( QPainter::HighQualityAntialiasing, !fastModeEnabled );
+  fullscreenView->setRenderHint( QPainter::SmoothPixmapTransform, !fastModeEnabled );
+
+
   ui->actionFast_Mode->setChecked( fastModeEnabled );
 }
 
@@ -144,7 +166,7 @@ bool MainWindow::save( QString fname ) {
   if( !fname.endsWith( ".panda" ) ) {
     fname.append( ".panda" );
   }
-  QFile fl( fname );
+  QSaveFile fl( fname );
   if( fl.open( QFile::WriteOnly ) ) {
     QDataStream ds( &fl );
     try {
@@ -155,17 +177,19 @@ bool MainWindow::save( QString fname ) {
       return( false );
     }
   }
+  if( fl.commit( ) ) {
+    setCurrentFile( QFileInfo( fname ) );
+    ui->statusBar->showMessage( tr( "Saved file sucessfully." ), 2000 );
+    editor->getUndoStack( )->setClean( );
+    if( autosaveFile.isOpen( ) ) {
+      autosaveFile.remove( );
+    }
+    return( true );
+  }
   else {
-    std::cerr << tr( "Could not open file in WriteOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::cerr << QString( tr( "Could not save file: " ) + fl.errorString( ) + "." ).toStdString( ) << std::endl;
     return( false );
   }
-  fl.flush( );
-  fl.close( );
-  setCurrentFile( QFileInfo( fname ) );
-  ui->statusBar->showMessage( tr( "Saved file sucessfully." ), 2000 );
-  editor->getUndoStack( )->setClean( );
-  return( true );
 }
 
 void MainWindow::show( ) {
@@ -233,7 +257,7 @@ bool MainWindow::open( const QString &fname ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::endl;
     return( false );
   }
   fl.close( );
@@ -271,7 +295,6 @@ void MainWindow::on_actionAbout_triggered( ) {
                         "<p><strong>Creators:</strong></p>"
                         "<ul>"
                         "<li> Davi Morales </li>"
-                        "<li> Héctor Castelli </li>"
                         "<li> Lucas Lellis </li>"
                         "<li> Rodrigo Torres </li>"
                         "<li> Prof. Fábio Cappabianco, Ph.D. </li>"
@@ -300,6 +323,16 @@ bool MainWindow::closeFile( ) {
 }
 
 void MainWindow::closeEvent( QCloseEvent *e ) {
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  settings.beginGroup( "MainWindow" );
+  settings.setValue( "geometry", saveGeometry( ) );
+  settings.setValue( "windowState", saveState( ) );
+  settings.beginGroup( "splitter" );
+  settings.setValue( "geometry", ui->splitter->saveGeometry( ) );
+  settings.setValue( "state", ui->splitter->saveState( ) );
+  settings.endGroup( );
+  settings.endGroup( );
 #ifdef DEBUG
   return;
 #endif
@@ -309,6 +342,7 @@ void MainWindow::closeEvent( QCloseEvent *e ) {
   else {
     e->ignore( );
   }
+  autosaveFile.remove( );
 }
 
 void MainWindow::on_actionSave_As_triggered( ) {
@@ -335,6 +369,13 @@ QFileInfo MainWindow::getCurrentFile( ) const {
 }
 
 void MainWindow::setCurrentFile( const QFileInfo &value ) {
+  autosaveFile.remove( );
+  QDir autosavePath( QDir::temp( ) );
+  if( value.exists( ) ) {
+    autosavePath = value.dir( );
+  }
+  qDebug( ) << "AutosavePath = " << autosavePath.absolutePath( );
+  autosaveFile.setFileTemplate( autosavePath.absoluteFilePath( value.baseName( ) + "XXXXXX.panda" ) );
   qDebug( ) << "Setting current file to: " << value.absoluteFilePath( );
   currentFile = value;
   if( value.fileName( ).isEmpty( ) ) {
@@ -392,20 +433,14 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
     return;
   }
   if( fl.open( QFile::ReadOnly ) ) {
-    QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
-    ListItemWidget *item = new ListItemWidget( pixmap, ElementType::BOX, fname, this );
-    ui->scrollAreaWidgetContents_Box->layout( )->removeItem( ui->verticalSpacer_BOX );
-    ui->scrollAreaWidgetContents_Box->layout( )->addWidget( item );
-    ui->scrollAreaWidgetContents_Box->layout( )->addItem( ui->verticalSpacer_BOX );
+    rboxController->addFile( fname );
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::endl;
     return;
   }
   fl.close( );
-
-  rboxController->addFile( fname );
 
   updateRecentBoxes( );
 
@@ -521,6 +556,34 @@ bool MainWindow::ExportToArduino( QString fname ) {
   return( true );
 }
 
+bool MainWindow::ExportToWaveFormFile( QString fname ) {
+  try {
+    if( fname.isEmpty( ) ) {
+      return( false );
+    }
+    QFile outFile( fname );
+    if( !outFile.open( QFile::WriteOnly ) ) {
+      std::cerr << ERRORMSG( tr( "Could not open %1 for write." ).arg( fname ).toStdString( ) ) << std::endl;
+      return( false );
+    }
+    QTextStream outStream( &outFile );
+    if( SimpleWaveform::saveToTxt( outStream, editor ) ) {
+      std::cout << "Waveform file saved to " << fname.toStdString( ) << std::endl;
+    }
+    else {
+      std::cerr << ERRORMSG( tr( "Could not generate waveform file for %1." ).arg(
+                               currentFile.fileName( ) ).toStdString( ) ) << std::endl;
+    }
+  }
+  catch( std::runtime_error &e ) {
+    QMessageBox::warning( this, tr( "Error" ), tr(
+                            "<strong>Error while exporting to waveform file:</strong><br>%1" ).arg( e.what( ) ) );
+    return( false );
+  }
+
+  return( true );
+}
+
 bool MainWindow::on_actionExport_to_Arduino_triggered( ) {
 
   QString fname = QFileDialog::getSaveFileName( this, tr( "Generate Arduino Code" ),
@@ -531,36 +594,24 @@ bool MainWindow::on_actionExport_to_Arduino_triggered( ) {
 }
 
 
-#define ZOOMFAC 0.1
 void MainWindow::on_actionZoom_in_triggered( ) {
 /*  QPointF scenePos = editor->getMousePos(); */
 
 /*  QPointF screenCtr = ui->graphicsView->rect().center(); */
-
-
-  ui->graphicsView->setTransformationAnchor( QGraphicsView::AnchorUnderMouse );
-  double newScale = std::round( gvzoom->scaleFactor( ) * 10 ) / 10.0 + ZOOMFAC;
-  if( newScale <= GraphicsViewZoom::maxZoom ) {
-    gvzoom->setScaleFactor( newScale );
-    zoomChanged( );
-  }
+  ui->graphicsView->gvzoom( )->zoomIn( );
 }
 
 void MainWindow::on_actionZoom_out_triggered( ) {
-  double newScale = std::round( gvzoom->scaleFactor( ) * 10 ) / 10.0 - ZOOMFAC;
-  if( newScale >= GraphicsViewZoom::minZoom ) {
-    gvzoom->setScaleFactor( newScale );
-    zoomChanged( );
-  }
+  ui->graphicsView->gvzoom( )->zoomOut( );
 }
 
 void MainWindow::on_actionReset_Zoom_triggered( ) {
-  gvzoom->setScaleFactor( 1.0 );
+  ui->graphicsView->gvzoom( )->resetZoom( );
 }
 
 void MainWindow::zoomChanged( ) {
-  ui->actionZoom_in->setEnabled( gvzoom->scaleFactor( ) + ZOOMFAC <= gvzoom->maxZoom );
-  ui->actionZoom_out->setEnabled( gvzoom->scaleFactor( ) - ZOOMFAC >= gvzoom->minZoom );
+  ui->actionZoom_in->setEnabled( ui->graphicsView->gvzoom( )->canZoomIn( ) );
+  ui->actionZoom_out->setEnabled( ui->graphicsView->gvzoom( )->canZoomOut( ) );
 }
 
 void MainWindow::updateRecentFileActions( ) {
@@ -718,6 +769,9 @@ void MainWindow::on_actionChange_Trigger_triggered( ) {
 }
 
 void MainWindow::on_actionClear_selection_triggered( ) {
+  if( fullscreenDlg->isVisible( ) && editor->getScene( )->selectedItems( ).isEmpty( ) ) {
+    fullscreenDlg->accept( );
+  }
   editor->getScene( )->clearSelection( );
 }
 
@@ -737,7 +791,7 @@ void MainWindow::populateMenu( QSpacerItem *spacer, QString names, QLayout *layo
 
 void MainWindow::populateLeftMenu( ) {
   populateMenu( ui->verticalSpacer_InOut,
-                "VCC,GND,BUTTON,SWITCH,CLOCK,LED,DISPLAY",
+                "VCC,GND,BUTTON,SWITCH,CLOCK,LED,DISPLAY,BUZZER",
                 ui->scrollAreaWidgetContents_InOut->layout( ) );
   populateMenu( ui->verticalSpacer_Gates,
                 "AND,OR,NOT,NAND,NOR,XOR,XNOR,MUX,DEMUX,NODE",
@@ -756,9 +810,8 @@ void MainWindow::on_actionFast_Mode_triggered( bool checked ) {
 }
 
 void MainWindow::on_actionWaveform_triggered( ) {
-  SimpleWaveform *wf = new SimpleWaveform( editor, this );
-
-  wf->showWaveform( );
+  SimpleWaveform wf( editor, this );
+  wf.showWaveform( );
 }
 
 void MainWindow::on_actionPanda_Light_triggered( ) {
@@ -778,4 +831,64 @@ void MainWindow::updateTheme( ) {
       ui->actionPanda_Light->setChecked( true );
       break;
   }
+}
+
+void MainWindow::on_actionFlip_horizontally_triggered( ) {
+  editor->flipH( );
+}
+
+void MainWindow::on_actionFlip_vertically_triggered( ) {
+  editor->flipV( );
+}
+
+void MainWindow::buildFullScreenDialog( ) {
+  fullscreenDlg = new QDialog( this );
+  fullscreenView = new GraphicsView( this );
+  fullscreenDlg->setWindowFlags( Qt::Window );
+  QHBoxLayout *dlg_layout = new QHBoxLayout( fullscreenDlg );
+
+  fullscreenDlg->addActions( this->actions( ) );
+  fullscreenDlg->addActions( ui->menuBar->actions( ) );
+
+  dlg_layout->setContentsMargins( 0, 0, 0, 0 );
+  dlg_layout->setMargin( 0 );
+  dlg_layout->addWidget( fullscreenView );
+  fullscreenDlg->setLayout( dlg_layout );
+  fullscreenDlg->setStyleSheet( "QGraphicsView { border-style: none; }" );
+  fullscreenView->setScene( editor->getScene( ) );
+}
+
+void MainWindow::on_actionFullscreen_triggered( ) {
+  if( fullscreenDlg->isVisible( ) ) {
+    fullscreenDlg->accept( );
+  }
+  else {
+    fullscreenDlg->showFullScreen( );
+    fullscreenDlg->exec( );
+  }
+}
+
+void MainWindow::autoSave( ) {
+  if( editor->getUndoStack( )->isClean( ) ) {
+    autosaveFile.remove( );
+  }
+  else {
+    if( autosaveFile.open( ) ) {
+      QDataStream ds( &autosaveFile );
+      qDebug( ) << "File saved to " << autosaveFile.fileName( );
+      try {
+        editor->save( ds );
+      }
+      catch( std::runtime_error &e ) {
+        std::cerr << tr( "Error autosaving project: " ).toStdString( ) << e.what( ) << std::endl;
+        autosaveFile.close( );
+        autosaveFile.remove( );
+      }
+      autosaveFile.close( );
+    }
+  }
+}
+
+void MainWindow::on_actionMute_triggered( ) {
+  editor->mute( ui->actionMute->isChecked( ) );
 }

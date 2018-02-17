@@ -95,11 +95,7 @@ void Led::updateLogic( ) {
 }
 void Led::setColor( QString color ) {
   m_color = color;
-  if( inputSize( ) == 1 ) {
-    input( 0 )->setRequired( false );
-  }
   updateLogic( );
-
 }
 
 QString Led::getColor( ) {
@@ -119,7 +115,6 @@ void Led::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double vers
     QString clr;
     ds >> clr;
     setColor( clr );
-
   }
 }
 
