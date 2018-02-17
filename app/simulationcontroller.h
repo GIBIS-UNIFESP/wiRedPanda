@@ -25,13 +25,16 @@ public slots:
   void start( );
   void reSortElms( );
   void clear( );
+  void updateView( );
+
 private:
-  void updateGraphicElement( QNEPort *port );
+  void updatePort( QNEPort *port );
   void updateConnection( QNEConnection *conn );
 
   ElementMapping *elMapping;
   Scene *scene;
-  QTimer timer;
+  QTimer simulationTimer;
+  QTimer viewTimer;
 };
 
 #endif /* SIMULATIONCONTROLLER_H */

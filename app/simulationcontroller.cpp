@@ -15,10 +15,13 @@
 #include <QStack>
 
 SimulationController::SimulationController( Scene *scn ) : QObject( dynamic_cast< QObject* >( scn ) ), elMapping(
-    nullptr ), timer( this ) {
+    nullptr ), simulationTimer( this ) {
   scene = scn;
-  timer.setInterval( GLOBALCLK );
-  connect( &timer, &QTimer::timeout, this, &SimulationController::update );
+  simulationTimer.setInterval( GLOBALCLK );
+  viewTimer.setInterval( int( 1000 / 30 ) );
+  viewTimer.start( );
+  connect( &viewTimer, &QTimer::timeout, this, &SimulationController::updateView );
+  connect( &simulationTimer, &QTimer::timeout, this, &SimulationController::update );
 }
 
 SimulationController::~SimulationController( ) {
@@ -29,12 +32,24 @@ void SimulationController::updateScene( const QRectF &rect ) {
   const QList< QGraphicsItem* > &items = scene->items( rect );
   for( QGraphicsItem *item: items ) {
     QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
-    updateConnection( conn );
+    GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+    if( conn ) {
+      updateConnection( conn );
+    }
+    else if( elm && ( elm->elementGroup( ) == ElementGroup::OUTPUT ) ) {
+      for( QNEInputPort *in: elm->inputs( ) ) {
+        updatePort( in );
+      }
+    }
   }
 }
 
+void SimulationController::updateView( ) {
+  updateScene( scene->views( ).first( )->sceneRect( ) );
+}
+
 bool SimulationController::isRunning( ) {
-  return( this->timer.isActive( ) );
+  return( this->simulationTimer.isActive( ) );
 }
 
 void SimulationController::update( ) {
@@ -54,18 +69,17 @@ void SimulationController::update( ) {
     for( LogicElement *elm : elMapping->logicElms ) {
       elm->updateLogic( );
     }
-    updateScene( scene->views( ).first( )->sceneRect( ) );
   }
 }
 
 void SimulationController::stop( ) {
-  timer.stop( );
+  simulationTimer.stop( );
 }
 
 void SimulationController::start( ) {
   Clock::reset = true;
   reSortElms( );
-  timer.start( );
+  simulationTimer.start( );
 }
 
 
@@ -78,7 +92,7 @@ void SimulationController::reSortElms( ) {
   if( elMapping ) {
     delete elMapping;
   }
-  elMapping = new ElementMapping( scene->getElements( ) );
+  elMapping = new ElementMapping( GlobalProperties::currentFile, scene->getElements( ) );
   elMapping->initialize( );
   elMapping->sort( );
   update( );
@@ -91,7 +105,7 @@ void SimulationController::clear( ) {
   elMapping = nullptr;
 }
 
-void SimulationController::updateGraphicElement( QNEPort *port ) {
+void SimulationController::updatePort( QNEPort *port ) {
   if( port && port->graphicElement( ) ) {
     GraphicElement *elm = port->graphicElement( );
     if( port->isOutput( ) ) {
@@ -120,10 +134,9 @@ void SimulationController::updateGraphicElement( QNEPort *port ) {
 }
 
 void SimulationController::updateConnection( QNEConnection *conn ) {
-  if( conn ) {
-    QNEPort *p1 = dynamic_cast< QNEPort* >( conn->start( ) );
-    QNEPort *p2 = dynamic_cast< QNEPort* >( conn->end( ) );
-    updateGraphicElement( p1 );
-    updateGraphicElement( p2 );
-  }
+  Q_ASSERT( conn );
+  QNEPort *p1 = dynamic_cast< QNEPort* >( conn->start( ) );
+  QNEPort *p2 = dynamic_cast< QNEPort* >( conn->end( ) );
+  updatePort( p1 );
+  updatePort( p2 );
 }

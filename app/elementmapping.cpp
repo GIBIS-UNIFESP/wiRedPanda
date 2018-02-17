@@ -9,7 +9,8 @@
 
 
 
-ElementMapping::ElementMapping( const QVector< GraphicElement* > &elms ) :
+ElementMapping::ElementMapping( QString file, const QVector< GraphicElement* > &elms ) :
+  currentFile( file ),
   elements( elms ),
   globalGND( false ),
   globalVCC( true ) {

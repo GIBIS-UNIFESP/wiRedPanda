@@ -8,7 +8,7 @@
 class BoxFileHelper {
 
 public:
-  static QFileInfo findFile(QString fname);
+  static QFileInfo findFile(QString fname, QString parentFile);
 
   static QString verifyRecursion(QString fname);
 

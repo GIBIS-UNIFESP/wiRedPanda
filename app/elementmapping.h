@@ -21,7 +21,7 @@ typedef QMap< Input*, LogicElement* > InputMap;
 
 class ElementMapping {
 public:
-
+  QString currentFile;
   ElementMap map;
   InputMap inputMap;
   QVector< Clock* > clocks;
@@ -32,7 +32,7 @@ public:
   LogicInput globalGND;
   LogicInput globalVCC;
 
-  ElementMapping( const QVector< GraphicElement* > &elms );
+  ElementMapping( QString file, const QVector< GraphicElement* > &elms );
   virtual ~ElementMapping( );
 
   void clear( );

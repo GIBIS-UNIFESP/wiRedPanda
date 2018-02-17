@@ -452,9 +452,9 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
   return( false );
 }
 
-bool Editor::loadBox( Box *box, QString fname ) {
-  boxManager->loadFile( fname );
+bool Editor::loadBox( Box *box, QString fname, QString parentFile ) {
   try {
+    boxManager->loadFile( fname, parentFile );
     box->loadFile( fname );
   }
   catch( BoxNotFoundException &err ) {
@@ -470,7 +470,7 @@ bool Editor::loadBox( Box *box, QString fname ) {
         return( false );
       }
       else {
-        return( loadBox( err.getBox( ), fname ) );
+        return( loadBox( err.getBox( ), fname, parentFile ) );
       }
     }
   }
@@ -540,7 +540,6 @@ void Editor::setHoverPort( QNEPort *port ) {
 }
 
 QNEPort* Editor::getHoverPort( ) {
-  /* TODO remove loop on new version */
   GraphicElement *hoverElm = dynamic_cast< GraphicElement* >( ElementFactory::getItemById( _hoverPortElm_id ) );
   QNEPort *hoverPort = nullptr;
   if( hoverElm ) {
@@ -580,7 +579,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
         Box *box = dynamic_cast< Box* >( elm );
         if( box ) {
           QString fname = label_auxData;
-          if( !loadBox( box, fname ) ) {
+          if( !loadBox( box, fname, GlobalProperties::currentFile ) ) {
             return( false );
           }
         }
