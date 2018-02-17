@@ -22,13 +22,12 @@ BoxManager::~BoxManager( ) {
 
 void BoxManager::loadFile( QString fname ) {
   QFileInfo finfo = BoxFileHelper::findFile( fname );
+  m_fileWatcher.addPath( finfo.absoluteFilePath( ) );
   if( m_boxes.contains( finfo.baseName( ) ) ) {
     qDebug( ) << "BoxManager: Box already inserted: " << finfo.baseName( );
-    //FIXME: Missing implementation
   }
   else {
     qDebug( ) << "BoxManager: Inserting Box: " << finfo.baseName( );
-    m_fileWatcher.addPath( finfo.absoluteFilePath( ) );
     BoxPrototype *prototype = new BoxPrototype( finfo.absoluteFilePath( ) );
     m_boxes.insert( finfo.baseName( ), prototype );
     prototype->reload( );
@@ -37,10 +36,11 @@ void BoxManager::loadFile( QString fname ) {
 
 void BoxManager::clear( ) {
   qDebug( ) << "BoxManager::Clear";
-  for( auto it = m_boxes.begin( ); it != m_boxes.end( ); it++ ) {
+  QMap< QString, BoxPrototype* > boxes = m_boxes;
+  m_boxes.clear( );
+  for( auto it = boxes.begin( ); it != boxes.end( ); it++ ) {
     delete it.value( );
   }
-  m_boxes.clear( );
   m_fileWatcher.removePaths( m_fileWatcher.files( ) );
 }
 
@@ -59,6 +59,7 @@ BoxManager* BoxManager::instance( ) {
 
 void BoxManager::reloadFile( QString fileName ) {
   QString bname = QFileInfo( fileName ).baseName( );
+  m_fileWatcher.addPath( fileName );
   if( warnAboutFileChange( bname ) ) {
     if( m_boxes.contains( bname ) ) {
       try {

@@ -46,11 +46,11 @@ QString BoxPrototype::outputLabel( int index ) const {
 }
 
 bool BoxPrototype::defaultInputValue( int index ) {
-  return( boxImpl.defaultInputValues[ index ] );
+  return( boxImpl.inputs[ index ]->value( ) );
 }
 
 bool BoxPrototype::isInputRequired( int index ) {
-  return( boxImpl.requiredInputs[ index ] );
+  return( boxImpl.inputs[ index ]->isRequired( ) );
 }
 
 BoxMapping* BoxPrototype::generateMapping( ) const {
