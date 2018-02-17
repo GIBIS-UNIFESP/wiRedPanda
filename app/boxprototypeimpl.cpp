@@ -3,6 +3,7 @@
 #include "elementfactory.h"
 #include "serializationfunctions.h"
 
+#include <QDebug>
 #include <QFile>
 
 BoxPrototypeImpl::~BoxPrototypeImpl( ) {
@@ -117,8 +118,6 @@ void BoxPrototypeImpl::loadOutputs( ) {
 
 void BoxPrototypeImpl::loadInputElement( GraphicElement *elm ) {
   for( QNEPort *port : elm->outputs( ) ) {
-
-
     Q_ASSERT( Editor::globalEditor );
     GraphicElement *nodeElm = ElementFactory::buildElement( ElementType::NODE, Editor::globalEditor );
     nodeElm->setPos( elm->pos( ) );
@@ -133,12 +132,16 @@ void BoxPrototypeImpl::loadInputElement( GraphicElement *elm ) {
     }
     inputs.append( nodeInput );
     elements.append( nodeElm );
-    for( QNEConnection *conn: port->connections( ) ) {
+    QList< QNEConnection* > conns = port->connections( );
+    for( QNEConnection *conn: conns ) {
       if( conn->port1( ) == port ) {
         conn->setPort1( nodeElm->output( ) );
       }
-      else {
+      else if( conn->port2( ) == port ) {
         conn->setPort2( nodeElm->output( ) );
+      }
+      else {
+
       }
     }
   }
@@ -157,12 +160,16 @@ void BoxPrototypeImpl::loadOutputElement( GraphicElement *elm ) {
     nodeOutput->setName( port->getName( ) );
     outputs.append( nodeOutput );
     elements.append( nodeElm );
-    for( QNEConnection *conn: port->connections( ) ) {
+    QList< QNEConnection* > conns = port->connections( );
+    for( QNEConnection *conn: conns ) {
       if( conn->port1( ) == port ) {
         conn->setPort1( nodeElm->input( ) );
       }
-      else {
+      else if( conn->port2( ) == port ) {
         conn->setPort2( nodeElm->input( ) );
+      }
+      else {
+
       }
     }
   }
@@ -172,6 +179,7 @@ void BoxPrototypeImpl::loadItem( QGraphicsItem *item ) {
   if( item->type( ) == GraphicElement::Type ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     if( elm ) {
+      qDebug( ) << ElementFactory::typeToText( elm->elementType( ) );
       switch( elm->elementType( ) ) {
           case ElementType::BUTTON:
           case ElementType::SWITCH:
