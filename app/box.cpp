@@ -98,9 +98,9 @@ void Box::loadOutputs( BoxPrototype *prototype ) {
 }
 
 void Box::loadFile( QString fname ) {
-  m_file = fname;
-  setToolTip( fname );
-  BoxPrototype *prototype = getPrototype( );
+  BoxPrototype *prototype = BoxManager::instance( )->getPrototype( fname );
+  m_file = prototype->fileName( );
+  setToolTip( m_file );
   prototype->insertBoxObserver( this );
   if( getLabel( ).isEmpty( ) ) {
     setLabel( prototype->baseName( ).toUpper( ) );

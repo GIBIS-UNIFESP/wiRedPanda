@@ -10,7 +10,9 @@
 
 
 ElementMapping::ElementMapping( const QVector< GraphicElement* > &elms ) :
-  elements( elms ) {
+  elements( elms ),
+  globalGND( false ),
+  globalVCC( true ) {
 }
 
 ElementMapping::~ElementMapping( ) {
@@ -179,7 +181,7 @@ void ElementMapping::applyConnection( GraphicElement *elm, QNEPort *in ) {
           predOutElm = map[ predecessor ];
           predOutIndex = other_out->index( );
         }
-        Q_ASSERT( predOutElm );
+        qDebug( ) << predecessor->objectName( );
         currentLogElm->connectPredecessor( inputIndex, predOutElm, predOutIndex );
       }
     }
