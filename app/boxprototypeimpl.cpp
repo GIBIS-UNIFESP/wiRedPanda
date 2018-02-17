@@ -11,6 +11,52 @@ BoxPrototypeImpl::~BoxPrototypeImpl( ) {
   }
 }
 
+
+//void BoxPrototypeImpl::sortMap( QVector< QNEPort* > &map ) {
+//  // BubbleSort
+//  for( int i = map.size( ) - 1; i >= 1; i-- ) {
+//    for( int j = 0; j < i; j++ ) {
+//      QPointF p1 = map[ j ]->graphicElement( )->pos( );
+//      QPointF p2 = map[ j + 1 ]->graphicElement( )->pos( );
+//      if( p1 != p2 ) {
+//        if( p1.y( ) > p2.y( ) ) {
+//          std::swap( map[ j ], map[ j + 1 ] );
+//        }
+//        else if( ( p1.y( ) == p2.y( ) ) && ( p1.x( ) > p2.x( ) ) ) {
+//          std::swap( map[ j ], map[ j + 1 ] );
+//        }
+//      }
+//      else {
+//        p1 = map[ j ]->pos( );
+//        p2 = map[ j + 1 ]->pos( );
+//        if( p1.x( ) > p2.x( ) ) {
+//          std::swap( map[ j ], map[ j + 1 ] );
+//        }
+//        else if( ( p1.x( ) == p2.x( ) ) && ( p1.y( ) > p2.y( ) ) ) {
+//          std::swap( map[ j ], map[ j + 1 ] );
+//        }
+//      }
+//    }
+//  }
+//}
+
+bool comparePorts( QNEPort *port1, QNEPort *port2 ) {
+  QPointF p1 = port1->graphicElement( )->pos( );
+  QPointF p2 = port2->graphicElement( )->pos( );
+  if( p1 != p2 ) {
+    return( p1.y( ) < p2.y( ) || ( p1.y( ) == p2.y( ) && p1.x( ) < p2.x( ) ) );
+  }
+  else {
+    p1 = port1->pos( );
+    p2 = port2->pos( );
+    return( p1.x( ) < p2.x( ) || ( p1.x( ) == p2.x( ) && p1.y( ) < p2.y( ) ) );
+  }
+}
+
+void BoxPrototypeImpl::sortPorts( QVector< QNEPort* > &map ) {
+  std::stable_sort( map.begin( ), map.end( ), comparePorts );
+}
+
 void BoxPrototypeImpl::loadFile( QString fileName ) {
   clear( );
 
@@ -22,50 +68,45 @@ void BoxPrototypeImpl::loadFile( QString fileName ) {
       loadItem( item );
     }
   }
-  setInputSize( referenceInputs.size( ) );
-  setOutputSize( referenceOutputs.size( ) );
+  setInputSize( inputs.size( ) );
+  setOutputSize( outputs.size( ) );
 
-  sortMap( referenceInputs );
-  sortMap( referenceOutputs );
+  sortPorts( inputs );
+  sortPorts( outputs );
 
   loadInputs( );
   loadOutputs( );
-//  elements = SimulationController::sortElements( elements );
-
 }
 
 void BoxPrototypeImpl::loadInputs( ) {
   for( int portIndex = 0; portIndex < getInputSize( ); ++portIndex ) {
-    GraphicElement *elm = referenceInputs.at( portIndex )->graphicElement( );
+    GraphicElement *elm = inputs.at( portIndex )->graphicElement( );
     QString lb = elm->getLabel( );
     if( lb.isEmpty( ) ) {
       lb = elm->objectName( );
     }
-    if( !referenceInputs.at( portIndex )->portName( ).isEmpty( ) ) {
+    if( !inputs.at( portIndex )->portName( ).isEmpty( ) ) {
       lb += " ";
-      lb += referenceInputs.at( portIndex )->portName( );
+      lb += inputs.at( portIndex )->portName( );
     }
     if( !elm->genericProperties( ).isEmpty( ) ) {
       lb += " [" + elm->genericProperties( ) + "]";
     }
+    requiredInputs[ portIndex ] = elm->input( )->isRequired( );
     inputLabels[ portIndex ] = lb;
-    if( elm->elementType( ) != ElementType::CLOCK ) {
-      requiredInputs[ portIndex ] = false;
-      defaultInputValues[ portIndex ] = referenceInputs.at( portIndex )->value( );
-    }
   }
 }
 
 void BoxPrototypeImpl::loadOutputs( ) {
   for( int portIndex = 0; portIndex < getOutputSize( ); ++portIndex ) {
-    GraphicElement *elm = referenceOutputs.at( portIndex )->graphicElement( );
+    GraphicElement *elm = outputs.at( portIndex )->graphicElement( );
     QString lb = elm->getLabel( );
     if( lb.isEmpty( ) ) {
       lb = elm->objectName( );
     }
-    if( !referenceOutputs.at( portIndex )->portName( ).isEmpty( ) ) {
+    if( !outputs.at( portIndex )->portName( ).isEmpty( ) ) {
       lb += " ";
-      lb += referenceOutputs.at( portIndex )->portName( );
+      lb += outputs.at( portIndex )->portName( );
     }
     if( !elm->genericProperties( ).isEmpty( ) ) {
       lb += " [" + elm->genericProperties( ) + "]";
@@ -74,41 +115,23 @@ void BoxPrototypeImpl::loadOutputs( ) {
   }
 }
 
-void BoxPrototypeImpl::sortMap( QVector< QNEPort* > &map ) {
-  // BubbleSort
-  for( int i = map.size( ) - 1; i >= 1; i-- ) {
-    for( int j = 0; j < i; j++ ) {
-      QPointF p1 = map[ j ]->graphicElement( )->pos( );
-      QPointF p2 = map[ j + 1 ]->graphicElement( )->pos( );
-      if( p1 != p2 ) {
-        if( p1.y( ) > p2.y( ) ) {
-          std::swap( map[ j ], map[ j + 1 ] );
-        }
-        else if( ( p1.y( ) == p2.y( ) ) && ( p1.x( ) > p2.x( ) ) ) {
-          std::swap( map[ j ], map[ j + 1 ] );
-        }
-      }
-      else {
-        p1 = map[ j ]->pos( );
-        p2 = map[ j + 1 ]->pos( );
-        if( p1.x( ) > p2.x( ) ) {
-          std::swap( map[ j ], map[ j + 1 ] );
-        }
-        else if( ( p1.x( ) == p2.x( ) ) && ( p1.y( ) > p2.y( ) ) ) {
-          std::swap( map[ j ], map[ j + 1 ] );
-        }
-      }
-    }
-  }
-}
-
-void BoxPrototypeImpl::loadInput( GraphicElement *elm ) {
+void BoxPrototypeImpl::loadInputElement( GraphicElement *elm ) {
   for( QNEPort *port : elm->outputs( ) ) {
-    referenceInputs.append( port );
 
 
     Q_ASSERT( Editor::globalEditor );
     GraphicElement *nodeElm = ElementFactory::buildElement( ElementType::NODE, Editor::globalEditor );
+    nodeElm->setPos( elm->pos( ) );
+    nodeElm->setLabel( elm->getLabel( ) );
+    QNEPort *nodeInput = nodeElm->input( );
+    nodeInput->setPos( port->pos( ) );
+    nodeInput->setName( port->getName( ) );
+    nodeInput->setRequired( false );
+    nodeInput->setDefaultValue( port->value( ) );
+    if( elm->elementType( ) == ElementType::CLOCK ) {
+      nodeInput->setRequired( true );
+    }
+    inputs.append( nodeInput );
     elements.append( nodeElm );
     for( QNEConnection *conn: port->connections( ) ) {
       if( conn->port1( ) == port ) {
@@ -118,17 +141,21 @@ void BoxPrototypeImpl::loadInput( GraphicElement *elm ) {
         conn->setPort2( nodeElm->output( ) );
       }
     }
-    inputs.append( nodeElm );
   }
   elm->disable( );
 }
 
-void BoxPrototypeImpl::loadOutput( GraphicElement *elm ) {
+void BoxPrototypeImpl::loadOutputElement( GraphicElement *elm ) {
   for( QNEPort *port : elm->inputs( ) ) {
-    referenceOutputs.append( port );
 
     Q_ASSERT( Editor::globalEditor );
     GraphicElement *nodeElm = ElementFactory::buildElement( ElementType::NODE, Editor::globalEditor );
+    nodeElm->setPos( elm->pos( ) );
+    nodeElm->setLabel( elm->getLabel( ) );
+    QNEPort *nodeOutput = nodeElm->output( );
+    nodeOutput->setPos( port->pos( ) );
+    nodeOutput->setName( port->getName( ) );
+    outputs.append( nodeOutput );
     elements.append( nodeElm );
     for( QNEConnection *conn: port->connections( ) ) {
       if( conn->port1( ) == port ) {
@@ -138,7 +165,6 @@ void BoxPrototypeImpl::loadOutput( GraphicElement *elm ) {
         conn->setPort2( nodeElm->input( ) );
       }
     }
-    outputs.append( nodeElm );
   }
 }
 
@@ -150,12 +176,12 @@ void BoxPrototypeImpl::loadItem( QGraphicsItem *item ) {
           case ElementType::BUTTON:
           case ElementType::SWITCH:
           case ElementType::CLOCK: {
-          loadInput( elm );
+          loadInputElement( elm );
           break;
         }
           case ElementType::DISPLAY:
           case ElementType::LED: {
-          loadOutput( elm );
+          loadOutputElement( elm );
           break;
         }
           default: {
@@ -168,8 +194,8 @@ void BoxPrototypeImpl::loadItem( QGraphicsItem *item ) {
 }
 
 void BoxPrototypeImpl::clear( ) {
-  referenceInputs.clear( );
-  referenceOutputs.clear( );
+  inputs.clear( );
+  outputs.clear( );
   setInputSize( 0 );
   setOutputSize( 0 );
   qDeleteAll( elements );
@@ -177,11 +203,11 @@ void BoxPrototypeImpl::clear( ) {
 }
 
 int BoxPrototypeImpl::getInputSize( ) const {
-  return( referenceInputs.size( ) );
+  return( inputs.size( ) );
 }
 
 int BoxPrototypeImpl::getOutputSize( ) const {
-  return( referenceOutputs.size( ) );
+  return( outputs.size( ) );
 }
 
 void BoxPrototypeImpl::setOutputSize( int outputSize ) {

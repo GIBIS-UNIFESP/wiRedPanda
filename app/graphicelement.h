@@ -24,6 +24,7 @@ enum class ElementGroup {
 class GraphicElement;
 
 typedef QVector< GraphicElement* > ElementVector;
+typedef QVector< QNEPort* > QNEPortVector;
 
 class GraphicElement : public QGraphicsObject, public ItemWithId {
   Q_OBJECT
@@ -183,8 +184,8 @@ private:
   QString m_labelText;
   QKeySequence m_trigger;
 protected:
-  QVector< QNEPort* > m_inputs;
-  QVector< QNEPort* > m_outputs;
+  QNEPortVector m_inputs;
+  QNEPortVector m_outputs;
 
   /* QGraphicsItem interface */
 protected:

@@ -8,20 +8,17 @@ class QNEPort;
 
 
 class BoxPrototypeImpl {
-  QVector< QNEPort* > referenceInputs;
 
 public:
 
   QVector< GraphicElement* > elements;
-  QVector< QNEPort* > referenceOutputs;
   QVector< bool > defaultInputValues;
   QVector< bool > requiredInputs;
   QVector< QString > inputLabels;
   QVector< QString > outputLabels;
 
-  QVector< GraphicElement* > inputs;
-  QVector< GraphicElement* > outputs;
-
+  QVector< QNEPort* > inputs;
+  QVector< QNEPort* > outputs;
 
   ~BoxPrototypeImpl( );
   void loadFile( QString fileName );
@@ -32,13 +29,13 @@ public:
   void setOutputSize( int outSize );
   void setInputSize( int inSize );
 
-  void loadInput( GraphicElement *elm );
+  void loadInputElement( GraphicElement *elm );
 
-  void loadOutput( GraphicElement *elm );
+  void loadOutputElement( GraphicElement *elm );
 
 private:
 
-  void sortMap( QVector< QNEPort* > &map );
+  void sortPorts( QVector< QNEPort* > &map );
   void loadItem( QGraphicsItem *item );
   void loadInputs( );
   void loadOutputs( );

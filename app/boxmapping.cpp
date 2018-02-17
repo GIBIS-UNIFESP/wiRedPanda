@@ -1,6 +1,6 @@
 #include "boxmapping.h"
 
-BoxMapping::BoxMapping( const ElementVector &elms, const ElementVector &inputs, const ElementVector &outputs ) :
+BoxMapping::BoxMapping( const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs ) :
   ElementMapping( elms ),
   boxInputs( inputs ),
   boxOutputs( outputs ) {
@@ -13,11 +13,11 @@ BoxMapping::~BoxMapping( ) {
 
 void BoxMapping::initialize( ) {
   ElementMapping::initialize( );
-  for( GraphicElement *elm : boxInputs ) {
-    inputs.append( map[ elm ] );
+  for( QNEPort *port : boxInputs ) {
+    inputs.append( map[ port->graphicElement( ) ] );
   }
-  for( GraphicElement *elm : boxOutputs ) {
-    outputs.append( map[ elm ] );
+  for( QNEPort *port : boxOutputs ) {
+    outputs.append( map[ port->graphicElement( ) ] );
   }
 }
 
@@ -32,10 +32,10 @@ void BoxMapping::clearConnections( ) {
 
 LogicElement* BoxMapping::getInput( int index ) {
   Q_ASSERT( index < boxInputs.size( ) );
-  return( map[ boxInputs[ index ] ] );
+  return( inputs[ index ] );
 }
 
 LogicElement* BoxMapping::getOutput( int index ) {
   Q_ASSERT( index < boxOutputs.size( ) );
-  return( map[ boxOutputs[ index ] ] );
+  return( outputs[ index ] );
 }
