@@ -12,8 +12,6 @@ class BoxPrototypeImpl {
 public:
 
   QVector< GraphicElement* > elements;
-  QVector< bool > defaultInputValues;
-  QVector< bool > requiredInputs;
   QVector< QString > inputLabels;
   QVector< QString > outputLabels;
 

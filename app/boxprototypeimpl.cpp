@@ -93,7 +93,6 @@ void BoxPrototypeImpl::loadInputs( ) {
     if( !elm->genericProperties( ).isEmpty( ) ) {
       lb += " [" + elm->genericProperties( ) + "]";
     }
-    requiredInputs[ portIndex ] = elm->input( )->isRequired( );
     inputLabels[ portIndex ] = lb;
   }
 }
@@ -127,6 +126,7 @@ void BoxPrototypeImpl::loadInputElement( GraphicElement *elm ) {
     nodeInput->setName( port->getName( ) );
     nodeInput->setRequired( false );
     nodeInput->setDefaultValue( port->value( ) );
+    nodeInput->setValue( port->value( ) );
     if( elm->elementType( ) == ElementType::CLOCK ) {
       nodeInput->setRequired( true );
     }
@@ -167,7 +167,6 @@ void BoxPrototypeImpl::loadItem( QGraphicsItem *item ) {
   if( item->type( ) == GraphicElement::Type ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     if( elm ) {
-      qDebug( ) << ElementFactory::typeToText( elm->elementType( ) );
       switch( elm->elementType( ) ) {
           case ElementType::BUTTON:
           case ElementType::SWITCH:
@@ -213,6 +212,4 @@ void BoxPrototypeImpl::setOutputSize( int outputSize ) {
 
 void BoxPrototypeImpl::setInputSize( int inputSize ) {
   inputLabels = QVector< QString >( inputSize );
-  defaultInputValues = QVector< bool >( inputSize, false );
-  requiredInputs = QVector< bool >( inputSize, true );
 }

@@ -71,8 +71,9 @@ void Box::loadInputs( BoxPrototype *prototype ) {
   for( int inputIdx = 0; inputIdx < prototype->inputSize( ); ++inputIdx ) {
     QNEPort *in = input( inputIdx );
     in->setName( prototype->inputLabel( inputIdx ) );
-    in->setDefaultValue( prototype->defaultInputValue( inputIdx ) );
     in->setRequired( prototype->isInputRequired( inputIdx ) );
+    in->setDefaultValue( prototype->defaultInputValue( inputIdx ) );
+    in->setValue( prototype->defaultInputValue( inputIdx ) );
   }
 }
 
