@@ -11,7 +11,7 @@ class BoxMapping : public ElementMapping {
   QVector< LogicElement* > inputs;
   QVector< LogicElement* > outputs;
 public:
-  BoxMapping( const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs );
+  BoxMapping( QString file, const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs );
 
   virtual ~BoxMapping( );
 

@@ -20,8 +20,8 @@ BoxManager::~BoxManager( ) {
   clear( );
 }
 
-void BoxManager::loadFile( QString fname ) {
-  QFileInfo finfo = BoxFileHelper::findFile( fname );
+void BoxManager::loadFile( QString fname, QString parentFile ) {
+  QFileInfo finfo = BoxFileHelper::findFile( fname, parentFile );
   m_fileWatcher.addPath( finfo.absoluteFilePath( ) );
   if( m_boxes.contains( finfo.baseName( ) ) ) {
     qDebug( ) << "BoxManager: Box already inserted: " << finfo.baseName( );
@@ -46,7 +46,7 @@ void BoxManager::clear( ) {
 
 BoxPrototype* BoxManager::getPrototype( QString fname ) {
   qDebug( ) << "get prototype of " << fname;
-  QFileInfo finfo = BoxFileHelper::findFile( fname );
+  QFileInfo finfo( fname );
   if( !m_boxes.contains( finfo.baseName( ) ) ) {
     return( nullptr );
   }

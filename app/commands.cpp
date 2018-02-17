@@ -416,7 +416,6 @@ void UpdateCommand::loadData( QByteArray itemData ) {
 
 SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
     parent ) {
-  /* TODO Reverse Split command... */
   Scene *customScene = aEditor->getScene( );
   GraphicElement *node = ElementFactory::buildElement( ElementType::NODE, aEditor );
   QNEConnection *conn2 = ElementFactory::instance->buildConnection( );

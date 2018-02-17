@@ -54,7 +54,7 @@ bool BoxPrototype::isInputRequired( int index ) {
 }
 
 BoxMapping* BoxPrototype::generateMapping( ) const {
-  return( new BoxMapping( boxImpl.elements, boxImpl.inputs, boxImpl.outputs ) );
+  return( new BoxMapping( fileName( ), boxImpl.elements, boxImpl.inputs, boxImpl.outputs ) );
 }
 
 void BoxPrototype::clear( ) {

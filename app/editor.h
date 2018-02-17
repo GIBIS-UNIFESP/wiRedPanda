@@ -98,7 +98,7 @@ public:
   QUndoStack* getUndoStack( ) const;
   Scene* getScene( ) const;
   void buildSelectionRect( );
-  bool loadBox( Box *box, QString fname );
+  bool loadBox(Box *box, QString fname , QString parentFile);
 
   void handleHoverPort( );
   void releaseHoverPort( );

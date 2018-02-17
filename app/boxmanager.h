@@ -18,7 +18,7 @@ public:
   BoxManager( MainWindow *mainWindow = 0, QObject *parent = 0 );
   virtual ~BoxManager( );
 
-  void loadFile( QString fname );
+  void loadFile(QString fname , QString parentFile);
   void clear( );
 
   BoxPrototype* getPrototype( QString fname );

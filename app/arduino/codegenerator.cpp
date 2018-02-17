@@ -125,7 +125,7 @@ void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &el
     if( elm->elementType( ) == ElementType::BOX ) {
       Box *box = qgraphicsitem_cast< Box* >( elm );
 
-      // TODO: FIXME: Get it to work again
+      // TODO: FIXME: Get code generator to work again
 //      if( box ) {
 //        out << "// " << box->getLabel( ) << endl;
 //        declareAuxVariablesRec( box->getElements( ), true );
@@ -217,7 +217,7 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
     if( elm->elementType( ) == ElementType::BOX ) {
       throw std::runtime_error( QString( "BOX element not supported : %1" ).arg(
                                   elm->objectName( ) ).toStdString( ) );
-      // TODO Get it to work
+      // TODO CodeGenerator::assignVariablesRec for Box Element
 //      Box *box = qgraphicsitem_cast< Box* >( elm );
 //      out << "    // " << box->getLabel( ) << endl;
 //      for( int i = 0; i < box->inputSize( ); ++i ) {
@@ -379,7 +379,7 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
           break;
           default:
           throw std::runtime_error( ERRORMSG( QString( "Element type not supported : %1" ).arg(
-                                      elm->objectName( ) ).toStdString() ) );
+                                                elm->objectName( ) ).toStdString( ) ) );
           break;
       }
     }

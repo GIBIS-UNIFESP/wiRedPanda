@@ -1,7 +1,10 @@
 #include "boxmapping.h"
 
-BoxMapping::BoxMapping( const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs ) :
-  ElementMapping( elms ),
+BoxMapping::BoxMapping( QString file,
+                        const ElementVector &elms,
+                        const QNEPortVector &inputs,
+                        const QNEPortVector &outputs ) :
+  ElementMapping( file, elms ),
   boxInputs( inputs ),
   boxOutputs( outputs ) {
 
