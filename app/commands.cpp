@@ -139,7 +139,9 @@ void loadItems( QByteArray &itemData, const QVector< int > &ids, Editor *editor,
                                          GlobalProperties::currentFile,
                                          portMap );
   if( items.size( ) != ids.size( ) ) {
-    throw std::runtime_error( QString("One or more elements was not found on scene. Expected %1, found %2.").arg(ids.size()).arg(items.size()).toStdString()  );
+    throw std::runtime_error( QString( "One or more elements was not found on scene. Expected %1, found %2." ).arg( ids.
+                                                                                                                    size( ) ).arg(
+                                items.size( ) ).toStdString( ) );
   }
   for( int i = 0; i < items.size( ); ++i ) {
     ItemWithId *iwid = dynamic_cast< ItemWithId* >( items[ i ] );
@@ -202,19 +204,19 @@ void AddItemsCommand::undo( ) {
   saveitems( itemData, items, otherIds );
 
   deleteItems( items, editor );
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 
 void DeleteItemsCommand::undo( ) {
   qDebug( ) << "UNDO " << text( );
   loadItems( itemData, ids, editor, otherIds );
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 
 void AddItemsCommand::redo( ) {
   qDebug( ) << "REDO " << text( );
   loadItems( itemData, ids, editor, otherIds );
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 void DeleteItemsCommand::redo( ) {
   qDebug( ) << "REDO " << text( );
@@ -223,7 +225,7 @@ void DeleteItemsCommand::redo( ) {
   saveitems( itemData, items, otherIds );
 
   deleteItems( items, editor );
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 
 
@@ -336,8 +338,10 @@ void MoveCommand::redo( ) {
 }
 
 
-UpdateCommand::UpdateCommand( const QVector< GraphicElement* > &elements, QByteArray oldData, Editor * editor,
-                              QUndoCommand *parent ) : QUndoCommand( parent ), editor(editor) {
+UpdateCommand::UpdateCommand( const QVector< GraphicElement* > &elements,
+                              QByteArray oldData,
+                              Editor *editor,
+                              QUndoCommand *parent ) : QUndoCommand( parent ), editor( editor ) {
   m_oldData = oldData;
   ids.reserve( elements.size( ) );
   QDataStream dataStream( &m_newData, QIODevice::WriteOnly );
@@ -350,12 +354,12 @@ UpdateCommand::UpdateCommand( const QVector< GraphicElement* > &elements, QByteA
 
 void UpdateCommand::undo( ) {
   loadData( m_oldData );
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 
 void UpdateCommand::redo( ) {
   loadData( m_newData );
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 
 void UpdateCommand::loadData( QByteArray itemData ) {
@@ -377,7 +381,6 @@ void UpdateCommand::loadData( QByteArray itemData ) {
 
 SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
     parent ) {
-  //TODO Reverse Split command...
   Scene *customScene = aEditor->getScene( );
   GraphicElement *node = ElementFactory::buildElement( ElementType::NODE, aEditor );
   QNEConnection *conn2 = ElementFactory::instance->buildConnection( );
@@ -434,14 +437,14 @@ void SplitCommand::redo( ) {
     node->setPos( nodePos );
     node->setRotation( nodeAngle );
 
-    QNEPort * p1 = c1->port1();
-    QNEPort * p2 = c1->port2();
-
-    if(p1->isOutput()){
+    QNEPort *p1 = c1->port1( );
+    QNEPort *p2 = c1->port2( );
+    if( p1->isOutput( ) ) {
       c2->setPort1( node->output( ) );
       c2->setPort2( p2 );
       c1->setPort2( node->input( ) );
-    } else {
+    }
+    else {
       c2->setPort1( node->output( ) );
       c2->setPort2( p1 );
       c1->setPort1( node->input( ) );
@@ -457,7 +460,7 @@ void SplitCommand::redo( ) {
   else {
     throw std::runtime_error( QString( "Error tryng to redo %1" ).arg( text( ) ).toStdString( ) );
   }
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 
 void SplitCommand::undo( ) {
@@ -481,7 +484,7 @@ void SplitCommand::undo( ) {
   else {
     throw std::runtime_error( QString( "Error tryng to undo %1" ).arg( text( ) ).toStdString( ) );
   }
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 
 MorphCommand::MorphCommand( const QVector< GraphicElement* > &elements,
@@ -506,7 +509,7 @@ void MorphCommand::undo( ) {
     oldElms[ i ] = ElementFactory::buildElement( types[ i ], editor );
   }
   transferConnections( newElms, oldElms );
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 
 void MorphCommand::redo( ) {
@@ -516,7 +519,7 @@ void MorphCommand::redo( ) {
     newElms[ i ] = ElementFactory::buildElement( newtype, editor );
   }
   transferConnections( oldElms, newElms );
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 
 void MorphCommand::transferConnections( QVector< GraphicElement* > from, QVector< GraphicElement* > to ) {
@@ -581,8 +584,9 @@ void MorphCommand::transferConnections( QVector< GraphicElement* > from, QVector
 
 
 ChangeInputSZCommand::ChangeInputSZCommand( const QVector< GraphicElement* > &elements,
-                                            int newInputSize, Editor * editor,
-                                            QUndoCommand *parent ) : QUndoCommand( parent ), editor(editor) {
+                                            int newInputSize,
+                                            Editor *editor,
+                                            QUndoCommand *parent ) : QUndoCommand( parent ), editor( editor ) {
   for( GraphicElement *elm : elements ) {
     elms.append( elm->id( ) );
   }
@@ -632,7 +636,7 @@ void ChangeInputSZCommand::redo( ) {
   for( GraphicElement *elm : serializationOrder ) {
     order.append( elm->id( ) );
   }
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }
 
 void ChangeInputSZCommand::undo( ) {
@@ -656,5 +660,5 @@ void ChangeInputSZCommand::undo( ) {
     }
     elm->setSelected( true );
   }
-  emit editor->circuitHasChanged();
+  emit editor->circuitHasChanged( );
 }

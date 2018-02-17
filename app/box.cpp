@@ -60,18 +60,7 @@ void Box::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double vers
 
 
 void Box::updateLogic( ) {
-  //TODO
-//  for( int inputPort = 0; inputPort < inputMap.size( ); ++inputPort ) {
-//    inputMap.at( inputPort )->setValue( input( inputPort )->value( ) );
-//  }
-//  for( GraphicElement *elm : elements ) {
-//    if( !elm->disabled( ) ) {
-//      elm->updateLogic( );
-//    }
-//  }
-//  for( int outputPort = 0; outputPort < outputMap.size( ); ++outputPort ) {
-//    output( outputPort )->setValue( outputMap.at( outputPort )->value( ) );
-//  }
+
 }
 
 
