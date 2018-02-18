@@ -28,7 +28,8 @@ public slots:
   void updateView( );
 
 private:
-  void updatePort( QNEPort *port );
+  void updatePort( QNEOutputPort *port );
+  void updatePort( QNEInputPort *port );
   void updateConnection( QNEConnection *conn );
 
   ElementMapping *elMapping;

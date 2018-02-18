@@ -42,10 +42,7 @@ LogicElement::~LogicElement( ) {
 void LogicElement::updateLogic( ) {
   if( m_isValid ) {
     for( size_t idx = 0; idx < m_inputs.size( ); ++idx ) {
-      LogicElement *pred = m_inputs[ idx ].first;
-      Q_ASSERT( pred != nullptr );
-      int port = m_inputs[ idx ].second;
-      m_inputvalues[ idx ] = pred->getOutputValue( port );
+      m_inputvalues[ idx ] = getInputValue( idx );
     }
     _updateLogic( m_inputvalues );
   }
@@ -102,6 +99,14 @@ int LogicElement::calculatePriority( ) {
 
 bool LogicElement::getOutputValue( size_t index ) const {
   return( m_outputs.at( index ) );
+}
+
+bool LogicElement::getInputValue( size_t index ) const {
+  Q_ASSERT( m_isValid );
+  LogicElement *pred = m_inputs[ index ].first;
+  Q_ASSERT( pred );
+  int port = m_inputs[ index ].second;
+  return( pred->getOutputValue( port ) );
 }
 
 LogicNode::LogicNode( ) : LogicElement( 1, 1 ) {

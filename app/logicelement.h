@@ -37,6 +37,7 @@ public:
   void setOutputValue( size_t index, bool value );
   void setOutputValue( bool value );
   bool getOutputValue( size_t index = 0 ) const;
+  bool getInputValue( size_t index = 0 ) const;
 
   void validate( );
 
