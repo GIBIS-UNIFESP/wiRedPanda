@@ -21,16 +21,6 @@ typedef QMap< Input*, LogicElement* > InputMap;
 
 class ElementMapping {
 public:
-  QString currentFile;
-  ElementMap map;
-  InputMap inputMap;
-  QVector< Clock* > clocks;
-  QVector< GraphicElement* > elements;
-  QMap< Box*, BoxMapping* > boxMappings;
-  QVector< LogicElement* > logicElms;
-
-  LogicInput globalGND;
-  LogicInput globalVCC;
 
   ElementMapping( QString file, const QVector< GraphicElement* > &elms );
   virtual ~ElementMapping( );
@@ -43,9 +33,27 @@ public:
 
   void sort( );
 
+  void update( );
+
+  BoxMapping* getBoxMapping( Box *box ) const;
+  LogicElement* getLogicElement( GraphicElement *elm ) const;
+
 protected:
+  // Attributes
+  QString currentFile;
+  ElementMap map;
+  InputMap inputMap;
+  QVector< Clock* > clocks;
+  QVector< GraphicElement* > elements;
+  QMap< Box*, BoxMapping* > boxMappings;
+  QVector< LogicElement* > logicElms;
+
+  LogicInput globalGND;
+  LogicInput globalVCC;
+
   QVector< LogicElement* > deletableElements;
 
+  // Methods
   LogicElement* buildLogicElement( GraphicElement *elm );
 
   void setDefaultValue( GraphicElement *elm, QNEPort *in );

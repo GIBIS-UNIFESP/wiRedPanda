@@ -5,6 +5,7 @@
 
 #include <QDebug>
 #include <clock.h>
+#include <clock.h>
 #include <qneconnection.h>
 
 
@@ -150,6 +151,34 @@ void ElementMapping::initialize( ) {
 void ElementMapping::sort( ) {
   sortLogicElements( );
   validateElements( );
+}
+
+void ElementMapping::update( ) {
+  for( Clock *clk : clocks ) {
+    if( Clock::reset ) {
+      clk->resetClock( );
+    }
+    else {
+      clk->updateLogic( );
+    }
+  }
+  Clock::reset = false;
+  for( auto iter = inputMap.begin( ); iter != inputMap.end( ); ++iter ) {
+    iter.value( )->setOutputValue( iter.key( )->getOn( ) );
+  }
+  for( LogicElement *elm : logicElms ) {
+    elm->updateLogic( );
+  }
+}
+
+BoxMapping* ElementMapping::getBoxMapping( Box *box ) const {
+  Q_ASSERT( box );
+  return( boxMappings[ box ] );
+}
+
+LogicElement* ElementMapping::getLogicElement( GraphicElement *elm ) const {
+  Q_ASSERT( elm );
+  return( map[ elm ] );
 }
 
 void ElementMapping::applyConnection( GraphicElement *elm, QNEPort *in ) {
