@@ -64,7 +64,7 @@ void BoxPrototypeImpl::loadFile( QString fileName ) {
   QFile file( fileName );
   if( file.open( QFile::ReadOnly ) ) {
     QDataStream ds( &file );
-    QList< QGraphicsItem* > items = SerializationFunctions::load( Editor::globalEditor, ds, fileName );
+    QList< QGraphicsItem* > items = SerializationFunctions::load( ds, fileName );
     for( QGraphicsItem *item : items ) {
       loadItem( item );
     }
@@ -118,7 +118,7 @@ void BoxPrototypeImpl::loadOutputs( ) {
 void BoxPrototypeImpl::loadInputElement( GraphicElement *elm ) {
   for( QNEOutputPort *port : elm->outputs( ) ) {
     Q_ASSERT( Editor::globalEditor );
-    GraphicElement *nodeElm = ElementFactory::buildElement( ElementType::NODE, Editor::globalEditor );
+    GraphicElement *nodeElm = ElementFactory::buildElement( ElementType::NODE );
     nodeElm->setPos( elm->pos( ) );
     nodeElm->setLabel( elm->getLabel( ) );
     QNEInputPort *nodeInput = nodeElm->input( );
@@ -146,7 +146,7 @@ void BoxPrototypeImpl::loadOutputElement( GraphicElement *elm ) {
   for( QNEInputPort *port : elm->inputs( ) ) {
 
     Q_ASSERT( Editor::globalEditor );
-    GraphicElement *nodeElm = ElementFactory::buildElement( ElementType::NODE, Editor::globalEditor );
+    GraphicElement *nodeElm = ElementFactory::buildElement( ElementType::NODE );
     nodeElm->setPos( elm->pos( ) );
     nodeElm->setLabel( elm->getLabel( ) );
     QNEOutputPort *nodeOutput = nodeElm->output( );

@@ -171,7 +171,7 @@ ElementFactory::ElementFactory( ) {
   clear( );
 }
 
-GraphicElement* ElementFactory::buildElement( ElementType type, Editor *editor, QGraphicsItem *parent ) {
+GraphicElement* ElementFactory::buildElement( ElementType type, QGraphicsItem *parent ) {
   GraphicElement *elm;
   elm = type == ElementType::BUTTON ? new InputButton( parent ) :
         type == ElementType::SWITCH ? new InputSwitch( parent ) :
@@ -194,7 +194,7 @@ GraphicElement* ElementFactory::buildElement( ElementType type, Editor *editor, 
         type == ElementType::TFLIPFLOP ? new TFlipFlop( parent ) :
         type == ElementType::TLATCH ? new TLatch( parent ) :
         type == ElementType::DISPLAY ? new Display( parent ) :
-        type == ElementType::BOX ? new Box( editor, parent ) :
+        type == ElementType::BOX ? new Box( parent ) :
         type == ElementType::NODE ? new Node( parent ) :
         type == ElementType::MUX ? new Mux( parent ) :
         type == ElementType::DEMUX ? new Demux( parent ) :

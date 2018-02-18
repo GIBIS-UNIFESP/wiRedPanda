@@ -29,8 +29,7 @@ void SerializationFunctions::serialize( const QList< QGraphicsItem* > &items, QD
   }
 }
 
-QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor,
-                                                             QDataStream &ds,
+QList< QGraphicsItem* > SerializationFunctions::deserialize( QDataStream &ds,
                                                              double version,
                                                              QString parentFile,
                                                              QMap< quint64, QNEPort* > portMap ) {
@@ -42,13 +41,13 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor,
       quint64 elmType;
       ds >> elmType;
       COMMENT( "Building " << ElementFactory::typeToText( ( ElementType ) elmType ).toStdString( ) << " element.", 4 );
-      GraphicElement *elm = ElementFactory::buildElement( ( ElementType ) elmType, editor );
+      GraphicElement *elm = ElementFactory::buildElement( ( ElementType ) elmType );
       if( elm ) {
         itemList.append( elm );
         elm->load( ds, portMap, version );
         if( elm->elementType( ) == ElementType::BOX ) {
           Box *box = qgraphicsitem_cast< Box* >( elm );
-          editor->loadBox( box, box->getFile( ), parentFile );
+          BoxManager::instance( )->loadBox( box, box->getFile( ), parentFile );
         }
         elm->setSelected( true );
       }
@@ -75,8 +74,7 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( Editor *editor,
 }
 
 
-QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStream &ds, QString parentFile,
-                                                      Scene *scene ) {
+QList< QGraphicsItem* > SerializationFunctions::load( QDataStream &ds, QString parentFile, Scene *scene ) {
   QString str;
   ds >> str;
   if( !str.startsWith( QApplication::applicationName( ) ) ) {
@@ -91,7 +89,7 @@ QList< QGraphicsItem* > SerializationFunctions::load( Editor *editor, QDataStrea
   if( version >= 1.4 ) {
     ds >> rect;
   }
-  QList< QGraphicsItem* > items = deserialize( editor, ds, version, parentFile );
+  QList< QGraphicsItem* > items = deserialize( ds, version, parentFile );
   if( scene ) {
     for( QGraphicsItem *item : items ) {
       scene->addItem( item );

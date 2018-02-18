@@ -19,7 +19,7 @@ class Box : public GraphicElement {
 
   friend class CodeGenerator;
 public:
-  Box( Editor *editor, QGraphicsItem *parent = 0 );
+  Box( QGraphicsItem *parent = 0 );
   virtual ~Box( );
   /* GraphicElement interface */
   virtual ElementType elementType( ) {

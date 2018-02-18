@@ -627,7 +627,7 @@ void TestElements::testBox( ) {
   Editor *editor = new Editor( this );
   InputButton *btn = new InputButton( );
   Led *led = new Led( );
-  Box *box = new Box( editor );
+  Box *box = new Box( );
   editor->getScene( )->addItem( btn );
   editor->getScene( )->addItem( led );
   editor->getScene( )->addItem( box );
@@ -689,8 +689,6 @@ void TestElements::testBox( ) {
 }
 
 void TestElements::testBoxes( ) {
-  Editor editor( this );
-
   QDir examplesDir( QString( "%1/../examples/" ).arg( CURRENTDIR ) );
 /*  qDebug( ) << "Current dir: " << CURRENTDIR; */
   QStringList entries;
@@ -698,7 +696,7 @@ void TestElements::testBoxes( ) {
   QFileInfoList files = examplesDir.entryInfoList( entries );
   for( QFileInfo f : files ) {
     qDebug( ) << "FILE: " << f.absoluteFilePath( );
-    Box box( &editor );
+    Box box;
     box.loadFile( f.absoluteFilePath( ) );
   }
 }
