@@ -29,16 +29,18 @@ SimulationController::~SimulationController( ) {
 }
 
 void SimulationController::updateScene( const QRectF &rect ) {
-  const QList< QGraphicsItem* > &items = scene->items( rect );
-  for( QGraphicsItem *item: items ) {
-    QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
-    GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
-    if( conn ) {
-      updateConnection( conn );
-    }
-    else if( elm && ( elm->elementGroup( ) == ElementGroup::OUTPUT ) ) {
-      for( QNEInputPort *in: elm->inputs( ) ) {
-        updatePort( in );
+  if( canRun( ) ) {
+    const QList< QGraphicsItem* > &items = scene->items( rect );
+    for( QGraphicsItem *item: items ) {
+      QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
+      GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+      if( conn ) {
+        updateConnection( conn );
+      }
+      else if( elm && ( elm->elementGroup( ) == ElementGroup::OUTPUT ) ) {
+        for( QNEInputPort *in: elm->inputs( ) ) {
+          updatePort( in );
+        }
       }
     }
   }
@@ -46,6 +48,13 @@ void SimulationController::updateScene( const QRectF &rect ) {
 
 void SimulationController::updateView( ) {
   updateScene( scene->views( ).first( )->sceneRect( ) );
+}
+
+bool SimulationController::canRun( ) {
+  if( !elMapping ) {
+    return( false );
+  }
+  return( elMapping->canRun( ) );
 }
 
 bool SimulationController::isRunning( ) {
@@ -79,9 +88,14 @@ void SimulationController::reSortElms( ) {
     delete elMapping;
   }
   elMapping = new ElementMapping( GlobalProperties::currentFile, scene->getElements( ) );
-  elMapping->initialize( );
-  elMapping->sort( );
-  update( );
+  if( elMapping->canInitialize( ) ) {
+    elMapping->initialize( );
+    elMapping->sort( );
+    update( );
+  }
+  else {
+    qDebug( ) << "Cannot initialize simulation!";
+  }
 }
 
 void SimulationController::clear( ) {
