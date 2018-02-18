@@ -38,9 +38,13 @@ public:
   BoxMapping* getBoxMapping( Box *box ) const;
   LogicElement* getLogicElement( GraphicElement *elm ) const;
 
+  bool canRun( ) const;
+  bool canInitialize( ) const;
+
 protected:
   // Attributes
   QString currentFile;
+  bool initialized;
   ElementMap map;
   InputMap inputMap;
   QVector< Clock* > clocks;
@@ -67,6 +71,7 @@ protected:
                                 QMap< GraphicElement*, int > &priority );
   void insertElement( GraphicElement *elm );
   void insertBox( Box *box );
+
 };
 
 #endif // ELEMENTMAPPING_H

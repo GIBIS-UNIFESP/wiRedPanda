@@ -24,8 +24,33 @@ BoxManager::~BoxManager( ) {
   clear( );
 }
 
+bool BoxManager::tryLoadFile( QString fname, QString parentFile ) {
+  try {
+    loadFile( fname, parentFile );
+  }
+  catch( BoxNotFoundException &err ) {
+    qDebug( ) << "BoxNotFoundException thrown: " << err.what( );
+    int ret = QMessageBox::warning( mainWindow, tr( "Error" ), QString::fromStdString(
+                                      err.what( ) ), QMessageBox::Ok, QMessageBox::Cancel );
+    if( ret == QMessageBox::Cancel ) {
+      return( false );
+    }
+    else {
+      fname = mainWindow->getOpenBoxFile( );
+      if( fname.isEmpty( ) ) {
+        return( false );
+      }
+      else {
+        return( tryLoadFile( fname, parentFile ) );
+      }
+    }
+  }
+  return( true );
+}
+
 void BoxManager::loadFile( QString fname, QString parentFile ) {
   QFileInfo finfo = BoxFileHelper::findFile( fname, parentFile );
+  Q_ASSERT( finfo.exists( ) && finfo.isFile( ) );
   fileWatcher.addPath( finfo.absoluteFilePath( ) );
   if( boxes.contains( finfo.baseName( ) ) ) {
     qDebug( ) << "BoxManager: Box already inserted: " << finfo.baseName( );
@@ -33,8 +58,8 @@ void BoxManager::loadFile( QString fname, QString parentFile ) {
   else {
     qDebug( ) << "BoxManager: Inserting Box: " << finfo.baseName( );
     BoxPrototype *prototype = new BoxPrototype( finfo.absoluteFilePath( ) );
-    boxes.insert( finfo.baseName( ), prototype );
     prototype->reload( );
+    boxes.insert( finfo.baseName( ), prototype );
   }
 }
 
@@ -64,34 +89,15 @@ void BoxManager::updateRecentBoxes( QString fname ) {
 }
 
 bool BoxManager::loadBox( Box *box, QString fname, QString parentFile ) {
-  try {
-    loadFile( fname, parentFile );
+  if( tryLoadFile( fname, parentFile ) ) {
     box->loadFile( fname );
   }
-  catch( BoxNotFoundException &err ) {
-    qDebug( ) << "BoxNotFoundException thrown: " << err.what( );
-    int ret = QMessageBox::warning( mainWindow, tr( "Error" ), QString::fromStdString(
-                                      err.what( ) ), QMessageBox::Ok, QMessageBox::Cancel );
-    if( ret == QMessageBox::Cancel ) {
-      return( false );
-    }
-    else {
-      fname = mainWindow->getOpenBoxFile( );
-      if( fname.isEmpty( ) ) {
-        return( false );
-      }
-      else {
-        return( loadBox( err.getBox( ), fname, parentFile ) );
-      }
-    }
-  }
-
   updateRecentBoxes( fname );
   return( true );
 }
 
 BoxPrototype* BoxManager::getPrototype( QString fname ) {
-  qDebug( ) << "get prototype of " << fname;
+  Q_ASSERT( !fname.isEmpty( ) );
   QFileInfo finfo( fname );
   if( !boxes.contains( finfo.baseName( ) ) ) {
     return( nullptr );

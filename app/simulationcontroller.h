@@ -27,6 +27,8 @@ public slots:
   void clear( );
   void updateView( );
 
+  bool canRun( );
+
 private:
   void updatePort( QNEOutputPort *port );
   void updatePort( QNEInputPort *port );

@@ -1,4 +1,5 @@
 #include "box.h"
+#include "boxmanager.h"
 #include "boxmapping.h"
 #include "boxprototype.h"
 #include "elementmapping.h"
@@ -12,6 +13,7 @@
 
 ElementMapping::ElementMapping( QString file, const QVector< GraphicElement* > &elms ) :
   currentFile( file ),
+  initialized( false ),
   elements( elms ),
   globalGND( false ),
   globalVCC( true ) {
@@ -22,6 +24,7 @@ ElementMapping::~ElementMapping( ) {
 }
 
 void ElementMapping::clear( ) {
+  initialized = false;
   globalGND.clearSucessors( );
   globalVCC.clearSucessors( );
   for( LogicElement *elm: deletableElements ) {
@@ -68,10 +71,13 @@ void ElementMapping::insertBox( Box *box ) {
   Q_ASSERT( box );
   Q_ASSERT( !boxMappings.contains( box ) );
   BoxPrototype *proto = box->getPrototype( );
-  BoxMapping *boxMap = proto->generateMapping( );
-  boxMap->initialize( );
-  boxMappings.insert( box, boxMap );
-  logicElms.append( boxMap->logicElms );
+  if( proto ) {
+    BoxMapping *boxMap = proto->generateMapping( );
+    Q_ASSERT( boxMap );
+    boxMap->initialize( );
+    boxMappings.insert( box, boxMap );
+    logicElms.append( boxMap->logicElms );
+  }
 }
 
 void ElementMapping::generateMap( ) {
@@ -146,6 +152,7 @@ void ElementMapping::initialize( ) {
   clear( );
   generateMap( );
   connectElements( );
+  initialized = true;
 }
 
 void ElementMapping::sort( ) {
@@ -154,20 +161,22 @@ void ElementMapping::sort( ) {
 }
 
 void ElementMapping::update( ) {
-  for( Clock *clk : clocks ) {
-    if( Clock::reset ) {
-      clk->resetClock( );
+  if( canRun( ) ) {
+    for( Clock *clk : clocks ) {
+      if( Clock::reset ) {
+        clk->resetClock( );
+      }
+      else {
+        clk->updateLogic( );
+      }
     }
-    else {
-      clk->updateLogic( );
+    Clock::reset = false;
+    for( auto iter = inputMap.begin( ); iter != inputMap.end( ); ++iter ) {
+      iter.value( )->setOutputValue( iter.key( )->getOn( ) );
     }
-  }
-  Clock::reset = false;
-  for( auto iter = inputMap.begin( ); iter != inputMap.end( ); ++iter ) {
-    iter.value( )->setOutputValue( iter.key( )->getOn( ) );
-  }
-  for( LogicElement *elm : logicElms ) {
-    elm->updateLogic( );
+    for( LogicElement *elm : logicElms ) {
+      elm->updateLogic( );
+    }
   }
 }
 
@@ -179,6 +188,23 @@ BoxMapping* ElementMapping::getBoxMapping( Box *box ) const {
 LogicElement* ElementMapping::getLogicElement( GraphicElement *elm ) const {
   Q_ASSERT( elm );
   return( map[ elm ] );
+}
+
+bool ElementMapping::canRun( ) const {
+  return( initialized );
+}
+
+bool ElementMapping::canInitialize( ) const {
+  for( GraphicElement *elm: elements ) {
+    if( elm->elementType( ) == ElementType::BOX ) {
+      Box *box = dynamic_cast< Box* >( elm );
+      BoxPrototype *prototype = BoxManager::instance( )->getPrototype( box->getFile( ) );
+      if( !box || !prototype ) {
+        return( false );
+      }
+    }
+  }
+  return( true );
 }
 
 void ElementMapping::applyConnection( GraphicElement *elm, QNEPort *in ) {
@@ -204,6 +230,7 @@ void ElementMapping::applyConnection( GraphicElement *elm, QNEPort *in ) {
         if( predecessor->elementType( ) == ElementType::BOX ) {
           Box *box = dynamic_cast< Box* >( predecessor );
           Q_ASSERT( box );
+          Q_ASSERT( boxMappings.contains( box ) );
           predOutElm = boxMappings[ box ]->getOutput( other_out->index( ) );
         }
         else {
