@@ -105,38 +105,48 @@ void SimulationController::clear( ) {
   elMapping = nullptr;
 }
 
-void SimulationController::updatePort( QNEPort *port ) {
-  if( port && port->graphicElement( ) ) {
-    GraphicElement *elm = port->graphicElement( );
-    if( port->isOutput( ) ) {
-      LogicElement *logElm = nullptr;
-      int portIndex = 0;
-      if( elm->elementType( ) == ElementType::BOX ) {
-        Box *box = dynamic_cast< Box* >( elm );
-        logElm = elMapping->boxMappings[ box ]->getOutput( port->index( ) );
-      }
-      else {
-        logElm = elMapping->map[ elm ];
-        portIndex = port->index( );
-      }
-      Q_ASSERT( logElm );
-      if( logElm->isValid( ) ) {
-        port->setValue( logElm->getOutputValue( portIndex ) );
-      }
-      else {
-        port->setValue( -1 );
-      }
-    }
-    else if( elm->elementGroup( ) == ElementGroup::OUTPUT ) {
-      elm->updateLogic( );
-    }
+void SimulationController::updatePort( QNEOutputPort *port ) {
+  Q_ASSERT( port );
+  GraphicElement *elm = port->graphicElement( );
+  Q_ASSERT( elm );
+  LogicElement *logElm = nullptr;
+  int portIndex = 0;
+  if( elm->elementType( ) == ElementType::BOX ) {
+    Box *box = dynamic_cast< Box* >( elm );
+    logElm = elMapping->boxMappings[ box ]->getOutput( port->index( ) );
+  }
+  else {
+    logElm = elMapping->map[ elm ];
+    portIndex = port->index( );
+  }
+  Q_ASSERT( logElm );
+  if( logElm->isValid( ) ) {
+    port->setValue( logElm->getOutputValue( portIndex ) );
+  }
+  else {
+    port->setValue( -1 );
+  }
+}
+
+void SimulationController::updatePort( QNEInputPort *port ) {
+  Q_ASSERT( port );
+  GraphicElement *elm = port->graphicElement( );
+  Q_ASSERT( elm );
+  LogicElement *logElm = elMapping->map[ elm ];
+  Q_ASSERT( logElm );
+  int portIndex = port->index( );
+  if( logElm->isValid( ) ) {
+    port->setValue( logElm->getInputValue( portIndex ) );
+  }
+  else {
+    port->setValue( -1 );
+  }
+  if( elm->elementGroup( ) == ElementGroup::OUTPUT ) {
+    elm->updateLogic( );
   }
 }
 
 void SimulationController::updateConnection( QNEConnection *conn ) {
   Q_ASSERT( conn );
-  QNEPort *p1 = dynamic_cast< QNEPort* >( conn->start( ) );
-  QNEPort *p2 = dynamic_cast< QNEPort* >( conn->end( ) );
-  updatePort( p1 );
-  updatePort( p2 );
+  updatePort( conn->start( ) );
 }
