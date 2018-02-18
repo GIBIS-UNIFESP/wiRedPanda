@@ -155,8 +155,7 @@ QList< QGraphicsItem* > loadItems( QByteArray &itemData,
    * We will store one additional information: The element IDs!
    */
   QList< QGraphicsItem* > items =
-    SerializationFunctions::deserialize( editor,
-                                         dataStream,
+    SerializationFunctions::deserialize( dataStream,
                                          version,
                                          GlobalProperties::currentFile,
                                          portMap );
@@ -414,16 +413,17 @@ void UpdateCommand::loadData( QByteArray itemData ) {
 }
 
 
-SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, Editor *aEditor, QUndoCommand *parent ) : QUndoCommand(
-    parent ) {
-  Scene *customScene = aEditor->getScene( );
-  GraphicElement *node = ElementFactory::buildElement( ElementType::NODE, aEditor );
+SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, Editor *editor, QUndoCommand *parent ) :
+  QUndoCommand( parent ),
+  editor( editor ),
+  scene( editor->getScene( ) ) {
+  GraphicElement *node = ElementFactory::buildElement( ElementType::NODE );
   QNEConnection *conn2 = ElementFactory::instance->buildConnection( );
 
   /* Align node to Grid */
   nodePos = point - QPointF( node->boundingRect( ).center( ) );
-  if( customScene ) {
-    int gridSize = customScene->gridSize( );
+  if( scene ) {
+    int gridSize = scene->gridSize( );
     qreal xV = qRound( nodePos.x( ) / gridSize ) * gridSize;
     qreal yV = qRound( nodePos.y( ) / gridSize ) * gridSize;
     nodePos = QPointF( xV, yV );
@@ -433,8 +433,6 @@ SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, Editor *aEditor,
   nodeAngle = 360 - 90 * ( std::round( nodeAngle / 90.0 ) );
 
   /* Assingning class attributes */
-  editor = aEditor;
-
   elm1_id = conn->start( )->graphicElement( )->id( );
   elm2_id = conn->end( )->graphicElement( )->id( );
 
@@ -466,7 +464,7 @@ void SplitCommand::redo( ) {
     ElementFactory::updateItemId( c2, c2_id );
   }
   if( !node ) {
-    node = ElementFactory::buildElement( ElementType::NODE, editor );
+    node = ElementFactory::buildElement( ElementType::NODE );
     ElementFactory::updateItemId( node, node_id );
   }
   if( c1 && c2 && elm1 && elm2 && node ) {
@@ -479,8 +477,8 @@ void SplitCommand::redo( ) {
     c2->setEnd( endPort );
     c1->setEnd( node->input( ) );
 
-    editor->getScene( )->addItem( node );
-    editor->getScene( )->addItem( c2 );
+    scene->addItem( node );
+    scene->addItem( c2 );
 
     c1->updatePosFromPorts( );
     c1->updatePath( );
@@ -538,7 +536,7 @@ void MorphCommand::undo( ) {
   QVector< GraphicElement* > newElms = findElements( ids ).toVector( );
   QVector< GraphicElement* > oldElms( newElms.size( ) );
   for( int i = 0; i < ids.size( ); ++i ) {
-    oldElms[ i ] = ElementFactory::buildElement( types[ i ], editor );
+    oldElms[ i ] = ElementFactory::buildElement( types[ i ] );
   }
   transferConnections( newElms, oldElms );
   emit editor->circuitHasChanged( );
@@ -549,7 +547,7 @@ void MorphCommand::redo( ) {
   QVector< GraphicElement* > oldElms = findElements( ids ).toVector( );
   QVector< GraphicElement* > newElms( oldElms.size( ) );
   for( int i = 0; i < ids.size( ); ++i ) {
-    newElms[ i ] = ElementFactory::buildElement( newtype, editor );
+    newElms[ i ] = ElementFactory::buildElement( newtype );
   }
   transferConnections( oldElms, newElms );
   emit editor->circuitHasChanged( );

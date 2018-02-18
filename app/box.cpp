@@ -1,7 +1,7 @@
 #include "box.h"
+#include "boxmanager.h"
 #include "boxnotfoundexception.h"
 #include "boxprototype.h"
-#include "editor.h"
 #include "globalproperties.h"
 #include "serializationfunctions.h"
 #include <QApplication>
@@ -17,8 +17,7 @@
 #include <iostream>
 #include <nodes/qneconnection.h>
 
-Box::Box( Editor *editor, QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, parent ) {
-  this->editor = editor;
+Box::Box( QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, parent ) {
   setHasLabel( true );
   /*
    *  QTransform transform;

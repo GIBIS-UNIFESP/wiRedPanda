@@ -7,19 +7,21 @@
 
 class MainWindow;
 class BoxPrototype;
+class Box;
 
 class BoxManager : public QObject {
   Q_OBJECT
-  QMap< QString, BoxPrototype* > m_boxes;
-  MainWindow *m_mainWindow;
+  QMap< QString, BoxPrototype* > boxes;
+  MainWindow *mainWindow;
 
-  QFileSystemWatcher m_fileWatcher;
+  QFileSystemWatcher fileWatcher;
 public:
   BoxManager( MainWindow *mainWindow = 0, QObject *parent = 0 );
   virtual ~BoxManager( );
 
-  void loadFile(QString fname , QString parentFile);
   void clear( );
+
+  bool loadBox( Box *box, QString fname, QString parentFile );
 
   BoxPrototype* getPrototype( QString fname );
 
@@ -29,9 +31,11 @@ private slots:
   void reloadFile( QString bname );
 
 private:
+  void loadFile( QString fname, QString parentFile );
   bool warnAboutFileChange( const QString &fileName );
 
   static BoxManager *globalBoxManager;
+  void updateRecentBoxes( QString fname );
 };
 
 #endif // BOXMANAGER_H

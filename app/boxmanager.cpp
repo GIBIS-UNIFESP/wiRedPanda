@@ -1,19 +1,23 @@
+#include "box.h"
 #include "boxfilehelper.h"
 #include "boxmanager.h"
+#include "boxnotfoundexception.h"
 #include "boxprototype.h"
 #include "mainwindow.h"
 
+#include <QApplication>
 #include <QDebug>
 #include <QMessageBox>
+#include <QSettings>
 #include <qfileinfo.h>
 
 BoxManager*BoxManager::globalBoxManager = nullptr;
 
-BoxManager::BoxManager( MainWindow *mainWindow, QObject *parent ) : QObject( parent ), m_mainWindow( mainWindow ) {
+BoxManager::BoxManager( MainWindow *mainWindow, QObject *parent ) : QObject( parent ), mainWindow( mainWindow ) {
   if( globalBoxManager == nullptr ) {
     globalBoxManager = this;
   }
-  connect( &m_fileWatcher, &QFileSystemWatcher::fileChanged, this, &BoxManager::reloadFile );
+  connect( &fileWatcher, &QFileSystemWatcher::fileChanged, this, &BoxManager::reloadFile );
 }
 
 BoxManager::~BoxManager( ) {
@@ -22,35 +26,77 @@ BoxManager::~BoxManager( ) {
 
 void BoxManager::loadFile( QString fname, QString parentFile ) {
   QFileInfo finfo = BoxFileHelper::findFile( fname, parentFile );
-  m_fileWatcher.addPath( finfo.absoluteFilePath( ) );
-  if( m_boxes.contains( finfo.baseName( ) ) ) {
+  fileWatcher.addPath( finfo.absoluteFilePath( ) );
+  if( boxes.contains( finfo.baseName( ) ) ) {
     qDebug( ) << "BoxManager: Box already inserted: " << finfo.baseName( );
   }
   else {
     qDebug( ) << "BoxManager: Inserting Box: " << finfo.baseName( );
     BoxPrototype *prototype = new BoxPrototype( finfo.absoluteFilePath( ) );
-    m_boxes.insert( finfo.baseName( ), prototype );
+    boxes.insert( finfo.baseName( ), prototype );
     prototype->reload( );
   }
 }
 
 void BoxManager::clear( ) {
   qDebug( ) << "BoxManager::Clear";
-  QMap< QString, BoxPrototype* > boxes = m_boxes;
-  m_boxes.clear( );
-  for( auto it = boxes.begin( ); it != boxes.end( ); it++ ) {
+  QMap< QString, BoxPrototype* > boxes_aux = boxes;
+  boxes.clear( );
+  for( auto it = boxes_aux.begin( ); it != boxes_aux.end( ); it++ ) {
     delete it.value( );
   }
-  m_fileWatcher.removePaths( m_fileWatcher.files( ) );
+  fileWatcher.removePaths( fileWatcher.files( ) );
+}
+
+void BoxManager::updateRecentBoxes( QString fname ) {
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  QStringList files;
+  if( settings.contains( "recentBoxes" ) ) {
+    files = settings.value( "recentBoxes" ).toStringList( );
+    files.removeAll( fname );
+  }
+  files.prepend( fname );
+  settings.setValue( "recentBoxes", files );
+  if( mainWindow ) {
+    mainWindow->updateRecentBoxes( );
+  }
+}
+
+bool BoxManager::loadBox( Box *box, QString fname, QString parentFile ) {
+  try {
+    loadFile( fname, parentFile );
+    box->loadFile( fname );
+  }
+  catch( BoxNotFoundException &err ) {
+    qDebug( ) << "BoxNotFoundException thrown: " << err.what( );
+    int ret = QMessageBox::warning( mainWindow, tr( "Error" ), QString::fromStdString(
+                                      err.what( ) ), QMessageBox::Ok, QMessageBox::Cancel );
+    if( ret == QMessageBox::Cancel ) {
+      return( false );
+    }
+    else {
+      fname = mainWindow->getOpenBoxFile( );
+      if( fname.isEmpty( ) ) {
+        return( false );
+      }
+      else {
+        return( loadBox( err.getBox( ), fname, parentFile ) );
+      }
+    }
+  }
+
+  updateRecentBoxes( fname );
+  return( true );
 }
 
 BoxPrototype* BoxManager::getPrototype( QString fname ) {
   qDebug( ) << "get prototype of " << fname;
   QFileInfo finfo( fname );
-  if( !m_boxes.contains( finfo.baseName( ) ) ) {
+  if( !boxes.contains( finfo.baseName( ) ) ) {
     return( nullptr );
   }
-  return( m_boxes[ finfo.baseName( ) ] );
+  return( boxes[ finfo.baseName( ) ] );
 }
 
 BoxManager* BoxManager::instance( ) {
@@ -59,14 +105,14 @@ BoxManager* BoxManager::instance( ) {
 
 void BoxManager::reloadFile( QString fileName ) {
   QString bname = QFileInfo( fileName ).baseName( );
-  m_fileWatcher.addPath( fileName );
+  fileWatcher.addPath( fileName );
   if( warnAboutFileChange( bname ) ) {
-    if( m_boxes.contains( bname ) ) {
+    if( boxes.contains( bname ) ) {
       try {
-        m_boxes[ bname ]->reload( );
+        boxes[ bname ]->reload( );
       }
       catch( std::runtime_error &e ) {
-        QMessageBox::warning( m_mainWindow, "Error", tr( "Error reloading Box: " ) + e.what( ),
+        QMessageBox::warning( mainWindow, "Error", tr( "Error reloading Box: " ) + e.what( ),
                               QMessageBox::Ok, QMessageBox::NoButton );
 
       }
@@ -77,8 +123,8 @@ void BoxManager::reloadFile( QString fileName ) {
 bool BoxManager::warnAboutFileChange( const QString &fileName ) {
   qDebug( ) << "File " << fileName << " has changed!";
   QMessageBox msgBox;
-  if( m_mainWindow ) {
-    msgBox.setParent( m_mainWindow );
+  if( mainWindow ) {
+    msgBox.setParent( mainWindow );
   }
   msgBox.setLocale( QLocale::Portuguese );
   msgBox.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
