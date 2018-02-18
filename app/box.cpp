@@ -88,6 +88,7 @@ void Box::loadOutputs( BoxPrototype *prototype ) {
 
 void Box::loadFile( QString fname ) {
   BoxPrototype *prototype = BoxManager::instance( )->getPrototype( fname );
+  Q_ASSERT( prototype );
   m_file = prototype->fileName( );
   setToolTip( m_file );
   prototype->insertBoxObserver( this );
