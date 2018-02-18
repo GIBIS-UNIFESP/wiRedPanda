@@ -54,21 +54,7 @@ bool SimulationController::isRunning( ) {
 
 void SimulationController::update( ) {
   if( elMapping ) {
-    for( Clock *clk : elMapping->clocks ) {
-      if( Clock::reset ) {
-        clk->resetClock( );
-      }
-      else {
-        clk->updateLogic( );
-      }
-    }
-    Clock::reset = false;
-    for( auto iter = elMapping->inputMap.begin( ); iter != elMapping->inputMap.end( ); ++iter ) {
-      iter.value( )->setOutputValue( iter.key( )->getOn( ) );
-    }
-    for( LogicElement *elm : elMapping->logicElms ) {
-      elm->updateLogic( );
-    }
+    elMapping->update( );
   }
 }
 
@@ -113,10 +99,10 @@ void SimulationController::updatePort( QNEOutputPort *port ) {
   int portIndex = 0;
   if( elm->elementType( ) == ElementType::BOX ) {
     Box *box = dynamic_cast< Box* >( elm );
-    logElm = elMapping->boxMappings[ box ]->getOutput( port->index( ) );
+    logElm = elMapping->getBoxMapping( box )->getOutput( port->index( ) );
   }
   else {
-    logElm = elMapping->map[ elm ];
+    logElm = elMapping->getLogicElement( elm );
     portIndex = port->index( );
   }
   Q_ASSERT( logElm );
@@ -132,7 +118,7 @@ void SimulationController::updatePort( QNEInputPort *port ) {
   Q_ASSERT( port );
   GraphicElement *elm = port->graphicElement( );
   Q_ASSERT( elm );
-  LogicElement *logElm = elMapping->map[ elm ];
+  LogicElement *logElm = elMapping->getLogicElement( elm );
   Q_ASSERT( logElm );
   int portIndex = port->index( );
   if( logElm->isValid( ) ) {
