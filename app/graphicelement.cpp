@@ -232,14 +232,13 @@ void GraphicElement::loadInputPorts( QDataStream &ds, QMap< quint64, QNEPort* > 
     throw std::runtime_error( ERRORMSG( "Corrupted DataStream!" ) );
   }
   for( size_t port = 0; port < inputSz; ++port ) {
-    loadInputPort( inputSz, portMap, ds, port );
+    loadInputPort( ds, portMap, port );
   }
   removeSurplusInputs( inputSz, portMap );
 }
 
 
-void GraphicElement::loadInputPort( quint64 inputSz, QMap< quint64, QNEPort* > &portMap, QDataStream &ds,
-                                    size_t port ) {
+void GraphicElement::loadInputPort( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, size_t port ) {
   QString name;
   int flags;
   quint64 ptr;
@@ -256,9 +255,7 @@ void GraphicElement::loadInputPort( quint64 inputSz, QMap< quint64, QNEPort* > &
   else {
     addPort( name, false, flags, ptr );
   }
-  if( port < inputSz ) {
-    portMap[ ptr ] = m_inputs[ port ];
-  }
+  portMap[ ptr ] = m_inputs[ port ];
 }
 
 
@@ -290,19 +287,18 @@ void GraphicElement::loadOutputPorts( QDataStream &ds, QMap< quint64, QNEPort* >
     throw std::runtime_error( ERRORMSG( "Corrupted DataStream!" ) );
   }
   for( size_t port = 0; port < outputSz; ++port ) {
-    loadOutputPort( port, outputSz, portMap, ds );
+    loadOutputPort( ds, portMap, port );
   }
 }
 
-void GraphicElement::loadOutputPort( size_t port, quint64 outputSz, QMap< quint64, QNEPort* > &portMap,
-                                     QDataStream &ds ) {
+void GraphicElement::loadOutputPort( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, size_t port ) {
   QString name;
   int flags;
   quint64 ptr;
   ds >> ptr;
   ds >> name;
   ds >> flags;
-  if( ( port < ( size_t ) m_outputs.size( ) ) && ( port < outputSz ) ) {
+  if( ( port < ( size_t ) m_outputs.size( ) ) ) {
     if( elementType( ) == ElementType::BOX ) {
       m_outputs[ port ]->setName( name );
     }
@@ -312,9 +308,7 @@ void GraphicElement::loadOutputPort( size_t port, quint64 outputSz, QMap< quint6
   else {
     addPort( name, true, flags, ptr );
   }
-  if( port < outputSz ) {
-    portMap[ ptr ] = m_outputs[ port ];
-  }
+  portMap[ ptr ] = m_outputs[ port ];
 }
 
 
