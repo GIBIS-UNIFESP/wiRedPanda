@@ -156,6 +156,7 @@ public:
 
   virtual QString genericProperties( );
 
+
 protected:
   void setRotatable( bool rotatable );
   void setHasLabel( bool hasLabel );
@@ -191,14 +192,33 @@ private:
   bool m_disabled;
   QString m_labelText;
   QKeySequence m_trigger;
+
+
+  void loadPos( QDataStream &ds );
+
+  void loadAngle( QDataStream &ds );
+
+  void loadLabel( QDataStream &ds, double version );
+
+  void loadMinMax( QDataStream &ds, double version );
+
+  void loadTrigger( QDataStream &ds, double version );
+
+  void loadInputPorts( QDataStream &ds, QMap< quint64, QNEPort* > &portMap );
+
+  void removePortFromMap( QNEPort *deletedPort, QMap< quint64, QNEPort* > &portMap );
+
+  void loadOutputPorts( QDataStream &ds, QMap< quint64, QNEPort* > &portMap );
+
+  void removeSurplusInputs( quint64 inputSz, QMap< quint64, QNEPort* > &portMap );
+
+  void loadInputPort( quint64 inputSz, QMap< quint64, QNEPort* > &portMap, QDataStream &ds, size_t port );
+
+  void loadOutputPort( size_t port, quint64 outputSz, QMap< quint64, QNEPort* > &portMap, QDataStream &ds );
+
 protected:
   QVector< QNEInputPort* > m_inputs;
   QVector< QNEOutputPort* > m_outputs;
-
-  /* QGraphicsItem interface */
-protected:
-/*  virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent * event); */
-
 };
 
 
