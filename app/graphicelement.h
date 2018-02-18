@@ -212,9 +212,9 @@ private:
 
   void removeSurplusInputs( quint64 inputSz, QMap< quint64, QNEPort* > &portMap );
 
-  void loadInputPort( quint64 inputSz, QMap< quint64, QNEPort* > &portMap, QDataStream &ds, size_t port );
+  void loadInputPort( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, size_t port );
 
-  void loadOutputPort( size_t port, quint64 outputSz, QMap< quint64, QNEPort* > &portMap, QDataStream &ds );
+  void loadOutputPort( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, size_t port );
 
 protected:
   QVector< QNEInputPort* > m_inputs;
