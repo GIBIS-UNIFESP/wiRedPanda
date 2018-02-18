@@ -66,10 +66,11 @@ void BoxManager::reloadFile( QString fileName ) {
         m_boxes[ bname ]->reload( );
       }
       catch( std::runtime_error &e ) {
-        // TODO: Warn user reload didn't work
+        QMessageBox::warning( m_mainWindow, "Error", tr( "Error reloading Box: " ) + e.what( ),
+                              QMessageBox::Ok, QMessageBox::NoButton );
+
       }
     }
-    // TODO DO something
   }
 }
 
