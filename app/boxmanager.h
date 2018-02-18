@@ -31,8 +31,8 @@ private slots:
   void reloadFile( QString bname );
 
 private:
-  bool tryLoadFile( QString fname, QString parentFile );
-  void loadFile( QString fname, QString parentFile );
+  bool tryLoadFile(QString &fname, QString parentFile );
+  void loadFile(QString &fname, QString parentFile );
   bool warnAboutFileChange( const QString &fileName );
 
   static BoxManager *globalBoxManager;

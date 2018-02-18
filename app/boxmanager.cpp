@@ -24,7 +24,7 @@ BoxManager::~BoxManager( ) {
   clear( );
 }
 
-bool BoxManager::tryLoadFile( QString fname, QString parentFile ) {
+bool BoxManager::tryLoadFile( QString &fname, QString parentFile ) {
   try {
     loadFile( fname, parentFile );
   }
@@ -48,8 +48,9 @@ bool BoxManager::tryLoadFile( QString fname, QString parentFile ) {
   return( true );
 }
 
-void BoxManager::loadFile( QString fname, QString parentFile ) {
+void BoxManager::loadFile( QString &fname, QString parentFile ) {
   QFileInfo finfo = BoxFileHelper::findFile( fname, parentFile );
+  fname = finfo.filePath( );
   Q_ASSERT( finfo.exists( ) && finfo.isFile( ) );
   fileWatcher.addPath( finfo.absoluteFilePath( ) );
   if( boxes.contains( finfo.baseName( ) ) ) {
