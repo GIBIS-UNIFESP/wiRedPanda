@@ -32,7 +32,7 @@ public:
   void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
   void updateLogic( );
 
-  void loadFile(QString fname );
+  void loadFile( QString fname );
   QString getFile( ) const;
 
   BoxPrototype* getPrototype( );

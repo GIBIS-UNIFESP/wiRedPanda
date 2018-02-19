@@ -8,6 +8,7 @@
 
 int main( int argc, char **argv ) {
   QApplication a( argc, argv );
+  Comment::setVerbosity( -1 );
   a.setOrganizationName( "WPanda" );
   a.setApplicationName( "WiredPanda" );
   a.setApplicationVersion( APP_VERSION );
@@ -24,9 +25,10 @@ int main( int argc, char **argv ) {
   status |= QTest::qExec( &testCommands, argc, argv );
   status |= QTest::qExec( &testWf, argc, argv );
   status |= QTest::qExec( &testIcons, argc, argv );
-  if(status == false){
+  if( status == false ) {
     std::cout << "All tests have passed!" << std::endl;
-  }else{
+  }
+  else {
     std::cout << "Some test failed!" << std::endl;
   }
   return( status );

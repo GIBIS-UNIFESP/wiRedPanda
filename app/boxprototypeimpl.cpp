@@ -117,7 +117,6 @@ void BoxPrototypeImpl::loadOutputs( ) {
 
 void BoxPrototypeImpl::loadInputElement( GraphicElement *elm ) {
   for( QNEOutputPort *port : elm->outputs( ) ) {
-    Q_ASSERT( Editor::globalEditor );
     GraphicElement *nodeElm = ElementFactory::buildElement( ElementType::NODE );
     nodeElm->setPos( elm->pos( ) );
     nodeElm->setLabel( elm->getLabel( ) );
@@ -144,8 +143,6 @@ void BoxPrototypeImpl::loadInputElement( GraphicElement *elm ) {
 
 void BoxPrototypeImpl::loadOutputElement( GraphicElement *elm ) {
   for( QNEInputPort *port : elm->inputs( ) ) {
-
-    Q_ASSERT( Editor::globalEditor );
     GraphicElement *nodeElm = ElementFactory::buildElement( ElementType::NODE );
     nodeElm->setPos( elm->pos( ) );
     nodeElm->setLabel( elm->getLabel( ) );

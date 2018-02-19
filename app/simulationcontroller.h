@@ -23,11 +23,10 @@ public slots:
   void update( );
   void stop( );
   void start( );
-  void reSortElms( );
   void clear( );
   void updateView( );
-
   bool canRun( );
+  void reSortElms( );
 
 private:
   void updatePort( QNEOutputPort *port );

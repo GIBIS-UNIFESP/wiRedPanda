@@ -79,7 +79,7 @@ void SimulationController::start( ) {
 
 
 void SimulationController::reSortElms( ) {
-  COMMENT( "GENERATING SIMULATION LAYER", 0 );
+  COMMENT( "GENERATING SIMULATION LAYER", 1 );
   QVector< GraphicElement* > elements = scene->getElements( );
   if( elements.size( ) == 0 ) {
     return;

@@ -623,17 +623,7 @@ QString testFile( QString fname ) {
   return( QString( "%1/../examples/%2" ).arg( CURRENTDIR, fname ) );
 }
 
-void TestElements::testBox( ) {
-  Editor *editor = new Editor( this );
-  InputButton *btn = new InputButton( );
-  Led *led = new Led( );
-  Box *box = new Box( );
-  editor->getScene( )->addItem( btn );
-  editor->getScene( )->addItem( led );
-  editor->getScene( )->addItem( box );
-  box->loadFile( testFile( "jkflipflop.panda" ) );
-  box->updateLogic( );
-
+void TestElements::testBoxData( Box *box ) {
   QCOMPARE( ( int ) box->inputSize( ), 5 );
   QCOMPARE( ( int ) box->outputSize( ), 2 );
 
@@ -649,46 +639,100 @@ void TestElements::testBox( ) {
   QCOMPARE( ( int ) box->input( 2 )->value( ), -1 );
   QCOMPARE( ( int ) box->input( 3 )->value( ), 1 );
   QCOMPARE( ( int ) box->input( 4 )->value( ), 1 );
+}
+
+void TestElements::testBox( ) {
+  BoxManager manager;
+  QString boxFile = testFile( "jkflipflop.panda" );
+  Scene scene;
+
+  Box *box = new Box( );
+  manager.loadBox( box, boxFile );
+
+  testBoxData( box );
+
+  InputButton *clkButton = new InputButton( );
+
+  InputButton *prstButton = new InputButton( );
+
+  Led *led = new Led( );
+  Led *led2 = new Led( );
 
   QNEConnection *conn = new QNEConnection( );
-  conn->setStart( btn->output( ) );
+  conn->setStart( clkButton->output( ) );
   conn->setEnd( box->input( 2 ) );
+
   QNEConnection *conn2 = new QNEConnection( );
+  conn2->setStart( box->output( 0 ) );
   conn2->setEnd( led->input( ) );
-  conn2->setStart( box->output( ) );
 
-  btn->updateLogic( );
-  box->updateLogic( );
-  led->updateLogic( );
+  QNEConnection *conn3 = new QNEConnection( );
+  conn3->setStart( prstButton->output( ) );
+  conn3->setEnd( box->input( 0 ) );
 
-  QCOMPARE( ( int ) box->input( 2 )->value( ), 0 );
+  QNEConnection *conn4 = new QNEConnection( );
+  conn4->setStart( box->output( 1 ) );
+  conn4->setEnd( led2->input( ) );
 
-  QCOMPARE( ( int ) box->output( 0 )->value( ), 0 );
-  QCOMPARE( ( int ) box->output( 1 )->value( ), 1 );
+  scene.addItem( led );
+  scene.addItem( led2 );
+  scene.addItem( clkButton );
+  scene.addItem( prstButton );
+  scene.addItem( box );
+  scene.addItem( conn );
+  scene.addItem( conn2 );
+  scene.addItem( conn3 );
+  scene.addItem( conn4 );
 
-  btn->setOn( false );
-  btn->updateLogic( );
-  box->updateLogic( );
-  led->updateLogic( );
+  SimulationController sc( &scene );
+  sc.reSortElms( );
+  for( int i = 0; i < 10; ++i ) {
+    clkButton->setOn( false );
+    prstButton->setOn( false );
+    sc.update( );
+    sc.updateScene( scene.itemsBoundingRect( ) );
 
-  QCOMPARE( ( int ) box->input( 2 )->value( ), 0 );
+    QCOMPARE( ( int ) box->input( 2 )->value( ), 0 );
 
-  QCOMPARE( ( int ) box->output( 0 )->value( ), 0 );
-  QCOMPARE( ( int ) box->output( 1 )->value( ), 1 );
+    QCOMPARE( ( int ) box->output( 0 )->value( ), 1 );
+    QCOMPARE( ( int ) box->output( 1 )->value( ), 0 );
 
-  btn->setOn( true );
-  btn->updateLogic( );
-  box->updateLogic( );
-  led->updateLogic( );
+    clkButton->setOn( false );
+    prstButton->setOn( true );
+    sc.update( );
+    sc.updateScene( scene.itemsBoundingRect( ) );
+    QCOMPARE( ( int ) box->input( 2 )->value( ), 0 );
 
-  QCOMPARE( ( int ) btn->output( )->value( ), 1 );
-  QCOMPARE( ( int ) box->input( 2 )->value( ), 1 );
+    QCOMPARE( ( int ) box->output( 0 )->value( ), 1 );
+    QCOMPARE( ( int ) box->output( 1 )->value( ), 0 );
 
-  QCOMPARE( ( int ) box->output( 0 )->value( ), 1 );
-  QCOMPARE( ( int ) box->output( 1 )->value( ), 0 );
+
+    clkButton->setOn( false );
+    sc.update( );
+    sc.updateScene( scene.itemsBoundingRect( ) );
+
+    QCOMPARE( ( int ) box->input( 2 )->value( ), 0 );
+
+    QCOMPARE( ( int ) box->output( 0 )->value( ), 1 );
+    QCOMPARE( ( int ) box->output( 1 )->value( ), 0 );
+
+
+    clkButton->setOn( true );
+    sc.update( );
+    sc.updateScene( scene.itemsBoundingRect( ) );
+
+    QCOMPARE( ( int ) box->input( 2 )->value( ), 1 );
+
+    std::cout << ( int ) box->output( 0 )->value( ) << " " << ( int ) box->output( 1 )->value( ) << std::endl;
+
+    QCOMPARE( ( int ) box->output( 0 )->value( ), 0 );
+    QCOMPARE( ( int ) box->output( 1 )->value( ), 1 );
+
+  }
 }
 
 void TestElements::testBoxes( ) {
+  BoxManager manager;
   QDir examplesDir( QString( "%1/../examples/" ).arg( CURRENTDIR ) );
 /*  qDebug( ) << "Current dir: " << CURRENTDIR; */
   QStringList entries;
@@ -697,6 +741,6 @@ void TestElements::testBoxes( ) {
   for( QFileInfo f : files ) {
     qDebug( ) << "FILE: " << f.absoluteFilePath( );
     Box box;
-    box.loadFile( f.absoluteFilePath( ) );
+    manager.loadBox( &box, f.absoluteFilePath( ) );
   }
 }
