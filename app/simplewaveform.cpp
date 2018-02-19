@@ -30,10 +30,14 @@ public:
       sc->stop( );
     }
   }
-  ~SCStop( ) {
+
+  void release( ) {
     if( restart ) {
       sc->start( );
     }
+  }
+  ~SCStop( ) {
+    release( );
   }
 };
 
@@ -157,9 +161,8 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
       uchar val = bs[ in ];
       dynamic_cast< Input* >( inputs[ in ] )->setOn( val );
     }
-    for( GraphicElement *elm : elements ) {
-      elm->updateLogic( );
-    }
+    sc->update( );
+    sc->updateAll( );
     int counter = 0;
     for( int out = 0; out < outputs.size( ); ++out ) {
       int inSz = outputs[ out ]->inputSize( );
@@ -200,6 +203,7 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
   for( int in = 0; in < inputs.size( ); ++in ) {
     dynamic_cast< Input* >( inputs[ in ] )->setOn( oldValues[ in ] );
   }
+  scst.release( );
   return( true );
 }
 
@@ -294,9 +298,8 @@ void SimpleWaveform::showWaveform( ) {
       in_series[ in ]->append( itr, offset + val );
       in_series[ in ]->append( itr + 1, offset + val );
     }
-    for( GraphicElement *elm : elements ) {
-      elm->updateLogic( );
-    }
+    sc->update( );
+    sc->updateAll( );
     int counter = 0;
     for( int out = 0; out < outputs.size( ); ++out ) {
       int inSz = outputs[ out ]->inputSize( );
@@ -342,6 +345,7 @@ void SimpleWaveform::showWaveform( ) {
     dynamic_cast< Input* >( inputs[ in ] )->setOn( oldValues[ in ] );
 
   }
+  scst.release( );
 }
 
 void SimpleWaveform::on_radioButton_Position_clicked( ) {

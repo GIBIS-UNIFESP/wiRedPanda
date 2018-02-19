@@ -15,7 +15,7 @@ public:
   virtual ElementGroup elementGroup( ) {
     return( ElementGroup::OUTPUT );
   }
-  void updateLogic( );
+  void refresh( );
   void setColor( QString getColor );
   QString getColor( );
 
