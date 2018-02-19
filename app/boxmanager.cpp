@@ -22,6 +22,9 @@ BoxManager::BoxManager( MainWindow *mainWindow, QObject *parent ) : QObject( par
 
 BoxManager::~BoxManager( ) {
   clear( );
+  if( globalBoxManager == this ) {
+    globalBoxManager = nullptr;
+  }
 }
 
 bool BoxManager::tryLoadFile( QString &fname, QString parentFile ) {
@@ -29,7 +32,7 @@ bool BoxManager::tryLoadFile( QString &fname, QString parentFile ) {
     loadFile( fname, parentFile );
   }
   catch( BoxNotFoundException &err ) {
-    qDebug( ) << "BoxNotFoundException thrown: " << err.what( );
+    COMMENT( "BoxNotFoundException thrown: " << err.what( ), 0 );
     int ret = QMessageBox::warning( mainWindow, tr( "Error" ), QString::fromStdString(
                                       err.what( ) ), QMessageBox::Ok, QMessageBox::Cancel );
     if( ret == QMessageBox::Cancel ) {
@@ -54,10 +57,10 @@ void BoxManager::loadFile( QString &fname, QString parentFile ) {
   Q_ASSERT( finfo.exists( ) && finfo.isFile( ) );
   fileWatcher.addPath( finfo.absoluteFilePath( ) );
   if( boxes.contains( finfo.baseName( ) ) ) {
-    qDebug( ) << "BoxManager: Box already inserted: " << finfo.baseName( );
+    COMMENT( "Box already inserted: " << finfo.baseName( ).toStdString( ), 0 );
   }
   else {
-    qDebug( ) << "BoxManager: Inserting Box: " << finfo.baseName( );
+    COMMENT( "Inserting Box: " << finfo.baseName( ).toStdString( ), 0 );
     BoxPrototype *prototype = new BoxPrototype( finfo.absoluteFilePath( ) );
     prototype->reload( );
     boxes.insert( finfo.baseName( ), prototype );
@@ -65,7 +68,7 @@ void BoxManager::loadFile( QString &fname, QString parentFile ) {
 }
 
 void BoxManager::clear( ) {
-  qDebug( ) << "BoxManager::Clear";
+  COMMENT( "Clear boxmanager", 1 );
   QMap< QString, BoxPrototype* > boxes_aux = boxes;
   boxes.clear( );
   for( auto it = boxes_aux.begin( ); it != boxes_aux.end( ); it++ ) {
@@ -128,7 +131,7 @@ void BoxManager::reloadFile( QString fileName ) {
 }
 
 bool BoxManager::warnAboutFileChange( const QString &fileName ) {
-  qDebug( ) << "File " << fileName << " has changed!";
+  COMMENT( "File " << fileName.toStdString( ) << " has changed!", 0 );
   QMessageBox msgBox;
   if( mainWindow ) {
     msgBox.setParent( mainWindow );

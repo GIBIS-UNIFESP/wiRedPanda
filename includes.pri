@@ -66,7 +66,8 @@ SOURCES += \
     $$PWD/app/boxprototypeimpl.cpp \
     $$PWD/app/elementmapping.cpp \
     $$PWD/app/boxmapping.cpp \
-    $$PWD/app/element/buzzer.cpp
+    $$PWD/app/element/buzzer.cpp \
+    $$PWD/app/common.cpp
 
 HEADERS  +=  \
     $$PWD/app/common.h \
