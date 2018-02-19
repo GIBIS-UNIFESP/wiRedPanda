@@ -53,7 +53,7 @@ public:
 
   virtual void updatePorts( );
 
-  virtual void updateLogic( ) = 0;
+  virtual void refresh( );
 
   /* QGraphicsItem interface */
 public:

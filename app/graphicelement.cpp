@@ -407,6 +407,10 @@ void GraphicElement::updatePorts( ) {
   }
 }
 
+void GraphicElement::refresh( ) {
+
+}
+
 /*
  * void GraphicElement::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * e) {
  *  if(e->button() == Qt::LeftButton) {

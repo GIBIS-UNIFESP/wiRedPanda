@@ -25,6 +25,7 @@ public slots:
   void start( );
   void clear( );
   void updateView( );
+  void updateAll( );
   bool canRun( );
   void reSortElms( );
 

@@ -690,6 +690,8 @@ void TestElements::testBox( ) {
     clkButton->setOn( false );
     prstButton->setOn( false );
     sc.update( );
+    sc.update( );
+    sc.update( );
     sc.updateScene( scene.itemsBoundingRect( ) );
 
     QCOMPARE( ( int ) box->input( 2 )->value( ), 0 );
@@ -700,6 +702,8 @@ void TestElements::testBox( ) {
     clkButton->setOn( false );
     prstButton->setOn( true );
     sc.update( );
+    sc.update( );
+    sc.update( );
     sc.updateScene( scene.itemsBoundingRect( ) );
     QCOMPARE( ( int ) box->input( 2 )->value( ), 0 );
 
@@ -708,6 +712,8 @@ void TestElements::testBox( ) {
 
 
     clkButton->setOn( false );
+    sc.update( );
+    sc.update( );
     sc.update( );
     sc.updateScene( scene.itemsBoundingRect( ) );
 
@@ -718,6 +724,8 @@ void TestElements::testBox( ) {
 
 
     clkButton->setOn( true );
+    sc.update( );
+    sc.update( );
     sc.update( );
     sc.updateScene( scene.itemsBoundingRect( ) );
 

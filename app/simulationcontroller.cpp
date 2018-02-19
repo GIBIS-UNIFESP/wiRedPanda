@@ -50,6 +50,10 @@ void SimulationController::updateView( ) {
   updateScene( scene->views( ).first( )->sceneRect( ) );
 }
 
+void SimulationController::updateAll( ) {
+  updateScene( scene->itemsBoundingRect( ) );
+}
+
 bool SimulationController::canRun( ) {
   if( !elMapping ) {
     return( false );
@@ -87,7 +91,7 @@ void SimulationController::reSortElms( ) {
   if( elMapping ) {
     delete elMapping;
   }
-  elMapping = new ElementMapping( GlobalProperties::currentFile, scene->getElements( ) );
+  elMapping = new ElementMapping( scene->getElements( ), GlobalProperties::currentFile );
   if( elMapping->canInitialize( ) ) {
     elMapping->initialize( );
     elMapping->sort( );
@@ -142,7 +146,7 @@ void SimulationController::updatePort( QNEInputPort *port ) {
     port->setValue( -1 );
   }
   if( elm->elementGroup( ) == ElementGroup::OUTPUT ) {
-    elm->updateLogic( );
+    elm->refresh( );
   }
 }
 

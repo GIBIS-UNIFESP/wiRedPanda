@@ -11,7 +11,7 @@
 
 
 
-ElementMapping::ElementMapping( QString file, const QVector< GraphicElement* > &elms ) :
+ElementMapping::ElementMapping( const QVector< GraphicElement* > &elms, QString file ) :
   currentFile( file ),
   initialized( false ),
   elements( elms ),

@@ -4,7 +4,7 @@ BoxMapping::BoxMapping( QString file,
                         const ElementVector &elms,
                         const QNEPortVector &inputs,
                         const QNEPortVector &outputs ) :
-  ElementMapping( file, elms ),
+  ElementMapping( elms, file ),
   boxInputs( inputs ),
   boxOutputs( outputs ) {
 

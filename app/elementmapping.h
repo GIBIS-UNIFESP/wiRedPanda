@@ -22,7 +22,7 @@ typedef QMap< Input*, LogicElement* > InputMap;
 class ElementMapping {
 public:
 
-  ElementMapping( QString file, const QVector< GraphicElement* > &elms );
+  ElementMapping( const QVector< GraphicElement* > &elms, QString file = QString( ) );
   virtual ~ElementMapping( );
 
   void clear( );

@@ -17,7 +17,7 @@ public:
   virtual ElementGroup elementGroup( ) {
     return( ElementGroup::OUTPUT );
   }
-  void updateLogic( );
+  void refresh( );
 
   void setAudio( QString note );
   QString getAudio( );
