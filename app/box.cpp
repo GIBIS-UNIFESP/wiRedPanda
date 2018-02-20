@@ -58,9 +58,7 @@ void Box::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double vers
 }
 
 
-void Box::updateLogic( ) {
 
-}
 
 
 void Box::loadInputs( BoxPrototype *prototype ) {

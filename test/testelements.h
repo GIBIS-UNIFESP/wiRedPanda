@@ -36,10 +36,8 @@ private slots:
   void testDFlipFlop( );
   void testDLatch( );
   void testJKFlipFlop( );
-  void testJKLatch( );
   void testSRFlipFlop( );
   void testTFlipFlop( );
-  void testTLatch( );
 
   void testBox( );
   void testBoxes( );

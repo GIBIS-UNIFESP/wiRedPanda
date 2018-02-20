@@ -21,9 +21,15 @@ Clock::~Clock( ) {
 }
 
 void Clock::updateClock( ) {
-  elapsed = 0;
-  setOn( !on );
+  if( !disabled( ) ) {
+    elapsed++;
+    if( ( elapsed % interval ) == 0 ) {
+      setOn( !on );
+    }
+  }
+  setOn( on );
 }
+
 
 bool Clock::getOn( ) const {
   return( on );
@@ -74,19 +80,8 @@ void Clock::setFrequency( float freq ) {
   }
 }
 
-void Clock::updateLogic( ) {
-  if( !disabled( ) ) {
-    elapsed++;
-    if( ( elapsed % interval ) == 0 ) {
-      updateClock( );
-    }
-  }
-  outputs( ).first( )->setValue( on );
-}
-
 void Clock::resetClock( ) {
-  on = true;
-  updateClock( );
+  setOn( true );
   elapsed = 0;
 }
 

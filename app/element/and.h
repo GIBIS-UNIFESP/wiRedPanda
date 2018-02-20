@@ -15,8 +15,6 @@ public:
   virtual ElementGroup elementGroup( ) {
     return( ElementGroup::GATE );
   }
-  void updateLogic( );
-
 
 };
 
