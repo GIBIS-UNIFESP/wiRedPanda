@@ -30,8 +30,6 @@ public:
 
   virtual ~LogicElement( );
 
-  void updateLogic( );
-
   void connectPredecessor( int index, LogicElement *elm, int port );
 
   void setOutputValue( size_t index, bool value );
@@ -50,6 +48,8 @@ public:
   void clearPredecessors( );
 
   void clearSucessors( );
+
+  void updateLogic( );
 };
 
 class LogicNode : public LogicElement {

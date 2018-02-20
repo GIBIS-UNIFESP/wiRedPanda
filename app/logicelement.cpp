@@ -36,7 +36,6 @@ LogicElement::LogicElement( size_t inputSize, size_t outputSize ) :
 }
 
 LogicElement::~LogicElement( ) {
-
 }
 
 void LogicElement::updateLogic( ) {

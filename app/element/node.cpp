@@ -22,11 +22,6 @@ void Node::updatePorts( ) {
   output( )->setPos( 32, 16 );
 }
 
-void Node::updateLogic( ) {
-  output( )->setValue( input( )->value( ) );
-}
-
-
 ElementType Node::elementType( ) {
   return( ElementType::NODE );
 }

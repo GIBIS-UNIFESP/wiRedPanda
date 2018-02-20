@@ -167,7 +167,7 @@ void ElementMapping::update( ) {
         clk->resetClock( );
       }
       else {
-        clk->updateLogic( );
+        clk->updateClock( );
       }
     }
     Clock::reset = false;
