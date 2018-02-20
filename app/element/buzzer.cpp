@@ -56,8 +56,6 @@ void Buzzer::playbuzzer( ) {
     setPixmap( ":/output/BuzzerOn.png" );
     m_audio.play( );
   }
-  qDebug( ) << m_audio.status( );
-  qDebug( ) << m_audio.source( );
   play = 1;
 }
 
