@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QTest>
 #include <logicelement.h>
+#include <array>
 
 class TestLogicElements : public QObject {
   Q_OBJECT
