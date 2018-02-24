@@ -16,7 +16,6 @@ public:
   virtual ElementGroup elementGroup( ) {
     return( ElementGroup::GATE );
   }
-  void updateLogic( );
 };
 
 #endif /* OR_H */

@@ -84,10 +84,10 @@ void QNEPort::connect( QNEConnection *conn ) {
     updateConnections( );
     if( graphicElement( ) ) {
 
-      graphicElement( )->updatePorts( );
-      if( isOutput( ) ) {
-        graphicElement( )->updateLogic( );
-      }
+//      graphicElement( )->updatePorts( );
+//      if( isOutput( ) ) {
+//        graphicElement( )->updateLogic( );
+//      }
     }
   }
 }
@@ -170,10 +170,17 @@ QVariant QNEPort::itemChange( GraphicsItemChange change, const QVariant &value )
   return( value );
 }
 
+int QNEPort::index( ) const {
+  return( m_index );
+}
+
+void QNEPort::setIndex( int index ) {
+  m_index = index;
+}
+
 QString QNEPort::getName( ) const {
   return( name );
 }
-
 
 int QNEPort::defaultValue( ) const {
   return( m_defaultValue );
@@ -197,7 +204,7 @@ void QNEPort::setCurrentBrush( const QBrush &currentBrush ) {
 }
 
 
-bool QNEPort::required( ) const {
+bool QNEPort::isRequired( ) const {
   return( m_required );
 }
 
@@ -269,7 +276,7 @@ bool QNEInputPort::isOutput( ) const {
 
 bool QNEInputPort::isValid( ) const {
   if( m_connections.isEmpty( ) ) {
-    return( !required( ) );
+    return( !isRequired( ) );
   }
   return( m_connections.size( ) == 1 );
 }

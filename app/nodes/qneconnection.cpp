@@ -79,7 +79,7 @@ void QNEConnection::setStart( QNEOutputPort *p ) {
 void QNEConnection::setEnd( QNEInputPort *p ) {
   QNEInputPort *old = m_end;
   m_end = p;
-  if( old && ( old != p )) {
+  if( old && ( old != p ) ) {
     old->disconnect( this );
   }
   if( p ) {
@@ -226,7 +226,7 @@ void QNEConnection::setStatus( const Status &status ) {
 
 void QNEConnection::updateTheme( ) {
   if( ThemeManager::globalMngr ) {
-    const ThemeAttrs attrs = ThemeManager::globalMngr->getAttrs();
+    const ThemeAttrs attrs = ThemeManager::globalMngr->getAttrs( );
     m_inactiveClr = attrs.qneConnection_false;
     m_activeClr = attrs.qneConnection_true;
     m_invalidClr = attrs.qneConnection_invalid;

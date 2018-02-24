@@ -1,3 +1,7 @@
+#include "box.h"
+#include "boxmapping.h"
+#include "elementfactory.h"
+#include "simulationcontroller.h"
 #include "simulationcontroller.h"
 
 #include <QDebug>
@@ -7,97 +11,146 @@
 
 #include <nodes/qneconnection.h>
 
+#include <QGraphicsView>
 #include <QStack>
 
-SimulationController::SimulationController( Scene *scn ) : QObject( dynamic_cast< QObject* >( scn ) ), timer( this ) {
+SimulationController::SimulationController( Scene *scn ) : QObject( dynamic_cast< QObject* >( scn ) ), elMapping(
+    nullptr ), simulationTimer( this ) {
   scene = scn;
-  timer.setInterval( GLOBALCLK );
-  connect( &timer, &QTimer::timeout, this, &SimulationController::update );
+  simulationTimer.setInterval( GLOBALCLK );
+  viewTimer.setInterval( int( 1000 / 30 ) );
+  viewTimer.start( );
+  connect( &viewTimer, &QTimer::timeout, this, &SimulationController::updateView );
+  connect( &simulationTimer, &QTimer::timeout, this, &SimulationController::update );
 }
 
 SimulationController::~SimulationController( ) {
-
+  clear( );
 }
 
-int SimulationController::calculatePriority( GraphicElement *elm,
-                                             QMap< GraphicElement*, bool > &beingvisited,
-                                             QMap< GraphicElement*, int > &priority ) {
-  if( !elm ) {
-    return( 0 );
-  }
-  if( beingvisited.contains( elm ) && ( beingvisited[ elm ] == true ) ) {
-
-    return( 0 );
-  }
-  if( priority.contains( elm ) ) {
-    return( priority[ elm ] );
-  }
-  beingvisited[ elm ] = true;
-  int max = 0;
-  for( QNEPort *port : elm->outputs( ) ) {
-    for( QNEConnection *conn : port->connections( ) ) {
-      QNEPort *sucessor = conn->otherPort( port );
-      if( sucessor ) {
-        max = qMax( calculatePriority( sucessor->graphicElement( ), beingvisited, priority ), max );
+void SimulationController::updateScene( const QRectF &rect ) {
+  if( canRun( ) ) {
+    const QList< QGraphicsItem* > &items = scene->items( rect );
+    for( QGraphicsItem *item: items ) {
+      QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
+      GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+      if( conn ) {
+        updateConnection( conn );
       }
-    }
-  }
-  int p = max + 1;
-  priority[ elm ] = p;
-  beingvisited[ elm ] = false;
-  return( p );
-}
-
-QVector< GraphicElement* > SimulationController::sortElements( QVector< GraphicElement* > elms ) {
-  QMap< GraphicElement*, bool > beingvisited;
-  QMap< GraphicElement*, int > priority;
-  for( GraphicElement *elm : elms ) {
-    calculatePriority( elm, beingvisited, priority );
-  }
-  std::sort( elms.begin( ), elms.end( ), [ priority ]( GraphicElement *e1, GraphicElement *e2 ) {
-    return( priority[ e2 ] < priority[ e1 ] );
-  } );
-
-  return( elms );
-}
-
-bool SimulationController::isRunning( ) {
-  return( this->timer.isActive( ) );
-}
-
-void SimulationController::update( ) {
-  QVector< GraphicElement* > elements = scene->getElements( );
-  if( Clock::reset ) {
-    for( GraphicElement *elm : elements ) {
-      if( elm->elementType( ) == ElementType::CLOCK ) {
-        Clock *clk = dynamic_cast< Clock* >( elm );
-        if( clk ) {
-          clk->resetClock( );
+      else if( elm && ( elm->elementGroup( ) == ElementGroup::OUTPUT ) ) {
+        for( QNEInputPort *in: elm->inputs( ) ) {
+          updatePort( in );
         }
       }
     }
-    Clock::reset = false;
   }
-  if( elements.isEmpty( ) ) {
-    return;
+}
+
+void SimulationController::updateView( ) {
+  updateScene( scene->views( ).first( )->sceneRect( ) );
+}
+
+void SimulationController::updateAll( ) {
+  updateScene( scene->itemsBoundingRect( ) );
+}
+
+bool SimulationController::canRun( ) {
+  if( !elMapping ) {
+    return( false );
   }
-  for( GraphicElement *elm : sortedElements ) {
-    elm->updateLogic( );
+  return( elMapping->canRun( ) );
+}
+
+bool SimulationController::isRunning( ) {
+  return( this->simulationTimer.isActive( ) );
+}
+
+void SimulationController::update( ) {
+  if( elMapping ) {
+    elMapping->update( );
   }
 }
 
 void SimulationController::stop( ) {
-  timer.stop( );
+  simulationTimer.stop( );
 }
 
 void SimulationController::start( ) {
-  timer.start( );
   Clock::reset = true;
   reSortElms( );
+  simulationTimer.start( );
 }
 
+
 void SimulationController::reSortElms( ) {
-  COMMENT( "Re-sorting elements", 3 );
+  COMMENT( "GENERATING SIMULATION LAYER", 1 );
   QVector< GraphicElement* > elements = scene->getElements( );
-  sortedElements = sortElements( elements );
+  if( elements.size( ) == 0 ) {
+    return;
+  }
+  if( elMapping ) {
+    delete elMapping;
+  }
+  elMapping = new ElementMapping( scene->getElements( ), GlobalProperties::currentFile );
+  if( elMapping->canInitialize( ) ) {
+    elMapping->initialize( );
+    elMapping->sort( );
+    update( );
+  }
+  else {
+    qDebug( ) << "Cannot initialize simulation!";
+  }
+}
+
+void SimulationController::clear( ) {
+  if( elMapping ) {
+    delete elMapping;
+  }
+  elMapping = nullptr;
+}
+
+void SimulationController::updatePort( QNEOutputPort *port ) {
+  Q_ASSERT( port );
+  GraphicElement *elm = port->graphicElement( );
+  Q_ASSERT( elm );
+  LogicElement *logElm = nullptr;
+  int portIndex = 0;
+  if( elm->elementType( ) == ElementType::BOX ) {
+    Box *box = dynamic_cast< Box* >( elm );
+    logElm = elMapping->getBoxMapping( box )->getOutput( port->index( ) );
+  }
+  else {
+    logElm = elMapping->getLogicElement( elm );
+    portIndex = port->index( );
+  }
+  Q_ASSERT( logElm );
+  if( logElm->isValid( ) ) {
+    port->setValue( logElm->getOutputValue( portIndex ) );
+  }
+  else {
+    port->setValue( -1 );
+  }
+}
+
+void SimulationController::updatePort( QNEInputPort *port ) {
+  Q_ASSERT( port );
+  GraphicElement *elm = port->graphicElement( );
+  Q_ASSERT( elm );
+  LogicElement *logElm = elMapping->getLogicElement( elm );
+  Q_ASSERT( logElm );
+  int portIndex = port->index( );
+  if( logElm->isValid( ) ) {
+    port->setValue( logElm->getInputValue( portIndex ) );
+  }
+  else {
+    port->setValue( -1 );
+  }
+  if( elm->elementGroup( ) == ElementGroup::OUTPUT ) {
+    elm->refresh( );
+  }
+}
+
+void SimulationController::updateConnection( QNEConnection *conn ) {
+  Q_ASSERT( conn );
+  updatePort( conn->start( ) );
 }

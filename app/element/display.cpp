@@ -33,7 +33,7 @@ Display::~Display( ) {
 
 }
 
-void Display::updateLogic( ) {
+void Display::refresh( ) {
   update( );
 }
 

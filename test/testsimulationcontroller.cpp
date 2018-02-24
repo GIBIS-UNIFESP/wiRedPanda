@@ -33,7 +33,7 @@ void TestSimulationController::testCase1( ) {
   conn2->setEnd( andItem->input( 1 ) );
   conn3->setStart( andItem->output( ) );
   conn3->setEnd( led->input( ) );
-  QVector< GraphicElement* > elms( SimulationController::sortElements( editor->getScene( )->getElements( ) ) );
+  QVector< GraphicElement* > elms( ElementMapping::sortGraphicElements( editor->getScene( )->getElements( ) ) );
   QVERIFY( elms.at( 0 ) == btn1 || elms.at( 1 ) == btn1 );
   QVERIFY( elms.at( 0 ) == btn2 || elms.at( 1 ) == btn2 );
   QVERIFY( elms.at( 2 ) == andItem );

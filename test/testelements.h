@@ -6,10 +6,15 @@
 #include <inputswitch.h>
 #include <qneconnection.h>
 
+
+class Box;
+
 class TestElements : public QObject {
   Q_OBJECT
   std::array< QNEConnection*, 5 > conn;
   std::array< InputSwitch*, 5 > sw;
+  void testBoxData( Box *box );
+
 public:
   explicit TestElements( QObject *parent = 0 );
 
@@ -31,13 +36,11 @@ private slots:
   void testDFlipFlop( );
   void testDLatch( );
   void testJKFlipFlop( );
-  void testJKLatch( );
   void testSRFlipFlop( );
   void testTFlipFlop( );
-  void testTLatch( );
 
-  void testBox();
-  void testBoxes();
+  void testBox( );
+  void testBoxes( );
 };
 
 #endif /* TESTELEMENTS_H */

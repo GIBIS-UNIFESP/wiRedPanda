@@ -2,6 +2,7 @@
 #define EDITOR_H
 
 
+#include "boxmanager.h"
 #include "simulationcontroller.h"
 #include <QObject>
 #include <QTime>
@@ -54,6 +55,7 @@ private:
   int _hoverPortElm_id;
   int _hoverPort_nbr;
   ElementEditor *_elementEditor;
+  BoxManager *boxManager;
 
   bool markingSelectionBox;
   QGraphicsRectItem *selectionRect;
@@ -96,8 +98,6 @@ public:
   QUndoStack* getUndoStack( ) const;
   Scene* getScene( ) const;
   void buildSelectionRect( );
-  bool loadBox( Box *box, QString fname );
-
   void handleHoverPort( );
   void releaseHoverPort( );
 
@@ -112,6 +112,8 @@ public:
 
 
   ElementEditor* getElementEditor( ) const;
+
+  static Editor *globalEditor;
 
   void deleteEditedConn( );
   void flipH( );

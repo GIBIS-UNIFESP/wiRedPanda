@@ -17,7 +17,7 @@ public:
   virtual ElementGroup elementGroup( ) {
     return( ElementGroup::OUTPUT );
   }
-  virtual void updateLogic( );
+  virtual void refresh( );
   void updatePorts( );
   QPixmap bkg, a, b, c, d, e, f, g, h;
 
