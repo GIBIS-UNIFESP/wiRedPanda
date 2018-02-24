@@ -1,3 +1,4 @@
+#include "elementmapping.h"
 #include "globalproperties.h"
 #include "graphicsviewzoom.h"
 #include "listitemwidget.h"
@@ -102,7 +103,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   rboxController = new RecentFilesController( "recentBoxes", this );
 
   QShortcut *shortcut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
-  connect( shortcut, SIGNAL( activated( ) ), ui->lineEdit, SLOT( setFocus( ) ) );
+  connect( shortcut, SIGNAL(activated()), ui->lineEdit, SLOT(setFocus()) );
   ui->graphicsView->setCacheMode( QGraphicsView::CacheBackground );
   firstResult = nullptr;
   updateRecentBoxes( );
@@ -256,7 +257,7 @@ bool MainWindow::open( const QString &fname ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-    std::endl;
+      std::endl;
     return( false );
   }
   fl.close( );
@@ -436,7 +437,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-    std::endl;
+      std::endl;
     return;
   }
   fl.close( );
@@ -536,7 +537,7 @@ bool MainWindow::ExportToArduino( QString fname ) {
     if( !fname.endsWith( ".ino" ) ) {
       fname.append( ".ino" );
     }
-    elements = SimulationController::sortElements( elements );
+    elements = ElementMapping::sortGraphicElements( elements );
 
 
     CodeGenerator arduino( QDir::home( ).absoluteFilePath( fname ), elements );
@@ -756,6 +757,7 @@ void MainWindow::on_actionPlay_triggered( bool checked ) {
   else {
     editor->getSimulationController( )->stop( );
   }
+  editor->getSimulationController( )->updateAll( );
 }
 
 void MainWindow::on_actionRename_triggered( ) {

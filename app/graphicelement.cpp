@@ -156,27 +156,53 @@ void GraphicElement::save( QDataStream &ds ) {
 
 void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) {
   COMMENT( "Loading element. Type: " << objectName( ).toStdString( ), 4 );
+  loadPos( ds );
+  loadAngle( ds );
+  /* <Version1.2> */
+  loadLabel( ds, version );
+  /* <\Version1.2> */
+  /* <Version1.3> */
+  loadMinMax( ds, version );
+  /* <\Version1.3> */
+  /* <Version1.9> */
+  loadTrigger( ds, version );
+  /* <\Version1.9> */
+  loadInputPorts( ds, portMap );
+  loadOutputPorts( ds, portMap );
+  COMMENT( "Updating port positions.", 4 );
+  updatePorts( );
+  COMMENT( "Finished loading element.", 4 );
+}
+
+
+void GraphicElement::loadPos( QDataStream &ds ) {
   QPointF p;
-  QString label_text;
   ds >> p;
+  setPos( p );
+}
+
+void GraphicElement::loadAngle( QDataStream &ds ) {
   qreal angle;
   ds >> angle;
-  setPos( p );
   setRotation( angle );
-  /* <Version1.2> */
+}
+
+void GraphicElement::loadLabel( QDataStream &ds, double version ) {
   if( version >= 1.2 ) {
+    QString label_text;
     ds >> label_text;
     setLabel( label_text );
   }
-  /* <\Version1.2> */
-  /* <Version1.3> */
+}
+
+void GraphicElement::loadMinMax( QDataStream &ds, double version ) {
   if( version >= 1.3 ) {
     quint64 min_isz, max_isz, min_osz, max_osz;
     ds >> min_isz;
     ds >> max_isz;
     ds >> min_osz;
     ds >> max_osz;
-    /* FIXME: Was it a bad decision to store Min and Max input/ouput sizes? */
+//     FIXME: Was it a bad decision to store Min and Max input/ouput sizes?
     /* Version 2.2 ?? fix ?? */
     if( !( ( m_minInputSz == m_maxInputSz ) && ( m_minInputSz > max_isz ) ) ) {
       m_minInputSz = min_isz;
@@ -187,77 +213,104 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
       m_maxOutputSz = max_osz;
     }
   }
-  /* <\Version1.3> */
-  /* <Version1.9> */
+}
+
+void GraphicElement::loadTrigger( QDataStream &ds, double version ) {
   if( version >= 1.9 ) {
-    ds >> m_trigger;
-    setLabel( label_text );
+    QKeySequence trigger;
+    ds >> trigger;
+    setTrigger( trigger );
   }
-  /* <\Version1.9> */
+}
 
-  quint64 inputSz, outputSz;
 
-  COMMENT( "Setting input ports.", 4 );
+void GraphicElement::loadInputPorts( QDataStream &ds, QMap< quint64, QNEPort* > &portMap ) {
+  COMMENT( "Loading input ports.", 4 );
+  quint64 inputSz;
   ds >> inputSz;
   if( inputSz > MAXIMUMVALIDINPUTSIZE ) {
     throw std::runtime_error( ERRORMSG( "Corrupted DataStream!" ) );
   }
   for( size_t port = 0; port < inputSz; ++port ) {
-    QString name;
-    int flags;
-    quint64 ptr;
-    ds >> ptr;
-    ds >> name;
-    ds >> flags;
-    if( ( port < ( size_t ) m_inputs.size( ) ) ) {
-      if( elementType( ) == ElementType::BOX ) {
-        m_inputs[ port ]->setName( name );
-      }
-      m_inputs[ port ]->setPortFlags( flags );
-      m_inputs[ port ]->setPtr( ptr );
-    }
-    else {
-      addPort( name, false, flags, ptr );
-    }
-    if( port < inputSz ) {
-      portMap[ ptr ] = m_inputs[ port ];
-    }
+    loadInputPort( ds, portMap, port );
   }
+  removeSurplusInputs( inputSz, portMap );
+}
+
+
+void GraphicElement::loadInputPort( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, size_t port ) {
+  QString name;
+  int flags;
+  quint64 ptr;
+  ds >> ptr;
+  ds >> name;
+  ds >> flags;
+  if( ( port < ( size_t ) m_inputs.size( ) ) ) {
+    if( elementType( ) == ElementType::BOX ) {
+      m_inputs[ port ]->setName( name );
+    }
+    m_inputs[ port ]->setPortFlags( flags );
+    m_inputs[ port ]->setPtr( ptr );
+  }
+  else {
+    addPort( name, false, flags, ptr );
+  }
+  portMap[ ptr ] = m_inputs[ port ];
+}
+
+
+void GraphicElement::removeSurplusInputs( quint64 inputSz, QMap< quint64, QNEPort* > &portMap ) {
   while( inputSize( ) > ( int ) inputSz && inputSz >= m_minInputSz ) {
-    delete m_inputs.back( );
+    QNEPort *deletedPort = m_inputs.back( );
+    removePortFromMap( deletedPort, portMap );
+    delete deletedPort;
     m_inputs.pop_back( );
   }
-  COMMENT( "Setting output ports.", 4 );
+}
+
+void GraphicElement::removePortFromMap( QNEPort *deletedPort, QMap< quint64, QNEPort* > &portMap ) {
+  for( auto it = portMap.begin( ); it != portMap.end( ); ) {
+    if( it.value( ) == deletedPort ) {
+      it = portMap.erase( it );
+    }
+    else {
+      ++it;
+    }
+  }
+}
+
+void GraphicElement::loadOutputPorts( QDataStream &ds, QMap< quint64, QNEPort* > &portMap ) {
+  COMMENT( "Loading output ports.", 4 );
+  quint64 outputSz;
   ds >> outputSz;
   if( outputSz > MAXIMUMVALIDINPUTSIZE ) {
     throw std::runtime_error( ERRORMSG( "Corrupted DataStream!" ) );
   }
   for( size_t port = 0; port < outputSz; ++port ) {
-    QString name;
-    int flags;
-    quint64 ptr;
-    ds >> ptr;
-    ds >> name;
-    ds >> flags;
-    if( ( port < ( size_t ) m_outputs.size( ) ) && ( port < outputSz ) ) {
-      if( elementType( ) == ElementType::BOX ) {
-        m_outputs[ port ]->setName( name );
-      }
-      m_outputs[ port ]->setPortFlags( flags );
-      m_outputs[ port ]->setPtr( ptr );
-    }
-    else {
-      addPort( name, true, flags, ptr );
-    }
-    if( port < outputSz ) {
-      portMap[ ptr ] = m_outputs[ port ];
-    }
+    loadOutputPort( ds, portMap, port );
   }
-  COMMENT( "Updating port positions.", 4 );
-  updatePorts( );
-
-  COMMENT( "Finished loading element.", 4 );
 }
+
+void GraphicElement::loadOutputPort( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, size_t port ) {
+  QString name;
+  int flags;
+  quint64 ptr;
+  ds >> ptr;
+  ds >> name;
+  ds >> flags;
+  if( ( port < ( size_t ) m_outputs.size( ) ) ) {
+    if( elementType( ) == ElementType::BOX ) {
+      m_outputs[ port ]->setName( name );
+    }
+    m_outputs[ port ]->setPortFlags( flags );
+    m_outputs[ port ]->setPtr( ptr );
+  }
+  else {
+    addPort( name, true, flags, ptr );
+  }
+  portMap[ ptr ] = m_outputs[ port ];
+}
+
 
 QVector< QNEInputPort* > GraphicElement::inputs( ) const {
   return( m_inputs );
@@ -295,10 +348,12 @@ QNEPort* GraphicElement::addPort( const QString &name, bool isOutput, int flags,
   if( isOutput ) {
     m_outputs.push_back( new QNEOutputPort( this ) );
     port = dynamic_cast< QNEPort* >( m_outputs.last( ) );
+    port->setIndex( outputSize( ) - 1 );
   }
   else {
     m_inputs.push_back( new QNEInputPort( this ) );
     port = dynamic_cast< QNEPort* >( m_inputs.last( ) );
+    port->setIndex( inputSize( ) - 1 );
   }
   port->setName( name );
   port->setGraphicElement( this );
@@ -350,6 +405,10 @@ void GraphicElement::updatePorts( ) {
       x += step * 2;
     }
   }
+}
+
+void GraphicElement::refresh( ) {
+
 }
 
 /*

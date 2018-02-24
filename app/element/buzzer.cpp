@@ -18,7 +18,7 @@ Buzzer::~Buzzer( ) {
 
 }
 
-void Buzzer::updateLogic( ) {
+void Buzzer::refresh( ) {
   if( isValid( ) ) {
     bool value = inputs( ).first( )->value( );
     if( value == 1 ) {
@@ -39,7 +39,7 @@ void Buzzer::updateLogic( ) {
 void Buzzer::setAudio( QString note ) {
   m_audio.setSource( QUrl::fromLocalFile( QString( ":output/audio/%1.wav" ).arg( note ) ) );
   m_audio.setVolume( 0.35 );
-  m_audio.setLoopCount(QSoundEffect::Infinite);
+  m_audio.setLoopCount( QSoundEffect::Infinite );
   m_note = note;
 }
 
@@ -56,8 +56,6 @@ void Buzzer::playbuzzer( ) {
     setPixmap( ":/output/BuzzerOn.png" );
     m_audio.play( );
   }
-  qDebug( ) << m_audio.status( );
-  qDebug( ) << m_audio.source( );
   play = 1;
 }
 

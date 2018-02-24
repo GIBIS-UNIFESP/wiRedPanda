@@ -56,7 +56,7 @@ QVector< QString > led_4bits = {
   ":/output/16colors/LightGrayLedOn.png",
 };
 
-void Led::updateLogic( ) {
+void Led::refresh( ) {
   std::bitset< 4 > index;
   for( int i = 0; i < inputSize( ); ++i ) {
     index[ i ] = input( inputSize( ) - i - 1 )->value( );
@@ -93,9 +93,10 @@ void Led::updateLogic( ) {
     setPixmap( ":/output/WhiteLedOff.png" );
   }
 }
+
 void Led::setColor( QString color ) {
   m_color = color;
-  updateLogic( );
+  refresh( );
 }
 
 QString Led::getColor( ) {

@@ -30,13 +30,19 @@
 #include <buzzer.h>
 #include <iostream>
 
+Editor*Editor::globalEditor = nullptr;
+
 Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ) {
+  if( !globalEditor ) {
+    globalEditor = this;
+  }
   mainWindow = qobject_cast< MainWindow* >( parent );
   markingSelectionBox = false;
   _editedConn_id = 0;
   undoStack = new QUndoStack( this );
   scene = new Scene( this );
 
+  boxManager = new BoxManager( mainWindow, this );
 
   install( scene );
   draggingElement = false;
@@ -106,6 +112,9 @@ void Editor::buildSelectionRect( ) {
 }
 
 void Editor::clear( ) {
+  simulationController->stop( );
+  simulationController->clear( );
+  boxManager->clear( );
   ElementFactory::instance->clear( );
   undoStack->clear( );
   if( scene ) {
@@ -116,6 +125,7 @@ void Editor::clear( ) {
     scene->setSceneRect( scene->views( ).front( )->rect( ) );
   }
   updateTheme( );
+  simulationController->start( );
   emit circuitHasChanged( );
 }
 
@@ -442,46 +452,6 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
   return( false );
 }
 
-bool Editor::loadBox( Box *box, QString fname ) {
-  try {
-    if( box->getParentFile( ).isEmpty( ) ) {
-      box->setParentFile( GlobalProperties::currentFile );
-    }
-    box->loadFile( fname );
-  }
-  catch( BoxNotFoundException &err ) {
-    qDebug( ) << "BoxNotFoundException thrown: " << err.what( );
-    int ret = QMessageBox::warning( mainWindow, tr( "Error" ), QString::fromStdString(
-                                      err.what( ) ), QMessageBox::Ok, QMessageBox::Cancel );
-    if( ret == QMessageBox::Cancel ) {
-      return( false );
-    }
-    else {
-      fname = mainWindow->getOpenBoxFile( );
-      if( fname.isEmpty( ) ) {
-        return( false );
-      }
-      else {
-        return( loadBox( err.getBox( ), fname ) );
-      }
-    }
-  }
-
-  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
-                      QApplication::organizationName( ), QApplication::applicationName( ) );
-  QStringList files;
-  if( settings.contains( "recentBoxes" ) ) {
-    files = settings.value( "recentBoxes" ).toStringList( );
-    files.removeAll( fname );
-  }
-  files.prepend( fname );
-  settings.setValue( "recentBoxes", files );
-  if( mainWindow ) {
-    mainWindow->updateRecentBoxes( );
-  }
-  return( true );
-}
-
 void Editor::handleHoverPort( ) {
   QNEPort *port = dynamic_cast< QNEPort* >( itemAt( mousePos ) );
   QNEPort *hoverPort = getHoverPort( );
@@ -532,7 +502,6 @@ void Editor::setHoverPort( QNEPort *port ) {
 }
 
 QNEPort* Editor::getHoverPort( ) {
-  /* TODO remove loop on new version */
   GraphicElement *hoverElm = dynamic_cast< GraphicElement* >( ElementFactory::getItemById( _hoverPortElm_id ) );
   QNEPort *hoverPort = nullptr;
   if( hoverElm ) {
@@ -562,7 +531,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
     QPointF pos = dde->scenePos( ) - offset;
     dde->accept( );
 
-    GraphicElement *elm = ElementFactory::buildElement( ( ElementType ) type, this );
+    GraphicElement *elm = ElementFactory::buildElement( ( ElementType ) type );
     /* If element type is unknown, a default element is created with the pixmap received from mimedata */
     if( !elm ) {
       return( false );
@@ -572,7 +541,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
         Box *box = dynamic_cast< Box* >( elm );
         if( box ) {
           QString fname = label_auxData;
-          if( !loadBox( box, fname ) ) {
+          if( !boxManager->loadBox( box, fname, GlobalProperties::currentFile ) ) {
             return( false );
           }
         }
@@ -618,8 +587,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
     QPointF ctr;
     ds >> ctr;
     double version = GlobalProperties::version;
-    QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( this,
-                                                                            ds,
+    QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( ds,
                                                                             version,
                                                                             GlobalProperties::currentFile );
     receiveCommand( new AddItemsCommand( itemList, this ) );
@@ -732,8 +700,7 @@ void Editor::paste( QDataStream &ds ) {
   ds >> ctr;
   QPointF offset = mousePos - ctr - QPointF( 32.0f, 32.0f );
   double version = GlobalProperties::version;
-  QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( this,
-                                                                          ds,
+  QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( ds,
                                                                           version,
                                                                           GlobalProperties::currentFile );
   receiveCommand( new AddItemsCommand( itemList, this ) );
@@ -761,7 +728,9 @@ void Editor::save( QDataStream &ds ) {
 
 void Editor::load( QDataStream &ds ) {
   clear( );
-  SerializationFunctions::load( this, ds, GlobalProperties::currentFile, scene );
+  simulationController->stop( );
+  SerializationFunctions::load( ds, GlobalProperties::currentFile, scene );
+  simulationController->start( );
   scene->clearSelection( );
   emit circuitHasChanged( );
 }

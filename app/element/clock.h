@@ -31,17 +31,13 @@ public:
   void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
   float getFrequency( );
   void setFrequency( float freq );
-  void updateLogic( );
+  void updateClock( );
   void resetClock( );
   QString genericProperties( );
-private:
-  void updateClock( );
-
-
-  // Input interface
 public:
   bool getOn( ) const;
   void setOn( bool value );
 };
+
 
 #endif // CLOCK_H

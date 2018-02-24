@@ -42,7 +42,6 @@ void SRFlipFlop::updatePorts( ) {
 }
 
 void SRFlipFlop::updateLogic( ) {
-  /* TODO: Add set and preset options. */
   char q1 = output( 0 )->value( ); /* Q */
   char q2 = output( 1 )->value( ); /* ~Q */
   if( !isValid( ) ) {

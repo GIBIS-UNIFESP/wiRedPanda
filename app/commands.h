@@ -118,12 +118,13 @@ class SplitCommand : public QUndoCommand {
 
 public:
 
-  explicit SplitCommand( QNEConnection *conn, QPointF point, Editor *aEditor, QUndoCommand *parent = 0 );
+  explicit SplitCommand( QNEConnection *conn, QPointF point, Editor *editor, QUndoCommand *parent = 0 );
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
 
 private:
   Editor *editor;
+  Scene *scene;
   QPointF nodePos;
   int nodeAngle;
   int elm1_id, elm2_id;
@@ -188,7 +189,7 @@ class FlipCommand : public QUndoCommand {
 
   enum { Id = 109 };
 public:
-  explicit FlipCommand(const QList< GraphicElement* > &aItems, int aAxis, QUndoCommand *parent = 0 );
+  explicit FlipCommand( const QList< GraphicElement* > &aItems, int aAxis, QUndoCommand *parent = 0 );
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
 

@@ -67,7 +67,7 @@ public:
   char value( ) const;
   virtual void setValue( char value ) = 0;
 
-  bool required( ) const;
+  bool isRequired( ) const;
   void setRequired( bool required );
 
   QBrush currentBrush( ) const;
@@ -83,9 +83,13 @@ public:
   void hoverLeave( );
   void hoverEnter( );
 
+  int index( ) const;
+  void setIndex( int index );
+
 protected:
   QVariant itemChange( GraphicsItemChange change, const QVariant &value );
   int m_defaultValue;
+  int m_index;
   QNEBlock *m_block;
   QString name;
   QGraphicsTextItem *label;
@@ -102,9 +106,10 @@ protected:
   QBrush _currentBrush;
 
   /* QGraphicsItem interface */
+protected:
   char m_value;
 
-  virtual void updateTheme() = 0;
+  virtual void updateTheme( ) = 0;
 };
 
 class QNEInputPort : public QNEPort {
@@ -116,7 +121,7 @@ public:
   void setValue( char value );
   bool isOutput( ) const;
   bool isValid( ) const;
-  void updateTheme();
+  void updateTheme( );
 };
 
 class QNEOutputPort : public QNEPort {
@@ -128,7 +133,7 @@ public:
   void setValue( char value );
   bool isOutput( ) const;
   bool isValid( ) const;
-  void updateTheme();
+  void updateTheme( );
 };
 
 
