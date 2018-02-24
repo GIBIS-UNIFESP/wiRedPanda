@@ -110,25 +110,26 @@ void SimulationController::clear( ) {
 }
 
 void SimulationController::updatePort( QNEOutputPort *port ) {
-  Q_ASSERT( port );
-  GraphicElement *elm = port->graphicElement( );
-  Q_ASSERT( elm );
-  LogicElement *logElm = nullptr;
-  int portIndex = 0;
-  if( elm->elementType( ) == ElementType::BOX ) {
-    Box *box = dynamic_cast< Box* >( elm );
-    logElm = elMapping->getBoxMapping( box )->getOutput( port->index( ) );
-  }
-  else {
-    logElm = elMapping->getLogicElement( elm );
-    portIndex = port->index( );
-  }
-  Q_ASSERT( logElm );
-  if( logElm->isValid( ) ) {
-    port->setValue( logElm->getOutputValue( portIndex ) );
-  }
-  else {
-    port->setValue( -1 );
+  if( port ) {
+    GraphicElement *elm = port->graphicElement( );
+    Q_ASSERT( elm );
+    LogicElement *logElm = nullptr;
+    int portIndex = 0;
+    if( elm->elementType( ) == ElementType::BOX ) {
+      Box *box = dynamic_cast< Box* >( elm );
+      logElm = elMapping->getBoxMapping( box )->getOutput( port->index( ) );
+    }
+    else {
+      logElm = elMapping->getLogicElement( elm );
+      portIndex = port->index( );
+    }
+    Q_ASSERT( logElm );
+    if( logElm->isValid( ) ) {
+      port->setValue( logElm->getOutputValue( portIndex ) );
+    }
+    else {
+      port->setValue( -1 );
+    }
   }
 }
 
