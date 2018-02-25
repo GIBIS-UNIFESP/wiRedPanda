@@ -236,14 +236,14 @@ void LogicJKFlipFlop::_updateLogic( const std::vector< bool > &inputs ) {
   bool prst = inputs[ 3 ];
   bool clr = inputs[ 4 ];
   if( clk && !lastClk ) {
-    if( j && k ) {
+    if( lastJ && lastK ) {
       std::swap( q0, q1 );
     }
-    else if( j ) {
+    else if( lastJ ) {
       q0 = true;
       q1 = false;
     }
-    else if( k ) {
+    else if( lastK ) {
       q0 = false;
       q1 = true;
     }
@@ -253,6 +253,8 @@ void LogicJKFlipFlop::_updateLogic( const std::vector< bool > &inputs ) {
     q1 = !clr;
   }
   lastClk = clk;
+  lastK = k;
+  lastJ = j;
 
   setOutputValue( 0, q0 );
   setOutputValue( 1, q1 );
@@ -309,7 +311,7 @@ void LogicTFlipFlop::_updateLogic( const std::vector< bool > &inputs ) {
   bool prst = inputs[ 2 ];
   bool clr = inputs[ 3 ];
   if( clk && !lastClk ) {
-    if( T ) {
+    if( lastValue ) {
       q0 = !q0;
       q1 = !q0;
     }
@@ -321,6 +323,7 @@ void LogicTFlipFlop::_updateLogic( const std::vector< bool > &inputs ) {
   setOutputValue( 0, q0 );
   setOutputValue( 1, q1 );
   lastClk = clk;
+  lastValue = T;
   /* Reference: https://en.wikipedia.org/wiki/Flip-flop_(electronics)#T_flip-flop */
 }
 
