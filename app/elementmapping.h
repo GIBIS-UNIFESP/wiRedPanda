@@ -10,6 +10,8 @@
 #include <QTimer>
 #include <input.h>
 
+#include <logicelement/logicinput.h>
+
 class Clock;
 class Box;
 

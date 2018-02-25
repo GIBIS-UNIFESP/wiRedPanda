@@ -3,8 +3,10 @@
 
 #include <QObject>
 #include <QTest>
-#include <logicelement.h>
 #include <array>
+#include <logicelement.h>
+
+#include <logicelement/logicinput.h>
 
 class TestLogicElements : public QObject {
   Q_OBJECT
