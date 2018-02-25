@@ -155,6 +155,8 @@ protected:
 
 private:
   bool lastClk;
+  bool lastJ;
+  bool lastK;
 };
 
 class LogicSRFlipFlop : public LogicElement {
@@ -179,6 +181,7 @@ protected:
 
 private:
   bool lastClk;
+  bool lastValue;
 };
 
 class LogicDFlipFlop : public LogicElement {
