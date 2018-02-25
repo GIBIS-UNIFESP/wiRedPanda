@@ -11,38 +11,17 @@ CONFIG(debug, debug|release) {
     CONFIG += console
 }
 
+include($$PWD/app/element/element.pri)
+include($$PWD/app/logicelement/logicelement.pri)
+
 SOURCES += \
     $$PWD/app/arduino/codegenerator.cpp \
+    $$PWD/app/elementeditor.cpp \
+    $$PWD/app/elementfactory.cpp \
     $$PWD/app/box.cpp \
     $$PWD/app/boxnotfoundexception.cpp \
     $$PWD/app/commands.cpp \
     $$PWD/app/editor.cpp \
-    $$PWD/app/element/and.cpp \
-    $$PWD/app/element/clock.cpp \
-    $$PWD/app/element/demux.cpp \
-    $$PWD/app/element/dflipflop.cpp \
-    $$PWD/app/element/display.cpp \
-    $$PWD/app/element/dlatch.cpp \
-    $$PWD/app/elementeditor.cpp \
-    $$PWD/app/elementfactory.cpp \
-    $$PWD/app/element/inputbutton.cpp \
-    $$PWD/app/element/inputgnd.cpp \
-    $$PWD/app/element/inputswitch.cpp \
-    $$PWD/app/element/inputvcc.cpp \
-    $$PWD/app/element/jkflipflop.cpp \
-    $$PWD/app/element/jklatch.cpp \
-    $$PWD/app/element/led.cpp \
-    $$PWD/app/element/mux.cpp \
-    $$PWD/app/element/nand.cpp \
-    $$PWD/app/element/node.cpp \
-    $$PWD/app/element/nor.cpp \
-    $$PWD/app/element/not.cpp \
-    $$PWD/app/element/or.cpp \
-    $$PWD/app/element/srflipflop.cpp \
-    $$PWD/app/element/tflipflop.cpp \
-    $$PWD/app/element/tlatch.cpp \
-    $$PWD/app/element/xnor.cpp \
-    $$PWD/app/element/xor.cpp \
     $$PWD/app/globalproperties.cpp \
     $$PWD/app/graphicelement.cpp \
     $$PWD/app/graphicsview.cpp \
@@ -66,7 +45,6 @@ SOURCES += \
     $$PWD/app/boxprototypeimpl.cpp \
     $$PWD/app/elementmapping.cpp \
     $$PWD/app/boxmapping.cpp \
-    $$PWD/app/element/buzzer.cpp \
     $$PWD/app/common.cpp
 
 HEADERS  +=  \
@@ -77,33 +55,8 @@ HEADERS  +=  \
     $$PWD/app/boxnotfoundexception.h \
     $$PWD/app/commands.h \
     $$PWD/app/editor.h \
-    $$PWD/app/element/and.h \
-    $$PWD/app/element/clock.h \
-    $$PWD/app/element/demux.h \
-    $$PWD/app/element/dflipflop.h \
-    $$PWD/app/element/display.h \
-    $$PWD/app/element/dlatch.h \
     $$PWD/app/elementeditor.h \
     $$PWD/app/elementfactory.h \
-    $$PWD/app/element/inputbutton.h \
-    $$PWD/app/element/inputgnd.h \
-    $$PWD/app/element/input.h \
-    $$PWD/app/element/inputswitch.h \
-    $$PWD/app/element/inputvcc.h \
-    $$PWD/app/element/jkflipflop.h \
-    $$PWD/app/element/jklatch.h \
-    $$PWD/app/element/led.h \
-    $$PWD/app/element/mux.h \
-    $$PWD/app/element/nand.h \
-    $$PWD/app/element/node.h \
-    $$PWD/app/element/nor.h \
-    $$PWD/app/element/not.h \
-    $$PWD/app/element/or.h \
-    $$PWD/app/element/srflipflop.h \
-    $$PWD/app/element/tflipflop.h \
-    $$PWD/app/element/tlatch.h \
-    $$PWD/app/element/xnor.h \
-    $$PWD/app/element/xor.h \
     $$PWD/app/globalproperties.h \
     $$PWD/app/graphicelement.h \
     $$PWD/app/graphicsview.h \
@@ -126,7 +79,6 @@ HEADERS  +=  \
     $$PWD/app/boxprototypeimpl.h \
     $$PWD/app/elementmapping.h \
     $$PWD/app/boxmapping.h \
-    $$PWD/app/element/buzzer.h
 
 INCLUDEPATH += \
     $$PWD/app \

@@ -1,5 +1,22 @@
 #include "testlogicelements.h"
 
+#include <logicelement/logicand.h>
+#include <logicelement/logicdemux.h>
+#include <logicelement/logicdflipflop.h>
+#include <logicelement/logicdlatch.h>
+#include <logicelement/logicjkflipflop.h>
+#include <logicelement/logicmux.h>
+#include <logicelement/logicnand.h>
+#include <logicelement/logicnode.h>
+#include <logicelement/logicnor.h>
+#include <logicelement/logicnot.h>
+#include <logicelement/logicor.h>
+#include <logicelement/logicoutput.h>
+#include <logicelement/logicsrflipflop.h>
+#include <logicelement/logictflipflop.h>
+#include <logicelement/logicxnor.h>
+#include <logicelement/logicxor.h>
+
 TestLogicElements::TestLogicElements( QObject *parent ) : QObject( parent ) {
 }
 
