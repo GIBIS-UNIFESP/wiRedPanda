@@ -465,14 +465,15 @@ QKeySequence GraphicElement::getTrigger( ) const {
 
 void GraphicElement::setTrigger( const QKeySequence &trigger ) {
   m_trigger = trigger;
+  updateLabel( );
 }
 
 QString GraphicElement::genericProperties( ) {
   return( QString( ) );
 }
 
-void GraphicElement::setLabel( QString label ) {
-  m_labelText = label;
+void GraphicElement::updateLabel( ) {
+  QString label = m_labelText;
   if( !hasTrigger( ) || getTrigger( ).toString( ).isEmpty( ) ) {
     this->label->setPlainText( label );
   }
@@ -482,6 +483,11 @@ void GraphicElement::setLabel( QString label ) {
     }
     this->label->setPlainText( label + QString( "(%1)" ).arg( getTrigger( ).toString( ) ) );
   }
+}
+
+void GraphicElement::setLabel( QString label ) {
+  m_labelText = label;
+  updateLabel( );
 }
 
 QString GraphicElement::getLabel( ) {

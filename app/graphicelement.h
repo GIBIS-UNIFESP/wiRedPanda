@@ -157,6 +157,8 @@ public:
   virtual QString genericProperties( );
 
 
+  void updateLabel();
+  
 protected:
   void setRotatable( bool rotatable );
   void setHasLabel( bool hasLabel );
