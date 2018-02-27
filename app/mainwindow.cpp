@@ -45,6 +45,9 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   settings.beginGroup( "splitter" );
   ui->splitter->restoreGeometry( settings.value( "geometry" ).toByteArray( ) );
   ui->splitter->restoreState( settings.value( "state" ).toByteArray( ) );
+
+  ui->actionExport_to_Arduino->setEnabled( false );
+
   settings.endGroup( );
   settings.endGroup( );
   QList< QKeySequence > zoom_in_shortcuts;
