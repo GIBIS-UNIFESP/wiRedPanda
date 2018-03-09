@@ -18,7 +18,7 @@
   !define MUI_FILE "wpanda"
   # These three must be integers
   !define VERSIONMAJOR 2
-  !define VERSIONMINOR 2
+  !define VERSIONMINOR 5
   !define VERSIONBUILD 0001
   !define MUI_VERSION "${VERSIONMAJOR}.{VERSIONMINOR}"
   !define MUI_BRANDINGTEXT "${MUI_PRODUCT} ${MUI_VERSION}"
