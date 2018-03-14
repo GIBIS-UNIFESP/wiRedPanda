@@ -1,7 +1,7 @@
 links:
-  - { url: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v2.5.1/WiredPanda_2_5_1_Windows_Installer_x86_64.exe', text: 'Windows x86_64 Installyer', logo: 'windows' }
+  - { url: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v2.5.1/WiredPanda_2_5_1_Windows_Installer_x86_64.exe', text: 'Windows x86_64 Installer', logo: 'windows' }
   - { url: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v2.5.1/WiredPanda_2_5_1_Windows_Portable_x86_64.zip', text: 'Windows x86_64 Portable', logo: 'windows' }
-  - { url: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v2.5.1/WiredPanda_2_5_1_Linux_Portable_x64.tar.xz', text: 'Linux Portable', logo: 'linux' }
+  - { url: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v2.5.1/WiredPanda_2_5_1_Linux_x86_64.AppImage', text: 'Linux Portable', logo: 'linux' }
 
 release: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/tag/v2.5.1'
 source: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/archive/v2.5.1.tar.gz'
