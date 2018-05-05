@@ -5,7 +5,7 @@
 
 class LogicAnd : public LogicElement {
 public:
-  explicit LogicAnd( int inputSize );
+  explicit LogicAnd( size_t inputSize );
 
   /* LogicElement interface */
 protected:

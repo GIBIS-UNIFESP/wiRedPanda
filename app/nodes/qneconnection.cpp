@@ -39,7 +39,7 @@
 QNEConnection::QNEConnection( QGraphicsItem *parent ) : QGraphicsPathItem( parent ) {
   setFlag( QGraphicsItem::ItemIsSelectable );
   setBrush( Qt::NoBrush );
-  setStatus( Status::Inactive );
+  setStatus( Inactive );
   setZValue( -1 );
   m_start = nullptr;
   m_end = nullptr;
@@ -136,8 +136,8 @@ double QNEConnection::angle( ) {
 }
 
 void QNEConnection::save( QDataStream &ds ) const {
-  ds << reinterpret_cast<quint64>(m_start);
-  ds << reinterpret_cast<quint64>(m_end);
+  ds << ( quint64 ) m_start;
+  ds << ( quint64 ) m_end;
 }
 
 bool QNEConnection::load( QDataStream &ds, const QMap< quint64, QNEPort* > &portMap ) {
@@ -208,15 +208,15 @@ QNEConnection::Status QNEConnection::status( ) const {
 void QNEConnection::setStatus( const Status &status ) {
   m_status = status;
   switch( status ) {
-      case Status::Inactive: {
+      case Inactive: {
       setPen( QPen( m_inactiveClr, 3 ) );
       break;
     }
-      case Status::Active: {
+      case Active: {
       setPen( QPen( m_activeClr, 3 ) );
       break;
     }
-      case Status::Invalid: {
+      case Invalid: {
       setPen( QPen( m_invalidClr, 5 ) );
       break;
     }
@@ -235,6 +235,11 @@ void QNEConnection::updateTheme( ) {
 
 void QNEConnection::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* ) {
   painter->setClipRect( option->exposedRect );
-  painter->setPen( isSelected() ? QPen( m_selectedClr, 5 ) : pen( ) );
+  if( isSelected( ) ) {
+    painter->setPen( QPen( m_selectedClr, 5 ) );
+  }
+  else {
+    painter->setPen( pen( ) );
+  }
   painter->drawPath( path( ) );
 }

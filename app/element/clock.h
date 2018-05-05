@@ -15,29 +15,29 @@ class Clock : public GraphicElement, public Input {
 
 public:
   explicit Clock( QGraphicsItem *parent );
-  virtual ~Clock( ) override;
+  virtual ~Clock( );
   static bool reset;
 public slots:
-  virtual ElementType elementType( ) const override {
+  virtual ElementType elementType( ) {
     return( ElementType::CLOCK );
   }
-  virtual ElementGroup elementGroup( ) const override {
+  virtual ElementGroup elementGroup( ) {
     return( ElementGroup::INPUT );
   }
 //  void updateClock();
 
   // GraphicElement interface
 public:
-  void save( QDataStream &ds ) const override;
-  void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) override;
-  double getFrequency( ) const override;
-  void setFrequency(double freq ) override;
+  void save( QDataStream &ds );
+  void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
+  float getFrequency( );
+  void setFrequency( float freq );
   void updateClock( );
   void resetClock( );
-  QString genericProperties( ) override;
+  QString genericProperties( );
 public:
-  bool getOn( ) const override;
-  void setOn( bool value ) override;
+  bool getOn( ) const;
+  void setOn( bool value );
 };
 
 

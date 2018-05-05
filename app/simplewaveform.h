@@ -17,7 +17,7 @@ class SimpleWaveform : public QDialog {
   enum class SortingKind { INCREASING, DECREASING, POSITION };
 
 public:
-  explicit SimpleWaveform( Editor *editor, QWidget *parent = nullptr );
+  explicit SimpleWaveform( Editor *editor, QWidget *parent = 0 );
   ~SimpleWaveform( );
 
   void showWaveform( );

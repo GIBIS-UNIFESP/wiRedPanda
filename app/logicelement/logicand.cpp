@@ -1,6 +1,6 @@
 #include "logicand.h"
 
-LogicAnd::LogicAnd(int inputSize )  : LogicElement( inputSize, 1 ) {
+LogicAnd::LogicAnd( size_t inputSize )  : LogicElement( inputSize, 1 ) {
 
 }
 

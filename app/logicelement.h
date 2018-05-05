@@ -25,16 +25,16 @@ class LogicElement {
 protected:
   virtual void _updateLogic( const std::vector< bool > &inputs ) = 0;
 public:
-  explicit LogicElement( int inputSize, int outputSize );
+  explicit LogicElement( size_t inputSize, size_t outputSize );
 
   virtual ~LogicElement( );
 
   void connectPredecessor( int index, LogicElement *elm, int port );
 
-  void setOutputValue( int index, bool value );
+  void setOutputValue( size_t index, bool value );
   void setOutputValue( bool value );
-  bool getOutputValue( int index = 0 ) const;
-  bool getInputValue( int index = 0 ) const;
+  bool getOutputValue( size_t index = 0 ) const;
+  bool getInputValue( size_t index = 0 ) const;
 
   void validate( );
 

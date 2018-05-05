@@ -5,7 +5,7 @@
 
 class LogicOutput : public LogicElement {
 public:
-  explicit LogicOutput(int inputSz );
+  explicit LogicOutput( size_t inputSz );
 
   /* LogicElement interface */
 protected:

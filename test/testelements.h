@@ -5,18 +5,18 @@
 #include "qneconnection.h"
 
 #include <QTest>
+#include <array>
 
 class Box;
 
 class TestElements : public QObject {
   Q_OBJECT
-
-  QVector<QNEConnection*> conn{5};
-  QVector<InputSwitch*> sw{5};
+  std::array< QNEConnection*, 5 > conn;
+  std::array< InputSwitch*, 5 > sw;
   void testBoxData( Box *box );
 
 public:
-  explicit TestElements( QObject *parent = nullptr );
+  explicit TestElements( QObject *parent = 0 );
 
 signals:
 

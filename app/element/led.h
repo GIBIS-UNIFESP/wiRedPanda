@@ -5,19 +5,19 @@
 
 class Led : public GraphicElement {
 public:
-  explicit Led( QGraphicsItem *parent = nullptr );
-  virtual ~Led( )override;
+  explicit Led( QGraphicsItem *parent = 0 );
+  virtual ~Led( );
 
   /* GraphicElement interface */
-  virtual ElementType elementType( )const override {
+  virtual ElementType elementType( ) {
     return( ElementType::LED );
   }
-  virtual ElementGroup elementGroup( )const override{
+  virtual ElementGroup elementGroup( ) {
     return( ElementGroup::OUTPUT );
   }
-  void refresh( )override;
-  void setColor( QString getColor )override;
-  QString getColor( ) const override;
+  void refresh( );
+  void setColor( QString getColor );
+  QString getColor( );
 
 private:
   QString m_color;
@@ -25,13 +25,13 @@ private:
 
   /* GraphicElement interface */
 public:
-  void save( QDataStream &ds ) const override;
-  void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version )override;
-  QString genericProperties( )override;
+  void save( QDataStream &ds );
+  void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
+  QString genericProperties( );
 
   // GraphicElement interface
   public:
-  void updatePorts()override;
+  void updatePorts();
 };
 
 #endif /* LED_H */

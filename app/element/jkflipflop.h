@@ -8,17 +8,17 @@ class JKFlipFlop : public GraphicElement {
   char lastJ;
   char lastK;
 public:
-  explicit JKFlipFlop( QGraphicsItem *parent = nullptr );
+  explicit JKFlipFlop( QGraphicsItem *parent = 0 );
 
   /* GraphicElement interface */
 public:
-  virtual ElementType elementType( ) const override {
+  virtual ElementType elementType( ) {
     return( ElementType::JKFLIPFLOP );
   }
-  virtual ElementGroup elementGroup( ) const override {
+  virtual ElementGroup elementGroup( ) {
     return( ElementGroup::MEMORY );
   }
-  virtual void updatePorts( ) override;
+  virtual void updatePorts( );
   void updateLogic( );
 };
 

@@ -1,6 +1,6 @@
 #include "logicnor.h"
 
-LogicNor::LogicNor(int inputSize )  : LogicElement( inputSize, 1 ) {
+LogicNor::LogicNor( size_t inputSize )  : LogicElement( inputSize, 1 ) {
 
 }
 

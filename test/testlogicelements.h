@@ -11,7 +11,7 @@
 class TestLogicElements : public QObject {
   Q_OBJECT
 
-  QVector<LogicInput*> sw{5};
+  std::array< LogicInput*, 5 > sw;
 public:
   explicit TestLogicElements( QObject *parent = nullptr );
 

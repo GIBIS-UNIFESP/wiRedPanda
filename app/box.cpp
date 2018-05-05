@@ -46,7 +46,7 @@ Box::~Box( ) {
 }
 
 
-void Box::save( QDataStream &ds ) const {
+void Box::save( QDataStream &ds ) {
   GraphicElement::save( ds );
   ds << m_file;
 }

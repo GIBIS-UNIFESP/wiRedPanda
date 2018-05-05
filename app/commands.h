@@ -20,9 +20,9 @@ class AddItemsCommand : public QUndoCommand {
 
   enum { Id = 101 };
 public:
-  explicit AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoCommand *parent = nullptr );
-  explicit AddItemsCommand( QNEConnection *aItem, Editor *aEditor, QUndoCommand *parent = nullptr );
-  explicit AddItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor, QUndoCommand *parent = nullptr );
+  explicit AddItemsCommand( GraphicElement *aItem, Editor *aEditor, QUndoCommand *parent = 0 );
+  explicit AddItemsCommand( QNEConnection *aItem, Editor *aEditor, QUndoCommand *parent = 0 );
+  explicit AddItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor, QUndoCommand *parent = 0 );
 
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
@@ -37,8 +37,8 @@ class DeleteItemsCommand : public QUndoCommand {
   Q_DECLARE_TR_FUNCTIONS( DeleteItemsCommand )
   enum { Id = 102 };
 public:
-  explicit DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor, QUndoCommand *parent = nullptr );
-  explicit DeleteItemsCommand( QGraphicsItem *item, Editor *aEditor, QUndoCommand *parent = nullptr );
+  explicit DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, Editor *aEditor, QUndoCommand *parent = 0 );
+  explicit DeleteItemsCommand( QGraphicsItem *item, Editor *aEditor, QUndoCommand *parent = 0 );
 
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
@@ -54,7 +54,7 @@ class RotateCommand : public QUndoCommand {
 
   enum { Id = 103 };
 public:
-  explicit RotateCommand( const QList< GraphicElement* > &aItems, int angle, QUndoCommand *parent = nullptr );
+  explicit RotateCommand( const QList< GraphicElement* > &aItems, int angle, QUndoCommand *parent = 0 );
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
   bool mergeWith( const QUndoCommand *command ) Q_DECL_OVERRIDE;
@@ -73,7 +73,7 @@ public:
 
   explicit MoveCommand( const QList< GraphicElement* > &list,
                         const QList< QPointF > &aOldPositions,
-                        QUndoCommand *parent = nullptr );
+                        QUndoCommand *parent = 0 );
 
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
@@ -97,7 +97,7 @@ public:
   explicit UpdateCommand( const QVector< GraphicElement* > &elements,
                           QByteArray oldData,
                           Editor *editor,
-                          QUndoCommand *parent = nullptr );
+                          QUndoCommand *parent = 0 );
 
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
@@ -120,7 +120,7 @@ class SplitCommand : public QUndoCommand {
 
 public:
 
-  explicit SplitCommand( QNEConnection *conn, QPointF point, Editor *editor, QUndoCommand *parent = nullptr );
+  explicit SplitCommand( QNEConnection *conn, QPointF point, Editor *editor, QUndoCommand *parent = 0 );
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
 
@@ -142,7 +142,8 @@ public:
   explicit MorphCommand( const QVector< GraphicElement* > &elements,
                          ElementType aType,
                          Editor *aEditor,
-                         QUndoCommand *parent = nullptr );
+                         QUndoCommand *parent =
+                           0 );
 
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
@@ -166,7 +167,7 @@ public:
   explicit ChangeInputSZCommand( const QVector< GraphicElement* > &elements,
                                  int newInputSize,
                                  Editor *editor,
-                                 QUndoCommand *parent = nullptr );
+                                 QUndoCommand *parent = 0 );
 
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
@@ -190,7 +191,7 @@ class FlipCommand : public QUndoCommand {
 
   enum { Id = 109 };
 public:
-  explicit FlipCommand( const QList< GraphicElement* > &aItems, int aAxis, QUndoCommand *parent = nullptr );
+  explicit FlipCommand( const QList< GraphicElement* > &aItems, int aAxis, QUndoCommand *parent = 0 );
   virtual void undo( ) Q_DECL_OVERRIDE;
   virtual void redo( ) Q_DECL_OVERRIDE;
 

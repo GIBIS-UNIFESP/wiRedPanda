@@ -5,7 +5,7 @@
 
 class LogicOr : public LogicElement {
 public:
-  explicit LogicOr( int inputSize );
+  explicit LogicOr( size_t inputSize );
 
   /* LogicElement interface */
 protected:

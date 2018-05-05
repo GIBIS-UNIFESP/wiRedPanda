@@ -52,7 +52,7 @@ QNEPort::QNEPort( QGraphicsItem *parent ) : QGraphicsPathItem( parent ) {
 
   m_portFlags = 0;
   m_value = false;
-  m_graphicElement = nullptr;
+  m_graphicElement = NULL;
   m_required = true;
   m_defaultValue = -1;
 }
@@ -130,6 +130,14 @@ int QNEPort::type( ) const {
   return( Type );
 }
 
+quint64 QNEPort::ptr( ) {
+  return( m_ptr );
+}
+
+void QNEPort::setPtr( quint64 p ) {
+  m_ptr = p;
+}
+
 bool QNEPort::isConnected( QNEPort *other ) {
   for( QNEConnection *conn : m_connections ) {
     if( ( conn->start( ) == other ) || ( conn->end( ) == other ) ) {
@@ -146,7 +154,7 @@ void QNEPort::updateConnections( ) {
   }
   if( isValid( ) ) {
     if( ( m_connections.size( ) == 0 ) && !isOutput( ) ) {
-      setValue( static_cast<char>(defaultValue( )) );
+      setValue( defaultValue( ) );
     }
   }
   else {
@@ -179,7 +187,7 @@ int QNEPort::defaultValue( ) const {
 
 void QNEPort::setDefaultValue( int defaultValue ) {
   m_defaultValue = defaultValue;
-  setValue( static_cast<char>(defaultValue) );
+  setValue( defaultValue );
 }
 
 
@@ -295,13 +303,13 @@ void QNEOutputPort::setValue( char value ) {
   m_value = value;
   for( QNEConnection *conn : connections( ) ) {
     if( value == -1 ) {
-      conn->setStatus( QNEConnection::Status::Invalid );
+      conn->setStatus( QNEConnection::Invalid );
     }
     else if( value == 0 ) {
-      conn->setStatus( QNEConnection::Status::Inactive );
+      conn->setStatus( QNEConnection::Inactive );
     }
     else {
-      conn->setStatus( QNEConnection::Status::Active );
+      conn->setStatus( QNEConnection::Active );
     }
     QNEInputPort *port = conn->otherPort( this );
     if( port ) {

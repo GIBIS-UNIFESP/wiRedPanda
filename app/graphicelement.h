@@ -33,7 +33,7 @@ public:
   enum { Type = QGraphicsItem::UserType + 3 };
 
   explicit GraphicElement( int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz,
-                           QGraphicsItem *parent = nullptr );
+                           QGraphicsItem *parent = 0 );
 
 private:
   QPixmap *pixmap;
@@ -43,13 +43,13 @@ private:
 
   /* GraphicElement interface. */
 public:
-  virtual ElementType elementType( ) const = 0;
+  virtual ElementType elementType( ) = 0;
 
-  virtual ElementGroup elementGroup( ) const = 0;
+  virtual ElementGroup elementGroup( ) = 0;
 
-  virtual void save( QDataStream &ds ) const;
+  virtual void save( QDataStream &ds );
 
-  virtual void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version );
+  virtual void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
 
   virtual void updatePorts( );
 
@@ -66,7 +66,7 @@ public:
 
   virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
 
-  QNEPort* addPort(const QString &name, bool isOutput, int flags = 0);
+  QNEPort* addPort( const QString &name, bool isOutput, int flags = 0, int ptr = 0 );
 
   void addInputPort( const QString &name = QString( ) );
 
@@ -104,8 +104,8 @@ public:
   int outputSize( );
   void setOutputSize( int size );
 
-  virtual double getFrequency( ) const;
-  virtual void setFrequency( double freq );
+  virtual float getFrequency( );
+  virtual void setFrequency( float freq );
 
   void setPixmap( const QString &pixmapName, QRect size = QRect( ) );
 
@@ -123,10 +123,10 @@ public:
 
 
   virtual void setColor( QString getColor );
-  virtual QString getColor( ) const;
+  virtual QString getColor( );
 
   virtual void setAudio( QString audio );
-  virtual QString getAudio( ) const;
+  virtual QString getAudio( );
 /*
  *  bool beingVisited( ) const;
  *  void setBeingVisited( bool beingVisited );
@@ -140,7 +140,7 @@ public:
   bool isValid( );
 
   void setLabel( QString label );
-  QString getLabel( ) const;
+  QString getLabel( );
 
   void updateTheme( );
   virtual void updateThemeLocal( );
@@ -180,10 +180,10 @@ private:
   QGraphicsTextItem *label;
   int m_topPosition;
   int m_bottomPosition;
-  int m_maxInputSz;
-  int m_maxOutputSz;
-  int m_minInputSz;
-  int m_minOutputSz;
+  quint64 m_maxInputSz;
+  quint64 m_maxOutputSz;
+  quint64 m_minInputSz;
+  quint64 m_minOutputSz;
   bool m_outputsOnTop;
   bool m_rotatable;
   bool m_hasLabel;
@@ -200,23 +200,23 @@ private:
 
   void loadAngle( QDataStream &ds );
 
-  void loadLabel( QDataStream &ds, const double version );
+  void loadLabel( QDataStream &ds, double version );
 
-  void loadMinMax(QDataStream &ds, const double version );
+  void loadMinMax( QDataStream &ds, double version );
 
   void loadTrigger( QDataStream &ds, double version );
 
-  void loadInputPorts(QDataStream &ds, QMap<quint64, QNEPort *> &portMap );
+  void loadInputPorts( QDataStream &ds, QMap< quint64, QNEPort* > &portMap );
 
-  void removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap );
+  void removePortFromMap( QNEPort *deletedPort, QMap< quint64, QNEPort* > &portMap );
 
-  void loadOutputPorts(QDataStream &ds, QMap<quint64, QNEPort *> &portMap );
+  void loadOutputPorts( QDataStream &ds, QMap< quint64, QNEPort* > &portMap );
 
-  void removeSurplusInputs(int inputSz, QMap<quint64, QNEPort *> &portMap );
+  void removeSurplusInputs( quint64 inputSz, QMap< quint64, QNEPort* > &portMap );
 
-  void loadInputPort(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, int port );
+  void loadInputPort( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, size_t port );
 
-  void loadOutputPort(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, int port );
+  void loadOutputPort( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, size_t port );
 
 protected:
   QVector< QNEInputPort* > m_inputs;

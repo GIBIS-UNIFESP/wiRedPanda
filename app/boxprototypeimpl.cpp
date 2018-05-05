@@ -45,12 +45,12 @@ bool comparePorts( QNEPort *port1, QNEPort *port2 ) {
   QPointF p1 = port1->graphicElement( )->pos( );
   QPointF p2 = port2->graphicElement( )->pos( );
   if( p1 != p2 ) {
-    return( p1.y( ) < p2.y( ) || ( qFuzzyCompare(p1.y(), p2.y()) && p1.x( ) < p2.x( ) ) );
+    return( p1.y( ) < p2.y( ) || ( p1.y( ) == p2.y( ) && p1.x( ) < p2.x( ) ) );
   }
   else {
     p1 = port1->pos( );
     p2 = port2->pos( );
-    return( p1.x( ) < p2.x( ) || ( qFuzzyCompare(p1.x(), p2.x()) && p1.y( ) < p2.y( ) ) );
+    return( p1.x( ) < p2.x( ) || ( p1.x( ) == p2.x( ) && p1.y( ) < p2.y( ) ) );
   }
 }
 
