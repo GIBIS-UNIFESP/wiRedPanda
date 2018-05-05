@@ -1,35 +1,37 @@
 language: cpp
-cache: apt
+compiler: gcc
+sudo: false
+dist: trusty
+cache: ccache
 
 os:
   - linux
   - osx
-
-dist: trusty
-
+  
 addons:
-apt:
-  sources:
-  - ubuntu-toolchain-r-test
-  packages:
-  - gcc-4.8
-  - g++-4.8
+  apt:
+    sources:
+    - sourceline: 'ppa:ubuntu-toolchain-r/test'
+    - sourceline: 'ppa:beineri/opt-qt-5.10.1-trusty'
+    packages:
+    - gcc-7
+    - g++-7
+    - qt510base
+    - qt510charts-no-lgpl
+    - qt510multimedia
+    - dh-make
 
 branches:
   only:
     - 'master'
 
 before_install:
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-      sudo add-apt-repository ppa:beineri/opt-qt-5.10.1-trusty -y && sudo apt-get update;
-    else
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
       brew update;
     fi;
 
 install:
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-      sudo apt-get install -y qt510base qt510charts-no-lgpl qt510multimedia dh-make;
-    else
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
       brew install qt gdb
       && chmod -R 755 /usr/local/opt/qt/*;
     fi;
