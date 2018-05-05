@@ -3,10 +3,6 @@ sudo: false
 dist: trusty
 cache: ccache
 
-compiler: 
-  - gcc
-  - clang
-
 os:
   - linux
   - osx
@@ -60,12 +56,3 @@ script:
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
       test/WPanda-test.app/Contents/MacOS/WPanda-test;
     fi;
-
-#deploy:
-#  provider: releases
-#  api_key:
-#    secure: YOUR_API_KEY_ENCRYPTED
-#  file: /tmp/packages/*
-#  skip_cleanup: true
-#  on:
-#    tags: true
