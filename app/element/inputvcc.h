@@ -5,14 +5,14 @@
 
 class InputVcc : public GraphicElement {
 public:
-  explicit InputVcc( QGraphicsItem *parent = 0 );
-  virtual ~InputVcc( );
+  explicit InputVcc( QGraphicsItem *parent = nullptr );
+  virtual ~InputVcc( )override;
   /* GraphicElement interface */
 public:
-  virtual ElementType elementType( ) {
+  virtual ElementType elementType( ) const override{
     return( ElementType::VCC );
   }
-  virtual ElementGroup elementGroup( ) {
+  virtual ElementGroup elementGroup( ) const override{
     return( ElementGroup::INPUT );
   }
   void updateLogic( );

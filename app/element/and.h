@@ -5,14 +5,14 @@
 
 class And : public GraphicElement {
 public:
-  explicit And( QGraphicsItem *parent = 0 );
+  explicit And( QGraphicsItem *parent = nullptr );
 
   /* GraphicElement interface */
 public:
-  virtual ElementType elementType( ) {
+  virtual ElementType elementType( ) const override {
     return( ElementType::AND );
   }
-  virtual ElementGroup elementGroup( ) {
+  virtual ElementGroup elementGroup( ) const override {
     return( ElementGroup::GATE );
   }
 

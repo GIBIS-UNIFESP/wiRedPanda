@@ -6,14 +6,14 @@
 class Xnor : public GraphicElement {
 public:
   explicit Xnor( QGraphicsItem *parent );
-  virtual ~Xnor( );
+  virtual ~Xnor( )override;
 
 /* GraphicElement interface */
 public:
-  virtual ElementType elementType( ) {
+  virtual ElementType elementType( )const override {
     return( ElementType::XNOR );
   }
-  virtual ElementGroup elementGroup( ) {
+  virtual ElementGroup elementGroup( )const override {
     return( ElementGroup::GATE );
   }
   void updateLogic( );

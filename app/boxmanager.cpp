@@ -74,7 +74,10 @@ void BoxManager::clear( ) {
   for( auto it = boxes_aux.begin( ); it != boxes_aux.end( ); it++ ) {
     delete it.value( );
   }
-  fileWatcher.removePaths( fileWatcher.files( ) );
+
+  if(fileWatcher.files().size() > 0){
+      fileWatcher.removePaths( fileWatcher.files( ) );
+  }
 }
 
 void BoxManager::updateRecentBoxes( QString fname ) {

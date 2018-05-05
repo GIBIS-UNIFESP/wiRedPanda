@@ -429,8 +429,8 @@ SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, Editor *editor, 
     nodePos = QPointF( xV, yV );
   }
   /* Rotate line according to angle between p1 and p2 */
-  nodeAngle = conn->angle( );
-  nodeAngle = 360 - 90 * ( std::round( nodeAngle / 90.0 ) );
+  nodeAngle = static_cast<int>(conn->angle( ));
+  nodeAngle = static_cast<int>(360 - 90 * ( std::round( nodeAngle / 90.0 )) );
 
   /* Assingning class attributes */
   elm1_id = conn->start( )->graphicElement( )->id( );

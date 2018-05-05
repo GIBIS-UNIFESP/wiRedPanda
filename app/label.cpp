@@ -54,7 +54,7 @@ void Label::startDrag( QPoint pos ) {
   ElementType type = ElementFactory::textToType( text );
 /*  qDebug() << objectName(); */
 
-  dataStream << QPointF( pos ) << ( qint32 ) type << m_auxData;
+  dataStream << QPointF( pos ) << static_cast<qint32>(type) << m_auxData;
 
   QMimeData *mimeData = new QMimeData;
   mimeData->setData( "application/x-dnditemdata", itemData );

@@ -5,18 +5,18 @@
 
 class JKLatch : public GraphicElement {
 public:
-  explicit JKLatch( QGraphicsItem *parent = 0 );
-  virtual ~JKLatch( );
+  explicit JKLatch( QGraphicsItem *parent = nullptr );
+  virtual ~JKLatch( )override;
 
   /* GraphicElement interface */
 public:
-  virtual ElementType elementType( ) {
+  virtual ElementType elementType( ) const override {
     return( ElementType::JKLATCH );
   }
-  virtual ElementGroup elementGroup( ) {
+  virtual ElementGroup elementGroup( ) const override {
     return( ElementGroup::MEMORY );
   }
-  virtual void updatePorts( );
+  virtual void updatePorts( )override;
   void updateLogic( );
 };
 

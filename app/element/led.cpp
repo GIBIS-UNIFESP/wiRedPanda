@@ -20,14 +20,14 @@ Led::~Led( ) {
 
 }
 
-QVector< QString > led_2bits = {
+static QVector< QString > led_2bits = {
   ":/output/16colors/BlackLedOn.png", /* 00 */
   ":/output/16colors/RedLedOn.png", /* 01 */
   ":/output/16colors/GreenLedOn.png", /* 10 */
   ":/output/16colors/RoyalLedOn.png" /* 11 */
 };
 
-QVector< QString > led_3bits = {
+static QVector< QString > led_3bits = {
   ":/output/16colors/BlackLedOn.png", /* 000 */
   ":/output/16colors/RoyalLedOn.png", /* 001 */
   ":/output/16colors/GreenLedOn.png", /* 010 */
@@ -38,7 +38,7 @@ QVector< QString > led_3bits = {
   ":/output/16colors/WhiteLedOn.png", /* 111 */
 };
 
-QVector< QString > led_4bits = {
+static QVector< QString > led_4bits = {
   ":/output/16colors/WhiteLedOn.png",
   ":/output/16colors/BlackLedOn.png",
   ":/output/16colors/NavyBlueLedOn.png",
@@ -62,7 +62,7 @@ void Led::refresh( ) {
   for( int i = 0; i < inputSize( ); ++i ) {
     index[ i ] = input( inputSize( ) - i - 1 )->value( );
   }
-  int idx = index.to_ulong( );
+  int idx = static_cast<int>(index.to_ulong( ));
   if( isValid( ) ) {
     switch( inputSize( ) ) {
         case 1: /* 1 bit */
@@ -100,11 +100,11 @@ void Led::setColor( QString color ) {
   refresh( );
 }
 
-QString Led::getColor( ) {
+QString Led::getColor( ) const {
   return( m_color );
 }
 
-void Led::save( QDataStream &ds ) {
+void Led::save( QDataStream &ds ) const {
   GraphicElement::save( ds );
   ds << getColor( );
 

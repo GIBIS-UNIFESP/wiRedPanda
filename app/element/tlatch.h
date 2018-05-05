@@ -5,18 +5,18 @@
 
 class TLatch : public GraphicElement {
 public:
-  explicit TLatch( QGraphicsItem *parent = 0 );
-  virtual ~TLatch( );
+  explicit TLatch( QGraphicsItem *parent = nullptr );
+  virtual ~TLatch( )override;
 
   /* GraphicElement interface */
 public:
-  virtual ElementType elementType( ) {
+  virtual ElementType elementType( ) const override{
     return( ElementType::TLATCH );
   }
-  virtual ElementGroup elementGroup( ) {
+  virtual ElementGroup elementGroup( ) const override{
     return( ElementGroup::MEMORY );
   }
-  virtual void updatePorts( );
+  virtual void updatePorts( )override;
   void updateLogic( );
 };
 

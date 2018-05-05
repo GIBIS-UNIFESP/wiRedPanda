@@ -6,14 +6,14 @@
 class Xor : public GraphicElement {
 public:
   explicit Xor( QGraphicsItem *parent );
-  virtual ~Xor( );
+  virtual ~Xor( )override;
 
 /* GraphicElement interface */
 public:
-  virtual ElementType elementType( ) {
+  virtual ElementType elementType( )const override {
     return( ElementType::XOR );
   }
-  virtual ElementGroup elementGroup( ) {
+  virtual ElementGroup elementGroup( )const override {
     return( ElementGroup::GATE );
   }
   void updateLogic( );

@@ -180,7 +180,7 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
     }
     for( int itr = 0; itr < num_iter; ++itr ) {
       std::bitset< std::numeric_limits< unsigned int >::digits > bs( itr );
-      outStream << ( int ) bs[ in ];
+      outStream << static_cast<int>(bs[ in ]);
     }
     outStream << " : \"" << label << "\"\n";
   }
@@ -194,7 +194,7 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
     int inSz = outputs[ out ]->inputSize( );
     for( int port = inSz - 1; port >= 0; --port ) {
       for( int itr = 0; itr < num_iter; ++itr ) {
-        outStream << ( int ) results[ counter ][ itr ];
+        outStream << static_cast<int>(results[ counter ][ itr ]);
       }
       counter += 1;
       outStream << " : \"" << label << "[" << port << "]\"\n";
@@ -212,7 +212,7 @@ void SimpleWaveform::showWaveform( ) {
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "waveform" );
   if( settings.contains( "sortingType" ) ) {
-    sortingKind = ( SortingKind ) settings.value( "sortingType" ).toInt( );
+    sortingKind = static_cast<SortingKind>(settings.value( "sortingType" ).toInt( ));
   }
   settings.endGroup( );
   switch( sortingKind ) {
@@ -285,7 +285,7 @@ void SimpleWaveform::showWaveform( ) {
   qDebug( ) << in_series.size( ) << " inputs";
   qDebug( ) << out_series.size( ) << " outputs";
 
-  int num_iter = pow( 2, in_series.size( ) );
+  int num_iter = static_cast<int>(pow( 2, in_series.size( ) ));
   qDebug( ) << "Num iter = " << num_iter;
 /*  gap += outputs.size( ) % 2; */
   for( int itr = 0; itr < num_iter; ++itr ) {
@@ -293,7 +293,7 @@ void SimpleWaveform::showWaveform( ) {
     qDebug( ) << itr;
     for( int in = 0; in < inputs.size( ); ++in ) {
       float val = bs[ in ];
-      dynamic_cast< Input* >( inputs[ in ] )->setOn( val );
+      dynamic_cast< Input* >( inputs[ in ] )->setOn( !qFuzzyIsNull(val) );
       float offset = ( in_series.size( ) - in - 1 + out_series.size( ) ) * 2 + gap + 0.5;
       in_series[ in ]->append( itr, offset + val );
       in_series[ in ]->append( itr + 1, offset + val );
@@ -353,7 +353,7 @@ void SimpleWaveform::on_radioButton_Position_clicked( ) {
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "waveform" );
   sortingKind = SortingKind::POSITION;
-  settings.setValue( "sortingType", ( int ) sortingKind );
+  settings.setValue( "sortingType", static_cast<int>(sortingKind));
   settings.endGroup( );
 
   showWaveform( );
@@ -364,7 +364,7 @@ void SimpleWaveform::on_radioButton_Increasing_clicked( ) {
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "waveform" );
   sortingKind = SortingKind::INCREASING;
-  settings.setValue( "sortingType", ( int ) sortingKind );
+  settings.setValue( "sortingType", static_cast<int>(sortingKind));
   settings.endGroup( );
 
   showWaveform( );
@@ -375,7 +375,7 @@ void SimpleWaveform::on_radioButton_Decreasing_clicked( ) {
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "waveform" );
   sortingKind = SortingKind::DECREASING;
-  settings.setValue( "sortingType", ( int ) sortingKind );
+  settings.setValue( "sortingType", static_cast<int>(sortingKind) );
   settings.endGroup( );
 
   showWaveform( );
@@ -388,7 +388,7 @@ void SimpleWaveform::on_pushButton_Copy_clicked( ) {
   QPainter painter;
   painter.begin( &p );
   painter.setRenderHint( QPainter::Antialiasing );
-  chart.paint( &painter, 0, 0 ); /* This gives 0 items in 1 group */
+  chart.paint( &painter, nullptr, nullptr ); /* This gives 0 items in 1 group */
   chartView->render( &painter ); /* m_view has app->chart() in it, and this one gives right image */
   qDebug( ) << "Copied";
   painter.end( );

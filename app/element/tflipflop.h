@@ -8,18 +8,18 @@ class TFlipFlop : public GraphicElement {
   char lastT;
   char lastQ;
 public:
-  explicit TFlipFlop( QGraphicsItem *parent = 0 );
-  virtual ~TFlipFlop( );
+  explicit TFlipFlop( QGraphicsItem *parent = nullptr );
+  virtual ~TFlipFlop( )override;
 
   /* GraphicElement interface */
 public:
-  virtual ElementType elementType( ) {
+  virtual ElementType elementType( )const override {
     return( ElementType::TFLIPFLOP );
   }
-  virtual ElementGroup elementGroup( ) {
+  virtual ElementGroup elementGroup( )const override {
     return( ElementGroup::MEMORY );
   }
-  virtual void updatePorts( );
+  virtual void updatePorts( )override;
   void updateLogic( );
 };
 

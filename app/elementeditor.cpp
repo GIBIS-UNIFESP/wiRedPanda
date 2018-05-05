@@ -43,7 +43,7 @@ QAction* addElementAction( QMenu *menu, GraphicElement *firstElm, ElementType ty
   if( !hasSameType || ( firstElm->elementType( ) != type ) ) {
     QAction *action = menu->addAction( QIcon( ElementFactory::getPixmap( type ) ), ElementFactory::translatedName(
                                          type ) );
-    action->setData( ( int ) type );
+    action->setData( static_cast<int>(type) );
     return( action );
   }
   return( nullptr );
@@ -229,7 +229,7 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
 
       hasSameLabel &= elm->getLabel( ) == firstElement->getLabel( );
       hasSameColors &= elm->getColor( ) == firstElement->getColor( );
-      hasSameFrequency &= elm->getFrequency( ) == firstElement->getFrequency( );
+      hasSameFrequency &= qFuzzyCompare(elm->getFrequency( ), firstElement->getFrequency( ));
       hasSameInputSize &= elm->inputSize( ) == firstElement->inputSize( );
       hasSameTrigger &= elm->getTrigger( ) == firstElement->getTrigger( );
       hasSameType &= elm->elementType( ) == firstElement->elementType( );

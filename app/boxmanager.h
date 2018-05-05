@@ -16,7 +16,7 @@ class BoxManager : public QObject {
 
   QFileSystemWatcher fileWatcher;
 public:
-  BoxManager( MainWindow *mainWindow = 0, QObject *parent = 0 );
+  BoxManager( MainWindow *mainWindow = nullptr, QObject *parent = nullptr );
   virtual ~BoxManager( );
 
   void clear( );

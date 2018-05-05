@@ -1,6 +1,6 @@
 #include "logicxor.h"
 
-LogicXor::LogicXor( size_t inputSize )  : LogicElement( inputSize, 1 ) {
+LogicXor::LogicXor(int inputSize )  : LogicElement( inputSize, 1 ) {
 
 }
 
