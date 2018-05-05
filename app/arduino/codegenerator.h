@@ -1,9 +1,10 @@
 #ifndef CODEGENERATOR_H
 #define CODEGENERATOR_H
 
+#include "graphicelement.h"
+
 #include <QFile>
 #include <QTextStream>
-#include <graphicelement.h>
 
 class MappedPin {
 public:

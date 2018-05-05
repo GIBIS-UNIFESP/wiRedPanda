@@ -1,7 +1,7 @@
 #ifndef JKLATCH_H
 #define JKLATCH_H
 
-#include <graphicelement.h>
+#include "graphicelement.h"
 
 class JKLatch : public GraphicElement {
 public:

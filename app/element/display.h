@@ -1,9 +1,7 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
-
-#include <graphicelement.h>
-
+#include "graphicelement.h"
 
 class Display : public GraphicElement {
 public:

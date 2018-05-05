@@ -4,6 +4,7 @@
 #include "graphicelement.h"
 #include "qneconnection.h"
 #include "serializationfunctions.h"
+
 #include <QApplication>
 #include <QDebug>
 #include <QGraphicsView>

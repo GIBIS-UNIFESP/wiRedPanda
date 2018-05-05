@@ -1,12 +1,12 @@
 #ifndef TESTLOGICELEMENTS_H
 #define TESTLOGICELEMENTS_H
 
+#include "logicelement.h"
+#include "logicelement/logicinput.h"
+
 #include <QObject>
 #include <QTest>
 #include <array>
-#include <logicelement.h>
-
-#include <logicelement/logicinput.h>
 
 class TestLogicElements : public QObject {
   Q_OBJECT

@@ -6,6 +6,7 @@
 #include "simplewaveform.h"
 #include "thememanager.h"
 #include "ui_mainwindow.h"
+#include "arduino/codegenerator.h"
 
 #include <QDebug>
 #include <QFileDialog>
@@ -17,8 +18,7 @@
 #include <QShortcut>
 #include <QStyleFactory>
 #include <QTemporaryFile>
-#include <QtPrintSupport/QPrinter>
-#include <arduino/codegenerator.h>
+#include <QPrinter>
 #include <cmath>
 #include <iostream>
 #include <stdexcept>

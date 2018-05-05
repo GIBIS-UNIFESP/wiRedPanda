@@ -1,5 +1,6 @@
 #include "common.h"
 #include "globalproperties.h"
+
 #include <QStringList>
 
 

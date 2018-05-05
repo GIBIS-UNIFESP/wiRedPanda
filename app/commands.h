@@ -1,14 +1,16 @@
 #ifndef COMMANDS_H
 #define COMMANDS_H
 
+#include "node.h"
+#include "qneconnection.h"
+
 #include <QApplication>
 #include <QGraphicsItem>
 #include <QList>
 #include <QPointF>
 #include <QUndoCommand>
 #include <memory>
-#include <node.h>
-#include <qneconnection.h>
+
 class Scene;
 class Editor;
 class GraphicElement;

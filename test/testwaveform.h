@@ -1,8 +1,9 @@
 #ifndef TESTWAVEFORM_H
 #define TESTWAVEFORM_H
 
+#include "editor.h"
+
 #include <QTest>
-#include <editor.h>
 
 class TestWaveForm : public QObject {
   Q_OBJECT

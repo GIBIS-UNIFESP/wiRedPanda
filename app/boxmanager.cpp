@@ -4,12 +4,12 @@
 #include "boxnotfoundexception.h"
 #include "boxprototype.h"
 #include "mainwindow.h"
+#include "qfileinfo.h"
 
 #include <QApplication>
 #include <QDebug>
 #include <QMessageBox>
 #include <QSettings>
-#include <qfileinfo.h>
 
 BoxManager*BoxManager::globalBoxManager = nullptr;
 

@@ -1,4 +1,5 @@
 #include "recentfilescontroller.h"
+
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>

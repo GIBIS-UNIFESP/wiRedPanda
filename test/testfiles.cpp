@@ -1,9 +1,11 @@
 #include "testfiles.h"
 
 #include "globalproperties.h"
-#include <commands.h>
-#include <mainwindow.h>
+#include "commands.h"
+#include "mainwindow.h"
+
 #include <stdexcept>
+
 void TestFiles::init( ) {
   editor = new Editor( this );
 }

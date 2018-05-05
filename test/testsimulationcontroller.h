@@ -2,8 +2,9 @@
 #define TESTSIMULATIONCONTROLLER_H
 
 #include "graphicelement.h"
+#include "editor.h"
+
 #include <QTest>
-#include <editor.h>
 
 class TestSimulationController : public QObject {
   Q_OBJECT

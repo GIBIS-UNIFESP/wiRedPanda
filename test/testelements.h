@@ -1,11 +1,11 @@
 #ifndef TESTELEMENTS_H
 #define TESTELEMENTS_H
 
+#include "inputswitch.h"
+#include "qneconnection.h"
+
 #include <QTest>
 #include <array>
-#include <inputswitch.h>
-#include <qneconnection.h>
-
 
 class Box;
 

@@ -1,6 +1,7 @@
-#include <stdexcept>
 #ifndef BOXNOTFOUNDEXCEPTION_H
 #define BOXNOTFOUNDEXCEPTION_H
+
+#include <stdexcept>
 
 class Box;
 class BoxNotFoundException : public std::runtime_error {

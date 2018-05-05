@@ -1,7 +1,7 @@
 #ifndef DFLIPFLOP_H
 #define DFLIPFLOP_H
 
-#include <graphicelement.h>
+#include "graphicelement.h"
 
 class DFlipFlop : public GraphicElement {
   bool lastClk;

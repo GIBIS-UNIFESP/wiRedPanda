@@ -1,8 +1,9 @@
 #ifndef DEMUX_H
 #define DEMUX_H
 
+#include "graphicelement.h"
+
 #include <QObject>
-#include <graphicelement.h>
 
 class Demux : public GraphicElement {
 public:

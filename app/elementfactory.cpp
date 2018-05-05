@@ -13,22 +13,21 @@
 #include "element/xnor.h"
 #include "element/xor.h"
 #include "elementfactory.h"
-#include <element/dflipflop.h>
-#include <element/display.h>
-#include <element/dlatch.h>
-#include <element/jkflipflop.h>
-#include <element/jklatch.h>
-#include <element/srflipflop.h>
-#include <element/tflipflop.h>
-#include <element/tlatch.h>
-
+#include "element/dflipflop.h"
+#include "element/display.h"
+#include "element/dlatch.h"
+#include "element/jkflipflop.h"
+#include "element/jklatch.h"
+#include "element/srflipflop.h"
+#include "element/tflipflop.h"
+#include "element/tlatch.h"
+#include "buzzer.h"
+#include "demux.h"
+#include "mux.h"
+#include "node.h"
+#include "qneconnection.h"
 
 #include <QDebug>
-#include <buzzer.h>
-#include <demux.h>
-#include <mux.h>
-#include <node.h>
-#include <qneconnection.h>
 
 ElementFactory*ElementFactory::instance = new ElementFactory( );
 

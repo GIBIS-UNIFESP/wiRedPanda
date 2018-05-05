@@ -3,7 +3,6 @@
 
 #include <QSet>
 #include <vector>
-
 #include <functional>
 
 /**

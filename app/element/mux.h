@@ -1,8 +1,9 @@
 #ifndef MUX_H
 #define MUX_H
 
+#include "graphicelement.h"
+
 #include <QObject>
-#include <graphicelement.h>
 
 class Mux : public GraphicElement {
 public:

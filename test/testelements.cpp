@@ -1,26 +1,27 @@
 #include "testelements.h"
-#include <QDebug>
 
-#include <box.h>
-#include <demux.h>
-#include <dlatch.h>
-#include <editor.h>
-#include <inputbutton.h>
-#include <iostream>
-#include <jkflipflop.h>
-#include <jklatch.h>
-#include <led.h>
-#include <mux.h>
-#include <node.h>
-#include <srflipflop.h>
-#include <tflipflop.h>
-#include <tlatch.h>
+#include "box.h"
+#include "demux.h"
+#include "dlatch.h"
+#include "editor.h"
+#include "inputbutton.h"
+#include "iostream"
+#include "jkflipflop.h"
+#include "jklatch.h"
+#include "led.h"
+#include "mux.h"
+#include "node.h"
+#include "srflipflop.h"
+#include "tflipflop.h"
+#include "tlatch.h"
 
 #include "and.h"
 #include "dflipflop.h"
 #include "inputgnd.h"
 #include "inputvcc.h"
 #include "or.h"
+
+#include <QDebug>
 #include <iostream>
 
 TestElements::TestElements( QObject *parent ) : QObject( parent ) {

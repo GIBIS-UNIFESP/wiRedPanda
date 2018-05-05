@@ -1,6 +1,8 @@
 #ifndef SERIALIZATIONFUNCTIONS_H
 #define SERIALIZATIONFUNCTIONS_H
 
+#include "qneport.h"
+
 #include <QGraphicsItem>
 
 class Editor;

@@ -24,8 +24,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #include "qneconnection.h"
-
 #include "qneport.h"
+#include "thememanager.h"
+#include "node.h"
 
 #include <QBrush>
 #include <QDebug>
@@ -34,8 +35,6 @@
 #include <QPainter>
 #include <QPen>
 #include <QStyleOptionGraphicsItem>
-#include <node.h>
-#include <thememanager.h>
 
 QNEConnection::QNEConnection( QGraphicsItem *parent ) : QGraphicsPathItem( parent ) {
   setFlag( QGraphicsItem::ItemIsSelectable );

@@ -1,7 +1,7 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include <graphicelement.h>
+#include "graphicelement.h"
 
 class Node : public GraphicElement {
 public:

@@ -4,7 +4,7 @@
 #include <QDebug>
 #include <QMouseEvent>
 #include <QScrollBar>
-#include <qmath.h>
+#include <QtMath>
 
 const double GraphicsViewZoom::maxZoom = 1.5;
 const double GraphicsViewZoom::minZoom = 0.20;

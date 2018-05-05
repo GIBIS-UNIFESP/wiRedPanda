@@ -3,14 +3,13 @@
 
 #include "graphicelement.h"
 #include "logicelement.h"
+#include "logicelement/logicinput.h"
+#include "input.h"
 
 #include <QGraphicsScene>
 #include <QMap>
 #include <QObject>
 #include <QTimer>
-#include <input.h>
-
-#include <logicelement/logicinput.h>
 
 class Clock;
 class Box;

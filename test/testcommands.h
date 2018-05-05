@@ -1,8 +1,9 @@
 #ifndef TESTCOMMANDS_H
 #define TESTCOMMANDS_H
 
+#include "editor.h"
+
 #include <QTest>
-#include <editor.h>
 
 class TestCommands : public QObject {
   Q_OBJECT

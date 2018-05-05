@@ -1,7 +1,7 @@
 #ifndef TLATCH_H
 #define TLATCH_H
 
-#include <graphicelement.h>
+#include "graphicelement.h"
 
 class TLatch : public GraphicElement {
 public:
