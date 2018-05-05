@@ -40,6 +40,28 @@ void GraphicsViewZoom::set_zoom_factor_base( double value ) {
   _zoom_factor_base = value;
 }
 
+void GraphicsViewZoom::zoomIn( ) {
+  _view->setTransformationAnchor( QGraphicsView::AnchorUnderMouse );
+  double newScale = std::round( scaleFactor( ) * 10 ) / 10.0 + ZOOMFAC;
+  if( newScale <= GraphicsViewZoom::maxZoom ) {
+    setScaleFactor( newScale );
+  }
+  emit zoomed( );
+}
+
+void GraphicsViewZoom::zoomOut( ) {
+  double newScale = std::round( scaleFactor( ) * 10 ) / 10.0 - ZOOMFAC;
+  if( newScale >= GraphicsViewZoom::minZoom ) {
+    setScaleFactor( newScale );
+  }
+  emit zoomed( );
+}
+
+void GraphicsViewZoom::resetZoom( ) {
+  setScaleFactor( 1.0 );
+  emit zoomed( );
+}
+
 double GraphicsViewZoom::scaleFactor( ) {
   return( _view->transform( ).m11( ) );
 }
@@ -49,6 +71,14 @@ void GraphicsViewZoom::setScaleFactor( double factor ) {
   tr *= QTransform::fromScale( 1.0 / tr.m11( ), 1.0 / tr.m11( ) );
   tr.scale( factor, factor );
   _view->setTransform( tr );
+}
+
+bool GraphicsViewZoom::canZoomIn( ) {
+  return( ( scaleFactor( ) + ZOOMFAC * 2 ) <= GraphicsViewZoom::maxZoom );
+}
+
+bool GraphicsViewZoom::canZoomOut( ) {
+  return( ( scaleFactor( ) - ZOOMFAC * 2 ) >= GraphicsViewZoom::minZoom );
 }
 
 bool GraphicsViewZoom::eventFilter( QObject *object, QEvent *event ) {

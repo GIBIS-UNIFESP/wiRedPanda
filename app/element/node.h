@@ -7,7 +7,6 @@ class Node : public GraphicElement {
 public:
   explicit Node( QGraphicsItem *parent = 0 );
   virtual void updatePorts( );
-  virtual void updateLogic( );
   virtual ElementGroup elementGroup( ) {
     return( ElementGroup::GATE );
   }

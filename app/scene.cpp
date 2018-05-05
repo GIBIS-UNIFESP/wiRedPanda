@@ -1,7 +1,9 @@
 #include "scene.h"
 
 #include <QColor>
+#include <QGraphicsView>
 #include <QPainter>
+#include <qneconnection.h>
 Scene::Scene( QObject *parent ) : QGraphicsScene( parent ) {
   m_gridSize = 16;
 }
@@ -41,6 +43,17 @@ void Scene::setDots( const QPen &dots ) {
   m_dots = dots;
 }
 
+
+QVector< GraphicElement* > Scene::getVisibleElements( ) {
+  QGraphicsView *graphicsView = views( ).first( );
+  if( !graphicsView->isActiveWindow( ) ) {
+    graphicsView = views( ).last( );
+  }
+  QRectF visibleRect = graphicsView->mapToScene( graphicsView->viewport( )->geometry( ) ).boundingRect( );
+
+  return( getElements( visibleRect ) );
+}
+
 QVector< GraphicElement* > Scene::getElements( ) {
   QVector< GraphicElement* > elements;
   QList< QGraphicsItem* > myItems = items( );
@@ -51,6 +64,30 @@ QVector< GraphicElement* > Scene::getElements( ) {
     }
   }
   return( elements );
+}
+
+QVector< GraphicElement* > Scene::getElements( QRectF rect ) {
+  QVector< GraphicElement* > elements;
+  QList< QGraphicsItem* > myItems = items( rect );
+  for( QGraphicsItem *item : myItems ) {
+    GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+    if( elm ) {
+      elements.append( elm );
+    }
+  }
+  return( elements );
+}
+
+QVector< QNEConnection* > Scene::getConnections( ) {
+  QVector< QNEConnection* > conns;
+  QList< QGraphicsItem* > myItems = items( );
+  for( QGraphicsItem *item : myItems ) {
+    QNEConnection *conn = dynamic_cast< QNEConnection* >( item );
+    if( conn ) {
+      conns.append( conn );
+    }
+  }
+  return( conns );
 }
 
 QVector< GraphicElement* > Scene::selectedElements( ) {

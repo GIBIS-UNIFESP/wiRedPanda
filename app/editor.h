@@ -2,6 +2,7 @@
 #define EDITOR_H
 
 
+#include "boxmanager.h"
 #include "simulationcontroller.h"
 #include <QObject>
 #include <QTime>
@@ -25,24 +26,26 @@ public:
   void load( QDataStream &ds );
   void cut( const QList< QGraphicsItem* > &items, QDataStream &ds );
   void copy( const QList< QGraphicsItem* > &items, QDataStream &ds );
-  void paste(QDataStream &ds);
+  void paste( QDataStream &ds );
   void selectAll( );
 signals:
   void scroll( int x, int y );
-  void circuitHasChanged();
+  void circuitHasChanged( );
 
 public slots:
   void clear( );
   void showWires( bool checked );
   void showGates( bool checked );
   void rotate( bool rotateRight );
-  void selectionChanged( );
+
   void receiveCommand( QUndoCommand *cmd );
   void copyAction( );
   void cutAction( );
   void pasteAction( );
   void deleteAction( );
+  void updateTheme( );
 
+  void mute( bool _mute = true );
 private:
   QUndoStack *undoStack;
   Scene *scene;
@@ -52,6 +55,7 @@ private:
   int _hoverPortElm_id;
   int _hoverPort_nbr;
   ElementEditor *_elementEditor;
+  BoxManager *boxManager;
 
   bool markingSelectionBox;
   QGraphicsRectItem *selectionRect;
@@ -74,22 +78,27 @@ private:
   bool dragMoveEvt( QGraphicsSceneDragDropEvent *dde );
   bool wheelEvt( QWheelEvent *wEvt );
 
-  void ctrlDrag(QPointF pos );
+  void ctrlDrag( QPointF pos );
   void install( Scene *s );
 
   QNEConnection* getEditedConn( );
   void setEditedConn( QNEConnection *editedConn );
 
   /* QObject interface */
+  void detachConnection( QNEInputPort *endPort );
+  void startNewConnection( QNEOutputPort *startPort );
+  void startNewConnection( QNEInputPort *endPort );
+
+  void startSelectionRect( );
+
+  void makeConnection( QNEConnection *editedConn );
 public:
   bool eventFilter( QObject *obj, QEvent *evt );
   void setElementEditor( ElementEditor *value );
   QUndoStack* getUndoStack( ) const;
   Scene* getScene( ) const;
   void buildSelectionRect( );
-  bool loadBox( Box *box, QString fname );
-
-  void handleHoverPort( QNEPort *port );
+  void handleHoverPort( );
   void releaseHoverPort( );
 
   void setHoverPort( QNEPort *port );
@@ -102,7 +111,13 @@ public:
   QPointF getMousePos( ) const;
 
 
-  ElementEditor * getElementEditor() const;
+  ElementEditor* getElementEditor( ) const;
+
+  static Editor *globalEditor;
+
+  void deleteEditedConn( );
+  void flipH( );
+  void flipV( );
 };
 
 #endif /* EDITOR_H */

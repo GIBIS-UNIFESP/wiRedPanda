@@ -5,13 +5,14 @@
 #include <QGraphicsPixmapItem>
 #include <QKeySequence>
 
-#include "nodes/qneport.h"
 #include "common.h"
 #include "itemwithid.h"
+#include "nodes/qneport.h"
 
 enum class ElementType {
   UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND, DISPLAY,
-  DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, TLATCH, BOX, NODE, MUX, DEMUX
+  DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, TLATCH, BOX, NODE, MUX, DEMUX,
+  BUZZER
 };
 
 enum class ElementGroup {
@@ -21,6 +22,11 @@ enum class ElementGroup {
 
 #define MAXIMUMVALIDINPUTSIZE 256
 
+class GraphicElement;
+
+typedef QVector< GraphicElement* > ElementVector;
+typedef QVector< QNEPort* > QNEPortVector;
+
 class GraphicElement : public QGraphicsObject, public ItemWithId {
   Q_OBJECT
 public:
@@ -28,11 +34,12 @@ public:
 
   explicit GraphicElement( int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz,
                            QGraphicsItem *parent = 0 );
-  virtual ~GraphicElement( );
 
 private:
-  QPixmap * pixmap;
-  QString currentPixmapPath;
+  QPixmap *pixmap;
+  QString currentPixmapName;
+  QColor m_selectionBrush;
+  QColor m_selectionPen;
 
   /* GraphicElement interface. */
 public:
@@ -46,7 +53,7 @@ public:
 
   virtual void updatePorts( );
 
-  virtual void updateLogic( ) = 0;
+  virtual void refresh( );
 
   /* QGraphicsItem interface */
 public:
@@ -77,15 +84,15 @@ public:
 
   bool outputsOnTop( ) const;
 
-  QVector< QNEPort* > inputs( ) const;
-  void setInputs( const QVector< QNEPort* > &inputs );
+  QVector< QNEInputPort* > inputs( ) const;
+  void setInputs( const QVector< QNEInputPort* > &inputs );
 
-  QVector< QNEPort* > outputs( ) const;
+  QVector< QNEOutputPort* > outputs( ) const;
 
-  QNEPort* input( int pos = 0 ) const;
-  QNEPort* output( int pos = 0 ) const;
+  QNEInputPort* input( int pos = 0 ) const;
+  QNEOutputPort* output( int pos = 0 ) const;
 
-  void setOutputs( const QVector< QNEPort* > &outputs );
+  void setOutputs( const QVector< QNEOutputPort* > &outputs );
 
   int minInputSz( ) const;
 
@@ -100,7 +107,7 @@ public:
   virtual float getFrequency( );
   virtual void setFrequency( float freq );
 
-  void setPixmap(const QString &pixmapPath , QRect size = QRect());
+  void setPixmap( const QString &pixmapName, QRect size = QRect( ) );
 
   bool rotatable( ) const;
 
@@ -112,8 +119,14 @@ public:
 
   bool hasTrigger( ) const;
 
+  bool hasAudio( ) const;
+
+
   virtual void setColor( QString getColor );
   virtual QString getColor( );
+
+  virtual void setAudio( QString audio );
+  virtual QString getAudio( );
 /*
  *  bool beingVisited( ) const;
  *  void setBeingVisited( bool beingVisited );
@@ -128,6 +141,10 @@ public:
 
   void setLabel( QString label );
   QString getLabel( );
+
+  void updateTheme( );
+  virtual void updateThemeLocal( );
+
   void disable( );
   void enable( );
   bool disabled( );
@@ -139,6 +156,9 @@ public:
 
   virtual QString genericProperties( );
 
+
+  void updateLabel();
+  
 protected:
   void setRotatable( bool rotatable );
   void setHasLabel( bool hasLabel );
@@ -147,6 +167,7 @@ protected:
   void setHasTrigger( bool hasTrigger );
   void setMinInputSz( int minInputSz );
   void setMinOutputSz( int minOutputSz );
+  void setHasAudio( bool hasAudio );
   void setOutputsOnTop( bool outputsOnTop );
   void setMaxOutputSz( int maxOutputSz );
   void setMaxInputSz( int maxInputSz );
@@ -169,17 +190,37 @@ private:
   bool m_hasFrequency;
   bool m_hasColors;
   bool m_hasTrigger;
+  bool m_hasAudio;
   bool m_disabled;
   QString m_labelText;
   QKeySequence m_trigger;
-protected:
-  QVector< QNEPort* > m_inputs;
-  QVector< QNEPort* > m_outputs;
 
-  /* QGraphicsItem interface */
-protected:
-/*  virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent * event); */
 
+  void loadPos( QDataStream &ds );
+
+  void loadAngle( QDataStream &ds );
+
+  void loadLabel( QDataStream &ds, double version );
+
+  void loadMinMax( QDataStream &ds, double version );
+
+  void loadTrigger( QDataStream &ds, double version );
+
+  void loadInputPorts( QDataStream &ds, QMap< quint64, QNEPort* > &portMap );
+
+  void removePortFromMap( QNEPort *deletedPort, QMap< quint64, QNEPort* > &portMap );
+
+  void loadOutputPorts( QDataStream &ds, QMap< quint64, QNEPort* > &portMap );
+
+  void removeSurplusInputs( quint64 inputSz, QMap< quint64, QNEPort* > &portMap );
+
+  void loadInputPort( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, size_t port );
+
+  void loadOutputPort( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, size_t port );
+
+protected:
+  QVector< QNEInputPort* > m_inputs;
+  QVector< QNEOutputPort* > m_outputs;
 };
 
 

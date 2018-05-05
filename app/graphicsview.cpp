@@ -1,4 +1,5 @@
 #include "graphicsview.h"
+#include "graphicsviewzoom.h"
 
 #include <QApplication>
 #include <QKeyEvent>
@@ -9,6 +10,8 @@ GraphicsView::GraphicsView( QWidget *parent ) : QGraphicsView( parent ) {
   _space = false;
   _panStartX = 0;
   _panStartY = 0;
+  setAcceptDrops( true );
+  m_gvzoom = new GraphicsViewZoom( this );
 }
 
 void GraphicsView::mousePressEvent( QMouseEvent *e ) {
@@ -53,7 +56,7 @@ void GraphicsView::keyPressEvent( QKeyEvent *e ) {
     QApplication::setOverrideCursor( Qt::ClosedHandCursor );
     e->accept( );
   }
-  QGraphicsView::keyPressEvent(e);
+  QGraphicsView::keyPressEvent( e );
 }
 
 
@@ -63,5 +66,9 @@ void GraphicsView::keyReleaseEvent( QKeyEvent *e ) {
     QApplication::restoreOverrideCursor( );
     e->accept( );
   }
-  QGraphicsView::keyReleaseEvent(e);
+  QGraphicsView::keyReleaseEvent( e );
+}
+
+GraphicsViewZoom* GraphicsView::gvzoom( ) const {
+  return( m_gvzoom );
 }

@@ -21,23 +21,3 @@ void Demux::updatePorts( ) {
   output( 0 )->setPos( 48, 32 - 12 ); /* Out */
   output( 1 )->setPos( 48, 32 + 12 ); /* Out */
 }
-
-void Demux::updateLogic( ) {
-  char in = input( 0 )->value( );
-  char choice = input( 1 )->value( );
-
-  char out0 = -1;
-  char out1 = -1;
-  if( isValid( ) ) {
-    if( choice == 0 ) {
-      out0 = in;
-      out1 = false;
-    }
-    else {
-      out0 = false;
-      out1 = in;
-    }
-  }
-  output( 0 )->setValue( out0 );
-  output( 1 )->setValue( out1 );
-}

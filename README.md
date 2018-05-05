@@ -36,7 +36,7 @@ This software is licensed under the [GNU General Public License, Version 3.0](ht
 
 See [`LICENSE`](LICENSE) for full of the license text.
   
-    Copyright (C) 2015 - Davi Morales, Fábio Cappabianco, Héctor Castelli, Lucas Lellis and Rodrigo Torres.
+    Copyright (C) 2015 - Davi Morales, Fábio Cappabianco, Lucas Lellis and Rodrigo Torres.
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

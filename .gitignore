@@ -45,3 +45,5 @@ build
 *.exe
 *.tar.gz
 *.lintian
+
+Deploy/*

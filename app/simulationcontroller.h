@@ -1,35 +1,43 @@
 #ifndef SIMULATIONCONTROLLER_H
 #define SIMULATIONCONTROLLER_H
 
-#include "graphicelement.h"
+#include "elementmapping.h"
 #include "scene.h"
 
-#include <QGraphicsScene>
-#include <QMap>
-#include <QObject>
-#include <QTimer>
+
+class Clock;
 
 class SimulationController : public QObject {
   Q_OBJECT
 public:
   explicit SimulationController( Scene *scn );
   ~SimulationController( );
+
+  void updateScene( const QRectF &rect );
   static QVector< GraphicElement* > sortElements( QVector< GraphicElement* > elms );
+
+  bool isRunning( );
 signals:
 
 public slots:
   void update( );
   void stop( );
   void start( );
-  void reSortElms();
+  void clear( );
+  void updateView( );
+  void updateAll( );
+  bool canRun( );
+  void reSortElms( );
 
 private:
+  void updatePort( QNEOutputPort *port );
+  void updatePort( QNEInputPort *port );
+  void updateConnection( QNEConnection *conn );
+
+  ElementMapping *elMapping;
   Scene *scene;
-  QTimer timer;
-  QVector< GraphicElement* > sortedElements;
-  static int calculatePriority( GraphicElement *elm,
-                                QMap< GraphicElement*, bool > &beingvisited,
-                                QMap< GraphicElement*, int > &priority );
+  QTimer simulationTimer;
+  QTimer viewTimer;
 };
 
 #endif /* SIMULATIONCONTROLLER_H */

@@ -11,21 +11,16 @@ Node::Node( QGraphicsItem *parent ) : GraphicElement( 1, 1, 1, 1, parent ) {
 //  paint->drawEllipse( 4, 4, 24, 24 );
 //  delete paint;
 //  setPixmap( pix );
-  setPixmap(":/basic/node.png", QRect(QPoint(16,16), QPoint(48,48)));
+  setPixmap( ":/basic/node.png", QRect( QPoint( 16, 16 ), QPoint( 48, 48 ) ) );
   updatePorts( );
   setPortName( "NODE" );
-  input()->setRequired(true);
+  input( )->setRequired( true );
 }
 
 void Node::updatePorts( ) {
-  input()->setPos( 0, 16 );
-  output()->setPos( 32, 16 );
+  input( )->setPos( 0, 16 );
+  output( )->setPos( 32, 16 );
 }
-
-void Node::updateLogic( ) {
-  output()->setValue( inputs( ).first( )->value( ) );
-}
-
 
 ElementType Node::elementType( ) {
   return( ElementType::NODE );
