@@ -33,7 +33,7 @@ Display::~Display( ) {
 
 }
 
-void Display::updateLogic( ) {
+void Display::refresh( ) {
   update( );
 }
 
@@ -96,7 +96,7 @@ void Display::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double 
   if( version < 1.6 ) {
     COMMENT( "Remapping inputs", 0 );
     QVector< int > order = { 2, 1, 4, 5, 0, 7, 3, 6 };
-    QVector< QNEPort* > aux = inputs( );
+    QVector< QNEInputPort* > aux = inputs( );
     for( int i = 0; i < aux.size( ); ++i ) {
       aux[ order[ i ] ] = inputs( )[ i ];
     }
@@ -106,7 +106,7 @@ void Display::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double 
   if( version < 1.7 ) {
     COMMENT( "Remapping inputs", 0 );
     QVector< int > order = { 2, 5, 4, 0, 7, 3, 6, 1 };
-    QVector< QNEPort* > aux = inputs( );
+    QVector< QNEInputPort* > aux = inputs( );
     for( int i = 0; i < aux.size( ); ++i ) {
       aux[ order[ i ] ] = inputs( )[ i ];
     }

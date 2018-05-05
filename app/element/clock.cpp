@@ -7,7 +7,6 @@ bool Clock::reset = false;
 Clock::Clock( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent ) {
   setOutputsOnTop( false );
   setRotatable( false );
-  setPixmap( ":/input/clock0.png" );
 /*  connect(&timer,&QTimer::timeout,this,&Clock::updateClock); */
   setFrequency( 1.0 );
   setHasFrequency( true );
@@ -15,23 +14,38 @@ Clock::Clock( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent ) {
   Clock::reset = true;
   setHasLabel( true );
   setPortName( "Clock" );
+  setOn( 0 );
 }
 
 Clock::~Clock( ) {
 }
 
 void Clock::updateClock( ) {
-  elapsed = 0;
+  if( !disabled( ) ) {
+    elapsed++;
+    if( ( elapsed % interval ) == 0 ) {
+      setOn( !on );
+    }
+  }
+  setOn( on );
+}
+
+
+bool Clock::getOn( ) const {
+  return( on );
+}
+
+void Clock::setOn( bool value ) {
+  on = value;
   if( on ) {
-    on = false;
-    setPixmap( ":/input/clock0.png" );
+    setPixmap( ":/input/clock1.png" );
   }
   else {
-    on = true;
-    setPixmap( ":/input/clock1.png" );
+    setPixmap( ":/input/clock0.png" );
   }
   outputs( ).first( )->setValue( on );
 }
+
 
 void Clock::save( QDataStream &ds ) {
   GraphicElement::save( ds );
@@ -55,7 +69,7 @@ void Clock::setFrequency( float freq ) {
 /*  qDebug() << "Clock frequency set to " << freq; */
   if( ( freq > 0.0 ) ) {
     int auxinterval = 1000 / ( freq * GLOBALCLK );
-    if(auxinterval > 0){
+    if( auxinterval > 0 ) {
       interval = auxinterval;
       m_frequency = freq;
       elapsed = 0;
@@ -66,20 +80,8 @@ void Clock::setFrequency( float freq ) {
   }
 }
 
-void Clock::updateLogic( ) {
-  if( !disabled( ) ) {
-    elapsed++;
-
-    if( ( elapsed % interval ) == 0 ) {
-      updateClock( );
-    }
-  }
-  outputs( ).first( )->setValue( on );
-}
-
 void Clock::resetClock( ) {
-  on = true;
-  updateClock( );
+  setOn( true );
   elapsed = 0;
 }
 

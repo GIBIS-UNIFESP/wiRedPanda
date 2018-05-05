@@ -1,0 +1,47 @@
+#include "simplewaveform.h"
+#include "testwaveform.h"
+
+#include <QTemporaryFile>
+
+void TestWaveForm::init( ) {
+  editor = new Editor( this );
+}
+
+void TestWaveForm::cleanup( ) {
+  delete editor;
+}
+
+void TestWaveForm::testDisplay4Bits( ) {
+  QDir examplesDir( QString( "%1/../examples/" ).arg( CURRENTDIR ) );
+  QString fileName = examplesDir.absoluteFilePath( "display-4bits.panda" );
+  QFile pandaFile( fileName );
+  QVERIFY( pandaFile.open( QFile::ReadOnly ) );
+  QDataStream ds( &pandaFile );
+  try {
+    editor->load( ds );
+  }
+  catch( std::runtime_error &e ) {
+    QFAIL( QString( "Could not load the file! Error: %1" ).arg( QString::fromStdString( e.what( ) ) ).toUtf8( ) );
+  }
+
+  QTemporaryFile outFile;
+  QVERIFY( outFile.open( ) );
+  QTextStream outStream( &outFile );
+  QVERIFY( SimpleWaveform::saveToTxt( outStream, editor ) );
+
+  outFile.flush( );
+  outFile.close( );
+
+  QFile firstFile( outFile.fileName( ) );
+  QFile secndFile( examplesDir.absoluteFilePath( "display-4bits.txt" ) );
+
+  QVERIFY( firstFile.open( QFile::ReadOnly ) );
+  QVERIFY( secndFile.open( QFile::ReadOnly ) );
+
+  QCOMPARE( firstFile.readAll( ), secndFile.readAll( ) );
+
+  firstFile.close( );
+  secndFile.close( );
+
+  outFile.remove( );
+}

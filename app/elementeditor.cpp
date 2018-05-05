@@ -3,6 +3,8 @@
 #include "elementeditor.h"
 #include "ui_elementeditor.h"
 #include <QDebug>
+#include <QGraphicsView>
+#include <QKeyEvent>
 #include <QMenu>
 #include <cmath>
 
@@ -12,6 +14,7 @@ ElementEditor::ElementEditor( QWidget *parent ) : QWidget( parent ), ui( new Ui:
   _manyIS = tr( "<Many values>" );
   _manyFreq = tr( "<Many values>" );
   _manyTriggers = tr( "<Many triggers>" );
+  _manyAudios = tr( "<Many sounds>" );
 
   ui->setupUi( this );
   setEnabled( false );
@@ -19,6 +22,12 @@ ElementEditor::ElementEditor( QWidget *parent ) : QWidget( parent ), ui( new Ui:
 
   ui->lineEditTrigger->setValidator( new QRegExpValidator( QRegExp( "[a-z]| |[A-Z]|[0-9]" ), this ) );
   fillColorComboBox( );
+  ui->lineEditElementLabel->installEventFilter( this );
+  ui->lineEditTrigger->installEventFilter( this );
+  ui->comboBoxColor->installEventFilter( this );
+  ui->comboBoxInputSz->installEventFilter( this );
+  ui->doubleSpinBoxFrequency->installEventFilter( this );
+  ui->comboBoxAudio->installEventFilter( this );
 }
 
 ElementEditor::~ElementEditor( ) {
@@ -34,13 +43,13 @@ QAction* addElementAction( QMenu *menu, GraphicElement *firstElm, ElementType ty
   if( !hasSameType || ( firstElm->elementType( ) != type ) ) {
     QAction *action = menu->addAction( QIcon( ElementFactory::getPixmap( type ) ), ElementFactory::translatedName(
                                          type ) );
-    action->setData( ElementFactory::typeToText( type ) );
+    action->setData( ( int ) type );
     return( action );
   }
   return( nullptr );
 }
 
-void ElementEditor::contextMenu(QPoint screenPos) {
+void ElementEditor::contextMenu( QPoint screenPos ) {
   QMenu menu;
   QString renameActionText( tr( "Rename" ) );
   QString rotateActionText( tr( "Rotate" ) );
@@ -49,16 +58,18 @@ void ElementEditor::contextMenu(QPoint screenPos) {
   QString triggerActionText( tr( "Change trigger" ) );
   QString morphMenuText( tr( "Morph to..." ) );
   if( hasLabel ) {
-    menu.addAction( QIcon( QPixmap( ":/toolbar/rename.png" ) ), renameActionText );
+    menu.addAction( QIcon( QPixmap( ":/toolbar/rename.png" ) ), renameActionText )->setData( renameActionText );
   }
   if( hasTrigger ) {
-    menu.addAction( QIcon( ElementFactory::getPixmap( ElementType::BUTTON ) ), triggerActionText );
+    menu.addAction( QIcon( ElementFactory::getPixmap( ElementType::BUTTON ) ), triggerActionText )->setData(
+      triggerActionText );
   }
   if( hasRotation ) {
-    menu.addAction( QIcon( QPixmap( ":/toolbar/rotateR.png" ) ), rotateActionText );
+    menu.addAction( QIcon( QPixmap( ":/toolbar/rotateR.png" ) ), rotateActionText )->setData( rotateActionText );
   }
   if( hasFrequency ) {
-    menu.addAction( QIcon( ElementFactory::getPixmap( ElementType::CLOCK ) ), freqActionText );
+    menu.addAction( QIcon( ElementFactory::getPixmap( ElementType::CLOCK ) ),
+                    freqActionText )->setData( freqActionText );
   }
   QMenu *submenucolors = nullptr;
   if( hasColors ) {
@@ -109,7 +120,12 @@ void ElementEditor::contextMenu(QPoint screenPos) {
         }
         break;
       }
-        case ElementGroup::OUTPUT:
+        case ElementGroup::OUTPUT:{
+        addElementAction( submenumorph, firstElm, ElementType::LED, hasSameType );
+        addElementAction( submenumorph, firstElm, ElementType::BUZZER, hasSameType );
+        break;
+      }
+
         case ElementGroup::BOX:
         case ElementGroup::MUX:
         case ElementGroup::OTHER:
@@ -146,8 +162,9 @@ void ElementEditor::contextMenu(QPoint screenPos) {
       ui->doubleSpinBoxFrequency->setFocus( );
     }
     else if( submenumorph && submenumorph->actions( ).contains( a ) ) {
-      if( ElementFactory::textToType( a->data( ).toString( ) ) != ElementType::UNKNOWN ) {
-        sendCommand( new MorphCommand( m_elements, ElementFactory::textToType( a->data( ).toString( ) ), editor ) );
+      ElementType type = static_cast< ElementType >( a->data( ).toInt( ) );
+      if( type != ElementType::UNKNOWN ) {
+        sendCommand( new MorphCommand( m_elements, type, editor ) );
       }
     }
     else if( submenucolors && submenucolors->actions( ).contains( a ) ) {
@@ -183,25 +200,27 @@ void ElementEditor::retranslateUi( ) {
 
 void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms ) {
   m_elements = elms;
-  hasLabel = hasColors = hasFrequency = canChangeInputSize = hasTrigger = false;
-  hasRotation = hasSameLabel = hasSameColors = hasSameFrequency = false;
+  hasLabel = hasColors = hasFrequency = canChangeInputSize = hasTrigger = hasAudio = false;
+  hasRotation = hasSameLabel = hasSameColors = hasSameFrequency = hasSameAudio = false;
   hasSameInputSize = hasSameTrigger = canMorph = hasSameType = hasAnyProperty = false;
   hasElements = false;
   if( !elms.isEmpty( ) ) {
     hasAnyProperty = false;
-    hasLabel = hasColors = hasFrequency = canChangeInputSize = hasTrigger = true;
+    hasLabel = hasColors = hasAudio = hasFrequency = canChangeInputSize = hasTrigger = true;
     hasRotation = true;
     setVisible( true );
     setEnabled( false );
     int minimum = 0, maximum = 100000000;
     hasSameLabel = hasSameColors = hasSameFrequency = true;
     hasSameInputSize = hasSameTrigger = canMorph = true;
+    hasSameAudio = true;
     hasSameType = true;
     hasElements = true;
     GraphicElement *firstElement = m_elements.front( );
     for( GraphicElement *elm : m_elements ) {
       hasLabel &= elm->hasLabel( );
       hasColors &= elm->hasColors( );
+      hasAudio &= elm->hasAudio( );
       hasFrequency &= elm->hasFrequency( );
       minimum = std::max( minimum, elm->minInputSz( ) );
       maximum = std::min( maximum, elm->maxInputSz( ) );
@@ -214,17 +233,19 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
       hasSameInputSize &= elm->inputSize( ) == firstElement->inputSize( );
       hasSameTrigger &= elm->getTrigger( ) == firstElement->getTrigger( );
       hasSameType &= elm->elementType( ) == firstElement->elementType( );
+      hasSameAudio &= elm->getAudio( ) == firstElement->getAudio( );
       canMorph &= elm->elementGroup( ) == firstElement->elementGroup( );
       canMorph &= elm->inputSize( ) == firstElement->inputSize( );
       canMorph &= elm->outputSize( ) == firstElement->outputSize( );
     }
     canChangeInputSize = ( minimum < maximum );
-    hasAnyProperty |= hasLabel | hasColors | hasFrequency;
+    hasAnyProperty |= hasLabel | hasColors | hasFrequency | hasAudio;
     hasAnyProperty |= canChangeInputSize | hasTrigger;
 
 
     /* Labels */
     ui->lineEditElementLabel->setVisible( hasLabel );
+    ui->lineEditElementLabel->setEnabled( hasLabel );
     ui->label_labels->setVisible( hasLabel );
     if( hasLabel ) {
       if( hasSameLabel ) {
@@ -237,20 +258,38 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
     /* Color */
     ui->label_color->setVisible( hasColors );
     ui->comboBoxColor->setVisible( hasColors );
+    ui->comboBoxColor->setEnabled( hasColors );
     if( ui->comboBoxColor->findText( _manyColors ) == -1 ) {
       ui->comboBoxColor->addItem( _manyColors );
     }
     if( hasColors ) {
       if( hasSameColors ) {
         ui->comboBoxColor->removeItem( ui->comboBoxColor->findText( _manyColors ) );
-        ui->comboBoxColor->setCurrentIndex( ui->comboBoxColor->findData(firstElement->getColor( ) ));
+        ui->comboBoxColor->setCurrentIndex( ui->comboBoxColor->findData( firstElement->getColor( ) ) );
       }
       else {
         ui->comboBoxColor->setCurrentText( _manyColors );
       }
     }
+    /* Sound */
+    ui->label_audio->setVisible( hasAudio );
+    ui->comboBoxAudio->setVisible( hasAudio );
+    ui->comboBoxAudio->setEnabled( hasAudio );
+    if( ui->comboBoxAudio->findText( _manyAudios ) == -1 ) {
+      ui->comboBoxAudio->addItem( _manyAudios );
+    }
+    if( hasAudio ) {
+      if( hasSameAudio ) {
+        ui->comboBoxAudio->removeItem( ui->comboBoxAudio->findText( _manyAudios ) );
+        ui->comboBoxAudio->setCurrentText( firstElement->getAudio( ) );
+      }
+      else {
+        ui->comboBoxAudio->setCurrentText( _manyAudios );
+      }
+    }
     /* Frequency */
     ui->doubleSpinBoxFrequency->setVisible( hasFrequency );
+    ui->doubleSpinBoxFrequency->setEnabled( hasFrequency );
     ui->label_frequency->setVisible( hasFrequency );
     if( hasFrequency ) {
       if( hasSameFrequency ) {
@@ -268,6 +307,7 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
     ui->comboBoxInputSz->clear( );
     ui->label_inputs->setVisible( canChangeInputSize );
     ui->comboBoxInputSz->setVisible( canChangeInputSize );
+    ui->comboBoxInputSz->setEnabled( canChangeInputSize );
     for( int port = minimum; port <= maximum; ++port ) {
       ui->comboBoxInputSz->addItem( QString::number( port ), port );
     }
@@ -286,6 +326,7 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
     }
     /* Trigger */
     ui->lineEditTrigger->setVisible( hasTrigger );
+    ui->lineEditTrigger->setEnabled( hasTrigger );
     ui->label_trigger->setVisible( hasTrigger );
     if( hasTrigger ) {
       if( hasSameTrigger ) {
@@ -318,8 +359,11 @@ void ElementEditor::apply( ) {
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );
   for( GraphicElement *elm : m_elements ) {
     elm->save( dataStream );
-    if( elm->hasColors( ) && ( ui->comboBoxColor->currentData().isValid() ) ) {
-      elm->setColor( ui->comboBoxColor->currentData().toString() );
+    if( elm->hasColors( ) && ( ui->comboBoxColor->currentData( ).isValid( ) ) ) {
+      elm->setColor( ui->comboBoxColor->currentData( ).toString( ) );
+    }
+    if( elm->hasAudio( ) && ( ui->comboBoxAudio->currentText( ) != _manyAudios ) ) {
+      elm->setAudio( ui->comboBoxAudio->currentText( ) );
     }
     if( elm->hasLabel( ) && ( ui->lineEditElementLabel->text( ) != _manyLabels ) ) {
       elm->setLabel( ui->lineEditElementLabel->text( ) );
@@ -336,8 +380,7 @@ void ElementEditor::apply( ) {
   emit sendCommand( new UpdateCommand( m_elements, itemData, editor ) );
 }
 
-void ElementEditor::setEditor(Editor * value)
-{
+void ElementEditor::setEditor( Editor *value ) {
   editor = value;
 }
 
@@ -345,8 +388,7 @@ void ElementEditor::on_lineEditElementLabel_editingFinished( ) {
   apply( );
 }
 
-void ElementEditor::on_comboBoxInputSz_currentIndexChanged( int index ) {
-  Q_UNUSED( index );
+void ElementEditor::on_comboBoxInputSz_currentIndexChanged( int ) {
   if( ( m_elements.isEmpty( ) ) || ( isEnabled( ) == false ) ) {
     return;
   }
@@ -359,8 +401,7 @@ void ElementEditor::on_doubleSpinBoxFrequency_editingFinished( ) {
   apply( );
 }
 
-void ElementEditor::on_comboBoxColor_currentIndexChanged( int index ) {
-  Q_UNUSED( index );
+void ElementEditor::on_comboBoxColor_currentIndexChanged( int ) {
   apply( );
 }
 
@@ -369,5 +410,59 @@ void ElementEditor::on_lineEditTrigger_textChanged( const QString &cmd ) {
 }
 
 void ElementEditor::on_lineEditTrigger_editingFinished( ) {
+  apply( );
+}
+
+
+bool ElementEditor::eventFilter( QObject *obj, QEvent *event ) {
+  QWidget *wgt = dynamic_cast< QWidget* >( obj );
+  QKeyEvent *keyEvent = dynamic_cast< QKeyEvent* >( event );
+  if( ( event->type( ) == QEvent::KeyPress ) && keyEvent && ( m_elements.size( ) == 1 ) ) {
+    bool move_fwd = keyEvent->key( ) == Qt::Key_Tab;
+    bool move_back = keyEvent->key( ) == Qt::Key_Backtab;
+    if( move_back || move_fwd ) {
+      GraphicElement *elm = m_elements.first( );
+      QVector< GraphicElement* > elms = scene->getVisibleElements( );
+      std::stable_sort( elms.begin( ), elms.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
+        return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
+      } );
+      std::stable_sort( elms.begin( ), elms.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
+        return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
+      } );
+
+      apply( );
+      int elmPos = elms.indexOf( elm );
+      qDebug( ) << "Pos = " << elmPos << " from " << elms.size( );
+      int step = 1;
+      if( move_back ) {
+        step = -1;
+      }
+      int pos = ( elms.size( ) + elmPos + step ) % elms.size( );
+      for( ; pos != elmPos;
+           pos = ( ( elms.size( ) + pos + step ) % elms.size( ) ) ) {
+        qDebug( ) << "Pos = " << pos;
+        elm = elms[ pos ];
+
+        setCurrentElements( QVector< GraphicElement* >( { elm } ) );
+        if( wgt->isEnabled( ) ) {
+          break;
+        }
+      }
+      scene->clearSelection( );
+      if( !wgt->isEnabled( ) ) {
+        elm = elms[ elmPos ];
+      }
+      elm->setSelected( true );
+      elm->ensureVisible( );
+      wgt->setFocus( );
+      event->accept( );
+      return( true );
+    }
+  }
+  /* pass the event on to the parent class */
+  return( QWidget::eventFilter( obj, event ) );
+}
+
+void ElementEditor::on_comboBoxAudio_currentIndexChanged( int ) {
   apply( );
 }

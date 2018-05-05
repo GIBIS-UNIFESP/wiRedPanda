@@ -30,11 +30,20 @@
    <layout class="QHBoxLayout" name="horizontalLayout_6">
     <item>
      <widget class="QSplitter" name="splitter">
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <property name="midLineWidth">
+       <number>2</number>
+      </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
       <property name="opaqueResize">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
       <property name="handleWidth">
        <number>8</number>
@@ -51,7 +60,7 @@
        </property>
        <property name="maximumSize">
         <size>
-         <width>400</width>
+         <width>600</width>
          <height>16777215</height>
         </size>
        </property>
@@ -73,7 +82,7 @@
              </size>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="io">
              <attribute name="title">
@@ -94,7 +103,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>252</height>
+                   <height>239</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -136,7 +145,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>252</height>
+                   <height>239</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -178,7 +187,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>252</height>
+                   <height>239</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -220,7 +229,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>252</height>
+                   <height>239</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -320,7 +329,7 @@
                <x>0</x>
                <y>0</y>
                <width>228</width>
-               <height>297</height>
+               <height>289</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
@@ -358,6 +367,9 @@
        </property>
        <property name="acceptDrops">
         <bool>true</bool>
+       </property>
+       <property name="midLineWidth">
+        <number>0</number>
        </property>
       </widget>
      </widget>
@@ -400,6 +412,7 @@
    <addaction name="actionReset_Zoom"/>
    <addaction name="separator"/>
    <addaction name="actionPlay"/>
+   <addaction name="actionWaveform"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QMenuBar" name="menuBar">
@@ -408,7 +421,7 @@
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>19</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -423,7 +436,7 @@
       <bool>false</bool>
      </property>
      <property name="title">
-      <string>Recent files:</string>
+      <string>&amp;Recent files:</string>
      </property>
      <property name="icon">
       <iconset resource="resources/toolbar/toolbar.qrc">
@@ -442,6 +455,7 @@
     <addaction name="actionSave_As"/>
     <addaction name="actionExport_to_Arduino"/>
     <addaction name="actionPrint"/>
+    <addaction name="actionExport_to_Image"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
     <addaction name="separator"/>
@@ -461,6 +475,8 @@
     <addaction name="separator"/>
     <addaction name="actionRotate_left"/>
     <addaction name="actionRotate_right"/>
+    <addaction name="actionFlip_horizontally"/>
+    <addaction name="actionFlip_vertically"/>
     <addaction name="separator"/>
     <addaction name="actionSelect_all"/>
     <addaction name="actionClear_selection"/>
@@ -476,6 +492,13 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
+    <widget class="QMenu" name="menuTheme">
+     <property name="title">
+      <string>&amp;Theme</string>
+     </property>
+     <addaction name="actionPanda_Light"/>
+     <addaction name="actionPanda_Dark"/>
+    </widget>
     <addaction name="actionZoom_in"/>
     <addaction name="actionZoom_out"/>
     <addaction name="actionReset_Zoom"/>
@@ -484,17 +507,29 @@
     <addaction name="actionGates"/>
     <addaction name="separator"/>
     <addaction name="actionFast_Mode"/>
+    <addaction name="separator"/>
+    <addaction name="menuTheme"/>
+    <addaction name="actionFullscreen"/>
    </widget>
    <widget class="QMenu" name="menuLanguage">
     <property name="title">
-     <string>Language</string>
+     <string>&amp;Language</string>
     </property>
     <addaction name="actionEnglish"/>
     <addaction name="actionPortuguese"/>
    </widget>
+   <widget class="QMenu" name="menuSimulation">
+    <property name="title">
+     <string>Sim&amp;ulation</string>
+    </property>
+    <addaction name="actionPlay"/>
+    <addaction name="actionWaveform"/>
+    <addaction name="actionMute"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
+   <addaction name="menuSimulation"/>
    <addaction name="menuLanguage"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -688,7 +723,7 @@
      <normaloff>:/toolbar/rotateR.png</normaloff>:/toolbar/rotateR.png</iconset>
    </property>
    <property name="text">
-    <string>Rotate right</string>
+    <string>R&amp;otate right</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
@@ -700,7 +735,7 @@
      <normaloff>:/toolbar/rotateL.png</normaloff>:/toolbar/rotateL.png</iconset>
    </property>
    <property name="text">
-    <string>Rotate left</string>
+    <string>Rotate &amp;left</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+R</string>
@@ -712,7 +747,7 @@
      <normaloff>:/toolbar/helpQt.png</normaloff>:/toolbar/helpQt.png</iconset>
    </property>
    <property name="text">
-    <string>About Qt</string>
+    <string>About &amp;Qt</string>
    </property>
   </action>
   <action name="actionSelect_all">
@@ -721,7 +756,7 @@
      <normaloff>:/toolbar/selectAll.png</normaloff>:/toolbar/selectAll.png</iconset>
    </property>
    <property name="text">
-    <string>Select all</string>
+    <string>&amp;Select all</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+A</string>
@@ -733,7 +768,7 @@
      <normaloff>:/toolbar/panelBox.png</normaloff>:/toolbar/panelBox.png</iconset>
    </property>
    <property name="text">
-    <string>Open file as a Box</string>
+    <string>Open &amp;file as a Box</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+O</string>
@@ -745,7 +780,10 @@
      <normaloff>:/toolbar/reloadFile.png</normaloff>:/toolbar/reloadFile.png</iconset>
    </property>
    <property name="text">
-    <string>Reload File</string>
+    <string>Re&amp;load File</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F5</string>
    </property>
   </action>
   <action name="actionExport_to_Arduino">
@@ -754,7 +792,10 @@
      <normaloff>:/toolbar/arduino.png</normaloff>:/toolbar/arduino.png</iconset>
    </property>
    <property name="text">
-    <string>Export to Arduino</string>
+    <string>E&amp;xport to Arduino</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+I</string>
    </property>
   </action>
   <action name="actionReset_Zoom">
@@ -763,7 +804,7 @@
      <normaloff>:/toolbar/zoomReset.png</normaloff>:/toolbar/zoomReset.png</iconset>
    </property>
    <property name="text">
-    <string>Reset Zoom</string>
+    <string>&amp;Reset Zoom</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+0</string>
@@ -775,7 +816,10 @@
      <normaloff>:/toolbar/pdf.png</normaloff>:/toolbar/pdf.png</iconset>
    </property>
    <property name="text">
-    <string>Export to PDF</string>
+    <string>Export to &amp;PDF</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+P</string>
    </property>
   </action>
   <action name="actionEnglish">
@@ -784,7 +828,7 @@
      <normaloff>:/toolbar/usa.png</normaloff>:/toolbar/usa.png</iconset>
    </property>
    <property name="text">
-    <string>English</string>
+    <string>&amp;English</string>
    </property>
   </action>
   <action name="actionPortuguese">
@@ -793,7 +837,7 @@
      <normaloff>:/toolbar/brasil.png</normaloff>:/toolbar/brasil.png</iconset>
    </property>
    <property name="text">
-    <string>Portuguese</string>
+    <string>&amp;Portuguese</string>
    </property>
   </action>
   <action name="actionPlay">
@@ -806,7 +850,7 @@
      <normalon>:/toolbar/pause.png</normalon>:/toolbar/play.png</iconset>
    </property>
    <property name="text">
-    <string>PlayPause</string>
+    <string>&amp;Play/Pause</string>
    </property>
    <property name="toolTip">
     <string>Play or Pause simulation.</string>
@@ -821,7 +865,7 @@
      <normaloff>:/toolbar/rename.png</normaloff>:/toolbar/rename.png</iconset>
    </property>
    <property name="text">
-    <string>Rename</string>
+    <string>&amp;Rename</string>
    </property>
    <property name="shortcut">
     <string>F2</string>
@@ -833,7 +877,7 @@
      <normaloff>:/input/buttonOff.png</normaloff>:/input/buttonOff.png</iconset>
    </property>
    <property name="text">
-    <string>Change Trigger</string>
+    <string>Cha&amp;nge Trigger</string>
    </property>
    <property name="shortcut">
     <string>F3</string>
@@ -845,7 +889,7 @@
      <normaloff>:/toolbar/cleanSelection.png</normaloff>:/toolbar/cleanSelection.png</iconset>
    </property>
    <property name="text">
-    <string>Clear selection</string>
+    <string>Cl&amp;ear selection</string>
    </property>
    <property name="shortcut">
     <string>Esc</string>
@@ -860,7 +904,81 @@
      <normaloff>:/toolbar/fast.png</normaloff>:/toolbar/fast.png</iconset>
    </property>
    <property name="text">
-    <string>Fast Mode</string>
+    <string>&amp;Fast Mode</string>
+   </property>
+  </action>
+  <action name="actionPanda_Light">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Panda Light</string>
+   </property>
+  </action>
+  <action name="actionPanda_Dark">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Panda &amp;Dark</string>
+   </property>
+  </action>
+  <action name="actionWaveform">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/wavyIcon.png</normaloff>:/toolbar/wavyIcon.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Waveform</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
+   </property>
+  </action>
+  <action name="actionExport_to_Image">
+   <property name="text">
+    <string>Export to &amp;Image</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="actionFlip_horizontally">
+   <property name="text">
+    <string>&amp;Flip horizontally</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+H</string>
+   </property>
+  </action>
+  <action name="actionFlip_vertically">
+   <property name="text">
+    <string>Flip &amp;vertically</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
+   </property>
+  </action>
+  <action name="actionFullscreen">
+   <property name="text">
+    <string>F&amp;ullscreen</string>
+   </property>
+   <property name="shortcut">
+    <string>F11</string>
+   </property>
+  </action>
+  <action name="actionMute">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Mute</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
    </property>
   </action>
  </widget>
@@ -888,13 +1006,13 @@
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
+  <include location="resources/resources.qrc"/>
+  <include location="resources/input/input.qrc"/>
   <include location="resources/basic/basic.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/input/input.qrc"/>
   <include location="resources/resources.qrc"/>
-  <include location="resources/resources.qrc"/>
-  <include location="resources/input/input.qrc"/>
   <include location="resources/basic/basic.qrc"/>
+  <include location="resources/input/input.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>

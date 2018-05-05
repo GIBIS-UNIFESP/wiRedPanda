@@ -15,7 +15,7 @@ public:
   virtual ElementGroup elementGroup( ) {
     return( ElementGroup::OUTPUT );
   }
-  void updateLogic( );
+  void refresh( );
   void setColor( QString getColor );
   QString getColor( );
 
@@ -28,6 +28,10 @@ public:
   void save( QDataStream &ds );
   void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
   QString genericProperties( );
+
+  // GraphicElement interface
+  public:
+  void updatePorts();
 };
 
 #endif /* LED_H */

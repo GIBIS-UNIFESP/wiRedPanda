@@ -38,7 +38,7 @@
     <name>DeleteItemsCommand</name>
     <message>
         <source>Delete %1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -155,107 +155,114 @@
     <name>ElementFactory</name>
     <message>
         <source>Button</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Led</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>And</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Or</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Clock</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Switch</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Not</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Nand</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Nor</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Xor</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Xnor</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>VCC</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>GND</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>D-flipflop</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>D-latch</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>JK-flipflop</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>JK-latch</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>SR-flipflop</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>T-latch</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>T-flipflop</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Display</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Box</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Mux</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Demux</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Node</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>FlipHCommand</name>
+    <message>
+        <source>Flip %1 elements in axis %2</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -286,10 +293,6 @@
     </message>
     <message>
         <source>&amp;File</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Recent files:</source>
         <translation></translation>
     </message>
     <message>
@@ -417,15 +420,7 @@
         <translation></translation>
     </message>
     <message>
-        <source>Rotate right</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Ctrl+R</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Rotate left</source>
         <translation></translation>
     </message>
     <message>
@@ -433,35 +428,11 @@
         <translation></translation>
     </message>
     <message>
-        <source>About Qt</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Select all</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Ctrl+A</source>
         <translation></translation>
     </message>
     <message>
-        <source>Open file as a Box</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Ctrl+Shift+O</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Reload File</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Export to Arduino</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Reset Zoom</source>
         <translation></translation>
     </message>
     <message>
@@ -586,60 +557,176 @@ Error: %1</source>
         <translation></translation>
     </message>
     <message>
-        <source>Language</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>English</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Portuguese</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>F1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>PlayPause</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Play or Pause simulation.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>F5</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>F2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Change Trigger</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>F3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Clear selection</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Esc</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <source>&lt;p&gt;wiRED Panda is a software developed by the students of the Federal University of SÃ£o Paulo. This project was created in order to help students to learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; HÃ©ctor Castelli &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. FÃ¡bio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <source>&amp;Recent files:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&amp;Theme</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&amp;Language</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Sim&amp;ulation</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>R&amp;otate right</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Rotate &amp;left</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>About &amp;Qt</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&amp;Select all</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Open &amp;file as a Box</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Re&amp;load File</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>E&amp;xport to Arduino</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&amp;Reset Zoom</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Export to &amp;PDF</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&amp;English</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&amp;Portuguese</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&amp;Play/Pause</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&amp;Rename</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Cha&amp;nge Trigger</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Cl&amp;ear selection</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&amp;Fast Mode</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&amp;Panda Light</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Panda &amp;Dark</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&amp;Waveform</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Ctrl+W</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Export to &amp;Image</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&amp;Flip horizontally</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Ctrl+H</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Flip &amp;vertically</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Ctrl+Y</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>F&amp;ullscreen</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>F11</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;wiRED Panda is a software developed by the students of the Federal University of SÃ£o Paulo. This project was created in order to help students to learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. FÃ¡bio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Could not open %1 for write.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Could not generate waveform file for %1.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&lt;strong&gt;Error while exporting to waveform file:&lt;/strong&gt;&lt;br&gt;%1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Export to Image</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>PNG files (*.png)</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -664,6 +751,57 @@ Error: %1</source>
     </message>
 </context>
 <context>
+    <name>SimpleWaveform</name>
+    <message>
+        <source>Dialog</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Decreasing</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Sorting</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Position</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>I&amp;ncreasing</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Copy to Clipboard</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Could not find any input for the simulation</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Could not find any input for the simulation.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Could not find any output for the simulation.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>The simulation is limited to 8 inputs.</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
     <name>SplitCommand</name>
     <message>
         <source>Wire split</source>
@@ -674,6 +812,29 @@ Error: %1</source>
     <name>UpdateCommand</name>
     <message>
         <source>Update %1 elements</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>main</name>
+    <message>
+        <source>Circuit file to open.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Export circuit to &lt;arduino-file&gt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>arduino file</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Export circuit to &lt;waveform&gt; text file</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>waveform text file</source>
         <translation></translation>
     </message>
 </context>

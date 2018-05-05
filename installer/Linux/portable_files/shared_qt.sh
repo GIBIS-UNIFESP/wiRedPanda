@@ -7,7 +7,7 @@ if [ "${dirname%$tmp}" != "/" ]; then
 dirname=$PWD/$dirname
 fi
 
-LD_LIBRARY_PATH=$dirname
-export LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$dirname
+export QT_QPA_PLATFORM_PLUGIN_PATH=$dirname
 sed -i "s,Icon=.*,Icon=${dirname}/wpanda.svg,g" "$dirname/../wpanda.desktop"
 "$dirname/$appname" "$@"
