@@ -20,7 +20,7 @@ class Editor : public QObject {
   Q_OBJECT
   QTime timer;
 public:
-  explicit Editor( QObject *parent = 0 );
+  explicit Editor( QObject *parent = nullptr );
   virtual ~Editor( );
   void save( QDataStream &ds );
   void load( QDataStream &ds );

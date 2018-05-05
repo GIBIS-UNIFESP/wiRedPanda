@@ -9,10 +9,10 @@ public:
 
   /* GraphicElement interface */
 public:
-  virtual ElementType elementType( ) {
+  virtual ElementType elementType( ) const override {
     return( ElementType::NOT );
   }
-  virtual ElementGroup elementGroup( ) {
+  virtual ElementGroup elementGroup( ) const override {
     return( ElementGroup::GATE );
   }
   void updateLogic( );

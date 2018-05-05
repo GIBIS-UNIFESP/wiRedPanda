@@ -39,7 +39,7 @@ public:
   enum { Type = QGraphicsItem::UserType + 1 };
   enum { NamePort = 1, TypePort = 2 };
 
-  explicit QNEPort( QGraphicsItem *parent = 0 );
+  explicit QNEPort( QGraphicsItem *parent = nullptr );
 
   void setNEBlock( QNEBlock* );
   void setName( const QString &n );
@@ -56,10 +56,6 @@ public:
   int portFlags( ) const;
 
   int type( ) const;
-
-  quint64 ptr( );
-  void setPtr( quint64 );
-
 
   GraphicElement* graphicElement( ) const;
   void setGraphicElement( GraphicElement *graphicElement );
@@ -98,7 +94,6 @@ protected:
   int margin;
   QList< QNEConnection* > m_connections;
   int m_portFlags;
-  quint64 m_ptr;
 
   bool m_required;
 

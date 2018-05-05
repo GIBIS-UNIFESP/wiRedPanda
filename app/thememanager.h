@@ -50,7 +50,7 @@ class ThemeManager : public QObject {
 public:
   static ThemeManager *globalMngr;
 
-  explicit ThemeManager( QObject *parent = 0 );
+  explicit ThemeManager( QObject *parent = nullptr );
 
   QString currentTheme( ) const;
   void setCurrentTheme( Theme theme );

@@ -32,13 +32,14 @@
 ElementFactory*ElementFactory::instance = new ElementFactory( );
 
 
-size_t ElementFactory::getLastId( ) const {
+int ElementFactory::getLastId( ) const {
   return( _lastId );
 }
 
 ElementType ElementFactory::textToType( QString text ) {
   text = text.toUpper( );
   ElementType type;
+
   type = text == "BUTTON" ? ElementType::BUTTON :
          text == "LED" ? ElementType::LED :
          text == "AND" ? ElementType::AND :
@@ -97,8 +98,10 @@ QString ElementFactory::typeToText( ElementType type ) {
       case ElementType::DEMUX: return( "DEMUX" );
       case ElementType::NODE: return( "NODE" );
       case ElementType::BUZZER: return( "BUZZER" );
-      case ElementType::UNKNOWN: default: return( "UNKNOWN" );
-  }
+      case ElementType::UNKNOWN: return ( "UNKNOWN" );
+   }
+
+  return( "UNKNOWN" );
 }
 
 QString ElementFactory::translatedName( ElementType type ) {
@@ -129,8 +132,10 @@ QString ElementFactory::translatedName( ElementType type ) {
       case ElementType::DEMUX: return( tr( "Demux" ) );
       case ElementType::NODE: return( tr( "Node" ) );
       case ElementType::BUZZER: return( tr( "Buzzer" ) );
-      case ElementType::UNKNOWN: default: return( tr( "Unknown" ) );
+      case ElementType::UNKNOWN: return( tr( "Unknown" ) );
   }
+
+  return( tr( "Unknown" ) );
 }
 
 QPixmap ElementFactory::getPixmap( ElementType type ) {
@@ -161,8 +166,9 @@ QPixmap ElementFactory::getPixmap( ElementType type ) {
       case ElementType::DEMUX: return( QPixmap( ":/basic/demux.png" ) );
       case ElementType::NODE: return( QPixmap( ":/basic/node.png" ) );
       case ElementType::BUZZER: return( QPixmap( ":/output/BuzzerOff.png" ) );
-      case ElementType::UNKNOWN: default: return( QPixmap( ) );
+      case ElementType::UNKNOWN: return( QPixmap( ) );
   }
+
   return( QPixmap( ) );
 }
 
@@ -198,7 +204,7 @@ GraphicElement* ElementFactory::buildElement( ElementType type, QGraphicsItem *p
         type == ElementType::MUX ? new Mux( parent ) :
         type == ElementType::DEMUX ? new Demux( parent ) :
         type == ElementType::BUZZER ? new Buzzer( parent ) :
-        ( GraphicElement* ) nullptr;
+                                      static_cast<GraphicElement*>(nullptr);
   return( elm );
 }
 
@@ -206,14 +212,14 @@ QNEConnection* ElementFactory::buildConnection( QGraphicsItem *parent ) {
   return( new QNEConnection( parent ) );
 }
 
-ItemWithId* ElementFactory::getItemById( size_t id ) {
+ItemWithId* ElementFactory::getItemById(int id ) {
   if( instance->map.contains( id ) ) {
     return( instance->map[ id ] );
   }
   return( nullptr );
 }
 
-bool ElementFactory::contains( size_t id ) {
+bool ElementFactory::contains(int id ) {
   return( instance->map.contains( id ) );
 }
 
@@ -229,14 +235,14 @@ void ElementFactory::removeItem( ItemWithId *item ) {
   instance->map.remove( item->id( ) );
 }
 
-void ElementFactory::updateItemId( ItemWithId *item, size_t newId ) {
+void ElementFactory::updateItemId(ItemWithId *item, int newId ) {
   instance->map.remove( item->id( ) );
   instance->map[ newId ] = item;
   item->setId( newId );
 }
 
 
-size_t ElementFactory::next_id( ) {
+int ElementFactory::next_id( ) {
   return( _lastId++ );
 }
 

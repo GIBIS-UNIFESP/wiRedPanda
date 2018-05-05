@@ -8,20 +8,20 @@
 
 class Buzzer : public GraphicElement {
 public:
-  explicit Buzzer( QGraphicsItem *parent = 0 );
-  virtual ~Buzzer( );
+  explicit Buzzer( QGraphicsItem *parent = nullptr );
+  virtual ~Buzzer( )override;
 public:
   /* GraphicElement interface */
-  virtual ElementType elementType( ) {
+  virtual ElementType elementType( )const override {
     return( ElementType::BUZZER );
   }
-  virtual ElementGroup elementGroup( ) {
+  virtual ElementGroup elementGroup( )const override {
     return( ElementGroup::OUTPUT );
   }
-  void refresh( );
+  void refresh( )override;
 
-  void setAudio( QString note );
-  QString getAudio( );
+  void setAudio( QString note )override;
+  QString getAudio( ) const override;
 
   void mute( bool _mute = true );
 
@@ -33,8 +33,8 @@ private:
   QString m_note;
   // GraphicElement interface
 public:
-  void save( QDataStream &ds );
-  void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
+  void save( QDataStream &ds ) const override;
+  void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) override;
 };
 
 #endif // BUZZER_H

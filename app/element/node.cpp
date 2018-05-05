@@ -22,6 +22,6 @@ void Node::updatePorts( ) {
   output( )->setPos( 32, 16 );
 }
 
-ElementType Node::elementType( ) {
+ElementType Node::elementType( ) const {
   return( ElementType::NODE );
 }
