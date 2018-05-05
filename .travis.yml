@@ -1,8 +1,11 @@
 language: cpp
-compiler: gcc
 sudo: false
 dist: trusty
 cache: ccache
+
+compiler: 
+  - gcc
+  - clang
 
 os:
   - linux
@@ -11,11 +14,8 @@ os:
 addons:
   apt:
     sources:
-    - sourceline: 'ppa:ubuntu-toolchain-r/test'
     - sourceline: 'ppa:beineri/opt-qt-5.10.1-trusty'
     packages:
-    - gcc-7
-    - g++-7
     - qt510base
     - qt510charts-no-lgpl
     - qt510multimedia
@@ -45,7 +45,8 @@ before_script:
 script:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
       source /opt/qt510/bin/qt510-env.sh;
-    else
+    fi
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
       QTDIR="/usr/local/opt/qt/"
       && PATH="${QTDIR}/bin:$PATH"
       && LDFLAGS=-L${QTDIR}/lib
@@ -55,7 +56,8 @@ script:
   - make -j4
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
       ./test/WPanda-test;
-    else
+    fi
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
       test/WPanda-test.app/Contents/MacOS/WPanda-test;
     fi;
 
