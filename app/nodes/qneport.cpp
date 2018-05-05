@@ -24,18 +24,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #include "qneport.h"
+#include "graphicelement.h"
+#include "qneconnection.h"
+#include "thememanager.h"
 
 #include <QFontMetrics>
 #include <QGraphicsScene>
-#include <graphicelement.h>
-
 #include <QCursor>
 #include <QDebug>
 #include <QPen>
 #include <iostream>
-#include <thememanager.h>
 
-#include "qneconnection.h"
 
 QNEPort::QNEPort( QGraphicsItem *parent ) : QGraphicsPathItem( parent ) {
   label = new QGraphicsTextItem( this );

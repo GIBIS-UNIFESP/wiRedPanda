@@ -26,8 +26,9 @@
 #ifndef QNECONNECTION_H
 #define QNECONNECTION_H
 
+#include "itemwithid.h"
+
 #include <QGraphicsPathItem>
-#include <itemwithid.h>
 
 class QNEPort;
 class QNEInputPort;

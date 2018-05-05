@@ -2,6 +2,7 @@
 #define BUZZER_H
 
 #include "graphicelement.h"
+
 #include <QSound>
 #include <QSoundEffect>
 

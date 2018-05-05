@@ -4,6 +4,9 @@
 #include "boxprototype.h"
 #include "globalproperties.h"
 #include "serializationfunctions.h"
+#include "inputswitch.h"
+#include "nodes/qneconnection.h"
+
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
@@ -13,9 +16,7 @@
 #include <QMessageBox>
 #include <QPointF>
 #include <QProcess>
-#include <inputswitch.h>
 #include <iostream>
-#include <nodes/qneconnection.h>
 
 Box::Box( QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, parent ) {
   setHasLabel( true );

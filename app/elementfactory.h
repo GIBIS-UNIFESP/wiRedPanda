@@ -1,6 +1,8 @@
 #ifndef ELEMENTFACTORY_H
 #define ELEMENTFACTORY_H
+
 #include "graphicelement.h"
+
 #include <deque>
 #include <QObject>
 

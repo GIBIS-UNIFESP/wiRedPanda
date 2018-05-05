@@ -1,9 +1,10 @@
 #include "scene.h"
+#include "qneconnection.h"
 
 #include <QColor>
 #include <QGraphicsView>
 #include <QPainter>
-#include <qneconnection.h>
+
 Scene::Scene( QObject *parent ) : QGraphicsScene( parent ) {
   m_gridSize = 16;
 }

@@ -1,9 +1,7 @@
 #ifndef LOGICOUTPUT_H
 #define LOGICOUTPUT_H
 
-#include <logicelement.h>
-
-
+#include "logicelement.h"
 
 class LogicOutput : public LogicElement {
 public:

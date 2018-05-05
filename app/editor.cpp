@@ -9,6 +9,7 @@
 #include "nodes/qneconnection.h"
 #include "serializationfunctions.h"
 #include "thememanager.h"
+#include "buzzer.h"
 
 #include <QApplication>
 #include <QClipboard>
@@ -27,7 +28,6 @@
 #include <QMimeData>
 #include <QSettings>
 #include <QtMath>
-#include <buzzer.h>
 #include <iostream>
 
 Editor*Editor::globalEditor = nullptr;

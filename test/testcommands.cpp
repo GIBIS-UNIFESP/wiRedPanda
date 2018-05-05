@@ -1,7 +1,7 @@
 #include "testcommands.h"
 
-#include <and.h>
-#include <commands.h>
+#include "and.h"
+#include "commands.h"
 
 
 void TestCommands::init( ) {

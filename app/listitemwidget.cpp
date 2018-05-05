@@ -2,6 +2,7 @@
 #include "graphicelement.h"
 #include "label.h"
 #include "listitemwidget.h"
+
 #include <QFileInfo>
 #include <QFrame>
 #include <QHBoxLayout>

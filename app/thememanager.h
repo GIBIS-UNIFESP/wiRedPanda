@@ -3,6 +3,7 @@
 
 #include <QColor>
 #include <QObject>
+
 class Editor;
 
 enum class Theme { Panda_Light, Panda_Dark };

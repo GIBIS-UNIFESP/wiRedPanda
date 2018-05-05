@@ -1,8 +1,9 @@
+#include "qneconnection.h"
 #include "display.h"
+
 #include <QDebug>
 #include <QPainter>
 #include <QPixmap>
-#include <qneconnection.h>
 
 Display::Display( QGraphicsItem *parent ) : GraphicElement( 8, 8, 0, 0, parent ) {
   setRotatable( false );

@@ -1,9 +1,7 @@
 #ifndef LOGICOR_H
 #define LOGICOR_H
 
-#include <logicelement.h>
-
-
+#include "logicelement.h"
 
 class LogicOr : public LogicElement {
 public:

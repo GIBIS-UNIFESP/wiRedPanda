@@ -4,6 +4,7 @@
 #include "globalproperties.h"
 #include "graphicelement.h"
 #include "input.h"
+
 #include <QTime>
 
 class Clock : public GraphicElement, public Input {

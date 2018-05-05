@@ -1,9 +1,7 @@
 #ifndef LOGICJKFLIPFLOP_H
 #define LOGICJKFLIPFLOP_H
 
-#include <logicelement.h>
-
-
+#include "logicelement.h"
 
 class LogicJKFlipFlop : public LogicElement {
 public:

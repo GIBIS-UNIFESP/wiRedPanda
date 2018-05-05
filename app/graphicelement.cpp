@@ -1,6 +1,7 @@
 #include "graphicelement.h"
 #include "scene.h"
 #include "thememanager.h"
+#include "nodes/qneconnection.h"
 
 #include <QDebug>
 #include <QGraphicsSceneMouseEvent>
@@ -9,7 +10,6 @@
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <iostream>
-#include <nodes/qneconnection.h>
 #include <stdexcept>
 
 QMap< QString, QPixmap > loadedPixmaps;

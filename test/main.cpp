@@ -5,6 +5,7 @@
 #include "testlogicelements.h"
 #include "testsimulationcontroller.h"
 #include "testwaveform.h"
+
 #include <QtTest>
 
 int main( int argc, char **argv ) {

@@ -1,13 +1,13 @@
 #ifndef GRAPHICELEMENT_H
 #define GRAPHICELEMENT_H
 
-#include <QGraphicsItem>
-#include <QGraphicsPixmapItem>
-#include <QKeySequence>
-
 #include "common.h"
 #include "itemwithid.h"
 #include "nodes/qneport.h"
+
+#include <QGraphicsItem>
+#include <QGraphicsPixmapItem>
+#include <QKeySequence>
 
 enum class ElementType {
   UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND, DISPLAY,

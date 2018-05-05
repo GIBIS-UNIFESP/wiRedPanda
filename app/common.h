@@ -1,7 +1,8 @@
-#include <iostream>
-
 #ifndef COMMON_H
 #define COMMON_H
+
+#include <iostream>
+
 class Comment {
 public:
   static int verbosity;

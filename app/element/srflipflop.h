@@ -1,7 +1,7 @@
 #ifndef SRFLIPFLOP_H
 #define SRFLIPFLOP_H
 
-#include <graphicelement.h>
+#include "graphicelement.h"
 
 class SRFlipFlop : public GraphicElement {
   bool lastClk;

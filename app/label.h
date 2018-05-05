@@ -1,9 +1,10 @@
 #ifndef LABEL_H
 #define LABEL_H
 
+#include "graphicelement.h"
+
 #include <QDrag>
 #include <QLabel>
-#include "graphicelement.h"
 
 class Label : public QLabel {
   Q_OBJECT

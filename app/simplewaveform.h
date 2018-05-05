@@ -8,8 +8,6 @@
 #include <QDialog>
 #include <QTextStream>
 
-using namespace QtCharts;
-
 namespace Ui {
   class SimpleWaveform;
 }
@@ -40,8 +38,8 @@ private slots:
 
 private:
   Ui::SimpleWaveform *ui;
-  QChart chart;
-  QChartView *chartView;
+  QtCharts::QChart chart;
+  QtCharts::QChartView *chartView;
   Editor *editor;
 
   SortingKind sortingKind;

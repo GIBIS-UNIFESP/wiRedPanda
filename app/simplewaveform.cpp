@@ -1,12 +1,12 @@
 #include "simplewaveform.h"
 #include "ui_simplewaveform.h"
 
+#include "input.h"
+
 #include <QChartView>
 #include <QDebug>
 #include <QLineSeries>
 #include <cmath>
-#include <input.h>
-
 #include <QBuffer>
 #include <QClipboard>
 #include <QMessageBox>

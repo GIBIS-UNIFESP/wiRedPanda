@@ -4,13 +4,12 @@
 #include "simulationcontroller.h"
 #include "simulationcontroller.h"
 
-#include <QDebug>
+#include "element/clock.h"
+
+#include "nodes/qneconnection.h"
+
 #include <limits>
-
-#include <element/clock.h>
-
-#include <nodes/qneconnection.h>
-
+#include <QDebug>
 #include <QGraphicsView>
 #include <QStack>
 

@@ -26,8 +26,9 @@
 #ifndef QNEPORT_H
 #define QNEPORT_H
 
+#include "qpen.h"
+
 #include <QGraphicsPathItem>
-#include <qpen.h>
 
 class QNEBlock;
 class QNEConnection;
