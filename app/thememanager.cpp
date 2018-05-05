@@ -17,7 +17,7 @@ void ThemeManager::setTheme( const Theme &theme ) {
     m_theme = theme;
     QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                         QApplication::organizationName( ), QApplication::applicationName( ) );
-    settings.setValue( "theme", static_cast<int>(theme) );
+    settings.setValue( "theme", ( int ) theme );
     emit themeChanged( );
   }
 }
@@ -35,7 +35,7 @@ ThemeManager::ThemeManager( QObject *parent ) : QObject( parent ) {
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   if( settings.contains( "theme" ) ) {
-    setTheme( static_cast<Theme>(settings.value( "theme" ).toInt( )) );
+    setTheme( ( Theme ) settings.value( "theme" ).toInt( ) );
   }
   else {
     setTheme( Theme::Panda_Light );

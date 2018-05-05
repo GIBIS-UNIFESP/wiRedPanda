@@ -6,14 +6,14 @@
 class Nor : public GraphicElement {
 public:
   explicit Nor( QGraphicsItem *parent );
-  virtual ~Nor( )override;
+  virtual ~Nor( );
 
   /* GraphicElement interface */
 public:
-  virtual ElementType elementType( ) const override {
+  virtual ElementType elementType( ) {
     return( ElementType::NOR );
   }
-  virtual ElementGroup elementGroup( ) const override {
+  virtual ElementGroup elementGroup( ) {
     return( ElementGroup::GATE );
   }
   void updateLogic( );

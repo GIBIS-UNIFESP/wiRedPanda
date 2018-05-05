@@ -5,7 +5,7 @@
 
 class LogicNand : public LogicElement {
 public:
-  explicit LogicNand( int inputSize );
+  explicit LogicNand( size_t inputSize );
 
   /* LogicElement interface */
 protected:

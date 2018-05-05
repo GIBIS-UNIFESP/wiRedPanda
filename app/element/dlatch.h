@@ -5,18 +5,18 @@
 
 class DLatch : public GraphicElement {
 public:
-  explicit DLatch( QGraphicsItem *parent = nullptr );
-  virtual ~DLatch( )override;
+  explicit DLatch( QGraphicsItem *parent = 0 );
+  virtual ~DLatch( );
 
   /* GraphicElement interface */
 public:
-  virtual ElementType elementType( )const override {
+  virtual ElementType elementType( ) {
     return( ElementType::DLATCH );
   }
-  virtual ElementGroup elementGroup( )const override {
+  virtual ElementGroup elementGroup( ) {
     return( ElementGroup::MEMORY );
   }
-  virtual void updatePorts( )override;
+  virtual void updatePorts( );
   void updateLogic( );
 };
 

@@ -25,7 +25,7 @@ void LogicElement::clearSucessors( ) {
   m_sucessors.clear( );
 }
 
-LogicElement::LogicElement(int inputSize, int outputSize ) :
+LogicElement::LogicElement( size_t inputSize, size_t outputSize ) :
   m_isValid( true ),
   beingVisited( false ),
   priority( -1 ),
@@ -52,7 +52,7 @@ void LogicElement::connectPredecessor( int index, LogicElement *elm, int port ) 
   elm->m_sucessors.insert( this );
 }
 
-void LogicElement::setOutputValue(int index, bool value ) {
+void LogicElement::setOutputValue( size_t index, bool value ) {
   m_outputs.at( index ) = value;
 }
 
@@ -96,11 +96,11 @@ int LogicElement::calculatePriority( ) {
   return( p );
 }
 
-bool LogicElement::getOutputValue(int index ) const {
+bool LogicElement::getOutputValue( size_t index ) const {
   return( m_outputs.at( index ) );
 }
 
-bool LogicElement::getInputValue(int index ) const {
+bool LogicElement::getInputValue( size_t index ) const {
   Q_ASSERT( m_isValid );
   LogicElement *pred = m_inputs[ index ].first;
   Q_ASSERT( pred );

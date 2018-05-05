@@ -1,6 +1,6 @@
 #include "logicor.h"
 
-LogicOr::LogicOr(int inputSize )  : LogicElement( inputSize, 1 ) {
+LogicOr::LogicOr( size_t inputSize )  : LogicElement( inputSize, 1 ) {
 
 }
 

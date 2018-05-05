@@ -8,7 +8,7 @@ class GraphicsViewZoom;
 class GraphicsView : public QGraphicsView {
   Q_OBJECT
 public:
-  explicit GraphicsView( QWidget *parent = nullptr );
+  explicit GraphicsView( QWidget *parent = 0 );
 
 
   /* QWidget interface */

@@ -106,7 +106,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   rboxController = new RecentFilesController( "recentBoxes", this );
 
   QShortcut *shortcut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
-  connect(shortcut, &QShortcut::activated, ui->lineEdit, QOverload<>::of(&QLineEdit::setFocus));
+  connect( shortcut, SIGNAL(activated()), ui->lineEdit, SLOT(setFocus()) );
   ui->graphicsView->setCacheMode( QGraphicsView::CacheBackground );
   firstResult = nullptr;
   updateRecentBoxes( );
@@ -620,7 +620,7 @@ void MainWindow::zoomChanged( ) {
 void MainWindow::updateRecentFileActions( ) {
   QStringList files = rfController->getFiles( );
 
-  int numRecentFiles = qMin( files.size( ), static_cast<int>(RecentFilesController::MaxRecentFiles) );
+  int numRecentFiles = qMin( files.size( ), ( int ) RecentFilesController::MaxRecentFiles );
   if( numRecentFiles > 0 ) {
     ui->menuRecent_files->setEnabled( true );
   }

@@ -5,14 +5,14 @@
 
 class Node : public GraphicElement {
 public:
-  explicit Node( QGraphicsItem *parent = nullptr );
-  virtual void updatePorts( )override;
-  virtual ElementGroup elementGroup( )const override {
+  explicit Node( QGraphicsItem *parent = 0 );
+  virtual void updatePorts( );
+  virtual ElementGroup elementGroup( ) {
     return( ElementGroup::GATE );
   }
   /* GraphicElement interface */
 public:
-  ElementType elementType( ) const override;
+  ElementType elementType( );
 };
 
 #endif /* NODE_H */

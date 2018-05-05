@@ -5,7 +5,7 @@
 
 class LogicXor : public LogicElement {
 public:
-  explicit LogicXor( int inputSize );
+  explicit LogicXor( size_t inputSize );
 
   /* LogicElement interface */
 protected:

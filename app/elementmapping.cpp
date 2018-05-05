@@ -157,7 +157,9 @@ LogicElement* ElementMapping::buildLogicElement( GraphicElement *elm ) {
       return( new LogicDemux( ) );
       default:
       throw std::runtime_error( "Not implemented yet: " + elm->objectName( ).toStdString( ) );
+      break;
   }
+  return( nullptr );
 }
 
 void ElementMapping::initialize( ) {

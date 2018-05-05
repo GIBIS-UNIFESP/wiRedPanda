@@ -8,18 +8,18 @@ class DFlipFlop : public GraphicElement {
   bool lastValue;
 
 public:
-  explicit DFlipFlop( QGraphicsItem *parent = nullptr );
-  virtual ~DFlipFlop( )override;
+  explicit DFlipFlop( QGraphicsItem *parent = 0 );
+  virtual ~DFlipFlop( );
 
   // GraphicElement interface
 public:
-  virtual ElementType elementType( ) const override {
+  virtual ElementType elementType( ) {
     return( ElementType::DFLIPFLOP );
   }
-  virtual ElementGroup elementGroup( ) const override {
+  virtual ElementGroup elementGroup( ) {
     return( ElementGroup::MEMORY );
   }
-  virtual void updatePorts( )override;
+  virtual void updatePorts( );
 
 };
 

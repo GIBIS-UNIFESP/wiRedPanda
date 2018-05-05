@@ -47,7 +47,7 @@ void Clock::setOn( bool value ) {
 }
 
 
-void Clock::save( QDataStream &ds ) const {
+void Clock::save( QDataStream &ds ) {
   GraphicElement::save( ds );
   ds << getFrequency( );
 }
@@ -57,18 +57,18 @@ void Clock::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double ve
   if( version >= 1.1 ) {
     float freq;
     ds >> freq;
-    setFrequency( static_cast<double>(freq) );
+    setFrequency( freq );
   }
 }
 
-double Clock::getFrequency( ) const {
+float Clock::getFrequency( ) {
   return( m_frequency );
 }
 
-void Clock::setFrequency( double freq ) {
+void Clock::setFrequency( float freq ) {
 /*  qDebug() << "Clock frequency set to " << freq; */
   if( ( freq > 0.0 ) ) {
-    int auxinterval = static_cast<int>(1000 / ( freq * GLOBALCLK ));
+    int auxinterval = 1000 / ( freq * GLOBALCLK );
     if( auxinterval > 0 ) {
       interval = auxinterval;
       m_frequency = freq;

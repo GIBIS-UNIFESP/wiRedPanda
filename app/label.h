@@ -9,7 +9,7 @@
 class Label : public QLabel {
   Q_OBJECT
 public:
-  explicit Label( QWidget *parent = nullptr );
+  explicit Label( QWidget *parent = 0 );
 
   virtual ~Label( );
   ElementType elementType( );

@@ -2,7 +2,7 @@
 
 #include <string>
 
-BoxNotFoundException::BoxNotFoundException( const std::string &message, Box *box ) : std::runtime_error( message ) {
+BoxNotFoundException::BoxNotFoundException( std::string message, Box *box ) : std::runtime_error( message ) {
   m_box = box;
 }
 

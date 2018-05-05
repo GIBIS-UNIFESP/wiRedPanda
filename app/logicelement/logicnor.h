@@ -5,7 +5,7 @@
 
 class LogicNor : public LogicElement {
 public:
-  explicit LogicNor( int inputSize );
+  explicit LogicNor( size_t inputSize );
 
   /* LogicElement interface */
 protected:

@@ -5,15 +5,15 @@
 
 class Or : public GraphicElement {
 public:
-  explicit Or( QGraphicsItem *parent = nullptr );
-  virtual ~Or( ) override;
+  explicit Or( QGraphicsItem *parent = 0 );
+  virtual ~Or( );
 
   /* GraphicElement interface */
 public:
-  virtual ElementType elementType( ) const override {
+  virtual ElementType elementType( ) {
     return( ElementType::OR );
   }
-  virtual ElementGroup elementGroup( ) const override {
+  virtual ElementGroup elementGroup( ) {
     return( ElementGroup::GATE );
   }
 };

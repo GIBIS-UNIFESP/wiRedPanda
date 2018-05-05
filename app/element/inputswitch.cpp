@@ -46,7 +46,7 @@ void InputSwitch::updateLogic( ) {
   }
 }
 
-void InputSwitch::save( QDataStream &ds ) const {
+void InputSwitch::save( QDataStream &ds ) {
   GraphicElement::save( ds );
   ds << on;
 }
