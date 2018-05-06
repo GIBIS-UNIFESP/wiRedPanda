@@ -47,13 +47,8 @@ bool InputButton::getOn( ) const {
   return( on );
 }
 
-void InputButton::setOn( bool value ) {
+void InputButton::setOn( const bool value ) {
   on = value;
-  if( on ) {
-    setPixmap( ":/input/buttonOn.png" );
-  }
-  else {
-    setPixmap( ":/input/buttonOff.png" );
-  }
+  setPixmap( on ? ":/input/buttonOn.png" : ":/input/buttonOff.png");
   updateLogic( );
 }
