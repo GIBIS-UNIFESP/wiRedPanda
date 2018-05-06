@@ -28,7 +28,7 @@ public:
   // Input interface
 public:
   bool getOn() const override;
-  void setOn(bool value) override;
+  void setOn(const bool value) override;
 };
 
 #endif /* INPUTBUTTON_H */

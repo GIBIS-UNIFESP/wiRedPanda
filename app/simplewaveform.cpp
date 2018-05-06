@@ -293,7 +293,7 @@ void SimpleWaveform::showWaveform( ) {
     qDebug( ) << itr;
     for( int in = 0; in < inputs.size( ); ++in ) {
       float val = bs[ in ];
-      dynamic_cast< Input* >( inputs[ in ] )->setOn( val );
+      dynamic_cast< Input* >( inputs[ in ] )->setOn( not qFuzzyIsNull(val) );
       float offset = ( in_series.size( ) - in - 1 + out_series.size( ) ) * 2 + gap + 0.5;
       in_series[ in ]->append( itr, offset + val );
       in_series[ in ]->append( itr + 1, offset + val );
