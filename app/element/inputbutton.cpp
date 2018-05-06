@@ -14,10 +14,6 @@ InputButton::InputButton( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, 
   setPortName( "Button" );
 }
 
-InputButton::~InputButton( ) {
-
-}
-
 void InputButton::mousePressEvent( QGraphicsSceneMouseEvent *event ) {
   if( event->button( ) == Qt::LeftButton ) {
     setOn( true );
@@ -49,6 +45,6 @@ bool InputButton::getOn( ) const {
 
 void InputButton::setOn( const bool value ) {
   on = value;
-  setPixmap( on ? ":/input/buttonOn.png" : ":/input/buttonOff.png");
+  setPixmap( on ? ":/input/buttonOn.png" : ":/input/buttonOff.png" );
   updateLogic( );
 }

@@ -4,12 +4,12 @@
 #include "node.h"
 #include "qneconnection.h"
 
+#include <memory>
 #include <QApplication>
 #include <QGraphicsItem>
 #include <QList>
 #include <QPointF>
 #include <QUndoCommand>
-#include <memory>
 
 class Scene;
 class Editor;

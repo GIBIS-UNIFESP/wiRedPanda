@@ -25,7 +25,7 @@ void TestCommands::testAddDeleteCommands( ) {
   editor->getUndoStack( )->redo( );
   editor->getUndoStack( )->undo( );
   editor->getUndoStack( )->redo( );
-  editor->receiveCommand( new DeleteItemsCommand( editor->getScene()->items(), editor ) );
+  editor->receiveCommand( new DeleteItemsCommand( editor->getScene( )->items( ), editor ) );
   editor->getUndoStack( )->undo( );
   editor->getUndoStack( )->redo( );
   editor->getUndoStack( )->undo( );

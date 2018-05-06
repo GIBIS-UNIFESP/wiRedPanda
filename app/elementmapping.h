@@ -2,9 +2,9 @@
 #define ELEMENTMAPPING_H
 
 #include "graphicelement.h"
+#include "input.h"
 #include "logicelement.h"
 #include "logicelement/logicinput.h"
-#include "input.h"
 
 #include <QGraphicsScene>
 #include <QMap>
@@ -67,9 +67,8 @@ protected:
   void connectElements( );
   void validateElements( );
   void sortLogicElements( );
-  static int calculatePriority( GraphicElement *elm,
-                                QMap< GraphicElement*, bool > &beingvisited,
-                                QMap< GraphicElement*, int > &priority );
+  static int calculatePriority( GraphicElement *elm, QMap< GraphicElement*, bool > &beingvisited, QMap< GraphicElement*,
+                                                                                                        int > &priority );
   void insertElement( GraphicElement *elm );
   void insertBox( Box *box );
 

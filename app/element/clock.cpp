@@ -64,7 +64,7 @@ float Clock::getFrequency( ) const {
 
 void Clock::setFrequency( float freq ) {
 /*  qDebug() << "Clock frequency set to " << freq; */
-  if( not qFuzzyIsNull(freq) ) {
+  if( not qFuzzyIsNull( freq ) ) {
     int auxinterval = 1000 / ( freq * GLOBALCLK );
     if( auxinterval > 0 ) {
       interval = auxinterval;

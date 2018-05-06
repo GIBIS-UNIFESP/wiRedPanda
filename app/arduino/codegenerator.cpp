@@ -1,8 +1,8 @@
-#include "codegenerator.h"
-#include "qneconnection.h"
 #include "box.h"
 #include "clock.h"
+#include "codegenerator.h"
 #include "editor.h"
+#include "qneconnection.h"
 
 #include <stdexcept>
 

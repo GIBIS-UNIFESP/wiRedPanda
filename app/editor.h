@@ -2,16 +2,16 @@
 #define EDITOR_H
 
 #include "boxmanager.h"
-#include "simulationcontroller.h"
 #include "elementeditor.h"
 #include "elementfactory.h"
 #include "nodes/qneconnection.h"
 #include "scene.h"
+#include "simulationcontroller.h"
 
-#include <QTime>
-#include <QUndoCommand>
 #include <memory>
 #include <QObject>
+#include <QTime>
+#include <QUndoCommand>
 
 class Box;
 class MainWindow;

@@ -1,15 +1,15 @@
 #include "graphicelement.h"
+#include "nodes/qneconnection.h"
 #include "scene.h"
 #include "thememanager.h"
-#include "nodes/qneconnection.h"
 
+#include <iostream>
 #include <QDebug>
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
-#include <iostream>
 #include <stdexcept>
 
 QMap< QString, QPixmap > loadedPixmaps;
@@ -139,15 +139,15 @@ void GraphicElement::save( QDataStream &ds ) const {
   /* <Version1.9> */
   ds << m_trigger;
   /* <\Version1.9> */
-  ds << static_cast<quint64>(m_inputs.size( ));
+  ds << static_cast< quint64 >( m_inputs.size( ) );
   for( QNEPort *port: m_inputs ) {
-    ds << reinterpret_cast<quint64>(port);
+    ds << reinterpret_cast< quint64 >( port );
     ds << port->portName( );
     ds << port->portFlags( );
   }
-  ds << static_cast<quint64>(m_outputs.size( ));
+  ds << static_cast< quint64 >( m_outputs.size( ) );
   for( QNEPort *port: m_outputs ) {
-    ds << reinterpret_cast<quint64>(port);
+    ds << reinterpret_cast< quint64 >( port );
     ds << port->portName( );
     ds << port->portFlags( );
   }
@@ -245,7 +245,7 @@ void GraphicElement::loadInputPort( QDataStream &ds, QMap< quint64, QNEPort* > &
   ds >> ptr;
   ds >> name;
   ds >> flags;
-  if( ( port < static_cast<size_t>(m_inputs.size( )) ) ) {
+  if( ( port < static_cast< size_t >( m_inputs.size( ) ) ) ) {
     if( elementType( ) == ElementType::BOX ) {
       m_inputs[ port ]->setName( name );
     }
@@ -260,7 +260,7 @@ void GraphicElement::loadInputPort( QDataStream &ds, QMap< quint64, QNEPort* > &
 
 
 void GraphicElement::removeSurplusInputs( quint64 inputSz, QMap< quint64, QNEPort* > &portMap ) {
-  while( inputSize( ) > static_cast<int>(inputSz) && inputSz >= m_minInputSz ) {
+  while( inputSize( ) > static_cast< int >( inputSz ) && inputSz >= m_minInputSz ) {
     QNEPort *deletedPort = m_inputs.back( );
     removePortFromMap( deletedPort, portMap );
     delete deletedPort;
@@ -298,7 +298,7 @@ void GraphicElement::loadOutputPort( QDataStream &ds, QMap< quint64, QNEPort* > 
   ds >> ptr;
   ds >> name;
   ds >> flags;
-  if( ( port < static_cast<size_t>(m_outputs.size( )) ) ) {
+  if( ( port < static_cast< size_t >( m_outputs.size( ) ) ) ) {
     if( elementType( ) == ElementType::BOX ) {
       m_outputs[ port ]->setName( name );
     }
@@ -338,10 +338,10 @@ void GraphicElement::paint( QPainter *painter, const QStyleOptionGraphicsItem *o
 
 QNEPort* GraphicElement::addPort( const QString &name, bool isOutput, int flags, int ptr ) {
   COMMENT( "Adding new port.", 4 );
-  if( isOutput && ( static_cast<quint64>(m_outputs.size( )) >= m_maxOutputSz ) ) {
+  if( isOutput && ( static_cast< quint64 >( m_outputs.size( ) ) >= m_maxOutputSz ) ) {
     return( nullptr );
   }
-  else if( !isOutput && ( static_cast<quint64>(m_inputs.size( )) >= m_maxInputSz ) ) {
+  else if( !isOutput && ( static_cast< quint64 >( m_inputs.size( ) ) >= m_maxInputSz ) ) {
     return( nullptr );
   }
   QNEPort *port = nullptr;

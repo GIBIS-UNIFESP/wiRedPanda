@@ -1,7 +1,7 @@
 #include "testfiles.h"
 
-#include "globalproperties.h"
 #include "commands.h"
+#include "globalproperties.h"
 #include "mainwindow.h"
 
 #include <stdexcept>
@@ -52,23 +52,23 @@ void TestFiles::testFiles( ) {
     }
     pandaFile.close( );
     QTemporaryFile outfile;
-    if( outfile.open() ) {
-      qDebug( ) << outfile.fileName();
+    if( outfile.open( ) ) {
+      qDebug( ) << outfile.fileName( );
       QDataStream ds2( &outfile );
       try {
         editor->save( ds2 );
       }
       catch( std::runtime_error & ) {
-        QFAIL( QString( "Error saving project: " + outfile.fileName() ).toUtf8( ) );
+        QFAIL( QString( "Error saving project: " + outfile.fileName( ) ).toUtf8( ) );
       }
     }
     else {
-      QFAIL( QString( "Could not open file in WriteOnly mode : " + outfile.fileName() ).toUtf8( ) );
+      QFAIL( QString( "Could not open file in WriteOnly mode : " + outfile.fileName( ) ).toUtf8( ) );
     }
     outfile.flush( );
     outfile.close( );
 
-    QFile pandaFile2( outfile.fileName() );
+    QFile pandaFile2( outfile.fileName( ) );
     QVERIFY( pandaFile2.open( QFile::ReadOnly ) );
     QDataStream ds3( &pandaFile2 );
     try {

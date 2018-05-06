@@ -9,7 +9,7 @@ class JKFlipFlop : public GraphicElement {
   char lastK;
 public:
   explicit JKFlipFlop( QGraphicsItem *parent = nullptr );
-  virtual ~JKFlipFlop() override = default;
+  virtual ~JKFlipFlop( ) override = default;
 
   /* GraphicElement interface */
 public:

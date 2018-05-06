@@ -1,28 +1,28 @@
 #include "box.h"
+#include "buzzer.h"
+#include "demux.h"
 #include "element/and.h"
 #include "element/clock.h"
+#include "element/dflipflop.h"
+#include "element/display.h"
+#include "element/dlatch.h"
 #include "element/inputbutton.h"
 #include "element/inputgnd.h"
 #include "element/inputswitch.h"
 #include "element/inputvcc.h"
+#include "element/jkflipflop.h"
+#include "element/jklatch.h"
 #include "element/led.h"
 #include "element/nand.h"
 #include "element/nor.h"
 #include "element/not.h"
 #include "element/or.h"
-#include "element/xnor.h"
-#include "element/xor.h"
-#include "elementfactory.h"
-#include "element/dflipflop.h"
-#include "element/display.h"
-#include "element/dlatch.h"
-#include "element/jkflipflop.h"
-#include "element/jklatch.h"
 #include "element/srflipflop.h"
 #include "element/tflipflop.h"
 #include "element/tlatch.h"
-#include "buzzer.h"
-#include "demux.h"
+#include "element/xnor.h"
+#include "element/xor.h"
+#include "elementfactory.h"
 #include "mux.h"
 #include "node.h"
 #include "qneconnection.h"
@@ -198,7 +198,7 @@ GraphicElement* ElementFactory::buildElement( ElementType type, QGraphicsItem *p
         type == ElementType::MUX ? new Mux( parent ) :
         type == ElementType::DEMUX ? new Demux( parent ) :
         type == ElementType::BUZZER ? new Buzzer( parent ) :
-                                      static_cast<GraphicElement*>(nullptr);
+        static_cast< GraphicElement* >( nullptr );
   return( elm );
 }
 

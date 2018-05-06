@@ -11,7 +11,7 @@ public:
   static const int MaxRecentFiles = 10;
   explicit RecentFilesController( QString attrName, QObject *parent = 0 );
   void addFile( QString fname );
-  QStringList getFiles();
+  QStringList getFiles( );
 
 signals:
   void recentFilesUpdated( );

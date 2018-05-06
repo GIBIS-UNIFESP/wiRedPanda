@@ -71,13 +71,11 @@ void BoxManager::clear( ) {
   COMMENT( "Clear boxmanager", 1 );
   QMap< QString, BoxPrototype* > boxes_aux = boxes;
   boxes.clear( );
-
-  for(auto it : boxes_aux){
-      delete it;
+  for( auto it : boxes_aux ) {
+    delete it;
   }
-
-  if(fileWatcher.files().size() > 0){
-      fileWatcher.removePaths( fileWatcher.files( ) );
+  if( fileWatcher.files( ).size( ) > 0 ) {
+    fileWatcher.removePaths( fileWatcher.files( ) );
   }
 }
 

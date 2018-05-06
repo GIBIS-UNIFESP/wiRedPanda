@@ -21,8 +21,8 @@
 #include "inputvcc.h"
 #include "or.h"
 
-#include <QDebug>
 #include <iostream>
+#include <QDebug>
 
 TestElements::TestElements( QObject *parent ) : QObject( parent ) {
 
@@ -31,17 +31,17 @@ TestElements::TestElements( QObject *parent ) : QObject( parent ) {
 void TestElements::init( ) {
   /* Creating connections */
   for( int i = 0; i < conn.size( ); ++i ) {
-    conn[i] = new QNEConnection( );
-    sw[i] = new InputSwitch( );
+    conn[ i ] = new QNEConnection( );
+    sw[ i ] = new InputSwitch( );
     conn.at( i )->setStart( sw.at( i )->output( ) );
   }
 }
 
 
 void TestElements::cleanup( ) {
-    for(auto &item:sw){
-        delete item;
-    }
+  for( auto &item:sw ) {
+    delete item;
+  }
 }
 
 void TestElements::testNode( ) {
@@ -79,7 +79,7 @@ void TestElements::testVCC( ) {
   InputVcc vcc;
   QCOMPARE( vcc.outputSize( ), 1 );
   QCOMPARE( vcc.inputSize( ), 0 );
-  QCOMPARE(static_cast<int>(vcc.output( )->value( )), 1 );
+  QCOMPARE( static_cast< int >( vcc.output( )->value( ) ), 1 );
 }
 
 
@@ -87,7 +87,7 @@ void TestElements::testGND( ) {
   InputGnd gnd;
   QCOMPARE( gnd.outputSize( ), 1 );
   QCOMPARE( gnd.inputSize( ), 0 );
-  QCOMPARE( static_cast<int>( gnd.output( )->value( )), 0 );
+  QCOMPARE( static_cast< int >( gnd.output( )->value( ) ), 0 );
 }
 
 void TestElements::testMux( ) {
@@ -181,8 +181,8 @@ QString testFile( QString fname ) {
 }
 
 void TestElements::testBoxData( const Box *box ) {
-  QCOMPARE( static_cast<int>( box->inputSize( )), 5 );
-  QCOMPARE(static_cast<int>( box->outputSize( )), 2 );
+  QCOMPARE( static_cast< int >( box->inputSize( ) ), 5 );
+  QCOMPARE( static_cast< int >( box->outputSize( ) ), 2 );
 
 
   QCOMPARE( box->input( 0 )->isRequired( ), false );
@@ -191,11 +191,11 @@ void TestElements::testBoxData( const Box *box ) {
   QCOMPARE( box->input( 3 )->isRequired( ), false );
   QCOMPARE( box->input( 4 )->isRequired( ), false );
 
-  QCOMPARE( static_cast<int>( box->input( 0 )->value( )), 1 );
-  QCOMPARE( static_cast<int>( box->input( 1 )->value( )), 1 );
-  QCOMPARE( static_cast<int>( box->input( 2 )->value( )), -1 );
-  QCOMPARE(static_cast<int>( box->input( 3 )->value( )), 1 );
-  QCOMPARE( static_cast<int>( box->input( 4 )->value( )), 1 );
+  QCOMPARE( static_cast< int >( box->input( 0 )->value( ) ), 1 );
+  QCOMPARE( static_cast< int >( box->input( 1 )->value( ) ), 1 );
+  QCOMPARE( static_cast< int >( box->input( 2 )->value( ) ), -1 );
+  QCOMPARE( static_cast< int >( box->input( 3 )->value( ) ), 1 );
+  QCOMPARE( static_cast< int >( box->input( 4 )->value( ) ), 1 );
 }
 
 void TestElements::testBox( ) {
@@ -251,10 +251,10 @@ void TestElements::testBox( ) {
     sc.update( );
     sc.updateScene( scene.itemsBoundingRect( ) );
 
-    QCOMPARE( static_cast<int>(box->input( 2 )->value( )), 0 );
+    QCOMPARE( static_cast< int >( box->input( 2 )->value( ) ), 0 );
 
-    QCOMPARE( static_cast<int>(box->output( 0 )->value( )), 1 );
-    QCOMPARE( static_cast<int>(box->output( 1 )->value( )), 0 );
+    QCOMPARE( static_cast< int >( box->output( 0 )->value( ) ), 1 );
+    QCOMPARE( static_cast< int >( box->output( 1 )->value( ) ), 0 );
 
     clkButton->setOn( false );
     prstButton->setOn( true );
@@ -262,10 +262,10 @@ void TestElements::testBox( ) {
     sc.update( );
     sc.update( );
     sc.updateScene( scene.itemsBoundingRect( ) );
-    QCOMPARE( static_cast<int>(box->input( 2 )->value( )), 0 );
+    QCOMPARE( static_cast< int >( box->input( 2 )->value( ) ), 0 );
 
-    QCOMPARE( static_cast<int>(box->output( 0 )->value( )), 1 );
-    QCOMPARE( static_cast<int>(box->output( 1 )->value( )), 0 );
+    QCOMPARE( static_cast< int >( box->output( 0 )->value( ) ), 1 );
+    QCOMPARE( static_cast< int >( box->output( 1 )->value( ) ), 0 );
 
 
     clkButton->setOn( false );
@@ -274,10 +274,10 @@ void TestElements::testBox( ) {
     sc.update( );
     sc.updateScene( scene.itemsBoundingRect( ) );
 
-    QCOMPARE( static_cast<int>( box->input( 2 )->value( )), 0 );
+    QCOMPARE( static_cast< int >( box->input( 2 )->value( ) ), 0 );
 
-    QCOMPARE( static_cast<int>( box->output( 0 )->value( )), 1 );
-    QCOMPARE( static_cast<int>( box->output( 1 )->value( )), 0 );
+    QCOMPARE( static_cast< int >( box->output( 0 )->value( ) ), 1 );
+    QCOMPARE( static_cast< int >( box->output( 1 )->value( ) ), 0 );
 
 
     clkButton->setOn( true );
@@ -286,12 +286,13 @@ void TestElements::testBox( ) {
     sc.update( );
     sc.updateScene( scene.itemsBoundingRect( ) );
 
-    QCOMPARE( static_cast<int>( box->input( 2 )->value( )), 1 );
+    QCOMPARE( static_cast< int >( box->input( 2 )->value( ) ), 1 );
 
-    std::cout << static_cast<int>( box->output( 0 )->value( )) << " " << static_cast<int>(box->output( 1 )->value( )) << std::endl;
+    std::cout << static_cast< int >( box->output( 0 )->value( ) ) << " " <<
+      static_cast< int >( box->output( 1 )->value( ) ) << std::endl;
 
-    QCOMPARE( static_cast<int>( box->output( 0 )->value( )), 0 );
-    QCOMPARE( static_cast<int>( box->output( 1 )->value( )), 1 );
+    QCOMPARE( static_cast< int >( box->output( 0 )->value( ) ), 0 );
+    QCOMPARE( static_cast< int >( box->output( 1 )->value( ) ), 1 );
 
   }
 }

@@ -1,5 +1,6 @@
 #include "box.h"
 #include "boxnotfoundexception.h"
+#include "buzzer.h"
 #include "commands.h"
 #include "editor.h"
 #include "globalproperties.h"
@@ -9,8 +10,8 @@
 #include "nodes/qneconnection.h"
 #include "serializationfunctions.h"
 #include "thememanager.h"
-#include "buzzer.h"
 
+#include <iostream>
 #include <QApplication>
 #include <QClipboard>
 #include <QDebug>
@@ -28,7 +29,6 @@
 #include <QMimeData>
 #include <QSettings>
 #include <QtMath>
-#include <iostream>
 
 Editor*Editor::globalEditor = nullptr;
 
@@ -531,7 +531,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
     QPointF pos = dde->scenePos( ) - offset;
     dde->accept( );
 
-    GraphicElement *elm = ElementFactory::buildElement( static_cast<ElementType>(type) );
+    GraphicElement *elm = ElementFactory::buildElement( static_cast< ElementType >( type ) );
     /* If element type is unknown, a default element is created with the pixmap received from mimedata */
     if( !elm ) {
       return( false );
@@ -891,7 +891,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
         movedElements.clear( );
       }
     }
-    switch( static_cast<int>(evt->type( )) ) {
+    switch( static_cast< int >( evt->type( ) ) ) {
         case QEvent::GraphicsSceneMousePress: {
         ret = mousePressEvt( mouseEvt );
         break;

@@ -6,7 +6,7 @@
 class Display : public GraphicElement {
 public:
   explicit Display( QGraphicsItem *parent = nullptr );
-  virtual ~Display( ) override;
+  virtual ~Display( ) override = default;
 
 public:
   virtual ElementType elementType( ) override {

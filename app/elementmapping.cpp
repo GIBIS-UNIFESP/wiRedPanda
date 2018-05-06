@@ -2,8 +2,8 @@
 #include "boxmanager.h"
 #include "boxmapping.h"
 #include "boxprototype.h"
-#include "elementmapping.h"
 #include "clock.h"
+#include "elementmapping.h"
 #include "qneconnection.h"
 
 #include "logicelement/logicand.h"
@@ -279,14 +279,15 @@ void ElementMapping::sortLogicElements( ) {
   for( LogicElement *elm : logicElms ) {
     elm->calculatePriority( );
   }
-  std::sort( logicElms.begin( ), logicElms.end( ), [ ]( LogicElement *e1, LogicElement *e2 ) {
+  std::sort( logicElms.begin( ),
+             logicElms.end( ),
+             [ ]( LogicElement *e1, LogicElement *e2 ) {
     return( *e2 < *e1 );
   } );
 
 }
 
-int ElementMapping::calculatePriority( GraphicElement *elm,
-                                       QMap< GraphicElement*, bool > &beingvisited,
+int ElementMapping::calculatePriority( GraphicElement *elm, QMap< GraphicElement*, bool > &beingvisited,
                                        QMap< GraphicElement*, int > &priority ) {
   if( !elm ) {
     return( 0 );

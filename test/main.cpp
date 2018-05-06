@@ -30,7 +30,7 @@ int main( int argc, char **argv ) {
   status |= QTest::qExec( &testWf, argc, argv );
   status |= QTest::qExec( &testIcons, argc, argv );
 
-  std::cout << (status ? "Some test failed!" : "All tests have passed!") << std::endl;
+  std::cout << ( status ? "Some test failed!" : "All tests have passed!" ) << std::endl;
 
   return( status );
 }

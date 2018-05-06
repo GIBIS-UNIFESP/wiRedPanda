@@ -13,7 +13,7 @@ public:
   virtual ElementType elementType( ) override {
     return( ElementType::OR );
   }
-  virtual ElementGroup elementGroup( )override {
+  virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::GATE );
   }
 };

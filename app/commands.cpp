@@ -6,9 +6,9 @@
 #include "scene.h"
 #include "serializationfunctions.h"
 
+#include <cmath>
 #include <QApplication>
 #include <QDebug>
-#include <cmath>
 #include <stdexcept>
 
 

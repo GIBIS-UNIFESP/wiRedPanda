@@ -10,10 +10,10 @@ public:
 
   /* GraphicElement interface */
 public:
-  virtual ElementType elementType( ) override{
+  virtual ElementType elementType( ) override {
     return( ElementType::NAND );
   }
-  virtual ElementGroup elementGroup( ) override{
+  virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::GATE );
   }
   void updateLogic( );

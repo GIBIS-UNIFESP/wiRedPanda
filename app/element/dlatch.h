@@ -6,7 +6,7 @@
 class DLatch : public GraphicElement {
 public:
   explicit DLatch( QGraphicsItem *parent = nullptr );
-  virtual ~DLatch( ) override;
+  virtual ~DLatch( ) override = default;
 
   /* GraphicElement interface */
 public:
