@@ -6,8 +6,8 @@
 
 class InputButton : public GraphicElement, public Input {
 public:
-  explicit InputButton( QGraphicsItem *parent = nullptr);
-  virtual ~InputButton( ) override;
+  explicit InputButton( QGraphicsItem *parent = nullptr );
+  virtual ~InputButton( ) override = default;
   bool on;
 
   /* QGraphicsItem interface */
@@ -27,8 +27,8 @@ public:
 
   // Input interface
 public:
-  bool getOn() const override;
-  void setOn(const bool value) override;
+  bool getOn( ) const override;
+  void setOn( const bool value ) override;
 };
 
 #endif /* INPUTBUTTON_H */

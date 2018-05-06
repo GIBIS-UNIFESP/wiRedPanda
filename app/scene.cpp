@@ -1,5 +1,5 @@
-#include "scene.h"
 #include "qneconnection.h"
+#include "scene.h"
 
 #include <QColor>
 #include <QGraphicsView>

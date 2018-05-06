@@ -32,7 +32,10 @@ class GraphicElement : public QGraphicsObject, public ItemWithId {
 public:
   enum { Type = QGraphicsItem::UserType + 3 };
 
-  explicit GraphicElement( int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz,
+  explicit GraphicElement( int minInputSz,
+                           int maxInputSz,
+                           int minOutputSz,
+                           int maxOutputSz,
                            QGraphicsItem *parent = nullptr );
 
 private:
@@ -102,7 +105,7 @@ public:
   void setInputSize( int size );
 
   int outputSize( ) const;
-  void setOutputSize(const int size );
+  void setOutputSize( const int size );
 
   virtual float getFrequency( ) const;
   virtual void setFrequency( float freq );
@@ -157,15 +160,15 @@ public:
   virtual QString genericProperties( );
 
 
-  void updateLabel();
-  
+  void updateLabel( );
+
 protected:
   void setRotatable( bool rotatable );
   void setHasLabel( bool hasLabel );
   void setHasFrequency( bool hasFrequency );
   void setHasColors( bool hasColors );
   void setHasTrigger( bool hasTrigger );
-  void setMinInputSz(const int minInputSz );
+  void setMinInputSz( const int minInputSz );
   void setMinOutputSz( int minOutputSz );
   void setHasAudio( bool hasAudio );
   void setOutputsOnTop( bool outputsOnTop );

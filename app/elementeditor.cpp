@@ -2,11 +2,11 @@
 #include "editor.h"
 #include "elementeditor.h"
 #include "ui_elementeditor.h"
+#include <cmath>
 #include <QDebug>
 #include <QGraphicsView>
 #include <QKeyEvent>
 #include <QMenu>
-#include <cmath>
 
 ElementEditor::ElementEditor( QWidget *parent ) : QWidget( parent ), ui( new Ui::ElementEditor ) {
   _manyLabels = tr( "<Many labels>" );
@@ -43,7 +43,7 @@ QAction* addElementAction( QMenu *menu, GraphicElement *firstElm, ElementType ty
   if( !hasSameType || ( firstElm->elementType( ) != type ) ) {
     QAction *action = menu->addAction( QIcon( ElementFactory::getPixmap( type ) ), ElementFactory::translatedName(
                                          type ) );
-    action->setData( static_cast<int>(type) );
+    action->setData( static_cast< int >( type ) );
     return( action );
   }
   return( nullptr );
@@ -120,7 +120,7 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
         }
         break;
       }
-        case ElementGroup::OUTPUT:{
+        case ElementGroup::OUTPUT: {
         addElementAction( submenumorph, firstElm, ElementType::LED, hasSameType );
         addElementAction( submenumorph, firstElm, ElementType::BUZZER, hasSameType );
         break;
@@ -229,7 +229,7 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
 
       hasSameLabel &= elm->getLabel( ) == firstElement->getLabel( );
       hasSameColors &= elm->getColor( ) == firstElement->getColor( );
-      hasSameFrequency &= qFuzzyCompare(elm->getFrequency( ), firstElement->getFrequency( ));
+      hasSameFrequency &= qFuzzyCompare( elm->getFrequency( ), firstElement->getFrequency( ) );
       hasSameInputSize &= elm->inputSize( ) == firstElement->inputSize( );
       hasSameTrigger &= elm->getTrigger( ) == firstElement->getTrigger( );
       hasSameType &= elm->elementType( ) == firstElement->elementType( );

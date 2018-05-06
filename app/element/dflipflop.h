@@ -9,7 +9,7 @@ class DFlipFlop : public GraphicElement {
 
 public:
   explicit DFlipFlop( QGraphicsItem *parent = nullptr );
-  virtual ~DFlipFlop( ) override;
+  virtual ~DFlipFlop( ) override = default;
 
   // GraphicElement interface
 public:

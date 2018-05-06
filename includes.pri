@@ -129,3 +129,6 @@ RESOURCES += \
 RESOURCES += $$PWD/app/resources/translations.qrc
 
 TRANSLATIONS = $$PWD/app/resources/wpanda_en.ts  $$PWD/app/resources/wpanda_pt.ts
+
+DISTFILES += \
+    $$PWD/uncrustify.cfg

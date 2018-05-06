@@ -5,7 +5,7 @@
 
 class Xnor : public GraphicElement {
 public:
-  explicit Xnor( QGraphicsItem *parent = nullptr);
+  explicit Xnor( QGraphicsItem *parent = nullptr );
   virtual ~Xnor( ) override = default;
 
 /* GraphicElement interface */

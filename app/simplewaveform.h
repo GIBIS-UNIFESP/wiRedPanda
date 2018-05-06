@@ -21,12 +21,10 @@ public:
   ~SimpleWaveform( );
 
   void showWaveform( );
-  static void sortElements(QVector<GraphicElement *> &elements,
-                            QVector< GraphicElement* > &inputs,
-                            QVector< GraphicElement* > &outputs,
-                            SortingKind sorting );
+  static void sortElements( QVector< GraphicElement* > &elements, QVector< GraphicElement* > &inputs,
+                            QVector< GraphicElement* > &outputs, SortingKind sorting );
 
-  static bool saveToTxt(QTextStream &outStream , Editor * editor);
+  static bool saveToTxt( QTextStream &outStream, Editor *editor );
 private slots:
   void on_radioButton_Position_clicked( );
 

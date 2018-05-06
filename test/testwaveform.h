@@ -7,7 +7,9 @@
 
 class TestWaveForm : public QObject {
   Q_OBJECT
+
   Editor * editor;
+
 private slots:
 
   /* functions executed by QtTest before and after each test */

@@ -77,10 +77,12 @@ void JKFlipFlop::updateLogic( ) {
   }
   output( 0 )->setValue( q1 );
   output( 1 )->setValue( q2 );
-  if( clk == -1 )
+  if( clk == -1 ) {
     lastClk = 0;
-  else
+  }
+  else {
     lastClk = clk;
+  }
   lastJ = j;
   lastK = k;
 }

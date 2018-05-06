@@ -49,7 +49,7 @@ void Buzzer::mute( bool _mute ) {
 }
 
 void Buzzer::playbuzzer( ) {
-  if ( play == 0 )  {
+  if( play == 0 ) {
     setPixmap( ":/output/BuzzerOn.png" );
     m_audio.play( );
   }

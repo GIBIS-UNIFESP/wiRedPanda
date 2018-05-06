@@ -14,7 +14,8 @@ public:
   static QList< QGraphicsItem* > deserialize( QDataStream &ds,
                                               double version,
                                               QString parentFile,
-                                              QMap< quint64, QNEPort* > portMap = QMap< quint64, QNEPort* >( ) );
+                                              QMap< quint64,
+                                                    QNEPort* > portMap = QMap< quint64, QNEPort* >( ) );
   static QList< QGraphicsItem* > load( QDataStream &ds, QString parentFile, Scene *scene = nullptr );
 };
 

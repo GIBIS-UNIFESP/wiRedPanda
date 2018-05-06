@@ -46,11 +46,11 @@ ListItemWidget::ListItemWidget( const QPixmap &pixmap, ElementType type, QString
 }
 
 void ListItemWidget::updateName( ) {
-  ElementType type = label->elementType();
+  ElementType type = label->elementType( );
   if( type != ElementType::BOX ) {
     QString name = ElementFactory::translatedName( type );
-    nameLabel->setText(name);
-    label->setName(name);
+    nameLabel->setText( name );
+    label->setName( name );
 
   }
 }

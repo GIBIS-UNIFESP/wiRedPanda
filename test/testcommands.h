@@ -7,7 +7,7 @@
 
 class TestCommands : public QObject {
   Q_OBJECT
-  Editor *editor;
+  Editor * editor;
 
 private slots:
   void init( );

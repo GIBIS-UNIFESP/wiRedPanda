@@ -8,7 +8,7 @@
 class Demux : public GraphicElement {
 public:
   explicit Demux( QGraphicsItem *parent = nullptr );
-    virtual ~Demux() override = default;
+  virtual ~Demux( ) override = default;
 
   virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::MUX );

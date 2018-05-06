@@ -1,8 +1,8 @@
 #include "led.h"
 
+#include <bitset>
 #include <QDebug>
 #include <QGraphicsSceneDragDropEvent>
-#include <bitset>
 
 Led::Led( QGraphicsItem *parent ) : GraphicElement( 1, 4, 0, 0, parent ) {
   setOutputsOnTop( true );

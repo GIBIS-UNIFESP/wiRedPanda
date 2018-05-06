@@ -11,9 +11,9 @@ class Box;
 class TestElements : public QObject {
   Q_OBJECT
 
-  QVector<QNEConnection*> conn{5};
-  QVector<InputSwitch*> sw{5};
-  void testBoxData(const Box *box );
+  QVector< QNEConnection* > conn{ 5 };
+  QVector< InputSwitch* > sw{ 5 };
+  void testBoxData( const Box *box );
 
 public:
   explicit TestElements( QObject *parent = nullptr );

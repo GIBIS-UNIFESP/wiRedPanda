@@ -23,10 +23,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
+#include "node.h"
 #include "qneconnection.h"
 #include "qneport.h"
 #include "thememanager.h"
-#include "node.h"
 
 #include <QBrush>
 #include <QDebug>
@@ -136,8 +136,8 @@ double QNEConnection::angle( ) {
 }
 
 void QNEConnection::save( QDataStream &ds ) const {
-  ds << reinterpret_cast<quint64>(m_start);
-  ds << reinterpret_cast<quint64>(m_end);
+  ds << reinterpret_cast< quint64 >( m_start );
+  ds << reinterpret_cast< quint64 >( m_end );
 }
 
 bool QNEConnection::load( QDataStream &ds, const QMap< quint64, QNEPort* > &portMap ) {

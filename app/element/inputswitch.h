@@ -6,7 +6,7 @@
 
 class InputSwitch : public GraphicElement, public Input {
 public:
-  explicit InputSwitch( QGraphicsItem *parent = nullptr);
+  explicit InputSwitch( QGraphicsItem *parent = nullptr );
   virtual ~InputSwitch( ) override = default;
 
   bool on;

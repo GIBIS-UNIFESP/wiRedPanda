@@ -23,17 +23,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#include "qneport.h"
 #include "graphicelement.h"
 #include "qneconnection.h"
+#include "qneport.h"
 #include "thememanager.h"
 
-#include <QFontMetrics>
-#include <QGraphicsScene>
+#include <iostream>
 #include <QCursor>
 #include <QDebug>
+#include <QFontMetrics>
+#include <QGraphicsScene>
 #include <QPen>
-#include <iostream>
 
 
 QNEPort::QNEPort( QGraphicsItem *parent ) : QGraphicsPathItem( parent ) {

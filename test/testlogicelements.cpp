@@ -21,22 +21,22 @@ TestLogicElements::TestLogicElements( QObject *parent ) : QObject( parent ) {
 }
 
 void TestLogicElements::init( ) {
-    for(auto &item : sw){
-        item = new LogicInput();
-    }
+  for( auto &item : sw ) {
+    item = new LogicInput( );
+  }
 }
 
 void TestLogicElements::cleanup( ) {
-    for(auto &item : sw){
-        delete item;
-    }
+  for( auto &item : sw ) {
+    delete item;
+  }
 }
 
 void TestLogicElements::testLogicNode( ) {
   LogicNode elm;
   elm.connectPredecessor( 0, sw.at( 0 ), 0 );
 
-  const QVector<QVector<int>> truthTable = {
+  const QVector< QVector< int > > truthTable = {
     {
       { { 1, 1 } },
       { { 0, 0 } }
@@ -45,7 +45,7 @@ void TestLogicElements::testLogicNode( ) {
   for( int test = 0; test < truthTable.size( ); ++test ) {
     sw.at( 0 )->setOutputValue( truthTable.at( test ).at( 0 ) );
     elm.updateLogic( );
-    QCOMPARE( static_cast<int>(elm.getOutputValue( )), truthTable.at( test ).at( 1 ) );
+    QCOMPARE( static_cast< int >( elm.getOutputValue( ) ), truthTable.at( test ).at( 1 ) );
   }
 }
 
@@ -54,7 +54,7 @@ void TestLogicElements::testLogicAnd( ) {
   elm.connectPredecessor( 0, sw.at( 0 ), 0 );
   elm.connectPredecessor( 1, sw.at( 1 ), 0 );
 
-  const QVector<QVector<int>> truthTable = {
+  const QVector< QVector< int > > truthTable = {
     {
       { { 1, 1, 1 } },
       { { 1, 0, 0 } },
@@ -67,7 +67,7 @@ void TestLogicElements::testLogicAnd( ) {
     sw.at( 1 )->setOutputValue( truthTable.at( test ).at( 1 ) );
     elm.updateLogic( );
 
-    QCOMPARE( static_cast<int>(elm.getOutputValue( )), truthTable.at( test ).at( 2 ) );
+    QCOMPARE( static_cast< int >( elm.getOutputValue( ) ), truthTable.at( test ).at( 2 ) );
   }
 }
 
@@ -76,7 +76,7 @@ void TestLogicElements::testLogicOr( ) {
   elm.connectPredecessor( 0, sw.at( 0 ), 0 );
   elm.connectPredecessor( 1, sw.at( 1 ), 0 );
 
-  const QVector<QVector<int>> truthTable = {
+  const QVector< QVector< int > > truthTable = {
     {
       { { 1, 1, 1 } },
       { { 1, 0, 1 } },
@@ -89,7 +89,7 @@ void TestLogicElements::testLogicOr( ) {
     sw.at( 1 )->setOutputValue( truthTable.at( test ).at( 1 ) );
     elm.updateLogic( );
 
-    QCOMPARE( static_cast<int>(elm.getOutputValue( )), truthTable.at( test ).at( 2 ) );
+    QCOMPARE( static_cast< int >( elm.getOutputValue( ) ), truthTable.at( test ).at( 2 ) );
   }
 }
 
@@ -108,7 +108,7 @@ void TestLogicElements::testLogicMux( ) {
   elm.connectPredecessor( 1, sw.at( 1 ), 0 );
   elm.connectPredecessor( 2, sw.at( 2 ), 0 );
 
-  const QVector<QVector<int>> truthTable = {
+  const QVector< QVector< int > > truthTable = {
     {
       { { 0, 0, 0, 0 } },
       { { 0, 0, 1, 0 } },
@@ -125,7 +125,7 @@ void TestLogicElements::testLogicMux( ) {
     sw.at( 1 )->setOutputValue( truthTable.at( test ).at( 1 ) );
     sw.at( 2 )->setOutputValue( truthTable.at( test ).at( 2 ) );
     elm.updateLogic( );
-    QCOMPARE( static_cast<int>(elm.getOutputValue( )), truthTable.at( test ).at( 3 ) );
+    QCOMPARE( static_cast< int >( elm.getOutputValue( ) ), truthTable.at( test ).at( 3 ) );
   }
 }
 
@@ -134,7 +134,7 @@ void TestLogicElements::testLogicDemux( ) {
   elm.connectPredecessor( 0, sw.at( 0 ), 0 );
   elm.connectPredecessor( 1, sw.at( 1 ), 0 );
 
-  const QVector<QVector<int>> truthTable = {
+  const QVector< QVector< int > > truthTable = {
     {
       /*  i  S  o0 o1 */
       { { 0, 0, 0, 0 } },
@@ -147,8 +147,8 @@ void TestLogicElements::testLogicDemux( ) {
     sw.at( 0 )->setOutputValue( truthTable.at( test ).at( 0 ) );
     sw.at( 1 )->setOutputValue( truthTable.at( test ).at( 1 ) );
     elm.updateLogic( );
-    QCOMPARE( static_cast<int>(elm.getOutputValue( 0 )), truthTable.at( test ).at( 2 ) );
-    QCOMPARE( static_cast<int>(elm.getOutputValue( 1 )), truthTable.at( test ).at( 3 ) );
+    QCOMPARE( static_cast< int >( elm.getOutputValue( 0 ) ), truthTable.at( test ).at( 2 ) );
+    QCOMPARE( static_cast< int >( elm.getOutputValue( 1 ) ), truthTable.at( test ).at( 3 ) );
   }
 }
 
@@ -159,7 +159,7 @@ void TestLogicElements::testLogicDFlipFlop( ) {
   elm.connectPredecessor( 2, sw.at( 2 ), 0 );
   elm.connectPredecessor( 3, sw.at( 3 ), 0 );
 
-  const QVector<QVector<int>> truthTable = {
+  const QVector< QVector< int > > truthTable = {
     {
       /*  L  D  C  p  c  Q ~Q */
       { { 0, 0, 1, 1, 1, 0, 1 } }, /* Clk up and D = 0 */
@@ -187,8 +187,8 @@ void TestLogicElements::testLogicDFlipFlop( ) {
     }
     elm.updateLogic( );
 
-    QCOMPARE( static_cast<int>(elm.getOutputValue( 0 )), truthTable.at( test ).at( 5 ) );
-    QCOMPARE( static_cast<int>(elm.getOutputValue( 1 )), truthTable.at( test ).at( 6 ) );
+    QCOMPARE( static_cast< int >( elm.getOutputValue( 0 ) ), truthTable.at( test ).at( 5 ) );
+    QCOMPARE( static_cast< int >( elm.getOutputValue( 1 ) ), truthTable.at( test ).at( 6 ) );
   }
 }
 
@@ -197,7 +197,7 @@ void TestLogicElements::testLogicDLatch( ) {
   elm.connectPredecessor( 0, sw.at( 0 ), 0 );
   elm.connectPredecessor( 1, sw.at( 1 ), 0 );
 
-  const QVector<QVector<int>> truthTable = {
+  const QVector< QVector< int > > truthTable = {
     {
       /*D  E  Q  A */
       { { 0, 0, 0, 0 } },
@@ -215,8 +215,8 @@ void TestLogicElements::testLogicDLatch( ) {
       sw.at( port )->setOutputValue( truthTable.at( test ).at( port ) );
     }
     elm.updateLogic( );
-    QCOMPARE( static_cast<int>(elm.getOutputValue( 0 )), truthTable.at( test ).at( 2 ) );
-    QCOMPARE( static_cast<int>(elm.getOutputValue( 1 )), static_cast<int>(!truthTable.at( test ).at( 2 )) );
+    QCOMPARE( static_cast< int >( elm.getOutputValue( 0 ) ), truthTable.at( test ).at( 2 ) );
+    QCOMPARE( static_cast< int >( elm.getOutputValue( 1 ) ), static_cast< int >( !truthTable.at( test ).at( 2 ) ) );
   }
 }
 
@@ -228,7 +228,7 @@ void TestLogicElements::testLogicJKFlipFlop( ) {
   elm.connectPredecessor( 3, sw.at( 3 ), 0 );
   elm.connectPredecessor( 4, sw.at( 4 ), 0 );
 
-  const QVector<QVector<int>> truthTable = {
+  const QVector< QVector< int > > truthTable = {
     {
       /*  L  J  C  K  p  c  Q  Q  A */
       { { 0, 0, 0, 0, 0, 1, 1, 0, 0 } }, /* Preset = false */
@@ -265,8 +265,8 @@ void TestLogicElements::testLogicJKFlipFlop( ) {
     }
     elm.updateLogic( );
 
-    QCOMPARE( static_cast<int>(elm.getOutputValue( 0 )), truthTable.at( test ).at( 6 ) );
-    QCOMPARE( static_cast<int>(elm.getOutputValue( 1 )), truthTable.at( test ).at( 7 ) );
+    QCOMPARE( static_cast< int >( elm.getOutputValue( 0 ) ), truthTable.at( test ).at( 6 ) );
+    QCOMPARE( static_cast< int >( elm.getOutputValue( 1 ) ), truthTable.at( test ).at( 7 ) );
   }
 }
 
@@ -280,7 +280,7 @@ void TestLogicElements::testLogicSRFlipFlop( ) {
   elm.connectPredecessor( 4, sw.at( 4 ), 0 );
 
 
-  const QVector<QVector<int>> truthTable = {
+  const QVector< QVector< int > > truthTable = {
     {
       /*  L  S  C  R  p  c  Q  Q  A */
 
@@ -326,8 +326,8 @@ void TestLogicElements::testLogicSRFlipFlop( ) {
       sw.at( port )->setOutputValue( truthTable.at( test ).at( port + 1 ) );
     }
     elm.updateLogic( );
-    QCOMPARE( static_cast<int>(elm.getOutputValue( 0 )), truthTable.at( test ).at( 6 ) );
-    QCOMPARE( static_cast<int>(elm.getOutputValue( 1 )), truthTable.at( test ).at( 7 ) );
+    QCOMPARE( static_cast< int >( elm.getOutputValue( 0 ) ), truthTable.at( test ).at( 6 ) );
+    QCOMPARE( static_cast< int >( elm.getOutputValue( 1 ) ), truthTable.at( test ).at( 7 ) );
   }
 }
 
@@ -338,7 +338,7 @@ void TestLogicElements::testLogicTFlipFlop( ) {
   elm.connectPredecessor( 2, sw.at( 2 ), 0 );
   elm.connectPredecessor( 3, sw.at( 3 ), 0 );
 
-  const QVector<QVector<int>> truthTable = {
+  const QVector< QVector< int > > truthTable = {
     {
       /*  L  T  C  p  c  Q ~Q  A */
       { { 1, 0, 1, 1, 1, 0, 1, 0 } }, /* No change */
@@ -377,7 +377,7 @@ void TestLogicElements::testLogicTFlipFlop( ) {
     }
     elm.updateLogic( );
 
-    QCOMPARE( static_cast<int>(elm.getOutputValue( 0 )), truthTable.at( test ).at( 5 ) );
-    QCOMPARE( static_cast<int>(elm.getOutputValue( 1 )), truthTable.at( test ).at( 6 ) );
+    QCOMPARE( static_cast< int >( elm.getOutputValue( 0 ) ), truthTable.at( test ).at( 5 ) );
+    QCOMPARE( static_cast< int >( elm.getOutputValue( 1 ) ), truthTable.at( test ).at( 6 ) );
   }
 }

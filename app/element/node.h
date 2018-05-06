@@ -6,7 +6,7 @@
 class Node : public GraphicElement {
 public:
   explicit Node( QGraphicsItem *parent = nullptr );
-  virtual ~Node() override = default;
+  virtual ~Node( ) override = default;
 
   virtual void updatePorts( ) override;
   virtual ElementGroup elementGroup( ) override {

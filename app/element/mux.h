@@ -8,17 +8,17 @@
 class Mux : public GraphicElement {
 public:
   explicit Mux( QGraphicsItem *parent = nullptr );
-  virtual ~Mux() override = default;
+  virtual ~Mux( ) override = default;
 
   /* GraphicElement interface */
 public:
-  ElementType elementType( )override {
+  ElementType elementType( ) override {
     return( ElementType::MUX );
   }
-  virtual ElementGroup elementGroup( )override {
+  virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::MUX );
   }
-  void updatePorts()override;
+  void updatePorts( ) override;
   void updateLogic( );
 };
 

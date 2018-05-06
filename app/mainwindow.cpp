@@ -1,3 +1,4 @@
+#include "arduino/codegenerator.h"
 #include "elementmapping.h"
 #include "globalproperties.h"
 #include "graphicsviewzoom.h"
@@ -6,21 +7,20 @@
 #include "simplewaveform.h"
 #include "thememanager.h"
 #include "ui_mainwindow.h"
-#include "arduino/codegenerator.h"
 
+#include <cmath>
+#include <iostream>
 #include <QDebug>
 #include <QFileDialog>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <QPrinter>
 #include <QRectF>
 #include <QSaveFile>
 #include <QSettings>
 #include <QShortcut>
 #include <QStyleFactory>
 #include <QTemporaryFile>
-#include <QPrinter>
-#include <cmath>
-#include <iostream>
 #include <stdexcept>
 
 
@@ -106,7 +106,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   rboxController = new RecentFilesController( "recentBoxes", this );
 
   QShortcut *shortcut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
-  connect( shortcut, &QShortcut::activated, ui->lineEdit, QOverload<>::of(&QWidget::setFocus) );
+  connect( shortcut, &QShortcut::activated, ui->lineEdit, QOverload< >::of( &QWidget::setFocus ) );
   ui->graphicsView->setCacheMode( QGraphicsView::CacheBackground );
   firstResult = nullptr;
   updateRecentBoxes( );
@@ -620,7 +620,7 @@ void MainWindow::zoomChanged( ) {
 void MainWindow::updateRecentFileActions( ) {
   QStringList files = rfController->getFiles( );
 
-  int numRecentFiles = qMin( files.size( ), static_cast<int>(RecentFilesController::MaxRecentFiles ));
+  int numRecentFiles = qMin( files.size( ), static_cast< int >( RecentFilesController::MaxRecentFiles ) );
   if( numRecentFiles > 0 ) {
     ui->menuRecent_files->setEnabled( true );
   }
