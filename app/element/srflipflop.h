@@ -7,18 +7,18 @@ class SRFlipFlop : public GraphicElement {
   bool lastClk;
 
 public:
-  explicit SRFlipFlop( QGraphicsItem *parent = 0 );
-  virtual ~SRFlipFlop( );
+  explicit SRFlipFlop( QGraphicsItem *parent = nullptr );
+  virtual ~SRFlipFlop( ) override = default;
 
   /* GraphicElement interface */
 public:
-  virtual ElementType elementType( ) {
+  virtual ElementType elementType( ) override {
     return( ElementType::SRFLIPFLOP );
   }
-  virtual ElementGroup elementGroup( ) {
+  virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::MEMORY );
   }
-  virtual void updatePorts( );
+  virtual void updatePorts( ) override;
   void updateLogic( );
 };
 

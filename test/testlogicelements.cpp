@@ -21,31 +21,31 @@ TestLogicElements::TestLogicElements( QObject *parent ) : QObject( parent ) {
 }
 
 void TestLogicElements::init( ) {
-  for( size_t i = 0; i < sw.size( ); ++i ) {
-    sw[ i ] = new LogicInput( );
-  }
+    for(auto &item : sw){
+        item = new LogicInput();
+    }
 }
 
 void TestLogicElements::cleanup( ) {
-  for( size_t i = 0; i < sw.size( ); ++i ) {
-    delete sw[ i ];
-  }
+    for(auto &item : sw){
+        delete item;
+    }
 }
 
 void TestLogicElements::testLogicNode( ) {
   LogicNode elm;
   elm.connectPredecessor( 0, sw.at( 0 ), 0 );
 
-  std::array< std::array< int, 2 >, 2 > truthTable = {
+  const QVector<QVector<int>> truthTable = {
     {
       { { 1, 1 } },
       { { 0, 0 } }
     }
   };
-  for( size_t test = 0; test < truthTable.size( ); ++test ) {
+  for( int test = 0; test < truthTable.size( ); ++test ) {
     sw.at( 0 )->setOutputValue( truthTable.at( test ).at( 0 ) );
     elm.updateLogic( );
-    QCOMPARE( ( int ) elm.getOutputValue( ), truthTable.at( test ).at( 1 ) );
+    QCOMPARE( static_cast<int>(elm.getOutputValue( )), truthTable.at( test ).at( 1 ) );
   }
 }
 
@@ -54,7 +54,7 @@ void TestLogicElements::testLogicAnd( ) {
   elm.connectPredecessor( 0, sw.at( 0 ), 0 );
   elm.connectPredecessor( 1, sw.at( 1 ), 0 );
 
-  std::array< std::array< int, 3 >, 4 > truthTable = {
+  const QVector<QVector<int>> truthTable = {
     {
       { { 1, 1, 1 } },
       { { 1, 0, 0 } },
@@ -67,7 +67,7 @@ void TestLogicElements::testLogicAnd( ) {
     sw.at( 1 )->setOutputValue( truthTable.at( test ).at( 1 ) );
     elm.updateLogic( );
 
-    QCOMPARE( ( int ) elm.getOutputValue( ), truthTable.at( test ).at( 2 ) );
+    QCOMPARE( static_cast<int>(elm.getOutputValue( )), truthTable.at( test ).at( 2 ) );
   }
 }
 
@@ -76,7 +76,7 @@ void TestLogicElements::testLogicOr( ) {
   elm.connectPredecessor( 0, sw.at( 0 ), 0 );
   elm.connectPredecessor( 1, sw.at( 1 ), 0 );
 
-  std::array< std::array< int, 3 >, 4 > truthTable = {
+  const QVector<QVector<int>> truthTable = {
     {
       { { 1, 1, 1 } },
       { { 1, 0, 1 } },
@@ -89,7 +89,7 @@ void TestLogicElements::testLogicOr( ) {
     sw.at( 1 )->setOutputValue( truthTable.at( test ).at( 1 ) );
     elm.updateLogic( );
 
-    QCOMPARE( ( int ) elm.getOutputValue( ), truthTable.at( test ).at( 2 ) );
+    QCOMPARE( static_cast<int>(elm.getOutputValue( )), truthTable.at( test ).at( 2 ) );
   }
 }
 
@@ -108,7 +108,7 @@ void TestLogicElements::testLogicMux( ) {
   elm.connectPredecessor( 1, sw.at( 1 ), 0 );
   elm.connectPredecessor( 2, sw.at( 2 ), 0 );
 
-  std::array< std::array< int, 4 >, 8 > truthTable = {
+  const QVector<QVector<int>> truthTable = {
     {
       { { 0, 0, 0, 0 } },
       { { 0, 0, 1, 0 } },
@@ -125,7 +125,7 @@ void TestLogicElements::testLogicMux( ) {
     sw.at( 1 )->setOutputValue( truthTable.at( test ).at( 1 ) );
     sw.at( 2 )->setOutputValue( truthTable.at( test ).at( 2 ) );
     elm.updateLogic( );
-    QCOMPARE( ( int ) elm.getOutputValue( ), truthTable.at( test ).at( 3 ) );
+    QCOMPARE( static_cast<int>(elm.getOutputValue( )), truthTable.at( test ).at( 3 ) );
   }
 }
 
@@ -134,7 +134,7 @@ void TestLogicElements::testLogicDemux( ) {
   elm.connectPredecessor( 0, sw.at( 0 ), 0 );
   elm.connectPredecessor( 1, sw.at( 1 ), 0 );
 
-  std::array< std::array< int, 4 >, 8 > truthTable = {
+  const QVector<QVector<int>> truthTable = {
     {
       /*  i  S  o0 o1 */
       { { 0, 0, 0, 0 } },
@@ -147,8 +147,8 @@ void TestLogicElements::testLogicDemux( ) {
     sw.at( 0 )->setOutputValue( truthTable.at( test ).at( 0 ) );
     sw.at( 1 )->setOutputValue( truthTable.at( test ).at( 1 ) );
     elm.updateLogic( );
-    QCOMPARE( ( int ) elm.getOutputValue( 0 ), truthTable.at( test ).at( 2 ) );
-    QCOMPARE( ( int ) elm.getOutputValue( 1 ), truthTable.at( test ).at( 3 ) );
+    QCOMPARE( static_cast<int>(elm.getOutputValue( 0 )), truthTable.at( test ).at( 2 ) );
+    QCOMPARE( static_cast<int>(elm.getOutputValue( 1 )), truthTable.at( test ).at( 3 ) );
   }
 }
 
@@ -159,7 +159,7 @@ void TestLogicElements::testLogicDFlipFlop( ) {
   elm.connectPredecessor( 2, sw.at( 2 ), 0 );
   elm.connectPredecessor( 3, sw.at( 3 ), 0 );
 
-  std::array< std::array< int, 7 >, 7 > truthTable = {
+  const QVector<QVector<int>> truthTable = {
     {
       /*  L  D  C  p  c  Q ~Q */
       { { 0, 0, 1, 1, 1, 0, 1 } }, /* Clk up and D = 0 */
@@ -173,7 +173,7 @@ void TestLogicElements::testLogicDFlipFlop( ) {
       { { 1, 1, 0, 1, 1, 1, 0 } }, /* Clk dwn and D = 1 ( must mantain current state )*/
     }
   };
-  for( size_t test = 0; test < truthTable.size( ); ++test ) {
+  for( int test = 0; test < truthTable.size( ); ++test ) {
     sw.at( 0 )->setOutputValue( truthTable.at( test ).at( 1 ) ); /* DATA */
     sw.at( 1 )->setOutputValue( truthTable.at( test ).at( 0 ) ); /*  CLK */
     sw.at( 2 )->setOutputValue( false ); /* PRST */
@@ -187,8 +187,8 @@ void TestLogicElements::testLogicDFlipFlop( ) {
     }
     elm.updateLogic( );
 
-    QCOMPARE( ( int ) elm.getOutputValue( 0 ), truthTable.at( test ).at( 5 ) );
-    QCOMPARE( ( int ) elm.getOutputValue( 1 ), truthTable.at( test ).at( 6 ) );
+    QCOMPARE( static_cast<int>(elm.getOutputValue( 0 )), truthTable.at( test ).at( 5 ) );
+    QCOMPARE( static_cast<int>(elm.getOutputValue( 1 )), truthTable.at( test ).at( 6 ) );
   }
 }
 
@@ -197,7 +197,7 @@ void TestLogicElements::testLogicDLatch( ) {
   elm.connectPredecessor( 0, sw.at( 0 ), 0 );
   elm.connectPredecessor( 1, sw.at( 1 ), 0 );
 
-  std::array< std::array< int, 4 >, 6 > truthTable = {
+  const QVector<QVector<int>> truthTable = {
     {
       /*D  E  Q  A */
       { { 0, 0, 0, 0 } },
@@ -208,15 +208,15 @@ void TestLogicElements::testLogicDLatch( ) {
       { { 1, 1, 1, 0 } },
     }
   };
-  for( size_t test = 0; test < truthTable.size( ); ++test ) {
+  for( int test = 0; test < truthTable.size( ); ++test ) {
     elm.setOutputValue( 0, truthTable.at( test ).at( 3 ) );
     elm.setOutputValue( 1, !truthTable.at( test ).at( 3 ) );
     for( int port = 0; port < 2; ++port ) {
       sw.at( port )->setOutputValue( truthTable.at( test ).at( port ) );
     }
     elm.updateLogic( );
-    QCOMPARE( ( int ) elm.getOutputValue( 0 ), truthTable.at( test ).at( 2 ) );
-    QCOMPARE( ( int ) elm.getOutputValue( 1 ), ( int ) !truthTable.at( test ).at( 2 ) );
+    QCOMPARE( static_cast<int>(elm.getOutputValue( 0 )), truthTable.at( test ).at( 2 ) );
+    QCOMPARE( static_cast<int>(elm.getOutputValue( 1 )), static_cast<int>(!truthTable.at( test ).at( 2 )) );
   }
 }
 
@@ -228,7 +228,7 @@ void TestLogicElements::testLogicJKFlipFlop( ) {
   elm.connectPredecessor( 3, sw.at( 3 ), 0 );
   elm.connectPredecessor( 4, sw.at( 4 ), 0 );
 
-  std::array< std::array< int, 9 >, 13 > truthTable = {
+  const QVector<QVector<int>> truthTable = {
     {
       /*  L  J  C  K  p  c  Q  Q  A */
       { { 0, 0, 0, 0, 0, 1, 1, 0, 0 } }, /* Preset = false */
@@ -247,7 +247,7 @@ void TestLogicElements::testLogicJKFlipFlop( ) {
     }
   };
   elm.updateLogic( );
-  for( size_t test = 0; test < truthTable.size( ); ++test ) {
+  for( int test = 0; test < truthTable.size( ); ++test ) {
     sw.at( 0 )->setOutputValue( truthTable.at( test ).at( 1 ) );
     sw.at( 1 )->setOutputValue( truthTable.at( test ).at( 0 ) );
     sw.at( 2 )->setOutputValue( truthTable.at( test ).at( 3 ) );
@@ -265,8 +265,8 @@ void TestLogicElements::testLogicJKFlipFlop( ) {
     }
     elm.updateLogic( );
 
-    QCOMPARE( ( int ) elm.getOutputValue( 0 ), truthTable.at( test ).at( 6 ) );
-    QCOMPARE( ( int ) elm.getOutputValue( 1 ), truthTable.at( test ).at( 7 ) );
+    QCOMPARE( static_cast<int>(elm.getOutputValue( 0 )), truthTable.at( test ).at( 6 ) );
+    QCOMPARE( static_cast<int>(elm.getOutputValue( 1 )), truthTable.at( test ).at( 7 ) );
   }
 }
 
@@ -280,7 +280,7 @@ void TestLogicElements::testLogicSRFlipFlop( ) {
   elm.connectPredecessor( 4, sw.at( 4 ), 0 );
 
 
-  std::array< std::array< int, 9 >, 23 > truthTable = {
+  const QVector<QVector<int>> truthTable = {
     {
       /*  L  S  C  R  p  c  Q  Q  A */
 
@@ -315,7 +315,7 @@ void TestLogicElements::testLogicSRFlipFlop( ) {
     }
   };
   elm.updateLogic( );
-  for( size_t test = 0; test < truthTable.size( ); ++test ) {
+  for( int test = 0; test < truthTable.size( ); ++test ) {
     sw.at( 0 )->setOutputValue( false );
     sw.at( 1 )->setOutputValue( truthTable.at( test ).at( 0 ) );
     sw.at( 2 )->setOutputValue( false );
@@ -326,8 +326,8 @@ void TestLogicElements::testLogicSRFlipFlop( ) {
       sw.at( port )->setOutputValue( truthTable.at( test ).at( port + 1 ) );
     }
     elm.updateLogic( );
-    QCOMPARE( ( int ) elm.getOutputValue( 0 ), truthTable.at( test ).at( 6 ) );
-    QCOMPARE( ( int ) elm.getOutputValue( 1 ), truthTable.at( test ).at( 7 ) );
+    QCOMPARE( static_cast<int>(elm.getOutputValue( 0 )), truthTable.at( test ).at( 6 ) );
+    QCOMPARE( static_cast<int>(elm.getOutputValue( 1 )), truthTable.at( test ).at( 7 ) );
   }
 }
 
@@ -338,7 +338,7 @@ void TestLogicElements::testLogicTFlipFlop( ) {
   elm.connectPredecessor( 2, sw.at( 2 ), 0 );
   elm.connectPredecessor( 3, sw.at( 3 ), 0 );
 
-  std::array< std::array< int, 8 >, 11 > truthTable = {
+  const QVector<QVector<int>> truthTable = {
     {
       /*  L  T  C  p  c  Q ~Q  A */
       { { 1, 0, 1, 1, 1, 0, 1, 0 } }, /* No change */
@@ -361,7 +361,7 @@ void TestLogicElements::testLogicTFlipFlop( ) {
     }
   };
   elm.updateLogic( );
-  for( size_t test = 0; test < truthTable.size( ); ++test ) {
+  for( int test = 0; test < truthTable.size( ); ++test ) {
     sw.at( 0 )->setOutputValue( truthTable.at( test ).at( 1 ) ); // T
     sw.at( 1 )->setOutputValue( truthTable.at( test ).at( 0 ) ); // CLK
     sw.at( 2 )->setOutputValue( true );
@@ -377,7 +377,7 @@ void TestLogicElements::testLogicTFlipFlop( ) {
     }
     elm.updateLogic( );
 
-    QCOMPARE( ( int ) elm.getOutputValue( 0 ), truthTable.at( test ).at( 5 ) );
-    QCOMPARE( ( int ) elm.getOutputValue( 1 ), truthTable.at( test ).at( 6 ) );
+    QCOMPARE( static_cast<int>(elm.getOutputValue( 0 )), truthTable.at( test ).at( 5 ) );
+    QCOMPARE( static_cast<int>(elm.getOutputValue( 1 )), truthTable.at( test ).at( 6 ) );
   }
 }

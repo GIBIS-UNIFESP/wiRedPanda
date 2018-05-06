@@ -121,7 +121,7 @@ void GraphicElement::setOutputs( const QVector< QNEOutputPort* > &outputs ) {
   m_outputs = outputs;
 }
 
-void GraphicElement::save( QDataStream &ds ) {
+void GraphicElement::save( QDataStream &ds ) const {
   COMMENT( "Saving element. Type: " << objectName( ).toStdString( ), 4 );
   ds << pos( );
   ds << rotation( );
@@ -139,15 +139,15 @@ void GraphicElement::save( QDataStream &ds ) {
   /* <Version1.9> */
   ds << m_trigger;
   /* <\Version1.9> */
-  ds << ( quint64 ) m_inputs.size( );
+  ds << static_cast<quint64>(m_inputs.size( ));
   for( QNEPort *port: m_inputs ) {
-    ds << ( quint64 ) port;
+    ds << reinterpret_cast<quint64>(port);
     ds << port->portName( );
     ds << port->portFlags( );
   }
-  ds << ( quint64 ) m_outputs.size( );
+  ds << static_cast<quint64>(m_outputs.size( ));
   for( QNEPort *port: m_outputs ) {
-    ds << ( quint64 ) port;
+    ds << reinterpret_cast<quint64>(port);
     ds << port->portName( );
     ds << port->portFlags( );
   }
@@ -245,7 +245,7 @@ void GraphicElement::loadInputPort( QDataStream &ds, QMap< quint64, QNEPort* > &
   ds >> ptr;
   ds >> name;
   ds >> flags;
-  if( ( port < ( size_t ) m_inputs.size( ) ) ) {
+  if( ( port < static_cast<size_t>(m_inputs.size( )) ) ) {
     if( elementType( ) == ElementType::BOX ) {
       m_inputs[ port ]->setName( name );
     }
@@ -260,7 +260,7 @@ void GraphicElement::loadInputPort( QDataStream &ds, QMap< quint64, QNEPort* > &
 
 
 void GraphicElement::removeSurplusInputs( quint64 inputSz, QMap< quint64, QNEPort* > &portMap ) {
-  while( inputSize( ) > ( int ) inputSz && inputSz >= m_minInputSz ) {
+  while( inputSize( ) > static_cast<int>(inputSz) && inputSz >= m_minInputSz ) {
     QNEPort *deletedPort = m_inputs.back( );
     removePortFromMap( deletedPort, portMap );
     delete deletedPort;
@@ -298,7 +298,7 @@ void GraphicElement::loadOutputPort( QDataStream &ds, QMap< quint64, QNEPort* > 
   ds >> ptr;
   ds >> name;
   ds >> flags;
-  if( ( port < ( size_t ) m_outputs.size( ) ) ) {
+  if( ( port < static_cast<size_t>(m_outputs.size( )) ) ) {
     if( elementType( ) == ElementType::BOX ) {
       m_outputs[ port ]->setName( name );
     }
@@ -338,11 +338,11 @@ void GraphicElement::paint( QPainter *painter, const QStyleOptionGraphicsItem *o
 
 QNEPort* GraphicElement::addPort( const QString &name, bool isOutput, int flags, int ptr ) {
   COMMENT( "Adding new port.", 4 );
-  if( isOutput && ( ( quint64 ) m_outputs.size( ) >= m_maxOutputSz ) ) {
-    return( NULL );
+  if( isOutput && ( static_cast<quint64>(m_outputs.size( )) >= m_maxOutputSz ) ) {
+    return( nullptr );
   }
-  else if( !isOutput && ( ( quint64 ) m_inputs.size( ) >= m_maxInputSz ) ) {
-    return( NULL );
+  else if( !isOutput && ( static_cast<quint64>(m_inputs.size( )) >= m_maxInputSz ) ) {
+    return( nullptr );
   }
   QNEPort *port = nullptr;
   if( isOutput ) {
@@ -490,7 +490,7 @@ void GraphicElement::setLabel( QString label ) {
   updateLabel( );
 }
 
-QString GraphicElement::getLabel( ) {
+QString GraphicElement::getLabel( ) const {
   return( m_labelText );
 }
 
@@ -531,7 +531,7 @@ bool GraphicElement::isValid( ) {
   if( valid == false ) {
     for( QNEOutputPort *output : outputs( ) ) {
       for( QNEConnection *conn : output->connections( ) ) {
-        conn->setStatus( QNEConnection::Invalid );
+        conn->setStatus( QNEConnection::Status::Invalid );
         QNEInputPort *port = conn->otherPort( output );
         if( port ) {
           port->setValue( -1 );
@@ -554,7 +554,7 @@ void GraphicElement::setColor( QString ) {
 
 }
 
-QString GraphicElement::getColor( ) {
+QString GraphicElement::getColor( ) const {
   return( QString( ) );
 }
 
@@ -562,7 +562,7 @@ void GraphicElement::setAudio( QString ) {
 
 }
 
-QString GraphicElement::getAudio( ) {
+QString GraphicElement::getAudio( ) const {
   return( QString( ) );
 }
 
@@ -603,7 +603,7 @@ int GraphicElement::minOutputSz( ) const {
   return( m_minOutputSz );
 }
 
-int GraphicElement::inputSize( ) {
+int GraphicElement::inputSize( ) const {
   return( m_inputs.size( ) );
 }
 
@@ -624,11 +624,11 @@ void GraphicElement::setInputSize( int size ) {
   }
 }
 
-int GraphicElement::outputSize( ) {
+int GraphicElement::outputSize( ) const {
   return( m_outputs.size( ) );
 }
 
-void GraphicElement::setOutputSize( int size ) {
+void GraphicElement::setOutputSize( const int size ) {
   if( ( size >= minOutputSz( ) ) && ( size <= maxOutputSz( ) ) ) {
     if( outputSize( ) < size ) {
       for( int port = outputSize( ); port < size; ++port ) {
@@ -643,7 +643,7 @@ void GraphicElement::setOutputSize( int size ) {
   }
 }
 
-float GraphicElement::getFrequency( ) {
+float GraphicElement::getFrequency( ) const {
   return( 0.0 );
 }
 
@@ -659,7 +659,7 @@ int GraphicElement::minInputSz( ) const {
   return( m_minInputSz );
 }
 
-void GraphicElement::setMinInputSz( int minInputSz ) {
+void GraphicElement::setMinInputSz( const int minInputSz ) {
   m_minInputSz = minInputSz;
 }
 

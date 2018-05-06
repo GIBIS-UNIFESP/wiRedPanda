@@ -17,9 +17,6 @@ Clock::Clock( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent ) {
   setOn( 0 );
 }
 
-Clock::~Clock( ) {
-}
-
 void Clock::updateClock( ) {
   if( !disabled( ) ) {
     elapsed++;
@@ -47,7 +44,7 @@ void Clock::setOn( bool value ) {
 }
 
 
-void Clock::save( QDataStream &ds ) {
+void Clock::save( QDataStream &ds ) const {
   GraphicElement::save( ds );
   ds << getFrequency( );
 }
@@ -61,7 +58,7 @@ void Clock::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double ve
   }
 }
 
-float Clock::getFrequency( ) {
+float Clock::getFrequency( ) const {
   return( m_frequency );
 }
 

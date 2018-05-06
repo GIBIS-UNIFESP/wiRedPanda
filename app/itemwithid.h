@@ -1,7 +1,6 @@
 #ifndef ITEMWITHID_H
 #define ITEMWITHID_H
 
-
 class ItemWithId {
   int m_id;
 

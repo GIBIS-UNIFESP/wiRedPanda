@@ -16,10 +16,6 @@ Led::Led( QGraphicsItem *parent ) : GraphicElement( 1, 4, 0, 0, parent ) {
 
 }
 
-Led::~Led( ) {
-
-}
-
 QVector< QString > led_2bits = {
   ":/output/16colors/BlackLedOn.png", /* 00 */
   ":/output/16colors/RedLedOn.png", /* 01 */
@@ -100,11 +96,11 @@ void Led::setColor( QString color ) {
   refresh( );
 }
 
-QString Led::getColor( ) {
+QString Led::getColor( ) const {
   return( m_color );
 }
 
-void Led::save( QDataStream &ds ) {
+void Led::save( QDataStream &ds ) const {
   GraphicElement::save( ds );
   ds << getColor( );
 

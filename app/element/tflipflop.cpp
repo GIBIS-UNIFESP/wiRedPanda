@@ -26,10 +26,6 @@ TFlipFlop::TFlipFlop( QGraphicsItem *parent ) : GraphicElement( 4, 4, 2, 2, pare
   input( 3 )->setDefaultValue( 1 );
 }
 
-TFlipFlop::~TFlipFlop( ) {
-
-}
-
 void TFlipFlop::updatePorts( ) {
   input( 0 )->setPos( topPosition( ), 13 ); /* T */
   input( 1 )->setPos( topPosition( ), 45 ); /* Clock */

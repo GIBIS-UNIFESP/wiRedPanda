@@ -15,10 +15,6 @@ Buzzer::Buzzer( QGraphicsItem *parent ) : GraphicElement( 1, 1, 0, 0, parent ) {
   play = 0;
 }
 
-Buzzer::~Buzzer( ) {
-
-}
-
 void Buzzer::refresh( ) {
   if( isValid( ) ) {
     bool value = inputs( ).first( )->value( );
@@ -44,7 +40,7 @@ void Buzzer::setAudio( QString note ) {
   m_note = note;
 }
 
-QString Buzzer::getAudio( ) {
+QString Buzzer::getAudio( ) const {
   return( m_note );
 }
 
@@ -53,7 +49,7 @@ void Buzzer::mute( bool _mute ) {
 }
 
 void Buzzer::playbuzzer( ) {
-  if( ( play == 0 ) ) {
+  if ( play == 0 )  {
     setPixmap( ":/output/BuzzerOn.png" );
     m_audio.play( );
   }
@@ -66,7 +62,7 @@ void Buzzer::stopbuzzer( ) {
   m_audio.stop( );
 }
 
-void Buzzer::save( QDataStream &ds ) {
+void Buzzer::save( QDataStream &ds ) const {
   GraphicElement::save( ds );
   ds << getAudio( );
 }
