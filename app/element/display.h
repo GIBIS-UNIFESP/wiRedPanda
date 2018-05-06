@@ -5,26 +5,26 @@
 
 class Display : public GraphicElement {
 public:
-  explicit Display( QGraphicsItem *parent );
-  virtual ~Display( );
+  explicit Display( QGraphicsItem *parent = nullptr );
+  virtual ~Display( ) override;
 
 public:
-  virtual ElementType elementType( ) {
+  virtual ElementType elementType( ) override {
     return( ElementType::DISPLAY );
   }
-  virtual ElementGroup elementGroup( ) {
+  virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::OUTPUT );
   }
-  virtual void refresh( );
-  void updatePorts( );
+  virtual void refresh( ) override;
+  void updatePorts( ) override;
   QPixmap bkg, a, b, c, d, e, f, g, h;
 
   /* QGraphicsItem interface */
 public:
-  void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
+  void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget ) override;
 
   /* GraphicElement interface */
 public:
-  void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
+  void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) override;
 };
 #endif /* DISPLAY_H */

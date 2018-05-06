@@ -33,7 +33,7 @@ public:
   enum { Type = QGraphicsItem::UserType + 3 };
 
   explicit GraphicElement( int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz,
-                           QGraphicsItem *parent = 0 );
+                           QGraphicsItem *parent = nullptr );
 
 private:
   QPixmap *pixmap;
@@ -47,7 +47,7 @@ public:
 
   virtual ElementGroup elementGroup( ) = 0;
 
-  virtual void save( QDataStream &ds );
+  virtual void save( QDataStream &ds ) const;
 
   virtual void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
 
@@ -98,13 +98,13 @@ public:
 
   int minOutputSz( ) const;
 
-  int inputSize( );
+  int inputSize( ) const;
   void setInputSize( int size );
 
-  int outputSize( );
-  void setOutputSize( int size );
+  int outputSize( ) const;
+  void setOutputSize(const int size );
 
-  virtual float getFrequency( );
+  virtual float getFrequency( ) const;
   virtual void setFrequency( float freq );
 
   void setPixmap( const QString &pixmapName, QRect size = QRect( ) );
@@ -123,10 +123,10 @@ public:
 
 
   virtual void setColor( QString getColor );
-  virtual QString getColor( );
+  virtual QString getColor( ) const;
 
   virtual void setAudio( QString audio );
-  virtual QString getAudio( );
+  virtual QString getAudio( ) const;
 /*
  *  bool beingVisited( ) const;
  *  void setBeingVisited( bool beingVisited );
@@ -140,7 +140,7 @@ public:
   bool isValid( );
 
   void setLabel( QString label );
-  QString getLabel( );
+  QString getLabel( ) const;
 
   void updateTheme( );
   virtual void updateThemeLocal( );
@@ -165,7 +165,7 @@ protected:
   void setHasFrequency( bool hasFrequency );
   void setHasColors( bool hasColors );
   void setHasTrigger( bool hasTrigger );
-  void setMinInputSz( int minInputSz );
+  void setMinInputSz(const int minInputSz );
   void setMinOutputSz( int minOutputSz );
   void setHasAudio( bool hasAudio );
   void setOutputsOnTop( bool outputsOnTop );

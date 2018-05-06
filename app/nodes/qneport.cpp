@@ -303,13 +303,13 @@ void QNEOutputPort::setValue( char value ) {
   m_value = value;
   for( QNEConnection *conn : connections( ) ) {
     if( value == -1 ) {
-      conn->setStatus( QNEConnection::Invalid );
+      conn->setStatus( QNEConnection::Status::Invalid );
     }
     else if( value == 0 ) {
-      conn->setStatus( QNEConnection::Inactive );
+      conn->setStatus( QNEConnection::Status::Inactive );
     }
     else {
-      conn->setStatus( QNEConnection::Active );
+      conn->setStatus( QNEConnection::Status::Active );
     }
     QNEInputPort *port = conn->otherPort( this );
     if( port ) {

@@ -41,8 +41,8 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( QDataStream &ds,
     if( type == GraphicElement::Type ) {
       quint64 elmType;
       ds >> elmType;
-      COMMENT( "Building " << ElementFactory::typeToText( ( ElementType ) elmType ).toStdString( ) << " element.", 4 );
-      GraphicElement *elm = ElementFactory::buildElement( ( ElementType ) elmType );
+      COMMENT( "Building " << ElementFactory::typeToText( static_cast<ElementType>(elmType) ).toStdString( ) << " element.", 4 );
+      GraphicElement *elm = ElementFactory::buildElement( static_cast<ElementType>(elmType) );
       if( elm ) {
         itemList.append( elm );
         elm->load( ds, portMap, version );

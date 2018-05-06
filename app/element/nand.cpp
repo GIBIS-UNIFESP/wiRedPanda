@@ -7,10 +7,6 @@ Nand::Nand(QGraphicsItem * parent) : GraphicElement(2,8,1,1,parent) {
   setPortName("NAND");
 }
 
-Nand::~Nand() {
-
-}
-
 void Nand::updateLogic() {
   char res = false;
   if(!isValid()) {

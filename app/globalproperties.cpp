@@ -18,7 +18,7 @@ double loadVersion( ) {
   QString txtVersion( APP_VERSION );
   bool ok;
   double version = GlobalProperties::toDouble( txtVersion, &ok );
-  if( !ok || ( version == 0. ) ) {
+  if( !ok || ( qFuzzyIsNull(version)) ) {
     throw std::runtime_error( ERRORMSG( "INVALID VERSION NUMBER!" ) );
   }
   return( version );

@@ -6,20 +6,20 @@
 
 class InputSwitch : public GraphicElement, public Input {
 public:
-  explicit InputSwitch( QGraphicsItem *parent = 0);
-  virtual ~InputSwitch( );
+  explicit InputSwitch( QGraphicsItem *parent = nullptr);
+  virtual ~InputSwitch( ) override = default;
 
   bool on;
   /* QGraphicsItem interface */
 protected:
-  void mousePressEvent( QGraphicsSceneMouseEvent *event );
+  void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
 
   /* GraphicElement interface */
 public:
-  virtual ElementType elementType( ) {
+  virtual ElementType elementType( ) override {
     return( ElementType::SWITCH );
   }
-  virtual ElementGroup elementGroup( ) {
+  virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::INPUT );
   }
   void updateLogic( );
@@ -27,10 +27,10 @@ public:
 
   /* GraphicElement interface */
 public:
-  void save( QDataStream &ds );
-  void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
-  virtual bool getOn( ) const;
-  virtual void setOn( bool value );
+  void save( QDataStream &ds ) const override;
+  void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) override;
+  virtual bool getOn( ) const override;
+  virtual void setOn( bool value ) override;
 };
 
 #endif /* INPUTSWITCH_H */

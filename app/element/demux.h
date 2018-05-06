@@ -7,17 +7,19 @@
 
 class Demux : public GraphicElement {
 public:
-  explicit Demux( QGraphicsItem *parent = 0 );
-  virtual ElementGroup elementGroup( ) {
+  explicit Demux( QGraphicsItem *parent = nullptr );
+    virtual ~Demux() override = default;
+
+  virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::MUX );
   }
 
   /* GraphicElement interface */
 public:
-  ElementType elementType( ) {
+  ElementType elementType( ) override {
     return( ElementType::DEMUX );
   }
-  void updatePorts( );
+  void updatePorts( ) override;
 };
 
 #endif /* DEMUX_H */

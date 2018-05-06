@@ -54,11 +54,11 @@ void TestFiles::testFiles( ) {
     QTemporaryFile outfile;
     if( outfile.open() ) {
       qDebug( ) << outfile.fileName();
-      QDataStream ds( &outfile );
+      QDataStream ds2( &outfile );
       try {
-        editor->save( ds );
+        editor->save( ds2 );
       }
-      catch( std::runtime_error &e ) {
+      catch( std::runtime_error & ) {
         QFAIL( QString( "Error saving project: " + outfile.fileName() ).toUtf8( ) );
       }
     }
@@ -70,9 +70,9 @@ void TestFiles::testFiles( ) {
 
     QFile pandaFile2( outfile.fileName() );
     QVERIFY( pandaFile2.open( QFile::ReadOnly ) );
-    QDataStream ds2( &pandaFile2 );
+    QDataStream ds3( &pandaFile2 );
     try {
-      editor->load( ds2 );
+      editor->load( ds3 );
     }
     catch( std::runtime_error &e ) {
       QFAIL( QString( "Could not load the file! Error: %1" ).arg( QString::fromStdString( e.what( ) ) ).toUtf8( ) );

@@ -198,7 +198,7 @@ GraphicElement* ElementFactory::buildElement( ElementType type, QGraphicsItem *p
         type == ElementType::MUX ? new Mux( parent ) :
         type == ElementType::DEMUX ? new Demux( parent ) :
         type == ElementType::BUZZER ? new Buzzer( parent ) :
-        ( GraphicElement* ) nullptr;
+                                      static_cast<GraphicElement*>(nullptr);
   return( elm );
 }
 

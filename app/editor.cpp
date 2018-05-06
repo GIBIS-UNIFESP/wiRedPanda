@@ -531,7 +531,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
     QPointF pos = dde->scenePos( ) - offset;
     dde->accept( );
 
-    GraphicElement *elm = ElementFactory::buildElement( ( ElementType ) type );
+    GraphicElement *elm = ElementFactory::buildElement( static_cast<ElementType>(type) );
     /* If element type is unknown, a default element is created with the pixmap received from mimedata */
     if( !elm ) {
       return( false );
@@ -891,7 +891,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
         movedElements.clear( );
       }
     }
-    switch( ( int ) evt->type( ) ) {
+    switch( static_cast<int>(evt->type( )) ) {
         case QEvent::GraphicsSceneMousePress: {
         ret = mousePressEvt( mouseEvt );
         break;

@@ -7,12 +7,6 @@ Nor::Nor(QGraphicsItem * parent) : GraphicElement(2,8,1,1,parent) {
   setPortName("NOR");
 }
 
-Nor::~Nor() {
-
-}
-
-
-
 void Nor::updateLogic() {
   char res = true;
 
