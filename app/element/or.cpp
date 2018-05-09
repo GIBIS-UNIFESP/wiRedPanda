@@ -6,7 +6,3 @@ Or::Or( QGraphicsItem *parent ) : GraphicElement( 2, 8, 1, 1, parent ) {
   updatePorts( );
   setPortName( "OR" );
 }
-
-Or::~Or( ) {
-
-}

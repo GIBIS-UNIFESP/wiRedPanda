@@ -26,10 +26,6 @@ SRFlipFlop::SRFlipFlop( QGraphicsItem *parent ) : GraphicElement( 5, 5, 2, 2, pa
   input( 4 )->setDefaultValue( 1 );
 }
 
-SRFlipFlop::~SRFlipFlop( ) {
-
-}
-
 void SRFlipFlop::updatePorts( ) {
   input( 0 )->setPos( topPosition( ), 13 ); /* S */
   input( 1 )->setPos( topPosition( ), 29 ); /* Clk */

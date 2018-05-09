@@ -3,6 +3,7 @@
 
 #include "graphicelement.h"
 #include "scene.h"
+
 #include <QGraphicsScene>
 #include <QUndoCommand>
 #include <QWidget>
@@ -17,7 +18,7 @@ class ElementEditor : public QWidget {
   Q_OBJECT
 
 public:
-  explicit ElementEditor( QWidget *parent = 0 );
+  explicit ElementEditor( QWidget *parent = nullptr );
   ~ElementEditor( );
 
   void setScene( Scene *s );

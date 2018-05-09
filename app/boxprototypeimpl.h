@@ -1,5 +1,6 @@
 #ifndef BOXPROTOTYPEIMPL_H
 #define BOXPROTOTYPEIMPL_H
+
 #include <QVector>
 
 class GraphicElement;

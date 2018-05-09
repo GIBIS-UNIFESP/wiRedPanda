@@ -2,31 +2,28 @@
 #include "boxmanager.h"
 #include "boxmapping.h"
 #include "boxprototype.h"
+#include "clock.h"
 #include "elementmapping.h"
+#include "qneconnection.h"
+
+#include "logicelement/logicand.h"
+#include "logicelement/logicdemux.h"
+#include "logicelement/logicdflipflop.h"
+#include "logicelement/logicdlatch.h"
+#include "logicelement/logicjkflipflop.h"
+#include "logicelement/logicmux.h"
+#include "logicelement/logicnand.h"
+#include "logicelement/logicnode.h"
+#include "logicelement/logicnor.h"
+#include "logicelement/logicnot.h"
+#include "logicelement/logicor.h"
+#include "logicelement/logicoutput.h"
+#include "logicelement/logicsrflipflop.h"
+#include "logicelement/logictflipflop.h"
+#include "logicelement/logicxnor.h"
+#include "logicelement/logicxor.h"
 
 #include <QDebug>
-#include <clock.h>
-#include <clock.h>
-#include <qneconnection.h>
-
-#include <logicelement/logicand.h>
-#include <logicelement/logicdemux.h>
-#include <logicelement/logicdflipflop.h>
-#include <logicelement/logicdlatch.h>
-#include <logicelement/logicjkflipflop.h>
-#include <logicelement/logicmux.h>
-#include <logicelement/logicnand.h>
-#include <logicelement/logicnode.h>
-#include <logicelement/logicnor.h>
-#include <logicelement/logicnot.h>
-#include <logicelement/logicor.h>
-#include <logicelement/logicoutput.h>
-#include <logicelement/logicsrflipflop.h>
-#include <logicelement/logictflipflop.h>
-#include <logicelement/logicxnor.h>
-#include <logicelement/logicxor.h>
-
-
 
 ElementMapping::ElementMapping( const QVector< GraphicElement* > &elms, QString file ) :
   currentFile( file ),
@@ -160,9 +157,7 @@ LogicElement* ElementMapping::buildLogicElement( GraphicElement *elm ) {
       return( new LogicDemux( ) );
       default:
       throw std::runtime_error( "Not implemented yet: " + elm->objectName( ).toStdString( ) );
-      break;
   }
-  return( nullptr );
 }
 
 void ElementMapping::initialize( ) {
@@ -282,14 +277,15 @@ void ElementMapping::sortLogicElements( ) {
   for( LogicElement *elm : logicElms ) {
     elm->calculatePriority( );
   }
-  std::sort( logicElms.begin( ), logicElms.end( ), [ ]( LogicElement *e1, LogicElement *e2 ) {
+  std::sort( logicElms.begin( ),
+             logicElms.end( ),
+             [ ]( LogicElement *e1, LogicElement *e2 ) {
     return( *e2 < *e1 );
   } );
 
 }
 
-int ElementMapping::calculatePriority( GraphicElement *elm,
-                                       QMap< GraphicElement*, bool > &beingvisited,
+int ElementMapping::calculatePriority( GraphicElement *elm, QMap< GraphicElement*, bool > &beingvisited,
                                        QMap< GraphicElement*, int > &priority ) {
   if( !elm ) {
     return( 0 );

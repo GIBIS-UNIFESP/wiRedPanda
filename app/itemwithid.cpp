@@ -2,7 +2,7 @@
 #include "itemwithid.h"
 
 ItemWithId::ItemWithId( ) {
-  ElementFactory::addItem(this);
+  ElementFactory::addItem( this );
 }
 
 int ItemWithId::id( ) const {
@@ -14,5 +14,5 @@ void ItemWithId::setId( int id ) {
 }
 
 ItemWithId::~ItemWithId( ) {
-  ElementFactory::removeItem(this);
+  ElementFactory::removeItem( this );
 }

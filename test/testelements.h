@@ -1,22 +1,22 @@
 #ifndef TESTELEMENTS_H
 #define TESTELEMENTS_H
 
-#include <QTest>
-#include <array>
-#include <inputswitch.h>
-#include <qneconnection.h>
+#include "inputswitch.h"
+#include "qneconnection.h"
 
+#include <QTest>
 
 class Box;
 
 class TestElements : public QObject {
   Q_OBJECT
-  std::array< QNEConnection*, 5 > conn;
-  std::array< InputSwitch*, 5 > sw;
-  void testBoxData( Box *box );
+
+  QVector< QNEConnection* > conn{ 5 };
+  QVector< InputSwitch* > sw{ 5 };
+  void testBoxData( const Box *box );
 
 public:
-  explicit TestElements( QObject *parent = 0 );
+  explicit TestElements( QObject *parent = nullptr );
 
 signals:
 

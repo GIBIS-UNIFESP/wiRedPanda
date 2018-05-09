@@ -38,7 +38,7 @@ void TestWaveForm::testDisplay4Bits( ) {
   QVERIFY( firstFile.open( QFile::ReadOnly ) );
   QVERIFY( secndFile.open( QFile::ReadOnly ) );
 
-  QCOMPARE( firstFile.readAll( ), secndFile.readAll( ) );
+  QCOMPARE( firstFile.readAll( ).replace( "\r\n", "\n" ), secndFile.readAll( ).replace( "\r\n", "\n" ) );
 
   firstFile.close( );
   secndFile.close( );

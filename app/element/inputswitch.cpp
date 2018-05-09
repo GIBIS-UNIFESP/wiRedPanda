@@ -12,10 +12,6 @@ InputSwitch::InputSwitch( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, 
   setPortName( "Switch" );
 }
 
-InputSwitch::~InputSwitch( ) {
-
-}
-
 bool InputSwitch::getOn( ) const {
   return( on );
 }
@@ -46,7 +42,7 @@ void InputSwitch::updateLogic( ) {
   }
 }
 
-void InputSwitch::save( QDataStream &ds ) {
+void InputSwitch::save( QDataStream &ds ) const {
   GraphicElement::save( ds );
   ds << on;
 }

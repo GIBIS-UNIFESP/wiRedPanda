@@ -1,48 +1,33 @@
 #ifndef TESTLOGICELEMENTS_H
 #define TESTLOGICELEMENTS_H
 
+#include "logicelement.h"
+#include "logicelement/logicinput.h"
+
+#include <array>
 #include <QObject>
 #include <QTest>
-#include <array>
-#include <logicelement.h>
-
-#include <logicelement/logicinput.h>
 
 class TestLogicElements : public QObject {
   Q_OBJECT
 
-  std::array< LogicInput*, 5 > sw;
+  QVector< LogicInput* > sw{ 5 };
 public:
   explicit TestLogicElements( QObject *parent = nullptr );
 
-signals:
-
 private slots:
-
   void init( );
-
   void cleanup( );
-
   void testLogicNode( );
-
   void testLogicAnd( );
-
   void testLogicOr( );
-
   void testLogicInput( );
-
   void testLogicMux( );
-
   void testLogicDemux( );
-
   void testLogicDFlipFlop( );
-
   void testLogicDLatch( );
-
   void testLogicJKFlipFlop( );
-
   void testLogicSRFlipFlop( );
-
   void testLogicTFlipFlop( );
 };
 
