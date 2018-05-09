@@ -113,20 +113,32 @@ void SimpleWaveform::sortElements( QVector< GraphicElement* > &elements,
                       return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
                     } );
   if( sorting == SortingKind::INCREASING ) {
-    std::stable_sort( inputs.begin( ), inputs.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
-                        return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) <= 0 );
-                      } );
-    std::stable_sort( outputs.begin( ), outputs.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
-                        return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) <= 0 );
-                      } );
+    std::stable_sort( inputs.begin( ), inputs.end( ),
+                      [ ]( GraphicElement *elm1, GraphicElement*
+                           elm2 ) {
+      return( QString::compare( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ),
+                                Qt::CaseInsensitive ) <= 0 );
+    } );
+    std::stable_sort( outputs.begin( ), outputs.end( ),
+                      [ ]( GraphicElement *elm1, GraphicElement*
+                           elm2 ) {
+      return( QString::compare( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ),
+                                Qt::CaseInsensitive ) <= 0 );
+    } );
   }
   else if( sorting == SortingKind::DECREASING ) {
-    std::stable_sort( inputs.begin( ), inputs.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
-                        return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) >= 0 );
-                      } );
-    std::stable_sort( outputs.begin( ), outputs.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
-                        return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) >= 0 );
-                      } );
+    std::stable_sort( inputs.begin( ), inputs.end( ),
+                      [ ]( GraphicElement *elm1, GraphicElement*
+                           elm2 ) {
+      return( QString::compare( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ),
+                                Qt::CaseInsensitive ) >= 0 );
+    } );
+    std::stable_sort( outputs.begin( ), outputs.end( ),
+                      [ ]( GraphicElement *elm1, GraphicElement*
+                           elm2 ) {
+      return( QString::compare( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ),
+                                Qt::CaseInsensitive ) >= 0 );
+    } );
   }
 }
 
