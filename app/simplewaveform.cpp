@@ -3,7 +3,6 @@
 
 #include "input.h"
 
-#include <cmath>
 #include <QBuffer>
 #include <QChartView>
 #include <QClipboard>
@@ -13,9 +12,10 @@
 #include <QMimeData>
 #include <QPointF>
 #include <QSettings>
+#include <cmath>
 /* #include <QSvgGenerator> */
-#include <bitset>
 #include <QValueAxis>
+#include <bitset>
 
 using namespace QtCharts;
 
@@ -41,10 +41,8 @@ public:
   }
 };
 
-SimpleWaveform::SimpleWaveform( Editor *editor, QWidget *parent ) :
-  QDialog( parent ),
-  ui( new Ui::SimpleWaveform ),
-  editor( editor ) {
+SimpleWaveform::SimpleWaveform( Editor *editor,
+                                QWidget *parent ) : QDialog( parent ), ui( new Ui::SimpleWaveform ), editor( editor ) {
   ui->setupUi( this );
   resize( 800, 500 );
   chart.legend( )->setAlignment( Qt::AlignLeft );
@@ -77,18 +75,20 @@ SimpleWaveform::~SimpleWaveform( ) {
   delete ui;
 }
 
-void SimpleWaveform::sortElements( QVector< GraphicElement* > &elements, QVector< GraphicElement* > &inputs,
-                                   QVector< GraphicElement* > &outputs, SortingKind sorting ) {
+void SimpleWaveform::sortElements( QVector< GraphicElement* > &elements,
+                                   QVector< GraphicElement* > &inputs,
+                                   QVector< GraphicElement* > &outputs,
+                                   SortingKind sorting ) {
   elements = ElementMapping::sortGraphicElements( elements );
   for( GraphicElement *elm : elements ) {
     if( elm && ( elm->type( ) == GraphicElement::Type ) ) {
       switch( elm->elementType( ) ) {
-          case ElementType::BUTTON:
-          case ElementType::SWITCH:
-          case ElementType::CLOCK: {
-          inputs.append( elm );
-          break;
-        }
+          case ElementType::BUTTON :
+          case ElementType::SWITCH :
+          case ElementType::CLOCK : {
+            inputs.append( elm );
+            break;
+          }
           case ElementType::DISPLAY:
           case ElementType::LED: {
           outputs.append( elm );
@@ -99,34 +99,34 @@ void SimpleWaveform::sortElements( QVector< GraphicElement* > &elements, QVector
       }
     }
   }
-  std::stable_sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
-    return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
-  } );
-  std::stable_sort( outputs.begin( ), outputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
-    return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
-  } );
+  std::stable_sort( inputs.begin( ), inputs.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
+                      return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
+                    } );
+  std::stable_sort( outputs.begin( ), outputs.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
+                      return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
+                    } );
 
-  std::stable_sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
-    return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
-  } );
-  std::stable_sort( outputs.begin( ), outputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
-    return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
-  } );
+  std::stable_sort( inputs.begin( ), inputs.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
+                      return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
+                    } );
+  std::stable_sort( outputs.begin( ), outputs.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
+                      return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
+                    } );
   if( sorting == SortingKind::INCREASING ) {
-    std::stable_sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
-      return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) <= 0 );
-    } );
-    std::stable_sort( outputs.begin( ), outputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
-      return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) <= 0 );
-    } );
+    std::stable_sort( inputs.begin( ), inputs.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
+                        return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) <= 0 );
+                      } );
+    std::stable_sort( outputs.begin( ), outputs.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
+                        return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) <= 0 );
+                      } );
   }
   else if( sorting == SortingKind::DECREASING ) {
-    std::stable_sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
-      return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) >= 0 );
-    } );
-    std::stable_sort( outputs.begin( ), outputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
-      return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) >= 0 );
-    } );
+    std::stable_sort( inputs.begin( ), inputs.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
+                        return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) >= 0 );
+                      } );
+    std::stable_sort( outputs.begin( ), outputs.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
+                        return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) >= 0 );
+                      } );
   }
 }
 
@@ -293,8 +293,8 @@ void SimpleWaveform::showWaveform( ) {
       float val = bs[ in ];
       dynamic_cast< Input* >( inputs[ in ] )->setOn( not qFuzzyIsNull( val ) );
       float offset = ( in_series.size( ) - in - 1 + out_series.size( ) ) * 2 + gap + 0.5;
-      in_series[ in ]->append( itr, offset + val );
-      in_series[ in ]->append( itr + 1, offset + val );
+      in_series[ in ]->append( itr, static_cast< qreal >( offset + val ) );
+      in_series[ in ]->append( itr + 1, static_cast< qreal >( offset + val ) );
     }
     sc->update( );
     sc->updateAll( );
@@ -304,8 +304,8 @@ void SimpleWaveform::showWaveform( ) {
       for( int port = inSz - 1; port >= 0; --port ) {
         float val = outputs[ out ]->input( port )->value( ) > 0;
         float offset = ( out_series.size( ) - counter - 1 ) * 2 + 0.5;
-        out_series[ counter ]->append( itr, offset + val );
-        out_series[ counter ]->append( itr + 1, offset + val );
+        out_series[ counter ]->append( itr, static_cast< qreal >( offset + val ) );
+        out_series[ counter ]->append( itr + 1, static_cast< qreal >( offset + val ) );
 /*        cout << counter << " " << out; */
         counter++;
       }

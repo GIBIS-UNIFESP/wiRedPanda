@@ -18,7 +18,7 @@ class ElementEditor : public QWidget {
   Q_OBJECT
 
 public:
-  explicit ElementEditor( QWidget *parent = 0 );
+  explicit ElementEditor( QWidget *parent = nullptr );
   ~ElementEditor( );
 
   void setScene( Scene *s );

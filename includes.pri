@@ -4,7 +4,7 @@ VERSION = 2.5.1
 
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
-CONFIG += c++11
+CONFIG += c++1z
 
 CONFIG(debug, debug|release) {
     CONFIG += console
@@ -18,10 +18,10 @@ CONFIG(debug, debug|release) {
 }
 
 *-clang{
-#    QMAKE_CXXFLAGS *= -Weverything -Wno-reserved-id-macro -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wno-undef -Wno-padded -Wno-sign-conversion -Wno-deprecated -Wno-covered-switch-default
-#    QMAKE_CXXFLAGS *= -Wno-undefined-reinterpret-cast -Wno-weak-vtables -Wno-exit-time-destructors -Wno-used-but-marked-unused -Wno-inconsistent-missing-destructor-override -Wno-documentation-unknown-command
-#    QMAKE_CXXFLAGS *= -Wno-shift-sign-overflow -Wno-non-virtual-dtor -Wno-conversion -Wno-global-constructors -Wno-switch-enum -Wno-missing-prototypes -Wno-shadow-field-in-constructor
-#    QMAKE_CXXFLAGS *= -Wno-shadow -Wno-shadow-field
+    QMAKE_CXXFLAGS *= -Weverything -Wno-reserved-id-macro -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wno-undef -Wno-padded -Wno-sign-conversion -Wno-deprecated -Wno-covered-switch-default
+    QMAKE_CXXFLAGS *= -Wno-undefined-reinterpret-cast -Wno-weak-vtables -Wno-exit-time-destructors -Wno-used-but-marked-unused -Wno-inconsistent-missing-destructor-override -Wno-documentation-unknown-command
+    QMAKE_CXXFLAGS *= -Wno-shift-sign-overflow -Wno-non-virtual-dtor -Wno-conversion -Wno-global-constructors -Wno-switch-enum -Wno-missing-prototypes -Wno-shadow-field-in-constructor
+    QMAKE_CXXFLAGS *= -Wno-shadow -Wno-shadow-field
 }
 
 #mac {

@@ -16,14 +16,14 @@ Led::Led( QGraphicsItem *parent ) : GraphicElement( 1, 4, 0, 0, parent ) {
 
 }
 
-QVector< QString > led_2bits = {
+static QVector< QString > led_2bits = {
   ":/output/16colors/BlackLedOn.png", /* 00 */
   ":/output/16colors/RedLedOn.png", /* 01 */
   ":/output/16colors/GreenLedOn.png", /* 10 */
   ":/output/16colors/RoyalLedOn.png" /* 11 */
 };
 
-QVector< QString > led_3bits = {
+static QVector< QString > led_3bits = {
   ":/output/16colors/BlackLedOn.png", /* 000 */
   ":/output/16colors/RoyalLedOn.png", /* 001 */
   ":/output/16colors/GreenLedOn.png", /* 010 */
@@ -34,7 +34,7 @@ QVector< QString > led_3bits = {
   ":/output/16colors/WhiteLedOn.png", /* 111 */
 };
 
-QVector< QString > led_4bits = {
+static QVector< QString > led_4bits = {
   ":/output/16colors/WhiteLedOn.png",
   ":/output/16colors/BlackLedOn.png",
   ":/output/16colors/NavyBlueLedOn.png",
