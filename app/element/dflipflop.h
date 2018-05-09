@@ -1,25 +1,25 @@
 #ifndef DFLIPFLOP_H
 #define DFLIPFLOP_H
 
-#include <graphicelement.h>
+#include "graphicelement.h"
 
 class DFlipFlop : public GraphicElement {
   bool lastClk;
   bool lastValue;
 
 public:
-  explicit DFlipFlop( QGraphicsItem *parent = 0 );
-  virtual ~DFlipFlop( );
+  explicit DFlipFlop( QGraphicsItem *parent = nullptr );
+  virtual ~DFlipFlop( ) override = default;
 
   // GraphicElement interface
 public:
-  virtual ElementType elementType( ) {
+  virtual ElementType elementType( ) override {
     return( ElementType::DFLIPFLOP );
   }
-  virtual ElementGroup elementGroup( ) {
+  virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::MEMORY );
   }
-  virtual void updatePorts( );
+  virtual void updatePorts( ) override;
 
 };
 

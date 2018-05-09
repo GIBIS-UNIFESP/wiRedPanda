@@ -5,6 +5,7 @@
 #include "testlogicelements.h"
 #include "testsimulationcontroller.h"
 #include "testwaveform.h"
+
 #include <QtTest>
 
 int main( int argc, char **argv ) {
@@ -28,11 +29,8 @@ int main( int argc, char **argv ) {
   status |= QTest::qExec( &testCommands, argc, argv );
   status |= QTest::qExec( &testWf, argc, argv );
   status |= QTest::qExec( &testIcons, argc, argv );
-  if( status == false ) {
-    std::cout << "All tests have passed!" << std::endl;
-  }
-  else {
-    std::cout << "Some test failed!" << std::endl;
-  }
+
+  std::cout << ( status ? "Some test failed!" : "All tests have passed!" ) << std::endl;
+
   return( status );
 }

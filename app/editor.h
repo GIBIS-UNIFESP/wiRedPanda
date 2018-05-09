@@ -1,17 +1,17 @@
 #ifndef EDITOR_H
 #define EDITOR_H
 
-
 #include "boxmanager.h"
+#include "elementeditor.h"
+#include "elementfactory.h"
+#include "nodes/qneconnection.h"
+#include "scene.h"
 #include "simulationcontroller.h"
+
+#include <memory>
 #include <QObject>
 #include <QTime>
 #include <QUndoCommand>
-#include <elementeditor.h>
-#include <elementfactory.h>
-#include <memory>
-#include <nodes/qneconnection.h>
-#include <scene.h>
 
 class Box;
 class MainWindow;
@@ -20,7 +20,7 @@ class Editor : public QObject {
   Q_OBJECT
   QTime timer;
 public:
-  explicit Editor( QObject *parent = 0 );
+  explicit Editor( QObject *parent = nullptr );
   virtual ~Editor( );
   void save( QDataStream &ds );
   void load( QDataStream &ds );

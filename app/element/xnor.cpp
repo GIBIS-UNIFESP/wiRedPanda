@@ -7,10 +7,6 @@ Xnor::Xnor( QGraphicsItem *parent ) : GraphicElement( 2, 8, 1, 1, parent ) {
   setPortName( "XNOR" );
 }
 
-Xnor::~Xnor( ) {
-
-}
-
 void Xnor::updateLogic( ) {
   char res = false;
   if( !isValid( ) ) {
@@ -20,7 +16,7 @@ void Xnor::updateLogic( ) {
     for( QNEPort *input : inputs( ) ) {
       res = res ^ input->value( );
     }
-    res =  !res;
+    res = !res;
   }
-  outputs( ).first( )->setValue(res);
+  outputs( ).first( )->setValue( res );
 }

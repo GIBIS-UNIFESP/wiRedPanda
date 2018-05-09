@@ -1,8 +1,9 @@
 #include "display.h"
+#include "qneconnection.h"
+
 #include <QDebug>
 #include <QPainter>
 #include <QPixmap>
-#include <qneconnection.h>
 
 Display::Display( QGraphicsItem *parent ) : GraphicElement( 8, 8, 0, 0, parent ) {
   setRotatable( false );
@@ -27,10 +28,6 @@ Display::Display( QGraphicsItem *parent ) : GraphicElement( 8, 8, 0, 0, parent )
     in->setRequired( false );
     in->setDefaultValue( 0 );
   }
-}
-
-Display::~Display( ) {
-
 }
 
 void Display::refresh( ) {

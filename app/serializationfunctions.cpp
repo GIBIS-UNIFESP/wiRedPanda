@@ -4,11 +4,12 @@
 #include "graphicelement.h"
 #include "qneconnection.h"
 #include "serializationfunctions.h"
+
+#include <iostream>
 #include <QApplication>
 #include <QDebug>
 #include <QGraphicsView>
 #include <QMessageBox>
-#include <iostream>
 #include <stdexcept>
 
 void SerializationFunctions::serialize( const QList< QGraphicsItem* > &items, QDataStream &ds ) {
@@ -29,9 +30,7 @@ void SerializationFunctions::serialize( const QList< QGraphicsItem* > &items, QD
   }
 }
 
-QList< QGraphicsItem* > SerializationFunctions::deserialize( QDataStream &ds,
-                                                             double version,
-                                                             QString parentFile,
+QList< QGraphicsItem* > SerializationFunctions::deserialize( QDataStream &ds, double version, QString parentFile,
                                                              QMap< quint64, QNEPort* > portMap ) {
   QList< QGraphicsItem* > itemList;
   while( !ds.atEnd( ) ) {
@@ -40,8 +39,10 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( QDataStream &ds,
     if( type == GraphicElement::Type ) {
       quint64 elmType;
       ds >> elmType;
-      COMMENT( "Building " << ElementFactory::typeToText( ( ElementType ) elmType ).toStdString( ) << " element.", 4 );
-      GraphicElement *elm = ElementFactory::buildElement( ( ElementType ) elmType );
+      COMMENT( "Building " << ElementFactory::typeToText(
+                 static_cast< ElementType >( elmType ) ).toStdString( ) << " element.",
+               4 );
+      GraphicElement *elm = ElementFactory::buildElement( static_cast< ElementType >( elmType ) );
       if( elm ) {
         itemList.append( elm );
         elm->load( ds, portMap, version );

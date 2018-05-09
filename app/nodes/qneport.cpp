@@ -23,19 +23,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
+#include "graphicelement.h"
+#include "qneconnection.h"
 #include "qneport.h"
+#include "thememanager.h"
 
-#include <QFontMetrics>
-#include <QGraphicsScene>
-#include <graphicelement.h>
-
+#include <iostream>
 #include <QCursor>
 #include <QDebug>
+#include <QFontMetrics>
+#include <QGraphicsScene>
 #include <QPen>
-#include <iostream>
-#include <thememanager.h>
 
-#include "qneconnection.h"
 
 QNEPort::QNEPort( QGraphicsItem *parent ) : QGraphicsPathItem( parent ) {
   label = new QGraphicsTextItem( this );
@@ -53,7 +52,7 @@ QNEPort::QNEPort( QGraphicsItem *parent ) : QGraphicsPathItem( parent ) {
 
   m_portFlags = 0;
   m_value = false;
-  m_graphicElement = NULL;
+  m_graphicElement = nullptr;
   m_required = true;
   m_defaultValue = -1;
 }
@@ -304,13 +303,13 @@ void QNEOutputPort::setValue( char value ) {
   m_value = value;
   for( QNEConnection *conn : connections( ) ) {
     if( value == -1 ) {
-      conn->setStatus( QNEConnection::Invalid );
+      conn->setStatus( QNEConnection::Status::Invalid );
     }
     else if( value == 0 ) {
-      conn->setStatus( QNEConnection::Inactive );
+      conn->setStatus( QNEConnection::Status::Inactive );
     }
     else {
-      conn->setStatus( QNEConnection::Active );
+      conn->setStatus( QNEConnection::Status::Active );
     }
     QNEInputPort *port = conn->otherPort( this );
     if( port ) {

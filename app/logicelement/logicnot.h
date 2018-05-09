@@ -3,8 +3,6 @@
 
 #include "logicelement.h"
 
-
-
 class LogicNot : public LogicElement {
 public:
   explicit LogicNot( );

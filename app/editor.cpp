@@ -1,5 +1,6 @@
 #include "box.h"
 #include "boxnotfoundexception.h"
+#include "buzzer.h"
 #include "commands.h"
 #include "editor.h"
 #include "globalproperties.h"
@@ -27,7 +28,6 @@
 #include <QMimeData>
 #include <QSettings>
 #include <QtMath>
-#include <buzzer.h>
 #include <iostream>
 
 Editor*Editor::globalEditor = nullptr;
@@ -531,7 +531,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
     QPointF pos = dde->scenePos( ) - offset;
     dde->accept( );
 
-    GraphicElement *elm = ElementFactory::buildElement( ( ElementType ) type );
+    GraphicElement *elm = ElementFactory::buildElement( static_cast< ElementType >( type ) );
     /* If element type is unknown, a default element is created with the pixmap received from mimedata */
     if( !elm ) {
       return( false );
@@ -682,7 +682,7 @@ void Editor::cut( const QList< QGraphicsItem* > &items, QDataStream &ds ) {
 }
 
 void Editor::copy( const QList< QGraphicsItem* > &items, QDataStream &ds ) {
-  QPointF center( 0.0f, 0.0f );
+  QPointF center( static_cast< qreal >( 0.0f ), static_cast< qreal >( 0.0f ) );
   float elm = 0;
   for( QGraphicsItem *item : items ) {
     if( item->type( ) == GraphicElement::Type ) {
@@ -690,7 +690,7 @@ void Editor::copy( const QList< QGraphicsItem* > &items, QDataStream &ds ) {
       elm++;
     }
   }
-  ds << center / elm;
+  ds << center / static_cast< qreal >( elm );
   SerializationFunctions::serialize( scene->selectedItems( ), ds );
 }
 
@@ -698,7 +698,7 @@ void Editor::paste( QDataStream &ds ) {
   scene->clearSelection( );
   QPointF ctr;
   ds >> ctr;
-  QPointF offset = mousePos - ctr - QPointF( 32.0f, 32.0f );
+  QPointF offset = mousePos - ctr - QPointF( static_cast< qreal >( 32.0f ), static_cast< qreal >( 32.0f ) );
   double version = GlobalProperties::version;
   QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( ds,
                                                                           version,
@@ -891,7 +891,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
         movedElements.clear( );
       }
     }
-    switch( ( int ) evt->type( ) ) {
+    switch( static_cast< int >( evt->type( ) ) ) {
         case QEvent::GraphicsSceneMousePress: {
         ret = mousePressEvt( mouseEvt );
         break;

@@ -1,9 +1,7 @@
 #ifndef LOGICMUX_H
 #define LOGICMUX_H
 
-#include <logicelement.h>
-
-
+#include "logicelement.h"
 
 class LogicMux : public LogicElement {
 public:

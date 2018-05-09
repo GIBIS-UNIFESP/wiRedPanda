@@ -1,23 +1,24 @@
 #ifndef MUX_H
 #define MUX_H
 
+#include "graphicelement.h"
+
 #include <QObject>
-#include <graphicelement.h>
 
 class Mux : public GraphicElement {
 public:
-  explicit Mux( QGraphicsItem *parent = 0 );
-
+  explicit Mux( QGraphicsItem *parent = nullptr );
+  virtual ~Mux( ) override = default;
 
   /* GraphicElement interface */
 public:
-  ElementType elementType( ) {
+  ElementType elementType( ) override {
     return( ElementType::MUX );
   }
-  virtual ElementGroup elementGroup( ) {
+  virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::MUX );
   }
-  void updatePorts();
+  void updatePorts( ) override;
   void updateLogic( );
 };
 

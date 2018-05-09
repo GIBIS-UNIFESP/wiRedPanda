@@ -7,10 +7,6 @@ Xor::Xor( QGraphicsItem *parent ) : GraphicElement( 2, 8, 1, 1, parent ) {
   setPortName( "XOR" );
 }
 
-Xor::~Xor( ) {
-
-}
-
 void Xor::updateLogic( ) {
   char res = false;
   if( !isValid( ) ) {
