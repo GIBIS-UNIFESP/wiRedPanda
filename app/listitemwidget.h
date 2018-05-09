@@ -12,7 +12,7 @@ private:
   QLabel *nameLabel;
 public:
   explicit ListItemWidget( const QPixmap &pixmap, ElementType elementType, QString boxFileName,
-                           QWidget *parent = NULL );
+                           QWidget *parent = nullptr );
 
 
   Label* getLabel( ) const;

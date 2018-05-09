@@ -8,8 +8,6 @@
 #include "thememanager.h"
 #include "ui_mainwindow.h"
 
-#include <cmath>
-#include <iostream>
 #include <QDebug>
 #include <QFileDialog>
 #include <QKeyEvent>
@@ -21,6 +19,8 @@
 #include <QShortcut>
 #include <QStyleFactory>
 #include <QTemporaryFile>
+#include <cmath>
+#include <iostream>
 #include <stdexcept>
 
 
@@ -260,7 +260,7 @@ bool MainWindow::open( const QString &fname ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::endl;
     return( false );
   }
   fl.close( );
@@ -326,6 +326,7 @@ bool MainWindow::closeFile( ) {
 }
 
 void MainWindow::closeEvent( QCloseEvent *e ) {
+  Q_UNUSED( e );
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "MainWindow" );
@@ -336,9 +337,7 @@ void MainWindow::closeEvent( QCloseEvent *e ) {
   settings.setValue( "state", ui->splitter->saveState( ) );
   settings.endGroup( );
   settings.endGroup( );
-#ifdef DEBUG
-  return;
-#endif
+#ifndef DEBUG
   if( closeFile( ) ) {
     close( );
   }
@@ -346,6 +345,7 @@ void MainWindow::closeEvent( QCloseEvent *e ) {
     e->ignore( );
   }
   autosaveFile.remove( );
+#endif
 }
 
 void MainWindow::on_actionSave_As_triggered( ) {
@@ -440,7 +440,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::endl;
     return;
   }
   fl.close( );

@@ -161,7 +161,7 @@ QPixmap ElementFactory::getPixmap( ElementType type ) {
       case ElementType::DEMUX: return( QPixmap( ":/basic/demux.png" ) );
       case ElementType::NODE: return( QPixmap( ":/basic/node.png" ) );
       case ElementType::BUZZER: return( QPixmap( ":/output/BuzzerOff.png" ) );
-      case ElementType::UNKNOWN: default: return( QPixmap( ) );
+      case ElementType::UNKNOWN: return( QPixmap( ) );
   }
   return( QPixmap( ) );
 }

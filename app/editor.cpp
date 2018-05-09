@@ -11,7 +11,6 @@
 #include "serializationfunctions.h"
 #include "thememanager.h"
 
-#include <iostream>
 #include <QApplication>
 #include <QClipboard>
 #include <QDebug>
@@ -29,6 +28,7 @@
 #include <QMimeData>
 #include <QSettings>
 #include <QtMath>
+#include <iostream>
 
 Editor*Editor::globalEditor = nullptr;
 
@@ -682,7 +682,7 @@ void Editor::cut( const QList< QGraphicsItem* > &items, QDataStream &ds ) {
 }
 
 void Editor::copy( const QList< QGraphicsItem* > &items, QDataStream &ds ) {
-  QPointF center( 0.0f, 0.0f );
+  QPointF center( static_cast< qreal >( 0.0f ), static_cast< qreal >( 0.0f ) );
   float elm = 0;
   for( QGraphicsItem *item : items ) {
     if( item->type( ) == GraphicElement::Type ) {
@@ -690,7 +690,7 @@ void Editor::copy( const QList< QGraphicsItem* > &items, QDataStream &ds ) {
       elm++;
     }
   }
-  ds << center / elm;
+  ds << center / static_cast< qreal >( elm );
   SerializationFunctions::serialize( scene->selectedItems( ), ds );
 }
 
@@ -698,7 +698,7 @@ void Editor::paste( QDataStream &ds ) {
   scene->clearSelection( );
   QPointF ctr;
   ds >> ctr;
-  QPointF offset = mousePos - ctr - QPointF( 32.0f, 32.0f );
+  QPointF offset = mousePos - ctr - QPointF( static_cast< qreal >( 32.0f ), static_cast< qreal >( 32.0f ) );
   double version = GlobalProperties::version;
   QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( ds,
                                                                           version,

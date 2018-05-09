@@ -20,8 +20,8 @@ public:
   static QString typeToText( ElementType type );
   static QString translatedName( ElementType type );
   static QPixmap getPixmap( ElementType type );
-  static GraphicElement* buildElement( ElementType type, QGraphicsItem *parent = 0 );
-  static QNEConnection* buildConnection( QGraphicsItem *parent = 0 );
+  static GraphicElement* buildElement( ElementType type, QGraphicsItem *parent = nullptr );
+  static QNEConnection* buildConnection( QGraphicsItem *parent = nullptr );
   static ItemWithId* getItemById( size_t id );
   static bool contains( size_t id );
   static void updateItemId( ItemWithId *item, size_t newId );

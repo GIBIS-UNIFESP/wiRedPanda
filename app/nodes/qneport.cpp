@@ -52,7 +52,7 @@ QNEPort::QNEPort( QGraphicsItem *parent ) : QGraphicsPathItem( parent ) {
 
   m_portFlags = 0;
   m_value = false;
-  m_graphicElement = NULL;
+  m_graphicElement = nullptr;
   m_required = true;
   m_defaultValue = -1;
 }
