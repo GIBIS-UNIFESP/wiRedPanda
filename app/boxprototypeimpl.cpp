@@ -172,6 +172,7 @@ void BoxPrototypeImpl::loadItem( QGraphicsItem *item ) {
           break;
         }
           case ElementType::DISPLAY:
+          case ElementType::DISPLAY14:
           case ElementType::LED:
           case ElementType::BUZZER: {
           loadOutputElement( elm );

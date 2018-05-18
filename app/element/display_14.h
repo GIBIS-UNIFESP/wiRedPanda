@@ -1,23 +1,23 @@
-#ifndef DISPLAY_H
-#define DISPLAY_H
+#ifndef DISPLAY14_H
+#define DISPLAY14_H
 
 #include "graphicelement.h"
 
-class Display : public GraphicElement {
+class Display14 : public GraphicElement {
 public:
-  explicit Display( QGraphicsItem *parent = nullptr );
-  virtual ~Display( ) override = default;
+  explicit Display14( QGraphicsItem *parent = nullptr );
+  virtual ~Display14( ) override = default;
 
 public:
   virtual ElementType elementType( ) override {
-    return( ElementType::DISPLAY );
+    return( ElementType::DISPLAY14 );
   }
   virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::OUTPUT );
   }
   virtual void refresh( ) override;
   void updatePorts( ) override;
-  QPixmap bkg, a, b, c, d, e, f, g, dp;
+  QPixmap bkg, a, b, c, d, e, f, g1, g2, h, j, k, l, m, n, dp;
 
   /* QGraphicsItem interface */
 public:
@@ -27,4 +27,4 @@ public:
 public:
   void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) override;
 };
-#endif /* DISPLAY_H */
+#endif /* DISPLAY14_H */
