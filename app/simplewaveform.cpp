@@ -90,6 +90,7 @@ void SimpleWaveform::sortElements( QVector< GraphicElement* > &elements,
             break;
           }
           case ElementType::DISPLAY:
+          case ElementType::DISPLAY14:
           case ElementType::LED: {
           outputs.append( elm );
           break;

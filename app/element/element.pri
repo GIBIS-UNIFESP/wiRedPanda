@@ -4,6 +4,7 @@ SOURCES += \
     $$PWD/demux.cpp \
     $$PWD/dflipflop.cpp \
     $$PWD/display.cpp \
+    $$PWD/display_14.cpp \
     $$PWD/dlatch.cpp \
     $$PWD/inputbutton.cpp \
     $$PWD/inputgnd.cpp \
@@ -23,7 +24,7 @@ SOURCES += \
     $$PWD/tlatch.cpp \
     $$PWD/xnor.cpp \
     $$PWD/xor.cpp \
-    $$PWD/buzzer.cpp \
+    $$PWD/buzzer.cpp
 
 
 HEADERS  +=  \
@@ -32,6 +33,7 @@ HEADERS  +=  \
     $$PWD/demux.h \
     $$PWD/dflipflop.h \
     $$PWD/display.h \
+    $$PWD/display_14.h \
     $$PWD/dlatch.h \
     $$PWD/inputbutton.h \
     $$PWD/inputgnd.h \

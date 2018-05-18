@@ -14,10 +14,7 @@
    id="svg2985"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="counter_h.svg"
-   inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/output/counter/counter_on.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+   sodipodi:docname="counter g.svg">
   <defs
      id="defs2987">
     <filter
@@ -61,8 +58,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="11.313708"
-     inkscape:cx="-1.6829914"
-     inkscape:cy="35.954682"
+     inkscape:cx="31.588792"
+     inkscape:cy="31.921839"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:document-units="px"
@@ -70,9 +67,9 @@
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:window-width="1920"
-     inkscape:window-height="1030"
+     inkscape:window-height="1029"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="24"
      inkscape:window-maximized="1">
     <sodipodi:guide
        orientation="1,0"
@@ -95,14 +92,15 @@
      id="layer1"
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
-    <rect
-       style="fill:#ff0000;fill-opacity:1;stroke:none"
-       id="rect3921-1-5"
-       width="16.199301"
-       height="4.7729707"
-       x="-32.263752"
-       y="15.866602"
-       ry="2.3864853"
-       transform="matrix(-0.17364818,-0.98480775,0.98480775,-0.17364818,0,0)" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#fc3426;fill-opacity:0.98823529;stroke:none"
+       id="path4019"
+       sodipodi:cx="-9.6343298"
+       sodipodi:cy="18.082253"
+       sodipodi:rx="3.7123106"
+       sodipodi:ry="3.4913397"
+       d="m -5.9220192,18.082253 a 3.7123106,3.4913397 0 1 1 -7.4246208,0 3.7123106,3.4913397 0 1 1 7.4246208,0 z"
+       transform="matrix(1.000051,0,0,1.0633454,55.922321,31.55982)" />
   </g>
 </svg>

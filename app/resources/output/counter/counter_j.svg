@@ -14,7 +14,7 @@
    id="svg2985"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="counter_h.svg"
+   sodipodi:docname="counter_J.svg"
    inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/output/counter/counter_on.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
@@ -97,12 +97,12 @@
      inkscape:groupmode="layer">
     <rect
        style="fill:#ff0000;fill-opacity:1;stroke:none"
-       id="rect3921-1-5"
-       width="16.199301"
+       id="rect3921-1-6"
+       width="16.375"
        height="4.7729707"
-       x="-32.263752"
-       y="15.866602"
+       x="12.624998"
+       y="-30.386486"
        ry="2.3864853"
-       transform="matrix(-0.17364818,-0.98480775,0.98480775,-0.17364818,0,0)" />
+       transform="matrix(0,1,-1,0,0,0)" />
   </g>
 </svg>

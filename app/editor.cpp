@@ -170,6 +170,7 @@ void Editor::showGates( bool checked ) {
           case ElementType::BUTTON:
           case ElementType::LED:
           case ElementType::DISPLAY:
+          case ElementType::DISPLAY14:
           break;
           default:
           item->setVisible( checked );

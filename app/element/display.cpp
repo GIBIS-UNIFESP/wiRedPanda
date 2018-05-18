@@ -21,7 +21,7 @@ Display::Display( QGraphicsItem *parent ) : GraphicElement( 8, 8, 0, 0, parent )
   e = QPixmap( ":/output/counter/counter_e.png" );
   f = QPixmap( ":/output/counter/counter_f.png" );
   g = QPixmap( ":/output/counter/counter_g.png" );
-  h = QPixmap( ":/output/counter/counter_h.png" );
+  dp = QPixmap( ":/output/counter/counter_dp.png" );
 
   setPortName( "Display" );
   for( QNEPort *in : inputs( ) ) {
@@ -73,8 +73,8 @@ void Display::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, 
   if( input( 5 )->value( ) == true ) { /* B */
     painter->drawPixmap( QPoint( 0, 0 ), b );
   }
-  if( input( 6 )->value( ) == true ) { /* DP (H) */
-    painter->drawPixmap( QPoint( 0, 0 ), h );
+  if( input( 6 )->value( ) == true ) { /* DP */
+    painter->drawPixmap( QPoint( 0, 0 ), dp );
   }
   if( input( 7 )->value( ) == true ) { /* C */
     painter->drawPixmap( QPoint( 0, 0 ), c );
