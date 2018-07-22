@@ -18,8 +18,8 @@
   !define MUI_FILE "wpanda"
   # These three must be integers
   !define VERSIONMAJOR 2
-  !define VERSIONMINOR 5
-  !define VERSIONBUILD 0001
+  !define VERSIONMINOR 6
+  !define VERSIONBUILD 0000
   !define MUI_VERSION "${VERSIONMAJOR}.{VERSIONMINOR}"
   !define MUI_BRANDINGTEXT "${MUI_PRODUCT} ${MUI_VERSION}"
   !define COMPANYNAME "UNIFESP"
