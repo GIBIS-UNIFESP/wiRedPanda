@@ -23,6 +23,15 @@ void Label::mousePressEvent( QMouseEvent *event ) {
   startDrag( event->pos( ) );
 }
 
+void Label::setPixmapData( const QPixmap &pixmapData ) {
+  m_pixmapData = pixmapData;
+  setPixmap( pixmapData.scaled( 64, 64 ) );
+}
+
+const QPixmap &Label::pixmapData( ) const {
+  return( m_pixmapData );
+}
+
 QString Label::name( ) const {
   return( m_name );
 }
@@ -41,7 +50,7 @@ void Label::setAuxData( const QString &auxData ) {
 }
 
 void Label::startDrag( QPoint pos ) {
-  QPixmap pixmap = *this->pixmap( );
+  QPixmap pixmap = pixmapData( );
   if( pos.isNull( ) ) {
     pos = this->pixmap( )->rect( ).center( );
   }

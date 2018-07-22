@@ -30,7 +30,7 @@ ListItemWidget::ListItemWidget( const QPixmap &pixmap, ElementType type, QString
   setLayout( itemLayout );
 
   label = new Label( parent );
-  label->setPixmap( pixmap );
+  label->setPixmapData( pixmap );
   label->setName( name );
   label->setAuxData( boxFileName );
   label->setElementType( type );
