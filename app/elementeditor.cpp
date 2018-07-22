@@ -2,11 +2,11 @@
 #include "editor.h"
 #include "elementeditor.h"
 #include "ui_elementeditor.h"
+#include <cmath>
 #include <QDebug>
 #include <QGraphicsView>
 #include <QKeyEvent>
 #include <QMenu>
-#include <cmath>
 
 ElementEditor::ElementEditor( QWidget *parent ) : QWidget( parent ), ui( new Ui::ElementEditor ) {
   _manyLabels = tr( "<Many labels>" );
@@ -100,6 +100,7 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
         }
         break;
       }
+        case ElementGroup::STATICINPUT:
         case ElementGroup::INPUT: {
         addElementAction( submenumorph, firstElm, ElementType::BUTTON, hasSameType );
         addElementAction( submenumorph, firstElm, ElementType::SWITCH, hasSameType );
@@ -234,9 +235,15 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
       hasSameTrigger &= elm->getTrigger( ) == firstElement->getTrigger( );
       hasSameType &= elm->elementType( ) == firstElement->elementType( );
       hasSameAudio &= elm->getAudio( ) == firstElement->getAudio( );
-      canMorph &= elm->elementGroup( ) == firstElement->elementGroup( );
       canMorph &= elm->inputSize( ) == firstElement->inputSize( );
       canMorph &= elm->outputSize( ) == firstElement->outputSize( );
+
+      bool sameElementGroup = elm->elementGroup( ) == firstElement->elementGroup( );
+      sameElementGroup |=
+        ( elm->elementGroup( ) == ElementGroup::INPUT && firstElement->elementGroup( ) == ElementGroup::STATICINPUT );
+      sameElementGroup |=
+        ( elm->elementGroup( ) == ElementGroup::STATICINPUT && firstElement->elementGroup( ) == ElementGroup::INPUT );
+      canMorph &= sameElementGroup;
     }
     canChangeInputSize = ( minimum < maximum );
     hasAnyProperty |= hasLabel | hasColors | hasFrequency | hasAudio;
@@ -423,12 +430,12 @@ bool ElementEditor::eventFilter( QObject *obj, QEvent *event ) {
     if( move_back || move_fwd ) {
       GraphicElement *elm = m_elements.first( );
       QVector< GraphicElement* > elms = scene->getVisibleElements( );
-      std::stable_sort( elms.begin( ), elms.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
-                          return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
-                        } );
-      std::stable_sort( elms.begin( ), elms.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
-                          return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
-                        } );
+      std::stable_sort( elms.begin( ), elms.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
+        return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
+      } );
+      std::stable_sort( elms.begin( ), elms.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
+        return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
+      } );
 
       apply( );
       int elmPos = elms.indexOf( elm );

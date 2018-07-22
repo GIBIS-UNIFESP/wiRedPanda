@@ -14,7 +14,7 @@ public:
     return( ElementType::GND );
   }
   virtual ElementGroup elementGroup( ) override {
-    return( ElementGroup::INPUT );
+    return( ElementGroup::STATICINPUT );
   }
   void updateLogic( );
 };

@@ -121,6 +121,7 @@ LogicElement* ElementMapping::buildLogicElement( GraphicElement *elm ) {
       case ElementType::BUZZER:
       case ElementType::DISPLAY:
       case ElementType::DISPLAY14:
+      case ElementType::LEDGRID:
       return( new LogicOutput( elm->inputSize( ) ) );
       case ElementType::NODE:
       return( new LogicNode( ) );

@@ -164,24 +164,14 @@ void BoxPrototypeImpl::loadItem( QGraphicsItem *item ) {
   if( item->type( ) == GraphicElement::Type ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     if( elm ) {
-      switch( elm->elementType( ) ) {
-          case ElementType::BUTTON:
-          case ElementType::SWITCH:
-          case ElementType::CLOCK: {
-          loadInputElement( elm );
-          break;
-        }
-          case ElementType::DISPLAY:
-          case ElementType::DISPLAY14:
-          case ElementType::LED:
-          case ElementType::BUZZER: {
-          loadOutputElement( elm );
-          break;
-        }
-          default: {
-          elements.append( elm );
-          break;
-        }
+      if( elm->elementGroup( ) == ElementGroup::INPUT ) {
+        loadInputElement( elm );
+      }
+      else if( elm->elementGroup( ) == ElementGroup::OUTPUT ) {
+        loadOutputElement( elm );
+      }
+      else {
+        elements.append( elm );
       }
     }
   }

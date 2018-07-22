@@ -3,6 +3,7 @@
 
 #include "input.h"
 
+#include <cmath>
 #include <QBuffer>
 #include <QChartView>
 #include <QClipboard>
@@ -12,10 +13,9 @@
 #include <QMimeData>
 #include <QPointF>
 #include <QSettings>
-#include <cmath>
 /* #include <QSvgGenerator> */
-#include <QValueAxis>
 #include <bitset>
+#include <QValueAxis>
 
 using namespace QtCharts;
 
@@ -41,8 +41,8 @@ public:
   }
 };
 
-SimpleWaveform::SimpleWaveform( Editor *editor,
-                                QWidget *parent ) : QDialog( parent ), ui( new Ui::SimpleWaveform ), editor( editor ) {
+SimpleWaveform::SimpleWaveform( Editor *editor, QWidget *parent ) : QDialog( parent ), ui( new Ui::SimpleWaveform ),
+  editor( editor ) {
   ui->setupUi( this );
   resize( 800, 500 );
   chart.legend( )->setAlignment( Qt::AlignLeft );
@@ -75,44 +75,32 @@ SimpleWaveform::~SimpleWaveform( ) {
   delete ui;
 }
 
-void SimpleWaveform::sortElements( QVector< GraphicElement* > &elements,
-                                   QVector< GraphicElement* > &inputs,
-                                   QVector< GraphicElement* > &outputs,
-                                   SortingKind sorting ) {
+void SimpleWaveform::sortElements( QVector< GraphicElement* > &elements, QVector< GraphicElement* > &inputs,
+                                   QVector< GraphicElement* > &outputs, SortingKind sorting ) {
   elements = ElementMapping::sortGraphicElements( elements );
   for( GraphicElement *elm : elements ) {
     if( elm && ( elm->type( ) == GraphicElement::Type ) ) {
-      switch( elm->elementType( ) ) {
-          case ElementType::BUTTON :
-          case ElementType::SWITCH :
-          case ElementType::CLOCK : {
-            inputs.append( elm );
-            break;
-          }
-          case ElementType::DISPLAY:
-          case ElementType::DISPLAY14:
-          case ElementType::LED: {
-          outputs.append( elm );
-          break;
-        }
-          default:
-          break;
+      if( elm->elementGroup( ) == ElementGroup::INPUT ) {
+        inputs.append( elm );
+      }
+      else if( elm->elementGroup( ) == ElementGroup::OUTPUT ) {
+        outputs.append( elm );
       }
     }
   }
-  std::stable_sort( inputs.begin( ), inputs.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
-                      return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
-                    } );
-  std::stable_sort( outputs.begin( ), outputs.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
-                      return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
-                    } );
+  std::stable_sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
+    return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
+  } );
+  std::stable_sort( outputs.begin( ), outputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
+    return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
+  } );
 
-  std::stable_sort( inputs.begin( ), inputs.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
-                      return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
-                    } );
-  std::stable_sort( outputs.begin( ), outputs.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
-                      return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
-                    } );
+  std::stable_sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
+    return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
+  } );
+  std::stable_sort( outputs.begin( ), outputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
+    return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
+  } );
   if( sorting == SortingKind::INCREASING ) {
     std::stable_sort( inputs.begin( ), inputs.end( ),
                       [ ]( GraphicElement *elm1, GraphicElement*
@@ -148,7 +136,8 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
   QVector< GraphicElement* > inputs;
   QVector< GraphicElement* > outputs;
 
-  // Sorting elements according to the radion option. All elements initially in elements vector. Then, inputs and outputs are extracted and sorted from it.
+  // Sorting elements according to the radion option. All elements initially in elements vector. Then, inputs and
+  // outputs are extracted and sorted from it.
   sortElements( elements, inputs, outputs, SortingKind::POSITION );
   if( elements.isEmpty( ) || inputs.isEmpty( ) || outputs.isEmpty( ) ) {
     return( false );
@@ -158,7 +147,8 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
   // Creating class to pause main window simulator while creating waveform.
   SCStop scst( sc );
 
-  // Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation.
+  // Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore
+  // it after simulation.
   QVector< char > oldValues( inputs.size( ) );
   for( int in = 0; in < inputs.size( ); ++in ) {
     oldValues[ in ] = inputs[ in ]->output( )->value( );
@@ -173,7 +163,8 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
   // Creating vector results with the output resulting values.
   QVector< QVector< uchar > > results( outputCount, QVector< uchar >( num_iter ) );
   for( int itr = 0; itr < num_iter; ++itr ) {
-    // For each iteration, set a distinct value for the inputs. The value is the bit values corresponding to the number of current iteration.
+    // For each iteration, set a distinct value for the inputs. The value is the bit values corresponding to the number
+    // of current iteration.
     std::bitset< std::numeric_limits< unsigned int >::digits > bs( itr );
     for( int in = 0; in < inputs.size( ); ++in ) {
       uchar val = bs[ in ];
@@ -264,7 +255,8 @@ void SimpleWaveform::showWaveform( ) {
   QVector< GraphicElement* > inputs;
   QVector< GraphicElement* > outputs;
 
-  // Sorting elements according to the radion option. All elements initially in elements vector. Then, inputs and outputs are extracted and sorted from it.
+  // Sorting elements according to the radion option. All elements initially in elements vector. Then, inputs and
+  // outputs are extracted and sorted from it.
   sortElements( elements, inputs, outputs, sortingKind );
   if( elements.isEmpty( ) ) {
     QMessageBox::warning( parentWidget( ), tr( "Error" ), tr( "Could not find any port for the simulation" ) );
@@ -285,8 +277,10 @@ void SimpleWaveform::showWaveform( ) {
   QVector< QLineSeries* > in_series;
   QVector< QLineSeries* > out_series;
 
-  // Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation.
-  // Also getting the name of the inputs. If no label is given, the element type is used as a name. Bug here? What if there are 2 inputs without name or two identical labels?
+  // Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore
+  // it after simulation.
+  // Also getting the name of the inputs. If no label is given, the element type is used as a name. Bug here? What if
+  // there are 2 inputs without name or two identical labels?
   QVector< char > oldValues( inputs.size( ) );
   for( int in = 0; in < inputs.size( ); ++in ) {
     in_series.append( new QLineSeries( this ) );
@@ -297,7 +291,8 @@ void SimpleWaveform::showWaveform( ) {
     in_series[ in ]->setName( label );
     oldValues[ in ] = inputs[ in ]->output( )->value( );
   }
-  // Getting the name of the outputs. If no label is given, the element type is used as a name. Bug here? What if there are 2 outputs without name or two identical labels?
+  // Getting the name of the outputs. If no label is given, the element type is used as a name. Bug here? What if there
+  // are 2 outputs without name or two identical labels?
   for( int out = 0; out < outputs.size( ); ++out ) {
     QString label = outputs[ out ]->getLabel( );
     if( label.isEmpty( ) ) {
@@ -322,7 +317,8 @@ void SimpleWaveform::showWaveform( ) {
 /*  gap += outputs.size( ) % 2; */
   // Running simulation.
   for( int itr = 0; itr < num_iter; ++itr ) {
-    // For each iteration, set a distinct value for the inputs. The value is the bit values corresponding to the number of current iteration.
+    // For each iteration, set a distinct value for the inputs. The value is the bit values corresponding to the number
+    // of current iteration.
     std::bitset< std::numeric_limits< unsigned int >::digits > bs( itr );
     //qDebug( ) << itr;
     for( int in = 0; in < inputs.size( ); ++in ) {
