@@ -8,9 +8,9 @@
 
 class Scene : public QGraphicsScene {
 public:
-  explicit Scene( QObject *parent = 0 );
-  Scene( const QRectF &sceneRect, QObject *parent = 0 );
-  Scene( qreal x, qreal y, qreal width, qreal height, QObject *parent = 0 );
+  explicit Scene( QObject *parent = nullptr );
+  Scene( const QRectF &sceneRect, QObject *parent = nullptr );
+  Scene( qreal x, qreal y, qreal width, qreal height, QObject *parent = nullptr );
 
   /* QGraphicsScene interface */
   int gridSize( ) const;

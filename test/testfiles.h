@@ -1,12 +1,13 @@
 #ifndef TESTFILES_H
 #define TESTFILES_H
 
+#include "editor.h"
+
 #include <QTest>
-#include <editor.h>
 
 class TestFiles : public QObject {
   Q_OBJECT
-  Editor *editor;
+  Editor * editor;
 private slots:
 
   /* functions executed by QtTest before and after each test */

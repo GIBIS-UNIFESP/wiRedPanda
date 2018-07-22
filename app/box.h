@@ -19,17 +19,18 @@ class Box : public GraphicElement {
 
   friend class CodeGenerator;
 public:
-  Box( QGraphicsItem *parent = 0 );
-  virtual ~Box( );
+  Box( QGraphicsItem *parent = nullptr );
+  virtual ~Box( ) override;
+
   /* GraphicElement interface */
-  virtual ElementType elementType( ) {
+  virtual ElementType elementType( ) override {
     return( ElementType::BOX );
   }
-  virtual ElementGroup elementGroup( ) {
+  virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::BOX );
   }
-  void save( QDataStream &ds );
-  void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
+  void save( QDataStream &ds ) const override;
+  void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) override;
 
   void loadFile( QString fname );
   QString getFile( ) const;
@@ -49,7 +50,7 @@ private:
 
   /* QGraphicsItem interface */
 protected:
-  void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event );
+  void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) override;
 };
 
 #endif /* BOX_H */

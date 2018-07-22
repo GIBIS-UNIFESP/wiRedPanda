@@ -5,16 +5,16 @@
 
 class InputGnd : public GraphicElement {
 public:
-  explicit InputGnd( QGraphicsItem *parent = 0 );
-  virtual ~InputGnd( );
+  explicit InputGnd( QGraphicsItem *parent = nullptr );
+  virtual ~InputGnd( ) override = default;
 
   /* GraphicElement interface */
 public:
-  virtual ElementType elementType( ) {
+  virtual ElementType elementType( ) override {
     return( ElementType::GND );
   }
-  virtual ElementGroup elementGroup( ) {
-    return( ElementGroup::INPUT );
+  virtual ElementGroup elementGroup( ) override {
+    return( ElementGroup::STATICINPUT );
   }
   void updateLogic( );
 };

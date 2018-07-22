@@ -23,10 +23,6 @@ DFlipFlop::DFlipFlop( QGraphicsItem *parent ) : GraphicElement( 4, 4, 2, 2, pare
   lastClk = false;
 }
 
-DFlipFlop::~DFlipFlop( ) {
-
-}
-
 void DFlipFlop::updatePorts( ) {
   input( 0 )->setPos( topPosition( ), 13 ); /* Data */
   input( 1 )->setPos( topPosition( ), 45 ); /* Clock */

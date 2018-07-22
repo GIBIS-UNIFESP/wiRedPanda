@@ -26,8 +26,9 @@
 #ifndef QNECONNECTION_H
 #define QNECONNECTION_H
 
+#include "itemwithid.h"
+
 #include <QGraphicsPathItem>
-#include <itemwithid.h>
 
 class QNEPort;
 class QNEInputPort;
@@ -36,9 +37,9 @@ class QNEOutputPort;
 class QNEConnection : public QGraphicsPathItem, public ItemWithId {
 public:
   enum { Type = QGraphicsItem::UserType + 2 };
-  enum Status { Invalid = -1, Inactive = 0, Active = 1 };
+  enum class Status { Invalid = -1, Inactive = 0, Active = 1 };
 
-  explicit QNEConnection( QGraphicsItem *parent = 0 );
+  explicit QNEConnection( QGraphicsItem *parent = nullptr );
   virtual ~QNEConnection( );
 
   void setStartPos( const QPointF &p );

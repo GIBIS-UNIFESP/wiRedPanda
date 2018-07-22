@@ -14,10 +14,6 @@ DLatch::DLatch( QGraphicsItem *parent ) : GraphicElement( 2, 2, 2, 2, parent ) {
   output( 1 )->setDefaultValue( 1 );
 }
 
-DLatch::~DLatch( ) {
-
-}
-
 void DLatch::updatePorts( ) {
   input( 0 )->setPos( topPosition( ), 13 ); /* Data */
   input( 1 )->setPos( topPosition( ), 45 ); /* Enable */

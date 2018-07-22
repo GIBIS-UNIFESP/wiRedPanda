@@ -11,10 +11,6 @@ TLatch::TLatch( QGraphicsItem *parent ) : GraphicElement( 2, 2, 2, 2, parent ) {
   output( 1 )->setName( "~Q" );
 }
 
-TLatch::~TLatch( ) {
-
-}
-
 void TLatch::updatePorts( ) {
   input( 0 )->setPos( topPosition( ), 13 ); /* T */
   input( 1 )->setPos( topPosition( ), 45 ); /* Clock */

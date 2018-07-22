@@ -3,7 +3,11 @@
 #include "boxnotfoundexception.h"
 #include "boxprototype.h"
 #include "globalproperties.h"
+#include "inputswitch.h"
+#include "nodes/qneconnection.h"
 #include "serializationfunctions.h"
+
+#include <iostream>
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
@@ -13,9 +17,6 @@
 #include <QMessageBox>
 #include <QPointF>
 #include <QProcess>
-#include <inputswitch.h>
-#include <iostream>
-#include <nodes/qneconnection.h>
 
 Box::Box( QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, parent ) {
   setHasLabel( true );
@@ -45,7 +46,7 @@ Box::~Box( ) {
 }
 
 
-void Box::save( QDataStream &ds ) {
+void Box::save( QDataStream &ds ) const {
   GraphicElement::save( ds );
   ds << m_file;
 }

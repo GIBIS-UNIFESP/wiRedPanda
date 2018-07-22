@@ -1,7 +1,6 @@
 #ifndef GRAPHICSVIEWZOOM_H
 #define GRAPHICSVIEWZOOM_H
 
-
 #include <QGraphicsView>
 #include <QObject>
 

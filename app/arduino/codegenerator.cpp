@@ -1,10 +1,11 @@
+#include "box.h"
+#include "clock.h"
 #include "codegenerator.h"
+#include "editor.h"
+#include "qneconnection.h"
 
-#include <box.h>
-#include <clock.h>
-#include <editor.h>
-#include <qneconnection.h>
 #include <stdexcept>
+
 CodeGenerator::CodeGenerator( QString fileName, const QVector< GraphicElement* > &elements ) : file( fileName ),
   elements( elements ) {
   if( !file.open( QIODevice::WriteOnly | QIODevice::Text ) ) {
@@ -96,8 +97,7 @@ void CodeGenerator::declareOutputs( ) {
   int counter = 1;
   out << "/* ========= Outputs ========== */" << endl;
   for( GraphicElement *elm : elements ) {
-    if( ( elm->elementType( ) == ElementType::LED ) ||
-        ( elm->elementType( ) == ElementType::DISPLAY ) ) {
+    if( elm->elementGroup( ) == ElementGroup::OUTPUT ) {
       QString label = elm->getLabel( );
       for( int i = 0; i < elm->inputs( ).size( ); ++i ) {
         QString varName = elm->objectName( ) + QString::number( counter );
@@ -123,7 +123,7 @@ void CodeGenerator::declareOutputs( ) {
 void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &elms, bool isBox ) {
   for( GraphicElement *elm : elms ) {
     if( elm->elementType( ) == ElementType::BOX ) {
-      Box *box = qgraphicsitem_cast< Box* >( elm );
+//      Box *box = qgraphicsitem_cast< Box* >( elm );
 
       // TODO: FIXME: Get code generator to work again
 //      if( box ) {
@@ -164,26 +164,26 @@ void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &el
         }
       }
       for( QNEPort *port : elm->outputs( ) ) {
-        QString varName = varMap[ port ];
-        out << "boolean " << varName << " = " << highLow( port->defaultValue( ) ) << ";" << endl;
+        QString varName2 = varMap[ port ];
+        out << "boolean " << varName2 << " = " << highLow( port->defaultValue( ) ) << ";" << endl;
         switch( elm->elementType( ) ) {
             case ElementType::CLOCK: {
             if( !isBox ) {
               Clock *clk = qgraphicsitem_cast< Clock* >( elm );
-              out << "elapsedMillis " << varName << "_elapsed = 0;" << endl;
-              out << "int " << varName << "_interval = " << 1000 / clk->getFrequency( ) << ";" << endl;
+              out << "elapsedMillis " << varName2 << "_elapsed = 0;" << endl;
+              out << "int " << varName2 << "_interval = " << 1000 / clk->getFrequency( ) << ";" << endl;
             }
             break;
           }
             case ElementType::DFLIPFLOP: {
-            out << "boolean " << varName << "_inclk = LOW;" << endl;
-            out << "boolean " << varName << "_last = LOW;" << endl;
+            out << "boolean " << varName2 << "_inclk = LOW;" << endl;
+            out << "boolean " << varName2 << "_last = LOW;" << endl;
             break;
           }
             case ElementType::TFLIPFLOP:
             case ElementType::SRFLIPFLOP:
             case ElementType::JKFLIPFLOP: {
-            out << "boolean " << varName << "_inclk = LOW;" << endl;
+            out << "boolean " << varName2 << "_inclk = LOW;" << endl;
             break;
           }
 
@@ -380,7 +380,6 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
           default:
           throw std::runtime_error( ERRORMSG( QString( "Element type not supported : %1" ).arg(
                                                 elm->objectName( ) ).toStdString( ) ) );
-          break;
       }
     }
   }

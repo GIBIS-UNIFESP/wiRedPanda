@@ -1,8 +1,8 @@
 #include "testsimulationcontroller.h"
 
-#include <and.h>
-#include <inputbutton.h>
-#include <led.h>
+#include "and.h"
+#include "inputbutton.h"
+#include "led.h"
 
 void TestSimulationController::init( ) {
   editor = new Editor( this );

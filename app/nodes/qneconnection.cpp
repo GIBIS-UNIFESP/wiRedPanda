@@ -23,9 +23,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
+#include "node.h"
 #include "qneconnection.h"
-
 #include "qneport.h"
+#include "thememanager.h"
 
 #include <QBrush>
 #include <QDebug>
@@ -34,13 +35,11 @@
 #include <QPainter>
 #include <QPen>
 #include <QStyleOptionGraphicsItem>
-#include <node.h>
-#include <thememanager.h>
 
 QNEConnection::QNEConnection( QGraphicsItem *parent ) : QGraphicsPathItem( parent ) {
   setFlag( QGraphicsItem::ItemIsSelectable );
   setBrush( Qt::NoBrush );
-  setStatus( Inactive );
+  setStatus( Status::Inactive );
   setZValue( -1 );
   m_start = nullptr;
   m_end = nullptr;
@@ -137,8 +136,8 @@ double QNEConnection::angle( ) {
 }
 
 void QNEConnection::save( QDataStream &ds ) const {
-  ds << ( quint64 ) m_start;
-  ds << ( quint64 ) m_end;
+  ds << reinterpret_cast< quint64 >( m_start );
+  ds << reinterpret_cast< quint64 >( m_end );
 }
 
 bool QNEConnection::load( QDataStream &ds, const QMap< quint64, QNEPort* > &portMap ) {
@@ -209,15 +208,15 @@ QNEConnection::Status QNEConnection::status( ) const {
 void QNEConnection::setStatus( const Status &status ) {
   m_status = status;
   switch( status ) {
-      case Inactive: {
+      case Status::Inactive: {
       setPen( QPen( m_inactiveClr, 3 ) );
       break;
     }
-      case Active: {
+      case Status::Active: {
       setPen( QPen( m_activeClr, 3 ) );
       break;
     }
-      case Invalid: {
+      case Status::Invalid: {
       setPen( QPen( m_invalidClr, 5 ) );
       break;
     }

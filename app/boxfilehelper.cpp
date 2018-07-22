@@ -2,9 +2,9 @@
 #include "boxnotfoundexception.h"
 #include "globalproperties.h"
 
+#include <iostream>
 #include <QDebug>
 #include <QDir>
-#include <iostream>
 
 QFileInfo BoxFileHelper::findFile( QString fname, QString parentFile ) {
   qDebug( ) << "Loading file: " << fname << ", parentFile: " << parentFile;
@@ -31,6 +31,7 @@ QFileInfo BoxFileHelper::findFile( QString fname, QString parentFile ) {
 }
 
 void BoxFileHelper::verifyRecursion( QString fname ) {
+  Q_UNUSED( fname );
   // TODO BoxFileHelper::verifyRecursion
 //  std::string msg = "Oh no! I'm my own parent.\nSomething is not ok...";
 //  if( !parentFile.isEmpty( ) && ( fname == parentFile ) ) {

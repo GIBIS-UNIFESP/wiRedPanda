@@ -1,34 +1,35 @@
 #include "box.h"
+#include "buzzer.h"
+#include "demux.h"
 #include "element/and.h"
 #include "element/clock.h"
+#include "element/dflipflop.h"
+#include "element/display.h"
+#include "element/display_14.h"
+#include "element/dlatch.h"
 #include "element/inputbutton.h"
 #include "element/inputgnd.h"
 #include "element/inputswitch.h"
 #include "element/inputvcc.h"
+#include "element/jkflipflop.h"
+#include "element/jklatch.h"
 #include "element/led.h"
+#include "element/ledgrid.h"
 #include "element/nand.h"
 #include "element/nor.h"
 #include "element/not.h"
 #include "element/or.h"
+#include "element/srflipflop.h"
+#include "element/tflipflop.h"
+#include "element/tlatch.h"
 #include "element/xnor.h"
 #include "element/xor.h"
 #include "elementfactory.h"
-#include <element/dflipflop.h>
-#include <element/display.h>
-#include <element/dlatch.h>
-#include <element/jkflipflop.h>
-#include <element/jklatch.h>
-#include <element/srflipflop.h>
-#include <element/tflipflop.h>
-#include <element/tlatch.h>
-
+#include "mux.h"
+#include "node.h"
+#include "qneconnection.h"
 
 #include <QDebug>
-#include <buzzer.h>
-#include <demux.h>
-#include <mux.h>
-#include <node.h>
-#include <qneconnection.h>
 
 ElementFactory*ElementFactory::instance = new ElementFactory( );
 
@@ -61,11 +62,13 @@ ElementType ElementFactory::textToType( QString text ) {
          text == "TLATCH" ? ElementType::TLATCH :
          text == "TFLIPFLOP" ? ElementType::TFLIPFLOP :
          text == "DISPLAY" ? ElementType::DISPLAY :
+         text == "DISPLAY14" ? ElementType::DISPLAY14 :
          text == "BOX" ? ElementType::BOX :
          text == "MUX" ? ElementType::MUX :
          text == "DEMUX" ? ElementType::DEMUX :
          text == "NODE" ? ElementType::NODE :
          text == "BUZZER" ? ElementType::BUZZER :
+         text == "LEDGRID" ? ElementType::LEDGRID :
          ElementType::UNKNOWN;
   return( type );
 }
@@ -93,11 +96,13 @@ QString ElementFactory::typeToText( ElementType type ) {
       case ElementType::TLATCH: return( "TLATCH" );
       case ElementType::TFLIPFLOP: return( "TFLIPFLOP" );
       case ElementType::DISPLAY: return( "DISPLAY" );
+      case ElementType::DISPLAY14: return( "DISPLAY14" );
       case ElementType::BOX: return( "BOX" );
       case ElementType::MUX: return( "MUX" );
       case ElementType::DEMUX: return( "DEMUX" );
       case ElementType::NODE: return( "NODE" );
       case ElementType::BUZZER: return( "BUZZER" );
+      case ElementType::LEDGRID: return( "LEDGRID" );
       case ElementType::UNKNOWN: default: return( "UNKNOWN" );
   }
 }
@@ -125,11 +130,13 @@ QString ElementFactory::translatedName( ElementType type ) {
       case ElementType::TLATCH: return( tr( "T-latch" ) );
       case ElementType::TFLIPFLOP: return( tr( "T-flipflop" ) );
       case ElementType::DISPLAY: return( tr( "Display" ) );
+      case ElementType::DISPLAY14: return( tr( "Display14" ) );
       case ElementType::BOX: return( tr( "Box" ) );
       case ElementType::MUX: return( tr( "Mux" ) );
       case ElementType::DEMUX: return( tr( "Demux" ) );
       case ElementType::NODE: return( tr( "Node" ) );
       case ElementType::BUZZER: return( tr( "Buzzer" ) );
+      case ElementType::LEDGRID: return( tr( "LedGrid" ) );
       case ElementType::UNKNOWN: default: return( tr( "Unknown" ) );
   }
 }
@@ -157,12 +164,14 @@ QPixmap ElementFactory::getPixmap( ElementType type ) {
       case ElementType::TLATCH: return( QPixmap( ":/memory/light/T-latch.png" ) );
       case ElementType::TFLIPFLOP: return( QPixmap( ":/memory/light/T-flipflop.png" ) );
       case ElementType::DISPLAY: return( QPixmap( ":/output/counter/counter_on.png" ) );
+      case ElementType::DISPLAY14: return( QPixmap( ":/output/counter/counter_14_on.png" ) );
       case ElementType::BOX: return( QPixmap( ":/basic/box.png" ) );
       case ElementType::MUX: return( QPixmap( ":/basic/mux.png" ) );
       case ElementType::DEMUX: return( QPixmap( ":/basic/demux.png" ) );
       case ElementType::NODE: return( QPixmap( ":/basic/node.png" ) );
       case ElementType::BUZZER: return( QPixmap( ":/output/BuzzerOff.png" ) );
-      case ElementType::UNKNOWN: default: return( QPixmap( ) );
+      case ElementType::LEDGRID: return( QPixmap( ":/output/LedGrid.png" ) );
+      case ElementType::UNKNOWN: return( QPixmap( ) );
   }
   return( QPixmap( ) );
 }
@@ -194,12 +203,14 @@ GraphicElement* ElementFactory::buildElement( ElementType type, QGraphicsItem *p
         type == ElementType::TFLIPFLOP ? new TFlipFlop( parent ) :
         type == ElementType::TLATCH ? new TLatch( parent ) :
         type == ElementType::DISPLAY ? new Display( parent ) :
+        type == ElementType::DISPLAY14 ? new Display14( parent ) :
         type == ElementType::BOX ? new Box( parent ) :
         type == ElementType::NODE ? new Node( parent ) :
         type == ElementType::MUX ? new Mux( parent ) :
         type == ElementType::DEMUX ? new Demux( parent ) :
         type == ElementType::BUZZER ? new Buzzer( parent ) :
-        ( GraphicElement* ) nullptr;
+        type == ElementType::LEDGRID ? new LedGrid( parent ) :
+        static_cast< GraphicElement* >( nullptr );
   return( elm );
 }
 

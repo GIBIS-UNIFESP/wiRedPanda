@@ -7,10 +7,6 @@ JKLatch::JKLatch( QGraphicsItem *parent ) : GraphicElement( 2, 2, 2, 2, parent )
   setPortName( "JK Latch" );
 }
 
-JKLatch::~JKLatch( ) {
-
-}
-
 void JKLatch::updatePorts( ) {
   input( 0 )->setPos( topPosition( ), 13 );
   input( 1 )->setPos( topPosition( ), 45 );
