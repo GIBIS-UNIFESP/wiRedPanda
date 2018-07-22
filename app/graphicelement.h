@@ -92,8 +92,11 @@ public:
 
   QVector< QNEOutputPort* > outputs( ) const;
 
-  QNEInputPort* input( int pos = 0 ) const;
-  QNEOutputPort* output( int pos = 0 ) const;
+  const QNEInputPort* input( int pos = 0 ) const;
+  const QNEOutputPort* output( int pos = 0 ) const;
+
+  QNEInputPort* input( int pos = 0 );
+  QNEOutputPort* output( int pos = 0 );
 
   void setOutputs( const QVector< QNEOutputPort* > &outputs );
 

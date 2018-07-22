@@ -109,11 +109,19 @@ QVector< QNEOutputPort* > GraphicElement::outputs( ) const {
   return( m_outputs );
 }
 
-QNEInputPort* GraphicElement::input( int pos ) const {
+const QNEInputPort* GraphicElement::input( int pos ) const {
   return( m_inputs.at( pos ) );
 }
 
-QNEOutputPort* GraphicElement::output( int pos ) const {
+const QNEOutputPort* GraphicElement::output( int pos ) const {
+  return( m_outputs.at( pos ) );
+}
+
+QNEInputPort* GraphicElement::input( int pos ) {
+  return( m_inputs.at( pos ) );
+}
+
+QNEOutputPort* GraphicElement::output( int pos ) {
   return( m_outputs.at( pos ) );
 }
 

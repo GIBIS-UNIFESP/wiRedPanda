@@ -1,5 +1,4 @@
 #include "ledgrid.h"
-#include <array>
 #include <qneconnection.h>
 #include <QDebug>
 #include <QPainter>
