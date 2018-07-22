@@ -1,9 +1,11 @@
 #include "testfiles.h"
 
+#include "commands.h"
 #include "globalproperties.h"
-#include <commands.h>
-#include <mainwindow.h>
+#include "mainwindow.h"
+
 #include <stdexcept>
+
 void TestFiles::init( ) {
   editor = new Editor( this );
 }
@@ -50,27 +52,27 @@ void TestFiles::testFiles( ) {
     }
     pandaFile.close( );
     QTemporaryFile outfile;
-    if( outfile.open() ) {
-      qDebug( ) << outfile.fileName();
-      QDataStream ds( &outfile );
+    if( outfile.open( ) ) {
+      qDebug( ) << outfile.fileName( );
+      QDataStream ds2( &outfile );
       try {
-        editor->save( ds );
+        editor->save( ds2 );
       }
-      catch( std::runtime_error &e ) {
-        QFAIL( QString( "Error saving project: " + outfile.fileName() ).toUtf8( ) );
+      catch( std::runtime_error & ) {
+        QFAIL( QString( "Error saving project: " + outfile.fileName( ) ).toUtf8( ) );
       }
     }
     else {
-      QFAIL( QString( "Could not open file in WriteOnly mode : " + outfile.fileName() ).toUtf8( ) );
+      QFAIL( QString( "Could not open file in WriteOnly mode : " + outfile.fileName( ) ).toUtf8( ) );
     }
     outfile.flush( );
     outfile.close( );
 
-    QFile pandaFile2( outfile.fileName() );
+    QFile pandaFile2( outfile.fileName( ) );
     QVERIFY( pandaFile2.open( QFile::ReadOnly ) );
-    QDataStream ds2( &pandaFile2 );
+    QDataStream ds3( &pandaFile2 );
     try {
-      editor->load( ds2 );
+      editor->load( ds3 );
     }
     catch( std::runtime_error &e ) {
       QFAIL( QString( "Could not load the file! Error: %1" ).arg( QString::fromStdString( e.what( ) ) ).toUtf8( ) );

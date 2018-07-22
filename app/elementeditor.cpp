@@ -2,11 +2,11 @@
 #include "editor.h"
 #include "elementeditor.h"
 #include "ui_elementeditor.h"
+#include <cmath>
 #include <QDebug>
 #include <QGraphicsView>
 #include <QKeyEvent>
 #include <QMenu>
-#include <cmath>
 
 ElementEditor::ElementEditor( QWidget *parent ) : QWidget( parent ), ui( new Ui::ElementEditor ) {
   _manyLabels = tr( "<Many labels>" );
@@ -43,7 +43,7 @@ QAction* addElementAction( QMenu *menu, GraphicElement *firstElm, ElementType ty
   if( !hasSameType || ( firstElm->elementType( ) != type ) ) {
     QAction *action = menu->addAction( QIcon( ElementFactory::getPixmap( type ) ), ElementFactory::translatedName(
                                          type ) );
-    action->setData( ( int ) type );
+    action->setData( static_cast< int >( type ) );
     return( action );
   }
   return( nullptr );
@@ -100,6 +100,7 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
         }
         break;
       }
+        case ElementGroup::STATICINPUT:
         case ElementGroup::INPUT: {
         addElementAction( submenumorph, firstElm, ElementType::BUTTON, hasSameType );
         addElementAction( submenumorph, firstElm, ElementType::SWITCH, hasSameType );
@@ -120,7 +121,7 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
         }
         break;
       }
-        case ElementGroup::OUTPUT:{
+        case ElementGroup::OUTPUT: {
         addElementAction( submenumorph, firstElm, ElementType::LED, hasSameType );
         addElementAction( submenumorph, firstElm, ElementType::BUZZER, hasSameType );
         break;
@@ -229,14 +230,20 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
 
       hasSameLabel &= elm->getLabel( ) == firstElement->getLabel( );
       hasSameColors &= elm->getColor( ) == firstElement->getColor( );
-      hasSameFrequency &= elm->getFrequency( ) == firstElement->getFrequency( );
+      hasSameFrequency &= qFuzzyCompare( elm->getFrequency( ), firstElement->getFrequency( ) );
       hasSameInputSize &= elm->inputSize( ) == firstElement->inputSize( );
       hasSameTrigger &= elm->getTrigger( ) == firstElement->getTrigger( );
       hasSameType &= elm->elementType( ) == firstElement->elementType( );
       hasSameAudio &= elm->getAudio( ) == firstElement->getAudio( );
-      canMorph &= elm->elementGroup( ) == firstElement->elementGroup( );
       canMorph &= elm->inputSize( ) == firstElement->inputSize( );
       canMorph &= elm->outputSize( ) == firstElement->outputSize( );
+
+      bool sameElementGroup = elm->elementGroup( ) == firstElement->elementGroup( );
+      sameElementGroup |=
+        ( elm->elementGroup( ) == ElementGroup::INPUT && firstElement->elementGroup( ) == ElementGroup::STATICINPUT );
+      sameElementGroup |=
+        ( elm->elementGroup( ) == ElementGroup::STATICINPUT && firstElement->elementGroup( ) == ElementGroup::INPUT );
+      canMorph &= sameElementGroup;
     }
     canChangeInputSize = ( minimum < maximum );
     hasAnyProperty |= hasLabel | hasColors | hasFrequency | hasAudio;
@@ -295,7 +302,7 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
       if( hasSameFrequency ) {
         ui->doubleSpinBoxFrequency->setMinimum( 0.5 );
         ui->doubleSpinBoxFrequency->setSpecialValueText( QString( ) );
-        ui->doubleSpinBoxFrequency->setValue( firstElement->getFrequency( ) );
+        ui->doubleSpinBoxFrequency->setValue( static_cast< double >( firstElement->getFrequency( ) ) );
       }
       else {
         ui->doubleSpinBoxFrequency->setMinimum( 0.0 );

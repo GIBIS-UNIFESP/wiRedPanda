@@ -1,8 +1,7 @@
 #ifndef LOGICNAND_H
 #define LOGICNAND_H
 
-#include <logicelement.h>
-
+#include "logicelement.h"
 
 class LogicNand : public LogicElement {
 public:

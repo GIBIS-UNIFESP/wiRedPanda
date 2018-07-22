@@ -1,3 +1,4 @@
+#include "arduino/codegenerator.h"
 #include "elementmapping.h"
 #include "globalproperties.h"
 #include "graphicsviewzoom.h"
@@ -11,14 +12,13 @@
 #include <QFileDialog>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <QPrinter>
 #include <QRectF>
 #include <QSaveFile>
 #include <QSettings>
 #include <QShortcut>
 #include <QStyleFactory>
 #include <QTemporaryFile>
-#include <QtPrintSupport/QPrinter>
-#include <arduino/codegenerator.h>
 #include <cmath>
 #include <iostream>
 #include <stdexcept>
@@ -106,7 +106,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   rboxController = new RecentFilesController( "recentBoxes", this );
 
   QShortcut *shortcut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
-  connect( shortcut, SIGNAL(activated()), ui->lineEdit, SLOT(setFocus()) );
+  connect( shortcut, &QShortcut::activated, ui->lineEdit, QOverload< >::of( &QWidget::setFocus ) );
   ui->graphicsView->setCacheMode( QGraphicsView::CacheBackground );
   firstResult = nullptr;
   updateRecentBoxes( );
@@ -260,7 +260,7 @@ bool MainWindow::open( const QString &fname ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::endl;
     return( false );
   }
   fl.close( );
@@ -326,6 +326,7 @@ bool MainWindow::closeFile( ) {
 }
 
 void MainWindow::closeEvent( QCloseEvent *e ) {
+  Q_UNUSED( e );
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "MainWindow" );
@@ -336,9 +337,7 @@ void MainWindow::closeEvent( QCloseEvent *e ) {
   settings.setValue( "state", ui->splitter->saveState( ) );
   settings.endGroup( );
   settings.endGroup( );
-#ifdef DEBUG
-  return;
-#endif
+#ifndef DEBUG
   if( closeFile( ) ) {
     close( );
   }
@@ -346,6 +345,7 @@ void MainWindow::closeEvent( QCloseEvent *e ) {
     e->ignore( );
   }
   autosaveFile.remove( );
+#endif
 }
 
 void MainWindow::on_actionSave_As_triggered( ) {
@@ -440,7 +440,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-      std::endl;
+    std::endl;
     return;
   }
   fl.close( );
@@ -620,7 +620,7 @@ void MainWindow::zoomChanged( ) {
 void MainWindow::updateRecentFileActions( ) {
   QStringList files = rfController->getFiles( );
 
-  int numRecentFiles = qMin( files.size( ), ( int ) RecentFilesController::MaxRecentFiles );
+  int numRecentFiles = qMin( files.size( ), static_cast< int >( RecentFilesController::MaxRecentFiles ) );
   if( numRecentFiles > 0 ) {
     ui->menuRecent_files->setEnabled( true );
   }
@@ -794,7 +794,7 @@ void MainWindow::populateMenu( QSpacerItem *spacer, QString names, QLayout *layo
 
 void MainWindow::populateLeftMenu( ) {
   populateMenu( ui->verticalSpacer_InOut,
-                "VCC,GND,BUTTON,SWITCH,CLOCK,LED,DISPLAY,BUZZER",
+                "VCC,GND,BUTTON,SWITCH,CLOCK,LED,DISPLAY,DISPLAY14,BUZZER,LEDGRID",
                 ui->scrollAreaWidgetContents_InOut->layout( ) );
   populateMenu( ui->verticalSpacer_Gates,
                 "AND,OR,NOT,NAND,NOR,XOR,XNOR,MUX,DEMUX,NODE",

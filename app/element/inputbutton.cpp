@@ -2,6 +2,7 @@
 
 #include <QDebug>
 #include <QGraphicsSceneMouseEvent>
+
 InputButton::InputButton( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent ) {
   setOutputsOnTop( false );
   setPixmap( ":/input/buttonOff.png" );
@@ -11,10 +12,6 @@ InputButton::InputButton( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, 
   setHasLabel( true );
   setHasTrigger( true );
   setPortName( "Button" );
-}
-
-InputButton::~InputButton( ) {
-
 }
 
 void InputButton::mousePressEvent( QGraphicsSceneMouseEvent *event ) {
@@ -46,13 +43,8 @@ bool InputButton::getOn( ) const {
   return( on );
 }
 
-void InputButton::setOn( bool value ) {
+void InputButton::setOn( const bool value ) {
   on = value;
-  if( on ) {
-    setPixmap( ":/input/buttonOn.png" );
-  }
-  else {
-    setPixmap( ":/input/buttonOff.png" );
-  }
+  setPixmap( on ? ":/input/buttonOn.png" : ":/input/buttonOff.png" );
   updateLogic( );
 }

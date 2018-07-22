@@ -1,9 +1,7 @@
 #ifndef LOGICXNOR_H
 #define LOGICXNOR_H
 
-#include <logicelement.h>
-
-
+#include "logicelement.h"
 
 class LogicXnor : public LogicElement {
 public:

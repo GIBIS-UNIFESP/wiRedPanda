@@ -1,8 +1,7 @@
 #ifndef LOGICINPUT_H
 #define LOGICINPUT_H
 
-#include <logicelement.h>
-
+#include "logicelement.h"
 
 class LogicInput : public LogicElement {
 public:

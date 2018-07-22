@@ -1,7 +1,7 @@
 #ifndef LOGICNODE_H
 #define LOGICNODE_H
 
-#include <logicelement.h>
+#include "logicelement.h"
 
 class LogicNode : public LogicElement {
 public:

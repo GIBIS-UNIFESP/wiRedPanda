@@ -2,6 +2,7 @@
 #include "graphicelement.h"
 #include "label.h"
 #include "listitemwidget.h"
+
 #include <QFileInfo>
 #include <QFrame>
 #include <QHBoxLayout>
@@ -29,7 +30,7 @@ ListItemWidget::ListItemWidget( const QPixmap &pixmap, ElementType type, QString
   setLayout( itemLayout );
 
   label = new Label( parent );
-  label->setPixmap( pixmap );
+  label->setPixmapData( pixmap );
   label->setName( name );
   label->setAuxData( boxFileName );
   label->setElementType( type );
@@ -45,11 +46,11 @@ ListItemWidget::ListItemWidget( const QPixmap &pixmap, ElementType type, QString
 }
 
 void ListItemWidget::updateName( ) {
-  ElementType type = label->elementType();
+  ElementType type = label->elementType( );
   if( type != ElementType::BOX ) {
     QString name = ElementFactory::translatedName( type );
-    nameLabel->setText(name);
-    label->setName(name);
+    nameLabel->setText( name );
+    label->setName( name );
 
   }
 }

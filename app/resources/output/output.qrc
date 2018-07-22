@@ -47,5 +47,16 @@
         <file>audio/F6.wav</file>
         <file>audio/G6.wav</file>
         <file>audio/C7.wav</file>
+        <file>counter/counter_dp.png</file>
+        <file>counter/counter_g1.png</file>
+        <file>counter/counter_g2.png</file>
+        <file>counter/counter_j.png</file>
+        <file>counter/counter_k.png</file>
+        <file>counter/counter_l.png</file>
+        <file>counter/counter_m.png</file>
+        <file>counter/counter_n.png</file>
+        <file>counter/counter_14_on.png</file>
+        <file>counter/counter_14_off.png</file>
+        <file>LedGrid.png</file>
     </qresource>
 </RCC>

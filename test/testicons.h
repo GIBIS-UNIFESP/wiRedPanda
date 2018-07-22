@@ -6,7 +6,7 @@
 class TestIcons : public QObject {
   Q_OBJECT
 private slots:
-    void testIcons();
+  void testIcons( );
 };
 
 #endif /* TESTICONS_H */

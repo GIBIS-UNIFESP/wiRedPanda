@@ -1,7 +1,7 @@
 #ifndef LOGICDLATCH_H
 #define LOGICDLATCH_H
 
-#include <logicelement.h>
+#include "logicelement.h"
 
 class LogicDLatch : public LogicElement {
 public:

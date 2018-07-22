@@ -45,12 +45,12 @@ bool comparePorts( QNEPort *port1, QNEPort *port2 ) {
   QPointF p1 = port1->graphicElement( )->pos( );
   QPointF p2 = port2->graphicElement( )->pos( );
   if( p1 != p2 ) {
-    return( p1.y( ) < p2.y( ) || ( p1.y( ) == p2.y( ) && p1.x( ) < p2.x( ) ) );
+    return( p1.y( ) < p2.y( ) || ( qFuzzyCompare( p1.y( ), p2.y( ) ) && p1.x( ) < p2.x( ) ) );
   }
   else {
     p1 = port1->pos( );
     p2 = port2->pos( );
-    return( p1.x( ) < p2.x( ) || ( p1.x( ) == p2.x( ) && p1.y( ) < p2.y( ) ) );
+    return( p1.x( ) < p2.x( ) || ( qFuzzyCompare( p1.x( ), p2.x( ) ) && p1.y( ) < p2.y( ) ) );
   }
 }
 
@@ -164,23 +164,14 @@ void BoxPrototypeImpl::loadItem( QGraphicsItem *item ) {
   if( item->type( ) == GraphicElement::Type ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     if( elm ) {
-      switch( elm->elementType( ) ) {
-          case ElementType::BUTTON:
-          case ElementType::SWITCH:
-          case ElementType::CLOCK: {
-          loadInputElement( elm );
-          break;
-        }
-          case ElementType::DISPLAY:
-          case ElementType::LED:
-          case ElementType::BUZZER: {
-          loadOutputElement( elm );
-          break;
-        }
-          default: {
-          elements.append( elm );
-          break;
-        }
+      if( elm->elementGroup( ) == ElementGroup::INPUT ) {
+        loadInputElement( elm );
+      }
+      else if( elm->elementGroup( ) == ElementGroup::OUTPUT ) {
+        loadOutputElement( elm );
+      }
+      else {
+        elements.append( elm );
       }
     }
   }

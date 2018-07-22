@@ -6,29 +6,29 @@
 
 class InputButton : public GraphicElement, public Input {
 public:
-  explicit InputButton( QGraphicsItem *parent = 0);
-  virtual ~InputButton( );
+  explicit InputButton( QGraphicsItem *parent = nullptr );
+  virtual ~InputButton( ) override = default;
   bool on;
 
   /* QGraphicsItem interface */
 protected:
-  void mousePressEvent( QGraphicsSceneMouseEvent *event );
-  void mouseReleaseEvent( QGraphicsSceneMouseEvent *event );
+  void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
+  void mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) override;
 
   /* GraphicElement interface */
 public:
-  virtual ElementType elementType( ) {
+  virtual ElementType elementType( ) override {
     return( ElementType::BUTTON );
   }
-  virtual ElementGroup elementGroup( ) {
+  virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::INPUT );
   }
   void updateLogic( );
 
   // Input interface
 public:
-  bool getOn() const;
-  void setOn(bool value);
+  bool getOn( ) const override;
+  void setOn( const bool value ) override;
 };
 
 #endif /* INPUTBUTTON_H */

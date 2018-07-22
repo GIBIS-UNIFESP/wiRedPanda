@@ -1,10 +1,11 @@
-
 include(../includes.pri)
 
 QT += testlib
+
 TARGET = WPanda-test
+
 SOURCES += \
-      main.cpp \
+    main.cpp \
     testelements.cpp \
     testsimulationcontroller.cpp \
     testfiles.cpp \
@@ -22,4 +23,4 @@ HEADERS += \
     testicons.h \
     testlogicelements.h
 
-DEFINES += CURRENTDIR=\\\"$$PWD\\\"
+DEFINES += CURRENTDIR=\\\"$$_PRO_FILE_PWD_\\\"

@@ -3,6 +3,7 @@
 
 #include <QColor>
 #include <QObject>
+
 class Editor;
 
 enum class Theme { Panda_Light, Panda_Dark };
@@ -49,7 +50,7 @@ class ThemeManager : public QObject {
 public:
   static ThemeManager *globalMngr;
 
-  explicit ThemeManager( QObject *parent = 0 );
+  explicit ThemeManager( QObject *parent = nullptr );
 
   QString currentTheme( ) const;
   void setCurrentTheme( Theme theme );

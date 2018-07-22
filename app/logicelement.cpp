@@ -7,15 +7,15 @@ bool LogicElement::isValid( ) const {
 }
 
 void LogicElement::clearPredecessors( ) {
-  for( auto input: m_inputs ) {
+  for( auto &input: m_inputs ) {
     input.first = nullptr;
     input.second = 0;
   }
 }
 
 void LogicElement::clearSucessors( ) {
-  for( LogicElement *elm : m_sucessors ) {
-    for( auto input: elm->m_inputs ) {
+  for( auto &elm : m_sucessors ) {
+    for( auto &input: elm->m_inputs ) {
       if( input.first == this ) {
         input.first = nullptr;
         input.second = 0;
