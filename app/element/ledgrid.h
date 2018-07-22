@@ -2,6 +2,7 @@
 #define LEDGRID_H
 
 
+#include <array>
 #include <graphicelement.h>
 
 
@@ -23,7 +24,7 @@ public:
   virtual void refresh( ) override;
   void updatePorts( ) override;
 
-  void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
+  void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget ) override;
   QString genericProperties( ) override;
 
   void save( QDataStream &ds ) const override;
