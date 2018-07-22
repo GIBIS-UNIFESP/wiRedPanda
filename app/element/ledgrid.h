@@ -10,28 +10,29 @@ public:
   explicit LedGrid( QGraphicsItem *parent );
   virtual ~LedGrid( );
 
-public:
-  virtual ElementType elementType( ) {
+  virtual ElementType elementType( ) override {
     return( ElementType::LEDGRID );
   }
-  virtual ElementGroup elementGroup( ) {
+
+  virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::OUTPUT );
   }
-  void setColor( QString getColor );
-  QString getColor( );
-  virtual void refresh( );
-  void updatePorts( );
-  QPixmap a, b, c, d;
+
+  void setColor( QString getColor ) override;
+  QString getColor( ) const override;
+  virtual void refresh( ) override;
+  void updatePorts( ) override;
+
+  void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
+  QString genericProperties( ) override;
+
+  void save( QDataStream &ds ) const override;
+  void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) override;
+
 private:
   QString m_color;
-  /* QGraphicsItem interface */
-public:
-  void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
-  QString genericProperties( );
-
-  /* GraphicElement interface */
-public:
-  void save( QDataStream &ds );
-  void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
+  QPixmap a, b;
+  std::array< int, 4 > m_rowOffsets;
+  std::array< int, 4 > m_colOffsets;
 };
 #endif /* LedGrid_H */
