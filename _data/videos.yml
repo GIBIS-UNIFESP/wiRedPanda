@@ -1,8 +1,17 @@
 links:
-  - { id: '7ZrzaaCME14', title: 'Guitar Panda Game' }
   - { id: 'Zwipcb2Y9LI', title: 'Genius Game' }
+  - { id: 'IYUH2PAxSwY', title: 'Snake Game' }
+  - { id: 'NSfLJ28f2kg', title: 'Panda Pong Game' }
+  - { id: 'Mz9OZTxgyKs', title: 'Crossing Led Game' }
+  - { id: 'MrdwYlFw5cA', title: 'Battleship Game' }
+  - { id: 'kAwma0FHVqk', title: 'Asteroids Game' }
+  - { id: 'ySxtKa3nyX4', title: 'Minefield Game' }
+  - { id: '_VraeKXzxPY', title: 'Mastermind-like Game'}
+  - { id: '7ZrzaaCME14', title: 'Guitar Panda Game' }
   - { id: '5j_w0ku2ws8', title: 'Bowling Game' }
-  - { id: '_zbECUEfMl4', title: 'Digital clock' }
   - { id: 'lBwgb8nfnMI', title: 'Calculator' }
   - { id: 'rgV-eJWG_1A', title: 'Elevator controller' }
   - { id: 'C_zxq3Rfgt4', title: 'Tetris Game' }
+  - { id: 'jWXAK4UhgMc', title: 'Getting started to wiRed Panda'}
+  - { id: '6CMYyfBackI', title: 'wiRed Panda presentation at FISL 2016'}
+
