@@ -16,11 +16,11 @@ The main features of the software are:
 Compiled binaries for Windows and Ubuntu are availble [here](http://gibis-unifesp.github.io/wiRedPanda/downloads/).
 
 ## Build dependencies
-To compile this software you will need the [Qt Development Environment ](https://www.qt.io/download) and the source code of the software.
+To compile this software you will need the [Qt Development Environment](https://www.qt.io/download) and the source code of the software.
 
 Here are the main dependencies tested to build the project:
 
-- Qt Version: 5.10
+- Qt Version: 5.10 ( Open Source )
 - Qt Charts Module
 - Qt Multimedia Module
 
