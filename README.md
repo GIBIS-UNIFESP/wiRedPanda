@@ -9,17 +9,23 @@ The main features of the software are:
   - Real time logic simulation.
   - User-friendly interface.
   - It's intuitive and easy to use.
-  - [**new**] Export your projects to Arduino!
 
 ![Alt text](images/wpanda.png?raw=true "WiRed Panda Screenshot")
 
 ## Downloads
 Compiled binaries for Windows and Ubuntu are availble [here](http://gibis-unifesp.github.io/wiRedPanda/downloads/).
 
+## Build dependencies
+To compile this software you will need the [Qt Development Environment ](https://www.qt.io/download) and the source code of the software.
+
+Here are the main dependencies tested to build the project:
+
+- Qt Version: 5.10
+- Qt Charts Module
+- Qt Multimedia
+
 ## Building WiRED Panda on your computer:
- To compile this software you will need the [Qt5.5 Development Environment ](http://www.qt.io/download-open-source/) and the [source code](https://github.com/GIBIS-UNIFESP/wiRedPanda/archive/v1.9-beta.tar.gz) of the software.
- 
- To compile and install this software on linux, please use the following commands:
+To compile and install this software on linux, please use the following commands:
 
 
 ```sh
@@ -27,7 +33,7 @@ git clone https://github.com/GIBIS-UNIFESP/wiRedPanda/
 mkdir wiRedPanda/build
 cd wiRedPanda/build
 qmake ../WPanda.pro
-sudo make install
+make -j4
 ```
 
 
