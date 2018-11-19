@@ -22,7 +22,7 @@ Here are the main dependencies tested to build the project:
 
 - Qt Version: 5.10
 - Qt Charts Module
-- Qt Multimedia
+- Qt Multimedia Module
 
 ## Building WiRED Panda on your computer:
 To compile and install this software on linux, please use the following commands:
