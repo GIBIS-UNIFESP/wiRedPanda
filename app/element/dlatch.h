@@ -17,7 +17,6 @@ public:
     return( ElementGroup::MEMORY );
   }
   virtual void updatePorts( ) override;
-  void updateLogic( );
 };
 
 #endif /* DLATCH_H */

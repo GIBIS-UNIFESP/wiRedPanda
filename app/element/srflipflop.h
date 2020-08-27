@@ -19,7 +19,6 @@ public:
     return( ElementGroup::MEMORY );
   }
   virtual void updatePorts( ) override;
-  void updateLogic( );
 };
 
 #endif /* SRFLIPFLOP_H */

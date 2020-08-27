@@ -23,6 +23,7 @@ class LogicElement {
 
 
 protected:
+  // Main function to update the logic of an element. Computes the outputs, given the inputs
   virtual void _updateLogic( const std::vector< bool > &inputs ) = 0;
 public:
   explicit LogicElement( size_t inputSize, size_t outputSize );
@@ -48,6 +49,7 @@ public:
 
   void clearSucessors( );
 
+  // Secure call to _updateLogic() with current inputs.
   void updateLogic( );
 };
 

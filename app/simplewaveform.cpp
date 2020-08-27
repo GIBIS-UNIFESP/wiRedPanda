@@ -41,16 +41,10 @@ public:
   }
 };
 
-SimpleWaveform::SimpleWaveform( Editor *editor,
-                                QWidget *parent ) : QDialog( parent ), ui( new Ui::SimpleWaveform ), editor( editor ) {
+SimpleWaveform::SimpleWaveform( Editor *editor, QWidget *parent ) : QDialog( parent ), ui( new Ui::SimpleWaveform ), editor( editor ) {
   ui->setupUi( this );
   resize( 800, 500 );
   chart.legend( )->setAlignment( Qt::AlignLeft );
-
-/*  chart.legend( )->hide( ); */
-/*  chart->addSeries(series); */
-
-/*  chart.setTitle( "Simple Waveform View." ); */
 
   chartView = new QChartView( &chart, this );
   chartView->setRenderHint( QPainter::Antialiasing );
@@ -58,7 +52,7 @@ SimpleWaveform::SimpleWaveform( Editor *editor,
   setWindowTitle( "Simple WaveForm - WaveDolphin Beta" );
   setWindowFlags( Qt::Window );
   setModal( true );
-  sortingKind = SortingKind::POSITION;
+  sortingMode = SortingMode::INCREASING;
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "SimpleWaveform" );
@@ -78,7 +72,7 @@ SimpleWaveform::~SimpleWaveform( ) {
 void SimpleWaveform::sortElements( QVector< GraphicElement* > &elements,
                                    QVector< GraphicElement* > &inputs,
                                    QVector< GraphicElement* > &outputs,
-                                   SortingKind sorting ) {
+                                   SortingMode sorting ) {
   elements = ElementMapping::sortGraphicElements( elements );
   for( GraphicElement *elm : elements ) {
     if( elm && ( elm->type( ) == GraphicElement::Type ) ) {
@@ -92,53 +86,42 @@ void SimpleWaveform::sortElements( QVector< GraphicElement* > &elements,
           case ElementType::DISPLAY:
           case ElementType::DISPLAY14:
           case ElementType::LED: {
-          outputs.append( elm );
-          break;
-        }
+            outputs.append( elm );
+            break;
+          }
           default:
           break;
       }
     }
   }
-  std::stable_sort( inputs.begin( ), inputs.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
-                      return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
-                    } );
-  std::stable_sort( outputs.begin( ), outputs.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
-                      return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
-                    } );
-
-  std::stable_sort( inputs.begin( ), inputs.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
-                      return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
-                    } );
-  std::stable_sort( outputs.begin( ), outputs.end( ), [] ( GraphicElement * elm1, GraphicElement * elm2 ) {
-                      return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
-                    } );
-  if( sorting == SortingKind::INCREASING ) {
-    std::stable_sort( inputs.begin( ), inputs.end( ),
-                      [ ]( GraphicElement *elm1, GraphicElement*
-                           elm2 ) {
-      return( QString::compare( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ),
-                                Qt::CaseInsensitive ) <= 0 );
+  if( sorting == SortingMode::POSITION ) {
+    std::stable_sort( inputs.begin( ), inputs.end( ), [] ( GraphicElement *elm1, GraphicElement *elm2 ) {
+        return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
     } );
-    std::stable_sort( outputs.begin( ), outputs.end( ),
-                      [ ]( GraphicElement *elm1, GraphicElement*
-                           elm2 ) {
-      return( QString::compare( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ),
-                                Qt::CaseInsensitive ) <= 0 );
+    std::stable_sort( outputs.begin( ), outputs.end( ), [] ( GraphicElement *elm1, GraphicElement *elm2 ) {
+        return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
+    } );
+    std::stable_sort( inputs.begin( ), inputs.end( ), [] ( GraphicElement *elm1, GraphicElement *elm2 ) {
+        return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
+    } );
+    std::stable_sort( outputs.begin( ), outputs.end( ), [] ( GraphicElement *elm1, GraphicElement *elm2 ) {
+        return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
     } );
   }
-  else if( sorting == SortingKind::DECREASING ) {
-    std::stable_sort( inputs.begin( ), inputs.end( ),
-                      [ ]( GraphicElement *elm1, GraphicElement*
-                           elm2 ) {
-      return( QString::compare( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ),
-                                Qt::CaseInsensitive ) >= 0 );
+  else if( sorting == SortingMode::INCREASING ) {
+    std::stable_sort( inputs.begin( ), inputs.end( ), [] ( GraphicElement *elm1, GraphicElement *elm2 ) {
+        return( QString::compare( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ), Qt::CaseInsensitive ) <= 0 );
     } );
-    std::stable_sort( outputs.begin( ), outputs.end( ),
-                      [ ]( GraphicElement *elm1, GraphicElement*
-                           elm2 ) {
-      return( QString::compare( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ),
-                                Qt::CaseInsensitive ) >= 0 );
+    std::stable_sort( outputs.begin( ), outputs.end( ), [] ( GraphicElement *elm1, GraphicElement*elm2 ) {
+      return( QString::compare( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ), Qt::CaseInsensitive ) <= 0 );
+    } );
+  }
+  else {// if( sorting == SortingMode::DECREASING ) {
+    std::stable_sort( inputs.begin( ), inputs.end( ), [] ( GraphicElement *elm1, GraphicElement *elm2 ) {
+      return( QString::compare( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ), Qt::CaseInsensitive ) >= 0 );
+    } );
+    std::stable_sort( outputs.begin( ), outputs.end( ), [] ( GraphicElement *elm1, GraphicElement *elm2 ) {
+      return( QString::compare( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ), Qt::CaseInsensitive ) >= 0 );
     } );
   }
 }
@@ -148,8 +131,8 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
   QVector< GraphicElement* > inputs;
   QVector< GraphicElement* > outputs;
 
-  // Sorting elements according to the radion option. All elements initially in elements vector. Then, inputs and outputs are extracted and sorted from it.
-  sortElements( elements, inputs, outputs, SortingKind::POSITION );
+  // Sorting elements according to the radion option. All elements initially in elements vector. Then, inputs and outputs are extracted from it.
+  sortElements( elements, inputs, outputs, SortingMode::INCREASING );
   if( elements.isEmpty( ) || inputs.isEmpty( ) || outputs.isEmpty( ) ) {
     return( false );
   }
@@ -163,17 +146,17 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
   for( int in = 0; in < inputs.size( ); ++in ) {
     oldValues[ in ] = inputs[ in ]->output( )->value( );
   }
-  // Computing number of iterations based on the number of inputs.
+  // Computing the number of iterations based on the number of inputs.
   int num_iter = pow( 2, inputs.size( ) );
-  // Getting the number of outputs. Warning: will not work if inout element type in created.
+  // Getting the number of outputs. Warning: this will not work if any inout element type in created.
   int outputCount = 0;
   for( GraphicElement *out : outputs ) {
     outputCount += out->inputSize( );
   }
-  // Creating vector results with the output resulting values.
+  // Creating results vector containing the output resulting values.
   QVector< QVector< uchar > > results( outputCount, QVector< uchar >( num_iter ) );
   for( int itr = 0; itr < num_iter; ++itr ) {
-    // For each iteration, set a distinct value for the inputs. The value is the bit values corresponding to the number of current iteration.
+    // For each iteration, set a distinct value for the inputs. The value to be set corresponds to the bits from the number of the current iteration.
     std::bitset< std::numeric_limits< unsigned int >::digits > bs( itr );
     for( int in = 0; in < inputs.size( ); ++in ) {
       uchar val = bs[ in ];
@@ -193,7 +176,7 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
       }
     }
   }
-  // Writing the input values at each iteration to the output stream.
+  // Writing the input value of each iteration to the output stream.
   for( int in = 0; in < inputs.size( ); ++in ) {
     QString label = inputs[ in ]->getLabel( );
     if( label.isEmpty( ) ) {
@@ -237,35 +220,32 @@ void SimpleWaveform::showWaveform( ) {
   settings.beginGroup( "waveform" );
   // Getting sorting type.
   if( settings.contains( "sortingType" ) ) {
-    sortingKind = static_cast< SortingKind >( settings.value( "sortingType" ).toInt( ) );
+    sortingMode = static_cast< SortingMode >( settings.value( "sortingType" ).toInt( ) );
   }
   settings.endGroup( );
-  switch( sortingKind ) {
-      case SortingKind::DECREASING:
-      ui->radioButton_Decreasing->setChecked( true );
-      break;
-      case SortingKind::INCREASING:
-      ui->radioButton_Increasing->setChecked( true );
-      break;
-      case SortingKind::POSITION:
-      ui->radioButton_Position->setChecked( true );
-      break;
+  switch( sortingMode ) {
+      case SortingMode::DECREASING:
+        ui->radioButton_Decreasing->setChecked( true );
+        break;
+      case SortingMode::INCREASING:
+        ui->radioButton_Increasing->setChecked( true );
+        break;
+      case SortingMode::POSITION:
+        ui->radioButton_Position->setChecked( true );
+        break;
   }
   int gap = 2;
-
+  // Clear previous chart.
   chart.removeAllSeries( );
-
   // Getting digital circuit simulator.
   SimulationController *sc = editor->getSimulationController( );
   // Creating class to pause main window simulator while creating waveform.
   SCStop scst( sc );
-
   QVector< GraphicElement* > elements = editor->getScene( )->getElements( );
   QVector< GraphicElement* > inputs;
   QVector< GraphicElement* > outputs;
-
-  // Sorting elements according to the radion option. All elements initially in elements vector. Then, inputs and outputs are extracted and sorted from it.
-  sortElements( elements, inputs, outputs, sortingKind );
+  // Sorting elements according to the radion option. All elements initially in elements vector. Then, inputs and outputs are extracted from it.
+  sortElements( elements, inputs, outputs, sortingMode );
   if( elements.isEmpty( ) ) {
     QMessageBox::warning( parentWidget( ), tr( "Error" ), tr( "Could not find any port for the simulation" ) );
     return;
@@ -284,7 +264,6 @@ void SimpleWaveform::showWaveform( ) {
   }
   QVector< QLineSeries* > in_series;
   QVector< QLineSeries* > out_series;
-
   // Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation.
   // Also getting the name of the inputs. If no label is given, the element type is used as a name. Bug here? What if there are 2 inputs without name or two identical labels?
   QVector< char > oldValues( inputs.size( ) );
@@ -315,7 +294,6 @@ void SimpleWaveform::showWaveform( ) {
   }
   //qDebug( ) << in_series.size( ) << " inputs";
   //qDebug( ) << out_series.size( ) << " outputs";
-
   // Computing number of iterations based on the number of inputs.
   int num_iter = pow( 2, in_series.size( ) );
   //qDebug( ) << "Num iter = " << num_iter;
@@ -359,34 +337,29 @@ void SimpleWaveform::showWaveform( ) {
   }
   // Setting graphic axes
   chart.createDefaultAxes( );
-
-/*  chart.axisY( )->hide( ); */
+  /*  chart.axisY( )->hide( ); */
   // Setting range and names to x, y axis.
   QValueAxis *ax = dynamic_cast< QValueAxis* >( chart.axisX( ) );
   ax->setRange( 0, num_iter );
   ax->setTickCount( num_iter + 1 );
   ax->setLabelFormat( QString( "%i" ) );
   QValueAxis *ay = dynamic_cast< QValueAxis* >( chart.axisY( ) );
-/*  ay->setShadesBrush( QBrush( Qt::lightGray ) ); */
-
+  /*  ay->setShadesBrush( QBrush( Qt::lightGray ) ); */
   // Setting graphics waveform color.
   ay->setShadesColor( QColor( 0, 0, 0, 8 ) );
   ay->setShadesPen( QPen( QColor( 0, 0, 0, 0 ) ) );
   ay->setShadesVisible( true );
-
   ay->setGridLineVisible( false );
   ay->setTickCount( ( in_series.size( ) + out_series.size( ) + gap / 2 + 1 ) );
   ay->setRange( 0, in_series.size( ) * 2 + out_series.size( ) * 2 + gap );
   ay->setGridLineColor( Qt::transparent );
   ay->setLabelsVisible( false );
-/*  ay->hide( ); */
-
+  /*  ay->hide( ); */
   // Executing QDialog. Opens window to the user.
   exec( );
   // Restoring the old values to the inputs, prior to simulaton.
   for( int in = 0; in < inputs.size( ); ++in ) {
     dynamic_cast< Input* >( inputs[ in ] )->setOn( oldValues[ in ] );
-
   }
   // Resuming digital circuit main window after waveform simulation is finished.
   scst.release( );
@@ -396,10 +369,9 @@ void SimpleWaveform::on_radioButton_Position_clicked( ) {
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "waveform" );
-  sortingKind = SortingKind::POSITION;
-  settings.setValue( "sortingType", static_cast< int >( sortingKind ) );
+  sortingMode = SortingMode::POSITION;
+  settings.setValue( "sortingType", static_cast< int >( sortingMode ) );
   settings.endGroup( );
-
   showWaveform( );
 }
 
@@ -407,10 +379,9 @@ void SimpleWaveform::on_radioButton_Increasing_clicked( ) {
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "waveform" );
-  sortingKind = SortingKind::INCREASING;
-  settings.setValue( "sortingType", static_cast< int >( sortingKind ) );
+  sortingMode = SortingMode::INCREASING;
+  settings.setValue( "sortingType", static_cast< int >( sortingMode ) );
   settings.endGroup( );
-
   showWaveform( );
 }
 
@@ -418,10 +389,9 @@ void SimpleWaveform::on_radioButton_Decreasing_clicked( ) {
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "waveform" );
-  sortingKind = SortingKind::DECREASING;
-  settings.setValue( "sortingType", static_cast< int >( sortingKind ) );
+  sortingMode = SortingMode::DECREASING;
+  settings.setValue( "sortingType", static_cast< int >( sortingMode ) );
   settings.endGroup( );
-
   showWaveform( );
 }
 

@@ -15,10 +15,8 @@
 static QMap< QString, QPixmap > loadedPixmaps;
 
 
-GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz,
-                                QGraphicsItem *parent ) : QGraphicsObject( parent ), label( new QGraphicsTextItem(
-                                                                                              this ) )
-{
+GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent ) :
+    QGraphicsObject( parent ), label( new QGraphicsTextItem( this ) ) {
   pixmap = nullptr;
   COMMENT( "Setting flags of elements. ", 4 );
   setFlag( QGraphicsItem::ItemIsMovable );

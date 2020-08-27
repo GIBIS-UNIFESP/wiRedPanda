@@ -16,7 +16,6 @@ public:
   virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::GATE );
   }
-  void updateLogic( );
 };
 
 #endif /* NAND_H */

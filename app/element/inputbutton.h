@@ -23,7 +23,6 @@ public:
   virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::INPUT );
   }
-  void updateLogic( );
 
   // Input interface
 public:

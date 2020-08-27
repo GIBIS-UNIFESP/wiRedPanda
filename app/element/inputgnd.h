@@ -16,7 +16,6 @@ public:
   virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::INPUT );
   }
-  void updateLogic( );
 };
 
 #endif /* INPUTGND_H */

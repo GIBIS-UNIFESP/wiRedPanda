@@ -19,7 +19,6 @@ public:
     return( ElementGroup::MUX );
   }
   void updatePorts( ) override;
-  void updateLogic( );
 };
 
 #endif /* MUX_H */
