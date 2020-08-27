@@ -160,7 +160,7 @@ QList< QGraphicsItem* > loadItems( QByteArray &itemData,
                                          GlobalProperties::currentFile,
                                          portMap );
   if( items.size( ) != ids.size( ) ) {
-    QString msg( "One or more elements was not found on scene. Expected %1, found %2." );
+    QString msg( "One or more elements were not found on scene. Expected %1, found %2." );
     msg = msg.arg( ids.size( ) ).arg( items.size( ) );
     throw std::runtime_error( ERRORMSG( msg.toStdString( ) ) );
   }

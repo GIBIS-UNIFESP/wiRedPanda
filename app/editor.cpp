@@ -11,6 +11,7 @@
 #include "serializationfunctions.h"
 #include "thememanager.h"
 
+#include <iostream>
 #include <QApplication>
 #include <QClipboard>
 #include <QDebug>
@@ -28,7 +29,6 @@
 #include <QMimeData>
 #include <QSettings>
 #include <QtMath>
-#include <iostream>
 
 Editor*Editor::globalEditor = nullptr;
 
@@ -165,16 +165,9 @@ void Editor::showGates( bool checked ) {
   for( QGraphicsItem *item : scene->items( ) ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     if( ( item->type( ) == GraphicElement::Type ) && elm ) {
-      switch( elm->elementType( ) ) {
-          case ElementType::SWITCH:
-          case ElementType::BUTTON:
-          case ElementType::LED:
-          case ElementType::DISPLAY:
-          case ElementType::DISPLAY14:
-          break;
-          default:
-          item->setVisible( checked );
-          break;
+      if( ( elm->elementGroup( ) != ElementGroup::INPUT ) &&
+          ( elm->elementGroup( ) != ElementGroup::OUTPUT ) ) {
+        item->setVisible( checked );
       }
     }
   }

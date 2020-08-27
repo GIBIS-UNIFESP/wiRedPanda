@@ -13,7 +13,7 @@ public:
     return( ElementType::VCC );
   }
   virtual ElementGroup elementGroup( ) override {
-    return( ElementGroup::INPUT );
+    return( ElementGroup::STATICINPUT );
   }
 };
 

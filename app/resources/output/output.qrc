@@ -57,5 +57,6 @@
         <file>counter/counter_n.png</file>
         <file>counter/counter_14_on.png</file>
         <file>counter/counter_14_off.png</file>
+        <file>LedGrid.png</file>
     </qresource>
 </RCC>

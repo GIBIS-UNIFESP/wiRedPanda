@@ -12,11 +12,11 @@
 enum class ElementType {
   UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND, DISPLAY,
   DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, TLATCH, BOX, NODE, MUX, DEMUX,
-  BUZZER, DISPLAY14
+  BUZZER, DISPLAY14, LEDGRID
 };
 
 enum class ElementGroup {
-  UNKNOWN, OTHER, BOX, INPUT, GATE, MEMORY, OUTPUT, MUX
+  UNKNOWN, OTHER, BOX, INPUT, GATE, MEMORY, OUTPUT, MUX, STATICINPUT
 };
 
 
@@ -88,8 +88,11 @@ public:
 
   QVector< QNEOutputPort* > outputs( ) const;
 
-  QNEInputPort* input( int pos = 0 ) const;
-  QNEOutputPort* output( int pos = 0 ) const;
+  const QNEInputPort* input( int pos = 0 ) const;
+  const QNEOutputPort* output( int pos = 0 ) const;
+
+  QNEInputPort* input( int pos = 0 );
+  QNEOutputPort* output( int pos = 0 );
 
   void setOutputs( const QVector< QNEOutputPort* > &outputs );
 

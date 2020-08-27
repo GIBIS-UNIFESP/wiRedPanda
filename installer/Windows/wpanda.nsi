@@ -18,8 +18,8 @@
   !define MUI_FILE "wpanda"
   # These three must be integers
   !define VERSIONMAJOR 2
-  !define VERSIONMINOR 2
-  !define VERSIONBUILD 0001
+  !define VERSIONMINOR 6
+  !define VERSIONBUILD 0
   !define MUI_VERSION "${VERSIONMAJOR}.{VERSIONMINOR}"
   !define MUI_BRANDINGTEXT "${MUI_PRODUCT} ${MUI_VERSION}"
   !define COMPANYNAME "UNIFESP"
@@ -43,8 +43,7 @@
 
   ;Request application privileges for Windows Vista
   RequestExecutionLevel admin
-
-  OutFile "wpanda_32.exe"
+  OutFile "WiredPanda_${VERSIONMAJOR}_${VERSIONMINOR}_${VERSIONBUILD}_Windows_Installer_x86_64.exe"
   ShowInstDetails "nevershow"
   ShowUninstDetails "nevershow"
   ;SetCompressor "bzip2"
