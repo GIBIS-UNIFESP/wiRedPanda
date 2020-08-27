@@ -18,7 +18,9 @@ bool InputSwitch::getOn( ) const {
 
 void InputSwitch::setOn( bool value ) {
   on = value;
-  updateLogic( );
+  if( !disabled( ) ) {
+    output( )->setValue( on );
+  }
   if( on ) {
     setPixmap( ":/input/switchOn.png" );
   }
@@ -34,12 +36,6 @@ void InputSwitch::mousePressEvent( QGraphicsSceneMouseEvent *event ) {
     event->accept( );
   }
   QGraphicsItem::mousePressEvent( event );
-}
-
-void InputSwitch::updateLogic( ) {
-  if( !disabled( ) ) {
-    output( )->setValue( on );
-  }
 }
 
 void InputSwitch::save( QDataStream &ds ) const {

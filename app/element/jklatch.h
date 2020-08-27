@@ -17,7 +17,6 @@ public:
     return( ElementGroup::MEMORY );
   }
   virtual void updatePorts( ) override;
-  void updateLogic( );
 };
 
 #endif /* JKLATCH_H */

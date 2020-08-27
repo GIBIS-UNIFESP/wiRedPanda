@@ -22,8 +22,6 @@ public:
   virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::INPUT );
   }
-  void updateLogic( );
-
 
   /* GraphicElement interface */
 public:

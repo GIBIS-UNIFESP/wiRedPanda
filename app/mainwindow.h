@@ -47,7 +47,6 @@ public:
 
   bool closeFile( );
 
-
   void populateMenu( QSpacerItem *spacer, QString names, QLayout *layout );
 
   void retranslateUi( );

@@ -32,11 +32,7 @@ class GraphicElement : public QGraphicsObject, public ItemWithId {
 public:
   enum { Type = QGraphicsItem::UserType + 3 };
 
-  explicit GraphicElement( int minInputSz,
-                           int maxInputSz,
-                           int minOutputSz,
-                           int maxOutputSz,
-                           QGraphicsItem *parent = nullptr );
+  explicit GraphicElement( int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent = nullptr );
 
 private:
   QPixmap *pixmap;

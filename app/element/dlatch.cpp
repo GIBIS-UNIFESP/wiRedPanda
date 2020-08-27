@@ -21,25 +21,3 @@ void DLatch::updatePorts( ) {
   output( 0 )->setPos( bottomPosition( ), 15 ); /* Q */
   output( 1 )->setPos( bottomPosition( ), 45 ); /* ~Q */
 }
-
-void DLatch::updateLogic( ) {
-  char res1 = output( 0 )->value( ); /* Q */
-  char res2 = output( 1 )->value( ); /* ~Q */
-  char data = input( 0 )->value( );
-  char enable = input( 1 )->value( );
-  if( !isValid( ) ) {
-    res1 = res2 = -1;
-  }
-  else {
-    if( res1 == -1 ) {
-      res1 = 0;
-      res2 = 1;
-    }
-    if( enable == 1 ) { /* If Enabled */
-      res1 = data; /* Output = Data */
-      res2 = !data; /* Output = Data */
-    }
-  }
-  output( 0 )->setValue( res1 );
-  output( 1 )->setValue( res2 );
-}
