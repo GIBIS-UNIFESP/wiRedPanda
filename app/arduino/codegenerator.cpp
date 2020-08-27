@@ -97,9 +97,7 @@ void CodeGenerator::declareOutputs( ) {
   int counter = 1;
   out << "/* ========= Outputs ========== */" << endl;
   for( GraphicElement *elm : elements ) {
-    if( ( elm->elementType( ) == ElementType::LED ) ||
-        ( elm->elementType( ) == ElementType::DISPLAY ) ||
-        ( elm->elementType( ) == ElementType::DISPLAY14 )) {
+    if( elm->elementGroup( ) == ElementGroup::OUTPUT ) {
       QString label = elm->getLabel( );
       for( int i = 0; i < elm->inputs( ).size( ); ++i ) {
         QString varName = elm->objectName( ) + QString::number( counter );

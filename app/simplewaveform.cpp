@@ -3,6 +3,7 @@
 
 #include "input.h"
 
+#include <cmath>
 #include <QBuffer>
 #include <QChartView>
 #include <QClipboard>
@@ -12,10 +13,9 @@
 #include <QMimeData>
 #include <QPointF>
 #include <QSettings>
-#include <cmath>
 /* #include <QSvgGenerator> */
-#include <QValueAxis>
 #include <bitset>
+#include <QValueAxis>
 
 using namespace QtCharts;
 
@@ -69,28 +69,15 @@ SimpleWaveform::~SimpleWaveform( ) {
   delete ui;
 }
 
-void SimpleWaveform::sortElements( QVector< GraphicElement* > &elements,
-                                   QVector< GraphicElement* > &inputs,
-                                   QVector< GraphicElement* > &outputs,
-                                   SortingMode sorting ) {
+void SimpleWaveform::sortElements( QVector< GraphicElement* > &elements, QVector< GraphicElement* > &inputs, QVector< GraphicElement* > &outputs, SortingMode sorting ) {
   elements = ElementMapping::sortGraphicElements( elements );
   for( GraphicElement *elm : elements ) {
     if( elm && ( elm->type( ) == GraphicElement::Type ) ) {
-      switch( elm->elementType( ) ) {
-          case ElementType::BUTTON :
-          case ElementType::SWITCH :
-          case ElementType::CLOCK : {
-            inputs.append( elm );
-            break;
-          }
-          case ElementType::DISPLAY:
-          case ElementType::DISPLAY14:
-          case ElementType::LED: {
-            outputs.append( elm );
-            break;
-          }
-          default:
-          break;
+      if( elm->elementGroup( ) == ElementGroup::INPUT ) {
+        inputs.append( elm );
+      }
+      else if( elm->elementGroup( ) == ElementGroup::OUTPUT ) {
+        outputs.append( elm );
       }
     }
   }
@@ -141,7 +128,8 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
   // Creating class to pause main window simulator while creating waveform.
   SCStop scst( sc );
 
-  // Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation.
+  // Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore
+  // it after simulation.
   QVector< char > oldValues( inputs.size( ) );
   for( int in = 0; in < inputs.size( ); ++in ) {
     oldValues[ in ] = inputs[ in ]->output( )->value( );
@@ -156,7 +144,7 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
   // Creating results vector containing the output resulting values.
   QVector< QVector< uchar > > results( outputCount, QVector< uchar >( num_iter ) );
   for( int itr = 0; itr < num_iter; ++itr ) {
-    // For each iteration, set a distinct value for the inputs. The value to be set corresponds to the bits from the number of the current iteration.
+    // For each iteration, set a distinct value for the inputs. The set value corresponds to the bits from the number of the current iteration.
     std::bitset< std::numeric_limits< unsigned int >::digits > bs( itr );
     for( int in = 0; in < inputs.size( ); ++in ) {
       uchar val = bs[ in ];
@@ -276,7 +264,8 @@ void SimpleWaveform::showWaveform( ) {
     in_series[ in ]->setName( label );
     oldValues[ in ] = inputs[ in ]->output( )->value( );
   }
-  // Getting the name of the outputs. If no label is given, the element type is used as a name. Bug here? What if there are 2 outputs without name or two identical labels?
+  // Getting the name of the outputs. If no label is given, the element type is used as a name. Bug here? What if there
+  // are 2 outputs without name or two identical labels?
   for( int out = 0; out < outputs.size( ); ++out ) {
     QString label = outputs[ out ]->getLabel( );
     if( label.isEmpty( ) ) {
@@ -300,7 +289,8 @@ void SimpleWaveform::showWaveform( ) {
 /*  gap += outputs.size( ) % 2; */
   // Running simulation.
   for( int itr = 0; itr < num_iter; ++itr ) {
-    // For each iteration, set a distinct value for the inputs. The value is the bit values corresponding to the number of current iteration.
+    // For each iteration, set a distinct value for the inputs. The value is the bit values corresponding to the number
+    // of current iteration.
     std::bitset< std::numeric_limits< unsigned int >::digits > bs( itr );
     //qDebug( ) << itr;
     for( int in = 0; in < inputs.size( ); ++in ) {
