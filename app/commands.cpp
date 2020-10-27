@@ -735,7 +735,7 @@ void FlipCommand::redo( ) {
     for( GraphicElement *elm : list ) {
         QPointF pos = elm->pos( );
         if( axis == 0 ) {
-            pos.setX( minPos.rx( ) + ( maxPos.rx( ) - pos.rx( ) ) );
+            pos.setX( minPos.rx() + ( maxPos.rx() - pos.rx()));
         }
         else {
             pos.setY( minPos.ry( ) + ( maxPos.ry( ) - pos.ry( ) ) );
