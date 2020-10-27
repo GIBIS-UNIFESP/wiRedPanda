@@ -6,9 +6,6 @@
 #include <QFileInfo>
 #include <QSettings>
 
-RecentFilesController::RecentFilesController( QString attrName, QObject *parent ) : QObject( parent ) {
-  this->attrName = attrName;
-}
 
 void RecentFilesController::addFile( QString fname ) {
   qDebug( ) << "Setting recent file to : \"" << fname << "\"";
