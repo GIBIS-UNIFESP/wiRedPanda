@@ -79,7 +79,7 @@ void BoxManager::clear( ) {
   }
 }
 
-void BoxManager::updateRecentBoxes( QString fname ) {
+void BoxManager::updateRecentBoxes(const QString& fname ) {
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   QStringList files;
