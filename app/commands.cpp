@@ -299,14 +299,14 @@ void RotateCommand::redo( ) {
     scn->clearSelection( );
     double cx = 0, cy = 0;
     int sz = 0;
-    for( GraphicElement *item : list ) {
+    for( GraphicElement *item : qAsConst(list) ) {
         cx += item->pos( ).x( );
         cy += item->pos( ).y( );
         sz++;
     }
     cx /= sz;
     cy /= sz;
-    for( GraphicElement *elm : list ) {
+    for( GraphicElement *elm : qAsConst(list) ) {
         QTransform transform;
         transform.translate( cx, cy );
         transform.rotate( angle );
@@ -732,7 +732,7 @@ void FlipCommand::redo( ) {
     QList< GraphicElement* > list = findElements( ids );
     QGraphicsScene *scn = list[ 0 ]->scene( );
     scn->clearSelection( );
-    for( GraphicElement *elm : list ) {
+    for( GraphicElement *elm : qAsConst(list) ) {
         QPointF pos = elm->pos( );
         if( axis == 0 ) {
             pos.setX( minPos.rx() + ( maxPos.rx() - pos.rx()));

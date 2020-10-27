@@ -13,7 +13,7 @@ CodeGenerator::CodeGenerator( QString fileName, const QVector< GraphicElement* >
   }
   globalCounter = 1;
   out.setDevice( &file );
-  availblePins = { "A0", "A1", "A2", "A3", "A4", "A5",
+  availablePins = { "A0", "A1", "A2", "A3", "A4", "A5",
                    /*"0", "1",*/ "2", "3", "4", "5", "6",
                    "7", "8", "9", "10", "11", "12", "13" };
 
@@ -76,12 +76,12 @@ void CodeGenerator::declareInputs( ) {
       QString varName = elm->objectName( ) + QString::number( counter );
       QString label = elm->getLabel( );
       if( !label.isEmpty( ) ) {
-        varName = QString( "%1_%2" ).arg( varName ).arg( label );
+        varName = QString( "%1_%2" ).arg( varName, label ); //! carmesim: use multi-arg instead
       }
       varName = clearString( varName );
-      out << QString( "const int %1 = %2;" ).arg( varName ).arg( availblePins.front( ) ) << endl;
-      inputMap.append( MappedPin( elm, availblePins.front( ), varName, elm->output( 0 ), 0 ) );
-      availblePins.pop_front( );
+      out << QString( "const int %1 = %2;" ).arg( varName, availablePins.front( ) ) << endl; //! carmesim: use multi-arg instead
+      inputMap.append( MappedPin( elm, availablePins.front( ), varName, elm->output( 0 ), 0 ) );
+      availablePins.pop_front( );
       varMap[ elm->output( ) ] = varName + QString( "_val" );
       counter++;
     }
@@ -98,16 +98,16 @@ void CodeGenerator::declareOutputs( ) {
       for( int i = 0; i < elm->inputs( ).size( ); ++i ) {
         QString varName = elm->objectName( ) + QString::number( counter );
         if( !label.isEmpty( ) ) {
-          varName = QString( "%1_%2" ).arg( varName ).arg( label );
+          varName = QString( "%1_%2" ).arg( varName, label );   //! carmesim: use multi-arg instead
         }
         QNEPort *port = elm->input( i );
         if( !port->getName( ).isEmpty( ) ) {
-          varName = QString( "%1_%2" ).arg( varName ).arg( port->getName( ) );
+          varName = QString( "%1_%2" ).arg( varName, port->getName( ) );
         }
         varName = clearString( varName );
-        out << QString( "const int %1 = %2;" ).arg( varName ).arg( availblePins.front( ) ) << endl;
-        outputMap.append( MappedPin( elm, availblePins.front( ), varName, port, i ) );
-        availblePins.pop_front( );
+        out << QString( "const int %1 = %2;" ).arg( varName, availablePins.front( ) ) << endl;
+        outputMap.append( MappedPin( elm, availablePins.front( ), varName, port, i ) );
+        availablePins.pop_front( );
       }
     }
     counter++;
@@ -134,8 +134,10 @@ void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &el
     }
     else {
       QString varName = QString( "aux_%1_%2" ).arg( clearString( elm->objectName( ) ) ).arg( globalCounter++ );
-      if( elm->outputs( ).size( ) == 1 ) {
-        QNEPort *port = elm->outputs( ).first( );
+      auto const outputs = elm->outputs(); //! carmesim: using this to avoid Qt container detachment
+      if( outputs.size( ) == 1 ) {
+
+        QNEPort *port = outputs.first( );   //! carmesim: stop using .first() on temporary value
         if( elm->elementType( ) == ElementType::VCC ) {
           varMap[ port ] = "HIGH";
           continue;
@@ -150,7 +152,8 @@ void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &el
       }
       else {
         int portCounter = 0;
-        for( QNEPort *port : elm->outputs( ) ) {
+//        auto const outputs = elm->outputs();
+        for( QNEPort *port : outputs ) {
           QString portName = varName;
           portName.append( QString( "_%1" ).arg( portCounter++ ) );
           if( !port->getName( ).isEmpty( ) ) {
@@ -159,7 +162,7 @@ void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &el
           varMap[ port ] = portName;
         }
       }
-      for( QNEPort *port : elm->outputs( ) ) {
+      for( QNEPort *port : outputs ) {
         QString varName2 = varMap[ port ];
         out << "boolean " << varName2 << " = " << highLow( port->defaultValue( ) ) << ";" << endl;
         switch( elm->elementType( ) ) {
@@ -246,15 +249,15 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
           QString inclk = firstOut + "_inclk";
           QString last = firstOut + "_last";
           out << QString( "    //D FlipFlop" ) << endl;
-          out << QString( "    if( %1 && !%2) { " ).arg( clk ).arg( inclk ) << endl;
-          out << QString( "        %1 = %2;" ).arg( firstOut ).arg( last ) << endl;
-          out << QString( "        %1 = !%2;" ).arg( secondOut ).arg( last ) << endl;
+          out << QString( "    if( %1 && !%2) { " ).arg( clk, inclk ) << endl;
+          out << QString( "        %1 = %2;" ).arg( firstOut, last ) << endl;
+          out << QString( "        %1 = !%2;" ).arg( secondOut, last ) << endl;
           out << QString( "    }" ) << endl;
           QString prst = otherPortName( elm->input( 2 ) );
           QString clr = otherPortName( elm->input( 3 ) );
-          out << QString( "    if( !%1 || !%2) { " ).arg( prst ).arg( clr ) << endl;
-          out << QString( "        %1 = !%2; //Preset" ).arg( firstOut ).arg( prst ) << endl;
-          out << QString( "        %1 = !%2; //Clear" ).arg( secondOut ).arg( clr ) << endl;
+          out << QString( "    if( !%1 || !%2) { " ).arg( prst, clr ) << endl;
+          out << QString( "        %1 = !%2; //Preset" ).arg( firstOut, prst ) << endl;
+          out << QString( "        %1 = !%2; //Clear" ).arg( secondOut, clr ) << endl;
           out << QString( "    }" ) << endl;
 
           /* Updating internal clock. */
@@ -270,8 +273,8 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
           QString clk = otherPortName( elm->input( 1 ) );
           out << QString( "    //D Latch" ) << endl;
           out << QString( "    if( %1 ) { " ).arg( clk ) << endl;
-          out << QString( "        %1 = %2;" ).arg( firstOut ).arg( data ) << endl;
-          out << QString( "        %1 = !%2;" ).arg( secondOut ).arg( data ) << endl;
+          out << QString( "        %1 = %2;" ).arg( firstOut, data ) << endl;
+          out << QString( "        %1 = !%2;" ).arg( secondOut, data ) << endl;
           out << QString( "    }" ) << endl;
           out << QString( "    //End of D Latch" ) << endl;
           break;
