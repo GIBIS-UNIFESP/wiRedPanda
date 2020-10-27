@@ -56,7 +56,8 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 
   /* THEME */
   QActionGroup *themeGroup = new QActionGroup( this );
-  for( QAction *action : ui->menuTheme->actions( ) ) {
+  auto const actions = ui->menuTheme->actions( );
+  for( QAction *action : actions ) {
     themeGroup->addAction( action );
   }
   themeGroup->setExclusive( true );
@@ -403,13 +404,13 @@ void MainWindow::on_actionSelect_all_triggered( ) {
 
 void MainWindow::updateRecentBoxes( ) {
   ui->scrollAreaWidgetContents_Box->layout( )->removeItem( ui->verticalSpacer_BOX );
-  for( ListItemWidget *item : boxItemWidgets ) {
+  for( ListItemWidget *item : qAsConst(boxItemWidgets) ) {
     item->deleteLater( );
   }
 /*  qDeleteAll( boxItemWidgets ); */
   boxItemWidgets.clear( );
 
-  QStringList files = rboxController->getFiles( );
+  const QStringList files = rboxController->getFiles( );
   for( auto file : files ) {
     QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
     ListItemWidget *item = new ListItemWidget( pixmap, ElementType::BOX, file, this );
@@ -452,7 +453,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
 
 void MainWindow::on_lineEdit_textChanged( const QString &text ) {
   ui->searchLayout->removeItem( ui->VSpacer );
-  for( ListItemWidget *item : searchItemWidgets ) {
+  for( ListItemWidget *item : qAsConst(searchItemWidgets)) {
     item->deleteLater( );
   }
   searchItemWidgets.clear( );
@@ -665,7 +666,8 @@ void MainWindow::on_actionPrint_triggered( ) {
   if( pdfFile.isEmpty( ) ) {
     return;
   }
-  if( !pdfFile.toLower( ).endsWith( ".pdf" ) ) {
+  //! carmesim: avoid unneeded heap allocation caused by toLower
+  if( !pdfFile.endsWith( ".pdf", Qt::CaseInsensitive ) ) {
     pdfFile.append( ".pdf" );
   }
   QPrinter printer( QPrinter::HighResolution );
@@ -694,7 +696,7 @@ void MainWindow::on_actionExport_to_Image_triggered( ) {
   if( pngFile.isEmpty( ) ) {
     return;
   }
-  if( !pngFile.toLower( ).endsWith( ".png" ) ) {
+  if( !pngFile.endsWith( ".png", Qt::CaseInsensitive ) ) {
     pngFile.append( ".png" );
   }
   QRectF s = editor->getScene( )->itemsBoundingRect( ).adjusted( -64, -64, 64, 64 );
