@@ -8,9 +8,9 @@ class RecentFilesController : public QObject {
   Q_OBJECT
   QString attrName;
 public:
-  static const int MaxRecentFiles = 10;
+  static constexpr int MaxRecentFiles = 10;
   explicit RecentFilesController(QString _attrName, QObject *parent = nullptr ) : QObject( parent ), attrName(_attrName) {};
-  void addFile( QString fname );
+  void addFile(const QString & fname);
   QStringList getFiles( );
 
 signals:

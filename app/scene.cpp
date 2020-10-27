@@ -5,21 +5,14 @@
 #include <QGraphicsView>
 #include <QPainter>
 
-Scene::Scene( QObject *parent ) : QGraphicsScene( parent ) {
-  m_gridSize = 16;
-}
+//! TODO: stop using QGraphicsView *
 
-Scene::Scene( const QRectF &sceneRect, QObject *parent ) : QGraphicsScene( sceneRect, parent ) {
-  m_gridSize = 16;
-}
+Scene::Scene( QObject *parent ) : QGraphicsScene( parent ) {}
 
-Scene::Scene( qreal x, qreal y, qreal width, qreal height, QObject *parent ) : QGraphicsScene( x,
-                                                                                               y,
-                                                                                               width,
-                                                                                               height,
-                                                                                               parent ) {
-  m_gridSize = 16;
-}
+Scene::Scene( const QRectF &sceneRect, QObject *parent ) : QGraphicsScene( sceneRect, parent ) {}
+
+Scene::Scene( qreal x, qreal y, qreal width, qreal height, QObject *parent )
+    : QGraphicsScene( x, y, width, height, parent) {}
 
 int Scene::gridSize( ) const {
   return( m_gridSize );
@@ -29,8 +22,8 @@ void Scene::drawBackground( QPainter *painter, const QRectF &rect ) {
   painter->setRenderHint( QPainter::Antialiasing, true );
   QGraphicsScene::drawBackground( painter, rect );
   painter->setPen( m_dots );
-  qreal left = int( rect.left( ) ) - ( int( rect.left( ) ) % m_gridSize );
-  qreal top = int( rect.top( ) ) - ( int( rect.top( ) ) % m_gridSize );
+  qreal left = int(rect.left()) - (int(rect.left()) % m_gridSize );
+  qreal top  = int(rect.top())  - (int( rect.top()) % m_gridSize );
   QVector< QPointF > points;
   for( qreal x = left; x < rect.right( ); x += m_gridSize ) {
     for( qreal y = top; y < rect.bottom( ); y += m_gridSize ) {
@@ -46,7 +39,7 @@ void Scene::setDots( const QPen &dots ) {
 
 
 QVector< GraphicElement* > Scene::getVisibleElements( ) {
-    auto gviews = views();
+    const auto gviews = views();
     QGraphicsView *graphicsView = gviews.first( );
     if( !graphicsView->isActiveWindow( ) ) {
         graphicsView = gviews.last( );
