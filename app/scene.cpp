@@ -46,13 +46,14 @@ void Scene::setDots( const QPen &dots ) {
 
 
 QVector< GraphicElement* > Scene::getVisibleElements( ) {
-  QGraphicsView *graphicsView = views( ).first( );
-  if( !graphicsView->isActiveWindow( ) ) {
-    graphicsView = views( ).last( );
-  }
-  QRectF visibleRect = graphicsView->mapToScene( graphicsView->viewport( )->geometry( ) ).boundingRect( );
+    auto gviews = views();
+    QGraphicsView *graphicsView = gviews.first( );
+    if( !graphicsView->isActiveWindow( ) ) {
+        graphicsView = gviews.last( );
+    }
+    QRectF visibleRect = graphicsView->mapToScene( graphicsView->viewport( )->geometry( ) ).boundingRect( );
 
-  return( getElements( visibleRect ) );
+    return getElements( visibleRect ) ;
 }
 
 QVector< GraphicElement* > Scene::getElements( ) {
@@ -64,7 +65,7 @@ QVector< GraphicElement* > Scene::getElements( ) {
       elements.append( elm );
     }
   }
-  return( elements );
+  return elements;
 }
 
 QVector< GraphicElement* > Scene::getElements( QRectF rect ) {

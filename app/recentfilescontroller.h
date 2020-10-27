@@ -9,12 +9,13 @@ class RecentFilesController : public QObject {
   QString attrName;
 public:
   static const int MaxRecentFiles = 10;
-  explicit RecentFilesController( QString attrName, QObject *parent = nullptr );
+  explicit RecentFilesController(QString _attrName, QObject *parent = nullptr ) : QObject( parent ), attrName(_attrName) {};
   void addFile( QString fname );
   QStringList getFiles( );
 
 signals:
   void recentFilesUpdated( );
 };
+
 
 #endif /* RECENTFILESCONTROLLER_H */

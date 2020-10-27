@@ -19,13 +19,9 @@ CodeGenerator::CodeGenerator( QString fileName, const QVector< GraphicElement* >
 
 }
 
-QString highLow( int val ) {
-  if( val == 1 ) {
-    return( "HIGH" );
-  }
-  else {
-    return( "LOW" );
-  }
+static inline QString highLow( int val )
+{
+    return val == 1 ? "HIGH" : "LOW";
 }
 
 QString clearString( QString input ) {
