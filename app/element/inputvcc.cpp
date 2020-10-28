@@ -9,5 +9,5 @@ InputVcc::InputVcc( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent
 }
 
 void InputVcc::updateLogic( ) {
-  outputs( ).first( )->setValue( true );
+  m_outputs.first( )->setValue( true );
 }
