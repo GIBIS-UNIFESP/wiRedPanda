@@ -12,6 +12,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <stdexcept>
 
+//! carmesim -- warning: non-POD static
 static QMap< QString, QPixmap > loadedPixmaps;
 
 
@@ -253,7 +254,7 @@ void GraphicElement::loadInputPort( QDataStream &ds, QMap< quint64, QNEPort* > &
   ds >> ptr;
   ds >> name;
   ds >> flags;
-  if( ( port < static_cast< size_t >( m_inputs.size( ) ) ) ) {
+  if( ( port < static_cast< size_t >( m_inputs.size() ) ) ) {
     if( elementType( ) == ElementType::BOX ) {
       m_inputs[ port ]->setName( name );
     }

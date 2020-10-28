@@ -13,12 +13,12 @@ void Nand::updateLogic( ) {
     res = -1;
   }
   else {
-    for( QNEPort *input: inputs( ) ) {
+    for( QNEPort *input: m_inputs ) {
       if( input->value( ) == false ) {
         res = true;
         break;
       }
     }
   }
-  outputs( ).first( )->setValue( res );
+  m_outputs.first( )->setValue( res );
 }
