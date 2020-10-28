@@ -97,7 +97,13 @@ void GraphicElement::setPixmap( const QString &pixmapName, QRect size ) {
   }
   if( pixmapPath != currentPixmapName ) {
     if( !loadedPixmaps.contains( pixmapPath ) ) {
-      loadedPixmaps[ pixmapPath ] = QPixmap::fromImage( QImage( pixmapPath ) ).copy( size );
+        //! carmesim-TODO: use QPixmap::loadFromData() here
+        QPixmap pixmap;
+        if (!pixmap.load(pixmapPath))
+        {
+            throw std::runtime_error( ERRORMSG("Couldn't load pixmap.") );
+        }
+        loadedPixmaps[ pixmapPath ] = pixmap.copy( size );
     }
     pixmap = &loadedPixmaps[ pixmapPath ];
     setTransformOriginPoint( pixmap->rect( ).center( ) );
