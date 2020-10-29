@@ -139,7 +139,7 @@ void QNEPort::setPtr( quint64 p ) {
 }
 
 bool QNEPort::isConnected( QNEPort *other ) {
-  for( QNEConnection *conn : m_connections ) {
+  for( QNEConnection *conn : qAsConst(m_connections) ) {
     if( ( conn->start( ) == other ) || ( conn->end( ) == other ) ) {
       return( true );
     }
@@ -148,7 +148,7 @@ bool QNEPort::isConnected( QNEPort *other ) {
 }
 
 void QNEPort::updateConnections( ) {
-  for( QNEConnection *conn : m_connections ) {
+  for( QNEConnection *conn : qAsConst(m_connections) ) {
     conn->updatePosFromPorts( );
     conn->updatePath( );
   }

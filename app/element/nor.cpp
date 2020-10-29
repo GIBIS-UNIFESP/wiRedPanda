@@ -13,12 +13,12 @@ void Nor::updateLogic( ) {
     res = -1;
   }
   else {
-    for( QNEPort *input: inputs( ) ) {
+    for( QNEPort *input: qAsConst(m_inputs) ) {
       if( input->value( ) == true ) {
         res = false;
         break;
       }
     }
   }
-  outputs( ).first( )->setValue( res );
+  m_outputs.first( )->setValue( res );
 }

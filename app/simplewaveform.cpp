@@ -78,7 +78,7 @@ SimpleWaveform::~SimpleWaveform( ) {
 void SimpleWaveform::sortElements( QVector< GraphicElement* > &elements, QVector< GraphicElement* > &inputs,
                                    QVector< GraphicElement* > &outputs, SortingKind sorting ) {
   elements = ElementMapping::sortGraphicElements( elements );
-  for( GraphicElement *elm : elements ) {
+  for( GraphicElement *elm : qAsConst(elements) ) {
     if( elm && ( elm->type( ) == GraphicElement::Type ) ) {
       if( elm->elementGroup( ) == ElementGroup::INPUT ) {
         inputs.append( elm );
@@ -157,7 +157,7 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
   int num_iter = pow( 2, inputs.size( ) );
   // Getting the number of outputs. Warning: will not work if inout element type in created.
   int outputCount = 0;
-  for( GraphicElement *out : outputs ) {
+  for( GraphicElement *out : qAsConst(outputs) ) {
     outputCount += out->inputSize( );
   }
   // Creating vector results with the output resulting values.
@@ -346,11 +346,11 @@ void SimpleWaveform::showWaveform( ) {
     }
   }
   // Inserting input series to the chart
-  for( QLineSeries *in : in_series ) {
+  for( QLineSeries *in : qAsConst(in_series) ) {
     chart.addSeries( in );
   }
   // Inserting output series to the chart
-  for( QLineSeries *out : out_series ) {
+  for( QLineSeries *out : qAsConst(out_series) ) {
     chart.addSeries( out );
   }
   // Setting graphic axes

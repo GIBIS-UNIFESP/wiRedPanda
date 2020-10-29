@@ -14,9 +14,9 @@ void Xor::updateLogic( ) {
   }
   else {
     res = 0;
-    for( QNEPort *input : inputs( ) ) {
+    for( QNEPort *input : qAsConst(m_inputs) ) {
       res = res ^ input->value( );
     }
   }
-  outputs( ).first( )->setValue( res );
+  m_outputs.first( )->setValue( res );
 }
