@@ -48,8 +48,8 @@ int main( int argc, char *argv[] ) {
 }
 
 /*
- * TODO Tests for all elements
- * TODO Create arduino version of all elements
- * TODO Select some elements, and input wires become input buttons, output wires become leds... Connections are then
+ * TODO: Tests for all elements
+ * TODO: Create arduino version of all elements
+ * TODO: Select some elements, and input wires become input buttons, output wires become leds... Connections are then
  * transfered to the box's ports.
  */

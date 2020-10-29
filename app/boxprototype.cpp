@@ -68,7 +68,7 @@ void BoxPrototype::reload( ) {
   clear( );
 
   boxImpl.loadFile( m_fileName );
-  for( Box *box : qAsConst(boxObservers)) {
+  for( Box *box : qAsConst( boxObservers ) ) {
     box->loadFile( m_fileName );
   }
 }

@@ -32,7 +32,7 @@ QFileInfo BoxFileHelper::findFile( QString fname, QString parentFile ) {
 
 void BoxFileHelper::verifyRecursion( QString fname ) {
   Q_UNUSED( fname );
-  // TODO BoxFileHelper::verifyRecursion
+  // TODO: BoxFileHelper::verifyRecursion
 //  std::string msg = "Oh no! I'm my own parent.\nSomething is not ok...";
 //  if( !parentFile.isEmpty( ) && ( fname == parentFile ) ) {
 //    throw( std::runtime_error( msg ) );

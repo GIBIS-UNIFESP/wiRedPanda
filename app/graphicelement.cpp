@@ -12,7 +12,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <stdexcept>
 
-//! carmesim -- warning: non-POD static
+// WARNING: non-POD static
 static QMap< QString, QPixmap > loadedPixmaps;
 
 
@@ -97,13 +97,12 @@ void GraphicElement::setPixmap( const QString &pixmapName, QRect size ) {
   }
   if( pixmapPath != currentPixmapName ) {
     if( !loadedPixmaps.contains( pixmapPath ) ) {
-        //! carmesim-TODO: use QPixmap::loadFromData() here
-        QPixmap pixmap;
-        if (!pixmap.load(pixmapPath))
-        {
-            throw std::runtime_error( ERRORMSG("Couldn't load pixmap.") );
-        }
-        loadedPixmaps[ pixmapPath ] = pixmap.copy( size );
+      // TODO: use QPixmap::loadFromData() here
+      QPixmap pixmap;
+      if( !pixmap.load( pixmapPath ) ) {
+        throw std::runtime_error( ERRORMSG( "Couldn't load pixmap." ) );
+      }
+      loadedPixmaps[ pixmapPath ] = pixmap.copy( size );
     }
     pixmap = &loadedPixmaps[ pixmapPath ];
     setTransformOriginPoint( pixmap->rect( ).center( ) );
@@ -260,7 +259,7 @@ void GraphicElement::loadInputPort( QDataStream &ds, QMap< quint64, QNEPort* > &
   ds >> ptr;
   ds >> name;
   ds >> flags;
-  if( ( port < static_cast< size_t >( m_inputs.size() ) ) ) {
+  if( ( port < static_cast< size_t >( m_inputs.size( ) ) ) ) {
     if( elementType( ) == ElementType::BOX ) {
       m_inputs[ port ]->setName( name );
     }
