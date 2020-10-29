@@ -23,10 +23,10 @@ void DLatch::updatePorts( ) {
 }
 
 void DLatch::updateLogic( ) {
-  char res1 = output( 0 )->value( ); /* Q */
-  char res2 = output( 1 )->value( ); /* ~Q */
-  char data = input( 0 )->value( );
-  char enable = input( 1 )->value( );
+  signed char res1 = output( 0 )->value( ); /* Q */
+  signed char res2 = output( 1 )->value( ); /* ~Q */
+  signed char data = input( 0 )->value( );
+  signed char enable = input( 1 )->value( );
   if( !isValid( ) ) {
     res1 = res2 = -1;
   }

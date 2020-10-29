@@ -41,13 +41,13 @@ void JKFlipFlop::updatePorts( ) {
 }
 
 void JKFlipFlop::updateLogic( ) {
-  char q1 = output( 0 )->value( ); /* Q */
-  char q2 = output( 1 )->value( ); /* ~Q */
-  char j = input( 0 )->value( );
-  char clk = input( 1 )->value( ); /* Current lock */
-  char k = input( 2 )->value( );
-  char prst = input( 3 )->value( );
-  char clr = input( 4 )->value( );
+  signed char q1 = output( 0 )->value( ); /* Q */
+  signed char q2 = output( 1 )->value( ); /* ~Q */
+  signed char j = input( 0 )->value( );
+  signed char clk = input( 1 )->value( ); /* Current lock */
+  signed char k = input( 2 )->value( );
+  signed char prst = input( 3 )->value( );
+  signed char clr = input( 4 )->value( );
   if( isValid( ) == false ) {
     q1 = -1;
     q2 = -1;
