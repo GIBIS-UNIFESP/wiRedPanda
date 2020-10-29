@@ -16,18 +16,16 @@ Led::Led( QGraphicsItem *parent ) : GraphicElement( 1, 4, 0, 0, parent ) {
 
 }
 
-//! carmesim: changed these led_*bits from QVector< QString > into static constexpr std::array<const char *>
-//! This should improve performance, but makes me weary of stack overflow, since std::array is stack-alloc'd
-//! TODO: make ":/output/16colors/" it's own variable in order to remove repetition
+// TODO: make ":/output/16colors/" it's own variable in order to remove repetition
 
-static constexpr std::array<const char *, 4> led_2bits = {
-    ":/output/16colors/BlackLedOn.png", /* 00 */
-    ":/output/16colors/RedLedOn.png", /* 01 */
-    ":/output/16colors/GreenLedOn.png", /* 10 */
-    ":/output/16colors/RoyalLedOn.png" /* 11 */
+static constexpr std::array< const char*, 4 > led_2bits = {
+  ":/output/16colors/BlackLedOn.png", /* 00 */
+  ":/output/16colors/RedLedOn.png", /* 01 */
+  ":/output/16colors/GreenLedOn.png", /* 10 */
+  ":/output/16colors/RoyalLedOn.png" /* 11 */
 };
 
-static constexpr std::array<const char *, 8> led_3bits = {
+static constexpr std::array< const char*, 8 > led_3bits = {
   ":/output/16colors/BlackLedOn.png", /* 000 */
   ":/output/16colors/RoyalLedOn.png", /* 001 */
   ":/output/16colors/GreenLedOn.png", /* 010 */
@@ -38,7 +36,7 @@ static constexpr std::array<const char *, 8> led_3bits = {
   ":/output/16colors/WhiteLedOn.png", /* 111 */
 };
 
-static constexpr std::array<const char *, 16> led_4bits = {
+static constexpr std::array< const char*, 16 > led_4bits = {
   ":/output/16colors/WhiteLedOn.png",
   ":/output/16colors/BlackLedOn.png",
   ":/output/16colors/NavyBlueLedOn.png",

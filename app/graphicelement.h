@@ -5,10 +5,10 @@
 #include "itemwithid.h"
 #include "nodes/qneport.h"
 
+#include <cstdint>
 #include <QGraphicsItem>
 #include <QGraphicsPixmapItem>
 #include <QKeySequence>
-#include <cstdint>
 
 enum class ElementType : uint_fast8_t {
   UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND, DISPLAY,
