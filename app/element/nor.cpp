@@ -8,7 +8,7 @@ Nor::Nor( QGraphicsItem *parent ) : GraphicElement( 2, 8, 1, 1, parent ) {
 }
 
 void Nor::updateLogic( ) {
-  char res = true;
+  signed char res = true;
   if( !isValid( ) ) {
     res = -1;
   }

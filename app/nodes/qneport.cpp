@@ -212,7 +212,7 @@ void QNEPort::setRequired( bool required ) {
   setDefaultValue( -1 * required );
 }
 
-char QNEPort::value( ) const {
+signed char QNEPort::value( ) const {
   return( m_value );
 }
 
@@ -247,7 +247,7 @@ QNEInputPort::~QNEInputPort( ) {
   }
 }
 
-void QNEInputPort::setValue( char value ) {
+void QNEInputPort::setValue( signed char value ) {
   m_value = value;
   if( !isValid( ) ) {
     m_value = -1;
@@ -299,7 +299,7 @@ QNEOutputPort::~QNEOutputPort( ) {
   }
 }
 
-void QNEOutputPort::setValue( char value ) {
+void QNEOutputPort::setValue( signed char value ) {
   m_value = value;
   for( QNEConnection *conn : connections( ) ) {
     if( value == -1 ) {

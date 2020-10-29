@@ -20,10 +20,10 @@ void Mux::updatePorts( ) {
 }
 
 void Mux::updateLogic( ) {
-  char data1 = input( 0 )->value( );
-  char data2 = input( 1 )->value( );
-  char choice = input( 2 )->value( );
-  char res = -1;
+  signed char data1 = input( 0 )->value( );
+  signed char data2 = input( 1 )->value( );
+  signed char choice = input( 2 )->value( );
+  signed char res = -1;
   if( isValid( ) ) {
     if( choice == 0 ) {
       res = data1;

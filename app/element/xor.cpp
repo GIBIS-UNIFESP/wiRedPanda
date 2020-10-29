@@ -8,7 +8,7 @@ Xor::Xor( QGraphicsItem *parent ) : GraphicElement( 2, 8, 1, 1, parent ) {
 }
 
 void Xor::updateLogic( ) {
-  char res = false;
+  signed char res = false;
   if( !isValid( ) ) {
     res = -1;
   }
