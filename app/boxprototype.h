@@ -18,7 +18,7 @@ class BoxPrototype {
   QVector< Box* > boxObservers;
 
 public:
-  BoxPrototype( const QString &fileName );
+  BoxPrototype( const QString& fileName );
   void reload( );
 
   QString fileName( ) const;

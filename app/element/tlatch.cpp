@@ -20,7 +20,7 @@ void TLatch::updatePorts( ) {
 }
 
 void TLatch::updateLogic( ) {
-  char res = output( 0 )->value( );
+  signed char res = output( 0 )->value( );
   if( !isValid( ) ) {
     res = -1;
   }
@@ -28,8 +28,8 @@ void TLatch::updateLogic( ) {
     if( res == -1 ) {
       res = 0;
     }
-    char toggle = input( 0 )->value( );
-    char enable = input( 1 )->value( );
+    signed char toggle = input( 0 )->value( );
+    signed char enable = input( 1 )->value( );
     if( enable == 1 ) { /* If Enable */
       if( toggle == 1 ) { /* And T */
         res = !res;

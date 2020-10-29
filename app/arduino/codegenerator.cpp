@@ -150,7 +150,6 @@ void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &el
       }
       else {
         int portCounter = 0;
-//        auto const outputs = elm->outputs();
         for( QNEPort *port : outputs ) {
           QString portName = varName;
           portName.append( QString( "_%1" ).arg( portCounter++ ) );

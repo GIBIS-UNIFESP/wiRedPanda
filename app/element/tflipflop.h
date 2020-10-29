@@ -5,8 +5,8 @@
 
 class TFlipFlop : public GraphicElement {
   bool lastClk;
-  char lastT;
-  char lastQ;
+  signed char lastT;
+  signed char lastQ;
 public:
   explicit TFlipFlop( QGraphicsItem *parent = nullptr );
   virtual ~TFlipFlop( ) override = default;
