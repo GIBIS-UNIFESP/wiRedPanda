@@ -1,0 +1,59 @@
+name: Build
+
+on: [push]
+
+env:
+  BUILD_TYPE: MinSizeRel
+
+jobs:
+
+# === Ubuntu 18.04 ===
+  ubuntu-18:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+      with: 
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Install
+      run: sudo apt install qt5-default qt5-qmake qtmultimedia5-dev libqt5charts5-dev
+
+    - name: Build
+      run: |
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j8
+    - name: Deploy
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'wiredpanda-ubuntu18.04-glibc'
+        path: build/app/wpanda
+
+# === MacOS 10.15 ===
+  macos:
+    runs-on: macos-10.15
+
+    steps:
+    - uses: actions/checkout@v2
+      with: 
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Install
+      run: brew install qt gdb
+
+    - name: Build
+      run: |
+        QTDIR="/usr/local/opt/qt/" && PATH="${QTDIR}/bin:$PATH" && LDFLAGS=-L${QTDIR}/lib && CPPFLAGS=-I${QTDIR}/include;
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j8
+    - name: Deploy
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'wiredpanda-macos-10_15'
+        path: build/app/wpanda.app/Contents/MacOS/wpanda
