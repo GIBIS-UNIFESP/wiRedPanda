@@ -23,7 +23,7 @@ void TestFiles::testFiles( ) {
   QFileInfoList files = examplesDir.entryInfoList( entries );
   QVERIFY( files.size( ) > 0 );
 /*  int counter = 0; */
-  for( QFileInfo f : qAsConst(files) ) {
+  for( QFileInfo f : qAsConst( files ) ) {
 /*    qDebug( ) << "File " << counter++ << " from " << files.size( ) << ": " << f.fileName( ); */
     QVERIFY( f.exists( ) );
     QFile pandaFile( f.absoluteFilePath( ) );

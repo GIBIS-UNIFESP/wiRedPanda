@@ -14,14 +14,13 @@ CodeGenerator::CodeGenerator( QString fileName, const QVector< GraphicElement* >
   globalCounter = 1;
   out.setDevice( &file );
   availablePins = { "A0", "A1", "A2", "A3", "A4", "A5",
-                   /*"0", "1",*/ "2", "3", "4", "5", "6",
-                   "7", "8", "9", "10", "11", "12", "13" };
+                    /*"0", "1",*/ "2", "3", "4", "5", "6",
+                    "7", "8", "9", "10", "11", "12", "13" };
 
 }
 
-static inline QString highLow( int val )
-{
-    return val == 1 ? "HIGH" : "LOW";
+static inline QString highLow( int val ) {
+  return( val == 1 ? "HIGH" : "LOW" );
 }
 
 QString clearString( QString input ) {
@@ -76,10 +75,10 @@ void CodeGenerator::declareInputs( ) {
       QString varName = elm->objectName( ) + QString::number( counter );
       QString label = elm->getLabel( );
       if( !label.isEmpty( ) ) {
-        varName = QString( "%1_%2" ).arg( varName, label ); //! carmesim: use multi-arg instead
+        varName = QString( "%1_%2" ).arg( varName, label );
       }
       varName = clearString( varName );
-      out << QString( "const int %1 = %2;" ).arg( varName, availablePins.front( ) ) << endl; //! carmesim: use multi-arg instead
+      out << QString( "const int %1 = %2;" ).arg( varName, availablePins.front( ) ) << endl;
       inputMap.append( MappedPin( elm, availablePins.front( ), varName, elm->output( 0 ), 0 ) );
       availablePins.pop_front( );
       varMap[ elm->output( ) ] = varName + QString( "_val" );
@@ -98,7 +97,7 @@ void CodeGenerator::declareOutputs( ) {
       for( int i = 0; i < elm->inputs( ).size( ); ++i ) {
         QString varName = elm->objectName( ) + QString::number( counter );
         if( !label.isEmpty( ) ) {
-          varName = QString( "%1_%2" ).arg( varName, label );   //! carmesim: use multi-arg instead
+          varName = QString( "%1_%2" ).arg( varName, label );
         }
         QNEPort *port = elm->input( i );
         if( !port->getName( ).isEmpty( ) ) {
@@ -121,7 +120,7 @@ void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &el
     if( elm->elementType( ) == ElementType::BOX ) {
 //      Box *box = qgraphicsitem_cast< Box* >( elm );
 
-      // TODO: FIXME: Get code generator to work again
+      // FIXME: Get code generator to work again
 //      if( box ) {
 //        out << "// " << box->getLabel( ) << endl;
 //        declareAuxVariablesRec( box->getElements( ), true );
@@ -134,10 +133,9 @@ void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &el
     }
     else {
       QString varName = QString( "aux_%1_%2" ).arg( clearString( elm->objectName( ) ) ).arg( globalCounter++ );
-      auto const outputs = elm->outputs(); //! carmesim: using this to avoid Qt container detachment
+      auto const outputs = elm->outputs( );
       if( outputs.size( ) == 1 ) {
-
-        QNEPort *port = outputs.first( );   //! carmesim: stop using .first() on temporary value
+        QNEPort *port = outputs.first( );
         if( elm->elementType( ) == ElementType::VCC ) {
           varMap[ port ] = "HIGH";
           continue;
@@ -202,10 +200,10 @@ void CodeGenerator::declareAuxVariables( ) {
 
 void CodeGenerator::setup( ) {
   out << "void setup( ) {" << endl;
-  for( MappedPin pin : qAsConst(inputMap) ) {
+  for( MappedPin pin : qAsConst( inputMap ) ) {
     out << "    pinMode( " << pin.varName << ", INPUT );" << endl;
   }
-  for( MappedPin pin : qAsConst(outputMap) ) {
+  for( MappedPin pin : qAsConst( outputMap ) ) {
     out << "    pinMode( " << pin.varName << ", OUTPUT );" << endl;
   }
   out << "}" << endl << endl;
@@ -216,7 +214,7 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
     if( elm->elementType( ) == ElementType::BOX ) {
       throw std::runtime_error( QString( "BOX element not supported : %1" ).arg(
                                   elm->objectName( ) ).toStdString( ) );
-      // TODO CodeGenerator::assignVariablesRec for Box Element
+      // TODO: CodeGenerator::assignVariablesRec for Box Element
 //      Box *box = qgraphicsitem_cast< Box* >( elm );
 //      out << "    // " << box->getLabel( ) << endl;
 //      for( int i = 0; i < box->inputSize( ); ++i ) {
@@ -463,7 +461,7 @@ void CodeGenerator::loop( ) {
   out << "    // Updating clocks. //" << endl;
   for( GraphicElement *elm : elements ) {
     if( elm->elementType( ) == ElementType::CLOCK ) {
-      const auto elm_outputs = elm->outputs();
+      const auto elm_outputs = elm->outputs( );
       QString varName = varMap[ elm_outputs.first( ) ];
       out << QString( "    if( %1_elapsed > %1_interval ){" ).arg( varName ) << endl;
       out << QString( "        %1_elapsed = 0;" ).arg( varName ) << endl;

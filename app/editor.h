@@ -9,8 +9,8 @@
 #include "simulationcontroller.h"
 
 #include <memory>
-#include <QObject>
 #include <QElapsedTimer>
+#include <QObject>
 #include <QUndoCommand>
 
 class Box;
