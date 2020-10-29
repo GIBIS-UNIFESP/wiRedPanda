@@ -8,7 +8,7 @@ Not::Not( QGraphicsItem *parent ) : GraphicElement( 1, 1, 1, 1, parent ) {
 }
 
 void Not::updateLogic( ) {
-  char res = !inputs( ).first( )->value( );
+  char res = !m_inputs.first( )->value( );
   if( !isValid( ) ) {
     res = -1;
   }

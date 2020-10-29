@@ -7,7 +7,7 @@ InputButton::InputButton( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, 
   setOutputsOnTop( false );
   setPixmap( ":/input/buttonOff.png" );
   setRotatable( false );
-  outputs( ).first( )->setValue( 0 );
+  m_outputs.first( )->setValue( 0 );
   setOn( false );
   setHasLabel( true );
   setHasTrigger( true );

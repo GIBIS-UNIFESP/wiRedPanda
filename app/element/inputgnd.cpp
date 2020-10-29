@@ -9,5 +9,5 @@ InputGnd::InputGnd( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent
 }
 
 void InputGnd::updateLogic( ) {
-  outputs( ).first( )->setValue( false );
+  m_outputs.first( )->setValue( false );
 }

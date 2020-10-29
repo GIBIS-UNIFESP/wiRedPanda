@@ -10,7 +10,7 @@
 
 #include <memory>
 #include <QObject>
-#include <QTime>
+#include <QElapsedTimer>
 #include <QUndoCommand>
 
 class Box;
@@ -18,7 +18,7 @@ class MainWindow;
 
 class Editor : public QObject {
   Q_OBJECT
-  QTime timer;
+  QElapsedTimer timer;
 public:
   explicit Editor( QObject *parent = nullptr );
   virtual ~Editor( );

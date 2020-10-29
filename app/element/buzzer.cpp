@@ -11,12 +11,13 @@ Buzzer::Buzzer( QGraphicsItem *parent ) : GraphicElement( 1, 1, 0, 0, parent ) {
   updatePorts( );
   setHasLabel( true );
   setPortName( "Buzzer" );
-  setAudio( "C6" );
+  setAudio( "C6" ); //! TODO: Call to virtual function during construction
   play = 0;
 }
 
 void Buzzer::refresh( ) {
   if( isValid( ) ) {
+
     bool value = inputs( ).first( )->value( );
     if( value == 1 ) {
       playbuzzer( );

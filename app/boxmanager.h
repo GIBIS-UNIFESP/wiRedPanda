@@ -36,7 +36,7 @@ private:
   bool warnAboutFileChange( const QString &fileName );
 
   static BoxManager *globalBoxManager;
-  void updateRecentBoxes( QString fname );
+  void updateRecentBoxes(const QString &fname);
 };
 
 #endif // BOXMANAGER_H

@@ -121,7 +121,8 @@ void Editor::clear( ) {
     scene->clear( );
   }
   buildSelectionRect( );
-  if( !scene->views( ).isEmpty( ) ) {
+  //! carmesim: scene can be NULL here. Add a NULL check
+  if( scene && !scene->views( ).isEmpty( ) ) {
     scene->setSceneRect( scene->views( ).front( )->rect( ) );
   }
   updateTheme( );
