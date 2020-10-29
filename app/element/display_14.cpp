@@ -31,7 +31,8 @@ Display14::Display14( QGraphicsItem *parent ) : GraphicElement( 15, 15, 0, 0, pa
   dp = QPixmap( ":/output/counter/counter_dp.png" );
 
   setPortName( "Display14" );
-  for( QNEPort *in : inputs( ) ) {
+  const auto m_inputs = inputs();
+  for( QNEPort *in : m_inputs ) {
     in->setRequired( false );
     in->setDefaultValue( 0 );
   }
