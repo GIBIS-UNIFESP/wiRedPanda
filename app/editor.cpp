@@ -59,14 +59,17 @@ Editor::~Editor( ) {
 void Editor::updateTheme( ) {
   if( ThemeManager::globalMngr ) {
     const ThemeAttrs attrs = ThemeManager::globalMngr->getAttrs( );
+    //! TODO: warning -- attrs may be null
     scene->setBackgroundBrush( attrs.scene_bgBrush );
     scene->setDots( QPen( attrs.scene_bgDots ) );
     selectionRect->setBrush( QBrush( attrs.selectionBrush ) );
     selectionRect->setPen( QPen( attrs.selectionPen, 1, Qt::SolidLine ) );
-    for( GraphicElement *elm : scene->getElements( ) ) {
+    auto const scene_elements = scene->getElements( );
+    for( GraphicElement *elm : scene_elements ) {
       elm->updateTheme( );
     }
-    for( QNEConnection *conn : scene->getConnections( ) ) {
+    auto const scene_connections = scene->getConnections();
+    for( QNEConnection *conn : scene_connections ) {
       conn->updateTheme( );
     }
   }
@@ -121,8 +124,9 @@ void Editor::clear( ) {
     scene->clear( );
   }
   buildSelectionRect( );
-  if( scene && !scene->views( ).isEmpty( ) ) {
-    scene->setSceneRect( scene->views( ).front( )->rect( ) );
+  auto const scene_views = scene->views();
+  if( scene && !scene_views.isEmpty( ) ) {
+    scene->setSceneRect( scene_views.front( )->rect( ) );
   }
   updateTheme( );
   simulationController->start( );
