@@ -1,6 +1,7 @@
 #include "led.h"
 
 #include <bitset>
+#include <array>
 #include <QDebug>
 #include <QGraphicsSceneDragDropEvent>
 
