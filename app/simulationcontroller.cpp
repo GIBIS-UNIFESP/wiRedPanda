@@ -37,7 +37,8 @@ void SimulationController::updateScene( const QRectF &rect ) {
         updateConnection( conn );
       }
       else if( elm && ( elm->elementGroup( ) == ElementGroup::OUTPUT ) ) {
-        for( QNEInputPort *in: elm->inputs( ) ) {
+        auto const elm_inputs = elm->inputs();
+        for( QNEInputPort *in: elm_inputs ) {
           updatePort( in );
         }
       }

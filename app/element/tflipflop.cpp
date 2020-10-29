@@ -37,8 +37,8 @@ void TFlipFlop::updatePorts( ) {
 }
 
 void TFlipFlop::updateLogic( ) {
-  char q1 = output( 0 )->value( ); /* Q */
-  char q2 = output( 1 )->value( ); /* Q */
+  signed char q1 = output( 0 )->value( ); /* Q */
+  signed char q2 = output( 1 )->value( ); /* Q */
   if( !isValid( ) ) {
     q1 = -1;
     q2 = -1;
@@ -48,10 +48,10 @@ void TFlipFlop::updateLogic( ) {
       q1 = output( 0 )->defaultValue( );
       q2 = output( 1 )->defaultValue( );
     }
-    char T = input( 0 )->value( );
-    char clk = input( 1 )->value( ); /* Current lock */
-    char prst = input( 2 )->value( );
-    char clr = input( 3 )->value( );
+    signed char T = input( 0 )->value( );
+    signed char clk = input( 1 )->value( ); /* Current lock */
+    signed char prst = input( 2 )->value( );
+    signed char clr = input( 3 )->value( );
     if( ( clk == 1 ) && ( lastClk == 0 ) ) { /* If Clock up*/
       if( lastT == 1 ) { /* And T */
         q1 = !q1;

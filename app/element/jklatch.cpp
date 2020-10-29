@@ -16,9 +16,9 @@ void JKLatch::updatePorts( ) {
 }
 
 void JKLatch::updateLogic( ) {
-  char res = m_outputs.first( )->value( );
-  char j = input( 0 )->value( );
-  char k = input( 1 )->value( );
+  signed char res = m_outputs.first( )->value( );
+  signed char j = input( 0 )->value( );
+  signed char k = input( 1 )->value( );
   if( !isValid( ) ) {
     res = -1;
   }

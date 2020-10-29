@@ -13,7 +13,7 @@ void Nand::updateLogic( ) {
     res = -1;
   }
   else {
-    for( QNEPort *input: m_inputs ) {
+    for( QNEPort *input: qAsConst(m_inputs) ) {
       if( input->value( ) == false ) {
         res = true;
         break;

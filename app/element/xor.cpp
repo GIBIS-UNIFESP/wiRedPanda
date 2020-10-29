@@ -8,15 +8,15 @@ Xor::Xor( QGraphicsItem *parent ) : GraphicElement( 2, 8, 1, 1, parent ) {
 }
 
 void Xor::updateLogic( ) {
-  char res = false;
+  signed char res = false;
   if( !isValid( ) ) {
     res = -1;
   }
   else {
     res = 0;
-    for( QNEPort *input : inputs( ) ) {
+    for( QNEPort *input : qAsConst(m_inputs) ) {
       res = res ^ input->value( );
     }
   }
-  outputs( ).first( )->setValue( res );
+  m_outputs.first( )->setValue( res );
 }

@@ -8,15 +8,15 @@ Xnor::Xnor( QGraphicsItem *parent ) : GraphicElement( 2, 8, 1, 1, parent ) {
 }
 
 void Xnor::updateLogic( ) {
-  char res = false;
+  signed char res = false;
   if( !isValid( ) ) {
     res = -1;
   }
   else {
-    for( QNEPort *input : inputs( ) ) {
+    for( QNEPort *input : qAsConst(m_inputs) ) {
       res = res ^ input->value( );
     }
     res = !res;
   }
-  outputs( ).first( )->setValue( res );
+  m_outputs.first( )->setValue( res );
 }
