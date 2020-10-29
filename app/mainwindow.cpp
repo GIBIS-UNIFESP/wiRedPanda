@@ -8,6 +8,8 @@
 #include "thememanager.h"
 #include "ui_mainwindow.h"
 
+#include <cmath>
+#include <iostream>
 #include <QDebug>
 #include <QFileDialog>
 #include <QKeyEvent>
@@ -19,8 +21,6 @@
 #include <QShortcut>
 #include <QStyleFactory>
 #include <QTemporaryFile>
-#include <cmath>
-#include <iostream>
 #include <stdexcept>
 
 
@@ -261,7 +261,7 @@ bool MainWindow::open( const QString &fname ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-    std::endl;
+      std::endl;
     return( false );
   }
   fl.close( );
@@ -404,7 +404,7 @@ void MainWindow::on_actionSelect_all_triggered( ) {
 
 void MainWindow::updateRecentBoxes( ) {
   ui->scrollAreaWidgetContents_Box->layout( )->removeItem( ui->verticalSpacer_BOX );
-  for( ListItemWidget *item : qAsConst(boxItemWidgets) ) {
+  for( ListItemWidget *item : qAsConst( boxItemWidgets ) ) {
     item->deleteLater( );
   }
 /*  qDeleteAll( boxItemWidgets ); */
@@ -441,7 +441,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-    std::endl;
+      std::endl;
     return;
   }
   fl.close( );
@@ -453,7 +453,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
 
 void MainWindow::on_lineEdit_textChanged( const QString &text ) {
   ui->searchLayout->removeItem( ui->VSpacer );
-  for( ListItemWidget *item : qAsConst(searchItemWidgets)) {
+  for( ListItemWidget *item : qAsConst( searchItemWidgets ) ) {
     item->deleteLater( );
   }
   searchItemWidgets.clear( );
@@ -666,7 +666,6 @@ void MainWindow::on_actionPrint_triggered( ) {
   if( pdfFile.isEmpty( ) ) {
     return;
   }
-  //! carmesim: avoid unneeded heap allocation caused by toLower
   if( !pdfFile.endsWith( ".pdf", Qt::CaseInsensitive ) ) {
     pdfFile.append( ".pdf" );
   }

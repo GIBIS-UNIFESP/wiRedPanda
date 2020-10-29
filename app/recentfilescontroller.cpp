@@ -7,7 +7,7 @@
 #include <QSettings>
 
 
-void RecentFilesController::addFile(const QString& fname ) {
+void RecentFilesController::addFile( const QString &fname ) {
   qDebug( ) << "Setting recent file to : \"" << fname << "\"";
   if( !QFile( fname ).exists( ) ) {
     return;

@@ -11,7 +11,7 @@ Buzzer::Buzzer( QGraphicsItem *parent ) : GraphicElement( 1, 1, 0, 0, parent ) {
   updatePorts( );
   setHasLabel( true );
   setPortName( "Buzzer" );
-  setAudio( "C6" ); //! TODO: Call to virtual function during construction
+  setAudio( "C6" ); // TODO: Call to virtual function during construction
   play = 0;
 }
 

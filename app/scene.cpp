@@ -5,14 +5,17 @@
 #include <QGraphicsView>
 #include <QPainter>
 
-//! TODO: stop using QGraphicsView *
+// TODO: stop using QGraphicsView *
 
-Scene::Scene( QObject *parent ) : QGraphicsScene( parent ) {}
+Scene::Scene( QObject *parent ) : QGraphicsScene( parent ) {
+}
 
-Scene::Scene( const QRectF &sceneRect, QObject *parent ) : QGraphicsScene( sceneRect, parent ) {}
+Scene::Scene( const QRectF &sceneRect, QObject *parent ) : QGraphicsScene( sceneRect, parent ) {
+}
 
 Scene::Scene( qreal x, qreal y, qreal width, qreal height, QObject *parent )
-    : QGraphicsScene( x, y, width, height, parent) {}
+  : QGraphicsScene( x, y, width, height, parent ) {
+}
 
 int Scene::gridSize( ) const {
   return( m_gridSize );
@@ -22,8 +25,8 @@ void Scene::drawBackground( QPainter *painter, const QRectF &rect ) {
   painter->setRenderHint( QPainter::Antialiasing, true );
   QGraphicsScene::drawBackground( painter, rect );
   painter->setPen( m_dots );
-  qreal left = int(rect.left()) - (int(rect.left()) % m_gridSize );
-  qreal top  = int(rect.top())  - (int( rect.top()) % m_gridSize );
+  qreal left = int( rect.left( ) ) - ( int( rect.left( ) ) % m_gridSize );
+  qreal top = int( rect.top( ) ) - ( int( rect.top( ) ) % m_gridSize );
   QVector< QPointF > points;
   for( qreal x = left; x < rect.right( ); x += m_gridSize ) {
     for( qreal y = top; y < rect.bottom( ); y += m_gridSize ) {
@@ -39,14 +42,14 @@ void Scene::setDots( const QPen &dots ) {
 
 
 QVector< GraphicElement* > Scene::getVisibleElements( ) {
-    const auto gviews = views();
-    QGraphicsView *graphicsView = gviews.first( );
-    if( !graphicsView->isActiveWindow( ) ) {
-        graphicsView = gviews.last( );
-    }
-    QRectF visibleRect = graphicsView->mapToScene( graphicsView->viewport( )->geometry( ) ).boundingRect( );
+  const auto gviews = views( );
+  QGraphicsView *graphicsView = gviews.first( );
+  if( !graphicsView->isActiveWindow( ) ) {
+    graphicsView = gviews.last( );
+  }
+  QRectF visibleRect = graphicsView->mapToScene( graphicsView->viewport( )->geometry( ) ).boundingRect( );
 
-    return getElements( visibleRect ) ;
+  return( getElements( visibleRect ) );
 }
 
 QVector< GraphicElement* > Scene::getElements( ) {
@@ -58,7 +61,7 @@ QVector< GraphicElement* > Scene::getElements( ) {
       elements.append( elm );
     }
   }
-  return elements;
+  return( elements );
 }
 
 QVector< GraphicElement* > Scene::getElements( QRectF rect ) {
