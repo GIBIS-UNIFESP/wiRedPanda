@@ -13,10 +13,10 @@ void Xnor::updateLogic( ) {
     res = -1;
   }
   else {
-    for( QNEPort *input : inputs( ) ) {
+    for( QNEPort *input : qAsConst(m_inputs) ) {
       res = res ^ input->value( );
     }
     res = !res;
   }
-  outputs( ).first( )->setValue( res );
+  m_outputs.first( )->setValue( res );
 }

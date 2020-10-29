@@ -5,7 +5,7 @@
 
 #include <QFileInfo>
 
-BoxPrototype::BoxPrototype( const QString &fileName ) : m_fileName( fileName ) {
+BoxPrototype::BoxPrototype( const QString & fileName ) : m_fileName( fileName ) {
 
 }
 
