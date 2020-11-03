@@ -6,7 +6,7 @@ permalink: /downloads/
 
 ---
 <p>
-The binaries of the <a href={{site.data.downloads.release}}>latest release</a> of wiRED Panda are availble in the following platforms:
+The binaries of the <a href={{site.data.downloads.release}}>latest release</a> of wiRED Panda are available for the following platforms:
 </p>
 <br><br>
 
@@ -18,8 +18,8 @@ The binaries of the <a href={{site.data.downloads.release}}>latest release</a> o
         <center>
           {% if item.logo == "linux" %}
             {% include linux.svg %}
-          {% elsif item.logo == "ubuntu" %}
-            {% include ubuntu.svg %}
+          {% elsif item.logo == "mac" %}
+            {% include apple.svg %}
           {% else %}
             {% include windows.svg %}
           {% endif %}
@@ -33,7 +33,7 @@ The binaries of the <a href={{site.data.downloads.release}}>latest release</a> o
 </table>
 <br><br>
 <p>
-wiRed Panda is also compatible with OSX and many linux distributions, but we don't have compiled versions availble for download. We are planning to release the OSX version in the following months, for now the software can be compiled on your own computer.
+Please do note that the macOS version requires Qt to be installed, which you can achieve with <b>brew install qt</b>.
 </p>
 
-<p>Take a look in our <a href="https://github.com/GIBIS-UNIFESP/wiRedPanda/">Github Repository</a> to view the build instructions.</p>
+<p>If you wish to compile WiRed Panda yourself, take a look at our <a href="https://github.com/GIBIS-UNIFESP/wiRedPanda/">GitHub repository</a> to view the build instructions.</p>
