@@ -37,9 +37,19 @@ sudo apt install qt5-default qt5-qmake qtmultimedia5-dev libqt5charts5-dev
 Algumas das dependências necessárias não estão nos repositórios padrão.
 
 ```bash
+sudo add-apt-repository ppa:beineri/opt-qt-5.10.1-xenial
+sudo apt update 
+sudo apt install dh-make qt510base qt510charts-no-lgpl qt510multimedia
+source /opt/qt510/bin/qt510-env.sh
+```
+
+* Ubuntu 14.04+ (ou Debian equivalentemente velho) based distros
+
+```bash
 sudo add-apt-repository ppa:beineri/opt-qt-5.10.1-trusty
 sudo apt update 
 sudo apt install dh-make qt510base qt510charts-no-lgpl qt510multimedia
+source /opt/qt510/bin/qt510-env.sh
 ```
 
 * Fedora
@@ -70,7 +80,7 @@ make -j$(nproc)
 Note: este processo pode demorar vários minutos para ser concluído. Uma vez terminado, o executável se encontrará em `wiredpanda/build/app/wpanda`, quando usando Linux, e em `wiredpanda/build/app/wpanda.app/Contents/MacOS/wpanda` quando em macOS.
 
 
-## Licensing
+## Licença
 
 O WiRed Panda este software é licenciado sob a [Licença Pública Geral GNU, Versão 3.0](http://www.gnu.org/licenses/).
 
