@@ -83,6 +83,51 @@ jobs:
         name: 'wiredpanda-ubuntu18.04-glibc'
         path: build/app/wpanda
 
+# === Windows 10 ===
+  windows:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with: 
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Set up Git for properly handling symlinks on Windows
+      run: git config --global core.symlinks true
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        arch: win64_mingw73
+        version: 5.12.9
+        modules: qtcharts qtmultimedia
+
+    - name: Build
+      run: |
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j8
+
+    - name: Deploy WiredPanda binary
+      run : |
+        cd build\app\release
+        windeployqt --compiler-runtime wpanda.exe
+        del *.o
+        cp $env:Qt5_Dir\bin\libgcc_s_seh-1.dll .
+        cp $env:Qt5_Dir\bin\libstdc++-6.dll .
+        cp $env:Qt5_Dir\bin\libwinpthread-1.dll .
+        cd ..
+        ren release wpanda
+
+    - name: Upload WiredPanda build
+      continue-on-error: true
+      uses: actions/upload-artifact@v2
+      with:
+        name: WiredPanda Windows (64-bit) build
+        path: build\app\wpanda\
+
 # === MacOS 10.15 ===
   macos:
     runs-on: macos-10.15
