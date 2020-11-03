@@ -4,6 +4,9 @@
 
 bool Clock::reset = false;
 
+Clock::~Clock( ) {
+}
+
 Clock::Clock( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent ) {
   setOutputsOnTop( false );
   setRotatable( false );
@@ -24,7 +27,7 @@ void Clock::updateClock( ) {
       setOn( !on );
     }
   }
-  setOn( on );
+    setOn( on );
 }
 
 bool Clock::getOn( ) const {
