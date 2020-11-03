@@ -37,10 +37,21 @@ sudo apt install qt5-default qt5-qmake qtmultimedia5-dev libqt5charts5-dev
 Some dependencies needed aren't available from the standard repositories.
 
 ```bash
+sudo add-apt-repository ppa:beineri/opt-qt-5.10.1-xenial
+sudo apt update 
+sudo apt install dh-make qt510base qt510charts-no-lgpl qt510multimedia
+source /opt/qt510/bin/qt510-env.sh
+```
+
+* Ubuntu 14.04+ (and equivalently-old Debian) based distros
+
+```bash
 sudo add-apt-repository ppa:beineri/opt-qt-5.10.1-trusty
 sudo apt update 
 sudo apt install dh-make qt510base qt510charts-no-lgpl qt510multimedia
+source /opt/qt510/bin/qt510-env.sh
 ```
+
 
 * Fedora
 
