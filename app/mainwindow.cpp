@@ -383,10 +383,10 @@ void MainWindow::setCurrentFile( const QFileInfo &value ) {
   qDebug( ) << "Setting current file to: " << value.absoluteFilePath( );
   currentFile = value;
   if( value.fileName( ).isEmpty( ) ) {
-    setWindowTitle( "wiRED PANDA" );
+    setWindowTitle( "wiRED PANDA v" + QString(APP_VERSION));
   }
   else {
-    setWindowTitle( QString( "wiRED PANDA ( %1 )" ).arg( value.fileName( ) ) );
+    setWindowTitle( QString( "wiRED PANDA %1 ( %2 )" ).arg( APP_VERSION, value.fileName( ) ) );
   }
   rfController->addFile( value.absoluteFilePath( ) );
   GlobalProperties::currentFile = currentFile.absoluteFilePath( );

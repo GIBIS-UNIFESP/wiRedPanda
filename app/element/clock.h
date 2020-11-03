@@ -15,11 +15,12 @@ class Clock : public GraphicElement, public Input {
 
 public:
   explicit Clock( QGraphicsItem *parent = nullptr );
-  virtual ~Clock( ) override = default;
+  virtual ~Clock( );
 
   static bool reset;
 public slots:
-  virtual ElementType elementType( ) override {
+  virtual ElementType elementType( ) override
+  {
     return( ElementType::CLOCK );
   }
   virtual ElementGroup elementGroup( ) override {

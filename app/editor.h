@@ -28,6 +28,7 @@ public:
   void copy( const QList< QGraphicsItem* > &items, QDataStream &ds );
   void paste( QDataStream &ds );
   void selectAll( );
+
 signals:
   void scroll( int x, int y );
   void circuitHasChanged( );
