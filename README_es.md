@@ -10,7 +10,9 @@ Las principales características de WiRed Panda son:
 - Interfaz amigable para el usuario;
 - Es intuitivo y fácil de usar;
 - Puede exportar su trabajo como una imagen o un PDF.
-    
+
+_Leia-me em [português](README_pt_BR.md). Read me in [English](README.md).    
+
 ![Pantalla principal](https://user-images.githubusercontent.com/36349314/97934063-532ed000-1d53-11eb-9667-73ea32f456ce.png)
 
 ## Descargas
