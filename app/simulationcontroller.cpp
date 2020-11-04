@@ -47,7 +47,8 @@ void SimulationController::updateScene( const QRectF &rect ) {
 }
 
 void SimulationController::updateView( ) {
-  updateScene( scene->views( ).first( )->sceneRect( ) );
+  auto const scene_views = scene->views( );
+  updateScene( scene_views.first( )->sceneRect( ) );
 }
 
 void SimulationController::updateAll( ) {

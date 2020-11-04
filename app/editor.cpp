@@ -76,7 +76,10 @@ Editor::~Editor( ) {
 void Editor::updateTheme( ) {
   if( ThemeManager::globalMngr ) {
     const ThemeAttrs attrs = ThemeManager::globalMngr->getAttrs( );
-    //! TODO: warning -- attrs may be null
+    if (!scene) {
+        //! scene could be NULL here
+        return;
+    }
     scene->setBackgroundBrush( attrs.scene_bgBrush );
     scene->setDots( QPen( attrs.scene_bgDots ) );
     selectionRect->setBrush( QBrush( attrs.selectionBrush ) );
@@ -93,7 +96,8 @@ void Editor::updateTheme( ) {
 }
 
 void Editor::mute( bool _mute ) {
-  for( GraphicElement *elm : scene->getElements( ) ) {
+  auto const scene_elems = scene->getElements( );
+  for( GraphicElement *elm : scene_elems ) {
     Buzzer *bz = dynamic_cast< Buzzer* >( elm );
     if( bz ) {
       bz->mute( _mute );
@@ -141,9 +145,12 @@ void Editor::clear( ) {
     scene->clear( );
   }
   buildSelectionRect( );
-  auto const scene_views = scene->views();
-  if( scene && !scene_views.isEmpty( ) ) {
-    scene->setSceneRect( scene_views.front( )->rect( ) );
+  if ( scene )
+  {
+      auto const scene_views = scene->views();
+      if(!scene_views.isEmpty( ) ) {
+        scene->setSceneRect( scene_views.front( )->rect( ) );
+      }
   }
   updateTheme( );
   simulationController->start( );
@@ -155,14 +162,25 @@ void Editor::deleteAction( ) {
   const QList< QGraphicsItem* > &items = scene->selectedItems( );
   scene->clearSelection( );
   if( !items.isEmpty( ) ) {
+    //! Guarantees that the simulation keeps running, if it were running upon the
+    //! element deletion.
+    bool simulationWasRunning = simulationController->isRunning();
+    //! Delete the selected items
     receiveCommand( new DeleteItemsCommand( items, this ) );
+    //! Clear the simulation controller.
+    //! This is needed to avoid a SIGSEGV caused by lack of synch. between an element's graphics code and logical code,
+    //! that is, its sprite could get deleted but its logical implementation not know about it.
     simulationController->clear();
+    if (simulationWasRunning) {
+        getSimulationController()->start();
+    }
   }
 }
 
 void Editor::showWires( bool checked ) {
   mShowWires = checked;
-  for( QGraphicsItem *item : scene->items( ) ) {
+  auto const scene_items = scene->items();
+  for( QGraphicsItem *item : scene_items ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     if( ( item->type( ) == QNEConnection::Type ) ) {
       item->setVisible( checked );
@@ -172,10 +190,12 @@ void Editor::showWires( bool checked ) {
         elm->setVisible( checked );
       }
       else {
-        for( QNEPort *in : elm->inputs( ) ) {
+        auto const elm_inputs = elm->inputs();
+        for( QNEPort *in : elm_inputs ) {
           in->setVisible( checked );
         }
-        for( QNEPort *out : elm->outputs( ) ) {
+        auto const elm_outputs = elm->outputs();
+        for( QNEPort *out : elm_outputs ) {
           out->setVisible( checked );
         }
       }
@@ -185,7 +205,8 @@ void Editor::showWires( bool checked ) {
 
 void Editor::showGates( bool checked ) {
   mShowGates = checked;
-  for( QGraphicsItem *item : scene->items( ) ) {
+  auto const scene_items = scene->items();
+  for( QGraphicsItem *item : scene_items ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     if( ( item->type( ) == GraphicElement::Type ) && elm ) {
       if( ( elm->elementGroup( ) != ElementGroup::INPUT ) &&
@@ -340,15 +361,19 @@ bool Editor::mousePressEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
     else {
       if( pressedPort->isOutput( ) ) {
         QNEOutputPort *startPort = dynamic_cast< QNEOutputPort* >( pressedPort );
-        startNewConnection( startPort );
+        if (startPort) {
+            startNewConnection( startPort );
+        }
       }
       else {
         QNEInputPort *endPort = dynamic_cast< QNEInputPort* >( pressedPort );
-        if( endPort->connections( ).size( ) > 0 ) {
-          detachConnection( endPort );
-        }
-        else {
-          startNewConnection( endPort );
+        if (endPort) {
+            if( endPort->connections( ).size( ) > 0 ) {
+              detachConnection( endPort );
+            }
+            else {
+              startNewConnection( endPort );
+            }
         }
       }
     }
@@ -379,7 +404,8 @@ void Editor::resizeScene( ) {
   QGraphicsItem *item = itemAt( mousePos );
   if( item && ( timer.elapsed( ) > 100 ) && draggingElement ) {
     if( !scene->views( ).isEmpty( ) ) {
-      QGraphicsView *view = scene->views( ).front( );
+      auto const scene_views = scene->views();
+      QGraphicsView *view = scene_views.front( );
       view->ensureVisible( QRectF( mousePos - QPointF( 4, 4 ), QSize( 9, 9 ) ).normalized( ) );
     }
     timer.restart( );
@@ -609,7 +635,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
                                                                             GlobalProperties::currentFile );
     receiveCommand( new AddItemsCommand( itemList, this ) );
     scene->clearSelection( );
-    for( QGraphicsItem *item : itemList ) {
+    for( QGraphicsItem *item : qAsConst(itemList) ) {
       if( item->type( ) == GraphicElement::Type ) {
         item->setPos( ( item->pos( ) + offset ) );
         item->setSelected( true );
@@ -721,7 +747,7 @@ void Editor::paste( QDataStream &ds ) {
                                                                           version,
                                                                           GlobalProperties::currentFile );
   receiveCommand( new AddItemsCommand( itemList, this ) );
-  for( QGraphicsItem *item : itemList ) {
+  for( QGraphicsItem *item : qAsConst(itemList) ) {
     if( item->type( ) == GraphicElement::Type ) {
       item->setPos( ( item->pos( ) + offset ) );
       item->update( );
@@ -732,7 +758,8 @@ void Editor::paste( QDataStream &ds ) {
 }
 
 void Editor::selectAll( ) {
-  for( QGraphicsItem *item : scene->items( ) ) {
+  auto const scene_items = scene->items();
+  for( QGraphicsItem *item : scene_items ) {
     item->setSelected( true );
   }
 }
@@ -841,6 +868,11 @@ void Editor::pasteAction( ) {
 }
 
 bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
+
+  if (!evt) {
+      return false;
+  }
+
   if( obj == scene ) {
     QGraphicsSceneDragDropEvent *dde = dynamic_cast< QGraphicsSceneDragDropEvent* >( evt );
     QGraphicsSceneMouseEvent *mouseEvt = dynamic_cast< QGraphicsSceneMouseEvent* >( evt );
@@ -950,10 +982,12 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
       }
         case QEvent::KeyPress: {
         if( keyEvt && !( keyEvt->modifiers( ) & Qt::ControlModifier ) ) {
-          for( GraphicElement *elm : scene->getElements( ) ) {
+          auto const scene_elems = scene->getElements();
+          for( GraphicElement *elm : scene_elems ) {
             if( elm->hasTrigger( ) && !elm->getTrigger( ).isEmpty( ) ) {
               Input *in = dynamic_cast< Input* >( elm );
-              if( in && elm->getTrigger( ).matches( keyEvt->key( ) ) ) {
+              if( in && elm->getTrigger( ).matches( keyEvt->key( ) ) )
+              {
                 if( elm->elementType( ) == ElementType::SWITCH ) {
                   in->setOn( !in->getOn( ) );
                 }
@@ -968,7 +1002,8 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
       }
         case QEvent::KeyRelease: {
         if( keyEvt && !( keyEvt->modifiers( ) & Qt::ControlModifier ) ) {
-          for( GraphicElement *elm : scene->getElements( ) ) {
+          auto const scene_elems = scene->getElements( );
+          for( GraphicElement *elm : scene_elems ) {
             if( elm->hasTrigger( ) && !elm->getTrigger( ).isEmpty( ) ) {
               Input *in = dynamic_cast< Input* >( elm );
               if( in && ( elm->getTrigger( ).matches( keyEvt->key( ) ) == QKeySequence::ExactMatch ) ) {

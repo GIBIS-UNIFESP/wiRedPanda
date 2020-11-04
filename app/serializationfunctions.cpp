@@ -97,7 +97,8 @@ QList< QGraphicsItem* > SerializationFunctions::load( QDataStream &ds, QString p
     }
     scene->setSceneRect( scene->itemsBoundingRect( ) );
     if( !scene->views( ).empty( ) ) {
-      QGraphicsView *view = scene->views( ).first( );
+      auto const scene_views = scene->views( );
+      QGraphicsView *view = scene_views.first( );
       rect = rect.united( view->rect( ) );
       rect.moveCenter( QPointF( 0, 0 ) );
       scene->setSceneRect( scene->sceneRect( ).united( rect ) );
