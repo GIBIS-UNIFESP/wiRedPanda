@@ -11,7 +11,7 @@ Suas principais características são:
   - Intuitivo e fácil de se usar;
   - Exporta para imagens ou PDF.
 
-Read me in [English](README.md).
+Read me in [English](README.md). Léame en [español](README_es.md).
    
 ![Tela principal](https://user-images.githubusercontent.com/36349314/97934063-532ed000-1d53-11eb-9667-73ea32f456ce.png)
 
