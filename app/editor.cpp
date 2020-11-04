@@ -56,6 +56,23 @@ Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ) {
 Editor::~Editor( ) {
 }
 
+//! CARMESIM
+//#ifdef Q_OS_WIN
+//#include <windows.h> // for Sleep
+//#endif
+//void _sleep(int ms)
+//{
+//    if (ms <= 0) { return; }
+
+//#ifdef Q_OS_WIN
+//    Sleep(uint(ms));
+//#else
+//    struct timespec ts = { ms / 1000, (ms % 1000) * 1000 * 1000 };
+//    nanosleep(&ts, NULL);
+//#endif
+//}
+
+
 void Editor::updateTheme( ) {
   if( ThemeManager::globalMngr ) {
     const ThemeAttrs attrs = ThemeManager::globalMngr->getAttrs( );
@@ -133,11 +150,13 @@ void Editor::clear( ) {
   emit circuitHasChanged( );
 }
 
+//! CARMESIM: reset scene upon deletion in order to avoid SIGSEGV
 void Editor::deleteAction( ) {
   const QList< QGraphicsItem* > &items = scene->selectedItems( );
   scene->clearSelection( );
   if( !items.isEmpty( ) ) {
     receiveCommand( new DeleteItemsCommand( items, this ) );
+    simulationController->clear();
   }
 }
 
