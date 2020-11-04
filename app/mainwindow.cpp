@@ -374,7 +374,9 @@ QFileInfo MainWindow::getCurrentFile( ) const {
 
 void MainWindow::setCurrentFile( const QFileInfo &value ) {
   autosaveFile.remove( );
+  //! Default the autosave path to the temporary directory of the system.
   QDir autosavePath( QDir::temp( ) );
+  //! Or to the current file's directory, if there is one
   if( value.exists( ) ) {
     autosavePath = value.dir( );
   }
@@ -386,8 +388,9 @@ void MainWindow::setCurrentFile( const QFileInfo &value ) {
     setWindowTitle( "wiRED PANDA v" + QString(APP_VERSION));
   }
   else {
-    setWindowTitle( QString( "wiRED PANDA %1 ( %2 )" ).arg( APP_VERSION, value.fileName( ) ) );
+    setWindowTitle( QString( "wiRED PANDA v%1 [%2]" ).arg( APP_VERSION, value.fileName( ) ) );
   }
+  //! Add the file to the recent files controller
   rfController->addFile( value.absoluteFilePath( ) );
   GlobalProperties::currentFile = currentFile.absoluteFilePath( );
   if( currentFile.exists( ) ) {
@@ -895,4 +898,10 @@ void MainWindow::autoSave( ) {
 
 void MainWindow::on_actionMute_triggered( ) {
   editor->mute( ui->actionMute->isChecked( ) );
+}
+
+void MainWindow::on_actionLabels_under_icons_triggered(bool checked)
+{
+    checked ? ui->mainToolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon)
+            : ui->mainToolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 }

@@ -121,6 +121,8 @@ private slots:
 
   void on_actionMute_triggered( );
 
+  void on_actionLabels_under_icons_triggered(bool checked);
+
 private:
   Ui::MainWindow *ui;
   Editor *editor;
