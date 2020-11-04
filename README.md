@@ -11,14 +11,14 @@ The main features of the software are:
   - It's intuitive and easy to use;
   - Export your work as an image or a PDF.
 
-Leia-me em [Português](README_pt_BR.md).
+_Leia-me em [português](README_pt_BR.md). Léame en [español](README_es.md)._
 
 ![Main screen](https://user-images.githubusercontent.com/36349314/97934063-532ed000-1d53-11eb-9667-73ea32f456ce.png)
 
 ## Downloads
 
 Compiled binaries for Windows and Linux are available [here](http://gibis-unifesp.github.io/wiRedPanda/downloads/).
-Dynamically-linked binaries for Linux and macOS are availble [here](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
+Dynamically-linked binaries for Linux and macOS are available [here](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
 
 ## Building
 
