@@ -11,7 +11,7 @@ The main features of the software are:
   - It's intuitive and easy to use;
   - Export your work as an image or a PDF.
 
-_Leia-me em [português](README_pt_BR.md). Léame en [español](README_es.md).
+_Leia-me em [português](README_pt_BR.md). Léame en [español](README_es.md)._
 
 ![Main screen](https://user-images.githubusercontent.com/36349314/97934063-532ed000-1d53-11eb-9667-73ea32f456ce.png)
 
