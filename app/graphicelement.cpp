@@ -515,10 +515,10 @@ void GraphicElement::updateTheme( ) {
     label->setDefaultTextColor( attrs.graphicElement_labelColor );
     m_selectionBrush = attrs.selectionBrush;
     m_selectionPen = attrs.selectionPen;
-    for( QNEInputPort *input  : m_inputs ) {
+    for( QNEInputPort *input  : qAsConst(m_inputs) ) {
       input->updateTheme( );
     }
-    for( QNEOutputPort *output : outputs( ) ) {
+    for( QNEOutputPort *output : qAsConst(m_outputs) ) {
       output->updateTheme( );
     }
     updateThemeLocal( );
@@ -543,7 +543,7 @@ bool GraphicElement::isValid( ) {
     }
   }
   if( valid == false ) {
-    for( QNEOutputPort *output : outputs( ) ) {
+    for( QNEOutputPort *output : m_outputs ) {
       for( QNEConnection *conn : output->connections( ) ) {
         conn->setStatus( QNEConnection::Status::Invalid );
         QNEInputPort *port = conn->otherPort( output );
