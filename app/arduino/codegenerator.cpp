@@ -199,10 +199,10 @@ void CodeGenerator::declareAuxVariables( ) {
 
 void CodeGenerator::setup( ) {
   out << "void setup( ) {" << endl;
-  for( MappedPin pin : qAsConst( inputMap ) ) {
+  for( const MappedPin& pin : qAsConst( inputMap ) ) {
     out << "    pinMode( " << pin.varName << ", INPUT );" << endl;
   }
-  for( MappedPin pin : qAsConst( outputMap ) ) {
+  for( const MappedPin& pin : qAsConst( outputMap ) ) {
     out << "    pinMode( " << pin.varName << ", OUTPUT );" << endl;
   }
   out << "}" << endl << endl;
@@ -283,8 +283,8 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
           QString k = otherPortName( elm->input( 2 ) );
           QString inclk = firstOut + "_inclk";
           out << QString( "    //JK FlipFlop" ) << endl;
-          out << QString( "    if( %1 && !%2 ) { " ).arg( clk ).arg( inclk ) << endl;
-          out << QString( "        if( %1 && %2) { " ).arg( j ).arg( k ) << endl;
+          out << QString( "    if( %1 && !%2 ) { " ).arg( clk, inclk ) << endl;
+          out << QString( "        if( %1 && %2) { " ).arg( j, k ) << endl;
           out << QString( "            boolean aux = %1;" ).arg( firstOut ) << endl;
           out << QString( "            %1 = %2;" ).arg( firstOut, secondOut ) << endl;
           out << QString( "            %1 = aux;" ).arg( secondOut ) << endl;
