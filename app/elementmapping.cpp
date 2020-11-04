@@ -60,8 +60,8 @@ void ElementMapping::clear( ) {
 QVector< GraphicElement* > ElementMapping::sortGraphicElements( QVector< GraphicElement* > elms ) {
 
   //! Clazy warning: Use QHash<K, T> instead of QMap<K, T> when K is a pointer
-  QMap< GraphicElement*, bool > beingvisited;
-  QMap< GraphicElement*, int > priority;
+  QHash< GraphicElement*, bool > beingvisited;
+  QHash< GraphicElement*, int > priority;
   for( GraphicElement *elm : elms ) {
     calculatePriority( elm, beingvisited, priority );
   }
@@ -293,8 +293,8 @@ void ElementMapping::sortLogicElements( ) {
 
 }
 
-int ElementMapping::calculatePriority( GraphicElement *elm, QMap< GraphicElement*, bool > &beingvisited,
-                                       QMap< GraphicElement*, int > &priority ) {
+int ElementMapping::calculatePriority( GraphicElement *elm, QHash< GraphicElement*, bool > &beingvisited,
+                                       QHash< GraphicElement*, int > &priority ) {
   if( !elm ) {
     return( 0 );
   }
