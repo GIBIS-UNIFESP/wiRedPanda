@@ -1,6 +1,5 @@
-# WiRed Panda
+# WiRed Panda ![GitHub All Releases](https://img.shields.io/github/downloads/gibis-unifesp/wiredpanda/total?style=flat-square) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/gibis-unifesp/wiredpanda?style=flat-square) ![GitHub](https://img.shields.io/github/license/gibis-unifesp/wiredpanda?style=flat-square)
 
-[![Estatus de la compilación](https://travis-ci.org/GIBIS-UNIFESP/wiRedPanda.svg?branch=master)](https://travis-ci.org/GIBIS-UNIFESP/wiRedPanda)
 
 WiRed Panda es [Software Libre](https://es.wikipedia.org/wiki/Software_libre) diseñado para ayudar a los estudiantes a aprender sobre la lógica detrás de los circuitos eléctricos, y simularlos de una forma fácil e intuitiva.
 
