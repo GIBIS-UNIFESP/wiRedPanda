@@ -413,8 +413,9 @@ void MainWindow::updateRecentBoxes( ) {
 /*  qDeleteAll( boxItemWidgets ); */
   boxItemWidgets.clear( );
 
+  //! Show recent files
   const QStringList files = rboxController->getFiles( );
-  for( auto file : files ) {
+  for(const QString& file : files ) {
     QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
     ListItemWidget *item = new ListItemWidget( pixmap, ElementType::BOX, file, this );
     boxItemWidgets.append( item );

@@ -8,6 +8,7 @@
 
 #include <QGraphicsScene>
 #include <QMap>
+#include <QHash>
 #include <QObject>
 #include <QTimer>
 
@@ -67,7 +68,7 @@ protected:
   void connectElements( );
   void validateElements( );
   void sortLogicElements( );
-  static int calculatePriority( GraphicElement *elm, QMap< GraphicElement*, bool > &beingvisited, QMap< GraphicElement*,
+  static int calculatePriority( GraphicElement *elm, QHash< GraphicElement*, bool > &beingvisited, QHash< GraphicElement*,
                                                                                                         int > &priority );
   void insertElement( GraphicElement *elm );
   void insertBox( Box *box );
