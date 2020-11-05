@@ -102,7 +102,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
-        arch: win64_mingw73
+        arch: win64_mingw81
         version: 5.15.0
         modules: qtcharts qtmultimedia
 
