@@ -13,7 +13,7 @@
 - [x] Show Lines with issues.
 - [x] Search.
 - [ ] Flip Elements in the latteral pannel.
-- [ ] 16-seg Display.
+- [X] 16-seg Display.
 - [ ] ~~Allow gates with more than 8 in/out.~~
 - [ ] ~~Labels always in horizontal.~~
 - [ ] Verify if file changed outside.

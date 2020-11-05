@@ -2,6 +2,8 @@
 
 #include <QGraphicsSceneMouseEvent>
 
+int InputSwitch::current_id_number = 0;
+
 InputSwitch::InputSwitch( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent ) {
   setOutputsOnTop( false );
   setRotatable( false );

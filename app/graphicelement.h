@@ -158,7 +158,7 @@ public:
 
   virtual QString genericProperties( );
 
-
+  // Update label in graphical interface
   void updateLabel( );
 
 protected:

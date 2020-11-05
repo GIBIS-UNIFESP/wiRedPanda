@@ -8,6 +8,7 @@ class InputButton : public GraphicElement, public Input {
 public:
   explicit InputButton( QGraphicsItem *parent = nullptr );
   virtual ~InputButton( ) override = default;
+  static int current_id_number; // Number used to create distinct labels for each instance of this element.
   bool on;
 
   /* QGraphicsItem interface */

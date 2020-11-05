@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <QGraphicsSceneMouseEvent>
 
+int InputButton::current_id_number = 0;
+
 InputButton::InputButton( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent ) {
   setOutputsOnTop( false );
   setPixmap( ":/input/buttonOff.png" );

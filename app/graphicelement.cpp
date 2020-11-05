@@ -480,7 +480,7 @@ QString GraphicElement::genericProperties( ) {
 
 void GraphicElement::updateLabel( ) {
   QString label = m_labelText;
-  if( !hasTrigger( ) || getTrigger( ).toString( ).isEmpty( ) ) {
+  if( ( !hasTrigger( ) ) || ( getTrigger( ).toString( ).isEmpty( ) ) ) {
     this->label->setPlainText( label );
   }
   else {

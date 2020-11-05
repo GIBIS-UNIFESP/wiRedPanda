@@ -10,6 +10,7 @@ class LedGrid : public GraphicElement {
 public:
   explicit LedGrid( QGraphicsItem *parent );
   virtual ~LedGrid( );
+  static int current_id_number; // Number used to create distinct labels for each instance of this element.
 
   virtual ElementType elementType( ) override {
     return( ElementType::LEDGRID );
