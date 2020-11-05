@@ -71,7 +71,7 @@ SimpleWaveform::~SimpleWaveform( ) {
 
 void SimpleWaveform::sortElements( QVector< GraphicElement* > &elements, QVector< GraphicElement* > &inputs, QVector< GraphicElement* > &outputs, SortingMode sorting ) {
   elements = ElementMapping::sortGraphicElements( elements );
-  for( GraphicElement *elm : elements ) {
+  for( GraphicElement *elm : qAsConst(elements) ) {
     if( elm && ( elm->type( ) == GraphicElement::Type ) ) {
       if( elm->elementGroup( ) == ElementGroup::INPUT ) {
         inputs.append( elm );
@@ -138,7 +138,7 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
   int num_iter = pow( 2, inputs.size( ) );
   // Getting the number of outputs. Warning: this will not work if any inout element type in created.
   int outputCount = 0;
-  for( GraphicElement *out : outputs ) {
+  for( GraphicElement *out : qAsConst(outputs) ) {
     outputCount += out->inputSize( );
   }
   // Creating results vector containing the output resulting values.
@@ -318,23 +318,25 @@ void SimpleWaveform::showWaveform( ) {
     }
   }
   // Inserting input series to the chart
-  for( QLineSeries *in : in_series ) {
+  for( QLineSeries *in : qAsConst(in_series) ) {
     chart.addSeries( in );
   }
   // Inserting output series to the chart
-  for( QLineSeries *out : out_series ) {
+  for( QLineSeries *out : qAsConst(out_series) ) {
     chart.addSeries( out );
   }
   // Setting graphic axes
   chart.createDefaultAxes( );
+
   /*  chart.axisY( )->hide( ); */
   // Setting range and names to x, y axis.
-  QValueAxis *ax = dynamic_cast< QValueAxis* >( chart.axisX( ) );
+  QValueAxis *ax = dynamic_cast< QValueAxis* >( chart.axes( Qt::Horizontal ).back( ) );
   ax->setRange( 0, num_iter );
   ax->setTickCount( num_iter + 1 );
   ax->setLabelFormat( QString( "%i" ) );
-  QValueAxis *ay = dynamic_cast< QValueAxis* >( chart.axisY( ) );
+  QValueAxis *ay = dynamic_cast< QValueAxis* >( chart.axes( Qt::Vertical ).back( ) );
   /*  ay->setShadesBrush( QBrush( Qt::lightGray ) ); */
+
   // Setting graphics waveform color.
   ay->setShadesColor( QColor( 0, 0, 0, 8 ) );
   ay->setShadesPen( QPen( QColor( 0, 0, 0, 0 ) ) );

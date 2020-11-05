@@ -23,6 +23,9 @@
    <iconset resource="resources/resources.qrc">
     <normaloff>:/pandaLogo.png</normaloff>:/pandaLogo.png</iconset>
   </property>
+  <property name="toolButtonStyle">
+   <enum>Qt::ToolButtonTextBesideIcon</enum>
+  </property>
   <property name="unifiedTitleAndToolBarOnMac">
    <bool>true</bool>
   </property>
@@ -82,7 +85,7 @@
              </size>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="io">
              <attribute name="title">
@@ -103,7 +106,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>239</height>
+                   <height>250</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -145,7 +148,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>239</height>
+                   <height>250</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -187,7 +190,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>239</height>
+                   <height>250</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -229,7 +232,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>208</width>
-                   <height>239</height>
+                   <height>250</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -329,7 +332,7 @@
                <x>0</x>
                <y>0</y>
                <width>228</width>
-               <height>289</height>
+               <height>296</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
@@ -421,7 +424,7 @@
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>25</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -510,6 +513,7 @@
     <addaction name="separator"/>
     <addaction name="menuTheme"/>
     <addaction name="actionFullscreen"/>
+    <addaction name="actionLabels_under_icons"/>
    </widget>
    <widget class="QMenu" name="menuLanguage">
     <property name="title">
@@ -736,6 +740,9 @@
    </property>
    <property name="text">
     <string>Rotate &amp;left</string>
+   </property>
+   <property name="statusTip">
+    <string>kkkkkkkk</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+R</string>
@@ -981,6 +988,14 @@
     <string>Ctrl+M</string>
    </property>
   </action>
+  <action name="actionLabels_under_icons">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Labels under icons</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1006,13 +1021,9 @@
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/resources.qrc"/>
   <include location="resources/input/input.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/resources.qrc"/>
   <include location="resources/basic/basic.qrc"/>
-  <include location="resources/input/input.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>

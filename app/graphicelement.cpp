@@ -12,6 +12,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <stdexcept>
 
+// WARNING: non-POD static
 static QMap< QString, QPixmap > loadedPixmaps;
 
 
@@ -94,7 +95,12 @@ void GraphicElement::setPixmap( const QString &pixmapName, QRect size ) {
   }
   if( pixmapPath != currentPixmapName ) {
     if( !loadedPixmaps.contains( pixmapPath ) ) {
-      loadedPixmaps[ pixmapPath ] = QPixmap::fromImage( QImage( pixmapPath ) ).copy( size );
+      // TODO: use QPixmap::loadFromData() here
+      QPixmap pixmap;
+      if( !pixmap.load( pixmapPath ) ) {
+        throw std::runtime_error( ERRORMSG( "Couldn't load pixmap." ) );
+      }
+      loadedPixmaps[ pixmapPath ] = pixmap.copy( size );
     }
     pixmap = &loadedPixmaps[ pixmapPath ];
     setTransformOriginPoint( pixmap->rect( ).center( ) );
@@ -507,10 +513,10 @@ void GraphicElement::updateTheme( ) {
     label->setDefaultTextColor( attrs.graphicElement_labelColor );
     m_selectionBrush = attrs.selectionBrush;
     m_selectionPen = attrs.selectionPen;
-    for( QNEInputPort *input  : m_inputs ) {
+    for( QNEInputPort *input  : qAsConst(m_inputs) ) {
       input->updateTheme( );
     }
-    for( QNEOutputPort *output : outputs( ) ) {
+    for( QNEOutputPort *output : qAsConst(m_outputs) ) {
       output->updateTheme( );
     }
     updateThemeLocal( );
@@ -535,7 +541,7 @@ bool GraphicElement::isValid( ) {
     }
   }
   if( valid == false ) {
-    for( QNEOutputPort *output : outputs( ) ) {
+    for( QNEOutputPort *output : m_outputs ) {
       for( QNEConnection *conn : output->connections( ) ) {
         conn->setStatus( QNEConnection::Status::Invalid );
         QNEInputPort *port = conn->otherPort( output );

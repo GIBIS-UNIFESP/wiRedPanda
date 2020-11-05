@@ -16,19 +16,19 @@ BoxMapping::~BoxMapping( ) {
 
 void BoxMapping::initialize( ) {
   ElementMapping::initialize( );
-  for( QNEPort *port : boxInputs ) {
+  for( QNEPort *port : qAsConst( boxInputs ) ) {
     inputs.append( map[ port->graphicElement( ) ] );
   }
-  for( QNEPort *port : boxOutputs ) {
+  for( QNEPort *port : qAsConst( boxOutputs ) ) {
     outputs.append( map[ port->graphicElement( ) ] );
   }
 }
 
 void BoxMapping::clearConnections( ) {
-  for( LogicElement *in : inputs ) {
+  for( LogicElement *in : qAsConst( inputs ) ) {
     in->clearPredecessors( );
   }
-  for( LogicElement *out : outputs ) {
+  for( LogicElement *out : qAsConst( outputs ) ) {
     out->clearSucessors( );
   }
 }

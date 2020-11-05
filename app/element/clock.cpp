@@ -5,11 +5,14 @@
 bool Clock::reset = false;
 int Clock::current_id_number = 0;
 
+Clock::~Clock( ) {
+}
+
 Clock::Clock( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent ) {
   setOutputsOnTop( false );
   setRotatable( false );
   /*  connect(&timer,&QTimer::timeout,this,&Clock::updateClock); */
-  setFrequency( 1.0 );
+  setFrequency( 1.0 ); // TODO: call to virtual function during construction
   setHasFrequency( true );
   on = false;
   Clock::reset = true;
@@ -25,7 +28,7 @@ void Clock::updateClock( ) {
       setOn( !on );
     }
   }
-  setOn( on );
+    setOn( on );
 }
 
 bool Clock::getOn( ) const {
@@ -40,7 +43,7 @@ void Clock::setOn( bool value ) {
   else {
     setPixmap( ":/input/clock0.png" );
   }
-  outputs( ).first( )->setValue( on );
+  m_outputs.first( )->setValue( on );
 }
 
 void Clock::save( QDataStream &ds ) const {

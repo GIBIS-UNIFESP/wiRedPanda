@@ -8,6 +8,8 @@
 #include "thememanager.h"
 #include "ui_mainwindow.h"
 
+#include <cmath>
+#include <iostream>
 #include <QDebug>
 #include <QFileDialog>
 #include <QKeyEvent>
@@ -19,8 +21,6 @@
 #include <QShortcut>
 #include <QStyleFactory>
 #include <QTemporaryFile>
-#include <cmath>
-#include <iostream>
 #include <stdexcept>
 
 
@@ -56,7 +56,8 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 
   /* THEME */
   QActionGroup *themeGroup = new QActionGroup( this );
-  for( QAction *action : ui->menuTheme->actions( ) ) {
+  auto const actions = ui->menuTheme->actions( );
+  for( QAction *action : actions ) {
     themeGroup->addAction( action );
   }
   themeGroup->setExclusive( true );
@@ -260,7 +261,7 @@ bool MainWindow::open( const QString &fname ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-    std::endl;
+      std::endl;
     return( false );
   }
   fl.close( );
@@ -373,7 +374,9 @@ QFileInfo MainWindow::getCurrentFile( ) const {
 
 void MainWindow::setCurrentFile( const QFileInfo &value ) {
   autosaveFile.remove( );
+  //! Default the autosave path to the temporary directory of the system.
   QDir autosavePath( QDir::temp( ) );
+  //! Or to the current file's directory, if there is one
   if( value.exists( ) ) {
     autosavePath = value.dir( );
   }
@@ -382,11 +385,12 @@ void MainWindow::setCurrentFile( const QFileInfo &value ) {
   qDebug( ) << "Setting current file to: " << value.absoluteFilePath( );
   currentFile = value;
   if( value.fileName( ).isEmpty( ) ) {
-    setWindowTitle( "wiRED PANDA" );
+    setWindowTitle( "wiRED PANDA v" + QString(APP_VERSION));
   }
   else {
-    setWindowTitle( QString( "wiRED PANDA ( %1 )" ).arg( value.fileName( ) ) );
+    setWindowTitle( QString( "wiRED PANDA v%1 [%2]" ).arg( APP_VERSION, value.fileName( ) ) );
   }
+  //! Add the file to the recent files controller
   rfController->addFile( value.absoluteFilePath( ) );
   GlobalProperties::currentFile = currentFile.absoluteFilePath( );
   if( currentFile.exists( ) ) {
@@ -403,14 +407,15 @@ void MainWindow::on_actionSelect_all_triggered( ) {
 
 void MainWindow::updateRecentBoxes( ) {
   ui->scrollAreaWidgetContents_Box->layout( )->removeItem( ui->verticalSpacer_BOX );
-  for( ListItemWidget *item : boxItemWidgets ) {
+  for( ListItemWidget *item : qAsConst( boxItemWidgets ) ) {
     item->deleteLater( );
   }
 /*  qDeleteAll( boxItemWidgets ); */
   boxItemWidgets.clear( );
 
-  QStringList files = rboxController->getFiles( );
-  for( auto file : files ) {
+  //! Show recent files
+  const QStringList files = rboxController->getFiles( );
+  for(const QString& file : files ) {
     QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
     ListItemWidget *item = new ListItemWidget( pixmap, ElementType::BOX, file, this );
     boxItemWidgets.append( item );
@@ -440,7 +445,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-    std::endl;
+      std::endl;
     return;
   }
   fl.close( );
@@ -452,7 +457,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
 
 void MainWindow::on_lineEdit_textChanged( const QString &text ) {
   ui->searchLayout->removeItem( ui->VSpacer );
-  for( ListItemWidget *item : searchItemWidgets ) {
+  for( ListItemWidget *item : qAsConst( searchItemWidgets ) ) {
     item->deleteLater( );
   }
   searchItemWidgets.clear( );
@@ -483,7 +488,7 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
       }
     }
     for( auto *label : searchResults ) {
-      ListItemWidget *item = new ListItemWidget( *label->pixmap( ), label->elementType( ), label->auxData( ) );
+      ListItemWidget *item = new ListItemWidget( label->pixmap( Qt::ReturnByValue ), label->elementType( ), label->auxData( ) );
       if( !firstResult ) {
         firstResult = item->getLabel( );
       }
@@ -665,7 +670,7 @@ void MainWindow::on_actionPrint_triggered( ) {
   if( pdfFile.isEmpty( ) ) {
     return;
   }
-  if( !pdfFile.toLower( ).endsWith( ".pdf" ) ) {
+  if( !pdfFile.endsWith( ".pdf", Qt::CaseInsensitive ) ) {
     pdfFile.append( ".pdf" );
   }
   QPrinter printer( QPrinter::HighResolution );
@@ -694,7 +699,7 @@ void MainWindow::on_actionExport_to_Image_triggered( ) {
   if( pngFile.isEmpty( ) ) {
     return;
   }
-  if( !pngFile.toLower( ).endsWith( ".png" ) ) {
+  if( !pngFile.endsWith( ".png", Qt::CaseInsensitive ) ) {
     pngFile.append( ".png" );
   }
   QRectF s = editor->getScene( )->itemsBoundingRect( ).adjusted( -64, -64, 64, 64 );
@@ -894,4 +899,10 @@ void MainWindow::autoSave( ) {
 
 void MainWindow::on_actionMute_triggered( ) {
   editor->mute( ui->actionMute->isChecked( ) );
+}
+
+void MainWindow::on_actionLabels_under_icons_triggered(bool checked)
+{
+    checked ? ui->mainToolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon)
+            : ui->mainToolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 }

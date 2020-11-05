@@ -7,7 +7,7 @@
 #include <QFile>
 
 BoxPrototypeImpl::~BoxPrototypeImpl( ) {
-  for( GraphicElement *elm: elements ) {
+  for( GraphicElement *elm: qAsConst( elements ) ) {
     delete elm;
   }
 }
@@ -116,7 +116,8 @@ void BoxPrototypeImpl::loadOutputs( ) {
 }
 
 void BoxPrototypeImpl::loadInputElement( GraphicElement *elm ) {
-  for( QNEOutputPort *port : elm->outputs( ) ) {
+  auto const outputs = elm->outputs( );
+  for( QNEOutputPort *port : outputs ) {
     GraphicElement *nodeElm = ElementFactory::buildElement( ElementType::NODE );
     nodeElm->setPos( elm->pos( ) );
     nodeElm->setLabel( elm->getLabel( ) );
@@ -142,7 +143,8 @@ void BoxPrototypeImpl::loadInputElement( GraphicElement *elm ) {
 }
 
 void BoxPrototypeImpl::loadOutputElement( GraphicElement *elm ) {
-  for( QNEInputPort *port : elm->inputs( ) ) {
+  auto const inputs = elm->inputs( );
+  for( QNEInputPort *port :  inputs ) {
     GraphicElement *nodeElm = ElementFactory::buildElement( ElementType::NODE );
     nodeElm->setPos( elm->pos( ) );
     nodeElm->setLabel( elm->getLabel( ) );

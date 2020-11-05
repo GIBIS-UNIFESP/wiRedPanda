@@ -5,8 +5,8 @@
 
 class JKFlipFlop : public GraphicElement {
   bool lastClk;
-  char lastJ;
-  char lastK;
+  signed char lastJ;
+  signed char lastK;
 public:
   explicit JKFlipFlop( QGraphicsItem *parent = nullptr );
   virtual ~JKFlipFlop( ) override = default;

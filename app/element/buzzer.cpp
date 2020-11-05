@@ -21,7 +21,8 @@ Buzzer::Buzzer( QGraphicsItem *parent ) : GraphicElement( 1, 1, 0, 0, parent ) {
 
 void Buzzer::refresh( ) {
   if( isValid( ) ) {
-    bool value = inputs( ).first( )->value( );
+
+    bool value = m_inputs.first( )->value( );
     if( value == 1 ) {
       playbuzzer( );
 
