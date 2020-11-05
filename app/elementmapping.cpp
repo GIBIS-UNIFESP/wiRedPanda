@@ -239,7 +239,9 @@ void ElementMapping::applyConnection( GraphicElement *elm, QNEPort *in ) {
     inputIndex = in->index( );
   }
   Q_ASSERT( currentLogElm );
-  if( in->connections( ).size( ) == 1 ) {
+  int connections = in->connections( ).size( );
+  bool connection_required = in->isRequired( );
+  if( connections == 1 ) {
     QNEPort *other_out = in->connections( ).first( )->otherPort( in );
     if( other_out ) {
       GraphicElement *predecessor = other_out->graphicElement( );
@@ -260,7 +262,7 @@ void ElementMapping::applyConnection( GraphicElement *elm, QNEPort *in ) {
       }
     }
   }
-  else if( ( in->connections( ).size( ) == 0 ) && !in->isRequired( ) ) {
+  else if( ( connections == 0 ) && ( !connection_required ) ) {
     LogicElement *pred = in->defaultValue( ) ? &globalVCC : &globalGND;
     currentLogElm->connectPredecessor( inputIndex, pred, 0 );
   }

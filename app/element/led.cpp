@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <QGraphicsSceneDragDropEvent>
 
+int Led::current_id_number = 0;
+
 Led::Led( QGraphicsItem *parent ) : GraphicElement( 1, 4, 0, 0, parent ) {
   setOutputsOnTop( true );
   setRotatable( false );

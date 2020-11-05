@@ -18,24 +18,3 @@ void TLatch::updatePorts( ) {
   output( 0 )->setPos( bottomPosition( ), 15 ); /* Q */
   output( 1 )->setPos( bottomPosition( ), 45 ); /* !Q */
 }
-
-void TLatch::updateLogic( ) {
-  signed char res = output( 0 )->value( );
-  if( !isValid( ) ) {
-    res = -1;
-  }
-  else {
-    if( res == -1 ) {
-      res = 0;
-    }
-    signed char toggle = input( 0 )->value( );
-    signed char enable = input( 1 )->value( );
-    if( enable == 1 ) { /* If Enable */
-      if( toggle == 1 ) { /* And T */
-        res = !res;
-      }
-    }
-  }
-  output( 0 )->setValue( res );
-  output( 1 )->setValue( !res );
-}

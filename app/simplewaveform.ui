@@ -57,11 +57,14 @@
    </item>
    <item row="1" column="1">
     <widget class="QRadioButton" name="radioButton_Position">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="text">
       <string>Position</string>
      </property>
      <property name="checked">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
     </widget>
    </item>
@@ -71,7 +74,7 @@
       <string>I&amp;ncreasing</string>
      </property>
      <property name="checked">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -85,7 +88,6 @@
   </layout>
  </widget>
  <resources>
-  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections>

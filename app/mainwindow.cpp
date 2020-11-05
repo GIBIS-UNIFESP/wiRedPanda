@@ -488,7 +488,7 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
       }
     }
     for( auto *label : searchResults ) {
-      ListItemWidget *item = new ListItemWidget( *label->pixmap( ), label->elementType( ), label->auxData( ) );
+      ListItemWidget *item = new ListItemWidget( label->pixmap( Qt::ReturnByValue ), label->elementType( ), label->auxData( ) );
       if( !firstResult ) {
         firstResult = item->getLabel( );
       }
