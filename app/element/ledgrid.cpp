@@ -4,6 +4,8 @@
 #include <QPainter>
 #include <QPixmap>
 
+int LedGrid::current_id_number = 0;
+
 LedGrid::LedGrid( QGraphicsItem *parent ) : GraphicElement( 8, 8, 0, 0, parent ) {
   setRotatable( false );
   setOutputsOnTop( true );

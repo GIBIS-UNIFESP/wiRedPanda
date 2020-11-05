@@ -3,6 +3,7 @@
 #include <QDebug>
 
 bool Clock::reset = false;
+int Clock::current_id_number = 0;
 
 Clock::~Clock( ) {
 }

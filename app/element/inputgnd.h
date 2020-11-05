@@ -16,7 +16,6 @@ public:
   virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::STATICINPUT );
   }
-  void updateLogic( );
 };
 
 #endif /* INPUTGND_H */

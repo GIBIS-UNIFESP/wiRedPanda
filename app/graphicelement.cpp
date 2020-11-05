@@ -16,10 +16,8 @@
 static QMap< QString, QPixmap > loadedPixmaps;
 
 
-GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz,
-                                QGraphicsItem *parent ) : QGraphicsObject( parent ), label( new QGraphicsTextItem(
-                                                                                              this ) )
-{
+GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent ) :
+    QGraphicsObject( parent ), label( new QGraphicsTextItem( this ) ) {
   pixmap = nullptr;
   COMMENT( "Setting flags of elements. ", 4 );
   setFlag( QGraphicsItem::ItemIsMovable );
@@ -488,7 +486,7 @@ QString GraphicElement::genericProperties( ) {
 
 void GraphicElement::updateLabel( ) {
   QString label = m_labelText;
-  if( !hasTrigger( ) || getTrigger( ).toString( ).isEmpty( ) ) {
+  if( ( !hasTrigger( ) ) || ( getTrigger( ).toString( ).isEmpty( ) ) ) {
     this->label->setPlainText( label );
   }
   else {

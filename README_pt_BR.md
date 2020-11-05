@@ -17,7 +17,7 @@ _Read me in [English](README.md). Léame en [español](README_es.md)._
 ## Downloads
 
 Binário compilados para Windows e Linux podem ser encontrados [aqui](http://gibis-unifesp.github.io/wiRedPanda/downloads/).
-Binários _linkads_ dinâmicamente para Linux e macOS podem ser encontrados [aqui](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
+Binários _linkados_ dinâmicamente para Linux e macOS podem ser encontrados [aqui](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
 
 ## Compilação
 

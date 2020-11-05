@@ -18,19 +18,3 @@ void Mux::updatePorts( ) {
   input( 2 )->setPos( 32, 58 ); /* S */
   output( 0 )->setPos( 48, 32 ); /* Out */
 }
-
-void Mux::updateLogic( ) {
-  signed char data1 = input( 0 )->value( );
-  signed char data2 = input( 1 )->value( );
-  signed char choice = input( 2 )->value( );
-  signed char res = -1;
-  if( isValid( ) ) {
-    if( choice == 0 ) {
-      res = data1;
-    }
-    else {
-      res = data2;
-    }
-  }
-  output( 0 )->setValue( res );
-}

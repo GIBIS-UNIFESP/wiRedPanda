@@ -15,7 +15,6 @@ public:
   virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::STATICINPUT );
   }
-  void updateLogic( );
 };
 
 #endif /* INPUTVCC_H */

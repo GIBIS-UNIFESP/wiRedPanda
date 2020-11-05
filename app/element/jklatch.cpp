@@ -15,26 +15,3 @@ void JKLatch::updatePorts( ) {
   output( 1 )->setPos( bottomPosition( ), 45 );
 }
 
-void JKLatch::updateLogic( ) {
-  signed char res = m_outputs.first( )->value( );
-  signed char j = input( 0 )->value( );
-  signed char k = input( 1 )->value( );
-  if( !isValid( ) ) {
-    res = -1;
-  }
-  else {
-    if( res == -1 ) {
-      res = 0;
-    }
-    if( ( j == 1 ) && ( k == 1 ) ) { /* IF J=K */
-      res = !res;
-    }
-    else if( j != k ) { /* J */
-      res = j;
-    } /* else nothing happens */
-  }
-  m_outputs.first( )->setValue( res );
-  m_outputs.last( )->setValue( !res );
-}
-
-/* Reference: https://en.wikipedia.org/wiki/Flip-flop_(electronics)#Gated_latches_and_conditional_transparency */

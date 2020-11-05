@@ -33,11 +33,7 @@ class GraphicElement : public QGraphicsObject, public ItemWithId {
 public:
   enum { Type = QGraphicsItem::UserType + 3 };
 
-  explicit GraphicElement( int minInputSz,
-                           int maxInputSz,
-                           int minOutputSz,
-                           int maxOutputSz,
-                           QGraphicsItem *parent = nullptr );
+  explicit GraphicElement( int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent = nullptr );
 
 private:
   QPixmap *pixmap;
@@ -163,7 +159,7 @@ public:
 
   virtual QString genericProperties( );
 
-
+  // Update label in graphical interface
   void updateLabel( );
 
 protected:

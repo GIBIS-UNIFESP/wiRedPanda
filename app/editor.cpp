@@ -662,14 +662,9 @@ bool Editor::dragMoveEvt( QGraphicsSceneDragDropEvent *dde ) {
 
 bool Editor::wheelEvt( QWheelEvent *wEvt ) {
   if( wEvt ) {
-    int numDegrees = wEvt->delta( ) / 8;
-    int numSteps = numDegrees / 15;
-    if( wEvt->orientation( ) == Qt::Horizontal ) {
-      emit scroll( numSteps, 0 );
-    }
-    else {
-      emit scroll( 0, numSteps );
-    }
+    QPoint numDegrees = wEvt->angleDelta( ) / 8;
+    QPoint numSteps = numDegrees / 15;
+    emit scroll( numSteps.x( ), numSteps.y( ) );
     wEvt->accept( );
     return( true );
   }
@@ -743,15 +738,17 @@ void Editor::paste( QDataStream &ds ) {
   ds >> ctr;
   QPointF offset = mousePos - ctr - QPointF( static_cast< qreal >( 32.0f ), static_cast< qreal >( 32.0f ) );
   double version = GlobalProperties::version;
-  QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( ds,
-                                                                          version,
-                                                                          GlobalProperties::currentFile );
+  QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( ds, version, GlobalProperties::currentFile );
   receiveCommand( new AddItemsCommand( itemList, this ) );
   for( QGraphicsItem *item : qAsConst(itemList) ) {
     if( item->type( ) == GraphicElement::Type ) {
       item->setPos( ( item->pos( ) + offset ) );
       item->update( );
       item->setSelected( true );
+      // If input or output, set label
+      // Parei aqui...
+//      if( ( item->elementGroup( ) == ElementGroup::INPUT ) || ( item->elementGroup( ) == ElementGroup::OUTPUT ) ) {
+//      }
     }
   }
   resizeScene( );

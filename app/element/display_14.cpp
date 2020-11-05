@@ -5,6 +5,8 @@
 #include <QPainter>
 #include <QPixmap>
 
+int Display14::current_id_number = 0;
+
 Display14::Display14( QGraphicsItem *parent ) : GraphicElement( 15, 15, 0, 0, parent ) {
   setRotatable( false );
   setOutputsOnTop( true );
