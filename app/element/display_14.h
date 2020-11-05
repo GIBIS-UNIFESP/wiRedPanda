@@ -7,6 +7,7 @@ class Display14 : public GraphicElement {
 public:
   explicit Display14( QGraphicsItem *parent = nullptr );
   virtual ~Display14( ) override = default;
+  static int current_id_number; // Number used to create distinct labels for each instance of this element.
 
 public:
   virtual ElementType elementType( ) override {

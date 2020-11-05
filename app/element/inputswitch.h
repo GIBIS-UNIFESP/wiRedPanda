@@ -8,6 +8,7 @@ class InputSwitch : public GraphicElement, public Input {
 public:
   explicit InputSwitch( QGraphicsItem *parent = nullptr );
   virtual ~InputSwitch( ) override = default;
+  static int current_id_number; // Number used to create distinct labels for each instance of this element.
 
   bool on;
   /* QGraphicsItem interface */

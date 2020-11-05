@@ -3,6 +3,7 @@
 #include <QDebug>
 
 bool Clock::reset = false;
+int Clock::current_id_number = 0;
 
 Clock::Clock( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent ) {
   setOutputsOnTop( false );

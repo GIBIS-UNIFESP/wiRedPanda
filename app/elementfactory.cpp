@@ -1,6 +1,6 @@
 #include "box.h"
-#include "buzzer.h"
-#include "demux.h"
+#include "element/buzzer.h"
+#include "element/demux.h"
 #include "element/and.h"
 #include "element/clock.h"
 #include "element/dflipflop.h"
@@ -25,14 +25,13 @@
 #include "element/xnor.h"
 #include "element/xor.h"
 #include "elementfactory.h"
-#include "mux.h"
-#include "node.h"
+#include "element/mux.h"
+#include "element/node.h"
 #include "qneconnection.h"
 
 #include <QDebug>
 
 ElementFactory*ElementFactory::instance = new ElementFactory( );
-
 
 size_t ElementFactory::getLastId( ) const {
   return( _lastId );

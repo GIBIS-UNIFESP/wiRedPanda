@@ -16,6 +16,7 @@ class Clock : public GraphicElement, public Input {
 public:
   explicit Clock( QGraphicsItem *parent = nullptr );
   virtual ~Clock( ) override = default;
+  static int current_id_number; // Number used to create distinct labels for each instance of this element.
 
   static bool reset;
 public slots:

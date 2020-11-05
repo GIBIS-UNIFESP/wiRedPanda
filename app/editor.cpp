@@ -694,15 +694,17 @@ void Editor::paste( QDataStream &ds ) {
   ds >> ctr;
   QPointF offset = mousePos - ctr - QPointF( static_cast< qreal >( 32.0f ), static_cast< qreal >( 32.0f ) );
   double version = GlobalProperties::version;
-  QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( ds,
-                                                                          version,
-                                                                          GlobalProperties::currentFile );
+  QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( ds, version, GlobalProperties::currentFile );
   receiveCommand( new AddItemsCommand( itemList, this ) );
   for( QGraphicsItem *item : itemList ) {
     if( item->type( ) == GraphicElement::Type ) {
       item->setPos( ( item->pos( ) + offset ) );
       item->update( );
       item->setSelected( true );
+      // If input or output, set label
+      // Parei aqui...
+//      if( ( item->elementGroup( ) == ElementGroup::INPUT ) || ( item->elementGroup( ) == ElementGroup::OUTPUT ) ) {
+//      }
     }
   }
   resizeScene( );

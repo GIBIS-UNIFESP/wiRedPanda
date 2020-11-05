@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <QGraphicsSceneDragDropEvent>
 
+int Buzzer::current_id_number = 0;
+
 Buzzer::Buzzer( QGraphicsItem *parent ) : GraphicElement( 1, 1, 0, 0, parent ) {
   setOutputsOnTop( true );
   setRotatable( false );
@@ -11,6 +13,8 @@ Buzzer::Buzzer( QGraphicsItem *parent ) : GraphicElement( 1, 1, 0, 0, parent ) {
   updatePorts( );
   setHasLabel( true );
   setPortName( "Buzzer" );
+  setLabel(objectName() + "_" + QString::number(Buzzer::current_id_number));
+  ++Buzzer::current_id_number;
   setAudio( "C6" );
   play = 0;
 }
