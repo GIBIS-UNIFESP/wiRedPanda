@@ -1,0 +1,156 @@
+name: Build
+
+on: [push]
+
+env:
+  BUILD_TYPE: MinSizeRel
+
+jobs:
+
+# === Ubuntu 16.04 ===
+  ubuntu-16:
+    runs-on: ubuntu-16.04
+
+    steps:
+    - uses: actions/checkout@v2
+      with: 
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Install Qt5
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: 5.12.9
+        modules: qtcharts qtmultimedia
+
+    - name: Install AppImage dependencies
+      run: sudo apt install libgstreamer-plugins-base1.0-0 libgstreamer-plugins-base1.0-dev
+
+    - name: Get linuxdeployqt
+      run: |
+        wget "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -P ~/
+        chmod +x ~/linuxdeployqt-continuous-x86_64.AppImage
+
+    - name: Build
+      run: |
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j8
+
+    - name: Deploy
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'wiredpanda-ubuntu16.04-glibc'
+        path: build/app/wpanda
+
+    - name: Make WiredPanda AppImage
+      run: |
+        cp installer/Linux/portable_files/wpanda.desktop build/app/wpanda.desktop
+        cp app/resources/wpanda.png build/app/wpanda.png
+        ~/linuxdeployqt-continuous-x86_64.AppImage build/app/wpanda -appimage 
+
+    - name: Upload WiredPanda AppImage
+      uses: actions/upload-artifact@v2
+      with:
+        name: WiredPanda Linux (64-bit) AppImage
+        path: wiRED_Panda*.AppImage
+
+
+
+# === Ubuntu 18.04 ===
+  ubuntu-18:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+      with: 
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Install
+      run: sudo apt install qt5-default qt5-qmake qtmultimedia5-dev libqt5charts5-dev
+
+    - name: Build
+      run: |
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j8
+    - name: Deploy
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'wiredpanda-ubuntu18.04-glibc'
+        path: build/app/wpanda
+
+# === Windows 10 ===
+  windows:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with: 
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Set up Git for properly handling symlinks on Windows
+      run: git config --global core.symlinks true
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        arch: win64_mingw73
+        version: 5.12.9
+        modules: qtcharts qtmultimedia
+
+    - name: Build
+      run: |
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j8
+
+    - name: Deploy WiredPanda binary
+      run : |
+        cd build\app\release
+        windeployqt --compiler-runtime wpanda.exe
+        del *.o
+        del *.cpp
+        cp $env:Qt5_Dir\bin\libgcc_s_seh-1.dll .
+        cp $env:Qt5_Dir\bin\libstdc++-6.dll .
+        cp $env:Qt5_Dir\bin\libwinpthread-1.dll .
+        cd ..
+        ren release wpanda
+
+    - name: Upload WiredPanda build
+      continue-on-error: true
+      uses: actions/upload-artifact@v2
+      with:
+        name: WiredPanda Windows (64-bit) build
+        path: build\app\wpanda\
+
+# === MacOS 10.15 ===
+  macos:
+    runs-on: macos-10.15
+
+    steps:
+    - uses: actions/checkout@v2
+      with: 
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Install
+      run: brew install qt gdb
+
+    - name: Build
+      run: |
+        QTDIR="/usr/local/opt/qt/" && PATH="${QTDIR}/bin:$PATH" && LDFLAGS=-L${QTDIR}/lib && CPPFLAGS=-I${QTDIR}/include;
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j8
+    - name: Deploy
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'wiredpanda-macos-10_15'
+        path: build/app/wpanda.app/Contents/MacOS/wpanda

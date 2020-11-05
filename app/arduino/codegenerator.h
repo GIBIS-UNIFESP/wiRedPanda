@@ -37,7 +37,8 @@ private:
   const QVector< GraphicElement* > elements;
   QVector< MappedPin > inputMap, outputMap;
   QHash< QNEPort*, QString > varMap;
-  QVector< QString > availblePins;
+  //! carmesim: fix typo in availablePins
+  QVector< QString > availablePins;
   void setup( );
   void loop( );
   unsigned int globalCounter;

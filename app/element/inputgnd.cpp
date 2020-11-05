@@ -7,4 +7,3 @@ InputGnd::InputGnd( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent
   setPortName( "GND" );
   outputs( ).first( )->setValue( false );
 }
-

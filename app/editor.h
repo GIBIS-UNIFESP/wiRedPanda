@@ -9,8 +9,8 @@
 #include "simulationcontroller.h"
 
 #include <memory>
+#include <QElapsedTimer>
 #include <QObject>
-#include <QTime>
 #include <QUndoCommand>
 
 class Box;
@@ -18,7 +18,7 @@ class MainWindow;
 
 class Editor : public QObject {
   Q_OBJECT
-  QTime timer;
+  QElapsedTimer timer;
 public:
   explicit Editor( QObject *parent = nullptr );
   virtual ~Editor( );
@@ -28,6 +28,7 @@ public:
   void copy( const QList< QGraphicsItem* > &items, QDataStream &ds );
   void paste( QDataStream &ds );
   void selectAll( );
+
 signals:
   void scroll( int x, int y );
   void circuitHasChanged( );

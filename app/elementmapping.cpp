@@ -41,11 +41,11 @@ void ElementMapping::clear( ) {
   initialized = false;
   globalGND.clearSucessors( );
   globalVCC.clearSucessors( );
-  for( LogicElement *elm: deletableElements ) {
+  for( LogicElement *elm: qAsConst(deletableElements) ) {
     delete elm;
   }
   deletableElements.clear( );
-  for( BoxMapping *boxMap : boxMappings ) {
+  for( BoxMapping *boxMap : qAsConst(boxMappings) ) {
     delete boxMap;
   }
   boxMappings.clear( );
@@ -58,8 +58,10 @@ void ElementMapping::clear( ) {
 
 
 QVector< GraphicElement* > ElementMapping::sortGraphicElements( QVector< GraphicElement* > elms ) {
-  QMap< GraphicElement*, bool > beingvisited;
-  QMap< GraphicElement*, int > priority;
+
+  //! Clazy warning: Use QHash<K, T> instead of QMap<K, T> when K is a pointer
+  QHash< GraphicElement*, bool > beingvisited;
+  QHash< GraphicElement*, int > priority;
   for( GraphicElement *elm : elms ) {
     calculatePriority( elm, beingvisited, priority );
   }
@@ -72,6 +74,7 @@ QVector< GraphicElement* > ElementMapping::sortGraphicElements( QVector< Graphic
 
 void ElementMapping::insertElement( GraphicElement *elm ) {
   LogicElement *logicElm = buildLogicElement( elm );
+  elm->type();
   deletableElements.append( logicElm );
   logicElms.append( logicElm );
   map.insert( elm, logicElm );
@@ -95,7 +98,7 @@ void ElementMapping::insertBox( Box *box ) {
 }
 
 void ElementMapping::generateMap( ) {
-  for( GraphicElement *elm: elements ) {
+  for( GraphicElement *elm: qAsConst(elements) ) {
     if( elm->elementType( ) == ElementType::CLOCK ) {
       Clock *clk = dynamic_cast< Clock* >( elm );
       Q_ASSERT( clk != nullptr );
@@ -176,19 +179,21 @@ void ElementMapping::sort( ) {
 
 void ElementMapping::update( ) {
   if( canRun( ) ) {
-    for( Clock *clk : clocks ) {
+    for( Clock *clk : qAsConst(clocks) ) {
+      if (!clk) { continue; };
       if( Clock::reset ) {
         clk->resetClock( );
       }
       else {
-        clk->updateClock( );
+          clk->updateClock( );
       }
     }
     Clock::reset = false;
     for( auto iter = inputMap.begin( ); iter != inputMap.end( ); ++iter ) {
+      if (!iter.key()) { continue; }
       iter.value( )->setOutputValue( iter.key( )->getOn( ) );
     }
-    for( LogicElement *elm : logicElms ) {
+    for( LogicElement *elm : qAsConst(logicElms) ) {
       elm->updateLogic( );
     }
   }
@@ -264,21 +269,22 @@ void ElementMapping::applyConnection( GraphicElement *elm, QNEPort *in ) {
 }
 
 void ElementMapping::connectElements( ) {
-  for( GraphicElement *elm : elements ) {
-    for( QNEPort *in : elm->inputs( ) ) {
+  for( GraphicElement *elm : qAsConst(elements) ) {
+      const auto elm_inputs = elm->inputs();
+      for( QNEPort *in : elm_inputs ) {
       applyConnection( elm, in );
     }
   }
 }
 
 void ElementMapping::validateElements( ) {
-  for( LogicElement *elm : logicElms ) {
+  for( LogicElement *elm : qAsConst(logicElms) ) {
     elm->validate( );
   }
 }
 
 void ElementMapping::sortLogicElements( ) {
-  for( LogicElement *elm : logicElms ) {
+  for( LogicElement *elm : qAsConst(logicElms) ) {
     elm->calculatePriority( );
   }
   std::sort( logicElms.begin( ),
@@ -289,8 +295,8 @@ void ElementMapping::sortLogicElements( ) {
 
 }
 
-int ElementMapping::calculatePriority( GraphicElement *elm, QMap< GraphicElement*, bool > &beingvisited,
-                                       QMap< GraphicElement*, int > &priority ) {
+int ElementMapping::calculatePriority( GraphicElement *elm, QHash< GraphicElement*, bool > &beingvisited,
+                                       QHash< GraphicElement*, int > &priority ) {
   if( !elm ) {
     return( 0 );
   }
@@ -302,7 +308,8 @@ int ElementMapping::calculatePriority( GraphicElement *elm, QMap< GraphicElement
   }
   beingvisited[ elm ] = true;
   int max = 0;
-  for( QNEPort *port : elm->outputs( ) ) {
+  auto const elm_outputs = elm->outputs();
+  for( QNEPort *port : elm_outputs ) {
     for( QNEConnection *conn : port->connections( ) ) {
       QNEPort *sucessor = conn->otherPort( port );
       if( sucessor ) {

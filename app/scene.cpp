@@ -5,20 +5,16 @@
 #include <QGraphicsView>
 #include <QPainter>
 
+// TODO: stop using QGraphicsView *
+
 Scene::Scene( QObject *parent ) : QGraphicsScene( parent ) {
-  m_gridSize = 16;
 }
 
 Scene::Scene( const QRectF &sceneRect, QObject *parent ) : QGraphicsScene( sceneRect, parent ) {
-  m_gridSize = 16;
 }
 
-Scene::Scene( qreal x, qreal y, qreal width, qreal height, QObject *parent ) : QGraphicsScene( x,
-                                                                                               y,
-                                                                                               width,
-                                                                                               height,
-                                                                                               parent ) {
-  m_gridSize = 16;
+Scene::Scene( qreal x, qreal y, qreal width, qreal height, QObject *parent )
+  : QGraphicsScene( x, y, width, height, parent ) {
 }
 
 int Scene::gridSize( ) const {
@@ -46,9 +42,10 @@ void Scene::setDots( const QPen &dots ) {
 
 
 QVector< GraphicElement* > Scene::getVisibleElements( ) {
-  QGraphicsView *graphicsView = views( ).first( );
+  const auto gviews = views( );
+  QGraphicsView *graphicsView = gviews.first( );
   if( !graphicsView->isActiveWindow( ) ) {
-    graphicsView = views( ).last( );
+    graphicsView = gviews.last( );
   }
   QRectF visibleRect = graphicsView->mapToScene( graphicsView->viewport( )->geometry( ) ).boundingRect( );
 

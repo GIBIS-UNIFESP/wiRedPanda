@@ -15,4 +15,3 @@ void JKLatch::updatePorts( ) {
   output( 1 )->setPos( bottomPosition( ), 45 );
 }
 
-/* Reference: https://en.wikipedia.org/wiki/Flip-flop_(electronics)#Gated_latches_and_conditional_transparency */

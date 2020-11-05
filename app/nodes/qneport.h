@@ -65,8 +65,8 @@ public:
   void setGraphicElement( GraphicElement *graphicElement );
 
   void updateConnections( );
-  char value( ) const;
-  virtual void setValue( char value ) = 0;
+  signed char value( ) const;
+  virtual void setValue( signed char value ) = 0;
 
   bool isRequired( ) const;
   void setRequired( bool required );
@@ -108,7 +108,7 @@ protected:
 
   /* QGraphicsItem interface */
 protected:
-  char m_value;
+  signed char m_value;
 
   virtual void updateTheme( ) = 0;
 };
@@ -119,7 +119,7 @@ public:
   virtual ~QNEInputPort( );
   /* QNEPort interface */
 public:
-  void setValue( char value );
+  void setValue( signed char value );
   bool isOutput( ) const;
   bool isValid( ) const;
   void updateTheme( );
@@ -131,7 +131,7 @@ public:
   virtual ~QNEOutputPort( );
   /* QNEPort interface */
 public:
-  void setValue( char value );
+  void setValue( signed char value );
   bool isOutput( ) const;
   bool isValid( ) const;
   void updateTheme( );

@@ -52,7 +52,7 @@ void Label::setAuxData( const QString &auxData ) {
 void Label::startDrag( QPoint pos ) {
   QPixmap pixmap = pixmapData( );
   if( pos.isNull( ) ) {
-    pos = this->pixmap( )->rect( ).center( );
+    pos = this->pixmap( Qt::ReturnByValue ).rect( ).center( );
   }
   QByteArray itemData;
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );

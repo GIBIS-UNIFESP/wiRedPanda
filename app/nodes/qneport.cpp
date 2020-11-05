@@ -139,7 +139,7 @@ void QNEPort::setPtr( quint64 p ) {
 }
 
 bool QNEPort::isConnected( QNEPort *other ) {
-  for( QNEConnection *conn : m_connections ) {
+  for( QNEConnection *conn : qAsConst(m_connections) ) {
     if( ( conn->start( ) == other ) || ( conn->end( ) == other ) ) {
       return( true );
     }
@@ -148,7 +148,7 @@ bool QNEPort::isConnected( QNEPort *other ) {
 }
 
 void QNEPort::updateConnections( ) {
-  for( QNEConnection *conn : m_connections ) {
+  for( QNEConnection *conn : qAsConst(m_connections) ) {
     conn->updatePosFromPorts( );
     conn->updatePath( );
   }
@@ -212,7 +212,7 @@ void QNEPort::setRequired( bool required ) {
   setDefaultValue( -1 * required );
 }
 
-char QNEPort::value( ) const {
+signed char QNEPort::value( ) const {
   return( m_value );
 }
 
@@ -247,7 +247,7 @@ QNEInputPort::~QNEInputPort( ) {
   }
 }
 
-void QNEInputPort::setValue( char value ) {
+void QNEInputPort::setValue( signed char value ) {
   m_value = value;
   if( !isValid( ) ) {
     m_value = -1;
@@ -299,7 +299,7 @@ QNEOutputPort::~QNEOutputPort( ) {
   }
 }
 
-void QNEOutputPort::setValue( char value ) {
+void QNEOutputPort::setValue( signed char value ) {
   m_value = value;
   for( QNEConnection *conn : connections( ) ) {
     if( value == -1 ) {

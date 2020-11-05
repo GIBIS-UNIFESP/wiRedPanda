@@ -5,17 +5,18 @@
 #include "itemwithid.h"
 #include "nodes/qneport.h"
 
+#include <cstdint>
 #include <QGraphicsItem>
 #include <QGraphicsPixmapItem>
 #include <QKeySequence>
 
-enum class ElementType {
+enum class ElementType : uint_fast8_t {
   UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND, DISPLAY,
   DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, TLATCH, BOX, NODE, MUX, DEMUX,
   BUZZER, DISPLAY14, LEDGRID
 };
 
-enum class ElementGroup {
+enum class ElementGroup : uint_fast8_t {
   UNKNOWN, OTHER, BOX, INPUT, GATE, MEMORY, OUTPUT, MUX, STATICINPUT
 };
 

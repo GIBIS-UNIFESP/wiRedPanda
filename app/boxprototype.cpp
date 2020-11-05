@@ -5,7 +5,7 @@
 
 #include <QFileInfo>
 
-BoxPrototype::BoxPrototype( const QString &fileName ) : m_fileName( fileName ) {
+BoxPrototype::BoxPrototype( const QString & fileName ) : m_fileName( fileName ) {
 
 }
 
@@ -68,7 +68,7 @@ void BoxPrototype::reload( ) {
   clear( );
 
   boxImpl.loadFile( m_fileName );
-  for( Box *box : boxObservers ) {
+  for( Box *box : qAsConst( boxObservers ) ) {
     box->loadFile( m_fileName );
   }
 }

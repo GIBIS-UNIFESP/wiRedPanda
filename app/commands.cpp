@@ -25,7 +25,8 @@ void storeIds( const QList< QGraphicsItem* > &items, QVector< int > &ids ) {
 void storeOtherIds( const QList< QGraphicsItem* > &connections, const QVector< int > &ids, QVector< int > &otherIds ) {
   for( QGraphicsItem *item : connections ) {
     QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
-    if( ( item->type( ) == QNEConnection::Type ) && conn ) {
+    if( ( item->type( ) == QNEConnection::Type ) && conn )
+    {
       QNEOutputPort *p1 = conn->start( );
       if( p1 && p1->graphicElement( ) && !ids.contains( p1->graphicElement( )->id( ) ) ) {
         otherIds.append( p1->graphicElement( )->id( ) );
@@ -55,14 +56,16 @@ QList< QGraphicsItem* > loadList( const QList< QGraphicsItem* > &aItems, QVector
   for( QGraphicsItem *item : elements ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     if( elm ) {
-      for( QNEInputPort *port : elm->inputs( ) ) {
+      auto const inputs = elm->inputs( );
+      for( QNEInputPort *port : inputs ) {
         for( QNEConnection *conn : port->connections( ) ) {
           if( !connections.contains( conn ) ) {
             connections.append( conn );
           }
         }
       }
-      for( QNEOutputPort *port : elm->outputs( ) ) {
+      auto const outputs = elm->outputs( );
+      for( QNEOutputPort *port : outputs ) {
         for( QNEConnection *conn : port->connections( ) ) {
           if( !connections.contains( conn ) ) {
             connections.append( conn );
@@ -218,11 +221,7 @@ DeleteItemsCommand::DeleteItemsCommand( const QList< QGraphicsItem* > &aItems, E
 }
 
 DeleteItemsCommand::DeleteItemsCommand( QGraphicsItem *item, Editor *aEditor, QUndoCommand *parent ) :
-  DeleteItemsCommand( QList< QGraphicsItem* >( {
-  item
-} ), aEditor, parent ) {
-
-}
+  DeleteItemsCommand( QList< QGraphicsItem* >( { item } ), aEditor, parent ) {}
 
 void AddItemsCommand::undo( ) {
   COMMENT( "UNDO " + text( ).toStdString( ), 0 );
@@ -236,6 +235,7 @@ void AddItemsCommand::undo( ) {
 
 void AddItemsCommand::redo( ) {
   COMMENT( "REDO " + text( ).toStdString( ), 0 );
+  // TODO: items seems unused
   QList< QGraphicsItem* > items = loadItems( itemData, ids, editor, otherIds );
   emit editor->circuitHasChanged( );
 }
@@ -293,14 +293,14 @@ void RotateCommand::redo( ) {
   scn->clearSelection( );
   double cx = 0, cy = 0;
   int sz = 0;
-  for( GraphicElement *item : list ) {
+  for( GraphicElement *item : qAsConst( list ) ) {
     cx += item->pos( ).x( );
     cy += item->pos( ).y( );
     sz++;
   }
   cx /= sz;
   cy /= sz;
-  for( GraphicElement *elm : list ) {
+  for( GraphicElement *elm : qAsConst( list ) ) {
     QTransform transform;
     transform.translate( cx, cy );
     transform.rotate( angle );
@@ -471,7 +471,7 @@ void SplitCommand::redo( ) {
     node->setPos( nodePos );
     node->setRotation( nodeAngle );
 
-/*    QNEOutputPort *startPort = c1->start( ); */
+    /*    QNEOutputPort *startPort = c1->start( ); */
     QNEInputPort *endPort = c1->end( );
     c2->setStart( node->output( ) );
     c2->setEnd( endPort );
@@ -722,10 +722,11 @@ void FlipCommand::undo( ) {
 
 void FlipCommand::redo( ) {
   COMMENT( "REDO " + text( ).toStdString( ), 0 );
+  // TODO: this might detach the QList
   QList< GraphicElement* > list = findElements( ids );
   QGraphicsScene *scn = list[ 0 ]->scene( );
   scn->clearSelection( );
-  for( GraphicElement *elm : list ) {
+  for( GraphicElement *elm : qAsConst( list ) ) {
     QPointF pos = elm->pos( );
     if( axis == 0 ) {
       pos.setX( minPos.rx( ) + ( maxPos.rx( ) - pos.rx( ) ) );

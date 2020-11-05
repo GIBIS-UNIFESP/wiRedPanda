@@ -17,7 +17,7 @@ LedGrid::LedGrid( QGraphicsItem *parent ) : GraphicElement( 8, 8, 0, 0, parent )
 
   setPixmap( ":/output/LedGrid.png" );
   setPortName( "Led Grid" );
-  for( QNEPort *in : inputs( ) ) {
+  for( QNEPort *in : qAsConst(m_inputs) ) {
     in->setRequired( false );
     in->setDefaultValue( 0 );
   }
