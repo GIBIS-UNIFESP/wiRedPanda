@@ -51,6 +51,7 @@ Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ) {
   mShowWires = true;
   mShowGates = true;
   connect( this, &Editor::circuitHasChanged, simulationController, &SimulationController::reSortElms );
+  connect( boxManager, &BoxManager::updatedBox, this, &Editor::redoSimulationController );
 }
 
 Editor::~Editor( ) {
@@ -162,19 +163,23 @@ void Editor::deleteAction( ) {
   const QList< QGraphicsItem* > &items = scene->selectedItems( );
   scene->clearSelection( );
   if( !items.isEmpty( ) ) {
-    //! Guarantees that the simulation keeps running, if it were running upon the
-    //! element deletion.
-    bool simulationWasRunning = simulationController->isRunning();
-    //! Delete the selected items
     receiveCommand( new DeleteItemsCommand( items, this ) );
+    redoSimulationController( );
+  }
+}
+
+void Editor::redoSimulationController( ) {
+    //! Guarantees that the simulation keeps running, if it was running upon the
+    //! element deletion.
+    bool simulationWasRunning = simulationController->isRunning( );
     //! Clear the simulation controller.
     //! This is needed to avoid a SIGSEGV caused by lack of synch. between an element's graphics code and logical code,
     //! that is, its sprite could get deleted but its logical implementation not know about it.
+    //! Also, it is required whenever the contents of a box is updated.
     simulationController->clear();
-    if (simulationWasRunning) {
-        getSimulationController()->start();
+    if( simulationWasRunning ) {
+        getSimulationController( )->start( );
     }
-  }
 }
 
 void Editor::showWires( bool checked ) {
