@@ -20,11 +20,13 @@ jobs:
     - name: Install Qt5
       uses: jurplel/install-qt-action@v2
       with:
-        version: 5.12.9
+        version: 5.15.1
         modules: qtcharts qtmultimedia
 
     - name: Install AppImage dependencies
-      run: sudo apt install libgstreamer-plugins-base1.0-0 libgstreamer-plugins-base1.0-dev
+      run: |
+        sudo apt-get install libgstreamer-plugins-base1.0-0 libgstreamer-plugins-base1.0-dev 
+        sudo apt-get install libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0-dev libxcb-render-util0 libxcb-xinerama0
 
     - name: Get linuxdeployqt
       run: |
@@ -68,8 +70,11 @@ jobs:
         submodules: recursive
         fetch-depth: 0
 
-    - name: Install
-      run: sudo apt install qt5-default qt5-qmake qtmultimedia5-dev libqt5charts5-dev
+    - name: Install Qt5
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: 5.15.1
+        modules: qtcharts qtmultimedia
 
     - name: Build
       run: |
@@ -99,8 +104,8 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
-        arch: win64_mingw73
-        version: 5.12.9
+        arch: win64_mingw81
+        version: 5.15.0
         modules: qtcharts qtmultimedia
 
     - name: Build
