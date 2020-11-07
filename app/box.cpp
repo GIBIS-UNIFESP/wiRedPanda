@@ -19,21 +19,9 @@
 #include <QProcess>
 
 Box::Box( QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, parent ) {
+  pixmapSkinName.append( ":/basic/box.png" );
   setHasLabel( true );
-  /*
-   *  QTransform transform;
-   *  transform.translate(pixmap.size().width() / 2, pixmap.size().height() / 2);
-   *  transform.rotate(-90);
-   *  transform.translate(-pixmap.size().width() / 2, -pixmap.size().height() / 2);
-   */
-
-  /*
-   *  setRotatable(false);
-   *  setRotation(90);
-   */
-
-  /*  setPixmap(pixmap.transformed(transform)); */
-  setPixmap( ":/basic/box.png" );
+  setPixmap( pixmapSkinName[ 0 ], QRect(0, 0, 64, 64) );
   setOutputsOnTop( true );
   setPortName( "BOX" );
 }
@@ -57,10 +45,6 @@ void Box::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double vers
     ds >> m_file;
   }
 }
-
-
-
-
 
 void Box::loadInputs( BoxPrototype *prototype ) {
   setMaxInputSz( prototype->inputSize( ) );
@@ -126,4 +110,12 @@ void Box::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) {
       wPanda->start( QCoreApplication::applicationFilePath( ), args );
     }
   }
+}
+
+void Box::setSkin( bool defaultSkin, QString filename ) {
+  if( defaultSkin )
+    pixmapSkinName[ 0 ] = ":/basic/box.png";
+  else
+    pixmapSkinName[ 0 ] = filename;
+  setPixmap( pixmapSkinName[ 0 ] );
 }

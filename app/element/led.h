@@ -22,9 +22,10 @@ public:
 
 private:
   QString m_color;
-
+  int m_colorNumber; /* white = 0, red = 2, green = 4, blue = 6, purple = 8 */
 
   /* GraphicElement interface */
+  void resetLedPixmapName( int ledNumber );
 public:
   void save( QDataStream &ds ) const override;
   void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) override;
@@ -33,6 +34,7 @@ public:
   // GraphicElement interface
 public:
   void updatePorts( ) override;
+  void setSkin( bool defaultSkin, QString filename ) override;
 };
 
 #endif /* LED_H */

@@ -6,8 +6,10 @@
 int InputButton::current_id_number = 0;
 
 InputButton::InputButton( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent ) {
+  pixmapSkinName.append( ":/input/buttonOff.png" );
+  pixmapSkinName.append( ":/input/buttonOn.png" );
   setOutputsOnTop( false );
-  setPixmap( ":/input/buttonOff.png" );
+  setPixmap( pixmapSkinName[ 0 ] );
   setRotatable( false );
   m_outputs.first( )->setValue( 0 );
   setOn( false );
@@ -41,8 +43,31 @@ bool InputButton::getOn( ) const {
 
 void InputButton::setOn( const bool value ) {
   on = value;
-  setPixmap( on ? ":/input/buttonOn.png" : ":/input/buttonOff.png" );
+  setPixmap( on ? pixmapSkinName[ 1 ] : pixmapSkinName[ 0 ] );
   if( !disabled( ) ) {
     output( )->setValue( on );
+  }
+}
+
+void InputButton::setSkin( bool defaultSkin, QString filename ) {
+  if( defaultSkin ) {
+    if( !on ) {
+      pixmapSkinName[ 0 ] = ":/input/buttonOff.png";
+      setPixmap( pixmapSkinName[ 0 ] );
+    }
+    else {
+      pixmapSkinName[ 1 ] = ":/input/buttonOn.png";
+      setPixmap( pixmapSkinName[ 1 ] );
+    }
+  }
+  else {
+    if( !on ) {
+      pixmapSkinName[ 0 ] = filename;
+      setPixmap( pixmapSkinName[ 0 ] );
+    }
+    else {
+      pixmapSkinName[ 1 ] = filename;
+      setPixmap( pixmapSkinName[ 1 ] );
+    }
   }
 }

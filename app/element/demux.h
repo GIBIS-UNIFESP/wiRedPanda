@@ -20,6 +20,7 @@ public:
     return( ElementType::DEMUX );
   }
   void updatePorts( ) override;
+  void setSkin( bool defaultSkin, QString filename ) override;
 };
 
 #endif /* DEMUX_H */

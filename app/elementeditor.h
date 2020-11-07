@@ -59,6 +59,10 @@ private slots:
 
   void on_comboBoxAudio_currentIndexChanged( int );
 
+  void on_pushButtonChangeSkin_clicked();
+
+  void on_pushButtonDefaultSkin_clicked();
+
 private:
   void setCurrentElements( const QVector< GraphicElement* > &element );
   void apply( );
@@ -80,6 +84,8 @@ private:
   QString _manyFreq;
   QString _manyTriggers;
   QString _manyAudios;
+  QString m_skinName;
+  bool m_defaultSkin;
 
 
 };

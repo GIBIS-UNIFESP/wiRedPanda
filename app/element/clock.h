@@ -40,6 +40,7 @@ public:
 public:
   bool getOn( ) const override;
   void setOn( bool value ) override;
+  void setSkin( bool defaultSkin, QString filename ) override;
 };
 
 

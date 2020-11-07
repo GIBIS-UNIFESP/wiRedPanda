@@ -6,14 +6,16 @@
 int Buzzer::current_id_number = 0;
 
 Buzzer::Buzzer( QGraphicsItem *parent ) : GraphicElement( 1, 1, 0, 0, parent ) {
+  pixmapSkinName.append( ":/output/BuzzerOff.png" );
+  pixmapSkinName.append( ":/output/BuzzerOn.png" );
   setOutputsOnTop( true );
   setRotatable( false );
   setHasAudio( true );
-  setPixmap( ":/output/BuzzerOff.png" );
+  setPixmap( pixmapSkinName[ 0 ] );
   updatePorts( );
   setHasLabel( true );
   setPortName( "Buzzer" );
-  setLabel(objectName() + "_" + QString::number(Buzzer::current_id_number));
+  setLabel( objectName( ) + "_" + QString::number( Buzzer::current_id_number ) );
   ++Buzzer::current_id_number;
   setAudio( "C6" );
   play = 0;
@@ -55,14 +57,14 @@ void Buzzer::mute( bool _mute ) {
 
 void Buzzer::playbuzzer( ) {
   if( play == 0 ) {
-    setPixmap( ":/output/BuzzerOn.png" );
+    setPixmap( pixmapSkinName[ 1 ] );
     m_audio.play( );
   }
   play = 1;
 }
 
 void Buzzer::stopbuzzer( ) {
-  setPixmap( ":/output/BuzzerOff.png" );
+  setPixmap( pixmapSkinName[ 0 ] );
   play = 0;
   m_audio.stop( );
 }
@@ -78,5 +80,28 @@ void Buzzer::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double v
     QString note;
     ds >> note;
     setAudio( note );
+  }
+}
+
+void Buzzer::setSkin( bool defaultSkin, QString filename ) {
+  if( defaultSkin ) {
+    if( play == 0 ) {
+      pixmapSkinName[ 0 ] = ":/output/BuzzerOff.png";
+      setPixmap( pixmapSkinName[ 0 ] );
+    }
+    else {
+      pixmapSkinName[ 1 ] = ":/output/BuzzerOn.png";
+      setPixmap( pixmapSkinName[ 1 ] );
+    }
+  }
+  else {
+    if( play == 0 ) {
+      pixmapSkinName[ 0 ] = filename;
+      setPixmap( pixmapSkinName[ 0 ] );
+    }
+    else {
+      pixmapSkinName[ 1 ] = filename;
+      setPixmap( pixmapSkinName[ 1 ] );
+    }
   }
 }

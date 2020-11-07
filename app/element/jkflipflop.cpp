@@ -3,7 +3,8 @@
 #include <QDebug>
 
 JKFlipFlop::JKFlipFlop( QGraphicsItem *parent ) : GraphicElement( 5, 5, 2, 2, parent ) {
-  setPixmap( ":/memory/JK-flipflop.png" );
+  pixmapSkinName.append( ":/memory/JK-flipflop.png" );
+  setPixmap( pixmapSkinName[ 0 ] );
   setRotatable( false );
   updatePorts( );
   lastClk = false;
@@ -38,4 +39,12 @@ void JKFlipFlop::updatePorts( ) {
 
   output( 0 )->setPos( bottomPosition( ), 15 ); /* Q */
   output( 1 )->setPos( bottomPosition( ), 45 ); /* ~Q */
+}
+
+void JKFlipFlop::setSkin( bool defaultSkin, QString filename ) {
+  if( defaultSkin )
+    pixmapSkinName[ 0 ] = ":/memory/JK-flipflop.png";
+  else
+    pixmapSkinName[ 0 ] = filename;
+  setPixmap( pixmapSkinName[ 0 ] );
 }
