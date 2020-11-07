@@ -27,5 +27,6 @@ public:
   /* GraphicElement interface */
 public:
   void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) override;
+  void setSkin( bool defaultSkin, QString filename ) override;
 };
 #endif /* DISPLAY14_H */

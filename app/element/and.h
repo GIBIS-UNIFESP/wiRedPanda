@@ -4,6 +4,7 @@
 #include "graphicelement.h"
 
 class And : public GraphicElement {
+
 public:
   explicit And( QGraphicsItem *parent = nullptr );
   virtual ~And( ) override = default;
@@ -16,6 +17,7 @@ public:
   virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::GATE );
   }
+  void setSkin( bool defaultSkin, QString filename ) override;
 
 };
 

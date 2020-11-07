@@ -13,7 +13,7 @@
 enum class ElementType : uint_fast8_t {
   UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND, DISPLAY,
   DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, TLATCH, BOX, NODE, MUX, DEMUX,
-  BUZZER, DISPLAY14, LEDGRID
+  BUZZER, DISPLAY14
 };
 
 enum class ElementGroup : uint_fast8_t {
@@ -40,6 +40,9 @@ private:
   QString currentPixmapName;
   QColor m_selectionBrush;
   QColor m_selectionPen;
+
+protected:
+  QVector< QString > pixmapSkinName;
 
   /* GraphicElement interface. */
 public:
@@ -73,6 +76,8 @@ public:
   void addOutputPort( const QString &name = QString( ) );
 
   virtual void setPortName( QString name );
+
+  virtual void setSkin( bool defaultSkin, QString filename );
 
   int topPosition( ) const;
 
@@ -220,6 +225,10 @@ private:
   void loadInputPort( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, size_t port );
 
   void loadOutputPort( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, size_t port );
+
+  void loadPixmapSkinNames( QDataStream &ds , double version );
+
+  void loadPixmapSkinName( QDataStream &ds, size_t skin );
 
 protected:
   QVector< QNEInputPort* > m_inputs;

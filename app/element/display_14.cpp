@@ -8,6 +8,23 @@
 int Display14::current_id_number = 0;
 
 Display14::Display14( QGraphicsItem *parent ) : GraphicElement( 15, 15, 0, 0, parent ) {
+  pixmapSkinName.append( ":/output/counter/counter_14_off.png" );
+  pixmapSkinName.append( ":/output/counter/counter_a.png" );
+  pixmapSkinName.append( ":/output/counter/counter_b.png" );
+  pixmapSkinName.append( ":/output/counter/counter_c.png" );
+  pixmapSkinName.append( ":/output/counter/counter_d.png" );
+  pixmapSkinName.append( ":/output/counter/counter_e.png" );
+  pixmapSkinName.append( ":/output/counter/counter_f.png" );
+  pixmapSkinName.append( ":/output/counter/counter_g1.png" );
+  pixmapSkinName.append( ":/output/counter/counter_g2.png" );
+  pixmapSkinName.append( ":/output/counter/counter_h.png" );
+  pixmapSkinName.append( ":/output/counter/counter_j.png" );
+  pixmapSkinName.append( ":/output/counter/counter_k.png" );
+  pixmapSkinName.append( ":/output/counter/counter_l.png" );
+  pixmapSkinName.append( ":/output/counter/counter_m.png" );
+  pixmapSkinName.append( ":/output/counter/counter_n.png" );
+  pixmapSkinName.append( ":/output/counter/counter_dp.png" );
+
   setRotatable( false );
   setOutputsOnTop( true );
   updatePorts( );
@@ -15,22 +32,22 @@ Display14::Display14( QGraphicsItem *parent ) : GraphicElement( 15, 15, 0, 0, pa
   setTopPosition( 6 );
   setHasLabel( true );
 
-  setPixmap( ":/output/counter/counter_14_off.png" );
-  a = QPixmap( ":/output/counter/counter_a.png" );
-  b = QPixmap( ":/output/counter/counter_b.png" );
-  c = QPixmap( ":/output/counter/counter_c.png" );
-  d = QPixmap( ":/output/counter/counter_d.png" );
-  e = QPixmap( ":/output/counter/counter_e.png" );
-  f = QPixmap( ":/output/counter/counter_f.png" );
-  g1 = QPixmap( ":/output/counter/counter_g1.png" );
-  g2 = QPixmap( ":/output/counter/counter_g2.png" );
-  h = QPixmap( ":/output/counter/counter_h.png" );
-  j = QPixmap( ":/output/counter/counter_j.png" );
-  k = QPixmap( ":/output/counter/counter_k.png" );
-  l = QPixmap( ":/output/counter/counter_l.png" );
-  m = QPixmap( ":/output/counter/counter_m.png" );
-  n = QPixmap( ":/output/counter/counter_n.png" );
-  dp = QPixmap( ":/output/counter/counter_dp.png" );
+  setPixmap( pixmapSkinName[ 0 ] );
+  a = QPixmap( pixmapSkinName[ 1 ] );
+  b = QPixmap( pixmapSkinName[ 2 ] );
+  c = QPixmap( pixmapSkinName[ 3 ] );
+  d = QPixmap( pixmapSkinName[ 4 ] );
+  e = QPixmap( pixmapSkinName[ 5 ] );
+  f = QPixmap( pixmapSkinName[ 6 ] );
+  g1 = QPixmap( pixmapSkinName[ 7 ] );
+  g2 = QPixmap( pixmapSkinName[ 8 ] );
+  h = QPixmap( pixmapSkinName[ 9 ] );
+  j = QPixmap( pixmapSkinName[ 10 ] );
+  k = QPixmap( pixmapSkinName[ 11 ] );
+  l = QPixmap( pixmapSkinName[ 12 ] );
+  m = QPixmap( pixmapSkinName[ 13 ] );
+  n = QPixmap( pixmapSkinName[ 14 ] );
+  dp = QPixmap( pixmapSkinName[ 15 ] );
 
   setPortName( "Display14" );
   for( QNEPort *in : qAsConst(m_inputs) ) {
@@ -127,4 +144,12 @@ void Display14::paint( QPainter *painter, const QStyleOptionGraphicsItem *option
 
 void Display14::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) {
   GraphicElement::load( ds, portMap, version );
+}
+
+void Display14::setSkin( bool defaultSkin, QString filename ) {
+  if( defaultSkin )
+    pixmapSkinName[ 0 ] = ":/output/counter/counter_14_off.png";
+  else
+    pixmapSkinName[ 0 ] = filename;
+  setPixmap( pixmapSkinName[ 0 ] );
 }

@@ -1,7 +1,8 @@
 #include "mux.h"
 
 Mux::Mux( QGraphicsItem *parent ) : GraphicElement( 3, 3, 1, 1, parent ) {
-  setPixmap( ":/basic/mux.png" );
+  pixmapSkinName.append( ":/basic/mux.png" );
+  setPixmap( pixmapSkinName[ 0 ] );
   setRotatable( false );
   updatePorts( );
   setPortName( "MUX" );
@@ -17,4 +18,12 @@ void Mux::updatePorts( ) {
   input( 1 )->setPos( 16, 32 + 12 ); /* 1 */
   input( 2 )->setPos( 32, 58 ); /* S */
   output( 0 )->setPos( 48, 32 ); /* Out */
+}
+
+void Mux::setSkin( bool defaultSkin, QString filename ) {
+  if( defaultSkin )
+    pixmapSkinName[ 0 ] = ":/basic/mux.png";
+  else
+    pixmapSkinName[ 0 ] = filename;
+  setPixmap( pixmapSkinName[ 0 ] );
 }
