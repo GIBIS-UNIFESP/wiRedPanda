@@ -799,7 +799,7 @@ void MainWindow::populateMenu( QSpacerItem *spacer, QString names, QLayout *layo
 
 void MainWindow::populateLeftMenu( ) {
   populateMenu( ui->verticalSpacer_InOut,
-                "VCC,GND,BUTTON,SWITCH,CLOCK,LED,DISPLAY,DISPLAY14,BUZZER,LEDGRID",
+                "VCC,GND,BUTTON,SWITCH,CLOCK,LED,DISPLAY,DISPLAY14,BUZZER",
                 ui->scrollAreaWidgetContents_InOut->layout( ) );
   populateMenu( ui->verticalSpacer_Gates,
                 "AND,OR,NOT,NAND,NOR,XOR,XNOR,MUX,DEMUX,NODE",

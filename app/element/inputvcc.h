@@ -15,6 +15,7 @@ public:
   virtual ElementGroup elementGroup( ) override {
     return( ElementGroup::STATICINPUT );
   }
+  void setSkin( bool defaultSkin, QString filename ) override;
 };
 
 #endif /* INPUTVCC_H */

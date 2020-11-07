@@ -11,6 +11,7 @@
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <stdexcept>
+#include <QFileInfo>
 
 // WARNING: non-POD static
 static QMap< QString, QPixmap > loadedPixmaps;
@@ -48,6 +49,7 @@ GraphicElement::GraphicElement( int minInputSz, int maxInputSz, int minOutputSz,
   m_hasTrigger = false;
   m_hasFrequency = false;
   m_hasLabel = false;
+  m_hasAudio = false;
   m_disabled = false;
   m_outputsOnTop = true;
 
@@ -81,7 +83,7 @@ void GraphicElement::enable( ) {
 
 void GraphicElement::setPixmap( const QString &pixmapName, QRect size ) {
   QString pixmapPath = pixmapName;
-  if( ThemeManager::globalMngr ) {
+  if( ThemeManager::globalMngr ) { // TODO: This has to be changed. Not a good way to do it. Probably better inside the class.
     if( pixmapPath.contains( "memory" ) ) {
       switch( ThemeManager::globalMngr->theme( ) ) {
           case Theme::Panda_Light:
@@ -163,6 +165,11 @@ void GraphicElement::save( QDataStream &ds ) const {
     ds << port->portName( );
     ds << port->portFlags( );
   }
+  /* <\Version2.7> */
+  ds << static_cast< quint64 >( pixmapSkinName.size( ) );
+  for( QString skinName: pixmapSkinName ) {
+    ds << skinName;
+  }
   COMMENT( "Finished saving element.", 4 );
 }
 
@@ -181,6 +188,8 @@ void GraphicElement::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, 
   /* <\Version1.9> */
   loadInputPorts( ds, portMap );
   loadOutputPorts( ds, portMap );
+  /* <\Version2.7> */
+  loadPixmapSkinNames( ds, version );
   COMMENT( "Updating port positions.", 4 );
   updatePorts( );
   COMMENT( "Finished loading element.", 4 );
@@ -323,6 +332,36 @@ void GraphicElement::loadOutputPort( QDataStream &ds, QMap< quint64, QNEPort* > 
   portMap[ ptr ] = m_outputs[ port ];
 }
 
+void GraphicElement::loadPixmapSkinNames( QDataStream &ds, double version ) {
+  if( version >= 2.7 ) {
+    COMMENT( "Loading pixmap skin names.", 4 );
+    quint64 outputSz;
+    ds >> outputSz;
+    if( outputSz > MAXIMUMVALIDINPUTSIZE ) {
+      throw std::runtime_error( ERRORMSG( "Corrupted DataStream!" ) );
+    }
+    for( size_t port = 0; port < outputSz; ++port ) {
+      loadPixmapSkinName( ds, port );
+    }
+    refresh( );
+  }
+}
+
+void GraphicElement::loadPixmapSkinName( QDataStream &ds, size_t skin ) {
+  QString name;
+  ds >> name;
+  if( ( skin < static_cast< size_t >( pixmapSkinName.size( ) ) ) ) {
+    QFileInfo fileInfo( name );
+    if( !fileInfo.isFile( ) ) {
+      std::cout << "Could not load skins: " << name.toStdString( ) << std::endl;
+    }
+    else
+      pixmapSkinName[ skin ] = name;
+  }
+  else {
+    std::cout << "Could not load some of the skins." << std::endl;
+  }
+}
 
 QVector< QNEInputPort* > GraphicElement::inputs( ) const {
   return( m_inputs );
@@ -331,7 +370,6 @@ QVector< QNEInputPort* > GraphicElement::inputs( ) const {
 void GraphicElement::setInputs( const QVector< QNEInputPort* > &inputs ) {
   m_inputs = inputs;
 }
-
 
 QRectF GraphicElement::boundingRect( ) const {
   return( pixmap->rect( ) );
@@ -390,6 +428,11 @@ void GraphicElement::setPortName( QString name ) {
   setToolTip( name );
 }
 
+void GraphicElement::setSkin( bool defaultSkin, QString filename ) {
+  Q_UNUSED( defaultSkin );
+  Q_UNUSED( filename );
+}
+
 void GraphicElement::updatePorts( ) {
 /*  qDebug() << "UpdatePorts"; */
   COMMENT( "Updating port positions that belong to the box.", 4 );
@@ -420,7 +463,7 @@ void GraphicElement::updatePorts( ) {
 }
 
 void GraphicElement::refresh( ) {
-
+  setPixmap( pixmapSkinName[ 0 ] );
 }
 
 /*
