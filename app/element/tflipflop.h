@@ -20,6 +20,7 @@ public:
     return( ElementGroup::MEMORY );
   }
   virtual void updatePorts( ) override;
+  void setSkin( bool defaultSkin, QString filename ) override;
 };
 
 #endif /* TFLIPFLOP_H */

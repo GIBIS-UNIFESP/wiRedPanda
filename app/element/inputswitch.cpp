@@ -5,9 +5,11 @@
 int InputSwitch::current_id_number = 0;
 
 InputSwitch::InputSwitch( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent ) {
+  pixmapSkinName.append( ":/input/switchOff.png" );
+  pixmapSkinName.append( ":/input/switchOn.png" );
   setOutputsOnTop( false );
   setRotatable( false );
-  setPixmap( ":/input/switchOff.png" );
+  setPixmap( pixmapSkinName[ 0 ] );
   on = false;
   setHasLabel( true );
   setHasTrigger( true );
@@ -24,10 +26,10 @@ void InputSwitch::setOn( bool value ) {
     output( )->setValue( on );
   }
   if( on ) {
-    setPixmap( ":/input/switchOn.png" );
+    setPixmap( pixmapSkinName[ 1 ] );
   }
   else {
-    setPixmap( ":/input/switchOff.png" );
+    setPixmap( pixmapSkinName[ 0 ] );
   }
 }
 
@@ -50,4 +52,27 @@ void InputSwitch::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, dou
   ds >> on;
   setOn( on );
   output( )->setValue( on );
+}
+
+void InputSwitch::setSkin( bool defaultSkin, QString filename ) {
+  if( defaultSkin ) {
+    if( !on ) {
+      pixmapSkinName[ 0 ] = ":/input/switchOff.png";
+      setPixmap( pixmapSkinName[ 0 ] );
+    }
+    else {
+      pixmapSkinName[ 1 ] = ":/input/switchOn.png";
+      setPixmap( pixmapSkinName[ 1 ] );
+    }
+  }
+  else {
+    if( !on ) {
+      pixmapSkinName[ 0 ] = filename;
+      setPixmap( pixmapSkinName[ 0 ] );
+    }
+    else {
+      pixmapSkinName[ 1 ] = filename;
+      setPixmap( pixmapSkinName[ 1 ] );
+    }
+  }
 }

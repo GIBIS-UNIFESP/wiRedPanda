@@ -15,6 +15,7 @@ public:
   /* GraphicElement interface */
 public:
   ElementType elementType( ) override;
+  void setSkin( bool defaultSkin, QString filename ) override;
 };
 
 #endif /* NODE_H */

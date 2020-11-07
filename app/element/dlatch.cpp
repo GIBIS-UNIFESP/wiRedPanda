@@ -1,7 +1,8 @@
 #include "dlatch.h"
 
 DLatch::DLatch( QGraphicsItem *parent ) : GraphicElement( 2, 2, 2, 2, parent ) {
-  setPixmap( ":/memory/D-latch.png" );
+  pixmapSkinName.append( ":/memory/D-latch.png" );
+  setPixmap( pixmapSkinName[ 0 ] );
   setRotatable( false );
   updatePorts( );
   setPortName( "D Latch" );
@@ -20,4 +21,12 @@ void DLatch::updatePorts( ) {
 
   output( 0 )->setPos( bottomPosition( ), 15 ); /* Q */
   output( 1 )->setPos( bottomPosition( ), 45 ); /* ~Q */
+}
+
+void DLatch::setSkin( bool defaultSkin, QString filename ) {
+  if( defaultSkin )
+    pixmapSkinName[ 0 ] = ":/memory/D-latch.png";
+  else
+    pixmapSkinName[ 0 ] = filename;
+  setPixmap( pixmapSkinName[ 0 ] );
 }

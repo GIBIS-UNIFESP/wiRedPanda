@@ -30,10 +30,12 @@ public:
 
   void save( QDataStream &ds ) const override;
   void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) override;
+  void setSkin( bool defaultSkin, QString filename ) override;
 
 private:
   QString m_color;
-  QPixmap a, b;
+  int m_colorNumber; /* white = 0, red = 2, green = 4, blue = 6, purple = 8 */
+  QPixmap led_off_pixmap, led_on_pixmap;
   std::array< int, 4 > m_rowOffsets;
   std::array< int, 4 > m_colOffsets;
 };
