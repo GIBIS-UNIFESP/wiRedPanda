@@ -111,7 +111,7 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
       }
         case ElementGroup::MEMORY: {
         if( firstElm->inputSize( ) == 2 ) {
-          addElementAction( submenumorph, firstElm, ElementType::TLATCH, hasSameType );
+//          addElementAction( submenumorph, firstElm, ElementType::TLATCH, hasSameType );
           addElementAction( submenumorph, firstElm, ElementType::DLATCH, hasSameType );
           addElementAction( submenumorph, firstElm, ElementType::JKLATCH, hasSameType );
         }

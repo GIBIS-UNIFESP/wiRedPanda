@@ -21,7 +21,7 @@
 #include "element/or.h"
 #include "element/srflipflop.h"
 #include "element/tflipflop.h"
-#include "element/tlatch.h"
+//#include "element/tlatch.h"
 #include "element/xnor.h"
 #include "element/xor.h"
 #include "elementfactory.h"
@@ -58,7 +58,7 @@ ElementType ElementFactory::textToType( QString text ) {
          text == "JKFLIPFLOP" ? ElementType::JKFLIPFLOP :
          text == "JKLATCH" ? ElementType::JKLATCH :
          text == "SRFLIPFLOP" ? ElementType::SRFLIPFLOP :
-         text == "TLATCH" ? ElementType::TLATCH :
+//         text == "TLATCH" ? ElementType::TLATCH :
          text == "TFLIPFLOP" ? ElementType::TFLIPFLOP :
          text == "DISPLAY" ? ElementType::DISPLAY :
          text == "DISPLAY14" ? ElementType::DISPLAY14 :
@@ -92,7 +92,7 @@ QString ElementFactory::typeToText( ElementType type ) {
       case ElementType::JKFLIPFLOP: return( "JKFLIPFLOP" );
       case ElementType::JKLATCH: return( "JKLATCH" );
       case ElementType::SRFLIPFLOP: return( "SRFLIPFLOP" );
-      case ElementType::TLATCH: return( "TLATCH" );
+//      case ElementType::TLATCH: return( "TLATCH" );
       case ElementType::TFLIPFLOP: return( "TFLIPFLOP" );
       case ElementType::DISPLAY: return( "DISPLAY" );
       case ElementType::DISPLAY14: return( "DISPLAY14" );
@@ -126,7 +126,7 @@ QString ElementFactory::translatedName( ElementType type ) {
       case ElementType::JKFLIPFLOP: return( tr( "JK-flipflop" ) );
       case ElementType::JKLATCH: return( tr( "JK-latch" ) );
       case ElementType::SRFLIPFLOP: return( tr( "SR-flipflop" ) );
-      case ElementType::TLATCH: return( tr( "T-latch" ) );
+//      case ElementType::TLATCH: return( tr( "T-latch" ) );
       case ElementType::TFLIPFLOP: return( tr( "T-flipflop" ) );
       case ElementType::DISPLAY: return( tr( "Display" ) );
       case ElementType::DISPLAY14: return( tr( "Display14" ) );
@@ -160,7 +160,7 @@ QPixmap ElementFactory::getPixmap( ElementType type ) {
       case ElementType::JKFLIPFLOP: return( QPixmap( ":/memory/light/JK-flipflop.png" ) );
       case ElementType::JKLATCH: return( QPixmap( ":/memory/light/JK-latch.png" ) );
       case ElementType::SRFLIPFLOP: return( QPixmap( ":/memory/light/SR-flipflop.png" ) );
-      case ElementType::TLATCH: return( QPixmap( ":/memory/light/T-latch.png" ) );
+//      case ElementType::TLATCH: return( QPixmap( ":/memory/light/T-latch.png" ) );
       case ElementType::TFLIPFLOP: return( QPixmap( ":/memory/light/T-flipflop.png" ) );
       case ElementType::DISPLAY: return( QPixmap( ":/output/counter/counter_on.png" ) );
       case ElementType::DISPLAY14: return( QPixmap( ":/output/counter/counter_14_on.png" ) );
@@ -200,7 +200,7 @@ GraphicElement* ElementFactory::buildElement( ElementType type, QGraphicsItem *p
         type == ElementType::JKFLIPFLOP ? new JKFlipFlop( parent ) :
         type == ElementType::SRFLIPFLOP ? new SRFlipFlop( parent ) :
         type == ElementType::TFLIPFLOP ? new TFlipFlop( parent ) :
-        type == ElementType::TLATCH ? new TLatch( parent ) :
+//        type == ElementType::TLATCH ? new TLatch( parent ) :
         type == ElementType::DISPLAY ? new Display( parent ) :
         type == ElementType::DISPLAY14 ? new Display14( parent ) :
         type == ElementType::BOX ? new Box( parent ) :

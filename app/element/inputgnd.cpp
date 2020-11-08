@@ -5,5 +5,5 @@ InputGnd::InputGnd( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent
   setPixmap( ":/input/0.png" );
   setRotatable( false );
   setPortName( "GND" );
-  outputs( ).first( )->setValue( false );
+  m_outputs.first( )->setValue( false );
 }

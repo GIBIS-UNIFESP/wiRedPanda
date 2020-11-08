@@ -13,7 +13,7 @@
 #include "node.h"
 #include "srflipflop.h"
 #include "tflipflop.h"
-#include "tlatch.h"
+//#include "tlatch.h"
 
 #include "and.h"
 #include "dflipflop.h"

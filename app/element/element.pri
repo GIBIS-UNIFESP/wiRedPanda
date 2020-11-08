@@ -21,7 +21,7 @@ SOURCES += \
     $$PWD/or.cpp \
     $$PWD/srflipflop.cpp \
     $$PWD/tflipflop.cpp \
-    $$PWD/tlatch.cpp \
+#    $$PWD/tlatch.cpp \
     $$PWD/xnor.cpp \
     $$PWD/xor.cpp \
     $$PWD/buzzer.cpp \
@@ -52,7 +52,7 @@ HEADERS  +=  \
     $$PWD/or.h \
     $$PWD/srflipflop.h \
     $$PWD/tflipflop.h \
-    $$PWD/tlatch.h \
+#    $$PWD/tlatch.h \
     $$PWD/xnor.h \
     $$PWD/xor.h \
     $$PWD/buzzer.h \
