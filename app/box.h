@@ -39,6 +39,7 @@ public:
 
   QVector< GraphicElement* > getElements( ) const;
 
+  void setSkin(bool defaultSkin, QString filename) override;
 private:
   Editor *editor;
   QString m_file;

@@ -130,6 +130,7 @@ void BoxManager::reloadFile( QString fileName ) {
       }
     }
   }
+  emit updatedBox( );
 }
 
 bool BoxManager::warnAboutFileChange( const QString &fileName ) {

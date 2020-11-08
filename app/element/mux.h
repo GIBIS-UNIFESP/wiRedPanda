@@ -19,6 +19,7 @@ public:
     return( ElementGroup::MUX );
   }
   void updatePorts( ) override;
+  void setSkin( bool defaultSkin, QString filename ) override;
 };
 
 #endif /* MUX_H */

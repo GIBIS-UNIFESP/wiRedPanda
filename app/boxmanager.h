@@ -27,6 +27,9 @@ public:
 
   static BoxManager* instance( );
 
+signals:
+  void updatedBox( );
+
 private slots:
   void reloadFile( QString bname );
 

@@ -1,7 +1,8 @@
 #include "dflipflop.h"
 
 DFlipFlop::DFlipFlop( QGraphicsItem *parent ) : GraphicElement( 4, 4, 2, 2, parent ) {
-  setPixmap( ":/memory/D-flipflop.png" );
+  pixmapSkinName.append( ":/memory/D-flipflop.png" );
+  setPixmap( pixmapSkinName[ 0 ] );
   setRotatable( false );
   updatePorts( );
   setPortName( "FlipFlop D" );
@@ -30,4 +31,12 @@ void DFlipFlop::updatePorts( ) {
   input( 3 )->setPos( 32, bottomPosition( ) ); /* Clear */
   output( 0 )->setPos( bottomPosition( ), 15 ); /* Q */
   output( 1 )->setPos( bottomPosition( ), 45 ); /* ~Q */
+}
+
+void DFlipFlop::setSkin( bool defaultSkin, QString filename ) {
+  if( defaultSkin )
+    pixmapSkinName[ 0 ] = ":/memory/D-flipflop.png";
+  else
+    pixmapSkinName[ 0 ] = filename;
+  setPixmap( pixmapSkinName[ 0 ] );
 }
