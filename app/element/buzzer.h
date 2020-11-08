@@ -37,6 +37,7 @@ private:
 public:
   void save( QDataStream &ds ) const override;
   void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) override;
+  void setSkin( bool defaultSkin, QString filename ) override;
 };
 
 #endif // BUZZER_H

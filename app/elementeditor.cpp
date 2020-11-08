@@ -7,6 +7,7 @@
 #include <QGraphicsView>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QFileDialog>
 
 ElementEditor::ElementEditor( QWidget *parent ) : QWidget( parent ), ui( new Ui::ElementEditor ) {
   _manyLabels = tr( "<Many labels>" );
@@ -15,6 +16,7 @@ ElementEditor::ElementEditor( QWidget *parent ) : QWidget( parent ), ui( new Ui:
   _manyFreq = tr( "<Many values>" );
   _manyTriggers = tr( "<Many triggers>" );
   _manyAudios = tr( "<Many sounds>" );
+  m_defaultSkin = true;
 
   ui->setupUi( this );
   setEnabled( false );
@@ -203,10 +205,9 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
   m_elements = elms;
   hasLabel = hasColors = hasFrequency = canChangeInputSize = hasTrigger = hasAudio = false;
   hasRotation = hasSameLabel = hasSameColors = hasSameFrequency = hasSameAudio = false;
-  hasSameInputSize = hasSameTrigger = canMorph = hasSameType = hasAnyProperty = false;
+  hasSameInputSize = hasSameTrigger = canMorph = hasSameType = false;
   hasElements = false;
   if( !elms.isEmpty( ) ) {
-    hasAnyProperty = false;
     hasLabel = hasColors = hasAudio = hasFrequency = canChangeInputSize = hasTrigger = true;
     hasRotation = true;
     setVisible( true );
@@ -246,9 +247,6 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
       canMorph &= sameElementGroup;
     }
     canChangeInputSize = ( minimum < maximum );
-    hasAnyProperty |= hasLabel | hasColors | hasFrequency | hasAudio;
-    hasAnyProperty |= canChangeInputSize | hasTrigger;
-
 
     /* Labels */
     ui->lineEditElementLabel->setVisible( hasLabel );
@@ -343,8 +341,8 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
         ui->lineEditTrigger->setText( _manyTriggers );
       }
     }
-    setEnabled( hasAnyProperty );
-    setVisible( hasAnyProperty );
+    setEnabled( true );
+    setVisible( true );
   }
   else {
     hasElements = false;
@@ -383,6 +381,7 @@ void ElementEditor::apply( ) {
         elm->setTrigger( QKeySequence( ui->lineEditTrigger->text( ) ) );
       }
     }
+    elm->setSkin( m_defaultSkin, m_skinName );
   }
   emit sendCommand( new UpdateCommand( m_elements, itemData, editor ) );
 }
@@ -471,5 +470,20 @@ bool ElementEditor::eventFilter( QObject *obj, QEvent *event ) {
 }
 
 void ElementEditor::on_comboBoxAudio_currentIndexChanged( int ) {
+  apply( );
+}
+
+void ElementEditor::on_pushButtonChangeSkin_clicked( ) {
+  QString fname = QFileDialog::getOpenFileName( this, tr( "Open File" ), "/home", tr( "Images (*.png *.gif *.jpg)" ) );
+  if( fname.isEmpty( ) ) {
+    return;
+  }
+  m_skinName = fname;
+  m_defaultSkin = false;
+  apply( );
+}
+
+void ElementEditor::on_pushButtonDefaultSkin_clicked( ) {
+  m_defaultSkin = true;
   apply( );
 }

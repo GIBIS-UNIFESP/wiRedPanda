@@ -47,6 +47,9 @@ private:
   QColor m_selectionBrush;
   QColor m_selectionPen;
 
+protected:
+  QVector< QString > pixmapSkinName;
+
   /* GraphicElement interface. */
 public:
   virtual ElementType elementType( ) = 0;
@@ -79,6 +82,8 @@ public:
   void addOutputPort( const QString &name = QString( ) );
 
   virtual void setPortName( QString name );
+
+  virtual void setSkin( bool defaultSkin, QString filename );
 
   int topPosition( ) const;
 
@@ -226,6 +231,10 @@ private:
   void loadInputPort( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, size_t port );
 
   void loadOutputPort( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, size_t port );
+
+  void loadPixmapSkinNames( QDataStream &ds , double version );
+
+  void loadPixmapSkinName( QDataStream &ds, size_t skin );
 
 protected:
   QVector< QNEInputPort* > m_inputs;

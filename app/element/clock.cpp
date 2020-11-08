@@ -9,6 +9,8 @@ Clock::~Clock( ) {
 }
 
 Clock::Clock( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent ) {
+  pixmapSkinName.append( ":/input/clock0.png" );
+  pixmapSkinName.append( ":/input/clock1.png" );
   setOutputsOnTop( false );
   setRotatable( false );
   /*  connect(&timer,&QTimer::timeout,this,&Clock::updateClock); */
@@ -19,6 +21,7 @@ Clock::Clock( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent ) {
   setHasLabel( true );
   setPortName( "Clock" );
   setOn( 0 );
+  setPixmap( pixmapSkinName[ 0 ] );
 }
 
 void Clock::updateClock( ) {
@@ -38,10 +41,10 @@ bool Clock::getOn( ) const {
 void Clock::setOn( bool value ) {
   on = value;
   if( on ) {
-    setPixmap( ":/input/clock1.png" );
+    setPixmap( pixmapSkinName[ 1 ] );
   }
   else {
-    setPixmap( ":/input/clock0.png" );
+    setPixmap( pixmapSkinName[ 0 ] );
   }
   m_outputs.first( )->setValue( on );
 }
@@ -86,4 +89,27 @@ void Clock::resetClock( ) {
 
 QString Clock::genericProperties( ) {
   return( QString( "%1 Hz" ).arg( static_cast< double >( getFrequency( ) ) ) );
+}
+
+void Clock::setSkin( bool defaultSkin, QString filename ) {
+  if( defaultSkin ) {
+    if( !on ) {
+      pixmapSkinName[ 0 ] = ":/input/clock0.png";
+      setPixmap( pixmapSkinName[ 0 ] );
+    }
+    else {
+      pixmapSkinName[ 1 ] = ":/input/clock1.png";
+      setPixmap( pixmapSkinName[ 1 ] );
+    }
+  }
+  else {
+    if( !on ) {
+      pixmapSkinName[ 0 ] = filename;
+      setPixmap( pixmapSkinName[ 0 ] );
+    }
+    else {
+      pixmapSkinName[ 1 ] = filename;
+      setPixmap( pixmapSkinName[ 1 ] );
+    }
+  }
 }

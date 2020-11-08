@@ -93,6 +93,7 @@ private:
   void startSelectionRect( );
 
   void makeConnection( QNEConnection *editedConn );
+  void redoSimulationController( );
 public:
   bool eventFilter( QObject *obj, QEvent *evt );
   void setElementEditor( ElementEditor *value );

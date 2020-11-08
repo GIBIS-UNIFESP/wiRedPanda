@@ -8,6 +8,15 @@
 int Display::current_id_number = 0;
 
 Display::Display( QGraphicsItem *parent ) : GraphicElement( 8, 8, 0, 0, parent ) {
+  pixmapSkinName.append( ":/output/counter/counter_off.png" );
+  pixmapSkinName.append( ":/output/counter/counter_a.png" );
+  pixmapSkinName.append( ":/output/counter/counter_b.png" );
+  pixmapSkinName.append( ":/output/counter/counter_c.png" );
+  pixmapSkinName.append( ":/output/counter/counter_d.png" );
+  pixmapSkinName.append( ":/output/counter/counter_e.png" );
+  pixmapSkinName.append( ":/output/counter/counter_f.png" );
+  pixmapSkinName.append( ":/output/counter/counter_g.png" );
+  pixmapSkinName.append( ":/output/counter/counter_dp.png" );
   setRotatable( false );
   setOutputsOnTop( true );
   updatePorts( );
@@ -15,15 +24,15 @@ Display::Display( QGraphicsItem *parent ) : GraphicElement( 8, 8, 0, 0, parent )
   setTopPosition( 6 );
   setHasLabel( true );
 
-  setPixmap( ":/output/counter/counter_off.png" );
-  a = QPixmap( ":/output/counter/counter_a.png" );
-  b = QPixmap( ":/output/counter/counter_b.png" );
-  c = QPixmap( ":/output/counter/counter_c.png" );
-  d = QPixmap( ":/output/counter/counter_d.png" );
-  e = QPixmap( ":/output/counter/counter_e.png" );
-  f = QPixmap( ":/output/counter/counter_f.png" );
-  g = QPixmap( ":/output/counter/counter_g.png" );
-  dp = QPixmap( ":/output/counter/counter_dp.png" );
+  setPixmap( pixmapSkinName[ 0 ] );
+  a = QPixmap( pixmapSkinName[ 1 ] );
+  b = QPixmap( pixmapSkinName[ 2 ] );
+  c = QPixmap( pixmapSkinName[ 3 ] );
+  d = QPixmap( pixmapSkinName[ 4 ] );
+  e = QPixmap( pixmapSkinName[ 5 ] );
+  f = QPixmap( pixmapSkinName[ 6 ] );
+  g = QPixmap( pixmapSkinName[ 7 ] );
+  dp = QPixmap( pixmapSkinName[ 8 ] );
 
   setPortName( "Display" );
   for( QNEPort *in : qAsConst(m_inputs) ) {
@@ -113,3 +122,12 @@ void Display::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double 
     updatePorts( );
   }
 }
+
+void Display::setSkin( bool defaultSkin, QString filename ) {
+  if( defaultSkin )
+    pixmapSkinName[ 0 ] = ":/output/counter/counter_off.png";
+  else
+    pixmapSkinName[ 0 ] = filename;
+  setPixmap( pixmapSkinName[ 0 ] );
+}
+

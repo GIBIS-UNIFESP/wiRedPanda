@@ -1,7 +1,8 @@
 #include "srflipflop.h"
 
 SRFlipFlop::SRFlipFlop( QGraphicsItem *parent ) : GraphicElement( 5, 5, 2, 2, parent ) {
-  setPixmap( ":/memory/SR-flipflop.png" );
+  pixmapSkinName.append( ":/memory/SR-flipflop.png" );
+  setPixmap( pixmapSkinName[ 0 ] );
   setRotatable( false );
   updatePorts( );
   lastClk = false;
@@ -35,4 +36,12 @@ void SRFlipFlop::updatePorts( ) {
 
   output( 0 )->setPos( bottomPosition( ), 15 ); /* Q */
   output( 1 )->setPos( bottomPosition( ), 45 ); /* ~Q */
+}
+
+void SRFlipFlop::setSkin( bool defaultSkin, QString filename ) {
+  if( defaultSkin )
+    pixmapSkinName[ 0 ] = ":/memory/SR-flipflop.png";
+  else
+    pixmapSkinName[ 0 ] = filename;
+  setPixmap( pixmapSkinName[ 0 ] );
 }

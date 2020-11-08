@@ -14,7 +14,6 @@
 #include "element/jkflipflop.h"
 #include "element/jklatch.h"
 #include "element/led.h"
-#include "element/ledgrid.h"
 #include "element/nand.h"
 #include "element/nor.h"
 #include "element/not.h"
@@ -67,7 +66,6 @@ ElementType ElementFactory::textToType( QString text ) {
          text == "DEMUX" ? ElementType::DEMUX :
          text == "NODE" ? ElementType::NODE :
          text == "BUZZER" ? ElementType::BUZZER :
-         text == "LEDGRID" ? ElementType::LEDGRID :
          ElementType::UNKNOWN;
   return( type );
 }
@@ -101,7 +99,6 @@ QString ElementFactory::typeToText( ElementType type ) {
       case ElementType::DEMUX: return( "DEMUX" );
       case ElementType::NODE: return( "NODE" );
       case ElementType::BUZZER: return( "BUZZER" );
-      case ElementType::LEDGRID: return( "LEDGRID" );
       case ElementType::UNKNOWN: default: return( "UNKNOWN" );
   }
 }
@@ -135,7 +132,6 @@ QString ElementFactory::translatedName( ElementType type ) {
       case ElementType::DEMUX: return( tr( "Demux" ) );
       case ElementType::NODE: return( tr( "Node" ) );
       case ElementType::BUZZER: return( tr( "Buzzer" ) );
-      case ElementType::LEDGRID: return( tr( "LedGrid" ) );
       case ElementType::UNKNOWN: default: return( tr( "Unknown" ) );
   }
 }
@@ -169,7 +165,6 @@ QPixmap ElementFactory::getPixmap( ElementType type ) {
       case ElementType::DEMUX: return( QPixmap( ":/basic/demux.png" ) );
       case ElementType::NODE: return( QPixmap( ":/basic/node.png" ) );
       case ElementType::BUZZER: return( QPixmap( ":/output/BuzzerOff.png" ) );
-      case ElementType::LEDGRID: return( QPixmap( ":/output/LedGrid.png" ) );
       case ElementType::UNKNOWN: return( QPixmap( ) );
   }
   return( QPixmap( ) );
@@ -208,7 +203,6 @@ GraphicElement* ElementFactory::buildElement( ElementType type, QGraphicsItem *p
         type == ElementType::MUX ? new Mux( parent ) :
         type == ElementType::DEMUX ? new Demux( parent ) :
         type == ElementType::BUZZER ? new Buzzer( parent ) :
-        type == ElementType::LEDGRID ? new LedGrid( parent ) :
         static_cast< GraphicElement* >( nullptr );
   return( elm );
 }
