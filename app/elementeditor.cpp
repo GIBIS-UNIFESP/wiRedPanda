@@ -497,13 +497,7 @@ void ElementEditor::on_comboBoxAudio_currentIndexChanged( int ) {
 
 // Skin change
 void ElementEditor::on_pushButtonChangeSkin_clicked( ) {
-  QString fname = QFileDialog::getOpenFileName( this, tr( "Open File" ), "/home", tr( "Images (*.png *.gif *.jpg)" ) );
-  if( fname.isEmpty( ) ) {
-    return;
-  }
-  m_skinName = fname;
-  m_defaultSkin = false;
-  apply( );
+  this->updateElementSkin();
 }
 
 void ElementEditor::on_pushButtonDefaultSkin_clicked( ) {
