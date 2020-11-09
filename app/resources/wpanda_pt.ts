@@ -131,7 +131,7 @@
         <translation>Rotacionar</translation>
     </message>
     <message>
-        <source>Change Color to %1</source>
+        <source>Change color to %1</source>
         <translation type="obsolete">Mudar cor para %1</translation>
     </message>
     <message>
@@ -147,7 +147,7 @@
         <translation>Mudar frequência</translation>
     </message>
     <message>
-        <source>Change color to...</source>
+        <source>Change color to ...</source>
         <translation>Mudar cor para ...</translation>
     </message>
     <message>
