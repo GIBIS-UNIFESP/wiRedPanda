@@ -57,7 +57,8 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
   QString rotateActionText( tr( "Rotate" ) );
   QString freqActionText( tr( "Change frequency" ) );
   QString colorMenuText( tr( "Change color to..." ) );
-  QString changeSkinText ( tr( "Change skin to ..." ) );
+  QString changeSkinText ( tr( "Change icon to ..." ) );
+  QString revertSkinText ( tr( "Set icon to default") );
   QString triggerActionText( tr( "Change trigger" ) );
   QString morphMenuText( tr( "Morph to..." ) );
   if( hasLabel ) {
@@ -68,7 +69,13 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
       triggerActionText );
   }
   if ( canChangeSkin ) {
-      menu.addAction( changeSkinText );
+      if ( m_defaultSkin ) {
+          // If the icon set is the default one, add the text to
+          // change it.
+          menu.addAction( changeSkinText );
+      } else {
+          menu.addAction( revertSkinText );
+      }
   }
   if( hasRotation ) {
     menu.addAction( QIcon( QPixmap( ":/toolbar/rotateR.png" ) ), rotateActionText )->setData( rotateActionText );
@@ -165,9 +172,14 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
     else if( a->data( ).toString( ) == triggerActionText ) {
       changeTriggerAction( );
     }
-    else if ( a->text() == changeSkinText ) {
-        // Reads a new sprite and applies it to the element
-        this->updateElementSkin();
+    else if ( a->text() == changeSkinText || a->text() == revertSkinText ) {
+        if ( m_defaultSkin ) {
+            // Reads a new sprite and applies it to the element
+            this->updateElementSkin();
+        } else {
+            m_defaultSkin = true;
+            this->apply();
+        }
     }
     else if( a->data( ).toString( ) == freqActionText ) {
       ui->doubleSpinBoxFrequency->setFocus( );
