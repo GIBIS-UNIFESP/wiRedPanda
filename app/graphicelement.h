@@ -19,7 +19,7 @@
 enum class ElementType : uint_fast8_t {
   UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND, DISPLAY,
   DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, BOX, NODE, MUX, DEMUX,
-  BUZZER, DISPLAY14, LEDGRID
+  BUZZER, DISPLAY14
 };
 
 enum class ElementGroup : uint_fast8_t {
@@ -127,6 +127,8 @@ public:
 
   bool hasLabel( ) const;
 
+  bool canChangeSkin() const;
+
   bool hasFrequency( ) const;
 
   bool hasColors( ) const;
@@ -178,6 +180,7 @@ protected:
   void setHasLabel( bool hasLabel );
   void setHasFrequency( bool hasFrequency );
   void setHasColors( bool hasColors );
+  void setCanChangeSkin ( bool canChangeSkin );
   void setHasTrigger( bool hasTrigger );
   void setMinInputSz( const int minInputSz );
   void setMinOutputSz( int minOutputSz );
@@ -201,6 +204,7 @@ private:
   bool m_outputsOnTop;
   bool m_rotatable;
   bool m_hasLabel;
+  bool m_canChangeSkin;
   bool m_hasFrequency;
   bool m_hasColors;
   bool m_hasTrigger;

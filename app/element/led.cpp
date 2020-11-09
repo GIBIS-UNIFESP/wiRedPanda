@@ -47,6 +47,7 @@ Led::Led( QGraphicsItem *parent ) : GraphicElement( 1, 4, 0, 0, parent ) {
   setPixmap( pixmapSkinName[ 0 ] );
   updatePorts( );
   setHasLabel( true );
+  setCanChangeSkin( true );
   setPortName( "Led" );
 }
 
