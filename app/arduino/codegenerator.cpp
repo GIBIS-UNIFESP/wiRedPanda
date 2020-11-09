@@ -453,7 +453,7 @@ void CodeGenerator::assignLogicOperator( GraphicElement *elm ) {
 void CodeGenerator::loop( ) {
   out << "void loop( ) {" << Qt::endl;
   out << "    // Reading input data //." << Qt::endl;
-  for( MappedPin pin : inputMap ) {
+  for( const MappedPin& pin : inputMap ) {
     out << QString( "    %1_val = digitalRead( %1 );" ).arg( pin.varName ) << Qt::endl;
   }
   out << Qt::endl;
@@ -472,8 +472,8 @@ void CodeGenerator::loop( ) {
   out << Qt::endl;
   out << "    // Assigning aux variables. //" << Qt::endl;
   assignVariablesRec( elements );
-  out << Qt::endl;
-  out << "    // Writing output data. //" << Qt::endl;
+  out << "\n";
+  out << "    // Writing output data. //\n";
   for( MappedPin pin : outputMap ) {
     QString varName = otherPortName( pin.port );
     if( varName.isEmpty( ) ) {
