@@ -57,6 +57,8 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
   QString rotateActionText( tr( "Rotate" ) );
   QString freqActionText( tr( "Change frequency" ) );
   QString colorMenuText( tr( "Change color to..." ) );
+  QString changeSkinText ( tr( "Change icon to ..." ) );
+  QString revertSkinText ( tr( "Set icon to default") );
   QString triggerActionText( tr( "Change trigger" ) );
   QString morphMenuText( tr( "Morph to..." ) );
   if( hasLabel ) {
@@ -65,6 +67,15 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
   if( hasTrigger ) {
     menu.addAction( QIcon( ElementFactory::getPixmap( ElementType::BUTTON ) ), triggerActionText )->setData(
       triggerActionText );
+  }
+  if ( canChangeSkin ) {
+      if ( m_defaultSkin ) {
+          // If the icon set is the default one, add the text to
+          // change it.
+          menu.addAction( changeSkinText );
+      } else {
+          menu.addAction( revertSkinText );
+      }
   }
   if( hasRotation ) {
     menu.addAction( QIcon( QPixmap( ":/toolbar/rotateR.png" ) ), rotateActionText )->setData( rotateActionText );
@@ -113,7 +124,7 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
       }
         case ElementGroup::MEMORY: {
         if( firstElm->inputSize( ) == 2 ) {
-          addElementAction( submenumorph, firstElm, ElementType::TLATCH, hasSameType );
+//          addElementAction( submenumorph, firstElm, ElementType::TLATCH, hasSameType );
           addElementAction( submenumorph, firstElm, ElementType::DLATCH, hasSameType );
           addElementAction( submenumorph, firstElm, ElementType::JKLATCH, hasSameType );
         }
@@ -161,17 +172,28 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
     else if( a->data( ).toString( ) == triggerActionText ) {
       changeTriggerAction( );
     }
+    else if ( a->text() == changeSkinText || a->text() == revertSkinText ) {
+        if ( m_defaultSkin ) {
+            // Reads a new sprite and applies it to the element
+            this->updateElementSkin();
+        } else {
+            m_defaultSkin = true;
+            this->apply();
+        }
+    }
     else if( a->data( ).toString( ) == freqActionText ) {
       ui->doubleSpinBoxFrequency->setFocus( );
     }
     else if( submenumorph && submenumorph->actions( ).contains( a ) ) {
       ElementType type = static_cast< ElementType >( a->data( ).toInt( ) );
       if( type != ElementType::UNKNOWN ) {
-        sendCommand( new MorphCommand( m_elements, type, editor ) );
+        emit sendCommand( new MorphCommand( m_elements, type, editor ) );
       }
     }
     else if( submenucolors && submenucolors->actions( ).contains( a ) ) {
       ui->comboBoxColor->setCurrentText( a->text( ) );
+    } else {
+        fprintf(stderr, "Text: \"%s\"\n", a->text( ).toStdString().c_str());
     }
   }
 }
@@ -184,6 +206,17 @@ void ElementEditor::renameAction( ) {
 void ElementEditor::changeTriggerAction( ) {
   ui->lineEditTrigger->setFocus( );
   ui->lineEditTrigger->selectAll( );
+}
+
+void ElementEditor::updateElementSkin() {
+    const QString homeDir = QDir::homePath();
+    QString fname = QFileDialog::getOpenFileName( this, tr( "Open File" ), homeDir, tr( "Images (*.png *.gif *.jpg)" ) );
+    if( fname.isEmpty( ) ) {
+      return;
+    }
+    m_skinName = fname;
+    m_defaultSkin = false;
+    apply( );
 }
 
 void ElementEditor::fillColorComboBox( ) {
@@ -209,7 +242,7 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
   hasElements = false;
   if( !elms.isEmpty( ) ) {
     hasLabel = hasColors = hasAudio = hasFrequency = canChangeInputSize = hasTrigger = true;
-    hasRotation = true;
+    hasRotation = canChangeSkin =  true;
     setVisible( true );
     setEnabled( false );
     int minimum = 0, maximum = 100000000;
@@ -219,9 +252,10 @@ void ElementEditor::setCurrentElements( const QVector< GraphicElement* > &elms )
     hasSameType = true;
     hasElements = true;
     GraphicElement *firstElement = m_elements.front( );
-    for( GraphicElement *elm : m_elements ) {
-      hasLabel &= elm->hasLabel( );
-      hasColors &= elm->hasColors( );
+    for( GraphicElement *elm : qAsConst(m_elements) ) {
+      hasLabel      &= elm->hasLabel( );
+      canChangeSkin &= elm->canChangeSkin();
+      hasColors     &= elm->hasColors( );
       hasAudio &= elm->hasAudio( );
       hasFrequency &= elm->hasFrequency( );
       minimum = std::max( minimum, elm->minInputSz( ) );
@@ -362,7 +396,7 @@ void ElementEditor::apply( ) {
   }
   QByteArray itemData;
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-  for( GraphicElement *elm : m_elements ) {
+  for( GraphicElement *elm : qAsConst(m_elements) ) {
     elm->save( dataStream );
     if( elm->hasColors( ) && ( ui->comboBoxColor->currentData( ).isValid( ) ) ) {
       elm->setColor( ui->comboBoxColor->currentData( ).toString( ) );
@@ -473,14 +507,9 @@ void ElementEditor::on_comboBoxAudio_currentIndexChanged( int ) {
   apply( );
 }
 
+// Skin change
 void ElementEditor::on_pushButtonChangeSkin_clicked( ) {
-  QString fname = QFileDialog::getOpenFileName( this, tr( "Open File" ), "/home", tr( "Images (*.png *.gif *.jpg)" ) );
-  if( fname.isEmpty( ) ) {
-    return;
-  }
-  m_skinName = fname;
-  m_defaultSkin = false;
-  apply( );
+  this->updateElementSkin();
 }
 
 void ElementEditor::on_pushButtonDefaultSkin_clicked( ) {

@@ -32,6 +32,7 @@ public:
  */
 
   void fillColorComboBox( );
+  void updateElementSkin( );
 
   void setEditor( Editor *value );
 
@@ -72,7 +73,7 @@ private:
   Scene *scene;
   Editor *editor;
   bool hasAnyProperty, hasLabel, hasColors, hasFrequency, hasAudio;
-  bool canChangeInputSize, hasTrigger, hasRotation;
+  bool canChangeInputSize, hasTrigger, hasRotation, canChangeSkin;
   bool hasSameLabel, hasSameColors, hasSameFrequency;
   bool hasSameInputSize, hasSameTrigger, canMorph, hasSameType;
   bool hasSameAudio;

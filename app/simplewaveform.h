@@ -14,7 +14,7 @@ namespace Ui {
 
 class SimpleWaveform : public QDialog {
   Q_OBJECT
-  enum class SortingMode { INCREASING, DECREASING, POSITION };
+  enum class SortingMode : uint_fast8_t { INCREASING, DECREASING, POSITION };
 
 public:
   explicit SimpleWaveform( Editor *editor, QWidget *parent = nullptr );

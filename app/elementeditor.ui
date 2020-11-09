@@ -28,7 +28,7 @@
         </size>
        </property>
        <property name="text">
-        <string>Change Skin</string>
+        <string>Change skin to ...</string>
        </property>
       </widget>
      </item>
