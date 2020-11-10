@@ -22,6 +22,8 @@ class Editor : public QObject {
 public:
   explicit Editor( QObject *parent = nullptr );
   virtual ~Editor( );
+  bool saveLocalBox( Box *box, QString newBoxPath );
+  bool saveLocal( QString newPath );
   void save( QDataStream &ds );
   void load( QDataStream &ds );
   void cut( const QList< QGraphicsItem* > &items, QDataStream &ds );

@@ -18,15 +18,12 @@ class BoxManager : public QObject {
 public:
   BoxManager( MainWindow *mainWindow = nullptr, QObject *parent = nullptr );
   virtual ~BoxManager( );
-
   void clear( );
-
   bool loadBox( Box *box, QString fname, QString parentFile = "" );
-
   BoxPrototype* getPrototype( QString fname );
-
   static BoxManager* instance( );
 
+  bool updatePrototypeFilePathName( QString sourceName, QString targetName );
 signals:
   void updatedBox( );
 

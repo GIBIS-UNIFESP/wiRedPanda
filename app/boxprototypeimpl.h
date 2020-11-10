@@ -29,8 +29,8 @@ public:
   void setInputSize( int inSize );
 
   void loadInputElement( GraphicElement *elm );
-
   void loadOutputElement( GraphicElement *elm );
+  bool updateLocalBox( QString fileName, QString boxDirName );
 
 private:
 

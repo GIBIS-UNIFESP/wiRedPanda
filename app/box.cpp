@@ -89,6 +89,14 @@ QString Box::getFile( ) const {
   return( m_file );
 }
 
+bool Box::setFile( QString newFileName ) {
+  COMMENT( "Updating box name.", 0 );
+  if( !BoxManager::instance( )->updatePrototypeFilePathName( m_file, newFileName ) )
+    return( false );
+  m_file = newFileName;
+  return( true );
+}
+
 BoxPrototype* Box::getPrototype( ) {
   return( BoxManager::instance( )->getPrototype( m_file ) );
 }

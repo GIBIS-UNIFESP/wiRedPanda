@@ -31,15 +31,13 @@ public:
   }
   void save( QDataStream &ds ) const override;
   void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) override;
-
   void loadFile( QString fname );
   QString getFile( ) const;
-
+  bool setFile( QString newFileName );
   BoxPrototype* getPrototype( );
-
   QVector< GraphicElement* > getElements( ) const;
-
   void setSkin(bool defaultSkin, QString filename) override;
+
 private:
   Editor *editor;
   QString m_file;

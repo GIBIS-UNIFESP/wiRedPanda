@@ -111,11 +111,34 @@ BoxPrototype* BoxManager::getPrototype( QString fname ) {
   return( boxes[ finfo.baseName( ) ] );
 }
 
+bool BoxManager::updatePrototypeFilePathName( QString sourceName, QString targetName ) {
+  COMMENT( "Updating box name from " << sourceName.toStdString( ) << " to " << targetName.toStdString( ), 0 );
+  Q_ASSERT( !sourceName.isEmpty( ) );
+  Q_ASSERT( !targetName.isEmpty( ) );
+  QFileInfo finfo( sourceName );
+  if( !boxes.contains( finfo.baseName( ) ) ) {
+    return( false );
+  }
+  COMMENT( "Updating prototype box name.", 0 );
+  auto proto = boxes[ finfo.baseName( ) ];
+  proto->fileName( targetName );
+  COMMENT( "Updating fileWatcher. Removing " << sourceName.toStdString( ), 0 );
+  if( fileWatcher.removePath( sourceName ) ) {
+    COMMENT( "Adding " << targetName.toStdString( ) << " to fileWatcher.", 0 );
+    fileWatcher.addPath( targetName );
+  }
+  else {
+    COMMENT( "Warning. FileWatcher did not exist. Probably already changed by other box instance update.", 0 );
+  }
+  return( true );
+}
+
 BoxManager* BoxManager::instance( ) {
   return( globalBoxManager );
 }
 
 void BoxManager::reloadFile( QString fileName ) {
+  COMMENT( "Change in box " << fileName.toStdString( ) << " detected.", 0 );
   QString bname = QFileInfo( fileName ).baseName( );
   fileWatcher.addPath( fileName );
   if( warnAboutFileChange( bname ) ) {

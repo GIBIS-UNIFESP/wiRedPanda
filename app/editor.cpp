@@ -766,6 +766,60 @@ void Editor::selectAll( ) {
   }
 }
 
+bool Editor::saveLocalBox( Box *box, QString newPath ) {
+  try {
+    if( box ) {
+      COMMENT( "Getting new paths for the boxes.", 0 )
+      QString fname = box->getFile( );
+      COMMENT( "Box file name: " << fname.toStdString( ), 0 );
+      auto boxPrototype = boxManager->getPrototype( fname );
+      QString newFilePath = newPath + "/boxes/" + QFileInfo( fname ).fileName( );
+      COMMENT( "newFilePath: " << newFilePath.toStdString( ), 0 );
+      QFile fl( newFilePath );
+      if( !fl.exists( ) ) {
+        COMMENT( "Copying file to local dir. File does not exist yet.", 0 );
+        QFile::copy( fname, newFilePath );
+        if( boxPrototype->updateLocalBox( newFilePath, newPath ) ) {
+          if( !box->setFile( newFilePath ) ) {
+            std::cerr << "Error changing boxes name." << std::endl;
+            return( false );
+          }
+        }
+        else {
+          std::cerr << "Error while saving boxes at the editor." << std::endl;
+          return( false );
+        }
+      }
+      else {
+        if( !box->setFile( newFilePath ) ) {
+          std::cerr << "Error changing boxes name." << std::endl;
+          return( false );
+        }
+      }
+    }
+    return( true );
+  }
+  catch( std::runtime_error &err ) {
+    QMessageBox::warning( mainWindow, tr( "Error" ), QString::fromStdString( err.what( ) ) );
+    return( false );
+  }
+}
+
+bool Editor::saveLocal( QString newPath ) {
+  if( !scene ) {
+    return( true );
+  }
+  auto const scene_elements = scene->getElements( );
+  COMMENT( "new path: " << newPath.toStdString( ), 0 );
+  for( GraphicElement *elm : scene_elements ) {
+    elm->updateSkinsPath( newPath + "/skins/" );
+    if( elm->elementType( ) == ElementType::BOX )
+      if( !saveLocalBox( dynamic_cast< Box* >( elm ), newPath ) )
+        return( false );
+  }
+  return( true );
+}
+
 void Editor::save( QDataStream &ds ) {
   ds << QApplication::applicationName( ) + " " + QString::number( GlobalProperties::version );
   ds << scene->sceneRect( );
@@ -870,11 +924,9 @@ void Editor::pasteAction( ) {
 }
 
 bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
-
   if (!evt) {
       return false;
   }
-
   if( obj == scene ) {
     QGraphicsSceneDragDropEvent *dde = dynamic_cast< QGraphicsSceneDragDropEvent* >( evt );
     QGraphicsSceneMouseEvent *mouseEvt = dynamic_cast< QGraphicsSceneMouseEvent* >( evt );
