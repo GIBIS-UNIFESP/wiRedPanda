@@ -26,6 +26,7 @@ Display14::Display14( QGraphicsItem *parent ) : GraphicElement( 15, 15, 0, 0, pa
   pixmapSkinName.append( ":/output/counter/counter_dp.png" );
 
   setRotatable( false );
+  setCanChangeSkin( true );
   setOutputsOnTop( true );
   updatePorts( );
   setBottomPosition( 58 );

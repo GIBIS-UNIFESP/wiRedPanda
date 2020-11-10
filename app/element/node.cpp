@@ -6,6 +6,7 @@ Node::Node( QGraphicsItem *parent ) : GraphicElement( 1, 1, 1, 1, parent ) {
   pixmapSkinName.append( ":/basic/node.png" );
   setPixmap( pixmapSkinName[ 0 ], QRect( QPoint( 16, 16 ), QPoint( 48, 48 ) ) );
   updatePorts( );
+  setCanChangeSkin( true );
   setPortName( "NODE" );
   input( )->setRequired( true );
 }

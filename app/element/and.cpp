@@ -5,6 +5,7 @@ And::And( QGraphicsItem *parent ) : GraphicElement( 2, 8, 1, 1, parent ) {
   setOutputsOnTop( true );
   setPixmap( pixmapSkinName[ 0 ] );
   updatePorts( );
+  setCanChangeSkin( true );
   setPortName( "AND" );
   setToolTip( "AND" );
 }

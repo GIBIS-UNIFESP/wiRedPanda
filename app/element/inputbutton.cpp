@@ -9,6 +9,7 @@ InputButton::InputButton( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, 
   pixmapSkinName.append( ":/input/buttonOff.png" );
   pixmapSkinName.append( ":/input/buttonOn.png" );
   setOutputsOnTop( false );
+  setCanChangeSkin( true );
   setPixmap( pixmapSkinName[ 0 ] );
   setRotatable( false );
   m_outputs.first( )->setValue( 0 );

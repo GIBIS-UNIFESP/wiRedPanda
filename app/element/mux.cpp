@@ -6,7 +6,7 @@ Mux::Mux( QGraphicsItem *parent ) : GraphicElement( 3, 3, 1, 1, parent ) {
   setRotatable( true );
   updatePorts( );
   setPortName( "MUX" );
-
+  setCanChangeSkin( true );
   input( 0 )->setName( "0" );
   input( 1 )->setName( "1" );
   input( 2 )->setName( "S" );

@@ -13,6 +13,7 @@ Clock::Clock( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent ) {
   pixmapSkinName.append( ":/input/clock1.png" );
   setOutputsOnTop( false );
   setRotatable( false );
+  setCanChangeSkin( true );
   /*  connect(&timer,&QTimer::timeout,this,&Clock::updateClock); */
   setFrequency( 1.0 ); // TODO: call to virtual function during construction
   setHasFrequency( true );
