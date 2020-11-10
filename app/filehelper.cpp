@@ -20,7 +20,10 @@ QFileInfo FileHelper::findBoxFile( QString fname, QString parentFile ) {
         fileInfo.setFile( currentFile.absoluteDir( ), myFile );
         if( !fileInfo.isFile( ) ) {
           COMMENT( "Searching subdir boxes: " << currentFile.absolutePath( ).toStdString( ) + "/boxes", 0 );
-          fileInfo.setFile( QDir( currentFile.absolutePath( ) + "/boxes" ), myFile );
+          QDir subdir( currentFile.absolutePath( ) );
+          subdir.cdUp( );
+          fileInfo.setFile( QDir( subdir.absolutePath( ) + "/boxes" ), myFile );
+          COMMENT( "Searching sibling subdir boxes: " << subdir.absolutePath( ).toStdString( ) + "/boxes", 0 );
           if( !fileInfo.isFile( ) ) {
             std::cerr << "Error: This file does not exists: " << fname.toStdString( ) << std::endl;
             throw( BoxNotFoundException( QString( "Box linked file \"%1\" could not be found!\n" "Do you want to find this file?" ).arg( fname ).toStdString( ), nullptr ) );
@@ -45,7 +48,10 @@ QFileInfo FileHelper::findSkinFile( QString fname ) {
         COMMENT( "Searching subdir skins: " << currentFile.absolutePath( ).toStdString( ) + "/skins", 0 );
         fileInfo.setFile( QDir( currentFile.absolutePath( ) + "/skins" ), myFile );
         if( !fileInfo.isFile( ) ) {
-          std::cerr << "Error: This file does not exists: " << fname.toStdString( ) << std::endl;
+          fileInfo.setFile( QDir( currentFile.absolutePath( ) + "/skins" ), myFile );
+          if( !fileInfo.isFile( ) ) {
+            std::cerr << "Error: This file does not exists: " << fname.toStdString( ) << std::endl;
+          }
         }
       }
     }
