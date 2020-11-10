@@ -641,6 +641,11 @@ void GraphicElement::setHasColors( bool hasColors ) {
   m_hasColors = hasColors;
 }
 
+void GraphicElement::setCanChangeSkin ( bool canChangeSkin )
+{
+    m_canChangeSkin = canChangeSkin;
+}
+
 void GraphicElement::setHasTrigger( bool hasTrigger ) {
   m_hasTrigger = hasTrigger;
 }
@@ -655,6 +660,10 @@ void GraphicElement::setHasFrequency( bool hasFrequency ) {
 
 bool GraphicElement::hasLabel( ) const {
   return( m_hasLabel );
+}
+
+bool GraphicElement::canChangeSkin() const {
+    return m_canChangeSkin;
 }
 
 void GraphicElement::setHasLabel( bool hasLabel ) {

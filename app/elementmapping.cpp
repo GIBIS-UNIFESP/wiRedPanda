@@ -159,6 +159,11 @@ LogicElement* ElementMapping::buildLogicElement( GraphicElement *elm ) {
       return( new LogicMux( ) );
       case ElementType::DEMUX:
       return( new LogicDemux( ) );
+//      case ElementType::TLATCH:
+      case ElementType::JKLATCH:
+      //! TODO: TLATCH not yet implemented.
+      return( new LogicDLatch( ) );
+
       default:
       throw std::runtime_error( "Not implemented yet: " + elm->objectName( ).toStdString( ) );
   }
