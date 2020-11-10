@@ -5,7 +5,7 @@
 
 int main( int argc, char *argv[] ) {
   QApplication a( argc, argv );
-  a.setOrganizationName( "WPanda" );
+  a.setOrganizationName( "GIBIS-UNIFESP" );
   a.setApplicationName( "WiredPanda" );
   a.setApplicationVersion( APP_VERSION );
 

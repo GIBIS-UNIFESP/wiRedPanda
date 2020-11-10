@@ -34,6 +34,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 
   ui->graphicsView->setScene( editor->getScene( ) );
   /* Translation */
+
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   if( settings.value( "language" ).isValid( ) ) {

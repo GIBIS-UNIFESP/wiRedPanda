@@ -6,7 +6,7 @@ InputVcc::InputVcc( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, parent
   setPixmap( pixmapSkinName[ 0 ] );
   setRotatable( false );
   setPortName( "VCC" );
-  outputs( ).first( )->setValue( true );
+  m_outputs.first( )->setValue( true );
 }
 
 void InputVcc::setSkin( bool defaultSkin, QString filename ) {
