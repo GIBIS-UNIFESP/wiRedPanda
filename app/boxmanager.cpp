@@ -1,5 +1,5 @@
 #include "box.h"
-#include "boxfilehelper.h"
+#include "filehelper.h"
 #include "boxmanager.h"
 #include "boxnotfoundexception.h"
 #include "boxprototype.h"
@@ -52,7 +52,7 @@ bool BoxManager::tryLoadFile( QString &fname, QString parentFile ) {
 }
 
 void BoxManager::loadFile( QString &fname, QString parentFile ) {
-  QFileInfo finfo = BoxFileHelper::findFile( fname, parentFile );
+  QFileInfo finfo = FileHelper::findBoxFile( fname, parentFile );
   fname = finfo.filePath( );
   Q_ASSERT( finfo.exists( ) && finfo.isFile( ) );
   fileWatcher.addPath( finfo.absoluteFilePath( ) );
@@ -68,7 +68,7 @@ void BoxManager::loadFile( QString &fname, QString parentFile ) {
 }
 
 void BoxManager::clear( ) {
-  COMMENT( "Clear boxmanager", 1 );
+  COMMENT( "Clear boxmanager", 0 );
   QMap< QString, BoxPrototype* > boxes_aux = boxes;
   boxes.clear( );
   for( auto it : boxes_aux ) {
@@ -77,6 +77,7 @@ void BoxManager::clear( ) {
   if( fileWatcher.files( ).size( ) > 0 ) {
     fileWatcher.removePaths( fileWatcher.files( ) );
   }
+  COMMENT( "Finished clearing boxmanager.", 0 );
 }
 
 void BoxManager::updateRecentBoxes( const QString &fname ) {

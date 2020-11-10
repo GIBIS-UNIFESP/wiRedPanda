@@ -156,7 +156,7 @@ QPixmap ElementFactory::getPixmap( ElementType type ) {
       case ElementType::JKFLIPFLOP: return( QPixmap( ":/memory/light/JK-flipflop.png" ) );
       case ElementType::JKLATCH: return( QPixmap( ":/memory/light/JK-latch.png" ) );
       case ElementType::SRFLIPFLOP: return( QPixmap( ":/memory/light/SR-flipflop.png" ) );
-//      case ElementType::TLATCH: return( QPixmap( ":/memory/light/T-latch.png" ) );
+      case ElementType::UNUSED: return( QPixmap( ":/memory/light/T-flipflop.png" ) );
       case ElementType::TFLIPFLOP: return( QPixmap( ":/memory/light/T-flipflop.png" ) );
       case ElementType::DISPLAY: return( QPixmap( ":/output/counter/counter_on.png" ) );
       case ElementType::DISPLAY14: return( QPixmap( ":/output/counter/counter_14_on.png" ) );
@@ -195,7 +195,7 @@ GraphicElement* ElementFactory::buildElement( ElementType type, QGraphicsItem *p
         type == ElementType::JKFLIPFLOP ? new JKFlipFlop( parent ) :
         type == ElementType::SRFLIPFLOP ? new SRFlipFlop( parent ) :
         type == ElementType::TFLIPFLOP ? new TFlipFlop( parent ) :
-//        type == ElementType::TLATCH ? new TLatch( parent ) :
+        type == ElementType::UNUSED ? new TFlipFlop( parent ) :
         type == ElementType::DISPLAY ? new Display( parent ) :
         type == ElementType::DISPLAY14 ? new Display14( parent ) :
         type == ElementType::BOX ? new Box( parent ) :
@@ -246,6 +246,7 @@ size_t ElementFactory::next_id( ) {
 }
 
 void ElementFactory::clear( ) {
+  COMMENT( "Element Factory clear.", 0 );
   map.clear( );
   _lastId = 1;
 }

@@ -69,26 +69,35 @@ void SerializationFunctions::serialize( const QList< QGraphicsItem* > &items, QD
 }
 
 QList< QGraphicsItem* > SerializationFunctions::deserialize( QDataStream &ds, double version, QString parentFile, QMap< quint64, QNEPort* > portMap ) {
+  QFile fl( "/tmp/data.txt" );
+  fl.open( QFile::WriteOnly );
+  QDataStream ds_data( &fl );
+
   QList< QGraphicsItem* > itemList;
   while( !ds.atEnd( ) ) {
     int type;
     ds >> type;
+    ds_data << type << "\n";
     COMMENT( "Type: " << type, 0 );
     if( type == GraphicElement::Type ) {
       quint64 elmType;
       ds >> elmType;
-      COMMENT( "Building " << ElementFactory::typeToText( static_cast< ElementType >( elmType ) ).toStdString( ) << " element.", 4 );
+      ds_data << elmType << "\n";
+      COMMENT( "Building " << ElementFactory::typeToText( static_cast< ElementType >( elmType ) ).toStdString( ) << " element.", 0 );
       GraphicElement *elm = ElementFactory::buildElement( static_cast< ElementType >( elmType ) );
+
       if( elm ) {
         itemList.append( elm );
         elm->load( ds, portMap, version );
         if( elm->elementType( ) == ElementType::BOX ) {
+          COMMENT( "Loading box.", 0 );
           Box *box = qgraphicsitem_cast< Box* >( elm );
           BoxManager::instance( )->loadBox( box, box->getFile( ), parentFile );
         }
         elm->setSelected( true );
       }
       else {
+        fl.close( );
         throw( std::runtime_error( ERRORMSG( "Could not build element." ) ) );
       }
     }
@@ -106,9 +115,11 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( QDataStream &ds, do
     }
     else {
       qDebug( ) << type;
+      fl.close( );
       throw( std::runtime_error( ERRORMSG( "Invalid type. Data is possibly corrupted." ) ) );
     }
   }
+  fl.close( );
   return( itemList );
 }
 
@@ -181,8 +192,13 @@ QList< QGraphicsItem* > SerializationFunctions::loadMoveData( QString dirName, Q
 }
 
 QList< QGraphicsItem* > SerializationFunctions::load( QDataStream &ds, QString parentFile, Scene *scene ) {
+  COMMENT( "Started loading file.", 0 );
+  QFile fl( "/tmp/serialize.txt" );
+  fl.open( QFile::WriteOnly );
+  QDataStream ds_header( &fl );
   QString str;
   ds >> str;
+  ds_header << str << "\n";
   if( !str.startsWith( QApplication::applicationName( ) ) ) {
     throw( std::runtime_error( ERRORMSG( "Invalid file format." ) ) );
   }
@@ -194,8 +210,12 @@ QList< QGraphicsItem* > SerializationFunctions::load( QDataStream &ds, QString p
   QRectF rect;
   if( version >= 1.4 ) {
     ds >> rect;
+    ds_header << rect;
   }
+  fl.close( );
+  COMMENT( "Header Ok. Version: " << version, 0 );
   QList< QGraphicsItem* > items = deserialize( ds, version, parentFile );
+  COMMENT( "Finished reading items.", 0 );
   if( scene ) {
     for( QGraphicsItem *item : items ) {
       scene->addItem( item );

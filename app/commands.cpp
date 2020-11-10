@@ -248,8 +248,7 @@ void DeleteItemsCommand::redo( ) {
 }
 
 
-RotateCommand::RotateCommand( const QList< GraphicElement* > &aItems, int aAngle, QUndoCommand *parent ) : QUndoCommand(
-    parent ) {
+RotateCommand::RotateCommand( const QList< GraphicElement* > &aItems, int aAngle, QUndoCommand *parent ) : QUndoCommand( parent ) {
   angle = aAngle;
   setText( tr( "Rotate %1 degrees" ).arg( angle ) );
   ids.reserve( aItems.size( ) );

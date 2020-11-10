@@ -878,8 +878,11 @@ void MainWindow::on_actionFullscreen_triggered( ) {
 }
 
 void MainWindow::autoSave( ) {
+  COMMENT( "Starting autosave.", 0 );
   if( editor->getUndoStack( )->isClean( ) ) {
-    autosaveFile.remove( );
+    COMMENT( "Undo stack is clean.", 0 );
+    if( autosaveFile.exists( ) )
+      autosaveFile.remove( );
   }
   else {
     if( autosaveFile.open( ) ) {
@@ -896,6 +899,7 @@ void MainWindow::autoSave( ) {
       autosaveFile.close( );
     }
   }
+  COMMENT( "Finished autosave.", 0 );
 }
 
 void MainWindow::on_actionMute_triggered( ) {

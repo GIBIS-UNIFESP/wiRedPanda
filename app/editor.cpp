@@ -75,6 +75,7 @@ Editor::~Editor( ) {
 
 
 void Editor::updateTheme( ) {
+  COMMENT( "Update theme.", 0 );
   if( ThemeManager::globalMngr ) {
     const ThemeAttrs attrs = ThemeManager::globalMngr->getAttrs( );
     if (!scene) {
@@ -94,6 +95,7 @@ void Editor::updateTheme( ) {
       conn->updateTheme( );
     }
   }
+  COMMENT( "Finished updating theme. ", 0 );
 }
 
 void Editor::mute( bool _mute ) {
@@ -129,14 +131,17 @@ void Editor::setEditedConn( QNEConnection *editedConn ) {
 
 
 void Editor::buildSelectionRect( ) {
+  COMMENT( "Build Selection Rect.", 0 );
   selectionRect = new QGraphicsRectItem( );
   selectionRect->setFlag( QGraphicsItem::ItemIsSelectable, false );
   if( scene ) {
     scene->addItem( selectionRect );
   }
+  COMMENT( "Finished building rect.", 0 );
 }
 
 void Editor::clear( ) {
+  COMMENT( "Clearing editor.", 0 );
   simulationController->stop( );
   simulationController->clear( );
   boxManager->clear( );
@@ -145,17 +150,20 @@ void Editor::clear( ) {
   if( scene ) {
     scene->clear( );
   }
+  COMMENT( "Building rect.", 0 );
   buildSelectionRect( );
-  if ( scene )
-  {
-      auto const scene_views = scene->views();
-      if(!scene_views.isEmpty( ) ) {
-        scene->setSceneRect( scene_views.front( )->rect( ) );
-      }
+  if( scene ) {
+    auto const scene_views = scene->views();
+    if(!scene_views.isEmpty( ) ) {
+      scene->setSceneRect( scene_views.front( )->rect( ) );
+    }
   }
+  COMMENT( "Updating theme.", 0 );
   updateTheme( );
   simulationController->start( );
+  COMMENT( "Emitting circuitHasChanged.", 0 );
   emit circuitHasChanged( );
+  COMMENT( "Finished clear.", 0 );
 }
 
 //! CARMESIM: reset scene upon deletion in order to avoid SIGSEGV
@@ -635,9 +643,7 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
     QPointF ctr;
     ds >> ctr;
     double version = GlobalProperties::version;
-    QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( ds,
-                                                                            version,
-                                                                            GlobalProperties::currentFile );
+    QList< QGraphicsItem* > itemList = SerializationFunctions::deserialize( ds, version, GlobalProperties::currentFile );
     receiveCommand( new AddItemsCommand( itemList, this ) );
     scene->clearSelection( );
     for( QGraphicsItem *item : qAsConst(itemList) ) {
@@ -827,12 +833,15 @@ void Editor::save( QDataStream &ds ) {
 }
 
 void Editor::load( QDataStream &ds ) {
+  COMMENT( "Loading file.", 0 );
   clear( );
   simulationController->stop( );
   SerializationFunctions::load( ds, GlobalProperties::currentFile, scene );
   simulationController->start( );
   scene->clearSelection( );
+  COMMENT( "Emiting circuit has changed.", 0 );
   emit circuitHasChanged( );
+  COMMENT( "Finished loading file.", 0 );
 }
 
 void Editor::setElementEditor( ElementEditor *value ) {

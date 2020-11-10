@@ -77,21 +77,26 @@ void SimulationController::stop( ) {
 }
 
 void SimulationController::start( ) {
+  COMMENT( "Start simulation controller.", 0 );
   Clock::reset = true;
   reSortElms( );
   simulationTimer.start( );
+  COMMENT( "Simulation started.", 0 );
 }
 
 
 void SimulationController::reSortElms( ) {
-  COMMENT( "GENERATING SIMULATION LAYER", 1 );
+  COMMENT( "GENERATING SIMULATION LAYER", 0 );
   QVector< GraphicElement* > elements = scene->getElements( );
+  COMMENT( "Elements read:" << elements.size( ), 0 );
   if( elements.size( ) == 0 ) {
     return;
   }
+  COMMENT( "After return.", 0 );
   if( elMapping ) {
     delete elMapping;
   }
+  COMMENT( "Elements deleted.", 0 );
   elMapping = new ElementMapping( scene->getElements( ), GlobalProperties::currentFile );
   if( elMapping->canInitialize( ) ) {
     elMapping->initialize( );
@@ -101,6 +106,7 @@ void SimulationController::reSortElms( ) {
   else {
     qDebug( ) << "Cannot initialize simulation!";
   }
+  COMMENT( "Finished simulation layer.", 0 );
 }
 
 void SimulationController::clear( ) {

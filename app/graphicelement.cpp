@@ -1,3 +1,4 @@
+#include "filehelper.h"
 #include "graphicelement.h"
 #include "nodes/qneconnection.h"
 #include "scene.h"
@@ -96,6 +97,7 @@ void GraphicElement::setPixmap( const QString &pixmapName, QRect size ) {
     }
   }
   if( pixmapPath != currentPixmapName ) {
+    COMMENT( "pixmapPath: " << pixmapPath.toStdString( ) << ", current name: " << currentPixmapName.toStdString( ), 0 );
     if( !loadedPixmaps.contains( pixmapPath ) ) {
       // TODO: use QPixmap::loadFromData() here
       QPixmap pixmap;
@@ -352,11 +354,13 @@ void GraphicElement::loadPixmapSkinName( QDataStream &ds, size_t skin ) {
   ds >> name;
   if( ( skin < static_cast< size_t >( pixmapSkinName.size( ) ) ) ) {
     QFileInfo fileInfo( name );
+    if( name[ 0 ] != ':' )
+      fileInfo = FileHelper::findSkinFile( name );
     if( !fileInfo.isFile( ) ) {
       std::cout << "Could not load skins: " << name.toStdString( ) << std::endl;
     }
     else
-      pixmapSkinName[ skin ] = name;
+      pixmapSkinName[ skin ] = fileInfo.absoluteFilePath( );
   }
   else {
     std::cout << "Could not load some of the skins." << std::endl;
