@@ -61,6 +61,10 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
   QString revertSkinText ( tr( "Set icon to default") );
   QString triggerActionText( tr( "Change trigger" ) );
   QString morphMenuText( tr( "Morph to..." ) );
+//  if ( !m_defaultSkin )
+//  {
+//      menu.addAction( "Current icon file: ../filename.png" );
+//  }
   if( hasLabel ) {
     menu.addAction( QIcon( QPixmap( ":/toolbar/rename.png" ) ), renameActionText )->setData( renameActionText );
   }
@@ -74,6 +78,9 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
           // change it.
           menu.addAction( changeSkinText );
       } else {
+          // Allow the re-changing of icon
+          menu.addAction( changeSkinText );
+          // .. or setting it to default
           menu.addAction( revertSkinText );
       }
   }
@@ -172,14 +179,14 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
     else if( a->data( ).toString( ) == triggerActionText ) {
       changeTriggerAction( );
     }
-    else if ( a->text() == changeSkinText || a->text() == revertSkinText ) {
-        if ( m_defaultSkin ) {
-            // Reads a new sprite and applies it to the element
-            this->updateElementSkin();
-        } else {
-            m_defaultSkin = true;
-            this->apply();
-        }
+    else if ( a->text() == changeSkinText ) {
+        // Reads a new sprite and applies it to the element
+        this->updateElementSkin();
+    }
+    else if ( a->text() == revertSkinText ) {
+        // Reset the icon to its default        
+        m_defaultSkin = true;
+        this->apply();
     }
     else if( a->data( ).toString( ) == freqActionText ) {
       ui->doubleSpinBoxFrequency->setFocus( );
@@ -193,7 +200,7 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
     else if( submenucolors && submenucolors->actions( ).contains( a ) ) {
       ui->comboBoxColor->setCurrentText( a->text( ) );
     } else {
-        fprintf(stderr, "Text: \"%s\"\n", a->text( ).toStdString().c_str());
+        fprintf(stderr, "In elementeditor: uncaught text \"%s\"\n", a->text( ).toStdString().c_str());
     }
   }
 }

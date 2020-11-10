@@ -4,6 +4,7 @@ Nor::Nor( QGraphicsItem *parent ) : GraphicElement( 2, 8, 1, 1, parent ) {
   pixmapSkinName.append( ":/basic/nor.png" );
   setOutputsOnTop( true );
   setPixmap( pixmapSkinName[ 0 ] );
+  setCanChangeSkin( true );
   updatePorts( );
   setPortName( "NOR" );
 }

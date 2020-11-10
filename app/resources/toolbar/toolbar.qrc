@@ -34,4 +34,9 @@
         <file>exit.png</file>
         <file>wavyIcon.png</file>
     </qresource>
+    <qresource prefix="/">
+        <file>arduino.png</file>
+        <file>default.png</file>
+        <file>default.svg</file>
+    </qresource>
 </RCC>

@@ -3,7 +3,9 @@
 JKLatch::JKLatch( QGraphicsItem *parent ) : GraphicElement( 2, 2, 2, 2, parent ) {
   setPixmap( ":/memory/JK-latch.png" );
   setRotatable( false );
+  setCanChangeSkin( true );
   updatePorts( );
+  setCanChangeSkin( true );
   setPortName( "JK Latch" );
 }
 

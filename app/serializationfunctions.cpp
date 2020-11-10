@@ -53,7 +53,7 @@ void SerializationFunctions::serialize( const QList< QGraphicsItem* > &items, QD
   for( QGraphicsItem *item: items ) {
     if( item->type( ) == GraphicElement::Type ) {
       GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
-      ds << item->type( );
+      ds << GraphicElement::Type;
       ds << static_cast< quint64 >( elm->elementType( ) );
       elm->save( ds );
     }
@@ -62,7 +62,7 @@ void SerializationFunctions::serialize( const QList< QGraphicsItem* > &items, QD
     if( item->type( ) == QNEConnection::Type ) {
       COMMENT( "Writing Connection.", 0 );
       QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
-      ds << item->type( );
+      ds << QNEConnection::Type;
       conn->save( ds );
     }
   }
@@ -75,7 +75,7 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( QDataStream &ds, do
 
   QList< QGraphicsItem* > itemList;
   while( !ds.atEnd( ) ) {
-    int type;
+    int32_t type;
     ds >> type;
     ds_data << type << "\n";
     COMMENT( "Type: " << type, 0 );
