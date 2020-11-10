@@ -32,8 +32,8 @@ ThemeAttrs ThemeManager::getAttrs( ) const {
 }
 
 ThemeManager::ThemeManager( QObject *parent ) : QObject( parent ) {
-  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
-                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName( ), QApplication::applicationName( ) );
+  m_theme = Theme::Panda_Light;
   if( settings.contains( "theme" ) ) {
     setTheme( static_cast< Theme >( settings.value( "theme" ).toInt( ) ) );
   }

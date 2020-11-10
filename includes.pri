@@ -48,6 +48,7 @@ SOURCES += \
     $$PWD/app/boxnotfoundexception.cpp \
     $$PWD/app/commands.cpp \
     $$PWD/app/editor.cpp \
+    $$PWD/app/filehelper.cpp \
     $$PWD/app/globalproperties.cpp \
     $$PWD/app/graphicelement.cpp \
     $$PWD/app/graphicsview.cpp \
@@ -67,7 +68,6 @@ SOURCES += \
     $$PWD/app/logicelement.cpp \
     $$PWD/app/boxmanager.cpp \
     $$PWD/app/boxprototype.cpp \
-    $$PWD/app/boxfilehelper.cpp \
     $$PWD/app/boxprototypeimpl.cpp \
     $$PWD/app/elementmapping.cpp \
     $$PWD/app/boxmapping.cpp \
@@ -75,6 +75,7 @@ SOURCES += \
 
 HEADERS  +=  \
     $$PWD/app/common.h \
+  $$PWD/app/filehelper.h \
     $$PWD/app/graphicsviewzoom.h \
     $$PWD/app/arduino/codegenerator.h\
     $$PWD/app/box.h \
@@ -101,7 +102,6 @@ HEADERS  +=  \
     $$PWD/app/logicelement.h \
     $$PWD/app/boxmanager.h \
     $$PWD/app/boxprototype.h \
-    $$PWD/app/boxfilehelper.cpp \
     $$PWD/app/boxprototypeimpl.h \
     $$PWD/app/elementmapping.h \
     $$PWD/app/boxmapping.h \

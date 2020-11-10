@@ -3,9 +3,10 @@
 Demux::Demux( QGraphicsItem *parent ) : GraphicElement( 2, 2, 2, 2, parent ) {
   pixmapSkinName.append( ":/basic/demux.png" );
   setPixmap( pixmapSkinName[ 0 ] );
-  setRotatable( false );
+  setRotatable( true );
   updatePorts( );
   setPortName( "DEMUX" );
+  setRotation( 180.0 );
 
   input( 0 )->setName( "in" );
   input( 1 )->setName( "S" );
@@ -17,10 +18,10 @@ Demux::Demux( QGraphicsItem *parent ) : GraphicElement( 2, 2, 2, 2, parent ) {
 }
 
 void Demux::updatePorts( ) {
-  input( 0 )->setPos( 16, 32 ); /* 0 */
-  input( 1 )->setPos( 32, 58 ); /* S */
-  output( 0 )->setPos( 48, 32 - 12 ); /* Out */
-  output( 1 )->setPos( 48, 32 + 12 ); /* Out */
+  input( 0 )->setPos( 32, 48 ); /* 0 */
+  input( 1 )->setPos( 58, 32 ); /* S */
+  output( 0 )->setPos( 32 - 12, 16 ); /* Out */
+  output( 1 )->setPos( 32 + 12, 16 ); /* Out */
 }
 
 void Demux::setSkin( bool defaultSkin, QString filename ) {

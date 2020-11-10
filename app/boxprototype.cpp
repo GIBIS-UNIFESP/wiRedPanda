@@ -1,5 +1,4 @@
 #include "box.h"
-#include "boxfilehelper.h"
 #include "boxmapping.h"
 #include "boxprototype.h"
 
