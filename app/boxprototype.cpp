@@ -9,6 +9,10 @@ BoxPrototype::BoxPrototype( const QString & fileName ) : m_fileName( fileName ) 
 
 }
 
+void BoxPrototype::fileName( QString newFileName ) {
+  m_fileName = newFileName;
+}
+
 QString BoxPrototype::fileName( ) const {
   return( m_fileName );
 }
@@ -27,6 +31,10 @@ void BoxPrototype::removeBoxObserver( Box *box ) {
   if( boxObservers.contains( box ) ) {
     boxObservers.removeAll( box );
   }
+}
+
+bool BoxPrototype::updateLocalBox( QString fileName, QString dirName ) {
+  return( boxImpl.updateLocalBox( fileName, dirName ) );
 }
 
 int BoxPrototype::inputSize( ) const {
@@ -63,10 +71,8 @@ void BoxPrototype::clear( ) {
 
 void BoxPrototype::reload( ) {
   //TODO: Verify file recursion
-//  verifyRecursion( fname );
-
+  //  verifyRecursion( fname );
   clear( );
-
   boxImpl.loadFile( m_fileName );
   for( Box *box : qAsConst( boxObservers ) ) {
     box->loadFile( m_fileName );

@@ -2,6 +2,7 @@
 #include "editor.h"
 #include "elementfactory.h"
 #include "serializationfunctions.h"
+#include "box.h"
 
 #include <QDebug>
 #include <QFile>
@@ -58,9 +59,49 @@ void BoxPrototypeImpl::sortPorts( QVector< QNEPort* > &map ) {
   std::stable_sort( map.begin( ), map.end( ), comparePorts );
 }
 
-void BoxPrototypeImpl::loadFile( QString fileName ) {
-  clear( );
+bool BoxPrototypeImpl::updateLocalBox( QString fileName, QString dirName ) {
+  COMMENT( "Recursive call to sub boxes.", 0 );
+  for( GraphicElement *elm: elements ) {
+    if( elm->elementType( ) == ElementType::BOX ) {
+      Box *box = dynamic_cast< Box* >( elm );
+      QString originalSubBoxName = box->getFile( );
+      QString subBoxFileName = dirName + "/boxes/" + QFileInfo( originalSubBoxName ).fileName( );
+      auto prototype = box->getPrototype( );
+      if( !QFile::exists( subBoxFileName ) ) {
+        COMMENT( "Copying subbox file to local dir. File does not exist yet.", 0 );
+        QFile::copy( originalSubBoxName, subBoxFileName );
+        if( prototype->updateLocalBox( subBoxFileName, dirName ) ) {
+          if( !box->setFile( subBoxFileName ) ) {
+            std::cerr << "Error updating subbox name." << std::endl;
+            return( false );
+          }
+        }
+        else {
+          std::cerr << "Error saving subbox." << std::endl;
+        }
+      }
+    }
+  }
+  COMMENT( "Updating references of subboxes.", 0 );
+  try {
+    if( !SerializationFunctions::update( fileName, dirName ) ) {
+      std::cerr << "Error saving local box." << std::endl;
+      return( false );
+    }
+    else {
+      COMMENT( "Saved at prototype impl.", 0 );
+    }
+  }
+  catch( std::runtime_error &e ) {
+    std::cerr << "Error saving project: " << e.what( ) << std::endl;
+     return( false );
+  }
+  return( true );
+}
 
+void BoxPrototypeImpl::loadFile( QString fileName ) {
+  COMMENT( "Reading box", 0 );
+  clear( );
   QFile file( fileName );
   if( file.open( QFile::ReadOnly ) ) {
     QDataStream ds( &file );
@@ -71,12 +112,11 @@ void BoxPrototypeImpl::loadFile( QString fileName ) {
   }
   setInputSize( inputs.size( ) );
   setOutputSize( outputs.size( ) );
-
   sortPorts( inputs );
   sortPorts( outputs );
-
   loadInputs( );
   loadOutputs( );
+  COMMENT( "Finished Reading box", 0 );
 }
 
 void BoxPrototypeImpl::loadInputs( ) {
@@ -118,9 +158,9 @@ void BoxPrototypeImpl::loadOutputs( ) {
 void BoxPrototypeImpl::loadInputElement( GraphicElement *elm ) {
   auto const outputs = elm->outputs( );
   for( QNEOutputPort *port : outputs ) {
-    GraphicElement *nodeElm = ElementFactory::buildElement( ElementType::NODE );
-    nodeElm->setPos( elm->pos( ) );
-    nodeElm->setLabel( elm->getLabel( ) );
+    GraphicElement *nodeElm = ElementFactory::buildElement( ElementType::NODE ); // Problem here. Inputs and outputs are transformed into nodes. And I can not use created connections with new elements...
+    nodeElm->setPos( elm->pos( ) );  // Solution 1: Create new connections cloning all circuit.
+    nodeElm->setLabel( elm->getLabel( ) ); // Solution 2: Load and save box circuit out of this code...
     QNEInputPort *nodeInput = nodeElm->input( );
     nodeInput->setPos( port->pos( ) );
     nodeInput->setName( port->getName( ) );
@@ -133,13 +173,13 @@ void BoxPrototypeImpl::loadInputElement( GraphicElement *elm ) {
     inputs.append( nodeInput );
     elements.append( nodeElm );
     QList< QNEConnection* > conns = port->connections( );
-    for( QNEConnection *conn: conns ) {
+    for( QNEConnection *conn: conns ) { // Solution 3. Revert this process before saving and then make it again after saving...
       if( port == conn->start( ) ) {
         conn->setStart( nodeElm->output( ) );
       }
     }
   }
-  elm->disable( );
+  elm->disable( ); // Maybe I will have to enable and disable it as well.
 }
 
 void BoxPrototypeImpl::loadOutputElement( GraphicElement *elm ) {

@@ -363,6 +363,22 @@ void GraphicElement::loadPixmapSkinName( QDataStream &ds, size_t skin ) {
   }
 }
 
+void GraphicElement::updateSkinsPath( QString newSkinPath ) {
+  for( int i = 0; i < pixmapSkinName.size( ); ++i ) {
+    QString name = pixmapSkinName[ i ];
+    if( name[ 0 ] != ':' ) {
+      COMMENT( "Detecting non-default skin name " << name.toStdString( ), 0 );
+      QString newSkinName = newSkinPath + QFileInfo( name ).fileName( );
+      QFile fl( newSkinName );
+      if( !fl.exists( ) ) {
+        COMMENT( "Copying skin to local dir. File does not exist yet.", 0 );
+        QFile::copy( pixmapSkinName[ i ], newSkinName );
+      }
+      pixmapSkinName[ i ] = newSkinName;
+    }
+  }
+}
+
 QVector< QNEInputPort* > GraphicElement::inputs( ) const {
   return( m_inputs );
 }

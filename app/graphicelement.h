@@ -166,6 +166,7 @@ public:
 
   // Update label in graphical interface
   void updateLabel( );
+  void updateSkinsPath(QString newSkinPath);
 
 protected:
   void setRotatable( bool rotatable );

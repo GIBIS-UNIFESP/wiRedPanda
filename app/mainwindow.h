@@ -120,7 +120,9 @@ private slots:
 
   void on_actionMute_triggered( );
 
-  void on_actionLabels_under_icons_triggered(bool checked);
+  void on_actionLabels_under_icons_triggered( bool checked );
+
+  void on_actionSave_Local_Project_triggered( );
 
 private:
   Ui::MainWindow *ui;

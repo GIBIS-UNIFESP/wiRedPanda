@@ -21,11 +21,14 @@ public:
   BoxPrototype( const QString& fileName );
   void reload( );
 
+  void fileName( QString newFileName );
   QString fileName( ) const;
   QString baseName( ) const;
 
   void insertBoxObserver( Box *box );
   void removeBoxObserver( Box *box );
+
+  bool updateLocalBox( QString fileName, QString boxDirName );
 
   int inputSize( ) const;
   int outputSize( ) const;

@@ -901,8 +901,44 @@ void MainWindow::on_actionMute_triggered( ) {
   editor->mute( ui->actionMute->isChecked( ) );
 }
 
-void MainWindow::on_actionLabels_under_icons_triggered(bool checked)
-{
-    checked ? ui->mainToolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon)
-            : ui->mainToolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+void MainWindow::on_actionLabels_under_icons_triggered( bool checked ) {
+    checked ? ui->mainToolBar->setToolButtonStyle( Qt::ToolButtonTextUnderIcon )
+            : ui->mainToolBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
+}
+
+void MainWindow::on_actionSave_Local_Project_triggered( ) {
+  QString fname = currentFile.absoluteFilePath( );
+  QString path = defaultDirectory.absolutePath( );
+  if( !currentFile.fileName( ).isEmpty( ) ) {
+    path = currentFile.absoluteFilePath( );
+  }
+  fname = QFileDialog::getSaveFileName( this, tr( "Save Local Project" ), path, tr( "Panda files (*.panda)" ) );
+  if( fname.isEmpty( ) ) {
+    return;
+  }
+  if( !fname.endsWith( ".panda" ) ) {
+    fname.append( ".panda" );
+  }
+  setCurrentFile( QFileInfo( fname ) );
+  COMMENT( "Saving boxes and skins", 0 );
+  // Save boxes ans skins locally here.
+  path = currentFile.absolutePath( );
+  if( !QDir( path + "/boxes" ).exists( ) ) {
+    bool dir_res = QDir( ).mkpath( path + "/boxes" );
+    if( !dir_res )
+      std::cerr << tr( "Error creating boxes directory." ).toStdString( ) << std::endl;
+  }
+  if( !QDir( path + "/skins" ).exists( ) ) {
+    bool dir_res = QDir( ).mkpath( path + "/skins" );
+    if( !dir_res )
+      std::cerr << tr( "Error creating skins directory." ).toStdString( ) << std::endl;
+  }
+  COMMENT( "Saving boxes and skins to local directories.", 0 );
+  if( !editor->saveLocal( path ) ) {
+    std::cerr << tr( "Error saving boxes." ).toStdString( ) << std::endl;
+    ui->statusBar->showMessage( tr( "Could not save the local project." ), 2000 );
+    return;
+  }
+  COMMENT( "Saving main project.", 0 );
+  save( );
 }
