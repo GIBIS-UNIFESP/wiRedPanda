@@ -1,7 +1,6 @@
 include(../includes.pri)
 
 QT += testlib
-CONFIG += c++14
 
 TARGET = WPanda-test
 

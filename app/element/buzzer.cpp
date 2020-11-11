@@ -1,10 +1,16 @@
 #include "buzzer.h"
+#include <array>
 
 #include <QDebug>
 #include <QGraphicsSceneDragDropEvent>
 
 int Buzzer::current_id_number = 0;
+// macOS doesn't want to compile a constexpr std::array<const char *> for some reason
+#ifdef Q_OS_MACOS
+static const std::array<const char *, 2> defaultSkins {
+#else
 static constexpr std::array<const char *, 2> defaultSkins {
+#endif
     ":/output/BuzzerOff.png",
     ":/output/BuzzerOn.png"
 };
