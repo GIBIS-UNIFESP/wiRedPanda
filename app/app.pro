@@ -6,8 +6,6 @@
 
 TARGET = wpanda
 
-CONFIG += c++14
-
 
 TEMPLATE = app
 
