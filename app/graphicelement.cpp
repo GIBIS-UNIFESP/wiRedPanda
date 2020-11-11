@@ -1,4 +1,3 @@
-#include "filehelper.h"
 #include "graphicelement.h"
 #include "nodes/qneconnection.h"
 #include "scene.h"
@@ -82,6 +81,36 @@ void GraphicElement::enable( ) {
   m_disabled = false;
 }
 
+void GraphicElement::setPixmap( const QString &pixmapName ) {
+  QString pixmapPath = pixmapName;
+  if( ThemeManager::globalMngr ) { // TODO: This has to be changed. Not a good way to do it. Probably better inside the class.
+    if( pixmapPath.contains( "memory" ) ) {
+      switch( ThemeManager::globalMngr->theme( ) ) {
+          case Theme::Panda_Light:
+          pixmapPath.replace( "memory", "memory/light" );
+          break;
+          case Theme::Panda_Dark:
+          pixmapPath.replace( "memory", "memory/dark" );
+          break;
+      }
+    }
+  }
+  if( pixmapPath != currentPixmapName ) {
+    if( !loadedPixmaps.contains( pixmapPath ) ) {
+      // TODO: use QPixmap::loadFromData() here
+
+      if( !loadedPixmaps[ pixmapPath ].load( pixmapPath ) ) {
+        std::cerr << "Problem loading pixmapPath = " << pixmapPath.toStdString() << '\n';
+        throw std::runtime_error( ERRORMSG( "Couldn't load pixmap." ) );
+      }
+    }
+    pixmap = &loadedPixmaps[ pixmapPath ];
+    setTransformOriginPoint( pixmap->rect( ).center( ) );
+    update( boundingRect( ) );
+  }
+  currentPixmapName = pixmapName;
+}
+
 void GraphicElement::setPixmap( const QString &pixmapName, QRect size ) {
   QString pixmapPath = pixmapName;
   if( ThemeManager::globalMngr ) { // TODO: This has to be changed. Not a good way to do it. Probably better inside the class.
@@ -97,7 +126,6 @@ void GraphicElement::setPixmap( const QString &pixmapName, QRect size ) {
     }
   }
   if( pixmapPath != currentPixmapName ) {
-    COMMENT( "pixmapPath: " << pixmapPath.toStdString( ) << ", current name: " << currentPixmapName.toStdString( ), 0 );
     if( !loadedPixmaps.contains( pixmapPath ) ) {
       // TODO: use QPixmap::loadFromData() here
       QPixmap pixmap;
@@ -354,13 +382,11 @@ void GraphicElement::loadPixmapSkinName( QDataStream &ds, size_t skin ) {
   ds >> name;
   if( ( skin < static_cast< size_t >( pixmapSkinName.size( ) ) ) ) {
     QFileInfo fileInfo( name );
-    if( name[ 0 ] != ':' )
-      fileInfo = FileHelper::findSkinFile( name );
     if( !fileInfo.isFile( ) ) {
       std::cout << "Could not load skins: " << name.toStdString( ) << std::endl;
     }
     else
-      pixmapSkinName[ skin ] = fileInfo.absoluteFilePath( );
+      pixmapSkinName[ skin ] = name;
   }
   else {
     std::cout << "Could not load some of the skins." << std::endl;

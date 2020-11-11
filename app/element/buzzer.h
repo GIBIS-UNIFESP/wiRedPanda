@@ -6,6 +6,7 @@
 #include <QSound>
 #include <QSoundEffect>
 
+
 class Buzzer : public GraphicElement {
 public:
   explicit Buzzer( QGraphicsItem *parent = nullptr );
@@ -30,6 +31,8 @@ public:
 private:
   void playbuzzer( );
   void stopbuzzer( );
+
+  QVector<QString> alternativeSkins;
   int play;
   QSoundEffect m_audio;
   QString m_note;

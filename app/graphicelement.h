@@ -122,7 +122,8 @@ public:
   virtual float getFrequency( ) const;
   virtual void setFrequency( float freq );
 
-  void setPixmap( const QString &pixmapName, QRect size = QRect( ) );
+  void setPixmap( const QString &pixmapName);
+  void setPixmap( const QString &pixmapName, QRect size );
 
   bool rotatable( ) const;
 
