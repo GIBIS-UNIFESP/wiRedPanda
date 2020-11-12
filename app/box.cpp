@@ -50,6 +50,7 @@ void Box::loadInputs( BoxPrototype *prototype ) {
   setMaxInputSz( prototype->inputSize( ) );
   setMinInputSz( prototype->inputSize( ) );
   setInputSize( prototype->inputSize( ) );
+  COMMENT( "Box " << m_file.toStdString( ) << " -> Inputs. min: " << minInputSz( ) << ", max: " << maxInputSz() << ", current: " << inputSize( ) << ", m_inputs: " << m_inputs.size( ), 0 );
   for( int inputIdx = 0; inputIdx < prototype->inputSize( ); ++inputIdx ) {
     QNEPort *in = input( inputIdx );
     in->setName( prototype->inputLabel( inputIdx ) );
@@ -67,6 +68,7 @@ void Box::loadOutputs( BoxPrototype *prototype ) {
     QNEPort *in = output( outputIdx );
     in->setName( prototype->outputLabel( outputIdx ) );
   }
+  COMMENT( "Box " << m_file.toStdString( ) << " -> Outputs. min: " << minOutputSz( ) << ", max: " << maxOutputSz() << ", current: " << outputSize( ) << ", m_outputs: " << m_outputs.size( ), 0 );
 }
 
 void Box::loadFile( QString fname ) {
