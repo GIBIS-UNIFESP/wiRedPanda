@@ -4,6 +4,7 @@ SRFlipFlop::SRFlipFlop( QGraphicsItem *parent ) : GraphicElement( 5, 5, 2, 2, pa
   pixmapSkinName.append( ":/memory/SR-flipflop.png" );
   setPixmap( pixmapSkinName[ 0 ] );
   setRotatable( false );
+  setCanChangeSkin( true );
   updatePorts( );
   lastClk = false;
   setPortName( "FlipFlop SR" );

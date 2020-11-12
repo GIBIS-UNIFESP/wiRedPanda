@@ -4,6 +4,7 @@ DFlipFlop::DFlipFlop( QGraphicsItem *parent ) : GraphicElement( 4, 4, 2, 2, pare
   pixmapSkinName.append( ":/memory/D-flipflop.png" );
   setPixmap( pixmapSkinName[ 0 ] );
   setRotatable( false );
+  setCanChangeSkin( true );
   updatePorts( );
   setPortName( "FlipFlop D" );
   input( 0 )->setName( "Data" );

@@ -4,6 +4,7 @@ Demux::Demux( QGraphicsItem *parent ) : GraphicElement( 2, 2, 2, 2, parent ) {
   pixmapSkinName.append( ":/basic/demux.png" );
   setPixmap( pixmapSkinName[ 0 ] );
   setRotatable( true );
+  setCanChangeSkin( true );
   updatePorts( );
   setPortName( "DEMUX" );
   setRotation( 180.0 );

@@ -37,7 +37,7 @@ typedef QVector< QNEPort* > QNEPortVector;
 class GraphicElement : public QGraphicsObject, public ItemWithId {
   Q_OBJECT
 public:
-  enum { Type = QGraphicsItem::UserType + 3 };
+  enum : uint32_t { Type = QGraphicsItem::UserType + 3 };
 
   explicit GraphicElement( int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent = nullptr );
 
@@ -53,6 +53,7 @@ protected:
   /* GraphicElement interface. */
 public:
   virtual ElementType elementType( ) = 0;
+  bool usingDefaultSkin;
 
   virtual ElementGroup elementGroup( ) = 0;
 
@@ -121,7 +122,8 @@ public:
   virtual float getFrequency( ) const;
   virtual void setFrequency( float freq );
 
-  void setPixmap( const QString &pixmapName, QRect size = QRect( ) );
+  void setPixmap( const QString &pixmapName);
+  void setPixmap( const QString &pixmapName, QRect size );
 
   bool rotatable( ) const;
 

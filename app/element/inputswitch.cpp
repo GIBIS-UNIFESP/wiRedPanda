@@ -8,6 +8,7 @@ InputSwitch::InputSwitch( QGraphicsItem *parent ) : GraphicElement( 0, 0, 1, 1, 
   pixmapSkinName.append( ":/input/switchOff.png" );
   pixmapSkinName.append( ":/input/switchOn.png" );
   setOutputsOnTop( false );
+  setCanChangeSkin( true );
   setRotatable( false );
   setPixmap( pixmapSkinName[ 0 ] );
   on = false;
