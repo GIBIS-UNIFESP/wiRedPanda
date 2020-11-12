@@ -148,15 +148,14 @@ void BoxManager::reloadFile( QString fileName ) {
         boxes[ bname ]->reload( );
       }
       catch( std::runtime_error &e ) {
-        QMessageBox::warning( mainWindow, "Error", tr( "Error reloading Box: " ) + e.what( ),
-                              QMessageBox::Ok, QMessageBox::NoButton );
-
+        QMessageBox::warning( mainWindow, "Error", tr( "Error reloading Box: " ) + e.what( ), QMessageBox::Ok, QMessageBox::NoButton );
       }
     }
   }
   emit updatedBox( );
 }
 
+// Maybe this funcion should never be called and the main project should reload the box every time it changes.
 bool BoxManager::warnAboutFileChange( const QString &fileName ) {
   COMMENT( "File " << fileName.toStdString( ) << " has changed!", 0 );
   QMessageBox msgBox;

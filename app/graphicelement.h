@@ -233,6 +233,8 @@ private:
 
   void removeSurplusInputs( quint64 inputSz, QMap< quint64, QNEPort* > &portMap );
 
+  void removeSurplusOutputs( quint64 outputSz, QMap<quint64, QNEPort *> &portMap );
+
   void loadInputPort( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, size_t port );
 
   void loadOutputPort( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, size_t port );

@@ -291,6 +291,15 @@ void GraphicElement::removeSurplusInputs( quint64 inputSz, QMap< quint64, QNEPor
   }
 }
 
+void GraphicElement::removeSurplusOutputs( quint64 outputSz, QMap< quint64, QNEPort* > &portMap ) {
+  while( outputSize( ) > static_cast< int >( outputSz ) && outputSz >= m_minOutputSz ) {
+    QNEPort *deletedPort = m_outputs.back( );
+    removePortFromMap( deletedPort, portMap );
+    delete deletedPort;
+    m_outputs.pop_back( );
+  }
+}
+
 void GraphicElement::removePortFromMap( QNEPort *deletedPort, QMap< quint64, QNEPort* > &portMap ) {
   for( auto it = portMap.begin( ); it != portMap.end( ); ) {
     if( it.value( ) == deletedPort ) {
@@ -312,6 +321,7 @@ void GraphicElement::loadOutputPorts( QDataStream &ds, QMap< quint64, QNEPort* >
   for( size_t port = 0; port < outputSz; ++port ) {
     loadOutputPort( ds, portMap, port );
   }
+  removeSurplusOutputs( outputSz, portMap );
 }
 
 void GraphicElement::loadOutputPort( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, size_t port ) {
@@ -455,7 +465,7 @@ void GraphicElement::setSkin( bool defaultSkin, QString filename ) {
 
 void GraphicElement::updatePorts( ) {
 /*  qDebug() << "UpdatePorts"; */
-  COMMENT( "Updating port positions that belong to the box.", 4 );
+  COMMENT( "Updating port positions that belong to the box.", 0 );
   int inputPos = m_topPosition;
   int outputPos = m_bottomPosition;
   if( m_outputsOnTop ) {
@@ -466,6 +476,7 @@ void GraphicElement::updatePorts( ) {
     int step = qMax( 32 / m_outputs.size( ), 6 );
     int x = 32 - m_outputs.size( ) * step + step;
     foreach( QNEPort * port, m_outputs ) {
+      COMMENT( "Setting output at " << x << ", " << outputPos, 0 );
       port->setPos( x, outputPos );
       port->update( );
       x += step * 2;
@@ -475,6 +486,7 @@ void GraphicElement::updatePorts( ) {
     int step = qMax( 32 / m_inputs.size( ), 6 );
     int x = 32 - m_inputs.size( ) * step + step;
     foreach( QNEPort * port, m_inputs ) {
+      COMMENT( "Setting input at " << x << ", " << inputPos, 0 );
       port->setPos( x, inputPos );
       port->update( );
       x += step * 2;
@@ -721,6 +733,7 @@ void GraphicElement::setOutputSize( const int size ) {
     }
     else {
       while( outputSize( ) > size ) {
+        delete m_outputs.back( );
         m_outputs.pop_back( );
       }
     }
