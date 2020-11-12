@@ -4,6 +4,7 @@ Or::Or( QGraphicsItem *parent ) : GraphicElement( 2, 8, 1, 1, parent ) {
   pixmapSkinName.append( ":/basic/or.png" );
   setOutputsOnTop( true );
   setPixmap( pixmapSkinName[ 0 ] );
+  setCanChangeSkin( true );
   updatePorts( );
   setPortName( "OR" );
 }

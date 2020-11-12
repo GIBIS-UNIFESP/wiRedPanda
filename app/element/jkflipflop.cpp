@@ -6,6 +6,7 @@ JKFlipFlop::JKFlipFlop( QGraphicsItem *parent ) : GraphicElement( 5, 5, 2, 2, pa
   pixmapSkinName.append( ":/memory/JK-flipflop.png" );
   setPixmap( pixmapSkinName[ 0 ] );
   setRotatable( false );
+  setCanChangeSkin( true );
   updatePorts( );
   lastClk = false;
   setPortName( "FlipFlop JK" );

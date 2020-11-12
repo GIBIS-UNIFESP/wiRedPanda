@@ -53,8 +53,8 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>resources/toolbar/default.png</normaloff>resources/toolbar/default.png</iconset>
+        <iconset resource="resources/toolbar/toolbar.qrc">
+         <normaloff>:/default.svg</normaloff>:/default.svg</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -206,6 +206,8 @@
   <tabstop>comboBoxColor</tabstop>
   <tabstop>lineEditTrigger</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="resources/toolbar/toolbar.qrc"/>
+ </resources>
  <connections/>
 </ui>

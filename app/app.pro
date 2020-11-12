@@ -6,6 +6,7 @@
 
 TARGET = wpanda
 
+
 TEMPLATE = app
 
 include(../includes.pri)

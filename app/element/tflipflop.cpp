@@ -4,6 +4,7 @@ TFlipFlop::TFlipFlop( QGraphicsItem *parent ) : GraphicElement( 4, 4, 2, 2, pare
   pixmapSkinName.append( ":/memory/T-flipflop.png" );
   setPixmap( pixmapSkinName[ 0 ] );
   setRotatable( false );
+  setCanChangeSkin( true );
   updatePorts( );
   lastClk = false;
   lastT = 0;

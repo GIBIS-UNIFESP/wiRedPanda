@@ -4,6 +4,7 @@ DLatch::DLatch( QGraphicsItem *parent ) : GraphicElement( 2, 2, 2, 2, parent ) {
   pixmapSkinName.append( ":/memory/D-latch.png" );
   setPixmap( pixmapSkinName[ 0 ] );
   setRotatable( false );
+  setCanChangeSkin( true );
   updatePorts( );
   setPortName( "D Latch" );
   input( 0 )->setName( "Data" );
