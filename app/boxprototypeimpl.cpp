@@ -61,7 +61,7 @@ void BoxPrototypeImpl::sortPorts( QVector< QNEPort* > &map ) {
 
 bool BoxPrototypeImpl::updateLocalBox( QString fileName, QString dirName ) {
   COMMENT( "Recursive call to sub boxes.", 0 );
-  for( GraphicElement *elm: elements ) {
+  for( GraphicElement *elm: qAsConst(elements) ) {
     if( elm->elementType( ) == ElementType::BOX ) {
       Box *box = dynamic_cast< Box* >( elm );
       QString originalSubBoxName = box->getFile( );

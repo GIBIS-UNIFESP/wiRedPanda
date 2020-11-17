@@ -199,10 +199,10 @@ void CodeGenerator::declareAuxVariables( ) {
 
 void CodeGenerator::setup( ) {
   out << "void setup( ) {" << Qt::endl;
-  for( MappedPin pin : qAsConst( inputMap ) ) {
+  for( const MappedPin& pin : qAsConst( inputMap ) ) {
     out << "    pinMode( " << pin.varName << ", INPUT );" << Qt::endl;
   }
-  for( MappedPin pin : qAsConst( outputMap ) ) {
+  for( const MappedPin& pin : qAsConst( outputMap ) ) {
     out << "    pinMode( " << pin.varName << ", OUTPUT );" << Qt::endl;
   }
   out << "}" << Qt::endl << Qt::endl;
@@ -453,7 +453,7 @@ void CodeGenerator::assignLogicOperator( GraphicElement *elm ) {
 void CodeGenerator::loop( ) {
   out << "void loop( ) {" << Qt::endl;
   out << "    // Reading input data //." << Qt::endl;
-  for( const MappedPin& pin : inputMap ) {
+  for( const MappedPin& pin : qAsConst(inputMap) ) {
     out << QString( "    %1_val = digitalRead( %1 );" ).arg( pin.varName ) << Qt::endl;
   }
   out << Qt::endl;
@@ -474,7 +474,7 @@ void CodeGenerator::loop( ) {
   assignVariablesRec( elements );
   out << "\n";
   out << "    // Writing output data. //\n";
-  for( MappedPin pin : outputMap ) {
+  for( MappedPin pin : qAsConst( outputMap ) ) {
     QString varName = otherPortName( pin.port );
     if( varName.isEmpty( ) ) {
       varName = highLow( pin.port->defaultValue( ) );
