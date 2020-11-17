@@ -181,7 +181,9 @@ void ElementMapping::sort( ) {
   validateElements( );
 }
 
+// TODO: This function can easily cause crashes when using the Undo command to delete elements
 void ElementMapping::update( ) {
+//  bool resetSimulationController = false;
   if( canRun( ) ) {
     for( Clock *clk : qAsConst(clocks) ) {
       if (!clk) { continue; };
@@ -194,13 +196,19 @@ void ElementMapping::update( ) {
     }
     Clock::reset = false;
     for( auto iter = inputMap.begin( ); iter != inputMap.end( ); ++iter ) {
-      if (!iter.key()) { continue; }
+      if (!iter.key()) {
+          continue;
+      }
+      if (!iter.value()) {
+          continue;
+      }
       iter.value( )->setOutputValue( iter.key( )->getOn( ) );
     }
     for( LogicElement *elm : qAsConst(logicElms) ) {
       elm->updateLogic( );
     }
   }
+//  return resetSimulationController;
 }
 
 BoxMapping* ElementMapping::getBoxMapping( Box *box ) const {

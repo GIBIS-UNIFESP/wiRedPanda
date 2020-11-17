@@ -67,8 +67,13 @@ bool SimulationController::isRunning( ) {
 }
 
 void SimulationController::update( ) {
+  if (shouldRestart)
+  {
+      shouldRestart = false;
+      this->clear();
+  }
   if( elMapping ) {
-    elMapping->update( );
+    elMapping->update();
   }
 }
 

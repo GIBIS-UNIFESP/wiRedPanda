@@ -172,6 +172,7 @@ void deleteItems( const QList< QGraphicsItem* > &items, Editor *editor ) {
   QVector< QGraphicsItem* > itemsVec = items.toVector( );
   /* Delete items on reverse order */
   for( int i = itemsVec.size( ) - 1; i >= 0; --i ) {
+
     editor->getScene( )->removeItem( itemsVec[ i ] );
     delete itemsVec[ i ];
   }
@@ -217,6 +218,11 @@ DeleteItemsCommand::DeleteItemsCommand( QGraphicsItem *item, Editor *aEditor, QU
 void AddItemsCommand::undo( ) {
   COMMENT( "UNDO " + text( ).toStdString( ), 0 );
   QList< QGraphicsItem* > items = findItems( ids );
+
+  SimulationController * sc =  this->editor->getSimulationController();
+  // We need to restart the simulation controller when deleting through the Undo command to
+  // guarantee that no crashes occur when deleting input elements (clocks, input buttons, etc.)
+  sc->shouldRestart = true;
 
   saveitems( itemData, items, otherIds );
   deleteItems( items, editor );
