@@ -197,7 +197,7 @@ void GraphicElement::save( QDataStream &ds ) const {
   }
   /* <\Version2.7> */
   ds << static_cast< quint64 >( pixmapSkinName.size( ) );
-  for( QString skinName: pixmapSkinName ) {
+  for( const QString& skinName: pixmapSkinName ) {
     ds << skinName;
   }
   COMMENT( "Finished saving element.", 4 );
@@ -634,7 +634,7 @@ void GraphicElement::updateThemeLocal( ) {
 bool GraphicElement::isValid( ) {
   COMMENT( "Checking if the element has the required signals to comput its value.", 4 );
   bool valid = true;
-  for( QNEInputPort *input  : m_inputs ) {
+  for( QNEInputPort *input  : qAsConst(m_inputs) ) {
     /* Required inputs must have exactly one connection. */
     if( !input->isValid( ) ) {
       valid = false;
@@ -642,7 +642,7 @@ bool GraphicElement::isValid( ) {
     }
   }
   if( valid == false ) {
-    for( QNEOutputPort *output : m_outputs ) {
+    for( QNEOutputPort *output : qAsConst(m_outputs) ) {
       for( QNEConnection *conn : output->connections( ) ) {
         conn->setStatus( QNEConnection::Status::Invalid );
         QNEInputPort *port = conn->otherPort( output );

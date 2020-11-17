@@ -57,8 +57,8 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
   QString rotateActionText( tr( "Rotate" ) );
   QString freqActionText( tr( "Change frequency" ) );
   QString colorMenuText( tr( "Change color to..." ) );
-  QString changeSkinText ( tr( "Change icon to ..." ) );
-  QString revertSkinText ( tr( "Set icon to default") );
+  QString changeSkinText ( tr( "Change skin to ..." ) );
+  QString revertSkinText ( tr( "Set skin to default") );
   QString triggerActionText( tr( "Change trigger" ) );
   QString morphMenuText( tr( "Morph to..." ) );
 //  if ( !m_defaultSkin )
