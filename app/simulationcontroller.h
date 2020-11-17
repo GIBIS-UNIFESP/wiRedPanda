@@ -10,6 +10,9 @@ class Clock;
 class SimulationController : public QObject {
   Q_OBJECT
 public:
+  // If shouldRestart == true, then the simulation controller will be cleared the next time that
+  // it is updated.
+  bool shouldRestart;
   explicit SimulationController( Scene *scn );
   ~SimulationController( );
 
