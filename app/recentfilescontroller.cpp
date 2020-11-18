@@ -6,16 +6,19 @@
 #include <QFileInfo>
 #include <QSettings>
 
-
+// TODO: quotes bug
 void RecentFilesController::addFile( const QString &fname ) {
   qDebug( ) << "Setting recent file to : \"" << fname << "\"";
   if( !QFile( fname ).exists( ) ) {
     return;
   }
-  QSettings settings( QSettings::IniFormat,
-                      QSettings::UserScope,
-                      QApplication::organizationName( ),
-                      QApplication::applicationName( ) );
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
+                      QApplication::organizationName( ), QApplication::applicationName( ) );
+
+  if ( !settings.contains( attrName ) )
+  {
+      return;
+  }
   QStringList files = settings.value( attrName ).toStringList( );
 
   files.removeAll( fname );

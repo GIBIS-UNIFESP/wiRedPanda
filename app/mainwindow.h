@@ -34,7 +34,7 @@ public:
   void show( );
   void clear( );
   QFileInfo getCurrentFile( ) const;
-  void setCurrentFile( const QFileInfo &value );
+  void setCurrentFile( const QFileInfo &value, bool deleteAutosave = true );
   bool ExportToArduino( QString fname );
   bool ExportToWaveFormFile( QString fname );
 
@@ -142,6 +142,9 @@ private:
   QVector< ListItemWidget* > boxItemWidgets, searchItemWidgets;
   void createRecentFileActions( );
   void populateLeftMenu( );
+  // Shows a message box for reloading the autosave at launch, when
+  // there's reason to believe that there's been unsaved progress.
+  int recoverAutoSaveFile( QString autosaveFilename );
   /* QWidget interface */
 protected:
   void closeEvent( QCloseEvent *e );

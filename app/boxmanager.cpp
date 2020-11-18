@@ -22,6 +22,7 @@ BoxManager::BoxManager( MainWindow *mainWindow, QObject *parent ) : QObject( par
 
 BoxManager::~BoxManager( ) {
   clear( );
+  fprintf(stderr, "Removing box manager");
   if( globalBoxManager == this ) {
     globalBoxManager = nullptr;
   }
