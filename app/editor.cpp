@@ -142,6 +142,7 @@ void Editor::buildSelectionRect( ) {
 
 void Editor::clear( ) {
   COMMENT( "Clearing editor.", 0 );
+//  fprintf(stderr, "Clearing editor\n");
   simulationController->stop( );
   simulationController->clear( );
   boxManager->clear( );
