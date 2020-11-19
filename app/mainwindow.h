@@ -27,7 +27,7 @@ class MainWindow : public QMainWindow {
   Q_OBJECT
 
 public:
-  explicit MainWindow( QWidget *parent = nullptr );
+  explicit MainWindow( QWidget *parent = nullptr, QString filename = QString( ) );
   ~MainWindow( );
 
   bool save( QString fname = QString( ) );
@@ -131,7 +131,7 @@ private:
   QDir defaultDirectory;
   QUndoView *undoView;
   Label *firstResult;
-  bool reloadedAutoSave;
+  bool loadedAutosave;
   QString autosaveFilename;
 
   QTemporaryFile autosaveFile;

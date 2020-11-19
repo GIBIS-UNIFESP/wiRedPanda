@@ -23,11 +23,10 @@ int main( int argc, char *argv[] ) {
 
   parser.process( a );
 
-
-  MainWindow w;
+  QStringList args = parser.positionalArguments( );
+  MainWindow w( nullptr, ( args.size( ) > 0 ? QString( args[ 0 ] ) : QString( ) ) );
   w.show( );
 
-  QStringList args = parser.positionalArguments( );
   if( args.size( ) > 0 ) {
     w.open( args[ 0 ] );
     QString arduFile = parser.value( arduinoFileOption );
