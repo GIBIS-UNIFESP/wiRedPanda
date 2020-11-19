@@ -21,16 +21,18 @@
 #include <QShortcut>
 #include <QStyleFactory>
 #include <QTemporaryFile>
+#include <QProcess>
 #include <stdexcept>
+#include <QGraphicsScene>
 
 
-MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ), undoView( nullptr ) {
+MainWindow::MainWindow( QWidget *parent , QString filename ) : QMainWindow( parent ), ui( new Ui::MainWindow ), undoView( nullptr ) {
   COMMENT( "WIRED PANDA Version = " << APP_VERSION << " OR " << GlobalProperties::version, 0 );
   ui->setupUi( this );
-  reloadedAutoSave = false;
   ThemeManager::globalMngr = new ThemeManager( this );
   editor = new Editor( this );
   autosaveFilename = "";
+  loadedAutosave = false;
 
   buildFullScreenDialog( );
 
@@ -43,15 +45,22 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
     loadTranslation( settings.value( "language" ).toString( ) );
   }
 
-  if( settings.contains("autosaveFile") ) {
+  if( settings.contains( "autosaveFile" ) ) {
     // If autosaveFile was found within the config. file, then WiredPanda probably didn't save its last project correctly, perhaps due to a crash.
     autosaveFilename = settings.value( "autosaveFile" ).toString( );
-    if( QFile( autosaveFilename ).exists( ) ) {
+    if( ( QFile( autosaveFilename ).exists( ) ) && ( autosaveFilename != filename ) ) {
       int ret = recoverAutoSaveFile( autosaveFilename );
       if( ret == QMessageBox::Yes ) {
-        reloadedAutoSave = true;
+        QProcess *wPanda = new QProcess( nullptr );
+        QStringList args;
+        args << autosaveFilename;
+        wPanda->start( QCoreApplication::applicationFilePath( ), args );
         COMMENT( "Reloaded autosave.", 0 );
       }
+    }
+    else if( ( QFile( autosaveFilename ).exists( ) ) && ( autosaveFilename == filename ) ) {
+      COMMENT( "Loading autosave!", 0 );
+      loadedAutosave = true;
     }
   }
 
@@ -171,9 +180,9 @@ void MainWindow::on_actionExit_triggered( ) {
 
 bool MainWindow::save( QString fname ) {
   COMMENT( "fname: " << fname.toStdString( ) << ", autosave: " << autosaveFilename.toStdString( ), 0 );
-  if( fname.isEmpty( ) ) {
+  if( ( fname.isEmpty( ) ) || ( loadedAutosave ) ) {
     fname = currentFile.absoluteFilePath( );
-    if( ( currentFile.fileName( ).isEmpty( ) ) || ( reloadedAutoSave ) ) {
+    if( ( currentFile.fileName( ).isEmpty( ) ) || ( loadedAutosave ) ) {
       fname = QFileDialog::getSaveFileName( this, tr( "Save File" ), defaultDirectory.absolutePath( ), tr( "Panda files (*.panda)" ) );
     }
   }
@@ -195,7 +204,7 @@ bool MainWindow::save( QString fname ) {
     }
   }
   if( fl.commit( ) ) {
-    reloadedAutoSave = false;
+    loadedAutosave = false;
     setCurrentFile( QFileInfo( fname ) );
     ui->statusBar->showMessage( tr( "Saved file sucessfully." ), 2000 );
     editor->getUndoStack( )->setClean( );
@@ -215,11 +224,6 @@ bool MainWindow::save( QString fname ) {
 void MainWindow::show( ) {
   QMainWindow::show( );
   editor->clear( );
-  if( reloadedAutoSave ) {
-    COMMENT( "Loading autosave.", 0 );
-    open( autosaveFilename );
-    COMMENT( "Finished loading autosave.", 0 );
-  }
 }
 
 void MainWindow::clear( ) {
@@ -362,6 +366,13 @@ bool MainWindow::closeFile( ) {
     else if( ret == QMessageBox::Cancel ) {
       ok = false;
     }
+    else { // Close without saving. Deleting autosave if it was opened.
+      if( loadedAutosave ) {
+        autosaveFile.remove( );
+        QSettings settings( QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName( ), QApplication::applicationName( ) );
+        settings.remove( "autosaveFile" );
+      }
+    }
   }
   return( ok );
 }
@@ -411,7 +422,7 @@ QFileInfo MainWindow::getCurrentFile( ) const {
 
 void MainWindow::setCurrentFile( const QFileInfo &value ) {
   COMMENT( "Default the autosave path to the temporary directory of the system.", 0 );
-  if( ( !reloadedAutoSave ) && ( value.exists( ) ) ) {
+  if( value.exists( ) ) {
     QDir autosavePath( QDir::temp( ) );
     COMMENT( "Autosave path set to the current file's directory, if there is one.", 0 );
     autosavePath = value.dir( );
@@ -426,8 +437,8 @@ void MainWindow::setCurrentFile( const QFileInfo &value ) {
   else {
     setWindowTitle( QString( "wiRED PANDA v%1 [%2]" ).arg( APP_VERSION, value.fileName( ) ) );
   }
-  COMMENT( "Adding file to controller.", 0 );
-  if( !reloadedAutoSave ) {
+  if( !loadedAutosave ) {
+    COMMENT( "Adding file to controller.", 0 );
     rfController->addFile( value.absoluteFilePath( ) );
   }
   GlobalProperties::currentFile = currentFile.absoluteFilePath( );
@@ -921,8 +932,7 @@ void MainWindow::autoSave( ) {
   COMMENT( "Starting autosave.", 0 );
   if( editor->getUndoStack( )->isClean( ) ) {
     COMMENT( "Undo stack is clean.", 0 );
-    if( autosaveFile.exists( ) )
-    {
+    if( autosaveFile.exists( ) ) {
         autosaveFile.remove( );
         settings.remove("autosaveFile");
     }
