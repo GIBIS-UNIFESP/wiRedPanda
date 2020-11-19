@@ -34,7 +34,7 @@ public:
   void show( );
   void clear( );
   QFileInfo getCurrentFile( ) const;
-  void setCurrentFile( const QFileInfo &value, bool deleteAutosave = true );
+  void setCurrentFile( const QFileInfo &value );
   bool ExportToArduino( QString fname );
   bool ExportToWaveFormFile( QString fname );
 
@@ -131,6 +131,8 @@ private:
   QDir defaultDirectory;
   QUndoView *undoView;
   Label *firstResult;
+  bool reloadedAutoSave;
+  QString autosaveFilename;
 
   QTemporaryFile autosaveFile;
 

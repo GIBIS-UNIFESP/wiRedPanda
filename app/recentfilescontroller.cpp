@@ -1,4 +1,5 @@
 #include "recentfilescontroller.h"
+#include "common.h"
 
 #include <QApplication>
 #include <QDebug>
@@ -8,16 +9,15 @@
 
 // TODO: quotes bug
 void RecentFilesController::addFile( const QString &fname ) {
-  qDebug( ) << "Setting recent file to : \"" << fname << "\"";
+  COMMENT( "Setting recent file to : \"" << fname.toStdString( ) << "\"", 0 );
   if( !QFile( fname ).exists( ) ) {
     return;
   }
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
-
-  if ( !settings.contains( attrName ) )
-  {
-      return;
+  if( !settings.contains( attrName ) ) {
+    COMMENT( "Early return because the settings do not contain attrName " << attrName.toStdString( ), 0 );
+    return;
   }
   QStringList files = settings.value( attrName ).toStringList( );
 
@@ -42,10 +42,7 @@ void RecentFilesController::addFile( const QString &fname ) {
 }
 
 QStringList RecentFilesController::getFiles( ) {
-  QSettings settings( QSettings::IniFormat,
-                      QSettings::UserScope,
-                      QApplication::organizationName( ),
-                      QApplication::applicationName( ) );
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName( ), QApplication::applicationName( ) );
   if( !settings.contains( attrName ) ) {
     return( QStringList( ) );
   }
