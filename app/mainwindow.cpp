@@ -50,6 +50,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
       int ret = recoverAutoSaveFile( autosaveFilename );
       if( ret == QMessageBox::Yes ) {
         reloadedAutoSave = true;
+        COMMENT( "Reloaded autosave.", 0 );
       }
     }
   }
@@ -169,12 +170,11 @@ void MainWindow::on_actionExit_triggered( ) {
 }
 
 bool MainWindow::save( QString fname ) {
+  COMMENT( "fname: " << fname.toStdString( ) << ", autosave: " << autosaveFilename.toStdString( ), 0 );
   if( fname.isEmpty( ) ) {
     fname = currentFile.absoluteFilePath( );
-    if( currentFile.fileName( ).isEmpty( ) ) {
-      fname =
-        QFileDialog::getSaveFileName( this, tr( "Save File" ), defaultDirectory.absolutePath( ), tr(
-                                        "Panda files (*.panda)" ) );
+    if( ( currentFile.fileName( ).isEmpty( ) ) || ( reloadedAutoSave ) ) {
+      fname = QFileDialog::getSaveFileName( this, tr( "Save File" ), defaultDirectory.absolutePath( ), tr( "Panda files (*.panda)" ) );
     }
   }
   if( fname.isEmpty( ) ) {
@@ -195,14 +195,14 @@ bool MainWindow::save( QString fname ) {
     }
   }
   if( fl.commit( ) ) {
+    reloadedAutoSave = false;
     setCurrentFile( QFileInfo( fname ) );
     ui->statusBar->showMessage( tr( "Saved file sucessfully." ), 2000 );
     editor->getUndoStack( )->setClean( );
     if( autosaveFile.isOpen( ) ) {
       autosaveFile.remove( );
-      QSettings settings( QSettings::IniFormat, QSettings::UserScope,
-                          QApplication::organizationName( ), QApplication::applicationName( ) );
-      settings.remove("autosaveFile");
+      QSettings settings( QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName( ), QApplication::applicationName( ) );
+      settings.remove( "autosaveFile" );
     }
     return( true );
   }
@@ -217,7 +217,7 @@ void MainWindow::show( ) {
   editor->clear( );
   if( reloadedAutoSave ) {
     COMMENT( "Loading autosave.", 0 );
-    this->open( autosaveFilename );
+    open( autosaveFilename );
     COMMENT( "Finished loading autosave.", 0 );
   }
 }
@@ -226,7 +226,6 @@ void MainWindow::clear( ) {
   editor->clear( );
   setCurrentFile( QFileInfo( ) );
 }
-
 
 int MainWindow::recoverAutoSaveFile ( QString autosaveFilename ) {
     QMessageBox msgBox;
@@ -379,19 +378,12 @@ void MainWindow::closeEvent( QCloseEvent *e ) {
   settings.setValue( "state", ui->splitter->saveState( ) );
   settings.endGroup( );
   settings.endGroup( );
-#ifndef DEBUG
   if( closeFile( ) ) {
     close( );
   }
   else {
     e->ignore( );
   }
-//  autosaveFile.remove( );
-//  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
-//                      QApplication::organizationName( ), QApplication::applicationName( ) );
-//  settings.remove("autosaveFile");
-
-#endif
 }
 
 void MainWindow::on_actionSave_As_triggered( ) {
