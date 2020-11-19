@@ -19,6 +19,7 @@ SimulationController::SimulationController( Scene *scn ) : QObject( dynamic_cast
   simulationTimer.setInterval( GLOBALCLK );
   viewTimer.setInterval( int( 1000 / 30 ) );
   viewTimer.start( );
+  shouldRestart = false;
   connect( &viewTimer, &QTimer::timeout, this, &SimulationController::updateView );
   connect( &simulationTimer, &QTimer::timeout, this, &SimulationController::update );
 }
