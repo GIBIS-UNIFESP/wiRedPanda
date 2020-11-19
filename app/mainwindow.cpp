@@ -33,6 +33,7 @@ MainWindow::MainWindow( QWidget *parent , QString filename ) : QMainWindow( pare
   editor = new Editor( this );
   autosaveFilename = "";
   loadedAutosave = false;
+  translator = nullptr;
 
   buildFullScreenDialog( );
 
