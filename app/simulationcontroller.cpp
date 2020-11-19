@@ -104,12 +104,14 @@ void SimulationController::reSortElms( ) {
   COMMENT( "Elements deleted.", 0 );
   elMapping = new ElementMapping( scene->getElements( ), GlobalProperties::currentFile );
   if( elMapping->canInitialize( ) ) {
+    COMMENT( "Can initialize.", 0 );
     elMapping->initialize( );
     elMapping->sort( );
     update( );
   }
   else {
     qDebug( ) << "Cannot initialize simulation!";
+    COMMENT( "Can not initialize.", 0 );
   }
   COMMENT( "Finished simulation layer.", 0 );
 }

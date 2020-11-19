@@ -15,15 +15,10 @@ int main( int argc, char *argv[] ) {
   parser.addVersionOption( );
   parser.addPositionalArgument( "file", QCoreApplication::translate( "main", "Circuit file to open." ) );
 
-  QCommandLineOption arduinoFileOption( QStringList( ) << "a" << "arduino-file",
-                                        QCoreApplication::translate( "main", "Export circuit to <arduino-file>" ),
-                                        QCoreApplication::translate( "main", "arduino file" ) );
+  QCommandLineOption arduinoFileOption( QStringList( ) << "a" << "arduino-file", QCoreApplication::translate( "main", "Export circuit to <arduino-file>" ), QCoreApplication::translate( "main", "arduino file" ) );
   parser.addOption( arduinoFileOption );
 
-  QCommandLineOption waveformFileOption( QStringList( ) << "w" << "waveform",
-                                         QCoreApplication::translate( "main",
-                                                                      "Export circuit to <waveform> text file" ),
-                                         QCoreApplication::translate( "main", "waveform text file" ) );
+  QCommandLineOption waveformFileOption( QStringList( ) << "w" << "waveform", QCoreApplication::translate( "main", "Export circuit to <waveform> text file" ), QCoreApplication::translate( "main", "waveform text file" ) );
   parser.addOption( waveformFileOption );
 
   parser.process( a );

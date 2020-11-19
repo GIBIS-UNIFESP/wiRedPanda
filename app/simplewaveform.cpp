@@ -53,8 +53,7 @@ SimpleWaveform::SimpleWaveform( Editor *editor, QWidget *parent ) : QDialog( par
   setWindowFlags( Qt::Window );
   setModal( true );
   sortingMode = SortingMode::INCREASING;
-  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
-                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "SimpleWaveform" );
   restoreGeometry( settings.value( "geometry" ).toByteArray( ) );
   settings.endGroup( );
@@ -202,11 +201,14 @@ bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
   return( true );
 }
 
+
+// Ideia: 1) Dividir essa função em partes. Uma para configurar, uma para carregar valores padrão ou de arquivo, uma para simular e uma para mostrar o resultado.
+// 2) Assim, ao abrir o simulador gráfico, poderia ter botão para simulação padrão e outra opção para carregar arquivo (.dolphin,.csv).
+// 3) Para rodar por linha de comando, o resultado poderia ser salvo em arquivo.
 void SimpleWaveform::showWaveform( ) {
-  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
-                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "waveform" );
-  // Getting sorting type.
+  COMMENT( "Getting sorting type.", 0 );
   if( settings.contains( "sortingType" ) ) {
     sortingMode = static_cast< SortingMode >( settings.value( "sortingType" ).toInt( ) );
   }
@@ -223,16 +225,16 @@ void SimpleWaveform::showWaveform( ) {
         break;
   }
   int gap = 2;
-  // Clear previous chart.
+  COMMENT( "Clear previous chart.", 0 );
   chart.removeAllSeries( );
-  // Getting digital circuit simulator.
+  COMMENT( "Getting digital circuit simulator.", 0 );
   SimulationController *sc = editor->getSimulationController( );
-  // Creating class to pause main window simulator while creating waveform.
+  COMMENT( "Creating class to pause main window simulator while creating waveform.", 0 );
   SCStop scst( sc );
   QVector< GraphicElement* > elements = editor->getScene( )->getElements( );
   QVector< GraphicElement* > inputs;
   QVector< GraphicElement* > outputs;
-  // Sorting elements according to the radion option. All elements initially in elements vector. Then, inputs and outputs are extracted from it.
+  COMMENT( "Sorting elements according to the radion option. All elements initially in elements vector. Then, inputs and outputs are extracted from it.", 0 );
   sortElements( elements, inputs, outputs, sortingMode );
   if( elements.isEmpty( ) ) {
     QMessageBox::warning( parentWidget( ), tr( "Error" ), tr( "Could not find any port for the simulation" ) );
@@ -252,8 +254,8 @@ void SimpleWaveform::showWaveform( ) {
   }
   QVector< QLineSeries* > in_series;
   QVector< QLineSeries* > out_series;
-  // Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation.
-  // Also getting the name of the inputs. If no label is given, the element type is used as a name. Bug here? What if there are 2 inputs without name or two identical labels?
+  COMMENT( "Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation. Not saving memory states though...", 0 );
+  COMMENT( "Also getting the name of the inputs. If no label is given, the element type is used as a name. Bug here? What if there are 2 inputs without name or two identical labels?", 0 );
   QVector< char > oldValues( inputs.size( ) );
   for( int in = 0; in < inputs.size( ); ++in ) {
     in_series.append( new QLineSeries( this ) );
@@ -264,8 +266,7 @@ void SimpleWaveform::showWaveform( ) {
     in_series[ in ]->setName( label );
     oldValues[ in ] = inputs[ in ]->output( )->value( );
   }
-  // Getting the name of the outputs. If no label is given, the element type is used as a name. Bug here? What if there
-  // are 2 outputs without name or two identical labels?
+  COMMENT( "Getting the name of the outputs. If no label is given, the element type is used as a name. Bug here? What if there are 2 outputs without name or two identical labels?", 0 );
   for( int out = 0; out < outputs.size( ); ++out ) {
     QString label = outputs[ out ]->getLabel( );
     if( label.isEmpty( ) ) {
@@ -281,18 +282,17 @@ void SimpleWaveform::showWaveform( ) {
       }
     }
   }
-  //qDebug( ) << in_series.size( ) << " inputs";
-  //qDebug( ) << out_series.size( ) << " outputs";
-  // Computing number of iterations based on the number of inputs.
+  COMMENT( in_series.size( ) << " inputs", 0 );
+  COMMENT( out_series.size( ) << " outputs", 0 );
+  COMMENT( "Computing number of iterations based on the number of inputs.", 0 );
   int num_iter = pow( 2, in_series.size( ) );
-  //qDebug( ) << "Num iter = " << num_iter;
+  COMMENT( "Num iter = " << num_iter, 0);
 /*  gap += outputs.size( ) % 2; */
-  // Running simulation.
+  COMMENT( "Running simulation.", 0 );
   for( int itr = 0; itr < num_iter; ++itr ) {
-    // For each iteration, set a distinct value for the inputs. The value is the bit values corresponding to the number
-    // of current iteration.
+    COMMENT( "For each iteration, set a distinct value for the inputs. The value is the bit values corresponding to the number of the current iteration.", 3 );
     std::bitset< std::numeric_limits< unsigned int >::digits > bs( itr );
-    //qDebug( ) << itr;
+    COMMENT( "itr:" << itr, 3 );
     for( int in = 0; in < inputs.size( ); ++in ) {
       float val = bs[ in ];
       dynamic_cast< Input* >( inputs[ in ] )->setOn( not qFuzzyIsNull( val ) );
@@ -300,10 +300,10 @@ void SimpleWaveform::showWaveform( ) {
       in_series[ in ]->append( itr, static_cast< qreal >( offset + val ) );
       in_series[ in ]->append( itr + 1, static_cast< qreal >( offset + val ) );
     }
-    // Updating the values of the circuit logic based on current input values.
+    COMMENT( "Updating the values of the circuit logic based on current input values.", 3 );
     sc->update( );
     sc->updateAll( );
-    // Setting the computed output values to the waveform results.
+    COMMENT( "Setting the computed output values to the waveform results.", 3 );
     int counter = 0;
     for( int out = 0; out < outputs.size( ); ++out ) {
       int inSz = outputs[ out ]->inputSize( );
@@ -317,19 +317,19 @@ void SimpleWaveform::showWaveform( ) {
       }
     }
   }
-  // Inserting input series to the chart
+  COMMENT( "Inserting input series to the chart.", 3 );
   for( QLineSeries *in : qAsConst(in_series) ) {
     chart.addSeries( in );
   }
-  // Inserting output series to the chart
+  COMMENT( "Inserting output series to the chart.", 3 );
   for( QLineSeries *out : qAsConst(out_series) ) {
     chart.addSeries( out );
   }
-  // Setting graphic axes
+  COMMENT( "Setting graphic axes.", 3 );
   chart.createDefaultAxes( );
 
   /*  chart.axisY( )->hide( ); */
-  // Setting range and names to x, y axis.
+  COMMENT( "Setting range and names to x, y axis.", 0 );
   QValueAxis *ax = dynamic_cast< QValueAxis* >( chart.axes( Qt::Horizontal ).back( ) );
   ax->setRange( 0, num_iter );
   ax->setTickCount( num_iter + 1 );
@@ -337,7 +337,7 @@ void SimpleWaveform::showWaveform( ) {
   QValueAxis *ay = dynamic_cast< QValueAxis* >( chart.axes( Qt::Vertical ).back( ) );
   /*  ay->setShadesBrush( QBrush( Qt::lightGray ) ); */
 
-  // Setting graphics waveform color.
+  COMMENT( "Setting graphics waveform color.", 0 );
   ay->setShadesColor( QColor( 0, 0, 0, 8 ) );
   ay->setShadesPen( QPen( QColor( 0, 0, 0, 0 ) ) );
   ay->setShadesVisible( true );
@@ -347,13 +347,13 @@ void SimpleWaveform::showWaveform( ) {
   ay->setGridLineColor( Qt::transparent );
   ay->setLabelsVisible( false );
   /*  ay->hide( ); */
-  // Executing QDialog. Opens window to the user.
+  COMMENT( "Executing QDialog. Opens window to the user.", 0 );
   exec( );
-  // Restoring the old values to the inputs, prior to simulaton.
+  COMMENT( "Restoring the old values to the inputs, prior to simulaton.", 0 );
   for( int in = 0; in < inputs.size( ); ++in ) {
     dynamic_cast< Input* >( inputs[ in ] )->setOn( oldValues[ in ] );
   }
-  // Resuming digital circuit main window after waveform simulation is finished.
+  COMMENT( "Resuming digital circuit main window after waveform simulation is finished.", 0 );
   scst.release( );
 }
 
