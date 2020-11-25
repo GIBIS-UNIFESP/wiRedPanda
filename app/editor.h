@@ -1,7 +1,7 @@
 #ifndef EDITOR_H
 #define EDITOR_H
 
-#include "boxmanager.h"
+#include "icmanager.h"
 #include "elementeditor.h"
 #include "elementfactory.h"
 #include "nodes/qneconnection.h"
@@ -13,7 +13,7 @@
 #include <QObject>
 #include <QUndoCommand>
 
-class Box;
+class IC;
 class MainWindow;
 
 class Editor : public QObject {
@@ -22,7 +22,7 @@ class Editor : public QObject {
 public:
   explicit Editor( QObject *parent = nullptr );
   virtual ~Editor( );
-  bool saveLocalBox( Box *box, QString newBoxPath );
+  bool saveLocalIC( IC *ic, QString newICPath );
   bool saveLocal( QString newPath );
   void save( QDataStream &ds );
   void load( QDataStream &ds );
@@ -58,9 +58,9 @@ private:
   int _hoverPortElm_id;
   int _hoverPort_nbr;
   ElementEditor *_elementEditor;
-  BoxManager *boxManager;
+  ICManager *icManager;
 
-  bool markingSelectionBox;
+  bool markingSelectionIC;
   QGraphicsRectItem *selectionRect;
   QPointF selectionStartPoint;
   SimulationController *simulationController;

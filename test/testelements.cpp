@@ -1,6 +1,6 @@
 #include "testelements.h"
 
-#include "box.h"
+#include "ic.h"
 #include "demux.h"
 #include "dlatch.h"
 #include "editor.h"
@@ -180,33 +180,33 @@ QString testFile( QString fname ) {
   return( QString( "%1/../examples/%2" ).arg( CURRENTDIR, fname ) );
 }
 
-void TestElements::testBoxData( const Box *box ) {
-  QCOMPARE( static_cast< int >( box->inputSize( ) ), 5 );
-  QCOMPARE( static_cast< int >( box->outputSize( ) ), 2 );
+void TestElements::testICData( const IC *ic ) {
+  QCOMPARE( static_cast< int >( ic->inputSize( ) ), 5 );
+  QCOMPARE( static_cast< int >( ic->outputSize( ) ), 2 );
 
 
-  QCOMPARE( box->input( 0 )->isRequired( ), false );
-  QCOMPARE( box->input( 1 )->isRequired( ), false );
-  QCOMPARE( box->input( 2 )->isRequired( ), true );
-  QCOMPARE( box->input( 3 )->isRequired( ), false );
-  QCOMPARE( box->input( 4 )->isRequired( ), false );
+  QCOMPARE( ic->input( 0 )->isRequired( ), false );
+  QCOMPARE( ic->input( 1 )->isRequired( ), false );
+  QCOMPARE( ic->input( 2 )->isRequired( ), true );
+  QCOMPARE( ic->input( 3 )->isRequired( ), false );
+  QCOMPARE( ic->input( 4 )->isRequired( ), false );
 
-  QCOMPARE( static_cast< int >( box->input( 0 )->value( ) ), 1 );
-  QCOMPARE( static_cast< int >( box->input( 1 )->value( ) ), 1 );
-  QCOMPARE( static_cast< int >( box->input( 2 )->value( ) ), -1 );
-  QCOMPARE( static_cast< int >( box->input( 3 )->value( ) ), 1 );
-  QCOMPARE( static_cast< int >( box->input( 4 )->value( ) ), 1 );
+  QCOMPARE( static_cast< int >( ic->input( 0 )->value( ) ), 1 );
+  QCOMPARE( static_cast< int >( ic->input( 1 )->value( ) ), 1 );
+  QCOMPARE( static_cast< int >( ic->input( 2 )->value( ) ), -1 );
+  QCOMPARE( static_cast< int >( ic->input( 3 )->value( ) ), 1 );
+  QCOMPARE( static_cast< int >( ic->input( 4 )->value( ) ), 1 );
 }
 
-void TestElements::testBox( ) {
-  BoxManager manager;
-  QString boxFile = testFile( "jkflipflop.panda" );
+void TestElements::testIC( ) {
+  ICManager manager;
+  QString icFile = testFile( "jkflipflop.panda" );
   Scene scene;
 
-  Box *box = new Box( );
-  manager.loadBox( box, boxFile );
+  IC *ic = new IC( );
+  manager.loadIC( ic, icFile );
 
-  testBoxData( box );
+  testICData( ic );
 
   InputButton *clkButton = new InputButton( );
 
@@ -217,25 +217,25 @@ void TestElements::testBox( ) {
 
   QNEConnection *conn = new QNEConnection( );
   conn->setStart( clkButton->output( ) );
-  conn->setEnd( box->input( 2 ) );
+  conn->setEnd( ic->input( 2 ) );
 
   QNEConnection *conn2 = new QNEConnection( );
-  conn2->setStart( box->output( 0 ) );
+  conn2->setStart( ic->output( 0 ) );
   conn2->setEnd( led->input( ) );
 
   QNEConnection *conn3 = new QNEConnection( );
   conn3->setStart( prstButton->output( ) );
-  conn3->setEnd( box->input( 0 ) );
+  conn3->setEnd( ic->input( 0 ) );
 
   QNEConnection *conn4 = new QNEConnection( );
-  conn4->setStart( box->output( 1 ) );
+  conn4->setStart( ic->output( 1 ) );
   conn4->setEnd( led2->input( ) );
 
   scene.addItem( led );
   scene.addItem( led2 );
   scene.addItem( clkButton );
   scene.addItem( prstButton );
-  scene.addItem( box );
+  scene.addItem( ic );
   scene.addItem( conn );
   scene.addItem( conn2 );
   scene.addItem( conn3 );
@@ -251,10 +251,10 @@ void TestElements::testBox( ) {
     sc.update( );
     sc.updateScene( scene.itemsBoundingRect( ) );
 
-    QCOMPARE( static_cast< int >( box->input( 2 )->value( ) ), 0 );
+    QCOMPARE( static_cast< int >( ic->input( 2 )->value( ) ), 0 );
 
-    QCOMPARE( static_cast< int >( box->output( 0 )->value( ) ), 1 );
-    QCOMPARE( static_cast< int >( box->output( 1 )->value( ) ), 0 );
+    QCOMPARE( static_cast< int >( ic->output( 0 )->value( ) ), 1 );
+    QCOMPARE( static_cast< int >( ic->output( 1 )->value( ) ), 0 );
 
     clkButton->setOn( false );
     prstButton->setOn( true );
@@ -262,10 +262,10 @@ void TestElements::testBox( ) {
     sc.update( );
     sc.update( );
     sc.updateScene( scene.itemsBoundingRect( ) );
-    QCOMPARE( static_cast< int >( box->input( 2 )->value( ) ), 0 );
+    QCOMPARE( static_cast< int >( ic->input( 2 )->value( ) ), 0 );
 
-    QCOMPARE( static_cast< int >( box->output( 0 )->value( ) ), 1 );
-    QCOMPARE( static_cast< int >( box->output( 1 )->value( ) ), 0 );
+    QCOMPARE( static_cast< int >( ic->output( 0 )->value( ) ), 1 );
+    QCOMPARE( static_cast< int >( ic->output( 1 )->value( ) ), 0 );
 
 
     clkButton->setOn( false );
@@ -274,10 +274,10 @@ void TestElements::testBox( ) {
     sc.update( );
     sc.updateScene( scene.itemsBoundingRect( ) );
 
-    QCOMPARE( static_cast< int >( box->input( 2 )->value( ) ), 0 );
+    QCOMPARE( static_cast< int >( ic->input( 2 )->value( ) ), 0 );
 
-    QCOMPARE( static_cast< int >( box->output( 0 )->value( ) ), 1 );
-    QCOMPARE( static_cast< int >( box->output( 1 )->value( ) ), 0 );
+    QCOMPARE( static_cast< int >( ic->output( 0 )->value( ) ), 1 );
+    QCOMPARE( static_cast< int >( ic->output( 1 )->value( ) ), 0 );
 
 
     clkButton->setOn( true );
@@ -286,19 +286,19 @@ void TestElements::testBox( ) {
     sc.update( );
     sc.updateScene( scene.itemsBoundingRect( ) );
 
-    QCOMPARE( static_cast< int >( box->input( 2 )->value( ) ), 1 );
+    QCOMPARE( static_cast< int >( ic->input( 2 )->value( ) ), 1 );
 
-    std::cout << static_cast< int >( box->output( 0 )->value( ) ) << " " <<
-      static_cast< int >( box->output( 1 )->value( ) ) << std::endl;
+    std::cout << static_cast< int >( ic->output( 0 )->value( ) ) << " " <<
+      static_cast< int >( ic->output( 1 )->value( ) ) << std::endl;
 
-    QCOMPARE( static_cast< int >( box->output( 0 )->value( ) ), 0 );
-    QCOMPARE( static_cast< int >( box->output( 1 )->value( ) ), 1 );
+    QCOMPARE( static_cast< int >( ic->output( 0 )->value( ) ), 0 );
+    QCOMPARE( static_cast< int >( ic->output( 1 )->value( ) ), 1 );
 
   }
 }
 
-void TestElements::testBoxes( ) {
-  BoxManager manager;
+void TestElements::testICs( ) {
+  ICManager manager;
   QDir examplesDir( QString( "%1/../examples/" ).arg( CURRENTDIR ) );
 /*  qDebug( ) << "Current dir: " << CURRENTDIR; */
   QStringList entries;
@@ -306,7 +306,7 @@ void TestElements::testBoxes( ) {
   QFileInfoList files = examplesDir.entryInfoList( entries );
   for( const auto &f : files ) {
     qDebug( ) << "FILE: " << f.absoluteFilePath( );
-    Box box;
-    manager.loadBox( &box, f.absoluteFilePath( ) );
+    IC ic;
+    manager.loadIC( &ic, f.absoluteFilePath( ) );
   }
 }

@@ -776,7 +776,13 @@
      <normaloff>:/toolbar/panelBox.png</normaloff>:/toolbar/panelBox.png</iconset>
    </property>
    <property name="text">
-    <string>Open &amp;file as a Box</string>
+    <string>Open &amp;file as IC</string>
+   </property>
+   <property name="iconText">
+    <string>Open file as IC</string>
+   </property>
+   <property name="toolTip">
+    <string>Open file as IC</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+O</string>
@@ -1035,9 +1041,9 @@
  </tabstops>
  <resources>
   <include location="resources/resources.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
  </resources>
  <connections/>
 </ui>

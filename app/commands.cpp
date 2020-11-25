@@ -1,4 +1,4 @@
-#include "box.h"
+#include "ic.h"
 #include "commands.h"
 #include "editor.h"
 #include "globalproperties.h"

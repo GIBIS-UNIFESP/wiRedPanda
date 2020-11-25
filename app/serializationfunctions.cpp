@@ -1,4 +1,4 @@
-#include "box.h"
+#include "ic.h"
 #include "editor.h"
 #include "globalproperties.h"
 #include "graphicelement.h"
@@ -19,7 +19,7 @@ bool SerializationFunctions::update( QString &fileName, QString dirName ) {
   QList< QGraphicsItem* > itemList;
   QFile file( fileName );
   if( file.open( QFile::ReadOnly ) ) {
-    COMMENT( "Started reading box file " << fileName.toStdString( ), 0 );
+    COMMENT( "Started reading IC file " << fileName.toStdString( ), 0 );
     QMap< quint64, QNEPort* > map = QMap< quint64, QNEPort* >( );
     QDataStream ds( &file );
     version = loadVersion( ds );
@@ -33,7 +33,7 @@ bool SerializationFunctions::update( QString &fileName, QString dirName ) {
   QSaveFile fl( fileName );
   COMMENT( "Before saving data", 0 );
   if( fl.open( QFile::WriteOnly ) ) {
-    COMMENT( "Start updating box " << fileName.toStdString( ), 0 );
+    COMMENT( "Start updating IC " << fileName.toStdString( ), 0 );
     QDataStream ds( &fl );
     ds << QApplication::applicationName( ) + " " + QString::number( GlobalProperties::version );
     ds << rect;
@@ -45,7 +45,7 @@ bool SerializationFunctions::update( QString &fileName, QString dirName ) {
     return( false );
   }
 
-  COMMENT( "Finished updating box " << fileName.toStdString( ), 0 );
+  COMMENT( "Finished updating IC " << fileName.toStdString( ), 0 );
   return( true );
 }
 
@@ -89,10 +89,10 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( QDataStream &ds, do
       if( elm ) {
         itemList.append( elm );
         elm->load( ds, portMap, version );
-        if( elm->elementType( ) == ElementType::BOX ) {
-          COMMENT( "Loading box.", 0 );
-          Box *box = qgraphicsitem_cast< Box* >( elm );
-          BoxManager::instance( )->loadBox( box, box->getFile( ), parentFile );
+        if( elm->elementType( ) == ElementType::IC ) {
+          COMMENT( "Loading IC.", 0 );
+          IC *ic = qgraphicsitem_cast< IC* >( elm );
+          ICManager::instance( )->loadIC( ic, ic->getFile( ), parentFile );
         }
         elm->setSelected( true );
       }
@@ -159,11 +159,11 @@ QList< QGraphicsItem* > SerializationFunctions::loadMoveData( QString dirName, Q
       if( elm ) {
         itemList.append( elm );
         elm->load( ds, portMap, version );
-        if( elm->elementType( ) == ElementType::BOX ) {
-          Box *box = qgraphicsitem_cast< Box* >( elm );
-          QString oldName = box->getFile( );
+        if( elm->elementType( ) == ElementType::IC ) {
+          IC *ic = qgraphicsitem_cast< IC* >( elm );
+          QString oldName = ic->getFile( );
           QString newName = dirName + "/boxes/" + QFileInfo( oldName ).fileName( );
-          box->setFile( newName );
+          ic->setFile( newName );
         }
         elm->updateSkinsPath( dirName + "/skins/" );
       }

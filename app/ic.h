@@ -1,7 +1,7 @@
-#ifndef BOX_H
-#define BOX_H
+#ifndef IC_H
+#define IC_H
 
-#include "boxprototype.h"
+#include "icprototype.h"
 #include "elementfactory.h"
 #include "graphicelement.h"
 #include "scene.h"
@@ -12,29 +12,29 @@
 
 class Editor;
 
-class BoxPrototype;
+class ICPrototype;
 
-class Box : public GraphicElement {
+class IC : public GraphicElement {
   Q_OBJECT
 
   friend class CodeGenerator;
 public:
-  Box( QGraphicsItem *parent = nullptr );
-  virtual ~Box( ) override;
+  IC( QGraphicsItem *parent = nullptr );
+  virtual ~IC( ) override;
 
   /* GraphicElement interface */
   virtual ElementType elementType( ) override {
-    return( ElementType::BOX );
+    return( ElementType::IC );
   }
   virtual ElementGroup elementGroup( ) override {
-    return( ElementGroup::BOX );
+    return( ElementGroup::IC );
   }
   void save( QDataStream &ds ) const override;
   void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) override;
   void loadFile( QString fname );
   QString getFile( ) const;
   bool setFile( QString newFileName );
-  BoxPrototype* getPrototype( );
+  ICPrototype* getPrototype( );
   QVector< GraphicElement* > getElements( ) const;
   void setSkin(bool defaultSkin, QString filename) override;
 
@@ -43,13 +43,13 @@ private:
   QString m_file;
 
 
-  void loadInputs( BoxPrototype *prototype );
+  void loadInputs( ICPrototype *prototype );
 
-  void loadOutputs( BoxPrototype *prototype );
+  void loadOutputs( ICPrototype *prototype );
 
   /* QGraphicsItem interface */
 protected:
   void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) override;
 };
 
-#endif /* BOX_H */
+#endif /* IC_H */

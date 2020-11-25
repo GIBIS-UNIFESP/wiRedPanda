@@ -297,7 +297,7 @@ void GraphicElement::loadInputPort( QDataStream &ds, QMap< quint64, QNEPort* > &
   ds >> name;
   ds >> flags;
   if( ( port < static_cast< size_t >( m_inputs.size( ) ) ) ) {
-    if( elementType( ) == ElementType::BOX ) {
+    if( elementType( ) == ElementType::IC ) {
       m_inputs[ port ]->setName( name );
     }
     m_inputs[ port ]->setPortFlags( flags );
@@ -360,7 +360,7 @@ void GraphicElement::loadOutputPort( QDataStream &ds, QMap< quint64, QNEPort* > 
   ds >> name;
   ds >> flags;
   if( ( port < static_cast< size_t >( m_outputs.size( ) ) ) ) {
-    if( elementType( ) == ElementType::BOX ) {
+    if( elementType( ) == ElementType::IC ) {
       m_outputs[ port ]->setName( name );
     }
     m_outputs[ port ]->setPortFlags( flags );
@@ -491,7 +491,7 @@ void GraphicElement::setSkin( bool defaultSkin, QString filename ) {
 
 void GraphicElement::updatePorts( ) {
 /*  qDebug() << "UpdatePorts"; */
-  COMMENT( "Updating port positions that belong to the box.", 0 );
+  COMMENT( "Updating port positions that belong to the IC.", 0 );
   int inputPos = m_topPosition;
   int outputPos = m_bottomPosition;
   if( m_outputsOnTop ) {

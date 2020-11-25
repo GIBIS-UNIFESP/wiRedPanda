@@ -1,7 +1,7 @@
-#include "box.h"
-#include "boxmanager.h"
-#include "boxmapping.h"
-#include "boxprototype.h"
+#include "ic.h"
+#include "icmanager.h"
+#include "icmapping.h"
+#include "icprototype.h"
 #include "clock.h"
 #include "elementmapping.h"
 #include "qneconnection.h"
@@ -45,10 +45,10 @@ void ElementMapping::clear( ) {
     delete elm;
   }
   deletableElements.clear( );
-  for( BoxMapping *boxMap : qAsConst(boxMappings) ) {
-    delete boxMap;
+  for( ICMapping *icMap : qAsConst(icMappings) ) {
+    delete icMap;
   }
-  boxMappings.clear( );
+  icMappings.clear( );
   map.clear( );
   inputMap.clear( );
   clocks.clear( );
@@ -84,16 +84,16 @@ void ElementMapping::insertElement( GraphicElement *elm ) {
   }
 }
 
-void ElementMapping::insertBox( Box *box ) {
-  Q_ASSERT( box );
-  Q_ASSERT( !boxMappings.contains( box ) );
-  BoxPrototype *proto = box->getPrototype( );
+void ElementMapping::insertIC( IC *ic ) {
+  Q_ASSERT( ic );
+  Q_ASSERT( !icMappings.contains( ic ) );
+  ICPrototype *proto = ic->getPrototype( );
   if( proto ) {
-    BoxMapping *boxMap = proto->generateMapping( );
-    Q_ASSERT( boxMap );
-    boxMap->initialize( );
-    boxMappings.insert( box, boxMap );
-    logicElms.append( boxMap->logicElms );
+    ICMapping *icMap = proto->generateMapping( );
+    Q_ASSERT( icMap );
+    icMap->initialize( );
+    icMappings.insert( ic, icMap );
+    logicElms.append( icMap->logicElms );
   }
 }
 
@@ -104,9 +104,9 @@ void ElementMapping::generateMap( ) {
       Q_ASSERT( clk != nullptr );
       clocks.append( clk );
     }
-    if( elm->elementType( ) == ElementType::BOX ) {
-      Box *box = dynamic_cast< Box* >( elm );
-      insertBox( box );
+    if( elm->elementType( ) == ElementType::IC ) {
+      IC *ic = dynamic_cast< IC* >( elm );
+      insertIC( ic );
     }
     else {
       insertElement( elm );
@@ -211,9 +211,9 @@ void ElementMapping::update( ) {
 //  return resetSimulationController;
 }
 
-BoxMapping* ElementMapping::getBoxMapping( Box *box ) const {
-  Q_ASSERT( box );
-  return( boxMappings[ box ] );
+ICMapping* ElementMapping::getICMapping( IC *ic ) const {
+  Q_ASSERT( ic );
+  return( icMappings[ ic ] );
 }
 
 LogicElement* ElementMapping::getLogicElement( GraphicElement *elm ) const {
@@ -227,10 +227,10 @@ bool ElementMapping::canRun( ) const {
 
 bool ElementMapping::canInitialize( ) const {
   for( GraphicElement *elm: elements ) {
-    if( elm->elementType( ) == ElementType::BOX ) {
-      Box *box = dynamic_cast< Box* >( elm );
-      BoxPrototype *prototype = BoxManager::instance( )->getPrototype( box->getFile( ) );
-      if( !box || !prototype ) {
+    if( elm->elementType( ) == ElementType::IC ) {
+      IC *ic = dynamic_cast< IC* >( elm );
+      ICPrototype *prototype = ICManager::instance( )->getPrototype( ic->getFile( ) );
+      if( !ic || !prototype ) {
         return( false );
       }
     }
@@ -241,10 +241,10 @@ bool ElementMapping::canInitialize( ) const {
 void ElementMapping::applyConnection( GraphicElement *elm, QNEPort *in ) {
   LogicElement *currentLogElm;
   int inputIndex = 0;
-  if( elm->elementType( ) == ElementType::BOX ) {
-    Box *box = dynamic_cast< Box* >( elm );
-    Q_ASSERT( box );
-    currentLogElm = boxMappings[ box ]->getInput( in->index( ) );
+  if( elm->elementType( ) == ElementType::IC ) {
+    IC *ic = dynamic_cast< IC* >( elm );
+    Q_ASSERT( ic );
+    currentLogElm = icMappings[ ic ]->getInput( in->index( ) );
   }
   else {
     currentLogElm = map[ elm ];
@@ -260,11 +260,11 @@ void ElementMapping::applyConnection( GraphicElement *elm, QNEPort *in ) {
       if( predecessor ) {
         int predOutIndex = 0;
         LogicElement *predOutElm;
-        if( predecessor->elementType( ) == ElementType::BOX ) {
-          Box *box = dynamic_cast< Box* >( predecessor );
-          Q_ASSERT( box );
-          Q_ASSERT( boxMappings.contains( box ) );
-          predOutElm = boxMappings[ box ]->getOutput( other_out->index( ) );
+        if( predecessor->elementType( ) == ElementType::IC ) {
+          IC *ic = dynamic_cast< IC* >( predecessor );
+          Q_ASSERT( ic );
+          Q_ASSERT( icMappings.contains( ic ) );
+          predOutElm = icMappings[ ic ]->getOutput( other_out->index( ) );
         }
         else {
           predOutElm = map[ predecessor ];

@@ -1,34 +1,34 @@
-#ifndef BOXPROTOTYPE_H
-#define BOXPROTOTYPE_H
+#ifndef ICPROTOTYPE_H
+#define ICPROTOTYPE_H
 
-#include "boxprototypeimpl.h"
+#include "icprototypeimpl.h"
 
 #include <QGraphicsItem>
 #include <QString>
 #include <QVector>
 
-class BoxMapping;
+class ICMapping;
 class GraphicElement;
-class Box;
+class IC;
 
-class BoxPrototype {
+class ICPrototype {
   QString m_fileName;
 
-  BoxPrototypeImpl boxImpl;
-  QVector< Box* > boxObservers;
+  ICPrototypeImpl ICImpl;
+  QVector< IC* > icObservers;
 
 public:
-  BoxPrototype( const QString& fileName );
+  ICPrototype( const QString& fileName );
   void reload( );
 
   void fileName( QString newFileName );
   QString fileName( ) const;
   QString baseName( ) const;
 
-  void insertBoxObserver( Box *box );
-  void removeBoxObserver( Box *box );
+  void insertICObserver( IC *ic );
+  void removeICObserver( IC *ic );
 
-  bool updateLocalBox( QString fileName, QString boxDirName );
+  bool updateLocalIC( QString fileName, QString icDirName );
 
   int inputSize( ) const;
   int outputSize( ) const;
@@ -39,10 +39,10 @@ public:
   bool defaultInputValue( int index );
   bool isInputRequired( int index );
 
-  BoxMapping* generateMapping( ) const;
+  ICMapping* generateMapping( ) const;
 
 private:
   void clear( );
 };
 
-#endif // BOXPROTOTYPE_H
+#endif // ICPROTOTYPE_H

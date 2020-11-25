@@ -6,14 +6,14 @@
 
 #include <QTest>
 
-class Box;
+class IC;
 
 class TestElements : public QObject {
   Q_OBJECT
 
   QVector< QNEConnection* > conn{ 5 };
   QVector< InputSwitch* > sw{ 5 };
-  void testBoxData( const Box *box );
+  void testICData( const IC *ic );
 
 public:
   explicit TestElements( QObject *parent = nullptr );
@@ -39,8 +39,8 @@ private slots:
   void testSRFlipFlop( );
   void testTFlipFlop( );
 
-  void testBox( );
-  void testBoxes( );
+  void testIC( );
+  void testICs( );
 };
 
 #endif /* TESTELEMENTS_H */

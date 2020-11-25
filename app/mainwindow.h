@@ -41,9 +41,9 @@ public:
   bool open( const QString &fname );
   void createUndoView( );
   int confirmSave( );
-  void updateRecentBoxes( );
+  void updateRecentICs( );
 
-  QString getOpenBoxFile( );
+  QString getOpenICFile( );
 
   bool closeFile( );
 
@@ -71,7 +71,7 @@ private slots:
   void on_actionExit_triggered( );
   void on_actionGates_triggered( bool checked );
   void on_actionNew_triggered( );
-  void on_actionOpen_Box_triggered( );
+  void on_actionOpen_IC_triggered( );
   void on_actionOpen_triggered( );
   void on_actionPortuguese_triggered( );
   void on_actionReload_File_triggered( );
@@ -138,7 +138,7 @@ private:
 
   QAction *undoAction;
   QAction *redoAction;
-  RecentFilesController *rfController, *rboxController;
+  RecentFilesController *rfController, *ricController;
   QAction *recentFileActs[ RecentFilesController::MaxRecentFiles ];
   QTranslator *translator;
   QVector< ListItemWidget* > boxItemWidgets, searchItemWidgets;
