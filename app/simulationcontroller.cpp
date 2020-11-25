@@ -1,5 +1,5 @@
-#include "box.h"
-#include "boxmapping.h"
+#include "ic.h"
+#include "icmapping.h"
 #include "elementfactory.h"
 #include "simulationcontroller.h"
 #include "simulationcontroller.h"
@@ -129,9 +129,9 @@ void SimulationController::updatePort( QNEOutputPort *port ) {
     Q_ASSERT( elm );
     LogicElement *logElm = nullptr;
     int portIndex = 0;
-    if( elm->elementType( ) == ElementType::BOX ) {
-      Box *box = dynamic_cast< Box* >( elm );
-      logElm = elMapping->getBoxMapping( box )->getOutput( port->index( ) );
+    if( elm->elementType( ) == ElementType::IC ) {
+      IC *ic = dynamic_cast< IC* >( elm );
+      logElm = elMapping->getICMapping( ic )->getOutput( port->index( ) );
     }
     else {
       logElm = elMapping->getLogicElement( elm );

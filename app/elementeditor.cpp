@@ -147,7 +147,7 @@ void ElementEditor::contextMenu( QPoint screenPos ) {
         break;
       }
 
-        case ElementGroup::BOX:
+        case ElementGroup::IC:
         case ElementGroup::MUX:
         case ElementGroup::OTHER:
         case ElementGroup::UNKNOWN:

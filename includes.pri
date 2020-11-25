@@ -44,8 +44,6 @@ SOURCES += \
     $$PWD/app/arduino/codegenerator.cpp \
     $$PWD/app/elementeditor.cpp \
     $$PWD/app/elementfactory.cpp \
-    $$PWD/app/box.cpp \
-    $$PWD/app/boxnotfoundexception.cpp \
     $$PWD/app/commands.cpp \
     $$PWD/app/editor.cpp \
     $$PWD/app/filehelper.cpp \
@@ -53,6 +51,12 @@ SOURCES += \
     $$PWD/app/graphicelement.cpp \
     $$PWD/app/graphicsview.cpp \
     $$PWD/app/graphicsviewzoom.cpp \
+    $$PWD/app/ic.cpp \
+    $$PWD/app/icmanager.cpp \
+    $$PWD/app/icmapping.cpp \
+    $$PWD/app/icnotfoundexception.cpp \
+    $$PWD/app/icprototype.cpp \
+    $$PWD/app/icprototypeimpl.cpp \
     $$PWD/app/label.cpp \
     $$PWD/app/listitemwidget.cpp \
     $$PWD/app/mainwindow.cpp \
@@ -66,11 +70,7 @@ SOURCES += \
     $$PWD/app/simplewaveform.cpp \
     $$PWD/app/thememanager.cpp \
     $$PWD/app/logicelement.cpp \
-    $$PWD/app/boxmanager.cpp \
-    $$PWD/app/boxprototype.cpp \
-    $$PWD/app/boxprototypeimpl.cpp \
     $$PWD/app/elementmapping.cpp \
-    $$PWD/app/boxmapping.cpp \
     $$PWD/app/common.cpp
 
 HEADERS  +=  \
@@ -78,8 +78,6 @@ HEADERS  +=  \
   $$PWD/app/filehelper.h \
     $$PWD/app/graphicsviewzoom.h \
     $$PWD/app/arduino/codegenerator.h\
-    $$PWD/app/box.h \
-    $$PWD/app/boxnotfoundexception.h \
     $$PWD/app/commands.h \
     $$PWD/app/editor.h \
     $$PWD/app/elementeditor.h \
@@ -87,6 +85,12 @@ HEADERS  +=  \
     $$PWD/app/globalproperties.h \
     $$PWD/app/graphicelement.h \
     $$PWD/app/graphicsview.h \
+  $$PWD/app/ic.h \
+  $$PWD/app/icmanager.h \
+  $$PWD/app/icmapping.h \
+  $$PWD/app/icnotfoundexception.h \
+  $$PWD/app/icprototype.h \
+  $$PWD/app/icprototypeimpl.h \
     $$PWD/app/label.h \
     $$PWD/app/listitemwidget.h \
     $$PWD/app/mainwindow.h \
@@ -100,11 +104,7 @@ HEADERS  +=  \
     $$PWD/app/simplewaveform.h \
     $$PWD/app/thememanager.h \
     $$PWD/app/logicelement.h \
-    $$PWD/app/boxmanager.h \
-    $$PWD/app/boxprototype.h \
-    $$PWD/app/boxprototypeimpl.h \
     $$PWD/app/elementmapping.h \
-    $$PWD/app/boxmapping.h \
 
 INCLUDEPATH += \
     $$PWD/app \

@@ -1,5 +1,5 @@
-#include "box.h"
-#include "boxnotfoundexception.h"
+#include "ic.h"
+#include "icnotfoundexception.h"
 #include "buzzer.h"
 #include "commands.h"
 #include "editor.h"
@@ -37,12 +37,12 @@ Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ) {
     globalEditor = this;
   }
   mainWindow = qobject_cast< MainWindow* >( parent );
-  markingSelectionBox = false;
+  markingSelectionIC = false;
   _editedConn_id = 0;
   undoStack = new QUndoStack( this );
   scene = new Scene( this );
 
-  boxManager = new BoxManager( mainWindow, this );
+  icManager = new ICManager( mainWindow, this );
 
   install( scene );
   draggingElement = false;
@@ -51,7 +51,7 @@ Editor::Editor( QObject *parent ) : QObject( parent ), scene( nullptr ) {
   mShowWires = true;
   mShowGates = true;
   connect( this, &Editor::circuitHasChanged, simulationController, &SimulationController::reSortElms );
-  connect( boxManager, &BoxManager::updatedBox, this, &Editor::redoSimulationController );
+  connect( icManager, &ICManager::updatedIC, this, &Editor::redoSimulationController );
 }
 
 Editor::~Editor( ) {
@@ -145,7 +145,7 @@ void Editor::clear( ) {
 //  fprintf(stderr, "Clearing editor\n");
   simulationController->stop( );
   simulationController->clear( );
-  boxManager->clear( );
+  icManager->clear( );
   ElementFactory::instance->clear( );
   undoStack->clear( );
   if( scene ) {
@@ -356,7 +356,7 @@ void Editor::detachConnection( QNEInputPort *endPort ) {
 
 void Editor::startSelectionRect( ) {
   selectionStartPoint = mousePos;
-  markingSelectionBox = true;
+  markingSelectionIC = true;
   selectionRect->setRect( QRectF( selectionStartPoint, selectionStartPoint ) );
   selectionRect->show( );
   selectionRect->update( );
@@ -444,7 +444,7 @@ bool Editor::mouseMoveEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
     }
     return( true );
   }
-  else if( markingSelectionBox ) {
+  else if( markingSelectionIC ) {
     /* If is marking the selectionBox, the last coordinate follows the mouse position. */
     QRectF rect = QRectF( selectionStartPoint, mousePos ).normalized( );
     selectionRect->setRect( rect );
@@ -452,7 +452,7 @@ bool Editor::mouseMoveEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
     selectionBox.addRect( rect );
     scene->setSelectionArea( selectionBox );
   }
-  else if( !markingSelectionBox ) {
+  else if( !markingSelectionIC ) {
     /* Else, the selectionRect is hidden. */
     selectionRect->hide( );
   }
@@ -496,7 +496,7 @@ bool Editor::mouseReleaseEvt( QGraphicsSceneMouseEvent *mouseEvt ) {
   }
   /* When mouse is released the selection rect is hidden. */
   selectionRect->hide( );
-  markingSelectionBox = false;
+  markingSelectionIC = false;
   if( QApplication::overrideCursor( ) ) {
     QApplication::setOverrideCursor( Qt::ArrowCursor );
   }
@@ -593,12 +593,12 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
     if( !elm ) {
       return( false );
     }
-    if( elm->elementType( ) == ElementType::BOX ) {
+    if( elm->elementType( ) == ElementType::IC ) {
       try {
-        Box *box = dynamic_cast< Box* >( elm );
+        IC *box = dynamic_cast< IC* >( elm );
         if( box ) {
           QString fname = label_auxData;
-          if( !boxManager->loadBox( box, fname, GlobalProperties::currentFile ) ) {
+          if( !icManager->loadIC( box, fname, GlobalProperties::currentFile ) ) {
             return( false );
           }
         }
@@ -773,21 +773,21 @@ void Editor::selectAll( ) {
   }
 }
 
-bool Editor::saveLocalBox( Box *box, QString newPath ) {
+bool Editor::saveLocalIC( IC *ic, QString newICPath ) {
   try {
-    if( box ) {
-      COMMENT( "Getting new paths for the boxes.", 0 )
-      QString fname = box->getFile( );
-      COMMENT( "Box file name: " << fname.toStdString( ), 0 );
-      auto boxPrototype = boxManager->getPrototype( fname );
-      QString newFilePath = newPath + "/boxes/" + QFileInfo( fname ).fileName( );
+    if( ic ) {
+      COMMENT( "Getting new paths for the ics.", 0 )
+      QString fname = ic->getFile( );
+      COMMENT( "IC file name: " << fname.toStdString( ), 0 );
+      auto icPrototype = icManager->getPrototype( fname );
+      QString newFilePath = newICPath + "/boxes/" + QFileInfo( fname ).fileName( );
       COMMENT( "newFilePath: " << newFilePath.toStdString( ), 0 );
       QFile fl( newFilePath );
       if( !fl.exists( ) ) {
         COMMENT( "Copying file to local dir. File does not exist yet.", 0 );
         QFile::copy( fname, newFilePath );
-        if( boxPrototype->updateLocalBox( newFilePath, newPath ) ) {
-          if( !box->setFile( newFilePath ) ) {
+        if( icPrototype->updateLocalIC( newFilePath, newICPath ) ) {
+          if( !ic->setFile( newFilePath ) ) {
             std::cerr << "Error changing boxes name." << std::endl;
             return( false );
           }
@@ -798,7 +798,7 @@ bool Editor::saveLocalBox( Box *box, QString newPath ) {
         }
       }
       else {
-        if( !box->setFile( newFilePath ) ) {
+        if( !ic->setFile( newFilePath ) ) {
           std::cerr << "Error changing boxes name." << std::endl;
           return( false );
         }
@@ -820,8 +820,8 @@ bool Editor::saveLocal( QString newPath ) {
   COMMENT( "new path: " << newPath.toStdString( ), 0 );
   for( GraphicElement *elm : scene_elements ) {
     elm->updateSkinsPath( newPath + "/skins/" );
-    if( elm->elementType( ) == ElementType::BOX )
-      if( !saveLocalBox( dynamic_cast< Box* >( elm ), newPath ) )
+    if( elm->elementType( ) == ElementType::IC )
+      if( !saveLocalIC( dynamic_cast< IC* >( elm ), newPath ) )
         return( false );
   }
   return( true );

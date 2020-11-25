@@ -1,13 +1,13 @@
 ﻿#include "common.h"
 #include "filehelper.h"
-#include "boxnotfoundexception.h"
+#include "icnotfoundexception.h"
 #include "globalproperties.h"
 
 #include <iostream>
 #include <QDebug>
 #include <QDir>
 
-QFileInfo FileHelper::findBoxFile( QString fname, QString parentFile ) {
+QFileInfo FileHelper::findICFile( QString fname, QString parentFile ) {
   qDebug( ) << "Loading file: " << fname << ", parentFile: " << parentFile;
   QFileInfo fileInfo( fname );
   QString myFile = fileInfo.fileName( );
@@ -26,7 +26,7 @@ QFileInfo FileHelper::findBoxFile( QString fname, QString parentFile ) {
           COMMENT( "Searching sibling subdir boxes: " << subdir.absolutePath( ).toStdString( ) + "/boxes", 0 );
           if( !fileInfo.isFile( ) ) {
             std::cerr << "Error: This file does not exists: " << fname.toStdString( ) << std::endl;
-            throw( BoxNotFoundException( QString( "Box linked file \"%1\" could not be found!\n" "Do you want to find this file?" ).arg( fname ).toStdString( ), nullptr ) );
+            throw( ICNotFoundException( QString( tr( "IC linked file \"%1\" could not be found!\n" "Do you want to find this file?" ) ).arg( fname ).toStdString( ), nullptr ) );
           }
         }
       }

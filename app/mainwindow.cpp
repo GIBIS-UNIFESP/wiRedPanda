@@ -129,13 +129,13 @@ MainWindow::MainWindow( QWidget *parent , QString filename ) : QMainWindow( pare
   connect( editor, &Editor::circuitHasChanged, this, &MainWindow::autoSave );
 
   rfController = new RecentFilesController( "recentFileList", this );
-  rboxController = new RecentFilesController( "recentBoxes", this );
+  ricController = new RecentFilesController( "recentICs", this );
 
   QShortcut *shortcut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
   connect( shortcut, &QShortcut::activated, ui->lineEdit, QOverload< >::of( &QWidget::setFocus ) );
   ui->graphicsView->setCacheMode( QGraphicsView::CacheBackground );
   firstResult = nullptr;
-  updateRecentBoxes( );
+  updateRecentICs( );
   createRecentFileActions( );
   updateRecentFileActions( );
 
@@ -455,7 +455,7 @@ void MainWindow::on_actionSelect_all_triggered( ) {
   editor->selectAll( );
 }
 
-void MainWindow::updateRecentBoxes( ) {
+void MainWindow::updateRecentICs( ) {
   ui->scrollAreaWidgetContents_Box->layout( )->removeItem( ui->verticalSpacer_BOX );
   for( ListItemWidget *item : qAsConst( boxItemWidgets ) ) {
     item->deleteLater( );
@@ -464,24 +464,23 @@ void MainWindow::updateRecentBoxes( ) {
   boxItemWidgets.clear( );
 
   //! Show recent files
-  const QStringList files = rboxController->getFiles( );
+  const QStringList files = ricController->getFiles( );
   for(const QString& file : files ) {
     QPixmap pixmap( QString::fromUtf8( ":/basic/box.png" ) );
-    ListItemWidget *item = new ListItemWidget( pixmap, ElementType::BOX, file, this );
+    ListItemWidget *item = new ListItemWidget( pixmap, ElementType::IC, file, this );
     boxItemWidgets.append( item );
     ui->scrollAreaWidgetContents_Box->layout( )->addWidget( item );
   }
   ui->scrollAreaWidgetContents_Box->layout( )->addItem( ui->verticalSpacer_BOX );
 }
 
-QString MainWindow::getOpenBoxFile( ) {
-  return( QFileDialog::getOpenFileName( this, tr( "Open File as Box" ), defaultDirectory.absolutePath( ), tr(
-                                          "Panda files (*.panda)" ) ) );
+QString MainWindow::getOpenICFile( ) {
+  return( QFileDialog::getOpenFileName( this, tr( "Open File as IC" ), defaultDirectory.absolutePath( ), tr( "Panda files (*.panda)" ) ) );
 }
 
-void MainWindow::on_actionOpen_Box_triggered( ) {
-  /* LOAD FILE AS BOX */
-  QString fname = getOpenBoxFile( );
+void MainWindow::on_actionOpen_IC_triggered( ) {
+  /* LOAD FILE AS IC */
+  QString fname = getOpenICFile( );
   if( fname.isEmpty( ) ) {
     return;
   }
@@ -491,7 +490,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
     return;
   }
   if( fl.open( QFile::ReadOnly ) ) {
-    rboxController->addFile( fname );
+    ricController->addFile( fname );
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
@@ -500,9 +499,9 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
   }
   fl.close( );
 
-  updateRecentBoxes( );
+  updateRecentICs( );
 
-  ui->statusBar->showMessage( tr( "Loaded box sucessfully." ), 2000 );
+  ui->statusBar->showMessage( tr( "Loaded ic sucessfully." ), 2000 );
 }
 
 void MainWindow::on_lineEdit_textChanged( const QString &text ) {
@@ -519,7 +518,7 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
   else {
     ui->searchScrollArea->show( );
     ui->tabWidget->hide( );
-    QList< Label* > boxes = ui->tabWidget->findChildren< Label* >( "label_box" );
+    QList< Label* > ics = ui->tabWidget->findChildren< Label* >( "label_ic" );
     QRegularExpression regex( QString( ".*%1.*" ).arg( text ), QRegularExpression::CaseInsensitiveOption );
     QList< Label* > searchResults;
     QRegularExpression regex2( QString( "^label_.*%1.*" ).arg( text ), QRegularExpression::CaseInsensitiveOption );
@@ -532,9 +531,9 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
         }
       }
     }
-    for( auto *box : boxes ) {
-      if( regex.match( box->auxData( ) ).hasMatch( ) ) {
-        searchResults.append( box );
+    for( auto *ic : ics ) {
+      if( regex.match( ic->auxData( ) ).hasMatch( ) ) {
+        searchResults.append( ic );
       }
     }
     for( auto *label : searchResults ) {
@@ -634,8 +633,7 @@ bool MainWindow::ExportToWaveFormFile( QString fname ) {
     }
   }
   catch( std::runtime_error &e ) {
-    QMessageBox::warning( this, tr( "Error" ), tr(
-                            "<strong>Error while exporting to waveform file:</strong><br>%1" ).arg( e.what( ) ) );
+    QMessageBox::warning( this, tr( "Error" ), tr( "<strong>Error while exporting to waveform file:</strong><br>%1" ).arg( e.what( ) ) );
     return( false );
   }
 
@@ -981,22 +979,22 @@ void MainWindow::on_actionSave_Local_Project_triggered( ) {
     fname.append( ".panda" );
   }
   setCurrentFile( QFileInfo( fname ) );
-  COMMENT( "Saving boxes and skins", 0 );
-  // Save boxes ans skins locally here.
+  COMMENT( "Saving ics and skins", 0 );
+  // Saves ics ans skins locally here.
   path = currentFile.absolutePath( );
   if( !QDir( path + "/boxes" ).exists( ) ) {
     bool dir_res = QDir( ).mkpath( path + "/boxes" );
     if( !dir_res )
-      std::cerr << tr( "Error creating boxes directory." ).toStdString( ) << std::endl;
+      std::cerr << tr( "Error creating ICs directory." ).toStdString( ) << std::endl;
   }
   if( !QDir( path + "/skins" ).exists( ) ) {
     bool dir_res = QDir( ).mkpath( path + "/skins" );
     if( !dir_res )
       std::cerr << tr( "Error creating skins directory." ).toStdString( ) << std::endl;
   }
-  COMMENT( "Saving boxes and skins to local directories.", 0 );
+  COMMENT( "Saving ics and skins to local directories.", 0 );
   if( !editor->saveLocal( path ) ) {
-    std::cerr << tr( "Error saving boxes." ).toStdString( ) << std::endl;
+    std::cerr << tr( "Error saving ICs." ).toStdString( ) << std::endl;
     ui->statusBar->showMessage( tr( "Could not save the local project." ), 2000 );
     return;
   }

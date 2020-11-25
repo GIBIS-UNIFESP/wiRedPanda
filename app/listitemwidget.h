@@ -11,11 +11,7 @@ private:
   Label *label;
   QLabel *nameLabel;
 public:
-  explicit ListItemWidget( const QPixmap &pixmap,
-                           ElementType elementType,
-                           QString boxFileName,
-                           QWidget *parent = nullptr );
-
+  explicit ListItemWidget( const QPixmap &pixmap, ElementType elementType, QString icFileName, QWidget *parent = nullptr );
 
   Label* getLabel( ) const;
 

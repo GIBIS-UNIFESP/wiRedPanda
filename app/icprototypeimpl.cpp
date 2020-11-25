@@ -1,13 +1,13 @@
-#include "boxprototypeimpl.h"
+#include "icprototypeimpl.h"
 #include "editor.h"
 #include "elementfactory.h"
 #include "serializationfunctions.h"
-#include "box.h"
+#include "ic.h"
 
 #include <QDebug>
 #include <QFile>
 
-BoxPrototypeImpl::~BoxPrototypeImpl( ) {
+ICPrototypeImpl::~ICPrototypeImpl( ) {
   for( GraphicElement *elm: qAsConst( elements ) ) {
     delete elm;
   }
@@ -55,37 +55,37 @@ bool comparePorts( QNEPort *port1, QNEPort *port2 ) {
   }
 }
 
-void BoxPrototypeImpl::sortPorts( QVector< QNEPort* > &map ) {
+void ICPrototypeImpl::sortPorts( QVector< QNEPort* > &map ) {
   std::stable_sort( map.begin( ), map.end( ), comparePorts );
 }
 
-bool BoxPrototypeImpl::updateLocalBox( QString fileName, QString dirName ) {
-  COMMENT( "Recursive call to sub boxes.", 0 );
+bool ICPrototypeImpl::updateLocalIC( QString fileName, QString dirName ) {
+  COMMENT( "Recursive call to sub ics.", 0 );
   for( GraphicElement *elm: qAsConst(elements) ) {
-    if( elm->elementType( ) == ElementType::BOX ) {
-      Box *box = dynamic_cast< Box* >( elm );
-      QString originalSubBoxName = box->getFile( );
-      QString subBoxFileName = dirName + "/boxes/" + QFileInfo( originalSubBoxName ).fileName( );
-      auto prototype = box->getPrototype( );
-      if( !QFile::exists( subBoxFileName ) ) {
-        COMMENT( "Copying subbox file to local dir. File does not exist yet.", 0 );
-        QFile::copy( originalSubBoxName, subBoxFileName );
-        if( prototype->updateLocalBox( subBoxFileName, dirName ) ) {
-          if( !box->setFile( subBoxFileName ) ) {
-            std::cerr << "Error updating subbox name." << std::endl;
+    if( elm->elementType( ) == ElementType::IC ) {
+      IC *ic = dynamic_cast< IC* >( elm );
+      QString originalSubICName = ic->getFile( );
+      QString subICFileName = dirName + "/boxes/" + QFileInfo( originalSubICName ).fileName( );
+      auto prototype = ic->getPrototype( );
+      if( !QFile::exists( subICFileName ) ) {
+        COMMENT( "Copying subic file to local dir. File does not exist yet.", 0 );
+        QFile::copy( originalSubICName, subICFileName );
+        if( prototype->updateLocalIC( subICFileName, dirName ) ) {
+          if( !ic->setFile( subICFileName ) ) {
+            std::cerr << "Error updating subic name." << std::endl;
             return( false );
           }
         }
         else {
-          std::cerr << "Error saving subbox." << std::endl;
+          std::cerr << "Error saving subic." << std::endl;
         }
       }
     }
   }
-  COMMENT( "Updating references of subboxes.", 0 );
+  COMMENT( "Updating references of subics.", 0 );
   try {
     if( !SerializationFunctions::update( fileName, dirName ) ) {
-      std::cerr << "Error saving local box." << std::endl;
+      std::cerr << "Error saving local ic." << std::endl;
       return( false );
     }
     else {
@@ -99,8 +99,8 @@ bool BoxPrototypeImpl::updateLocalBox( QString fileName, QString dirName ) {
   return( true );
 }
 
-void BoxPrototypeImpl::loadFile( QString fileName ) {
-  COMMENT( "Reading box", 0 );
+void ICPrototypeImpl::loadFile( QString fileName ) {
+  COMMENT( "Reading ic", 0 );
   clear( );
   QFile file( fileName );
   if( file.open( QFile::ReadOnly ) ) {
@@ -116,10 +116,10 @@ void BoxPrototypeImpl::loadFile( QString fileName ) {
   sortPorts( outputs );
   loadInputs( );
   loadOutputs( );
-  COMMENT( "Finished Reading box", 0 );
+  COMMENT( "Finished Reading ic", 0 );
 }
 
-void BoxPrototypeImpl::loadInputs( ) {
+void ICPrototypeImpl::loadInputs( ) {
   for( int portIndex = 0; portIndex < getInputSize( ); ++portIndex ) {
     GraphicElement *elm = inputs.at( portIndex )->graphicElement( );
     QString lb = elm->getLabel( );
@@ -137,7 +137,7 @@ void BoxPrototypeImpl::loadInputs( ) {
   }
 }
 
-void BoxPrototypeImpl::loadOutputs( ) {
+void ICPrototypeImpl::loadOutputs( ) {
   for( int portIndex = 0; portIndex < getOutputSize( ); ++portIndex ) {
     GraphicElement *elm = outputs.at( portIndex )->graphicElement( );
     QString lb = elm->getLabel( );
@@ -155,12 +155,12 @@ void BoxPrototypeImpl::loadOutputs( ) {
   }
 }
 
-void BoxPrototypeImpl::loadInputElement( GraphicElement *elm ) {
+void ICPrototypeImpl::loadInputElement( GraphicElement *elm ) {
   auto const outputs = elm->outputs( );
   for( QNEOutputPort *port : outputs ) {
     GraphicElement *nodeElm = ElementFactory::buildElement( ElementType::NODE ); // Problem here. Inputs and outputs are transformed into nodes. And I can not use created connections with new elements...
     nodeElm->setPos( elm->pos( ) );  // Solution 1: Create new connections cloning all circuit.
-    nodeElm->setLabel( elm->getLabel( ) ); // Solution 2: Load and save box circuit out of this code...
+    nodeElm->setLabel( elm->getLabel( ) ); // Solution 2: Load and save ic circuit out of this code...
     QNEInputPort *nodeInput = nodeElm->input( );
     nodeInput->setPos( port->pos( ) );
     nodeInput->setName( port->getName( ) );
@@ -182,7 +182,7 @@ void BoxPrototypeImpl::loadInputElement( GraphicElement *elm ) {
   elm->disable( ); // Maybe I will have to enable and disable it as well.
 }
 
-void BoxPrototypeImpl::loadOutputElement( GraphicElement *elm ) {
+void ICPrototypeImpl::loadOutputElement( GraphicElement *elm ) {
   auto const inputs = elm->inputs( );
   for( QNEInputPort *port :  inputs ) {
     GraphicElement *nodeElm = ElementFactory::buildElement( ElementType::NODE );
@@ -202,7 +202,7 @@ void BoxPrototypeImpl::loadOutputElement( GraphicElement *elm ) {
   }
 }
 
-void BoxPrototypeImpl::loadItem( QGraphicsItem *item ) {
+void ICPrototypeImpl::loadItem( QGraphicsItem *item ) {
   if( item->type( ) == GraphicElement::Type ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     if( elm ) {
@@ -219,7 +219,7 @@ void BoxPrototypeImpl::loadItem( QGraphicsItem *item ) {
   }
 }
 
-void BoxPrototypeImpl::clear( ) {
+void ICPrototypeImpl::clear( ) {
   inputs.clear( );
   outputs.clear( );
   setInputSize( 0 );
@@ -228,18 +228,18 @@ void BoxPrototypeImpl::clear( ) {
   elements.clear( );
 }
 
-int BoxPrototypeImpl::getInputSize( ) const {
+int ICPrototypeImpl::getInputSize( ) const {
   return( inputs.size( ) );
 }
 
-int BoxPrototypeImpl::getOutputSize( ) const {
+int ICPrototypeImpl::getOutputSize( ) const {
   return( outputs.size( ) );
 }
 
-void BoxPrototypeImpl::setOutputSize( int outputSize ) {
+void ICPrototypeImpl::setOutputSize( int outputSize ) {
   outputLabels = QVector< QString >( outputSize );
 }
 
-void BoxPrototypeImpl::setInputSize( int inputSize ) {
+void ICPrototypeImpl::setInputSize( int inputSize ) {
   inputLabels = QVector< QString >( inputSize );
 }

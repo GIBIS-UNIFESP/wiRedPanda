@@ -16,12 +16,11 @@ void ListItemWidget::mousePressEvent( QMouseEvent* ) {
   label->startDrag( );
 }
 
-ListItemWidget::ListItemWidget( const QPixmap &pixmap, ElementType type, QString boxFileName,
-                                QWidget *parent ) : QFrame( parent ) {
+ListItemWidget::ListItemWidget( const QPixmap &pixmap, ElementType type, QString icFileName, QWidget *parent ) : QFrame( parent ) {
   QHBoxLayout *itemLayout = new QHBoxLayout( );
   QString name = ElementFactory::translatedName( type );
-  if( type == ElementType::BOX ) {
-    name = QFileInfo( boxFileName ).baseName( ).toUpper( );
+  if( type == ElementType::IC ) {
+    name = QFileInfo( icFileName ).baseName( ).toUpper( );
   }
   itemLayout->setSpacing( 6 );
   itemLayout->setObjectName( QStringLiteral( "itemLayout" ) );
@@ -32,7 +31,7 @@ ListItemWidget::ListItemWidget( const QPixmap &pixmap, ElementType type, QString
   label = new Label( parent );
   label->setPixmapData( pixmap );
   label->setName( name );
-  label->setAuxData( boxFileName );
+  label->setAuxData( icFileName );
   label->setElementType( type );
 
 
@@ -47,7 +46,7 @@ ListItemWidget::ListItemWidget( const QPixmap &pixmap, ElementType type, QString
 
 void ListItemWidget::updateName( ) {
   ElementType type = label->elementType( );
-  if( type != ElementType::BOX ) {
+  if( type != ElementType::IC ) {
     QString name = ElementFactory::translatedName( type );
     nameLabel->setText( name );
     label->setName( name );

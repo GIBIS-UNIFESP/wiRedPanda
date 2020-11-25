@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="pt_BR">
+<TS version="2.1" language="pt_BR">
 <context>
     <name>AddItemsCommand</name>
     <message>
@@ -17,17 +17,6 @@
     </message>
 </context>
 <context>
-    <name>Box</name>
-    <message>
-        <source>The file %1 changed, do you want to reload?</source>
-        <translation>O arquivo %1 mudou, deseja recarregar?</translation>
-    </message>
-    <message>
-        <source>Do you want to load this file?&lt;br&gt;%1</source>
-        <translation>Gostaria de abrir este arquivo? &lt;br&gt; %1</translation>
-    </message>
-</context>
-<context>
     <name>ChangeInputSZCommand</name>
     <message>
         <source>Change input size to %1</source>
@@ -39,10 +28,6 @@
     <message>
         <source>Delete %1 elements</source>
         <translation>Remover %1 portas(s)</translation>
-    </message>
-    <message>
-        <source>Delete %1 items</source>
-        <translation type="obsolete">Remover %1 item(s)</translation>
     </message>
 </context>
 <context>
@@ -119,20 +104,12 @@
         <translation>&lt;Vários atalhos&gt;</translation>
     </message>
     <message>
-        <source>None</source>
-        <translation type="obsolete">Nenhum</translation>
-    </message>
-    <message>
         <source>Rename</source>
         <translation>Renomear</translation>
     </message>
     <message>
         <source>Rotate</source>
         <translation>Rotacionar</translation>
-    </message>
-    <message>
-        <source>Change color to %1</source>
-        <translation type="obsolete">Mudar cor para %1</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -147,10 +124,6 @@
         <translation>Mudar frequência</translation>
     </message>
     <message>
-        <source>Change color to ...</source>
-        <translation>Mudar cor para ...</translation>
-    </message>
-    <message>
         <source>Change trigger</source>
         <translation>Mudar atalho</translation>
     </message>
@@ -161,6 +134,78 @@
     <message>
         <source>Cut</source>
         <translation>Recortar</translation>
+    </message>
+    <message>
+        <source>F6</source>
+        <translation type="unfinished">F6</translation>
+    </message>
+    <message>
+        <source>Open File</source>
+        <translation type="unfinished">Abrir arquivo</translation>
+    </message>
+    <message>
+        <source>Change skin to ...</source>
+        <translation type="unfinished">Alterar imagem para ...</translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished">Original</translation>
+    </message>
+    <message>
+        <source>Skin</source>
+        <translation type="unfinished">Imagem</translation>
+    </message>
+    <message>
+        <source>Audio</source>
+        <translation type="unfinished">Áudio</translation>
+    </message>
+    <message>
+        <source> Hz</source>
+        <translation type="unfinished">Hz</translation>
+    </message>
+    <message>
+        <source>C6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>D6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>E6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>G6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>B7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>C7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;Many sounds&gt;</source>
+        <translation type="unfinished">&lt;Muitos sons&gt;</translation>
+    </message>
+    <message>
+        <source>Change color to...</source>
+        <translation type="unfinished">Alterar cor para...</translation>
+    </message>
+    <message>
+        <source>Set skin to default</source>
+        <translation type="unfinished">Voltar para a imagem padrão</translation>
+    </message>
+    <message>
+        <source>Images (*.png *.gif *.jpg)</source>
+        <translation type="unfinished">Imagens (*.png *.gif *.jpg)</translation>
     </message>
 </context>
 <context>
@@ -218,14 +263,6 @@
         <translation>GND</translation>
     </message>
     <message>
-        <source>D-flipflop</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>D-latch</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>JK-flipflop</source>
         <translation>JK-Flipflop</translation>
     </message>
@@ -234,32 +271,12 @@
         <translation>JK-Latch</translation>
     </message>
     <message>
-        <source>SR-flipflop</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>T-latch</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>T-flipflop</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Display</source>
         <translation>Display</translation>
     </message>
     <message>
-        <source>Box</source>
-        <translation>Caixa</translation>
-    </message>
-    <message>
         <source>Mux</source>
         <translation>Mux</translation>
-    </message>
-    <message>
-        <source>Demux</source>
-        <translation></translation>
     </message>
     <message>
         <source>Node</source>
@@ -268,6 +285,47 @@
     <message>
         <source>Unknown</source>
         <translation>Desconhecido</translation>
+    </message>
+    <message>
+        <source>D-flipflop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>D-latch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SR-flipflop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>T-flipflop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display14</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>IC</source>
+        <translation type="unfinished">CI</translation>
+    </message>
+    <message>
+        <source>Demux</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buzzer</source>
+        <translation type="unfinished">Campainha</translation>
+    </message>
+</context>
+<context>
+    <name>FileHelper</name>
+    <message>
+        <source>IC linked file &quot;%1&quot; could not be found!
+Do you want to find this file?</source>
+        <translation type="unfinished">Arquivo de CI associado &quot;%1&quot; não encontrado!
+        Deseja encontrar esse arquivo?</translation>
     </message>
 </context>
 <context>
@@ -278,90 +336,36 @@
     </message>
 </context>
 <context>
-    <name>MainWindow</name>
+    <name>IC</name>
     <message>
-        <source>WiRED Panda</source>
-        <translation></translation>
+        <source>Do you want to load this file?&lt;br&gt;%1</source>
+        <translation type="unfinished">Gostaria de abrir este arquivo? &lt;br&gt; %1</translation>
     </message>
+</context>
+<context>
+    <name>ICManager</name>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">Erro</translation>
+    </message>
+    <message>
+        <source>The file %1 changed, do you want to reload?</source>
+        <translation type="unfinished">O arquivo %1 mudou, deseja recarregar?</translation>
+    </message>
+    <message>
+        <source>Error reloading IC: </source>
+        <translation type="unfinished">Erro ao atualizar CI: </translation>
+    </message>
+</context>
+<context>
+    <name>MainWindow</name>
     <message>
         <source>In/Out</source>
         <translation>In/Out</translation>
     </message>
     <message>
-        <source>vcc</source>
-        <translation type="obsolete">VCC</translation>
-    </message>
-    <message>
-        <source>VCC</source>
-        <translation type="obsolete">VCC</translation>
-    </message>
-    <message>
-        <source>GND</source>
-        <translation type="obsolete">GND</translation>
-    </message>
-    <message>
-        <source>Button</source>
-        <translation type="obsolete">Botão</translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation type="obsolete">Interruptor</translation>
-    </message>
-    <message>
-        <source>Clock</source>
-        <translation type="obsolete">Clock</translation>
-    </message>
-    <message>
-        <source>Led</source>
-        <translation type="obsolete">Led</translation>
-    </message>
-    <message>
-        <source>Display</source>
-        <translation type="obsolete">Display</translation>
-    </message>
-    <message>
         <source>Gates</source>
         <translation>Portas Lógicas</translation>
-    </message>
-    <message>
-        <source>AND</source>
-        <translation type="obsolete">AND</translation>
-    </message>
-    <message>
-        <source>OR</source>
-        <translation type="obsolete">OR</translation>
-    </message>
-    <message>
-        <source>NOT</source>
-        <translation type="obsolete">NOT</translation>
-    </message>
-    <message>
-        <source>NAND</source>
-        <translation type="obsolete">NAND</translation>
-    </message>
-    <message>
-        <source>NOR</source>
-        <translation type="obsolete">NOR</translation>
-    </message>
-    <message>
-        <source>XOR</source>
-        <translation type="obsolete">XOR</translation>
-    </message>
-    <message>
-        <source>XNOR</source>
-        <translation type="obsolete">XNOR</translation>
-    </message>
-    <message>
-        <source>MUX</source>
-        <translation type="obsolete">MUX</translation>
-    </message>
-    <message>
-        <source>DEMUX</source>
-        <translation type="obsolete">DEMUX</translation>
-    </message>
-    <message>
-        <source>NODE</source>
-        <translation type="obsolete">NODE</translation>
     </message>
     <message>
         <source>Memory</source>
@@ -369,7 +373,7 @@
     </message>
     <message>
         <source>Box</source>
-        <translation>Caixa</translation>
+        <translation>CI</translation>
     </message>
     <message>
         <source>Search:</source>
@@ -386,10 +390,6 @@
     <message>
         <source>&amp;Help</source>
         <translation>&amp;Ajuda</translation>
-    </message>
-    <message>
-        <source>Language</source>
-        <translation type="obsolete">Linguagem</translation>
     </message>
     <message>
         <source>&amp;View</source>
@@ -410,14 +410,6 @@
     <message>
         <source>Save &amp;As...</source>
         <translation>Salvar &amp;Como...</translation>
-    </message>
-    <message>
-        <source>Undo</source>
-        <translation type="obsolete">Desfazer</translation>
-    </message>
-    <message>
-        <source>Redo</source>
-        <translation type="obsolete">Refazer</translation>
     </message>
     <message>
         <source>Cu&amp;t</source>
@@ -464,38 +456,6 @@
         <translation>&amp;Sair</translation>
     </message>
     <message>
-        <source>Rotate right</source>
-        <translation type="obsolete">Rotacionar à Direita</translation>
-    </message>
-    <message>
-        <source>Rotate left</source>
-        <translation type="obsolete">Rotacionar à Esquerda</translation>
-    </message>
-    <message>
-        <source>About Qt</source>
-        <translation type="obsolete">Sobre o Qt</translation>
-    </message>
-    <message>
-        <source>Select all</source>
-        <translation type="obsolete">Selecionar Tudo</translation>
-    </message>
-    <message>
-        <source>Open file as a Box</source>
-        <translation type="obsolete">Abrir arquivo como uma Caixa</translation>
-    </message>
-    <message>
-        <source>Reload File</source>
-        <translation type="obsolete">Recarregar arquivo</translation>
-    </message>
-    <message>
-        <source>Export to Arduino</source>
-        <translation type="obsolete">Exportar para Arduino</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
         <source>&amp;Undo</source>
         <translation>&amp;Desfazer</translation>
     </message>
@@ -518,10 +478,6 @@
     <message>
         <source>Error saving project: </source>
         <translation>Erro ao salvar o projeto: </translation>
-    </message>
-    <message>
-        <source>Could not open file in WriteOnly mode : </source>
-        <translation>Não foi possível abrir o arquivo : </translation>
     </message>
     <message>
         <source>Saved file sucessfully.</source>
@@ -566,20 +522,8 @@ Errp: %1</translation>
         <translation>Abrir arquivo</translation>
     </message>
     <message>
-        <source>&lt;p&gt;wiRED Panda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students to learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Héctor Castelli &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;wiRED Panda é um software desenvolvido por estudantes da Universidade Federal de São Paulo. Este projeto foi desenvolvido como uma ferramenta didática para auxiliar em disciplinas de Circuitos Digitais.&lt;/p&gt; &lt;p&gt;Versão: %1&lt;/p&gt; &lt;p&gt;&lt;strong&gt;Equipe:&lt;/strong&gt; &lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Héctor Castelli &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Dr. Fábio Cappabianco. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso website!&lt;/a&gt;&lt;/p&gt;</translation>
-    </message>
-    <message>
         <source>Save File as ...</source>
         <translation>Salvar Arquivo como...</translation>
-    </message>
-    <message>
-        <source>Open File as Box</source>
-        <translation>Abrir arquivo como uma Caixa</translation>
-    </message>
-    <message>
-        <source>Loaded box sucessfully.</source>
-        <translation>Caixa carregada com sucesso.</translation>
     </message>
     <message>
         <source>Arduino code successfully generated.</source>
@@ -602,98 +546,6 @@ Errp: %1</translation>
         <translation>Arquivo Arduino (*.ino)</translation>
     </message>
     <message>
-        <source>Current Language changed to %1</source>
-        <translation type="obsolete">Linguagem mudou para %1</translation>
-    </message>
-    <message>
-        <source>JK-flipflop</source>
-        <translation type="obsolete">JK-Flipflop</translation>
-    </message>
-    <message>
-        <source>JK-latch</source>
-        <translation type="obsolete">JK-Latch</translation>
-    </message>
-    <message>
-        <source>Recent files:</source>
-        <translation type="obsolete">Arquivos recentes:</translation>
-    </message>
-    <message>
-        <source>Ctrl+O</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+S</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+S</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+X</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+C</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+V</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Del</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+N</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl++</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+-</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+1</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+2</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Q</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+R</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+R</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+A</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+O</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Reset Zoom</source>
-        <translation type="obsolete">Restaurar Zoom</translation>
-    </message>
-    <message>
-        <source>Ctrl+0</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Export to PDF</source>
         <translation>Exportar para PDF</translation>
     </message>
@@ -710,20 +562,8 @@ Errp: %1</translation>
         <translation>Não foi possível imprimir este circuito no PDF.</translation>
     </message>
     <message>
-        <source>English</source>
-        <translation type="obsolete">English</translation>
-    </message>
-    <message>
-        <source>Portuguese</source>
-        <translation type="obsolete">Português</translation>
-    </message>
-    <message>
         <source>F1</source>
         <translation>F1</translation>
-    </message>
-    <message>
-        <source>PlayPause</source>
-        <translation type="obsolete">Iniciar/Pausar</translation>
     </message>
     <message>
         <source>Play or Pause simulation.</source>
@@ -734,32 +574,16 @@ Errp: %1</translation>
         <translation>F5</translation>
     </message>
     <message>
-        <source>Rename</source>
-        <translation type="obsolete">Renomear</translation>
-    </message>
-    <message>
         <source>F2</source>
         <translation>F2</translation>
-    </message>
-    <message>
-        <source>Change Trigger</source>
-        <translation type="obsolete">Mudar Atalho</translation>
     </message>
     <message>
         <source>F3</source>
         <translation>F3</translation>
     </message>
     <message>
-        <source>Clear selection</source>
-        <translation type="obsolete">Limpar seleção</translation>
-    </message>
-    <message>
         <source>Esc</source>
         <translation>Esc</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;wiRED Panda is a software developed by the students of the Federal University of SÃ£o Paulo. This project was created in order to help students to learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; HÃ©ctor Castelli &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. FÃ¡bio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;wiRED Panda é um software desenvolvido por estudantes da Universidade Federal de São Paulo. Este projeto foi desenvolvido como uma ferramenta didática para auxiliar em disciplinas de Circuitos Digitais.&lt;/p&gt; &lt;p&gt;Versão: %1&lt;/p&gt; &lt;p&gt;&lt;strong&gt;Equipe:&lt;/strong&gt; &lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Dr. Fábio Cappabianco. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso website!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&amp;Recent files:</source>
@@ -792,10 +616,6 @@ Errp: %1</translation>
     <message>
         <source>&amp;Select all</source>
         <translation>Selecionar tudo</translation>
-    </message>
-    <message>
-        <source>Open &amp;file as a Box</source>
-        <translation>Abrir arquivo como módulo</translation>
     </message>
     <message>
         <source>Re&amp;load File</source>
@@ -854,10 +674,6 @@ Errp: %1</translation>
         <translation>Forma de Onda</translation>
     </message>
     <message>
-        <source>Ctrl+W</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Export to &amp;Image</source>
         <translation>Exportar para Imagem</translation>
     </message>
@@ -866,16 +682,8 @@ Errp: %1</translation>
         <translation>Espelhar horizontalmente</translation>
     </message>
     <message>
-        <source>Ctrl+H</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Flip &amp;vertically</source>
         <translation>Espelhar Verticalmente</translation>
-    </message>
-    <message>
-        <source>Ctrl+Y</source>
-        <translation></translation>
     </message>
     <message>
         <source>F&amp;ullscreen</source>
@@ -884,10 +692,6 @@ Errp: %1</translation>
     <message>
         <source>F11</source>
         <translation>F11</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;wiRED Panda is a software developed by the students of the Federal University of SÃ£o Paulo. This project was created in order to help students to learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. FÃ¡bio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;wiRED Panda é um software desenvolvido pelos estudantes da Universidade Federal de São Paulo. Este projeto foi criado com o objetivo de auxiliar no ensino de circuitos digitais.&lt;/p&gt;&lt;p&gt;Versão: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Criadores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Could not open %1 for write.</source>
@@ -908,6 +712,183 @@ Errp: %1</translation>
     <message>
         <source>PNG files (*.png)</source>
         <translation>Arquivos PNG (*.png)</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation type="unfinished">Silenciar</translation>
+    </message>
+    <message>
+        <source>Labels under icons</source>
+        <translation type="unfinished">Nomes abaixo dos ícones</translation>
+    </message>
+    <message>
+        <source>Save Local Project</source>
+        <translation type="unfinished">Salvar Projeto Localmente</translation>
+    </message>
+    <message>
+        <source>Could not save file: </source>
+        <translation type="unfinished">Não foi possível salvar o arquivo</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;wiRED Panda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students to learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRed Panda is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
+        <translation type="unfinished">wiRED Panda é um software desenvolvido por estudantes da Universidade Federal de São Paulo. Este projeto foi desenvolvido para ajudar os estudantes a aprenderem mais sobre circuitos digitais.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Desenvolvedores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRed Panda atualmente é mantido por Prof. Fábio Cappabianco, Ph.D. e Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Por favor, informe em nossa página do GitHub sobre eventuais bugs encontrados ou se deseja uma nova funcionalidade.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Loaded ic sucessfully.</source>
+        <translation type="unfinished">CI carregado com sucesso.</translation>
+    </message>
+    <message>
+        <source>Error autosaving project: </source>
+        <translation type="unfinished">Erro ao salvar projeto automaticamente: </translation>
+    </message>
+    <message>
+        <source>Error creating skins directory.</source>
+        <translation type="unfinished">Erro ao criar pasta para as imagens.</translation>
+    </message>
+    <message>
+        <source>WiRED Panda</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+O</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+V</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Del</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+N</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl++</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Q</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+R</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>kkkkkkkk</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+R</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+O</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+F5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Alt+I</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+P</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+W</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+E</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+H</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+M</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Alt+S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>We have found an autosave file. Do you want to load it?
+ Autosave: </source>
+        <translation type="unfinished">Um arquivo de autosave foi encontrado. Deseja carrega-lo?</translation>
+    </message>
+    <message>
+        <source>Open File as IC</source>
+        <translation type="unfinished">Arquivo como CI</translation>
+    </message>
+    <message>
+        <source>Error creating ICs directory.</source>
+        <translation type="unfinished">Erro ao criar diretório de CI.</translation>
+    </message>
+    <message>
+        <source>Error saving ICs.</source>
+        <translation type="unfinished">Erro ao salvar CIs.</translation>
+    </message>
+    <message>
+        <source>Could not save the local project.</source>
+        <translation type="unfinished">Não foi possível salvar o projeto localmente.</translation>
+    </message>
+    <message>
+        <source>Open &amp;file as IC</source>
+        <translation type="unfinished">Abrir &amp;arquivo como CI</translation>
+    </message>
+    <message>
+        <source>Open file as IC</source>
+        <translation type="unfinished">Abrir arquivo como CI</translation>
     </message>
 </context>
 <context>
@@ -930,21 +911,9 @@ Errp: %1</translation>
         <source>Rotate %1 degrees</source>
         <translation>Rotacionar %1 graus</translation>
     </message>
-    <message>
-        <source>Rotate  AA %1 degrees</source>
-        <translation type="obsolete">Rotacionar %1 graus</translation>
-    </message>
 </context>
 <context>
     <name>SimpleWaveform</name>
-    <message>
-        <source>Dialog</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation></translation>
-    </message>
     <message>
         <source>Decreasing</source>
         <translation>Decrescente</translation>
@@ -970,10 +939,6 @@ Errp: %1</translation>
         <translation>Erro</translation>
     </message>
     <message>
-        <source>Could not find any input for the simulation</source>
-        <translation>Não extstem entradas para a simulação</translation>
-    </message>
-    <message>
         <source>Could not find any input for the simulation.</source>
         <translation>Não existem entradas para a simulação.</translation>
     </message>
@@ -984,6 +949,18 @@ Errp: %1</translation>
     <message>
         <source>The simulation is limited to 8 inputs.</source>
         <translation>A simulação em forma de onda está limitada em 8 portas de entrada.</translation>
+    </message>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished">Diálogo</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not find any port for the simulation</source>
+        <translation type="unfinished">Não foi possível encontrar portas para a simulação</translation>
     </message>
 </context>
 <context>
@@ -998,29 +975,6 @@ Errp: %1</translation>
     <message>
         <source>Update %1 elements</source>
         <translation>Atualizar %1 porta(s)</translation>
-    </message>
-</context>
-<context>
-    <name>main</name>
-    <message>
-        <source>Circuit file to open.</source>
-        <translation>Arquivo .panda.</translation>
-    </message>
-    <message>
-        <source>Export circuit to &lt;arduino-file&gt;</source>
-        <translation>Exportar circuito para &lt;arduino-file&gt;</translation>
-    </message>
-    <message>
-        <source>arduino file</source>
-        <translation>Código fonte de arduino</translation>
-    </message>
-    <message>
-        <source>Export circuit to &lt;waveform&gt; text file</source>
-        <translation>Exportar circuito para arquivo de texto da &lt;waveform&gt;</translation>
-    </message>
-    <message>
-        <source>waveform text file</source>
-        <translation>Arquivo de forma de onda</translation>
     </message>
 </context>
 </TS>

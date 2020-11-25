@@ -1,4 +1,4 @@
-#include "box.h"
+#include "ic.h"
 #include "clock.h"
 #include "codegenerator.h"
 #include "editor.h"
@@ -117,7 +117,7 @@ void CodeGenerator::declareOutputs( ) {
 
 void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &elms, bool isBox ) {
   for( GraphicElement *elm : elms ) {
-    if( elm->elementType( ) == ElementType::BOX ) {
+    if( elm->elementType( ) == ElementType::IC ) {
 //      Box *box = qgraphicsitem_cast< Box* >( elm );
 
       // FIXME: Get code generator to work again
@@ -210,7 +210,7 @@ void CodeGenerator::setup( ) {
 
 void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms ) {
   for( GraphicElement *elm : elms ) {
-    if( elm->elementType( ) == ElementType::BOX ) {
+    if( elm->elementType( ) == ElementType::IC ) {
       throw std::runtime_error( QString( "BOX element not supported : %1" ).arg(
                                   elm->objectName( ) ).toStdString( ) );
       // TODO: CodeGenerator::assignVariablesRec for Box Element

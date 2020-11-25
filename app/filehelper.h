@@ -5,17 +5,17 @@
 #include <QString>
 
 
-class FileHelper {
-
+class FileHelper : public QObject {
+  Q_OBJECT
 public:
-  static QFileInfo findBoxFile( QString fname, QString parentFile );
+  static QFileInfo findICFile( QString fname, QString parentFile );
   static QFileInfo findSkinFile( QString fname );
 
   static void verifyRecursion( QString fname );
 
 private:
-  FileHelper( ) {
+  FileHelper( QObject *parent = nullptr ) : QObject( parent ) {
   }
 };
 
-#endif // BOXFILEHELPER_H
+#endif // FILEHELPER_H

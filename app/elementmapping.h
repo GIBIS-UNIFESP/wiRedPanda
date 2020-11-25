@@ -13,11 +13,11 @@
 #include <QTimer>
 
 class Clock;
-class Box;
+class IC;
 
 
 class ElementMapping;
-class BoxMapping;
+class ICMapping;
 typedef QMap< GraphicElement*, LogicElement* > ElementMap;
 typedef QMap< Input*, LogicElement* > InputMap;
 
@@ -37,7 +37,7 @@ public:
 
   void update( );
 
-  BoxMapping* getBoxMapping( Box *box ) const;
+  ICMapping* getICMapping( IC *ic ) const;
   LogicElement* getLogicElement( GraphicElement *elm ) const;
 
   bool canRun( ) const;
@@ -51,7 +51,7 @@ protected:
   InputMap inputMap;
   QVector< Clock* > clocks;
   QVector< GraphicElement* > elements;
-  QMap< Box*, BoxMapping* > boxMappings;
+  QMap< IC*, ICMapping* > icMappings;
   QVector< LogicElement* > logicElms;
 
   LogicInput globalGND;
@@ -71,7 +71,7 @@ protected:
   static int calculatePriority( GraphicElement *elm, QHash< GraphicElement*, bool > &beingvisited, QHash< GraphicElement*,
                                                                                                         int > &priority );
   void insertElement( GraphicElement *elm );
-  void insertBox( Box *box );
+  void insertIC( IC *ic );
 
 };
 

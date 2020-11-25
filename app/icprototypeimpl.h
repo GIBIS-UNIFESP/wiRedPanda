@@ -1,5 +1,5 @@
-#ifndef BOXPROTOTYPEIMPL_H
-#define BOXPROTOTYPEIMPL_H
+#ifndef ICPROTOTYPEIMPL_H
+#define ICPROTOTYPEIMPL_H
 
 #include <QVector>
 
@@ -8,7 +8,7 @@ class QGraphicsItem;
 class QNEPort;
 
 
-class BoxPrototypeImpl {
+class ICPrototypeImpl {
 
 public:
 
@@ -19,7 +19,7 @@ public:
   QVector< QNEPort* > inputs;
   QVector< QNEPort* > outputs;
 
-  ~BoxPrototypeImpl( );
+  ~ICPrototypeImpl( );
   void loadFile( QString fileName );
   void clear( );
 
@@ -30,7 +30,7 @@ public:
 
   void loadInputElement( GraphicElement *elm );
   void loadOutputElement( GraphicElement *elm );
-  bool updateLocalBox( QString fileName, QString boxDirName );
+  bool updateLocalIC( QString fileName, QString icDirName );
 
 private:
 
@@ -40,4 +40,4 @@ private:
   void loadOutputs( );
 };
 
-#endif // BOXPROTOTYPEIMPL_H
+#endif // ICPROTOTYPEIMPL_H

@@ -1,7 +1,7 @@
-#include "box.h"
-#include "boxmanager.h"
-#include "boxnotfoundexception.h"
-#include "boxprototype.h"
+#include "ic.h"
+#include "icmanager.h"
+#include "icnotfoundexception.h"
+#include "icprototype.h"
 #include "globalproperties.h"
 #include "inputswitch.h"
 #include "nodes/qneconnection.h"
@@ -18,39 +18,39 @@
 #include <QPointF>
 #include <QProcess>
 
-Box::Box( QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, parent ) {
+IC::IC( QGraphicsItem *parent ) : GraphicElement( 0, 0, 0, 0, parent ) {
   pixmapSkinName.append( ":/basic/box.png" );
   setHasLabel( true );
   setPixmap( pixmapSkinName[ 0 ], QRect(0, 0, 64, 64) );
   setOutputsOnTop( true );
-  setPortName( "BOX" );
+  setPortName( "IC" );
 }
 
-Box::~Box( ) {
-  BoxPrototype *prototype = BoxManager::instance( )->getPrototype( m_file );
+IC::~IC( ) {
+  ICPrototype *prototype = ICManager::instance( )->getPrototype( m_file );
   if( prototype ) {
-    prototype->removeBoxObserver( this );
+    prototype->removeICObserver( this );
   }
 }
 
 
-void Box::save( QDataStream &ds ) const {
+void IC::save( QDataStream &ds ) const {
   GraphicElement::save( ds );
   ds << m_file;
 }
 
-void Box::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) {
+void IC::load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) {
   GraphicElement::load( ds, portMap, version );
   if( version >= 1.2 ) {
     ds >> m_file;
   }
 }
 
-void Box::loadInputs( BoxPrototype *prototype ) {
+void IC::loadInputs( ICPrototype *prototype ) {
   setMaxInputSz( prototype->inputSize( ) );
   setMinInputSz( prototype->inputSize( ) );
   setInputSize( prototype->inputSize( ) );
-  COMMENT( "Box " << m_file.toStdString( ) << " -> Inputs. min: " << minInputSz( ) << ", max: " << maxInputSz() << ", current: " << inputSize( ) << ", m_inputs: " << m_inputs.size( ), 0 );
+  COMMENT( "IC " << m_file.toStdString( ) << " -> Inputs. min: " << minInputSz( ) << ", max: " << maxInputSz() << ", current: " << inputSize( ) << ", m_inputs: " << m_inputs.size( ), 0 );
   for( int inputIdx = 0; inputIdx < prototype->inputSize( ); ++inputIdx ) {
     QNEPort *in = input( inputIdx );
     in->setName( prototype->inputLabel( inputIdx ) );
@@ -60,7 +60,7 @@ void Box::loadInputs( BoxPrototype *prototype ) {
   }
 }
 
-void Box::loadOutputs( BoxPrototype *prototype ) {
+void IC::loadOutputs( ICPrototype *prototype ) {
   setMaxOutputSz( prototype->outputSize( ) );
   setMinOutputSz( prototype->outputSize( ) );
   setOutputSize( prototype->outputSize( ) );
@@ -68,15 +68,15 @@ void Box::loadOutputs( BoxPrototype *prototype ) {
     QNEPort *in = output( outputIdx );
     in->setName( prototype->outputLabel( outputIdx ) );
   }
-  COMMENT( "Box " << m_file.toStdString( ) << " -> Outputs. min: " << minOutputSz( ) << ", max: " << maxOutputSz() << ", current: " << outputSize( ) << ", m_outputs: " << m_outputs.size( ), 0 );
+  COMMENT( "IC " << m_file.toStdString( ) << " -> Outputs. min: " << minOutputSz( ) << ", max: " << maxOutputSz() << ", current: " << outputSize( ) << ", m_outputs: " << m_outputs.size( ), 0 );
 }
 
-void Box::loadFile( QString fname ) {
-  BoxPrototype *prototype = BoxManager::instance( )->getPrototype( fname );
+void IC::loadFile( QString fname ) {
+  ICPrototype *prototype = ICManager::instance( )->getPrototype( fname );
   Q_ASSERT( prototype );
   m_file = prototype->fileName( );
   setToolTip( m_file );
-  prototype->insertBoxObserver( this );
+  prototype->insertICObserver( this );
   if( getLabel( ).isEmpty( ) ) {
     setLabel( prototype->baseName( ).toUpper( ) );
   }
@@ -87,24 +87,24 @@ void Box::loadFile( QString fname ) {
   updatePorts( );
 }
 
-QString Box::getFile( ) const {
+QString IC::getFile( ) const {
   return( m_file );
 }
 
-bool Box::setFile( QString newFileName ) {
-  COMMENT( "Updating box name.", 0 );
-  if( !BoxManager::instance( )->updatePrototypeFilePathName( m_file, newFileName ) )
+bool IC::setFile( QString newFileName ) {
+  COMMENT( "Updating ic name.", 0 );
+  if( !ICManager::instance( )->updatePrototypeFilePathName( m_file, newFileName ) )
     return( false );
   m_file = newFileName;
   return( true );
 }
 
-BoxPrototype* Box::getPrototype( ) {
-  return( BoxManager::instance( )->getPrototype( m_file ) );
+ICPrototype* IC::getPrototype( ) {
+  return( ICManager::instance( )->getPrototype( m_file ) );
 }
 
 
-void Box::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) {
+void IC::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) {
   if( event->button( ) == Qt::LeftButton ) {
     QMessageBox msgBox;
     /*    msgBox.setParent(  ); */
@@ -122,7 +122,7 @@ void Box::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) {
   }
 }
 
-void Box::setSkin( bool defaultSkin, QString filename ) {
+void IC::setSkin( bool defaultSkin, QString filename ) {
   if( defaultSkin )
     pixmapSkinName[ 0 ] = ":/basic/box.png";
   else

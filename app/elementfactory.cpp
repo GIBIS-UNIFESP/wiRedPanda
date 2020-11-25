@@ -1,4 +1,4 @@
-#include "box.h"
+#include "ic.h"
 #include "element/buzzer.h"
 #include "element/demux.h"
 #include "element/and.h"
@@ -61,7 +61,7 @@ ElementType ElementFactory::textToType( QString text ) {
          text == "TFLIPFLOP" ? ElementType::TFLIPFLOP :
          text == "DISPLAY" ? ElementType::DISPLAY :
          text == "DISPLAY14" ? ElementType::DISPLAY14 :
-         text == "BOX" ? ElementType::BOX :
+         text == "IC" ? ElementType::IC :
          text == "MUX" ? ElementType::MUX :
          text == "DEMUX" ? ElementType::DEMUX :
          text == "NODE" ? ElementType::NODE :
@@ -94,7 +94,7 @@ QString ElementFactory::typeToText( ElementType type ) {
       case ElementType::TFLIPFLOP: return( "TFLIPFLOP" );
       case ElementType::DISPLAY: return( "DISPLAY" );
       case ElementType::DISPLAY14: return( "DISPLAY14" );
-      case ElementType::BOX: return( "BOX" );
+      case ElementType::IC: return( "IC" );
       case ElementType::MUX: return( "MUX" );
       case ElementType::DEMUX: return( "DEMUX" );
       case ElementType::NODE: return( "NODE" );
@@ -127,7 +127,7 @@ QString ElementFactory::translatedName( ElementType type ) {
       case ElementType::TFLIPFLOP: return( tr( "T-flipflop" ) );
       case ElementType::DISPLAY: return( tr( "Display" ) );
       case ElementType::DISPLAY14: return( tr( "Display14" ) );
-      case ElementType::BOX: return( tr( "Box" ) );
+      case ElementType::IC: return( tr( "IC" ) );
       case ElementType::MUX: return( tr( "Mux" ) );
       case ElementType::DEMUX: return( tr( "Demux" ) );
       case ElementType::NODE: return( tr( "Node" ) );
@@ -160,7 +160,7 @@ QPixmap ElementFactory::getPixmap( ElementType type ) {
       case ElementType::TFLIPFLOP: return( QPixmap( ":/memory/light/T-flipflop.png" ) );
       case ElementType::DISPLAY: return( QPixmap( ":/output/counter/counter_on.png" ) );
       case ElementType::DISPLAY14: return( QPixmap( ":/output/counter/counter_14_on.png" ) );
-      case ElementType::BOX: return( QPixmap( ":/basic/box.png" ) );
+      case ElementType::IC: return( QPixmap( ":/basic/box.png" ) );
       case ElementType::MUX: return( QPixmap( ":/basic/mux.png" ) );
       case ElementType::DEMUX: return( QPixmap( ":/basic/demux.png" ) );
       case ElementType::NODE: return( QPixmap( ":/basic/node.png" ) );
@@ -198,7 +198,7 @@ GraphicElement* ElementFactory::buildElement( ElementType type, QGraphicsItem *p
         type == ElementType::UNUSED ? new TFlipFlop( parent ) :
         type == ElementType::DISPLAY ? new Display( parent ) :
         type == ElementType::DISPLAY14 ? new Display14( parent ) :
-        type == ElementType::BOX ? new Box( parent ) :
+        type == ElementType::IC ? new IC( parent ) :
         type == ElementType::NODE ? new Node( parent ) :
         type == ElementType::MUX ? new Mux( parent ) :
         type == ElementType::DEMUX ? new Demux( parent ) :
