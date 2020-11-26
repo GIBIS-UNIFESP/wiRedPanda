@@ -304,7 +304,7 @@ void TestElements::testICs( ) {
   QStringList entries;
   entries << "*.panda";
   QFileInfoList files = examplesDir.entryInfoList( entries );
-  for( const auto &f : files ) {
+  for( const auto &f : qAsConst(files) ) {
     qDebug( ) << "FILE: " << f.absoluteFilePath( );
     IC ic;
     manager.loadIC( &ic, f.absoluteFilePath( ) );
