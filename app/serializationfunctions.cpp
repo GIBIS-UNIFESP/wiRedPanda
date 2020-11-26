@@ -217,7 +217,7 @@ QList< QGraphicsItem* > SerializationFunctions::load( QDataStream &ds, QString p
   QList< QGraphicsItem* > items = deserialize( ds, version, parentFile );
   COMMENT( "Finished reading items.", 0 );
   if( scene ) {
-    for( QGraphicsItem *item : items ) {
+    for( QGraphicsItem *item : qAsConst(items) ) {
       scene->addItem( item );
     }
     scene->setSceneRect( scene->itemsBoundingRect( ) );

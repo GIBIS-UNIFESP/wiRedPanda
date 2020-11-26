@@ -106,7 +106,7 @@ void ICPrototypeImpl::loadFile( QString fileName ) {
   if( file.open( QFile::ReadOnly ) ) {
     QDataStream ds( &file );
     QList< QGraphicsItem* > items = SerializationFunctions::load( ds, fileName );
-    for( QGraphicsItem *item : items ) {
+    for( QGraphicsItem *item : qAsConst(items) ) {
       loadItem( item );
     }
   }
