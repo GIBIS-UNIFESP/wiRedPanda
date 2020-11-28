@@ -17,7 +17,7 @@ _Leia-me em [português](README_pt_BR.md). Léame en [español](README_es.md)._
 ## Downloads
 
 Compiled binaries for Windows and Linux are available [here](http://gibis-unifesp.github.io/wiRedPanda/downloads/).
-Dynamically-linked binaries for Linux and macOS are available [here](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
+Dynamically-linked binaries for macOS are available [here](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
 
 ## Building
 
@@ -25,45 +25,49 @@ Dynamically-linked binaries for Linux and macOS are available [here](https://git
 
 #### Dependencies 
 
-* Debian Buster 10+ or Ubuntu 18.04+ based distros
+Qt 5.15.0+ is needed for building, as well as QtCharts and QtMultimedia. 
+
+On sufficiently well updated distros, such as Arch Linux, Gentoo, Manjaro, Debian Testing, etc., Qt 5.15 can be installed from the standard repos.
+
+* Debian Testing
 
 ```bash
-sudo apt install qt5-default qt5-qmake qtmultimedia5-dev libqt5charts5-dev
+sudo apt install qtbase5-dev qt5-make qtbase5-dev-tools qtchooser libqt5charts5-dev libqt5multimedia5-dev
 ```
 
-* Debian Stretch 8+ or Ubuntu 16.04+ based distros
-
-Some dependencies needed aren't available from the standard repositories.
+* Arch Linux-based
 
 ```bash
-sudo add-apt-repository ppa:beineri/opt-qt-5.10.1-xenial
-sudo apt update 
-sudo apt install dh-make qt510base qt510charts-no-lgpl qt510multimedia
-source /opt/qt510/bin/qt510-env.sh
-```
-
-* Ubuntu 14.04+ (and equivalently-old Debian) based distros
-
-```bash
-sudo add-apt-repository ppa:beineri/opt-qt-5.10.1-trusty
-sudo apt update 
-sudo apt install dh-make qt510base qt510charts-no-lgpl qt510multimedia
-source /opt/qt510/bin/qt510-env.sh
-```
-
-
-* Fedora
-
-```bash
-sudo dnf install qt5 qt5-devel qt5-qtmultimedia-devel qt5-charts-devel
+sudo pacman -S qt5-base qt5-charts qt5-multimedia
 ```
 
 * macOS
 
-You can either [build Qt5 from source](https://doc.qt.io/qt-5/macos-building.html), or get it from [Homebrew](https://brew.sh/).
-
 ```bash
 brew install qt
+```
+
+* Others
+
+The Qt version that most non-rolling release distros have will not be enough to build this project (at the time of writing).
+
+Qt5 may be installed directly from the [Qt website](https://www.qt.io/download), from unofficial installers such as [aqtinstall](https://github.com/miurahr/aqtinstall), from community-maintained repositories or [built from source](https://wiki.qt.io/Building_Qt_5_from_Git).
+
+Here's how one could use aqtinstall to install Qt 5.15.1 (Python 3 needed) alongside with the necessary plugins on a Debian-based distro.
+
+```bash
+sudo apt-get update
+sudo apt-get install build-essential libgl1-mesa-dev libxkbcommon-x11-0 libpulse-dev -y
+python3 -m pip install setuptools wheel
+python3 -m pip install py7zr==0.10.1
+python3 -m pip install aqtinstall==0.9.7
+python3 -m pip install importlib-metadata==2.0.0
+python3 -m aqt install 5.15.1 linux desktop -m qtcharts qtmultimedia -O ~/Qt
+export Qt5_Dir=~/Qt/5.15.1
+export Qt5_DIR=~/Qt/5.15.1
+export QT_PLUGIN_PATH=~/Qt/5.15.1/gcc_64/plugins
+PATH=~/Qt/5.15.1/gcc_64/bin:$PATH
+export PATH
 ```
 
 #### Build process
