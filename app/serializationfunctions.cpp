@@ -131,7 +131,7 @@ double SerializationFunctions::loadVersion( QDataStream &ds ) {
 }
 
 QString SerializationFunctions::loadDolphinFilename( QDataStream &ds, double version ) {
-  QString str;
+  QString str = "none";
   if( version >= 3.0 )
     ds >> str;
   return( str );
