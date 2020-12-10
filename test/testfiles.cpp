@@ -42,7 +42,7 @@ void TestFiles::testFiles( ) {
 
 
     QList< QGraphicsItem* > items = editor->getScene( )->items( );
-    for( QGraphicsItem *item : items ) {
+    for( QGraphicsItem *item : qAsConst(items) ) {
       if( item->type( ) == QNEConnection::Type ) {
         QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
         QVERIFY( conn != nullptr );

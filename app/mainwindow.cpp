@@ -524,14 +524,14 @@ void MainWindow::on_lineEdit_textChanged( const QString &text ) {
     QRegularExpression regex2( QString( "^label_.*%1.*" ).arg( text ), QRegularExpression::CaseInsensitiveOption );
     searchResults.append( ui->tabWidget->findChildren< Label* >( regex2 ) );
     QList< Label* > allLabels = ui->tabWidget->findChildren< Label* >( );
-    for( Label *lb : allLabels ) {
+    for( Label *lb : qAsConst(allLabels) ) {
       if( regex.match( lb->name( ) ).hasMatch( ) ) {
         if( !searchResults.contains( lb ) ) {
           searchResults.append( lb );
         }
       }
     }
-    for( auto *ic : ics ) {
+    for( auto *ic : qAsConst(ics) ) {
       if( regex.match( ic->auxData( ) ).hasMatch( ) ) {
         searchResults.append( ic );
       }
@@ -747,7 +747,7 @@ void MainWindow::retranslateUi( ) {
 
 
   QList< ListItemWidget* > items = ui->tabWidget->findChildren< ListItemWidget* >( );
-  for( ListItemWidget *item : items ) {
+  for( ListItemWidget *item : qAsConst(items) ) {
     item->updateName( );
   }
 }
@@ -812,7 +812,7 @@ void MainWindow::on_actionClear_selection_triggered( ) {
 void MainWindow::populateMenu( QSpacerItem *spacer, QString names, QLayout *layout ) {
   QStringList list( names.split( "," ) );
   layout->removeItem( spacer );
-  for( QString name : list ) {
+  for( QString name : qAsConst(list) ) {
     name = name.trimmed( ).toUpper( );
     ElementType type = ElementFactory::textToType( name );
     QPixmap pixmap( ElementFactory::getPixmap( type ) );

@@ -238,7 +238,7 @@ void Editor::rotate( bool rotateRight ) {
   }
   QList< QGraphicsItem* > list = scene->selectedItems( );
   QList< GraphicElement* > elms;
-  for( QGraphicsItem *item : list ) {
+  for( QGraphicsItem *item : qAsConst(list) ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     if( elm && ( elm->type( ) == GraphicElement::Type ) ) {
       elms.append( elm );
@@ -252,7 +252,7 @@ void Editor::rotate( bool rotateRight ) {
 void Editor::flipH( ) {
   QList< QGraphicsItem* > list = scene->selectedItems( );
   QList< GraphicElement* > elms;
-  for( QGraphicsItem *item : list ) {
+  for( QGraphicsItem *item : qAsConst(list) ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     if( elm && ( elm->type( ) == GraphicElement::Type ) ) {
       elms.append( elm );
@@ -267,7 +267,7 @@ void Editor::flipH( ) {
 void Editor::flipV( ) {
   QList< QGraphicsItem* > list = scene->selectedItems( );
   QList< GraphicElement* > elms;
-  for( QGraphicsItem *item : list ) {
+  for( QGraphicsItem *item : qAsConst(list) ) {
     GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
     if( elm && ( elm->type( ) == GraphicElement::Type ) ) {
       elms.append( elm );
@@ -287,12 +287,12 @@ QList< QGraphicsItem* > Editor::itemsAt( QPointF pos ) {
 QGraphicsItem* Editor::itemAt( QPointF pos ) {
   QList< QGraphicsItem* > items = scene->items( pos );
   items.append( itemsAt( pos ) );
-  for( QGraphicsItem *item : items ) {
+  for( QGraphicsItem *item : qAsConst(items) ) {
     if( item->type( ) == QNEPort::Type ) {
       return( item );
     }
   }
-  for( QGraphicsItem *item : items ) {
+  for( QGraphicsItem *item : qAsConst(items) ) {
     if( item->type( ) > QGraphicsItem::UserType ) {
       return( item );
     }
@@ -409,7 +409,7 @@ void Editor::resizeScene( ) {
   QVector< GraphicElement* > elms = scene->getElements( );
   if( !elms.isEmpty( ) ) {
     QRectF rect = scene->sceneRect( );
-    for( GraphicElement *elm : elms ) {
+    for( GraphicElement *elm : qAsConst(elms) ) {
       QRectF itemRect = elm->boundingRect( ).translated( elm->pos( ) );
       rect = rect.united( itemRect.adjusted( -10, -10, 10, 10 ) );
     }
@@ -684,7 +684,7 @@ void Editor::ctrlDrag( QPointF pos ) {
   QVector< GraphicElement* > selectedElms = scene->selectedElements( );
   if( !selectedElms.isEmpty( ) ) {
     QRectF rect;
-    for( GraphicElement *elm : selectedElms ) {
+    for( GraphicElement *elm : qAsConst(selectedElms) ) {
       rect = rect.united( elm->boundingRect( ).translated( elm->pos( ) ) );
     }
     rect = rect.adjusted( -8, -8, 8, 8 );
@@ -989,7 +989,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
         list.append( itemsAt( mousePos ) );
         movedElements.clear( );
         oldPositions.clear( );
-        for( QGraphicsItem *it : list ) {
+        for( QGraphicsItem *it : qAsConst(list) ) {
           GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( it );
           if( elm ) {
             movedElements.append( elm );
