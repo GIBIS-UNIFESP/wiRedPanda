@@ -119,7 +119,7 @@ void saveitems( QByteArray &itemData, const QList< QGraphicsItem* > &items, cons
   itemData.clear( );
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );
   QList< GraphicElement* > others = findElements( otherIds );
-  for( GraphicElement *elm : others ) {
+  for( GraphicElement *elm : qAsConst(others) ) {
     elm->save( dataStream );
   }
   SerializationFunctions::serialize( items, dataStream );
@@ -145,7 +145,7 @@ QList< QGraphicsItem* > loadItems( QByteArray &itemData, const QVector< int > &i
   QDataStream dataStream( &itemData, QIODevice::ReadOnly );
   double version = GlobalProperties::version;
   QMap< quint64, QNEPort* > portMap;
-  for( GraphicElement *elm : otherElms ) {
+  for( GraphicElement *elm : qAsConst(otherElms) ) {
     elm->load( dataStream, portMap, version );
   }
   /*
@@ -399,7 +399,7 @@ void UpdateCommand::loadData( QByteArray itemData ) {
   }
   double version = GlobalProperties::version;
   if( !elements.isEmpty( ) ) {
-    for( GraphicElement *elm : elements ) {
+    for( GraphicElement *elm : qAsConst(elements) ) {
       elm->load( dataStream, portMap, version );
       elm->setSelected( true );
     }
