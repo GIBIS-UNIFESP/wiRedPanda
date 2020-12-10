@@ -95,8 +95,22 @@ void BewavedDolphin::drawPixMaps( ) {
   risingBlue = QPixmap( ":/dolphin/rising_blue.png" ).scaled( 100, 38 );
 }
 
+void BewavedDolphin::closeEvent( QCloseEvent *e ) {
+  Q_UNUSED( e );
+  on_actionExit_triggered( );
+}
+
 void BewavedDolphin::on_actionExit_triggered( ) {
-  close( );
+  if( currentFile.fileName( ).isEmpty( ) ) {
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question( this, tr( "Wired Panda - Bewaved Dolphin" ), tr( "Save simulation before closing?" ), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel );
+    if( reply == QMessageBox::Save ) {
+      on_actionSave_as_triggered( );
+    }
+    else if( reply == QMessageBox::Discard ) {
+      close( );
+    }
+  }
 }
 
 bool BewavedDolphin::loadElements( ) {
