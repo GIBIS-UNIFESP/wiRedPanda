@@ -870,3 +870,24 @@ void BewavedDolphin::on_actionExport_to_PDF_triggered( ) {
   scene->render( &p, QRectF( ), scene->sceneRect( ).adjusted( -64, -64, 64, 64 ) );
   p.end( );
 }
+
+void BewavedDolphin::on_actionAbout_triggered( ) {
+  QMessageBox::about( this, "beWaved Dolphin",
+                      tr(
+                        "<p>beWaved Dolphin is a waveform simulator for the weRed Panda software developed by the Federal University of São Paulo."
+                        " This project was created in order to help students to learn about logic circuits.</p>"
+                        "<p>Software version: %1</p>"
+                        "<p><strong>Creators:</strong></p>"
+                        "<ul>"
+                        "<li> Prof. Fábio Cappabianco, Ph.D. </li>"
+                        "</ul>"
+                        "<p> beWaved Dolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.</p>"
+                        "<p> Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.</p>"
+                        "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>" )
+                      .arg(
+                        QApplication::applicationVersion( ) ) );
+}
+
+void BewavedDolphin::on_actionAbout_Qt_triggered( ) {
+  QMessageBox::aboutQt( this );
+}
