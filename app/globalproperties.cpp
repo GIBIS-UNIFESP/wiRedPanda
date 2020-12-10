@@ -9,7 +9,8 @@ double GlobalProperties::toDouble( QString txtVersion, bool *ok ) {
   if( txtVersion.contains( "-" ) ) {
     txtVersion = txtVersion.split( "-" ).first( );
   }
-  txtVersion = txtVersion.split( "." )[ 0 ] + "." + txtVersion.split( "." )[ 1 ];
+  if( txtVersion.contains( "." ) )
+    txtVersion = txtVersion.split( "." )[ 0 ] + "." + txtVersion.split( "." )[ 1 ];
   version = txtVersion.toDouble( ok );
   return( version );
 }

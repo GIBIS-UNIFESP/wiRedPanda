@@ -25,9 +25,9 @@ int main( int argc, char *argv[] ) {
 
   QStringList args = parser.positionalArguments( );
   MainWindow w( nullptr, ( args.size( ) > 0 ? QString( args[ 0 ] ) : QString( ) ) );
-  w.show( );
 
   if( args.size( ) > 0 ) {
+    w.clear( );
     w.open( args[ 0 ] );
     QString arduFile = parser.value( arduinoFileOption );
     if( !arduFile.isEmpty( ) ) {
@@ -37,6 +37,9 @@ int main( int argc, char *argv[] ) {
     if( !wfFile.isEmpty( ) ) {
       return( !w.ExportToWaveFormFile( wfFile ) );
     }
+  }
+  else {
+    w.show( );
   }
   return( a.exec( ) );
 }

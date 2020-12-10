@@ -1,4 +1,5 @@
 #include "arduino/codegenerator.h"
+#include "bewaveddolphin.h"
 #include "elementmapping.h"
 #include "globalproperties.h"
 #include "graphicsviewzoom.h"
@@ -34,6 +35,8 @@ MainWindow::MainWindow( QWidget *parent , QString filename ) : QMainWindow( pare
   autosaveFilename = "";
   loadedAutosave = false;
   translator = nullptr;
+  bd = nullptr;
+  dolphinFilename = "none";
 
   buildFullScreenDialog( );
 
@@ -197,7 +200,7 @@ bool MainWindow::save( QString fname ) {
   if( fl.open( QFile::WriteOnly ) ) {
     QDataStream ds( &fl );
     try {
-      editor->save( ds );
+      editor->save( ds, dolphinFilename );
     }
     catch( std::runtime_error &e ) {
       std::cerr << tr( "Error saving project: " ).toStdString( ) << e.what( ) << std::endl;
@@ -320,9 +323,7 @@ void MainWindow::scrollView( int dx, int dy ) {
 }
 
 void MainWindow::on_actionOpen_triggered( ) {
-  QString fname =
-    QFileDialog::getOpenFileName( this, tr( "Open File" ), defaultDirectory.absolutePath( ),
-                                  tr( "Panda files (*.panda)" ) );
+  QString fname = QFileDialog::getOpenFileName( this, tr( "Open File" ), defaultDirectory.absolutePath( ), tr( "Panda files (*.panda)" ) );
   if( fname.isEmpty( ) ) {
     return;
   }
@@ -404,9 +405,7 @@ void MainWindow::on_actionSave_As_triggered( ) {
   if( !currentFile.fileName( ).isEmpty( ) ) {
     path = currentFile.absoluteFilePath( );
   }
-  fname =
-    QFileDialog::getSaveFileName( this, tr( "Save File as ..." ), path, tr(
-                                    "Panda files (*.panda)" ) );
+  fname = QFileDialog::getSaveFileName( this, tr( "Save File as ..." ), path, tr( "Panda files (*.panda)" ) );
   if( fname.isEmpty( ) ) {
     return;
   }
@@ -616,37 +615,25 @@ bool MainWindow::ExportToArduino( QString fname ) {
 
 bool MainWindow::ExportToWaveFormFile( QString fname ) {
   try {
-    if( fname.isEmpty( ) ) {
+    if( ( fname.isEmpty( ) ) || ( fname == "none" ) ) {
       return( false );
     }
-    QFile outFile( fname );
-    if( !outFile.open( QFile::WriteOnly ) ) {
-      std::cerr << ERRORMSG( tr( "Could not open %1 for write." ).arg( fname ).toStdString( ) ) << std::endl;
+    bd = new BewavedDolphin( editor, this );
+    if( !bd->createWaveform( dolphinFilename ) ) {
+      std::cerr << ERRORMSG( tr( "Could not open waveform file: %1." ).arg( currentFile.fileName( ) ).toStdString( ) ) << std::endl;
       return( false );
     }
-    QTextStream outStream( &outFile );
-    if( SimpleWaveform::saveToTxt( outStream, editor ) ) {
-      std::cout << "Waveform file saved to " << fname.toStdString( ) << std::endl;
-    }
-    else {
-      std::cerr << ERRORMSG( tr( "Could not generate waveform file for %1." ).arg(
-                               currentFile.fileName( ) ).toStdString( ) ) << std::endl;
-    }
+    bd->print( );
   }
   catch( std::runtime_error &e ) {
     QMessageBox::warning( this, tr( "Error" ), tr( "<strong>Error while exporting to waveform file:</strong><br>%1" ).arg( e.what( ) ) );
     return( false );
   }
-
   return( true );
 }
 
 bool MainWindow::on_actionExport_to_Arduino_triggered( ) {
-
-  QString fname = QFileDialog::getSaveFileName( this, tr( "Generate Arduino Code" ),
-                                                defaultDirectory.absolutePath( ), tr(
-                                                  "Arduino file (*.ino)" ) );
-
+  QString fname = QFileDialog::getSaveFileName( this, tr( "Generate Arduino Code" ), defaultDirectory.absolutePath( ), tr( "Arduino file (*.ino)" ) );
   return( ExportToArduino( fname ) );
 }
 
@@ -712,10 +699,7 @@ void MainWindow::createRecentFileActions( ) {
 }
 
 void MainWindow::on_actionPrint_triggered( ) {
-
-  QString pdfFile =
-    QFileDialog::getSaveFileName( this, tr( "Export to PDF" ), defaultDirectory.absolutePath( ), tr(
-                                    "PDF files (*.pdf)" ) );
+  QString pdfFile = QFileDialog::getSaveFileName( this, tr( "Export to PDF" ), defaultDirectory.absolutePath( ), tr( "PDF files (*.pdf)" ) );
   if( pdfFile.isEmpty( ) ) {
     return;
   }
@@ -727,8 +711,6 @@ void MainWindow::on_actionPrint_triggered( ) {
   printer.setOrientation( QPrinter::Portrait );
   printer.setOutputFormat( QPrinter::PdfFormat );
   printer.setOutputFileName( pdfFile );
-
-
   QPainter p;
   if( !p.begin( &printer ) ) {
 
@@ -741,10 +723,7 @@ void MainWindow::on_actionPrint_triggered( ) {
 
 
 void MainWindow::on_actionExport_to_Image_triggered( ) {
-
-  QString pngFile =
-    QFileDialog::getSaveFileName( this, tr( "Export to Image" ), defaultDirectory.absolutePath( ), tr(
-                                    "PNG files (*.png)" ) );
+  QString pngFile = QFileDialog::getSaveFileName( this, tr( "Export to Image" ), defaultDirectory.absolutePath( ), tr( "PNG files (*.png)" ) );
   if( pngFile.isEmpty( ) ) {
     return;
   }
@@ -756,10 +735,8 @@ void MainWindow::on_actionExport_to_Image_triggered( ) {
   QPainter painter;
   painter.begin( &p );
   painter.setRenderHint( QPainter::Antialiasing );
-
   editor->getScene( )->render( &painter, QRectF( ), s );
   painter.end( );
-
   QImage img = p.toImage( );
   img.save( pngFile );
 }
@@ -867,8 +844,11 @@ void MainWindow::on_actionFast_Mode_triggered( bool checked ) {
 }
 
 void MainWindow::on_actionWaveform_triggered( ) {
-  SimpleWaveform wf( editor, this );
-  wf.showWaveform( );
+  bd = new BewavedDolphin( editor, this );
+  if( bd->createWaveform( dolphinFilename ) )
+    bd->show( );
+  else
+    delete bd;
 }
 
 void MainWindow::on_actionPanda_Light_triggered( ) {
@@ -915,6 +895,15 @@ void MainWindow::buildFullScreenDialog( ) {
   fullscreenView->setScene( editor->getScene( ) );
 }
 
+QString MainWindow::getDolphinFilename( ) {
+  return( dolphinFilename );
+}
+
+
+void MainWindow::setDolphinFilename( QString filename ) {
+  dolphinFilename = filename;
+}
+
 void MainWindow::on_actionFullscreen_triggered( ) {
   if( fullscreenDlg->isVisible( ) ) {
     fullscreenDlg->accept( );
@@ -943,7 +932,7 @@ void MainWindow::autoSave( ) {
       qDebug( ) << "File saved to " << autosaveFilename;
       settings.setValue( "autosaveFile", autosaveFilename );
       try {
-        editor->save( ds );
+        editor->save( ds, dolphinFilename );
       }
       catch( std::runtime_error &e ) {
         std::cerr << tr( "Error autosaving project: " ).toStdString( ) << e.what( ) << std::endl;

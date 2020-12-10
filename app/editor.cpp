@@ -631,16 +631,12 @@ bool Editor::dropEvt( QGraphicsSceneDragDropEvent *dde ) {
     return( true );
   }
   else if( dde->mimeData( )->hasFormat( "application/ctrlDragData" ) ) {
-
     QByteArray itemData = dde->mimeData( )->data( "application/ctrlDragData" );
     QDataStream ds( &itemData, QIODevice::ReadOnly );
-
     QPointF offset;
     ds >> offset;
     offset = dde->scenePos( ) - offset;
     dde->accept( );
-
-
     QPointF ctr;
     ds >> ctr;
     double version = GlobalProperties::version;
@@ -827,8 +823,9 @@ bool Editor::saveLocal( QString newPath ) {
   return( true );
 }
 
-void Editor::save( QDataStream &ds ) {
+void Editor::save( QDataStream &ds, const QString &dolphinFilename ) {
   ds << QApplication::applicationName( ) + " " + QString::number( GlobalProperties::version );
+  ds << dolphinFilename;
   ds << scene->sceneRect( );
   SerializationFunctions::serialize( scene->items( ), ds );
 }
@@ -836,8 +833,33 @@ void Editor::save( QDataStream &ds ) {
 void Editor::load( QDataStream &ds ) {
   COMMENT( "Loading file.", 0 );
   clear( );
+  COMMENT( "Clear!", 0 );
   simulationController->stop( );
-  SerializationFunctions::load( ds, GlobalProperties::currentFile, scene );
+  COMMENT( "Stoped simulation.", 0 );
+  double version = SerializationFunctions::loadVersion( ds );
+  COMMENT( "Version: " << version, 0 );
+  QString dolphinFilename( SerializationFunctions::loadDolphinFilename( ds, version ) );
+  mainWindow->setDolphinFilename( dolphinFilename );
+  COMMENT( "Dolphin name: " << dolphinFilename.toStdString( ), 0 );
+  QRectF rect( SerializationFunctions::loadRect( ds, version ) );
+  COMMENT( "Header Ok. Version: " << version, 0 );
+  QList< QGraphicsItem* > items = SerializationFunctions::deserialize( ds, version, GlobalProperties::currentFile );
+  COMMENT( "Finished loading items.", 0 );
+  if( scene ) {
+    for( QGraphicsItem *item : items ) {
+      scene->addItem( item );
+    }
+    scene->setSceneRect( scene->itemsBoundingRect( ) );
+    if( !scene->views( ).empty( ) ) {
+      auto const scene_views = scene->views( );
+      QGraphicsView *view = scene_views.first( );
+      rect = rect.united( view->rect( ) );
+      rect.moveCenter( QPointF( 0, 0 ) );
+      scene->setSceneRect( scene->sceneRect( ).united( rect ) );
+      view->centerOn( scene->itemsBoundingRect( ).center( ) );
+    }
+  }
+  //SerializationFunctions::load( ds, GlobalProperties::currentFile, scene );
   simulationController->start( );
   scene->clearSelection( );
   COMMENT( "Emiting circuit has changed.", 0 );
@@ -952,8 +974,7 @@ bool Editor::eventFilter( QObject *obj, QEvent *evt ) {
       }
     }
     bool ret = false;
-    if( mouseEvt && ( ( evt->type( ) == QEvent::GraphicsSceneMousePress )
-                      || ( evt->type( ) == QEvent::GraphicsSceneMouseDoubleClick ) ) ) {
+    if( mouseEvt && ( ( evt->type( ) == QEvent::GraphicsSceneMousePress ) || ( evt->type( ) == QEvent::GraphicsSceneMouseDoubleClick ) ) ) {
       QGraphicsItem *item = itemAt( mousePos );
       if( item && ( mouseEvt->button( ) == Qt::LeftButton ) ) {
         if( ( mouseEvt->modifiers( ) & Qt::ControlModifier ) && ( item->type( ) == GraphicElement::Type ) ) {

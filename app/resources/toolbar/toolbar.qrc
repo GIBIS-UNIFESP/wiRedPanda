@@ -33,6 +33,7 @@
         <file>wires.png</file>
         <file>exit.png</file>
         <file>wavyIcon.png</file>
+        <file>dolphin_icon.png</file>
     </qresource>
     <qresource prefix="/">
         <file>arduino.png</file>

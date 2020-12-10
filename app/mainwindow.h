@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "bewaveddolphin.h"
 #include "editor.h"
 #include "graphicsview.h"
 #include "graphicsviewzoom.h"
@@ -57,6 +58,9 @@ public:
 
   void buildFullScreenDialog( );
 
+  QString getDolphinFilename( );
+  void setDolphinFilename( QString filename );
+
   QDialog *fullscreenDlg;
   GraphicsView *fullscreenView;
 
@@ -99,7 +103,6 @@ private slots:
 
   void on_actionClear_selection_triggered( );
 
-
   void on_actionFast_Mode_triggered( bool checked );
 
   void on_actionWaveform_triggered( );
@@ -133,6 +136,8 @@ private:
   Label *firstResult;
   bool loadedAutosave;
   QString autosaveFilename;
+  QString dolphinFilename;
+  BewavedDolphin *bd;
 
   QTemporaryFile autosaveFile;
 

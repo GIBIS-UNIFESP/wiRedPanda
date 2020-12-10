@@ -1,5 +1,5 @@
 QT       += core gui printsupport charts multimedia widgets
-VERSION = 2.7
+VERSION = 3.0
 
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
@@ -42,6 +42,8 @@ include($$PWD/app/logicelement/logicelement.pri)
 
 SOURCES += \
     $$PWD/app/arduino/codegenerator.cpp \
+    $$PWD/app/bewaveddolphin.cpp \
+    $$PWD/app/clockDialog.cpp \
     $$PWD/app/elementeditor.cpp \
     $$PWD/app/elementfactory.cpp \
     $$PWD/app/commands.cpp \
@@ -58,12 +60,14 @@ SOURCES += \
     $$PWD/app/icprototype.cpp \
     $$PWD/app/icprototypeimpl.cpp \
     $$PWD/app/label.cpp \
+    $$PWD/app/lengthDialog.cpp \
     $$PWD/app/listitemwidget.cpp \
     $$PWD/app/mainwindow.cpp \
     $$PWD/app/nodes/qneconnection.cpp \
     $$PWD/app/nodes/qneport.cpp \
     $$PWD/app/recentfilescontroller.cpp \
     $$PWD/app/scene.cpp \
+    $$PWD/app/scstop.cpp \
     $$PWD/app/serializationfunctions.cpp \
     $$PWD/app/simulationcontroller.cpp \
     $$PWD/app/itemwithid.cpp \
@@ -74,6 +78,8 @@ SOURCES += \
     $$PWD/app/common.cpp
 
 HEADERS  +=  \
+  $$PWD/app/bewaveddolphin.h \
+  $$PWD/app/clockDialog.h \
     $$PWD/app/common.h \
   $$PWD/app/filehelper.h \
     $$PWD/app/graphicsviewzoom.h \
@@ -92,19 +98,21 @@ HEADERS  +=  \
   $$PWD/app/icprototype.h \
   $$PWD/app/icprototypeimpl.h \
     $$PWD/app/label.h \
+  $$PWD/app/lengthDialog.h \
     $$PWD/app/listitemwidget.h \
     $$PWD/app/mainwindow.h \
     $$PWD/app/nodes/qneconnection.h \
     $$PWD/app/nodes/qneport.h \
     $$PWD/app/recentfilescontroller.h \
     $$PWD/app/scene.h \
+  $$PWD/app/scstop.h \
     $$PWD/app/serializationfunctions.h \
     $$PWD/app/simulationcontroller.h \
     $$PWD/app/itemwithid.h \
     $$PWD/app/simplewaveform.h \
     $$PWD/app/thememanager.h \
     $$PWD/app/logicelement.h \
-    $$PWD/app/elementmapping.h \
+    $$PWD/app/elementmapping.h
 
 INCLUDEPATH += \
     $$PWD/app \
@@ -112,11 +120,15 @@ INCLUDEPATH += \
     $$PWD/app/nodes
 
 FORMS    += \
+    $$PWD/app/bewaveddolphin.ui \
+    $$PWD/app/clockDialog.ui \
+    $$PWD/app/lengthDialog.ui \
     $$PWD/app/mainwindow.ui \
     $$PWD/app/elementeditor.ui \
     $$PWD/app/simplewaveform.ui
 
 RESOURCES += \
+    $$PWD/app/resources/dolphin/dolphin.qrc \
     $$PWD/app/resources/resources.qrc\
     $$PWD/app/resources/basic/basic.qrc\
     $$PWD/app/resources/input/input.qrc\

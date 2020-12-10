@@ -20,7 +20,7 @@
    <string>WiRED Panda</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources/resources.qrc">
+   <iconset>
     <normaloff>:/pandaLogo.png</normaloff>:/pandaLogo.png</iconset>
   </property>
   <property name="toolButtonStyle">
@@ -943,7 +943,7 @@
   <action name="actionWaveform">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/wavyIcon.png</normaloff>:/toolbar/wavyIcon.png</iconset>
+     <normaloff>:/toolbar/dolphin_icon.png</normaloff>:/toolbar/dolphin_icon.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Waveform</string>
@@ -1040,10 +1040,9 @@
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/resources.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/basic/basic.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/input/input.qrc"/>
  </resources>
  <connections/>
 </ui>
