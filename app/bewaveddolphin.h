@@ -107,6 +107,7 @@ private:
   QTableView *signalTableView;
   QStandardItemModel *model;
   PlotType type;
+  bool edited;
 
   double scale;
   const double SCALE_FACTOR = 0.8;
@@ -141,6 +142,7 @@ private:
   void CreateZeroElement( int row, int col, bool isInput = true, bool changePrevious = true );
   void CreateOneElement( int row, int col, bool isInput = true, bool changePrevious = true );
   void zoomChanged( );
+  bool checkSave( );
 
 protected:
   void closeEvent( QCloseEvent *e );

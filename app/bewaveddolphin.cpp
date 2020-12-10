@@ -69,6 +69,7 @@ BewavedDolphin::BewavedDolphin( Editor *editor, QWidget *parent ) :
   //connect( gv->gvzoom( ), &GraphicsViewZoom::zoomed, this, &BewavedDolphin::zoomChanged );
   gv->gvzoom( )->set_zoom_factor_base( SCALE_FACTOR );
   drawPixMaps( );
+  edited = false;
 }
 
 BewavedDolphin::~BewavedDolphin( ) {
@@ -96,21 +97,31 @@ void BewavedDolphin::drawPixMaps( ) {
 }
 
 void BewavedDolphin::closeEvent( QCloseEvent *e ) {
-  Q_UNUSED( e );
-  on_actionExit_triggered( );
+  e->ignore( );
+  if( checkSave( ) )
+    e->accept( );
 }
 
 void BewavedDolphin::on_actionExit_triggered( ) {
-  if( currentFile.fileName( ).isEmpty( ) ) {
+  close( );
+}
+
+bool BewavedDolphin::checkSave( ) {
+  if( edited ) {
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question( this, tr( "Wired Panda - Bewaved Dolphin" ), tr( "Save simulation before closing?" ), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel );
     if( reply == QMessageBox::Save ) {
-      on_actionSave_as_triggered( );
+      on_actionSave_triggered( );
+      if( edited )
+        return( false );
+      else
+        return( true );
     }
-    else if( reply == QMessageBox::Discard ) {
-      close( );
-    }
+    else if( reply == QMessageBox::Discard )
+      return( true );
+    return( false );
   }
+  return( true );
 }
 
 bool BewavedDolphin::loadElements( ) {
@@ -241,6 +252,7 @@ void BewavedDolphin::loadNewTable( QStringList &input_labels, QStringList &outpu
   signalTableView->verticalHeader( )->setSectionResizeMode( QHeaderView::ResizeMode::Fixed );
   signalTableView->horizontalHeader( )->setSectionResizeMode( QHeaderView::ResizeMode::Fixed );
   COMMENT( "Inputs: " << input_labels.size( ) << ", outputs: " << output_labels.size( ), 0 );
+  edited = false;
   on_actionClear_triggered( );
 }
 
@@ -300,6 +312,7 @@ bool BewavedDolphin::createWaveform( QString filename ) {
   }
   COMMENT( "Resuming digital circuit main window after waveform simulation is finished.", 0 );
   scst.release( );
+  edited = false;
   return( true );
 }
 
@@ -334,6 +347,7 @@ void BewavedDolphin::on_actionSet_to_0_triggered( ) {
     COMMENT( "Editing value.", 0 );
     CreateZeroElement( row, col );
   }
+  edited = true;
   COMMENT( "Running simulation", 0 );
   run( );
 }
@@ -347,6 +361,7 @@ void BewavedDolphin::on_actionSet_to_1_triggered( ) {
     COMMENT( "Editing value.", 0 );
     CreateOneElement( row, col );
   }
+  edited = true;
   COMMENT( "Running simulation", 0 );
   run( );
 }
@@ -362,6 +377,7 @@ void BewavedDolphin::on_actionInvert_triggered( ) {
     COMMENT( "Editing value.", 0 );
     CreateElement( row, col, value );
   }
+  edited = true;
   COMMENT( "Running simulation", 0 );
   run( );
 }
@@ -402,6 +418,7 @@ void BewavedDolphin::on_actionSet_clock_wave_triggered( ) {
     COMMENT( "Editing value.", 0 )
     CreateElement( row, col, value );
   }
+  edited = true;
   COMMENT( "Running simulation", 0 );
   run( );
 }
@@ -418,6 +435,7 @@ void BewavedDolphin::on_actionCombinational_triggered( ) {
     clock_period *= 2;
     half_clock_period *= 2;
   }
+  edited = true;
   COMMENT( "Running simulation", 0 );
   run( );
 }
@@ -441,6 +459,7 @@ void BewavedDolphin::setLength( int sim_length, bool run_simulation ) {
     signalTableView->resize( width, hight );
     QRectF rect = scene->itemsBoundingRect( );
     scene->setSceneRect( rect );
+    edited = true;
     return;
   }
   COMMENT( "Increasing the simulation length.", 0 );
@@ -456,6 +475,7 @@ void BewavedDolphin::setLength( int sim_length, bool run_simulation ) {
   signalTableView->resize( width, hight );
   QRectF rect = scene->itemsBoundingRect( );
   scene->setSceneRect( rect );
+  edited = true;
   COMMENT( "Running simulation", 0 );
   if( run_simulation ) {
      run( );
@@ -495,6 +515,7 @@ void BewavedDolphin::on_actionClear_triggered( ) {
     }
   }
   COMMENT( "Running simulation", 0 );
+  edited = true;
   run( );
 }
 
@@ -528,6 +549,7 @@ void BewavedDolphin::on_actionCut_triggered( ) {
   cut( ranges, dataStream );
   mimeData->setData( "bdolphin/copydata", itemData );
   clipboard->setMimeData( mimeData );
+  edited = true;
 }
 
 void BewavedDolphin::on_actionPaste_triggered( ) {
@@ -542,6 +564,7 @@ void BewavedDolphin::on_actionPaste_triggered( ) {
     QDataStream dataStream( &itemData, QIODevice::ReadOnly );
     paste( ranges, dataStream );
   }
+  edited = true;
 }
 
 void BewavedDolphin::cut( const QItemSelection &ranges, QDataStream &ds ) {
@@ -615,6 +638,7 @@ void BewavedDolphin::on_actionSave_as_triggered( ) {
     }
     setWindowTitle( "Bewaved Dolphin Simulator [" + currentFile.fileName( ) + "]" );
     ui->statusbar->showMessage( tr( "Saved file sucessfully." ), 2000 );
+    edited = false;
   }
   else {
     ui->statusbar->showMessage( tr( "Could not save file: " ) + fname + ".", 2000 );
@@ -630,6 +654,7 @@ void BewavedDolphin::on_actionSave_triggered( ) {
   QString fname = currentFile.absoluteFilePath( );
   if( save( fname ) ) {
     ui->statusbar->showMessage( tr( "Saved file sucessfully." ), 2000 );
+    edited = false;
   }
   else {
     ui->statusbar->showMessage( tr( "Could not save file: " ) + fname + ".", 2000 );
@@ -654,6 +679,7 @@ void BewavedDolphin::on_actionLoad_triggered( ) {
     return;
   }
   load( fname );
+  edited = false;
   ui->statusbar->showMessage( tr( "File loaded successfully." ), 2000 );
 }
 

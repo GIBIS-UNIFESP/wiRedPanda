@@ -37,9 +37,7 @@ MainWindow::MainWindow( QWidget *parent , QString filename ) : QMainWindow( pare
   translator = nullptr;
   bd = nullptr;
   dolphinFilename = "none";
-
   buildFullScreenDialog( );
-
   ui->graphicsView->setScene( editor->getScene( ) );
   /* Translation */
 
@@ -232,6 +230,7 @@ void MainWindow::show( ) {
 
 void MainWindow::clear( ) {
   editor->clear( );
+  dolphinFilename = "none";
   setCurrentFile( QFileInfo( ) );
 }
 
