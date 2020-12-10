@@ -406,19 +406,19 @@
   </action>
   <action name="actionShowValues">
    <property name="text">
-    <string>Show Values</string>
+    <string>Show Numeric</string>
    </property>
   </action>
   <action name="actionShowCurve">
    <property name="text">
-    <string>Show Curve</string>
+    <string>Show Waves</string>
    </property>
   </action>
  </widget>
  <resources>
-  <include location="resources/dolphin/dolphin.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/input/input.qrc"/>
+  <include location="resources/dolphin/dolphin.qrc"/>
  </resources>
  <connections/>
 </ui>
