@@ -141,6 +141,11 @@ private:
   void CreateZeroElement( int row, int col, bool isInput = true, bool changePrevious = true );
   void CreateOneElement( int row, int col, bool isInput = true, bool changePrevious = true );
   void zoomChanged( );
+
+protected:
+  void closeEvent( QCloseEvent *e );
+
+
 };
 
 

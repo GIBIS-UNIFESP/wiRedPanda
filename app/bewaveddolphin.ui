@@ -417,8 +417,8 @@
  </widget>
  <resources>
   <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/input/input.qrc"/>
   <include location="resources/dolphin/dolphin.qrc"/>
+  <include location="resources/input/input.qrc"/>
  </resources>
  <connections/>
 </ui>
