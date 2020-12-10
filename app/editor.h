@@ -24,7 +24,7 @@ public:
   virtual ~Editor( );
   bool saveLocalIC( IC *ic, QString newICPath );
   bool saveLocal( QString newPath );
-  void save( QDataStream &ds );
+  void save( QDataStream &ds, const QString &dolphinFilename );
   void load( QDataStream &ds );
   void cut( const QList< QGraphicsItem* > &items, QDataStream &ds );
   void copy( const QList< QGraphicsItem* > &items, QDataStream &ds );

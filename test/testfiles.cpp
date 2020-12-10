@@ -56,7 +56,7 @@ void TestFiles::testFiles( ) {
       qDebug( ) << outfile.fileName( );
       QDataStream ds2( &outfile );
       try {
-        editor->save( ds2 );
+        editor->save( ds2, "none" );
       }
       catch( std::runtime_error & ) {
         QFAIL( QString( "Error saving project: " + outfile.fileName( ) ).toUtf8( ) );

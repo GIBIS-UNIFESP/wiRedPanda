@@ -1,5 +1,6 @@
 #include "simplewaveform.h"
 #include "ui_simplewaveform.h"
+#include "scstop.h"
 
 #include "input.h"
 
@@ -18,28 +19,6 @@
 #include <QValueAxis>
 
 using namespace QtCharts;
-
-
-class SCStop {
-  SimulationController *sc;
-  bool restart = false;
-public:
-  SCStop( SimulationController *sc ) : sc( sc ) {
-    if( sc->isRunning( ) ) {
-      restart = true;
-      sc->stop( );
-    }
-  }
-
-  void release( ) {
-    if( restart ) {
-      sc->start( );
-    }
-  }
-  ~SCStop( ) {
-    release( );
-  }
-};
 
 SimpleWaveform::SimpleWaveform( Editor *editor, QWidget *parent ) : QDialog( parent ), ui( new Ui::SimpleWaveform ), editor( editor ) {
   ui->setupUi( this );
@@ -60,8 +39,7 @@ SimpleWaveform::SimpleWaveform( Editor *editor, QWidget *parent ) : QDialog( par
 }
 
 SimpleWaveform::~SimpleWaveform( ) {
-  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
-                      QApplication::organizationName( ), QApplication::applicationName( ) );
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "SimpleWaveform" );
   settings.setValue( "geometry", saveGeometry( ) );
   settings.endGroup( );
@@ -253,7 +231,6 @@ void SimpleWaveform::showWaveform( ) {
     return;
   }
   QVector< QLineSeries* > in_series;
-  QVector< QLineSeries* > out_series;
   COMMENT( "Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation. Not saving memory states though...", 0 );
   COMMENT( "Also getting the name of the inputs. If no label is given, the element type is used as a name. Bug here? What if there are 2 inputs without name or two identical labels?", 0 );
   QVector< char > oldValues( inputs.size( ) );
@@ -266,6 +243,7 @@ void SimpleWaveform::showWaveform( ) {
     in_series[ in ]->setName( label );
     oldValues[ in ] = inputs[ in ]->output( )->value( );
   }
+  QVector< QLineSeries* > out_series;
   COMMENT( "Getting the name of the outputs. If no label is given, the element type is used as a name. Bug here? What if there are 2 outputs without name or two identical labels?", 0 );
   for( int out = 0; out < outputs.size( ); ++out ) {
     QString label = outputs[ out ]->getLabel( );
@@ -318,11 +296,11 @@ void SimpleWaveform::showWaveform( ) {
     }
   }
   COMMENT( "Inserting input series to the chart.", 3 );
-  for( QLineSeries *in : qAsConst(in_series) ) {
+  for( QLineSeries *in : qAsConst( in_series ) ) {
     chart.addSeries( in );
   }
   COMMENT( "Inserting output series to the chart.", 3 );
-  for( QLineSeries *out : qAsConst(out_series) ) {
+  for( QLineSeries *out : qAsConst( out_series ) ) {
     chart.addSeries( out );
   }
   COMMENT( "Setting graphic axes.", 3 );

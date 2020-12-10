@@ -246,9 +246,7 @@ void DeleteItemsCommand::undo( ) {
 void DeleteItemsCommand::redo( ) {
   COMMENT( "REDO " + text( ).toStdString( ), 0 );
   QList< QGraphicsItem* > items = findItems( ids );
-
   saveitems( itemData, items, otherIds );
-
   deleteItems( items, editor );
   emit editor->circuitHasChanged( );
 }

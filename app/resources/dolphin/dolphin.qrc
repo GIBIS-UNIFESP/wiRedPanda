@@ -1,0 +1,30 @@
+<RCC>
+    <qresource prefix="/dolphin">
+        <file>png.png</file>
+        <file>zoomReset.png</file>
+        <file>zoomOut.png</file>
+        <file>zoomIn.png</file>
+        <file>play.png</file>
+        <file>pdf.png</file>
+        <file>new.png</file>
+        <file>help.png</file>
+        <file>folder.png</file>
+        <file>exit.png</file>
+        <file>delete.png</file>
+        <file>default.png</file>
+        <file>save.png</file>
+        <file>cut.png</file>
+        <file>paste.png</file>
+        <file>not.png</file>
+        <file>zoomRange.png</file>
+        <file>range.png</file>
+        <file>rising_blue.png</file>
+        <file>rising_green.png</file>
+        <file>falling_blue.png</file>
+        <file>falling_green.png</file>
+        <file>high_blue.png</file>
+        <file>high_green.png</file>
+        <file>low_blue.png</file>
+        <file>low_green.png</file>
+    </qresource>
+</RCC>
