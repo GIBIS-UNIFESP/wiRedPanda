@@ -1,7 +1,7 @@
 links:
-  - { url: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v2.7.0/WiredPanda.Windows.Portable.64-bit.zip', text: 'Windows x86_64 Portable', logo: 'windows' }
-  - { url: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v2.7.0/WiredPanda.Linux.64-bit.AppImage', text: 'Linux Portable', logo: 'linux' }
-  - { url: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v2.7.0/WiredPanda.macOS.zip', text: 'macOS Catalina', logo: 'mac' }
+  - { url: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v3.0.0/WiredPanda.Windows.zip', text: 'Windows x86_64 Portable', logo: 'windows' }
+  - { url: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v3.0.0/WiredPanda.Linux.AppImage', text: 'Linux Portable', logo: 'linux' }
+  - { url: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v3.0.0/WiredPanda.macOS', text: 'macOS Catalina', logo: 'mac' }
 
 release: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/tag/v2.7.0'
 source: 'https://github.com/GIBIS-UNIFESP/wiRedPanda/archive/v2.7.0.tar.gz'
