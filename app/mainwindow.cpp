@@ -951,7 +951,7 @@ void MainWindow::autoSave( ) {
     if( autosaveFile.open( ) ) {
       QDataStream ds( &autosaveFile );
       QString autosaveFilename = autosaveFile.fileName( );
-      qDebug( ) << "File saved to " << autosaveFilename;
+      //qDebug( ) << "File saved to " << autosaveFilename;
       settings.setValue( "autosaveFile", autosaveFilename );
       try {
         editor->save( ds, dolphinFilename );
