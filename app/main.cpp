@@ -2,6 +2,8 @@
 
 #include <QApplication>
 #include <QCommandLineParser>
+#include <qdebug.h>
+#include <qmessagebox.h>
 
 int main( int argc, char *argv[] ) {
   QApplication a( argc, argv );
@@ -26,20 +28,25 @@ int main( int argc, char *argv[] ) {
   QStringList args = parser.positionalArguments( );
   MainWindow w( nullptr, ( args.size( ) > 0 ? QString( args[ 0 ] ) : QString( ) ) );
 
-  if( args.size( ) > 0 ) {
-    w.clear( );
-    w.open( args[ 0 ] );
-    QString arduFile = parser.value( arduinoFileOption );
-    if( !arduFile.isEmpty( ) ) {
+  QString arduFile = parser.value( arduinoFileOption );
+  if( !arduFile.isEmpty( ) ) {
+    if( args.size( ) > 0 ) {
+      w.open( args[ 0 ] );
       return( !w.ExportToArduino( arduFile ) );
     }
-    QString wfFile = parser.value( waveformFileOption );
-    if( !wfFile.isEmpty( ) ) {
+    return( 0 );
+  }
+  QString wfFile = parser.value( waveformFileOption );
+  if( !wfFile.isEmpty( ) ) {
+    if( args.size( ) > 0 ) {
+      w.open( args[ 0 ] );
       return( !w.ExportToWaveFormFile( wfFile ) );
     }
+    return( 0 );
   }
-  else {
-    w.show( );
+  w.show( );
+  if( args.size( ) > 0 ) {
+    w.open( args[ 0 ] );
   }
   return( a.exec( ) );
 }

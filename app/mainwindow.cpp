@@ -57,7 +57,7 @@ MainWindow::MainWindow( QWidget *parent , QString filename ) : QMainWindow( pare
         QStringList args;
         args << autosaveFilename;
         wPanda->start( QCoreApplication::applicationFilePath( ), args );
-        COMMENT( "Reloaded autosave.", 0 );
+        COMMENT( "Reloaded autosave: " << args[ 0 ].toStdString( ), 0 );
       }
     }
     else if( ( QFile( autosaveFilename ).exists( ) ) && ( autosaveFilename == filename ) ) {
@@ -234,14 +234,13 @@ void MainWindow::clear( ) {
   setCurrentFile( QFileInfo( ) );
 }
 
-int MainWindow::recoverAutoSaveFile ( QString autosaveFilename ) {
+int MainWindow::recoverAutoSaveFile( QString autosaveFilename ) {
     QMessageBox msgBox;
     msgBox.setParent( this );
     msgBox.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
     msgBox.setText( QString(tr( "We have found an autosave file. Do you want to load it?\n Autosave: ") + autosaveFilename ) );
     msgBox.setWindowModality( Qt::WindowModal );
     msgBox.setDefaultButton( QMessageBox::Save );
-
     return( msgBox.exec( ) );
 }
 
@@ -428,6 +427,13 @@ void MainWindow::setCurrentFile( const QFileInfo &value ) {
     COMMENT( "Autosavepath: " << autosavePath.absolutePath( ).toStdString( ), 0 );
     autosaveFile.setFileTemplate( autosavePath.absoluteFilePath( value.baseName( ) + "XXXXXX.panda" ) );
     COMMENT( "Setting current file to: " << value.absoluteFilePath( ).toStdString( ), 0 );
+  }
+  else {
+    COMMENT( "Defalt value does not exist: " << value.absoluteFilePath( ).toStdString( ), 0 );
+    QDir autosavePath( QDir::temp( ) );
+    COMMENT( "Autosavepath: " << autosavePath.absolutePath( ).toStdString( ), 0 );
+    autosaveFile.setFileTemplate( autosavePath.absoluteFilePath( "XXXXXX.panda" ) );
+    COMMENT( "Setting current file to random file in tmp.", 0 );
   }
   currentFile = value;
   if( value.fileName( ).isEmpty( ) ) {
@@ -914,8 +920,7 @@ void MainWindow::on_actionFullscreen_triggered( ) {
 }
 
 void MainWindow::autoSave( ) {
-  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
-                        QApplication::organizationName( ), QApplication::applicationName( ) );
+  QSettings settings( QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName( ), QApplication::applicationName( ) );
   COMMENT( "Starting autosave.", 0 );
   if( editor->getUndoStack( )->isClean( ) ) {
     COMMENT( "Undo stack is clean.", 0 );
@@ -925,6 +930,24 @@ void MainWindow::autoSave( ) {
     }
   }
   else {
+    if( autosaveFile.exists( ) ) {
+      autosaveFile.remove( );
+      if( !currentFile.fileName( ).isEmpty( ) ) {
+        QDir autosavePath( QDir::temp( ) );
+        COMMENT( "Autosave path set to the current file's directory, if there is one.", 0 );
+        autosavePath = currentFile.dir( );
+        COMMENT( "Autosavepath: " << autosavePath.absolutePath( ).toStdString( ), 0 );
+        autosaveFile.setFileTemplate( autosavePath.absoluteFilePath( currentFile.baseName( ) + "XXXXXX.panda" ) );
+        COMMENT( "Setting current file to: " << currentFile.absoluteFilePath( ).toStdString( ), 0 );
+      }
+      else {
+        COMMENT( "Defalt value not set yet.", 0 );
+        QDir autosavePath( QDir::temp( ) );
+        COMMENT( "Autosavepath: " << autosavePath.absolutePath( ).toStdString( ), 0 );
+        autosaveFile.setFileTemplate( autosavePath.absoluteFilePath( "XXXXXX.panda" ) );
+        COMMENT( "Setting current file to random file in tmp.", 0 );
+      }
+    }
     if( autosaveFile.open( ) ) {
       QDataStream ds( &autosaveFile );
       QString autosaveFilename = autosaveFile.fileName( );
