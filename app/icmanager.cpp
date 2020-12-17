@@ -22,7 +22,7 @@ ICManager::ICManager( MainWindow *mainWindow, QObject *parent ) : QObject( paren
 
 ICManager::~ICManager( ) {
   clear( );
-  fprintf(stderr, "Removing IC manager");
+  //fprintf(stderr, "Removing IC manager");
   if( globalICManager == this ) {
     globalICManager = nullptr;
   }

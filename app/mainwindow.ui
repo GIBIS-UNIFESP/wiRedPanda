@@ -400,7 +400,7 @@
    </attribute>
    <addaction name="actionNew"/>
    <addaction name="actionOpen"/>
-   <addaction name="actionOpen_Box"/>
+   <addaction name="actionOpen_IC"/>
    <addaction name="actionSave"/>
    <addaction name="separator"/>
    <addaction name="actionRotate_left"/>
@@ -450,7 +450,7 @@
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
     <addaction name="separator"/>
-    <addaction name="actionOpen_Box"/>
+    <addaction name="actionOpen_IC"/>
     <addaction name="menuRecent_files"/>
     <addaction name="actionReload_File"/>
     <addaction name="separator"/>
@@ -770,7 +770,7 @@
     <string>Ctrl+A</string>
    </property>
   </action>
-  <action name="actionOpen_Box">
+  <action name="actionOpen_IC">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
      <normaloff>:/toolbar/panelBox.png</normaloff>:/toolbar/panelBox.png</iconset>
@@ -1040,9 +1040,9 @@
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/basic/basic.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/input/input.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
  </resources>
  <connections/>
 </ui>
