@@ -16,17 +16,9 @@ void RecentFilesController::addFile( const QString &fname ) {
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   if( !settings.contains( attrName ) ) {
-    if ( attrName == "recentICs" ) {
-        if ( !settings.contains("recentBoxes") ) {
-            // This is necessary because we integrated circuits were called boxes in past versions.
-            // This is meant to maintain compatibility with older saves.
-            COMMENT( "Early return because the settings do not contain attrName recentICs or recentBoxes", 0 );
-            return;
-        }
-    } else {
-        COMMENT( "Early return because the settings do not contain attrName " << attrName.toStdString( ), 0 );
-        return;
-    }
+      //! TODO: disabling this check for now, since it creates problems while loading .panda files as integrated circuits
+//      COMMENT( "Early return because the settings do not contain attrName " << attrName.toStdString( ), 0 );
+//      return;
   }
   QStringList files = settings.value( attrName ).toStringList( );
 
