@@ -17,8 +17,12 @@ void RecentFilesController::addFile( const QString &fname ) {
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   if( !settings.contains( attrName ) ) {
       //! TODO: disabling this check for now, since it creates problems while loading .panda files as integrated circuits
-//      COMMENT( "Early return because the settings do not contain attrName " << attrName.toStdString( ), 0 );
-//      return;
+      if ( attrName == "recentICs" ) {
+          settings.setValue( "recentICs", "" );
+      } else {
+          COMMENT( "Early return because the settings do not contain attrName " << attrName.toStdString( ), 0 );
+          return;
+      }
   }
   QStringList files = settings.value( attrName ).toStringList( );
 
