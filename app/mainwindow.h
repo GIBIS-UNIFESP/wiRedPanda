@@ -31,17 +31,33 @@ public:
   explicit MainWindow( QWidget *parent = nullptr, QString filename = QString( ) );
   ~MainWindow( );
 
+  //! Saves the project to a .panda file. Removes the autosave file in the process.
   bool save( QString fname = QString( ) );
-  void show( );
-  void clear( );
-  QFileInfo getCurrentFile( ) const;
-  void setCurrentFile( const QFileInfo &value );
-  bool ExportToArduino( QString fname );
-  bool ExportToWaveFormFile( QString fname );
 
-  bool open( const QString &fname );
+  //! Sets the main window as visible, as well as its child widgets. Cleans the editor.
+  void show( );
+
+  //!
+  void clear( );
+
+  //! Returns the file name of the currently loaded Panda file.
+  QFileInfo getCurrentFile( ) const;
+
+  //! Sets the current file to the given value.
+  //! Mostly used by `loadPandaFile` and clearing functions
+  void setCurrentFile( const QFileInfo &value );
+
+  //! Exports the current simulation to an
+  bool exportToArduino( QString fname );
+  //! Saves the current Bewaved Dolphin (waveform simulator) file
+  bool exportToWaveFormFile( QString fname );
+
+  //! Loads a .panda file
+  bool loadPandaFile( const QString &fname );
   void createUndoView( );
+  //! Opens a message box asking the user if he wishes to save his progress
   int confirmSave( );
+  //!
   void updateRecentICs( );
 
   QString getOpenICFile( );

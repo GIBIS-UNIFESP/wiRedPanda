@@ -31,22 +31,22 @@ int main( int argc, char *argv[] ) {
   QString arduFile = parser.value( arduinoFileOption );
   if( !arduFile.isEmpty( ) ) {
     if( args.size( ) > 0 ) {
-      w.open( args[ 0 ] );
-      return( !w.ExportToArduino( arduFile ) );
+      w.loadPandaFile( args[ 0 ] );
+      return( !w.exportToArduino( arduFile ) );
     }
     return( 0 );
   }
   QString wfFile = parser.value( waveformFileOption );
   if( !wfFile.isEmpty( ) ) {
     if( args.size( ) > 0 ) {
-      w.open( args[ 0 ] );
-      return( !w.ExportToWaveFormFile( wfFile ) );
+      w.loadPandaFile( args[ 0 ] );
+      return( !w.exportToWaveFormFile( wfFile ) );
     }
     return( 0 );
   }
   w.show( );
   if( args.size( ) > 0 ) {
-    w.open( args[ 0 ] );
+    w.loadPandaFile( args[ 0 ] );
   }
   return( a.exec( ) );
 }

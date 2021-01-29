@@ -274,7 +274,7 @@ void MainWindow::on_actionRotate_left_triggered( ) {
   editor->rotate( false );
 }
 
-bool MainWindow::open( const QString &fname ) {
+bool MainWindow::loadPandaFile( const QString &fname ) {
   QFile fl( fname );
   if( !fl.exists( ) ) {
     QMessageBox::warning( this, tr( "Error!" ), tr( "File \"%1\" does not exists!" ).arg(
@@ -310,7 +310,7 @@ bool MainWindow::open( const QString &fname ) {
   COMMENT( "Closing file.", 0 );
   fl.close( );
   //COMMENT( "Adding to controller.", 0 );
-  //rfController->addFile( fname );
+//  rfController->addFile( fname );
   ui->statusBar->showMessage( tr( "File loaded successfully." ), 2000 );
 /*  on_actionWaveform_triggered( ); */
   return( true );
@@ -325,7 +325,7 @@ void MainWindow::on_actionOpen_triggered( ) {
   if( fname.isEmpty( ) ) {
     return;
   }
-  open( fname );
+  loadPandaFile( fname );
 }
 
 void MainWindow::on_actionSave_triggered( ) {
@@ -568,7 +568,7 @@ void MainWindow::resizeEvent( QResizeEvent* ) {
 void MainWindow::on_actionReload_File_triggered( ) {
   if( currentFile.exists( ) ) {
     if( closeFile( ) ) {
-      open( currentFile.absoluteFilePath( ) );
+      loadPandaFile( currentFile.absoluteFilePath( ) );
     }
   }
 }
@@ -585,7 +585,7 @@ void MainWindow::on_actionGates_triggered( bool checked ) {
 }
 
 
-bool MainWindow::ExportToArduino( QString fname ) {
+bool MainWindow::exportToArduino( QString fname ) {
   try {
     if( fname.isEmpty( ) ) {
       return( false );
@@ -618,7 +618,7 @@ bool MainWindow::ExportToArduino( QString fname ) {
   return( true );
 }
 
-bool MainWindow::ExportToWaveFormFile( QString fname ) {
+bool MainWindow::exportToWaveFormFile( QString fname ) {
   try {
     if( ( fname.isEmpty( ) ) || ( fname == "none" ) ) {
       return( false );
@@ -639,7 +639,7 @@ bool MainWindow::ExportToWaveFormFile( QString fname ) {
 
 bool MainWindow::on_actionExport_to_Arduino_triggered( ) {
   QString fname = QFileDialog::getSaveFileName( this, tr( "Generate Arduino Code" ), defaultDirectory.absolutePath( ), tr( "Arduino file (*.ino)" ) );
-  return( ExportToArduino( fname ) );
+  return( exportToArduino( fname ) );
 }
 
 
@@ -686,7 +686,7 @@ void MainWindow::openRecentFile( ) {
   if( action ) {
     QString fileName = action->data( ).toString( );
 
-    open( fileName );
+    loadPandaFile( fileName );
   }
 }
 
@@ -712,8 +712,8 @@ void MainWindow::on_actionPrint_triggered( ) {
     pdfFile.append( ".pdf" );
   }
   QPrinter printer( QPrinter::HighResolution );
-  printer.setPageSize( QPrinter::A4 );
-  printer.setOrientation( QPrinter::Portrait );
+  printer.setPageSize( QPageSize(QPageSize::A4) );
+  printer.setPageOrientation( QPageLayout::Orientation::Landscape );
   printer.setOutputFormat( QPrinter::PdfFormat );
   printer.setOutputFileName( pdfFile );
   QPainter p;

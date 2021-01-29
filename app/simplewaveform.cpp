@@ -308,11 +308,14 @@ void SimpleWaveform::showWaveform( ) {
 
   /*  chart.axisY( )->hide( ); */
   COMMENT( "Setting range and names to x, y axis.", 0 );
-  QValueAxis *ax = dynamic_cast< QValueAxis* >( chart.axes( Qt::Horizontal ).back( ) );
+  const auto horizontal_axe = chart.axes( Qt::Horizontal );
+  const auto vertical_axe   = chart.axes( Qt::Vertical );
+
+  QValueAxis *ax = dynamic_cast< QValueAxis* >( horizontal_axe.back( ) );
   ax->setRange( 0, num_iter );
   ax->setTickCount( num_iter + 1 );
   ax->setLabelFormat( QString( "%i" ) );
-  QValueAxis *ay = dynamic_cast< QValueAxis* >( chart.axes( Qt::Vertical ).back( ) );
+  QValueAxis *ay = dynamic_cast< QValueAxis* >( vertical_axe.back( ) );
   /*  ay->setShadesBrush( QBrush( Qt::lightGray ) ); */
 
   COMMENT( "Setting graphics waveform color.", 0 );
