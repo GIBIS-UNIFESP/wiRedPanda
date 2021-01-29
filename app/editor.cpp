@@ -861,7 +861,9 @@ void Editor::load( QDataStream &ds ) {
   }
   //SerializationFunctions::load( ds, GlobalProperties::currentFile, scene );
   simulationController->start( );
-  scene->clearSelection( );
+  if (scene) {
+      scene->clearSelection( );
+  }
   COMMENT( "Emiting circuit has changed.", 0 );
   emit circuitHasChanged( );
   COMMENT( "Finished loading file.", 0 );
