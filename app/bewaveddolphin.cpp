@@ -341,7 +341,7 @@ void BewavedDolphin::on_actionSet_to_0_triggered( ) {
   COMMENT( "Pressed 0!", 0 );
   //auto itemList = signalTableView->selectedItems( );
   auto itemList = signalTableView->selectionModel( )->selectedIndexes( );
-  for( auto item: itemList ) {
+  for( auto item: qAsConst(itemList) ) {
     int row = item.row( );
     int col = item.column( );
     COMMENT( "Editing value.", 0 );
@@ -355,7 +355,7 @@ void BewavedDolphin::on_actionSet_to_0_triggered( ) {
 void BewavedDolphin::on_actionSet_to_1_triggered( ) {
   COMMENT( "Pressed 0!", 0 );
   auto itemList = signalTableView->selectionModel( )->selectedIndexes( );
-  for( auto item: itemList ) {
+  for( auto item: qAsConst(itemList) ) {
     int row = item.row( );
     int col = item.column( );
     COMMENT( "Editing value.", 0 );
@@ -369,7 +369,7 @@ void BewavedDolphin::on_actionSet_to_1_triggered( ) {
 void BewavedDolphin::on_actionInvert_triggered( ) {
   COMMENT( "Pressed Not!", 0 );
   auto itemList = signalTableView->selectionModel( )->selectedIndexes( );
-  for( auto item: itemList ) {
+  for( auto item: qAsConst(itemList) ) {
     int row = item.row( );
     int col = item.column( );
     int value = model->index( row, col, QModelIndex( ) ).data( ).toInt( );
@@ -384,7 +384,7 @@ void BewavedDolphin::on_actionInvert_triggered( ) {
 
 int BewavedDolphin::sectionFirstColumn( const QItemSelection &ranges ) {
   int first_col = model->columnCount( ) - 1;
-  for( auto range: ranges ) {
+  for( const auto &range: ranges ) {
     if( range.left( ) < first_col )
       first_col = range.left( );
   }
@@ -393,7 +393,7 @@ int BewavedDolphin::sectionFirstColumn( const QItemSelection &ranges ) {
 
 int BewavedDolphin::sectionFirstRow( const QItemSelection &ranges ) {
   int first_row = model->rowCount( ) - 1;
-  for( auto range: ranges ) {
+  for( const auto &range: ranges ) {
     if( range.top( ) < first_row )
       first_row = range.top( );
   }
@@ -411,7 +411,7 @@ void BewavedDolphin::on_actionSet_clock_wave_triggered( ) {
     return;
   int half_clock_period = clock_period / 2;
   auto itemList = signalTableView->selectionModel( )->selectedIndexes( );
-  for( auto item: itemList ) {
+  for( auto item: qAsConst(itemList) ) {
     int row = item.row( );
     int col = item.column( );
     int value = ( ( col - first_col ) % clock_period < half_clock_period ? 0 : 1);
@@ -578,7 +578,7 @@ void BewavedDolphin::copy( const QItemSelection &ranges, QDataStream &ds ) {
   int first_col = sectionFirstColumn( ranges );
   auto itemList = signalTableView->selectionModel( )->selectedIndexes( );
   ds << static_cast< qint64 >( itemList.size( ) );
-  for( auto item: itemList ) {
+  for( auto item: qAsConst(itemList) ) {
     int row = item.row( );
     int col = item.column( );
     int data = model->item( row, col )->text( ).toInt( );
@@ -898,8 +898,8 @@ void BewavedDolphin::on_actionExport_to_PDF_triggered( ) {
     pdfFile.append( ".pdf" );
   }
   QPrinter printer( QPrinter::HighResolution );
-  printer.setPageSize( QPrinter::A4 );
-  printer.setOrientation( QPrinter::Landscape );
+  printer.setPageSize( QPageSize(QPageSize::A4) );
+  printer.setPageOrientation( QPageLayout::Orientation::Landscape );
   printer.setOutputFormat( QPrinter::PdfFormat );
   printer.setOutputFileName( pdfFile );
   QPainter p;

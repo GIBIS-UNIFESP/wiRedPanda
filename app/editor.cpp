@@ -846,7 +846,7 @@ void Editor::load( QDataStream &ds ) {
   QList< QGraphicsItem* > items = SerializationFunctions::deserialize( ds, version, GlobalProperties::currentFile );
   COMMENT( "Finished loading items.", 0 );
   if( scene ) {
-    for( QGraphicsItem *item : items ) {
+    for( QGraphicsItem *item : qAsConst(items) ) {
       scene->addItem( item );
     }
     scene->setSceneRect( scene->itemsBoundingRect( ) );
