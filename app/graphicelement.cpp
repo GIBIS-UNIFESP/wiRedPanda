@@ -13,7 +13,7 @@
 #include <stdexcept>
 #include <QFileInfo>
 
-// WARNING: non-POD static
+// TODO - WARNING: non-POD static
 static QMap< QString, QPixmap > loadedPixmaps;
 
 
