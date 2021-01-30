@@ -178,7 +178,7 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elms
                 switch (elm->elementType()) {
                 case ElementType::CLOCK: {
                     if (!isBox) {
-                        Clock *clk = qgraphicsitem_cast<Clock *>(elm);
+                        auto *clk = qgraphicsitem_cast<Clock *>(elm);
                         out << "elapsedMillis " << varName2 << "_elapsed = 0;" << Qt::endl;
                         out << "int " << varName2 << "_interval = " << 1000 / clk->getFrequency() << ";" << Qt::endl;
                     }
