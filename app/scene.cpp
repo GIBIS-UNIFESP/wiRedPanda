@@ -1,12 +1,12 @@
 #include "scene.h"
-#include "qneconnection.h"
 
 #include <QColor>
 #include <QGraphicsView>
 #include <QPainter>
 
-// TODO: stop using QGraphicsView *
+#include "qneconnection.h"
 
+// TODO: stop using QGraphicsView *
 Scene::Scene(QObject *parent)
     : QGraphicsScene(parent)
 {

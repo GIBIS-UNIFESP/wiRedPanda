@@ -1,8 +1,7 @@
 #include "simplewaveform.h"
-#include "scstop.h"
-#include "ui_simplewaveform.h"
 
-#include "input.h"
+#include <bitset>
+#include <cmath>
 
 #include <QBuffer>
 #include <QChartView>
@@ -13,10 +12,13 @@
 #include <QMimeData>
 #include <QPointF>
 #include <QSettings>
-#include <cmath>
-/* #include <QSvgGenerator> */
 #include <QValueAxis>
-#include <bitset>
+
+#include "elementmapping.h"
+#include "scstop.h"
+#include "ui_simplewaveform.h"
+
+#include "input.h"
 
 using namespace QtCharts;
 

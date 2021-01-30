@@ -1,10 +1,11 @@
 #ifndef ELEMENTFACTORY_H
 #define ELEMENTFACTORY_H
 
-#include "graphicelement.h"
+#include <deque>
 
 #include <QObject>
-#include <deque>
+
+#include "graphicelement.h"
 
 class Editor;
 class ElementFactory : public QObject

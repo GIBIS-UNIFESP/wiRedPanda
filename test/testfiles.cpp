@@ -1,10 +1,10 @@
 #include "testfiles.h"
 
+#include <stdexcept>
+
 #include "commands.h"
 #include "globalproperties.h"
 #include "mainwindow.h"
-
-#include <stdexcept>
 
 void TestFiles::init()
 {

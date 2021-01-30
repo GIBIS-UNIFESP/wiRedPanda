@@ -1,17 +1,18 @@
 #ifndef EDITOR_H
 #define EDITOR_H
 
+#include <memory>
+
+#include <QElapsedTimer>
+#include <QObject>
+#include <QUndoCommand>
+
 #include "elementeditor.h"
 #include "elementfactory.h"
 #include "icmanager.h"
 #include "nodes/qneconnection.h"
 #include "scene.h"
 #include "simulationcontroller.h"
-
-#include <QElapsedTimer>
-#include <QObject>
-#include <QUndoCommand>
-#include <memory>
 
 class IC;
 class MainWindow;

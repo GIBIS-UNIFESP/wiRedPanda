@@ -1,3 +1,5 @@
+#include <QDebug>
+
 #include "element/and.h"
 #include "element/buzzer.h"
 #include "element/clock.h"
@@ -27,8 +29,6 @@
 #include "element/xor.h"
 #include "elementfactory.h"
 #include "qneconnection.h"
-
-#include <QDebug>
 
 ElementFactory *ElementFactory::instance = new ElementFactory();
 

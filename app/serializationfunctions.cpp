@@ -1,17 +1,19 @@
 #include "serializationfunctions.h"
-#include "editor.h"
-#include "globalproperties.h"
-#include "graphicelement.h"
-#include "ic.h"
-#include "qneconnection.h"
 
 #include <QApplication>
 #include <QDebug>
+#include <QGraphicsItem>
 #include <QGraphicsView>
 #include <QMessageBox>
 #include <QSaveFile>
 #include <iostream>
 #include <stdexcept>
+
+#include "editor.h"
+#include "globalproperties.h"
+#include "graphicelement.h"
+#include "ic.h"
+#include "qneconnection.h"
 
 bool SerializationFunctions::update(QString &fileName, QString dirName)
 {

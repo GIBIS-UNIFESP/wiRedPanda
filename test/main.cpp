@@ -1,3 +1,5 @@
+#include <QtTest>
+
 #include "testcommands.h"
 #include "testelements.h"
 #include "testfiles.h"
@@ -6,8 +8,6 @@
 #include "testsimulationcontroller.h"
 #include "testwaveform.h"
 #include "thememanager.h"
-
-#include <QtTest>
 
 int main(int argc, char **argv)
 {

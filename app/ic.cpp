@@ -1,11 +1,6 @@
 #include "ic.h"
-#include "globalproperties.h"
-#include "icmanager.h"
-#include "icnotfoundexception.h"
-#include "icprototype.h"
-#include "inputswitch.h"
-#include "nodes/qneconnection.h"
-#include "serializationfunctions.h"
+
+#include <iostream>
 
 #include <QApplication>
 #include <QDebug>
@@ -16,7 +11,14 @@
 #include <QMessageBox>
 #include <QPointF>
 #include <QProcess>
-#include <iostream>
+
+#include "globalproperties.h"
+#include "icmanager.h"
+#include "icnotfoundexception.h"
+#include "icprototype.h"
+#include "inputswitch.h"
+#include "nodes/qneconnection.h"
+#include "serializationfunctions.h"
 
 IC::IC(QGraphicsItem *parent)
     : GraphicElement(0, 0, 0, 0, parent)

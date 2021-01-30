@@ -1,10 +1,11 @@
 #ifndef TESTELEMENTS_H
 #define TESTELEMENTS_H
 
+#include <QObject>
+#include <QTest>
+
 #include "inputswitch.h"
 #include "qneconnection.h"
-
-#include <QTest>
 
 class IC;
 

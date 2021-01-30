@@ -4,6 +4,8 @@
 #include "elementmapping.h"
 #include "graphicelement.h"
 
+class LogicElement;
+
 class ICMapping : public ElementMapping
 {
     QNEPortVector icInputs;

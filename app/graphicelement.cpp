@@ -1,7 +1,5 @@
-#include "graphicelement.h"
-#include "nodes/qneconnection.h"
-#include "scene.h"
-#include "thememanager.h"
+#include <iostream>
+#include <stdexcept>
 
 #include <QDebug>
 #include <QFileInfo>
@@ -10,8 +8,11 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
-#include <iostream>
-#include <stdexcept>
+
+#include "graphicelement.h"
+#include "nodes/qneconnection.h"
+#include "scene.h"
+#include "thememanager.h"
 
 // TODO - WARNING: non-POD static
 static QMap<QString, QPixmap> loadedPixmaps;

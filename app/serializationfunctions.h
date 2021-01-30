@@ -3,8 +3,7 @@
 
 #include "qneport.h"
 
-#include <QGraphicsItem>
-
+class QGraphicsItem;
 class Editor;
 class Scene;
 
