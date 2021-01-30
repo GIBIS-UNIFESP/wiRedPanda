@@ -120,7 +120,7 @@ void Editor::install(Scene *s)
     clear();
 }
 
-QNEConnection *Editor::getEditedConn()
+QNEConnection *Editor::getEditedConn() const
 {
     return (dynamic_cast<QNEConnection *>(ElementFactory::getItemById(_editedConn_id)));
 }
