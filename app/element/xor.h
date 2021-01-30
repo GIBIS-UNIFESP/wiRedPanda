@@ -7,15 +7,15 @@ class Xor : public GraphicElement
 {
 public:
     explicit Xor(QGraphicsItem *parent = nullptr);
-    virtual ~Xor() override = default;
+    ~Xor() override = default;
 
     /* GraphicElement interface */
 public:
-    virtual ElementType elementType() override
+    ElementType elementType() override
     {
         return (ElementType::XOR);
     }
-    virtual ElementGroup elementGroup() override
+    ElementGroup elementGroup() override
     {
         return (ElementGroup::GATE);
     }
