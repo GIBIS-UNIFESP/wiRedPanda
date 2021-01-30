@@ -98,7 +98,7 @@ public:
 public:
     int type() const override
     {
-        return (Type);
+        return Type;
     }
 
     QRectF boundingRect() const override;
