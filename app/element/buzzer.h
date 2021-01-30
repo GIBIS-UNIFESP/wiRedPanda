@@ -22,11 +22,11 @@ public:
     /* GraphicElement interface */
     ElementType elementType() override
     {
-        return (ElementType::BUZZER);
+        return ElementType::BUZZER;
     }
     ElementGroup elementGroup() override
     {
-        return (ElementGroup::OUTPUT);
+        return ElementGroup::OUTPUT;
     }
     void refresh() override;
 
