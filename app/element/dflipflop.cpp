@@ -4,7 +4,7 @@
 #include "dflipflop.h"
 
 DFlipFlop::DFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(4, 4, 2, 2, parent)
+    : GraphicElement(ElementType::DFLIPFLOP, ElementGroup::MEMORY, 4, 4, 2, 2, parent)
 {
     pixmapSkinName.append(":/memory/D-flipflop.png");
     setPixmap(pixmapSkinName[0]);

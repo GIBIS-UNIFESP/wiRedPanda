@@ -6,7 +6,7 @@
 #include <QPainter>
 
 Node::Node(QGraphicsItem *parent)
-    : GraphicElement(1, 1, 1, 1, parent)
+    : GraphicElement(ElementType::NODE, ElementGroup::GATE, 1, 1, 1, 1, parent)
 {
     pixmapSkinName.append(":/basic/node.png");
     setPixmap(pixmapSkinName[0], QRect(QPoint(16, 16), QPoint(48, 48)));
@@ -20,11 +20,6 @@ void Node::updatePorts()
 {
     input()->setPos(0, 16);
     output()->setPos(32, 16);
-}
-
-ElementType Node::elementType()
-{
-    return ElementType::NODE;
 }
 
 void Node::setSkin(bool defaultSkin, QString filename)

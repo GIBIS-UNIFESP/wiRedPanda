@@ -15,13 +15,6 @@ public:
     ~Node() override = default;
 
     void updatePorts() override;
-    ElementGroup elementGroup() override
-    {
-        return ElementGroup::GATE;
-    }
-    /* GraphicElement interface */
-public:
-    ElementType elementType() override;
     void setSkin(bool defaultSkin, QString filename) override;
 };
 

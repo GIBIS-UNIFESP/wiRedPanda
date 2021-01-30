@@ -16,14 +16,6 @@ public:
 
     /* GraphicElement interface */
 public:
-    ElementType elementType() override
-    {
-        return ElementType::JKLATCH;
-    }
-    ElementGroup elementGroup() override
-    {
-        return ElementGroup::MEMORY;
-    }
     void updatePorts() override;
 };
 

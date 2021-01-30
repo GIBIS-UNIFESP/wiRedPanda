@@ -18,14 +18,6 @@ public:
 
     /* GraphicElement interface */
 public:
-    ElementType elementType() override
-    {
-        return ElementType::MUX;
-    }
-    ElementGroup elementGroup() override
-    {
-        return ElementGroup::MUX;
-    }
     void updatePorts() override;
     void setSkin(bool defaultSkin, QString filename) override;
 };

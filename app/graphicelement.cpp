@@ -11,6 +11,7 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
+#include <QPixmap>
 
 #include "graphicelement.h"
 #include "nodes/qneconnection.h"
@@ -20,16 +21,37 @@
 // TODO - WARNING: non-POD static
 static QMap<QString, QPixmap> loadedPixmaps;
 
-GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent)
-    : QGraphicsObject(parent)
+GraphicElement::GraphicElement(
+    ElementType type,
+    ElementGroup group,
+    int minInputSz,
+    int maxInputSz,
+    int minOutputSz,
+    int maxOutputSz,
+    QGraphicsItem *parent):
+    QGraphicsObject(parent)
+    , m_pixmap(nullptr)
     , m_label(new QGraphicsTextItem(this))
+    , m_topPosition(0)
+    , m_bottomPosition(64)
+    , m_maxInputSz(maxInputSz)
+    , m_maxOutputSz(maxOutputSz)
+    , m_minInputSz(minInputSz)
+    , m_minOutputSz(minOutputSz)
+    , m_outputsOnTop(true)
+    , m_rotatable(true)
+    , m_hasLabel(false)
+    , m_canChangeSkin(false)
+    , m_hasFrequency(false)
+    , m_hasColors(false)
+    , m_hasTrigger(false)
+    , m_hasAudio(false)
+    , m_disabled(false)
+    , m_elementType(type)
+    , m_elementGroup(group)
 {
-    m_pixmap = nullptr;
     COMMENT("Setting flags of elements. ", 4);
-    setFlag(QGraphicsItem::ItemIsMovable);
-    setFlag(QGraphicsItem::ItemIsSelectable);
-    /*  setFlag(QGraphicsItem::ItemSendsScenePositionChanges); */
-    setFlag(QGraphicsItem::ItemSendsGeometryChanges);
+    setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemSendsGeometryChanges);
 
     COMMENT("Setting attributes. ", 4);
     m_label->hide();
@@ -39,24 +61,6 @@ GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, 
     m_label->setPos(64, 30);
     m_label->setParentItem(this);
     m_label->setDefaultTextColor(Qt::black);
-    m_bottomPosition = 64;
-    m_topPosition = 0;
-    m_minInputSz = minInputSz;
-    m_minOutputSz = minOutputSz;
-    m_maxInputSz = maxInputSz;
-    m_maxOutputSz = maxOutputSz;
-    /*
-     *  m_visited = false;
-     *  m_beingVisited = false;
-     */
-    m_rotatable = true;
-    m_hasColors = false;
-    m_hasTrigger = false;
-    m_hasFrequency = false;
-    m_hasLabel = false;
-    m_hasAudio = false;
-    m_disabled = false;
-    m_outputsOnTop = true;
 
     COMMENT("Including input and output ports.", 4);
     for (int i = 0; i < minInputSz; i++) {
@@ -68,12 +72,21 @@ GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, 
     updateTheme();
 }
 
-QPixmap GraphicElement::getPixmap() const
-{
+QPixmap GraphicElement::getPixmap() const {
     if (m_pixmap) {
         return *m_pixmap;
     }
-    return QPixmap();
+    return {};
+}
+
+ElementType GraphicElement::elementType() const
+{
+    return m_elementType;
+}
+
+ElementGroup GraphicElement::elementGroup() const
+{
+    return m_elementGroup;
 }
 
 void GraphicElement::disable()

@@ -24,18 +24,6 @@ public:
     ~Clock() override;
     static int current_id_number; // Number used to create distinct labels for each instance of this element.
     static bool reset;
-public slots:
-    ElementType elementType() override
-    {
-        return ElementType::CLOCK;
-    }
-    ElementGroup elementGroup() override
-    {
-        return ElementGroup::INPUT;
-    }
-    //  void updateClock();
-
-    // GraphicElement interface
 public:
     void save(QDataStream &ds) const override;
     void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
