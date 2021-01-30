@@ -9,6 +9,8 @@ TARGET = wpanda
 
 TEMPLATE = app
 
+QMAKE_PROJECT_DEPTH = 0
+
 include(../includes.pri)
 include(install.pri)
 
