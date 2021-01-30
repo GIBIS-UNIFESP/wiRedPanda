@@ -50,14 +50,14 @@ QString CodeGenerator::otherPortName(QNEPort *port)
     if (port) {
         if (port->connections().isEmpty()) {
             return (highLow(port->defaultValue()));
-        } else {
-            QNEPort *other = port->connections().front()->otherPort(port);
-            if (other) {
-                return (varMap[other]);
-            } else {
-                return (highLow(port->defaultValue()));
-            }
         }
+        QNEPort *other = port->connections().front()->otherPort(port);
+        if (other) {
+            return (varMap[other]);
+        } else {
+            return (highLow(port->defaultValue()));
+        }
+
     } else {
         return ("LOW");
     }
@@ -155,7 +155,8 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elms
                 if (elm->elementType() == ElementType::VCC) {
                     varMap[port] = "HIGH";
                     continue;
-                } else if (elm->elementType() == ElementType::GND) {
+                }
+                if (elm->elementType() == ElementType::GND) {
                     varMap[port] = "LOW";
                     continue;
                 } else if (varMap[port].isEmpty()) {
@@ -247,7 +248,8 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elms)
             //      boxElms = SimulationController::sortElements( boxElms );
             //      assignVariablesRec( boxElms );
             //      out << "    // End of " << box->getLabel( ) << Qt::endl;
-        } else if (elm->inputs().isEmpty() || elm->outputs().isEmpty()) {
+        }
+        if (elm->inputs().isEmpty() || elm->outputs().isEmpty()) {
             continue;
         } else {
             QString firstOut = varMap[elm->output(0)];
