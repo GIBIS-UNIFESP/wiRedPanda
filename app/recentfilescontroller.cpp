@@ -1,11 +1,12 @@
 #include "recentfilescontroller.h"
-#include "common.h"
 
 #include <QApplication>
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>
 #include <QSettings>
+
+#include "common.h"
 
 // TODO: quotes bug
 void RecentFilesController::addFile(const QString &fname)

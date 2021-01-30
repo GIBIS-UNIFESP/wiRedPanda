@@ -1,11 +1,12 @@
-﻿#include "common.h"
-#include "filehelper.h"
-#include "globalproperties.h"
-#include "icnotfoundexception.h"
+﻿#include <iostream>
 
 #include <QDebug>
 #include <QDir>
-#include <iostream>
+
+#include "common.h"
+#include "filehelper.h"
+#include "globalproperties.h"
+#include "icnotfoundexception.h"
 
 QFileInfo FileHelper::findICFile(QString fname, QString parentFile)
 {

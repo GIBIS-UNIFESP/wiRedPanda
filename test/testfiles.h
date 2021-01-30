@@ -1,9 +1,10 @@
 #ifndef TESTFILES_H
 #define TESTFILES_H
 
-#include "editor.h"
-
+#include <QObject>
 #include <QTest>
+
+#include "editor.h"
 
 class TestFiles : public QObject
 {

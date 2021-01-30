@@ -1,11 +1,12 @@
 #include "icprototypeimpl.h"
+
+#include <QDebug>
+#include <QFile>
+
 #include "editor.h"
 #include "elementfactory.h"
 #include "ic.h"
 #include "serializationfunctions.h"
-
-#include <QDebug>
-#include <QFile>
 
 ICPrototypeImpl::~ICPrototypeImpl()
 {

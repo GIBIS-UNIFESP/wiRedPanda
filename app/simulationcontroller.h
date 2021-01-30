@@ -1,10 +1,16 @@
 #ifndef SIMULATIONCONTROLLER_H
 #define SIMULATIONCONTROLLER_H
 
-#include "elementmapping.h"
-#include "scene.h"
+#include <QObject>
+#include <QTimer>
 
 class Clock;
+class ElementMapping;
+class GraphicElement;
+class QNEConnection;
+class QNEInputPort;
+class QNEOutputPort;
+class Scene;
 
 class SimulationController : public QObject
 {

@@ -1,7 +1,6 @@
 #ifndef CLOCKDIALOG_H
 #define CLOCKDIALOG_H
 
-#include "ui_clockDialog.h"
 #include <QDialog>
 
 namespace Ui

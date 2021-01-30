@@ -1,6 +1,8 @@
 #include "testsimulationcontroller.h"
 
 #include "and.h"
+#include "elementmapping.h"
+#include "graphicelement.h"
 #include "inputbutton.h"
 #include "led.h"
 

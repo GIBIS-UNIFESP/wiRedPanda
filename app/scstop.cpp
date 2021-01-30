@@ -1,7 +1,9 @@
 #include "scstop.h"
+
+#include <cmath>
+
 #include "input.h"
 #include "simulationcontroller.h"
-#include <cmath>
 
 SCStop::SCStop(SimulationController *sc)
     : sc(sc)

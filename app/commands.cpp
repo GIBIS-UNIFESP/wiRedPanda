@@ -1,15 +1,17 @@
 #include "commands.h"
+
+#include <cmath>
+#include <stdexcept>
+
+#include <QApplication>
+#include <QDebug>
+
 #include "editor.h"
 #include "globalproperties.h"
 #include "graphicelement.h"
 #include "ic.h"
 #include "scene.h"
 #include "serializationfunctions.h"
-
-#include <QApplication>
-#include <QDebug>
-#include <cmath>
-#include <stdexcept>
 
 void storeIds(const QList<QGraphicsItem *> &items, QVector<int> &ids)
 {

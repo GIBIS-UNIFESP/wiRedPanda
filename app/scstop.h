@@ -1,9 +1,6 @@
 #ifndef SCSTOP_H
 #define SCSTOP_H
 
-#include "input.h"
-#include <cmath>
-
 class SimulationController;
 
 class SCStop

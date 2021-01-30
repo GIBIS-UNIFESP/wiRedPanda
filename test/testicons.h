@@ -1,6 +1,7 @@
 #ifndef TESTICONS_H
 #define TESTICONS_H
 
+#include <QObject>
 #include <QTest>
 
 class TestIcons : public QObject

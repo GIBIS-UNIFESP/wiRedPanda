@@ -1,15 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "bewaveddolphin.h"
-#include "editor.h"
-#include "graphicsview.h"
-#include "graphicsviewzoom.h"
-#include "label.h"
-#include "listitemwidget.h"
-#include "recentfilescontroller.h"
-#include "scene.h"
-
 #include <QDialog>
 #include <QDir>
 #include <QFileInfo>
@@ -19,6 +10,15 @@
 #include <QTemporaryFile>
 #include <QTranslator>
 #include <QUndoView>
+
+#include "bewaveddolphin.h"
+#include "editor.h"
+#include "graphicsview.h"
+#include "graphicsviewzoom.h"
+#include "label.h"
+#include "listitemwidget.h"
+#include "recentfilescontroller.h"
+#include "scene.h"
 
 namespace Ui
 {

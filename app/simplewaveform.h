@@ -26,6 +26,7 @@ public:
     static void sortElements(QVector<GraphicElement *> &elements, QVector<GraphicElement *> &inputs, QVector<GraphicElement *> &outputs, SortingMode sorting);
 
     static bool saveToTxt(QTextStream &outStream, Editor *editor);
+
 private slots:
     void on_radioButton_Position_clicked();
     void on_radioButton_Increasing_clicked();

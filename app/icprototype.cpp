@@ -1,8 +1,9 @@
 #include "icprototype.h"
-#include "ic.h"
-#include "icmapping.h"
 
 #include <QFileInfo>
+
+#include "ic.h"
+#include "icmapping.h"
 
 ICPrototype::ICPrototype(const QString &fileName)
     : m_fileName(fileName)
