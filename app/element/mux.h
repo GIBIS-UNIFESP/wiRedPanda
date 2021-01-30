@@ -9,7 +9,7 @@ class Mux : public GraphicElement
 {
 public:
     explicit Mux(QGraphicsItem *parent = nullptr);
-    virtual ~Mux() override = default;
+    ~Mux() override = default;
 
     /* GraphicElement interface */
 public:
@@ -17,7 +17,7 @@ public:
     {
         return (ElementType::MUX);
     }
-    virtual ElementGroup elementGroup() override
+    ElementGroup elementGroup() override
     {
         return (ElementGroup::MUX);
     }
