@@ -36,11 +36,11 @@ void ICMapping::clearConnections()
 LogicElement *ICMapping::getInput(int index)
 {
     Q_ASSERT(index < icInputs.size());
-    return (inputs[index]);
+    return inputs[index];
 }
 
 LogicElement *ICMapping::getOutput(int index)
 {
     Q_ASSERT(index < icOutputs.size());
-    return (outputs[index]);
+    return outputs[index];
 }
