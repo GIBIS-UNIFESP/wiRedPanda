@@ -80,7 +80,7 @@ void ElementMapping::insertElement(GraphicElement *elm)
     deletableElements.append(logicElm);
     logicElms.append(logicElm);
     map.insert(elm, logicElm);
-    Input *in = dynamic_cast<Input *>(elm);
+    auto *in = dynamic_cast<Input *>(elm);
     if (in) {
         inputMap[in] = logicElm;
     }
@@ -104,7 +104,7 @@ void ElementMapping::generateMap()
 {
     for (GraphicElement *elm : qAsConst(elements)) {
         if (elm->elementType() == ElementType::CLOCK) {
-            Clock *clk = dynamic_cast<Clock *>(elm);
+            auto *clk = dynamic_cast<Clock *>(elm);
             Q_ASSERT(clk != nullptr);
             clocks.append(clk);
         }
