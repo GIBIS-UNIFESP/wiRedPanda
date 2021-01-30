@@ -5,14 +5,15 @@
 
 double GlobalProperties::toDouble(QString txtVersion, bool *ok)
 {
-    double version;
     if (txtVersion.contains("-")) {
         txtVersion = txtVersion.split("-").first();
     }
-    if (txtVersion.contains("."))
+
+    if (txtVersion.contains(".")) {
         txtVersion = txtVersion.split(".")[0] + "." + txtVersion.split(".")[1];
-    version = txtVersion.toDouble(ok);
-    return (version);
+    }
+
+    return txtVersion.toDouble(ok);
 }
 
 double loadVersion()
