@@ -71,10 +71,11 @@ void Led::refresh()
         break;
     }
     case 2: { /* 2 bits */ // TODO: add option to select dark/light colors according to the theme.
-        if (idx == 3)
+        if (idx == 3) {
             setPixmap(pixmapSkinName[22]);
-        else
+        } else {
             setPixmap(pixmapSkinName[18 + idx]);
+        }
         break;
     }
     case 3: { /* 3 bits */ // TODO: add option to select dark/light colors according to the theme.
@@ -91,16 +92,17 @@ void Led::refresh()
 void Led::setColor(QString color)
 {
     m_color = color;
-    if (color == "White")
+    if (color == "White") {
         m_colorNumber = 0;
-    else if (color == "Red")
+    } else if (color == "Red") {
         m_colorNumber = 2;
-    else if (color == "Green")
+    } else if (color == "Green") {
         m_colorNumber = 4;
-    else if (color == "Blue")
+    } else if (color == "Blue") {
         m_colorNumber = 6;
-    else if (color == "Purple")
+    } else if (color == "Purple") {
         m_colorNumber = 8;
+    }
     refresh();
 }
 
@@ -148,42 +150,47 @@ void Led::setSkin(bool defaultSkin, QString filename)
     }
     switch (inputSize()) {
     case 1: { /* 1 bit */
-        if (defaultSkin)
+        if (defaultSkin) {
             resetLedPixmapName(m_colorNumber + idx);
-        else
+        } else {
             pixmapSkinName[m_colorNumber + idx] = filename;
+        }
         setPixmap(pixmapSkinName[m_colorNumber + idx]);
         break;
     }
     case 2: { /* 2 bits */ // TODO: add option to select dark/light colors according to the theme.
         if (idx == 3) {
-            if (defaultSkin)
+            if (defaultSkin) {
                 resetLedPixmapName(22);
-            else
+            } else {
                 pixmapSkinName[22] = filename;
+            }
             setPixmap(pixmapSkinName[22]);
         } else {
-            if (defaultSkin)
+            if (defaultSkin) {
                 resetLedPixmapName(18 + idx);
-            else
+            } else {
                 pixmapSkinName[18 + idx] = filename;
+            }
             setPixmap(pixmapSkinName[18 + idx]);
         }
         break;
     }
     case 3: { /* 3 bits */ // TODO: add option to select dark/light colors according to the theme.
-        if (defaultSkin)
+        if (defaultSkin) {
             resetLedPixmapName(18 + idx);
-        else
+        } else {
             pixmapSkinName[18 + idx] = filename;
+        }
         setPixmap(pixmapSkinName[18 + idx]);
         break;
     }
     case 4: { /* 4 bits */
-        if (defaultSkin)
+        if (defaultSkin) {
             resetLedPixmapName(10 + idx);
-        else
+        } else {
             pixmapSkinName[10 + idx] = filename;
+        }
         setPixmap(pixmapSkinName[10 + idx]);
         break;
     }
