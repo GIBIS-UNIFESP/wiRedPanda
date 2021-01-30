@@ -322,7 +322,7 @@ int ElementMapping::calculatePriority(GraphicElement *elm, QHash<GraphicElement 
     if (!elm) {
         return (0);
     }
-    if (beingvisited.contains(elm) && (beingvisited[elm] == true)) {
+    if (beingvisited.contains(elm) && (beingvisited[elm])) {
         return (0);
     }
     if (priority.contains(elm)) {
