@@ -27,7 +27,7 @@ double loadVersion()
     if (!ok || (qFuzzyIsNull(version))) {
         throw std::runtime_error(ERRORMSG("INVALID VERSION NUMBER!"));
     }
-    return (version);
+    return version;
 }
 
 QString GlobalProperties::currentFile = QString();
