@@ -408,14 +408,14 @@ bool Editor::mousePressEvt(QGraphicsSceneMouseEvent *mouseEvt)
             }
         }
         return (true);
-    } else {
-        if (getEditedConn()) {
-            deleteEditedConn();
-        } else if (!item && (mouseEvt->button() == Qt::LeftButton)) {
-            /* Mouse pressed over board (Selection box). */
-            startSelectionRect();
-        }
     }
+    if (getEditedConn()) {
+        deleteEditedConn();
+    } else if (!item && (mouseEvt->button() == Qt::LeftButton)) {
+        /* Mouse pressed over board (Selection box). */
+        startSelectionRect();
+    }
+
     return (false);
 }
 
@@ -457,7 +457,8 @@ bool Editor::mouseMoveEvt(QGraphicsSceneMouseEvent *mouseEvt)
             deleteEditedConn();
         }
         return (true);
-    } else if (markingSelectionIC) {
+    }
+    if (markingSelectionIC) {
         /* If is marking the selectionBox, the last coordinate follows the mouse position. */
         QRectF rect = QRectF(selectionStartPoint, mousePos).normalized();
         selectionRect->setRect(rect);
@@ -642,7 +643,8 @@ bool Editor::dropEvt(QGraphicsSceneDragDropEvent *dde)
         elm->setPos(pos);
 
         return (true);
-    } else if (dde->mimeData()->hasFormat("application/ctrlDragData")) {
+    }
+    if (dde->mimeData()->hasFormat("application/ctrlDragData")) {
         QByteArray itemData = dde->mimeData()->data("application/ctrlDragData");
         QDataStream ds(&itemData, QIODevice::ReadOnly);
         QPointF offset;
