@@ -19,7 +19,7 @@ class ICManager : public QObject
 
 public:
     ICManager(MainWindow *mainWindow = nullptr, QObject *parent = nullptr);
-    virtual ~ICManager();
+    ~ICManager() override;
     void clear();
     bool loadIC(IC *ic, QString fname, QString parentFile = "");
     ICPrototype *getPrototype(QString fname);
