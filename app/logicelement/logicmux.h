@@ -10,7 +10,7 @@ public:
 
     /* LogicElement interface */
 protected:
-    virtual void _updateLogic(const std::vector<bool> &inputs);
+    void _updateLogic(const std::vector<bool> &inputs) override;
 };
 
 #endif // LOGICMUX_H
