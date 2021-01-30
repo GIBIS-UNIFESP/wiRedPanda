@@ -16,9 +16,10 @@ Xnor::Xnor(QGraphicsItem *parent)
 
 void Xnor::setSkin(bool defaultSkin, QString filename)
 {
-    if (defaultSkin)
+    if (defaultSkin) {
         pixmapSkinName[0] = ":/basic/xnor.png";
-    else
+    } else {
         pixmapSkinName[0] = filename;
+    }
     setPixmap(pixmapSkinName[0]);
 }
