@@ -589,7 +589,7 @@ void MainWindow::on_actionReload_File_triggered()
 void MainWindow::on_actionGates_triggered(bool checked)
 {
     ui->actionWires->setEnabled(checked);
-    if (checked == false) {
+    if (!checked) {
         editor->showWires(checked);
     } else {
         editor->showWires(ui->actionWires->isChecked());
