@@ -59,7 +59,7 @@ public:
 
     int type() const override
     {
-        return (Type);
+        return Type;
     }
     QNEPort *otherPort(const QNEPort *port) const;
     QNEOutputPort *otherPort(const QNEInputPort *) const;
