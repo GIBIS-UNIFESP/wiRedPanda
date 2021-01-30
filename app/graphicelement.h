@@ -65,8 +65,8 @@ public:
     explicit GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent = nullptr);
 
 private:
-    QPixmap *pixmap;
-    QString currentPixmapName;
+    QPixmap *m_pixmap;
+    QString m_currentPixmapName;
     QColor m_selectionBrush;
     QColor m_selectionPen;
 
@@ -220,7 +220,7 @@ protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
-    QGraphicsTextItem *label;
+    QGraphicsTextItem *m_label;
     int m_topPosition;
     int m_bottomPosition;
     quint64 m_maxInputSz;
