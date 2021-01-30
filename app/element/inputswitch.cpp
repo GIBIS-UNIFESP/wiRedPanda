@@ -24,7 +24,7 @@ InputSwitch::InputSwitch(QGraphicsItem *parent)
 
 bool InputSwitch::getOn() const
 {
-    return (on);
+    return on;
 }
 
 void InputSwitch::setOn(bool value)
