@@ -3,15 +3,14 @@
 
 #include "logicelement.h"
 
-class LogicInput : public LogicElement {
+class LogicInput : public LogicElement
+{
 public:
+    explicit LogicInput(bool defaultValue = false);
 
-  explicit LogicInput( bool defaultValue = false );
-
-  /* LogicElement interface */
+    /* LogicElement interface */
 protected:
-  virtual void _updateLogic( const std::vector< bool > & );
+    virtual void _updateLogic(const std::vector<bool> &);
 };
-
 
 #endif // LOGICINPUT_H

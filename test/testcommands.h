@@ -5,16 +5,16 @@
 
 #include <QTest>
 
-class TestCommands : public QObject {
-  Q_OBJECT
-  Editor * editor;
+class TestCommands : public QObject
+{
+    Q_OBJECT
+    Editor *editor;
 
 private slots:
-  void init( );
-  void cleanup( );
+    void init();
+    void cleanup();
 
-  void testAddDeleteCommands( );
-
+    void testAddDeleteCommands();
 };
 
 #endif /* TESTCOMMANDS_H */

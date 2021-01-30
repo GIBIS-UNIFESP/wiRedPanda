@@ -3,18 +3,18 @@
 
 #include "logicelement.h"
 
-class LogicDFlipFlop : public LogicElement {
+class LogicDFlipFlop : public LogicElement
+{
 public:
-  explicit LogicDFlipFlop( );
+    explicit LogicDFlipFlop();
 
-  /* LogicElement interface */
+    /* LogicElement interface */
 protected:
-  virtual void _updateLogic( const std::vector< bool > &inputs );
+    virtual void _updateLogic(const std::vector<bool> &inputs);
 
 private:
-  bool lastClk;
-  bool lastValue;
+    bool lastClk;
+    bool lastValue;
 };
-
 
 #endif // LOGICDFLIPFLOP_H

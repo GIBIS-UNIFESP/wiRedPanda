@@ -5,22 +5,25 @@
 
 #include <QObject>
 
-class Demux : public GraphicElement {
+class Demux : public GraphicElement
+{
 public:
-  explicit Demux( QGraphicsItem *parent = nullptr );
-  virtual ~Demux( ) override = default;
+    explicit Demux(QGraphicsItem *parent = nullptr);
+    virtual ~Demux() override = default;
 
-  virtual ElementGroup elementGroup( ) override {
-    return( ElementGroup::MUX );
-  }
+    virtual ElementGroup elementGroup() override
+    {
+        return (ElementGroup::MUX);
+    }
 
-  /* GraphicElement interface */
+    /* GraphicElement interface */
 public:
-  ElementType elementType( ) override {
-    return( ElementType::DEMUX );
-  }
-  void updatePorts( ) override;
-  void setSkin( bool defaultSkin, QString filename ) override;
+    ElementType elementType() override
+    {
+        return (ElementType::DEMUX);
+    }
+    void updatePorts() override;
+    void setSkin(bool defaultSkin, QString filename) override;
 };
 
 #endif /* DEMUX_H */

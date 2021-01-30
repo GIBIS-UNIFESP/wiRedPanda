@@ -3,15 +3,14 @@
 
 #include "logicelement.h"
 
-class LogicNode : public LogicElement {
+class LogicNode : public LogicElement
+{
 public:
+    explicit LogicNode();
 
-  explicit LogicNode( );
-
-  /* LogicElement interface */
+    /* LogicElement interface */
 protected:
-  virtual void _updateLogic( const std::vector< bool > & );
+    virtual void _updateLogic(const std::vector<bool> &);
 };
-
 
 #endif // LOGICNODE_H

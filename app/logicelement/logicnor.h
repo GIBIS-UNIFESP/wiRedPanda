@@ -3,12 +3,13 @@
 
 #include "logicelement.h"
 
-class LogicNor : public LogicElement {
+class LogicNor : public LogicElement
+{
 public:
-  explicit LogicNor( size_t inputSize );
+    explicit LogicNor(size_t inputSize);
 
-  /* LogicElement interface */
+    /* LogicElement interface */
 protected:
-  virtual void _updateLogic( const std::vector< bool > &inputs );
+    virtual void _updateLogic(const std::vector<bool> &inputs);
 };
 #endif // LOGICNOR_H

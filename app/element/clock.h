@@ -7,41 +7,43 @@
 
 #include <QTime>
 
-class Clock : public GraphicElement, public Input {
-  int interval;
-  int elapsed;
-  bool on;
-  double m_frequency;
+class Clock : public GraphicElement, public Input
+{
+    int interval;
+    int elapsed;
+    bool on;
+    double m_frequency;
 
 public:
-  explicit Clock( QGraphicsItem *parent = nullptr );
-  virtual ~Clock( );
-  static int current_id_number; // Number used to create distinct labels for each instance of this element.
-  static bool reset;
+    explicit Clock(QGraphicsItem *parent = nullptr);
+    virtual ~Clock();
+    static int current_id_number; // Number used to create distinct labels for each instance of this element.
+    static bool reset;
 public slots:
-  virtual ElementType elementType( ) override
-  {
-    return( ElementType::CLOCK );
-  }
-  virtual ElementGroup elementGroup( ) override {
-    return( ElementGroup::INPUT );
-  }
-//  void updateClock();
+    virtual ElementType elementType() override
+    {
+        return (ElementType::CLOCK);
+    }
+    virtual ElementGroup elementGroup() override
+    {
+        return (ElementGroup::INPUT);
+    }
+    //  void updateClock();
 
-  // GraphicElement interface
+    // GraphicElement interface
 public:
-  void save( QDataStream &ds ) const override;
-  void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) override;
-  float getFrequency( ) const override;
-  void setFrequency( float freq ) override;
-  void updateClock( );
-  void resetClock( );
-  QString genericProperties( ) override;
+    void save(QDataStream &ds) const override;
+    void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
+    float getFrequency() const override;
+    void setFrequency(float freq) override;
+    void updateClock();
+    void resetClock();
+    QString genericProperties() override;
+
 public:
-  bool getOn( ) const override;
-  void setOn( bool value ) override;
-  void setSkin( bool defaultSkin, QString filename ) override;
+    bool getOn() const override;
+    void setOn(bool value) override;
+    void setSkin(bool defaultSkin, QString filename) override;
 };
-
 
 #endif // CLOCK_H

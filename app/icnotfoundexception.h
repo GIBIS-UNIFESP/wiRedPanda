@@ -4,11 +4,13 @@
 #include <stdexcept>
 
 class IC;
-class ICNotFoundException : public std::runtime_error {
-  IC *m_ic;
+class ICNotFoundException : public std::runtime_error
+{
+    IC *m_ic;
+
 public:
-  ICNotFoundException( const std::string &message, IC *ic );
-  IC* getIC( ) const;
+    ICNotFoundException(const std::string &message, IC *ic);
+    IC *getIC() const;
 };
 
 #endif /* ICNOTFOUNDEXCEPTION_H */

@@ -3,13 +3,14 @@
 
 #include "logicelement.h"
 
-class LogicXor : public LogicElement {
+class LogicXor : public LogicElement
+{
 public:
-  explicit LogicXor( size_t inputSize );
+    explicit LogicXor(size_t inputSize);
 
-  /* LogicElement interface */
+    /* LogicElement interface */
 protected:
-  virtual void _updateLogic( const std::vector< bool > &inputs );
+    virtual void _updateLogic(const std::vector<bool> &inputs);
 };
 
 #endif // LOGICXOR_H

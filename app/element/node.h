@@ -3,19 +3,21 @@
 
 #include "graphicelement.h"
 
-class Node : public GraphicElement {
+class Node : public GraphicElement
+{
 public:
-  explicit Node( QGraphicsItem *parent = nullptr );
-  virtual ~Node( ) override = default;
+    explicit Node(QGraphicsItem *parent = nullptr);
+    virtual ~Node() override = default;
 
-  virtual void updatePorts( ) override;
-  virtual ElementGroup elementGroup( ) override {
-    return( ElementGroup::GATE );
-  }
-  /* GraphicElement interface */
+    virtual void updatePorts() override;
+    virtual ElementGroup elementGroup() override
+    {
+        return (ElementGroup::GATE);
+    }
+    /* GraphicElement interface */
 public:
-  ElementType elementType( ) override;
-  void setSkin( bool defaultSkin, QString filename ) override;
+    ElementType elementType() override;
+    void setSkin(bool defaultSkin, QString filename) override;
 };
 
 #endif /* NODE_H */

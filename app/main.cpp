@@ -5,50 +5,57 @@
 #include <qdebug.h>
 #include <qmessagebox.h>
 
-int main( int argc, char *argv[] ) {
-  QApplication a( argc, argv );
-  a.setOrganizationName( "GIBIS-UNIFESP" );
-  a.setApplicationName( "WiredPanda" );
-  a.setApplicationVersion( APP_VERSION );
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    a.setOrganizationName("GIBIS-UNIFESP");
+    a.setApplicationName("WiredPanda");
+    a.setApplicationVersion(APP_VERSION);
 
-  QCommandLineParser parser;
-  parser.setApplicationDescription( a.applicationName( ) );
-  parser.addHelpOption( );
-  parser.addVersionOption( );
-  parser.addPositionalArgument( "file", QCoreApplication::translate( "main", "Circuit file to open." ) );
+    QCommandLineParser parser;
+    parser.setApplicationDescription(a.applicationName());
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addPositionalArgument("file", QCoreApplication::translate("main", "Circuit file to open."));
 
-  QCommandLineOption arduinoFileOption( QStringList( ) << "a" << "arduino-file", QCoreApplication::translate( "main", "Export circuit to <arduino-file>" ), QCoreApplication::translate( "main", "arduino file" ) );
-  parser.addOption( arduinoFileOption );
+    QCommandLineOption arduinoFileOption(QStringList() << "a"
+                                                       << "arduino-file",
+                                         QCoreApplication::translate("main", "Export circuit to <arduino-file>"),
+                                         QCoreApplication::translate("main", "arduino file"));
+    parser.addOption(arduinoFileOption);
 
-  QCommandLineOption waveformFileOption( QStringList( ) << "w" << "waveform", QCoreApplication::translate( "main", "Export circuit to <waveform> text file" ), QCoreApplication::translate( "main", "waveform text file" ) );
-  parser.addOption( waveformFileOption );
+    QCommandLineOption waveformFileOption(QStringList() << "w"
+                                                        << "waveform",
+                                          QCoreApplication::translate("main", "Export circuit to <waveform> text file"),
+                                          QCoreApplication::translate("main", "waveform text file"));
+    parser.addOption(waveformFileOption);
 
-  parser.process( a );
+    parser.process(a);
 
-  QStringList args = parser.positionalArguments( );
-  MainWindow w( nullptr, ( args.size( ) > 0 ? QString( args[ 0 ] ) : QString( ) ) );
+    QStringList args = parser.positionalArguments();
+    MainWindow w(nullptr, (args.size() > 0 ? QString(args[0]) : QString()));
 
-  QString arduFile = parser.value( arduinoFileOption );
-  if( !arduFile.isEmpty( ) ) {
-    if( args.size( ) > 0 ) {
-      w.loadPandaFile( args[ 0 ] );
-      return( !w.exportToArduino( arduFile ) );
+    QString arduFile = parser.value(arduinoFileOption);
+    if (!arduFile.isEmpty()) {
+        if (args.size() > 0) {
+            w.loadPandaFile(args[0]);
+            return (!w.exportToArduino(arduFile));
+        }
+        return (0);
     }
-    return( 0 );
-  }
-  QString wfFile = parser.value( waveformFileOption );
-  if( !wfFile.isEmpty( ) ) {
-    if( args.size( ) > 0 ) {
-      w.loadPandaFile( args[ 0 ] );
-      return( !w.exportToWaveFormFile( wfFile ) );
+    QString wfFile = parser.value(waveformFileOption);
+    if (!wfFile.isEmpty()) {
+        if (args.size() > 0) {
+            w.loadPandaFile(args[0]);
+            return (!w.exportToWaveFormFile(wfFile));
+        }
+        return (0);
     }
-    return( 0 );
-  }
-  w.show( );
-  if( args.size( ) > 0 ) {
-    w.loadPandaFile( args[ 0 ] );
-  }
-  return( a.exec( ) );
+    w.show();
+    if (args.size() > 0) {
+        w.loadPandaFile(args[0]);
+    }
+    return (a.exec());
 }
 
 /*
