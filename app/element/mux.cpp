@@ -4,7 +4,7 @@
 #include "mux.h"
 
 Mux::Mux(QGraphicsItem *parent)
-    : GraphicElement(3, 3, 1, 1, parent)
+    : GraphicElement(ElementType::MUX, ElementGroup::MUX, 3, 3, 1, 1, parent)
 {
     pixmapSkinName.append(":/basic/mux.png");
     setPixmap(pixmapSkinName[0]);
@@ -27,9 +27,10 @@ void Mux::updatePorts()
 
 void Mux::setSkin(bool defaultSkin, QString filename)
 {
-    if (defaultSkin)
+    if (defaultSkin) {
         pixmapSkinName[0] = ":/basic/mux.png";
-    else
+    } else {
         pixmapSkinName[0] = filename;
+    }
     setPixmap(pixmapSkinName[0]);
 }

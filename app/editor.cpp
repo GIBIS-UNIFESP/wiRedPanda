@@ -123,7 +123,7 @@ void Editor::install(Scene *s)
 
 QNEConnection *Editor::getEditedConn() const
 {
-    return (dynamic_cast<QNEConnection *>(ElementFactory::getItemById(_editedConn_id)));
+    return dynamic_cast<QNEConnection *>(ElementFactory::getItemById(_editedConn_id));
 }
 
 void Editor::setEditedConn(QNEConnection *editedConn)
@@ -292,7 +292,7 @@ void Editor::flipV()
 QList<QGraphicsItem *> Editor::itemsAt(QPointF pos)
 {
     QRectF rect(pos - QPointF(4, 4), QSize(9, 9));
-    return (scene->items(rect.normalized()));
+    return scene->items(rect.normalized());
 }
 
 QGraphicsItem *Editor::itemAt(QPointF pos)
@@ -301,30 +301,30 @@ QGraphicsItem *Editor::itemAt(QPointF pos)
     items.append(itemsAt(pos));
     for (QGraphicsItem *item : qAsConst(items)) {
         if (item->type() == QNEPort::Type) {
-            return (item);
+            return item;
         }
     }
     for (QGraphicsItem *item : qAsConst(items)) {
         if (item->type() > QGraphicsItem::UserType) {
-            return (item);
+            return item;
         }
     }
-    return (nullptr);
+    return nullptr;
 }
 
 ElementEditor *Editor::getElementEditor() const
 {
-    return (_elementEditor);
+    return _elementEditor;
 }
 
 QPointF Editor::getMousePos() const
 {
-    return (mousePos);
+    return mousePos;
 }
 
 SimulationController *Editor::getSimulationController() const
 {
-    return (simulationController);
+    return simulationController;
 }
 
 void Editor::addItem(QGraphicsItem *item)
@@ -408,7 +408,7 @@ bool Editor::mousePressEvt(QGraphicsSceneMouseEvent *mouseEvt)
                 }
             }
         }
-        return (true);
+        return true;
     }
     if (getEditedConn()) {
         deleteEditedConn();
@@ -417,7 +417,7 @@ bool Editor::mousePressEvt(QGraphicsSceneMouseEvent *mouseEvt)
         startSelectionRect();
     }
 
-    return (false);
+    return false;
 }
 
 void Editor::resizeScene()
@@ -457,7 +457,7 @@ bool Editor::mouseMoveEvt(QGraphicsSceneMouseEvent *mouseEvt)
         } else {
             deleteEditedConn();
         }
-        return (true);
+        return true;
     }
     if (markingSelectionIC) {
         /* If is marking the selectionBox, the last coordinate follows the mouse position. */
@@ -470,7 +470,7 @@ bool Editor::mouseMoveEvt(QGraphicsSceneMouseEvent *mouseEvt)
         /* Else, the selectionRect is hidden. */
         selectionRect->hide();
     }
-    return (false);
+    return false;
 }
 
 void Editor::makeConnection(QNEConnection *editedConn)
@@ -506,7 +506,7 @@ void Editor::makeConnection(QNEConnection *editedConn)
 bool Editor::mouseReleaseEvt(QGraphicsSceneMouseEvent *mouseEvt)
 {
     if (!mouseEvt) {
-        return (false);
+        return false;
     }
     /* When mouse is released the selection rect is hidden. */
     selectionRect->hide();
@@ -518,9 +518,9 @@ bool Editor::mouseReleaseEvt(QGraphicsSceneMouseEvent *mouseEvt)
     if (editedConn && !(mouseEvt->buttons() & Qt::LeftButton)) {
         /* A connection is being created, and left button was released. */
         makeConnection(editedConn);
-        return (true);
+        return true;
     }
-    return (false);
+    return false;
 }
 
 void Editor::handleHoverPort()
@@ -587,7 +587,7 @@ QNEPort *Editor::getHoverPort()
     if (!hoverPort) {
         setHoverPort(nullptr);
     }
-    return (hoverPort);
+    return hoverPort;
 }
 
 bool Editor::dropEvt(QGraphicsSceneDragDropEvent *dde)
@@ -607,7 +607,7 @@ bool Editor::dropEvt(QGraphicsSceneDragDropEvent *dde)
         GraphicElement *elm = ElementFactory::buildElement(static_cast<ElementType>(type));
         /* If element type is unknown, a default element is created with the pixmap received from mimedata */
         if (!elm) {
-            return (false);
+            return false;
         }
         if (elm->elementType() == ElementType::IC) {
             try {
@@ -615,12 +615,12 @@ bool Editor::dropEvt(QGraphicsSceneDragDropEvent *dde)
                 if (box) {
                     QString fname = label_auxData;
                     if (!icManager->loadIC(box, fname, GlobalProperties::currentFile)) {
-                        return (false);
+                        return false;
                     }
                 }
             } catch (std::runtime_error &err) {
                 QMessageBox::warning(mainWindow, tr("Error"), QString::fromStdString(err.what()));
-                return (false);
+                return false;
             }
         }
         int wdtOffset = (64 - elm->boundingRect().width()) / 2;
@@ -643,7 +643,7 @@ bool Editor::dropEvt(QGraphicsSceneDragDropEvent *dde)
         /* Adjusting the position of the element. */
         elm->setPos(pos);
 
-        return (true);
+        return true;
     }
     if (dde->mimeData()->hasFormat("application/ctrlDragData")) {
         QByteArray itemData = dde->mimeData()->data("application/ctrlDragData");
@@ -667,21 +667,21 @@ bool Editor::dropEvt(QGraphicsSceneDragDropEvent *dde)
         }
         resizeScene();
 
-        return (true);
+        return true;
     }
-    return (false);
+    return false;
 }
 
 bool Editor::dragMoveEvt(QGraphicsSceneDragDropEvent *dde)
 {
     /* Accepting drag/drop event of the following mimedata format. */
     if (dde->mimeData()->hasFormat("application/x-dnditemdata")) {
-        return (true);
+        return true;
     }
     if (dde->mimeData()->hasFormat("application/ctrlDragData")) {
-        return (true);
+        return true;
     }
-    return (false);
+    return false;
 }
 
 bool Editor::wheelEvt(QWheelEvent *wEvt)
@@ -691,9 +691,9 @@ bool Editor::wheelEvt(QWheelEvent *wEvt)
         QPoint numSteps = numDegrees / 15;
         emit scroll(numSteps.x(), numSteps.y());
         wEvt->accept();
-        return (true);
+        return true;
     }
-    return (false);
+    return false;
 }
 
 void Editor::ctrlDrag(QPointF pos)
@@ -734,12 +734,12 @@ void Editor::ctrlDrag(QPointF pos)
 
 QUndoStack *Editor::getUndoStack() const
 {
-    return (undoStack);
+    return undoStack;
 }
 
 Scene *Editor::getScene() const
 {
-    return (scene);
+    return scene;
 }
 
 void Editor::cut(const QList<QGraphicsItem *> &items, QDataStream &ds)
@@ -810,40 +810,42 @@ bool Editor::saveLocalIC(IC *ic, QString newICPath)
                 if (icPrototype->updateLocalIC(newFilePath, newICPath)) {
                     if (!ic->setFile(newFilePath)) {
                         std::cerr << "Error changing boxes name." << std::endl;
-                        return (false);
+                        return false;
                     }
                 } else {
                     std::cerr << "Error while saving boxes at the editor." << std::endl;
-                    return (false);
+                    return false;
                 }
             } else {
                 if (!ic->setFile(newFilePath)) {
                     std::cerr << "Error changing boxes name." << std::endl;
-                    return (false);
+                    return false;
                 }
             }
         }
-        return (true);
+        return true;
     } catch (std::runtime_error &err) {
         QMessageBox::warning(mainWindow, tr("Error"), QString::fromStdString(err.what()));
-        return (false);
+        return false;
     }
 }
 
 bool Editor::saveLocal(QString newPath)
 {
     if (!scene) {
-        return (true);
+        return true;
     }
     auto const scene_elements = scene->getElements();
     COMMENT("new path: " << newPath.toStdString(), 0);
     for (GraphicElement *elm : scene_elements) {
         elm->updateSkinsPath(newPath + "/skins/");
-        if (elm->elementType() == ElementType::IC)
-            if (!saveLocalIC(dynamic_cast<IC *>(elm), newPath))
-                return (false);
+        if (elm->elementType() == ElementType::IC) {
+            if (!saveLocalIC(dynamic_cast<IC *>(elm), newPath)) {
+                return false;
+            }
+        }
     }
-    return (true);
+    return true;
 }
 
 void Editor::save(QDataStream &ds, const QString &dolphinFilename)
@@ -908,7 +910,7 @@ QPointF roundTo(QPointF point, int multiple)
     int y = static_cast<int>(point.y());
     int nx = multiple * qFloor(x / multiple);
     int ny = multiple * qFloor(y / multiple);
-    return (QPointF(nx, ny));
+    return QPointF(nx, ny);
 }
 
 void Editor::contextMenu(QPoint screenPos)
@@ -1002,7 +1004,7 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
             handleHoverPort();
             if (mouseEvt->modifiers() & Qt::ShiftModifier) {
                 mouseEvt->setModifiers(Qt::ControlModifier);
-                return (QObject::eventFilter(obj, evt));
+                return QObject::eventFilter(obj, evt);
             }
         }
         bool ret = false;
@@ -1012,7 +1014,7 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
                 if ((mouseEvt->modifiers() & Qt::ControlModifier) && (item->type() == GraphicElement::Type)) {
                     item->setSelected(true);
                     ctrlDrag(mouseEvt->scenePos());
-                    return (true);
+                    return true;
                 }
                 draggingElement = true;
                 /* STARTING MOVING ELEMENT */
@@ -1092,7 +1094,7 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
                     }
                 }
                 evt->accept();
-                return (true);
+                return true;
             }
             break;
         }
@@ -1132,8 +1134,8 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
         }
         }
         if (ret) {
-            return (ret);
+            return ret;
         }
     }
-    return (QObject::eventFilter(obj, evt));
+    return QObject::eventFilter(obj, evt);
 }

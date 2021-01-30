@@ -8,7 +8,7 @@
 int InputSwitch::current_id_number = 0;
 
 InputSwitch::InputSwitch(QGraphicsItem *parent)
-    : GraphicElement(0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::SWITCH, ElementGroup::INPUT, 0, 0, 1, 1, parent)
 {
     pixmapSkinName.append(":/input/switchOff.png");
     pixmapSkinName.append(":/input/switchOn.png");
@@ -24,7 +24,7 @@ InputSwitch::InputSwitch(QGraphicsItem *parent)
 
 bool InputSwitch::getOn() const
 {
-    return (on);
+    return on;
 }
 
 void InputSwitch::setOn(bool value)

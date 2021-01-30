@@ -4,7 +4,7 @@
 #include "not.h"
 
 Not::Not(QGraphicsItem *parent)
-    : GraphicElement(1, 1, 1, 1, parent)
+    : GraphicElement(ElementType::NOT, ElementGroup::GATE, 1, 1, 1, 1, parent)
 {
     pixmapSkinName.append(":/basic/not.png");
     setOutputsOnTop(true);
@@ -16,9 +16,10 @@ Not::Not(QGraphicsItem *parent)
 
 void Not::setSkin(bool defaultSkin, QString filename)
 {
-    if (defaultSkin)
+    if (defaultSkin) {
         pixmapSkinName[0] = ":/basic/not.png";
-    else
+    } else {
         pixmapSkinName[0] = filename;
+    }
     setPixmap(pixmapSkinName[0]);
 }

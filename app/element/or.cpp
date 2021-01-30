@@ -4,7 +4,7 @@
 #include "or.h"
 
 Or::Or(QGraphicsItem *parent)
-    : GraphicElement(2, 8, 1, 1, parent)
+    : GraphicElement(ElementType::OR, ElementGroup::GATE, 2, 8, 1, 1, parent)
 {
     pixmapSkinName.append(":/basic/or.png");
     setOutputsOnTop(true);
@@ -16,9 +16,10 @@ Or::Or(QGraphicsItem *parent)
 
 void Or::setSkin(bool defaultSkin, QString filename)
 {
-    if (defaultSkin)
+    if (defaultSkin) {
         pixmapSkinName[0] = ":/basic/or.png";
-    else
+    } else {
         pixmapSkinName[0] = filename;
+    }
     setPixmap(pixmapSkinName[0]);
 }

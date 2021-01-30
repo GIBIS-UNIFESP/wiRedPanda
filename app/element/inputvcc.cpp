@@ -4,7 +4,7 @@
 #include "inputvcc.h"
 
 InputVcc::InputVcc(QGraphicsItem *parent)
-    : GraphicElement(0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::VCC, ElementGroup::STATICINPUT, 0, 0, 1, 1, parent)
 {
     pixmapSkinName.append(":/input/1.png");
     setOutputsOnTop(false);
@@ -17,9 +17,10 @@ InputVcc::InputVcc(QGraphicsItem *parent)
 
 void InputVcc::setSkin(bool defaultSkin, QString filename)
 {
-    if (defaultSkin)
+    if (defaultSkin) {
         pixmapSkinName[0] = ":/input/1.png";
-    else
+    } else {
         pixmapSkinName[0] = filename;
+    }
     setPixmap(pixmapSkinName[0]);
 }

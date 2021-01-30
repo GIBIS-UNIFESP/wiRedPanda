@@ -10,7 +10,7 @@
 int LedGrid::current_id_number = 0;
 
 LedGrid::LedGrid(QGraphicsItem *parent)
-    : GraphicElement(8, 8, 0, 0, parent)
+    : GraphicElement(ElementType::LEDGRID, ElementGroup::OUTPUT, 8, 8, 0, 0, parent)
 {
     pixmapSkinName.append(":/output/LedGrid.png"); // 0
     pixmapSkinName.append(":/output/WhiteLedOff.png"); // 1
@@ -82,16 +82,17 @@ void LedGrid::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 void LedGrid::setColor(QString color)
 {
     m_color = color;
-    if (color == "White")
+    if (color == "White") {
         m_colorNumber = 0;
-    else if (color == "Red")
+    } else if (color == "Red") {
         m_colorNumber = 2;
-    else if (color == "Green")
+    } else if (color == "Green") {
         m_colorNumber = 4;
-    else if (color == "Blue")
+    } else if (color == "Blue") {
         m_colorNumber = 6;
-    else if (color == "Purple")
+    } else if (color == "Purple") {
         m_colorNumber = 8;
+    }
     led_off_pixmap = QPixmap(pixmapSkinName[1 + m_colorNumber]);
     led_on_pixmap = QPixmap(pixmapSkinName[2 + m_colorNumber]);
     refresh();
@@ -99,7 +100,7 @@ void LedGrid::setColor(QString color)
 
 QString LedGrid::getColor() const
 {
-    return (m_color);
+    return m_color;
 }
 
 void LedGrid::save(QDataStream &ds) const
@@ -120,7 +121,7 @@ void LedGrid::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double ve
 
 QString LedGrid::genericProperties()
 {
-    return (getColor());
+    return getColor();
 }
 
 void LedGrid::updatePorts()

@@ -4,7 +4,7 @@
 #include "inputgnd.h"
 
 InputGnd::InputGnd(QGraphicsItem *parent)
-    : GraphicElement(0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::GND, ElementGroup::STATICINPUT, 0, 0, 1, 1, parent)
 {
     pixmapSkinName.append(":/input/0.png");
     setOutputsOnTop(false);
@@ -17,9 +17,10 @@ InputGnd::InputGnd(QGraphicsItem *parent)
 
 void InputGnd::setSkin(bool defaultSkin, QString filename)
 {
-    if (defaultSkin)
+    if (defaultSkin) {
         pixmapSkinName[0] = ":/input/0.png";
-    else
+    } else {
         pixmapSkinName[0] = filename;
+    }
     setPixmap(pixmapSkinName[0]);
 }

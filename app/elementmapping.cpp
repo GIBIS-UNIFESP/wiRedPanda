@@ -70,10 +70,10 @@ QVector<GraphicElement *> ElementMapping::sortGraphicElements(QVector<GraphicEle
         calculatePriority(elm, beingvisited, priority);
     }
     std::sort(elms.begin(), elms.end(), [priority](GraphicElement *e1, GraphicElement *e2) {
-        return (priority[e2] < priority[e1]);
+        return priority[e2] < priority[e1];
     });
 
-    return (elms);
+    return elms;
 }
 
 void ElementMapping::insertElement(GraphicElement *elm)
@@ -126,50 +126,50 @@ LogicElement *ElementMapping::buildLogicElement(GraphicElement *elm)
     case ElementType::SWITCH:
     case ElementType::BUTTON:
     case ElementType::CLOCK:
-        return (new LogicInput());
+        return new LogicInput();
     case ElementType::LED:
     case ElementType::BUZZER:
     case ElementType::DISPLAY:
     case ElementType::DISPLAY14:
-        return (new LogicOutput(elm->inputSize()));
+        return new LogicOutput(elm->inputSize());
     case ElementType::NODE:
-        return (new LogicNode());
+        return new LogicNode();
     case ElementType::VCC:
-        return (new LogicInput(true));
+        return new LogicInput(true);
     case ElementType::GND:
-        return (new LogicInput(false));
+        return new LogicInput(false);
     case ElementType::AND:
-        return (new LogicAnd(elm->inputSize()));
+        return new LogicAnd(elm->inputSize());
     case ElementType::OR:
-        return (new LogicOr(elm->inputSize()));
+        return new LogicOr(elm->inputSize());
     case ElementType::NAND:
-        return (new LogicNand(elm->inputSize()));
+        return new LogicNand(elm->inputSize());
     case ElementType::NOR:
-        return (new LogicNor(elm->inputSize()));
+        return new LogicNor(elm->inputSize());
     case ElementType::XOR:
-        return (new LogicXor(elm->inputSize()));
+        return new LogicXor(elm->inputSize());
     case ElementType::XNOR:
-        return (new LogicXnor(elm->inputSize()));
+        return new LogicXnor(elm->inputSize());
     case ElementType::NOT:
-        return (new LogicNot());
+        return new LogicNot();
     case ElementType::JKFLIPFLOP:
-        return (new LogicJKFlipFlop());
+        return new LogicJKFlipFlop();
     case ElementType::SRFLIPFLOP:
-        return (new LogicSRFlipFlop());
+        return new LogicSRFlipFlop();
     case ElementType::TFLIPFLOP:
-        return (new LogicTFlipFlop());
+        return new LogicTFlipFlop();
     case ElementType::DFLIPFLOP:
-        return (new LogicDFlipFlop());
+        return new LogicDFlipFlop();
     case ElementType::DLATCH:
-        return (new LogicDLatch());
+        return new LogicDLatch();
     case ElementType::MUX:
-        return (new LogicMux());
+        return new LogicMux();
     case ElementType::DEMUX:
-        return (new LogicDemux());
+        return new LogicDemux();
         //      case ElementType::TLATCH:
     case ElementType::JKLATCH:
         //! TODO: TLATCH not yet implemented.
-        return (new LogicDLatch());
+        return new LogicDLatch();
 
     default:
         throw std::runtime_error("Not implemented yet: " + elm->objectName().toStdString());
@@ -225,18 +225,18 @@ void ElementMapping::update()
 ICMapping *ElementMapping::getICMapping(IC *ic) const
 {
     Q_ASSERT(ic);
-    return (icMappings[ic]);
+    return icMappings[ic];
 }
 
 LogicElement *ElementMapping::getLogicElement(GraphicElement *elm) const
 {
     Q_ASSERT(elm);
-    return (map[elm]);
+    return map[elm];
 }
 
 bool ElementMapping::canRun() const
 {
-    return (initialized);
+    return initialized;
 }
 
 bool ElementMapping::canInitialize() const
@@ -246,11 +246,11 @@ bool ElementMapping::canInitialize() const
             IC *ic = dynamic_cast<IC *>(elm);
             ICPrototype *prototype = ICManager::instance()->getPrototype(ic->getFile());
             if (!ic || !prototype) {
-                return (false);
+                return false;
             }
         }
     }
-    return (true);
+    return true;
 }
 
 void ElementMapping::applyConnection(GraphicElement *elm, QNEPort *in)
@@ -316,20 +316,20 @@ void ElementMapping::sortLogicElements()
         elm->calculatePriority();
     }
     std::sort(logicElms.begin(), logicElms.end(), [](LogicElement *e1, LogicElement *e2) {
-        return (*e2 < *e1);
+        return *e2 < *e1;
     });
 }
 
 int ElementMapping::calculatePriority(GraphicElement *elm, QHash<GraphicElement *, bool> &beingvisited, QHash<GraphicElement *, int> &priority)
 {
     if (!elm) {
-        return (0);
+        return 0;
     }
     if (beingvisited.contains(elm) && (beingvisited[elm])) {
-        return (0);
+        return 0;
     }
     if (priority.contains(elm)) {
-        return (priority[elm]);
+        return priority[elm];
     }
     beingvisited[elm] = true;
     int max = 0;
@@ -345,5 +345,5 @@ int ElementMapping::calculatePriority(GraphicElement *elm, QHash<GraphicElement 
     int p = max + 1;
     priority[elm] = p;
     beingvisited[elm] = false;
-    return (p);
+    return p;
 }

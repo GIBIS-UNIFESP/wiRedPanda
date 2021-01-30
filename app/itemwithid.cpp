@@ -11,7 +11,7 @@ ItemWithId::ItemWithId()
 
 int ItemWithId::id() const
 {
-    return (m_id);
+    return m_id;
 }
 
 void ItemWithId::setId(int id)

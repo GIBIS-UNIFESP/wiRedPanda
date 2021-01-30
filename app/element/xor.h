@@ -14,16 +14,6 @@ public:
     explicit Xor(QGraphicsItem *parent = nullptr);
     ~Xor() override = default;
 
-    /* GraphicElement interface */
-public:
-    ElementType elementType() override
-    {
-        return (ElementType::XOR);
-    }
-    ElementGroup elementGroup() override
-    {
-        return (ElementGroup::GATE);
-    }
     void setSkin(bool defaultSkin, QString filename) override;
 };
 

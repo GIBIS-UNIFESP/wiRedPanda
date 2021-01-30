@@ -18,9 +18,9 @@ int lengthDialog::getFrequency()
     canceled = false;
     exec();
     if (canceled) {
-        return (-1);
+        return -1;
     }
-    return (ui->lengthSpinBox->value());
+    return ui->lengthSpinBox->value();
 }
 
 lengthDialog::~lengthDialog()

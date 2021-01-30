@@ -17,16 +17,6 @@ public:
     explicit DFlipFlop(QGraphicsItem *parent = nullptr);
     ~DFlipFlop() override = default;
 
-    // GraphicElement interface
-public:
-    ElementType elementType() override
-    {
-        return (ElementType::DFLIPFLOP);
-    }
-    ElementGroup elementGroup() override
-    {
-        return (ElementGroup::MEMORY);
-    }
     void updatePorts() override;
     void setSkin(bool defaultSkin, QString filename) override;
 };

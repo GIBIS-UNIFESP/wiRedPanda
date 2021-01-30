@@ -4,7 +4,7 @@
 #include "dflipflop.h"
 
 DFlipFlop::DFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(4, 4, 2, 2, parent)
+    : GraphicElement(ElementType::DFLIPFLOP, ElementGroup::MEMORY, 4, 4, 2, 2, parent)
 {
     pixmapSkinName.append(":/memory/D-flipflop.png");
     setPixmap(pixmapSkinName[0]);
@@ -42,9 +42,10 @@ void DFlipFlop::updatePorts()
 
 void DFlipFlop::setSkin(bool defaultSkin, QString filename)
 {
-    if (defaultSkin)
+    if (defaultSkin) {
         pixmapSkinName[0] = ":/memory/D-flipflop.png";
-    else
+    } else {
         pixmapSkinName[0] = filename;
+    }
     setPixmap(pixmapSkinName[0]);
 }

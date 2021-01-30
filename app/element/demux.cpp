@@ -4,7 +4,7 @@
 #include "demux.h"
 
 Demux::Demux(QGraphicsItem *parent)
-    : GraphicElement(2, 2, 2, 2, parent)
+    : GraphicElement(ElementType::DEMUX, ElementGroup::MUX, 2, 2, 2, 2, parent)
 {
     pixmapSkinName.append(":/basic/demux.png");
     setPixmap(pixmapSkinName[0]);
@@ -31,9 +31,10 @@ void Demux::updatePorts()
 
 void Demux::setSkin(bool defaultSkin, QString filename)
 {
-    if (defaultSkin)
+    if (defaultSkin) {
         pixmapSkinName[0] = ":/basic/demux.png";
-    else
+    } else {
         pixmapSkinName[0] = filename;
+    }
     setPixmap(pixmapSkinName[0]);
 }

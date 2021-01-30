@@ -23,17 +23,6 @@ protected:
 
     /* GraphicElement interface */
 public:
-    ElementType elementType() override
-    {
-        return (ElementType::SWITCH);
-    }
-    ElementGroup elementGroup() override
-    {
-        return (ElementGroup::INPUT);
-    }
-
-    /* GraphicElement interface */
-public:
     void save(QDataStream &ds) const override;
     void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
     bool getOn() const override;

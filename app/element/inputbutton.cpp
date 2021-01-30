@@ -9,7 +9,7 @@
 int InputButton::current_id_number = 0;
 
 InputButton::InputButton(QGraphicsItem *parent)
-    : GraphicElement(0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::BUTTON, ElementGroup::INPUT, 0, 0, 1, 1, parent)
 {
     pixmapSkinName.append(":/input/buttonOff.png");
     pixmapSkinName.append(":/input/buttonOn.png");
@@ -46,7 +46,7 @@ void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 bool InputButton::getOn() const
 {
-    return (on);
+    return on;
 }
 
 void InputButton::setOn(const bool value)

@@ -222,7 +222,7 @@ public:
     void redo() Q_DECL_OVERRIDE;
     int id() const Q_DECL_OVERRIDE
     {
-        return (Id);
+        return Id;
     }
 
 private:
@@ -246,7 +246,7 @@ public:
 
     int id() const Q_DECL_OVERRIDE
     {
-        return (Id);
+        return Id;
     }
 
 private:
@@ -271,7 +271,7 @@ public:
 
     int id() const Q_DECL_OVERRIDE
     {
-        return (Id);
+        return Id;
     }
 
 private:

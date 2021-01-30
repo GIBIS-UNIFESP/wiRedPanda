@@ -11,7 +11,7 @@
 int Display14::current_id_number = 0;
 
 Display14::Display14(QGraphicsItem *parent)
-    : GraphicElement(15, 15, 0, 0, parent)
+    : GraphicElement(ElementType::DISPLAY14, ElementGroup::OUTPUT, 15, 15, 0, 0, parent)
 {
     pixmapSkinName.append(":/output/counter/counter_14_off.png");
     pixmapSkinName.append(":/output/counter/counter_a.png");
@@ -158,9 +158,10 @@ void Display14::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double 
 
 void Display14::setSkin(bool defaultSkin, QString filename)
 {
-    if (defaultSkin)
+    if (defaultSkin) {
         pixmapSkinName[0] = ":/output/counter/counter_14_off.png";
-    else
+    } else {
         pixmapSkinName[0] = filename;
+    }
     setPixmap(pixmapSkinName[0]);
 }

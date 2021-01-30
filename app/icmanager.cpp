@@ -44,16 +44,15 @@ bool ICManager::tryLoadFile(QString &fname, QString parentFile)
         COMMENT("ICNotFoundException thrown: " << err.what(), 0);
         int ret = QMessageBox::warning(mainWindow, tr("Error"), QString::fromStdString(err.what()), QMessageBox::Ok, QMessageBox::Cancel);
         if (ret == QMessageBox::Cancel) {
-            return (false);
+            return false;
         }
         fname = mainWindow->getOpenICFile();
         if (fname.isEmpty()) {
-            return (false);
-        } else {
-            return (tryLoadFile(fname, parentFile));
+            return false;
         }
+        return tryLoadFile(fname, parentFile);
     }
-    return (true);
+    return true;
 }
 
 void ICManager::loadFile(QString &fname, QString parentFile)
@@ -107,7 +106,7 @@ bool ICManager::loadIC(IC *ic, QString fname, QString parentFile)
         ic->loadFile(fname);
     }
     updateRecentICs(fname);
-    return (true);
+    return true;
 }
 
 ICPrototype *ICManager::getPrototype(QString fname)
@@ -115,9 +114,9 @@ ICPrototype *ICManager::getPrototype(QString fname)
     Q_ASSERT(!fname.isEmpty());
     QFileInfo finfo(fname);
     if (!ics.contains(finfo.baseName())) {
-        return (nullptr);
+        return nullptr;
     }
-    return (ics[finfo.baseName()]);
+    return ics[finfo.baseName()];
 }
 
 bool ICManager::updatePrototypeFilePathName(QString sourceName, QString targetName)
@@ -127,7 +126,7 @@ bool ICManager::updatePrototypeFilePathName(QString sourceName, QString targetNa
     Q_ASSERT(!targetName.isEmpty());
     QFileInfo finfo(sourceName);
     if (!ics.contains(finfo.baseName())) {
-        return (false);
+        return false;
     }
     COMMENT("Updating prototype IC name.", 0);
     auto proto = ics[finfo.baseName()];
@@ -139,12 +138,12 @@ bool ICManager::updatePrototypeFilePathName(QString sourceName, QString targetNa
     } else {
         COMMENT("Warning. FileWatcher did not exist. Probably already changed by other IC instance update.", 0);
     }
-    return (true);
+    return true;
 }
 
 ICManager *ICManager::instance()
 {
-    return (globalICManager);
+    return globalICManager;
 }
 
 void ICManager::reloadFile(QString fileName)
@@ -177,5 +176,5 @@ bool ICManager::warnAboutFileChange(const QString &fileName)
     msgBox.setText(tr("The file %1 changed, do you want to reload?").arg(fileName));
     msgBox.setWindowModality(Qt::ApplicationModal);
     msgBox.setDefaultButton(QMessageBox::Yes);
-    return (msgBox.exec() == QMessageBox::Yes);
+    return msgBox.exec() == QMessageBox::Yes;
 }

@@ -15,15 +15,6 @@ public:
     ~Led() override = default;
     static int current_id_number; // Number used to create distinct labels for each instance of this element.
 
-    /* GraphicElement interface */
-    ElementType elementType() override
-    {
-        return (ElementType::LED);
-    }
-    ElementGroup elementGroup() override
-    {
-        return (ElementGroup::OUTPUT);
-    }
     void refresh() override;
     void setColor(QString getColor) override;
     QString getColor() const override;

@@ -4,7 +4,7 @@
 #include "and.h"
 
 And::And(QGraphicsItem *parent)
-    : GraphicElement(2, 8, 1, 1, parent)
+    : GraphicElement(ElementType::AND, ElementGroup::GATE, 2, 8, 1, 1, parent)
 {
     pixmapSkinName.append(":/basic/and.png");
     setOutputsOnTop(true);

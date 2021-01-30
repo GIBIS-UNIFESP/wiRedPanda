@@ -4,7 +4,7 @@
 #include "nor.h"
 
 Nor::Nor(QGraphicsItem *parent)
-    : GraphicElement(2, 8, 1, 1, parent)
+    : GraphicElement(ElementType::NOR, ElementGroup::GATE, 2, 8, 1, 1, parent)
 {
     pixmapSkinName.append(":/basic/nor.png");
     setOutputsOnTop(true);
@@ -16,9 +16,10 @@ Nor::Nor(QGraphicsItem *parent)
 
 void Nor::setSkin(bool defaultSkin, QString filename)
 {
-    if (defaultSkin)
+    if (defaultSkin) {
         pixmapSkinName[0] = ":/basic/nor.png";
-    else
+    } else {
         pixmapSkinName[0] = filename;
+    }
     setPixmap(pixmapSkinName[0]);
 }

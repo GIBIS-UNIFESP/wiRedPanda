@@ -4,7 +4,7 @@
 #include "dlatch.h"
 
 DLatch::DLatch(QGraphicsItem *parent)
-    : GraphicElement(2, 2, 2, 2, parent)
+    : GraphicElement(ElementType::DLATCH, ElementGroup::MEMORY, 2, 2, 2, 2, parent)
 {
     pixmapSkinName.append(":/memory/D-latch.png");
     setPixmap(pixmapSkinName[0]);
@@ -32,9 +32,10 @@ void DLatch::updatePorts()
 
 void DLatch::setSkin(bool defaultSkin, QString filename)
 {
-    if (defaultSkin)
+    if (defaultSkin) {
         pixmapSkinName[0] = ":/memory/D-latch.png";
-    else
+    } else {
         pixmapSkinName[0] = filename;
+    }
     setPixmap(pixmapSkinName[0]);
 }

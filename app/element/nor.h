@@ -14,16 +14,6 @@ public:
     explicit Nor(QGraphicsItem *parent = nullptr);
     ~Nor() override = default;
 
-    /* GraphicElement interface */
-public:
-    ElementType elementType() override
-    {
-        return (ElementType::NOR);
-    }
-    ElementGroup elementGroup() override
-    {
-        return (ElementGroup::GATE);
-    }
     void setSkin(bool defaultSkin, QString filename) override;
 };
 

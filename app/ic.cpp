@@ -24,7 +24,7 @@
 #include "serializationfunctions.h"
 
 IC::IC(QGraphicsItem *parent)
-    : GraphicElement(0, 0, 0, 0, parent)
+    : GraphicElement(ElementType::IC, ElementGroup::IC, 0, 0, 0, 0, parent)
 {
     pixmapSkinName.append(":/basic/box.png");
     setHasLabel(true);
@@ -105,21 +105,22 @@ void IC::loadFile(QString fname)
 
 QString IC::getFile() const
 {
-    return (m_file);
+    return m_file;
 }
 
 bool IC::setFile(QString newFileName)
 {
     COMMENT("Updating ic name.", 0);
-    if (!ICManager::instance()->updatePrototypeFilePathName(m_file, newFileName))
-        return (false);
+    if (!ICManager::instance()->updatePrototypeFilePathName(m_file, newFileName)) {
+        return false;
+    }
     m_file = newFileName;
-    return (true);
+    return true;
 }
 
 ICPrototype *IC::getPrototype()
 {
-    return (ICManager::instance()->getPrototype(m_file));
+    return ICManager::instance()->getPrototype(m_file);
 }
 
 void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
@@ -143,9 +144,10 @@ void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 void IC::setSkin(bool defaultSkin, QString filename)
 {
-    if (defaultSkin)
+    if (defaultSkin) {
         pixmapSkinName[0] = ":/basic/box.png";
-    else
+    } else {
         pixmapSkinName[0] = filename;
+    }
     setPixmap(pixmapSkinName[0]);
 }

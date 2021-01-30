@@ -4,7 +4,7 @@
 #include "srflipflop.h"
 
 SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(5, 5, 2, 2, parent)
+    : GraphicElement(ElementType::SRFLIPFLOP, ElementGroup::MEMORY, 5, 5, 2, 2, parent)
 {
     pixmapSkinName.append(":/memory/SR-flipflop.png");
     setPixmap(pixmapSkinName[0]);
@@ -47,9 +47,10 @@ void SRFlipFlop::updatePorts()
 
 void SRFlipFlop::setSkin(bool defaultSkin, QString filename)
 {
-    if (defaultSkin)
+    if (defaultSkin) {
         pixmapSkinName[0] = ":/memory/SR-flipflop.png";
-    else
+    } else {
         pixmapSkinName[0] = filename;
+    }
     setPixmap(pixmapSkinName[0]);
 }

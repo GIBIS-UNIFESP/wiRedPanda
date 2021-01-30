@@ -16,17 +16,6 @@ public:
     explicit Demux(QGraphicsItem *parent = nullptr);
     ~Demux() override = default;
 
-    ElementGroup elementGroup() override
-    {
-        return (ElementGroup::MUX);
-    }
-
-    /* GraphicElement interface */
-public:
-    ElementType elementType() override
-    {
-        return (ElementType::DEMUX);
-    }
     void updatePorts() override;
     void setSkin(bool defaultSkin, QString filename) override;
 };

@@ -4,7 +4,7 @@
 #include "xor.h"
 
 Xor::Xor(QGraphicsItem *parent)
-    : GraphicElement(2, 8, 1, 1, parent)
+    : GraphicElement(ElementType::XOR, ElementGroup::GATE, 2, 8, 1, 1, parent)
 {
     pixmapSkinName.append(":/basic/xor.png");
     setOutputsOnTop(true);
@@ -16,9 +16,10 @@ Xor::Xor(QGraphicsItem *parent)
 
 void Xor::setSkin(bool defaultSkin, QString filename)
 {
-    if (defaultSkin)
+    if (defaultSkin) {
         pixmapSkinName[0] = ":/basic/xor.png";
-    else
+    } else {
         pixmapSkinName[0] = filename;
+    }
     setPixmap(pixmapSkinName[0]);
 }

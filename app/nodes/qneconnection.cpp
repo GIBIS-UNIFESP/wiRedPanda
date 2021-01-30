@@ -125,12 +125,12 @@ void QNEConnection::updatePath()
 
 QNEOutputPort *QNEConnection::start() const
 {
-    return (m_start);
+    return m_start;
 }
 
 QNEInputPort *QNEConnection::end() const
 {
-    return (m_end);
+    return m_end;
 }
 
 double QNEConnection::angle()
@@ -142,9 +142,9 @@ double QNEConnection::angle()
             std::swap(p1, p2);
         }
         QLineF line(p1->scenePos(), p2->scenePos());
-        return (line.angle());
+        return line.angle();
     }
-    return (0.0);
+    return 0.0;
 }
 
 void QNEConnection::save(QDataStream &ds) const
@@ -186,37 +186,35 @@ bool QNEConnection::load(QDataStream &ds, const QMap<quint64, QNEPort *> &portMa
             }
         }
     } else {
-        return (false);
+        return false;
     }
     updatePosFromPorts();
     updatePath();
-    if (!m_start || !m_end) {
-        return (false);
-    }
-    return (true);
+
+    return (m_start != nullptr && m_end != nullptr);
 }
 
 QNEPort *QNEConnection::otherPort(const QNEPort *port) const
 {
     if (port == dynamic_cast<QNEPort *>(m_start)) {
-        return (dynamic_cast<QNEPort *>(m_end));
+        return dynamic_cast<QNEPort *>(m_end);
     }
-    return (dynamic_cast<QNEPort *>(m_start));
+    return dynamic_cast<QNEPort *>(m_start);
 }
 
 QNEOutputPort *QNEConnection::otherPort(const QNEInputPort *) const
 {
-    return (m_start);
+    return m_start;
 }
 
 QNEInputPort *QNEConnection::otherPort(const QNEOutputPort *) const
 {
-    return (m_end);
+    return m_end;
 }
 
 QNEConnection::Status QNEConnection::status() const
 {
-    return (m_status);
+    return m_status;
 }
 
 void QNEConnection::setStatus(const Status &status)

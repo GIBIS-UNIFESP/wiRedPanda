@@ -72,12 +72,12 @@ void QNEPort::setName(const QString &n)
 
 int QNEPort::radius() const
 {
-    return (radius_);
+    return radius_;
 }
 
 const QList<QNEConnection *> &QNEPort::connections() const
 {
-    return (m_connections);
+    return m_connections;
 }
 
 void QNEPort::connect(QNEConnection *conn)
@@ -126,22 +126,22 @@ void QNEPort::setPortFlags(int f)
 
 const QString &QNEPort::portName() const
 {
-    return (name);
+    return name;
 }
 
 int QNEPort::portFlags() const
 {
-    return (m_portFlags);
+    return m_portFlags;
 }
 
 int QNEPort::type() const
 {
-    return (Type);
+    return Type;
 }
 
 quint64 QNEPort::ptr()
 {
-    return (m_ptr);
+    return m_ptr;
 }
 
 void QNEPort::setPtr(quint64 p)
@@ -153,10 +153,10 @@ bool QNEPort::isConnected(QNEPort *other)
 {
     for (QNEConnection *conn : qAsConst(m_connections)) {
         if ((conn->start() == other) || (conn->end() == other)) {
-            return (true);
+            return true;
         }
     }
-    return (false);
+    return false;
 }
 
 void QNEPort::updateConnections()
@@ -179,12 +179,12 @@ QVariant QNEPort::itemChange(GraphicsItemChange change, const QVariant &value)
     if (change == ItemScenePositionHasChanged) {
         updateConnections();
     }
-    return (value);
+    return value;
 }
 
 int QNEPort::index() const
 {
-    return (m_index);
+    return m_index;
 }
 
 void QNEPort::setIndex(int index)
@@ -194,12 +194,12 @@ void QNEPort::setIndex(int index)
 
 QString QNEPort::getName() const
 {
-    return (name);
+    return name;
 }
 
 int QNEPort::defaultValue() const
 {
-    return (m_defaultValue);
+    return m_defaultValue;
 }
 
 void QNEPort::setDefaultValue(int defaultValue)
@@ -210,7 +210,7 @@ void QNEPort::setDefaultValue(int defaultValue)
 
 QBrush QNEPort::currentBrush() const
 {
-    return (_currentBrush);
+    return _currentBrush;
 }
 
 void QNEPort::setCurrentBrush(const QBrush &currentBrush)
@@ -223,7 +223,7 @@ void QNEPort::setCurrentBrush(const QBrush &currentBrush)
 
 bool QNEPort::isRequired() const
 {
-    return (m_required);
+    return m_required;
 }
 
 void QNEPort::setRequired(bool required)
@@ -234,12 +234,12 @@ void QNEPort::setRequired(bool required)
 
 signed char QNEPort::value() const
 {
-    return (m_value);
+    return m_value;
 }
 
 GraphicElement *QNEPort::graphicElement() const
 {
-    return (m_graphicElement);
+    return m_graphicElement;
 }
 
 void QNEPort::setGraphicElement(GraphicElement *graphicElement)
@@ -298,15 +298,15 @@ void QNEInputPort::setValue(signed char value)
 
 bool QNEInputPort::isOutput() const
 {
-    return (false);
+    return false;
 }
 
 bool QNEInputPort::isValid() const
 {
     if (m_connections.isEmpty()) {
-        return (!isRequired());
+        return !isRequired();
     }
-    return (m_connections.size() == 1);
+    return m_connections.size() == 1;
 }
 
 void QNEInputPort::updateTheme()
@@ -350,12 +350,12 @@ void QNEOutputPort::setValue(signed char value)
 
 bool QNEOutputPort::isOutput() const
 {
-    return (true);
+    return true;
 }
 
 bool QNEOutputPort::isValid() const
 {
-    return (m_value != -1);
+    return m_value != -1;
 }
 
 void QNEOutputPort::updateTheme()

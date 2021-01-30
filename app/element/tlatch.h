@@ -16,10 +16,10 @@
 //  /* GraphicElement interface */
 // public:
 //  virtual ElementType elementType( ) override {
-//    return( ElementType::TLATCH );
+//    return  ElementType::TLATCH ;
 //  }
 //  virtual ElementGroup elementGroup( ) override {
-//    return( ElementGroup::MEMORY );
+//    return  ElementGroup::MEMORY ;
 //  }
 //  virtual void updatePorts( ) override;
 //};

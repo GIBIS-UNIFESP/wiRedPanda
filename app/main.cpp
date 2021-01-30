@@ -42,23 +42,23 @@ int main(int argc, char *argv[])
     if (!arduFile.isEmpty()) {
         if (args.size() > 0) {
             w.loadPandaFile(args[0]);
-            return (!w.exportToArduino(arduFile));
+            return !w.exportToArduino(arduFile);
         }
-        return (0);
+        return 0;
     }
     QString wfFile = parser.value(waveformFileOption);
     if (!wfFile.isEmpty()) {
         if (args.size() > 0) {
             w.loadPandaFile(args[0]);
-            return (!w.exportToWaveFormFile(wfFile));
+            return !w.exportToWaveFormFile(wfFile);
         }
-        return (0);
+        return 0;
     }
     w.show();
     if (args.size() > 0) {
         w.loadPandaFile(args[0]);
     }
-    return (a.exec());
+    return a.exec();
 }
 
 /*
