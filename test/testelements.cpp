@@ -192,7 +192,7 @@ void TestElements::testTFlipFlop()
 
 QString testFile(QString fname)
 {
-    return (QString("%1/../examples/%2").arg(CURRENTDIR, fname));
+    return QString("%1/../examples/%2").arg(CURRENTDIR, fname);
 }
 
 void TestElements::testICData(const IC *ic)
