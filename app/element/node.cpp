@@ -29,9 +29,10 @@ ElementType Node::elementType()
 
 void Node::setSkin(bool defaultSkin, QString filename)
 {
-    if (defaultSkin)
+    if (defaultSkin) {
         pixmapSkinName[0] = ":/basic/node.png";
-    else
+    } else {
         pixmapSkinName[0] = filename;
+    }
     setPixmap(pixmapSkinName[0]);
 }
