@@ -6,8 +6,6 @@
 class JKFlipFlop : public GraphicElement
 {
     bool lastClk;
-    signed char lastJ;
-    signed char lastK;
 
 public:
     explicit JKFlipFlop(QGraphicsItem *parent = nullptr);
