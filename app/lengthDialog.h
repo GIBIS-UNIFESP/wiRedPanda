@@ -17,7 +17,7 @@ class lengthDialog : public QDialog
 public:
     explicit lengthDialog(QWidget *parent = nullptr);
     int getFrequency();
-    ~lengthDialog();
+    ~lengthDialog() override;
 
 private slots:
     void on_cancelPushButton_clicked();
