@@ -839,9 +839,11 @@ bool Editor::saveLocal(QString newPath)
     COMMENT("new path: " << newPath.toStdString(), 0);
     for (GraphicElement *elm : scene_elements) {
         elm->updateSkinsPath(newPath + "/skins/");
-        if (elm->elementType() == ElementType::IC)
-            if (!saveLocalIC(dynamic_cast<IC *>(elm), newPath))
+        if (elm->elementType() == ElementType::IC) {
+            if (!saveLocalIC(dynamic_cast<IC *>(elm), newPath)) {
                 return false;
+            }
+        }
     }
     return true;
 }
