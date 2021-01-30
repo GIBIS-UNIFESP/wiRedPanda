@@ -21,6 +21,9 @@ class Scene;
 class Editor;
 class GraphicElement;
 
+//!
+//! \brief The AddItemsCommand class represents a single action of adding a list of actions on the editor
+//!
 class AddItemsCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(AddItemsCommand)
@@ -28,17 +31,38 @@ class AddItemsCommand : public QUndoCommand
     enum { Id = 101 };
 
 public:
+    //!
+    //! \brief AddItemsCommand ctor taking a GraphicElement as its item
+    //! \param aItem   An item in the form of a GraphicElement (an IO elem., a gate or an IC)
+    //! \param aEditor The editor to which the command will be added to
+    //!
     explicit AddItemsCommand(GraphicElement *aItem, Editor *aEditor, QUndoCommand *parent = nullptr);
+    //!
+    //! \brief AddItemsCommand ctor taking a QNEConnection as its item
+    //! \param aItem   An item in the form of a QNEConnection (a node or a connection between nodes)
+    //! \param aEditor The editor to which the command will be added to
+    //!
     explicit AddItemsCommand(QNEConnection *aItem, Editor *aEditor, QUndoCommand *parent = nullptr);
+    //!
+    //! \brief AddItemsCommand ctor taking a several QGraphicsItems as its items
+    //! \param aItem   A list of items in the form of GraphicElements (an IO elem., a gate or an IC)
+    //! \param aEditor The editor to which the command will be added to
+    //!
     explicit AddItemsCommand(const QList<QGraphicsItem *> &aItems, Editor *aEditor, QUndoCommand *parent = nullptr);
 
+    //!
+    //! \brief undo reverts a change on the editor made by AddItemsCommand::redo
+    //!
     void undo() Q_DECL_OVERRIDE;
+    //!
+    //! \brief redo applies the change on the editor
+    //!
     void redo() Q_DECL_OVERRIDE;
 
 private:
-    QByteArray itemData;
-    Editor *editor;
-    QVector<int> ids, otherIds;
+    QByteArray m_itemData;
+    Editor * m_editor;
+    QVector<int> m_ids, m_otherIds;
 };
 
 class DeleteItemsCommand : public QUndoCommand

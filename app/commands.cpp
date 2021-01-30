@@ -193,9 +193,9 @@ AddItemsCommand::AddItemsCommand(GraphicElement *aItem, Editor *aEditor, QUndoCo
     : QUndoCommand(parent)
 {
     QList<QGraphicsItem *> items({aItem});
-    items = loadList(items, ids, otherIds);
-    editor = aEditor;
-    addItems(editor, items);
+    items = loadList(items, m_ids, m_otherIds);
+    m_editor = aEditor;
+    addItems(m_editor, items);
     setText(tr("Add %1 element").arg(aItem->objectName()));
 }
 
@@ -203,18 +203,18 @@ AddItemsCommand::AddItemsCommand(QNEConnection *aItem, Editor *aEditor, QUndoCom
     : QUndoCommand(parent)
 {
     QList<QGraphicsItem *> items({aItem});
-    items = loadList(items, ids, otherIds);
-    editor = aEditor;
-    addItems(editor, items);
+    items = loadList(items, m_ids, m_otherIds);
+    m_editor = aEditor;
+    addItems(m_editor, items);
     setText(tr("Add connection"));
 }
 
 AddItemsCommand::AddItemsCommand(const QList<QGraphicsItem *> &aItems, Editor *aEditor, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
-    QList<QGraphicsItem *> items = loadList(aItems, ids, otherIds);
-    editor = aEditor;
-    addItems(editor, items);
+    QList<QGraphicsItem *> items = loadList(aItems, m_ids, m_otherIds);
+    m_editor = aEditor;
+    addItems(m_editor, items);
     setText(tr("Add %1 elements").arg(items.size()));
 }
 
@@ -234,24 +234,24 @@ DeleteItemsCommand::DeleteItemsCommand(QGraphicsItem *item, Editor *aEditor, QUn
 void AddItemsCommand::undo()
 {
     COMMENT("UNDO " + text().toStdString(), 0);
-    QList<QGraphicsItem *> items = findItems(ids);
+    QList<QGraphicsItem *> items = findItems(m_ids);
 
-    SimulationController *sc = this->editor->getSimulationController();
+    SimulationController *sc = this->m_editor->getSimulationController();
     // We need to restart the simulation controller when deleting through the Undo command to
     // guarantee that no crashes occur when deleting input elements (clocks, input buttons, etc.)
     sc->shouldRestart = true;
 
-    saveitems(itemData, items, otherIds);
-    deleteItems(items, editor);
-    emit editor->circuitHasChanged();
+    saveitems(m_itemData, items, m_otherIds);
+    deleteItems(items, m_editor);
+    emit m_editor->circuitHasChanged();
 }
 
 void AddItemsCommand::redo()
 {
     COMMENT("REDO " + text().toStdString(), 0);
     // TODO: items seems unused
-    QList<QGraphicsItem *> items = loadItems(itemData, ids, editor, otherIds);
-    emit editor->circuitHasChanged();
+    QList<QGraphicsItem *> items = loadItems(m_itemData, m_ids, m_editor, m_otherIds);
+    emit m_editor->circuitHasChanged();
 }
 
 void DeleteItemsCommand::undo()
