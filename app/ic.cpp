@@ -105,21 +105,21 @@ void IC::loadFile(QString fname)
 
 QString IC::getFile() const
 {
-    return (m_file);
+    return m_file;
 }
 
 bool IC::setFile(QString newFileName)
 {
     COMMENT("Updating ic name.", 0);
     if (!ICManager::instance()->updatePrototypeFilePathName(m_file, newFileName))
-        return (false);
+        return false;
     m_file = newFileName;
-    return (true);
+    return true;
 }
 
 ICPrototype *IC::getPrototype()
 {
-    return (ICManager::instance()->getPrototype(m_file));
+    return ICManager::instance()->getPrototype(m_file);
 }
 
 void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
