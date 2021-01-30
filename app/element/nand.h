@@ -7,15 +7,15 @@ class Nand : public GraphicElement
 {
 public:
     explicit Nand(QGraphicsItem *parent = nullptr);
-    virtual ~Nand() override = default;
+    ~Nand() override = default;
 
     /* GraphicElement interface */
 public:
-    virtual ElementType elementType() override
+    ElementType elementType() override
     {
         return (ElementType::NAND);
     }
-    virtual ElementGroup elementGroup() override
+    ElementGroup elementGroup() override
     {
         return (ElementGroup::GATE);
     }
