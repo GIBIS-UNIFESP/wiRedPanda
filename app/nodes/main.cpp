@@ -34,5 +34,5 @@ int main(int argc, char *argv[])
     QNEMainWindow w;
     w.show();
 
-    return (a.exec());
+    return a.exec();
 }
