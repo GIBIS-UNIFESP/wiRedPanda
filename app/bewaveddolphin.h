@@ -22,7 +22,7 @@ class SignalModel : public QStandardItemModel
 {
 public:
     SignalModel(int rows, int inputs, int columns, QObject *parent = nullptr);
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
     int inputs;
 };
 
@@ -43,7 +43,7 @@ class BewavedDolphin : public QMainWindow
 
 public:
     explicit BewavedDolphin(Editor *editor, QWidget *parent = nullptr);
-    ~BewavedDolphin();
+    ~BewavedDolphin() override;
     bool createWaveform(QString filename);
     void show();
     void print();
@@ -150,7 +150,7 @@ private:
     bool checkSave();
 
 protected:
-    void closeEvent(QCloseEvent *e);
+    void closeEvent(QCloseEvent *e) override;
 };
 
 #endif // BEWAVEDDOLPHIN_H
