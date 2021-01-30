@@ -3,13 +3,14 @@
 
 #include "logicelement.h"
 
-class LogicDLatch : public LogicElement {
+class LogicDLatch : public LogicElement
+{
 public:
-  explicit LogicDLatch( );
+    explicit LogicDLatch();
 
-  /* LogicElement interface */
+    /* LogicElement interface */
 protected:
-  virtual void _updateLogic( const std::vector< bool > &inputs );
+    virtual void _updateLogic(const std::vector<bool> &inputs);
 };
 
 #endif // LOGICDLATCH_H

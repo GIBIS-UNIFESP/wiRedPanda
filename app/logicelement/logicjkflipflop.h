@@ -3,19 +3,19 @@
 
 #include "logicelement.h"
 
-class LogicJKFlipFlop : public LogicElement {
+class LogicJKFlipFlop : public LogicElement
+{
 public:
-  explicit LogicJKFlipFlop( );
+    explicit LogicJKFlipFlop();
 
-  /* LogicElement interface */
+    /* LogicElement interface */
 protected:
-  virtual void _updateLogic( const std::vector< bool > &inputs );
+    virtual void _updateLogic(const std::vector<bool> &inputs);
 
 private:
-  bool lastClk;
-  bool lastJ;
-  bool lastK;
+    bool lastClk;
+    bool lastJ;
+    bool lastK;
 };
-
 
 #endif // LOGICJKFLIPFLOP_H

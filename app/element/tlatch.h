@@ -3,13 +3,13 @@
 
 //#include "graphicelement.h"
 
-//class TLatch : public GraphicElement {
-//public:
+// class TLatch : public GraphicElement {
+// public:
 //  explicit TLatch( QGraphicsItem *parent = nullptr );
 //  virtual ~TLatch( ) override = default;
 
 //  /* GraphicElement interface */
-//public:
+// public:
 //  virtual ElementType elementType( ) override {
 //    return( ElementType::TLATCH );
 //  }

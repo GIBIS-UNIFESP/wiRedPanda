@@ -34,55 +34,55 @@ class QNEPort;
 class QNEInputPort;
 class QNEOutputPort;
 
-class QNEConnection : public QGraphicsPathItem, public ItemWithId {
+class QNEConnection : public QGraphicsPathItem, public ItemWithId
+{
 public:
-  enum : uint32_t   { Type = QGraphicsItem::UserType + 2 };
-  enum class Status { Invalid = -1, Inactive = 0, Active = 1 };
+    enum : uint32_t { Type = QGraphicsItem::UserType + 2 };
+    enum class Status { Invalid = -1, Inactive = 0, Active = 1 };
 
-  explicit QNEConnection( QGraphicsItem *parent = nullptr );
-  virtual ~QNEConnection( );
+    explicit QNEConnection(QGraphicsItem *parent = nullptr);
+    virtual ~QNEConnection();
 
-  void setStartPos( const QPointF &p );
-  void setEndPos( const QPointF &p );
-  void setStart( QNEOutputPort *p );
-  void setEnd( QNEInputPort *p );
-  void updatePosFromPorts( );
-  void updatePath( );
-  QNEOutputPort* start( ) const;
-  QNEInputPort* end( ) const;
+    void setStartPos(const QPointF &p);
+    void setEndPos(const QPointF &p);
+    void setStart(QNEOutputPort *p);
+    void setEnd(QNEInputPort *p);
+    void updatePosFromPorts();
+    void updatePath();
+    QNEOutputPort *start() const;
+    QNEInputPort *end() const;
 
-  double angle( );
+    double angle();
 
-  void save( QDataStream & ) const;
-  bool load( QDataStream &, const QMap< quint64, QNEPort* > &portMap = QMap< quint64, QNEPort* >( ) );
+    void save(QDataStream &) const;
+    bool load(QDataStream &, const QMap<quint64, QNEPort *> &portMap = QMap<quint64, QNEPort *>());
 
-  int type( ) const {
-    return( Type );
-  }
-  QNEPort* otherPort( const QNEPort *port ) const;
-  QNEOutputPort* otherPort( const QNEInputPort* ) const;
-  QNEInputPort* otherPort( const QNEOutputPort* ) const;
-  Status status( ) const;
-  void setStatus( const Status &status );
+    int type() const
+    {
+        return (Type);
+    }
+    QNEPort *otherPort(const QNEPort *port) const;
+    QNEOutputPort *otherPort(const QNEInputPort *) const;
+    QNEInputPort *otherPort(const QNEOutputPort *) const;
+    Status status() const;
+    void setStatus(const Status &status);
 
-  void updateTheme( );
+    void updateTheme();
 
 private:
-  QPointF startPos;
-  QPointF endPos;
-  QNEOutputPort *m_start;
-  QNEInputPort *m_end;
-  Status m_status;
+    QPointF startPos;
+    QPointF endPos;
+    QNEOutputPort *m_start;
+    QNEInputPort *m_end;
+    Status m_status;
 
-  QColor m_invalidClr;
-  QColor m_activeClr;
-  QColor m_inactiveClr;
-  QColor m_selectedClr;
-  /* QGraphicsItem interface */
+    QColor m_invalidClr;
+    QColor m_activeClr;
+    QColor m_inactiveClr;
+    QColor m_selectedClr;
+    /* QGraphicsItem interface */
 public:
-  void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
-
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 };
-
 
 #endif /* QNECONNECTION_H */

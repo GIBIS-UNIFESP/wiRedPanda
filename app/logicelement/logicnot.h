@@ -3,14 +3,14 @@
 
 #include "logicelement.h"
 
-class LogicNot : public LogicElement {
+class LogicNot : public LogicElement
+{
 public:
-  explicit LogicNot( );
+    explicit LogicNot();
 
-  /* LogicElement interface */
+    /* LogicElement interface */
 protected:
-  virtual void _updateLogic( const std::vector< bool > &inputs );
+    virtual void _updateLogic(const std::vector<bool> &inputs);
 };
-
 
 #endif // LOGICNOT_H

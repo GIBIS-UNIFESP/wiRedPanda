@@ -5,250 +5,271 @@
 #include "itemwithid.h"
 #include "nodes/qneport.h"
 
-#include <cstdint>
 #include <QGraphicsItem>
 #include <QGraphicsPixmapItem>
 #include <QKeySequence>
+#include <cstdint>
 
-//enum class ElementType : uint_fast8_t {
+// enum class ElementType : uint_fast8_t {
 //  UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND, DISPLAY,
 //  DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, TLATCH, BOX, NODE, MUX, DEMUX,
 //  BUZZER, DISPLAY14, LEDGRID
 //};
 
 enum class ElementType : uint_fast8_t {
-  UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND, DISPLAY,
-  DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, UNUSED, IC, NODE, MUX, DEMUX,
-  BUZZER, DISPLAY14
+    UNKNOWN,
+    BUTTON,
+    SWITCH,
+    LED,
+    NOT,
+    AND,
+    OR,
+    NAND,
+    NOR,
+    CLOCK,
+    XOR,
+    XNOR,
+    VCC,
+    GND,
+    DISPLAY,
+    DLATCH,
+    JKLATCH,
+    DFLIPFLOP,
+    JKFLIPFLOP,
+    SRFLIPFLOP,
+    TFLIPFLOP,
+    UNUSED,
+    IC,
+    NODE,
+    MUX,
+    DEMUX,
+    BUZZER,
+    DISPLAY14
 };
 
-enum class ElementGroup : uint_fast8_t {
-  UNKNOWN, OTHER, IC, INPUT, GATE, MEMORY, OUTPUT, MUX, STATICINPUT
-};
-
+enum class ElementGroup : uint_fast8_t { UNKNOWN, OTHER, IC, INPUT, GATE, MEMORY, OUTPUT, MUX, STATICINPUT };
 
 #define MAXIMUMVALIDINPUTSIZE 256
 
 class GraphicElement;
 
-typedef QVector< GraphicElement* > ElementVector;
-typedef QVector< QNEPort* > QNEPortVector;
+typedef QVector<GraphicElement *> ElementVector;
+typedef QVector<QNEPort *> QNEPortVector;
 
-class GraphicElement : public QGraphicsObject, public ItemWithId {
-  Q_OBJECT
+class GraphicElement : public QGraphicsObject, public ItemWithId
+{
+    Q_OBJECT
 public:
-  enum : uint32_t { Type = QGraphicsItem::UserType + 3 };
+    enum : uint32_t { Type = QGraphicsItem::UserType + 3 };
 
-  explicit GraphicElement( int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent = nullptr );
+    explicit GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent = nullptr);
 
 private:
-  QPixmap *pixmap;
-  QString currentPixmapName;
-  QColor m_selectionBrush;
-  QColor m_selectionPen;
+    QPixmap *pixmap;
+    QString currentPixmapName;
+    QColor m_selectionBrush;
+    QColor m_selectionPen;
 
 protected:
-  QVector< QString > pixmapSkinName;
+    QVector<QString> pixmapSkinName;
 
-  /* GraphicElement interface. */
+    /* GraphicElement interface. */
 public:
-  virtual ElementType elementType( ) = 0;
-  bool usingDefaultSkin;
+    virtual ElementType elementType() = 0;
+    bool usingDefaultSkin;
 
-  virtual ElementGroup elementGroup( ) = 0;
+    virtual ElementGroup elementGroup() = 0;
 
-  virtual void save( QDataStream &ds ) const;
+    virtual void save(QDataStream &ds) const;
 
-  virtual void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
+    virtual void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version);
 
-  virtual void updatePorts( );
+    virtual void updatePorts();
 
-  virtual void refresh( );
+    virtual void refresh();
 
-  /* QGraphicsItem interface */
+    /* QGraphicsItem interface */
 public:
+    int type() const
+    {
+        return (Type);
+    }
 
-  int type( ) const {
-    return( Type );
-  }
+    virtual QRectF boundingRect() const;
 
-  virtual QRectF boundingRect( ) const;
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
-  virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
+    QNEPort *addPort(const QString &name, bool isOutput, int flags = 0, int ptr = 0);
 
-  QNEPort* addPort( const QString &name, bool isOutput, int flags = 0, int ptr = 0 );
+    void addInputPort(const QString &name = QString());
 
-  void addInputPort( const QString &name = QString( ) );
+    void addOutputPort(const QString &name = QString());
 
-  void addOutputPort( const QString &name = QString( ) );
+    virtual void setPortName(QString name);
 
-  virtual void setPortName( QString name );
+    virtual void setSkin(bool defaultSkin, QString filename);
 
-  virtual void setSkin( bool defaultSkin, QString filename );
+    int topPosition() const;
 
-  int topPosition( ) const;
+    int bottomPosition() const;
 
-  int bottomPosition( ) const;
+    int maxInputSz() const;
 
-  int maxInputSz( ) const;
+    int maxOutputSz() const;
 
-  int maxOutputSz( ) const;
+    bool outputsOnTop() const;
 
-  bool outputsOnTop( ) const;
+    QVector<QNEInputPort *> inputs() const;
+    void setInputs(const QVector<QNEInputPort *> &inputs);
 
-  QVector< QNEInputPort* > inputs( ) const;
-  void setInputs( const QVector< QNEInputPort* > &inputs );
+    QVector<QNEOutputPort *> outputs() const;
 
-  QVector< QNEOutputPort* > outputs( ) const;
+    const QNEInputPort *input(int pos = 0) const;
+    const QNEOutputPort *output(int pos = 0) const;
 
-  const QNEInputPort* input( int pos = 0 ) const;
-  const QNEOutputPort* output( int pos = 0 ) const;
+    QNEInputPort *input(int pos = 0);
+    QNEOutputPort *output(int pos = 0);
 
-  QNEInputPort* input( int pos = 0 );
-  QNEOutputPort* output( int pos = 0 );
+    void setOutputs(const QVector<QNEOutputPort *> &outputs);
 
-  void setOutputs( const QVector< QNEOutputPort* > &outputs );
+    int minInputSz() const;
 
-  int minInputSz( ) const;
+    int minOutputSz() const;
 
-  int minOutputSz( ) const;
+    int inputSize() const;
+    void setInputSize(int size);
 
-  int inputSize( ) const;
-  void setInputSize( int size );
+    int outputSize() const;
+    void setOutputSize(const int size);
 
-  int outputSize( ) const;
-  void setOutputSize( const int size );
+    virtual float getFrequency() const;
+    virtual void setFrequency(float freq);
 
-  virtual float getFrequency( ) const;
-  virtual void setFrequency( float freq );
+    void setPixmap(const QString &pixmapName);
+    void setPixmap(const QString &pixmapName, QRect size);
 
-  void setPixmap( const QString &pixmapName);
-  void setPixmap( const QString &pixmapName, QRect size );
+    bool rotatable() const;
 
-  bool rotatable( ) const;
+    bool hasLabel() const;
 
-  bool hasLabel( ) const;
+    bool canChangeSkin() const;
 
-  bool canChangeSkin() const;
+    bool hasFrequency() const;
 
-  bool hasFrequency( ) const;
+    bool hasColors() const;
 
-  bool hasColors( ) const;
+    bool hasTrigger() const;
 
-  bool hasTrigger( ) const;
+    bool hasAudio() const;
 
-  bool hasAudio( ) const;
+    virtual void setColor(QString getColor);
+    virtual QString getColor() const;
 
+    virtual void setAudio(QString audio);
+    virtual QString getAudio() const;
+    /*
+     *  bool beingVisited( ) const;
+     *  void setBeingVisited( bool beingVisited );
+     */
 
-  virtual void setColor( QString getColor );
-  virtual QString getColor( ) const;
+    /*
+     *  bool visited( ) const;
+     *  void setVisited( bool visited );
+     */
 
-  virtual void setAudio( QString audio );
-  virtual QString getAudio( ) const;
-/*
- *  bool beingVisited( ) const;
- *  void setBeingVisited( bool beingVisited );
- */
+    bool isValid();
 
-/*
- *  bool visited( ) const;
- *  void setVisited( bool visited );
- */
+    void setLabel(QString label);
+    QString getLabel() const;
 
-  bool isValid( );
+    void updateTheme();
+    virtual void updateThemeLocal();
 
-  void setLabel( QString label );
-  QString getLabel( ) const;
+    void disable();
+    void enable();
+    bool disabled();
 
-  void updateTheme( );
-  virtual void updateThemeLocal( );
+    QPixmap getPixmap() const;
 
-  void disable( );
-  void enable( );
-  bool disabled( );
+    QKeySequence getTrigger() const;
+    void setTrigger(const QKeySequence &trigger);
 
-  QPixmap getPixmap( ) const;
+    virtual QString genericProperties();
 
-  QKeySequence getTrigger( ) const;
-  void setTrigger( const QKeySequence &trigger );
-
-  virtual QString genericProperties( );
-
-  // Update label in graphical interface
-  void updateLabel( );
-  void updateSkinsPath(QString newSkinPath);
+    // Update label in graphical interface
+    void updateLabel();
+    void updateSkinsPath(QString newSkinPath);
 
 protected:
-  void setRotatable( bool rotatable );
-  void setHasLabel( bool hasLabel );
-  void setHasFrequency( bool hasFrequency );
-  void setHasColors( bool hasColors );
-  void setCanChangeSkin ( bool canChangeSkin );
-  void setHasTrigger( bool hasTrigger );
-  void setMinInputSz( const int minInputSz );
-  void setMinOutputSz( int minOutputSz );
-  void setHasAudio( bool hasAudio );
-  void setOutputsOnTop( bool outputsOnTop );
-  void setMaxOutputSz( int maxOutputSz );
-  void setMaxInputSz( int maxInputSz );
-  void setTopPosition( int topPosition );
-  void setBottomPosition( int bottomPosition );
+    void setRotatable(bool rotatable);
+    void setHasLabel(bool hasLabel);
+    void setHasFrequency(bool hasFrequency);
+    void setHasColors(bool hasColors);
+    void setCanChangeSkin(bool canChangeSkin);
+    void setHasTrigger(bool hasTrigger);
+    void setMinInputSz(const int minInputSz);
+    void setMinOutputSz(int minOutputSz);
+    void setHasAudio(bool hasAudio);
+    void setOutputsOnTop(bool outputsOnTop);
+    void setMaxOutputSz(int maxOutputSz);
+    void setMaxInputSz(int maxInputSz);
+    void setTopPosition(int topPosition);
+    void setBottomPosition(int bottomPosition);
 
-/*  virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e); */
-  QVariant itemChange( GraphicsItemChange change, const QVariant &value );
+    /*  virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e); */
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+
 private:
-  QGraphicsTextItem *label;
-  int m_topPosition;
-  int m_bottomPosition;
-  quint64 m_maxInputSz;
-  quint64 m_maxOutputSz;
-  quint64 m_minInputSz;
-  quint64 m_minOutputSz;
-  bool m_outputsOnTop;
-  bool m_rotatable;
-  bool m_hasLabel;
-  bool m_canChangeSkin;
-  bool m_hasFrequency;
-  bool m_hasColors;
-  bool m_hasTrigger;
-  bool m_hasAudio;
-  bool m_disabled;
-  QString m_labelText;
-  QKeySequence m_trigger;
+    QGraphicsTextItem *label;
+    int m_topPosition;
+    int m_bottomPosition;
+    quint64 m_maxInputSz;
+    quint64 m_maxOutputSz;
+    quint64 m_minInputSz;
+    quint64 m_minOutputSz;
+    bool m_outputsOnTop;
+    bool m_rotatable;
+    bool m_hasLabel;
+    bool m_canChangeSkin;
+    bool m_hasFrequency;
+    bool m_hasColors;
+    bool m_hasTrigger;
+    bool m_hasAudio;
+    bool m_disabled;
+    QString m_labelText;
+    QKeySequence m_trigger;
 
+    void loadPos(QDataStream &ds);
 
-  void loadPos( QDataStream &ds );
+    void loadAngle(QDataStream &ds);
 
-  void loadAngle( QDataStream &ds );
+    void loadLabel(QDataStream &ds, double version);
 
-  void loadLabel( QDataStream &ds, double version );
+    void loadMinMax(QDataStream &ds, double version);
 
-  void loadMinMax( QDataStream &ds, double version );
+    void loadTrigger(QDataStream &ds, double version);
 
-  void loadTrigger( QDataStream &ds, double version );
+    void loadInputPorts(QDataStream &ds, QMap<quint64, QNEPort *> &portMap);
 
-  void loadInputPorts( QDataStream &ds, QMap< quint64, QNEPort* > &portMap );
+    void removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap);
 
-  void removePortFromMap( QNEPort *deletedPort, QMap< quint64, QNEPort* > &portMap );
+    void loadOutputPorts(QDataStream &ds, QMap<quint64, QNEPort *> &portMap);
 
-  void loadOutputPorts( QDataStream &ds, QMap< quint64, QNEPort* > &portMap );
+    void removeSurplusInputs(quint64 inputSz, QMap<quint64, QNEPort *> &portMap);
 
-  void removeSurplusInputs( quint64 inputSz, QMap< quint64, QNEPort* > &portMap );
+    void removeSurplusOutputs(quint64 outputSz, QMap<quint64, QNEPort *> &portMap);
 
-  void removeSurplusOutputs( quint64 outputSz, QMap<quint64, QNEPort *> &portMap );
+    void loadInputPort(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, size_t port);
 
-  void loadInputPort( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, size_t port );
+    void loadOutputPort(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, size_t port);
 
-  void loadOutputPort( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, size_t port );
+    void loadPixmapSkinNames(QDataStream &ds, double version);
 
-  void loadPixmapSkinNames( QDataStream &ds , double version );
-
-  void loadPixmapSkinName( QDataStream &ds, size_t skin );
+    void loadPixmapSkinName(QDataStream &ds, size_t skin);
 
 protected:
-  QVector< QNEInputPort* > m_inputs;
-  QVector< QNEOutputPort* > m_outputs;
+    QVector<QNEInputPort *> m_inputs;
+    QVector<QNEOutputPort *> m_outputs;
 };
-
 
 #endif /* GRAPHICELEMENT_H */

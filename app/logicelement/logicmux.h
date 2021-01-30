@@ -3,14 +3,14 @@
 
 #include "logicelement.h"
 
-class LogicMux : public LogicElement {
+class LogicMux : public LogicElement
+{
 public:
-  explicit LogicMux( );
+    explicit LogicMux();
 
-  /* LogicElement interface */
+    /* LogicElement interface */
 protected:
-  virtual void _updateLogic( const std::vector< bool > &inputs );
+    virtual void _updateLogic(const std::vector<bool> &inputs);
 };
-
 
 #endif // LOGICMUX_H

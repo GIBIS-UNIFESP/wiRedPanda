@@ -5,16 +5,17 @@
 
 #include <QTest>
 
-class TestFiles : public QObject {
-  Q_OBJECT
-  Editor * editor;
+class TestFiles : public QObject
+{
+    Q_OBJECT
+    Editor *editor;
 private slots:
 
-  /* functions executed by QtTest before and after each test */
-  void init( );
-  void cleanup( );
+    /* functions executed by QtTest before and after each test */
+    void init();
+    void cleanup();
 
-  void testFiles( );
+    void testFiles();
 };
 
 #endif /* TESTFILES_H */

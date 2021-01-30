@@ -3,21 +3,24 @@
 
 #include "graphicelement.h"
 
-class DLatch : public GraphicElement {
+class DLatch : public GraphicElement
+{
 public:
-  explicit DLatch( QGraphicsItem *parent = nullptr );
-  virtual ~DLatch( ) override = default;
+    explicit DLatch(QGraphicsItem *parent = nullptr);
+    virtual ~DLatch() override = default;
 
-  /* GraphicElement interface */
+    /* GraphicElement interface */
 public:
-  virtual ElementType elementType( ) override {
-    return( ElementType::DLATCH );
-  }
-  virtual ElementGroup elementGroup( ) override {
-    return( ElementGroup::MEMORY );
-  }
-  virtual void updatePorts( ) override;
-  void setSkin( bool defaultSkin, QString filename ) override;
+    virtual ElementType elementType() override
+    {
+        return (ElementType::DLATCH);
+    }
+    virtual ElementGroup elementGroup() override
+    {
+        return (ElementGroup::MEMORY);
+    }
+    virtual void updatePorts() override;
+    void setSkin(bool defaultSkin, QString filename) override;
 };
 
 #endif /* DLATCH_H */
