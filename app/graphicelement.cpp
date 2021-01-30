@@ -676,7 +676,7 @@ bool GraphicElement::isValid()
             break;
         }
     }
-    if (valid == false) {
+    if (!valid) {
         for (QNEOutputPort *output : qAsConst(m_outputs)) {
             for (QNEConnection *conn : output->connections()) {
                 conn->setStatus(QNEConnection::Status::Invalid);
