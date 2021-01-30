@@ -22,14 +22,14 @@ class IC : public GraphicElement
 
 public:
     IC(QGraphicsItem *parent = nullptr);
-    virtual ~IC() override;
+    ~IC() override;
 
     /* GraphicElement interface */
-    virtual ElementType elementType() override
+    ElementType elementType() override
     {
         return (ElementType::IC);
     }
-    virtual ElementGroup elementGroup() override
+    ElementGroup elementGroup() override
     {
         return (ElementGroup::IC);
     }
