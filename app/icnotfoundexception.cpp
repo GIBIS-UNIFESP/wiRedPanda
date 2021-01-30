@@ -13,5 +13,5 @@ ICNotFoundException::ICNotFoundException(const std::string &message, IC *ic)
 
 IC *ICNotFoundException::getIC() const
 {
-    return (m_ic);
+    return m_ic;
 }
