@@ -4,23 +4,25 @@
 #include "elementmapping.h"
 #include "graphicelement.h"
 
-class ICMapping : public ElementMapping {
-  QNEPortVector icInputs;
-  QNEPortVector icOutputs;
+class ICMapping : public ElementMapping
+{
+    QNEPortVector icInputs;
+    QNEPortVector icOutputs;
 
-  QVector< LogicElement* > inputs;
-  QVector< LogicElement* > outputs;
+    QVector<LogicElement *> inputs;
+    QVector<LogicElement *> outputs;
+
 public:
-  ICMapping( QString file, const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs );
+    ICMapping(QString file, const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs);
 
-  virtual ~ICMapping( );
+    virtual ~ICMapping();
 
-  void initialize( );
+    void initialize();
 
-  void clearConnections( );
+    void clearConnections();
 
-  LogicElement* getInput( int index );
-  LogicElement* getOutput( int index );
+    LogicElement *getInput(int index);
+    LogicElement *getOutput(int index);
 };
 
 #endif // ICMAPPING_H

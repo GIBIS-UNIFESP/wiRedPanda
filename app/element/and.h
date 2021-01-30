@@ -3,22 +3,23 @@
 
 #include "graphicelement.h"
 
-class And : public GraphicElement {
-
+class And : public GraphicElement
+{
 public:
-  explicit And( QGraphicsItem *parent = nullptr );
-  virtual ~And( ) override = default;
+    explicit And(QGraphicsItem *parent = nullptr);
+    virtual ~And() override = default;
 
-  /* GraphicElement interface */
+    /* GraphicElement interface */
 public:
-  virtual ElementType elementType( ) override {
-    return( ElementType::AND );
-  }
-  virtual ElementGroup elementGroup( ) override {
-    return( ElementGroup::GATE );
-  }
-  void setSkin( bool defaultSkin, QString filename ) override;
-
+    virtual ElementType elementType() override
+    {
+        return (ElementType::AND);
+    }
+    virtual ElementGroup elementGroup() override
+    {
+        return (ElementGroup::GATE);
+    }
+    void setSkin(bool defaultSkin, QString filename) override;
 };
 
 #endif /* AND_H */

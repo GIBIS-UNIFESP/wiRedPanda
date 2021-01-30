@@ -3,13 +3,14 @@
 
 #include "logicelement.h"
 
-class LogicAnd : public LogicElement {
+class LogicAnd : public LogicElement
+{
 public:
-  explicit LogicAnd( size_t inputSize );
+    explicit LogicAnd(size_t inputSize);
 
-  /* LogicElement interface */
+    /* LogicElement interface */
 protected:
-  virtual void _updateLogic( const std::vector< bool > &inputs );
+    virtual void _updateLogic(const std::vector<bool> &inputs);
 };
 
 #endif // LOGICAND_H

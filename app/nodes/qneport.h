@@ -34,108 +34,109 @@ class QNEBlock;
 class QNEConnection;
 class GraphicElement;
 
-class QNEPort : public QGraphicsPathItem {
+class QNEPort : public QGraphicsPathItem
+{
 public:
-  enum { Type = QGraphicsItem::UserType + 1 };
-  enum { NamePort = 1, TypePort = 2 };
+    enum { Type = QGraphicsItem::UserType + 1 };
+    enum { NamePort = 1, TypePort = 2 };
 
-  explicit QNEPort( QGraphicsItem *parent = nullptr );
+    explicit QNEPort(QGraphicsItem *parent = nullptr);
 
-  void setNEBlock( QNEBlock* );
-  void setName( const QString &n );
-  int radius( ) const;
-  const QList< QNEConnection* > &connections( ) const;
-  void connect( QNEConnection *conn );
-  void disconnect( QNEConnection *conn );
-  bool isConnected( QNEPort* );
-  void setPortFlags( int );
+    void setNEBlock(QNEBlock *);
+    void setName(const QString &n);
+    int radius() const;
+    const QList<QNEConnection *> &connections() const;
+    void connect(QNEConnection *conn);
+    void disconnect(QNEConnection *conn);
+    bool isConnected(QNEPort *);
+    void setPortFlags(int);
 
-  virtual bool isOutput( ) const = 0;
+    virtual bool isOutput() const = 0;
 
-  const QString &portName( ) const;
-  int portFlags( ) const;
+    const QString &portName() const;
+    int portFlags() const;
 
-  int type( ) const;
+    int type() const;
 
-  quint64 ptr( );
-  void setPtr( quint64 );
+    quint64 ptr();
+    void setPtr(quint64);
 
+    GraphicElement *graphicElement() const;
+    void setGraphicElement(GraphicElement *graphicElement);
 
-  GraphicElement* graphicElement( ) const;
-  void setGraphicElement( GraphicElement *graphicElement );
+    void updateConnections();
+    signed char value() const;
+    virtual void setValue(signed char value) = 0;
 
-  void updateConnections( );
-  signed char value( ) const;
-  virtual void setValue( signed char value ) = 0;
+    bool isRequired() const;
+    void setRequired(bool required);
 
-  bool isRequired( ) const;
-  void setRequired( bool required );
+    QBrush currentBrush() const;
+    void setCurrentBrush(const QBrush &currentBrush);
 
-  QBrush currentBrush( ) const;
-  void setCurrentBrush( const QBrush &currentBrush );
+    int defaultValue() const;
+    void setDefaultValue(int defaultValue);
 
-  int defaultValue( ) const;
-  void setDefaultValue( int defaultValue );
+    QString getName() const;
 
-  QString getName( ) const;
+    virtual bool isValid() const = 0;
 
-  virtual bool isValid( ) const = 0;
+    void hoverLeave();
+    void hoverEnter();
 
-  void hoverLeave( );
-  void hoverEnter( );
-
-  int index( ) const;
-  void setIndex( int index );
+    int index() const;
+    void setIndex(int index);
 
 protected:
-  QVariant itemChange( GraphicsItemChange change, const QVariant &value );
-  int m_defaultValue;
-  int m_index;
-  QNEBlock *m_block;
-  QString name;
-  QGraphicsTextItem *label;
-  int radius_;
-  int margin;
-  QList< QNEConnection* > m_connections;
-  int m_portFlags;
-  quint64 m_ptr;
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+    int m_defaultValue;
+    int m_index;
+    QNEBlock *m_block;
+    QString name;
+    QGraphicsTextItem *label;
+    int radius_;
+    int margin;
+    QList<QNEConnection *> m_connections;
+    int m_portFlags;
+    quint64 m_ptr;
 
-  bool m_required;
+    bool m_required;
 
-  /* WPanda */
-  GraphicElement *m_graphicElement;
-  QBrush _currentBrush;
+    /* WPanda */
+    GraphicElement *m_graphicElement;
+    QBrush _currentBrush;
 
-  /* QGraphicsItem interface */
+    /* QGraphicsItem interface */
 protected:
-  signed char m_value;
+    signed char m_value;
 
-  virtual void updateTheme( ) = 0;
+    virtual void updateTheme() = 0;
 };
 
-class QNEInputPort : public QNEPort {
+class QNEInputPort : public QNEPort
+{
 public:
-  explicit QNEInputPort( QGraphicsItem *parent );
-  virtual ~QNEInputPort( );
-  /* QNEPort interface */
+    explicit QNEInputPort(QGraphicsItem *parent);
+    virtual ~QNEInputPort();
+    /* QNEPort interface */
 public:
-  void setValue( signed char value );
-  bool isOutput( ) const;
-  bool isValid( ) const;
-  void updateTheme( );
+    void setValue(signed char value);
+    bool isOutput() const;
+    bool isValid() const;
+    void updateTheme();
 };
 
-class QNEOutputPort : public QNEPort {
+class QNEOutputPort : public QNEPort
+{
 public:
-  explicit QNEOutputPort( QGraphicsItem *parent );
-  virtual ~QNEOutputPort( );
-  /* QNEPort interface */
+    explicit QNEOutputPort(QGraphicsItem *parent);
+    virtual ~QNEOutputPort();
+    /* QNEPort interface */
 public:
-  void setValue( signed char value );
-  bool isOutput( ) const;
-  bool isValid( ) const;
-  void updateTheme( );
+    void setValue(signed char value);
+    bool isOutput() const;
+    bool isValid() const;
+    void updateTheme();
 };
-
 
 #endif /* QNEPORT_H */

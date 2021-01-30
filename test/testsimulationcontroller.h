@@ -6,17 +6,18 @@
 
 #include <QTest>
 
-class TestSimulationController : public QObject {
-  Q_OBJECT
+class TestSimulationController : public QObject
+{
+    Q_OBJECT
 
-  QVector< GraphicElement* > elms;
-  Editor *editor;
+    QVector<GraphicElement *> elms;
+    Editor *editor;
 private slots:
 
-  /* functions executed by QtTest before and after each test */
-  void init( );
-  void cleanup( );
-  void testCase1( );
+    /* functions executed by QtTest before and after each test */
+    void init();
+    void cleanup();
+    void testCase1();
 };
 
 #endif /* TESTSIMULATIONCONTROLLER_H */

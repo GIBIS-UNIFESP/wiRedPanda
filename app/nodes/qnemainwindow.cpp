@@ -34,115 +34,106 @@
 
 #include "qneport.h"
 
-QNEMainWindow::QNEMainWindow( QWidget *parent ) :
-  QMainWindow( parent ) {
+QNEMainWindow::QNEMainWindow(QWidget *parent)
+    : QMainWindow(parent)
+{
+    scene = new QGraphicsScene();
 
+    QAction *quitAct = new QAction(tr("&Quit"), this);
+    quitAct->setShortcuts(QKeySequence::Quit);
+    quitAct->setStatusTip(tr("Quit the application"));
+    connect(quitAct, SIGNAL(triggered()), qApp, SLOT(quit()));
 
-  scene = new QGraphicsScene( );
+    QAction *loadAct = new QAction(tr("&Load"), this);
+    loadAct->setShortcuts(QKeySequence::Open);
+    loadAct->setStatusTip(tr("Open a file"));
+    connect(loadAct, SIGNAL(triggered()), this, SLOT(loadFile()));
 
+    QAction *saveAct = new QAction(tr("&Save"), this);
+    saveAct->setShortcuts(QKeySequence::Save);
+    saveAct->setStatusTip(tr("Save a file"));
+    connect(saveAct, SIGNAL(triggered()), this, SLOT(saveFile()));
 
-  QAction *quitAct = new QAction( tr( "&Quit" ), this );
-  quitAct->setShortcuts( QKeySequence::Quit );
-  quitAct->setStatusTip( tr( "Quit the application" ) );
-  connect( quitAct, SIGNAL(triggered()), qApp, SLOT(quit()) );
+    QAction *addAct = new QAction(tr("&Add"), this);
+    addAct->setStatusTip(tr("Add a block"));
+    connect(addAct, SIGNAL(triggered()), this, SLOT(addBlock()));
 
-  QAction *loadAct = new QAction( tr( "&Load" ), this );
-  loadAct->setShortcuts( QKeySequence::Open );
-  loadAct->setStatusTip( tr( "Open a file" ) );
-  connect( loadAct, SIGNAL(triggered()), this, SLOT(loadFile()) );
+    fileMenu = menuBar()->addMenu(tr("&File"));
+    fileMenu->addAction(addAct);
+    fileMenu->addAction(loadAct);
+    fileMenu->addAction(saveAct);
+    fileMenu->addSeparator();
+    fileMenu->addAction(quitAct);
 
-  QAction *saveAct = new QAction( tr( "&Save" ), this );
-  saveAct->setShortcuts( QKeySequence::Save );
-  saveAct->setStatusTip( tr( "Save a file" ) );
-  connect( saveAct, SIGNAL(triggered()), this, SLOT(saveFile()) );
+    setWindowTitle(tr("Node Editor"));
 
-  QAction *addAct = new QAction( tr( "&Add" ), this );
-  addAct->setStatusTip( tr( "Add a block" ) );
-  connect( addAct, SIGNAL(triggered()), this, SLOT(addBlock()) );
+    QDockWidget *dock = new QDockWidget(tr("Nodes"), this);
+    dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    view = new QGraphicsView(dock);
+    view->setScene(scene);
 
-  fileMenu = menuBar( )->addMenu( tr( "&File" ) );
-  fileMenu->addAction( addAct );
-  fileMenu->addAction( loadAct );
-  fileMenu->addAction( saveAct );
-  fileMenu->addSeparator( );
-  fileMenu->addAction( quitAct );
+    view->setRenderHint(QPainter::Antialiasing, true);
 
-  setWindowTitle( tr( "Node Editor" ) );
+    dock->setWidget(view);
+    addDockWidget(Qt::LeftDockWidgetArea, dock);
 
+    nodesEditor = new QNodesEditor(this);
+    nodesEditor->install(scene);
 
+    QNEBlock *b = new QNEBlock(0);
+    scene->addItem(b);
+    b->addPort("test", 0, QNEPort::NamePort);
+    b->addPort("TestBlock", 0, QNEPort::TypePort);
+    b->addInputPort("in1");
+    b->addInputPort("in2");
+    b->addInputPort("in3");
+    b->addOutputPort("out1");
+    b->addOutputPort("out2");
+    b->addOutputPort("out3");
 
-  QDockWidget *dock = new QDockWidget( tr( "Nodes" ), this );
-  dock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-  view = new QGraphicsView( dock );
-  view->setScene( scene );
+    b = b->clone();
+    b->setPos(150, 0);
 
-  view->setRenderHint( QPainter::Antialiasing, true );
-
-  dock->setWidget( view );
-  addDockWidget( Qt::LeftDockWidgetArea, dock );
-
-
-
-
-
-
-
-
-  nodesEditor = new QNodesEditor( this );
-  nodesEditor->install( scene );
-
-
-  QNEBlock *b = new QNEBlock( 0 );
-  scene->addItem( b );
-  b->addPort( "test", 0, QNEPort::NamePort );
-  b->addPort( "TestBlock", 0, QNEPort::TypePort );
-  b->addInputPort( "in1" );
-  b->addInputPort( "in2" );
-  b->addInputPort( "in3" );
-  b->addOutputPort( "out1" );
-  b->addOutputPort( "out2" );
-  b->addOutputPort( "out3" );
-
-  b = b->clone( );
-  b->setPos( 150, 0 );
-
-  b = b->clone( );
-  b->setPos( 150, 150 );
+    b = b->clone();
+    b->setPos(150, 150);
 }
 
-QNEMainWindow::~QNEMainWindow( ) {
-
+QNEMainWindow::~QNEMainWindow()
+{
 }
 
-void QNEMainWindow::saveFile( ) {
-  QString fname = QFileDialog::getSaveFileName( );
-  if( fname.isEmpty( ) ) {
-    return;
-  }
-  QFile f( fname );
-  f.open( QFile::WriteOnly );
-  QDataStream ds( &f );
-  nodesEditor->save( ds );
+void QNEMainWindow::saveFile()
+{
+    QString fname = QFileDialog::getSaveFileName();
+    if (fname.isEmpty()) {
+        return;
+    }
+    QFile f(fname);
+    f.open(QFile::WriteOnly);
+    QDataStream ds(&f);
+    nodesEditor->save(ds);
 }
 
-void QNEMainWindow::loadFile( ) {
-  QString fname = QFileDialog::getOpenFileName( );
-  if( fname.isEmpty( ) ) {
-    return;
-  }
-  QFile f( fname );
-  f.open( QFile::ReadOnly );
-  QDataStream ds( &f );
-  nodesEditor->load( ds );
+void QNEMainWindow::loadFile()
+{
+    QString fname = QFileDialog::getOpenFileName();
+    if (fname.isEmpty()) {
+        return;
+    }
+    QFile f(fname);
+    f.open(QFile::ReadOnly);
+    QDataStream ds(&f);
+    nodesEditor->load(ds);
 }
 
-void QNEMainWindow::addBlock( ) {
-  QNEBlock *b = new QNEBlock( 0 );
+void QNEMainWindow::addBlock()
+{
+    QNEBlock *b = new QNEBlock(0);
 
-  scene->addItem( b );
-  static const char *names[] = { "Vin", "Voutsadfasdf", "Imin", "Imax", "mul", "add", "sub", "div", "Conv", "FFT" };
-  for( int i = 0; i < 4 + rand( ) % 3; i++ ) {
-    b->addPort( names[ rand( ) % 10 ], rand( ) % 2, 0, 0 );
-    b->setPos( view->sceneRect( ).center( ).toPoint( ) );
-  }
+    scene->addItem(b);
+    static const char *names[] = {"Vin", "Voutsadfasdf", "Imin", "Imax", "mul", "add", "sub", "div", "Conv", "FFT"};
+    for (int i = 0; i < 4 + rand() % 3; i++) {
+        b->addPort(names[rand() % 10], rand() % 2, 0, 0);
+        b->setPos(view->sceneRect().center().toPoint());
+    }
 }

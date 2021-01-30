@@ -4,18 +4,20 @@
 #include <QFileInfo>
 #include <QString>
 
-
-class FileHelper : public QObject {
-  Q_OBJECT
+class FileHelper : public QObject
+{
+    Q_OBJECT
 public:
-  static QFileInfo findICFile( QString fname, QString parentFile );
-  static QFileInfo findSkinFile( QString fname );
+    static QFileInfo findICFile(QString fname, QString parentFile);
+    static QFileInfo findSkinFile(QString fname);
 
-  static void verifyRecursion( QString fname );
+    static void verifyRecursion(QString fname);
 
 private:
-  FileHelper( QObject *parent = nullptr ) : QObject( parent ) {
-  }
+    FileHelper(QObject *parent = nullptr)
+        : QObject(parent)
+    {
+    }
 };
 
 #endif // FILEHELPER_H

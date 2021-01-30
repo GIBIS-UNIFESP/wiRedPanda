@@ -3,20 +3,23 @@
 
 #include "graphicelement.h"
 
-class Or : public GraphicElement {
+class Or : public GraphicElement
+{
 public:
-  explicit Or( QGraphicsItem *parent = nullptr );
-  virtual ~Or( ) override = default;
+    explicit Or(QGraphicsItem *parent = nullptr);
+    virtual ~Or() override = default;
 
-  /* GraphicElement interface */
+    /* GraphicElement interface */
 public:
-  virtual ElementType elementType( ) override {
-    return( ElementType::OR );
-  }
-  virtual ElementGroup elementGroup( ) override {
-    return( ElementGroup::GATE );
-  }
-  void setSkin( bool defaultSkin, QString filename ) override;
+    virtual ElementType elementType() override
+    {
+        return (ElementType::OR);
+    }
+    virtual ElementGroup elementGroup() override
+    {
+        return (ElementGroup::GATE);
+    }
+    void setSkin(bool defaultSkin, QString filename) override;
 };
 
 #endif /* OR_H */

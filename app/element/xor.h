@@ -3,20 +3,23 @@
 
 #include "graphicelement.h"
 
-class Xor : public GraphicElement {
+class Xor : public GraphicElement
+{
 public:
-  explicit Xor( QGraphicsItem *parent = nullptr );
-  virtual ~Xor( ) override = default;
+    explicit Xor(QGraphicsItem *parent = nullptr);
+    virtual ~Xor() override = default;
 
-/* GraphicElement interface */
+    /* GraphicElement interface */
 public:
-  virtual ElementType elementType( ) override {
-    return( ElementType::XOR );
-  }
-  virtual ElementGroup elementGroup( ) override {
-    return( ElementGroup::GATE );
-  }
-  void setSkin( bool defaultSkin, QString filename ) override;
+    virtual ElementType elementType() override
+    {
+        return (ElementType::XOR);
+    }
+    virtual ElementGroup elementGroup() override
+    {
+        return (ElementGroup::GATE);
+    }
+    void setSkin(bool defaultSkin, QString filename) override;
 };
 
 #endif /* XOR_H */
