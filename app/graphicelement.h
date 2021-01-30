@@ -34,20 +34,31 @@ class GraphicElement;
 typedef QVector< GraphicElement* > ElementVector;
 typedef QVector< QNEPort* > QNEPortVector;
 
+/**
+ * @brief Virtual class to implement graphical element appearance, input and output ports, and tooltips.
+ *
+ * The appearance includes editable features such as pose, colors, skins, shortcuts, and labels.
+ * It also implements the functions to handle loading and saving the element into files.
+ */
 class GraphicElement : public QGraphicsObject, public ItemWithId {
   Q_OBJECT
 public:
   enum : uint32_t { Type = QGraphicsItem::UserType + 3 };
 
   explicit GraphicElement( int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent = nullptr );
-
 private:
+  /**
+   * @brief Current pixmap displayed for this GraphicElement.
+   */
   QPixmap *pixmap;
   QString currentPixmapName;
   QColor m_selectionBrush;
   QColor m_selectionPen;
 
 protected:
+  /**
+   * @brief Path to all current skins. The default skin is in a research file. Custom skin names are system file paths defined by the user.
+   */
   QVector< QString > pixmapSkinName;
 
   /* GraphicElement interface. */
@@ -57,8 +68,15 @@ public:
 
   virtual ElementGroup elementGroup( ) = 0;
 
+  /**
+   * @brief Saves the graphic element through a binary data stream.
+   */
   virtual void save( QDataStream &ds ) const;
 
+  /**
+   * @brief Loads the graphic element through a binary data stream.
+   * @param portMap receives a reference to each input and output port.
+   */
   virtual void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
 
   virtual void updatePorts( );
