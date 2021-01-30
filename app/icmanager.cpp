@@ -42,13 +42,12 @@ bool ICManager::tryLoadFile(QString &fname, QString parentFile)
         int ret = QMessageBox::warning(mainWindow, tr("Error"), QString::fromStdString(err.what()), QMessageBox::Ok, QMessageBox::Cancel);
         if (ret == QMessageBox::Cancel) {
             return (false);
+        }
+        fname = mainWindow->getOpenICFile();
+        if (fname.isEmpty()) {
+            return (false);
         } else {
-            fname = mainWindow->getOpenICFile();
-            if (fname.isEmpty()) {
-                return (false);
-            } else {
-                return (tryLoadFile(fname, parentFile));
-            }
+            return (tryLoadFile(fname, parentFile));
         }
     }
     return (true);
