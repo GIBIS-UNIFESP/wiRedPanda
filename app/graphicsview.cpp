@@ -81,5 +81,5 @@ void GraphicsView::keyReleaseEvent(QKeyEvent *e)
 
 GraphicsViewZoom *GraphicsView::gvzoom() const
 {
-    return (m_gvzoom);
+    return m_gvzoom;
 }
