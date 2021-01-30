@@ -27,11 +27,11 @@ public:
 public slots:
     ElementType elementType() override
     {
-        return (ElementType::CLOCK);
+        return ElementType::CLOCK;
     }
     ElementGroup elementGroup() override
     {
-        return (ElementGroup::INPUT);
+        return ElementGroup::INPUT;
     }
     //  void updateClock();
 
