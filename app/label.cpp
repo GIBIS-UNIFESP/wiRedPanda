@@ -79,9 +79,9 @@ void Label::startDrag(QPoint pos)
 
     dataStream << QPointF(pos) << static_cast<qint32>(type) << m_auxData;
 
-    QMimeData *mimeData = new QMimeData;
+    auto *mimeData = new QMimeData;
     mimeData->setData("application/x-dnditemdata", itemData);
-    QDrag *drag = new QDrag(parent());
+    auto *drag = new QDrag(parent());
     drag->setMimeData(mimeData);
     drag->setPixmap(pixmap);
     drag->setHotSpot(pos);
