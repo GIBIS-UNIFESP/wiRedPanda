@@ -70,14 +70,14 @@ void SimulationController::updateAll()
 bool SimulationController::canRun()
 {
     if (!elMapping) {
-        return (false);
+        return false;
     }
-    return (elMapping->canRun());
+    return elMapping->canRun();
 }
 
 bool SimulationController::isRunning()
 {
-    return (this->simulationTimer.isActive());
+    return this->simulationTimer.isActive();
 }
 
 void SimulationController::update()
