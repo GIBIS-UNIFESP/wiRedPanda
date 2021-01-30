@@ -1,6 +1,6 @@
 #include "bewaveddolphin.h"
 
-#include <string.h>
+#include <cstring>
 
 #include <QClipboard>
 #include <QFileDialog>
