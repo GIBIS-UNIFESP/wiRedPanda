@@ -56,7 +56,7 @@ public:
     const QString &portName() const;
     int portFlags() const;
 
-    int type() const;
+    int type() const override;
 
     quint64 ptr();
     void setPtr(quint64);
@@ -88,7 +88,7 @@ public:
     void setIndex(int index);
 
 protected:
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     int m_defaultValue;
     int m_index;
     QNEBlock *m_block;
@@ -117,26 +117,26 @@ class QNEInputPort : public QNEPort
 {
 public:
     explicit QNEInputPort(QGraphicsItem *parent);
-    virtual ~QNEInputPort();
+    ~QNEInputPort() override;
     /* QNEPort interface */
 public:
-    void setValue(signed char value);
-    bool isOutput() const;
-    bool isValid() const;
-    void updateTheme();
+    void setValue(signed char value) override;
+    bool isOutput() const override;
+    bool isValid() const override;
+    void updateTheme() override;
 };
 
 class QNEOutputPort : public QNEPort
 {
 public:
     explicit QNEOutputPort(QGraphicsItem *parent);
-    virtual ~QNEOutputPort();
+    ~QNEOutputPort() override;
     /* QNEPort interface */
 public:
-    void setValue(signed char value);
-    bool isOutput() const;
-    bool isValid() const;
-    void updateTheme();
+    void setValue(signed char value) override;
+    bool isOutput() const override;
+    bool isValid() const override;
+    void updateTheme() override;
 };
 
 #endif /* QNEPORT_H */
