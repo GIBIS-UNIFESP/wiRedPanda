@@ -53,7 +53,7 @@ QStringList RecentFilesController::getFiles()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     if (!settings.contains(attrName)) {
-        return (QStringList());
+        return QStringList();
     }
     QStringList files = settings.value(attrName).toStringList();
     for (int i = 0; i < files.size();) {
@@ -68,5 +68,5 @@ QStringList RecentFilesController::getFiles()
         files.removeLast();
     }
     settings.setValue(attrName, files);
-    return (files);
+    return files;
 }
