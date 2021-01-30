@@ -465,8 +465,8 @@ void ElementEditor::on_lineEditTrigger_editingFinished()
 
 bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
 {
-    QWidget *wgt = dynamic_cast<QWidget *>(obj);
-    QKeyEvent *keyEvent = dynamic_cast<QKeyEvent *>(event);
+    auto *wgt = dynamic_cast<QWidget *>(obj);
+    auto *keyEvent = dynamic_cast<QKeyEvent *>(event);
     if ((event->type() == QEvent::KeyPress) && keyEvent && (m_elements.size() == 1)) {
         bool move_fwd = keyEvent->key() == Qt::Key_Tab;
         bool move_back = keyEvent->key() == Qt::Key_Backtab;
