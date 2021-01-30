@@ -190,7 +190,7 @@ QList< QGraphicsItem* > SerializationFunctions::loadMoveData( QString dirName, Q
   return( itemList );
 }
 
-QList< QGraphicsItem* > SerializationFunctions::load( QDataStream &ds, QString parentFile, Scene *scene ) {
+QList< QGraphicsItem* > SerializationFunctions::load( QDataStream &ds, QString parentFile ) {
   COMMENT( "Started loading file.", 0 );
   QString str;
   ds >> str;
@@ -203,23 +203,9 @@ QList< QGraphicsItem* > SerializationFunctions::load( QDataStream &ds, QString p
     throw( std::runtime_error( ERRORMSG( "Invalid version number." ) ) );
   }
   loadDolphinFilename( ds, version );
-  QRectF rect( loadRect( ds, version ) );
+  loadRect( ds, version );
   COMMENT( "Header Ok. Version: " << version, 0 );
   QList< QGraphicsItem* > items = deserialize( ds, version, parentFile );
   COMMENT( "Finished reading items.", 0 );
-  if( scene ) {
-    for( QGraphicsItem *item : qAsConst(items) ) {
-      scene->addItem( item );
-    }
-    scene->setSceneRect( scene->itemsBoundingRect( ) );
-    if( !scene->views( ).empty( ) ) {
-      auto const scene_views = scene->views( );
-      QGraphicsView *view = scene_views.first( );
-      rect = rect.united( view->rect( ) );
-      rect.moveCenter( QPointF( 0, 0 ) );
-      scene->setSceneRect( scene->sceneRect( ).united( rect ) );
-      view->centerOn( scene->itemsBoundingRect( ).center( ) );
-    }
-  }
   return( items );
 }
