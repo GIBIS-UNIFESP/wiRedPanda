@@ -8,7 +8,7 @@ class InputButton : public GraphicElement, public Input
 {
 public:
     explicit InputButton(QGraphicsItem *parent = nullptr);
-    virtual ~InputButton() override = default;
+    ~InputButton() override = default;
     static int current_id_number; // Number used to create distinct labels for each instance of this element.
     bool on;
 
@@ -19,11 +19,11 @@ protected:
 
     /* GraphicElement interface */
 public:
-    virtual ElementType elementType() override
+    ElementType elementType() override
     {
         return (ElementType::BUTTON);
     }
-    virtual ElementGroup elementGroup() override
+    ElementGroup elementGroup() override
     {
         return (ElementGroup::INPUT);
     }
