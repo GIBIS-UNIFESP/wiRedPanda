@@ -32,11 +32,11 @@ public:
     /* GraphicElement interface */
     ElementType elementType() override
     {
-        return (ElementType::IC);
+        return ElementType::IC;
     }
     ElementGroup elementGroup() override
     {
-        return (ElementGroup::IC);
+        return ElementGroup::IC;
     }
     void save(QDataStream &ds) const override;
     void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
