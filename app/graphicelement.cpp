@@ -567,7 +567,7 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
     COMMENT("Align to grid.", 4);
     if ((change == ItemPositionChange) && scene()) {
         QPointF newPos = value.toPointF();
-        Scene *customScene = dynamic_cast<Scene *>(scene());
+        auto *customScene = dynamic_cast<Scene *>(scene());
         if (customScene) {
             int gridSize = customScene->gridSize();
             qreal xV = qRound(newPos.x() / gridSize) * gridSize;
