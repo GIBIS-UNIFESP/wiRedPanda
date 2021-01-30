@@ -18,11 +18,11 @@ public:
 public:
     ElementType elementType() override
     {
-        return (ElementType::NAND);
+        return ElementType::NAND;
     }
     ElementGroup elementGroup() override
     {
-        return (ElementGroup::GATE);
+        return ElementGroup::GATE;
     }
     void setSkin(bool defaultSkin, QString filename) override;
 };
