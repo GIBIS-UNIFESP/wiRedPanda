@@ -41,7 +41,7 @@ public:
 
     void validate();
 
-    bool operator<(const LogicElement &other);
+    bool operator<(const LogicElement &other) const;
 
     int calculatePriority();
 
