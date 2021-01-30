@@ -32,9 +32,10 @@ void DLatch::updatePorts()
 
 void DLatch::setSkin(bool defaultSkin, QString filename)
 {
-    if (defaultSkin)
+    if (defaultSkin) {
         pixmapSkinName[0] = ":/memory/D-latch.png";
-    else
+    } else {
         pixmapSkinName[0] = filename;
+    }
     setPixmap(pixmapSkinName[0]);
 }
