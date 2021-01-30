@@ -7,19 +7,19 @@ class DLatch : public GraphicElement
 {
 public:
     explicit DLatch(QGraphicsItem *parent = nullptr);
-    virtual ~DLatch() override = default;
+    ~DLatch() override = default;
 
     /* GraphicElement interface */
 public:
-    virtual ElementType elementType() override
+    ElementType elementType() override
     {
         return (ElementType::DLATCH);
     }
-    virtual ElementGroup elementGroup() override
+    ElementGroup elementGroup() override
     {
         return (ElementGroup::MEMORY);
     }
-    virtual void updatePorts() override;
+    void updatePorts() override;
     void setSkin(bool defaultSkin, QString filename) override;
 };
 
