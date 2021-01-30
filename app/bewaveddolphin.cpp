@@ -71,7 +71,7 @@ BewavedDolphin::BewavedDolphin(Editor *editor, QWidget *parent)
     gv->setScene(scene);
     signalTableView = new QTableView;
     scene->installEventFilter(signalTableView);
-    SignalDelegate *delegate = new SignalDelegate(4, this);
+    auto *delegate = new SignalDelegate(4, this);
     signalTableView->setItemDelegate(delegate);
     scene->addWidget(signalTableView);
     QList<QKeySequence> zoom_in_shortcuts;
@@ -576,7 +576,7 @@ void BewavedDolphin::on_actionCopy_triggered()
         return;
     }
     QClipboard *clipboard = QApplication::clipboard();
-    QMimeData *mimeData = new QMimeData;
+    auto *mimeData = new QMimeData;
     QByteArray itemData;
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
     copy(ranges, dataStream);
@@ -593,7 +593,7 @@ void BewavedDolphin::on_actionCut_triggered()
         return;
     }
     QClipboard *clipboard = QApplication::clipboard();
-    QMimeData *mimeData = new QMimeData();
+    auto *mimeData = new QMimeData();
     QByteArray itemData;
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
     cut(ranges, dataStream);
@@ -670,7 +670,7 @@ void BewavedDolphin::on_actionSave_as_triggered()
     if (!currentFile.fileName().isEmpty()) {
         path = currentFile.absoluteFilePath();
     }
-    QString *selected_filter = new QString(100);
+    auto *selected_filter = new QString(100);
     fname = QFileDialog::getSaveFileName(this, tr("Save File as ..."), path, tr("Dolphin files (*.dolphin);;CSV files (*.csv)"), selected_filter);
     if (fname.isEmpty()) {
         return;
