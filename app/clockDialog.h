@@ -15,7 +15,7 @@ class clockDialog : public QDialog
 public:
     explicit clockDialog(QWidget *parent = nullptr);
     int getFrequency();
-    ~clockDialog();
+    ~clockDialog() override;
 
 private slots:
     void on_cancelPushButton_clicked();
