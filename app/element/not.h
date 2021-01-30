@@ -7,15 +7,15 @@ class Not : public GraphicElement
 {
 public:
     explicit Not(QGraphicsItem *parent = nullptr);
-    virtual ~Not() override = default;
+    ~Not() override = default;
 
     /* GraphicElement interface */
 public:
-    virtual ElementType elementType() override
+    ElementType elementType() override
     {
         return (ElementType::NOT);
     }
-    virtual ElementGroup elementGroup() override
+    ElementGroup elementGroup() override
     {
         return (ElementGroup::GATE);
     }
