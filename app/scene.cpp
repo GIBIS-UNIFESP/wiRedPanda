@@ -65,7 +65,7 @@ QVector<GraphicElement *> Scene::getElements()
     QVector<GraphicElement *> elements;
     QList<QGraphicsItem *> myItems = items();
     for (QGraphicsItem *item : qAsConst(myItems)) {
-        GraphicElement *elm = qgraphicsitem_cast<GraphicElement *>(item);
+        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
         if (elm) {
             elements.append(elm);
         }
@@ -78,7 +78,7 @@ QVector<GraphicElement *> Scene::getElements(QRectF rect)
     QVector<GraphicElement *> elements;
     QList<QGraphicsItem *> myItems = items(rect);
     for (QGraphicsItem *item : qAsConst(myItems)) {
-        GraphicElement *elm = qgraphicsitem_cast<GraphicElement *>(item);
+        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
         if (elm) {
             elements.append(elm);
         }
@@ -91,7 +91,7 @@ QVector<QNEConnection *> Scene::getConnections()
     QVector<QNEConnection *> conns;
     QList<QGraphicsItem *> myItems = items();
     for (QGraphicsItem *item : qAsConst(myItems)) {
-        QNEConnection *conn = dynamic_cast<QNEConnection *>(item);
+        auto *conn = dynamic_cast<QNEConnection *>(item);
         if (conn) {
             conns.append(conn);
         }
@@ -105,7 +105,7 @@ QVector<GraphicElement *> Scene::selectedElements()
     QList<QGraphicsItem *> myItems = selectedItems();
     for (QGraphicsItem *item : qAsConst(myItems)) {
         if (item->type() == GraphicElement::Type) {
-            GraphicElement *elm = qgraphicsitem_cast<GraphicElement *>(item);
+            auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
             if (elm) {
                 elements.append(elm);
             }
