@@ -10,7 +10,7 @@ public:
 
     /* LogicElement interface */
 protected:
-    virtual void _updateLogic(const std::vector<bool> &);
+    void _updateLogic(const std::vector<bool> &) override;
 };
 
 #endif // LOGICINPUT_H
