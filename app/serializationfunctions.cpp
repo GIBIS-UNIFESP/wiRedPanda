@@ -48,11 +48,11 @@ bool SerializationFunctions::update(QString &fileName, QString dirName)
     }
     if (!fl.commit()) {
         std::cerr << "Could not save file: " + fl.errorString().toStdString() + "." << std::endl;
-        return (false);
+        return false;
     }
 
     COMMENT("Finished updating IC " << fileName.toStdString(), 0);
-    return (true);
+    return true;
 }
 
 void SerializationFunctions::serialize(const QList<QGraphicsItem *> &items, QDataStream &ds)
@@ -114,7 +114,7 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &ds, doub
             throw(std::runtime_error(ERRORMSG("Invalid type. Data is possibly corrupted.")));
         }
     }
-    return (itemList);
+    return itemList;
 }
 
 double SerializationFunctions::loadVersion(QDataStream &ds)
@@ -132,7 +132,7 @@ double SerializationFunctions::loadVersion(QDataStream &ds)
     if (!ok) {
         throw(std::runtime_error(ERRORMSG("Invalid version number.")));
     }
-    return (version);
+    return version;
 }
 
 QString SerializationFunctions::loadDolphinFilename(QDataStream &ds, double version)
@@ -140,7 +140,7 @@ QString SerializationFunctions::loadDolphinFilename(QDataStream &ds, double vers
     QString str = "none";
     if (version >= 3.0)
         ds >> str;
-    return (str);
+    return str;
 }
 
 QRectF SerializationFunctions::loadRect(QDataStream &ds, double version)
@@ -148,7 +148,7 @@ QRectF SerializationFunctions::loadRect(QDataStream &ds, double version)
     QRectF rect;
     if (version >= 1.4)
         ds >> rect;
-    return (rect);
+    return rect;
 }
 
 QList<QGraphicsItem *> SerializationFunctions::loadMoveData(QString dirName, QDataStream &ds, double version, QMap<quint64, QNEPort *> portMap)
@@ -191,7 +191,7 @@ QList<QGraphicsItem *> SerializationFunctions::loadMoveData(QString dirName, QDa
         }
     }
     COMMENT("Finished loading data.", 0);
-    return (itemList);
+    return itemList;
 }
 
 QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &ds, QString parentFile, Scene *scene)
@@ -226,5 +226,5 @@ QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &ds, QString par
             view->centerOn(scene->itemsBoundingRect().center());
         }
     }
-    return (items);
+    return items;
 }
