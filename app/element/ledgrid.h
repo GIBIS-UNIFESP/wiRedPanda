@@ -18,12 +18,12 @@ public:
 
     virtual ElementType elementType() override
     {
-        return (ElementType::LEDGRID);
+        return ElementType::LEDGRID;
     }
 
     virtual ElementGroup elementGroup() override
     {
-        return (ElementGroup::OUTPUT);
+        return ElementGroup::OUTPUT;
     }
 
     void setColor(QString getColor) override;
