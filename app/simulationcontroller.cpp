@@ -39,8 +39,8 @@ void SimulationController::updateScene(const QRectF &rect)
     if (canRun()) {
         const QList<QGraphicsItem *> &items = scene->items(rect);
         for (QGraphicsItem *item : items) {
-            QNEConnection *conn = qgraphicsitem_cast<QNEConnection *>(item);
-            GraphicElement *elm = qgraphicsitem_cast<GraphicElement *>(item);
+            auto *conn = qgraphicsitem_cast<QNEConnection *>(item);
+            auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
             if (conn) {
                 updateConnection(conn);
             } else if (elm && (elm->elementGroup() == ElementGroup::OUTPUT)) {
