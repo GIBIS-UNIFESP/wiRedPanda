@@ -20,7 +20,7 @@ public:
     // it is updated.
     bool shouldRestart;
     explicit SimulationController(Scene *scn);
-    ~SimulationController();
+    ~SimulationController() override;
 
     void updateScene(const QRectF &rect);
     static QVector<GraphicElement *> sortElements(QVector<GraphicElement *> elms);
