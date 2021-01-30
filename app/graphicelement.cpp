@@ -18,9 +18,9 @@ static QMap<QString, QPixmap> loadedPixmaps;
 
 GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent)
     : QGraphicsObject(parent)
-    , label(new QGraphicsTextItem(this))
+    , m_label(new QGraphicsTextItem(this))
 {
-    pixmap = nullptr;
+    m_pixmap = nullptr;
     COMMENT("Setting flags of elements. ", 4);
     setFlag(QGraphicsItem::ItemIsMovable);
     setFlag(QGraphicsItem::ItemIsSelectable);
@@ -28,13 +28,13 @@ GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, 
     setFlag(QGraphicsItem::ItemSendsGeometryChanges);
 
     COMMENT("Setting attributes. ", 4);
-    label->hide();
+    m_label->hide();
     QFont font("SansSerif");
     font.setBold(true);
-    label->setFont(font);
-    label->setPos(64, 30);
-    label->setParentItem(this);
-    label->setDefaultTextColor(Qt::black);
+    m_label->setFont(font);
+    m_label->setPos(64, 30);
+    m_label->setParentItem(this);
+    m_label->setDefaultTextColor(Qt::black);
     m_bottomPosition = 64;
     m_topPosition = 0;
     m_minInputSz = minInputSz;
@@ -66,8 +66,8 @@ GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, 
 
 QPixmap GraphicElement::getPixmap() const
 {
-    if (pixmap) {
-        return (*pixmap);
+    if (m_pixmap) {
+        return (*m_pixmap);
     } else {
         return (QPixmap());
     }
@@ -98,7 +98,7 @@ void GraphicElement::setPixmap(const QString &pixmapName)
             }
         }
     }
-    if (pixmapPath != currentPixmapName) {
+    if (pixmapPath != m_currentPixmapName) {
         if (!loadedPixmaps.contains(pixmapPath)) {
             // TODO: use QPixmap::loadFromData() here
 
@@ -107,11 +107,11 @@ void GraphicElement::setPixmap(const QString &pixmapName)
                 throw std::runtime_error(ERRORMSG("Couldn't load pixmap."));
             }
         }
-        pixmap = &loadedPixmaps[pixmapPath];
-        setTransformOriginPoint(pixmap->rect().center());
+        m_pixmap = &loadedPixmaps[pixmapPath];
+        setTransformOriginPoint(m_pixmap->rect().center());
         update(boundingRect());
     }
-    currentPixmapName = pixmapName;
+    m_currentPixmapName = pixmapName;
 }
 
 void GraphicElement::setPixmap(const QString &pixmapName, QRect size)
@@ -129,7 +129,7 @@ void GraphicElement::setPixmap(const QString &pixmapName, QRect size)
             }
         }
     }
-    if (pixmapPath != currentPixmapName) {
+    if (pixmapPath != m_currentPixmapName) {
         if (!loadedPixmaps.contains(pixmapPath)) {
             // TODO: use QPixmap::loadFromData() here
             QPixmap pixmap;
@@ -138,11 +138,11 @@ void GraphicElement::setPixmap(const QString &pixmapName, QRect size)
             }
             loadedPixmaps[pixmapPath] = pixmap.copy(size);
         }
-        pixmap = &loadedPixmaps[pixmapPath];
-        setTransformOriginPoint(pixmap->rect().center());
+        m_pixmap = &loadedPixmaps[pixmapPath];
+        setTransformOriginPoint(m_pixmap->rect().center());
         update(boundingRect());
     }
-    currentPixmapName = pixmapName;
+    m_currentPixmapName = pixmapName;
 }
 
 QVector<QNEOutputPort *> GraphicElement::outputs() const
@@ -449,7 +449,7 @@ void GraphicElement::setInputs(const QVector<QNEInputPort *> &inputs)
 
 QRectF GraphicElement::boundingRect() const
 {
-    return (pixmap->rect());
+    return (m_pixmap->rect());
 }
 
 void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -620,12 +620,12 @@ void GraphicElement::updateLabel()
 {
     QString label = m_labelText;
     if ((!hasTrigger()) || (getTrigger().toString().isEmpty())) {
-        this->label->setPlainText(label);
+        m_label->setPlainText(label);
     } else {
         if (!label.isEmpty()) {
             label += " ";
         }
-        this->label->setPlainText(label + QString("(%1)").arg(getTrigger().toString()));
+        m_label->setPlainText(label + QString("(%1)").arg(getTrigger().toString()));
     }
 }
 
@@ -645,7 +645,7 @@ void GraphicElement::updateTheme()
     if (ThemeManager::globalMngr) {
         const ThemeAttrs attrs = ThemeManager::globalMngr->getAttrs();
 
-        label->setDefaultTextColor(attrs.graphicElement_labelColor);
+        m_label->setDefaultTextColor(attrs.graphicElement_labelColor);
         m_selectionBrush = attrs.selectionBrush;
         m_selectionPen = attrs.selectionPen;
         for (QNEInputPort *input : qAsConst(m_inputs)) {
@@ -656,7 +656,7 @@ void GraphicElement::updateTheme()
         }
         updateThemeLocal();
 
-        setPixmap(currentPixmapName);
+        setPixmap(m_currentPixmapName);
         update();
     }
 }
@@ -756,7 +756,7 @@ bool GraphicElement::canChangeSkin() const
 void GraphicElement::setHasLabel(bool hasLabel)
 {
     m_hasLabel = hasLabel;
-    label->setVisible(hasLabel);
+    m_label->setVisible(hasLabel);
 }
 
 bool GraphicElement::rotatable() const
