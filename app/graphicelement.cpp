@@ -69,9 +69,8 @@ QPixmap GraphicElement::getPixmap() const
 {
     if (m_pixmap) {
         return (*m_pixmap);
-    } else {
-        return (QPixmap());
     }
+    return (QPixmap());
 }
 
 void GraphicElement::disable()
@@ -470,7 +469,8 @@ QNEPort *GraphicElement::addPort(const QString &name, bool isOutput, int flags, 
     COMMENT("Adding new port.", 4);
     if (isOutput && (static_cast<quint64>(m_outputs.size()) >= m_maxOutputSz)) {
         return (nullptr);
-    } else if (!isOutput && (static_cast<quint64>(m_inputs.size()) >= m_maxInputSz)) {
+    }
+    if (!isOutput && (static_cast<quint64>(m_inputs.size()) >= m_maxInputSz)) {
         return (nullptr);
     }
     QNEPort *port = nullptr;
@@ -573,9 +573,8 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
             qreal xV = qRound(newPos.x() / gridSize) * gridSize;
             qreal yV = qRound(newPos.y() / gridSize) * gridSize;
             return (QPointF(xV, yV));
-        } else {
-            return (newPos);
         }
+        return (newPos);
     }
     COMMENT("Moves wires.", 4);
     if ((change == ItemScenePositionHasChanged) || (change == ItemRotationHasChanged) || (change == ItemTransformHasChanged)) {
