@@ -42,7 +42,7 @@ void Clock::updateClock()
 
 bool Clock::getOn() const
 {
-    return (on);
+    return on;
 }
 
 void Clock::setOn(bool value)
@@ -74,7 +74,7 @@ void Clock::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double vers
 
 float Clock::getFrequency() const
 {
-    return (static_cast<float>(m_frequency));
+    return static_cast<float>(m_frequency);
 }
 
 void Clock::setFrequency(float freq)
@@ -101,7 +101,7 @@ void Clock::resetClock()
 
 QString Clock::genericProperties()
 {
-    return (QString("%1 Hz").arg(static_cast<double>(getFrequency())));
+    return QString("%1 Hz").arg(static_cast<double>(getFrequency()));
 }
 
 void Clock::setSkin(bool defaultSkin, QString filename)
