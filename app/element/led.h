@@ -18,11 +18,11 @@ public:
     /* GraphicElement interface */
     ElementType elementType() override
     {
-        return (ElementType::LED);
+        return ElementType::LED;
     }
     ElementGroup elementGroup() override
     {
-        return (ElementGroup::OUTPUT);
+        return ElementGroup::OUTPUT;
     }
     void refresh() override;
     void setColor(QString getColor) override;
