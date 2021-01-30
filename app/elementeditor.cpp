@@ -394,7 +394,7 @@ void ElementEditor::selectionChanged()
 
 void ElementEditor::apply()
 {
-    if ((m_elements.isEmpty()) || (isEnabled() == false)) {
+    if ((m_elements.isEmpty()) || (!isEnabled())) {
         return;
     }
     QByteArray itemData;
@@ -435,7 +435,7 @@ void ElementEditor::on_lineEditElementLabel_editingFinished()
 
 void ElementEditor::on_comboBoxInputSz_currentIndexChanged(int)
 {
-    if ((m_elements.isEmpty()) || (isEnabled() == false)) {
+    if ((m_elements.isEmpty()) || (!isEnabled())) {
         return;
     }
     if (canChangeInputSize && (ui->comboBoxInputSz->currentText() != _manyIS)) {
