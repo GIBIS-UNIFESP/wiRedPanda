@@ -54,7 +54,7 @@ void SerializationFunctions::serialize(const QList<QGraphicsItem *> &items, QDat
 {
     for (QGraphicsItem *item : items) {
         if (item->type() == GraphicElement::Type) {
-            GraphicElement *elm = qgraphicsitem_cast<GraphicElement *>(item);
+            auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
             ds << GraphicElement::Type;
             ds << static_cast<quint64>(elm->elementType());
             elm->save(ds);
@@ -63,7 +63,7 @@ void SerializationFunctions::serialize(const QList<QGraphicsItem *> &items, QDat
     for (QGraphicsItem *item : items) {
         if (item->type() == QNEConnection::Type) {
             COMMENT("Writing Connection.", 0);
-            QNEConnection *conn = qgraphicsitem_cast<QNEConnection *>(item);
+            auto *conn = qgraphicsitem_cast<QNEConnection *>(item);
             ds << QNEConnection::Type;
             conn->save(ds);
         }
