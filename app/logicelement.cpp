@@ -7,7 +7,7 @@
 
 bool LogicElement::isValid() const
 {
-    return (m_isValid);
+    return m_isValid;
 }
 
 void LogicElement::clearPredecessors()
@@ -86,16 +86,16 @@ void LogicElement::validate()
 
 bool LogicElement::operator<(const LogicElement &other) const
 {
-    return (priority < other.priority);
+    return priority < other.priority;
 }
 
 int LogicElement::calculatePriority()
 {
     if (beingVisited) {
-        return (0);
+        return 0;
     }
     if (priority != -1) {
-        return (priority);
+        return priority;
     }
     beingVisited = true;
     int max = 0;
@@ -105,12 +105,12 @@ int LogicElement::calculatePriority()
     const int p = max + 1;
     priority = p;
     beingVisited = false;
-    return (p);
+    return p;
 }
 
 bool LogicElement::getOutputValue(size_t index) const
 {
-    return (m_outputs.at(index));
+    return m_outputs.at(index);
 }
 
 bool LogicElement::getInputValue(size_t index) const
@@ -119,5 +119,5 @@ bool LogicElement::getInputValue(size_t index) const
     LogicElement *pred = m_inputs[index].first;
     Q_ASSERT(pred);
     int port = m_inputs[index].second;
-    return (pred->getOutputValue(port));
+    return pred->getOutputValue(port);
 }
