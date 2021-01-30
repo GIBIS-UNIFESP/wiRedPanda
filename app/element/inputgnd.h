@@ -17,11 +17,11 @@ public:
 public:
     ElementType elementType() override
     {
-        return (ElementType::GND);
+        return ElementType::GND;
     }
     ElementGroup elementGroup() override
     {
-        return (ElementGroup::STATICINPUT);
+        return ElementGroup::STATICINPUT;
     }
     void setSkin(bool defaultSkin, QString filename) override;
 };
