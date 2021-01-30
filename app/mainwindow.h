@@ -135,7 +135,7 @@ private slots:
 
     void on_actionFlip_vertically_triggered();
 
-    void on_actionFullscreen_triggered();
+    void on_actionFullscreen_triggered() const;
 
     void autoSave();
 
