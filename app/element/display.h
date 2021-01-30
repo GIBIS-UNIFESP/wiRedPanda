@@ -7,19 +7,19 @@ class Display : public GraphicElement
 {
 public:
     explicit Display(QGraphicsItem *parent = nullptr);
-    virtual ~Display() override = default;
+    ~Display() override = default;
     static int current_id_number; // Number used to create distinct labels for each instance of this element.
 
 public:
-    virtual ElementType elementType() override
+    ElementType elementType() override
     {
         return (ElementType::DISPLAY);
     }
-    virtual ElementGroup elementGroup() override
+    ElementGroup elementGroup() override
     {
         return (ElementGroup::OUTPUT);
     }
-    virtual void refresh() override;
+    void refresh() override;
     void updatePorts() override;
     QPixmap bkg, a, b, c, d, e, f, g, dp;
 
