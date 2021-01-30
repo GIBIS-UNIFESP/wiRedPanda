@@ -369,7 +369,7 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elms)
                 out << QString("    }") << Qt::endl;
                 QString prst = otherPortName(elm->input(2));
                 QString clr = otherPortName(elm->input(3));
-                out << QString("    if( !%1 || !%2) { ").arg(prst).arg(clr) << Qt::endl;
+                out << QString("    if( !%1 || !%2) { ").arg(prst, clr) << Qt::endl;
                 out << QString("        %1 = !%2; //Preset").arg(firstOut, prst) << Qt::endl;
                 out << QString("        %1 = !%2; //Clear").arg(secondOut, clr) << Qt::endl;
                 out << QString("    }") << Qt::endl;

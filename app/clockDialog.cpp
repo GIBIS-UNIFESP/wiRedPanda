@@ -7,9 +7,9 @@
 
 clockDialog::clockDialog(QWidget *parent)
     : QDialog(parent)
-    , ui(new Ui::clockDialog)
+    , m_ui(new Ui::clockDialog)
 {
-    ui->setupUi(this);
+    m_ui->setupUi(this);
     setWindowTitle("Clock Frequency Selection");
     setWindowFlags(Qt::Window);
     setModal(true);
@@ -17,22 +17,23 @@ clockDialog::clockDialog(QWidget *parent)
 
 int clockDialog::getFrequency()
 {
-    canceled = false;
+    m_canceled = false;
+    // QDialog::exec
     exec();
-    if (canceled) {
-        return (-1);
+    if (m_canceled) {
+        return -1;
     }
-    return (ui->frequencySpinBox->value());
+    return (m_ui->frequencySpinBox->value());
 }
 
 clockDialog::~clockDialog()
 {
-    delete ui;
+    delete m_ui;
 }
 
 void clockDialog::on_cancelPushButton_clicked()
 {
-    canceled = true;
+    m_canceled = true;
     close();
 }
 
