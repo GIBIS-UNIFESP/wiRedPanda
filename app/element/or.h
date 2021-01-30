@@ -18,11 +18,11 @@ public:
 public:
     ElementType elementType() override
     {
-        return (ElementType::OR);
+        return ElementType::OR;
     }
     ElementGroup elementGroup() override
     {
-        return (ElementGroup::GATE);
+        return ElementGroup::GATE;
     }
     void setSkin(bool defaultSkin, QString filename) override;
 };
