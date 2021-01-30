@@ -22,7 +22,7 @@ void ListItemWidget::mousePressEvent(QMouseEvent *)
 ListItemWidget::ListItemWidget(const QPixmap &pixmap, ElementType type, QString icFileName, QWidget *parent)
     : QFrame(parent)
 {
-    QHBoxLayout *itemLayout = new QHBoxLayout();
+    auto *itemLayout = new QHBoxLayout();
     QString name = ElementFactory::translatedName(type);
     if (type == ElementType::IC) {
         name = QFileInfo(icFileName).baseName().toUpper();
