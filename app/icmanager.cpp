@@ -63,7 +63,7 @@ void ICManager::loadFile(QString &fname, QString parentFile)
         COMMENT("IC already inserted: " << finfo.baseName().toStdString(), 0);
     } else {
         COMMENT("Inserting IC: " << finfo.baseName().toStdString(), 0);
-        ICPrototype *prototype = new ICPrototype(finfo.absoluteFilePath());
+        auto *prototype = new ICPrototype(finfo.absoluteFilePath());
         prototype->reload();
         ics.insert(finfo.baseName(), prototype);
     }
