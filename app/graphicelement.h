@@ -248,6 +248,9 @@ private:
   QString m_labelText;
   QKeySequence m_trigger;
 
+  /**
+   * functions to load GraphicElement atributes through a binary data stream
+   */
   void loadPos( QDataStream &ds );
   void loadAngle( QDataStream &ds );
   void loadLabel( QDataStream &ds, double version );
