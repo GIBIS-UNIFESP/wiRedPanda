@@ -31,7 +31,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = nullptr, QString filename = QString());
-    ~MainWindow();
+    ~MainWindow() override;
 
     //! Saves the project to a .panda file. Removes the autosave file in the process.
     bool save(QString fname = QString());
@@ -172,8 +172,8 @@ private:
     int recoverAutoSaveFile(QString autosaveFilename);
     /* QWidget interface */
 protected:
-    void closeEvent(QCloseEvent *e);
-    void resizeEvent(QResizeEvent *);
+    void closeEvent(QCloseEvent *e) override;
+    void resizeEvent(QResizeEvent *) override;
 };
 
 #endif /* MAINWINDOW_H */
