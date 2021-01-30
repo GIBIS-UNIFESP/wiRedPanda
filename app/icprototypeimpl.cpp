@@ -51,11 +51,11 @@ bool comparePorts(QNEPort *port1, QNEPort *port2)
     QPointF p1 = port1->graphicElement()->pos();
     QPointF p2 = port2->graphicElement()->pos();
     if (p1 != p2) {
-        return (p1.y() < p2.y() || (qFuzzyCompare(p1.y(), p2.y()) && p1.x() < p2.x()));
+        return p1.y() < p2.y() || (qFuzzyCompare(p1.y(), p2.y()) && p1.x() < p2.x());
     }
     p1 = port1->pos();
     p2 = port2->pos();
-    return (p1.x() < p2.x() || (qFuzzyCompare(p1.x(), p2.x()) && p1.y() < p2.y()));
+    return p1.x() < p2.x() || (qFuzzyCompare(p1.x(), p2.x()) && p1.y() < p2.y());
 }
 
 void ICPrototypeImpl::sortPorts(QVector<QNEPort *> &map)
@@ -78,7 +78,7 @@ bool ICPrototypeImpl::updateLocalIC(QString fileName, QString dirName)
                 if (prototype->updateLocalIC(subICFileName, dirName)) {
                     if (!ic->setFile(subICFileName)) {
                         std::cerr << "Error updating subic name." << std::endl;
-                        return (false);
+                        return false;
                     }
                 } else {
                     std::cerr << "Error saving subic." << std::endl;
@@ -90,15 +90,15 @@ bool ICPrototypeImpl::updateLocalIC(QString fileName, QString dirName)
     try {
         if (!SerializationFunctions::update(fileName, dirName)) {
             std::cerr << "Error saving local ic." << std::endl;
-            return (false);
+            return false;
         }
         COMMENT("Saved at prototype impl.", 0);
 
     } catch (std::runtime_error &e) {
         std::cerr << "Error saving project: " << e.what() << std::endl;
-        return (false);
+        return false;
     }
-    return (true);
+    return true;
 }
 
 void ICPrototypeImpl::loadFile(QString fileName)
@@ -238,12 +238,12 @@ void ICPrototypeImpl::clear()
 
 int ICPrototypeImpl::getInputSize() const
 {
-    return (inputs.size());
+    return inputs.size();
 }
 
 int ICPrototypeImpl::getOutputSize() const
 {
-    return (outputs.size());
+    return outputs.size();
 }
 
 void ICPrototypeImpl::setOutputSize(int outputSize)
