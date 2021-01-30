@@ -40,7 +40,7 @@ Qt::ItemFlags SignalModel::flags(const QModelIndex &index) const
         flags = ~(Qt::ItemIsEditable | Qt::ItemIsSelectable);
     else
         flags = ~(Qt::ItemIsEditable | Qt::ItemIsSelectable) | Qt::ItemIsSelectable;
-    return (flags);
+    return flags;
 }
 
 SignalDelegate::SignalDelegate(int margin, QObject *parent)
@@ -141,13 +141,13 @@ bool BewavedDolphin::checkSave()
         if (reply == QMessageBox::Save) {
             on_actionSave_triggered();
             if (edited)
-                return (false);
-            return (true);
+                return false;
+            return true;
         } else if (reply == QMessageBox::Discard)
-            return (true);
-        return (false);
+            return true;
+        return false;
     }
-    return (true);
+    return true;
 }
 
 bool BewavedDolphin::loadElements()
@@ -156,7 +156,7 @@ bool BewavedDolphin::loadElements()
     inputs.clear();
     outputs.clear();
     if (elements.isEmpty()) {
-        return (false);
+        return false;
     }
     elements = ElementMapping::sortGraphicElements(elements);
     for (GraphicElement *elm : qAsConst(elements)) {
@@ -169,22 +169,22 @@ bool BewavedDolphin::loadElements()
         }
     }
     std::stable_sort(inputs.begin(), inputs.end(), [](GraphicElement *elm1, GraphicElement *elm2) {
-        return (QString::compare(elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8(), Qt::CaseInsensitive) <= 0);
+        return QString::compare(elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8(), Qt::CaseInsensitive) <= 0;
     });
     std::stable_sort(outputs.begin(), outputs.end(), [](GraphicElement *elm1, GraphicElement *elm2) {
-        return (QString::compare(elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8(), Qt::CaseInsensitive) <= 0);
+        return QString::compare(elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8(), Qt::CaseInsensitive) <= 0;
     });
 
     if ((inputs.isEmpty()) || (outputs.isEmpty()))
-        return (false);
-    return (true);
+        return false;
+    return true;
 }
 
 void BewavedDolphin::CreateElement(int row, int col, int value, bool isInput, bool changePrevious)
 {
     if (value == 0)
-        return (CreateZeroElement(row, col, isInput, changePrevious));
-    return (CreateOneElement(row, col, isInput, changePrevious));
+        return CreateZeroElement(row, col, isInput, changePrevious);
+    return CreateOneElement(row, col, isInput, changePrevious);
 }
 
 void BewavedDolphin::CreateZeroElement(int row, int col, bool isInput, bool changePrevious)
@@ -312,7 +312,7 @@ QVector<char> BewavedDolphin::loadSignals(QStringList &input_labels, QStringList
             }
         }
     }
-    return (oldValues);
+    return oldValues;
 }
 
 bool BewavedDolphin::createWaveform(QString filename)
@@ -325,7 +325,7 @@ bool BewavedDolphin::createWaveform(QString filename)
     COMMENT("Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.", 0);
     if (!loadElements()) {
         QMessageBox::warning(parentWidget(), tr("Error"), tr("Could not load enough elements for the simulation."));
-        return (false);
+        return false;
     }
     QStringList input_labels;
     QStringList output_labels;
@@ -342,7 +342,7 @@ bool BewavedDolphin::createWaveform(QString filename)
     loadNewTable(input_labels, output_labels);
     if (filename != "none") {
         if (!load(filename))
-            return (false);
+            return false;
     }
     COMMENT("Restoring the old values to the inputs, prior to simulaton.", 0);
     for (int in = 0; in < inputs.size(); ++in) {
@@ -351,7 +351,7 @@ bool BewavedDolphin::createWaveform(QString filename)
     COMMENT("Resuming digital circuit main window after waveform simulation is finished.", 0);
     scst.release();
     edited = false;
-    return (true);
+    return true;
 }
 
 void BewavedDolphin::show()
@@ -432,7 +432,7 @@ int BewavedDolphin::sectionFirstColumn(const QItemSelection &ranges)
         if (range.left() < first_col)
             first_col = range.left();
     }
-    return (first_col);
+    return first_col;
 }
 
 int BewavedDolphin::sectionFirstRow(const QItemSelection &ranges)
@@ -442,7 +442,7 @@ int BewavedDolphin::sectionFirstRow(const QItemSelection &ranges)
         if (range.top() < first_row)
             first_row = range.top();
     }
-    return (first_row);
+    return first_row;
 }
 
 void BewavedDolphin::on_actionSet_clock_wave_triggered()
@@ -759,7 +759,7 @@ bool BewavedDolphin::save(QString &fname)
                 save(ds);
             } catch (std::runtime_error &e) {
                 ui->statusbar->showMessage(tr("Could not save file: ") + e.what(), 2000);
-                return (false);
+                return false;
             }
         } else {
             COMMENT("Saving CSV file.", 0);
@@ -767,11 +767,11 @@ bool BewavedDolphin::save(QString &fname)
                 save(fl);
             } catch (std::runtime_error &e) {
                 ui->statusbar->showMessage(tr("Could not save file: ") + e.what(), 2000);
-                return (false);
+                return false;
             }
         }
     }
-    return (fl.commit());
+    return fl.commit();
 }
 
 void BewavedDolphin::save(QDataStream &ds)
@@ -809,7 +809,7 @@ bool BewavedDolphin::load(QString fname)
     QFile fl(fname);
     if (!fl.exists()) {
         QMessageBox::warning(this, tr("Error!"), tr("File \"%1\" does not exists!").arg(fname), QMessageBox::Ok, QMessageBox::NoButton);
-        return (false);
+        return false;
     }
     COMMENT("File exists.", 0);
     if (fl.open(QFile::ReadOnly)) {
@@ -825,7 +825,7 @@ bool BewavedDolphin::load(QString fname)
             } catch (std::runtime_error &e) {
                 std::cerr << tr("Error loading project: ").toStdString() << e.what() << std::endl;
                 QMessageBox::warning(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
-                return (false);
+                return false;
             }
         } else if (fname.endsWith(".csv")) {
             COMMENT("CSV file opened.", 0);
@@ -837,21 +837,21 @@ bool BewavedDolphin::load(QString fname)
             } catch (std::runtime_error &e) {
                 std::cerr << tr("Error loading project: ").toStdString() << e.what() << std::endl;
                 QMessageBox::warning(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
-                return (false);
+                return false;
             }
         } else {
             std::cerr << tr("Format not supported. Could not open file : ").toStdString() << fname.toStdString() << "." << std::endl;
-            return (false);
+            return false;
         }
     } else {
         std::cerr << tr("Could not open file in ReadOnly mode : ").toStdString() << fname.toStdString() << "." << std::endl;
         QMessageBox::warning(this, tr("Error!"), tr("Could not open file in ReadOnly mode : ") + fname + ".", QMessageBox::Ok, QMessageBox::NoButton);
-        return (false);
+        return false;
     }
     COMMENT("Closing file.", 0);
     fl.close();
     setWindowTitle("Bewaved Dolphin Simulator [" + currentFile.fileName() + "]");
-    return (true);
+    return true;
 }
 
 void BewavedDolphin::load(QDataStream &ds)
