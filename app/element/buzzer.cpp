@@ -70,7 +70,7 @@ void Buzzer::setAudio(QString note)
 
 QString Buzzer::getAudio() const
 {
-    return (m_note);
+    return m_note;
 }
 
 void Buzzer::mute(bool _mute)
