@@ -14,7 +14,7 @@
 
 Label *ListItemWidget::getLabel() const
 {
-    return (label);
+    return label;
 }
 
 void ListItemWidget::mousePressEvent(QMouseEvent *)
