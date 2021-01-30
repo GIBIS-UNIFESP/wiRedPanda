@@ -15,7 +15,7 @@ void storeIds(const QList<QGraphicsItem *> &items, QVector<int> &ids)
 {
     ids.reserve(items.size());
     for (QGraphicsItem *item : items) {
-        ItemWithId *iwid = dynamic_cast<ItemWithId *>(item);
+        auto *iwid = dynamic_cast<ItemWithId *>(item);
         if (iwid) {
             ids.append(iwid->id());
         }
@@ -25,7 +25,7 @@ void storeIds(const QList<QGraphicsItem *> &items, QVector<int> &ids)
 void storeOtherIds(const QList<QGraphicsItem *> &connections, const QVector<int> &ids, QVector<int> &otherIds)
 {
     for (QGraphicsItem *item : connections) {
-        QNEConnection *conn = qgraphicsitem_cast<QNEConnection *>(item);
+        auto *conn = qgraphicsitem_cast<QNEConnection *>(item);
         if ((item->type() == QNEConnection::Type) && conn) {
             QNEOutputPort *p1 = conn->start();
             if (p1 && p1->graphicElement() && !ids.contains(p1->graphicElement()->id())) {
@@ -53,7 +53,7 @@ QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &aItems, QVector<in
     QList<QGraphicsItem *> connections;
     /* Stores all the wires linked to these elements */
     for (QGraphicsItem *item : elements) {
-        GraphicElement *elm = qgraphicsitem_cast<GraphicElement *>(item);
+        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
         if (elm) {
             auto const inputs = elm->inputs();
             for (QNEInputPort *port : inputs) {
@@ -92,7 +92,7 @@ QList<QGraphicsItem *> findItems(const QVector<int> &ids)
 {
     QList<QGraphicsItem *> items;
     for (int id : ids) {
-        QGraphicsItem *item = dynamic_cast<QGraphicsItem *>(ElementFactory::getItemById(id));
+        auto *item = dynamic_cast<QGraphicsItem *>(ElementFactory::getItemById(id));
         if (item) {
             items.append(item);
         }
@@ -107,7 +107,7 @@ QList<GraphicElement *> findElements(const QVector<int> &ids)
 {
     QList<GraphicElement *> items;
     for (int id : ids) {
-        GraphicElement *item = dynamic_cast<GraphicElement *>(ElementFactory::getItemById(id));
+        auto *item = dynamic_cast<GraphicElement *>(ElementFactory::getItemById(id));
         if (item) {
             items.append(item);
         }
@@ -165,7 +165,7 @@ QList<QGraphicsItem *> loadItems(QByteArray &itemData, const QVector<int> &ids, 
         throw std::runtime_error(ERRORMSG(msg.toStdString()));
     }
     for (int i = 0; i < items.size(); ++i) {
-        ItemWithId *iwid = dynamic_cast<ItemWithId *>(items[i]);
+        auto *iwid = dynamic_cast<ItemWithId *>(items[i]);
         if (iwid) {
             ElementFactory::updateItemId(iwid, ids[i]);
         }
@@ -327,7 +327,7 @@ void RotateCommand::redo()
 
 bool RotateCommand::mergeWith(const QUndoCommand *command)
 {
-    const RotateCommand *rotateCommand = static_cast<const RotateCommand *>(command);
+    const auto *rotateCommand = static_cast<const RotateCommand *>(command);
     if (ids.size() != rotateCommand->ids.size()) {
         return (false);
     }
