@@ -12,7 +12,7 @@ void LogicDemux::_updateLogic(const std::vector<bool> &inputs)
 
     bool out0 = false;
     bool out1 = false;
-    if (choice == false) {
+    if (!choice) {
         out0 = data;
     } else {
         out1 = data;
