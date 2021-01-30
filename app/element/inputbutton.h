@@ -26,11 +26,11 @@ protected:
 public:
     ElementType elementType() override
     {
-        return (ElementType::BUTTON);
+        return ElementType::BUTTON;
     }
     ElementGroup elementGroup() override
     {
-        return (ElementGroup::INPUT);
+        return ElementGroup::INPUT;
     }
 
     // Input interface
