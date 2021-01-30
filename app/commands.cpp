@@ -333,7 +333,7 @@ void RotateCommand::redo()
 bool RotateCommand::mergeWith(const QUndoCommand *command)
 {
     const auto *rotateCommand = static_cast<const RotateCommand *>(command);
-    if (ids.size() != rotateCommand->ids.size()) {
+    if (m_ids.size() != rotateCommand->m_ids.size()) {
         return false;
     }
     QVector<GraphicElement *> list = findElements(m_ids).toVector();
@@ -631,14 +631,14 @@ void MorphCommand::transferConnections(QVector<GraphicElement *> from, QVector<G
 
 ChangeInputSZCommand::ChangeInputSZCommand(const QVector<GraphicElement *> &elements, int newInputSize, Editor *editor, QUndoCommand *parent)
     : QUndoCommand(parent)
-    , editor(editor)
+    , m_editor(editor)
 {
     for (GraphicElement *elm : elements) {
-        elms.append(elm->id());
+        m_elms.append(elm->id());
     }
     m_newInputSize = newInputSize;
     if (!elements.isEmpty()) {
-        scene = elements.front()->scene();
+        m_scene = elements.front()->scene();
     }
     setText(tr("Change input size to %1").arg(newInputSize));
 }
@@ -646,9 +646,9 @@ ChangeInputSZCommand::ChangeInputSZCommand(const QVector<GraphicElement *> &elem
 void ChangeInputSZCommand::redo()
 {
     COMMENT("REDO " + text().toStdString(), 0);
-    const QVector<GraphicElement *> m_elements = findElements(elms).toVector();
+    const QVector<GraphicElement *> m_elements = findElements(m_elms).toVector();
     if (!m_elements.isEmpty() && m_elements.front()->scene()) {
-        scene->clearSelection();
+        m_scene->clearSelection();
     }
     QVector<GraphicElement *> serializationOrder;
     m_oldData.clear();
@@ -671,7 +671,7 @@ void ChangeInputSZCommand::redo()
             while (!elm->input(in)->connections().isEmpty()) {
                 QNEConnection *conn = elm->input(in)->connections().front();
                 conn->save(dataStream);
-                scene->removeItem(conn);
+                m_scene->removeItem(conn);
                 QNEPort *otherPort = conn->otherPort(elm->input(in));
                 elm->input(in)->disconnect(conn);
                 otherPort->disconnect(conn);
@@ -680,20 +680,20 @@ void ChangeInputSZCommand::redo()
         elm->setInputSize(m_newInputSize);
         elm->setSelected(true);
     }
-    order.clear();
+    m_order.clear();
     for (GraphicElement *elm : serializationOrder) {
-        order.append(elm->id());
+        m_order.append(elm->id());
     }
-    emit editor->circuitHasChanged();
+    emit m_editor->circuitHasChanged();
 }
 
 void ChangeInputSZCommand::undo()
 {
     COMMENT("UNDO " + text().toStdString(), 0);
-    const QVector<GraphicElement *> m_elements = findElements(elms).toVector();
-    const QVector<GraphicElement *> serializationOrder = findElements(order).toVector();
+    const QVector<GraphicElement *> m_elements = findElements(m_elms).toVector();
+    const QVector<GraphicElement *> serializationOrder = findElements(m_order).toVector();
     if (!m_elements.isEmpty() && m_elements.front()->scene()) {
-        scene->clearSelection();
+        m_scene->clearSelection();
     }
     QDataStream dataStream(&m_oldData, QIODevice::ReadOnly);
     double version = GlobalProperties::version;
@@ -706,35 +706,35 @@ void ChangeInputSZCommand::undo()
         for (int in = m_newInputSize; in < elm->inputSize(); ++in) {
             QNEConnection *conn = ElementFactory::buildConnection();
             conn->load(dataStream, portMap);
-            scene->addItem(conn);
+            m_scene->addItem(conn);
         }
         elm->setSelected(true);
     }
-    emit editor->circuitHasChanged();
+    emit m_editor->circuitHasChanged();
 }
 
 FlipCommand::FlipCommand(const QList<GraphicElement *> &aItems, int aAxis, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
-    axis = aAxis;
+    m_axis = aAxis;
     setText(tr("Flip %1 elements in axis %2").arg(aItems.size()).arg(aAxis));
-    ids.reserve(aItems.size());
-    positions.reserve(aItems.size());
+    m_ids.reserve(aItems.size());
+    m_positions.reserve(aItems.size());
     double xmin, xmax, ymin, ymax;
     if (aItems.size() > 0) {
         xmin = xmax = aItems.first()->pos().rx();
         ymin = ymax = aItems.first()->pos().ry();
         for (GraphicElement *item : aItems) {
-            positions.append(item->pos());
+            m_positions.append(item->pos());
             item->setPos(item->pos());
-            ids.append(item->id());
+            m_ids.append(item->id());
             xmin = qMin(xmin, item->pos().rx());
             xmax = qMax(xmax, item->pos().rx());
             ymin = qMin(ymin, item->pos().ry());
             ymax = qMax(ymax, item->pos().ry());
         }
-        minPos = QPointF(xmin, ymin);
-        maxPos = QPointF(xmax, ymax);
+        m_minPos = QPointF(xmin, ymin);
+        m_maxPos = QPointF(xmax, ymax);
     }
 }
 
@@ -748,15 +748,15 @@ void FlipCommand::redo()
 {
     COMMENT("REDO " + text().toStdString(), 0);
     // TODO: this might detach the QList
-    QList<GraphicElement *> list = findElements(ids);
+    QList<GraphicElement *> list = findElements(m_ids);
     QGraphicsScene *scn = list[0]->scene();
     scn->clearSelection();
     for (GraphicElement *elm : qAsConst(list)) {
         QPointF pos = elm->pos();
-        if (axis == 0) {
-            pos.setX(minPos.rx() + (maxPos.rx() - pos.rx()));
+        if (m_axis == 0) {
+            pos.setX(m_minPos.rx() + (m_maxPos.rx() - pos.rx()));
         } else {
-            pos.setY(minPos.ry() + (maxPos.ry() - pos.ry()));
+            pos.setY(m_minPos.ry() + (m_maxPos.ry() - pos.ry()));
         }
         elm->setPos(pos);
         elm->update();
