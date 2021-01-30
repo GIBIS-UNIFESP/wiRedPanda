@@ -71,9 +71,9 @@ GraphicElement::GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, 
 QPixmap GraphicElement::getPixmap() const
 {
     if (m_pixmap) {
-        return (*m_pixmap);
+        return *m_pixmap;
     }
-    return (QPixmap());
+    return QPixmap();
 }
 
 void GraphicElement::disable()
@@ -150,27 +150,27 @@ void GraphicElement::setPixmap(const QString &pixmapName, QRect size)
 
 QVector<QNEOutputPort *> GraphicElement::outputs() const
 {
-    return (m_outputs);
+    return m_outputs;
 }
 
 const QNEInputPort *GraphicElement::input(int pos) const
 {
-    return (m_inputs.at(pos));
+    return m_inputs.at(pos);
 }
 
 const QNEOutputPort *GraphicElement::output(int pos) const
 {
-    return (m_outputs.at(pos));
+    return m_outputs.at(pos);
 }
 
 QNEInputPort *GraphicElement::input(int pos)
 {
-    return (m_inputs.at(pos));
+    return m_inputs.at(pos);
 }
 
 QNEOutputPort *GraphicElement::output(int pos)
 {
-    return (m_outputs.at(pos));
+    return m_outputs.at(pos);
 }
 
 void GraphicElement::setOutputs(const QVector<QNEOutputPort *> &outputs)
@@ -442,7 +442,7 @@ void GraphicElement::updateSkinsPath(QString newSkinPath)
 
 QVector<QNEInputPort *> GraphicElement::inputs() const
 {
-    return (m_inputs);
+    return m_inputs;
 }
 
 void GraphicElement::setInputs(const QVector<QNEInputPort *> &inputs)
@@ -452,7 +452,7 @@ void GraphicElement::setInputs(const QVector<QNEInputPort *> &inputs)
 
 QRectF GraphicElement::boundingRect() const
 {
-    return (m_pixmap->rect());
+    return m_pixmap->rect();
 }
 
 void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -471,10 +471,10 @@ QNEPort *GraphicElement::addPort(const QString &name, bool isOutput, int flags, 
 {
     COMMENT("Adding new port.", 4);
     if (isOutput && (static_cast<quint64>(m_outputs.size()) >= m_maxOutputSz)) {
-        return (nullptr);
+        return nullptr;
     }
     if (!isOutput && (static_cast<quint64>(m_inputs.size()) >= m_maxInputSz)) {
-        return (nullptr);
+        return nullptr;
     }
     QNEPort *port = nullptr;
     if (isOutput) {
@@ -493,7 +493,7 @@ QNEPort *GraphicElement::addPort(const QString &name, bool isOutput, int flags, 
     COMMENT("Updating new port.", 4);
     this->updatePorts();
     port->show();
-    return (port);
+    return port;
 }
 
 void GraphicElement::addInputPort(const QString &name)
@@ -575,9 +575,9 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
             int gridSize = customScene->gridSize();
             qreal xV = qRound(newPos.x() / gridSize) * gridSize;
             qreal yV = qRound(newPos.y() / gridSize) * gridSize;
-            return (QPointF(xV, yV));
+            return QPointF(xV, yV);
         }
-        return (newPos);
+        return newPos;
     }
     COMMENT("Moves wires.", 4);
     if ((change == ItemScenePositionHasChanged) || (change == ItemRotationHasChanged) || (change == ItemTransformHasChanged)) {
@@ -590,12 +590,12 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
     }
     update();
 
-    return (QGraphicsItem::itemChange(change, value));
+    return QGraphicsItem::itemChange(change, value);
 }
 
 bool GraphicElement::hasAudio() const
 {
-    return (m_hasAudio);
+    return m_hasAudio;
 }
 
 void GraphicElement::setHasAudio(bool hasaudio)
@@ -605,7 +605,7 @@ void GraphicElement::setHasAudio(bool hasaudio)
 
 QKeySequence GraphicElement::getTrigger() const
 {
-    return (m_trigger);
+    return m_trigger;
 }
 
 void GraphicElement::setTrigger(const QKeySequence &trigger)
@@ -616,7 +616,7 @@ void GraphicElement::setTrigger(const QKeySequence &trigger)
 
 QString GraphicElement::genericProperties()
 {
-    return (QString());
+    return QString();
 }
 
 void GraphicElement::updateLabel()
@@ -640,7 +640,7 @@ void GraphicElement::setLabel(QString label)
 
 QString GraphicElement::getLabel() const
 {
-    return (m_labelText);
+    return m_labelText;
 }
 
 void GraphicElement::updateTheme()
@@ -690,17 +690,17 @@ bool GraphicElement::isValid()
             }
         }
     }
-    return (valid);
+    return valid;
 }
 
 bool GraphicElement::hasColors() const
 {
-    return (m_hasColors);
+    return m_hasColors;
 }
 
 bool GraphicElement::hasTrigger() const
 {
-    return (m_hasTrigger);
+    return m_hasTrigger;
 }
 
 void GraphicElement::setColor(QString)
@@ -709,7 +709,7 @@ void GraphicElement::setColor(QString)
 
 QString GraphicElement::getColor() const
 {
-    return (QString());
+    return QString();
 }
 
 void GraphicElement::setAudio(QString)
@@ -718,7 +718,7 @@ void GraphicElement::setAudio(QString)
 
 QString GraphicElement::getAudio() const
 {
-    return (QString());
+    return QString();
 }
 
 void GraphicElement::setHasColors(bool hasColors)
@@ -738,7 +738,7 @@ void GraphicElement::setHasTrigger(bool hasTrigger)
 
 bool GraphicElement::hasFrequency() const
 {
-    return (m_hasFrequency);
+    return m_hasFrequency;
 }
 
 void GraphicElement::setHasFrequency(bool hasFrequency)
@@ -748,7 +748,7 @@ void GraphicElement::setHasFrequency(bool hasFrequency)
 
 bool GraphicElement::hasLabel() const
 {
-    return (m_hasLabel);
+    return m_hasLabel;
 }
 
 bool GraphicElement::canChangeSkin() const
@@ -764,7 +764,7 @@ void GraphicElement::setHasLabel(bool hasLabel)
 
 bool GraphicElement::rotatable() const
 {
-    return (m_rotatable);
+    return m_rotatable;
 }
 
 void GraphicElement::setRotatable(bool rotatable)
@@ -774,12 +774,12 @@ void GraphicElement::setRotatable(bool rotatable)
 
 int GraphicElement::minOutputSz() const
 {
-    return (m_minOutputSz);
+    return m_minOutputSz;
 }
 
 int GraphicElement::inputSize() const
 {
-    return (m_inputs.size());
+    return m_inputs.size();
 }
 
 void GraphicElement::setInputSize(int size)
@@ -801,7 +801,7 @@ void GraphicElement::setInputSize(int size)
 
 int GraphicElement::outputSize() const
 {
-    return (m_outputs.size());
+    return m_outputs.size();
 }
 
 void GraphicElement::setOutputSize(const int size)
@@ -822,7 +822,7 @@ void GraphicElement::setOutputSize(const int size)
 
 float GraphicElement::getFrequency() const
 {
-    return (0.0);
+    return 0.0;
 }
 
 void GraphicElement::setFrequency(float)
@@ -836,7 +836,7 @@ void GraphicElement::setMinOutputSz(int minOutputSz)
 
 int GraphicElement::minInputSz() const
 {
-    return (m_minInputSz);
+    return m_minInputSz;
 }
 
 void GraphicElement::setMinInputSz(const int minInputSz)
@@ -846,7 +846,7 @@ void GraphicElement::setMinInputSz(const int minInputSz)
 
 int GraphicElement::maxOutputSz() const
 {
-    return (m_maxOutputSz);
+    return m_maxOutputSz;
 }
 
 void GraphicElement::setMaxOutputSz(int maxOutputSz)
@@ -856,7 +856,7 @@ void GraphicElement::setMaxOutputSz(int maxOutputSz)
 
 int GraphicElement::maxInputSz() const
 {
-    return (m_maxInputSz);
+    return m_maxInputSz;
 }
 
 void GraphicElement::setMaxInputSz(int maxInputSz)
@@ -866,7 +866,7 @@ void GraphicElement::setMaxInputSz(int maxInputSz)
 
 int GraphicElement::bottomPosition() const
 {
-    return (m_bottomPosition);
+    return m_bottomPosition;
 }
 
 void GraphicElement::setBottomPosition(int bottomPosition)
@@ -877,7 +877,7 @@ void GraphicElement::setBottomPosition(int bottomPosition)
 
 int GraphicElement::topPosition() const
 {
-    return (m_topPosition);
+    return m_topPosition;
 }
 
 void GraphicElement::setTopPosition(int topPosition)
@@ -888,7 +888,7 @@ void GraphicElement::setTopPosition(int topPosition)
 
 bool GraphicElement::outputsOnTop() const
 {
-    return (m_outputsOnTop);
+    return m_outputsOnTop;
 }
 
 void GraphicElement::setOutputsOnTop(bool outputsOnTop)
@@ -899,5 +899,5 @@ void GraphicElement::setOutputsOnTop(bool outputsOnTop)
 
 bool GraphicElement::disabled()
 {
-    return (m_disabled);
+    return m_disabled;
 }
