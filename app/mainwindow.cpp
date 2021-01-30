@@ -58,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent, QString filename)
         if ((QFile(autosaveFilename).exists()) && (autosaveFilename != filename)) {
             int ret = recoverAutoSaveFile(autosaveFilename);
             if (ret == QMessageBox::Yes) {
-                QProcess *wPanda = new QProcess(nullptr);
+                auto *wPanda = new QProcess(nullptr);
                 QStringList args;
                 args << autosaveFilename;
                 wPanda->start(QCoreApplication::applicationFilePath(), args);
@@ -86,7 +86,7 @@ MainWindow::MainWindow(QWidget *parent, QString filename)
     ui->actionZoom_in->setShortcuts(zoom_in_shortcuts);
 
     /* THEME */
-    QActionGroup *themeGroup = new QActionGroup(this);
+    auto *themeGroup = new QActionGroup(this);
     auto const actions = ui->menuTheme->actions();
     for (QAction *action : actions) {
         themeGroup->addAction(action);
@@ -136,7 +136,7 @@ MainWindow::MainWindow(QWidget *parent, QString filename)
     rfController = new RecentFilesController("recentFileList", this);
     ricController = new RecentFilesController("recentICs", this);
 
-    QShortcut *shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F), this);
+    auto *shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F), this);
     connect(shortcut, &QShortcut::activated, ui->lineEdit, QOverload<>::of(&QWidget::setFocus));
     ui->graphicsView->setCacheMode(QGraphicsView::CacheBackground);
     firstResult = nullptr;
@@ -484,7 +484,7 @@ void MainWindow::updateRecentICs()
     const QStringList files = ricController->getFiles();
     for (const QString &file : files) {
         QPixmap pixmap(QString::fromUtf8(":/basic/box.png"));
-        ListItemWidget *item = new ListItemWidget(pixmap, ElementType::IC, file, this);
+        auto *item = new ListItemWidget(pixmap, ElementType::IC, file, this);
         boxItemWidgets.append(item);
         ui->scrollAreaWidgetContents_Box->layout()->addWidget(item);
     }
@@ -554,7 +554,7 @@ void MainWindow::on_lineEdit_textChanged(const QString &text)
             }
         }
         for (auto *label : searchResults) {
-            ListItemWidget *item = new ListItemWidget(label->pixmap(Qt::ReturnByValue), label->elementType(), label->auxData());
+            auto *item = new ListItemWidget(label->pixmap(Qt::ReturnByValue), label->elementType(), label->auxData());
             if (!firstResult) {
                 firstResult = item->getLabel();
             }
@@ -699,7 +699,7 @@ void MainWindow::updateRecentFileActions()
 
 void MainWindow::openRecentFile()
 {
-    QAction *action = qobject_cast<QAction *>(sender());
+    auto *action = qobject_cast<QAction *>(sender());
     if (action) {
         QString fileName = action->data().toString();
 
@@ -843,7 +843,7 @@ void MainWindow::populateMenu(QSpacerItem *spacer, QString names, QLayout *layou
         name = name.trimmed().toUpper();
         ElementType type = ElementFactory::textToType(name);
         QPixmap pixmap(ElementFactory::getPixmap(type));
-        ListItemWidget *item = new ListItemWidget(pixmap, type, name, this);
+        auto *item = new ListItemWidget(pixmap, type, name, this);
         layout->addWidget(item);
     }
     layout->addItem(spacer);
@@ -910,7 +910,7 @@ void MainWindow::buildFullScreenDialog()
     fullscreenDlg = new QDialog(this);
     fullscreenView = new GraphicsView(this);
     fullscreenDlg->setWindowFlags(Qt::Window);
-    QHBoxLayout *dlg_layout = new QHBoxLayout(fullscreenDlg);
+    auto *dlg_layout = new QHBoxLayout(fullscreenDlg);
 
     fullscreenDlg->addActions(this->actions());
     fullscreenDlg->addActions(ui->menuBar->actions());
