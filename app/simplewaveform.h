@@ -20,7 +20,7 @@ class SimpleWaveform : public QDialog
 
 public:
     explicit SimpleWaveform(Editor *editor, QWidget *parent = nullptr);
-    ~SimpleWaveform();
+    ~SimpleWaveform() override;
 
     void showWaveform();
     static void sortElements(QVector<GraphicElement *> &elements, QVector<GraphicElement *> &inputs, QVector<GraphicElement *> &outputs, SortingMode sorting);
