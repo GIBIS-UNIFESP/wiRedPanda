@@ -9,19 +9,19 @@ class SRFlipFlop : public GraphicElement
 
 public:
     explicit SRFlipFlop(QGraphicsItem *parent = nullptr);
-    virtual ~SRFlipFlop() override = default;
+    ~SRFlipFlop() override = default;
 
     /* GraphicElement interface */
 public:
-    virtual ElementType elementType() override
+    ElementType elementType() override
     {
         return (ElementType::SRFLIPFLOP);
     }
-    virtual ElementGroup elementGroup() override
+    ElementGroup elementGroup() override
     {
         return (ElementGroup::MEMORY);
     }
-    virtual void updatePorts() override;
+    void updatePorts() override;
     void setSkin(bool defaultSkin, QString filename) override;
 };
 
