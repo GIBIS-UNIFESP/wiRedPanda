@@ -25,11 +25,11 @@ protected:
 public:
     ElementType elementType() override
     {
-        return (ElementType::SWITCH);
+        return ElementType::SWITCH;
     }
     ElementGroup elementGroup() override
     {
-        return (ElementGroup::INPUT);
+        return ElementGroup::INPUT;
     }
 
     /* GraphicElement interface */
