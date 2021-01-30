@@ -197,7 +197,7 @@ bool MainWindow::save(QString fname)
         }
     }
     if (fname.isEmpty()) {
-        return (false);
+        return false;
     }
     if (!fname.endsWith(".panda")) {
         fname.append(".panda");
@@ -209,7 +209,7 @@ bool MainWindow::save(QString fname)
             editor->save(ds, dolphinFilename);
         } catch (std::runtime_error &e) {
             std::cerr << tr("Error saving project: ").toStdString() << e.what() << std::endl;
-            return (false);
+            return false;
         }
     }
     if (fl.commit()) {
@@ -222,10 +222,10 @@ bool MainWindow::save(QString fname)
             QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
             settings.remove("autosaveFile");
         }
-        return (true);
+        return true;
     }
     std::cerr << QString(tr("Could not save file: ") + fl.errorString() + ".").toStdString() << std::endl;
-    return (false);
+    return false;
 }
 
 void MainWindow::show()
@@ -249,7 +249,7 @@ int MainWindow::recoverAutoSaveFile(QString autosaveFilename)
     msgBox.setText(QString(tr("We have found an autosave file. Do you want to load it?\n Autosave: ") + autosaveFilename));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Save);
-    return (msgBox.exec());
+    return msgBox.exec();
 }
 
 int MainWindow::confirmSave()
@@ -262,7 +262,7 @@ int MainWindow::confirmSave()
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Save);
 
-    return (msgBox.exec());
+    return msgBox.exec();
 }
 
 void MainWindow::on_actionNew_triggered()
@@ -293,7 +293,7 @@ bool MainWindow::loadPandaFile(const QString &fname)
     if (!fl.exists()) {
         QMessageBox::warning(this, tr("Error!"), tr("File \"%1\" does not exists!").arg(fname), QMessageBox::Ok, QMessageBox::NoButton);
         std::cerr << tr("Error: This file does not exists: ").toStdString() << fname.toStdString() << std::endl;
-        return (false);
+        return false;
     }
     COMMENT("File exists.", 0);
     if (fl.open(QFile::ReadOnly)) {
@@ -311,11 +311,11 @@ bool MainWindow::loadPandaFile(const QString &fname)
             std::cerr << tr("Error loading project: ").toStdString() << e.what() << std::endl;
             QMessageBox::warning(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
             clear();
-            return (false);
+            return false;
         }
     } else {
         std::cerr << tr("Could not open file in ReadOnly mode : ").toStdString() << fname.toStdString() << "." << std::endl;
-        return (false);
+        return false;
     }
     COMMENT("Closing file.", 0);
     fl.close();
@@ -323,7 +323,7 @@ bool MainWindow::loadPandaFile(const QString &fname)
     //  rfController->addFile( fname );
     ui->statusBar->showMessage(tr("File loaded successfully."), 2000);
     /*  on_actionWaveform_triggered( ); */
-    return (true);
+    return true;
 }
 
 void MainWindow::scrollView(int dx, int dy)
@@ -387,7 +387,7 @@ bool MainWindow::closeFile()
             }
         }
     }
-    return (ok);
+    return ok;
 }
 
 void MainWindow::closeEvent(QCloseEvent *e)
@@ -429,7 +429,7 @@ void MainWindow::on_actionSave_As_triggered()
 
 QFileInfo MainWindow::getCurrentFile() const
 {
-    return (currentFile);
+    return currentFile;
 }
 
 void MainWindow::setCurrentFile(const QFileInfo &value)
@@ -495,7 +495,7 @@ void MainWindow::updateRecentICs()
 
 QString MainWindow::getOpenICFile()
 {
-    return (QFileDialog::getOpenFileName(this, tr("Open File as IC"), defaultDirectory.absolutePath(), tr("Panda files (*.panda)")));
+    return QFileDialog::getOpenFileName(this, tr("Open File as IC"), defaultDirectory.absolutePath(), tr("Panda files (*.panda)"));
 }
 
 void MainWindow::on_actionOpen_IC_triggered()
@@ -604,13 +604,13 @@ bool MainWindow::exportToArduino(QString fname)
 {
     try {
         if (fname.isEmpty()) {
-            return (false);
+            return false;
         }
         QVector<GraphicElement *> elements = editor->getScene()->getElements();
         SimulationController *sc = editor->getSimulationController();
         sc->stop();
         if (elements.isEmpty()) {
-            return (false);
+            return false;
         }
         if (!fname.endsWith(".ino")) {
             fname.append(".ino");
@@ -625,35 +625,35 @@ bool MainWindow::exportToArduino(QString fname)
         qDebug() << "Arduino code successfully generated.";
     } catch (std::runtime_error &e) {
         QMessageBox::warning(this, tr("Error"), tr("<strong>Error while exporting to arduino code:</strong><br>%1").arg(e.what()));
-        return (false);
+        return false;
     }
 
-    return (true);
+    return true;
 }
 
 bool MainWindow::exportToWaveFormFile(QString fname)
 {
     try {
         if ((fname.isEmpty()) || (fname == "none")) {
-            return (false);
+            return false;
         }
         bd = new BewavedDolphin(editor, this);
         if (!bd->createWaveform(dolphinFilename)) {
             std::cerr << ERRORMSG(tr("Could not open waveform file: %1.").arg(currentFile.fileName()).toStdString()) << std::endl;
-            return (false);
+            return false;
         }
         bd->print();
     } catch (std::runtime_error &e) {
         QMessageBox::warning(this, tr("Error"), tr("<strong>Error while exporting to waveform file:</strong><br>%1").arg(e.what()));
-        return (false);
+        return false;
     }
-    return (true);
+    return true;
 }
 
 bool MainWindow::on_actionExport_to_Arduino_triggered()
 {
     QString fname = QFileDialog::getSaveFileName(this, tr("Generate Arduino Code"), defaultDirectory.absolutePath(), tr("Arduino file (*.ino)"));
-    return (exportToArduino(fname));
+    return exportToArduino(fname);
 }
 
 void MainWindow::on_actionZoom_in_triggered()
@@ -927,7 +927,7 @@ void MainWindow::buildFullScreenDialog()
 
 QString MainWindow::getDolphinFilename()
 {
-    return (dolphinFilename);
+    return dolphinFilename;
 }
 
 void MainWindow::setDolphinFilename(QString filename)
