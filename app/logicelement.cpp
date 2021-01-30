@@ -83,7 +83,7 @@ void LogicElement::validate()
     }
 }
 
-bool LogicElement::operator<(const LogicElement &other)
+bool LogicElement::operator<(const LogicElement &other) const
 {
     return (priority < other.priority);
 }
