@@ -24,7 +24,7 @@ void Node::updatePorts()
 
 ElementType Node::elementType()
 {
-    return (ElementType::NODE);
+    return ElementType::NODE;
 }
 
 void Node::setSkin(bool defaultSkin, QString filename)
