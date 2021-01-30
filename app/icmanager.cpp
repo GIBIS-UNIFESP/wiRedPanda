@@ -49,9 +49,8 @@ bool ICManager::tryLoadFile(QString &fname, QString parentFile)
         fname = mainWindow->getOpenICFile();
         if (fname.isEmpty()) {
             return false;
-        } else {
-            return tryLoadFile(fname, parentFile);
         }
+        return tryLoadFile(fname, parentFile);
     }
     return true;
 }
