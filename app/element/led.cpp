@@ -17,7 +17,7 @@ int Led::current_id_number = 0;
  *         1000: dark gray, 1001: light blue, 1010: light green, 1011: cyan,   1100: light red, 1101: pink,    1110: yellow, 1111: white
  */
 Led::Led(QGraphicsItem *parent)
-    : GraphicElement(1, 4, 0, 0, parent)
+    : GraphicElement(ElementType::LED, ElementGroup::OUTPUT, 1, 4, 0, 0, parent)
 {
     pixmapSkinName.append(":/output/WhiteLedOff.png"); // Single input values: 0
     pixmapSkinName.append(":/output/WhiteLedOn.png"); // 1

@@ -10,7 +10,7 @@
 int LedGrid::current_id_number = 0;
 
 LedGrid::LedGrid(QGraphicsItem *parent)
-    : GraphicElement(8, 8, 0, 0, parent)
+    : GraphicElement(ElementType::LEDGRID, ElementGroup::OUTPUT, 8, 8, 0, 0, parent)
 {
     pixmapSkinName.append(":/output/LedGrid.png"); // 0
     pixmapSkinName.append(":/output/WhiteLedOff.png"); // 1

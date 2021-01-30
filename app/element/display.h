@@ -15,15 +15,6 @@ public:
     ~Display() override = default;
     static int current_id_number; // Number used to create distinct labels for each instance of this element.
 
-public:
-    ElementType elementType() override
-    {
-        return ElementType::DISPLAY;
-    }
-    ElementGroup elementGroup() override
-    {
-        return ElementGroup::OUTPUT;
-    }
     void refresh() override;
     void updatePorts() override;
     QPixmap bkg, a, b, c, d, e, f, g, dp;

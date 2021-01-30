@@ -4,7 +4,7 @@
 #include "dlatch.h"
 
 DLatch::DLatch(QGraphicsItem *parent)
-    : GraphicElement(2, 2, 2, 2, parent)
+    : GraphicElement(ElementType::DLATCH, ElementGroup::MEMORY, 2, 2, 2, 2, parent)
 {
     pixmapSkinName.append(":/memory/D-latch.png");
     setPixmap(pixmapSkinName[0]);

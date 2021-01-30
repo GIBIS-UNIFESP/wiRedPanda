@@ -4,7 +4,7 @@
 #include "xnor.h"
 
 Xnor::Xnor(QGraphicsItem *parent)
-    : GraphicElement(2, 8, 1, 1, parent)
+    : GraphicElement(ElementType::XNOR, ElementGroup::GATE, 2, 8, 1, 1, parent)
 {
     pixmapSkinName.append(":/basic/xnor.png");
     setOutputsOnTop(true);

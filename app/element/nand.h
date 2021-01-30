@@ -14,16 +14,6 @@ public:
     explicit Nand(QGraphicsItem *parent = nullptr);
     ~Nand() override = default;
 
-    /* GraphicElement interface */
-public:
-    ElementType elementType() override
-    {
-        return ElementType::NAND;
-    }
-    ElementGroup elementGroup() override
-    {
-        return ElementGroup::GATE;
-    }
     void setSkin(bool defaultSkin, QString filename) override;
 };
 

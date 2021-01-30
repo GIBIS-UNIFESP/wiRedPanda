@@ -19,7 +19,7 @@ static constexpr std::array<const char *, 2> defaultSkins {
 };
 
 Buzzer::Buzzer(QGraphicsItem *parent)
-    : GraphicElement(1, 1, 0, 0, parent)
+    : GraphicElement(ElementType::BUZZER, ElementGroup::OUTPUT, 1, 1, 0, 0, parent)
 {
     //  pixmapSkinName.append( ":/output/BuzzerOff.png" );
     //  pixmapSkinName.append( ":/output/BuzzerOn.png" );

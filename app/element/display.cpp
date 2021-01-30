@@ -11,7 +11,7 @@
 int Display::current_id_number = 0;
 
 Display::Display(QGraphicsItem *parent)
-    : GraphicElement(8, 8, 0, 0, parent)
+    : GraphicElement(ElementType::DISPLAY, ElementGroup::OUTPUT, 8, 8, 0, 0, parent)
 {
     pixmapSkinName.append(":/output/counter/counter_off.png");
     pixmapSkinName.append(":/output/counter/counter_a.png");

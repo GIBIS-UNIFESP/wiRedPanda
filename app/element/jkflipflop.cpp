@@ -6,7 +6,7 @@
 #include <QDebug>
 
 JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(5, 5, 2, 2, parent)
+    : GraphicElement(ElementType::JKFLIPFLOP, ElementGroup::MEMORY, 5, 5, 2, 2, parent)
 {
     pixmapSkinName.append(":/memory/JK-flipflop.png");
     setPixmap(pixmapSkinName[0]);

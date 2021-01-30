@@ -4,7 +4,7 @@
 #include "mux.h"
 
 Mux::Mux(QGraphicsItem *parent)
-    : GraphicElement(3, 3, 1, 1, parent)
+    : GraphicElement(ElementType::MUX, ElementGroup::MUX, 3, 3, 1, 1, parent)
 {
     pixmapSkinName.append(":/basic/mux.png");
     setPixmap(pixmapSkinName[0]);

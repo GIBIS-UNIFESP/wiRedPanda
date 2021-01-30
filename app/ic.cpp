@@ -24,7 +24,7 @@
 #include "serializationfunctions.h"
 
 IC::IC(QGraphicsItem *parent)
-    : GraphicElement(0, 0, 0, 0, parent)
+    : GraphicElement(ElementType::IC, ElementGroup::IC, 0, 0, 0, 0, parent)
 {
     pixmapSkinName.append(":/basic/box.png");
     setHasLabel(true);
