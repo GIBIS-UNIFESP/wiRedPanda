@@ -79,6 +79,9 @@ public:
    */
   virtual void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
 
+  /**
+   * @brief updatePorts: Updates the number and the connected elements to the ports whenever needed (e.g. loading the element, changing the number of inputs/outputs).
+   */
   virtual void updatePorts( );
 
   virtual void refresh( );
@@ -94,10 +97,19 @@ public:
 
   virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
 
+  /**
+   * @brief addPort: adds an input or output port at the end of the port vector.
+   */
   QNEPort* addPort( const QString &name, bool isOutput, int flags = 0, int ptr = 0 );
 
+  /**
+   * @brief addInputPort: adds an input port at the end of the input port vector.
+   */
   void addInputPort( const QString &name = QString( ) );
 
+  /**
+   * @brief addOutputPort: adds an output port at the end of the output port vector.
+   */
   void addOutputPort( const QString &name = QString( ) );
 
   virtual void setPortName( QString name );
@@ -112,6 +124,9 @@ public:
 
   int maxOutputSz( ) const;
 
+  /**
+   * @brief outputsOnTop: returns true if the output ports are on the top position of the GraphicElement.
+   */
   bool outputsOnTop( ) const;
 
   QVector< QNEInputPort* > inputs( ) const;
@@ -137,6 +152,9 @@ public:
   int outputSize( ) const;
   void setOutputSize( const int size );
 
+  /**
+   * @brief getFrequency: virtual function overloaded by clock element. Other elements have frequency of 0.
+   */
   virtual float getFrequency( ) const;
   virtual void setFrequency( float freq );
 
@@ -157,28 +175,24 @@ public:
 
   bool hasAudio( ) const;
 
-
   virtual void setColor( QString getColor );
   virtual QString getColor( ) const;
 
   virtual void setAudio( QString audio );
   virtual QString getAudio( ) const;
-/*
- *  bool beingVisited( ) const;
- *  void setBeingVisited( bool beingVisited );
- */
-
-/*
- *  bool visited( ) const;
- *  void setVisited( bool visited );
- */
 
   bool isValid( );
 
   void setLabel( QString label );
   QString getLabel( ) const;
 
+  /**
+   * @brief updateTheme: Updates the GraphicElement theme according to the dark/light wiRed Panda theme.
+   */
   void updateTheme( );
+  /**
+   * @brief updateThemeLocal: unfinished function with no current use.
+   */
   virtual void updateThemeLocal( );
 
   void disable( );
@@ -194,7 +208,7 @@ public:
 
   // Update label in graphical interface
   void updateLabel( );
-  void updateSkinsPath(QString newSkinPath);
+  void updateSkinsPath( QString newSkinPath );
 
 protected:
   void setRotatable( bool rotatable );
@@ -234,37 +248,31 @@ private:
   QString m_labelText;
   QKeySequence m_trigger;
 
-
   void loadPos( QDataStream &ds );
-
   void loadAngle( QDataStream &ds );
-
   void loadLabel( QDataStream &ds, double version );
-
   void loadMinMax( QDataStream &ds, double version );
-
   void loadTrigger( QDataStream &ds, double version );
-
   void loadInputPorts( QDataStream &ds, QMap< quint64, QNEPort* > &portMap );
-
-  void removePortFromMap( QNEPort *deletedPort, QMap< quint64, QNEPort* > &portMap );
-
   void loadOutputPorts( QDataStream &ds, QMap< quint64, QNEPort* > &portMap );
-
-  void removeSurplusInputs( quint64 inputSz, QMap< quint64, QNEPort* > &portMap );
-
-  void removeSurplusOutputs( quint64 outputSz, QMap<quint64, QNEPort *> &portMap );
-
   void loadInputPort( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, size_t port );
-
   void loadOutputPort( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, size_t port );
-
   void loadPixmapSkinNames( QDataStream &ds , double version );
-
   void loadPixmapSkinName( QDataStream &ds, size_t skin );
 
+  void removePortFromMap( QNEPort *deletedPort, QMap< quint64, QNEPort* > &portMap );
+  void removeSurplusInputs( quint64 inputSz, QMap< quint64, QNEPort* > &portMap );
+  void removeSurplusOutputs( quint64 outputSz, QMap<quint64, QNEPort *> &portMap );
+
+
 protected:
+  /**
+   * @brief m_inputs: input port vector
+   */
   QVector< QNEInputPort* > m_inputs;
+  /**
+   * @brief m_outputs: output port vector
+   */
   QVector< QNEOutputPort* > m_outputs;
 };
 
