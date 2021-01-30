@@ -21,7 +21,7 @@ class ElementEditor : public QWidget
 
 public:
     explicit ElementEditor(QWidget *parent = nullptr);
-    ~ElementEditor();
+    ~ElementEditor() override;
 
     void setScene(Scene *s);
     void contextMenu(QPoint screenPos);
@@ -57,7 +57,7 @@ private slots:
 
     void on_lineEditTrigger_editingFinished();
 
-    bool eventFilter(QObject *obj, QEvent *event);
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
     void on_comboBoxAudio_currentIndexChanged(int);
 
