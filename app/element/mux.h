@@ -20,11 +20,11 @@ public:
 public:
     ElementType elementType() override
     {
-        return (ElementType::MUX);
+        return ElementType::MUX;
     }
     ElementGroup elementGroup() override
     {
-        return (ElementGroup::MUX);
+        return ElementGroup::MUX;
     }
     void updatePorts() override;
     void setSkin(bool defaultSkin, QString filename) override;
