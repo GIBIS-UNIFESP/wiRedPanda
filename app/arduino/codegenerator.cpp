@@ -296,8 +296,8 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elms)
                 QString k = otherPortName(elm->input(2));
                 QString inclk = firstOut + "_inclk";
                 out << QString("    //JK FlipFlop") << Qt::endl;
-                out << QString("    if( %1 && !%2 ) { ").arg(clk).arg(inclk) << Qt::endl;
-                out << QString("        if( %1 && %2) { ").arg(j).arg(k) << Qt::endl;
+                out << QString("    if( %1 && !%2 ) { ").arg(clk, inclk) << Qt::endl;
+                out << QString("        if( %1 && %2) { ").arg(j, k) << Qt::endl;
                 out << QString("            boolean aux = %1;").arg(firstOut) << Qt::endl;
                 out << QString("            %1 = %2;").arg(firstOut, secondOut) << Qt::endl;
                 out << QString("            %1 = aux;").arg(secondOut) << Qt::endl;
@@ -311,9 +311,9 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elms)
                 out << QString("    }") << Qt::endl;
                 QString prst = otherPortName(elm->input(3));
                 QString clr = otherPortName(elm->input(4));
-                out << QString("    if( !%1 || !%2 ) { ").arg(prst).arg(clr) << Qt::endl;
-                out << QString("        %1 = !%2; //Preset").arg(firstOut).arg(prst) << Qt::endl;
-                out << QString("        %1 = !%2; //Clear").arg(secondOut).arg(clr) << Qt::endl;
+                out << QString("    if( !%1 || !%2 ) { ").arg(prst, clr) << Qt::endl;
+                out << QString("        %1 = !%2; //Preset").arg(firstOut, prst) << Qt::endl;
+                out << QString("        %1 = !%2; //Clear").arg(secondOut, clr) << Qt::endl;
                 out << QString("    }") << Qt::endl;
 
                 /* Updating internal clock. */
@@ -339,9 +339,9 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elms)
                 out << QString("    }") << Qt::endl;
                 QString prst = otherPortName(elm->input(3));
                 QString clr = otherPortName(elm->input(4));
-                out << QString("    if( !%1 || !%2 ) { ").arg(prst).arg(clr) << Qt::endl;
-                out << QString("        %1 = !%2; //Preset").arg(firstOut).arg(prst) << Qt::endl;
-                out << QString("        %1 = !%2; //Clear").arg(secondOut).arg(clr) << Qt::endl;
+                out << QString("    if( !%1 || !%2 ) { ").arg(prst, clr) << Qt::endl;
+                out << QString("        %1 = !%2; //Preset").arg(firstOut, prst) << Qt::endl;
+                out << QString("        %1 = !%2; //Clear").arg(secondOut, clr) << Qt::endl;
                 out << QString("    }") << Qt::endl;
 
                 /* Updating internal clock. */
@@ -356,17 +356,17 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elms)
                 QString inclk = firstOut + "_inclk";
                 //          QString last = firstOut + "_last";
                 out << QString("    //T FlipFlop") << Qt::endl;
-                out << QString("    if( %1 && !%2) { ").arg(clk).arg(inclk) << Qt::endl;
+                out << QString("    if( %1 && !%2) { ").arg(clk,inclk) << Qt::endl;
                 out << QString("        if( %1 ) { ").arg(t) << Qt::endl;
                 out << QString("            %1 = !%1;").arg(firstOut) << Qt::endl;
-                out << QString("            %1 = !%2;").arg(secondOut).arg(firstOut) << Qt::endl;
+                out << QString("            %1 = !%2;").arg(secondOut, firstOut) << Qt::endl;
                 out << QString("        }") << Qt::endl;
                 out << QString("    }") << Qt::endl;
                 QString prst = otherPortName(elm->input(2));
                 QString clr = otherPortName(elm->input(3));
                 out << QString("    if( !%1 || !%2) { ").arg(prst).arg(clr) << Qt::endl;
-                out << QString("        %1 = !%2; //Preset").arg(firstOut).arg(prst) << Qt::endl;
-                out << QString("        %1 = !%2; //Clear").arg(secondOut).arg(clr) << Qt::endl;
+                out << QString("        %1 = !%2; //Preset").arg(firstOut, prst) << Qt::endl;
+                out << QString("        %1 = !%2; //Clear").arg(secondOut, clr) << Qt::endl;
                 out << QString("    }") << Qt::endl;
 
                 /* Updating internal clock. */
@@ -447,7 +447,8 @@ void CodeGenerator::assignLogicOperator(GraphicElement *elm)
         if (!inPort->connections().isEmpty()) {
             out << otherPortName(inPort);
             for (int i = 1; i < elm->inputs().size(); ++i) {
-                inPort = elm->inputs()[i];
+                const auto elmInputs = elm->inputs();
+                inPort = elmInputs[i];
                 out << " " << logicOperator << " ";
                 out << otherPortName(inPort);
             }
