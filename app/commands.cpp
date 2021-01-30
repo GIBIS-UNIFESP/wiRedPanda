@@ -123,7 +123,7 @@ QList<GraphicElement *> findElements(const QVector<int> &ids)
     return (items);
 }
 
-void saveitems(QByteArray &itemData, const QList<QGraphicsItem *> &items, const QVector<int> &otherIds)
+void saveItems(QByteArray &itemData, const QList<QGraphicsItem *> &items, const QVector<int> &otherIds)
 {
     itemData.clear();
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
@@ -221,8 +221,8 @@ AddItemsCommand::AddItemsCommand(const QList<QGraphicsItem *> &aItems, Editor *a
 DeleteItemsCommand::DeleteItemsCommand(const QList<QGraphicsItem *> &aItems, Editor *aEditor, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
-    QList<QGraphicsItem *> items = loadList(aItems, ids, otherIds);
-    editor = aEditor;
+    QList<QGraphicsItem *> items = loadList(aItems, m_ids, m_otherIds);
+    m_editor = aEditor;
     setText(tr("Delete %1 elements").arg(items.size()));
 }
 
@@ -241,7 +241,7 @@ void AddItemsCommand::undo()
     // guarantee that no crashes occur when deleting input elements (clocks, input buttons, etc.)
     sc->shouldRestart = true;
 
-    saveitems(m_itemData, items, m_otherIds);
+    saveItems(m_itemData, items, m_otherIds);
     deleteItems(items, m_editor);
     emit m_editor->circuitHasChanged();
 }
@@ -257,45 +257,45 @@ void AddItemsCommand::redo()
 void DeleteItemsCommand::undo()
 {
     COMMENT("UNDO " + text().toStdString(), 0);
-    loadItems(itemData, ids, editor, otherIds);
-    emit editor->circuitHasChanged();
+    loadItems(m_itemData, m_ids, m_editor, m_otherIds);
+    emit m_editor->circuitHasChanged();
 }
 
 void DeleteItemsCommand::redo()
 {
     COMMENT("REDO " + text().toStdString(), 0);
-    QList<QGraphicsItem *> items = findItems(ids);
-    saveitems(itemData, items, otherIds);
-    deleteItems(items, editor);
-    emit editor->circuitHasChanged();
+    QList<QGraphicsItem *> items = findItems(m_ids);
+    saveItems(m_itemData, items, m_otherIds);
+    deleteItems(items, m_editor);
+    emit m_editor->circuitHasChanged();
 }
 
 RotateCommand::RotateCommand(const QList<GraphicElement *> &aItems, int aAngle, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
-    angle = aAngle;
-    setText(tr("Rotate %1 degrees").arg(angle));
-    ids.reserve(aItems.size());
-    positions.reserve(aItems.size());
+    m_angle = aAngle;
+    setText(tr("Rotate %1 degrees").arg(m_angle));
+    m_ids.reserve(aItems.size());
+    m_positions.reserve(aItems.size());
     for (GraphicElement *item : aItems) {
-        positions.append(item->pos());
+        m_positions.append(item->pos());
         item->setPos(item->pos());
-        ids.append(item->id());
+        m_ids.append(item->id());
     }
 }
 
 void RotateCommand::undo()
 {
     COMMENT("UNDO " + text().toStdString(), 0);
-    QList<GraphicElement *> list = findElements(ids);
+    QList<GraphicElement *> list = findElements(m_ids);
     QGraphicsScene *scn = list[0]->scene();
     scn->clearSelection();
     for (int i = 0; i < list.size(); ++i) {
         GraphicElement *elm = list[i];
         if (elm->rotatable()) {
-            elm->setRotation(elm->rotation() - angle);
+            elm->setRotation(elm->rotation() - m_angle);
         }
-        elm->setPos(positions[i]);
+        elm->setPos(m_positions[i]);
         elm->update();
         elm->setSelected(true);
     }
@@ -304,7 +304,7 @@ void RotateCommand::undo()
 void RotateCommand::redo()
 {
     COMMENT("REDO " + text().toStdString(), 0);
-    QList<GraphicElement *> list = findElements(ids);
+    QList<GraphicElement *> list = findElements(m_ids);
     QGraphicsScene *scn = list[0]->scene();
     scn->clearSelection();
     double cx = 0, cy = 0;
@@ -319,10 +319,10 @@ void RotateCommand::redo()
     for (GraphicElement *elm : qAsConst(list)) {
         QTransform transform;
         transform.translate(cx, cy);
-        transform.rotate(angle);
+        transform.rotate(m_angle);
         transform.translate(-cx, -cy);
         if (elm->rotatable()) {
-            elm->setRotation(elm->rotation() + angle);
+            elm->setRotation(elm->rotation() + m_angle);
         }
         elm->setPos(transform.map(elm->pos()));
         elm->update();
@@ -333,18 +333,18 @@ void RotateCommand::redo()
 bool RotateCommand::mergeWith(const QUndoCommand *command)
 {
     const auto *rotateCommand = static_cast<const RotateCommand *>(command);
-    if (ids.size() != rotateCommand->ids.size()) {
+    if (m_ids.size() != rotateCommand->m_ids.size()) {
         return (false);
     }
-    QVector<GraphicElement *> list = findElements(ids).toVector();
-    QVector<GraphicElement *> list2 = findElements(rotateCommand->ids).toVector();
+    QVector<GraphicElement *> list = findElements(m_ids).toVector();
+    QVector<GraphicElement *> list2 = findElements(rotateCommand->m_ids).toVector();
     for (int i = 0; i < list.size(); ++i) {
         if (list[i] != list2[i]) {
             return (false);
         }
     }
-    angle = (angle + rotateCommand->angle) % 360;
-    setText(tr("Rotate %1 degrees").arg(angle));
+    m_angle = (m_angle + rotateCommand->m_angle) % 360;
+    setText(tr("Rotate %1 degrees").arg(m_angle));
     undo();
     redo();
     return (true);
@@ -355,15 +355,15 @@ int RotateCommand::id() const
     return (Id);
 }
 
-MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPointF> &aOldPositions, QUndoCommand *parent)
+MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPointF> &oldPositions, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
-    oldPositions = aOldPositions;
-    newPositions.reserve(list.size());
-    ids.reserve(list.size());
+    m_oldPositions = oldPositions;
+    m_newPositions.reserve(list.size());
+    m_ids.reserve(list.size());
     for (GraphicElement *elm : list) {
-        ids.append(elm->id());
-        newPositions.append(elm->pos());
+        m_ids.append(elm->id());
+        m_newPositions.append(elm->pos());
     }
     setText(tr("Move elements"));
 }
@@ -371,18 +371,18 @@ MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPoint
 void MoveCommand::undo()
 {
     COMMENT("UNDO " + text().toStdString(), 0);
-    QVector<GraphicElement *> elms = findElements(ids).toVector();
+    QVector<GraphicElement *> elms = findElements(m_ids).toVector();
     for (int i = 0; i < elms.size(); ++i) {
-        elms[i]->setPos(oldPositions[i]);
+        elms[i]->setPos(m_oldPositions[i]);
     }
 }
 
 void MoveCommand::redo()
 {
     COMMENT("REDO " + text().toStdString(), 0);
-    QVector<GraphicElement *> elms = findElements(ids).toVector();
+    QVector<GraphicElement *> elms = findElements(m_ids).toVector();
     for (int i = 0; i < elms.size(); ++i) {
-        elms[i]->setPos(newPositions[i]);
+        elms[i]->setPos(m_newPositions[i]);
     }
 }
 
