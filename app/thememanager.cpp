@@ -10,7 +10,7 @@ ThemeManager *ThemeManager::globalMngr = nullptr;
 
 Theme ThemeManager::theme() const
 {
-    return (m_theme);
+    return m_theme;
 }
 
 void ThemeManager::setTheme(const Theme &theme)
@@ -31,7 +31,7 @@ void ThemeManager::initialize()
 
 ThemeAttrs ThemeManager::getAttrs() const
 {
-    return (attrs);
+    return attrs;
 }
 
 ThemeManager::ThemeManager(QObject *parent)
