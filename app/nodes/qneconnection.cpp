@@ -190,10 +190,8 @@ bool QNEConnection::load(QDataStream &ds, const QMap<quint64, QNEPort *> &portMa
     }
     updatePosFromPorts();
     updatePath();
-    if (!m_start || !m_end) {
-        return false;
-    }
-    return true;
+
+    return (m_start != nullptr && m_end != nullptr);
 }
 
 QNEPort *QNEConnection::otherPort(const QNEPort *port) const
