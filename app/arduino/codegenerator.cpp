@@ -40,29 +40,29 @@ CodeGenerator::CodeGenerator(QString fileName, const QVector<GraphicElement *> &
 
 static inline QString highLow(int val)
 {
-    return (val == 1 ? "HIGH" : "LOW");
+    return val == 1 ? "HIGH" : "LOW";
 }
 
 QString clearString(QString input)
 {
-    return (input.toLower().trimmed().replace(" ", "_").replace("-", "_").replace(QRegExp("\\W"), ""));
+    return input.toLower().trimmed().replace(" ", "_").replace("-", "_").replace(QRegExp("\\W"), "");
 }
 
 QString CodeGenerator::otherPortName(QNEPort *port)
 {
     if (port) {
         if (port->connections().isEmpty()) {
-            return (highLow(port->defaultValue()));
+            return highLow(port->defaultValue());
         }
         QNEPort *other = port->connections().front()->otherPort(port);
         if (other) {
-            return (varMap[other]);
+            return varMap[other];
         } else {
-            return (highLow(port->defaultValue()));
+            return highLow(port->defaultValue());
         }
 
     } else {
-        return ("LOW");
+        return "LOW";
     }
 }
 
@@ -82,7 +82,7 @@ bool CodeGenerator::generate()
 
     /* Loop section */
     loop();
-    return (true);
+    return true;
 }
 
 void CodeGenerator::declareInputs()
