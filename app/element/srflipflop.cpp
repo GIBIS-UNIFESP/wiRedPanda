@@ -4,7 +4,7 @@
 #include "srflipflop.h"
 
 SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(5, 5, 2, 2, parent)
+    : GraphicElement(ElementType::SRFLIPFLOP, ElementGroup::MEMORY, 5, 5, 2, 2, parent)
 {
     pixmapSkinName.append(":/memory/SR-flipflop.png");
     setPixmap(pixmapSkinName[0]);

@@ -4,7 +4,7 @@
 #include "inputvcc.h"
 
 InputVcc::InputVcc(QGraphicsItem *parent)
-    : GraphicElement(0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::VCC, ElementGroup::STATICINPUT, 0, 0, 1, 1, parent)
 {
     pixmapSkinName.append(":/input/1.png");
     setOutputsOnTop(false);

@@ -11,7 +11,7 @@ int Clock::current_id_number = 0;
 Clock::~Clock() = default;
 
 Clock::Clock(QGraphicsItem *parent)
-    : GraphicElement(0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::CLOCK, ElementGroup::INPUT, 0, 0, 1, 1, parent)
 {
     pixmapSkinName.append(":/input/clock0.png");
     pixmapSkinName.append(":/input/clock1.png");

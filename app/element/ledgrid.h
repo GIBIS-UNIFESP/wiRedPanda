@@ -16,16 +16,6 @@ public:
     virtual ~LedGrid();
     static int current_id_number; // Number used to create distinct labels for each instance of this element.
 
-    virtual ElementType elementType() override
-    {
-        return ElementType::LEDGRID;
-    }
-
-    virtual ElementGroup elementGroup() override
-    {
-        return ElementGroup::OUTPUT;
-    }
-
     void setColor(QString getColor) override;
     QString getColor() const override;
     virtual void refresh() override;

@@ -4,7 +4,7 @@
 #include "demux.h"
 
 Demux::Demux(QGraphicsItem *parent)
-    : GraphicElement(2, 2, 2, 2, parent)
+    : GraphicElement(ElementType::DEMUX, ElementGroup::MUX, 2, 2, 2, 2, parent)
 {
     pixmapSkinName.append(":/basic/demux.png");
     setPixmap(pixmapSkinName[0]);

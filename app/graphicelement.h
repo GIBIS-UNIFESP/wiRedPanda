@@ -68,23 +68,16 @@ class GraphicElement : public QGraphicsObject, public ItemWithId
 public:
     enum : uint32_t { Type = QGraphicsItem::UserType + 3 };
 
-    explicit GraphicElement(int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent = nullptr);
-
-private:
-    QPixmap *m_pixmap;
-    QString m_currentPixmapName;
-    QColor m_selectionBrush;
-    QColor m_selectionPen;
+    GraphicElement(ElementType type, ElementGroup group, int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent = nullptr);
 
 protected:
     QVector<QString> pixmapSkinName;
 
     /* GraphicElement interface. */
 public:
-    virtual ElementType elementType() = 0;
-    bool usingDefaultSkin;
+    ElementType elementType() const;
 
-    virtual ElementGroup elementGroup() = 0;
+    ElementGroup elementGroup() const;
 
     virtual void save(QDataStream &ds) const;
 
@@ -173,15 +166,6 @@ public:
 
     virtual void setAudio(QString audio);
     virtual QString getAudio() const;
-    /*
-     *  bool beingVisited( ) const;
-     *  void setBeingVisited( bool beingVisited );
-     */
-
-    /*
-     *  bool visited( ) const;
-     *  void setVisited( bool visited );
-     */
 
     bool isValid();
 
@@ -224,8 +208,13 @@ protected:
 
     /*  virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e); */
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+    bool usingDefaultSkin;
 
 private:
+    QPixmap *m_pixmap;
+    QString m_currentPixmapName;
+    QColor m_selectionBrush;
+    QColor m_selectionPen;
     QGraphicsTextItem *m_label;
     int m_topPosition;
     int m_bottomPosition;
@@ -242,6 +231,8 @@ private:
     bool m_hasTrigger;
     bool m_hasAudio;
     bool m_disabled;
+    ElementType m_elementType;
+    ElementGroup m_elementGroup;
     QString m_labelText;
     QKeySequence m_trigger;
 
