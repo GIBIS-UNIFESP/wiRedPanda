@@ -90,7 +90,7 @@ QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &aItems, QVector<in
     storeIds(elements + connections, ids);
     /* Stores all the elements linked to each connection that will not be deleted. */
     storeOtherIds(connections, ids, otherIds);
-    return (elements + connections);
+    return elements + connections;
 }
 
 QList<QGraphicsItem *> findItems(const QVector<int> &ids)
@@ -105,7 +105,7 @@ QList<QGraphicsItem *> findItems(const QVector<int> &ids)
     if (items.size() != ids.size()) {
         throw std::runtime_error(ERRORMSG("One or more items was not found on the scene."));
     }
-    return (items);
+    return items;
 }
 
 QList<GraphicElement *> findElements(const QVector<int> &ids)
@@ -120,7 +120,7 @@ QList<GraphicElement *> findElements(const QVector<int> &ids)
     if (items.size() != ids.size()) {
         throw std::runtime_error(ERRORMSG("One or more elements was not found on the scene."));
     }
-    return (items);
+    return items;
 }
 
 void saveitems(QByteArray &itemData, const QList<QGraphicsItem *> &items, const QVector<int> &otherIds)
@@ -150,7 +150,7 @@ void addItems(Editor *editor, QList<QGraphicsItem *> items)
 QList<QGraphicsItem *> loadItems(QByteArray &itemData, const QVector<int> &ids, Editor *editor, QVector<int> &otherIds)
 {
     if (itemData.isEmpty()) {
-        return (QList<QGraphicsItem *>());
+        return QList<QGraphicsItem *>();
     }
     QVector<GraphicElement *> otherElms = findElements(otherIds).toVector();
     QDataStream dataStream(&itemData, QIODevice::ReadOnly);
@@ -176,7 +176,7 @@ QList<QGraphicsItem *> loadItems(QByteArray &itemData, const QVector<int> &ids, 
         }
     }
     addItems(editor, items);
-    return (items);
+    return items;
 }
 
 void deleteItems(const QList<QGraphicsItem *> &items, Editor *editor)
@@ -334,25 +334,25 @@ bool RotateCommand::mergeWith(const QUndoCommand *command)
 {
     const auto *rotateCommand = static_cast<const RotateCommand *>(command);
     if (ids.size() != rotateCommand->ids.size()) {
-        return (false);
+        return false;
     }
     QVector<GraphicElement *> list = findElements(ids).toVector();
     QVector<GraphicElement *> list2 = findElements(rotateCommand->ids).toVector();
     for (int i = 0; i < list.size(); ++i) {
         if (list[i] != list2[i]) {
-            return (false);
+            return false;
         }
     }
     angle = (angle + rotateCommand->angle) % 360;
     setText(tr("Rotate %1 degrees").arg(angle));
     undo();
     redo();
-    return (true);
+    return true;
 }
 
 int RotateCommand::id() const
 {
-    return (Id);
+    return Id;
 }
 
 MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPointF> &aOldPositions, QUndoCommand *parent)
@@ -465,12 +465,12 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF point, Editor *editor, Q
 
 QNEConnection *findConn(int id)
 {
-    return (dynamic_cast<QNEConnection *>(ElementFactory::getItemById(id)));
+    return dynamic_cast<QNEConnection *>(ElementFactory::getItemById(id));
 }
 
 GraphicElement *findElm(int id)
 {
-    return (dynamic_cast<GraphicElement *>(ElementFactory::getItemById(id)));
+    return dynamic_cast<GraphicElement *>(ElementFactory::getItemById(id));
 }
 
 void SplitCommand::redo()
