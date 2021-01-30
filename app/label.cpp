@@ -11,9 +11,7 @@ Label::Label(QWidget *parent)
 {
 }
 
-Label::~Label()
-{
-}
+Label::~Label() = default;
 
 ElementType Label::elementType()
 {
