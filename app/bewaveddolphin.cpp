@@ -36,10 +36,11 @@ SignalModel::SignalModel(int rows, int inputs, int columns, QObject *parent)
 Qt::ItemFlags SignalModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags flags;
-    if (index.row() >= inputs)
+    if (index.row() >= inputs) {
         flags = ~(Qt::ItemIsEditable | Qt::ItemIsSelectable);
-    else
+    } else {
         flags = ~(Qt::ItemIsEditable | Qt::ItemIsSelectable) | Qt::ItemIsSelectable;
+    }
     return flags;
 }
 
@@ -121,8 +122,9 @@ void BewavedDolphin::drawPixMaps()
 void BewavedDolphin::closeEvent(QCloseEvent *e)
 {
     e->ignore();
-    if (checkSave())
+    if (checkSave()) {
         e->accept();
+    }
 }
 
 void BewavedDolphin::on_actionExit_triggered()
@@ -140,11 +142,10 @@ bool BewavedDolphin::checkSave()
                                       QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
         if (reply == QMessageBox::Save) {
             on_actionSave_triggered();
-            if (edited)
-                return false;
+            return (!edited);
+        } else if (reply == QMessageBox::Discard) {
             return true;
-        } else if (reply == QMessageBox::Discard)
-            return true;
+        }
         return false;
     }
     return true;
@@ -180,8 +181,9 @@ bool BewavedDolphin::loadElements()
 
 void BewavedDolphin::CreateElement(int row, int col, int value, bool isInput, bool changePrevious)
 {
-    if (value == 0)
+    if (value == 0) {
         return CreateZeroElement(row, col, isInput, changePrevious);
+    }
     return CreateOneElement(row, col, isInput, changePrevious);
 }
 
@@ -190,27 +192,31 @@ void BewavedDolphin::CreateZeroElement(int row, int col, bool isInput, bool chan
     COMMENT("Getting previous value to check previous cell refresh requirement.", 3);
     // QMessageBox::warning( this, "Zero: row, col", ( row + 48 ) + QString( " " ) + ( col + 48 ) );
     int previous_value;
-    if (model->item(row, col) == nullptr)
+    if (model->item(row, col) == nullptr) {
         previous_value = -1;
-    else if (model->item(row, col)->text().toInt() == 0)
+    } else if (model->item(row, col)->text().toInt() == 0) {
         previous_value = 0;
-    else
+    } else {
         previous_value = 1;
+    }
     COMMENT("Changing current item.", 3);
     auto index = model->index(row, col);
     model->setData(index, "0", Qt::DisplayRole);
     model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
     if (type == PlotType::line) {
         model->setData(index, Qt::AlignLeft, Qt::TextAlignmentRole);
-        if ((col != model->columnCount() - 1) && (model->item(row, col + 1) != nullptr) && (model->item(row, col + 1)->text().toInt() == 1))
+        if ((col != model->columnCount() - 1) && (model->item(row, col + 1) != nullptr) && (model->item(row, col + 1)->text().toInt() == 1)) {
             model->setData(index, risingGreen, Qt::DecorationRole);
-        else
+        } else {
             model->setData(index, lowGreen, Qt::DecorationRole);
-    } else
+        }
+    } else {
         model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
+    }
     COMMENT("Changing previous item, if needed.", 3);
-    if ((changePrevious) && (col != 0) && (previous_value == 1))
+    if ((changePrevious) && (col != 0) && (previous_value == 1)) {
         CreateElement(row, col - 1, model->item(row, col - 1)->text().toInt(), isInput, false);
+    }
 }
 
 void BewavedDolphin::CreateOneElement(int row, int col, bool isInput, bool changePrevious)
@@ -218,26 +224,30 @@ void BewavedDolphin::CreateOneElement(int row, int col, bool isInput, bool chang
     COMMENT("Getting previous value to check previous cell refresh requirement.", 3);
     // QMessageBox::warning( this, "One: row, col", ( row + 48 ) + QString( " " ) + ( col + 48 ) );
     int previous_value;
-    if (model->item(row, col) == nullptr)
+    if (model->item(row, col) == nullptr) {
         previous_value = -1;
-    else if (model->item(row, col)->text().toInt() == 0)
+    } else if (model->item(row, col)->text().toInt() == 0) {
         previous_value = 0;
-    else
+    } else {
         previous_value = 1;
+    }
     COMMENT("Changing current item.", 3);
     auto index = model->index(row, col);
     model->setData(index, "1", Qt::DisplayRole);
     if (type == PlotType::line) {
         model->setData(index, Qt::AlignLeft, Qt::TextAlignmentRole);
-        if ((col != model->columnCount() - 1) && (model->item(row, col + 1) != nullptr) && (model->item(row, col + 1)->text().toInt() == 0))
+        if ((col != model->columnCount() - 1) && (model->item(row, col + 1) != nullptr) && (model->item(row, col + 1)->text().toInt() == 0)) {
             model->setData(index, fallingGreen, Qt::DecorationRole);
-        else
+        } else {
             model->setData(index, highGreen, Qt::DecorationRole);
-    } else
+        }
+    } else {
         model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
+    }
     COMMENT("Changing previous item, if needed.", 3);
-    if ((changePrevious) && (col != 0) && (previous_value == 0))
+    if ((changePrevious) && (col != 0) && (previous_value == 0)) {
         CreateElement(row, col - 1, model->item(row, col - 1)->text().toInt(), isInput, false);
+    }
 }
 
 void BewavedDolphin::run()
@@ -339,8 +349,9 @@ bool BewavedDolphin::createWaveform(QString filename)
     COMMENT("Loading initial data into the table.", 0);
     loadNewTable(input_labels, output_labels);
     if (filename != "none") {
-        if (!load(filename))
+        if (!load(filename)) {
             return false;
+        }
     }
     COMMENT("Restoring the old values to the inputs, prior to simulaton.", 0);
     for (int in = 0; in < inputs.size(); ++in) {
@@ -427,8 +438,9 @@ int BewavedDolphin::sectionFirstColumn(const QItemSelection &ranges)
 {
     int first_col = model->columnCount() - 1;
     for (const auto &range : ranges) {
-        if (range.left() < first_col)
+        if (range.left() < first_col) {
             first_col = range.left();
+        }
     }
     return first_col;
 }
@@ -437,8 +449,9 @@ int BewavedDolphin::sectionFirstRow(const QItemSelection &ranges)
 {
     int first_row = model->rowCount() - 1;
     for (const auto &range : ranges) {
-        if (range.top() < first_row)
+        if (range.top() < first_row) {
             first_row = range.top();
+        }
     }
     return first_row;
 }
@@ -451,8 +464,9 @@ void BewavedDolphin::on_actionSet_clock_wave_triggered()
     COMMENT("Setting the signal according it its column and clock period.", 0);
     clockDialog dialog(this);
     int clock_period = dialog.getFrequency();
-    if (clock_period < 0)
+    if (clock_period < 0) {
         return;
+    }
     int half_clock_period = clock_period / 2;
     auto itemList = signalTableView->selectionModel()->selectedIndexes();
     for (auto item : qAsConst(itemList)) {
@@ -680,10 +694,11 @@ void BewavedDolphin::on_actionSave_as_triggered()
         return;
     }
     if ((!fname.endsWith(".dolphin")) && (!fname.endsWith(".csv"))) {
-        if (selected_filter->contains("dolphin"))
+        if (selected_filter->contains("dolphin")) {
             fname.append(".dolphin");
-        else
+        } else {
             fname.append(".csv");
+        }
     }
     if (save(fname)) {
         currentFile = fname;
