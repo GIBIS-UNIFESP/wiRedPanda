@@ -20,12 +20,12 @@ void ICPrototype::fileName(QString newFileName)
 
 QString ICPrototype::fileName() const
 {
-    return (m_fileName);
+    return m_fileName;
 }
 
 QString ICPrototype::baseName() const
 {
-    return (QFileInfo(m_fileName).baseName());
+    return QFileInfo(m_fileName).baseName();
 }
 
 void ICPrototype::insertICObserver(IC *ic)
@@ -44,42 +44,42 @@ void ICPrototype::removeICObserver(IC *ic)
 
 bool ICPrototype::updateLocalIC(QString fileName, QString dirName)
 {
-    return (ICImpl.updateLocalIC(fileName, dirName));
+    return ICImpl.updateLocalIC(fileName, dirName);
 }
 
 int ICPrototype::inputSize() const
 {
-    return (ICImpl.getInputSize());
+    return ICImpl.getInputSize();
 }
 
 int ICPrototype::outputSize() const
 {
-    return (ICImpl.getOutputSize());
+    return ICImpl.getOutputSize();
 }
 
 QString ICPrototype::inputLabel(int index) const
 {
-    return (ICImpl.inputLabels[index]);
+    return ICImpl.inputLabels[index];
 }
 
 QString ICPrototype::outputLabel(int index) const
 {
-    return (ICImpl.outputLabels[index]);
+    return ICImpl.outputLabels[index];
 }
 
 bool ICPrototype::defaultInputValue(int index)
 {
-    return (ICImpl.inputs[index]->value());
+    return ICImpl.inputs[index]->value();
 }
 
 bool ICPrototype::isInputRequired(int index)
 {
-    return (ICImpl.inputs[index]->isRequired());
+    return ICImpl.inputs[index]->isRequired();
 }
 
 ICMapping *ICPrototype::generateMapping() const
 {
-    return (new ICMapping(fileName(), ICImpl.elements, ICImpl.inputs, ICImpl.outputs));
+    return new ICMapping(fileName(), ICImpl.elements, ICImpl.inputs, ICImpl.outputs);
 }
 
 void ICPrototype::clear()
