@@ -10,16 +10,16 @@ class Buzzer : public GraphicElement
 {
 public:
     explicit Buzzer(QGraphicsItem *parent = nullptr);
-    virtual ~Buzzer() override = default;
+    ~Buzzer() override = default;
     static int current_id_number; // Number used to create distinct labels for each instance of this element.
 
 public:
     /* GraphicElement interface */
-    virtual ElementType elementType() override
+    ElementType elementType() override
     {
         return (ElementType::BUZZER);
     }
-    virtual ElementGroup elementGroup() override
+    ElementGroup elementGroup() override
     {
         return (ElementGroup::OUTPUT);
     }
