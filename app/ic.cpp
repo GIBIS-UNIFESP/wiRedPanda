@@ -128,7 +128,7 @@ void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
         msgBox.setWindowModality(Qt::ApplicationModal);
         msgBox.setDefaultButton(QMessageBox::Yes);
         if (msgBox.exec() == QMessageBox::Yes) {
-            QProcess *wPanda = new QProcess(scene());
+            auto *wPanda = new QProcess(scene());
             QStringList args;
             args << m_file;
             wPanda->start(QCoreApplication::applicationFilePath(), args);
