@@ -1,13 +1,8 @@
 #include "mainwindow.h"
-#include "arduino/codegenerator.h"
-#include "bewaveddolphin.h"
-#include "elementmapping.h"
-#include "globalproperties.h"
-#include "graphicsviewzoom.h"
-#include "listitemwidget.h"
-#include "simplewaveform.h"
-#include "thememanager.h"
-#include "ui_mainwindow.h"
+
+#include <cmath>
+#include <iostream>
+#include <stdexcept>
 
 #include <QDebug>
 #include <QFileDialog>
@@ -22,9 +17,17 @@
 #include <QShortcut>
 #include <QStyleFactory>
 #include <QTemporaryFile>
-#include <cmath>
-#include <iostream>
-#include <stdexcept>
+
+#include "arduino/codegenerator.h"
+#include "bewaveddolphin.h"
+#include "elementmapping.h"
+#include "globalproperties.h"
+#include "graphicsviewzoom.h"
+#include "listitemwidget.h"
+#include "simplewaveform.h"
+#include "thememanager.h"
+
+#include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent, QString filename)
     : QMainWindow(parent)

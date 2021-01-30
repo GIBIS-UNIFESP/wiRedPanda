@@ -1,9 +1,9 @@
 #ifndef LISTITEMWIDGET_H
 #define LISTITEMWIDGET_H
 
-#include "label.h"
-
 #include <QWidget>
+
+#include "label.h"
 
 class ListItemWidget : public QFrame
 {

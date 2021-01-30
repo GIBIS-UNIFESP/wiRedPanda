@@ -1,16 +1,16 @@
 #ifndef ELEMENTMAPPING_H
 #define ELEMENTMAPPING_H
 
-#include "graphicelement.h"
-#include "input.h"
-#include "logicelement.h"
-#include "logicelement/logicinput.h"
-
 #include <QGraphicsScene>
 #include <QHash>
 #include <QMap>
 #include <QObject>
 #include <QTimer>
+
+#include "graphicelement.h"
+#include "input.h"
+#include "logicelement.h"
+#include "logicelement/logicinput.h"
 
 class Clock;
 class IC;

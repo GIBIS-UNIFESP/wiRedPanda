@@ -1,15 +1,16 @@
 #include "icmanager.h"
+
+#include <QApplication>
+#include <QDebug>
+#include <QFileInfo>
+#include <QMessageBox>
+#include <QSettings>
+
 #include "filehelper.h"
 #include "ic.h"
 #include "icnotfoundexception.h"
 #include "icprototype.h"
 #include "mainwindow.h"
-#include "qfileinfo.h"
-
-#include <QApplication>
-#include <QDebug>
-#include <QMessageBox>
-#include <QSettings>
 
 ICManager *ICManager::globalICManager = nullptr;
 

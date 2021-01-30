@@ -1,5 +1,7 @@
 #include "clockDialog.h"
 
+#include "ui_clockDialog.h"
+
 clockDialog::clockDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::clockDialog)

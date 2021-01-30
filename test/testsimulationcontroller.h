@@ -1,10 +1,11 @@
 #ifndef TESTSIMULATIONCONTROLLER_H
 #define TESTSIMULATIONCONTROLLER_H
 
+#include <QObject>
+#include <QTest>
+
 #include "editor.h"
 #include "graphicelement.h"
-
-#include <QTest>
 
 class TestSimulationController : public QObject
 {

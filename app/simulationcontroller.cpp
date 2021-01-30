@@ -1,12 +1,14 @@
 #include "simulationcontroller.h"
-#include "elementfactory.h"
-#include "ic.h"
-#include "icmapping.h"
-#include "simulationcontroller.h"
 
 #include "element/clock.h"
-
+#include "elementfactory.h"
+#include "elementmapping.h"
+#include "graphicelement.h"
+#include "ic.h"
+#include "icmapping.h"
 #include "nodes/qneconnection.h"
+#include "scene.h"
+#include "simulationcontroller.h"
 
 #include <QDebug>
 #include <QGraphicsView>

@@ -1,7 +1,7 @@
-#include "globalproperties.h"
-#include "common.h"
-
 #include <QStringList>
+
+#include "common.h"
+#include "globalproperties.h"
 
 double GlobalProperties::toDouble(QString txtVersion, bool *ok)
 {

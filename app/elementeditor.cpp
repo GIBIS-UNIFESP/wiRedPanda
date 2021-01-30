@@ -1,13 +1,16 @@
 #include "elementeditor.h"
-#include "commands.h"
-#include "editor.h"
-#include "ui_elementeditor.h"
+
+#include <cmath>
+
 #include <QDebug>
 #include <QFileDialog>
 #include <QGraphicsView>
 #include <QKeyEvent>
 #include <QMenu>
-#include <cmath>
+
+#include "commands.h"
+#include "editor.h"
+#include "ui_elementeditor.h"
 
 ElementEditor::ElementEditor(QWidget *parent)
     : QWidget(parent)

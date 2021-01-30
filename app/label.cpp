@@ -1,8 +1,10 @@
 #include "label.h"
-#include "elementfactory.h"
+
+#include <thread>
 
 #include <QtWidgets>
-#include <thread>
+
+#include "elementfactory.h"
 
 Label::Label(QWidget *parent)
     : QLabel(parent)

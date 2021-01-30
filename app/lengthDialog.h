@@ -1,8 +1,9 @@
 #ifndef LENGTHDIALOG_H
 #define LENGTHDIALOG_H
 
-#include "ui_lengthDialog.h"
 #include <QDialog>
+
+#include "ui_lengthDialog.h"
 
 namespace Ui
 {

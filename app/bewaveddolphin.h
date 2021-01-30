@@ -3,13 +3,14 @@
 
 #include "editor.h"
 #include "graphicsview.h"
-#include "qfileinfo.h"
+
+#include <QFileInfo>
+#include <QItemDelegate>
 #include <QMainWindow>
-#include <qitemdelegate.h>
-#include <qpainter.h>
-#include <qsavefile.h>
-#include <qstandarditemmodel.h>
-#include <qtableview.h>
+#include <QPainter>
+#include <QSaveFile>
+#include <QStandardItemModel>
+#include <QTableView>
 
 namespace Ui
 {

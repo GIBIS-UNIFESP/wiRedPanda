@@ -1,23 +1,28 @@
 #include "bewaveddolphin.h"
+
+#include <string.h>
+
+#include <QClipboard>
+#include <QFileDialog>
+#include <QGraphicsProxyWidget>
+#include <QGraphicsView>
+#include <QHeaderView>
+#include <QMessageBox>
+#include <QMimeData>
+#include <QPrinter>
+#include <QSaveFile>
+#include <QSettings>
+#include <QSizePolicy>
+#include <QtDebug>
+
 #include "clockDialog.h"
+#include "elementmapping.h"
+#include "input.h"
 #include "lengthDialog.h"
 #include "mainwindow.h"
 #include "scstop.h"
-#include "ui_bewaveddolphin.h"
 
-#include <QPrinter>
-#include <QSettings>
-#include <QtDebug>
-#include <qclipboard.h>
-#include <qfiledialog.h>
-#include <qgraphicsproxywidget.h>
-#include <qgraphicsview.h>
-#include <qheaderview.h>
-#include <qmessagebox.h>
-#include <qmimedata.h>
-#include <qsavefile.h>
-#include <qsizepolicy.h>
-#include <string.h>
+#include "ui_bewaveddolphin.h"
 
 SignalModel::SignalModel(int rows, int inputs, int columns, QObject *parent)
     : QStandardItemModel(rows, columns, parent)

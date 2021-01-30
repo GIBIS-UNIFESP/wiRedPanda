@@ -1,9 +1,10 @@
 #ifndef LOGICELEMENT_H
 #define LOGICELEMENT_H
 
-#include <QSet>
 #include <functional>
 #include <vector>
+
+#include <QSet>
 
 /**
  * @brief The LogicElement class was designed to represent logic
