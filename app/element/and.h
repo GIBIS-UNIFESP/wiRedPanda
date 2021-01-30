@@ -7,15 +7,15 @@ class And : public GraphicElement
 {
 public:
     explicit And(QGraphicsItem *parent = nullptr);
-    virtual ~And() override = default;
+    ~And() override = default;
 
     /* GraphicElement interface */
 public:
-    virtual ElementType elementType() override
+    ElementType elementType() override
     {
         return (ElementType::AND);
     }
-    virtual ElementGroup elementGroup() override
+    ElementGroup elementGroup() override
     {
         return (ElementGroup::GATE);
     }
