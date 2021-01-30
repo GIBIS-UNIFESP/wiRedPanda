@@ -111,8 +111,9 @@ QString IC::getFile() const
 bool IC::setFile(QString newFileName)
 {
     COMMENT("Updating ic name.", 0);
-    if (!ICManager::instance()->updatePrototypeFilePathName(m_file, newFileName))
+    if (!ICManager::instance()->updatePrototypeFilePathName(m_file, newFileName)) {
         return false;
+    }
     m_file = newFileName;
     return true;
 }
@@ -143,9 +144,10 @@ void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 void IC::setSkin(bool defaultSkin, QString filename)
 {
-    if (defaultSkin)
+    if (defaultSkin) {
         pixmapSkinName[0] = ":/basic/box.png";
-    else
+    } else {
         pixmapSkinName[0] = filename;
+    }
     setPixmap(pixmapSkinName[0]);
 }
