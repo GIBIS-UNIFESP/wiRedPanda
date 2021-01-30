@@ -210,7 +210,7 @@ void ICPrototypeImpl::loadOutputElement(GraphicElement *elm)
 void ICPrototypeImpl::loadItem(QGraphicsItem *item)
 {
     if (item->type() == GraphicElement::Type) {
-        GraphicElement *elm = qgraphicsitem_cast<GraphicElement *>(item);
+        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
         if (elm) {
             if (elm->elementGroup() == ElementGroup::INPUT) {
                 loadInputElement(elm);
