@@ -1,3 +1,6 @@
+// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "elementmapping.h"
 #include "clock.h"
 #include "ic.h"
