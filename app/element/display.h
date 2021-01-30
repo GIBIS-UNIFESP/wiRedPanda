@@ -18,11 +18,11 @@ public:
 public:
     ElementType elementType() override
     {
-        return (ElementType::DISPLAY);
+        return ElementType::DISPLAY;
     }
     ElementGroup elementGroup() override
     {
-        return (ElementGroup::OUTPUT);
+        return ElementGroup::OUTPUT;
     }
     void refresh() override;
     void updatePorts() override;
