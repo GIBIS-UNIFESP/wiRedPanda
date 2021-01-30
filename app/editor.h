@@ -88,7 +88,7 @@ private:
     void ctrlDrag(QPointF pos);
     void install(Scene *s);
 
-    QNEConnection *getEditedConn();
+    QNEConnection *getEditedConn() const;
     void setEditedConn(QNEConnection *editedConn);
 
     /* QObject interface */
