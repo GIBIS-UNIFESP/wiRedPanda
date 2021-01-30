@@ -7,15 +7,15 @@ class Nor : public GraphicElement
 {
 public:
     explicit Nor(QGraphicsItem *parent = nullptr);
-    virtual ~Nor() override = default;
+    ~Nor() override = default;
 
     /* GraphicElement interface */
 public:
-    virtual ElementType elementType() override
+    ElementType elementType() override
     {
         return (ElementType::NOR);
     }
-    virtual ElementGroup elementGroup() override
+    ElementGroup elementGroup() override
     {
         return (ElementGroup::GATE);
     }
