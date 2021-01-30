@@ -175,9 +175,7 @@ bool BewavedDolphin::loadElements()
         return QString::compare(elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8(), Qt::CaseInsensitive) <= 0;
     });
 
-    if ((inputs.isEmpty()) || (outputs.isEmpty()))
-        return false;
-    return true;
+    return (!inputs.isEmpty() && !outputs.isEmpty());
 }
 
 void BewavedDolphin::CreateElement(int row, int col, int value, bool isInput, bool changePrevious)
