@@ -11,19 +11,19 @@ class TFlipFlop : public GraphicElement
 
 public:
     explicit TFlipFlop(QGraphicsItem *parent = nullptr);
-    virtual ~TFlipFlop() override = default;
+    ~TFlipFlop() override = default;
 
     /* GraphicElement interface */
 public:
-    virtual ElementType elementType() override
+    ElementType elementType() override
     {
         return (ElementType::TFLIPFLOP);
     }
-    virtual ElementGroup elementGroup() override
+    ElementGroup elementGroup() override
     {
         return (ElementGroup::MEMORY);
     }
-    virtual void updatePorts() override;
+    void updatePorts() override;
     void setSkin(bool defaultSkin, QString filename) override;
 };
 
