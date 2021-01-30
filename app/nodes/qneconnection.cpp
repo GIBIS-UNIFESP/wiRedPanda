@@ -161,8 +161,8 @@ bool QNEConnection::load(QDataStream &ds, const QMap<quint64, QNEPort *> &portMa
     ds >> ptr2;
     if (portMap.isEmpty()) {
         COMMENT("Empty port map.", 0);
-        QNEPort *port1 = reinterpret_cast<QNEPort *>(ptr1);
-        QNEPort *port2 = reinterpret_cast<QNEPort *>(ptr2);
+        auto *port1 = reinterpret_cast<QNEPort *>(ptr1);
+        auto *port2 = reinterpret_cast<QNEPort *>(ptr2);
         if (port2 && port1) {
             if (!port1->isOutput() && port2->isOutput()) {
                 setStart(dynamic_cast<QNEOutputPort *>(port2));
