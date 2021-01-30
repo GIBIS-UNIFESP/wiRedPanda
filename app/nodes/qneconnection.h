@@ -41,7 +41,7 @@ public:
     enum class Status { Invalid = -1, Inactive = 0, Active = 1 };
 
     explicit QNEConnection(QGraphicsItem *parent = nullptr);
-    virtual ~QNEConnection();
+    ~QNEConnection() override;
 
     void setStartPos(const QPointF &p);
     void setEndPos(const QPointF &p);
@@ -57,7 +57,7 @@ public:
     void save(QDataStream &) const;
     bool load(QDataStream &, const QMap<quint64, QNEPort *> &portMap = QMap<quint64, QNEPort *>());
 
-    int type() const
+    int type() const override
     {
         return (Type);
     }
@@ -82,7 +82,7 @@ private:
     QColor m_selectedClr;
     /* QGraphicsItem interface */
 public:
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 };
 
 #endif /* QNECONNECTION_H */
