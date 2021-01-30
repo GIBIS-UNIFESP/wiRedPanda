@@ -57,9 +57,9 @@ QAction *addElementAction(QMenu *menu, GraphicElement *firstElm, ElementType typ
     if (!hasSameType || (firstElm->elementType() != type)) {
         QAction *action = menu->addAction(QIcon(ElementFactory::getPixmap(type)), ElementFactory::translatedName(type));
         action->setData(static_cast<int>(type));
-        return (action);
+        return action;
     }
-    return (nullptr);
+    return nullptr;
 }
 
 void ElementEditor::contextMenu(QPoint screenPos)
@@ -477,10 +477,10 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
             GraphicElement *elm = m_elements.first();
             QVector<GraphicElement *> elms = scene->getVisibleElements();
             std::stable_sort(elms.begin(), elms.end(), [](GraphicElement *elm1, GraphicElement *elm2) {
-                return (elm1->pos().ry() < elm2->pos().ry());
+                return elm1->pos().ry() < elm2->pos().ry();
             });
             std::stable_sort(elms.begin(), elms.end(), [](GraphicElement *elm1, GraphicElement *elm2) {
-                return (elm1->pos().rx() < elm2->pos().rx());
+                return elm1->pos().rx() < elm2->pos().rx();
             });
 
             apply();
@@ -508,11 +508,11 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
             elm->ensureVisible();
             wgt->setFocus();
             event->accept();
-            return (true);
+            return true;
         }
     }
     /* pass the event on to the parent class */
-    return (QWidget::eventFilter(obj, event));
+    return QWidget::eventFilter(obj, event);
 }
 
 void ElementEditor::on_comboBoxAudio_currentIndexChanged(int)
