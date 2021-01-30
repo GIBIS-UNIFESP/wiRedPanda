@@ -105,7 +105,7 @@ void Editor::mute(bool _mute)
 {
     auto const scene_elems = scene->getElements();
     for (GraphicElement *elm : scene_elems) {
-        Buzzer *bz = dynamic_cast<Buzzer *>(elm);
+        auto *bz = dynamic_cast<Buzzer *>(elm);
         if (bz) {
             bz->mute(_mute);
         }
@@ -205,7 +205,7 @@ void Editor::showWires(bool checked)
     mShowWires = checked;
     auto const scene_items = scene->items();
     for (QGraphicsItem *item : scene_items) {
-        GraphicElement *elm = qgraphicsitem_cast<GraphicElement *>(item);
+        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
         if ((item->type() == QNEConnection::Type)) {
             item->setVisible(checked);
         } else if ((item->type() == GraphicElement::Type) && elm) {
@@ -230,7 +230,7 @@ void Editor::showGates(bool checked)
     mShowGates = checked;
     auto const scene_items = scene->items();
     for (QGraphicsItem *item : scene_items) {
-        GraphicElement *elm = qgraphicsitem_cast<GraphicElement *>(item);
+        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
         if ((item->type() == GraphicElement::Type) && elm) {
             if ((elm->elementGroup() != ElementGroup::INPUT) && (elm->elementGroup() != ElementGroup::OUTPUT)) {
                 item->setVisible(checked);
@@ -248,7 +248,7 @@ void Editor::rotate(bool rotateRight)
     QList<QGraphicsItem *> list = scene->selectedItems();
     QList<GraphicElement *> elms;
     for (QGraphicsItem *item : qAsConst(list)) {
-        GraphicElement *elm = qgraphicsitem_cast<GraphicElement *>(item);
+        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
         if (elm && (elm->type() == GraphicElement::Type)) {
             elms.append(elm);
         }
@@ -263,7 +263,7 @@ void Editor::flipH()
     QList<QGraphicsItem *> list = scene->selectedItems();
     QList<GraphicElement *> elms;
     for (QGraphicsItem *item : qAsConst(list)) {
-        GraphicElement *elm = qgraphicsitem_cast<GraphicElement *>(item);
+        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
         if (elm && (elm->type() == GraphicElement::Type)) {
             elms.append(elm);
         }
@@ -278,7 +278,7 @@ void Editor::flipV()
     QList<QGraphicsItem *> list = scene->selectedItems();
     QList<GraphicElement *> elms;
     for (QGraphicsItem *item : qAsConst(list)) {
-        GraphicElement *elm = qgraphicsitem_cast<GraphicElement *>(item);
+        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
         if (elm && (elm->type() == GraphicElement::Type)) {
             elms.append(elm);
         }
@@ -386,18 +386,18 @@ bool Editor::mousePressEvt(QGraphicsSceneMouseEvent *mouseEvt)
     if (item && (item->type() == QNEPort::Type)) {
         /* When the mouse pressed over an connected input port, the line
          * is disconnected and can be connected in an other port. */
-        QNEPort *pressedPort = qgraphicsitem_cast<QNEPort *>(item);
+        auto *pressedPort = qgraphicsitem_cast<QNEPort *>(item);
         QNEConnection *editedConn = getEditedConn();
         if (editedConn) {
             makeConnection(editedConn);
         } else {
             if (pressedPort->isOutput()) {
-                QNEOutputPort *startPort = dynamic_cast<QNEOutputPort *>(pressedPort);
+                auto *startPort = dynamic_cast<QNEOutputPort *>(pressedPort);
                 if (startPort) {
                     startNewConnection(startPort);
                 }
             } else {
-                QNEInputPort *endPort = dynamic_cast<QNEInputPort *>(pressedPort);
+                auto *endPort = dynamic_cast<QNEInputPort *>(pressedPort);
                 if (endPort) {
                     if (endPort->connections().size() > 0) {
                         detachConnection(endPort);
@@ -473,7 +473,7 @@ bool Editor::mouseMoveEvt(QGraphicsSceneMouseEvent *mouseEvt)
 
 void Editor::makeConnection(QNEConnection *editedConn)
 {
-    QNEPort *port = dynamic_cast<QNEPort *>(itemAt(mousePos));
+    auto *port = dynamic_cast<QNEPort *>(itemAt(mousePos));
     if (port && editedConn) {
         /* The mouse is released over a QNEPort. */
         QNEOutputPort *startPort = nullptr;
@@ -523,7 +523,7 @@ bool Editor::mouseReleaseEvt(QGraphicsSceneMouseEvent *mouseEvt)
 
 void Editor::handleHoverPort()
 {
-    QNEPort *port = dynamic_cast<QNEPort *>(itemAt(mousePos));
+    auto *port = dynamic_cast<QNEPort *>(itemAt(mousePos));
     QNEPort *hoverPort = getHoverPort();
     if (hoverPort && (port != hoverPort)) {
         releaseHoverPort();
@@ -573,7 +573,7 @@ void Editor::setHoverPort(QNEPort *port)
 
 QNEPort *Editor::getHoverPort()
 {
-    GraphicElement *hoverElm = dynamic_cast<GraphicElement *>(ElementFactory::getItemById(_hoverPortElm_id));
+    auto *hoverElm = dynamic_cast<GraphicElement *>(ElementFactory::getItemById(_hoverPortElm_id));
     QNEPort *hoverPort = nullptr;
     if (hoverElm) {
         if (_hoverPort_nbr < hoverElm->inputSize()) {
@@ -718,10 +718,10 @@ void Editor::ctrlDrag(QPointF pos)
 
         copy(scene->selectedItems(), dataStream);
 
-        QMimeData *mimeData = new QMimeData;
+        auto *mimeData = new QMimeData;
         mimeData->setData("application/ctrlDragData", itemData);
 
-        QDrag *drag = new QDrag(this);
+        auto *drag = new QDrag(this);
         drag->setMimeData(mimeData);
         drag->setPixmap(QPixmap::fromImage(image));
         drag->setHotSpot(offset.toPoint());
@@ -952,7 +952,7 @@ void Editor::copyAction()
         clipboard->clear();
     } else {
         QClipboard *clipboard = QApplication::clipboard();
-        QMimeData *mimeData = new QMimeData;
+        auto *mimeData = new QMimeData;
         QByteArray itemData;
         QDataStream dataStream(&itemData, QIODevice::WriteOnly);
         copy(scene->selectedItems(), dataStream);
@@ -964,7 +964,7 @@ void Editor::copyAction()
 void Editor::cutAction()
 {
     QClipboard *clipboard = QApplication::clipboard();
-    QMimeData *mimeData = new QMimeData();
+    auto *mimeData = new QMimeData();
     QByteArray itemData;
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
     cut(scene->selectedItems(), dataStream);
@@ -989,10 +989,10 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
         return false;
     }
     if (obj == scene) {
-        QGraphicsSceneDragDropEvent *dde = dynamic_cast<QGraphicsSceneDragDropEvent *>(evt);
-        QGraphicsSceneMouseEvent *mouseEvt = dynamic_cast<QGraphicsSceneMouseEvent *>(evt);
-        QWheelEvent *wEvt = dynamic_cast<QWheelEvent *>(evt);
-        QKeyEvent *keyEvt = dynamic_cast<QKeyEvent *>(evt);
+        auto *dde = dynamic_cast<QGraphicsSceneDragDropEvent *>(evt);
+        auto *mouseEvt = dynamic_cast<QGraphicsSceneMouseEvent *>(evt);
+        auto *wEvt = dynamic_cast<QWheelEvent *>(evt);
+        auto *keyEvt = dynamic_cast<QKeyEvent *>(evt);
         if (mouseEvt) {
             mousePos = mouseEvt->scenePos();
             resizeScene();
@@ -1019,7 +1019,7 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
                 movedElements.clear();
                 oldPositions.clear();
                 for (QGraphicsItem *it : qAsConst(list)) {
-                    GraphicElement *elm = qgraphicsitem_cast<GraphicElement *>(it);
+                    auto *elm = qgraphicsitem_cast<GraphicElement *>(it);
                     if (elm) {
                         movedElements.append(elm);
                         oldPositions.append(elm->pos());
@@ -1080,7 +1080,7 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
             break;
         }
         case QEvent::GraphicsSceneMouseDoubleClick: {
-            QNEConnection *connection = dynamic_cast<QNEConnection *>(itemAt(mousePos));
+            auto *connection = dynamic_cast<QNEConnection *>(itemAt(mousePos));
             if (connection && (connection->type() == QNEConnection::Type)) {
                 /* Mouse pressed over a connection. */
                 if (connection) {
@@ -1098,7 +1098,7 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
                 auto const scene_elems = scene->getElements();
                 for (GraphicElement *elm : scene_elems) {
                     if (elm->hasTrigger() && !elm->getTrigger().isEmpty()) {
-                        Input *in = dynamic_cast<Input *>(elm);
+                        auto *in = dynamic_cast<Input *>(elm);
                         if (in && elm->getTrigger().matches(keyEvt->key())) {
                             if (elm->elementType() == ElementType::SWITCH) {
                                 in->setOn(!in->getOn());
@@ -1116,7 +1116,7 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
                 auto const scene_elems = scene->getElements();
                 for (GraphicElement *elm : scene_elems) {
                     if (elm->hasTrigger() && !elm->getTrigger().isEmpty()) {
-                        Input *in = dynamic_cast<Input *>(elm);
+                        auto *in = dynamic_cast<Input *>(elm);
                         if (in && (elm->getTrigger().matches(keyEvt->key()) == QKeySequence::ExactMatch)) {
                             if (elm->elementType() != ElementType::SWITCH) {
                                 in->setOn(false);
