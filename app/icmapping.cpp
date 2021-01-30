@@ -7,9 +7,7 @@ ICMapping::ICMapping(QString file, const ElementVector &elms, const QNEPortVecto
 {
 }
 
-ICMapping::~ICMapping()
-{
-}
+ICMapping::~ICMapping() = default;
 
 void ICMapping::initialize()
 {
