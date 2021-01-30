@@ -106,7 +106,7 @@ void Led::setColor(QString color)
 
 QString Led::getColor() const
 {
-    return (m_color);
+    return m_color;
 }
 
 void Led::save(QDataStream &ds) const
@@ -127,7 +127,7 @@ void Led::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double versio
 
 QString Led::genericProperties()
 {
-    return (getColor());
+    return getColor();
 }
 
 void Led::updatePorts()
