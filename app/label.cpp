@@ -18,7 +18,7 @@ Label::~Label() = default;
 
 ElementType Label::elementType()
 {
-    return (m_elementType);
+    return m_elementType;
 }
 
 void Label::setElementType(ElementType elementType)
@@ -39,12 +39,12 @@ void Label::setPixmapData(const QPixmap &pixmapData)
 
 const QPixmap &Label::pixmapData() const
 {
-    return (m_pixmapData);
+    return m_pixmapData;
 }
 
 QString Label::name() const
 {
-    return (m_name);
+    return m_name;
 }
 
 void Label::setName(const QString &name)
@@ -54,7 +54,7 @@ void Label::setName(const QString &name)
 
 QString Label::auxData() const
 {
-    return (m_auxData);
+    return m_auxData;
 }
 
 void Label::setAuxData(const QString &auxData)
