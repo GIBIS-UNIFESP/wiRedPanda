@@ -859,7 +859,6 @@ void Editor::load( QDataStream &ds ) {
       view->centerOn( scene->itemsBoundingRect( ).center( ) );
     }
   }
-  //SerializationFunctions::load( ds, GlobalProperties::currentFile, scene );
   simulationController->start( );
   scene->clearSelection( );
   COMMENT( "Emiting circuit has changed.", 0 );
