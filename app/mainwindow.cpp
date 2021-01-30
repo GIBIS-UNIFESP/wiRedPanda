@@ -220,10 +220,9 @@ bool MainWindow::save(QString fname)
             settings.remove("autosaveFile");
         }
         return (true);
-    } else {
-        std::cerr << QString(tr("Could not save file: ") + fl.errorString() + ".").toStdString() << std::endl;
-        return (false);
     }
+    std::cerr << QString(tr("Could not save file: ") + fl.errorString() + ".").toStdString() << std::endl;
+    return (false);
 }
 
 void MainWindow::show()
