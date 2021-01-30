@@ -40,7 +40,7 @@ QFileInfo FileHelper::findICFile(QString fname, QString parentFile)
             }
         }
     }
-    return (fileInfo);
+    return fileInfo;
 }
 
 QFileInfo FileHelper::findSkinFile(QString fname)
@@ -66,7 +66,7 @@ QFileInfo FileHelper::findSkinFile(QString fname)
         }
     }
     COMMENT("FileInfo found: " << fileInfo.absoluteFilePath().toStdString(), 0);
-    return (fileInfo);
+    return fileInfo;
 }
 
 void FileHelper::verifyRecursion(QString fname)
