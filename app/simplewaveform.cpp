@@ -329,11 +329,11 @@ void SimpleWaveform::showWaveform()
     const auto horizontal_axe = chart.axes(Qt::Horizontal);
     const auto vertical_axe = chart.axes(Qt::Vertical);
 
-    QValueAxis *ax = dynamic_cast<QValueAxis *>(horizontal_axe.back());
+    auto *ax = dynamic_cast<QValueAxis *>(horizontal_axe.back());
     ax->setRange(0, num_iter);
     ax->setTickCount(num_iter + 1);
     ax->setLabelFormat(QString("%i"));
-    QValueAxis *ay = dynamic_cast<QValueAxis *>(vertical_axe.back());
+    auto *ay = dynamic_cast<QValueAxis *>(vertical_axe.back());
     /*  ay->setShadesBrush( QBrush( Qt::lightGray ) ); */
 
     COMMENT("Setting graphics waveform color.", 0);
@@ -398,7 +398,7 @@ void SimpleWaveform::on_pushButton_Copy_clicked()
     chartView->render(&painter); /* m_view has app->chart() in it, and this one gives right image */
     qDebug() << "Copied";
     painter.end();
-    QMimeData *d = new QMimeData();
+    auto *d = new QMimeData();
     d->setImageData(p);
     QApplication::clipboard()->setMimeData(d, QClipboard::Clipboard);
 }
