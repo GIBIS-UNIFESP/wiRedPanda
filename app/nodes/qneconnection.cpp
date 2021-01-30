@@ -200,9 +200,8 @@ QNEPort *QNEConnection::otherPort(const QNEPort *port) const
 {
     if (port == dynamic_cast<QNEPort *>(m_start)) {
         return (dynamic_cast<QNEPort *>(m_end));
-    } else {
-        return (dynamic_cast<QNEPort *>(m_start));
     }
+    return (dynamic_cast<QNEPort *>(m_start));
 }
 
 QNEOutputPort *QNEConnection::otherPort(const QNEInputPort *) const
