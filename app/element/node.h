@@ -17,7 +17,7 @@ public:
     void updatePorts() override;
     ElementGroup elementGroup() override
     {
-        return (ElementGroup::GATE);
+        return ElementGroup::GATE;
     }
     /* GraphicElement interface */
 public:
