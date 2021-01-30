@@ -23,9 +23,7 @@ public:
     {
     }
 
-    MappedPin()
-    {
-    }
+    MappedPin() = default;
 };
 
 class CodeGenerator
