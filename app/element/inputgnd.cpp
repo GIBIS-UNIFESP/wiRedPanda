@@ -17,9 +17,10 @@ InputGnd::InputGnd(QGraphicsItem *parent)
 
 void InputGnd::setSkin(bool defaultSkin, QString filename)
 {
-    if (defaultSkin)
+    if (defaultSkin) {
         pixmapSkinName[0] = ":/input/0.png";
-    else
+    } else {
         pixmapSkinName[0] = filename;
+    }
     setPixmap(pixmapSkinName[0]);
 }
