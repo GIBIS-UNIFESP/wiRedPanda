@@ -139,8 +139,7 @@ bool BewavedDolphin::checkSave()
             on_actionSave_triggered();
             if (edited)
                 return (false);
-            else
-                return (true);
+            return (true);
         } else if (reply == QMessageBox::Discard)
             return (true);
         return (false);
@@ -182,8 +181,7 @@ void BewavedDolphin::CreateElement(int row, int col, int value, bool isInput, bo
 {
     if (value == 0)
         return (CreateZeroElement(row, col, isInput, changePrevious));
-    else
-        return (CreateOneElement(row, col, isInput, changePrevious));
+    return (CreateOneElement(row, col, isInput, changePrevious));
 }
 
 void BewavedDolphin::CreateZeroElement(int row, int col, bool isInput, bool changePrevious)
