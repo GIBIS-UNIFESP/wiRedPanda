@@ -47,9 +47,10 @@ void SRFlipFlop::updatePorts()
 
 void SRFlipFlop::setSkin(bool defaultSkin, QString filename)
 {
-    if (defaultSkin)
+    if (defaultSkin) {
         pixmapSkinName[0] = ":/memory/SR-flipflop.png";
-    else
+    } else {
         pixmapSkinName[0] = filename;
+    }
     setPixmap(pixmapSkinName[0]);
 }
