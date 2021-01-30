@@ -18,11 +18,11 @@ public:
 public:
     ElementType elementType() override
     {
-        return (ElementType::DLATCH);
+        return ElementType::DLATCH;
     }
     ElementGroup elementGroup() override
     {
-        return (ElementGroup::MEMORY);
+        return ElementGroup::MEMORY;
     }
     void updatePorts() override;
     void setSkin(bool defaultSkin, QString filename) override;
