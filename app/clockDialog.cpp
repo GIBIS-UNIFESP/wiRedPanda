@@ -23,7 +23,7 @@ int clockDialog::getFrequency()
     if (m_canceled) {
         return -1;
     }
-    return (m_ui->frequencySpinBox->value());
+    return m_ui->frequencySpinBox->value();
 }
 
 clockDialog::~clockDialog()
