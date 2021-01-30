@@ -12,7 +12,7 @@ class Label : public QLabel
 public:
     explicit Label(QWidget *parent = nullptr);
 
-    virtual ~Label();
+    ~Label() override;
     ElementType elementType();
     void setElementType(ElementType elementType);
     QString auxData() const;
@@ -25,7 +25,7 @@ public:
     void setPixmapData(const QPixmap &pixmapData);
 
 protected:
-    void mousePressEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
 
 private:
     ElementType m_elementType;
