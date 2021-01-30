@@ -64,7 +64,7 @@ private:
     Qt::KeyboardModifiers _modifiers;
     double _zoom_factor_base;
     QPointF target_scene_pos, target_viewport_pos;
-    bool eventFilter(QObject *object, QEvent *event);
+    bool eventFilter(QObject *object, QEvent *event) override;
 
 signals:
     void zoomed();
