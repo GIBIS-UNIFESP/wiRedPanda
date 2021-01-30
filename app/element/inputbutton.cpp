@@ -46,7 +46,7 @@ void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 bool InputButton::getOn() const
 {
-    return (on);
+    return on;
 }
 
 void InputButton::setOn(const bool value)
