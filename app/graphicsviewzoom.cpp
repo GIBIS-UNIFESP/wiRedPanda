@@ -73,7 +73,7 @@ void GraphicsViewZoom::resetZoom()
 
 double GraphicsViewZoom::scaleFactor()
 {
-    return (_view->transform().m11());
+    return _view->transform().m11();
 }
 
 void GraphicsViewZoom::setScaleFactor(double factor)
@@ -86,12 +86,12 @@ void GraphicsViewZoom::setScaleFactor(double factor)
 
 bool GraphicsViewZoom::canZoomIn()
 {
-    return ((scaleFactor() + ZOOMFAC * 2) <= GraphicsViewZoom::maxZoom);
+    return (scaleFactor() + ZOOMFAC * 2) <= GraphicsViewZoom::maxZoom;
 }
 
 bool GraphicsViewZoom::canZoomOut()
 {
-    return ((scaleFactor() - ZOOMFAC * 2) >= GraphicsViewZoom::minZoom);
+    return (scaleFactor() - ZOOMFAC * 2) >= GraphicsViewZoom::minZoom;
 }
 
 bool GraphicsViewZoom::eventFilter(QObject *object, QEvent *event)
@@ -110,10 +110,10 @@ bool GraphicsViewZoom::eventFilter(QObject *object, QEvent *event)
             double angle = wheel_event->angleDelta().y();
             double factor = qPow(_zoom_factor_base, angle);
             gentle_zoom(factor);
-            return (true);
+            return true;
             //}
         }
     }
     Q_UNUSED(object)
-    return (false);
+    return false;
 }
