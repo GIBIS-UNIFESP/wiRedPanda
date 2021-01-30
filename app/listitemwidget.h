@@ -20,7 +20,7 @@ public:
     void updateName();
 
 protected:
-    void mousePressEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
 
 signals:
 
