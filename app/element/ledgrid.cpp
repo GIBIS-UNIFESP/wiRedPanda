@@ -99,7 +99,7 @@ void LedGrid::setColor(QString color)
 
 QString LedGrid::getColor() const
 {
-    return (m_color);
+    return m_color;
 }
 
 void LedGrid::save(QDataStream &ds) const
@@ -120,7 +120,7 @@ void LedGrid::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double ve
 
 QString LedGrid::genericProperties()
 {
-    return (getColor());
+    return getColor();
 }
 
 void LedGrid::updatePorts()
