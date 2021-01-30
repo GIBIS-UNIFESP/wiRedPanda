@@ -17,9 +17,9 @@ class ICMapping : public ElementMapping
 public:
     ICMapping(QString file, const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs);
 
-    virtual ~ICMapping();
+    ~ICMapping() override;
 
-    void initialize();
+    void initialize() override;
 
     void clearConnections();
 
