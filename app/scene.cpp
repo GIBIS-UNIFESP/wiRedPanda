@@ -27,7 +27,7 @@ Scene::Scene(qreal x, qreal y, qreal width, qreal height, QObject *parent)
 
 int Scene::gridSize() const
 {
-    return (m_gridSize);
+    return m_gridSize;
 }
 
 void Scene::drawBackground(QPainter *painter, const QRectF &rect)
@@ -60,7 +60,7 @@ QVector<GraphicElement *> Scene::getVisibleElements()
     }
     QRectF visibleRect = graphicsView->mapToScene(graphicsView->viewport()->geometry()).boundingRect();
 
-    return (getElements(visibleRect));
+    return getElements(visibleRect);
 }
 
 QVector<GraphicElement *> Scene::getElements()
@@ -73,7 +73,7 @@ QVector<GraphicElement *> Scene::getElements()
             elements.append(elm);
         }
     }
-    return (elements);
+    return elements;
 }
 
 QVector<GraphicElement *> Scene::getElements(QRectF rect)
@@ -86,7 +86,7 @@ QVector<GraphicElement *> Scene::getElements(QRectF rect)
             elements.append(elm);
         }
     }
-    return (elements);
+    return elements;
 }
 
 QVector<QNEConnection *> Scene::getConnections()
@@ -99,7 +99,7 @@ QVector<QNEConnection *> Scene::getConnections()
             conns.append(conn);
         }
     }
-    return (conns);
+    return conns;
 }
 
 QVector<GraphicElement *> Scene::selectedElements()
@@ -114,5 +114,5 @@ QVector<GraphicElement *> Scene::selectedElements()
             }
         }
     }
-    return (elements);
+    return elements;
 }
