@@ -9,19 +9,19 @@ class JKFlipFlop : public GraphicElement
 
 public:
     explicit JKFlipFlop(QGraphicsItem *parent = nullptr);
-    virtual ~JKFlipFlop() override = default;
+    ~JKFlipFlop() override = default;
 
     /* GraphicElement interface */
 public:
-    virtual ElementType elementType() override
+    ElementType elementType() override
     {
         return (ElementType::JKFLIPFLOP);
     }
-    virtual ElementGroup elementGroup() override
+    ElementGroup elementGroup() override
     {
         return (ElementGroup::MEMORY);
     }
-    virtual void updatePorts() override;
+    void updatePorts() override;
     void setSkin(bool defaultSkin, QString filename) override;
 };
 
