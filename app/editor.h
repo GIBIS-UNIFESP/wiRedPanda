@@ -23,7 +23,7 @@ class Editor : public QObject
 
 public:
     explicit Editor(QObject *parent = nullptr);
-    virtual ~Editor();
+    ~Editor() override;
     bool saveLocalIC(IC *ic, QString newICPath);
     bool saveLocal(QString newPath);
     void save(QDataStream &ds, const QString &dolphinFilename);
@@ -101,7 +101,7 @@ private:
     void redoSimulationController();
 
 public:
-    bool eventFilter(QObject *obj, QEvent *evt);
+    bool eventFilter(QObject *obj, QEvent *evt) override;
     void setElementEditor(ElementEditor *value);
     QUndoStack *getUndoStack() const;
     Scene *getScene() const;
