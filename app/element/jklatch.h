@@ -18,11 +18,11 @@ public:
 public:
     ElementType elementType() override
     {
-        return (ElementType::JKLATCH);
+        return ElementType::JKLATCH;
     }
     ElementGroup elementGroup() override
     {
-        return (ElementGroup::MEMORY);
+        return ElementGroup::MEMORY;
     }
     void updatePorts() override;
 };
