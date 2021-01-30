@@ -18,14 +18,14 @@ public:
 
     ElementGroup elementGroup() override
     {
-        return (ElementGroup::MUX);
+        return ElementGroup::MUX;
     }
 
     /* GraphicElement interface */
 public:
     ElementType elementType() override
     {
-        return (ElementType::DEMUX);
+        return ElementType::DEMUX;
     }
     void updatePorts() override;
     void setSkin(bool defaultSkin, QString filename) override;
