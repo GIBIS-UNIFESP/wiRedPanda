@@ -73,30 +73,30 @@ void SimpleWaveform::sortElements(QVector<GraphicElement *> &elements,
     }
     if (sorting == SortingMode::POSITION) {
         std::stable_sort(inputs.begin(), inputs.end(), [](GraphicElement *elm1, GraphicElement *elm2) {
-            return (elm1->pos().ry() < elm2->pos().ry());
+            return elm1->pos().ry() < elm2->pos().ry();
         });
         std::stable_sort(outputs.begin(), outputs.end(), [](GraphicElement *elm1, GraphicElement *elm2) {
-            return (elm1->pos().ry() < elm2->pos().ry());
+            return elm1->pos().ry() < elm2->pos().ry();
         });
         std::stable_sort(inputs.begin(), inputs.end(), [](GraphicElement *elm1, GraphicElement *elm2) {
-            return (elm1->pos().rx() < elm2->pos().rx());
+            return elm1->pos().rx() < elm2->pos().rx();
         });
         std::stable_sort(outputs.begin(), outputs.end(), [](GraphicElement *elm1, GraphicElement *elm2) {
-            return (elm1->pos().rx() < elm2->pos().rx());
+            return elm1->pos().rx() < elm2->pos().rx();
         });
     } else if (sorting == SortingMode::INCREASING) {
         std::stable_sort(inputs.begin(), inputs.end(), [](GraphicElement *elm1, GraphicElement *elm2) {
-            return (QString::compare(elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8(), Qt::CaseInsensitive) <= 0);
+            return QString::compare(elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8(), Qt::CaseInsensitive) <= 0;
         });
         std::stable_sort(outputs.begin(), outputs.end(), [](GraphicElement *elm1, GraphicElement *elm2) {
-            return (QString::compare(elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8(), Qt::CaseInsensitive) <= 0);
+            return QString::compare(elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8(), Qt::CaseInsensitive) <= 0;
         });
     } else { // if( sorting == SortingMode::DECREASING ) {
         std::stable_sort(inputs.begin(), inputs.end(), [](GraphicElement *elm1, GraphicElement *elm2) {
-            return (QString::compare(elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8(), Qt::CaseInsensitive) >= 0);
+            return QString::compare(elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8(), Qt::CaseInsensitive) >= 0;
         });
         std::stable_sort(outputs.begin(), outputs.end(), [](GraphicElement *elm1, GraphicElement *elm2) {
-            return (QString::compare(elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8(), Qt::CaseInsensitive) >= 0);
+            return QString::compare(elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8(), Qt::CaseInsensitive) >= 0;
         });
     }
 }
@@ -110,7 +110,7 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, Editor *editor)
     // Sorting elements according to the radion option. All elements initially in elements vector. Then, inputs and outputs are extracted from it.
     sortElements(elements, inputs, outputs, SortingMode::INCREASING);
     if (elements.isEmpty() || inputs.isEmpty() || outputs.isEmpty()) {
-        return (false);
+        return false;
     }
     // Getting digital circuit simulator.
     SimulationController *sc = editor->getSimulationController();
@@ -188,7 +188,7 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, Editor *editor)
     }
     // Resuming digital circuit main window after waveform simulation is finished.
     scst.release();
-    return (true);
+    return true;
 }
 
 // Ideia: 1) Dividir essa função em partes. Uma para configurar, uma para carregar valores padrão ou de arquivo, uma para simular e uma para mostrar o
