@@ -933,7 +933,7 @@ void MainWindow::setDolphinFilename(QString filename)
     dolphinFilename = filename;
 }
 
-void MainWindow::on_actionFullscreen_triggered()
+void MainWindow::on_actionFullscreen_triggered() const
 {
     if (fullscreenDlg->isVisible()) {
         fullscreenDlg->accept();
