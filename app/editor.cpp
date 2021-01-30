@@ -56,9 +56,7 @@ Editor::Editor(QObject *parent)
     connect(icManager, &ICManager::updatedIC, this, &Editor::redoSimulationController);
 }
 
-Editor::~Editor()
-{
-}
+Editor::~Editor() = default;
 
 //! CARMESIM
 //#ifdef Q_OS_WIN
