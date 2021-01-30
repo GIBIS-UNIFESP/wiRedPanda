@@ -49,11 +49,10 @@ bool comparePorts(QNEPort *port1, QNEPort *port2)
     QPointF p2 = port2->graphicElement()->pos();
     if (p1 != p2) {
         return (p1.y() < p2.y() || (qFuzzyCompare(p1.y(), p2.y()) && p1.x() < p2.x()));
-    } else {
-        p1 = port1->pos();
-        p2 = port2->pos();
-        return (p1.x() < p2.x() || (qFuzzyCompare(p1.x(), p2.x()) && p1.y() < p2.y()));
     }
+    p1 = port1->pos();
+    p2 = port2->pos();
+    return (p1.x() < p2.x() || (qFuzzyCompare(p1.x(), p2.x()) && p1.y() < p2.y()));
 }
 
 void ICPrototypeImpl::sortPorts(QVector<QNEPort *> &map)
@@ -89,9 +88,9 @@ bool ICPrototypeImpl::updateLocalIC(QString fileName, QString dirName)
         if (!SerializationFunctions::update(fileName, dirName)) {
             std::cerr << "Error saving local ic." << std::endl;
             return (false);
-        } else {
-            COMMENT("Saved at prototype impl.", 0);
         }
+        COMMENT("Saved at prototype impl.", 0);
+
     } catch (std::runtime_error &e) {
         std::cerr << "Error saving project: " << e.what() << std::endl;
         return (false);
