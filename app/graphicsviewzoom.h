@@ -49,9 +49,9 @@ public:
     static constexpr double maxZoom = 1.5;
     static constexpr double minZoom = 0.2;
     explicit GraphicsViewZoom(QGraphicsView *view);
-    void gentle_zoom(double factor);
-    void set_modifiers(Qt::KeyboardModifiers modifiers);
-    void set_zoom_factor_base(double value);
+    void gentleZoom(double factor);
+    void setModifiers(Qt::KeyboardModifiers modifiers);
+    void setZoomFactorBase(double value);
 
     void zoomIn();
     void zoomOut();
@@ -67,8 +67,8 @@ private:
 
     QGraphicsView *m_view;
     Qt::KeyboardModifiers m_modifiers;
-    double m_zoom_factor_base;
-    QPointF m_target_scene_pos, m_target_viewport_pos;
+    double m_zoomFactorBase;
+    QPointF m_targetScenePos, m_targetViewportPos;
     bool eventFilter(QObject *object, QEvent *event) override;
 
 signals:
