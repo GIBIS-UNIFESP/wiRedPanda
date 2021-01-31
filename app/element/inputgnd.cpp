@@ -15,7 +15,7 @@ InputGnd::InputGnd(QGraphicsItem *parent)
     m_outputs.first()->setValue(false);
 }
 
-void InputGnd::setSkin(bool defaultSkin, QString filename)
+void InputGnd::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         pixmapSkinName[0] = ":/input/0.png";

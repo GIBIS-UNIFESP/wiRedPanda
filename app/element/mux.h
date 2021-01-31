@@ -19,7 +19,7 @@ public:
     /* GraphicElement interface */
 public:
     void updatePorts() override;
-    void setSkin(bool defaultSkin, QString filename) override;
+    void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
 #endif /* MUX_H */

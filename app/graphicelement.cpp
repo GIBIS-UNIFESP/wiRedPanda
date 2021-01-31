@@ -436,7 +436,7 @@ void GraphicElement::loadPixmapSkinName(QDataStream &ds, size_t skin)
     }
 }
 
-void GraphicElement::updateSkinsPath(QString newSkinPath)
+void GraphicElement::updateSkinsPath(const QString &newSkinPath)
 {
     for (int i = 0; i < pixmapSkinName.size(); ++i) {
         QString name = pixmapSkinName[i];
@@ -519,13 +519,13 @@ void GraphicElement::addOutputPort(const QString &name)
     addPort(name, true);
 }
 
-void GraphicElement::setPortName(QString name)
+void GraphicElement::setPortName(const QString &name)
 {
     setObjectName(name);
     setToolTip(name);
 }
 
-void GraphicElement::setSkin(bool defaultSkin, QString filename)
+void GraphicElement::setSkin(bool defaultSkin, const QString &filename)
 {
     Q_UNUSED(defaultSkin);
     Q_UNUSED(filename);
@@ -533,7 +533,6 @@ void GraphicElement::setSkin(bool defaultSkin, QString filename)
 
 void GraphicElement::updatePorts()
 {
-    /*  qDebug() << "UpdatePorts"; */
     COMMENT("Updating port positions that belong to the IC.", 0);
     int inputPos = m_topPosition;
     int outputPos = m_bottomPosition;
@@ -567,16 +566,6 @@ void GraphicElement::refresh()
 {
     setPixmap(pixmapSkinName[0]);
 }
-
-/*
- * void GraphicElement::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * e) {
- *  if(e->button() == Qt::LeftButton) {
- *    addOutputPort();
- *  } else {
- *    addInputPort();
- *  }
- * }
- */
 
 QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
 {
@@ -645,7 +634,7 @@ void GraphicElement::updateLabel()
     }
 }
 
-void GraphicElement::setLabel(QString label)
+void GraphicElement::setLabel(const QString &label)
 {
     m_labelText = label;
     updateLabel();
@@ -716,8 +705,9 @@ bool GraphicElement::hasTrigger() const
     return m_hasTrigger;
 }
 
-void GraphicElement::setColor(QString)
+void GraphicElement::setColor(const QString &color)
 {
+    Q_UNUSED(color);
 }
 
 QString GraphicElement::getColor() const
@@ -725,8 +715,9 @@ QString GraphicElement::getColor() const
     return QString();
 }
 
-void GraphicElement::setAudio(QString)
+void GraphicElement::setAudio(const QString &audio)
 {
+    Q_UNUSED(audio);
 }
 
 QString GraphicElement::getAudio() const

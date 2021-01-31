@@ -18,34 +18,6 @@ ICPrototypeImpl::~ICPrototypeImpl()
     }
 }
 
-// void BoxPrototypeImpl::sortMap( QVector< QNEPort* > &map ) {
-//  // BubbleSort
-//  for( int i = map.size( ) - 1; i >= 1; i-- ) {
-//    for( int j = 0; j < i; j++ ) {
-//      QPointF p1 = map[ j ]->graphicElement( )->pos( );
-//      QPointF p2 = map[ j + 1 ]->graphicElement( )->pos( );
-//      if( p1 != p2 ) {
-//        if( p1.y( ) > p2.y( ) ) {
-//          std::swap( map[ j ], map[ j + 1 ] );
-//        }
-//        else if( ( p1.y( ) == p2.y( ) ) && ( p1.x( ) > p2.x( ) ) ) {
-//          std::swap( map[ j ], map[ j + 1 ] );
-//        }
-//      }
-//      else {
-//        p1 = map[ j ]->pos( );
-//        p2 = map[ j + 1 ]->pos( );
-//        if( p1.x( ) > p2.x( ) ) {
-//          std::swap( map[ j ], map[ j + 1 ] );
-//        }
-//        else if( ( p1.x( ) == p2.x( ) ) && ( p1.y( ) > p2.y( ) ) ) {
-//          std::swap( map[ j ], map[ j + 1 ] );
-//        }
-//      }
-//    }
-//  }
-//}
-
 bool comparePorts(QNEPort *port1, QNEPort *port2)
 {
     QPointF p1 = port1->graphicElement()->pos();
@@ -63,7 +35,7 @@ void ICPrototypeImpl::sortPorts(QVector<QNEPort *> &map)
     std::stable_sort(map.begin(), map.end(), comparePorts);
 }
 
-bool ICPrototypeImpl::updateLocalIC(QString fileName, QString dirName)
+bool ICPrototypeImpl::updateLocalIC(const QString &fileName, const QString &dirName)
 {
     COMMENT("Recursive call to sub ics.", 0);
     for (GraphicElement *elm : qAsConst(elements)) {
@@ -101,7 +73,7 @@ bool ICPrototypeImpl::updateLocalIC(QString fileName, QString dirName)
     return true;
 }
 
-void ICPrototypeImpl::loadFile(QString fileName)
+void ICPrototypeImpl::loadFile(const QString &fileName)
 {
     COMMENT("Reading ic", 0);
     clear();

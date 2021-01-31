@@ -15,7 +15,7 @@ And::And(QGraphicsItem *parent)
     setToolTip("AND");
 }
 
-void And::setSkin(bool defaultSkin, QString filename)
+void And::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin)
         pixmapSkinName[0] = ":/basic/and.png";

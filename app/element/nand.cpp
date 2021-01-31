@@ -15,7 +15,7 @@ Nand::Nand(QGraphicsItem *parent)
     setPortName("NAND");
 }
 
-void Nand::setSkin(bool defaultSkin, QString filename)
+void Nand::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         pixmapSkinName[0] = ":/basic/nand.png";

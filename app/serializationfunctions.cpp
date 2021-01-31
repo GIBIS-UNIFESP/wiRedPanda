@@ -18,7 +18,7 @@
 #include "ic.h"
 #include "qneconnection.h"
 
-bool SerializationFunctions::update(QString &fileName, QString dirName)
+bool SerializationFunctions::update(const QString &fileName, const QString &dirName)
 {
     double version;
     QRectF rect;
@@ -75,7 +75,7 @@ void SerializationFunctions::serialize(const QList<QGraphicsItem *> &items, QDat
     }
 }
 
-QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &ds, double version, QString parentFile, QMap<quint64, QNEPort *> portMap)
+QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &ds, double version, const QString &parentFile, QMap<quint64, QNEPort *> portMap)
 {
     QList<QGraphicsItem *> itemList;
     while (!ds.atEnd()) {
@@ -151,7 +151,7 @@ QRectF SerializationFunctions::loadRect(QDataStream &ds, double version)
     return rect;
 }
 
-QList<QGraphicsItem *> SerializationFunctions::loadMoveData(QString dirName, QDataStream &ds, double version, QMap<quint64, QNEPort *> portMap)
+QList<QGraphicsItem *> SerializationFunctions::loadMoveData(const QString &dirName, QDataStream &ds, double version, QMap<quint64, QNEPort *> portMap)
 {
     QList<QGraphicsItem *> itemList;
     while (!ds.atEnd()) {
@@ -194,7 +194,7 @@ QList<QGraphicsItem *> SerializationFunctions::loadMoveData(QString dirName, QDa
     return itemList;
 }
 
-QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &ds, QString parentFile, Scene *scene)
+QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &ds, const QString &parentFile, Scene *scene)
 {
     COMMENT("Started loading file.", 0);
     QString str;

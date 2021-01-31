@@ -44,7 +44,7 @@ void TFlipFlop::updatePorts()
     output(1)->setPos(bottomPosition(), 45); /* ~Q */
 }
 
-void TFlipFlop::setSkin(bool defaultSkin, QString filename)
+void TFlipFlop::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         pixmapSkinName[0] = ":/memory/T-flipflop.png";

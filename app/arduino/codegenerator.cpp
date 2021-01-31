@@ -9,7 +9,7 @@
 
 #include <stdexcept>
 
-CodeGenerator::CodeGenerator(QString fileName, const QVector<GraphicElement *> &elements)
+CodeGenerator::CodeGenerator(const QString &fileName, const QVector<GraphicElement *> &elements)
     : file(fileName)
     , elements(elements)
 {
@@ -43,7 +43,7 @@ static inline QString highLow(int val)
     return val == 1 ? "HIGH" : "LOW";
 }
 
-QString clearString(QString input)
+QString clearString(const QString &input)
 {
     return input.toLower().trimmed().replace(" ", "_").replace("-", "_").replace(QRegExp("\\W"), "");
 }

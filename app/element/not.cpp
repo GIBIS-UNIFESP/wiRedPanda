@@ -14,7 +14,7 @@ Not::Not(QGraphicsItem *parent)
     setPortName("NOT");
 }
 
-void Not::setSkin(bool defaultSkin, QString filename)
+void Not::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         pixmapSkinName[0] = ":/basic/not.png";

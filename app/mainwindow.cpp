@@ -32,7 +32,7 @@
 
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent, QString filename)
+MainWindow::MainWindow(QWidget *parent, const QString &filename)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , undoView(nullptr)

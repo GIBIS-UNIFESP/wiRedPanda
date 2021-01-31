@@ -761,7 +761,7 @@ void BewavedDolphin::on_actionLoad_triggered()
     ui->statusbar->showMessage(tr("File loaded successfully."), 2000);
 }
 
-bool BewavedDolphin::save(QString &fname)
+bool BewavedDolphin::save(const QString &fname)
 {
     QSaveFile fl(fname);
     if (fl.open(QFile::WriteOnly)) {
@@ -817,7 +817,7 @@ void BewavedDolphin::save(QSaveFile &fl)
     }
 }
 
-bool BewavedDolphin::load(QString fname)
+bool BewavedDolphin::load(const QString &fname)
 {
     QFile fl(fname);
     if (!fl.exists()) {

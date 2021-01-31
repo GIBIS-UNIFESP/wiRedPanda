@@ -86,7 +86,7 @@ void IC::loadOutputs(ICPrototype *prototype)
             0);
 }
 
-void IC::loadFile(QString fname)
+void IC::loadFile(const QString &fname)
 {
     ICPrototype *prototype = ICManager::instance()->getPrototype(fname);
     Q_ASSERT(prototype);
@@ -108,7 +108,7 @@ QString IC::getFile() const
     return m_file;
 }
 
-bool IC::setFile(QString newFileName)
+bool IC::setFile(const QString &newFileName)
 {
     COMMENT("Updating ic name.", 0);
     if (!ICManager::instance()->updatePrototypeFilePathName(m_file, newFileName)) {
@@ -142,7 +142,7 @@ void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-void IC::setSkin(bool defaultSkin, QString filename)
+void IC::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         pixmapSkinName[0] = ":/basic/box.png";
