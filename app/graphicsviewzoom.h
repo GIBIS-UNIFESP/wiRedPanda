@@ -65,10 +65,10 @@ private:
     double scaleFactor();
     void setScaleFactor(double factor);
 
-    QGraphicsView *_view;
-    Qt::KeyboardModifiers _modifiers;
-    double _zoom_factor_base;
-    QPointF target_scene_pos, target_viewport_pos;
+    QGraphicsView *m_view;
+    Qt::KeyboardModifiers m_modifiers;
+    double m_zoom_factor_base;
+    QPointF m_target_scene_pos, m_target_viewport_pos;
     bool eventFilter(QObject *object, QEvent *event) override;
 
 signals:
