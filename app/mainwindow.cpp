@@ -7,10 +7,10 @@
 #include <iostream>
 #include <stdexcept>
 
+#include <QCloseEvent>
 #include <QDebug>
+#include <QDialog>
 #include <QFileDialog>
-#include <QGraphicsScene>
-#include <QKeyEvent>
 #include <QMessageBox>
 #include <QPrinter>
 #include <QProcess>
@@ -18,16 +18,19 @@
 #include <QSaveFile>
 #include <QSettings>
 #include <QShortcut>
-#include <QStyleFactory>
-#include <QTemporaryFile>
+#include <QSpacerItem>
+#include <QTranslator>
+#include <QUndoView>
 
 #include "arduino/codegenerator.h"
 #include "bewaveddolphin.h"
+#include "editor.h"
 #include "elementmapping.h"
 #include "globalproperties.h"
+#include "graphicsview.h"
 #include "graphicsviewzoom.h"
+#include "label.h"
 #include "listitemwidget.h"
-#include "simplewaveform.h"
 #include "thememanager.h"
 
 #include "ui_mainwindow.h"
