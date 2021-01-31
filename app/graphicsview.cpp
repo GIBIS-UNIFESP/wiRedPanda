@@ -12,10 +12,10 @@
 GraphicsView::GraphicsView(QWidget *parent)
     : QGraphicsView(parent)
 {
-    _pan = false;
-    _space = false;
-    _panStartX = 0;
-    _panStartY = 0;
+    m_pan = false;
+    m_space = false;
+    m_panStartX = 0;
+    m_panStartY = 0;
     setAcceptDrops(true);
     m_gvzoom = new GraphicsViewZoom(this);
 }
@@ -23,9 +23,9 @@ GraphicsView::GraphicsView(QWidget *parent)
 void GraphicsView::mousePressEvent(QMouseEvent *e)
 {
     if (e->button() == Qt::MiddleButton) {
-        _pan = true;
-        _panStartX = e->x();
-        _panStartY = e->y();
+        m_pan = true;
+        m_panStartX = e->x();
+        m_panStartY = e->y();
         QApplication::setOverrideCursor(Qt::ClosedHandCursor);
         e->accept();
         return;
@@ -36,7 +36,7 @@ void GraphicsView::mousePressEvent(QMouseEvent *e)
 void GraphicsView::mouseReleaseEvent(QMouseEvent *e)
 {
     if (e->button() == Qt::MiddleButton) {
-        _pan = false;
+        m_pan = false;
         QApplication::restoreOverrideCursor();
         e->accept();
         return;
@@ -46,23 +46,23 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *e)
 
 void GraphicsView::mouseMoveEvent(QMouseEvent *e)
 {
-    if (_pan || _space) {
-        horizontalScrollBar()->setValue(horizontalScrollBar()->value() - (e->x() - _panStartX));
-        verticalScrollBar()->setValue(verticalScrollBar()->value() - (e->y() - _panStartY));
-        _panStartX = e->x();
-        _panStartY = e->y();
+    if (m_pan || m_space) {
+        horizontalScrollBar()->setValue(horizontalScrollBar()->value() - (e->x() - m_panStartX));
+        verticalScrollBar()->setValue(verticalScrollBar()->value() - (e->y() - m_panStartY));
+        m_panStartX = e->x();
+        m_panStartY = e->y();
         e->accept();
         return;
     }
-    _panStartX = e->x();
-    _panStartY = e->y();
+    m_panStartX = e->x();
+    m_panStartY = e->y();
     QGraphicsView::mouseMoveEvent(e);
 }
 
 void GraphicsView::keyPressEvent(QKeyEvent *e)
 {
     if (e->key() == Qt::Key_Space) {
-        _space = true;
+        m_space = true;
         QApplication::setOverrideCursor(Qt::ClosedHandCursor);
         e->accept();
     }
@@ -72,7 +72,7 @@ void GraphicsView::keyPressEvent(QKeyEvent *e)
 void GraphicsView::keyReleaseEvent(QKeyEvent *e)
 {
     if (e->key() == Qt::Key_Space) {
-        _space = false;
+        m_space = false;
         QApplication::restoreOverrideCursor();
         e->accept();
     }

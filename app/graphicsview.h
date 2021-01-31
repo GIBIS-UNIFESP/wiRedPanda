@@ -27,10 +27,10 @@ protected:
     void keyReleaseEvent(QKeyEvent *e) override;
 
 private:
-    bool _pan;
-    bool _space;
-    int _panStartX;
-    int _panStartY;
+    bool m_pan;
+    bool m_space;
+    int m_panStartX;
+    int m_panStartY;
 
     GraphicsViewZoom *m_gvzoom;
 };
