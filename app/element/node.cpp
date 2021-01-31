@@ -3,8 +3,6 @@
 
 #include "node.h"
 
-#include <QPainter>
-
 Node::Node(QGraphicsItem *parent)
     : GraphicElement(ElementType::NODE, ElementGroup::GATE, 1, 1, 1, 1, parent)
 {
