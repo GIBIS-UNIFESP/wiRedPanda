@@ -39,12 +39,12 @@ private slots:
     void on_pushButton_Copy_clicked();
 
 private:
-    Ui::SimpleWaveform *ui;
-    QtCharts::QChart chart;
-    QtCharts::QChartView *chartView;
-    Editor *editor;
+    Ui::SimpleWaveform *m_ui;
+    QtCharts::QChart m_chart;
+    QtCharts::QChartView *m_chartView;
+    Editor *m_editor;
 
-    SortingMode sortingMode;
+    SortingMode m_sortingMode;
 };
 
 #endif /* SIMPLEWAVEFORM_H */
