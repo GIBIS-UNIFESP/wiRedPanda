@@ -24,6 +24,7 @@
 #include "inputgnd.h"
 #include "inputvcc.h"
 #include "or.h"
+#include "qneport.h"
 
 #include <QDebug>
 #include <iostream>
