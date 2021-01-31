@@ -36,9 +36,9 @@ public:
     void redo() Q_DECL_OVERRIDE;
 
 private:
-    QByteArray itemData;
-    Editor *editor;
-    QVector<int> ids, otherIds;
+    QByteArray m_itemData;
+    Editor * m_editor;
+    QVector<int> m_ids, m_otherIds;
 };
 
 class DeleteItemsCommand : public QUndoCommand
@@ -54,9 +54,9 @@ public:
     void redo() Q_DECL_OVERRIDE;
 
 private:
-    QByteArray itemData;
-    Editor *editor;
-    QVector<int> ids, otherIds;
+    QByteArray m_itemData;
+    Editor * m_editor;
+    QVector<int> m_ids, m_otherIds;
 };
 
 class RotateCommand : public QUndoCommand
@@ -73,9 +73,12 @@ public:
     int id() const Q_DECL_OVERRIDE;
 
 private:
-    int angle;
-    QVector<int> ids;
-    QVector<QPointF> positions;
+    //!
+    //! \brief m_angle defines how many degrees will be rotated, in clockwise direction, in this command.
+    //!
+    int m_angle;
+    QVector<int> m_ids;
+    QVector<QPointF> m_positions;
 };
 
 class MoveCommand : public QUndoCommand
@@ -94,11 +97,11 @@ public:
     }
 
 private:
-    QVector<int> ids;
-    QList<QPointF> oldPositions;
-    QList<QPointF> newPositions;
+    QVector<int> m_ids;
+    QList<QPointF> m_oldPositions;
+    QList<QPointF> m_newPositions;
 
-    QPointF offset;
+    QPointF m_offset;
 };
 
 class UpdateCommand : public QUndoCommand
@@ -185,10 +188,10 @@ public:
     }
 
 private:
-    QVector<int> elms;
-    QVector<int> order;
-    Editor *editor;
-    QGraphicsScene *scene;
+    QVector<int> m_elms;
+    QVector<int> m_order;
+    Editor *m_editor;
+    QGraphicsScene *m_scene;
     QByteArray m_oldData;
     int m_newInputSize;
 };
@@ -210,10 +213,10 @@ public:
     }
 
 private:
-    int axis;
-    QVector<int> ids;
-    QVector<QPointF> positions;
-    QPointF minPos, maxPos;
+    int m_axis;
+    QVector<int> m_ids;
+    QVector<QPointF> m_positions;
+    QPointF m_minPos, m_maxPos;
 };
 
 #endif /* COMMANDS_H */
