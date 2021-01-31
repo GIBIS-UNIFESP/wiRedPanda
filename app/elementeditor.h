@@ -61,23 +61,23 @@ private:
     void setCurrentElements(const QVector<GraphicElement *> &element);
     void apply();
 
-    Ui::ElementEditor *ui;
+    Ui::ElementEditor * m_ui;
     QVector<GraphicElement *> m_elements;
-    Scene *scene;
-    Editor *editor;
-    bool hasAnyProperty, hasLabel, hasColors, hasFrequency, hasAudio;
-    bool canChangeInputSize, hasTrigger, hasRotation, canChangeSkin;
-    bool hasSameLabel, hasSameColors, hasSameFrequency;
-    bool hasSameInputSize, hasSameTrigger, canMorph, hasSameType;
-    bool hasSameAudio;
-    bool hasElements;
+    Scene *m_scene;
+    Editor *m_editor;
+    bool m_hasAnyProperty, m_hasLabel, m_hasColors, m_hasFrequency, m_hasAudio;
+    bool m_canChangeInputSize, m_hasTrigger, m_hasRotation, m_canChangeSkin;
+    bool m_hasSameLabel, m_hasSameColors, m_hasSameFrequency;
+    bool m_hasSameInputSize, m_hasSameTrigger, m_canMorph, m_hasSameType;
+    bool m_hasSameAudio;
+    bool m_hasElements;
 
-    QString _manyLabels;
-    QString _manyColors;
-    QString _manyIS;
-    QString _manyFreq;
-    QString _manyTriggers;
-    QString _manyAudios;
+    QString m_manyLabels;
+    QString m_manyColors;
+    QString m_manyIS;
+    QString m_manyFreq;
+    QString m_manyTriggers;
+    QString m_manyAudios;
     QString m_skinName;
     bool m_defaultSkin;
 };
