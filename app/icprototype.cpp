@@ -7,6 +7,7 @@
 
 #include "ic.h"
 #include "icmapping.h"
+#include "qneport.h"
 
 ICPrototype::ICPrototype(const QString &fileName)
     : m_fileName(fileName)
