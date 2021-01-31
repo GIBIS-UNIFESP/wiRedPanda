@@ -21,6 +21,9 @@ class Scene;
 class Editor;
 class GraphicElement;
 
+//!
+//! \brief The AddItemsCommand class represents a single action of adding a list of elements on the editor
+//!
 class AddItemsCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(AddItemsCommand)
@@ -28,11 +31,32 @@ class AddItemsCommand : public QUndoCommand
     enum { Id = 101 };
 
 public:
+    //!
+    //! \brief AddItemsCommand ctor taking a GraphicElement as its item
+    //! \param aItem   An item in the form of a GraphicElement (an IO elem., a gate or an IC)
+    //! \param aEditor The editor to which the command will be added to
+    //!
     explicit AddItemsCommand(GraphicElement *aItem, Editor *aEditor, QUndoCommand *parent = nullptr);
+    //!
+    //! \brief AddItemsCommand ctor taking a QNEConnection as its item
+    //! \param aItem   An item in the form of a QNEConnection (a node or a connection between nodes)
+    //! \param aEditor The editor to which the command will be added to
+    //!
     explicit AddItemsCommand(QNEConnection *aItem, Editor *aEditor, QUndoCommand *parent = nullptr);
+    //!
+    //! \brief AddItemsCommand ctor taking a several QGraphicsItems as its items
+    //! \param aItem   A list of items in the form of GraphicElements (an IO elem., a gate or an IC)
+    //! \param aEditor The editor to which the command will be added to
+    //!
     explicit AddItemsCommand(const QList<QGraphicsItem *> &aItems, Editor *aEditor, QUndoCommand *parent = nullptr);
 
+    //!
+    //! \brief undo reverts a change on the editor made by AddItemsCommand::redo
+    //!
     void undo() Q_DECL_OVERRIDE;
+    //!
+    //! \brief redo applies the change on the editor
+    //!
     void redo() Q_DECL_OVERRIDE;
 
 private:
@@ -41,16 +65,35 @@ private:
     QVector<int> m_ids, m_otherIds;
 };
 
+//!
+//! \brief The DeleteItemsCommand class represents a single action of removing a list of elements on the editor
+//!
 class DeleteItemsCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(DeleteItemsCommand)
     enum { Id = 102 };
 
 public:
+    //!
+    //! \brief DeleteItemsCommand
+    //! \param aItems  A list of QGraphicsItems to be removed from the editor
+    //! \param aEditor The editor from where the items will be removed
+    //!
     explicit DeleteItemsCommand(const QList<QGraphicsItem *> &aItems, Editor *aEditor, QUndoCommand *parent = nullptr);
+    //!
+    //! \brief DeleteItemsCommand
+    //! \param aItems  A QGraphicsItem to be removed from the editor
+    //! \param aEditor The editor from where the items will be removed from
+    //!
     explicit DeleteItemsCommand(QGraphicsItem *item, Editor *aEditor, QUndoCommand *parent = nullptr);
 
+    //!
+    //! \brief undo reverts a change on the editor made by DeleteItemsCommand::redo.
+    //!
     void undo() Q_DECL_OVERRIDE;
+    //!
+    //! \brief redo applies the change on the editor
+    //!
     void redo() Q_DECL_OVERRIDE;
 
 private:
@@ -59,6 +102,9 @@ private:
     QVector<int> m_ids, m_otherIds;
 };
 
+//!
+//! \brief The RotateCommand class represents a single action of rotating a list of elements on the editor
+//!
 class RotateCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(RotateCommand)
@@ -66,9 +112,22 @@ class RotateCommand : public QUndoCommand
     enum { Id = 103 };
 
 public:
+    //!
+    //! \brief RotateCommand
+    //! \param aItems are the items to be rotated
+    //! \param angle defines how many degrees will be rotated, in clockwise direction, by this command.
+    //!
     explicit RotateCommand(const QList<GraphicElement *> &aItems, int angle, QUndoCommand *parent = nullptr);
+
+    //!
+    //! \brief undo reverts a change on the editor made by RotateCommand::redo
+    //!
     void undo() Q_DECL_OVERRIDE;
+    //!
+    //! \brief redo applies the change on the editor
+    //!
     void redo() Q_DECL_OVERRIDE;
+    // TODO: mergeWith is unused!
     bool mergeWith(const QUndoCommand *command) Q_DECL_OVERRIDE;
     int id() const Q_DECL_OVERRIDE;
 
@@ -81,6 +140,9 @@ private:
     QVector<QPointF> m_positions;
 };
 
+//!
+//! \brief The MoveCommand class represents a single action of moving a list of actions on the editor
+//!
 class MoveCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(MoveCommand)
@@ -104,6 +166,9 @@ private:
     QPointF m_offset;
 };
 
+//!
+//! \brief The UpdateCommand class
+//!
 class UpdateCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(UpdateCommand)
