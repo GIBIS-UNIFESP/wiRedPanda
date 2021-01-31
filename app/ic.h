@@ -6,10 +6,7 @@
 #ifndef IC_H
 #define IC_H
 
-#include "elementfactory.h"
 #include "graphicelement.h"
-#include "icprototype.h"
-#include "scene.h"
 #include "simulationcontroller.h"
 
 class Editor;

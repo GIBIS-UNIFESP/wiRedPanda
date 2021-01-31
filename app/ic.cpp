@@ -15,12 +15,15 @@
 #include <QPointF>
 #include <QProcess>
 
+#include "common.h"
+#include "elementfactory.h"
 #include "globalproperties.h"
 #include "icmanager.h"
 #include "icnotfoundexception.h"
 #include "icprototype.h"
 #include "inputswitch.h"
 #include "nodes/qneconnection.h"
+#include "qneport.h"
 #include "serializationfunctions.h"
 
 IC::IC(QGraphicsItem *parent)
