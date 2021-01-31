@@ -18,9 +18,6 @@ And::And(QGraphicsItem *parent)
 
 void And::setSkin(bool defaultSkin, const QString &filename)
 {
-    if (defaultSkin)
-        pixmapSkinName[0] = ":/basic/and.png";
-    else
-        pixmapSkinName[0] = filename;
+    pixmapSkinName[0] = defaultSkin ? ":/basic/and.png" : filename;
     setPixmap(pixmapSkinName[0]);
 }
