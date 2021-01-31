@@ -14,12 +14,15 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "common.h"
 #include "editor.h"
+#include "elementfactory.h"
 #include "globalproperties.h"
 #include "graphicelement.h"
 #include "ic.h"
 #include "icmanager.h"
 #include "qneconnection.h"
+#include "qneport.h"
 
 bool SerializationFunctions::update(const QString &fileName, const QString &dirName)
 {
