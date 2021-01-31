@@ -3,6 +3,8 @@
 
 #include "demux.h"
 
+#include "qneport.h"
+
 Demux::Demux(QGraphicsItem *parent)
     : GraphicElement(ElementType::DEMUX, ElementGroup::MUX, 2, 2, 2, 2, parent)
 {
