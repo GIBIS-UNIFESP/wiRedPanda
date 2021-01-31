@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "clock.h"
+#include "globalproperties.h"
 
 #include <QDebug>
 
