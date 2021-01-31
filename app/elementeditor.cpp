@@ -10,6 +10,7 @@
 #include <QGraphicsView>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QUndoCommand>
 
 #include "commands.h"
 #include "editor.h"
