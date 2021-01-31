@@ -9,12 +9,13 @@
 #include <QHash>
 #include <QMap>
 
-#include "graphicelement.h"
 #include "input.h"
 #include "logicelement.h"
 #include "logicelement/logicinput.h"
+#include "qneport.h"
 
 class Clock;
+class GraphicElement;
 class IC;
 
 class ElementMapping;
