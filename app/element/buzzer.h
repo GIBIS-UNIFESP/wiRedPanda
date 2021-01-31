@@ -8,7 +8,6 @@
 
 #include "graphicelement.h"
 
-#include <QSound>
 #include <QSoundEffect>
 
 class Buzzer : public GraphicElement
