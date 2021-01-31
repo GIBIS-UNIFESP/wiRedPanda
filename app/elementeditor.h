@@ -6,11 +6,12 @@
 #ifndef ELEMENTEDITOR_H
 #define ELEMENTEDITOR_H
 
-#include <QUndoCommand>
 #include <QWidget>
 
 #include "graphicelement.h"
 #include "scene.h"
+
+class QUndoCommand;
 
 namespace Ui
 {
