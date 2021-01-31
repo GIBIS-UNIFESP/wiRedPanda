@@ -5,6 +5,7 @@
 
 #include <QApplication>
 #include <QDebug>
+#include <QGraphicsView>
 #include <QMouseEvent>
 #include <QScrollBar>
 #include <QtMath>
