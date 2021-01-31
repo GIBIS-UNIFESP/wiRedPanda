@@ -30,8 +30,8 @@ private slots:
     void on_okPushButton_clicked();
 
 private:
-    Ui::lengthDialog *ui;
-    bool canceled;
+    Ui::lengthDialog *m_ui;
+    bool m_canceled;
 };
 
 #endif /* LENGTHDIALOG_H */
