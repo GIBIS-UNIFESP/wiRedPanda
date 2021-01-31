@@ -196,11 +196,9 @@ void GraphicElement::save(QDataStream &ds) const
     COMMENT("Saving element. Type: " << objectName().toStdString(), 4);
     ds << pos();
     ds << rotation();
-
     /* <Version1.2> */
     ds << getLabel();
     /* <\Version1.2> */
-
     /* <Version1.3> */
     ds << m_minInputSz;
     ds << m_maxInputSz;
