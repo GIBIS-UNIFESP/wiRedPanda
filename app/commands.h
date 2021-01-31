@@ -7,17 +7,19 @@
 #define COMMANDS_H
 
 #include <QCoreApplication>
+#include <QGraphicsScene>
 #include <QList>
 #include <QPointF>
 #include <QUndoCommand>
 
-#include "node.h"
-#include "qneconnection.h"
+#include "elementtype.h"
+#include "globalproperties.h"
 
 class Scene;
 class Editor;
 class GraphicElement;
 class QGraphicsItem;
+class QNEConnection;
 
 //!
 //! \brief The AddItemsCommand class represents a single action of adding a list of elements on the editor

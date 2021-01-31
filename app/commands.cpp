@@ -6,16 +6,15 @@
 #include <cmath>
 #include <stdexcept>
 
-#include <QApplication>
-#include <QDebug>
+#include <QDrag>
 #include <QGraphicsItem>
 
 #include "editor.h"
-#include "globalproperties.h"
-#include "graphicelement.h"
-#include "ic.h"
+#include "elementfactory.h"
+#include "qneconnection.h"
 #include "scene.h"
 #include "serializationfunctions.h"
+#include "simulationcontroller.h"
 
 void storeIds(const QList<QGraphicsItem *> &items, QVector<int> &ids)
 {
