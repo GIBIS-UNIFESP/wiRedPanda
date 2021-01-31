@@ -3,6 +3,8 @@
 
 #include "srflipflop.h"
 
+#include "qneport.h"
+
 SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::SRFLIPFLOP, ElementGroup::MEMORY, 5, 5, 2, 2, parent)
 {
