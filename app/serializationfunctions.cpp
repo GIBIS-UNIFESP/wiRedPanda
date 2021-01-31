@@ -18,6 +18,7 @@
 #include "globalproperties.h"
 #include "graphicelement.h"
 #include "ic.h"
+#include "icmanager.h"
 #include "qneconnection.h"
 
 bool SerializationFunctions::update(const QString &fileName, const QString &dirName)
