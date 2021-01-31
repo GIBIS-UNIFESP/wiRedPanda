@@ -9,16 +9,17 @@
 #include <QGraphicsItem>
 #include <QKeySequence>
 
-#include "common.h"
 #include "elementtype.h"
 #include "itemwithid.h"
-#include "nodes/qneport.h"
 
 enum class ElementGroup : uint_fast8_t { UNKNOWN, OTHER, IC, INPUT, GATE, MEMORY, OUTPUT, MUX, STATICINPUT };
 
 #define MAXIMUMVALIDINPUTSIZE 256
 
 class GraphicElement;
+class QNEPort;
+class QNEInputPort;
+class QNEOutputPort;
 
 typedef QVector<GraphicElement *> ElementVector;
 
