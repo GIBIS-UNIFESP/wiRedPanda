@@ -5,6 +5,8 @@
 
 #include <QApplication>
 #include <QDebug>
+#include <QFile>
+#include <QFileInfo>
 #include <QGraphicsItem>
 #include <QGraphicsView>
 #include <QMessageBox>
