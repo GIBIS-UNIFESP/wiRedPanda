@@ -30,6 +30,7 @@
 #include "element/node.h"
 #include "element/xnor.h"
 #include "element/xor.h"
+#include "common.h"
 #include "elementfactory.h"
 #include "graphicelement.h"
 #include "qneconnection.h"
