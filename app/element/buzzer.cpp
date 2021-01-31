@@ -105,11 +105,12 @@ void Buzzer::save(QDataStream &ds) const
 void Buzzer::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
 {
     GraphicElement::load(ds, portMap, version);
-    if (version >= 2.4) {
-        QString note;
-        ds >> note;
-        setAudio(note);
+    if (version < 2.4) {
+        return;
     }
+    QString note;
+    ds >> note;
+    setAudio(note);
 }
 
 void Buzzer::setSkin(bool defaultSkin, const QString &filename)
