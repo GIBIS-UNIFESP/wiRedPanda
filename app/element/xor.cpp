@@ -14,7 +14,7 @@ Xor::Xor(QGraphicsItem *parent)
     setPortName("XOR");
 }
 
-void Xor::setSkin(bool defaultSkin, QString filename)
+void Xor::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         pixmapSkinName[0] = ":/basic/xor.png";

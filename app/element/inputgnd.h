@@ -14,7 +14,7 @@ public:
     explicit InputGnd(QGraphicsItem *parent = nullptr);
     ~InputGnd() override = default;
 public:
-    void setSkin(bool defaultSkin, QString filename) override;
+    void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
 #endif /* INPUTGND_H */

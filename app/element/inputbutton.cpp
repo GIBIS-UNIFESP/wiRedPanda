@@ -3,7 +3,6 @@
 
 #include "inputbutton.h"
 
-#include <QDebug>
 #include <QGraphicsSceneMouseEvent>
 
 int InputButton::current_id_number = 0;
@@ -11,8 +10,11 @@ int InputButton::current_id_number = 0;
 InputButton::InputButton(QGraphicsItem *parent)
     : GraphicElement(ElementType::BUTTON, ElementGroup::INPUT, 0, 0, 1, 1, parent)
 {
-    pixmapSkinName.append(":/input/buttonOff.png");
-    pixmapSkinName.append(":/input/buttonOn.png");
+    pixmapSkinName = {
+        ":/input/buttonOff.png",
+        ":/input/buttonOn.png",
+    };
+
     setOutputsOnTop(false);
     setCanChangeSkin(true);
     setPixmap(pixmapSkinName[0]);
@@ -58,7 +60,7 @@ void InputButton::setOn(const bool value)
     }
 }
 
-void InputButton::setSkin(bool defaultSkin, QString filename)
+void InputButton::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         if (!on) {

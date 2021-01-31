@@ -14,7 +14,7 @@ public:
     explicit Or(QGraphicsItem *parent = nullptr);
     ~Or() override = default;
 
-    void setSkin(bool defaultSkin, QString filename) override;
+    void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
 #endif /* OR_H */

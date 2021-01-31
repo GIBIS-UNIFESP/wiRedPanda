@@ -6,7 +6,7 @@
 SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::SRFLIPFLOP, ElementGroup::MEMORY, 5, 5, 2, 2, parent)
 {
-    pixmapSkinName.append(":/memory/SR-flipflop.png");
+    pixmapSkinName = {":/memory/SR-flipflop.png"};
     setPixmap(pixmapSkinName[0]);
     setRotatable(false);
     setCanChangeSkin(true);
@@ -45,7 +45,7 @@ void SRFlipFlop::updatePorts()
     output(1)->setPos(bottomPosition(), 45); /* ~Q */
 }
 
-void SRFlipFlop::setSkin(bool defaultSkin, QString filename)
+void SRFlipFlop::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         pixmapSkinName[0] = ":/memory/SR-flipflop.png";

@@ -13,12 +13,14 @@ clockDialog::clockDialog(QWidget *parent)
     setWindowTitle("Clock Frequency Selection");
     setWindowFlags(Qt::Window);
     setModal(true);
+
+    connect(m_ui->cancelPushButton, &QPushButton::clicked, this, &clockDialog::cancelRequested);
+    connect(m_ui->okPushButton, &QPushButton::clicked, this, &clockDialog::okRequested);
 }
 
 int clockDialog::getFrequency()
 {
     m_canceled = false;
-    // QDialog::exec
     exec();
     if (m_canceled) {
         return -1;
@@ -31,13 +33,13 @@ clockDialog::~clockDialog()
     delete m_ui;
 }
 
-void clockDialog::on_cancelPushButton_clicked()
+void clockDialog::cancelRequested()
 {
     m_canceled = true;
     close();
 }
 
-void clockDialog::on_okPushButton_clicked()
+void clockDialog::okRequested()
 {
     close();
 }

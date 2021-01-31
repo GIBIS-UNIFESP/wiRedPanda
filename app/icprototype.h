@@ -8,7 +8,6 @@
 
 #include "icprototypeimpl.h"
 
-#include <QGraphicsItem>
 #include <QString>
 #include <QVector>
 
@@ -27,14 +26,14 @@ public:
     ICPrototype(const QString &fileName);
     void reload();
 
-    void fileName(QString newFileName);
+    void fileName(const QString &newFileName);
     QString fileName() const;
     QString baseName() const;
 
     void insertICObserver(IC *ic);
     void removeICObserver(IC *ic);
 
-    bool updateLocalIC(QString fileName, QString icDirName);
+    bool updateLocalIC(const QString &fileName, const QString &icDirName);
 
     int inputSize() const;
     int outputSize() const;

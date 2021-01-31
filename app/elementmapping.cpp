@@ -7,6 +7,7 @@
 #include "icmanager.h"
 #include "icmapping.h"
 #include "icprototype.h"
+#include "graphicelement.h"
 #include "qneconnection.h"
 
 #include "logicelement/logicand.h"

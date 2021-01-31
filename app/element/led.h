@@ -16,7 +16,7 @@ public:
     static int current_id_number; // Number used to create distinct labels for each instance of this element.
 
     void refresh() override;
-    void setColor(QString getColor) override;
+    void setColor(const QString &getColor) override;
     QString getColor() const override;
 
 private:
@@ -34,7 +34,7 @@ public:
     // GraphicElement interface
 public:
     void updatePorts() override;
-    void setSkin(bool defaultSkin, QString filename) override;
+    void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
 #endif /* LED_H */

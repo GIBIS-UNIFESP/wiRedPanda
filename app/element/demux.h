@@ -17,7 +17,7 @@ public:
     ~Demux() override = default;
 
     void updatePorts() override;
-    void setSkin(bool defaultSkin, QString filename) override;
+    void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
 #endif /* DEMUX_H */

@@ -51,7 +51,7 @@ ThemeAttrs::ThemeAttrs()
     setTheme(Theme::Panda_Light);
 }
 
-void ThemeAttrs::setTheme(Theme thm)
+void ThemeAttrs::setTheme(const Theme &thm)
 {
     switch (thm) {
     case Theme::Panda_Light:
