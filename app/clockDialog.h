@@ -27,9 +27,8 @@ public:
     ~clockDialog() override;
 
 private slots:
-    void on_cancelPushButton_clicked();
-
-    void on_okPushButton_clicked();
+    void cancelRequested();
+    void okRequested();
 
 private:
     Ui::clockDialog * m_ui;
