@@ -330,7 +330,7 @@ QVector<char> BewavedDolphin::loadSignals(QStringList &input_labels, QStringList
     return oldValues;
 }
 
-bool BewavedDolphin::createWaveform(QString filename)
+bool BewavedDolphin::createWaveform(const QString& filename)
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     COMMENT("Getting digital circuit simulator.", 0);

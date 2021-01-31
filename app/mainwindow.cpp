@@ -248,7 +248,7 @@ void MainWindow::clear()
     setCurrentFile(QFileInfo());
 }
 
-int MainWindow::recoverAutoSaveFile(QString autosaveFilename)
+int MainWindow::recoverAutoSaveFile(const QString& autosaveFilename)
 {
     QMessageBox msgBox;
     msgBox.setParent(this);
@@ -638,7 +638,7 @@ bool MainWindow::exportToArduino(QString fname)
     return true;
 }
 
-bool MainWindow::exportToWaveFormFile(QString fname)
+bool MainWindow::exportToWaveFormFile(const QString& fname)
 {
     try {
         if ((fname.isEmpty()) || (fname == "none")) {
@@ -784,7 +784,7 @@ void MainWindow::retranslateUi()
     }
 }
 
-void MainWindow::loadTranslation(QString language)
+void MainWindow::loadTranslation(const QString& language)
 {
     if (translator) {
         qApp->removeTranslator(translator);
@@ -844,7 +844,7 @@ void MainWindow::on_actionClear_selection_triggered()
     editor->getScene()->clearSelection();
 }
 
-void MainWindow::populateMenu(QSpacerItem *spacer, QString names, QLayout *layout)
+void MainWindow::populateMenu(QSpacerItem *spacer, const QString& names, QLayout *layout)
 {
     QStringList list(names.split(","));
     layout->removeItem(spacer);
