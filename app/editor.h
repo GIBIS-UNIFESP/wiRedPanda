@@ -32,9 +32,22 @@ class Editor : public QObject
 public:
     explicit Editor(QObject *parent = nullptr);
     ~Editor() override;
-    bool saveLocalIC(IC *ic, QString newICPath);
-    bool saveLocal(QString newPath);
+    /**
+     * @brief saveLocalIC: saves an IC and its internal ICs recursively into the same local project subfolder.
+     */
+    bool saveLocalIC(IC *ic, const QString& newICPath);
+    /**
+     * @brief saveLocal: saves a project locally in a given directory so that all ICs and skins are also saved in local subfolders.
+     * This is very useful to export projects that use ICs from other folders or projects.
+     */
+    bool saveLocal(const QString& newPath);
+    /**
+     * @brief save: saves the project through a binary data stream.
+     */
     void save(QDataStream &ds, const QString &dolphinFilename);
+    /**
+     * @brief load: loads the project through a binary data stream.
+     */
     void load(QDataStream &ds);
     void cut(const QList<QGraphicsItem *> &items, QDataStream &ds);
     void copy(const QList<QGraphicsItem *> &items, QDataStream &ds);

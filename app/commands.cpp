@@ -137,7 +137,7 @@ void saveItems(QByteArray &itemData, const QList<QGraphicsItem *> &items, const 
     SerializationFunctions::serialize(items, dataStream);
 }
 
-void addItems(Editor *editor, QList<QGraphicsItem *> items)
+void addItems(Editor *editor, const QList<QGraphicsItem *>& items)
 {
     editor->getScene()->clearSelection();
     for (QGraphicsItem *item : items) {
