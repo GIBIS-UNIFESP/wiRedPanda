@@ -10,7 +10,8 @@
 #include <QTest>
 
 #include "editor.h"
-#include "graphicelement.h"
+
+class GraphicElement;
 
 class TestSimulationController : public QObject
 {
