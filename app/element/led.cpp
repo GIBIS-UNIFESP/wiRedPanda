@@ -19,7 +19,7 @@ Led::Led(QGraphicsItem *parent)
     : GraphicElement(ElementType::LED, ElementGroup::OUTPUT, 1, 4, 0, 0, parent)
 {
     pixmapSkinName = {
-        ":/output/WhiteLedOff.png",              // Single input values: 0
+        ":/output/WhiteLedOff.png",             // Single input values: 0
         ":/output/WhiteLedOn.png",              // 1
         ":/output/RedLedOff.png",               // 2
         ":/output/RedLedOn.png",                // 3
