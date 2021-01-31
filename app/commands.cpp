@@ -9,9 +9,12 @@
 #include <QDrag>
 #include <QGraphicsItem>
 
+#include "common.h"
 #include "editor.h"
 #include "elementfactory.h"
+#include "graphicelement.h"
 #include "qneconnection.h"
+#include "qneport.h"
 #include "scene.h"
 #include "serializationfunctions.h"
 #include "simulationcontroller.h"
