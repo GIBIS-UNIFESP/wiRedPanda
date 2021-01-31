@@ -9,6 +9,8 @@
 #include <QScrollBar>
 #include <QtMath>
 
+#define ZOOMFAC 0.1
+
 GraphicsViewZoom::GraphicsViewZoom(QGraphicsView *view)
     : QObject(view)
     , _view(view)
