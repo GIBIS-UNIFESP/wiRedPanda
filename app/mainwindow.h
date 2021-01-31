@@ -56,7 +56,7 @@ public:
     //! Exports the current simulation to an
     bool exportToArduino(QString fname);
     //! Saves the current Bewaved Dolphin (waveform simulator) file
-    bool exportToWaveFormFile(QString fname);
+    bool exportToWaveFormFile(const QString& fname);
 
     //! Loads a .panda file
     bool loadPandaFile(const QString &fname);
@@ -70,11 +70,11 @@ public:
 
     bool closeFile();
 
-    void populateMenu(QSpacerItem *spacer, QString names, QLayout *layout);
+    void populateMenu(QSpacerItem *spacer, const QString& names, QLayout *layout);
 
     void retranslateUi();
 
-    void loadTranslation(QString language);
+    void loadTranslation(const QString& language);
 
     void setFastMode(bool fastModeEnabled);
 
@@ -173,7 +173,7 @@ private:
     void populateLeftMenu();
     // Shows a message box for reloading the autosave at launch, when
     // there's reason to believe that there's been unsaved progress.
-    int recoverAutoSaveFile(QString autosaveFilename);
+    int recoverAutoSaveFile(const QString& autosaveFilename);
     /* QWidget interface */
 protected:
     void closeEvent(QCloseEvent *e) override;
