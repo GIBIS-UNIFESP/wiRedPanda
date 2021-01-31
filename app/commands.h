@@ -6,7 +6,7 @@
 #ifndef COMMANDS_H
 #define COMMANDS_H
 
-#include <QApplication>
+#include <QCoreApplication>
 #include <QGraphicsItem>
 #include <QList>
 #include <QPointF>
