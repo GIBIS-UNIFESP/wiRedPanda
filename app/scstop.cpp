@@ -3,9 +3,6 @@
 
 #include "scstop.h"
 
-#include <cmath>
-
-#include "input.h"
 #include "simulationcontroller.h"
 
 SCStop::SCStop(SimulationController *sc)
