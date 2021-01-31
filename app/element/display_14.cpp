@@ -3,6 +3,8 @@
 
 #include "display_14.h"
 
+#include "qneport.h"
+
 #include <QPainter>
 #include <QPixmap>
 
