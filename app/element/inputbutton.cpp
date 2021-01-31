@@ -3,6 +3,8 @@
 
 #include "inputbutton.h"
 
+#include "qneport.h"
+
 #include <QGraphicsSceneMouseEvent>
 
 int InputButton::current_id_number = 0;
