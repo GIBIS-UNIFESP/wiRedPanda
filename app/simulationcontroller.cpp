@@ -3,8 +3,8 @@
 
 #include "simulationcontroller.h"
 
+#include "common.h"
 #include "element/clock.h"
-#include "elementfactory.h"
 #include "elementmapping.h"
 #include "globalproperties.h"
 #include "graphicelement.h"
@@ -16,8 +16,6 @@
 
 #include <QDebug>
 #include <QGraphicsView>
-#include <QStack>
-#include <limits>
 
 SimulationController::SimulationController(Scene *scn)
     : QObject(dynamic_cast<QObject *>(scn))
