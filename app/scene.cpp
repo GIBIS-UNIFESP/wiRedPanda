@@ -7,7 +7,9 @@
 #include <QGraphicsView>
 #include <QPainter>
 
+#include "graphicelement.h"
 #include "qneconnection.h"
+#include "qneport.h"
 
 // TODO: stop using QGraphicsView *
 Scene::Scene(QObject *parent)

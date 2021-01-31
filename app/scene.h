@@ -6,10 +6,11 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "graphicelement.h"
-
 #include <QGraphicsScene>
 #include <QObject>
+
+class GraphicElement;
+class QNEConnection;
 
 class Scene : public QGraphicsScene
 {
