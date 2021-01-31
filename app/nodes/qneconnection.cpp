@@ -36,212 +36,224 @@
 #include <QPen>
 #include <QStyleOptionGraphicsItem>
 
-QNEConnection::QNEConnection( QGraphicsItem *parent ) : QGraphicsPathItem( parent ) {
-  setFlag( QGraphicsItem::ItemIsSelectable );
-  setBrush( Qt::NoBrush );
-  setStatus( Status::Inactive );
-  setZValue( -1 );
-  m_start = nullptr;
-  m_end = nullptr;
-  updateTheme( );
+QNEConnection::QNEConnection(QGraphicsItem *parent)
+    : QGraphicsPathItem(parent)
+{
+    setFlag(QGraphicsItem::ItemIsSelectable);
+    setBrush(Qt::NoBrush);
+    setStatus(Status::Inactive);
+    setZValue(-1);
+    m_start = nullptr;
+    m_end = nullptr;
+    updateTheme();
 }
 
-QNEConnection::~QNEConnection( ) {
-  if( m_start ) {
-    m_start->disconnect( this );
-  }
-  if( m_end ) {
-    m_end->disconnect( this );
-  }
-}
-
-void QNEConnection::setStartPos( const QPointF &p ) {
-  startPos = p;
-}
-
-void QNEConnection::setEndPos( const QPointF &p ) {
-  endPos = p;
-}
-
-void QNEConnection::setStart( QNEOutputPort *p ) {
-  QNEOutputPort *old = m_start;
-  m_start = p;
-  if( old && ( old != p ) ) {
-    old->disconnect( this );
-  }
-  if( p ) {
-    setStartPos( p->scenePos( ) );
-    p->connect( this );
-  }
-}
-
-void QNEConnection::setEnd( QNEInputPort *p ) {
-  QNEInputPort *old = m_end;
-  m_end = p;
-  if( old && ( old != p ) ) {
-    old->disconnect( this );
-  }
-  if( p ) {
-    p->connect( this );
-    setEndPos( p->scenePos( ) );
-  }
-}
-
-void QNEConnection::updatePosFromPorts( ) {
-  if( m_start ) {
-    startPos = m_start->scenePos( );
-  }
-  if( m_end ) {
-    endPos = m_end->scenePos( );
-  }
-  updatePath( );
-}
-
-void QNEConnection::updatePath( ) {
-  QPainterPath p;
-
-  p.moveTo( startPos );
-
-  qreal dx = endPos.x( ) - startPos.x( );
-  qreal dy = endPos.y( ) - startPos.y( );
-
-  QPointF ctr1( startPos.x( ) + dx * 0.25, startPos.y( ) + dy * 0.1 );
-  QPointF ctr2( startPos.x( ) + dx * 0.75, startPos.y( ) + dy * 0.9 );
-
-  p.cubicTo( ctr1, ctr2, endPos );
-
-/*  p.lineTo(pos2); */
-  setPath( p );
-}
-
-QNEOutputPort* QNEConnection::start( ) const {
-  return( m_start );
-}
-
-QNEInputPort* QNEConnection::end( ) const {
-  return( m_end );
-}
-
-double QNEConnection::angle( ) {
-  QNEPort *p1 = m_start;
-  QNEPort *p2 = m_end;
-  if( p1 && p2 ) {
-    if( p2->isOutput( ) ) {
-      std::swap( p1, p2 );
+QNEConnection::~QNEConnection()
+{
+    if (m_start) {
+        m_start->disconnect(this);
     }
-    QLineF line( p1->scenePos( ), p2->scenePos( ) );
-    return( line.angle( ) );
-  }
-  return( 0.0 );
-}
-
-void QNEConnection::save( QDataStream &ds ) const {
-  ds << reinterpret_cast< quint64 >( m_start );
-  ds << reinterpret_cast< quint64 >( m_end );
-}
-
-bool QNEConnection::load( QDataStream &ds, const QMap< quint64, QNEPort* > &portMap ) {
-  quint64 ptr1;
-  quint64 ptr2;
-  ds >> ptr1;
-  ds >> ptr2;
-  if( portMap.isEmpty( ) ) {
-    COMMENT( "Empty port map.", 0 );
-    QNEPort *port1 = reinterpret_cast< QNEPort* >( ptr1 );
-    QNEPort *port2 = reinterpret_cast< QNEPort* >( ptr2 );
-    if( port2 && port1 ) {
-      if( !port1->isOutput( ) && port2->isOutput( ) ) {
-        setStart( dynamic_cast< QNEOutputPort* >( port2 ) );
-        setEnd( dynamic_cast< QNEInputPort* >( port1 ) );
-      }
-      else if( port1->isOutput( ) && !port2->isOutput( ) ) {
-        setStart( dynamic_cast< QNEOutputPort* >( port1 ) );
-        setEnd( dynamic_cast< QNEInputPort* >( port2 ) );
-      }
+    if (m_end) {
+        m_end->disconnect(this);
     }
-  }
-  else if( portMap.contains( ptr1 ) && portMap.contains( ptr2 ) ) {
-    COMMENT( "Port map with elements.", 0 );
-    QNEPort *port1 = portMap[ ptr1 ];
-    QNEPort *port2 = portMap[ ptr2 ];
-    if( port1 && port2 ) {
-      if( !port1->isOutput( ) && port2->isOutput( ) ) {
-        setStart( dynamic_cast< QNEOutputPort* >( port2 ) );
-        setEnd( dynamic_cast< QNEInputPort* >( port1 ) );
-      }
-      else if( port1->isOutput( ) && !port2->isOutput( ) ) {
-        setStart( dynamic_cast< QNEOutputPort* >( port1 ) );
-        setEnd( dynamic_cast< QNEInputPort* >( port2 ) );
-      }
+}
+
+void QNEConnection::setStartPos(const QPointF &p)
+{
+    startPos = p;
+}
+
+void QNEConnection::setEndPos(const QPointF &p)
+{
+    endPos = p;
+}
+
+void QNEConnection::setStart(QNEOutputPort *p)
+{
+    QNEOutputPort *old = m_start;
+    m_start = p;
+    if (old && (old != p)) {
+        old->disconnect(this);
     }
-  }
-  else {
-    return( false );
-  }
-  updatePosFromPorts( );
-  updatePath( );
-  if( !m_start || !m_end ) {
-    return( false );
-  }
-  return( true );
-}
-
-QNEPort* QNEConnection::otherPort( const QNEPort *port ) const {
-  if( port == dynamic_cast< QNEPort* >( m_start ) ) {
-    return( dynamic_cast< QNEPort* >( m_end ) );
-  }
-  else {
-    return( dynamic_cast< QNEPort* >( m_start ) );
-  }
-}
-
-QNEOutputPort* QNEConnection::otherPort( const QNEInputPort* ) const {
-  return( m_start );
-}
-
-QNEInputPort* QNEConnection::otherPort( const QNEOutputPort* ) const {
-  return( m_end );
-}
-
-QNEConnection::Status QNEConnection::status( ) const {
-  return( m_status );
-}
-
-void QNEConnection::setStatus( const Status &status ) {
-  m_status = status;
-  switch( status ) {
-      case Status::Inactive: {
-      setPen( QPen( m_inactiveClr, 3 ) );
-      break;
+    if (p) {
+        setStartPos(p->scenePos());
+        p->connect(this);
     }
-      case Status::Active: {
-      setPen( QPen( m_activeClr, 3 ) );
-      break;
-    }
-      case Status::Invalid: {
-      setPen( QPen( m_invalidClr, 5 ) );
-      break;
-    }
-  }
 }
 
-void QNEConnection::updateTheme( ) {
-  if( ThemeManager::globalMngr ) {
-    const ThemeAttrs attrs = ThemeManager::globalMngr->getAttrs( );
-    m_inactiveClr = attrs.qneConnection_false;
-    m_activeClr = attrs.qneConnection_true;
-    m_invalidClr = attrs.qneConnection_invalid;
-    m_selectedClr = attrs.qneConnection_selected;
-  }
+void QNEConnection::setEnd(QNEInputPort *p)
+{
+    QNEInputPort *old = m_end;
+    m_end = p;
+    if (old && (old != p)) {
+        old->disconnect(this);
+    }
+    if (p) {
+        p->connect(this);
+        setEndPos(p->scenePos());
+    }
 }
 
-void QNEConnection::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* ) {
-  painter->setClipRect( option->exposedRect );
-  if( isSelected( ) ) {
-    painter->setPen( QPen( m_selectedClr, 5 ) );
-  }
-  else {
-    painter->setPen( pen( ) );
-  }
-  painter->drawPath( path( ) );
+void QNEConnection::updatePosFromPorts()
+{
+    if (m_start) {
+        startPos = m_start->scenePos();
+    }
+    if (m_end) {
+        endPos = m_end->scenePos();
+    }
+    updatePath();
+}
+
+void QNEConnection::updatePath()
+{
+    QPainterPath p;
+
+    p.moveTo(startPos);
+
+    qreal dx = endPos.x() - startPos.x();
+    qreal dy = endPos.y() - startPos.y();
+
+    QPointF ctr1(startPos.x() + dx * 0.25, startPos.y() + dy * 0.1);
+    QPointF ctr2(startPos.x() + dx * 0.75, startPos.y() + dy * 0.9);
+
+    p.cubicTo(ctr1, ctr2, endPos);
+
+    /*  p.lineTo(pos2); */
+    setPath(p);
+}
+
+QNEOutputPort *QNEConnection::start() const
+{
+    return m_start;
+}
+
+QNEInputPort *QNEConnection::end() const
+{
+    return m_end;
+}
+
+double QNEConnection::angle()
+{
+    QNEPort *p1 = m_start;
+    QNEPort *p2 = m_end;
+    if (p1 && p2) {
+        if (p2->isOutput()) {
+            std::swap(p1, p2);
+        }
+        QLineF line(p1->scenePos(), p2->scenePos());
+        return line.angle();
+    }
+    return 0.0;
+}
+
+void QNEConnection::save(QDataStream &ds) const
+{
+    ds << reinterpret_cast<quint64>(m_start);
+    ds << reinterpret_cast<quint64>(m_end);
+}
+
+bool QNEConnection::load(QDataStream &ds, const QMap<quint64, QNEPort *> &portMap)
+{
+    quint64 ptr1;
+    quint64 ptr2;
+    ds >> ptr1;
+    ds >> ptr2;
+    if (portMap.isEmpty()) {
+        COMMENT("Empty port map.", 0);
+        auto *port1 = reinterpret_cast<QNEPort *>(ptr1);
+        auto *port2 = reinterpret_cast<QNEPort *>(ptr2);
+        if (port2 && port1) {
+            if (!port1->isOutput() && port2->isOutput()) {
+                setStart(dynamic_cast<QNEOutputPort *>(port2));
+                setEnd(dynamic_cast<QNEInputPort *>(port1));
+            } else if (port1->isOutput() && !port2->isOutput()) {
+                setStart(dynamic_cast<QNEOutputPort *>(port1));
+                setEnd(dynamic_cast<QNEInputPort *>(port2));
+            }
+        }
+    } else if (portMap.contains(ptr1) && portMap.contains(ptr2)) {
+        COMMENT("Port map with elements.", 0);
+        QNEPort *port1 = portMap[ptr1];
+        QNEPort *port2 = portMap[ptr2];
+        if (port1 && port2) {
+            if (!port1->isOutput() && port2->isOutput()) {
+                setStart(dynamic_cast<QNEOutputPort *>(port2));
+                setEnd(dynamic_cast<QNEInputPort *>(port1));
+            } else if (port1->isOutput() && !port2->isOutput()) {
+                setStart(dynamic_cast<QNEOutputPort *>(port1));
+                setEnd(dynamic_cast<QNEInputPort *>(port2));
+            }
+        }
+    } else {
+        return false;
+    }
+    updatePosFromPorts();
+    updatePath();
+
+    return (m_start != nullptr && m_end != nullptr);
+}
+
+QNEPort *QNEConnection::otherPort(const QNEPort *port) const
+{
+    if (port == dynamic_cast<QNEPort *>(m_start)) {
+        return dynamic_cast<QNEPort *>(m_end);
+    }
+    return dynamic_cast<QNEPort *>(m_start);
+}
+
+QNEOutputPort *QNEConnection::otherPort(const QNEInputPort *) const
+{
+    return m_start;
+}
+
+QNEInputPort *QNEConnection::otherPort(const QNEOutputPort *) const
+{
+    return m_end;
+}
+
+QNEConnection::Status QNEConnection::status() const
+{
+    return m_status;
+}
+
+void QNEConnection::setStatus(const Status &status)
+{
+    m_status = status;
+    switch (status) {
+    case Status::Inactive: {
+        setPen(QPen(m_inactiveClr, 3));
+        break;
+    }
+    case Status::Active: {
+        setPen(QPen(m_activeClr, 3));
+        break;
+    }
+    case Status::Invalid: {
+        setPen(QPen(m_invalidClr, 5));
+        break;
+    }
+    }
+}
+
+void QNEConnection::updateTheme()
+{
+    if (ThemeManager::globalMngr) {
+        const ThemeAttrs attrs = ThemeManager::globalMngr->getAttrs();
+        m_inactiveClr = attrs.qneConnection_false;
+        m_activeClr = attrs.qneConnection_true;
+        m_invalidClr = attrs.qneConnection_invalid;
+        m_selectedClr = attrs.qneConnection_selected;
+    }
+}
+
+void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
+{
+    painter->setClipRect(option->exposedRect);
+    if (isSelected()) {
+        painter->setPen(QPen(m_selectedClr, 5));
+    } else {
+        painter->setPen(pen());
+    }
+    painter->drawPath(path());
 }

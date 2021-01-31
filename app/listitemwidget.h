@@ -1,25 +1,31 @@
+/*
+ * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #ifndef LISTITEMWIDGET_H
 #define LISTITEMWIDGET_H
 
-#include "label.h"
-
 #include <QWidget>
 
-class ListItemWidget : public QFrame {
-  Q_OBJECT
+#include "label.h"
+
+class ListItemWidget : public QFrame
+{
+    Q_OBJECT
 private:
-  Label *label;
-  QLabel *nameLabel;
+    Label *label;
+    QLabel *nameLabel;
+
 public:
-  explicit ListItemWidget( const QPixmap &pixmap, ElementType elementType, QString icFileName, QWidget *parent = nullptr );
+    explicit ListItemWidget(const QPixmap &pixmap, ElementType elementType, QString icFileName, QWidget *parent = nullptr);
 
-  Label* getLabel( ) const;
+    Label *getLabel() const;
 
-  void updateName( );
+    void updateName();
 
 protected:
-  void mousePressEvent( QMouseEvent *event );
-
+    void mousePressEvent(QMouseEvent *event) override;
 
 signals:
 

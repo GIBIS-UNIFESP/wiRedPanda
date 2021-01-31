@@ -1,3 +1,8 @@
+/*
+ * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #ifndef THEMEMANAGER_H
 #define THEMEMANAGER_H
 
@@ -10,62 +15,63 @@ enum class Theme { Panda_Light, Panda_Dark };
 
 class ThemeManager;
 
-class ThemeAttrs {
+class ThemeAttrs
+{
 public:
-  ThemeAttrs( );
+    ThemeAttrs();
 
-  QColor scene_bgBrush;
-  QColor scene_bgDots;
+    QColor scene_bgBrush;
+    QColor scene_bgDots;
 
-  QColor selectionBrush;
-  QColor selectionPen;
+    QColor selectionBrush;
+    QColor selectionPen;
 
-  QColor qneConnection_true;
-  QColor qneConnection_false;
-  QColor qneConnection_invalid;
-  QColor qneConnection_selected;
+    QColor qneConnection_true;
+    QColor qneConnection_false;
+    QColor qneConnection_invalid;
+    QColor qneConnection_selected;
 
-  QColor graphicElement_labelColor;
+    QColor graphicElement_labelColor;
 
-  QColor qnePort_hoverPort;
-  QColor qnePort_true_pen;
-  QColor qnePort_true_brush;
-  QColor qnePort_false_pen;
-  QColor qnePort_false_brush;
-  QColor qnePort_invalid_pen;
-  QColor qnePort_invalid_brush;
-  QColor qnePort_output_pen;
-  QColor qnePort_output_brush;
+    QColor qnePort_hoverPort;
+    QColor qnePort_true_pen;
+    QColor qnePort_true_brush;
+    QColor qnePort_false_pen;
+    QColor qnePort_false_brush;
+    QColor qnePort_invalid_pen;
+    QColor qnePort_invalid_brush;
+    QColor qnePort_output_pen;
+    QColor qnePort_output_brush;
 
-  void setTheme( Theme thm );
+    void setTheme(Theme thm);
 };
 
-class ThemeManager : public QObject {
-  Q_OBJECT
+class ThemeManager : public QObject
+{
+    Q_OBJECT
 
-  Editor * editor;
-  Theme m_theme;
-  ThemeAttrs attrs;
+    Editor *editor;
+    Theme m_theme;
+    ThemeAttrs attrs;
 
 public:
-  static ThemeManager *globalMngr;
+    static ThemeManager *globalMngr;
 
-  explicit ThemeManager( QObject *parent = nullptr );
+    explicit ThemeManager(QObject *parent = nullptr);
 
-  QString currentTheme( ) const;
-  void setCurrentTheme( Theme theme );
+    QString currentTheme() const;
+    void setCurrentTheme(Theme theme);
 
-  Theme theme( ) const;
-  void setTheme( const Theme &theme );
+    Theme theme() const;
+    void setTheme(const Theme &theme);
 
-  void initialize( );
-  ThemeAttrs getAttrs( ) const;
+    void initialize();
+    ThemeAttrs getAttrs() const;
 
 signals:
-  void themeChanged( );
+    void themeChanged();
 
 public slots:
-
 };
 
 #endif /* THEMEMANAGER_H */

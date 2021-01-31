@@ -1,26 +1,35 @@
+/*
+ * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #ifndef ICMAPPING_H
 #define ICMAPPING_H
 
 #include "elementmapping.h"
 #include "graphicelement.h"
 
-class ICMapping : public ElementMapping {
-  QNEPortVector icInputs;
-  QNEPortVector icOutputs;
+class LogicElement;
 
-  QVector< LogicElement* > inputs;
-  QVector< LogicElement* > outputs;
+class ICMapping : public ElementMapping
+{
+    QNEPortVector icInputs;
+    QNEPortVector icOutputs;
+
+    QVector<LogicElement *> inputs;
+    QVector<LogicElement *> outputs;
+
 public:
-  ICMapping( QString file, const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs );
+    ICMapping(QString file, const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs);
 
-  virtual ~ICMapping( );
+    ~ICMapping() override;
 
-  void initialize( );
+    void initialize() override;
 
-  void clearConnections( );
+    void clearConnections();
 
-  LogicElement* getInput( int index );
-  LogicElement* getOutput( int index );
+    LogicElement *getInput(int index);
+    LogicElement *getOutput(int index);
 };
 
 #endif // ICMAPPING_H
