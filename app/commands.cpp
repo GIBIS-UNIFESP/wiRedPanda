@@ -355,10 +355,10 @@ int RotateCommand::id() const
     return Id;
 }
 
-MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPointF> &aOldPositions, QUndoCommand *parent)
+MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPointF> &oldPositions, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
-    m_oldPositions = aOldPositions;
+    m_oldPositions = oldPositions;
     m_newPositions.reserve(list.size());
     m_ids.reserve(list.size());
     for (GraphicElement *elm : list) {
