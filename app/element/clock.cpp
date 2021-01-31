@@ -38,7 +38,7 @@ void Clock::updateClock()
 {
     if (!disabled()) {
         elapsed++;
-        if ((elapsed % interval) == 0) {
+        if ((elapsed % m_interval) == 0) {
             setOn(!on);
         }
     }
@@ -88,7 +88,7 @@ void Clock::setFrequency(float freq)
     if (!qFuzzyIsNull(freq)) {
         int auxinterval = 1000 / (freq * GLOBALCLK);
         if (auxinterval > 0) {
-            interval = auxinterval;
+            m_interval = auxinterval;
             m_frequency = static_cast<double>(freq);
             elapsed = 0;
             Clock::reset = true;
