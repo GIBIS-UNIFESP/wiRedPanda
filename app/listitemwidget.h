@@ -14,8 +14,8 @@ class ListItemWidget : public QFrame
 {
     Q_OBJECT
 private:
-    Label *label;
-    QLabel *nameLabel;
+    Label *m_label;
+    QLabel *m_nameLabel;
 
 public:
     explicit ListItemWidget(const QPixmap &pixmap, ElementType elementType, const QString &icFileName, QWidget *parent = nullptr);
