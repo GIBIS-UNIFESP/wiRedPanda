@@ -6,7 +6,6 @@
 #ifndef LOGICELEMENT_H
 #define LOGICELEMENT_H
 
-#include <functional>
 #include <vector>
 
 #include <QSet>
