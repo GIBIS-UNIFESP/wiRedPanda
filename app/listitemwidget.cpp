@@ -9,7 +9,6 @@
 #include <QVariant>
 
 #include "elementfactory.h"
-#include "graphicelement.h"
 #include "label.h"
 
 Label *ListItemWidget::getLabel() const
