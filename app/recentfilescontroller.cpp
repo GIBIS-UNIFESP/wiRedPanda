@@ -18,16 +18,16 @@ void RecentFilesController::addFile(const QString &fname)
         return;
     }
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    if (!settings.contains(attrName)) {
+    if (!settings.contains(m_attrName)) {
         //! TODO: disabling this check for now, since it creates problems while loading .panda files as integrated circuits
-        if (attrName == "recentICs") {
+        if (m_attrName == "recentICs") {
             settings.setValue("recentICs", "");
         } else {
-            COMMENT("Early return because the settings do not contain attrName " << attrName.toStdString(), 0);
+            COMMENT("Early return because the settings do not contain attrName " << m_attrName.toStdString(), 0);
             return;
         }
     }
-    QStringList files = settings.value(attrName).toStringList();
+    QStringList files = settings.value(m_attrName).toStringList();
 
     files.removeAll(fname);
 
@@ -43,7 +43,7 @@ void RecentFilesController::addFile(const QString &fname)
     while (files.size() > MaxRecentFiles) {
         files.removeLast();
     }
-    settings.setValue(attrName, files);
+    settings.setValue(m_attrName, files);
 
     emit recentFilesUpdated();
 }
@@ -51,10 +51,10 @@ void RecentFilesController::addFile(const QString &fname)
 QStringList RecentFilesController::getFiles()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    if (!settings.contains(attrName)) {
+    if (!settings.contains(m_attrName)) {
         return QStringList();
     }
-    QStringList files = settings.value(attrName).toStringList();
+    QStringList files = settings.value(m_attrName).toStringList();
     for (int i = 0; i < files.size();) {
         QFileInfo fileInfo(files.at(i));
         if (!fileInfo.exists()) {
@@ -66,6 +66,6 @@ QStringList RecentFilesController::getFiles()
     while (files.size() > MaxRecentFiles) {
         files.removeLast();
     }
-    settings.setValue(attrName, files);
+    settings.setValue(m_attrName, files);
     return files;
 }
