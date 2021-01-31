@@ -114,7 +114,7 @@ QList< GraphicElement* > findElements( const QVector< int > &ids ) {
   return( items );
 }
 
-void saveitems( QByteArray &itemData, const QList< QGraphicsItem* > &items, const QVector< int > &otherIds ) {
+void saveItems( QByteArray &itemData, const QList< QGraphicsItem* > &items, const QVector< int > &otherIds ) {
   itemData.clear( );
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );
   QList< GraphicElement* > others = findElements( otherIds );
@@ -223,7 +223,7 @@ void AddItemsCommand::undo( ) {
   // guarantee that no crashes occur when deleting input elements (clocks, input buttons, etc.)
   sc->shouldRestart = true;
 
-  saveitems( itemData, items, otherIds );
+  saveItems( itemData, items, otherIds );
   deleteItems( items, editor );
   emit editor->circuitHasChanged( );
 }
@@ -245,7 +245,7 @@ void DeleteItemsCommand::undo( ) {
 void DeleteItemsCommand::redo( ) {
   COMMENT( "REDO " + text( ).toStdString( ), 0 );
   QList< QGraphicsItem* > items = findItems( ids );
-  saveitems( itemData, items, otherIds );
+  saveItems( itemData, items, otherIds );
   deleteItems( items, editor );
   emit editor->circuitHasChanged( );
 }
