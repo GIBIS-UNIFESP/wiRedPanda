@@ -8,6 +8,7 @@
 #include "graphicelement.h"
 #include "inputbutton.h"
 #include "led.h"
+#include "qneconnection.h"
 
 void TestSimulationController::init()
 {
