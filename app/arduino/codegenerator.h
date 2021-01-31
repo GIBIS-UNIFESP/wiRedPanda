@@ -6,11 +6,11 @@
 #ifndef CODEGENERATOR_H
 #define CODEGENERATOR_H
 
-#include "graphicelement.h"
-
 #include <QFile>
 #include <QTextStream>
 
+class GraphicElement;
+class QNEPort;
 class MappedPin
 {
 public:
@@ -34,7 +34,7 @@ public:
 class CodeGenerator
 {
 public:
-    CodeGenerator(QString fileName, const QVector<GraphicElement *> &aElements);
+    CodeGenerator(const QString &fileName, const QVector<GraphicElement *> &aElements);
     bool generate();
 
 private:

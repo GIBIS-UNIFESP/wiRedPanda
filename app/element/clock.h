@@ -6,11 +6,8 @@
 #ifndef CLOCK_H
 #define CLOCK_H
 
-#include "globalproperties.h"
 #include "graphicelement.h"
 #include "input.h"
-
-#include <QTime>
 
 class Clock : public GraphicElement, public Input
 {
@@ -36,7 +33,7 @@ public:
 public:
     bool getOn() const override;
     void setOn(bool value) override;
-    void setSkin(bool defaultSkin, QString filename) override;
+    void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
 #endif // CLOCK_H

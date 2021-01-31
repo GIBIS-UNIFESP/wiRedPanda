@@ -14,7 +14,7 @@ public:
     explicit Nor(QGraphicsItem *parent = nullptr);
     ~Nor() override = default;
 
-    void setSkin(bool defaultSkin, QString filename) override;
+    void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
 #endif /* NOR_H */

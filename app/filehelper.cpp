@@ -1,4 +1,4 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+﻿// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include <iostream>
@@ -10,7 +10,7 @@
 #include "globalproperties.h"
 #include "icnotfoundexception.h"
 
-QFileInfo FileHelper::findICFile(QString fname, QString parentFile)
+QFileInfo FileHelper::findICFile(const QString &fname, const QString &parentFile)
 {
     qDebug() << "Loading file: " << fname << ", parentFile: " << parentFile;
     QFileInfo fileInfo(fname);
@@ -43,7 +43,7 @@ QFileInfo FileHelper::findICFile(QString fname, QString parentFile)
     return fileInfo;
 }
 
-QFileInfo FileHelper::findSkinFile(QString fname)
+QFileInfo FileHelper::findSkinFile(const QString &fname)
 {
     qDebug() << "Loading file: " << fname;
     QFileInfo fileInfo(fname);
@@ -69,7 +69,7 @@ QFileInfo FileHelper::findSkinFile(QString fname)
     return fileInfo;
 }
 
-void FileHelper::verifyRecursion(QString fname)
+void FileHelper::verifyRecursion(const QString &fname)
 {
     Q_UNUSED(fname);
     // TODO: BoxFileHelper::verifyRecursion

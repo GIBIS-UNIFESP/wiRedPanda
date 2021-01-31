@@ -6,7 +6,7 @@
 Not::Not(QGraphicsItem *parent)
     : GraphicElement(ElementType::NOT, ElementGroup::GATE, 1, 1, 1, 1, parent)
 {
-    pixmapSkinName.append(":/basic/not.png");
+    pixmapSkinName = {":/basic/not.png"};
     setOutputsOnTop(true);
     setPixmap(pixmapSkinName[0]);
     setCanChangeSkin(true);
@@ -14,7 +14,7 @@ Not::Not(QGraphicsItem *parent)
     setPortName("NOT");
 }
 
-void Not::setSkin(bool defaultSkin, QString filename)
+void Not::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         pixmapSkinName[0] = ":/basic/not.png";

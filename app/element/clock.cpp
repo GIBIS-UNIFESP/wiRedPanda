@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "clock.h"
+#include "globalproperties.h"
 
 #include <QDebug>
 
@@ -13,8 +14,11 @@ Clock::~Clock() = default;
 Clock::Clock(QGraphicsItem *parent)
     : GraphicElement(ElementType::CLOCK, ElementGroup::INPUT, 0, 0, 1, 1, parent)
 {
-    pixmapSkinName.append(":/input/clock0.png");
-    pixmapSkinName.append(":/input/clock1.png");
+    pixmapSkinName = {
+        ":/input/clock0.png",
+        ":/input/clock1.png"
+    };
+
     setOutputsOnTop(false);
     setRotatable(false);
     setCanChangeSkin(true);
@@ -104,7 +108,7 @@ QString Clock::genericProperties()
     return QString("%1 Hz").arg(static_cast<double>(getFrequency()));
 }
 
-void Clock::setSkin(bool defaultSkin, QString filename)
+void Clock::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         if (!on) {

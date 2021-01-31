@@ -43,32 +43,19 @@ public:
 
     void setEditor(Editor *value);
 
+    bool eventFilter(QObject *obj, QEvent *event) override;
+
 signals:
     void sendCommand(QUndoCommand *cmd);
+
 
 private slots:
 
     void selectionChanged();
 
-    void on_lineEditElementLabel_editingFinished();
-
-    void on_comboBoxInputSz_currentIndexChanged(int index);
-
-    void on_doubleSpinBoxFrequency_editingFinished();
-
-    void on_comboBoxColor_currentIndexChanged(int index);
-
-    void on_lineEditTrigger_textChanged(const QString &arg1);
-
-    void on_lineEditTrigger_editingFinished();
-
-    bool eventFilter(QObject *obj, QEvent *event) override;
-
-    void on_comboBoxAudio_currentIndexChanged(int);
-
-    void on_pushButtonChangeSkin_clicked();
-
-    void on_pushButtonDefaultSkin_clicked();
+    void inputIndexChanged(int index);
+    void triggerChanged(const QString &arg1);
+    void defaultSkin();
 
 private:
     void setCurrentElements(const QVector<GraphicElement *> &element);

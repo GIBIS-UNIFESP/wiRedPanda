@@ -34,7 +34,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr, QString filename = QString());
+    explicit MainWindow(QWidget *parent = nullptr, const QString &filename = QString());
     ~MainWindow() override;
 
     //! Saves the project to a .panda file. Removes the autosave file in the process.

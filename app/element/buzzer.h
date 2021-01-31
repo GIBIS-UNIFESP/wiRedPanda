@@ -19,13 +19,13 @@ public:
 
     void refresh() override;
 
-    void setAudio(QString note) override;
+    void setAudio(const QString &note) override;
     QString getAudio() const override;
 
     void mute(bool _mute = true);
     void save(QDataStream &ds) const override;
     void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
-    void setSkin(bool defaultSkin, QString filename) override;
+    void setSkin(bool defaultSkin, const QString &filename) override;
 
 private:
     void playbuzzer();

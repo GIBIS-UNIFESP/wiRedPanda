@@ -22,7 +22,7 @@ void ListItemWidget::mousePressEvent(QMouseEvent *)
     label->startDrag();
 }
 
-ListItemWidget::ListItemWidget(const QPixmap &pixmap, ElementType type, QString icFileName, QWidget *parent)
+ListItemWidget::ListItemWidget(const QPixmap &pixmap, ElementType type, const QString &icFileName, QWidget *parent)
     : QFrame(parent)
 {
     auto *itemLayout = new QHBoxLayout();

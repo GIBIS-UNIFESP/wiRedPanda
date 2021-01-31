@@ -40,6 +40,17 @@ ElementEditor::ElementEditor(QWidget *parent)
     m_ui->comboBoxInputSz->installEventFilter(this);
     m_ui->doubleSpinBoxFrequency->installEventFilter(this);
     m_ui->comboBoxAudio->installEventFilter(this);
+
+    connect(m_ui->lineEditElementLabel, &QLineEdit::editingFinished,        this, &ElementEditor::apply);
+    connect(m_ui->doubleSpinBoxFrequency, &QDoubleSpinBox::editingFinished, this, &ElementEditor::apply);
+    connect(m_ui->lineEditTrigger, &QLineEdit::editingFinished,             this, &ElementEditor::apply);
+    connect(m_ui->lineEditTrigger, &QLineEdit::textChanged,                 this, &ElementEditor::triggerChanged);
+    connect(m_ui->pushButtonChangeSkin, &QPushButton::clicked,              this, &ElementEditor::updateElementSkin);
+    connect(m_ui->pushButtonDefaultSkin, &QPushButton::clicked,             this, &ElementEditor::defaultSkin);
+
+    connect(m_ui->comboBoxColor, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ElementEditor::apply);
+    connect(m_ui->comboBoxAudio, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ElementEditor::apply);
+    connect(m_ui->comboBoxInputSz, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ElementEditor::inputIndexChanged);
 }
 
 ElementEditor::~ElementEditor()
@@ -432,12 +443,7 @@ void ElementEditor::setEditor(Editor *value)
     m_editor = value;
 }
 
-void ElementEditor::on_lineEditElementLabel_editingFinished()
-{
-    apply();
-}
-
-void ElementEditor::on_comboBoxInputSz_currentIndexChanged(int)
+void ElementEditor::inputIndexChanged(int idx)
 {
     if ((m_elements.isEmpty()) || (!isEnabled())) {
         return;
@@ -447,24 +453,9 @@ void ElementEditor::on_comboBoxInputSz_currentIndexChanged(int)
     }
 }
 
-void ElementEditor::on_doubleSpinBoxFrequency_editingFinished()
-{
-    apply();
-}
-
-void ElementEditor::on_comboBoxColor_currentIndexChanged(int)
-{
-    apply();
-}
-
-void ElementEditor::on_lineEditTrigger_textChanged(const QString &cmd)
+void ElementEditor::triggerChanged(const QString &cmd)
 {
     m_ui->lineEditTrigger->setText(cmd.toUpper());
-}
-
-void ElementEditor::on_lineEditTrigger_editingFinished()
-{
-    apply();
 }
 
 bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
@@ -516,18 +507,7 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
     return QWidget::eventFilter(obj, event);
 }
 
-void ElementEditor::on_comboBoxAudio_currentIndexChanged(int)
-{
-    apply();
-}
-
-// Skin change
-void ElementEditor::on_pushButtonChangeSkin_clicked()
-{
-    this->updateElementSkin();
-}
-
-void ElementEditor::on_pushButtonDefaultSkin_clicked()
+void ElementEditor::defaultSkin()
 {
     m_defaultSkin = true;
     apply();

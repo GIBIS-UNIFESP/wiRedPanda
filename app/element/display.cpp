@@ -3,7 +3,6 @@
 
 #include "display.h"
 
-#include <QDebug>
 #include <QPainter>
 #include <QPixmap>
 
@@ -12,15 +11,18 @@ int Display::current_id_number = 0;
 Display::Display(QGraphicsItem *parent)
     : GraphicElement(ElementType::DISPLAY, ElementGroup::OUTPUT, 8, 8, 0, 0, parent)
 {
-    pixmapSkinName.append(":/output/counter/counter_off.png");
-    pixmapSkinName.append(":/output/counter/counter_a.png");
-    pixmapSkinName.append(":/output/counter/counter_b.png");
-    pixmapSkinName.append(":/output/counter/counter_c.png");
-    pixmapSkinName.append(":/output/counter/counter_d.png");
-    pixmapSkinName.append(":/output/counter/counter_e.png");
-    pixmapSkinName.append(":/output/counter/counter_f.png");
-    pixmapSkinName.append(":/output/counter/counter_g.png");
-    pixmapSkinName.append(":/output/counter/counter_dp.png");
+    pixmapSkinName = {
+        ":/output/counter/counter_off.png",
+        ":/output/counter/counter_a.png",
+        ":/output/counter/counter_b.png",
+        ":/output/counter/counter_c.png",
+        ":/output/counter/counter_d.png",
+        ":/output/counter/counter_e.png",
+        ":/output/counter/counter_f.png",
+        ":/output/counter/counter_g.png",
+        ":/output/counter/counter_dp.png",
+    };
+
     setRotatable(false);
     setCanChangeSkin(true);
     setOutputsOnTop(true);
@@ -132,7 +134,7 @@ void Display::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double ve
     }
 }
 
-void Display::setSkin(bool defaultSkin, QString filename)
+void Display::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         pixmapSkinName[0] = ":/output/counter/counter_off.png";
