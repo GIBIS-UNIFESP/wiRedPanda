@@ -40,7 +40,7 @@ public:
      * @brief saveLocal: saves a project locally in a given directory so that all ICs and skins are also saved in local subfolders.
      * This is very useful to export projects that use ICs from other folders or projects.
      */
-    bool saveLocal(QString QString& newPath);
+    bool saveLocal(const QString& newPath);
     /**
      * @brief save: saves the project through a binary data stream.
      */
