@@ -5,9 +5,9 @@
 
 lengthDialog::lengthDialog(QWidget *parent)
     : QDialog(parent)
-    , ui(new Ui::lengthDialog)
+    , m_ui(new Ui::lengthDialog)
 {
-    ui->setupUi(this);
+    m_ui->setupUi(this);
     setWindowTitle("Simulation length Selection");
     setWindowFlags(Qt::Window);
     setModal(true);
@@ -15,22 +15,22 @@ lengthDialog::lengthDialog(QWidget *parent)
 
 int lengthDialog::getFrequency()
 {
-    canceled = false;
+    m_canceled = false;
     exec();
-    if (canceled) {
+    if (m_canceled) {
         return -1;
     }
-    return ui->lengthSpinBox->value();
+    return m_ui->lengthSpinBox->value();
 }
 
 lengthDialog::~lengthDialog()
 {
-    delete ui;
+    delete m_ui;
 }
 
 void lengthDialog::on_cancelPushButton_clicked()
 {
-    canceled = true;
+    m_canceled = true;
     close();
 }
 
