@@ -10,6 +10,7 @@
 #include "editor.h"
 #include "elementfactory.h"
 #include "ic.h"
+#include "qneconnection.h"
 #include "serializationfunctions.h"
 
 ICPrototypeImpl::~ICPrototypeImpl()
