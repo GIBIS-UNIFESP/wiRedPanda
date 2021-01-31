@@ -5,8 +5,6 @@
 
 #include <QApplication>
 #include <QCommandLineParser>
-#include <QDebug>
-#include <QMessageBox>
 
 int main(int argc, char *argv[])
 {
