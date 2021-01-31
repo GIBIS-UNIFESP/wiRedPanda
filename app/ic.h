@@ -12,9 +12,6 @@
 #include "scene.h"
 #include "simulationcontroller.h"
 
-#include <QFileInfo>
-#include <QFileSystemWatcher>
-
 class Editor;
 
 class ICPrototype;
