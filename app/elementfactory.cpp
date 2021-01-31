@@ -25,7 +25,6 @@
 #include "element/srflipflop.h"
 #include "element/tflipflop.h"
 #include "ic.h"
-//#include "element/tlatch.h"
 #include "element/mux.h"
 #include "element/node.h"
 #include "element/xnor.h"
