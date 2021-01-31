@@ -112,21 +112,11 @@ QString Clock::genericProperties()
 
 void Clock::setSkin(bool defaultSkin, const QString &filename)
 {
-    if (defaultSkin) {
-        if (!m_isOn) {
-            pixmapSkinName[0] = ":/input/clock0.png";
-            setPixmap(pixmapSkinName[0]);
-        } else {
-            pixmapSkinName[1] = ":/input/clock1.png";
-            setPixmap(pixmapSkinName[1]);
-        }
+    if (!m_isOn) {
+        pixmapSkinName[0] = defaultSkin ? ":/input/clock0.png" : filename;
+        setPixmap(pixmapSkinName[0]);
     } else {
-        if (!m_isOn) {
-            pixmapSkinName[0] = filename;
-            setPixmap(pixmapSkinName[0]);
-        } else {
-            pixmapSkinName[1] = filename;
-            setPixmap(pixmapSkinName[1]);
-        }
+        pixmapSkinName[1] = defaultSkin ? ":/input/clock1.png" : filename;
+        setPixmap(pixmapSkinName[1]);
     }
 }
