@@ -18,14 +18,17 @@
 #include <QTableView>
 
 #include "clockDialog.h"
+#include "common.h"
 #include "editor.h"
 #include "elementfactory.h"
 #include "elementmapping.h"
+#include "graphicelement.h"
 #include "graphicsview.h"
 #include "graphicsviewzoom.h"
 #include "input.h"
 #include "lengthDialog.h"
 #include "mainwindow.h"
+#include "qneport.h"
 #include "scstop.h"
 #include "simulationcontroller.h"
 
