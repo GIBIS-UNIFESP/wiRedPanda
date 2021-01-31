@@ -19,31 +19,31 @@ GraphicsViewZoom::GraphicsViewZoom(QGraphicsView *view)
     m_view->viewport()->installEventFilter(this);
     m_view->setMouseTracking(true);
     m_modifiers = Qt::ControlModifier;
-    m_zoom_factor_base = 1.0015;
+    m_zoomFactorBase = 1.0015;
 }
 
-void GraphicsViewZoom::gentle_zoom(double factor)
+void GraphicsViewZoom::gentleZoom(double factor)
 {
     QTransform tr = m_view->transform().scale(factor, factor);
     double scfac = tr.m11();
     if ((scfac >= minZoom) && (scfac <= maxZoom)) {
         m_view->setTransform(tr);
-        m_view->centerOn(m_target_scene_pos);
-        QPointF delta_viewport_pos = m_target_viewport_pos - QPointF(m_view->viewport()->width() / 2.0, m_view->viewport()->height() / 2.0);
-        QPointF viewport_center = m_view->mapFromScene(m_target_scene_pos) - delta_viewport_pos;
+        m_view->centerOn(m_targetScenePos);
+        QPointF delta_viewport_pos = m_targetViewportPos - QPointF(m_view->viewport()->width() / 2.0, m_view->viewport()->height() / 2.0);
+        QPointF viewport_center = m_view->mapFromScene(m_targetScenePos) - delta_viewport_pos;
         m_view->centerOn(m_view->mapToScene(viewport_center.toPoint()));
         emit zoomed();
     }
 }
 
-void GraphicsViewZoom::set_modifiers(Qt::KeyboardModifiers modifiers)
+void GraphicsViewZoom::setModifiers(Qt::KeyboardModifiers modifiers)
 {
     m_modifiers = modifiers;
 }
 
-void GraphicsViewZoom::set_zoom_factor_base(double value)
+void GraphicsViewZoom::setZoomFactorBase(double value)
 {
-    m_zoom_factor_base = value;
+    m_zoomFactorBase = value;
 }
 
 void GraphicsViewZoom::zoomIn()
@@ -98,18 +98,18 @@ bool GraphicsViewZoom::eventFilter(QObject *object, QEvent *event)
 {
     if (event->type() == QEvent::MouseMove) {
         auto *mouse_event = static_cast<QMouseEvent *>(event);
-        QPointF delta = m_target_viewport_pos - mouse_event->pos();
+        QPointF delta = m_targetViewportPos - mouse_event->pos();
         if ((qAbs(delta.x()) > 5) || (qAbs(delta.y()) > 5)) {
-            m_target_viewport_pos = mouse_event->pos();
-            m_target_scene_pos = m_view->mapToScene(mouse_event->pos());
+            m_targetViewportPos = mouse_event->pos();
+            m_targetScenePos = m_view->mapToScene(mouse_event->pos());
         }
     } else if (event->type() == QEvent::Wheel) {
         auto *wheel_event = static_cast<QWheelEvent *>(event);
         if (QApplication::keyboardModifiers() == m_modifiers) {
             // if( wheel_event->orientation( ) == Qt::Vertical ) {
             double angle = wheel_event->angleDelta().y();
-            double factor = qPow(m_zoom_factor_base, angle);
-            gentle_zoom(factor);
+            double factor = qPow(m_zoomFactorBase, angle);
+            gentleZoom(factor);
             return true;
             //}
         }

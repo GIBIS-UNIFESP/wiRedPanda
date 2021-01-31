@@ -31,8 +31,8 @@ void LogicElement::clearSucessors()
 
 LogicElement::LogicElement(size_t inputSize, size_t outputSize)
     : m_isValid(true)
-    , beingVisited(false)
-    , priority(-1)
+    , m_beingVisited(false)
+    , m_priority(-1)
     , m_inputs(inputSize, std::make_pair(nullptr, 0))
     , m_inputvalues(inputSize, false)
     , m_outputs(outputSize, false)
@@ -84,25 +84,25 @@ void LogicElement::validate()
 
 bool LogicElement::operator<(const LogicElement &other) const
 {
-    return priority < other.priority;
+    return m_priority < other.m_priority;
 }
 
 int LogicElement::calculatePriority()
 {
-    if (beingVisited) {
+    if (m_beingVisited) {
         return 0;
     }
-    if (priority != -1) {
-        return priority;
+    if (m_priority != -1) {
+        return m_priority;
     }
-    beingVisited = true;
+    m_beingVisited = true;
     int max = 0;
     for (LogicElement *s : qAsConst(m_sucessors)) {
         max = qMax(s->calculatePriority(), max);
     }
     const int p = max + 1;
-    priority = p;
-    beingVisited = false;
+    m_priority = p;
+    m_beingVisited = false;
     return p;
 }
 

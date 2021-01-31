@@ -5,8 +5,8 @@
 
 ICMapping::ICMapping(QString file, const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs)
     : ElementMapping(elms, file)
-    , icInputs(inputs)
-    , icOutputs(outputs)
+    , m_icInputs(inputs)
+    , m_icOutputs(outputs)
 {
 }
 
@@ -15,32 +15,32 @@ ICMapping::~ICMapping() = default;
 void ICMapping::initialize()
 {
     ElementMapping::initialize();
-    for (QNEPort *port : qAsConst(icInputs)) {
-        inputs.append(map[port->graphicElement()]);
+    for (QNEPort *port : qAsConst(m_icInputs)) {
+        m_inputs.append(map[port->graphicElement()]);
     }
-    for (QNEPort *port : qAsConst(icOutputs)) {
-        outputs.append(map[port->graphicElement()]);
+    for (QNEPort *port : qAsConst(m_icOutputs)) {
+        m_outputs.append(map[port->graphicElement()]);
     }
 }
 
 void ICMapping::clearConnections()
 {
-    for (LogicElement *in : qAsConst(inputs)) {
+    for (LogicElement *in : qAsConst(m_inputs)) {
         in->clearPredecessors();
     }
-    for (LogicElement *out : qAsConst(outputs)) {
+    for (LogicElement *out : qAsConst(m_outputs)) {
         out->clearSucessors();
     }
 }
 
 LogicElement *ICMapping::getInput(int index)
 {
-    Q_ASSERT(index < icInputs.size());
-    return inputs[index];
+    Q_ASSERT(index < m_icInputs.size());
+    return m_inputs[index];
 }
 
 LogicElement *ICMapping::getOutput(int index)
 {
-    Q_ASSERT(index < icOutputs.size());
-    return outputs[index];
+    Q_ASSERT(index < m_icOutputs.size());
+    return m_outputs[index];
 }

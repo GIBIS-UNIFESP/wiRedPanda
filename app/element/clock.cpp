@@ -53,11 +53,7 @@ bool Clock::getOn() const
 void Clock::setOn(bool value)
 {
     m_isOn = value;
-    if (m_isOn) {
-        setPixmap(pixmapSkinName[1]);
-    } else {
-        setPixmap(pixmapSkinName[0]);
-    }
+    setPixmap(pixmapSkinName[m_isOn ? 1 : 0]);
     m_outputs.first()->setValue(m_isOn);
 }
 
@@ -70,11 +66,12 @@ void Clock::save(QDataStream &ds) const
 void Clock::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
 {
     GraphicElement::load(ds, portMap, version);
-    if (version >= 1.1) {
-        float freq;
-        ds >> freq;
-        setFrequency(freq);
+    if (version < 1.1) {
+        return;
     }
+    float freq;
+    ds >> freq;
+    setFrequency(freq);
 }
 
 float Clock::getFrequency() const
@@ -85,17 +82,21 @@ float Clock::getFrequency() const
 void Clock::setFrequency(float freq)
 {
     /*  qDebug() << "Clock frequency set to " << freq; */
-    if (!qFuzzyIsNull(freq)) {
-        int auxinterval = 1000 / (freq * GLOBALCLK);
-        if (auxinterval > 0) {
-            m_interval = auxinterval;
-            m_frequency = static_cast<double>(freq);
-            m_elapsed = 0;
-            Clock::reset = true;
-            //      qDebug() << "Freq = " << freq <<  " interval = " << interval;
-        }
-        /*    timer.start( static_cast< int >(1000.0/freq) ); */
+    if (qFuzzyIsNull(freq)) {
+        return;
     }
+
+    int auxinterval = 1000 / (freq * GLOBALCLK);
+    if (auxinterval <= 0) {
+        return;
+    }
+
+    m_interval = auxinterval;
+    m_frequency = static_cast<double>(freq);
+    m_elapsed = 0;
+    Clock::reset = true;
+    //      qDebug() << "Freq = " << freq <<  " interval = " << interval;
+    /*    timer.start( static_cast< int >(1000.0/freq) ); */
 }
 
 void Clock::resetClock()
@@ -111,21 +112,11 @@ QString Clock::genericProperties()
 
 void Clock::setSkin(bool defaultSkin, const QString &filename)
 {
-    if (defaultSkin) {
-        if (!m_isOn) {
-            pixmapSkinName[0] = ":/input/clock0.png";
-            setPixmap(pixmapSkinName[0]);
-        } else {
-            pixmapSkinName[1] = ":/input/clock1.png";
-            setPixmap(pixmapSkinName[1]);
-        }
+    if (!m_isOn) {
+        pixmapSkinName[0] = defaultSkin ? ":/input/clock0.png" : filename;
+        setPixmap(pixmapSkinName[0]);
     } else {
-        if (!m_isOn) {
-            pixmapSkinName[0] = filename;
-            setPixmap(pixmapSkinName[0]);
-        } else {
-            pixmapSkinName[1] = filename;
-            setPixmap(pixmapSkinName[1]);
-        }
+        pixmapSkinName[1] = defaultSkin ? ":/input/clock1.png" : filename;
+        setPixmap(pixmapSkinName[1]);
     }
 }

@@ -16,12 +16,13 @@
  */
 class LogicElement
 {
+private:
     /**
      * @brief m_isValid is calculated at compilation time.
      */
     bool m_isValid;
-    bool beingVisited;
-    int priority;
+    bool m_beingVisited;
+    int m_priority;
     std::vector<std::pair<LogicElement *, int>> m_inputs;
     std::vector<bool> m_inputvalues;
     std::vector<bool> m_outputs;

@@ -47,17 +47,15 @@ Buzzer::Buzzer(QGraphicsItem *parent)
 
 void Buzzer::refresh()
 {
-    if (isValid()) {
-        bool value = m_inputs.first()->value();
-        if (value == 1) {
-            playbuzzer();
+    if (!isValid()) {
+        stopbuzzer();
+        return;
+    }
 
-        } else {
-            if (m_play == 1) {
-                stopbuzzer();
-            }
-        }
-    } else {
+    const bool value = m_inputs.first()->value();
+    if (value == 1) {
+        playbuzzer();
+    } else if (m_play == 1) {
         stopbuzzer();
     }
 }
@@ -82,11 +80,13 @@ void Buzzer::mute(bool _mute)
 
 void Buzzer::playbuzzer()
 {
-    if (m_play == 0) {
-        usingDefaultSkin ? setPixmap(defaultSkins[1]) : setPixmap(m_alternativeSkins[1]);
-        m_audio.play();
-        m_play = 1;
+    if (m_play != 0) {
+        return;
     }
+
+    usingDefaultSkin ? setPixmap(defaultSkins[1]) : setPixmap(m_alternativeSkins[1]);
+    m_audio.play();
+    m_play = 1;
 }
 
 void Buzzer::stopbuzzer()
@@ -105,11 +105,12 @@ void Buzzer::save(QDataStream &ds) const
 void Buzzer::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
 {
     GraphicElement::load(ds, portMap, version);
-    if (version >= 2.4) {
-        QString note;
-        ds >> note;
-        setAudio(note);
+    if (version < 2.4) {
+        return;
     }
+    QString note;
+    ds >> note;
+    setAudio(note);
 }
 
 void Buzzer::setSkin(bool defaultSkin, const QString &filename)

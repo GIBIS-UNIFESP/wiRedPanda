@@ -150,53 +150,30 @@ void Led::setSkin(bool defaultSkin, const QString &filename)
             index[i] = input(inputSize() - i - 1)->value();
         idx = index.to_ulong();
     }
+    int value_idx = 0;
     switch (inputSize()) {
-    case 1: { /* 1 bit */
-        if (defaultSkin) {
-            resetLedPixmapName(m_colorNumber + idx);
-        } else {
-            pixmapSkinName[m_colorNumber + idx] = filename;
-        }
-        setPixmap(pixmapSkinName[m_colorNumber + idx]);
-        break;
+    case 1: /* 1 bit */
+        value_idx = m_colorNumber + idx;
+    break;
+    case 2: /* 2 bits */ // TODO: add option to select dark/light colors according to the theme.
+        value_idx = idx == 3 ? 22 : 18 + idx;
+    break;
+
+    case 3:  /* 3 bits */ // TODO: add option to select dark/light colors according to the theme.
+        value_idx = 18 + idx;
+    break;
+
+    case 4:  /* 4 bits */
+        value_idx = 10 + idx;
+    break;
     }
-    case 2: { /* 2 bits */ // TODO: add option to select dark/light colors according to the theme.
-        if (idx == 3) {
-            if (defaultSkin) {
-                resetLedPixmapName(22);
-            } else {
-                pixmapSkinName[22] = filename;
-            }
-            setPixmap(pixmapSkinName[22]);
-        } else {
-            if (defaultSkin) {
-                resetLedPixmapName(18 + idx);
-            } else {
-                pixmapSkinName[18 + idx] = filename;
-            }
-            setPixmap(pixmapSkinName[18 + idx]);
-        }
-        break;
+
+    if (defaultSkin) {
+        resetLedPixmapName(value_idx);
+    } else {
+        pixmapSkinName[value_idx] = filename;
     }
-    case 3: { /* 3 bits */ // TODO: add option to select dark/light colors according to the theme.
-        if (defaultSkin) {
-            resetLedPixmapName(18 + idx);
-        } else {
-            pixmapSkinName[18 + idx] = filename;
-        }
-        setPixmap(pixmapSkinName[18 + idx]);
-        break;
-    }
-    case 4: { /* 4 bits */
-        if (defaultSkin) {
-            resetLedPixmapName(10 + idx);
-        } else {
-            pixmapSkinName[10 + idx] = filename;
-        }
-        setPixmap(pixmapSkinName[10 + idx]);
-        break;
-    }
-    }
+    setPixmap(pixmapSkinName[value_idx]);
 }
 
 void Led::resetLedPixmapName(int ledNumber)

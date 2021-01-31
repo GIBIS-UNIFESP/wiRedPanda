@@ -31,61 +31,61 @@ QString ICPrototype::baseName() const
 
 void ICPrototype::insertICObserver(IC *ic)
 {
-    if (!icObservers.contains(ic)) {
-        icObservers.append(ic);
+    if (!m_icObservers.contains(ic)) {
+        m_icObservers.append(ic);
     }
 }
 
 void ICPrototype::removeICObserver(IC *ic)
 {
-    if (icObservers.contains(ic)) {
-        icObservers.removeAll(ic);
+    if (m_icObservers.contains(ic)) {
+        m_icObservers.removeAll(ic);
     }
 }
 
 bool ICPrototype::updateLocalIC(const QString &fileName, const QString &dirName)
 {
-    return ICImpl.updateLocalIC(fileName, dirName);
+    return m_ICImpl.updateLocalIC(fileName, dirName);
 }
 
 int ICPrototype::inputSize() const
 {
-    return ICImpl.getInputSize();
+    return m_ICImpl.getInputSize();
 }
 
 int ICPrototype::outputSize() const
 {
-    return ICImpl.getOutputSize();
+    return m_ICImpl.getOutputSize();
 }
 
 QString ICPrototype::inputLabel(int index) const
 {
-    return ICImpl.inputLabels[index];
+    return m_ICImpl.inputLabels[index];
 }
 
 QString ICPrototype::outputLabel(int index) const
 {
-    return ICImpl.outputLabels[index];
+    return m_ICImpl.outputLabels[index];
 }
 
 bool ICPrototype::defaultInputValue(int index)
 {
-    return ICImpl.inputs[index]->value();
+    return m_ICImpl.inputs[index]->value();
 }
 
 bool ICPrototype::isInputRequired(int index)
 {
-    return ICImpl.inputs[index]->isRequired();
+    return m_ICImpl.inputs[index]->isRequired();
 }
 
 ICMapping *ICPrototype::generateMapping() const
 {
-    return new ICMapping(fileName(), ICImpl.elements, ICImpl.inputs, ICImpl.outputs);
+    return new ICMapping(fileName(), m_ICImpl.elements, m_ICImpl.inputs, m_ICImpl.outputs);
 }
 
 void ICPrototype::clear()
 {
-    ICImpl.clear();
+    m_ICImpl.clear();
 }
 
 void ICPrototype::reload()
@@ -93,8 +93,8 @@ void ICPrototype::reload()
     // TODO: Verify file recursion
     //  verifyRecursion( fname );
     clear();
-    ICImpl.loadFile(m_fileName);
-    for (IC *ic : qAsConst(icObservers)) {
+    m_ICImpl.loadFile(m_fileName);
+    for (IC *ic : qAsConst(m_icObservers)) {
         ic->loadFile(m_fileName);
     }
 }

@@ -17,10 +17,11 @@ class IC;
 
 class ICPrototype
 {
+private:
     QString m_fileName;
 
-    ICPrototypeImpl ICImpl;
-    QVector<IC *> icObservers;
+    ICPrototypeImpl m_ICImpl;
+    QVector<IC *> m_icObservers;
 
 public:
     ICPrototype(const QString &fileName);
