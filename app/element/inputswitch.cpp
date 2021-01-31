@@ -3,6 +3,8 @@
 
 #include "inputswitch.h"
 
+#include "qneport.h"
+
 #include <QGraphicsSceneMouseEvent>
 
 int InputSwitch::current_id_number = 0;
