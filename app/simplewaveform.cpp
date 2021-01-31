@@ -30,20 +30,20 @@ using namespace QtCharts;
 
 SimpleWaveform::SimpleWaveform(Editor *editor, QWidget *parent)
     : QDialog(parent)
-    , ui(new Ui::SimpleWaveform)
-    , editor(editor)
+    , m_ui(new Ui::SimpleWaveform)
+    , m_editor(editor)
 {
-    ui->setupUi(this);
+    m_ui->setupUi(this);
     resize(800, 500);
-    chart.legend()->setAlignment(Qt::AlignLeft);
+    m_chart.legend()->setAlignment(Qt::AlignLeft);
 
-    chartView = new QChartView(&chart, this);
-    chartView->setRenderHint(QPainter::Antialiasing);
-    ui->gridLayout->addWidget(chartView);
+    m_chartView = new QChartView(&m_chart, this);
+    m_chartView->setRenderHint(QPainter::Antialiasing);
+    m_ui->gridLayout->addWidget(m_chartView);
     setWindowTitle("Simple WaveForm - WaveDolphin Beta");
     setWindowFlags(Qt::Window);
     setModal(true);
-    sortingMode = SortingMode::INCREASING;
+    m_sortingMode = SortingMode::INCREASING;
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     settings.beginGroup("SimpleWaveform");
     restoreGeometry(settings.value("geometry").toByteArray());
@@ -56,7 +56,7 @@ SimpleWaveform::~SimpleWaveform()
     settings.beginGroup("SimpleWaveform");
     settings.setValue("geometry", saveGeometry());
     settings.endGroup();
-    delete ui;
+    delete m_ui;
 }
 
 void SimpleWaveform::sortElements(QVector<GraphicElement *> &elements,
@@ -203,32 +203,32 @@ void SimpleWaveform::showWaveform()
     settings.beginGroup("waveform");
     COMMENT("Getting sorting type.", 0);
     if (settings.contains("sortingType")) {
-        sortingMode = static_cast<SortingMode>(settings.value("sortingType").toInt());
+        m_sortingMode = static_cast<SortingMode>(settings.value("sortingType").toInt());
     }
     settings.endGroup();
-    switch (sortingMode) {
+    switch (m_sortingMode) {
     case SortingMode::DECREASING:
-        ui->radioButton_Decreasing->setChecked(true);
+        m_ui->radioButton_Decreasing->setChecked(true);
         break;
     case SortingMode::INCREASING:
-        ui->radioButton_Increasing->setChecked(true);
+        m_ui->radioButton_Increasing->setChecked(true);
         break;
     case SortingMode::POSITION:
-        ui->radioButton_Position->setChecked(true);
+        m_ui->radioButton_Position->setChecked(true);
         break;
     }
     int gap = 2;
     COMMENT("Clear previous chart.", 0);
-    chart.removeAllSeries();
+    m_chart.removeAllSeries();
     COMMENT("Getting digital circuit simulator.", 0);
-    SimulationController *sc = editor->getSimulationController();
+    SimulationController *sc = m_editor->getSimulationController();
     COMMENT("Creating class to pause main window simulator while creating waveform.", 0);
     SCStop scst(sc);
-    QVector<GraphicElement *> elements = editor->getScene()->getElements();
+    QVector<GraphicElement *> elements = m_editor->getScene()->getElements();
     QVector<GraphicElement *> inputs;
     QVector<GraphicElement *> outputs;
     COMMENT("Sorting elements according to the radion option. All elements initially in elements vector. Then, inputs and outputs are extracted from it.", 0);
-    sortElements(elements, inputs, outputs, sortingMode);
+    sortElements(elements, inputs, outputs, m_sortingMode);
     if (elements.isEmpty()) {
         QMessageBox::warning(parentWidget(), tr("Error"), tr("Could not find any port for the simulation"));
         return;
@@ -321,19 +321,19 @@ void SimpleWaveform::showWaveform()
     }
     COMMENT("Inserting input series to the chart.", 3);
     for (QLineSeries *in : qAsConst(in_series)) {
-        chart.addSeries(in);
+        m_chart.addSeries(in);
     }
     COMMENT("Inserting output series to the chart.", 3);
     for (QLineSeries *out : qAsConst(out_series)) {
-        chart.addSeries(out);
+        m_chart.addSeries(out);
     }
     COMMENT("Setting graphic axes.", 3);
-    chart.createDefaultAxes();
+    m_chart.createDefaultAxes();
 
     /*  chart.axisY( )->hide( ); */
     COMMENT("Setting range and names to x, y axis.", 0);
-    const auto horizontal_axe = chart.axes(Qt::Horizontal);
-    const auto vertical_axe = chart.axes(Qt::Vertical);
+    const auto horizontal_axe = m_chart.axes(Qt::Horizontal);
+    const auto vertical_axe = m_chart.axes(Qt::Vertical);
 
     auto *ax = dynamic_cast<QValueAxis *>(horizontal_axe.back());
     ax->setRange(0, num_iter);
@@ -366,8 +366,8 @@ void SimpleWaveform::on_radioButton_Position_clicked()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     settings.beginGroup("waveform");
-    sortingMode = SortingMode::POSITION;
-    settings.setValue("sortingType", static_cast<int>(sortingMode));
+    m_sortingMode = SortingMode::POSITION;
+    settings.setValue("sortingType", static_cast<int>(m_sortingMode));
     settings.endGroup();
     showWaveform();
 }
@@ -376,8 +376,8 @@ void SimpleWaveform::on_radioButton_Increasing_clicked()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     settings.beginGroup("waveform");
-    sortingMode = SortingMode::INCREASING;
-    settings.setValue("sortingType", static_cast<int>(sortingMode));
+    m_sortingMode = SortingMode::INCREASING;
+    settings.setValue("sortingType", static_cast<int>(m_sortingMode));
     settings.endGroup();
     showWaveform();
 }
@@ -386,22 +386,22 @@ void SimpleWaveform::on_radioButton_Decreasing_clicked()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     settings.beginGroup("waveform");
-    sortingMode = SortingMode::DECREASING;
-    settings.setValue("sortingType", static_cast<int>(sortingMode));
+    m_sortingMode = SortingMode::DECREASING;
+    settings.setValue("sortingType", static_cast<int>(m_sortingMode));
     settings.endGroup();
     showWaveform();
 }
 
 void SimpleWaveform::on_pushButton_Copy_clicked()
 {
-    QSize s = chart.size().toSize();
+    QSize s = m_chart.size().toSize();
     QPixmap p(s);
     p.fill(Qt::white);
     QPainter painter;
     painter.begin(&p);
     painter.setRenderHint(QPainter::Antialiasing);
-    chart.paint(&painter, nullptr, nullptr); /* This gives 0 items in 1 group */
-    chartView->render(&painter); /* m_view has app->chart() in it, and this one gives right image */
+    m_chart.paint(&painter, nullptr, nullptr); /* This gives 0 items in 1 group */
+    m_chartView->render(&painter); /* m_view has app->chart() in it, and this one gives right image */
     qDebug() << "Copied";
     painter.end();
     auto *d = new QMimeData();
