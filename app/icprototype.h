@@ -8,7 +8,6 @@
 
 #include "icprototypeimpl.h"
 
-#include <QGraphicsItem>
 #include <QString>
 #include <QVector>
 
