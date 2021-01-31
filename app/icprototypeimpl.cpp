@@ -5,6 +5,7 @@
 
 #include <QDebug>
 #include <QFile>
+#include <QFileInfo>
 
 #include "editor.h"
 #include "elementfactory.h"
