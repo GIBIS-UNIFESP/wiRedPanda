@@ -26,7 +26,7 @@ Clock::Clock(QGraphicsItem *parent)
     /*  connect(&timer,&QTimer::timeout,this,&Clock::updateClock); */
     setFrequency(1.0); // TODO: call to virtual function during construction
     setHasFrequency(true);
-    on = false;
+    m_isOn = false;
     Clock::reset = true;
     setHasLabel(true);
     setPortName("Clock");
@@ -37,28 +37,28 @@ Clock::Clock(QGraphicsItem *parent)
 void Clock::updateClock()
 {
     if (!disabled()) {
-        elapsed++;
-        if ((elapsed % interval) == 0) {
-            setOn(!on);
+        m_elapsed++;
+        if ((m_elapsed % m_interval) == 0) {
+            setOn(!m_isOn);
         }
     }
-    setOn(on);
+    setOn(m_isOn);
 }
 
 bool Clock::getOn() const
 {
-    return on;
+    return m_isOn;
 }
 
 void Clock::setOn(bool value)
 {
-    on = value;
-    if (on) {
+    m_isOn = value;
+    if (m_isOn) {
         setPixmap(pixmapSkinName[1]);
     } else {
         setPixmap(pixmapSkinName[0]);
     }
-    m_outputs.first()->setValue(on);
+    m_outputs.first()->setValue(m_isOn);
 }
 
 void Clock::save(QDataStream &ds) const
@@ -88,9 +88,9 @@ void Clock::setFrequency(float freq)
     if (!qFuzzyIsNull(freq)) {
         int auxinterval = 1000 / (freq * GLOBALCLK);
         if (auxinterval > 0) {
-            interval = auxinterval;
+            m_interval = auxinterval;
             m_frequency = static_cast<double>(freq);
-            elapsed = 0;
+            m_elapsed = 0;
             Clock::reset = true;
             //      qDebug() << "Freq = " << freq <<  " interval = " << interval;
         }
@@ -101,7 +101,7 @@ void Clock::setFrequency(float freq)
 void Clock::resetClock()
 {
     setOn(true);
-    elapsed = 0;
+    m_elapsed = 0;
 }
 
 QString Clock::genericProperties()
@@ -112,7 +112,7 @@ QString Clock::genericProperties()
 void Clock::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
-        if (!on) {
+        if (!m_isOn) {
             pixmapSkinName[0] = ":/input/clock0.png";
             setPixmap(pixmapSkinName[0]);
         } else {
@@ -120,7 +120,7 @@ void Clock::setSkin(bool defaultSkin, const QString &filename)
             setPixmap(pixmapSkinName[1]);
         }
     } else {
-        if (!on) {
+        if (!m_isOn) {
             pixmapSkinName[0] = filename;
             setPixmap(pixmapSkinName[0]);
         } else {
