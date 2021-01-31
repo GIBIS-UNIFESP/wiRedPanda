@@ -21,7 +21,6 @@ enum class ElementGroup : uint_fast8_t { UNKNOWN, OTHER, IC, INPUT, GATE, MEMORY
 class GraphicElement;
 
 typedef QVector<GraphicElement *> ElementVector;
-typedef QVector<QNEPort *> QNEPortVector;
 
 class GraphicElement : public QGraphicsObject, public ItemWithId
 {
