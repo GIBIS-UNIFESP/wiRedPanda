@@ -3,8 +3,7 @@
 
 #include "codegenerator.h"
 #include "clock.h"
-#include "editor.h"
-#include "ic.h"
+#include "graphicelement.h"
 #include "qneconnection.h"
 
 #include <stdexcept>
