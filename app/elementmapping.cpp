@@ -2,14 +2,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "elementmapping.h"
+
 #include "clock.h"
+#include "graphicelement.h"
 #include "ic.h"
 #include "icmanager.h"
 #include "icmapping.h"
 #include "icprototype.h"
 #include "input.h"
 #include "logicelement.h"
-#include "graphicelement.h"
 #include "qneconnection.h"
 #include "qneport.h"
 
