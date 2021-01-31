@@ -25,8 +25,7 @@ void storeIds( const QList< QGraphicsItem* > &items, QVector< int > &ids ) {
 void storeOtherIds( const QList< QGraphicsItem* > &connections, const QVector< int > &ids, QVector< int > &otherIds ) {
   for( QGraphicsItem *item : connections ) {
     QNEConnection *conn = qgraphicsitem_cast< QNEConnection* >( item );
-    if( ( item->type( ) == QNEConnection::Type ) && conn )
-    {
+    if( ( item->type( ) == QNEConnection::Type ) && conn ) {
       QNEOutputPort *p1 = conn->start( );
       if( p1 && p1->graphicElement( ) && !ids.contains( p1->graphicElement( )->id( ) ) ) {
         otherIds.append( p1->graphicElement( )->id( ) );
@@ -72,7 +71,7 @@ QList< QGraphicsItem* > loadList( const QList< QGraphicsItem* > &aItems, QVector
       }
     }
   }
-  /* Stores the other wires selected */
+  /* Stores the other selected wires */
   for( QGraphicsItem *item : aItems ) {
     if( item->type( ) == QNEConnection::Type ) {
       if( !connections.contains( item ) ) {
