@@ -36,7 +36,7 @@ ICManager::~ICManager()
     }
 }
 
-bool ICManager::tryLoadFile(QString &fname, QString parentFile)
+bool ICManager::tryLoadFile(QString &fname, const QString& parentFile)
 {
     try {
         loadFile(fname, parentFile);
@@ -55,7 +55,7 @@ bool ICManager::tryLoadFile(QString &fname, QString parentFile)
     return true;
 }
 
-void ICManager::loadFile(QString &fname, QString parentFile)
+void ICManager::loadFile(QString &fname, const QString& parentFile)
 {
     QFileInfo finfo = FileHelper::findICFile(fname, parentFile);
     fname = finfo.filePath();
@@ -109,7 +109,7 @@ bool ICManager::loadIC(IC *ic, QString fname, QString parentFile)
     return true;
 }
 
-ICPrototype *ICManager::getPrototype(QString fname)
+ICPrototype *ICManager::getPrototype(const QString& fname)
 {
     Q_ASSERT(!fname.isEmpty());
     QFileInfo finfo(fname);
@@ -119,7 +119,7 @@ ICPrototype *ICManager::getPrototype(QString fname)
     return ics[finfo.baseName()];
 }
 
-bool ICManager::updatePrototypeFilePathName(QString sourceName, QString targetName)
+bool ICManager::updatePrototypeFilePathName(const QString& sourceName, const QString& targetName)
 {
     COMMENT("Updating IC name from " << sourceName.toStdString() << " to " << targetName.toStdString(), 0);
     Q_ASSERT(!sourceName.isEmpty());
@@ -146,7 +146,7 @@ ICManager *ICManager::instance()
     return globalICManager;
 }
 
-void ICManager::reloadFile(QString fileName)
+void ICManager::reloadFile(const QString& fileName)
 {
     COMMENT("Change in IC " << fileName.toStdString() << " detected.", 0);
     QString bname = QFileInfo(fileName).baseName();
