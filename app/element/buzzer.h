@@ -31,8 +31,9 @@ private:
     void playbuzzer();
     void stopbuzzer();
 
-    QVector<QString> alternativeSkins;
-    int play;
+    QVector<QString> m_alternativeSkins;
+    // TODO: this could just be a bool
+    int m_play;
     QSoundEffect m_audio;
     QString m_note;
 };
