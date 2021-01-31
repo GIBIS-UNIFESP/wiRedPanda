@@ -82,17 +82,21 @@ float Clock::getFrequency() const
 void Clock::setFrequency(float freq)
 {
     /*  qDebug() << "Clock frequency set to " << freq; */
-    if (!qFuzzyIsNull(freq)) {
-        int auxinterval = 1000 / (freq * GLOBALCLK);
-        if (auxinterval > 0) {
-            m_interval = auxinterval;
-            m_frequency = static_cast<double>(freq);
-            m_elapsed = 0;
-            Clock::reset = true;
-            //      qDebug() << "Freq = " << freq <<  " interval = " << interval;
-        }
-        /*    timer.start( static_cast< int >(1000.0/freq) ); */
+    if (qFuzzyIsNull(freq)) {
+        return;
     }
+
+    int auxinterval = 1000 / (freq * GLOBALCLK);
+    if (auxinterval <= 0) {
+        return;
+    }
+
+    m_interval = auxinterval;
+    m_frequency = static_cast<double>(freq);
+    m_elapsed = 0;
+    Clock::reset = true;
+    //      qDebug() << "Freq = " << freq <<  " interval = " << interval;
+    /*    timer.start( static_cast< int >(1000.0/freq) ); */
 }
 
 void Clock::resetClock()
