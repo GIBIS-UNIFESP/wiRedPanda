@@ -14,11 +14,12 @@ class LogicElement;
 
 class ICMapping : public ElementMapping
 {
-    QNEPortVector icInputs;
-    QNEPortVector icOutputs;
+private:
+    QNEPortVector m_icInputs;
+    QNEPortVector m_icOutputs;
 
-    QVector<LogicElement *> inputs;
-    QVector<LogicElement *> outputs;
+    QVector<LogicElement *> m_inputs;
+    QVector<LogicElement *> m_outputs;
 
 public:
     ICMapping(QString file, const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs);
