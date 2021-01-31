@@ -6,7 +6,8 @@
 TFlipFlop::TFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::TFLIPFLOP, ElementGroup::MEMORY, 4, 4, 2, 2, parent)
 {
-    pixmapSkinName.append(":/memory/T-flipflop.png");
+    pixmapSkinName = {":/memory/T-flipflop.png"};
+
     setPixmap(pixmapSkinName[0]);
     setRotatable(false);
     setCanChangeSkin(true);
@@ -44,7 +45,7 @@ void TFlipFlop::updatePorts()
     output(1)->setPos(bottomPosition(), 45); /* ~Q */
 }
 
-void TFlipFlop::setSkin(bool defaultSkin, QString filename)
+void TFlipFlop::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         pixmapSkinName[0] = ":/memory/T-flipflop.png";

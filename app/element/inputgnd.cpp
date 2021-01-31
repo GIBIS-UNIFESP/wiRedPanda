@@ -6,7 +6,8 @@
 InputGnd::InputGnd(QGraphicsItem *parent)
     : GraphicElement(ElementType::GND, ElementGroup::STATICINPUT, 0, 0, 1, 1, parent)
 {
-    pixmapSkinName.append(":/input/0.png");
+    pixmapSkinName = {":/input/0.png"};
+
     setOutputsOnTop(false);
     setCanChangeSkin(true);
     setPixmap(pixmapSkinName[0]);
@@ -15,7 +16,7 @@ InputGnd::InputGnd(QGraphicsItem *parent)
     m_outputs.first()->setValue(false);
 }
 
-void InputGnd::setSkin(bool defaultSkin, QString filename)
+void InputGnd::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         pixmapSkinName[0] = ":/input/0.png";

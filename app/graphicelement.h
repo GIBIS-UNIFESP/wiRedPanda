@@ -9,18 +9,11 @@
 #include <cstdint>
 
 #include <QGraphicsItem>
-#include <QGraphicsPixmapItem>
 #include <QKeySequence>
 
 #include "common.h"
 #include "itemwithid.h"
 #include "nodes/qneport.h"
-
-// enum class ElementType : uint_fast8_t {
-//  UNKNOWN, BUTTON, SWITCH, LED, NOT, AND, OR, NAND, NOR, CLOCK, XOR, XNOR, VCC, GND, DISPLAY,
-//  DLATCH, JKLATCH, DFLIPFLOP, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP, TLATCH, BOX, NODE, MUX, DEMUX,
-//  BUZZER, DISPLAY14, LEDGRID
-//};
 
 enum class ElementType : uint_fast8_t {
     UNKNOWN,
@@ -104,9 +97,9 @@ public:
 
     void addOutputPort(const QString &name = QString());
 
-    virtual void setPortName(QString name);
+    virtual void setPortName(const QString &name);
 
-    virtual void setSkin(bool defaultSkin, QString filename);
+    virtual void setSkin(bool defaultSkin, const QString &filename);
 
     int topPosition() const;
 
@@ -161,15 +154,15 @@ public:
 
     bool hasAudio() const;
 
-    virtual void setColor(QString getColor);
+    virtual void setColor(const QString &color);
     virtual QString getColor() const;
 
-    virtual void setAudio(QString audio);
+    virtual void setAudio(const QString &audio);
     virtual QString getAudio() const;
 
     bool isValid();
 
-    void setLabel(QString label);
+    void setLabel(const QString &label);
     QString getLabel() const;
 
     void updateTheme();
@@ -188,7 +181,7 @@ public:
 
     // Update label in graphical interface
     void updateLabel();
-    void updateSkinsPath(QString newSkinPath);
+    void updateSkinsPath(const QString &newSkinPath);
 
 protected:
     void setRotatable(bool rotatable);
@@ -206,7 +199,6 @@ protected:
     void setTopPosition(int topPosition);
     void setBottomPosition(int bottomPosition);
 
-    /*  virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e); */
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     bool usingDefaultSkin;
 

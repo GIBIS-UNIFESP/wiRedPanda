@@ -10,8 +10,11 @@ int InputSwitch::current_id_number = 0;
 InputSwitch::InputSwitch(QGraphicsItem *parent)
     : GraphicElement(ElementType::SWITCH, ElementGroup::INPUT, 0, 0, 1, 1, parent)
 {
-    pixmapSkinName.append(":/input/switchOff.png");
-    pixmapSkinName.append(":/input/switchOn.png");
+    pixmapSkinName = {
+        ":/input/switchOff.png",
+        ":/input/switchOn.png",
+    };
+
     setOutputsOnTop(false);
     setCanChangeSkin(true);
     setRotatable(false);
@@ -64,7 +67,7 @@ void InputSwitch::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, doubl
     output()->setValue(on);
 }
 
-void InputSwitch::setSkin(bool defaultSkin, QString filename)
+void InputSwitch::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         if (!on) {

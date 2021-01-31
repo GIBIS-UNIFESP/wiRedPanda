@@ -8,7 +8,6 @@
 
 #include "graphicelement.h"
 
-#include <QDrag>
 #include <QLabel>
 
 class Label : public QLabel

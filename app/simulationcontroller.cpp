@@ -6,6 +6,7 @@
 #include "element/clock.h"
 #include "elementfactory.h"
 #include "elementmapping.h"
+#include "globalproperties.h"
 #include "graphicelement.h"
 #include "ic.h"
 #include "icmapping.h"

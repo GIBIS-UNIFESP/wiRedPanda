@@ -13,7 +13,7 @@ class InputVcc : public GraphicElement
 public:
     explicit InputVcc(QGraphicsItem *parent = nullptr);
     ~InputVcc() override = default;
-    void setSkin(bool defaultSkin, QString filename) override;
+    void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
 #endif /* INPUTVCC_H */

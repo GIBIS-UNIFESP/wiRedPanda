@@ -6,7 +6,8 @@
 And::And(QGraphicsItem *parent)
     : GraphicElement(ElementType::AND, ElementGroup::GATE, 2, 8, 1, 1, parent)
 {
-    pixmapSkinName.append(":/basic/and.png");
+    pixmapSkinName = {":/basic/and.png"};
+
     setOutputsOnTop(true);
     setPixmap(pixmapSkinName[0]);
     updatePorts();
@@ -15,7 +16,7 @@ And::And(QGraphicsItem *parent)
     setToolTip("AND");
 }
 
-void And::setSkin(bool defaultSkin, QString filename)
+void And::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin)
         pixmapSkinName[0] = ":/basic/and.png";

@@ -8,6 +8,7 @@
 
 #include <QApplication>
 #include <QDebug>
+#include <QGraphicsItem>
 
 #include "editor.h"
 #include "globalproperties.h"

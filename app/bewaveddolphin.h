@@ -142,10 +142,10 @@ private:
     void paste(QItemSelection &ranges, QDataStream &ds);
     int sectionFirstColumn(const QItemSelection &ranges);
     int sectionFirstRow(const QItemSelection &ranges);
-    bool save(QString &fname);
+    bool save(const QString &fname);
     void save(QDataStream &ds);
     void save(QSaveFile &fl);
-    bool load(QString fname);
+    bool load(const QString &fname);
     void load(QDataStream &ds);
     void load(QFile &fl);
     void drawPixMaps();

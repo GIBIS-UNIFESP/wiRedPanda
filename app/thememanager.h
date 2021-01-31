@@ -43,7 +43,7 @@ public:
     QColor qnePort_output_pen;
     QColor qnePort_output_brush;
 
-    void setTheme(Theme thm);
+    void setTheme(const Theme &thm);
 };
 
 class ThemeManager : public QObject
@@ -60,7 +60,7 @@ public:
     explicit ThemeManager(QObject *parent = nullptr);
 
     QString currentTheme() const;
-    void setCurrentTheme(Theme theme);
+    void setCurrentTheme(const Theme &theme);
 
     Theme theme() const;
     void setTheme(const Theme &theme);

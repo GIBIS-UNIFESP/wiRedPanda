@@ -27,7 +27,7 @@ public:
     void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
     bool getOn() const override;
     void setOn(bool value) override;
-    void setSkin(bool defaultSkin, QString filename) override;
+    void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
 #endif /* INPUTSWITCH_H */

@@ -6,10 +6,7 @@
 #ifndef COMMANDS_H
 #define COMMANDS_H
 
-#include <memory>
-
-#include <QApplication>
-#include <QGraphicsItem>
+#include <QCoreApplication>
 #include <QList>
 #include <QPointF>
 #include <QUndoCommand>
@@ -20,6 +17,7 @@
 class Scene;
 class Editor;
 class GraphicElement;
+class QGraphicsItem;
 
 void storeIds( const QList< QGraphicsItem* > &items, QVector< int > &ids );
 void storeOtherIds( const QList< QGraphicsItem* > &connections, const QVector< int > &ids, QVector< int > &otherIds );

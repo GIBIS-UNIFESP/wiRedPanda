@@ -60,7 +60,7 @@ void Buzzer::refresh()
     }
 }
 
-void Buzzer::setAudio(QString note)
+void Buzzer::setAudio(const QString &note)
 {
     m_audio.setSource(QUrl::fromLocalFile(QString(":output/audio/%1.wav").arg(note)));
     m_audio.setVolume(0.35);
@@ -110,7 +110,7 @@ void Buzzer::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double ver
     }
 }
 
-void Buzzer::setSkin(bool defaultSkin, QString filename)
+void Buzzer::setSkin(bool defaultSkin, const QString &filename)
 {
     if (this->play > 0) {
         this->play = 1;
@@ -125,27 +125,3 @@ void Buzzer::setSkin(bool defaultSkin, QString filename)
         //      std::cerr << "Filename: " << alternativeSkins[ play ].toStdString() << '\n';
     }
 }
-
-// Previous version:
-// void Buzzer::setSkin( bool defaultSkin, QString filename ) {
-//  if( defaultSkin ) {
-//    if( play == 0 ) {
-//      pixmapSkinName[ 0 ] = ":/output/BuzzerOff.png";
-//      setPixmap( pixmapSkinName[ 0 ] );
-//    }
-//    else {
-//      pixmapSkinName[ 1 ] = ":/output/BuzzerOn.png";
-//      setPixmap( pixmapSkinName[ 1 ] );
-//    }
-//  }
-//  else {
-//    if( play == 0 ) {
-//      pixmapSkinName[ 0 ] = filename;
-//      setPixmap( pixmapSkinName[ 0 ] );
-//    }
-//    else {
-//      pixmapSkinName[ 1 ] = filename;
-//      setPixmap( pixmapSkinName[ 1 ] );
-//    }
-//  }
-//}
