@@ -66,11 +66,12 @@ void Clock::save(QDataStream &ds) const
 void Clock::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
 {
     GraphicElement::load(ds, portMap, version);
-    if (version >= 1.1) {
-        float freq;
-        ds >> freq;
-        setFrequency(freq);
+    if (version < 1.1) {
+        return;
     }
+    float freq;
+    ds >> freq;
+    setFrequency(freq);
 }
 
 float Clock::getFrequency() const
