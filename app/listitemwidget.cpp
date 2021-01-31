@@ -4,9 +4,7 @@
 #include "listitemwidget.h"
 
 #include <QFileInfo>
-#include <QFrame>
 #include <QHBoxLayout>
-#include <QVariant>
 
 #include "elementfactory.h"
 #include "label.h"
