@@ -6,24 +6,23 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QDialog>
 #include <QDir>
 #include <QFileInfo>
-#include <QGraphicsScene>
 #include <QMainWindow>
-#include <QSpacerItem>
 #include <QTemporaryFile>
-#include <QTranslator>
-#include <QUndoView>
 
-#include "bewaveddolphin.h"
-#include "editor.h"
-#include "graphicsview.h"
-#include "graphicsviewzoom.h"
-#include "label.h"
-#include "listitemwidget.h"
 #include "recentfilescontroller.h"
-#include "scene.h"
+
+class QDialog;
+class QUndoView;
+class QSpacerItem;
+class QTranslator;
+
+class BewavedDolphin;
+class Editor;
+class GraphicsView;
+class Label;
+class ListItemWidget;
 
 namespace Ui
 {
