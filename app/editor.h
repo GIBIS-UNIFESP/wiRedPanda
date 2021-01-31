@@ -61,29 +61,29 @@ public slots:
     void mute(bool _mute = true);
 
 private:
-    QUndoStack *undoStack;
-    Scene *scene;
+    QUndoStack *m_undoStack;
+    Scene *m_scene;
     QList<QGraphicsItem *> itemsAt(QPointF pos);
     QGraphicsItem *itemAt(QPointF pos);
-    int _editedConn_id;
-    int _hoverPortElm_id;
-    int _hoverPort_nbr;
-    ElementEditor *_elementEditor;
-    ICManager *icManager;
+    int m_editedConn_id;
+    int m_hoverPortElm_id;
+    int m_hoverPort_nbr;
+    ElementEditor *m_elementEditor;
+    ICManager *m_icManager;
 
-    bool markingSelectionIC;
-    QGraphicsRectItem *selectionRect;
-    QPointF selectionStartPoint;
-    SimulationController *simulationController;
-    QPointF mousePos, lastPos;
+    bool m_markingSelectionIC;
+    QGraphicsRectItem *m_selectionRect;
+    QPointF m_selectionStartPoint;
+    SimulationController *m_simulationController;
+    QPointF m_mousePos, m_lastPos;
     void addItem(QGraphicsItem *item);
-    bool draggingElement;
-    QList<GraphicElement *> movedElements;
-    QList<QPointF> oldPositions;
-    MainWindow *mainWindow;
+    bool m_draggingElement;
+    QList<GraphicElement *> m_movedElements;
+    QList<QPointF> m_oldPositions;
+    MainWindow *m_mainWindow;
     /*  bool mControlKeyPressed; */
-    bool mShowWires;
-    bool mShowGates;
+    bool m_showWires;
+    bool m_showGates;
 
     bool mousePressEvt(QGraphicsSceneMouseEvent *mouseEvt);
     bool mouseMoveEvt(QGraphicsSceneMouseEvent *mouseEvt);
