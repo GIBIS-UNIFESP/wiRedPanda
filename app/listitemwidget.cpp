@@ -11,12 +11,12 @@
 
 Label *ListItemWidget::getLabel() const
 {
-    return label;
+    return m_label;
 }
 
 void ListItemWidget::mousePressEvent(QMouseEvent *)
 {
-    label->startDrag();
+    m_label->startDrag();
 }
 
 ListItemWidget::ListItemWidget(const QPixmap &pixmap, ElementType type, const QString &icFileName, QWidget *parent)
@@ -33,27 +33,27 @@ ListItemWidget::ListItemWidget(const QPixmap &pixmap, ElementType type, const QS
 
     setLayout(itemLayout);
 
-    label = new Label(parent);
-    label->setPixmapData(pixmap);
-    label->setName(name);
-    label->setAuxData(icFileName);
-    label->setElementType(type);
+    m_label = new Label(parent);
+    m_label->setPixmapData(pixmap);
+    m_label->setName(name);
+    m_label->setAuxData(icFileName);
+    m_label->setElementType(type);
 
-    nameLabel = new QLabel(name, this);
-    nameLabel->setText(name);
-    itemLayout->addWidget(label);
+    m_nameLabel = new QLabel(name, this);
+    m_nameLabel->setText(name);
+    itemLayout->addWidget(m_label);
     itemLayout->addStretch();
-    itemLayout->addWidget(nameLabel);
+    itemLayout->addWidget(m_nameLabel);
     itemLayout->addStretch();
     itemLayout->setMargin(0);
 }
 
 void ListItemWidget::updateName()
 {
-    ElementType type = label->elementType();
+    ElementType type = m_label->elementType();
     if (type != ElementType::IC) {
         QString name = ElementFactory::translatedName(type);
-        nameLabel->setText(name);
-        label->setName(name);
+        m_nameLabel->setText(name);
+        m_label->setName(name);
     }
 }
