@@ -1,30 +1,38 @@
+/*
+ * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #ifndef CLOCKDIALOG_H
 #define CLOCKDIALOG_H
 
 #include <QDialog>
-#include "ui_clockDialog.h"
 
-namespace Ui {
-  class clockDialog;
+namespace Ui
+{
+class clockDialog;
 }
 
-class clockDialog : public QDialog {
-  Q_OBJECT
+//!
+//! \brief The clockDialog class handles dialogs for setting the frequency at which a clock ticks
+//!
+class clockDialog : public QDialog
+{
+    Q_OBJECT
 
 public:
-  explicit clockDialog( QWidget *parent = nullptr );
-  int getFrequency( );
-  ~clockDialog( );
+    explicit clockDialog(QWidget *parent = nullptr);
+    //! Returns the clock frequency (in Hz)
+    int getFrequency();
+    ~clockDialog() override;
 
 private slots:
-  void on_cancelPushButton_clicked();
-
-  void on_okPushButton_clicked();
+    void cancelRequested();
+    void okRequested();
 
 private:
-  Ui::clockDialog *ui;
-  bool canceled;
-
+    Ui::clockDialog * m_ui;
+    bool m_canceled;
 };
 
 #endif /* CLOCKDIALOG_H */

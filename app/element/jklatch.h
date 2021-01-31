@@ -1,22 +1,22 @@
+/*
+ * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #ifndef JKLATCH_H
 #define JKLATCH_H
 
 #include "graphicelement.h"
 
-class JKLatch : public GraphicElement {
+class JKLatch : public GraphicElement
+{
 public:
-  explicit JKLatch( QGraphicsItem *parent = nullptr );
-  virtual ~JKLatch( ) override = default;
+    explicit JKLatch(QGraphicsItem *parent = nullptr);
+    ~JKLatch() override = default;
 
-  /* GraphicElement interface */
+    /* GraphicElement interface */
 public:
-  virtual ElementType elementType( ) override {
-    return( ElementType::JKLATCH );
-  }
-  virtual ElementGroup elementGroup( ) override {
-    return( ElementGroup::MEMORY );
-  }
-  virtual void updatePorts( ) override;
+    void updatePorts() override;
 };
 
 #endif /* JKLATCH_H */
