@@ -6,10 +6,14 @@
 #ifndef SERIALIZATIONFUNCTIONS_H
 #define SERIALIZATIONFUNCTIONS_H
 
-#include "qneport.h"
+#include <QMap>
+#include <QRectF>
+#include <QString>
 
 class QGraphicsItem;
 class Editor;
+class QNEPort;
+class Scene;
 
 class SerializationFunctions
 {
