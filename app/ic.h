@@ -1,9 +1,14 @@
+/*
+ * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #ifndef IC_H
 #define IC_H
 
-#include "icprototype.h"
 #include "elementfactory.h"
 #include "graphicelement.h"
+#include "icprototype.h"
 #include "scene.h"
 #include "simulationcontroller.h"
 
@@ -14,42 +19,36 @@ class Editor;
 
 class ICPrototype;
 
-class IC : public GraphicElement {
-  Q_OBJECT
+class IC : public GraphicElement
+{
+    Q_OBJECT
 
-  friend class CodeGenerator;
+    friend class CodeGenerator;
+
 public:
-  IC( QGraphicsItem *parent = nullptr );
-  virtual ~IC( ) override;
+    IC(QGraphicsItem *parent = nullptr);
+    ~IC() override;
 
-  /* GraphicElement interface */
-  virtual ElementType elementType( ) override {
-    return( ElementType::IC );
-  }
-  virtual ElementGroup elementGroup( ) override {
-    return( ElementGroup::IC );
-  }
-  void save( QDataStream &ds ) const override;
-  void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version ) override;
-  void loadFile( QString fname );
-  QString getFile( ) const;
-  bool setFile( QString newFileName );
-  ICPrototype* getPrototype( );
-  QVector< GraphicElement* > getElements( ) const;
-  void setSkin(bool defaultSkin, QString filename) override;
+    void save(QDataStream &ds) const override;
+    void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
+    void loadFile(QString fname);
+    QString getFile() const;
+    bool setFile(QString newFileName);
+    ICPrototype *getPrototype();
+    QVector<GraphicElement *> getElements() const;
+    void setSkin(bool defaultSkin, QString filename) override;
 
 private:
-  Editor *editor;
-  QString m_file;
+    Editor *editor;
+    QString m_file;
 
+    void loadInputs(ICPrototype *prototype);
 
-  void loadInputs( ICPrototype *prototype );
+    void loadOutputs(ICPrototype *prototype);
 
-  void loadOutputs( ICPrototype *prototype );
-
-  /* QGraphicsItem interface */
+    /* QGraphicsItem interface */
 protected:
-  void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) override;
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 };
 
 #endif /* IC_H */

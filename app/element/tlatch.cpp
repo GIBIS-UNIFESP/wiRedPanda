@@ -1,6 +1,9 @@
+// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "tlatch.h"
 
-//TLatch::TLatch( QGraphicsItem *parent ) : GraphicElement( 2, 2, 2, 2, parent ) {
+// TLatch::TLatch( QGraphicsItem *parent ) : GraphicElement( 2, 2, 2, 2, parent ) {
 //  setPixmap( ":/memory/T-latch.png" );
 //  setRotatable( false );
 //  updatePorts( );
@@ -11,7 +14,7 @@
 //  output( 1 )->setName( "~Q" );
 //}
 
-//void TLatch::updatePorts( ) {
+// void TLatch::updatePorts( ) {
 //  input( 0 )->setPos( topPosition( ), 13 ); /* T */
 //  input( 1 )->setPos( topPosition( ), 45 ); /* Clock */
 
