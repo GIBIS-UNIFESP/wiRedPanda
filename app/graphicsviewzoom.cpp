@@ -9,9 +9,6 @@
 #include <QScrollBar>
 #include <QtMath>
 
-const double GraphicsViewZoom::maxZoom = 1.5;
-const double GraphicsViewZoom::minZoom = 0.20;
-
 GraphicsViewZoom::GraphicsViewZoom(QGraphicsView *view)
     : QObject(view)
     , _view(view)
