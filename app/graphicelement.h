@@ -9,7 +9,6 @@
 #include <cstdint>
 
 #include <QGraphicsItem>
-#include <QGraphicsPixmapItem>
 #include <QKeySequence>
 
 #include "common.h"
