@@ -3,10 +3,9 @@
 
 #include "label.h"
 
-#include <thread>
-
 #include <QDrag>
-#include <QtWidgets>
+#include <QMimeData>
+#include <QMouseEvent>
 
 #include "elementfactory.h"
 
