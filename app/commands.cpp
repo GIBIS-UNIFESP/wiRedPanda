@@ -119,7 +119,7 @@ void saveitems( QByteArray &itemData, const QList< QGraphicsItem* > &items, cons
   itemData.clear( );
   QDataStream dataStream( &itemData, QIODevice::WriteOnly );
   QList< GraphicElement* > others = findElements( otherIds );
-  for( GraphicElement *elm : qAsConst(others) ) {
+  for( GraphicElement *elm : qAsConst( others ) ) {
     elm->save( dataStream );
   }
   SerializationFunctions::serialize( items, dataStream );
