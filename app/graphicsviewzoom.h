@@ -6,8 +6,8 @@
 #ifndef GRAPHICSVIEWZOOM_H
 #define GRAPHICSVIEWZOOM_H
 
-#include <QGraphicsView>
 #include <QObject>
+#include <QPointF>
 
 /*!
  * This class adds ability to zoom QGraphicsView using mouse wheel. The point under cursor
@@ -40,14 +40,14 @@
  * The default zoom factor base is 1.0015.
  */
 
-#define ZOOMFAC 0.1
+class QGraphicsView;
 
 class GraphicsViewZoom : public QObject
 {
     Q_OBJECT
 public:
-    static const double maxZoom;
-    static const double minZoom;
+    static constexpr double maxZoom = 1.5;
+    static constexpr double minZoom = 0.2;
     explicit GraphicsViewZoom(QGraphicsView *view);
     void gentle_zoom(double factor);
     void set_modifiers(Qt::KeyboardModifiers modifiers);

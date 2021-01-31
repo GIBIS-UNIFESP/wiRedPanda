@@ -3,6 +3,8 @@
 
 #include "jklatch.h"
 
+#include "qneport.h"
+
 JKLatch::JKLatch(QGraphicsItem *parent)
     : GraphicElement(ElementType::JKLATCH, ElementGroup::MEMORY, 2, 2, 2, 2, parent)
 {

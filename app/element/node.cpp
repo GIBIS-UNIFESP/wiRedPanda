@@ -3,6 +3,8 @@
 
 #include "node.h"
 
+#include "qneport.h"
+
 Node::Node(QGraphicsItem *parent)
     : GraphicElement(ElementType::NODE, ElementGroup::GATE, 1, 1, 1, 1, parent)
 {

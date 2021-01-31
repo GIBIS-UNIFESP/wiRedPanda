@@ -3,6 +3,8 @@
 
 #include "dlatch.h"
 
+#include "qneport.h"
+
 DLatch::DLatch(QGraphicsItem *parent)
     : GraphicElement(ElementType::DLATCH, ElementGroup::MEMORY, 2, 2, 2, 2, parent)
 {
