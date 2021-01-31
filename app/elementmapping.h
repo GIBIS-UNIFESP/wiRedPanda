@@ -6,11 +6,8 @@
 #ifndef ELEMENTMAPPING_H
 #define ELEMENTMAPPING_H
 
-#include <QGraphicsScene>
 #include <QHash>
 #include <QMap>
-#include <QObject>
-#include <QTimer>
 
 #include "graphicelement.h"
 #include "input.h"
