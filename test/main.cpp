@@ -3,6 +3,9 @@
 
 #include <QtTest>
 
+#include <iostream>
+
+#include "common.h"
 #include "testcommands.h"
 #include "testelements.h"
 #include "testfiles.h"
