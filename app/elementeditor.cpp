@@ -7,14 +7,14 @@
 
 #include <QDebug>
 #include <QFileDialog>
-#include <QGraphicsView>
 #include <QKeyEvent>
 #include <QMenu>
-#include <QUndoCommand>
 
 #include "commands.h"
 #include "editor.h"
+#include "elementfactory.h"
 #include "ui_elementeditor.h"
+#include "scene.h"
 
 ElementEditor::ElementEditor(QWidget *parent)
     : QWidget(parent)
