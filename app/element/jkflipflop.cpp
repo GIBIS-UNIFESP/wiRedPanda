@@ -3,6 +3,8 @@
 
 #include "jkflipflop.h"
 
+#include "qneport.h"
+
 JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::JKFLIPFLOP, ElementGroup::MEMORY, 5, 5, 2, 2, parent)
 {

@@ -27,7 +27,6 @@
 #define QNEMAINWINDOW_H
 
 #include <QMainWindow>
-#include <QtWidgets>
 
 class QNodesEditor;
 

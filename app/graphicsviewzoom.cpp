@@ -5,12 +5,12 @@
 
 #include <QApplication>
 #include <QDebug>
+#include <QGraphicsView>
 #include <QMouseEvent>
 #include <QScrollBar>
 #include <QtMath>
 
-const double GraphicsViewZoom::maxZoom = 1.5;
-const double GraphicsViewZoom::minZoom = 0.20;
+#define ZOOMFAC 0.1
 
 GraphicsViewZoom::GraphicsViewZoom(QGraphicsView *view)
     : QObject(view)

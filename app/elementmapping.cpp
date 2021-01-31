@@ -7,8 +7,11 @@
 #include "icmanager.h"
 #include "icmapping.h"
 #include "icprototype.h"
+#include "input.h"
+#include "logicelement.h"
 #include "graphicelement.h"
 #include "qneconnection.h"
+#include "qneport.h"
 
 #include "logicelement/logicand.h"
 #include "logicelement/logicdemux.h"
@@ -26,8 +29,6 @@
 #include "logicelement/logictflipflop.h"
 #include "logicelement/logicxnor.h"
 #include "logicelement/logicxor.h"
-
-#include <QDebug>
 
 ElementMapping::ElementMapping(const QVector<GraphicElement *> &elms, QString file)
     : currentFile(file)

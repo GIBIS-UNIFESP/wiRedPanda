@@ -20,11 +20,14 @@
 #include <QShortcut>
 #include <QSpacerItem>
 #include <QTranslator>
+#include <QUndoStack>
 #include <QUndoView>
 
 #include "arduino/codegenerator.h"
 #include "bewaveddolphin.h"
+#include "common.h"
 #include "editor.h"
+#include "elementfactory.h"
 #include "elementmapping.h"
 #include "globalproperties.h"
 #include "graphicsview.h"
@@ -32,6 +35,7 @@
 #include "label.h"
 #include "listitemwidget.h"
 #include "thememanager.h"
+#include "simulationcontroller.h"
 
 #include "ui_mainwindow.h"
 

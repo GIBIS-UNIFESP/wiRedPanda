@@ -25,12 +25,14 @@
 #include "element/srflipflop.h"
 #include "element/tflipflop.h"
 #include "ic.h"
-//#include "element/tlatch.h"
+#include "itemwithid.h"
 #include "element/mux.h"
 #include "element/node.h"
 #include "element/xnor.h"
 #include "element/xor.h"
+#include "common.h"
 #include "elementfactory.h"
+#include "graphicelement.h"
 #include "qneconnection.h"
 
 ElementFactory *ElementFactory::instance = new ElementFactory();

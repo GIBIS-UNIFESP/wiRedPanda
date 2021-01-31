@@ -6,7 +6,7 @@
 #ifndef LISTITEMWIDGET_H
 #define LISTITEMWIDGET_H
 
-#include <QWidget>
+#include <QFrame>
 
 #include "label.h"
 

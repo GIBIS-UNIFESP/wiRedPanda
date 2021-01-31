@@ -8,6 +8,8 @@
 
 #include "graphicelement.h"
 
+class QNEPort;
+
 class Display : public GraphicElement
 {
 public:

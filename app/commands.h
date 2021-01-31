@@ -7,17 +7,19 @@
 #define COMMANDS_H
 
 #include <QCoreApplication>
+#include <QGraphicsScene>
 #include <QList>
 #include <QPointF>
 #include <QUndoCommand>
 
-#include "node.h"
-#include "qneconnection.h"
+#include "elementtype.h"
+#include "globalproperties.h"
 
 class Scene;
 class Editor;
 class GraphicElement;
 class QGraphicsItem;
+class QNEConnection;
 
 void storeIds( const QList< QGraphicsItem* > &items, QVector< int > &ids );
 void storeOtherIds( const QList< QGraphicsItem* > &connections, const QVector< int > &ids, QVector< int > &otherIds );

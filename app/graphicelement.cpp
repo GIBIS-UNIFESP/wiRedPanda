@@ -4,17 +4,16 @@
 #include <iostream>
 #include <stdexcept>
 
-#include <QDebug>
 #include <QFileInfo>
-#include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
-#include <QMessageBox>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QPixmap>
 
+#include "common.h"
 #include "graphicelement.h"
 #include "nodes/qneconnection.h"
+#include "nodes/qneport.h"
 #include "scene.h"
 #include "thememanager.h"
 
