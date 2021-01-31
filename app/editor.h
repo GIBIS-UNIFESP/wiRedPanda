@@ -49,28 +49,70 @@ public:
      * @brief load: loads the project through a binary data stream.
      */
     void load(QDataStream &ds);
+    //!
+    //! \brief cut copies a selection of items to the given data stream and then issues a DeleteItemsCommand to remove those items from view
+    //! \param items are the elements that will be removed from the editor
+    //! \param ds is the data stream to where the items will be copied to
+    //!
     void cut(const QList<QGraphicsItem *> &items, QDataStream &ds);
+    //!
+    //! \brief copy copies a list of items to a given data stream
+    //!
     void copy(const QList<QGraphicsItem *> &items, QDataStream &ds);
+    //!
+    //! \brief paste moves a list of items from a data stream into the editor
+    //!
     void paste(QDataStream &ds);
+    //! Selects all elements on the editor. Issued when the user presses Ctrl + A.
     void selectAll();
 
 signals:
+    //! Signals a QWidget::scroll
     void scroll(int x, int y);
+    //! Autosaves the progress at every new change in the circuit
     void circuitHasChanged();
 
 public slots:
+    //! Clears the entire editor, that is, clears the simulation controller, the IC manager, scene, undo stack and element factory.
     void clear();
+    //!
+    //! \brief showWires regulates the visibility of wires
+    //! \param checked - If checked is true, then the wires are visible. If not, then the wires are invisible.
+    //!
     void showWires(bool checked);
+    //!
+    //! \brief showGates regulates the visibility of gates
+    //! \param checked - If checked is true, then the gates are visible. If not, then the gates are invisible.
+    //!
     void showGates(bool checked);
+    //!
+    //! \brief rotate rotates the editor's selected items by a given amount of degrees, through a RotateCommand
+    //! \param rotateRight is the amount of degrees that the selected elements are going to rotate, in clockwise motion.
+    //!
     void rotate(bool rotateRight);
 
     void receiveCommand(QUndoCommand *cmd);
+    //!
+    //! \brief copyAction copies the editor's selected items to clipboard
+    //!
     void copyAction();
+    //!
+    //! \brief cutAction copies the editor's selected items to clipboard and then remove them from view
+    //!
     void cutAction();
+    //!
+    //! \brief pasteAction inserts items into view from the clipboard
+    //!
     void pasteAction();
+    //!
+    //! \brief deleteAction deletes the selected items
+    //!
     void deleteAction();
     void updateTheme();
 
+    //!
+    //! \brief mute mutes or unmutes all buzzers, depending from the flag passed onto the methods
+    //!
     void mute(bool _mute = true);
 
 private:
