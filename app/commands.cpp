@@ -110,7 +110,7 @@ QList< GraphicElement* > findElements( const QVector< int > &ids ) {
     }
   }
   if( items.size( ) != ids.size( ) ) {
-    throw std::runtime_error( ERRORMSG( "One or more elements was not found on the scene." ) );
+    throw std::runtime_error( ERRORMSG( "One or more elements were not found on the scene." ) );
   }
   return( items );
 }
@@ -145,12 +145,9 @@ QList< QGraphicsItem* > loadItems( QByteArray &itemData, const QVector< int > &i
   QDataStream dataStream( &itemData, QIODevice::ReadOnly );
   double version = GlobalProperties::version;
   QMap< quint64, QNEPort* > portMap;
-  for( GraphicElement *elm : qAsConst(otherElms) ) {
+  for( GraphicElement *elm : qAsConst( otherElms ) ) {
     elm->load( dataStream, portMap, version );
   }
-  /*
-   * Warning: This portMap is not the same as the previous one.
-  */
   /*
    * Assuming that all connections are stored after the elements, we will deserialize the elements first.
    * We will store one additional information: The element IDs!
