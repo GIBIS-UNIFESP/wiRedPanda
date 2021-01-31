@@ -47,17 +47,15 @@ Buzzer::Buzzer(QGraphicsItem *parent)
 
 void Buzzer::refresh()
 {
-    if (isValid()) {
-        bool value = m_inputs.first()->value();
-        if (value == 1) {
-            playbuzzer();
+    if (!isValid()) {
+        stopbuzzer();
+        return;
+    }
 
-        } else {
-            if (m_play == 1) {
-                stopbuzzer();
-            }
-        }
-    } else {
+    const bool value = m_inputs.first()->value();
+    if (value == 1) {
+        playbuzzer();
+    } else if (m_play == 1) {
         stopbuzzer();
     }
 }
