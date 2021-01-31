@@ -30,19 +30,19 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     setHasAudio(true);
     //  setPixmap( pixmapSkinName[ 0 ] );
     setPixmap(defaultSkins[0]);
-    this->alternativeSkins = QVector<QString>({defaultSkins[0], defaultSkins[1]});
+    this->m_alternativeSkins = QVector<QString>({defaultSkins[0], defaultSkins[1]});
     updatePorts();
     setCanChangeSkin(true);
     setHasLabel(true);
     // Let's reserve space for alternativeSkins :D
     // All is well, rite?
-    alternativeSkins.resize(2);
+    m_alternativeSkins.resize(2);
     setPortName("Buzzer");
     setLabel(objectName() + "_" + QString::number(Buzzer::current_id_number));
     ++Buzzer::current_id_number;
     usingDefaultSkin = true;
     setAudio("C6");
-    play = 0;
+    m_play = 0;
 }
 
 void Buzzer::refresh()
@@ -53,7 +53,7 @@ void Buzzer::refresh()
             playbuzzer();
 
         } else {
-            if (play == 1) {
+            if (m_play == 1) {
                 stopbuzzer();
             }
         }
@@ -82,17 +82,17 @@ void Buzzer::mute(bool _mute)
 
 void Buzzer::playbuzzer()
 {
-    if (play == 0) {
-        usingDefaultSkin ? setPixmap(defaultSkins[1]) : setPixmap(alternativeSkins[1]);
+    if (m_play == 0) {
+        usingDefaultSkin ? setPixmap(defaultSkins[1]) : setPixmap(m_alternativeSkins[1]);
         m_audio.play();
-        play = 1;
+        m_play = 1;
     }
 }
 
 void Buzzer::stopbuzzer()
 {
-    usingDefaultSkin ? setPixmap(defaultSkins[0]) : setPixmap(alternativeSkins[0]);
-    play = 0;
+    usingDefaultSkin ? setPixmap(defaultSkins[0]) : setPixmap(m_alternativeSkins[0]);
+    m_play = 0;
     m_audio.stop();
 }
 
@@ -114,16 +114,16 @@ void Buzzer::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double ver
 
 void Buzzer::setSkin(bool defaultSkin, const QString &filename)
 {
-    if (this->play > 0) {
-        this->play = 1;
+    if (this->m_play > 0) {
+        this->m_play = 1;
     }
     if (defaultSkin) {
         usingDefaultSkin = true;
-        setPixmap(defaultSkins[play]);
+        setPixmap(defaultSkins[m_play]);
     } else {
         usingDefaultSkin = false;
-        alternativeSkins[play] = filename;
-        setPixmap(alternativeSkins[play]);
+        m_alternativeSkins[m_play] = filename;
+        setPixmap(m_alternativeSkins[m_play]);
         //      std::cerr << "Filename: " << alternativeSkins[ play ].toStdString() << '\n';
     }
 }
