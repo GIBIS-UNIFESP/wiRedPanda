@@ -35,12 +35,12 @@ public:
     /**
      * @brief saveLocalIC: saves an IC and its internal ICs recursively into the same local project subfolder.
      */
-    bool saveLocalIC(IC *ic, QString newICPath);
+    bool saveLocalIC(IC *ic, const QString& newICPath);
     /**
      * @brief saveLocal: saves a project locally in a given directory so that all ICs and skins are also saved in local subfolders.
      * This is very useful to export projects that use ICs from other folders or projects.
      */
-    bool saveLocal(QString newPath);
+    bool saveLocal(QString QString& newPath);
     /**
      * @brief save: saves the project through a binary data stream.
      */

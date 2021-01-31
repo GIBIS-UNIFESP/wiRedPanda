@@ -27,19 +27,19 @@ public:
     ~ICManager() override;
     void clear();
     bool loadIC(IC *ic, QString fname, QString parentFile = "");
-    ICPrototype *getPrototype(QString fname);
+    ICPrototype *getPrototype(const QString& fname);
     static ICManager *instance();
 
-    bool updatePrototypeFilePathName(QString sourceName, QString targetName);
+    bool updatePrototypeFilePathName(const QString& sourceName, const QString& targetName);
 signals:
     void updatedIC();
 
 private slots:
-    void reloadFile(QString bname);
+    void reloadFile(const QString& bname);
 
 private:
-    bool tryLoadFile(QString &fname, QString parentFile);
-    void loadFile(QString &fname, QString parentFile);
+    bool tryLoadFile(QString &fname, const QString& parentFile);
+    void loadFile(QString &fname, const QString& parentFile);
     bool warnAboutFileChange(const QString &fileName);
 
     static ICManager *globalICManager;
