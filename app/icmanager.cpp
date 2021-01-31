@@ -4,11 +4,11 @@
 #include "icmanager.h"
 
 #include <QApplication>
-#include <QDebug>
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QSettings>
 
+#include "common.h"
 #include "filehelper.h"
 #include "ic.h"
 #include "icnotfoundexception.h"
