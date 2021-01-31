@@ -17,8 +17,10 @@
 #include <QSettings>
 #include <QValueAxis>
 
+#include "elementfactory.h"
 #include "elementmapping.h"
 #include "scstop.h"
+#include "simulationcontroller.h"
 #include "ui_simplewaveform.h"
 
 #include "input.h"
