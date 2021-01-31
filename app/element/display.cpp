@@ -3,7 +3,6 @@
 
 #include "display.h"
 
-#include <QDebug>
 #include <QPainter>
 #include <QPixmap>
 
