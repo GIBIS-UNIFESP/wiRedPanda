@@ -8,8 +8,6 @@
 
 #include "logicelement.h"
 
-#include <array>
-
 #include <QObject>
 #include <QTest>
 
