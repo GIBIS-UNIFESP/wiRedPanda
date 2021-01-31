@@ -18,7 +18,7 @@ public:
     explicit TFlipFlop(QGraphicsItem *parent = nullptr);
     ~TFlipFlop() override = default;
     void updatePorts() override;
-    void setSkin(bool defaultSkin, QString filename) override;
+    void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
 #endif /* TFLIPFLOP_H */

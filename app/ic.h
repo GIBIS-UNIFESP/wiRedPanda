@@ -28,12 +28,12 @@ public:
 
     void save(QDataStream &ds) const override;
     void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
-    void loadFile(QString fname);
+    void loadFile(const QString &fname);
     QString getFile() const;
-    bool setFile(QString newFileName);
+    bool setFile(const QString &newFileName);
     ICPrototype *getPrototype();
     QVector<GraphicElement *> getElements() const;
-    void setSkin(bool defaultSkin, QString filename) override;
+    void setSkin(bool defaultSkin, const QString &filename) override;
 
 private:
     Editor *editor;

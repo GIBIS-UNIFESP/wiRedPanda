@@ -13,7 +13,7 @@ class Xnor : public GraphicElement
 public:
     explicit Xnor(QGraphicsItem *parent = nullptr);
     ~Xnor() override = default;
-    void setSkin(bool defaultSkin, QString filename) override;
+    void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
 #endif /* Xnor_H */

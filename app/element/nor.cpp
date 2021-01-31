@@ -14,7 +14,7 @@ Nor::Nor(QGraphicsItem *parent)
     setPortName("NOR");
 }
 
-void Nor::setSkin(bool defaultSkin, QString filename)
+void Nor::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         pixmapSkinName[0] = ":/basic/nor.png";

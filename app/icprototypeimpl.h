@@ -23,7 +23,7 @@ public:
     QVector<QNEPort *> outputs;
 
     ~ICPrototypeImpl();
-    void loadFile(QString fileName);
+    void loadFile(const QString &fileName);
     void clear();
 
     int getInputSize() const;
@@ -33,7 +33,7 @@ public:
 
     void loadInputElement(GraphicElement *elm);
     void loadOutputElement(GraphicElement *elm);
-    bool updateLocalIC(QString fileName, QString icDirName);
+    bool updateLocalIC(const QString &fileName, const QString &icDirName);
 
 private:
     void sortPorts(QVector<QNEPort *> &map);

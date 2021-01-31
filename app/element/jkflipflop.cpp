@@ -49,7 +49,7 @@ void JKFlipFlop::updatePorts()
     output(1)->setPos(bottomPosition(), 45); /* ~Q */
 }
 
-void JKFlipFlop::setSkin(bool defaultSkin, QString filename)
+void JKFlipFlop::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         pixmapSkinName[0] = ":/memory/JK-flipflop.png";

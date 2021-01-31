@@ -92,7 +92,7 @@ void Led::refresh()
     }
 }
 
-void Led::setColor(QString color)
+void Led::setColor(const QString &color)
 {
     m_color = color;
     if (color == "White") {
@@ -142,7 +142,7 @@ void Led::updatePorts()
     GraphicElement::updatePorts();
 }
 
-void Led::setSkin(bool defaultSkin, QString filename)
+void Led::setSkin(bool defaultSkin, const QString &filename)
 {
     int idx = 0;
     if (isValid()) {

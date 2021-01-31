@@ -16,7 +16,7 @@ InputVcc::InputVcc(QGraphicsItem *parent)
     m_outputs.first()->setValue(true);
 }
 
-void InputVcc::setSkin(bool defaultSkin, QString filename)
+void InputVcc::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         pixmapSkinName[0] = ":/input/1.png";

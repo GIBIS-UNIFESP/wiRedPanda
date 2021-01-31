@@ -15,7 +15,7 @@ Or::Or(QGraphicsItem *parent)
     setPortName("OR");
 }
 
-void Or::setSkin(bool defaultSkin, QString filename)
+void Or::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         pixmapSkinName[0] = ":/basic/or.png";

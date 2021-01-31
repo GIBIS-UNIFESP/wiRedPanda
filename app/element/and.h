@@ -14,7 +14,7 @@ public:
     explicit And(QGraphicsItem *parent = nullptr);
     ~And() override = default;
 
-    void setSkin(bool defaultSkin, QString filename) override;
+    void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
 #endif /* AND_H */

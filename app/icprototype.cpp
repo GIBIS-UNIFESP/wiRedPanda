@@ -13,7 +13,7 @@ ICPrototype::ICPrototype(const QString &fileName)
 {
 }
 
-void ICPrototype::fileName(QString newFileName)
+void ICPrototype::fileName(const QString &newFileName)
 {
     m_fileName = newFileName;
 }
@@ -42,7 +42,7 @@ void ICPrototype::removeICObserver(IC *ic)
     }
 }
 
-bool ICPrototype::updateLocalIC(QString fileName, QString dirName)
+bool ICPrototype::updateLocalIC(const QString &fileName, const QString &dirName)
 {
     return ICImpl.updateLocalIC(fileName, dirName);
 }

@@ -17,7 +17,7 @@ public:
     static double version;
     static bool soundEnabled;
 
-    static double toDouble(QString txtVersion, bool *ok);
+    static double toDouble(const QString &txtVersion, bool *ok);
 };
 
 #endif // GLOBALPROPERTIES_H

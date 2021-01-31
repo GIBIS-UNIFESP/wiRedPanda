@@ -107,7 +107,7 @@ QString Clock::genericProperties()
     return QString("%1 Hz").arg(static_cast<double>(getFrequency()));
 }
 
-void Clock::setSkin(bool defaultSkin, QString filename)
+void Clock::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         if (!on) {
