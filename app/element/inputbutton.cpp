@@ -3,7 +3,6 @@
 
 #include "inputbutton.h"
 
-#include <QDebug>
 #include <QGraphicsSceneMouseEvent>
 
 int InputButton::current_id_number = 0;
