@@ -3,6 +3,8 @@
 
 #include "inputvcc.h"
 
+#include "qneport.h"
+
 InputVcc::InputVcc(QGraphicsItem *parent)
     : GraphicElement(ElementType::VCC, ElementGroup::STATICINPUT, 0, 0, 1, 1, parent)
 {
