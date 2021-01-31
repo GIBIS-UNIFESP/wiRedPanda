@@ -13,6 +13,9 @@ class Editor;
 
 class ICPrototype;
 
+//!
+//! \brief The IC class
+//!
 class IC : public GraphicElement
 {
     Q_OBJECT
@@ -23,13 +26,26 @@ public:
     IC(QGraphicsItem *parent = nullptr);
     ~IC() override;
 
+    //!
+    //! \brief save saves the IC's internal file to the given data stream
+    //!
     void save(QDataStream &ds) const override;
     void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
+    //!
+    //! \brief loadFile is used when an IC is dragged into the editor
+    //!
     void loadFile(const QString &fname);
+    //! \brief getFile returns this->m_file
     QString getFile() const;
     bool setFile(const QString &newFileName);
     ICPrototype *getPrototype();
+    // WARNING - TODO: getElements is unimplemented
     QVector<GraphicElement *> getElements() const;
+    //!
+    //! \brief setSkin changes the skin (or icon) of an IC in the editor
+    //! \param defaultSkin, if true, makes the IC display its default skin.
+    //! \param filename is the IC's new skin if defaultSkin is false.
+    //!
     void setSkin(bool defaultSkin, const QString &filename) override;
 
 private:

@@ -91,6 +91,10 @@ public slots:
     //!
     void rotate(bool rotateRight);
 
+    // TODO: perhaps receiveCommand should have a better name
+    //!
+    //! \brief receiveCommand adds a command into the editor's undo stack
+    //!
     void receiveCommand(QUndoCommand *cmd);
     //!
     //! \brief copyAction copies the editor's selected items to clipboard
