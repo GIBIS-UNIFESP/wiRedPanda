@@ -9,14 +9,14 @@
 #include <QHash>
 #include <QMap>
 
-#include "input.h"
-#include "logicelement.h"
 #include "logicelement/logicinput.h"
-#include "qneport.h"
 
 class Clock;
 class GraphicElement;
 class IC;
+class Input;
+class LogicElement;
+class QNEPort;
 
 class ElementMapping;
 class ICMapping;
