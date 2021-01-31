@@ -3,9 +3,6 @@
 
 #include "led.h"
 
-#include <QDebug>
-#include <QGraphicsSceneDragDropEvent>
-#include <array>
 #include <bitset>
 
 int Led::current_id_number = 0;
