@@ -20,6 +20,7 @@
 
 #include "clockDialog.h"
 #include "elementmapping.h"
+#include "graphicsviewzoom.h"
 #include "input.h"
 #include "lengthDialog.h"
 #include "mainwindow.h"
