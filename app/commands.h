@@ -7,7 +7,6 @@
 #define COMMANDS_H
 
 #include <QCoreApplication>
-#include <QGraphicsItem>
 #include <QList>
 #include <QPointF>
 #include <QUndoCommand>
@@ -18,6 +17,7 @@
 class Scene;
 class Editor;
 class GraphicElement;
+class QGraphicsItem;
 
 //!
 //! \brief The AddItemsCommand class represents a single action of adding a list of elements on the editor
