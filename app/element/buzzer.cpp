@@ -80,11 +80,13 @@ void Buzzer::mute(bool _mute)
 
 void Buzzer::playbuzzer()
 {
-    if (m_play == 0) {
-        usingDefaultSkin ? setPixmap(defaultSkins[1]) : setPixmap(m_alternativeSkins[1]);
-        m_audio.play();
-        m_play = 1;
+    if (m_play != 0) {
+        return;
     }
+
+    usingDefaultSkin ? setPixmap(defaultSkins[1]) : setPixmap(m_alternativeSkins[1]);
+    m_audio.play();
+    m_play = 1;
 }
 
 void Buzzer::stopbuzzer()
