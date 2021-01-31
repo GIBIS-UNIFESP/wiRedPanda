@@ -11,8 +11,11 @@ int InputButton::current_id_number = 0;
 InputButton::InputButton(QGraphicsItem *parent)
     : GraphicElement(ElementType::BUTTON, ElementGroup::INPUT, 0, 0, 1, 1, parent)
 {
-    pixmapSkinName.append(":/input/buttonOff.png");
-    pixmapSkinName.append(":/input/buttonOn.png");
+    pixmapSkinName = {
+        ":/input/buttonOff.png",
+        ":/input/buttonOn.png",
+    };
+
     setOutputsOnTop(false);
     setCanChangeSkin(true);
     setPixmap(pixmapSkinName[0]);

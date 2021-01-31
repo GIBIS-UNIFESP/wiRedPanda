@@ -6,7 +6,8 @@
 InputVcc::InputVcc(QGraphicsItem *parent)
     : GraphicElement(ElementType::VCC, ElementGroup::STATICINPUT, 0, 0, 1, 1, parent)
 {
-    pixmapSkinName.append(":/input/1.png");
+    pixmapSkinName = {":/input/1.png"};
+
     setOutputsOnTop(false);
     setCanChangeSkin(true);
     setPixmap(pixmapSkinName[0]);

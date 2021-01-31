@@ -13,8 +13,11 @@ Clock::~Clock() = default;
 Clock::Clock(QGraphicsItem *parent)
     : GraphicElement(ElementType::CLOCK, ElementGroup::INPUT, 0, 0, 1, 1, parent)
 {
-    pixmapSkinName.append(":/input/clock0.png");
-    pixmapSkinName.append(":/input/clock1.png");
+    pixmapSkinName = {
+        ":/input/clock0.png",
+        ":/input/clock1.png"
+    };
+
     setOutputsOnTop(false);
     setRotatable(false);
     setCanChangeSkin(true);

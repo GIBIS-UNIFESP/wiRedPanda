@@ -6,7 +6,7 @@
 Nor::Nor(QGraphicsItem *parent)
     : GraphicElement(ElementType::NOR, ElementGroup::GATE, 2, 8, 1, 1, parent)
 {
-    pixmapSkinName.append(":/basic/nor.png");
+    pixmapSkinName = {":/basic/nor.png"};
     setOutputsOnTop(true);
     setPixmap(pixmapSkinName[0]);
     setCanChangeSkin(true);

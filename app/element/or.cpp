@@ -6,7 +6,8 @@
 Or::Or(QGraphicsItem *parent)
     : GraphicElement(ElementType::OR, ElementGroup::GATE, 2, 8, 1, 1, parent)
 {
-    pixmapSkinName.append(":/basic/or.png");
+    pixmapSkinName = {":/basic/or.png"};
+
     setOutputsOnTop(true);
     setPixmap(pixmapSkinName[0]);
     setCanChangeSkin(true);

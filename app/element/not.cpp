@@ -6,7 +6,7 @@
 Not::Not(QGraphicsItem *parent)
     : GraphicElement(ElementType::NOT, ElementGroup::GATE, 1, 1, 1, 1, parent)
 {
-    pixmapSkinName.append(":/basic/not.png");
+    pixmapSkinName = {":/basic/not.png"};
     setOutputsOnTop(true);
     setPixmap(pixmapSkinName[0]);
     setCanChangeSkin(true);

@@ -6,7 +6,8 @@
 Mux::Mux(QGraphicsItem *parent)
     : GraphicElement(ElementType::MUX, ElementGroup::MUX, 3, 3, 1, 1, parent)
 {
-    pixmapSkinName.append(":/basic/mux.png");
+    pixmapSkinName = {":/basic/mux.png"};
+
     setPixmap(pixmapSkinName[0]);
     setRotatable(true);
     updatePorts();
