@@ -19,6 +19,7 @@
 
 #include "clockDialog.h"
 #include "editor.h"
+#include "elementfactory.h"
 #include "elementmapping.h"
 #include "graphicsview.h"
 #include "graphicsviewzoom.h"
@@ -26,6 +27,7 @@
 #include "lengthDialog.h"
 #include "mainwindow.h"
 #include "scstop.h"
+#include "simulationcontroller.h"
 
 #include "ui_bewaveddolphin.h"
 
