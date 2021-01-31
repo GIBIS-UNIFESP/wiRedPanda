@@ -1,5 +1,7 @@
+// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "recentfilescontroller.h"
-#include "common.h"
 
 #include <QApplication>
 #include <QDebug>
@@ -7,59 +9,64 @@
 #include <QFileInfo>
 #include <QSettings>
 
+#include "common.h"
+
 // TODO: quotes bug
-void RecentFilesController::addFile( const QString &fname ) {
-  COMMENT( "Setting recent file to : \"" << fname.toStdString( ) << "\"", 0 );
-  if( !QFile( fname ).exists( ) ) {
-    return;
-  }
-  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
-                      QApplication::organizationName( ), QApplication::applicationName( ) );
-  if( !settings.contains( attrName ) ) {
-      //! TODO: disabling this check for now, since it creates problems while loading .panda files as integrated circuits
-//      COMMENT( "Early return because the settings do not contain attrName " << attrName.toStdString( ), 0 );
-//      return;
-  }
-  QStringList files = settings.value( attrName ).toStringList( );
-
-  files.removeAll( fname );
-
-  files.prepend( fname );
-  for( int i = 0; i < files.size( ); ) {
-    QFileInfo fileInfo( files.at( i ) );
-    if( !fileInfo.exists( ) ) {
-      files.removeAt( i );
+void RecentFilesController::addFile(const QString &fname)
+{
+    COMMENT("Setting recent file to : \"" << fname.toStdString() << "\"", 0);
+    if (!QFile(fname).exists()) {
+        return;
     }
-    else {
-      ++i;
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
+    if (!settings.contains(attrName)) {
+        //! TODO: disabling this check for now, since it creates problems while loading .panda files as integrated circuits
+        if (attrName == "recentICs") {
+            settings.setValue("recentICs", "");
+        } else {
+            COMMENT("Early return because the settings do not contain attrName " << attrName.toStdString(), 0);
+            return;
+        }
     }
-  }
-  while( files.size( ) > MaxRecentFiles ) {
-    files.removeLast( );
-  }
-  settings.setValue( attrName, files );
+    QStringList files = settings.value(attrName).toStringList();
 
-  emit recentFilesUpdated( );
+    files.removeAll(fname);
+
+    files.prepend(fname);
+    for (int i = 0; i < files.size();) {
+        QFileInfo fileInfo(files.at(i));
+        if (!fileInfo.exists()) {
+            files.removeAt(i);
+        } else {
+            ++i;
+        }
+    }
+    while (files.size() > MaxRecentFiles) {
+        files.removeLast();
+    }
+    settings.setValue(attrName, files);
+
+    emit recentFilesUpdated();
 }
 
-QStringList RecentFilesController::getFiles( ) {
-  QSettings settings( QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName( ), QApplication::applicationName( ) );
-  if( !settings.contains( attrName ) ) {
-    return( QStringList( ) );
-  }
-  QStringList files = settings.value( attrName ).toStringList( );
-  for( int i = 0; i < files.size( ); ) {
-    QFileInfo fileInfo( files.at( i ) );
-    if( !fileInfo.exists( ) ) {
-      files.removeAt( i );
+QStringList RecentFilesController::getFiles()
+{
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
+    if (!settings.contains(attrName)) {
+        return QStringList();
     }
-    else {
-      ++i;
+    QStringList files = settings.value(attrName).toStringList();
+    for (int i = 0; i < files.size();) {
+        QFileInfo fileInfo(files.at(i));
+        if (!fileInfo.exists()) {
+            files.removeAt(i);
+        } else {
+            ++i;
+        }
     }
-  }
-  while( files.size( ) > MaxRecentFiles ) {
-    files.removeLast( );
-  }
-  settings.setValue( attrName, files );
-  return( files );
+    while (files.size() > MaxRecentFiles) {
+        files.removeLast();
+    }
+    settings.setValue(attrName, files);
+    return files;
 }
