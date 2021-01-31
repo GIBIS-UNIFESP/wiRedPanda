@@ -4,32 +4,37 @@
 #include "editor.h"
 #include "buzzer.h"
 #include "commands.h"
+#include "common.h"
+#include "elementeditor.h"
+#include "elementfactory.h"
 #include "globalproperties.h"
 #include "graphicelement.h"
 #include "ic.h"
-#include "icnotfoundexception.h"
+#include "icmanager.h"
+#include "icprototype.h"
 #include "input.h"
 #include "mainwindow.h"
 #include "nodes/qneconnection.h"
+#include "qneport.h"
 #include "serializationfunctions.h"
+#include "simulationcontroller.h"
 #include "thememanager.h"
 
 #include <QApplication>
 #include <QClipboard>
-#include <QDebug>
 #include <QDrag>
-#include <QFileDialog>
 #include <QGraphicsItem>
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
 #include <QKeyEvent>
-#include <QLabel>
 #include <QMenu>
 #include <QMessageBox>
 #include <QMimeData>
-#include <QSettings>
-#include <QtMath>
+#include <QWheelEvent>
+#include <QUndoCommand>
+#include <QUndoStack>
+#include <cmath>
 #include <iostream>
 
 Editor *Editor::globalEditor = nullptr;
@@ -908,8 +913,8 @@ QPointF roundTo(QPointF point, int multiple)
 {
     int x = static_cast<int>(point.x());
     int y = static_cast<int>(point.y());
-    int nx = multiple * qFloor(x / multiple);
-    int ny = multiple * qFloor(y / multiple);
+    int nx = multiple * std::floor(x / multiple);
+    int ny = multiple * std::floor(y / multiple);
     return QPointF(nx, ny);
 }
 

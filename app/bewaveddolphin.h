@@ -6,16 +6,21 @@
 #ifndef BEWAVEDDOLPHIN_H
 #define BEWAVEDDOLPHIN_H
 
-#include "editor.h"
-#include "graphicsview.h"
-
 #include <QFileInfo>
 #include <QItemDelegate>
+#include <QItemSelection>
 #include <QMainWindow>
-#include <QPainter>
 #include <QSaveFile>
 #include <QStandardItemModel>
-#include <QTableView>
+
+class Editor;
+class GraphicsView;
+class MainWindow;
+class GraphicElement;
+class QGraphicsScene;
+class QPainter;
+class QTableView;
+class SimulationController;
 
 namespace Ui
 {

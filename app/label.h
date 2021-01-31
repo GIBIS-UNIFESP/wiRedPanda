@@ -6,9 +6,9 @@
 #ifndef LABEL_H
 #define LABEL_H
 
-#include "graphicelement.h"
-
 #include <QLabel>
+
+#include "elementtype.h"
 
 class Label : public QLabel
 {

@@ -3,13 +3,15 @@
 
 #include "icprototypeimpl.h"
 
-#include <QDebug>
 #include <QFile>
 #include <QFileInfo>
 
-#include "editor.h"
+#include "common.h"
 #include "elementfactory.h"
 #include "ic.h"
+#include "icprototype.h"
+#include "qneconnection.h"
+#include "qneport.h"
 #include "serializationfunctions.h"
 
 ICPrototypeImpl::~ICPrototypeImpl()

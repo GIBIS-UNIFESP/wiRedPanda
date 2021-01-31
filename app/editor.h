@@ -6,21 +6,23 @@
 #ifndef EDITOR_H
 #define EDITOR_H
 
-#include <memory>
-
 #include <QElapsedTimer>
 #include <QObject>
-#include <QUndoCommand>
 
-#include "elementeditor.h"
-#include "elementfactory.h"
-#include "icmanager.h"
-#include "nodes/qneconnection.h"
 #include "scene.h"
-#include "simulationcontroller.h"
 
+class ElementEditor;
 class IC;
+class ICManager;
 class MainWindow;
+class QNEConnection;
+class QNEInputPort;
+class QNEOutputPort;
+class QNEPort;
+class QUndoCommand;
+class QUndoStack;
+class QWheelEvent;
+class SimulationController;
 
 class Editor : public QObject
 {

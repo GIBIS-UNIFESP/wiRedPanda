@@ -6,13 +6,16 @@
 #ifndef ELEMENTFACTORY_H
 #define ELEMENTFACTORY_H
 
-#include <deque>
-
+#include <QGraphicsItem>
 #include <QObject>
 
-#include "graphicelement.h"
+#include "elementtype.h"
 
 class Editor;
+class GraphicElement;
+class ItemWithId;
+class QNEConnection;
+
 class ElementFactory : public QObject
 {
     Q_OBJECT

@@ -6,25 +6,31 @@
 #include <cstring>
 
 #include <QClipboard>
+#include <QCloseEvent>
 #include <QFileDialog>
-#include <QGraphicsProxyWidget>
-#include <QGraphicsView>
 #include <QHeaderView>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QPainter>
 #include <QPrinter>
 #include <QSaveFile>
 #include <QSettings>
-#include <QSizePolicy>
-#include <QtDebug>
+#include <QTableView>
 
 #include "clockDialog.h"
+#include "common.h"
+#include "editor.h"
+#include "elementfactory.h"
 #include "elementmapping.h"
+#include "graphicelement.h"
+#include "graphicsview.h"
 #include "graphicsviewzoom.h"
 #include "input.h"
 #include "lengthDialog.h"
 #include "mainwindow.h"
+#include "qneport.h"
 #include "scstop.h"
+#include "simulationcontroller.h"
 
 #include "ui_bewaveddolphin.h"
 

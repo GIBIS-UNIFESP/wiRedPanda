@@ -6,19 +6,22 @@
 #include <bitset>
 #include <cmath>
 
-#include <QBuffer>
 #include <QChartView>
 #include <QClipboard>
 #include <QDebug>
 #include <QLineSeries>
 #include <QMessageBox>
 #include <QMimeData>
-#include <QPointF>
 #include <QSettings>
 #include <QValueAxis>
 
+#include "common.h"
+#include "elementfactory.h"
 #include "elementmapping.h"
+#include "graphicelement.h"
+#include "qneport.h"
 #include "scstop.h"
+#include "simulationcontroller.h"
 #include "ui_simplewaveform.h"
 
 #include "input.h"

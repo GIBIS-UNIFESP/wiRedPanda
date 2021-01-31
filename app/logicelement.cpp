@@ -3,8 +3,6 @@
 
 #include "logicelement.h"
 
-#include <QDebug>
-
 bool LogicElement::isValid() const
 {
     return m_isValid;

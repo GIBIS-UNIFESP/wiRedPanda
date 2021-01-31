@@ -4,17 +4,16 @@
 #include <iostream>
 #include <stdexcept>
 
-#include <QDebug>
 #include <QFileInfo>
-#include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
-#include <QMessageBox>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QPixmap>
 
+#include "common.h"
 #include "graphicelement.h"
 #include "nodes/qneconnection.h"
+#include "nodes/qneport.h"
 #include "scene.h"
 #include "thememanager.h"
 
@@ -196,11 +195,9 @@ void GraphicElement::save(QDataStream &ds) const
     COMMENT("Saving element. Type: " << objectName().toStdString(), 4);
     ds << pos();
     ds << rotation();
-
     /* <Version1.2> */
     ds << getLabel();
     /* <\Version1.2> */
-
     /* <Version1.3> */
     ds << m_minInputSz;
     ds << m_maxInputSz;

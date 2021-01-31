@@ -8,6 +8,7 @@
 
 #include "elementmapping.h"
 #include "graphicelement.h"
+#include "qneport.h"
 
 class LogicElement;
 

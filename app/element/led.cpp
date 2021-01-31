@@ -3,6 +3,8 @@
 
 #include "led.h"
 
+#include "qneport.h"
+
 #include <bitset>
 
 int Led::current_id_number = 0;

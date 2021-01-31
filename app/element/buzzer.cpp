@@ -4,6 +4,8 @@
 #include "buzzer.h"
 #include <array>
 
+#include "qneport.h"
+
 #include <QDebug>
 #include <QGraphicsSceneDragDropEvent>
 

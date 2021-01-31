@@ -8,6 +8,7 @@
 #include "commands.h"
 #include "globalproperties.h"
 #include "mainwindow.h"
+#include "qneconnection.h"
 
 void TestFiles::init()
 {

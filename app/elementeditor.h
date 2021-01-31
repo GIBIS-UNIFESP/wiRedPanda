@@ -9,9 +9,9 @@
 #include <QWidget>
 
 #include "graphicelement.h"
-#include "scene.h"
 
 class QUndoCommand;
+class Scene;
 
 namespace Ui
 {
