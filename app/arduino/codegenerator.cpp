@@ -493,7 +493,7 @@ void CodeGenerator::loop()
     assignVariablesRec(elements);
     out << "\n";
     out << "    // Writing output data. //\n";
-    for (MappedPin pin : qAsConst(outputMap)) {
+    for (const MappedPin& pin : qAsConst(outputMap)) {
         QString varName = otherPortName(pin.port);
         if (varName.isEmpty()) {
             varName = highLow(pin.port->defaultValue());

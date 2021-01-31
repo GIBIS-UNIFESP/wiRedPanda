@@ -55,7 +55,7 @@ class BewavedDolphin : public QMainWindow
 public:
     explicit BewavedDolphin(Editor *editor, QWidget *parent = nullptr);
     ~BewavedDolphin() override;
-    bool createWaveform(QString filename);
+    bool createWaveform(const QString& filename);
     void show();
     void print();
 
