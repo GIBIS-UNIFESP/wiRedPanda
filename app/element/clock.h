@@ -11,9 +11,10 @@
 
 class Clock : public GraphicElement, public Input
 {
-    int interval;
-    int elapsed;
-    bool on;
+private:
+    int m_interval;
+    int m_elapsed;
+    bool m_isOn;
     double m_frequency;
 
 public:
