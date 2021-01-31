@@ -3,6 +3,8 @@
 
 #include "tflipflop.h"
 
+#include "qneport.h"
+
 TFlipFlop::TFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::TFLIPFLOP, ElementGroup::MEMORY, 4, 4, 2, 2, parent)
 {
