@@ -6,11 +6,11 @@
 #ifndef CODEGENERATOR_H
 #define CODEGENERATOR_H
 
-#include "graphicelement.h"
-
 #include <QFile>
 #include <QTextStream>
 
+class GraphicElement;
+class QNEPort;
 class MappedPin
 {
 public:
