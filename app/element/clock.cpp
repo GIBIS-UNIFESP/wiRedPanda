@@ -53,11 +53,7 @@ bool Clock::getOn() const
 void Clock::setOn(bool value)
 {
     m_isOn = value;
-    if (m_isOn) {
-        setPixmap(pixmapSkinName[1]);
-    } else {
-        setPixmap(pixmapSkinName[0]);
-    }
+    setPixmap(pixmapSkinName[m_isOn ? 1 : 0]);
     m_outputs.first()->setValue(m_isOn);
 }
 
