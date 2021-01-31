@@ -94,7 +94,7 @@ BewavedDolphin::BewavedDolphin(Editor *editor, QWidget *parent)
     zoom_in_shortcuts << QKeySequence("Ctrl++") << QKeySequence("Ctrl+=");
     m_ui->actionZoom_In->setShortcuts(zoom_in_shortcuts);
     // connect( gv->gvzoom( ), &GraphicsViewZoom::zoomed, this, &BewavedDolphin::zoomChanged );
-    m_gv->gvzoom()->set_zoom_factor_base(m_SCALE_FACTOR);
+    m_gv->gvzoom()->setZoomFactorBase(m_SCALE_FACTOR);
     drawPixMaps();
     m_edited = false;
 }
