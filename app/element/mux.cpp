@@ -3,6 +3,8 @@
 
 #include "mux.h"
 
+#include "qneport.h"
+
 Mux::Mux(QGraphicsItem *parent)
     : GraphicElement(ElementType::MUX, ElementGroup::MUX, 3, 3, 1, 1, parent)
 {
