@@ -86,6 +86,7 @@ HEADERS  +=  \
     $$PWD/app/arduino/codegenerator.h\
     $$PWD/app/commands.h \
     $$PWD/app/editor.h \
+    $$PWD/app/elementtype.h \
     $$PWD/app/elementeditor.h \
     $$PWD/app/elementfactory.h \
     $$PWD/app/globalproperties.h \

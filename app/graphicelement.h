@@ -6,45 +6,13 @@
 #ifndef GRAPHICELEMENT_H
 #define GRAPHICELEMENT_H
 
-#include <cstdint>
-
 #include <QGraphicsItem>
 #include <QKeySequence>
 
 #include "common.h"
+#include "elementtype.h"
 #include "itemwithid.h"
 #include "nodes/qneport.h"
-
-enum class ElementType : uint_fast8_t {
-    UNKNOWN,
-    BUTTON,
-    SWITCH,
-    LED,
-    NOT,
-    AND,
-    OR,
-    NAND,
-    NOR,
-    CLOCK,
-    XOR,
-    XNOR,
-    VCC,
-    GND,
-    DISPLAY,
-    DLATCH,
-    JKLATCH,
-    DFLIPFLOP,
-    JKFLIPFLOP,
-    SRFLIPFLOP,
-    TFLIPFLOP,
-    UNUSED,
-    IC,
-    NODE,
-    MUX,
-    DEMUX,
-    BUZZER,
-    DISPLAY14
-};
 
 enum class ElementGroup : uint_fast8_t { UNKNOWN, OTHER, IC, INPUT, GATE, MEMORY, OUTPUT, MUX, STATICINPUT };
 
