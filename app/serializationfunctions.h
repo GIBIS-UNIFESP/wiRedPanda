@@ -17,7 +17,7 @@ public:
   static QRectF loadRect( QDataStream &ds, double version );
   static QString loadDolphinFilename( QDataStream &ds , double version );
 private:
-  static QList< QGraphicsItem* > loadMoveData( QString icDirName, QDataStream &ds, double version, QMap< quint64, QNEPort* > portMap );
+  static QList< QGraphicsItem* > loadMoveData( QString icDirName, QDataStream &ds, double version );
 };
 
 #endif /* SERIALIZATIONFUNCTIONS_H */
