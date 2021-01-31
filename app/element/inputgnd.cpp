@@ -6,7 +6,8 @@
 InputGnd::InputGnd(QGraphicsItem *parent)
     : GraphicElement(ElementType::GND, ElementGroup::STATICINPUT, 0, 0, 1, 1, parent)
 {
-    pixmapSkinName.append(":/input/0.png");
+    pixmapSkinName = {":/input/0.png"};
+
     setOutputsOnTop(false);
     setCanChangeSkin(true);
     setPixmap(pixmapSkinName[0]);

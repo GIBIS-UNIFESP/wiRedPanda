@@ -19,32 +19,35 @@ int Led::current_id_number = 0;
 Led::Led(QGraphicsItem *parent)
     : GraphicElement(ElementType::LED, ElementGroup::OUTPUT, 1, 4, 0, 0, parent)
 {
-    pixmapSkinName.append(":/output/WhiteLedOff.png"); // Single input values: 0
-    pixmapSkinName.append(":/output/WhiteLedOn.png"); // 1
-    pixmapSkinName.append(":/output/RedLedOff.png"); // 2
-    pixmapSkinName.append(":/output/RedLedOn.png"); // 3
-    pixmapSkinName.append(":/output/GreenLedOff.png"); // 4
-    pixmapSkinName.append(":/output/GreenLedOn.png"); // 5
-    pixmapSkinName.append(":/output/BlueLedOff.png"); // 6
-    pixmapSkinName.append(":/output/BlueLedOn.png"); // 7
-    pixmapSkinName.append(":/output/PurpleLedOff.png"); // 8
-    pixmapSkinName.append(":/output/PurpleLedOn.png"); // 9
-    pixmapSkinName.append(":/output/16colors/BlackLedOn.png"); // Multiple input values: 10
-    pixmapSkinName.append(":/output/16colors/NavyBlueLedOn.png"); // 11
-    pixmapSkinName.append(":/output/16colors/GreenLedOn.png"); // 12
-    pixmapSkinName.append(":/output/16colors/TealLedOn.png"); // 13
-    pixmapSkinName.append(":/output/16colors/DarkRedLedOn.png"); // 14
-    pixmapSkinName.append(":/output/16colors/MagentaLedOn.png"); // 15
-    pixmapSkinName.append(":/output/16colors/OrangeLedOn.png"); // 16
-    pixmapSkinName.append(":/output/16colors/LightGrayLedOn.png"); // 17
-    pixmapSkinName.append(":/output/16colors/DarkGrayLedOn.png"); // 18
-    pixmapSkinName.append(":/output/16colors/RoyalLedOn.png"); // 19
-    pixmapSkinName.append(":/output/16colors/LimeGreenLedOn.png"); // 20
-    pixmapSkinName.append(":/output/16colors/AquaLightLedOn.png"); // 21
-    pixmapSkinName.append(":/output/16colors/RedLedOn.png"); // 22
-    pixmapSkinName.append(":/output/16colors/HotPinkLedOn.png"); // 23
-    pixmapSkinName.append(":/output/16colors/YellowLedOn.png"); // 24
-    pixmapSkinName.append(":/output/16colors/WhiteLedOn.png"); // 25
+    pixmapSkinName = {
+        ":/output/WhiteLedOff.png"              // Single input values: 0
+        ":/output/WhiteLedOn.png",              // 1
+        ":/output/RedLedOff.png",               // 2
+        ":/output/RedLedOn.png",                // 3
+        ":/output/GreenLedOff.png",             // 4
+        ":/output/GreenLedOn.png",              // 5
+        ":/output/BlueLedOff.png",              // 6
+        ":/output/BlueLedOn.png",               // 7
+        ":/output/PurpleLedOff.png",            // 8
+        ":/output/PurpleLedOn.png",             // 9
+        ":/output/16colors/BlackLedOn.png",     // Multiple input values: 10
+        ":/output/16colors/NavyBlueLedOn.png",  // 11
+        ":/output/16colors/GreenLedOn.png",     // 12
+        ":/output/16colors/TealLedOn.png",      // 13
+        ":/output/16colors/DarkRedLedOn.png",   // 14
+        ":/output/16colors/MagentaLedOn.png",   // 15
+        ":/output/16colors/OrangeLedOn.png",    // 16
+        ":/output/16colors/LightGrayLedOn.png", // 17
+        ":/output/16colors/DarkGrayLedOn.png",  // 18
+        ":/output/16colors/RoyalLedOn.png",     // 19
+        ":/output/16colors/LimeGreenLedOn.png", // 20
+        ":/output/16colors/AquaLightLedOn.png", // 21
+        ":/output/16colors/RedLedOn.png",       // 22
+        ":/output/16colors/HotPinkLedOn.png",   // 23
+        ":/output/16colors/YellowLedOn.png",    // 24
+        ":/output/16colors/WhiteLedOn.png",     // 25
+    };
+
     setOutputsOnTop(true);
     setRotatable(false);
     setHasColors(true);
