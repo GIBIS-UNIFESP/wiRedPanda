@@ -25,6 +25,7 @@
 
 #include "arduino/codegenerator.h"
 #include "bewaveddolphin.h"
+#include "common.h"
 #include "editor.h"
 #include "elementfactory.h"
 #include "elementmapping.h"
