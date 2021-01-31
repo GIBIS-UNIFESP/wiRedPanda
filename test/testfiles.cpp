@@ -41,7 +41,7 @@ void TestFiles::testFiles()
         try {
             editor->load(ds);
         } catch (std::runtime_error &e) {
-            QFAIL(QString("Could not load the file! Error: %1").arg(QString::fromStdString(e.what())).toUtf8());
+            QFAIL(QString("Could not load the file! Error: %1").arg(QString::fromStdString(e.what())).toUtf8().constData());
         }
 
         QList<QGraphicsItem *> items = editor->getScene()->items();
@@ -61,10 +61,10 @@ void TestFiles::testFiles()
             try {
                 editor->save(ds2, "none");
             } catch (std::runtime_error &) {
-                QFAIL(QString("Error saving project: " + outfile.fileName()).toUtf8());
+                QFAIL(QString("Error saving project: " + outfile.fileName()).toUtf8().constData());
             }
         } else {
-            QFAIL(QString("Could not open file in WriteOnly mode : " + outfile.fileName()).toUtf8());
+            QFAIL(QString("Could not open file in WriteOnly mode : " + outfile.fileName()).toUtf8().constData());
         }
         outfile.flush();
         outfile.close();
@@ -75,7 +75,7 @@ void TestFiles::testFiles()
         try {
             editor->load(ds3);
         } catch (std::runtime_error &e) {
-            QFAIL(QString("Could not load the file! Error: %1").arg(QString::fromStdString(e.what())).toUtf8());
+            QFAIL(QString("Could not load the file! Error: %1").arg(QString::fromStdString(e.what())).toUtf8().constData());
         }
         outfile.remove();
     }
