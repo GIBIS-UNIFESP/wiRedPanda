@@ -20,14 +20,13 @@ bool SerializationFunctions::update( QString &fileName, QString dirName ) {
   QFile file( fileName );
   if( file.open( QFile::ReadOnly ) ) {
     COMMENT( "Started reading IC file " << fileName.toStdString( ), 0 );
-    QMap< quint64, QNEPort* > map = QMap< quint64, QNEPort* >( );
     QDataStream ds( &file );
     version = loadVersion( ds );
     loadDolphinFilename( ds, version );
     rect = loadRect( ds, version );
     COMMENT( "Version: " << version, 0 );
     COMMENT( "Element deserialization.", 0 );
-    itemList = loadMoveData( dirName, ds, version, map );
+    itemList = loadMoveData( dirName, ds, version );
     COMMENT( "Finished loading data", 0 );
   }
   QSaveFile fl( fileName );
@@ -81,7 +80,7 @@ QList< QGraphicsItem* > SerializationFunctions::deserialize( QDataStream &ds, do
       GraphicElement *elm = ElementFactory::buildElement( static_cast< ElementType >( elmType ) );
       if( elm ) {
         itemList.append( elm );
-        elm->load( ds, portMap, version );
+        elm->load( ds, portMap, version ); // This portmap is used here and returned.
         if( elm->elementType( ) == ElementType::IC ) {
           COMMENT( "Loading IC.", 0 );
           IC *ic = qgraphicsitem_cast< IC* >( elm );
@@ -144,7 +143,8 @@ QRectF SerializationFunctions::loadRect( QDataStream &ds, double version ) {
   return( rect );
 }
 
-QList< QGraphicsItem* > SerializationFunctions::loadMoveData( QString dirName, QDataStream &ds, double version, QMap< quint64, QNEPort* > portMap ) {
+QList< QGraphicsItem* > SerializationFunctions::loadMoveData( QString dirName, QDataStream &ds, double version ) {
+  QMap< quint64, QNEPort* > portMap;
   QList< QGraphicsItem* > itemList;
   while( !ds.atEnd( ) ) {
     int type;

@@ -149,6 +149,9 @@ QList< QGraphicsItem* > loadItems( QByteArray &itemData, const QVector< int > &i
     elm->load( dataStream, portMap, version );
   }
   /*
+   * Warning: This portMap is not the same as the previous one.
+  */
+  /*
    * Assuming that all connections are stored after the elements, we will deserialize the elements first.
    * We will store one additional information: The element IDs!
    */
@@ -393,7 +396,7 @@ void UpdateCommand::redo( ) {
 void UpdateCommand::loadData( QByteArray itemData ) {
   QVector< GraphicElement* > elements = findElements( ids ).toVector( );
   QDataStream dataStream( &itemData, QIODevice::ReadOnly );
-  QMap< quint64, QNEPort* > portMap;
+  QMap< quint64, QNEPort* > portMap; // Unused portMap.
   if( !elements.isEmpty( ) && elements.front( )->scene( ) ) {
     elements.front( )->scene( )->clearSelection( );
   }
@@ -668,7 +671,7 @@ void ChangeInputSZCommand::undo( ) {
   }
   QDataStream dataStream( &m_oldData, QIODevice::ReadOnly );
   double version = GlobalProperties::version;
-  QMap< quint64, QNEPort* > portMap;
+  QMap< quint64, QNEPort* >  portMap; // This portmap is used!
   for( GraphicElement *elm : serializationOrder ) {
     elm->load( dataStream, portMap, version );
   }
