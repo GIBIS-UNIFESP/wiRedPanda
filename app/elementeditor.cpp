@@ -445,6 +445,7 @@ void ElementEditor::setEditor(Editor *value)
 
 void ElementEditor::inputIndexChanged(int idx)
 {
+    Q_UNUSED(idx)
     if ((m_elements.isEmpty()) || (!isEnabled())) {
         return;
     }
