@@ -6,7 +6,6 @@
 #ifndef ELEMENTEDITOR_H
 #define ELEMENTEDITOR_H
 
-#include <QGraphicsScene>
 #include <QUndoCommand>
 #include <QWidget>
 
