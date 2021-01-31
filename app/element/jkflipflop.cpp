@@ -8,7 +8,8 @@
 JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::JKFLIPFLOP, ElementGroup::MEMORY, 5, 5, 2, 2, parent)
 {
-    pixmapSkinName.append(":/memory/JK-flipflop.png");
+    pixmapSkinName = {":/memory/JK-flipflop.png"};
+
     setPixmap(pixmapSkinName[0]);
     setRotatable(false);
     setCanChangeSkin(true);

@@ -12,22 +12,24 @@ int Display14::current_id_number = 0;
 Display14::Display14(QGraphicsItem *parent)
     : GraphicElement(ElementType::DISPLAY14, ElementGroup::OUTPUT, 15, 15, 0, 0, parent)
 {
-    pixmapSkinName.append(":/output/counter/counter_14_off.png");
-    pixmapSkinName.append(":/output/counter/counter_a.png");
-    pixmapSkinName.append(":/output/counter/counter_b.png");
-    pixmapSkinName.append(":/output/counter/counter_c.png");
-    pixmapSkinName.append(":/output/counter/counter_d.png");
-    pixmapSkinName.append(":/output/counter/counter_e.png");
-    pixmapSkinName.append(":/output/counter/counter_f.png");
-    pixmapSkinName.append(":/output/counter/counter_g1.png");
-    pixmapSkinName.append(":/output/counter/counter_g2.png");
-    pixmapSkinName.append(":/output/counter/counter_h.png");
-    pixmapSkinName.append(":/output/counter/counter_j.png");
-    pixmapSkinName.append(":/output/counter/counter_k.png");
-    pixmapSkinName.append(":/output/counter/counter_l.png");
-    pixmapSkinName.append(":/output/counter/counter_m.png");
-    pixmapSkinName.append(":/output/counter/counter_n.png");
-    pixmapSkinName.append(":/output/counter/counter_dp.png");
+    pixmapSkinName = {
+        ":/output/counter/counter_14_off.png",
+        ":/output/counter/counter_a.png",
+        ":/output/counter/counter_b.png",
+        ":/output/counter/counter_c.png",
+        ":/output/counter/counter_d.png",
+        ":/output/counter/counter_e.png",
+        ":/output/counter/counter_f.png",
+        ":/output/counter/counter_g1.png",
+        ":/output/counter/counter_g2.png",
+        ":/output/counter/counter_h.png",
+        ":/output/counter/counter_j.png",
+        ":/output/counter/counter_k.png",
+        ":/output/counter/counter_l.png",
+        ":/output/counter/counter_m.png",
+        ":/output/counter/counter_n.png",
+        ":/output/counter/counter_dp.png",
+    };
 
     setRotatable(false);
     setCanChangeSkin(true);

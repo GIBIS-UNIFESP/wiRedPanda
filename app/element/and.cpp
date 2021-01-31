@@ -6,7 +6,8 @@
 And::And(QGraphicsItem *parent)
     : GraphicElement(ElementType::AND, ElementGroup::GATE, 2, 8, 1, 1, parent)
 {
-    pixmapSkinName.append(":/basic/and.png");
+    pixmapSkinName = {":/basic/and.png"};
+
     setOutputsOnTop(true);
     setPixmap(pixmapSkinName[0]);
     updatePorts();

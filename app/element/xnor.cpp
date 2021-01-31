@@ -6,7 +6,8 @@
 Xnor::Xnor(QGraphicsItem *parent)
     : GraphicElement(ElementType::XNOR, ElementGroup::GATE, 2, 8, 1, 1, parent)
 {
-    pixmapSkinName.append(":/basic/xnor.png");
+    pixmapSkinName = {":/basic/xnor.png"};
+
     setOutputsOnTop(true);
     setCanChangeSkin(true);
     setPixmap(pixmapSkinName[0]);

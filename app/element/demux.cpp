@@ -6,7 +6,7 @@
 Demux::Demux(QGraphicsItem *parent)
     : GraphicElement(ElementType::DEMUX, ElementGroup::MUX, 2, 2, 2, 2, parent)
 {
-    pixmapSkinName.append(":/basic/demux.png");
+    pixmapSkinName = {":/basic/demux.png"};
     setPixmap(pixmapSkinName[0]);
     setRotatable(true);
     setCanChangeSkin(true);
