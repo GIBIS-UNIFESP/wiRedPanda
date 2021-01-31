@@ -60,13 +60,13 @@ void SignalDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
 
 BewavedDolphin::BewavedDolphin(Editor *editor, QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::BewavedDolphin)
-    , editor(editor)
-    , mainWindow(dynamic_cast<MainWindow *>(parent))
-    , type(PlotType::line)
+    , m_ui(new Ui::BewavedDolphin)
+    , m_editor(editor)
+    , m_mainWindow(dynamic_cast<MainWindow *>(parent))
+    , m_type(PlotType::line)
 {
-    scale = 1.0;
-    ui->setupUi(this);
+    m_scale = 1.0;
+    m_ui->setupUi(this);
     resize(800, 500);
     setWindowTitle("Bewaved Dolphin Simulator");
     setWindowFlags(Qt::Window);
@@ -74,23 +74,23 @@ BewavedDolphin::BewavedDolphin(Editor *editor, QWidget *parent)
     settings.beginGroup("BewavedDolphin");
     restoreGeometry(settings.value("geometry").toByteArray());
     settings.endGroup();
-    gv = new GraphicsView(this);
-    ui->verticalLayout->addWidget(gv);
-    scene = new QGraphicsScene(this);
+    m_gv = new GraphicsView(this);
+    m_ui->verticalLayout->addWidget(m_gv);
+    m_scene = new QGraphicsScene(this);
     // ui->graphicsView->setScene( scene );
-    gv->setScene(scene);
-    signalTableView = new QTableView;
-    scene->installEventFilter(signalTableView);
+    m_gv->setScene(m_scene);
+    m_signalTableView = new QTableView;
+    m_scene->installEventFilter(m_signalTableView);
     auto *delegate = new SignalDelegate(4, this);
-    signalTableView->setItemDelegate(delegate);
-    scene->addWidget(signalTableView);
+    m_signalTableView->setItemDelegate(delegate);
+    m_scene->addWidget(m_signalTableView);
     QList<QKeySequence> zoom_in_shortcuts;
     zoom_in_shortcuts << QKeySequence("Ctrl++") << QKeySequence("Ctrl+=");
-    ui->actionZoom_In->setShortcuts(zoom_in_shortcuts);
+    m_ui->actionZoom_In->setShortcuts(zoom_in_shortcuts);
     // connect( gv->gvzoom( ), &GraphicsViewZoom::zoomed, this, &BewavedDolphin::zoomChanged );
-    gv->gvzoom()->set_zoom_factor_base(SCALE_FACTOR);
+    m_gv->gvzoom()->set_zoom_factor_base(m_SCALE_FACTOR);
     drawPixMaps();
-    edited = false;
+    m_edited = false;
 }
 
 BewavedDolphin::~BewavedDolphin()
@@ -99,25 +99,25 @@ BewavedDolphin::~BewavedDolphin()
     settings.beginGroup("BewavedDolphin");
     settings.setValue("geometry", saveGeometry());
     settings.endGroup();
-    delete ui;
+    delete m_ui;
 }
 
 void BewavedDolphin::zoomChanged()
 {
-    ui->actionZoom_In->setEnabled(gv->gvzoom()->canZoomIn());
-    ui->actionZoom_out->setEnabled(gv->gvzoom()->canZoomOut());
+    m_ui->actionZoom_In->setEnabled(m_gv->gvzoom()->canZoomIn());
+    m_ui->actionZoom_out->setEnabled(m_gv->gvzoom()->canZoomOut());
 }
 
 void BewavedDolphin::drawPixMaps()
 {
-    lowGreen = QPixmap(":/dolphin/low_green.png").scaled(100, 38);
-    lowBlue = QPixmap(":/dolphin/low_blue.png").scaled(100, 38);
-    highGreen = QPixmap(":/dolphin/high_green.png").scaled(100, 38);
-    highBlue = QPixmap(":/dolphin/high_blue.png").scaled(100, 38);
-    fallingGreen = QPixmap(":/dolphin/falling_green.png").scaled(100, 38);
-    fallingBlue = QPixmap(":/dolphin/falling_blue.png").scaled(100, 38);
-    risingGreen = QPixmap(":/dolphin/rising_green.png").scaled(100, 38);
-    risingBlue = QPixmap(":/dolphin/rising_blue.png").scaled(100, 38);
+    m_lowGreen = QPixmap(":/dolphin/low_green.png").scaled(100, 38);
+    m_lowBlue = QPixmap(":/dolphin/low_blue.png").scaled(100, 38);
+    m_highGreen = QPixmap(":/dolphin/high_green.png").scaled(100, 38);
+    m_highBlue = QPixmap(":/dolphin/high_blue.png").scaled(100, 38);
+    m_fallingGreen = QPixmap(":/dolphin/falling_green.png").scaled(100, 38);
+    m_fallingBlue = QPixmap(":/dolphin/falling_blue.png").scaled(100, 38);
+    m_risingGreen = QPixmap(":/dolphin/rising_green.png").scaled(100, 38);
+    m_risingBlue = QPixmap(":/dolphin/rising_blue.png").scaled(100, 38);
 }
 
 void BewavedDolphin::closeEvent(QCloseEvent *e)
@@ -135,7 +135,7 @@ void BewavedDolphin::on_actionExit_triggered()
 
 bool BewavedDolphin::checkSave()
 {
-    if (edited) {
+    if (m_edited) {
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question(this,
                                       tr("Wired Panda - Bewaved Dolphin"),
@@ -143,7 +143,7 @@ bool BewavedDolphin::checkSave()
                                       QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
         if (reply == QMessageBox::Save) {
             on_actionSave_triggered();
-            return (!edited);
+            return (!m_edited);
         } else if (reply == QMessageBox::Discard) {
             return true;
         }
@@ -154,9 +154,9 @@ bool BewavedDolphin::checkSave()
 
 bool BewavedDolphin::loadElements()
 {
-    QVector<GraphicElement *> elements = editor->getScene()->getElements();
-    inputs.clear();
-    outputs.clear();
+    QVector<GraphicElement *> elements = m_editor->getScene()->getElements();
+    m_inputs.clear();
+    m_outputs.clear();
     if (elements.isEmpty()) {
         return false;
     }
@@ -164,20 +164,20 @@ bool BewavedDolphin::loadElements()
     for (GraphicElement *elm : qAsConst(elements)) {
         if (elm && (elm->type() == GraphicElement::Type)) {
             if (elm->elementGroup() == ElementGroup::INPUT) {
-                inputs.append(elm);
+                m_inputs.append(elm);
             } else if (elm->elementGroup() == ElementGroup::OUTPUT) {
-                outputs.append(elm);
+                m_outputs.append(elm);
             }
         }
     }
-    std::stable_sort(inputs.begin(), inputs.end(), [](GraphicElement *elm1, GraphicElement *elm2) {
+    std::stable_sort(m_inputs.begin(), m_inputs.end(), [](GraphicElement *elm1, GraphicElement *elm2) {
         return QString::compare(elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8(), Qt::CaseInsensitive) <= 0;
     });
-    std::stable_sort(outputs.begin(), outputs.end(), [](GraphicElement *elm1, GraphicElement *elm2) {
+    std::stable_sort(m_outputs.begin(), m_outputs.end(), [](GraphicElement *elm1, GraphicElement *elm2) {
         return QString::compare(elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8(), Qt::CaseInsensitive) <= 0;
     });
 
-    return (!inputs.isEmpty() && !outputs.isEmpty());
+    return (!m_inputs.isEmpty() && !m_outputs.isEmpty());
 }
 
 void BewavedDolphin::CreateElement(int row, int col, int value, bool isInput, bool changePrevious)
@@ -193,30 +193,30 @@ void BewavedDolphin::CreateZeroElement(int row, int col, bool isInput, bool chan
     COMMENT("Getting previous value to check previous cell refresh requirement.", 3);
     // QMessageBox::warning( this, "Zero: row, col", ( row + 48 ) + QString( " " ) + ( col + 48 ) );
     int previous_value;
-    if (model->item(row, col) == nullptr) {
+    if (m_model->item(row, col) == nullptr) {
         previous_value = -1;
-    } else if (model->item(row, col)->text().toInt() == 0) {
+    } else if (m_model->item(row, col)->text().toInt() == 0) {
         previous_value = 0;
     } else {
         previous_value = 1;
     }
     COMMENT("Changing current item.", 3);
-    auto index = model->index(row, col);
-    model->setData(index, "0", Qt::DisplayRole);
-    model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
-    if (type == PlotType::line) {
-        model->setData(index, Qt::AlignLeft, Qt::TextAlignmentRole);
-        if ((col != model->columnCount() - 1) && (model->item(row, col + 1) != nullptr) && (model->item(row, col + 1)->text().toInt() == 1)) {
-            model->setData(index, risingGreen, Qt::DecorationRole);
+    auto index = m_model->index(row, col);
+    m_model->setData(index, "0", Qt::DisplayRole);
+    m_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
+    if (m_type == PlotType::line) {
+        m_model->setData(index, Qt::AlignLeft, Qt::TextAlignmentRole);
+        if ((col != m_model->columnCount() - 1) && (m_model->item(row, col + 1) != nullptr) && (m_model->item(row, col + 1)->text().toInt() == 1)) {
+            m_model->setData(index, m_risingGreen, Qt::DecorationRole);
         } else {
-            model->setData(index, lowGreen, Qt::DecorationRole);
+            m_model->setData(index, m_lowGreen, Qt::DecorationRole);
         }
     } else {
-        model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
+        m_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
     }
     COMMENT("Changing previous item, if needed.", 3);
     if ((changePrevious) && (col != 0) && (previous_value == 1)) {
-        CreateElement(row, col - 1, model->item(row, col - 1)->text().toInt(), isInput, false);
+        CreateElement(row, col - 1, m_model->item(row, col - 1)->text().toInt(), isInput, false);
     }
 }
 
@@ -225,56 +225,56 @@ void BewavedDolphin::CreateOneElement(int row, int col, bool isInput, bool chang
     COMMENT("Getting previous value to check previous cell refresh requirement.", 3);
     // QMessageBox::warning( this, "One: row, col", ( row + 48 ) + QString( " " ) + ( col + 48 ) );
     int previous_value;
-    if (model->item(row, col) == nullptr) {
+    if (m_model->item(row, col) == nullptr) {
         previous_value = -1;
-    } else if (model->item(row, col)->text().toInt() == 0) {
+    } else if (m_model->item(row, col)->text().toInt() == 0) {
         previous_value = 0;
     } else {
         previous_value = 1;
     }
     COMMENT("Changing current item.", 3);
-    auto index = model->index(row, col);
-    model->setData(index, "1", Qt::DisplayRole);
-    if (type == PlotType::line) {
-        model->setData(index, Qt::AlignLeft, Qt::TextAlignmentRole);
-        if ((col != model->columnCount() - 1) && (model->item(row, col + 1) != nullptr) && (model->item(row, col + 1)->text().toInt() == 0)) {
-            model->setData(index, fallingGreen, Qt::DecorationRole);
+    auto index = m_model->index(row, col);
+    m_model->setData(index, "1", Qt::DisplayRole);
+    if (m_type == PlotType::line) {
+        m_model->setData(index, Qt::AlignLeft, Qt::TextAlignmentRole);
+        if ((col != m_model->columnCount() - 1) && (m_model->item(row, col + 1) != nullptr) && (m_model->item(row, col + 1)->text().toInt() == 0)) {
+            m_model->setData(index, m_fallingGreen, Qt::DecorationRole);
         } else {
-            model->setData(index, highGreen, Qt::DecorationRole);
+            m_model->setData(index, m_highGreen, Qt::DecorationRole);
         }
     } else {
-        model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
+        m_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
     }
     COMMENT("Changing previous item, if needed.", 3);
     if ((changePrevious) && (col != 0) && (previous_value == 0)) {
-        CreateElement(row, col - 1, model->item(row, col - 1)->text().toInt(), isInput, false);
+        CreateElement(row, col - 1, m_model->item(row, col - 1)->text().toInt(), isInput, false);
     }
 }
 
 void BewavedDolphin::run()
 {
-    for (int itr = 0; itr < model->columnCount(); ++itr) {
+    for (int itr = 0; itr < m_model->columnCount(); ++itr) {
         COMMENT("itr:" << itr, 3);
-        for (int in = 0; in < inputs.size(); ++in) {
-            int val = model->item(in, itr)->text().toInt();
-            dynamic_cast<Input *>(inputs[in])->setOn(val);
+        for (int in = 0; in < m_inputs.size(); ++in) {
+            int val = m_model->item(in, itr)->text().toInt();
+            dynamic_cast<Input *>(m_inputs[in])->setOn(val);
         }
         COMMENT("Updating the values of the circuit logic based on current input values.", 3);
-        sc->update();
-        sc->updateAll();
+        m_sc->update();
+        m_sc->updateAll();
         COMMENT("Setting the computed output values to the waveform results.", 3);
-        int counter = inputs.size();
-        for (int out = 0; out < outputs.size(); ++out) {
-            int inSz = outputs[out]->inputSize();
+        int counter = m_inputs.size();
+        for (int out = 0; out < m_outputs.size(); ++out) {
+            int inSz = m_outputs[out]->inputSize();
             for (int port = inSz - 1; port >= 0; --port) {
-                int value = static_cast<int>(outputs[out]->input(port)->value());
+                int value = static_cast<int>(m_outputs[out]->input(port)->value());
                 COMMENT("out value: " << value, 0);
                 CreateElement(counter, itr, value, false);
                 counter++;
             }
         }
     }
-    signalTableView->viewport()->update();
+    m_signalTableView->viewport()->update();
 }
 
 void BewavedDolphin::loadNewTable(QStringList &input_labels, QStringList &output_labels)
@@ -282,39 +282,39 @@ void BewavedDolphin::loadNewTable(QStringList &input_labels, QStringList &output
     int iterations = 32;
     COMMENT("Num iter = " << iterations, 0);
     COMMENT("Update table.", 0);
-    model = new SignalModel(inputs.size() + output_labels.size(), inputs.size(), iterations, this);
-    signalTableView->setModel(model);
-    model->setVerticalHeaderLabels(input_labels + output_labels);
-    signalTableView->setAlternatingRowColors(true);
-    signalTableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Fixed);
-    signalTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Fixed);
+    m_model = new SignalModel(m_inputs.size() + output_labels.size(), m_inputs.size(), iterations, this);
+    m_signalTableView->setModel(m_model);
+    m_model->setVerticalHeaderLabels(input_labels + output_labels);
+    m_signalTableView->setAlternatingRowColors(true);
+    m_signalTableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Fixed);
+    m_signalTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Fixed);
     COMMENT("Inputs: " << input_labels.size() << ", outputs: " << output_labels.size(), 0);
-    edited = false;
+    m_edited = false;
     on_actionClear_triggered();
 }
 
 QVector<char> BewavedDolphin::loadSignals(QStringList &input_labels, QStringList &output_labels)
 {
-    QVector<char> oldValues(inputs.size());
-    for (int in = 0; in < inputs.size(); ++in) {
-        QString label = inputs[in]->getLabel();
+    QVector<char> oldValues(m_inputs.size());
+    for (int in = 0; in < m_inputs.size(); ++in) {
+        QString label = m_inputs[in]->getLabel();
         if (label.isEmpty()) {
-            label = ElementFactory::translatedName(inputs[in]->elementType());
+            label = ElementFactory::translatedName(m_inputs[in]->elementType());
         }
         input_labels.append(label);
-        oldValues[in] = inputs[in]->output()->value();
+        oldValues[in] = m_inputs[in]->output()->value();
     }
     COMMENT(
         "Getting the name of the outputs. If no label is given, the element type is used as a name. Bug here? What if there are 2 outputs without name or two "
         "identical labels?",
         0);
-    for (int out = 0; out < outputs.size(); ++out) {
-        QString label = outputs[out]->getLabel();
+    for (int out = 0; out < m_outputs.size(); ++out) {
+        QString label = m_outputs[out]->getLabel();
         if (label.isEmpty()) {
-            label = ElementFactory::translatedName(outputs[out]->elementType());
+            label = ElementFactory::translatedName(m_outputs[out]->elementType());
         }
-        for (int port = 0; port < outputs[out]->inputSize(); ++port) {
-            if (outputs[out]->inputSize() > 1) {
+        for (int port = 0; port < m_outputs[out]->inputSize(); ++port) {
+            if (m_outputs[out]->inputSize() > 1) {
                 output_labels.append(QString("%1_%2").arg(label).arg(port));
             } else {
                 output_labels.append(label);
@@ -328,9 +328,9 @@ bool BewavedDolphin::createWaveform(QString filename)
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     COMMENT("Getting digital circuit simulator.", 0);
-    sc = editor->getSimulationController();
+    m_sc = m_editor->getSimulationController();
     COMMENT("Creating class to pause main window simulator while creating waveform.", 0);
-    SCStop scst(sc);
+    SCStop scst(m_sc);
     COMMENT("Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.", 0);
     if (!loadElements()) {
         QMessageBox::warning(parentWidget(), tr("Error"), tr("Could not load enough elements for the simulation."));
@@ -355,12 +355,12 @@ bool BewavedDolphin::createWaveform(QString filename)
         }
     }
     COMMENT("Restoring the old values to the inputs, prior to simulaton.", 0);
-    for (int in = 0; in < inputs.size(); ++in) {
-        dynamic_cast<Input *>(inputs[in])->setOn(oldValues[in]);
+    for (int in = 0; in < m_inputs.size(); ++in) {
+        dynamic_cast<Input *>(m_inputs[in])->setOn(oldValues[in]);
     }
     COMMENT("Resuming digital circuit main window after waveform simulation is finished.", 0);
     scst.release();
-    edited = false;
+    m_edited = false;
     return true;
 }
 
@@ -368,19 +368,19 @@ void BewavedDolphin::show()
 {
     QMainWindow::show();
     COMMENT("Getting table dimensions.", 0);
-    int width = signalTableView->horizontalHeader()->length() + signalTableView->columnWidth(0);
-    int hight = signalTableView->verticalHeader()->length() + signalTableView->rowHeight(0);
-    signalTableView->resize(width, hight);
+    int width = m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0);
+    int hight = m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0);
+    m_signalTableView->resize(width, hight);
 }
 
 void BewavedDolphin::print()
 {
-    std::cout << std::to_string(model->rowCount()).c_str() << ",";
-    std::cout << std::to_string(model->columnCount()).c_str() << ",\n";
-    for (int row = 0; row < model->rowCount(); ++row) {
-        std::cout << model->verticalHeaderItem(row)->text().toStdString() << ": ";
-        for (int col = 0; col < model->columnCount(); ++col) {
-            QString val = model->item(row, col)->text();
+    std::cout << std::to_string(m_model->rowCount()).c_str() << ",";
+    std::cout << std::to_string(m_model->columnCount()).c_str() << ",\n";
+    for (int row = 0; row < m_model->rowCount(); ++row) {
+        std::cout << m_model->verticalHeaderItem(row)->text().toStdString() << ": ";
+        for (int col = 0; col < m_model->columnCount(); ++col) {
+            QString val = m_model->item(row, col)->text();
             std::cout << val.toStdString().c_str() << ",";
         }
         std::cout << "\n";
@@ -391,14 +391,14 @@ void BewavedDolphin::on_actionSet_to_0_triggered()
 {
     COMMENT("Pressed 0!", 0);
     // auto itemList = signalTableView->selectedItems( );
-    auto itemList = signalTableView->selectionModel()->selectedIndexes();
+    auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
     for (auto item : qAsConst(itemList)) {
         int row = item.row();
         int col = item.column();
         COMMENT("Editing value.", 0);
         CreateZeroElement(row, col);
     }
-    edited = true;
+    m_edited = true;
     COMMENT("Running simulation", 0);
     run();
 }
@@ -406,14 +406,14 @@ void BewavedDolphin::on_actionSet_to_0_triggered()
 void BewavedDolphin::on_actionSet_to_1_triggered()
 {
     COMMENT("Pressed 0!", 0);
-    auto itemList = signalTableView->selectionModel()->selectedIndexes();
+    auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
     for (auto item : qAsConst(itemList)) {
         int row = item.row();
         int col = item.column();
         COMMENT("Editing value.", 0);
         CreateOneElement(row, col);
     }
-    edited = true;
+    m_edited = true;
     COMMENT("Running simulation", 0);
     run();
 }
@@ -421,23 +421,23 @@ void BewavedDolphin::on_actionSet_to_1_triggered()
 void BewavedDolphin::on_actionInvert_triggered()
 {
     COMMENT("Pressed Not!", 0);
-    auto itemList = signalTableView->selectionModel()->selectedIndexes();
+    auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
     for (auto item : qAsConst(itemList)) {
         int row = item.row();
         int col = item.column();
-        int value = model->index(row, col, QModelIndex()).data().toInt();
+        int value = m_model->index(row, col, QModelIndex()).data().toInt();
         value = (value + 1) % 2;
         COMMENT("Editing value.", 0);
         CreateElement(row, col, value);
     }
-    edited = true;
+    m_edited = true;
     COMMENT("Running simulation", 0);
     run();
 }
 
 int BewavedDolphin::sectionFirstColumn(const QItemSelection &ranges)
 {
-    int first_col = model->columnCount() - 1;
+    int first_col = m_model->columnCount() - 1;
     for (const auto &range : ranges) {
         if (range.left() < first_col) {
             first_col = range.left();
@@ -448,7 +448,7 @@ int BewavedDolphin::sectionFirstColumn(const QItemSelection &ranges)
 
 int BewavedDolphin::sectionFirstRow(const QItemSelection &ranges)
 {
-    int first_row = model->rowCount() - 1;
+    int first_row = m_model->rowCount() - 1;
     for (const auto &range : ranges) {
         if (range.top() < first_row) {
             first_row = range.top();
@@ -460,7 +460,7 @@ int BewavedDolphin::sectionFirstRow(const QItemSelection &ranges)
 void BewavedDolphin::on_actionSet_clock_wave_triggered()
 {
     COMMENT("Getting first column.", 0);
-    QItemSelection ranges = signalTableView->selectionModel()->selection();
+    QItemSelection ranges = m_signalTableView->selectionModel()->selection();
     int first_col = sectionFirstColumn(ranges);
     COMMENT("Setting the signal according it its column and clock period.", 0);
     clockDialog dialog(this);
@@ -469,7 +469,7 @@ void BewavedDolphin::on_actionSet_clock_wave_triggered()
         return;
     }
     int half_clock_period = clock_period / 2;
-    auto itemList = signalTableView->selectionModel()->selectedIndexes();
+    auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
     for (auto item : qAsConst(itemList)) {
         int row = item.row();
         int col = item.column();
@@ -477,7 +477,7 @@ void BewavedDolphin::on_actionSet_clock_wave_triggered()
         COMMENT("Editing value.", 0)
         CreateElement(row, col, value);
     }
-    edited = true;
+    m_edited = true;
     COMMENT("Running simulation", 0);
     run();
 }
@@ -487,15 +487,15 @@ void BewavedDolphin::on_actionCombinational_triggered()
     COMMENT("Setting the signal according it its column and clock period.", 0);
     int clock_period = 2;
     int half_clock_period = 1;
-    for (int row = 0; row < inputs.size(); ++row) {
-        for (int col = 0; col < model->columnCount(); ++col) {
+    for (int row = 0; row < m_inputs.size(); ++row) {
+        for (int col = 0; col < m_model->columnCount(); ++col) {
             int value = (col % clock_period < half_clock_period ? 0 : 1);
             CreateElement(row, col, value);
         }
         clock_period *= 2;
         half_clock_period *= 2;
     }
-    edited = true;
+    m_edited = true;
     COMMENT("Running simulation", 0);
     run();
 }
@@ -513,31 +513,31 @@ void BewavedDolphin::on_actionSet_Length_triggered()
 
 void BewavedDolphin::setLength(int sim_length, bool run_simulation)
 {
-    if (sim_length <= model->columnCount()) {
+    if (sim_length <= m_model->columnCount()) {
         COMMENT("Reducing or keeping the simulation length.", 0);
-        model->setColumnCount(sim_length);
-        int width = signalTableView->horizontalHeader()->length() + signalTableView->columnWidth(0);
-        int hight = signalTableView->verticalHeader()->length() + signalTableView->rowHeight(0);
-        signalTableView->resize(width, hight);
-        QRectF rect = scene->itemsBoundingRect();
-        scene->setSceneRect(rect);
-        edited = true;
+        m_model->setColumnCount(sim_length);
+        int width = m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0);
+        int hight = m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0);
+        m_signalTableView->resize(width, hight);
+        QRectF rect = m_scene->itemsBoundingRect();
+        m_scene->setSceneRect(rect);
+        m_edited = true;
         return;
     }
     COMMENT("Increasing the simulation length.", 0);
-    int old_length = model->columnCount();
-    model->setColumnCount(sim_length);
-    for (int row = 0; row < inputs.size(); ++row) {
-        for (int col = old_length; col < model->columnCount(); ++col) {
+    int old_length = m_model->columnCount();
+    m_model->setColumnCount(sim_length);
+    for (int row = 0; row < m_inputs.size(); ++row) {
+        for (int col = old_length; col < m_model->columnCount(); ++col) {
             CreateZeroElement(row, col, true, false);
         }
     }
-    int width = signalTableView->horizontalHeader()->length() + signalTableView->columnWidth(0);
-    int hight = signalTableView->verticalHeader()->length() + signalTableView->rowHeight(0);
-    signalTableView->resize(width, hight);
-    QRectF rect = scene->itemsBoundingRect();
-    scene->setSceneRect(rect);
-    edited = true;
+    int width = m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0);
+    int hight = m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0);
+    m_signalTableView->resize(width, hight);
+    QRectF rect = m_scene->itemsBoundingRect();
+    m_scene->setSceneRect(rect);
+    m_edited = true;
     COMMENT("Running simulation", 0);
     if (run_simulation) {
         run();
@@ -547,48 +547,48 @@ void BewavedDolphin::setLength(int sim_length, bool run_simulation)
 void BewavedDolphin::on_actionZoom_out_triggered()
 {
     // gv->gvzoom( )->zoomOut( );
-    scale *= SCALE_FACTOR;
-    gv->scale(SCALE_FACTOR, SCALE_FACTOR);
+    m_scale *= m_SCALE_FACTOR;
+    m_gv->scale(m_SCALE_FACTOR, m_SCALE_FACTOR);
 }
 
 void BewavedDolphin::on_actionZoom_In_triggered()
 {
     // gv->gvzoom( )->zoomIn( );
-    scale /= SCALE_FACTOR;
-    gv->scale(1.0 / SCALE_FACTOR, 1.0 / SCALE_FACTOR);
+    m_scale /= m_SCALE_FACTOR;
+    m_gv->scale(1.0 / m_SCALE_FACTOR, 1.0 / m_SCALE_FACTOR);
 }
 
 void BewavedDolphin::on_actionReset_Zoom_triggered()
 {
     // gv->gvzoom( )->resetZoom( );
-    gv->scale(1.0 / scale, 1.0 / scale);
-    scale = 1.0;
+    m_gv->scale(1.0 / m_scale, 1.0 / m_scale);
+    m_scale = 1.0;
 }
 
 void BewavedDolphin::on_actionZoom_Range_triggered()
 {
-    gv->scale(1.0 / scale, 1.0 / scale);
-    double w_scale = static_cast<double>(gv->width()) / (signalTableView->horizontalHeader()->length() + signalTableView->columnWidth(0));
-    double h_scale = static_cast<double>(gv->height()) / (signalTableView->verticalHeader()->length() + signalTableView->rowHeight(0));
-    scale = std::min(w_scale, h_scale);
-    gv->scale(1.0 * scale, 1.0 * scale);
+    m_gv->scale(1.0 / m_scale, 1.0 / m_scale);
+    double w_scale = static_cast<double>(m_gv->width()) / (m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0));
+    double h_scale = static_cast<double>(m_gv->height()) / (m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0));
+    m_scale = std::min(w_scale, h_scale);
+    m_gv->scale(1.0 * m_scale, 1.0 * m_scale);
 }
 
 void BewavedDolphin::on_actionClear_triggered()
 {
-    for (int row = 0; row < inputs.size(); ++row) {
-        for (int col = 0; col < model->columnCount(); ++col) {
+    for (int row = 0; row < m_inputs.size(); ++row) {
+        for (int col = 0; col < m_model->columnCount(); ++col) {
             CreateZeroElement(row, col);
         }
     }
     COMMENT("Running simulation", 0);
-    edited = true;
+    m_edited = true;
     run();
 }
 
 void BewavedDolphin::on_actionCopy_triggered()
 {
-    QItemSelection ranges = signalTableView->selectionModel()->selection();
+    QItemSelection ranges = m_signalTableView->selectionModel()->selection();
     if (ranges.isEmpty()) {
         QClipboard *clipboard = QApplication::clipboard();
         clipboard->clear();
@@ -605,7 +605,7 @@ void BewavedDolphin::on_actionCopy_triggered()
 
 void BewavedDolphin::on_actionCut_triggered()
 {
-    QItemSelection ranges = signalTableView->selectionModel()->selection();
+    QItemSelection ranges = m_signalTableView->selectionModel()->selection();
     if (ranges.isEmpty()) {
         QClipboard *clipboard = QApplication::clipboard();
         clipboard->clear();
@@ -618,12 +618,12 @@ void BewavedDolphin::on_actionCut_triggered()
     cut(ranges, dataStream);
     mimeData->setData("bdolphin/copydata", itemData);
     clipboard->setMimeData(mimeData);
-    edited = true;
+    m_edited = true;
 }
 
 void BewavedDolphin::on_actionPaste_triggered()
 {
-    QItemSelection ranges = signalTableView->selectionModel()->selection();
+    QItemSelection ranges = m_signalTableView->selectionModel()->selection();
     if (ranges.isEmpty()) {
         return;
     }
@@ -634,7 +634,7 @@ void BewavedDolphin::on_actionPaste_triggered()
         QDataStream dataStream(&itemData, QIODevice::ReadOnly);
         paste(ranges, dataStream);
     }
-    edited = true;
+    m_edited = true;
 }
 
 void BewavedDolphin::cut(const QItemSelection &ranges, QDataStream &ds)
@@ -648,12 +648,12 @@ void BewavedDolphin::copy(const QItemSelection &ranges, QDataStream &ds)
     COMMENT("Serializing data into data stream.", 0);
     int first_row = sectionFirstRow(ranges);
     int first_col = sectionFirstColumn(ranges);
-    auto itemList = signalTableView->selectionModel()->selectedIndexes();
+    auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
     ds << static_cast<qint64>(itemList.size());
     for (auto item : qAsConst(itemList)) {
         int row = item.row();
         int col = item.column();
-        int data = model->item(row, col)->text().toInt();
+        int data = m_model->item(row, col)->text().toInt();
         ds << static_cast<qint64>(row - first_row);
         ds << static_cast<qint64>(col - first_col);
         ds << static_cast<qint64>(data);
@@ -675,7 +675,7 @@ void BewavedDolphin::paste(QItemSelection &ranges, QDataStream &ds)
         ds >> data;
         int new_row = static_cast<int>(first_row + row);
         int new_col = static_cast<int>(first_col + col);
-        if ((new_row < inputs.size()) && (new_col < model->columnCount())) {
+        if ((new_row < m_inputs.size()) && (new_col < m_model->columnCount())) {
             CreateElement(new_row, new_col, data);
         }
     }
@@ -684,10 +684,10 @@ void BewavedDolphin::paste(QItemSelection &ranges, QDataStream &ds)
 
 void BewavedDolphin::on_actionSave_as_triggered()
 {
-    QString fname = currentFile.absoluteFilePath();
-    QString path = mainWindow->getCurrentFile().dir().absolutePath();
-    if (!currentFile.fileName().isEmpty()) {
-        path = currentFile.absoluteFilePath();
+    QString fname = m_currentFile.absoluteFilePath();
+    QString path = m_mainWindow->getCurrentFile().dir().absolutePath();
+    if (!m_currentFile.fileName().isEmpty()) {
+        path = m_currentFile.absoluteFilePath();
     }
     auto *selected_filter = new QString(100);
     fname = QFileDialog::getSaveFileName(this, tr("Save File as ..."), path, tr("Dolphin files (*.dolphin);;CSV files (*.csv)"), selected_filter);
@@ -702,50 +702,50 @@ void BewavedDolphin::on_actionSave_as_triggered()
         }
     }
     if (save(fname)) {
-        currentFile = fname;
-        if (mainWindow->getDolphinFilename() != fname) {
+        m_currentFile = fname;
+        if (m_mainWindow->getDolphinFilename() != fname) {
             QMessageBox::StandardButton reply;
             reply = QMessageBox::question(this,
                                           tr("Wired Panda - Bewaved Dolphin"),
                                           tr("Do you want to link this Bewaved Dolphin file to your current Wired Panda file and save it?"),
                                           QMessageBox::Yes | QMessageBox::No);
             if (reply == QMessageBox::Yes) {
-                mainWindow->setDolphinFilename(fname);
-                mainWindow->save();
+                m_mainWindow->setDolphinFilename(fname);
+                m_mainWindow->save();
             }
         }
-        setWindowTitle("Bewaved Dolphin Simulator [" + currentFile.fileName() + "]");
-        ui->statusbar->showMessage(tr("Saved file sucessfully."), 2000);
-        edited = false;
+        setWindowTitle("Bewaved Dolphin Simulator [" + m_currentFile.fileName() + "]");
+        m_ui->statusbar->showMessage(tr("Saved file sucessfully."), 2000);
+        m_edited = false;
     } else {
-        ui->statusbar->showMessage(tr("Could not save file: ") + fname + ".", 2000);
+        m_ui->statusbar->showMessage(tr("Could not save file: ") + fname + ".", 2000);
     }
     delete selected_filter;
 }
 
 void BewavedDolphin::on_actionSave_triggered()
 {
-    if (currentFile.fileName().isEmpty()) {
+    if (m_currentFile.fileName().isEmpty()) {
         on_actionSave_as_triggered();
         return;
     }
-    QString fname = currentFile.absoluteFilePath();
+    QString fname = m_currentFile.absoluteFilePath();
     if (save(fname)) {
-        ui->statusbar->showMessage(tr("Saved file sucessfully."), 2000);
-        edited = false;
+        m_ui->statusbar->showMessage(tr("Saved file sucessfully."), 2000);
+        m_edited = false;
     } else {
-        ui->statusbar->showMessage(tr("Could not save file: ") + fname + ".", 2000);
+        m_ui->statusbar->showMessage(tr("Could not save file: ") + fname + ".", 2000);
     }
 }
 
 void BewavedDolphin::on_actionLoad_triggered()
 {
     QDir defaultDirectory;
-    if (currentFile.exists()) {
-        defaultDirectory = currentFile.dir();
+    if (m_currentFile.exists()) {
+        defaultDirectory = m_currentFile.dir();
     } else {
-        if (mainWindow->getCurrentFile().exists()) {
-            mainWindow->getCurrentFile().dir();
+        if (m_mainWindow->getCurrentFile().exists()) {
+            m_mainWindow->getCurrentFile().dir();
         } else {
             defaultDirectory = QDir::home();
         }
@@ -758,8 +758,8 @@ void BewavedDolphin::on_actionLoad_triggered()
         return;
     }
     load(fname);
-    edited = false;
-    ui->statusbar->showMessage(tr("File loaded successfully."), 2000);
+    m_edited = false;
+    m_ui->statusbar->showMessage(tr("File loaded successfully."), 2000);
 }
 
 bool BewavedDolphin::save(QString &fname)
@@ -772,7 +772,7 @@ bool BewavedDolphin::save(QString &fname)
             try {
                 save(ds);
             } catch (std::runtime_error &e) {
-                ui->statusbar->showMessage(tr("Could not save file: ") + e.what(), 2000);
+                m_ui->statusbar->showMessage(tr("Could not save file: ") + e.what(), 2000);
                 return false;
             }
         } else {
@@ -780,7 +780,7 @@ bool BewavedDolphin::save(QString &fname)
             try {
                 save(fl);
             } catch (std::runtime_error &e) {
-                ui->statusbar->showMessage(tr("Could not save file: ") + e.what(), 2000);
+                m_ui->statusbar->showMessage(tr("Could not save file: ") + e.what(), 2000);
                 return false;
             }
         }
@@ -792,11 +792,11 @@ void BewavedDolphin::save(QDataStream &ds)
 {
     ds << QString("Bewaved Dolphin 1.0");
     COMMENT("Serializing data into data stream.", 0);
-    ds << static_cast<qint64>(inputs.size());
-    ds << static_cast<qint64>(model->columnCount());
-    for (int itr = 0; itr < model->columnCount(); ++itr) {
-        for (int in = 0; in < inputs.size(); ++in) {
-            int val = model->item(in, itr)->text().toInt();
+    ds << static_cast<qint64>(m_inputs.size());
+    ds << static_cast<qint64>(m_model->columnCount());
+    for (int itr = 0; itr < m_model->columnCount(); ++itr) {
+        for (int in = 0; in < m_inputs.size(); ++in) {
+            int val = m_model->item(in, itr)->text().toInt();
             ds << static_cast<qint64>(val);
         }
     }
@@ -804,13 +804,13 @@ void BewavedDolphin::save(QDataStream &ds)
 
 void BewavedDolphin::save(QSaveFile &fl)
 {
-    fl.write(std::to_string(model->rowCount()).c_str());
+    fl.write(std::to_string(m_model->rowCount()).c_str());
     fl.write(",");
-    fl.write(std::to_string(model->columnCount()).c_str());
+    fl.write(std::to_string(m_model->columnCount()).c_str());
     fl.write(",\n");
-    for (int row = 0; row < model->rowCount(); ++row) {
-        for (int col = 0; col < model->columnCount(); ++col) {
-            QString val = model->item(row, col)->text();
+    for (int row = 0; row < m_model->rowCount(); ++row) {
+        for (int col = 0; col < m_model->columnCount(); ++col) {
+            QString val = m_model->item(row, col)->text();
             fl.write(val.toStdString().c_str());
             fl.write(",");
         }
@@ -835,7 +835,7 @@ bool BewavedDolphin::load(QString fname)
                 COMMENT("Loading in editor.", 0);
                 load(ds);
                 COMMENT("Finished updating chanched by signal.", 0);
-                currentFile = QFileInfo(fname);
+                m_currentFile = QFileInfo(fname);
             } catch (std::runtime_error &e) {
                 std::cerr << tr("Error loading project: ").toStdString() << e.what() << std::endl;
                 QMessageBox::warning(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
@@ -847,7 +847,7 @@ bool BewavedDolphin::load(QString fname)
                 COMMENT("Loading in editor.", 0);
                 load(fl);
                 COMMENT("Finished updating chanched by signal.", 0);
-                currentFile = QFileInfo(fname);
+                m_currentFile = QFileInfo(fname);
             } catch (std::runtime_error &e) {
                 std::cerr << tr("Error loading project: ").toStdString() << e.what() << std::endl;
                 QMessageBox::warning(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
@@ -864,7 +864,7 @@ bool BewavedDolphin::load(QString fname)
     }
     COMMENT("Closing file.", 0);
     fl.close();
-    setWindowTitle("Bewaved Dolphin Simulator [" + currentFile.fileName() + "]");
+    setWindowTitle("Bewaved Dolphin Simulator [" + m_currentFile.fileName() + "]");
     return true;
 }
 
@@ -879,8 +879,8 @@ void BewavedDolphin::load(QDataStream &ds)
     qint64 cols;
     ds >> rows;
     ds >> cols;
-    if (rows > inputs.size()) {
-        rows = inputs.size();
+    if (rows > m_inputs.size()) {
+        rows = m_inputs.size();
     }
     if ((cols < 2) || (cols > 2048)) {
         throw(std::runtime_error(ERRORMSG("Invalid number of columns.")));
@@ -903,8 +903,8 @@ void BewavedDolphin::load(QFile &fl)
     QList<QByteArray> wordList(content.split(','));
     int rows = wordList[0].toInt();
     int cols = wordList[1].toInt();
-    if (rows > inputs.size()) {
-        rows = inputs.size();
+    if (rows > m_inputs.size()) {
+        rows = m_inputs.size();
     }
     if ((cols < 2) || (cols > 2048)) {
         throw(std::runtime_error(ERRORMSG("Invalid number of columns.")));
@@ -922,15 +922,15 @@ void BewavedDolphin::load(QFile &fl)
 
 void BewavedDolphin::on_actionShowValues_triggered()
 {
-    type = PlotType::number;
-    for (int row = 0; row < model->rowCount(); ++row) {
-        for (int col = 0; col < model->columnCount(); ++col) {
-            model->setData(model->index(row, col), "", Qt::DecorationRole);
+    m_type = PlotType::number;
+    for (int row = 0; row < m_model->rowCount(); ++row) {
+        for (int col = 0; col < m_model->columnCount(); ++col) {
+            m_model->setData(m_model->index(row, col), "", Qt::DecorationRole);
         }
     }
-    for (int row = 0; row < inputs.size(); ++row) {
-        for (int col = 0; col < model->columnCount(); ++col) {
-            CreateElement(row, col, model->item(row, col)->text().toInt());
+    for (int row = 0; row < m_inputs.size(); ++row) {
+        for (int col = 0; col < m_model->columnCount(); ++col) {
+            CreateElement(row, col, m_model->item(row, col)->text().toInt());
         }
     }
     COMMENT("Running simulation", 0);
@@ -939,10 +939,10 @@ void BewavedDolphin::on_actionShowValues_triggered()
 
 void BewavedDolphin::on_actionShowCurve_triggered()
 {
-    type = PlotType::line;
-    for (int row = 0; row < inputs.size(); ++row) {
-        for (int col = 0; col < model->columnCount(); ++col) {
-            CreateElement(row, col, model->item(row, col)->text().toInt());
+    m_type = PlotType::line;
+    for (int row = 0; row < m_inputs.size(); ++row) {
+        for (int col = 0; col < m_model->columnCount(); ++col) {
+            CreateElement(row, col, m_model->item(row, col)->text().toInt());
         }
     }
     COMMENT("Running simulation", 0);
@@ -951,19 +951,19 @@ void BewavedDolphin::on_actionShowCurve_triggered()
 
 void BewavedDolphin::on_actionExport_to_PNG_triggered()
 {
-    QString pngFile = QFileDialog::getSaveFileName(this, tr("Export to Image"), currentFile.absolutePath(), tr("PNG files (*.png)"));
+    QString pngFile = QFileDialog::getSaveFileName(this, tr("Export to Image"), m_currentFile.absolutePath(), tr("PNG files (*.png)"));
     if (pngFile.isEmpty()) {
         return;
     }
     if (!pngFile.endsWith(".png", Qt::CaseInsensitive)) {
         pngFile.append(".png");
     }
-    QRectF s = scene->sceneRect();
+    QRectF s = m_scene->sceneRect();
     QPixmap p(s.size().toSize());
     QPainter painter;
     painter.begin(&p);
     painter.setRenderHint(QPainter::Antialiasing);
-    scene->render(&painter, QRectF(), s);
+    m_scene->render(&painter, QRectF(), s);
     painter.end();
     QImage img = p.toImage();
     img.save(pngFile);
@@ -971,7 +971,7 @@ void BewavedDolphin::on_actionExport_to_PNG_triggered()
 
 void BewavedDolphin::on_actionExport_to_PDF_triggered()
 {
-    QString pdfFile = QFileDialog::getSaveFileName(this, tr("Export to PDF"), currentFile.absolutePath(), tr("PDF files (*.pdf)"));
+    QString pdfFile = QFileDialog::getSaveFileName(this, tr("Export to PDF"), m_currentFile.absolutePath(), tr("PDF files (*.pdf)"));
     if (pdfFile.isEmpty()) {
         return;
     }
@@ -988,7 +988,7 @@ void BewavedDolphin::on_actionExport_to_PDF_triggered()
         QMessageBox::warning(this, tr("ERROR"), tr("Could not print this circuit to PDF."), QMessageBox::Ok);
         return;
     }
-    scene->render(&p, QRectF(), scene->sceneRect().adjusted(-64, -64, 64, 64));
+    m_scene->render(&p, QRectF(), m_scene->sceneRect().adjusted(-64, -64, 64, 64));
     p.end();
 }
 

@@ -104,33 +104,33 @@ private slots:
     void on_actionAbout_Qt_triggered();
 
 private:
-    Ui::BewavedDolphin *ui;
-    Editor *editor;
-    MainWindow *mainWindow;
-    SimulationController *sc;
-    GraphicsView *gv;
+    Ui::BewavedDolphin *m_ui;
+    Editor *m_editor;
+    MainWindow *m_mainWindow;
+    SimulationController *m_sc;
+    GraphicsView *m_gv;
 
-    QFileInfo currentFile;
+    QFileInfo m_currentFile;
 
-    QVector<GraphicElement *> inputs;
-    QVector<GraphicElement *> outputs;
-    QGraphicsScene *scene;
-    QTableView *signalTableView;
-    QStandardItemModel *model;
-    PlotType type;
-    bool edited;
+    QVector<GraphicElement *> m_inputs;
+    QVector<GraphicElement *> m_outputs;
+    QGraphicsScene *m_scene;
+    QTableView *m_signalTableView;
+    QStandardItemModel *m_model;
+    PlotType m_type;
+    bool m_edited;
 
-    double scale;
-    const double SCALE_FACTOR = 0.8;
+    double m_scale;
+    const double m_SCALE_FACTOR = 0.8;
 
-    QPixmap lowGreen;
-    QPixmap highGreen;
-    QPixmap fallingGreen;
-    QPixmap risingGreen;
-    QPixmap lowBlue;
-    QPixmap highBlue;
-    QPixmap fallingBlue;
-    QPixmap risingBlue;
+    QPixmap m_lowGreen;
+    QPixmap m_highGreen;
+    QPixmap m_fallingGreen;
+    QPixmap m_risingGreen;
+    QPixmap m_lowBlue;
+    QPixmap m_highBlue;
+    QPixmap m_fallingBlue;
+    QPixmap m_risingBlue;
 
     bool loadElements();
     void loadNewTable(QStringList &input_labels, QStringList &output_labels);
