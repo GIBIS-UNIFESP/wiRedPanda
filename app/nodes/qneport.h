@@ -34,6 +34,9 @@ class QNEBlock;
 class QNEConnection;
 class GraphicElement;
 
+class QNEPort;
+typedef QVector<QNEPort *> QNEPortVector;
+
 class QNEPort : public QGraphicsPathItem
 {
 public:
