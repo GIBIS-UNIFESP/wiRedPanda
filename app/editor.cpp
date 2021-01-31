@@ -886,7 +886,6 @@ void Editor::load(QDataStream &ds)
             view->centerOn(scene->itemsBoundingRect().center());
         }
     }
-    // SerializationFunctions::load( ds, GlobalProperties::currentFile, scene );
     simulationController->start();
     if (scene) {
         scene->clearSelection();

@@ -21,9 +21,16 @@ class Scene;
 class Editor;
 class GraphicElement;
 
-//!
-//! \brief The AddItemsCommand class represents a single action of adding a list of elements on the editor
-//!
+void storeIds( const QList< QGraphicsItem* > &items, QVector< int > &ids );
+void storeOtherIds( const QList< QGraphicsItem* > &connections, const QVector< int > &ids, QVector< int > &otherIds );
+QList< QGraphicsItem* > loadList( const QList< QGraphicsItem* > &aItems, QVector< int > &ids, QVector< int > &otherIds );
+QList< QGraphicsItem* > findItems( const QVector< int > &ids );
+QList< GraphicElement* > findElements( const QVector< int > &ids );
+void saveItems( QByteArray &itemData, const QList< QGraphicsItem* > &items, const QVector< int > &otherIds );
+void addItems( Editor *editor, QList< QGraphicsItem* > items );
+QList< QGraphicsItem* > loadItems( QByteArray &itemData, const QVector< int > &ids, Editor *editor, QVector< int > &otherIds );
+void deleteItems( const QList< QGraphicsItem* > &items, Editor *editor );
+
 class AddItemsCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(AddItemsCommand)

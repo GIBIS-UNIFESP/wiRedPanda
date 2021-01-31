@@ -26,14 +26,13 @@ bool SerializationFunctions::update(QString &fileName, QString dirName)
     QFile file(fileName);
     if (file.open(QFile::ReadOnly)) {
         COMMENT("Started reading IC file " << fileName.toStdString(), 0);
-        QMap<quint64, QNEPort *> map = QMap<quint64, QNEPort *>();
         QDataStream ds(&file);
         version = loadVersion(ds);
         loadDolphinFilename(ds, version);
         rect = loadRect(ds, version);
         COMMENT("Version: " << version, 0);
         COMMENT("Element deserialization.", 0);
-        itemList = loadMoveData(dirName, ds, version, map);
+        itemList = loadMoveData(dirName, ds, version);
         COMMENT("Finished loading data", 0);
     }
     QSaveFile fl(fileName);
@@ -151,8 +150,9 @@ QRectF SerializationFunctions::loadRect(QDataStream &ds, double version)
     return rect;
 }
 
-QList<QGraphicsItem *> SerializationFunctions::loadMoveData(QString dirName, QDataStream &ds, double version, QMap<quint64, QNEPort *> portMap)
+QList<QGraphicsItem *> SerializationFunctions::loadMoveData(QString dirName, QDataStream &ds, double version)
 {
+    QMap<quint64, QNEPort *> portMap;
     QList<QGraphicsItem *> itemList;
     while (!ds.atEnd()) {
         int type;
@@ -194,7 +194,7 @@ QList<QGraphicsItem *> SerializationFunctions::loadMoveData(QString dirName, QDa
     return itemList;
 }
 
-QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &ds, QString parentFile, Scene *scene)
+QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &ds, QString parentFile)
 {
     COMMENT("Started loading file.", 0);
     QString str;
@@ -208,23 +208,9 @@ QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &ds, QString par
         throw(std::runtime_error(ERRORMSG("Invalid version number.")));
     }
     loadDolphinFilename(ds, version);
-    QRectF rect(loadRect(ds, version));
+    loadRect( ds, version );
     COMMENT("Header Ok. Version: " << version, 0);
     QList<QGraphicsItem *> items = deserialize(ds, version, parentFile);
     COMMENT("Finished reading items.", 0);
-    if (scene) {
-        for (QGraphicsItem *item : qAsConst(items)) {
-            scene->addItem(item);
-        }
-        scene->setSceneRect(scene->itemsBoundingRect());
-        if (!scene->views().empty()) {
-            auto const scene_views = scene->views();
-            QGraphicsView *view = scene_views.first();
-            rect = rect.united(view->rect());
-            rect.moveCenter(QPointF(0, 0));
-            scene->setSceneRect(scene->sceneRect().united(rect));
-            view->centerOn(scene->itemsBoundingRect().center());
-        }
-    }
     return items;
 }
