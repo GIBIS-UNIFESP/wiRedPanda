@@ -32,8 +32,8 @@ class Editor : public QObject
 public:
     explicit Editor(QObject *parent = nullptr);
     ~Editor() override;
-    bool saveLocalIC(IC *ic, QString newICPath);
-    bool saveLocal(QString newPath);
+    bool saveLocalIC(IC *ic, const QString& newICPath);
+    bool saveLocal(const QString& newPath);
     void save(QDataStream &ds, const QString &dolphinFilename);
     void load(QDataStream &ds);
     void cut(const QList<QGraphicsItem *> &items, QDataStream &ds);

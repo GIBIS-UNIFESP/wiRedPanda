@@ -618,7 +618,7 @@ bool Editor::dropEvt(QGraphicsSceneDragDropEvent *dde)
             try {
                 IC *box = dynamic_cast<IC *>(elm);
                 if (box) {
-                    QString fname = label_auxData;
+                    const QString& fname = label_auxData;
                     if (!m_icManager->loadIC(box, fname, GlobalProperties::currentFile)) {
                         return false;
                     }
@@ -798,7 +798,7 @@ void Editor::selectAll()
     }
 }
 
-bool Editor::saveLocalIC(IC *ic, QString newICPath)
+bool Editor::saveLocalIC(IC *ic, const QString& newICPath)
 {
     try {
         if (ic) {
@@ -835,7 +835,7 @@ bool Editor::saveLocalIC(IC *ic, QString newICPath)
     }
 }
 
-bool Editor::saveLocal(QString newPath)
+bool Editor::saveLocal(const QString& newPath)
 {
     if (!m_scene) {
         return true;
