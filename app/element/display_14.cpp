@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "display_14.h"
-#include "qneconnection.h"
 
 #include <QDebug>
 #include <QPainter>
