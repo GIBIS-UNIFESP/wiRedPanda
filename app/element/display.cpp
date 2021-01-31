@@ -135,7 +135,7 @@ void Display::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double ve
     }
 }
 
-void Display::setSkin(bool defaultSkin, QString filename)
+void Display::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         pixmapSkinName[0] = ":/output/counter/counter_off.png";

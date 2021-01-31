@@ -14,7 +14,7 @@ public:
     explicit Nand(QGraphicsItem *parent = nullptr);
     ~Nand() override = default;
 
-    void setSkin(bool defaultSkin, QString filename) override;
+    void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
 #endif /* NAND_H */

@@ -24,7 +24,7 @@ protected:
 public:
     bool getOn() const override;
     void setOn(const bool value) override;
-    void setSkin(bool defaultSkin, QString filename) override;
+    void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
 #endif /* INPUTBUTTON_H */

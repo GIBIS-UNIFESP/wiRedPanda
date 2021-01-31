@@ -15,7 +15,7 @@ Xnor::Xnor(QGraphicsItem *parent)
     setPortName("XNOR");
 }
 
-void Xnor::setSkin(bool defaultSkin, QString filename)
+void Xnor::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         pixmapSkinName[0] = ":/basic/xnor.png";

@@ -6,17 +6,18 @@
 #include "common.h"
 #include "globalproperties.h"
 
-double GlobalProperties::toDouble(QString txtVersion, bool *ok)
+double GlobalProperties::toDouble(const QString &txtVersion, bool *ok)
 {
-    if (txtVersion.contains("-")) {
-        txtVersion = txtVersion.split("-").first();
+    QString value = txtVersion;
+    if (value.contains("-")) {
+        value = value.split("-").first();
     }
 
-    if (txtVersion.contains(".")) {
-        txtVersion = txtVersion.split(".")[0] + "." + txtVersion.split(".")[1];
+    if (value.contains(".")) {
+        value = value.split(".")[0] + "." + value.split(".")[1];
     }
 
-    return txtVersion.toDouble(ok);
+    return value.toDouble(ok);
 }
 
 double loadVersion()

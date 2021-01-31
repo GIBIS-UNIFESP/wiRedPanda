@@ -23,7 +23,7 @@ void Node::updatePorts()
     output()->setPos(32, 16);
 }
 
-void Node::setSkin(bool defaultSkin, QString filename)
+void Node::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         pixmapSkinName[0] = ":/basic/node.png";

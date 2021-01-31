@@ -67,7 +67,7 @@ void InputSwitch::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, doubl
     output()->setValue(on);
 }
 
-void InputSwitch::setSkin(bool defaultSkin, QString filename)
+void InputSwitch::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         if (!on) {

@@ -14,7 +14,7 @@ public:
     explicit Xor(QGraphicsItem *parent = nullptr);
     ~Xor() override = default;
 
-    void setSkin(bool defaultSkin, QString filename) override;
+    void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
 #endif /* XOR_H */

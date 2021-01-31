@@ -61,7 +61,7 @@ void InputButton::setOn(const bool value)
     }
 }
 
-void InputButton::setSkin(bool defaultSkin, QString filename)
+void InputButton::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         if (!on) {

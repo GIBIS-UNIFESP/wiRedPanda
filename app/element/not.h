@@ -13,7 +13,7 @@ class Not : public GraphicElement
 public:
     explicit Not(QGraphicsItem *parent = nullptr);
     ~Not() override = default;
-    void setSkin(bool defaultSkin, QString filename) override;
+    void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
 #endif /* NOT_H */

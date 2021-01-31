@@ -26,7 +26,7 @@ void Mux::updatePorts()
     output(0)->setPos(32, 16); /* Out */
 }
 
-void Mux::setSkin(bool defaultSkin, QString filename)
+void Mux::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
         pixmapSkinName[0] = ":/basic/mux.png";
