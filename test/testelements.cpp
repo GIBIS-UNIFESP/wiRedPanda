@@ -192,7 +192,7 @@ void TestElements::testTFlipFlop()
     QCOMPARE(elm.elementType(), ElementType::TFLIPFLOP);
 }
 
-QString testFile(QString fname)
+QString testFile(const QString& fname)
 {
     return QString("%1/../examples/%2").arg(CURRENTDIR, fname);
 }
