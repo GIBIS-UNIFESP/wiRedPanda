@@ -1,7 +1,6 @@
 // Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "common.h"
 #include "display.h"
 #include "qneport.h"
 
@@ -115,7 +114,7 @@ void Display::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double ve
      * 2,1,4,5,0,7,3,6
      */
     if (version < 1.6) {
-        COMMENT("Remapping inputs", 0);
+        qDebug() << "Remapping inputs";
         QVector<int> order = {2, 1, 4, 5, 0, 7, 3, 6};
         QVector<QNEInputPort *> aux = inputs();
         for (int i = 0; i < aux.size(); ++i) {
@@ -125,7 +124,7 @@ void Display::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double ve
         updatePorts();
     }
     if (version < 1.7) {
-        COMMENT("Remapping inputs", 0);
+        qDebug() << "Remapping inputs";
         QVector<int> order = {2, 5, 4, 0, 7, 3, 6, 1};
         QVector<QNEInputPort *> aux = inputs();
         for (int i = 0; i < aux.size(); ++i) {

@@ -3,7 +3,6 @@
 
 #include "codegenerator.h"
 #include "clock.h"
-#include "common.h"
 #include "graphicelement.h"
 #include "qneconnection.h"
 #include "qneport.h"
@@ -54,7 +53,7 @@ QString CodeGenerator::otherPortName(QNEPort *port)
     if (port) {
         if (port->connections().isEmpty()) {
             return highLow(port->defaultValue());
-        }
+ 
         QNEPort *other = port->connections().front()->otherPort(port);
         if (other) {
             return varMap[other];
