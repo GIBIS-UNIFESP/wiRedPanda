@@ -239,7 +239,7 @@ void AddItemsCommand::undo()
     COMMENT("UNDO " + text().toStdString(), 0);
     QList<QGraphicsItem *> items = findItems(m_ids);
 
-    SimulationController *sc = this->m_editor->getSimulationController();
+    SimulationController *sc = m_editor->getSimulationController();
     // We need to restart the simulation controller when deleting through the Undo command to
     // guarantee that no crashes occur when deleting input elements (clocks, input buttons, etc.)
     sc->shouldRestart = true;
