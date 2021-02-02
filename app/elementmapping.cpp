@@ -32,11 +32,11 @@
 #include "logicelement/logicxor.h"
 
 ElementMapping::ElementMapping(const QVector<GraphicElement *> &elms, QString file)
-    : currentFile(file)
-    , initialized(false)
-    , elements(elms)
-    , globalGND(false)
-    , globalVCC(true)
+    : m_currentFile(file)
+    , m_initialized(false)
+    , m_elements(elms)
+    , m_globalGND(false)
+    , m_globalVCC(true)
 {
 }
 
@@ -47,21 +47,21 @@ ElementMapping::~ElementMapping()
 
 void ElementMapping::clear()
 {
-    initialized = false;
-    globalGND.clearSucessors();
-    globalVCC.clearSucessors();
-    for (LogicElement *elm : qAsConst(deletableElements)) {
+    m_initialized = false;
+    m_globalGND.clearSucessors();
+    m_globalVCC.clearSucessors();
+    for (LogicElement *elm : qAsConst(m_deletableElements)) {
         delete elm;
     }
-    deletableElements.clear();
-    for (ICMapping *icMap : qAsConst(icMappings)) {
+    m_deletableElements.clear();
+    for (ICMapping *icMap : qAsConst(m_icMappings)) {
         delete icMap;
     }
-    icMappings.clear();
-    map.clear();
-    inputMap.clear();
-    clocks.clear();
-    logicElms.clear();
+    m_icMappings.clear();
+    m_elementMap.clear();
+    m_inputMap.clear();
+    m_clocks.clear();
+    m_logicElms.clear();
 }
 
 QVector<GraphicElement *> ElementMapping::sortGraphicElements(QVector<GraphicElement *> elms)
@@ -83,36 +83,36 @@ void ElementMapping::insertElement(GraphicElement *elm)
 {
     LogicElement *logicElm = buildLogicElement(elm);
     elm->type();
-    deletableElements.append(logicElm);
-    logicElms.append(logicElm);
-    map.insert(elm, logicElm);
+    m_deletableElements.append(logicElm);
+    m_logicElms.append(logicElm);
+    m_elementMap.insert(elm, logicElm);
     auto *in = dynamic_cast<Input *>(elm);
     if (in) {
-        inputMap[in] = logicElm;
+        m_inputMap[in] = logicElm;
     }
 }
 
 void ElementMapping::insertIC(IC *ic)
 {
     Q_ASSERT(ic);
-    Q_ASSERT(!icMappings.contains(ic));
+    Q_ASSERT(!m_icMappings.contains(ic));
     ICPrototype *proto = ic->getPrototype();
     if (proto) {
         ICMapping *icMap = proto->generateMapping();
         Q_ASSERT(icMap);
         icMap->initialize();
-        icMappings.insert(ic, icMap);
-        logicElms.append(icMap->logicElms);
+        m_icMappings.insert(ic, icMap);
+        m_logicElms.append(icMap->m_logicElms);
     }
 }
 
 void ElementMapping::generateMap()
 {
-    for (GraphicElement *elm : qAsConst(elements)) {
+    for (GraphicElement *elm : qAsConst(m_elements)) {
         if (elm->elementType() == ElementType::CLOCK) {
             auto *clk = dynamic_cast<Clock *>(elm);
             Q_ASSERT(clk != nullptr);
-            clocks.append(clk);
+            m_clocks.append(clk);
         }
         if (elm->elementType() == ElementType::IC) {
             IC *ic = dynamic_cast<IC *>(elm);
@@ -184,7 +184,7 @@ void ElementMapping::initialize()
     clear();
     generateMap();
     connectElements();
-    initialized = true;
+    m_initialized = true;
 }
 
 void ElementMapping::sort()
@@ -198,7 +198,7 @@ void ElementMapping::update()
 {
     //  bool resetSimulationController = false;
     if (canRun()) {
-        for (Clock *clk : qAsConst(clocks)) {
+        for (Clock *clk : qAsConst(m_clocks)) {
             if (!clk) {
                 continue;
             };
@@ -209,7 +209,7 @@ void ElementMapping::update()
             }
         }
         Clock::reset = false;
-        for (auto iter = inputMap.begin(); iter != inputMap.end(); ++iter) {
+        for (auto iter = m_inputMap.begin(); iter != m_inputMap.end(); ++iter) {
             if (!iter.key()) {
                 continue;
             }
@@ -218,7 +218,7 @@ void ElementMapping::update()
             }
             iter.value()->setOutputValue(iter.key()->getOn());
         }
-        for (LogicElement *elm : qAsConst(logicElms)) {
+        for (LogicElement *elm : qAsConst(m_logicElms)) {
             elm->updateLogic();
         }
     }
@@ -228,23 +228,23 @@ void ElementMapping::update()
 ICMapping *ElementMapping::getICMapping(IC *ic) const
 {
     Q_ASSERT(ic);
-    return icMappings[ic];
+    return m_icMappings[ic];
 }
 
 LogicElement *ElementMapping::getLogicElement(GraphicElement *elm) const
 {
     Q_ASSERT(elm);
-    return map[elm];
+    return m_elementMap[elm];
 }
 
 bool ElementMapping::canRun() const
 {
-    return initialized;
+    return m_initialized;
 }
 
 bool ElementMapping::canInitialize() const
 {
-    for (GraphicElement *elm : elements) {
+    for (GraphicElement *elm : m_elements) {
         if (elm->elementType() == ElementType::IC) {
             IC *ic = dynamic_cast<IC *>(elm);
             ICPrototype *prototype = ICManager::instance()->getPrototype(ic->getFile());
@@ -263,9 +263,9 @@ void ElementMapping::applyConnection(GraphicElement *elm, QNEPort *in)
     if (elm->elementType() == ElementType::IC) {
         IC *ic = dynamic_cast<IC *>(elm);
         Q_ASSERT(ic);
-        currentLogElm = icMappings[ic]->getInput(in->index());
+        currentLogElm = m_icMappings[ic]->getInput(in->index());
     } else {
-        currentLogElm = map[elm];
+        currentLogElm = m_elementMap[elm];
         inputIndex = in->index();
     }
     Q_ASSERT(currentLogElm);
@@ -281,24 +281,24 @@ void ElementMapping::applyConnection(GraphicElement *elm, QNEPort *in)
                 if (predecessor->elementType() == ElementType::IC) {
                     IC *ic = dynamic_cast<IC *>(predecessor);
                     Q_ASSERT(ic);
-                    Q_ASSERT(icMappings.contains(ic));
-                    predOutElm = icMappings[ic]->getOutput(other_out->index());
+                    Q_ASSERT(m_icMappings.contains(ic));
+                    predOutElm = m_icMappings[ic]->getOutput(other_out->index());
                 } else {
-                    predOutElm = map[predecessor];
+                    predOutElm = m_elementMap[predecessor];
                     predOutIndex = other_out->index();
                 }
                 currentLogElm->connectPredecessor(inputIndex, predOutElm, predOutIndex);
             }
         }
     } else if ((connections == 0) && (!connection_required)) {
-        LogicElement *pred = in->defaultValue() ? &globalVCC : &globalGND;
+        LogicElement *pred = in->defaultValue() ? &m_globalVCC : &m_globalGND;
         currentLogElm->connectPredecessor(inputIndex, pred, 0);
     }
 }
 
 void ElementMapping::connectElements()
 {
-    for (GraphicElement *elm : qAsConst(elements)) {
+    for (GraphicElement *elm : qAsConst(m_elements)) {
         const auto elm_inputs = elm->inputs();
         for (QNEPort *in : elm_inputs) {
             applyConnection(elm, in);
@@ -308,17 +308,17 @@ void ElementMapping::connectElements()
 
 void ElementMapping::validateElements()
 {
-    for (LogicElement *elm : qAsConst(logicElms)) {
+    for (LogicElement *elm : qAsConst(m_logicElms)) {
         elm->validate();
     }
 }
 
 void ElementMapping::sortLogicElements()
 {
-    for (LogicElement *elm : qAsConst(logicElms)) {
+    for (LogicElement *elm : qAsConst(m_logicElms)) {
         elm->calculatePriority();
     }
-    std::sort(logicElms.begin(), logicElms.end(), [](LogicElement *e1, LogicElement *e2) {
+    std::sort(m_logicElms.begin(), m_logicElms.end(), [](LogicElement *e1, LogicElement *e2) {
         return *e2 < *e1;
     });
 }
