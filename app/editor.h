@@ -27,7 +27,6 @@ class SimulationController;
 class Editor : public QObject
 {
     Q_OBJECT
-    QElapsedTimer timer;
 
 public:
     explicit Editor(QObject *parent = nullptr);
@@ -54,6 +53,31 @@ public:
     void paste(QDataStream &ds);
     void selectAll();
 
+    bool eventFilter(QObject *obj, QEvent *evt) override;
+    void setElementEditor(ElementEditor *value);
+    QUndoStack *getUndoStack() const;
+    Scene *getScene() const;
+    void buildSelectionRect();
+    void handleHoverPort();
+    void releaseHoverPort();
+
+    void setHoverPort(QNEPort *port);
+    QNEPort *getHoverPort();
+
+    void resizeScene();
+    SimulationController *getSimulationController() const;
+    void contextMenu(QPoint screenPos);
+    void updateVisibility();
+    QPointF getMousePos() const;
+
+    ElementEditor *getElementEditor() const;
+
+    static Editor *globalEditor;
+
+    void deleteEditedConn();
+    void flipH();
+    void flipV();
+
 signals:
     void scroll(int x, int y);
     void circuitHasChanged();
@@ -74,6 +98,8 @@ public slots:
     void mute(bool _mute = true);
 
 private:
+    QElapsedTimer m_timer;
+
     QUndoStack *m_undoStack;
     Scene *m_scene;
     QList<QGraphicsItem *> itemsAt(QPointF pos);
@@ -120,32 +146,6 @@ private:
 
     void makeConnection(QNEConnection *editedConn);
     void redoSimulationController();
-
-public:
-    bool eventFilter(QObject *obj, QEvent *evt) override;
-    void setElementEditor(ElementEditor *value);
-    QUndoStack *getUndoStack() const;
-    Scene *getScene() const;
-    void buildSelectionRect();
-    void handleHoverPort();
-    void releaseHoverPort();
-
-    void setHoverPort(QNEPort *port);
-    QNEPort *getHoverPort();
-
-    void resizeScene();
-    SimulationController *getSimulationController() const;
-    void contextMenu(QPoint screenPos);
-    void updateVisibility();
-    QPointF getMousePos() const;
-
-    ElementEditor *getElementEditor() const;
-
-    static Editor *globalEditor;
-
-    void deleteEditedConn();
-    void flipH();
-    void flipV();
 };
 
 #endif /* EDITOR_H */
