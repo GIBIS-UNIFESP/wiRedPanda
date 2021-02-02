@@ -65,9 +65,13 @@ void Label::setAuxData(const QString &auxData)
 
 void Label::startDrag(QPoint pos)
 {
-    QPixmap pixmap = pixmapData();
+    QPixmap pixMap = pixmapData();
     if (pos.isNull()) {
-        pos = this->pixmap(Qt::ReturnByValue).rect().center();
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))   
+        pos = pixmap(Qt::ReturnByValue).rect().center();
+#else
+        pos = pixmap()->rect().center();
+#endif
     }
     QByteArray itemData;
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
@@ -84,7 +88,7 @@ void Label::startDrag(QPoint pos)
     mimeData->setData("application/x-dnditemdata", itemData);
     auto *drag = new QDrag(parent());
     drag->setMimeData(mimeData);
-    drag->setPixmap(pixmap);
+    drag->setPixmap(pixMap);
     drag->setHotSpot(pos);
     drag->exec(Qt::CopyAction, Qt::CopyAction);
 }
