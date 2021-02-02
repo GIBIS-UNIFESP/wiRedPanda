@@ -163,11 +163,9 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
 void MainWindow::setFastMode(bool fastModeEnabled)
 {
     ui->graphicsView->setRenderHint(QPainter::Antialiasing, !fastModeEnabled);
-    ui->graphicsView->setRenderHint(QPainter::HighQualityAntialiasing, !fastModeEnabled);
     ui->graphicsView->setRenderHint(QPainter::SmoothPixmapTransform, !fastModeEnabled);
 
     fullscreenView->setRenderHint(QPainter::Antialiasing, !fastModeEnabled);
-    fullscreenView->setRenderHint(QPainter::HighQualityAntialiasing, !fastModeEnabled);
     fullscreenView->setRenderHint(QPainter::SmoothPixmapTransform, !fastModeEnabled);
 
     ui->actionFast_Mode->setChecked(fastModeEnabled);
@@ -925,7 +923,7 @@ void MainWindow::buildFullScreenDialog()
     fullscreenDlg->setWindowFlags(Qt::Window);
     auto *dlg_layout = new QHBoxLayout(fullscreenDlg);
 
-    fullscreenDlg->addActions(this->actions());
+    fullscreenDlg->addActions(actions());
     fullscreenDlg->addActions(ui->menuBar->actions());
 
     dlg_layout->setContentsMargins(0, 0, 0, 0);
