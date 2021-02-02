@@ -242,7 +242,7 @@ void AddItemsCommand::undo()
     SimulationController *sc = m_editor->getSimulationController();
     // We need to restart the simulation controller when deleting through the Undo command to
     // guarantee that no crashes occur when deleting input elements (clocks, input buttons, etc.)
-    sc->shouldRestart = true;
+    sc->setRestart();
 
     saveItems(m_itemData, items, m_otherIds);
     deleteItems(items, m_editor);

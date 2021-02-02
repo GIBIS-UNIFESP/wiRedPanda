@@ -21,9 +21,10 @@ class SimulationController : public QObject
 {
     Q_OBJECT
 public:
-    // If shouldRestart == true, then the simulation controller will be cleared the next time that
+    // If m_shouldRestart == true, then the simulation controller will be cleared the next time that
     // it is updated.
-    bool shouldRestart;
+    void setRestart() { m_shouldRestart = true; }
+    
     explicit SimulationController(Scene *scn);
     ~SimulationController() override;
 
@@ -48,10 +49,11 @@ private:
     void updatePort(QNEInputPort *port);
     void updateConnection(QNEConnection *conn);
 
-    ElementMapping *elMapping;
-    Scene *scene;
-    QTimer simulationTimer;
-    QTimer viewTimer;
+    bool m_shouldRestart;
+    ElementMapping *m_elMapping;
+    Scene *m_scene;
+    QTimer m_simulationTimer;
+    QTimer m_viewTimer;
 };
 
 #endif /* SIMULATIONCONTROLLER_H */
