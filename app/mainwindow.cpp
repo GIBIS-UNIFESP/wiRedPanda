@@ -563,7 +563,11 @@ void MainWindow::on_lineEdit_textChanged(const QString &text)
             }
         }
         for (auto *label : searchResults) {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))   
             auto *item = new ListItemWidget(label->pixmap(Qt::ReturnByValue), label->elementType(), label->auxData());
+#else
+            auto *item = new ListItemWidget(*label->pixmap(), label->elementType(), label->auxData());
+#endif
             if (!firstResult) {
                 firstResult = item->getLabel();
             }
