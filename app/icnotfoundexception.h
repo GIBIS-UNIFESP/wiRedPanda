@@ -11,11 +11,12 @@
 class IC;
 class ICNotFoundException : public std::runtime_error
 {
-    IC *m_ic;
-
 public:
     ICNotFoundException(const std::string &message, IC *ic);
     IC *getIC() const;
+
+private:
+    IC *m_ic;
 };
 
 #endif /* ICNOTFOUNDEXCEPTION_H */
