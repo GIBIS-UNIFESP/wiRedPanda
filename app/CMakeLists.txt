@@ -1,0 +1,142 @@
+set(
+    WPANDA_FILES
+    main.cpp
+    bewaveddolphin.cpp
+    clockDialog.cpp
+    elementeditor.cpp
+    elementfactory.cpp
+    commands.cpp
+    editor.cpp
+    filehelper.cpp
+    globalproperties.cpp
+    graphicelement.cpp
+    graphicsview.cpp
+    graphicsviewzoom.cpp
+    ic.cpp
+    icmanager.cpp
+    icmapping.cpp
+    icnotfoundexception.cpp
+    icprototype.cpp
+    icprototypeimpl.cpp
+    label.cpp
+    lengthDialog.cpp
+    listitemwidget.cpp
+    mainwindow.cpp
+    recentfilescontroller.cpp
+    scene.cpp
+    scstop.cpp
+    serializationfunctions.cpp
+    simulationcontroller.cpp
+    itemwithid.cpp
+    simplewaveform.cpp
+    thememanager.cpp
+    logicelement.cpp
+    elementmapping.cpp
+    common.cpp
+
+    arduino/codegenerator.cpp
+
+    nodes/qneconnection.cpp
+    nodes/qneport.cpp
+)
+
+set (
+    WPANDA_ELEMENT
+    element/and.cpp
+    element/clock.cpp
+    element/demux.cpp
+    element/dflipflop.cpp
+    element/display.cpp
+    element/display_14.cpp
+    element/dlatch.cpp
+    element/inputbutton.cpp
+    element/inputgnd.cpp
+    element/inputswitch.cpp
+    element/inputvcc.cpp
+    element/jkflipflop.cpp
+    element/jklatch.cpp
+    element/led.cpp
+    element/mux.cpp
+    element/nand.cpp
+    element/node.cpp
+    element/nor.cpp
+    element/not.cpp
+    element/or.cpp
+    element/srflipflop.cpp
+    element/tflipflop.cpp
+    element/xnor.cpp
+    element/xor.cpp
+    element/buzzer.cpp
+)
+    # element/tlatch.cpp
+
+set (
+    WPANDA_LOGICELEMENT
+    logicelement/logicnode.cpp
+    logicelement/logicinput.cpp
+    logicelement/logicoutput.cpp
+    logicelement/logicand.cpp
+    logicelement/logicor.cpp
+    logicelement/logicnand.cpp
+    logicelement/logicnor.cpp
+    logicelement/logicxor.cpp
+    logicelement/logicxnor.cpp
+    logicelement/logicnot.cpp
+    logicelement/logicjkflipflop.cpp
+    logicelement/logicsrflipflop.cpp
+    logicelement/logictflipflop.cpp
+    logicelement/logicdflipflop.cpp
+    logicelement/logicdlatch.cpp
+    logicelement/logicmux.cpp
+    logicelement/logicdemux.cpp
+)
+
+qt5_add_resources(
+    WPANDA_RESOURCES
+    resources/dolphin/dolphin.qrc
+    resources/resources.qrc
+    resources/basic/basic.qrc
+    resources/input/input.qrc
+    resources/output/output.qrc
+    resources/toolbar/toolbar.qrc
+    resources/memory/dark/memory_dark.qrc
+    resources/memory/light/memory_light.qrc
+)
+
+set (
+    WPANDA_FORMS
+    bewaveddolphin.ui
+    clockDialog.ui
+    lengthDialog.ui
+    mainwindow.ui
+    elementeditor.ui
+    simplewaveform.ui
+)
+
+add_executable(
+    wpanda
+    ${WPANDA_FILES}
+    ${WPANDA_LOGICELEMENT}
+    ${WPANDA_ELEMENT}
+    ${WPANDA_FORMS}
+    ${WPANDA_RESOURCES}
+    ${WPANDA_FORMS}
+)
+
+target_compile_definitions(
+    wpanda
+    PUBLIC
+        -DCURRENTDIR="${CMAKE_CURRENT_SOURCE_DIR}"
+        -DAPP_VERSION="${APP_VERSION}"
+)
+
+target_link_libraries(
+    wpanda
+PRIVATE
+    Qt5::Core
+    Qt5::Charts
+    Qt5::Widgets
+    Qt5::Gui
+    Qt5::Multimedia
+    Qt5::PrintSupport
+)

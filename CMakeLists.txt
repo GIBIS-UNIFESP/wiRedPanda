@@ -6,14 +6,18 @@ project(WiredPanda
     LANGUAGES CXX
 )
 
+# wiRedPanda version
+set(APP_VERSION "3.0")
+
 set(CMAKE_CXX_STANDARD 17)
 set(CXX_STANDARD_REQUIRED ON)
 
-set(QT_MIN_VERSION "5.12.0")
+set(QT_MIN_VERSION "5.14.0")
 
 set(CMAKE_AUTOMOC ON)
 set(AUTOMOC_MOC_OPTIONS -Muri=org.GIBIS-UNIFESP.wiRedPanda)
 
+set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -27,10 +31,25 @@ add_compile_definitions(
     QT_USE_FAST_OPERATOR_PLUS
 )
 
+find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED
+    Core
+    Gui
+    Charts
+    Multimedia
+    PrintSupport
+    Widgets
+    Test
+)
+
 find_package (ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
 set (CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
 include(cmake/Git.cmake)
 include(cmake/Format.cmake)
 
+include_directories(./app/element)
+include_directories(./app/nodes)
+include_directories(./app)
+
+add_subdirectory(app)
 add_subdirectory(test)

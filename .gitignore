@@ -36,7 +36,8 @@ Makefile*
 .sass-cache
 _site
 
-build
+/build*
+.vscode
 
 *~
 *#
