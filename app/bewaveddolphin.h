@@ -34,7 +34,9 @@ class SignalModel : public QStandardItemModel
 public:
     SignalModel(int rows, int inputs, int columns, QObject *parent = nullptr);
     Qt::ItemFlags flags(const QModelIndex &index) const override;
-    int inputs;
+
+private:
+    int m_inputs;
 };
 
 class SignalDelegate : public QItemDelegate

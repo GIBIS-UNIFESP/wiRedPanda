@@ -36,14 +36,14 @@
 
 SignalModel::SignalModel(int rows, int inputs, int columns, QObject *parent)
     : QStandardItemModel(rows, columns, parent)
-    , inputs(inputs)
+    , m_inputs(inputs)
 {
 }
 
 Qt::ItemFlags SignalModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags flags;
-    if (index.row() >= inputs) {
+    if (index.row() >= m_inputs) {
         flags = ~(Qt::ItemIsEditable | Qt::ItemIsSelectable);
     } else {
         flags = ~(Qt::ItemIsEditable | Qt::ItemIsSelectable) | Qt::ItemIsSelectable;
