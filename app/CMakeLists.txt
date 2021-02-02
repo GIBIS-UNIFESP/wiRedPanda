@@ -1,12 +1,14 @@
+
 set(
     WPANDA_FILES
-    main.cpp
     bewaveddolphin.cpp
     clockDialog.cpp
+    commands.cpp
+    common.cpp
+    editor.cpp
     elementeditor.cpp
     elementfactory.cpp
-    commands.cpp
-    editor.cpp
+    elementmapping.cpp
     filehelper.cpp
     globalproperties.cpp
     graphicelement.cpp
@@ -18,21 +20,19 @@ set(
     icnotfoundexception.cpp
     icprototype.cpp
     icprototypeimpl.cpp
+    itemwithid.cpp
     label.cpp
     lengthDialog.cpp
     listitemwidget.cpp
+    logicelement.cpp
     mainwindow.cpp
     recentfilescontroller.cpp
     scene.cpp
     scstop.cpp
     serializationfunctions.cpp
-    simulationcontroller.cpp
-    itemwithid.cpp
     simplewaveform.cpp
+    simulationcontroller.cpp
     thememanager.cpp
-    logicelement.cpp
-    elementmapping.cpp
-    common.cpp
 
     arduino/codegenerator.cpp
 
@@ -40,56 +40,17 @@ set(
     nodes/qneport.cpp
 )
 
-set (
-    WPANDA_ELEMENT
-    element/and.cpp
-    element/clock.cpp
-    element/demux.cpp
-    element/dflipflop.cpp
-    element/display.cpp
-    element/display_14.cpp
-    element/dlatch.cpp
-    element/inputbutton.cpp
-    element/inputgnd.cpp
-    element/inputswitch.cpp
-    element/inputvcc.cpp
-    element/jkflipflop.cpp
-    element/jklatch.cpp
-    element/led.cpp
-    element/mux.cpp
-    element/nand.cpp
-    element/node.cpp
-    element/nor.cpp
-    element/not.cpp
-    element/or.cpp
-    element/srflipflop.cpp
-    element/tflipflop.cpp
-    element/xnor.cpp
-    element/xor.cpp
-    element/buzzer.cpp
+add_library(wpandacommon ${WPANDA_FILES} )
+target_link_libraries( wpandacommon PUBLIC ${WPANDA_LIBS} )
+target_compile_definitions(
+    wpandacommon
+    PUBLIC
+        -DCURRENTDIR="${CMAKE_CURRENT_SOURCE_DIR}"
+        -DAPP_VERSION="${APP_VERSION}"
 )
-    # element/tlatch.cpp
 
-set (
-    WPANDA_LOGICELEMENT
-    logicelement/logicnode.cpp
-    logicelement/logicinput.cpp
-    logicelement/logicoutput.cpp
-    logicelement/logicand.cpp
-    logicelement/logicor.cpp
-    logicelement/logicnand.cpp
-    logicelement/logicnor.cpp
-    logicelement/logicxor.cpp
-    logicelement/logicxnor.cpp
-    logicelement/logicnot.cpp
-    logicelement/logicjkflipflop.cpp
-    logicelement/logicsrflipflop.cpp
-    logicelement/logictflipflop.cpp
-    logicelement/logicdflipflop.cpp
-    logicelement/logicdlatch.cpp
-    logicelement/logicmux.cpp
-    logicelement/logicdemux.cpp
-)
+add_subdirectory(element)
+add_subdirectory(logicelement)
 
 qt5_add_resources(
     WPANDA_RESOURCES
@@ -115,12 +76,9 @@ set (
 
 add_executable(
     wpanda
-    ${WPANDA_FILES}
-    ${WPANDA_LOGICELEMENT}
-    ${WPANDA_ELEMENT}
+    main.cpp
     ${WPANDA_FORMS}
     ${WPANDA_RESOURCES}
-    ${WPANDA_FORMS}
 )
 
 target_compile_definitions(
@@ -132,11 +90,9 @@ target_compile_definitions(
 
 target_link_libraries(
     wpanda
-PRIVATE
-    Qt5::Core
-    Qt5::Charts
-    Qt5::Widgets
-    Qt5::Gui
-    Qt5::Multimedia
-    Qt5::PrintSupport
+PUBLIC
+    ${WPANDA_LIBS}
+    wpandacommon
+    wpandaelements
+    wpandalogicelement
 )
