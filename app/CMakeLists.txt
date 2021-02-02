@@ -84,8 +84,7 @@ add_executable(
 target_compile_definitions(
     wpanda
     PUBLIC
-        -DCURRENTDIR="${CMAKE_CURRENT_SOURCE_DIR}"
-        -DAPP_VERSION="${APP_VERSION}"
+    -DAPP_VERSION="${APP_VERSION}"
 )
 
 target_link_libraries(
