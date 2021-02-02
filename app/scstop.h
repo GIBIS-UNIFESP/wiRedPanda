@@ -10,13 +10,14 @@ class SimulationController;
 
 class SCStop
 {
-    SimulationController *sc;
-    bool restart = false;
-
 public:
     SCStop(SimulationController *sc);
     void release();
     ~SCStop();
+
+private:
+    SimulationController *m_sc;
+    bool m_restart = false;
 };
 
 #endif /* SCSTOP_H */
