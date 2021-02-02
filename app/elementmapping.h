@@ -47,19 +47,19 @@ public:
 
 protected:
     // Attributes
-    QString currentFile;
-    bool initialized;
-    ElementMap map;
-    InputMap inputMap;
-    QVector<Clock *> clocks;
-    QVector<GraphicElement *> elements;
-    QMap<IC *, ICMapping *> icMappings;
-    QVector<LogicElement *> logicElms;
+    QString m_currentFile;
+    bool m_initialized;
+    ElementMap m_elementMap;
+    InputMap m_inputMap;
+    QVector<Clock *> m_clocks;
+    QVector<GraphicElement *> m_elements;
+    QMap<IC *, ICMapping *> m_icMappings;
+    QVector<LogicElement *> m_logicElms;
 
-    LogicInput globalGND;
-    LogicInput globalVCC;
+    LogicInput m_globalGND;
+    LogicInput m_globalVCC;
 
-    QVector<LogicElement *> deletableElements;
+    QVector<LogicElement *> m_deletableElements;
 
     // Methods
     LogicElement *buildLogicElement(GraphicElement *elm);

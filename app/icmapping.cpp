@@ -16,10 +16,10 @@ void ICMapping::initialize()
 {
     ElementMapping::initialize();
     for (QNEPort *port : qAsConst(m_icInputs)) {
-        m_inputs.append(map[port->graphicElement()]);
+        m_inputs.append(m_elementMap[port->graphicElement()]);
     }
     for (QNEPort *port : qAsConst(m_icOutputs)) {
-        m_outputs.append(map[port->graphicElement()]);
+        m_outputs.append(m_elementMap[port->graphicElement()]);
     }
 }
 
