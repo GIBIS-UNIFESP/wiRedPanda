@@ -50,10 +50,6 @@ class ThemeManager : public QObject
 {
     Q_OBJECT
 
-    Editor *editor;
-    Theme m_theme;
-    ThemeAttrs attrs;
-
 public:
     static ThemeManager *globalMngr;
 
@@ -71,7 +67,9 @@ public:
 signals:
     void themeChanged();
 
-public slots:
+private:
+    Theme m_theme;
+    ThemeAttrs m_attrs;
 };
 
 #endif /* THEMEMANAGER_H */
