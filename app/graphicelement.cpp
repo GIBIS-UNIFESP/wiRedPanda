@@ -501,7 +501,7 @@ QNEPort *GraphicElement::addPort(const QString &name, bool isOutput, int flags, 
     port->setPortFlags(flags);
     port->setPtr(ptr);
     COMMENT("Updating new port.", 4);
-    this->updatePorts();
+    updatePorts();
     port->show();
     return port;
 }
