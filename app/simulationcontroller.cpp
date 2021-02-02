@@ -76,14 +76,14 @@ bool SimulationController::canRun()
 
 bool SimulationController::isRunning()
 {
-    return this->simulationTimer.isActive();
+    return simulationTimer.isActive();
 }
 
 void SimulationController::update()
 {
     if (shouldRestart) {
         shouldRestart = false;
-        this->clear();
+        clear();
     }
     if (elMapping) {
         elMapping->update();
