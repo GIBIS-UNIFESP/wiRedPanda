@@ -1,16 +1,6 @@
-find_package(Qt5 ${QT_MIN_VERSION} REQUIRED NO_MODULE COMPONENTS
-    Charts
-    Core
-    Widgets
-    Test
-)
 
-include_directories(../app)
-include_directories(../app/element)
-include_directories(../app/nodes)
-
-add_executable(
-    wiredtest
+set (
+    WPANDA_TEST_FILES
     main.cpp
     testcommands.cpp
     testelements.cpp
@@ -21,17 +11,30 @@ add_executable(
     testwaveform.cpp
 )
 
-target_compile_definitions(
+qt5_add_resources(
+    WPANDA_RESOURCES
+    ../app/resources/dolphin/dolphin.qrc
+    ../app/resources/resources.qrc
+    ../app/resources/basic/basic.qrc
+    ../app/resources/input/input.qrc
+    ../app/resources/output/output.qrc
+    ../app/resources/toolbar/toolbar.qrc
+    ../app/resources/memory/dark/memory_dark.qrc
+    ../app/resources/memory/light/memory_light.qrc
+)
+
+add_executable(
     wiredtest
-    PUBLIC
-        -DCURRENTDIR="${CMAKE_CURRENT_SOURCE_DIR}"
+    ${WPANDA_TEST_FILES}
+    ${WPANDA_RESOURCES}
 )
 
 target_link_libraries(
     wiredtest
-PRIVATE
-    Qt5::Core
-    Qt5::Charts
-    Qt5::Widgets
+PUBLIC
+    ${WPANDA_LIBS}
+    wpandacommon
+    wpandaelements
+    wpandalogicelement
     Qt5::Test
 )

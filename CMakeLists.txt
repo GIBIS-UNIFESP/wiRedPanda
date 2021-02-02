@@ -8,6 +8,7 @@ project(WiredPanda
 
 # wiRedPanda version
 set(APP_VERSION "3.0")
+option(BUILD_TEST "BUILD_TEST" 0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CXX_STANDARD_REQUIRED ON)
@@ -32,13 +33,22 @@ add_compile_definitions(
 )
 
 find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED
+    Charts
     Core
     Gui
-    Charts
     Multimedia
     PrintSupport
     Widgets
-    Test
+)
+
+set( 
+    WPANDA_LIBS
+    Qt5::Charts
+    Qt5::Core
+    Qt5::Gui
+    Qt5::Multimedia
+    Qt5::PrintSupport
+    Qt5::Widgets
 )
 
 find_package (ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
@@ -47,9 +57,13 @@ set (CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 include(cmake/Git.cmake)
 include(cmake/Format.cmake)
 
+include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} )
 include_directories(./app/element)
 include_directories(./app/nodes)
 include_directories(./app)
 
 add_subdirectory(app)
-add_subdirectory(test)
+if(BUILD_TEST)
+    find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Test )
+    add_subdirectory(test)
+endif()
