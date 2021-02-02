@@ -33,7 +33,6 @@ public:
     void setSkin(bool defaultSkin, const QString &filename) override;
 
 private:
-    Editor *editor;
     QString m_file;
 
     void loadInputs(ICPrototype *prototype);
