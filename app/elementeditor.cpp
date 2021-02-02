@@ -198,11 +198,11 @@ void ElementEditor::contextMenu(QPoint screenPos)
             changeTriggerAction();
         } else if (a->text() == changeSkinText) {
             // Reads a new sprite and applies it to the element
-            this->updateElementSkin();
+            updateElementSkin();
         } else if (a->text() == revertSkinText) {
             // Reset the icon to its default
             m_defaultSkin = true;
-            this->apply();
+            apply();
         } else if (a->data().toString() == freqActionText) {
             m_ui->doubleSpinBoxFrequency->setFocus();
         } else if (submenumorph && submenumorph->actions().contains(a)) {
