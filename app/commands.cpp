@@ -391,7 +391,7 @@ void MoveCommand::redo()
 
 UpdateCommand::UpdateCommand(const QVector<GraphicElement *> &elements, QByteArray oldData, Editor *editor, QUndoCommand *parent)
     : QUndoCommand(parent)
-    , editor(editor)
+    , m_editor(editor)
 {
     m_oldData = oldData;
     ids.reserve(elements.size());
@@ -407,14 +407,14 @@ void UpdateCommand::undo()
 {
     COMMENT("UNDO " + text().toStdString(), 0);
     loadData(m_oldData);
-    emit editor->circuitHasChanged();
+    emit m_editor->circuitHasChanged();
 }
 
 void UpdateCommand::redo()
 {
     COMMENT("REDO " + text().toStdString(), 0);
     loadData(m_newData);
-    emit editor->circuitHasChanged();
+    emit m_editor->circuitHasChanged();
 }
 
 void UpdateCommand::loadData(QByteArray itemData)
@@ -436,32 +436,32 @@ void UpdateCommand::loadData(QByteArray itemData)
 
 SplitCommand::SplitCommand(QNEConnection *conn, QPointF point, Editor *editor, QUndoCommand *parent)
     : QUndoCommand(parent)
-    , editor(editor)
-    , scene(editor->getScene())
+    , m_editor(editor)
+    , m_scene(editor->getScene())
 {
     GraphicElement *node = ElementFactory::buildElement(ElementType::NODE);
     QNEConnection *conn2 = ElementFactory::instance->buildConnection();
 
     /* Align node to Grid */
-    nodePos = point - QPointF(node->boundingRect().center());
-    if (scene) {
-        int gridSize = scene->gridSize();
-        qreal xV = qRound(nodePos.x() / gridSize) * gridSize;
-        qreal yV = qRound(nodePos.y() / gridSize) * gridSize;
-        nodePos = QPointF(xV, yV);
+    m_nodePos = point - QPointF(node->boundingRect().center());
+    if (m_scene) {
+        int gridSize = m_scene->gridSize();
+        qreal xV = qRound(m_nodePos.x() / gridSize) * gridSize;
+        qreal yV = qRound(m_nodePos.y() / gridSize) * gridSize;
+        m_nodePos = QPointF(xV, yV);
     }
     /* Rotate line according to angle between p1 and p2 */
-    nodeAngle = conn->angle();
-    nodeAngle = 360 - 90 * (std::round(nodeAngle / 90.0));
+    m_nodeAngle = conn->angle();
+    m_nodeAngle = 360 - 90 * (std::round(m_nodeAngle / 90.0));
 
     /* Assingning class attributes */
-    elm1_id = conn->start()->graphicElement()->id();
-    elm2_id = conn->end()->graphicElement()->id();
+    m_elm1_id = conn->start()->graphicElement()->id();
+    m_elm2_id = conn->end()->graphicElement()->id();
 
-    c1_id = conn->id();
-    c2_id = conn2->id();
+    m_c1_id = conn->id();
+    m_c2_id = conn2->id();
 
-    node_id = node->id();
+    m_node_id = node->id();
 
     setText(tr("Wire split"));
 }
@@ -479,22 +479,22 @@ GraphicElement *findElm(int id)
 void SplitCommand::redo()
 {
     COMMENT("REDO " + text().toStdString(), 0);
-    QNEConnection *c1 = findConn(c1_id);
-    QNEConnection *c2 = findConn(c2_id);
-    GraphicElement *node = findElm(node_id);
-    GraphicElement *elm1 = findElm(elm1_id);
-    GraphicElement *elm2 = findElm(elm2_id);
+    QNEConnection *c1 = findConn(m_c1_id);
+    QNEConnection *c2 = findConn(m_c2_id);
+    GraphicElement *node = findElm(m_node_id);
+    GraphicElement *elm1 = findElm(m_elm1_id);
+    GraphicElement *elm2 = findElm(m_elm2_id);
     if (!c2) {
         c2 = ElementFactory::buildConnection();
-        ElementFactory::updateItemId(c2, c2_id);
+        ElementFactory::updateItemId(c2, m_c2_id);
     }
     if (!node) {
         node = ElementFactory::buildElement(ElementType::NODE);
-        ElementFactory::updateItemId(node, node_id);
+        ElementFactory::updateItemId(node, m_node_id);
     }
     if (c1 && c2 && elm1 && elm2 && node) {
-        node->setPos(nodePos);
-        node->setRotation(nodeAngle);
+        node->setPos(m_nodePos);
+        node->setRotation(m_nodeAngle);
 
         /*    QNEOutputPort *startPort = c1->start( ); */
         QNEInputPort *endPort = c1->end();
@@ -502,8 +502,8 @@ void SplitCommand::redo()
         c2->setEnd(endPort);
         c1->setEnd(node->input());
 
-        scene->addItem(node);
-        scene->addItem(c2);
+        m_scene->addItem(node);
+        m_scene->addItem(c2);
 
         c1->updatePosFromPorts();
         c1->updatePath();
@@ -512,44 +512,44 @@ void SplitCommand::redo()
     } else {
         throw std::runtime_error(ERRORMSG(QString("Error tryng to redo %1").arg(text()).toStdString()));
     }
-    emit editor->circuitHasChanged();
+    emit m_editor->circuitHasChanged();
 }
 
 void SplitCommand::undo()
 {
     COMMENT("UNDO " + text().toStdString(), 0);
-    QNEConnection *c1 = findConn(c1_id);
-    QNEConnection *c2 = findConn(c2_id);
-    GraphicElement *node = findElm(node_id);
-    GraphicElement *elm1 = findElm(elm1_id);
-    GraphicElement *elm2 = findElm(elm2_id);
+    QNEConnection *c1 = findConn(m_c1_id);
+    QNEConnection *c2 = findConn(m_c2_id);
+    GraphicElement *node = findElm(m_node_id);
+    GraphicElement *elm1 = findElm(m_elm1_id);
+    GraphicElement *elm2 = findElm(m_elm2_id);
     if (c1 && c2 && elm1 && elm2 && node) {
         c1->setEnd(c2->end());
 
         c1->updatePosFromPorts();
         c1->updatePath();
 
-        editor->getScene()->removeItem(c2);
-        editor->getScene()->removeItem(node);
+        m_editor->getScene()->removeItem(c2);
+        m_editor->getScene()->removeItem(node);
 
         delete c2;
         delete node;
     } else {
         throw std::runtime_error(ERRORMSG(QString("Error tryng to undo %1").arg(text()).toStdString()));
     }
-    emit editor->circuitHasChanged();
+    emit m_editor->circuitHasChanged();
 }
 
 MorphCommand::MorphCommand(const QVector<GraphicElement *> &elements, ElementType aType, Editor *aEditor, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
-    newtype = aType;
-    editor = aEditor;
-    ids.reserve(elements.size());
-    types.reserve(elements.size());
+    m_newtype = aType;
+    m_editor = aEditor;
+    m_ids.reserve(elements.size());
+    m_types.reserve(elements.size());
     for (GraphicElement *oldElm : elements) {
-        ids.append(oldElm->id());
-        types.append(oldElm->elementType());
+        m_ids.append(oldElm->id());
+        m_types.append(oldElm->elementType());
     }
     setText(tr("Morph %1 elements to %2").arg(elements.size()).arg(elements.front()->objectName()));
 }
@@ -557,25 +557,25 @@ MorphCommand::MorphCommand(const QVector<GraphicElement *> &elements, ElementTyp
 void MorphCommand::undo()
 {
     COMMENT("UNDO " + text().toStdString(), 0);
-    QVector<GraphicElement *> newElms = findElements(ids).toVector();
+    QVector<GraphicElement *> newElms = findElements(m_ids).toVector();
     QVector<GraphicElement *> oldElms(newElms.size());
-    for (int i = 0; i < ids.size(); ++i) {
-        oldElms[i] = ElementFactory::buildElement(types[i]);
+    for (int i = 0; i < m_ids.size(); ++i) {
+        oldElms[i] = ElementFactory::buildElement(m_types[i]);
     }
     transferConnections(newElms, oldElms);
-    emit editor->circuitHasChanged();
+    emit m_editor->circuitHasChanged();
 }
 
 void MorphCommand::redo()
 {
     COMMENT("REDO " + text().toStdString(), 0);
-    QVector<GraphicElement *> oldElms = findElements(ids).toVector();
+    QVector<GraphicElement *> oldElms = findElements(m_ids).toVector();
     QVector<GraphicElement *> newElms(oldElms.size());
-    for (int i = 0; i < ids.size(); ++i) {
-        newElms[i] = ElementFactory::buildElement(newtype);
+    for (int i = 0; i < m_ids.size(); ++i) {
+        newElms[i] = ElementFactory::buildElement(m_newtype);
     }
     transferConnections(oldElms, newElms);
-    emit editor->circuitHasChanged();
+    emit m_editor->circuitHasChanged();
 }
 
 void MorphCommand::transferConnections(QVector<GraphicElement *> from, QVector<GraphicElement *> to)
@@ -623,11 +623,11 @@ void MorphCommand::transferConnections(QVector<GraphicElement *> from, QVector<G
             }
         }
         int oldId = oldElm->id();
-        editor->getScene()->removeItem(oldElm);
+        m_editor->getScene()->removeItem(oldElm);
         delete oldElm;
 
         ElementFactory::updateItemId(newElm, oldId);
-        editor->getScene()->addItem(newElm);
+        m_editor->getScene()->addItem(newElm);
         newElm->updatePorts();
     }
 }

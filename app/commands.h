@@ -195,7 +195,7 @@ private:
     QVector<int> ids;
     QByteArray m_oldData;
     QByteArray m_newData;
-    Editor *editor;
+    Editor *m_editor;
 
     void loadData(QByteArray itemData);
 };
@@ -211,13 +211,13 @@ public:
     void redo() Q_DECL_OVERRIDE;
 
 private:
-    Editor *editor;
-    Scene *scene;
-    QPointF nodePos;
-    int nodeAngle;
-    int elm1_id, elm2_id;
-    int c1_id, c2_id;
-    int node_id;
+    Editor *m_editor;
+    Scene *m_scene;
+    QPointF m_nodePos;
+    int m_nodeAngle;
+    int m_elm1_id, m_elm2_id;
+    int m_c1_id, m_c2_id;
+    int m_node_id;
 };
 
 class MorphCommand : public QUndoCommand
@@ -236,10 +236,10 @@ public:
     }
 
 private:
-    QVector<int> ids;
-    QVector<ElementType> types;
-    ElementType newtype;
-    Editor *editor;
+    QVector<int> m_ids;
+    QVector<ElementType> m_types;
+    ElementType m_newtype;
+    Editor *m_editor;
     void transferConnections(QVector<GraphicElement *> from, QVector<GraphicElement *> to);
 };
 
