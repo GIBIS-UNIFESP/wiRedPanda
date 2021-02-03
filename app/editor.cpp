@@ -871,7 +871,9 @@ void Editor::load(QDataStream &ds)
     double version = SerializationFunctions::loadVersion(ds);
     COMMENT("Version: " << version, 0);
     QString dolphinFilename(SerializationFunctions::loadDolphinFilename(ds, version));
-    m_mainWindow->setDolphinFilename(dolphinFilename);
+    if (m_mainWindow) {
+        m_mainWindow->setDolphinFilename(dolphinFilename);
+    }
     COMMENT("Dolphin name: " << dolphinFilename.toStdString(), 0);
     QRectF rect(SerializationFunctions::loadRect(ds, version));
     COMMENT("Header Ok. Version: " << version, 0);
