@@ -143,16 +143,18 @@ double SerializationFunctions::loadVersion(QDataStream &ds)
 QString SerializationFunctions::loadDolphinFilename(QDataStream &ds, double version)
 {
     QString str = "none";
-    if (version >= 3.0)
+    if (version >= 3.0) {
         ds >> str;
+    }
     return str;
 }
 
 QRectF SerializationFunctions::loadRect(QDataStream &ds, double version)
 {
     QRectF rect;
-    if (version >= 1.4)
+    if (version >= 1.4) {
         ds >> rect;
+    }
     return rect;
 }
 
