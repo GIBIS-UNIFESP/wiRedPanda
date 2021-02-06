@@ -25,7 +25,6 @@
 
 #include "arduino/codegenerator.h"
 #include "bewaveddolphin.h"
-#include "common.h"
 #include "editor.h"
 #include "elementfactory.h"
 #include "elementmapping.h"
@@ -44,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     , ui(new Ui::MainWindow)
     , undoView(nullptr)
 {
-    COMMENT("WIRED PANDA Version = " << APP_VERSION << " OR " << GlobalProperties::version, 0);
+    qDebug() << "WIRED PANDA Version = " << APP_VERSION << " OR " << GlobalProperties::version ;
     ui->setupUi(this);
     ThemeManager::globalMngr = new ThemeManager(this);
     editor = new Editor(this);
@@ -72,10 +71,10 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
                 QStringList args;
                 args << autosaveFilename;
                 wPanda->start(QCoreApplication::applicationFilePath(), args);
-                COMMENT("Reloaded autosave: " << args[0].toStdString(), 0);
+                qDebug() << "Reloaded autosave: " << QString::fromStdString(args[0].toStdString());
             }
         } else if ((QFile(autosaveFilename).exists()) && (autosaveFilename == filename)) {
-            COMMENT("Loading autosave!", 0);
+            qDebug() << "Loading autosave!" ;
             loadedAutosave = true;
         }
     }
@@ -196,7 +195,7 @@ void MainWindow::on_actionExit_triggered()
 
 bool MainWindow::save(QString fname)
 {
-    COMMENT("fname: " << fname.toStdString() << ", autosave: " << autosaveFilename.toStdString(), 0);
+    qDebug() << "fname: " << QString::fromStdString(fname.toStdString()) << ", autosave: " << QString::fromStdString(autosaveFilename.toStdString());
     if ((fname.isEmpty()) || (loadedAutosave)) {
         fname = currentFile.absoluteFilePath();
         if ((currentFile.fileName().isEmpty()) || (loadedAutosave)) {
@@ -302,18 +301,18 @@ bool MainWindow::loadPandaFile(const QString &fname)
         std::cerr << tr("Error: This file does not exists: ").toStdString() << fname.toStdString() << std::endl;
         return false;
     }
-    COMMENT("File exists.", 0);
+    qDebug() << "File exists." ;
     if (fl.open(QFile::ReadOnly)) {
-        COMMENT("File opened.", 0);
+        qDebug() << "File opened." ;
         QDataStream ds(&fl);
         setCurrentFile(QFileInfo(fname));
-        COMMENT("Current file set.", 0);
+        qDebug() << "Current file set." ;
         try {
-            COMMENT("Loading in editor.", 0);
+            qDebug() << "Loading in editor." ;
             editor->load(ds);
-            COMMENT("Loaded. Emiting changed signal.", 0);
+            qDebug() << "Loaded. Emiting changed signal." ;
             emit editor->circuitHasChanged();
-            COMMENT("Finished updating chanched by signal.", 0);
+            qDebug() << "Finished updating chanched by signal." ;
         } catch (std::runtime_error &e) {
             std::cerr << tr("Error loading project: ").toStdString() << e.what() << std::endl;
             QMessageBox::warning(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
@@ -324,9 +323,9 @@ bool MainWindow::loadPandaFile(const QString &fname)
         std::cerr << tr("Could not open file in ReadOnly mode : ").toStdString() << fname.toStdString() << "." << std::endl;
         return false;
     }
-    COMMENT("Closing file.", 0);
+    qDebug() << "Closing file." ;
     fl.close();
-    // COMMENT( "Adding to controller.", 0 );
+    // qDebug() <<  "Adding to controller.", 0 );
     //  rfController->addFile( fname );
     ui->statusBar->showMessage(tr("File loaded successfully."), 2000);
     /*  on_actionWaveform_triggered( ); */
@@ -441,20 +440,20 @@ QFileInfo MainWindow::getCurrentFile() const
 
 void MainWindow::setCurrentFile(const QFileInfo &value)
 {
-    COMMENT("Default the autosave path to the temporary directory of the system.", 0);
+    qDebug() << "Default the autosave path to the temporary directory of the system." ;
     if (value.exists()) {
         QDir autosavePath(QDir::temp());
-        COMMENT("Autosave path set to the current file's directory, if there is one.", 0);
+        qDebug() << "Autosave path set to the current file's directory, if there is one." ;
         autosavePath = value.dir();
-        COMMENT("Autosavepath: " << autosavePath.absolutePath().toStdString(), 0);
+        qDebug() << "Autosavepath: " << QString::fromStdString(autosavePath.absolutePath().toStdString());
         autosaveFile.setFileTemplate(autosavePath.absoluteFilePath(value.baseName() + "XXXXXX.panda"));
-        COMMENT("Setting current file to: " << value.absoluteFilePath().toStdString(), 0);
+        qDebug() << "Setting current file to: " << QString::fromStdString(value.absoluteFilePath().toStdString());
     } else {
-        COMMENT("Defalt value does not exist: " << value.absoluteFilePath().toStdString(), 0);
+        qDebug() << "Defalt value does not exist: " << QString::fromStdString(value.absoluteFilePath().toStdString());
         QDir autosavePath(QDir::temp());
-        COMMENT("Autosavepath: " << autosavePath.absolutePath().toStdString(), 0);
+        qDebug() << "Autosavepath: " << QString::fromStdString(autosavePath.absolutePath().toStdString());
         autosaveFile.setFileTemplate(autosavePath.absoluteFilePath("XXXXXX.panda"));
-        COMMENT("Setting current file to random file in tmp.", 0);
+        qDebug() << "Setting current file to random file in tmp." ;
     }
     currentFile = value;
     if (value.fileName().isEmpty()) {
@@ -463,11 +462,11 @@ void MainWindow::setCurrentFile(const QFileInfo &value)
         setWindowTitle(QString("wiRED PANDA v%1 [%2]").arg(APP_VERSION, value.fileName()));
     }
     if (!loadedAutosave) {
-        COMMENT("Adding file to controller.", 0);
+        qDebug() << "Adding file to controller." ;
         rfController->addFile(value.absoluteFilePath());
     }
     GlobalProperties::currentFile = currentFile.absoluteFilePath();
-    COMMENT("Setting global current file.", 0);
+    qDebug() << "Setting global current file." ;
     if (currentFile.exists()) {
         defaultDirectory = currentFile.dir();
     } else {
@@ -646,7 +645,7 @@ bool MainWindow::exportToWaveFormFile(const QString& fname)
         }
         bd = new BewavedDolphin(editor, this);
         if (!bd->createWaveform(dolphinFilename)) {
-            std::cerr << ERRORMSG(tr("Could not open waveform file: %1.").arg(currentFile.fileName()).toStdString()) << std::endl;
+            std::cerr << tr("Could not open waveform file: %1.").arg(currentFile.fileName()).toStdString() << std::endl;
             return false;
         }
         bd->print();
@@ -955,9 +954,9 @@ void MainWindow::on_actionFullscreen_triggered() const
 void MainWindow::autoSave()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    COMMENT("Starting autosave.", 0);
+    qDebug() << "Starting autosave." ;
     if (editor->getUndoStack()->isClean()) {
-        COMMENT("Undo stack is clean.", 0);
+        qDebug() << "Undo stack is clean." ;
         if (autosaveFile.exists()) {
             autosaveFile.remove();
             settings.remove("autosaveFile");
@@ -967,17 +966,17 @@ void MainWindow::autoSave()
             autosaveFile.remove();
             if (!currentFile.fileName().isEmpty()) {
                 QDir autosavePath(QDir::temp());
-                COMMENT("Autosave path set to the current file's directory, if there is one.", 0);
+                qDebug() << "Autosave path set to the current file's directory, if there is one." ;
                 autosavePath = currentFile.dir();
-                COMMENT("Autosavepath: " << autosavePath.absolutePath().toStdString(), 0);
+                qDebug() << "Autosavepath: " << QString::fromStdString(autosavePath.absolutePath().toStdString());
                 autosaveFile.setFileTemplate(autosavePath.absoluteFilePath(currentFile.baseName() + "XXXXXX.panda"));
-                COMMENT("Setting current file to: " << currentFile.absoluteFilePath().toStdString(), 0);
+                qDebug() << "Setting current file to: " << QString::fromStdString(currentFile.absoluteFilePath().toStdString());
             } else {
-                COMMENT("Defalt value not set yet.", 0);
+                qDebug() << "Defalt value not set yet." ;
                 QDir autosavePath(QDir::temp());
-                COMMENT("Autosavepath: " << autosavePath.absolutePath().toStdString(), 0);
+                qDebug() << "Autosavepath: " << QString::fromStdString(autosavePath.absolutePath().toStdString());
                 autosaveFile.setFileTemplate(autosavePath.absoluteFilePath("XXXXXX.panda"));
-                COMMENT("Setting current file to random file in tmp.", 0);
+                qDebug() << "Setting current file to random file in tmp." ;
             }
         }
         if (autosaveFile.open()) {
@@ -996,7 +995,7 @@ void MainWindow::autoSave()
             autosaveFile.close();
         }
     }
-    COMMENT("Finished autosave.", 0);
+    qDebug() << "Finished autosave." ;
 }
 
 void MainWindow::on_actionMute_triggered()
@@ -1024,7 +1023,7 @@ void MainWindow::on_actionSave_Local_Project_triggered()
         fname.append(".panda");
     }
     setCurrentFile(QFileInfo(fname));
-    COMMENT("Saving ics and skins", 0);
+    qDebug() << "Saving ics and skins" ;
     // Saves ics ans skins locally here.
     path = currentFile.absolutePath();
     if (!QDir(path + "/boxes").exists()) {
@@ -1037,12 +1036,12 @@ void MainWindow::on_actionSave_Local_Project_triggered()
         if (!dir_res)
             std::cerr << tr("Error creating skins directory.").toStdString() << std::endl;
     }
-    COMMENT("Saving ics and skins to local directories.", 0);
+    qDebug() << "Saving ics and skins to local directories." ;
     if (!editor->saveLocal(path)) {
         std::cerr << tr("Error saving ICs.").toStdString() << std::endl;
         ui->statusBar->showMessage(tr("Could not save the local project."), 2000);
         return;
     }
-    COMMENT("Saving main project.", 0);
+    qDebug() << "Saving main project." ;
     save();
 }

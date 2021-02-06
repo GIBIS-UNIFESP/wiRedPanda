@@ -6,6 +6,7 @@
 
 #include <QPainter>
 #include <QPixmap>
+#include <QDebug>
 
 int Display::current_id_number = 0;
 

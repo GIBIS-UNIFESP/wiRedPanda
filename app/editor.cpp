@@ -4,7 +4,6 @@
 #include "editor.h"
 #include "buzzer.h"
 #include "commands.h"
-#include "common.h"
 #include "elementeditor.h"
 #include "elementfactory.h"
 #include "globalproperties.h"
@@ -36,6 +35,7 @@
 #include <QUndoStack>
 #include <cmath>
 #include <iostream>
+#include <QDebug>
 
 Editor *Editor::globalEditor = nullptr;
 
@@ -84,7 +84,7 @@ Editor::~Editor() = default;
 
 void Editor::updateTheme()
 {
-    COMMENT("Update theme.", 0);
+    qDebug() << "Update theme.";
     if (ThemeManager::globalMngr) {
         const ThemeAttrs attrs = ThemeManager::globalMngr->getAttrs();
         if (!m_scene) {
@@ -104,7 +104,7 @@ void Editor::updateTheme()
             conn->updateTheme();
         }
     }
-    COMMENT("Finished updating theme. ", 0);
+    qDebug() << "Finished updating theme. ";
 }
 
 void Editor::mute(bool _mute)
@@ -143,18 +143,18 @@ void Editor::setEditedConn(QNEConnection *editedConn)
 
 void Editor::buildSelectionRect()
 {
-    COMMENT("Build Selection Rect.", 0);
+    qDebug() << "Build Selection Rect.";
     m_selectionRect = new QGraphicsRectItem();
     m_selectionRect->setFlag(QGraphicsItem::ItemIsSelectable, false);
     if (m_scene) {
         m_scene->addItem(m_selectionRect);
     }
-    COMMENT("Finished building rect.", 0);
+    qDebug() << "Finished building rect.";
 }
 
 void Editor::clear()
 {
-    COMMENT("Clearing editor.", 0);
+    qDebug() << "Clearing editor.";
     //  fprintf(stderr, "Clearing editor\n");
     m_simulationController->stop();
     m_simulationController->clear();
@@ -164,7 +164,7 @@ void Editor::clear()
     if (m_scene) {
         m_scene->clear();
     }
-    COMMENT("Building rect.", 0);
+    qDebug() << "Building rect.";
     buildSelectionRect();
     if (m_scene) {
         auto const scene_views = m_scene->views();
@@ -172,12 +172,12 @@ void Editor::clear()
             m_scene->setSceneRect(scene_views.front()->rect());
         }
     }
-    COMMENT("Updating theme.", 0);
+    qDebug() << "Updating theme.";
     updateTheme();
     m_simulationController->start();
-    COMMENT("Emitting circuitHasChanged.", 0);
+    qDebug() << "Emitting circuitHasChanged.";
     emit circuitHasChanged();
-    COMMENT("Finished clear.", 0);
+    qDebug() << "Finished clear.";
 }
 
 //! CARMESIM: reset scene upon deletion in order to avoid SIGSEGV
@@ -703,7 +703,7 @@ bool Editor::wheelEvt(QWheelEvent *wEvt)
 
 void Editor::ctrlDrag(QPointF pos)
 {
-    COMMENT("Ctrl + Drag action triggered.", 0);
+    qDebug() << "Ctrl + Drag action triggered.";
     QVector<GraphicElement *> selectedElms = m_scene->selectedElements();
     if (!selectedElms.isEmpty()) {
         QRectF rect;
@@ -802,15 +802,15 @@ bool Editor::saveLocalIC(IC *ic, const QString& newICPath)
 {
     try {
         if (ic) {
-            COMMENT("Getting new paths for the ics.", 0)
+            qDebug() << "Getting new paths for the ics.";
             QString fname = ic->getFile();
-            COMMENT("IC file name: " << fname.toStdString(), 0);
+            qDebug() << "IC file name: " << QString::fromStdString(fname.toStdString());
             auto icPrototype = m_icManager->getPrototype(fname);
             QString newFilePath = newICPath + "/boxes/" + QFileInfo(fname).fileName();
-            COMMENT("newFilePath: " << newFilePath.toStdString(), 0);
+            qDebug() << "newFilePath: " << QString::fromStdString(newFilePath.toStdString());
             QFile fl(newFilePath);
             if (!fl.exists()) {
-                COMMENT("Copying file to local dir. File does not exist yet.", 0);
+                qDebug() << "Copying file to local dir. File does not exist yet.";
                 QFile::copy(fname, newFilePath);
                 if (icPrototype->updateLocalIC(newFilePath, newICPath)) {
                     if (!ic->setFile(newFilePath)) {
@@ -841,7 +841,7 @@ bool Editor::saveLocal(const QString& newPath)
         return true;
     }
     auto const scene_elements = m_scene->getElements();
-    COMMENT("new path: " << newPath.toStdString(), 0);
+    qDebug() << "new path: " << QString::fromStdString(newPath.toStdString());
     for (GraphicElement *elm : scene_elements) {
         elm->updateSkinsPath(newPath + "/skins/");
         if (elm->elementType() == ElementType::IC) {
@@ -863,20 +863,20 @@ void Editor::save(QDataStream &ds, const QString &dolphinFilename)
 
 void Editor::load(QDataStream &ds)
 {
-    COMMENT("Loading file.", 0);
+    qDebug() << "Loading file.";
     clear();
-    COMMENT("Clear!", 0);
+    qDebug() << "Clear!";
     m_simulationController->stop();
-    COMMENT("Stoped simulation.", 0);
+    qDebug() << "Stoped simulation.";
     double version = SerializationFunctions::loadVersion(ds);
-    COMMENT("Version: " << version, 0);
+    qDebug() << "Version: " << version;
     QString dolphinFilename(SerializationFunctions::loadDolphinFilename(ds, version));
     m_mainWindow->setDolphinFilename(dolphinFilename);
-    COMMENT("Dolphin name: " << dolphinFilename.toStdString(), 0);
+    qDebug() << "Dolphin name: " << QString::fromStdString(dolphinFilename.toStdString());
     QRectF rect(SerializationFunctions::loadRect(ds, version));
-    COMMENT("Header Ok. Version: " << version, 0);
+    qDebug() << "Header Ok. Version: " << version;
     QList<QGraphicsItem *> items = SerializationFunctions::deserialize(ds, version, GlobalProperties::currentFile);
-    COMMENT("Finished loading items.", 0);
+    qDebug() << "Finished loading items.";
     if (m_scene) {
         for (QGraphicsItem *item : qAsConst(items)) {
             m_scene->addItem(item);
@@ -896,9 +896,9 @@ void Editor::load(QDataStream &ds)
     if (m_scene) {
         m_scene->clearSelection();
     }
-    COMMENT("Emiting circuit has changed.", 0);
+    qDebug() << "Emiting circuit has changed.";
     emit circuitHasChanged();
-    COMMENT("Finished loading file.", 0);
+    qDebug() << "Finished loading file.";
 }
 
 void Editor::setElementEditor(ElementEditor *value)

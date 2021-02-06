@@ -1,12 +1,13 @@
 // Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <iostream>
 
 #include "icprototypeimpl.h"
 
 #include <QFile>
 #include <QFileInfo>
+#include <QDebug>
 
-#include "common.h"
 #include "elementfactory.h"
 #include "ic.h"
 #include "icprototype.h"
@@ -40,7 +41,7 @@ void ICPrototypeImpl::sortPorts(QVector<QNEPort *> &map)
 
 bool ICPrototypeImpl::updateLocalIC(const QString &fileName, const QString &dirName)
 {
-    COMMENT("Recursive call to sub ics.", 0);
+    qDebug() << "Recursive call to sub ics.";
     for (GraphicElement *elm : qAsConst(elements)) {
         if (elm->elementType() == ElementType::IC) {
             IC *ic = dynamic_cast<IC *>(elm);
@@ -48,7 +49,7 @@ bool ICPrototypeImpl::updateLocalIC(const QString &fileName, const QString &dirN
             QString subICFileName = dirName + "/boxes/" + QFileInfo(originalSubICName).fileName();
             auto prototype = ic->getPrototype();
             if (!QFile::exists(subICFileName)) {
-                COMMENT("Copying subic file to local dir. File does not exist yet.", 0);
+                qDebug() << "Copying subic file to local dir. File does not exist yet.";
                 QFile::copy(originalSubICName, subICFileName);
                 if (prototype->updateLocalIC(subICFileName, dirName)) {
                     if (!ic->setFile(subICFileName)) {
@@ -61,13 +62,13 @@ bool ICPrototypeImpl::updateLocalIC(const QString &fileName, const QString &dirN
             }
         }
     }
-    COMMENT("Updating references of subics.", 0);
+    qDebug() << "Updating references of subics.";
     try {
         if (!SerializationFunctions::update(fileName, dirName)) {
             std::cerr << "Error saving local ic." << std::endl;
             return false;
         }
-        COMMENT("Saved at prototype impl.", 0);
+        qDebug() << "Saved at prototype impl.";
 
     } catch (std::runtime_error &e) {
         std::cerr << "Error saving project: " << e.what() << std::endl;
@@ -78,7 +79,7 @@ bool ICPrototypeImpl::updateLocalIC(const QString &fileName, const QString &dirN
 
 void ICPrototypeImpl::loadFile(const QString &fileName)
 {
-    COMMENT("Reading ic", 0);
+    qDebug() << "Reading ic";
     clear();
     QFile file(fileName);
     if (file.open(QFile::ReadOnly)) {
@@ -94,7 +95,7 @@ void ICPrototypeImpl::loadFile(const QString &fileName)
     sortPorts(outputs);
     loadInputs();
     loadOutputs();
-    COMMENT("Finished Reading ic", 0);
+    qDebug() << "Finished Reading ic";
 }
 
 void ICPrototypeImpl::loadInputs()

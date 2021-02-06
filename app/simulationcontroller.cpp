@@ -3,7 +3,6 @@
 
 #include "simulationcontroller.h"
 
-#include "common.h"
 #include "element/clock.h"
 #include "elementmapping.h"
 #include "globalproperties.h"
@@ -97,37 +96,37 @@ void SimulationController::stop()
 
 void SimulationController::start()
 {
-    COMMENT("Start simulation controller.", 0);
+    qDebug() << "Start simulation controller.";
     Clock::reset = true;
     reSortElms();
     simulationTimer.start();
-    COMMENT("Simulation started.", 0);
+    qDebug() << "Simulation started.";
 }
 
 void SimulationController::reSortElms()
 {
-    COMMENT("GENERATING SIMULATION LAYER", 0);
+    qDebug() << "GENERATING SIMULATION LAYER";
     QVector<GraphicElement *> elements = scene->getElements();
-    COMMENT("Elements read:" << elements.size(), 0);
+    qDebug() << "Elements read:" << elements.size();
     if (elements.size() == 0) {
         return;
     }
-    COMMENT("After return.", 0);
+    qDebug() << "After return.";
     if (elMapping) {
         delete elMapping;
     }
-    COMMENT("Elements deleted.", 0);
+    qDebug() << "Elements deleted.";
     elMapping = new ElementMapping(scene->getElements(), GlobalProperties::currentFile);
     if (elMapping->canInitialize()) {
-        COMMENT("Can initialize.", 0);
+        qDebug() << "Can initialize.";
         elMapping->initialize();
         elMapping->sort();
         update();
     } else {
         qDebug() << "Cannot initialize simulation!";
-        COMMENT("Can not initialize.", 0);
+        qDebug() << "Can not initialize.";
     }
-    COMMENT("Finished simulation layer.", 0);
+    qDebug() << "Finished simulation layer.";
 }
 
 void SimulationController::clear()

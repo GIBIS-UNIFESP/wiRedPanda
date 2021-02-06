@@ -8,8 +8,8 @@
 
 #include <QDrag>
 #include <QGraphicsItem>
+#include <QDebug>
 
-#include "common.h"
 #include "editor.h"
 #include "elementfactory.h"
 #include "graphicelement.h"
@@ -106,7 +106,7 @@ QList<QGraphicsItem *> findItems(const QVector<int> &ids)
         }
     }
     if (items.size() != ids.size()) {
-        throw std::runtime_error(ERRORMSG("One or more items was not found on the scene."));
+        throw std::runtime_error("One or more items was not found on the scene.");
     }
     return items;
 }
@@ -121,7 +121,7 @@ QList<GraphicElement *> findElements(const QVector<int> &ids)
         }
     }
     if (items.size() != ids.size()) {
-        throw std::runtime_error(ERRORMSG("One or more elements was not found on the scene."));
+        throw std::runtime_error("One or more elements was not found on the scene.");
     }
     return items;
 }
@@ -170,7 +170,7 @@ QList<QGraphicsItem *> loadItems(QByteArray &itemData, const QVector<int> &ids, 
     if (items.size() != ids.size()) {
         QString msg("One or more elements were not found on scene. Expected %1, found %2.");
         msg = msg.arg(ids.size()).arg(items.size());
-        throw std::runtime_error(ERRORMSG(msg.toStdString()));
+        throw std::runtime_error(msg.toStdString());
     }
     for (int i = 0; i < items.size(); ++i) {
         auto *iwid = dynamic_cast<ItemWithId *>(items[i]);
@@ -236,7 +236,7 @@ DeleteItemsCommand::DeleteItemsCommand(QGraphicsItem *item, Editor *aEditor, QUn
 
 void AddItemsCommand::undo()
 {
-    COMMENT("UNDO " + text().toStdString(), 0);
+    qDebug() << "UNDO "  << QString::fromStdString(text().toStdString());
     QList<QGraphicsItem *> items = findItems(m_ids);
 
     SimulationController *sc = this->m_editor->getSimulationController();
@@ -251,7 +251,7 @@ void AddItemsCommand::undo()
 
 void AddItemsCommand::redo()
 {
-    COMMENT("REDO " + text().toStdString(), 0);
+    qDebug() << "REDO " << QString::fromStdString(text().toStdString());
     // TODO: items seems unused
     QList<QGraphicsItem *> items = loadItems(m_itemData, m_ids, m_editor, m_otherIds);
     emit m_editor->circuitHasChanged();
@@ -259,14 +259,14 @@ void AddItemsCommand::redo()
 
 void DeleteItemsCommand::undo()
 {
-    COMMENT("UNDO " + text().toStdString(), 0);
+    qDebug() << "UNDO "  << QString::fromStdString(text().toStdString());
     loadItems(m_itemData, m_ids, m_editor, m_otherIds);
     emit m_editor->circuitHasChanged();
 }
 
 void DeleteItemsCommand::redo()
 {
-    COMMENT("REDO " + text().toStdString(), 0);
+    qDebug() << "REDO "  << QString::fromStdString(text().toStdString());
     QList<QGraphicsItem *> items = findItems(m_ids);
     saveItems(m_itemData, items, m_otherIds);
     deleteItems(items, m_editor);
@@ -289,7 +289,7 @@ RotateCommand::RotateCommand(const QList<GraphicElement *> &aItems, int aAngle, 
 
 void RotateCommand::undo()
 {
-    COMMENT("UNDO " + text().toStdString(), 0);
+    qDebug() << "UNDO " << QString::fromStdString(text().toStdString());
     QList<GraphicElement *> list = findElements(m_ids);
     QGraphicsScene *scn = list[0]->scene();
     scn->clearSelection();
@@ -306,7 +306,7 @@ void RotateCommand::undo()
 
 void RotateCommand::redo()
 {
-    COMMENT("REDO " + text().toStdString(), 0);
+    qDebug() << "REDO " << QString::fromStdString(text().toStdString());
     QList<GraphicElement *> list = findElements(m_ids);
     QGraphicsScene *scn = list[0]->scene();
     scn->clearSelection();
@@ -373,7 +373,7 @@ MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPoint
 
 void MoveCommand::undo()
 {
-    COMMENT("UNDO " + text().toStdString(), 0);
+    qDebug() << "UNDO " << QString::fromStdString(text().toStdString());
     QVector<GraphicElement *> elms = findElements(m_ids).toVector();
     for (int i = 0; i < elms.size(); ++i) {
         elms[i]->setPos(m_oldPositions[i]);
@@ -382,7 +382,7 @@ void MoveCommand::undo()
 
 void MoveCommand::redo()
 {
-    COMMENT("REDO " + text().toStdString(), 0);
+    qDebug() << "REDO " << QString::fromStdString(text().toStdString());
     QVector<GraphicElement *> elms = findElements(m_ids).toVector();
     for (int i = 0; i < elms.size(); ++i) {
         elms[i]->setPos(m_newPositions[i]);
@@ -405,14 +405,14 @@ UpdateCommand::UpdateCommand(const QVector<GraphicElement *> &elements, QByteArr
 
 void UpdateCommand::undo()
 {
-    COMMENT("UNDO " + text().toStdString(), 0);
+    qDebug() << "UNDO " << QString::fromStdString(text().toStdString());
     loadData(m_oldData);
     emit editor->circuitHasChanged();
 }
 
 void UpdateCommand::redo()
 {
-    COMMENT("REDO " + text().toStdString(), 0);
+    qDebug() << "REDO " << QString::fromStdString(text().toStdString());
     loadData(m_newData);
     emit editor->circuitHasChanged();
 }
@@ -478,7 +478,7 @@ GraphicElement *findElm(int id)
 
 void SplitCommand::redo()
 {
-    COMMENT("REDO " + text().toStdString(), 0);
+    qDebug() << "REDO " << QString::fromStdString(text().toStdString());
     QNEConnection *c1 = findConn(c1_id);
     QNEConnection *c2 = findConn(c2_id);
     GraphicElement *node = findElm(node_id);
@@ -510,14 +510,14 @@ void SplitCommand::redo()
         c2->updatePosFromPorts();
         c2->updatePath();
     } else {
-        throw std::runtime_error(ERRORMSG(QString("Error tryng to redo %1").arg(text()).toStdString()));
+        throw std::runtime_error(QString("Error tryng to redo %1").arg(text()).toStdString());
     }
     emit editor->circuitHasChanged();
 }
 
 void SplitCommand::undo()
 {
-    COMMENT("UNDO " + text().toStdString(), 0);
+    qDebug() << "UNDO "  << QString::fromStdString(text().toStdString());
     QNEConnection *c1 = findConn(c1_id);
     QNEConnection *c2 = findConn(c2_id);
     GraphicElement *node = findElm(node_id);
@@ -535,7 +535,7 @@ void SplitCommand::undo()
         delete c2;
         delete node;
     } else {
-        throw std::runtime_error(ERRORMSG(QString("Error tryng to undo %1").arg(text()).toStdString()));
+        throw std::runtime_error(QString("Error tryng to undo %1").arg(text()).toStdString());
     }
     emit editor->circuitHasChanged();
 }
@@ -556,7 +556,7 @@ MorphCommand::MorphCommand(const QVector<GraphicElement *> &elements, ElementTyp
 
 void MorphCommand::undo()
 {
-    COMMENT("UNDO " + text().toStdString(), 0);
+    qDebug() << "UNDO "  << QString::fromStdString(text().toStdString());
     QVector<GraphicElement *> newElms = findElements(ids).toVector();
     QVector<GraphicElement *> oldElms(newElms.size());
     for (int i = 0; i < ids.size(); ++i) {
@@ -568,7 +568,7 @@ void MorphCommand::undo()
 
 void MorphCommand::redo()
 {
-    COMMENT("REDO " + text().toStdString(), 0);
+    qDebug() << "REDO " << QString::fromStdString(text().toStdString());
     QVector<GraphicElement *> oldElms = findElements(ids).toVector();
     QVector<GraphicElement *> newElms(oldElms.size());
     for (int i = 0; i < ids.size(); ++i) {
@@ -648,7 +648,7 @@ ChangeInputSZCommand::ChangeInputSZCommand(const QVector<GraphicElement *> &elem
 
 void ChangeInputSZCommand::redo()
 {
-    COMMENT("REDO " + text().toStdString(), 0);
+    qDebug() << "REDO " << QString::fromStdString(text().toStdString());
     const QVector<GraphicElement *> m_elements = findElements(m_elms).toVector();
     if (!m_elements.isEmpty() && m_elements.front()->scene()) {
         m_scene->clearSelection();
@@ -692,7 +692,7 @@ void ChangeInputSZCommand::redo()
 
 void ChangeInputSZCommand::undo()
 {
-    COMMENT("UNDO " + text().toStdString(), 0);
+    qDebug() << "UNDO " << QString::fromStdString(text().toStdString());
     const QVector<GraphicElement *> m_elements = findElements(m_elms).toVector();
     const QVector<GraphicElement *> serializationOrder = findElements(m_order).toVector();
     if (!m_elements.isEmpty() && m_elements.front()->scene()) {
@@ -743,13 +743,13 @@ FlipCommand::FlipCommand(const QList<GraphicElement *> &aItems, int aAxis, QUndo
 
 void FlipCommand::undo()
 {
-    COMMENT("UNDO " + text().toStdString(), 0);
+    qDebug() << "UNDO " << QString::fromStdString(text().toStdString());
     redo();
 }
 
 void FlipCommand::redo()
 {
-    COMMENT("REDO " + text().toStdString(), 0);
+    qDebug() << "REDO " << QString::fromStdString(text().toStdString());
     // TODO: this might detach the QList
     QList<GraphicElement *> list = findElements(m_ids);
     QGraphicsScene *scn = list[0]->scene();

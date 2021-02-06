@@ -7,13 +7,12 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QSettings>
-
-#include "common.h"
+#include <QDebug>
 
 // TODO: quotes bug
 void RecentFilesController::addFile(const QString &fname)
 {
-    COMMENT("Setting recent file to : \"" << fname.toStdString() << "\"", 0);
+    qDebug() << "Setting recent file to : \"" << QString::fromStdString(fname.toStdString()) << "\"";
     if (!QFile(fname).exists()) {
         return;
     }
@@ -23,7 +22,7 @@ void RecentFilesController::addFile(const QString &fname)
         if (m_attrName == "recentICs") {
             settings.setValue("recentICs", "");
         } else {
-            COMMENT("Early return because the settings do not contain attrName " << m_attrName.toStdString(), 0);
+            qDebug() << "Early return because the settings do not contain attrName " << QString::fromStdString(m_attrName.toStdString());
             return;
         }
     }

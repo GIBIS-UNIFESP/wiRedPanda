@@ -5,7 +5,6 @@
 #include <QDebug>
 #include <QDir>
 
-#include "common.h"
 #include "filehelper.h"
 #include "globalproperties.h"
 #include "icnotfoundexception.h"
@@ -23,11 +22,11 @@ QFileInfo FileHelper::findICFile(const QString &fname, const QString &parentFile
                 QFileInfo currentFile(GlobalProperties::currentFile);
                 fileInfo.setFile(currentFile.absoluteDir(), myFile);
                 if (!fileInfo.isFile()) {
-                    COMMENT("Searching subdir boxes: " << currentFile.absolutePath().toStdString() + "/boxes", 0);
+                    qDebug() << "Searching subdir boxes: " << QString::fromStdString(currentFile.absolutePath().toStdString()) << "/boxes";
                     QDir subdir(currentFile.absolutePath());
                     subdir.cdUp();
                     fileInfo.setFile(QDir(subdir.absolutePath() + "/boxes"), myFile);
-                    COMMENT("Searching sibling subdir boxes: " << subdir.absolutePath().toStdString() + "/boxes", 0);
+                    qDebug() << "Searching sibling subdir boxes: " << QString::fromStdString(subdir.absolutePath().toStdString()) << "/boxes";
                     if (!fileInfo.isFile()) {
                         std::cerr << "Error: This file does not exists: " << fname.toStdString() << std::endl;
                         throw(ICNotFoundException(QString(tr("IC linked file \"%1\" could not be found!\n"
@@ -54,7 +53,7 @@ QFileInfo FileHelper::findSkinFile(const QString &fname)
             QFileInfo currentFile(GlobalProperties::currentFile);
             fileInfo.setFile(currentFile.absoluteDir(), myFile);
             if (!fileInfo.isFile()) {
-                COMMENT("Searching subdir skins: " << currentFile.absolutePath().toStdString() + "/skins", 0);
+                qDebug() << "Searching subdir skins: " << QString::fromStdString(currentFile.absolutePath().toStdString()) << "/skins";
                 fileInfo.setFile(QDir(currentFile.absolutePath() + "/skins"), myFile);
                 if (!fileInfo.isFile()) {
                     fileInfo.setFile(QDir(currentFile.absolutePath() + "/skins"), myFile);
@@ -65,7 +64,7 @@ QFileInfo FileHelper::findSkinFile(const QString &fname)
             }
         }
     }
-    COMMENT("FileInfo found: " << fileInfo.absoluteFilePath().toStdString(), 0);
+    qDebug() << "FileInfo found: " << QString::fromStdString(fileInfo.absoluteFilePath().toStdString());
     return fileInfo;
 }
 

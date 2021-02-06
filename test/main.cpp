@@ -5,7 +5,6 @@
 
 #include <iostream>
 
-#include "common.h"
 #include "testcommands.h"
 #include "testelements.h"
 #include "testfiles.h"
@@ -19,7 +18,6 @@ int main(int argc, char **argv)
 {
     QApplication a(argc, argv);
     ThemeManager::globalMngr = new ThemeManager();
-    Comment::setVerbosity(-1);
     a.setOrganizationName("WPanda");
     a.setApplicationName("WiredPanda");
     a.setApplicationVersion(APP_VERSION);

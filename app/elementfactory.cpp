@@ -30,7 +30,6 @@
 #include "element/node.h"
 #include "element/xnor.h"
 #include "element/xor.h"
-#include "common.h"
 #include "elementfactory.h"
 #include "graphicelement.h"
 #include "qneconnection.h"
@@ -350,7 +349,7 @@ size_t ElementFactory::next_id()
 
 void ElementFactory::clear()
 {
-    COMMENT("Element Factory clear.", 0);
+    qDebug () << "Element Factory clear.";
     map.clear();
     _lastId = 1;
 }

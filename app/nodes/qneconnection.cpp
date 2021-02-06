@@ -23,7 +23,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#include "common.h"
 #include "qneconnection.h"
 #include "qneport.h"
 #include "thememanager.h"
@@ -160,7 +159,7 @@ bool QNEConnection::load(QDataStream &ds, const QMap<quint64, QNEPort *> &portMa
     ds >> ptr1;
     ds >> ptr2;
     if (portMap.isEmpty()) {
-        COMMENT("Empty port map.", 0);
+        qDebug() << "Empty port map.";
         auto *port1 = reinterpret_cast<QNEPort *>(ptr1);
         auto *port2 = reinterpret_cast<QNEPort *>(ptr2);
         if (port2 && port1) {
@@ -173,7 +172,7 @@ bool QNEConnection::load(QDataStream &ds, const QMap<quint64, QNEPort *> &portMa
             }
         }
     } else if (portMap.contains(ptr1) && portMap.contains(ptr2)) {
-        COMMENT("Port map with elements.", 0);
+        qDebug() << "Port map with elements.";
         QNEPort *port1 = portMap[ptr1];
         QNEPort *port2 = portMap[ptr2];
         if (port1 && port2) {

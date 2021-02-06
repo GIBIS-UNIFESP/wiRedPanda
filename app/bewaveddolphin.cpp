@@ -4,6 +4,7 @@
 #include "bewaveddolphin.h"
 
 #include <cstring>
+#include <iostream>
 
 #include <QClipboard>
 #include <QCloseEvent>
@@ -16,6 +17,7 @@
 #include <QSaveFile>
 #include <QSettings>
 #include <QTableView>
+#include <QDebug>
 
 #include "clockDialog.h"
 #include "editor.h"
@@ -870,7 +872,7 @@ void BewavedDolphin::load(QDataStream &ds)
     QString str;
     ds >> str;
     if (!str.startsWith("Bewaved Dolphin")) {
-        throw(std::runtime_error(ERRORMSG("Invalid file format. Starts with: " + str.toStdString())));
+        throw(std::runtime_error("Invalid file format. Starts with: " + str.toStdString()));
     }
     qint64 rows;
     qint64 cols;
@@ -880,7 +882,7 @@ void BewavedDolphin::load(QDataStream &ds)
         rows = m_inputs.size();
     }
     if ((cols < 2) || (cols > 2048)) {
-        throw(std::runtime_error(ERRORMSG("Invalid number of columns.")));
+        throw(std::runtime_error("Invalid number of columns."));
     }
     setLength(cols, false);
     qDebug() << "Update table.";
@@ -904,7 +906,7 @@ void BewavedDolphin::load(QFile &fl)
         rows = m_inputs.size();
     }
     if ((cols < 2) || (cols > 2048)) {
-        throw(std::runtime_error(ERRORMSG("Invalid number of columns.")));
+        throw(std::runtime_error("Invalid number of columns."));
     }
     setLength(cols, false);
     qDebug() << "Update table.";

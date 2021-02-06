@@ -15,7 +15,6 @@
 #include <QPointF>
 #include <QProcess>
 
-#include "common.h"
 #include "elementfactory.h"
 #include "globalproperties.h"
 #include "icmanager.h"
@@ -63,9 +62,8 @@ void IC::loadInputs(ICPrototype *prototype)
     setMaxInputSz(prototype->inputSize());
     setMinInputSz(prototype->inputSize());
     setInputSize(prototype->inputSize());
-    COMMENT("IC " << m_file.toStdString() << " -> Inputs. min: " << minInputSz() << ", max: " << maxInputSz() << ", current: " << inputSize()
-                  << ", m_inputs: " << m_inputs.size(),
-            0);
+    qDebug() << "IC " << QString::fromStdString(m_file.toStdString() + " -> Inputs. min: ") << minInputSz() << ", max: " << maxInputSz() << ", current: " << inputSize()
+                  << ", m_inputs: " << m_inputs.size();
     for (int inputIdx = 0; inputIdx < prototype->inputSize(); ++inputIdx) {
         QNEPort *in = input(inputIdx);
         in->setName(prototype->inputLabel(inputIdx));
@@ -84,9 +82,8 @@ void IC::loadOutputs(ICPrototype *prototype)
         QNEPort *in = output(outputIdx);
         in->setName(prototype->outputLabel(outputIdx));
     }
-    COMMENT("IC " << m_file.toStdString() << " -> Outputs. min: " << minOutputSz() << ", max: " << maxOutputSz() << ", current: " << outputSize()
-                  << ", m_outputs: " << m_outputs.size(),
-            0);
+    qDebug() << "IC " << QString::fromStdString(m_file.toStdString()) << " -> Outputs. min: " << minOutputSz() << ", max: " << maxOutputSz() << ", current: " << outputSize()
+                  << ", m_outputs: " << m_outputs.size();
 }
 
 void IC::loadFile(const QString &fname)
@@ -113,7 +110,7 @@ QString IC::getFile() const
 
 bool IC::setFile(const QString &newFileName)
 {
-    COMMENT("Updating ic name.", 0);
+    qDebug() << "Updating ic name.";
     if (!ICManager::instance()->updatePrototypeFilePathName(m_file, newFileName)) {
         return false;
     }

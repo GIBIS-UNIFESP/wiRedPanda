@@ -3,7 +3,6 @@
 
 #include <QStringList>
 
-#include "common.h"
 #include "globalproperties.h"
 
 double GlobalProperties::toDouble(const QString &txtVersion, bool *ok)
@@ -26,7 +25,7 @@ double loadVersion()
     bool ok;
     double version = GlobalProperties::toDouble(txtVersion, &ok);
     if (!ok || (qFuzzyIsNull(version))) {
-        throw std::runtime_error(ERRORMSG("INVALID VERSION NUMBER!"));
+        throw std::runtime_error("INVALID VERSION NUMBER!");
     }
     return version;
 }

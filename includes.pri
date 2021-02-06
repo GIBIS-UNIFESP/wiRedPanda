@@ -75,12 +75,10 @@ SOURCES += \
     $$PWD/app/thememanager.cpp \
     $$PWD/app/logicelement.cpp \
     $$PWD/app/elementmapping.cpp \
-    $$PWD/app/common.cpp
 
 HEADERS  +=  \
   $$PWD/app/bewaveddolphin.h \
   $$PWD/app/clockDialog.h \
-    $$PWD/app/common.h \
   $$PWD/app/filehelper.h \
     $$PWD/app/graphicsviewzoom.h \
     $$PWD/app/arduino/codegenerator.h\
