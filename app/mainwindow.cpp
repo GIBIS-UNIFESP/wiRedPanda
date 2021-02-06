@@ -162,11 +162,9 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
 void MainWindow::setFastMode(bool fastModeEnabled)
 {
     ui->graphicsView->setRenderHint(QPainter::Antialiasing, !fastModeEnabled);
-    ui->graphicsView->setRenderHint(QPainter::HighQualityAntialiasing, !fastModeEnabled);
     ui->graphicsView->setRenderHint(QPainter::SmoothPixmapTransform, !fastModeEnabled);
 
     fullscreenView->setRenderHint(QPainter::Antialiasing, !fastModeEnabled);
-    fullscreenView->setRenderHint(QPainter::HighQualityAntialiasing, !fastModeEnabled);
     fullscreenView->setRenderHint(QPainter::SmoothPixmapTransform, !fastModeEnabled);
 
     ui->actionFast_Mode->setChecked(fastModeEnabled);
@@ -562,7 +560,11 @@ void MainWindow::on_lineEdit_textChanged(const QString &text)
             }
         }
         for (auto *label : searchResults) {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))   
             auto *item = new ListItemWidget(label->pixmap(Qt::ReturnByValue), label->elementType(), label->auxData());
+#else
+            auto *item = new ListItemWidget(*label->pixmap(), label->elementType(), label->auxData());
+#endif
             if (!firstResult) {
                 firstResult = item->getLabel();
             }
@@ -920,7 +922,7 @@ void MainWindow::buildFullScreenDialog()
     fullscreenDlg->setWindowFlags(Qt::Window);
     auto *dlg_layout = new QHBoxLayout(fullscreenDlg);
 
-    fullscreenDlg->addActions(this->actions());
+    fullscreenDlg->addActions(actions());
     fullscreenDlg->addActions(ui->menuBar->actions());
 
     dlg_layout->setContentsMargins(0, 0, 0, 0);

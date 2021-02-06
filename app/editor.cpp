@@ -57,7 +57,7 @@ Editor::Editor(QObject *parent)
     install(m_scene);
     m_draggingElement = false;
     clear();
-    timer.start();
+    m_timer.start();
     m_showWires = true;
     m_showGates = true;
     connect(this, &Editor::circuitHasChanged, m_simulationController, &SimulationController::reSortElms);
@@ -437,13 +437,13 @@ void Editor::resizeScene()
         m_scene->setSceneRect(rect);
     }
     QGraphicsItem *item = itemAt(m_mousePos);
-    if (item && (timer.elapsed() > 100) && m_draggingElement) {
+    if (item && (m_timer.elapsed() > 100) && m_draggingElement) {
         if (!m_scene->views().isEmpty()) {
             auto const scene_views = m_scene->views();
             QGraphicsView *view = scene_views.front();
             view->ensureVisible(QRectF(m_mousePos - QPointF(4, 4), QSize(9, 9)).normalized());
         }
-        timer.restart();
+        m_timer.restart();
     }
 }
 
@@ -871,8 +871,12 @@ void Editor::load(QDataStream &ds)
     double version = SerializationFunctions::loadVersion(ds);
     qDebug() << "Version: " << version;
     QString dolphinFilename(SerializationFunctions::loadDolphinFilename(ds, version));
-    m_mainWindow->setDolphinFilename(dolphinFilename);
+
+    if (m_mainWindow) {
+        m_mainWindow->setDolphinFilename(dolphinFilename);
+    }
     qDebug() << "Dolphin name: " << QString::fromStdString(dolphinFilename.toStdString());
+
     QRectF rect(SerializationFunctions::loadRect(ds, version));
     qDebug() << "Header Ok. Version: " << version;
     QList<QGraphicsItem *> items = SerializationFunctions::deserialize(ds, version, GlobalProperties::currentFile);

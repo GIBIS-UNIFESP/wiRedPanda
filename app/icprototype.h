@@ -17,12 +17,6 @@ class IC;
 
 class ICPrototype
 {
-private:
-    QString m_fileName;
-
-    ICPrototypeImpl m_ICImpl;
-    QVector<IC *> m_icObservers;
-
 public:
     ICPrototype(const QString &fileName);
     void reload();
@@ -49,6 +43,11 @@ public:
 
 private:
     void clear();
+
+    QString m_fileName;
+
+    ICPrototypeImpl m_ICImpl;
+    QVector<IC *> m_icObservers;
 };
 
 #endif // ICPROTOTYPE_H

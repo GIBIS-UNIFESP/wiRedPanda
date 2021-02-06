@@ -6,18 +6,18 @@
 #include "simulationcontroller.h"
 
 SCStop::SCStop(SimulationController *sc)
-    : sc(sc)
+    : m_sc(sc)
 {
-    if (sc->isRunning()) {
-        restart = true;
-        sc->stop();
+    if (m_sc->isRunning()) {
+        m_restart = true;
+        m_sc->stop();
     }
 }
 
 void SCStop::release()
 {
-    if (restart) {
-        sc->start();
+    if (m_restart) {
+        m_sc->start();
     }
 }
 SCStop::~SCStop()

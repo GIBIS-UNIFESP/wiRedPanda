@@ -15,7 +15,7 @@ Theme ThemeManager::theme() const
 
 void ThemeManager::setTheme(const Theme &theme)
 {
-    attrs.setTheme(theme);
+    m_attrs.setTheme(theme);
     if (m_theme != theme) {
         m_theme = theme;
         QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
@@ -31,7 +31,7 @@ void ThemeManager::initialize()
 
 ThemeAttrs ThemeManager::getAttrs() const
 {
-    return attrs;
+    return m_attrs;
 }
 
 ThemeManager::ThemeManager(QObject *parent)

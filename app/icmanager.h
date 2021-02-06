@@ -17,10 +17,6 @@ class IC;
 class ICManager : public QObject
 {
     Q_OBJECT
-    QMap<QString, ICPrototype *> ics;
-    MainWindow *mainWindow;
-
-    QFileSystemWatcher fileWatcher;
 
 public:
     ICManager(MainWindow *mainWindow = nullptr, QObject *parent = nullptr);
@@ -44,6 +40,11 @@ private:
 
     static ICManager *globalICManager;
     void updateRecentICs(const QString &fname);
+
+    QMap<QString, ICPrototype *> m_ics;
+    MainWindow *m_mainWindow;
+
+    QFileSystemWatcher m_fileWatcher;
 };
 
 #endif // ICMANAGER_H

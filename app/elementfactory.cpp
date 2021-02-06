@@ -38,7 +38,7 @@ ElementFactory *ElementFactory::instance = new ElementFactory();
 
 size_t ElementFactory::getLastId() const
 {
-    return _lastId;
+    return m_lastId;
 }
 
 ElementType ElementFactory::textToType(QString text)
@@ -310,46 +310,46 @@ QNEConnection *ElementFactory::buildConnection(QGraphicsItem *parent)
 
 ItemWithId *ElementFactory::getItemById(size_t id)
 {
-    if (instance->map.contains(id)) {
-        return instance->map[id];
+    if (instance->m_map.contains(id)) {
+        return instance->m_map[id];
     }
     return nullptr;
 }
 
 bool ElementFactory::contains(size_t id)
 {
-    return instance->map.contains(id);
+    return instance->m_map.contains(id);
 }
 
 void ElementFactory::addItem(ItemWithId *item)
 {
     if (item) {
         int newId = instance->next_id();
-        instance->map[newId] = item;
+        instance->m_map[newId] = item;
         item->setId(newId);
     }
 }
 
 void ElementFactory::removeItem(ItemWithId *item)
 {
-    instance->map.remove(item->id());
+    instance->m_map.remove(item->id());
 }
 
 void ElementFactory::updateItemId(ItemWithId *item, size_t newId)
 {
-    instance->map.remove(item->id());
-    instance->map[newId] = item;
+    instance->m_map.remove(item->id());
+    instance->m_map[newId] = item;
     item->setId(newId);
 }
 
 size_t ElementFactory::next_id()
 {
-    return _lastId++;
+    return m_lastId++;
 }
 
 void ElementFactory::clear()
 {
     qDebug () << "Element Factory clear.";
-    map.clear();
-    _lastId = 1;
+    m_map.clear();
+    m_lastId = 1;
 }

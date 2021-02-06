@@ -30,7 +30,7 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     setHasAudio(true);
     //  setPixmap( pixmapSkinName[ 0 ] );
     setPixmap(defaultSkins[0]);
-    this->m_alternativeSkins = QVector<QString>({defaultSkins[0], defaultSkins[1]});
+    m_alternativeSkins = QVector<QString>({defaultSkins[0], defaultSkins[1]});
     updatePorts();
     setCanChangeSkin(true);
     setHasLabel(true);
@@ -115,8 +115,8 @@ void Buzzer::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double ver
 
 void Buzzer::setSkin(bool defaultSkin, const QString &filename)
 {
-    if (this->m_play > 0) {
-        this->m_play = 1;
+    if (m_play > 0) {
+        m_play = 1;
     }
     if (defaultSkin) {
         usingDefaultSkin = true;
