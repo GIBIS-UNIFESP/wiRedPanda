@@ -10,9 +10,6 @@ LogicXnor::LogicXnor(size_t inputSize)
 
 void LogicXnor::_updateLogic(const std::vector<bool> &inputs)
 {
-    bool result = false;
-    for (bool in : inputs) {
-        result ^= in;
-    }
+    auto result = std::accumulate(inputs.begin(), inputs.end(), false, std::bit_xor<bool>());
     setOutputValue(!result);
 }
