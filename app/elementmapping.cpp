@@ -50,13 +50,9 @@ void ElementMapping::clear()
     m_initialized = false;
     m_globalGND.clearSucessors();
     m_globalVCC.clearSucessors();
-    for (LogicElement *elm : qAsConst(m_deletableElements)) {
-        delete elm;
-    }
+    qDeleteAll(m_deletableElements);
     m_deletableElements.clear();
-    for (ICMapping *icMap : qAsConst(m_icMappings)) {
-        delete icMap;
-    }
+    qDeleteAll(m_icMappings);
     m_icMappings.clear();
     m_elementMap.clear();
     m_inputMap.clear();
