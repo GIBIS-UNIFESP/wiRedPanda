@@ -43,16 +43,16 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , undoView(nullptr)
+    , editor(new Editor(this))
+    , autosaveFilename("")
+    , loadedAutosave(false)
+    , translator(nullptr)
+    , bd(nullptr)
+    , dolphinFilename("none")
 {
     COMMENT("WIRED PANDA Version = " << APP_VERSION << " OR " << GlobalProperties::version, 0);
     ui->setupUi(this);
     ThemeManager::globalMngr = new ThemeManager(this);
-    editor = new Editor(this);
-    autosaveFilename = "";
-    loadedAutosave = false;
-    translator = nullptr;
-    bd = nullptr;
-    dolphinFilename = "none";
     buildFullScreenDialog();
     ui->graphicsView->setScene(editor->getScene());
     /* Translation */
@@ -143,8 +143,10 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     connect(editor, &Editor::scroll, this, &MainWindow::scrollView);
     connect(editor, &Editor::circuitHasChanged, this, &MainWindow::autoSave);
 
-    rfController = new RecentFilesController("recentFileList", this);
-    ricController = new RecentFilesController("recentICs", this);
+    rfController = new RecentFilesController("recentFileList", this, true);
+    ricController = new RecentFilesController("recentICs", this, false);
+    connect(this, &MainWindow::addRecentFile, rfController, &RecentFilesController::addRecentFile);
+    connect(this, &MainWindow::addRecentIcFile, ricController, &RecentFilesController::addRecentFile);
 
     auto *shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F), this);
     connect(shortcut, &QShortcut::activated, ui->lineEdit, QOverload<>::of(&QWidget::setFocus));
@@ -155,6 +157,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     updateRecentFileActions();
 
     connect(rfController, &RecentFilesController::recentFilesUpdated, this, &MainWindow::updateRecentFileActions);
+    connect(ricController, &RecentFilesController::recentFilesUpdated, this, &MainWindow::updateRecentICs);
     /*  QApplication::setStyle( QStyleFactory::create( "Fusion" ) ); */
     ui->actionPlay->setChecked(true);
     populateLeftMenu();
@@ -325,7 +328,7 @@ bool MainWindow::loadPandaFile(const QString &fname)
     COMMENT("Closing file.", 0);
     fl.close();
     // COMMENT( "Adding to controller.", 0 );
-    //  rfController->addFile( fname );
+    //  emit addRecentFile( fname );
     ui->statusBar->showMessage(tr("File loaded successfully."), 2000);
     /*  on_actionWaveform_triggered( ); */
     return true;
@@ -437,32 +440,32 @@ QFileInfo MainWindow::getCurrentFile() const
     return currentFile;
 }
 
-void MainWindow::setCurrentFile(const QFileInfo &value)
+void MainWindow::setCurrentFile(const QFileInfo &file)
 {
     COMMENT("Default the autosave path to the temporary directory of the system.", 0);
-    if (value.exists()) {
+    if (file.exists()) {
         QDir autosavePath(QDir::temp());
         COMMENT("Autosave path set to the current file's directory, if there is one.", 0);
-        autosavePath = value.dir();
+        autosavePath = file.dir();
         COMMENT("Autosavepath: " << autosavePath.absolutePath().toStdString(), 0);
-        autosaveFile.setFileTemplate(autosavePath.absoluteFilePath(value.baseName() + "XXXXXX.panda"));
-        COMMENT("Setting current file to: " << value.absoluteFilePath().toStdString(), 0);
+        autosaveFile.setFileTemplate(autosavePath.absoluteFilePath(file.baseName() + "XXXXXX.panda"));
+        COMMENT("Setting current file to: " << file.absoluteFilePath().toStdString(), 0);
     } else {
-        COMMENT("Defalt value does not exist: " << value.absoluteFilePath().toStdString(), 0);
+        COMMENT("Defalt file does not exist: " << file.absoluteFilePath().toStdString(), 0);
         QDir autosavePath(QDir::temp());
         COMMENT("Autosavepath: " << autosavePath.absolutePath().toStdString(), 0);
         autosaveFile.setFileTemplate(autosavePath.absoluteFilePath("XXXXXX.panda"));
         COMMENT("Setting current file to random file in tmp.", 0);
     }
-    currentFile = value;
-    if (value.fileName().isEmpty()) {
+    currentFile = file;
+    if (file.fileName().isEmpty()) {
         setWindowTitle("wiRED PANDA v" + QString(APP_VERSION));
     } else {
-        setWindowTitle(QString("wiRED PANDA v%1 [%2]").arg(APP_VERSION, value.fileName()));
+        setWindowTitle(QString("wiRED PANDA v%1 [%2]").arg(APP_VERSION, file.fileName()));
     }
     if (!loadedAutosave) {
         COMMENT("Adding file to controller.", 0);
-        rfController->addFile(value.absoluteFilePath());
+        emit addRecentFile(file.absoluteFilePath());
     }
     GlobalProperties::currentFile = currentFile.absoluteFilePath();
     COMMENT("Setting global current file.", 0);
@@ -488,7 +491,7 @@ void MainWindow::updateRecentICs()
     boxItemWidgets.clear();
 
     //! Show recent files
-    const QStringList files = ricController->getFiles();
+    const QStringList files = ricController->getRecentFiles();
     for (const QString &file : files) {
         QPixmap pixmap(QString::fromUtf8(":/basic/box.png"));
         auto *item = new ListItemWidget(pixmap, ElementType::IC, file, this);
@@ -516,14 +519,12 @@ void MainWindow::on_actionOpen_IC_triggered()
         return;
     }
     if (fl.open(QFile::ReadOnly)) {
-        ricController->addFile(fname);
+        emit addRecentIcFile(fname);
     } else {
         std::cerr << tr("Could not open file in ReadOnly mode : ").toStdString() << fname.toStdString() << "." << std::endl;
         return;
     }
     fl.close();
-
-    updateRecentICs();
 
     ui->statusBar->showMessage(tr("Loaded ic sucessfully."), 2000);
 }
@@ -691,7 +692,7 @@ void MainWindow::zoomChanged()
 
 void MainWindow::updateRecentFileActions()
 {
-    QStringList files = rfController->getFiles();
+    QStringList files = rfController->getRecentFiles();
 
     int numRecentFiles = qMin(files.size(), static_cast<int>(RecentFilesController::MaxRecentFiles));
     if (numRecentFiles > 0) {

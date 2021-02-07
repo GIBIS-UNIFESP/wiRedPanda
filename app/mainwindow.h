@@ -51,7 +51,7 @@ public:
 
     //! Sets the current file to the given value.
     //! Mostly used by `loadPandaFile` and clearing functions
-    void setCurrentFile(const QFileInfo &value);
+    void setCurrentFile(const QFileInfo &file);
 
     //! Exports the current simulation to an
     bool exportToArduino(QString fname);
@@ -64,8 +64,6 @@ public:
     //! Opens a message box asking the user if he wishes to save his progress
     int confirmSave();
     //!
-    void updateRecentICs();
-
     QString getOpenICFile();
 
     bool closeFile();
@@ -85,6 +83,13 @@ public:
 
     QDialog *fullscreenDlg;
     GraphicsView *fullscreenView;
+
+signals:
+    void addRecentIcFile(const QString &fname);
+    void addRecentFile(const QString &fname);
+
+public slots:
+    void updateRecentICs();
 
 private slots:
     bool on_actionExport_to_Arduino_triggered();
