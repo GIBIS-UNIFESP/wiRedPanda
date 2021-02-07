@@ -10,9 +10,6 @@ LogicAnd::LogicAnd(size_t inputSize)
 
 void LogicAnd::_updateLogic(const std::vector<bool> &inputs)
 {
-    bool result = true;
-    for (bool in : inputs) {
-        result &= in;
-    }
+    auto result = std::accumulate(inputs.begin(), inputs.end(), true, std::bit_and<bool>());
     setOutputValue(result);
 }
