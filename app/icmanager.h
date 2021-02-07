@@ -29,6 +29,7 @@ public:
     bool updatePrototypeFilePathName(const QString& sourceName, const QString& targetName);
 signals:
     void updatedIC();
+    void addRecentIcFile(const QString& fname);
 
 private slots:
     void reloadFile(const QString& bname);
@@ -39,7 +40,6 @@ private:
     bool warnAboutFileChange(const QString &fileName);
 
     static ICManager *globalICManager;
-    void updateRecentICs(const QString &fname);
 
     QMap<QString, ICPrototype *> m_ics;
     MainWindow *m_mainWindow;
