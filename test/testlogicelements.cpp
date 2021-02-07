@@ -27,16 +27,12 @@ TestLogicElements::TestLogicElements(QObject *parent)
 
 void TestLogicElements::init()
 {
-    for (auto &item : sw) {
-        item = new LogicInput();
-    }
+    std::generate(sw.begin(), sw.end(), [] { return new LogicInput(); });
 }
 
 void TestLogicElements::cleanup()
 {
-    for (auto &item : sw) {
-        delete item;
-    }
+    qDeleteAll(sw);
 }
 
 void TestLogicElements::testLogicNode()
