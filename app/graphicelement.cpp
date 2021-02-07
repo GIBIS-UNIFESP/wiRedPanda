@@ -791,10 +791,8 @@ void GraphicElement::setInputSize(int size)
                 addInputPort();
             }
         } else {
-            while (inputSize() > size) {
-                delete m_inputs.back();
-                m_inputs.pop_back();
-            }
+            qDeleteAll(m_inputs.begin() + size, m_inputs.end());
+            m_inputs.resize(size);
             updatePorts();
         }
     }
@@ -813,10 +811,8 @@ void GraphicElement::setOutputSize(const int size)
                 addOutputPort();
             }
         } else {
-            while (outputSize() > size) {
-                delete m_outputs.back();
-                m_outputs.pop_back();
-            }
+            qDeleteAll(m_outputs.begin() + size, m_outputs.end());
+            m_outputs.resize(size);
         }
     }
 }
