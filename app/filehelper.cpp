@@ -13,32 +13,29 @@
 QFileInfo FileHelper::findICFile(const QString &fname, const QString &parentFile)
 {
     qDebug() << "Loading file: " << fname << ", parentFile: " << parentFile;
+    QFileInfo currentFile(GlobalProperties::currentFile);
     QFileInfo fileInfo(fname);
     QString myFile = fileInfo.fileName();
-    if (!fileInfo.isFile()) {
-        fileInfo.setFile(QDir::current(), fileInfo.fileName());
-        if (!fileInfo.isFile()) {
-            fileInfo.setFile(QFileInfo(parentFile).absoluteDir(), myFile);
-            if (!fileInfo.isFile()) {
-                QFileInfo currentFile(GlobalProperties::currentFile);
-                fileInfo.setFile(currentFile.absoluteDir(), myFile);
-                if (!fileInfo.isFile()) {
-                    COMMENT("Searching subdir boxes: " << currentFile.absolutePath().toStdString() + "/boxes", 0);
-                    QDir subdir(currentFile.absolutePath());
-                    subdir.cdUp();
-                    fileInfo.setFile(QDir(subdir.absolutePath() + "/boxes"), myFile);
-                    COMMENT("Searching sibling subdir boxes: " << subdir.absolutePath().toStdString() + "/boxes", 0);
-                    if (!fileInfo.isFile()) {
-                        std::cerr << "Error: This file does not exists: " << fname.toStdString() << std::endl;
-                        throw(ICNotFoundException(QString(tr("IC linked file \"%1\" could not be found!\n"
-                                                             "Do you want to find this file?"))
-                                                      .arg(fname)
-                                                      .toStdString(),
-                                                  nullptr));
-                    }
-                }
-            }
-        }
+
+    auto setFileInfo = [&fileInfo](const QDir &dir, const QString &file) {
+        fileInfo.setFile(dir, file);
+        return fileInfo.isFile();
+    };
+
+    QDir subdir(currentFile.absolutePath());
+    subdir.cdUp();
+    if (!fileInfo.isFile() &&
+        !setFileInfo(QDir::current(), fileInfo.fileName()) &&
+        !setFileInfo(QFileInfo(parentFile).absoluteDir(), myFile) &&
+        !setFileInfo(currentFile.absoluteDir(), myFile) &&
+        !setFileInfo(QDir(currentFile.absolutePath() + "/boxes"), myFile) &&
+        !setFileInfo(QDir(subdir.absolutePath() + "/boxes"), myFile)) {
+        std::cerr << "Error: This file does not exists: " << fname.toStdString() << std::endl;
+        throw(ICNotFoundException(QString(tr("IC linked file \"%1\" could not be found!\n"
+                                             "Do you want to find this file?"))
+                                      .arg(fname)
+                                      .toStdString(),
+                                  nullptr));
     }
     return fileInfo;
 }
@@ -46,25 +43,22 @@ QFileInfo FileHelper::findICFile(const QString &fname, const QString &parentFile
 QFileInfo FileHelper::findSkinFile(const QString &fname)
 {
     qDebug() << "Loading file: " << fname;
+    QFileInfo currentFile(GlobalProperties::currentFile);
     QFileInfo fileInfo(fname);
     QString myFile = fileInfo.fileName();
-    if (!fileInfo.isFile()) {
-        fileInfo.setFile(QDir::current(), fileInfo.fileName());
-        if (!fileInfo.isFile()) {
-            QFileInfo currentFile(GlobalProperties::currentFile);
-            fileInfo.setFile(currentFile.absoluteDir(), myFile);
-            if (!fileInfo.isFile()) {
-                COMMENT("Searching subdir skins: " << currentFile.absolutePath().toStdString() + "/skins", 0);
-                fileInfo.setFile(QDir(currentFile.absolutePath() + "/skins"), myFile);
-                if (!fileInfo.isFile()) {
-                    fileInfo.setFile(QDir(currentFile.absolutePath() + "/skins"), myFile);
-                    if (!fileInfo.isFile()) {
-                        std::cerr << "Error: This file does not exists: " << fname.toStdString() << std::endl;
-                    }
-                }
-            }
-        }
+
+    auto setFileInfo = [&fileInfo](const QDir &dir, const QString &file) {
+        fileInfo.setFile(dir, file);
+        return fileInfo.isFile();
+    };
+
+    if (!fileInfo.isFile() &&
+        !setFileInfo(QDir::current(), fileInfo.fileName()) &&
+        !setFileInfo(currentFile.absoluteDir(), myFile) &&
+        !setFileInfo(QDir(currentFile.absolutePath() + "/skins"), myFile)) {
+        std::cerr << "Error: This file does not exists: " << fname.toStdString() << std::endl;
     }
+
     COMMENT("FileInfo found: " << fileInfo.absoluteFilePath().toStdString(), 0);
     return fileInfo;
 }
