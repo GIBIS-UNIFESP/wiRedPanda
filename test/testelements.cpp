@@ -46,9 +46,7 @@ void TestElements::init()
 
 void TestElements::cleanup()
 {
-    for (auto &item : sw) {
-        delete item;
-    }
+    qDeleteAll(sw);
 }
 
 void TestElements::testNode()
