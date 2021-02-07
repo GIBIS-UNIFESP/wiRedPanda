@@ -16,9 +16,7 @@
 
 ICPrototypeImpl::~ICPrototypeImpl()
 {
-    for (GraphicElement *elm : qAsConst(elements)) {
-        delete elm;
-    }
+    qDeleteAll(elements);
 }
 
 bool comparePorts(QNEPort *port1, QNEPort *port2)
