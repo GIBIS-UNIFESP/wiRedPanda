@@ -63,8 +63,9 @@ void Led::refresh()
     int idx = 0;
     if (isValid()) {
         std::bitset<4> index;
-        for (int i = 0; i < inputSize(); ++i)
+        for (int i = 0; i < inputSize(); ++i) {
             index[i] = input(inputSize() - i - 1)->value();
+        }
         idx = index.to_ulong();
     }
     switch (inputSize()) {
@@ -146,8 +147,9 @@ void Led::setSkin(bool defaultSkin, const QString &filename)
     int idx = 0;
     if (isValid()) {
         std::bitset<4> index;
-        for (int i = 0; i < inputSize(); ++i)
+        for (int i = 0; i < inputSize(); ++i) {
             index[i] = input(inputSize() - i - 1)->value();
+        }
         idx = index.to_ulong();
     }
     int value_idx = 0;
