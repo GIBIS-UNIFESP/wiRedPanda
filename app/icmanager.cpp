@@ -25,11 +25,17 @@ ICManager::ICManager(MainWindow *mainWindow, QObject *parent)
         globalICManager = this;
     }
     connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this, &ICManager::reloadFile);
+    if (m_mainWindow) {
+        connect(this, &ICManager::addRecentIcFile, m_mainWindow, &MainWindow::addRecentIcFile);
+    }
 }
 
 ICManager::~ICManager()
 {
     clear();
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
+    settings.setValue("recentICs", "");
+
     // fprintf(stderr, "Removing IC manager");
     if (globalICManager == this) {
         globalICManager = nullptr;
@@ -76,28 +82,11 @@ void ICManager::clear()
     COMMENT("Clear ICManager", 0);
     QMap<QString, ICPrototype *> ics_aux = m_ics;
     m_ics.clear();
-    for (auto it : ics_aux) {
-        delete it;
-    }
+    qDeleteAll(ics_aux);
     if (m_fileWatcher.files().size() > 0) {
         m_fileWatcher.removePaths(m_fileWatcher.files());
     }
     COMMENT("Finished clearing ICManager.", 0);
-}
-
-void ICManager::updateRecentICs(const QString &fname)
-{
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    QStringList files;
-    if (settings.contains("recentICs")) {
-        files = settings.value("recentICs").toStringList();
-        files.removeAll(fname);
-    }
-    files.prepend(fname);
-    settings.setValue("recentICs", files);
-    if (m_mainWindow) {
-        m_mainWindow->updateRecentICs();
-    }
 }
 
 bool ICManager::loadIC(IC *ic, QString fname, QString parentFile)
@@ -105,7 +94,7 @@ bool ICManager::loadIC(IC *ic, QString fname, QString parentFile)
     if (tryLoadFile(fname, parentFile)) {
         ic->loadFile(fname);
     }
-    updateRecentICs(fname);
+    emit addRecentIcFile(fname);
     return true;
 }
 

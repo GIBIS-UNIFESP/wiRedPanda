@@ -21,12 +21,12 @@ SimulationController::SimulationController(Scene *scn)
     : QObject(dynamic_cast<QObject *>(scn))
     , m_elMapping(nullptr)
     , m_simulationTimer(this)
+    , m_scene(scn)
+    , m_shouldRestart(false)
 {
-    m_scene = scn;
     m_simulationTimer.setInterval(GLOBALCLK);
     m_viewTimer.setInterval(int(1000 / 30));
     m_viewTimer.start();
-    m_shouldRestart = false;
     connect(&m_viewTimer, &QTimer::timeout, this, &SimulationController::updateView);
     connect(&m_simulationTimer, &QTimer::timeout, this, &SimulationController::update);
 }
