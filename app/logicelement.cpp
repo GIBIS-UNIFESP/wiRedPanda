@@ -10,10 +10,7 @@ bool LogicElement::isValid() const
 
 void LogicElement::clearPredecessors()
 {
-    for (auto &input : m_inputs) {
-        input.first = nullptr;
-        input.second = 0;
-    }
+    std::fill(m_inputs.begin(), m_inputs.end(), std::make_pair(nullptr, 0));
 }
 
 void LogicElement::clearSucessors()
