@@ -30,7 +30,7 @@ Clock::Clock(QGraphicsItem *parent)
     Clock::reset = true;
     setHasLabel(true);
     setPortName("Clock");
-    setOn(0);
+    setOn(false);
     setPixmap(pixmapSkinName[0]);
 }
 
