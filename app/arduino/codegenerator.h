@@ -19,7 +19,7 @@ public:
     QString varName;
     QNEPort *port;
     int portNbr;
-    MappedPin(GraphicElement *elm, QString pin, QString varName, QNEPort *port, int portNbr = 0)
+    MappedPin(GraphicElement *elm, const QString &pin, const QString &varName, QNEPort *port, int portNbr = 0)
         : elm(elm)
         , pin(pin)
         , varName(varName)
