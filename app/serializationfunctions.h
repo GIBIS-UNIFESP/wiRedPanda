@@ -50,7 +50,7 @@ public:
      */
     static QRectF loadRect(QDataStream &ds, double version);
     static QString loadDolphinFilename(QDataStream &ds, double version);
-    
+
 private:
     /**
      * @brief loadMoveData: loads the contents of an IC and updates its internal IC's directories. Used when a project is saved as a local project in another folder.
