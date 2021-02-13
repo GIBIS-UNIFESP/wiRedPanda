@@ -31,7 +31,7 @@
 #include "logicelement/logicxnor.h"
 #include "logicelement/logicxor.h"
 
-ElementMapping::ElementMapping(const QVector<GraphicElement *> &elms, QString file)
+ElementMapping::ElementMapping(const QVector<GraphicElement *> &elms, const QString &file)
     : m_currentFile(file)
     , m_initialized(false)
     , m_elements(elms)
