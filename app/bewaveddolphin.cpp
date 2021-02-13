@@ -26,7 +26,7 @@
 #include "graphicsview.h"
 #include "graphicsviewzoom.h"
 #include "input.h"
-#include "lengthDialog.h"
+#include "LengthDialog.h"
 #include "mainwindow.h"
 #include "qneport.h"
 #include "scstop.h"

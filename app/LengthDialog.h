@@ -8,7 +8,7 @@
 
 #include <QDialog>
 
-#include "ui_lengthDialog.h"
+#include "ui_LengthDialog.h"
 
 namespace Ui
 {
