@@ -941,7 +941,7 @@ QString MainWindow::getDolphinFilename()
     return dolphinFilename;
 }
 
-void MainWindow::setDolphinFilename(QString filename)
+void MainWindow::setDolphinFilename(const QString &filename)
 {
     dolphinFilename = filename;
 }
