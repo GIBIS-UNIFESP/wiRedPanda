@@ -79,7 +79,7 @@ public:
     void buildFullScreenDialog();
 
     QString getDolphinFilename();
-    void setDolphinFilename(QString filename);
+    void setDolphinFilename(const QString &filename);
 
     QDialog *fullscreenDlg;
     GraphicsView *fullscreenView;
