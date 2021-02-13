@@ -152,7 +152,7 @@ void ICManager::reloadFile(const QString& fileName)
     emit updatedIC();
 }
 
-// Maybe this funcion should never be called and the main project should reload the IC every time it changes.
+// Maybe this function should never be called and the main project should reload the IC every time it changes.
 bool ICManager::warnAboutFileChange(const QString &fileName)
 {
     COMMENT("File " << fileName.toStdString() << " has changed!", 0);

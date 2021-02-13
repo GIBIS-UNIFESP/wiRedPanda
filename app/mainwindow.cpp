@@ -223,7 +223,7 @@ bool MainWindow::save(QString fname)
     if (fl.commit()) {
         loadedAutosave = false;
         setCurrentFile(QFileInfo(fname));
-        ui->statusBar->showMessage(tr("Saved file sucessfully."), 2000);
+        ui->statusBar->showMessage(tr("Saved file successfully."), 2000);
         editor->getUndoStack()->setClean();
         if (autosaveFile.isOpen()) {
             autosaveFile.remove();
@@ -312,9 +312,9 @@ bool MainWindow::loadPandaFile(const QString &fname)
         try {
             COMMENT("Loading in editor.", 0);
             editor->load(ds);
-            COMMENT("Loaded. Emiting changed signal.", 0);
+            COMMENT("Loaded. Emitting changed signal.", 0);
             emit editor->circuitHasChanged();
-            COMMENT("Finished updating chanched by signal.", 0);
+            COMMENT("Finished updating changed by signal.", 0);
         } catch (std::runtime_error &e) {
             std::cerr << tr("Error loading project: ").toStdString() << e.what() << std::endl;
             QMessageBox::warning(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
@@ -451,7 +451,7 @@ void MainWindow::setCurrentFile(const QFileInfo &file)
         autosaveFile.setFileTemplate(autosavePath.absoluteFilePath(file.baseName() + "XXXXXX.panda"));
         COMMENT("Setting current file to: " << file.absoluteFilePath().toStdString(), 0);
     } else {
-        COMMENT("Defalt file does not exist: " << file.absoluteFilePath().toStdString(), 0);
+        COMMENT("Default file does not exist: " << file.absoluteFilePath().toStdString(), 0);
         QDir autosavePath(QDir::temp());
         COMMENT("Autosavepath: " << autosavePath.absolutePath().toStdString(), 0);
         autosaveFile.setFileTemplate(autosavePath.absoluteFilePath("XXXXXX.panda"));
@@ -526,7 +526,7 @@ void MainWindow::on_actionOpen_IC_triggered()
     }
     fl.close();
 
-    ui->statusBar->showMessage(tr("Loaded ic sucessfully."), 2000);
+    ui->statusBar->showMessage(tr("Loaded ic successfully."), 2000);
 }
 
 void MainWindow::on_lineEdit_textChanged(const QString &text)
@@ -562,7 +562,7 @@ void MainWindow::on_lineEdit_textChanged(const QString &text)
             }
         }
         for (auto *label : searchResults) {
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))   
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
             auto *item = new ListItemWidget(label->pixmap(Qt::ReturnByValue), label->elementType(), label->auxData());
 #else
             auto *item = new ListItemWidget(*label->pixmap(), label->elementType(), label->auxData());
@@ -976,7 +976,7 @@ void MainWindow::autoSave()
                 autosaveFile.setFileTemplate(autosavePath.absoluteFilePath(currentFile.baseName() + "XXXXXX.panda"));
                 COMMENT("Setting current file to: " << currentFile.absoluteFilePath().toStdString(), 0);
             } else {
-                COMMENT("Defalt value not set yet.", 0);
+                COMMENT("Default value not set yet.", 0);
                 QDir autosavePath(QDir::temp());
                 COMMENT("Autosavepath: " << autosavePath.absolutePath().toStdString(), 0);
                 autosaveFile.setFileTemplate(autosavePath.absoluteFilePath("XXXXXX.panda"));
