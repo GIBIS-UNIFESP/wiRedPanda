@@ -25,9 +25,9 @@ public:
     ~lengthDialog() override;
 
 private slots:
-    void on_cancelPushButton_clicked();
+    void cancelClicked();
 
-    void on_okPushButton_clicked();
+    void okClicked();
 
 private:
     Ui::lengthDialog *m_ui;

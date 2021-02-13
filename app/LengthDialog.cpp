@@ -11,6 +11,8 @@ lengthDialog::lengthDialog(QWidget *parent)
     setWindowTitle("Simulation length Selection");
     setWindowFlags(Qt::Window);
     setModal(true);
+    connect(m_ui->cancelPushButton, &QPushButton::clicked, this, &lengthDialog::cancelClicked);
+    connect(m_ui->okPushButton, &QPushButton::clicked, this, &lengthDialog::okClicked);
 }
 
 int lengthDialog::getFrequency()
@@ -28,13 +30,13 @@ lengthDialog::~lengthDialog()
     delete m_ui;
 }
 
-void lengthDialog::on_cancelPushButton_clicked()
+void lengthDialog::cancelClicked()
 {
     m_canceled = true;
     close();
 }
 
-void lengthDialog::on_okPushButton_clicked()
+void lengthDialog::okClicked()
 {
     close();
 }
