@@ -19,10 +19,10 @@
 
 SimulationController::SimulationController(Scene *scn)
     : QObject(dynamic_cast<QObject *>(scn))
-    , m_elMapping(nullptr)
-    , m_simulationTimer(this)
-    , m_scene(scn)
     , m_shouldRestart(false)
+    , m_elMapping(nullptr)
+    , m_scene(scn)
+    , m_simulationTimer(this)
 {
     m_simulationTimer.setInterval(GLOBALCLK);
     m_viewTimer.setInterval(int(1000 / 30));
