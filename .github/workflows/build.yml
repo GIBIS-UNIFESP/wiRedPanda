@@ -50,10 +50,7 @@ jobs:
       run: |
         PATH=/home/runner/work/wiredpanda-testing/Qt/5.15.1/gcc_64/bin:$PATH
         export PATH
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j8
+        cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build --parallel --config Release
     - name: Deploy
       uses: actions/upload-artifact@v2
       with:
@@ -93,10 +90,7 @@ jobs:
 
     - name: Build
       run: |
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j8
+        cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build --parallel --config Release
     - name: Deploy
       uses: actions/upload-artifact@v2
       with:
@@ -125,10 +119,7 @@ jobs:
 
     - name: Build
       run: |
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j8
+        cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build --parallel --config Release
     - name: Deploy WiredPanda binary
       run : |
         cd build\app\release
@@ -163,10 +154,7 @@ jobs:
     - name: Build
       run: |
         QTDIR="/usr/local/opt/qt/" && PATH="${QTDIR}/bin:$PATH" && LDFLAGS=-L${QTDIR}/lib && CPPFLAGS=-I${QTDIR}/include;
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j8
+        cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build --parallel --config Release
     - name: Deploy
       uses: actions/upload-artifact@v2
       with:
