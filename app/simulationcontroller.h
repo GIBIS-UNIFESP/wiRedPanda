@@ -24,7 +24,7 @@ public:
     // If m_shouldRestart == true, then the simulation controller will be cleared the next time that
     // it is updated.
     void setRestart() { m_shouldRestart = true; }
-    
+
     explicit SimulationController(Scene *scn);
     ~SimulationController() override;
 

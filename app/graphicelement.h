@@ -53,7 +53,7 @@ public:
      * @brief Saves the graphic element through a binary data stream.
      */
     virtual void save(QDataStream &ds) const;
-    
+
     /**
      * @brief Loads the graphic element through a binary data stream.
      * @param portMap receives a reference to each input and output port.
