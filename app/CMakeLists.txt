@@ -22,7 +22,7 @@ set(
     icprototypeimpl.cpp
     itemwithid.cpp
     label.cpp
-    lengthDialog.cpp
+    LengthDialog.cpp
     listitemwidget.cpp
     logicelement.cpp
     mainwindow.cpp
@@ -68,7 +68,7 @@ set (
     WPANDA_FORMS
     bewaveddolphin.ui
     clockDialog.ui
-    lengthDialog.ui
+    LengthDialog.ui
     mainwindow.ui
     elementeditor.ui
     simplewaveform.ui
