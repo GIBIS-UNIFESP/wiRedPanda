@@ -26,7 +26,7 @@ private:
     std::vector<std::pair<LogicElement *, int>> m_inputs;
     std::vector<bool> m_inputvalues;
     std::vector<bool> m_outputs;
-    QSet<LogicElement *> m_sucessors;
+    QSet<LogicElement *> m_successors;
 
 protected:
     // Main function to update the logic of an element. Computes the outputs, given the inputs

@@ -15,7 +15,7 @@ void LogicElement::clearPredecessors()
 
 void LogicElement::clearSucessors()
 {
-    for (auto &elm : qAsConst(m_sucessors)) {
+    for (auto &elm : qAsConst(m_successors)) {
         for (auto &input : elm->m_inputs) {
             if (input.first == this) {
                 input.first = nullptr;
@@ -23,7 +23,7 @@ void LogicElement::clearSucessors()
             }
         }
     }
-    m_sucessors.clear();
+    m_successors.clear();
 }
 
 LogicElement::LogicElement(size_t inputSize, size_t outputSize)
@@ -51,7 +51,7 @@ void LogicElement::updateLogic()
 void LogicElement::connectPredecessor(int index, LogicElement *elm, int port)
 {
     m_inputs.at(index) = std::make_pair(elm, port);
-    elm->m_sucessors.insert(this);
+    elm->m_successors.insert(this);
 }
 
 void LogicElement::setOutputValue(size_t index, bool value)
@@ -73,7 +73,7 @@ void LogicElement::validate()
         }
     }
     if (!m_isValid) {
-        for (LogicElement *elm : qAsConst(m_sucessors)) {
+        for (LogicElement *elm : qAsConst(m_successors)) {
             elm->m_isValid = false;
         }
     }
@@ -94,7 +94,7 @@ int LogicElement::calculatePriority()
     }
     m_beingVisited = true;
     int max = 0;
-    for (LogicElement *s : qAsConst(m_sucessors)) {
+    for (LogicElement *s : qAsConst(m_successors)) {
         max = qMax(s->calculatePriority(), max);
     }
     const int p = max + 1;

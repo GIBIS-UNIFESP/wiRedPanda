@@ -281,7 +281,7 @@ void GraphicElement::loadMinMax(QDataStream &ds, double version)
         ds >> max_isz;
         ds >> min_osz;
         ds >> max_osz;
-        //     FIXME: Was it a bad decision to store Min and Max input/ouput sizes?
+        //     FIXME: Was it a bad decision to store Min and Max input/output sizes?
         /* Version 2.2 ?? fix ?? */
         if (!((m_minInputSz == m_maxInputSz) && (m_minInputSz > max_isz))) {
             m_minInputSz = min_isz;
