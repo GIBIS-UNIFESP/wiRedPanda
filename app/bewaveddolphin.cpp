@@ -375,8 +375,8 @@ void BewavedDolphin::show()
     QMainWindow::show();
     COMMENT("Getting table dimensions.", 0);
     int width = m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0);
-    int hight = m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0);
-    m_signalTableView->resize(width, hight);
+    int height = m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0);
+    m_signalTableView->resize(width, height);
 }
 
 void BewavedDolphin::print()
@@ -523,8 +523,8 @@ void BewavedDolphin::setLength(int sim_length, bool run_simulation)
         COMMENT("Reducing or keeping the simulation length.", 0);
         m_model->setColumnCount(sim_length);
         int width = m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0);
-        int hight = m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0);
-        m_signalTableView->resize(width, hight);
+        int height = m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0);
+        m_signalTableView->resize(width, height);
         QRectF rect = m_scene->itemsBoundingRect();
         m_scene->setSceneRect(rect);
         m_edited = true;
@@ -539,8 +539,8 @@ void BewavedDolphin::setLength(int sim_length, bool run_simulation)
         }
     }
     int width = m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0);
-    int hight = m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0);
-    m_signalTableView->resize(width, hight);
+    int height = m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0);
+    m_signalTableView->resize(width, height);
     QRectF rect = m_scene->itemsBoundingRect();
     m_scene->setSceneRect(rect);
     m_edited = true;
@@ -721,7 +721,7 @@ void BewavedDolphin::on_actionSave_as_triggered()
             }
         }
         setWindowTitle("Bewaved Dolphin Simulator [" + m_currentFile.fileName() + "]");
-        m_ui->statusbar->showMessage(tr("Saved file sucessfully."), 2000);
+        m_ui->statusbar->showMessage(tr("Saved file successfully."), 2000);
         m_edited = false;
     } else {
         m_ui->statusbar->showMessage(tr("Could not save file: ") + fname + ".", 2000);
@@ -737,7 +737,7 @@ void BewavedDolphin::on_actionSave_triggered()
     }
     QString fname = m_currentFile.absoluteFilePath();
     if (save(fname)) {
-        m_ui->statusbar->showMessage(tr("Saved file sucessfully."), 2000);
+        m_ui->statusbar->showMessage(tr("Saved file successfully."), 2000);
         m_edited = false;
     } else {
         m_ui->statusbar->showMessage(tr("Could not save file: ") + fname + ".", 2000);
@@ -840,7 +840,7 @@ bool BewavedDolphin::load(const QString &fname)
             try {
                 COMMENT("Loading in editor.", 0);
                 load(ds);
-                COMMENT("Finished updating chanched by signal.", 0);
+                COMMENT("Finished updating changed by signal.", 0);
                 m_currentFile = QFileInfo(fname);
             } catch (std::runtime_error &e) {
                 std::cerr << tr("Error loading project: ").toStdString() << e.what() << std::endl;
@@ -852,7 +852,7 @@ bool BewavedDolphin::load(const QString &fname)
             try {
                 COMMENT("Loading in editor.", 0);
                 load(fl);
-                COMMENT("Finished updating chanched by signal.", 0);
+                COMMENT("Finished updating changed by signal.", 0);
                 m_currentFile = QFileInfo(fname);
             } catch (std::runtime_error &e) {
                 std::cerr << tr("Error loading project: ").toStdString() << e.what() << std::endl;

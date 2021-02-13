@@ -867,7 +867,7 @@ void Editor::load(QDataStream &ds)
     clear();
     COMMENT("Clear!", 0);
     m_simulationController->stop();
-    COMMENT("Stoped simulation.", 0);
+    COMMENT("Stopped simulation.", 0);
     double version = SerializationFunctions::loadVersion(ds);
     COMMENT("Version: " << version, 0);
     QString dolphinFilename(SerializationFunctions::loadDolphinFilename(ds, version));
@@ -898,7 +898,7 @@ void Editor::load(QDataStream &ds)
     if (m_scene) {
         m_scene->clearSelection();
     }
-    COMMENT("Emiting circuit has changed.", 0);
+    COMMENT("Emitting circuit has changed.", 0);
     emit circuitHasChanged();
     COMMENT("Finished loading file.", 0);
 }

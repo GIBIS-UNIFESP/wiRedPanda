@@ -335,9 +335,9 @@ int ElementMapping::calculatePriority(GraphicElement *elm, QHash<GraphicElement 
     auto const elm_outputs = elm->outputs();
     for (QNEPort *port : elm_outputs) {
         for (QNEConnection *conn : port->connections()) {
-            QNEPort *sucessor = conn->otherPort(port);
-            if (sucessor) {
-                max = qMax(calculatePriority(sucessor->graphicElement(), beingvisited, priority), max);
+            QNEPort *successor = conn->otherPort(port);
+            if (successor) {
+                max = qMax(calculatePriority(successor->graphicElement(), beingvisited, priority), max);
             }
         }
     }
