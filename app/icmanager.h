@@ -22,7 +22,7 @@ public:
     ICManager(MainWindow *mainWindow = nullptr, QObject *parent = nullptr);
     ~ICManager() override;
     void clear();
-    bool loadIC(IC *ic, QString fname, QString parentFile = "");
+    bool loadIC(IC *ic, QString fname, const QString &parentFile = "");
     ICPrototype *getPrototype(const QString& fname);
     static ICManager *instance();
 
