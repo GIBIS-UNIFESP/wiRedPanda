@@ -42,13 +42,14 @@
 MainWindow::MainWindow(QWidget *parent, const QString &filename)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , undoView(nullptr)
     , editor(new Editor(this))
-    , autosaveFilename("")
+    , undoView(nullptr)
+    , firstResult(nullptr)
     , loadedAutosave(false)
-    , translator(nullptr)
-    , bd(nullptr)
+    , autosaveFilename("")
     , dolphinFilename("none")
+    , bd(nullptr)
+    , translator(nullptr)
 {
     COMMENT("WIRED PANDA Version = " << APP_VERSION << " OR " << GlobalProperties::version, 0);
     ui->setupUi(this);
