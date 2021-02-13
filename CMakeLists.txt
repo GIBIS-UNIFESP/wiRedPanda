@@ -53,7 +53,7 @@ set(
     Qt5::Widgets
 )
 
-find_package (ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
+find_package (ECM ${KF5_MIN_VERSION} NO_MODULE)
 set (CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
 include(cmake/Git.cmake)
