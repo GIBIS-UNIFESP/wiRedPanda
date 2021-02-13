@@ -78,7 +78,7 @@ QVector<GraphicElement *> Scene::getElements()
     return elements;
 }
 
-QVector<GraphicElement *> Scene::getElements(QRectF rect)
+QVector<GraphicElement *> Scene::getElements(const QRectF &rect)
 {
     QVector<GraphicElement *> elements;
     QList<QGraphicsItem *> myItems = items(rect);
