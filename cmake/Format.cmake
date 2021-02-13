@@ -1,3 +1,8 @@
+if(NOT ECM_FOUND)
+    message(WARNING "Can't use KDE_CLANG_FORMAT, ECM not available.")
+    return()
+endif()
+
 include(KDEClangFormat)
 
 file(
