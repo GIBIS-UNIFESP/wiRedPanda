@@ -89,7 +89,7 @@ void ICManager::clear()
     COMMENT("Finished clearing ICManager.", 0);
 }
 
-bool ICManager::loadIC(IC *ic, QString fname, QString parentFile)
+bool ICManager::loadIC(IC *ic, QString fname, const QString &parentFile)
 {
     if (tryLoadFile(fname, parentFile)) {
         ic->loadFile(fname);
