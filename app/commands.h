@@ -182,7 +182,7 @@ class UpdateCommand : public QUndoCommand
 public:
     enum { Id = 105 };
 
-    explicit UpdateCommand(const QVector<GraphicElement *> &elements, QByteArray oldData, Editor *editor, QUndoCommand *parent = nullptr);
+    explicit UpdateCommand(const QVector<GraphicElement *> &elements, const QByteArray &oldData, Editor *editor, QUndoCommand *parent = nullptr);
 
     void undo() Q_DECL_OVERRIDE;
     void redo() Q_DECL_OVERRIDE;

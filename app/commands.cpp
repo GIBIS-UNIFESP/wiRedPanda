@@ -389,7 +389,7 @@ void MoveCommand::redo()
     }
 }
 
-UpdateCommand::UpdateCommand(const QVector<GraphicElement *> &elements, QByteArray oldData, Editor *editor, QUndoCommand *parent)
+UpdateCommand::UpdateCommand(const QVector<GraphicElement *> &elements, const QByteArray &oldData, Editor *editor, QUndoCommand *parent)
     : QUndoCommand(parent)
     , m_editor(editor)
 {
