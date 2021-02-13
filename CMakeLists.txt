@@ -43,7 +43,7 @@ find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED
     Widgets
 )
 
-set( 
+set(
     WPANDA_LIBS
     Qt5::Charts
     Qt5::Core
