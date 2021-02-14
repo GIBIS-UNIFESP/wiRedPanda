@@ -6,6 +6,8 @@
 LogicJKFlipFlop::LogicJKFlipFlop()
     : LogicElement(5, 2)
     , lastClk(false)
+    , lastJ(true)
+    , lastK(true)
 {
     setOutputValue(0, false);
     setOutputValue(1, true);
