@@ -1,0 +1,6 @@
+File=wpanda.kcfg
+ClassName=WPandaSettings
+Mutators=true
+DefaultValueGetters=true
+MemberVariables=private
+GlobalEnums=true

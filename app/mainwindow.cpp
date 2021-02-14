@@ -16,7 +16,6 @@
 #include <QProcess>
 #include <QRectF>
 #include <QSaveFile>
-#include <QSettings>
 #include <QShortcut>
 #include <QSpacerItem>
 #include <QTranslator>
@@ -38,6 +37,7 @@
 #include "simulationcontroller.h"
 
 #include "ui_mainwindow.h"
+#include "WPandaSettings.h"
 
 MainWindow::MainWindow(QWidget *parent, const QString &filename)
     : QMainWindow(parent)
@@ -50,22 +50,23 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     , dolphinFilename("none")
     , bd(nullptr)
     , translator(nullptr)
+    , m_settings(new WPandaSettings)
 {
     COMMENT("WIRED PANDA Version = " << APP_VERSION << " OR " << GlobalProperties::version, 0);
     ui->setupUi(this);
     ThemeManager::globalMngr = new ThemeManager(this);
     buildFullScreenDialog();
     ui->graphicsView->setScene(editor->getScene());
+
+    m_settings->load();
+
+    // Change the default value on wpanda.kcfg after KDE translate
     /* Translation */
 
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    if (settings.value("language").isValid()) {
-        loadTranslation(settings.value("language").toString());
-    }
+    loadTranslation(m_settings->language());
 
-    if (settings.contains("autosaveFile")) {
+    if (autosaveFilename != "") {
         // If autosaveFile was found within the config. file, then WiredPanda probably didn't save its last project correctly, perhaps due to a crash.
-        autosaveFilename = settings.value("autosaveFile").toString();
         if ((QFile(autosaveFilename).exists()) && (autosaveFilename != filename)) {
             int ret = recoverAutoSaveFile(autosaveFilename);
             if (ret == QMessageBox::Yes) {
@@ -81,17 +82,14 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
         }
     }
 
-    settings.beginGroup("MainWindow");
-    restoreGeometry(settings.value("geometry").toByteArray());
-    restoreState(settings.value("windowState").toByteArray());
-    settings.beginGroup("splitter");
-    ui->splitter->restoreGeometry(settings.value("geometry").toByteArray());
-    ui->splitter->restoreState(settings.value("state").toByteArray());
+    restoreGeometry(GlobalProperties::settingToByteArray(m_settings->windowGeometry()));
+    restoreState(GlobalProperties::settingToByteArray(m_settings->windowState()));
+
+    ui->splitter->restoreGeometry(GlobalProperties::settingToByteArray(m_settings->splitterGeometry()));
+    ui->splitter->restoreState(GlobalProperties::settingToByteArray(m_settings->splitterState()));
 
     ui->actionExport_to_Arduino->setEnabled(false);
 
-    settings.endGroup();
-    settings.endGroup();
     QList<QKeySequence> zoom_in_shortcuts;
     zoom_in_shortcuts << QKeySequence("Ctrl++") << QKeySequence("Ctrl+=");
     ui->actionZoom_in->setShortcuts(zoom_in_shortcuts);
@@ -108,11 +106,8 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     connect(ThemeManager::globalMngr, &ThemeManager::themeChanged, editor, &Editor::updateTheme);
     ThemeManager::globalMngr->initialize();
     /*  ui->graphicsView->setBackgroundBrush(QBrush(QColor(Qt::gray))); */
-    if (settings.value("fastMode").isValid()) {
-        setFastMode(settings.value("fastMode").toBool());
-    } else {
-        setFastMode(false);
-    }
+    setFastMode(m_settings->fastMode());
+
     editor->setElementEditor(ui->widgetElementEditor);
     ui->searchScrollArea->hide();
 
@@ -144,8 +139,8 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     connect(editor, &Editor::scroll, this, &MainWindow::scrollView);
     connect(editor, &Editor::circuitHasChanged, this, &MainWindow::autoSave);
 
-    rfController = new RecentFilesController("recentFileList", this, true);
-    ricController = new RecentFilesController("recentICs", this, false);
+    rfController = new RecentFilesController(this, true);
+    ricController = new RecentFilesController(this, false);
     connect(this, &MainWindow::addRecentFile, rfController, &RecentFilesController::addRecentFile);
     connect(this, &MainWindow::addRecentIcFile, ricController, &RecentFilesController::addRecentFile);
 
@@ -162,6 +157,10 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     /*  QApplication::setStyle( QStyleFactory::create( "Fusion" ) ); */
     ui->actionPlay->setChecked(true);
     populateLeftMenu();
+}
+
+WPandaSettings *MainWindow::settings() {
+    return m_settings;
 }
 
 void MainWindow::setFastMode(bool fastModeEnabled)
@@ -185,6 +184,9 @@ void MainWindow::createUndoView()
 
 MainWindow::~MainWindow()
 {
+    m_settings->save();
+    m_settings->deleteLater();
+
     if (undoView) {
         delete undoView;
     }
@@ -228,8 +230,7 @@ bool MainWindow::save(QString fname)
         editor->getUndoStack()->setClean();
         if (autosaveFile.isOpen()) {
             autosaveFile.remove();
-            QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-            settings.remove("autosaveFile");
+            m_settings->setAutoSaveFile(QStringLiteral(""));
         }
         return true;
     }
@@ -391,8 +392,7 @@ bool MainWindow::closeFile()
         } else { // Close without saving. Deleting autosave if it was opened.
             if (loadedAutosave) {
                 autosaveFile.remove();
-                QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-                settings.remove("autosaveFile");
+                m_settings->setAutoSaveFile(QStringLiteral(""));
             }
         }
     }
@@ -402,15 +402,13 @@ bool MainWindow::closeFile()
 void MainWindow::closeEvent(QCloseEvent *e)
 {
     Q_UNUSED(e);
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    settings.beginGroup("MainWindow");
-    settings.setValue("geometry", saveGeometry());
-    settings.setValue("windowState", saveState());
-    settings.beginGroup("splitter");
-    settings.setValue("geometry", ui->splitter->saveGeometry());
-    settings.setValue("state", ui->splitter->saveState());
-    settings.endGroup();
-    settings.endGroup();
+
+    m_settings->setWindowGeometry(GlobalProperties::settingToIntList(saveGeometry()));
+    m_settings->setWindowState(GlobalProperties::settingToIntList(saveState()));
+    m_settings->setSplitterGeometry(GlobalProperties::settingToIntList(ui->splitter->saveGeometry()));
+    m_settings->setSplitterState(GlobalProperties::settingToIntList(ui->splitter->saveState()));
+    m_settings->save();
+
     if (closeFile()) {
         close();
     } else {
@@ -804,18 +802,16 @@ void MainWindow::loadTranslation(const QString& language)
 
 void MainWindow::on_actionEnglish_triggered()
 {
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     QString language = "://wpanda_en.qm";
-    settings.setValue("language", language);
+    m_settings->setLanguage(language);
 
     loadTranslation(language);
 }
 
 void MainWindow::on_actionPortuguese_triggered()
 {
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     QString language = "://wpanda_pt.qm";
-    settings.setValue("language", language);
+    m_settings->setLanguage(language);
 
     loadTranslation(language);
 }
@@ -873,8 +869,7 @@ void MainWindow::populateLeftMenu()
 void MainWindow::on_actionFast_Mode_triggered(bool checked)
 {
     setFastMode(checked);
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    settings.setValue("fastMode", checked);
+    m_settings->setFastMode(checked);
 }
 
 void MainWindow::on_actionWaveform_triggered()
@@ -958,13 +953,12 @@ void MainWindow::on_actionFullscreen_triggered() const
 
 void MainWindow::autoSave()
 {
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     COMMENT("Starting autosave.", 0);
     if (editor->getUndoStack()->isClean()) {
         COMMENT("Undo stack is clean.", 0);
         if (autosaveFile.exists()) {
             autosaveFile.remove();
-            settings.remove("autosaveFile");
+            m_settings->setAutoSaveFile(QStringLiteral(""));
         }
     } else {
         if (autosaveFile.exists()) {
@@ -988,14 +982,14 @@ void MainWindow::autoSave()
             QDataStream ds(&autosaveFile);
             QString autosaveFilename = autosaveFile.fileName();
             // qDebug( ) << "File saved to " << autosaveFilename;
-            settings.setValue("autosaveFile", autosaveFilename);
+            m_settings->setAutoSaveFile(autosaveFilename);
             try {
                 editor->save(ds, dolphinFilename);
             } catch (std::runtime_error &e) {
                 std::cerr << tr("Error autosaving project: ").toStdString() << e.what() << std::endl;
                 autosaveFile.close();
                 autosaveFile.remove();
-                settings.remove("autosaveFile");
+                m_settings->setAutoSaveFile(QStringLiteral(""));
             }
             autosaveFile.close();
         }

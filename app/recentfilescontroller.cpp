@@ -6,18 +6,19 @@
 #include <QApplication>
 #include <QFile>
 #include <QFileInfo>
-#include <QSettings>
 
 #include "common.h"
+#include "WPandaSettings.h"
+#include "mainwindow.h"
 
-RecentFilesController::RecentFilesController(const QString &_attrName, QObject *parent, bool saveSetting)
+RecentFilesController::RecentFilesController(QObject *parent, bool saveSetting)
     : QObject(parent)
-    , m_attrName(_attrName)
     , m_saveSetting(saveSetting)
 {
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    if (settings.contains(m_attrName)) {
-        m_files = settings.value(m_attrName).toStringList();
+    if (m_saveSetting) {
+        if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
+            m_files = mainwindow->settings()->recentFileList();
+        }
     }
 }
 
@@ -59,7 +60,8 @@ QStringList RecentFilesController::getRecentFiles()
 void RecentFilesController::saveRecentFiles()
 {
     if (m_saveSetting) {
-        QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-        settings.setValue(m_attrName, m_files);
+        if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
+            mainwindow->settings()->setRecentFileList(m_files);
+        }
     }
 }

@@ -40,7 +40,10 @@ set(
     nodes/qneport.cpp
 )
 
-add_library(wpandacommon ${WPANDA_FILES} )
+kconfig_add_kcfg_files(WPANDA_KCFG settings/WPandaSettings.kcfgc)
+
+add_library(wpandacommon ${WPANDA_KCFG} ${WPANDA_FILES} )
+
 target_link_libraries( wpandacommon PUBLIC ${WPANDA_LIBS} )
 target_compile_definitions(
     wpandacommon
@@ -57,6 +60,7 @@ qt5_add_resources(
     WPANDA_RESOURCES
     resources/dolphin/dolphin.qrc
     resources/resources.qrc
+    resources/translations.qrc
     resources/basic/basic.qrc
     resources/input/input.qrc
     resources/output/output.qrc

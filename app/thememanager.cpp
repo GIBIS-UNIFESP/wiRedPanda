@@ -2,9 +2,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "thememanager.h"
+#include "WPandaSettings.h"
+#include "mainwindow.h"
 
 #include <QApplication>
-#include <QSettings>
 
 ThemeManager *ThemeManager::globalMngr = nullptr;
 
@@ -18,8 +19,9 @@ void ThemeManager::setTheme(const Theme &theme)
     m_attrs.setTheme(theme);
     if (m_theme != theme) {
         m_theme = theme;
-        QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-        settings.setValue("theme", static_cast<int>(theme));
+        if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
+            mainwindow->settings()->setTheme(static_cast<int>(theme));
+        }
         emit themeChanged();
     }
 }
@@ -38,9 +40,8 @@ ThemeManager::ThemeManager(QObject *parent)
     : QObject(parent)
     , m_theme(Theme::Panda_Light)
 {
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    if (settings.contains("theme")) {
-        m_theme = static_cast<Theme>(settings.value("theme").toInt());
+    if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
+        m_theme = static_cast<Theme>(mainwindow->settings()->theme());
     }
     setTheme(m_theme);
 }

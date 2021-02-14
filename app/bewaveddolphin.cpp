@@ -14,7 +14,6 @@
 #include <QPainter>
 #include <QPrinter>
 #include <QSaveFile>
-#include <QSettings>
 #include <QTableView>
 
 #include "clockDialog.h"
@@ -22,6 +21,7 @@
 #include "editor.h"
 #include "elementfactory.h"
 #include "elementmapping.h"
+#include "globalproperties.h"
 #include "graphicelement.h"
 #include "graphicsview.h"
 #include "graphicsviewzoom.h"
@@ -33,6 +33,8 @@
 #include "simulationcontroller.h"
 
 #include "ui_bewaveddolphin.h"
+#include "WPandaSettings.h"
+#include "mainwindow.h"
 
 SignalModel::SignalModel(int rows, int inputs, int columns, QObject *parent)
     : QStandardItemModel(rows, columns, parent)
@@ -76,10 +78,11 @@ BewavedDolphin::BewavedDolphin(Editor *editor, QWidget *parent)
     resize(800, 500);
     setWindowTitle("Bewaved Dolphin Simulator");
     setWindowFlags(Qt::Window);
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    settings.beginGroup("BewavedDolphin");
-    restoreGeometry(settings.value("geometry").toByteArray());
-    settings.endGroup();
+
+    if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
+        restoreGeometry(GlobalProperties::settingToByteArray(mainwindow->settings()->bdGeometry()));
+    }
+
     m_gv = new GraphicsView(this);
     m_ui->verticalLayout->addWidget(m_gv);
     m_scene = new QGraphicsScene(this);
@@ -101,10 +104,10 @@ BewavedDolphin::BewavedDolphin(Editor *editor, QWidget *parent)
 
 BewavedDolphin::~BewavedDolphin()
 {
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    settings.beginGroup("BewavedDolphin");
-    settings.setValue("geometry", saveGeometry());
-    settings.endGroup();
+    if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
+        mainwindow->settings()->setBdGeometry(GlobalProperties::settingToIntList(saveGeometry()));
+    }
+
     delete m_ui;
 }
 
@@ -332,7 +335,6 @@ QVector<char> BewavedDolphin::loadSignals(QStringList &input_labels, QStringList
 
 bool BewavedDolphin::createWaveform(const QString& filename)
 {
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     COMMENT("Getting digital circuit simulator.", 0);
     m_sc = m_editor->getSimulationController();
     COMMENT("Creating class to pause main window simulator while creating waveform.", 0);

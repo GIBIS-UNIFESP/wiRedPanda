@@ -6,7 +6,6 @@
 #include <QApplication>
 #include <QFileInfo>
 #include <QMessageBox>
-#include <QSettings>
 
 #include "common.h"
 #include "filehelper.h"
@@ -33,8 +32,6 @@ ICManager::ICManager(MainWindow *mainWindow, QObject *parent)
 ICManager::~ICManager()
 {
     clear();
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    settings.setValue("recentICs", "");
 
     // fprintf(stderr, "Removing IC manager");
     if (globalICManager == this) {

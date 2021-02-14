@@ -18,6 +18,8 @@ public:
     static bool soundEnabled;
 
     static double toDouble(const QString &txtVersion, bool *ok);
+    static QByteArray settingToByteArray(const QList<int> &savedSettings);
+    static QList<int> settingToIntList(const QByteArray &toSaveSettings);
 };
 
 #endif // GLOBALPROPERTIES_H

@@ -12,7 +12,6 @@
 #include <QLineSeries>
 #include <QMessageBox>
 #include <QMimeData>
-#include <QSettings>
 #include <QValueAxis>
 
 #include "common.h"
@@ -23,8 +22,11 @@
 #include "scstop.h"
 #include "simulationcontroller.h"
 #include "ui_simplewaveform.h"
+#include "globalproperties.h"
 
 #include "input.h"
+#include "WPandaSettings.h"
+#include "mainwindow.h"
 
 using namespace QtCharts;
 
@@ -44,18 +46,17 @@ SimpleWaveform::SimpleWaveform(Editor *editor, QWidget *parent)
     setWindowFlags(Qt::Window);
     setModal(true);
     m_sortingMode = SortingMode::INCREASING;
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    settings.beginGroup("SimpleWaveform");
-    restoreGeometry(settings.value("geometry").toByteArray());
-    settings.endGroup();
+
+    if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
+        restoreGeometry(GlobalProperties::settingToByteArray(mainwindow->settings()->swGeometry()));
+    }
 }
 
 SimpleWaveform::~SimpleWaveform()
 {
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    settings.beginGroup("SimpleWaveform");
-    settings.setValue("geometry", saveGeometry());
-    settings.endGroup();
+    if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
+        mainwindow->settings()->setSwGeometry(GlobalProperties::settingToIntList(saveGeometry()));
+    }
     delete m_ui;
 }
 
@@ -199,13 +200,10 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, Editor *editor)
 // por linha de comando, o resultado poderia ser salvo em arquivo.
 void SimpleWaveform::showWaveform()
 {
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    settings.beginGroup("waveform");
-    COMMENT("Getting sorting type.", 0);
-    if (settings.contains("sortingType")) {
-        m_sortingMode = static_cast<SortingMode>(settings.value("sortingType").toInt());
+    if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
+        m_sortingMode = static_cast<SortingMode>(mainwindow->settings()->sortingType());
     }
-    settings.endGroup();
+
     switch (m_sortingMode) {
     case SortingMode::DECREASING:
         m_ui->radioButton_Decreasing->setChecked(true);
@@ -364,31 +362,28 @@ void SimpleWaveform::showWaveform()
 
 void SimpleWaveform::on_radioButton_Position_clicked()
 {
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    settings.beginGroup("waveform");
     m_sortingMode = SortingMode::POSITION;
-    settings.setValue("sortingType", static_cast<int>(m_sortingMode));
-    settings.endGroup();
+    if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
+        mainwindow->settings()->setSortingType(static_cast<int>(m_sortingMode));
+    }
     showWaveform();
 }
 
 void SimpleWaveform::on_radioButton_Increasing_clicked()
 {
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    settings.beginGroup("waveform");
     m_sortingMode = SortingMode::INCREASING;
-    settings.setValue("sortingType", static_cast<int>(m_sortingMode));
-    settings.endGroup();
+    if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
+        mainwindow->settings()->setSortingType(static_cast<int>(m_sortingMode));
+    }
     showWaveform();
 }
 
 void SimpleWaveform::on_radioButton_Decreasing_clicked()
 {
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    settings.beginGroup("waveform");
     m_sortingMode = SortingMode::DECREASING;
-    settings.setValue("sortingType", static_cast<int>(m_sortingMode));
-    settings.endGroup();
+    if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
+        mainwindow->settings()->setSortingType(static_cast<int>(m_sortingMode));
+    }
     showWaveform();
 }
 

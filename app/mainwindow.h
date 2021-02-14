@@ -23,6 +23,7 @@ class Editor;
 class GraphicsView;
 class Label;
 class ListItemWidget;
+class WPandaSettings;
 
 namespace Ui
 {
@@ -80,6 +81,8 @@ public:
 
     QString getDolphinFilename();
     void setDolphinFilename(const QString &filename);
+
+    WPandaSettings *settings();
 
     QDialog *fullscreenDlg;
     GraphicsView *fullscreenView;
@@ -174,6 +177,7 @@ private:
     QAction *recentFileActs[RecentFilesController::MaxRecentFiles];
     QTranslator *translator;
     QVector<ListItemWidget *> boxItemWidgets, searchItemWidgets;
+    WPandaSettings *m_settings;
     void createRecentFileActions();
     void populateLeftMenu();
     // Shows a message box for reloading the autosave at launch, when
