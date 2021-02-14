@@ -6,6 +6,7 @@
 LogicTFlipFlop::LogicTFlipFlop()
     : LogicElement(4, 2)
     , lastClk(false)
+    , lastValue(true)
 {
     setOutputValue(0, false);
     setOutputValue(1, true);
