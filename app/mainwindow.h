@@ -82,8 +82,6 @@ public:
     QString getDolphinFilename();
     void setDolphinFilename(const QString &filename);
 
-    WPandaSettings *settings();
-
 signals:
     void addRecentIcFile(const QString &fname);
     void addRecentFile(const QString &fname);

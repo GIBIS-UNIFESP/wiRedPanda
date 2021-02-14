@@ -50,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     , m_dolphinFilename("none")
     , m_bd(nullptr)
     , m_translator(nullptr)   
-    , m_settings(new WPandaSettings)
+    , m_settings(WPandaSettings::self())
 {
     COMMENT("WIRED PANDA Version = " << APP_VERSION << " OR " << GlobalProperties::version, 0);
     m_ui->setupUi(this);
@@ -190,7 +190,7 @@ MainWindow::~MainWindow()
     m_settings->save();
 
     delete m_ui;
-    }
+}
 
 void MainWindow::on_actionExit_triggered()
 {
@@ -1030,13 +1030,13 @@ void MainWindow::on_actionSave_Local_Project_triggered()
         bool dir_res = QDir().mkpath(path + "/boxes");
         if (!dir_res) {
             std::cerr << tr("Error creating ICs directory.").toStdString() << std::endl;
-    }
+        }
     }
     if (!QDir(path + "/skins").exists()) {
         bool dir_res = QDir().mkpath(path + "/skins");
         if (!dir_res) {
             std::cerr << tr("Error creating skins directory.").toStdString() << std::endl;
-    }
+        }
     }
     COMMENT("Saving ics and skins to local directories.", 0);
     if (!m_editor->saveLocal(path)) {

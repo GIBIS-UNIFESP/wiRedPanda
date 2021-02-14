@@ -9,16 +9,14 @@
 
 #include "common.h"
 #include "WPandaSettings.h"
-#include "mainwindow.h"
 
 RecentFilesController::RecentFilesController(QObject *parent, bool saveSetting)
     : QObject(parent)
     , m_saveSetting(saveSetting)
 {
     if (m_saveSetting) {
-        if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
-            m_files = mainwindow->settings()->recentFileList();
-        }
+        auto settings = WPandaSettings::self();
+        m_files = settings->recentFileList();
     }
 }
 
@@ -60,8 +58,7 @@ QStringList RecentFilesController::getRecentFiles()
 void RecentFilesController::saveRecentFiles()
 {
     if (m_saveSetting) {
-        if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
-            mainwindow->settings()->setRecentFileList(m_files);
-        }
+        auto settings = WPandaSettings::self();
+        settings->setRecentFileList(m_files);
     }
 }

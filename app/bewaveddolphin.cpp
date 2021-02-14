@@ -34,7 +34,6 @@
 
 #include "ui_bewaveddolphin.h"
 #include "WPandaSettings.h"
-#include "mainwindow.h"
 
 SignalModel::SignalModel(int rows, int inputs, int columns, QObject *parent)
     : QStandardItemModel(rows, columns, parent)
@@ -79,9 +78,9 @@ BewavedDolphin::BewavedDolphin(Editor *editor, QWidget *parent)
     setWindowTitle("Bewaved Dolphin Simulator");
     setWindowFlags(Qt::Window);
 
-    if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
-        restoreGeometry(GlobalProperties::settingToByteArray(mainwindow->settings()->bdGeometry()));
-    }
+    // TODO: remove geometry from settings save
+    auto settings = WPandaSettings::self();
+    restoreGeometry(GlobalProperties::settingToByteArray(settings->bdGeometry()));
 
     m_gv = new GraphicsView(this);
     m_ui->verticalLayout->addWidget(m_gv);
@@ -104,9 +103,9 @@ BewavedDolphin::BewavedDolphin(Editor *editor, QWidget *parent)
 
 BewavedDolphin::~BewavedDolphin()
 {
-    if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
-        mainwindow->settings()->setBdGeometry(GlobalProperties::settingToIntList(saveGeometry()));
-    }
+    // TODO: remove geometry from settings save
+    auto settings = WPandaSettings::self();
+    settings->setBdGeometry(GlobalProperties::settingToIntList(saveGeometry()));
 
     delete m_ui;
 }

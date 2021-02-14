@@ -26,7 +26,6 @@
 
 #include "input.h"
 #include "WPandaSettings.h"
-#include "mainwindow.h"
 
 using namespace QtCharts;
 
@@ -47,16 +46,17 @@ SimpleWaveform::SimpleWaveform(Editor *editor, QWidget *parent)
     setModal(true);
     m_sortingMode = SortingMode::INCREASING;
 
-    if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
-        restoreGeometry(GlobalProperties::settingToByteArray(mainwindow->settings()->swGeometry()));
-    }
+    // TODO: Remove save geometry
+    auto settings = WPandaSettings::self();
+    restoreGeometry(GlobalProperties::settingToByteArray(settings->swGeometry()));
 }
 
 SimpleWaveform::~SimpleWaveform()
 {
-    if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
-        mainwindow->settings()->setSwGeometry(GlobalProperties::settingToIntList(saveGeometry()));
-    }
+    // TODO: Remove save geometry
+    auto settings = WPandaSettings::self();
+    settings->setSwGeometry(GlobalProperties::settingToIntList(saveGeometry()));
+
     delete m_ui;
 }
 
@@ -200,9 +200,8 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, Editor *editor)
 // por linha de comando, o resultado poderia ser salvo em arquivo.
 void SimpleWaveform::showWaveform()
 {
-    if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
-        m_sortingMode = static_cast<SortingMode>(mainwindow->settings()->sortingType());
-    }
+    auto settings = WPandaSettings::self();
+    m_sortingMode = static_cast<SortingMode>(settings->sortingType());
 
     switch (m_sortingMode) {
     case SortingMode::DECREASING:
@@ -363,27 +362,24 @@ void SimpleWaveform::showWaveform()
 void SimpleWaveform::on_radioButton_Position_clicked()
 {
     m_sortingMode = SortingMode::POSITION;
-    if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
-        mainwindow->settings()->setSortingType(static_cast<int>(m_sortingMode));
-    }
+    auto settings = WPandaSettings::self();
+    settings->setSortingType(static_cast<int>(m_sortingMode));
     showWaveform();
 }
 
 void SimpleWaveform::on_radioButton_Increasing_clicked()
 {
     m_sortingMode = SortingMode::INCREASING;
-    if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
-        mainwindow->settings()->setSortingType(static_cast<int>(m_sortingMode));
-    }
+    auto settings = WPandaSettings::self();
+    settings->setSortingType(static_cast<int>(m_sortingMode));
     showWaveform();
 }
 
 void SimpleWaveform::on_radioButton_Decreasing_clicked()
 {
     m_sortingMode = SortingMode::DECREASING;
-    if (auto mainwindow = qobject_cast<MainWindow *>(this->parent())) {
-        mainwindow->settings()->setSortingType(static_cast<int>(m_sortingMode));
-    }
+    auto settings = WPandaSettings::self();
+    settings->setSortingType(static_cast<int>(m_sortingMode));
     showWaveform();
 }
 
