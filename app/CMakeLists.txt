@@ -48,6 +48,7 @@ target_compile_definitions(
         -DCURRENTDIR="${CMAKE_CURRENT_SOURCE_DIR}"
         -DAPP_VERSION="${APP_VERSION}"
 )
+target_compile_options( wpandacommon PUBLIC ${COMPILE_WARNS} )
 
 add_subdirectory(element)
 add_subdirectory(logicelement)
@@ -86,6 +87,7 @@ target_compile_definitions(
     PUBLIC
     -DAPP_VERSION="${APP_VERSION}"
 )
+target_compile_options( wpanda PUBLIC ${COMPILE_WARNS} )
 
 target_link_libraries(
     wpanda
