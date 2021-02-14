@@ -23,7 +23,7 @@ jobs:
     - name: Install Qt5
       run: |
         sudo apt-get update
-        sudo apt-get install build-essential libgl1-mesa-dev libxkbcommon-x11-0 libpulse-dev -y
+        sudo apt-get install build-essential libgl1-mesa-dev libxkbcommon-x11-0 libpulse-dev -y cmake libkf5config-dev
         python3 -m pip install setuptools wheel
         python3 -m pip install py7zr==0.10.1
         python3 -m pip install aqtinstall==0.9.7
@@ -87,6 +87,9 @@ jobs:
       with:
         version: 5.15.1
         modules: qtcharts qtmultimedia
+      run: |
+        sudo apt-get update
+        sudo apt-get install build-essential libgl1-mesa-dev libxkbcommon-x11-0 libpulse-dev -y cmake libkf5config-dev
 
     - name: Build
       run: |
