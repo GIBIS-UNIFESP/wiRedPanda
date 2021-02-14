@@ -147,7 +147,6 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     auto *shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F), this);
     connect(shortcut, &QShortcut::activated, ui->lineEdit, QOverload<>::of(&QWidget::setFocus));
     ui->graphicsView->setCacheMode(QGraphicsView::CacheBackground);
-    firstResult = nullptr;
     updateRecentICs();
     createRecentFileActions();
     updateRecentFileActions();
