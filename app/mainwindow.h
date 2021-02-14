@@ -84,9 +84,6 @@ public:
 
     WPandaSettings *settings();
 
-    QDialog *fullscreenDlg;
-    GraphicsView *fullscreenView;
-
 signals:
     void addRecentIcFile(const QString &fname);
     void addRecentFile(const QString &fname);
@@ -158,25 +155,29 @@ private slots:
     void on_actionSave_Local_Project_triggered();
 
 private:
-    Ui::MainWindow *ui;
-    Editor *editor;
-    QFileInfo currentFile;
-    QDir defaultDirectory;
-    QUndoView *undoView;
-    Label *firstResult;
-    bool loadedAutosave;
-    QString autosaveFilename;
-    QString dolphinFilename;
-    BewavedDolphin *bd;
+    Ui::MainWindow *m_ui;
+    Editor *m_editor;
+    QFileInfo m_currentFile;
+    QDir m_defaultDirectory;
+    QUndoView *m_undoView;
+    Label *m_firstResult;
+    bool m_loadedAutosave;
+    QString m_autosaveFilename;
+    QString m_dolphinFilename;
+    BewavedDolphin *m_bd;
+    QDialog *m_fullscreenDlg;
+    GraphicsView *m_fullscreenView;
 
-    QTemporaryFile autosaveFile;
+    QTemporaryFile m_autosaveFile;
 
-    QAction *undoAction;
-    QAction *redoAction;
-    RecentFilesController *rfController, *ricController;
-    QAction *recentFileActs[RecentFilesController::MaxRecentFiles];
-    QTranslator *translator;
-    QVector<ListItemWidget *> boxItemWidgets, searchItemWidgets;
+    QAction *m_undoAction;
+    QAction *m_redoAction;
+    RecentFilesController *m_rfController;
+    RecentFilesController *m_ricController;
+    QAction *m_recentFileActs[RecentFilesController::MaxRecentFiles];
+    QTranslator *m_translator;
+    QVector<ListItemWidget *> m_boxItemWidgets;
+    QVector<ListItemWidget *> m_searchItemWidgets;
     WPandaSettings *m_settings;
     void createRecentFileActions();
     void populateLeftMenu();
