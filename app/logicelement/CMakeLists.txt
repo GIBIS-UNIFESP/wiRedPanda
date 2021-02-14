@@ -22,3 +22,4 @@ set (
 
 add_library(wpandalogicelement ${WPANDA_LOGICELEMENT} )
 target_link_libraries(wpandalogicelement PUBLIC ${WPANDA_LIBS} )
+target_compile_options(wpandalogicelement PRIVATE ${COMPILE_WARNS} )

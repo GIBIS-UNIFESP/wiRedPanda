@@ -30,3 +30,4 @@ set (
     # tlatch.cpp
 add_library(wpandaelements ${WPANDA_ELEMENT} )
 target_link_libraries(wpandaelements PUBLIC ${WPANDA_LIBS} )
+target_compile_options(wpandaelements PRIVATE ${COMPILE_WARNS} )
