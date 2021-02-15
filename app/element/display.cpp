@@ -13,7 +13,7 @@ int Display::current_id_number = 0;
 Display::Display(QGraphicsItem *parent)
     : GraphicElement(ElementType::DISPLAY, ElementGroup::OUTPUT, 8, 8, 0, 0, parent)
 {
-    pixmapSkinName = {
+    m_pixmapSkinName = {
         ":/output/counter/counter_off.png",
         ":/output/counter/counter_a.png",
         ":/output/counter/counter_b.png",
@@ -33,15 +33,15 @@ Display::Display(QGraphicsItem *parent)
     setTopPosition(6);
     setHasLabel(true);
 
-    setPixmap(pixmapSkinName[0]);
-    a = QPixmap(pixmapSkinName[1]);
-    b = QPixmap(pixmapSkinName[2]);
-    c = QPixmap(pixmapSkinName[3]);
-    d = QPixmap(pixmapSkinName[4]);
-    e = QPixmap(pixmapSkinName[5]);
-    f = QPixmap(pixmapSkinName[6]);
-    g = QPixmap(pixmapSkinName[7]);
-    dp = QPixmap(pixmapSkinName[8]);
+    setPixmap(m_pixmapSkinName[0]);
+    a = QPixmap(m_pixmapSkinName[1]);
+    b = QPixmap(m_pixmapSkinName[2]);
+    c = QPixmap(m_pixmapSkinName[3]);
+    d = QPixmap(m_pixmapSkinName[4]);
+    e = QPixmap(m_pixmapSkinName[5]);
+    f = QPixmap(m_pixmapSkinName[6]);
+    g = QPixmap(m_pixmapSkinName[7]);
+    dp = QPixmap(m_pixmapSkinName[8]);
 
     setPortName("Display");
     for (QNEPort *in : qAsConst(m_inputs)) {
@@ -139,9 +139,9 @@ void Display::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double ve
 void Display::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
-        pixmapSkinName[0] = ":/output/counter/counter_off.png";
+        m_pixmapSkinName[0] = ":/output/counter/counter_off.png";
     } else {
-        pixmapSkinName[0] = filename;
+        m_pixmapSkinName[0] = filename;
     }
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
 }

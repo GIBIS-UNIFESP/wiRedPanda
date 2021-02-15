@@ -6,10 +6,10 @@
 Nand::Nand(QGraphicsItem *parent)
     : GraphicElement(ElementType::NAND, ElementGroup::GATE, 2, 8, 1, 1, parent)
 {
-    pixmapSkinName = {":/basic/nand.png"};
+    m_pixmapSkinName = {":/basic/nand.png"};
 
     setOutputsOnTop(true);
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
     setCanChangeSkin(true);
     updatePorts();
     setCanChangeSkin(true);
@@ -19,9 +19,9 @@ Nand::Nand(QGraphicsItem *parent)
 void Nand::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
-        pixmapSkinName[0] = ":/basic/nand.png";
+        m_pixmapSkinName[0] = ":/basic/nand.png";
     } else {
-        pixmapSkinName[0] = filename;
+        m_pixmapSkinName[0] = filename;
     }
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
 }

@@ -220,8 +220,8 @@ void GraphicElement::save(QDataStream &ds) const
         ds << port->portFlags();
     }
     /* <\Version2.7> */
-    ds << static_cast<quint64>(pixmapSkinName.size());
-    for (const QString &skinName : pixmapSkinName) {
+    ds << static_cast<quint64>(m_pixmapSkinName.size());
+    for (const QString &skinName : m_pixmapSkinName) {
         ds << skinName;
     }
     COMMENT("Finished saving element.", 4);
@@ -422,12 +422,12 @@ void GraphicElement::loadPixmapSkinName(QDataStream &ds, size_t skin)
 {
     QString name;
     ds >> name;
-    if ((skin < static_cast<size_t>(pixmapSkinName.size()))) {
+    if ((skin < static_cast<size_t>(m_pixmapSkinName.size()))) {
         QFileInfo fileInfo(name);
         if (!fileInfo.isFile()) {
             std::cout << "Could not load skins: " << name.toStdString() << std::endl;
         } else
-            pixmapSkinName[skin] = name;
+            m_pixmapSkinName[skin] = name;
     } else {
         std::cout << "Could not load some of the skins." << std::endl;
     }
@@ -435,17 +435,17 @@ void GraphicElement::loadPixmapSkinName(QDataStream &ds, size_t skin)
 
 void GraphicElement::updateSkinsPath(const QString &newSkinPath)
 {
-    for (int i = 0; i < pixmapSkinName.size(); ++i) {
-        QString name = pixmapSkinName[i];
+    for (int i = 0; i < m_pixmapSkinName.size(); ++i) {
+        QString name = m_pixmapSkinName[i];
         if (name[0] != ':') {
             COMMENT("Detecting non-default skin name " << name.toStdString(), 0);
             QString newSkinName = newSkinPath + QFileInfo(name).fileName();
             QFile fl(newSkinName);
             if (!fl.exists()) {
                 COMMENT("Copying skin to local dir. File does not exist yet.", 0);
-                QFile::copy(pixmapSkinName[i], newSkinName);
+                QFile::copy(m_pixmapSkinName[i], newSkinName);
             }
-            pixmapSkinName[i] = newSkinName;
+            m_pixmapSkinName[i] = newSkinName;
         }
     }
 }
@@ -561,7 +561,7 @@ void GraphicElement::updatePorts()
 
 void GraphicElement::refresh()
 {
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
 }
 
 QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)

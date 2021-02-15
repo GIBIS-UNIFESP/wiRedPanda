@@ -8,11 +8,11 @@
 InputVcc::InputVcc(QGraphicsItem *parent)
     : GraphicElement(ElementType::VCC, ElementGroup::STATICINPUT, 0, 0, 1, 1, parent)
 {
-    pixmapSkinName = {":/input/1.png"};
+    m_pixmapSkinName = {":/input/1.png"};
 
     setOutputsOnTop(false);
     setCanChangeSkin(true);
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
     setRotatable(false);
     setPortName("VCC");
     m_outputs.first()->setValue(true);
@@ -21,9 +21,9 @@ InputVcc::InputVcc(QGraphicsItem *parent)
 void InputVcc::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
-        pixmapSkinName[0] = ":/input/1.png";
+        m_pixmapSkinName[0] = ":/input/1.png";
     } else {
-        pixmapSkinName[0] = filename;
+        m_pixmapSkinName[0] = filename;
     }
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
 }
