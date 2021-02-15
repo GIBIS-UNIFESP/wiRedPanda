@@ -11,17 +11,11 @@
 class GraphicElement;
 class QGraphicsItem;
 class QNEPort;
+class ICMapping;
 
 class ICPrototypeImpl
 {
 public:
-    QVector<GraphicElement *> elements;
-    QVector<QString> inputLabels;
-    QVector<QString> outputLabels;
-
-    QVector<QNEPort *> inputs;
-    QVector<QNEPort *> outputs;
-
     ~ICPrototypeImpl();
     void loadFile(const QString &fileName);
     void clear();
@@ -35,11 +29,25 @@ public:
     void loadOutputElement(GraphicElement *elm);
     bool updateLocalIC(const QString &fileName, const QString &icDirName);
 
+    GraphicElement *getElement(int index);
+    QString getInputLabel(int index) const;
+    QString getOutputLabel(int index) const;
+    QNEPort *getInput(int index);
+    QNEPort *getOutput(int index);
+    ICMapping *generateMapping(const QString &fileName) const;
+
 private:
     void sortPorts(QVector<QNEPort *> &map);
     void loadItem(QGraphicsItem *item);
     void loadInputs();
     void loadOutputs();
+
+    QVector<GraphicElement *> m_elements;
+    QVector<QString> m_inputLabels;
+    QVector<QString> m_outputLabels;
+
+    QVector<QNEPort *> m_inputs;
+    QVector<QNEPort *> m_outputs;
 };
 
 #endif // ICPROTOTYPEIMPL_H
