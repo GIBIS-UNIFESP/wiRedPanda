@@ -13,7 +13,7 @@ int Display14::current_id_number = 0;
 Display14::Display14(QGraphicsItem *parent)
     : GraphicElement(ElementType::DISPLAY14, ElementGroup::OUTPUT, 15, 15, 0, 0, parent)
 {
-    pixmapSkinName = {
+    m_pixmapSkinName = {
         ":/output/counter/counter_14_off.png",
         ":/output/counter/counter_a.png",
         ":/output/counter/counter_b.png",
@@ -40,22 +40,22 @@ Display14::Display14(QGraphicsItem *parent)
     setTopPosition(6);
     setHasLabel(true);
 
-    setPixmap(pixmapSkinName[0]);
-    a = QPixmap(pixmapSkinName[1]);
-    b = QPixmap(pixmapSkinName[2]);
-    c = QPixmap(pixmapSkinName[3]);
-    d = QPixmap(pixmapSkinName[4]);
-    e = QPixmap(pixmapSkinName[5]);
-    f = QPixmap(pixmapSkinName[6]);
-    g1 = QPixmap(pixmapSkinName[7]);
-    g2 = QPixmap(pixmapSkinName[8]);
-    h = QPixmap(pixmapSkinName[9]);
-    j = QPixmap(pixmapSkinName[10]);
-    k = QPixmap(pixmapSkinName[11]);
-    l = QPixmap(pixmapSkinName[12]);
-    m = QPixmap(pixmapSkinName[13]);
-    n = QPixmap(pixmapSkinName[14]);
-    dp = QPixmap(pixmapSkinName[15]);
+    setPixmap(m_pixmapSkinName[0]);
+    a = QPixmap(m_pixmapSkinName[1]);
+    b = QPixmap(m_pixmapSkinName[2]);
+    c = QPixmap(m_pixmapSkinName[3]);
+    d = QPixmap(m_pixmapSkinName[4]);
+    e = QPixmap(m_pixmapSkinName[5]);
+    f = QPixmap(m_pixmapSkinName[6]);
+    g1 = QPixmap(m_pixmapSkinName[7]);
+    g2 = QPixmap(m_pixmapSkinName[8]);
+    h = QPixmap(m_pixmapSkinName[9]);
+    j = QPixmap(m_pixmapSkinName[10]);
+    k = QPixmap(m_pixmapSkinName[11]);
+    l = QPixmap(m_pixmapSkinName[12]);
+    m = QPixmap(m_pixmapSkinName[13]);
+    n = QPixmap(m_pixmapSkinName[14]);
+    dp = QPixmap(m_pixmapSkinName[15]);
 
     setPortName("Display14");
     for (QNEPort *in : qAsConst(m_inputs)) {
@@ -161,9 +161,9 @@ void Display14::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double 
 void Display14::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
-        pixmapSkinName[0] = ":/output/counter/counter_14_off.png";
+        m_pixmapSkinName[0] = ":/output/counter/counter_14_off.png";
     } else {
-        pixmapSkinName[0] = filename;
+        m_pixmapSkinName[0] = filename;
     }
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
 }

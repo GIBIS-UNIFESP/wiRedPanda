@@ -8,8 +8,8 @@
 Demux::Demux(QGraphicsItem *parent)
     : GraphicElement(ElementType::DEMUX, ElementGroup::MUX, 2, 2, 2, 2, parent)
 {
-    pixmapSkinName = {":/basic/demux.png"};
-    setPixmap(pixmapSkinName[0]);
+    m_pixmapSkinName = {":/basic/demux.png"};
+    setPixmap(m_pixmapSkinName[0]);
     setRotatable(true);
     setCanChangeSkin(true);
     updatePorts();
@@ -34,9 +34,9 @@ void Demux::updatePorts()
 void Demux::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
-        pixmapSkinName[0] = ":/basic/demux.png";
+        m_pixmapSkinName[0] = ":/basic/demux.png";
     } else {
-        pixmapSkinName[0] = filename;
+        m_pixmapSkinName[0] = filename;
     }
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
 }

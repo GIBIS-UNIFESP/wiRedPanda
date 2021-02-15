@@ -18,7 +18,7 @@ int Led::current_id_number = 0;
 Led::Led(QGraphicsItem *parent)
     : GraphicElement(ElementType::LED, ElementGroup::OUTPUT, 1, 4, 0, 0, parent)
 {
-    pixmapSkinName = {
+    m_pixmapSkinName = {
         ":/output/WhiteLedOff.png",             // Single input values: 0
         ":/output/WhiteLedOn.png",              // 1
         ":/output/RedLedOff.png",               // 2
@@ -51,7 +51,7 @@ Led::Led(QGraphicsItem *parent)
     setRotatable(false);
     setHasColors(true);
     setColor("White");
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
     updatePorts();
     setHasLabel(true);
     setCanChangeSkin(true);
@@ -70,23 +70,23 @@ void Led::refresh()
     }
     switch (inputSize()) {
     case 1: { /* 1 bit */
-        setPixmap(pixmapSkinName[m_colorNumber + idx]);
+        setPixmap(m_pixmapSkinName[m_colorNumber + idx]);
         break;
     }
     case 2: { /* 2 bits */ // TODO: add option to select dark/light colors according to the theme.
         if (idx == 3) {
-            setPixmap(pixmapSkinName[22]);
+            setPixmap(m_pixmapSkinName[22]);
         } else {
-            setPixmap(pixmapSkinName[18 + idx]);
+            setPixmap(m_pixmapSkinName[18 + idx]);
         }
         break;
     }
     case 3: { /* 3 bits */ // TODO: add option to select dark/light colors according to the theme.
-        setPixmap(pixmapSkinName[18 + idx]);
+        setPixmap(m_pixmapSkinName[18 + idx]);
         break;
     }
     case 4: { /* 4 bits */
-        setPixmap(pixmapSkinName[10 + idx]);
+        setPixmap(m_pixmapSkinName[10 + idx]);
         break;
     }
     }
@@ -173,91 +173,91 @@ void Led::setSkin(bool defaultSkin, const QString &filename)
     if (defaultSkin) {
         resetLedPixmapName(value_idx);
     } else {
-        pixmapSkinName[value_idx] = filename;
+        m_pixmapSkinName[value_idx] = filename;
     }
-    setPixmap(pixmapSkinName[value_idx]);
+    setPixmap(m_pixmapSkinName[value_idx]);
 }
 
 void Led::resetLedPixmapName(int ledNumber)
 {
     switch (ledNumber) {
     case 0:
-        pixmapSkinName[0] = ":/output/WhiteLedOff.png";
+        m_pixmapSkinName[0] = ":/output/WhiteLedOff.png";
         break;
     case 1:
-        pixmapSkinName[1] = ":/output/WhiteLedOn.png";
+        m_pixmapSkinName[1] = ":/output/WhiteLedOn.png";
         break;
     case 2:
-        pixmapSkinName[2] = ":/output/RedLedOff.png";
+        m_pixmapSkinName[2] = ":/output/RedLedOff.png";
         break;
     case 3:
-        pixmapSkinName[3] = ":/output/RedLedOn.png";
+        m_pixmapSkinName[3] = ":/output/RedLedOn.png";
         break;
     case 4:
-        pixmapSkinName[4] = ":/output/GreenLedOff.png";
+        m_pixmapSkinName[4] = ":/output/GreenLedOff.png";
         break;
     case 5:
-        pixmapSkinName[5] = ":/output/GreenLedOn.png";
+        m_pixmapSkinName[5] = ":/output/GreenLedOn.png";
         break;
     case 6:
-        pixmapSkinName[6] = ":/output/BlueLedOff.png";
+        m_pixmapSkinName[6] = ":/output/BlueLedOff.png";
         break;
     case 7:
-        pixmapSkinName[7] = ":/output/BlueLedOn.png";
+        m_pixmapSkinName[7] = ":/output/BlueLedOn.png";
         break;
     case 8:
-        pixmapSkinName[8] = ":/output/PurpleLedOff.png";
+        m_pixmapSkinName[8] = ":/output/PurpleLedOff.png";
         break;
     case 9:
-        pixmapSkinName[9] = ":/output/PurpleLedOn.png";
+        m_pixmapSkinName[9] = ":/output/PurpleLedOn.png";
         break;
     case 10:
-        pixmapSkinName[10] = ":/output/16colors/BlackLedOn.png";
+        m_pixmapSkinName[10] = ":/output/16colors/BlackLedOn.png";
         break;
     case 11:
-        pixmapSkinName[11] = ":/output/16colors/NavyBlueLedOn.png";
+        m_pixmapSkinName[11] = ":/output/16colors/NavyBlueLedOn.png";
         break;
     case 12:
-        pixmapSkinName[12] = ":/output/16colors/GreenLedOn.png";
+        m_pixmapSkinName[12] = ":/output/16colors/GreenLedOn.png";
         break;
     case 13:
-        pixmapSkinName[13] = ":/output/16colors/TealLedOn.png";
+        m_pixmapSkinName[13] = ":/output/16colors/TealLedOn.png";
         break;
     case 14:
-        pixmapSkinName[14] = ":/output/16colors/DarkRedLedOn.png";
+        m_pixmapSkinName[14] = ":/output/16colors/DarkRedLedOn.png";
         break;
     case 15:
-        pixmapSkinName[15] = ":/output/16colors/MagentaLedOn.png";
+        m_pixmapSkinName[15] = ":/output/16colors/MagentaLedOn.png";
         break;
     case 16:
-        pixmapSkinName[16] = ":/output/16colors/OrangeLedOn.png";
+        m_pixmapSkinName[16] = ":/output/16colors/OrangeLedOn.png";
         break;
     case 17:
-        pixmapSkinName[17] = ":/output/16colors/LightGrayLedOn.png";
+        m_pixmapSkinName[17] = ":/output/16colors/LightGrayLedOn.png";
         break;
     case 18:
-        pixmapSkinName[18] = ":/output/16colors/DarkGrayLedOn.png";
+        m_pixmapSkinName[18] = ":/output/16colors/DarkGrayLedOn.png";
         break;
     case 19:
-        pixmapSkinName[19] = ":/output/16colors/RoyalLedOn.png";
+        m_pixmapSkinName[19] = ":/output/16colors/RoyalLedOn.png";
         break;
     case 20:
-        pixmapSkinName[20] = ":/output/16colors/LimeGreenLedOn.png";
+        m_pixmapSkinName[20] = ":/output/16colors/LimeGreenLedOn.png";
         break;
     case 21:
-        pixmapSkinName[21] = ":/output/16colors/AquaLightLedOn.png";
+        m_pixmapSkinName[21] = ":/output/16colors/AquaLightLedOn.png";
         break;
     case 22:
-        pixmapSkinName[22] = ":/output/16colors/RedLedOn.png";
+        m_pixmapSkinName[22] = ":/output/16colors/RedLedOn.png";
         break;
     case 23:
-        pixmapSkinName[23] = ":/output/16colors/HotPinkLedOn.png";
+        m_pixmapSkinName[23] = ":/output/16colors/HotPinkLedOn.png";
         break;
     case 24:
-        pixmapSkinName[24] = ":/output/16colors/YellowLedOn.png";
+        m_pixmapSkinName[24] = ":/output/16colors/YellowLedOn.png";
         break;
     case 25:
-        pixmapSkinName[25] = ":/output/16colors/WhiteLedOn.png";
+        m_pixmapSkinName[25] = ":/output/16colors/WhiteLedOn.png";
         break;
     }
 }

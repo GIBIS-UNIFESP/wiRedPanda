@@ -6,10 +6,10 @@
 Or::Or(QGraphicsItem *parent)
     : GraphicElement(ElementType::OR, ElementGroup::GATE, 2, 8, 1, 1, parent)
 {
-    pixmapSkinName = {":/basic/or.png"};
+    m_pixmapSkinName = {":/basic/or.png"};
 
     setOutputsOnTop(true);
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
     setCanChangeSkin(true);
     updatePorts();
     setPortName("OR");
@@ -18,9 +18,9 @@ Or::Or(QGraphicsItem *parent)
 void Or::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
-        pixmapSkinName[0] = ":/basic/or.png";
+        m_pixmapSkinName[0] = ":/basic/or.png";
     } else {
-        pixmapSkinName[0] = filename;
+        m_pixmapSkinName[0] = filename;
     }
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
 }

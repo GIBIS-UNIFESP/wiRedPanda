@@ -15,7 +15,7 @@ Clock::~Clock() = default;
 Clock::Clock(QGraphicsItem *parent)
     : GraphicElement(ElementType::CLOCK, ElementGroup::INPUT, 0, 0, 1, 1, parent)
 {
-    pixmapSkinName = {
+    m_pixmapSkinName = {
         ":/input/clock0.png",
         ":/input/clock1.png"
     };
@@ -31,7 +31,7 @@ Clock::Clock(QGraphicsItem *parent)
     setHasLabel(true);
     setPortName("Clock");
     setOn(false);
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
 }
 
 void Clock::updateClock()
@@ -53,7 +53,7 @@ bool Clock::getOn() const
 void Clock::setOn(bool value)
 {
     m_isOn = value;
-    setPixmap(pixmapSkinName[m_isOn ? 1 : 0]);
+    setPixmap(m_pixmapSkinName[m_isOn ? 1 : 0]);
     m_outputs.first()->setValue(m_isOn);
 }
 
@@ -113,10 +113,10 @@ QString Clock::genericProperties()
 void Clock::setSkin(bool defaultSkin, const QString &filename)
 {
     if (!m_isOn) {
-        pixmapSkinName[0] = defaultSkin ? ":/input/clock0.png" : filename;
-        setPixmap(pixmapSkinName[0]);
+        m_pixmapSkinName[0] = defaultSkin ? ":/input/clock0.png" : filename;
+        setPixmap(m_pixmapSkinName[0]);
     } else {
-        pixmapSkinName[1] = defaultSkin ? ":/input/clock1.png" : filename;
-        setPixmap(pixmapSkinName[1]);
+        m_pixmapSkinName[1] = defaultSkin ? ":/input/clock1.png" : filename;
+        setPixmap(m_pixmapSkinName[1]);
     }
 }
