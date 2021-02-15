@@ -14,7 +14,8 @@ class Editor;
 class ICPrototype;
 
 //!
-//! \brief The IC class
+//! \brief The IC class represents an integrated circuit, that is, a circuit (a .panda file) within
+//!        a larger .panda circuit.
 //!
 class IC : public GraphicElement
 {
@@ -35,7 +36,7 @@ public:
     //! \brief loadFile is used when an IC is dragged into the editor
     //!
     void loadFile(const QString &fname);
-    //! \brief getFile returns this->m_file
+    //! \brief getFile returns the filename of the .panda file of the underlying circuit.
     QString getFile() const;
     bool setFile(const QString &newFileName);
     ICPrototype *getPrototype();
