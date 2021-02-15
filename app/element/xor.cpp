@@ -6,10 +6,10 @@
 Xor::Xor(QGraphicsItem *parent)
     : GraphicElement(ElementType::XOR, ElementGroup::GATE, 2, 8, 1, 1, parent)
 {
-    pixmapSkinName.append(":/basic/xor.png");
+    m_pixmapSkinName.append(":/basic/xor.png");
     setOutputsOnTop(true);
     setCanChangeSkin(true);
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
     updatePorts();
     setPortName("XOR");
 }
@@ -17,9 +17,9 @@ Xor::Xor(QGraphicsItem *parent)
 void Xor::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
-        pixmapSkinName[0] = ":/basic/xor.png";
+        m_pixmapSkinName[0] = ":/basic/xor.png";
     } else {
-        pixmapSkinName[0] = filename;
+        m_pixmapSkinName[0] = filename;
     }
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
 }

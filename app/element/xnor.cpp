@@ -6,11 +6,11 @@
 Xnor::Xnor(QGraphicsItem *parent)
     : GraphicElement(ElementType::XNOR, ElementGroup::GATE, 2, 8, 1, 1, parent)
 {
-    pixmapSkinName = {":/basic/xnor.png"};
+    m_pixmapSkinName = {":/basic/xnor.png"};
 
     setOutputsOnTop(true);
     setCanChangeSkin(true);
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
     updatePorts();
     setPortName("XNOR");
 }
@@ -18,9 +18,9 @@ Xnor::Xnor(QGraphicsItem *parent)
 void Xnor::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
-        pixmapSkinName[0] = ":/basic/xnor.png";
+        m_pixmapSkinName[0] = ":/basic/xnor.png";
     } else {
-        pixmapSkinName[0] = filename;
+        m_pixmapSkinName[0] = filename;
     }
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
 }
