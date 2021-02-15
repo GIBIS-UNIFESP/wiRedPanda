@@ -10,13 +10,14 @@
 #include "elementfactory.h"
 #include "ic.h"
 #include "icprototype.h"
+#include "icmapping.h"
 #include "qneconnection.h"
 #include "qneport.h"
 #include "serializationfunctions.h"
 
 ICPrototypeImpl::~ICPrototypeImpl()
 {
-    qDeleteAll(elements);
+    qDeleteAll(m_elements);
 }
 
 bool comparePorts(QNEPort *port1, QNEPort *port2)
@@ -39,7 +40,7 @@ void ICPrototypeImpl::sortPorts(QVector<QNEPort *> &map)
 bool ICPrototypeImpl::updateLocalIC(const QString &fileName, const QString &dirName)
 {
     COMMENT("Recursive call to sub ics.", 0);
-    for (GraphicElement *elm : qAsConst(elements)) {
+    for (GraphicElement *elm : qAsConst(m_elements)) {
         if (elm->elementType() == ElementType::IC) {
             IC *ic = dynamic_cast<IC *>(elm);
             QString originalSubICName = ic->getFile();
@@ -86,10 +87,10 @@ void ICPrototypeImpl::loadFile(const QString &fileName)
             loadItem(item);
         }
     }
-    setInputSize(inputs.size());
-    setOutputSize(outputs.size());
-    sortPorts(inputs);
-    sortPorts(outputs);
+    setInputSize(m_inputs.size());
+    setOutputSize(m_outputs.size());
+    sortPorts(m_inputs);
+    sortPorts(m_outputs);
     loadInputs();
     loadOutputs();
     COMMENT("Finished Reading ic", 0);
@@ -98,38 +99,38 @@ void ICPrototypeImpl::loadFile(const QString &fileName)
 void ICPrototypeImpl::loadInputs()
 {
     for (int portIndex = 0; portIndex < getInputSize(); ++portIndex) {
-        GraphicElement *elm = inputs.at(portIndex)->graphicElement();
+        GraphicElement *elm = m_inputs.at(portIndex)->graphicElement();
         QString lb = elm->getLabel();
         if (lb.isEmpty()) {
             lb = elm->objectName();
         }
-        if (!inputs.at(portIndex)->portName().isEmpty()) {
+        if (!m_inputs.at(portIndex)->portName().isEmpty()) {
             lb += " ";
-            lb += inputs.at(portIndex)->portName();
+            lb += m_inputs.at(portIndex)->portName();
         }
         if (!elm->genericProperties().isEmpty()) {
             lb += " [" + elm->genericProperties() + "]";
         }
-        inputLabels[portIndex] = lb;
+        m_inputLabels[portIndex] = lb;
     }
 }
 
 void ICPrototypeImpl::loadOutputs()
 {
     for (int portIndex = 0; portIndex < getOutputSize(); ++portIndex) {
-        GraphicElement *elm = outputs.at(portIndex)->graphicElement();
+        GraphicElement *elm = m_outputs.at(portIndex)->graphicElement();
         QString lb = elm->getLabel();
         if (lb.isEmpty()) {
             lb = elm->objectName();
         }
-        if (!outputs.at(portIndex)->portName().isEmpty()) {
+        if (!m_outputs.at(portIndex)->portName().isEmpty()) {
             lb += " ";
-            lb += outputs.at(portIndex)->portName();
+            lb += m_outputs.at(portIndex)->portName();
         }
         if (!elm->genericProperties().isEmpty()) {
             lb += " [" + elm->genericProperties() + "]";
         }
-        outputLabels[portIndex] = lb;
+        m_outputLabels[portIndex] = lb;
     }
 }
 
@@ -150,8 +151,8 @@ void ICPrototypeImpl::loadInputElement(GraphicElement *elm)
         if (elm->elementType() == ElementType::CLOCK) {
             nodeInput->setRequired(true);
         }
-        inputs.append(nodeInput);
-        elements.append(nodeElm);
+        m_inputs.append(nodeInput);
+        m_elements.append(nodeElm);
         QList<QNEConnection *> conns = port->connections();
         for (QNEConnection *conn : conns) { // Solution 3. Revert this process before saving and then make it again after saving...
             if (port == conn->start()) {
@@ -172,8 +173,8 @@ void ICPrototypeImpl::loadOutputElement(GraphicElement *elm)
         QNEOutputPort *nodeOutput = nodeElm->output();
         nodeOutput->setPos(port->pos());
         nodeOutput->setName(port->getName());
-        outputs.append(nodeOutput);
-        elements.append(nodeElm);
+        m_outputs.append(nodeOutput);
+        m_elements.append(nodeElm);
         QList<QNEConnection *> conns = port->connections();
         for (QNEConnection *conn : conns) {
             if (port == conn->end()) {
@@ -193,7 +194,7 @@ void ICPrototypeImpl::loadItem(QGraphicsItem *item)
             } else if (elm->elementGroup() == ElementGroup::OUTPUT) {
                 loadOutputElement(elm);
             } else {
-                elements.append(elm);
+                m_elements.append(elm);
             }
         }
     }
@@ -201,30 +202,60 @@ void ICPrototypeImpl::loadItem(QGraphicsItem *item)
 
 void ICPrototypeImpl::clear()
 {
-    inputs.clear();
-    outputs.clear();
+    m_inputs.clear();
+    m_outputs.clear();
     setInputSize(0);
     setOutputSize(0);
-    qDeleteAll(elements);
-    elements.clear();
+    qDeleteAll(m_elements);
+    m_elements.clear();
 }
 
 int ICPrototypeImpl::getInputSize() const
 {
-    return inputs.size();
+    return m_inputs.size();
 }
 
 int ICPrototypeImpl::getOutputSize() const
 {
-    return outputs.size();
+    return m_outputs.size();
 }
 
 void ICPrototypeImpl::setOutputSize(int outputSize)
 {
-    outputLabels = QVector<QString>(outputSize);
+    m_outputLabels = QVector<QString>(outputSize);
 }
 
 void ICPrototypeImpl::setInputSize(int inputSize)
 {
-    inputLabels = QVector<QString>(inputSize);
+    m_inputLabels = QVector<QString>(inputSize);
+}
+
+GraphicElement *ICPrototypeImpl::getElement(int index)
+{
+    return m_elements[index];
+}
+
+QString ICPrototypeImpl::getInputLabel(int index) const
+{
+    return m_inputLabels[index];
+}
+
+QString ICPrototypeImpl::getOutputLabel(int index) const
+{
+    return m_outputLabels[index];
+}
+
+QNEPort *ICPrototypeImpl::getInput(int index)
+{
+    return m_inputs[index];
+}
+
+QNEPort *ICPrototypeImpl::getOutput(int index)
+{
+    return m_outputs[index];
+}
+
+ICMapping *ICPrototypeImpl::generateMapping(const QString &fileName) const
+{
+    return new ICMapping(fileName, m_elements, m_inputs, m_outputs);
 }
