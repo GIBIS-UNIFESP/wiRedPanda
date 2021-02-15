@@ -23,12 +23,12 @@ static constexpr std::array<const char *, 2> defaultSkins {
 Buzzer::Buzzer(QGraphicsItem *parent)
     : GraphicElement(ElementType::BUZZER, ElementGroup::OUTPUT, 1, 1, 0, 0, parent)
 {
-    //  pixmapSkinName.append( ":/output/BuzzerOff.png" );
-    //  pixmapSkinName.append( ":/output/BuzzerOn.png" );
+    //  m_pixmapSkinName.append( ":/output/BuzzerOff.png" );
+    //  m_pixmapSkinName.append( ":/output/BuzzerOn.png" );
     setOutputsOnTop(true);
     setRotatable(false);
     setHasAudio(true);
-    //  setPixmap( pixmapSkinName[ 0 ] );
+    //  setPixmap( m_pixmapSkinName[ 0 ] );
     setPixmap(defaultSkins[0]);
     m_alternativeSkins = QVector<QString>({defaultSkins[0], defaultSkins[1]});
     updatePorts();
@@ -40,7 +40,7 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     setPortName("Buzzer");
     setLabel(objectName() + "_" + QString::number(Buzzer::current_id_number));
     ++Buzzer::current_id_number;
-    usingDefaultSkin = true;
+    m_usingDefaultSkin = true;
     setAudio("C6");
     m_play = 0;
 }
@@ -84,14 +84,14 @@ void Buzzer::playbuzzer()
         return;
     }
 
-    usingDefaultSkin ? setPixmap(defaultSkins[1]) : setPixmap(m_alternativeSkins[1]);
+    m_usingDefaultSkin ? setPixmap(defaultSkins[1]) : setPixmap(m_alternativeSkins[1]);
     m_audio.play();
     m_play = 1;
 }
 
 void Buzzer::stopbuzzer()
 {
-    usingDefaultSkin ? setPixmap(defaultSkins[0]) : setPixmap(m_alternativeSkins[0]);
+    m_usingDefaultSkin ? setPixmap(defaultSkins[0]) : setPixmap(m_alternativeSkins[0]);
     m_play = 0;
     m_audio.stop();
 }
@@ -119,10 +119,10 @@ void Buzzer::setSkin(bool defaultSkin, const QString &filename)
         m_play = 1;
     }
     if (defaultSkin) {
-        usingDefaultSkin = true;
+        m_usingDefaultSkin = true;
         setPixmap(defaultSkins[m_play]);
     } else {
-        usingDefaultSkin = false;
+        m_usingDefaultSkin = false;
         m_alternativeSkins[m_play] = filename;
         setPixmap(m_alternativeSkins[m_play]);
         //      std::cerr << "Filename: " << alternativeSkins[ play ].toStdString() << '\n';

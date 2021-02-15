@@ -32,19 +32,13 @@ typedef QVector<GraphicElement *> ElementVector;
 class GraphicElement : public QGraphicsObject, public ItemWithId
 {
     Q_OBJECT
+
 public:
     enum : uint32_t { Type = QGraphicsItem::UserType + 3 };
 
     GraphicElement(ElementType type, ElementGroup group, int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent = nullptr);
 
-protected:
-    /**
-     * @brief Path to all current skins. The default skin is in a research file. Custom skin names are system file paths defined by the user.
-     */
-    QVector<QString> pixmapSkinName;
-
     /* GraphicElement interface. */
-public:
     ElementType elementType() const;
 
     ElementGroup elementGroup() const;
@@ -68,7 +62,6 @@ public:
     virtual void refresh();
 
     /* QGraphicsItem interface */
-public:
     int type() const override
     {
         return Type;
@@ -191,25 +184,6 @@ public:
     void updateLabel();
     void updateSkinsPath(const QString &newSkinPath);
 
-protected:
-    void setRotatable(bool rotatable);
-    void setHasLabel(bool hasLabel);
-    void setHasFrequency(bool hasFrequency);
-    void setHasColors(bool hasColors);
-    void setCanChangeSkin(bool canChangeSkin);
-    void setHasTrigger(bool hasTrigger);
-    void setMinInputSz(const int minInputSz);
-    void setMinOutputSz(int minOutputSz);
-    void setHasAudio(bool hasAudio);
-    void setOutputsOnTop(bool outputsOnTop);
-    void setMaxOutputSz(int maxOutputSz);
-    void setMaxInputSz(int maxInputSz);
-    void setTopPosition(int topPosition);
-    void setBottomPosition(int bottomPosition);
-
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
-    bool usingDefaultSkin;
-
 private:
     /**
      * @brief Current pixmap displayed for this GraphicElement.
@@ -258,8 +232,30 @@ private:
     void removeSurplusInputs(quint64 inputSz, QMap<quint64, QNEPort *> &portMap);
     void removeSurplusOutputs(quint64 outputSz, QMap<quint64, QNEPort *> &portMap);
 
-
 protected:
+    /**
+     * @brief Path to all current skins. The default skin is in a research file. Custom skin names are system file paths defined by the user.
+     */
+    QVector<QString> m_pixmapSkinName;
+
+    void setRotatable(bool rotatable);
+    void setHasLabel(bool hasLabel);
+    void setHasFrequency(bool hasFrequency);
+    void setHasColors(bool hasColors);
+    void setCanChangeSkin(bool canChangeSkin);
+    void setHasTrigger(bool hasTrigger);
+    void setMinInputSz(const int minInputSz);
+    void setMinOutputSz(int minOutputSz);
+    void setHasAudio(bool hasAudio);
+    void setOutputsOnTop(bool outputsOnTop);
+    void setMaxOutputSz(int maxOutputSz);
+    void setMaxInputSz(int maxInputSz);
+    void setTopPosition(int topPosition);
+    void setBottomPosition(int bottomPosition);
+
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+    bool m_usingDefaultSkin;
+
     /**
      * @brief m_inputs: input port vector
      */

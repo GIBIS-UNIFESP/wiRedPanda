@@ -8,9 +8,9 @@
 DFlipFlop::DFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::DFLIPFLOP, ElementGroup::MEMORY, 4, 4, 2, 2, parent)
 {
-    pixmapSkinName = {":/memory/D-flipflop.png"};
+    m_pixmapSkinName = {":/memory/D-flipflop.png"};
 
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
     setRotatable(false);
     setCanChangeSkin(true);
     updatePorts();
@@ -46,9 +46,9 @@ void DFlipFlop::updatePorts()
 void DFlipFlop::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
-        pixmapSkinName[0] = ":/memory/D-flipflop.png";
+        m_pixmapSkinName[0] = ":/memory/D-flipflop.png";
     } else {
-        pixmapSkinName[0] = filename;
+        m_pixmapSkinName[0] = filename;
     }
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
 }

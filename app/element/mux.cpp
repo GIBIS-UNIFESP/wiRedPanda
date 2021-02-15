@@ -8,9 +8,9 @@
 Mux::Mux(QGraphicsItem *parent)
     : GraphicElement(ElementType::MUX, ElementGroup::MUX, 3, 3, 1, 1, parent)
 {
-    pixmapSkinName = {":/basic/mux.png"};
+    m_pixmapSkinName = {":/basic/mux.png"};
 
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
     setRotatable(true);
     updatePorts();
     setPortName("MUX");
@@ -31,9 +31,9 @@ void Mux::updatePorts()
 void Mux::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
-        pixmapSkinName[0] = ":/basic/mux.png";
+        m_pixmapSkinName[0] = ":/basic/mux.png";
     } else {
-        pixmapSkinName[0] = filename;
+        m_pixmapSkinName[0] = filename;
     }
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
 }

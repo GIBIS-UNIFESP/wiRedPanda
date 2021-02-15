@@ -6,10 +6,10 @@
 And::And(QGraphicsItem *parent)
     : GraphicElement(ElementType::AND, ElementGroup::GATE, 2, 8, 1, 1, parent)
 {
-    pixmapSkinName = {":/basic/and.png"};
+    m_pixmapSkinName = {":/basic/and.png"};
 
     setOutputsOnTop(true);
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
     updatePorts();
     setCanChangeSkin(true);
     setPortName("AND");
@@ -18,6 +18,6 @@ And::And(QGraphicsItem *parent)
 
 void And::setSkin(bool defaultSkin, const QString &filename)
 {
-    pixmapSkinName[0] = defaultSkin ? ":/basic/and.png" : filename;
-    setPixmap(pixmapSkinName[0]);
+    m_pixmapSkinName[0] = defaultSkin ? ":/basic/and.png" : filename;
+    setPixmap(m_pixmapSkinName[0]);
 }

@@ -8,9 +8,9 @@
 DLatch::DLatch(QGraphicsItem *parent)
     : GraphicElement(ElementType::DLATCH, ElementGroup::MEMORY, 2, 2, 2, 2, parent)
 {
-    pixmapSkinName = {":/memory/D-latch.png"};
+    m_pixmapSkinName = {":/memory/D-latch.png"};
 
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
     setRotatable(false);
     setCanChangeSkin(true);
     updatePorts();
@@ -36,9 +36,9 @@ void DLatch::updatePorts()
 void DLatch::setSkin(bool defaultSkin, const QString &filename)
 {
     if (defaultSkin) {
-        pixmapSkinName[0] = ":/memory/D-latch.png";
+        m_pixmapSkinName[0] = ":/memory/D-latch.png";
     } else {
-        pixmapSkinName[0] = filename;
+        m_pixmapSkinName[0] = filename;
     }
-    setPixmap(pixmapSkinName[0]);
+    setPixmap(m_pixmapSkinName[0]);
 }
