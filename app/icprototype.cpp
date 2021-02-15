@@ -60,27 +60,27 @@ int ICPrototype::outputSize() const
 
 QString ICPrototype::inputLabel(int index) const
 {
-    return m_ICImpl.inputLabels[index];
+    return m_ICImpl.getInputLabel(index);
 }
 
 QString ICPrototype::outputLabel(int index) const
 {
-    return m_ICImpl.outputLabels[index];
+    return m_ICImpl.getOutputLabel(index);
 }
 
 bool ICPrototype::defaultInputValue(int index)
 {
-    return m_ICImpl.inputs[index]->value();
+    return m_ICImpl.getInput(index)->value();
 }
 
 bool ICPrototype::isInputRequired(int index)
 {
-    return m_ICImpl.inputs[index]->isRequired();
+    return m_ICImpl.getInput(index)->isRequired();
 }
 
 ICMapping *ICPrototype::generateMapping() const
 {
-    return new ICMapping(fileName(), m_ICImpl.elements, m_ICImpl.inputs, m_ICImpl.outputs);
+    return m_ICImpl.generateMapping(fileName());
 }
 
 void ICPrototype::clear()
