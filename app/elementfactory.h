@@ -22,7 +22,6 @@ class ElementFactory : public QObject
 
 public:
     static ElementFactory *instance;
-    QMap<size_t, ItemWithId *> m_map;
 
     static ElementType textToType(QString text);
     static QString typeToText(ElementType type);
@@ -41,6 +40,7 @@ public:
     void clear();
 
 private:
+    QMap<size_t, ItemWithId *> m_map;
     size_t m_lastId;
     ElementFactory();
 };
