@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+                          http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+    <group name="general">
+        <entry name ="Language" type="String">
+            <label>Interface language selected</label>
+            <default>://wpanda_en.qm</default>
+        </entry>
+        <entry name ="AutoSaveFile" type="String">
+            <label>Name of the auto-save file</label>
+        </entry>
+        <entry name ="FastMode" type="Bool">
+            <label>Simulator mode</label>
+            <default>false</default>
+        </entry>
+    </group>
+    <group name="MainWindow">
+        <entry name ="WindowGeometry" type="IntList">
+            <label>Window geometry</label>
+        </entry>
+        <entry name ="WindowState" type="IntList">
+            <label>Window state</label>
+        </entry>
+    </group>
+    <group name="Splitter">
+        <entry name ="SplitterGeometry" type="IntList">
+            <label>Window geometry</label>
+        </entry>
+        <entry name ="SplitterState" type="IntList">
+            <label>Simulator state</label>
+        </entry>
+    </group>
+    <group name="ThemeManager">
+        <entry name ="Theme" type="Int">
+            <label>Choose the Theme</label>
+        </entry>
+    </group>
+    <group name="RecentFiles">
+        <entry name ="recentFileList" type="StringList">
+            <label>Recent Files List</label>
+        </entry>
+    </group>
+    <group name="BewavedDolphin">
+        <entry name ="BdGeometry" type="IntList">
+            <label>BewavedDolphin Window Geometry</label>
+        </entry>
+    </group>
+    <group name="SimpleWaveform">
+        <entry name ="SwGeometry" type="IntList">
+            <label>SimpleWaveform Window Geometry</label>
+        </entry>
+        <entry name ="SortingType" type="Int">
+            <label>Wave Sorting Type</label>
+        </entry>
+    </group>
+</kcfg>

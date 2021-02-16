@@ -35,3 +35,20 @@ QString GlobalProperties::currentFile = QString();
 double GlobalProperties::version = loadVersion();
 
 bool GlobalProperties::soundEnabled = true;
+
+QByteArray GlobalProperties::settingToByteArray(const QList<int> &savedSettings)
+{
+    QByteArray toByteArray;
+    for (auto savedSetting : savedSettings) {
+        toByteArray.append(savedSetting);
+    }
+    return toByteArray;
+}
+QList<int> GlobalProperties::settingToIntList(const QByteArray &toSaveSettings)
+{
+    QList<int> toIntList;
+    for (auto toSaveSetting : toSaveSettings) {
+        toIntList.append(toSaveSetting);
+    }
+    return toIntList;
+}

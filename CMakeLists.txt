@@ -49,7 +49,9 @@ find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED
     Widgets
 )
 
-set(
+find_package(KF5Config)
+
+set( 
     WPANDA_LIBS
     Qt5::Charts
     Qt5::Core
@@ -57,6 +59,8 @@ set(
     Qt5::Multimedia
     Qt5::PrintSupport
     Qt5::Widgets
+    KF5::ConfigCore
+    KF5::ConfigGui
 )
 
 find_package (ECM ${KF5_MIN_VERSION} NO_MODULE)
@@ -65,7 +69,7 @@ set (CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 include(cmake/Git.cmake)
 include(cmake/Format.cmake)
 
-include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} )
+include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/app )
 include_directories(./app/element)
 include_directories(./app/nodes)
 include_directories(./app)
