@@ -95,10 +95,10 @@ protected:
     int m_defaultValue;
     int m_index;
     QNEBlock *m_block;
-    QString name;
-    QGraphicsTextItem *label;
-    int radius_;
-    int margin;
+    QString m_name;
+    QGraphicsTextItem *m_label;
+    int m_radius;
+    int m_margin;
     QList<QNEConnection *> m_connections;
     int m_portFlags;
     quint64 m_ptr;
@@ -107,10 +107,9 @@ protected:
 
     /* WPanda */
     GraphicElement *m_graphicElement;
-    QBrush _currentBrush;
+    QBrush m_currentBrush;
 
     /* QGraphicsItem interface */
-protected:
     signed char m_value;
 
     virtual void updateTheme() = 0;
@@ -122,7 +121,6 @@ public:
     explicit QNEInputPort(QGraphicsItem *parent);
     ~QNEInputPort() override;
     /* QNEPort interface */
-public:
     void setValue(signed char value) override;
     bool isOutput() const override;
     bool isValid() const override;
@@ -135,7 +133,6 @@ public:
     explicit QNEOutputPort(QGraphicsItem *parent);
     ~QNEOutputPort() override;
     /* QNEPort interface */
-public:
     void setValue(signed char value) override;
     bool isOutput() const override;
     bool isValid() const override;
