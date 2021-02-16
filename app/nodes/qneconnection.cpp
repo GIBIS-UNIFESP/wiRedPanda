@@ -38,13 +38,13 @@
 
 QNEConnection::QNEConnection(QGraphicsItem *parent)
     : QGraphicsPathItem(parent)
+    , m_start(nullptr)
+    , m_end(nullptr)
 {
     setFlag(QGraphicsItem::ItemIsSelectable);
     setBrush(Qt::NoBrush);
     setStatus(Status::Inactive);
     setZValue(-1);
-    m_start = nullptr;
-    m_end = nullptr;
     updateTheme();
 }
 
@@ -60,12 +60,12 @@ QNEConnection::~QNEConnection()
 
 void QNEConnection::setStartPos(const QPointF &p)
 {
-    startPos = p;
+    m_startPos = p;
 }
 
 void QNEConnection::setEndPos(const QPointF &p)
 {
-    endPos = p;
+    m_endPos = p;
 }
 
 void QNEConnection::setStart(QNEOutputPort *p)
@@ -97,10 +97,10 @@ void QNEConnection::setEnd(QNEInputPort *p)
 void QNEConnection::updatePosFromPorts()
 {
     if (m_start) {
-        startPos = m_start->scenePos();
+        m_startPos = m_start->scenePos();
     }
     if (m_end) {
-        endPos = m_end->scenePos();
+        m_endPos = m_end->scenePos();
     }
     updatePath();
 }
@@ -109,15 +109,15 @@ void QNEConnection::updatePath()
 {
     QPainterPath p;
 
-    p.moveTo(startPos);
+    p.moveTo(m_startPos);
 
-    qreal dx = endPos.x() - startPos.x();
-    qreal dy = endPos.y() - startPos.y();
+    qreal dx = m_endPos.x() - m_startPos.x();
+    qreal dy = m_endPos.y() - m_startPos.y();
 
-    QPointF ctr1(startPos.x() + dx * 0.25, startPos.y() + dy * 0.1);
-    QPointF ctr2(startPos.x() + dx * 0.75, startPos.y() + dy * 0.9);
+    QPointF ctr1(m_startPos.x() + dx * 0.25, m_startPos.y() + dy * 0.1);
+    QPointF ctr2(m_startPos.x() + dx * 0.75, m_startPos.y() + dy * 0.9);
 
-    p.cubicTo(ctr1, ctr2, endPos);
+    p.cubicTo(ctr1, ctr2, m_endPos);
 
     /*  p.lineTo(pos2); */
     setPath(p);
