@@ -69,9 +69,10 @@ public:
 
     void updateTheme();
 
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 private:
-    QPointF startPos;
-    QPointF endPos;
+    QPointF m_startPos;
+    QPointF m_endPos;
     QNEOutputPort *m_start;
     QNEInputPort *m_end;
     Status m_status;
@@ -81,8 +82,6 @@ private:
     QColor m_inactiveClr;
     QColor m_selectedClr;
     /* QGraphicsItem interface */
-public:
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 };
 
 #endif /* QNECONNECTION_H */
