@@ -37,13 +37,18 @@
 
 QNEPort::QNEPort(QGraphicsItem *parent)
     : QGraphicsPathItem(parent)
+    , m_defaultValue(-1)
+    , m_label(new QGraphicsTextItem(this))
+    , m_radius(5)
+    , m_margin(2)
+    , m_portFlags(0)
+    , m_required(true)
+    , m_graphicElement(nullptr)
+    , m_value(false)
 {
-    label = new QGraphicsTextItem(this);
-    radius_ = 5;
-    margin = 2;
 
     QPainterPath p;
-    p.addPolygon(QRectF(QPointF(-radius_, -radius_), QPointF(radius_, radius_)));
+    p.addPolygon(QRectF(QPointF(-m_radius, -m_radius), QPointF(m_radius, m_radius)));
     setPath(p);
 
     setPen(QPen(Qt::darkRed));
@@ -51,11 +56,6 @@ QNEPort::QNEPort(QGraphicsItem *parent)
 
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
 
-    m_portFlags = 0;
-    m_value = false;
-    m_graphicElement = nullptr;
-    m_required = true;
-    m_defaultValue = -1;
 }
 
 void QNEPort::setNEBlock(QNEBlock *b)
@@ -65,14 +65,14 @@ void QNEPort::setNEBlock(QNEBlock *b)
 
 void QNEPort::setName(const QString &n)
 {
-    name = n;
-    /*  label->setPlainText( n ); */
+    m_name = n;
+    /*  m_label->setPlainText( n ); */
     setToolTip(n);
 }
 
 int QNEPort::radius() const
 {
-    return radius_;
+    return m_radius;
 }
 
 const QList<QNEConnection *> &QNEPort::connections() const
@@ -87,12 +87,12 @@ void QNEPort::connect(QNEConnection *conn)
             m_connections.append(conn);
         }
         updateConnections();
-        if (graphicElement()) {
-            //      graphicElement( )->updatePorts( );
-            //      if( isOutput( ) ) {
-            //        graphicElement( )->updateLogic( );
-            //      }
-        }
+        // if (graphicElement()) {
+        //     graphicElement()->updatePorts();
+        //     if (isOutput()) {
+        //         graphicElement()->updateLogic();
+        //     }
+        // }
     }
 }
 
@@ -114,19 +114,19 @@ void QNEPort::setPortFlags(int f)
     if (m_portFlags & TypePort) {
         QFont font(scene()->font());
         font.setItalic(true);
-        label->setFont(font);
+        m_label->setFont(font);
         setPath(QPainterPath());
     } else if (m_portFlags & NamePort) {
         QFont font(scene()->font());
         font.setBold(true);
-        label->setFont(font);
+        m_label->setFont(font);
         setPath(QPainterPath());
     }
 }
 
 const QString &QNEPort::portName() const
 {
-    return name;
+    return m_name;
 }
 
 int QNEPort::portFlags() const
@@ -194,7 +194,7 @@ void QNEPort::setIndex(int index)
 
 QString QNEPort::getName() const
 {
-    return name;
+    return m_name;
 }
 
 int QNEPort::defaultValue() const
@@ -210,12 +210,12 @@ void QNEPort::setDefaultValue(int defaultValue)
 
 QBrush QNEPort::currentBrush() const
 {
-    return _currentBrush;
+    return m_currentBrush;
 }
 
 void QNEPort::setCurrentBrush(const QBrush &currentBrush)
 {
-    _currentBrush = currentBrush;
+    m_currentBrush = currentBrush;
     if (brush().color() != Qt::yellow) {
         setBrush(currentBrush);
     }
@@ -262,7 +262,7 @@ void QNEPort::hoverEnter()
 QNEInputPort::QNEInputPort(QGraphicsItem *parent)
     : QNEPort(parent)
 {
-    label->setPos(-radius_ - margin - label->boundingRect().width(), -label->boundingRect().height() / 2);
+    m_label->setPos(-m_radius - m_margin - m_label->boundingRect().width(), -m_label->boundingRect().height() / 2);
 }
 
 QNEInputPort::~QNEInputPort()
@@ -316,7 +316,7 @@ void QNEInputPort::updateTheme()
 QNEOutputPort::QNEOutputPort(QGraphicsItem *parent)
     : QNEPort(parent)
 {
-    label->setPos(radius_ + margin, -label->boundingRect().height() / 2);
+    m_label->setPos(m_radius + m_margin, -m_label->boundingRect().height() / 2);
     updateTheme();
 }
 
