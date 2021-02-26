@@ -5,17 +5,26 @@
 
 #include <QFileInfo>
 #include <QHBoxLayout>
+#include <QMenu>
+#include <QMouseEvent>
 
 #include "elementfactory.h"
 #include "label.h"
+#include "mainwindow.h"
 
 Label *ListItemWidget::getLabel() const
 {
     return m_label;
 }
 
-void ListItemWidget::mousePressEvent(QMouseEvent *)
+void ListItemWidget::mousePressEvent(QMouseEvent *event)
 {
+    if (m_label->elementType() == ElementType::IC) {
+        if (event->button() == Qt::MouseButton::RightButton) {
+            m_menu->exec(event->globalPos());
+            return;
+        }
+    }
     m_label->startDrag();
 }
 
@@ -26,6 +35,7 @@ ListItemWidget::ListItemWidget(const QPixmap &pixmap, ElementType type, const QS
     QString name = ElementFactory::translatedName(type);
     if (type == ElementType::IC) {
         name = QFileInfo(icFileName).baseName().toUpper();
+        setupIcMenu();
     }
     itemLayout->setSpacing(6);
     itemLayout->setObjectName(QStringLiteral("itemLayout"));
@@ -48,6 +58,11 @@ ListItemWidget::ListItemWidget(const QPixmap &pixmap, ElementType type, const QS
     itemLayout->setMargin(0);
 }
 
+QString ListItemWidget::getFileName()
+{
+    return m_label->auxData();
+}
+
 void ListItemWidget::updateName()
 {
     ElementType type = m_label->elementType();
@@ -56,4 +71,16 @@ void ListItemWidget::updateName()
         m_nameLabel->setText(name);
         m_label->setName(name);
     }
+}
+
+void ListItemWidget::setupIcMenu()
+{
+    m_menu = new QMenu(this);
+
+    auto removeAction = m_menu->addAction(QIcon(QPixmap(":/toolbar/delete.png")), tr("Delete"), this,
+        [this] { Q_EMIT removeIC(this); });
+    removeAction->setObjectName(QStringLiteral("remove-ic"));
+
+    auto mainWindow = static_cast<MainWindow *>(parent());
+    connect(this, &ListItemWidget::removeIC, mainWindow, &MainWindow::removeIc);
 }

@@ -25,6 +25,7 @@ signals:
 
 public slots:
     void addRecentFile(const QString &fname);
+    void removeRecentFile(const QString &fname);
 
 private:
     void saveRecentFiles();
