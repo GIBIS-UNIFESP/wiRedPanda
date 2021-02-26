@@ -36,6 +36,7 @@
 #include "listitemwidget.h"
 #include "thememanager.h"
 #include "simulationcontroller.h"
+#include "ic.h"
 
 #include "ui_mainwindow.h"
 
@@ -146,10 +147,11 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     connect(m_editor, &Editor::scroll, this, &MainWindow::scrollView);
     connect(m_editor, &Editor::circuitHasChanged, this, &MainWindow::autoSave);
 
-    m_rfController = new RecentFilesController(this, true);
-    m_ricController = new RecentFilesController(this, false);
+    m_rfController = new RecentFilesController("recentFileList", this, true);
+    m_ricController = new RecentFilesController("recentICs", this, false);
     connect(this, &MainWindow::addRecentFile, m_rfController, &RecentFilesController::addRecentFile);
     connect(this, &MainWindow::addRecentIcFile, m_ricController, &RecentFilesController::addRecentFile);
+    connect(this, &MainWindow::removeRecentIcFile, m_ricController, &RecentFilesController::removeRecentFile);
 
     auto *shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F), this);
     connect(shortcut, &QShortcut::activated, m_ui->lineEdit, QOverload<>::of(&QWidget::setFocus));
@@ -506,6 +508,25 @@ void MainWindow::updateRecentICs()
         m_ui->scrollAreaWidgetContents_Box->layout()->addWidget(item);
     }
     m_ui->scrollAreaWidgetContents_Box->layout()->addItem(m_ui->verticalSpacer_BOX);
+}
+
+void MainWindow::removeIc(ListItemWidget *item)
+{
+    auto elements = m_editor->getScene()->getElements();
+    bool doRemove = true;
+    for (auto element : elements) {
+        if (element->elementType() == ElementType::IC) {
+            auto elementIC = dynamic_cast<IC *>(element);
+            if (elementIC && elementIC->getFile() == item->getFileName()) {
+                doRemove = false;
+                break;
+            }
+        }
+    }
+
+    if (doRemove) {
+        Q_EMIT removeRecentIcFile(item->getFileName());
+    }
 }
 
 QString MainWindow::getOpenICFile()

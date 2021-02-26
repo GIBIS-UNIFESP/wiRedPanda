@@ -10,12 +10,15 @@
 
 #include "label.h"
 
+class QMenu;
+
 class ListItemWidget : public QFrame
 {
     Q_OBJECT
 private:
     Label *m_label;
     QLabel *m_nameLabel;
+    QMenu *m_menu;
 
 public:
     explicit ListItemWidget(const QPixmap &pixmap, ElementType elementType, const QString &icFileName, QWidget *parent = nullptr);
@@ -24,10 +27,14 @@ public:
 
     void updateName();
 
+    QString getFileName();
+
 protected:
     void mousePressEvent(QMouseEvent *event) override;
+    void setupIcMenu();
 
 signals:
+    void removeIC(ListItemWidget *item);
 
 public slots:
 };

@@ -84,9 +84,11 @@ public:
 signals:
     void addRecentIcFile(const QString &fname);
     void addRecentFile(const QString &fname);
+    void removeRecentIcFile(const QString &fname);
 
 public slots:
     void updateRecentICs();
+    void removeIc(ListItemWidget *item);
 
 private slots:
     bool on_actionExport_to_Arduino_triggered();

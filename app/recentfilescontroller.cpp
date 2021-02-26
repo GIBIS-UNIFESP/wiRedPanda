@@ -56,6 +56,13 @@ QStringList RecentFilesController::getRecentFiles()
     return m_files;
 }
 
+void RecentFilesController::removeRecentFile(const QString &fname)
+{
+    m_files.removeAll(fname);
+    emit recentFilesUpdated();
+    saveRecentFiles();
+}
+
 void RecentFilesController::saveRecentFiles()
 {
     if (m_saveSetting) {
