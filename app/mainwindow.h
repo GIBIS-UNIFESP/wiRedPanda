@@ -92,32 +92,50 @@ public slots:
     void updateRecentICs();
 
 private slots:
-    bool on_actionExport_to_Arduino_triggered();
-    void on_actionExport_to_Image_triggered();
-    void on_actionPrint_triggered();
+    
+    /* Menu File  Start*/
+    void actionNewTriggered();
+    void actionOpenTriggered();
+    
+    void actionOpenIcTriggered();
+    void openRecentFile();
+    void actionReloadFileTriggered();
+    
+    void actionSaveTriggered();
+    void actionSaveAsTriggered();
+    void actionSaveLocalProjectTriggered();
+    
+    bool actionExportToArduinoTriggered();
+    void actionPrintTriggered();
+    void actionExportToImageTriggered();
+    void actionExitTriggered();
+    /* Menu File End */
+    
+    
+    
 
     void on_actionAbout_Qt_triggered();
     void on_actionAbout_triggered();
     void on_actionEnglish_triggered();
-    void on_actionExit_triggered();
+    
     void on_actionGates_triggered(bool checked);
-    void on_actionNew_triggered();
-    void on_actionOpen_IC_triggered();
-    void on_actionOpen_triggered();
+    
+    
+    
     void on_actionPortuguese_triggered();
-    void on_actionReload_File_triggered();
+    
     void on_actionReset_Zoom_triggered();
     void on_actionRotate_left_triggered();
     void on_actionRotate_right_triggered();
-    void on_actionSave_As_triggered();
-    void on_actionSave_triggered();
+    
+    
     void on_actionSelect_all_triggered();
     void on_actionWires_triggered(bool checked);
     void on_actionZoom_in_triggered();
     void on_actionZoom_out_triggered();
     void on_lineEdit_returnPressed();
     void on_lineEdit_textChanged(const QString &arg1);
-    void openRecentFile();
+    
     void scrollView(int dx, int dy);
     void updateRecentFileActions();
     void zoomChanged();
@@ -152,7 +170,7 @@ private slots:
 
     void on_actionLabels_under_icons_triggered(bool checked);
 
-    void on_actionSave_Local_Project_triggered();
+    
 
 private:
     Ui::MainWindow *ui;

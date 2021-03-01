@@ -1,7 +1,7 @@
 
 set(
     WPANDA_FILES
-    bewaveddolphin.cpp
+    BewavedDolphin.cpp
     clockDialog.cpp
     commands.cpp
     common.cpp
@@ -67,7 +67,7 @@ qt5_add_resources(
 
 set (
     WPANDA_FORMS
-    bewaveddolphin.ui
+    BewavedDolphin.ui
     clockDialog.ui
     LengthDialog.ui
     mainwindow.ui

@@ -24,7 +24,7 @@
 #include <QUndoView>
 
 #include "arduino/codegenerator.h"
-#include "bewaveddolphin.h"
+#include "BewavedDolphin.h"
 #include "common.h"
 #include "editor.h"
 #include "elementfactory.h"
@@ -162,6 +162,22 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     /*  QApplication::setStyle( QStyleFactory::create( "Fusion" ) ); */
     ui->actionPlay->setChecked(true);
     populateLeftMenu();
+    
+    
+    /* Connections for slot this class*/
+    connect(ui->actionExit, &QAction::triggered, this, &MainWindow::actionExitTriggered);
+    connect(ui->actionNew, &QAction::triggered, this, &MainWindow::actionNewTriggered);
+    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::actionOpenTriggered);
+    connect(ui->actionOpen_IC, &QAction::triggered, this, &MainWindow::actionOpenIcTriggered);
+    connect(ui->actionReload_File, &QAction::triggered, this, &MainWindow::actionReloadFileTriggered);
+    connect(ui->actionSave, &QAction::triggered, this, &MainWindow::actionSaveTriggered);
+    connect(ui->actionSave_As, &QAction::triggered, this, &MainWindow::actionSaveAsTriggered);
+    connect(ui->actionSave_Local_Project, &QAction::triggered, this, &MainWindow::actionSaveLocalProjectTriggered);
+    connect(ui->actionExport_to_Arduino, &QAction::triggered, this, &MainWindow::actionExportToArduinoTriggered);
+    connect(ui->actionPrint, &QAction::triggered, this, &MainWindow::actionPrintTriggered);
+    connect(ui->actionExport_to_Image, &QAction::triggered, this, &MainWindow::actionExportToImageTriggered);
+    
+    
 }
 
 void MainWindow::setFastMode(bool fastModeEnabled)
@@ -191,7 +207,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_actionExit_triggered()
+void MainWindow::actionExitTriggered()
 {
     close();
 }
@@ -274,12 +290,6 @@ int MainWindow::confirmSave()
     return msgBox.exec();
 }
 
-void MainWindow::on_actionNew_triggered()
-{
-    if (closeFile()) {
-        clear();
-    }
-}
 
 void MainWindow::on_actionWires_triggered(bool checked)
 {
@@ -340,7 +350,16 @@ void MainWindow::scrollView(int dx, int dy)
     ui->graphicsView->scroll(dx, dy);
 }
 
-void MainWindow::on_actionOpen_triggered()
+
+
+void MainWindow::actionNewTriggered()
+{
+    if (closeFile()) {
+        clear();
+    }
+}
+
+void MainWindow::actionOpenTriggered()
 {
     QString fname = QFileDialog::getOpenFileName(this, tr("Open File"), defaultDirectory.absolutePath(), tr("Panda files (*.panda)"));
     if (fname.isEmpty()) {
@@ -349,10 +368,184 @@ void MainWindow::on_actionOpen_triggered()
     loadPandaFile(fname);
 }
 
-void MainWindow::on_actionSave_triggered()
+void MainWindow::actionOpenIcTriggered()
+{
+    /* LOAD FILE AS IC */
+    QString fname = getOpenICFile();
+    if (fname.isEmpty()) {
+        return;
+    }
+    QFile fl(fname);
+    if (!fl.exists()) {
+        std::cerr << tr("Error: This file does not exists: ").toStdString() << fname.toStdString() << std::endl;
+        return;
+    }
+    if (fl.open(QFile::ReadOnly)) {
+        emit addRecentIcFile(fname);
+    } else {
+        std::cerr << tr("Could not open file in ReadOnly mode : ").toStdString() << fname.toStdString() << "." << std::endl;
+        return;
+    }
+    fl.close();
+
+    ui->statusBar->showMessage(tr("Loaded ic successfully."), 2000);
+}
+
+
+
+
+void MainWindow::actionReloadFileTriggered()
+{
+    if (currentFile.exists()) {
+        if (closeFile()) {
+            loadPandaFile(currentFile.absoluteFilePath());
+        }
+    }
+}
+
+
+void MainWindow::openRecentFile()
+{
+    auto *action = qobject_cast<QAction *>(sender());
+    if (action) {
+        QString fileName = action->data().toString();
+
+        loadPandaFile(fileName);
+    }
+}
+
+void MainWindow::createRecentFileActions()
+{
+    for (int i = 0; i < RecentFilesController::MaxRecentFiles; ++i) {
+        recentFileActs[i] = new QAction(this);
+        recentFileActs[i]->setVisible(false);
+        connect(recentFileActs[i], &QAction::triggered, this, &MainWindow::openRecentFile);
+        ui->menuRecent_files->addAction(recentFileActs[i]);
+    }
+    updateRecentFileActions();
+    for (int i = 0; i < RecentFilesController::MaxRecentFiles; ++i) {
+        ui->menuRecent_files->addAction(recentFileActs[i]);
+    }
+}
+
+
+void MainWindow::actionSaveTriggered()
 {
     save();
 }
+
+
+void MainWindow::actionSaveAsTriggered()
+{
+    QString fname = currentFile.absoluteFilePath();
+    QString path = defaultDirectory.absolutePath();
+    if (!currentFile.fileName().isEmpty()) {
+        path = currentFile.absoluteFilePath();
+    }
+    fname = QFileDialog::getSaveFileName(this, tr("Save File as ..."), path, tr("Panda files (*.panda)"));
+    if (fname.isEmpty()) {
+        return;
+    }
+    if (!fname.endsWith(".panda")) {
+        fname.append(".panda");
+    }
+    setCurrentFile(QFileInfo(fname));
+    save();
+}
+
+
+void MainWindow::actionSaveLocalProjectTriggered()
+{
+    QString fname = currentFile.absoluteFilePath();
+    QString path = defaultDirectory.absolutePath();
+    if (!currentFile.fileName().isEmpty()) {
+        path = currentFile.absoluteFilePath();
+    }
+    fname = QFileDialog::getSaveFileName(this, tr("Save Local Project"), path, tr("Panda files (*.panda)"));
+    if (fname.isEmpty()) {
+        return;
+    }
+    if (!fname.endsWith(".panda")) {
+        fname.append(".panda");
+    }
+    setCurrentFile(QFileInfo(fname));
+    COMMENT("Saving ics and skins", 0);
+    // Saves ics ans skins locally here.
+    path = currentFile.absolutePath();
+    if (!QDir(path + "/boxes").exists()) {
+        bool dir_res = QDir().mkpath(path + "/boxes");
+        if (!dir_res)
+            std::cerr << tr("Error creating ICs directory.").toStdString() << std::endl;
+    }
+    if (!QDir(path + "/skins").exists()) {
+        bool dir_res = QDir().mkpath(path + "/skins");
+        if (!dir_res)
+            std::cerr << tr("Error creating skins directory.").toStdString() << std::endl;
+    }
+    COMMENT("Saving ics and skins to local directories.", 0);
+    if (!editor->saveLocal(path)) {
+        std::cerr << tr("Error saving ICs.").toStdString() << std::endl;
+        ui->statusBar->showMessage(tr("Could not save the local project."), 2000);
+        return;
+    }
+    COMMENT("Saving main project.", 0);
+    save();
+}
+
+
+bool MainWindow::actionExportToArduinoTriggered()
+{
+    QString fname = QFileDialog::getSaveFileName(this, tr("Generate Arduino Code"), defaultDirectory.absolutePath(), tr("Arduino file (*.ino)"));
+    return exportToArduino(fname);
+}
+
+
+
+void MainWindow::actionPrintTriggered()
+{
+    QString pdfFile = QFileDialog::getSaveFileName(this, tr("Export to PDF"), defaultDirectory.absolutePath(), tr("PDF files (*.pdf)"));
+    if (pdfFile.isEmpty()) {
+        return;
+    }
+    if (!pdfFile.endsWith(".pdf", Qt::CaseInsensitive)) {
+        pdfFile.append(".pdf");
+    }
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setPageSize(QPageSize(QPageSize::A4));
+    printer.setPageOrientation(QPageLayout::Orientation::Landscape);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setOutputFileName(pdfFile);
+    QPainter p;
+    if (!p.begin(&printer)) {
+        QMessageBox::warning(this, tr("ERROR"), tr("Could not print this circuit to PDF."), QMessageBox::Ok);
+        return;
+    }
+    editor->getScene()->render(&p, QRectF(), editor->getScene()->itemsBoundingRect().adjusted(-64, -64, 64, 64));
+    p.end();
+}
+
+
+
+void MainWindow::actionExportToImageTriggered()
+{
+    QString pngFile = QFileDialog::getSaveFileName(this, tr("Export to Image"), defaultDirectory.absolutePath(), tr("PNG files (*.png)"));
+    if (pngFile.isEmpty()) {
+        return;
+    }
+    if (!pngFile.endsWith(".png", Qt::CaseInsensitive)) {
+        pngFile.append(".png");
+    }
+    QRectF s = editor->getScene()->itemsBoundingRect().adjusted(-64, -64, 64, 64);
+    QPixmap p(s.size().toSize());
+    QPainter painter;
+    painter.begin(&p);
+    painter.setRenderHint(QPainter::Antialiasing);
+    editor->getScene()->render(&painter, QRectF(), s);
+    painter.end();
+    QImage img = p.toImage();
+    img.save(pngFile);
+}
+
 
 void MainWindow::on_actionAbout_triggered()
 {
@@ -418,23 +611,6 @@ void MainWindow::closeEvent(QCloseEvent *e)
     }
 }
 
-void MainWindow::on_actionSave_As_triggered()
-{
-    QString fname = currentFile.absoluteFilePath();
-    QString path = defaultDirectory.absolutePath();
-    if (!currentFile.fileName().isEmpty()) {
-        path = currentFile.absoluteFilePath();
-    }
-    fname = QFileDialog::getSaveFileName(this, tr("Save File as ..."), path, tr("Panda files (*.panda)"));
-    if (fname.isEmpty()) {
-        return;
-    }
-    if (!fname.endsWith(".panda")) {
-        fname.append(".panda");
-    }
-    setCurrentFile(QFileInfo(fname));
-    save();
-}
 
 QFileInfo MainWindow::getCurrentFile() const
 {
@@ -507,28 +683,7 @@ QString MainWindow::getOpenICFile()
     return QFileDialog::getOpenFileName(this, tr("Open File as IC"), defaultDirectory.absolutePath(), tr("Panda files (*.panda)"));
 }
 
-void MainWindow::on_actionOpen_IC_triggered()
-{
-    /* LOAD FILE AS IC */
-    QString fname = getOpenICFile();
-    if (fname.isEmpty()) {
-        return;
-    }
-    QFile fl(fname);
-    if (!fl.exists()) {
-        std::cerr << tr("Error: This file does not exists: ").toStdString() << fname.toStdString() << std::endl;
-        return;
-    }
-    if (fl.open(QFile::ReadOnly)) {
-        emit addRecentIcFile(fname);
-    } else {
-        std::cerr << tr("Could not open file in ReadOnly mode : ").toStdString() << fname.toStdString() << "." << std::endl;
-        return;
-    }
-    fl.close();
 
-    ui->statusBar->showMessage(tr("Loaded ic successfully."), 2000);
-}
 
 void MainWindow::on_lineEdit_textChanged(const QString &text)
 {
@@ -591,14 +746,7 @@ void MainWindow::resizeEvent(QResizeEvent *)
     editor->getScene()->setSceneRect(editor->getScene()->sceneRect().united(ui->graphicsView->rect()));
 }
 
-void MainWindow::on_actionReload_File_triggered()
-{
-    if (currentFile.exists()) {
-        if (closeFile()) {
-            loadPandaFile(currentFile.absoluteFilePath());
-        }
-    }
-}
+
 
 void MainWindow::on_actionGates_triggered(bool checked)
 {
@@ -661,11 +809,7 @@ bool MainWindow::exportToWaveFormFile(const QString& fname)
     return true;
 }
 
-bool MainWindow::on_actionExport_to_Arduino_triggered()
-{
-    QString fname = QFileDialog::getSaveFileName(this, tr("Generate Arduino Code"), defaultDirectory.absolutePath(), tr("Arduino file (*.ino)"));
-    return exportToArduino(fname);
-}
+
 
 void MainWindow::on_actionZoom_in_triggered()
 {
@@ -710,72 +854,11 @@ void MainWindow::updateRecentFileActions()
     }
 }
 
-void MainWindow::openRecentFile()
-{
-    auto *action = qobject_cast<QAction *>(sender());
-    if (action) {
-        QString fileName = action->data().toString();
 
-        loadPandaFile(fileName);
-    }
-}
 
-void MainWindow::createRecentFileActions()
-{
-    for (int i = 0; i < RecentFilesController::MaxRecentFiles; ++i) {
-        recentFileActs[i] = new QAction(this);
-        recentFileActs[i]->setVisible(false);
-        connect(recentFileActs[i], &QAction::triggered, this, &MainWindow::openRecentFile);
-        ui->menuRecent_files->addAction(recentFileActs[i]);
-    }
-    updateRecentFileActions();
-    for (int i = 0; i < RecentFilesController::MaxRecentFiles; ++i) {
-        ui->menuRecent_files->addAction(recentFileActs[i]);
-    }
-}
 
-void MainWindow::on_actionPrint_triggered()
-{
-    QString pdfFile = QFileDialog::getSaveFileName(this, tr("Export to PDF"), defaultDirectory.absolutePath(), tr("PDF files (*.pdf)"));
-    if (pdfFile.isEmpty()) {
-        return;
-    }
-    if (!pdfFile.endsWith(".pdf", Qt::CaseInsensitive)) {
-        pdfFile.append(".pdf");
-    }
-    QPrinter printer(QPrinter::HighResolution);
-    printer.setPageSize(QPageSize(QPageSize::A4));
-    printer.setPageOrientation(QPageLayout::Orientation::Landscape);
-    printer.setOutputFormat(QPrinter::PdfFormat);
-    printer.setOutputFileName(pdfFile);
-    QPainter p;
-    if (!p.begin(&printer)) {
-        QMessageBox::warning(this, tr("ERROR"), tr("Could not print this circuit to PDF."), QMessageBox::Ok);
-        return;
-    }
-    editor->getScene()->render(&p, QRectF(), editor->getScene()->itemsBoundingRect().adjusted(-64, -64, 64, 64));
-    p.end();
-}
 
-void MainWindow::on_actionExport_to_Image_triggered()
-{
-    QString pngFile = QFileDialog::getSaveFileName(this, tr("Export to Image"), defaultDirectory.absolutePath(), tr("PNG files (*.png)"));
-    if (pngFile.isEmpty()) {
-        return;
-    }
-    if (!pngFile.endsWith(".png", Qt::CaseInsensitive)) {
-        pngFile.append(".png");
-    }
-    QRectF s = editor->getScene()->itemsBoundingRect().adjusted(-64, -64, 64, 64);
-    QPixmap p(s.size().toSize());
-    QPainter painter;
-    painter.begin(&p);
-    painter.setRenderHint(QPainter::Antialiasing);
-    editor->getScene()->render(&painter, QRectF(), s);
-    painter.end();
-    QImage img = p.toImage();
-    img.save(pngFile);
-}
+
 
 void MainWindow::retranslateUi()
 {
@@ -1013,40 +1096,4 @@ void MainWindow::on_actionLabels_under_icons_triggered(bool checked)
     checked ? ui->mainToolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon) : ui->mainToolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 }
 
-void MainWindow::on_actionSave_Local_Project_triggered()
-{
-    QString fname = currentFile.absoluteFilePath();
-    QString path = defaultDirectory.absolutePath();
-    if (!currentFile.fileName().isEmpty()) {
-        path = currentFile.absoluteFilePath();
-    }
-    fname = QFileDialog::getSaveFileName(this, tr("Save Local Project"), path, tr("Panda files (*.panda)"));
-    if (fname.isEmpty()) {
-        return;
-    }
-    if (!fname.endsWith(".panda")) {
-        fname.append(".panda");
-    }
-    setCurrentFile(QFileInfo(fname));
-    COMMENT("Saving ics and skins", 0);
-    // Saves ics ans skins locally here.
-    path = currentFile.absolutePath();
-    if (!QDir(path + "/boxes").exists()) {
-        bool dir_res = QDir().mkpath(path + "/boxes");
-        if (!dir_res)
-            std::cerr << tr("Error creating ICs directory.").toStdString() << std::endl;
-    }
-    if (!QDir(path + "/skins").exists()) {
-        bool dir_res = QDir().mkpath(path + "/skins");
-        if (!dir_res)
-            std::cerr << tr("Error creating skins directory.").toStdString() << std::endl;
-    }
-    COMMENT("Saving ics and skins to local directories.", 0);
-    if (!editor->saveLocal(path)) {
-        std::cerr << tr("Error saving ICs.").toStdString() << std::endl;
-        ui->statusBar->showMessage(tr("Could not save the local project."), 2000);
-        return;
-    }
-    COMMENT("Saving main project.", 0);
-    save();
-}
+

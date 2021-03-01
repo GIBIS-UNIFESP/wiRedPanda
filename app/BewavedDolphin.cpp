@@ -1,7 +1,7 @@
 // Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "bewaveddolphin.h"
+#include "BewavedDolphin.h"
 
 #include <cstring>
 
@@ -32,7 +32,7 @@
 #include "scstop.h"
 #include "simulationcontroller.h"
 
-#include "ui_bewaveddolphin.h"
+#include "ui_BewavedDolphin.h"
 
 SignalModel::SignalModel(int rows, int inputs, int columns, QObject *parent)
     : QStandardItemModel(rows, columns, parent)
@@ -97,6 +97,15 @@ BewavedDolphin::BewavedDolphin(Editor *editor, QWidget *parent)
     m_gv->gvzoom()->setZoomFactorBase(m_SCALE_FACTOR);
     drawPixMaps();
     m_edited = false;
+    
+    
+    
+    /* Connections */
+    
+    
+    
+    
+    
 }
 
 BewavedDolphin::~BewavedDolphin()
