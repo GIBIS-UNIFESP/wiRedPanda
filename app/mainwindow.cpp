@@ -164,7 +164,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     populateLeftMenu();
     
     
-    /* Connections for slot this class*/
+    /* Connections for slot Menu File this class*/
     connect(ui->actionExit, &QAction::triggered, this, &MainWindow::actionExitTriggered);
     connect(ui->actionNew, &QAction::triggered, this, &MainWindow::actionNewTriggered);
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::actionOpenTriggered);
@@ -176,6 +176,32 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     connect(ui->actionExport_to_Arduino, &QAction::triggered, this, &MainWindow::actionExportToArduinoTriggered);
     connect(ui->actionPrint, &QAction::triggered, this, &MainWindow::actionPrintTriggered);
     connect(ui->actionExport_to_Image, &QAction::triggered, this, &MainWindow::actionExportToImageTriggered);
+    
+    
+    /* Connections for slot Menu Edit this class */
+    connect(ui->actionRename, &QAction::triggered, this, &MainWindow::actionRenameTriggered);
+    connect(ui->actionChange_Trigger, &QAction::triggered, this, &MainWindow::actionChangeTriggerTriggered);
+    connect(ui->actionRotate_left, &QAction::triggered, this, &MainWindow::actionRotateLeftTriggered);
+    connect(ui->actionRotate_right, &QAction::triggered, this, &MainWindow::actionRotateRightTriggered);
+    connect(ui->actionFlip_horizontally, &QAction::triggered, this, &MainWindow::actionFlipHorizontallyTriggered);
+    connect(ui->actionFlip_vertically, &QAction::triggered, this, &MainWindow::actionFlipVerticallyTriggered);
+    connect(ui->actionSelect_all, &QAction::triggered, this, &MainWindow::actionSelectAllTriggered);
+    connect(ui->actionClear_selection, &QAction::triggered, this, &MainWindow::actionClearSelectionTriggered);
+    
+    
+    
+    /* Connections for slot Menu View */
+    connect(ui->actionPanda_Light, &QAction::triggered, this, &MainWindow::actionPandaLightTriggered);
+    connect(ui->actionPanda_Dark, &QAction::triggered, this, &MainWindow::actionPandaDarkTriggered);
+    connect(ui->actionZoom_in, &QAction::triggered, this, &MainWindow::actionZoomInTriggered);
+    connect(ui->actionZoom_out, &QAction::triggered, this, &MainWindow::actionZoomOutTriggered);
+    connect(ui->actionReset_Zoom, &QAction::triggered, this, &MainWindow::actionResetZoomTriggered);
+    connect(ui->actionWires, &QAction::triggered, this, &MainWindow::actionWiresTriggered);
+    connect(ui->actionGates, &QAction::triggered, this, &MainWindow::actionGatesTriggered);
+    connect(ui->actionFullscreen, &QAction::triggered, this, &MainWindow::actionFullScreenTriggered);
+    connect(ui->actionLabels_under_icons, &QAction::triggered, this, &MainWindow::actionLabelsUnderIconsTriggered);
+    
+    
     
     
 }
@@ -291,17 +317,17 @@ int MainWindow::confirmSave()
 }
 
 
-void MainWindow::on_actionWires_triggered(bool checked)
+void MainWindow::actionWiresTriggered(bool checked)
 {
     editor->showWires(checked);
 }
 
-void MainWindow::on_actionRotate_right_triggered()
+void MainWindow::actionRotateRightTriggered()
 {
     editor->rotate(true);
 }
 
-void MainWindow::on_actionRotate_left_triggered()
+void MainWindow::actionRotateLeftTriggered()
 {
     editor->rotate(false);
 }
@@ -653,7 +679,7 @@ void MainWindow::setCurrentFile(const QFileInfo &file)
     }
 }
 
-void MainWindow::on_actionSelect_all_triggered()
+void MainWindow::actionSelectAllTriggered()
 {
     editor->selectAll();
 }
@@ -748,7 +774,7 @@ void MainWindow::resizeEvent(QResizeEvent *)
 
 
 
-void MainWindow::on_actionGates_triggered(bool checked)
+void MainWindow::actionGatesTriggered(bool checked)
 {
     ui->actionWires->setEnabled(checked);
     if (!checked) {
@@ -811,7 +837,7 @@ bool MainWindow::exportToWaveFormFile(const QString& fname)
 
 
 
-void MainWindow::on_actionZoom_in_triggered()
+void MainWindow::actionZoomInTriggered()
 {
     /*  QPointF scenePos = editor->getMousePos(); */
 
@@ -819,12 +845,12 @@ void MainWindow::on_actionZoom_in_triggered()
     ui->graphicsView->gvzoom()->zoomIn();
 }
 
-void MainWindow::on_actionZoom_out_triggered()
+void MainWindow::actionZoomOutTriggered()
 {
     ui->graphicsView->gvzoom()->zoomOut();
 }
 
-void MainWindow::on_actionReset_Zoom_triggered()
+void MainWindow::actionResetZoomTriggered()
 {
     ui->graphicsView->gvzoom()->resetZoom();
 }
@@ -913,17 +939,17 @@ void MainWindow::on_actionPlay_triggered(bool checked)
     editor->getSimulationController()->updateAll();
 }
 
-void MainWindow::on_actionRename_triggered()
+void MainWindow::actionRenameTriggered()
 {
     editor->getElementEditor()->renameAction();
 }
 
-void MainWindow::on_actionChange_Trigger_triggered()
+void MainWindow::actionChangeTriggerTriggered()
 {
     editor->getElementEditor()->changeTriggerAction();
 }
 
-void MainWindow::on_actionClear_selection_triggered()
+void MainWindow::actionClearSelectionTriggered()
 {
     if (fullscreenDlg->isVisible() && editor->getScene()->selectedItems().isEmpty()) {
         fullscreenDlg->accept();
@@ -953,7 +979,7 @@ void MainWindow::populateLeftMenu()
     populateMenu(ui->verticalSpacer_Memory, "DFLIPFLOP,DLATCH,JKFLIPFLOP,SRFLIPFLOP,TFLIPFLOP", ui->scrollAreaWidgetContents_Memory->layout());
 }
 
-void MainWindow::on_actionFast_Mode_triggered(bool checked)
+void MainWindow::actionFastModeTriggered(bool checked)
 {
     setFastMode(checked);
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
@@ -969,12 +995,12 @@ void MainWindow::on_actionWaveform_triggered()
         delete bd;
 }
 
-void MainWindow::on_actionPanda_Light_triggered()
+void MainWindow::actionPandaLightTriggered()
 {
     ThemeManager::globalMngr->setTheme(Theme::Panda_Light);
 }
 
-void MainWindow::on_actionPanda_Dark_triggered()
+void MainWindow::actionPandaDarkTriggered()
 {
     ThemeManager::globalMngr->setTheme(Theme::Panda_Dark);
 }
@@ -991,12 +1017,12 @@ void MainWindow::updateTheme()
     }
 }
 
-void MainWindow::on_actionFlip_horizontally_triggered()
+void MainWindow::actionFlipHorizontallyTriggered()
 {
     editor->flipH();
 }
 
-void MainWindow::on_actionFlip_vertically_triggered()
+void MainWindow::actionFlipVerticallyTriggered()
 {
     editor->flipV();
 }
@@ -1029,7 +1055,7 @@ void MainWindow::setDolphinFilename(const QString &filename)
     dolphinFilename = filename;
 }
 
-void MainWindow::on_actionFullscreen_triggered() const
+void MainWindow::actionFullScreenTriggered() const
 {
     if (fullscreenDlg->isVisible()) {
         fullscreenDlg->accept();
@@ -1091,7 +1117,7 @@ void MainWindow::on_actionMute_triggered()
     editor->mute(ui->actionMute->isChecked());
 }
 
-void MainWindow::on_actionLabels_under_icons_triggered(bool checked)
+void MainWindow::actionLabelsUnderIconsTriggered(bool checked)
 {
     checked ? ui->mainToolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon) : ui->mainToolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 }
