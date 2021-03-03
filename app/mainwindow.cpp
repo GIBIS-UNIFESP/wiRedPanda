@@ -190,9 +190,9 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     
     
     
-    /* Connections for slot Menu View */
+    /* Connections for slot Menu View this class*/
     connect(ui->actionPanda_Light, &QAction::triggered, this, &MainWindow::actionPandaLightTriggered);
-    connect(ui->actionPanda_Dark, &QAction::triggered, this, &MainWindow::actionPandaDarkTriggered);
+    //connect(ui->actionPanda_Dark, &QAction::triggered, this, &MainWindow::actionPandaDarkTriggered);
     connect(ui->actionZoom_in, &QAction::triggered, this, &MainWindow::actionZoomInTriggered);
     connect(ui->actionZoom_out, &QAction::triggered, this, &MainWindow::actionZoomOutTriggered);
     connect(ui->actionReset_Zoom, &QAction::triggered, this, &MainWindow::actionResetZoomTriggered);
