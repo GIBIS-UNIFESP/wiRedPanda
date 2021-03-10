@@ -1,7 +1,7 @@
 // Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "mainwindow.h"
+#include "MainWindow.h"
 
 #include <cmath>
 #include <iostream>
@@ -37,7 +37,7 @@
 #include "thememanager.h"
 #include "simulationcontroller.h"
 
-#include "ui_mainwindow.h"
+#include "ui_MainWindow.h"
 
 MainWindow::MainWindow(QWidget *parent, const QString &filename)
     : QMainWindow(parent)
@@ -200,6 +200,26 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     connect(ui->actionGates, &QAction::triggered, this, &MainWindow::actionGatesTriggered);
     connect(ui->actionFullscreen, &QAction::triggered, this, &MainWindow::actionFullScreenTriggered);
     connect(ui->actionLabels_under_icons, &QAction::triggered, this, &MainWindow::actionLabelsUnderIconsTriggered);
+    
+    
+    /* Connections for slot Menu Language this class*/
+    connect(ui->actionEnglish, &QAction::triggered, this, &MainWindow::actionEnglishTriggered);
+    connect(ui->actionPortuguese, &QAction::triggered, this, &MainWindow::actionPortugueseTriggered);
+    
+    /* Connections for slot Menu About this class*/
+    connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::actionAboutTriggered);
+    connect(ui->actionAbout_Qt, &QAction::triggered, this, &MainWindow::actionAboutQtTriggered);
+    
+     /* Connections for slot Menu Simulation this class*/
+    connect(ui->actionPlay, &QAction::triggered, this, &MainWindow::actionPlayTriggered);
+    connect(ui->actionWaveform, &QAction::triggered, this, &MainWindow::actionWaveFormTriggered);
+    connect(ui->actionMute, &QAction::triggered, this, &MainWindow::actionMuteTriggered);
+    
+    
+    /* Connections for slot LineEdit this class*/
+    connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::lineEditReturnPressed);
+    connect(ui->lineEdit, &QLineEdit::textChanged, this, &MainWindow::lineEditTextChanged);
+    
     
     
     
@@ -573,7 +593,7 @@ void MainWindow::actionExportToImageTriggered()
 }
 
 
-void MainWindow::on_actionAbout_triggered()
+void MainWindow::actionAboutTriggered()
 {
     QMessageBox::about(this,
                        "wiRED Panda",
@@ -593,7 +613,7 @@ void MainWindow::on_actionAbout_triggered()
                            .arg(QApplication::applicationVersion()));
 }
 
-void MainWindow::on_actionAbout_Qt_triggered()
+void MainWindow::actionAboutQtTriggered()
 {
     QMessageBox::aboutQt(this);
 }
@@ -711,7 +731,7 @@ QString MainWindow::getOpenICFile()
 
 
 
-void MainWindow::on_lineEdit_textChanged(const QString &text)
+void MainWindow::lineEditTextChanged(const QString &text)
 {
     ui->searchLayout->removeItem(ui->VSpacer);
     for (ListItemWidget *item : qAsConst(searchItemWidgets)) {
@@ -759,7 +779,7 @@ void MainWindow::on_lineEdit_textChanged(const QString &text)
     ui->searchLayout->addItem(ui->VSpacer);
 }
 
-void MainWindow::on_lineEdit_returnPressed()
+void MainWindow::lineEditReturnPressed()
 {
     if (firstResult) {
         firstResult->startDrag();
@@ -911,7 +931,7 @@ void MainWindow::loadTranslation(const QString& language)
     }
 }
 
-void MainWindow::on_actionEnglish_triggered()
+void MainWindow::actionEnglishTriggered()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     QString language = "://wpanda_en.qm";
@@ -920,7 +940,7 @@ void MainWindow::on_actionEnglish_triggered()
     loadTranslation(language);
 }
 
-void MainWindow::on_actionPortuguese_triggered()
+void MainWindow::actionPortugueseTriggered()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     QString language = "://wpanda_pt.qm";
@@ -929,7 +949,7 @@ void MainWindow::on_actionPortuguese_triggered()
     loadTranslation(language);
 }
 
-void MainWindow::on_actionPlay_triggered(bool checked)
+void MainWindow::actionPlayTriggered(bool checked)
 {
     if (checked) {
         editor->getSimulationController()->start();
@@ -986,7 +1006,7 @@ void MainWindow::actionFastModeTriggered(bool checked)
     settings.setValue("fastMode", checked);
 }
 
-void MainWindow::on_actionWaveform_triggered()
+void MainWindow::actionWaveFormTriggered()
 {
     bd = new BewavedDolphin(editor, this);
     if (bd->createWaveform(dolphinFilename))
@@ -1112,7 +1132,7 @@ void MainWindow::autoSave()
     COMMENT("Finished autosave.", 0);
 }
 
-void MainWindow::on_actionMute_triggered()
+void MainWindow::actionMuteTriggered()
 {
     editor->mute(ui->actionMute->isChecked());
 }

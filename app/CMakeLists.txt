@@ -25,7 +25,7 @@ set(
     LengthDialog.cpp
     listitemwidget.cpp
     logicelement.cpp
-    mainwindow.cpp
+    MainWindow.cpp
     recentfilescontroller.cpp
     scene.cpp
     scstop.cpp
@@ -70,7 +70,7 @@ set (
     BewavedDolphin.ui
     clockDialog.ui
     LengthDialog.ui
-    mainwindow.ui
+    MainWindow.ui
     elementeditor.ui
     simplewaveform.ui
 )

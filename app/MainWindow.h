@@ -136,54 +136,32 @@ private slots:
     void actionFullScreenTriggered() const;
     void actionLabelsUnderIconsTriggered(bool checked);
     
+    /* Language */
+    void actionEnglishTriggered();
+    void actionPortugueseTriggered();
+    
+    /* Help */
+    void actionAboutTriggered();
+    void actionAboutQtTriggered();
     
     
-    void on_actionAbout_Qt_triggered();
-    void on_actionAbout_triggered();
-    void on_actionEnglish_triggered();
-    
-   
-    
+    /* simulation */
+    void actionPlayTriggered(bool checked);
+    void actionWaveFormTriggered();
+    void actionMuteTriggered();
     
     
-    void on_actionPortuguese_triggered();
-    
-   
-   
-    
-    
-    void on_lineEdit_returnPressed();
-    void on_lineEdit_textChanged(const QString &arg1);
+    void lineEditReturnPressed();
+    void lineEditTextChanged(const QString &arg1);
+
+
     
     void scrollView(int dx, int dy);
     void updateRecentFileActions();
     void zoomChanged();
-
-    void on_actionPlay_triggered(bool checked);
-
-   
-
     
-
-    void on_actionWaveform_triggered();
-
-    
-
-    
-
     void updateTheme();
-
-    
-
-  
-
     void autoSave();
-
-    void on_actionMute_triggered();
-
-    
-
-    
 
 private:
     Ui::MainWindow *ui;
