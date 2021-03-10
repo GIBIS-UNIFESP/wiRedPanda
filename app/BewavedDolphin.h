@@ -62,53 +62,40 @@ public:
     void print();
 
 private slots:
-    void on_actionExit_triggered();
+    
+    
+    /* Menu File */
+    void actionLoadTriggered();
+    void actionSaveTriggered();
+    void actionSaveAsTriggered();
+    void actionExportToPdfTriggered();
+    void actionExportToPngTriggered();
+    void actionExitTriggered();
 
-    void on_actionSet_to_0_triggered();
+    /* Menu Edit*/
+    void actionCutTriggered();
+    void actionCopyTriggered();
+    void actionPasteTriggered();
+    void actionClearTriggered();
+    void actionCombinationalTriggered();
+    void actionSetTo_0_Triggered();
+    void actionSetTo_1_Triggered();
+    void actionInvertTriggered();
+    void actionSetClockWaveTriggered();
 
-    void on_actionSet_to_1_triggered();
+    /* Menu View */
+    void actionZoomOutTriggered();
+    void actionZoomInTriggered();
+    void actionResetZoomTriggered();
+    void actionZoomRangeTriggered();
+    void actionSetLengthTriggered();
+    void actionShowValuesTriggered();
+    void actionShowCurveTriggered();
 
-    void on_actionInvert_triggered();
-
-    void on_actionSet_clock_wave_triggered();
-
-    void on_actionCombinational_triggered();
-
-    void on_actionSet_Length_triggered();
-
-    void on_actionZoom_out_triggered();
-
-    void on_actionZoom_In_triggered();
-
-    void on_actionReset_Zoom_triggered();
-
-    void on_actionZoom_Range_triggered();
-
-    void on_actionClear_triggered();
-
-    void on_actionCopy_triggered();
-
-    void on_actionPaste_triggered();
-
-    void on_actionCut_triggered();
-
-    void on_actionSave_as_triggered();
-
-    void on_actionSave_triggered();
-
-    void on_actionLoad_triggered();
-
-    void on_actionShowValues_triggered();
-
-    void on_actionShowCurve_triggered();
-
-    void on_actionExport_to_PNG_triggered();
-
-    void on_actionExport_to_PDF_triggered();
-
-    void on_actionAbout_triggered();
-
-    void on_actionAbout_Qt_triggered();
+    
+    /* Menu Help */
+    void actionAboutTriggered();
+    void actionAboutQtTriggered();
 
 private:
     Ui::BewavedDolphin *m_ui;

@@ -100,9 +100,40 @@ BewavedDolphin::BewavedDolphin(Editor *editor, QWidget *parent)
     
     
     
-    /* Connections */
+   /* Connections for slot Menu File this class*/
+    connect( m_ui->actionLoad, &QAction::triggered, this, &BewavedDolphin::actionLoadTriggered);
+    connect( m_ui->actionSave, &QAction::triggered, this, &BewavedDolphin::actionSaveTriggered);
+    connect( m_ui->actionSave_as, &QAction::triggered, this, &BewavedDolphin::actionSaveAsTriggered);
+    connect( m_ui->actionExport_to_PDF, &QAction::triggered, this, &BewavedDolphin::actionExportToPdfTriggered);
+    connect( m_ui->actionExport_to_PNG, &QAction::triggered, this, &BewavedDolphin::actionExportToPngTriggered);
+    connect( m_ui->actionExit, &QAction::triggered, this, &BewavedDolphin::actionExitTriggered);
+    
+    /* Connections for slot Menu Edit this class*/
+    connect( m_ui->actionCut, &QAction::triggered, this, &BewavedDolphin::actionCutTriggered);
+    connect( m_ui->actionCopy, &QAction::triggered, this, &BewavedDolphin::actionCopyTriggered);
+    connect( m_ui->actionPaste, &QAction::triggered, this, &BewavedDolphin::actionPasteTriggered);
+    connect( m_ui->actionClear, &QAction::triggered, this, &BewavedDolphin::actionClearTriggered);
+    connect( m_ui->actionCombinational, &QAction::triggered, this, &BewavedDolphin::actionCombinationalTriggered);
+    connect( m_ui->actionSet_to_0, &QAction::triggered, this, &BewavedDolphin::actionSetTo_0_Triggered);
+    connect( m_ui->actionSet_to_1, &QAction::triggered, this, &BewavedDolphin::actionSetTo_1_Triggered);
+    connect( m_ui->actionInvert, &QAction::triggered, this, &BewavedDolphin::actionInvertTriggered);
+    connect( m_ui->actionSet_clock_wave, &QAction::triggered, this, &BewavedDolphin::actionSetClockWaveTriggered);
     
     
+    /* Connections for slot Menu Edit this class*/
+    connect( m_ui->actionZoom_out, &QAction::triggered, this, &BewavedDolphin::actionZoomOutTriggered);
+    connect( m_ui->actionZoom_In, &QAction::triggered, this, &BewavedDolphin::actionZoomInTriggered);
+    connect( m_ui->actionReset_Zoom, &QAction::triggered, this, &BewavedDolphin::actionResetZoomTriggered);
+    connect( m_ui->actionZoom_Range, &QAction::triggered, this, &BewavedDolphin::actionZoomRangeTriggered);
+    connect( m_ui->actionSet_Length, &QAction::triggered, this, &BewavedDolphin::actionSetLengthTriggered);
+    connect( m_ui->actionZoom_In, &QAction::triggered, this, &BewavedDolphin::actionCutTriggered);
+    connect( m_ui->actionShowValues, &QAction::triggered, this, &BewavedDolphin::actionShowValuesTriggered);
+    connect( m_ui->actionShowCurve, &QAction::triggered, this, &BewavedDolphin::actionShowCurveTriggered);
+    
+    
+     /* Connections for slot Menu Help this class*/
+    connect( m_ui->actionAbout, &QAction::triggered, this, &BewavedDolphin::actionAboutTriggered);
+    connect( m_ui->actionAbout_Qt, &QAction::triggered, this, &BewavedDolphin::actionAboutQtTriggered);
     
     
     
@@ -143,7 +174,7 @@ void BewavedDolphin::closeEvent(QCloseEvent *e)
     }
 }
 
-void BewavedDolphin::on_actionExit_triggered()
+void BewavedDolphin::actionExitTriggered()
 {
     close();
 }
@@ -157,7 +188,7 @@ bool BewavedDolphin::checkSave()
                                       tr("Save simulation before closing?"),
                                       QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
         if (reply == QMessageBox::Save) {
-            on_actionSave_triggered();
+            actionSaveTriggered();
             return (!m_edited);
         } else if (reply == QMessageBox::Discard) {
             return true;
@@ -305,7 +336,7 @@ void BewavedDolphin::loadNewTable(QStringList &input_labels, QStringList &output
     m_signalTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Fixed);
     COMMENT("Inputs: " << input_labels.size() << ", outputs: " << output_labels.size(), 0);
     m_edited = false;
-    on_actionClear_triggered();
+    actionClearTriggered();
 }
 
 QVector<char> BewavedDolphin::loadSignals(QStringList &input_labels, QStringList &output_labels)
@@ -402,7 +433,7 @@ void BewavedDolphin::print()
     }
 }
 
-void BewavedDolphin::on_actionSet_to_0_triggered()
+void BewavedDolphin::actionSetTo_0_Triggered()
 {
     COMMENT("Pressed 0!", 0);
     // auto itemList = signalTableView->selectedItems( );
@@ -418,7 +449,7 @@ void BewavedDolphin::on_actionSet_to_0_triggered()
     run();
 }
 
-void BewavedDolphin::on_actionSet_to_1_triggered()
+void BewavedDolphin::actionSetTo_1_Triggered()
 {
     COMMENT("Pressed 0!", 0);
     auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
@@ -433,7 +464,7 @@ void BewavedDolphin::on_actionSet_to_1_triggered()
     run();
 }
 
-void BewavedDolphin::on_actionInvert_triggered()
+void BewavedDolphin::actionInvertTriggered()
 {
     COMMENT("Pressed Not!", 0);
     auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
@@ -472,7 +503,7 @@ int BewavedDolphin::sectionFirstRow(const QItemSelection &ranges)
     return first_row;
 }
 
-void BewavedDolphin::on_actionSet_clock_wave_triggered()
+void BewavedDolphin::actionSetClockWaveTriggered()
 {
     COMMENT("Getting first column.", 0);
     QItemSelection ranges = m_signalTableView->selectionModel()->selection();
@@ -497,7 +528,7 @@ void BewavedDolphin::on_actionSet_clock_wave_triggered()
     run();
 }
 
-void BewavedDolphin::on_actionCombinational_triggered()
+void BewavedDolphin::actionCombinationalTriggered()
 {
     COMMENT("Setting the signal according it its column and clock period.", 0);
     int clock_period = 2;
@@ -515,7 +546,7 @@ void BewavedDolphin::on_actionCombinational_triggered()
     run();
 }
 
-void BewavedDolphin::on_actionSet_Length_triggered()
+void BewavedDolphin::actionSetLengthTriggered()
 {
     COMMENT("Setting the simulation length.", 0);
     lengthDialog dialog(this);
@@ -559,28 +590,28 @@ void BewavedDolphin::setLength(int sim_length, bool run_simulation)
     }
 }
 
-void BewavedDolphin::on_actionZoom_out_triggered()
+void BewavedDolphin::actionZoomOutTriggered()
 {
     // gv->gvzoom( )->zoomOut( );
     m_scale *= m_SCALE_FACTOR;
     m_gv->scale(m_SCALE_FACTOR, m_SCALE_FACTOR);
 }
 
-void BewavedDolphin::on_actionZoom_In_triggered()
+void BewavedDolphin::actionZoomInTriggered()
 {
     // gv->gvzoom( )->zoomIn( );
     m_scale /= m_SCALE_FACTOR;
     m_gv->scale(1.0 / m_SCALE_FACTOR, 1.0 / m_SCALE_FACTOR);
 }
 
-void BewavedDolphin::on_actionReset_Zoom_triggered()
+void BewavedDolphin::actionResetZoomTriggered()
 {
     // gv->gvzoom( )->resetZoom( );
     m_gv->scale(1.0 / m_scale, 1.0 / m_scale);
     m_scale = 1.0;
 }
 
-void BewavedDolphin::on_actionZoom_Range_triggered()
+void BewavedDolphin::actionZoomRangeTriggered()
 {
     m_gv->scale(1.0 / m_scale, 1.0 / m_scale);
     double w_scale = static_cast<double>(m_gv->width()) / (m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0));
@@ -589,7 +620,7 @@ void BewavedDolphin::on_actionZoom_Range_triggered()
     m_gv->scale(1.0 * m_scale, 1.0 * m_scale);
 }
 
-void BewavedDolphin::on_actionClear_triggered()
+void BewavedDolphin::actionClearTriggered()
 {
     for (int row = 0; row < m_inputs.size(); ++row) {
         for (int col = 0; col < m_model->columnCount(); ++col) {
@@ -601,7 +632,7 @@ void BewavedDolphin::on_actionClear_triggered()
     run();
 }
 
-void BewavedDolphin::on_actionCopy_triggered()
+void BewavedDolphin::actionCopyTriggered()
 {
     QItemSelection ranges = m_signalTableView->selectionModel()->selection();
     if (ranges.isEmpty()) {
@@ -618,7 +649,7 @@ void BewavedDolphin::on_actionCopy_triggered()
     clipboard->setMimeData(mimeData);
 }
 
-void BewavedDolphin::on_actionCut_triggered()
+void BewavedDolphin::actionCutTriggered()
 {
     QItemSelection ranges = m_signalTableView->selectionModel()->selection();
     if (ranges.isEmpty()) {
@@ -636,7 +667,7 @@ void BewavedDolphin::on_actionCut_triggered()
     m_edited = true;
 }
 
-void BewavedDolphin::on_actionPaste_triggered()
+void BewavedDolphin::actionPasteTriggered()
 {
     QItemSelection ranges = m_signalTableView->selectionModel()->selection();
     if (ranges.isEmpty()) {
@@ -655,7 +686,7 @@ void BewavedDolphin::on_actionPaste_triggered()
 void BewavedDolphin::cut(const QItemSelection &ranges, QDataStream &ds)
 {
     copy(ranges, ds);
-    on_actionSet_to_0_triggered();
+    actionSetTo_0_Triggered();
 }
 
 void BewavedDolphin::copy(const QItemSelection &ranges, QDataStream &ds)
@@ -697,7 +728,7 @@ void BewavedDolphin::paste(QItemSelection &ranges, QDataStream &ds)
     run();
 }
 
-void BewavedDolphin::on_actionSave_as_triggered()
+void BewavedDolphin::actionSaveAsTriggered()
 {
     QString fname = m_currentFile.absoluteFilePath();
     QString path = m_mainWindow->getCurrentFile().dir().absolutePath();
@@ -738,10 +769,10 @@ void BewavedDolphin::on_actionSave_as_triggered()
     delete selected_filter;
 }
 
-void BewavedDolphin::on_actionSave_triggered()
+void BewavedDolphin::actionSaveTriggered()
 {
     if (m_currentFile.fileName().isEmpty()) {
-        on_actionSave_as_triggered();
+        actionSaveAsTriggered();
         return;
     }
     QString fname = m_currentFile.absoluteFilePath();
@@ -753,7 +784,7 @@ void BewavedDolphin::on_actionSave_triggered()
     }
 }
 
-void BewavedDolphin::on_actionLoad_triggered()
+void BewavedDolphin::actionLoadTriggered()
 {
     QDir defaultDirectory;
     if (m_currentFile.exists()) {
@@ -935,7 +966,7 @@ void BewavedDolphin::load(QFile &fl)
     run();
 }
 
-void BewavedDolphin::on_actionShowValues_triggered()
+void BewavedDolphin::actionShowValuesTriggered()
 {
     m_type = PlotType::number;
     for (int row = 0; row < m_model->rowCount(); ++row) {
@@ -952,7 +983,7 @@ void BewavedDolphin::on_actionShowValues_triggered()
     run();
 }
 
-void BewavedDolphin::on_actionShowCurve_triggered()
+void BewavedDolphin::actionShowCurveTriggered()
 {
     m_type = PlotType::line;
     for (int row = 0; row < m_inputs.size(); ++row) {
@@ -964,7 +995,7 @@ void BewavedDolphin::on_actionShowCurve_triggered()
     run();
 }
 
-void BewavedDolphin::on_actionExport_to_PNG_triggered()
+void BewavedDolphin::actionExportToPngTriggered()
 {
     QString pngFile = QFileDialog::getSaveFileName(this, tr("Export to Image"), m_currentFile.absolutePath(), tr("PNG files (*.png)"));
     if (pngFile.isEmpty()) {
@@ -984,7 +1015,7 @@ void BewavedDolphin::on_actionExport_to_PNG_triggered()
     img.save(pngFile);
 }
 
-void BewavedDolphin::on_actionExport_to_PDF_triggered()
+void BewavedDolphin::actionExportToPdfTriggered()
 {
     QString pdfFile = QFileDialog::getSaveFileName(this, tr("Export to PDF"), m_currentFile.absolutePath(), tr("PDF files (*.pdf)"));
     if (pdfFile.isEmpty()) {
@@ -1007,7 +1038,7 @@ void BewavedDolphin::on_actionExport_to_PDF_triggered()
     p.end();
 }
 
-void BewavedDolphin::on_actionAbout_triggered()
+void BewavedDolphin::actionAboutTriggered()
 {
     QMessageBox::about(this,
                        "beWaved Dolphin",
@@ -1024,7 +1055,7 @@ void BewavedDolphin::on_actionAbout_triggered()
                            .arg(QApplication::applicationVersion()));
 }
 
-void BewavedDolphin::on_actionAbout_Qt_triggered()
+void BewavedDolphin::actionAboutQtTriggered()
 {
     QMessageBox::aboutQt(this);
 }

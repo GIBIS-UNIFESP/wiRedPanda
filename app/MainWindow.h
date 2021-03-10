@@ -150,7 +150,7 @@ private slots:
     void actionWaveFormTriggered();
     void actionMuteTriggered();
     
-    
+    /* Line Edit */
     void lineEditReturnPressed();
     void lineEditTextChanged(const QString &arg1);
 
