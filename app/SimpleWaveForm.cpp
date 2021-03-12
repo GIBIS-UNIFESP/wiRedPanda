@@ -48,6 +48,14 @@ SimpleWaveform::SimpleWaveform(Editor *editor, QWidget *parent)
     settings.beginGroup("SimpleWaveform");
     restoreGeometry(settings.value("geometry").toByteArray());
     settings.endGroup();
+    
+    connect( m_ui->pushButton, &QPushButton::clicked, this, &SimpleWaveform::pushButtonCopyClicked);
+    connect( m_ui->radioButton_Decreasing, &QPushButton::clicked, this, &SimpleWaveform::radioButtonDecreasingClicked);
+    connect( m_ui->radioButton_Position, &QPushButton::clicked, this, &SimpleWaveform::radioButtonPositionClicked);
+    connect( m_ui->radioButton_Increasing, &QPushButton::clicked, this, &SimpleWaveform::radioButtonIncreasingClicked);
+    
+    
+    
 }
 
 SimpleWaveform::~SimpleWaveform()
@@ -362,7 +370,7 @@ void SimpleWaveform::showWaveform()
     scst.release();
 }
 
-void SimpleWaveform::on_radioButton_Position_clicked()
+void SimpleWaveform::radioButtonPositionClicked()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     settings.beginGroup("waveform");
@@ -372,7 +380,7 @@ void SimpleWaveform::on_radioButton_Position_clicked()
     showWaveform();
 }
 
-void SimpleWaveform::on_radioButton_Increasing_clicked()
+void SimpleWaveform::radioButtonIncreasingClicked()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     settings.beginGroup("waveform");
@@ -382,7 +390,7 @@ void SimpleWaveform::on_radioButton_Increasing_clicked()
     showWaveform();
 }
 
-void SimpleWaveform::on_radioButton_Decreasing_clicked()
+void SimpleWaveform::radioButtonDecreasingClicked()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     settings.beginGroup("waveform");
@@ -392,7 +400,7 @@ void SimpleWaveform::on_radioButton_Decreasing_clicked()
     showWaveform();
 }
 
-void SimpleWaveform::on_pushButton_Copy_clicked()
+void SimpleWaveform::pushButtonCopyClicked()
 {
     QSize s = m_chart.size().toSize();
     QPixmap p(s);

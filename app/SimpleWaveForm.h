@@ -33,10 +33,12 @@ public:
     static bool saveToTxt(QTextStream &outStream, Editor *editor);
 
 private slots:
-    void on_radioButton_Position_clicked();
-    void on_radioButton_Increasing_clicked();
-    void on_radioButton_Decreasing_clicked();
-    void on_pushButton_Copy_clicked();
+    void pushButtonCopyClicked();
+    void radioButtonDecreasingClicked();
+    void radioButtonPositionClicked();
+    void radioButtonIncreasingClicked();
+    
+    
 
 private:
     Ui::SimpleWaveform *m_ui;
