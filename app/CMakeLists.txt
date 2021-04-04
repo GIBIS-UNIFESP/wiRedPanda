@@ -1,7 +1,7 @@
 
 set(
     WPANDA_FILES
-    bewaveddolphin.cpp
+    BewavedDolphin.cpp
     clockDialog.cpp
     commands.cpp
     common.cpp
@@ -25,7 +25,7 @@ set(
     LengthDialog.cpp
     listitemwidget.cpp
     logicelement.cpp
-    mainwindow.cpp
+    MainWindow.cpp
     recentfilescontroller.cpp
     scene.cpp
     scstop.cpp
@@ -67,10 +67,10 @@ qt5_add_resources(
 
 set (
     WPANDA_FORMS
-    bewaveddolphin.ui
+    BewavedDolphin.ui
     clockDialog.ui
     LengthDialog.ui
-    mainwindow.ui
+    MainWindow.ui
     elementeditor.ui
     simplewaveform.ui
 )

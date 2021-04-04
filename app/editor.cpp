@@ -13,7 +13,7 @@
 #include "icmanager.h"
 #include "icprototype.h"
 #include "input.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "nodes/qneconnection.h"
 #include "qneport.h"
 #include "serializationfunctions.h"

@@ -13,7 +13,7 @@
 #include "ic.h"
 #include "icnotfoundexception.h"
 #include "icprototype.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 
 ICManager *ICManager::globalICManager = nullptr;
 

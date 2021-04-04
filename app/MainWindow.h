@@ -92,67 +92,76 @@ public slots:
     void updateRecentICs();
 
 private slots:
-    bool on_actionExport_to_Arduino_triggered();
-    void on_actionExport_to_Image_triggered();
-    void on_actionPrint_triggered();
-
-    void on_actionAbout_Qt_triggered();
-    void on_actionAbout_triggered();
-    void on_actionEnglish_triggered();
-    void on_actionExit_triggered();
-    void on_actionGates_triggered(bool checked);
-    void on_actionNew_triggered();
-    void on_actionOpen_IC_triggered();
-    void on_actionOpen_triggered();
-    void on_actionPortuguese_triggered();
-    void on_actionReload_File_triggered();
-    void on_actionReset_Zoom_triggered();
-    void on_actionRotate_left_triggered();
-    void on_actionRotate_right_triggered();
-    void on_actionSave_As_triggered();
-    void on_actionSave_triggered();
-    void on_actionSelect_all_triggered();
-    void on_actionWires_triggered(bool checked);
-    void on_actionZoom_in_triggered();
-    void on_actionZoom_out_triggered();
-    void on_lineEdit_returnPressed();
-    void on_lineEdit_textChanged(const QString &arg1);
+    
+    /* Menu File  Start*/
+    void actionNewTriggered();
+    void actionOpenTriggered();
+    
+    void actionOpenIcTriggered();
     void openRecentFile();
+    void actionReloadFileTriggered();
+    
+    void actionSaveTriggered();
+    void actionSaveAsTriggered();
+    void actionSaveLocalProjectTriggered();
+    
+    bool actionExportToArduinoTriggered();
+    void actionPrintTriggered();
+    void actionExportToImageTriggered();
+    void actionExitTriggered();
+        
+    
+    /* Menu Edit */
+    void actionRenameTriggered();
+    void actionChangeTriggerTriggered();
+    
+    void actionRotateLeftTriggered();
+    void actionRotateRightTriggered();
+    void actionFlipHorizontallyTriggered();
+    void actionFlipVerticallyTriggered();
+    
+    void actionSelectAllTriggered();
+    void actionClearSelectionTriggered();
+    
+    
+    /* Menu View */
+    void actionPandaLightTriggered();
+    void actionPandaDarkTriggered();
+    void actionZoomInTriggered();
+    void actionZoomOutTriggered();
+    void actionResetZoomTriggered();
+    void actionWiresTriggered(bool checked);
+    void actionGatesTriggered(bool checked);
+    void actionFastModeTriggered(bool checked);
+    void actionFullScreenTriggered() const;
+    void actionLabelsUnderIconsTriggered(bool checked);
+    
+    /* Language */
+    void actionEnglishTriggered();
+    void actionPortugueseTriggered();
+    
+    /* Help */
+    void actionAboutTriggered();
+    void actionAboutQtTriggered();
+    
+    
+    /* simulation */
+    void actionPlayTriggered(bool checked);
+    void actionWaveFormTriggered();
+    void actionMuteTriggered();
+    
+    /* Line Edit */
+    void lineEditReturnPressed();
+    void lineEditTextChanged(const QString &arg1);
+
+
+    
     void scrollView(int dx, int dy);
     void updateRecentFileActions();
     void zoomChanged();
-
-    void on_actionPlay_triggered(bool checked);
-
-    void on_actionRename_triggered();
-
-    void on_actionChange_Trigger_triggered();
-
-    void on_actionClear_selection_triggered();
-
-    void on_actionFast_Mode_triggered(bool checked);
-
-    void on_actionWaveform_triggered();
-
-    void on_actionPanda_Light_triggered();
-
-    void on_actionPanda_Dark_triggered();
-
+    
     void updateTheme();
-
-    void on_actionFlip_horizontally_triggered();
-
-    void on_actionFlip_vertically_triggered();
-
-    void on_actionFullscreen_triggered() const;
-
     void autoSave();
-
-    void on_actionMute_triggered();
-
-    void on_actionLabels_under_icons_triggered(bool checked);
-
-    void on_actionSave_Local_Project_triggered();
 
 private:
     Ui::MainWindow *ui;
