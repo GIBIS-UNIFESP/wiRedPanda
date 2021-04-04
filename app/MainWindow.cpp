@@ -730,6 +730,9 @@ QString MainWindow::getOpenICFile()
 }
 
 
+    ui->statusBar->showMessage(tr("Loaded ic successfully."), 2000);
+
+
 
 void MainWindow::lineEditTextChanged(const QString &text)
 {
