@@ -78,10 +78,10 @@ SOURCES += \
     $$PWD/app/common.cpp
 
 HEADERS  +=  \
-  $$PWD/app/bewaveddolphin.h \
-  $$PWD/app/clockDialog.h \
+    $$PWD/app/bewaveddolphin.h \
+    $$PWD/app/clockDialog.h \
     $$PWD/app/common.h \
-  $$PWD/app/filehelper.h \
+    $$PWD/app/filehelper.h \
     $$PWD/app/graphicsviewzoom.h \
     $$PWD/app/arduino/codegenerator.h\
     $$PWD/app/commands.h \
@@ -92,21 +92,21 @@ HEADERS  +=  \
     $$PWD/app/globalproperties.h \
     $$PWD/app/graphicelement.h \
     $$PWD/app/graphicsview.h \
-  $$PWD/app/ic.h \
-  $$PWD/app/icmanager.h \
-  $$PWD/app/icmapping.h \
-  $$PWD/app/icnotfoundexception.h \
-  $$PWD/app/icprototype.h \
-  $$PWD/app/icprototypeimpl.h \
+    $$PWD/app/ic.h \
+    $$PWD/app/icmanager.h \
+    $$PWD/app/icmapping.h \
+    $$PWD/app/icnotfoundexception.h \
+    $$PWD/app/icprototype.h \
+    $$PWD/app/icprototypeimpl.h \
     $$PWD/app/label.h \
-  $$PWD/app/lengthDialog.h \
+    $$PWD/app/lengthDialog.h \
     $$PWD/app/listitemwidget.h \
     $$PWD/app/mainwindow.h \
     $$PWD/app/nodes/qneconnection.h \
     $$PWD/app/nodes/qneport.h \
     $$PWD/app/recentfilescontroller.h \
     $$PWD/app/scene.h \
-  $$PWD/app/scstop.h \
+    $$PWD/app/scstop.h \
     $$PWD/app/serializationfunctions.h \
     $$PWD/app/simulationcontroller.h \
     $$PWD/app/itemwithid.h \

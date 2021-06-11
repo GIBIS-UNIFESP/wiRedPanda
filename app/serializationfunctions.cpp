@@ -107,11 +107,14 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &ds, doub
         } else if (type == QNEConnection::Type) {
             COMMENT("Reading Connection.", 0);
             QNEConnection *conn = ElementFactory::buildConnection();
+            COMMENT("Connection built.", 0);
             conn->setSelected(true);
+            COMMENT("Selected true.", 0);
             if (!conn->load(ds, portMap)) {
                 COMMENT("Deleting connection.", 0);
                 delete conn;
             } else {
+                COMMENT("Appending connection.", 0);
                 itemList.append(conn);
             }
         } else {
@@ -119,6 +122,7 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &ds, doub
             throw(std::runtime_error(ERRORMSG("Invalid type. Data is possibly corrupted.")));
         }
     }
+    COMMENT("Finished deserializing.", 0);
     return itemList;
 }
 
