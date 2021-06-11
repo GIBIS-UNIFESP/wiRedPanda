@@ -27,4 +27,5 @@ FORMS +=
 
 HEADERS +=
 
-
+TRANSLATIONS = wpanda_en.ts \
+               wpanda_pt.ts
