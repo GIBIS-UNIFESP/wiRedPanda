@@ -60,7 +60,7 @@ bool ICPrototypeImpl::updateLocalIC(const QString &fileName, const QString &dirN
             }
         }
     }
-    COMMENT("Updating references of subics.", 0);
+    COMMENT("Updating references of subics in IC files!!!", 0);
     try {
         if (!SerializationFunctions::update(fileName, dirName)) {
             std::cerr << "Error saving local ic." << std::endl;
