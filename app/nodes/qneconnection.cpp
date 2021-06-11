@@ -173,24 +173,33 @@ bool QNEConnection::load(QDataStream &ds, const QMap<quint64, QNEPort *> &portMa
             }
         }
     } else if (portMap.contains(ptr1) && portMap.contains(ptr2)) {
-        COMMENT("Port map with elements.", 0);
+        COMMENT("Port map with elements: ptr1: " << ptr1 << ", ptr2: " << ptr2, 0);
         QNEPort *port1 = portMap[ptr1];
         QNEPort *port2 = portMap[ptr2];
+        COMMENT("Before if 1.", 0);
         if (port1 && port2) {
+            COMMENT("Before if 2.", 0);
             if (!port1->isOutput() && port2->isOutput()) {
+                COMMENT("Setting start 1.", 0);
                 setStart(dynamic_cast<QNEOutputPort *>(port2));
+                COMMENT("Setting end 1.", 0);
                 setEnd(dynamic_cast<QNEInputPort *>(port1));
             } else if (port1->isOutput() && !port2->isOutput()) {
+                COMMENT("Setting start 2.", 0);
                 setStart(dynamic_cast<QNEOutputPort *>(port1));
+                COMMENT("Setting end 2.", 0);
                 setEnd(dynamic_cast<QNEInputPort *>(port2));
             }
+            COMMENT("After ifs.", 0);
         }
     } else {
         return false;
     }
+    COMMENT("Updating pos from ports.", 0);
     updatePosFromPorts();
+    COMMENT("Updating path.", 0);
     updatePath();
-
+    COMMENT("returning.", 0);
     return (m_start != nullptr && m_end != nullptr);
 }
 
