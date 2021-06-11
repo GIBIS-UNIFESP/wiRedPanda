@@ -855,9 +855,7 @@ bool Editor::saveLocal(const QString& newPath)
 
 void Editor::save(QDataStream &ds, const QString &dolphinFilename)
 {
-    ds << QApplication::applicationName() + " " + QString::number(GlobalProperties::version);
-    ds << dolphinFilename;
-    ds << m_scene->sceneRect();
+    SerializationFunctions::saveHeader(ds, dolphinFilename, m_scene->sceneRect());
     SerializationFunctions::serialize(m_scene->items(), ds);
 }
 

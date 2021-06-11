@@ -26,6 +26,10 @@ public:
      */
     static bool update(const QString &fileName, const QString &icDirName);
     /**
+     * @brief saveHeader: Saves the following header information into the panda file, in this order: app name, app version, associated dolphin filename, scene rectangle.
+     */
+    static void saveHeader(QDataStream &ds, const QString &dolphinFilename, const QRectF &rect);
+    /**
      * @brief serialize: Serializes the list of QGraphicItems through a binary data stream.
      */
     static void serialize(const QList<QGraphicsItem *> &items, QDataStream &ds);

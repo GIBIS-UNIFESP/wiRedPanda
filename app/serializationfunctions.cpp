@@ -27,6 +27,7 @@
 bool SerializationFunctions::update(const QString &fileName, const QString &dirName)
 {
     double version;
+    QString dolphinFilename;
     QRectF rect;
     QList<QGraphicsItem *> itemList;
     QFile file(fileName);
@@ -34,7 +35,7 @@ bool SerializationFunctions::update(const QString &fileName, const QString &dirN
         COMMENT("Started reading IC file " << fileName.toStdString(), 0);
         QDataStream ds(&file);
         version = loadVersion(ds);
-        loadDolphinFilename(ds, version);
+        dolphinFilename = loadDolphinFilename(ds, version);
         rect = loadRect(ds, version);
         COMMENT("Version: " << version, 0);
         COMMENT("Element deserialization.", 0);
@@ -46,8 +47,8 @@ bool SerializationFunctions::update(const QString &fileName, const QString &dirN
     if (fl.open(QFile::WriteOnly)) {
         COMMENT("Start updating IC " << fileName.toStdString(), 0);
         QDataStream ds(&fl);
-        ds << QApplication::applicationName() + " " + QString::number(GlobalProperties::version);
-        ds << rect;
+        COMMENT("Saving header information.", 0);
+        saveHeader(ds, dolphinFilename, rect);
         COMMENT("Element serialization.", 0);
         serialize(itemList, ds);
     }
@@ -58,6 +59,13 @@ bool SerializationFunctions::update(const QString &fileName, const QString &dirN
 
     COMMENT("Finished updating IC " << fileName.toStdString(), 0);
     return true;
+}
+
+void SerializationFunctions::saveHeader(QDataStream &ds, const QString &dolphinFilename, const QRectF &rect)
+{
+  ds << QApplication::applicationName() + " " + QString::number(GlobalProperties::version);
+  ds << dolphinFilename;
+  ds << rect;
 }
 
 void SerializationFunctions::serialize(const QList<QGraphicsItem *> &items, QDataStream &ds)
