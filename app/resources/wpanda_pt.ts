@@ -462,7 +462,7 @@ Erro: %1</translation>
     </message>
     <message>
         <source>Change skin to ...</source>
-        <translation>Alterar imagem para ...</translation>
+        <translation>Alterar aparência para ...</translation>
     </message>
     <message>
         <source>Default</source>
@@ -518,7 +518,7 @@ Erro: %1</translation>
     </message>
     <message>
         <source>Set skin to default</source>
-        <translation>Voltar para a imagem padrão</translation>
+        <translation>Colocar aparência padrão</translation>
     </message>
     <message>
         <source>Images (*.png *.gif *.jpg)</source>
@@ -1273,7 +1273,7 @@ Errp: %1</translation>
     </message>
     <message>
         <source>Copy to Clipboard</source>
-        <translation>Copiar imagem</translation>
+        <translation>Copiar para Área de Transferência</translation>
     </message>
     <message>
         <source>Error</source>
