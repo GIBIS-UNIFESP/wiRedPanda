@@ -59,6 +59,7 @@ private slots:
 
 private:
     void setCurrentElements(const QVector<GraphicElement *> &element);
+    void updateSkins();
     void apply();
 
     Ui::ElementEditor * m_ui;
@@ -79,6 +80,7 @@ private:
     QString m_manyTriggers;
     QString m_manyAudios;
     QString m_skinName;
+    bool m_updatingSkin;
     bool m_defaultSkin;
 };
 
