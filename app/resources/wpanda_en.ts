@@ -17,6 +17,322 @@
     </message>
 </context>
 <context>
+    <name>BewavedDolphin</name>
+    <message>
+        <source>MainWindow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>toolBar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+H</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+L</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+W</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Combinational</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export to PDF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+P</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save As...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+V</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set to 0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+0, 0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set to 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+1, 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set clock wave</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+W</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invert</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+N</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Merge</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Split</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export to PNG</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+P</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+L</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About Qt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+H</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom In</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+=, Ctrl+=</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom Out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom Range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+R</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset Zoom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Home</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Numeric</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Waves</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wired Panda - Bewaved Dolphin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save simulation before closing?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not load enough elements for the simulation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save File as ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dolphin files (*.dolphin);;CSV files (*.csv)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to link this Bewaved Dolphin file to your current Wired Panda file and save it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saved file successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not save file: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File loaded successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File &quot;%1&quot; does not exists!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error loading project: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not open file.
+Error: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Format not supported. Could not open file : </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not open file in ReadOnly mode : </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export to Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PNG files (*.png)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PDF files (*.pdf)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ERROR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not print this circuit to PDF.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;beWaved Dolphin is a waveform simulator for the weRed Panda software developed by the Federal University of São Paulo. This project was created in order to help students to learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWaved Dolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ChangeInputSZCommand</name>
     <message>
         <source>Change input size to %1</source>
@@ -372,10 +688,6 @@ Do you want to find this file?</source>
     </message>
     <message>
         <source>Memory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Box</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -739,10 +1051,6 @@ Do you want to find this file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Saved file sucessfully.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Could not save file: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -797,31 +1105,11 @@ Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Open File as IC</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Loaded ic sucessfully.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Arduino code successfully generated.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;strong&gt;Error while exporting to arduino code:&lt;/strong&gt;&lt;br&gt;%1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not open %1 for write.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not generate waveform file for %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -881,11 +1169,35 @@ Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Open &amp;file as IC</source>
+        <source>Saved file successfully.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Open file as IC</source>
+        <source>Could not open waveform file: %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>IC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load &amp;file as IC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load file as IC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load File as IC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loaded IC successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;strong&gt;Error while exporting to Arduino code:&lt;/strong&gt;&lt;br&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -972,6 +1284,33 @@ Error: %1</source>
     <name>UpdateCommand</name>
     <message>
         <source>Update %1 elements</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>clockDialog</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clock Frequency</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>1024</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
