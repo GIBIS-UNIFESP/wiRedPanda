@@ -27,6 +27,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     m_manyTriggers = tr("<Many triggers>");
     m_manyAudios = tr("<Many sounds>");
     m_defaultSkin = true;
+    m_updatingSkin = false;
 
     m_ui->setupUi(this);
     setEnabled(false);
@@ -85,10 +86,6 @@ void ElementEditor::contextMenu(QPoint screenPos)
     QString revertSkinText(tr("Set skin to default"));
     QString triggerActionText(tr("Change trigger"));
     QString morphMenuText(tr("Morph to..."));
-    //  if ( !m_defaultSkin )
-    //  {
-    //      menu.addAction( "Current icon file: ../filename.png" );
-    //  }
     if (m_hasLabel) {
         menu.addAction(QIcon(QPixmap(":/toolbar/rename.png")), renameActionText)->setData(renameActionText);
     }
@@ -96,16 +93,8 @@ void ElementEditor::contextMenu(QPoint screenPos)
         menu.addAction(QIcon(ElementFactory::getPixmap(ElementType::BUTTON)), triggerActionText)->setData(triggerActionText);
     }
     if (m_canChangeSkin) {
-        if (m_defaultSkin) {
-            // If the icon set is the default one, add the text to
-            // change it.
-            menu.addAction(changeSkinText);
-        } else {
-            // Allow the re-changing of icon
-            menu.addAction(changeSkinText);
-            // .. or setting it to default
-            menu.addAction(revertSkinText);
-        }
+        menu.addAction(changeSkinText);
+        menu.addAction(revertSkinText);
     }
     if (m_hasRotation) {
         menu.addAction(QIcon(QPixmap(":/toolbar/rotateR.png")), rotateActionText)->setData(rotateActionText);
@@ -202,6 +191,7 @@ void ElementEditor::contextMenu(QPoint screenPos)
         } else if (a->text() == revertSkinText) {
             // Reset the icon to its default
             m_defaultSkin = true;
+            m_updatingSkin = true;
             apply();
         } else if (a->data().toString() == freqActionText) {
             m_ui->doubleSpinBoxFrequency->setFocus();
@@ -237,6 +227,7 @@ void ElementEditor::updateElementSkin()
     if (fname.isEmpty()) {
         return;
     }
+    m_updatingSkin = true;
     m_skinName = fname;
     m_defaultSkin = false;
     apply();
@@ -433,7 +424,12 @@ void ElementEditor::apply()
                 elm->setTrigger(QKeySequence(m_ui->lineEditTrigger->text()));
             }
         }
-        elm->setSkin(m_defaultSkin, m_skinName);
+        if (m_updatingSkin) {
+            elm->setSkin(m_defaultSkin, m_skinName);
+        }
+    }
+    if (m_updatingSkin) {
+        m_updatingSkin = false;
     }
     emit sendCommand(new UpdateCommand(m_elements, itemData, m_editor));
 }
@@ -510,6 +506,7 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
 
 void ElementEditor::defaultSkin()
 {
+    m_updatingSkin = true;
     m_defaultSkin = true;
     apply();
 }
