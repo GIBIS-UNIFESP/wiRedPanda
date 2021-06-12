@@ -504,7 +504,7 @@ void MainWindow::updateRecentICs()
 
 QString MainWindow::getOpenICFile()
 {
-    return QFileDialog::getOpenFileName(this, tr("Open File as IC"), defaultDirectory.absolutePath(), tr("Panda files (*.panda)"));
+    return QFileDialog::getOpenFileName(this, tr("Load File as IC"), defaultDirectory.absolutePath(), tr("Panda files (*.panda)"));
 }
 
 void MainWindow::on_actionOpen_IC_triggered()
@@ -527,7 +527,7 @@ void MainWindow::on_actionOpen_IC_triggered()
     }
     fl.close();
 
-    ui->statusBar->showMessage(tr("Loaded ic successfully."), 2000);
+    ui->statusBar->showMessage(tr("Loaded IC successfully."), 2000);
 }
 
 void MainWindow::on_lineEdit_textChanged(const QString &text)
@@ -635,7 +635,7 @@ bool MainWindow::exportToArduino(QString fname)
 
         qDebug() << "Arduino code successfully generated.";
     } catch (std::runtime_error &e) {
-        QMessageBox::warning(this, tr("Error"), tr("<strong>Error while exporting to arduino code:</strong><br>%1").arg(e.what()));
+        QMessageBox::warning(this, tr("Error"), tr("<strong>Error while exporting to Arduino code:</strong><br>%1").arg(e.what()));
         return false;
     }
 
