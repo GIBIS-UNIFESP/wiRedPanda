@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "clock.h"
+#include "common.h"
 #include "globalproperties.h"
 #include "qneport.h"
 
@@ -15,6 +16,7 @@ Clock::~Clock() = default;
 Clock::Clock(QGraphicsItem *parent)
     : GraphicElement(ElementType::CLOCK, ElementGroup::INPUT, 0, 0, 1, 1, parent)
 {
+    COMMENT("Creating clock.", 0);
     m_pixmapSkinName = {
         ":/input/clock0.png",
         ":/input/clock1.png"
@@ -45,16 +47,23 @@ void Clock::updateClock()
     setOn(m_isOn);
 }
 
-bool Clock::getOn() const
+bool Clock::getOn(int port) const
 {
+    Q_UNUSED(port);
     return m_isOn;
 }
 
-void Clock::setOn(bool value)
+void Clock::setOn(bool value, int port)
 {
+    Q_UNUSED(port);
     m_isOn = value;
     setPixmap(m_pixmapSkinName[m_isOn ? 1 : 0]);
     m_outputs.first()->setValue(m_isOn);
+}
+
+int Clock::outputSize()
+{
+    return 1;
 }
 
 void Clock::save(QDataStream &ds) const

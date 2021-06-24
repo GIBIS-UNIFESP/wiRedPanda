@@ -4,6 +4,7 @@
 #include "elementmapping.h"
 
 #include "clock.h"
+#include "common.h"
 #include "graphicelement.h"
 #include "ic.h"
 #include "icmanager.h"
@@ -125,7 +126,8 @@ LogicElement *ElementMapping::buildLogicElement(GraphicElement *elm)
     case ElementType::SWITCH:
     case ElementType::BUTTON:
     case ElementType::CLOCK:
-        return new LogicInput();
+    case ElementType::ROTARY:
+        return new LogicInput(false, elm->outputSize());
     case ElementType::LED:
     case ElementType::BUZZER:
     case ElementType::DISPLAY:
@@ -177,8 +179,11 @@ LogicElement *ElementMapping::buildLogicElement(GraphicElement *elm)
 
 void ElementMapping::initialize()
 {
+    COMMENT("Clear.", 0);
     clear();
+    COMMENT("Generate Map.", 0);
     generateMap();
+    COMMENT("Connect.", 0);
     connectElements();
     m_initialized = true;
 }
@@ -193,6 +198,7 @@ void ElementMapping::sort()
 void ElementMapping::update()
 {
     //  bool resetSimulationController = false;
+    //COMMENT("Can run.", 0);
     if (canRun()) {
         for (Clock *clk : qAsConst(m_clocks)) {
             if (!clk) {
@@ -212,7 +218,9 @@ void ElementMapping::update()
             if (!iter.value()) {
                 continue;
             }
-            iter.value()->setOutputValue(iter.key()->getOn());
+            for(int port = 0; port < iter.key()->outputSize(); ++port) {
+                iter.value()->setOutputValue(port, iter.key()->getOn(port));
+            }
         }
         for (LogicElement *elm : qAsConst(m_logicElms)) {
             elm->updateLogic();

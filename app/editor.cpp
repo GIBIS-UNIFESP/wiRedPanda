@@ -608,12 +608,13 @@ bool Editor::dropEvt(QGraphicsSceneDragDropEvent *dde)
         dataStream >> offset >> type >> label_auxData;
         QPointF pos = dde->scenePos() - offset;
         dde->accept();
-
+        COMMENT("Droped element of type: " << static_cast<int>(type) << " at position: " << pos.x() << ", " << pos.y() << ", label: " << label_auxData.toStdString(), 0);
         GraphicElement *elm = ElementFactory::buildElement(static_cast<ElementType>(type));
-        /* If element type is unknown, a default element is created with the pixmap received from mimedata */
+        COMMENT("If element type is unknown, a default element is created with the pixmap received from mimedata", 0);
         if (!elm) {
             return false;
         }
+        COMMENT("Valid element!", 0);
         if (elm->elementType() == ElementType::IC) {
             try {
                 IC *box = dynamic_cast<IC *>(elm);
@@ -639,13 +640,13 @@ bool Editor::dropEvt(QGraphicsSceneDragDropEvent *dde)
         if (elm->rotatable() && (elm->elementType() != ElementType::NODE)) {
             elm->setRotation(90);
         }
-        /* Adding the element to the scene. */
+        COMMENT("Adding the element to the scene.", 0);
         receiveCommand(new AddItemsCommand(elm, this));
-        /* Cleaning the selection. */
+        COMMENT("Cleaning the selection.", 0);
         m_scene->clearSelection();
-        /* Setting created element as selected. */
+        COMMENT("Setting created element as selected.", 0);
         elm->setSelected(true);
-        /* Adjusting the position of the element. */
+        COMMENT("Adjusting the position of the element.", 0);
         elm->setPos(pos);
 
         return true;
@@ -1128,7 +1129,7 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
                     if (elm->hasTrigger() && !elm->getTrigger().isEmpty()) {
                         auto *in = dynamic_cast<Input *>(elm);
                         if (in && (elm->getTrigger().matches(keyEvt->key()) == QKeySequence::ExactMatch)) {
-                            if (elm->elementType() != ElementType::SWITCH) {
+                            if (elm->elementType() == ElementType::BUTTON) {
                                 in->setOn(false);
                             }
                         }

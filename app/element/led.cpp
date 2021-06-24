@@ -71,6 +71,8 @@ void Led::refresh()
     switch (inputSize()) {
     case 1: { /* 1 bit */
         setPixmap(m_pixmapSkinName[m_colorNumber + idx]);
+        input(0)->setName("led");
+        input(0)->setPos(32,bottomPosition());
         break;
     }
     case 2: { /* 2 bits */ // TODO: add option to select dark/light colors according to the theme.
@@ -79,14 +81,32 @@ void Led::refresh()
         } else {
             setPixmap(m_pixmapSkinName[18 + idx]);
         }
+        input(0)->setName("0");
+        input(0)->setPos(24,bottomPosition());
+        input(1)->setName("1");
+        input(1)->setPos(40,bottomPosition());
         break;
     }
     case 3: { /* 3 bits */ // TODO: add option to select dark/light colors according to the theme.
         setPixmap(m_pixmapSkinName[18 + idx]);
+        input(0)->setName("0");
+        input(0)->setPos(16,bottomPosition());
+        input(1)->setName("1");
+        input(1)->setPos(32,bottomPosition());
+        input(2)->setName("2");
+        input(2)->setPos(48,bottomPosition());
         break;
     }
     case 4: { /* 4 bits */
         setPixmap(m_pixmapSkinName[10 + idx]);
+        input(0)->setName("0");
+        input(0)->setPos(8,bottomPosition());
+        input(1)->setName("1");
+        input(1)->setPos(24,bottomPosition());
+        input(2)->setName("2");
+        input(2)->setPos(40,bottomPosition());
+        input(3)->setName("3");
+        input(3)->setPos(56,bottomPosition());
         break;
     }
     }
@@ -138,8 +158,7 @@ QString Led::genericProperties()
 void Led::updatePorts()
 {
     setHasColors(inputSize() == 1);
-
-    GraphicElement::updatePorts();
+    //GraphicElement::updatePorts();
 }
 
 void Led::setSkin(bool defaultSkin, const QString &filename)

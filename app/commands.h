@@ -291,4 +291,29 @@ private:
     QPointF m_minPos, m_maxPos;
 };
 
+class ChangeOutputSZCommand : public QUndoCommand
+{
+    Q_DECLARE_TR_FUNCTIONS(ChangeOutputSZCommand)
+public:
+    enum { Id = 110 };
+
+    explicit ChangeOutputSZCommand(const QVector<GraphicElement *> &elements, int newOutputSize, Editor *editor, QUndoCommand *parent = nullptr);
+
+    void undo() Q_DECL_OVERRIDE;
+    void redo() Q_DECL_OVERRIDE;
+
+    int id() const Q_DECL_OVERRIDE
+    {
+        return Id;
+    }
+
+private:
+    QVector<int> m_elms;
+    QVector<int> m_order;
+    Editor *m_editor;
+    QGraphicsScene *m_scene;
+    QByteArray m_oldData;
+    int m_newOutputSize;
+};
+
 #endif /* COMMANDS_H */

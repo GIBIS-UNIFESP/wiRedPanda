@@ -22,9 +22,10 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 public:
-    bool getOn() const override;
-    void setOn(const bool value) override;
+    bool getOn(int port=0) const override;
+    void setOn(const bool value, int port=0) override;
     void setSkin(bool defaultSkin, const QString &filename) override;
+    int outputSize() override;
 };
 
 #endif /* INPUTBUTTON_H */

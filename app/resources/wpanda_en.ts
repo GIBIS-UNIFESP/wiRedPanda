@@ -340,6 +340,13 @@ Error: %1</source>
     </message>
 </context>
 <context>
+    <name>ChangeOutputSZCommand</name>
+    <message>
+        <source>Change input size to %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DeleteItemsCommand</name>
     <message>
         <source>Delete %1 elements</source>
@@ -523,6 +530,10 @@ Error: %1</source>
         <source>White</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Output Ports:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ElementFactory</name>
@@ -632,6 +643,10 @@ Error: %1</source>
     </message>
     <message>
         <source>Unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotary switch</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

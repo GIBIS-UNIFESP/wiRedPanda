@@ -15,6 +15,7 @@
 #include "element/inputgnd.h"
 #include "element/inputswitch.h"
 #include "element/inputvcc.h"
+#include "element/inputrotary.h"
 #include "element/jkflipflop.h"
 #include "element/jklatch.h"
 #include "element/led.h"
@@ -44,6 +45,7 @@ size_t ElementFactory::getLastId() const
 
 ElementType ElementFactory::textToType(QString text)
 {
+    COMMENT("Creating Element Type conversion text to type.", 4);
     text = text.toUpper();
     ElementType type;
     type = text == "BUTTON"    ? ElementType::BUTTON
@@ -64,22 +66,22 @@ ElementType ElementFactory::textToType(QString text)
         : text == "JKFLIPFLOP" ? ElementType::JKFLIPFLOP
         : text == "JKLATCH"    ? ElementType::JKLATCH
         : text == "SRFLIPFLOP" ? ElementType::SRFLIPFLOP
-                               :
-                               //         text == "TLATCH" ? ElementType::TLATCH :
-        text == "TFLIPFLOP"   ? ElementType::TFLIPFLOP
-        : text == "DISPLAY"   ? ElementType::DISPLAY
-        : text == "DISPLAY14" ? ElementType::DISPLAY14
-        : text == "IC"        ? ElementType::IC
-        : text == "MUX"       ? ElementType::MUX
-        : text == "DEMUX"     ? ElementType::DEMUX
-        : text == "NODE"      ? ElementType::NODE
-        : text == "BUZZER"    ? ElementType::BUZZER
-                              : ElementType::UNKNOWN;
+        : text == "ROTARY"     ? ElementType::ROTARY
+        : text == "TFLIPFLOP"  ? ElementType::TFLIPFLOP
+        : text == "DISPLAY"    ? ElementType::DISPLAY
+        : text == "DISPLAY14"  ? ElementType::DISPLAY14
+        : text == "IC"         ? ElementType::IC
+        : text == "MUX"        ? ElementType::MUX
+        : text == "DEMUX"      ? ElementType::DEMUX
+        : text == "NODE"       ? ElementType::NODE
+        : text == "BUZZER"     ? ElementType::BUZZER
+                               : ElementType::UNKNOWN;
     return type;
 }
 
 QString ElementFactory::typeToText(ElementType type)
 {
+    COMMENT("Creating Element Type conversion type to text.", 4);
     switch (type) {
     case ElementType::BUTTON:
         return "BUTTON";
@@ -117,7 +119,8 @@ QString ElementFactory::typeToText(ElementType type)
         return "JKLATCH";
     case ElementType::SRFLIPFLOP:
         return "SRFLIPFLOP";
-        //      case ElementType::TLATCH: return  "TLATCH" ;
+    case ElementType::ROTARY:
+        return  "ROTARY" ;
     case ElementType::TFLIPFLOP:
         return "TFLIPFLOP";
     case ElementType::DISPLAY:
@@ -179,7 +182,8 @@ QString ElementFactory::translatedName(ElementType type)
         return tr("JK-latch");
     case ElementType::SRFLIPFLOP:
         return tr("SR-flipflop");
-        //      case ElementType::TLATCH: return  tr( "T-latch" ) ;
+    case ElementType::ROTARY:
+        return tr("Rotary switch");
     case ElementType::TFLIPFLOP:
         return tr("T-flipflop");
     case ElementType::DISPLAY:
@@ -241,10 +245,10 @@ QPixmap ElementFactory::getPixmap(ElementType type)
         return QPixmap(":/memory/light/JK-latch.png");
     case ElementType::SRFLIPFLOP:
         return QPixmap(":/memory/light/SR-flipflop.png");
-    case ElementType::UNUSED:
-        return QPixmap(":/memory/light/T-flipflop.png");
     case ElementType::TFLIPFLOP:
         return QPixmap(":/memory/light/T-flipflop.png");
+    case ElementType::ROTARY:
+        return QPixmap(":/input/rotary/rotary_icon.png");
     case ElementType::DISPLAY:
         return QPixmap(":/output/counter/counter_on.png");
     case ElementType::DISPLAY14:
@@ -272,6 +276,7 @@ ElementFactory::ElementFactory()
 
 GraphicElement *ElementFactory::buildElement(ElementType type, QGraphicsItem *parent)
 {
+    COMMENT("Creating Element. Building it!", 4);
     GraphicElement *elm;
     elm = type == ElementType::BUTTON     ? new InputButton(parent)
         : type == ElementType::SWITCH     ? new InputSwitch(parent)
@@ -292,7 +297,7 @@ GraphicElement *ElementFactory::buildElement(ElementType type, QGraphicsItem *pa
         : type == ElementType::JKFLIPFLOP ? new JKFlipFlop(parent)
         : type == ElementType::SRFLIPFLOP ? new SRFlipFlop(parent)
         : type == ElementType::TFLIPFLOP  ? new TFlipFlop(parent)
-        : type == ElementType::UNUSED     ? new TFlipFlop(parent)
+        : type == ElementType::ROTARY     ? new InputRotary(parent)
         : type == ElementType::DISPLAY    ? new Display(parent)
         : type == ElementType::DISPLAY14  ? new Display14(parent)
         : type == ElementType::IC         ? new IC(parent)

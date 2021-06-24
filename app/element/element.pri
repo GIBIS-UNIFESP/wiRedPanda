@@ -8,6 +8,7 @@ SOURCES += \
     $$PWD/dlatch.cpp \
     $$PWD/inputbutton.cpp \
     $$PWD/inputgnd.cpp \
+    $$PWD/inputrotary.cpp \
     $$PWD/inputswitch.cpp \
     $$PWD/inputvcc.cpp \
     $$PWD/jkflipflop.cpp \
@@ -37,6 +38,7 @@ HEADERS  +=  \
     $$PWD/inputbutton.h \
     $$PWD/inputgnd.h \
     $$PWD/input.h \
+    $$PWD/inputrotary.h \
     $$PWD/inputswitch.h \
     $$PWD/inputvcc.h \
     $$PWD/jkflipflop.h \

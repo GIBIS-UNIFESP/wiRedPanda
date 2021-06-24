@@ -25,7 +25,7 @@ enum class ElementType : uint_fast8_t {
     JKFLIPFLOP,
     SRFLIPFLOP,
     TFLIPFLOP,
-    UNUSED,
+    ROTARY,
     IC,
     NODE,
     MUX,

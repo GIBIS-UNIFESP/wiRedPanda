@@ -20,15 +20,8 @@
 // TODO - WARNING: non-POD static
 static QMap<QString, QPixmap> loadedPixmaps;
 
-GraphicElement::GraphicElement(
-    ElementType type,
-    ElementGroup group,
-    int minInputSz,
-    int maxInputSz,
-    int minOutputSz,
-    int maxOutputSz,
-    QGraphicsItem *parent):
-    QGraphicsObject(parent)
+GraphicElement::GraphicElement(ElementType type, ElementGroup group, int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent)
+    : QGraphicsObject(parent)
     , m_pixmap(nullptr)
     , m_label(new QGraphicsTextItem(this))
     , m_topPosition(0)
@@ -49,7 +42,7 @@ GraphicElement::GraphicElement(
     , m_elementType(type)
     , m_elementGroup(group)
 {
-    COMMENT("Setting flags of elements. ", 4);
+    COMMENT("Setting flags of elements. ", 0);
     setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemSendsGeometryChanges);
 
     COMMENT("Setting attributes. ", 4);

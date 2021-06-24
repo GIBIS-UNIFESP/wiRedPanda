@@ -3,10 +3,13 @@
 
 #include "logicinput.h"
 
-LogicInput::LogicInput(bool defaultValue)
-    : LogicElement(0, 1)
+LogicInput::LogicInput(bool defaultValue, int n_outputs)
+    : LogicElement(0, n_outputs)
 {
     setOutputValue(0, defaultValue);
+    for (int port=1; port < n_outputs; ++port) {
+        setOutputValue(port, false);
+    }
 }
 
 void LogicInput::_updateLogic(const std::vector<bool> &)

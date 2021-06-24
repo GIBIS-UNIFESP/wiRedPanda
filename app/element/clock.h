@@ -32,8 +32,9 @@ public:
     QString genericProperties() override;
 
 public:
-    bool getOn() const override;
-    void setOn(bool value) override;
+    bool getOn(int port=0) const override;
+    void setOn(bool value, int port=0) override;
+    int outputSize() override;
     void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
