@@ -868,6 +868,9 @@ void Editor::load(QDataStream &ds)
     m_simulationController->stop();
     COMMENT("Stopped simulation.", 0);
     double version = SerializationFunctions::loadVersion(ds);
+    if (version > GlobalProperties::version) {
+        QMessageBox::warning(m_mainWindow, tr("Newer version file."), tr("Warning! Your Wired Panda is possibly outdated.\n The file you are opening has been saved in a newer version.\n Please, check for updates."));
+    }
     COMMENT("Version: " << version, 0);
     QString dolphinFilename(SerializationFunctions::loadDolphinFilename(ds, version));
     if (m_mainWindow) {

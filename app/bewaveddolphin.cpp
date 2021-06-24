@@ -505,7 +505,6 @@ void BewavedDolphin::on_actionSet_clock_wave_triggered()
     run();
 }
 
-// TODO: fix this for too many inputs.
 void BewavedDolphin::on_actionCombinational_triggered()
 {
     COMMENT("Setting the signal according to its columns and clock period.", 0);
