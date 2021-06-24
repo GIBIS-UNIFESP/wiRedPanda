@@ -1,5 +1,5 @@
 QT       += core gui printsupport charts multimedia widgets
-VERSION = 3.0
+VERSION = 3.02
 
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 

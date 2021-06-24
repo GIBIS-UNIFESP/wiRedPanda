@@ -363,6 +363,16 @@ Error: %1</source>
         <source>Paste</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Newer version file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning! Your Wired Panda is possibly outdated.
+ The file you are opening has been saved in a newer version.
+ Please, check for updates.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ElementEditor</name>

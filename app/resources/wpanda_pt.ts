@@ -364,6 +364,18 @@ Erro: %1</translation>
         <source>Paste</source>
         <translation>Colar</translation>
     </message>
+    <message>
+        <source>Newer version file.</source>
+        <translation>Arquivo de versão mais nova.</translation>
+    </message>
+    <message>
+        <source>Warning! Your Wired Panda is possibly outdated.
+ The file you are opening has been saved in a newer version.
+ Please, check for updates.</source>
+        <translation>Aviso! Seu Wired Panda provavelmente está desatualizado.
+        O arquivo que você está abrindo foi salvo com uma versão mais recente.
+        Por favor, verifique se há atualizações.</translation>
+    </message>
 </context>
 <context>
     <name>ElementEditor</name>
