@@ -32,7 +32,6 @@ void InputButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
         setOn(true);
-
         event->accept();
     }
     QGraphicsItem::mousePressEvent(event);
@@ -42,19 +41,20 @@ void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
         setOn(false);
-
         event->accept();
     }
     GraphicElement::mouseReleaseEvent(event);
 }
 
-bool InputButton::getOn() const
+bool InputButton::getOn(int port) const
 {
+    Q_UNUSED(port);
     return on;
 }
 
-void InputButton::setOn(const bool value)
+void InputButton::setOn(const bool value, int port)
 {
+    Q_UNUSED(port);
     on = value;
     setPixmap(on ? m_pixmapSkinName[1] : m_pixmapSkinName[0]);
     if (!disabled()) {
@@ -81,4 +81,9 @@ void InputButton::setSkin(bool defaultSkin, const QString &filename)
             setPixmap(m_pixmapSkinName[1]);
         }
     }
+}
+
+int InputButton::outputSize()
+{
+    return 1;
 }

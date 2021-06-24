@@ -121,6 +121,7 @@ private:
 
     QVector<GraphicElement *> m_inputs;
     QVector<GraphicElement *> m_outputs;
+    int m_input_ports;
     QGraphicsScene *m_scene;
     QTableView *m_signalTableView;
     QStandardItemModel *m_model;
@@ -140,7 +141,7 @@ private:
     QPixmap m_risingBlue;
 
     bool loadElements();
-    void loadNewTable(QStringList &input_labels, QStringList &output_labels);
+    void loadNewTable(const QStringList &input_labels, const QStringList &output_labels);
     QVector<char> loadSignals(QStringList &input_labels, QStringList &output_labels);
     void run();
     void setLength(int sim_length, bool run_simulation = true);

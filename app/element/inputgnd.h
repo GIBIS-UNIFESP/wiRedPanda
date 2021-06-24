@@ -13,7 +13,6 @@ class InputGnd : public GraphicElement
 public:
     explicit InputGnd(QGraphicsItem *parent = nullptr);
     ~InputGnd() override = default;
-public:
     void setSkin(bool defaultSkin, const QString &filename) override;
 };
 

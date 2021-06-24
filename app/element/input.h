@@ -9,8 +9,9 @@
 class Input
 {
 public:
-    virtual bool getOn() const = 0;
-    virtual void setOn(bool value) = 0;
+    virtual bool getOn(int port=0) const = 0;
+    virtual void setOn(bool value, int port=0) = 0;
+    virtual int outputSize() = 0;
 };
 
 #endif /* INPUT_H */

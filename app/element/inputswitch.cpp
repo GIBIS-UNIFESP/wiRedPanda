@@ -27,13 +27,15 @@ InputSwitch::InputSwitch(QGraphicsItem *parent)
     setPortName("Switch");
 }
 
-bool InputSwitch::getOn() const
+bool InputSwitch::getOn(int port) const
 {
+    Q_UNUSED(port);
     return on;
 }
 
-void InputSwitch::setOn(bool value)
+void InputSwitch::setOn(bool value, int port)
 {
+    Q_UNUSED(port);
     on = value;
     if (!disabled()) {
         output()->setValue(on);
@@ -49,7 +51,6 @@ void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
         setOn(!on);
-
         event->accept();
     }
     QGraphicsItem::mousePressEvent(event);
@@ -88,4 +89,9 @@ void InputSwitch::setSkin(bool defaultSkin, const QString &filename)
             setPixmap(m_pixmapSkinName[1]);
         }
     }
+}
+
+int InputSwitch::outputSize()
+{
+    return 1;
 }

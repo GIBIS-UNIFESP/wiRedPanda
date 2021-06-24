@@ -121,7 +121,9 @@ void SimulationController::reSortElms()
     if (m_elMapping->canInitialize()) {
         COMMENT("Can initialize.", 0);
         m_elMapping->initialize();
+        COMMENT("Sorting.", 0);
         m_elMapping->sort();
+        COMMENT("Updating.", 0);
         update();
     } else {
         qDebug() << "Cannot initialize simulation!";

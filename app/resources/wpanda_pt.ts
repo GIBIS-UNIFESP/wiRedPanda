@@ -341,6 +341,13 @@ Erro: %1</translation>
     </message>
 </context>
 <context>
+    <name>ChangeOutputSZCommand</name>
+    <message>
+        <source>Change input size to %1</source>
+        <translation>Mudar numero de entradas para %1</translation>
+    </message>
+</context>
+<context>
     <name>DeleteItemsCommand</name>
     <message>
         <source>Delete %1 elements</source>
@@ -524,6 +531,10 @@ Erro: %1</translation>
         <source>Images (*.png *.gif *.jpg)</source>
         <translation>Imagens (*.png *.gif *.jpg)</translation>
     </message>
+    <message>
+        <source>Output Ports:</source>
+        <translation>Portas de Saída:</translation>
+    </message>
 </context>
 <context>
     <name>ElementFactory</name>
@@ -635,6 +646,10 @@ Erro: %1</translation>
         <source>Buzzer</source>
         <translation>Campainha</translation>
     </message>
+    <message>
+        <source>Rotary switch</source>
+        <translation>Comutador rotativo</translation>
+    </message>
 </context>
 <context>
     <name>FileHelper</name>
@@ -687,10 +702,6 @@ Do you want to find this file?</source>
     <message>
         <source>Memory</source>
         <translation>Memória</translation>
-    </message>
-    <message>
-        <source>Box</source>
-        <translation type="vanished">CI</translation>
     </message>
     <message>
         <source>Search:</source>
@@ -797,10 +808,6 @@ Do you want to find this file?</source>
         <translation>Erro ao salvar o projeto: </translation>
     </message>
     <message>
-        <source>Saved file sucessfully.</source>
-        <translation type="vanished">Arquivo salvo com sucesso.</translation>
-    </message>
-    <message>
         <source>Do you want to save your changes?</source>
         <translation>Deseja salvar suas alterações?</translation>
     </message>
@@ -849,10 +856,6 @@ Errp: %1</translation>
     <message>
         <source>Error</source>
         <translation>Erro</translation>
-    </message>
-    <message>
-        <source>&lt;strong&gt;Error while exporting to arduino code:&lt;/strong&gt;&lt;br&gt;%1</source>
-        <translation type="vanished">&lt;strong&gt;Erro ao exportar para código de Arduino:&lt;/strong&gt;&lt;br&gt;%1</translation>
     </message>
     <message>
         <source>Generate Arduino Code</source>
@@ -1009,14 +1012,6 @@ Errp: %1</translation>
     <message>
         <source>F11</source>
         <translation>F11</translation>
-    </message>
-    <message>
-        <source>Could not open %1 for write.</source>
-        <translation type="vanished">Não foi possível abrir %1</translation>
-    </message>
-    <message>
-        <source>Could not generate waveform file for %1.</source>
-        <translation type="vanished">Não foi possível gerar a forma de onda para %1.</translation>
     </message>
     <message>
         <source>&lt;strong&gt;Error while exporting to waveform file:&lt;/strong&gt;&lt;br&gt;%1</source>
@@ -1190,14 +1185,6 @@ Errp: %1</translation>
     <message>
         <source>Could not save the local project.</source>
         <translation>Não foi possível salvar o projeto localmente.</translation>
-    </message>
-    <message>
-        <source>Open &amp;file as IC</source>
-        <translation type="obsolete">Abrir &amp;arquivo como CI</translation>
-    </message>
-    <message>
-        <source>Open file as IC</source>
-        <translation type="obsolete">Abrir arquivo como CI</translation>
     </message>
     <message>
         <source>Saved file successfully.</source>

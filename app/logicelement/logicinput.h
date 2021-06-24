@@ -11,7 +11,7 @@
 class LogicInput : public LogicElement
 {
 public:
-    explicit LogicInput(bool defaultValue = false);
+    explicit LogicInput(bool defaultValue = false, int n_outputs=1);
 
     /* LogicElement interface */
 protected:

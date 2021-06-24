@@ -25,12 +25,12 @@
         <file>rotary/rotary_arrow_0.png</file>
         <file>rotary/rotary_arrow_7.png</file>
         <file>rotary/rotary_arrow_15.png</file>
-        <file>rotary/RedLed_Based_2.png</file>
-        <file>rotary/RedLed_Based_4.png</file>
-        <file>rotary/RedLed_Based_8.png</file>
-        <file>rotary/RedLed_Based_10.png</file>
-        <file>rotary/RedLed_Based_16.png</file>
-        <file>rotary/RedLed_Based_icon.png</file>
+        <file>rotary/rotary_2.png</file>
+        <file>rotary/rotary_4.png</file>
+        <file>rotary/rotary_8.png</file>
+        <file>rotary/rotary_10.png</file>
+        <file>rotary/rotary_16.png</file>
+        <file>rotary/rotary_icon.png</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

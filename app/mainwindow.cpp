@@ -865,7 +865,7 @@ void MainWindow::populateMenu(QSpacerItem *spacer, const QString& names, QLayout
 
 void MainWindow::populateLeftMenu()
 {
-    populateMenu(ui->verticalSpacer_InOut, "VCC,GND,BUTTON,SWITCH,CLOCK,LED,DISPLAY,DISPLAY14,BUZZER", ui->scrollAreaWidgetContents_InOut->layout());
+    populateMenu(ui->verticalSpacer_InOut, "VCC,GND,BUTTON,SWITCH,ROTARY,CLOCK,LED,DISPLAY,DISPLAY14,BUZZER", ui->scrollAreaWidgetContents_InOut->layout());
     populateMenu(ui->verticalSpacer_Gates, "AND,OR,NOT,NAND,NOR,XOR,XNOR,MUX,DEMUX,NODE", ui->scrollAreaWidgetContents_Gates->layout());
     populateMenu(ui->verticalSpacer_Memory, "DFLIPFLOP,DLATCH,JKFLIPFLOP,SRFLIPFLOP,TFLIPFLOP", ui->scrollAreaWidgetContents_Memory->layout());
 }
