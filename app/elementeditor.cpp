@@ -425,6 +425,8 @@ void ElementEditor::setCurrentElements(const QVector<GraphicElement *> &elms)
         m_ui->comboBoxValue->setVisible(m_hasOnlyInputs);
         m_ui->comboBoxValue->setEnabled(m_hasOnlyInputs);
         if (m_hasOnlyInputs) {
+            if (max_current_output_size == 1)
+                max_current_output_size++;
             for (int val=0; val < max_current_output_size; ++val) {
                 m_ui->comboBoxValue->addItem(QString::number(val), val);
             }
@@ -556,7 +558,12 @@ void ElementEditor::outputValueChanged(const QString &idx)
     int new_value = m_ui->comboBoxValue->currentText().toInt();
     for (int idx=0; idx < m_elements.size(); ++idx) {
         auto elm = m_elements[idx];
-        dynamic_cast<InputRotary*>(elm)->setOn(true, new_value);
+        if(elm->elementType() == ElementType::ROTARY) {
+            dynamic_cast<InputRotary*>(elm)->setOn(true, new_value);
+        }
+        else {
+            dynamic_cast<Input*>(elm)->setOn(new_value);
+        }
     }
     COMMENT("Output value changed to " << idx.toInt(), 0);
     apply();
