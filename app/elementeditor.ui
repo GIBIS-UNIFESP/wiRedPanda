@@ -7,45 +7,72 @@
     <x>0</x>
     <y>0</y>
     <width>202</width>
-    <height>431</height>
+    <height>483</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="14" column="0">
+   <item row="16" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Skin</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QLineEdit" name="lineEditElementLabel"/>
-   </item>
-   <item row="12" column="0">
-    <widget class="QLabel" name="label_trigger">
+   <item row="6" column="0">
+    <widget class="QLabel" name="label_value">
      <property name="text">
-      <string>Trigger</string>
+      <string>Value:</string>
      </property>
     </widget>
    </item>
    <item row="8" column="0">
-    <widget class="QLabel" name="label_color">
+    <widget class="QLabel" name="label_frequency">
      <property name="text">
-      <string>Color:</string>
+      <string>Frequency:</string>
      </property>
     </widget>
    </item>
-   <item row="9" column="0">
+   <item row="15" column="0">
+    <widget class="QLineEdit" name="lineEditTrigger"/>
+   </item>
+   <item row="5" column="0">
+    <widget class="QComboBox" name="comboBoxOutputSz"/>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_outputs">
+     <property name="text">
+      <string>Output Ports:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLineEdit" name="lineEditElementLabel"/>
+   </item>
+   <item row="11" column="0">
     <widget class="QComboBox" name="comboBoxColor">
      <property name="currentText">
       <string/>
      </property>
     </widget>
    </item>
-   <item row="11" column="0">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_labels">
+     <property name="text">
+      <string>Label:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="0">
+    <widget class="QLabel" name="label_trigger">
+     <property name="text">
+      <string>Trigger</string>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="0">
     <widget class="QComboBox" name="comboBoxAudio">
      <item>
       <property name="text">
@@ -96,27 +123,17 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QComboBox" name="comboBoxInputSz"/>
-   </item>
-   <item row="10" column="0">
+   <item row="12" column="0">
     <widget class="QLabel" name="label_audio">
      <property name="text">
       <string>Audio</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="label_frequency">
-     <property name="text">
-      <string>Frequency:</string>
-     </property>
-    </widget>
+   <item row="3" column="0">
+    <widget class="QComboBox" name="comboBoxInputSz"/>
    </item>
-   <item row="13" column="0">
-    <widget class="QLineEdit" name="lineEditTrigger"/>
-   </item>
-   <item row="15" column="0">
+   <item row="17" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="sizeConstraint">
       <enum>QLayout::SetNoConstraint</enum>
@@ -168,21 +185,14 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label_labels">
+   <item row="10" column="0">
+    <widget class="QLabel" name="label_color">
      <property name="text">
-      <string>Label:</string>
+      <string>Color:</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_outputs">
-     <property name="text">
-      <string>Output Ports:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
+   <item row="9" column="0">
     <widget class="QDoubleSpinBox" name="doubleSpinBoxFrequency">
      <property name="specialValueText">
       <string/>
@@ -204,8 +214,8 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QComboBox" name="comboBoxOutputSz"/>
+   <item row="7" column="0">
+    <widget class="QComboBox" name="comboBoxValue"/>
    </item>
   </layout>
  </widget>

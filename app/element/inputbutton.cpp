@@ -82,8 +82,3 @@ void InputButton::setSkin(bool defaultSkin, const QString &filename)
         }
     }
 }
-
-int InputButton::outputSize()
-{
-    return 1;
-}

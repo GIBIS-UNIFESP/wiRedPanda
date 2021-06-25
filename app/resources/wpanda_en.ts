@@ -544,6 +544,10 @@ Error: %1</source>
         <source>Output Ports:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Value:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ElementFactory</name>

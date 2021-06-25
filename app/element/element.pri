@@ -6,6 +6,7 @@ SOURCES += \
     $$PWD/display.cpp \
     $$PWD/display_14.cpp \
     $$PWD/dlatch.cpp \
+  $$PWD/input.cpp \
     $$PWD/inputbutton.cpp \
     $$PWD/inputgnd.cpp \
     $$PWD/inputrotary.cpp \

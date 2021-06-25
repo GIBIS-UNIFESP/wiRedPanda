@@ -90,8 +90,3 @@ void InputSwitch::setSkin(bool defaultSkin, const QString &filename)
         }
     }
 }
-
-int InputSwitch::outputSize()
-{
-    return 1;
-}

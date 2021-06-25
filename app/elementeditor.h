@@ -54,6 +54,7 @@ private slots:
     void selectionChanged();
     void inputIndexChanged(int index);
     void outputIndexChanged(const QString &index);
+    void outputValueChanged(const QString &index);
     void triggerChanged(const QString &arg1);
     void defaultSkin();
 
@@ -70,15 +71,17 @@ private:
     bool m_canChangeInputSize, m_canChangeOutputSize;
     bool m_hasTrigger, m_hasRotation, m_canChangeSkin;
     bool m_hasSameLabel, m_hasSameColors, m_hasSameFrequency;
-    bool m_hasSameInputSize, m_hasSameOutputSize;
+    bool m_hasSameInputSize, m_hasSameOutputSize, m_hasSameOutputValue;
     bool m_hasSameTrigger, m_canMorph, m_hasSameType;
     bool m_hasSameAudio;
     bool m_hasElements;
+    bool m_hasOnlyInputs;
 
     QString m_manyLabels;
     QString m_manyColors;
     QString m_manyIS;
     QString m_manyOS;
+    QString m_manyOV;
     QString m_manyFreq;
     QString m_manyTriggers;
     QString m_manyAudios;

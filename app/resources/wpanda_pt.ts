@@ -547,6 +547,10 @@ Erro: %1</translation>
         <source>Output Ports:</source>
         <translation>Portas de Saída:</translation>
     </message>
+    <message>
+        <source>Value:</source>
+        <translation>Valor:</translation>
+    </message>
 </context>
 <context>
     <name>ElementFactory</name>
