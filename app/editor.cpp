@@ -13,6 +13,7 @@
 #include "icmanager.h"
 #include "icprototype.h"
 #include "input.h"
+#include "inputrotary.h"
 #include "mainwindow.h"
 #include "nodes/qneconnection.h"
 #include "qneport.h"
@@ -1113,9 +1114,12 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
                 for (GraphicElement *elm : scene_elems) {
                     if (elm->hasTrigger() && !elm->getTrigger().isEmpty()) {
                         auto *in = dynamic_cast<Input *>(elm);
-                        if (in && elm->getTrigger().matches(keyEvt->key())) {
+                        if (in && !in->isLocked() && elm->getTrigger().matches(keyEvt->key())) {
                             if (elm->elementType() == ElementType::SWITCH) {
                                 in->setOn(!in->getOn());
+                            } else if (elm->elementType() == ElementType::ROTARY) {
+                                int val = in->outputValue();
+                                in->setOn(true, (val + 1) % in->outputSize());
                             } else {
                                 in->setOn(true);
                             }
@@ -1131,7 +1135,7 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
                 for (GraphicElement *elm : scene_elems) {
                     if (elm->hasTrigger() && !elm->getTrigger().isEmpty()) {
                         auto *in = dynamic_cast<Input *>(elm);
-                        if (in && (elm->getTrigger().matches(keyEvt->key()) == QKeySequence::ExactMatch)) {
+                        if (in && !in->isLocked() && (elm->getTrigger().matches(keyEvt->key()) == QKeySequence::ExactMatch)) {
                             if (elm->elementType() == ElementType::BUTTON) {
                                 in->setOn(false);
                             }

@@ -16,7 +16,7 @@ InputSwitch::InputSwitch(QGraphicsItem *parent)
         ":/input/switchOff.png",
         ":/input/switchOn.png",
     };
-
+    locked = false;
     setOutputsOnTop(false);
     setCanChangeSkin(true);
     setRotatable(false);
@@ -49,7 +49,7 @@ void InputSwitch::setOn(bool value, int port)
 
 void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
+    if ((!locked)&&(event->button() == Qt::LeftButton)) {
         setOn(!on);
         event->accept();
     }
@@ -60,12 +60,16 @@ void InputSwitch::save(QDataStream &ds) const
 {
     GraphicElement::save(ds);
     ds << on;
+    ds << locked;
 }
 
 void InputSwitch::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
 {
     GraphicElement::load(ds, portMap, version);
     ds >> on;
+    if (version >= 3.1) {
+        ds >> locked;
+    }
     setOn(on);
     output()->setValue(on);
 }

@@ -15,6 +15,7 @@ InputRotary::InputRotary(QGraphicsItem *parent)
 {
     COMMENT("Creating rotaty.", 0);
     m_value = 0;
+    locked = false;
     m_pixmapSkinName = {
         ":/input/rotary/rotary_2.png",
         ":/input/rotary/rotary_4.png",
@@ -236,7 +237,7 @@ void InputRotary::setOn(bool value, int port)
 
 void InputRotary::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
+    if ((!locked)&&(event->button() == Qt::LeftButton)) {
         setOn(true, (m_value + 1)%outputSize());
         event->accept();
     }
@@ -247,14 +248,17 @@ void InputRotary::save(QDataStream &ds) const
 {
     GraphicElement::save(ds);
     ds << m_value;
+    ds << locked;
 }
 
 void InputRotary::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
 {
     GraphicElement::load(ds, portMap, version);
     ds >> m_value;
+    if (version >= 3.1) {
+        ds >> locked;
+    }
     setOn(true, m_value);
-    //output(m_value)->setValue(true);
 }
 
 void InputRotary::setSkin(bool defaultSkin, const QString &filename)

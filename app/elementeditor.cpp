@@ -47,6 +47,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     m_ui->comboBoxValue->installEventFilter(this);
     m_ui->doubleSpinBoxFrequency->installEventFilter(this);
     m_ui->comboBoxAudio->installEventFilter(this);
+    m_ui->checkBoxLocked->installEventFilter(this);
 
     connect(m_ui->lineEditElementLabel, &QLineEdit::editingFinished,        this, &ElementEditor::apply);
     connect(m_ui->doubleSpinBoxFrequency, &QDoubleSpinBox::editingFinished, this, &ElementEditor::apply);
@@ -60,6 +61,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->comboBoxInputSz, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ElementEditor::inputIndexChanged);
     connect(m_ui->comboBoxOutputSz, &QComboBox::currentTextChanged, this, &ElementEditor::outputIndexChanged);
     connect(m_ui->comboBoxValue, &QComboBox::currentTextChanged, this, &ElementEditor::outputValueChanged);
+    connect(m_ui->checkBoxLocked, &QCheckBox::clicked, this, &ElementEditor::inputLocked);
 }
 
 ElementEditor::~ElementEditor()
@@ -266,6 +268,7 @@ void ElementEditor::setCurrentElements(const QVector<GraphicElement *> &elms)
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = false;
     m_hasElements = false;
     if (!elms.isEmpty()) {
+        bool sameCheckState = true;
         m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = true;
         m_hasRotation = m_canChangeSkin = m_hasOnlyInputs = true;
         setVisible(true);
@@ -300,6 +303,7 @@ void ElementEditor::setCurrentElements(const QVector<GraphicElement *> &elms)
             max_current_output_size = std::min(max_current_output_size, elm->outputSize());
             if ((elm->elementGroup() == ElementGroup::INPUT)&&(firstElement->elementGroup() == ElementGroup::INPUT)) {
                 m_hasSameOutputValue &= dynamic_cast<Input*>(elm)->outputValue() == dynamic_cast<Input*>(firstElement)->outputValue();
+                sameCheckState &= dynamic_cast<Input*>(elm)->isLocked() == dynamic_cast<Input*>(firstElement)->isLocked();
             }
             m_hasSameTrigger &= elm->getTrigger() == firstElement->getTrigger();
             m_hasSameType &= elm->elementType() == firstElement->elementType();
@@ -437,6 +441,20 @@ void ElementEditor::setCurrentElements(const QVector<GraphicElement *> &elms)
                 m_ui->comboBoxValue->setCurrentText(m_manyOV);
             }
         }
+        /* Input locked */
+        m_ui->checkBoxLocked->setVisible(m_hasOnlyInputs);
+        m_ui->checkBoxLocked->setEnabled(m_hasOnlyInputs);
+        if (m_hasOnlyInputs) {
+            if (sameCheckState) {
+                if (dynamic_cast<Input*>(firstElement)->isLocked()) {
+                    m_ui->checkBoxLocked->setCheckState(Qt::CheckState::Checked);
+                } else {
+                    m_ui->checkBoxLocked->setCheckState(Qt::CheckState::Unchecked);
+                }
+            } else {
+                m_ui->checkBoxLocked->setCheckState(Qt::CheckState::PartiallyChecked);
+            }
+        }
         /* Trigger */
         m_ui->lineEditTrigger->setVisible(m_hasTrigger);
         m_ui->lineEditTrigger->setEnabled(m_hasTrigger);
@@ -525,7 +543,7 @@ void ElementEditor::outputIndexChanged(const QString &idx)
     if (m_canChangeOutputSize && (m_ui->comboBoxOutputSz->currentText() != m_manyOS)) {
         emit sendCommand(new ChangeOutputSZCommand(m_elements, m_ui->comboBoxOutputSz->currentData().toInt(), m_editor));
     }
-    COMMENT("Output changed to " << idx.toInt(), 0);
+    COMMENT("Output size changed to " << idx.toInt(), 0);
     apply();
 }
 
@@ -540,7 +558,20 @@ void ElementEditor::outputValueChanged(const QString &idx)
         auto elm = m_elements[idx];
         dynamic_cast<InputRotary*>(elm)->setOn(true, new_value);
     }
-    COMMENT("Output changed to " << idx.toInt(), 0);
+    COMMENT("Output value changed to " << idx.toInt(), 0);
+    apply();
+}
+
+void ElementEditor::inputLocked(const bool value)
+{
+    if ((m_elements.isEmpty()) || (!isEnabled())) {
+        return;
+    }
+    for (int idx=0; idx < m_elements.size(); ++idx) {
+        auto elm = m_elements[idx];
+        dynamic_cast<Input*>(elm)->setLocked(value);
+    }
+    COMMENT("Input locked.", 0);
     apply();
 }
 

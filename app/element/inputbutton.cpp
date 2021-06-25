@@ -16,7 +16,7 @@ InputButton::InputButton(QGraphicsItem *parent)
         ":/input/buttonOff.png",
         ":/input/buttonOn.png",
     };
-
+    locked = false;
     setOutputsOnTop(false);
     setCanChangeSkin(true);
     setPixmap(m_pixmapSkinName[0]);
@@ -30,7 +30,7 @@ InputButton::InputButton(QGraphicsItem *parent)
 
 void InputButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
+    if ((!locked)&&(event->button() == Qt::LeftButton)) {
         setOn(true);
         event->accept();
     }
@@ -39,11 +39,25 @@ void InputButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
+    if ((!locked)&&(event->button() == Qt::LeftButton)) {
         setOn(false);
         event->accept();
     }
     GraphicElement::mouseReleaseEvent(event);
+}
+
+void InputButton::save(QDataStream &ds) const
+{
+    GraphicElement::save(ds);
+    ds << locked;
+}
+
+void InputButton::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
+{
+    GraphicElement::load(ds, portMap, version);
+    if (version >= 3.1) {
+        ds >> locked;
+    }
 }
 
 bool InputButton::getOn(int port) const
