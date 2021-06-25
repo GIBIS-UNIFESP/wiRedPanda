@@ -35,7 +35,8 @@ public:
     bool getOn(int port=0) const override;
     void setOn(bool value, int port=0) override;
     void setSkin(bool defaultSkin, const QString &filename) override;
-    int outputSize() override;
+    int outputSize() const override;
+    int outputValue() const override;
 };
 
 #endif /* INPUTROTARY_H */

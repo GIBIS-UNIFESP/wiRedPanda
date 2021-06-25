@@ -61,11 +61,6 @@ void Clock::setOn(bool value, int port)
     m_outputs.first()->setValue(m_isOn);
 }
 
-int Clock::outputSize()
-{
-    return 1;
-}
-
 void Clock::save(QDataStream &ds) const
 {
     GraphicElement::save(ds);

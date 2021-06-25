@@ -14,6 +14,7 @@
 #include "common.h"
 #include "editor.h"
 #include "elementfactory.h"
+#include "inputrotary.h"
 #include "ui_elementeditor.h"
 #include "scene.h"
 
@@ -25,6 +26,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     m_manyColors = tr("<Many colors>");
     m_manyIS = tr("<Many values>");
     m_manyOS = tr("<Many values>");
+    m_manyOV = tr("<Many values>");
     m_manyFreq = tr("<Many values>");
     m_manyTriggers = tr("<Many triggers>");
     m_manyAudios = tr("<Many sounds>");
@@ -42,6 +44,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     m_ui->comboBoxColor->installEventFilter(this);
     m_ui->comboBoxInputSz->installEventFilter(this);
     m_ui->comboBoxOutputSz->installEventFilter(this);
+    m_ui->comboBoxValue->installEventFilter(this);
     m_ui->doubleSpinBoxFrequency->installEventFilter(this);
     m_ui->comboBoxAudio->installEventFilter(this);
 
@@ -56,6 +59,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->comboBoxAudio, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ElementEditor::apply);
     connect(m_ui->comboBoxInputSz, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ElementEditor::inputIndexChanged);
     connect(m_ui->comboBoxOutputSz, &QComboBox::currentTextChanged, this, &ElementEditor::outputIndexChanged);
+    connect(m_ui->comboBoxValue, &QComboBox::currentTextChanged, this, &ElementEditor::outputValueChanged);
 }
 
 ElementEditor::~ElementEditor()
@@ -258,18 +262,19 @@ void ElementEditor::setCurrentElements(const QVector<GraphicElement *> &elms)
 {
     m_elements = elms;
     m_hasLabel = m_hasColors = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = m_hasAudio = false;
-    m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = false;
-    m_hasSameInputSize = m_hasSameOutputSize = m_hasSameTrigger = m_canMorph = m_hasSameType = false;
+    m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = false;
+    m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = false;
     m_hasElements = false;
     if (!elms.isEmpty()) {
         m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = true;
-        m_hasRotation = m_canChangeSkin = true;
+        m_hasRotation = m_canChangeSkin = m_hasOnlyInputs = true;
         setVisible(true);
         setEnabled(false);
         int minimum_inputs = 0, maximum_inputs = 100000000;
         int minimum_outputs = 0, maximum_outputs = 100000000;
+        int max_current_output_size = 100000000;
         m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = true;
-        m_hasSameInputSize = m_hasSameOutputSize = m_hasSameTrigger = m_canMorph = true;
+        m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = true;
         m_hasSameAudio = true;
         m_hasSameType = true;
         m_hasElements = true;
@@ -292,6 +297,10 @@ void ElementEditor::setCurrentElements(const QVector<GraphicElement *> &elms)
             m_hasSameFrequency &= qFuzzyCompare(elm->getFrequency(), firstElement->getFrequency());
             m_hasSameInputSize &= elm->inputSize() == firstElement->inputSize();
             m_hasSameOutputSize &= elm->outputSize() == firstElement->outputSize();
+            max_current_output_size = std::min(max_current_output_size, elm->outputSize());
+            if ((elm->elementGroup() == ElementGroup::INPUT)&&(firstElement->elementGroup() == ElementGroup::INPUT)) {
+                m_hasSameOutputValue &= dynamic_cast<Input*>(elm)->outputValue() == dynamic_cast<Input*>(firstElement)->outputValue();
+            }
             m_hasSameTrigger &= elm->getTrigger() == firstElement->getTrigger();
             m_hasSameType &= elm->elementType() == firstElement->elementType();
             m_hasSameAudio &= elm->getAudio() == firstElement->getAudio();
@@ -301,6 +310,7 @@ void ElementEditor::setCurrentElements(const QVector<GraphicElement *> &elms)
             bool sameElementGroup = elm->elementGroup() == firstElement->elementGroup();
             sameElementGroup |= (elm->elementGroup() == ElementGroup::INPUT && firstElement->elementGroup() == ElementGroup::STATICINPUT);
             sameElementGroup |= (elm->elementGroup() == ElementGroup::STATICINPUT && firstElement->elementGroup() == ElementGroup::INPUT);
+            m_hasOnlyInputs &= elm->elementGroup() == ElementGroup::INPUT;
             m_canMorph &= sameElementGroup;
         }
         m_canChangeInputSize = (minimum_inputs < maximum_inputs);
@@ -405,6 +415,28 @@ void ElementEditor::setCurrentElements(const QVector<GraphicElement *> &elms)
                 m_ui->comboBoxOutputSz->setCurrentText(m_manyOS);
             }
         }
+        /* Output value */
+        m_ui->comboBoxValue->clear();
+        m_ui->label_value->setVisible(m_hasOnlyInputs);
+        m_ui->comboBoxValue->setVisible(m_hasOnlyInputs);
+        m_ui->comboBoxValue->setEnabled(m_hasOnlyInputs);
+        if (m_hasOnlyInputs) {
+            for (int val=0; val < max_current_output_size; ++val) {
+                m_ui->comboBoxValue->addItem(QString::number(val), val);
+            }
+        }
+        if (m_ui->comboBoxValue->findText(m_manyOV) == -1) {
+            m_ui->comboBoxValue->addItem(m_manyOV);
+        }
+        if (m_hasOnlyInputs) {
+            if (m_hasSameOutputValue) {
+                QString outputValue = QString::number(dynamic_cast<Input*>(firstElement)->outputValue());
+                m_ui->comboBoxValue->removeItem(m_ui->comboBoxValue->findText(m_manyOV));
+                m_ui->comboBoxValue->setCurrentText(outputValue);
+            } else {
+                m_ui->comboBoxValue->setCurrentText(m_manyOV);
+            }
+        }
         /* Trigger */
         m_ui->lineEditTrigger->setVisible(m_hasTrigger);
         m_ui->lineEditTrigger->setEnabled(m_hasTrigger);
@@ -497,6 +529,20 @@ void ElementEditor::outputIndexChanged(const QString &idx)
     apply();
 }
 
+void ElementEditor::outputValueChanged(const QString &idx)
+{
+    Q_UNUSED(idx);
+    if ((m_elements.isEmpty()) || (!isEnabled())) {
+        return;
+    }
+    int new_value = m_ui->comboBoxValue->currentText().toInt();
+    for (int idx=0; idx < m_elements.size(); ++idx) {
+        auto elm = m_elements[idx];
+        dynamic_cast<InputRotary*>(elm)->setOn(true, new_value);
+    }
+    COMMENT("Output changed to " << idx.toInt(), 0);
+    apply();
+}
 
 void ElementEditor::triggerChanged(const QString &cmd)
 {

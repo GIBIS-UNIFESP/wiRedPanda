@@ -308,7 +308,12 @@ void InputRotary::setSkin(bool defaultSkin, const QString &filename)
     }
 }
 
-int InputRotary::outputSize()
+int InputRotary::outputSize() const
 {
     return(outputs().size());
+}
+
+int InputRotary::outputValue() const
+{
+    return m_value;
 }
