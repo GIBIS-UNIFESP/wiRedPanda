@@ -22,6 +22,8 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 public:
+    void save(QDataStream &ds) const override;
+    void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
     bool getOn(int port=0) const override;
     void setOn(const bool value, int port=0) override;
     void setSkin(bool defaultSkin, const QString &filename) override;

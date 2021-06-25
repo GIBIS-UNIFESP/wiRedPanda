@@ -55,6 +55,7 @@ private slots:
     void inputIndexChanged(int index);
     void outputIndexChanged(const QString &index);
     void outputValueChanged(const QString &index);
+    void inputLocked(const bool value);
     void triggerChanged(const QString &arg1);
     void defaultSkin();
 

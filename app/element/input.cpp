@@ -12,3 +12,13 @@ int Input::outputValue() const
 {
     return(getOn());
 }
+
+bool Input::isLocked() const
+{
+    return locked;
+}
+
+void Input::setLocked(bool value)
+{
+    locked = value;
+}

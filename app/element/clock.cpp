@@ -17,6 +17,7 @@ Clock::Clock(QGraphicsItem *parent)
     : GraphicElement(ElementType::CLOCK, ElementGroup::INPUT, 0, 0, 1, 1, parent)
 {
     COMMENT("Creating clock.", 0);
+    locked = false;
     m_pixmapSkinName = {
         ":/input/clock0.png",
         ":/input/clock1.png"
@@ -38,7 +39,7 @@ Clock::Clock(QGraphicsItem *parent)
 
 void Clock::updateClock()
 {
-    if (!disabled()) {
+    if ((!locked)&&(!disabled())) {
         m_elapsed++;
         if ((m_elapsed % m_interval) == 0) {
             setOn(!m_isOn);
@@ -65,6 +66,7 @@ void Clock::save(QDataStream &ds) const
 {
     GraphicElement::save(ds);
     ds << getFrequency();
+    ds << locked;
 }
 
 void Clock::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
@@ -75,6 +77,9 @@ void Clock::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double vers
     }
     float freq;
     ds >> freq;
+    if (version >= 3.1) {
+        ds >> locked;
+    }
     setFrequency(freq);
 }
 
