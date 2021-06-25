@@ -35,8 +35,8 @@ public:
     void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
     void setSkin(bool defaultSkin, const QString &filename) override;
 
-private:
-    QPixmap convertColor(const QImage &src, bool red, bool green, bool blue);
-    void convertAllColors(QVector<QPixmap> &maps);
+public:
+    static QPixmap convertColor(const QImage &src, bool red, bool green, bool blue);
+    static void convertAllColors(QVector<QPixmap> &maps);
 };
 #endif /* DISPLAY_H */

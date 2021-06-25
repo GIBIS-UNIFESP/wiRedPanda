@@ -17,14 +17,19 @@ public:
 
     void refresh() override;
     void updatePorts() override;
-    QPixmap bkg, a, b, c, d, e, f, g1, g2, h, j, k, l, m, n, dp;
+    QVector<QPixmap> bkg, a, b, c, d, e, f, g1, g2, h, j, k, l, m, n, dp;
+    QString m_color;
+    int m_color_number;
 
     /* QGraphicsItem interface */
 public:
+    void setColor(const QString &getColor) override;
+    QString getColor() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
     /* GraphicElement interface */
 public:
+    void save(QDataStream &ds) const override;
     void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
     void setSkin(bool defaultSkin, const QString &filename) override;
 };
