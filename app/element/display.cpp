@@ -26,28 +26,67 @@ Display::Display(QGraphicsItem *parent)
     };
 
     setRotatable(false);
+    setHasColors(true);
     setCanChangeSkin(true);
     setOutputsOnTop(true);
     updatePorts();
     setBottomPosition(58);
     setTopPosition(6);
     setHasLabel(true);
+    m_color = "Red";
+    m_color_number = 1;
 
+    COMMENT("Allocating pixmaps.", 0);
     setPixmap(m_pixmapSkinName[0]);
-    a = QPixmap(m_pixmapSkinName[1]);
-    b = QPixmap(m_pixmapSkinName[2]);
-    c = QPixmap(m_pixmapSkinName[3]);
-    d = QPixmap(m_pixmapSkinName[4]);
-    e = QPixmap(m_pixmapSkinName[5]);
-    f = QPixmap(m_pixmapSkinName[6]);
-    g = QPixmap(m_pixmapSkinName[7]);
-    dp = QPixmap(m_pixmapSkinName[8]);
+    a = QVector<QPixmap>(5, m_pixmapSkinName[1]);
+    b = QVector<QPixmap>(5, m_pixmapSkinName[2]);
+    c = QVector<QPixmap>(5, m_pixmapSkinName[3]);
+    d = QVector<QPixmap>(5, m_pixmapSkinName[4]);
+    e = QVector<QPixmap>(5, m_pixmapSkinName[5]);
+    f = QVector<QPixmap>(5, m_pixmapSkinName[6]);
+    g = QVector<QPixmap>(5, m_pixmapSkinName[7]);
+    dp = QVector<QPixmap>(5, m_pixmapSkinName[8]);
+
+    COMMENT("Converting segments to other colors.", 0);
+    convertAllColors(a);
+    convertAllColors(b);
+    convertAllColors(c);
+    convertAllColors(d);
+    convertAllColors(e);
+    convertAllColors(f);
+    convertAllColors(g);
+    convertAllColors(dp);
 
     setPortName("Display");
     for (QNEPort *in : qAsConst(m_inputs)) {
         in->setRequired(false);
         in->setDefaultValue(0);
     }
+}
+
+void Display::convertAllColors(QVector<QPixmap> &maps)
+{
+  QImage tmp(maps[1].toImage());
+  maps[0] = convertColor(tmp,true,true,true);
+  maps[2] = convertColor(tmp,false,true,false);
+  maps[3] = convertColor(tmp,false,false,true);
+  maps[4] = convertColor(tmp,true,false,true);
+}
+
+QPixmap Display::convertColor(const QImage &src, bool red, bool green, bool blue)
+{
+    QImage tgt(src);
+    for(int y = 0; y < src.height(); y++) {
+        for(int x= 0; x < src.width(); x++) {
+            int src_red = src.pixelColor(x,y).red();
+            int src_alpha = src.pixelColor(x,y).alpha();
+            int tgt_red = red ? src_red : 0;
+            int tgt_green = green ? src_red : 0;
+            int tgt_blue = blue ? src_red : 0;
+            tgt.setPixelColor(x,y,QColor(tgt_red, tgt_green, tgt_blue, src_alpha));
+        }
+    }
+    return(QPixmap::fromImage(tgt));
 }
 
 void Display::refresh()
@@ -79,29 +118,57 @@ void Display::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 {
     GraphicElement::paint(painter, option, widget);
     if (input(0)->value() == true) { /* G */
-        painter->drawPixmap(QPoint(0, 0), g);
+        painter->drawPixmap(QPoint(0, 0), g[m_color_number]);
     }
     if (input(1)->value() == true) { /* F */
-        painter->drawPixmap(QPoint(0, 0), f);
+        painter->drawPixmap(QPoint(0, 0), f[m_color_number]);
     }
     if (input(2)->value() == true) { /* E */
-        painter->drawPixmap(QPoint(0, 0), e);
+        painter->drawPixmap(QPoint(0, 0), e[m_color_number]);
     }
     if (input(3)->value() == true) { /* D */
-        painter->drawPixmap(QPoint(0, 0), d);
+        painter->drawPixmap(QPoint(0, 0), d[m_color_number]);
     }
     if (input(4)->value() == true) { /* A */
-        painter->drawPixmap(QPoint(0, 0), a);
+        painter->drawPixmap(QPoint(0, 0), a[m_color_number]);
     }
     if (input(5)->value() == true) { /* B */
-        painter->drawPixmap(QPoint(0, 0), b);
+        painter->drawPixmap(QPoint(0, 0), b[m_color_number]);
     }
     if (input(6)->value() == true) { /* DP */
-        painter->drawPixmap(QPoint(0, 0), dp);
+        painter->drawPixmap(QPoint(0, 0), dp[m_color_number]);
     }
     if (input(7)->value() == true) { /* C */
-        painter->drawPixmap(QPoint(0, 0), c);
+        painter->drawPixmap(QPoint(0, 0), c[m_color_number]);
     }
+}
+
+void Display::setColor(const QString &color)
+{
+    m_color = color;
+    if (color == "White") {
+        m_color_number = 0;
+    } else if (color == "Red") {
+        m_color_number = 1;
+    } else if (color == "Green") {
+        m_color_number = 2;
+    } else if (color == "Blue") {
+        m_color_number = 3;
+    } else if (color == "Purple") {
+        m_color_number = 4;
+    }
+    refresh();
+}
+
+QString Display::getColor() const
+{
+    return m_color;
+}
+
+void Display::save(QDataStream &ds) const
+{
+    GraphicElement::save(ds);
+    ds << getColor();
 }
 
 void Display::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
@@ -133,6 +200,11 @@ void Display::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double ve
         }
         setInputs(aux);
         updatePorts();
+    }
+    if (version >= 3.1) {
+      QString clr;
+      ds >> clr;
+      setColor(clr);
     }
 }
 
