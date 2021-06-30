@@ -19,12 +19,14 @@
 #include "element/jkflipflop.h"
 #include "element/jklatch.h"
 #include "element/led.h"
+#include "element/line.h"
 #include "element/nand.h"
 #include "element/nor.h"
 #include "element/not.h"
 #include "element/or.h"
 #include "element/srflipflop.h"
 #include "element/tflipflop.h"
+#include "element/text.h"
 #include "ic.h"
 #include "itemwithid.h"
 #include "element/mux.h"
@@ -75,6 +77,8 @@ ElementType ElementFactory::textToType(QString text)
         : text == "DEMUX"      ? ElementType::DEMUX
         : text == "NODE"       ? ElementType::NODE
         : text == "BUZZER"     ? ElementType::BUZZER
+        : text == "TEXT"       ? ElementType::TEXT
+        : text == "LINE"       ? ElementType::LINE
                                : ElementType::UNKNOWN;
     return type;
 }
@@ -137,6 +141,10 @@ QString ElementFactory::typeToText(ElementType type)
         return "NODE";
     case ElementType::BUZZER:
         return "BUZZER";
+    case ElementType::TEXT:
+        return "TEXT";
+    case ElementType::LINE:
+        return "LINE";
     case ElementType::UNKNOWN:
     default:
         return "UNKNOWN";
@@ -200,6 +208,10 @@ QString ElementFactory::translatedName(ElementType type)
         return tr("Node");
     case ElementType::BUZZER:
         return tr("Buzzer");
+    case ElementType::TEXT:
+        return tr("Text");
+    case ElementType::LINE:
+        return tr("Line");
     case ElementType::UNKNOWN:
     default:
         return tr("Unknown");
@@ -263,6 +275,10 @@ QPixmap ElementFactory::getPixmap(ElementType type)
         return QPixmap(":/basic/node.png");
     case ElementType::BUZZER:
         return QPixmap(":/output/BuzzerOff.png");
+    case ElementType::TEXT:
+        return QPixmap(":/text.png");
+    case ElementType::LINE:
+        return QPixmap(":/line.png");
     case ElementType::UNKNOWN:
         return QPixmap();
     }
@@ -305,6 +321,8 @@ GraphicElement *ElementFactory::buildElement(ElementType type, QGraphicsItem *pa
         : type == ElementType::MUX        ? new Mux(parent)
         : type == ElementType::DEMUX      ? new Demux(parent)
         : type == ElementType::BUZZER     ? new Buzzer(parent)
+        : type == ElementType::TEXT       ? new Text(parent)
+        : type == ElementType::LINE       ? new Line(parent)
                                           : static_cast<GraphicElement *>(nullptr);
     return elm;
 }

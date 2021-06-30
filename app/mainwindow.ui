@@ -88,8 +88,15 @@
              <number>0</number>
             </property>
             <widget class="QWidget" name="io">
+             <attribute name="icon">
+              <iconset resource="resources/input/input.qrc">
+               <normaloff>:/input/buttonOff.png</normaloff>:/input/buttonOff.png</iconset>
+             </attribute>
              <attribute name="title">
-              <string>In/Out</string>
+              <string/>
+             </attribute>
+             <attribute name="toolTip">
+              <string>Inputs/Outputs</string>
              </attribute>
              <layout class="QGridLayout" name="gridLayout_2">
               <item row="0" column="0">
@@ -130,7 +137,14 @@
              </layout>
             </widget>
             <widget class="QWidget" name="gates">
+             <attribute name="icon">
+              <iconset resource="resources/basic/basic.qrc">
+               <normaloff>:/basic/xor.png</normaloff>:/basic/xor.png</iconset>
+             </attribute>
              <attribute name="title">
+              <string/>
+             </attribute>
+             <attribute name="toolTip">
               <string>Gates</string>
              </attribute>
              <layout class="QGridLayout" name="gridLayout_6">
@@ -172,7 +186,14 @@
              </layout>
             </widget>
             <widget class="QWidget" name="memory">
+             <attribute name="icon">
+              <iconset resource="resources/memory/light/memory_light.qrc">
+               <normaloff>:/memory/light/D-flipflop.png</normaloff>:/memory/light/D-flipflop.png</iconset>
+             </attribute>
              <attribute name="title">
+              <string/>
+             </attribute>
+             <attribute name="toolTip">
               <string>Memory</string>
              </attribute>
              <layout class="QGridLayout" name="gridLayout_5">
@@ -213,9 +234,16 @@
               </item>
              </layout>
             </widget>
-            <widget class="QWidget" name="box">
+            <widget class="QWidget" name="ic">
+             <attribute name="icon">
+              <iconset resource="resources/basic/basic.qrc">
+               <normaloff>:/basic/box.png</normaloff>:/basic/box.png</iconset>
+             </attribute>
              <attribute name="title">
-              <string>IC</string>
+              <string/>
+             </attribute>
+             <attribute name="toolTip">
+              <string>Integrated Circuits</string>
              </attribute>
              <layout class="QGridLayout" name="gridLayout_4">
               <item row="0" column="0">
@@ -245,6 +273,58 @@
                      <size>
                       <width>20</width>
                       <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </widget>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="misc">
+             <attribute name="icon">
+              <iconset resource="resources/misc/misc.qrc">
+               <normaloff>:/text.png</normaloff>:/text.png</iconset>
+             </attribute>
+             <attribute name="title">
+              <string/>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_3">
+              <item row="0" column="0">
+               <widget class="QScrollArea" name="scrollArea_Misc">
+                <property name="frameShape">
+                 <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="widgetResizable">
+                 <bool>true</bool>
+                </property>
+                <widget class="QWidget" name="scrollAreaWidgetContents_Misc">
+                 <property name="geometry">
+                  <rect>
+                   <x>0</x>
+                   <y>0</y>
+                   <width>238</width>
+                   <height>248</height>
+                  </rect>
+                 </property>
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_6">
+                  <item>
+                   <spacer name="verticalSpacer_MISC">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>210</width>
+                      <height>227</height>
                      </size>
                     </property>
                    </spacer>
@@ -1040,9 +1120,13 @@
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
+  <include location="resources/memory/light/memory_light.qrc"/>
+  <include location="resources/misc/misc.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
   <include location="resources/basic/basic.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/input/input.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -865,9 +865,11 @@ void MainWindow::populateMenu(QSpacerItem *spacer, const QString& names, QLayout
 
 void MainWindow::populateLeftMenu()
 {
+    ui->tabWidget->setCurrentIndex(0);
     populateMenu(ui->verticalSpacer_InOut, "VCC,GND,BUTTON,SWITCH,ROTARY,CLOCK,LED,DISPLAY,DISPLAY14,BUZZER", ui->scrollAreaWidgetContents_InOut->layout());
     populateMenu(ui->verticalSpacer_Gates, "AND,OR,NOT,NAND,NOR,XOR,XNOR,MUX,DEMUX,NODE", ui->scrollAreaWidgetContents_Gates->layout());
     populateMenu(ui->verticalSpacer_Memory, "DFLIPFLOP,DLATCH,JKFLIPFLOP,SRFLIPFLOP,TFLIPFLOP", ui->scrollAreaWidgetContents_Memory->layout());
+    populateMenu(ui->verticalSpacer_MISC, "TEXT,LINE", ui->scrollAreaWidgetContents_Misc->layout());
 }
 
 void MainWindow::on_actionFast_Mode_triggered(bool checked)

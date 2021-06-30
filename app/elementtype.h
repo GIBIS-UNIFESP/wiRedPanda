@@ -31,7 +31,9 @@ enum class ElementType : uint_fast8_t {
     MUX,
     DEMUX,
     BUZZER,
-    DISPLAY14
+    DISPLAY14,
+    TEXT,
+    LINE
 };
 
 #endif

@@ -548,6 +548,10 @@ Error: %1</source>
         <source>Value:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Locked</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ElementFactory</name>
@@ -663,6 +667,14 @@ Error: %1</source>
         <source>Rotary switch</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>FileHelper</name>
@@ -705,10 +717,6 @@ Do you want to find this file?</source>
     <name>MainWindow</name>
     <message>
         <source>WiRED Panda</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>In/Out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1206,10 +1214,6 @@ Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>IC</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Load &amp;file as IC</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1227,6 +1231,18 @@ Error: %1</source>
     </message>
     <message>
         <source>&lt;strong&gt;Error while exporting to Arduino code:&lt;/strong&gt;&lt;br&gt;%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inputs/Outputs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Integrated Circuit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Miscellaneous</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -239,7 +239,7 @@ void Editor::showGates(bool checked)
     for (QGraphicsItem *item : scene_items) {
         auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
         if ((item->type() == GraphicElement::Type) && elm) {
-            if ((elm->elementGroup() != ElementGroup::INPUT) && (elm->elementGroup() != ElementGroup::OUTPUT)) {
+            if ((elm->elementGroup() != ElementGroup::INPUT) && (elm->elementGroup() != ElementGroup::OUTPUT) && (elm->elementGroup() != ElementGroup::OTHER)) {
                 item->setVisible(checked);
             }
         }
@@ -638,7 +638,7 @@ bool Editor::dropEvt(QGraphicsSceneDragDropEvent *dde)
          * TODO: Rotate all element icons, remake the port position logic, and remove the code below.
          * Rotating element in 90 degrees.
          */
-        if (elm->rotatable() && (elm->elementType() != ElementType::NODE)) {
+        if (elm->rotatable() && (elm->elementType() != ElementType::NODE) && (elm->elementGroup() != ElementGroup::OTHER)) {
             elm->setRotation(90);
         }
         COMMENT("Adding the element to the scene.", 0);
