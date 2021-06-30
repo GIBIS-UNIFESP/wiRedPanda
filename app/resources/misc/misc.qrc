@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>text.png</file>
+        <file>line.png</file>
+        <file>no_text.png</file>
+    </qresource>
+</RCC>
