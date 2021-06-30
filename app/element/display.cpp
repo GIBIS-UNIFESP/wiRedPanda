@@ -29,7 +29,7 @@ Display::Display(QGraphicsItem *parent)
     setHasColors(true);
     setCanChangeSkin(true);
     setOutputsOnTop(true);
-    updatePorts();
+    Display::updatePorts();
     setBottomPosition(58);
     setTopPosition(6);
     setHasLabel(true);

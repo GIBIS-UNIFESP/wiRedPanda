@@ -50,9 +50,10 @@ Led::Led(QGraphicsItem *parent)
     setOutputsOnTop(true);
     setRotatable(false);
     setHasColors(true);
-    setColor("White");
+    m_color = "White";
+    m_colorNumber = 0;
     setPixmap(m_pixmapSkinName[0]);
-    updatePorts();
+    Led::updatePorts();
     setHasLabel(true);
     setCanChangeSkin(true);
     setPortName("Led");

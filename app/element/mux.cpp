@@ -12,7 +12,7 @@ Mux::Mux(QGraphicsItem *parent)
 
     setPixmap(m_pixmapSkinName[0]);
     setRotatable(true);
-    updatePorts();
+    Mux::updatePorts();
     setPortName("MUX");
     setCanChangeSkin(true);
     input(0)->setName("0");

@@ -13,7 +13,7 @@ TFlipFlop::TFlipFlop(QGraphicsItem *parent)
     setPixmap(m_pixmapSkinName[0]);
     setRotatable(false);
     setCanChangeSkin(true);
-    updatePorts();
+    TFlipFlop::updatePorts();
     lastClk = false;
     lastT = 0;
     lastQ = 0;

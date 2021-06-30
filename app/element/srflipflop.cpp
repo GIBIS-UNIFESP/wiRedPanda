@@ -12,7 +12,7 @@ SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
     setPixmap(m_pixmapSkinName[0]);
     setRotatable(false);
     setCanChangeSkin(true);
-    updatePorts();
+    SRFlipFlop::updatePorts();
     lastClk = false;
     setPortName("FlipFlop SR");
 

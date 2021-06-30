@@ -13,7 +13,7 @@ DFlipFlop::DFlipFlop(QGraphicsItem *parent)
     setPixmap(m_pixmapSkinName[0]);
     setRotatable(false);
     setCanChangeSkin(true);
-    updatePorts();
+    DFlipFlop::updatePorts();
     setPortName("FlipFlop D");
     input(0)->setName("Data");
     input(1)->setName("Clock");

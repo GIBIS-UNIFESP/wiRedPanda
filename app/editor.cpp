@@ -613,6 +613,7 @@ bool Editor::dropEvt(QGraphicsSceneDragDropEvent *dde)
         GraphicElement *elm = ElementFactory::buildElement(static_cast<ElementType>(type));
         COMMENT("If element type is unknown, a default element is created with the pixmap received from mimedata", 0);
         if (!elm) {
+            COMMENT("Element not valid!", 0);
             return false;
         }
         COMMENT("Valid element!", 0);

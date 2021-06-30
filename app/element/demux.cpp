@@ -12,7 +12,7 @@ Demux::Demux(QGraphicsItem *parent)
     setPixmap(m_pixmapSkinName[0]);
     setRotatable(true);
     setCanChangeSkin(true);
-    updatePorts();
+    Demux::updatePorts();
     setPortName("DEMUX");
     setRotation(180.0);
 

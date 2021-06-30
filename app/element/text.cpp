@@ -10,7 +10,6 @@ Text::Text(QGraphicsItem *parent)
         ":/no_text.png",
         ":/text.png",
     };
-
     setRotatable(true);
     setOutputsOnTop(true);
     setPixmap(m_pixmapSkinName[0]);

@@ -27,13 +27,13 @@ Clock::Clock(QGraphicsItem *parent)
     setRotatable(false);
     setCanChangeSkin(true);
     /*  connect(&timer,&QTimer::timeout,this,&Clock::updateClock); */
-    setFrequency(1.0); // TODO: call to virtual function during construction
+    Clock::setFrequency(1.0); // TODO: call to virtual function during construction
     setHasFrequency(true);
     m_isOn = false;
     Clock::reset = true;
     setHasLabel(true);
     setPortName("Clock");
-    setOn(false);
+    Clock::setOn(false);
     setPixmap(m_pixmapSkinName[0]);
 }
 
