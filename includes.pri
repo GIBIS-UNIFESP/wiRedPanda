@@ -130,6 +130,7 @@ FORMS    += \
 
 RESOURCES += \
     $$PWD/app/resources/dolphin/dolphin.qrc \
+    $$PWD/app/resources/misc/misc.qrc \
     $$PWD/app/resources/resources.qrc\
     $$PWD/app/resources/basic/basic.qrc\
     $$PWD/app/resources/input/input.qrc\
