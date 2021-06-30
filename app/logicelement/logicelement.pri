@@ -1,6 +1,7 @@
 HEADERS += \
     $$PWD/logicnode.h \
     $$PWD/logicinput.h \
+    $$PWD/logicnone.h \
     $$PWD/logicoutput.h \
     $$PWD/logicand.h \
     $$PWD/logicor.h \
@@ -20,6 +21,7 @@ HEADERS += \
 SOURCES += \
     $$PWD/logicnode.cpp \
     $$PWD/logicinput.cpp \
+    $$PWD/logicnone.cpp \
     $$PWD/logicoutput.cpp \
     $$PWD/logicand.cpp \
     $$PWD/logicor.cpp \
