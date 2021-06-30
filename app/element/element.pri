@@ -47,7 +47,7 @@ HEADERS  +=  \
     $$PWD/jkflipflop.h \
     $$PWD/jklatch.h \
     $$PWD/led.h \
-  $$PWD/line.h \
+    $$PWD/line.h \
     $$PWD/mux.h \
     $$PWD/nand.h \
     $$PWD/node.h \
@@ -55,7 +55,7 @@ HEADERS  +=  \
     $$PWD/not.h \
     $$PWD/or.h \
     $$PWD/srflipflop.h \
-  $$PWD/text.h \
+    $$PWD/text.h \
     $$PWD/tflipflop.h \
 #    $$PWD/tlatch.h \
     $$PWD/xnor.h \

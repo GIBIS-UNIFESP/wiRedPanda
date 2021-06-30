@@ -138,10 +138,9 @@ void ICPrototypeImpl::loadInputElement(GraphicElement *elm)
 {
     auto const outputs = elm->outputs();
     for (QNEOutputPort *port : outputs) {
-        GraphicElement *nodeElm = ElementFactory::buildElement(
-            ElementType::NODE); // Problem here. Inputs and outputs are transformed into nodes. And I can not use created connections with new elements...
-        nodeElm->setPos(elm->pos()); // Solution 1: Create new connections cloning all circuit.
-        nodeElm->setLabel(elm->getLabel()); // Solution 2: Load and save ic circuit out of this code...
+        GraphicElement *nodeElm = ElementFactory::buildElement(ElementType::NODE);
+        nodeElm->setPos(elm->pos());
+        nodeElm->setLabel(elm->getLabel());
         QNEInputPort *nodeInput = nodeElm->input();
         nodeInput->setPos(port->pos());
         nodeInput->setName(port->getName());
@@ -154,7 +153,7 @@ void ICPrototypeImpl::loadInputElement(GraphicElement *elm)
         m_inputs.append(nodeInput);
         m_elements.append(nodeElm);
         QList<QNEConnection *> conns = port->connections();
-        for (QNEConnection *conn : conns) { // Solution 3. Revert this process before saving and then make it again after saving...
+        for (QNEConnection *conn : conns) {
             if (port == conn->start()) {
                 conn->setStart(nodeElm->output());
             }

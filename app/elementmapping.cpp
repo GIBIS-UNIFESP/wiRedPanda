@@ -23,6 +23,7 @@
 #include "logicelement/logicmux.h"
 #include "logicelement/logicnand.h"
 #include "logicelement/logicnode.h"
+#include "logicelement/logicnone.h"
 #include "logicelement/logicnor.h"
 #include "logicelement/logicnot.h"
 #include "logicelement/logicor.h"
@@ -167,11 +168,12 @@ LogicElement *ElementMapping::buildLogicElement(GraphicElement *elm)
         return new LogicMux();
     case ElementType::DEMUX:
         return new LogicDemux();
-        //      case ElementType::TLATCH:
+      //case ElementType::TLATCH:
     case ElementType::JKLATCH:
-        //! TODO: TLATCH not yet implemented.
         return new LogicDLatch();
-
+    case ElementType::TEXT:
+    case ElementType::LINE:
+        return new LogicNone();
     default:
         throw std::runtime_error("Not implemented yet: " + elm->objectName().toStdString());
     }
@@ -197,8 +199,6 @@ void ElementMapping::sort()
 // TODO: This function can easily cause crashes when using the Undo command to delete elements
 void ElementMapping::update()
 {
-    //  bool resetSimulationController = false;
-    //COMMENT("Can run.", 0);
     if (canRun()) {
         for (Clock *clk : qAsConst(m_clocks)) {
             if (!clk) {

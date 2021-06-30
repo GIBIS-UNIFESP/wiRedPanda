@@ -110,7 +110,7 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &ds, doub
                 }
                 elm->setSelected(true);
             } else {
-                throw(std::runtime_error(ERRORMSG("Could not build element.")));
+                throw(std::runtime_error(ERRORMSG("Could not build element."))); // TODO: must remove this message from here and not throw an exception.
             }
         } else if (type == QNEConnection::Type) {
             COMMENT("Reading Connection.", 0);

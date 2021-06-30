@@ -551,6 +551,10 @@ Erro: %1</translation>
         <source>Value:</source>
         <translation>Valor:</translation>
     </message>
+    <message>
+        <source>Locked</source>
+        <translation>Travado</translation>
+    </message>
 </context>
 <context>
     <name>ElementFactory</name>
@@ -666,6 +670,14 @@ Erro: %1</translation>
         <source>Rotary switch</source>
         <translation>Comutador rotativo</translation>
     </message>
+    <message>
+        <source>Text</source>
+        <translation>Texto</translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation>Linha</translation>
+    </message>
 </context>
 <context>
     <name>FileHelper</name>
@@ -707,10 +719,6 @@ Do you want to find this file?</source>
 </context>
 <context>
     <name>MainWindow</name>
-    <message>
-        <source>In/Out</source>
-        <translation>Ent./Saí.</translation>
-    </message>
     <message>
         <source>Gates</source>
         <translation>Portas</translation>
@@ -1211,10 +1219,6 @@ Errp: %1</translation>
         <translation>Não foi possível abrir o arquivo de forma de onda: %1.</translation>
     </message>
     <message>
-        <source>IC</source>
-        <translation>CI</translation>
-    </message>
-    <message>
         <source>Load &amp;file as IC</source>
         <translation>&amp;Carregar arquivo como CI</translation>
     </message>
@@ -1233,6 +1237,18 @@ Errp: %1</translation>
     <message>
         <source>&lt;strong&gt;Error while exporting to Arduino code:&lt;/strong&gt;&lt;br&gt;%1</source>
         <translation>&lt;strong&gt;Erro ao exportar para código de Arduino:&lt;/strong&gt;&lt;br&gt;%1</translation>
+    </message>
+    <message>
+        <source>Inputs/Outputs</source>
+        <translation>Entradas/Saídas</translation>
+    </message>
+    <message>
+        <source>Integrated Circuit</source>
+        <translation>Circuito Integrado</translation>
+    </message>
+    <message>
+        <source>Miscellaneous</source>
+        <translation>Diversos</translation>
     </message>
 </context>
 <context>
