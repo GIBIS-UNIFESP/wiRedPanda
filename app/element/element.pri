@@ -15,6 +15,7 @@ SOURCES += \
     $$PWD/jkflipflop.cpp \
     $$PWD/jklatch.cpp \
     $$PWD/led.cpp \
+  $$PWD/line.cpp \
     $$PWD/mux.cpp \
     $$PWD/nand.cpp \
     $$PWD/node.cpp \
@@ -22,6 +23,7 @@ SOURCES += \
     $$PWD/not.cpp \
     $$PWD/or.cpp \
     $$PWD/srflipflop.cpp \
+  $$PWD/text.cpp \
     $$PWD/tflipflop.cpp \
 #    $$PWD/tlatch.cpp \
     $$PWD/xnor.cpp \
@@ -45,6 +47,7 @@ HEADERS  +=  \
     $$PWD/jkflipflop.h \
     $$PWD/jklatch.h \
     $$PWD/led.h \
+  $$PWD/line.h \
     $$PWD/mux.h \
     $$PWD/nand.h \
     $$PWD/node.h \
@@ -52,6 +55,7 @@ HEADERS  +=  \
     $$PWD/not.h \
     $$PWD/or.h \
     $$PWD/srflipflop.h \
+  $$PWD/text.h \
     $$PWD/tflipflop.h \
 #    $$PWD/tlatch.h \
     $$PWD/xnor.h \
