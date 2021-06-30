@@ -41,7 +41,7 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     setLabel(objectName() + "_" + QString::number(Buzzer::current_id_number));
     ++Buzzer::current_id_number;
     m_usingDefaultSkin = true;
-    setAudio("C6");
+    Buzzer::setAudio("C6");
     m_play = 0;
 }
 

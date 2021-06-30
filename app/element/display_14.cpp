@@ -37,7 +37,7 @@ Display14::Display14(QGraphicsItem *parent)
     setHasColors(true);
     setCanChangeSkin(true);
     setOutputsOnTop(true);
-    updatePorts();
+    Display14::updatePorts();
     setBottomPosition(58);
     setTopPosition(6);
     setHasLabel(true);

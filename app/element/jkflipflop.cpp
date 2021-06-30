@@ -13,7 +13,7 @@ JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
     setPixmap(m_pixmapSkinName[0]);
     setRotatable(false);
     setCanChangeSkin(true);
-    updatePorts();
+    JKFlipFlop::updatePorts();
     lastClk = false;
     setPortName("FlipFlop JK");
 

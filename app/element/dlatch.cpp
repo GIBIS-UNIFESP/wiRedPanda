@@ -13,7 +13,7 @@ DLatch::DLatch(QGraphicsItem *parent)
     setPixmap(m_pixmapSkinName[0]);
     setRotatable(false);
     setCanChangeSkin(true);
-    updatePorts();
+    DLatch::updatePorts();
     setPortName("D Latch");
     input(0)->setName("Data");
     input(1)->setName("Enable");

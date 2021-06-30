@@ -494,7 +494,7 @@ QNEPort *GraphicElement::addPort(const QString &name, bool isOutput, int flags, 
     port->setPortFlags(flags);
     port->setPtr(ptr);
     COMMENT("Updating new port.", 4);
-    updatePorts();
+    GraphicElement::updatePorts();
     port->show();
     return port;
 }
@@ -649,8 +649,7 @@ void GraphicElement::updateTheme()
         for (QNEOutputPort *output : qAsConst(m_outputs)) {
             output->updateTheme();
         }
-        updateThemeLocal();
-
+        //updateThemeLocal();
         setPixmap(m_currentPixmapName);
         update();
     }

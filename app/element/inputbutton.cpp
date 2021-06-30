@@ -22,7 +22,7 @@ InputButton::InputButton(QGraphicsItem *parent)
     setPixmap(m_pixmapSkinName[0]);
     setRotatable(false);
     m_outputs.first()->setValue(0);
-    setOn(false);
+    InputButton::setOn(false);
     setHasLabel(true);
     setHasTrigger(true);
     setPortName("Button");

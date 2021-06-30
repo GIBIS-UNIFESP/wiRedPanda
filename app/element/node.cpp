@@ -11,7 +11,7 @@ Node::Node(QGraphicsItem *parent)
     m_pixmapSkinName = {":/basic/node.png"};
 
     setPixmap(m_pixmapSkinName[0], QRect(QPoint(16, 16), QPoint(48, 48)));
-    updatePorts();
+    Node::updatePorts();
     setCanChangeSkin(true);
     setPortName("NODE");
     input()->setRequired(true);
