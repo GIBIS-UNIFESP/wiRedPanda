@@ -1238,11 +1238,11 @@ Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Integrated Circuit</source>
+        <source>Miscellaneous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Miscellaneous</source>
+        <source>Integrated Circuits</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

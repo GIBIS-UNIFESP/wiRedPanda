@@ -1243,12 +1243,12 @@ Errp: %1</translation>
         <translation>Entradas/Saídas</translation>
     </message>
     <message>
-        <source>Integrated Circuit</source>
-        <translation>Circuito Integrado</translation>
-    </message>
-    <message>
         <source>Miscellaneous</source>
         <translation>Diversos</translation>
+    </message>
+    <message>
+        <source>Integrated Circuits</source>
+        <translation>Circuitos Integrados</translation>
     </message>
 </context>
 <context>
