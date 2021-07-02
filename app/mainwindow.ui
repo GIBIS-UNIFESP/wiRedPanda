@@ -30,9 +30,15 @@
    <bool>true</bool>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_6">
-    <item>
+   <layout class="QGridLayout" name="gridLayout_8">
+    <item row="0" column="0">
      <widget class="QSplitter" name="splitter">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
       </property>
@@ -85,7 +91,7 @@
              </size>
             </property>
             <property name="currentIndex">
-             <number>4</number>
+             <number>3</number>
             </property>
             <widget class="QWidget" name="io">
              <attribute name="icon">
@@ -112,7 +118,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>238</width>
+                   <width>248</width>
                    <height>248</height>
                   </rect>
                  </property>
@@ -161,7 +167,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>238</width>
+                   <width>248</width>
                    <height>248</height>
                   </rect>
                  </property>
@@ -210,7 +216,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>238</width>
+                   <width>248</width>
                    <height>248</height>
                   </rect>
                  </property>
@@ -259,13 +265,13 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>238</width>
+                   <width>248</width>
                    <height>248</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
                   <item>
-                   <spacer name="verticalSpacer_BOX">
+                   <spacer name="verticalSpacer_IC">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
                     </property>
@@ -308,7 +314,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>238</width>
+                   <width>248</width>
                    <height>248</height>
                   </rect>
                  </property>
@@ -414,7 +420,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>258</width>
+               <width>268</width>
                <height>295</height>
               </rect>
              </property>
@@ -444,19 +450,68 @@
         </item>
        </layout>
       </widget>
-      <widget class="GraphicsView" name="graphicsView">
+      <widget class="QTabWidget" name="tabWidget_mainWindow">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
-         <horstretch>3</horstretch>
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="acceptDrops">
-        <bool>true</bool>
+       <property name="minimumSize">
+        <size>
+         <width>570</width>
+         <height>0</height>
+        </size>
        </property>
-       <property name="midLineWidth">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
         <number>0</number>
        </property>
+       <widget class="QWidget" name="tab1">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>570</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <attribute name="title">
+         <string>Tab 1</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_7">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+        </layout>
+       </widget>
       </widget>
      </widget>
     </item>
@@ -1115,30 +1170,24 @@
    <header>elementeditor.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>GraphicsView</class>
-   <extends>QGraphicsView</extends>
-   <header>graphicsview.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>lineEdit</tabstop>
   <tabstop>tabWidget</tabstop>
   <tabstop>scrollAreaInOut</tabstop>
-  <tabstop>graphicsView</tabstop>
   <tabstop>scrollAreaMemory</tabstop>
   <tabstop>scrollArea_Box</tabstop>
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/output/output.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
-  <include location="resources/memory/light/memory_light.qrc"/>
   <include location="resources/misc/misc.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/memory/light/memory_light.qrc"/>
  </resources>
  <connections/>
 </ui>

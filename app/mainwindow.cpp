@@ -53,7 +53,12 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     ui->setupUi(this);
     ThemeManager::globalMngr = new ThemeManager(this);
     buildFullScreenDialog();
-    ui->graphicsView->setScene(editor->getScene());
+    COMMENT("Dialog built.", 0);
+    ui->tab1->setLayout(fullscreenDlg->layout());
+    ui->tab1->layout()->addWidget(fullscreenView);
+
+    COMMENT("Seting scene.", 0);
+    fullscreenView->setScene(editor->getScene());
     /* Translation */
 
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
@@ -132,7 +137,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     ui->menuEdit->insertAction(ui->menuEdit->actions().at(0), undoAction);
     ui->menuEdit->insertAction(undoAction, redoAction);
 
-    connect(ui->graphicsView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
+    connect(fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
     connect(editor, &Editor::scroll, this, &MainWindow::scrollView);
     connect(editor, &Editor::circuitHasChanged, this, &MainWindow::autoSave);
 
@@ -143,7 +148,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
 
     auto *shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F), this);
     connect(shortcut, &QShortcut::activated, ui->lineEdit, QOverload<>::of(&QWidget::setFocus));
-    ui->graphicsView->setCacheMode(QGraphicsView::CacheBackground);
+    fullscreenView->setCacheMode(QGraphicsView::CacheBackground);
     firstResult = nullptr;
     updateRecentICs();
     createRecentFileActions();
@@ -158,9 +163,6 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
 
 void MainWindow::setFastMode(bool fastModeEnabled)
 {
-    ui->graphicsView->setRenderHint(QPainter::Antialiasing, !fastModeEnabled);
-    ui->graphicsView->setRenderHint(QPainter::SmoothPixmapTransform, !fastModeEnabled);
-
     fullscreenView->setRenderHint(QPainter::Antialiasing, !fastModeEnabled);
     fullscreenView->setRenderHint(QPainter::SmoothPixmapTransform, !fastModeEnabled);
 
@@ -309,8 +311,6 @@ bool MainWindow::loadPandaFile(const QString &fname)
     }
     COMMENT("Closing file.", 0);
     fl.close();
-    // COMMENT( "Adding to controller.", 0 );
-    //  emit addRecentFile( fname );
     ui->statusBar->showMessage(tr("File loaded successfully."), 2000);
     /*  on_actionWaveform_triggered( ); */
     return true;
@@ -318,7 +318,7 @@ bool MainWindow::loadPandaFile(const QString &fname)
 
 void MainWindow::scrollView(int dx, int dy)
 {
-    ui->graphicsView->scroll(dx, dy);
+    fullscreenView->scroll(dx, dy);
 }
 
 void MainWindow::on_actionOpen_triggered()
@@ -465,7 +465,7 @@ void MainWindow::on_actionSelect_all_triggered()
 
 void MainWindow::updateRecentICs()
 {
-    ui->scrollAreaWidgetContents_Box->layout()->removeItem(ui->verticalSpacer_BOX);
+    ui->scrollAreaWidgetContents_Box->layout()->removeItem(ui->verticalSpacer_IC);
     for (ListItemWidget *item : qAsConst(icItemWidgets)) {
         item->deleteLater();
     }
@@ -480,7 +480,7 @@ void MainWindow::updateRecentICs()
         icItemWidgets.append(item);
         ui->scrollAreaWidgetContents_Box->layout()->addWidget(item);
     }
-    ui->scrollAreaWidgetContents_Box->layout()->addItem(ui->verticalSpacer_BOX);
+    ui->scrollAreaWidgetContents_Box->layout()->addItem(ui->verticalSpacer_IC);
 }
 
 QString MainWindow::getOpenICFile()
@@ -569,7 +569,7 @@ void MainWindow::on_lineEdit_returnPressed()
 
 void MainWindow::resizeEvent(QResizeEvent *)
 {
-    editor->getScene()->setSceneRect(editor->getScene()->sceneRect().united(ui->graphicsView->rect()));
+    editor->getScene()->setSceneRect(editor->getScene()->sceneRect().united(fullscreenView->rect()));
 }
 
 void MainWindow::on_actionReload_File_triggered()
@@ -650,26 +650,23 @@ bool MainWindow::on_actionExport_to_Arduino_triggered()
 
 void MainWindow::on_actionZoom_in_triggered()
 {
-    /*  QPointF scenePos = editor->getMousePos(); */
-
-    /*  QPointF screenCtr = ui->graphicsView->rect().center(); */
-    ui->graphicsView->gvzoom()->zoomIn();
+    fullscreenView->gvzoom()->zoomIn();
 }
 
 void MainWindow::on_actionZoom_out_triggered()
 {
-    ui->graphicsView->gvzoom()->zoomOut();
+    fullscreenView->gvzoom()->zoomOut();
 }
 
 void MainWindow::on_actionReset_Zoom_triggered()
 {
-    ui->graphicsView->gvzoom()->resetZoom();
+    fullscreenView->gvzoom()->resetZoom();
 }
 
 void MainWindow::zoomChanged()
 {
-    ui->actionZoom_in->setEnabled(ui->graphicsView->gvzoom()->canZoomIn());
-    ui->actionZoom_out->setEnabled(ui->graphicsView->gvzoom()->canZoomOut());
+    ui->actionZoom_in->setEnabled(fullscreenView->gvzoom()->canZoomIn());
+    ui->actionZoom_out->setEnabled(fullscreenView->gvzoom()->canZoomOut());
 }
 
 void MainWindow::updateRecentFileActions()
@@ -970,7 +967,6 @@ void MainWindow::autoSave()
         if (autosaveFile.open()) {
             QDataStream ds(&autosaveFile);
             QString autosaveFilename = autosaveFile.fileName();
-            // qDebug( ) << "File saved to " << autosaveFilename;
             settings.setValue("autosaveFile", autosaveFilename);
             try {
                 editor->save(ds, dolphinFilename);
