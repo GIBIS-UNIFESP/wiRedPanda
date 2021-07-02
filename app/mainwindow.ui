@@ -1071,8 +1071,16 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="resources/output/output.qrc">
+     <normaloff>:/output/BuzzerOff.png</normaloff>
+     <normalon>:/mute.png</normalon>:/output/BuzzerOff.png</iconset>
+   </property>
    <property name="text">
     <string>Mute</string>
+   </property>
+   <property name="statusTip">
+    <string>Mutes and unmutes circuit buzzers</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+M</string>
@@ -1123,6 +1131,7 @@
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
+  <include location="resources/output/output.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/input/input.qrc"/>

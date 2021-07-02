@@ -816,10 +816,6 @@ Do you want to find this file?</source>
         <translation>&amp;Refazer</translation>
     </message>
     <message>
-        <source>Command List</source>
-        <translation>Lista de comandos</translation>
-    </message>
-    <message>
         <source>Save File</source>
         <translation>Salvar arquivo</translation>
     </message>
@@ -1249,6 +1245,14 @@ Errp: %1</translation>
     <message>
         <source>Integrated Circuits</source>
         <translation>Circuitos Integrados</translation>
+    </message>
+    <message>
+        <source>Mutes and unmutes circuit buzzers</source>
+        <translation>Ativa e desativa som das campanhias do cuicuito</translation>
+    </message>
+    <message>
+        <source>Unmute</source>
+        <translation>Ativar som</translation>
     </message>
 </context>
 <context>

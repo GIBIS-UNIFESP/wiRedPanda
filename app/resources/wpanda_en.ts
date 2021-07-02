@@ -1072,10 +1072,6 @@ Do you want to find this file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Command List</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Save File</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1243,6 +1239,14 @@ Error: %1</source>
     </message>
     <message>
         <source>Integrated Circuits</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mutes and unmutes circuit buzzers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unmute</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
