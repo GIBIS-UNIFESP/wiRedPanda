@@ -65,9 +65,7 @@ void IC::loadInputs(ICPrototype *prototype)
     setMaxInputSz(prototype->inputSize());
     setMinInputSz(prototype->inputSize());
     setInputSize(prototype->inputSize());
-    COMMENT("IC " << m_file.toStdString() << " -> Inputs. min: " << minInputSz() << ", max: " << maxInputSz() << ", current: " << inputSize()
-                  << ", m_inputs: " << m_inputs.size(),
-            0);
+    COMMENT("IC " << m_file.toStdString() << " -> Inputs. min: " << minInputSz() << ", max: " << maxInputSz() << ", current: " << inputSize() << ", m_inputs: " << m_inputs.size(), 0);
     for (int inputIdx = 0; inputIdx < prototype->inputSize(); ++inputIdx) {
         QNEPort *in = input(inputIdx);
         in->setName(prototype->inputLabel(inputIdx));
@@ -83,12 +81,10 @@ void IC::loadOutputs(ICPrototype *prototype)
     setMinOutputSz(prototype->outputSize());
     setOutputSize(prototype->outputSize());
     for (int outputIdx = 0; outputIdx < prototype->outputSize(); ++outputIdx) {
-        QNEPort *in = output(outputIdx);
-        in->setName(prototype->outputLabel(outputIdx));
+        QNEPort *out = output(outputIdx);
+        out->setName(prototype->outputLabel(outputIdx));
     }
-    COMMENT("IC " << m_file.toStdString() << " -> Outputs. min: " << minOutputSz() << ", max: " << maxOutputSz() << ", current: " << outputSize()
-                  << ", m_outputs: " << m_outputs.size(),
-            0);
+    COMMENT("IC " << m_file.toStdString() << " -> Outputs. min: " << minOutputSz() << ", max: " << maxOutputSz() << ", current: " << outputSize() << ", m_outputs: " << m_outputs.size(), 0);
 }
 
 void IC::loadFile(const QString &fname)
