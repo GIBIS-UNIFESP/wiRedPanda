@@ -989,6 +989,11 @@ void MainWindow::autoSave()
 void MainWindow::on_actionMute_triggered()
 {
     editor->mute(ui->actionMute->isChecked());
+    if (ui->actionMute->isChecked()) {
+        ui->actionMute->setText(tr("Unmute"));
+    } else {
+        ui->actionMute->setText(tr("Mute"));
+    }
 }
 
 void MainWindow::on_actionLabels_under_icons_triggered(bool checked)

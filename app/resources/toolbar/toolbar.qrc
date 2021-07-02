@@ -39,5 +39,6 @@
         <file>arduino.png</file>
         <file>default.png</file>
         <file>default.svg</file>
+        <file>mute.png</file>
     </qresource>
 </RCC>
