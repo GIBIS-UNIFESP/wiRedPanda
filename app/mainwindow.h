@@ -104,37 +104,21 @@ private slots:
     void scrollView(int dx, int dy);
     void updateRecentFileActions();
     void zoomChanged();
-
     void on_actionPlay_triggered(bool checked);
-
     void on_actionRename_triggered();
-
     void on_actionChange_Trigger_triggered();
-
     void on_actionClear_selection_triggered();
-
     void on_actionFast_Mode_triggered(bool checked);
-
     void on_actionWaveform_triggered();
-
     void on_actionPanda_Light_triggered();
-
     void on_actionPanda_Dark_triggered();
-
     void updateTheme();
-
     void on_actionFlip_horizontally_triggered();
-
     void on_actionFlip_vertically_triggered();
-
     void on_actionFullscreen_triggered() const;
-
     void autoSave();
-
     void on_actionMute_triggered();
-
     void on_actionLabels_under_icons_triggered(bool checked);
-
     void on_actionSave_Local_Project_triggered();
 
 private:
