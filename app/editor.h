@@ -113,7 +113,7 @@ private:
     ElementEditor *m_elementEditor;
     ICManager *m_icManager;
 
-    bool m_markingSelectionIC;
+    bool m_markingSelectionBox;
     QGraphicsRectItem *m_selectionRect;
     QPointF m_selectionStartPoint;
     SimulationController *m_simulationController;
