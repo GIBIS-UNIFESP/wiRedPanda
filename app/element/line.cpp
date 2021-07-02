@@ -11,8 +11,14 @@ Line::Line(QGraphicsItem *parent)
     setRotatable(true);
     setOutputsOnTop(true);
     setPixmap(m_pixmapSkinName[0]);
-    setCanChangeSkin(false);
+    setCanChangeSkin(true);
     setHasLabel(true);
     setPortName("LINE");
     setToolTip("LINE");
+}
+
+void Line::setSkin(bool defaultSkin, const QString &filename)
+{
+    m_pixmapSkinName[0] = defaultSkin ? ":/line.png" : filename;
+    setPixmap(m_pixmapSkinName[0]);
 }
