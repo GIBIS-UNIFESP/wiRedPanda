@@ -14,7 +14,6 @@
 #include "recentfilescontroller.h"
 
 class QDialog;
-class QUndoView;
 class QSpacerItem;
 class QTranslator;
 
@@ -60,7 +59,6 @@ public:
 
     //! Loads a .panda file
     bool loadPandaFile(const QString &fname);
-    void createUndoView();
     //! Opens a message box asking the user if he wishes to save his progress
     int confirmSave();
     //!
@@ -159,7 +157,6 @@ private:
     Editor *editor;
     QFileInfo currentFile;
     QDir defaultDirectory;
-    QUndoView *undoView;
     Label *firstResult;
     bool loadedAutosave;
     QString autosaveFilename;
@@ -173,7 +170,7 @@ private:
     RecentFilesController *rfController, *ricController;
     QAction *recentFileActs[RecentFilesController::MaxRecentFiles];
     QTranslator *translator;
-    QVector<ListItemWidget *> boxItemWidgets, searchItemWidgets;
+    QVector<ListItemWidget *> icItemWidgets, searchItemWidgets;
     void createRecentFileActions();
     void populateLeftMenu();
     // Shows a message box for reloading the autosave at launch, when

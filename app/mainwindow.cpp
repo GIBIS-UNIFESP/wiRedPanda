@@ -21,7 +21,6 @@
 #include <QSpacerItem>
 #include <QTranslator>
 #include <QUndoStack>
-#include <QUndoView>
 
 #include "arduino/codegenerator.h"
 #include "bewaveddolphin.h"
@@ -43,7 +42,6 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , editor(new Editor(this))
-    , undoView(nullptr)
     , firstResult(nullptr)
     , loadedAutosave(false)
     , autosaveFilename("")
@@ -118,12 +116,6 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
 
     setCurrentFile(QFileInfo());
 
-    /*
-     * #ifdef DEBUG
-     *  createUndoView( );
-     * #endif
-     */
-
     connect(ui->actionCopy, &QAction::triggered, editor, &Editor::copyAction);
     connect(ui->actionCut, &QAction::triggered, editor, &Editor::cutAction);
     connect(ui->actionPaste, &QAction::triggered, editor, &Editor::pasteAction);
@@ -175,19 +167,8 @@ void MainWindow::setFastMode(bool fastModeEnabled)
     ui->actionFast_Mode->setChecked(fastModeEnabled);
 }
 
-void MainWindow::createUndoView()
-{
-    undoView = new QUndoView(editor->getUndoStack());
-    undoView->setWindowTitle(tr("Command List"));
-    undoView->show();
-    undoView->setAttribute(Qt::WA_QuitOnClose, false);
-}
-
 MainWindow::~MainWindow()
 {
-    if (undoView) {
-        delete undoView;
-    }
     delete ui;
 }
 
@@ -485,18 +466,18 @@ void MainWindow::on_actionSelect_all_triggered()
 void MainWindow::updateRecentICs()
 {
     ui->scrollAreaWidgetContents_Box->layout()->removeItem(ui->verticalSpacer_BOX);
-    for (ListItemWidget *item : qAsConst(boxItemWidgets)) {
+    for (ListItemWidget *item : qAsConst(icItemWidgets)) {
         item->deleteLater();
     }
     /*  qDeleteAll( boxItemWidgets ); */
-    boxItemWidgets.clear();
+    icItemWidgets.clear();
 
     //! Show recent files
     const QStringList files = ricController->getRecentFiles();
     for (const QString &file : files) {
         QPixmap pixmap(QString::fromUtf8(":/basic/box.png"));
         auto *item = new ListItemWidget(pixmap, ElementType::IC, file, this);
-        boxItemWidgets.append(item);
+        icItemWidgets.append(item);
         ui->scrollAreaWidgetContents_Box->layout()->addWidget(item);
     }
     ui->scrollAreaWidgetContents_Box->layout()->addItem(ui->verticalSpacer_BOX);
