@@ -35,47 +35,32 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr, const QString &filename = QString());
     ~MainWindow() override;
-
     //! Saves the project to a .panda file. Removes the autosave file in the process.
     bool save(QString fname = QString());
-
     //! Sets the main window as visible, as well as its child widgets. Cleans the editor.
     void show();
-
-    //!
     void clear();
-
     //! Returns the file name of the currently loaded Panda file.
     QFileInfo getCurrentFile() const;
-
     //! Sets the current file to the given value.
     //! Mostly used by `loadPandaFile` and clearing functions
     void setCurrentFile(const QFileInfo &file);
-
     //! Exports the current simulation to an
     bool exportToArduino(QString fname);
     //! Saves the current Bewaved Dolphin (waveform simulator) file
     bool exportToWaveFormFile(const QString& fname);
-
     //! Loads a .panda file
     bool loadPandaFile(const QString &fname);
     //! Opens a message box asking the user if he wishes to save his progress
     int confirmSave();
     //!
     QString getOpenICFile();
-
     bool closeFile();
-
     void populateMenu(QSpacerItem *spacer, const QString& names, QLayout *layout);
-
     void retranslateUi();
-
     void loadTranslation(const QString& language);
-
     void setFastMode(bool fastModeEnabled);
-
     void buildFullScreenDialog();
-
     QString getDolphinFilename();
     void setDolphinFilename(const QString &filename);
 
