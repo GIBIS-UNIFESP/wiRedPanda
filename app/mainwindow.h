@@ -78,7 +78,6 @@ private slots:
     bool on_actionExport_to_Arduino_triggered();
     void on_actionExport_to_Image_triggered();
     void on_actionPrint_triggered();
-
     void on_actionAbout_Qt_triggered();
     void on_actionAbout_triggered();
     void on_actionEnglish_triggered();
