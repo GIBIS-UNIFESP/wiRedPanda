@@ -48,7 +48,7 @@ Editor::Editor(QObject *parent)
         globalEditor = this;
     }
     m_mainWindow = qobject_cast<MainWindow *>(parent);
-    m_markingSelectionIC = false;
+    m_markingSelectionBox = false;
     m_editedConn_id = 0;
     m_undoStack = new QUndoStack(this);
     m_scene = new Scene(this);
@@ -381,7 +381,7 @@ void Editor::detachConnection(QNEInputPort *endPort)
 void Editor::startSelectionRect()
 {
     m_selectionStartPoint = m_mousePos;
-    m_markingSelectionIC = true;
+    m_markingSelectionBox = true;
     m_selectionRect->setRect(QRectF(m_selectionStartPoint, m_selectionStartPoint));
     m_selectionRect->show();
     m_selectionRect->update();
@@ -465,14 +465,14 @@ bool Editor::mouseMoveEvt(QGraphicsSceneMouseEvent *mouseEvt)
         }
         return true;
     }
-    if (m_markingSelectionIC) {
+    if (m_markingSelectionBox) {
         /* If is marking the selectionBox, the last coordinate follows the mouse position. */
         QRectF rect = QRectF(m_selectionStartPoint, m_mousePos).normalized();
         m_selectionRect->setRect(rect);
         QPainterPath selectionBox;
         selectionBox.addRect(rect);
         m_scene->setSelectionArea(selectionBox);
-    } else if (!m_markingSelectionIC) {
+    } else if (!m_markingSelectionBox) {
         /* Else, the selectionRect is hidden. */
         m_selectionRect->hide();
     }
@@ -516,7 +516,7 @@ bool Editor::mouseReleaseEvt(QGraphicsSceneMouseEvent *mouseEvt)
     }
     /* When mouse is released the selection rect is hidden. */
     m_selectionRect->hide();
-    m_markingSelectionIC = false;
+    m_markingSelectionBox = false;
     if (QApplication::overrideCursor()) {
         QApplication::setOverrideCursor(Qt::ArrowCursor);
     }
