@@ -101,9 +101,6 @@ void ICPrototypeImpl::loadInputs()
     for (int portIndex = 0; portIndex < getInputSize(); ++portIndex) {
         GraphicElement *elm = m_inputs.at(portIndex)->graphicElement();
         QString lb = elm->getLabel();
-        if (lb.isEmpty()) {
-            lb = elm->objectName();
-        }
         if (!m_inputs.at(portIndex)->portName().isEmpty()) {
             lb += " ";
             lb += m_inputs.at(portIndex)->portName();
@@ -120,9 +117,6 @@ void ICPrototypeImpl::loadOutputs()
     for (int portIndex = 0; portIndex < getOutputSize(); ++portIndex) {
         GraphicElement *elm = m_outputs.at(portIndex)->graphicElement();
         QString lb = elm->getLabel();
-        if (lb.isEmpty()) {
-            lb = elm->objectName();
-        }
         if (!m_outputs.at(portIndex)->portName().isEmpty()) {
             lb += " ";
             lb += m_outputs.at(portIndex)->portName();
@@ -141,6 +135,9 @@ void ICPrototypeImpl::loadInputElement(GraphicElement *elm)
         GraphicElement *nodeElm = ElementFactory::buildElement(ElementType::NODE);
         nodeElm->setPos(elm->pos());
         nodeElm->setLabel(elm->getLabel());
+        if (elm->getLabel().isEmpty()) {
+            nodeElm->setLabel(ElementFactory::typeToText(elm->elementType()));
+        }
         QNEInputPort *nodeInput = nodeElm->input();
         nodeInput->setPos(port->pos());
         nodeInput->setName(port->getName());
@@ -169,6 +166,9 @@ void ICPrototypeImpl::loadOutputElement(GraphicElement *elm)
         GraphicElement *nodeElm = ElementFactory::buildElement(ElementType::NODE);
         nodeElm->setPos(elm->pos());
         nodeElm->setLabel(elm->getLabel());
+        if (elm->getLabel().isEmpty()) {
+            nodeElm->setLabel(ElementFactory::typeToText(elm->elementType()));
+        }
         QNEOutputPort *nodeOutput = nodeElm->output();
         nodeOutput->setPos(port->pos());
         nodeOutput->setName(port->getName());

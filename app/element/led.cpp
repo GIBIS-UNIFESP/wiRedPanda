@@ -72,7 +72,7 @@ void Led::refresh()
     switch (inputSize()) {
     case 1: { /* 1 bit */
         setPixmap(m_pixmapSkinName[m_colorNumber + idx]);
-        input(0)->setName("led");
+        input(0)->setName("");
         input(0)->setPos(32,bottomPosition());
         break;
     }
