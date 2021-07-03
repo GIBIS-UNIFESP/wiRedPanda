@@ -50,9 +50,15 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     , translator(nullptr)
 {
     COMMENT("WIRED PANDA Version = " << APP_VERSION << " OR " << GlobalProperties::version, 0);
+
     ui->setupUi(this);
     ThemeManager::globalMngr = new ThemeManager(this);
     buildFullScreenDialog();
+    /* Translation */
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
+    if (settings.value("language").isValid()) {
+        loadTranslation(settings.value("language").toString());
+    }
     COMMENT("Dialog built. Now adding tab.", 0);
     auto new_tab = new QWidget(ui->tabWidget_mainWindow);
     new_tab->setLayout(fullscreenDlg->layout());
@@ -61,12 +67,6 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
 
     COMMENT("Seting scene.", 0);
     fullscreenView->setScene(editor->getScene());
-    /* Translation */
-
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    if (settings.value("language").isValid()) {
-        loadTranslation(settings.value("language").toString());
-    }
 
     if (settings.contains("autosaveFile")) {
         // If autosaveFile was found within the config. file, then WiredPanda probably didn't save its last project correctly, perhaps due to a crash.
@@ -314,6 +314,7 @@ bool MainWindow::loadPandaFile(const QString &fname)
     COMMENT("Closing file.", 0);
     fl.close();
     ui->statusBar->showMessage(tr("File loaded successfully."), 2000);
+    ui->tabWidget_mainWindow->setTabText(ui->tabWidget_mainWindow->currentIndex(), QFileInfo(fname).fileName());
     /*  on_actionWaveform_triggered( ); */
     return true;
 }
