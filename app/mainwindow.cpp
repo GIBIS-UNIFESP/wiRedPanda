@@ -53,9 +53,11 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     ui->setupUi(this);
     ThemeManager::globalMngr = new ThemeManager(this);
     buildFullScreenDialog();
-    COMMENT("Dialog built.", 0);
-    ui->tab1->setLayout(fullscreenDlg->layout());
-    ui->tab1->layout()->addWidget(fullscreenView);
+    COMMENT("Dialog built. Now adding tab.", 0);
+    auto new_tab = new QWidget(ui->tabWidget_mainWindow);
+    new_tab->setLayout(fullscreenDlg->layout());
+    new_tab->layout()->addWidget(fullscreenView);
+    ui->tabWidget_mainWindow->addTab(new_tab, tr("New Project"));
 
     COMMENT("Seting scene.", 0);
     fullscreenView->setScene(editor->getScene());
