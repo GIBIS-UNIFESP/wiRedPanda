@@ -1254,6 +1254,10 @@ Errp: %1</translation>
         <source>Unmute</source>
         <translation>Ativar som</translation>
     </message>
+    <message>
+        <source>New Project</source>
+        <translation>Projeto Novo</translation>
+    </message>
 </context>
 <context>
     <name>MorphCommand</name>
