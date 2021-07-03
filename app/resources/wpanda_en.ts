@@ -1249,6 +1249,10 @@ Error: %1</source>
         <source>Unmute</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>New Project</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MorphCommand</name>
