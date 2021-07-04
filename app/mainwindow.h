@@ -22,6 +22,7 @@ class Editor;
 class GraphicsView;
 class Label;
 class ListItemWidget;
+class WorkSpace;
 
 namespace Ui
 {
@@ -35,6 +36,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr, const QString &filename = QString());
     ~MainWindow() override;
+    //! Creates a new tab with the given tab_name. Used by new and load actions.
+    void createNewTab(const QString &tab_name);
     //! Saves the project to a .panda file. Removes the autosave file in the process.
     bool save(QString fname = QString());
     //! Sets the main window as visible, as well as its child widgets. Cleans the editor.
@@ -64,8 +67,8 @@ public:
     QString getDolphinFilename();
     void setDolphinFilename(const QString &filename);
 
-    QDialog *fullscreenDlg;
-    GraphicsView *fullscreenView;
+    QDialog *m_fullscreenDlg;
+    GraphicsView *m_fullscreenView;
 
 signals:
     void addRecentIcFile(const QString &fname);
@@ -73,6 +76,8 @@ signals:
 
 public slots:
     void updateRecentICs();
+    void closeTab(int tab);
+    void selectTab(int tab);
 
 private slots:
     bool on_actionExport_to_Arduino_triggered();
@@ -122,22 +127,23 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    Editor *editor;
-    QFileInfo currentFile;
-    QDir defaultDirectory;
-    Label *firstResult;
-    bool loadedAutosave;
-    QString autosaveFilename;
-    QString dolphinFilename;
-    BewavedDolphin *bd;
+    Editor *m_editor;
+    QFileInfo m_currentFile;
+    QDir m_defaultDirectory;
+    Label *m_firstResult;
+    bool m_loadedAutoSave;
+    QString m_autoSaveFileName;
+    QString m_dolphinFileName;
+    BewavedDolphin *m_bd;
+    QVector<WorkSpace> m_tabs;
+    int m_current_tab;
+    QVector<QTemporaryFile*> m_autoSaveFile;
 
-    QTemporaryFile autosaveFile;
-
-    QAction *undoAction;
-    QAction *redoAction;
-    RecentFilesController *rfController, *ricController;
-    QAction *recentFileActs[RecentFilesController::MaxRecentFiles];
-    QTranslator *translator;
+    QAction *m_undoAction;
+    QAction *m_redoAction;
+    RecentFilesController *m_rfController, *m_ricController;
+    QAction *m_recentFileActs[RecentFilesController::MaxRecentFiles];
+    QTranslator *m_translator;
     QVector<ListItemWidget *> icItemWidgets, searchItemWidgets;
     void createRecentFileActions();
     void populateLeftMenu();

@@ -75,7 +75,8 @@ SOURCES += \
     $$PWD/app/thememanager.cpp \
     $$PWD/app/logicelement.cpp \
     $$PWD/app/elementmapping.cpp \
-    $$PWD/app/common.cpp
+    $$PWD/app/common.cpp \
+    $$PWD/app/workspace.cpp
 
 HEADERS  +=  \
     $$PWD/app/bewaveddolphin.h \
@@ -113,7 +114,8 @@ HEADERS  +=  \
     $$PWD/app/simplewaveform.h \
     $$PWD/app/thememanager.h \
     $$PWD/app/logicelement.h \
-    $$PWD/app/elementmapping.h
+    $$PWD/app/elementmapping.h \
+    $$PWD/app/workspace.h
 
 INCLUDEPATH += \
     $$PWD/app \

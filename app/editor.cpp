@@ -38,26 +38,16 @@
 #include <cmath>
 #include <iostream>
 
-Editor *Editor::globalEditor = nullptr;
-
 Editor::Editor(QObject *parent)
     : QObject(parent)
     , m_scene(nullptr)
 {
-    if (!globalEditor) {
-        globalEditor = this;
-    }
     m_mainWindow = qobject_cast<MainWindow *>(parent);
     m_markingSelectionBox = false;
     m_editedConn_id = 0;
-    m_undoStack = new QUndoStack(this);
-    m_scene = new Scene(this);
-
     m_icManager = new ICManager(m_mainWindow, this);
-
-    install(m_scene);
+    install();
     m_draggingElement = false;
-    clear();
     m_timer.start();
     m_showWires = true;
     m_showGates = true;
@@ -119,38 +109,14 @@ void Editor::mute(bool _mute)
     }
 }
 
-void Editor::install(Scene *s)
+void Editor::install()
 {
-    s->installEventFilter(this);
-    m_simulationController = new SimulationController(s);
+    m_undoStack = new QUndoStack(this);
+    m_scene = new Scene(this);
+    m_scene->installEventFilter(this);
+    m_simulationController = new SimulationController(m_scene);
     m_simulationController->start();
     clear();
-}
-
-QNEConnection *Editor::getEditedConn() const
-{
-    return dynamic_cast<QNEConnection *>(ElementFactory::getItemById(m_editedConn_id));
-}
-
-void Editor::setEditedConn(QNEConnection *editedConn)
-{
-    if (editedConn) {
-        editedConn->setFocus();
-        m_editedConn_id = editedConn->id();
-    } else {
-        m_editedConn_id = 0;
-    }
-}
-
-void Editor::buildSelectionRect()
-{
-    COMMENT("Build Selection Rect.", 0);
-    m_selectionRect = new QGraphicsRectItem();
-    m_selectionRect->setFlag(QGraphicsItem::ItemIsSelectable, false);
-    if (m_scene) {
-        m_scene->addItem(m_selectionRect);
-    }
-    COMMENT("Finished building rect.", 0);
 }
 
 void Editor::clear()
@@ -179,6 +145,32 @@ void Editor::clear()
     COMMENT("Emitting circuitHasChanged.", 0);
     emit circuitHasChanged();
     COMMENT("Finished clear.", 0);
+}
+
+QNEConnection *Editor::getEditedConn() const
+{
+    return dynamic_cast<QNEConnection *>(ElementFactory::getItemById(m_editedConn_id));
+}
+
+void Editor::setEditedConn(QNEConnection *editedConn)
+{
+    if (editedConn) {
+        editedConn->setFocus();
+        m_editedConn_id = editedConn->id();
+    } else {
+        m_editedConn_id = 0;
+    }
+}
+
+void Editor::buildSelectionRect()
+{
+    COMMENT("Build Selection Rect.", 0);
+    m_selectionRect = new QGraphicsRectItem();
+    m_selectionRect->setFlag(QGraphicsItem::ItemIsSelectable, false);
+    if (m_scene) {
+        m_scene->addItem(m_selectionRect);
+    }
+    COMMENT("Finished building rect.", 0);
 }
 
 //! CARMESIM: reset scene upon deletion in order to avoid SIGSEGV
@@ -745,9 +737,19 @@ QUndoStack *Editor::getUndoStack() const
     return m_undoStack;
 }
 
+void Editor::setUndoStack(QUndoStack *stack)
+{
+    m_undoStack = stack;
+}
+
 Scene *Editor::getScene() const
 {
     return m_scene;
+}
+
+void Editor::setScene(Scene *scene)
+{
+    m_scene = scene;
 }
 
 void Editor::cut(const QList<QGraphicsItem *> &items, QDataStream &ds)
