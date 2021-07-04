@@ -83,7 +83,6 @@ BewavedDolphin::BewavedDolphin(Editor *editor, QWidget *parent)
     m_gv = new GraphicsView(this);
     m_ui->verticalLayout->addWidget(m_gv);
     m_scene = new QGraphicsScene(this);
-    // ui->graphicsView->setScene( scene );
     m_gv->setScene(m_scene);
     m_signalTableView = new QTableView;
     m_scene->installEventFilter(m_signalTableView);

@@ -59,7 +59,9 @@ public:
     bool eventFilter(QObject *obj, QEvent *evt) override;
     void setElementEditor(ElementEditor *value);
     QUndoStack *getUndoStack() const;
+    void setUndoStack(QUndoStack *stack);
     Scene *getScene() const;
+    void setScene(Scene *scene);
     void buildSelectionRect();
     void handleHoverPort();
     void releaseHoverPort();
@@ -74,8 +76,6 @@ public:
     QPointF getMousePos() const;
 
     ElementEditor *getElementEditor() const;
-
-    static Editor *globalEditor;
 
     void deleteEditedConn();
     void flipH();
@@ -135,7 +135,7 @@ private:
     bool wheelEvt(QWheelEvent *wEvt);
 
     void ctrlDrag(QPointF pos);
-    void install(Scene *s);
+    void install();
 
     QNEConnection *getEditedConn() const;
     void setEditedConn(QNEConnection *editedConn);
