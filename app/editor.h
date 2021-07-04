@@ -90,6 +90,7 @@ public slots:
     void showWires(bool checked);
     void showGates(bool checked);
     void rotate(bool rotateRight);
+    void install();
 
     void receiveCommand(QUndoCommand *cmd);
     void copyAction();
@@ -105,8 +106,6 @@ private:
 
     QUndoStack *m_undoStack;
     Scene *m_scene;
-    QList<QGraphicsItem *> itemsAt(QPointF pos);
-    QGraphicsItem *itemAt(QPointF pos);
     int m_editedConn_id;
     int m_hoverPortElm_id;
     int m_hoverPort_nbr;
@@ -118,7 +117,6 @@ private:
     QPointF m_selectionStartPoint;
     SimulationController *m_simulationController;
     QPointF m_mousePos, m_lastPos;
-    void addItem(QGraphicsItem *item);
     bool m_draggingElement;
     QList<GraphicElement *> m_movedElements;
     QList<QPointF> m_oldPositions;
@@ -127,15 +125,16 @@ private:
     bool m_showWires;
     bool m_showGates;
 
+    QList<QGraphicsItem *> itemsAt(QPointF pos);
+    QGraphicsItem *itemAt(QPointF pos);
+    void addItem(QGraphicsItem *item);
     bool mousePressEvt(QGraphicsSceneMouseEvent *mouseEvt);
     bool mouseMoveEvt(QGraphicsSceneMouseEvent *mouseEvt);
     bool mouseReleaseEvt(QGraphicsSceneMouseEvent *mouseEvt);
     bool dropEvt(QGraphicsSceneDragDropEvent *dde);
     bool dragMoveEvt(QGraphicsSceneDragDropEvent *dde);
     bool wheelEvt(QWheelEvent *wEvt);
-
     void ctrlDrag(QPointF pos);
-    void install();
 
     QNEConnection *getEditedConn() const;
     void setEditedConn(QNEConnection *editedConn);
