@@ -41,6 +41,7 @@
 Editor::Editor(QObject *parent)
     : QObject(parent)
     , m_scene(nullptr)
+    , m_simulationController(nullptr)
 {
     m_mainWindow = qobject_cast<MainWindow *>(parent);
     m_markingSelectionBox = false;
@@ -114,6 +115,11 @@ void Editor::install()
     m_undoStack = new QUndoStack(this);
     m_scene = new Scene(this);
     m_scene->installEventFilter(this);
+    if (m_simulationController!=nullptr) {
+        m_simulationController->stop();
+        m_simulationController->clear();
+        delete m_simulationController;//->deleteLater();
+    }
     m_simulationController = new SimulationController(m_scene);
     m_simulationController->start();
     clear();

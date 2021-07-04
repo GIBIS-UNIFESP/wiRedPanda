@@ -502,6 +502,7 @@ void MainWindow::closeTab(int tab) {
 
 void MainWindow::selectTab(int tab) {
     if (tab != m_current_tab) {
+        disconnect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
         m_fullscreenDlg = m_tabs[tab].fullScreenDlg();
         m_fullscreenView = m_tabs[tab].fullscreenView();
         m_editor->setUndoStack(m_tabs[tab].undoStack());
@@ -510,6 +511,7 @@ void MainWindow::selectTab(int tab) {
         m_autoSaveFileName = m_tabs[tab].autoSaveFileName();
         m_dolphinFileName = m_tabs[tab].dolphinFileName();
         m_current_tab = tab;
+        connect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
         emit m_editor->circuitHasChanged();
     }
 }
