@@ -146,6 +146,11 @@ private:
     QAction *m_recentFileActs[RecentFilesController::MaxRecentFiles];
     QTranslator *m_translator;
     QVector<ListItemWidget *> icItemWidgets, searchItemWidgets;
+    /**
+     * @brief createNewWorkspace: Creates a new workspace in a new tab. Called by load and new functions.
+     * @param fname
+     */
+    void createNewWorkspace(const QString &fname);
     void createRecentFileActions();
     void populateLeftMenu();
     // Shows a message box for reloading the autosave at launch, when
