@@ -39,7 +39,7 @@ public:
     QString getOutputLabel(int index) const;
     QNEPort *getInput(int index);
     QNEPort *getOutput(int index);
-    ICMapping *generateMapping(const QString &fileName) const;
+    ICMapping *generateMapping() const;
 
 private:
     void sortPorts(QVector<QNEPort *> &map);

@@ -254,7 +254,7 @@ QNEPort *ICPrototypeImpl::getOutput(int index)
     return m_outputs[index];
 }
 
-ICMapping *ICPrototypeImpl::generateMapping(const QString &fileName) const
+ICMapping *ICPrototypeImpl::generateMapping() const
 {
-    return new ICMapping(fileName, m_elements, m_inputs, m_outputs);
+    return new ICMapping(m_elements, m_inputs, m_outputs);
 }

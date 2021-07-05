@@ -48,6 +48,7 @@ public:
     //! Sets the current file to the given value.
     //! Mostly used by `loadPandaFile` and clearing functions
     void setCurrentFile(const QFileInfo &file);
+    void setAutoSaveFileName(const QFileInfo &file);
     //! Exports the current simulation to an
     bool exportToArduino(QString fname);
     //! Saves the current Bewaved Dolphin (waveform simulator) file

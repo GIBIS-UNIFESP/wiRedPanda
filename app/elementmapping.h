@@ -26,7 +26,7 @@ typedef QMap<Input *, LogicElement *> InputMap;
 class ElementMapping
 {
 public:
-    ElementMapping(const QVector<GraphicElement *> &elms, const QString &file = QString());
+    ElementMapping(const QVector<GraphicElement *> &elms);
     virtual ~ElementMapping();
 
     void clear();

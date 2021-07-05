@@ -2,15 +2,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "bewaveddolphin.h"
+#include "icmanager.h"
 #include "graphicsview.h"
 #include "scene.h"
+#include "simulationcontroller.h"
 #include "workspace.h"
 
-WorkSpace::WorkSpace(QDialog *fullscreenDlg, GraphicsView *fullscreenView, QUndoStack *undoStack, Scene *scene)
+WorkSpace::WorkSpace(QDialog *fullscreenDlg, GraphicsView *fullscreenView, QUndoStack *undoStack, Scene *scene, SimulationController *simullationController, ICManager *icManager)
   : m_fullscreenDlg(fullscreenDlg)
   , m_fullscreenView(fullscreenView)
   , m_undoStack(undoStack)
   , m_scene(scene)
+  , m_simulationController(simullationController)
+  , m_icManager(icManager)
 {
 }
 
@@ -35,7 +39,17 @@ QUndoStack *WorkSpace::undoStack() const
 
 Scene *WorkSpace::scene() const
 {
-  return m_scene;
+    return m_scene;
+}
+
+SimulationController *WorkSpace::simullationController()
+{
+    return m_simulationController;
+}
+
+ICManager *WorkSpace::icManager()
+{
+    return m_icManager;
 }
 
 void WorkSpace::setCurrentFile(QFileInfo &finfo)

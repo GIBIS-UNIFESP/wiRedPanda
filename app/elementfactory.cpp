@@ -288,6 +288,8 @@ QPixmap ElementFactory::getPixmap(ElementType type)
 ElementFactory::ElementFactory()
 {
     clear();
+    m_map.clear();
+    m_lastId = 0;
 }
 
 GraphicElement *ElementFactory::buildElement(ElementType type, QGraphicsItem *parent)
@@ -374,6 +376,6 @@ size_t ElementFactory::next_id()
 void ElementFactory::clear()
 {
     COMMENT("Element Factory clear.", 0);
-    m_map.clear();
-    m_lastId = 1;
+    //m_map.clear();
+    //m_lastId = 1;
 }

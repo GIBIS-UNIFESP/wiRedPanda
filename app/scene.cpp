@@ -12,8 +12,9 @@
 #include "qneport.h"
 
 // TODO: stop using QGraphicsView *
-Scene::Scene(QObject *parent)
+Scene::Scene(QObject *parent, int id)
     : QGraphicsScene(parent)
+    , m_id(id)
 {
 }
 
