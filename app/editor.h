@@ -93,7 +93,7 @@ public slots:
     void showWires(bool checked);
     void showGates(bool checked);
     void rotate(bool rotateRight);
-    void install(int id=0);
+    void setupWorkspace(int id=0);
 
     void receiveCommand(QUndoCommand *cmd);
     void copyAction();
