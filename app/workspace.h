@@ -27,7 +27,7 @@ public:
     GraphicsView *fullscreenView() const;
     QUndoStack *undoStack() const;
     Scene *scene() const;
-    SimulationController *simullationController();
+    SimulationController *simulationController();
     ICManager *icManager();
 
     void setCurrentFile(QFileInfo &finfo);

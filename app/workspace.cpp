@@ -42,7 +42,7 @@ Scene *WorkSpace::scene() const
     return m_scene;
 }
 
-SimulationController *WorkSpace::simullationController()
+SimulationController *WorkSpace::simulationController()
 {
     return m_simulationController;
 }

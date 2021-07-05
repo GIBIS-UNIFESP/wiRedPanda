@@ -109,36 +109,22 @@ void Editor::mute(bool _mute)
 
 void Editor::setupWorkspace(int id)
 {
+    if (m_simulationController!=nullptr) {
+      m_simulationController->stop();
+    }
     m_icManager = new ICManager(m_mainWindow, this);
     m_undoStack = new QUndoStack(this);
     m_scene = new Scene(this, id);
     m_scene->installEventFilter(this);
-    if (m_simulationController!=nullptr) {
-        COMMENT("Deleting old simulation controller.", 0);
-        m_simulationController->stop();
-        m_simulationController->clear();
-        delete m_simulationController;//->deleteLater();
-    }
     m_simulationController = new SimulationController(m_scene);
     m_simulationController->start();
-    clear();
+    setRectangle();
     connect(this, &Editor::circuitHasChanged, m_simulationController, &SimulationController::reSortElms);
     connect(m_icManager, &ICManager::updatedIC, this, &Editor::redoSimulationController);
 }
 
-// Esse cara é um veneno agora. Não é para apagar mais nada... Mas precisa apagar aos poucos de cada aba...
-void Editor::clear()
+void Editor::setRectangle()
 {
-    COMMENT("Clearing editor.", 0);
-    //  fprintf(stderr, "Clearing editor\n");
-    m_simulationController->stop();
-    m_simulationController->clear();
-    m_icManager->clear();
-    ElementFactory::instance->clear();
-    m_undoStack->clear();
-    if (m_scene) {
-        m_scene->clear();
-    }
     COMMENT("Building rect.", 0);
     buildSelectionRect();
     if (m_scene) {
@@ -149,7 +135,6 @@ void Editor::clear()
     }
     COMMENT("Updating theme.", 0);
     updateTheme();
-    m_simulationController->start();
     COMMENT("Emitting circuitHasChanged.", 0);
     emit circuitHasChanged();
     COMMENT("Finished clear.", 0);
@@ -335,11 +320,8 @@ SimulationController *Editor::getSimulationController() const
 
 void Editor::setSimulationController(SimulationController *simulationController) {
     disconnect(this, &Editor::circuitHasChanged, m_simulationController, &SimulationController::reSortElms);
-    m_simulationController->stop();
     m_simulationController = simulationController;
-    m_simulationController->start();
     connect(this, &Editor::circuitHasChanged, m_simulationController, &SimulationController::reSortElms);
-    emit circuitHasChanged();
 }
 
 void Editor::addItem(QGraphicsItem *item)
@@ -896,8 +878,8 @@ void Editor::save(QDataStream &ds, const QString &dolphinFilename)
 void Editor::load(QDataStream &ds)
 {
     COMMENT("Loading file.", 0);
-    clear();
-    COMMENT("Clear!", 0);
+    setRectangle();
+//    COMMENT("Clear!", 0);
     m_simulationController->stop();
     COMMENT("Stopped simulation.", 0);
     double version = SerializationFunctions::loadVersion(ds);

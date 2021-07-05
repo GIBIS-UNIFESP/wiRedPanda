@@ -227,13 +227,12 @@ bool MainWindow::save(QString fname)
 void MainWindow::show()
 {
     QMainWindow::show();
-    //m_editor->clear();
 }
 
 // This should become clearTab or closeProject...
 void MainWindow::clear()
 {
-    m_editor->clear();
+    m_editor->setRectangle();
     m_dolphinFileName = "none";
     setCurrentFile(QFileInfo());
 }
@@ -263,11 +262,13 @@ int MainWindow::confirmSave()
 
 void MainWindow::createNewWorkspace(const QString &fname)
 {
+    COMMENT("Creating new workspace: " << fname.toStdString(), 0);
     m_editor->setupWorkspace(1); // Please remove that number... it is for debuging.
     buildFullScreenDialog();
     createNewTab(fname);
     emit ui->tabWidget_mainWindow->tabBarClicked(m_tabs.size()-1);
     ui->tabWidget_mainWindow->setCurrentIndex(m_tabs.size()-1);
+    COMMENT("Finished creating new workspace: " << fname.toStdString(), 0);
 }
 
 
@@ -315,7 +316,7 @@ bool MainWindow::loadPandaFile(const QString &fname)
         } catch (std::runtime_error &e) {
             std::cerr << tr("Error loading project: ").toStdString() << e.what() << std::endl;
             QMessageBox::warning(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
-            //clear(); -> This should be a clear workspace.
+            closeTab(m_tabs.size()-1);
             return false;
         }
     } else {
@@ -513,20 +514,31 @@ void MainWindow::closeTab(int tab) {
 }
 
 void MainWindow::selectTab(int tab) {
+    COMMENT("Selecting tab: " << QString::number(tab).toStdString(), 0);
     if (tab != m_current_tab) {
+        m_editor->getSimulationController()->stop();
+        COMMENT("full screen.", 0);
         disconnect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
         m_fullscreenDlg = m_tabs[tab].fullScreenDlg();
         m_fullscreenView = m_tabs[tab].fullscreenView();
+        COMMENT("editor.", 0);
         m_editor->setUndoStack(m_tabs[tab].undoStack());
+        COMMENT("editor stack done.", 0);
         m_editor->setScene(m_tabs[tab].scene());
-        m_editor->setSimulationController(m_tabs[tab].simullationController());
+        COMMENT("editor scene done.", 0);
+        m_editor->setSimulationController(m_tabs[tab].simulationController());
+        COMMENT("editor controller done.", 0);
         m_editor->setICManager(m_tabs[tab].icManager());
+        COMMENT("files.", 0);
         m_currentFile = m_tabs[tab].currentFile();
         m_autoSaveFileName = m_tabs[tab].autoSaveFileName();
         m_dolphinFileName = m_tabs[tab].dolphinFileName();
+        COMMENT("moving...", 0);
         m_current_tab = tab;
         ui->widgetElementEditor->setScene(m_tabs[tab].scene());
         connect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
+        COMMENT("emit circuithaschanged.", 0);
+        m_editor->getSimulationController()->start();
         emit m_editor->circuitHasChanged();
     }
 }

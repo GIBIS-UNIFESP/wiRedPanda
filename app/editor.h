@@ -89,7 +89,7 @@ signals:
     void circuitHasChanged();
 
 public slots:
-    void clear();
+    void setRectangle();
     void showWires(bool checked);
     void showGates(bool checked);
     void rotate(bool rotateRight);
