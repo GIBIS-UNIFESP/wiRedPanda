@@ -62,6 +62,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     COMMENT("Building dialog within a new tab.", 0);
     buildFullScreenDialog();
     createNewTab(tr("New Project"));
+    connect(ui->tabWidget_mainWindow, &QTabWidget::tabBarClicked, this, &MainWindow::selectTab);
 
     COMMENT("Checking for autosave file recovery.", 0);
     if (settings.contains("autosaveFile")) {
@@ -116,6 +117,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     ui->searchScrollArea->hide();
     auto *shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F), this);
     connect(shortcut, &QShortcut::activated, ui->lineEdit, QOverload<>::of(&QWidget::setFocus));
+    populateLeftMenu();
 
     COMMENT("Setting directories and autosave file.", 0);
     setCurrentFile(QFileInfo());
@@ -134,28 +136,25 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     ui->menuEdit->insertAction(ui->menuEdit->actions().at(0), m_undoAction);
     ui->menuEdit->insertAction(m_undoAction, m_redoAction);
 
-    COMMENT("Setting up zoom funcionalities.", 0);
+    COMMENT("Setting up zoom and screen funcionalities.", 0);
     connect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
     connect(m_editor, &Editor::scroll, this, &MainWindow::scrollView);
     connect(m_editor, &Editor::circuitHasChanged, this, &MainWindow::autoSave);
+    m_fullscreenView->setCacheMode(QGraphicsView::CacheBackground);
 
     COMMENT("Loading recent file list.", 0);
     m_rfController = new RecentFilesController("recentFileList", this, true);
     m_ricController = new RecentFilesController("recentICs", this, false);
     connect(this, &MainWindow::addRecentFile, m_rfController, &RecentFilesController::addRecentFile);
     connect(this, &MainWindow::addRecentIcFile, m_ricController, &RecentFilesController::addRecentFile);
-
-    m_fullscreenView->setCacheMode(QGraphicsView::CacheBackground);
     m_firstResult = nullptr;
     updateRecentICs();
     createRecentFileActions();
-
     connect(m_rfController, &RecentFilesController::recentFilesUpdated, this, &MainWindow::updateRecentFileActions);
     connect(m_ricController, &RecentFilesController::recentFilesUpdated, this, &MainWindow::updateRecentICs);
-    connect(ui->tabWidget_mainWindow, &QTabWidget::tabBarClicked, this, &MainWindow::selectTab);
-    /*  QApplication::setStyle( QStyleFactory::create( "Fusion" ) ); */
+
+    COMMENT("Checking playing simulation.", 0);
     ui->actionPlay->setChecked(true);
-    populateLeftMenu();
 }
 
 void MainWindow::createNewTab( const QString &tab_name ) {
