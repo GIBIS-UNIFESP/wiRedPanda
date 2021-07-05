@@ -46,7 +46,7 @@ Editor::Editor(QObject *parent)
     m_mainWindow = qobject_cast<MainWindow *>(parent);
     m_markingSelectionBox = false;
     m_editedConn_id = 0;
-    install();
+    setupWorkspace();
     m_draggingElement = false;
     m_showWires = true;
     m_showGates = true;
@@ -107,7 +107,7 @@ void Editor::mute(bool _mute)
     }
 }
 
-void Editor::install(int id)
+void Editor::setupWorkspace(int id)
 {
     m_icManager = new ICManager(m_mainWindow, this);
     m_undoStack = new QUndoStack(this);

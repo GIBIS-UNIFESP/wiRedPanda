@@ -174,7 +174,6 @@ void MainWindow::setFastMode(bool fastModeEnabled)
 {
     m_fullscreenView->setRenderHint(QPainter::Antialiasing, !fastModeEnabled);
     m_fullscreenView->setRenderHint(QPainter::SmoothPixmapTransform, !fastModeEnabled);
-
     ui->actionFast_Mode->setChecked(fastModeEnabled);
 }
 
@@ -235,7 +234,7 @@ void MainWindow::show()
     m_editor->clear();
 }
 
-// Please, remove me!!!
+// This should become clearTab or closeProject...
 void MainWindow::clear()
 {
     m_editor->clear();
@@ -258,7 +257,6 @@ int MainWindow::confirmSave()
 {
     QMessageBox msgBox;
     msgBox.setParent(this);
-    /*  msgBox.setLocale( QLocale::Portuguese ); */
     msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
     msgBox.setText(tr("Do you want to save your changes?"));
     msgBox.setWindowModality(Qt::WindowModal);
@@ -269,16 +267,9 @@ int MainWindow::confirmSave()
 
 void MainWindow::on_actionNew_triggered()
 {
-//    if (closeFile()) {
-//        clear();
-//    }
-    COMMENT("Installing.", 0);
-    m_editor->install(1);
-    COMMENT("Building.", 0);
+    m_editor->setupWorkspace(1); // Please remove that number... it is for debuging.
     buildFullScreenDialog();
-    COMMENT("Creating.", 0);
     createNewTab(tr("New Project"));
-    COMMENT("Selecting.", 0);
     emit ui->tabWidget_mainWindow->tabBarClicked(m_tabs.size()-1);
     ui->tabWidget_mainWindow->setCurrentIndex(m_tabs.size()-1);
 }
@@ -310,11 +301,11 @@ bool MainWindow::loadPandaFile(const QString &fname)
     if (fl.open(QFile::ReadOnly)) {
         COMMENT("File opened.", 0);
         QDataStream ds(&fl);
-        setCurrentFile(QFileInfo(fname));
-        COMMENT("Current file set.", 0);
         try {
             COMMENT("Loading in editor.", 0);
             m_editor->load(ds);
+            COMMENT("Current file set.", 0);
+            setCurrentFile(QFileInfo(fname));
             COMMENT("Loaded. Emitting changed signal.", 0);
             emit m_editor->circuitHasChanged();
             COMMENT("Finished updating changed by signal.", 0);
@@ -331,7 +322,6 @@ bool MainWindow::loadPandaFile(const QString &fname)
     COMMENT("Closing file.", 0);
     fl.close();
     ui->statusBar->showMessage(tr("File loaded successfully."), 2000);
-    /*  on_actionWaveform_triggered( ); */
     return true;
 }
 
@@ -950,10 +940,8 @@ void MainWindow::buildFullScreenDialog()
     m_fullscreenView = new GraphicsView(this);
     m_fullscreenDlg->setWindowFlags(Qt::Window);
     auto *dlg_layout = new QHBoxLayout(m_fullscreenDlg);
-
     m_fullscreenDlg->addActions(actions());
     m_fullscreenDlg->addActions(ui->menuBar->actions());
-
     dlg_layout->setContentsMargins(0, 0, 0, 0);
     dlg_layout->setMargin(0);
     dlg_layout->addWidget(m_fullscreenView);
