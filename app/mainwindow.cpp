@@ -64,24 +64,6 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     createNewTab(tr("New Project"));
     connect(ui->tabWidget_mainWindow, &QTabWidget::tabBarClicked, this, &MainWindow::selectTab);
 
-    COMMENT("Checking for autosave file recovery.", 0);
-    if (settings.contains("autosaveFile")) {
-        m_autoSaveFileName = settings.value("autosaveFile").toString();
-        if ((QFile(m_autoSaveFileName).exists()) && (m_autoSaveFileName != filename)) {
-            int ret = recoverAutoSaveFile(m_autoSaveFileName);
-            if (ret == QMessageBox::Yes) {
-                auto *wPanda = new QProcess(nullptr);
-                QStringList args;
-                args << m_autoSaveFileName;
-                wPanda->start(QCoreApplication::applicationFilePath(), args);
-                COMMENT("Reloaded autosave: " << args[0].toStdString(), 0);
-            }
-        } else if ((QFile(m_autoSaveFileName).exists()) && (m_autoSaveFileName == filename)) {
-            COMMENT("Loading autosave!", 0);
-            m_loadedAutoSave = true;
-        }
-    }
-
     COMMENT("Restoring geometry and setting zoom controls.", 0);
     settings.beginGroup("MainWindow");
     restoreGeometry(settings.value("geometry").toByteArray());
@@ -152,6 +134,20 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     createRecentFileActions();
     connect(m_rfController, &RecentFilesController::recentFilesUpdated, this, &MainWindow::updateRecentFileActions);
     connect(m_ricController, &RecentFilesController::recentFilesUpdated, this, &MainWindow::updateRecentICs);
+
+    COMMENT("Checking for autosave file recovery.", 0);
+    if (settings.contains("autosaveFile")) {
+        m_autoSaveFileName = settings.value("autosaveFile").toString();
+        if ((QFile(m_autoSaveFileName).exists()) && (m_autoSaveFileName != filename)) {
+            int ret = recoverAutoSaveFile(m_autoSaveFileName);
+            if (ret == QMessageBox::Yes) {
+                loadPandaFile(m_autoSaveFileName);
+            }
+        } else if ((QFile(m_autoSaveFileName).exists()) && (m_autoSaveFileName == filename)) {
+            COMMENT("Loading autosave!", 0);
+            m_loadedAutoSave = true;
+        }
+    }
 
     COMMENT("Checking playing simulation.", 0);
     ui->actionPlay->setChecked(true);
@@ -231,7 +227,7 @@ bool MainWindow::save(QString fname)
 void MainWindow::show()
 {
     QMainWindow::show();
-    m_editor->clear();
+    //m_editor->clear();
 }
 
 // This should become clearTab or closeProject...
@@ -265,13 +261,19 @@ int MainWindow::confirmSave()
     return msgBox.exec();
 }
 
-void MainWindow::on_actionNew_triggered()
+void MainWindow::createNewWorkspace(const QString &fname)
 {
     m_editor->setupWorkspace(1); // Please remove that number... it is for debuging.
     buildFullScreenDialog();
-    createNewTab(tr("New Project"));
+    createNewTab(fname);
     emit ui->tabWidget_mainWindow->tabBarClicked(m_tabs.size()-1);
     ui->tabWidget_mainWindow->setCurrentIndex(m_tabs.size()-1);
+}
+
+
+void MainWindow::on_actionNew_triggered()
+{
+    createNewWorkspace(tr("New Project"));
 }
 
 void MainWindow::on_actionWires_triggered(bool checked)
@@ -301,6 +303,7 @@ bool MainWindow::loadPandaFile(const QString &fname)
     if (fl.open(QFile::ReadOnly)) {
         COMMENT("File opened.", 0);
         QDataStream ds(&fl);
+        createNewWorkspace(QFileInfo(fl).fileName());
         try {
             COMMENT("Loading in editor.", 0);
             m_editor->load(ds);
@@ -312,7 +315,7 @@ bool MainWindow::loadPandaFile(const QString &fname)
         } catch (std::runtime_error &e) {
             std::cerr << tr("Error loading project: ").toStdString() << e.what() << std::endl;
             QMessageBox::warning(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
-            clear();
+            //clear(); -> This should be a clear workspace.
             return false;
         }
     } else {
@@ -369,8 +372,12 @@ void MainWindow::on_actionAbout_Qt_triggered()
     QMessageBox::aboutQt(this);
 }
 
+// TODO: This must be done for every tab...
 bool MainWindow::closeFile()
 {
+    // 1) Save current tab number
+    // 2) Access each tab undostack and check which ones are not clean and put into a list.
+    // 3) Ask if the user wants to: Save, SaveAll, Discard, DiscardAll, Cancel.
     bool ok = true;
     if (!m_editor->getUndoStack()->isClean()) {
         int ret = confirmSave();
@@ -476,15 +483,13 @@ void MainWindow::on_actionSelect_all_triggered()
     m_editor->selectAll();
 }
 
-void MainWindow::updateRecentICs()
+void MainWindow::updateRecentICs() // Bug here... It is not showing and loading the recent boxes.
 {
     ui->scrollAreaWidgetContents_Box->layout()->removeItem(ui->verticalSpacer_IC);
     for (ListItemWidget *item : qAsConst(icItemWidgets)) {
         item->deleteLater();
     }
-    /*  qDeleteAll( boxItemWidgets ); */
     icItemWidgets.clear();
-
     //! Show recent files
     const QStringList files = m_ricController->getRecentFiles();
     for (const QString &file : files) {
@@ -499,6 +504,12 @@ void MainWindow::updateRecentICs()
 void MainWindow::closeTab(int tab) {
     m_tabs.remove(tab);
     delete m_autoSaveFile[tab];
+    if (m_tabs.size() == 0) {
+        createNewWorkspace(tr("New Project"));
+    }
+    if (m_current_tab == tab) {
+        selectTab(std::max(0, tab-1));
+    }
 }
 
 void MainWindow::selectTab(int tab) {
@@ -515,8 +526,6 @@ void MainWindow::selectTab(int tab) {
         m_dolphinFileName = m_tabs[tab].dolphinFileName();
         m_current_tab = tab;
         ui->widgetElementEditor->setScene(m_tabs[tab].scene());
-        // TODO: current file.
-        // TODO: renaming bug in multiple tabs. Maybe we have to disable something.
         connect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
         emit m_editor->circuitHasChanged();
     }
@@ -546,7 +555,6 @@ void MainWindow::on_actionOpen_IC_triggered()
         return;
     }
     fl.close();
-
     ui->statusBar->showMessage(tr("Loaded IC successfully."), 2000);
 }
 
