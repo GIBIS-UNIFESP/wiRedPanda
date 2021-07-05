@@ -62,6 +62,8 @@ public:
     void setUndoStack(QUndoStack *stack);
     Scene *getScene() const;
     void setScene(Scene *scene);
+    ICManager *getICManager() const;
+    void setICManager(ICManager *icManager);
     void buildSelectionRect();
     void handleHoverPort();
     void releaseHoverPort();
@@ -71,6 +73,7 @@ public:
 
     void resizeScene();
     SimulationController *getSimulationController() const;
+    void setSimulationController(SimulationController *simulationController);
     void contextMenu(QPoint screenPos);
     void updateVisibility();
     QPointF getMousePos() const;
@@ -90,7 +93,7 @@ public slots:
     void showWires(bool checked);
     void showGates(bool checked);
     void rotate(bool rotateRight);
-    void install();
+    void install(int id=0);
 
     void receiveCommand(QUndoCommand *cmd);
     void copyAction();

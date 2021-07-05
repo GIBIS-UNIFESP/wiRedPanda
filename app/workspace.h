@@ -15,16 +15,20 @@
 class BewavedDolphin;
 class GraphicsView;
 class Scene;
+class SimulationController;
+class ICManager;
 
 class WorkSpace
 {
 public:
-    WorkSpace(QDialog *fullscreenDlg, GraphicsView *fullscreenView, QUndoStack *undoStack, Scene *scene);
+    WorkSpace(QDialog *fullscreenDlg, GraphicsView *fullscreenView, QUndoStack *undoStack, Scene *scene, SimulationController *simullationController, ICManager *icManager);
     ~WorkSpace();
     QDialog *fullScreenDlg() const;
     GraphicsView *fullscreenView() const;
     QUndoStack *undoStack() const;
     Scene *scene() const;
+    SimulationController *simullationController();
+    ICManager *icManager();
 
     void setCurrentFile(QFileInfo &finfo);
     QFileInfo currentFile();
@@ -38,6 +42,8 @@ private:
     GraphicsView *m_fullscreenView;
     QUndoStack *m_undoStack;
     Scene *m_scene;
+    SimulationController *m_simulationController;
+    ICManager *m_icManager;
     QFileInfo m_currentFile;
     QString m_autosaveFileName;
     QString m_dolphinFilename;

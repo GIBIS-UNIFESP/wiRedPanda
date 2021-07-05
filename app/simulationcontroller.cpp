@@ -117,7 +117,7 @@ void SimulationController::reSortElms()
         delete m_elMapping;
     }
     COMMENT("Elements deleted.", 0);
-    m_elMapping = new ElementMapping(m_scene->getElements(), GlobalProperties::currentFile);
+    m_elMapping = new ElementMapping(m_scene->getElements());
     if (m_elMapping->canInitialize()) {
         COMMENT("Can initialize.", 0);
         m_elMapping->initialize();

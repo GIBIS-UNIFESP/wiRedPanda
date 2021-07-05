@@ -80,7 +80,7 @@ bool ICPrototype::isInputRequired(int index)
 
 ICMapping *ICPrototype::generateMapping() const
 {
-    return m_ICImpl.generateMapping(fileName());
+    return m_ICImpl.generateMapping();
 }
 
 void ICPrototype::clear()

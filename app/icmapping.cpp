@@ -3,8 +3,8 @@
 
 #include "icmapping.h"
 
-ICMapping::ICMapping(const QString &file, const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs)
-    : ElementMapping(elms, file)
+ICMapping::ICMapping(const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs)
+    : ElementMapping(elms)
     , m_icInputs(inputs)
     , m_icOutputs(outputs)
 {

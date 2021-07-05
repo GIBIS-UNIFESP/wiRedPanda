@@ -46,14 +46,11 @@ Editor::Editor(QObject *parent)
     m_mainWindow = qobject_cast<MainWindow *>(parent);
     m_markingSelectionBox = false;
     m_editedConn_id = 0;
-    m_icManager = new ICManager(m_mainWindow, this);
     install();
     m_draggingElement = false;
-    m_timer.start();
     m_showWires = true;
     m_showGates = true;
-    connect(this, &Editor::circuitHasChanged, m_simulationController, &SimulationController::reSortElms);
-    connect(m_icManager, &ICManager::updatedIC, this, &Editor::redoSimulationController);
+    m_timer.start();
 }
 
 Editor::~Editor() = default;
@@ -110,12 +107,14 @@ void Editor::mute(bool _mute)
     }
 }
 
-void Editor::install()
+void Editor::install(int id)
 {
+    m_icManager = new ICManager(m_mainWindow, this);
     m_undoStack = new QUndoStack(this);
-    m_scene = new Scene(this);
+    m_scene = new Scene(this, id);
     m_scene->installEventFilter(this);
     if (m_simulationController!=nullptr) {
+        COMMENT("Deleting old simulation controller.", 0);
         m_simulationController->stop();
         m_simulationController->clear();
         delete m_simulationController;//->deleteLater();
@@ -123,8 +122,11 @@ void Editor::install()
     m_simulationController = new SimulationController(m_scene);
     m_simulationController->start();
     clear();
+    connect(this, &Editor::circuitHasChanged, m_simulationController, &SimulationController::reSortElms);
+    connect(m_icManager, &ICManager::updatedIC, this, &Editor::redoSimulationController);
 }
 
+// Esse cara é um veneno agora. Não é para apagar mais nada... Mas precisa apagar aos poucos de cada aba...
 void Editor::clear()
 {
     COMMENT("Clearing editor.", 0);
@@ -329,6 +331,15 @@ QPointF Editor::getMousePos() const
 SimulationController *Editor::getSimulationController() const
 {
     return m_simulationController;
+}
+
+void Editor::setSimulationController(SimulationController *simulationController) {
+    disconnect(this, &Editor::circuitHasChanged, m_simulationController, &SimulationController::reSortElms);
+    m_simulationController->stop();
+    m_simulationController = simulationController;
+    m_simulationController->start();
+    connect(this, &Editor::circuitHasChanged, m_simulationController, &SimulationController::reSortElms);
+    emit circuitHasChanged();
 }
 
 void Editor::addItem(QGraphicsItem *item)
@@ -758,6 +769,18 @@ void Editor::setScene(Scene *scene)
     m_scene = scene;
 }
 
+ICManager *Editor::getICManager() const
+{
+    return m_icManager;
+}
+
+void Editor::setICManager(ICManager *icManager)
+{
+    disconnect(m_icManager, &ICManager::updatedIC, this, &Editor::redoSimulationController);
+    m_icManager = icManager;
+    connect(m_icManager, &ICManager::updatedIC, this, &Editor::redoSimulationController);
+}
+
 void Editor::cut(const QList<QGraphicsItem *> &items, QDataStream &ds)
 {
     copy(items, ds);
@@ -905,7 +928,6 @@ void Editor::load(QDataStream &ds)
             view->centerOn(m_scene->itemsBoundingRect().center());
         }
     }
-    // SerializationFunctions::load( ds, GlobalProperties::currentFile, scene );
     m_simulationController->start();
     if (m_scene) {
         m_scene->clearSelection();

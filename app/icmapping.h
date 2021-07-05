@@ -22,7 +22,7 @@ private:
     QVector<LogicElement *> m_outputs;
 
 public:
-    ICMapping(const QString &file, const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs);
+    ICMapping(const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs);
 
     ~ICMapping() override;
 
