@@ -140,8 +140,8 @@ private:
     int m_current_tab;
     QVector<QTemporaryFile*> m_autoSaveFile;
 
-    QAction *m_undoAction;
-    QAction *m_redoAction;
+    QVector<QAction*> m_undoAction;
+    QVector<QAction*> m_redoAction;
     RecentFilesController *m_rfController, *m_ricController;
     QAction *m_recentFileActs[RecentFilesController::MaxRecentFiles];
     QTranslator *m_translator;
@@ -156,8 +156,12 @@ private:
     // Shows a message box for reloading the autosave at launch, when
     // there's reason to believe that there's been unsaved progress.
     int recoverAutoSaveFile(const QString& autosaveFilename);
-    /* QWidget interface */
+    // Undo and Redo interface for each tab.
+    void createUndoRedoMenus();
+    // Change the undo and redo menu when another tab is selected.
+    void selectUndoRedoMenu(int tab);
 protected:
+    /* QWidget interface */
     void closeEvent(QCloseEvent *e) override;
     void resizeEvent(QResizeEvent *) override;
 };

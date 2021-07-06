@@ -20,6 +20,7 @@
 #include "serializationfunctions.h"
 #include "simulationcontroller.h"
 #include "thememanager.h"
+#include "workspace.h"
 
 #include <QApplication>
 #include <QClipboard>
@@ -121,6 +122,17 @@ void Editor::setupWorkspace()
     setRectangle();
     connect(this, &Editor::circuitHasChanged, m_simulationController, &SimulationController::reSortElms);
     connect(m_icManager, &ICManager::updatedIC, this, &Editor::redoSimulationController);
+}
+
+void Editor::selectWorkspace(WorkSpace *workspace)
+{
+    m_undoStack = workspace->undoStack();
+    COMMENT("editor stack done.", 0);
+    m_scene = workspace->scene();
+    COMMENT("editor scene done.", 0);
+    setSimulationController(workspace->simulationController());
+    COMMENT("editor controller done.", 0);
+    setICManager(workspace->icManager());
 }
 
 void Editor::setRectangle()
@@ -736,19 +748,9 @@ QUndoStack *Editor::getUndoStack() const
     return m_undoStack;
 }
 
-void Editor::setUndoStack(QUndoStack *stack)
-{
-    m_undoStack = stack;
-}
-
 Scene *Editor::getScene() const
 {
     return m_scene;
-}
-
-void Editor::setScene(Scene *scene)
-{
-    m_scene = scene;
 }
 
 ICManager *Editor::getICManager() const

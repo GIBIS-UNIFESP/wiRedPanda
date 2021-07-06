@@ -501,7 +501,6 @@ void ElementEditor::apply()
         }
         if (elm->hasLabel() && (m_ui->lineEditElementLabel->text() != m_manyLabels)) {
             elm->setLabel(m_ui->lineEditElementLabel->text());
-            COMMENT("Apply in scene: " << QString::number(m_scene->m_id).toStdString(), 0);
         }
         if (elm->hasFrequency() && (m_ui->doubleSpinBoxFrequency->text() != m_manyFreq)) {
             elm->setFrequency(m_ui->doubleSpinBoxFrequency->value());

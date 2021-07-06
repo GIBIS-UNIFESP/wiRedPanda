@@ -104,19 +104,12 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     COMMENT("Setting directories and autosave file.", 0);
     setCurrentFile(QFileInfo());
 
-    COMMENT("Creating undo and redo funcionalities.", 0);
+    COMMENT("Creating edit menu funcionalities.", 0);
     connect(ui->actionCopy, &QAction::triggered, m_editor, &Editor::copyAction);
     connect(ui->actionCut, &QAction::triggered, m_editor, &Editor::cutAction);
     connect(ui->actionPaste, &QAction::triggered, m_editor, &Editor::pasteAction);
     connect(ui->actionDelete, &QAction::triggered, m_editor, &Editor::deleteAction);
-    m_undoAction = m_editor->getUndoStack()->createUndoAction(this, tr("&Undo"));
-    m_undoAction->setIcon(QIcon(QPixmap(":/toolbar/undo.png")));
-    m_undoAction->setShortcuts(QKeySequence::Undo);
-    m_redoAction = m_editor->getUndoStack()->createRedoAction(this, tr("&Redo"));
-    m_redoAction->setIcon(QIcon(QPixmap(":/toolbar/redo.png")));
-    m_redoAction->setShortcuts(QKeySequence::Redo);
-    ui->menuEdit->insertAction(ui->menuEdit->actions().at(0), m_undoAction);
-    ui->menuEdit->insertAction(m_undoAction, m_redoAction);
+    createUndoRedoMenus();
 
     COMMENT("Setting up zoom and screen funcionalities.", 0);
     connect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
@@ -164,6 +157,26 @@ void MainWindow::createNewTab( const QString &tab_name ) {
     m_autoSaveFile.append(new QTemporaryFile());
     COMMENT("Setting scene.", 0);
     m_fullscreenView->setScene(m_editor->getScene());
+}
+
+void MainWindow::createUndoRedoMenus()
+{
+    m_undoAction.push_back(m_editor->getUndoStack()->createUndoAction(this, tr("&Undo")));
+    m_undoAction[m_undoAction.size()-1]->setIcon(QIcon(QPixmap(":/toolbar/undo.png")));
+    m_undoAction[m_undoAction.size()-1]->setShortcuts(QKeySequence::Undo);
+    m_redoAction.push_back(m_editor->getUndoStack()->createRedoAction(this, tr("&Redo")));
+    m_redoAction[m_undoAction.size()-1]->setIcon(QIcon(QPixmap(":/toolbar/redo.png")));
+    m_redoAction[m_undoAction.size()-1]->setShortcuts(QKeySequence::Redo);
+    ui->menuEdit->insertAction(ui->menuEdit->actions().at(0), m_undoAction[m_undoAction.size()-1]);
+    ui->menuEdit->insertAction(m_undoAction[m_undoAction.size()-1], m_redoAction[m_undoAction.size()-1]);
+}
+
+void MainWindow::selectUndoRedoMenu(int tab)
+{
+    ui->menuEdit->removeAction(m_undoAction[m_current_tab]);
+    ui->menuEdit->removeAction(m_redoAction[m_current_tab]);
+    ui->menuEdit->insertAction(ui->menuEdit->actions().at(0), m_undoAction[tab]);
+    ui->menuEdit->insertAction(m_undoAction[tab], m_redoAction[tab]);
 }
 
 void MainWindow::setFastMode(bool fastModeEnabled)
@@ -266,6 +279,7 @@ void MainWindow::createNewWorkspace(const QString &fname)
     m_editor->setupWorkspace();
     buildFullScreenDialog();
     createNewTab(fname);
+    createUndoRedoMenus();
     emit ui->tabWidget_mainWindow->tabBarClicked(m_tabs.size()-1);
     ui->tabWidget_mainWindow->setCurrentIndex(m_tabs.size()-1);
     COMMENT("Finished creating new workspace: " << fname.toStdString(), 0);
@@ -512,6 +526,7 @@ void MainWindow::closeTab(int tab) {
     if (m_current_tab == tab) {
         selectTab(std::max(0, tab-1));
     }
+    // Undo and redo menus
 }
 
 void MainWindow::selectTab(int tab) {
@@ -523,13 +538,9 @@ void MainWindow::selectTab(int tab) {
         m_fullscreenDlg = m_tabs[tab].fullScreenDlg();
         m_fullscreenView = m_tabs[tab].fullscreenView();
         COMMENT("editor.", 0);
-        m_editor->setUndoStack(m_tabs[tab].undoStack());
-        COMMENT("editor stack done.", 0);
-        m_editor->setScene(m_tabs[tab].scene());
-        COMMENT("editor scene done.", 0);
-        m_editor->setSimulationController(m_tabs[tab].simulationController());
-        COMMENT("editor controller done.", 0);
-        m_editor->setICManager(m_tabs[tab].icManager());
+        m_editor->selectWorkspace(&m_tabs[tab]);
+        COMMENT("undo and redo menu.", 0);
+        selectUndoRedoMenu(tab);
         COMMENT("files.", 0);
         m_currentFile = m_tabs[tab].currentFile();
         m_autoSaveFileName = m_tabs[tab].autoSaveFileName();
