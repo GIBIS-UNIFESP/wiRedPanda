@@ -472,6 +472,9 @@
        <property name="currentIndex">
         <number>-1</number>
        </property>
+       <property name="tabsClosable">
+        <bool>true</bool>
+       </property>
       </widget>
      </widget>
     </item>
@@ -1140,14 +1143,14 @@
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/misc/misc.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/input/input.qrc"/>
+  <include location="resources/memory/light/memory_light.qrc"/>
   <include location="resources/basic/basic.qrc"/>
   <include location="resources/output/output.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/memory/light/memory_light.qrc"/>
+  <include location="resources/misc/misc.qrc"/>
  </resources>
  <connections/>
 </ui>

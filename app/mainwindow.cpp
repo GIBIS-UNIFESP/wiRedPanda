@@ -64,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     createNewTab(tr("New Project"));
     m_current_tab = 0;
     connect(ui->tabWidget_mainWindow, &QTabWidget::tabBarClicked, this, &MainWindow::selectTab);
+    connect(ui->tabWidget_mainWindow, &QTabWidget::tabCloseRequested, this, &MainWindow::closeTab);
 
     COMMENT("Restoring geometry and setting zoom controls.", 0);
     settings.beginGroup("MainWindow");
@@ -130,21 +131,58 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     connect(m_ricController, &RecentFilesController::recentFilesUpdated, this, &MainWindow::updateRecentICs);
 
     COMMENT("Checking for autosave file recovery.", 0);
-    if (settings.contains("autosaveFile")) {
-        m_autoSaveFileName = settings.value("autosaveFile").toString();
-        if ((QFile(m_autoSaveFileName).exists()) && (m_autoSaveFileName != filename)) {
-            int ret = recoverAutoSaveFile(m_autoSaveFileName);
-            if (ret == QMessageBox::Yes) {
-                loadPandaFile(m_autoSaveFileName);
-            }
-        } else if ((QFile(m_autoSaveFileName).exists()) && (m_autoSaveFileName == filename)) {
-            COMMENT("Loading autosave!", 0);
-            m_loadedAutoSave = true;
-        }
-    }
-
+    loadAutoSaveFiles(settings, filename);
     COMMENT("Checking playing simulation.", 0);
     ui->actionPlay->setChecked(true);
+}
+
+void MainWindow::loadAutoSaveFiles(QSettings &settings, const QString &filename)
+{
+    if (settings.contains("autosaveFiles")) {
+        int autoSaveFiles = settings.value("autosaveFiles").toInt();
+        bool yes_to_all = false;
+        bool no_to_all = false;
+        bool load_error = false;
+        for (int idx=0; idx < autoSaveFiles; ++idx) {
+            if (settings.contains("autosaveFile"+QString::number(idx))) {
+                m_autoSaveFileName = settings.value("autosaveFile"+QString::number(idx)).toString();
+                if ((QFile(m_autoSaveFileName).exists()) && (m_autoSaveFileName != filename)) {
+                    int ret = QMessageBox::No;
+                    if ((!yes_to_all)&&(!no_to_all)) {
+                        ret = recoverAutoSaveFile(m_autoSaveFileName);
+                        if (ret == QMessageBox::YesToAll) {
+                            yes_to_all = true;
+                        }
+                        if (ret == QMessageBox::NoToAll) {
+                            no_to_all = true;
+                        }
+                    }
+                    if ((yes_to_all)||(ret == QMessageBox::Yes)) {
+                        if (!loadPandaFile(m_autoSaveFileName)) {
+                            load_error = true;
+                            ret = autoSaveFileDeleteAnyway(m_autoSaveFileName);
+                            if (ret == QMessageBox::Yes) {
+                                settings.remove("autosaveFile"+QString::number(idx));
+                            } else if (ret == QMessageBox::Cancel) {
+                                closeFile();
+                            }
+                        }
+                    }
+                } else if ((QFile(m_autoSaveFileName).exists()) && (m_autoSaveFileName == filename)) {
+                    COMMENT("Loading autosave!", 0);
+                    m_loadedAutoSave = true;
+                }
+            }
+        }
+        if (!load_error) {
+            for (int idx=0; idx < autoSaveFiles; ++idx) {
+                if (settings.contains("autosaveFile"+QString::number(idx))) {
+                    settings.remove("autosaveFile"+QString::number(idx));
+                }
+            }
+            settings.remove("autosaveFiles");
+        }
+    }
 }
 
 void MainWindow::createNewTab(const QString &tab_name) {
@@ -191,6 +229,9 @@ void MainWindow::setFastMode(bool fastModeEnabled)
 
 MainWindow::~MainWindow()
 {
+    foreach(auto file, m_autoSaveFile) {
+        delete file;
+    }
     delete ui;
 }
 
@@ -201,7 +242,7 @@ void MainWindow::on_actionExit_triggered()
 
 bool MainWindow::save(QString fname)
 {
-    COMMENT("fname: " << fname.toStdString() << ", autosave: " << m_autoSaveFileName.toStdString(), 0);
+    COMMENT("fname: " << fname.toStdString(), 0);
     if ((fname.isEmpty()) || (m_loadedAutoSave)) {
         fname = m_currentFile.absoluteFilePath();
         if ((m_currentFile.fileName().isEmpty()) || (m_loadedAutoSave)) {
@@ -232,7 +273,7 @@ bool MainWindow::save(QString fname)
         if (m_autoSaveFile[m_current_tab]->isOpen()) {
             m_autoSaveFile[m_current_tab]->remove();
             QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-            settings.remove("autosaveFile");
+            settings.remove("autosaveFile"+QString::number(m_current_tab));
         }
         return true;
     }
@@ -245,26 +286,53 @@ void MainWindow::show()
     QMainWindow::show();
 }
 
-int MainWindow::recoverAutoSaveFile(const QString& autosaveFilename)
+int MainWindow::closeTabAnyway()
 {
     QMessageBox msgBox;
     msgBox.setParent(this);
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-    msgBox.setText(QString(tr("We have found an autosave file. Do you want to load it?\n Autosave: ") + autosaveFilename));
+    msgBox.setText(QString(tr("File not saved. Close tab anyway?")));
     msgBox.setWindowModality(Qt::WindowModal);
-    msgBox.setDefaultButton(QMessageBox::Save);
+    msgBox.setDefaultButton(QMessageBox::No);
     return msgBox.exec();
 }
 
-int MainWindow::confirmSave()
+
+int MainWindow::recoverAutoSaveFile(const QString& autosaveFilename)
 {
     QMessageBox msgBox;
     msgBox.setParent(this);
-    msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll);
+    msgBox.setText(QString(tr("We have found an autosave file. Do you want to load it?\n Autosave: ") + autosaveFilename));
+    msgBox.setWindowModality(Qt::WindowModal);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+    return msgBox.exec();
+}
+
+int MainWindow::confirmSave(bool multiple)
+{
+    QMessageBox msgBox;
+    msgBox.setParent(this);
+    if (multiple) {
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel);
+    } else {
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+    }
     msgBox.setText(tr("Do you want to save your changes?"));
     msgBox.setWindowModality(Qt::WindowModal);
-    msgBox.setDefaultButton(QMessageBox::Save);
+    msgBox.setDefaultButton(QMessageBox::Yes);
 
+    return msgBox.exec();
+}
+
+int MainWindow::autoSaveFileDeleteAnyway(const QString& autosaveFilename)
+{
+    QMessageBox msgBox;
+    msgBox.setParent(this);
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+    msgBox.setText(QString(tr("Error while opening autosave file. Do you want to delete it ?\n Autosave: ") + autosaveFilename));
+    msgBox.setWindowModality(Qt::WindowModal);
+    msgBox.setDefaultButton(QMessageBox::No);
     return msgBox.exec();
 }
 
@@ -383,28 +451,16 @@ void MainWindow::on_actionAbout_Qt_triggered()
     QMessageBox::aboutQt(this);
 }
 
-// TODO: This must be done for every tab...
 bool MainWindow::closeFile()
 {
-    // 1) Save current tab number
-    // 2) Access each tab undostack and check which ones are not clean and put into a list.
-    // 3) Ask if the user wants to: Save, SaveAll, Discard, DiscardAll, Cancel.
-    bool ok = true;
-    if (!m_editor->getUndoStack()->isClean()) {
-        int ret = confirmSave();
-        if (ret == QMessageBox::Save) {
-            ok = save();
-        } else if (ret == QMessageBox::Cancel) {
-            ok = false;
-        } else { // Close without saving. Deleting autosave if it was opened.
-            if (m_loadedAutoSave) {
-                m_autoSaveFile[m_current_tab]->remove();
-                QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-                settings.remove("autosaveFile");
-            }
+    while(m_tabs.size() > 0) {
+        int tab_idx = m_tabs.size() - 1;
+        auto tab = m_tabs[tab_idx];
+        if (!closeTabAction(tab_idx, true)) {
+            return false;
         }
     }
-    return ok;
+    return true;
 }
 
 void MainWindow::closeEvent(QCloseEvent *e)
@@ -513,24 +569,58 @@ void MainWindow::updateRecentICs() // Bug here... It is not showing and loading 
 }
 
 void MainWindow::closeTab(int tab) {
+    closeTabAction(tab, false);
+}
+
+bool MainWindow::closeTabAction(int tab, bool force_close)
+{
+    COMMENT("Create a new empty project if no there are no available tabs.", 0);
+    if ((m_tabs.size() == 1) && (!force_close)) {
+        return false;
+    }
+    COMMENT("Checking if needs to save file.", 0);
+    if (!m_tabs[tab].undoStack()->isClean()) {
+        int ret = confirmSave(false);
+        if (ret == QMessageBox::Yes) {
+            if(!save()) {
+                if(closeTabAnyway()==QMessageBox::No) {
+                    return false;
+                } else {
+                    if (m_loadedAutoSave) {
+                        m_autoSaveFile[tab]->remove();
+                        QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
+                        settings.remove("autosaveFile"+QString::number(tab));
+                    }
+                }
+            }
+        } else if (ret == QMessageBox::Cancel) {
+            return false;
+        } else { // Close without saving. Deleting autosave if it was opened.
+            if (m_loadedAutoSave) {
+                m_autoSaveFile[tab]->remove();
+                QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
+                settings.remove("autosaveFile"+QString::number(tab));
+            }
+        }
+    }
+    COMMENT("Moving to other tab if closed tab is the current one.", 0);
+    //bool remove_actions = false;
+    if (m_current_tab == tab) {
+        selectTab((tab+1)%(m_tabs.size()-1));
+    }
     COMMENT("Deleting tab and autosave", 0);
     m_tabs.remove(tab);
     delete m_autoSaveFile[tab];
+    m_autoSaveFile.remove(tab);
     COMMENT("Removing undo and redo menus.", 0);
     if (m_current_tab == tab) {
         ui->menuEdit->removeAction(m_undoAction[tab]);
         ui->menuEdit->removeAction(m_redoAction[tab]);
     }
-    delete m_undoAction[tab];
-    delete m_redoAction[tab];
-    COMMENT("Create a new empty project if no there are no available tabs.", 0);
-    if (m_tabs.size() == 0) {
-        createNewWorkspace(tr("New Project"));
-    }
-    COMMENT("Moving to other tab if closed tab is the current one.", 0);
-    if (m_current_tab == tab) {
-        selectTab(std::max(0, tab-1));
-    }
+    m_undoAction.remove(tab);
+    m_redoAction.remove(tab);
+    ui->tabWidget_mainWindow->removeTab(tab);
+    return true;
 }
 
 void MainWindow::selectTab(int tab) {
@@ -650,7 +740,7 @@ void MainWindow::resizeEvent(QResizeEvent *)
 void MainWindow::on_actionReload_File_triggered()
 {
     if (m_currentFile.exists()) {
-        if (closeFile()) {
+        if (closeTabAction(m_current_tab,false)) {
             loadPandaFile(m_currentFile.absoluteFilePath());
         }
     }
@@ -1015,7 +1105,7 @@ void MainWindow::autoSave()
         COMMENT("Undo stack is clean.", 0);
         if (m_autoSaveFile[m_current_tab]->exists()) {
             m_autoSaveFile[m_current_tab]->remove();
-            settings.remove("autosaveFile");
+            settings.remove("autosaveFile"+QString::number(m_current_tab));
         }
     } else {
         if (m_autoSaveFile[m_current_tab]->exists()) {
@@ -1038,14 +1128,15 @@ void MainWindow::autoSave()
         if (m_autoSaveFile[m_current_tab]->open()) {
             QDataStream ds(m_autoSaveFile[m_current_tab]);
             QString autosaveFilename = m_autoSaveFile[m_current_tab]->fileName();
-            settings.setValue("autosaveFile", autosaveFilename);
+            settings.setValue("autosaveFiles", m_tabs.size());
+            settings.setValue("autosaveFile"+QString::number(m_current_tab), autosaveFilename);
             try {
                 m_editor->save(ds, m_dolphinFileName);
             } catch (std::runtime_error &e) {
                 std::cerr << tr("Error autosaving project: ").toStdString() << e.what() << std::endl;
                 m_autoSaveFile[m_current_tab]->close();
                 m_autoSaveFile[m_current_tab]->remove();
-                settings.remove("autosaveFile");
+                settings.remove("autosaveFile"+QString::number(m_current_tab));
             }
             m_autoSaveFile[m_current_tab]->close();
         }

@@ -61,6 +61,7 @@ public:
     void setElementEditor(ElementEditor *value);
     QUndoStack *getUndoStack() const;
     Scene *getScene() const;
+    QGraphicsRectItem *getSceneRect() const;
     ICManager *getICManager() const;
     void setICManager(ICManager *icManager);
     void buildSelectionRect();
