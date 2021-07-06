@@ -9,6 +9,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QMainWindow>
+#include <QSettings>
 #include <QTemporaryFile>
 
 #include "recentfilescontroller.h"
@@ -55,7 +56,7 @@ public:
     //! Loads a .panda file
     bool loadPandaFile(const QString &fname);
     //! Opens a message box asking the user if he wishes to save his progress
-    int confirmSave();
+    int confirmSave(bool multiple=true);
     //!
     QString getOpenICFile();
     bool closeFile();
@@ -155,10 +156,15 @@ private:
     // Shows a message box for reloading the autosave at launch, when
     // there's reason to believe that there's been unsaved progress.
     int recoverAutoSaveFile(const QString& autosaveFilename);
+    int autoSaveFileDeleteAnyway(const QString& autosaveFilename);
     // Undo and Redo interface for each tab.
     void createUndoRedoMenus();
     // Change the undo and redo menu when another tab is selected.
     void selectUndoRedoMenu(int tab);
+    void loadAutoSaveFiles(QSettings &settings, const QString &filename);
+    bool closeTabAction(int tab, bool force_close);
+    // Message box to ask if user wants to close in case of canceled or failed save action.
+    int closeTabAnyway();
 protected:
     /* QWidget interface */
     void closeEvent(QCloseEvent *e) override;

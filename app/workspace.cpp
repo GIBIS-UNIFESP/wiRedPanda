@@ -2,18 +2,20 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "bewaveddolphin.h"
-#include "icmanager.h"
-#include "graphicsview.h"
 #include "editor.h"
+#include "graphicsview.h"
+#include "icmanager.h"
+#include "simulationcontroller.h"
 #include "workspace.h"
 
 WorkSpace::WorkSpace(QDialog *fullscreenDlg, GraphicsView *fullscreenView, Editor *editor)
-  : m_fullscreenDlg(fullscreenDlg)
-  , m_fullscreenView(fullscreenView)
-  , m_undoStack(editor->getUndoStack())
-  , m_scene(editor->getScene())
-  , m_simulationController(editor->getSimulationController())
-  , m_icManager(editor->getICManager())
+    : m_fullscreenDlg(fullscreenDlg)
+    , m_fullscreenView(fullscreenView)
+    , m_undoStack(editor->getUndoStack())
+    , m_scene(editor->getScene())
+    , m_simulationController(editor->getSimulationController())
+    , m_icManager(editor->getICManager())
+    , m_selectionRect(editor->getSceneRect())
 {
 }
 
@@ -49,6 +51,11 @@ SimulationController *WorkSpace::simulationController()
 ICManager *WorkSpace::icManager()
 {
     return m_icManager;
+}
+
+QGraphicsRectItem *WorkSpace::sceneRect()
+{
+    return m_selectionRect;
 }
 
 void WorkSpace::setCurrentFile(QFileInfo &finfo)

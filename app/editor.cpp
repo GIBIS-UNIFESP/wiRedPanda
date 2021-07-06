@@ -129,6 +129,7 @@ void Editor::selectWorkspace(WorkSpace *workspace)
     m_undoStack = workspace->undoStack();
     COMMENT("editor stack done.", 0);
     m_scene = workspace->scene();
+    m_selectionRect = workspace->sceneRect();
     COMMENT("editor scene done.", 0);
     setSimulationController(workspace->simulationController());
     COMMENT("editor controller done.", 0);
@@ -753,6 +754,11 @@ Scene *Editor::getScene() const
     return m_scene;
 }
 
+QGraphicsRectItem *Editor::getSceneRect() const
+{
+    return m_selectionRect;
+}
+
 ICManager *Editor::getICManager() const
 {
     return m_icManager;
@@ -880,7 +886,6 @@ void Editor::save(QDataStream &ds, const QString &dolphinFilename)
 void Editor::load(QDataStream &ds)
 {
     COMMENT("Loading file.", 0);
-    setRectangle();
     m_simulationController->stop();
     COMMENT("Stopped simulation.", 0);
     double version = SerializationFunctions::loadVersion(ds);
