@@ -61,17 +61,7 @@ QFileInfo WorkSpace::currentFile()
   return m_currentFile;
 }
 
-void WorkSpace::setAutoSaveFileName(QString &fname)
-{
-    m_autosaveFileName = fname;
-}
-
-QString WorkSpace::autoSaveFileName()
-{
-    return m_autosaveFileName;
-}
-
-void WorkSpace::setDolphinFileName(QString &fname)
+void WorkSpace::setDolphinFileName(const QString &fname)
 {
     m_dolphinFilename = fname;
 }

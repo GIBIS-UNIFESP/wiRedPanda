@@ -881,7 +881,6 @@ void Editor::load(QDataStream &ds)
 {
     COMMENT("Loading file.", 0);
     setRectangle();
-//    COMMENT("Clear!", 0);
     m_simulationController->stop();
     COMMENT("Stopped simulation.", 0);
     double version = SerializationFunctions::loadVersion(ds);

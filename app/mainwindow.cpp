@@ -518,15 +518,24 @@ void MainWindow::updateRecentICs() // Bug here... It is not showing and loading 
 }
 
 void MainWindow::closeTab(int tab) {
+    COMMENT("Deleting tab and autosave", 0);
     m_tabs.remove(tab);
     delete m_autoSaveFile[tab];
+    COMMENT("Removing undo and redo menus.", 0);
+    if (m_current_tab == tab) {
+        ui->menuEdit->removeAction(m_undoAction[tab]);
+        ui->menuEdit->removeAction(m_redoAction[tab]);
+    }
+    delete m_undoAction[tab];
+    delete m_redoAction[tab];
+    COMMENT("Create a new empty project if no there are no available tabs.", 0);
     if (m_tabs.size() == 0) {
         createNewWorkspace(tr("New Project"));
     }
+    COMMENT("Moving to other tab if closed tab is the current one.", 0);
     if (m_current_tab == tab) {
         selectTab(std::max(0, tab-1));
     }
-    // Undo and redo menus
 }
 
 void MainWindow::selectTab(int tab) {
@@ -543,7 +552,7 @@ void MainWindow::selectTab(int tab) {
         selectUndoRedoMenu(tab);
         COMMENT("files.", 0);
         m_currentFile = m_tabs[tab].currentFile();
-        m_autoSaveFileName = m_tabs[tab].autoSaveFileName();
+        //m_autoSaveFileName = m_tabs[tab].autoSaveFileName();
         m_dolphinFileName = m_tabs[tab].dolphinFileName();
         COMMENT("moving...", 0);
         m_current_tab = tab;
@@ -989,6 +998,7 @@ QString MainWindow::getDolphinFilename()
 void MainWindow::setDolphinFilename(const QString &filename)
 {
     m_dolphinFileName = filename;
+    m_tabs[m_current_tab].setDolphinFileName(filename);
 }
 
 void MainWindow::on_actionFullscreen_triggered() const

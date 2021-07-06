@@ -33,9 +33,7 @@ public:
 
     void setCurrentFile(QFileInfo &finfo);
     QFileInfo currentFile();
-    void setAutoSaveFileName(QString &fname);
-    QString autoSaveFileName();
-    void setDolphinFileName(QString &fname);
+    void setDolphinFileName(const QString &fname);
     QString dolphinFileName();
 
 private:
@@ -46,11 +44,7 @@ private:
     SimulationController *m_simulationController;
     ICManager *m_icManager;
     QFileInfo m_currentFile;
-    QString m_autosaveFileName;
     QString m_dolphinFilename;
-
-public:
-    //QTemporaryFile m_autoSaveFile;
 
 };
 
