@@ -62,6 +62,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     COMMENT("Building dialog within a new tab.", 0);
     buildFullScreenDialog();
     createNewTab(tr("New Project"));
+    m_current_tab = 0;
     connect(ui->tabWidget_mainWindow, &QTabWidget::tabBarClicked, this, &MainWindow::selectTab);
 
     COMMENT("Restoring geometry and setting zoom controls.", 0);
@@ -146,14 +147,16 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     ui->actionPlay->setChecked(true);
 }
 
-void MainWindow::createNewTab( const QString &tab_name ) {
+void MainWindow::createNewTab(const QString &tab_name) {
     COMMENT("Dialog built. Now adding tab.", 0);
     auto new_tab = new QWidget(ui->tabWidget_mainWindow);
     new_tab->setLayout(m_fullscreenDlg->layout());
     new_tab->layout()->addWidget(m_fullscreenView);
     ui->tabWidget_mainWindow->addTab(new_tab, tab_name);
-    m_current_tab = 0;
+    COMMENT("Creating workspace.", 0 );
     m_tabs.push_back(WorkSpace(m_fullscreenDlg, m_fullscreenView, m_editor));
+    //m_current_tab = m_tabs.size() - 1;
+    COMMENT("Files.", 0);
     m_autoSaveFile.append(new QTemporaryFile());
     COMMENT("Setting scene.", 0);
     m_fullscreenView->setScene(m_editor->getScene());
@@ -240,14 +243,6 @@ bool MainWindow::save(QString fname)
 void MainWindow::show()
 {
     QMainWindow::show();
-}
-
-// This should become clearTab or closeProject...
-void MainWindow::clear()
-{
-    m_editor->setRectangle();
-    m_dolphinFileName = "";
-    setCurrentFile(QFileInfo());
 }
 
 int MainWindow::recoverAutoSaveFile(const QString& autosaveFilename)
@@ -552,7 +547,6 @@ void MainWindow::selectTab(int tab) {
         selectUndoRedoMenu(tab);
         COMMENT("files.", 0);
         m_currentFile = m_tabs[tab].currentFile();
-        //m_autoSaveFileName = m_tabs[tab].autoSaveFileName();
         m_dolphinFileName = m_tabs[tab].dolphinFileName();
         COMMENT("moving...", 0);
         m_current_tab = tab;
@@ -562,6 +556,7 @@ void MainWindow::selectTab(int tab) {
         m_editor->getSimulationController()->start();
         emit m_editor->circuitHasChanged();
     }
+    COMMENT("New tab selected. BD filename: " << m_dolphinFileName.toStdString(), 0);
 }
 
 QString MainWindow::getOpenICFile()
@@ -938,6 +933,7 @@ void MainWindow::on_actionWaveform_triggered()
         m_bd = new BewavedDolphin(m_editor, this);
     }
     if (m_bd->createWaveform(m_dolphinFileName)) {
+        COMMENT("BD filename: " << m_dolphinFileName.toStdString(), 0);
         m_bd->show();
     }
 }
