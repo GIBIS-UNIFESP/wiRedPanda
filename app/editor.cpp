@@ -107,14 +107,14 @@ void Editor::mute(bool _mute)
     }
 }
 
-void Editor::setupWorkspace(int id)
+void Editor::setupWorkspace()
 {
     if (m_simulationController!=nullptr) {
       m_simulationController->stop();
     }
     m_icManager = new ICManager(m_mainWindow, this);
     m_undoStack = new QUndoStack(this);
-    m_scene = new Scene(this, id);
+    m_scene = new Scene(this);
     m_scene->installEventFilter(this);
     m_simulationController = new SimulationController(m_scene);
     m_simulationController->start();

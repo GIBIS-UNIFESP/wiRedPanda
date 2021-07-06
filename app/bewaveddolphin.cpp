@@ -363,7 +363,7 @@ bool BewavedDolphin::createWaveform(const QString& filename)
     QVector<char> oldValues = loadSignals(input_labels, output_labels);
     COMMENT("Loading initial data into the table.", 0);
     loadNewTable(input_labels, output_labels);
-    if (filename != "none") {
+    if (filename != "") {
         if (!load(filename)) {
             return false;
         }
@@ -844,7 +844,7 @@ bool BewavedDolphin::load(const QString &fname)
 {
     QFile fl(fname);
     if (!fl.exists()) {
-        QMessageBox::warning(this, tr("Error!"), tr("File \"%1\" does not exists!").arg(fname), QMessageBox::Ok, QMessageBox::NoButton);
+        QMessageBox::warning(this, tr("Error!"), tr("File \"%1\" does not exist!").arg(fname), QMessageBox::Ok, QMessageBox::NoButton);
         return false;
     }
     COMMENT("File exists.", 0);

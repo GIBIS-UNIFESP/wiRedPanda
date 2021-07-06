@@ -287,10 +287,6 @@
         <translation>Erro!</translation>
     </message>
     <message>
-        <source>File &quot;%1&quot; does not exists!</source>
-        <translation>O Arquivo %1 não existe!</translation>
-    </message>
-    <message>
         <source>Error loading project: </source>
         <translation>Erro ao abrir o projeto: </translation>
     </message>
@@ -331,6 +327,10 @@ Erro: %1</translation>
     <message>
         <source>&lt;p&gt;beWaved Dolphin is a waveform simulator for the weRed Panda software developed by the Federal University of São Paulo. This project was created in order to help students to learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWaved Dolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWaved Dolphin é um simulador de forma de onda para o software wiRed Panda, desenvolvido pela Universidade Federal de São Paulo. Este projeto foi criado para ajudar os estudantes a aprender sobre circuitos digitais.&lt;/p&gt;&lt;p&gt;Versao do software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Criadores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWaved Dolphin é mantido atualmente pelo Prof. Fábio Cappabianco, Ph.D. e por Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Por favor, informe em nossa página do GitHub sobre eventuais bugs encontrados ou se deseja uma nova funcionalidade.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>File &quot;%1&quot; does not exist!</source>
+        <translation>O arquivo &quot;%1&quot; não existe!</translation>
     </message>
 </context>
 <context>
@@ -836,14 +836,6 @@ Do you want to find this file?</source>
         <translation>Erro!</translation>
     </message>
     <message>
-        <source>File &quot;%1&quot; does not exists!</source>
-        <translation>O Arquivo %1 não existe!</translation>
-    </message>
-    <message>
-        <source>Error: This file does not exists: </source>
-        <translation>Erro: Este arquivo não existe: </translation>
-    </message>
-    <message>
         <source>Error loading project: </source>
         <translation>Erro ao abrir o projeto: </translation>
     </message>
@@ -1257,6 +1249,14 @@ Errp: %1</translation>
     <message>
         <source>New Project</source>
         <translation>Projeto Novo</translation>
+    </message>
+    <message>
+        <source>File &quot;%1&quot; does not exist!</source>
+        <translation>O arquivo &quot;%1&quot; não existe!</translation>
+    </message>
+    <message>
+        <source>Error: This file does not exist: </source>
+        <translation>Erro: Este arquivo não existe: </translation>
     </message>
 </context>
 <context>

@@ -30,7 +30,7 @@ QFileInfo FileHelper::findICFile(const QString &fname, const QString &parentFile
         !setFileInfo(currentFile.absoluteDir(), myFile) &&
         !setFileInfo(QDir(currentFile.absolutePath() + "/boxes"), myFile) &&
         !setFileInfo(QDir(subdir.absolutePath() + "/boxes"), myFile)) {
-        std::cerr << "Error: This file does not exists: " << fname.toStdString() << std::endl;
+        std::cerr << "Error: This file does not exist: " << fname.toStdString() << std::endl;
         throw(ICNotFoundException(QString(tr("IC linked file \"%1\" could not be found!\n"
                                              "Do you want to find this file?"))
                                       .arg(fname)
@@ -56,7 +56,7 @@ QFileInfo FileHelper::findSkinFile(const QString &fname)
         !setFileInfo(QDir::current(), fileInfo.fileName()) &&
         !setFileInfo(currentFile.absoluteDir(), myFile) &&
         !setFileInfo(QDir(currentFile.absolutePath() + "/skins"), myFile)) {
-        std::cerr << "Error: This file does not exists: " << fname.toStdString() << std::endl;
+        std::cerr << "Error: This file does not exist: " << fname.toStdString() << std::endl;
     }
 
     COMMENT("FileInfo found: " << fileInfo.absoluteFilePath().toStdString(), 0);
