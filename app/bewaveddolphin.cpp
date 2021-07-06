@@ -346,6 +346,7 @@ QVector<char> BewavedDolphin::loadSignals(QStringList &input_labels, QStringList
 
 bool BewavedDolphin::createWaveform(const QString& filename)
 {
+    COMMENT("Updating window name with current filename.", 0);
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     COMMENT("Getting digital circuit simulator.", 0);
     m_sc = m_editor->getSimulationController();
@@ -363,7 +364,10 @@ bool BewavedDolphin::createWaveform(const QString& filename)
     QVector<char> oldValues = loadSignals(input_labels, output_labels);
     COMMENT("Loading initial data into the table.", 0);
     loadNewTable(input_labels, output_labels);
-    if (filename != "") {
+    if (filename.isEmpty()) {
+        setWindowTitle("Bewaved Dolphin Simulator");
+        m_currentFile = filename;
+    } else {
         if (!load(filename)) {
             return false;
         }

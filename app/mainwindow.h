@@ -42,7 +42,6 @@ public:
     bool save(QString fname = QString());
     //! Sets the main window as visible, as well as its child widgets. Cleans the editor.
     void show();
-    void clear();
     //! Returns the file name of the currently loaded Panda file.
     QFileInfo getCurrentFile() const;
     //! Sets the current file to the given value.
