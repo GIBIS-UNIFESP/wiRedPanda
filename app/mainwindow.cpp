@@ -45,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     , m_firstResult(nullptr)
     , m_loadedAutoSave(false)
     , m_autoSaveFileName("")
-    , m_dolphinFileName("none")
+    , m_dolphinFileName("")
     , m_bd(nullptr)
     , m_translator(nullptr)
 {
@@ -160,7 +160,7 @@ void MainWindow::createNewTab( const QString &tab_name ) {
     new_tab->layout()->addWidget(m_fullscreenView);
     ui->tabWidget_mainWindow->addTab(new_tab, tab_name);
     m_current_tab = 0;
-    m_tabs.push_back(WorkSpace(m_fullscreenDlg, m_fullscreenView, m_editor->getUndoStack(), m_editor->getScene(), m_editor->getSimulationController(), m_editor->getICManager()));
+    m_tabs.push_back(WorkSpace(m_fullscreenDlg, m_fullscreenView, m_editor));
     m_autoSaveFile.append(new QTemporaryFile());
     COMMENT("Setting scene.", 0);
     m_fullscreenView->setScene(m_editor->getScene());
@@ -233,7 +233,7 @@ void MainWindow::show()
 void MainWindow::clear()
 {
     m_editor->setRectangle();
-    m_dolphinFileName = "none";
+    m_dolphinFileName = "";
     setCurrentFile(QFileInfo());
 }
 
@@ -263,7 +263,7 @@ int MainWindow::confirmSave()
 void MainWindow::createNewWorkspace(const QString &fname)
 {
     COMMENT("Creating new workspace: " << fname.toStdString(), 0);
-    m_editor->setupWorkspace(1); // Please remove that number... it is for debuging.
+    m_editor->setupWorkspace();
     buildFullScreenDialog();
     createNewTab(fname);
     emit ui->tabWidget_mainWindow->tabBarClicked(m_tabs.size()-1);
@@ -296,8 +296,9 @@ bool MainWindow::loadPandaFile(const QString &fname)
 {
     QFile fl(fname);
     if (!fl.exists()) {
-        QMessageBox::warning(this, tr("Error!"), tr("File \"%1\" does not exists!").arg(fname), QMessageBox::Ok, QMessageBox::NoButton);
-        std::cerr << tr("Error: This file does not exists: ").toStdString() << fname.toStdString() << std::endl;
+        QMessageBox::warning(this, tr("Error!"), tr("File \"%1\" does not exist!").arg(fname), QMessageBox::Ok, QMessageBox::NoButton);
+        std::cerr << tr("Error: This file does not exist: ").toStdString() << fname.toStdString() << std::endl;
+        COMMENT("Here!", 0);
         return false;
     }
     COMMENT("File exists.", 0);
@@ -557,7 +558,7 @@ void MainWindow::on_actionOpen_IC_triggered()
     }
     QFile fl(fname);
     if (!fl.exists()) {
-        std::cerr << tr("Error: This file does not exists: ").toStdString() << fname.toStdString() << std::endl;
+        std::cerr << tr("Error: This file does not exist: ").toStdString() << fname.toStdString() << std::endl;
         return;
     }
     if (fl.open(QFile::ReadOnly)) {
@@ -685,12 +686,13 @@ bool MainWindow::exportToArduino(QString fname)
 bool MainWindow::exportToWaveFormFile(const QString& fname)
 {
     try {
-        if ((fname.isEmpty()) || (fname == "none")) {
+        if (fname.isEmpty()) {
             return false;
         }
         m_bd = new BewavedDolphin(m_editor, this);
         if (!m_bd->createWaveform(m_dolphinFileName)) {
             std::cerr << ERRORMSG(tr("Could not open waveform file: %1.").arg(m_currentFile.fileName()).toStdString()) << std::endl;
+            delete m_bd;
             return false;
         }
         m_bd->print();
@@ -848,7 +850,6 @@ void MainWindow::on_actionPortuguese_triggered()
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     QString language = "://wpanda_pt.qm";
     settings.setValue("language", language);
-
     loadTranslation(language);
 }
 
@@ -916,10 +917,9 @@ void MainWindow::on_actionWaveform_triggered()
     if (m_bd == nullptr) {
         m_bd = new BewavedDolphin(m_editor, this);
     }
-    if (m_bd->createWaveform(m_dolphinFileName))
+    if (m_bd->createWaveform(m_dolphinFileName)) {
         m_bd->show();
-    else
-        delete m_bd;
+    }
 }
 
 void MainWindow::on_actionPanda_Light_triggered()
@@ -1067,7 +1067,6 @@ void MainWindow::on_actionSave_Local_Project_triggered()
     }
     setCurrentFile(QFileInfo(fname));
     COMMENT("Saving ics and skins", 0);
-    // Saves ics ans skins locally here.
     path = m_currentFile.absolutePath();
     if (!QDir(path + "/boxes").exists()) {
         bool dir_res = QDir().mkpath(path + "/boxes");

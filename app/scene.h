@@ -15,13 +15,12 @@ class QNEConnection;
 class Scene : public QGraphicsScene
 {
 public:
-    explicit Scene(QObject *parent = nullptr, int id=0);
+    explicit Scene(QObject *parent = nullptr);
     Scene(const QRectF &sceneRect, QObject *parent = nullptr);
     Scene(qreal x, qreal y, qreal width, qreal height, QObject *parent = nullptr);
 
     /* QGraphicsScene interface */
     int gridSize() const;
-    int m_id;
     QVector<GraphicElement *> getElements();
     QVector<GraphicElement *> getElements(const QRectF &rect);
     QVector<QNEConnection *> getConnections();

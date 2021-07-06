@@ -4,17 +4,16 @@
 #include "bewaveddolphin.h"
 #include "icmanager.h"
 #include "graphicsview.h"
-#include "scene.h"
-#include "simulationcontroller.h"
+#include "editor.h"
 #include "workspace.h"
 
-WorkSpace::WorkSpace(QDialog *fullscreenDlg, GraphicsView *fullscreenView, QUndoStack *undoStack, Scene *scene, SimulationController *simullationController, ICManager *icManager)
+WorkSpace::WorkSpace(QDialog *fullscreenDlg, GraphicsView *fullscreenView, Editor *editor)
   : m_fullscreenDlg(fullscreenDlg)
   , m_fullscreenView(fullscreenView)
-  , m_undoStack(undoStack)
-  , m_scene(scene)
-  , m_simulationController(simullationController)
-  , m_icManager(icManager)
+  , m_undoStack(editor->getUndoStack())
+  , m_scene(editor->getScene())
+  , m_simulationController(editor->getSimulationController())
+  , m_icManager(editor->getICManager())
 {
 }
 

@@ -13,6 +13,7 @@
 #define WORKSPACE_H
 
 class BewavedDolphin;
+class Editor;
 class GraphicsView;
 class Scene;
 class SimulationController;
@@ -21,7 +22,7 @@ class ICManager;
 class WorkSpace
 {
 public:
-    WorkSpace(QDialog *fullscreenDlg, GraphicsView *fullscreenView, QUndoStack *undoStack, Scene *scene, SimulationController *simullationController, ICManager *icManager);
+    WorkSpace(QDialog *fullscreenDlg, GraphicsView *fullscreenView, Editor *editor);
     ~WorkSpace();
     QDialog *fullScreenDlg() const;
     GraphicsView *fullscreenView() const;
