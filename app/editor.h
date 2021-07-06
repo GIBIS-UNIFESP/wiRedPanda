@@ -23,6 +23,7 @@ class QUndoCommand;
 class QUndoStack;
 class QWheelEvent;
 class SimulationController;
+class WorkSpace;
 
 class Editor : public QObject
 {
@@ -59,9 +60,7 @@ public:
     bool eventFilter(QObject *obj, QEvent *evt) override;
     void setElementEditor(ElementEditor *value);
     QUndoStack *getUndoStack() const;
-    void setUndoStack(QUndoStack *stack);
     Scene *getScene() const;
-    void setScene(Scene *scene);
     ICManager *getICManager() const;
     void setICManager(ICManager *icManager);
     void buildSelectionRect();
@@ -77,8 +76,8 @@ public:
     void contextMenu(QPoint screenPos);
     void updateVisibility();
     QPointF getMousePos() const;
-
     ElementEditor *getElementEditor() const;
+    void selectWorkspace(WorkSpace *workspace);
 
     void deleteEditedConn();
     void flipH();
