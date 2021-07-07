@@ -625,7 +625,7 @@ bool Editor::dropEvt(QGraphicsSceneDragDropEvent *dde)
                 IC *box = dynamic_cast<IC *>(elm);
                 if (box) {
                     const QString& fname = label_auxData;
-                    if (!m_icManager->loadIC(box, fname, GlobalProperties::currentFile)) {
+                    if (!m_icManager->loadIC(box, fname, m_mainWindow->getCurrentFile().absoluteFilePath())) {
                         return false;
                     }
                 }
@@ -666,7 +666,7 @@ bool Editor::dropEvt(QGraphicsSceneDragDropEvent *dde)
         QPointF ctr;
         ds >> ctr;
         double version = GlobalProperties::version;
-        QList<QGraphicsItem *> itemList = SerializationFunctions::deserialize(ds, version, GlobalProperties::currentFile);
+        QList<QGraphicsItem *> itemList = SerializationFunctions::deserialize(ds, version, m_mainWindow->getCurrentFile().absoluteFilePath());
         receiveCommand(new AddItemsCommand(itemList, this));
         m_scene->clearSelection();
         for (QGraphicsItem *item : qAsConst(itemList)) {
@@ -797,7 +797,7 @@ void Editor::paste(QDataStream &ds)
     ds >> ctr;
     QPointF offset = m_mousePos - ctr - QPointF(static_cast<qreal>(32.0f), static_cast<qreal>(32.0f));
     double version = GlobalProperties::version;
-    QList<QGraphicsItem *> itemList = SerializationFunctions::deserialize(ds, version, GlobalProperties::currentFile);
+    QList<QGraphicsItem *> itemList = SerializationFunctions::deserialize(ds, version, m_mainWindow->getCurrentFile().absoluteFilePath());
     receiveCommand(new AddItemsCommand(itemList, this));
     for (QGraphicsItem *item : qAsConst(itemList)) {
         if (item->type() == GraphicElement::Type) {
@@ -882,7 +882,7 @@ void Editor::save(QDataStream &ds, const QString &dolphinFilename)
     SerializationFunctions::serialize(m_scene->items(), ds);
 }
 
-void Editor::load(QDataStream &ds)
+void Editor::load(QDataStream &ds, const QString &filename)
 {
     COMMENT("Loading file.", 0);
     m_simulationController->stop();
@@ -899,7 +899,7 @@ void Editor::load(QDataStream &ds)
     COMMENT("Dolphin name: " << dolphinFilename.toStdString(), 0);
     QRectF rect(SerializationFunctions::loadRect(ds, version));
     COMMENT("Header Ok. Version: " << version, 0);
-    QList<QGraphicsItem *> items = SerializationFunctions::deserialize(ds, version, GlobalProperties::currentFile);
+    QList<QGraphicsItem *> items = SerializationFunctions::deserialize(ds, version, filename);
     COMMENT("Finished loading items.", 0);
     if (m_scene) {
         for (QGraphicsItem *item : qAsConst(items)) {

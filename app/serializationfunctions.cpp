@@ -94,17 +94,17 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &ds, doub
     while (!ds.atEnd()) {
         int32_t type;
         ds >> type;
-        COMMENT("Type: " << type, 0);
+        COMMENT("Type: " << type, 3);
         if (type == GraphicElement::Type) {
             quint64 elmType;
             ds >> elmType;
-            COMMENT("Building " << ElementFactory::typeToText(static_cast<ElementType>(elmType)).toStdString() << " element.", 0);
+            COMMENT("Building " << ElementFactory::typeToText(static_cast<ElementType>(elmType)).toStdString() << " element.", 3);
             GraphicElement *elm = ElementFactory::buildElement(static_cast<ElementType>(elmType));
             if (elm) {
                 itemList.append(elm);
                 elm->load(ds, portMap, version);
                 if (elm->elementType() == ElementType::IC) {
-                    COMMENT("Loading IC.", 0);
+                    COMMENT("Loading IC.", 3);
                     IC *ic = qgraphicsitem_cast<IC *>(elm);
                     ICManager::instance()->loadIC(ic, ic->getFile(), parentFile);
                 }
@@ -113,16 +113,16 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &ds, doub
                 throw(std::runtime_error(ERRORMSG("Could not build element."))); // TODO: must remove this message from here and not throw an exception.
             }
         } else if (type == QNEConnection::Type) {
-            COMMENT("Reading Connection.", 0);
+            COMMENT("Reading Connection.", 3);
             QNEConnection *conn = ElementFactory::buildConnection();
-            COMMENT("Connection built.", 0);
+            COMMENT("Connection built.", 3);
             conn->setSelected(true);
-            COMMENT("Selected true.", 0);
+            COMMENT("Selected true.", 3);
             if (!conn->load(ds, portMap)) {
-                COMMENT("Deleting connection.", 0);
+                COMMENT("Deleting connection.", 3);
                 delete conn;
             } else {
-                COMMENT("Appending connection.", 0);
+                COMMENT("Appending connection.", 3);
                 itemList.append(conn);
             }
         } else {

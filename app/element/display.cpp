@@ -36,7 +36,7 @@ Display::Display(QGraphicsItem *parent)
     m_color = "Red";
     m_color_number = 1;
 
-    COMMENT("Allocating pixmaps.", 0);
+    COMMENT("Allocating pixmaps.", 3);
     setPixmap(m_pixmapSkinName[0]);
     a = QVector<QPixmap>(5, m_pixmapSkinName[1]);
     b = QVector<QPixmap>(5, m_pixmapSkinName[2]);
@@ -47,7 +47,7 @@ Display::Display(QGraphicsItem *parent)
     g = QVector<QPixmap>(5, m_pixmapSkinName[7]);
     dp = QVector<QPixmap>(5, m_pixmapSkinName[8]);
 
-    COMMENT("Converting segments to other colors.", 0);
+    COMMENT("Converting segments to other colors.", 3);
     convertAllColors(a);
     convertAllColors(b);
     convertAllColors(c);

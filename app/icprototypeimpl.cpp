@@ -40,11 +40,14 @@ void ICPrototypeImpl::sortPorts(QVector<QNEPort *> &map)
 bool ICPrototypeImpl::updateLocalIC(const QString &fileName, const QString &dirName)
 {
     COMMENT("Recursive call to sub ics.", 0);
+    COMMENT("Elements: " << QString::number(m_elements.size()).toStdString(), 0); // Error here. m_elements seem to be empty.
     for (GraphicElement *elm : qAsConst(m_elements)) {
         if (elm->elementType() == ElementType::IC) {
             IC *ic = dynamic_cast<IC *>(elm);
             QString originalSubICName = ic->getFile();
+            COMMENT("moving reference of IC " << originalSubICName.toStdString(), 0);
             QString subICFileName = dirName + "/boxes/" + QFileInfo(originalSubICName).fileName();
+            COMMENT("moving to " << subICFileName.toStdString(), 0);
             auto prototype = ic->getPrototype();
             if (!QFile::exists(subICFileName)) {
                 COMMENT("Copying subic file to local dir. File does not exist yet.", 0);

@@ -160,7 +160,7 @@ bool QNEConnection::load(QDataStream &ds, const QMap<quint64, QNEPort *> &portMa
     ds >> ptr1;
     ds >> ptr2;
     if (portMap.isEmpty()) {
-        COMMENT("Empty port map.", 0);
+        COMMENT("Empty port map.", 3);
         auto *port1 = reinterpret_cast<QNEPort *>(ptr1);
         auto *port2 = reinterpret_cast<QNEPort *>(ptr2);
         if (port2 && port1) {
@@ -173,33 +173,33 @@ bool QNEConnection::load(QDataStream &ds, const QMap<quint64, QNEPort *> &portMa
             }
         }
     } else if (portMap.contains(ptr1) && portMap.contains(ptr2)) {
-        COMMENT("Port map with elements: ptr1: " << ptr1 << ", ptr2: " << ptr2, 0);
+        COMMENT("Port map with elements: ptr1: " << ptr1 << ", ptr2: " << ptr2, 3);
         QNEPort *port1 = portMap[ptr1];
         QNEPort *port2 = portMap[ptr2];
-        COMMENT("Before if 1.", 0);
+        COMMENT("Before if 1.", 3);
         if (port1 && port2) {
-            COMMENT("Before if 2.", 0);
+            COMMENT("Before if 2.", 3);
             if (!port1->isOutput() && port2->isOutput()) {
-                COMMENT("Setting start 1.", 0);
+                COMMENT("Setting start 1.", 3);
                 setStart(dynamic_cast<QNEOutputPort *>(port2));
-                COMMENT("Setting end 1.", 0);
+                COMMENT("Setting end 1.", 3);
                 setEnd(dynamic_cast<QNEInputPort *>(port1));
             } else if (port1->isOutput() && !port2->isOutput()) {
-                COMMENT("Setting start 2.", 0);
+                COMMENT("Setting start 2.", 3);
                 setStart(dynamic_cast<QNEOutputPort *>(port1));
-                COMMENT("Setting end 2.", 0);
+                COMMENT("Setting end 2.", 3);
                 setEnd(dynamic_cast<QNEInputPort *>(port2));
             }
-            COMMENT("After ifs.", 0);
+            COMMENT("After ifs.", 3);
         }
     } else {
         return false;
     }
-    COMMENT("Updating pos from ports.", 0);
+    COMMENT("Updating pos from ports.", 3);
     updatePosFromPorts();
-    COMMENT("Updating path.", 0);
+    COMMENT("Updating path.", 3);
     updatePath();
-    COMMENT("returning.", 0);
+    COMMENT("returning.", 3);
     return (m_start != nullptr && m_end != nullptr);
 }
 

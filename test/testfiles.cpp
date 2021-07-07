@@ -40,7 +40,7 @@ void TestFiles::testFiles()
 
         QDataStream ds(&pandaFile);
         try {
-            editor->load(ds);
+            editor->load(ds, f.absoluteFilePath());
         } catch (std::runtime_error &e) {
             QFAIL(QString("Could not load the file! Error: %1").arg(QString::fromStdString(e.what())).toUtf8().constData());
         }
@@ -74,7 +74,7 @@ void TestFiles::testFiles()
         QVERIFY(pandaFile2.open(QFile::ReadOnly));
         QDataStream ds3(&pandaFile2);
         try {
-            editor->load(ds3);
+            editor->load(ds3, outfile.fileName());
         } catch (std::runtime_error &e) {
             QFAIL(QString("Could not load the file! Error: %1").arg(QString::fromStdString(e.what())).toUtf8().constData());
         }

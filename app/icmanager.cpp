@@ -45,6 +45,7 @@ ICManager::~ICManager()
 bool ICManager::tryLoadFile(QString &fname, const QString& parentFile)
 {
     try {
+        COMMENT("Trying yo loading file " << fname.toStdString() << " with parentfile name: " << parentFile.toStdString(), 3);
         loadFile(fname, parentFile);
     } catch (ICNotFoundException &err) {
         COMMENT("ICNotFoundException thrown: " << err.what(), 0);
@@ -63,14 +64,15 @@ bool ICManager::tryLoadFile(QString &fname, const QString& parentFile)
 
 void ICManager::loadFile(QString &fname, const QString& parentFile)
 {
+    COMMENT("Loading file " << fname.toStdString() << " with parentfile name: " << parentFile.toStdString(), 3);
     QFileInfo finfo = FileHelper::findICFile(fname, parentFile);
     fname = finfo.filePath();
     Q_ASSERT(finfo.exists() && finfo.isFile());
     m_fileWatcher.addPath(finfo.absoluteFilePath());
     if (m_ics.contains(finfo.baseName())) {
-        COMMENT("IC already inserted: " << finfo.baseName().toStdString(), 0);
+        COMMENT("IC already inserted: " << finfo.baseName().toStdString(), 3);
     } else {
-        COMMENT("Inserting IC: " << finfo.baseName().toStdString(), 0);
+        COMMENT("Inserting IC: " << finfo.baseName().toStdString(), 3);
         auto *prototype = new ICPrototype(finfo.absoluteFilePath());
         prototype->reload();
         m_ics.insert(finfo.baseName(), prototype);
@@ -79,18 +81,19 @@ void ICManager::loadFile(QString &fname, const QString& parentFile)
 
 void ICManager::clear()
 {
-    COMMENT("Clear ICManager", 0);
+    COMMENT("Clear ICManager", 3);
     QMap<QString, ICPrototype *> ics_aux = m_ics;
     m_ics.clear();
     qDeleteAll(ics_aux);
     if (m_fileWatcher.files().size() > 0) {
         m_fileWatcher.removePaths(m_fileWatcher.files());
     }
-    COMMENT("Finished clearing ICManager.", 0);
+    COMMENT("Finished clearing ICManager.", 3);
 }
 
 bool ICManager::loadIC(IC *ic, QString fname, const QString &parentFile)
 {
+    COMMENT("Loading IC file " << fname.toStdString() << " with parentfile name: " << parentFile.toStdString(), 3);
     if (tryLoadFile(fname, parentFile)) {
         ic->loadFile(fname);
     }

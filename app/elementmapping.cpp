@@ -180,11 +180,11 @@ LogicElement *ElementMapping::buildLogicElement(GraphicElement *elm)
 
 void ElementMapping::initialize()
 {
-    COMMENT("Clear.", 0);
+    COMMENT("Clear.", 3);
     clear();
-    COMMENT("Generate Map.", 0);
+    COMMENT("Generate Map.", 3);
     generateMap();
-    COMMENT("Connect.", 0);
+    COMMENT("Connect.", 3);
     connectElements();
     m_initialized = true;
 }
