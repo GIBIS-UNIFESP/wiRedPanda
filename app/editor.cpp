@@ -117,6 +117,7 @@ void Editor::setupWorkspace()
     m_undoStack = new QUndoStack(this);
     m_scene = new Scene(this);
     m_scene->installEventFilter(this);
+    //m_scene->installEventFilter(m_mainWindow);
     m_simulationController = new SimulationController(m_scene);
     m_simulationController->start();
     setRectangle();
