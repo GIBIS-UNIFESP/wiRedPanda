@@ -61,8 +61,8 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
 
     COMMENT("Building dialog within a new tab.", 0);
     buildFullScreenDialog();
-    createNewTab(tr("New Project"));
     m_current_tab = 0;
+    createNewTab(tr("New Project"));
     connect(ui->tabWidget_mainWindow, &QTabWidget::tabBarClicked, this, &MainWindow::selectTab);
     connect(ui->tabWidget_mainWindow, &QTabWidget::tabCloseRequested, this, &MainWindow::closeTab);
 
@@ -186,18 +186,19 @@ void MainWindow::loadAutoSaveFiles(QSettings &settings, const QString &filename)
 }
 
 void MainWindow::createNewTab(const QString &tab_name) {
-    COMMENT("Dialog built. Now adding tab.", 0);
+    COMMENT("Dialog built. Now adding tab. #tabs: " << m_tabs.size() << ", current tab: " << m_current_tab, 0);
     auto new_tab = new QWidget(ui->tabWidget_mainWindow);
     new_tab->setLayout(m_fullscreenDlg->layout());
     new_tab->layout()->addWidget(m_fullscreenView);
     ui->tabWidget_mainWindow->addTab(new_tab, tab_name);
     COMMENT("Creating workspace.", 0 );
     m_tabs.push_back(WorkSpace(m_fullscreenDlg, m_fullscreenView, m_editor));
-    //m_current_tab = m_tabs.size() - 1;
     COMMENT("Files.", 0);
-    m_autoSaveFile.append(new QTemporaryFile());
+    m_autoSaveFile.push_back(new QTemporaryFile());
     COMMENT("Setting scene.", 0);
     m_fullscreenView->setScene(m_editor->getScene());
+    m_current_tab = m_tabs.size() - 1;
+    COMMENT("Finished #tabs: " << m_tabs.size() << ", current tab: " << m_current_tab, 0);
 }
 
 void MainWindow::createUndoRedoMenus()
@@ -229,9 +230,7 @@ void MainWindow::setFastMode(bool fastModeEnabled)
 
 MainWindow::~MainWindow()
 {
-    foreach(auto file, m_autoSaveFile) {
-        delete file;
-    }
+    m_autoSaveFile.clear();
     delete ui;
 }
 
@@ -574,6 +573,7 @@ void MainWindow::closeTab(int tab) {
 
 bool MainWindow::closeTabAction(int tab, bool force_close)
 {
+    COMMENT("Closing tab " << QString::number(tab).toStdString() << ", #tabs: " << m_tabs.size() << ", current tab: " << m_current_tab, 0);
     COMMENT("Create a new empty project if no there are no available tabs.", 0);
     if ((m_tabs.size() == 1) && (!force_close)) {
         return false;
@@ -604,15 +604,16 @@ bool MainWindow::closeTabAction(int tab, bool force_close)
         }
     }
     COMMENT("Moving to other tab if closed tab is the current one.", 0);
-    //bool remove_actions = false;
     if (m_current_tab == tab) {
-        selectTab((tab+1)%(m_tabs.size()-1));
+        if (m_tabs.size() != 1) {
+            selectTab((tab + 1) % m_tabs.size());
+        }
     }
+
     COMMENT("Deleting tab and autosave", 0);
     m_tabs.remove(tab);
-    delete m_autoSaveFile[tab];
     m_autoSaveFile.remove(tab);
-    COMMENT("Removing undo and redo menus.", 0);
+    COMMENT("Removing undo and redo menus. Used only when closing the program with force_close = true.", 0);
     if (m_current_tab == tab) {
         ui->menuEdit->removeAction(m_undoAction[tab]);
         ui->menuEdit->removeAction(m_redoAction[tab]);
@@ -620,6 +621,10 @@ bool MainWindow::closeTabAction(int tab, bool force_close)
     m_undoAction.remove(tab);
     m_redoAction.remove(tab);
     ui->tabWidget_mainWindow->removeTab(tab);
+    if (m_current_tab >= m_tabs.size()) {
+        m_current_tab = std::max(0, m_tabs.size() - 1);
+    }
+    COMMENT("Closed tab " << QString::number(tab).toStdString() << ", #tabs: " << m_tabs.size() << ", current tab: " << m_current_tab, 0);
     return true;
 }
 
@@ -1103,7 +1108,7 @@ void MainWindow::autoSave()
     COMMENT("Starting autosave.", 0);
     if (m_editor->getUndoStack()->isClean()) {
         COMMENT("Undo stack is clean.", 0);
-        if (m_autoSaveFile[m_current_tab]->exists()) {
+        if (m_autoSaveFile[m_current_tab]->exists()) { // TODO: aparentemente tentando salvar arquivo vazio (m_autoSaveFile tem elemento, mas vazio).
             m_autoSaveFile[m_current_tab]->remove();
             settings.remove("autosaveFile"+QString::number(m_current_tab));
         }
