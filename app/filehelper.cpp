@@ -32,10 +32,7 @@ QFileInfo FileHelper::findICFile(const QString &fname, const QString &parentFile
         !setFileInfo(QDir(subdir.absolutePath() + "/boxes"), myFile)) {
         std::cerr << "Error: This file does not exist: " << fname.toStdString() << std::endl;
         throw(ICNotFoundException(QString(tr("IC linked file \"%1\" could not be found!\n"
-                                             "Do you want to find this file?"))
-                                      .arg(fname)
-                                      .toStdString(),
-                                  nullptr));
+                                             "Do you want to find this file?")).arg(fname).toStdString(),nullptr));
     }
     return fileInfo;
 }
