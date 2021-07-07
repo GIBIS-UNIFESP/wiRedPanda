@@ -42,7 +42,7 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, int minInpu
     , m_elementType(type)
     , m_elementGroup(group)
 {
-    COMMENT("Setting flags of elements. ", 0);
+    COMMENT("Setting flags of elements. ", 4);
     setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemSendsGeometryChanges);
 
     COMMENT("Setting attributes. ", 4);
@@ -417,10 +417,11 @@ void GraphicElement::loadPixmapSkinName(QDataStream &ds, size_t skin)
     ds >> name;
     if ((skin < static_cast<size_t>(m_pixmapSkinName.size()))) {
         QFileInfo fileInfo(name);
-        if (!fileInfo.isFile()) {
-            std::cout << "Could not load skins: " << name.toStdString() << std::endl;
-        } else
+        if (fileInfo.isFile()) {
+            //std::cout << "Could not load skins: " << name.toStdString() << std::endl;
+        //} else {
             m_pixmapSkinName[skin] = name;
+        }
     } else {
         std::cout << "Could not load some of the skins." << std::endl;
     }
@@ -523,7 +524,7 @@ void GraphicElement::setSkin(bool defaultSkin, const QString &filename)
 
 void GraphicElement::updatePorts()
 {
-    COMMENT("Updating port positions that belong to the IC.", 0);
+    COMMENT("Updating port positions that belong to the IC.", 5);
     int inputPos = m_topPosition;
     int outputPos = m_bottomPosition;
     if (m_outputsOnTop) {
@@ -534,7 +535,7 @@ void GraphicElement::updatePorts()
         int step = qMax(32 / m_outputs.size(), 6);
         int x = 32 - m_outputs.size() * step + step;
         foreach (QNEPort *port, m_outputs) {
-            COMMENT("Setting output at " << x << ", " << outputPos, 0);
+            COMMENT("Setting output at " << x << ", " << outputPos, 5);
             port->setPos(x, outputPos);
             port->update();
             x += step * 2;
@@ -544,7 +545,7 @@ void GraphicElement::updatePorts()
         int step = qMax(32 / m_inputs.size(), 6);
         int x = 32 - m_inputs.size() * step + step;
         foreach (QNEPort *port, m_inputs) {
-            COMMENT("Setting input at " << x << ", " << inputPos, 0);
+            COMMENT("Setting input at " << x << ", " << inputPos, 5);
             port->setPos(x, inputPos);
             port->update();
             x += step * 2;

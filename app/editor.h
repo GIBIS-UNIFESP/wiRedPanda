@@ -51,7 +51,7 @@ public:
     /**
      * @brief load: loads the project through a binary data stream.
      */
-    void load(QDataStream &ds);
+    void load(QDataStream &ds, const QString &filename);
     void cut(const QList<QGraphicsItem *> &items, QDataStream &ds);
     void copy(const QList<QGraphicsItem *> &items, QDataStream &ds);
     void paste(QDataStream &ds);

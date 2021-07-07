@@ -247,6 +247,7 @@ bool MainWindow::save(QString fname)
     COMMENT("Checking if it is an autosave file or new a new project, and ask for a filename.", 0);
     QString autoSaveFileName;
     if ((fname.isEmpty()) || ((!allAutoSaveFileName.isEmpty()) && (allAutoSaveFileName.contains(fname)))) {
+        COMMENT("Should open window!", 0);
         autoSaveFileName = fname;
         if (m_currentFile.fileName().isEmpty()) {
             fname = QFileDialog::getSaveFileName(this, tr("Save File"), m_defaultDirectory.absolutePath(), tr("Panda files (*.panda)"));
@@ -389,12 +390,14 @@ bool MainWindow::loadPandaFile(const QString &fname)
     }
     COMMENT("File exists.", 0);
     if (fl.open(QFile::ReadOnly)) {
-        COMMENT("File opened.", 0);
+        COMMENT("File opened: " << fname.toStdString(), 0);
         QDataStream ds(&fl);
+        int current_tab = m_current_tab;
         createNewWorkspace(QFileInfo(fl).fileName());
         try {
             COMMENT("Loading in editor.", 0);
-            m_editor->load(ds);
+            GlobalProperties::currentFile = fname; // Do this to search for IC files.
+            m_editor->load(ds, fname);
             COMMENT("Current file set.", 0);
             setCurrentFile(QFileInfo(fname));
             COMMENT("Loaded. Emitting changed signal.", 0);
@@ -404,6 +407,7 @@ bool MainWindow::loadPandaFile(const QString &fname)
             std::cerr << tr("Error loading project: ").toStdString() << e.what() << std::endl;
             QMessageBox::warning(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
             closeTab(m_tabs.size()-1);
+            emit ui->tabWidget_mainWindow->tabBarClicked(current_tab);
             return false;
         }
     } else {
@@ -432,7 +436,7 @@ void MainWindow::on_actionOpen_triggered()
 
 void MainWindow::on_actionSave_triggered()
 {
-    save();
+    save(m_currentFile.absoluteFilePath());
 }
 
 void MainWindow::on_actionAbout_triggered()
@@ -513,7 +517,6 @@ bool MainWindow::hasModifiedFiles()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     QString allAutoSaveFileName;
-    QString autoSaveFileName;
     if (settings.contains("autosaveFile")) {
         allAutoSaveFileName = settings.value("autosaveFile").toString();
     }
@@ -544,7 +547,7 @@ void MainWindow::on_actionSave_As_triggered()
         fname.append(".panda");
     }
     setCurrentFile(QFileInfo(fname));
-    save();
+    save(m_currentFile.absoluteFilePath());
 }
 
 QFileInfo MainWindow::getCurrentFile() const
@@ -642,7 +645,7 @@ bool MainWindow::closeTabAction(int tab)
         bool discardAutosaves = false;
         int ret = confirmSave(false);
         if (ret == QMessageBox::Yes) {
-            if(!save()) {
+            if(!save(m_tabs[tab].currentFile().absoluteFilePath())) {
                 if(closeTabAnyway()==QMessageBox::No) {
                     return false;
                 } else {
@@ -709,7 +712,7 @@ void MainWindow::selectTab(int tab) {
         COMMENT("files.", 0);
         m_currentFile = m_tabs[tab].currentFile();
         m_dolphinFileName = m_tabs[tab].dolphinFileName();
-        COMMENT("moving...", 0);
+        COMMENT("selecting tab in UI...", 0);
         m_current_tab = tab;
         ui->widgetElementEditor->setScene(m_tabs[tab].scene());
         connect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
@@ -1170,53 +1173,53 @@ void MainWindow::on_actionFullscreen_triggered() const
 
 void MainWindow::autoSave()
 {
-    COMMENT("Starting autosave.", 0);
+    COMMENT("Starting autosave.", 2);
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     QString allAutoSaveFileName;
     if (settings.contains("autosaveFile")) {
         allAutoSaveFileName = settings.value("autosaveFile").toString();
-        COMMENT("All auto save file names before autosaving: " << allAutoSaveFileName.toStdString(), 0);
+        COMMENT("All auto save file names before autosaving: " << allAutoSaveFileName.toStdString(), 3);
         if (allAutoSaveFileName.contains(m_autoSaveFile[m_current_tab]->fileName())) {
-          COMMENT("Removing current autosave file name.", 0 );
+          COMMENT("Removing current autosave file name.", 3);
           allAutoSaveFileName.remove(m_autoSaveFile[m_current_tab]->fileName());
           settings.setValue("autosaveFile", allAutoSaveFileName);
         }
     }
-    COMMENT("All auto save file names after possibly removing autosave: " << allAutoSaveFileName.toStdString(), 0);
+    COMMENT("All auto save file names after possibly removing autosave: " << allAutoSaveFileName.toStdString(), 3);
     if (m_editor->getUndoStack()->isClean()) {
-        COMMENT("Undo stack is clean.", 0);
+        COMMENT("Undo stack is clean.", 3);
         if (m_autoSaveFile[m_current_tab]->exists()) {
             m_autoSaveFile[m_current_tab]->remove();
         }
     } else {
-        COMMENT("Undo in not clear. Have to set autosave file.", 0);
+        COMMENT("Undo in not clear. Have to set autosave file.", 3);
         if (m_autoSaveFile[m_current_tab]->exists()) {
-            COMMENT("Autosave file already exists. Delete it to update.", 0);
+            COMMENT("Autosave file already exists. Delete it to update.", 3);
             m_autoSaveFile[m_current_tab]->remove();
             if (!m_currentFile.fileName().isEmpty()) {
                 QDir autosavePath(QDir::temp());
-                COMMENT("Autosave path set to the current file's directory, if there is one.", 0);
+                COMMENT("Autosave path set to the current file's directory, if there is one.", 3);
                 autosavePath = m_currentFile.dir();
-                COMMENT("Autosavepath: " << autosavePath.absolutePath().toStdString(), 0);
+                COMMENT("Autosavepath: " << autosavePath.absolutePath().toStdString(), 3);
                 m_autoSaveFile[m_current_tab]->setFileTemplate(autosavePath.absoluteFilePath(m_currentFile.baseName() + "XXXXXX.panda"));
-                COMMENT("Setting current file to: " << m_currentFile.absoluteFilePath().toStdString(), 0);
+                COMMENT("Setting current file to: " << m_currentFile.absoluteFilePath().toStdString(), 3);
             } else {
-                COMMENT("Default value not set yet.", 0);
+                COMMENT("Default value not set yet.", 3);
                 QDir autosavePath(QDir::temp());
-                COMMENT("Autosavepath: " << autosavePath.absolutePath().toStdString(), 0);
+                COMMENT("Autosavepath: " << autosavePath.absolutePath().toStdString(), 3);
                 m_autoSaveFile[m_current_tab]->setFileTemplate(autosavePath.absoluteFilePath("XXXXXX.panda"));
-                COMMENT("Setting current file to random file in tmp.", 0);
+                COMMENT("Setting current file to random file in tmp.", 3);
             }
         }
         if (m_autoSaveFile[m_current_tab]->open()) {
-            COMMENT("Writing to autosave file.", 0);
+            COMMENT("Writing to autosave file.", 3);
             QDataStream ds(m_autoSaveFile[m_current_tab]);
             QString autosaveFilename = m_autoSaveFile[m_current_tab]->fileName() + "\t";
             try {
                 m_editor->save(ds, m_dolphinFileName);
                 allAutoSaveFileName.append(autosaveFilename);
                 settings.setValue("autosaveFile", allAutoSaveFileName);
-                COMMENT("All auto save file names after adding autosave: " << allAutoSaveFileName.toStdString(), 0);
+                COMMENT("All auto save file names after adding autosave: " << allAutoSaveFileName.toStdString(), 3);
             } catch (std::runtime_error &e) {
                 std::cerr << tr("Error autosaving project: ").toStdString() << e.what() << std::endl;
                 m_autoSaveFile[m_current_tab]->close();
@@ -1225,7 +1228,7 @@ void MainWindow::autoSave()
             m_autoSaveFile[m_current_tab]->close();
         }
     }
-    COMMENT("Finished autosave.", 0);
+    COMMENT("Finished autosave.", 3);
 }
 
 void MainWindow::on_actionMute_triggered()
@@ -1277,5 +1280,5 @@ void MainWindow::on_actionSave_Local_Project_triggered()
         return;
     }
     COMMENT("Saving main project.", 0);
-    save();
+    save(fname);
 }

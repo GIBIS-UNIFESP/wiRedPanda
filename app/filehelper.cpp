@@ -12,7 +12,7 @@
 
 QFileInfo FileHelper::findICFile(const QString &fname, const QString &parentFile)
 {
-    qDebug() << "Loading file: " << fname << ", parentFile: " << parentFile;
+    COMMENT("Loading file: " << fname.toStdString() << ", parentFile: " << parentFile.toStdString(), 3);
     QFileInfo currentFile(GlobalProperties::currentFile);
     QFileInfo fileInfo(fname);
     QString myFile = fileInfo.fileName();
@@ -22,8 +22,21 @@ QFileInfo FileHelper::findICFile(const QString &fname, const QString &parentFile
         return fileInfo.isFile();
     };
 
+//    auto fileName = [&fileInfo](const QDir &dir, const QString &file) {
+//        fileInfo.setFile(dir, file);
+//        return fileInfo.absoluteFilePath().toStdString();
+//    };
+
     QDir subdir(currentFile.absolutePath());
     subdir.cdUp();
+
+//    COMMENT("Possible files:\n" <<
+//            fileName(QDir::current(), fileInfo.fileName()) << "\n" <<
+//            fileName(QFileInfo(parentFile).absoluteDir(), myFile) << "\n" <<
+//            fileName(currentFile.absoluteDir(), myFile) << "\n" <<
+//            fileName(QDir(currentFile.absolutePath() + "/boxes"), myFile) << "\n" <<
+//            fileName(QDir(subdir.absolutePath() + "/boxes"), myFile), 0);
+
     if (!fileInfo.isFile() &&
         !setFileInfo(QDir::current(), fileInfo.fileName()) &&
         !setFileInfo(QFileInfo(parentFile).absoluteDir(), myFile) &&
@@ -52,7 +65,7 @@ QFileInfo FileHelper::findSkinFile(const QString &fname)
     if (!fileInfo.isFile() &&
         !setFileInfo(QDir::current(), fileInfo.fileName()) &&
         !setFileInfo(currentFile.absoluteDir(), myFile) &&
-        !setFileInfo(QDir(currentFile.absolutePath() + "/skins"), myFile)) {
+        !setFileInfo(QDir(currentFile.absolutePath() + "/skins/"), myFile)) {
         std::cerr << "Error: This file does not exist: " << fname.toStdString() << std::endl;
     }
 

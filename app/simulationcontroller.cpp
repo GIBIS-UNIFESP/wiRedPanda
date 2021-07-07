@@ -106,30 +106,30 @@ void SimulationController::start()
 
 void SimulationController::reSortElms()
 {
-    COMMENT("GENERATING SIMULATION LAYER", 0);
+    COMMENT("GENERATING SIMULATION LAYER", 2);
     QVector<GraphicElement *> elements = m_scene->getElements();
     COMMENT("Elements read:" << elements.size(), 0);
     if (elements.size() == 0) {
         return;
     }
-    COMMENT("After return.", 0);
+    COMMENT("After return.", 2);
     if (m_elMapping) {
         delete m_elMapping;
     }
-    COMMENT("Elements deleted.", 0);
+    COMMENT("Elements deleted.", 2);
     m_elMapping = new ElementMapping(m_scene->getElements());
     if (m_elMapping->canInitialize()) {
-        COMMENT("Can initialize.", 0);
+        COMMENT("Can initialize.", 2);
         m_elMapping->initialize();
-        COMMENT("Sorting.", 0);
+        COMMENT("Sorting.", 2);
         m_elMapping->sort();
-        COMMENT("Updating.", 0);
+        COMMENT("Updating.", 2);
         update();
     } else {
         qDebug() << "Cannot initialize simulation!";
         COMMENT("Can not initialize.", 0);
     }
-    COMMENT("Finished simulation layer.", 0);
+    COMMENT("Finished simulation layer.", 2);
 }
 
 void SimulationController::clear()

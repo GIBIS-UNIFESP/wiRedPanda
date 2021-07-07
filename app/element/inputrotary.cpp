@@ -13,7 +13,7 @@ int InputRotary::current_id_number = 0;
 InputRotary::InputRotary(QGraphicsItem *parent)
     : GraphicElement(ElementType::ROTARY, ElementGroup::INPUT, 0, 0, 2, 16, parent)
 {
-    COMMENT("Creating rotaty.", 0);
+    COMMENT("Creating rotaty.", 3);
     m_value = 0;
     locked = false;
     m_pixmapSkinName = {

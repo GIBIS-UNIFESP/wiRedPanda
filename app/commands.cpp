@@ -252,8 +252,7 @@ void AddItemsCommand::undo()
 void AddItemsCommand::redo()
 {
     COMMENT("REDO " + text().toStdString(), 0);
-    // TODO: items seems unused
-    QList<QGraphicsItem *> items = loadItems(m_itemData, m_ids, m_editor, m_otherIds);
+    loadItems(m_itemData, m_ids, m_editor, m_otherIds);
     emit m_editor->circuitHasChanged();
 }
 
