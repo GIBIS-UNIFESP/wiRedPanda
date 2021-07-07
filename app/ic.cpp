@@ -29,13 +29,13 @@
 IC::IC(QGraphicsItem *parent)
     : GraphicElement(ElementType::IC, ElementGroup::IC, 0, 0, 0, 0, parent)
 {
-    std::cout << "Creating box." << std::endl;
+    //std::cout << "Creating box." << std::endl;
     m_pixmapSkinName.append(":/basic/box.png");
     setHasLabel(true);
     setPixmap(m_pixmapSkinName[0], QRect(0, 0, 64, 64));
     setOutputsOnTop(true);
     setPortName("IC");
-    std::cout << "Box done." << std::endl;
+    //std::cout << "Box done." << std::endl;
 }
 
 IC::~IC()

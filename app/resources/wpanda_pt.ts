@@ -1258,6 +1258,16 @@ Errp: %1</translation>
         <source>Error: This file does not exist: </source>
         <translation>Erro: Este arquivo não existe: </translation>
     </message>
+    <message>
+        <source>File not saved. Close tab anyway?</source>
+        <translation>Arquivo não foi salvo. Fechar mesmo assim?</translation>
+    </message>
+    <message>
+        <source>Error while opening autosave file. Do you want to delete it ?
+ Autosave: </source>
+        <translation>Erro ao abrir arquivo de autosave. Você quer apagá-lo?
+ Autosave: </translation>
+    </message>
 </context>
 <context>
     <name>MorphCommand</name>

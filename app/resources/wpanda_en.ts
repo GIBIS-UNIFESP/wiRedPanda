@@ -1253,6 +1253,15 @@ Error: %1</source>
         <source>Error: This file does not exist: </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>File not saved. Close tab anyway?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error while opening autosave file. Do you want to delete it ?
+ Autosave: </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MorphCommand</name>
