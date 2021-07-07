@@ -133,7 +133,6 @@ private:
     QDir m_defaultDirectory;
     Label *m_firstResult;
     bool m_loadedAutoSave;
-    QString m_autoSaveFileName;
     QString m_dolphinFileName;
     BewavedDolphin *m_bd;
     QVector<WorkSpace> m_tabs;
