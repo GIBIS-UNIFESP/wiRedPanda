@@ -484,9 +484,10 @@ void MainWindow::closeEvent(QCloseEvent *e)
             closeWindow = true;
             closeFile();
         }
-    }
-    if (closeFile()) {
-        closeWindow = true;
+    } else {
+        if (closeFile()) {
+            closeWindow = true;
+        }
     }
     if (closeWindow) {
       updateSettings();
