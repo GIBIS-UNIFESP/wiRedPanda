@@ -1268,6 +1268,15 @@ Errp: %1</translation>
         <translation>Erro ao abrir arquivo de autosave. Você quer apagá-lo?
  Autosave: </translation>
     </message>
+    <message>
+        <source>Exit </source>
+        <translation>Sair do </translation>
+    </message>
+    <message>
+        <source>Are you sure?
+</source>
+        <translation>Tem certeza?</translation>
+    </message>
 </context>
 <context>
     <name>MorphCommand</name>

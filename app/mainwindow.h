@@ -162,7 +162,7 @@ private:
     // Change the undo and redo menu when another tab is selected.
     void selectUndoRedoMenu(int tab);
     void loadAutoSaveFiles(QSettings &settings, const QString &filename);
-    bool closeTabAction(int tab, bool force_close);
+    bool closeTabAction(int tab);
     // Message box to ask if user wants to close in case of canceled or failed save action.
     int closeTabAnyway();
 protected:

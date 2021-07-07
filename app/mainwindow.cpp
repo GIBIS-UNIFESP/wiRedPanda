@@ -455,7 +455,7 @@ bool MainWindow::closeFile()
     while(m_tabs.size() > 0) {
         int tab_idx = m_tabs.size() - 1;
         auto tab = m_tabs[tab_idx];
-        if (!closeTabAction(tab_idx, true)) {
+        if (!closeTabAction(tab_idx)) {
             return false;
         }
     }
@@ -464,18 +464,26 @@ bool MainWindow::closeFile()
 
 void MainWindow::closeEvent(QCloseEvent *e)
 {
-    Q_UNUSED(e);
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    settings.beginGroup("MainWindow");
-    settings.setValue("geometry", saveGeometry());
-    settings.setValue("windowState", saveState());
-    settings.beginGroup("splitter");
-    settings.setValue("geometry", ui->splitter->saveGeometry());
-    settings.setValue("state", ui->splitter->saveState());
-    settings.endGroup();
-    settings.endGroup();
-    if (closeFile()) {
-        close();
+    QMessageBox::StandardButton resBtn = QMessageBox::question( this, tr("Exit ") + QApplication::applicationName(),
+                                                                tr("Are you sure?\n"),
+                                                                QMessageBox::Cancel | QMessageBox::Yes,
+                                                                QMessageBox::Yes);
+    if (resBtn == QMessageBox::Yes) {
+        QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
+        settings.beginGroup("MainWindow");
+        settings.setValue("geometry", saveGeometry());
+        settings.setValue("windowState", saveState());
+        settings.beginGroup("splitter");
+        settings.setValue("geometry", ui->splitter->saveGeometry());
+        settings.setValue("state", ui->splitter->saveState());
+        settings.endGroup();
+        settings.endGroup();
+        if (closeFile()) {
+            close();
+            e->accept();
+        } else {
+            e->ignore();
+        }
     } else {
         e->ignore();
     }
@@ -568,16 +576,16 @@ void MainWindow::updateRecentICs() // Bug here... It is not showing and loading 
 }
 
 void MainWindow::closeTab(int tab) {
-    closeTabAction(tab, false);
+    if (m_tabs.size() == 1) {
+        emit close();
+    } else {
+        closeTabAction(tab);
+    }
 }
 
-bool MainWindow::closeTabAction(int tab, bool force_close)
+bool MainWindow::closeTabAction(int tab)
 {
     COMMENT("Closing tab " << QString::number(tab).toStdString() << ", #tabs: " << m_tabs.size() << ", current tab: " << m_current_tab, 0);
-    COMMENT("Create a new empty project if no there are no available tabs.", 0);
-    if ((m_tabs.size() == 1) && (!force_close)) {
-        return false;
-    }
     COMMENT("Checking if needs to save file.", 0);
     if (!m_tabs[tab].undoStack()->isClean()) {
         int ret = confirmSave(false);
@@ -603,13 +611,12 @@ bool MainWindow::closeTabAction(int tab, bool force_close)
             }
         }
     }
-    COMMENT("Moving to other tab if closed tab is the current one.", 0);
+    COMMENT("Moving to other tab if closed tab is the current one, and if possible.", 0);
     if (m_current_tab == tab) {
         if (m_tabs.size() != 1) {
             selectTab((tab + 1) % m_tabs.size());
         }
     }
-
     COMMENT("Deleting tab and autosave", 0);
     m_tabs.remove(tab);
     m_autoSaveFile.remove(tab);
@@ -745,7 +752,7 @@ void MainWindow::resizeEvent(QResizeEvent *)
 void MainWindow::on_actionReload_File_triggered()
 {
     if (m_currentFile.exists()) {
-        if (closeTabAction(m_current_tab,false)) {
+        if (closeTabAction(m_current_tab)) {
             loadPandaFile(m_currentFile.absoluteFilePath());
         }
     }
