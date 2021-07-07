@@ -165,6 +165,9 @@ private:
     bool closeTabAction(int tab);
     // Message box to ask if user wants to close in case of canceled or failed save action.
     int closeTabAnyway();
+    // Checks if any tab has content to be saved.
+    bool hasModifiedFiles();
+    void updateSettings();
 protected:
     /* QWidget interface */
     void closeEvent(QCloseEvent *e) override;

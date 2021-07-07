@@ -164,7 +164,7 @@ void MainWindow::loadAutoSaveFiles(QSettings &settings, const QString &filename)
                             if (ret == QMessageBox::Yes) {
                                 settings.remove("autosaveFile"+QString::number(idx));
                             } else if (ret == QMessageBox::Cancel) {
-                                closeFile();
+                                close();
                             }
                         }
                     }
@@ -464,29 +464,48 @@ bool MainWindow::closeFile()
 
 void MainWindow::closeEvent(QCloseEvent *e)
 {
-    QMessageBox::StandardButton resBtn = QMessageBox::question( this, tr("Exit ") + QApplication::applicationName(),
-                                                                tr("Are you sure?\n"),
-                                                                QMessageBox::Cancel | QMessageBox::Yes,
-                                                                QMessageBox::Yes);
-    if (resBtn == QMessageBox::Yes) {
-        QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-        settings.beginGroup("MainWindow");
-        settings.setValue("geometry", saveGeometry());
-        settings.setValue("windowState", saveState());
-        settings.beginGroup("splitter");
-        settings.setValue("geometry", ui->splitter->saveGeometry());
-        settings.setValue("state", ui->splitter->saveState());
-        settings.endGroup();
-        settings.endGroup();
-        if (closeFile()) {
-            close();
+    if (!hasModifiedFiles()) {
+        QMessageBox::StandardButton resBtn = QMessageBox::question( this, tr("Exit ") + QApplication::applicationName(),
+                                                                    tr("Are you sure?\n"),
+                                                                    QMessageBox::Cancel | QMessageBox::Yes,
+                                                                    QMessageBox::Yes);
+        if (resBtn == QMessageBox::Yes) {
+            updateSettings();
+            closeFile();
             e->accept();
         } else {
             e->ignore();
+            return;
         }
+    }
+    if (closeFile()) {
+        updateSettings();
+        e->accept();
     } else {
         e->ignore();
     }
+}
+
+void MainWindow::updateSettings() {
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
+    settings.beginGroup("MainWindow");
+    settings.setValue("geometry", saveGeometry());
+    settings.setValue("windowState", saveState());
+    settings.beginGroup("splitter");
+    settings.setValue("geometry", ui->splitter->saveGeometry());
+    settings.setValue("state", ui->splitter->saveState());
+    settings.endGroup();
+    settings.endGroup();
+}
+
+bool MainWindow::hasModifiedFiles()
+{
+    foreach(auto tab, m_tabs) {
+        if (!tab.undoStack()->isClean()) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void MainWindow::on_actionSave_As_triggered()
@@ -577,7 +596,7 @@ void MainWindow::updateRecentICs() // Bug here... It is not showing and loading 
 
 void MainWindow::closeTab(int tab) {
     if (m_tabs.size() == 1) {
-        emit close();
+        close();
     } else {
         closeTabAction(tab);
     }
