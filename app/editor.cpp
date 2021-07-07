@@ -148,8 +148,6 @@ void Editor::setRectangle()
     }
     COMMENT("Updating theme.", 0);
     updateTheme();
-    COMMENT("Emitting circuitHasChanged.", 0);
-    emit circuitHasChanged();
     COMMENT("Finished clear.", 0);
 }
 
