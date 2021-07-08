@@ -40,9 +40,11 @@ IC::IC(QGraphicsItem *parent)
 
 IC::~IC()
 {
-    ICPrototype *prototype = ICManager::instance()->getPrototype(m_file);
-    if (prototype) {
-        prototype->removeICObserver(this);
+    if (ICManager::instance() != nullptr) {
+        ICPrototype *prototype = ICManager::instance()->getPrototype(m_file);
+        if (prototype) {
+            prototype->removeICObserver(this);
+        }
     }
 }
 
