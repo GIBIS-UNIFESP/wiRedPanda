@@ -302,8 +302,6 @@ void TestElements::testIC()
 
         QCOMPARE(static_cast<int>(ic->input(2)->value()), 1);
 
-        std::cout << static_cast<int>(ic->output(0)->value()) << " " << static_cast<int>(ic->output(1)->value()) << std::endl;
-
         QCOMPARE(static_cast<int>(ic->output(0)->value()), 0);
         QCOMPARE(static_cast<int>(ic->output(1)->value()), 1);
     }

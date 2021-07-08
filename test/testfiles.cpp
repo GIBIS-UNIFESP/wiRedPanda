@@ -12,12 +12,10 @@
 
 void TestFiles::init()
 {
-    editor = new Editor(this);
 }
 
 void TestFiles::cleanup()
 {
-    delete editor;
 }
 
 void TestFiles::testFiles()
@@ -31,6 +29,7 @@ void TestFiles::testFiles()
     QVERIFY(files.size() > 0);
     /*  int counter = 0; */
     for (const QFileInfo &f : qAsConst(files)) {
+        editor = new Editor(this);
         /*    qDebug( ) << "File " << counter++ << " from " << files.size( ) << ": " << f.fileName( ); */
         QVERIFY(f.exists());
         QFile pandaFile(f.absoluteFilePath());
@@ -79,5 +78,6 @@ void TestFiles::testFiles()
             QFAIL(QString("Could not load the file! Error: %1").arg(QString::fromStdString(e.what())).toUtf8().constData());
         }
         outfile.remove();
+        delete editor;
     }
 }
