@@ -44,7 +44,7 @@ sudo pacman -S qt5-base qt5-charts qt5-multimedia
 * macOS
 
 ```bash
-brew install qt
+brew install qt5
 ```
 
 * Others
@@ -63,8 +63,8 @@ python3 -m pip install py7zr==0.10.1
 python3 -m pip install aqtinstall==0.9.7
 python3 -m pip install importlib-metadata==2.0.0
 python3 -m aqt install 5.15.1 linux desktop -m qtcharts qtmultimedia -O ~/Qt
-export Qt5_Dir=~/Qt/5.15.1
-export Qt5_DIR=~/Qt/5.15.1
+export Qt5_Dir=~/Qt5/5.15.1
+export Qt5_DIR=~/Qt5/5.15.1
 export QT_PLUGIN_PATH=~/Qt/5.15.1/gcc_64/plugins
 PATH=~/Qt/5.15.1/gcc_64/bin:$PATH
 export PATH
