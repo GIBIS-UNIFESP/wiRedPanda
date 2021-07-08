@@ -193,7 +193,6 @@ void MainWindow::createNewTab(const QString &tab_name) {
     m_autoSaveFile.push_back(new QTemporaryFile());
     COMMENT("Setting scene.", 0);
     m_fullscreenView->setScene(m_editor->getScene());
-    m_current_tab = m_tabs.size() - 1;
     COMMENT("Finished #tabs: " << m_tabs.size() << ", current tab: " << m_current_tab, 0);
 }
 
@@ -355,6 +354,7 @@ void MainWindow::createNewWorkspace(const QString &fname)
     createUndoRedoMenus();
     emit ui->tabWidget_mainWindow->tabBarClicked(m_tabs.size()-1);
     ui->tabWidget_mainWindow->setCurrentIndex(m_tabs.size()-1);
+    //m_current_tab = m_tabs.size() - 1;
     COMMENT("Finished creating new workspace: " << fname.toStdString(), 0);
 }
 

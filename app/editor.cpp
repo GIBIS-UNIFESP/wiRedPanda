@@ -767,6 +767,7 @@ void Editor::setICManager(ICManager *icManager)
 {
     disconnect(m_icManager, &ICManager::updatedIC, this, &Editor::redoSimulationController);
     m_icManager = icManager;
+    ICManager::setGlobalInstance(icManager);
     connect(m_icManager, &ICManager::updatedIC, this, &Editor::redoSimulationController);
 }
 
