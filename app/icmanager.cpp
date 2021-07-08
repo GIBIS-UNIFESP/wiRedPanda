@@ -138,6 +138,11 @@ ICManager *ICManager::instance()
     return globalICManager;
 }
 
+void ICManager::setGlobalInstance(ICManager *icManager)
+{
+    globalICManager = icManager;
+}
+
 void ICManager::reloadFile(const QString& fileName)
 {
     COMMENT("Change in IC " << fileName.toStdString() << " detected.", 0);

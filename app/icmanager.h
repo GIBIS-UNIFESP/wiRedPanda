@@ -25,7 +25,7 @@ public:
     bool loadIC(IC *ic, QString fname, const QString &parentFile = "");
     ICPrototype *getPrototype(const QString& fname);
     static ICManager *instance();
-
+    static void setGlobalInstance(ICManager *icManager);
     bool updatePrototypeFilePathName(const QString& sourceName, const QString& targetName);
 signals:
     void updatedIC();
