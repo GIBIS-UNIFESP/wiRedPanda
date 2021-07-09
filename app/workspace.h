@@ -24,7 +24,6 @@ class WorkSpace
 {
 public:
     WorkSpace(QDialog *fullscreenDlg, GraphicsView *fullscreenView, Editor *editor);
-    ~WorkSpace();
     QDialog *fullScreenDlg() const;
     GraphicsView *fullscreenView() const;
     QUndoStack *undoStack() const;
@@ -38,6 +37,7 @@ public:
     void setDolphinFileName(const QString &fname);
     QString dolphinFileName();
 
+    void free();
 private:
     QDialog *m_fullscreenDlg;
     GraphicsView *m_fullscreenView;

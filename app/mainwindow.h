@@ -137,7 +137,7 @@ private:
     BewavedDolphin *m_bd;
     QVector<WorkSpace> m_tabs;
     int m_current_tab;
-    QVector<QTemporaryFile*> m_autoSaveFile;
+    QTemporaryFile** m_autoSaveFile; // We had memory leak problems using QVectors for that.
 
     QVector<QAction*> m_undoAction;
     QVector<QAction*> m_redoAction;
@@ -167,6 +167,8 @@ private:
     // Checks if any tab has content to be saved.
     bool hasModifiedFiles();
     void updateSettings();
+    void addAutosaveFile();
+    void removeAutosaveFile(int tab);
 protected:
     /* QWidget interface */
     void closeEvent(QCloseEvent *e) override;

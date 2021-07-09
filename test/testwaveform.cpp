@@ -9,11 +9,12 @@
 void TestWaveForm::init()
 {
     editor = new Editor(this);
+    editor->setupWorkspace();
 }
 
 void TestWaveForm::cleanup()
 {
-    delete editor;
+    editor->deleteLater();
 }
 
 void TestWaveForm::testDisplay4Bits()

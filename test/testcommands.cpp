@@ -9,11 +9,12 @@
 void TestCommands::init()
 {
     editor = new Editor(this);
+    editor->setupWorkspace();
 }
 
 void TestCommands::cleanup()
 {
-    delete editor;
+    editor->deleteLater();
 }
 
 void TestCommands::testAddDeleteCommands()

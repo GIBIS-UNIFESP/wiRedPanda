@@ -132,7 +132,7 @@ void Editor::selectWorkspace(WorkSpace *workspace)
     COMMENT("editor scene done.", 0);
     setSimulationController(workspace->simulationController());
     COMMENT("editor controller done.", 0);
-    setICManager(workspace->icManager());
+    setICManager(workspace->icManager()); // Problema 2
 }
 
 void Editor::setRectangle()
@@ -763,7 +763,7 @@ ICManager *Editor::getICManager() const
 
 void Editor::setICManager(ICManager *icManager)
 {
-    disconnect(m_icManager, &ICManager::updatedIC, this, &Editor::redoSimulationController);
+    disconnect(m_icManager, &ICManager::updatedIC, this, &Editor::redoSimulationController); // Problema 2
     m_icManager = icManager;
     ICManager::setGlobalInstance(icManager);
     connect(m_icManager, &ICManager::updatedIC, this, &Editor::redoSimulationController);
