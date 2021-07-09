@@ -80,6 +80,7 @@ void TestFiles::testFiles()
         } catch (std::runtime_error &e) {
             QFAIL(QString("Could not load the file! Error: %1").arg(QString::fromStdString(e.what())).toUtf8().constData());
         }
+        pandaFile2.close();
         outfile.remove();
         editor->deleteLater();
     }

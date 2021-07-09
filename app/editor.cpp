@@ -833,8 +833,7 @@ bool Editor::saveLocalIC(IC *ic, const QString& newICPath)
             QFile fl(newFilePath);
             if (!fl.exists()) {
                 COMMENT("Copying file to local dir. File does not exist yet.", 0);
-                QFile::copy(fname, newFilePath);
-                if (icPrototype->updateLocalIC(newFilePath, newICPath)) {
+                if (icPrototype->updateLocalIC(fname, newFilePath, newICPath)) {
                     if (!ic->setFile(newFilePath)) {
                         std::cerr << "Error changing boxes name." << std::endl;
                         return false;

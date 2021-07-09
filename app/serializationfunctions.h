@@ -20,11 +20,12 @@ class SerializationFunctions
 public:
     /**
      * @brief update: Updates internal ICs recursively when a project is saved as a local project in another folder. This is required to keep valid references to all used ICs.
-     * @param fileName is the path to the IC.
+     * @param src_fileName is the original path to the IC.
+     * @param tgt_fileName is the new path to the IC.
      * @param icDirName is the new directory name where the IC will be saved.
      * @return true if IC was successfully updated.
      */
-    static bool update(const QString &fileName, const QString &icDirName);
+    static bool update(const QString &src_fileName, const QString &tgt_fileName, const QString &icDirName);
     /**
      * @brief saveHeader: Saves the following header information into the panda file, in this order: app name, app version, associated dolphin filename, scene rectangle.
      */

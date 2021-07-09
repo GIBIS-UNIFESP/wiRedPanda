@@ -24,15 +24,15 @@
 #include "qneconnection.h"
 #include "qneport.h"
 
-bool SerializationFunctions::update(const QString &fileName, const QString &dirName)
+bool SerializationFunctions::update(const QString &src_fileName, const QString &tgt_fileName, const QString &dirName)
 {
     double version;
     QString dolphinFilename;
     QRectF rect;
     QList<QGraphicsItem *> itemList;
-    QFile file(fileName);
+    QFile file(src_fileName);
     if (file.open(QFile::ReadOnly)) {
-        COMMENT("Started reading IC file " << fileName.toStdString(), 0);
+        COMMENT("Started reading IC file " << src_fileName.toStdString(), 0);
         QDataStream ds(&file);
         version = loadVersion(ds);
         dolphinFilename = loadDolphinFilename(ds, version);
@@ -41,11 +41,12 @@ bool SerializationFunctions::update(const QString &fileName, const QString &dirN
         COMMENT("Element deserialization.", 0);
         itemList = loadMoveData(dirName, ds, version);
         COMMENT("Finished loading data", 0);
+        file.close();
     }
-    QSaveFile fl(fileName);
+    QSaveFile fl(tgt_fileName);
     COMMENT("Before saving data", 0);
     if (fl.open(QFile::WriteOnly)) {
-        COMMENT("Start updating IC " << fileName.toStdString(), 0);
+        COMMENT("Start updating IC " << tgt_fileName.toStdString(), 0);
         QDataStream ds(&fl);
         COMMENT("Saving header information.", 0);
         saveHeader(ds, dolphinFilename, rect);
@@ -57,7 +58,7 @@ bool SerializationFunctions::update(const QString &fileName, const QString &dirN
         return false;
     }
 
-    COMMENT("Finished updating IC " << fileName.toStdString(), 0);
+    COMMENT("Finished updating IC " << tgt_fileName.toStdString(), 0);
     return true;
 }
 

@@ -43,9 +43,9 @@ void ICPrototype::removeICObserver(IC *ic)
     }
 }
 
-bool ICPrototype::updateLocalIC(const QString &fileName, const QString &dirName)
+bool ICPrototype::updateLocalIC(const QString &src_fileName, const QString &tgt_fileName, const QString &dirName)
 {
-    return m_ICImpl.updateLocalIC(fileName, dirName);
+    return m_ICImpl.updateLocalIC(src_fileName, tgt_fileName, dirName);
 }
 
 int ICPrototype::inputSize() const
