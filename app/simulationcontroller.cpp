@@ -92,7 +92,7 @@ void SimulationController::update()
 
 void SimulationController::stop()
 {
-    m_simulationTimer.stop();
+    m_simulationTimer.stop(); // Problema aqui 1.
 }
 
 void SimulationController::start()

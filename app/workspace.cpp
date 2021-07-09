@@ -19,8 +19,13 @@ WorkSpace::WorkSpace(QDialog *fullscreenDlg, GraphicsView *fullscreenView, Edito
 {
 }
 
-WorkSpace::~WorkSpace()
+void WorkSpace::free()
 {
+    delete m_selectionRect;
+    m_undoStack->deleteLater();
+    m_scene->deleteLater();
+    m_simulationController->deleteLater();
+    m_icManager->deleteLater();
 }
 
 QDialog *WorkSpace::fullScreenDlg() const

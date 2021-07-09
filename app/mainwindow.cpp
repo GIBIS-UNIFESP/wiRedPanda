@@ -46,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     , m_loadedAutoSave(false)
     , m_dolphinFileName("")
     , m_bd(nullptr)
+    , m_autoSaveFile(nullptr)
     , m_translator(nullptr)
 {
     COMMENT("WIRED PANDA Version = " << APP_VERSION << " OR " << GlobalProperties::version, 0);
@@ -188,10 +189,38 @@ void MainWindow::createNewTab(const QString &tab_name) {
     COMMENT("Storing tab pointers.", 0 );
     m_tabs.push_back(WorkSpace(m_fullscreenDlg, m_fullscreenView, m_editor));
     COMMENT("Files.", 0);
-    m_autoSaveFile.push_back(new QTemporaryFile());
+    addAutosaveFile();
     COMMENT("Setting scene.", 0);
     m_fullscreenView->setScene(m_editor->getScene());
     COMMENT("Finished #tabs: " << m_tabs.size() << ", current tab: " << m_current_tab, 0);
+}
+
+void MainWindow::addAutosaveFile()
+{
+    QTemporaryFile** new_vector = new QTemporaryFile*[m_tabs.size()];
+    for (int idx = 0; idx < m_tabs.size() - 1; ++idx) {
+        new_vector[idx] = m_autoSaveFile[idx];
+    }
+    new_vector[m_tabs.size() - 1] = new QTemporaryFile();
+    delete []m_autoSaveFile;
+    m_autoSaveFile = new_vector;
+}
+
+void MainWindow::removeAutosaveFile(int tab)
+{
+    QTemporaryFile** new_vector = nullptr;
+    if (m_tabs.size() > 1) {
+        new_vector = new QTemporaryFile*[m_tabs.size()-1];
+        for (int idx = 0; idx < tab; ++idx) {
+            new_vector[idx] = m_autoSaveFile[idx];
+        }
+        for (int idx = tab+1; idx < m_tabs.size(); ++idx) {
+            new_vector[idx-1] = m_autoSaveFile[idx];
+        }
+    }
+    delete m_autoSaveFile[tab];
+    delete []m_autoSaveFile;
+    m_autoSaveFile = new_vector;
 }
 
 void MainWindow::createUndoRedoMenus()
@@ -223,7 +252,6 @@ void MainWindow::setFastMode(bool fastModeEnabled)
 
 MainWindow::~MainWindow()
 {
-    m_autoSaveFile.clear();
     delete ui;
 }
 
@@ -493,6 +521,8 @@ void MainWindow::closeEvent(QCloseEvent *e)
     if (closeWindow) {
       updateSettings();
       e->accept();
+      m_editor->deleteLater();
+      m_editor = nullptr;
     } else {
       e->ignore();
     }
@@ -619,7 +649,7 @@ void MainWindow::closeTab(int tab) {
     if (m_tabs.size() == 1) {
         close();
     } else {
-        closeTabAction(tab);
+        closeTabAction(tab); // Problema 1, 2
     }
 }
 
@@ -629,6 +659,7 @@ bool MainWindow::closeTabAction(int tab)
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     QString allAutoSaveFileName;
     QString autoSaveFileName;
+    COMMENT("Reading autosave file names.", 0);
     if (settings.contains("autosaveFile")) {
         allAutoSaveFileName = settings.value("autosaveFile").toString();
         COMMENT("Verifying if this is a recovered autosave file.", 0);
@@ -671,14 +702,11 @@ bool MainWindow::closeTabAction(int tab)
         }
     }
     COMMENT("Moving to other tab if closed tab is the current one, and if possible.", 0);
-    if (m_current_tab == tab) {
-        if (m_tabs.size() != 1) {
-            selectTab((tab + 1) % m_tabs.size());
-        }
-    }
+    selectTab((tab + 1) % m_tabs.size());// Problema 1, 2
     COMMENT("Deleting tab and autosave", 0);
+    removeAutosaveFile(tab); // This removes the QTempFile object allocation.
+    m_tabs[tab].free();
     m_tabs.remove(tab);
-    m_autoSaveFile.remove(tab); // This removes the QTempFile object allocation.
     COMMENT("Removing undo and redo menus. Used only when closing the program with force_close = true.", 0);
     if (m_current_tab == tab) {
         ui->menuEdit->removeAction(m_undoAction[tab]);
@@ -697,13 +725,13 @@ bool MainWindow::closeTabAction(int tab)
 void MainWindow::selectTab(int tab) {
     COMMENT("Selecting tab: " << QString::number(tab).toStdString(), 0);
     if (tab != m_current_tab) {
-        m_editor->getSimulationController()->stop();
+        m_editor->getSimulationController()->stop(); // Problema aqui 1
         COMMENT("full screen.", 0);
         disconnect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
         m_fullscreenDlg = m_tabs[tab].fullScreenDlg();
         m_fullscreenView = m_tabs[tab].fullscreenView();
         COMMENT("editor.", 0);
-        m_editor->selectWorkspace(&m_tabs[tab]);
+        m_editor->selectWorkspace(&m_tabs[tab]); // Problema 2
         COMMENT("undo and redo menu.", 0);
         selectUndoRedoMenu(tab);
         COMMENT("files.", 0);
@@ -805,7 +833,9 @@ void MainWindow::on_lineEdit_returnPressed()
 
 void MainWindow::resizeEvent(QResizeEvent *)
 {
-    m_editor->getScene()->setSceneRect(m_editor->getScene()->sceneRect().united(m_fullscreenView->rect()));
+    if(m_editor) {
+        m_editor->getScene()->setSceneRect(m_editor->getScene()->sceneRect().united(m_fullscreenView->rect()));
+    }
 }
 
 void MainWindow::on_actionReload_File_triggered()

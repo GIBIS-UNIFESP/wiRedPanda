@@ -13,6 +13,7 @@
 void TestSimulationController::init()
 {
     editor = new Editor(this);
+    editor->setupWorkspace();
 }
 
 void TestSimulationController::cleanup()
