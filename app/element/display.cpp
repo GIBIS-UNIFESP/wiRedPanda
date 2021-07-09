@@ -68,6 +68,7 @@ void Display::convertAllColors(QVector<QPixmap> &maps)
 {
   QImage tmp(maps[1].toImage());
   maps[0] = convertColor(tmp,true,true,true);
+  maps[1] = convertColor(tmp,true,false,false);
   maps[2] = convertColor(tmp,false,true,false);
   maps[3] = convertColor(tmp,false,false,true);
   maps[4] = convertColor(tmp,true,false,true);
@@ -77,13 +78,16 @@ QPixmap Display::convertColor(const QImage &src, bool red, bool green, bool blue
 {
     QImage tgt(src);
     for(int y = 0; y < src.height(); y++) {
+        const uchar *src_line = src.scanLine(y);
+        uchar *tgt_line = tgt.scanLine(y);
         for(int x= 0; x < src.width(); x++) {
-            int src_red = src.pixelColor(x,y).red();
-            int src_alpha = src.pixelColor(x,y).alpha();
-            int tgt_red = red ? src_red : 0;
-            int tgt_green = green ? src_red : 0;
-            int tgt_blue = blue ? src_red : 0;
-            tgt.setPixelColor(x,y,QColor(tgt_red, tgt_green, tgt_blue, src_alpha));
+            src_line += 2;
+            uchar src_red = *src_line;
+            src_line += 2;
+            *tgt_line++ = blue ? src_red : 0;
+            *tgt_line++ = green ? src_red : 0;
+            *tgt_line++ = red ? src_red : 0;
+            tgt_line++;
         }
     }
     return(QPixmap::fromImage(tgt));

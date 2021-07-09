@@ -36,7 +36,7 @@ public:
     void setSkin(bool defaultSkin, const QString &filename) override;
 
 public:
-    static QPixmap convertColor(const QImage &src, bool red, bool green, bool blue);
+    static QPixmap convertColor(const QImage &src, bool blue, bool green, bool red);
     static void convertAllColors(QVector<QPixmap> &maps);
 };
 #endif /* DISPLAY_H */
