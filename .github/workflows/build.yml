@@ -102,6 +102,19 @@ jobs:
       with:
         name: 'wiredpanda-ubuntu18.04-glibc'
         path: build/app/wpanda
+    - name: Make WiredPanda AppImage
+      run: |
+        PATH=/home/runner/work/wiredpanda-testing/Qt/5.15.1/gcc_64/bin:$PATH
+        export PATH
+        cp installer/Linux/portable_files/wpanda.desktop build/app/wpanda.desktop
+        cp app/resources/wpanda.png build/app/wpanda.png
+        ~/linuxdeployqt-continuous-x86_64.AppImage build/app/wpanda -appimage 
+    - name: Upload WiredPanda AppImage
+      uses: actions/upload-artifact@v2
+      with:
+        name: WiredPanda Linux (64-bit) AppImage
+        path: wiRED_Panda*.AppImage
+
 
 # === Windows 10 ===
   windows:
