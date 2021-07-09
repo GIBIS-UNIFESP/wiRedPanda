@@ -10,68 +10,68 @@ env:
 
 jobs:
 
-# === Ubuntu 16.04 ===
-#   ubuntu-16:
-#     runs-on: ubuntu-16.04
+=== Ubuntu 16.04 ===
+  ubuntu-16:
+    runs-on: ubuntu-16.04
 
-#     steps:
-#     - uses: actions/checkout@v2
-#       with: 
-#         submodules: recursive
-#         fetch-depth: 0
+    steps:
+    - uses: actions/checkout@v2
+      with: 
+        submodules: recursive
+        fetch-depth: 0
 
-#     - name: Install Qt5
-#       run: |
-#         sudo apt-get update
-#         sudo apt-get install build-essential libgl1-mesa-dev libxkbcommon-x11-0 libpulse-dev -y
-#         python3 -m pip install setuptools wheel
-#         python3 -m pip install py7zr==0.10.1
-#         python3 -m pip install aqtinstall==0.9.7
-#         python3 -m pip install importlib-metadata==2.0.0
-#         python3 -m aqt install 5.15.1 linux desktop -m qtcharts qtmultimedia -O /home/runner/work/wiredpanda-testing/Qt
-#         ls -li /home/runner/work/wiredpanda-testing/Qt
-#         ls -li /home/runner/work/wiredpanda-testing/Qt/5.15.1
-#         ls -li /home/runner/work/wiredpanda-testing/Qt/5.15.1/gcc_64
-#         ls -li /home/runner/work/wiredpanda-testing/Qt/5.15.1/gcc_64/bin
-#         export Qt5_Dir=/home/runner/work/wiredpanda-testing/Qt/5.15.1
-#         export Qt5_DIR=/home/runner/work/wiredpanda-testing/Qt/5.15.1
-#         export QT_PLUGIN_PATH=/home/runner/work/wiredpanda-testing/Qt/5.15.1/gcc_64/plugins
-#         PATH=/home/runner/work/wiredpanda-testing/Qt/5.15.1/gcc_64/bin:$PATH
-#         export PATH
-#     - name: Install AppImage dependencies
-#       run: |
-#         sudo apt-get install libgstreamer-plugins-base1.0-0 libgstreamer-plugins-base1.0-dev 
-#         sudo apt-get install libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0-dev libxcb-render-util0 libxcb-xinerama0
-#     - name: Get linuxdeployqt
-#       run: |
-#         wget "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -P ~/
-#         chmod +x ~/linuxdeployqt-continuous-x86_64.AppImage
-#     - name: Build
-#       run: |
-#         PATH=/home/runner/work/wiredpanda-testing/Qt/5.15.1/gcc_64/bin:$PATH
-#         export PATH
-#         mkdir build
-#         cd build
-#         qmake ../WPanda.pro
-#         make -j8
-#     - name: Deploy
-#       uses: actions/upload-artifact@v2
-#       with:
-#         name: 'wiredpanda-ubuntu16.04-glibc'
-#         path: build/app/wpanda
+    - name: Install Qt5
+      run: |
+        sudo apt-get update
+        sudo apt-get install build-essential libgl1-mesa-dev libxkbcommon-x11-0 libpulse-dev -y
+        python3 -m pip install setuptools wheel
+        python3 -m pip install py7zr==0.10.1
+        python3 -m pip install aqtinstall==0.9.7
+        python3 -m pip install importlib-metadata==2.0.0
+        python3 -m aqt install 5.15.1 linux desktop -m qtcharts qtmultimedia -O /home/runner/work/wiredpanda-testing/Qt
+        ls -li /home/runner/work/wiredpanda-testing/Qt
+        ls -li /home/runner/work/wiredpanda-testing/Qt/5.15.1
+        ls -li /home/runner/work/wiredpanda-testing/Qt/5.15.1/gcc_64
+        ls -li /home/runner/work/wiredpanda-testing/Qt/5.15.1/gcc_64/bin
+        export Qt5_Dir=/home/runner/work/wiredpanda-testing/Qt/5.15.1
+        export Qt5_DIR=/home/runner/work/wiredpanda-testing/Qt/5.15.1
+        export QT_PLUGIN_PATH=/home/runner/work/wiredpanda-testing/Qt/5.15.1/gcc_64/plugins
+        PATH=/home/runner/work/wiredpanda-testing/Qt/5.15.1/gcc_64/bin:$PATH
+        export PATH
+    - name: Install AppImage dependencies
+      run: |
+        sudo apt-get install libgstreamer-plugins-base1.0-0 libgstreamer-plugins-base1.0-dev 
+        sudo apt-get install libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0-dev libxcb-render-util0 libxcb-xinerama0
+    - name: Get linuxdeployqt
+      run: |
+        wget "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -P ~/
+        chmod +x ~/linuxdeployqt-continuous-x86_64.AppImage
+    - name: Build
+      run: |
+        PATH=/home/runner/work/wiredpanda-testing/Qt/5.15.1/gcc_64/bin:$PATH
+        export PATH
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j8
+    - name: Deploy
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'wiredpanda-ubuntu16.04-glibc'
+        path: build/app/wpanda
 
-#     - name: Make WiredPanda AppImage
-#       run: |
-#         PATH=/home/runner/work/wiredpanda-testing/Qt/5.15.1/gcc_64/bin:$PATH
-#         export PATH
-#         cp installer/Linux/portable_files/wpanda.desktop build/app/wpanda.desktop
-#         cp app/resources/wpanda.png build/app/wpanda.png
-#         ~/linuxdeployqt-continuous-x86_64.AppImage build/app/wpanda -appimage 
-#     - name: Upload WiredPanda AppImage
-#       uses: actions/upload-artifact@v2
-#       with:
-#         name: WiredPanda Linux (64-bit) AppImage
-#         path: wiRED_Panda*.AppImage
+    - name: Make WiredPanda AppImage
+      run: |
+        PATH=/home/runner/work/wiredpanda-testing/Qt/5.15.1/gcc_64/bin:$PATH
+        export PATH
+        cp installer/Linux/portable_files/wpanda.desktop build/app/wpanda.desktop
+        cp app/resources/wpanda.png build/app/wpanda.png
+        ~/linuxdeployqt-continuous-x86_64.AppImage build/app/wpanda -appimage 
+    - name: Upload WiredPanda AppImage
+      uses: actions/upload-artifact@v2
+      with:
+        name: WiredPanda Linux (64-bit) AppImage
+        path: wiRED_Panda*.AppImage
 
 
 
@@ -102,19 +102,6 @@ jobs:
       with:
         name: 'wiredpanda-ubuntu18.04-glibc'
         path: build/app/wpanda
-    - name: Make WiredPanda AppImage
-      run: |
-        PATH=/home/runner/work/wiredpanda-testing/Qt/5.15.1/gcc_64/bin:$PATH
-        export PATH
-        cp installer/Linux/portable_files/wpanda.desktop build/app/wpanda.desktop
-        cp app/resources/wpanda.png build/app/wpanda.png
-        ~/linuxdeployqt-continuous-x86_64.AppImage build/app/wpanda -appimage 
-    - name: Upload WiredPanda AppImage
-      uses: actions/upload-artifact@v2
-      with:
-        name: WiredPanda Linux (64-bit) AppImage
-        path: wiRED_Panda*.AppImage
-
 
 # === Windows 10 ===
   windows:
