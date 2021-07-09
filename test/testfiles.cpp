@@ -12,10 +12,12 @@
 
 void TestFiles::init()
 {
+
 }
 
 void TestFiles::cleanup()
 {
+
 }
 
 void TestFiles::testFiles()
@@ -27,9 +29,11 @@ void TestFiles::testFiles()
     entries << "*.panda";
     QFileInfoList files = examplesDir.entryInfoList(entries);
     QVERIFY(files.size() > 0);
-    /*  int counter = 0; */
+    int counter = 0;
     for (const QFileInfo &f : qAsConst(files)) {
-        editor = new Editor(this);
+          editor = new Editor(this);
+        if (counter++ > 8)
+            continue;
         /*    qDebug( ) << "File " << counter++ << " from " << files.size( ) << ": " << f.fileName( ); */
         QVERIFY(f.exists());
         QFile pandaFile(f.absoluteFilePath());
@@ -78,6 +82,6 @@ void TestFiles::testFiles()
             QFAIL(QString("Could not load the file! Error: %1").arg(QString::fromStdString(e.what())).toUtf8().constData());
         }
         outfile.remove();
-        delete editor;
+            delete editor;
     }
 }

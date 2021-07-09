@@ -60,9 +60,8 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     }
 
     COMMENT("Building dialog within a new tab.", 0);
-    buildFullScreenDialog();
     m_current_tab = 0;
-    createNewTab(tr("New Project"));
+    createNewWorkspace(tr("New Project"));
     connect(ui->tabWidget_mainWindow, &QTabWidget::tabBarClicked, this, &MainWindow::selectTab);
     connect(ui->tabWidget_mainWindow, &QTabWidget::tabCloseRequested, this, &MainWindow::closeTab);
 
@@ -111,7 +110,6 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     connect(ui->actionCut, &QAction::triggered, m_editor, &Editor::cutAction);
     connect(ui->actionPaste, &QAction::triggered, m_editor, &Editor::pasteAction);
     connect(ui->actionDelete, &QAction::triggered, m_editor, &Editor::deleteAction);
-    createUndoRedoMenus();
 
     COMMENT("Setting up zoom and screen funcionalities.", 0);
     connect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
@@ -187,7 +185,7 @@ void MainWindow::createNewTab(const QString &tab_name) {
     new_tab->setLayout(m_fullscreenDlg->layout());
     new_tab->layout()->addWidget(m_fullscreenView);
     ui->tabWidget_mainWindow->addTab(new_tab, tab_name);
-    COMMENT("Creating workspace.", 0 );
+    COMMENT("Storing tab pointers.", 0 );
     m_tabs.push_back(WorkSpace(m_fullscreenDlg, m_fullscreenView, m_editor));
     COMMENT("Files.", 0);
     m_autoSaveFile.push_back(new QTemporaryFile());
@@ -345,16 +343,15 @@ int MainWindow::autoSaveFileDeleteAnyway(const QString& autosaveFilename)
     return msgBox.exec();
 }
 
-void MainWindow::createNewWorkspace(const QString &fname)
+void MainWindow::createNewWorkspace(const QString &fname) // Use this function always... Call it from MainWindow constructor.
 {
     COMMENT("Creating new workspace: " << fname.toStdString(), 0);
     m_editor->setupWorkspace();
     buildFullScreenDialog();
     createNewTab(fname);
     createUndoRedoMenus();
-    emit ui->tabWidget_mainWindow->tabBarClicked(m_tabs.size()-1);
+    emit ui->tabWidget_mainWindow->tabBarClicked(m_tabs.size()-1); // Move these to on_actionNew_triggered.
     ui->tabWidget_mainWindow->setCurrentIndex(m_tabs.size()-1);
-    //m_current_tab = m_tabs.size() - 1;
     COMMENT("Finished creating new workspace: " << fname.toStdString(), 0);
 }
 

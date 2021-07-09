@@ -47,7 +47,6 @@ Editor::Editor(QObject *parent)
     m_mainWindow = qobject_cast<MainWindow *>(parent);
     m_markingSelectionBox = false;
     m_editedConn_id = 0;
-    setupWorkspace();
     m_draggingElement = false;
     m_showWires = true;
     m_showGates = true;
@@ -117,7 +116,6 @@ void Editor::setupWorkspace()
     m_undoStack = new QUndoStack(this);
     m_scene = new Scene(this);
     m_scene->installEventFilter(this);
-    //m_scene->installEventFilter(m_mainWindow);
     m_simulationController = new SimulationController(m_scene);
     m_simulationController->start();
     setRectangle();
