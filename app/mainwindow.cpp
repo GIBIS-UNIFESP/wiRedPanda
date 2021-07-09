@@ -649,7 +649,7 @@ void MainWindow::closeTab(int tab) {
     if (m_tabs.size() == 1) {
         close();
     } else {
-        closeTabAction(tab); // Problema 1, 2
+        closeTabAction(tab);
     }
 }
 
@@ -702,7 +702,7 @@ bool MainWindow::closeTabAction(int tab)
         }
     }
     COMMENT("Moving to other tab if closed tab is the current one, and if possible.", 0);
-    selectTab((tab + 1) % m_tabs.size());// Problema 1, 2
+    selectTab((tab + 1) % m_tabs.size());
     COMMENT("Deleting tab and autosave", 0);
     removeAutosaveFile(tab); // This removes the QTempFile object allocation.
     m_tabs[tab].free();
@@ -725,13 +725,13 @@ bool MainWindow::closeTabAction(int tab)
 void MainWindow::selectTab(int tab) {
     COMMENT("Selecting tab: " << QString::number(tab).toStdString(), 0);
     if (tab != m_current_tab) {
-        m_editor->getSimulationController()->stop(); // Problema aqui 1
+        m_editor->getSimulationController()->stop();
         COMMENT("full screen.", 0);
         disconnect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
         m_fullscreenDlg = m_tabs[tab].fullScreenDlg();
         m_fullscreenView = m_tabs[tab].fullscreenView();
         COMMENT("editor.", 0);
-        m_editor->selectWorkspace(&m_tabs[tab]); // Problema 2
+        m_editor->selectWorkspace(&m_tabs[tab]);
         COMMENT("undo and redo menu.", 0);
         selectUndoRedoMenu(tab);
         COMMENT("files.", 0);
