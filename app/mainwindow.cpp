@@ -767,12 +767,12 @@ void MainWindow::on_actionOpen_IC_triggered()
     }
     if (fl.open(QFile::ReadOnly)) {
         emit addRecentIcFile(fname);
+        fl.close();
+        ui->statusBar->showMessage(tr("Loaded IC successfully."), 2000);
     } else {
         std::cerr << tr("Could not open file in ReadOnly mode : ").toStdString() << fname.toStdString() << "." << std::endl;
-        return;
+        ui->statusBar->showMessage(tr("Error loading IC file."), 2000);
     }
-    fl.close();
-    ui->statusBar->showMessage(tr("Loaded IC successfully."), 2000);
 }
 
 void MainWindow::on_lineEdit_textChanged(const QString &text)

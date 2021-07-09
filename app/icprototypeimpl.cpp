@@ -37,10 +37,10 @@ void ICPrototypeImpl::sortPorts(QVector<QNEPort *> &map)
     std::stable_sort(map.begin(), map.end(), comparePorts);
 }
 
-bool ICPrototypeImpl::updateLocalIC(const QString &fileName, const QString &dirName)
+bool ICPrototypeImpl::updateLocalIC(const QString &src_fileName, const QString &tgt_fileName, const QString &dirName)
 {
-    COMMENT("Recursive call to sub ics.", 0);
-    COMMENT("Elements: " << QString::number(m_elements.size()).toStdString(), 0); // Error here. m_elements seem to be empty.
+    COMMENT("Recursive call to sub ics: " << src_fileName.toStdString(), 0);
+    COMMENT("Elements: " << QString::number(m_elements.size()).toStdString(), 0);
     for (GraphicElement *elm : qAsConst(m_elements)) {
         if (elm->elementType() == ElementType::IC) {
             IC *ic = dynamic_cast<IC *>(elm);
@@ -52,7 +52,7 @@ bool ICPrototypeImpl::updateLocalIC(const QString &fileName, const QString &dirN
             if (!QFile::exists(subICFileName)) {
                 COMMENT("Copying subic file to local dir. File does not exist yet.", 0);
                 QFile::copy(originalSubICName, subICFileName);
-                if (prototype->updateLocalIC(subICFileName, dirName)) {
+                if (prototype->updateLocalIC(originalSubICName, subICFileName, dirName)) {
                     if (!ic->setFile(subICFileName)) {
                         std::cerr << "Error updating subic name." << std::endl;
                         return false;
@@ -65,7 +65,7 @@ bool ICPrototypeImpl::updateLocalIC(const QString &fileName, const QString &dirN
     }
     COMMENT("Updating references of subics in IC files!!!", 0);
     try {
-        if (!SerializationFunctions::update(fileName, dirName)) {
+        if (!SerializationFunctions::update(src_fileName, tgt_fileName, dirName)) {
             std::cerr << "Error saving local ic." << std::endl;
             return false;
         }
@@ -89,6 +89,7 @@ void ICPrototypeImpl::loadFile(const QString &fileName)
         for (QGraphicsItem *item : qAsConst(items)) {
             loadItem(item);
         }
+        file.close();
     }
     setInputSize(m_inputs.size());
     setOutputSize(m_outputs.size());

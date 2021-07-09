@@ -35,6 +35,7 @@ class CodeGenerator
 {
 public:
     CodeGenerator(const QString &fileName, const QVector<GraphicElement *> &aElements);
+    ~CodeGenerator();
     bool generate();
 
 private:

@@ -39,6 +39,11 @@ CodeGenerator::CodeGenerator(const QString &fileName, const QVector<GraphicEleme
                      "13"};
 }
 
+CodeGenerator::~CodeGenerator()
+{
+    file.close();
+}
+
 static inline QString highLow(int val)
 {
     return val == 1 ? "HIGH" : "LOW";
