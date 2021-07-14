@@ -27,24 +27,24 @@ public:
     static ICManager *instance();
     static void setGlobalInstance(ICManager *icManager);
     bool updatePrototypeFilePathName(const QString& sourceName, const QString& targetName);
+    void wakeUp();
 signals:
     void updatedIC();
     void addRecentIcFile(const QString& fname);
 
 private slots:
-    void reloadFile(const QString& bname);
+    void setReloadFile(const QString& bname);
 
 private:
     bool tryLoadFile(QString &fname, const QString& parentFile);
     void loadFile(QString &fname, const QString& parentFile);
-    bool warnAboutFileChange(const QString &fileName);
 
     static ICManager *globalICManager;
 
     QMap<QString, ICPrototype *> m_ics;
     MainWindow *m_mainWindow;
-
     QFileSystemWatcher m_fileWatcher;
+    QList<QString> requiresReload;
 };
 
 #endif // ICMANAGER_H

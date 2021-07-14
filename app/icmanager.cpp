@@ -20,11 +20,12 @@ ICManager *ICManager::globalICManager = nullptr;
 ICManager::ICManager(MainWindow *mainWindow, QObject *parent)
     : QObject(parent)
     , m_mainWindow(mainWindow)
+    , requiresReload()
 {
     if (globalICManager == nullptr) {
         globalICManager = this;
     }
-    connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this, &ICManager::reloadFile);
+    connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this, &ICManager::setReloadFile);
     if (m_mainWindow) {
         connect(this, &ICManager::addRecentIcFile, m_mainWindow, &MainWindow::addRecentIcFile);
     }
@@ -143,35 +144,23 @@ void ICManager::setGlobalInstance(ICManager *icManager)
     globalICManager = icManager;
 }
 
-void ICManager::reloadFile(const QString& fileName)
+void ICManager::setReloadFile(const QString& fileName)
 {
     COMMENT("Change in IC " << fileName.toStdString() << " detected.", 0);
     QString bname = QFileInfo(fileName).baseName();
     m_fileWatcher.addPath(fileName);
-    if (warnAboutFileChange(bname)) {
-        if (m_ics.contains(bname)) {
-            try {
-                m_ics[bname]->reload();
-            } catch (std::runtime_error &e) {
-                QMessageBox::warning(m_mainWindow, "Error", tr("Error reloading IC: ") + e.what(), QMessageBox::Ok, QMessageBox::NoButton);
-            }
-        }
+    if (!requiresReload.contains(bname)) {
+        requiresReload.push_back(bname);
     }
-    emit updatedIC();
 }
 
-// Maybe this function should never be called and the main project should reload the IC every time it changes.
-bool ICManager::warnAboutFileChange(const QString &fileName)
+void ICManager::wakeUp()
 {
-    COMMENT("File " << fileName.toStdString() << " has changed!", 0);
-    QMessageBox msgBox;
-    if (m_mainWindow) {
-        msgBox.setParent(m_mainWindow);
+    for (QString &bname: requiresReload) {
+        if (m_ics.contains(bname)) {
+            m_ics[bname]->reload();
+        }
     }
-    msgBox.setLocale(QLocale::Portuguese);
-    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-    msgBox.setText(tr("The file %1 changed, do you want to reload?").arg(fileName));
-    msgBox.setWindowModality(Qt::ApplicationModal);
-    msgBox.setDefaultButton(QMessageBox::Yes);
-    return msgBox.exec() == QMessageBox::Yes;
+    requiresReload.clear();
+    emit updatedIC();
 }
