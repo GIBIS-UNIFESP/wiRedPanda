@@ -103,6 +103,12 @@ bool ICManager::loadIC(IC *ic, QString fname, const QString &parentFile)
     return true;
 }
 
+void ICManager::openIC(QString fname)
+{
+    COMMENT("Opening IC file " << fname.toStdString(), 0);
+    m_mainWindow->loadPandaFile(fname);
+}
+
 ICPrototype *ICManager::getPrototype(const QString& fname)
 {
     Q_ASSERT(!fname.isEmpty());

@@ -735,6 +735,7 @@ void MainWindow::selectTab(int tab) {
         COMMENT("undo and redo menu.", 0);
         selectUndoRedoMenu(tab);
         COMMENT("files.", 0);
+        GlobalProperties::currentFile = m_currentFile.absoluteFilePath();
         m_currentFile = m_tabs[tab].currentFile();
         m_dolphinFileName = m_tabs[tab].dolphinFileName();
         COMMENT("selecting tab in UI...", 0);

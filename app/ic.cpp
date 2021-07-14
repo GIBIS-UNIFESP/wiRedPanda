@@ -128,21 +128,8 @@ ICPrototype *IC::getPrototype()
 
 void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
-        QMessageBox msgBox;
-        /*    msgBox.setParent(  ); */
-        msgBox.setLocale(QLocale::Portuguese);
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setText(tr("Do you want to load this file?<br>%1").arg(m_file));
-        msgBox.setWindowModality(Qt::ApplicationModal);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        if (msgBox.exec() == QMessageBox::Yes) {
-            auto *wPanda = new QProcess(scene());
-            QStringList args;
-            args << m_file;
-            wPanda->start(QCoreApplication::applicationFilePath(), args);
-        }
-    }
+    event->accept();
+    ICManager::instance()->openIC(m_file);
 }
 
 void IC::setSkin(bool defaultSkin, const QString &filename)
