@@ -133,6 +133,7 @@ void Editor::selectWorkspace(WorkSpace *workspace)
     setSimulationController(workspace->simulationController());
     COMMENT("editor controller done.", 0);
     setICManager(workspace->icManager());
+    m_icManager->wakeUp();
 }
 
 void Editor::setRectangle()
