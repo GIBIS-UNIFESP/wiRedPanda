@@ -23,6 +23,7 @@ public:
     ~ICManager() override;
     void clear();
     bool loadIC(IC *ic, QString fname, const QString &parentFile = "");
+    void openIC(QString fname);
     ICPrototype *getPrototype(const QString& fname);
     static ICManager *instance();
     static void setGlobalInstance(ICManager *icManager);
