@@ -705,11 +705,11 @@ Do you want to find this file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Error reloading IC: </source>
+        <source>File error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The file %1 changed, do you want to reload?</source>
+        <source>Error reloading changed IC file. Perhaps it was deleted.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1269,6 +1269,10 @@ Error: %1</source>
     <message>
         <source>Are you sure?
 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error loading IC file.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
