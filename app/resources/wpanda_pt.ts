@@ -709,12 +709,12 @@ Do you want to find this file?</source>
         <translation>Erro</translation>
     </message>
     <message>
-        <source>The file %1 changed, do you want to reload?</source>
-        <translation>O arquivo %1 mudou, deseja recarregar?</translation>
+        <source>File error.</source>
+        <translation>Erro em arquivo.</translation>
     </message>
     <message>
-        <source>Error reloading IC: </source>
-        <translation>Erro ao atualizar CI: </translation>
+        <source>Error reloading changed IC file. Perhaps it was deleted.</source>
+        <translation>Erro ao atualizar arquivo de CI modificado. Talvez ele tenha sido apagado.</translation>
     </message>
 </context>
 <context>
@@ -1276,6 +1276,10 @@ Errp: %1</translation>
         <source>Are you sure?
 </source>
         <translation>Tem certeza?</translation>
+    </message>
+    <message>
+        <source>Error loading IC file.</source>
+        <translation>Erro ao carregar arquivo de CI.</translation>
     </message>
 </context>
 <context>

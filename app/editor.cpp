@@ -25,6 +25,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QDrag>
+#include <qdebug.h>
 #include <QGraphicsItem>
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsSceneMouseEvent>

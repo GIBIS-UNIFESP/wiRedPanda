@@ -4,6 +4,7 @@
 #include "icmanager.h"
 
 #include <QApplication>
+#include <qdebug.h>
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QSettings>
@@ -151,6 +152,9 @@ void ICManager::setReloadFile(const QString& fileName)
     m_fileWatcher.addPath(fileName);
     if (!requiresReload.contains(bname)) {
         requiresReload.push_back(bname);
+        if (globalICManager == this) {
+            wakeUp();
+        }
     }
 }
 
@@ -158,7 +162,11 @@ void ICManager::wakeUp()
 {
     for (QString &bname: requiresReload) {
         if (m_ics.contains(bname)) {
-            m_ics[bname]->reload();
+            try {
+                m_ics[bname]->reload();
+            }  catch (...) {
+                QMessageBox::warning(m_mainWindow, tr("File error."), tr("Error reloading changed IC file. Perhaps it was deleted."));
+            }
         }
     }
     requiresReload.clear();
