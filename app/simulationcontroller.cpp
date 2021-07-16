@@ -95,6 +95,18 @@ void SimulationController::stop()
     m_simulationTimer.stop();
 }
 
+void SimulationController::setClockReset()
+{
+    COMMENT("Reseting clock.", 0);
+    Clock::reset = true;
+}
+
+void SimulationController::startTimer()
+{
+    COMMENT("Starting timer.", 0);
+    m_simulationTimer.start();
+}
+
 void SimulationController::start()
 {
     COMMENT("Start simulation controller.", 0);

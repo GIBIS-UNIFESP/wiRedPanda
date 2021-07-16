@@ -32,18 +32,20 @@ public:
     static QVector<GraphicElement *> sortElements(QVector<GraphicElement *> elms);
 
     bool isRunning();
+    void clear();
+    void startTimer();
+
 signals:
 
 public slots:
     void update();
     void stop();
+    void setClockReset();
     void start();
-    void clear();
     void updateView();
     void updateAll();
     bool canRun();
-    void reSortElms();
-
+    void reSortElms();    
 private:
     void updatePort(QNEOutputPort *port);
     void updatePort(QNEInputPort *port);
