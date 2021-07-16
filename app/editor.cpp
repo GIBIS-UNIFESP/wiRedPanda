@@ -200,7 +200,7 @@ void Editor::redoSimulationController()
     //! Also, it is required whenever the contents of a box is updated.
     m_simulationController->clear();
     if (simulationWasRunning) {
-        getSimulationController()->start();
+        m_simulationController->start();
     }
 }
 
@@ -915,12 +915,13 @@ void Editor::load(QDataStream &ds, const QString &filename)
             view->centerOn(m_scene->itemsBoundingRect().center());
         }
     }
-    m_simulationController->start();
     if (m_scene) {
         m_scene->clearSelection();
     }
     COMMENT("Emitting circuit has changed.", 0);
+    m_simulationController->setClockReset();
     emit circuitHasChanged();
+    m_simulationController->startTimer();
     COMMENT("Finished loading file.", 0);
 }
 

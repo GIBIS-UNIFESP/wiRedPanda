@@ -27,7 +27,7 @@ Clock::Clock(QGraphicsItem *parent)
     setRotatable(false);
     setCanChangeSkin(true);
     /*  connect(&timer,&QTimer::timeout,this,&Clock::updateClock); */
-    Clock::setFrequency(1.0); // TODO: call to virtual function during construction
+    Clock::setFrequency(1.0);
     setHasFrequency(true);
     m_isOn = false;
     Clock::reset = true;
@@ -90,7 +90,6 @@ float Clock::getFrequency() const
 
 void Clock::setFrequency(float freq)
 {
-    /*  qDebug() << "Clock frequency set to " << freq; */
     if (qFuzzyIsNull(freq)) {
         return;
     }

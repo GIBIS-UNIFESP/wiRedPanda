@@ -378,7 +378,7 @@ void MainWindow::createNewWorkspace(const QString &fname) // Use this function a
     buildFullScreenDialog();
     createNewTab(fname);
     createUndoRedoMenus();
-    emit ui->tabWidget_mainWindow->tabBarClicked(m_tabs.size()-1); // Move these to on_actionNew_triggered.
+    selectTab(m_tabs.size()-1); // Move these to on_actionNew_triggered.
     ui->tabWidget_mainWindow->setCurrentIndex(m_tabs.size()-1);
     COMMENT("Finished creating new workspace: " << fname.toStdString(), 0);
 }
@@ -428,7 +428,7 @@ bool MainWindow::loadPandaFile(const QString &fname)
             std::cerr << tr("Error loading project: ").toStdString() << e.what() << std::endl;
             QMessageBox::warning(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
             closeTab(m_tabs.size()-1);
-            emit ui->tabWidget_mainWindow->tabBarClicked(current_tab);
+            selectTab(current_tab);
             return false;
         }
     } else {
@@ -739,8 +739,9 @@ void MainWindow::selectTab(int tab) {
         ui->widgetElementEditor->setScene(m_tabs[tab].scene());
         connect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
         COMMENT("emit circuithaschanged.", 0);
-        m_editor->getSimulationController()->start();
+        m_editor->getSimulationController()->setClockReset();
         emit m_editor->circuitHasChanged();
+        m_editor->getSimulationController()->startTimer();
     }
     COMMENT("New tab selected. BD filename: " << m_dolphinFileName.toStdString(), 0);
 }
