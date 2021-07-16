@@ -420,14 +420,10 @@ bool MainWindow::loadPandaFile(const QString &fname)
         int current_tab = m_current_tab;
         createNewWorkspace(QFileInfo(fl).fileName());
         try {
-            COMMENT("Loading in editor.", 0);
-            GlobalProperties::currentFile = fname; // Do this to search for IC files.
-            m_editor->load(ds, fname);
             COMMENT("Current file set.", 0);
             setCurrentFile(QFileInfo(fname));
-            COMMENT("Loaded. Emitting changed signal.", 0);
-            emit m_editor->circuitHasChanged();
-            COMMENT("Finished updating changed by signal.", 0);
+            COMMENT("Loading in editor.", 0);
+            m_editor->load(ds, fname);
         } catch (std::runtime_error &e) {
             std::cerr << tr("Error loading project: ").toStdString() << e.what() << std::endl;
             QMessageBox::warning(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
