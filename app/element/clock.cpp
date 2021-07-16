@@ -95,7 +95,7 @@ void Clock::setFrequency(float freq)
         return;
     }
 
-    int auxinterval = 1000 / (freq * GLOBALCLK);
+    int auxinterval = 500 / (freq * GLOBALCLK);
     if (auxinterval <= 0) {
         return;
     }
@@ -104,8 +104,6 @@ void Clock::setFrequency(float freq)
     m_frequency = static_cast<double>(freq);
     m_elapsed = 0;
     Clock::reset = true;
-    //      qDebug() << "Freq = " << freq <<  " interval = " << interval;
-    /*    timer.start( static_cast< int >(1000.0/freq) ); */
 }
 
 void Clock::resetClock()
