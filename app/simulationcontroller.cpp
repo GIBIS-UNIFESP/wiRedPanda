@@ -126,7 +126,7 @@ void SimulationController::reSortElms()
         COMMENT("Updating.", 2);
         update();
     } else {
-        qDebug() << "Cannot initialize simulation!";
+        qDebug() << "Cannot initialize simulation!"; // Bug happening...
         COMMENT("Can not initialize.", 0);
     }
     COMMENT("Finished simulation layer.", 2);
