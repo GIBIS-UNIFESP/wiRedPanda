@@ -173,7 +173,7 @@ private:
     // Checks if any tab has content to be saved.
     bool hasModifiedFiles();
     void updateSettings();
-    void addAutosaveFile();
+    void createAutosaveFile();
     void removeAutosaveFile(int tab);
     /**
      * @brief disconnectTab: Function used to disconnect elements of current tab, to safely change or close a tab.
