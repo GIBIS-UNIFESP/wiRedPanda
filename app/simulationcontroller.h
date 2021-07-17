@@ -45,7 +45,7 @@ public slots:
     void updateView();
     void updateAll();
     bool canRun();
-    void reSortElms();    
+    void reSortElements();    
 private:
     void updatePort(QNEOutputPort *port);
     void updatePort(QNEInputPort *port);

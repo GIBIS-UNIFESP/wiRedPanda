@@ -258,7 +258,7 @@ void TestElements::testIC()
     scene.addItem(conn4);
 
     SimulationController sc(&scene);
-    sc.reSortElms();
+    sc.reSortElements();
     for (int i = 0; i < 10; ++i) {
         clkButton->setOn(false);
         prstButton->setOn(false);

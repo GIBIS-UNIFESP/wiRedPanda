@@ -89,10 +89,14 @@ signals:
     void circuitHasChanged();
 
 public slots:
-    void setRectangle();
+    void buildAndSetRectangle();
     void showWires(bool checked);
     void showGates(bool checked);
     void rotate(bool rotateRight);
+    /**
+     * @brief setupWorkspace: Creates workspace elements: IC manager, undo stack, scene, and simulation controller.
+     * @param connect_signals: true: connects IC manager and simulation controller signals/slots if this is the first tab (opening the program).
+     */
     void setupWorkspace();
 
     void receiveCommand(QUndoCommand *cmd);

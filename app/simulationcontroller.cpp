@@ -111,12 +111,12 @@ void SimulationController::start()
 {
     COMMENT("Start simulation controller.", 0);
     Clock::reset = true;
-    reSortElms();
+    reSortElements();
     m_simulationTimer.start();
     COMMENT("Simulation started.", 0);
 }
 
-void SimulationController::reSortElms()
+void SimulationController::reSortElements()
 {
     COMMENT("GENERATING SIMULATION LAYER", 2);
     QVector<GraphicElement *> elements = m_scene->getElements();
@@ -129,7 +129,7 @@ void SimulationController::reSortElms()
         delete m_elMapping;
     }
     COMMENT("Elements deleted.", 2);
-    m_elMapping = new ElementMapping(m_scene->getElements());
+    m_elMapping = new ElementMapping(elements);
     if (m_elMapping->canInitialize()) {
         COMMENT("Can initialize.", 2);
         m_elMapping->initialize();

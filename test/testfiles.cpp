@@ -27,13 +27,9 @@ void TestFiles::testFiles()
     entries << "*.panda";
     QFileInfoList files = examplesDir.entryInfoList(entries);
     QVERIFY(files.size() > 0);
-    //int counter = 0;
     for (const QFileInfo &f : qAsConst(files)) {
         editor = new Editor(this);
         editor->setupWorkspace();
-//        if (counter++ > 8)
-//            continue;
-        /*    qDebug( ) << "File " << counter++ << " from " << files.size( ) << ": " << f.fileName( ); */
         QVERIFY(f.exists());
         QFile pandaFile(f.absoluteFilePath());
         GlobalProperties::currentFile = f.absoluteFilePath();

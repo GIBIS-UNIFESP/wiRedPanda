@@ -31,6 +31,7 @@
 #include "globalproperties.h"
 #include "graphicsview.h"
 #include "graphicsviewzoom.h"
+#include "icmanager.h"
 #include "label.h"
 #include "listitemwidget.h"
 #include "thememanager.h"
@@ -113,7 +114,6 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     connect(ui->actionDelete, &QAction::triggered, m_editor, &Editor::deleteAction);
 
     COMMENT("Setting up zoom and screen funcionalities.", 0);
-    connect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
     connect(m_editor, &Editor::scroll, this, &MainWindow::scrollView);
     connect(m_editor, &Editor::circuitHasChanged, this, &MainWindow::autoSave);
     m_fullscreenView->setCacheMode(QGraphicsView::CacheBackground);
@@ -188,14 +188,10 @@ void MainWindow::createNewTab(const QString &tab_name) {
     ui->tabWidget_mainWindow->addTab(new_tab, tab_name);
     COMMENT("Storing tab pointers.", 0 );
     m_tabs.push_back(WorkSpace(m_fullscreenDlg, m_fullscreenView, m_editor));
-    COMMENT("Files.", 0);
-    addAutosaveFile();
-    COMMENT("Setting scene.", 0);
-    m_fullscreenView->setScene(m_editor->getScene());
     COMMENT("Finished #tabs: " << m_tabs.size() << ", current tab: " << m_current_tab, 0);
 }
 
-void MainWindow::addAutosaveFile()
+void MainWindow::createAutosaveFile()
 {
     QTemporaryFile** new_vector = new QTemporaryFile*[m_tabs.size()];
     for (int idx = 0; idx < m_tabs.size() - 1; ++idx) {
@@ -235,10 +231,14 @@ void MainWindow::createUndoRedoMenus()
     ui->menuEdit->insertAction(m_undoAction[m_undoAction.size()-1], m_redoAction[m_undoAction.size()-1]);
 }
 
-void MainWindow::selectUndoRedoMenu(int tab)
+void MainWindow::removeUndoRedoMenu()
 {
     ui->menuEdit->removeAction(m_undoAction[m_current_tab]);
     ui->menuEdit->removeAction(m_redoAction[m_current_tab]);
+}
+
+void MainWindow::addUndoRedoMenu(int tab)
+{
     ui->menuEdit->insertAction(ui->menuEdit->actions().at(0), m_undoAction[tab]);
     ui->menuEdit->insertAction(m_undoAction[tab], m_redoAction[tab]);
 }
@@ -370,19 +370,6 @@ int MainWindow::autoSaveFileDeleteAnyway(const QString& autosaveFilename)
     msgBox.setDefaultButton(QMessageBox::No);
     return msgBox.exec();
 }
-
-void MainWindow::createNewWorkspace(const QString &fname) // Use this function always... Call it from MainWindow constructor.
-{
-    COMMENT("Creating new workspace: " << fname.toStdString(), 0);
-    m_editor->setupWorkspace();
-    buildFullScreenDialog();
-    createNewTab(fname);
-    createUndoRedoMenus();
-    selectTab(m_tabs.size()-1); // Move these to on_actionNew_triggered.
-    ui->tabWidget_mainWindow->setCurrentIndex(m_tabs.size()-1);
-    COMMENT("Finished creating new workspace: " << fname.toStdString(), 0);
-}
-
 
 void MainWindow::on_actionNew_triggered()
 {
@@ -697,51 +684,97 @@ bool MainWindow::closeTabAction(int tab)
             }
         }
     }
-    COMMENT("Moving to other tab if closed tab is the current one, and if possible.", 0);
-    selectTab((tab + 1) % m_tabs.size());
+    COMMENT("Moving to other tab if closed tab is the current one and not the only one. Othewise, if has just one tab, disconnects it from the UI.", 0);
+    if ((tab == m_current_tab) && (m_tabs.size() != 1)) {
+        selectTab((tab + 1) % m_tabs.size());
+    } else if (m_tabs.size() == 1) {
+        disconnectTab();
+        ui->menuEdit->removeAction(m_undoAction[tab]);
+        ui->menuEdit->removeAction(m_redoAction[tab]);
+    }
     COMMENT("Deleting tab and autosave", 0);
     removeAutosaveFile(tab); // This removes the QTempFile object allocation.
     m_tabs[tab].free();
     m_tabs.remove(tab);
-    COMMENT("Removing undo and redo menus. Used only when closing the program with force_close = true.", 0);
-    if (m_current_tab == tab) {
-        ui->menuEdit->removeAction(m_undoAction[tab]);
-        ui->menuEdit->removeAction(m_redoAction[tab]);
-    }
     m_undoAction.remove(tab);
     m_redoAction.remove(tab);
     ui->tabWidget_mainWindow->removeTab(tab);
-    if (m_current_tab >= m_tabs.size()) {
-        m_current_tab = std::max(0, m_tabs.size() - 1);
+    COMMENT("Adjusting m_current_tab if removed tab lays before the current one.", 0);
+    if (m_current_tab > tab) {
+        m_current_tab--;
     }
     COMMENT("Closed tab " << QString::number(tab).toStdString() << ", #tabs: " << m_tabs.size() << ", current tab: " << m_current_tab, 0);
     return true;
 }
 
-void MainWindow::selectTab(int tab) {
+void MainWindow::disconnectTab()
+{
+    COMMENT("Stopping simulation controller.", 0);
+    m_editor->getSimulationController()->stop();
+    COMMENT("Disconnecting zoom from UI controllers.", 0);
+    disconnect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
+    COMMENT("Removing undo and redo actions from UI menu.", 0 );
+    removeUndoRedoMenu();
+}
+
+void MainWindow::connectTab(int tab)
+{
+    COMMENT("Setting view and dialog to currecnt canvas.", 0);
+    m_fullscreenDlg = m_tabs[tab].fullScreenDlg();
+    m_fullscreenView = m_tabs[tab].fullscreenView();
+    connect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
+    COMMENT("Setting edtor elements to current tab: undo stack, scene, rectangle, simulation controller, IC manager. Also connecting IC Manager and simulation controller signals and setting global IC manager. Updating ICs if changed.", 0);
+    m_editor->selectWorkspace(&m_tabs[tab]);
+    COMMENT("Connecting undo and redo functions to UI menu.", 0);
+    addUndoRedoMenu(tab);
+    COMMENT("Setting Panda and Dolphin file info.", 0);
+    m_currentFile = m_tabs[tab].currentFile();
+    m_dolphinFileName = m_tabs[tab].dolphinFileName();
+    GlobalProperties::currentFile = m_currentFile.absoluteFilePath();
+    COMMENT("Setting selected tab as the current one.", 0);
+    m_current_tab = tab;
+    COMMENT("Connecting current tab to element editor menu in UI.", 0);
+    ui->widgetElementEditor->setScene(m_tabs[tab].scene());
+    COMMENT("Reinitialize simulation controller.", 0);
+    m_editor->getSimulationController()->start();
+}
+
+void MainWindow::createNewWorkspace(const QString &fname)
+{
+    COMMENT("Creating new workspace: " << fname.toStdString(), 0);
+    if (m_tabs.size() != 0) {
+        disconnectTab();
+    }
+    COMMENT("Creating workspace elements used by the editor.", 0);
+    m_editor->setupWorkspace();
+    COMMENT("Creating the view and dialog elements used by the main window canvas.", 0);
+    buildFullScreenDialog();
+    COMMENT("Creating the tab structure.", 0);
+    createNewTab(fname);
+    COMMENT("Setting panda and dolphin names.", 0); // Check setCurrentFile... maybe it includes two elements below.
+    m_currentFile = fname;
+    m_dolphinFileName = "";
+    GlobalProperties::currentFile = fname;
+    COMMENT("Creating autosave file.", 0);
+    createAutosaveFile();
+    COMMENT("Creating undo and redu action menus.", 0);
+    createUndoRedoMenus(); // Maybe we should not add them to the main window yet...
+    COMMENT("Selecting the newly created tab.", 0);
+    m_current_tab = m_tabs.size()-1;
+    ui->tabWidget_mainWindow->setCurrentIndex(m_current_tab);
+    COMMENT("Connecting current tab to element editor menu in UI.", 0);
+    ui->widgetElementEditor->setScene(m_tabs[m_current_tab].scene());
+    COMMENT("Reinitialize simulation controller and sets autosavefile.", 0);
+    m_editor->getSimulationController()->start();
+    COMMENT("Finished creating new workspace: " << fname.toStdString(), 0);
+}
+
+void MainWindow::selectTab(int tab)
+{
     COMMENT("Selecting tab: " << QString::number(tab).toStdString(), 0);
     if (tab != m_current_tab) {
-        m_editor->getSimulationController()->stop();
-        COMMENT("full screen.", 0);
-        disconnect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
-        m_fullscreenDlg = m_tabs[tab].fullScreenDlg();
-        m_fullscreenView = m_tabs[tab].fullscreenView();
-        COMMENT("editor.", 0);
-        m_editor->selectWorkspace(&m_tabs[tab]);
-        COMMENT("undo and redo menu.", 0);
-        selectUndoRedoMenu(tab);
-        COMMENT("files.", 0);
-        GlobalProperties::currentFile = m_currentFile.absoluteFilePath();
-        m_currentFile = m_tabs[tab].currentFile();
-        m_dolphinFileName = m_tabs[tab].dolphinFileName();
-        COMMENT("selecting tab in UI...", 0);
-        m_current_tab = tab;
-        ui->widgetElementEditor->setScene(m_tabs[tab].scene());
-        connect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
-        COMMENT("emit circuithaschanged.", 0);
-        m_editor->getSimulationController()->setClockReset();
-        emit m_editor->circuitHasChanged();
-        m_editor->getSimulationController()->startTimer();
+        disconnectTab();
+        connectTab(tab);
     }
     COMMENT("New tab selected. BD filename: " << m_dolphinFileName.toStdString(), 0);
 }
@@ -839,7 +872,7 @@ void MainWindow::resizeEvent(QResizeEvent *)
 void MainWindow::on_actionReload_File_triggered()
 {
     if (m_currentFile.exists()) {
-        if (closeTabAction(m_current_tab)) {
+        if (closeTabAction(m_current_tab)) { // Review this. This is wrong. Old code from single workspace times.
             loadPandaFile(m_currentFile.absoluteFilePath());
         }
     }
@@ -1173,6 +1206,7 @@ void MainWindow::buildFullScreenDialog()
     m_fullscreenDlg->setLayout(dlg_layout);
     m_fullscreenDlg->setStyleSheet("QGraphicsView { border-style: none; }");
     m_fullscreenView->setScene(m_editor->getScene());
+    connect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
 }
 
 QString MainWindow::getDolphinFilename()
@@ -1201,6 +1235,7 @@ void MainWindow::autoSave()
     COMMENT("Starting autosave.", 2);
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     QString allAutoSaveFileName;
+    COMMENT("Cheking if autosavefile exists and if it contains current project file. If so, remove autosavefile from it.", 0);
     if (settings.contains("autosaveFile")) {
         allAutoSaveFileName = settings.value("autosaveFile").toString();
         COMMENT("All auto save file names before autosaving: " << allAutoSaveFileName.toStdString(), 3);
@@ -1211,13 +1246,14 @@ void MainWindow::autoSave()
         }
     }
     COMMENT("All auto save file names after possibly removing autosave: " << allAutoSaveFileName.toStdString(), 3);
+    COMMENT("If autosave exists and undo stack is clean, remove it.", 0);
     if (m_editor->getUndoStack()->isClean()) {
         COMMENT("Undo stack is clean.", 3);
         if (m_autoSaveFile[m_current_tab]->exists()) {
             m_autoSaveFile[m_current_tab]->remove();
         }
     } else {
-        COMMENT("Undo in not clear. Have to set autosave file.", 3);
+        COMMENT("Undo in not clean. Must set autosave file.", 3);
         if (m_autoSaveFile[m_current_tab]->exists()) {
             COMMENT("Autosave file already exists. Delete it to update.", 3);
             m_autoSaveFile[m_current_tab]->remove();
