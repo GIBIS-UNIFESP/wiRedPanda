@@ -158,8 +158,14 @@ private:
     int autoSaveFileDeleteAnyway(const QString& autosaveFilename);
     // Undo and Redo interface for each tab.
     void createUndoRedoMenus();
-    // Change the undo and redo menu when another tab is selected.
-    void selectUndoRedoMenu(int tab);
+    /**
+     * @brief addUndoRedoMenu: Adds undo and redo of selected tab into the UI menu.
+     */
+    void addUndoRedoMenu(int tab);
+    /**
+     * @brief removeUndoRedoMenu: Removes undo and redo of current tab from the UI menu.
+     */
+    void removeUndoRedoMenu();
     void loadAutoSaveFiles(QSettings &settings, const QString &filename);
     bool closeTabAction(int tab);
     // Message box to ask if user wants to close in case of canceled or failed save action.
@@ -169,6 +175,14 @@ private:
     void updateSettings();
     void addAutosaveFile();
     void removeAutosaveFile(int tab);
+    /**
+     * @brief disconnectTab: Function used to disconnect elements of current tab, to safely change or close a tab.
+     */
+    void disconnectTab();
+    /**
+     * @brief connectTab: Function called as a tab is selected. The tab is connected to the UI.
+     */
+    void connectTab(int tab);
 protected:
     /* QWidget interface */
     void closeEvent(QCloseEvent *e) override;

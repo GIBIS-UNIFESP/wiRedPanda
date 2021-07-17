@@ -250,7 +250,8 @@ bool ElementMapping::canInitialize() const
     for (GraphicElement *elm : m_elements) {
         if (elm->elementType() == ElementType::IC) {
             IC *ic = dynamic_cast<IC *>(elm);
-            ICPrototype *prototype = ICManager::instance()->getPrototype(ic->getFile());
+            auto icManager = ICManager::instance();
+            ICPrototype *prototype = icManager->getPrototype(ic->getFile());
             if (!ic || !prototype) {
                 return false;
             }

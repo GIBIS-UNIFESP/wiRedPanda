@@ -110,18 +110,12 @@ void Editor::mute(bool _mute)
 
 void Editor::setupWorkspace()
 {
-    if (m_simulationController!=nullptr) {
-      m_simulationController->stop();
-    }
-    m_icManager = new ICManager(m_mainWindow, this);
+    setICManager(new ICManager(m_mainWindow, this));
     m_undoStack = new QUndoStack(this);
     m_scene = new Scene(this);
     m_scene->installEventFilter(this);
-    m_simulationController = new SimulationController(m_scene);
-    m_simulationController->start();
-    setRectangle();
-    connect(this, &Editor::circuitHasChanged, m_simulationController, &SimulationController::reSortElms);
-    connect(m_icManager, &ICManager::updatedIC, this, &Editor::redoSimulationController);
+    setSimulationController(new SimulationController(m_scene));
+    buildAndSetRectangle();
 }
 
 void Editor::selectWorkspace(WorkSpace *workspace)
@@ -137,7 +131,7 @@ void Editor::selectWorkspace(WorkSpace *workspace)
     m_icManager->wakeUp();
 }
 
-void Editor::setRectangle()
+void Editor::buildAndSetRectangle()
 {
     COMMENT("Building rect.", 0);
     buildSelectionRect();
@@ -331,9 +325,8 @@ SimulationController *Editor::getSimulationController() const
 }
 
 void Editor::setSimulationController(SimulationController *simulationController) {
-    disconnect(this, &Editor::circuitHasChanged, m_simulationController, &SimulationController::reSortElms);
     m_simulationController = simulationController;
-    connect(this, &Editor::circuitHasChanged, m_simulationController, &SimulationController::reSortElms);
+    connect(this, &Editor::circuitHasChanged, m_simulationController, &SimulationController::reSortElements);
 }
 
 void Editor::addItem(QGraphicsItem *item)
@@ -765,7 +758,7 @@ ICManager *Editor::getICManager() const
 
 void Editor::setICManager(ICManager *icManager)
 {
-    disconnect(m_icManager, &ICManager::updatedIC, this, &Editor::redoSimulationController);
+    //disconnect(m_icManager, &ICManager::updatedIC, this, &Editor::redoSimulationController);
     m_icManager = icManager;
     ICManager::setGlobalInstance(icManager);
     connect(m_icManager, &ICManager::updatedIC, this, &Editor::redoSimulationController);
@@ -905,6 +898,7 @@ void Editor::load(QDataStream &ds, const QString &filename)
         for (QGraphicsItem *item : qAsConst(items)) {
             m_scene->addItem(item);
         }
+        COMMENT("This code tries to centralize the elements in scene using the rectangle. But it is not working well.", 3);
         m_scene->setSceneRect(m_scene->itemsBoundingRect());
         if (!m_scene->views().empty()) {
             auto const scene_views = m_scene->views();
@@ -914,14 +908,9 @@ void Editor::load(QDataStream &ds, const QString &filename)
             m_scene->setSceneRect(m_scene->sceneRect().united(rect));
             view->centerOn(m_scene->itemsBoundingRect().center());
         }
-    }
-    if (m_scene) {
         m_scene->clearSelection();
     }
-    COMMENT("Emitting circuit has changed.", 0);
-    m_simulationController->setClockReset();
-    emit circuitHasChanged();
-    m_simulationController->startTimer();
+    m_simulationController->start();
     COMMENT("Finished loading file.", 0);
 }
 
