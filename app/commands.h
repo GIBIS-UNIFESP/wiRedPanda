@@ -124,7 +124,7 @@ public:
     //! \param aItems are the items to be rotated
     //! \param angle defines how many degrees will be rotated, in clockwise direction, by this command.
     //!
-    explicit RotateCommand(const QList<GraphicElement *> &aItems, int angle, QUndoCommand *parent = nullptr);
+    explicit RotateCommand(const QList<GraphicElement *> &aItems, int angle, Editor *aEditor, QUndoCommand *parent = nullptr);
 
     //!
     //! \brief undo reverts a change on the editor made by RotateCommand::redo
@@ -145,6 +145,7 @@ private:
     int m_angle;
     QVector<int> m_ids;
     QVector<QPointF> m_positions;
+    Editor *m_editor;
 };
 
 //!
@@ -156,7 +157,7 @@ class MoveCommand : public QUndoCommand
 public:
     enum { Id = 104 };
 
-    explicit MoveCommand(const QList<GraphicElement *> &list, const QList<QPointF> &aOldPositions, QUndoCommand *parent = nullptr);
+    explicit MoveCommand(const QList<GraphicElement *> &list, const QList<QPointF> &aOldPositions, Editor *aEditor, QUndoCommand *parent = nullptr);
 
     void undo() Q_DECL_OVERRIDE;
     void redo() Q_DECL_OVERRIDE;
@@ -169,7 +170,7 @@ private:
     QVector<int> m_ids;
     QList<QPointF> m_oldPositions;
     QList<QPointF> m_newPositions;
-
+    Editor *m_editor;
     QPointF m_offset;
 };
 
@@ -275,7 +276,7 @@ class FlipCommand : public QUndoCommand
     enum { Id = 109 };
 
 public:
-    explicit FlipCommand(const QList<GraphicElement *> &aItems, int aAxis, QUndoCommand *parent = nullptr);
+    explicit FlipCommand(const QList<GraphicElement *> &aItems, int aAxis, Editor *aEditor, QUndoCommand *parent = nullptr);
     void undo() Q_DECL_OVERRIDE;
     void redo() Q_DECL_OVERRIDE;
 
@@ -289,6 +290,7 @@ private:
     QVector<int> m_ids;
     QVector<QPointF> m_positions;
     QPointF m_minPos, m_maxPos;
+    Editor *m_editor;
 };
 
 class ChangeOutputSZCommand : public QUndoCommand

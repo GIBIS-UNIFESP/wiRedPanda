@@ -124,11 +124,11 @@ void SimulationController::reSortElements()
     if (elements.size() == 0) {
         return;
     }
-    COMMENT("After return.", 2);
+    COMMENT("Deleting existing mapping.", 2);
     if (m_elMapping) {
         delete m_elMapping;
     }
-    COMMENT("Elements deleted.", 2);
+    COMMENT("Recreating mapping for simulation.", 2);
     m_elMapping = new ElementMapping(elements);
     if (m_elMapping->canInitialize()) {
         COMMENT("Can initialize.", 2);
