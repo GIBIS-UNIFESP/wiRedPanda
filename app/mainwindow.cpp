@@ -116,6 +116,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     COMMENT("Setting up zoom and screen funcionalities.", 0);
     connect(m_editor, &Editor::scroll, this, &MainWindow::scrollView);
     connect(m_editor, &Editor::circuitHasChanged, this, &MainWindow::autoSave);
+    connect(m_editor, &Editor::circuitAppearenceHasChanged, this, &MainWindow::autoSave);
     m_fullscreenView->setCacheMode(QGraphicsView::CacheBackground);
 
     COMMENT("Loading recent file list.", 0);
@@ -570,7 +571,6 @@ void MainWindow::setCurrentFile(const QFileInfo &file)
 {
     setAutoSaveFileName(file);
     if (!file.fileName().isEmpty()) {
-        // tab.undoStack()->isClean()
         ui->tabWidget_mainWindow->setTabText(m_current_tab, file.fileName());
     } else {
         ui->tabWidget_mainWindow->setTabText(m_current_tab, tr("New Project"));
@@ -751,7 +751,7 @@ void MainWindow::connectTab(int tab)
 
 void MainWindow::createNewWorkspace()
 {
-    COMMENT("Creating new workspace: " << fname.toStdString(), 0);
+    COMMENT("Creating new workspace.", 0);
     if (m_tabs.size() != 0) {
         disconnectTab();
     }
@@ -774,7 +774,7 @@ void MainWindow::createNewWorkspace()
     ui->widgetElementEditor->setScene(m_tabs[m_current_tab].scene());
     COMMENT("Reinitialize simulation controller and sets autosavefile.", 0);
     m_editor->getSimulationController()->start();
-    COMMENT("Finished creating new workspace: " << fname.toStdString(), 0);
+    COMMENT("Finished creating new workspace.", 0);
 }
 
 void MainWindow::selectTab(int tab)
@@ -1256,12 +1256,14 @@ void MainWindow::autoSave()
     COMMENT("All auto save file names after possibly removing autosave: " << allAutoSaveFileName.toStdString(), 3);
     COMMENT("If autosave exists and undo stack is clean, remove it.", 0);
     if (m_editor->getUndoStack()->isClean()) {
+        ui->tabWidget_mainWindow->setTabText(m_current_tab, m_currentFile.fileName());
         COMMENT("Undo stack is clean.", 3);
         if (m_autoSaveFile[m_current_tab]->exists()) {
             m_autoSaveFile[m_current_tab]->remove();
         }
     } else {
         COMMENT("Undo in not clean. Must set autosave file.", 3);
+        ui->tabWidget_mainWindow->setTabText(m_current_tab, m_currentFile.fileName() + "*");
         if (m_autoSaveFile[m_current_tab]->exists()) {
             COMMENT("Autosave file already exists. Delete it to update.", 3);
             m_autoSaveFile[m_current_tab]->remove();

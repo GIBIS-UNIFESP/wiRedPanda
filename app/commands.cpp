@@ -272,10 +272,11 @@ void DeleteItemsCommand::redo()
     emit m_editor->circuitHasChanged();
 }
 
-RotateCommand::RotateCommand(const QList<GraphicElement *> &aItems, int aAngle, QUndoCommand *parent)
+RotateCommand::RotateCommand(const QList<GraphicElement *> &aItems, int aAngle, Editor *aEditor, QUndoCommand *parent)
     : QUndoCommand(parent)
+    , m_angle(aAngle)
+    , m_editor(aEditor)
 {
-    m_angle = aAngle;
     setText(tr("Rotate %1 degrees").arg(m_angle));
     m_ids.reserve(aItems.size());
     m_positions.reserve(aItems.size());
@@ -301,6 +302,7 @@ void RotateCommand::undo()
         elm->update();
         elm->setSelected(true);
     }
+    emit m_editor->circuitAppearenceHasChanged();
 }
 
 void RotateCommand::redo()
@@ -330,6 +332,7 @@ void RotateCommand::redo()
         elm->update();
         elm->setSelected(true);
     }
+    emit m_editor->circuitAppearenceHasChanged();
 }
 
 bool RotateCommand::mergeWith(const QUndoCommand *command)
@@ -357,10 +360,11 @@ int RotateCommand::id() const
     return Id;
 }
 
-MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPointF> &oldPositions, QUndoCommand *parent)
+MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPointF> &oldPositions, Editor *aEditor, QUndoCommand *parent)
     : QUndoCommand(parent)
+    , m_oldPositions(oldPositions)
+    , m_editor(aEditor)
 {
-    m_oldPositions = oldPositions;
     m_newPositions.reserve(list.size());
     m_ids.reserve(list.size());
     for (GraphicElement *elm : list) {
@@ -377,6 +381,7 @@ void MoveCommand::undo()
     for (int i = 0; i < elms.size(); ++i) {
         elms[i]->setPos(m_oldPositions[i]);
     }
+    emit m_editor->circuitAppearenceHasChanged();
 }
 
 void MoveCommand::redo()
@@ -386,6 +391,7 @@ void MoveCommand::redo()
     for (int i = 0; i < elms.size(); ++i) {
         elms[i]->setPos(m_newPositions[i]);
     }
+    emit m_editor->circuitAppearenceHasChanged();
 }
 
 UpdateCommand::UpdateCommand(const QVector<GraphicElement *> &elements, const QByteArray &oldData, Editor *editor, QUndoCommand *parent)
@@ -715,10 +721,11 @@ void ChangeInputSZCommand::undo()
     emit m_editor->circuitHasChanged();
 }
 
-FlipCommand::FlipCommand(const QList<GraphicElement *> &aItems, int aAxis, QUndoCommand *parent)
+FlipCommand::FlipCommand(const QList<GraphicElement *> &aItems, int aAxis, Editor *aEditor, QUndoCommand *parent)
     : QUndoCommand(parent)
+    , m_axis(aAxis)
+    , m_editor(aEditor)
 {
-    m_axis = aAxis;
     setText(tr("Flip %1 elements in axis %2").arg(aItems.size()).arg(aAxis));
     m_ids.reserve(aItems.size());
     m_positions.reserve(aItems.size());
@@ -767,6 +774,7 @@ void FlipCommand::redo()
             elm->setRotation(elm->rotation() + 180);
         }
     }
+    emit m_editor->circuitAppearenceHasChanged();
 }
 
 ChangeOutputSZCommand::ChangeOutputSZCommand(const QVector<GraphicElement *> &elements, int newOutputSize, Editor *editor, QUndoCommand *parent)

@@ -193,7 +193,7 @@ void ElementEditor::contextMenu(QPoint screenPos)
         if (a->data().toString() == renameActionText) {
             renameAction();
         } else if (a->data().toString() == rotateActionText) {
-            emit sendCommand(new RotateCommand(m_elements.toList(), 90.0));
+            emit sendCommand(new RotateCommand(m_elements.toList(), 90.0, m_editor));
         } else if (a->data().toString() == triggerActionText) {
             changeTriggerAction();
         } else if (a->text() == changeSkinText) {

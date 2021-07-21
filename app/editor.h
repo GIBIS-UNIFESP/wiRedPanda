@@ -87,6 +87,7 @@ public:
 signals:
     void scroll(int x, int y);
     void circuitHasChanged();
+    void circuitAppearenceHasChanged();
 
 public slots:
     void buildAndSetRectangle();

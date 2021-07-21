@@ -252,7 +252,7 @@ void Editor::rotate(bool rotateRight)
         }
     }
     if ((elms.size() > 1) || ((elms.size() == 1) && elms.front()->rotatable())) {
-        receiveCommand(new RotateCommand(elms, angle));
+        receiveCommand(new RotateCommand(elms, angle, this));
     }
 }
 
@@ -267,7 +267,7 @@ void Editor::flipH()
         }
     }
     if ((elms.size() > 1) || ((elms.size() == 1))) {
-        receiveCommand(new FlipCommand(elms, 0));
+        receiveCommand(new FlipCommand(elms, 0, this));
     }
 }
 
@@ -282,7 +282,7 @@ void Editor::flipV()
         }
     }
     if ((elms.size() > 1) || ((elms.size() == 1))) {
-        receiveCommand(new FlipCommand(elms, 1));
+        receiveCommand(new FlipCommand(elms, 1, this));
     }
 }
 
@@ -1069,7 +1069,7 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
                         }
                     }
                     if (valid) {
-                        receiveCommand(new MoveCommand(m_movedElements, m_oldPositions));
+                        receiveCommand(new MoveCommand(m_movedElements, m_oldPositions, this));
                     }
                 }
                 m_draggingElement = false;
