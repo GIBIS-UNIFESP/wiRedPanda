@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
 
     COMMENT("Building dialog within a new tab.", 0);
     m_current_tab = 0;
-    createNewWorkspace(tr("New Project"));
+    createNewWorkspace();
     connect(ui->tabWidget_mainWindow, &QTabWidget::tabBarClicked, this, &MainWindow::selectTab);
     connect(ui->tabWidget_mainWindow, &QTabWidget::tabCloseRequested, this, &MainWindow::closeTab);
 
@@ -180,12 +180,12 @@ void MainWindow::loadAutoSaveFiles(QSettings &settings, const QString &filename)
     }
 }
 
-void MainWindow::createNewTab(const QString &tab_name) {
+void MainWindow::createNewTab() {
     COMMENT("Dialog built. Now adding tab. #tabs: " << m_tabs.size() << ", current tab: " << m_current_tab, 0);
     auto new_tab = new QWidget(ui->tabWidget_mainWindow);
     new_tab->setLayout(m_fullscreenDlg->layout());
     new_tab->layout()->addWidget(m_fullscreenView);
-    ui->tabWidget_mainWindow->addTab(new_tab, tab_name);
+    ui->tabWidget_mainWindow->addTab(new_tab, "");
     COMMENT("Storing tab pointers.", 0 );
     m_tabs.push_back(WorkSpace(m_fullscreenDlg, m_fullscreenView, m_editor));
     COMMENT("Finished #tabs: " << m_tabs.size() << ", current tab: " << m_current_tab, 0);
@@ -263,6 +263,7 @@ void MainWindow::on_actionExit_triggered()
 bool MainWindow::save(QString fname)
 {
     COMMENT("fname: " << fname.toStdString(), 0);
+    COMMENT("Getting autosave settings info.", 0);
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     QString allAutoSaveFileName;
     if (settings.contains("autosaveFile")) {
@@ -296,7 +297,7 @@ bool MainWindow::save(QString fname)
     }
     if (fl.commit()) {
         setCurrentFile(QFileInfo(fname));
-        ui->statusBar->showMessage(tr("Saved file successfully."), 2000);
+        ui->statusBar->showMessage(tr("Saved file successfully."), 4000);
         m_editor->getUndoStack()->setClean();
         COMMENT("Remove from autosave list recovered file that has been saved.", 0)
         if (!autoSaveFileName.isEmpty()) {
@@ -373,7 +374,8 @@ int MainWindow::autoSaveFileDeleteAnyway(const QString& autosaveFilename)
 
 void MainWindow::on_actionNew_triggered()
 {
-    createNewWorkspace(tr("New Project"));
+    createNewWorkspace();
+    setCurrentFile(QFileInfo());
 }
 
 void MainWindow::on_actionWires_triggered(bool checked)
@@ -404,8 +406,8 @@ bool MainWindow::loadPandaFile(const QString &fname)
     if (fl.open(QFile::ReadOnly)) {
         COMMENT("File opened: " << fname.toStdString(), 0);
         QDataStream ds(&fl);
-        int current_tab = m_current_tab;
-        createNewWorkspace(QFileInfo(fl).fileName());
+        int current_tab = m_current_tab; // Stored to possibly recover it in case of error.
+        createNewWorkspace();
         try {
             COMMENT("Current file set.", 0);
             setCurrentFile(QFileInfo(fname));
@@ -556,8 +558,7 @@ void MainWindow::on_actionSave_As_triggered()
     if (!fname.endsWith(".panda")) {
         fname.append(".panda");
     }
-    setCurrentFile(QFileInfo(fname));
-    save(m_currentFile.absoluteFilePath());
+    save(fname);
 }
 
 QFileInfo MainWindow::getCurrentFile() const
@@ -569,21 +570,20 @@ void MainWindow::setCurrentFile(const QFileInfo &file)
 {
     setAutoSaveFileName(file);
     if (!file.fileName().isEmpty()) {
+        // tab.undoStack()->isClean()
         ui->tabWidget_mainWindow->setTabText(m_current_tab, file.fileName());
-        m_currentFile = file;
-        m_tabs[m_current_tab].setCurrentFile(m_currentFile);
+    } else {
+        ui->tabWidget_mainWindow->setTabText(m_current_tab, tr("New Project"));
     }
+    m_currentFile = file;
+    m_tabs[m_current_tab].setCurrentFile(m_currentFile);
     if (!m_loadedAutoSave) {
         COMMENT("Adding file to controller.", 0);
         emit addRecentFile(file.absoluteFilePath());
     }
+    COMMENT("Setting global current file and dir", 0);
     GlobalProperties::currentFile = m_currentFile.absoluteFilePath();
-    COMMENT("Setting global current file.", 0);
-    if (m_currentFile.exists()) {
-        m_defaultDirectory = m_currentFile.dir();
-    } else {
-        m_defaultDirectory = QDir::home();
-    }
+    setCurrentDir();
 }
 
 void MainWindow::setAutoSaveFileName(const QFileInfo &file)
@@ -717,6 +717,15 @@ void MainWindow::disconnectTab()
     removeUndoRedoMenu();
 }
 
+void MainWindow::setCurrentDir()
+{
+    if (m_currentFile.exists()) {
+        m_defaultDirectory = m_currentFile.dir();
+    } else {
+        m_defaultDirectory = QDir::home();
+    }
+}
+
 void MainWindow::connectTab(int tab)
 {
     COMMENT("Setting view and dialog to currecnt canvas.", 0);
@@ -731,6 +740,7 @@ void MainWindow::connectTab(int tab)
     m_currentFile = m_tabs[tab].currentFile();
     m_dolphinFileName = m_tabs[tab].dolphinFileName();
     GlobalProperties::currentFile = m_currentFile.absoluteFilePath();
+    setCurrentDir();
     COMMENT("Setting selected tab as the current one.", 0);
     m_current_tab = tab;
     COMMENT("Connecting current tab to element editor menu in UI.", 0);
@@ -739,7 +749,7 @@ void MainWindow::connectTab(int tab)
     m_editor->getSimulationController()->start();
 }
 
-void MainWindow::createNewWorkspace(const QString &fname)
+void MainWindow::createNewWorkspace()
 {
     COMMENT("Creating new workspace: " << fname.toStdString(), 0);
     if (m_tabs.size() != 0) {
@@ -750,17 +760,15 @@ void MainWindow::createNewWorkspace(const QString &fname)
     COMMENT("Creating the view and dialog elements used by the main window canvas.", 0);
     buildFullScreenDialog();
     COMMENT("Creating the tab structure.", 0);
-    createNewTab(fname);
-    COMMENT("Setting panda and dolphin names.", 0); // Check setCurrentFile... maybe it includes two elements below.
-    m_currentFile = fname;
+    createNewTab();
+    COMMENT("Setting dolphin name.", 0);
     m_dolphinFileName = "";
-    GlobalProperties::currentFile = fname;
     COMMENT("Creating autosave file.", 0);
     createAutosaveFile();
     COMMENT("Creating undo and redu action menus.", 0);
-    createUndoRedoMenus(); // Maybe we should not add them to the main window yet...
+    createUndoRedoMenus();
     COMMENT("Selecting the newly created tab.", 0);
-    m_current_tab = m_tabs.size()-1;
+    m_current_tab = m_tabs.size() - 1;
     ui->tabWidget_mainWindow->setCurrentIndex(m_current_tab);
     COMMENT("Connecting current tab to element editor menu in UI.", 0);
     ui->widgetElementEditor->setScene(m_tabs[m_current_tab].scene());

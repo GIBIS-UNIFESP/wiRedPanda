@@ -696,13 +696,6 @@ Do you want to find this file?</source>
     </message>
 </context>
 <context>
-    <name>IC</name>
-    <message>
-        <source>Do you want to load this file?&lt;br&gt;%1</source>
-        <translation>Gostaria de abrir este arquivo? &lt;br&gt; %1</translation>
-    </message>
-</context>
-<context>
     <name>ICManager</name>
     <message>
         <source>Error</source>
