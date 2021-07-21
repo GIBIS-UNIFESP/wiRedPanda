@@ -38,7 +38,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr, const QString &filename = QString());
     ~MainWindow() override;
     //! Creates a new tab with the given tab_name. Used by new and load actions.
-    void createNewTab(const QString &tab_name);
+    void createNewTab();
     //! Saves the project to a .panda file. Removes the autosave file in the process.
     bool save(QString fname = QString());
     //! Sets the main window as visible, as well as its child widgets. Cleans the editor.
@@ -71,6 +71,7 @@ public:
     QDialog *m_fullscreenDlg;
     GraphicsView *m_fullscreenView;
 
+    void setCurrentDir();
 signals:
     void addRecentIcFile(const QString &fname);
     void addRecentFile(const QString &fname);
@@ -147,9 +148,8 @@ private:
     QVector<ListItemWidget *> icItemWidgets, searchItemWidgets;
     /**
      * @brief createNewWorkspace: Creates a new workspace in a new tab. Called by load and new functions.
-     * @param fname
      */
-    void createNewWorkspace(const QString &fname);
+    void createNewWorkspace();
     void createRecentFileActions();
     void populateLeftMenu();
     // Shows a message box for reloading the autosave at launch, when
