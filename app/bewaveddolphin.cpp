@@ -259,6 +259,22 @@ void BewavedDolphin::CreateOneElement(int row, int col, bool isInput, bool chang
     }
 }
 
+void BewavedDolphin::restoreInputs()
+{
+    COMMENT("Restoring the old values to the inputs, prior to simulaton.", 0);
+    size_t old_idx = 0;
+    for (int in = 0; in < m_inputs.size(); ++in) {
+        for (int port = 0; port < m_inputs[in]->outputSize(); ++port) {
+            if (m_inputs[in]->outputSize() > 1) {
+                dynamic_cast<Input *>(m_inputs[in])->setOn(m_oldInputValues[in], port);
+            } else {
+                dynamic_cast<Input *>(m_inputs[in])->setOn(m_oldInputValues[in]);
+            }
+            ++old_idx;
+        }
+    }
+}
+
 void BewavedDolphin::run()
 {
     for (int itr = 0; itr < m_model->columnCount(); ++itr) {
@@ -286,6 +302,8 @@ void BewavedDolphin::run()
             }
         }
     }
+    COMMENT("Setting inputs back to old values.", 3);
+    restoreInputs();
     m_signalTableView->viewport()->update();
 }
 
@@ -363,7 +381,7 @@ bool BewavedDolphin::createWaveform(const QString& filename)
     QStringList output_labels;
     COMMENT( "Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation. Not saving memory states though...", 0);
     COMMENT( "Also getting the name of the inputs. If no label is given, the element type is used as a name. Bug here? What if there are 2 inputs without name or two identical labels?", 0);
-    QVector<char> oldValues = loadSignals(input_labels, output_labels);
+    m_oldInputValues = loadSignals(input_labels, output_labels);
     COMMENT("Loading initial data into the table.", 0);
     loadNewTable(input_labels, output_labels);
     if (filename.isEmpty()) {
@@ -372,18 +390,6 @@ bool BewavedDolphin::createWaveform(const QString& filename)
     } else {
         if (!load(filename)) {
             return false;
-        }
-    }
-    COMMENT("Restoring the old values to the inputs, prior to simulaton.", 0);
-    size_t old_idx = 0;
-    for (int in = 0; in < m_inputs.size(); ++in) {
-        for (int port = 0; port < m_inputs[in]->outputSize(); ++port) {
-            if (m_inputs[in]->outputSize() > 1) {
-                dynamic_cast<Input *>(m_inputs[in])->setOn(oldValues[in], port);
-            } else {
-                dynamic_cast<Input *>(m_inputs[in])->setOn(oldValues[in]);
-            }
-            ++old_idx;
         }
     }
     COMMENT("Resuming digital circuit main window after waveform simulation is finished.", 0);

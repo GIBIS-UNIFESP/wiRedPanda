@@ -98,6 +98,7 @@ private:
 
     QVector<GraphicElement *> m_inputs;
     QVector<GraphicElement *> m_outputs;
+    QVector<char> m_oldInputValues;
     int m_input_ports;
     QGraphicsScene *m_scene;
     QTableView *m_signalTableView;
@@ -141,6 +142,7 @@ private:
     bool checkSave();
 
     void associateToWiredPanda(const QString &fname);
+    void restoreInputs();
 protected:
     void closeEvent(QCloseEvent *e) override;
 };
