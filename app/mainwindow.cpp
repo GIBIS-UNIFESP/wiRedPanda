@@ -697,8 +697,6 @@ bool MainWindow::closeTabAction(int tab)
         selectTab((tab + 1) % m_tabs.size());
     } else if (m_tabs.size() == 1) {
         disconnectTab();
-        ui->menuEdit->removeAction(m_undoAction[tab]);
-        ui->menuEdit->removeAction(m_redoAction[tab]);
     }
     COMMENT("Deleting tab and autosave", 0);
     removeAutosaveFile(tab); // This removes the QTempFile object allocation.
@@ -887,11 +885,11 @@ void MainWindow::resizeEvent(QResizeEvent *)
 
 void MainWindow::on_actionReload_File_triggered()
 {
-    if (m_currentFile.exists()) {
-        if (closeTabAction(m_current_tab)) { // Review this. This is wrong. Old code from single workspace times.
-            loadPandaFile(m_currentFile.absoluteFilePath());
-        }
-    }
+//    if (m_currentFile.exists()) {
+//        if (closeTabAction(m_current_tab)) { // Review this. This is wrong. Old code from single workspace times.
+//            loadPandaFile(m_currentFile.absoluteFilePath());
+//        }
+//    }
 }
 
 void MainWindow::on_actionGates_triggered(bool checked)
