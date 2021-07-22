@@ -708,6 +708,21 @@ void BewavedDolphin::paste(QItemSelection &ranges, QDataStream &ds)
     run();
 }
 
+void BewavedDolphin::associateToWiredPanda(const QString &fname)
+{
+    if (m_mainWindow->getDolphinFilename() != fname) {
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this,
+                                      tr("Wired Panda - Bewaved Dolphin"),
+                                      tr("Do you want to link this Bewaved Dolphin file to your current Wired Panda file and save it?"),
+                                      QMessageBox::Yes | QMessageBox::No);
+        if (reply == QMessageBox::Yes) {
+            m_mainWindow->setDolphinFilename(fname);
+            m_mainWindow->save();
+        }
+    }
+}
+
 void BewavedDolphin::on_actionSave_as_triggered()
 {
     QString fname = m_currentFile.absoluteFilePath();
@@ -729,17 +744,7 @@ void BewavedDolphin::on_actionSave_as_triggered()
     }
     if (save(fname)) {
         m_currentFile = fname;
-        if (m_mainWindow->getDolphinFilename() != fname) {
-            QMessageBox::StandardButton reply;
-            reply = QMessageBox::question(this,
-                                          tr("Wired Panda - Bewaved Dolphin"),
-                                          tr("Do you want to link this Bewaved Dolphin file to your current Wired Panda file and save it?"),
-                                          QMessageBox::Yes | QMessageBox::No);
-            if (reply == QMessageBox::Yes) {
-                m_mainWindow->setDolphinFilename(fname);
-                m_mainWindow->save();
-            }
-        }
+        associateToWiredPanda(fname);
         setWindowTitle("Bewaved Dolphin Simulator [" + m_currentFile.fileName() + "]");
         m_ui->statusbar->showMessage(tr("Saved file successfully."), 2000);
         m_edited = false;
@@ -890,6 +895,7 @@ bool BewavedDolphin::load(const QString &fname)
     }
     COMMENT("Closing file.", 0);
     fl.close();
+    associateToWiredPanda(fname);
     setWindowTitle("Bewaved Dolphin Simulator [" + m_currentFile.fileName() + "]");
     return true;
 }
