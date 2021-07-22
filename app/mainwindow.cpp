@@ -964,6 +964,7 @@ bool MainWindow::exportToWaveFormFile(const QString& fname)
         }
         m_bd->print();
     } catch (std::runtime_error &e) {
+        setEnabled(true);
         QMessageBox::warning(this, tr("Error"), tr("<strong>Error while exporting to waveform file:</strong><br>%1").arg(e.what()));
         return false;
     }

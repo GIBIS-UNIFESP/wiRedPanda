@@ -135,6 +135,8 @@ void BewavedDolphin::closeEvent(QCloseEvent *e)
 
 void BewavedDolphin::on_actionExit_triggered()
 {
+    delete m_sc;
+    m_mainWindow->setEnabled(true);
     close();
 }
 
@@ -348,10 +350,11 @@ bool BewavedDolphin::createWaveform(const QString& filename)
 {
     COMMENT("Updating window name with current filename.", 0);
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    COMMENT("Getting digital circuit simulator.", 0);
-    m_sc = m_editor->getSimulationController();
     COMMENT("Creating class to pause main window simulator while creating waveform.", 0);
-    SCStop scst(m_sc);
+    m_sc = new SimulationController(m_editor->getScene());
+    SCStop scst(m_editor->getSimulationController());
+    m_mainWindow->setDisabled(true);
+    this->setEnabled(true);
     COMMENT("Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.", 0);
     if (!loadElements()) {
         QMessageBox::warning(parentWidget(), tr("Error"), tr("Could not load enough elements for the simulation."));
