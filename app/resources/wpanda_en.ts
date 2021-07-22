@@ -1086,10 +1086,6 @@ Do you want to find this file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Do you want to save your changes?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Error!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1266,6 +1262,14 @@ Error: %1</source>
     </message>
     <message>
         <source>Error loading IC file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> has been modified. Do you want to save your changes?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New Project*</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

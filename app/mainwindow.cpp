@@ -359,7 +359,11 @@ int MainWindow::confirmSave(bool multiple)
     } else {
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
     }
-    msgBox.setText(tr("Do you want to save your changes?"));
+    QString fname = m_currentFile.absoluteFilePath();
+    if (fname.isEmpty()) {
+        fname = tr("New Project");
+    }
+    msgBox.setText(fname + tr(" has been modified. Do you want to save your changes?"));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Yes);
     return msgBox.exec();
