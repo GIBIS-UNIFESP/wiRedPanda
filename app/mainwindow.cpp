@@ -225,24 +225,26 @@ void MainWindow::createUndoRedoMenus()
     m_undoAction.push_back(m_editor->getUndoStack()->createUndoAction(this, tr("&Undo")));
     m_undoAction[m_undoAction.size()-1]->setIcon(QIcon(QPixmap(":/toolbar/undo.png")));
     m_undoAction[m_undoAction.size()-1]->setShortcuts(QKeySequence::Undo);
-    connect(m_editor->getUndoStack(), &QUndoStack::indexChanged, m_editor, &Editor::checkUpdateRequest);
     m_redoAction.push_back(m_editor->getUndoStack()->createRedoAction(this, tr("&Redo")));
     m_redoAction[m_undoAction.size()-1]->setIcon(QIcon(QPixmap(":/toolbar/redo.png")));
     m_redoAction[m_undoAction.size()-1]->setShortcuts(QKeySequence::Redo);
     ui->menuEdit->insertAction(ui->menuEdit->actions().at(0), m_undoAction[m_undoAction.size()-1]);
     ui->menuEdit->insertAction(m_undoAction[m_undoAction.size()-1], m_redoAction[m_undoAction.size()-1]);
+    connect(m_editor->getUndoStack(), &QUndoStack::indexChanged, m_editor, &Editor::checkUpdateRequest);
 }
 
 void MainWindow::removeUndoRedoMenu()
 {
     ui->menuEdit->removeAction(m_undoAction[m_current_tab]);
     ui->menuEdit->removeAction(m_redoAction[m_current_tab]);
+    disconnect(m_editor->getUndoStack(), &QUndoStack::indexChanged, m_editor, &Editor::checkUpdateRequest);
 }
 
 void MainWindow::addUndoRedoMenu(int tab)
 {
     ui->menuEdit->insertAction(ui->menuEdit->actions().at(0), m_undoAction[tab]);
     ui->menuEdit->insertAction(m_undoAction[tab], m_redoAction[tab]);
+    connect(m_editor->getUndoStack(), &QUndoStack::indexChanged, m_editor, &Editor::checkUpdateRequest);
 }
 
 void MainWindow::setFastMode(bool fastModeEnabled)
@@ -654,6 +656,7 @@ bool MainWindow::closeTabAction(int tab)
     COMMENT("All auto save file names before closing tab: " << allAutoSaveFileName.toStdString(), 0);
     COMMENT("Checking if needs to save file.", 0);
     if ((!m_tabs[tab].undoStack()->isClean()) || (!autoSaveFileName.isEmpty())) {
+        selectTab(tab);
         bool discardAutosaves = false;
         int ret = confirmSave(false);
         if (ret == QMessageBox::Yes) {
@@ -1256,7 +1259,7 @@ void MainWindow::autoSave()
     }
     COMMENT("All auto save file names after possibly removing autosave: " << allAutoSaveFileName.toStdString(), 3);
     COMMENT("If autosave exists and undo stack is clean, remove it.", 0);
-    auto undostack = m_tabs[m_current_tab].undoStack();//m_editor->getUndoStack();
+    auto undostack = m_tabs[m_current_tab].undoStack();
     COMMENT("undostack element: " << undostack->index() << " of " << undostack->count(), 0);
     if (undostack->isClean()) {
         if (m_currentFile.exists()) {

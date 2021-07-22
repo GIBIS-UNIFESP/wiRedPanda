@@ -754,7 +754,6 @@ ICManager *Editor::getICManager() const
 
 void Editor::setICManager(ICManager *icManager)
 {
-    //disconnect(m_icManager, &ICManager::updatedIC, this, &Editor::redoSimulationController);
     m_icManager = icManager;
     ICManager::setGlobalInstance(icManager);
     connect(m_icManager, &ICManager::updatedIC, this, &Editor::redoSimulationController);
@@ -794,10 +793,6 @@ void Editor::paste(QDataStream &ds)
             item->setPos((item->pos() + offset));
             item->update();
             item->setSelected(true);
-            // If input or output, set label
-            // Parei aqui...
-            //      if( ( item->elementGroup( ) == ElementGroup::INPUT ) || ( item->elementGroup( ) == ElementGroup::OUTPUT ) ) {
-            //      }
         }
     }
     resizeScene();
