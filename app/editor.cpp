@@ -51,6 +51,8 @@ Editor::Editor(QObject *parent)
     m_draggingElement = false;
     m_showWires = true;
     m_showGates = true;
+    m_circuitUpdateRequired = false;
+    m_autoSaveRequired = false;
     m_timer.start();
 }
 
@@ -185,13 +187,7 @@ void Editor::deleteAction()
 
 void Editor::redoSimulationController()
 {
-    //! Guarantees that the simulation keeps running, if it was running upon the
-    //! element deletion.
     bool simulationWasRunning = m_simulationController->isRunning();
-    //! Clear the simulation controller.
-    //! This is needed to avoid a SIGSEGV caused by lack of synch. between an element's graphics code and logical code,
-    //! that is, its sprite could get deleted but its logical implementation not know about it.
-    //! Also, it is required whenever the contents of a box is updated.
     m_simulationController->clear();
     if (simulationWasRunning) {
         m_simulationController->start();
@@ -962,9 +958,30 @@ void Editor::updateVisibility()
     showWires(m_showWires);
 }
 
+void Editor::setCircuitUpdateRequired()
+{
+    m_circuitUpdateRequired = true;
+}
+
+void Editor::setAutoSaveRequired()
+{
+    m_autoSaveRequired = true;
+}
+
 void Editor::receiveCommand(QUndoCommand *cmd)
 {
     m_undoStack->push(cmd);
+}
+
+void Editor::checkUpdateRequest(int )
+{
+    if (m_circuitUpdateRequired) {
+        emit circuitHasChanged();
+        m_circuitUpdateRequired = false;
+    } else if (m_autoSaveRequired) {
+        emit circuitAppearenceHasChanged();
+        m_autoSaveRequired = false;
+    }
 }
 
 void Editor::copyAction()

@@ -138,10 +138,10 @@ void SimulationController::reSortElements()
         COMMENT("Updating.", 2);
         update();
     } else {
-        qDebug() << "Cannot initialize simulation!"; // Bug happening...
+        qDebug() << "Cannot initialize simulation!";
         COMMENT("Can not initialize.", 0);
     }
-    COMMENT("Finished simulation layer.", 2);
+    COMMENT("Finished simulation layer.", 0);
 }
 
 void SimulationController::clear()
