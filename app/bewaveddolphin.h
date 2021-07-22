@@ -140,6 +140,7 @@ private:
     void zoomChanged();
     bool checkSave();
 
+    void associateToWiredPanda(const QString &fname);
 protected:
     void closeEvent(QCloseEvent *e) override;
 };
