@@ -821,10 +821,6 @@ Do you want to find this file?</source>
         <translation>Erro ao salvar o projeto: </translation>
     </message>
     <message>
-        <source>Do you want to save your changes?</source>
-        <translation>Deseja salvar suas alterações?</translation>
-    </message>
-    <message>
         <source>Error!</source>
         <translation>Erro!</translation>
     </message>
@@ -1273,6 +1269,14 @@ Errp: %1</translation>
     <message>
         <source>Error loading IC file.</source>
         <translation>Erro ao carregar arquivo de CI.</translation>
+    </message>
+    <message>
+        <source> has been modified. Do you want to save your changes?</source>
+        <translation> foi modificado. Deseja salvar suas alterações?</translation>
+    </message>
+    <message>
+        <source>New Project*</source>
+        <translation>Projeto Novo*</translation>
     </message>
 </context>
 <context>
