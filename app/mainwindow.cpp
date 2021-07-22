@@ -885,11 +885,27 @@ void MainWindow::resizeEvent(QResizeEvent *)
 
 void MainWindow::on_actionReload_File_triggered()
 {
-//    if (m_currentFile.exists()) {
-//        if (closeTabAction(m_current_tab)) { // Review this. This is wrong. Old code from single workspace times.
-//            loadPandaFile(m_currentFile.absoluteFilePath());
-//        }
-//    }
+    if (!m_currentFile.exists()) {
+        return;
+    } else {
+        auto undostack = m_tabs[m_current_tab].undoStack();
+        if (!undostack->isClean()) {
+            int ret = confirmSave(false);
+            if (ret == QMessageBox::Yes) {
+                if(!save(m_tabs[m_current_tab].currentFile().absoluteFilePath())) {
+                    if(closeTabAnyway()==QMessageBox::No) {
+                        return;
+                    }
+                }
+            } else if (ret == QMessageBox::Cancel) {
+                return;
+            }
+            m_editor->selectAll();
+            m_editor->deleteAction();
+            m_editor->getUndoStack()->clear();
+            loadPandaFile(m_currentFile.absoluteFilePath());
+        }
+    }
 }
 
 void MainWindow::on_actionGates_triggered(bool checked)
