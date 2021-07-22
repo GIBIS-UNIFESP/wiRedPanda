@@ -221,6 +221,28 @@ AddItemsCommand::AddItemsCommand(const QList<QGraphicsItem *> &aItems, Editor *a
     setText(tr("Add %1 elements").arg(items.size()));
 }
 
+void AddItemsCommand::undo()
+{
+    COMMENT("UNDO " + text().toStdString(), 0);
+    QList<QGraphicsItem *> items = findItems(m_ids);
+
+    SimulationController *sc = m_editor->getSimulationController();
+    // We need to restart the simulation controller when deleting through the Undo command to
+    // guarantee that no crashes occur when deleting input elements (clocks, input buttons, etc.)
+    sc->setRestart();
+
+    saveItems(m_itemData, items, m_otherIds);
+    deleteItems(items, m_editor);
+    m_editor->setCircuitUpdateRequired();
+}
+
+void AddItemsCommand::redo()
+{
+    COMMENT("REDO " + text().toStdString(), 0);
+    loadItems(m_itemData, m_ids, m_editor, m_otherIds);
+    m_editor->setCircuitUpdateRequired();
+}
+
 DeleteItemsCommand::DeleteItemsCommand(const QList<QGraphicsItem *> &aItems, Editor *aEditor, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
@@ -234,33 +256,11 @@ DeleteItemsCommand::DeleteItemsCommand(QGraphicsItem *item, Editor *aEditor, QUn
 {
 }
 
-void AddItemsCommand::undo()
-{
-    COMMENT("UNDO " + text().toStdString(), 0);
-    QList<QGraphicsItem *> items = findItems(m_ids);
-
-    SimulationController *sc = m_editor->getSimulationController();
-    // We need to restart the simulation controller when deleting through the Undo command to
-    // guarantee that no crashes occur when deleting input elements (clocks, input buttons, etc.)
-    sc->setRestart();
-
-    saveItems(m_itemData, items, m_otherIds);
-    deleteItems(items, m_editor);
-    emit m_editor->circuitHasChanged();
-}
-
-void AddItemsCommand::redo()
-{
-    COMMENT("REDO " + text().toStdString(), 0);
-    loadItems(m_itemData, m_ids, m_editor, m_otherIds);
-    emit m_editor->circuitHasChanged();
-}
-
 void DeleteItemsCommand::undo()
 {
     COMMENT("UNDO " + text().toStdString(), 0);
     loadItems(m_itemData, m_ids, m_editor, m_otherIds);
-    emit m_editor->circuitHasChanged();
+    m_editor->setCircuitUpdateRequired();
 }
 
 void DeleteItemsCommand::redo()
@@ -269,7 +269,7 @@ void DeleteItemsCommand::redo()
     QList<QGraphicsItem *> items = findItems(m_ids);
     saveItems(m_itemData, items, m_otherIds);
     deleteItems(items, m_editor);
-    emit m_editor->circuitHasChanged();
+    m_editor->setCircuitUpdateRequired();
 }
 
 RotateCommand::RotateCommand(const QList<GraphicElement *> &aItems, int aAngle, Editor *aEditor, QUndoCommand *parent)
@@ -302,7 +302,7 @@ void RotateCommand::undo()
         elm->update();
         elm->setSelected(true);
     }
-    emit m_editor->circuitAppearenceHasChanged();
+    m_editor->setAutoSaveRequired();
 }
 
 void RotateCommand::redo()
@@ -332,7 +332,7 @@ void RotateCommand::redo()
         elm->update();
         elm->setSelected(true);
     }
-    emit m_editor->circuitAppearenceHasChanged();
+    m_editor->setAutoSaveRequired();
 }
 
 bool RotateCommand::mergeWith(const QUndoCommand *command)
@@ -381,7 +381,7 @@ void MoveCommand::undo()
     for (int i = 0; i < elms.size(); ++i) {
         elms[i]->setPos(m_oldPositions[i]);
     }
-    emit m_editor->circuitAppearenceHasChanged();
+    m_editor->setAutoSaveRequired();
 }
 
 void MoveCommand::redo()
@@ -391,7 +391,7 @@ void MoveCommand::redo()
     for (int i = 0; i < elms.size(); ++i) {
         elms[i]->setPos(m_newPositions[i]);
     }
-    emit m_editor->circuitAppearenceHasChanged();
+    m_editor->setAutoSaveRequired();
 }
 
 UpdateCommand::UpdateCommand(const QVector<GraphicElement *> &elements, const QByteArray &oldData, Editor *editor, QUndoCommand *parent)
@@ -412,14 +412,14 @@ void UpdateCommand::undo()
 {
     COMMENT("UNDO " + text().toStdString(), 0);
     loadData(m_oldData);
-    emit m_editor->circuitHasChanged();
+    m_editor->setCircuitUpdateRequired();
 }
 
 void UpdateCommand::redo()
 {
     COMMENT("REDO " + text().toStdString(), 0);
     loadData(m_newData);
-    emit m_editor->circuitHasChanged();
+    m_editor->setCircuitUpdateRequired();
 }
 
 void UpdateCommand::loadData(QByteArray itemData)
@@ -517,7 +517,7 @@ void SplitCommand::redo()
     } else {
         throw std::runtime_error(ERRORMSG(QString("Error tryng to redo %1").arg(text()).toStdString()));
     }
-    emit m_editor->circuitHasChanged();
+    m_editor->setCircuitUpdateRequired();
 }
 
 void SplitCommand::undo()
@@ -542,7 +542,7 @@ void SplitCommand::undo()
     } else {
         throw std::runtime_error(ERRORMSG(QString("Error tryng to undo %1").arg(text()).toStdString()));
     }
-    emit m_editor->circuitHasChanged();
+    m_editor->setCircuitUpdateRequired();
 }
 
 MorphCommand::MorphCommand(const QVector<GraphicElement *> &elements, ElementType aType, Editor *aEditor, QUndoCommand *parent)
@@ -568,7 +568,7 @@ void MorphCommand::undo()
         oldElms[i] = ElementFactory::buildElement(m_types[i]);
     }
     transferConnections(newElms, oldElms);
-    emit m_editor->circuitHasChanged();
+    m_editor->setCircuitUpdateRequired();
 }
 
 void MorphCommand::redo()
@@ -580,7 +580,7 @@ void MorphCommand::redo()
         newElms[i] = ElementFactory::buildElement(m_newtype);
     }
     transferConnections(oldElms, newElms);
-    emit m_editor->circuitHasChanged();
+    m_editor->setCircuitUpdateRequired();
 }
 
 void MorphCommand::transferConnections(QVector<GraphicElement *> from, QVector<GraphicElement *> to)
@@ -692,7 +692,7 @@ void ChangeInputSZCommand::redo()
     for (GraphicElement *elm : serializationOrder) {
         m_order.append(elm->id());
     }
-    emit m_editor->circuitHasChanged();
+    m_editor->setCircuitUpdateRequired();
 }
 
 void ChangeInputSZCommand::undo()
@@ -718,7 +718,7 @@ void ChangeInputSZCommand::undo()
         }
         elm->setSelected(true);
     }
-    emit m_editor->circuitHasChanged();
+    m_editor->setCircuitUpdateRequired();
 }
 
 FlipCommand::FlipCommand(const QList<GraphicElement *> &aItems, int aAxis, Editor *aEditor, QUndoCommand *parent)
@@ -774,7 +774,7 @@ void FlipCommand::redo()
             elm->setRotation(elm->rotation() + 180);
         }
     }
-    emit m_editor->circuitAppearenceHasChanged();
+    m_editor->setAutoSaveRequired();
 }
 
 ChangeOutputSZCommand::ChangeOutputSZCommand(const QVector<GraphicElement *> &elements, int newOutputSize, Editor *editor, QUndoCommand *parent)
@@ -832,7 +832,7 @@ void ChangeOutputSZCommand::redo()
     for (GraphicElement *elm : serializationOrder) {
         m_order.append(elm->id());
     }
-    emit m_editor->circuitHasChanged();
+    m_editor->setCircuitUpdateRequired();
 }
 
 void ChangeOutputSZCommand::undo()
@@ -858,5 +858,5 @@ void ChangeOutputSZCommand::undo()
         }
         elm->setSelected(true);
     }
-    emit m_editor->circuitHasChanged();
+    m_editor->setCircuitUpdateRequired();
 }

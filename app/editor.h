@@ -84,6 +84,8 @@ public:
     void flipH();
     void flipV();
 
+    void setCircuitUpdateRequired();
+    void setAutoSaveRequired();
 signals:
     void scroll(int x, int y);
     void circuitHasChanged();
@@ -94,6 +96,7 @@ public slots:
     void showWires(bool checked);
     void showGates(bool checked);
     void rotate(bool rotateRight);
+    void checkUpdateRequest(int index);
     /**
      * @brief setupWorkspace: Creates workspace elements: IC manager, undo stack, scene, and simulation controller.
      * @param connect_signals: true: connects IC manager and simulation controller signals/slots if this is the first tab (opening the program).
@@ -132,6 +135,8 @@ private:
     /*  bool mControlKeyPressed; */
     bool m_showWires;
     bool m_showGates;
+    bool m_circuitUpdateRequired;
+    bool m_autoSaveRequired;
 
     QList<QGraphicsItem *> itemsAt(QPointF pos);
     QGraphicsItem *itemAt(QPointF pos);

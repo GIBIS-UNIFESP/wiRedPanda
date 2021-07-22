@@ -225,6 +225,7 @@ void MainWindow::createUndoRedoMenus()
     m_undoAction.push_back(m_editor->getUndoStack()->createUndoAction(this, tr("&Undo")));
     m_undoAction[m_undoAction.size()-1]->setIcon(QIcon(QPixmap(":/toolbar/undo.png")));
     m_undoAction[m_undoAction.size()-1]->setShortcuts(QKeySequence::Undo);
+    connect(m_editor->getUndoStack(), &QUndoStack::indexChanged, m_editor, &Editor::checkUpdateRequest);
     m_redoAction.push_back(m_editor->getUndoStack()->createRedoAction(this, tr("&Redo")));
     m_redoAction[m_undoAction.size()-1]->setIcon(QIcon(QPixmap(":/toolbar/redo.png")));
     m_redoAction[m_undoAction.size()-1]->setShortcuts(QKeySequence::Redo);
@@ -1255,15 +1256,25 @@ void MainWindow::autoSave()
     }
     COMMENT("All auto save file names after possibly removing autosave: " << allAutoSaveFileName.toStdString(), 3);
     COMMENT("If autosave exists and undo stack is clean, remove it.", 0);
-    if (m_editor->getUndoStack()->isClean()) {
-        ui->tabWidget_mainWindow->setTabText(m_current_tab, m_currentFile.fileName());
+    auto undostack = m_tabs[m_current_tab].undoStack();//m_editor->getUndoStack();
+    COMMENT("undostack element: " << undostack->index() << " of " << undostack->count(), 0);
+    if (undostack->isClean()) {
+        if (m_currentFile.exists()) {
+            ui->tabWidget_mainWindow->setTabText(m_current_tab, m_currentFile.fileName());
+        } else {
+            ui->tabWidget_mainWindow->setTabText(m_current_tab, tr("New Project"));
+        }
         COMMENT("Undo stack is clean.", 3);
         if (m_autoSaveFile[m_current_tab]->exists()) {
             m_autoSaveFile[m_current_tab]->remove();
         }
     } else {
         COMMENT("Undo in not clean. Must set autosave file.", 3);
-        ui->tabWidget_mainWindow->setTabText(m_current_tab, m_currentFile.fileName() + "*");
+        if (m_currentFile.exists()) {
+            ui->tabWidget_mainWindow->setTabText(m_current_tab, m_currentFile.fileName() + "*");
+        } else {
+            ui->tabWidget_mainWindow->setTabText(m_current_tab, tr("New Project*"));
+        }
         if (m_autoSaveFile[m_current_tab]->exists()) {
             COMMENT("Autosave file already exists. Delete it to update.", 3);
             m_autoSaveFile[m_current_tab]->remove();
