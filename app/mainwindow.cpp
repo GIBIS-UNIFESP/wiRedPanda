@@ -1188,6 +1188,8 @@ void MainWindow::on_actionWaveform_triggered()
     if (m_bd->createWaveform(m_dolphinFileName)) {
         COMMENT("BD filename: " << m_dolphinFileName.toStdString(), 0);
         m_bd->show();
+    } else {
+        setEnabled(true);
     }
 }
 
