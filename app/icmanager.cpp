@@ -10,6 +10,7 @@
 #include <QSettings>
 
 #include "common.h"
+#include "globalproperties.h"
 #include "ic.h"
 #include "icnotfoundexception.h"
 #include "icprototype.h"
@@ -54,7 +55,7 @@ void ICManager::clear()
 
 bool ICManager::loadIC(IC *ic, QString fname)
 {
-    COMMENT("Loading IC file " << fname.toStdString(), 3);
+    //qDebug() << "Loading IC file ....... " << fname;
     loadFile(fname);
     ic->loadFile(fname);
     return true;
@@ -64,15 +65,19 @@ void ICManager::loadFile(QString &fname)
 {
     COMMENT("Loading file " << fname.toStdString(), 3);
     QFileInfo finfo;
-    finfo.setFile(m_mainWindow->getCurrentDir(), fname);
+    //qDebug() << "Current main window dir: " << QFileInfo(GlobalProperties::currentFile).absolutePath();
+    finfo.setFile(QFileInfo(GlobalProperties::currentFile).absolutePath(), QFileInfo(fname).fileName());
+    //qDebug() << "IC file: " << finfo.absoluteFilePath();
     Q_ASSERT(finfo.exists() && finfo.isFile());
     m_fileWatcher.addPath(finfo.absoluteFilePath());
     if (m_ics.contains(finfo.baseName())) {
         COMMENT("IC already inserted: " << finfo.baseName().toStdString(), 3);
     } else {
         COMMENT("Inserting IC: " << finfo.baseName().toStdString(), 3);
+        //qDebug() << "Inserting IC: " << finfo.absoluteFilePath();
         auto *prototype = new ICPrototype(finfo.absoluteFilePath());
         prototype->reload();
+        //qDebug() << "Really Inserting IC: " << finfo.baseName();
         m_ics.insert(finfo.baseName(), prototype);
     }
 }

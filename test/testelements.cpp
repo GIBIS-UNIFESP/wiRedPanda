@@ -6,6 +6,7 @@
 #include "demux.h"
 #include "dlatch.h"
 #include "editor.h"
+#include "globalproperties.h"
 #include "ic.h"
 #include "inputbutton.h"
 #include "iostream"
@@ -16,8 +17,6 @@
 #include "node.h"
 #include "srflipflop.h"
 #include "tflipflop.h"
-//#include "tlatch.h"
-
 #include "and.h"
 #include "dflipflop.h"
 #include "icmanager.h"
@@ -215,12 +214,15 @@ void TestElements::testICData(const IC *ic)
 
 void TestElements::testIC()
 {
-    ICManager manager;
+    Editor *editor = new Editor();
+    editor->setupWorkspace();
+    GlobalProperties::currentFile = QString("%1/../examples/simple.panda").arg(CURRENTDIR);
+    ICManager *manager(editor->getICManager());
     QString icFile = testFile("jkflipflop.panda");
     Scene scene;
 
     IC *ic = new IC();
-    manager.loadIC(ic, icFile);
+    manager->loadIC(ic, icFile);
 
     testICData(ic);
 
@@ -305,11 +307,15 @@ void TestElements::testIC()
         QCOMPARE(static_cast<int>(ic->output(0)->value()), 0);
         QCOMPARE(static_cast<int>(ic->output(1)->value()), 1);
     }
+    delete editor;
 }
 
 void TestElements::testICs()
 {
-    ICManager manager;
+    Editor *editor = new Editor();
+    editor->setupWorkspace();
+    GlobalProperties::currentFile = QString("%1/../examples/simple.panda").arg(CURRENTDIR);
+    ICManager *manager(editor->getICManager());
     QDir examplesDir(QString("%1/../examples/").arg(CURRENTDIR));
     /*  qDebug( ) << "Current dir: " << CURRENTDIR; */
     QStringList entries;
@@ -318,6 +324,7 @@ void TestElements::testICs()
     for (const auto &f : qAsConst(files)) {
         qDebug() << "FILE: " << f.absoluteFilePath();
         IC ic;
-        manager.loadIC(&ic, f.absoluteFilePath());
+        manager->loadIC(&ic, f.absoluteFilePath());
     }
+    delete editor;
 }

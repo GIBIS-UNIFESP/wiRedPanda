@@ -52,6 +52,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     , m_translator(nullptr)
 {
     COMMENT("WIRED PANDA Version = " << APP_VERSION << " OR " << GlobalProperties::version, 0);
+    qDebug() << "WIRED PANDA Version = " << APP_VERSION << " OR " << QString::number(GlobalProperties::version);
     ui->setupUi(this);
     ThemeManager::globalMngr = new ThemeManager(this);
     setWindowTitle("wiRED PANDA v" + QString(APP_VERSION));
@@ -333,11 +334,11 @@ void MainWindow::show()
         msgBox.setIcon(QMessageBox::Icon::Information);
         msgBox.setWindowTitle("wiRed Panda version 4.0.");
         msgBox.setText(QString(tr("This version is not 100\% compatible with previous versions of wiRed Panda.\n"
-                                  "To open old version projects containing CIs(or boxes) and/or skins,"
+                                  "To open old version projects containing ICs(or boxes) and/or skins,"
                                   "their files must be moved to the same directory as the main project file.\n"
                                   "wiRed Panda 4.0 will automatically list all other .panda files located "
-                                  "in the same directory of the current project as CIs in the editor tab.\n"
-                                  "You have to save new projects before having access to CIs.")));
+                                  "in the same directory of the current project as ICs in the editor tab.\n"
+                                  "You have to save new projects before having access to ICs.")));
         msgBox.setWindowModality(Qt::WindowModal);
         msgBox.setDefaultButton(QMessageBox::Ok);
         msgBox.setCheckBox(cb);

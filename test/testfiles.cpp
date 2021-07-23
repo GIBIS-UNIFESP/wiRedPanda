@@ -35,14 +35,12 @@ void TestFiles::testFiles()
         GlobalProperties::currentFile = f.absoluteFilePath();
         QVERIFY(pandaFile.exists());
         QVERIFY(pandaFile.open(QFile::ReadOnly));
-
         QDataStream ds(&pandaFile);
         try {
             editor->load(ds);
         } catch (std::runtime_error &e) {
             QFAIL(QString("Could not load the file! Error: %1").arg(QString::fromStdString(e.what())).toUtf8().constData());
         }
-
         QList<QGraphicsItem *> items = editor->getScene()->items();
         for (QGraphicsItem *item : qAsConst(items)) {
             if (item->type() == QNEConnection::Type) {

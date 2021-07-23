@@ -373,6 +373,14 @@ Error: %1</source>
  Please, check for updates.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Old version file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning! This is an old version wiRed Panda project file (version &lt; 4.0). To open it correctly, save all ICs and skins into the main project directory.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ElementEditor</name>
@@ -677,14 +685,6 @@ Error: %1</source>
     </message>
 </context>
 <context>
-    <name>FileHelper</name>
-    <message>
-        <source>IC linked file &quot;%1&quot; could not be found!
-Do you want to find this file?</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>FlipHCommand</name>
     <message>
         <source>Flip %1 elements in axis %2</source>
@@ -693,10 +693,6 @@ Do you want to find this file?</source>
 </context>
 <context>
     <name>ICManager</name>
-    <message>
-        <source>Error</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>File error.</source>
         <translation type="unfinished"></translation>
@@ -905,10 +901,6 @@ Do you want to find this file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ctrl+Shift+O</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Re&amp;load File</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1049,14 +1041,6 @@ Do you want to find this file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Save Local Project</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ctrl+Alt+S</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&amp;Undo</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1167,43 +1151,11 @@ Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Error creating ICs directory.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating skins directory.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error saving ICs.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not save the local project.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Saved file successfully.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Could not open waveform file: %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Load &amp;file as IC</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Load file as IC</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Load File as IC</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Loaded IC successfully.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1261,15 +1213,22 @@ Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Error loading IC file.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source> has been modified. Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>New Project*</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t show this again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This version is not 100% compatible with previous versions of wiRed Panda.
+To open old version projects containing ICs(or boxes) and/or skins,their files must be moved to the same directory as the main project file.
+wiRed Panda 4.0 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
+You have to save new projects before having access to ICs.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
