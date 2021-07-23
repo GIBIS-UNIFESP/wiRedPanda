@@ -91,7 +91,7 @@
              </size>
             </property>
             <property name="currentIndex">
-             <number>3</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="io">
              <attribute name="icon">
@@ -501,7 +501,6 @@
    </attribute>
    <addaction name="actionNew"/>
    <addaction name="actionOpen"/>
-   <addaction name="actionOpen_IC"/>
    <addaction name="actionSave"/>
    <addaction name="separator"/>
    <addaction name="actionRotate_left"/>
@@ -551,13 +550,11 @@
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
     <addaction name="separator"/>
-    <addaction name="actionOpen_IC"/>
     <addaction name="menuRecent_files"/>
     <addaction name="actionReload_File"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
-    <addaction name="actionSave_Local_Project"/>
     <addaction name="actionExport_to_Arduino"/>
     <addaction name="actionPrint"/>
     <addaction name="actionExport_to_Image"/>
@@ -871,24 +868,6 @@
     <string>Ctrl+A</string>
    </property>
   </action>
-  <action name="actionOpen_IC">
-   <property name="icon">
-    <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/panelBox.png</normaloff>:/toolbar/panelBox.png</iconset>
-   </property>
-   <property name="text">
-    <string>Load &amp;file as IC</string>
-   </property>
-   <property name="iconText">
-    <string>Load file as IC</string>
-   </property>
-   <property name="toolTip">
-    <string>Load file as IC</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+O</string>
-   </property>
-  </action>
   <action name="actionReload_File">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
@@ -1112,18 +1091,6 @@
     <string>Labels under icons</string>
    </property>
   </action>
-  <action name="actionSave_Local_Project">
-   <property name="icon">
-    <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/save.png</normaloff>:/toolbar/save.png</iconset>
-   </property>
-   <property name="text">
-    <string>Save Local Project</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Alt+S</string>
-   </property>
-  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1143,14 +1110,14 @@
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/memory/light/memory_light.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
   <include location="resources/output/output.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/misc/misc.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/memory/light/memory_light.qrc"/>
  </resources>
  <connections/>
 </ui>

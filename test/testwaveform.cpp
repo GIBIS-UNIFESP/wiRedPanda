@@ -25,7 +25,7 @@ void TestWaveForm::testDisplay4Bits()
     QVERIFY(pandaFile.open(QFile::ReadOnly));
     QDataStream ds(&pandaFile);
     try {
-        editor->load(ds, fileName);
+        editor->load(ds);
     } catch (std::runtime_error &e) {
         QFAIL(QString("Could not load the file! Error: %1").arg(QString::fromStdString(e.what())).toUtf8().constData());
     }

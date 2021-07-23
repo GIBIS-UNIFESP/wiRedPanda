@@ -111,16 +111,6 @@ QString IC::getFile() const
     return m_file;
 }
 
-bool IC::setFile(const QString &newFileName)
-{
-    COMMENT("Updating ic name.", 0);
-    if (!ICManager::instance()->updatePrototypeFilePathName(m_file, newFileName)) {
-        return false;
-    }
-    m_file = newFileName;
-    return true;
-}
-
 ICPrototype *IC::getPrototype()
 {
     return ICManager::instance()->getPrototype(m_file);

@@ -44,26 +44,6 @@ ICManager::~ICManager()
     }
 }
 
-bool ICManager::tryLoadFile(QString &fname, const QString& parentFile)
-{
-    try {
-        COMMENT("Trying yo loading file " << fname.toStdString() << " with parentfile name: " << parentFile.toStdString(), 3);
-        loadFile(fname, parentFile);
-    } catch (ICNotFoundException &err) {
-        COMMENT("ICNotFoundException thrown: " << err.what(), 0);
-        int ret = QMessageBox::warning(m_mainWindow, tr("Error"), QString::fromStdString(err.what()), QMessageBox::Ok, QMessageBox::Cancel);
-        if (ret == QMessageBox::Cancel) {
-            return false;
-        }
-        fname = m_mainWindow->getOpenICFile();
-        if (fname.isEmpty()) {
-            return false;
-        }
-        return tryLoadFile(fname, parentFile);
-    }
-    return true;
-}
-
 void ICManager::loadFile(QString &fname, const QString& parentFile)
 {
     COMMENT("Loading file " << fname.toStdString() << " with parentfile name: " << parentFile.toStdString(), 3);
@@ -93,12 +73,10 @@ void ICManager::clear()
     COMMENT("Finished clearing ICManager.", 3);
 }
 
-bool ICManager::loadIC(IC *ic, QString fname, const QString &parentFile)
+bool ICManager::loadIC(IC *ic, QString fname)
 {
     COMMENT("Loading IC file " << fname.toStdString() << " with parentfile name: " << parentFile.toStdString(), 3);
-    if (tryLoadFile(fname, parentFile)) {
-        ic->loadFile(fname);
-    }
+    ic->loadFile(fname);
     emit addRecentIcFile(fname);
     return true;
 }
@@ -117,28 +95,6 @@ ICPrototype *ICManager::getPrototype(const QString& fname)
         return nullptr;
     }
     return m_ics[finfo.baseName()];
-}
-
-bool ICManager::updatePrototypeFilePathName(const QString& sourceName, const QString& targetName)
-{
-    COMMENT("Updating IC name from " << sourceName.toStdString() << " to " << targetName.toStdString(), 0);
-    Q_ASSERT(!sourceName.isEmpty());
-    Q_ASSERT(!targetName.isEmpty());
-    QFileInfo finfo(sourceName);
-    if (!m_ics.contains(finfo.baseName())) {
-        return false;
-    }
-    COMMENT("Updating prototype IC name.", 0);
-    auto proto = m_ics[finfo.baseName()];
-    proto->fileName(targetName);
-    COMMENT("Updating m_fileWatcher. Removing " << sourceName.toStdString(), 0);
-    if (m_fileWatcher.removePath(sourceName)) {
-        COMMENT("Adding " << targetName.toStdString() << " to m_fileWatcher.", 0);
-        m_fileWatcher.addPath(targetName);
-    } else {
-        COMMENT("Warning. FileWatcher did not exist. Probably already changed by other IC instance update.", 0);
-    }
-    return true;
 }
 
 ICManager *ICManager::instance()

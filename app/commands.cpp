@@ -166,7 +166,7 @@ QList<QGraphicsItem *> loadItems(QByteArray &itemData, const QVector<int> &ids, 
      * Assuming that all connections are stored after the elements, we will deserialize the elements first.
      * We will store one additional information: The element IDs!
      */
-    QList<QGraphicsItem *> items = SerializationFunctions::deserialize(dataStream, version, GlobalProperties::currentFile, portMap);
+    QList<QGraphicsItem *> items = SerializationFunctions::deserialize(dataStream, version, portMap);
     if (items.size() != ids.size()) {
         QString msg("One or more elements were not found on scene. Expected %1, found %2.");
         msg = msg.arg(ids.size()).arg(items.size());

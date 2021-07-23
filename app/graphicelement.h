@@ -182,7 +182,6 @@ public:
 
     // Update label in graphical interface
     void updateLabel();
-    void updateSkinsPath(const QString &newSkinPath);
 
 private:
     /**

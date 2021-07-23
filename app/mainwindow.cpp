@@ -7,6 +7,7 @@
 #include <iostream>
 #include <stdexcept>
 
+#include <qcheckbox.h>
 #include <QCloseEvent>
 #include <QDebug>
 #include <QDialog>
@@ -123,12 +124,12 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     m_rfController = new RecentFilesController("recentFileList", this, true);
     m_ricController = new RecentFilesController("recentICs", this, false);
     connect(this, &MainWindow::addRecentFile, m_rfController, &RecentFilesController::addRecentFile);
-    connect(this, &MainWindow::addRecentIcFile, m_ricController, &RecentFilesController::addRecentFile);
+    connect(this, &MainWindow::addRecentIcFile, m_ricController, &RecentFilesController::addRecentFile); // TODO: This signal/slot adds to recent files
     m_firstResult = nullptr;
-    updateRecentICs();
+    //updateRecentICs();
     createRecentFileActions();
     connect(m_rfController, &RecentFilesController::recentFilesUpdated, this, &MainWindow::updateRecentFileActions);
-    connect(m_ricController, &RecentFilesController::recentFilesUpdated, this, &MainWindow::updateRecentICs);
+    connect(m_ricController, &RecentFilesController::recentFilesUpdated, this, &MainWindow::updateRecentICs); // TODO: This signal is emited from RecentFilesController::addRescentFile
 
     COMMENT("Checking for autosave file recovery.", 0);
     loadAutoSaveFiles(settings, filename);
@@ -325,6 +326,35 @@ bool MainWindow::save(QString fname)
 void MainWindow::show()
 {
     QMainWindow::show();
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
+    COMMENT("What is new message box.", 0);
+    if (!settings.contains("WhatsNew4")) {
+        QCheckBox *cb = new QCheckBox(tr("Don't show this again."));
+        QMessageBox msgBox;
+        msgBox.setParent(this);
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setIcon(QMessageBox::Icon::Information);
+        msgBox.setWindowTitle("wiRed Panda version 4.0.");
+        msgBox.setText(QString(tr("This version is not 100\% compatible with previous versions of wiRed Panda.\n"
+                                  "To open old version projects containing CIs(or boxes) and/or skins,"
+                                  "their files must be moved to the same directory as the main project file.\n"
+                                  "wiRed Panda 4.0 will automatically list all other .panda files located "
+                                  "in the same directory of the current project as CIs in the editor tab.\n"
+                                  "You have to save new projects before having access to CIs.")));
+        msgBox.setWindowModality(Qt::WindowModal);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.setCheckBox(cb);
+        QObject::connect(cb, &QCheckBox::stateChanged, this, [](int state) {
+            if (static_cast<Qt::CheckState>(state) == Qt::CheckState::Checked) {
+                QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
+                settings.setValue("WhatsNew4", "true");
+            } else {
+                QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
+                settings.remove("WhatsNew4");
+            }
+        });
+        msgBox.exec();
+    }
 }
 
 int MainWindow::closeTabAnyway()
@@ -420,7 +450,7 @@ bool MainWindow::loadPandaFile(const QString &fname)
             COMMENT("Current file set.", 0);
             setCurrentFile(QFileInfo(fname));
             COMMENT("Loading in editor.", 0);
-            m_editor->load(ds, fname);
+            m_editor->load(ds);
         } catch (std::runtime_error &e) {
             std::cerr << tr("Error loading project: ").toStdString() << e.what() << std::endl;
             QMessageBox::warning(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
@@ -617,7 +647,7 @@ void MainWindow::on_actionSelect_all_triggered()
     m_editor->selectAll();
 }
 
-void MainWindow::updateRecentICs() // Bug here... It is not showing and loading the recent boxes.
+void MainWindow::updateRecentICs() // TODO: Update IC box loadIC.
 {
     ui->scrollAreaWidgetContents_Box->layout()->removeItem(ui->verticalSpacer_IC);
     for (ListItemWidget *item : qAsConst(icItemWidgets)) {
@@ -791,33 +821,6 @@ void MainWindow::selectTab(int tab)
         connectTab(tab);
     }
     COMMENT("New tab selected. BD filename: " << m_dolphinFileName.toStdString(), 0);
-}
-
-QString MainWindow::getOpenICFile()
-{
-    return QFileDialog::getOpenFileName(this, tr("Load File as IC"), m_defaultDirectory.absolutePath(), tr("Panda files (*.panda)"));
-}
-
-void MainWindow::on_actionOpen_IC_triggered()
-{
-    /* LOAD FILE AS IC */
-    QString fname = getOpenICFile();
-    if (fname.isEmpty()) {
-        return;
-    }
-    QFile fl(fname);
-    if (!fl.exists()) {
-        std::cerr << tr("Error: This file does not exist: ").toStdString() << fname.toStdString() << std::endl;
-        return;
-    }
-    if (fl.open(QFile::ReadOnly)) {
-        emit addRecentIcFile(fname);
-        fl.close();
-        ui->statusBar->showMessage(tr("Loaded IC successfully."), 2000);
-    } else {
-        std::cerr << tr("Could not open file in ReadOnly mode : ").toStdString() << fname.toStdString() << "." << std::endl;
-        ui->statusBar->showMessage(tr("Error loading IC file."), 2000);
-    }
 }
 
 void MainWindow::on_lineEdit_textChanged(const QString &text)
@@ -1149,7 +1152,7 @@ void MainWindow::on_actionClear_selection_triggered()
     m_editor->getScene()->clearSelection();
 }
 
-void MainWindow::populateMenu(QSpacerItem *spacer, const QString& names, QLayout *layout)
+void MainWindow::populateMenu(QSpacerItem *spacer, const QString& names, QLayout *layout) // TODO: call this function with the list of files and set directory watcher.
 {
     QStringList list(names.split(","));
     layout->removeItem(spacer);
@@ -1161,7 +1164,6 @@ void MainWindow::populateMenu(QSpacerItem *spacer, const QString& names, QLayout
         layout->addWidget(item);
     }
     layout->addItem(spacer);
-    /*  layout->setSpacing(10); */
 }
 
 void MainWindow::populateLeftMenu()
@@ -1350,41 +1352,4 @@ void MainWindow::on_actionMute_triggered()
 void MainWindow::on_actionLabels_under_icons_triggered(bool checked)
 {
     checked ? ui->mainToolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon) : ui->mainToolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
-}
-
-void MainWindow::on_actionSave_Local_Project_triggered()
-{
-    QString fname = m_currentFile.absoluteFilePath();
-    QString path = m_defaultDirectory.absolutePath();
-    if (!m_currentFile.fileName().isEmpty()) {
-        path = m_currentFile.absoluteFilePath();
-    }
-    fname = QFileDialog::getSaveFileName(this, tr("Save Local Project"), path, tr("Panda files (*.panda)"));
-    if (fname.isEmpty()) {
-        return;
-    }
-    if (!fname.endsWith(".panda")) {
-        fname.append(".panda");
-    }
-    setCurrentFile(QFileInfo(fname));
-    COMMENT("Saving ics and skins", 0);
-    path = m_currentFile.absolutePath();
-    if (!QDir(path + "/boxes").exists()) {
-        bool dir_res = QDir().mkpath(path + "/boxes");
-        if (!dir_res)
-            std::cerr << tr("Error creating ICs directory.").toStdString() << std::endl;
-    }
-    if (!QDir(path + "/skins").exists()) {
-        bool dir_res = QDir().mkpath(path + "/skins");
-        if (!dir_res)
-            std::cerr << tr("Error creating skins directory.").toStdString() << std::endl;
-    }
-    COMMENT("Saving ics and skins to local directories.", 0);
-    if (!m_editor->saveLocal(path)) {
-        std::cerr << tr("Error saving ICs.").toStdString() << std::endl;
-        ui->statusBar->showMessage(tr("Could not save the local project."), 2000);
-        return;
-    }
-    COMMENT("Saving main project.", 0);
-    save(fname);
 }

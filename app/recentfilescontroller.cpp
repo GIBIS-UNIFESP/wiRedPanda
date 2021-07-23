@@ -28,15 +28,12 @@ void RecentFilesController::addRecentFile(const QString &fname)
     if (!QFile(fname).exists()) {
         return;
     }
-
     m_files.removeAll(fname);
     m_files.prepend(fname);
     if (m_files.size() > MaxRecentFiles) {
         m_files.erase(m_files.begin() + MaxRecentFiles, m_files.end());
     }
-
     emit recentFilesUpdated();
-
     saveRecentFiles();
 }
 

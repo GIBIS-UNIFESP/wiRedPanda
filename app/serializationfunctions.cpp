@@ -24,44 +24,6 @@
 #include "qneconnection.h"
 #include "qneport.h"
 
-bool SerializationFunctions::update(const QString &src_fileName, const QString &tgt_fileName, const QString &dirName)
-{
-    double version;
-    QString dolphinFilename;
-    QRectF rect;
-    QList<QGraphicsItem *> itemList;
-    QFile file(src_fileName);
-    if (file.open(QFile::ReadOnly)) {
-        COMMENT("Started reading IC file " << src_fileName.toStdString(), 0);
-        QDataStream ds(&file);
-        version = loadVersion(ds);
-        dolphinFilename = loadDolphinFilename(ds, version);
-        rect = loadRect(ds, version);
-        COMMENT("Version: " << version, 0);
-        COMMENT("Element deserialization.", 0);
-        itemList = loadMoveData(dirName, ds, version);
-        COMMENT("Finished loading data", 0);
-        file.close();
-    }
-    QSaveFile fl(tgt_fileName);
-    COMMENT("Before saving data", 0);
-    if (fl.open(QFile::WriteOnly)) {
-        COMMENT("Start updating IC " << tgt_fileName.toStdString(), 0);
-        QDataStream ds(&fl);
-        COMMENT("Saving header information.", 0);
-        saveHeader(ds, dolphinFilename, rect);
-        COMMENT("Element serialization.", 0);
-        serialize(itemList, ds);
-    }
-    if (!fl.commit()) {
-        std::cerr << "Could not save file: " + fl.errorString().toStdString() + "." << std::endl;
-        return false;
-    }
-
-    COMMENT("Finished updating IC " << tgt_fileName.toStdString(), 0);
-    return true;
-}
-
 void SerializationFunctions::saveHeader(QDataStream &ds, const QString &dolphinFilename, const QRectF &rect)
 {
   ds << QApplication::applicationName() + " " + QString::number(GlobalProperties::version);
@@ -89,7 +51,7 @@ void SerializationFunctions::serialize(const QList<QGraphicsItem *> &items, QDat
     }
 }
 
-QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &ds, double version, const QString &parentFile, QMap<quint64, QNEPort *> portMap)
+QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &ds, double version, QMap<quint64, QNEPort *> portMap)
 {
     QList<QGraphicsItem *> itemList;
     while (!ds.atEnd()) {
@@ -107,7 +69,7 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &ds, doub
                 if (elm->elementType() == ElementType::IC) {
                     COMMENT("Loading IC.", 3);
                     IC *ic = qgraphicsitem_cast<IC *>(elm);
-                    ICManager::instance()->loadIC(ic, ic->getFile(), parentFile);
+                    ICManager::instance()->loadIC(ic, ic->getFile());
                 }
                 elm->setSelected(true);
             } else {
@@ -174,51 +136,7 @@ QRectF SerializationFunctions::loadRect(QDataStream &ds, double version)
     return rect;
 }
 
-QList<QGraphicsItem *> SerializationFunctions::loadMoveData(const QString &dirName, QDataStream &ds, double version)
-{
-    QMap<quint64, QNEPort *> portMap;
-    QList<QGraphicsItem *> itemList;
-    while (!ds.atEnd()) {
-        int type;
-        ds >> type;
-        COMMENT("Type: " << type, 0);
-        if (type == GraphicElement::Type) {
-            quint64 elmType;
-            ds >> elmType;
-            COMMENT("Building " << ElementFactory::typeToText(static_cast<ElementType>(elmType)).toStdString() << " element.", 0);
-            GraphicElement *elm = ElementFactory::buildElement(static_cast<ElementType>(elmType));
-            if (elm) {
-                itemList.append(elm);
-                elm->load(ds, portMap, version);
-                if (elm->elementType() == ElementType::IC) {
-                    IC *ic = qgraphicsitem_cast<IC *>(elm);
-                    QString oldName = ic->getFile();
-                    QString newName = dirName + "/boxes/" + QFileInfo(oldName).fileName();
-                    ic->setFile(newName);
-                }
-                elm->updateSkinsPath(dirName + "/skins/");
-            } else {
-                throw(std::runtime_error(ERRORMSG("Could not build element.")));
-            }
-        } else if (type == QNEConnection::Type) {
-            COMMENT("Reading Connection.", 0);
-            QNEConnection *conn = ElementFactory::buildConnection();
-            if (!conn->load(ds, portMap)) {
-                COMMENT("Deleting connection.", 0);
-                delete conn;
-            } else {
-                itemList.append(conn);
-            }
-        } else {
-            qDebug() << type;
-            throw(std::runtime_error(ERRORMSG("Invalid type. Data is possibly corrupted.")));
-        }
-    }
-    COMMENT("Finished loading data.", 0);
-    return itemList;
-}
-
-QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &ds, const QString &parentFile)
+QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &ds)
 {
     COMMENT("Started loading file.", 0);
     QString str;
@@ -234,7 +152,7 @@ QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &ds, const QStri
     loadDolphinFilename(ds, version);
     loadRect( ds, version );
     COMMENT("Header Ok. Version: " << version, 0);
-    QList<QGraphicsItem *> items = deserialize(ds, version, parentFile);
+    QList<QGraphicsItem *> items = deserialize(ds, version);
     COMMENT("Finished reading items.", 0);
     return items;
 }

@@ -28,13 +28,6 @@ public:
     void insertICObserver(IC *ic);
     void removeICObserver(IC *ic);
 
-    /**
-     * @brief updateLocalIC: Updates all subIC paths inside the file of this prototype.
-     * While saving a local project, WiredPanda copies all ICs e subICs to a project local directory.
-     * Then, this function is responsible for updating the correct references of IC files to their subICs.
-     */
-    bool updateLocalIC(const QString &src_fileName, const QString &tgt_fileName, const QString &icDirName);
-
     int inputSize() const;
     int outputSize() const;
 
