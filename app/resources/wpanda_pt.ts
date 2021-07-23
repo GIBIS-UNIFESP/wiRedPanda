@@ -376,6 +376,14 @@ Erro: %1</translation>
         O arquivo que você está abrindo foi salvo com uma versão mais recente.
         Por favor, verifique se há atualizações.</translation>
     </message>
+    <message>
+        <source>Old version file.</source>
+        <translation>Arquivo de versão antiga.</translation>
+    </message>
+    <message>
+        <source>Warning! This is an old version wiRed Panda project file (version &lt; 4.0). To open it correctly, save all ICs and skins into the main project directory.</source>
+        <translation>Aviso! Este arquivo de projeto é de uma versão antiga do wiRed Panda (versão &lt; 4.0). Para abri-lo corretamente, salve todas os CIs e aparências no diretório do projeto principal.</translation>
+    </message>
 </context>
 <context>
     <name>ElementEditor</name>
@@ -680,15 +688,6 @@ Erro: %1</translation>
     </message>
 </context>
 <context>
-    <name>FileHelper</name>
-    <message>
-        <source>IC linked file &quot;%1&quot; could not be found!
-Do you want to find this file?</source>
-        <translation>Arquivo de CI associado &quot;%1&quot; não encontrado!
-        Deseja encontrar esse arquivo?</translation>
-    </message>
-</context>
-<context>
     <name>FlipHCommand</name>
     <message>
         <source>Flip %1 elements in axis %2</source>
@@ -697,10 +696,6 @@ Do you want to find this file?</source>
 </context>
 <context>
     <name>ICManager</name>
-    <message>
-        <source>Error</source>
-        <translation>Erro</translation>
-    </message>
     <message>
         <source>File error.</source>
         <translation>Erro em arquivo.</translation>
@@ -1035,10 +1030,6 @@ Errp: %1</translation>
         <translation>Nomes abaixo dos ícones</translation>
     </message>
     <message>
-        <source>Save Local Project</source>
-        <translation>Salvar Projeto Localmente</translation>
-    </message>
-    <message>
         <source>Could not save file: </source>
         <translation>Não foi possível salvar o arquivo</translation>
     </message>
@@ -1049,10 +1040,6 @@ Errp: %1</translation>
     <message>
         <source>Error autosaving project: </source>
         <translation>Erro ao salvar projeto automaticamente: </translation>
-    </message>
-    <message>
-        <source>Error creating skins directory.</source>
-        <translation>Erro ao criar pasta para as imagens.</translation>
     </message>
     <message>
         <source>WiRED Panda</source>
@@ -1127,10 +1114,6 @@ Errp: %1</translation>
         <translation></translation>
     </message>
     <message>
-        <source>Ctrl+Shift+O</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Ctrl+F5</source>
         <translation></translation>
     </message>
@@ -1167,25 +1150,9 @@ Errp: %1</translation>
         <translation></translation>
     </message>
     <message>
-        <source>Ctrl+Alt+S</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>We have found an autosave file. Do you want to load it?
  Autosave: </source>
         <translation>Um arquivo de autosave foi encontrado. Deseja carrega-lo?</translation>
-    </message>
-    <message>
-        <source>Error creating ICs directory.</source>
-        <translation>Erro ao criar diretório de CI.</translation>
-    </message>
-    <message>
-        <source>Error saving ICs.</source>
-        <translation>Erro ao salvar CIs.</translation>
-    </message>
-    <message>
-        <source>Could not save the local project.</source>
-        <translation>Não foi possível salvar o projeto localmente.</translation>
     </message>
     <message>
         <source>Saved file successfully.</source>
@@ -1194,22 +1161,6 @@ Errp: %1</translation>
     <message>
         <source>Could not open waveform file: %1.</source>
         <translation>Não foi possível abrir o arquivo de forma de onda: %1.</translation>
-    </message>
-    <message>
-        <source>Load &amp;file as IC</source>
-        <translation>&amp;Carregar arquivo como CI</translation>
-    </message>
-    <message>
-        <source>Load file as IC</source>
-        <translation>Corregar arquivo como CI</translation>
-    </message>
-    <message>
-        <source>Load File as IC</source>
-        <translation>Corregar arquivo como CI</translation>
-    </message>
-    <message>
-        <source>Loaded IC successfully.</source>
-        <translation>CI carregado com sucesso.</translation>
     </message>
     <message>
         <source>&lt;strong&gt;Error while exporting to Arduino code:&lt;/strong&gt;&lt;br&gt;%1</source>
@@ -1267,16 +1218,26 @@ Errp: %1</translation>
         <translation>Tem certeza?</translation>
     </message>
     <message>
-        <source>Error loading IC file.</source>
-        <translation>Erro ao carregar arquivo de CI.</translation>
-    </message>
-    <message>
         <source> has been modified. Do you want to save your changes?</source>
         <translation> foi modificado. Deseja salvar suas alterações?</translation>
     </message>
     <message>
         <source>New Project*</source>
         <translation>Projeto Novo*</translation>
+    </message>
+    <message>
+        <source>Don&apos;t show this again.</source>
+        <translation>Não mostrar novamente.</translation>
+    </message>
+    <message>
+        <source>This version is not 100% compatible with previous versions of wiRed Panda.
+To open old version projects containing ICs(or boxes) and/or skins,their files must be moved to the same directory as the main project file.
+wiRed Panda 4.0 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
+You have to save new projects before having access to ICs.</source>
+        <translation>Esta versão não é 100% compatível com versões anteriores do wiRed Panda.
+Para abrir um projeto de versão anterior que contenha CIs(ou caixas) e/ou aparências, seus arquivos precisam ser movidos para o mesmo diretório do arquivo do projeto principal.
+wiRed Panda 4.0 agora alistará automaticamente todos os outros arquivos .panda localizados no mesmo diretório do projeto atual como CIs na aba de edição.
+Você terá que salvar seus projetos novos antes de poder acessar CIs.</translation>
     </message>
 </context>
 <context>

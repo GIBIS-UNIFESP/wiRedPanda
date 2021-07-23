@@ -821,7 +821,7 @@ void Editor::load(QDataStream &ds)
     if (version > GlobalProperties::version) {
         QMessageBox::warning(m_mainWindow, tr("Newer version file."), tr("Warning! Your Wired Panda is possibly outdated.\n The file you are opening has been saved in a newer version.\n Please, check for updates."));
     } else if (version < 4.0) {
-        QMessageBox::warning(m_mainWindow, tr("Old version file."), tr("Warning! This is an old version wiRed Panda project file (version < 4.0). To open it correctly, save all CIs and skins into the main project directory."));
+        QMessageBox::warning(m_mainWindow, tr("Old version file."), tr("Warning! This is an old version wiRed Panda project file (version < 4.0). To open it correctly, save all ICs and skins into the main project directory."));
     }
     COMMENT("Version: " << version, 0);
     QString dolphinFilename(SerializationFunctions::loadDolphinFilename(ds, version));

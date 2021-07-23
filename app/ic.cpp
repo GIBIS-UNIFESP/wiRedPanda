@@ -91,6 +91,7 @@ void IC::loadOutputs(ICPrototype *prototype)
 
 void IC::loadFile(const QString &fname)
 {
+    //qDebug() << "Opening IC " << fname;
     ICPrototype *prototype = ICManager::instance()->getPrototype(fname);
     Q_ASSERT(prototype);
     m_file = prototype->fileName();
@@ -104,6 +105,7 @@ void IC::loadFile(const QString &fname)
     // Loading outputs
     loadOutputs(prototype);
     updatePorts();
+    //qDebug() << "IC loaded! " << fname;
 }
 
 QString IC::getFile() const
