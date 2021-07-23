@@ -10,7 +10,6 @@
 #include <QSettings>
 
 #include "common.h"
-#include "filehelper.h"
 #include "ic.h"
 #include "icnotfoundexception.h"
 #include "icprototype.h"
@@ -27,9 +26,6 @@ ICManager::ICManager(MainWindow *mainWindow, QObject *parent)
         globalICManager = this;
     }
     connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this, &ICManager::setReloadFile);
-    if (m_mainWindow) {
-        connect(this, &ICManager::addRecentIcFile, m_mainWindow, &MainWindow::addRecentIcFile);
-    }
 }
 
 ICManager::~ICManager()
@@ -41,23 +37,6 @@ ICManager::~ICManager()
     // fprintf(stderr, "Removing IC manager");
     if (globalICManager == this) {
         globalICManager = nullptr;
-    }
-}
-
-void ICManager::loadFile(QString &fname, const QString& parentFile)
-{
-    COMMENT("Loading file " << fname.toStdString() << " with parentfile name: " << parentFile.toStdString(), 3);
-    QFileInfo finfo = FileHelper::findICFile(fname, parentFile);
-    fname = finfo.filePath();
-    Q_ASSERT(finfo.exists() && finfo.isFile());
-    m_fileWatcher.addPath(finfo.absoluteFilePath());
-    if (m_ics.contains(finfo.baseName())) {
-        COMMENT("IC already inserted: " << finfo.baseName().toStdString(), 3);
-    } else {
-        COMMENT("Inserting IC: " << finfo.baseName().toStdString(), 3);
-        auto *prototype = new ICPrototype(finfo.absoluteFilePath());
-        prototype->reload();
-        m_ics.insert(finfo.baseName(), prototype);
     }
 }
 
@@ -75,10 +54,27 @@ void ICManager::clear()
 
 bool ICManager::loadIC(IC *ic, QString fname)
 {
-    COMMENT("Loading IC file " << fname.toStdString() << " with parentfile name: " << parentFile.toStdString(), 3);
+    COMMENT("Loading IC file " << fname.toStdString(), 3);
+    loadFile(fname);
     ic->loadFile(fname);
-    emit addRecentIcFile(fname);
     return true;
+}
+
+void ICManager::loadFile(QString &fname)
+{
+    COMMENT("Loading file " << fname.toStdString(), 3);
+    QFileInfo finfo;
+    finfo.setFile(m_mainWindow->getCurrentDir(), fname);
+    Q_ASSERT(finfo.exists() && finfo.isFile());
+    m_fileWatcher.addPath(finfo.absoluteFilePath());
+    if (m_ics.contains(finfo.baseName())) {
+        COMMENT("IC already inserted: " << finfo.baseName().toStdString(), 3);
+    } else {
+        COMMENT("Inserting IC: " << finfo.baseName().toStdString(), 3);
+        auto *prototype = new ICPrototype(finfo.absoluteFilePath());
+        prototype->reload();
+        m_ics.insert(finfo.baseName(), prototype);
+    }
 }
 
 void ICManager::openIC(QString fname)

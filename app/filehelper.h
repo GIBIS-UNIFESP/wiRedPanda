@@ -13,9 +13,6 @@ class FileHelper : public QObject
 {
     Q_OBJECT
 public:
-    static QFileInfo findICFile(const QString &fname, const QString &parentFile);
-    static QFileInfo findSkinFile(const QString &fname);
-
     static void verifyRecursion(const QString &fname);
 
 private:

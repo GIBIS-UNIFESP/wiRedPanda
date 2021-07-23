@@ -122,14 +122,11 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
 
     COMMENT("Loading recent file list.", 0);
     m_rfController = new RecentFilesController("recentFileList", this, true);
-    m_ricController = new RecentFilesController("recentICs", this, false);
     connect(this, &MainWindow::addRecentFile, m_rfController, &RecentFilesController::addRecentFile);
-    connect(this, &MainWindow::addRecentIcFile, m_ricController, &RecentFilesController::addRecentFile); // TODO: This signal/slot adds to recent files
     m_firstResult = nullptr;
     //updateRecentICs();
     createRecentFileActions();
     connect(m_rfController, &RecentFilesController::recentFilesUpdated, this, &MainWindow::updateRecentFileActions);
-    connect(m_ricController, &RecentFilesController::recentFilesUpdated, this, &MainWindow::updateRecentICs); // TODO: This signal is emited from RecentFilesController::addRescentFile
 
     COMMENT("Checking for autosave file recovery.", 0);
     loadAutoSaveFiles(settings, filename);
@@ -437,7 +434,6 @@ bool MainWindow::loadPandaFile(const QString &fname)
     if (!fl.exists()) {
         QMessageBox::warning(this, tr("Error!"), tr("File \"%1\" does not exist!").arg(fname), QMessageBox::Ok, QMessageBox::NoButton);
         std::cerr << tr("Error: This file does not exist: ").toStdString() << fname.toStdString() << std::endl;
-        COMMENT("Here!", 0);
         return false;
     }
     COMMENT("File exists.", 0);
@@ -451,6 +447,7 @@ bool MainWindow::loadPandaFile(const QString &fname)
             setCurrentFile(QFileInfo(fname));
             COMMENT("Loading in editor.", 0);
             m_editor->load(ds);
+            updateICList();
         } catch (std::runtime_error &e) {
             std::cerr << tr("Error loading project: ").toStdString() << e.what() << std::endl;
             QMessageBox::warning(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
@@ -604,6 +601,11 @@ QFileInfo MainWindow::getCurrentFile() const
     return m_currentFile;
 }
 
+QDir MainWindow::getCurrentDir() const
+{
+    return m_currentFile.absoluteDir();
+}
+
 void MainWindow::setCurrentFile(const QFileInfo &file)
 {
     setAutoSaveFileName(file);
@@ -613,6 +615,9 @@ void MainWindow::setCurrentFile(const QFileInfo &file)
         ui->tabWidget_mainWindow->setTabText(m_current_tab, tr("New Project"));
     }
     m_currentFile = file;
+    if (file.exists()) {
+        updateICList();
+    }
     m_tabs[m_current_tab].setCurrentFile(m_currentFile);
     if (!m_loadedAutoSave) {
         COMMENT("Adding file to controller.", 0);
@@ -647,20 +652,25 @@ void MainWindow::on_actionSelect_all_triggered()
     m_editor->selectAll();
 }
 
-void MainWindow::updateRecentICs() // TODO: Update IC box loadIC.
+void MainWindow::updateICList()
 {
     ui->scrollAreaWidgetContents_Box->layout()->removeItem(ui->verticalSpacer_IC);
     for (ListItemWidget *item : qAsConst(icItemWidgets)) {
         item->deleteLater();
     }
     icItemWidgets.clear();
-    //! Show recent files
-    const QStringList files = m_ricController->getRecentFiles();
-    for (const QString &file : files) {
-        QPixmap pixmap(QString::fromUtf8(":/basic/box.png"));
-        auto *item = new ListItemWidget(pixmap, ElementType::IC, file, this);
-        icItemWidgets.append(item);
-        ui->scrollAreaWidgetContents_Box->layout()->addWidget(item);
+    if (m_currentFile.exists()) {
+        COMMENT("Show files.", 0);
+        QDir directory(m_currentFile.absoluteDir());
+        QStringList files = directory.entryList(QStringList() << "*.panda" << "*.PANDA", QDir::Files);
+        files.removeAll(m_currentFile.fileName());
+        COMMENT("Files: " << files.join(", ").toStdString(), 0);
+        for (const QString &file : qAsConst(files)) {
+            QPixmap pixmap(QString::fromUtf8(":/basic/box.png"));
+            auto *item = new ListItemWidget(pixmap, ElementType::IC, file, this);
+            icItemWidgets.append(item);
+            ui->scrollAreaWidgetContents_Box->layout()->addWidget(item);
+        }
     }
     ui->scrollAreaWidgetContents_Box->layout()->addItem(ui->verticalSpacer_IC);
 }
@@ -777,6 +787,7 @@ void MainWindow::connectTab(int tab)
     m_dolphinFileName = m_tabs[tab].dolphinFileName();
     GlobalProperties::currentFile = m_currentFile.absoluteFilePath();
     setCurrentDir();
+    updateICList();
     COMMENT("Setting selected tab as the current one.", 0);
     m_current_tab = tab;
     COMMENT("Connecting current tab to element editor menu in UI.", 0);
