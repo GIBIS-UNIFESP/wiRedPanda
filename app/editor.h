@@ -33,25 +33,13 @@ public:
     explicit Editor(QObject *parent = nullptr);
     ~Editor() override;
     /**
-     * @brief saveLocalIC: saves an IC and its internal ICs recursively into the same local project subfolder.
-     */
-    bool saveLocalIC(IC *ic, const QString& newICPath);
-    /**
-     * @brief saveLocal: saves a project locally in a given directory so that all ICs and skins are also saved in local subfolders.
-     * This is very useful to export projects that use ICs from other folders or projects.
-     * The function saves all ICs and skins into local folders to the given project path of the main .panda file.
-     * It works recursively, saving eventual ICs inside used ICs and updates their reference paths.
-     * The function does NOT save the main project file, which should be done by save() function.
-     */
-    bool saveLocal(const QString& newPath);
-    /**
      * @brief save: saves the project through a binary data stream.
      */
     void save(QDataStream &ds, const QString &dolphinFilename);
     /**
      * @brief load: loads the project through a binary data stream.
      */
-    void load(QDataStream &ds, const QString &filename);
+    void load(QDataStream &ds);
     void cut(const QList<QGraphicsItem *> &items, QDataStream &ds);
     void copy(const QList<QGraphicsItem *> &items, QDataStream &ds);
     void paste(QDataStream &ds);

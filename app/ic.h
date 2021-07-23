@@ -27,7 +27,6 @@ public:
     void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
     void loadFile(const QString &fname);
     QString getFile() const;
-    bool setFile(const QString &newFileName);
     ICPrototype *getPrototype();
     QVector<GraphicElement *> getElements() const;
     void setSkin(bool defaultSkin, const QString &filename) override;

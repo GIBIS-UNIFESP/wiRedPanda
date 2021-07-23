@@ -614,7 +614,7 @@ bool Editor::dropEvt(QGraphicsSceneDragDropEvent *dde)
                 IC *box = dynamic_cast<IC *>(elm);
                 if (box) {
                     const QString& fname = label_auxData;
-                    if (!m_icManager->loadIC(box, fname, m_mainWindow->getCurrentFile().absoluteFilePath())) {
+                    if (!m_icManager->loadIC(box, fname)) {
                         return false;
                     }
                 }
@@ -655,7 +655,7 @@ bool Editor::dropEvt(QGraphicsSceneDragDropEvent *dde)
         QPointF ctr;
         ds >> ctr;
         double version = GlobalProperties::version;
-        QList<QGraphicsItem *> itemList = SerializationFunctions::deserialize(ds, version, m_mainWindow->getCurrentFile().absoluteFilePath());
+        QList<QGraphicsItem *> itemList = SerializationFunctions::deserialize(ds, version);
         receiveCommand(new AddItemsCommand(itemList, this));
         m_scene->clearSelection();
         for (QGraphicsItem *item : qAsConst(itemList)) {
@@ -786,7 +786,7 @@ void Editor::paste(QDataStream &ds)
     ds >> ctr;
     QPointF offset = m_mousePos - ctr - QPointF(static_cast<qreal>(32.0f), static_cast<qreal>(32.0f));
     double version = GlobalProperties::version;
-    QList<QGraphicsItem *> itemList = SerializationFunctions::deserialize(ds, version, m_mainWindow->getCurrentFile().absoluteFilePath());
+    QList<QGraphicsItem *> itemList = SerializationFunctions::deserialize(ds, version);
     receiveCommand(new AddItemsCommand(itemList, this));
     for (QGraphicsItem *item : qAsConst(itemList)) {
         if (item->type() == GraphicElement::Type) {
@@ -806,67 +806,13 @@ void Editor::selectAll()
     }
 }
 
-bool Editor::saveLocalIC(IC *ic, const QString& newICPath)
-{
-    try {
-        if (ic) {
-            COMMENT("Getting new paths for the ics.", 0)
-            QString fname = ic->getFile();
-            COMMENT("IC file name: " << fname.toStdString(), 0);
-            auto icPrototype = m_icManager->getPrototype(fname);
-            QString newFilePath = newICPath + "/boxes/" + QFileInfo(fname).fileName();
-            COMMENT("newFilePath: " << newFilePath.toStdString(), 0);
-            QFile fl(newFilePath);
-            if (!fl.exists()) {
-                COMMENT("Copying file to local dir. File does not exist yet.", 0);
-                if (icPrototype->updateLocalIC(fname, newFilePath, newICPath)) {
-                    if (!ic->setFile(newFilePath)) {
-                        std::cerr << "Error changing boxes name." << std::endl;
-                        return false;
-                    }
-                } else {
-                    std::cerr << "Error while saving boxes at the editor." << std::endl;
-                    return false;
-                }
-            } else {
-                if (!ic->setFile(newFilePath)) {
-                    std::cerr << "Error changing boxes name." << std::endl;
-                    return false;
-                }
-            }
-        }
-        return true;
-    } catch (std::runtime_error &err) {
-        QMessageBox::warning(m_mainWindow, tr("Error"), QString::fromStdString(err.what()));
-        return false;
-    }
-}
-
-bool Editor::saveLocal(const QString& newPath)
-{
-    if (!m_scene) {
-        return true;
-    }
-    auto const scene_elements = m_scene->getElements();
-    COMMENT("new path: " << newPath.toStdString(), 0);
-    for (GraphicElement *elm : scene_elements) {
-        elm->updateSkinsPath(newPath + "/skins/");
-        if (elm->elementType() == ElementType::IC) {
-            if (!saveLocalIC(dynamic_cast<IC *>(elm), newPath)) {
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
 void Editor::save(QDataStream &ds, const QString &dolphinFilename)
 {
     SerializationFunctions::saveHeader(ds, dolphinFilename, m_scene->sceneRect());
     SerializationFunctions::serialize(m_scene->items(), ds);
 }
 
-void Editor::load(QDataStream &ds, const QString &filename)
+void Editor::load(QDataStream &ds)
 {
     COMMENT("Loading file.", 0);
     m_simulationController->stop();
@@ -883,7 +829,7 @@ void Editor::load(QDataStream &ds, const QString &filename)
     COMMENT("Dolphin name: " << dolphinFilename.toStdString(), 0);
     QRectF rect(SerializationFunctions::loadRect(ds, version));
     COMMENT("Header Ok. Version: " << version, 0);
-    QList<QGraphicsItem *> items = SerializationFunctions::deserialize(ds, version, filename);
+    QList<QGraphicsItem *> items = SerializationFunctions::deserialize(ds, version);
     COMMENT("Finished loading items.", 0);
     if (m_scene) {
         for (QGraphicsItem *item : qAsConst(items)) {

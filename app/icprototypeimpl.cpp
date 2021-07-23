@@ -37,47 +37,6 @@ void ICPrototypeImpl::sortPorts(QVector<QNEPort *> &map)
     std::stable_sort(map.begin(), map.end(), comparePorts);
 }
 
-bool ICPrototypeImpl::updateLocalIC(const QString &src_fileName, const QString &tgt_fileName, const QString &dirName)
-{
-    COMMENT("Recursive call to sub ics: " << src_fileName.toStdString(), 0);
-    COMMENT("Elements: " << QString::number(m_elements.size()).toStdString(), 0);
-    for (GraphicElement *elm : qAsConst(m_elements)) {
-        if (elm->elementType() == ElementType::IC) {
-            IC *ic = dynamic_cast<IC *>(elm);
-            QString originalSubICName = ic->getFile();
-            COMMENT("moving reference of IC " << originalSubICName.toStdString(), 0);
-            QString subICFileName = dirName + "/boxes/" + QFileInfo(originalSubICName).fileName();
-            COMMENT("moving to " << subICFileName.toStdString(), 0);
-            auto prototype = ic->getPrototype();
-            if (!QFile::exists(subICFileName)) {
-                COMMENT("Copying subic file to local dir. File does not exist yet.", 0);
-                QFile::copy(originalSubICName, subICFileName);
-                if (prototype->updateLocalIC(originalSubICName, subICFileName, dirName)) {
-                    if (!ic->setFile(subICFileName)) {
-                        std::cerr << "Error updating subic name." << std::endl;
-                        return false;
-                    }
-                } else {
-                    std::cerr << "Error saving subic." << std::endl;
-                }
-            }
-        }
-    }
-    COMMENT("Updating references of subics in IC files!!!", 0);
-    try {
-        if (!SerializationFunctions::update(src_fileName, tgt_fileName, dirName)) {
-            std::cerr << "Error saving local ic." << std::endl;
-            return false;
-        }
-        COMMENT("Saved at prototype impl.", 0);
-
-    } catch (std::runtime_error &e) {
-        std::cerr << "Error saving project: " << e.what() << std::endl;
-        return false;
-    }
-    return true;
-}
-
 void ICPrototypeImpl::loadFile(const QString &fileName)
 {
     COMMENT("Reading ic", 0);
@@ -85,7 +44,7 @@ void ICPrototypeImpl::loadFile(const QString &fileName)
     QFile file(fileName);
     if (file.open(QFile::ReadOnly)) {
         QDataStream ds(&file);
-        QList<QGraphicsItem *> items = SerializationFunctions::load(ds, fileName);
+        QList<QGraphicsItem *> items = SerializationFunctions::load(ds);
         for (QGraphicsItem *item : qAsConst(items)) {
             loadItem(item);
         }

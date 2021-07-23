@@ -57,8 +57,6 @@ public:
     bool loadPandaFile(const QString &fname);
     //! Opens a message box asking the user if he wishes to save his progress
     int confirmSave(bool multiple=true);
-    //!
-    QString getOpenICFile();
     bool closeFile();
     void populateMenu(QSpacerItem *spacer, const QString& names, QLayout *layout);
     void retranslateUi();
@@ -91,7 +89,6 @@ private slots:
     void on_actionExit_triggered();
     void on_actionGates_triggered(bool checked);
     void on_actionNew_triggered();
-    void on_actionOpen_IC_triggered();
     void on_actionOpen_triggered();
     void on_actionPortuguese_triggered();
     void on_actionReload_File_triggered();
@@ -125,7 +122,6 @@ private slots:
     void autoSave();
     void on_actionMute_triggered();
     void on_actionLabels_under_icons_triggered(bool checked);
-    void on_actionSave_Local_Project_triggered();
 
 private:
     Ui::MainWindow *ui;

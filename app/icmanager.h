@@ -22,12 +22,11 @@ public:
     ICManager(MainWindow *mainWindow = nullptr, QObject *parent = nullptr);
     ~ICManager() override;
     void clear();
-    bool loadIC(IC *ic, QString fname, const QString &parentFile = "");
+    bool loadIC(IC *ic, QString fname);
     void openIC(QString fname);
     ICPrototype *getPrototype(const QString& fname);
     static ICManager *instance();
     static void setGlobalInstance(ICManager *icManager);
-    bool updatePrototypeFilePathName(const QString& sourceName, const QString& targetName);
     void wakeUp();
 signals:
     void updatedIC();
@@ -37,7 +36,6 @@ private slots:
     void setReloadFile(const QString& bname);
 
 private:
-    bool tryLoadFile(QString &fname, const QString& parentFile);
     void loadFile(QString &fname, const QString& parentFile);
 
     static ICManager *globalICManager;
