@@ -23,6 +23,7 @@ public:
     ~ICManager() override;
     void clear();
     bool loadIC(IC *ic, QString fname);
+    void loadFile(QString &fname);
     void openIC(QString fname);
     ICPrototype *getPrototype(const QString& fname);
     static ICManager *instance();
@@ -30,7 +31,6 @@ public:
     void wakeUp();
 signals:
     void updatedIC();
-    void addRecentIcFile(const QString& fname);
 
 private slots:
     void setReloadFile(const QString& bname);

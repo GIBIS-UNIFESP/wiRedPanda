@@ -45,6 +45,8 @@ public:
     void show();
     //! Returns the file name of the currently loaded Panda file.
     QFileInfo getCurrentFile() const;
+    //! Returns the dir name of the currently loaded Panda file.
+    QDir getCurrentDir() const;
     //! Sets the current file to the given value.
     //! Mostly used by `loadPandaFile` and clearing functions
     void setCurrentFile(const QFileInfo &file);
@@ -71,11 +73,10 @@ public:
 
     void setCurrentDir();
 signals:
-    void addRecentIcFile(const QString &fname);
     void addRecentFile(const QString &fname);
 
 public slots:
-    void updateRecentICs();
+    void updateICList();
     void closeTab(int tab);
     void selectTab(int tab);
 
@@ -138,7 +139,7 @@ private:
 
     QVector<QAction*> m_undoAction;
     QVector<QAction*> m_redoAction;
-    RecentFilesController *m_rfController, *m_ricController;
+    RecentFilesController *m_rfController;
     QAction *m_recentFileActs[RecentFilesController::MaxRecentFiles];
     QTranslator *m_translator;
     QVector<ListItemWidget *> icItemWidgets, searchItemWidgets;

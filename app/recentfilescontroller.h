@@ -9,7 +9,7 @@
 #include <QObject>
 
 /**
- * Class to hold the list of recent open files and IC
+ * Class to hold the list of recent open files
  */
 class RecentFilesController : public QObject
 {
