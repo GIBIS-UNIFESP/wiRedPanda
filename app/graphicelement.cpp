@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdexcept>
 
+#include <qdir.h>
 #include <QFileInfo>
 #include <QKeyEvent>
 #include <QPainter>
@@ -12,6 +13,7 @@
 
 #include "common.h"
 #include "graphicelement.h"
+#include "globalproperties.h"
 #include "nodes/qneconnection.h"
 #include "nodes/qneport.h"
 #include "scene.h"
@@ -109,7 +111,6 @@ void GraphicElement::setPixmap(const QString &pixmapName)
     if (pixmapPath != m_currentPixmapName) {
         if (!loadedPixmaps.contains(pixmapPath)) {
             // TODO: use QPixmap::loadFromData() here
-
             if (!loadedPixmaps[pixmapPath].load(pixmapPath)) {
                 std::cerr << "Problem loading pixmapPath = " << pixmapPath.toStdString() << '\n';
                 throw std::runtime_error(ERRORMSG("Couldn't load pixmap."));
@@ -416,12 +417,14 @@ void GraphicElement::loadPixmapSkinName(QDataStream &ds, size_t skin)
     QString name;
     ds >> name;
     if ((skin < static_cast<size_t>(m_pixmapSkinName.size()))) {
-        QFileInfo fileInfo(name);
+        QFileInfo fileInfo(QFileInfo(GlobalProperties::currentFile).absoluteDir(), name);
+        COMMENT("Skin filename: " << fileInfo.absoluteFilePath().toStdString(), 0);
         if (fileInfo.isFile()) {
-            //std::cout << "Could not load skins: " << name.toStdString() << std::endl;
-        //} else {
             m_pixmapSkinName[skin] = name;
+        } else {
+            std::cout << "Could not load some of the skins." << std::endl;
         }
+
     } else {
         std::cout << "Could not load some of the skins." << std::endl;
     }

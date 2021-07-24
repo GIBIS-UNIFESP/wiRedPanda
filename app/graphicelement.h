@@ -40,7 +40,6 @@ public:
 
     /* GraphicElement interface. */
     ElementType elementType() const;
-
     ElementGroup elementGroup() const;
 
     /**
