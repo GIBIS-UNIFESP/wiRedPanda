@@ -74,7 +74,7 @@
     <widget class="QLineEdit" name="lineEditTrigger"/>
    </item>
    <item row="17" column="0">
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="label_skin">
      <property name="text">
       <string>Skin</string>
      </property>

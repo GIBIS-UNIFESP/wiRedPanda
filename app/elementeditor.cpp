@@ -102,7 +102,7 @@ void ElementEditor::contextMenu(QPoint screenPos)
     if (m_hasTrigger) {
         menu.addAction(QIcon(ElementFactory::getPixmap(ElementType::BUTTON)), triggerActionText)->setData(triggerActionText);
     }
-    if (m_canChangeSkin) {
+    if ((m_canChangeSkin)&&(GlobalProperties::currentFile != "")) {
         menu.addAction(changeSkinText);
         menu.addAction(revertSkinText);
     }
@@ -166,7 +166,6 @@ void ElementEditor::contextMenu(QPoint screenPos)
             addElementAction(submenumorph, firstElm, ElementType::BUZZER, m_hasSameType);
             break;
         }
-
         case ElementGroup::IC:
         case ElementGroup::MUX:
         case ElementGroup::OTHER:
@@ -233,11 +232,29 @@ void ElementEditor::changeTriggerAction()
 
 void ElementEditor::updateElementSkin()
 {
-    const QString homeDir = QDir::homePath();
-    QString fname = QFileDialog::getOpenFileName(this, tr("Open File"), homeDir, tr("Images (*.png *.gif *.jpg)"));
+    const QString homeDir = QFileInfo(GlobalProperties::currentFile).absolutePath();
+    COMMENT("Updating skin with home dir: " << homeDir.toStdString(), 0);
+    QFileDialog fileDialog;
+    fileDialog.setObjectName(tr("Open File"));
+    fileDialog.setFileMode(QFileDialog::ExistingFile);
+    //fileDialog.setFilter(QDir::Files);
+    fileDialog.setNameFilter(tr("Images (*.png *.gif *.jpg *.jpeg)"));
+    fileDialog.setDirectory(homeDir);
+    connect(&fileDialog, &QFileDialog::directoryEntered, this, [&fileDialog, homeDir](QString new_dir) {
+        COMMENT("Changing dir to " << new_dir.toStdString() << ", home: " << homeDir.toStdString(), 0);
+        if (new_dir != homeDir) {
+            fileDialog.setDirectory(homeDir);
+        }
+    });
+    if (!fileDialog.exec()) {
+        return;
+    }
+    auto files = fileDialog.selectedFiles();
+    QString fname = files.first();
     if (fname.isEmpty()) {
         return;
     }
+    COMMENT("File name: " << fname.toStdString(), 0);
     m_updatingSkin = true;
     m_skinName = fname;
     m_defaultSkin = false;
@@ -284,7 +301,7 @@ void ElementEditor::setCurrentElements(const QVector<GraphicElement *> &elms)
         GraphicElement *firstElement = m_elements.front();
         for (GraphicElement *elm : qAsConst(m_elements)) {
             m_hasLabel &= elm->hasLabel();
-            m_canChangeSkin &= elm->canChangeSkin();
+            m_canChangeSkin &= elm->canChangeSkin() & !GlobalProperties::currentFile.isEmpty();
             m_hasColors &= elm->hasColors();
             m_hasAudio &= elm->hasAudio();
             m_hasFrequency &= elm->hasFrequency();
@@ -470,6 +487,10 @@ void ElementEditor::setCurrentElements(const QVector<GraphicElement *> &elms)
         }
         setEnabled(true);
         setVisible(true);
+        /* Skin */
+        m_ui->label_skin->setVisible(m_canChangeSkin);
+        m_ui->pushButtonChangeSkin->setVisible(m_canChangeSkin);
+        m_ui->pushButtonDefaultSkin->setVisible(m_canChangeSkin);
     } else {
         m_hasElements = false;
         setVisible(false);
