@@ -525,10 +525,6 @@ Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Images (*.png *.gif *.jpg)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Green</source>
         <translation type="unfinished"></translation>
     </message>
@@ -558,6 +554,10 @@ Error: %1</source>
     </message>
     <message>
         <source>Locked</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Images (*.png *.gif *.jpg *.jpeg)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1229,6 +1229,10 @@ Error: %1</source>
 To open old version projects containing ICs(or boxes) and/or skins,their files must be moved to the same directory as the main project file.
 wiRed Panda 4.0 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
 You have to save new projects before having access to ICs.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About this version</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

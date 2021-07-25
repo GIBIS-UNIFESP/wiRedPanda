@@ -498,6 +498,13 @@ void ElementEditor::setCurrentElements(const QVector<GraphicElement *> &elms)
     }
 }
 
+void ElementEditor::disable()
+{
+    m_hasElements = false;
+    setVisible(false);
+    m_ui->lineEditElementLabel->setText("");
+}
+
 void ElementEditor::selectionChanged()
 {
     QVector<GraphicElement *> elms = m_scene->selectedElements();

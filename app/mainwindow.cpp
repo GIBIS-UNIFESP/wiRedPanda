@@ -55,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     qDebug() << "WIRED PANDA Version = " << APP_VERSION << " OR " << QString::number(GlobalProperties::version);
     ui->setupUi(this);
     ThemeManager::globalMngr = new ThemeManager(this);
-    setWindowTitle("wiRED PANDA v" + QString(APP_VERSION));
+
     /* Translation */
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     COMMENT("Settings filename: " << settings.fileName().toStdString(), 0);
@@ -114,6 +114,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     connect(ui->actionCut, &QAction::triggered, m_editor, &Editor::cutAction);
     connect(ui->actionPaste, &QAction::triggered, m_editor, &Editor::pasteAction);
     connect(ui->actionDelete, &QAction::triggered, m_editor, &Editor::deleteAction);
+    connect(ui->actionAbout_this_version, &QAction::triggered, this, &MainWindow::aboutThisVersion);
 
     COMMENT("Setting up zoom and screen funcionalities.", 0);
     connect(m_editor, &Editor::scroll, this, &MainWindow::scrollView);
@@ -133,6 +134,9 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     loadAutoSaveFiles(settings, filename);
     COMMENT("Checking playing simulation.", 0);
     ui->actionPlay->setChecked(true);
+
+    COMMENT("Window title.", 0);
+    setWindowTitle("wiRED PANDA v" + QString(APP_VERSION));
 }
 
 void MainWindow::loadAutoSaveFiles(QSettings &settings, const QString &filename)
@@ -325,34 +329,41 @@ void MainWindow::show()
 {
     QMainWindow::show();
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    COMMENT("What is new message box.", 0);
     if (!settings.contains("WhatsNew4")) {
-        QCheckBox *cb = new QCheckBox(tr("Don't show this again."));
-        QMessageBox msgBox;
-        msgBox.setParent(this);
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setIcon(QMessageBox::Icon::Information);
-        msgBox.setWindowTitle("wiRed Panda version 4.0.");
-        msgBox.setText(QString(tr("This version is not 100\% compatible with previous versions of wiRed Panda.\n"
-                                  "To open old version projects containing ICs(or boxes) and/or skins,"
-                                  "their files must be moved to the same directory as the main project file.\n"
-                                  "wiRed Panda 4.0 will automatically list all other .panda files located "
-                                  "in the same directory of the current project as ICs in the editor tab.\n"
-                                  "You have to save new projects before having access to ICs.")));
-        msgBox.setWindowModality(Qt::WindowModal);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.setCheckBox(cb);
-        QObject::connect(cb, &QCheckBox::stateChanged, this, [](int state) {
-            if (static_cast<Qt::CheckState>(state) == Qt::CheckState::Checked) {
-                QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-                settings.setValue("WhatsNew4", "true");
-            } else {
-                QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-                settings.remove("WhatsNew4");
-            }
-        });
-        msgBox.exec();
+        aboutThisVersion();
     }
+}
+
+void MainWindow::aboutThisVersion()
+{
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
+    COMMENT("What is new message box.", 0);
+    QCheckBox *cb = new QCheckBox(tr("Don't show this again."));
+    cb->setChecked(settings.contains("WhatsNew4"));
+    QMessageBox msgBox;
+    msgBox.setParent(this);
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setIcon(QMessageBox::Icon::Information);
+    msgBox.setWindowTitle("wiRed Panda version 4.0.");
+    msgBox.setText(QString(tr("This version is not 100\% compatible with previous versions of wiRed Panda.\n"
+                              "To open old version projects containing ICs(or boxes) and/or skins,"
+                              "their files must be moved to the same directory as the main project file.\n"
+                              "wiRed Panda 4.0 will automatically list all other .panda files located "
+                              "in the same directory of the current project as ICs in the editor tab.\n"
+                              "You have to save new projects before having access to ICs.")));
+    msgBox.setWindowModality(Qt::WindowModal);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.setCheckBox(cb);
+    QObject::connect(cb, &QCheckBox::stateChanged, this, [](int state) {
+        if (static_cast<Qt::CheckState>(state) == Qt::CheckState::Checked) {
+            QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
+            settings.setValue("WhatsNew4", "true");
+        } else {
+            QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
+            settings.remove("WhatsNew4");
+        }
+    });
+    msgBox.exec();
 }
 
 int MainWindow::closeTabAnyway()
@@ -831,6 +842,7 @@ void MainWindow::selectTab(int tab)
     if (tab != m_current_tab) {
         disconnectTab();
         connectTab(tab);
+        m_editor->clearSelection();
     }
     COMMENT("New tab selected. BD filename: " << m_dolphinFileName.toStdString(), 0);
 }

@@ -1120,3 +1120,9 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
     }
     return QObject::eventFilter(obj, evt);
 }
+
+void Editor::clearSelection()
+{
+    m_scene->clearSelection();
+    m_elementEditor->disable();
+}

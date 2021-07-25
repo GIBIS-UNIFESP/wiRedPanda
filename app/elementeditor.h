@@ -45,6 +45,7 @@ public:
 
     bool eventFilter(QObject *obj, QEvent *event) override;
 
+    void disable();
 signals:
     void sendCommand(QUndoCommand *cmd);
 
