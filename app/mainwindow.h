@@ -123,7 +123,7 @@ private slots:
     void autoSave();
     void on_actionMute_triggered();
     void on_actionLabels_under_icons_triggered(bool checked);
-
+    void aboutThisVersion();
 private:
     Ui::MainWindow *ui;
     Editor *m_editor;

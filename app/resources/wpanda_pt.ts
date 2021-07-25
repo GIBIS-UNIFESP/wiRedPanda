@@ -548,10 +548,6 @@ Erro: %1</translation>
         <translation>Colocar aparência padrão</translation>
     </message>
     <message>
-        <source>Images (*.png *.gif *.jpg)</source>
-        <translation>Imagens (*.png *.gif *.jpg)</translation>
-    </message>
-    <message>
         <source>Output Ports:</source>
         <translation>Portas de Saída:</translation>
     </message>
@@ -562,6 +558,10 @@ Erro: %1</translation>
     <message>
         <source>Locked</source>
         <translation>Travado</translation>
+    </message>
+    <message>
+        <source>Images (*.png *.gif *.jpg *.jpeg)</source>
+        <translation>Imagens (*.png *.gif *.jpg *.jpeg)</translation>
     </message>
 </context>
 <context>
@@ -1238,6 +1238,10 @@ You have to save new projects before having access to ICs.</source>
 Para abrir um projeto de versão anterior que contenha CIs(ou caixas) e/ou aparências, seus arquivos precisam ser movidos para o mesmo diretório do arquivo do projeto principal.
 wiRed Panda 4.0 agora alistará automaticamente todos os outros arquivos .panda localizados no mesmo diretório do projeto atual como CIs na aba de edição.
 Você terá que salvar seus projetos novos antes de poder acessar CIs.</translation>
+    </message>
+    <message>
+        <source>About this version</source>
+        <translation>Sobre esta versão</translation>
     </message>
 </context>
 <context>

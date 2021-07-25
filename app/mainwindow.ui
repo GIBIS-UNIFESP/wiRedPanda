@@ -589,6 +589,7 @@
     </property>
     <addaction name="actionAbout"/>
     <addaction name="actionAbout_Qt"/>
+    <addaction name="actionAbout_this_version"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -1091,6 +1092,11 @@
     <string>Labels under icons</string>
    </property>
   </action>
+  <action name="actionAbout_this_version">
+   <property name="text">
+    <string>About this version</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1110,14 +1116,14 @@
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/output/output.qrc"/>
-  <include location="resources/misc/misc.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
   <include location="resources/memory/light/memory_light.qrc"/>
+  <include location="resources/misc/misc.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/output/output.qrc"/>
  </resources>
  <connections/>
 </ui>

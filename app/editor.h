@@ -74,6 +74,7 @@ public:
 
     void setCircuitUpdateRequired();
     void setAutoSaveRequired();
+    void clearSelection();
 signals:
     void scroll(int x, int y);
     void circuitHasChanged();
