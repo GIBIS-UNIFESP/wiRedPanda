@@ -299,7 +299,11 @@ void ElementEditor::setCurrentElements(const QVector<GraphicElement *> &elms)
         m_hasSameType = true;
         m_hasElements = true;
         GraphicElement *firstElement = m_elements.front();
+        ElementType element_type = firstElement->elementType();
         for (GraphicElement *elm : qAsConst(m_elements)) {
+            if (elm->elementType() != firstElement->elementType()) {
+                element_type = ElementType::UNKNOWN;
+            }
             m_hasLabel &= elm->hasLabel();
             m_canChangeSkin &= elm->canChangeSkin() & !GlobalProperties::currentFile.isEmpty();
             m_hasColors &= elm->hasColors();
@@ -336,6 +340,8 @@ void ElementEditor::setCurrentElements(const QVector<GraphicElement *> &elms)
         }
         m_canChangeInputSize = (minimum_inputs < maximum_inputs);
         m_canChangeOutputSize = (minimum_outputs < maximum_outputs);
+        /* Element type */
+        m_ui->label_type->setText(ElementFactory::typeToTitleText(element_type));
         /* Labels */
         m_ui->lineEditElementLabel->setVisible(m_hasLabel);
         m_ui->lineEditElementLabel->setEnabled(m_hasLabel);

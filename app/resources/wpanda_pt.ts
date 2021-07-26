@@ -563,6 +563,10 @@ Erro: %1</translation>
         <source>Images (*.png *.gif *.jpg *.jpeg)</source>
         <translation>Imagens (*.png *.gif *.jpg *.jpeg)</translation>
     </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Type&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Tipo&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
 </context>
 <context>
     <name>ElementFactory</name>
@@ -685,6 +689,130 @@ Erro: %1</translation>
     <message>
         <source>Line</source>
         <translation>Linha</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;PUSH BUTTON&lt;/b&gt;</source>
+        <translation>&lt;b&gt;BOTÃO DE PRESSÃO&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;LED&lt;/b&gt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;AND&lt;/b&gt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;OR&lt;/b&gt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;CLOCK SIGNAL&lt;/b&gt;</source>
+        <translation>&lt;b&gt;SINAL DE RELÓGIO&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;SWITCH&lt;/b&gt;</source>
+        <translation>&lt;b&gt;INTERRUPTOR&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;NOT&lt;/b&gt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;NAND&lt;/b&gt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;NOR&lt;/b&gt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;XOR&lt;/b&gt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;XNOR&lt;/b&gt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;VCC&lt;/b&gt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;GROUND&lt;/b&gt;</source>
+        <translation>&lt;b&gt;TERRA&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;D-FLIPFLOP&lt;/b&gt;</source>
+        <translation>&lt;b&gt;FLIPFLOP D&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source></source>
+        <translation>&lt;b&gt;LATCH D&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;SR-FLIPFLOP&lt;/b&gt;</source>
+        <translation>&lt;b&gt;FLIPFLOP SR&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;ROTARY SWITCH&lt;/b&gt;</source>
+        <translation>&lt;b&gt;COMUTADOR ROTATIVO&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;T-FLIPFLOP&lt;/b&gt;</source>
+        <translation>&lt;b&gt;FLIPFLOP T&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;7-SEGMENT DISPLAY&lt;/b&gt;</source>
+        <translation>&lt;b&gt;DISPLAY DE 7 SEGMENTOS&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;14-SEGMENT DISPLAY&lt;/b&gt;</source>
+        <translation>&lt;b&gt;DISPLAY DE 14 SEGMENTOS&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;INTEGRATED CIRCUIT&lt;/b&gt;</source>
+        <translation>&lt;b&gt;CIRCUITO INTEGRADO&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;MULTIPLEXER&lt;/b&gt;</source>
+        <translation>&lt;b&gt;MULTIPLEXADOR&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;DEMULTIPLEXER&lt;/b&gt;</source>
+        <translation>&lt;b&gt;DEMULTIPLEXADOR&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;NODE&lt;/b&gt;</source>
+        <translation>&lt;b&gt;NÓ&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;BUZZER&lt;/b&gt;</source>
+        <translation>&lt;b&gt;CAMPAINHA&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;TEXT&lt;/b&gt;</source>
+        <translation>&lt;b&gt;TEXTO&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;LINE&lt;/b&gt;</source>
+        <translation>&lt;b&gt;LINHA&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;MULTIPLE TYPES&lt;/b&gt;</source>
+        <translation>&lt;b&gt;VÁRIOS TIPOS&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;D-LATCH&lt;/b&gt;</source>
+        <translation>&lt;b&gt;LATCH D&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;JK-FLIPFLOP&lt;/b&gt;</source>
+        <translation>&lt;b&gt;FLIPFLOP JK&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;JK-LATCH&lt;/b&gt;</source>
+        <translation>&lt;b&gt;LATCH JK&lt;/b&gt;</translation>
     </message>
 </context>
 <context>
