@@ -25,6 +25,7 @@ public:
 
     static ElementType textToType(QString text);
     static QString typeToText(ElementType type);
+    static QString typeToTitleText(ElementType type);
     static QString translatedName(ElementType type);
     static QPixmap getPixmap(ElementType type);
     static GraphicElement *buildElement(ElementType type, QGraphicsItem *parent = nullptr);

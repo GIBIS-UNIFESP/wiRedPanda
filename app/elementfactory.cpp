@@ -151,6 +151,74 @@ QString ElementFactory::typeToText(ElementType type)
     }
 }
 
+QString ElementFactory::typeToTitleText(ElementType type)
+{
+    COMMENT("Creating Element Type conversion type to text.", 4);
+    switch (type) {
+    case ElementType::BUTTON:
+        return tr("<b>PUSH BUTTON</b>");
+    case ElementType::LED:
+        return tr("<b>LED</b>");
+    case ElementType::AND:
+        return tr("<b>AND</b>");
+    case ElementType::OR:
+        return tr("<b>OR</b>");
+    case ElementType::CLOCK:
+        return tr("<b>CLOCK SIGNAL</b>");
+    case ElementType::SWITCH:
+        return tr("<b>SWITCH</b>");
+    case ElementType::NOT:
+        return tr("<b>NOT</b>");
+    case ElementType::NAND:
+        return tr("<b>NAND</b>");
+    case ElementType::NOR:
+        return tr("<b>NOR</b>");
+    case ElementType::XOR:
+        return tr("<b>XOR</b>");
+    case ElementType::XNOR:
+        return tr("<b>XNOR</b>");
+    case ElementType::VCC:
+        return tr("<b>VCC</b>");
+    case ElementType::GND:
+        return tr("<b>GROUND</b>");
+    case ElementType::DFLIPFLOP:
+        return tr("<b>D-FLIPFLOP</b>");
+    case ElementType::DLATCH:
+        return tr("<b>D-LATCH</b>");
+    case ElementType::JKFLIPFLOP:
+        return tr("<b>JK-FLIPFLOP</b>");
+    case ElementType::JKLATCH:
+        return tr("<b>JK-LATCH</b>");
+    case ElementType::SRFLIPFLOP:
+        return tr("<b>SR-FLIPFLOP</b>");
+    case ElementType::ROTARY:
+        return tr("<b>ROTARY SWITCH</b>");
+    case ElementType::TFLIPFLOP:
+        return tr("<b>T-FLIPFLOP</b>");
+    case ElementType::DISPLAY:
+        return tr("<b>7-SEGMENT DISPLAY</b>");
+    case ElementType::DISPLAY14:
+        return tr("<b>14-SEGMENT DISPLAY</b>");
+    case ElementType::IC:
+        return tr("<b>INTEGRATED CIRCUIT</b>");
+    case ElementType::MUX:
+        return tr("<b>MULTIPLEXER</b>");
+    case ElementType::DEMUX:
+        return tr("<b>DEMULTIPLEXER</b>");
+    case ElementType::NODE:
+        return tr("<b>NODE</b>");
+    case ElementType::BUZZER:
+        return tr("<b>BUZZER</b>");
+    case ElementType::TEXT:
+        return tr("<b>TEXT</b>");
+    case ElementType::LINE:
+        return tr("<b>LINE</b>");
+    case ElementType::UNKNOWN:
+    default:
+        return tr("<b>MULTIPLE TYPES</b>");
+    }
+}
+
 QString ElementFactory::translatedName(ElementType type)
 {
     switch (type) {
