@@ -767,7 +767,8 @@ bool MainWindow::closeTabAction(int tab)
 
 void MainWindow::disconnectTab()
 {
-    COMMENT("Stopping simulation controller.", 0);
+    COMMENT("Stopping simulation controller and event handling.", 0);
+    m_editor->setHandlingEvents(false);
     m_editor->getSimulationController()->stop();
     COMMENT("Disconnecting zoom from UI controllers.", 0);
     disconnect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
@@ -806,6 +807,7 @@ void MainWindow::connectTab(int tab)
     ui->widgetElementEditor->setScene(m_tabs[tab].scene());
     COMMENT("Reinitialize simulation controller.", 0);
     m_editor->getSimulationController()->start();
+    m_editor->setHandlingEvents(true);
 }
 
 void MainWindow::createNewWorkspace()
@@ -831,8 +833,9 @@ void MainWindow::createNewWorkspace()
     ui->tabWidget_mainWindow->setCurrentIndex(m_current_tab);
     COMMENT("Connecting current tab to element editor menu in UI.", 0);
     ui->widgetElementEditor->setScene(m_tabs[m_current_tab].scene());
-    COMMENT("Reinitialize simulation controller and sets autosavefile.", 0);
+    COMMENT("(Re)initialize simulation controller.", 0);
     m_editor->getSimulationController()->start();
+    m_editor->setHandlingEvents(true);
     COMMENT("Finished creating new workspace.", 0);
 }
 
