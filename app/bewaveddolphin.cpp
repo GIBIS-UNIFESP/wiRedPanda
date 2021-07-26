@@ -127,15 +127,14 @@ void BewavedDolphin::drawPixMaps()
 
 void BewavedDolphin::closeEvent(QCloseEvent *e)
 {
-    e->ignore();
     if (checkSave()) {
+        m_mainWindow->setEnabled(true);
         e->accept();
     }
 }
 
 void BewavedDolphin::on_actionExit_triggered()
 {
-    m_mainWindow->setEnabled(true);
     close();
 }
 
