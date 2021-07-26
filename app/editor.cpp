@@ -53,6 +53,7 @@ Editor::Editor(QObject *parent)
     m_showGates = true;
     m_circuitUpdateRequired = false;
     m_autoSaveRequired = false;
+    m_handlingEvents = true;
     m_timer.start();
 }
 
@@ -966,9 +967,14 @@ void Editor::pasteAction()
     }
 }
 
+void Editor::setHandlingEvents(bool value)
+{
+    m_handlingEvents = value;
+}
+
 bool Editor::eventFilter(QObject *obj, QEvent *evt)
 {
-    if (!evt) {
+    if ((!m_handlingEvents) || (!evt)) {
         return false;
     }
     if (obj == m_scene) {

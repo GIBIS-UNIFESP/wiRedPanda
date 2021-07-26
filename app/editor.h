@@ -75,6 +75,7 @@ public:
     void setCircuitUpdateRequired();
     void setAutoSaveRequired();
     void clearSelection();
+    void setHandlingEvents(bool value);
 signals:
     void scroll(int x, int y);
     void circuitHasChanged();
@@ -126,6 +127,7 @@ private:
     bool m_showGates;
     bool m_circuitUpdateRequired;
     bool m_autoSaveRequired;
+    bool m_handlingEvents;
 
     QList<QGraphicsItem *> itemsAt(QPointF pos);
     QGraphicsItem *itemAt(QPointF pos);
