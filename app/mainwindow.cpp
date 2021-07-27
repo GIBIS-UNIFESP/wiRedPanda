@@ -135,8 +135,28 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     COMMENT("Checking playing simulation.", 0);
     ui->actionPlay->setChecked(true);
 
+    COMMENT("Connecting change tab shortcut to tab selection function.", 0);
+    auto *nextTabShortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Tab), ui->tabWidget_mainWindow);
+    connect(nextTabShortcut, &QShortcut::activated, this, &MainWindow::selectNextTab);
+    auto *prevTabShortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Backtab), ui->tabWidget_mainWindow);
+    connect(prevTabShortcut, &QShortcut::activated, this, &MainWindow::selectPreviousTab);
+
     COMMENT("Window title.", 0);
     setWindowTitle("wiRED PANDA v" + QString(APP_VERSION));
+}
+
+void MainWindow::selectNextTab() {
+    COMMENT("Forward: " << QString::number(m_current_tab).toStdString(), 0);
+    selectTab((m_current_tab + 1) % m_tabs.size());
+    ui->tabWidget_mainWindow->setCurrentIndex(m_current_tab);
+    COMMENT("Forward end: " << QString::number(m_current_tab).toStdString(), 0);
+}
+
+void MainWindow::selectPreviousTab() {
+    COMMENT("Backwards: " << QString::number(m_current_tab).toStdString(), 0);
+    selectTab((m_current_tab + m_tabs.size() - 1) % m_tabs.size());
+    ui->tabWidget_mainWindow->setCurrentIndex(m_current_tab);
+    COMMENT("Backwards end: " << QString::number(m_current_tab).toStdString(), 0);
 }
 
 void MainWindow::loadAutoSaveFiles(QSettings &settings, const QString &filename)
@@ -145,9 +165,9 @@ void MainWindow::loadAutoSaveFiles(QSettings &settings, const QString &filename)
         COMMENT("autosave files exist in config file.", 0);
         bool yes_to_all = false;
         bool no_to_all = false;
-        QString allAutoSaveFileName(settings.value("autosaveFile").toString());
-        QStringList autoSaveFileNameList(allAutoSaveFileName.split("\t",Qt::SkipEmptyParts));
-        COMMENT("all files: " << allAutoSaveFileName.toStdString(), 0);
+        QString allAutoSaveFileNames(settings.value("autosaveFile").toString());
+        QStringList autoSaveFileNameList(allAutoSaveFileNames.split("\t",Qt::SkipEmptyParts));
+        COMMENT("all files: " << allAutoSaveFileNames.toStdString(), 0);
         foreach(auto autoSaveFileName, autoSaveFileNameList) {
             if ((QFile(autoSaveFileName).exists()) && (autoSaveFileName != filename)) {
                 COMMENT("Autosave exists and was not open. Trying to recover.", 0);
@@ -165,8 +185,8 @@ void MainWindow::loadAutoSaveFiles(QSettings &settings, const QString &filename)
                     if (!loadPandaFile(autoSaveFileName)) {
                         ret = autoSaveFileDeleteAnyway(autoSaveFileName);
                         if (ret == QMessageBox::Yes) {
-                            allAutoSaveFileName.remove(autoSaveFileName+"\t");
-                            settings.setValue("autosaveFile", allAutoSaveFileName);
+                            allAutoSaveFileNames.remove(autoSaveFileName+"\t");
+                            settings.setValue("autosaveFile", allAutoSaveFileNames);
                         }
                     }
                 }
@@ -175,8 +195,8 @@ void MainWindow::loadAutoSaveFiles(QSettings &settings, const QString &filename)
                 m_loadedAutoSave = true;
             } else if (!QFile(autoSaveFileName).exists()) {
                 COMMENT("Removing autosave file name from config that does not exist.", 0);
-                allAutoSaveFileName.remove(autoSaveFileName+"\t");
-                settings.setValue("autosaveFile", allAutoSaveFileName);
+                allAutoSaveFileNames.remove(autoSaveFileName+"\t");
+                settings.setValue("autosaveFile", allAutoSaveFileNames);
             }
         }
     } else {
@@ -272,14 +292,14 @@ bool MainWindow::save(QString fname)
     COMMENT("fname: " << fname.toStdString(), 0);
     COMMENT("Getting autosave settings info.", 0);
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    QString allAutoSaveFileName;
+    QString allAutoSaveFileNames;
     if (settings.contains("autosaveFile")) {
-        allAutoSaveFileName = settings.value("autosaveFile").toString();
+        allAutoSaveFileNames = settings.value("autosaveFile").toString();
     }
-    COMMENT("All auto save file names before save: " << allAutoSaveFileName.toStdString(), 0);
+    COMMENT("All auto save file names before save: " << allAutoSaveFileNames.toStdString(), 0);
     COMMENT("Checking if it is an autosave file or new a new project, and ask for a filename.", 0);
     QString autoSaveFileName;
-    if ((fname.isEmpty()) || ((!allAutoSaveFileName.isEmpty()) && (allAutoSaveFileName.contains(fname)))) {
+    if ((fname.isEmpty()) || ((!allAutoSaveFileNames.isEmpty()) && (allAutoSaveFileNames.contains(fname)))) {
         COMMENT("Should open window!", 0);
         autoSaveFileName = fname;
         if (m_currentFile.fileName().isEmpty()) {
@@ -308,16 +328,16 @@ bool MainWindow::save(QString fname)
         m_editor->getUndoStack()->setClean();
         COMMENT("Remove from autosave list recovered file that has been saved.", 0)
         if (!autoSaveFileName.isEmpty()) {
-            allAutoSaveFileName.remove(autoSaveFileName+"\t");
-            settings.setValue("autosaveFile", allAutoSaveFileName);
-            COMMENT("All auto save file names after removing recovered: " << allAutoSaveFileName.toStdString(), 0);
+            allAutoSaveFileNames.remove(autoSaveFileName+"\t");
+            settings.setValue("autosaveFile", allAutoSaveFileNames);
+            COMMENT("All auto save file names after removing recovered: " << allAutoSaveFileNames.toStdString(), 0);
         }
         COMMENT("Remove autosave from settings and deleting it.", 0);
         if (m_autoSaveFile[m_current_tab]->isOpen()) {
-            allAutoSaveFileName.remove(m_autoSaveFile[m_current_tab]->fileName());
-            settings.setValue("autosaveFile", allAutoSaveFileName+"\n");
+            allAutoSaveFileNames.remove(m_autoSaveFile[m_current_tab]->fileName()+"\t");
+            settings.setValue("autosaveFile", allAutoSaveFileNames+"\n");
             m_autoSaveFile[m_current_tab]->remove();
-            COMMENT("All auto save file names after removing autosave: " << allAutoSaveFileName.toStdString(), 0);
+            COMMENT("All auto save file names after removing autosave: " << allAutoSaveFileNames.toStdString(), 0);
         }
         return true;
     }
@@ -575,16 +595,16 @@ void MainWindow::updateSettings() {
 bool MainWindow::hasModifiedFiles()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    QString allAutoSaveFileName;
+    QString allAutoSaveFileNames;
     if (settings.contains("autosaveFile")) {
-        allAutoSaveFileName = settings.value("autosaveFile").toString();
+        allAutoSaveFileNames = settings.value("autosaveFile").toString();
     }
     for (int idx = 0; idx < m_tabs.size(); ++idx) {
         auto tab = m_tabs[idx];
         if (!tab.undoStack()->isClean()) {
             return true;
         }
-        if ((!tab.currentFile().fileName().isEmpty())&&(allAutoSaveFileName.contains(tab.currentFile().fileName()))) {
+        if ((!tab.currentFile().fileName().isEmpty())&&(allAutoSaveFileNames.contains(tab.currentFile().fileName()))) {
             return true;
         }
     }
@@ -699,17 +719,17 @@ bool MainWindow::closeTabAction(int tab)
 {
     COMMENT("Closing tab " << QString::number(tab).toStdString() << ", #tabs: " << m_tabs.size() << ", current tab: " << m_current_tab, 0);
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    QString allAutoSaveFileName;
+    QString allAutoSaveFileNames;
     QString autoSaveFileName;
     COMMENT("Reading autosave file names.", 0);
     if (settings.contains("autosaveFile")) {
-        allAutoSaveFileName = settings.value("autosaveFile").toString();
+        allAutoSaveFileNames = settings.value("autosaveFile").toString();
         COMMENT("Verifying if this is a recovered autosave file.", 0);
-        if (allAutoSaveFileName.contains(m_tabs[tab].currentFile().fileName())) {
+        if (allAutoSaveFileNames.contains(m_tabs[tab].currentFile().fileName())) {
             autoSaveFileName = m_tabs[tab].currentFile().absoluteFilePath();
         }
     }
-    COMMENT("All auto save file names before closing tab: " << allAutoSaveFileName.toStdString(), 0);
+    COMMENT("All auto save file names before closing tab: " << allAutoSaveFileNames.toStdString(), 0);
     COMMENT("Checking if needs to save file.", 0);
     if ((!m_tabs[tab].undoStack()->isClean()) || (!autoSaveFileName.isEmpty())) {
         selectTab(tab);
@@ -731,16 +751,16 @@ bool MainWindow::closeTabAction(int tab)
         if (discardAutosaves) {
             if (!autoSaveFileName.isEmpty()) {
                 COMMENT("Discarding recovered autosave file.", 0);
-                allAutoSaveFileName.remove(autoSaveFileName+"\t");
-                settings.setValue("autosaveFile", allAutoSaveFileName);
-                COMMENT("All auto save file names after removing recovery file: " << allAutoSaveFileName.toStdString(), 0);
+                allAutoSaveFileNames.remove(autoSaveFileName+"\t");
+                settings.setValue("autosaveFile", allAutoSaveFileNames);
+                COMMENT("All auto save file names after removing recovery file: " << allAutoSaveFileNames.toStdString(), 0);
             }
             if (!m_tabs[tab].undoStack()->isClean()) {
                 COMMENT("Discarding autosave modification.", 0);
-                allAutoSaveFileName.remove(m_autoSaveFile[tab]->fileName()+"\t");
-                settings.setValue("autosaveFile", allAutoSaveFileName);
+                allAutoSaveFileNames.remove(m_autoSaveFile[tab]->fileName()+"\t");
+                settings.setValue("autosaveFile", allAutoSaveFileNames);
                 m_autoSaveFile[tab]->remove(); // This only removes the autosave file itself, not the QTempFile object.
-                COMMENT("All auto save file names after removing autosave file: " << allAutoSaveFileName.toStdString(), 0);
+                COMMENT("All auto save file names after removing autosave file: " << allAutoSaveFileNames.toStdString(), 0);
             }
         }
     }
@@ -1296,18 +1316,18 @@ void MainWindow::autoSave()
 {
     COMMENT("Starting autosave.", 2);
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    QString allAutoSaveFileName;
+    QString allAutoSaveFileNames;
     COMMENT("Cheking if autosavefile exists and if it contains current project file. If so, remove autosavefile from it.", 0);
     if (settings.contains("autosaveFile")) {
-        allAutoSaveFileName = settings.value("autosaveFile").toString();
-        COMMENT("All auto save file names before autosaving: " << allAutoSaveFileName.toStdString(), 3);
-        if (allAutoSaveFileName.contains(m_autoSaveFile[m_current_tab]->fileName())) {
+        allAutoSaveFileNames = settings.value("autosaveFile").toString();
+        COMMENT("All auto save file names before autosaving: " << allAutoSaveFileNames.toStdString(), 3);
+        if ((!m_autoSaveFile[m_current_tab]->fileName().isEmpty())&&(allAutoSaveFileNames.contains(m_autoSaveFile[m_current_tab]->fileName()))) {
           COMMENT("Removing current autosave file name.", 3);
-          allAutoSaveFileName.remove(m_autoSaveFile[m_current_tab]->fileName());
-          settings.setValue("autosaveFile", allAutoSaveFileName);
+          allAutoSaveFileNames.remove(m_autoSaveFile[m_current_tab]->fileName()+"\t");
+          settings.setValue("autosaveFile", allAutoSaveFileNames);
         }
     }
-    COMMENT("All auto save file names after possibly removing autosave: " << allAutoSaveFileName.toStdString(), 3);
+    COMMENT("All auto save file names after possibly removing autosave: " << allAutoSaveFileNames.toStdString(), 0);
     COMMENT("If autosave exists and undo stack is clean, remove it.", 0);
     auto undostack = m_tabs[m_current_tab].undoStack();
     COMMENT("undostack element: " << undostack->index() << " of " << undostack->count(), 0);
@@ -1352,9 +1372,9 @@ void MainWindow::autoSave()
             QString autosaveFilename = m_autoSaveFile[m_current_tab]->fileName() + "\t";
             try {
                 m_editor->save(ds, m_dolphinFileName);
-                allAutoSaveFileName.append(autosaveFilename);
-                settings.setValue("autosaveFile", allAutoSaveFileName);
-                COMMENT("All auto save file names after adding autosave: " << allAutoSaveFileName.toStdString(), 3);
+                allAutoSaveFileNames.append(autosaveFilename);
+                settings.setValue("autosaveFile", allAutoSaveFileNames);
+                COMMENT("All auto save file names after adding autosave: " << allAutoSaveFileNames.toStdString(), 3);
             } catch (std::runtime_error &e) {
                 std::cerr << tr("Error autosaving project: ").toStdString() << e.what() << std::endl;
                 m_autoSaveFile[m_current_tab]->close();

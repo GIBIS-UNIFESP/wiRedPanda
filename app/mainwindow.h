@@ -180,6 +180,8 @@ private:
      * @brief connectTab: Function called as a tab is selected. The tab is connected to the UI.
      */
     void connectTab(int tab);
+    void selectNextTab();
+    void selectPreviousTab();
 protected:
     /* QWidget interface */
     void closeEvent(QCloseEvent *e) override;
