@@ -28,7 +28,7 @@ SimulationController::SimulationController(Scene *scn)
     m_viewTimer.setInterval(int(1000 / 30));
     m_viewTimer.start();
     connect(&m_viewTimer, &QTimer::timeout, this, &SimulationController::updateView);
-    connect(&m_simulationTimer, &QTimer::timeout, this, &SimulationController::update);
+    connect(&m_simulationTimer, &QTimer::timeout, this, &SimulationController::tic);
 }
 
 SimulationController::~SimulationController()
@@ -79,6 +79,11 @@ bool SimulationController::isRunning()
     return m_simulationTimer.isActive();
 }
 
+void SimulationController::tic()
+{
+    update();
+}
+
 void SimulationController::update()
 {
     if (m_shouldRestart) {
@@ -93,12 +98,6 @@ void SimulationController::update()
 void SimulationController::stop()
 {
     m_simulationTimer.stop();
-}
-
-void SimulationController::setClockReset()
-{
-    COMMENT("Reseting clock.", 0);
-    Clock::reset = true;
 }
 
 void SimulationController::startTimer()

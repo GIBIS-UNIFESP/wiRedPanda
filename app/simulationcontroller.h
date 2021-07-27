@@ -40,8 +40,8 @@ signals:
 public slots:
     void update();
     void stop();
-    void setClockReset();
     void start();
+    void tic();
     void updateView();
     void updateAll();
     bool canRun();

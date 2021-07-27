@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "scstop.h"
+#include "clock.h"
 #include "common.h"
 #include "simulationcontroller.h"
 
@@ -12,6 +13,8 @@ SCStop::SCStop(SimulationController *sc)
     if (m_sc->isRunning()) {
         m_restart = true;
         m_sc->stop();
+        Clock::reset = true;
+        Clock::pause = true;
     }
 }
 
@@ -20,6 +23,7 @@ void SCStop::release()
     COMMENT("Releasing!!!!!", 0 );
     if (m_restart) {
         m_sc->start();
+        Clock::pause = false;
     }
 }
 SCStop::~SCStop()
