@@ -519,7 +519,7 @@ void ElementEditor::selectionChanged()
 
 void ElementEditor::apply()
 {
-    COMMENT("Apply", 0);
+    COMMENT("Apply", 3);
     if ((m_elements.isEmpty()) || (!isEnabled())) {
         return;
     }
@@ -599,7 +599,6 @@ void ElementEditor::outputValueChanged(const QString &idx)
             dynamic_cast<Input*>(elm)->setOn(new_value);
         }
     }
-    COMMENT("Output value changed to " << idx.toInt(), 0);
     apply();
 }
 

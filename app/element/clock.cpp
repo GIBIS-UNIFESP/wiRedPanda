@@ -9,6 +9,7 @@
 #include <QDebug>
 
 bool Clock::reset = false;
+bool Clock::pause = false;
 int Clock::current_id_number = 0;
 
 Clock::~Clock() = default;
@@ -26,11 +27,11 @@ Clock::Clock(QGraphicsItem *parent)
     setOutputsOnTop(false);
     setRotatable(false);
     setCanChangeSkin(true);
-    /*  connect(&timer,&QTimer::timeout,this,&Clock::updateClock); */
     Clock::setFrequency(1.0);
     setHasFrequency(true);
     m_isOn = false;
     Clock::reset = true;
+    Clock::pause = false;
     setHasLabel(true);
     setPortName("Clock");
     Clock::setOn(false);
@@ -39,10 +40,11 @@ Clock::Clock(QGraphicsItem *parent)
 
 void Clock::updateClock()
 {
-    if ((!locked)&&(!disabled())) {
+    if ((!locked)&&(!disabled())&&(!Clock::pause)) {
         m_elapsed++;
         if ((m_elapsed % m_interval) == 0) {
             setOn(!m_isOn);
+            return;
         }
     }
     setOn(m_isOn);

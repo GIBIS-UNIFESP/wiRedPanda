@@ -3,6 +3,18 @@
 
 #include "logicelement.h"
 
+LogicElement::LogicElement(size_t inputSize, size_t outputSize)
+    : m_isValid(true)
+    , m_beingVisited(false)
+    , m_priority(-1)
+    , m_inputs(inputSize, std::make_pair(nullptr, 0))
+    , m_inputvalues(inputSize, false)
+    , m_outputs(outputSize, false)
+{
+}
+
+LogicElement::~LogicElement() = default;
+
 bool LogicElement::isValid() const
 {
     return m_isValid;
@@ -25,18 +37,6 @@ void LogicElement::clearSucessors()
     }
     m_successors.clear();
 }
-
-LogicElement::LogicElement(size_t inputSize, size_t outputSize)
-    : m_isValid(true)
-    , m_beingVisited(false)
-    , m_priority(-1)
-    , m_inputs(inputSize, std::make_pair(nullptr, 0))
-    , m_inputvalues(inputSize, false)
-    , m_outputs(outputSize, false)
-{
-}
-
-LogicElement::~LogicElement() = default;
 
 void LogicElement::updateLogic()
 {
