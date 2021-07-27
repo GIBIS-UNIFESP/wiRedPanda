@@ -225,7 +225,6 @@ void ElementMapping::update()
             elm->updateLogic();
         }
     }
-    //  return resetSimulationController;
 }
 
 ICMapping *ElementMapping::getICMapping(IC *ic) const
