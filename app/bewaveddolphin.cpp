@@ -276,6 +276,7 @@ void BewavedDolphin::restoreInputs()
 
 void BewavedDolphin::run()
 {
+    SCStop scst(m_sc);
     for (int itr = 0; itr < m_model->columnCount(); ++itr) {
         COMMENT("itr:" << itr << ", inputs: " << m_inputs.size(), 4);
         int table_line = 0;
@@ -304,6 +305,7 @@ void BewavedDolphin::run()
     COMMENT("Setting inputs back to old values.", 3);
     restoreInputs();
     m_signalTableView->viewport()->update();
+    scst.release();
 }
 
 void BewavedDolphin::loadNewTable(const QStringList &input_labels, const QStringList &output_labels)
