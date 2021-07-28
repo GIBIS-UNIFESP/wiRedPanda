@@ -668,13 +668,13 @@ void MainWindow::setAutoSaveFileName(const QFileInfo &file)
         COMMENT("Autosave path set to the current file's directory, if there is one.", 0);
         autosavePath = file.dir();
         COMMENT("Autosavepath: " << autosavePath.absolutePath().toStdString(), 0);
-        m_autoSaveFile[m_current_tab]->setFileTemplate(autosavePath.absoluteFilePath(file.baseName() + "XXXXXX.panda"));
+        m_autoSaveFile[m_current_tab]->setFileTemplate(autosavePath.absoluteFilePath("." + file.baseName() + "XXXXXX.panda"));
         COMMENT("Setting current file to: " << file.absoluteFilePath().toStdString(), 0);
     } else {
         COMMENT("Default file does not exist: " << file.absoluteFilePath().toStdString(), 0);
         QDir autosavePath(QDir::temp());
         COMMENT("Autosavepath: " << autosavePath.absolutePath().toStdString(), 0);
-        m_autoSaveFile[m_current_tab]->setFileTemplate(autosavePath.absoluteFilePath("XXXXXX.panda"));
+        m_autoSaveFile[m_current_tab]->setFileTemplate(autosavePath.absoluteFilePath(".XXXXXX.panda"));
         COMMENT("Setting current file to random file in tmp.", 0);
     }
 }
@@ -696,6 +696,11 @@ void MainWindow::updateICList()
         QDir directory(m_currentFile.absoluteDir());
         QStringList files = directory.entryList(QStringList() << "*.panda" << "*.PANDA", QDir::Files);
         files.removeAll(m_currentFile.fileName());
+        for (int i = files.size() - 1; i >= 0; --i) {
+            if (files[i][0] == ".") {
+                files.removeAt(i);
+            }
+        }
         COMMENT("Files: " << files.join(", ").toStdString(), 0);
         for (const QString &file : qAsConst(files)) {
             QPixmap pixmap(QString::fromUtf8(":/basic/box.png"));
@@ -1356,13 +1361,13 @@ void MainWindow::autoSave()
                 COMMENT("Autosave path set to the current file's directory, if there is one.", 3);
                 autosavePath = m_currentFile.dir();
                 COMMENT("Autosavepath: " << autosavePath.absolutePath().toStdString(), 3);
-                m_autoSaveFile[m_current_tab]->setFileTemplate(autosavePath.absoluteFilePath(m_currentFile.baseName() + "XXXXXX.panda"));
+                m_autoSaveFile[m_current_tab]->setFileTemplate(autosavePath.absoluteFilePath("." + m_currentFile.baseName() + "XXXXXX.panda"));
                 COMMENT("Setting current file to: " << m_currentFile.absoluteFilePath().toStdString(), 3);
             } else {
                 COMMENT("Default value not set yet.", 3);
                 QDir autosavePath(QDir::temp());
                 COMMENT("Autosavepath: " << autosavePath.absolutePath().toStdString(), 3);
-                m_autoSaveFile[m_current_tab]->setFileTemplate(autosavePath.absoluteFilePath("XXXXXX.panda"));
+                m_autoSaveFile[m_current_tab]->setFileTemplate(autosavePath.absoluteFilePath(".XXXXXX.panda"));
                 COMMENT("Setting current file to random file in tmp.", 3);
             }
         }
