@@ -22,6 +22,7 @@
 #include "editor.h"
 #include "elementfactory.h"
 #include "elementmapping.h"
+#include "globalproperties.h"
 #include "graphicelement.h"
 #include "graphicsview.h"
 #include "graphicsviewzoom.h"
@@ -74,10 +75,10 @@ BewavedDolphin::BewavedDolphin(Editor *editor, QWidget *parent)
     m_scale = 1.0;
     m_ui->setupUi(this);
     resize(800, 500);
-    setWindowTitle("Bewaved Dolphin Simulator");
+    setWindowTitle(tr("beWavedDolphin Simulator"));
     setWindowFlags(Qt::Window);
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    settings.beginGroup("BewavedDolphin");
+    settings.beginGroup("beWavedDolphin");
     restoreGeometry(settings.value("geometry").toByteArray());
     settings.endGroup();
     m_gv = new GraphicsView(this);
@@ -101,7 +102,7 @@ BewavedDolphin::BewavedDolphin(Editor *editor, QWidget *parent)
 BewavedDolphin::~BewavedDolphin()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    settings.beginGroup("BewavedDolphin");
+    settings.beginGroup("beWavedDolphin");
     settings.setValue("geometry", saveGeometry());
     settings.endGroup();
     delete m_ui;
@@ -389,11 +390,13 @@ bool BewavedDolphin::createWaveform(const QString& filename)
     COMMENT("Loading initial data into the table.", 0);
     loadNewTable(input_labels, output_labels);
     if (filename.isEmpty()) {
-        setWindowTitle("Bewaved Dolphin Simulator");
+        setWindowTitle(tr("beWavedDolphin Simulator"));
         m_currentFile = filename;
     } else {
-        if (!load(filename)) {
-            return false;
+        QFileInfo finfo(m_mainWindow->getCurrentDir(), QFileInfo(filename).fileName());
+        if (!load(finfo.absoluteFilePath())) {
+            setWindowTitle(tr("beWavedDolphin Simulator"));
+            m_currentFile = QFileInfo();
         }
     }
     COMMENT("Resuming digital circuit main window after waveform simulation is finished.", 0);
@@ -757,7 +760,7 @@ void BewavedDolphin::on_actionSave_as_triggered()
     if (save(fname)) {
         m_currentFile = fname;
         associateToWiredPanda(fname);
-        setWindowTitle("Bewaved Dolphin Simulator [" + m_currentFile.fileName() + "]");
+        setWindowTitle(tr("beWavedDolphin Simulator") + " [" + m_currentFile.fileName() + "]");
         m_ui->statusbar->showMessage(tr("Saved file successfully."), 2000);
         m_edited = false;
     } else {
@@ -793,10 +796,23 @@ void BewavedDolphin::on_actionLoad_triggered()
             defaultDirectory = QDir::home();
         }
     }
-    QString fname = QFileDialog::getOpenFileName(this,
-                                                 tr("Open File"),
-                                                 defaultDirectory.absolutePath(),
-                                                 tr("All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)"));
+    const QString homeDir(m_mainWindow->getCurrentDir().dirName());
+    QFileDialog fileDialog;
+    fileDialog.setObjectName(tr("Open File"));
+    fileDialog.setFileMode(QFileDialog::ExistingFile);
+    fileDialog.setNameFilter(tr("All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)"));
+    fileDialog.setDirectory(homeDir);
+    connect(&fileDialog, &QFileDialog::directoryEntered, this, [&fileDialog, homeDir](QString new_dir) {
+        COMMENT("Changing dir to " << new_dir.toStdString() << ", home: " << homeDir.toStdString(), 0);
+        if (new_dir != homeDir) {
+            fileDialog.setDirectory(homeDir);
+        }
+    });
+    if (!fileDialog.exec()) {
+        return;
+    }
+    auto files = fileDialog.selectedFiles();
+    QString fname = files.first();
     if (fname.isEmpty()) {
         return;
     }
@@ -833,7 +849,7 @@ bool BewavedDolphin::save(const QString &fname)
 
 void BewavedDolphin::save(QDataStream &ds)
 {
-    ds << QString("Bewaved Dolphin 1.0");
+    ds << QString("beWavedDolphin 1.0");
     COMMENT("Serializing data into data stream.", 0);
     ds << static_cast<qint64>(m_input_ports);
     ds << static_cast<qint64>(m_model->columnCount());
@@ -908,7 +924,7 @@ bool BewavedDolphin::load(const QString &fname)
     COMMENT("Closing file.", 0);
     fl.close();
     associateToWiredPanda(fname);
-    setWindowTitle("Bewaved Dolphin Simulator [" + m_currentFile.fileName() + "]");
+    setWindowTitle(tr("beWavedDolphin Simulator") + " [" + m_currentFile.fileName() + "]");
     return true;
 }
 
@@ -916,7 +932,7 @@ void BewavedDolphin::load(QDataStream &ds)
 {
     QString str;
     ds >> str;
-    if (!str.startsWith("Bewaved Dolphin")) {
+    if (!str.startsWith("beWavedDolphin")) {
         throw(std::runtime_error(ERRORMSG("Invalid file format. Starts with: " + str.toStdString())));
     }
     qint64 rows;
@@ -1039,7 +1055,7 @@ void BewavedDolphin::on_actionExport_to_PDF_triggered()
 void BewavedDolphin::on_actionAbout_triggered()
 {
     QMessageBox::about(this,
-                       "beWaved Dolphin",
+                       "beWavedDolphin",
                        tr("<p>beWaved Dolphin is a waveform simulator for the weRed Panda software developed by the Federal University of São Paulo."
                           " This project was created in order to help students to learn about logic circuits.</p>"
                           "<p>Software version: %1</p>"

@@ -51,8 +51,8 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     , m_autoSaveFile(nullptr)
     , m_translator(nullptr)
 {
-    COMMENT("WIRED PANDA Version = " << APP_VERSION << " OR " << GlobalProperties::version, 0);
-    qDebug() << "WIRED PANDA Version = " << APP_VERSION << " OR " << QString::number(GlobalProperties::version);
+    COMMENT("wiRedPanda Version = " << APP_VERSION << " OR " << GlobalProperties::version, 0);
+    qDebug() << "wiRedPanda Version = " << APP_VERSION << " OR " << QString::number(GlobalProperties::version);
     ui->setupUi(this);
     ThemeManager::globalMngr = new ThemeManager(this);
 
@@ -115,6 +115,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     connect(ui->actionPaste, &QAction::triggered, m_editor, &Editor::pasteAction);
     connect(ui->actionDelete, &QAction::triggered, m_editor, &Editor::deleteAction);
     connect(ui->actionAbout_this_version, &QAction::triggered, this, &MainWindow::aboutThisVersion);
+    ui->actionWaveform->setDisabled(true);
 
     COMMENT("Setting up zoom and screen funcionalities.", 0);
     connect(m_editor, &Editor::scroll, this, &MainWindow::scrollView);
@@ -142,7 +143,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     connect(prevTabShortcut, &QShortcut::activated, this, &MainWindow::selectPreviousTab);
 
     COMMENT("Window title.", 0);
-    setWindowTitle("wiRED PANDA v" + QString(APP_VERSION));
+    setWindowTitle("wiRedPanda v" + QString(APP_VERSION));
 }
 
 void MainWindow::selectNextTab() {
@@ -364,13 +365,15 @@ void MainWindow::aboutThisVersion()
     msgBox.setParent(this);
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.setIcon(QMessageBox::Icon::Information);
-    msgBox.setWindowTitle("wiRed Panda version 4.0.");
-    msgBox.setText(QString(tr("This version is not 100\% compatible with previous versions of wiRed Panda.\n"
-                              "To open old version projects containing ICs(or boxes) and/or skins,"
-                              "their files must be moved to the same directory as the main project file.\n"
-                              "wiRed Panda 4.0 will automatically list all other .panda files located "
+    msgBox.setWindowTitle("wiRedPanda version 4.0.");
+    msgBox.setText(QString(tr("This version is not 100\% compatible with previous versions of wiRedPanda.\n"
+                              "To open old version projects containing ICs(or boxes), skins, and/or "
+                              "beWavedDolphin simulations, their files must be moved to the same directory "
+                              "as the main project file.\n"
+                              "wiRedPanda 4.0 will automatically list all other .panda files located "
                               "in the same directory of the current project as ICs in the editor tab.\n"
-                              "You have to save new projects before having access to ICs.")));
+                              "You have to save new projects before accessing ICs and skins, or running "
+                              "beWavedDolphin simulations.")));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Ok);
     msgBox.setCheckBox(cb);
@@ -519,8 +522,8 @@ void MainWindow::on_actionSave_triggered()
 void MainWindow::on_actionAbout_triggered()
 {
     QMessageBox::about(this,
-                       "wiRED Panda",
-                       tr("<p>wiRED Panda is a software developed by the students of the Federal University of São Paulo."
+                       "wiRedPanda",
+                       tr("<p>wiRedPanda is a software developed by the students of the Federal University of São Paulo."
                           " This project was created in order to help students to learn about logic circuits.</p>"
                           "<p>Software version: %1</p>"
                           "<p><strong>Creators:</strong></p>"
@@ -530,7 +533,7 @@ void MainWindow::on_actionAbout_triggered()
                           "<li> Rodrigo Torres </li>"
                           "<li> Prof. Fábio Cappabianco, Ph.D. </li>"
                           "</ul>"
-                          "<p> wiRed Panda is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.</p>"
+                          "<p> wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.</p>"
                           "<p> Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.</p>"
                           "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
                            .arg(QApplication::applicationVersion()));
@@ -799,14 +802,17 @@ void MainWindow::disconnectTab()
     disconnect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
     COMMENT("Removing undo and redo actions from UI menu.", 0 );
     removeUndoRedoMenu();
+    COMMENT("Disabling beWaved Dolphin action.", 0);
 }
 
 void MainWindow::setCurrentDir()
 {
     if (m_currentFile.exists()) {
         m_defaultDirectory = m_currentFile.dir();
+        ui->actionWaveform->setEnabled(true);
     } else {
         m_defaultDirectory = QDir::home();
+        ui->actionWaveform->setDisabled(true);
     }
 }
 

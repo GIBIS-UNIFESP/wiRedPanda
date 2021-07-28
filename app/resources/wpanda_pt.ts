@@ -332,6 +332,10 @@ Erro: %1</translation>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>O arquivo &quot;%1&quot; não existe!</translation>
     </message>
+    <message>
+        <source>beWavedDolphin Simulator</source>
+        <translation>Simulador beWavedDolphin</translation>
+    </message>
 </context>
 <context>
     <name>ChangeInputSZCommand</name>
@@ -1162,10 +1166,6 @@ Errp: %1</translation>
         <translation>Não foi possível salvar o arquivo</translation>
     </message>
     <message>
-        <source>&lt;p&gt;wiRED Panda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students to learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRed Panda is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;wiRED Panda é um software desenvolvido por estudantes da Universidade Federal de São Paulo. Este projeto foi desenvolvido para ajudar os estudantes a aprenderem mais sobre circuitos digitais.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Desenvolvedores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRed Panda atualmente é mantido por Prof. Fábio Cappabianco, Ph.D. e Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Por favor, informe em nossa página do GitHub sobre eventuais bugs encontrados ou se deseja uma nova funcionalidade.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
-    </message>
-    <message>
         <source>Error autosaving project: </source>
         <translation>Erro ao salvar projeto automaticamente: </translation>
     </message>
@@ -1358,18 +1358,32 @@ Errp: %1</translation>
         <translation>Não mostrar novamente.</translation>
     </message>
     <message>
-        <source>This version is not 100% compatible with previous versions of wiRed Panda.
-To open old version projects containing ICs(or boxes) and/or skins,their files must be moved to the same directory as the main project file.
-wiRed Panda 4.0 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
-You have to save new projects before having access to ICs.</source>
-        <translation>Esta versão não é 100% compatível com versões anteriores do wiRed Panda.
-Para abrir um projeto de versão anterior que contenha CIs(ou caixas) e/ou aparências, seus arquivos precisam ser movidos para o mesmo diretório do arquivo do projeto principal.
-wiRed Panda 4.0 agora alistará automaticamente todos os outros arquivos .panda localizados no mesmo diretório do projeto atual como CIs na aba de edição.
-Você terá que salvar seus projetos novos antes de poder acessar CIs.</translation>
-    </message>
-    <message>
         <source>About this version</source>
         <translation>Sobre esta versão</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students to learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;wiRedPanda é um software desenvolvido por estudantes da Universidade Federal de São Paulo. Este projeto foi desenvolvido para ajudar os estudantes a aprenderem mais sobre circuitos digitais.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Desenvolvedores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRed Panda atualmente é mantido por Prof. Fábio Cappabianco, Ph.D. e Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Por favor, informe em nossa página do GitHub sobre eventuais bugs encontrados ou se deseja uma nova funcionalidade.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>This version is not 100% compatible with previous versions of wiRedPanda.
+To open old version projects containing ICs(or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
+wiRedPanda 4.0 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
+You have to save new projects before accessing ICs and skins, or runningbeWavedDolphin simulations.</source>
+        <translation>Esta versão não é 100% compatível com versões anteriores do wiRedPanda.
+Para abrir um projeto de versão anterior que contenha CIs(ou caixas), aparências e/ou simulações do beWavedDolphin, seus arquivos precisam ser movidos para o mesmo diretório do arquivo do projeto principal.
+wiRedPanda 4.0 agora alistará automaticamente todos os outros arquivos .panda localizados no mesmo diretório do projeto atual como CIs na aba de edição.
+Você terá que salvar seus projetos novos antes de poder acessar CIs e aparências ou executar simulações do beWavedDolphin.</translation>
+    </message>
+    <message>
+        <source>This version is not 100% compatible with previous versions of wiRedPanda.
+To open old version projects containing ICs(or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
+wiRedPanda 4.0 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
+You have to save new projects before accessing ICs and skins, or running beWavedDolphin simulations.</source>
+        <translation>Esta versão não é 100% compatível com versões anteriores do wiRedPanda.
+Para abrir um projeto de versão anterior que contenha CIs(ou caixas), aparências e/ou simulações do beWavedDolphin, seus arquivos precisam ser movidos para o mesmo diretório do arquivo do projeto principal.
+wiRedPanda 4.0 agora alistará automaticamente todos os outros arquivos .panda localizados no mesmo diretório do projeto atual como CIs na aba de edição.
+Você terá que salvar seus projetos novos antes de poder acessar CIs e aparências ou executar simulações do beWavedDolphin.</translation>
     </message>
 </context>
 <context>
