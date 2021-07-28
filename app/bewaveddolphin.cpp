@@ -133,7 +133,7 @@ void BewavedDolphin::closeEvent(QCloseEvent *e)
         e->accept();
     }
     else {
-        return;
+        e->ignore();
     }
 }
 
