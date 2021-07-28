@@ -417,14 +417,17 @@ void GraphicElement::loadPixmapSkinName(QDataStream &ds, size_t skin)
     QString name;
     ds >> name;
     if ((skin < static_cast<size_t>(m_pixmapSkinName.size()))) {
-        QFileInfo fileInfo(QFileInfo(GlobalProperties::currentFile).absoluteDir(), name);
-        COMMENT("Skin filename: " << fileInfo.absoluteFilePath().toStdString(), 0);
-        if (fileInfo.isFile()) {
-            m_pixmapSkinName[skin] = name;
-        } else {
-            std::cout << "Could not load some of the skins." << std::endl;
+        if (name[0] != ":") {
+            QDir dir(QFileInfo(GlobalProperties::currentFile).absoluteDir());
+            QString filename(QFileInfo(name).fileName());
+            QFileInfo fileInfo(dir, filename);
+            COMMENT("Skin filename: " << fileInfo.absoluteFilePath().toStdString(), 0);
+            if (fileInfo.isFile()) {
+                m_pixmapSkinName[skin] = fileInfo.absoluteFilePath();
+            } else {
+                std::cout << "Could not load some of the skins." << std::endl;
+            }
         }
-
     } else {
         std::cout << "Could not load some of the skins." << std::endl;
     }

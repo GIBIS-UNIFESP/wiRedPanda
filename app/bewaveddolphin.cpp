@@ -131,6 +131,9 @@ void BewavedDolphin::closeEvent(QCloseEvent *e)
         m_mainWindow->setEnabled(true);
         e->accept();
     }
+    else {
+        return;
+    }
 }
 
 void BewavedDolphin::on_actionExit_triggered()
