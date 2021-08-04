@@ -1,4 +1,5 @@
 HEADERS += \
+    $$PWD/logicmemory.h \
     $$PWD/logicnode.h \
     $$PWD/logicinput.h \
     $$PWD/logicnone.h \
@@ -19,6 +20,7 @@ HEADERS += \
     $$PWD/logicdemux.h
 
 SOURCES += \
+    $$PWD/logicmemory.cpp \
     $$PWD/logicnode.cpp \
     $$PWD/logicinput.cpp \
     $$PWD/logicnone.cpp \
