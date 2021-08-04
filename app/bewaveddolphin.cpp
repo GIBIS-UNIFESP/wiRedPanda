@@ -409,9 +409,7 @@ void BewavedDolphin::show()
 {
     QMainWindow::show();
     COMMENT("Getting table dimensions.", 0);
-    m_signalTableView->resize(this->width()-20, this->height()-102);
-    QRectF rect = m_scene->itemsBoundingRect();
-    m_scene->setSceneRect(rect);
+    resizeScene();
 }
 
 void BewavedDolphin::print()
@@ -557,9 +555,7 @@ void BewavedDolphin::setLength(int sim_length, bool run_simulation)
     if (sim_length <= m_model->columnCount()) {
         COMMENT("Reducing or keeping the simulation length.", 0);
         m_model->setColumnCount(sim_length);
-        m_signalTableView->resize(this->width()-20, this->height()-102);
-        QRectF rect = m_scene->itemsBoundingRect();
-        m_scene->setSceneRect(rect);
+        resizeScene();
         m_edited = true;
         return;
     }
@@ -571,9 +567,7 @@ void BewavedDolphin::setLength(int sim_length, bool run_simulation)
             CreateZeroElement(row, col, true, false);
         }
     }
-    m_signalTableView->resize(this->width()-20, this->height()-102);
-    QRectF rect = m_scene->itemsBoundingRect();
-    m_scene->setSceneRect(rect);
+    resizeScene();
     m_edited = true;
     COMMENT("Running simulation", 0);
     if (run_simulation) {
@@ -586,6 +580,7 @@ void BewavedDolphin::on_actionZoom_out_triggered()
     // gv->gvzoom( )->zoomOut( );
     m_scale *= m_SCALE_FACTOR;
     m_gv->scale(m_SCALE_FACTOR, m_SCALE_FACTOR);
+    resizeScene();
 }
 
 void BewavedDolphin::on_actionZoom_In_triggered()
@@ -593,6 +588,7 @@ void BewavedDolphin::on_actionZoom_In_triggered()
     // gv->gvzoom( )->zoomIn( );
     m_scale /= m_SCALE_FACTOR;
     m_gv->scale(1.0 / m_SCALE_FACTOR, 1.0 / m_SCALE_FACTOR);
+    resizeScene();
 }
 
 void BewavedDolphin::on_actionReset_Zoom_triggered()
@@ -600,6 +596,7 @@ void BewavedDolphin::on_actionReset_Zoom_triggered()
     // gv->gvzoom( )->resetZoom( );
     m_gv->scale(1.0 / m_scale, 1.0 / m_scale);
     m_scale = 1.0;
+    resizeScene();
 }
 
 void BewavedDolphin::on_actionZoom_Range_triggered()
@@ -609,6 +606,7 @@ void BewavedDolphin::on_actionZoom_Range_triggered()
     double h_scale = static_cast<double>(m_gv->height()) / (m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0) + 10);
     m_scale = std::min(w_scale, h_scale);
     m_gv->scale(1.0 * m_scale, 1.0 * m_scale);
+    resizeScene();
 }
 
 void BewavedDolphin::on_actionClear_triggered()
@@ -1085,7 +1083,13 @@ void BewavedDolphin::on_actionAbout_Qt_triggered()
 void BewavedDolphin::resizeEvent(QResizeEvent* event)
 {
     QMainWindow::resizeEvent(event);
-    m_signalTableView->resize(this->width()-20, this->height()-102);
+    resizeScene();
+}
+
+void BewavedDolphin::resizeScene()
+{
+    m_signalTableView->resize((this->width()-20)/m_scale, (this->height()-102)/m_scale);
     QRectF rect = m_scene->itemsBoundingRect();
     m_scene->setSceneRect(rect);
 }
+
