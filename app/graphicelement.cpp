@@ -12,6 +12,7 @@
 #include <QPixmap>
 
 #include "common.h"
+#include "elementfactory.h"
 #include "graphicelement.h"
 #include "globalproperties.h"
 #include "nodes/qneconnection.h"
@@ -46,6 +47,7 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, int minInpu
 {
     COMMENT("Setting flags of elements. ", 4);
     setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemSendsGeometryChanges);
+    setToolTip(ElementFactory::translatedName(m_elementType));
 
     COMMENT("Setting attributes. ", 4);
     m_label->hide();
@@ -502,7 +504,7 @@ void GraphicElement::addOutputPort(const QString &name)
 void GraphicElement::setPortName(const QString &name)
 {
     setObjectName(name);
-    setToolTip(name);
+    //setToolTip(name);
 }
 
 void GraphicElement::setSkin(bool defaultSkin, const QString &filename)
