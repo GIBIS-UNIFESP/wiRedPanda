@@ -409,9 +409,7 @@ void BewavedDolphin::show()
 {
     QMainWindow::show();
     COMMENT("Getting table dimensions.", 0);
-    int width = m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0);
-    int height = m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0) + 10;
-    m_signalTableView->resize(width, height);
+    m_signalTableView->resize(this->width()-20, this->height()-102);
     QRectF rect = m_scene->itemsBoundingRect();
     m_scene->setSceneRect(rect);
 }
@@ -559,9 +557,7 @@ void BewavedDolphin::setLength(int sim_length, bool run_simulation)
     if (sim_length <= m_model->columnCount()) {
         COMMENT("Reducing or keeping the simulation length.", 0);
         m_model->setColumnCount(sim_length);
-        int width = m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0);
-        int height = m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0) + 10;
-        m_signalTableView->resize(width, height);
+        m_signalTableView->resize(this->width()-20, this->height()-102);
         QRectF rect = m_scene->itemsBoundingRect();
         m_scene->setSceneRect(rect);
         m_edited = true;
@@ -575,9 +571,7 @@ void BewavedDolphin::setLength(int sim_length, bool run_simulation)
             CreateZeroElement(row, col, true, false);
         }
     }
-    int width = m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0);
-    int height = m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0) + 10;
-    m_signalTableView->resize(width, height);
+    m_signalTableView->resize(this->width()-20, this->height()-102);
     QRectF rect = m_scene->itemsBoundingRect();
     m_scene->setSceneRect(rect);
     m_edited = true;
@@ -1086,4 +1080,12 @@ void BewavedDolphin::on_actionAbout_triggered()
 void BewavedDolphin::on_actionAbout_Qt_triggered()
 {
     QMessageBox::aboutQt(this);
+}
+
+void BewavedDolphin::resizeEvent(QResizeEvent* event)
+{
+    QMainWindow::resizeEvent(event);
+    m_signalTableView->resize(this->width()-20, this->height()-102);
+    QRectF rect = m_scene->itemsBoundingRect();
+    m_scene->setSceneRect(rect);
 }
