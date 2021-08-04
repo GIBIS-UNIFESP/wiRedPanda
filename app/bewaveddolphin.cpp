@@ -412,6 +412,8 @@ void BewavedDolphin::show()
     int width = m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0);
     int height = m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0) + 10;
     m_signalTableView->resize(width, height);
+    QRectF rect = m_scene->itemsBoundingRect();
+    m_scene->setSceneRect(rect);
 }
 
 void BewavedDolphin::print()
