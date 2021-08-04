@@ -7,8 +7,6 @@ LogicDFlipFlop::LogicDFlipFlop()
     : LogicElement(4, 2)
     , lastClk(false)
     , lastValue(true)
-    , nextQ0(false)
-    , nextQ1(true)
 {
     setOutputValue(0, false);
     setOutputValue(1, true);
