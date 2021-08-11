@@ -741,7 +741,7 @@ void BewavedDolphin::on_actionSave_as_triggered()
     fileDialog.setNameFilter(tr("Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)"));
     fileDialog.setAcceptMode(QFileDialog::AcceptSave);
     fileDialog.setDirectory(path);
-    fileDialog.setFileMode(QFileDialog::ExistingFile);
+    //fileDialog.setFileMode(QFileDialog::ExistingFile);
     connect(&fileDialog, &QFileDialog::directoryEntered, this, [&fileDialog, path](QString new_dir) {
         COMMENT("Changing dir to " << new_dir.toStdString() << ", home: " << path.toStdString(), 0);
         if (new_dir != path) {
