@@ -21,6 +21,7 @@
 #include "simulationcontroller.h"
 #include "thememanager.h"
 #include "workspace.h"
+#include "remotedeviceconfig.h"
 
 #include <QApplication>
 #include <QClipboard>
@@ -1080,6 +1081,12 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
                 evt->accept();
                 return true;
             }
+
+            RemoteDevice *remoteDevice = dynamic_cast< RemoteDevice* >( itemAt( m_mousePos ) );
+            if (remoteDevice) {
+                openConfigAction();
+            }
+
             break;
         }
         case QEvent::KeyPress: {
@@ -1131,4 +1138,14 @@ void Editor::clearSelection()
 {
     m_scene->clearSelection();
     m_elementEditor->disable();
+}
+
+void Editor::openConfigAction( ) {
+  QVector< GraphicElement* > elms = m_scene->selectedElements( );
+  if( elms.size() == 1 ) {
+      RemoteDeviceConfig fc( this, m_mainWindow, elms.first() );
+      fc.start( );
+  } else {
+      QMessageBox::warning( m_mainWindow, tr( "ERROR" ), "Unable to trigger configure for more than a remote element at once", QMessageBox::Ok );
+  }
 }

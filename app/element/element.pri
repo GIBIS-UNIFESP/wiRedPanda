@@ -28,7 +28,8 @@ SOURCES += \
 #    $$PWD/tlatch.cpp \
     $$PWD/xnor.cpp \
     $$PWD/xor.cpp \
-    $$PWD/buzzer.cpp
+    $$PWD/buzzer.cpp \
+    $$PWD/remotedevice.cpp
 
 HEADERS  +=  \
     $$PWD/and.h \
@@ -60,4 +61,5 @@ HEADERS  +=  \
 #    $$PWD/tlatch.h \
     $$PWD/xnor.h \
     $$PWD/xor.h \
-    $$PWD/buzzer.h
+    $$PWD/buzzer.h \
+    $$PWD/remotedevice.h

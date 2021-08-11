@@ -99,6 +99,7 @@ public slots:
     void pasteAction();
     void deleteAction();
     void updateTheme();
+    void openConfigAction( );
 
     void mute(bool _mute = true);
 

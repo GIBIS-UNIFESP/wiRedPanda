@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "mainwindow.h"
+#include "protocol.h"
 
 #include <QApplication>
 #include <QCommandLineParser>
@@ -53,6 +54,10 @@ int main(int argc, char *argv[])
         return 0;
     }
     w.show();
+
+    // Initialize TCP Network Protocol
+    RemoteProtocol::init(&w);
+
     if (args.size() > 0) {
         w.loadPandaFile(args[0]);
     }

@@ -33,7 +33,8 @@ enum class ElementType : uint_fast8_t {
     BUZZER,
     DISPLAY14,
     TEXT,
-    LINE
+    LINE,
+    REMOTE
 };
 
 #endif

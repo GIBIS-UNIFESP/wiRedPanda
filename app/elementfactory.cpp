@@ -27,6 +27,7 @@
 #include "element/srflipflop.h"
 #include "element/tflipflop.h"
 #include "element/text.h"
+#include "element/remotedevice.h"
 #include "ic.h"
 #include "itemwithid.h"
 #include "element/mux.h"
@@ -79,6 +80,7 @@ ElementType ElementFactory::textToType(QString text)
         : text == "BUZZER"     ? ElementType::BUZZER
         : text == "TEXT"       ? ElementType::TEXT
         : text == "LINE"       ? ElementType::LINE
+        : text == "REMOTE"     ? ElementType::REMOTE
                                : ElementType::UNKNOWN;
     return type;
 }
@@ -145,6 +147,8 @@ QString ElementFactory::typeToText(ElementType type)
         return "TEXT";
     case ElementType::LINE:
         return "LINE";
+    case ElementType::REMOTE:
+        return "REMOTE";
     case ElementType::UNKNOWN:
     default:
         return "UNKNOWN";
@@ -213,6 +217,8 @@ QString ElementFactory::typeToTitleText(ElementType type)
         return tr("<b>TEXT</b>");
     case ElementType::LINE:
         return tr("<b>LINE</b>");
+    case ElementType::REMOTE:
+        return tr("<b>REMOTE</b>");
     case ElementType::UNKNOWN:
     default:
         return tr("<b>MULTIPLE TYPES</b>");
@@ -280,6 +286,8 @@ QString ElementFactory::translatedName(ElementType type)
         return tr("Text");
     case ElementType::LINE:
         return tr("Line");
+    case ElementType::REMOTE:
+        return tr("Remote");
     case ElementType::UNKNOWN:
     default:
         return tr("Unknown");
@@ -347,6 +355,8 @@ QPixmap ElementFactory::getPixmap(ElementType type)
         return QPixmap(":/text.png");
     case ElementType::LINE:
         return QPixmap(":/line.png");
+    case ElementType::REMOTE:
+        return QPixmap(":/remote/remote_device.png");
     case ElementType::UNKNOWN:
         return QPixmap();
     }
@@ -393,6 +403,7 @@ GraphicElement *ElementFactory::buildElement(ElementType type, QGraphicsItem *pa
         : type == ElementType::BUZZER     ? new Buzzer(parent)
         : type == ElementType::TEXT       ? new Text(parent)
         : type == ElementType::LINE       ? new Line(parent)
+        : type == ElementType::REMOTE     ? new RemoteDevice(parent)
                                           : static_cast<GraphicElement *>(nullptr);
     return elm;
 }

@@ -1,4 +1,4 @@
-QT       += core gui printsupport charts multimedia widgets
+QT       += core gui printsupport charts multimedia widgets network xml
 VERSION = 4.0
 
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
@@ -76,7 +76,9 @@ SOURCES += \
     $$PWD/app/logicelement.cpp \
     $$PWD/app/elementmapping.cpp \
     $$PWD/app/common.cpp \
-    $$PWD/app/workspace.cpp
+    $$PWD/app/workspace.cpp \
+    $$PWD/app/protocol.cpp \
+    $$PWD/app/remotedeviceconfig.cpp
 
 HEADERS  +=  \
     $$PWD/app/bewaveddolphin.h \
@@ -115,7 +117,10 @@ HEADERS  +=  \
     $$PWD/app/thememanager.h \
     $$PWD/app/logicelement.h \
     $$PWD/app/elementmapping.h \
-    $$PWD/app/workspace.h
+    $$PWD/app/workspace.h \
+    $$PWD/app/network.h \
+    $$PWD/app/protocol.h \
+    $$PWD/app/remotedeviceconfig.h
 
 INCLUDEPATH += \
     $$PWD/app \
@@ -128,7 +133,8 @@ FORMS    += \
     $$PWD/app/lengthDialog.ui \
     $$PWD/app/mainwindow.ui \
     $$PWD/app/elementeditor.ui \
-    $$PWD/app/simplewaveform.ui
+    $$PWD/app/simplewaveform.ui \
+    $$PWD/app/remotedeviceconfig.ui
 
 RESOURCES += \
     $$PWD/app/resources/dolphin/dolphin.qrc \
@@ -139,7 +145,8 @@ RESOURCES += \
     $$PWD/app/resources/output/output.qrc\
     $$PWD/app/resources/toolbar/toolbar.qrc \
     $$PWD/app/resources/memory/dark/memory_dark.qrc \
-    $$PWD/app/resources/memory/light/memory_light.qrc
+    $$PWD/app/resources/memory/light/memory_light.qrc \
+    $$PWD/app/resources/remote/remote.qrc
 
 RESOURCES += $$PWD/app/resources/translations.qrc
 

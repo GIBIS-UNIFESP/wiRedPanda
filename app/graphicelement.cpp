@@ -121,6 +121,9 @@ void GraphicElement::setPixmap(const QString &pixmapName)
         update(boundingRect());
     }
     m_currentPixmapName = pixmapName;
+
+   // update bottom position for wires to come in the correct place
+   setBottomPosition( getPixmap().rect().height() );
 }
 
 void GraphicElement::setPixmap(const QString &pixmapName, QRect size)
@@ -520,9 +523,13 @@ void GraphicElement::updatePorts()
         inputPos = m_bottomPosition;
         outputPos = m_topPosition;
     }
+
+    const QRect& rect = getPixmap().rect();
+    int width = rect.width()/2;
+
     if (!m_outputs.isEmpty()) {
-        int step = qMax(32 / m_outputs.size(), 6);
-        int x = 32 - m_outputs.size() * step + step;
+        int step = qMax(width / m_outputs.size(), 6);
+        int x = width - m_outputs.size() * step + step;
         foreach (QNEPort *port, m_outputs) {
             COMMENT("Setting output at " << x << ", " << outputPos, 5);
             port->setPos(x, outputPos);
@@ -531,8 +538,8 @@ void GraphicElement::updatePorts()
         }
     }
     if (!m_inputs.isEmpty()) {
-        int step = qMax(32 / m_inputs.size(), 6);
-        int x = 32 - m_inputs.size() * step + step;
+        int step = qMax(width / m_inputs.size(), 6);
+        int x = width - m_inputs.size() * step + step;
         foreach (QNEPort *port, m_inputs) {
             COMMENT("Setting input at " << x << ", " << inputPos, 5);
             port->setPos(x, inputPos);
@@ -852,6 +859,16 @@ void GraphicElement::setBottomPosition(int bottomPosition)
 {
     m_bottomPosition = bottomPosition;
     updatePorts();
+}
+
+bool GraphicElement::hasCustomConfig() const
+{
+    return m_hasCustomConfig;
+}
+
+void GraphicElement::setHasCustomConfig(bool hasCustomConfig)
+{
+    m_hasCustomConfig = hasCustomConfig;
 }
 
 int GraphicElement::topPosition() const

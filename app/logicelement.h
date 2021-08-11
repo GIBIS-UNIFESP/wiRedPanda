@@ -43,6 +43,8 @@ public:
     void setOutputValue(bool value);
     bool getOutputValue(size_t index = 0) const;
     bool getInputValue(size_t index = 0) const;
+    size_t getInputAmount() { return m_inputs.size(); }
+    size_t getOutputAmount() { return m_outputs.size(); }
 
     void validate();
 

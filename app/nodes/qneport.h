@@ -90,6 +90,9 @@ public:
     int index() const;
     void setIndex(int index);
 
+    void setRemoteId(int id) { m_remoteId = id; }
+    int getRemoteId() { return m_remoteId; }
+
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     int m_defaultValue;
@@ -108,6 +111,7 @@ protected:
     /* WPanda */
     GraphicElement *m_graphicElement;
     QBrush m_currentBrush;
+    int m_remoteId;
 
     /* QGraphicsItem interface */
     signed char m_value;

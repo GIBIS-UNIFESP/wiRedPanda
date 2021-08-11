@@ -14,6 +14,7 @@
 #include "logicelement.h"
 #include "qneconnection.h"
 #include "qneport.h"
+#include "remotedevice.h"
 
 #include "logicelement/logicand.h"
 #include "logicelement/logicdemux.h"
@@ -32,6 +33,7 @@
 #include "logicelement/logictflipflop.h"
 #include "logicelement/logicxnor.h"
 #include "logicelement/logicxor.h"
+#include "logicelement/logicremotedevice.h"
 
 ElementMapping::ElementMapping(const QVector<GraphicElement *> &elms)
     : m_initialized(false)
@@ -173,6 +175,13 @@ LogicElement *ElementMapping::buildLogicElement(GraphicElement *elm)
     case ElementType::TEXT:
     case ElementType::LINE:
         return new LogicNone();
+    case ElementType::REMOTE: {
+                RemoteDevice* remoteDevice;
+                if ((remoteDevice = dynamic_cast<RemoteDevice*>(elm)))
+                    return( new LogicRemoteDevice( remoteDevice ) );
+
+                throw std::runtime_error( "Unable to create a remote device logic element: " + elm->objectName( ).toStdString( ) );
+          }
     default:
         throw std::runtime_error("Not implemented yet: " + elm->objectName().toStdString());
     }

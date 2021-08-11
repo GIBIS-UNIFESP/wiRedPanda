@@ -11,6 +11,7 @@
 #include <QMainWindow>
 #include <QSettings>
 #include <QTemporaryFile>
+#include <QDomDocument>
 
 #include "recentfilescontroller.h"
 
@@ -67,6 +68,8 @@ public:
     void buildFullScreenDialog();
     QString getDolphinFilename();
     void setDolphinFilename(const QString &filename);
+
+    QDomDocument* loadRemoteFunctions( );
 
     QDialog *m_fullscreenDlg;
     GraphicsView *m_fullscreenView;
