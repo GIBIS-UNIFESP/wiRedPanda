@@ -409,9 +409,7 @@ void BewavedDolphin::show()
 {
     QMainWindow::show();
     COMMENT("Getting table dimensions.", 0);
-    int width = m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0);
-    int height = m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0) + 10;
-    m_signalTableView->resize(width, height);
+    resizeScene();
 }
 
 void BewavedDolphin::print()
@@ -557,11 +555,7 @@ void BewavedDolphin::setLength(int sim_length, bool run_simulation)
     if (sim_length <= m_model->columnCount()) {
         COMMENT("Reducing or keeping the simulation length.", 0);
         m_model->setColumnCount(sim_length);
-        int width = m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0);
-        int height = m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0) + 10;
-        m_signalTableView->resize(width, height);
-        QRectF rect = m_scene->itemsBoundingRect();
-        m_scene->setSceneRect(rect);
+        resizeScene();
         m_edited = true;
         return;
     }
@@ -573,11 +567,7 @@ void BewavedDolphin::setLength(int sim_length, bool run_simulation)
             CreateZeroElement(row, col, true, false);
         }
     }
-    int width = m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0);
-    int height = m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0) + 10;
-    m_signalTableView->resize(width, height);
-    QRectF rect = m_scene->itemsBoundingRect();
-    m_scene->setSceneRect(rect);
+    resizeScene();
     m_edited = true;
     COMMENT("Running simulation", 0);
     if (run_simulation) {
@@ -590,6 +580,7 @@ void BewavedDolphin::on_actionZoom_out_triggered()
     // gv->gvzoom( )->zoomOut( );
     m_scale *= m_SCALE_FACTOR;
     m_gv->scale(m_SCALE_FACTOR, m_SCALE_FACTOR);
+    resizeScene();
 }
 
 void BewavedDolphin::on_actionZoom_In_triggered()
@@ -597,6 +588,7 @@ void BewavedDolphin::on_actionZoom_In_triggered()
     // gv->gvzoom( )->zoomIn( );
     m_scale /= m_SCALE_FACTOR;
     m_gv->scale(1.0 / m_SCALE_FACTOR, 1.0 / m_SCALE_FACTOR);
+    resizeScene();
 }
 
 void BewavedDolphin::on_actionReset_Zoom_triggered()
@@ -604,6 +596,7 @@ void BewavedDolphin::on_actionReset_Zoom_triggered()
     // gv->gvzoom( )->resetZoom( );
     m_gv->scale(1.0 / m_scale, 1.0 / m_scale);
     m_scale = 1.0;
+    resizeScene();
 }
 
 void BewavedDolphin::on_actionZoom_Range_triggered()
@@ -613,6 +606,7 @@ void BewavedDolphin::on_actionZoom_Range_triggered()
     double h_scale = static_cast<double>(m_gv->height()) / (m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0) + 10);
     m_scale = std::min(w_scale, h_scale);
     m_gv->scale(1.0 * m_scale, 1.0 * m_scale);
+    resizeScene();
 }
 
 void BewavedDolphin::on_actionClear_triggered()
@@ -741,17 +735,30 @@ void BewavedDolphin::associateToWiredPanda(const QString &fname)
 void BewavedDolphin::on_actionSave_as_triggered()
 {
     QString fname = m_currentFile.absoluteFilePath();
-    QString path = m_mainWindow->getCurrentFile().dir().absolutePath();
-    if (!m_currentFile.fileName().isEmpty()) {
-        path = m_currentFile.absoluteFilePath();
+    QString path = m_mainWindow->getCurrentFile().absolutePath();
+    QFileDialog fileDialog;
+    fileDialog.setObjectName(tr("Save File as..."));
+    fileDialog.setNameFilter(tr("Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)"));
+    fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+    fileDialog.setDirectory(path);
+    fileDialog.setFileMode(QFileDialog::ExistingFile);
+    connect(&fileDialog, &QFileDialog::directoryEntered, this, [&fileDialog, path](QString new_dir) {
+        COMMENT("Changing dir to " << new_dir.toStdString() << ", home: " << path.toStdString(), 0);
+        if (new_dir != path) {
+            fileDialog.setDirectory(path);
+        }
+    });
+    if (!fileDialog.exec()) {
+        return;
     }
-    auto *selected_filter = new QString(100);
-    fname = QFileDialog::getSaveFileName(this, tr("Save File as ..."), path, tr("Dolphin files (*.dolphin);;CSV files (*.csv)"), selected_filter);
+    auto files = fileDialog.selectedFiles();
+    fname = files.first();
     if (fname.isEmpty()) {
         return;
     }
     if ((!fname.endsWith(".dolphin")) && (!fname.endsWith(".csv"))) {
-        if (selected_filter->contains("dolphin")) {
+        if (fileDialog.selectedNameFilter().contains("dolphin")) {
+        //if (selected_filter->contains("dolphin")) {
             fname.append(".dolphin");
         } else {
             fname.append(".csv");
@@ -766,7 +773,6 @@ void BewavedDolphin::on_actionSave_as_triggered()
     } else {
         m_ui->statusbar->showMessage(tr("Could not save file: ") + fname + ".", 2000);
     }
-    delete selected_filter;
 }
 
 void BewavedDolphin::on_actionSave_triggered()
@@ -796,7 +802,7 @@ void BewavedDolphin::on_actionLoad_triggered()
             defaultDirectory = QDir::home();
         }
     }
-    const QString homeDir(m_mainWindow->getCurrentDir().dirName());
+    const QString homeDir(m_mainWindow->getCurrentDir().absolutePath());
     QFileDialog fileDialog;
     fileDialog.setObjectName(tr("Open File"));
     fileDialog.setFileMode(QFileDialog::ExistingFile);
@@ -1073,3 +1079,17 @@ void BewavedDolphin::on_actionAbout_Qt_triggered()
 {
     QMessageBox::aboutQt(this);
 }
+
+void BewavedDolphin::resizeEvent(QResizeEvent* event)
+{
+    QMainWindow::resizeEvent(event);
+    resizeScene();
+}
+
+void BewavedDolphin::resizeScene()
+{
+    m_signalTableView->resize((this->width()-20)/m_scale, (this->height()-102)/m_scale);
+    QRectF rect = m_scene->itemsBoundingRect();
+    m_scene->setSceneRect(rect);
+}
+

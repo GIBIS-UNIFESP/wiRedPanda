@@ -251,14 +251,6 @@
         <translation>Não foi possível carregar os elementos para a simulação.</translation>
     </message>
     <message>
-        <source>Save File as ...</source>
-        <translation>Salvar Arquivo como...</translation>
-    </message>
-    <message>
-        <source>Dolphin files (*.dolphin);;CSV files (*.csv)</source>
-        <translation>Arquivos Dolphin (*.dolphin);;Arquivos CSV (*.csv)</translation>
-    </message>
-    <message>
         <source>Do you want to link this Bewaved Dolphin file to your current Wired Panda file and save it?</source>
         <translation>Você deseja associar este arquivo do Bewaved Dolphin ao seu arquivo atual do Wired Panda e salvá-lo?</translation>
     </message>
@@ -335,6 +327,14 @@ Erro: %1</translation>
     <message>
         <source>beWavedDolphin Simulator</source>
         <translation>Simulador beWavedDolphin</translation>
+    </message>
+    <message>
+        <source>Save File as...</source>
+        <translation>Salvar Arquivo como...</translation>
+    </message>
+    <message>
+        <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
+        <translation>Arquivos Dolphin (*.dolphin);;Arquivos CSV (*.csv);;Todos arquivos suportados (*.dolphin *.csv)</translation>
     </message>
 </context>
 <context>
@@ -628,11 +628,11 @@ Erro: %1</translation>
     </message>
     <message>
         <source>JK-flipflop</source>
-        <translation>JK-Flipflop</translation>
+        <translation>Flipflop JK</translation>
     </message>
     <message>
         <source>JK-latch</source>
-        <translation>JK-Latch</translation>
+        <translation>Latch JK</translation>
     </message>
     <message>
         <source>Display</source>
@@ -640,7 +640,7 @@ Erro: %1</translation>
     </message>
     <message>
         <source>Mux</source>
-        <translation>Mux</translation>
+        <translation>Multiplexador</translation>
     </message>
     <message>
         <source>Node</source>
@@ -652,23 +652,23 @@ Erro: %1</translation>
     </message>
     <message>
         <source>D-flipflop</source>
-        <translation></translation>
+        <translation>Flip-flop D</translation>
     </message>
     <message>
         <source>D-latch</source>
-        <translation></translation>
+        <translation>Latch D</translation>
     </message>
     <message>
         <source>SR-flipflop</source>
-        <translation></translation>
+        <translation>Flip-flop SR</translation>
     </message>
     <message>
         <source>T-flipflop</source>
-        <translation></translation>
+        <translation>Flip-flop T</translation>
     </message>
     <message>
         <source>Display14</source>
-        <translation></translation>
+        <translation>Display de 14 segmentos</translation>
     </message>
     <message>
         <source>IC</source>
@@ -676,7 +676,7 @@ Erro: %1</translation>
     </message>
     <message>
         <source>Demux</source>
-        <translation></translation>
+        <translation>Demultiplexador</translation>
     </message>
     <message>
         <source>Buzzer</source>
@@ -1364,16 +1364,6 @@ Errp: %1</translation>
     <message>
         <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students to learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda é um software desenvolvido por estudantes da Universidade Federal de São Paulo. Este projeto foi desenvolvido para ajudar os estudantes a aprenderem mais sobre circuitos digitais.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Desenvolvedores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRed Panda atualmente é mantido por Prof. Fábio Cappabianco, Ph.D. e Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Por favor, informe em nossa página do GitHub sobre eventuais bugs encontrados ou se deseja uma nova funcionalidade.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>This version is not 100% compatible with previous versions of wiRedPanda.
-To open old version projects containing ICs(or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
-wiRedPanda 4.0 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
-You have to save new projects before accessing ICs and skins, or runningbeWavedDolphin simulations.</source>
-        <translation>Esta versão não é 100% compatível com versões anteriores do wiRedPanda.
-Para abrir um projeto de versão anterior que contenha CIs(ou caixas), aparências e/ou simulações do beWavedDolphin, seus arquivos precisam ser movidos para o mesmo diretório do arquivo do projeto principal.
-wiRedPanda 4.0 agora alistará automaticamente todos os outros arquivos .panda localizados no mesmo diretório do projeto atual como CIs na aba de edição.
-Você terá que salvar seus projetos novos antes de poder acessar CIs e aparências ou executar simulações do beWavedDolphin.</translation>
     </message>
     <message>
         <source>This version is not 100% compatible with previous versions of wiRedPanda.

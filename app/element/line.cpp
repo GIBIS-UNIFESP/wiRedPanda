@@ -14,7 +14,6 @@ Line::Line(QGraphicsItem *parent)
     setCanChangeSkin(true);
     setHasLabel(true);
     setPortName("LINE");
-    setToolTip("LINE");
 }
 
 void Line::setSkin(bool defaultSkin, const QString &filename)

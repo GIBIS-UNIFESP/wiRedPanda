@@ -251,14 +251,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Save File as ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dolphin files (*.dolphin);;CSV files (*.csv)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Do you want to link this Bewaved Dolphin file to your current Wired Panda file and save it?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -333,6 +325,14 @@ Error: %1</source>
     </message>
     <message>
         <source>beWavedDolphin Simulator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save File as...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

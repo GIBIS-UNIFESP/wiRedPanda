@@ -143,7 +143,9 @@ private:
 
     void associateToWiredPanda(const QString &fname);
     void restoreInputs();
+    void resizeScene();
 protected:
+    void resizeEvent(QResizeEvent* event) override;
     void closeEvent(QCloseEvent *e) override;
 };
 

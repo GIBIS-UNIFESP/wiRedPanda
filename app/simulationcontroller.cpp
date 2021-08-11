@@ -90,7 +90,7 @@ void SimulationController::update()
         m_shouldRestart = false;
         clear();
     }
-    if (m_elMapping) {
+    if (m_elMapping) { // TODO: Remove this check, if possible. May increse the simulation speed significantly.
         m_elMapping->update();
     }
 }
