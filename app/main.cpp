@@ -5,6 +5,7 @@
 
 #include <QApplication>
 #include <QCommandLineParser>
+#include "globalproperties.h"
 
 int main(int argc, char *argv[])
 {
@@ -32,13 +33,13 @@ int main(int argc, char *argv[])
     parser.addOption(waveformFileOption);
 
     parser.process(a);
-
     QStringList args = parser.positionalArguments();
-    MainWindow w(nullptr, (args.size() > 0 ? QString(args[0]) : QString()));
 
     QString arduFile = parser.value(arduinoFileOption);
     if (!arduFile.isEmpty()) {
         if (args.size() > 0) {
+            GlobalProperties::verbose = false;
+            MainWindow w;
             w.loadPandaFile(args[0]);
             return !w.exportToArduino(arduFile);
         }
@@ -47,11 +48,15 @@ int main(int argc, char *argv[])
     QString wfFile = parser.value(waveformFileOption);
     if (!wfFile.isEmpty()) {
         if (args.size() > 0) {
+            GlobalProperties::verbose = false;
+            MainWindow w;
             w.loadPandaFile(args[0]);
             return !w.exportToWaveFormFile(wfFile);
         }
         return 0;
     }
+
+    MainWindow w(nullptr, (args.size() > 0 ? QString(args[0]) : QString()));
     w.show();
     if (args.size() > 0) {
         w.loadPandaFile(args[0]);

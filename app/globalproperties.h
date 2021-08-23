@@ -16,6 +16,7 @@ public:
     static QString currentFile;
     static double version;
     static bool soundEnabled;
+    static bool verbose;
 
     static double toDouble(const QString &txtVersion, bool *ok);
 };

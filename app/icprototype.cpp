@@ -83,13 +83,16 @@ void ICPrototype::clear()
     m_ICImpl.clear();
 }
 
-void ICPrototype::reload()
+bool ICPrototype::reload()
 {
     // TODO: Verify file recursion
     //  verifyRecursion( fname );
     clear();
-    m_ICImpl.loadFile(m_fileName);
+    if (!m_ICImpl.loadFile(m_fileName)) {
+        return false;
+    }
     for (IC *ic : qAsConst(m_icObservers)) {
         ic->loadFile(m_fileName);
     }
+    return true;
 }

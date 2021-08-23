@@ -51,9 +51,8 @@ void SerializationFunctions::serialize(const QList<QGraphicsItem *> &items, QDat
     }
 }
 
-QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &ds, double version, QMap<quint64, QNEPort *> portMap)
+bool SerializationFunctions::deserialize(QDataStream &ds, QList<QGraphicsItem *> &itemList, double version, QMap<quint64, QNEPort *> portMap)
 {
-    QList<QGraphicsItem *> itemList;
     while (!ds.atEnd()) {
         int32_t type;
         ds >> type;
@@ -69,11 +68,14 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &ds, doub
                 if (elm->elementType() == ElementType::IC) {
                     COMMENT("Loading IC.", 3);
                     IC *ic = qgraphicsitem_cast<IC *>(elm);
-                    ICManager::instance()->loadIC(ic, ic->getFile());
+                    if (!ICManager::instance()->loadIC(ic, ic->getFile())) {
+                        return false;
+                    }
                 }
                 elm->setSelected(true);
             } else {
-                throw(std::runtime_error(ERRORMSG("Could not build element."))); // TODO: must remove this message from here and not throw an exception.
+                qDebug() << "Could not build element.";
+                return false;
             }
         } else if (type == QNEConnection::Type) {
             COMMENT("Reading Connection.", 3);
@@ -89,12 +91,12 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &ds, doub
                 itemList.append(conn);
             }
         } else {
-            qDebug() << type;
-            throw(std::runtime_error(ERRORMSG("Invalid type. Data is possibly corrupted.")));
+            qDebug() << "Invalid type. Data is possibly corrupted: " << type;
+            return false;
         }
     }
     COMMENT("Finished deserializing.", 0);
-    return itemList;
+    return true;
 }
 
 double SerializationFunctions::loadVersion(QDataStream &ds)
@@ -136,23 +138,23 @@ QRectF SerializationFunctions::loadRect(QDataStream &ds, double version)
     return rect;
 }
 
-QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &ds)
+bool SerializationFunctions::load(QDataStream &ds, QList<QGraphicsItem *> items)
 {
     COMMENT("Started loading file.", 0);
     QString str;
     ds >> str;
     if (!str.startsWith(QApplication::applicationName())) {
-        throw(std::runtime_error(ERRORMSG("Invalid file format.")));
+        qDebug() << "Invalid file format.";
+        return false;
     }
     bool ok;
     double version = GlobalProperties::toDouble(str.split(" ").at(1), &ok);
     if (!ok) {
-        throw(std::runtime_error(ERRORMSG("Invalid version number.")));
+        qDebug() << "Invalid version number.";
+        return false;
     }
     loadDolphinFilename(ds, version);
     loadRect( ds, version );
     COMMENT("Header Ok. Version: " << version, 0);
-    QList<QGraphicsItem *> items = deserialize(ds, version);
-    COMMENT("Finished reading items.", 0);
-    return items;
+    return (deserialize(ds, items, version));
 }

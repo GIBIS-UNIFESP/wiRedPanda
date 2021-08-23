@@ -6,6 +6,7 @@
 #include <cmath>
 #include <stdexcept>
 
+#include <qdebug.h>
 #include <QDrag>
 #include <QGraphicsItem>
 
@@ -150,10 +151,10 @@ void addItems(Editor *editor, const QList<QGraphicsItem *>& items)
     }
 }
 
-QList<QGraphicsItem *> loadItems(QByteArray &itemData, const QVector<int> &ids, Editor *editor, QVector<int> &otherIds)
+bool loadItems(QByteArray &itemData, const QVector<int> &ids, Editor *editor, QVector<int> &otherIds)
 {
     if (itemData.isEmpty()) {
-        return QList<QGraphicsItem *>();
+        return true;
     }
     QVector<GraphicElement *> otherElms = findElements(otherIds).toVector();
     QDataStream dataStream(&itemData, QIODevice::ReadOnly);
@@ -166,11 +167,14 @@ QList<QGraphicsItem *> loadItems(QByteArray &itemData, const QVector<int> &ids, 
      * Assuming that all connections are stored after the elements, we will deserialize the elements first.
      * We will store one additional information: The element IDs!
      */
-    QList<QGraphicsItem *> items = SerializationFunctions::deserialize(dataStream, version, portMap);
+    QList<QGraphicsItem *> items;
+    if (!SerializationFunctions::deserialize(dataStream, items, version, portMap)) {
+        qDebug() << "Error while deserializing.";
+        return false;
+    }
     if (items.size() != ids.size()) {
-        QString msg("One or more elements were not found on scene. Expected %1, found %2.");
-        msg = msg.arg(ids.size()).arg(items.size());
-        throw std::runtime_error(ERRORMSG(msg.toStdString()));
+        qDebug() << "One or more elements were not found on scene.";
+        return false;
     }
     for (int i = 0; i < items.size(); ++i) {
         auto *iwid = dynamic_cast<ItemWithId *>(items[i]);
@@ -179,7 +183,7 @@ QList<QGraphicsItem *> loadItems(QByteArray &itemData, const QVector<int> &ids, 
         }
     }
     addItems(editor, items);
-    return items;
+    return true;
 }
 
 void deleteItems(const QList<QGraphicsItem *> &items, Editor *editor)
@@ -239,8 +243,9 @@ void AddItemsCommand::undo()
 void AddItemsCommand::redo()
 {
     COMMENT("REDO " + text().toStdString(), 0);
-    loadItems(m_itemData, m_ids, m_editor, m_otherIds);
-    m_editor->setCircuitUpdateRequired();
+    if (loadItems(m_itemData, m_ids, m_editor, m_otherIds)) {
+        m_editor->setCircuitUpdateRequired();
+    }
 }
 
 DeleteItemsCommand::DeleteItemsCommand(const QList<QGraphicsItem *> &aItems, Editor *aEditor, QUndoCommand *parent)
@@ -259,8 +264,9 @@ DeleteItemsCommand::DeleteItemsCommand(QGraphicsItem *item, Editor *aEditor, QUn
 void DeleteItemsCommand::undo()
 {
     COMMENT("UNDO " + text().toStdString(), 0);
-    loadItems(m_itemData, m_ids, m_editor, m_otherIds);
-    m_editor->setCircuitUpdateRequired();
+    if (loadItems(m_itemData, m_ids, m_editor, m_otherIds)) {
+        m_editor->setCircuitUpdateRequired();
+    }
 }
 
 void DeleteItemsCommand::redo()

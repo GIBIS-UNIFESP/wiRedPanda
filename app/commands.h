@@ -28,7 +28,7 @@ QList< QGraphicsItem* > findItems( const QVector< int > &ids );
 QList< GraphicElement* > findElements( const QVector< int > &ids );
 void saveItems( QByteArray &itemData, const QList< QGraphicsItem* > &items, const QVector< int > &otherIds );
 void addItems( Editor *editor, const QList< QGraphicsItem* >& items );
-QList< QGraphicsItem* > loadItems( QByteArray &itemData, const QVector< int > &ids, Editor *editor, QVector< int > &otherIds );
+bool loadItems(QByteArray &itemData, const QVector< int > &ids, Editor *editor, QVector< int > &otherIds );
 void deleteItems( const QList< QGraphicsItem* > &items, Editor *editor );
 
 class AddItemsCommand : public QUndoCommand
