@@ -33,5 +33,5 @@ double loadVersion()
 
 QString GlobalProperties::currentFile = QString();
 double GlobalProperties::version = loadVersion();
-
 bool GlobalProperties::soundEnabled = true;
+bool GlobalProperties::verbose = true;

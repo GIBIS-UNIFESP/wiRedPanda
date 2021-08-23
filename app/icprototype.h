@@ -19,7 +19,7 @@ class ICPrototype
 {
 public:
     ICPrototype(const QString &fileName);
-    void reload();
+    bool reload();
 
     void fileName(const QString &newFileName);
     QString fileName() const;

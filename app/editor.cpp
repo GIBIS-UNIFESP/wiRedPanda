@@ -620,7 +620,7 @@ bool Editor::dropEvt(QGraphicsSceneDragDropEvent *dde)
                     }
                 }
             } catch (std::runtime_error &err) {
-                QMessageBox::warning(m_mainWindow, tr("Error"), QString::fromStdString(err.what()));
+                QMessageBox::warning(m_mainWindow, tr("Error while loading IC."), QString::fromStdString(err.what()));
                 return false;
             }
         }
@@ -656,7 +656,11 @@ bool Editor::dropEvt(QGraphicsSceneDragDropEvent *dde)
         QPointF ctr;
         ds >> ctr;
         double version = GlobalProperties::version;
-        QList<QGraphicsItem *> itemList = SerializationFunctions::deserialize(ds, version);
+        QList<QGraphicsItem *> itemList;
+        if (!SerializationFunctions::deserialize(ds, itemList, version)) {
+            QMessageBox::warning(m_mainWindow, tr("Drop error"), tr("Could not make the mouse drop of the element."));
+            return false;
+        }
         receiveCommand(new AddItemsCommand(itemList, this));
         m_scene->clearSelection();
         for (QGraphicsItem *item : qAsConst(itemList)) {
@@ -787,7 +791,11 @@ void Editor::paste(QDataStream &ds)
     ds >> ctr;
     QPointF offset = m_mousePos - ctr - QPointF(static_cast<qreal>(32.0f), static_cast<qreal>(32.0f));
     double version = GlobalProperties::version;
-    QList<QGraphicsItem *> itemList = SerializationFunctions::deserialize(ds, version);
+    QList<QGraphicsItem *> itemList;
+    if (!SerializationFunctions::deserialize(ds, itemList, version)) {
+        QMessageBox::warning(m_mainWindow, tr("Paste error"), tr("Could not past elements."));
+        return;
+    }
     receiveCommand(new AddItemsCommand(itemList, this));
     for (QGraphicsItem *item : qAsConst(itemList)) {
         if (item->type() == GraphicElement::Type) {
@@ -819,9 +827,9 @@ void Editor::load(QDataStream &ds)
     m_simulationController->stop();
     COMMENT("Stopped simulation.", 0);
     double version = SerializationFunctions::loadVersion(ds);
-    if (version > GlobalProperties::version) {
+    if ((version > GlobalProperties::version) && (GlobalProperties::verbose)) {
         QMessageBox::warning(m_mainWindow, tr("Newer version file."), tr("Warning! Your Wired Panda is possibly outdated.\n The file you are opening has been saved in a newer version.\n Please, check for updates."));
-    } else if (version < 4.0) {
+    } else if ((version < 4.0) && (GlobalProperties::verbose)) {
         QMessageBox::warning(m_mainWindow, tr("Old version file."), tr("Warning! This is an old version wiRed Panda project file (version < 4.0). To open it correctly, save all ICs and skins into the main project directory."));
     }
     COMMENT("Version: " << version, 0);
@@ -832,7 +840,14 @@ void Editor::load(QDataStream &ds)
     COMMENT("Dolphin name: " << dolphinFilename.toStdString(), 0);
     QRectF rect(SerializationFunctions::loadRect(ds, version));
     COMMENT("Header Ok. Version: " << version, 0);
-    QList<QGraphicsItem *> items = SerializationFunctions::deserialize(ds, version);
+    QList<QGraphicsItem *> items;
+    if (!SerializationFunctions::deserialize(ds, items, version)) {
+        if (GlobalProperties::verbose) {
+            throw(std::runtime_error(""));
+        } else {
+            Q_ASSERT(false);
+        }
+    }
     COMMENT("Finished loading items.", 0);
     if (m_scene) {
         for (QGraphicsItem *item : qAsConst(items)) {

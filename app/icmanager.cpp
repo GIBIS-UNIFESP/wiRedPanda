@@ -56,19 +56,28 @@ void ICManager::clear()
 bool ICManager::loadIC(IC *ic, QString fname)
 {
     //qDebug() << "Loading IC file ....... " << fname;
-    loadFile(fname);
+    if (!loadFile(fname)) {
+        return false;
+    }
     ic->loadFile(fname);
     return true;
 }
 
-void ICManager::loadFile(QString &fname)
+bool ICManager::loadFile(QString &fname)
 {
     COMMENT("Loading file " << fname.toStdString(), 3);
     QFileInfo finfo;
     //qDebug() << "Current main window dir: " << QFileInfo(GlobalProperties::currentFile).absolutePath();
     finfo.setFile(QFileInfo(GlobalProperties::currentFile).absolutePath(), QFileInfo(fname).fileName());
     //qDebug() << "IC file: " << finfo.absoluteFilePath();
-    Q_ASSERT(finfo.exists() && finfo.isFile());
+    if (GlobalProperties::verbose) {
+        if ((!finfo.exists()) || (!finfo.isFile())) {
+            QMessageBox::warning(m_mainWindow, tr("File error."), tr("Error loading IC file ")+finfo.fileName());
+            return false;
+        }
+    } else {
+        Q_ASSERT(finfo.exists() && finfo.isFile());
+    }
     m_fileWatcher.addPath(finfo.absoluteFilePath());
     if (m_ics.contains(finfo.baseName())) {
         COMMENT("IC already inserted: " << finfo.baseName().toStdString(), 3);
@@ -76,10 +85,19 @@ void ICManager::loadFile(QString &fname)
         COMMENT("Inserting IC: " << finfo.baseName().toStdString(), 3);
         //qDebug() << "Inserting IC: " << finfo.absoluteFilePath();
         auto *prototype = new ICPrototype(finfo.absoluteFilePath());
-        prototype->reload();
+        if (!prototype->reload()) {
+            if (GlobalProperties::verbose) {
+                QMessageBox::warning(m_mainWindow, tr("File error."), tr("Error reloading IC file ")+finfo.fileName());
+                return false;
+            }
+            else {
+                Q_ASSERT(false);
+            }
+        }
         //qDebug() << "Really Inserting IC: " << finfo.baseName();
         m_ics.insert(finfo.baseName(), prototype);
     }
+    return true;
 }
 
 void ICManager::openIC(QString fname)

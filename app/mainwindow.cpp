@@ -52,7 +52,9 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     , m_translator(nullptr)
 {
     COMMENT("wiRedPanda Version = " << APP_VERSION << " OR " << GlobalProperties::version, 0);
-    qDebug() << "wiRedPanda Version = " << APP_VERSION << " OR " << QString::number(GlobalProperties::version);
+    if (GlobalProperties::verbose) {
+        qDebug() << "wiRedPanda Version = " << APP_VERSION << " OR " << QString::number(GlobalProperties::version);
+    }
     ui->setupUi(this);
     ThemeManager::globalMngr = new ThemeManager(this);
 
@@ -1018,7 +1020,7 @@ bool MainWindow::exportToWaveFormFile(const QString& fname)
             return false;
         }
         m_bd = new BewavedDolphin(m_editor, this);
-        if (!m_bd->createWaveform(m_dolphinFileName)) {
+        if (!m_bd->createWaveform(fname)) {
             std::cerr << ERRORMSG(tr("Could not open waveform file: %1.").arg(m_currentFile.fileName()).toStdString()) << std::endl;
             delete m_bd;
             return false;

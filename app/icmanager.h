@@ -23,7 +23,7 @@ public:
     ~ICManager() override;
     void clear();
     bool loadIC(IC *ic, QString fname);
-    void loadFile(QString &fname);
+    bool loadFile(QString &fname);
     void openIC(QString fname);
     ICPrototype *getPrototype(const QString& fname);
     static ICManager *instance();

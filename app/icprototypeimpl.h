@@ -17,7 +17,7 @@ class ICPrototypeImpl
 {
 public:
     ~ICPrototypeImpl();
-    void loadFile(const QString &fileName);
+    bool loadFile(const QString &fileName);
     void clear();
 
     int getInputSize() const;

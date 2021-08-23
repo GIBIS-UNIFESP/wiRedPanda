@@ -378,7 +378,7 @@ bool BewavedDolphin::createWaveform(const QString& filename)
     m_mainWindow->setDisabled(true);
     this->setEnabled(true);
     COMMENT("Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.", 0);
-    if (!loadElements()) {
+    if ((!loadElements())&&(GlobalProperties::verbose)) {
         QMessageBox::warning(parentWidget(), tr("Error"), tr("Could not load enough elements for the simulation."));
         return false;
     }
@@ -417,7 +417,7 @@ void BewavedDolphin::print()
     std::cout << std::to_string(m_model->rowCount()).c_str() << ",";
     std::cout << std::to_string(m_model->columnCount()).c_str() << ",\n";
     for (int row = 0; row < m_model->rowCount(); ++row) {
-        std::cout << m_model->verticalHeaderItem(row)->text().toStdString() << ": ";
+        //std::cout << m_model->verticalHeaderItem(row)->text().toStdString() << ": ";
         for (int col = 0; col < m_model->columnCount(); ++col) {
             QString val = m_model->item(row, col)->text();
             std::cout << val.toStdString().c_str() << ",";
@@ -719,7 +719,7 @@ void BewavedDolphin::paste(QItemSelection &ranges, QDataStream &ds)
 
 void BewavedDolphin::associateToWiredPanda(const QString &fname)
 {
-    if (m_mainWindow->getDolphinFilename() != fname) {
+    if ((m_mainWindow->getDolphinFilename() != fname) && (GlobalProperties::verbose)) {
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question(this,
                                       tr("Wired Panda - Bewaved Dolphin"),

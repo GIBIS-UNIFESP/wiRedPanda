@@ -37,14 +37,18 @@ void ICPrototypeImpl::sortPorts(QVector<QNEPort *> &map)
     std::stable_sort(map.begin(), map.end(), comparePorts);
 }
 
-void ICPrototypeImpl::loadFile(const QString &fileName)
+bool ICPrototypeImpl::loadFile(const QString &fileName)
 {
     COMMENT("Reading ic", 0);
     clear();
     QFile file(fileName);
     if (file.open(QFile::ReadOnly)) {
         QDataStream ds(&file);
-        QList<QGraphicsItem *> items = SerializationFunctions::load(ds);
+        QList<QGraphicsItem *> items;
+        if (!SerializationFunctions::load(ds, items)) {
+            file.close();
+            return false;
+        }
         for (QGraphicsItem *item : qAsConst(items)) {
             loadItem(item);
         }
@@ -57,6 +61,7 @@ void ICPrototypeImpl::loadFile(const QString &fileName)
     loadInputs();
     loadOutputs();
     COMMENT("Finished Reading ic", 0);
+    return true;
 }
 
 void ICPrototypeImpl::loadInputs()

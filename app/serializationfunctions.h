@@ -28,15 +28,15 @@ public:
     static void serialize(const QList<QGraphicsItem *> &items, QDataStream &ds);
     /**
      * @brief deserialize: Deserializes a list of QGraphicItems coming through a binary data stream. It stops at the end of the stream.
-     * @param parentFile is the name of the parent file of the current project. It is used as a basis to search for ICs so that it is possible to load them.
+     * @param itemList is used to return the list of deserialized items.
      * @param portMap is used to return a map of all input and output ports. This mapping may be used to check and to create connections between element ports.
      */
-    static QList<QGraphicsItem *> deserialize(QDataStream &ds, double version, QMap<quint64, QNEPort *> portMap = QMap<quint64, QNEPort *>());
+    static bool deserialize(QDataStream &ds, QList<QGraphicsItem *> &itemList, double version, QMap<quint64, QNEPort *> portMap = QMap<quint64, QNEPort *>());
     /**
      * @brief load: Loads a .panda file project. The procedure includes loading and checking file header information, canvas status, and deserializing the graphical elements through a binary data stream.
      * @param parentFile is the name of the parent file of the current project. It is used as a basis to search for ICs so that it is possible to load them.
      */
-    static QList<QGraphicsItem *> load(QDataStream &ds);
+    static bool load(QDataStream &ds, QList<QGraphicsItem *> items);
     /**
      * @brief loadVersion Checks if it is a wiRed Panda project file and reads its version.
      * @throws std::runtime_error if it is not a valid wiRed Panda project file.
