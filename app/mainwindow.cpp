@@ -103,7 +103,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     COMMENT("Setting left side menus.", 0);
     m_editor->setElementEditor(ui->widgetElementEditor);
     ui->searchScrollArea->hide();
-    auto *shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F), this);
+    auto *shortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
     connect(shortcut, &QShortcut::activated, ui->lineEdit, QOverload<>::of(&QWidget::setFocus));
     populateLeftMenu();
 
@@ -138,9 +138,9 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     ui->actionPlay->setChecked(true);
 
     COMMENT("Connecting change tab shortcut to tab selection function.", 0);
-    auto *nextTabShortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Tab), ui->tabWidget_mainWindow);
+    auto *nextTabShortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_Tab), ui->tabWidget_mainWindow);
     connect(nextTabShortcut, &QShortcut::activated, this, &MainWindow::selectNextTab);
-    auto *prevTabShortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Backtab), ui->tabWidget_mainWindow);
+    auto *prevTabShortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_Backtab), ui->tabWidget_mainWindow);
     connect(prevTabShortcut, &QShortcut::activated, this, &MainWindow::selectPreviousTab);
 
     COMMENT("Window title.", 0);
