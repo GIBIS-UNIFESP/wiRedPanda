@@ -121,28 +121,28 @@ void Display::updatePorts()
 void Display::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     GraphicElement::paint(painter, option, widget);
-    if (input(0)->value() == true) { /* G */
+    if (input(0)->value() == 1) { /* G */
         painter->drawPixmap(QPoint(0, 0), g[m_color_number]);
     }
-    if (input(1)->value() == true) { /* F */
+    if (input(1)->value() == 1) { /* F */
         painter->drawPixmap(QPoint(0, 0), f[m_color_number]);
     }
-    if (input(2)->value() == true) { /* E */
+    if (input(2)->value() == 1) { /* E */
         painter->drawPixmap(QPoint(0, 0), e[m_color_number]);
     }
-    if (input(3)->value() == true) { /* D */
+    if (input(3)->value() == 1) { /* D */
         painter->drawPixmap(QPoint(0, 0), d[m_color_number]);
     }
-    if (input(4)->value() == true) { /* A */
+    if (input(4)->value() == 1) { /* A */
         painter->drawPixmap(QPoint(0, 0), a[m_color_number]);
     }
-    if (input(5)->value() == true) { /* B */
+    if (input(5)->value() == 1) { /* B */
         painter->drawPixmap(QPoint(0, 0), b[m_color_number]);
     }
-    if (input(6)->value() == true) { /* DP */
+    if (input(6)->value() == 1) { /* DP */
         painter->drawPixmap(QPoint(0, 0), dp[m_color_number]);
     }
-    if (input(7)->value() == true) { /* C */
+    if (input(7)->value() == 1) { /* C */
         painter->drawPixmap(QPoint(0, 0), c[m_color_number]);
     }
 }

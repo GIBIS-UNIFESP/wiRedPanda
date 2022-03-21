@@ -126,49 +126,49 @@ void Display14::updatePorts()
 void Display14::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     GraphicElement::paint(painter, option, widget);
-    if (input(0)->value() == true) { /* G1 */
+    if (input(0)->value() == 1) { /* G1 */
         painter->drawPixmap(QPoint(0, 0), g1[m_color_number]);
     }
-    if (input(1)->value() == true) { /* F */
+    if (input(1)->value() == 1) { /* F */
         painter->drawPixmap(QPoint(0, 0), f[m_color_number]);
     }
-    if (input(2)->value() == true) { /* E */
+    if (input(2)->value() == 1) { /* E */
         painter->drawPixmap(QPoint(0, 0), e[m_color_number]);
     }
-    if (input(3)->value() == true) { /* D */
+    if (input(3)->value() == 1) { /* D */
         painter->drawPixmap(QPoint(0, 0), d[m_color_number]);
     }
-    if (input(4)->value() == true) { /* A */
+    if (input(4)->value() == 1) { /* A */
         painter->drawPixmap(QPoint(0, 0), a[m_color_number]);
     }
-    if (input(5)->value() == true) { /* B */
+    if (input(5)->value() == 1) { /* B */
         painter->drawPixmap(QPoint(0, 0), b[m_color_number]);
     }
-    if (input(6)->value() == true) { /* DP */
+    if (input(6)->value() == 1) { /* DP */
         painter->drawPixmap(QPoint(0, 0), dp[m_color_number]);
     }
-    if (input(7)->value() == true) { /* C */
+    if (input(7)->value() == 1) { /* C */
         painter->drawPixmap(QPoint(0, 0), c[m_color_number]);
     }
-    if (input(8)->value() == true) { /* G2 */
+    if (input(8)->value() == 1) { /* G2 */
         painter->drawPixmap(QPoint(0, 0), g2[m_color_number]);
     }
-    if (input(9)->value() == true) { /* H */
+    if (input(9)->value() == 1) { /* H */
         painter->drawPixmap(QPoint(0, 0), h[m_color_number]);
     }
-    if (input(10)->value() == true) { /* J */
+    if (input(10)->value() == 1) { /* J */
         painter->drawPixmap(QPoint(0, 0), j[m_color_number]);
     }
-    if (input(11)->value() == true) { /* K */
+    if (input(11)->value() == 1) { /* K */
         painter->drawPixmap(QPoint(0, 0), k[m_color_number]);
     }
-    if (input(12)->value() == true) { /* L */
+    if (input(12)->value() == 1) { /* L */
         painter->drawPixmap(QPoint(0, 0), l[m_color_number]);
     }
-    if (input(13)->value() == true) { /* M */
+    if (input(13)->value() == 1) { /* M */
         painter->drawPixmap(QPoint(0, 0), m[m_color_number]);
     }
-    if (input(14)->value() == true) { /* N */
+    if (input(14)->value() == 1) { /* N */
         painter->drawPixmap(QPoint(0, 0), n[m_color_number]);
     }
 }
