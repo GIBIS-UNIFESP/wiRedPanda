@@ -13,6 +13,10 @@
 #include <QDialog>
 #include <QTextStream>
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+using namespace QtCharts;
+#endif
+
 namespace Ui
 {
 class SimpleWaveform;
@@ -40,8 +44,8 @@ private slots:
 
 private:
     Ui::SimpleWaveform *m_ui;
-    QtCharts::QChart m_chart;
-    QtCharts::QChartView *m_chartView;
+    QChart m_chart;
+    QChartView *m_chartView;
     Editor *m_editor;
 
     SortingMode m_sortingMode;

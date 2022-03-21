@@ -8,6 +8,7 @@
 #include "qneconnection.h"
 #include "qneport.h"
 
+#include <QRegularExpression>
 #include <stdexcept>
 
 CodeGenerator::CodeGenerator(const QString &fileName, const QVector<GraphicElement *> &elements)
@@ -51,7 +52,7 @@ static inline QString highLow(int val)
 
 QString clearString(const QString &input)
 {
-    return input.toLower().trimmed().replace(" ", "_").replace("-", "_").replace(QRegExp("\\W"), "");
+    return input.toLower().trimmed().replace(" ", "_").replace("-", "_").replace(QRegularExpression("\\W"), "");
 }
 
 QString CodeGenerator::otherPortName(QNEPort *port)

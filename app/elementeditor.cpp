@@ -37,7 +37,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     setEnabled(false);
     setVisible(false);
 
-    m_ui->lineEditTrigger->setValidator(new QRegExpValidator(QRegExp("[a-z]| |[A-Z]|[0-9]"), this));
+    m_ui->lineEditTrigger->setValidator(new QRegularExpressionValidator(QRegularExpression("[a-z]| |[A-Z]|[0-9]"), this));
     fillColorComboBox();
     m_ui->lineEditElementLabel->installEventFilter(this);
     m_ui->lineEditTrigger->installEventFilter(this);
