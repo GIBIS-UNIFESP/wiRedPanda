@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "codegenerator.h"
@@ -80,7 +80,7 @@ QString CodeGenerator::otherPortName(QNEPort *port)
 bool CodeGenerator::generate()
 {
     out << "// ==================================================================== //" << endl;
-    out << "// ======= This code was generated automatically by wiRED PANDA ======= //" << endl;
+    out << "// ======= This code was generated automatically by WiRedPanda ======== //" << endl;
     out << "// ==================================================================== //" << endl;
     out << endl << endl;
     out << "#include <elapsedMillis.h>" << endl;
