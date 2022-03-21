@@ -41,6 +41,12 @@
 #include "ui_mainwindow.h"
 #include "workspace.h"
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+#define SKIPEMPTYPARTS QString::SkipEmptyParts
+#else
+#define SKIPEMPTYPARTS Qt::SkipEmptyParts
+#endif
+
 MainWindow::MainWindow(QWidget *parent, const QString &filename)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -168,7 +174,7 @@ void MainWindow::loadAutoSaveFiles(QSettings &settings, const QString &filename)
         bool yes_to_all = false;
         bool no_to_all = false;
         QString allAutoSaveFileNames(settings.value("autosaveFile").toString());
-        QStringList autoSaveFileNameList(allAutoSaveFileNames.split("\t",Qt::SkipEmptyParts));
+        QStringList autoSaveFileNameList(allAutoSaveFileNames.split("\t", SKIPEMPTYPARTS));
         COMMENT("all files: " << allAutoSaveFileNames.toStdString(), 0);
         foreach(auto autoSaveFileName, autoSaveFileNameList) {
             if ((QFile(autoSaveFileName).exists()) && (autoSaveFileName != filename)) {
