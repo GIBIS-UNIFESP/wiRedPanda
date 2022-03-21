@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "bewaveddolphin.h"
@@ -97,6 +97,7 @@ BewavedDolphin::BewavedDolphin(Editor *editor, QWidget *parent)
     m_gv->gvzoom()->setZoomFactorBase(m_SCALE_FACTOR);
     drawPixMaps();
     m_edited = false;
+    m_ui->retranslateUi(this);
 }
 
 BewavedDolphin::~BewavedDolphin()
@@ -145,11 +146,12 @@ void BewavedDolphin::on_actionExit_triggered()
 bool BewavedDolphin::checkSave()
 {
     if (m_edited) {
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this,
-                                      tr("Wired Panda - Bewaved Dolphin"),
-                                      tr("Save simulation before closing?"),
-                                      QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        auto reply =
+            QMessageBox::question(
+                this,
+                tr("WiRedPanda - beWavedDolphin"),
+                tr("Save simulation before closing?"),
+                QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
         if (reply == QMessageBox::Save) {
             on_actionSave_triggered();
             return (!m_edited);
@@ -720,11 +722,13 @@ void BewavedDolphin::paste(QItemSelection &ranges, QDataStream &ds)
 void BewavedDolphin::associateToWiredPanda(const QString &fname)
 {
     if (m_mainWindow->getDolphinFilename() != fname) {
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this,
-                                      tr("Wired Panda - Bewaved Dolphin"),
-                                      tr("Do you want to link this Bewaved Dolphin file to your current Wired Panda file and save it?"),
-                                      QMessageBox::Yes | QMessageBox::No);
+        auto reply =
+            QMessageBox::question(
+                this,
+                tr("WiRedPanda - beWavedDolphin"),
+                tr("Do you want to link this beWavedDolphin file to your current WiRedPanda file and save it?"),
+                QMessageBox::Yes | QMessageBox::No);
+
         if (reply == QMessageBox::Yes) {
             m_mainWindow->setDolphinFilename(fname);
             m_mainWindow->save();
@@ -1062,16 +1066,16 @@ void BewavedDolphin::on_actionAbout_triggered()
 {
     QMessageBox::about(this,
                        "beWavedDolphin",
-                       tr("<p>beWaved Dolphin is a waveform simulator for the weRed Panda software developed by the Federal University of São Paulo."
-                          " This project was created in order to help students to learn about logic circuits.</p>"
+                       tr("<p>beWavedDolphin is a waveform simulator for the WiRedPanda software developed by the Federal University of São Paulo."
+                          " This project was created in order to help students learn about logic circuits.</p>"
                           "<p>Software version: %1</p>"
                           "<p><strong>Creators:</strong></p>"
                           "<ul>"
                           "<li> Prof. Fábio Cappabianco, Ph.D. </li>"
                           "</ul>"
-                          "<p> beWaved Dolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.</p>"
+                          "<p> beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.</p>"
                           "<p> Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.</p>"
-                          "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
+                          "<p><a href=\"http://gibis-unifesp.github.io/WiRedPanda/\">Visit our website!</a></p>")
                            .arg(QApplication::applicationVersion()));
 }
 

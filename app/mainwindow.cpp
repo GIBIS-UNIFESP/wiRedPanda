@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "mainwindow.h"
@@ -58,8 +58,8 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     , m_autoSaveFile(nullptr)
     , m_translator(nullptr)
 {
-    COMMENT("wiRedPanda Version = " << APP_VERSION << " OR " << GlobalProperties::version, 0);
-    qDebug() << "wiRedPanda Version = " << APP_VERSION << " OR " << QString::number(GlobalProperties::version);
+    COMMENT("WiRedPanda Version = " << APP_VERSION << " OR " << GlobalProperties::version, 0);
+    qDebug() << "WiRedPanda Version = " << APP_VERSION << " OR " << QString::number(GlobalProperties::version);
     ui->setupUi(this);
     ThemeManager::globalMngr = new ThemeManager(this);
 
@@ -67,7 +67,11 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     COMMENT("Settings filename: " << settings.fileName().toStdString(), 0);
     if (settings.value("language").isValid()) {
-        loadTranslation(settings.value("language").toString());
+        QString language = settings.value("language").toString();
+        if (language == "://wpanda_pt.qm") {
+            language = "://wpanda_pt_BR.qm";
+        }
+        loadTranslation(language);
     }
 
     COMMENT("Building dialog within a new tab.", 0);
@@ -372,15 +376,17 @@ void MainWindow::aboutThisVersion()
     msgBox.setParent(this);
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.setIcon(QMessageBox::Icon::Information);
-    msgBox.setWindowTitle("wiRedPanda version 4.0.");
-    msgBox.setText(QString(tr("This version is not 100\% compatible with previous versions of wiRedPanda.\n"
-                              "To open old version projects containing ICs(or boxes), skins, and/or "
-                              "beWavedDolphin simulations, their files must be moved to the same directory "
-                              "as the main project file.\n"
-                              "wiRedPanda 4.0 will automatically list all other .panda files located "
-                              "in the same directory of the current project as ICs in the editor tab.\n"
-                              "You have to save new projects before accessing ICs and skins, or running "
-                              "beWavedDolphin simulations.")));
+    msgBox.setWindowTitle("WiRedPanda version " + QString(APP_VERSION));
+    msgBox.setText(
+        tr("This version is not 100% compatible with previous versions of WiRedPanda.\n"
+           "To open old version projects containing ICs (or boxes), skins, and/or "
+           "beWavedDolphin simulations, their files must be moved to the same directory "
+           "as the main project file.\n"
+           "WiRedPanda %1 will automatically list all other .panda files located "
+           "in the same directory of the current project as ICs in the editor tab.\n"
+           "You have to save new projects before accessing ICs and skins, or running "
+           "beWavedDolphin simulations.")
+                .arg(APP_VERSION));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Ok);
     msgBox.setCheckBox(cb);
@@ -413,7 +419,7 @@ int MainWindow::recoverAutoSaveFile(const QString& autosaveFilename)
     QMessageBox msgBox;
     msgBox.setParent(this);
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll);
-    msgBox.setText(QString(tr("We have found an autosave file. Do you want to load it?\n Autosave: ") + autosaveFilename));
+    msgBox.setText(QString(tr("An autosave file was found. Do you want to load it?\n") + autosaveFilename));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Yes);
     return msgBox.exec();
@@ -528,22 +534,23 @@ void MainWindow::on_actionSave_triggered()
 
 void MainWindow::on_actionAbout_triggered()
 {
-    QMessageBox::about(this,
-                       "wiRedPanda",
-                       tr("<p>wiRedPanda is a software developed by the students of the Federal University of São Paulo."
-                          " This project was created in order to help students to learn about logic circuits.</p>"
-                          "<p>Software version: %1</p>"
-                          "<p><strong>Creators:</strong></p>"
-                          "<ul>"
-                          "<li> Davi Morales </li>"
-                          "<li> Lucas Lellis </li>"
-                          "<li> Rodrigo Torres </li>"
-                          "<li> Prof. Fábio Cappabianco, Ph.D. </li>"
-                          "</ul>"
-                          "<p> wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.</p>"
-                          "<p> Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.</p>"
-                          "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
-                           .arg(QApplication::applicationVersion()));
+    QMessageBox::about(
+        this,
+        "WiRedPanda",
+        tr("<p>WiRedPanda is a software developed by the students of the Federal University of São Paulo."
+           " This project was created in order to help students learn about logic circuits.</p>"
+           "<p>Software version: %1</p>"
+           "<p><strong>Creators:</strong></p>"
+           "<ul>"
+           "<li> Davi Morales </li>"
+           "<li> Lucas Lellis </li>"
+           "<li> Rodrigo Torres </li>"
+           "<li> Prof. Fábio Cappabianco, Ph.D. </li>"
+           "</ul>"
+           "<p> WiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.</p>"
+           "<p> Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.</p>"
+           "<p><a href=\"http://gibis-unifesp.github.io/WiRedPanda/\">Visit our website!</a></p>")
+            .arg(QApplication::applicationVersion()));
 }
 
 void MainWindow::on_actionAbout_Qt_triggered()
@@ -567,11 +574,15 @@ void MainWindow::closeEvent(QCloseEvent *e)
 {
     bool closeWindow = false;
     if (!hasModifiedFiles()) {
-        QMessageBox::StandardButton resBtn = QMessageBox::question( this, tr("Exit ") + QApplication::applicationName(),
-                                                                    tr("Are you sure?\n"),
-                                                                    QMessageBox::Cancel | QMessageBox::Yes,
-                                                                    QMessageBox::Yes);
-        if (resBtn == QMessageBox::Yes) {
+        auto reply =
+            QMessageBox::question(
+                this,
+                tr("Exit ") + QApplication::applicationName(),
+                tr("Are you sure?"),
+                QMessageBox::Cancel | QMessageBox::Yes,
+                QMessageBox::Yes);
+
+        if (reply == QMessageBox::Yes) {
             closeWindow = true;
             closeFile();
         }
@@ -809,7 +820,7 @@ void MainWindow::disconnectTab()
     disconnect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
     COMMENT("Removing undo and redo actions from UI menu.", 0 );
     removeUndoRedoMenu();
-    COMMENT("Disabling beWaved Dolphin action.", 0);
+    COMMENT("Disabling beWavedDolphin action.", 0);
 }
 
 void MainWindow::setCurrentDir()
@@ -825,11 +836,11 @@ void MainWindow::setCurrentDir()
 
 void MainWindow::connectTab(int tab)
 {
-    COMMENT("Setting view and dialog to currecnt canvas.", 0);
+    COMMENT("Setting view and dialog to current canvas.", 0);
     m_fullscreenDlg = m_tabs[tab].fullScreenDlg();
     m_fullscreenView = m_tabs[tab].fullscreenView();
     connect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
-    COMMENT("Setting edtor elements to current tab: undo stack, scene, rectangle, simulation controller, IC manager. Also connecting IC Manager and simulation controller signals and setting global IC manager. Updating ICs if changed.", 0);
+    COMMENT("Setting editor elements to current tab: undo stack, scene, rectangle, simulation controller, IC manager. Also connecting IC Manager and simulation controller signals and setting global IC manager. Updating ICs if changed.", 0);
     m_editor->selectWorkspace(&m_tabs[tab]);
     COMMENT("Connecting undo and redo functions to UI menu.", 0);
     addUndoRedoMenu(tab);
@@ -1163,13 +1174,20 @@ void MainWindow::loadTranslation(const QString& language)
     if (m_translator) {
         qApp->removeTranslator(m_translator);
     }
-    m_translator = new QTranslator(this);
-    if (m_translator->load(language)) {
-        qApp->installTranslator(m_translator);
-        retranslateUi();
-    } else {
-        QMessageBox::critical(this, "Error!", "Error loading translation!");
+
+    if(language == "://wpanda_en.qm") {
+        return retranslateUi();
     }
+
+    m_translator = new QTranslator(this);
+
+    if (!m_translator->load(language)) {
+        QMessageBox::critical(this, "Error!", "Error loading translation!");
+        return;
+    }
+
+    qApp->installTranslator(m_translator);
+    retranslateUi();
 }
 
 void MainWindow::on_actionEnglish_triggered()
@@ -1177,14 +1195,13 @@ void MainWindow::on_actionEnglish_triggered()
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     QString language = "://wpanda_en.qm";
     settings.setValue("language", language);
-
     loadTranslation(language);
 }
 
 void MainWindow::on_actionPortuguese_triggered()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    QString language = "://wpanda_pt.qm";
+    QString language = "://wpanda_pt_BR.qm";
     settings.setValue("language", language);
     loadTranslation(language);
 }

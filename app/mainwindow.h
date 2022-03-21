@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2022, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -53,8 +53,8 @@ public:
     void setAutoSaveFileName(const QFileInfo &file);
     //! Exports the current simulation to an
     bool exportToArduino(QString fname);
-    //! Saves the current Bewaved Dolphin (waveform simulator) file
-    bool exportToWaveFormFile(const QString& fname);
+    //! Saves the current beWavedDolphin (waveform simulator) file
+    bool exportToWaveFormFile(const QString &fname);
     //! Loads a .panda file
     bool loadPandaFile(const QString &fname);
     //! Opens a message box asking the user if he wishes to save his progress
