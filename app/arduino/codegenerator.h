@@ -9,6 +9,7 @@
 #include <QFile>
 #include <QHash>
 #include <QTextStream>
+#include <QVector>
 
 class GraphicElement;
 class QNEPort;

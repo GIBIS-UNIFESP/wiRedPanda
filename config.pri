@@ -1,6 +1,6 @@
-#!versionAtLeast(QT_VERSION, 5.15.0) {
-#    error("Use Qt 5.15 or newer")
-#}
+equals(QT_MAJOR_VERSION, 5) : lessThan(QT_MINOR_VERSION, 7) {
+    error("Use Qt 5.7 or newer")
+}
 
 equals(QT_MAJOR_VERSION, 6) : !versionAtLeast(QT_VERSION, 6.2.0) {
     error("For Qt6 the minimum version is 6.2.0")

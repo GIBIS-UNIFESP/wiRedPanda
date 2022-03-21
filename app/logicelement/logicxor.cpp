@@ -3,6 +3,8 @@
 
 #include "logicxor.h"
 
+#include <functional>
+
 LogicXor::LogicXor(size_t inputSize)
     : LogicElement(inputSize, 1)
 {

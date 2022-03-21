@@ -23,6 +23,7 @@ class ICManager;
 class WorkSpace
 {
 public:
+    WorkSpace() = default; // for Qt < 5.15
     WorkSpace(QDialog *fullscreenDlg, GraphicsView *fullscreenView, Editor *editor);
     QDialog *fullScreenDlg() const;
     GraphicsView *fullscreenView() const;

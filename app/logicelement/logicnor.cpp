@@ -3,6 +3,8 @@
 
 #include "logicnor.h"
 
+#include <functional>
+
 LogicNor::LogicNor(size_t inputSize)
     : LogicElement(inputSize, 1)
 {

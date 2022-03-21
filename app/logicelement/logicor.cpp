@@ -3,6 +3,8 @@
 
 #include "logicor.h"
 
+#include <functional>
+
 LogicOr::LogicOr(size_t inputSize)
     : LogicElement(inputSize, 1)
 {
