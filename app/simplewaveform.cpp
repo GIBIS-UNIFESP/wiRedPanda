@@ -297,7 +297,7 @@ void SimpleWaveform::showWaveform()
         COMMENT("itr:" << itr, 3);
         for (int in = 0; in < inputs.size(); ++in) {
             float val = bs[in];
-            dynamic_cast<Input *>(inputs[in])->setOn(not qFuzzyIsNull(val));
+            dynamic_cast<Input *>(inputs[in])->setOn(!qFuzzyIsNull(val));
             float offset = (in_series.size() - in - 1 + out_series.size()) * 2 + gap + 0.5;
             in_series[in]->append(itr, static_cast<qreal>(offset + val));
             in_series[in]->append(itr + 1, static_cast<qreal>(offset + val));
