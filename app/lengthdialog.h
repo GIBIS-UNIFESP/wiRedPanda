@@ -8,21 +8,19 @@
 
 #include <QDialog>
 
-#include "ui_LengthDialog.h"
-
 namespace Ui
 {
-class lengthDialog;
+class LengthDialog;
 }
 
-class lengthDialog : public QDialog
+class LengthDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit lengthDialog(QWidget *parent = nullptr);
+    explicit LengthDialog(QWidget *parent = nullptr);
     int getFrequency();
-    ~lengthDialog() override;
+    ~LengthDialog() override;
 
 private slots:
     void cancelClicked();
@@ -30,7 +28,7 @@ private slots:
     void okClicked();
 
 private:
-    Ui::lengthDialog *m_ui;
+    Ui::LengthDialog *m_ui;
     bool m_canceled;
 };
 
