@@ -43,7 +43,7 @@ include($$PWD/app/logicelement/logicelement.pri)
 SOURCES += \
     $$PWD/app/arduino/codegenerator.cpp \
     $$PWD/app/bewaveddolphin.cpp \
-    $$PWD/app/clockDialog.cpp \
+    $$PWD/app/clockdialog.cpp \
     $$PWD/app/elementeditor.cpp \
     $$PWD/app/elementfactory.cpp \
     $$PWD/app/commands.cpp \
@@ -60,7 +60,7 @@ SOURCES += \
     $$PWD/app/icprototype.cpp \
     $$PWD/app/icprototypeimpl.cpp \
     $$PWD/app/label.cpp \
-    $$PWD/app/lengthDialog.cpp \
+    $$PWD/app/lengthdialog.cpp \
     $$PWD/app/listitemwidget.cpp \
     $$PWD/app/mainwindow.cpp \
     $$PWD/app/nodes/qneconnection.cpp \
@@ -80,7 +80,7 @@ SOURCES += \
 
 HEADERS  +=  \
     $$PWD/app/bewaveddolphin.h \
-    $$PWD/app/clockDialog.h \
+    $$PWD/app/clockdialog.h \
     $$PWD/app/common.h \
     $$PWD/app/filehelper.h \
     $$PWD/app/graphicsviewzoom.h \
@@ -100,7 +100,7 @@ HEADERS  +=  \
     $$PWD/app/icprototype.h \
     $$PWD/app/icprototypeimpl.h \
     $$PWD/app/label.h \
-    $$PWD/app/lengthDialog.h \
+    $$PWD/app/lengthdialog.h \
     $$PWD/app/listitemwidget.h \
     $$PWD/app/mainwindow.h \
     $$PWD/app/nodes/qneconnection.h \
@@ -124,8 +124,8 @@ INCLUDEPATH += \
 
 FORMS    += \
     $$PWD/app/bewaveddolphin.ui \
-    $$PWD/app/clockDialog.ui \
-    $$PWD/app/lengthDialog.ui \
+    $$PWD/app/clockdialog.ui \
+    $$PWD/app/lengthdialog.ui \
     $$PWD/app/mainwindow.ui \
     $$PWD/app/elementeditor.ui \
     $$PWD/app/simplewaveform.ui

@@ -17,7 +17,7 @@
 #include <QSettings>
 #include <QTableView>
 
-#include "clockDialog.h"
+#include "clockdialog.h"
 #include "common.h"
 #include "editor.h"
 #include "elementfactory.h"
@@ -27,7 +27,7 @@
 #include "graphicsview.h"
 #include "graphicsviewzoom.h"
 #include "input.h"
-#include "LengthDialog.h"
+#include "lengthdialog.h"
 #include "mainwindow.h"
 #include "qneport.h"
 #include "scstop.h"
@@ -502,7 +502,7 @@ void BewavedDolphin::on_actionSet_clock_wave_triggered()
     QItemSelection ranges = m_signalTableView->selectionModel()->selection();
     int first_col = sectionFirstColumn(ranges);
     COMMENT("Setting the signal according it its column and clock period.", 0);
-    clockDialog dialog(this);
+    ClockDialog dialog(this);
     int clock_period = dialog.getFrequency();
     if (clock_period < 0) {
         return;
@@ -542,7 +542,7 @@ void BewavedDolphin::on_actionCombinational_triggered()
 void BewavedDolphin::on_actionSet_Length_triggered()
 {
     COMMENT("Setting the simulation length.", 0);
-    lengthDialog dialog(this);
+    LengthDialog dialog(this);
     int sim_length = dialog.getFrequency();
     if (sim_length < 0) {
         return;

@@ -10,28 +10,28 @@
 
 namespace Ui
 {
-class clockDialog;
+class ClockDialog;
 }
 
 //!
 //! \brief The clockDialog class handles dialogs for setting the frequency at which a clock ticks
 //!
-class clockDialog : public QDialog
+class ClockDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit clockDialog(QWidget *parent = nullptr);
+    explicit ClockDialog(QWidget *parent = nullptr);
     //! Returns the clock frequency (in Hz)
     int getFrequency();
-    ~clockDialog() override;
+    ~ClockDialog() override;
 
 private slots:
     void cancelRequested();
     void okRequested();
 
 private:
-    Ui::clockDialog * m_ui;
+    Ui::ClockDialog * m_ui;
     bool m_canceled;
 };
 
