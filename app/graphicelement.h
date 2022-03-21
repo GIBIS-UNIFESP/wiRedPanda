@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2022, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -160,7 +160,7 @@ public:
     QString getLabel() const;
 
     /**
-     * @brief updateTheme: Updates the GraphicElement theme according to the dark/light wiRed Panda theme.
+     * @brief updateTheme: Updates the GraphicElement theme according to the dark/light WiRedPanda theme.
      */
     void updateTheme();
     /**

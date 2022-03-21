@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2022, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -38,8 +38,8 @@ public:
      */
     static QList<QGraphicsItem *> load(QDataStream &ds);
     /**
-     * @brief loadVersion Checks if it is a wiRed Panda project file and reads its version.
-     * @throws std::runtime_error if it is not a valid wiRed Panda project file.
+     * @brief loadVersion Checks if it is a WiRedPanda project file and reads its version.
+     * @throws std::runtime_error if it is not a valid WiRedPanda project file.
      */
     static double loadVersion(QDataStream &ds);
     /**
