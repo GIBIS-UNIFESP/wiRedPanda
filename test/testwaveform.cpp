@@ -5,6 +5,7 @@
 #include "simplewaveform.h"
 
 #include <QTemporaryFile>
+#include <stdexcept>
 
 void TestWaveForm::init()
 {
