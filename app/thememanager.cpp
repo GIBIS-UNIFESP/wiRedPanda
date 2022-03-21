@@ -67,6 +67,11 @@ void ThemeAttrs::setTheme(const Theme &thm)
         qneConnection_false = QColor(Qt::darkGreen);
         qneConnection_invalid = QColor(Qt::red);
 
+#ifndef Q_OS_MAC
+        qApp->setPalette(defaultPalette);
+        qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
+#endif
+
         break;
     case Theme::Panda_Dark:
         scene_bgBrush = QColor("#404552");
@@ -82,6 +87,31 @@ void ThemeAttrs::setTheme(const Theme &thm)
         qneConnection_false = QColor(65, 150, 130, 255);
 
         qneConnection_invalid = QColor(Qt::red);
+
+#ifndef Q_OS_MAC
+        QPalette darkPalette;
+        darkPalette.setColor(QPalette::Window, QColor(53, 53, 53));
+        darkPalette.setColor(QPalette::WindowText, Qt::white);
+        darkPalette.setColor(QPalette::Base, QColor(25, 25, 25));
+        darkPalette.setColor(QPalette::AlternateBase, QColor(53, 53, 53));
+        darkPalette.setColor(QPalette::ToolTipBase, Qt::white);
+        darkPalette.setColor(QPalette::ToolTipText, Qt::white);
+        darkPalette.setColor(QPalette::Text, Qt::white);
+        darkPalette.setColor(QPalette::Button, QColor(53, 53, 53));
+        darkPalette.setColor(QPalette::ButtonText, Qt::white);
+        darkPalette.setColor(QPalette::BrightText, Qt::red);
+        darkPalette.setColor(QPalette::Link, QColor(42, 130, 218));
+
+        darkPalette.setColor(QPalette::Highlight, QColor(42, 130, 218));
+        darkPalette.setColor(QPalette::HighlightedText, Qt::black);
+
+        darkPalette.setColor(QPalette::Disabled, QPalette::ButtonText, QColor(120, 120, 120));
+        darkPalette.setColor(QPalette::Disabled, QPalette::Base, QColor(120, 120, 120));
+        darkPalette.setColor(QPalette::Disabled, QPalette::WindowText, QColor(120, 120, 120));
+
+        qApp->setPalette(darkPalette);
+        qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
+#endif
 
         break;
     }

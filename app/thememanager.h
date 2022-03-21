@@ -6,8 +6,10 @@
 #ifndef THEMEMANAGER_H
 #define THEMEMANAGER_H
 
+#include <QApplication>
 #include <QColor>
 #include <QObject>
+#include <QPalette>
 
 class Editor;
 
@@ -44,6 +46,9 @@ public:
     QColor qnePort_output_brush;
 
     void setTheme(const Theme &thm);
+
+private:
+    QPalette const defaultPalette = qApp->palette();
 };
 
 class ThemeManager : public QObject

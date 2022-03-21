@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
     a.setOrganizationName("GIBIS-UNIFESP");
     a.setApplicationName("WiredPanda");
     a.setApplicationVersion(APP_VERSION);
+    a.setStyle("Fusion");
 
     QCommandLineParser parser;
     parser.setApplicationDescription(a.applicationName());
