@@ -1,4 +1,4 @@
-include(../includes.pri)
+include(../config.pri)
 
 QT += testlib
 
