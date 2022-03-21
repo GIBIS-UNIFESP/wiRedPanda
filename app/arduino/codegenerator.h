@@ -7,6 +7,7 @@
 #define CODEGENERATOR_H
 
 #include <QFile>
+#include <QHash>
 #include <QTextStream>
 
 class GraphicElement;
