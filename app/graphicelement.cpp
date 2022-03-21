@@ -419,7 +419,7 @@ void GraphicElement::loadPixmapSkinName(QDataStream &ds, size_t skin)
     QString name;
     ds >> name;
     if ((skin < static_cast<size_t>(m_pixmapSkinName.size()))) {
-        if (name[0] != ":") {
+        if (name[0] != ':') {
             QDir dir(QFileInfo(GlobalProperties::currentFile).absoluteDir());
             QString filename(QFileInfo(name).fileName());
             QFileInfo fileInfo(dir, filename);

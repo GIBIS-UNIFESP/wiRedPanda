@@ -45,7 +45,7 @@ ListItemWidget::ListItemWidget(const QPixmap &pixmap, ElementType type, const QS
     itemLayout->addStretch();
     itemLayout->addWidget(m_nameLabel);
     itemLayout->addStretch();
-    itemLayout->setMargin(0);
+    itemLayout->setContentsMargins(0, 0, 0, 0);
 }
 
 void ListItemWidget::updateName()

@@ -8,6 +8,7 @@
 
 #include <QDrag>
 #include <QGraphicsItem>
+#include <QIODevice>
 
 #include "common.h"
 #include "editor.h"

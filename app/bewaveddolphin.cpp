@@ -391,7 +391,7 @@ bool BewavedDolphin::createWaveform(const QString& filename)
     loadNewTable(input_labels, output_labels);
     if (filename.isEmpty()) {
         setWindowTitle(tr("beWavedDolphin Simulator"));
-        m_currentFile = filename;
+        m_currentFile = QFileInfo(filename);
     } else {
         QFileInfo finfo(m_mainWindow->getCurrentDir(), QFileInfo(filename).fileName());
         if (!load(finfo.absoluteFilePath())) {
@@ -765,7 +765,7 @@ void BewavedDolphin::on_actionSave_as_triggered()
         }
     }
     if (save(fname)) {
-        m_currentFile = fname;
+        m_currentFile = QFileInfo(fname);
         associateToWiredPanda(fname);
         setWindowTitle(tr("beWavedDolphin Simulator") + " [" + m_currentFile.fileName() + "]");
         m_ui->statusbar->showMessage(tr("Saved file successfully."), 2000);

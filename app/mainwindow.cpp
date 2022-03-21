@@ -22,6 +22,7 @@
 #include <QSpacerItem>
 #include <QTranslator>
 #include <QUndoStack>
+#include <QActionGroup>
 
 #include "arduino/codegenerator.h"
 #include "bewaveddolphin.h"
@@ -700,7 +701,7 @@ void MainWindow::updateICList()
         QStringList files = directory.entryList(QStringList() << "*.panda" << "*.PANDA", QDir::Files);
         files.removeAll(m_currentFile.fileName());
         for (int i = files.size() - 1; i >= 0; --i) {
-            if (files[i][0] == ".") {
+            if (files[i][0] == '.') {
                 files.removeAt(i);
             }
         }
@@ -1294,7 +1295,6 @@ void MainWindow::buildFullScreenDialog()
     m_fullscreenDlg->addActions(actions());
     m_fullscreenDlg->addActions(ui->menuBar->actions());
     dlg_layout->setContentsMargins(0, 0, 0, 0);
-    dlg_layout->setMargin(0);
     dlg_layout->addWidget(m_fullscreenView);
     m_fullscreenDlg->setLayout(dlg_layout);
     m_fullscreenDlg->setStyleSheet("QGraphicsView { border-style: none; }");

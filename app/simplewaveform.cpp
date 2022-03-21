@@ -26,8 +26,6 @@
 
 #include "input.h"
 
-using namespace QtCharts;
-
 SimpleWaveform::SimpleWaveform(Editor *editor, QWidget *parent)
     : QDialog(parent)
     , m_ui(new Ui::SimpleWaveform)
