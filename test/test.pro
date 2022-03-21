@@ -5,7 +5,7 @@ QT += testlib
 TARGET = WPanda-test
 
 SOURCES += \
-    main.cpp \
+    testmain.cpp \
     testelements.cpp \
     testsimulationcontroller.cpp \
     testfiles.cpp \
