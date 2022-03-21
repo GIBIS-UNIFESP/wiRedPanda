@@ -3,6 +3,8 @@
 
 #include "logicnand.h"
 
+#include <functional>
+
 LogicNand::LogicNand(size_t inputSize)
     : LogicElement(inputSize, 1)
 {

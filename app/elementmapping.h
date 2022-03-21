@@ -8,6 +8,7 @@
 
 #include <QHash>
 #include <QMap>
+#include <QVector>
 
 #include "logicelement/logicinput.h"
 
