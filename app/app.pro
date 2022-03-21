@@ -9,7 +9,7 @@ TARGET = wpanda
 
 TEMPLATE = app
 
-include(../includes.pri)
+include(../config.pri)
 include(install.pri)
 
 win32{
