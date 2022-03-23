@@ -182,10 +182,10 @@ bool BewavedDolphin::loadElements()
         }
     }
     std::stable_sort(m_inputs.begin(), m_inputs.end(), [](GraphicElement *elm1, GraphicElement *elm2) {
-        return QString::compare(elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8(), Qt::CaseInsensitive) <= 0;
+        return QString::compare(elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8(), Qt::CaseInsensitive) < 0;
     });
     std::stable_sort(m_outputs.begin(), m_outputs.end(), [](GraphicElement *elm1, GraphicElement *elm2) {
-        return QString::compare(elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8(), Qt::CaseInsensitive) <= 0;
+        return QString::compare(elm1->getLabel().toUtf8(), elm2->getLabel().toUtf8(), Qt::CaseInsensitive) < 0;
     });
 
     return (!m_inputs.isEmpty() && !m_outputs.isEmpty());
