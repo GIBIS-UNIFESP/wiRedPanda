@@ -1,97 +1,102 @@
-# WiRed Panda ![GitHub All Releases](https://img.shields.io/github/downloads/gibis-unifesp/wiredpanda/total?style=flat-square) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/gibis-unifesp/wiredpanda?style=flat-square) ![GitHub](https://img.shields.io/github/license/gibis-unifesp/wiredpanda?style=flat-square)
+# wiRedPanda ![Todos los lanzamientos de GitHub](https://img.shields.io/github/downloads/gibis-unifesp/wiredpanda/total?style=flat-square) ![Lanzamiento de GitHub (último por fecha)](https://img.shields.io/github/v/release/gibis-unifesp/wiredpanda?style=flat-square) ![GitHub](https://img.shields.io/github/license/gibis-unifesp/wiredpanda?style=flat-square)
 
 
-WiRed Panda es [Software Libre](https://es.wikipedia.org/wiki/Software_libre) diseñado para ayudar a los estudiantes a aprender sobre la lógica detrás de los circuitos eléctricos, y simularlos de una forma fácil e intuitiva.
+wiRedPanda es un software gratuito diseñado para ayudar a los estudiantes a aprender sobre circuitos lógicos y simularlos de una manera fácil y amigable.
 
-Las principales características de WiRed Panda son:
-- Es multiplataforma, funciona en Windows, MacOs y Linux;
-- Simulación de lógica en tiempo real;
-- Interfaz amigable para el usuario;
-- Es intuitivo y fácil de usar;
-- Puede exportar su trabajo como una imagen o un PDF.
+Las principales características del software son:
+  - Funciona en Windows, macOS y Linux;
+  - Simulación lógica en tiempo real;
+  - Interfaz amigable;
+  - Es intuitivo y fácil de usar;
+  - Exporta tu trabajo como una imagen o un PDF.
 
-_Leia-me em [português](README_pt_BR.md). Read me in [English](README.md)._    
+_Leia-me em [português](README_pt_BR.md). Léame en [english](README.md)._
 
-![Pantalla principal](https://user-images.githubusercontent.com/36349314/97934063-532ed000-1d53-11eb-9667-73ea32f456ce.png)
+![Pantalla principal](https://gibis-unifesp.github.io/wiRedPanda/images/ffms.gif)
 
 ## Descargas
-Binarios precompilados para **Windows** y **Linux** están disponibles [aquí](http://gibis-unifesp.github.io/wiRedPanda/downloads/).
+Los binarios compilados para Windows y Linux están disponibles [aquí](http://gibis-unifesp.github.io/wiRedPanda/downloads/).
 
-Binarios vinculados dinamicamente para **Linux** y **MacOs** están disponibles [aquí](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
+Los binarios enlazados dinámicamente para macOS están disponibles [aquí](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
 
-## Compilación
+## Compilando
 
-### En Linux y MacOs
+### En Linux y macOS
 
 #### Dependencias
 
-* Distribuciones basadas en Debian Buster o Ubuntu 18.04
-```bash
-sudo apt install qt5-default qt5-qmake qtmultimedia5-dev libqt5charts5-dev
-```
+Se necesita Qt 5.7.0+ o 6.2.0+ para compilar, así como QtCharts y QtMultimedia.
 
-* Distribuciones basadas en Debian Stretch o Ubuntu 16.04
+En distribuciones como Arch Linux, Gentoo, Manjaro, Debian Testing, etc., Qt 5.7+ se puede instalar desde los repositorios estándar.
 
-Algunas dependencias no están disponibles a travez de los repositorios estándar.
+* Debian Testing
 
 ```bash
-sudo add-apt-repository ppa:beineri/opt-qt-5.10.1-xenial
-sudo apt update 
-sudo apt install dh-make qt510base qt510charts-no-lgpl qt510multimedia
-source /opt/qt510/bin/qt510-env.sh
+sudo apt install qtbase5-dev qt5-make qtbase5-dev-tools qtchooser libqt5charts5-dev libqt5multimedia5-dev
 ```
 
-* Ubuntu 14.04+ y Debian Jessie
-```bash
-sudo add-apt-repository ppa:beineri/opt-qt-5.10.1-trusty
-sudo apt update 
-sudo apt install dh-make qt510base qt510charts-no-lgpl qt510multimedia
-source /opt/qt510/bin/qt510-env.sh
-```
-
-* Fedora
-```bash
-sudo dnf install qt5 qt5-devel qt5-qtmultimedia-devel qt5-charts-devel
-```
-
-* MacOs
-
-Puede [compilar Qt5 a partir del código fuente](https://doc.qt.io/qt-5/macos-building.html), o puede instalarlo usando [Homebrew](https://brew.sh/).
+* Basado en Arch Linux
 
 ```bash
-brew install qt
+sudo pacman -S qt5-base qt5-charts qt5-multimedia
 ```
 
-### Proceso de compilación
+* macOS
+
+```bash
+brew install qt5
+```
+
+* Otros
+
+Qt5 se puede instalar directamente desde el [sitio web de Qt] (https://www.qt.io/download), desde instaladores no oficiales como [aqtinstall] (https://github.com/miurahr/aqtinstall), desde repositorios mantenidos por la comunidad o [construidos desde la fuente] (https://wiki.qt.io/Building_Qt_5_from_Git).
+
+Así es como se podría usar aqtinstall para instalar Qt 5.15.1 (se necesita Python 3) junto con los complementos necesarios en una distribución basada en Debian.
+
+```bash
+sudo apt-get update
+sudo apt-get install build-essential libgl1-mesa-dev libxkbcommon-x11-0 libpulse-dev -y
+python3 -m pip install setuptools wheel
+python3 -m pip install py7zr==0.10.1
+python3 -m pip install aqtinstall==0.9.7
+python3 -m pip install importlib-metadata==2.0.0
+python3 -m aqt install 5.15.1 linux desktop -m qtcharts qtmultimedia -O ~/Qt
+export Qt5_Dir=~/Qt5/5.15.1
+export Qt5_DIR=~/Qt5/5.15.1
+export QT_PLUGIN_PATH=~/Qt/5.15.1/gcc_64/plugins
+PATH=~/Qt/5.15.1/gcc_64/bin:$PATH
+export PATH
+```
+
+#### Proceso de compilación
 
 ```bash
 git clone https://github.com/GIBIS-UNIFESP/wiredpanda.git
 mkdir wiredpanda/build
 cd wiredpanda/build
 qmake ../WPanda.pro
-make -j$(nproc)
+make -j
 ```
 
-Este proceso puede tardar unos momentos. Una vez finalizado el proceso de compilación podrá encontrar el binario en '/wiredpanda/build/app/wpanda' **si esta usando Linux**, y en 'wiredpanda/build/app/wpanda.app' **si esta usando MacOs**.
+Este proceso podría llevar un tiempo. Una vez concluido, el binario se ubicará en `wiredpanda/build/app/wpanda`, en Linux, y en `wiredpanda/build/app/wpanda.app/Contents/MacOS/wpanda` en macOS.
 
 ## Licencia
 
-WiRed Panda esta bajo la 3ra versión de la Licencia Pública General GNU ([GPL3.0](http://www.gnu.org/licenses/)).
+wiRedPanda tiene licencia bajo la [Licencia pública general de GNU, versión 3.0] (http://www.gnu.org/licenses/).
 
-Para más información consultar el archivo [`LICENSE`](LICENSE).
-
-    Copyright (C) 2020 - Davi Morales, Fábio Cappabianco, Lucas Lellis, Rodrigo Torres and Vinícius Miguel.
+Consulte [`LICENCIA`](LICENCIA) para obtener el texto completo de la licencia.
+  
+    Copyright (C) 2022 - Davi Morales, Fábio Cappabianco, Lucas Lellis, Rodrigo Torres y Vinícius Miguel.
     
-    Este programa es software libre: puedes redistribuirlo y/o modificarlo
-    bajo los términos de la Licencia Pública General GNU publicada por la
-    Free Software Foundation, ya sea la versión 3 de la licencia,
-    o (a su elección) cualquier versión posterior.
+    Este programa es software libre: puedes redistribuirlo y/o modificar
+    bajo los términos de la Licencia Pública General GNU publicada por
+    la Free Software Foundation, ya sea la versión 3 de la Licencia, o
+    (a su elección) cualquier versión posterior.
     
-    Este programa se distribuye con la esperanza de que sea útil, pero
-    SIN NINGUNA GARANTÍA; sin siquiera la garantía implícita de COMERCIALIDAD
-    o APTITUD PARA UN PROPÓSITO PARTICULAR. Para más detalles consultar la
-    Licencia Pública General GNU.
+    Este programa se distribuye con la esperanza de que sea útil,
+    pero SIN NINGUNA GARANTIA; sin siquiera la garantía implícita de
+    COMERCIABILIDAD o IDONEIDAD PARA UN FIN DETERMINADO. Ver el
+    Licencia Pública General GNU para más detalles.
     
-    Deberá haber recibido una copia de la Licencia Pública General GNU
-    junto con este programa.
-    De lo contrario, consulte <http://www.gnu.org/licenses/>
+    Debería haber recibido una copia de la Licencia Pública General GNU
+    junto con este programa. Si no, consulte <http://www.gnu.org/licenses/>.
