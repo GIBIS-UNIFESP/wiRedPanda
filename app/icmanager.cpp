@@ -7,7 +7,6 @@
 #include <qdebug.h>
 #include <QFileInfo>
 #include <QMessageBox>
-#include <QSettings>
 
 #include "common.h"
 #include "globalproperties.h"
@@ -15,6 +14,7 @@
 #include "icnotfoundexception.h"
 #include "icprototype.h"
 #include "mainwindow.h"
+#include "settings.h"
 
 ICManager *ICManager::globalICManager = nullptr;
 
@@ -32,8 +32,7 @@ ICManager::ICManager(MainWindow *mainWindow, QObject *parent)
 ICManager::~ICManager()
 {
     clear();
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    settings.setValue("recentICs", "");
+    Settings::setValue("recentICs", "");
 
     // fprintf(stderr, "Removing IC manager");
     if (globalICManager == this) {
