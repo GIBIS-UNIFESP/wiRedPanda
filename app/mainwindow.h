@@ -127,7 +127,7 @@ private:
     Ui::MainWindow *ui;
     Editor *m_editor;
     QFileInfo m_currentFile;
-    QDir m_defaultDirectory;
+    QString m_defaultDirectory;
     Label *m_firstResult;
     bool m_loadedAutoSave;
     QString m_dolphinFileName;

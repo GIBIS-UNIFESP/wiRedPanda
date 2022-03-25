@@ -314,7 +314,7 @@ bool MainWindow::save(QString fname)
         COMMENT("Should open window!", 0);
         autoSaveFileName = fname;
         if (m_currentFile.fileName().isEmpty()) {
-            fname = QFileDialog::getSaveFileName(this, tr("Save File"), m_defaultDirectory.absolutePath(), tr("Panda files (*.panda)"));
+            fname = QFileDialog::getSaveFileName(this, tr("Save File"), m_defaultDirectory, tr("Panda files (*.panda)"));
         }
     }
     if (fname.isEmpty()) {
@@ -515,7 +515,11 @@ void MainWindow::scrollView(int dx, int dy)
 
 void MainWindow::on_actionOpen_triggered()
 {
-    QString fname = QFileDialog::getOpenFileName(this, tr("Open File"), m_defaultDirectory.absolutePath(), tr("Panda files (*.panda)"));
+    if (m_defaultDirectory.isEmpty()) {
+        m_defaultDirectory = "./examples/";
+    }
+
+    QString fname = QFileDialog::getOpenFileName(this, tr("Open File"), m_defaultDirectory, tr("Panda files (*.panda)"));
     if (fname.isEmpty()) {
         return;
     }
@@ -628,7 +632,7 @@ bool MainWindow::hasModifiedFiles()
 void MainWindow::on_actionSave_As_triggered()
 {
     QString fname = m_currentFile.absoluteFilePath();
-    QString path = m_defaultDirectory.absolutePath();
+    QString path = m_defaultDirectory;
     if (!m_currentFile.fileName().isEmpty()) {
         path = m_currentFile.absoluteFilePath();
     }
@@ -818,10 +822,9 @@ void MainWindow::disconnectTab()
 void MainWindow::setCurrentDir()
 {
     if (m_currentFile.exists()) {
-        m_defaultDirectory = m_currentFile.dir();
+        m_defaultDirectory = m_currentFile.dir().absolutePath();
         ui->actionWaveform->setEnabled(true);
     } else {
-        m_defaultDirectory = QDir::home();
         ui->actionWaveform->setDisabled(true);
     }
 }
@@ -1044,7 +1047,7 @@ bool MainWindow::exportToWaveFormFile(const QString& fname)
 
 bool MainWindow::on_actionExport_to_Arduino_triggered()
 {
-    QString fname = QFileDialog::getSaveFileName(this, tr("Generate Arduino Code"), m_defaultDirectory.absolutePath(), tr("Arduino file (*.ino)"));
+    QString fname = QFileDialog::getSaveFileName(this, tr("Generate Arduino Code"), m_defaultDirectory, tr("Arduino file (*.ino)"));
     return exportToArduino(fname);
 }
 
@@ -1109,7 +1112,7 @@ void MainWindow::createRecentFileActions()
 
 void MainWindow::on_actionPrint_triggered()
 {
-    QString pdfFile = QFileDialog::getSaveFileName(this, tr("Export to PDF"), m_defaultDirectory.absolutePath(), tr("PDF files (*.pdf)"));
+    QString pdfFile = QFileDialog::getSaveFileName(this, tr("Export to PDF"), m_defaultDirectory, tr("PDF files (*.pdf)"));
     if (pdfFile.isEmpty()) {
         return;
     }
@@ -1132,7 +1135,7 @@ void MainWindow::on_actionPrint_triggered()
 
 void MainWindow::on_actionExport_to_Image_triggered()
 {
-    QString pngFile = QFileDialog::getSaveFileName(this, tr("Export to Image"), m_defaultDirectory.absolutePath(), tr("PNG files (*.png)"));
+    QString pngFile = QFileDialog::getSaveFileName(this, tr("Export to Image"), m_defaultDirectory, tr("PNG files (*.png)"));
     if (pngFile.isEmpty()) {
         return;
     }
