@@ -14,7 +14,6 @@
 #include <QPainter>
 #include <QPrinter>
 #include <QSaveFile>
-#include <QSettings>
 #include <QTableView>
 
 #include "clockdialog.h"
@@ -31,6 +30,7 @@
 #include "mainwindow.h"
 #include "qneport.h"
 #include "scstop.h"
+#include "settings.h"
 #include "simulationcontroller.h"
 
 #include "ui_bewaveddolphin.h"
@@ -77,10 +77,9 @@ BewavedDolphin::BewavedDolphin(Editor *editor, QWidget *parent)
     resize(800, 500);
     setWindowTitle(tr("beWavedDolphin Simulator"));
     setWindowFlags(Qt::Window);
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    settings.beginGroup("beWavedDolphin");
-    restoreGeometry(settings.value("geometry").toByteArray());
-    settings.endGroup();
+    Settings::beginGroup("beWavedDolphin");
+    restoreGeometry(Settings::value("geometry").toByteArray());
+    Settings::endGroup();
     m_gv = new GraphicsView(this);
     m_ui->verticalLayout->addWidget(m_gv);
     m_scene = new QGraphicsScene(this);
@@ -102,10 +101,9 @@ BewavedDolphin::BewavedDolphin(Editor *editor, QWidget *parent)
 
 BewavedDolphin::~BewavedDolphin()
 {
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    settings.beginGroup("beWavedDolphin");
-    settings.setValue("geometry", saveGeometry());
-    settings.endGroup();
+    Settings::beginGroup("beWavedDolphin");
+    Settings::setValue("geometry", saveGeometry());
+    Settings::endGroup();
     delete m_ui;
 }
 
@@ -373,7 +371,6 @@ QVector<char> BewavedDolphin::loadSignals(QStringList &input_labels, QStringList
 bool BewavedDolphin::createWaveform(const QString& filename)
 {
     COMMENT("Updating window name with current filename.", 0);
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
     COMMENT("Creating class to pause main window simulator while creating waveform.", 0);
     m_sc = m_editor->getSimulationController();
     SCStop scst(m_sc);

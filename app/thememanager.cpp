@@ -3,8 +3,9 @@
 
 #include "thememanager.h"
 
+#include "settings.h"
+
 #include <QApplication>
-#include <QSettings>
 
 ThemeManager *ThemeManager::globalMngr = nullptr;
 
@@ -18,8 +19,7 @@ void ThemeManager::setTheme(const Theme &theme)
     m_attrs.setTheme(theme);
     if (m_theme != theme) {
         m_theme = theme;
-        QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-        settings.setValue("theme", static_cast<int>(theme));
+        Settings::setValue("theme", static_cast<int>(theme));
         emit themeChanged();
     }
 }
@@ -38,9 +38,8 @@ ThemeManager::ThemeManager(QObject *parent)
     : QObject(parent)
     , m_theme(Theme::Panda_Light)
 {
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    if (settings.contains("theme")) {
-        m_theme = static_cast<Theme>(settings.value("theme").toInt());
+    if (Settings::contains("theme")) {
+        m_theme = static_cast<Theme>(Settings::value("theme").toInt());
     }
     setTheme(m_theme);
 }

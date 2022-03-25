@@ -124,6 +124,7 @@ SOURCES += \
     $$PWD/app/scene.cpp \
     $$PWD/app/scstop.cpp \
     $$PWD/app/serializationfunctions.cpp \
+    $$PWD/app/settings.cpp \
     $$PWD/app/simplewaveform.cpp \
     $$PWD/app/simulationcontroller.cpp \
     $$PWD/app/thememanager.cpp \
@@ -163,6 +164,7 @@ HEADERS += \
     $$PWD/app/scene.h \
     $$PWD/app/scstop.h \
     $$PWD/app/serializationfunctions.h \
+    $$PWD/app/settings.h \
     $$PWD/app/simplewaveform.h \
     $$PWD/app/simulationcontroller.h \
     $$PWD/app/thememanager.h \

@@ -9,7 +9,6 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QMainWindow>
-#include <QSettings>
 #include <QTemporaryFile>
 
 #include "recentfilescontroller.h"
@@ -163,7 +162,7 @@ private:
      * @brief removeUndoRedoMenu: Removes undo and redo of current tab from the UI menu.
      */
     void removeUndoRedoMenu();
-    void loadAutoSaveFiles(QSettings &settings, const QString &filename);
+    void loadAutoSaveFiles(const QString &filename);
     bool closeTabAction(int tab);
     // Message box to ask if user wants to close in case of canceled or failed save action.
     int closeTabAnyway();
