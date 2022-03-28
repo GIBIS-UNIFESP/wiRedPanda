@@ -17,9 +17,10 @@
 
 int main(int argc, char **argv)
 {
+    Comment::setVerbosity(-1);
+
     QApplication a(argc, argv);
     ThemeManager::globalMngr = new ThemeManager();
-    Comment::setVerbosity(-1);
     a.setOrganizationName("WPanda");
     a.setApplicationName("WiredPanda");
     a.setApplicationVersion(APP_VERSION);
