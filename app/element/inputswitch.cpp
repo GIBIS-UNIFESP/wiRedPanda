@@ -10,7 +10,7 @@
 int InputSwitch::current_id_number = 0;
 
 InputSwitch::InputSwitch(QGraphicsItem *parent)
-    : GraphicElement(ElementType::SWITCH, ElementGroup::INPUT, 0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::Switch, ElementGroup::Input, 0, 0, 1, 1, parent)
 {
     m_pixmapSkinName = {
         ":/input/switchOff.png",
@@ -49,7 +49,7 @@ void InputSwitch::setOn(bool value, int port)
 
 void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if ((!locked)&&(event->button() == Qt::LeftButton)) {
+    if ((!locked) && (event->button() == Qt::LeftButton)) {
         setOn(!on);
         event->accept();
     }

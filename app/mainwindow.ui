@@ -841,9 +841,6 @@
    <property name="text">
     <string>Rotate &amp;left</string>
    </property>
-   <property name="statusTip">
-    <string>kkkkkkkk</string>
-   </property>
    <property name="shortcut">
     <string>Ctrl+Shift+R</string>
    </property>

@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef LOGICDLATCH_H
-#define LOGICDLATCH_H
+#pragma once
 
 #include "logicelement.h"
 
@@ -13,9 +12,7 @@ class LogicDLatch : public LogicElement
 public:
     explicit LogicDLatch();
 
-    /* LogicElement interface */
 protected:
     void _updateLogic(const std::vector<bool> &inputs) override;
 };
 
-#endif // LOGICDLATCH_H

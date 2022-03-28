@@ -6,7 +6,7 @@
 #include "qneport.h"
 
 InputGnd::InputGnd(QGraphicsItem *parent)
-    : GraphicElement(ElementType::GND, ElementGroup::STATICINPUT, 0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::Gnd, ElementGroup::StaticInput, 0, 0, 1, 1, parent)
 {
     m_pixmapSkinName = {":/input/0.png"};
 

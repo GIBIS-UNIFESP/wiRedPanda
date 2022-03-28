@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef LOGICTFLIPFLOP_H
-#define LOGICTFLIPFLOP_H
+#pragma once
 
 #include "logicelement.h"
 
@@ -13,7 +12,6 @@ class LogicTFlipFlop : public LogicElement
 public:
     explicit LogicTFlipFlop();
 
-    /* LogicElement interface */
 protected:
     void _updateLogic(const std::vector<bool> &inputs) override;
 
@@ -21,5 +19,3 @@ private:
     bool lastClk;
     bool lastValue;
 };
-
-#endif // LOGICTFLIPFLOP_H

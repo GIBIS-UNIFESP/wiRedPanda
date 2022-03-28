@@ -6,7 +6,7 @@
 #include "qneport.h"
 
 JKLatch::JKLatch(QGraphicsItem *parent)
-    : GraphicElement(ElementType::JKLATCH, ElementGroup::MEMORY, 2, 2, 2, 2, parent)
+    : GraphicElement(ElementType::JKLatch, ElementGroup::Memory, 2, 2, 2, 2, parent)
 {
     setPixmap(":/memory/JK-latch.png");
     setRotatable(false);

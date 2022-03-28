@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright 2015 - 2022, GIBIS-Unifesp and the wiRedPanda contributors
+# Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 

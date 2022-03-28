@@ -4,10 +4,9 @@
 #include "logicnone.h"
 
 LogicNone::LogicNone()
-    : LogicElement(0,0)
+    : LogicElement(0, 0)
 {
 }
-
 
 void LogicNone::_updateLogic(const std::vector<bool> &inputs)
 {

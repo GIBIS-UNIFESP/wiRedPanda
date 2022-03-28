@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef BUZZER_H
-#define BUZZER_H
+#pragma once
 
 #include "graphicelement.h"
 
@@ -12,6 +11,8 @@
 
 class Buzzer : public GraphicElement
 {
+    Q_OBJECT
+
 public:
     explicit Buzzer(QGraphicsItem *parent = nullptr);
     ~Buzzer() override = default;
@@ -38,4 +39,3 @@ private:
     QString m_note;
 };
 
-#endif // BUZZER_H

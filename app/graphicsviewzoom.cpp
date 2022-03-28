@@ -10,7 +10,7 @@
 #include <QScrollBar>
 #include <QtMath>
 
-#define ZOOMFAC 0.1
+constexpr auto zoomFactor = 0.1;
 
 GraphicsViewZoom::GraphicsViewZoom(QGraphicsView *view)
     : QObject(view)
@@ -49,7 +49,7 @@ void GraphicsViewZoom::setZoomFactorBase(double value)
 void GraphicsViewZoom::zoomIn()
 {
     m_view->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-    double newScale = std::round(scaleFactor() * 10) / 10.0 + ZOOMFAC;
+    double newScale = std::round(scaleFactor() * 10) / 10.0 + zoomFactor;
     if (newScale <= GraphicsViewZoom::maxZoom) {
         setScaleFactor(newScale);
     }
@@ -58,7 +58,7 @@ void GraphicsViewZoom::zoomIn()
 
 void GraphicsViewZoom::zoomOut()
 {
-    double newScale = std::round(scaleFactor() * 10) / 10.0 - ZOOMFAC;
+    double newScale = std::round(scaleFactor() * 10) / 10.0 - zoomFactor;
     if (newScale >= GraphicsViewZoom::minZoom) {
         setScaleFactor(newScale);
     }
@@ -86,32 +86,32 @@ void GraphicsViewZoom::setScaleFactor(double factor)
 
 bool GraphicsViewZoom::canZoomIn()
 {
-    return (scaleFactor() + ZOOMFAC * 2) <= GraphicsViewZoom::maxZoom;
+    return (scaleFactor() + zoomFactor * 2) <= GraphicsViewZoom::maxZoom;
 }
 
 bool GraphicsViewZoom::canZoomOut()
 {
-    return (scaleFactor() - ZOOMFAC * 2) >= GraphicsViewZoom::minZoom;
+    return (scaleFactor() - zoomFactor * 2) >= GraphicsViewZoom::minZoom;
 }
 
 bool GraphicsViewZoom::eventFilter(QObject *object, QEvent *event)
 {
     if (event->type() == QEvent::MouseMove) {
-        auto *mouse_event = static_cast<QMouseEvent *>(event);
+        auto *mouse_event = dynamic_cast<QMouseEvent *>(event);
         QPointF delta = m_targetViewportPos - mouse_event->pos();
         if ((qAbs(delta.x()) > 5) || (qAbs(delta.y()) > 5)) {
             m_targetViewportPos = mouse_event->pos();
             m_targetScenePos = m_view->mapToScene(mouse_event->pos());
         }
     } else if (event->type() == QEvent::Wheel) {
-        auto *wheel_event = static_cast<QWheelEvent *>(event);
+        auto *wheel_event = dynamic_cast<QWheelEvent *>(event);
         if (QApplication::keyboardModifiers() == m_modifiers) {
-            // if( wheel_event->orientation( ) == Qt::Vertical ) {
+            // if (wheel_event->orientation() == Qt::Vertical) {
             double angle = wheel_event->angleDelta().y();
             double factor = qPow(m_zoomFactorBase, angle);
             gentleZoom(factor);
             return true;
-            //}
+            // }
         }
     }
     Q_UNUSED(object)

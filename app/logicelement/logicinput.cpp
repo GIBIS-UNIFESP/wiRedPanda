@@ -7,12 +7,12 @@ LogicInput::LogicInput(bool defaultValue, int n_outputs)
     : LogicElement(0, n_outputs)
 {
     setOutputValue(0, defaultValue);
-    for (int port=1; port < n_outputs; ++port) {
+    for (int port = 1; port < n_outputs; ++port) {
         setOutputValue(port, false);
     }
 }
 
-void LogicInput::_updateLogic(const std::vector<bool> &)
+void LogicInput::_updateLogic(const std::vector<bool> & /*inputs*/)
 {
     // Does nothing on update
 }

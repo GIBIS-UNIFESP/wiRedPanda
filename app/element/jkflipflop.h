@@ -3,14 +3,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef JKFLIPFLOP_H
-#define JKFLIPFLOP_H
+#pragma once
 
 #include "graphicelement.h"
 
 class JKFlipFlop : public GraphicElement
 {
-    bool lastClk;
+    Q_OBJECT
 
 public:
     explicit JKFlipFlop(QGraphicsItem *parent = nullptr);
@@ -18,6 +17,8 @@ public:
 
     void updatePorts() override;
     void setSkin(bool defaultSkin, const QString &filename) override;
+
+private:
+    bool lastClk;
 };
 
-#endif /* JKFLIPFLOP_H */

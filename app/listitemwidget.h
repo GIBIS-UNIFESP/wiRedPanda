@@ -3,33 +3,28 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef LISTITEMWIDGET_H
-#define LISTITEMWIDGET_H
-
-#include <QFrame>
+#pragma once
 
 #include "label.h"
+
+#include <QFrame>
 
 class ListItemWidget : public QFrame
 {
     Q_OBJECT
-private:
-    Label *m_label;
-    QLabel *m_nameLabel;
 
 public:
+    explicit ListItemWidget(const QPixmap *pixmap, ElementType elementType, const QString &icFileName, QWidget *parent = nullptr);
     explicit ListItemWidget(const QPixmap &pixmap, ElementType elementType, const QString &icFileName, QWidget *parent = nullptr);
 
     Label *getLabel() const;
-
     void updateName();
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
 
-signals:
-
-public slots:
+private:
+    Label *m_label;
+    QLabel *m_nameLabel;
 };
 
-#endif /* LISTITEMWIDGET_H */

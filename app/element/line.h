@@ -3,17 +3,17 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef LINE_H
-#define LINE_H
+#pragma once
 
 #include "graphicelement.h"
 
 class Line : public GraphicElement
 {
+    Q_OBJECT
+
 public:
     explicit Line(QGraphicsItem *parent = nullptr);
     ~Line() override = default;
-     void setSkin(bool defaultSkin, const QString &filename) override;
+    void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
-#endif /* LINE_H */

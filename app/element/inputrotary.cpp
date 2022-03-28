@@ -1,8 +1,9 @@
 // Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "common.h"
 #include "inputrotary.h"
+
+#include "common.h"
 #include "qneport.h"
 
 #include <QGraphicsSceneMouseEvent>
@@ -11,7 +12,7 @@
 int InputRotary::current_id_number = 0;
 
 InputRotary::InputRotary(QGraphicsItem *parent)
-    : GraphicElement(ElementType::ROTARY, ElementGroup::INPUT, 0, 0, 2, 16, parent)
+    : GraphicElement(ElementType::Rotary, ElementGroup::Input, 0, 0, 2, 16, parent)
 {
     COMMENT("Creating rotaty.", 3);
     m_value = 0;
@@ -43,28 +44,28 @@ InputRotary::InputRotary(QGraphicsItem *parent)
     setRotatable(false);
     setOutputsOnTop(false);
     setCanChangeSkin(true);
-    //updatePorts();
+    // updatePorts();
     setHasLabel(true);
     setHasTrigger(true);
     setPortName("Rotary");
 
     setPixmap(m_pixmapSkinName[0]);
-    m_rotary2 = QPixmap(m_pixmapSkinName[0]);
-    m_rotary4 = QPixmap(m_pixmapSkinName[1]);
-    m_rotary8 = QPixmap(m_pixmapSkinName[2]);
-    m_rotary10 = QPixmap(m_pixmapSkinName[3]);
-    m_rotary16 = QPixmap(m_pixmapSkinName[4]);
-    m_pointer = QVector<QPixmap>(16);
-    m_pointer[0] = QPixmap(m_pixmapSkinName[5]);
-    m_pointer[1] = QPixmap(m_pixmapSkinName[6]);
-    m_pointer[2] = QPixmap(m_pixmapSkinName[7]);
-    m_pointer[3] = QPixmap(m_pixmapSkinName[8]);
-    m_pointer[4] = QPixmap(m_pixmapSkinName[9]);
-    m_pointer[5] = QPixmap(m_pixmapSkinName[10]);
-    m_pointer[6] = QPixmap(m_pixmapSkinName[11]);
-    m_pointer[7] = QPixmap(m_pixmapSkinName[12]);
-    m_pointer[8] = QPixmap(m_pixmapSkinName[13]);
-    m_pointer[9] = QPixmap(m_pixmapSkinName[14]);
+    m_rotary2 =     QPixmap(m_pixmapSkinName[0]);
+    m_rotary4 =     QPixmap(m_pixmapSkinName[1]);
+    m_rotary8 =     QPixmap(m_pixmapSkinName[2]);
+    m_rotary10 =    QPixmap(m_pixmapSkinName[3]);
+    m_rotary16 =    QPixmap(m_pixmapSkinName[4]);
+    m_pointer =     QVector<QPixmap>(16);
+    m_pointer[0] =  QPixmap(m_pixmapSkinName[5]);
+    m_pointer[1] =  QPixmap(m_pixmapSkinName[6]);
+    m_pointer[2] =  QPixmap(m_pixmapSkinName[7]);
+    m_pointer[3] =  QPixmap(m_pixmapSkinName[8]);
+    m_pointer[4] =  QPixmap(m_pixmapSkinName[9]);
+    m_pointer[5] =  QPixmap(m_pixmapSkinName[10]);
+    m_pointer[6] =  QPixmap(m_pixmapSkinName[11]);
+    m_pointer[7] =  QPixmap(m_pixmapSkinName[12]);
+    m_pointer[8] =  QPixmap(m_pixmapSkinName[13]);
+    m_pointer[9] =  QPixmap(m_pixmapSkinName[14]);
     m_pointer[10] = QPixmap(m_pixmapSkinName[15]);
     m_pointer[11] = QPixmap(m_pixmapSkinName[16]);
     m_pointer[12] = QPixmap(m_pixmapSkinName[17]);
@@ -76,21 +77,12 @@ InputRotary::InputRotary(QGraphicsItem *parent)
 void InputRotary::refresh()
 {
     switch (outputSize()) {
-    case 2:
-        setPixmap(m_pixmapSkinName[0]);
-        break;
-    case 4:
-        setPixmap(m_pixmapSkinName[1]);
-        break;
-    case 8:
-        setPixmap(m_pixmapSkinName[2]);
-        break;
-    case 10:
-        setPixmap(m_pixmapSkinName[3]);
-        break;
-    default: // case 16:
-        setPixmap(m_pixmapSkinName[4]);
-        break;
+    case 2:  setPixmap(m_pixmapSkinName[0]); break;
+    case 4:  setPixmap(m_pixmapSkinName[1]); break;
+    case 8:  setPixmap(m_pixmapSkinName[2]); break;
+    case 10: setPixmap(m_pixmapSkinName[3]); break;
+ // case 16:
+    default: setPixmap(m_pixmapSkinName[4]); break;
     }
     update();
 }
@@ -198,25 +190,19 @@ void InputRotary::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
         m_value = 0;
         output(0)->setValue(1);
     }
-    for (int port=0; port < outputSize(); ++port) {
-        if( m_value == port ) {
+    for (int port = 0; port < outputSize(); ++port) {
+        if (m_value == port) {
             output(port)->setValue(1);
-            switch (outputSize()) {
-            case 2:
-                painter->drawPixmap(QPoint(0, 0), m_pointer[port*8]);
-                break;
-            case 4:
-                painter->drawPixmap(QPoint(0, 0), m_pointer[port*4]);
-                break;
-            case 8:
-                painter->drawPixmap(QPoint(0, 0), m_pointer[port*2]);
-                break;
-            default:
-                painter->drawPixmap(QPoint(0, 0), m_pointer[port]);
-                break;
-            }
-        }
-        else {
+
+            const int size = outputSize();
+            int idx = port;
+
+            if (size == 2) { idx *= 8; }
+            if (size == 4) { idx *= 4; }
+            if (size == 8) { idx *= 2; }
+
+            painter->drawPixmap(0, 0, m_pointer[idx]);
+        } else {
             output(port)->setValue(0);
         }
     }
@@ -224,7 +210,7 @@ void InputRotary::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
 bool InputRotary::getOn(int port) const
 {
-    return(m_value == port);
+    return (m_value == port);
 }
 
 void InputRotary::setOn(bool value, int port)
@@ -237,8 +223,8 @@ void InputRotary::setOn(bool value, int port)
 
 void InputRotary::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if ((!locked)&&(event->button() == Qt::LeftButton)) {
-        setOn(true, (m_value + 1)%outputSize());
+    if ((!locked) && (event->button() == Qt::LeftButton)) {
+        setOn(true, (m_value + 1) % outputSize());
         event->accept();
     }
     QGraphicsItem::mousePressEvent(event);
@@ -281,7 +267,7 @@ void InputRotary::setSkin(bool defaultSkin, const QString &filename)
             m_pixmapSkinName[3] = ":/input/rotary/rotary_10.png";
             setPixmap(m_pixmapSkinName[3]);
             break;
-        default: //case 16:
+        default: // case 16:
             m_pixmapSkinName[4] = ":/input/rotary/rotary_16.png";
             setPixmap(m_pixmapSkinName[4]);
             break;
@@ -304,7 +290,7 @@ void InputRotary::setSkin(bool defaultSkin, const QString &filename)
             m_pixmapSkinName[3] = ":/input/rotary/rotary_10.png";
             setPixmap(m_pixmapSkinName[3]);
             break;
-        default: //case 16:
+        default: // case 16:
             m_pixmapSkinName[4] = ":/input/rotary/rotary_16.png";
             setPixmap(m_pixmapSkinName[4]);
             break;
@@ -314,7 +300,7 @@ void InputRotary::setSkin(bool defaultSkin, const QString &filename)
 
 int InputRotary::outputSize() const
 {
-    return(outputs().size());
+    return (outputs().size());
 }
 
 int InputRotary::outputValue() const

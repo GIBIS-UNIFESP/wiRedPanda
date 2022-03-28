@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "display_14.h"
-#include "display.h"
 
+#include "display.h"
 #include "qneport.h"
 
 #include <QPainter>
@@ -12,7 +12,7 @@
 int Display14::current_id_number = 0;
 
 Display14::Display14(QGraphicsItem *parent)
-    : GraphicElement(ElementType::DISPLAY14, ElementGroup::OUTPUT, 15, 15, 0, 0, parent)
+    : GraphicElement(ElementType::Display14, ElementGroup::Output, 15, 15, 0, 0, parent)
 {
     m_pixmapSkinName = {
         ":/output/counter/counter_14_off.png",
@@ -78,7 +78,7 @@ Display14::Display14(QGraphicsItem *parent)
     Display::convertAllColors(dp);
 
     setPortName("Display14");
-    for (QNEPort *in : qAsConst(m_inputs)) {
+    for (auto *in : qAsConst(m_inputs)) {
         in->setRequired(false);
         in->setDefaultValue(0);
     }
@@ -205,9 +205,9 @@ void Display14::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double 
 {
     GraphicElement::load(ds, portMap, version);
     if (version >= 3.1) {
-      QString clr;
-      ds >> clr;
-      setColor(clr);
+        QString clr;
+        ds >> clr;
+        setColor(clr);
     }
 }
 

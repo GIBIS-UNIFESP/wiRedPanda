@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef CODEGENERATOR_H
-#define CODEGENERATOR_H
+#pragma once
 
 #include <QFile>
 #include <QHash>
@@ -13,6 +12,7 @@
 
 class GraphicElement;
 class QNEPort;
+
 class MappedPin
 {
 public:
@@ -59,6 +59,6 @@ private:
     void assignVariablesRec(const QVector<GraphicElement *> &elms);
     void assignLogicOperator(GraphicElement *elm);
     QString otherPortName(QNEPort *port);
+    static QString removeForbiddenChars(const QString &input);
 };
 
-#endif /* CODEGENERATOR_H */

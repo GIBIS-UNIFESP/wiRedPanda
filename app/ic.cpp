@@ -3,39 +3,23 @@
 
 #include "ic.h"
 
-#include <iostream>
-
-#include <QApplication>
-#include <QDebug>
-#include <QDir>
-#include <QFileInfo>
-#include <QGraphicsScene>
-#include <QGraphicsSceneMouseEvent>
-#include <QMessageBox>
-#include <QPointF>
-#include <QProcess>
-
 #include "common.h"
-#include "elementfactory.h"
-#include "globalproperties.h"
 #include "icmanager.h"
-#include "icnotfoundexception.h"
 #include "icprototype.h"
-#include "inputswitch.h"
-#include "nodes/qneconnection.h"
 #include "qneport.h"
-#include "serializationfunctions.h"
+
+#include <QGraphicsSceneMouseEvent>
 
 IC::IC(QGraphicsItem *parent)
     : GraphicElement(ElementType::IC, ElementGroup::IC, 0, 0, 0, 0, parent)
 {
-    //std::cout << "Creating box." << std::endl;
+    // std::cout << "Creating box." << std::endl;
     m_pixmapSkinName.append(":/basic/box.png");
     setHasLabel(true);
     setPixmap(m_pixmapSkinName[0], QRect(0, 0, 64, 64));
     setOutputsOnTop(true);
     setPortName("IC");
-    //std::cout << "Box done." << std::endl;
+    // std::cout << "Box done." << std::endl;
 }
 
 IC::~IC()
@@ -91,7 +75,7 @@ void IC::loadOutputs(ICPrototype *prototype)
 
 void IC::loadFile(const QString &fname)
 {
-    //qDebug() << "Opening IC " << fname;
+    // qDebug() << "Opening IC " << fname;
     ICPrototype *prototype = ICManager::instance()->getPrototype(fname);
     Q_ASSERT(prototype);
     m_file = prototype->fileName();
@@ -105,7 +89,7 @@ void IC::loadFile(const QString &fname)
     // Loading outputs
     loadOutputs(prototype);
     updatePorts();
-    //qDebug() << "IC loaded! " << fname;
+    // qDebug() << "IC loaded! " << fname;
 }
 
 QString IC::getFile() const

@@ -3,16 +3,15 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef BEWAVEDDOLPHIN_H
-#define BEWAVEDDOLPHIN_H
+#pragma once
 
 #include <QFileInfo>
 #include <QItemDelegate>
-#include <QItemSelection>
 #include <QMainWindow>
-#include <QSaveFile>
 #include <QStandardItemModel>
 
+class QSaveFile;
+class QItemSelection;
 class Editor;
 class GraphicsView;
 class MainWindow;
@@ -27,10 +26,12 @@ namespace Ui
 class BewavedDolphin;
 }
 
-enum class PlotType { number, line };
+enum class PlotType { Number, Line };
 
 class SignalModel : public QStandardItemModel
 {
+    Q_OBJECT
+
 public:
     SignalModel(int rows, int inputs, int columns, QObject *parent = nullptr);
     Qt::ItemFlags flags(const QModelIndex &index) const override;
@@ -41,6 +42,8 @@ private:
 
 class SignalDelegate : public QItemDelegate
 {
+    Q_OBJECT
+
 public:
     SignalDelegate(int margin, QObject *parent);
 
@@ -57,7 +60,7 @@ class BewavedDolphin : public QMainWindow
 public:
     explicit BewavedDolphin(Editor *editor, QWidget *parent = nullptr);
     ~BewavedDolphin() override;
-    bool createWaveform(const QString& filename);
+    bool createWaveform(const QString &filename);
     void show();
     void print();
 
@@ -144,9 +147,8 @@ private:
     void associateToWiredPanda(const QString &fname);
     void restoreInputs();
     void resizeScene();
+
 protected:
-    void resizeEvent(QResizeEvent* event) override;
+    void resizeEvent(QResizeEvent *event) override;
     void closeEvent(QCloseEvent *e) override;
 };
-
-#endif // BEWAVEDDOLPHIN_H

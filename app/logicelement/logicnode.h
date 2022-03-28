@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef LOGICNODE_H
-#define LOGICNODE_H
+#pragma once
 
 #include "logicelement.h"
 
@@ -13,9 +12,7 @@ class LogicNode : public LogicElement
 public:
     explicit LogicNode();
 
-    /* LogicElement interface */
 protected:
-    void _updateLogic(const std::vector<bool> &) override;
+    void _updateLogic(const std::vector<bool> &inputs) override;
 };
 
-#endif // LOGICNODE_H

@@ -1,10 +1,6 @@
 // Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include <QtTest>
-
-#include <iostream>
-
 #include "common.h"
 #include "testcommands.h"
 #include "testelements.h"
@@ -15,32 +11,29 @@
 #include "testwaveform.h"
 #include "thememanager.h"
 
+#include <QtTest>
+
 int main(int argc, char **argv)
 {
     Comment::setVerbosity(-1);
 
     QApplication a(argc, argv);
-    ThemeManager::globalMngr = new ThemeManager();
-    a.setOrganizationName("WPanda");
-    a.setApplicationName("WiredPanda");
+    a.setOrganizationName("GIBIS-UNIFESP");
+    a.setApplicationName("WiRedPanda");
     a.setApplicationVersion(APP_VERSION);
-    TestElements testElements;
-    TestLogicElements testLogicElements;
-    TestSimulationController testSC;
-    TestFiles testFiles;
-    TestCommands testCommands;
-    TestWaveForm testWf;
-    TestIcons testIcons;
-    int status = 0;
-    status |= QTest::qExec(&testElements, argc, argv);
-    status |= QTest::qExec(&testLogicElements, argc, argv);
-    status |= QTest::qExec(&testSC, argc, argv);
-    status |= QTest::qExec(&testFiles, argc, argv);
-    status |= QTest::qExec(&testCommands, argc, argv);
-    status |= QTest::qExec(&testWf, argc, argv);
-    status |= QTest::qExec(&testIcons, argc, argv);
 
-    std::cout << (status ? "Some test failed!" : "All tests have passed!") << std::endl;
+    ThemeManager::globalManager = new ThemeManager();
+
+    int status = 0;
+    status |= QTest::qExec(new TestCommands, argc, argv);
+    status |= QTest::qExec(new TestElements, argc, argv);
+    status |= QTest::qExec(new TestFiles, argc, argv);
+    status |= QTest::qExec(new TestIcons, argc, argv);
+    status |= QTest::qExec(new TestLogicElements, argc, argv);
+    status |= QTest::qExec(new TestSimulationController, argc, argv);
+    status |= QTest::qExec(new TestWaveForm, argc, argv);
+
+    qInfo() << (status ? "Some test failed!" : "All tests have passed!");
 
     return status;
 }

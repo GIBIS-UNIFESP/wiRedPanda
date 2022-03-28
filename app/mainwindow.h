@@ -3,15 +3,14 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
+
+#include "recentfilescontroller.h"
 
 #include <QDir>
 #include <QFileInfo>
 #include <QMainWindow>
 #include <QTemporaryFile>
-
-#include "recentfilescontroller.h"
 
 class QDialog;
 class QSpacerItem;
@@ -48,7 +47,7 @@ public:
     QDir getCurrentDir() const;
     //! Sets the current file to the given value.
     //! Mostly used by `loadPandaFile` and clearing functions
-    void setCurrentFile(const QFileInfo &file);
+    void setCurrentFile(const QString &fname);
     void setAutoSaveFileName(const QFileInfo &file);
     //! Exports the current simulation to an
     bool exportToArduino(QString fname);
@@ -57,11 +56,11 @@ public:
     //! Loads a .panda file
     bool loadPandaFile(const QString &fname);
     //! Opens a message box asking the user if he wishes to save his progress
-    int confirmSave(bool multiple=true);
+    int confirmSave(bool multiple = true);
     bool closeFile();
-    void populateMenu(QSpacerItem *spacer, const QString& names, QLayout *layout);
+    void populateMenu(QSpacerItem *spacer, const QString &names, QLayout *layout);
     void retranslateUi();
-    void loadTranslation(const QString& language);
+    void loadTranslation(QString language);
     void setFastMode(bool fastModeEnabled);
     void buildFullScreenDialog();
     QString getDolphinFilename();
@@ -71,58 +70,64 @@ public:
     GraphicsView *m_fullscreenView;
 
     void setCurrentDir();
+
 signals:
     void addRecentFile(const QString &fname);
 
 public slots:
-    void updateICList();
     void closeTab(int tab);
     void selectTab(int tab);
+    void updateICList();
 
 private slots:
     bool on_actionExport_to_Arduino_triggered();
-    void on_actionExport_to_Image_triggered();
-    void on_actionPrint_triggered();
+    void aboutThisVersion();
+    void autoSave();
     void on_actionAbout_Qt_triggered();
     void on_actionAbout_triggered();
+    void on_actionChange_Trigger_triggered();
+    void on_actionClear_selection_triggered();
     void on_actionEnglish_triggered();
     void on_actionExit_triggered();
+    void on_actionExport_to_Image_triggered();
+    void on_actionFast_Mode_triggered(bool checked);
+    void on_actionFlip_horizontally_triggered();
+    void on_actionFlip_vertically_triggered();
+    void on_actionFullscreen_triggered() const;
     void on_actionGates_triggered(bool checked);
+    void on_actionLabels_under_icons_triggered(bool checked);
+    void on_actionMute_triggered();
     void on_actionNew_triggered();
     void on_actionOpen_triggered();
+    void on_actionPanda_Dark_triggered();
+    void on_actionPanda_Light_triggered();
+    void on_actionPlay_triggered(bool checked);
     void on_actionPortuguese_triggered();
+    void on_actionPrint_triggered();
     void on_actionReload_File_triggered();
-    void on_actionReset_Zoom_triggered();
+    void on_actionRename_triggered();
+    void on_actionReset_Zoom_triggered() const;
     void on_actionRotate_left_triggered();
     void on_actionRotate_right_triggered();
     void on_actionSave_As_triggered();
     void on_actionSave_triggered();
     void on_actionSelect_all_triggered();
-    void on_actionWires_triggered(bool checked);
-    void on_actionZoom_in_triggered();
-    void on_actionZoom_out_triggered();
-    void on_lineEdit_returnPressed();
-    void on_lineEdit_textChanged(const QString &arg1);
-    void openRecentFile();
-    void scrollView(int dx, int dy);
-    void updateRecentFileActions();
-    void zoomChanged();
-    void on_actionPlay_triggered(bool checked);
-    void on_actionRename_triggered();
-    void on_actionChange_Trigger_triggered();
-    void on_actionClear_selection_triggered();
-    void on_actionFast_Mode_triggered(bool checked);
     void on_actionWaveform_triggered();
-    void on_actionPanda_Light_triggered();
-    void on_actionPanda_Dark_triggered();
+    void on_actionWires_triggered(bool checked);
+    void on_actionZoom_in_triggered() const;
+    void on_actionZoom_out_triggered() const;
+    void on_lineEdit_returnPressed();
+    void on_lineEdit_textChanged(const QString &text);
+    void openRecentFile();
+    void scrollView(int dx, int dy) const;
+    void updateRecentFileActions();
     void updateTheme();
-    void on_actionFlip_horizontally_triggered();
-    void on_actionFlip_vertically_triggered();
-    void on_actionFullscreen_triggered() const;
-    void autoSave();
-    void on_actionMute_triggered();
-    void on_actionLabels_under_icons_triggered(bool checked);
-    void aboutThisVersion();
+    void zoomChanged();
+
+protected:
+    void closeEvent(QCloseEvent *e) override;
+    void resizeEvent(QResizeEvent * /*event*/) override;
+
 private:
     Ui::MainWindow *ui;
     Editor *m_editor;
@@ -134,10 +139,10 @@ private:
     BewavedDolphin *m_bd;
     QVector<WorkSpace> m_tabs;
     int m_current_tab;
-    QTemporaryFile** m_autoSaveFile; // We had memory leak problems using QVectors for that.
+    QTemporaryFile **m_autoSaveFile; // We had memory leak problems using QVectors for that.
 
-    QVector<QAction*> m_undoAction;
-    QVector<QAction*> m_redoAction;
+    QVector<QAction *> m_undoAction;
+    QVector<QAction *> m_redoAction;
     RecentFilesController *m_rfController;
     QAction *m_recentFileActs[RecentFilesController::MaxRecentFiles];
     QTranslator *m_translator;
@@ -150,8 +155,8 @@ private:
     void populateLeftMenu();
     // Shows a message box for reloading the autosave at launch, when
     // there's reason to believe that there's been unsaved progress.
-    int recoverAutoSaveFile(const QString& autosaveFilename);
-    int autoSaveFileDeleteAnyway(const QString& autosaveFilename);
+    int recoverAutoSaveFile(const QString &autosaveFilename);
+    int autoSaveFileDeleteAnyway(const QString &autosaveFilename);
     // Undo and Redo interface for each tab.
     void createUndoRedoMenus();
     /**
@@ -181,10 +186,5 @@ private:
     void connectTab(int tab);
     void selectNextTab();
     void selectPreviousTab();
-protected:
-    /* QWidget interface */
-    void closeEvent(QCloseEvent *e) override;
-    void resizeEvent(QResizeEvent *) override;
 };
 
-#endif /* MAINWINDOW_H */

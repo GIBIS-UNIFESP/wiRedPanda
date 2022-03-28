@@ -23,8 +23,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#include "common.h"
 #include "qneconnection.h"
+
+#include "common.h"
 #include "qneport.h"
 #include "thememanager.h"
 
@@ -58,12 +59,12 @@ QNEConnection::~QNEConnection()
     }
 }
 
-void QNEConnection::setStartPos(const QPointF &p)
+void QNEConnection::setStartPos(QPointF p)
 {
     m_startPos = p;
 }
 
-void QNEConnection::setEndPos(const QPointF &p)
+void QNEConnection::setEndPos(QPointF p)
 {
     m_endPos = p;
 }
@@ -119,7 +120,7 @@ void QNEConnection::updatePath()
 
     p.cubicTo(ctr1, ctr2, m_endPos);
 
-    /*  p.lineTo(pos2); */
+    // p.lineTo(pos2);
     setPath(p);
 }
 
@@ -205,18 +206,18 @@ bool QNEConnection::load(QDataStream &ds, const QMap<quint64, QNEPort *> &portMa
 
 QNEPort *QNEConnection::otherPort(const QNEPort *port) const
 {
-    if (port == dynamic_cast<QNEPort *>(m_start)) {
-        return dynamic_cast<QNEPort *>(m_end);
+    if (port == m_start) {
+        return m_end;
     }
-    return dynamic_cast<QNEPort *>(m_start);
+    return m_start;
 }
 
-QNEOutputPort *QNEConnection::otherPort(const QNEInputPort *) const
+QNEOutputPort *QNEConnection::otherPort(const QNEInputPort * /*port*/) const
 {
     return m_start;
 }
 
-QNEInputPort *QNEConnection::otherPort(const QNEOutputPort *) const
+QNEInputPort *QNEConnection::otherPort(const QNEOutputPort * /*port*/) const
 {
     return m_end;
 }
@@ -226,29 +227,20 @@ QNEConnection::Status QNEConnection::status() const
     return m_status;
 }
 
-void QNEConnection::setStatus(const Status &status)
+void QNEConnection::setStatus(Status status)
 {
     m_status = status;
     switch (status) {
-    case Status::Inactive: {
-        setPen(QPen(m_inactiveClr, 3));
-        break;
-    }
-    case Status::Active: {
-        setPen(QPen(m_activeClr, 3));
-        break;
-    }
-    case Status::Invalid: {
-        setPen(QPen(m_invalidClr, 5));
-        break;
-    }
+    case Status::Inactive: setPen(QPen(m_inactiveClr, 3)); break;
+    case Status::Active:   setPen(QPen(m_activeClr, 3)); break;
+    case Status::Invalid:  setPen(QPen(m_invalidClr, 5)); break;
     }
 }
 
 void QNEConnection::updateTheme()
 {
-    if (ThemeManager::globalMngr) {
-        const ThemeAttrs attrs = ThemeManager::globalMngr->getAttrs();
+    if (ThemeManager::globalManager) {
+        const ThemeAttrs attrs = ThemeManager::globalManager->getAttrs();
         m_inactiveClr = attrs.qneConnection_false;
         m_activeClr = attrs.qneConnection_true;
         m_invalidClr = attrs.qneConnection_invalid;
@@ -256,7 +248,7 @@ void QNEConnection::updateTheme()
     }
 }
 
-void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
+void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget * /*widget*/)
 {
     painter->setClipRect(option->exposedRect);
     if (isSelected()) {

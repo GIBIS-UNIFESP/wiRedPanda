@@ -9,7 +9,7 @@
 SCStop::SCStop(SimulationController *sc)
     : m_sc(sc)
 {
-    COMMENT("Stoping!!!!!", 0 );
+    COMMENT("Stoping!!!!!", 0);
     if (m_sc->isRunning()) {
         m_restart = true;
         m_sc->stop();
@@ -20,7 +20,7 @@ SCStop::SCStop(SimulationController *sc)
 
 void SCStop::release()
 {
-    COMMENT("Releasing!!!!!", 0 );
+    COMMENT("Releasing!!!!!", 0);
     if (m_restart) {
         m_sc->start();
         Clock::pause = false;

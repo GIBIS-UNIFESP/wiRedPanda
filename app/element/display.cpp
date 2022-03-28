@@ -1,8 +1,9 @@
 // Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "common.h"
 #include "display.h"
+
+#include "common.h"
 #include "qneport.h"
 
 #include <QPainter>
@@ -11,7 +12,7 @@
 int Display::current_id_number = 0;
 
 Display::Display(QGraphicsItem *parent)
-    : GraphicElement(ElementType::DISPLAY, ElementGroup::OUTPUT, 8, 8, 0, 0, parent)
+    : GraphicElement(ElementType::Display, ElementGroup::Output, 8, 8, 0, 0, parent)
 {
     m_pixmapSkinName = {
         ":/output/counter/counter_off.png",
@@ -58,7 +59,7 @@ Display::Display(QGraphicsItem *parent)
     convertAllColors(dp);
 
     setPortName("Display");
-    for (QNEPort *in : qAsConst(m_inputs)) {
+    for (auto *in : qAsConst(m_inputs)) {
         in->setRequired(false);
         in->setDefaultValue(0);
     }
@@ -66,21 +67,21 @@ Display::Display(QGraphicsItem *parent)
 
 void Display::convertAllColors(QVector<QPixmap> &maps)
 {
-  QImage tmp(maps[1].toImage());
-  maps[0] = convertColor(tmp,true,true,true);
-  maps[1] = convertColor(tmp,true,false,false);
-  maps[2] = convertColor(tmp,false,true,false);
-  maps[3] = convertColor(tmp,false,false,true);
-  maps[4] = convertColor(tmp,true,false,true);
+    QImage tmp(maps[1].toImage());
+    maps[0] = convertColor(tmp, true, true, true);
+    maps[1] = convertColor(tmp, true, false, false);
+    maps[2] = convertColor(tmp, false, true, false);
+    maps[3] = convertColor(tmp, false, false, true);
+    maps[4] = convertColor(tmp, true, false, true);
 }
 
 QPixmap Display::convertColor(const QImage &src, bool red, bool green, bool blue)
 {
     QImage tgt(src);
-    for(int y = 0; y < src.height(); y++) {
+    for (int y = 0; y < src.height(); y++) {
         const uchar *src_line = src.scanLine(y);
         uchar *tgt_line = tgt.scanLine(y);
-        for(int x= 0; x < src.width(); x++) {
+        for (int x = 0; x < src.width(); x++) {
             src_line += 2;
             uchar src_red = *src_line;
             src_line += 2;
@@ -90,7 +91,7 @@ QPixmap Display::convertColor(const QImage &src, bool red, bool green, bool blue
             tgt_line++;
         }
     }
-    return(QPixmap::fromImage(tgt));
+    return (QPixmap::fromImage(tgt));
 }
 
 void Display::refresh()
@@ -178,12 +179,12 @@ void Display::save(QDataStream &ds) const
 void Display::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
 {
     GraphicElement::load(ds, portMap, version);
-    //  qDebug( ) << "Version: " << version;
+    // qDebug() << "Version: " << version;
     /*
-     * 0,7,2,1,3,4,5,6
-     * 7,5,4,2,1,4,6,3,0
-     * 4,5,7,3,2,1,0,6
-     * 2,1,4,5,0,7,3,6
+     * 0, 7, 2, 1, 3, 4, 5, 6
+     * 7, 5, 4, 2, 1, 4, 6, 3, 0
+     * 4, 5, 7, 3, 2, 1, 0, 6
+     * 2, 1, 4, 5, 0, 7, 3, 6
      */
     if (version < 1.6) {
         COMMENT("Remapping inputs", 0);
@@ -206,9 +207,9 @@ void Display::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double ve
         updatePorts();
     }
     if (version >= 3.1) {
-      QString clr;
-      ds >> clr;
-      setColor(clr);
+        QString clr;
+        ds >> clr;
+        setColor(clr);
     }
 }
 

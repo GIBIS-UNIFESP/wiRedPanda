@@ -3,11 +3,11 @@
 
 #include "icprototype.h"
 
-#include <QFileInfo>
-
 #include "ic.h"
 #include "icmapping.h"
 #include "qneport.h"
+
+#include <QFileInfo>
 
 ICPrototype::ICPrototype(const QString &fileName)
     : m_fileName(fileName)
@@ -86,10 +86,10 @@ void ICPrototype::clear()
 void ICPrototype::reload()
 {
     // TODO: Verify file recursion
-    //  verifyRecursion( fname );
+    // verifyRecursion(fname);
     clear();
     m_ICImpl.loadFile(m_fileName);
-    for (IC *ic : qAsConst(m_icObservers)) {
+    for (auto *ic : qAsConst(m_icObservers)) {
         ic->loadFile(m_fileName);
     }
 }

@@ -6,7 +6,7 @@
 #include "qneport.h"
 
 Demux::Demux(QGraphicsItem *parent)
-    : GraphicElement(ElementType::DEMUX, ElementGroup::MUX, 2, 2, 2, 2, parent)
+    : GraphicElement(ElementType::Demux, ElementGroup::Mux, 2, 2, 2, 2, parent)
 {
     m_pixmapSkinName = {":/basic/demux.png"};
     setPixmap(m_pixmapSkinName[0]);

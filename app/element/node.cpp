@@ -6,7 +6,7 @@
 #include "qneport.h"
 
 Node::Node(QGraphicsItem *parent)
-    : GraphicElement(ElementType::NODE, ElementGroup::GATE, 1, 1, 1, 1, parent)
+    : GraphicElement(ElementType::Node, ElementGroup::Gate, 1, 1, 1, 1, parent)
 {
     m_pixmapSkinName = {":/basic/node.png"};
 
