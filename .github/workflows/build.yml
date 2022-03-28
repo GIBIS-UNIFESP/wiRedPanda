@@ -1,4 +1,4 @@
-# Copyright 2015 - 2022, GIBIS-Unifesp and the wiRedPanda contributors
+# Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 name: Build
@@ -73,8 +73,6 @@ jobs:
       run : |
         cd build\app\release
         windeployqt --compiler-runtime wpanda.exe
-        del *.o
-        del *.cpp
         cp $env:Qt5_Dir\bin\libgcc_s_seh-1.dll .
         cp $env:Qt5_Dir\bin\libstdc++-6.dll .
         cp $env:Qt5_Dir\bin\libwinpthread-1.dll .
