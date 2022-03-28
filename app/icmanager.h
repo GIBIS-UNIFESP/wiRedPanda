@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef ICMANAGER_H
-#define ICMANAGER_H
+#pragma once
 
 #include <QFileSystemWatcher>
 #include <QMap>
@@ -19,13 +18,13 @@ class ICManager : public QObject
     Q_OBJECT
 
 public:
-    ICManager(MainWindow *mainWindow = nullptr, QObject *parent = nullptr);
+    explicit ICManager(MainWindow *mainWindow = nullptr, QObject *parent = nullptr);
     ~ICManager() override;
     void clear();
     bool loadIC(IC *ic, QString fname);
     void loadFile(QString &fname);
-    void openIC(QString fname);
-    ICPrototype *getPrototype(const QString& fname);
+    void openIC(const QString &fname);
+    ICPrototype *getPrototype(const QString &fname);
     static ICManager *instance();
     static void setGlobalInstance(ICManager *icManager);
     void wakeUp();
@@ -33,10 +32,10 @@ signals:
     void updatedIC();
 
 private slots:
-    void setReloadFile(const QString& bname);
+    void setReloadFile(const QString &fileName);
 
 private:
-    void loadFile(QString &fname, const QString& parentFile);
+    void loadFile(QString &fname, const QString &parentFile);
 
     static ICManager *globalICManager;
 
@@ -46,4 +45,3 @@ private:
     QList<QString> requiresReload;
 };
 
-#endif // ICMANAGER_H

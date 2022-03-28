@@ -3,19 +3,16 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef LOGICINPUT_H
-#define LOGICINPUT_H
+#pragma once
 
 #include "logicelement.h"
 
 class LogicInput : public LogicElement
 {
 public:
-    explicit LogicInput(bool defaultValue = false, int n_outputs=1);
+    explicit LogicInput(bool defaultValue = false, int n_outputs = 1);
 
-    /* LogicElement interface */
 protected:
-    void _updateLogic(const std::vector<bool> &) override;
+    void _updateLogic(const std::vector<bool> & /*inputs*/) override;
 };
 
-#endif // LOGICINPUT_H

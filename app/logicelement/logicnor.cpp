@@ -12,6 +12,6 @@ LogicNor::LogicNor(size_t inputSize)
 
 void LogicNor::_updateLogic(const std::vector<bool> &inputs)
 {
-    auto result = std::accumulate(inputs.begin(), inputs.end(), false, std::bit_or<bool>());
+    auto result = std::accumulate(inputs.begin(), inputs.end(), false, std::bit_or<>());
     setOutputValue(!result);
 }

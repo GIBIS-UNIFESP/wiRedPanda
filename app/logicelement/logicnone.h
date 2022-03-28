@@ -3,18 +3,16 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef LOGICNONE_H
-#define LOGICNONE_H
+#pragma once
 
 #include "logicelement.h"
 
 class LogicNone : public LogicElement
 {
-  /* LogicElement interface */
 public:
-  explicit LogicNone();
+    explicit LogicNone();
+
 protected:
     void _updateLogic(const std::vector<bool> &inputs) override;
 };
 
-#endif // LOGICNONE_H

@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef LENGTHDIALOG_H
-#define LENGTHDIALOG_H
+#pragma once
 
 #include <QDialog>
 
@@ -24,7 +23,6 @@ public:
 
 private slots:
     void cancelClicked();
-
     void okClicked();
 
 private:
@@ -32,4 +30,3 @@ private:
     bool m_canceled;
 };
 
-#endif /* LENGTHDIALOG_H */

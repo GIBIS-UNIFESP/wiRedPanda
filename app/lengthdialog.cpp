@@ -9,7 +9,7 @@ LengthDialog::LengthDialog(QWidget *parent)
     , m_ui(new Ui::LengthDialog)
 {
     m_ui->setupUi(this);
-    setWindowTitle("Simulation length Selection");
+    setWindowTitle("Simulation Length Selection");
     setWindowFlags(Qt::Window);
     setModal(true);
     connect(m_ui->cancelPushButton, &QPushButton::clicked, this, &LengthDialog::cancelClicked);
@@ -20,7 +20,7 @@ int LengthDialog::getFrequency()
 {
     m_canceled = false;
     exec();
-    if (m_canceled) {
+    if (m_canceled) { // TODO: always false
         return -1;
     }
     return m_ui->lengthSpinBox->value();
@@ -41,3 +41,5 @@ void LengthDialog::okClicked()
 {
     close();
 }
+
+// TODO: order of buttons is wrong on some operating systems

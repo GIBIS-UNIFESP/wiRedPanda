@@ -3,12 +3,12 @@
 
 #include "recentfilescontroller.h"
 
+#include "common.h"
+#include "settings.h"
+
 #include <QApplication>
 #include <QFile>
 #include <QFileInfo>
-
-#include "common.h"
-#include "settings.h"
 
 RecentFilesController::RecentFilesController(const QString &_attrName, QObject *parent, bool saveSetting)
     : QObject(parent)

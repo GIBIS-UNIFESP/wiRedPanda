@@ -6,7 +6,7 @@
 #include "qneport.h"
 
 SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(ElementType::SRFLIPFLOP, ElementGroup::MEMORY, 5, 5, 2, 2, parent)
+    : GraphicElement(ElementType::SRFlipFlop, ElementGroup::Memory, 5, 5, 2, 2, parent)
 {
     m_pixmapSkinName = {":/memory/SR-flipflop.png"};
     setPixmap(m_pixmapSkinName[0]);

@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef ICPROTOTYPE_H
-#define ICPROTOTYPE_H
+#pragma once
 
 #include "icprototypeimpl.h"
 
@@ -18,7 +17,7 @@ class IC;
 class ICPrototype
 {
 public:
-    ICPrototype(const QString &fileName);
+    explicit ICPrototype(const QString &fileName);
     void reload();
 
     void fileName(const QString &newFileName);
@@ -48,4 +47,3 @@ private:
     QVector<IC *> m_icObservers;
 };
 
-#endif // ICPROTOTYPE_H

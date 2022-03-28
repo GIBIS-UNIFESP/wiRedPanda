@@ -27,7 +27,7 @@ void LogicElement::clearPredecessors()
 
 void LogicElement::clearSucessors()
 {
-    for (auto &elm : qAsConst(m_successors)) {
+    for (const auto &elm : qAsConst(m_successors)) {
         for (auto &input : elm->m_inputs) {
             if (input.first == this) {
                 input.first = nullptr;
@@ -73,7 +73,7 @@ void LogicElement::validate()
         }
     }
     if (!m_isValid) {
-        for (LogicElement *elm : qAsConst(m_successors)) {
+        for (auto *elm : qAsConst(m_successors)) {
             elm->m_isValid = false;
         }
     }
@@ -94,7 +94,7 @@ int LogicElement::calculatePriority()
     }
     m_beingVisited = true;
     int max = 0;
-    for (LogicElement *s : qAsConst(m_successors)) {
+    for (auto *s : qAsConst(m_successors)) {
         max = qMax(s->calculatePriority(), max);
     }
     const int p = max + 1;

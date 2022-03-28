@@ -2,30 +2,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "mainwindow.h"
+#include "ui_mainwindow.h"
 
-#include <cmath>
-#include <iostream>
-#include <stdexcept>
-
-#include <qcheckbox.h>
-#include <QCloseEvent>
-#include <QDebug>
-#include <QDialog>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QPrinter>
-#include <QProcess>
-#include <QRectF>
-#include <QSaveFile>
-#include <QSettings>
-#include <QShortcut>
-#include <QSpacerItem>
-#include <QTranslator>
-#include <QUndoStack>
-#include <QActionGroup>
-
-#include "arduino/codegenerator.h"
 #include "bewaveddolphin.h"
+#include "codegenerator.h"
 #include "common.h"
 #include "editor.h"
 #include "elementfactory.h"
@@ -36,11 +16,21 @@
 #include "icmanager.h"
 #include "label.h"
 #include "listitemwidget.h"
-#include "thememanager.h"
 #include "settings.h"
 #include "simulationcontroller.h"
-#include "ui_mainwindow.h"
+#include "thememanager.h"
 #include "workspace.h"
+
+#include <QActionGroup>
+#include <QCheckBox>
+#include <QCloseEvent>
+#include <QDebug>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QPrinter>
+#include <QSaveFile>
+#include <QShortcut>
+#include <QTranslator>
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #define SKIPEMPTYPARTS QString::SkipEmptyParts
@@ -62,17 +52,10 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     COMMENT("WiRedPanda Version = " << APP_VERSION << " OR " << GlobalProperties::version, 0);
     qDebug() << "WiRedPanda Version = " << APP_VERSION << " OR " << QString::number(GlobalProperties::version);
     ui->setupUi(this);
-    ThemeManager::globalMngr = new ThemeManager(this);
+    ThemeManager::globalManager = new ThemeManager(this);
 
-    /* Translation */
     COMMENT("Settings filename: " << Settings::fileName().toStdString(), 0);
-    if (Settings::contains("language")) {
-        QString language = Settings::value("language").toString();
-        if (language == "://wpanda_pt.qm") {
-            language = "://wpanda_pt_BR.qm";
-        }
-        loadTranslation(language);
-    }
+    loadTranslation(Settings::value("language").toString());
 
     COMMENT("Building dialog within a new tab.", 0);
     m_current_tab = 0;
@@ -94,31 +77,27 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     zoom_in_shortcuts << QKeySequence("Ctrl++") << QKeySequence("Ctrl+=");
     ui->actionZoom_in->setShortcuts(zoom_in_shortcuts);
 
-    COMMENT("Preparing theme and UI modes.",0);
+    COMMENT("Preparing theme and UI modes.", 0);
     auto *themeGroup = new QActionGroup(this);
-    auto const actions = ui->menuTheme->actions();
-    for (QAction *action : actions) {
+    const auto actions = ui->menuTheme->actions();
+    for (auto *action : actions) {
         themeGroup->addAction(action);
     }
     themeGroup->setExclusive(true);
-    connect(ThemeManager::globalMngr, &ThemeManager::themeChanged, this, &MainWindow::updateTheme);
-    connect(ThemeManager::globalMngr, &ThemeManager::themeChanged, m_editor, &Editor::updateTheme);
-    ThemeManager::globalMngr->initialize();
-    if (Settings::value("fastMode").isValid()) {
-        setFastMode(Settings::value("fastMode").toBool());
-    } else {
-        setFastMode(false);
-    }
+    connect(ThemeManager::globalManager, &ThemeManager::themeChanged, this, &MainWindow::updateTheme);
+    connect(ThemeManager::globalManager, &ThemeManager::themeChanged, m_editor, &Editor::updateTheme);
+    ThemeManager::globalManager->initialize();
+    setFastMode(Settings::value("fastMode").toBool());
 
     COMMENT("Setting left side menus.", 0);
     m_editor->setElementEditor(ui->widgetElementEditor);
     ui->searchScrollArea->hide();
     auto *shortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
-    connect(shortcut, &QShortcut::activated, ui->lineEdit, QOverload<>::of(&QWidget::setFocus));
+    connect(shortcut, &QShortcut::activated, ui->lineEdit, qOverload<>(&QWidget::setFocus));
     populateLeftMenu();
 
     COMMENT("Setting directories and autosave file.", 0);
-    setCurrentFile(QFileInfo());
+    setCurrentFile({});
 
     COMMENT("Creating edit menu funcionalities.", 0);
     connect(ui->actionCopy, &QAction::triggered, m_editor, &Editor::copyAction);
@@ -138,7 +117,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     m_rfController = new RecentFilesController("recentFileList", this, true);
     connect(this, &MainWindow::addRecentFile, m_rfController, &RecentFilesController::addRecentFile);
     m_firstResult = nullptr;
-    //updateRecentICs();
+    // updateRecentICs();
     createRecentFileActions();
     connect(m_rfController, &RecentFilesController::recentFilesUpdated, this, &MainWindow::updateRecentFileActions);
 
@@ -154,17 +133,19 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     connect(prevTabShortcut, &QShortcut::activated, this, &MainWindow::selectPreviousTab);
 
     COMMENT("Window title.", 0);
-    setWindowTitle("wiRedPanda v" + QString(APP_VERSION));
+    setWindowTitle("WiRedPanda " + QString(APP_VERSION));
 }
 
-void MainWindow::selectNextTab() {
+void MainWindow::selectNextTab()
+{
     COMMENT("Forward: " << QString::number(m_current_tab).toStdString(), 0);
     selectTab((m_current_tab + 1) % m_tabs.size());
     ui->tabWidget_mainWindow->setCurrentIndex(m_current_tab);
     COMMENT("Forward end: " << QString::number(m_current_tab).toStdString(), 0);
 }
 
-void MainWindow::selectPreviousTab() {
+void MainWindow::selectPreviousTab()
+{
     COMMENT("Backwards: " << QString::number(m_current_tab).toStdString(), 0);
     selectTab((m_current_tab + m_tabs.size() - 1) % m_tabs.size());
     ui->tabWidget_mainWindow->setCurrentIndex(m_current_tab);
@@ -180,11 +161,11 @@ void MainWindow::loadAutoSaveFiles(const QString &filename)
         QString allAutoSaveFileNames(Settings::value("autosaveFile").toString());
         QStringList autoSaveFileNameList(allAutoSaveFileNames.split("\t", SKIPEMPTYPARTS));
         COMMENT("all files: " << allAutoSaveFileNames.toStdString(), 0);
-        foreach(auto autoSaveFileName, autoSaveFileNameList) {
+        for (const auto &autoSaveFileName : qAsConst(autoSaveFileNameList)) {
             if ((QFile(autoSaveFileName).exists()) && (autoSaveFileName != filename)) {
                 COMMENT("Autosave exists and was not open. Trying to recover.", 0);
                 int ret = QMessageBox::No;
-                if ((!yes_to_all)&&(!no_to_all)) {
+                if ((!yes_to_all) && (!no_to_all)) {
                     ret = recoverAutoSaveFile(autoSaveFileName);
                     if (ret == QMessageBox::YesToAll) {
                         yes_to_all = true;
@@ -193,11 +174,11 @@ void MainWindow::loadAutoSaveFiles(const QString &filename)
                         no_to_all = true;
                     }
                 }
-                if ((yes_to_all)||(ret == QMessageBox::Yes)) {
+                if ((yes_to_all) || (ret == QMessageBox::Yes)) {
                     if (!loadPandaFile(autoSaveFileName)) {
                         ret = autoSaveFileDeleteAnyway(autoSaveFileName);
                         if (ret == QMessageBox::Yes) {
-                            allAutoSaveFileNames.remove(autoSaveFileName+"\t");
+                            allAutoSaveFileNames.remove(autoSaveFileName + "\t");
                             Settings::setValue("autosaveFile", allAutoSaveFileNames);
                         }
                     }
@@ -207,7 +188,7 @@ void MainWindow::loadAutoSaveFiles(const QString &filename)
                 m_loadedAutoSave = true;
             } else if (!QFile(autoSaveFileName).exists()) {
                 COMMENT("Removing autosave file name from config that does not exist.", 0);
-                allAutoSaveFileNames.remove(autoSaveFileName+"\t");
+                allAutoSaveFileNames.remove(autoSaveFileName + "\t");
                 Settings::setValue("autosaveFile", allAutoSaveFileNames);
             }
         }
@@ -216,55 +197,56 @@ void MainWindow::loadAutoSaveFiles(const QString &filename)
     }
 }
 
-void MainWindow::createNewTab() {
+void MainWindow::createNewTab()
+{
     COMMENT("Dialog built. Now adding tab. #tabs: " << m_tabs.size() << ", current tab: " << m_current_tab, 0);
-    auto new_tab = new QWidget(ui->tabWidget_mainWindow);
+    auto *new_tab = new QWidget(ui->tabWidget_mainWindow);
     new_tab->setLayout(m_fullscreenDlg->layout());
     new_tab->layout()->addWidget(m_fullscreenView);
     ui->tabWidget_mainWindow->addTab(new_tab, "");
-    COMMENT("Storing tab pointers.", 0 );
+    COMMENT("Storing tab pointers.", 0);
     m_tabs.push_back(WorkSpace(m_fullscreenDlg, m_fullscreenView, m_editor));
     COMMENT("Finished #tabs: " << m_tabs.size() << ", current tab: " << m_current_tab, 0);
 }
 
 void MainWindow::createAutosaveFile()
 {
-    QTemporaryFile** new_vector = new QTemporaryFile*[m_tabs.size()];
+    auto **new_vector = new QTemporaryFile *[m_tabs.size()];
     for (int idx = 0; idx < m_tabs.size() - 1; ++idx) {
         new_vector[idx] = m_autoSaveFile[idx];
     }
     new_vector[m_tabs.size() - 1] = new QTemporaryFile();
-    delete []m_autoSaveFile;
+    delete[] m_autoSaveFile;
     m_autoSaveFile = new_vector;
 }
 
 void MainWindow::removeAutosaveFile(int tab)
 {
-    QTemporaryFile** new_vector = nullptr;
+    QTemporaryFile **new_vector = nullptr;
     if (m_tabs.size() > 1) {
-        new_vector = new QTemporaryFile*[m_tabs.size()-1];
+        new_vector = new QTemporaryFile *[m_tabs.size() - 1];
         for (int idx = 0; idx < tab; ++idx) {
             new_vector[idx] = m_autoSaveFile[idx];
         }
-        for (int idx = tab+1; idx < m_tabs.size(); ++idx) {
-            new_vector[idx-1] = m_autoSaveFile[idx];
+        for (int idx = tab + 1; idx < m_tabs.size(); ++idx) {
+            new_vector[idx - 1] = m_autoSaveFile[idx];
         }
     }
     delete m_autoSaveFile[tab];
-    delete []m_autoSaveFile;
+    delete[] m_autoSaveFile;
     m_autoSaveFile = new_vector;
 }
 
 void MainWindow::createUndoRedoMenus()
 {
     m_undoAction.push_back(m_editor->getUndoStack()->createUndoAction(this, tr("&Undo")));
-    m_undoAction[m_undoAction.size()-1]->setIcon(QIcon(QPixmap(":/toolbar/undo.png")));
-    m_undoAction[m_undoAction.size()-1]->setShortcuts(QKeySequence::Undo);
+    m_undoAction[m_undoAction.size() - 1]->setIcon(QIcon(QPixmap(":/toolbar/undo.png")));
+    m_undoAction[m_undoAction.size() - 1]->setShortcuts(QKeySequence::Undo);
     m_redoAction.push_back(m_editor->getUndoStack()->createRedoAction(this, tr("&Redo")));
-    m_redoAction[m_undoAction.size()-1]->setIcon(QIcon(QPixmap(":/toolbar/redo.png")));
-    m_redoAction[m_undoAction.size()-1]->setShortcuts(QKeySequence::Redo);
-    ui->menuEdit->insertAction(ui->menuEdit->actions().at(0), m_undoAction[m_undoAction.size()-1]);
-    ui->menuEdit->insertAction(m_undoAction[m_undoAction.size()-1], m_redoAction[m_undoAction.size()-1]);
+    m_redoAction[m_undoAction.size() - 1]->setIcon(QIcon(QPixmap(":/toolbar/redo.png")));
+    m_redoAction[m_undoAction.size() - 1]->setShortcuts(QKeySequence::Redo);
+    ui->menuEdit->insertAction(ui->menuEdit->actions().at(0), m_undoAction[m_undoAction.size() - 1]);
+    ui->menuEdit->insertAction(m_undoAction[m_undoAction.size() - 1], m_redoAction[m_undoAction.size() - 1]);
     connect(m_editor->getUndoStack(), &QUndoStack::indexChanged, m_editor, &Editor::checkUpdateRequest);
 }
 
@@ -334,19 +316,19 @@ bool MainWindow::save(QString fname)
         }
     }
     if (fl.commit()) {
-        setCurrentFile(QFileInfo(fname));
+        setCurrentFile(fname);
         ui->statusBar->showMessage(tr("Saved file successfully."), 4000);
         m_editor->getUndoStack()->setClean();
         COMMENT("Remove from autosave list recovered file that has been saved.", 0)
         if (!autoSaveFileName.isEmpty()) {
-            allAutoSaveFileNames.remove(autoSaveFileName+"\t");
+            allAutoSaveFileNames.remove(autoSaveFileName + "\t");
             Settings::setValue("autosaveFile", allAutoSaveFileNames);
             COMMENT("All auto save file names after removing recovered: " << allAutoSaveFileNames.toStdString(), 0);
         }
         COMMENT("Remove autosave from settings and deleting it.", 0);
         if (m_autoSaveFile[m_current_tab]->isOpen()) {
-            allAutoSaveFileNames.remove(m_autoSaveFile[m_current_tab]->fileName()+"\t");
-            Settings::setValue("autosaveFile", allAutoSaveFileNames+"\n");
+            allAutoSaveFileNames.remove(m_autoSaveFile[m_current_tab]->fileName() + "\t");
+            Settings::setValue("autosaveFile", allAutoSaveFileNames + "\n");
             m_autoSaveFile[m_current_tab]->remove();
             COMMENT("All auto save file names after removing autosave: " << allAutoSaveFileNames.toStdString(), 0);
         }
@@ -367,13 +349,13 @@ void MainWindow::show()
 void MainWindow::aboutThisVersion()
 {
     COMMENT("What is new message box.", 0);
-    QCheckBox *cb = new QCheckBox(tr("Don't show this again."));
+    auto *cb = new QCheckBox(tr("Don't show this again."));
     cb->setChecked(Settings::contains("WhatsNew4"));
     QMessageBox msgBox;
     msgBox.setParent(this);
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.setIcon(QMessageBox::Icon::Information);
-    msgBox.setWindowTitle("WiRedPanda version " + QString(APP_VERSION));
+    msgBox.setWindowTitle("WiRedPanda " + QString(APP_VERSION));
     msgBox.setText(
         tr("This version is not 100% compatible with previous versions of WiRedPanda.\n"
            "To open old version projects containing ICs (or boxes), skins, and/or "
@@ -383,7 +365,7 @@ void MainWindow::aboutThisVersion()
            "in the same directory of the current project as ICs in the editor tab.\n"
            "You have to save new projects before accessing ICs and skins, or running "
            "beWavedDolphin simulations.")
-                .arg(APP_VERSION));
+            .arg(APP_VERSION));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Ok);
     msgBox.setCheckBox(cb);
@@ -409,7 +391,7 @@ int MainWindow::closeTabAnyway()
 }
 
 
-int MainWindow::recoverAutoSaveFile(const QString& autosaveFilename)
+int MainWindow::recoverAutoSaveFile(const QString &autosaveFilename)
 {
     QMessageBox msgBox;
     msgBox.setParent(this);
@@ -439,7 +421,7 @@ int MainWindow::confirmSave(bool multiple)
     return msgBox.exec();
 }
 
-int MainWindow::autoSaveFileDeleteAnyway(const QString& autosaveFilename)
+int MainWindow::autoSaveFileDeleteAnyway(const QString &autosaveFilename)
 {
     QMessageBox msgBox;
     msgBox.setParent(this);
@@ -453,7 +435,7 @@ int MainWindow::autoSaveFileDeleteAnyway(const QString& autosaveFilename)
 void MainWindow::on_actionNew_triggered()
 {
     createNewWorkspace();
-    setCurrentFile(QFileInfo());
+    setCurrentFile({});
 }
 
 void MainWindow::on_actionWires_triggered(bool checked)
@@ -482,19 +464,19 @@ bool MainWindow::loadPandaFile(const QString &fname)
     COMMENT("File exists.", 0);
     if (fl.open(QFile::ReadOnly)) {
         COMMENT("File opened: " << fname.toStdString(), 0);
-        QDataStream ds(&fl);
-        int current_tab = m_current_tab; // Stored to possibly recover it in case of error.
+        const int current_tab = m_current_tab; // Stored to possibly recover it in case of error.
         createNewWorkspace();
         try {
             COMMENT("Current file set.", 0);
-            setCurrentFile(QFileInfo(fname));
+            setCurrentFile(fname);
             COMMENT("Loading in editor.", 0);
+            QDataStream ds(&fl);
             m_editor->load(ds);
             updateICList();
         } catch (std::runtime_error &e) {
             std::cerr << tr("Error loading project: ").toStdString() << e.what() << std::endl;
             QMessageBox::warning(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
-            closeTab(m_tabs.size()-1);
+            closeTab(m_tabs.size() - 1);
             selectTab(current_tab);
             return false;
         }
@@ -508,7 +490,7 @@ bool MainWindow::loadPandaFile(const QString &fname)
     return true;
 }
 
-void MainWindow::scrollView(int dx, int dy)
+void MainWindow::scrollView(int dx, int dy) const
 {
     m_fullscreenView->scroll(dx, dy);
 }
@@ -548,7 +530,7 @@ void MainWindow::on_actionAbout_triggered()
            "</ul>"
            "<p> WiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.</p>"
            "<p> Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.</p>"
-           "<p><a href=\"http://gibis-unifesp.github.io/WiRedPanda/\">Visit our website!</a></p>")
+           "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
             .arg(QApplication::applicationVersion()));
 }
 
@@ -559,7 +541,7 @@ void MainWindow::on_actionAbout_Qt_triggered()
 
 bool MainWindow::closeFile()
 {
-    while(m_tabs.size() > 0) {
+    while (!m_tabs.empty()) {
         int tab_idx = m_tabs.size() - 1;
         auto tab = m_tabs[tab_idx];
         if (!closeTabAction(tab_idx)) {
@@ -591,16 +573,17 @@ void MainWindow::closeEvent(QCloseEvent *e)
         }
     }
     if (closeWindow) {
-      updateSettings();
-      e->accept();
-      m_editor->deleteLater();
-      m_editor = nullptr;
+        updateSettings();
+        e->accept();
+        m_editor->deleteLater();
+        m_editor = nullptr;
     } else {
-      e->ignore();
+        e->ignore();
     }
 }
 
-void MainWindow::updateSettings() {
+void MainWindow::updateSettings()
+{
     Settings::beginGroup("MainWindow");
     Settings::setValue("geometry", saveGeometry());
     Settings::setValue("windowState", saveState());
@@ -617,12 +600,11 @@ bool MainWindow::hasModifiedFiles()
     if (Settings::contains("autosaveFile")) {
         allAutoSaveFileNames = Settings::value("autosaveFile").toString();
     }
-    for (int idx = 0; idx < m_tabs.size(); ++idx) {
-        auto tab = m_tabs[idx];
+    for (auto tab : m_tabs) {
         if (!tab.undoStack()->isClean()) {
             return true;
         }
-        if ((!tab.currentFile().fileName().isEmpty())&&(allAutoSaveFileNames.contains(tab.currentFile().fileName()))) {
+        if ((!tab.currentFile().fileName().isEmpty()) && (allAutoSaveFileNames.contains(tab.currentFile().fileName()))) {
             return true;
         }
     }
@@ -631,12 +613,11 @@ bool MainWindow::hasModifiedFiles()
 
 void MainWindow::on_actionSave_As_triggered()
 {
-    QString fname = m_currentFile.absoluteFilePath();
     QString path = m_defaultDirectory;
     if (!m_currentFile.fileName().isEmpty()) {
         path = m_currentFile.absoluteFilePath();
     }
-    fname = QFileDialog::getSaveFileName(this, tr("Save File as ..."), path, tr("Panda files (*.panda)"));
+    QString fname = QFileDialog::getSaveFileName(this, tr("Save File as ..."), path, tr("Panda files (*.panda)"));
     if (fname.isEmpty()) {
         return;
     }
@@ -656,8 +637,9 @@ QDir MainWindow::getCurrentDir() const
     return m_currentFile.absoluteDir();
 }
 
-void MainWindow::setCurrentFile(const QFileInfo &file)
+void MainWindow::setCurrentFile(const QString &fname)
 {
+    QFileInfo file(fname);
     setAutoSaveFileName(file);
     if (!file.fileName().isEmpty()) {
         ui->tabWidget_mainWindow->setTabText(m_current_tab, file.fileName());
@@ -705,14 +687,14 @@ void MainWindow::on_actionSelect_all_triggered()
 void MainWindow::updateICList()
 {
     ui->scrollAreaWidgetContents_Box->layout()->removeItem(ui->verticalSpacer_IC);
-    for (ListItemWidget *item : qAsConst(icItemWidgets)) {
+    for (auto *item : qAsConst(icItemWidgets)) {
         item->deleteLater();
     }
     icItemWidgets.clear();
     if (m_currentFile.exists()) {
         COMMENT("Show files.", 0);
         QDir directory(m_currentFile.absoluteDir());
-        QStringList files = directory.entryList(QStringList() << "*.panda" << "*.PANDA", QDir::Files);
+        QStringList files = directory.entryList({"*.panda", "*.PANDA"}, QDir::Files);
         files.removeAll(m_currentFile.fileName());
         for (int i = files.size() - 1; i >= 0; --i) {
             if (files[i][0] == '.') {
@@ -730,7 +712,8 @@ void MainWindow::updateICList()
     ui->scrollAreaWidgetContents_Box->layout()->addItem(ui->verticalSpacer_IC);
 }
 
-void MainWindow::closeTab(int tab) {
+void MainWindow::closeTab(int tab)
+{
     if (m_tabs.size() == 1) {
         close();
     } else {
@@ -758,8 +741,8 @@ bool MainWindow::closeTabAction(int tab)
         bool discardAutosaves = false;
         int ret = confirmSave(false);
         if (ret == QMessageBox::Yes) {
-            if(!save(m_tabs[tab].currentFile().absoluteFilePath())) {
-                if(closeTabAnyway()==QMessageBox::No) {
+            if (!save(m_tabs[tab].currentFile().absoluteFilePath())) {
+                if (closeTabAnyway() == QMessageBox::No) {
                     return false;
                 } else {
                     discardAutosaves = true;
@@ -773,13 +756,13 @@ bool MainWindow::closeTabAction(int tab)
         if (discardAutosaves) {
             if (!autoSaveFileName.isEmpty()) {
                 COMMENT("Discarding recovered autosave file.", 0);
-                allAutoSaveFileNames.remove(autoSaveFileName+"\t");
+                allAutoSaveFileNames.remove(autoSaveFileName + "\t");
                 Settings::setValue("autosaveFile", allAutoSaveFileNames);
                 COMMENT("All auto save file names after removing recovery file: " << allAutoSaveFileNames.toStdString(), 0);
             }
             if (!m_tabs[tab].undoStack()->isClean()) {
                 COMMENT("Discarding autosave modification.", 0);
-                allAutoSaveFileNames.remove(m_autoSaveFile[tab]->fileName()+"\t");
+                allAutoSaveFileNames.remove(m_autoSaveFile[tab]->fileName() + "\t");
                 Settings::setValue("autosaveFile", allAutoSaveFileNames);
                 m_autoSaveFile[tab]->remove(); // This only removes the autosave file itself, not the QTempFile object.
                 COMMENT("All auto save file names after removing autosave file: " << allAutoSaveFileNames.toStdString(), 0);
@@ -814,7 +797,7 @@ void MainWindow::disconnectTab()
     m_editor->getSimulationController()->stop();
     COMMENT("Disconnecting zoom from UI controllers.", 0);
     disconnect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
-    COMMENT("Removing undo and redo actions from UI menu.", 0 );
+    COMMENT("Removing undo and redo actions from UI menu.", 0);
     removeUndoRedoMenu();
     COMMENT("Disabling beWavedDolphin action.", 0);
 }
@@ -857,7 +840,7 @@ void MainWindow::connectTab(int tab)
 void MainWindow::createNewWorkspace()
 {
     COMMENT("Creating new workspace.", 0);
-    if (m_tabs.size() != 0) {
+    if (!m_tabs.empty()) {
         disconnectTab();
     }
     COMMENT("Creating workspace elements used by the editor.", 0);
@@ -897,7 +880,7 @@ void MainWindow::selectTab(int tab)
 void MainWindow::on_lineEdit_textChanged(const QString &text)
 {
     ui->searchLayout->removeItem(ui->VSpacer);
-    for (ListItemWidget *item : qAsConst(searchItemWidgets)) {
+    for (auto *item : qAsConst(searchItemWidgets)) {
         item->deleteLater();
     }
     searchItemWidgets.clear();
@@ -908,16 +891,15 @@ void MainWindow::on_lineEdit_textChanged(const QString &text)
     } else {
         ui->searchScrollArea->show();
         ui->tabWidget->hide();
-        QList<Label *> ics = ui->tabWidget->findChildren<Label *>("label_ic");
+        auto ics = ui->tabWidget->findChildren<Label *>("label_ic");
         QRegularExpression regex(QString(".*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
-        QList<Label *> searchResults;
         QRegularExpression regex2(QString("^label_.*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
-        searchResults.append(ui->tabWidget->findChildren<Label *>(regex2));
-        QList<Label *> allLabels = ui->tabWidget->findChildren<Label *>();
-        for (Label *lb : qAsConst(allLabels)) {
-            if (regex.match(lb->name()).hasMatch()) {
-                if (!searchResults.contains(lb)) {
-                    searchResults.append(lb);
+        auto searchResults = ui->tabWidget->findChildren<Label *>(regex2);
+        auto allLabels = ui->tabWidget->findChildren<Label *>();
+        for (auto *label : qAsConst(allLabels)) {
+            if (regex.match(label->name()).hasMatch()) {
+                if (!searchResults.contains(label)) {
+                    searchResults.append(label);
                 }
             }
         }
@@ -927,11 +909,7 @@ void MainWindow::on_lineEdit_textChanged(const QString &text)
             }
         }
         for (auto *label : searchResults) {
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
-            auto *item = new ListItemWidget(label->pixmap(Qt::ReturnByValue), label->elementType(), label->auxData());
-#else
-            auto *item = new ListItemWidget(*label->pixmap(), label->elementType(), label->auxData());
-#endif
+            auto *item = new ListItemWidget(label->pixmap(), label->elementType(), label->auxData());
             if (!m_firstResult) {
                 m_firstResult = item->getLabel();
             }
@@ -950,9 +928,9 @@ void MainWindow::on_lineEdit_returnPressed()
     }
 }
 
-void MainWindow::resizeEvent(QResizeEvent *)
+void MainWindow::resizeEvent(QResizeEvent * /*event*/)
 {
-    if(m_editor) {
+    if (m_editor) {
         m_editor->getScene()->setSceneRect(m_editor->getScene()->sceneRect().united(m_fullscreenView->rect()));
     }
 }
@@ -962,12 +940,12 @@ void MainWindow::on_actionReload_File_triggered()
     if (!m_currentFile.exists()) {
         return;
     } else {
-        auto undostack = m_tabs[m_current_tab].undoStack();
+        auto *undostack = m_tabs[m_current_tab].undoStack();
         if (!undostack->isClean()) {
             int ret = confirmSave(false);
             if (ret == QMessageBox::Yes) {
-                if(!save(m_tabs[m_current_tab].currentFile().absoluteFilePath())) {
-                    if(closeTabAnyway()==QMessageBox::No) {
+                if (!save(m_tabs[m_current_tab].currentFile().absoluteFilePath())) {
+                    if (closeTabAnyway() == QMessageBox::No) {
                         return;
                     }
                 }
@@ -1024,7 +1002,7 @@ bool MainWindow::exportToArduino(QString fname)
     return true;
 }
 
-bool MainWindow::exportToWaveFormFile(const QString& fname)
+bool MainWindow::exportToWaveFormFile(const QString &fname)
 {
     try {
         if (fname.isEmpty()) {
@@ -1051,17 +1029,17 @@ bool MainWindow::on_actionExport_to_Arduino_triggered()
     return exportToArduino(fname);
 }
 
-void MainWindow::on_actionZoom_in_triggered()
+void MainWindow::on_actionZoom_in_triggered() const
 {
     m_fullscreenView->gvzoom()->zoomIn();
 }
 
-void MainWindow::on_actionZoom_out_triggered()
+void MainWindow::on_actionZoom_out_triggered() const
 {
     m_fullscreenView->gvzoom()->zoomOut();
 }
 
-void MainWindow::on_actionReset_Zoom_triggered()
+void MainWindow::on_actionReset_Zoom_triggered() const
 {
     m_fullscreenView->gvzoom()->resetZoom();
 }
@@ -1074,13 +1052,13 @@ void MainWindow::zoomChanged()
 
 void MainWindow::updateRecentFileActions()
 {
-    QStringList files = m_rfController->getRecentFiles();
-    int numRecentFiles = qMin(files.size(), static_cast<int>(RecentFilesController::MaxRecentFiles));
+    const auto files = m_rfController->getRecentFiles();
+    const int numRecentFiles = qMin(files.size(), static_cast<int>(RecentFilesController::MaxRecentFiles));
     if (numRecentFiles > 0) {
         ui->menuRecent_files->setEnabled(true);
     }
     for (int i = 0; i < numRecentFiles; ++i) {
-        QString text = QString("&%1 %2").arg(i + 1).arg(QFileInfo(files[i]).fileName());
+        const QString text = QString("&%1 %2").arg(i + 1).arg(QFileInfo(files[i]).fileName());
         m_recentFileActs[i]->setText(text);
         m_recentFileActs[i]->setData(files[i]);
         m_recentFileActs[i]->setVisible(true);
@@ -1158,19 +1136,27 @@ void MainWindow::retranslateUi()
     ui->retranslateUi(this);
     ui->widgetElementEditor->retranslateUi();
 
-    QList<ListItemWidget *> items = ui->tabWidget->findChildren<ListItemWidget *>();
-    for (ListItemWidget *item : qAsConst(items)) {
+    auto items = ui->tabWidget->findChildren<ListItemWidget *>();
+    for (auto *item : qAsConst(items)) {
         item->updateName();
     }
 }
 
-void MainWindow::loadTranslation(const QString& language)
+void MainWindow::loadTranslation(QString language)
 {
+    if (language.isEmpty()) {
+        return;
+    }
+
     if (m_translator) {
         qApp->removeTranslator(m_translator);
     }
 
-    if(language == "://wpanda_en.qm") {
+    if (language == "://wpanda_pt.qm") {
+        language = "://wpanda_pt_BR.qm";
+    }
+
+    if (language == "://wpanda_en.qm") {
         return retranslateUi();
     }
 
@@ -1227,14 +1213,14 @@ void MainWindow::on_actionClear_selection_triggered()
     m_editor->getScene()->clearSelection();
 }
 
-void MainWindow::populateMenu(QSpacerItem *spacer, const QString& names, QLayout *layout) // TODO: call this function with the list of files and set directory watcher.
+void MainWindow::populateMenu(QSpacerItem *spacer, const QString &names, QLayout *layout) // TODO: call this function with the list of files and set directory watcher.
 {
-    QStringList list(names.split(","));
+    auto list(names.split(", "));
     layout->removeItem(spacer);
-    for (QString name : qAsConst(list)) {
+    for (auto &name : list) {
         name = name.trimmed().toUpper();
-        ElementType type = ElementFactory::textToType(name);
-        QPixmap pixmap(ElementFactory::getPixmap(type));
+        auto type = ElementFactory::textToType(name);
+        auto pixmap(ElementFactory::getPixmap(type));
         auto *item = new ListItemWidget(pixmap, type, name, this);
         layout->addWidget(item);
     }
@@ -1244,10 +1230,10 @@ void MainWindow::populateMenu(QSpacerItem *spacer, const QString& names, QLayout
 void MainWindow::populateLeftMenu()
 {
     ui->tabWidget->setCurrentIndex(0);
-    populateMenu(ui->verticalSpacer_InOut, "VCC,GND,BUTTON,SWITCH,ROTARY,CLOCK,LED,DISPLAY,DISPLAY14,BUZZER", ui->scrollAreaWidgetContents_InOut->layout());
-    populateMenu(ui->verticalSpacer_Gates, "AND,OR,NOT,NAND,NOR,XOR,XNOR,MUX,DEMUX,NODE", ui->scrollAreaWidgetContents_Gates->layout());
-    populateMenu(ui->verticalSpacer_Memory, "DFLIPFLOP,DLATCH,JKFLIPFLOP,SRFLIPFLOP,TFLIPFLOP", ui->scrollAreaWidgetContents_Memory->layout());
-    populateMenu(ui->verticalSpacer_MISC, "TEXT,LINE", ui->scrollAreaWidgetContents_Misc->layout());
+    populateMenu(ui->verticalSpacer_InOut, "VCC, GND, BUTTON, SWITCH, ROTARY, CLOCK, LED, DISPLAY, DISPLAY14, BUZZER", ui->scrollAreaWidgetContents_InOut->layout());
+    populateMenu(ui->verticalSpacer_Gates, "AND, OR, NOT, NAND, NOR, XOR, XNOR, MUX, DEMUX, NODE", ui->scrollAreaWidgetContents_Gates->layout());
+    populateMenu(ui->verticalSpacer_Memory, "DFLIPFLOP, DLATCH, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP", ui->scrollAreaWidgetContents_Memory->layout());
+    populateMenu(ui->verticalSpacer_MISC, "TEXT, LINE", ui->scrollAreaWidgetContents_Misc->layout());
 }
 
 void MainWindow::on_actionFast_Mode_triggered(bool checked)
@@ -1271,23 +1257,19 @@ void MainWindow::on_actionWaveform_triggered()
 
 void MainWindow::on_actionPanda_Light_triggered()
 {
-    ThemeManager::globalMngr->setTheme(Theme::Panda_Light);
+    ThemeManager::globalManager->setTheme(Theme::Light);
 }
 
 void MainWindow::on_actionPanda_Dark_triggered()
 {
-    ThemeManager::globalMngr->setTheme(Theme::Panda_Dark);
+    ThemeManager::globalManager->setTheme(Theme::Dark);
 }
 
 void MainWindow::updateTheme()
 {
-    switch (ThemeManager::globalMngr->theme()) {
-    case Theme::Panda_Dark:
-        ui->actionPanda_Dark->setChecked(true);
-        break;
-    case Theme::Panda_Light:
-        ui->actionPanda_Light->setChecked(true);
-        break;
+    switch (ThemeManager::globalManager->theme()) {
+    case Theme::Dark:  ui->actionPanda_Dark->setChecked(true); break;
+    case Theme::Light: ui->actionPanda_Light->setChecked(true); break;
     }
 }
 
@@ -1346,15 +1328,15 @@ void MainWindow::autoSave()
     if (Settings::contains("autosaveFile")) {
         allAutoSaveFileNames = Settings::value("autosaveFile").toString();
         COMMENT("All auto save file names before autosaving: " << allAutoSaveFileNames.toStdString(), 3);
-        if ((!m_autoSaveFile[m_current_tab]->fileName().isEmpty())&&(allAutoSaveFileNames.contains(m_autoSaveFile[m_current_tab]->fileName()))) {
-          COMMENT("Removing current autosave file name.", 3);
-          allAutoSaveFileNames.remove(m_autoSaveFile[m_current_tab]->fileName()+"\t");
-          Settings::setValue("autosaveFile", allAutoSaveFileNames);
+        if ((!m_autoSaveFile[m_current_tab]->fileName().isEmpty()) && (allAutoSaveFileNames.contains(m_autoSaveFile[m_current_tab]->fileName()))) {
+            COMMENT("Removing current autosave file name.", 3);
+            allAutoSaveFileNames.remove(m_autoSaveFile[m_current_tab]->fileName() + "\t");
+            Settings::setValue("autosaveFile", allAutoSaveFileNames);
         }
     }
     COMMENT("All auto save file names after possibly removing autosave: " << allAutoSaveFileNames.toStdString(), 0);
     COMMENT("If autosave exists and undo stack is clean, remove it.", 0);
-    auto undostack = m_tabs[m_current_tab].undoStack();
+    auto *undostack = m_tabs[m_current_tab].undoStack();
     COMMENT("undostack element: " << undostack->index() << " of " << undostack->count(), 0);
     if (undostack->isClean()) {
         if (m_currentFile.exists()) {

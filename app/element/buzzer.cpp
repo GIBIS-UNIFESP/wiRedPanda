@@ -2,33 +2,29 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "buzzer.h"
-#include <array>
 
 #include "qneport.h"
 
 #include <QDebug>
 #include <QGraphicsSceneDragDropEvent>
+#include <array>
 
 int Buzzer::current_id_number = 0;
-// macOS doesn't want to compile a constexpr std::array<const char *> for some reason
-#ifdef Q_OS_MACOS
-static const std::array<const char *, 2> defaultSkins
+
+static constexpr std::array<const char *, 2> defaultSkins
 {
-#else
-static constexpr std::array<const char *, 2> defaultSkins {
-#endif
     ":/output/BuzzerOff.png", ":/output/BuzzerOn.png"
 };
 
 Buzzer::Buzzer(QGraphicsItem *parent)
-    : GraphicElement(ElementType::BUZZER, ElementGroup::OUTPUT, 1, 1, 0, 0, parent)
+    : GraphicElement(ElementType::Buzzer, ElementGroup::Output, 1, 1, 0, 0, parent)
 {
-    //  m_pixmapSkinName.append( ":/output/BuzzerOff.png" );
-    //  m_pixmapSkinName.append( ":/output/BuzzerOn.png" );
+    // m_pixmapSkinName.append(":/output/BuzzerOff.png");
+    // m_pixmapSkinName.append(":/output/BuzzerOn.png");
     setOutputsOnTop(true);
     setRotatable(false);
     setHasAudio(true);
-    //  setPixmap( m_pixmapSkinName[ 0 ] );
+    // setPixmap(m_pixmapSkinName[0]);
     setPixmap(defaultSkins[0]);
     m_alternativeSkins = QVector<QString>({defaultSkins[0], defaultSkins[1]});
     updatePorts();
@@ -125,6 +121,6 @@ void Buzzer::setSkin(bool defaultSkin, const QString &filename)
         m_usingDefaultSkin = false;
         m_alternativeSkins[m_play] = filename;
         setPixmap(m_alternativeSkins[m_play]);
-        //      std::cerr << "Filename: " << alternativeSkins[ play ].toStdString() << '\n';
+        // std::cerr << "Filename: " << alternativeSkins[play].toStdString() << '\n';
     }
 }

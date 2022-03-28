@@ -3,11 +3,11 @@
 
 #include "graphicsview.h"
 
+#include "graphicsviewzoom.h"
+
 #include <QApplication>
 #include <QKeyEvent>
 #include <QScrollBar>
-
-#include "graphicsviewzoom.h"
 
 GraphicsView::GraphicsView(QWidget *parent)
     : QGraphicsView(parent)

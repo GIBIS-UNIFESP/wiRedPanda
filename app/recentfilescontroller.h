@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef RECENTFILESCONTROLLER_H
-#define RECENTFILESCONTROLLER_H
+#pragma once
 
 #include <QObject>
 
@@ -33,4 +32,3 @@ private:
     QStringList m_files;
 };
 
-#endif /* RECENTFILESCONTROLLER_H */

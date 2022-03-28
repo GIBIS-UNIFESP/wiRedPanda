@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef EDITOR_H
-#define EDITOR_H
+#pragma once
+
+#include "scene.h"
 
 #include <QElapsedTimer>
 #include <QObject>
-
-#include "scene.h"
 
 class ElementEditor;
 class IC;
@@ -76,6 +75,7 @@ public:
     void setAutoSaveRequired();
     void clearSelection();
     void setHandlingEvents(bool value);
+
 signals:
     void scroll(int x, int y);
     void circuitHasChanged();
@@ -86,7 +86,7 @@ public slots:
     void showWires(bool checked);
     void showGates(bool checked);
     void rotate(bool rotateRight);
-    void checkUpdateRequest(int index);
+    void checkUpdateRequest();
     /**
      * @brief setupWorkspace: Creates workspace elements: IC manager, undo stack, scene, and simulation controller.
      * @param connect_signals: true: connects IC manager and simulation controller signals/slots if this is the first tab (opening the program).
@@ -122,7 +122,7 @@ private:
     QList<GraphicElement *> m_movedElements;
     QList<QPointF> m_oldPositions;
     MainWindow *m_mainWindow;
-    /*  bool mControlKeyPressed; */
+    // bool mControlKeyPressed;
     bool m_showWires;
     bool m_showGates;
     bool m_circuitUpdateRequired;
@@ -143,15 +143,11 @@ private:
     QNEConnection *getEditedConn() const;
     void setEditedConn(QNEConnection *editedConn);
 
-    /* QObject interface */
     void detachConnection(QNEInputPort *endPort);
-    void startNewConnection(QNEOutputPort *startPort);
-    void startNewConnection(QNEInputPort *endPort);
-
-    void startSelectionRect();
-
     void makeConnection(QNEConnection *editedConn);
     void redoSimulationController();
+    void startNewConnection(QNEInputPort *endPort);
+    void startNewConnection(QNEOutputPort *startPort);
+    void startSelectionRect();
 };
 
-#endif /* EDITOR_H */

@@ -3,12 +3,11 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef GLOBALPROPERTIES_H
-#define GLOBALPROPERTIES_H
+#pragma once
 
 #include <QString>
 
-#define GLOBALCLK 10
+constexpr auto globalClock = 10;
 
 class GlobalProperties
 {
@@ -19,5 +18,3 @@ public:
 
     static double toDouble(const QString &txtVersion, bool *ok);
 };
-
-#endif // GLOBALPROPERTIES_H

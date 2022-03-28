@@ -2,54 +2,41 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "testwaveform.h"
+
+#include "editor.h"
 #include "simplewaveform.h"
 
 #include <QTemporaryFile>
+#include <QTest>
 #include <stdexcept>
-
-void TestWaveForm::init()
-{
-    editor = new Editor(this);
-    editor->setupWorkspace();
-}
-
-void TestWaveForm::cleanup()
-{
-    editor->deleteLater();
-}
 
 void TestWaveForm::testDisplay4Bits()
 {
-    QDir examplesDir(QString("%1/../examples/").arg(CURRENTDIR));
-    QString fileName = examplesDir.absoluteFilePath("display-4bits.panda");
-    QFile pandaFile(fileName);
-    QVERIFY(pandaFile.open(QFile::ReadOnly));
-    QDataStream ds(&pandaFile);
+    auto *editor = new Editor(this);
+    editor->setupWorkspace();
+
+    const QDir examplesDir(QString(CURRENTDIR) + "/../examples/");
+    const QString fileName = examplesDir.absoluteFilePath("display-4bits.panda");
+
     try {
+        QFile pandaFile(fileName);
+        QVERIFY(pandaFile.open(QFile::ReadOnly));
+        QDataStream ds(&pandaFile);
         editor->load(ds);
     } catch (std::runtime_error &e) {
-        QFAIL(QString("Could not load the file! Error: %1").arg(QString::fromStdString(e.what())).toUtf8().constData());
+        QFAIL("Could not load the file! Error: " + QString(e.what()).toUtf8());
     }
-    pandaFile.close();
 
-    QTemporaryFile outFile;
-    QVERIFY(outFile.open());
-    QTextStream outStream(&outFile);
-    QVERIFY(SimpleWaveform::saveToTxt(outStream, editor));
+    QTemporaryFile tempFile;
+    QVERIFY(tempFile.open());
+    QTextStream tempStream(&tempFile);
+    QVERIFY(SimpleWaveform::saveToTxt(tempStream, editor));
+    tempStream.flush();
+    QVERIFY(tempFile.reset());
 
-    outFile.flush();
-    outFile.close();
+    QFile referenceFile(examplesDir.absoluteFilePath("display-4bits.txt"));
 
-    QFile firstFile(outFile.fileName());
-    QFile secndFile(examplesDir.absoluteFilePath("display-4bits.txt"));
+    QVERIFY(referenceFile.open(QFile::ReadOnly));
 
-    QVERIFY(firstFile.open(QFile::ReadOnly));
-    QVERIFY(secndFile.open(QFile::ReadOnly));
-
-    QCOMPARE(firstFile.readAll().replace("\r\n", "\n"), secndFile.readAll().replace("\r\n", "\n"));
-
-    firstFile.close();
-    secndFile.close();
-
-    outFile.remove();
+    QCOMPARE(tempFile.readAll().replace("\r\n", "\n"), referenceFile.readAll().replace("\r\n", "\n"));
 }

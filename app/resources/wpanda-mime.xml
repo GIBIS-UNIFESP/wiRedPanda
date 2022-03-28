@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <!--
- Copyright 2015 - 2022, GIBIS-Unifesp and the wiRedPanda contributors
+ Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  SPDX-License-Identifier: GPL-3.0-or-later
 -->
 
  <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
    <mime-type type="application/x-wpanda">
-   <comment>WiRED Panda circuit file</comment>
-   <comment xml:lang="pt">Arquivo de circuito WiRED Panda</comment>
+   <comment>WiRedPanda circuit file</comment>
+   <comment xml:lang="pt">Arquivo de circuito WiRedPanda</comment>
    <glob pattern="*.panda"/>
   </mime-type>
  </mime-info>

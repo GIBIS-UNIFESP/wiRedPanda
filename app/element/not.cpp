@@ -4,7 +4,7 @@
 #include "not.h"
 
 Not::Not(QGraphicsItem *parent)
-    : GraphicElement(ElementType::NOT, ElementGroup::GATE, 1, 1, 1, 1, parent)
+    : GraphicElement(ElementType::Not, ElementGroup::Gate, 1, 1, 1, 1, parent)
 {
     m_pixmapSkinName = {":/basic/not.png"};
     setOutputsOnTop(true);

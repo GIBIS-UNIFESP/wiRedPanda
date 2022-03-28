@@ -3,14 +3,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef ELEMENTMAPPING_H
-#define ELEMENTMAPPING_H
+#pragma once
+
+#include "logicinput.h"
 
 #include <QHash>
 #include <QMap>
 #include <QVector>
-
-#include "logicelement/logicinput.h"
 
 class Clock;
 class GraphicElement;
@@ -21,30 +20,25 @@ class QNEPort;
 
 class ElementMapping;
 class ICMapping;
-typedef QMap<GraphicElement *, LogicElement *> ElementMap;
-typedef QMap<Input *, LogicElement *> InputMap;
+
+using ElementMap = QMap<GraphicElement *, LogicElement *>;
+using InputMap = QMap<Input *, LogicElement *>;
 
 class ElementMapping
 {
 public:
-    ElementMapping(const QVector<GraphicElement *> &elms);
+    explicit ElementMapping(const QVector<GraphicElement *> &elms);
     virtual ~ElementMapping();
-
-    void clear();
-
-    static QVector<GraphicElement *> sortGraphicElements(QVector<GraphicElement *> elms);
-
-    virtual void initialize();
-
-    void sort();
-
-    void update();
 
     ICMapping *getICMapping(IC *ic) const;
     LogicElement *getLogicElement(GraphicElement *elm) const;
-
-    bool canRun() const;
     bool canInitialize() const;
+    bool canRun() const;
+    static QVector<GraphicElement *> sortGraphicElements(QVector<GraphicElement *> elms);
+    virtual void initialize();
+    void clear();
+    void sort();
+    void update();
 
 protected:
     // Attributes
@@ -64,16 +58,14 @@ protected:
 
     // Methods
     LogicElement *buildLogicElement(GraphicElement *elm);
-
-    void setDefaultValue(GraphicElement *elm, QNEPort *in);
-    void applyConnection(GraphicElement *elm, QNEPort *in);
-    void generateMap();
-    void connectElements();
-    void validateElements();
-    void sortLogicElements();
     static int calculatePriority(GraphicElement *elm, QHash<GraphicElement *, bool> &beingvisited, QHash<GraphicElement *, int> &priority);
+    void applyConnection(GraphicElement *elm, QNEPort *in);
+    void connectElements();
+    void generateMap();
     void insertElement(GraphicElement *elm);
     void insertIC(IC *ic);
+    void setDefaultValue(GraphicElement *elm, QNEPort *in);
+    void sortLogicElements();
+    void validateElements();
 };
 
-#endif // ELEMENTMAPPING_H

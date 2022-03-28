@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef ITEMWITHID_H
-#define ITEMWITHID_H
+#pragma once
 
 class ItemWithId
 {
@@ -17,4 +16,3 @@ public:
     virtual ~ItemWithId();
 };
 
-#endif /* ITEMWITHID_H */

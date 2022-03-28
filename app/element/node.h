@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef NODE_H
-#define NODE_H
+#pragma once
 
 #include "graphicelement.h"
 
 class Node : public GraphicElement
 {
+    Q_OBJECT
+
 public:
     explicit Node(QGraphicsItem *parent = nullptr);
     ~Node() override = default;
@@ -18,4 +19,3 @@ public:
     void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
-#endif /* NODE_H */

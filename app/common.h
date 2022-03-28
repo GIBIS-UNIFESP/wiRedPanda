@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef COMMON_H
-#define COMMON_H
+#pragma once
 
 #include <iostream>
 
@@ -29,5 +28,3 @@ public:
 #endif
 
 #define ERRORMSG(exp) std::string(__FILE__) + ": " + std::to_string(__LINE__) + ": " + std::string(__FUNCTION__) + ": Error: " + exp
-
-#endif // COMMON_H

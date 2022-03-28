@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef SIMPLEWAVEFORM_H
-#define SIMPLEWAVEFORM_H
+#pragma once
 
 #include "editor.h"
 
@@ -25,7 +24,8 @@ class SimpleWaveform;
 class SimpleWaveform : public QDialog
 {
     Q_OBJECT
-    enum class SortingMode : uint_fast8_t { INCREASING, DECREASING, POSITION };
+
+    enum class SortingMode : uint_fast8_t { Increasing, Decreasing, Position };
 
 public:
     explicit SimpleWaveform(Editor *editor, QWidget *parent = nullptr);
@@ -33,7 +33,6 @@ public:
 
     void showWaveform();
     static void sortElements(QVector<GraphicElement *> &elements, QVector<GraphicElement *> &inputs, QVector<GraphicElement *> &outputs, SortingMode sorting);
-
     static bool saveToTxt(QTextStream &outStream, Editor *editor);
 
 private slots:
@@ -47,8 +46,6 @@ private:
     QChart m_chart;
     QChartView *m_chartView;
     Editor *m_editor;
-
     SortingMode m_sortingMode;
 };
 
-#endif /* SIMPLEWAVEFORM_H */

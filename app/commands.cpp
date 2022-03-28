@@ -3,13 +3,6 @@
 
 #include "commands.h"
 
-#include <cmath>
-#include <stdexcept>
-
-#include <QDrag>
-#include <QGraphicsItem>
-#include <QIODevice>
-
 #include "common.h"
 #include "editor.h"
 #include "elementfactory.h"
@@ -20,10 +13,16 @@
 #include "serializationfunctions.h"
 #include "simulationcontroller.h"
 
+#include <QDrag>
+#include <QGraphicsItem>
+#include <QIODevice>
+#include <cmath>
+#include <stdexcept>
+
 void storeIds(const QList<QGraphicsItem *> &items, QVector<int> &ids)
 {
     ids.reserve(items.size());
-    for (QGraphicsItem *item : items) {
+    for (auto *item : items) {
         auto *iwid = dynamic_cast<ItemWithId *>(item);
         if (iwid) {
             ids.append(iwid->id());
@@ -33,14 +32,14 @@ void storeIds(const QList<QGraphicsItem *> &items, QVector<int> &ids)
 
 void storeOtherIds(const QList<QGraphicsItem *> &connections, const QVector<int> &ids, QVector<int> &otherIds)
 {
-    for (QGraphicsItem *item : connections) {
+    for (auto *item : connections) {
         auto *conn = qgraphicsitem_cast<QNEConnection *>(item);
         if ((item->type() == QNEConnection::Type) && conn) {
-            QNEOutputPort *p1 = conn->start();
+            auto *p1 = conn->start();
             if (p1 && p1->graphicElement() && !ids.contains(p1->graphicElement()->id())) {
                 otherIds.append(p1->graphicElement()->id());
             }
-            QNEInputPort *p2 = conn->end();
+            auto *p2 = conn->end();
             if (p2 && p2->graphicElement() && !ids.contains(p2->graphicElement()->id())) {
                 otherIds.append(p2->graphicElement()->id());
             }
@@ -52,7 +51,7 @@ QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &aItems, QVector<in
 {
     QList<QGraphicsItem *> elements;
     /* Stores selected graphicElements */
-    for (QGraphicsItem *item : aItems) {
+    for (auto *item : aItems) {
         if (item->type() == GraphicElement::Type) {
             if (!elements.contains(item)) {
                 elements.append(item);
@@ -61,20 +60,20 @@ QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &aItems, QVector<in
     }
     QList<QGraphicsItem *> connections;
     /* Stores all the wires linked to these elements */
-    for (QGraphicsItem *item : elements) {
+    for (auto *item : elements) {
         auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
         if (elm) {
-            auto const inputs = elm->inputs();
-            for (QNEInputPort *port : inputs) {
-                for (QNEConnection *conn : port->connections()) {
+            const auto inputs = elm->inputs();
+            for (auto *port : inputs) {
+                for (auto *conn : port->connections()) {
                     if (!connections.contains(conn)) {
                         connections.append(conn);
                     }
                 }
             }
-            auto const outputs = elm->outputs();
-            for (QNEOutputPort *port : outputs) {
-                for (QNEConnection *conn : port->connections()) {
+            const auto outputs = elm->outputs();
+            for (auto *port : outputs) {
+                for (auto *conn : port->connections()) {
                     if (!connections.contains(conn)) {
                         connections.append(conn);
                     }
@@ -83,7 +82,7 @@ QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &aItems, QVector<in
         }
     }
     /* Stores the other wires selected */
-    for (QGraphicsItem *item : aItems) {
+    for (auto *item : aItems) {
         if (item->type() == QNEConnection::Type) {
             if (!connections.contains(item)) {
                 connections.append(item);
@@ -132,16 +131,16 @@ void saveItems(QByteArray &itemData, const QList<QGraphicsItem *> &items, const 
     itemData.clear();
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
     QList<GraphicElement *> others = findElements(otherIds);
-    for (GraphicElement *elm : qAsConst(others)) {
+    for (auto *elm : qAsConst(others)) {
         elm->save(dataStream);
     }
     SerializationFunctions::serialize(items, dataStream);
 }
 
-void addItems(Editor *editor, const QList<QGraphicsItem *>& items)
+void addItems(Editor *editor, const QList<QGraphicsItem *> &items)
 {
     editor->getScene()->clearSelection();
-    for (QGraphicsItem *item : items) {
+    for (auto *item : items) {
         if (item->scene() != editor->getScene()) {
             editor->getScene()->addItem(item);
         }
@@ -154,20 +153,20 @@ void addItems(Editor *editor, const QList<QGraphicsItem *>& items)
 QList<QGraphicsItem *> loadItems(QByteArray &itemData, const QVector<int> &ids, Editor *editor, QVector<int> &otherIds)
 {
     if (itemData.isEmpty()) {
-        return QList<QGraphicsItem *>();
+        return {};
     }
-    QVector<GraphicElement *> otherElms = findElements(otherIds).toVector();
+    auto otherElms = findElements(otherIds).toVector();
     QDataStream dataStream(&itemData, QIODevice::ReadOnly);
     double version = GlobalProperties::version;
     QMap<quint64, QNEPort *> portMap;
-    for (GraphicElement *elm : qAsConst(otherElms)) {
+    for (auto *elm : qAsConst(otherElms)) {
         elm->load(dataStream, portMap, version);
     }
     /*
      * Assuming that all connections are stored after the elements, we will deserialize the elements first.
      * We will store one additional information: The element IDs!
      */
-    QList<QGraphicsItem *> items = SerializationFunctions::deserialize(dataStream, version, portMap);
+    auto items = SerializationFunctions::deserialize(dataStream, version, portMap);
     if (items.size() != ids.size()) {
         QString msg("One or more elements were not found on scene. Expected %1, found %2.");
         msg = msg.arg(ids.size()).arg(items.size());
@@ -281,7 +280,7 @@ RotateCommand::RotateCommand(const QList<GraphicElement *> &aItems, int aAngle, 
     setText(tr("Rotate %1 degrees").arg(m_angle));
     m_ids.reserve(aItems.size());
     m_positions.reserve(aItems.size());
-    for (GraphicElement *item : aItems) {
+    for (auto *item : aItems) {
         m_positions.append(item->pos());
         item->setPos(item->pos());
         m_ids.append(item->id());
@@ -314,14 +313,14 @@ void RotateCommand::redo()
     scn->clearSelection();
     double cx = 0, cy = 0;
     int sz = 0;
-    for (GraphicElement *item : qAsConst(list)) {
+    for (auto *item : qAsConst(list)) {
         cx += item->pos().x();
         cy += item->pos().y();
         sz++;
     }
     cx /= sz;
     cy /= sz;
-    for (GraphicElement *elm : qAsConst(list)) {
+    for (auto *elm : qAsConst(list)) {
         QTransform transform;
         transform.translate(cx, cy);
         transform.rotate(m_angle);
@@ -338,12 +337,12 @@ void RotateCommand::redo()
 
 bool RotateCommand::mergeWith(const QUndoCommand *command)
 {
-    const auto *rotateCommand = static_cast<const RotateCommand *>(command);
+    const auto *rotateCommand = dynamic_cast<const RotateCommand *>(command);
     if (m_ids.size() != rotateCommand->m_ids.size()) {
         return false;
     }
-    QVector<GraphicElement *> list = findElements(m_ids).toVector();
-    QVector<GraphicElement *> list2 = findElements(rotateCommand->m_ids).toVector();
+    auto list = findElements(m_ids).toVector();
+    auto list2 = findElements(rotateCommand->m_ids).toVector();
     for (int i = 0; i < list.size(); ++i) {
         if (list[i] != list2[i]) {
             return false;
@@ -368,7 +367,7 @@ MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPoint
 {
     m_newPositions.reserve(list.size());
     m_ids.reserve(list.size());
-    for (GraphicElement *elm : list) {
+    for (auto *elm : list) {
         m_ids.append(elm->id());
         m_newPositions.append(elm->pos());
     }
@@ -378,7 +377,7 @@ MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPoint
 void MoveCommand::undo()
 {
     COMMENT("UNDO " + text().toStdString(), 0);
-    QVector<GraphicElement *> elms = findElements(m_ids).toVector();
+    auto elms = findElements(m_ids).toVector();
     for (int i = 0; i < elms.size(); ++i) {
         elms[i]->setPos(m_oldPositions[i]);
     }
@@ -388,7 +387,7 @@ void MoveCommand::undo()
 void MoveCommand::redo()
 {
     COMMENT("REDO " + text().toStdString(), 0);
-    QVector<GraphicElement *> elms = findElements(m_ids).toVector();
+    auto elms = findElements(m_ids).toVector();
     for (int i = 0; i < elms.size(); ++i) {
         elms[i]->setPos(m_newPositions[i]);
     }
@@ -402,7 +401,7 @@ UpdateCommand::UpdateCommand(const QVector<GraphicElement *> &elements, const QB
     m_oldData = oldData;
     ids.reserve(elements.size());
     QDataStream dataStream(&m_newData, QIODevice::WriteOnly);
-    for (GraphicElement *elm : elements) {
+    for (auto *elm : elements) {
         elm->save(dataStream);
         ids.append(elm->id());
     }
@@ -425,7 +424,7 @@ void UpdateCommand::redo()
 
 void UpdateCommand::loadData(QByteArray itemData)
 {
-    QVector<GraphicElement *> elements = findElements(ids).toVector();
+    auto elements = findElements(ids).toVector();
     QDataStream dataStream(&itemData, QIODevice::ReadOnly);
     QMap<quint64, QNEPort *> portMap;
     if (!elements.isEmpty() && elements.front()->scene()) {
@@ -433,7 +432,7 @@ void UpdateCommand::loadData(QByteArray itemData)
     }
     double version = GlobalProperties::version;
     if (!elements.isEmpty()) {
-        for (GraphicElement *elm : qAsConst(elements)) {
+        for (auto *elm : qAsConst(elements)) {
             elm->load(dataStream, portMap, version);
             elm->setSelected(true);
         }
@@ -445,7 +444,7 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF point, Editor *editor, Q
     , m_editor(editor)
     , m_scene(editor->getScene())
 {
-    GraphicElement *node = ElementFactory::buildElement(ElementType::NODE);
+    GraphicElement *node = ElementFactory::buildElement(ElementType::Node);
     QNEConnection *conn2 = ElementFactory::instance->buildConnection();
 
     /* Align node to Grid */
@@ -495,14 +494,14 @@ void SplitCommand::redo()
         ElementFactory::updateItemId(c2, m_c2_id);
     }
     if (!node) {
-        node = ElementFactory::buildElement(ElementType::NODE);
+        node = ElementFactory::buildElement(ElementType::Node);
         ElementFactory::updateItemId(node, m_node_id);
     }
     if (c1 && c2 && elm1 && elm2 && node) {
         node->setPos(m_nodePos);
         node->setRotation(m_nodeAngle);
 
-        /*    QNEOutputPort *startPort = c1->start( ); */
+        // QNEOutputPort *startPort = c1->start();
         QNEInputPort *endPort = c1->end();
         c2->setStart(node->output());
         c2->setEnd(endPort);
@@ -553,7 +552,7 @@ MorphCommand::MorphCommand(const QVector<GraphicElement *> &elements, ElementTyp
     m_editor = aEditor;
     m_ids.reserve(elements.size());
     m_types.reserve(elements.size());
-    for (GraphicElement *oldElm : elements) {
+    for (auto *oldElm : elements) {
         m_ids.append(oldElm->id());
         m_types.append(oldElm->elementType());
     }
@@ -595,9 +594,9 @@ void MorphCommand::transferConnections(QVector<GraphicElement *> from, QVector<G
         if (newElm->rotatable() && oldElm->rotatable()) {
             newElm->setRotation(oldElm->rotation());
         }
-        if ((newElm->elementType() == ElementType::NOT) && (oldElm->elementType() == ElementType::NODE)) {
+        if ((newElm->elementType() == ElementType::Not) && (oldElm->elementType() == ElementType::Node)) {
             newElm->setRotation(oldElm->rotation() + 90.0);
-        } else if ((newElm->elementType() == ElementType::NODE) && (oldElm->elementType() == ElementType::NOT)) {
+        } else if ((newElm->elementType() == ElementType::Node) && (oldElm->elementType() == ElementType::Not)) {
             newElm->setRotation(oldElm->rotation() - 90.0);
         }
         if (newElm->hasLabel() && oldElm->hasLabel()) {
@@ -642,7 +641,7 @@ ChangeInputSZCommand::ChangeInputSZCommand(const QVector<GraphicElement *> &elem
     : QUndoCommand(parent)
     , m_editor(editor)
 {
-    for (GraphicElement *elm : elements) {
+    for (auto *elm : elements) {
         m_elms.append(elm->id());
     }
     m_newInputSize = newInputSize;
@@ -663,25 +662,25 @@ void ChangeInputSZCommand::redo()
     m_oldData.clear();
     QDataStream dataStream(&m_oldData, QIODevice::WriteOnly);
     for (int i = 0; i < m_elements.size(); ++i) {
-        GraphicElement *elm = m_elements[i];
+        auto *elm = m_elements[i];
         elm->save(dataStream);
         serializationOrder.append(elm);
         for (int in = m_newInputSize; in < elm->inputSize(); ++in) {
-            for (QNEConnection *conn : elm->input(in)->connections()) {
-                QNEPort *otherPort = conn->otherPort(elm->input(in));
+            for (auto *conn : elm->input(in)->connections()) {
+                auto *otherPort = conn->otherPort(elm->input(in));
                 otherPort->graphicElement()->save(dataStream);
                 serializationOrder.append(otherPort->graphicElement());
             }
         }
     }
     for (int i = 0; i < m_elements.size(); ++i) {
-        GraphicElement *elm = m_elements[i];
+        auto *elm = m_elements[i];
         for (int in = m_newInputSize; in < elm->inputSize(); ++in) {
             while (!elm->input(in)->connections().isEmpty()) {
-                QNEConnection *conn = elm->input(in)->connections().front();
+                auto *conn = elm->input(in)->connections().front();
                 conn->save(dataStream);
                 m_scene->removeItem(conn);
-                QNEPort *otherPort = conn->otherPort(elm->input(in));
+                auto *otherPort = conn->otherPort(elm->input(in));
                 elm->input(in)->disconnect(conn);
                 otherPort->disconnect(conn);
             }
@@ -690,7 +689,7 @@ void ChangeInputSZCommand::redo()
         elm->setSelected(true);
     }
     m_order.clear();
-    for (GraphicElement *elm : serializationOrder) {
+    for (auto *elm : serializationOrder) {
         m_order.append(elm->id());
     }
     m_editor->setCircuitUpdateRequired();
@@ -707,13 +706,13 @@ void ChangeInputSZCommand::undo()
     QDataStream dataStream(&m_oldData, QIODevice::ReadOnly);
     double version = GlobalProperties::version;
     QMap<quint64, QNEPort *> portMap;
-    for (GraphicElement *elm : serializationOrder) {
+    for (auto *elm : serializationOrder) {
         elm->load(dataStream, portMap, version);
     }
     for (int i = 0; i < m_elements.size(); ++i) {
-        GraphicElement *elm = m_elements[i];
+        auto *elm = m_elements[i];
         for (int in = m_newInputSize; in < elm->inputSize(); ++in) {
-            QNEConnection *conn = ElementFactory::buildConnection();
+            auto *conn = ElementFactory::buildConnection();
             conn->load(dataStream, portMap);
             m_scene->addItem(conn);
         }
@@ -731,10 +730,10 @@ FlipCommand::FlipCommand(const QList<GraphicElement *> &aItems, int aAxis, Edito
     m_ids.reserve(aItems.size());
     m_positions.reserve(aItems.size());
     double xmin, xmax, ymin, ymax;
-    if (aItems.size() > 0) {
+    if (!aItems.empty()) {
         xmin = xmax = aItems.first()->pos().rx();
         ymin = ymax = aItems.first()->pos().ry();
-        for (GraphicElement *item : aItems) {
+        for (auto *item : aItems) {
             m_positions.append(item->pos());
             item->setPos(item->pos());
             m_ids.append(item->id());
@@ -758,11 +757,11 @@ void FlipCommand::redo()
 {
     COMMENT("REDO " + text().toStdString(), 0);
     // TODO: this might detach the QList
-    QList<GraphicElement *> list = findElements(m_ids);
-    QGraphicsScene *scn = list[0]->scene();
+    auto list = findElements(m_ids);
+    auto *scn = list[0]->scene();
     scn->clearSelection();
-    for (GraphicElement *elm : qAsConst(list)) {
-        QPointF pos = elm->pos();
+    for (auto *elm : qAsConst(list)) {
+        auto pos = elm->pos();
         if (m_axis == 0) {
             pos.setX(m_minPos.rx() + (m_maxPos.rx() - pos.rx()));
         } else {
@@ -782,7 +781,7 @@ ChangeOutputSZCommand::ChangeOutputSZCommand(const QVector<GraphicElement *> &el
     : QUndoCommand(parent)
     , m_editor(editor)
 {
-    for (GraphicElement *elm : elements) {
+    for (auto *elm : elements) {
         m_elms.append(elm->id());
     }
     m_newOutputSize = newOutputSize;
@@ -803,25 +802,25 @@ void ChangeOutputSZCommand::redo()
     m_oldData.clear();
     QDataStream dataStream(&m_oldData, QIODevice::WriteOnly);
     for (int i = 0; i < m_elements.size(); ++i) {
-        GraphicElement *elm = m_elements[i];
+        auto *elm = m_elements[i];
         elm->save(dataStream);
         serializationOrder.append(elm);
         for (int out = m_newOutputSize; out < elm->outputSize(); ++out) {
-            for (QNEConnection *conn : elm->output(out)->connections()) {
-                QNEPort *otherPort = conn->otherPort(elm->output(out));
+            for (auto *conn : elm->output(out)->connections()) {
+                auto *otherPort = conn->otherPort(elm->output(out));
                 otherPort->graphicElement()->save(dataStream);
                 serializationOrder.append(otherPort->graphicElement());
             }
         }
     }
     for (int i = 0; i < m_elements.size(); ++i) {
-        GraphicElement *elm = m_elements[i];
+        auto *elm = m_elements[i];
         for (int out = m_newOutputSize; out < elm->outputSize(); ++out) {
             while (!elm->output(out)->connections().isEmpty()) {
-                QNEConnection *conn = elm->output(out)->connections().front();
+                auto *conn = elm->output(out)->connections().front();
                 conn->save(dataStream);
                 m_scene->removeItem(conn);
-                QNEPort *otherPort = conn->otherPort(elm->output(out));
+                auto *otherPort = conn->otherPort(elm->output(out));
                 elm->output(out)->disconnect(conn);
                 otherPort->disconnect(conn);
             }
@@ -830,7 +829,7 @@ void ChangeOutputSZCommand::redo()
         elm->setSelected(true);
     }
     m_order.clear();
-    for (GraphicElement *elm : serializationOrder) {
+    for (auto *elm : serializationOrder) {
         m_order.append(elm->id());
     }
     m_editor->setCircuitUpdateRequired();
@@ -847,13 +846,13 @@ void ChangeOutputSZCommand::undo()
     QDataStream dataStream(&m_oldData, QIODevice::ReadOnly);
     double version = GlobalProperties::version;
     QMap<quint64, QNEPort *> portMap;
-    for (GraphicElement *elm : serializationOrder) {
+    for (auto *elm : serializationOrder) {
         elm->load(dataStream, portMap, version);
     }
     for (int i = 0; i < m_elements.size(); ++i) {
-        GraphicElement *elm = m_elements[i];
+        auto *elm = m_elements[i];
         for (int out = m_newOutputSize; out < elm->outputSize(); ++out) {
-            QNEConnection *conn = ElementFactory::buildConnection();
+            auto *conn = ElementFactory::buildConnection();
             conn->load(dataStream, portMap);
             m_scene->addItem(conn);
         }

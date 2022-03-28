@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef ICMAPPING_H
-#define ICMAPPING_H
+#pragma once
 
 #include "elementmapping.h"
 #include "graphicelement.h"
@@ -34,4 +33,3 @@ public:
     LogicElement *getOutput(int index);
 };
 
-#endif // ICMAPPING_H

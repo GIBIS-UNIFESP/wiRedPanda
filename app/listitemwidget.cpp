@@ -3,20 +3,26 @@
 
 #include "listitemwidget.h"
 
-#include <QFileInfo>
-#include <QHBoxLayout>
-
 #include "elementfactory.h"
 #include "label.h"
+
+#include <QFileInfo>
+#include <QHBoxLayout>
 
 Label *ListItemWidget::getLabel() const
 {
     return m_label;
 }
 
-void ListItemWidget::mousePressEvent(QMouseEvent *)
+void ListItemWidget::mousePressEvent(QMouseEvent * /*event*/)
 {
     m_label->startDrag();
+}
+
+ListItemWidget::ListItemWidget(const QPixmap *pixmap, ElementType elementType, const QString &icFileName, QWidget *parent)
+    : ListItemWidget(*pixmap, elementType, icFileName, parent)
+{
+    // for compiling on Qt versions < 5.15
 }
 
 ListItemWidget::ListItemWidget(const QPixmap &pixmap, ElementType type, const QString &icFileName, QWidget *parent)
@@ -29,7 +35,7 @@ ListItemWidget::ListItemWidget(const QPixmap &pixmap, ElementType type, const QS
     }
     itemLayout->setSpacing(6);
     itemLayout->setObjectName(QStringLiteral("itemLayout"));
-    /*  itemLayout->setSizeConstraint( QLayout::SetFixedSize ); */
+    // itemLayout->setSizeConstraint(QLayout::SetFixedSize);
 
     setLayout(itemLayout);
 

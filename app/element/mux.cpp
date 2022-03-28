@@ -6,7 +6,7 @@
 #include "qneport.h"
 
 Mux::Mux(QGraphicsItem *parent)
-    : GraphicElement(ElementType::MUX, ElementGroup::MUX, 3, 3, 1, 1, parent)
+    : GraphicElement(ElementType::Mux, ElementGroup::Mux, 3, 3, 1, 1, parent)
 {
     m_pixmapSkinName = {":/basic/mux.png"};
 

@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef LOGICDEMUX_H
-#define LOGICDEMUX_H
+#pragma once
 
 #include "logicelement.h"
 
@@ -13,9 +12,7 @@ class LogicDemux : public LogicElement
 public:
     explicit LogicDemux();
 
-    /* LogicElement interface */
 protected:
     void _updateLogic(const std::vector<bool> &inputs) override;
 };
 
-#endif // LOGICDEMUX_H

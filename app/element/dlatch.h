@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef DLATCH_H
-#define DLATCH_H
+#pragma once
 
 #include "graphicelement.h"
 
 class DLatch : public GraphicElement
 {
+    Q_OBJECT
+
 public:
     explicit DLatch(QGraphicsItem *parent = nullptr);
     ~DLatch() override = default;
@@ -18,4 +19,3 @@ public:
     void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
-#endif /* DLATCH_H */

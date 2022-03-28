@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef SERIALIZATIONFUNCTIONS_H
-#define SERIALIZATIONFUNCTIONS_H
+#pragma once
 
 #include <QMap>
 #include <QRectF>
@@ -49,4 +48,3 @@ public:
     static QString loadDolphinFilename(QDataStream &ds, double version);
 };
 
-#endif /* SERIALIZATIONFUNCTIONS_H */

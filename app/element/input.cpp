@@ -10,7 +10,7 @@ int Input::outputSize() const
 
 int Input::outputValue() const
 {
-    return(getOn());
+    return (getOn());
 }
 
 bool Input::isLocked() const

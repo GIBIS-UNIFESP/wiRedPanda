@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef NAND_H
-#define NAND_H
+#pragma once
 
 #include "graphicelement.h"
 
 class Nand : public GraphicElement
 {
+    Q_OBJECT
+
 public:
     explicit Nand(QGraphicsItem *parent = nullptr);
     ~Nand() override = default;
@@ -17,4 +18,3 @@ public:
     void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
-#endif /* NAND_H */

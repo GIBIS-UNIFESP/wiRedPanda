@@ -3,22 +3,22 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef SRFLIPFLOP_H
-#define SRFLIPFLOP_H
+#pragma once
 
 #include "graphicelement.h"
 
 class SRFlipFlop : public GraphicElement
 {
-    bool lastClk;
+    Q_OBJECT
 
 public:
     explicit SRFlipFlop(QGraphicsItem *parent = nullptr);
     ~SRFlipFlop() override = default;
 
-    /* GraphicElement interface */
     void updatePorts() override;
     void setSkin(bool defaultSkin, const QString &filename) override;
+
+private:
+    bool lastClk;
 };
 
-#endif /* SRFLIPFLOP_H */
