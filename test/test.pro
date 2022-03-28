@@ -2,6 +2,8 @@ include(../config.pri)
 
 QT += testlib
 
+CONFIG += testcase
+
 TARGET = WPanda-test
 
 SOURCES += \

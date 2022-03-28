@@ -19,7 +19,6 @@ DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
 QT += core gui printsupport charts multimedia widgets
 
-CONFIG -= debug_and_release debug_and_release_target
 CONFIG += c++14 warn_on
 
 DEFINES += QT_DEPRECATED_WARNINGS
