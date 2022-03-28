@@ -2,12 +2,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "mainwindow.h"
+#include "common.h"
 
 #include <QApplication>
 #include <QCommandLineParser>
 
 int main(int argc, char *argv[])
 {
+    Comment::setVerbosity(1);
+
     QApplication a(argc, argv);
     a.setOrganizationName("GIBIS-UNIFESP");
     a.setApplicationName("WiredPanda");
