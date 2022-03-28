@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef XOR_H
-#define XOR_H
+#pragma once
 
 #include "graphicelement.h"
 
 class Xor : public GraphicElement
 {
+    Q_OBJECT
+
 public:
     explicit Xor(QGraphicsItem *parent = nullptr);
     ~Xor() override = default;
@@ -17,4 +18,3 @@ public:
     void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
-#endif /* XOR_H */

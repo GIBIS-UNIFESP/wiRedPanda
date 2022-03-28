@@ -7,14 +7,14 @@
 
 #include <QApplication>
 
-ThemeManager *ThemeManager::globalMngr = nullptr;
+ThemeManager *ThemeManager::globalManager = nullptr;
 
 Theme ThemeManager::theme() const
 {
     return m_theme;
 }
 
-void ThemeManager::setTheme(const Theme &theme)
+void ThemeManager::setTheme(Theme theme)
 {
     m_attrs.setTheme(theme);
     if (m_theme != theme) {
@@ -36,7 +36,7 @@ ThemeAttrs ThemeManager::getAttrs() const
 
 ThemeManager::ThemeManager(QObject *parent)
     : QObject(parent)
-    , m_theme(Theme::Panda_Light)
+    , m_theme(Theme::Light)
 {
     if (Settings::contains("theme")) {
         m_theme = static_cast<Theme>(Settings::value("theme").toInt());
@@ -46,14 +46,14 @@ ThemeManager::ThemeManager(QObject *parent)
 
 ThemeAttrs::ThemeAttrs()
 {
-    setTheme(Theme::Panda_Light);
+    setTheme(Theme::Light);
 }
 
-void ThemeAttrs::setTheme(const Theme &thm)
+void ThemeAttrs::setTheme(Theme theme)
 {
-    switch (thm) {
-    case Theme::Panda_Light:
-        scene_bgBrush = QColor("#ffffe6");
+    switch (theme) {
+    case Theme::Light:
+        scene_bgBrush = QColor(255, 255, 230);
         scene_bgDots = QColor(Qt::darkGray);
         selectionBrush = QColor(175, 0, 0, 80);
         selectionPen = QColor(175, 0, 0, 255);
@@ -72,8 +72,8 @@ void ThemeAttrs::setTheme(const Theme &thm)
 #endif
 
         break;
-    case Theme::Panda_Dark:
-        scene_bgBrush = QColor("#404552");
+    case Theme::Dark:
+        scene_bgBrush = QColor(64, 69, 82);
         scene_bgDots = QColor(Qt::black);
         selectionBrush = QColor(230, 255, 85, 150);
         selectionPen = QColor(230, 255, 85, 255);
@@ -125,5 +125,5 @@ void ThemeAttrs::setTheme(const Theme &thm)
     qnePort_hoverPort = QColor(Qt::yellow);
 
     qnePort_output_pen = QColor(Qt::darkRed);
-    qnePort_output_brush = QColor("#f35369");
+    qnePort_output_brush = QColor(243, 83, 105);
 }

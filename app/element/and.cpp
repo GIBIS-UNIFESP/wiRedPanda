@@ -5,7 +5,7 @@
 #include "elementfactory.h"
 
 And::And(QGraphicsItem *parent)
-    : GraphicElement(ElementType::AND, ElementGroup::GATE, 2, 8, 1, 1, parent)
+    : GraphicElement(ElementType::And, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
     m_pixmapSkinName = {":/basic/and.png"};
 

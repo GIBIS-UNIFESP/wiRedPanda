@@ -12,6 +12,6 @@ LogicXor::LogicXor(size_t inputSize)
 
 void LogicXor::_updateLogic(const std::vector<bool> &inputs)
 {
-    auto result = std::accumulate(inputs.begin(), inputs.end(), false, std::bit_xor<bool>());
+    auto result = std::accumulate(inputs.begin(), inputs.end(), false, std::bit_xor<>());
     setOutputValue(result);
 }

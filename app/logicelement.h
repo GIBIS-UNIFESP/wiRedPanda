@@ -3,12 +3,10 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef LOGICELEMENT_H
-#define LOGICELEMENT_H
-
-#include <vector>
+#pragma once
 
 #include <QSet>
+#include <vector>
 
 /**
  * @brief The LogicElement class was designed to represent logic
@@ -60,4 +58,3 @@ public:
     void updateLogic();
 };
 
-#endif /* LOGICELEMENT_H */

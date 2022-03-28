@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef THEMEMANAGER_H
-#define THEMEMANAGER_H
+#pragma once
 
 #include <QApplication>
 #include <QColor>
@@ -13,7 +12,7 @@
 
 class Editor;
 
-enum class Theme { Panda_Light, Panda_Dark };
+enum class Theme { Light, Dark };
 
 class ThemeManager;
 
@@ -45,7 +44,7 @@ public:
     QColor qnePort_output_pen;
     QColor qnePort_output_brush;
 
-    void setTheme(const Theme &thm);
+    void setTheme(Theme theme);
 
 private:
     QPalette const defaultPalette = qApp->palette();
@@ -56,7 +55,7 @@ class ThemeManager : public QObject
     Q_OBJECT
 
 public:
-    static ThemeManager *globalMngr;
+    static ThemeManager *globalManager;
 
     explicit ThemeManager(QObject *parent = nullptr);
 
@@ -64,7 +63,7 @@ public:
     void setCurrentTheme(const Theme &theme);
 
     Theme theme() const;
-    void setTheme(const Theme &theme);
+    void setTheme(Theme theme);
 
     void initialize();
     ThemeAttrs getAttrs() const;
@@ -77,4 +76,3 @@ private:
     ThemeAttrs m_attrs;
 };
 
-#endif /* THEMEMANAGER_H */

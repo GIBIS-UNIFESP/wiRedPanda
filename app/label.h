@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef LABEL_H
-#define LABEL_H
-
-#include <QLabel>
+#pragma once
 
 #include "elementtype.h"
+
+#include <QLabel>
 
 class Label : public QLabel
 {
     Q_OBJECT
+
 public:
     explicit Label(QWidget *parent = nullptr);
 
@@ -38,4 +38,3 @@ private:
     QString m_auxData;
 };
 
-#endif /* LABEL_H */

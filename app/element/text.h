@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef TEXT_H
-#define TEXT_H
+#pragma once
 
 #include "graphicelement.h"
 
 class Text : public GraphicElement
 {
+    Q_OBJECT
+
 public:
     explicit Text(QGraphicsItem *parent = nullptr);
     ~Text() override = default;
 };
 
-#endif /* TEXT_H */

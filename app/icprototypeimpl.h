@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef ICPROTOTYPEIMPL_H
-#define ICPROTOTYPEIMPL_H
+#pragma once
 
 #include <QVector>
 
@@ -22,8 +21,8 @@ public:
 
     int getInputSize() const;
     int getOutputSize() const;
-    void setOutputSize(int outSize);
-    void setInputSize(int inSize);
+    void setOutputSize(int outputSize);
+    void setInputSize(int inputSize);
 
     void loadInputElement(GraphicElement *elm);
     void loadOutputElement(GraphicElement *elm);
@@ -49,4 +48,3 @@ private:
     QVector<QNEPort *> m_outputs;
 };
 
-#endif // ICPROTOTYPEIMPL_H

@@ -1,7 +1,7 @@
-# wiRedPanda ![Todos los lanzamientos de GitHub](https://img.shields.io/github/downloads/gibis-unifesp/wiredpanda/total?style=flat-square) ![Lanzamiento de GitHub (último por fecha)](https://img.shields.io/github/v/release/gibis-unifesp/wiredpanda?style=flat-square) ![GitHub](https://img.shields.io/github/license/gibis-unifesp/wiredpanda?style=flat-square)
+# WiRedPanda ![Todos los lanzamientos de GitHub](https://img.shields.io/github/downloads/gibis-unifesp/wiredpanda/total?style=flat-square) ![Lanzamiento de GitHub (último por fecha)](https://img.shields.io/github/v/release/gibis-unifesp/wiredpanda?style=flat-square) ![GitHub](https://img.shields.io/github/license/gibis-unifesp/wiredpanda?style=flat-square)
 
 
-wiRedPanda es un software gratuito diseñado para ayudar a los estudiantes a aprender sobre circuitos lógicos y simularlos de una manera fácil y amigable.
+WiRedPanda es un software gratuito diseñado para ayudar a los estudiantes a aprender sobre circuitos lógicos y simularlos de una manera fácil y amigable.
 
 Las principales características del software son:
   - Funciona en Windows, macOS y Linux;
@@ -82,7 +82,7 @@ Este proceso podría llevar un tiempo. Una vez concluido, el binario se ubicará
 
 ## Licencia
 
-wiRedPanda tiene licencia bajo la [Licencia pública general de GNU, versión 3.0] (http://www.gnu.org/licenses/).
+WiRedPanda tiene licencia bajo la [Licencia pública general de GNU, versión 3.0] (http://www.gnu.org/licenses/).
 
 Consulte [`LICENCIA`](LICENCIA) para obtener el texto completo de la licencia.
   

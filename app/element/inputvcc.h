@@ -3,17 +3,17 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef INPUTVCC_H
-#define INPUTVCC_H
+#pragma once
 
 #include "graphicelement.h"
 
 class InputVcc : public GraphicElement
 {
+    Q_OBJECT
+
 public:
     explicit InputVcc(QGraphicsItem *parent = nullptr);
     ~InputVcc() override = default;
     void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
-#endif /* INPUTVCC_H */

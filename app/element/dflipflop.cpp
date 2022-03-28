@@ -6,7 +6,7 @@
 #include "qneport.h"
 
 DFlipFlop::DFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(ElementType::DFLIPFLOP, ElementGroup::MEMORY, 4, 4, 2, 2, parent)
+    : GraphicElement(ElementType::DFlipFlop, ElementGroup::Memory, 4, 4, 2, 2, parent)
 {
     m_pixmapSkinName = {":/memory/D-flipflop.png"};
 

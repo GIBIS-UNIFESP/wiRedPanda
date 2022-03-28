@@ -4,7 +4,7 @@
 #include "text.h"
 
 Text::Text(QGraphicsItem *parent)
-    : GraphicElement(ElementType::TEXT, ElementGroup::OTHER, 0, 0, 0, 0, parent)
+    : GraphicElement(ElementType::Text, ElementGroup::Other, 0, 0, 0, 0, parent)
 {
     m_pixmapSkinName = {
         ":/no_text.png",

@@ -6,7 +6,7 @@
 #include "qneport.h"
 
 JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(ElementType::JKFLIPFLOP, ElementGroup::MEMORY, 5, 5, 2, 2, parent)
+    : GraphicElement(ElementType::JKFlipFlop, ElementGroup::Memory, 5, 5, 2, 2, parent)
 {
     m_pixmapSkinName = {":/memory/JK-flipflop.png"};
 

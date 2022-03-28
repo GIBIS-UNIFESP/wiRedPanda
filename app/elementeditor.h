@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef ELEMENTEDITOR_H
-#define ELEMENTEDITOR_H
-
-#include <QWidget>
+#pragma once
 
 #include "graphicelement.h"
 
+#include <QWidget>
+
+class Editor;
 class QUndoCommand;
 class Scene;
 
@@ -17,8 +17,6 @@ namespace Ui
 {
 class ElementEditor;
 }
-
-class Editor;
 
 class ElementEditor : public QWidget
 {
@@ -33,10 +31,9 @@ public:
     void renameAction();
     void changeTriggerAction();
     void retranslateUi();
-    /*
-     *  void renameAction( const QVector< GraphicElement *> &element );
-     *  void changeColorAction( const QVector<GraphicElement *> &element );
-     */
+
+    // void renameAction(const QVector<GraphicElement *> &element);
+    // void changeColorAction(const QVector<GraphicElement *> &element);
 
     void fillColorComboBox();
     void updateElementSkin();
@@ -49,23 +46,22 @@ public:
 signals:
     void sendCommand(QUndoCommand *cmd);
 
-
 private slots:
 
     void selectionChanged();
-    void inputIndexChanged(int index);
-    void outputIndexChanged(const QString &index);
-    void outputValueChanged(const QString &index);
+    void inputIndexChanged(int idx);
+    void outputIndexChanged(const QString &idx);
+    void outputValueChanged(const QString &idx);
     void inputLocked(const bool value);
-    void triggerChanged(const QString &arg1);
+    void triggerChanged(const QString &cmd);
     void defaultSkin();
 
 private:
-    void setCurrentElements(const QVector<GraphicElement *> &element);
+    void setCurrentElements(const QVector<GraphicElement *> &elms);
     void updateSkins();
     void apply();
 
-    Ui::ElementEditor * m_ui;
+    Ui::ElementEditor *m_ui;
     QVector<GraphicElement *> m_elements;
     Scene *m_scene;
     Editor *m_editor;
@@ -92,4 +88,3 @@ private:
     bool m_defaultSkin;
 };
 
-#endif /* ELEMENTEDITOR_H */

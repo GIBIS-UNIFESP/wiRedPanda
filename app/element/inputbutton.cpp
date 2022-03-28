@@ -10,7 +10,7 @@
 int InputButton::current_id_number = 0;
 
 InputButton::InputButton(QGraphicsItem *parent)
-    : GraphicElement(ElementType::BUTTON, ElementGroup::INPUT, 0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::Button, ElementGroup::Input, 0, 0, 1, 1, parent)
 {
     m_pixmapSkinName = {
         ":/input/buttonOff.png",
@@ -30,7 +30,7 @@ InputButton::InputButton(QGraphicsItem *parent)
 
 void InputButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if ((!locked)&&(event->button() == Qt::LeftButton)) {
+    if ((!locked) && (event->button() == Qt::LeftButton)) {
         setOn(true);
         event->accept();
     }
@@ -39,7 +39,7 @@ void InputButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    if ((!locked)&&(event->button() == Qt::LeftButton)) {
+    if ((!locked) && (event->button() == Qt::LeftButton)) {
         setOn(false);
         event->accept();
     }

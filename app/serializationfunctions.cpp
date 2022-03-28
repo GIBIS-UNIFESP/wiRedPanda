@@ -3,6 +3,16 @@
 
 #include "serializationfunctions.h"
 
+#include "common.h"
+#include "editor.h"
+#include "elementfactory.h"
+#include "globalproperties.h"
+#include "graphicelement.h"
+#include "ic.h"
+#include "icmanager.h"
+#include "qneconnection.h"
+#include "qneport.h"
+
 #include <QApplication>
 #include <QDebug>
 #include <QFile>
@@ -14,26 +24,16 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "common.h"
-#include "editor.h"
-#include "elementfactory.h"
-#include "globalproperties.h"
-#include "graphicelement.h"
-#include "ic.h"
-#include "icmanager.h"
-#include "qneconnection.h"
-#include "qneport.h"
-
 void SerializationFunctions::saveHeader(QDataStream &ds, const QString &dolphinFilename, const QRectF &rect)
 {
-  ds << QApplication::applicationName() + " " + QString::number(GlobalProperties::version);
-  ds << dolphinFilename;
-  ds << rect;
+    ds << QApplication::applicationName() + " " + QString::number(GlobalProperties::version);
+    ds << dolphinFilename;
+    ds << rect;
 }
 
 void SerializationFunctions::serialize(const QList<QGraphicsItem *> &items, QDataStream &ds)
 {
-    for (QGraphicsItem *item : items) {
+    for (auto *item : items) {
         if (item->type() == GraphicElement::Type) {
             auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
             ds << GraphicElement::Type;
@@ -41,7 +41,7 @@ void SerializationFunctions::serialize(const QList<QGraphicsItem *> &items, QDat
             elm->save(ds);
         }
     }
-    for (QGraphicsItem *item : items) {
+    for (auto *item : items) {
         if (item->type() == QNEConnection::Type) {
             COMMENT("Writing Connection.", 0);
             auto *conn = qgraphicsitem_cast<QNEConnection *>(item);
@@ -102,7 +102,7 @@ double SerializationFunctions::loadVersion(QDataStream &ds)
     COMMENT("Loading version.", 0);
     QString str;
     ds >> str;
-    if (!str.startsWith(QApplication::applicationName())) {
+    if (!str.startsWith(QApplication::applicationName(), Qt::CaseInsensitive)) {
         throw(std::runtime_error(ERRORMSG("Invalid file format.")));
     }
     COMMENT("String: " << str.toStdString(), 0);
@@ -120,7 +120,7 @@ QString SerializationFunctions::loadDolphinFilename(QDataStream &ds, double vers
     QString str = "";
     if (version >= 3.0) {
         ds >> str;
-        if ((version < 3.3)&&(str=="none")) {
+        if ((version < 3.3) && (str == "none")) {
             str = "";
         }
     }
@@ -141,7 +141,7 @@ QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &ds)
     COMMENT("Started loading file.", 0);
     QString str;
     ds >> str;
-    if (!str.startsWith(QApplication::applicationName())) {
+    if (!str.startsWith(QApplication::applicationName(), Qt::CaseInsensitive)) {
         throw(std::runtime_error(ERRORMSG("Invalid file format.")));
     }
     bool ok;
@@ -150,7 +150,7 @@ QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &ds)
         throw(std::runtime_error(ERRORMSG("Invalid version number.")));
     }
     loadDolphinFilename(ds, version);
-    loadRect( ds, version );
+    loadRect(ds, version);
     COMMENT("Header Ok. Version: " << version, 0);
     QList<QGraphicsItem *> items = deserialize(ds, version);
     COMMENT("Finished reading items.", 0);

@@ -3,17 +3,17 @@
 
 #include "icprototypeimpl.h"
 
-#include <QFile>
-#include <QFileInfo>
-
 #include "common.h"
 #include "elementfactory.h"
 #include "ic.h"
-#include "icprototype.h"
 #include "icmapping.h"
+#include "icprototype.h"
 #include "qneconnection.h"
 #include "qneport.h"
 #include "serializationfunctions.h"
+
+#include <QFile>
+#include <QFileInfo>
 
 ICPrototypeImpl::~ICPrototypeImpl()
 {
@@ -45,7 +45,7 @@ void ICPrototypeImpl::loadFile(const QString &fileName)
     if (file.open(QFile::ReadOnly)) {
         QDataStream ds(&file);
         QList<QGraphicsItem *> items = SerializationFunctions::load(ds);
-        for (QGraphicsItem *item : qAsConst(items)) {
+        for (auto *item : qAsConst(items)) {
             loadItem(item);
         }
         file.close();
@@ -93,27 +93,27 @@ void ICPrototypeImpl::loadOutputs()
 
 void ICPrototypeImpl::loadInputElement(GraphicElement *elm)
 {
-    auto const outputs = elm->outputs();
-    for (QNEOutputPort *port : outputs) {
-        GraphicElement *nodeElm = ElementFactory::buildElement(ElementType::NODE);
+    const auto outputs = elm->outputs();
+    for (auto *port : outputs) {
+        auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
         nodeElm->setPos(elm->pos());
         nodeElm->setLabel(elm->getLabel());
         if (elm->getLabel().isEmpty()) {
             nodeElm->setLabel(ElementFactory::typeToText(elm->elementType()));
         }
-        QNEInputPort *nodeInput = nodeElm->input();
+        auto *nodeInput = nodeElm->input();
         nodeInput->setPos(port->pos());
         nodeInput->setName(port->getName());
         nodeInput->setRequired(false);
         nodeInput->setDefaultValue(port->value());
         nodeInput->setValue(port->value());
-        if (elm->elementType() == ElementType::CLOCK) {
+        if (elm->elementType() == ElementType::Clock) {
             nodeInput->setRequired(true);
         }
         m_inputs.append(nodeInput);
         m_elements.append(nodeElm);
-        QList<QNEConnection *> conns = port->connections();
-        for (QNEConnection *conn : conns) {
+        auto conns = port->connections();
+        for (auto *conn : conns) {
             if (port == conn->start()) {
                 conn->setStart(nodeElm->output());
             }
@@ -124,21 +124,21 @@ void ICPrototypeImpl::loadInputElement(GraphicElement *elm)
 
 void ICPrototypeImpl::loadOutputElement(GraphicElement *elm)
 {
-    auto const inputs = elm->inputs();
-    for (QNEInputPort *port : inputs) {
-        GraphicElement *nodeElm = ElementFactory::buildElement(ElementType::NODE);
+    const auto inputs = elm->inputs();
+    for (auto *port : inputs) {
+        auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
         nodeElm->setPos(elm->pos());
         nodeElm->setLabel(elm->getLabel());
         if (elm->getLabel().isEmpty()) {
             nodeElm->setLabel(ElementFactory::typeToText(elm->elementType()));
         }
-        QNEOutputPort *nodeOutput = nodeElm->output();
+        auto *nodeOutput = nodeElm->output();
         nodeOutput->setPos(port->pos());
         nodeOutput->setName(port->getName());
         m_outputs.append(nodeOutput);
         m_elements.append(nodeElm);
-        QList<QNEConnection *> conns = port->connections();
-        for (QNEConnection *conn : conns) {
+        auto conns = port->connections();
+        for (auto *conn : conns) {
             if (port == conn->end()) {
                 conn->setEnd(nodeElm->input());
             }
@@ -151,9 +151,9 @@ void ICPrototypeImpl::loadItem(QGraphicsItem *item)
     if (item->type() == GraphicElement::Type) {
         auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
         if (elm) {
-            if (elm->elementGroup() == ElementGroup::INPUT) {
+            if (elm->elementGroup() == ElementGroup::Input) {
                 loadInputElement(elm);
-            } else if (elm->elementGroup() == ElementGroup::OUTPUT) {
+            } else if (elm->elementGroup() == ElementGroup::Output) {
                 loadOutputElement(elm);
             } else {
                 m_elements.append(elm);

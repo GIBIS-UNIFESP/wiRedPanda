@@ -6,7 +6,7 @@
 #include "qneport.h"
 
 InputVcc::InputVcc(QGraphicsItem *parent)
-    : GraphicElement(ElementType::VCC, ElementGroup::STATICINPUT, 0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::Vcc, ElementGroup::StaticInput, 0, 0, 1, 1, parent)
 {
     m_pixmapSkinName = {":/input/1.png"};
 

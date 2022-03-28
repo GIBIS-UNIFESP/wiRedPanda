@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright 2015 - 2022, GIBIS-Unifesp and the wiRedPanda contributors
+# Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 
@@ -25,8 +25,8 @@ install icons/128x128/*  $INSTALL_DIR/icons/128x128
 
 echo \
 "[Desktop Entry]
-GenericName=wiRED Panda
-Name=wiRED Panda
+GenericName=WiRedPanda
+Name=WiRedPanda
 Comment=Learn about logic circuits in an easy and friendly way.
 Exec=/bin/sh $INSTALL_DIR/wpanda.sh %f
 Icon=$INSTALL_DIR/wpanda.svg

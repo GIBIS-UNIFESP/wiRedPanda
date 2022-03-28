@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef CLOCKDIALOG_H
-#define CLOCKDIALOG_H
+#pragma once
 
 #include <QDialog>
 
@@ -31,8 +30,7 @@ private slots:
     void okRequested();
 
 private:
-    Ui::ClockDialog * m_ui;
+    Ui::ClockDialog *m_ui;
     bool m_canceled;
 };
 
-#endif /* CLOCKDIALOG_H */

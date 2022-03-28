@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef COMMANDS_H
-#define COMMANDS_H
+#pragma once
+
+#include "elementtype.h"
+#include "globalproperties.h"
 
 #include <QCoreApplication>
 #include <QGraphicsScene>
@@ -12,24 +14,21 @@
 #include <QPointF>
 #include <QUndoCommand>
 
-#include "elementtype.h"
-#include "globalproperties.h"
-
 class Scene;
 class Editor;
 class GraphicElement;
 class QGraphicsItem;
 class QNEConnection;
 
-void storeIds( const QList< QGraphicsItem* > &items, QVector< int > &ids );
-void storeOtherIds( const QList< QGraphicsItem* > &connections, const QVector< int > &ids, QVector< int > &otherIds );
-QList< QGraphicsItem* > loadList( const QList< QGraphicsItem* > &aItems, QVector< int > &ids, QVector< int > &otherIds );
-QList< QGraphicsItem* > findItems( const QVector< int > &ids );
-QList< GraphicElement* > findElements( const QVector< int > &ids );
-void saveItems( QByteArray &itemData, const QList< QGraphicsItem* > &items, const QVector< int > &otherIds );
-void addItems( Editor *editor, const QList< QGraphicsItem* >& items );
-QList< QGraphicsItem* > loadItems( QByteArray &itemData, const QVector< int > &ids, Editor *editor, QVector< int > &otherIds );
-void deleteItems( const QList< QGraphicsItem* > &items, Editor *editor );
+QList<GraphicElement *> findElements(const QVector<int> &ids);
+QList<QGraphicsItem *> findItems(const QVector<int> &ids);
+QList<QGraphicsItem *> loadItems(QByteArray &itemData, const QVector<int> &ids, Editor *editor, QVector<int> &otherIds);
+QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &aItems, QVector<int> &ids, QVector<int> &otherIds);
+void addItems(Editor *editor, const QList<QGraphicsItem *> &items);
+void deleteItems(const QList<QGraphicsItem *> &items, Editor *editor);
+void saveItems(QByteArray &itemData, const QList<QGraphicsItem *> &items, const QVector<int> &otherIds);
+void storeIds(const QList<QGraphicsItem *> &items, QVector<int> &ids);
+void storeOtherIds(const QList<QGraphicsItem *> &connections, const QVector<int> &ids, QVector<int> &otherIds);
 
 class AddItemsCommand : public QUndoCommand
 {
@@ -68,7 +67,7 @@ public:
 
 private:
     QByteArray m_itemData;
-    Editor * m_editor;
+    Editor *m_editor;
     QVector<int> m_ids, m_otherIds;
 };
 
@@ -105,7 +104,7 @@ public:
 
 private:
     QByteArray m_itemData;
-    Editor * m_editor;
+    Editor *m_editor;
     QVector<int> m_ids, m_otherIds;
 };
 
@@ -154,6 +153,7 @@ private:
 class MoveCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(MoveCommand)
+
 public:
     enum { Id = 104 };
 
@@ -180,6 +180,7 @@ private:
 class UpdateCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(UpdateCommand)
+
 public:
     enum { Id = 105 };
 
@@ -224,6 +225,7 @@ private:
 class MorphCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(MorphCommand)
+
 public:
     enum { Id = 107 };
 
@@ -247,6 +249,7 @@ private:
 class ChangeInputSZCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(ChangeInputSZCommand)
+
 public:
     enum { Id = 108 };
 
@@ -296,6 +299,7 @@ private:
 class ChangeOutputSZCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(ChangeOutputSZCommand)
+
 public:
     enum { Id = 110 };
 
@@ -318,4 +322,3 @@ private:
     int m_newOutputSize;
 };
 
-#endif /* COMMANDS_H */

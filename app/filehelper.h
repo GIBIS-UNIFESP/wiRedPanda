@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef FILEHELPER_H
-#define FILEHELPER_H
+#pragma once
 
 #include <QFileInfo>
 #include <QString>
@@ -12,14 +11,14 @@
 class FileHelper : public QObject
 {
     Q_OBJECT
+
 public:
     static void verifyRecursion(const QString &fname);
 
 private:
-    FileHelper(QObject *parent = nullptr)
+    explicit FileHelper(QObject *parent = nullptr)
         : QObject(parent)
     {
     }
 };
 
-#endif // FILEHELPER_H

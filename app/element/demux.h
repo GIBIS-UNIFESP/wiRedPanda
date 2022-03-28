@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef DEMUX_H
-#define DEMUX_H
+#pragma once
 
 #include "graphicelement.h"
 
@@ -12,6 +11,8 @@
 
 class Demux : public GraphicElement
 {
+    Q_OBJECT
+
 public:
     explicit Demux(QGraphicsItem *parent = nullptr);
     ~Demux() override = default;
@@ -20,4 +21,3 @@ public:
     void setSkin(bool defaultSkin, const QString &filename) override;
 };
 
-#endif /* DEMUX_H */

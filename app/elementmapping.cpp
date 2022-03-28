@@ -15,23 +15,23 @@
 #include "qneconnection.h"
 #include "qneport.h"
 
-#include "logicelement/logicand.h"
-#include "logicelement/logicdemux.h"
-#include "logicelement/logicdflipflop.h"
-#include "logicelement/logicdlatch.h"
-#include "logicelement/logicjkflipflop.h"
-#include "logicelement/logicmux.h"
-#include "logicelement/logicnand.h"
-#include "logicelement/logicnode.h"
-#include "logicelement/logicnone.h"
-#include "logicelement/logicnor.h"
-#include "logicelement/logicnot.h"
-#include "logicelement/logicor.h"
-#include "logicelement/logicoutput.h"
-#include "logicelement/logicsrflipflop.h"
-#include "logicelement/logictflipflop.h"
-#include "logicelement/logicxnor.h"
-#include "logicelement/logicxor.h"
+#include "logicand.h"
+#include "logicdemux.h"
+#include "logicdflipflop.h"
+#include "logicdlatch.h"
+#include "logicjkflipflop.h"
+#include "logicmux.h"
+#include "logicnand.h"
+#include "logicnode.h"
+#include "logicnone.h"
+#include "logicnor.h"
+#include "logicnot.h"
+#include "logicor.h"
+#include "logicoutput.h"
+#include "logicsrflipflop.h"
+#include "logictflipflop.h"
+#include "logicxnor.h"
+#include "logicxor.h"
 
 ElementMapping::ElementMapping(const QVector<GraphicElement *> &elms)
     : m_initialized(false)
@@ -66,7 +66,7 @@ QVector<GraphicElement *> ElementMapping::sortGraphicElements(QVector<GraphicEle
     //! Clazy warning: Use QHash<K, T> instead of QMap<K, T> when K is a pointer
     QHash<GraphicElement *, bool> beingvisited;
     QHash<GraphicElement *, int> priority;
-    for (GraphicElement *elm : elms) {
+    for (auto *elm : elms) {
         calculatePriority(elm, beingvisited, priority);
     }
     std::sort(elms.begin(), elms.end(), [priority](GraphicElement *e1, GraphicElement *e2) {
@@ -105,8 +105,8 @@ void ElementMapping::insertIC(IC *ic)
 
 void ElementMapping::generateMap()
 {
-    for (GraphicElement *elm : qAsConst(m_elements)) {
-        if (elm->elementType() == ElementType::CLOCK) {
+    for (auto *elm : qAsConst(m_elements)) {
+        if (elm->elementType() == ElementType::Clock) {
             auto *clk = dynamic_cast<Clock *>(elm);
             Q_ASSERT(clk != nullptr);
             m_clocks.append(clk);
@@ -123,58 +123,36 @@ void ElementMapping::generateMap()
 LogicElement *ElementMapping::buildLogicElement(GraphicElement *elm)
 {
     switch (elm->elementType()) {
-    case ElementType::SWITCH:
-    case ElementType::BUTTON:
-    case ElementType::CLOCK:
-    case ElementType::ROTARY:
-        return new LogicInput(false, elm->outputSize());
-    case ElementType::LED:
-    case ElementType::BUZZER:
-    case ElementType::DISPLAY:
-    case ElementType::DISPLAY14:
-        return new LogicOutput(elm->inputSize());
-    case ElementType::NODE:
-        return new LogicNode();
-    case ElementType::VCC:
-        return new LogicInput(true);
-    case ElementType::GND:
-        return new LogicInput(false);
-    case ElementType::AND:
-        return new LogicAnd(elm->inputSize());
-    case ElementType::OR:
-        return new LogicOr(elm->inputSize());
-    case ElementType::NAND:
-        return new LogicNand(elm->inputSize());
-    case ElementType::NOR:
-        return new LogicNor(elm->inputSize());
-    case ElementType::XOR:
-        return new LogicXor(elm->inputSize());
-    case ElementType::XNOR:
-        return new LogicXnor(elm->inputSize());
-    case ElementType::NOT:
-        return new LogicNot();
-    case ElementType::JKFLIPFLOP:
-        return new LogicJKFlipFlop();
-    case ElementType::SRFLIPFLOP:
-        return new LogicSRFlipFlop();
-    case ElementType::TFLIPFLOP:
-        return new LogicTFlipFlop();
-    case ElementType::DFLIPFLOP:
-        return new LogicDFlipFlop();
-    case ElementType::DLATCH:
-        return new LogicDLatch();
-    case ElementType::MUX:
-        return new LogicMux();
-    case ElementType::DEMUX:
-        return new LogicDemux();
-      //case ElementType::TLATCH:
-    case ElementType::JKLATCH:
-        return new LogicDLatch();
-    case ElementType::TEXT:
-    case ElementType::LINE:
-        return new LogicNone();
-    default:
-        throw std::runtime_error("Not implemented yet: " + elm->objectName().toStdString());
+    case ElementType::Switch:
+    case ElementType::Button:
+    case ElementType::Clock:
+    case ElementType::Rotary:     return new LogicInput(false, elm->outputSize());
+    case ElementType::Led:
+    case ElementType::Buzzer:
+    case ElementType::Display:
+    case ElementType::Display14:  return new LogicOutput(elm->inputSize());
+    case ElementType::Node:       return new LogicNode();
+    case ElementType::Vcc:        return new LogicInput(true);
+    case ElementType::Gnd:        return new LogicInput(false);
+    case ElementType::And:        return new LogicAnd(elm->inputSize());
+    case ElementType::Or:         return new LogicOr(elm->inputSize());
+    case ElementType::Nand:       return new LogicNand(elm->inputSize());
+    case ElementType::Nor:        return new LogicNor(elm->inputSize());
+    case ElementType::Xor:        return new LogicXor(elm->inputSize());
+    case ElementType::XNor:       return new LogicXnor(elm->inputSize());
+    case ElementType::Not:        return new LogicNot();
+    case ElementType::JKFlipFlop: return new LogicJKFlipFlop();
+    case ElementType::SRFlipFlop: return new LogicSRFlipFlop();
+    case ElementType::TFlipFlop:  return new LogicTFlipFlop();
+    case ElementType::DFlipFlop:  return new LogicDFlipFlop();
+    case ElementType::DLatch:     return new LogicDLatch();
+    case ElementType::Mux:        return new LogicMux();
+    case ElementType::Demux:      return new LogicDemux();
+ // case ElementType::TLATCH:
+    case ElementType::JKLatch:    return new LogicDLatch();
+    case ElementType::Text:
+    case ElementType::Line:       return new LogicNone();
+    default:                      throw std::runtime_error("Not implemented yet: " + elm->objectName().toStdString());
     }
 }
 
@@ -199,7 +177,7 @@ void ElementMapping::sort()
 void ElementMapping::update()
 {
     if (canRun()) {
-        for (Clock *clk : qAsConst(m_clocks)) {
+        for (auto *clk : qAsConst(m_clocks)) {
             if (!clk) {
                 continue;
             };
@@ -217,11 +195,11 @@ void ElementMapping::update()
             if (!iter.value()) {
                 continue;
             }
-            for(int port = 0; port < iter.key()->outputSize(); ++port) {
+            for (int port = 0; port < iter.key()->outputSize(); ++port) {
                 iter.value()->setOutputValue(port, iter.key()->getOn(port));
             }
         }
-        for (LogicElement *elm : qAsConst(m_logicElms)) {
+        for (auto *elm : qAsConst(m_logicElms)) {
             elm->updateLogic();
         }
     }
@@ -246,11 +224,11 @@ bool ElementMapping::canRun() const
 
 bool ElementMapping::canInitialize() const
 {
-    for (GraphicElement *elm : m_elements) {
+    for (auto *elm : m_elements) {
         if (elm->elementType() == ElementType::IC) {
-            IC *ic = dynamic_cast<IC *>(elm);
-            auto icManager = ICManager::instance();
-            ICPrototype *prototype = icManager->getPrototype(ic->getFile());
+            auto *ic = dynamic_cast<IC *>(elm);
+            auto *icManager = ICManager::instance();
+            auto *prototype = icManager->getPrototype(ic->getFile());
             if (!ic || !prototype) {
                 return false;
             }
@@ -301,9 +279,9 @@ void ElementMapping::applyConnection(GraphicElement *elm, QNEPort *in)
 
 void ElementMapping::connectElements()
 {
-    for (GraphicElement *elm : qAsConst(m_elements)) {
+    for (auto *elm : qAsConst(m_elements)) {
         const auto elm_inputs = elm->inputs();
-        for (QNEPort *in : elm_inputs) {
+        for (auto *in : elm_inputs) {
             applyConnection(elm, in);
         }
     }
@@ -311,17 +289,17 @@ void ElementMapping::connectElements()
 
 void ElementMapping::validateElements()
 {
-    for (LogicElement *elm : qAsConst(m_logicElms)) {
+    for (auto *elm : qAsConst(m_logicElms)) {
         elm->validate();
     }
 }
 
 void ElementMapping::sortLogicElements()
 {
-    for (LogicElement *elm : qAsConst(m_logicElms)) {
+    for (auto *elm : qAsConst(m_logicElms)) {
         elm->calculatePriority();
     }
-    std::sort(m_logicElms.begin(), m_logicElms.end(), [](LogicElement *e1, LogicElement *e2) {
+    std::sort(m_logicElms.begin(), m_logicElms.end(), [](auto *e1, auto *e2) {
         return *e2 < *e1;
     });
 }
@@ -339,10 +317,10 @@ int ElementMapping::calculatePriority(GraphicElement *elm, QHash<GraphicElement 
     }
     beingvisited[elm] = true;
     int max = 0;
-    auto const elm_outputs = elm->outputs();
-    for (QNEPort *port : elm_outputs) {
-        for (QNEConnection *conn : port->connections()) {
-            QNEPort *successor = conn->otherPort(port);
+    const auto elm_outputs = elm->outputs();
+    for (auto *port : elm_outputs) {
+        for (auto *conn : port->connections()) {
+            auto *successor = conn->otherPort(port);
             if (successor) {
                 max = qMax(calculatePriority(successor->graphicElement(), beingvisited, priority), max);
             }

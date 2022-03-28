@@ -2,18 +2,18 @@ cmake_minimum_required (VERSION 3.12 FATAL_ERROR)
 
 project(WiredPanda
     VERSION 1.0
-    DESCRIPTION "Logic Port teaching tool"
+    DESCRIPTION "Logic circuits teaching tool"
     LANGUAGES CXX
 )
 
-# wiRedPanda version
-set(APP_VERSION "3.0")
+# WiRedPanda version
+set(APP_VERSION "4.0")
 option(BUILD_TEST "BUILD_TEST" 0)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 set(CXX_STANDARD_REQUIRED ON)
 
-set(QT_MIN_VERSION "5.14.0")
+set(QT_MIN_VERSION "5.7.0")
 
 set(CMAKE_AUTOMOC ON)
 set(AUTOMOC_MOC_OPTIONS -Muri=org.GIBIS-UNIFESP.wiRedPanda)
@@ -66,9 +66,11 @@ include(cmake/Git.cmake)
 include(cmake/Format.cmake)
 
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} )
-include_directories(./app/element)
-include_directories(./app/nodes)
 include_directories(./app)
+include_directories(./app/arduino)
+include_directories(./app/element)
+include_directories(./app/logicelement)
+include_directories(./app/nodes)
 
 add_subdirectory(app)
 if(BUILD_TEST)

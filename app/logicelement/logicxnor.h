@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef LOGICXNOR_H
-#define LOGICXNOR_H
+#pragma once
 
 #include "logicelement.h"
 
@@ -13,9 +12,7 @@ class LogicXnor : public LogicElement
 public:
     explicit LogicXnor(size_t inputSize);
 
-    /* LogicElement interface */
 protected:
     void _updateLogic(const std::vector<bool> &inputs) override;
 };
 
-#endif // LOGICXNOR_H

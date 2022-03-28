@@ -4,7 +4,7 @@
 #include "line.h"
 
 Line::Line(QGraphicsItem *parent)
-    : GraphicElement(ElementType::LINE, ElementGroup::OTHER, 0, 0, 0, 0, parent)
+    : GraphicElement(ElementType::Line, ElementGroup::Other, 0, 0, 0, 0, parent)
 {
     m_pixmapSkinName = {":/line.png"};
 
