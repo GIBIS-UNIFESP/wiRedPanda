@@ -139,22 +139,23 @@ void BewavedDolphin::on_actionExit_triggered()
 
 bool BewavedDolphin::checkSave()
 {
-    if (m_edited) {
-        auto reply =
+    if (!m_edited) {
+        return true;
+    }
+
+    auto reply =
             QMessageBox::question(
                 this,
                 tr("WiRedPanda - beWavedDolphin"),
                 tr("Save simulation before closing?"),
                 QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-        if (reply == QMessageBox::Save) {
-            on_actionSave_triggered();
-            return (!m_edited);
-        } else if (reply == QMessageBox::Discard) {
-            return true;
-        }
-        return false;
+
+    switch(reply){
+    case QMessageBox::Save: on_actionSave_triggered(); return (!m_edited);
+    case QMessageBox::Discard: return true;
+    case QMessageBox::Cancel: return false;
+    default: return true;
     }
-    return true;
 }
 
 bool BewavedDolphin::loadElements()
@@ -280,11 +281,11 @@ void BewavedDolphin::run()
     for (int itr = 0; itr < m_model->columnCount(); ++itr) {
         qCDebug(four) << "itr:" << itr << ", inputs:" << m_inputs.size();
         int table_line = 0;
-        for (int in = 0; in < m_inputs.size(); ++in) {
-            int outSz = m_inputs[in]->outputSize();
+        for (auto *input : m_inputs) {
+            int outSz = input->outputSize();
             for (int port = 0; port < outSz; ++port) {
                 int val = m_model->item(table_line, itr)->text().toInt();
-                dynamic_cast<Input *>(m_inputs[in])->setOn(val, port);
+                dynamic_cast<Input *>(input)->setOn(val, port);
                 ++table_line;
             }
         }
@@ -293,10 +294,10 @@ void BewavedDolphin::run()
         m_sc->updateAll();
         qCDebug(four) << "Setting the computed output values to the waveform results.";
         int counter = m_input_ports;
-        for (int out = 0; out < m_outputs.size(); ++out) {
-            int inSz = m_outputs[out]->inputSize();
+        for (auto *output : m_outputs) {
+            int inSz = output->inputSize();
             for (int port = 0; port < inSz; ++port) {
-                int value = static_cast<int>(m_outputs[out]->input(port)->value());
+                int value = static_cast<int>(output->input(port)->value());
                 CreateElement(counter, itr, value, false);
                 counter++;
             }
@@ -328,32 +329,32 @@ QVector<char> BewavedDolphin::loadSignals(QStringList &input_labels, QStringList
 {
     QVector<char> oldValues(m_input_ports);
     int old_idx = 0;
-    for (int in = 0; in < m_inputs.size(); ++in) {
-        QString label = m_inputs[in]->getLabel();
+    for (auto *input : m_inputs) {
+        QString label = input->getLabel();
         if (label.isEmpty()) {
-            label = ElementFactory::translatedName(m_inputs[in]->elementType());
+            label = ElementFactory::translatedName(input->elementType());
         }
-        for (int port = 0; port < m_inputs[in]->outputSize(); ++port) {
-            if (m_inputs[in]->outputSize() > 1) {
+        for (int port = 0; port < input->outputSize(); ++port) {
+            if (input->outputSize() > 1) {
                 // QMessageBox::warning(this, "Append", "Appending label: " + QString(label) + ", port: " + QString::number(port));
                 input_labels.append(QString("%1_%2").arg(label).arg(port));
-                oldValues[old_idx] = m_inputs[in]->output(port)->value();
+                oldValues[old_idx] = input->output(port)->value();
             } else {
                 // QMessageBox::warning(this, "Append", "Appending label " + QString(label));
                 input_labels.append(label);
-                oldValues[old_idx] = m_inputs[in]->output()->value();
+                oldValues[old_idx] = input->output()->value();
             }
             ++old_idx;
         }
     }
     qCDebug(zero) << "Getting the name of the outputs. If no label is given, element type is used as a name. What if there are 2 outputs without name or 2 identical labels?";
-    for (int out = 0; out < m_outputs.size(); ++out) {
-        QString label = m_outputs[out]->getLabel();
+    for (auto *output : m_outputs) {
+        QString label = output->getLabel();
         if (label.isEmpty()) {
-            label = ElementFactory::translatedName(m_outputs[out]->elementType());
+            label = ElementFactory::translatedName(output->elementType());
         }
-        for (int port = 0; port < m_outputs[out]->inputSize(); ++port) {
-            if (m_outputs[out]->inputSize() > 1) {
+        for (int port = 0; port < output->inputSize(); ++port) {
+            if (output->inputSize() > 1) {
                 output_labels.append(QString("%1_%2").arg(label).arg(port));
             } else {
                 output_labels.append(label);

@@ -33,7 +33,6 @@ ICManager::~ICManager()
     clear();
     Settings::setValue("recentICs", "");
 
-    // fprintf(stderr, "Removing IC manager");
     if (globalICManager == this) {
         globalICManager = nullptr;
     }

@@ -212,7 +212,7 @@ void ElementEditor::contextMenu(QPoint screenPos)
         } else if (submenucolors && submenucolors->actions().contains(a)) {
             m_ui->comboBoxColor->setCurrentText(a->text());
         } else {
-            fprintf(stderr, "In elementeditor: uncaught text \"%s\"\n", a->text().toStdString().c_str());
+            qDebug(zero) << "uncaught text " + a->text();
         }
     }
 }
@@ -304,6 +304,7 @@ void ElementEditor::setCurrentElements(const QVector<GraphicElement *> &elms)
         for (auto *elm : qAsConst(m_elements)) {
             if (elm->elementType() != firstElement->elementType()) {
                 element_type = ElementType::Unknown;
+                break;
             }
             m_hasLabel &= elm->hasLabel();
             m_canChangeSkin &= elm->canChangeSkin() && !GlobalProperties::currentFile.isEmpty();
@@ -592,9 +593,8 @@ void ElementEditor::outputValueChanged(const QString &idx)
         return;
     }
     int new_value = m_ui->comboBoxValue->currentText().toInt();
-    for (int idx_ = 0; idx_ < m_elements.size(); ++idx_) {
-        auto *elm = m_elements[idx_];
-        if (elm->elementType() == ElementType::Rotary) {
+    for (auto *elm : m_elements) {
+        if (elm->elementType() == ElementType::InputRotary) {
             dynamic_cast<InputRotary *>(elm)->setOn(true, new_value);
         } else {
             dynamic_cast<Input *>(elm)->setOn(new_value);
@@ -608,8 +608,7 @@ void ElementEditor::inputLocked(const bool value)
     if ((m_elements.isEmpty()) || (!isEnabled())) {
         return;
     }
-    for (int idx = 0; idx < m_elements.size(); ++idx) {
-        auto *elm = m_elements[idx];
+    for (auto *elm : m_elements) {
         dynamic_cast<Input *>(elm)->setLocked(value);
     }
     qCDebug(zero) << "Input locked.";

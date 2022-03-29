@@ -17,8 +17,6 @@ bool Clock::reset = false;
 bool Clock::pause = false;
 int Clock::current_id_number = 0;
 
-Clock::~Clock() = default;
-
 Clock::Clock(QGraphicsItem *parent)
     : GraphicElement(ElementType::Clock, ElementGroup::Input, 0, 0, 1, 1, parent)
 {
