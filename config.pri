@@ -91,6 +91,7 @@ include($$PWD/app/element/element.pri)
 include($$PWD/app/logicelement/logicelement.pri)
 
 SOURCES += \
+    $$PWD/app/application.cpp \
     $$PWD/app/arduino/codegenerator.cpp \
     $$PWD/app/bewaveddolphin.cpp \
     $$PWD/app/clockdialog.cpp \
@@ -130,7 +131,8 @@ SOURCES += \
     $$PWD/app/workspace.cpp
 
 HEADERS += \
-    $$PWD/app/arduino/codegenerator.h\
+    $$PWD/app/application.h \
+    $$PWD/app/arduino/codegenerator.h \
     $$PWD/app/bewaveddolphin.h \
     $$PWD/app/clockdialog.h \
     $$PWD/app/commands.h \
