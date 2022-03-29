@@ -193,9 +193,3 @@ RESOURCES += \
     $$PWD/app/resources/output/output.qrc\
     $$PWD/app/resources/toolbar/toolbar.qrc \
     $$PWD/app/resources/translations.qrc
-
-TRANSLATIONS += \
-    $$PWD/app/resources/wpanda_pt_BR.ts
-
-DISTFILES += \
-    $$PWD/uncrustify.cfg

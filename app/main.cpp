@@ -23,15 +23,15 @@ int main(int argc, char *argv[])
     }
 #endif
 
-    Application a(argc, argv);
-    a.setOrganizationName("GIBIS-UNIFESP");
-    a.setApplicationName("WiRedPanda");
-    a.setApplicationVersion(APP_VERSION);
-    a.setStyle("Fusion");
+    Application app(argc, argv);
+    app.setOrganizationName("GIBIS-UNIFESP");
+    app.setApplicationName("WiRedPanda");
+    app.setApplicationVersion(APP_VERSION);
+    app.setStyle("Fusion");
 
     try {
         QCommandLineParser parser;
-        parser.setApplicationDescription(a.applicationName());
+        parser.setApplicationDescription(app.applicationName());
         parser.addHelpOption();
         parser.addVersionOption();
         parser.addPositionalArgument("file", QCoreApplication::translate("main", "Circuit file to open."));
@@ -48,38 +48,39 @@ int main(int argc, char *argv[])
                     QCoreApplication::translate("main", "waveform text file"));
         parser.addOption(waveformFileOption);
 
-        parser.process(a);
+        parser.process(app);
 
+        // TODO: process verbosity level/format
 
         QStringList args = parser.positionalArguments();
-        MainWindow *w = new MainWindow(nullptr, (!args.empty() ? QString(args[0]) : QString()));
+        auto *window = new MainWindow(nullptr, (!args.empty() ? QString(args[0]) : QString()));
 
         QString arduFile = parser.value(arduinoFileOption);
         if (!arduFile.isEmpty()) {
             if (!args.empty()) {
-                w->loadPandaFile(args[0]);
-                return !w->exportToArduino(arduFile);
+                window->loadPandaFile(args[0]);
+                return !window->exportToArduino(arduFile);
             }
             return 0;
         }
         QString wfFile = parser.value(waveformFileOption);
         if (!wfFile.isEmpty()) {
             if (!args.empty()) {
-                w->loadPandaFile(args[0]);
-                return !w->exportToWaveFormFile(wfFile);
+                window->loadPandaFile(args[0]);
+                return !window->exportToWaveFormFile(wfFile);
             }
             return 0;
         }
-        w->show();
+        window->show();
         if (!args.empty()) {
-            w->loadPandaFile(args[0]);
+            window->loadPandaFile(args[0]);
         }
     } catch (std::exception &e) {
         QMessageBox::critical(nullptr, "Erro", e.what());
         exit(1);
     }
 
-    return a.exec();
+    return app.exec();
 }
 
 /*

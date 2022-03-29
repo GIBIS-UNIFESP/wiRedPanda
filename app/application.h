@@ -13,8 +13,8 @@ class Application : public QApplication
 
 public:
     Application(int &argc, char **argv);
-    ~Application() = default;
+    ~Application() override = default;
 
-    bool notify(QObject *receiver, QEvent *event);
+    bool notify(QObject *receiver, QEvent *event) override;
 };
 

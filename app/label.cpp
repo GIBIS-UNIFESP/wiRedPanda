@@ -68,7 +68,7 @@ void Label::startDrag(QPoint pos)
     QPixmap pixMap = pixmapData();
     if (pos.isNull()) {
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
-        pos = pixmap(Qt::ReturnByValue).rect().center();
+        pos = pixmap().rect().center();
 #else
         pos = pixmap()->rect().center();
 #endif

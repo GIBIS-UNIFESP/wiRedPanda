@@ -448,7 +448,7 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF point, Editor *editor, Q
     QNEConnection *conn2 = ElementFactory::instance->buildConnection();
 
     /* Align node to Grid */
-    m_nodePos = point - QPointF(node->boundingRect().center());
+    m_nodePos = point - node->boundingRect().center();
     if (m_scene) {
         int gridSize = m_scene->gridSize();
         qreal xV = qRound(m_nodePos.x() / gridSize) * gridSize;
@@ -661,8 +661,7 @@ void ChangeInputSZCommand::redo()
     QVector<GraphicElement *> serializationOrder;
     m_oldData.clear();
     QDataStream dataStream(&m_oldData, QIODevice::WriteOnly);
-    for (int i = 0; i < m_elements.size(); ++i) {
-        auto *elm = m_elements[i];
+    for (auto *elm : m_elements) {
         elm->save(dataStream);
         serializationOrder.append(elm);
         for (int in = m_newInputSize; in < elm->inputSize(); ++in) {
@@ -673,8 +672,7 @@ void ChangeInputSZCommand::redo()
             }
         }
     }
-    for (int i = 0; i < m_elements.size(); ++i) {
-        auto *elm = m_elements[i];
+    for (auto *elm : m_elements) {
         for (int in = m_newInputSize; in < elm->inputSize(); ++in) {
             while (!elm->input(in)->connections().isEmpty()) {
                 auto *conn = elm->input(in)->connections().front();
@@ -709,8 +707,7 @@ void ChangeInputSZCommand::undo()
     for (auto *elm : serializationOrder) {
         elm->load(dataStream, portMap, version);
     }
-    for (int i = 0; i < m_elements.size(); ++i) {
-        auto *elm = m_elements[i];
+    for (auto *elm : m_elements) {
         for (int in = m_newInputSize; in < elm->inputSize(); ++in) {
             auto *conn = ElementFactory::buildConnection();
             conn->load(dataStream, portMap);
@@ -801,8 +798,7 @@ void ChangeOutputSZCommand::redo()
     QVector<GraphicElement *> serializationOrder;
     m_oldData.clear();
     QDataStream dataStream(&m_oldData, QIODevice::WriteOnly);
-    for (int i = 0; i < m_elements.size(); ++i) {
-        auto *elm = m_elements[i];
+    for (auto *elm : m_elements) {
         elm->save(dataStream);
         serializationOrder.append(elm);
         for (int out = m_newOutputSize; out < elm->outputSize(); ++out) {
@@ -813,8 +809,7 @@ void ChangeOutputSZCommand::redo()
             }
         }
     }
-    for (int i = 0; i < m_elements.size(); ++i) {
-        auto *elm = m_elements[i];
+    for (auto *elm : m_elements) {
         for (int out = m_newOutputSize; out < elm->outputSize(); ++out) {
             while (!elm->output(out)->connections().isEmpty()) {
                 auto *conn = elm->output(out)->connections().front();
@@ -849,8 +844,7 @@ void ChangeOutputSZCommand::undo()
     for (auto *elm : serializationOrder) {
         elm->load(dataStream, portMap, version);
     }
-    for (int i = 0; i < m_elements.size(); ++i) {
-        auto *elm = m_elements[i];
+    for (auto *elm : m_elements) {
         for (int out = m_newOutputSize; out < elm->outputSize(); ++out) {
             auto *conn = ElementFactory::buildConnection();
             conn->load(dataStream, portMap);
