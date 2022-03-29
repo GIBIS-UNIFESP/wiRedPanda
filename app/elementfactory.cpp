@@ -48,7 +48,7 @@ int ElementFactory::getLastId() const
 
 ElementType ElementFactory::textToType(QString text)
 {
-    COMMENT("Creating Element Type conversion text to type.", 4);
+    qCDebug(four) << "Creating Element Type conversion text to type.";
     text = text.toUpper();
 
     return text == "AND"        ? ElementType::And
@@ -85,7 +85,7 @@ ElementType ElementFactory::textToType(QString text)
 
 QString ElementFactory::typeToText(ElementType type) // TODO: replace with QMetaEnum
 {
-    COMMENT("Creating Element Type conversion type to text.", 4);
+    qCDebug(four) << "Creating Element Type conversion type to text.";
     switch (type) {
     case ElementType::And:        return "AND";
     case ElementType::Button:     return "BUTTON";
@@ -122,7 +122,7 @@ QString ElementFactory::typeToText(ElementType type) // TODO: replace with QMeta
 
 QString ElementFactory::typeToTitleText(ElementType type)
 {
-    COMMENT("Creating Element Type conversion type to text.", 4);
+    qCDebug(four) << "Creating Element Type conversion type to text.";
     switch (type) {
     case ElementType::And:        return tr("<b>AND</b>");
     case ElementType::Button:     return tr("<b>PUSH BUTTON</b>");
@@ -240,7 +240,7 @@ ElementFactory::ElementFactory()
 
 GraphicElement *ElementFactory::buildElement(ElementType type, QGraphicsItem *parent)
 {
-    COMMENT("Creating Element. Building it!", 4);
+    qCDebug(four) << "Creating Element. Building it.";
 
     return type == ElementType::And        ? new And(parent)
          : type == ElementType::Button     ? new InputButton(parent)
@@ -320,7 +320,7 @@ int ElementFactory::next_id()
 
 void ElementFactory::clear()
 {
-    // COMMENT("Element Factory clear.", 0);
+    // qCDebug(zero) << "Element Factory clear.";
     // m_map.clear();
     // m_lastId = 1;
 }

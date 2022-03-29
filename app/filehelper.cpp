@@ -20,7 +20,7 @@ void FileHelper::verifyRecursion(const QString &fname)
     //     throw(std::runtime_error(msg));
     // }
     // for (auto *box = parentBox; box != nullptr; box = box->getParentBox()) {
-    //     // qDebug() << "File: " << box->getFile();
+    //     // qCDebug(zero) << "File:" << box->getFile();
     //     if (box->getFile() == fname) {
     //         throw(std::runtime_error(msg));
     //     }

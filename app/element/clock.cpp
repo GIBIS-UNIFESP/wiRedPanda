@@ -18,7 +18,7 @@ Clock::~Clock() = default;
 Clock::Clock(QGraphicsItem *parent)
     : GraphicElement(ElementType::Clock, ElementGroup::Input, 0, 0, 1, 1, parent)
 {
-    COMMENT("Creating clock.", 0);
+    qCDebug(zero) << "Creating clock.";
     locked = false;
     m_pixmapSkinName = {
         ":/input/clock0.png",

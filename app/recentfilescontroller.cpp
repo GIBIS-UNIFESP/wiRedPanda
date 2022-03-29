@@ -23,7 +23,7 @@ RecentFilesController::RecentFilesController(const QString &_attrName, QObject *
 // TODO: quotes bug
 void RecentFilesController::addRecentFile(const QString &fname)
 {
-    COMMENT("Setting recent file to : \"" << fname.toStdString() << "\"", 3);
+    qCDebug(three) << "Setting recent file to:" << fname;
     if (!QFile(fname).exists()) {
         return;
     }

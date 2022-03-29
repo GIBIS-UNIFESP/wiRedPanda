@@ -39,7 +39,7 @@ void ICPrototypeImpl::sortPorts(QVector<QNEPort *> &map)
 
 void ICPrototypeImpl::loadFile(const QString &fileName)
 {
-    COMMENT("Reading ic", 0);
+    qCDebug(zero) << "Reading IC.";
     clear();
     QFile file(fileName);
     if (file.open(QFile::ReadOnly)) {
@@ -56,7 +56,7 @@ void ICPrototypeImpl::loadFile(const QString &fileName)
     sortPorts(m_outputs);
     loadInputs();
     loadOutputs();
-    COMMENT("Finished Reading ic", 0);
+    qCDebug(zero) << "Finished Reading IC.";
 }
 
 void ICPrototypeImpl::loadInputs()

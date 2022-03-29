@@ -37,7 +37,7 @@ Display::Display(QGraphicsItem *parent)
     m_color = "Red";
     m_color_number = 1;
 
-    COMMENT("Allocating pixmaps.", 3);
+    qCDebug(three) << "Allocating pixmaps.";
     setPixmap(m_pixmapSkinName[0]);
     a = QVector<QPixmap>(5, m_pixmapSkinName[1]);
     b = QVector<QPixmap>(5, m_pixmapSkinName[2]);
@@ -48,7 +48,7 @@ Display::Display(QGraphicsItem *parent)
     g = QVector<QPixmap>(5, m_pixmapSkinName[7]);
     dp = QVector<QPixmap>(5, m_pixmapSkinName[8]);
 
-    COMMENT("Converting segments to other colors.", 3);
+    qCDebug(three) << "Converting segments to other colors.";
     convertAllColors(a);
     convertAllColors(b);
     convertAllColors(c);
@@ -179,7 +179,7 @@ void Display::save(QDataStream &ds) const
 void Display::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
 {
     GraphicElement::load(ds, portMap, version);
-    // qDebug() << "Version: " << version;
+    // qCDebug(zero) << "Version:" << version;
     /*
      * 0, 7, 2, 1, 3, 4, 5, 6
      * 7, 5, 4, 2, 1, 4, 6, 3, 0
@@ -187,7 +187,7 @@ void Display::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double ve
      * 2, 1, 4, 5, 0, 7, 3, 6
      */
     if (version < 1.6) {
-        COMMENT("Remapping inputs", 0);
+        qCDebug(zero) << "Remapping inputs.";
         QVector<int> order = {2, 1, 4, 5, 0, 7, 3, 6};
         QVector<QNEInputPort *> aux = inputs();
         for (int i = 0; i < aux.size(); ++i) {
@@ -197,7 +197,7 @@ void Display::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double ve
         updatePorts();
     }
     if (version < 1.7) {
-        COMMENT("Remapping inputs", 0);
+        qCDebug(zero) << "Remapping inputs.";
         QVector<int> order = {2, 5, 4, 0, 7, 3, 6, 1};
         QVector<QNEInputPort *> aux = inputs();
         for (int i = 0; i < aux.size(); ++i) {
