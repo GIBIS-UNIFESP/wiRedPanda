@@ -13,9 +13,9 @@
 
 void TestFiles::testFiles()
 {
-    // qDebug() << "CURRENTDIR: " << CURRENTDIR;
+    // qCDebug(zero) << "CURRENTDIR:" << CURRENTDIR;
     const QDir examplesDir(QString(CURRENTDIR) + "/../examples/");
-    // qDebug() << "Examples dir: " << examplesDir.absolutePath();
+    // qCDebug(zero) << "Examples dir:" << examplesDir.absolutePath();
     const auto files = examplesDir.entryInfoList(QStringList("*.panda"));
     QVERIFY(!files.empty());
 
@@ -52,7 +52,7 @@ void TestFiles::testFiles()
             QFAIL("Could not open temporary file in ReadWrite mode: " + tempfile.fileName().toUtf8());
         }
 
-        // qDebug() << tempfile.fileName();
+        // qCDebug(zero) << tempfile.fileName();
         QDataStream ds(&tempfile);
 
         try {

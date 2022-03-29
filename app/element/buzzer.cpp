@@ -121,6 +121,6 @@ void Buzzer::setSkin(bool defaultSkin, const QString &filename)
         m_usingDefaultSkin = false;
         m_alternativeSkins[m_play] = filename;
         setPixmap(m_alternativeSkins[m_play]);
-        // std::cerr << "Filename: " << alternativeSkins[play].toStdString() << '\n';
+        // qCDebug(zero) << "Filename:" << alternativeSkins[play];
     }
 }

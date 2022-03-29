@@ -80,7 +80,7 @@ void Label::startDrag(QPoint pos)
         text = text.split("_").last();
     }
     ElementType type = ElementFactory::textToType(text);
-    // qDebug() << objectName();
+    // qCDebug(zero) << objectName();
 
     dataStream << QPointF(pos) << static_cast<qint32>(type) << m_auxData;
 

@@ -13,13 +13,13 @@
 IC::IC(QGraphicsItem *parent)
     : GraphicElement(ElementType::IC, ElementGroup::IC, 0, 0, 0, 0, parent)
 {
-    // std::cout << "Creating box." << std::endl;
+    // qCDebug(zero) << "Creating box.";
     m_pixmapSkinName.append(":/basic/box.png");
     setHasLabel(true);
     setPixmap(m_pixmapSkinName[0], QRect(0, 0, 64, 64));
     setOutputsOnTop(true);
     setPortName("IC");
-    // std::cout << "Box done." << std::endl;
+    // qCDebug(zero) << "Box done.";
 }
 
 IC::~IC()
@@ -51,7 +51,7 @@ void IC::loadInputs(ICPrototype *prototype)
     setMaxInputSz(prototype->inputSize());
     setMinInputSz(prototype->inputSize());
     setInputSize(prototype->inputSize());
-    COMMENT("IC " << m_file.toStdString() << " -> Inputs. min: " << minInputSz() << ", max: " << maxInputSz() << ", current: " << inputSize() << ", m_inputs: " << m_inputs.size(), 3);
+    qCDebug(three) << "IC" << m_file << "-> Inputs. min:" << minInputSz() << ", max:" << maxInputSz() << ", current:" << inputSize() << ", m_inputs:" << m_inputs.size();
     for (int inputIdx = 0; inputIdx < prototype->inputSize(); ++inputIdx) {
         QNEPort *in = input(inputIdx);
         in->setName(prototype->inputLabel(inputIdx));
@@ -70,12 +70,12 @@ void IC::loadOutputs(ICPrototype *prototype)
         QNEPort *out = output(outputIdx);
         out->setName(prototype->outputLabel(outputIdx));
     }
-    COMMENT("IC " << m_file.toStdString() << " -> Outputs. min: " << minOutputSz() << ", max: " << maxOutputSz() << ", current: " << outputSize() << ", m_outputs: " << m_outputs.size(), 3);
+    qCDebug(three) << "IC" << m_file << "-> Outputs. min:" << minOutputSz() << ", max:" << maxOutputSz() << ", current:" << outputSize() << ", m_outputs:" << m_outputs.size();
 }
 
 void IC::loadFile(const QString &fname)
 {
-    // qDebug() << "Opening IC " << fname;
+    // qCDebug(zero) << "Opening IC:" << fname;
     ICPrototype *prototype = ICManager::instance()->getPrototype(fname);
     Q_ASSERT(prototype);
     m_file = prototype->fileName();
@@ -89,7 +89,7 @@ void IC::loadFile(const QString &fname)
     // Loading outputs
     loadOutputs(prototype);
     updatePorts();
-    // qDebug() << "IC loaded! " << fname;
+    // qCDebug(zero) << "IC loaded:" << fname;
 }
 
 QString IC::getFile() const

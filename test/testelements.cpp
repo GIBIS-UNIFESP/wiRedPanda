@@ -315,11 +315,11 @@ void TestElements::testICs()
     GlobalProperties::currentFile = QString(CURRENTDIR) + "/../examples/simple.panda";
     auto *manager(editor->getICManager());
     const QDir examplesDir(QString(CURRENTDIR) + "/../examples/");
-    // qDebug() << "Current dir: " << CURRENTDIR;
+    // qCDebug(zero) << "Current dir:" << CURRENTDIR;
     const auto files = examplesDir.entryInfoList(QStringList{"*.panda"});
-    // qDebug() << "files: " << files;
+    // qCDebug(zero) << "files:" << files;
     for (const auto &fileInfo : qAsConst(files)) {
-        // qDebug() << "FILE: " << f.absoluteFilePath();
+        // qCDebug(zero) << "FILE:" << f.absoluteFilePath();
         IC ic;
         manager->loadIC(&ic, fileInfo.absoluteFilePath());
     }

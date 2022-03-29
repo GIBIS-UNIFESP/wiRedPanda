@@ -103,43 +103,42 @@ void SimulationController::stop()
 
 void SimulationController::startTimer()
 {
-    COMMENT("Starting timer.", 0);
+    qCDebug(zero) << "Starting timer.";
     m_simulationTimer.start();
 }
 
 void SimulationController::start()
 {
-    COMMENT("Start simulation controller.", 0);
+    qCDebug(zero) << "Start simulation controller.";
     Clock::reset = true;
     reSortElements();
     m_simulationTimer.start();
-    COMMENT("Simulation started.", 0);
+    qCDebug(zero) << "Simulation started.";
 }
 
 void SimulationController::reSortElements()
 {
-    COMMENT("GENERATING SIMULATION LAYER", 2);
+    qCDebug(two) << "GENERATING SIMULATION LAYER.";
     QVector<GraphicElement *> elements = m_scene->getElements();
-    COMMENT("Elements read: " << elements.size(), 0);
+    qCDebug(zero) << "Elements read:" << elements.size();
     if (elements.empty()) {
         return;
     }
-    COMMENT("Deleting existing mapping.", 2);
+    qCDebug(two) << "Deleting existing mapping.";
     delete m_elMapping;
-    COMMENT("Recreating mapping for simulation.", 2);
+    qCDebug(two) << "Recreating mapping for simulation.";
     m_elMapping = new ElementMapping(elements);
     if (m_elMapping->canInitialize()) {
-        COMMENT("Can initialize.", 2);
+        qCDebug(two) << "Can initialize.";
         m_elMapping->initialize();
-        COMMENT("Sorting.", 2);
+        qCDebug(two) << "Sorting.";
         m_elMapping->sort();
-        COMMENT("Updating.", 2);
+        qCDebug(two) << "Updating.";
         update();
     } else {
-        qDebug() << "Cannot initialize simulation!";
-        COMMENT("Can not initialize.", 0);
+        qCDebug(zero) << "Cannot initialize simulation.";
     }
-    COMMENT("Finished simulation layer.", 0);
+    qCDebug(zero) << "Finished simulation layer.";
 }
 
 void SimulationController::clear()
