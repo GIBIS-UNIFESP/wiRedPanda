@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <iostream>
 #include <QLoggingCategory>
+#include <iostream>
 
 Q_DECLARE_LOGGING_CATEGORY(zero)
 Q_DECLARE_LOGGING_CATEGORY(one)

@@ -268,6 +268,7 @@ void MainWindow::addUndoRedoMenu(int tab)
 void MainWindow::setFastMode(bool fastModeEnabled)
 {
     m_fullscreenView->setRenderHint(QPainter::Antialiasing, !fastModeEnabled);
+    m_fullscreenView->setRenderHint(QPainter::TextAntialiasing, !fastModeEnabled);
     m_fullscreenView->setRenderHint(QPainter::SmoothPixmapTransform, !fastModeEnabled);
     ui->actionFast_Mode->setChecked(fastModeEnabled);
 }
@@ -385,7 +386,7 @@ int MainWindow::closeTabAnyway()
     QMessageBox msgBox;
     msgBox.setParent(this);
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-    msgBox.setText(QString(tr("File not saved. Close tab anyway?")));
+    msgBox.setText(tr("File not saved. Close tab anyway?"));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::No);
     return msgBox.exec();
@@ -397,7 +398,7 @@ int MainWindow::recoverAutoSaveFile(const QString &autosaveFilename)
     QMessageBox msgBox;
     msgBox.setParent(this);
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll);
-    msgBox.setText(QString(tr("An autosave file was found. Do you want to load it?\n") + autosaveFilename));
+    msgBox.setText(tr("An autosave file was found. Do you want to load it?\n") + autosaveFilename);
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Yes);
     return msgBox.exec();
@@ -427,7 +428,7 @@ int MainWindow::autoSaveFileDeleteAnyway(const QString &autosaveFilename)
     QMessageBox msgBox;
     msgBox.setParent(this);
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
-    msgBox.setText(QString(tr("Error while opening autosave file. Do you want to delete it ?\n Autosave: ") + autosaveFilename));
+    msgBox.setText(tr("Error while opening autosave file. Do you want to delete it ?\n Autosave: ") + autosaveFilename);
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::No);
     return msgBox.exec();
@@ -1098,6 +1099,8 @@ void MainWindow::on_actionPrint_triggered()
     if (!pdfFile.endsWith(".pdf", Qt::CaseInsensitive)) {
         pdfFile.append(".pdf");
     }
+    // TODO: replace QPrinter with QPdfWriter?
+    // use QPainter::LosslessImageRendering
     QPrinter printer(QPrinter::HighResolution);
     printer.setPageSize(QPageSize(QPageSize::A4));
     printer.setPageOrientation(QPageLayout::Orientation::Landscape);

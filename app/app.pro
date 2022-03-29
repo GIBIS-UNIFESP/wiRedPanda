@@ -13,3 +13,5 @@ win32 {
 SOURCES += main.cpp
 
 DISTFILES += resources/postinst
+
+TRANSLATIONS += resources/wpanda_pt_BR.ts

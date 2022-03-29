@@ -649,7 +649,7 @@ void GraphicElement::updateThemeLocal()
 
 bool GraphicElement::isValid()
 {
-    qCDebug(four) << "Checking if the element has the required signals to comput its value.";
+    qCDebug(four) << "Checking if the element has the required signals to compute its value.";
     bool valid = true;
     for (auto *input : qAsConst(m_inputs)) {
         /* Required inputs must have exactly one connection. */

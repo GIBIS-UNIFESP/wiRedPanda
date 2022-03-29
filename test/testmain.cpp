@@ -17,10 +17,10 @@ int main(int argc, char **argv)
 {
     Comment::setVerbosity(-1);
 
-    QApplication a(argc, argv);
-    a.setOrganizationName("GIBIS-UNIFESP");
-    a.setApplicationName("WiRedPanda");
-    a.setApplicationVersion(APP_VERSION);
+    QApplication app(argc, argv);
+    app.setOrganizationName("GIBIS-UNIFESP");
+    app.setApplicationName("WiRedPanda");
+    app.setApplicationVersion(APP_VERSION);
 
     ThemeManager::globalManager = new ThemeManager();
 

@@ -148,7 +148,7 @@ QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &ds)
     loadDolphinFilename(ds, version);
     loadRect(ds, version);
     qCDebug(zero) << "Header Ok. Version:" << version;
-    QList<QGraphicsItem *> items = deserialize(ds, version);
+    auto items = deserialize(ds, version);
     qCDebug(zero) << "Finished reading items.";
     return items;
 }
