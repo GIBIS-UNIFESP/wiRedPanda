@@ -161,7 +161,7 @@ bool QNEConnection::load(QDataStream &ds, const QMap<quint64, QNEPort *> &portMa
     ds >> ptr1;
     ds >> ptr2;
     if (portMap.isEmpty()) {
-        COMMENT("Empty port map.", 3);
+        qCDebug(three) << "Empty port map.";
         auto *port1 = reinterpret_cast<QNEPort *>(ptr1);
         auto *port2 = reinterpret_cast<QNEPort *>(ptr2);
         if (port2 && port1) {
@@ -174,33 +174,33 @@ bool QNEConnection::load(QDataStream &ds, const QMap<quint64, QNEPort *> &portMa
             }
         }
     } else if (portMap.contains(ptr1) && portMap.contains(ptr2)) {
-        COMMENT("Port map with elements: ptr1: " << ptr1 << ", ptr2: " << ptr2, 3);
+        qCDebug(three) << "Port map with elements: ptr1:" << ptr1 << ", ptr2:" << ptr2;
         QNEPort *port1 = portMap[ptr1];
         QNEPort *port2 = portMap[ptr2];
-        COMMENT("Before if 1.", 3);
+        qCDebug(three) << "Before if 1.";
         if (port1 && port2) {
-            COMMENT("Before if 2.", 3);
+            qCDebug(three) << "Before if 2.";
             if (!port1->isOutput() && port2->isOutput()) {
-                COMMENT("Setting start 1.", 3);
+                qCDebug(three) << "Setting start 1.";
                 setStart(dynamic_cast<QNEOutputPort *>(port2));
-                COMMENT("Setting end 1.", 3);
+                qCDebug(three) << "Setting end 1.";
                 setEnd(dynamic_cast<QNEInputPort *>(port1));
             } else if (port1->isOutput() && !port2->isOutput()) {
-                COMMENT("Setting start 2.", 3);
+                qCDebug(three) << "Setting start 2.";
                 setStart(dynamic_cast<QNEOutputPort *>(port1));
-                COMMENT("Setting end 2.", 3);
+                qCDebug(three) << "Setting end 2.";
                 setEnd(dynamic_cast<QNEInputPort *>(port2));
             }
-            COMMENT("After ifs.", 3);
+            qCDebug(three) << "After ifs.";
         }
     } else {
         return false;
     }
-    COMMENT("Updating pos from ports.", 3);
+    qCDebug(three) << "Updating pos from ports.";
     updatePosFromPorts();
-    COMMENT("Updating path.", 3);
+    qCDebug(three) << "Updating path.";
     updatePath();
-    COMMENT("returning.", 3);
+    qCDebug(three) << "returning.";
     return (m_start != nullptr && m_end != nullptr);
 }
 

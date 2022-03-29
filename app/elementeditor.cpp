@@ -232,7 +232,7 @@ void ElementEditor::changeTriggerAction()
 void ElementEditor::updateElementSkin()
 {
     const QString homeDir = QFileInfo(GlobalProperties::currentFile).absolutePath();
-    COMMENT("Updating skin with home dir: " << homeDir.toStdString(), 0);
+    qCDebug(zero) << "Updating skin with home dir:" << homeDir;
     QFileDialog fileDialog;
     fileDialog.setObjectName(tr("Open File"));
     fileDialog.setFileMode(QFileDialog::ExistingFile);
@@ -240,7 +240,7 @@ void ElementEditor::updateElementSkin()
     fileDialog.setNameFilter(tr("Images (*.png *.gif *.jpg *.jpeg)"));
     fileDialog.setDirectory(homeDir);
     connect(&fileDialog, &QFileDialog::directoryEntered, this, [&fileDialog, homeDir](const QString &new_dir) {
-        COMMENT("Changing dir to " << new_dir.toStdString() << ", home: " << homeDir.toStdString(), 0);
+        qCDebug(zero) << "Changing dir to " << new_dir << ", home:" << homeDir;
         if (new_dir != homeDir) {
             fileDialog.setDirectory(homeDir);
         }
@@ -253,7 +253,7 @@ void ElementEditor::updateElementSkin()
     if (fname.isEmpty()) {
         return;
     }
-    COMMENT("File name: " << fname.toStdString(), 0);
+    qCDebug(zero) << "File name:" << fname;
     m_updatingSkin = true;
     m_skinName = fname;
     m_defaultSkin = false;
@@ -521,7 +521,7 @@ void ElementEditor::selectionChanged()
 
 void ElementEditor::apply()
 {
-    COMMENT("Apply", 3);
+    qCDebug(three) << "Apply.";
     if ((m_elements.isEmpty()) || (!isEnabled())) {
         return;
     }
@@ -581,7 +581,7 @@ void ElementEditor::outputIndexChanged(const QString &idx)
     if (m_canChangeOutputSize && (m_ui->comboBoxOutputSz->currentText() != m_manyOS)) {
         emit sendCommand(new ChangeOutputSZCommand(m_elements, m_ui->comboBoxOutputSz->currentData().toInt(), m_editor));
     }
-    COMMENT("Output size changed to " << idx.toInt(), 0);
+    qCDebug(zero) << "Output size changed to " << idx.toInt();
     apply();
 }
 
@@ -612,7 +612,7 @@ void ElementEditor::inputLocked(const bool value)
         auto *elm = m_elements[idx];
         dynamic_cast<Input *>(elm)->setLocked(value);
     }
-    COMMENT("Input locked.", 0);
+    qCDebug(zero) << "Input locked.";
     apply();
 }
 
@@ -639,14 +639,14 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
             });
             apply();
             int elmPos = elms.indexOf(elm);
-            qDebug() << "Pos = " << elmPos << " from " << elms.size();
+            qCDebug(zero) << "Pos =" << elmPos << "from" << elms.size();
             int step = 1;
             if (move_back) {
                 step = -1;
             }
             int pos = (elms.size() + elmPos + step) % elms.size();
             for (; pos != elmPos; pos = ((elms.size() + pos + step) % elms.size())) {
-                qDebug() << "Pos = " << pos;
+                qCDebug(zero) << "Pos =" << pos;
                 elm = elms[pos];
 
                 setCurrentElements(QVector<GraphicElement *>({elm}));

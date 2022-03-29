@@ -8,9 +8,20 @@
 #include <QCommandLineParser>
 #include <QMessageBox>
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
+
 int main(int argc, char *argv[])
 {
-    Comment::setVerbosity(1);
+    Comment::setVerbosity(1); // change to -1 to disable comments
+
+#ifdef Q_OS_WIN
+    if (AttachConsole(ATTACH_PARENT_PROCESS)) {
+        freopen("CONOUT$", "w", stdout);
+        freopen("CONOUT$", "w", stderr);
+    }
+#endif
 
     Application a(argc, argv);
     a.setOrganizationName("GIBIS-UNIFESP");
