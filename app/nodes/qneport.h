@@ -23,19 +23,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#ifndef QNEPORT_H
-#define QNEPORT_H
+#pragma once
 
 #include "qpen.h"
 
 #include <QGraphicsPathItem>
 
-class QNEBlock;
 class QNEConnection;
 class GraphicElement;
-
 class QNEPort;
-typedef QVector<QNEPort *> QNEPortVector;
+
+using QNEPortVector = QVector<QNEPort *>;
 
 class QNEPort : public QGraphicsPathItem
 {
@@ -45,7 +43,6 @@ public:
 
     explicit QNEPort(QGraphicsItem *parent = nullptr);
 
-    void setNEBlock(QNEBlock *);
     void setName(const QString &n);
     int radius() const;
     const QList<QNEConnection *> &connections() const;
@@ -61,7 +58,7 @@ public:
 
     int type() const override;
 
-    quint64 ptr();
+    quint64 ptr() const;
     void setPtr(quint64);
 
     GraphicElement *graphicElement() const;
@@ -94,7 +91,6 @@ protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     int m_defaultValue;
     int m_index;
-    QNEBlock *m_block;
     QString m_name;
     QGraphicsTextItem *m_label;
     int m_radius;
@@ -139,4 +135,3 @@ public:
     void updateTheme() override;
 };
 
-#endif /* QNEPORT_H */

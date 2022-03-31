@@ -1,31 +1,25 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef TESTELEMENTS_H
-#define TESTELEMENTS_H
+#pragma once
 
 #include <QObject>
-#include <QTest>
-
-#include "inputswitch.h"
-#include "qneconnection.h"
+#include <QVector>
 
 class IC;
+class InputSwitch;
+class QNEConnection;
 
 class TestElements : public QObject
 {
     Q_OBJECT
 
-    QVector<QNEConnection *> conn{5};
-    QVector<InputSwitch *> sw{5};
+    QVector<QNEConnection *> connections{5};
+    QVector<InputSwitch *> switches{5};
     void testICData(const IC *ic);
-
-public:
-    explicit TestElements(QObject *parent = nullptr);
-
-signals:
+    QString testFile(const QString &fileName);
 
 private slots:
     void init();
@@ -49,5 +43,3 @@ private slots:
     void testIC();
     void testICs();
 };
-
-#endif /* TESTELEMENTS_H */

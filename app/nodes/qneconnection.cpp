@@ -23,8 +23,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#include "common.h"
 #include "qneconnection.h"
+
+#include "common.h"
 #include "qneport.h"
 #include "thememanager.h"
 
@@ -58,12 +59,12 @@ QNEConnection::~QNEConnection()
     }
 }
 
-void QNEConnection::setStartPos(const QPointF &p)
+void QNEConnection::setStartPos(QPointF p)
 {
     m_startPos = p;
 }
 
-void QNEConnection::setEndPos(const QPointF &p)
+void QNEConnection::setEndPos(QPointF p)
 {
     m_endPos = p;
 }
@@ -119,7 +120,7 @@ void QNEConnection::updatePath()
 
     p.cubicTo(ctr1, ctr2, m_endPos);
 
-    /*  p.lineTo(pos2); */
+    // p.lineTo(pos2);
     setPath(p);
 }
 
@@ -160,7 +161,7 @@ bool QNEConnection::load(QDataStream &ds, const QMap<quint64, QNEPort *> &portMa
     ds >> ptr1;
     ds >> ptr2;
     if (portMap.isEmpty()) {
-        COMMENT("Empty port map.", 0);
+        COMMENT("Empty port map.", 3);
         auto *port1 = reinterpret_cast<QNEPort *>(ptr1);
         auto *port2 = reinterpret_cast<QNEPort *>(ptr2);
         if (port2 && port1) {
@@ -173,6 +174,7 @@ bool QNEConnection::load(QDataStream &ds, const QMap<quint64, QNEPort *> &portMa
             }
         }
     } else if (portMap.contains(ptr1) && portMap.contains(ptr2)) {
+<<<<<<< HEAD
         COMMENT("Port map with elements: ptr1: " << ptr1 << ", ptr2: " << ptr2, 0);
         QNEPort *port1 = portMap[ptr1];
         QNEPort *port2 = portMap[ptr2];
@@ -191,32 +193,60 @@ bool QNEConnection::load(QDataStream &ds, const QMap<quint64, QNEPort *> &portMa
                 setEnd(dynamic_cast<QNEInputPort *>(port2));
             }
             COMMENT("After ifs.", 0);
+=======
+        COMMENT("Port map with elements: ptr1: " << ptr1 << ", ptr2: " << ptr2, 3);
+        QNEPort *port1 = portMap[ptr1];
+        QNEPort *port2 = portMap[ptr2];
+        COMMENT("Before if 1.", 3);
+        if (port1 && port2) {
+            COMMENT("Before if 2.", 3);
+            if (!port1->isOutput() && port2->isOutput()) {
+                COMMENT("Setting start 1.", 3);
+                setStart(dynamic_cast<QNEOutputPort *>(port2));
+                COMMENT("Setting end 1.", 3);
+                setEnd(dynamic_cast<QNEInputPort *>(port1));
+            } else if (port1->isOutput() && !port2->isOutput()) {
+                COMMENT("Setting start 2.", 3);
+                setStart(dynamic_cast<QNEOutputPort *>(port1));
+                COMMENT("Setting end 2.", 3);
+                setEnd(dynamic_cast<QNEInputPort *>(port2));
+            }
+            COMMENT("After ifs.", 3);
+>>>>>>> master
         }
     } else {
         return false;
     }
+<<<<<<< HEAD
     COMMENT("Updating pos from ports.", 0);
     updatePosFromPorts();
     COMMENT("Updating path.", 0);
     updatePath();
     COMMENT("returning.", 0);
+=======
+    COMMENT("Updating pos from ports.", 3);
+    updatePosFromPorts();
+    COMMENT("Updating path.", 3);
+    updatePath();
+    COMMENT("returning.", 3);
+>>>>>>> master
     return (m_start != nullptr && m_end != nullptr);
 }
 
 QNEPort *QNEConnection::otherPort(const QNEPort *port) const
 {
-    if (port == dynamic_cast<QNEPort *>(m_start)) {
-        return dynamic_cast<QNEPort *>(m_end);
+    if (port == m_start) {
+        return m_end;
     }
-    return dynamic_cast<QNEPort *>(m_start);
+    return m_start;
 }
 
-QNEOutputPort *QNEConnection::otherPort(const QNEInputPort *) const
+QNEOutputPort *QNEConnection::otherPort(const QNEInputPort * /*port*/) const
 {
     return m_start;
 }
 
-QNEInputPort *QNEConnection::otherPort(const QNEOutputPort *) const
+QNEInputPort *QNEConnection::otherPort(const QNEOutputPort * /*port*/) const
 {
     return m_end;
 }
@@ -226,29 +256,20 @@ QNEConnection::Status QNEConnection::status() const
     return m_status;
 }
 
-void QNEConnection::setStatus(const Status &status)
+void QNEConnection::setStatus(Status status)
 {
     m_status = status;
     switch (status) {
-    case Status::Inactive: {
-        setPen(QPen(m_inactiveClr, 3));
-        break;
-    }
-    case Status::Active: {
-        setPen(QPen(m_activeClr, 3));
-        break;
-    }
-    case Status::Invalid: {
-        setPen(QPen(m_invalidClr, 5));
-        break;
-    }
+    case Status::Inactive: setPen(QPen(m_inactiveClr, 3)); break;
+    case Status::Active:   setPen(QPen(m_activeClr, 3)); break;
+    case Status::Invalid:  setPen(QPen(m_invalidClr, 5)); break;
     }
 }
 
 void QNEConnection::updateTheme()
 {
-    if (ThemeManager::globalMngr) {
-        const ThemeAttrs attrs = ThemeManager::globalMngr->getAttrs();
+    if (ThemeManager::globalManager) {
+        const ThemeAttrs attrs = ThemeManager::globalManager->getAttrs();
         m_inactiveClr = attrs.qneConnection_false;
         m_activeClr = attrs.qneConnection_true;
         m_invalidClr = attrs.qneConnection_invalid;
@@ -256,7 +277,7 @@ void QNEConnection::updateTheme()
     }
 }
 
-void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
+void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget * /*widget*/)
 {
     painter->setClipRect(option->exposedRect);
     if (isSelected()) {

@@ -1,14 +1,14 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef ICNOTFOUNDEXCEPTION_H
-#define ICNOTFOUNDEXCEPTION_H
+#pragma once
 
 #include <stdexcept>
 
 class IC;
+
 class ICNotFoundException : public std::runtime_error
 {
 public:
@@ -19,4 +19,3 @@ private:
     IC *m_ic;
 };
 
-#endif /* ICNOTFOUNDEXCEPTION_H */

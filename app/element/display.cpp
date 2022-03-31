@@ -1,8 +1,9 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "common.h"
 #include "display.h"
+
+#include "common.h"
 #include "qneport.h"
 
 #include <QPainter>
@@ -11,7 +12,7 @@
 int Display::current_id_number = 0;
 
 Display::Display(QGraphicsItem *parent)
-    : GraphicElement(ElementType::DISPLAY, ElementGroup::OUTPUT, 8, 8, 0, 0, parent)
+    : GraphicElement(ElementType::Display, ElementGroup::Output, 8, 8, 0, 0, parent)
 {
     m_pixmapSkinName = {
         ":/output/counter/counter_off.png",
@@ -26,28 +27,71 @@ Display::Display(QGraphicsItem *parent)
     };
 
     setRotatable(false);
+    setHasColors(true);
     setCanChangeSkin(true);
     setOutputsOnTop(true);
-    updatePorts();
+    Display::updatePorts();
     setBottomPosition(58);
     setTopPosition(6);
     setHasLabel(true);
+    m_color = "Red";
+    m_color_number = 1;
 
+    COMMENT("Allocating pixmaps.", 3);
     setPixmap(m_pixmapSkinName[0]);
-    a = QPixmap(m_pixmapSkinName[1]);
-    b = QPixmap(m_pixmapSkinName[2]);
-    c = QPixmap(m_pixmapSkinName[3]);
-    d = QPixmap(m_pixmapSkinName[4]);
-    e = QPixmap(m_pixmapSkinName[5]);
-    f = QPixmap(m_pixmapSkinName[6]);
-    g = QPixmap(m_pixmapSkinName[7]);
-    dp = QPixmap(m_pixmapSkinName[8]);
+    a = QVector<QPixmap>(5, m_pixmapSkinName[1]);
+    b = QVector<QPixmap>(5, m_pixmapSkinName[2]);
+    c = QVector<QPixmap>(5, m_pixmapSkinName[3]);
+    d = QVector<QPixmap>(5, m_pixmapSkinName[4]);
+    e = QVector<QPixmap>(5, m_pixmapSkinName[5]);
+    f = QVector<QPixmap>(5, m_pixmapSkinName[6]);
+    g = QVector<QPixmap>(5, m_pixmapSkinName[7]);
+    dp = QVector<QPixmap>(5, m_pixmapSkinName[8]);
+
+    COMMENT("Converting segments to other colors.", 3);
+    convertAllColors(a);
+    convertAllColors(b);
+    convertAllColors(c);
+    convertAllColors(d);
+    convertAllColors(e);
+    convertAllColors(f);
+    convertAllColors(g);
+    convertAllColors(dp);
 
     setPortName("Display");
-    for (QNEPort *in : qAsConst(m_inputs)) {
+    for (auto *in : qAsConst(m_inputs)) {
         in->setRequired(false);
         in->setDefaultValue(0);
     }
+}
+
+void Display::convertAllColors(QVector<QPixmap> &maps)
+{
+    QImage tmp(maps[1].toImage());
+    maps[0] = convertColor(tmp, true, true, true);
+    maps[1] = convertColor(tmp, true, false, false);
+    maps[2] = convertColor(tmp, false, true, false);
+    maps[3] = convertColor(tmp, false, false, true);
+    maps[4] = convertColor(tmp, true, false, true);
+}
+
+QPixmap Display::convertColor(const QImage &src, bool red, bool green, bool blue)
+{
+    QImage tgt(src);
+    for (int y = 0; y < src.height(); y++) {
+        const uchar *src_line = src.scanLine(y);
+        uchar *tgt_line = tgt.scanLine(y);
+        for (int x = 0; x < src.width(); x++) {
+            src_line += 2;
+            uchar src_red = *src_line;
+            src_line += 2;
+            *tgt_line++ = blue ? src_red : 0;
+            *tgt_line++ = green ? src_red : 0;
+            *tgt_line++ = red ? src_red : 0;
+            tgt_line++;
+        }
+    }
+    return (QPixmap::fromImage(tgt));
 }
 
 void Display::refresh()
@@ -78,41 +122,69 @@ void Display::updatePorts()
 void Display::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     GraphicElement::paint(painter, option, widget);
-    if (input(0)->value() == true) { /* G */
-        painter->drawPixmap(QPoint(0, 0), g);
+    if (input(0)->value() == 1) { /* G */
+        painter->drawPixmap(QPoint(0, 0), g[m_color_number]);
     }
-    if (input(1)->value() == true) { /* F */
-        painter->drawPixmap(QPoint(0, 0), f);
+    if (input(1)->value() == 1) { /* F */
+        painter->drawPixmap(QPoint(0, 0), f[m_color_number]);
     }
-    if (input(2)->value() == true) { /* E */
-        painter->drawPixmap(QPoint(0, 0), e);
+    if (input(2)->value() == 1) { /* E */
+        painter->drawPixmap(QPoint(0, 0), e[m_color_number]);
     }
-    if (input(3)->value() == true) { /* D */
-        painter->drawPixmap(QPoint(0, 0), d);
+    if (input(3)->value() == 1) { /* D */
+        painter->drawPixmap(QPoint(0, 0), d[m_color_number]);
     }
-    if (input(4)->value() == true) { /* A */
-        painter->drawPixmap(QPoint(0, 0), a);
+    if (input(4)->value() == 1) { /* A */
+        painter->drawPixmap(QPoint(0, 0), a[m_color_number]);
     }
-    if (input(5)->value() == true) { /* B */
-        painter->drawPixmap(QPoint(0, 0), b);
+    if (input(5)->value() == 1) { /* B */
+        painter->drawPixmap(QPoint(0, 0), b[m_color_number]);
     }
-    if (input(6)->value() == true) { /* DP */
-        painter->drawPixmap(QPoint(0, 0), dp);
+    if (input(6)->value() == 1) { /* DP */
+        painter->drawPixmap(QPoint(0, 0), dp[m_color_number]);
     }
-    if (input(7)->value() == true) { /* C */
-        painter->drawPixmap(QPoint(0, 0), c);
+    if (input(7)->value() == 1) { /* C */
+        painter->drawPixmap(QPoint(0, 0), c[m_color_number]);
     }
+}
+
+void Display::setColor(const QString &color)
+{
+    m_color = color;
+    if (color == "White") {
+        m_color_number = 0;
+    } else if (color == "Red") {
+        m_color_number = 1;
+    } else if (color == "Green") {
+        m_color_number = 2;
+    } else if (color == "Blue") {
+        m_color_number = 3;
+    } else if (color == "Purple") {
+        m_color_number = 4;
+    }
+    refresh();
+}
+
+QString Display::getColor() const
+{
+    return m_color;
+}
+
+void Display::save(QDataStream &ds) const
+{
+    GraphicElement::save(ds);
+    ds << getColor();
 }
 
 void Display::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
 {
     GraphicElement::load(ds, portMap, version);
-    //  qDebug( ) << "Version: " << version;
+    // qDebug() << "Version: " << version;
     /*
-     * 0,7,2,1,3,4,5,6
-     * 7,5,4,2,1,4,6,3,0
-     * 4,5,7,3,2,1,0,6
-     * 2,1,4,5,0,7,3,6
+     * 0, 7, 2, 1, 3, 4, 5, 6
+     * 7, 5, 4, 2, 1, 4, 6, 3, 0
+     * 4, 5, 7, 3, 2, 1, 0, 6
+     * 2, 1, 4, 5, 0, 7, 3, 6
      */
     if (version < 1.6) {
         COMMENT("Remapping inputs", 0);
@@ -133,6 +205,11 @@ void Display::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double ve
         }
         setInputs(aux);
         updatePorts();
+    }
+    if (version >= 3.1) {
+        QString clr;
+        ds >> clr;
+        setColor(clr);
     }
 }
 

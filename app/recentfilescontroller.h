@@ -1,15 +1,14 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef RECENTFILESCONTROLLER_H
-#define RECENTFILESCONTROLLER_H
+#pragma once
 
 #include <QObject>
 
 /**
- * Class to hold the list of recent open files and IC
+ * Class to hold the list of recent open files
  */
 class RecentFilesController : public QObject
 {
@@ -33,4 +32,3 @@ private:
     QStringList m_files;
 };
 
-#endif /* RECENTFILESCONTROLLER_H */

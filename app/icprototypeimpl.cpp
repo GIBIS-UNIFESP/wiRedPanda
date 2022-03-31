@@ -1,19 +1,19 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "icprototypeimpl.h"
 
-#include <QFile>
-#include <QFileInfo>
-
 #include "common.h"
 #include "elementfactory.h"
 #include "ic.h"
-#include "icprototype.h"
 #include "icmapping.h"
+#include "icprototype.h"
 #include "qneconnection.h"
 #include "qneport.h"
 #include "serializationfunctions.h"
+
+#include <QFile>
+#include <QFileInfo>
 
 ICPrototypeImpl::~ICPrototypeImpl()
 {
@@ -37,6 +37,7 @@ void ICPrototypeImpl::sortPorts(QVector<QNEPort *> &map)
     std::stable_sort(map.begin(), map.end(), comparePorts);
 }
 
+<<<<<<< HEAD
 bool ICPrototypeImpl::updateLocalIC(const QString &fileName, const QString &dirName)
 {
     COMMENT("Recursive call to sub ics.", 0);
@@ -75,6 +76,8 @@ bool ICPrototypeImpl::updateLocalIC(const QString &fileName, const QString &dirN
     return true;
 }
 
+=======
+>>>>>>> master
 void ICPrototypeImpl::loadFile(const QString &fileName)
 {
     COMMENT("Reading ic", 0);
@@ -82,10 +85,11 @@ void ICPrototypeImpl::loadFile(const QString &fileName)
     QFile file(fileName);
     if (file.open(QFile::ReadOnly)) {
         QDataStream ds(&file);
-        QList<QGraphicsItem *> items = SerializationFunctions::load(ds, fileName);
-        for (QGraphicsItem *item : qAsConst(items)) {
+        QList<QGraphicsItem *> items = SerializationFunctions::load(ds);
+        for (auto *item : qAsConst(items)) {
             loadItem(item);
         }
+        file.close();
     }
     setInputSize(m_inputs.size());
     setOutputSize(m_outputs.size());
@@ -101,9 +105,6 @@ void ICPrototypeImpl::loadInputs()
     for (int portIndex = 0; portIndex < getInputSize(); ++portIndex) {
         GraphicElement *elm = m_inputs.at(portIndex)->graphicElement();
         QString lb = elm->getLabel();
-        if (lb.isEmpty()) {
-            lb = elm->objectName();
-        }
         if (!m_inputs.at(portIndex)->portName().isEmpty()) {
             lb += " ";
             lb += m_inputs.at(portIndex)->portName();
@@ -120,9 +121,6 @@ void ICPrototypeImpl::loadOutputs()
     for (int portIndex = 0; portIndex < getOutputSize(); ++portIndex) {
         GraphicElement *elm = m_outputs.at(portIndex)->graphicElement();
         QString lb = elm->getLabel();
-        if (lb.isEmpty()) {
-            lb = elm->objectName();
-        }
         if (!m_outputs.at(portIndex)->portName().isEmpty()) {
             lb += " ";
             lb += m_outputs.at(portIndex)->portName();
@@ -136,25 +134,27 @@ void ICPrototypeImpl::loadOutputs()
 
 void ICPrototypeImpl::loadInputElement(GraphicElement *elm)
 {
-    auto const outputs = elm->outputs();
-    for (QNEOutputPort *port : outputs) {
-        GraphicElement *nodeElm = ElementFactory::buildElement(
-            ElementType::NODE); // Problem here. Inputs and outputs are transformed into nodes. And I can not use created connections with new elements...
-        nodeElm->setPos(elm->pos()); // Solution 1: Create new connections cloning all circuit.
-        nodeElm->setLabel(elm->getLabel()); // Solution 2: Load and save ic circuit out of this code...
-        QNEInputPort *nodeInput = nodeElm->input();
+    const auto outputs = elm->outputs();
+    for (auto *port : outputs) {
+        auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
+        nodeElm->setPos(elm->pos());
+        nodeElm->setLabel(elm->getLabel());
+        if (elm->getLabel().isEmpty()) {
+            nodeElm->setLabel(ElementFactory::typeToText(elm->elementType()));
+        }
+        auto *nodeInput = nodeElm->input();
         nodeInput->setPos(port->pos());
         nodeInput->setName(port->getName());
         nodeInput->setRequired(false);
         nodeInput->setDefaultValue(port->value());
         nodeInput->setValue(port->value());
-        if (elm->elementType() == ElementType::CLOCK) {
+        if (elm->elementType() == ElementType::Clock) {
             nodeInput->setRequired(true);
         }
         m_inputs.append(nodeInput);
         m_elements.append(nodeElm);
-        QList<QNEConnection *> conns = port->connections();
-        for (QNEConnection *conn : conns) { // Solution 3. Revert this process before saving and then make it again after saving...
+        auto conns = port->connections();
+        for (auto *conn : conns) {
             if (port == conn->start()) {
                 conn->setStart(nodeElm->output());
             }
@@ -165,18 +165,21 @@ void ICPrototypeImpl::loadInputElement(GraphicElement *elm)
 
 void ICPrototypeImpl::loadOutputElement(GraphicElement *elm)
 {
-    auto const inputs = elm->inputs();
-    for (QNEInputPort *port : inputs) {
-        GraphicElement *nodeElm = ElementFactory::buildElement(ElementType::NODE);
+    const auto inputs = elm->inputs();
+    for (auto *port : inputs) {
+        auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
         nodeElm->setPos(elm->pos());
         nodeElm->setLabel(elm->getLabel());
-        QNEOutputPort *nodeOutput = nodeElm->output();
+        if (elm->getLabel().isEmpty()) {
+            nodeElm->setLabel(ElementFactory::typeToText(elm->elementType()));
+        }
+        auto *nodeOutput = nodeElm->output();
         nodeOutput->setPos(port->pos());
         nodeOutput->setName(port->getName());
         m_outputs.append(nodeOutput);
         m_elements.append(nodeElm);
-        QList<QNEConnection *> conns = port->connections();
-        for (QNEConnection *conn : conns) {
+        auto conns = port->connections();
+        for (auto *conn : conns) {
             if (port == conn->end()) {
                 conn->setEnd(nodeElm->input());
             }
@@ -189,9 +192,9 @@ void ICPrototypeImpl::loadItem(QGraphicsItem *item)
     if (item->type() == GraphicElement::Type) {
         auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
         if (elm) {
-            if (elm->elementGroup() == ElementGroup::INPUT) {
+            if (elm->elementGroup() == ElementGroup::Input) {
                 loadInputElement(elm);
-            } else if (elm->elementGroup() == ElementGroup::OUTPUT) {
+            } else if (elm->elementGroup() == ElementGroup::Output) {
                 loadOutputElement(elm);
             } else {
                 m_elements.append(elm);
@@ -255,7 +258,7 @@ QNEPort *ICPrototypeImpl::getOutput(int index)
     return m_outputs[index];
 }
 
-ICMapping *ICPrototypeImpl::generateMapping(const QString &fileName) const
+ICMapping *ICPrototypeImpl::generateMapping() const
 {
-    return new ICMapping(fileName, m_elements, m_inputs, m_outputs);
+    return new ICMapping(m_elements, m_inputs, m_outputs);
 }

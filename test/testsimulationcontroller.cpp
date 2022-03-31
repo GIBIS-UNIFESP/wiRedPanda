@@ -1,48 +1,48 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "testsimulationcontroller.h"
 
 #include "and.h"
+#include "editor.h"
 #include "elementmapping.h"
-#include "graphicelement.h"
 #include "inputbutton.h"
 #include "led.h"
 #include "qneconnection.h"
 
-void TestSimulationController::init()
-{
-    editor = new Editor(this);
-}
-
-void TestSimulationController::cleanup()
-{
-    editor->deleteLater();
-}
+#include <QTest>
 
 void TestSimulationController::testCase1()
 {
-    InputButton *btn1 = new InputButton();
-    InputButton *btn2 = new InputButton();
-    And *andItem = new And();
-    Led *led = new Led();
-    QNEConnection *conn = new QNEConnection();
-    QNEConnection *conn2 = new QNEConnection();
-    QNEConnection *conn3 = new QNEConnection();
-    editor->getScene()->addItem(led);
-    editor->getScene()->addItem(andItem);
-    editor->getScene()->addItem(btn1);
-    editor->getScene()->addItem(btn2);
-    editor->getScene()->addItem(conn);
-    editor->getScene()->addItem(conn2);
-    editor->getScene()->addItem(conn3);
+    auto *editor = new Editor(this);
+    editor->setupWorkspace();
+
+    auto *btn1 = new InputButton();
+    auto *btn2 = new InputButton();
+    auto *andItem = new And();
+    auto *led = new Led();
+    auto *conn = new QNEConnection();
+    auto *conn2 = new QNEConnection();
+    auto *conn3 = new QNEConnection();
+
+    auto *scene = editor->getScene();
+    scene->addItem(led);
+    scene->addItem(andItem);
+    scene->addItem(btn1);
+    scene->addItem(btn2);
+    scene->addItem(conn);
+    scene->addItem(conn2);
+    scene->addItem(conn3);
+
     conn->setStart(btn1->output());
     conn->setEnd(andItem->input(0));
     conn2->setStart(btn2->output());
     conn2->setEnd(andItem->input(1));
     conn3->setStart(andItem->output());
     conn3->setEnd(led->input());
-    QVector<GraphicElement *> elms(ElementMapping::sortGraphicElements(editor->getScene()->getElements()));
+
+    const auto elms(ElementMapping::sortGraphicElements(scene->getElements()));
+
     QVERIFY(elms.at(0) == btn1 || elms.at(1) == btn1);
     QVERIFY(elms.at(0) == btn2 || elms.at(1) == btn2);
     QVERIFY(elms.at(2) == andItem);

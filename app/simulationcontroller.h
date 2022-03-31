@@ -1,10 +1,9 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef SIMULATIONCONTROLLER_H
-#define SIMULATIONCONTROLLER_H
+#pragma once
 
 #include <QObject>
 #include <QTimer>
@@ -20,6 +19,7 @@ class Scene;
 class SimulationController : public QObject
 {
     Q_OBJECT
+
 public:
     // If m_shouldRestart == true, then the simulation controller will be cleared the next time that
     // it is updated.
@@ -32,17 +32,20 @@ public:
     static QVector<GraphicElement *> sortElements(QVector<GraphicElement *> elms);
 
     bool isRunning();
+    void clear();
+    void startTimer();
+
 signals:
 
 public slots:
     void update();
     void stop();
     void start();
-    void clear();
+    void tic();
     void updateView();
     void updateAll();
     bool canRun();
-    void reSortElms();
+    void reSortElements();
 
 private:
     void updatePort(QNEOutputPort *port);
@@ -56,4 +59,3 @@ private:
     QTimer m_viewTimer;
 };
 
-#endif /* SIMULATIONCONTROLLER_H */

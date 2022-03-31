@@ -7,14 +7,175 @@
     <x>0</x>
     <y>0</y>
     <width>202</width>
-    <height>409</height>
+    <height>511</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_value">
+     <property name="text">
+      <string>Value:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="0">
+    <widget class="QDoubleSpinBox" name="doubleSpinBoxFrequency">
+     <property name="specialValueText">
+      <string/>
+     </property>
+     <property name="suffix">
+      <string> Hz</string>
+     </property>
+     <property name="decimals">
+      <number>1</number>
+     </property>
+     <property name="minimum">
+      <double>0.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>50.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="0">
+    <widget class="QLabel" name="label_color">
+     <property name="text">
+      <string>Color:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="0">
+    <widget class="QComboBox" name="comboBoxAudio">
+     <item>
+      <property name="text">
+       <string>C6</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>D6</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>E6</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>F6</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>G6</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>A7</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>B7</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>C7</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_inputs">
+     <property name="text">
+      <string>Input Ports:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="0">
+    <widget class="QLabel" name="label_audio">
+     <property name="text">
+      <string>Audio</string>
+     </property>
+    </widget>
+   </item>
    <item row="13" column="0">
+    <widget class="QComboBox" name="comboBoxColor">
+     <property name="currentText">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLineEdit" name="lineEditElementLabel"/>
+   </item>
+   <item row="18" column="0">
+    <widget class="QLabel" name="label_skin">
+     <property name="text">
+      <string>Skin</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_outputs">
+     <property name="text">
+      <string>Output Ports:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QComboBox" name="comboBoxOutputSz"/>
+   </item>
+   <item row="17" column="0">
+    <widget class="QLineEdit" name="lineEditTrigger"/>
+   </item>
+   <item row="10" column="0">
+    <widget class="QLabel" name="label_frequency">
+     <property name="text">
+      <string>Frequency:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_labels">
+     <property name="text">
+      <string>Label:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QComboBox" name="comboBoxInputSz"/>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_type">
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Type&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::RichText</enum>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0">
+    <widget class="QCheckBox" name="checkBoxLocked">
+     <property name="text">
+      <string>Locked</string>
+     </property>
+    </widget>
+   </item>
+   <item row="19" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="sizeConstraint">
       <enum>QLayout::SetNoConstraint</enum>
@@ -66,136 +227,15 @@
      </item>
     </layout>
    </item>
-   <item row="12" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Skin</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QComboBox" name="comboBoxInputSz"/>
-   </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="label_color">
-     <property name="text">
-      <string>Color:</string>
-     </property>
-    </widget>
-   </item>
    <item row="8" column="0">
-    <widget class="QLabel" name="label_audio">
-     <property name="text">
-      <string>Audio</string>
-     </property>
-    </widget>
+    <widget class="QComboBox" name="comboBoxValue"/>
    </item>
-   <item row="7" column="0">
-    <widget class="QComboBox" name="comboBoxColor">
-     <property name="currentText">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_inputs">
-     <property name="text">
-      <string>Input Ports:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="0">
+   <item row="16" column="0">
     <widget class="QLabel" name="label_trigger">
      <property name="text">
       <string>Trigger</string>
      </property>
     </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_frequency">
-     <property name="text">
-      <string>Frequency:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QDoubleSpinBox" name="doubleSpinBoxFrequency">
-     <property name="specialValueText">
-      <string/>
-     </property>
-     <property name="suffix">
-      <string> Hz</string>
-     </property>
-     <property name="decimals">
-      <number>1</number>
-     </property>
-     <property name="minimum">
-      <double>0.000000000000000</double>
-     </property>
-     <property name="maximum">
-      <double>50.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>0.100000000000000</double>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="0">
-    <widget class="QComboBox" name="comboBoxAudio">
-     <item>
-      <property name="text">
-       <string>C6</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>D6</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>E6</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>F6</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>G6</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>A7</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>B7</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>C7</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLineEdit" name="lineEditElementLabel"/>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label_labels">
-     <property name="text">
-      <string>Label:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="11" column="0">
-    <widget class="QLineEdit" name="lineEditTrigger"/>
    </item>
   </layout>
  </widget>

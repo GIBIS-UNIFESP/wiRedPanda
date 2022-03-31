@@ -1,17 +1,15 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef DFLIPFLOP_H
-#define DFLIPFLOP_H
+#pragma once
 
 #include "graphicelement.h"
 
 class DFlipFlop : public GraphicElement
 {
-    bool lastClk;
-    bool lastValue;
+    Q_OBJECT
 
 public:
     explicit DFlipFlop(QGraphicsItem *parent = nullptr);
@@ -19,6 +17,9 @@ public:
 
     void updatePorts() override;
     void setSkin(bool defaultSkin, const QString &filename) override;
+
+private:
+    bool lastClk;
+    bool lastValue;
 };
 
-#endif // DFLIPFLOP_H

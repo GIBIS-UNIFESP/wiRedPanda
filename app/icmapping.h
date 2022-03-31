@@ -1,10 +1,9 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef ICMAPPING_H
-#define ICMAPPING_H
+#pragma once
 
 #include "elementmapping.h"
 #include "graphicelement.h"
@@ -22,7 +21,7 @@ private:
     QVector<LogicElement *> m_outputs;
 
 public:
-    ICMapping(const QString &file, const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs);
+    ICMapping(const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs);
 
     ~ICMapping() override;
 
@@ -34,4 +33,3 @@ public:
     LogicElement *getOutput(int index);
 };
 
-#endif // ICMAPPING_H

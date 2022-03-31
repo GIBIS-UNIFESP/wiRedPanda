@@ -1,4 +1,4 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "inputswitch.h"
@@ -10,13 +10,13 @@
 int InputSwitch::current_id_number = 0;
 
 InputSwitch::InputSwitch(QGraphicsItem *parent)
-    : GraphicElement(ElementType::SWITCH, ElementGroup::INPUT, 0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::Switch, ElementGroup::Input, 0, 0, 1, 1, parent)
 {
     m_pixmapSkinName = {
         ":/input/switchOff.png",
         ":/input/switchOn.png",
     };
-
+    locked = false;
     setOutputsOnTop(false);
     setCanChangeSkin(true);
     setRotatable(false);
@@ -27,13 +27,15 @@ InputSwitch::InputSwitch(QGraphicsItem *parent)
     setPortName("Switch");
 }
 
-bool InputSwitch::getOn() const
+bool InputSwitch::getOn(int port) const
 {
+    Q_UNUSED(port);
     return on;
 }
 
-void InputSwitch::setOn(bool value)
+void InputSwitch::setOn(bool value, int port)
 {
+    Q_UNUSED(port);
     on = value;
     if (!disabled()) {
         output()->setValue(on);
@@ -47,9 +49,8 @@ void InputSwitch::setOn(bool value)
 
 void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
+    if ((!locked) && (event->button() == Qt::LeftButton)) {
         setOn(!on);
-
         event->accept();
     }
     QGraphicsItem::mousePressEvent(event);
@@ -59,12 +60,16 @@ void InputSwitch::save(QDataStream &ds) const
 {
     GraphicElement::save(ds);
     ds << on;
+    ds << locked;
 }
 
 void InputSwitch::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
 {
     GraphicElement::load(ds, portMap, version);
     ds >> on;
+    if (version >= 3.1) {
+        ds >> locked;
+    }
     setOn(on);
     output()->setValue(on);
 }

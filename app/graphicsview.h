@@ -1,10 +1,9 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef GRAPHICSVIEW_H
-#define GRAPHICSVIEW_H
+#pragma once
 
 #include <QGraphicsView>
 
@@ -13,10 +12,10 @@ class GraphicsViewZoom;
 class GraphicsView : public QGraphicsView
 {
     Q_OBJECT
+
 public:
     explicit GraphicsView(QWidget *parent = nullptr);
 
-    /* QWidget interface */
     GraphicsViewZoom *gvzoom() const;
 
 protected:
@@ -35,4 +34,3 @@ private:
     GraphicsViewZoom *m_gvzoom;
 };
 
-#endif /* GRAPHICSVIEW_H */

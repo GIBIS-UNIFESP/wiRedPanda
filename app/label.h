@@ -1,18 +1,18 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef LABEL_H
-#define LABEL_H
-
-#include <QLabel>
+#pragma once
 
 #include "elementtype.h"
+
+#include <QLabel>
 
 class Label : public QLabel
 {
     Q_OBJECT
+
 public:
     explicit Label(QWidget *parent = nullptr);
 
@@ -38,4 +38,3 @@ private:
     QString m_auxData;
 };
 
-#endif /* LABEL_H */

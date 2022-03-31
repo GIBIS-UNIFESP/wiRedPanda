@@ -1,4 +1,4 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "mux.h"
@@ -6,13 +6,13 @@
 #include "qneport.h"
 
 Mux::Mux(QGraphicsItem *parent)
-    : GraphicElement(ElementType::MUX, ElementGroup::MUX, 3, 3, 1, 1, parent)
+    : GraphicElement(ElementType::Mux, ElementGroup::Mux, 3, 3, 1, 1, parent)
 {
     m_pixmapSkinName = {":/basic/mux.png"};
 
     setPixmap(m_pixmapSkinName[0]);
     setRotatable(true);
-    updatePorts();
+    Mux::updatePorts();
     setPortName("MUX");
     setCanChangeSkin(true);
     input(0)->setName("0");

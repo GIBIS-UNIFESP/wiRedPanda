@@ -1,10 +1,12 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef COMMANDS_H
-#define COMMANDS_H
+#pragma once
+
+#include "elementtype.h"
+#include "globalproperties.h"
 
 #include <QCoreApplication>
 #include <QGraphicsScene>
@@ -12,24 +14,21 @@
 #include <QPointF>
 #include <QUndoCommand>
 
-#include "elementtype.h"
-#include "globalproperties.h"
-
 class Scene;
 class Editor;
 class GraphicElement;
 class QGraphicsItem;
 class QNEConnection;
 
-void storeIds( const QList< QGraphicsItem* > &items, QVector< int > &ids );
-void storeOtherIds( const QList< QGraphicsItem* > &connections, const QVector< int > &ids, QVector< int > &otherIds );
-QList< QGraphicsItem* > loadList( const QList< QGraphicsItem* > &aItems, QVector< int > &ids, QVector< int > &otherIds );
-QList< QGraphicsItem* > findItems( const QVector< int > &ids );
-QList< GraphicElement* > findElements( const QVector< int > &ids );
-void saveItems( QByteArray &itemData, const QList< QGraphicsItem* > &items, const QVector< int > &otherIds );
-void addItems( Editor *editor, const QList< QGraphicsItem* >& items );
-QList< QGraphicsItem* > loadItems( QByteArray &itemData, const QVector< int > &ids, Editor *editor, QVector< int > &otherIds );
-void deleteItems( const QList< QGraphicsItem* > &items, Editor *editor );
+QList<GraphicElement *> findElements(const QVector<int> &ids);
+QList<QGraphicsItem *> findItems(const QVector<int> &ids);
+QList<QGraphicsItem *> loadItems(QByteArray &itemData, const QVector<int> &ids, Editor *editor, QVector<int> &otherIds);
+QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &aItems, QVector<int> &ids, QVector<int> &otherIds);
+void addItems(Editor *editor, const QList<QGraphicsItem *> &items);
+void deleteItems(const QList<QGraphicsItem *> &items, Editor *editor);
+void saveItems(QByteArray &itemData, const QList<QGraphicsItem *> &items, const QVector<int> &otherIds);
+void storeIds(const QList<QGraphicsItem *> &items, QVector<int> &ids);
+void storeOtherIds(const QList<QGraphicsItem *> &connections, const QVector<int> &ids, QVector<int> &otherIds);
 
 class AddItemsCommand : public QUndoCommand
 {
@@ -68,7 +67,7 @@ public:
 
 private:
     QByteArray m_itemData;
-    Editor * m_editor;
+    Editor *m_editor;
     QVector<int> m_ids, m_otherIds;
 };
 
@@ -105,7 +104,7 @@ public:
 
 private:
     QByteArray m_itemData;
-    Editor * m_editor;
+    Editor *m_editor;
     QVector<int> m_ids, m_otherIds;
 };
 
@@ -124,7 +123,7 @@ public:
     //! \param aItems are the items to be rotated
     //! \param angle defines how many degrees will be rotated, in clockwise direction, by this command.
     //!
-    explicit RotateCommand(const QList<GraphicElement *> &aItems, int angle, QUndoCommand *parent = nullptr);
+    explicit RotateCommand(const QList<GraphicElement *> &aItems, int angle, Editor *aEditor, QUndoCommand *parent = nullptr);
 
     //!
     //! \brief undo reverts a change on the editor made by RotateCommand::redo
@@ -145,6 +144,7 @@ private:
     int m_angle;
     QVector<int> m_ids;
     QVector<QPointF> m_positions;
+    Editor *m_editor;
 };
 
 //!
@@ -153,10 +153,11 @@ private:
 class MoveCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(MoveCommand)
+
 public:
     enum { Id = 104 };
 
-    explicit MoveCommand(const QList<GraphicElement *> &list, const QList<QPointF> &aOldPositions, QUndoCommand *parent = nullptr);
+    explicit MoveCommand(const QList<GraphicElement *> &list, const QList<QPointF> &aOldPositions, Editor *aEditor, QUndoCommand *parent = nullptr);
 
     void undo() Q_DECL_OVERRIDE;
     void redo() Q_DECL_OVERRIDE;
@@ -169,7 +170,7 @@ private:
     QVector<int> m_ids;
     QList<QPointF> m_oldPositions;
     QList<QPointF> m_newPositions;
-
+    Editor *m_editor;
     QPointF m_offset;
 };
 
@@ -179,6 +180,7 @@ private:
 class UpdateCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(UpdateCommand)
+
 public:
     enum { Id = 105 };
 
@@ -223,6 +225,7 @@ private:
 class MorphCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(MorphCommand)
+
 public:
     enum { Id = 107 };
 
@@ -246,6 +249,7 @@ private:
 class ChangeInputSZCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(ChangeInputSZCommand)
+
 public:
     enum { Id = 108 };
 
@@ -275,7 +279,7 @@ class FlipCommand : public QUndoCommand
     enum { Id = 109 };
 
 public:
-    explicit FlipCommand(const QList<GraphicElement *> &aItems, int aAxis, QUndoCommand *parent = nullptr);
+    explicit FlipCommand(const QList<GraphicElement *> &aItems, int aAxis, Editor *aEditor, QUndoCommand *parent = nullptr);
     void undo() Q_DECL_OVERRIDE;
     void redo() Q_DECL_OVERRIDE;
 
@@ -289,6 +293,32 @@ private:
     QVector<int> m_ids;
     QVector<QPointF> m_positions;
     QPointF m_minPos, m_maxPos;
+    Editor *m_editor;
 };
 
-#endif /* COMMANDS_H */
+class ChangeOutputSZCommand : public QUndoCommand
+{
+    Q_DECLARE_TR_FUNCTIONS(ChangeOutputSZCommand)
+
+public:
+    enum { Id = 110 };
+
+    explicit ChangeOutputSZCommand(const QVector<GraphicElement *> &elements, int newOutputSize, Editor *editor, QUndoCommand *parent = nullptr);
+
+    void undo() Q_DECL_OVERRIDE;
+    void redo() Q_DECL_OVERRIDE;
+
+    int id() const Q_DECL_OVERRIDE
+    {
+        return Id;
+    }
+
+private:
+    QVector<int> m_elms;
+    QVector<int> m_order;
+    Editor *m_editor;
+    QGraphicsScene *m_scene;
+    QByteArray m_oldData;
+    int m_newOutputSize;
+};
+

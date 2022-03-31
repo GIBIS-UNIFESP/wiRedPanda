@@ -1,13 +1,12 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "or.h"
 
 Or::Or(QGraphicsItem *parent)
-    : GraphicElement(ElementType::OR, ElementGroup::GATE, 2, 8, 1, 1, parent)
+    : GraphicElement(ElementType::Or, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
     m_pixmapSkinName = {":/basic/or.png"};
-
     setOutputsOnTop(true);
     setPixmap(m_pixmapSkinName[0]);
     setCanChangeSkin(true);

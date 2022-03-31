@@ -1,12 +1,36 @@
 <RCC>
     <qresource prefix="/input">
+        <file>0.png</file>
         <file>1.png</file>
         <file>buttonOff.png</file>
         <file>buttonOn.png</file>
         <file>clock0.png</file>
         <file>clock1.png</file>
+        <file>input.qrc</file>
+        <file>rotary/rotary_10.png</file>
+        <file>rotary/rotary_16.png</file>
+        <file>rotary/rotary_2.png</file>
+        <file>rotary/rotary_4.png</file>
+        <file>rotary/rotary_8.png</file>
+        <file>rotary/rotary_arrow_0.png</file>
+        <file>rotary/rotary_arrow_1.png</file>
+        <file>rotary/rotary_arrow_10.png</file>
+        <file>rotary/rotary_arrow_11.png</file>
+        <file>rotary/rotary_arrow_12.png</file>
+        <file>rotary/rotary_arrow_13.png</file>
+        <file>rotary/rotary_arrow_14.png</file>
+        <file>rotary/rotary_arrow_15.png</file>
+        <file>rotary/rotary_arrow_2.png</file>
+        <file>rotary/rotary_arrow_3.png</file>
+        <file>rotary/rotary_arrow_4.png</file>
+        <file>rotary/rotary_arrow_5.png</file>
+        <file>rotary/rotary_arrow_6.png</file>
+        <file>rotary/rotary_arrow_7.png</file>
+        <file>rotary/rotary_arrow_8.png</file>
+        <file>rotary/rotary_arrow_9.png</file>
+        <file>rotary/rotary_icon.png</file>
         <file>switchOff.png</file>
         <file>switchOn.png</file>
-        <file>0.png</file>
     </qresource>
+    <qresource prefix="/"/>
 </RCC>

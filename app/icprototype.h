@@ -1,10 +1,9 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef ICPROTOTYPE_H
-#define ICPROTOTYPE_H
+#pragma once
 
 #include "icprototypeimpl.h"
 
@@ -18,7 +17,7 @@ class IC;
 class ICPrototype
 {
 public:
-    ICPrototype(const QString &fileName);
+    explicit ICPrototype(const QString &fileName);
     void reload();
 
     void fileName(const QString &newFileName);
@@ -28,6 +27,7 @@ public:
     void insertICObserver(IC *ic);
     void removeICObserver(IC *ic);
 
+<<<<<<< HEAD
     /**
      * @brief updateLocalIC: Updates all subIC paths inside the file of this prototype.
      * While saving a local project, WiredPanda copies all ICs e subICs to a project local directory.
@@ -35,6 +35,8 @@ public:
      */
     bool updateLocalIC(const QString &fileName, const QString &icDirName);
 
+=======
+>>>>>>> master
     int inputSize() const;
     int outputSize() const;
 
@@ -55,4 +57,3 @@ private:
     QVector<IC *> m_icObservers;
 };
 
-#endif // ICPROTOTYPE_H

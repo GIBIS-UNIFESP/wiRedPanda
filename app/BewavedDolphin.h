@@ -1,18 +1,17 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef BEWAVEDDOLPHIN_H
-#define BEWAVEDDOLPHIN_H
+#pragma once
 
 #include <QFileInfo>
 #include <QItemDelegate>
-#include <QItemSelection>
 #include <QMainWindow>
-#include <QSaveFile>
 #include <QStandardItemModel>
 
+class QSaveFile;
+class QItemSelection;
 class Editor;
 class GraphicsView;
 class MainWindow;
@@ -27,10 +26,12 @@ namespace Ui
 class BewavedDolphin;
 }
 
-enum class PlotType { number, line };
+enum class PlotType { Number, Line };
 
 class SignalModel : public QStandardItemModel
 {
+    Q_OBJECT
+
 public:
     SignalModel(int rows, int inputs, int columns, QObject *parent = nullptr);
     Qt::ItemFlags flags(const QModelIndex &index) const override;
@@ -41,6 +42,8 @@ private:
 
 class SignalDelegate : public QItemDelegate
 {
+    Q_OBJECT
+
 public:
     SignalDelegate(int margin, QObject *parent);
 
@@ -57,11 +60,12 @@ class BewavedDolphin : public QMainWindow
 public:
     explicit BewavedDolphin(Editor *editor, QWidget *parent = nullptr);
     ~BewavedDolphin() override;
-    bool createWaveform(const QString& filename);
+    bool createWaveform(const QString &filename);
     void show();
     void print();
 
 private slots:
+<<<<<<< HEAD:app/BewavedDolphin.h
     
     
     /* Menu File */
@@ -96,6 +100,32 @@ private slots:
     /* Menu Help */
     void actionAboutTriggered();
     void actionAboutQtTriggered();
+=======
+    void on_actionExit_triggered();
+    void on_actionSet_to_0_triggered();
+    void on_actionSet_to_1_triggered();
+    void on_actionInvert_triggered();
+    void on_actionSet_clock_wave_triggered();
+    void on_actionCombinational_triggered();
+    void on_actionSet_Length_triggered();
+    void on_actionZoom_out_triggered();
+    void on_actionZoom_In_triggered();
+    void on_actionReset_Zoom_triggered();
+    void on_actionZoom_Range_triggered();
+    void on_actionClear_triggered();
+    void on_actionCopy_triggered();
+    void on_actionPaste_triggered();
+    void on_actionCut_triggered();
+    void on_actionSave_as_triggered();
+    void on_actionSave_triggered();
+    void on_actionLoad_triggered();
+    void on_actionShowValues_triggered();
+    void on_actionShowCurve_triggered();
+    void on_actionExport_to_PNG_triggered();
+    void on_actionExport_to_PDF_triggered();
+    void on_actionAbout_triggered();
+    void on_actionAbout_Qt_triggered();
+>>>>>>> master:app/bewaveddolphin.h
 
 private:
     Ui::BewavedDolphin *m_ui;
@@ -108,6 +138,8 @@ private:
 
     QVector<GraphicElement *> m_inputs;
     QVector<GraphicElement *> m_outputs;
+    QVector<char> m_oldInputValues;
+    int m_input_ports;
     QGraphicsScene *m_scene;
     QTableView *m_signalTableView;
     QStandardItemModel *m_model;
@@ -127,7 +159,7 @@ private:
     QPixmap m_risingBlue;
 
     bool loadElements();
-    void loadNewTable(QStringList &input_labels, QStringList &output_labels);
+    void loadNewTable(const QStringList &input_labels, const QStringList &output_labels);
     QVector<char> loadSignals(QStringList &input_labels, QStringList &output_labels);
     void run();
     void setLength(int sim_length, bool run_simulation = true);
@@ -149,8 +181,11 @@ private:
     void zoomChanged();
     bool checkSave();
 
+    void associateToWiredPanda(const QString &fname);
+    void restoreInputs();
+    void resizeScene();
+
 protected:
+    void resizeEvent(QResizeEvent *event) override;
     void closeEvent(QCloseEvent *e) override;
 };
-
-#endif // BEWAVEDDOLPHIN_H

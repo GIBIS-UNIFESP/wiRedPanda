@@ -1,10 +1,11 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "and.h"
+#include "elementfactory.h"
 
 And::And(QGraphicsItem *parent)
-    : GraphicElement(ElementType::AND, ElementGroup::GATE, 2, 8, 1, 1, parent)
+    : GraphicElement(ElementType::And, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
     m_pixmapSkinName = {":/basic/and.png"};
 
@@ -13,7 +14,6 @@ And::And(QGraphicsItem *parent)
     updatePorts();
     setCanChangeSkin(true);
     setPortName("AND");
-    setToolTip("AND");
 }
 
 void And::setSkin(bool defaultSkin, const QString &filename)

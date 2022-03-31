@@ -1,16 +1,18 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef CODEGENERATOR_H
-#define CODEGENERATOR_H
+#pragma once
 
 #include <QFile>
+#include <QHash>
 #include <QTextStream>
+#include <QVector>
 
 class GraphicElement;
 class QNEPort;
+
 class MappedPin
 {
 public:
@@ -35,6 +37,7 @@ class CodeGenerator
 {
 public:
     CodeGenerator(const QString &fileName, const QVector<GraphicElement *> &aElements);
+    ~CodeGenerator();
     bool generate();
 
 private:
@@ -56,6 +59,6 @@ private:
     void assignVariablesRec(const QVector<GraphicElement *> &elms);
     void assignLogicOperator(GraphicElement *elm);
     QString otherPortName(QNEPort *port);
+    static QString removeForbiddenChars(const QString &input);
 };
 
-#endif /* CODEGENERATOR_H */

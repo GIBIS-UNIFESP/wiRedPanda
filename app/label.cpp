@@ -1,13 +1,13 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "label.h"
 
+#include "elementfactory.h"
+
 #include <QDrag>
 #include <QMimeData>
 #include <QMouseEvent>
-
-#include "elementfactory.h"
 
 Label::Label(QWidget *parent)
     : QLabel(parent)
@@ -80,7 +80,7 @@ void Label::startDrag(QPoint pos)
         text = text.split("_").last();
     }
     ElementType type = ElementFactory::textToType(text);
-    /*  qDebug() << objectName(); */
+    // qDebug() << objectName();
 
     dataStream << QPointF(pos) << static_cast<qint32>(type) << m_auxData;
 

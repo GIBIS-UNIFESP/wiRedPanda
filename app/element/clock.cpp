@@ -1,20 +1,25 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "clock.h"
+
+#include "common.h"
 #include "globalproperties.h"
 #include "qneport.h"
 
 #include <QDebug>
 
 bool Clock::reset = false;
+bool Clock::pause = false;
 int Clock::current_id_number = 0;
 
 Clock::~Clock() = default;
 
 Clock::Clock(QGraphicsItem *parent)
-    : GraphicElement(ElementType::CLOCK, ElementGroup::INPUT, 0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::Clock, ElementGroup::Input, 0, 0, 1, 1, parent)
 {
+    COMMENT("Creating clock.", 0);
+    locked = false;
     m_pixmapSkinName = {
         ":/input/clock0.png",
         ":/input/clock1.png"
@@ -23,35 +28,38 @@ Clock::Clock(QGraphicsItem *parent)
     setOutputsOnTop(false);
     setRotatable(false);
     setCanChangeSkin(true);
-    /*  connect(&timer,&QTimer::timeout,this,&Clock::updateClock); */
-    setFrequency(1.0); // TODO: call to virtual function during construction
+    Clock::setFrequency(1.0);
     setHasFrequency(true);
     m_isOn = false;
     Clock::reset = true;
+    Clock::pause = false;
     setHasLabel(true);
     setPortName("Clock");
-    setOn(false);
+    Clock::setOn(false);
     setPixmap(m_pixmapSkinName[0]);
 }
 
 void Clock::updateClock()
 {
-    if (!disabled()) {
+    if ((!locked) && (!disabled()) && (!Clock::pause)) {
         m_elapsed++;
         if ((m_elapsed % m_interval) == 0) {
             setOn(!m_isOn);
+            return;
         }
     }
     setOn(m_isOn);
 }
 
-bool Clock::getOn() const
+bool Clock::getOn(int port) const
 {
+    Q_UNUSED(port);
     return m_isOn;
 }
 
-void Clock::setOn(bool value)
+void Clock::setOn(bool value, int port)
 {
+    Q_UNUSED(port);
     m_isOn = value;
     setPixmap(m_pixmapSkinName[m_isOn ? 1 : 0]);
     m_outputs.first()->setValue(m_isOn);
@@ -61,6 +69,7 @@ void Clock::save(QDataStream &ds) const
 {
     GraphicElement::save(ds);
     ds << getFrequency();
+    ds << locked;
 }
 
 void Clock::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
@@ -71,6 +80,9 @@ void Clock::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double vers
     }
     float freq;
     ds >> freq;
+    if (version >= 3.1) {
+        ds >> locked;
+    }
     setFrequency(freq);
 }
 
@@ -81,12 +93,11 @@ float Clock::getFrequency() const
 
 void Clock::setFrequency(float freq)
 {
-    /*  qDebug() << "Clock frequency set to " << freq; */
     if (qFuzzyIsNull(freq)) {
         return;
     }
 
-    int auxinterval = 1000 / (freq * GLOBALCLK);
+    int auxinterval = 500 / (freq * globalClock);
     if (auxinterval <= 0) {
         return;
     }
@@ -95,8 +106,6 @@ void Clock::setFrequency(float freq)
     m_frequency = static_cast<double>(freq);
     m_elapsed = 0;
     Clock::reset = true;
-    //      qDebug() << "Freq = " << freq <<  " interval = " << interval;
-    /*    timer.start( static_cast< int >(1000.0/freq) ); */
 }
 
 void Clock::resetClock()

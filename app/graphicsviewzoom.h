@@ -1,10 +1,9 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef GRAPHICSVIEWZOOM_H
-#define GRAPHICSVIEWZOOM_H
+#pragma once
 
 #include <QObject>
 #include <QPointF>
@@ -45,6 +44,7 @@ class QGraphicsView;
 class GraphicsViewZoom : public QObject
 {
     Q_OBJECT
+
 public:
     static constexpr double maxZoom = 1.5;
     static constexpr double minZoom = 0.2;
@@ -61,6 +61,9 @@ public:
 
     void resetZoom();
 
+signals:
+    void zoomed();
+
 private:
     double scaleFactor();
     void setScaleFactor(double factor);
@@ -70,9 +73,5 @@ private:
     double m_zoomFactorBase;
     QPointF m_targetScenePos, m_targetViewportPos;
     bool eventFilter(QObject *object, QEvent *event) override;
-
-signals:
-    void zoomed();
 };
 
-#endif /* GRAPHICSVIEWZOOM_H */

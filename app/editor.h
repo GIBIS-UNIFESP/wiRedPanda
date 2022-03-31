@@ -1,15 +1,14 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef EDITOR_H
-#define EDITOR_H
+#pragma once
+
+#include "scene.h"
 
 #include <QElapsedTimer>
 #include <QObject>
-
-#include "scene.h"
 
 class ElementEditor;
 class IC;
@@ -23,6 +22,7 @@ class QUndoCommand;
 class QUndoStack;
 class QWheelEvent;
 class SimulationController;
+class WorkSpace;
 
 class Editor : public QObject
 {
@@ -32,6 +32,7 @@ public:
     explicit Editor(QObject *parent = nullptr);
     ~Editor() override;
     /**
+<<<<<<< HEAD
      * @brief saveLocalIC: saves an IC and its internal ICs recursively into the same local project subfolder.
      */
     bool saveLocalIC(IC *ic, const QString& newICPath);
@@ -44,6 +45,8 @@ public:
      */
     bool saveLocal(const QString& newPath);
     /**
+=======
+>>>>>>> master
      * @brief save: saves the project through a binary data stream.
      */
     void save(QDataStream &ds, const QString &dolphinFilename);
@@ -60,6 +63,9 @@ public:
     void setElementEditor(ElementEditor *value);
     QUndoStack *getUndoStack() const;
     Scene *getScene() const;
+    QGraphicsRectItem *getSceneRect() const;
+    ICManager *getICManager() const;
+    void setICManager(ICManager *icManager);
     void buildSelectionRect();
     void handleHoverPort();
     void releaseHoverPort();
@@ -69,27 +75,38 @@ public:
 
     void resizeScene();
     SimulationController *getSimulationController() const;
+    void setSimulationController(SimulationController *simulationController);
     void contextMenu(QPoint screenPos);
     void updateVisibility();
     QPointF getMousePos() const;
-
     ElementEditor *getElementEditor() const;
-
-    static Editor *globalEditor;
+    void selectWorkspace(WorkSpace *workspace);
 
     void deleteEditedConn();
     void flipH();
     void flipV();
 
+    void setCircuitUpdateRequired();
+    void setAutoSaveRequired();
+    void clearSelection();
+    void setHandlingEvents(bool value);
+
 signals:
     void scroll(int x, int y);
     void circuitHasChanged();
+    void circuitAppearenceHasChanged();
 
 public slots:
-    void clear();
+    void buildAndSetRectangle();
     void showWires(bool checked);
     void showGates(bool checked);
     void rotate(bool rotateRight);
+    void checkUpdateRequest();
+    /**
+     * @brief setupWorkspace: Creates workspace elements: IC manager, undo stack, scene, and simulation controller.
+     * @param connect_signals: true: connects IC manager and simulation controller signals/slots if this is the first tab (opening the program).
+     */
+    void setupWorkspace();
 
     void receiveCommand(QUndoCommand *cmd);
     void copyAction();
@@ -105,50 +122,47 @@ private:
 
     QUndoStack *m_undoStack;
     Scene *m_scene;
-    QList<QGraphicsItem *> itemsAt(QPointF pos);
-    QGraphicsItem *itemAt(QPointF pos);
     int m_editedConn_id;
     int m_hoverPortElm_id;
     int m_hoverPort_nbr;
     ElementEditor *m_elementEditor;
     ICManager *m_icManager;
 
-    bool m_markingSelectionIC;
+    bool m_markingSelectionBox;
     QGraphicsRectItem *m_selectionRect;
     QPointF m_selectionStartPoint;
     SimulationController *m_simulationController;
     QPointF m_mousePos, m_lastPos;
-    void addItem(QGraphicsItem *item);
     bool m_draggingElement;
     QList<GraphicElement *> m_movedElements;
     QList<QPointF> m_oldPositions;
     MainWindow *m_mainWindow;
-    /*  bool mControlKeyPressed; */
+    // bool mControlKeyPressed;
     bool m_showWires;
     bool m_showGates;
+    bool m_circuitUpdateRequired;
+    bool m_autoSaveRequired;
+    bool m_handlingEvents;
 
+    QList<QGraphicsItem *> itemsAt(QPointF pos);
+    QGraphicsItem *itemAt(QPointF pos);
+    void addItem(QGraphicsItem *item);
     bool mousePressEvt(QGraphicsSceneMouseEvent *mouseEvt);
     bool mouseMoveEvt(QGraphicsSceneMouseEvent *mouseEvt);
     bool mouseReleaseEvt(QGraphicsSceneMouseEvent *mouseEvt);
     bool dropEvt(QGraphicsSceneDragDropEvent *dde);
     bool dragMoveEvt(QGraphicsSceneDragDropEvent *dde);
     bool wheelEvt(QWheelEvent *wEvt);
-
     void ctrlDrag(QPointF pos);
-    void install(Scene *s);
 
     QNEConnection *getEditedConn() const;
     void setEditedConn(QNEConnection *editedConn);
 
-    /* QObject interface */
     void detachConnection(QNEInputPort *endPort);
-    void startNewConnection(QNEOutputPort *startPort);
-    void startNewConnection(QNEInputPort *endPort);
-
-    void startSelectionRect();
-
     void makeConnection(QNEConnection *editedConn);
     void redoSimulationController();
+    void startNewConnection(QNEInputPort *endPort);
+    void startNewConnection(QNEOutputPort *startPort);
+    void startSelectionRect();
 };
 
-#endif /* EDITOR_H */

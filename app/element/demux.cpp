@@ -1,4 +1,4 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "demux.h"
@@ -6,13 +6,13 @@
 #include "qneport.h"
 
 Demux::Demux(QGraphicsItem *parent)
-    : GraphicElement(ElementType::DEMUX, ElementGroup::MUX, 2, 2, 2, 2, parent)
+    : GraphicElement(ElementType::Demux, ElementGroup::Mux, 2, 2, 2, 2, parent)
 {
     m_pixmapSkinName = {":/basic/demux.png"};
     setPixmap(m_pixmapSkinName[0]);
     setRotatable(true);
     setCanChangeSkin(true);
-    updatePorts();
+    Demux::updatePorts();
     setPortName("DEMUX");
     setRotation(180.0);
 

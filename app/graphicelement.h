@@ -1,27 +1,36 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef GRAPHICELEMENT_H
-#define GRAPHICELEMENT_H
-
-#include <QGraphicsItem>
-#include <QKeySequence>
+#pragma once
 
 #include "elementtype.h"
 #include "itemwithid.h"
 
-enum class ElementGroup : uint_fast8_t { UNKNOWN, OTHER, IC, INPUT, GATE, MEMORY, OUTPUT, MUX, STATICINPUT };
+#include <QGraphicsItem>
+#include <QKeySequence>
 
-#define MAXIMUMVALIDINPUTSIZE 256
+enum class ElementGroup : uint_fast8_t {
+    Gate = 4,
+    IC = 2,
+    Input = 3,
+    Memory = 5,
+    Mux = 7,
+    Other = 1,
+    Output = 6,
+    StaticInput = 8,
+    Unknown = 0,
+};
+
+constexpr auto maximumValidInputSize = 256;
 
 class GraphicElement;
 class QNEPort;
 class QNEInputPort;
 class QNEOutputPort;
 
-typedef QVector<GraphicElement *> ElementVector;
+using ElementVector = QVector<GraphicElement *>;
 
 /**
  * @brief Virtual class to implement graphical element appearance, input and output ports, and tooltips.
@@ -40,7 +49,6 @@ public:
 
     /* GraphicElement interface. */
     ElementType elementType() const;
-
     ElementGroup elementGroup() const;
 
     /**
@@ -130,7 +138,7 @@ public:
      * @brief getFrequency: virtual function overloaded by clock element. Other elements have frequency of 0.
      */
     virtual float getFrequency() const;
-    virtual void setFrequency(float freq);
+    virtual void setFrequency(float /*freq*/);
 
     void setPixmap(const QString &pixmapName);
     void setPixmap(const QString &pixmapName, QRect size);
@@ -161,7 +169,7 @@ public:
     QString getLabel() const;
 
     /**
-     * @brief updateTheme: Updates the GraphicElement theme according to the dark/light wiRed Panda theme.
+     * @brief updateTheme: Updates the GraphicElement theme according to the dark/light WiRedPanda theme.
      */
     void updateTheme();
     /**
@@ -171,7 +179,7 @@ public:
 
     void disable();
     void enable();
-    bool disabled();
+    bool disabled() const;
 
     QPixmap getPixmap() const;
 
@@ -182,7 +190,6 @@ public:
 
     // Update label in graphical interface
     void updateLabel();
-    void updateSkinsPath(const QString &newSkinPath);
 
 private:
     /**
@@ -266,4 +273,3 @@ protected:
     QVector<QNEOutputPort *> m_outputs;
 };
 
-#endif /* GRAPHICELEMENT_H */

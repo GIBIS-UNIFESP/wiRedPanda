@@ -1,4 +1,4 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "inputvcc.h"
@@ -6,7 +6,7 @@
 #include "qneport.h"
 
 InputVcc::InputVcc(QGraphicsItem *parent)
-    : GraphicElement(ElementType::VCC, ElementGroup::STATICINPUT, 0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::Vcc, ElementGroup::StaticInput, 0, 0, 1, 1, parent)
 {
     m_pixmapSkinName = {":/input/1.png"};
 

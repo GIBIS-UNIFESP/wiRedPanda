@@ -1,19 +1,24 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "icmanager.h"
 
-#include <QApplication>
-#include <QFileInfo>
-#include <QMessageBox>
-#include <QSettings>
-
 #include "common.h"
-#include "filehelper.h"
+#include "globalproperties.h"
 #include "ic.h"
 #include "icnotfoundexception.h"
 #include "icprototype.h"
+<<<<<<< HEAD
 #include "MainWindow.h"
+=======
+#include "mainwindow.h"
+#include "settings.h"
+
+#include <QApplication>
+#include <QDebug>
+#include <QFileInfo>
+#include <QMessageBox>
+>>>>>>> master
 
 ICManager *ICManager::globalICManager = nullptr;
 
@@ -24,17 +29,13 @@ ICManager::ICManager(MainWindow *mainWindow, QObject *parent)
     if (globalICManager == nullptr) {
         globalICManager = this;
     }
-    connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this, &ICManager::reloadFile);
-    if (m_mainWindow) {
-        connect(this, &ICManager::addRecentIcFile, m_mainWindow, &MainWindow::addRecentIcFile);
-    }
+    connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this, &ICManager::setReloadFile);
 }
 
 ICManager::~ICManager()
 {
     clear();
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    settings.setValue("recentICs", "");
+    Settings::setValue("recentICs", "");
 
     // fprintf(stderr, "Removing IC manager");
     if (globalICManager == this) {
@@ -42,63 +43,54 @@ ICManager::~ICManager()
     }
 }
 
-bool ICManager::tryLoadFile(QString &fname, const QString& parentFile)
+void ICManager::clear()
 {
-    try {
-        loadFile(fname, parentFile);
-    } catch (ICNotFoundException &err) {
-        COMMENT("ICNotFoundException thrown: " << err.what(), 0);
-        int ret = QMessageBox::warning(m_mainWindow, tr("Error"), QString::fromStdString(err.what()), QMessageBox::Ok, QMessageBox::Cancel);
-        if (ret == QMessageBox::Cancel) {
-            return false;
-        }
-        fname = m_mainWindow->getOpenICFile();
-        if (fname.isEmpty()) {
-            return false;
-        }
-        return tryLoadFile(fname, parentFile);
+    COMMENT("Clear ICManager", 3);
+    QMap<QString, ICPrototype *> ics_aux = m_ics;
+    m_ics.clear();
+    qDeleteAll(ics_aux);
+    if (!m_fileWatcher.files().empty()) {
+        m_fileWatcher.removePaths(m_fileWatcher.files());
     }
+    COMMENT("Finished clearing ICManager.", 3);
+}
+
+bool ICManager::loadIC(IC *ic, QString fname)
+{
+    // qDebug() << "Loading IC file ....... " << fname;
+    loadFile(fname);
+    ic->loadFile(fname);
     return true;
 }
 
-void ICManager::loadFile(QString &fname, const QString& parentFile)
+void ICManager::loadFile(QString &fname)
 {
-    QFileInfo finfo = FileHelper::findICFile(fname, parentFile);
-    fname = finfo.filePath();
+    COMMENT("Loading file " << fname.toStdString(), 3);
+    QFileInfo finfo;
+    // qDebug() << "Current main window dir: " << QFileInfo(GlobalProperties::currentFile).absolutePath();
+    finfo.setFile(QFileInfo(GlobalProperties::currentFile).absolutePath(), QFileInfo(fname).fileName());
+    // qDebug() << "IC file: " << finfo.absoluteFilePath();
     Q_ASSERT(finfo.exists() && finfo.isFile());
     m_fileWatcher.addPath(finfo.absoluteFilePath());
     if (m_ics.contains(finfo.baseName())) {
-        COMMENT("IC already inserted: " << finfo.baseName().toStdString(), 0);
+        COMMENT("IC already inserted: " << finfo.baseName().toStdString(), 3);
     } else {
-        COMMENT("Inserting IC: " << finfo.baseName().toStdString(), 0);
+        COMMENT("Inserting IC: " << finfo.baseName().toStdString(), 3);
+        // qDebug() << "Inserting IC: " << finfo.absoluteFilePath();
         auto *prototype = new ICPrototype(finfo.absoluteFilePath());
         prototype->reload();
+        // qDebug() << "Really Inserting IC: " << finfo.baseName();
         m_ics.insert(finfo.baseName(), prototype);
     }
 }
 
-void ICManager::clear()
+void ICManager::openIC(const QString &fname)
 {
-    COMMENT("Clear ICManager", 0);
-    QMap<QString, ICPrototype *> ics_aux = m_ics;
-    m_ics.clear();
-    qDeleteAll(ics_aux);
-    if (m_fileWatcher.files().size() > 0) {
-        m_fileWatcher.removePaths(m_fileWatcher.files());
-    }
-    COMMENT("Finished clearing ICManager.", 0);
+    COMMENT("Opening IC file " << fname.toStdString(), 0);
+    m_mainWindow->loadPandaFile(fname);
 }
 
-bool ICManager::loadIC(IC *ic, QString fname, const QString &parentFile)
-{
-    if (tryLoadFile(fname, parentFile)) {
-        ic->loadFile(fname);
-    }
-    emit addRecentIcFile(fname);
-    return true;
-}
-
-ICPrototype *ICManager::getPrototype(const QString& fname)
+ICPrototype *ICManager::getPrototype(const QString &fname)
 {
     Q_ASSERT(!fname.isEmpty());
     QFileInfo finfo(fname);
@@ -108,62 +100,40 @@ ICPrototype *ICManager::getPrototype(const QString& fname)
     return m_ics[finfo.baseName()];
 }
 
-bool ICManager::updatePrototypeFilePathName(const QString& sourceName, const QString& targetName)
-{
-    COMMENT("Updating IC name from " << sourceName.toStdString() << " to " << targetName.toStdString(), 0);
-    Q_ASSERT(!sourceName.isEmpty());
-    Q_ASSERT(!targetName.isEmpty());
-    QFileInfo finfo(sourceName);
-    if (!m_ics.contains(finfo.baseName())) {
-        return false;
-    }
-    COMMENT("Updating prototype IC name.", 0);
-    auto proto = m_ics[finfo.baseName()];
-    proto->fileName(targetName);
-    COMMENT("Updating m_fileWatcher. Removing " << sourceName.toStdString(), 0);
-    if (m_fileWatcher.removePath(sourceName)) {
-        COMMENT("Adding " << targetName.toStdString() << " to m_fileWatcher.", 0);
-        m_fileWatcher.addPath(targetName);
-    } else {
-        COMMENT("Warning. FileWatcher did not exist. Probably already changed by other IC instance update.", 0);
-    }
-    return true;
-}
-
 ICManager *ICManager::instance()
 {
     return globalICManager;
 }
 
-void ICManager::reloadFile(const QString& fileName)
+void ICManager::setGlobalInstance(ICManager *icManager)
+{
+    globalICManager = icManager;
+}
+
+void ICManager::setReloadFile(const QString &fileName)
 {
     COMMENT("Change in IC " << fileName.toStdString() << " detected.", 0);
     QString bname = QFileInfo(fileName).baseName();
     m_fileWatcher.addPath(fileName);
-    if (warnAboutFileChange(bname)) {
+    if (!requiresReload.contains(bname)) {
+        requiresReload.push_back(bname);
+        if (globalICManager == this) {
+            wakeUp();
+        }
+    }
+}
+
+void ICManager::wakeUp()
+{
+    for (QString &bname : requiresReload) {
         if (m_ics.contains(bname)) {
             try {
                 m_ics[bname]->reload();
-            } catch (std::runtime_error &e) {
-                QMessageBox::warning(m_mainWindow, "Error", tr("Error reloading IC: ") + e.what(), QMessageBox::Ok, QMessageBox::NoButton);
+            } catch (...) {
+                QMessageBox::warning(m_mainWindow, tr("File error."), tr("Error reloading changed IC file. Perhaps it was deleted."));
             }
         }
     }
+    requiresReload.clear();
     emit updatedIC();
-}
-
-// Maybe this function should never be called and the main project should reload the IC every time it changes.
-bool ICManager::warnAboutFileChange(const QString &fileName)
-{
-    COMMENT("File " << fileName.toStdString() << " has changed!", 0);
-    QMessageBox msgBox;
-    if (m_mainWindow) {
-        msgBox.setParent(m_mainWindow);
-    }
-    msgBox.setLocale(QLocale::Portuguese);
-    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-    msgBox.setText(tr("The file %1 changed, do you want to reload?").arg(fileName));
-    msgBox.setWindowModality(Qt::ApplicationModal);
-    msgBox.setDefaultButton(QMessageBox::Yes);
-    return msgBox.exec() == QMessageBox::Yes;
 }

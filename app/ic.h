@@ -1,16 +1,13 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef IC_H
-#define IC_H
+#pragma once
 
 #include "graphicelement.h"
-#include "simulationcontroller.h"
 
 class Editor;
-
 class ICPrototype;
 
 class IC : public GraphicElement
@@ -20,28 +17,23 @@ class IC : public GraphicElement
     friend class CodeGenerator;
 
 public:
-    IC(QGraphicsItem *parent = nullptr);
+    explicit IC(QGraphicsItem *parent = nullptr);
     ~IC() override;
 
     void save(QDataStream &ds) const override;
     void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
     void loadFile(const QString &fname);
     QString getFile() const;
-    bool setFile(const QString &newFileName);
     ICPrototype *getPrototype();
     QVector<GraphicElement *> getElements() const;
     void setSkin(bool defaultSkin, const QString &filename) override;
+
+protected:
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
     QString m_file;
 
     void loadInputs(ICPrototype *prototype);
-
     void loadOutputs(ICPrototype *prototype);
-
-    /* QGraphicsItem interface */
-protected:
-    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 };
-
-#endif /* IC_H */

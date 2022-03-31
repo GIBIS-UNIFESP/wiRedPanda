@@ -1,13 +1,13 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "icprototype.h"
 
-#include <QFileInfo>
-
 #include "ic.h"
 #include "icmapping.h"
 #include "qneport.h"
+
+#include <QFileInfo>
 
 ICPrototype::ICPrototype(const QString &fileName)
     : m_fileName(fileName)
@@ -43,11 +43,6 @@ void ICPrototype::removeICObserver(IC *ic)
     }
 }
 
-bool ICPrototype::updateLocalIC(const QString &fileName, const QString &dirName)
-{
-    return m_ICImpl.updateLocalIC(fileName, dirName);
-}
-
 int ICPrototype::inputSize() const
 {
     return m_ICImpl.getInputSize();
@@ -80,7 +75,7 @@ bool ICPrototype::isInputRequired(int index)
 
 ICMapping *ICPrototype::generateMapping() const
 {
-    return m_ICImpl.generateMapping(fileName());
+    return m_ICImpl.generateMapping();
 }
 
 void ICPrototype::clear()
@@ -91,10 +86,10 @@ void ICPrototype::clear()
 void ICPrototype::reload()
 {
     // TODO: Verify file recursion
-    //  verifyRecursion( fname );
+    // verifyRecursion(fname);
     clear();
     m_ICImpl.loadFile(m_fileName);
-    for (IC *ic : qAsConst(m_icObservers)) {
+    for (auto *ic : qAsConst(m_icObservers)) {
         ic->loadFile(m_fileName);
     }
 }

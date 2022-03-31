@@ -1,15 +1,14 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef ELEMENTFACTORY_H
-#define ELEMENTFACTORY_H
+#pragma once
+
+#include "elementtype.h"
 
 #include <QGraphicsItem>
 #include <QObject>
-
-#include "elementtype.h"
 
 class Editor;
 class GraphicElement;
@@ -25,24 +24,24 @@ public:
 
     static ElementType textToType(QString text);
     static QString typeToText(ElementType type);
+    static QString typeToTitleText(ElementType type);
     static QString translatedName(ElementType type);
     static QPixmap getPixmap(ElementType type);
     static GraphicElement *buildElement(ElementType type, QGraphicsItem *parent = nullptr);
     static QNEConnection *buildConnection(QGraphicsItem *parent = nullptr);
-    static ItemWithId *getItemById(size_t id);
-    static bool contains(size_t id);
-    static void updateItemId(ItemWithId *item, size_t newId);
+    static ItemWithId *getItemById(int id);
+    static bool contains(int id);
+    static void updateItemId(ItemWithId *item, int newId);
     static void removeItem(ItemWithId *item);
     static void addItem(ItemWithId *item);
 
-    size_t getLastId() const;
-    size_t next_id();
+    int getLastId() const;
+    int next_id();
     void clear();
 
 private:
-    QMap<size_t, ItemWithId *> m_map;
-    size_t m_lastId;
+    QMap<int, ItemWithId *> m_map;
+    int m_lastId;
     ElementFactory();
 };
 
-#endif /* ELEMENTFACTORY_H */

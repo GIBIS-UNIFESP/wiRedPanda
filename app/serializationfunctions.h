@@ -1,10 +1,9 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef SERIALIZATIONFUNCTIONS_H
-#define SERIALIZATIONFUNCTIONS_H
+#pragma once
 
 #include <QMap>
 #include <QRectF>
@@ -19,12 +18,9 @@ class SerializationFunctions
 {
 public:
     /**
-     * @brief update: Updates internal ICs recursively when a project is saved as a local project in another folder. This is required to keep valid references to all used ICs.
-     * @param fileName is the path to the IC.
-     * @param icDirName is the new directory name where the IC will be saved.
-     * @return true if IC was successfully updated.
+     * @brief saveHeader: Saves the following header information into the panda file, in this order: app name, app version, associated dolphin filename, scene rectangle.
      */
-    static bool update(const QString &fileName, const QString &icDirName);
+    static void saveHeader(QDataStream &ds, const QString &dolphinFilename, const QRectF &rect);
     /**
      * @brief saveHeader: Saves the following header information into the panda file, in this order: app name, app version, associated dolphin filename, scene rectangle.
      */
@@ -38,15 +34,15 @@ public:
      * @param parentFile is the name of the parent file of the current project. It is used as a basis to search for ICs so that it is possible to load them.
      * @param portMap is used to return a map of all input and output ports. This mapping may be used to check and to create connections between element ports.
      */
-    static QList<QGraphicsItem *> deserialize(QDataStream &ds, double version, const QString &parentFile, QMap<quint64, QNEPort *> portMap = QMap<quint64, QNEPort *>());
+    static QList<QGraphicsItem *> deserialize(QDataStream &ds, double version, QMap<quint64, QNEPort *> portMap = QMap<quint64, QNEPort *>());
     /**
      * @brief load: Loads a .panda file project. The procedure includes loading and checking file header information, canvas status, and deserializing the graphical elements through a binary data stream.
      * @param parentFile is the name of the parent file of the current project. It is used as a basis to search for ICs so that it is possible to load them.
      */
-    static QList<QGraphicsItem *> load(QDataStream &ds, const QString &parentFile);
+    static QList<QGraphicsItem *> load(QDataStream &ds);
     /**
-     * @brief loadVersion Checks if it is a wiRed Panda project file and reads its version.
-     * @throws std::runtime_error if it is not a valid wiRed Panda project file.
+     * @brief loadVersion Checks if it is a WiRedPanda project file and reads its version.
+     * @throws std::runtime_error if it is not a valid WiRedPanda project file.
      */
     static double loadVersion(QDataStream &ds);
     /**
@@ -54,13 +50,5 @@ public:
      */
     static QRectF loadRect(QDataStream &ds, double version);
     static QString loadDolphinFilename(QDataStream &ds, double version);
-
-private:
-    /**
-     * @brief loadMoveData: loads the contents of an IC and updates its internal IC's directories. Used when a project is saved as a local project in another folder.
-     * @param icDirName is the name of the new directory where the project is being saved.
-     */
-    static QList<QGraphicsItem *> loadMoveData(const QString &icDirName, QDataStream &ds, double version);
 };
 
-#endif /* SERIALIZATIONFUNCTIONS_H */

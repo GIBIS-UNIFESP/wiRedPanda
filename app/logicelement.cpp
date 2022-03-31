@@ -1,7 +1,19 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "logicelement.h"
+
+LogicElement::LogicElement(size_t inputSize, size_t outputSize)
+    : m_isValid(true)
+    , m_beingVisited(false)
+    , m_priority(-1)
+    , m_inputs(inputSize, std::make_pair(nullptr, 0))
+    , m_inputvalues(inputSize, false)
+    , m_outputs(outputSize, false)
+{
+}
+
+LogicElement::~LogicElement() = default;
 
 bool LogicElement::isValid() const
 {
@@ -15,7 +27,7 @@ void LogicElement::clearPredecessors()
 
 void LogicElement::clearSucessors()
 {
-    for (auto &elm : qAsConst(m_successors)) {
+    for (const auto &elm : qAsConst(m_successors)) {
         for (auto &input : elm->m_inputs) {
             if (input.first == this) {
                 input.first = nullptr;
@@ -25,18 +37,6 @@ void LogicElement::clearSucessors()
     }
     m_successors.clear();
 }
-
-LogicElement::LogicElement(size_t inputSize, size_t outputSize)
-    : m_isValid(true)
-    , m_beingVisited(false)
-    , m_priority(-1)
-    , m_inputs(inputSize, std::make_pair(nullptr, 0))
-    , m_inputvalues(inputSize, false)
-    , m_outputs(outputSize, false)
-{
-}
-
-LogicElement::~LogicElement() = default;
 
 void LogicElement::updateLogic()
 {
@@ -73,7 +73,7 @@ void LogicElement::validate()
         }
     }
     if (!m_isValid) {
-        for (LogicElement *elm : qAsConst(m_successors)) {
+        for (auto *elm : qAsConst(m_successors)) {
             elm->m_isValid = false;
         }
     }
@@ -94,7 +94,7 @@ int LogicElement::calculatePriority()
     }
     m_beingVisited = true;
     int max = 0;
-    for (LogicElement *s : qAsConst(m_successors)) {
+    for (auto *s : qAsConst(m_successors)) {
         max = qMax(s->calculatePriority(), max);
     }
     const int p = max + 1;
