@@ -9,6 +9,10 @@
 
 #include <QDebug>
 
+namespace {
+int id = qRegisterMetaType<Clock>();
+}
+
 bool Clock::reset = false;
 bool Clock::pause = false;
 int Clock::current_id_number = 0;
@@ -35,6 +39,7 @@ Clock::Clock(QGraphicsItem *parent)
     Clock::pause = false;
     setHasLabel(true);
     setPortName("Clock");
+    setToolTip(m_translatedName);
     Clock::setOn(false);
     setPixmap(m_pixmapSkinName[0]);
 }

@@ -99,7 +99,7 @@ void ElementEditor::contextMenu(QPoint screenPos)
         menu.addAction(QIcon(QPixmap(":/toolbar/rename.png")), renameActionText)->setData(renameActionText);
     }
     if (m_hasTrigger) {
-        menu.addAction(QIcon(ElementFactory::getPixmap(ElementType::Button)), triggerActionText)->setData(triggerActionText);
+        menu.addAction(QIcon(ElementFactory::getPixmap(ElementType::InputButton)), triggerActionText)->setData(triggerActionText);
     }
     if ((m_canChangeSkin) && (GlobalProperties::currentFile != "")) {
         menu.addAction(changeSkinText);
@@ -135,18 +135,18 @@ void ElementEditor::contextMenu(QPoint screenPos)
                 addElementAction(submenumorph, firstElm, ElementType::Nand, m_hasSameType);
                 addElementAction(submenumorph, firstElm, ElementType::Nor, m_hasSameType);
                 addElementAction(submenumorph, firstElm, ElementType::Xor, m_hasSameType);
-                addElementAction(submenumorph, firstElm, ElementType::XNor, m_hasSameType);
+                addElementAction(submenumorph, firstElm, ElementType::Xnor, m_hasSameType);
             }
             break;
         }
         case ElementGroup::StaticInput:
         case ElementGroup::Input: {
-            addElementAction(submenumorph, firstElm, ElementType::Button, m_hasSameType);
-            addElementAction(submenumorph, firstElm, ElementType::Switch, m_hasSameType);
+            addElementAction(submenumorph, firstElm, ElementType::InputButton, m_hasSameType);
+            addElementAction(submenumorph, firstElm, ElementType::InputSwitch, m_hasSameType);
             addElementAction(submenumorph, firstElm, ElementType::Clock, m_hasSameType);
-            addElementAction(submenumorph, firstElm, ElementType::Vcc, m_hasSameType);
-            addElementAction(submenumorph, firstElm, ElementType::Gnd, m_hasSameType);
-            addElementAction(submenumorph, firstElm, ElementType::Rotary, m_hasSameType);
+            addElementAction(submenumorph, firstElm, ElementType::InputVcc, m_hasSameType);
+            addElementAction(submenumorph, firstElm, ElementType::InputGnd, m_hasSameType);
+            addElementAction(submenumorph, firstElm, ElementType::InputRotary, m_hasSameType);
             break;
         }
         case ElementGroup::Memory: {

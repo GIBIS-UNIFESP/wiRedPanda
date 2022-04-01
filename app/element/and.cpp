@@ -4,6 +4,10 @@
 #include "and.h"
 #include "elementfactory.h"
 
+namespace {
+int id = qRegisterMetaType<And>();
+}
+
 And::And(QGraphicsItem *parent)
     : GraphicElement(ElementType::And, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
@@ -14,6 +18,7 @@ And::And(QGraphicsItem *parent)
     updatePorts();
     setCanChangeSkin(true);
     setPortName("AND");
+    setToolTip(m_translatedName);
 }
 
 void And::setSkin(bool defaultSkin, const QString &filename)

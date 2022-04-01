@@ -10,10 +10,20 @@
 class InputGnd : public GraphicElement
 {
     Q_OBJECT
+    Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
+    Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
+    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
 
 public:
     explicit InputGnd(QGraphicsItem *parent = nullptr);
     ~InputGnd() override = default;
+
     void setSkin(bool defaultSkin, const QString &filename) override;
+
+    const QString m_titleText = tr("<b>GROUND</b>");
+    const QString m_translatedName = tr("GND");
+    const QString m_pixmap = ":/input/0.png";
 };
+
+Q_DECLARE_METATYPE(InputGnd)
 

@@ -10,6 +10,10 @@
 
 #include <QGraphicsSceneMouseEvent>
 
+namespace {
+int id = qRegisterMetaType<IC>();
+}
+
 IC::IC(QGraphicsItem *parent)
     : GraphicElement(ElementType::IC, ElementGroup::IC, 0, 0, 0, 0, parent)
 {
@@ -19,6 +23,7 @@ IC::IC(QGraphicsItem *parent)
     setPixmap(m_pixmapSkinName[0], QRect(0, 0, 64, 64));
     setOutputsOnTop(true);
     setPortName("IC");
+    setToolTip(m_translatedName);
     // qCDebug(zero) << "Box done.";
 }
 

@@ -3,8 +3,12 @@
 
 #include "xnor.h"
 
+namespace {
+int id = qRegisterMetaType<Xnor>();
+}
+
 Xnor::Xnor(QGraphicsItem *parent)
-    : GraphicElement(ElementType::XNor, ElementGroup::Gate, 2, 8, 1, 1, parent)
+    : GraphicElement(ElementType::Xnor, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
     m_pixmapSkinName = {":/basic/xnor.png"};
 
@@ -13,6 +17,7 @@ Xnor::Xnor(QGraphicsItem *parent)
     setPixmap(m_pixmapSkinName[0]);
     updatePorts();
     setPortName("XNOR");
+    setToolTip(m_translatedName);
 }
 
 void Xnor::setSkin(bool defaultSkin, const QString &filename)

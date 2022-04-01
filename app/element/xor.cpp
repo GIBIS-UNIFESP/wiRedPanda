@@ -3,6 +3,10 @@
 
 #include "xor.h"
 
+namespace {
+int id = qRegisterMetaType<Xor>();
+}
+
 Xor::Xor(QGraphicsItem *parent)
     : GraphicElement(ElementType::Xor, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
@@ -12,6 +16,7 @@ Xor::Xor(QGraphicsItem *parent)
     setPixmap(m_pixmapSkinName[0]);
     updatePorts();
     setPortName("XOR");
+    setToolTip(m_translatedName);
 }
 
 void Xor::setSkin(bool defaultSkin, const QString &filename)

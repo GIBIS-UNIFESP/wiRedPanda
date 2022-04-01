@@ -5,6 +5,10 @@
 
 #include "qneport.h"
 
+namespace {
+int id = qRegisterMetaType<TFlipFlop>();
+}
+
 TFlipFlop::TFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::TFlipFlop, ElementGroup::Memory, 4, 4, 2, 2, parent)
 {
@@ -18,6 +22,7 @@ TFlipFlop::TFlipFlop(QGraphicsItem *parent)
     lastT = 0;
     lastQ = 0;
     setPortName("FlipFlop T");
+    setToolTip(m_translatedName);
 
     input(0)->setName("T");
     input(1)->setName("Clock");

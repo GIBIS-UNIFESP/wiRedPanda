@@ -34,19 +34,11 @@ void SerializationFunctions::saveHeader(QDataStream &ds, const QString &dolphinF
 void SerializationFunctions::serialize(const QList<QGraphicsItem *> &items, QDataStream &ds)
 {
     for (auto *item : items) {
-        if (item->type() == GraphicElement::Type) {
-            auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
-            ds << GraphicElement::Type;
-            ds << static_cast<quint64>(elm->elementType());
-            elm->save(ds);
+        if (auto *element = qgraphicsitem_cast<GraphicElement *>(item)) {
+            ds << element;
         }
-    }
-    for (auto *item : items) {
-        if (item->type() == QNEConnection::Type) {
-            qCDebug(zero) << "Writing Connection.";
-            auto *conn = qgraphicsitem_cast<QNEConnection *>(item);
-            ds << QNEConnection::Type;
-            conn->save(ds);
+        if (auto *connection = qgraphicsitem_cast<QNEConnection *>(item)) {
+            ds << connection;
         }
     }
 }
@@ -54,28 +46,34 @@ void SerializationFunctions::serialize(const QList<QGraphicsItem *> &items, QDat
 QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &ds, double version, QMap<quint64, QNEPort *> portMap)
 {
     QList<QGraphicsItem *> itemList;
+
     while (!ds.atEnd()) {
         int32_t type;
         ds >> type;
         qCDebug(three) << "Type:" << type;
+
+        if (type != GraphicElement::Type && type != QNEConnection::Type) {
+            throw(std::runtime_error(ERRORMSG("Invalid type. Data is possibly corrupted.")));
+        }
+
         if (type == GraphicElement::Type) {
-            quint64 elmType;
+            ElementType elmType;
             ds >> elmType;
-            qCDebug(three) << "Building" << ElementFactory::typeToText(static_cast<ElementType>(elmType)) << "element.";
-            GraphicElement *elm = ElementFactory::buildElement(static_cast<ElementType>(elmType));
-            if (elm) {
-                itemList.append(elm);
-                elm->load(ds, portMap, version);
-                if (elm->elementType() == ElementType::IC) {
-                    qCDebug(three) << "Loading IC.";
-                    IC *ic = qgraphicsitem_cast<IC *>(elm);
-                    ICManager::instance()->loadIC(ic, ic->getFile());
-                }
-                elm->setSelected(true);
-            } else {
-                throw(std::runtime_error(ERRORMSG("Could not build element."))); // TODO: must remove this message from here and not throw an exception.
+
+            auto* elm = ElementFactory::buildElement(elmType);
+            itemList.append(elm);
+            elm->load(ds, portMap, version);
+
+            if (elm->elementType() == ElementType::IC) {
+                qCDebug(three) << "Loading IC.";
+                IC *ic = qgraphicsitem_cast<IC*>(elm);
+                ICManager::instance()->loadIC(ic, ic->getFile());
             }
-        } else if (type == QNEConnection::Type) {
+
+            elm->setSelected(true);
+        }
+
+        if (type == QNEConnection::Type) {
             qCDebug(three) << "Reading Connection.";
             QNEConnection *conn = ElementFactory::buildConnection();
             qCDebug(three) << "Connection built.";
@@ -88,11 +86,9 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &ds, doub
                 qCDebug(three) << "Appending connection.";
                 itemList.append(conn);
             }
-        } else {
-            qCDebug(zero) << type;
-            throw(std::runtime_error(ERRORMSG("Invalid type. Data is possibly corrupted.")));
         }
     }
+
     qCDebug(zero) << "Finished deserializing.";
     return itemList;
 }

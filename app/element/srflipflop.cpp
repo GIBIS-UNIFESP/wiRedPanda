@@ -5,6 +5,10 @@
 
 #include "qneport.h"
 
+namespace {
+int id = qRegisterMetaType<SRFlipFlop>();
+}
+
 SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::SRFlipFlop, ElementGroup::Memory, 5, 5, 2, 2, parent)
 {
@@ -15,6 +19,7 @@ SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
     SRFlipFlop::updatePorts();
     lastClk = false;
     setPortName("FlipFlop SR");
+    setToolTip(m_translatedName);
 
     input(0)->setName("S");
     input(1)->setName("Clock");

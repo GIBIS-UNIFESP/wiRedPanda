@@ -3,6 +3,10 @@
 
 #include "not.h"
 
+namespace {
+int id = qRegisterMetaType<Not>();
+}
+
 Not::Not(QGraphicsItem *parent)
     : GraphicElement(ElementType::Not, ElementGroup::Gate, 1, 1, 1, 1, parent)
 {
@@ -12,6 +16,7 @@ Not::Not(QGraphicsItem *parent)
     setCanChangeSkin(true);
     updatePorts();
     setPortName("NOT");
+    setToolTip(m_translatedName);
 }
 
 void Not::setSkin(bool defaultSkin, const QString &filename)

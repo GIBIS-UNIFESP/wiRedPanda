@@ -3,6 +3,10 @@
 
 #include "nand.h"
 
+namespace {
+int id = qRegisterMetaType<Nand>();
+}
+
 Nand::Nand(QGraphicsItem *parent)
     : GraphicElement(ElementType::Nand, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
@@ -14,6 +18,7 @@ Nand::Nand(QGraphicsItem *parent)
     updatePorts();
     setCanChangeSkin(true);
     setPortName("NAND");
+    setToolTip(m_translatedName);
 }
 
 void Nand::setSkin(bool defaultSkin, const QString &filename)

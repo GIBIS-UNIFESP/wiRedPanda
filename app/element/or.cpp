@@ -3,6 +3,10 @@
 
 #include "or.h"
 
+namespace {
+int id = qRegisterMetaType<Or>();
+}
+
 Or::Or(QGraphicsItem *parent)
     : GraphicElement(ElementType::Or, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
@@ -12,6 +16,7 @@ Or::Or(QGraphicsItem *parent)
     setCanChangeSkin(true);
     updatePorts();
     setPortName("OR");
+    setToolTip(m_translatedName);
 }
 
 void Or::setSkin(bool defaultSkin, const QString &filename)

@@ -82,3 +82,4 @@ private:
     QColor m_selectedClr;
 };
 
+QDataStream &operator<<(QDataStream &ds, const QNEConnection *item);

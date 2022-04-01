@@ -5,6 +5,10 @@
 
 #include "qneport.h"
 
+namespace {
+int id = qRegisterMetaType<JKFlipFlop>();
+}
+
 JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::JKFlipFlop, ElementGroup::Memory, 5, 5, 2, 2, parent)
 {
@@ -16,6 +20,7 @@ JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
     JKFlipFlop::updatePorts();
     lastClk = false;
     setPortName("FlipFlop JK");
+    setToolTip(m_translatedName);
 
     input(0)->setName("J");
     input(1)->setName("Clock");

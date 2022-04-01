@@ -5,6 +5,10 @@
 
 #include "qneport.h"
 
+namespace {
+int id = qRegisterMetaType<Mux>();
+}
+
 Mux::Mux(QGraphicsItem *parent)
     : GraphicElement(ElementType::Mux, ElementGroup::Mux, 3, 3, 1, 1, parent)
 {
@@ -14,6 +18,7 @@ Mux::Mux(QGraphicsItem *parent)
     setRotatable(true);
     Mux::updatePorts();
     setPortName("MUX");
+    setToolTip(m_translatedName);
     setCanChangeSkin(true);
     input(0)->setName("0");
     input(1)->setName("1");

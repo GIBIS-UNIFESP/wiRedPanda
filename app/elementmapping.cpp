@@ -123,36 +123,36 @@ void ElementMapping::generateMap()
 LogicElement *ElementMapping::buildLogicElement(GraphicElement *elm)
 {
     switch (elm->elementType()) {
-    case ElementType::Switch:
-    case ElementType::Button:
+    case ElementType::InputSwitch:
+    case ElementType::InputButton:
     case ElementType::Clock:
-    case ElementType::Rotary:     return new LogicInput(false, elm->outputSize());
+    case ElementType::InputRotary: return new LogicInput(false, elm->outputSize());
     case ElementType::Led:
     case ElementType::Buzzer:
     case ElementType::Display:
-    case ElementType::Display14:  return new LogicOutput(elm->inputSize());
-    case ElementType::Node:       return new LogicNode();
-    case ElementType::Vcc:        return new LogicInput(true);
-    case ElementType::Gnd:        return new LogicInput(false);
-    case ElementType::And:        return new LogicAnd(elm->inputSize());
-    case ElementType::Or:         return new LogicOr(elm->inputSize());
-    case ElementType::Nand:       return new LogicNand(elm->inputSize());
-    case ElementType::Nor:        return new LogicNor(elm->inputSize());
-    case ElementType::Xor:        return new LogicXor(elm->inputSize());
-    case ElementType::XNor:       return new LogicXnor(elm->inputSize());
-    case ElementType::Not:        return new LogicNot();
-    case ElementType::JKFlipFlop: return new LogicJKFlipFlop();
-    case ElementType::SRFlipFlop: return new LogicSRFlipFlop();
-    case ElementType::TFlipFlop:  return new LogicTFlipFlop();
-    case ElementType::DFlipFlop:  return new LogicDFlipFlop();
-    case ElementType::DLatch:     return new LogicDLatch();
-    case ElementType::Mux:        return new LogicMux();
-    case ElementType::Demux:      return new LogicDemux();
+    case ElementType::Display14:   return new LogicOutput(elm->inputSize());
+    case ElementType::Node:        return new LogicNode();
+    case ElementType::InputVcc:    return new LogicInput(true);
+    case ElementType::InputGnd:    return new LogicInput(false);
+    case ElementType::And:         return new LogicAnd(elm->inputSize());
+    case ElementType::Or:          return new LogicOr(elm->inputSize());
+    case ElementType::Nand:        return new LogicNand(elm->inputSize());
+    case ElementType::Nor:         return new LogicNor(elm->inputSize());
+    case ElementType::Xor:         return new LogicXor(elm->inputSize());
+    case ElementType::Xnor:        return new LogicXnor(elm->inputSize());
+    case ElementType::Not:         return new LogicNot();
+    case ElementType::JKFlipFlop:  return new LogicJKFlipFlop();
+    case ElementType::SRFlipFlop:  return new LogicSRFlipFlop();
+    case ElementType::TFlipFlop:   return new LogicTFlipFlop();
+    case ElementType::DFlipFlop:   return new LogicDFlipFlop();
+    case ElementType::DLatch:      return new LogicDLatch();
+    case ElementType::Mux:         return new LogicMux();
+    case ElementType::Demux:       return new LogicDemux();
  // case ElementType::TLATCH:
-    case ElementType::JKLatch:    return new LogicDLatch();
+    case ElementType::JKLatch:     return new LogicDLatch();
     case ElementType::Text:
-    case ElementType::Line:       return new LogicNone();
-    default:                      throw std::runtime_error("Not implemented yet: " + elm->objectName().toStdString());
+    case ElementType::Line:        return new LogicNone();
+    default:                       throw std::runtime_error("Not implemented yet: " + elm->objectName().toStdString());
     }
 }
 
