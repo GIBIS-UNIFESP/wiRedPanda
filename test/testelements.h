@@ -16,30 +16,26 @@ class TestElements : public QObject
 {
     Q_OBJECT
 
-    QVector<QNEConnection *> connections{5};
-    QVector<InputSwitch *> switches{5};
-    void testICData(const IC *ic);
+private:
     QString testFile(const QString &fileName);
-
-private slots:
-    void init();
     void cleanup();
-
-    void testNode();
+    void init();
     void testAnd();
-    void testOr();
-    void testVCC();
-    void testGND();
-
-    void testMux();
-    void testDemux();
-
     void testDFlipFlop();
     void testDLatch();
+    void testDemux();
+    void testGND();
+    void testIC();
+    void testICData(const IC *ic);
+    void testICs();
     void testJKFlipFlop();
+    void testMux();
+    void testNode();
+    void testOr();
     void testSRFlipFlop();
     void testTFlipFlop();
+    void testVCC();
 
-    void testIC();
-    void testICs();
+    QVector<InputSwitch *> switches{5};
+    QVector<QNEConnection *> connections{5};
 };

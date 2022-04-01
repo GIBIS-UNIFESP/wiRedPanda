@@ -13,8 +13,7 @@ class GlobalProperties
 {
 public:
     static QString currentFile;
-    static double version;
     static bool soundEnabled;
-
     static double toDouble(const QString &txtVersion, bool *ok);
+    static double version;
 };

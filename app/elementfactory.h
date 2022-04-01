@@ -38,8 +38,9 @@ public:
     void clear();
 
 private:
+    ElementFactory() = default;
+
     QMap<int, ItemWithId *> m_map;
-    int m_lastId;
-    ElementFactory();
+    int m_lastId = 0;
 };
 

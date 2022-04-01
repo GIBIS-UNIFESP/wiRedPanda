@@ -16,10 +16,10 @@ class Xnor : public GraphicElement
 
 public:
     explicit Xnor(QGraphicsItem *parent = nullptr);
-    ~Xnor() override = default;
 
     void setSkin(bool defaultSkin, const QString &filename) override;
 
+private:
     const QString m_titleText = tr("<b>XNOR</b>");
     const QString m_translatedName = tr("Xnor");
     const QString m_pixmap = ":/basic/xnor.png";

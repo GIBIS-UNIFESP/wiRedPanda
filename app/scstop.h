@@ -11,8 +11,9 @@ class SCStop
 {
 public:
     explicit SCStop(SimulationController *sc);
-    void release();
     ~SCStop();
+
+    void release();
 
 private:
     SimulationController *m_sc;

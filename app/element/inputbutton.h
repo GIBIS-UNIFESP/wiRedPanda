@@ -17,24 +17,25 @@ class InputButton : public GraphicElement, public Input
 
 public:
     explicit InputButton(QGraphicsItem *parent = nullptr);
-    ~InputButton() override = default;
 
     static int current_id_number; // Number used to create distinct labels for each instance of this element.
-    bool on;
 
-    const QString m_titleText = tr("<b>PUSH BUTTON</b>");
-    const QString m_translatedName = tr("Button");
-    const QString m_pixmap = ":/input/buttonOff.png";
-
-    void save(QDataStream &ds) const override;
-    void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
     bool getOn(int port = 0) const override;
+    void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
+    void save(QDataStream &ds) const override;
     void setOn(const bool value, int port = 0) override;
     void setSkin(bool defaultSkin, const QString &filename) override;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+
+private:
+    const QString m_titleText = tr("<b>PUSH BUTTON</b>");
+    const QString m_translatedName = tr("Button");
+    const QString m_pixmap = ":/input/buttonOff.png";
+
+    bool on;
 };
 
 Q_DECLARE_METATYPE(InputButton)

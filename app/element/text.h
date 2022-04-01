@@ -16,8 +16,8 @@ class Text : public GraphicElement
 
 public:
     explicit Text(QGraphicsItem *parent = nullptr);
-    ~Text() override = default;
 
+private:
     const QString m_titleText = tr("<b>TEXT</b>");
     const QString m_translatedName = tr("Text");
     const QString m_pixmap = ":/text.png";

@@ -16,16 +16,15 @@ class TFlipFlop : public GraphicElement
 
 public:
     explicit TFlipFlop(QGraphicsItem *parent = nullptr);
-    ~TFlipFlop() override = default;
 
-    void updatePorts() override;
     void setSkin(bool defaultSkin, const QString &filename) override;
+    void updatePorts() override;
 
+private:
     const QString m_titleText = tr("<b>T-FLIPFLOP</b>");
     const QString m_translatedName = tr("T-FlipFlop");
     const QString m_pixmap = ":/memory/light/T-flipflop.png";
 
-private:
     bool lastClk;
     signed char lastT;
     signed char lastQ;

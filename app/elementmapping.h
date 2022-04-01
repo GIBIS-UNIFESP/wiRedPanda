@@ -30,35 +30,22 @@ public:
     explicit ElementMapping(const QVector<GraphicElement *> &elms);
     virtual ~ElementMapping();
 
+    static QVector<GraphicElement *> sortGraphicElements(QVector<GraphicElement *> elms);
+
     ICMapping *getICMapping(IC *ic) const;
     LogicElement *getLogicElement(GraphicElement *elm) const;
     bool canInitialize() const;
     bool canRun() const;
-    static QVector<GraphicElement *> sortGraphicElements(QVector<GraphicElement *> elms);
     virtual void initialize();
     void clear();
     void sort();
     void update();
 
 protected:
-    // Attributes
-    QString m_currentFile;
-    bool m_initialized;
-    ElementMap m_elementMap;
-    InputMap m_inputMap;
-    QVector<Clock *> m_clocks;
-    QVector<GraphicElement *> m_elements;
-    QMap<IC *, ICMapping *> m_icMappings;
-    QVector<LogicElement *> m_logicElms;
-
-    LogicInput m_globalGND;
-    LogicInput m_globalVCC;
-
-    QVector<LogicElement *> m_deletableElements;
-
     // Methods
-    LogicElement *buildLogicElement(GraphicElement *elm);
     static int calculatePriority(GraphicElement *elm, QHash<GraphicElement *, bool> &beingvisited, QHash<GraphicElement *, int> &priority);
+
+    LogicElement *buildLogicElement(GraphicElement *elm);
     void applyConnection(GraphicElement *elm, QNEPort *in);
     void connectElements();
     void generateMap();
@@ -67,5 +54,18 @@ protected:
     void setDefaultValue(GraphicElement *elm, QNEPort *in);
     void sortLogicElements();
     void validateElements();
+
+    // Attributes
+    ElementMap m_elementMap;
+    InputMap m_inputMap;
+    LogicInput m_globalGND;
+    LogicInput m_globalVCC;
+    QMap<IC *, ICMapping *> m_icMappings;
+    QString m_currentFile;
+    QVector<Clock *> m_clocks;
+    QVector<GraphicElement *> m_elements;
+    QVector<LogicElement *> m_deletableElements;
+    QVector<LogicElement *> m_logicElms;
+    bool m_initialized;
 };
 

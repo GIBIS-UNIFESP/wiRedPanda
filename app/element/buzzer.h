@@ -18,28 +18,25 @@ class Buzzer : public GraphicElement
 
 public:
     explicit Buzzer(QGraphicsItem *parent = nullptr);
-    ~Buzzer() override = default;
     Buzzer(const Buzzer &other) : Buzzer(other.parentItem()) {};
 
     static int current_id_number; // Number used to create distinct labels for each instance of this element.
 
-    void refresh() override;
-
-    void setAudio(const QString &note) override;
     QString getAudio() const override;
-
-    void mute(bool _mute = true);
-    void save(QDataStream &ds) const override;
     void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
+    void mute(bool _mute = true);
+    void refresh() override;
+    void save(QDataStream &ds) const override;
+    void setAudio(const QString &note) override;
     void setSkin(bool defaultSkin, const QString &filename) override;
-
-    const QString m_titleText = tr("<b>BUZZER</b>");
-    const QString m_translatedName = tr("Buzzer");
-    const QString m_pixmap = ":/output/BuzzerOff.png";
 
 private:
     void playbuzzer();
     void stopbuzzer();
+
+    const QString m_titleText = tr("<b>BUZZER</b>");
+    const QString m_translatedName = tr("Buzzer");
+    const QString m_pixmap = ":/output/BuzzerOff.png";
 
     QVector<QString> m_alternativeSkins;
     // TODO: this could just be a bool

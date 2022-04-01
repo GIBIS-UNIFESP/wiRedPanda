@@ -16,10 +16,10 @@ class And : public GraphicElement
 
 public:
     explicit And(QGraphicsItem *parent = nullptr);
-    ~And() override = default;
 
     void setSkin(bool defaultSkin, const QString &filename) override;
 
+private:
     const QString m_titleText = tr("<b>AND</b>");
     const QString m_translatedName = tr("And");
     const QString m_pixmap = ":/basic/and.png";

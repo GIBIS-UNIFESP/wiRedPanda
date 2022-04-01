@@ -17,23 +17,21 @@ class Scene : public QGraphicsScene
 public:
     explicit Scene(QObject *parent = nullptr);
     explicit Scene(const QRectF &sceneRect, QObject *parent = nullptr);
-    Scene(qreal x, qreal y, qreal width, qreal height, QObject *parent = nullptr);
+    explicit Scene(qreal x, qreal y, qreal width, qreal height, QObject *parent = nullptr);
 
-    int gridSize() const;
     QVector<GraphicElement *> getElements();
     QVector<GraphicElement *> getElements(const QRectF &rect);
-    QVector<QNEConnection *> getConnections();
+    QVector<GraphicElement *> getVisibleElements();
     QVector<GraphicElement *> selectedElements();
-
+    QVector<QNEConnection *> getConnections();
+    int gridSize() const;
     void setDots(const QPen &dots);
 
-    QVector<GraphicElement *> getVisibleElements();
-
-protected:
-    void drawBackground(QPainter *painter, const QRectF &rect) override;
+private:
     static constexpr int m_gridSize = 16;
 
-private:
+    void drawBackground(QPainter *painter, const QRectF &rect) override;
+
     QPen m_dots;
 };
 

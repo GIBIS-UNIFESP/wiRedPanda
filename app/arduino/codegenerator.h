@@ -16,11 +16,6 @@ class QNEPort;
 class MappedPin
 {
 public:
-    GraphicElement *elm;
-    QString pin;
-    QString varName;
-    QNEPort *port;
-    int portNbr;
     MappedPin(GraphicElement *elm, const QString &pin, const QString &varName, QNEPort *port, int portNbr = 0)
         : elm(elm)
         , pin(pin)
@@ -31,6 +26,12 @@ public:
     }
 
     MappedPin() = default;
+
+    GraphicElement *elm;
+    QString pin;
+    QString varName;
+    QNEPort *port;
+    int portNbr;
 };
 
 class CodeGenerator
@@ -38,27 +39,27 @@ class CodeGenerator
 public:
     CodeGenerator(const QString &fileName, const QVector<GraphicElement *> &aElements);
     ~CodeGenerator();
+
     bool generate();
 
 private:
-    void declareInputs();
-    void declareOutputs();
-    void declareAuxVariables();
-
-    QFile file;
-    QTextStream out;
-    const QVector<GraphicElement *> elements;
-    QVector<MappedPin> inputMap, outputMap;
-    QHash<QNEPort *, QString> varMap;
-    //! carmesim: fix typo in availablePins
-    QVector<QString> availablePins;
-    void setup();
-    void loop();
-    unsigned int globalCounter;
-    void declareAuxVariablesRec(const QVector<GraphicElement *> &elms, bool isBox = false);
-    void assignVariablesRec(const QVector<GraphicElement *> &elms);
-    void assignLogicOperator(GraphicElement *elm);
     QString otherPortName(QNEPort *port);
     static QString removeForbiddenChars(const QString &input);
+    void assignLogicOperator(GraphicElement *elm);
+    void assignVariablesRec(const QVector<GraphicElement *> &elms);
+    void declareAuxVariables();
+    void declareAuxVariablesRec(const QVector<GraphicElement *> &elms, bool isBox = false);
+    void declareInputs();
+    void declareOutputs();
+    void loop();
+    void setup();
+
+    QFile file;
+    QHash<QNEPort *, QString> varMap;
+    QTextStream out;
+    QVector<MappedPin> inputMap, outputMap;
+    QVector<QString> availablePins;
+    const QVector<GraphicElement *> elements;
+    unsigned int globalCounter;
 };
 

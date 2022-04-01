@@ -42,13 +42,13 @@
 MainWindow::MainWindow(QWidget *parent, const QString &filename)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , m_bd(nullptr)
     , m_editor(new Editor(this))
     , m_firstResult(nullptr)
-    , m_loadedAutoSave(false)
     , m_dolphinFileName("")
-    , m_bd(nullptr)
     , m_autoSaveFile(nullptr)
     , m_translator(nullptr)
+    , m_loadedAutoSave(false)
 {
     qCDebug(zero) << "WiRedPanda Version =" << APP_VERSION << "OR" << GlobalProperties::version;
 
@@ -132,6 +132,42 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     connect(nextTabShortcut, &QShortcut::activated, this, &MainWindow::selectNextTab);
     auto *prevTabShortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_Backtab), ui->tabWidget_mainWindow);
     connect(prevTabShortcut, &QShortcut::activated, this, &MainWindow::selectPreviousTab);
+
+    qCDebug(zero) << "Setting connections";
+    connect(ui->actionAbout_Qt, &QAction::triggered, this, &MainWindow::on_actionAbout_Qt_triggered);
+    connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::on_actionAbout_triggered);
+    connect(ui->actionChange_Trigger, &QAction::triggered, this, &MainWindow::on_actionChange_Trigger_triggered);
+    connect(ui->actionEnglish, &QAction::triggered, this, &MainWindow::on_actionEnglish_triggered);
+    connect(ui->actionExit, &QAction::triggered, this, &MainWindow::on_actionExit_triggered);
+    connect(ui->actionExport_to_Image, &QAction::triggered, this, &MainWindow::on_actionExport_to_Image_triggered);
+    connect(ui->actionFast_Mode, &QAction::triggered, this, &MainWindow::on_actionFast_Mode_triggered);
+    connect(ui->actionFlip_horizontally, &QAction::triggered, this, &MainWindow::on_actionFlip_horizontally_triggered);
+    connect(ui->actionFlip_vertically, &QAction::triggered, this, &MainWindow::on_actionFlip_vertically_triggered);
+    connect(ui->actionFullscreen, &QAction::triggered, this, &MainWindow::on_actionFullscreen_triggered);
+    connect(ui->actionGates, &QAction::triggered, this, &MainWindow::on_actionGates_triggered);
+    connect(ui->actionLabels_under_icons, &QAction::triggered, this, &MainWindow::on_actionLabels_under_icons_triggered);
+    connect(ui->actionMute, &QAction::triggered, this, &MainWindow::on_actionMute_triggered);
+    connect(ui->actionNew, &QAction::triggered, this, &MainWindow::on_actionNew_triggered);
+    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::on_actionOpen_triggered);
+    connect(ui->actionPanda_Dark, &QAction::triggered, this, &MainWindow::on_actionPanda_Dark_triggered);
+    connect(ui->actionPanda_Light, &QAction::triggered, this, &MainWindow::on_actionPanda_Light_triggered);
+    connect(ui->actionPlay, &QAction::triggered, this, &MainWindow::on_actionPlay_triggered);
+    connect(ui->actionPortuguese, &QAction::triggered, this, &MainWindow::on_actionPortuguese_triggered);
+    connect(ui->actionPrint, &QAction::triggered, this, &MainWindow::on_actionPrint_triggered);
+    connect(ui->actionReload_File, &QAction::triggered, this, &MainWindow::on_actionReload_File_triggered);
+    connect(ui->actionRename, &QAction::triggered, this, &MainWindow::on_actionRename_triggered);
+    connect(ui->actionReset_Zoom, &QAction::triggered, this, &MainWindow::on_actionReset_Zoom_triggered);
+    connect(ui->actionRotate_left, &QAction::triggered, this, &MainWindow::on_actionRotate_left_triggered);
+    connect(ui->actionRotate_right, &QAction::triggered, this, &MainWindow::on_actionRotate_right_triggered);
+    connect(ui->actionSave_As, &QAction::triggered, this, &MainWindow::on_actionSave_As_triggered);
+    connect(ui->actionSave, &QAction::triggered, this, &MainWindow::on_actionSave_triggered);
+    connect(ui->actionSelect_all, &QAction::triggered, this, &MainWindow::on_actionSelect_all_triggered);
+    connect(ui->actionWaveform, &QAction::triggered, this, &MainWindow::on_actionWaveform_triggered);
+    connect(ui->actionWires, &QAction::triggered, this, &MainWindow::on_actionWires_triggered);
+    connect(ui->actionZoom_in, &QAction::triggered, this, &MainWindow::on_actionZoom_in_triggered);
+    connect(ui->actionZoom_out, &QAction::triggered, this, &MainWindow::on_actionZoom_out_triggered);
+    connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::on_lineEdit_returnPressed);
+    connect(ui->lineEdit, &QLineEdit::textChanged, this, &MainWindow::on_lineEdit_textChanged);
 
     qCDebug(zero) << "Window title.";
     setWindowTitle("WiRedPanda " + QString(APP_VERSION));

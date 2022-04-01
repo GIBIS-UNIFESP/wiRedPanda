@@ -13,23 +13,19 @@ class LogicElement;
 
 class ICMapping : public ElementMapping
 {
-private:
-    QNEPortVector m_icInputs;
-    QNEPortVector m_icOutputs;
-
-    QVector<LogicElement *> m_inputs;
-    QVector<LogicElement *> m_outputs;
-
 public:
     ICMapping(const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs);
-
     ~ICMapping() override;
-
-    void initialize() override;
-
-    void clearConnections();
 
     LogicElement *getInput(int index);
     LogicElement *getOutput(int index);
+    void clearConnections();
+    void initialize() override;
+
+private:
+    QNEPortVector m_icInputs;
+    QNEPortVector m_icOutputs;
+    QVector<LogicElement *> m_inputs;
+    QVector<LogicElement *> m_outputs;
 };
 

@@ -11,6 +11,6 @@ class TestIcons : public QObject
 {
     Q_OBJECT
 
-private slots:
+private:
     void testIcons();
 };

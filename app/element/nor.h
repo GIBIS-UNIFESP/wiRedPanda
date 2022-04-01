@@ -16,10 +16,10 @@ class Nor : public GraphicElement
 
 public:
     explicit Nor(QGraphicsItem *parent = nullptr);
-    ~Nor() override = default;
 
     void setSkin(bool defaultSkin, const QString &filename) override;
 
+private:
     const QString m_titleText = tr("<b>NOR</b>");
     const QString m_translatedName = tr("Nor");
     const QString m_pixmap = ":/basic/nor.png";

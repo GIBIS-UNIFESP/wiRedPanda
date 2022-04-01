@@ -11,7 +11,7 @@ class TestSimulationController : public QObject
 {
     Q_OBJECT
 
-private slots:
+private:
     void testCase1();
 };
 

@@ -34,10 +34,10 @@
 #include "logicxor.h"
 
 ElementMapping::ElementMapping(const QVector<GraphicElement *> &elms)
-    : m_initialized(false)
-    , m_elements(elms)
-    , m_globalGND(false)
+    : m_globalGND(false)
     , m_globalVCC(true)
+    , m_elements(elms)
+    , m_initialized(false)
 {
 }
 
