@@ -1317,14 +1317,9 @@ void MainWindow::setDolphinFilename(const QString &filename)
     m_tabs[m_current_tab].setDolphinFileName(filename);
 }
 
-void MainWindow::on_actionFullscreen_triggered() const
+void MainWindow::on_actionFullscreen_triggered()
 {
-    if (m_fullscreenDlg->isVisible()) {
-        m_fullscreenDlg->accept();
-    } else {
-        m_fullscreenDlg->showFullScreen();
-        m_fullscreenDlg->exec();
-    }
+    isFullScreen() ? showNormal() : showFullScreen();
 }
 
 void MainWindow::autoSave()
