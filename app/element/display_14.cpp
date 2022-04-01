@@ -9,6 +9,10 @@
 #include <QPainter>
 #include <QPixmap>
 
+namespace {
+int id = qRegisterMetaType<Display14>();
+}
+
 int Display14::current_id_number = 0;
 
 Display14::Display14(QGraphicsItem *parent)
@@ -78,6 +82,8 @@ Display14::Display14(QGraphicsItem *parent)
     Display::convertAllColors(dp);
 
     setPortName("Display14");
+    setToolTip(m_translatedName);
+
     for (auto *in : qAsConst(m_inputs)) {
         in->setRequired(false);
         in->setDefaultValue(0);

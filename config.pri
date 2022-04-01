@@ -97,6 +97,7 @@ SOURCES += \
     $$PWD/app/elementeditor.cpp \
     $$PWD/app/elementfactory.cpp \
     $$PWD/app/elementmapping.cpp \
+    $$PWD/app/elementtype.cpp \
     $$PWD/app/filehelper.cpp \
     $$PWD/app/globalproperties.cpp \
     $$PWD/app/graphicelement.cpp \

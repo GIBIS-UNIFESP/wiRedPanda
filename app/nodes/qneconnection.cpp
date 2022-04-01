@@ -258,3 +258,11 @@ void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
     }
     painter->drawPath(path());
 }
+
+QDataStream &operator<<(QDataStream &ds, const QNEConnection *item){
+    qCDebug(zero) << "Writing Connection.";
+    const auto *conn = qgraphicsitem_cast<const QNEConnection *>(item);
+    ds << QNEConnection::Type;
+    conn->save(ds);
+    return ds;
+}

@@ -5,8 +5,12 @@
 
 #include "qneport.h"
 
+namespace {
+int id = qRegisterMetaType<InputVcc>();
+}
+
 InputVcc::InputVcc(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Vcc, ElementGroup::StaticInput, 0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::InputVcc, ElementGroup::StaticInput, 0, 0, 1, 1, parent)
 {
     m_pixmapSkinName = {":/input/1.png"};
 
@@ -15,6 +19,7 @@ InputVcc::InputVcc(QGraphicsItem *parent)
     setPixmap(m_pixmapSkinName[0]);
     setRotatable(false);
     setPortName("VCC");
+    setToolTip(m_translatedName);
     m_outputs.first()->setValue(true);
 }
 

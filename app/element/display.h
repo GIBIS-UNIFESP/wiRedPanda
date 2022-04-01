@@ -12,10 +12,14 @@ class QNEPort;
 class Display : public GraphicElement
 {
     Q_OBJECT
+    Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
+    Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
+    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
 
 public:
     explicit Display(QGraphicsItem *parent = nullptr);
     ~Display() override = default;
+
     static int current_id_number; // Number used to create distinct labels for each instance of this element.
 
     void refresh() override;
@@ -35,4 +39,10 @@ public:
     QVector<QPixmap> bkg, a, b, c, d, e, f, g, dp;
     QString m_color;
     int m_color_number;
+
+    const QString m_titleText = tr("<b>7-SEGMENT DISPLAY</b>");
+    const QString m_translatedName = tr("Display");
+    const QString m_pixmap = ":/output/counter/counter_on.png";
 };
+
+Q_DECLARE_METATYPE(Display)

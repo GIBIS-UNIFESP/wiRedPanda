@@ -3,6 +3,10 @@
 
 #include "text.h"
 
+namespace {
+int id = qRegisterMetaType<Text>();
+}
+
 Text::Text(QGraphicsItem *parent)
     : GraphicElement(ElementType::Text, ElementGroup::Other, 0, 0, 0, 0, parent)
 {
@@ -16,5 +20,5 @@ Text::Text(QGraphicsItem *parent)
     setCanChangeSkin(false);
     setHasLabel(true);
     setPortName("TEXT");
-    setToolTip("TEXT");
+    setToolTip(m_translatedName);
 }

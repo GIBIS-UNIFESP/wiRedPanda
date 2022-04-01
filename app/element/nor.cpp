@@ -3,6 +3,10 @@
 
 #include "nor.h"
 
+namespace {
+int id = qRegisterMetaType<Nor>();
+}
+
 Nor::Nor(QGraphicsItem *parent)
     : GraphicElement(ElementType::Nor, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
@@ -12,6 +16,7 @@ Nor::Nor(QGraphicsItem *parent)
     setCanChangeSkin(true);
     updatePorts();
     setPortName("NOR");
+    setToolTip(m_translatedName);
 }
 
 void Nor::setSkin(bool defaultSkin, const QString &filename)

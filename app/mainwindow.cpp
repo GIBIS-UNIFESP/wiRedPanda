@@ -1219,7 +1219,6 @@ void MainWindow::populateMenu(QSpacerItem *spacer, const QString &names, QLayout
     auto list(names.split(", "));
     layout->removeItem(spacer);
     for (auto &name : list) {
-        name = name.trimmed().toUpper();
         auto type = ElementFactory::textToType(name);
         auto pixmap(ElementFactory::getPixmap(type));
         auto *item = new ListItemWidget(pixmap, type, name, this);
@@ -1231,10 +1230,10 @@ void MainWindow::populateMenu(QSpacerItem *spacer, const QString &names, QLayout
 void MainWindow::populateLeftMenu()
 {
     ui->tabWidget->setCurrentIndex(0);
-    populateMenu(ui->verticalSpacer_InOut, "VCC, GND, BUTTON, SWITCH, ROTARY, CLOCK, LED, DISPLAY, DISPLAY14, BUZZER", ui->scrollAreaWidgetContents_InOut->layout());
-    populateMenu(ui->verticalSpacer_Gates, "AND, OR, NOT, NAND, NOR, XOR, XNOR, MUX, DEMUX, NODE", ui->scrollAreaWidgetContents_Gates->layout());
-    populateMenu(ui->verticalSpacer_Memory, "DFLIPFLOP, DLATCH, JKFLIPFLOP, SRFLIPFLOP, TFLIPFLOP", ui->scrollAreaWidgetContents_Memory->layout());
-    populateMenu(ui->verticalSpacer_MISC, "TEXT, LINE", ui->scrollAreaWidgetContents_Misc->layout());
+    populateMenu(ui->verticalSpacer_InOut, "InputVcc, InputGnd, InputButton, InputSwitch, InputRotary, Clock, Led, Display, Display14, Buzzer", ui->scrollAreaWidgetContents_InOut->layout());
+    populateMenu(ui->verticalSpacer_Gates, "And, Or, Not, Nand, Nor, Xor, Xnor, Mux, Demux, Node", ui->scrollAreaWidgetContents_Gates->layout());
+    populateMenu(ui->verticalSpacer_Memory, "DFlipFlop, DLatch, JKFlipFlop, SRFlipFlop, TFlipFlop", ui->scrollAreaWidgetContents_Memory->layout());
+    populateMenu(ui->verticalSpacer_MISC, "Text, Line", ui->scrollAreaWidgetContents_Misc->layout());
 }
 
 void MainWindow::on_actionFast_Mode_triggered(bool checked)

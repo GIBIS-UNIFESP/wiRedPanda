@@ -1058,9 +1058,9 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
                     if (elm->hasTrigger() && !elm->getTrigger().isEmpty()) {
                         auto *in = dynamic_cast<Input *>(elm);
                         if (in && !in->isLocked() && elm->getTrigger().matches(keyEvt->key())) {
-                            if (elm->elementType() == ElementType::Switch) {
+                            if (elm->elementType() == ElementType::InputSwitch) {
                                 in->setOn(!in->getOn());
-                            } else if (elm->elementType() == ElementType::Rotary) {
+                            } else if (elm->elementType() == ElementType::InputRotary) {
                                 int val = in->outputValue();
                                 in->setOn(true, (val + 1) % in->outputSize());
                             } else {
@@ -1079,7 +1079,7 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
                     if (elm->hasTrigger() && !elm->getTrigger().isEmpty()) {
                         auto *in = dynamic_cast<Input *>(elm);
                         if (in && !in->isLocked() && (elm->getTrigger().matches(keyEvt->key()) == QKeySequence::ExactMatch)) {
-                            if (elm->elementType() == ElementType::Button) {
+                            if (elm->elementType() == ElementType::InputButton) {
                                 in->setOn(false);
                             }
                         }

@@ -5,6 +5,10 @@
 
 #include "qneport.h"
 
+namespace {
+int id = qRegisterMetaType<JKLatch>();
+}
+
 JKLatch::JKLatch(QGraphicsItem *parent)
     : GraphicElement(ElementType::JKLatch, ElementGroup::Memory, 2, 2, 2, 2, parent)
 {
@@ -14,6 +18,7 @@ JKLatch::JKLatch(QGraphicsItem *parent)
     JKLatch::updatePorts();
     setCanChangeSkin(true);
     setPortName("JK Latch");
+    setToolTip(m_translatedName);
 }
 
 void JKLatch::updatePorts()

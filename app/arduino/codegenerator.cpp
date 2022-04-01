@@ -110,7 +110,7 @@ void CodeGenerator::declareInputs()
     out << "/* ========= Inputs ========== */" << endl;
     for (auto *elm : elements) {
         const auto type = elm->elementType();
-        if (type == ElementType::Button || type == ElementType::Switch) {
+        if (type == ElementType::InputButton || type == ElementType::InputSwitch) {
             QString varName = elm->objectName() + QString::number(counter);
             QString label = elm->getLabel();
             if (!label.isEmpty()) {
@@ -175,11 +175,11 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elms
             const auto outputs = elm->outputs();
             if (outputs.size() == 1) {
                 QNEPort *port = outputs.first();
-                if (elm->elementType() == ElementType::Vcc) {
+                if (elm->elementType() == ElementType::InputVcc) {
                     varMap[port] = "HIGH";
                     continue;
                 }
-                if (elm->elementType() == ElementType::Gnd) {
+                if (elm->elementType() == ElementType::InputGnd) {
                     varMap[port] = "LOW";
                     continue;
                 } else if (varMap[port].isEmpty()) {
@@ -410,7 +410,7 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elms)
             case ElementType::Nand:
             case ElementType::Nor:
             case ElementType::Xor:
-            case ElementType::XNor:
+            case ElementType::Xnor:
             case ElementType::Not:
             case ElementType::Node: assignLogicOperator(elm); break;
             default:                throw std::runtime_error(ERRORMSG(QString("Element type not supported : %1").arg(elm->objectName()).toStdString()));
@@ -447,7 +447,7 @@ void CodeGenerator::assignLogicOperator(GraphicElement *elm)
         logicOperator = "^";
         break;
     }
-    case ElementType::XNor: {
+    case ElementType::Xnor: {
         logicOperator = "^";
         negate = true;
         break;

@@ -5,6 +5,10 @@
 
 #include "qneport.h"
 
+namespace {
+int id = qRegisterMetaType<DFlipFlop>();
+}
+
 DFlipFlop::DFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::DFlipFlop, ElementGroup::Memory, 4, 4, 2, 2, parent)
 {
@@ -15,6 +19,7 @@ DFlipFlop::DFlipFlop(QGraphicsItem *parent)
     setCanChangeSkin(true);
     DFlipFlop::updatePorts();
     setPortName("FlipFlop D");
+    setToolTip(m_translatedName);
     input(0)->setName("Data");
     input(1)->setName("Clock");
     input(2)->setName("~Preset");
