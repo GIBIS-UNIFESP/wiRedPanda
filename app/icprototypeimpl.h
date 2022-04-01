@@ -16,35 +16,32 @@ class ICPrototypeImpl
 {
 public:
     ~ICPrototypeImpl();
-    void loadFile(const QString &fileName);
-    void clear();
-
-    int getInputSize() const;
-    int getOutputSize() const;
-    void setOutputSize(int outputSize);
-    void setInputSize(int inputSize);
-
-    void loadInputElement(GraphicElement *elm);
-    void loadOutputElement(GraphicElement *elm);
 
     GraphicElement *getElement(int index);
-    QString getInputLabel(int index) const;
-    QString getOutputLabel(int index) const;
+    ICMapping *generateMapping() const;
     QNEPort *getInput(int index);
     QNEPort *getOutput(int index);
-    ICMapping *generateMapping() const;
+    QString getInputLabel(int index) const;
+    QString getOutputLabel(int index) const;
+    int getInputSize() const;
+    int getOutputSize() const;
+    void clear();
+    void loadFile(const QString &fileName);
+    void loadInputElement(GraphicElement *elm);
+    void loadOutputElement(GraphicElement *elm);
+    void setInputSize(int inputSize);
+    void setOutputSize(int outputSize);
 
 private:
-    void sortPorts(QVector<QNEPort *> &map);
-    void loadItem(QGraphicsItem *item);
     void loadInputs();
+    void loadItem(QGraphicsItem *item);
     void loadOutputs();
+    void sortPorts(QVector<QNEPort *> &map);
 
     QVector<GraphicElement *> m_elements;
-    QVector<QString> m_inputLabels;
-    QVector<QString> m_outputLabels;
-
     QVector<QNEPort *> m_inputs;
     QVector<QNEPort *> m_outputs;
+    QVector<QString> m_inputLabels;
+    QVector<QString> m_outputLabels;
 };
 

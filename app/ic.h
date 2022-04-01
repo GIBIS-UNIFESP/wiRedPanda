@@ -23,26 +23,25 @@ public:
     explicit IC(QGraphicsItem *parent = nullptr);
     ~IC() override;
 
-    void save(QDataStream &ds) const override;
+    ICPrototype *getPrototype();
+    QString getFile() const;
+    QVector<GraphicElement *> getElements() const;
     void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
     void loadFile(const QString &fname);
-    QString getFile() const;
-    ICPrototype *getPrototype();
-    QVector<GraphicElement *> getElements() const;
+    void save(QDataStream &ds) const override;
     void setSkin(bool defaultSkin, const QString &filename) override;
-
-    const QString m_titleText = tr("<b>INTEGRATED CIRCUIT</b>");
-    const QString m_translatedName = tr("IC");
-    const QString m_pixmap = ":/basic/box.png";
 
 protected:
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
-    QString m_file;
-
     void loadInputs(ICPrototype *prototype);
     void loadOutputs(ICPrototype *prototype);
+
+    QString m_file;
+    const QString m_titleText = tr("<b>INTEGRATED CIRCUIT</b>");
+    const QString m_translatedName = tr("IC");
+    const QString m_pixmap = ":/basic/box.png";
 };
 
 Q_DECLARE_METATYPE(IC)

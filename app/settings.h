@@ -9,6 +9,7 @@ class Settings
 {
 public:
     Settings() = delete;
+
     static QString fileName();
     static QVariant value(const QString &key);
     static bool contains(const QString &key);

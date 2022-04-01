@@ -31,21 +31,21 @@ public:
     explicit SimpleWaveform(Editor *editor, QWidget *parent = nullptr);
     ~SimpleWaveform() override;
 
-    void showWaveform();
-    static void sortElements(QVector<GraphicElement *> &elements, QVector<GraphicElement *> &inputs, QVector<GraphicElement *> &outputs, SortingMode sorting);
     static bool saveToTxt(QTextStream &outStream, Editor *editor);
+    static void sortElements(QVector<GraphicElement *> &elements, QVector<GraphicElement *> &inputs, QVector<GraphicElement *> &outputs, SortingMode sorting);
 
-private slots:
-    void on_radioButton_Position_clicked();
-    void on_radioButton_Increasing_clicked();
-    void on_radioButton_Decreasing_clicked();
-    void on_pushButton_Copy_clicked();
+    void showWaveform();
 
 private:
+    void on_pushButton_Copy_clicked();
+    void on_radioButton_Decreasing_clicked();
+    void on_radioButton_Increasing_clicked();
+    void on_radioButton_Position_clicked();
+
     Ui::SimpleWaveform *m_ui;
+    Editor *m_editor;
     QChart m_chart;
     QChartView *m_chartView;
-    Editor *m_editor;
     SortingMode m_sortingMode;
 };
 

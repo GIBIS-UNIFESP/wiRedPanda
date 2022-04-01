@@ -14,11 +14,9 @@ class TestLogicElements : public QObject
 {
     Q_OBJECT
 
-    QVector<LogicInput *> switches{5};
-
-private slots:
-    void init();
+private:
     void cleanup();
+    void init();
     void testLogicAnd();
     void testLogicDFlipFlop();
     void testLogicDLatch();
@@ -30,4 +28,6 @@ private slots:
     void testLogicOr();
     void testLogicSRFlipFlop();
     void testLogicTFlipFlop();
+
+    QVector<LogicInput *> switches{5};
 };

@@ -16,10 +16,10 @@ class Or : public GraphicElement
 
 public:
     explicit Or(QGraphicsItem *parent = nullptr);
-    ~Or() override = default;
 
     void setSkin(bool defaultSkin, const QString &filename) override;
 
+private:
     const QString m_titleText = tr("<b>OR</b>");
     const QString m_translatedName = tr("Or");
     const QString m_pixmap = ":/basic/or.png";

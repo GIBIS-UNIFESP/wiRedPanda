@@ -19,10 +19,10 @@
 
 SimulationController::SimulationController(Scene *scn)
     : QObject(scn)
-    , m_shouldRestart(false)
     , m_elMapping(nullptr)
-    , m_scene(scn)
     , m_simulationTimer(this)
+    , m_scene(scn)
+    , m_shouldRestart(false)
 {
     m_simulationTimer.setInterval(globalClock);
     m_viewTimer.setInterval(int(1000 / 30));
@@ -35,6 +35,9 @@ SimulationController::~SimulationController()
 {
     clear();
 }
+
+// If (m_shouldRestart) then the simulation controller will be cleared the next time that it is updated.
+void SimulationController::setRestart() { m_shouldRestart = true; }
 
 void SimulationController::updateScene(const QRectF &rect)
 {

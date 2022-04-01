@@ -16,16 +16,15 @@ class DFlipFlop : public GraphicElement
 
 public:
     explicit DFlipFlop(QGraphicsItem *parent = nullptr);
-    ~DFlipFlop() override = default;
 
-    void updatePorts() override;
     void setSkin(bool defaultSkin, const QString &filename) override;
+    void updatePorts() override;
 
+private:
     const QString m_titleText = tr("<b>D-FLIPFLOP</b>");
     const QString m_translatedName = tr("D-FlipFlop");
     const QString m_pixmap = ":/memory/light/D-flipflop.png";
 
-private:
     bool lastClk;
     bool lastValue;
 };

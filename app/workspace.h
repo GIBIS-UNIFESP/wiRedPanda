@@ -24,29 +24,28 @@ class WorkSpace
 public:
     WorkSpace() = default; // for compiling on Qt 5.7+
     WorkSpace(QDialog *fullscreenDlg, GraphicsView *fullscreenView, Editor *editor);
-    QDialog *fullScreenDlg() const;
+
     GraphicsView *fullscreenView() const;
+    ICManager *icManager();
+    QDialog *fullScreenDlg() const;
+    QFileInfo currentFile();
+    QGraphicsRectItem *sceneRect();
+    QString dolphinFileName();
     QUndoStack *undoStack() const;
     Scene *scene() const;
-    QGraphicsRectItem *sceneRect();
     SimulationController *simulationController();
-    ICManager *icManager();
-
-    void setCurrentFile(const QFileInfo &finfo);
-    QFileInfo currentFile();
-    void setDolphinFileName(const QString &fname);
-    QString dolphinFileName();
-
     void free();
+    void setCurrentFile(const QFileInfo &finfo);
+    void setDolphinFileName(const QString &fname);
 
 private:
-    QDialog *m_fullscreenDlg;
     GraphicsView *m_fullscreenView;
+    ICManager *m_icManager;
+    QDialog *m_fullscreenDlg;
+    QFileInfo m_currentFile;
+    QGraphicsRectItem *m_selectionRect;
+    QString m_dolphinFilename;
     QUndoStack *m_undoStack;
     Scene *m_scene;
     SimulationController *m_simulationController;
-    ICManager *m_icManager;
-    QGraphicsRectItem *m_selectionRect;
-    QFileInfo m_currentFile;
-    QString m_dolphinFilename;
 };

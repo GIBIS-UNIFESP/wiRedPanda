@@ -16,10 +16,10 @@ class Not : public GraphicElement
 
 public:
     explicit Not(QGraphicsItem *parent = nullptr);
-    ~Not() override = default;
 
     void setSkin(bool defaultSkin, const QString &filename) override;
 
+private:
     const QString m_titleText = tr("<b>NOT</b>");
     const QString m_translatedName = tr("Not");
     const QString m_pixmap = ":/basic/not.png";

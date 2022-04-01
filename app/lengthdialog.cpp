@@ -9,7 +9,7 @@ LengthDialog::LengthDialog(QWidget *parent)
     , m_ui(new Ui::LengthDialog)
 {
     m_ui->setupUi(this);
-    setWindowTitle("Simulation Length Selection");
+    setWindowTitle(tr("Simulation Length Selection"));
     setWindowFlags(Qt::Window);
     setModal(true);
     connect(m_ui->cancelPushButton, &QPushButton::clicked, this, &LengthDialog::cancelClicked);

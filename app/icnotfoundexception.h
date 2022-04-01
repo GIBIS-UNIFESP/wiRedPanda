@@ -13,6 +13,7 @@ class ICNotFoundException : public std::runtime_error
 {
 public:
     ICNotFoundException(const std::string &message, IC *ic);
+
     IC *getIC() const;
 
 private:

@@ -334,35 +334,10 @@ void RotateCommand::redo()
     m_editor->setAutoSaveRequired();
 }
 
-bool RotateCommand::mergeWith(const QUndoCommand *command)
-{
-    const auto *rotateCommand = dynamic_cast<const RotateCommand *>(command);
-    if (m_ids.size() != rotateCommand->m_ids.size()) {
-        return false;
-    }
-    auto list = findElements(m_ids).toVector();
-    auto list2 = findElements(rotateCommand->m_ids).toVector();
-    for (int i = 0; i < list.size(); ++i) {
-        if (list[i] != list2[i]) {
-            return false;
-        }
-    }
-    m_angle = (m_angle + rotateCommand->m_angle) % 360;
-    setText(tr("Rotate %1 degrees").arg(m_angle));
-    undo();
-    redo();
-    return true;
-}
-
-int RotateCommand::id() const
-{
-    return Id;
-}
-
 MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPointF> &oldPositions, Editor *aEditor, QUndoCommand *parent)
     : QUndoCommand(parent)
-    , m_oldPositions(oldPositions)
     , m_editor(aEditor)
+    , m_oldPositions(oldPositions)
 {
     m_newPositions.reserve(list.size());
     m_ids.reserve(list.size());
@@ -719,8 +694,8 @@ void ChangeInputSZCommand::undo()
 
 FlipCommand::FlipCommand(const QList<GraphicElement *> &aItems, int aAxis, Editor *aEditor, QUndoCommand *parent)
     : QUndoCommand(parent)
-    , m_axis(aAxis)
     , m_editor(aEditor)
+    , m_axis(aAxis)
 {
     setText(tr("Flip %1 elements in axis %2").arg(aItems.size(), aAxis));
     m_ids.reserve(aItems.size());

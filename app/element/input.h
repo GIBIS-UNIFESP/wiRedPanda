@@ -8,12 +8,12 @@
 class Input
 {
 public:
-    virtual bool getOn(int port = 0) const = 0;
-    virtual void setOn(bool value, int port = 0) = 0;
-    virtual int outputSize() const;
-    virtual int outputValue() const;
     bool isLocked() const;
     void setLocked(bool value);
+    virtual bool getOn(int port = 0) const = 0;
+    virtual int outputSize() const;
+    virtual int outputValue() const;
+    virtual void setOn(bool value, int port = 0) = 0;
 
 protected:
     bool locked;
