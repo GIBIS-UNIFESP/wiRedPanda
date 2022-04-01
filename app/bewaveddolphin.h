@@ -64,6 +64,10 @@ public:
     void show();
     void print();
 
+protected:
+    void resizeEvent(QResizeEvent *event) override;
+    void closeEvent(QCloseEvent *e) override;
+
 private slots:
     void on_actionExit_triggered();
     void on_actionSet_to_0_triggered();
@@ -147,8 +151,4 @@ private:
     void associateToWiredPanda(const QString &fname);
     void restoreInputs();
     void resizeScene();
-
-protected:
-    void resizeEvent(QResizeEvent *event) override;
-    void closeEvent(QCloseEvent *e) override;
 };
