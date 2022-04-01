@@ -336,11 +336,11 @@ QVector<char> BewavedDolphin::loadSignals(QStringList &input_labels, QStringList
         }
         for (int port = 0; port < input->outputSize(); ++port) {
             if (input->outputSize() > 1) {
-                // QMessageBox::warning(this, "Append", "Appending label: " + QString(label) + ", port: " + QString::number(port));
-                input_labels.append(QString("%1_%2").arg(label).arg(port));
+//                QMessageBox::warning(this, "Append", "Appending label: " + label + ", port: " + QString::number(port));
+                input_labels.append(label + "_" + port);
                 oldValues[old_idx] = input->output(port)->value();
             } else {
-                // QMessageBox::warning(this, "Append", "Appending label " + QString(label));
+//                 QMessageBox::warning(this, "Append", "Appending label " + label);
                 input_labels.append(label);
                 oldValues[old_idx] = input->output()->value();
             }
@@ -355,7 +355,7 @@ QVector<char> BewavedDolphin::loadSignals(QStringList &input_labels, QStringList
         }
         for (int port = 0; port < output->inputSize(); ++port) {
             if (output->inputSize() > 1) {
-                output_labels.append(QString("%1_%2").arg(label).arg(port));
+                output_labels.append(label + "_" + port);
             } else {
                 output_labels.append(label);
             }
@@ -375,7 +375,7 @@ bool BewavedDolphin::createWaveform(const QString &filename)
     this->setEnabled(true);
     qCDebug(zero) << "Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.";
     if (!loadElements()) {
-        QMessageBox::warning(parentWidget(), tr("Error"), tr("Could not load enough elements for the simulation."));
+        QMessageBox::critical(parentWidget(), tr("Error"), tr("Could not load enough elements for the simulation."));
         return false;
     }
     QStringList input_labels;
@@ -885,7 +885,7 @@ bool BewavedDolphin::load(const QString &fname)
 {
     QFile fl(fname);
     if (!fl.exists()) {
-        QMessageBox::warning(this, tr("Error!"), tr("File \"%1\" does not exist!").arg(fname), QMessageBox::Ok, QMessageBox::NoButton);
+        QMessageBox::critical(this, tr("Error!"), tr("File \"%1\" does not exist!").arg(fname), QMessageBox::Ok, QMessageBox::NoButton);
         return false;
     }
     qCDebug(zero) << "File exists.";
@@ -901,7 +901,7 @@ bool BewavedDolphin::load(const QString &fname)
                 m_currentFile = QFileInfo(fname);
             } catch (std::runtime_error &e) {
                 qCDebug(zero) << tr("Error loading project:") << e.what();
-                QMessageBox::warning(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
+                QMessageBox::critical(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
                 return false;
             }
         } else if (fname.endsWith(".csv")) {
@@ -913,7 +913,7 @@ bool BewavedDolphin::load(const QString &fname)
                 m_currentFile = QFileInfo(fname);
             } catch (std::runtime_error &e) {
                 qCDebug(zero) << tr("Error loading project:") << e.what();
-                QMessageBox::warning(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
+                QMessageBox::critical(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
                 return false;
             }
         } else {
@@ -922,7 +922,7 @@ bool BewavedDolphin::load(const QString &fname)
         }
     } else {
         qCDebug(zero) << tr("Could not open file in ReadOnly mode :") << fname;
-        QMessageBox::warning(this, tr("Error!"), tr("Could not open file in ReadOnly mode : ") + fname + ".", QMessageBox::Ok, QMessageBox::NoButton);
+        QMessageBox::critical(this, tr("Error!"), tr("Could not open file in ReadOnly mode : ") + fname + ".", QMessageBox::Ok, QMessageBox::NoButton);
         return false;
     }
     qCDebug(zero) << "Closing file.";
@@ -937,7 +937,7 @@ void BewavedDolphin::load(QDataStream &ds)
     QString str;
     ds >> str;
     if (!str.startsWith("beWavedDolphin")) {
-        throw(std::runtime_error(ERRORMSG("Invalid file format. Starts with: " + str.toStdString())));
+        throw(std::runtime_error(ERRORMSG(QObject::tr("Invalid file format. Starts with: ").toStdString() + str.toStdString())));
     }
     qint64 rows;
     qint64 cols;
@@ -947,7 +947,7 @@ void BewavedDolphin::load(QDataStream &ds)
         rows = m_input_ports;
     }
     if ((cols < 2) || (cols > 2048)) {
-        throw(std::runtime_error(ERRORMSG("Invalid number of columns.")));
+        throw(std::runtime_error(ERRORMSG(QObject::tr("Invalid number of columns.").toStdString())));
     }
     setLength(cols, false);
     qCDebug(zero) << "Update table.";
@@ -971,7 +971,7 @@ void BewavedDolphin::load(QFile &fl)
         rows = m_input_ports;
     }
     if ((cols < 2) || (cols > 2048)) {
-        throw(std::runtime_error(ERRORMSG("Invalid number of columns.")));
+        throw(std::runtime_error(ERRORMSG(QObject::tr("Invalid number of columns.").toStdString())));
     }
     setLength(cols, false);
     qCDebug(zero) << "Update table.";
@@ -1049,7 +1049,7 @@ void BewavedDolphin::on_actionExport_to_PDF_triggered()
     printer.setOutputFileName(pdfFile);
     QPainter p;
     if (!p.begin(&printer)) {
-        QMessageBox::warning(this, tr("ERROR"), tr("Could not print this circuit to PDF."), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Error!"), tr("Could not print this circuit to PDF."), QMessageBox::Ok);
         return;
     }
     m_scene->render(&p, QRectF(), m_scene->sceneRect().adjusted(-64, -64, 64, 64));

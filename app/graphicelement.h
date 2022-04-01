@@ -89,12 +89,12 @@ public:
     /**
      * @brief addInputPort: adds an input port at the end of the input port vector.
      */
-    void addInputPort(const QString &name = QString());
+    void addInputPort(const QString &name = {});
 
     /**
      * @brief addOutputPort: adds an output port at the end of the output port vector.
      */
-    void addOutputPort(const QString &name = QString());
+    void addOutputPort(const QString &name = {});
 
     virtual void setPortName(const QString &name);
 

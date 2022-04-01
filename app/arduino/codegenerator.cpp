@@ -252,7 +252,7 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elms)
 {
     for (auto *elm : elms) {
         if (elm->elementType() == ElementType::IC) {
-            throw std::runtime_error(QString("BOX element not supported : %1").arg(elm->objectName()).toStdString());
+            throw std::runtime_error(QObject::tr("BOX element not supported: ").toStdString() + elm->objectName().toStdString());
             // TODO: CodeGenerator::assignVariablesRec for Box Element
             //      Box *box = qgraphicsitem_cast<Box*>(elm);
             //      out << "    // " << box->getLabel() << endl;
@@ -413,7 +413,7 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elms)
             case ElementType::Xnor:
             case ElementType::Not:
             case ElementType::Node: assignLogicOperator(elm); break;
-            default:                throw std::runtime_error(ERRORMSG(QString("Element type not supported : %1").arg(elm->objectName()).toStdString()));
+            default:                throw std::runtime_error(ERRORMSG(QObject::tr("Element type not supported: ").toStdString() + elm->objectName().toStdString()));
             }
         }
     }

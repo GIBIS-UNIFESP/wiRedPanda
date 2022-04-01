@@ -65,7 +65,9 @@ void ICManager::loadFile(QString &fname)
     // qCDebug(zero) << "Current main window dir:" << QFileInfo(GlobalProperties::currentFile).absolutePath();
     finfo.setFile(QFileInfo(GlobalProperties::currentFile).absolutePath(), QFileInfo(fname).fileName());
     // qCDebug(zero) << "IC file:" << finfo.absoluteFilePath();
-    Q_ASSERT(finfo.exists() && finfo.isFile());
+    if (!finfo.exists() || !finfo.isFile()) {
+        throw std::runtime_error(fname.toStdString() + tr(" not found.").toStdString());
+    }
     m_fileWatcher.addPath(finfo.absoluteFilePath());
     if (m_ics.contains(finfo.baseName())) {
         qCDebug(three) << "IC already inserted:" << finfo.baseName();
@@ -125,7 +127,7 @@ void ICManager::wakeUp()
             try {
                 m_ics[bname]->reload();
             } catch (...) {
-                QMessageBox::warning(m_mainWindow, tr("File error."), tr("Error reloading changed IC file. Perhaps it was deleted."));
+                QMessageBox::critical(m_mainWindow, tr("Error!"), tr("Error reloading changed IC file. Perhaps it was deleted."));
             }
         }
     }

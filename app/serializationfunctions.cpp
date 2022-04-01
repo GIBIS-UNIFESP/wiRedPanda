@@ -53,7 +53,7 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &ds, doub
         qCDebug(three) << "Type:" << type;
 
         if (type != GraphicElement::Type && type != QNEConnection::Type) {
-            throw(std::runtime_error(ERRORMSG("Invalid type. Data is possibly corrupted.")));
+            throw(std::runtime_error(ERRORMSG(QObject::tr("Invalid type. Data is possibly corrupted.").toStdString())));
         }
 
         if (type == GraphicElement::Type) {
@@ -99,14 +99,14 @@ double SerializationFunctions::loadVersion(QDataStream &ds)
     QString str;
     ds >> str;
     if (!str.startsWith(QApplication::applicationName(), Qt::CaseInsensitive)) {
-        throw(std::runtime_error(ERRORMSG("Invalid file format.")));
+        throw(std::runtime_error(ERRORMSG(QObject::tr("Invalid file format.")).toStdString()));
     }
     qCDebug(zero) << "String:" << str;
     bool ok;
     double version = GlobalProperties::toDouble(str.split(" ").at(1), &ok);
     qCDebug(zero) << "Version:" << version;
     if (!ok) {
-        throw(std::runtime_error(ERRORMSG("Invalid version number.")));
+        throw(std::runtime_error(ERRORMSG(QObject::tr("Invalid version number.")).toStdString()));
     }
     return version;
 }
@@ -138,12 +138,12 @@ QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &ds)
     QString str;
     ds >> str;
     if (!str.startsWith(QApplication::applicationName(), Qt::CaseInsensitive)) {
-        throw(std::runtime_error(ERRORMSG("Invalid file format.")));
+        throw(std::runtime_error(ERRORMSG(QObject::tr("Invalid file format.")).toStdString()));
     }
     bool ok;
     double version = GlobalProperties::toDouble(str.split(" ").at(1), &ok);
     if (!ok) {
-        throw(std::runtime_error(ERRORMSG("Invalid version number.")));
+        throw(std::runtime_error(ERRORMSG(QObject::tr("Invalid version number.").toStdString())));
     }
     loadDolphinFilename(ds, version);
     loadRect(ds, version);

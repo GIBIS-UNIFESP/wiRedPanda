@@ -605,8 +605,8 @@ bool Editor::dropEvt(QGraphicsSceneDragDropEvent *dde)
                         return false;
                     }
                 }
-            } catch (std::runtime_error &err) {
-                QMessageBox::warning(m_mainWindow, tr("Error"), QString::fromStdString(err.what()));
+            } catch (std::runtime_error &e) {
+                QMessageBox::critical(m_mainWindow, tr("Error!"), e.what());
                 return false;
             }
         }

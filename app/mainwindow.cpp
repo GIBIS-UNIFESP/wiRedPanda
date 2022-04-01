@@ -459,7 +459,7 @@ bool MainWindow::loadPandaFile(const QString &fname)
 {
     QFile fl(fname);
     if (!fl.exists()) {
-        QMessageBox::warning(this, tr("Error!"), tr("File \"%1\" does not exist!").arg(fname), QMessageBox::Ok, QMessageBox::NoButton);
+        QMessageBox::critical(this, tr("Error!"), tr("File \"%1\" does not exist!").arg(fname), QMessageBox::Ok, QMessageBox::NoButton);
         qCDebug(zero) << "Error: This file does not exist:" << fname;
         return false;
     }
@@ -477,7 +477,7 @@ bool MainWindow::loadPandaFile(const QString &fname)
             updateICList();
         } catch (std::runtime_error &e) {
             qCDebug(zero) << "Error loading project:" << e.what();
-            QMessageBox::warning(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
+            QMessageBox::critical(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
             closeTab(m_tabs.size() - 1);
             selectTab(current_tab);
             return false;
@@ -997,7 +997,7 @@ bool MainWindow::exportToArduino(QString fname)
 
         qCDebug(zero) << "Arduino code successfully generated.";
     } catch (std::runtime_error &e) {
-        QMessageBox::warning(this, tr("Error"), tr("<strong>Error while exporting to Arduino code:</strong><br>%1").arg(e.what()));
+        QMessageBox::critical(this, tr("Error!"), tr("<strong>Error while exporting to Arduino code:</strong><br>%1").arg(e.what()));
         return false;
     }
 
@@ -1019,7 +1019,7 @@ bool MainWindow::exportToWaveFormFile(const QString &fname)
         m_bd->print();
     } catch (std::runtime_error &e) {
         setEnabled(true);
-        QMessageBox::warning(this, tr("Error"), tr("<strong>Error while exporting to waveform file:</strong><br>%1").arg(e.what()));
+        QMessageBox::critical(this, tr("Error!"), tr("<strong>Error while exporting to waveform file:</strong><br>%1").arg(e.what()));
         return false;
     }
     return true;
@@ -1060,7 +1060,7 @@ void MainWindow::updateRecentFileActions()
         ui->menuRecent_files->setEnabled(true);
     }
     for (int i = 0; i < numRecentFiles; ++i) {
-        const QString text = QString("&%1 %2").arg(i + 1).arg(QFileInfo(files[i]).fileName());
+        const QString text = "&" + QString::number(i + 1) + " " + QFileInfo(files[i]).fileName();
         m_recentFileActs[i]->setText(text);
         m_recentFileActs[i]->setData(files[i]);
         m_recentFileActs[i]->setVisible(true);
@@ -1108,7 +1108,7 @@ void MainWindow::on_actionPrint_triggered()
     printer.setOutputFileName(pdfFile);
     QPainter p;
     if (!p.begin(&printer)) {
-        QMessageBox::warning(this, tr("ERROR"), tr("Could not print this circuit to PDF."), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Error!"), tr("Could not print this circuit to PDF."), QMessageBox::Ok);
         return;
     }
     m_editor->getScene()->render(&p, QRectF(), m_editor->getScene()->itemsBoundingRect().adjusted(-64, -64, 64, 64));
