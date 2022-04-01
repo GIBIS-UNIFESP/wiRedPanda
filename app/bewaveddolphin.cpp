@@ -337,7 +337,7 @@ QVector<char> BewavedDolphin::loadSignals(QStringList &input_labels, QStringList
         for (int port = 0; port < input->outputSize(); ++port) {
             if (input->outputSize() > 1) {
 //                QMessageBox::warning(this, "Append", "Appending label: " + label + ", port: " + QString::number(port));
-                input_labels.append(label + "_" + port);
+                input_labels.append(label + "_" + QString::number(port));
                 oldValues[old_idx] = input->output(port)->value();
             } else {
 //                 QMessageBox::warning(this, "Append", "Appending label " + label);
@@ -355,7 +355,7 @@ QVector<char> BewavedDolphin::loadSignals(QStringList &input_labels, QStringList
         }
         for (int port = 0; port < output->inputSize(); ++port) {
             if (output->inputSize() > 1) {
-                output_labels.append(label + "_" + port);
+                output_labels.append(label + "_" + QString::number(port));
             } else {
                 output_labels.append(label);
             }

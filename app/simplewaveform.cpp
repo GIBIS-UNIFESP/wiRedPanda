@@ -263,7 +263,7 @@ void SimpleWaveform::showWaveform()
         for (int port = 0; port < output->inputSize(); ++port) {
             out_series.append(new QLineSeries(this));
             if (output->inputSize() > 1) {
-                out_series.last()->setName(label + "_" + port);
+                out_series.last()->setName(label + "_" + QString::number(port));
             } else {
                 out_series.last()->setName(label);
             }
