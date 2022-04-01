@@ -1299,6 +1299,10 @@ void MainWindow::buildFullScreenDialog()
     m_fullscreenDlg->setLayout(dlg_layout);
     m_fullscreenDlg->setStyleSheet("QGraphicsView { border-style: none; }");
     m_fullscreenView->setScene(m_editor->getScene());
+    const bool fastModeEnabled = ui->actionFast_Mode->isChecked();
+    m_fullscreenView->setRenderHint(QPainter::Antialiasing, !fastModeEnabled);
+    m_fullscreenView->setRenderHint(QPainter::TextAntialiasing, !fastModeEnabled);
+    m_fullscreenView->setRenderHint(QPainter::SmoothPixmapTransform, !fastModeEnabled);
     connect(m_fullscreenView->gvzoom(), &GraphicsViewZoom::zoomed, this, &MainWindow::zoomChanged);
 }
 
