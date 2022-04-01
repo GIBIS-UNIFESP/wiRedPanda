@@ -16,10 +16,10 @@ class JKLatch : public GraphicElement
 
 public:
     explicit JKLatch(QGraphicsItem *parent = nullptr);
-    ~JKLatch() override = default;
 
     void updatePorts() override;
 
+private:
     const QString m_titleText = tr("<b>JK-LATCH</b>");
     const QString m_translatedName = tr("JK-Latch");
     const QString m_pixmap = ":/memory/light/JK-latch.png";

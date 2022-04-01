@@ -16,16 +16,15 @@ class SRFlipFlop : public GraphicElement
 
 public:
     explicit SRFlipFlop(QGraphicsItem *parent = nullptr);
-    ~SRFlipFlop() override = default;
 
-    void updatePorts() override;
     void setSkin(bool defaultSkin, const QString &filename) override;
+    void updatePorts() override;
 
+private:
     const QString m_titleText = tr("<b>SR-FLIPFLOP</b>");
     const QString m_translatedName = tr("SR-FlipFlop");
     const QString m_pixmap = ":/memory/light/SR-flipflop.png";
 
-private:
     bool lastClk;
 };
 

@@ -21,6 +21,8 @@ class ThemeAttrs
 public:
     ThemeAttrs();
 
+    void setTheme(Theme theme);
+
     QColor scene_bgBrush;
     QColor scene_bgDots;
 
@@ -44,8 +46,6 @@ public:
     QColor qnePort_output_pen;
     QColor qnePort_output_brush;
 
-    void setTheme(Theme theme);
-
 private:
     QPalette const defaultPalette = qApp->palette();
 };
@@ -55,18 +55,16 @@ class ThemeManager : public QObject
     Q_OBJECT
 
 public:
-    static ThemeManager *globalManager;
-
     explicit ThemeManager(QObject *parent = nullptr);
 
+    static ThemeManager *globalManager;
+
     QString currentTheme() const;
-    void setCurrentTheme(const Theme &theme);
-
     Theme theme() const;
-    void setTheme(Theme theme);
-
-    void initialize();
     ThemeAttrs getAttrs() const;
+    void initialize();
+    void setCurrentTheme(const Theme &theme);
+    void setTheme(Theme theme);
 
 signals:
     void themeChanged();

@@ -43,6 +43,11 @@ SimpleWaveform::SimpleWaveform(Editor *editor, QWidget *parent)
     Settings::beginGroup("SimpleWaveform");
     restoreGeometry(Settings::value("geometry").toByteArray());
     Settings::endGroup();
+
+    connect(m_ui->pushButton_Copy, &QPushButton::clicked, this, &SimpleWaveform::on_pushButton_Copy_clicked);
+    connect(m_ui->radioButton_Decreasing, &QRadioButton::clicked, this, &SimpleWaveform::on_radioButton_Decreasing_clicked);
+    connect(m_ui->radioButton_Increasing, &QRadioButton::clicked, this, &SimpleWaveform::on_radioButton_Increasing_clicked);
+    connect(m_ui->radioButton_Position, &QRadioButton::clicked, this, &SimpleWaveform::on_radioButton_Position_clicked);
 }
 
 SimpleWaveform::~SimpleWaveform()

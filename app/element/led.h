@@ -16,30 +16,27 @@ class Led : public GraphicElement
 
 public:
     explicit Led(QGraphicsItem *parent = nullptr);
-    ~Led() override = default;
 
     static int current_id_number; // Number used to create distinct labels for each instance of this element.
 
-    void refresh() override;
-    void setColor(const QString &getColor) override;
-    QString getColor() const override;
-
-    void save(QDataStream &ds) const override;
-    void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
     QString genericProperties() override;
-
-    void updatePorts() override;
+    QString getColor() const override;
+    void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
+    void refresh() override;
+    void save(QDataStream &ds) const override;
+    void setColor(const QString &getColor) override;
     void setSkin(bool defaultSkin, const QString &filename) override;
+    void updatePorts() override;
+
+private:
+    void resetLedPixmapName(int ledNumber);
 
     const QString m_titleText = tr("<b>LED</b>");
     const QString m_translatedName = tr("Led");
     const QString m_pixmap = ":/output/WhiteLedOff.png";
 
-private:
     QString m_color;
     int m_colorNumber; /* white = 0, red = 2, green = 4, blue = 6, purple = 8 */
-
-    void resetLedPixmapName(int ledNumber);
 };
 
 Q_DECLARE_METATYPE(Led)

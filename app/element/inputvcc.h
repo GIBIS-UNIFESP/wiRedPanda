@@ -16,10 +16,10 @@ class InputVcc : public GraphicElement
 
 public:
     explicit InputVcc(QGraphicsItem *parent = nullptr);
-    ~InputVcc() override = default;
 
     void setSkin(bool defaultSkin, const QString &filename) override;
 
+private:
     const QString m_titleText = tr("<b>VCC</b>");
     const QString m_translatedName = tr("VCC");
     const QString m_pixmap = ":/input/1.png";

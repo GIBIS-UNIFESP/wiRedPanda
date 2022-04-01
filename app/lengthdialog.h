@@ -18,14 +18,14 @@ class LengthDialog : public QDialog
 
 public:
     explicit LengthDialog(QWidget *parent = nullptr);
-    int getFrequency();
     ~LengthDialog() override;
 
-private slots:
+    int getFrequency();
+
+private:
     void cancelClicked();
     void okClicked();
 
-private:
     Ui::LengthDialog *m_ui;
     bool m_canceled;
 };

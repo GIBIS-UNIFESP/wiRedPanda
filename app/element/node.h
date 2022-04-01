@@ -16,11 +16,11 @@ class Node : public GraphicElement
 
 public:
     explicit Node(QGraphicsItem *parent = nullptr);
-    ~Node() override = default;
 
-    void updatePorts() override;
     void setSkin(bool defaultSkin, const QString &filename) override;
+    void updatePorts() override;
 
+private:
     const QString m_titleText = tr("<b>NODE</b>");
     const QString m_translatedName = tr("Node");
     const QString m_pixmap = ":/basic/node.png";

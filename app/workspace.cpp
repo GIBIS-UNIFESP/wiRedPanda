@@ -10,13 +10,13 @@
 #include "simulationcontroller.h"
 
 WorkSpace::WorkSpace(QDialog *fullscreenDlg, GraphicsView *fullscreenView, Editor *editor)
-    : m_fullscreenDlg(fullscreenDlg)
-    , m_fullscreenView(fullscreenView)
+    : m_fullscreenView(fullscreenView)
+    , m_icManager(editor->getICManager())
+    , m_fullscreenDlg(fullscreenDlg)
+    , m_selectionRect(editor->getSceneRect())
     , m_undoStack(editor->getUndoStack())
     , m_scene(editor->getScene())
     , m_simulationController(editor->getSimulationController())
-    , m_icManager(editor->getICManager())
-    , m_selectionRect(editor->getSceneRect())
 {
 }
 

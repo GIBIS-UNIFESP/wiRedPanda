@@ -11,6 +11,6 @@ class TestCommands : public QObject
 {
     Q_OBJECT
 
-private slots:
+private:
     void testAddDeleteCommands();
 };

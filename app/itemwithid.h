@@ -7,12 +7,15 @@
 
 class ItemWithId
 {
-    int m_id;
 
 public:
     ItemWithId();
+    virtual ~ItemWithId();
+
     int id() const;
     void setId(int id);
-    virtual ~ItemWithId();
+
+private:
+    int m_id;
 };
 

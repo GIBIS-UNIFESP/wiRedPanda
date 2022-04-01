@@ -13,12 +13,8 @@ class FileHelper : public QObject
     Q_OBJECT
 
 public:
-    static void verifyRecursion(const QString &fname);
+    FileHelper() = delete;
 
-private:
-    explicit FileHelper(QObject *parent = nullptr)
-        : QObject(parent)
-    {
-    }
+    static void verifyRecursion(const QString &fname);
 };
 

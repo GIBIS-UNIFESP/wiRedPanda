@@ -16,10 +16,10 @@ class Line : public GraphicElement
 
 public:
     explicit Line(QGraphicsItem *parent = nullptr);
-    ~Line() override = default;
 
     void setSkin(bool defaultSkin, const QString &filename) override;
 
+private:
     const QString m_titleText = tr("<b>LINE</b>");
     const QString m_translatedName = tr("Line");
     const QString m_pixmap = ":/line.png";

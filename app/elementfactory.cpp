@@ -71,13 +71,6 @@ QPixmap ElementFactory::getPixmap(ElementType type)
     return {};
 }
 
-ElementFactory::ElementFactory()
-{
-    clear();
-    m_map.clear();
-    m_lastId = 0;
-}
-
 GraphicElement *ElementFactory::buildElement(ElementType type)
 {
     qCDebug(four) << "Creating Element. Building it." << type;

@@ -16,10 +16,10 @@ class Nand : public GraphicElement
 
 public:
     explicit Nand(QGraphicsItem *parent = nullptr);
-    ~Nand() override = default;
 
     void setSkin(bool defaultSkin, const QString &filename) override;
 
+private:
     const QString m_titleText = tr("<b>NAND</b>");
     const QString m_translatedName = tr("Nand");
     const QString m_pixmap = ":/basic/nand.png";

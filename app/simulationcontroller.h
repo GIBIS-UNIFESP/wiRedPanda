@@ -21,41 +21,34 @@ class SimulationController : public QObject
     Q_OBJECT
 
 public:
-    // If m_shouldRestart == true, then the simulation controller will be cleared the next time that
-    // it is updated.
-    void setRestart() { m_shouldRestart = true; }
-
     explicit SimulationController(Scene *scn);
     ~SimulationController() override;
 
-    void updateScene(const QRectF &rect);
     static QVector<GraphicElement *> sortElements(QVector<GraphicElement *> elms);
 
     bool isRunning();
     void clear();
-    void startTimer();
-
-signals:
-
-public slots:
-    void update();
-    void stop();
-    void start();
-    void tic();
-    void updateView();
-    void updateAll();
-    bool canRun();
     void reSortElements();
+    void setRestart();
+    void start();
+    void startTimer();
+    void stop();
+    void update();
+    void updateAll();
+    void updateScene(const QRectF &rect);
 
 private:
-    void updatePort(QNEOutputPort *port);
-    void updatePort(QNEInputPort *port);
+    bool canRun();
+    void tic();
     void updateConnection(QNEConnection *conn);
+    void updatePort(QNEInputPort *port);
+    void updatePort(QNEOutputPort *port);
+    void updateView();
 
-    bool m_shouldRestart;
     ElementMapping *m_elMapping;
-    Scene *m_scene;
     QTimer m_simulationTimer;
     QTimer m_viewTimer;
+    Scene *m_scene;
+    bool m_shouldRestart;
 };
 
