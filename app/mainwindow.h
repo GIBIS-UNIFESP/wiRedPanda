@@ -93,7 +93,7 @@ private slots:
     void on_actionFast_Mode_triggered(bool checked);
     void on_actionFlip_horizontally_triggered();
     void on_actionFlip_vertically_triggered();
-    void on_actionFullscreen_triggered() const;
+    void on_actionFullscreen_triggered();
     void on_actionGates_triggered(bool checked);
     void on_actionLabels_under_icons_triggered(bool checked);
     void on_actionMute_triggered();
