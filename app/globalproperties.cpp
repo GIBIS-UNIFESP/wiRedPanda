@@ -27,12 +27,12 @@ double loadVersion()
     bool ok;
     double version = GlobalProperties::toDouble(txtVersion, &ok);
     if (!ok || (qFuzzyIsNull(version))) {
-        throw std::runtime_error(ERRORMSG("INVALID VERSION NUMBER!"));
+        throw std::runtime_error(ERRORMSG(QObject::tr("Invalid version number!").toStdString()));
     }
     return version;
 }
 
-QString GlobalProperties::currentFile = QString();
+QString GlobalProperties::currentFile = {};
 double GlobalProperties::version = loadVersion();
 
 bool GlobalProperties::soundEnabled = true;

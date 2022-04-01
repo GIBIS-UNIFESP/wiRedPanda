@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
             window->loadPandaFile(args[0]);
         }
     } catch (std::exception &e) {
-        QMessageBox::critical(nullptr, "Erro", e.what());
+        QMessageBox::critical(nullptr, QObject::tr("Error!"), e.what());
         exit(1);
     }
 

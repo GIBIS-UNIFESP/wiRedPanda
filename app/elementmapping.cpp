@@ -152,7 +152,7 @@ LogicElement *ElementMapping::buildLogicElement(GraphicElement *elm)
     case ElementType::JKLatch:     return new LogicDLatch();
     case ElementType::Text:
     case ElementType::Line:        return new LogicNone();
-    default:                       throw std::runtime_error("Not implemented yet: " + elm->objectName().toStdString());
+    default:                       throw std::runtime_error(QObject::tr("Not implemented yet: ").toStdString() + elm->objectName().toStdString());
     }
 }
 

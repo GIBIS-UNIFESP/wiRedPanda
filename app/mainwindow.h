@@ -33,12 +33,12 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr, const QString &filename = QString());
+    explicit MainWindow(QWidget *parent = nullptr, const QString &filename = {});
     ~MainWindow() override;
     //! Creates a new tab with the given tab_name. Used by new and load actions.
     void createNewTab();
     //! Saves the project to a .panda file. Removes the autosave file in the process.
-    bool save(QString fname = QString());
+    bool save(QString fname = {});
     //! Sets the main window as visible, as well as its child widgets. Cleans the editor.
     void show();
     //! Returns the file name of the currently loaded Panda file.

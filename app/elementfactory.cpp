@@ -89,13 +89,13 @@ GraphicElement *ElementFactory::buildElement(ElementType type)
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     int id = QMetaType::type(typeToText(type).toLatin1());
     if (id == QMetaType::UnknownType) {
-        throw std::runtime_error("unknown type: " + typeToText(type).toLatin1());
+        throw std::runtime_error(QObject::tr("Unknown type: ").toStdString() + typeToText(type).toStdString());
     }
     auto *elm = static_cast<GraphicElement *>(QMetaType::create(id));
 #else
     const auto metaType = QMetaType::fromName(typeToText(type).toLatin1());
     if (not metaType.isValid() or metaType.id() == QMetaType::UnknownType) {
-        throw std::runtime_error("unknown type: " + typeToText(type).toLatin1());
+        throw std::runtime_error(QObject::tr("Unknown type: ").toStdString() + typeToText(type).toStdString());
     }
     auto *elm = static_cast<GraphicElement *>(metaType.create());
 #endif
