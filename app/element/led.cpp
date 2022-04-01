@@ -7,6 +7,10 @@
 
 #include <bitset>
 
+namespace{
+int id = qRegisterMetaType<Led>();
+}
+
 int Led::current_id_number = 0;
 
 /* Color pallets:
@@ -57,6 +61,7 @@ Led::Led(QGraphicsItem *parent)
     setHasLabel(true);
     setCanChangeSkin(true);
     setPortName("Led");
+    setToolTip(m_translatedName);
 }
 
 void Led::refresh()

@@ -7,10 +7,14 @@
 
 #include <QGraphicsSceneMouseEvent>
 
+namespace {
+int id = qRegisterMetaType<InputButton>();
+}
+
 int InputButton::current_id_number = 0;
 
 InputButton::InputButton(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Button, ElementGroup::Input, 0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::InputButton, ElementGroup::Input, 0, 0, 1, 1, parent)
 {
     m_pixmapSkinName = {
         ":/input/buttonOff.png",
@@ -26,6 +30,7 @@ InputButton::InputButton(QGraphicsItem *parent)
     setHasLabel(true);
     setHasTrigger(true);
     setPortName("Button");
+    setToolTip(m_translatedName);
 }
 
 void InputButton::mousePressEvent(QGraphicsSceneMouseEvent *event)

@@ -5,6 +5,10 @@
 
 #include "qneport.h"
 
+namespace {
+int id = qRegisterMetaType<DLatch>();
+}
+
 DLatch::DLatch(QGraphicsItem *parent)
     : GraphicElement(ElementType::DLatch, ElementGroup::Memory, 2, 2, 2, 2, parent)
 {
@@ -15,6 +19,7 @@ DLatch::DLatch(QGraphicsItem *parent)
     setCanChangeSkin(true);
     DLatch::updatePorts();
     setPortName("D Latch");
+    setToolTip(m_translatedName);
     input(0)->setName("Data");
     input(1)->setName("Enable");
     output(0)->setName("Q");

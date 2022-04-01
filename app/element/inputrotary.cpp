@@ -9,10 +9,14 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 
+namespace {
+int id = qRegisterMetaType<InputRotary>();
+}
+
 int InputRotary::current_id_number = 0;
 
 InputRotary::InputRotary(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Rotary, ElementGroup::Input, 0, 0, 2, 16, parent)
+    : GraphicElement(ElementType::InputRotary, ElementGroup::Input, 0, 0, 2, 16, parent)
 {
     qCDebug(three) << "Creating rotary.";
     m_value = 0;
@@ -48,6 +52,7 @@ InputRotary::InputRotary(QGraphicsItem *parent)
     setHasLabel(true);
     setHasTrigger(true);
     setPortName("Rotary");
+    setToolTip(m_translatedName);
 
     setPixmap(m_pixmapSkinName[0]);
     m_rotary2 =     QPixmap(m_pixmapSkinName[0]);

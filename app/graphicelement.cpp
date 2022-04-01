@@ -20,6 +20,10 @@
 #include <iostream>
 #include <stdexcept>
 
+namespace {
+int id = qRegisterMetaType<GraphicElement>();
+}
+
 // TODO - WARNING: non-POD static
 static QMap<QString, QPixmap> loadedPixmaps;
 
@@ -47,7 +51,6 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, int minInpu
 {
     qCDebug(four) << "Setting flags of elements.";
     setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemSendsGeometryChanges);
-    setToolTip(ElementFactory::translatedName(m_elementType));
 
     qCDebug(four) << "Setting attributes.";
     m_label->hide();
@@ -874,4 +877,13 @@ void GraphicElement::setOutputsOnTop(bool outputsOnTop)
 bool GraphicElement::disabled() const
 {
     return m_disabled;
+}
+
+QDataStream &operator<<(QDataStream &ds, const GraphicElement *item){
+    qDebug(four) << "Writing element.";
+    const auto *elm = qgraphicsitem_cast<const GraphicElement *>(item);
+    ds << GraphicElement::Type;
+    ds << static_cast<quint64>(elm->elementType());
+    elm->save(ds);
+    return ds;
 }

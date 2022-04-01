@@ -8,9 +8,7 @@
 #include "elementtype.h"
 
 #include <QGraphicsItem>
-#include <QObject>
 
-class Editor;
 class GraphicElement;
 class ItemWithId;
 class QNEConnection;
@@ -22,12 +20,12 @@ class ElementFactory : public QObject
 public:
     static ElementFactory *instance;
 
-    static ElementType textToType(QString text);
+    static ElementType textToType(const QString &text);
     static QString typeToText(ElementType type);
     static QString typeToTitleText(ElementType type);
     static QString translatedName(ElementType type);
     static QPixmap getPixmap(ElementType type);
-    static GraphicElement *buildElement(ElementType type, QGraphicsItem *parent = nullptr);
+    static GraphicElement *buildElement(ElementType type);
     static QNEConnection *buildConnection(QGraphicsItem *parent = nullptr);
     static ItemWithId *getItemById(int id);
     static bool contains(int id);

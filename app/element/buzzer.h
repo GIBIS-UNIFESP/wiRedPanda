@@ -12,10 +12,15 @@
 class Buzzer : public GraphicElement
 {
     Q_OBJECT
+    Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
+    Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
+    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
 
 public:
     explicit Buzzer(QGraphicsItem *parent = nullptr);
     ~Buzzer() override = default;
+    Buzzer(const Buzzer &other) : Buzzer(other.parentItem()) {};
+
     static int current_id_number; // Number used to create distinct labels for each instance of this element.
 
     void refresh() override;
@@ -28,6 +33,10 @@ public:
     void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
     void setSkin(bool defaultSkin, const QString &filename) override;
 
+    const QString m_titleText = tr("<b>BUZZER</b>");
+    const QString m_translatedName = tr("Buzzer");
+    const QString m_pixmap = ":/output/BuzzerOff.png";
+
 private:
     void playbuzzer();
     void stopbuzzer();
@@ -39,3 +48,4 @@ private:
     QString m_note;
 };
 
+Q_DECLARE_METATYPE(Buzzer)

@@ -5,6 +5,10 @@
 
 #include "qneport.h"
 
+namespace {
+int id = qRegisterMetaType<Demux>();
+}
+
 Demux::Demux(QGraphicsItem *parent)
     : GraphicElement(ElementType::Demux, ElementGroup::Mux, 2, 2, 2, 2, parent)
 {
@@ -14,6 +18,7 @@ Demux::Demux(QGraphicsItem *parent)
     setCanChangeSkin(true);
     Demux::updatePorts();
     setPortName("DEMUX");
+    setToolTip(m_translatedName);
     setRotation(180.0);
 
     input(0)->setName("in");

@@ -1,44 +1,50 @@
 #pragma once
 
+#include <QObject>
 #include <cstdint>
 
-enum class ElementType : uint_fast8_t {
-    And = 5,
-    Button = 1,
-    Buzzer = 26,
-    Clock = 9,
-    Demux = 25,
-    DFlipFlop = 17,
-    Display = 14,
-    Display14 = 27,
-    DLatch = 15,
-    Gnd = 13,
-    IC = 22,
-    JKFlipFlop = 18,
-    JKLatch = 16,
-    Led = 3,
-    Line = 29,
-    Mux = 24,
-    Nand = 7,
-    Node = 23,
-    Nor = 8,
-    Not = 4,
-    Or = 6,
-    Rotary = 21,
-    SRFlipFlop = 19,
-    Switch = 2,
-    Text = 28,
-    TFlipFlop = 20,
-    Unknown = 0,
-    Vcc = 12,
-    XNor = 11,
-    Xor = 10,
+class Enums {
+    Q_GADGET
+
+public:
+    Enums() = delete;
+
+    enum class ElementType : uint_fast8_t {
+        And = 5,
+        Buzzer = 26,
+        Clock = 9,
+        DFlipFlop = 17,
+        DLatch = 15,
+        Demux = 25,
+        Display = 14,
+        Display14 = 27,
+        IC = 22,
+        InputButton = 1,
+        InputGnd = 13,
+        InputRotary = 21,
+        InputSwitch = 2,
+        InputVcc = 12,
+        JKFlipFlop = 18,
+        JKLatch = 16,
+        Led = 3,
+        Line = 29,
+        Mux = 24,
+        Nand = 7,
+        Node = 23,
+        Nor = 8,
+        Not = 4,
+        Or = 6,
+        SRFlipFlop = 19,
+        TFlipFlop = 20,
+        Text = 28,
+        Unknown = 0,
+        Xnor = 11,
+        Xor = 10,
+    };
+    Q_ENUM(ElementType);
 };
 
-inline ElementType &operator++(ElementType &e)
-{
-    return e = static_cast<ElementType>(static_cast<int>(e) + 1);
-}
+using ElementType = Enums::ElementType;
 
-// TODO: wrap in a class to register enum and be able to convert to/from string
-// Q_ENUM(ElementType)
+ElementType &operator++(ElementType &e);
+QDataStream &operator>>(QDataStream &ds, ElementType &type);

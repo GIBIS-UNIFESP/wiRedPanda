@@ -13,6 +13,9 @@ class ICPrototype;
 class IC : public GraphicElement
 {
     Q_OBJECT
+    Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
+    Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
+    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
 
     friend class CodeGenerator;
 
@@ -28,6 +31,10 @@ public:
     QVector<GraphicElement *> getElements() const;
     void setSkin(bool defaultSkin, const QString &filename) override;
 
+    const QString m_titleText = tr("<b>INTEGRATED CIRCUIT</b>");
+    const QString m_translatedName = tr("IC");
+    const QString m_pixmap = ":/basic/box.png";
+
 protected:
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 
@@ -37,3 +44,5 @@ private:
     void loadInputs(ICPrototype *prototype);
     void loadOutputs(ICPrototype *prototype);
 };
+
+Q_DECLARE_METATYPE(IC)

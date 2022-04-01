@@ -75,14 +75,7 @@ void Label::startDrag(QPoint pos)
     }
     QByteArray itemData;
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-    QString text = ElementFactory::typeToText(m_elementType);
-    if (text.contains("_")) {
-        text = text.split("_").last();
-    }
-    ElementType type = ElementFactory::textToType(text);
-    // qCDebug(zero) << objectName();
-
-    dataStream << QPointF(pos) << static_cast<qint32>(type) << m_auxData;
+    dataStream << QPointF(pos) << static_cast<qint32>(m_elementType) << m_auxData;
 
     auto *mimeData = new QMimeData;
     mimeData->setData("application/x-dnditemdata", itemData);

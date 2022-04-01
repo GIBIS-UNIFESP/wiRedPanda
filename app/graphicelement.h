@@ -45,7 +45,9 @@ class GraphicElement : public QGraphicsObject, public ItemWithId
 public:
     enum : uint32_t { Type = QGraphicsItem::UserType + 3 };
 
+    GraphicElement(QGraphicsItem *parent = nullptr) : QGraphicsObject(parent) {};
     GraphicElement(ElementType type, ElementGroup group, int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent = nullptr);
+    GraphicElement(const GraphicElement &other) : GraphicElement(other.parentItem()) {};
 
     /* GraphicElement interface. */
     ElementType elementType() const;
@@ -273,3 +275,6 @@ protected:
     QVector<QNEOutputPort *> m_outputs;
 };
 
+Q_DECLARE_METATYPE(GraphicElement)
+
+QDataStream &operator<<(QDataStream &ds, const GraphicElement *item);

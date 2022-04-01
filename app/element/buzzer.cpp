@@ -9,6 +9,10 @@
 #include <QGraphicsSceneDragDropEvent>
 #include <array>
 
+namespace {
+int id = qRegisterMetaType<Buzzer>();
+}
+
 int Buzzer::current_id_number = 0;
 
 static constexpr std::array<const char *, 2> defaultSkins
@@ -34,6 +38,7 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     // All is well, rite?
     m_alternativeSkins.resize(2);
     setPortName("Buzzer");
+    setToolTip(m_translatedName);
     setLabel(objectName() + "_" + QString::number(Buzzer::current_id_number));
     ++Buzzer::current_id_number;
     m_usingDefaultSkin = true;

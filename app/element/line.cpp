@@ -3,6 +3,10 @@
 
 #include "line.h"
 
+namespace {
+int id = qRegisterMetaType<Line>();
+}
+
 Line::Line(QGraphicsItem *parent)
     : GraphicElement(ElementType::Line, ElementGroup::Other, 0, 0, 0, 0, parent)
 {
@@ -14,6 +18,7 @@ Line::Line(QGraphicsItem *parent)
     setCanChangeSkin(true);
     setHasLabel(true);
     setPortName("LINE");
+    setToolTip(m_translatedName);
 }
 
 void Line::setSkin(bool defaultSkin, const QString &filename)

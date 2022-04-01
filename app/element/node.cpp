@@ -5,6 +5,10 @@
 
 #include "qneport.h"
 
+namespace {
+int id = qRegisterMetaType<Node>();
+}
+
 Node::Node(QGraphicsItem *parent)
     : GraphicElement(ElementType::Node, ElementGroup::Gate, 1, 1, 1, 1, parent)
 {
@@ -14,6 +18,7 @@ Node::Node(QGraphicsItem *parent)
     Node::updatePorts();
     setCanChangeSkin(true);
     setPortName("NODE");
+    setToolTip(m_translatedName);
     input()->setRequired(true);
 }
 
