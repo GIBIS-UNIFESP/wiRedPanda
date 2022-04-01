@@ -106,7 +106,7 @@ QList<QGraphicsItem *> findItems(const QVector<int> &ids)
         }
     }
     if (items.size() != ids.size()) {
-        throw std::runtime_error(ERRORMSG("One or more items was not found on the scene."));
+        throw std::runtime_error(ERRORMSG(QObject::tr("One or more items was not found on the scene.").toStdString()));
     }
     return items;
 }
@@ -121,7 +121,7 @@ QList<GraphicElement *> findElements(const QVector<int> &ids)
         }
     }
     if (items.size() != ids.size()) {
-        throw std::runtime_error(ERRORMSG("One or more elements was not found on the scene."));
+        throw std::runtime_error(ERRORMSG(QObject::tr("One or more elements was not found on the scene.").toStdString()));
     }
     return items;
 }
@@ -168,8 +168,7 @@ QList<QGraphicsItem *> loadItems(QByteArray &itemData, const QVector<int> &ids, 
      */
     auto items = SerializationFunctions::deserialize(dataStream, version, portMap);
     if (items.size() != ids.size()) {
-        QString msg("One or more elements were not found on scene. Expected %1, found %2.");
-        msg = msg.arg(ids.size()).arg(items.size());
+        QString msg = QObject::tr("One or more elements were not found on scene. Expected %1, found %2.").arg(ids.size(), items.size());
         throw std::runtime_error(ERRORMSG(msg.toStdString()));
     }
     for (int i = 0; i < items.size(); ++i) {
@@ -515,7 +514,7 @@ void SplitCommand::redo()
         c2->updatePosFromPorts();
         c2->updatePath();
     } else {
-        throw std::runtime_error(ERRORMSG(QString("Error tryng to redo %1").arg(text()).toStdString()));
+        throw std::runtime_error(ERRORMSG(QObject::tr("Error trying to redo ").toStdString()) + text().toStdString());
     }
     m_editor->setCircuitUpdateRequired();
 }
@@ -540,7 +539,7 @@ void SplitCommand::undo()
         delete c2;
         delete node;
     } else {
-        throw std::runtime_error(ERRORMSG(QString("Error tryng to undo %1").arg(text()).toStdString()));
+        throw std::runtime_error(ERRORMSG(QObject::tr("Error trying to undo ").toStdString()) + text().toStdString());
     }
     m_editor->setCircuitUpdateRequired();
 }
@@ -723,7 +722,7 @@ FlipCommand::FlipCommand(const QList<GraphicElement *> &aItems, int aAxis, Edito
     , m_axis(aAxis)
     , m_editor(aEditor)
 {
-    setText(tr("Flip %1 elements in axis %2").arg(aItems.size()).arg(aAxis));
+    setText(tr("Flip %1 elements in axis %2").arg(aItems.size(), aAxis));
     m_ids.reserve(aItems.size());
     m_positions.reserve(aItems.size());
     double xmin, xmax, ymin, ymax;

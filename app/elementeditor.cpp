@@ -392,7 +392,7 @@ void ElementEditor::setCurrentElements(const QVector<GraphicElement *> &elms)
         if (m_hasFrequency) {
             if (m_hasSameFrequency) {
                 m_ui->doubleSpinBoxFrequency->setMinimum(0.5);
-                m_ui->doubleSpinBoxFrequency->setSpecialValueText(QString());
+                m_ui->doubleSpinBoxFrequency->setSpecialValueText({});
                 m_ui->doubleSpinBoxFrequency->setValue(static_cast<double>(firstElement->getFrequency()));
             } else {
                 m_ui->doubleSpinBoxFrequency->setMinimum(0.0);

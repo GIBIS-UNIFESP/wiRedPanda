@@ -219,19 +219,19 @@ void SimpleWaveform::showWaveform()
     qCDebug(zero) << "Sorting elements according to the radion option. All elements initially in elements vector. Then, inputs and outputs are extracted from it.";
     sortElements(elements, inputs, outputs, m_sortingMode);
     if (elements.isEmpty()) {
-        QMessageBox::warning(parentWidget(), tr("Error"), tr("Could not find any port for the simulation"));
+        QMessageBox::critical(parentWidget(), tr("Error!"), tr("Could not find any port for the simulation"));
         return;
     }
     if (inputs.isEmpty()) {
-        QMessageBox::warning(parentWidget(), tr("Error"), tr("Could not find any input for the simulation."));
+        QMessageBox::critical(parentWidget(), tr("Error!"), tr("Could not find any input for the simulation."));
         return;
     }
     if (outputs.isEmpty()) {
-        QMessageBox::warning(parentWidget(), tr("Error"), tr("Could not find any output for the simulation."));
+        QMessageBox::critical(parentWidget(), tr("Error!"), tr("Could not find any output for the simulation."));
         return;
     }
     if (inputs.size() > 8) {
-        QMessageBox::warning(parentWidget(), tr("Error"), tr("The simulation is limited to 8 inputs."));
+        QMessageBox::critical(parentWidget(), tr("Error!"), tr("The simulation is limited to 8 inputs."));
         return;
     }
     QVector<QLineSeries *> in_series;
@@ -263,7 +263,7 @@ void SimpleWaveform::showWaveform()
         for (int port = 0; port < output->inputSize(); ++port) {
             out_series.append(new QLineSeries(this));
             if (output->inputSize() > 1) {
-                out_series.last()->setName(QString("%1_%2").arg(label).arg(port));
+                out_series.last()->setName(label + "_" + port);
             } else {
                 out_series.last()->setName(label);
             }
@@ -323,7 +323,7 @@ void SimpleWaveform::showWaveform()
     auto *ax = qobject_cast<QValueAxis *>(horizontal_axe.back());
     ax->setRange(0, num_iter);
     ax->setTickCount(num_iter + 1);
-    ax->setLabelFormat(QString("%i"));
+    ax->setLabelFormat("%i");
     auto *ay = qobject_cast<QValueAxis *>(vertical_axe.back());
     // ay->setShadesBrush(QBrush(Qt::lightGray));
 

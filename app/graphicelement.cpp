@@ -115,7 +115,7 @@ void GraphicElement::setPixmap(const QString &pixmapName)
             // TODO: use QPixmap::loadFromData() here
             if (!loadedPixmaps[pixmapPath].load(pixmapPath)) {
                 qCDebug(zero) << "Problem loading pixmapPath:" << pixmapPath;
-                throw std::runtime_error(ERRORMSG("Couldn't load pixmap."));
+                throw std::runtime_error(ERRORMSG(QObject::tr("Couldn't load pixmap.").toStdString()));
             }
         }
         m_pixmap = &loadedPixmaps[pixmapPath];
@@ -141,7 +141,7 @@ void GraphicElement::setPixmap(const QString &pixmapName, QRect size)
             // TODO: use QPixmap::loadFromData() here
             QPixmap pixmap;
             if (!pixmap.load(pixmapPath)) {
-                throw std::runtime_error(ERRORMSG("Couldn't load pixmap."));
+                throw std::runtime_error(ERRORMSG(QObject::tr("Couldn't load pixmap.").toStdString()));
             }
             loadedPixmaps[pixmapPath] = pixmap.copy(size);
         }
@@ -301,7 +301,7 @@ void GraphicElement::loadInputPorts(QDataStream &ds, QMap<quint64, QNEPort *> &p
     quint64 inputSz;
     ds >> inputSz;
     if (inputSz > maximumValidInputSize) {
-        throw std::runtime_error(ERRORMSG("Corrupted DataStream!"));
+        throw std::runtime_error(ERRORMSG(QObject::tr("Corrupted DataStream!").toStdString()));
     }
     for (size_t port = 0; port < inputSz; ++port) {
         loadInputPort(ds, portMap, port);
@@ -366,7 +366,7 @@ void GraphicElement::loadOutputPorts(QDataStream &ds, QMap<quint64, QNEPort *> &
     quint64 outputSz;
     ds >> outputSz;
     if (outputSz > maximumValidInputSize) {
-        throw std::runtime_error(ERRORMSG("Corrupted DataStream!"));
+        throw std::runtime_error(ERRORMSG(QObject::tr("Corrupted DataStream!").toStdString()));
     }
     for (size_t port = 0; port < outputSz; ++port) {
         loadOutputPort(ds, portMap, port);
@@ -401,7 +401,7 @@ void GraphicElement::loadPixmapSkinNames(QDataStream &ds, double version)
         quint64 outputSz;
         ds >> outputSz;
         if (outputSz > maximumValidInputSize) {
-            throw std::runtime_error(ERRORMSG("Corrupted DataStream!"));
+            throw std::runtime_error(ERRORMSG(QObject::tr("Corrupted DataStream!").toStdString()));
         }
         for (size_t port = 0; port < outputSz; ++port) {
             loadPixmapSkinName(ds, port);
