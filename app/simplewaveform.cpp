@@ -148,7 +148,7 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, Editor *editor)
         sc->updateAll();
         // Setting the computed output values to the waveform results vector.
         int counter = 0;
-        for (auto *output : outputs) {
+        for (auto *output : qAsConst(outputs)) {
             int inSz = output->inputSize();
             for (int port = inSz - 1; port >= 0; --port) {
                 uchar val = output->input(port)->value();
@@ -172,7 +172,7 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, Editor *editor)
     outStream << "\n";
     // Writing the output values at each iteration to the output stream.
     int counter = 0;
-    for (auto *output : outputs) {
+    for (auto *output : qAsConst(outputs)) {
         QString label = output->getLabel();
         if (label.isEmpty()) {
             label = ElementFactory::translatedName(output->elementType());
@@ -260,7 +260,7 @@ void SimpleWaveform::showWaveform()
     qCDebug(zero) <<
         "Getting the name of the outputs. If no label is given, the element type is used as a name. "
         "Bug here? What if there are 2 outputs without name or two identical labels?";
-    for (auto *output : outputs) {
+    for (auto *output : qAsConst(outputs)) {
         QString label = output->getLabel();
         if (label.isEmpty()) {
             label = ElementFactory::translatedName(output->elementType());
@@ -297,7 +297,7 @@ void SimpleWaveform::showWaveform()
         sc->updateAll();
         qCDebug(three) << "Setting the computed output values to the waveform results.";
         int counter = 0;
-        for (auto *output : outputs) {
+        for (auto *output : qAsConst(outputs)) {
             int inSz = output->inputSize();
             for (int port = inSz - 1; port >= 0; --port) {
                 float val = output->input(port)->value() > 0;

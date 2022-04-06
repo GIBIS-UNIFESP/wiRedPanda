@@ -638,7 +638,7 @@ bool MainWindow::hasModifiedFiles()
     if (Settings::contains("autosaveFile")) {
         allAutoSaveFileNames = Settings::value("autosaveFile").toString();
     }
-    for (auto tab : m_tabs) {
+    for (auto tab : qAsConst(m_tabs)) {
         if (!tab.undoStack()->isClean()) {
             return true;
         }
@@ -946,7 +946,7 @@ void MainWindow::on_lineEdit_textChanged(const QString &text)
                 searchResults.append(ic);
             }
         }
-        for (auto *label : searchResults) {
+        for (auto *label : qAsConst(searchResults)) {
             auto *item = new ListItemWidget(label->pixmap(), label->elementType(), label->auxData());
             if (!m_firstResult) {
                 m_firstResult = item->getLabel();
