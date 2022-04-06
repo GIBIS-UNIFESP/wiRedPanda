@@ -306,7 +306,7 @@ void BewavedDolphin::run()
     for (int itr = 0; itr < m_model->columnCount(); ++itr) {
         qCDebug(four) << "itr:" << itr << ", inputs:" << m_inputs.size();
         int table_line = 0;
-        for (auto *input : m_inputs) {
+        for (auto *input : qAsConst(m_inputs)) {
             int outSz = input->outputSize();
             for (int port = 0; port < outSz; ++port) {
                 int val = m_model->item(table_line, itr)->text().toInt();
@@ -319,7 +319,7 @@ void BewavedDolphin::run()
         m_sc->updateAll();
         qCDebug(four) << "Setting the computed output values to the waveform results.";
         int counter = m_input_ports;
-        for (auto *output : m_outputs) {
+        for (auto *output : qAsConst(m_outputs)) {
             int inSz = output->inputSize();
             for (int port = 0; port < inSz; ++port) {
                 int value = static_cast<int>(output->input(port)->value());
@@ -354,7 +354,7 @@ QVector<char> BewavedDolphin::loadSignals(QStringList &input_labels, QStringList
 {
     QVector<char> oldValues(m_input_ports);
     int old_idx = 0;
-    for (auto *input : m_inputs) {
+    for (auto *input : qAsConst(m_inputs)) {
         QString label = input->getLabel();
         if (label.isEmpty()) {
             label = ElementFactory::translatedName(input->elementType());
@@ -373,7 +373,7 @@ QVector<char> BewavedDolphin::loadSignals(QStringList &input_labels, QStringList
         }
     }
     qCDebug(zero) << "Getting the name of the outputs. If no label is given, element type is used as a name. What if there are 2 outputs without name or 2 identical labels?";
-    for (auto *output : m_outputs) {
+    for (auto *output : qAsConst(m_outputs)) {
         QString label = output->getLabel();
         if (label.isEmpty()) {
             label = ElementFactory::translatedName(output->elementType());
@@ -817,12 +817,12 @@ void BewavedDolphin::on_actionLoad_triggered()
 {
     QDir defaultDirectory;
     if (m_currentFile.exists()) {
-        defaultDirectory = m_currentFile.dir();
+        defaultDirectory.setPath(m_currentFile.absolutePath());
     } else {
         if (m_mainWindow->getCurrentFile().exists()) {
             m_mainWindow->getCurrentFile().dir();
         } else {
-            defaultDirectory = QDir::home();
+            defaultDirectory.setPath(QDir::homePath());
         }
     }
     const QString homeDir(m_mainWindow->getCurrentDir().absolutePath());

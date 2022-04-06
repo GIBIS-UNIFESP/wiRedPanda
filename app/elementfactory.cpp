@@ -87,7 +87,7 @@ GraphicElement *ElementFactory::buildElement(ElementType type)
     auto *elm = static_cast<GraphicElement *>(QMetaType::create(id));
 #else
     const auto metaType = QMetaType::fromName(typeToText(type).toLatin1());
-    if (not metaType.isValid() or metaType.id() == QMetaType::UnknownType) {
+    if (!metaType.isValid() || metaType.id() == QMetaType::UnknownType) {
         throw std::runtime_error(QObject::tr("Unknown type: ").toStdString() + typeToText(type).toStdString());
     }
     auto *elm = static_cast<GraphicElement *>(metaType.create());

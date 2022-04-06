@@ -64,17 +64,17 @@ int main(int argc, char *argv[])
         if (!arduFile.isEmpty()) {
             if (!args.empty()) {
                 window->loadPandaFile(args[0]);
-                return !window->exportToArduino(arduFile);
+                exit(!window->exportToArduino(arduFile));
             }
-            return 0;
+            exit(0);
         }
         QString wfFile = parser.value(waveformFileOption);
         if (!wfFile.isEmpty()) {
             if (!args.empty()) {
                 window->loadPandaFile(args[0]);
-                return !window->exportToWaveFormFile(wfFile);
+                exit(!window->exportToWaveFormFile(wfFile));
             }
-            return 0;
+            exit(0);
         }
         window->show();
         if (!args.empty()) {

@@ -593,7 +593,7 @@ void ElementEditor::outputValueChanged(const QString &idx)
         return;
     }
     int new_value = m_ui->comboBoxValue->currentText().toInt();
-    for (auto *elm : m_elements) {
+    for (auto *elm : qAsConst(m_elements)) {
         if (elm->elementType() == ElementType::InputRotary) {
             dynamic_cast<InputRotary *>(elm)->setOn(true, new_value);
         } else {
@@ -608,7 +608,7 @@ void ElementEditor::inputLocked(const bool value)
     if ((m_elements.isEmpty()) || (!isEnabled())) {
         return;
     }
-    for (auto *elm : m_elements) {
+    for (auto *elm : qAsConst(m_elements)) {
         dynamic_cast<Input *>(elm)->setLocked(value);
     }
     qCDebug(zero) << "Input locked.";
