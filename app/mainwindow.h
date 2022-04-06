@@ -61,7 +61,7 @@ public:
     QString getDolphinFilename();
     bool closeFile();
     void buildFullScreenDialog();
-    void loadTranslation(QString language);
+    void loadTranslation(const QString &language);
     void populateMenu(QSpacerItem *spacer, const QString &names, QLayout *layout);
     void retranslateUi();
     void setAutoSaveFileName(const QFileInfo &file);
@@ -172,7 +172,8 @@ private:
     QString m_defaultDirectory;
     QString m_dolphinFileName;
     QTemporaryFile **m_autoSaveFile; // We had memory leak problems using QVectors for that.
-    QTranslator *m_translator;
+    QTranslator *m_pandaTranslator;
+    QTranslator *m_qtTranslator;
     QVector<ListItemWidget *> icItemWidgets, searchItemWidgets;
     QVector<QAction *> m_redoAction;
     QVector<QAction *> m_undoAction;

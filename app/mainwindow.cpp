@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     , m_firstResult(nullptr)
     , m_dolphinFileName("")
     , m_autoSaveFile(nullptr)
-    , m_translator(nullptr)
+    , m_pandaTranslator(nullptr)
     , m_loadedAutoSave(false)
 {
     qCDebug(zero) << "WiRedPanda Version =" << APP_VERSION << "OR" << GlobalProperties::version;
@@ -1182,32 +1182,50 @@ void MainWindow::retranslateUi()
     }
 }
 
-void MainWindow::loadTranslation(QString language)
+void MainWindow::loadTranslation(const QString &language)
 {
     if (language.isEmpty()) {
         return;
     }
 
-    if (m_translator) {
-        qApp->removeTranslator(m_translator);
+    if (m_pandaTranslator) {
+        qApp->removeTranslator(m_pandaTranslator);
     }
 
-    if (language == "://wpanda_pt.qm") {
-        language = "://wpanda_pt_BR.qm";
+    if (m_qtTranslator) {
+        qApp->removeTranslator(m_qtTranslator);
+    }
+
+    QString pandaFile;
+    QString qtFile;
+
+    if (language == "://wpanda_pt_BR.qm") {
+        pandaFile = "://wpanda_pt_BR.qm";
+        qtFile = "://qt_pt_BR.qm";
     }
 
     if (language == "://wpanda_en.qm") {
         return retranslateUi();
     }
 
-    m_translator = new QTranslator(this);
-
-    if (!m_translator->load(language)) {
-        QMessageBox::critical(this, "Error!", "Error loading translation!");
+    if (pandaFile.isEmpty() || qtFile.isEmpty()) {
         return;
     }
 
-    qApp->installTranslator(m_translator);
+    m_pandaTranslator = new QTranslator(this);
+
+    if (!m_pandaTranslator->load(pandaFile) || !qApp->installTranslator(m_pandaTranslator)) {
+        QMessageBox::critical(this, "Error!", "Error loading WiRedPanda translation!");
+        return;
+    }
+
+    m_qtTranslator = new QTranslator(this);
+
+    if (!m_qtTranslator->load(qtFile) || !qApp->installTranslator(m_qtTranslator)) {
+        QMessageBox::critical(this, "Error!", "Error loading Qt translation!");
+        return;
+    }
+
     retranslateUi();
 }
 
