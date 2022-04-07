@@ -1299,7 +1299,7 @@ QDomDocument* MainWindow::loadRemoteFunctions() {
     qCDebug(zero) << QDir::currentPath();
 
     QFile f("remotelab.xml");
-    if (!f.open(QIODevice::ReadOnly ))
+    if (!f.open(QIODevice::ReadOnly))
     {
       // Error while loading file
       // Remote functionalities will be disabled

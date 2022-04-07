@@ -70,7 +70,7 @@ public:
     void setDolphinFilename(const QString &filename);
     void setFastMode(bool fastModeEnabled);
 
-    QDomDocument* loadRemoteFunctions( );
+    QDomDocument* loadRemoteFunctions();
 
     QDialog *m_fullscreenDlg;
     GraphicsView *m_fullscreenView;

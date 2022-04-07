@@ -121,7 +121,7 @@ public:
     bool disabled() const;
     bool hasAudio() const;
     bool hasColors() const;
-    bool hasCustomConfig( ) const;
+    bool hasCustomConfig() const;
     bool hasFrequency() const;
     bool hasLabel() const;
     bool hasTrigger() const;

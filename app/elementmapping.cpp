@@ -158,7 +158,7 @@ LogicElement *ElementMapping::buildLogicElement(GraphicElement *elm)
     }
 }
 
-LogicRemoteDevice *ElementMapping::remote(GraphicElement *elm){
+LogicRemoteDevice *ElementMapping::remote(GraphicElement *elm) {
     if (auto remoteDevice = dynamic_cast<RemoteDevice *>(elm)) {
         return new LogicRemoteDevice(remoteDevice);
     }

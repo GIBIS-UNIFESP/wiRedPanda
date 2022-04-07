@@ -29,10 +29,10 @@ static QMap<QString, QPixmap> loadedPixmaps;
 
 GraphicElement::GraphicElement(ElementType type, ElementGroup group, int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent)
     : QGraphicsObject(parent)
-    , m_pixmap(nullptr)
     , m_elementGroup(group)
     , m_elementType(type)
     , m_label(new QGraphicsTextItem(this))
+    , m_pixmap(nullptr)
     , m_canChangeSkin(false)
     , m_disabled(false)
     , m_hasAudio(false)
@@ -125,7 +125,7 @@ void GraphicElement::setPixmap(const QString &pixmapName)
     m_currentPixmapName = pixmapName;
 
    // update bottom position for wires to come in the correct place
-   setBottomPosition( getPixmap().rect().height() );
+   setBottomPosition(getPixmap().rect().height());
 }
 
 void GraphicElement::setPixmap(const QString &pixmapName, QRect size)
@@ -896,7 +896,7 @@ bool GraphicElement::disabled() const
     return m_disabled;
 }
 
-QDataStream &operator<<(QDataStream &ds, const GraphicElement *item){
+QDataStream &operator<<(QDataStream &ds, const GraphicElement *item) {
     qDebug(four) << "Writing element.";
     const auto *elm = qgraphicsitem_cast<const GraphicElement *>(item);
     ds << GraphicElement::Type;

@@ -93,11 +93,9 @@ SOURCES += \
     $$PWD/app/clockdialog.cpp \
     $$PWD/app/commands.cpp \
     $$PWD/app/common.cpp \
-    $$PWD/app/common.cpp \
     $$PWD/app/editor.cpp \
     $$PWD/app/elementeditor.cpp \
     $$PWD/app/elementfactory.cpp \
-    $$PWD/app/elementmapping.cpp \
     $$PWD/app/elementmapping.cpp \
     $$PWD/app/elementtype.cpp \
     $$PWD/app/filehelper.cpp \
@@ -115,7 +113,6 @@ SOURCES += \
     $$PWD/app/label.cpp \
     $$PWD/app/lengthdialog.cpp \
     $$PWD/app/listitemwidget.cpp \
-    $$PWD/app/logicelement.cpp \
     $$PWD/app/logicelement.cpp \
     $$PWD/app/mainwindow.cpp \
     $$PWD/app/nodes/qneconnection.cpp \
@@ -143,7 +140,6 @@ HEADERS += \
     $$PWD/app/elementeditor.h \
     $$PWD/app/elementfactory.h \
     $$PWD/app/elementmapping.h \
-    $$PWD/app/elementmapping.h \
     $$PWD/app/elementtype.h \
     $$PWD/app/filehelper.h \
     $$PWD/app/globalproperties.h \
@@ -161,7 +157,6 @@ HEADERS += \
     $$PWD/app/lengthdialog.h \
     $$PWD/app/listitemwidget.h \
     $$PWD/app/logicelement.h \
-    $$PWD/app/logicelement.h \
     $$PWD/app/mainwindow.h \
     $$PWD/app/network.h \
     $$PWD/app/nodes/qneconnection.h \
@@ -177,7 +172,6 @@ HEADERS += \
     $$PWD/app/simulationcontroller.h \
     $$PWD/app/thememanager.h \
     $$PWD/app/workspace.h
-    $$PWD/app/workspace.h \
 
 INCLUDEPATH += \
     $$PWD/app \
@@ -194,12 +188,11 @@ FORMS += \
     $$PWD/app/mainwindow.ui \
     $$PWD/app/remotedeviceconfig.ui \
     $$PWD/app/simplewaveform.ui
-    $$PWD/app/simplewaveform.ui \
 
 RESOURCES += \
-    $$PWD/app/resources/basic/basic.qrc\
+    $$PWD/app/resources/basic/basic.qrc \
     $$PWD/app/resources/dolphin/dolphin.qrc \
-    $$PWD/app/resources/input/input.qrc\
+    $$PWD/app/resources/input/input.qrc \
     $$PWD/app/resources/memory/dark/memory_dark.qrc \
     $$PWD/app/resources/memory/light/memory_light.qrc \
     $$PWD/app/resources/misc/misc.qrc \

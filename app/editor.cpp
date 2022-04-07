@@ -18,11 +18,11 @@
 #include "mainwindow.h"
 #include "qneconnection.h"
 #include "qneport.h"
+#include "remotedeviceconfig.h"
 #include "serializationfunctions.h"
 #include "simulationcontroller.h"
 #include "thememanager.h"
 #include "workspace.h"
-#include "remotedeviceconfig.h"
 
 #include <QApplication>
 #include <QClipboard>
@@ -1009,10 +1009,10 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
             if (m_draggingElement && (mouseEvt->button() == Qt::LeftButton)) {
                 if (!m_movedElements.empty()) {
 
-                  //  if (movedElements.size() != oldPositions.size()) {
-                  //      throw std::runtime_error(ERRORMSG(tr("Invalid coordinates.").toStdString()));
-                  //  }
-                  //  qCDebug(zero) << "OUT.";
+                    //  if (movedElements.size() != oldPositions.size()) {
+                    //      throw std::runtime_error(ERRORMSG(tr("Invalid coordinates.").toStdString()));
+                    //  }
+                    //  qCDebug(zero) << "OUT.";
 
                     bool valid = false;
                     for (int elm = 0; elm < m_movedElements.size(); ++elm) {
@@ -1051,7 +1051,7 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
                 return true;
             }
 
-            RemoteDevice *remoteDevice = dynamic_cast< RemoteDevice* >( itemAt( m_mousePos ) );
+            auto *remoteDevice = dynamic_cast<RemoteDevice *>(itemAt(m_mousePos));
             if (remoteDevice) {
                 openConfigAction();
             }
@@ -1109,12 +1109,13 @@ void Editor::clearSelection()
     m_elementEditor->disable();
 }
 
-void Editor::openConfigAction( ) {
-  QVector< GraphicElement* > elms = m_scene->selectedElements( );
-  if( elms.size() == 1 ) {
-      RemoteDeviceConfig fc( this, m_mainWindow, elms.first() );
-      fc.start( );
-  } else {
-      QMessageBox::warning( m_mainWindow, tr( "ERROR" ), "Unable to trigger configure for more than a remote element at once", QMessageBox::Ok );
-  }
+void Editor::openConfigAction() {
+    auto elms = m_scene->selectedElements();
+
+    if (elms.size() != 1) {
+        throw std::runtime_error(QObject::tr("Unable to trigger configure for more than a remote element at once").toStdString());
+    }
+
+    RemoteDeviceConfig fc(this, m_mainWindow, elms.first());
+    fc.start();
 }

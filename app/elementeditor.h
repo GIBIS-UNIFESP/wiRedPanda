@@ -39,6 +39,7 @@ public:
 
 signals:
     void sendCommand(QUndoCommand *cmd);
+
 private:
     void apply();
     void defaultSkin();

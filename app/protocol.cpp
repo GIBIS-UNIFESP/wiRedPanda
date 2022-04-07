@@ -35,35 +35,35 @@ void RemoteProtocol::parse_session_start(RemoteDevice* elm, NetworkIncomingMessa
         QString errorMsg = imsg.popString();
 
         switch (errorCode) {
-            // unable to authenticate
-            case 0: {
-                elm->disconnect();
-                QMessageBox messageBox;
-                messageBox.critical(0,"Error",errorMsg);
-                break;
-            }
+        // unable to authenticate
+        case 0: {
+            elm->disconnect();
+            QMessageBox messageBox;
+            messageBox.critical(0,"Error",errorMsg);
+            break;
+        }
 
             // not enough devices, enter queue?
-            case 1: {
-                QMessageBox::StandardButton reply;
-                reply = QMessageBox::question(0, "Not enough devices", errorMsg,
-                    QMessageBox::Yes|QMessageBox::No);
+        case 1: {
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::question(0, "Not enough devices", errorMsg,
+                                          QMessageBox::Yes|QMessageBox::No);
 
-                if (reply == QMessageBox::Yes) {
-                    elm->sendRequestToEnterQueue(token);
-                } else {
-                    elm->disconnect();
-                }
-
-                break;
-            }
-
-            default: {
+            if (reply == QMessageBox::Yes) {
+                elm->sendRequestToEnterQueue(token);
+            } else {
                 elm->disconnect();
-                QMessageBox messageBox;
-                messageBox.critical(0,"Error",errorMsg);
-                break;
             }
+
+            break;
+        }
+
+        default: {
+            elm->disconnect();
+            QMessageBox messageBox;
+            messageBox.critical(0,"Error",errorMsg);
+            break;
+        }
         }
 
         return;
@@ -94,7 +94,7 @@ void RemoteProtocol::parse_session_start(RemoteDevice* elm, NetworkIncomingMessa
             // we must verify that all the available pins are present on this new connection
             std::list<Pin>::const_iterator it = availablePins.begin();
             bool found = false;
-            while(it != availablePins.end()) {
+            while (it != availablePins.end()) {
                 if (it->getId() == id && QString::fromStdString(it->getName()).compare(pinName) == 0 && static_cast<uint8_t>(it->getType()) == type) {
                     found = true;
                     break;
@@ -132,7 +132,7 @@ void RemoteProtocol::parse_session_start(RemoteDevice* elm, NetworkIncomingMessa
 
     if (portMappingReseted) {
         QMessageBox *msgBox = new QMessageBox(warningMsgParent);
-        msgBox->setIcon( QMessageBox::Warning );
+        msgBox->setIcon(QMessageBox::Warning);
         msgBox->setText("Since available pins are slightly different, the mapped pins have been reseted.");
         msgBox->setAttribute(Qt::WA_DeleteOnClose); // delete pointer after close
         msgBox->show();
@@ -140,7 +140,7 @@ void RemoteProtocol::parse_session_start(RemoteDevice* elm, NetworkIncomingMessa
     }
 
     QMessageBox *msgBox = new QMessageBox(warningMsgParent);
-    msgBox->setIcon( QMessageBox::Information );
+    msgBox->setIcon(QMessageBox::Information);
     msgBox->setText("Connection estabilished!");
     msgBox->setAttribute(Qt::WA_DeleteOnClose); // delete pointer after close
     msgBox->show();
@@ -156,7 +156,7 @@ void RemoteProtocol::parse_pong(RemoteDevice* elm, NetworkIncomingMessage& imsg)
     uint64_t current = QDateTime::currentMSecsSinceEpoch();
 
     elm->setLatency(current-timestamp);
-    elm->setAliveSince(QDateTime::currentSecsSinceEpoch());
+    elm->setAliveSince(QDateTime::currentMSecsSinceEpoch() / 1000);
 }
 
 void RemoteProtocol::parse_output(RemoteDevice* elm, NetworkIncomingMessage& imsg) {
@@ -175,13 +175,13 @@ void RemoteProtocol::parse_time_warning(RemoteDevice* elm, NetworkIncomingMessag
     if (isWarning == 0) {
         uint64_t startedEpoch = elm->getStartedTimeEpoch();
 
-        long amountOfSeconds = static_cast<long>(QDateTime::currentSecsSinceEpoch() - static_cast<int64_t>(startedEpoch));
-        QString time = QDateTime::fromSecsSinceEpoch(static_cast<uint32_t>(amountOfSeconds), Qt::UTC).toString("hh:mm:ss");
+        long amountOfSeconds = static_cast<long>(QDateTime::currentMSecsSinceEpoch() / 1000 - static_cast<int64_t>(startedEpoch));
+        QString time = QDateTime::fromMSecsSinceEpoch(static_cast<uint32_t>(amountOfSeconds * 1000), Qt::UTC).toString("hh:mm:ss");
 
         elm->disconnect();
 
         QMessageBox *msgBox = new QMessageBox(warningMsgParent);
-        msgBox->setIcon( QMessageBox::Warning );
+        msgBox->setIcon(QMessageBox::Warning);
         msgBox->setText("Once there was other users waiting to use the device, you have been disconnected after " + time + " time of continuous usage.");
         msgBox->setAttribute(Qt::WA_DeleteOnClose); // delete pointer after close
         msgBox->show();
@@ -203,7 +203,7 @@ void RemoteProtocol::parse_time_warning(RemoteDevice* elm, NetworkIncomingMessag
     std::cerr << "afterTimeStartedEpoch: " << afterTimeStartedEpoch << std::endl;
 
     QMessageBox *msgBox = new QMessageBox(warningMsgParent);
-    msgBox->setIcon( QMessageBox::Warning );
+    msgBox->setIcon(QMessageBox::Warning);
     msgBox->setText("There are other users in queue for using the system, you have been granted " + time + " to finish your use. If you are no longer using the remote device, please disconnect.");
     msgBox->setAttribute(Qt::WA_DeleteOnClose); // delete pointer after close
     msgBox->show();
@@ -238,14 +238,14 @@ void RemoteProtocol::parse_queue_info(RemoteDevice* elm, NetworkIncomingMessage&
             elm->setQueueEstimatedEpoch(estimatedEpoch);
         // if time is increasing more than the minimim wait time in seconds
         // (plus 20 seconds from connect/disconnect required time and clock diferences), then update.
-        else if(static_cast<int>(estimatedEpoch-elm->getQueueEstimatedEpoch()) > static_cast<int>(elm->getMinWaitTime() + 20))
+        else if (static_cast<int>(estimatedEpoch-elm->getQueueEstimatedEpoch()) > static_cast<int>(elm->getMinWaitTime() + 20))
             elm->setQueueEstimatedEpoch(estimatedEpoch);
     }
 }
 
 void RemoteProtocol::parse(RemoteDevice* elm, uint8_t opcode, QByteArray byteArray) {
 
-    assert(initialized);
+    Q_ASSERT(initialized);
 
     NetworkIncomingMessage imsg(opcode, byteArray);
 
@@ -255,7 +255,7 @@ void RemoteProtocol::parse(RemoteDevice* elm, uint8_t opcode, QByteArray byteArr
         it->second(elm, imsg);
 
         // all bytes should be read
-        assert(imsg.getRemainingBytes() <= 0);
+        Q_ASSERT(imsg.getRemainingBytes() <= 0);
     }
 }
 
@@ -275,9 +275,9 @@ NetworkOutgoingMessage RemoteProtocol::sendIOInfo(uint16_t latency, const std::l
     msg.addByte<quint16>(latency);
     msg.addByte<quint16>(mappedPins.size());
 
-    for ( const Pin& pin : mappedPins) {
-        msg.addByte<quint32>(pin.getId());
-        msg.addByte<quint8>(pin.getType());
+    for (const Pin& pin : mappedPins) {
+        msg.addByte<quint32>(static_cast<quint32>(pin.getId()));
+        msg.addByte<quint8>(static_cast<quint8>(pin.getType()));
     }
 
     msg.addSize();

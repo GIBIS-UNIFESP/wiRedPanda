@@ -1,5 +1,4 @@
-#ifndef REMOTEDEVICECONFIG_H
-#define REMOTEDEVICECONFIG_H
+#pragma once
 
 #include "editor.h"
 #include "remotedevice.h"
@@ -14,59 +13,50 @@
 #define MAJOR_REMOTE_VERSION 1
 #define MINOR_REMOTE_VERSION 0
 
-namespace Ui {
-  class RemoteDeviceConfig;
+namespace Ui
+{
+class RemoteDeviceConfig;
 }
 
-class RemoteDeviceConfig : public QDialog {
-  Q_OBJECT
+class RemoteDeviceConfig : public QDialog
+{
+    Q_OBJECT
 
 public:
-  explicit RemoteDeviceConfig( Editor *editor, QWidget *parent = nullptr, GraphicElement *elm = nullptr );
-  ~RemoteDeviceConfig( );
+    explicit RemoteDeviceConfig(Editor *editor, QWidget *parent = nullptr, GraphicElement *elm = nullptr);
+    ~RemoteDeviceConfig();
 
-  void start();
-  void setupAuthScreen();
-  void setupConfigScreen();
-  void setupQueueScreen();
-  void updateServiceInfo(QString str);
-  bool savePortMapping();
+    static QString version() {
+        return QString("%1.%2").arg(QString::number(MAJOR_REMOTE_VERSION), QString::number(MINOR_REMOTE_VERSION));
+    }
 
-  static QString version() {
-      return QString("%1.%2").arg(QString::number(MAJOR_REMOTE_VERSION), QString::number(MINOR_REMOTE_VERSION));
-  }
+    bool savePortMapping();
+    void setupAuthScreen();
+    void setupConfigScreen();
+    void setupQueueScreen();
+    void start();
+    void updateServiceInfo(const QString &str);
 
-private slots:
-
-  void connectionResponse(QNetworkReply* reply);
-
-  // Actions
-  void onAddPin();
-  void onRemovePin();
-
-  void onCopyToClipboard();
-
-  void onTimeRefresh();
-  void onQueueTimeRefresh();
-
-  void onTryToConnect();
-  void onEditPortMapping(int row, int column);
-  void comboboxItemChanged(QString arg);
-
-  void onApplyConfig(QAbstractButton* btn);
-  void onRejectConfig();
-
-  void on_disconnectBtn_clicked();
-
-  void on_leaveBtn_clicked();
 
 private:
-  Ui::RemoteDeviceConfig *ui;
-  RemoteDevice *elm;
-  Editor *editor;
-  QNetworkAccessManager *manager;
-  RemoteLabOption currentOption;
-  QTimer timer;
-};
+    void comboboxItemChanged(QString arg);
+    void connectionResponse(QNetworkReply* reply);
+    void onAddPin();
+    void onApplyConfig(QAbstractButton* btn);
+    void onCopyToClipboard();
+    void onEditPortMapping(int row, int column);
+    void onQueueTimeRefresh();
+    void onRejectConfig();
+    void onRemovePin();
+    void onTimeRefresh();
+    void onTryToConnect();
+    void on_disconnectBtn_clicked();
+    void on_leaveBtn_clicked();
 
-#endif /* REMOTEDEVICECONFIG_H */
+    Ui::RemoteDeviceConfig *m_ui;
+    Editor *m_editor;
+    QNetworkAccessManager *m_manager;
+    QTimer m_timer;
+    RemoteDevice *m_elm;
+    RemoteLabOption m_currentOption;
+};

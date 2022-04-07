@@ -14,71 +14,71 @@
 
 #include <iostream>
 
-RemoteDeviceConfig::RemoteDeviceConfig( Editor *editor, QWidget *parent, GraphicElement *elm ) : QDialog( parent ), ui( new Ui::RemoteDeviceConfig ), editor( editor ), manager(new QNetworkAccessManager(this)) {
-  ui->setupUi( this );
+RemoteDeviceConfig::RemoteDeviceConfig(Editor *editor, QWidget *parent, GraphicElement *elm) : QDialog(parent), m_ui(new Ui::RemoteDeviceConfig), m_editor(editor), m_manager(new QNetworkAccessManager(this)) {
+    m_ui->setupUi(this);
 
-  setWindowTitle( "Remote Device" );
-  setWindowFlags( Qt::Dialog );
-  setModal( true );
-  QSettings settings( QSettings::IniFormat, QSettings::UserScope,
-                      QApplication::organizationName( ), QApplication::applicationName( ) );
+    setWindowTitle("Remote Device");
+    setWindowFlags(Qt::Dialog);
+    setModal(true);
 
-  ui->stackedWidget->setCurrentIndex(0);
+    m_ui->stackedWidget->setCurrentIndex(0);
 
-  QPixmap unavailable( ":/remote/unavailable.png" );
-  ui->logo->setPixmap(unavailable);
+    QPixmap unavailable(":/remote/unavailable.png");
+    m_ui->logo->setPixmap(unavailable);
 
-  ui->progressBar->setMinimum(0);
-  ui->progressBar->setMaximum(100);
+    m_ui->progressBar->setMinimum(0);
+    m_ui->progressBar->setMaximum(100);
 
-  manager->setTransferTimeout(1500);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+    m_manager->setTransferTimeout(1500);
+#endif
 
-  connect(manager, &QNetworkAccessManager::finished,
-          this, &RemoteDeviceConfig::connectionResponse);
+    connect(m_manager, &QNetworkAccessManager::finished,
+            this, &RemoteDeviceConfig::connectionResponse);
 
-  if (RemoteDevice* remoteDevice = dynamic_cast<RemoteDevice*>(elm)) {
-    this->elm = remoteDevice;
-  }
+    if (auto *remoteDevice = dynamic_cast<RemoteDevice*>(elm)) {
+        m_elm = remoteDevice;
+    }
 
-  if (this->elm->getAuthToken() == "") {
-    setupAuthScreen();
-  } else if (this->elm->isInQueue()) {
-    setupQueueScreen();
-  } else {
-    setupConfigScreen();
-  }
+    if (m_elm->getAuthToken() == "") {
+        setupAuthScreen();
+    } else if (m_elm->isInQueue()) {
+        setupQueueScreen();
+    } else {
+        setupConfigScreen();
+    }
 }
 
 RemoteDeviceConfig::~RemoteDeviceConfig() {
-    delete manager;
-    delete ui;
+    delete m_manager;
+    delete m_ui;
 }
 
 void RemoteDeviceConfig::setupQueueScreen() {
-    ui->stackedWidget->setCurrentIndex(2);
+    m_ui->stackedWidget->setCurrentIndex(2);
 
     QMovie *movie = new QMovie(":/remote/loading.gif");
-    ui->waiting_list_logo->setMovie(movie);
+    m_ui->waiting_list_logo->setMovie(movie);
     movie->start();
 
     onQueueTimeRefresh();
 
-    connect(&this->timer, &QTimer::timeout, this, &RemoteDeviceConfig::onQueueTimeRefresh);
-    this->timer.start(1000);
+    connect(&m_timer, &QTimer::timeout, this, &RemoteDeviceConfig::onQueueTimeRefresh);
+    m_timer.start(1000);
 }
 
 void RemoteDeviceConfig::setupAuthScreen() {
-    ui->stackedWidget->setCurrentIndex(0);
+    m_ui->stackedWidget->setCurrentIndex(0);
 
-    for (auto option : this->elm->getOptions()) {
-      ui->serviceSelector->addItem(QString::fromUtf8(option.getName().c_str()));
+    for (auto option : m_elm->getOptions()) {
+        m_ui->serviceSelector->addItem(QString::fromUtf8(option.getName().c_str()));
     }
 
-    QString currentSelected = ui->serviceSelector->currentText();
+    QString currentSelected = m_ui->serviceSelector->currentText();
 
-    connect(ui->serviceSelector, SIGNAL(currentTextChanged(QString)), this, SLOT(comboboxItemChanged(QString)));
-    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onTryToConnect()));
-    ui->connectButton->setDisabled(false);
+    connect(m_ui->serviceSelector, &QComboBox::currentTextChanged, this, &RemoteDeviceConfig::comboboxItemChanged);
+    connect(m_ui->connectButton, &QAbstractButton::clicked, this, &RemoteDeviceConfig::onTryToConnect);
+    m_ui->connectButton->setDisabled(false);
 
     updateServiceInfo(currentSelected);
 }
@@ -87,7 +87,7 @@ void RemoteDeviceConfig::onEditPortMapping(int row, int column) {
     QStringList items;
 
     if (column == 0) {
-        const std::list<Pin>& availablePins = elm->getAvailablePins();
+        const std::list<Pin>& availablePins = m_elm->getAvailablePins();
         std::list<Pin>::const_iterator it;
         for (it = availablePins.begin(); it != availablePins.end(); ++it) {
             items << QString::fromStdString(it->getName());
@@ -105,11 +105,11 @@ void RemoteDeviceConfig::onEditPortMapping(int row, int column) {
     if (input.exec())
     {
         QString inputValue = input.textValue();
-        QTableWidgetItem* item = ui->tableWidget->item(row, column);
+        QTableWidgetItem* item = m_ui->tableWidget->item(row, column);
 
         if (!item) {
             item = new QTableWidgetItem();
-            ui->tableWidget->setItem(row, column, item);
+            m_ui->tableWidget->setItem(row, column, item);
         }
 
         item->setText(inputValue);
@@ -117,20 +117,20 @@ void RemoteDeviceConfig::onEditPortMapping(int row, int column) {
 }
 
 void RemoteDeviceConfig::onAddPin() {
-    ui->tableWidget->insertRow(ui->tableWidget->currentRow()+1);
+    m_ui->tableWidget->insertRow(m_ui->tableWidget->currentRow() + 1);
 }
 
 void RemoteDeviceConfig::onRemovePin() {
-    ui->tableWidget->removeRow(ui->tableWidget->currentRow());
+    m_ui->tableWidget->removeRow(m_ui->tableWidget->currentRow());
 }
 
 bool RemoteDeviceConfig::savePortMapping() {
-    elm->resetPortMapping();
+    m_elm->resetPortMapping();
 
-    int rowsAmount = ui->tableWidget->rowCount();
+    int rowsAmount = m_ui->tableWidget->rowCount();
 
     for (int row = 0; row<rowsAmount; row++) {
-        QTableWidgetItem* portWidget = ui->tableWidget->item(row, 0);
+        QTableWidgetItem* portWidget = m_ui->tableWidget->item(row, 0);
 
         if (!portWidget) {
             QMessageBox messageBox;
@@ -141,7 +141,7 @@ bool RemoteDeviceConfig::savePortMapping() {
 
         QString portName = portWidget->text();
 
-        QTableWidgetItem* typeWidget = ui->tableWidget->item(row, 1);
+        QTableWidgetItem* typeWidget = m_ui->tableWidget->item(row, 1);
 
         if (!typeWidget) {
             QMessageBox messageBox;
@@ -152,9 +152,9 @@ bool RemoteDeviceConfig::savePortMapping() {
 
         QString typeName = typeWidget->text();
 
-        PIN_TYPE type = Pin::convertTypeString(typeName.toStdString());
+        Pin_Type type = Pin::convertTypeString(typeName.toStdString());
 
-        if (!elm->mapPin(portName.toStdString(), type)) {
+        if (!m_elm->mapPin(portName.toStdString(), static_cast<uint8_t>(type))) {
             QMessageBox messageBox;
             messageBox.information(0,"Error","Unable to map pin " + portName + " as " + typeName);
             messageBox.setFixedSize(500,200);
@@ -163,15 +163,15 @@ bool RemoteDeviceConfig::savePortMapping() {
 
     }
 
-    elm->sendIOInfo();
-    elm->setupPorts();
+    m_elm->sendIOInfo();
+    m_elm->setupPorts();
 
     return true;
 }
 void RemoteDeviceConfig::onQueueTimeRefresh() {
-    uint64_t timestamp = QDateTime::currentSecsSinceEpoch();
+    uint64_t timestamp = QDateTime::currentMSecsSinceEpoch() / 1000;
 
-    long estimatedTime = static_cast<long>(elm->getQueueEstimatedEpoch() - timestamp);
+    long estimatedTime = static_cast<long>(m_elm->getQueueEstimatedEpoch() - timestamp);
 
     int hour = estimatedTime / 3600;
     int min = (estimatedTime % 3600) / 60;
@@ -195,46 +195,46 @@ void RemoteDeviceConfig::onQueueTimeRefresh() {
     if (timestamp % 2 == 0)
         separator = " ";
 
-    ui->timeEstimated->display(hourStr + separator + minStr + separator + secsStr);
+    m_ui->timeEstimated->display(hourStr + separator + minStr + separator + secsStr);
 
-    ui->estimatedTimeProgressBar->setMinimum(0);
-    ui->estimatedTimeProgressBar->setMaximum(100);
+    m_ui->estimatedTimeProgressBar->setMinimum(0);
+    m_ui->estimatedTimeProgressBar->setMaximum(100);
 
-    int estimatedSeconds = static_cast<int>(elm->getQueueEstimatedEpoch() - elm->getWaitingSince());
+    int estimatedSeconds = static_cast<int>(m_elm->getQueueEstimatedEpoch() - m_elm->getWaitingSince());
 
     if (estimatedSeconds <= 0)
         estimatedSeconds = 1;
 
-    int secondsPassed = static_cast<int>(timestamp - elm->getWaitingSince());
+    int secondsPassed = static_cast<int>(timestamp - m_elm->getWaitingSince());
 
     if (secondsPassed <= 0)
         secondsPassed = 0;
 
-    ui->estimatedTimeProgressBar->setValue(static_cast<int>(secondsPassed*100.0f/estimatedSeconds));
+    m_ui->estimatedTimeProgressBar->setValue(static_cast<int>(secondsPassed * 100.0f / estimatedSeconds));
 
     QString queueInfoModel = "<html><head/><body><p><span style=\" font-size:12pt;\">You are currently on position </span><span style=\" font-size:12pt; font-weight:600;\">%1</span></p><p>Please be patient and you will receive at least %2 to use this device</p></body></html>";
 
-    QString deviceAllowedTime = QDateTime::fromSecsSinceEpoch(static_cast<uint32_t>(elm->getDeviceAllowedTime()), Qt::UTC).toString("mm:ss");
+    QString deviceAllowedTime = QDateTime::fromMSecsSinceEpoch(static_cast<uint32_t>(m_elm->getDeviceAllowedTime() * 1000), Qt::UTC).toString("mm:ss");
 
-    QString str = queueInfoModel.arg(elm->getQueuePos()).arg(deviceAllowedTime);
-    ui->queueInfoLbl->setText(str);
+    QString str = queueInfoModel.arg(m_elm->getQueuePos()).arg(deviceAllowedTime);
+    m_ui->queueInfoLbl->setText(str);
 
     // finally in
-    if (!elm->isInQueue()) {
-        if (elm->getDeviceId() != 0)
+    if (!m_elm->isInQueue()) {
+        if (m_elm->getDeviceId() != 0)
             setupConfigScreen();
         else
-            this->close();
+            close();
     }
 }
 
 void RemoteDeviceConfig::onTimeRefresh() {
     static uint16_t last_latency;
 
-    uint64_t timestamp = QDateTime::currentSecsSinceEpoch();
+    uint64_t timestamp = QDateTime::currentMSecsSinceEpoch() / 1000;
 
     {
-        uint64_t allowUntil = elm->getAllowUntil();
+        uint64_t allowUntil = m_elm->getAllowUntil();
         long timeRemaining = static_cast<long>(allowUntil - timestamp);
 
         bool allowedTimeExceeded = false;
@@ -249,7 +249,7 @@ void RemoteDeviceConfig::onTimeRefresh() {
         int secs = timeRemaining % 60;
 
         // increases minWaitTime or availableAfterTime to the time left
-        long avaliableAfterTime = elm->getAvailableAfterTime();
+        long avaliableAfterTime = m_elm->getAvailableAfterTime();
 
         min += avaliableAfterTime / 60;
         secs += avaliableAfterTime % 60;
@@ -273,12 +273,12 @@ void RemoteDeviceConfig::onTimeRefresh() {
         if (timestamp % 2 == 0)
             separator = " ";
 
-        ui->timeRemaining->display(minStr + separator + secsStr);
+        m_ui->timeRemaining->display(minStr + separator + secsStr);
 
         timeRemaining += static_cast<long>(avaliableAfterTime);
-        int percent = static_cast<int>(static_cast<float>(timeRemaining*100.0f)/static_cast<float>(elm->getTimeAllowed()));
+        int percent = static_cast<int>(static_cast<float>(timeRemaining*100.0f)/static_cast<float>(m_elm->getTimeAllowed()));
 
-        ui->progressBar->setValue(percent);
+        m_ui->progressBar->setValue(percent);
 
         QPalette progressBarPalette;
 
@@ -288,18 +288,18 @@ void RemoteDeviceConfig::onTimeRefresh() {
             progressBarPalette.setColor(QPalette::Highlight, Qt::green);
         }
 
-        ui->progressBar->setPalette(progressBarPalette);
+        m_ui->progressBar->setPalette(progressBarPalette);
 
         // Auto closes window when reaching zero seconds
         if (avaliableAfterTime <= 0)
-            this->close();
+            close();
     }
 
     QPalette sample_palette;
     sample_palette.setColor(QPalette::Window, Qt::white);
-    if (elm->getLatency() <= 20) {
+    if (m_elm->getLatency() <= 20) {
         sample_palette.setColor(QPalette::WindowText, Qt::darkGreen);
-    } else if (elm->getLatency() > 20 && elm->getLatency() <= 50) {
+    } else if (m_elm->getLatency() > 20 && m_elm->getLatency() <= 50) {
         sample_palette.setColor(QPalette::WindowText, Qt::darkYellow);
     } else {
         sample_palette.setColor(QPalette::WindowText, Qt::darkRed);
@@ -307,10 +307,10 @@ void RemoteDeviceConfig::onTimeRefresh() {
 
     static int warnedAlready = 0;
 
-    if (warnedAlready < 2 && elm->getLatency() > 120 && last_latency > 120) {
+    if (warnedAlready < 2 && m_elm->getLatency() > 120 && last_latency > 120) {
 
-        QMessageBox *msgBox = new QMessageBox( this );
-        msgBox->setIcon( QMessageBox::Critical );
+        QMessageBox *msgBox = new QMessageBox(this);
+        msgBox->setIcon(QMessageBox::Critical);
         msgBox->setText("Your connection latency is pretty bad, you will not be able to use the remote lab.");
         msgBox->setAttribute(Qt::WA_DeleteOnClose); // delete pointer after close
         msgBox->show();
@@ -319,10 +319,10 @@ void RemoteDeviceConfig::onTimeRefresh() {
         warnedAlready = 2;
     }
 
-    if (warnedAlready < 1 && elm->getLatency() > 80 && last_latency > 80) {
+    if (warnedAlready < 1 && m_elm->getLatency() > 80 && last_latency > 80) {
 
-        QMessageBox *msgBox = new QMessageBox( this );
-        msgBox->setIcon( QMessageBox::Warning );
+        QMessageBox *msgBox = new QMessageBox(this);
+        msgBox->setIcon(QMessageBox::Warning);
         msgBox->setText("Looks like your connection is pretty unstable, you may not be able to use the remote lab.");
         msgBox->setAttribute(Qt::WA_DeleteOnClose); // delete pointer after close
         msgBox->show();
@@ -331,26 +331,26 @@ void RemoteDeviceConfig::onTimeRefresh() {
         warnedAlready = 1;
     }
 
-    last_latency = elm->getLatency();
+    last_latency = m_elm->getLatency();
 
-    ui->ping->setAutoFillBackground(true);
-    ui->ping->setPalette(sample_palette);
-    ui->ping->setText("Ping: " + QString::number(elm->getLatency()) + "ms");
+    m_ui->ping->setAutoFillBackground(true);
+    m_ui->ping->setPalette(sample_palette);
+    m_ui->ping->setText("Ping: " + QString::number(m_elm->getLatency()) + "ms");
 }
 
 void RemoteDeviceConfig::setupConfigScreen() {
-    ui->stackedWidget->setCurrentIndex(1);
-    QString url = QString::fromStdString(this->elm->getCurrentOption().getUrl());
+    m_ui->stackedWidget->setCurrentIndex(1);
+    QString url = QString::fromStdString(m_elm->getCurrentOption().getUrl());
 
-    std::cout << this->elm->getAuthToken() << std::endl;
+    std::cout << m_elm->getAuthToken() << std::endl;
     std::cout << url.toStdString() << std::endl;
 
     // Connect buttons
-    connect(ui->buttonBox, &QDialogButtonBox::clicked, this, &RemoteDeviceConfig::onApplyConfig);
-    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &RemoteDeviceConfig::onRejectConfig);
+    connect(m_ui->buttonBox, &QDialogButtonBox::clicked, this, &RemoteDeviceConfig::onApplyConfig);
+    connect(m_ui->buttonBox, &QDialogButtonBox::rejected, this, &RemoteDeviceConfig::onRejectConfig);
 
-    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    m_ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     QAction* addAction = new QAction("Add", this);
     QAction* removeAction = new QAction("Remove", this);
@@ -371,66 +371,60 @@ void RemoteDeviceConfig::setupConfigScreen() {
     alignMenu->addAction(addAction);
     alignMenu->addAction(removeAction);
 
-    ui->pinOptions->setPopupMode(QToolButton::MenuButtonPopup);
-    ui->pinOptions->setMenu(alignMenu);
-    ui->pinOptions->setDefaultAction(addAction);
+    m_ui->pinOptions->setPopupMode(QToolButton::MenuButtonPopup);
+    m_ui->pinOptions->setMenu(alignMenu);
+    m_ui->pinOptions->setDefaultAction(addAction);
 
-    ui->copyToClipboard->setDefaultAction(copyAction);
+    m_ui->copyToClipboard->setDefaultAction(copyAction);
 
-    connect(ui->tableWidget, &QTableWidget::cellDoubleClicked, this, &RemoteDeviceConfig::onEditPortMapping);
+    connect(m_ui->tableWidget, &QTableWidget::cellDoubleClicked, this, &RemoteDeviceConfig::onEditPortMapping);
 
-    ui->ping->setText("Ping: ...");
-    elm->sendPing();
+    m_ui->ping->setText("Ping: ...");
+    m_elm->sendPing();
 
     onTimeRefresh();
 
-    connect(&this->timer, &QTimer::timeout, this, &RemoteDeviceConfig::onTimeRefresh);
-    this->timer.start(1000);
+    connect(&m_timer, &QTimer::timeout, this, &RemoteDeviceConfig::onTimeRefresh);
+    m_timer.start(1000);
 
-    ui->methodLabel->setText(QString::fromStdString(elm->getDeviceAuth().name));
-    ui->methodTokenFrame->hide();
+    m_ui->methodLabel->setText(QString::fromStdString(m_elm->getDeviceAuth().name));
+    m_ui->methodTokenFrame->hide();
 
-    if (elm->getDeviceMethod().compare("VirtualHere") == 0) {
-        ui->content->setText(QString::fromStdString(elm->getDeviceAuth().token));
-        ui->methodTokenFrame->show();
+    if (m_elm->getDeviceMethod().compare("VirtualHere") == 0) {
+        m_ui->content->setText(QString::fromStdString(m_elm->getDeviceAuth().token));
+        m_ui->methodTokenFrame->show();
     }
 
     // pins
 
-    ui->tableWidget->clearContents();
+    m_ui->tableWidget->clearContents();
 
-    const std::list<Pin>& mappedPins = elm->getMappedPins();
+    const std::list<Pin>& mappedPins = m_elm->getMappedPins();
     std::list<Pin>::const_iterator it;
     int row = 0;
     for (it = mappedPins.begin(); it != mappedPins.end(); ++it) {
-        ui->tableWidget->insertRow(row);
-        QTableWidgetItem* portWidget = ui->tableWidget->item(row, 0);
+        m_ui->tableWidget->insertRow(row);
+        QTableWidgetItem* portWidget = m_ui->tableWidget->item(row, 0);
 
         if (!portWidget) {
             portWidget = new QTableWidgetItem();
-            ui->tableWidget->setItem(row, 0, portWidget);
+            m_ui->tableWidget->setItem(row, 0, portWidget);
         }
 
         portWidget->setText(QString::fromStdString(it->getName()));
 
-        QTableWidgetItem* typeWidget = ui->tableWidget->item(row, 1);
+        auto* typeWidget = m_ui->tableWidget->item(row, 1);
 
         if (!typeWidget) {
             typeWidget = new QTableWidgetItem();
-            ui->tableWidget->setItem(row, 1, typeWidget);
+            m_ui->tableWidget->setItem(row, 1, typeWidget);
         }
 
         QString type = "";
-        switch(it->getType()) {
-            case 1:
-                type = "INPUT";
-                break;
-            case 2:
-                type = "OUTPUT";
-                break;
-            default:
-                type = "ERROR";
-                break;
+        switch(static_cast<int>(it->getType())) {
+        case 1:  type = "INPUT";  break;
+        case 2:  type = "OUTPUT"; break;
+        default: type = "ERROR";  break;
         }
 
         typeWidget->setText(type);
@@ -442,9 +436,9 @@ void RemoteDeviceConfig::setupConfigScreen() {
     {
         QNetworkRequest request;
         request.setUrl(QUrl(url+"logo"));
-        request.setRawHeader("User-Agent", "WiredPanda 1.0");
+        request.setRawHeader("User-Agent", "WiRedPanda 1.0"); // TODO: replace 1.0 with APP_VERSION
 
-        QNetworkReply* reply = manager->get(request);
+        QNetworkReply* reply = m_manager->get(request);
         reply->setProperty("type", "image");
         reply->setProperty("req", "setInfoLogo");
     }
@@ -453,19 +447,19 @@ void RemoteDeviceConfig::setupConfigScreen() {
     {
         QNetworkRequest request;
         request.setUrl(QUrl(url+"method"));
-        request.setRawHeader("User-Agent", "WiredPanda 1.0");
+        request.setRawHeader("User-Agent", "WiRedPanda 1.0"); // TODO: replace 1.0 with APP_VERSION
         request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
-        QString postDataStr("token=" + QString::fromStdString(elm->getAuthToken()) + "&" + "deviceId=" + QString::number(elm->getDeviceId()));
+        QString postDataStr("token=" + QString::fromStdString(m_elm->getAuthToken()) + "&" + "deviceId=" + QString::number(m_elm->getDeviceId()));
 
-        QNetworkReply* reply = manager->post(request, postDataStr.toUtf8());
+        QNetworkReply* reply = m_manager->post(request, postDataStr.toUtf8());
         reply->setProperty("type", "image");
         reply->setProperty("req", "setMethod");
     }
 
     // TODO: Remove QProcess* memory should be freed
-    if (elm->getDeviceMethod() == "VirtualHere") {
-        #ifdef _WIN32
+    if (m_elm->getDeviceMethod() == "VirtualHere") {
+#ifdef _WIN32
         // start virtualhere
         {
             QStringList args;
@@ -475,8 +469,8 @@ void RemoteDeviceConfig::setupConfigScreen() {
             args << "-cvhui.ini";
             process->start("vhui32.exe", args);
         }
-        #endif
-        #ifdef _WIN64
+#endif
+#ifdef _WIN64
         // start virtualhere
         {
             QStringList args;
@@ -486,7 +480,7 @@ void RemoteDeviceConfig::setupConfigScreen() {
             args << "-cvhui.ini";
             process->start("vhui64.exe", args);
         }
-        #endif
+#endif
     }
 }
 
@@ -500,29 +494,29 @@ void RemoteDeviceConfig::connectionResponse(QNetworkReply* reply) {
 
     if (reply->property("type") == "json") {
         QJsonDocument loadDoc(QJsonDocument::fromJson(repliedData));
-        std::cout << "JSON " << static_cast<QString>(repliedData).toStdString( ) << std::endl;
+        std::cout << "JSON " << static_cast<QString>(repliedData).toStdString() << std::endl;
 
         QJsonObject json = loadDoc.object();
         QVariantMap json_map = json.toVariantMap();
 
         if (reply->property("req") == "updateService") {
-            QPixmap online( ":/remote/online.png" );
-            QPixmap offline( ":/remote/offline.png" );
+            QPixmap online(":/remote/online.png");
+            QPixmap offline(":/remote/offline.png");
 
             QString versionStr = json["version"].toString();
-            currentOption.setVersion(versionStr.toStdString());
+            m_currentOption.setVersion(versionStr.toStdString());
 
             if (json["status"].toString() == "Online") {
-                ui->status->setPixmap(online.scaled(ui->status->width(), ui->status->height(), Qt::KeepAspectRatio));
+                m_ui->status->setPixmap(online.scaled(m_ui->status->width(), m_ui->status->height(), Qt::KeepAspectRatio));
             } else {
-                ui->status->setPixmap(offline.scaled(ui->status->width(), ui->status->height(), Qt::KeepAspectRatio));
+                m_ui->status->setPixmap(offline.scaled(m_ui->status->width(), m_ui->status->height(), Qt::KeepAspectRatio));
             }
 
-            ui->statusLabel->setText(json["status"].toString() != "" ? json["status"].toString() : "Offline");
-            ui->uptimeLabel->setText("Uptime: " + json["uptime"].toString());
+            m_ui->statusLabel->setText(json["status"].toString() != "" ? json["status"].toString() : "Offline");
+            m_ui->uptimeLabel->setText("Uptime: " + json["uptime"].toString());
 
-            ui->deviceSelector->clear();
-            ui->methodSelector->clear();
+            m_ui->deviceSelector->clear();
+            m_ui->methodSelector->clear();
 
             int totalAmount = 0;
             int avaliableAmount = 0;
@@ -530,17 +524,17 @@ void RemoteDeviceConfig::connectionResponse(QNetworkReply* reply) {
             {
                 QVariantMap devicesAmount = json_map["devices"].toMap();
                 QStringList key_list = devicesAmount.keys();
-                for(int i=0; i < key_list.count(); ++i) {
+                for (int i = 0; i < key_list.count(); ++i) {
                     QString key = key_list.at(i);
                     int deviceId = devicesAmount[key].toInt();
-                    ui->deviceSelector->addItem(QString ("%1").arg(key), QVariant::fromValue(deviceId));
+                    m_ui->deviceSelector->addItem(QString ("%1").arg(key), QVariant::fromValue(deviceId));
                 }
             }
 
             {
                 QVariantMap devicesAmount = json_map["devicesAmount"].toMap();
                 QStringList key_list = devicesAmount.keys();
-                for(int i=0; i < key_list.count(); ++i) {
+                for (int i = 0; i < key_list.count(); ++i) {
                     QString key = key_list.at(i);
                     int amount = devicesAmount[key].toInt();
                     totalAmount += amount;
@@ -550,7 +544,7 @@ void RemoteDeviceConfig::connectionResponse(QNetworkReply* reply) {
             {
                 QVariantMap devicesAvailable = json_map["devicesAvailable"].toMap();
                 QStringList key_list = devicesAvailable.keys();
-                for(int i=0; i < key_list.count(); ++i) {
+                for (int i = 0; i < key_list.count(); ++i) {
                     QString key = key_list.at(i);
                     int amount = devicesAvailable[key].toInt();
                     avaliableAmount += amount;
@@ -560,17 +554,17 @@ void RemoteDeviceConfig::connectionResponse(QNetworkReply* reply) {
             {
                 QVariantMap methods = json_map["methods"].toMap();
                 QStringList key_list = methods.keys();
-                for(int i=0; i < key_list.count(); ++i) {
+                for (int i = 0; i < key_list.count(); ++i) {
                     QString key = key_list.at(i);
                     int methodId = methods[key].toInt();
-                    ui->methodSelector->addItem(QString ("%1").arg(key), QVariant::fromValue(methodId));
+                    m_ui->methodSelector->addItem(QString ("%1").arg(key), QVariant::fromValue(methodId));
                 }
             }
 
-            ui->lcdTotal->display(totalAmount);
-            ui->lcdAmount->display(avaliableAmount);
+            m_ui->lcdTotal->display(totalAmount);
+            m_ui->lcdAmount->display(avaliableAmount);
         } else if (reply->property("req") == "connect") {
-            ui->connectButton->setDisabled(false);
+            m_ui->connectButton->setDisabled(false);
 
             if (json["reply"] != "ok") {
                 QMessageBox messageBox;
@@ -586,33 +580,33 @@ void RemoteDeviceConfig::connectionResponse(QNetworkReply* reply) {
 
             QHostInfo info = QHostInfo::fromName(host);
 
-            if (info.error() != QHostInfo::NoError ){
+            if (info.error() != QHostInfo::NoError) {
                 std::cout << info.errorString().toStdString() << std::endl;
                 QMessageBox messageBox;
                 messageBox.critical(0,"Error","Unable to resolve hostname !");
                 messageBox.setFixedSize(500,200);
-                this->close();
+                close();
                 return;
             }
 
             host = info.addresses().first().toString();
 
-            uint8_t deviceTypeId = ui->deviceSelector->currentData().toUInt();
-            uint8_t methodId = ui->methodSelector->currentData().toUInt();
+            uint8_t deviceTypeId = m_ui->deviceSelector->currentData().toUInt();
+            uint8_t methodId = m_ui->methodSelector->currentData().toUInt();
 
-            if (!elm->connectTo(host.toStdString(), json["port"].toInt(), json["token"].toString().toStdString(), deviceTypeId, methodId)) {
+            if (!m_elm->connectTo(host.toStdString(), json["port"].toInt(), json["token"].toString().toStdString(), deviceTypeId, methodId)) {
                 QMessageBox messageBox;
                 messageBox.critical(0,"Error","Connection failure !");
                 messageBox.setFixedSize(500,200);
-                this->close();
+                close();
                 return;
             }
 
-            this->close();
+            close();
         }
     }
 
-    if(reply->property("type") == "image") {
+    if (reply->property("type") == "image") {
         QString req = reply->property("req").toString();
         std::cout << "IMAGE req=" << req.toStdString() << std::endl;
 
@@ -621,40 +615,40 @@ void RemoteDeviceConfig::connectionResponse(QNetworkReply* reply) {
             pic.loadFromData(repliedData);
 
             if (!pic.isNull()) {
-                ui->logo->setPixmap(pic.scaled(ui->logo->width(), ui->logo->height(), Qt::KeepAspectRatio));
+                m_ui->logo->setPixmap(pic.scaled(m_ui->logo->width(), m_ui->logo->height(), Qt::KeepAspectRatio));
             } else {
-                QPixmap unavailable( ":/remote/unavailable.png" );
-                ui->logo->setPixmap(unavailable);
+                QPixmap unavailable(":/remote/unavailable.png");
+                m_ui->logo->setPixmap(unavailable);
             }
         } else if (req == "setInfoLogo") {
             QPixmap pic;
             pic.loadFromData(repliedData);
 
             if (!pic.isNull()) {
-                ui->infoLogo->setPixmap(pic.scaled(ui->infoLogo->width(), ui->infoLogo->height(), Qt::KeepAspectRatio));
+                m_ui->infoLogo->setPixmap(pic.scaled(m_ui->infoLogo->width(), m_ui->infoLogo->height(), Qt::KeepAspectRatio));
             } else {
-                QPixmap unavailable( ":/remote/unavailable.png" );
-                ui->infoLogo->setPixmap(unavailable);
+                QPixmap unavailable(":/remote/unavailable.png");
+                m_ui->infoLogo->setPixmap(unavailable);
             }
         } else if (req == "setMethod") {
             QPixmap pic;
             pic.loadFromData(repliedData);
 
             if (!pic.isNull()) {
-                ui->methodImg->setPixmap(pic.scaled(ui->methodImg->width(), ui->methodImg->height(), Qt::KeepAspectRatio));
+                m_ui->methodImg->setPixmap(pic.scaled(m_ui->methodImg->width(), m_ui->methodImg->height(), Qt::KeepAspectRatio));
             } else {
-                QPixmap unavailable( ":/remote/unavailable.png" );
-                ui->methodImg->setPixmap(unavailable);
+                QPixmap unavailable(":/remote/unavailable.png");
+                m_ui->methodImg->setPixmap(unavailable);
             }
         }
     }
 }
 
-void RemoteDeviceConfig::updateServiceInfo(QString str) {
-    auto& options = this->elm->getOptions();
+void RemoteDeviceConfig::updateServiceInfo(const QString &str) {
+    auto &options = m_elm->getOptions();
     auto it = options.begin();
 
-    while(it != options.end()) {
+    while (it != options.end()) {
         if (it->getName() != str.toStdString())
             it++;
         else
@@ -662,16 +656,16 @@ void RemoteDeviceConfig::updateServiceInfo(QString str) {
     }
 
     if (it != options.end()) {
-        currentOption = (*it);
+        m_currentOption = (*it);
         QString url = QString::fromStdString(it->getUrl());
 
         // retrieve service information
         {
             QNetworkRequest request;
             request.setUrl(QUrl(url));
-            request.setRawHeader("User-Agent", "WiredPanda 1.0");
+            request.setRawHeader("User-Agent", "WiRedPanda 1.0"); // TODO: replace with APP_VERSION
 
-            QNetworkReply* reply = manager->get(request);
+            QNetworkReply* reply = m_manager->get(request);
             reply->setProperty("type", "json");
             reply->setProperty("req", "updateService");
         }
@@ -680,41 +674,38 @@ void RemoteDeviceConfig::updateServiceInfo(QString str) {
         {
             QNetworkRequest request;
             request.setUrl(QUrl(url+"logo"));
-            request.setRawHeader("User-Agent", "WiredPanda 1.0");
+            request.setRawHeader("User-Agent", "WiRedPanda 1.0"); // TODO: replace with APP_VERSION
 
-            QNetworkReply* reply = manager->get(request);
+            QNetworkReply* reply = m_manager->get(request);
             reply->setProperty("type", "image");
             reply->setProperty("req", "setLogo");
         }
 
         // change to loading
-        QPixmap unavailable( ":/remote/unavailable.png" );
-        QPixmap searching( ":/remote/searching.png" );
+        QPixmap unavailable(":/remote/unavailable.png");
+        QPixmap searching(":/remote/searching.png");
 
-        ui->logo->setPixmap(unavailable);
-        ui->status->setPixmap(searching.scaled(ui->status->width(), ui->status->height(), Qt::KeepAspectRatio));
-        ui->deviceSelector->clear();
-        ui->statusLabel->setText("...");
-        ui->lcdTotal->display(0);
-        ui->lcdAmount->display(0);
+        m_ui->logo->setPixmap(unavailable);
+        m_ui->status->setPixmap(searching.scaled(m_ui->status->width(), m_ui->status->height(), Qt::KeepAspectRatio));
+        m_ui->deviceSelector->clear();
+        m_ui->statusLabel->setText("...");
+        m_ui->lcdTotal->display(0);
+        m_ui->lcdAmount->display(0);
     } else {
         QMessageBox messageBox;
         messageBox.critical(0,"Error","Any available services could be found");
         messageBox.setFixedSize(500,200);
-        this->close();
+        close();
     }
 }
 
 void RemoteDeviceConfig::onTryToConnect() {
     // verify if the version is compatible before sending connection request
 
-    ui->connectButton->setDisabled(true);
+    m_ui->connectButton->setDisabled(true);
 
-    QString versionStr = QString::fromStdString(currentOption.getVersion());
-    // gets first dot position
-    int firstDotIndex = versionStr.indexOf(".");
-    QStringRef majorVersionStr(&versionStr, 1, firstDotIndex-1);
-    int majorVersion = majorVersionStr.toInt();
+    const QString versionStr = QString::fromStdString(m_currentOption.getVersion());
+    const int majorVersion = versionStr.split(".").first().toInt();
 
     if (MAJOR_REMOTE_VERSION < majorVersion) {
         QMessageBox messageBox;
@@ -727,28 +718,28 @@ void RemoteDeviceConfig::onTryToConnect() {
     }
 
     QNetworkRequest request;
-    request.setUrl(QUrl(QString::fromStdString(currentOption.getUrl())+"login"));
-    request.setRawHeader("User-Agent", "WiredPanda 1.0");
+    request.setUrl(QUrl(QString::fromStdString(m_currentOption.getUrl()) + "login"));
+    request.setRawHeader("User-Agent", "WiRedPanda 1.0"); // TODO: replace with APP_VERSION
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
-    QString encodedPasswd = ui->passwdInput->text();
-    AUTH_METHOD currentAuthMethod = currentOption.getAuthMethod();
-    if (currentAuthMethod != AUTH_METHOD::PLAIN) {
+    QString encodedPasswd = m_ui->passwdInput->text();
+    Auth_Method currentAuthMethod = m_currentOption.getAuthMethod();
+    if (currentAuthMethod != Auth_Method::Plain) {
         QCryptographicHash::Algorithm algorithm;
         switch(currentAuthMethod) {
-            case AUTH_METHOD::MD5:
-                algorithm = QCryptographicHash::Algorithm::Md5;
-                break;
-            case AUTH_METHOD::SHA1:
-                algorithm = QCryptographicHash::Algorithm::Sha1;
-                break;
-            case AUTH_METHOD::SHA256:
-                algorithm = QCryptographicHash::Algorithm::Sha256;
-                break;
-            default:
-                algorithm = QCryptographicHash::Algorithm::Sha256;
-                std::cerr << "ERROR: Unable to evaluate the correct encoding method, sending as SHA256." << std::endl;
-                break;
+        case Auth_Method::MD5:
+            algorithm = QCryptographicHash::Algorithm::Md5;
+            break;
+        case Auth_Method::SHA1:
+            algorithm = QCryptographicHash::Algorithm::Sha1;
+            break;
+        case Auth_Method::SHA256:
+            algorithm = QCryptographicHash::Algorithm::Sha256;
+            break;
+        default:
+            algorithm = QCryptographicHash::Algorithm::Sha256;
+            std::cerr << "ERROR: Unable to evaluate the correct encoding method, sending as SHA256." << std::endl;
+            break;
         }
 
         QCryptographicHash hashAlgorithm(algorithm);
@@ -756,15 +747,19 @@ void RemoteDeviceConfig::onTryToConnect() {
         encodedPasswd = hashAlgorithm.result().toHex();
     }
 
-    elm->setCurrentOption(currentOption);
+    m_elm->setCurrentOption(m_currentOption);
 
-    QString postDataStr("login=" + ui->loginInput->text() + "&" + "passwd=" + encodedPasswd);
+    QString postDataStr("login=" + m_ui->loginInput->text() + "&" + "passwd=" + encodedPasswd);
 
     // when logging in, it might take more time
     // once LDAP service can be quite slow
-    manager->setTransferTimeout(20000);
-    QNetworkReply* reply = manager->post(request, postDataStr.toUtf8());
-    manager->setTransferTimeout(1000);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+    m_manager->setTransferTimeout(20000);
+#endif
+    QNetworkReply* reply = m_manager->post(request, postDataStr.toUtf8());
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+    m_manager->setTransferTimeout(1000);
+#endif
 
     reply->setProperty("type", "json");
     reply->setProperty("req", "connect");
@@ -779,7 +774,7 @@ void RemoteDeviceConfig::onApplyConfig(QAbstractButton* btn)
     if (btn->text() == "Apply") {
         std::cout << "APPLIED!" << std::endl;
         if (savePortMapping()) {
-            this->close();
+            close();
         }
     }
 }
@@ -794,23 +789,23 @@ void RemoteDeviceConfig::onCopyToClipboard()
     QClipboard *clipboard = QGuiApplication::clipboard();
 
     clipboard->clear();
-    clipboard->setText(QString::fromStdString(elm->getDeviceAuth().token));
+    clipboard->setText(QString::fromStdString(m_elm->getDeviceAuth().token));
 }
 
 void RemoteDeviceConfig::on_disconnectBtn_clicked()
 {
-    elm->disconnect();
+    m_elm->disconnect();
 
     QMessageBox messageBox;
-    messageBox.information(0,"Info","Disconnected successfully!");
-    this->close();
+    messageBox.information(0, "Info", "Disconnected successfully!");
+    close();
 }
 
 void RemoteDeviceConfig::on_leaveBtn_clicked()
 {
-    elm->disconnect();
+    m_elm->disconnect();
 
     QMessageBox messageBox;
     messageBox.information(0,"Info","You have left the queue!");
-    this->close();
+    close();
 }

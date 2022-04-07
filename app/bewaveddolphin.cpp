@@ -175,7 +175,7 @@ bool BewavedDolphin::checkSave()
                 tr("Save simulation before closing?"),
                 QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
 
-    switch(reply){
+    switch (reply) {
     case QMessageBox::Save: on_actionSave_triggered(); return (!m_edited);
     case QMessageBox::Discard: return true;
     case QMessageBox::Cancel: return false;
@@ -738,7 +738,7 @@ void BewavedDolphin::paste(QItemSelection &ranges, QDataStream &ds)
     run();
 }
 
-void BewavedDolphin::associateToWiredPanda(const QString &fname)
+void BewavedDolphin::associateToWiRedPanda(const QString &fname)
 {
     if (m_mainWindow->getDolphinFilename() != fname) {
         auto reply =
@@ -789,7 +789,7 @@ void BewavedDolphin::on_actionSave_as_triggered()
     }
     if (save(fname)) {
         m_currentFile = QFileInfo(fname);
-        associateToWiredPanda(fname);
+        associateToWiRedPanda(fname);
         setWindowTitle(tr("beWavedDolphin Simulator") + " [" + m_currentFile.fileName() + "]");
         m_ui->statusbar->showMessage(tr("Saved file successfully."), 2000);
         m_edited = false;
@@ -952,7 +952,7 @@ bool BewavedDolphin::load(const QString &fname)
     }
     qCDebug(zero) << "Closing file.";
     fl.close();
-    associateToWiredPanda(fname);
+    associateToWiRedPanda(fname);
     setWindowTitle(tr("beWavedDolphin Simulator") + " [" + m_currentFile.fileName() + "]");
     return true;
 }

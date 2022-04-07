@@ -81,7 +81,7 @@ private:
     void CreateElement(int row, int col, int value, bool isInput = true, bool changePrevious = true);
     void CreateOneElement(int row, int col, bool isInput = true, bool changePrevious = true);
     void CreateZeroElement(int row, int col, bool isInput = true, bool changePrevious = true);
-    void associateToWiredPanda(const QString &fname);
+    void associateToWiRedPanda(const QString &fname);
     void copy(const QItemSelection &ranges, QDataStream &ds);
     void cut(const QItemSelection &ranges, QDataStream &ds);
     void drawPixMaps();

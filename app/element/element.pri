@@ -29,7 +29,6 @@ SOURCES += \
     $$PWD/tflipflop.cpp \
 #    $$PWD/tlatch.cpp \
     $$PWD/xnor.cpp \
-    $$PWD/xor.cpp \
     $$PWD/xor.cpp
 
 HEADERS += \

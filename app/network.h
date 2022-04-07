@@ -1,5 +1,4 @@
-#ifndef NETWORK_H
-#define NETWORK_H
+#pragma once
 
 #include <QBuffer>
 #include <QtEndian>
@@ -76,6 +75,3 @@ public:
     uint8_t getOpcode() { return opcode; }
     uint32_t getRemainingBytes() { return remainingBytes; }
 };
-
-
-#endif // NETWORK_H
