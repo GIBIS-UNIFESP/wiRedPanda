@@ -1,12 +1,16 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "jklatch.h"
 
 #include "qneport.h"
 
+namespace {
+int id = qRegisterMetaType<JKLatch>();
+}
+
 JKLatch::JKLatch(QGraphicsItem *parent)
-    : GraphicElement(ElementType::JKLATCH, ElementGroup::MEMORY, 2, 2, 2, 2, parent)
+    : GraphicElement(ElementType::JKLatch, ElementGroup::Memory, 2, 2, 2, 2, parent)
 {
     setPixmap(":/memory/JK-latch.png");
     setRotatable(false);
@@ -14,6 +18,7 @@ JKLatch::JKLatch(QGraphicsItem *parent)
     JKLatch::updatePorts();
     setCanChangeSkin(true);
     setPortName("JK Latch");
+    setToolTip(m_translatedName);
 }
 
 void JKLatch::updatePorts()

@@ -1,10 +1,9 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef ICPROTOTYPE_H
-#define ICPROTOTYPE_H
+#pragma once
 
 #include "icprototypeimpl.h"
 
@@ -18,34 +17,27 @@ class IC;
 class ICPrototype
 {
 public:
-    ICPrototype(const QString &fileName);
-    void reload();
-
-    void fileName(const QString &newFileName);
-    QString fileName() const;
-    QString baseName() const;
-
-    void insertICObserver(IC *ic);
-    void removeICObserver(IC *ic);
-
-    int inputSize() const;
-    int outputSize() const;
-
-    QString inputLabel(int index) const;
-    QString outputLabel(int index) const;
-
-    bool defaultInputValue(int index);
-    bool isInputRequired(int index);
+    explicit ICPrototype(const QString &fileName);
 
     ICMapping *generateMapping() const;
+    QString baseName() const;
+    QString fileName() const;
+    QString inputLabel(int index) const;
+    QString outputLabel(int index) const;
+    bool defaultInputValue(int index);
+    bool isInputRequired(int index);
+    int inputSize() const;
+    int outputSize() const;
+    void fileName(const QString &newFileName);
+    void insertICObserver(IC *ic);
+    void reload();
+    void removeICObserver(IC *ic);
 
 private:
     void clear();
 
-    QString m_fileName;
-
     ICPrototypeImpl m_ICImpl;
+    QString m_fileName;
     QVector<IC *> m_icObservers;
 };
 
-#endif // ICPROTOTYPE_H

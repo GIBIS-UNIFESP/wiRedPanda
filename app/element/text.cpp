@@ -1,10 +1,14 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "text.h"
 
+namespace {
+int id = qRegisterMetaType<Text>();
+}
+
 Text::Text(QGraphicsItem *parent)
-    : GraphicElement(ElementType::TEXT, ElementGroup::OTHER, 0, 0, 0, 0, parent)
+    : GraphicElement(ElementType::Text, ElementGroup::Other, 0, 0, 0, 0, parent)
 {
     m_pixmapSkinName = {
         ":/no_text.png",
@@ -16,5 +20,5 @@ Text::Text(QGraphicsItem *parent)
     setCanChangeSkin(false);
     setHasLabel(true);
     setPortName("TEXT");
-    setToolTip("TEXT");
+    setToolTip(m_translatedName);
 }

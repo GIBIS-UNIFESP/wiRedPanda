@@ -1,12 +1,13 @@
 SOURCES += \
     $$PWD/and.cpp \
+    $$PWD/buzzer.cpp \
     $$PWD/clock.cpp \
     $$PWD/demux.cpp \
     $$PWD/dflipflop.cpp \
     $$PWD/display.cpp \
     $$PWD/display_14.cpp \
     $$PWD/dlatch.cpp \
-  $$PWD/input.cpp \
+    $$PWD/input.cpp \
     $$PWD/inputbutton.cpp \
     $$PWD/inputgnd.cpp \
     $$PWD/inputrotary.cpp \
@@ -15,33 +16,34 @@ SOURCES += \
     $$PWD/jkflipflop.cpp \
     $$PWD/jklatch.cpp \
     $$PWD/led.cpp \
-  $$PWD/line.cpp \
+    $$PWD/line.cpp \
     $$PWD/mux.cpp \
     $$PWD/nand.cpp \
     $$PWD/node.cpp \
     $$PWD/nor.cpp \
     $$PWD/not.cpp \
     $$PWD/or.cpp \
+    $$PWD/remotedevice.cpp \
     $$PWD/srflipflop.cpp \
-  $$PWD/text.cpp \
+    $$PWD/text.cpp \
     $$PWD/tflipflop.cpp \
 #    $$PWD/tlatch.cpp \
     $$PWD/xnor.cpp \
     $$PWD/xor.cpp \
-    $$PWD/buzzer.cpp \
-    $$PWD/remotedevice.cpp
+    $$PWD/xor.cpp
 
-HEADERS  +=  \
+HEADERS += \
     $$PWD/and.h \
+    $$PWD/buzzer.h \
     $$PWD/clock.h \
     $$PWD/demux.h \
     $$PWD/dflipflop.h \
     $$PWD/display.h \
     $$PWD/display_14.h \
     $$PWD/dlatch.h \
+    $$PWD/input.h \
     $$PWD/inputbutton.h \
     $$PWD/inputgnd.h \
-    $$PWD/input.h \
     $$PWD/inputrotary.h \
     $$PWD/inputswitch.h \
     $$PWD/inputvcc.h \
@@ -55,11 +57,10 @@ HEADERS  +=  \
     $$PWD/nor.h \
     $$PWD/not.h \
     $$PWD/or.h \
+    $$PWD/remotedevice.h \
     $$PWD/srflipflop.h \
     $$PWD/text.h \
     $$PWD/tflipflop.h \
 #    $$PWD/tlatch.h \
     $$PWD/xnor.h \
-    $$PWD/xor.h \
-    $$PWD/buzzer.h \
-    $$PWD/remotedevice.h
+    $$PWD/xor.h

@@ -1,32 +1,31 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef LABEL_H
-#define LABEL_H
-
-#include <QLabel>
+#pragma once
 
 #include "elementtype.h"
+
+#include <QLabel>
 
 class Label : public QLabel
 {
     Q_OBJECT
+
 public:
     explicit Label(QWidget *parent = nullptr);
-
     ~Label() override;
-    ElementType elementType();
-    void setElementType(ElementType elementType);
-    QString auxData() const;
-    void setAuxData(const QString &auxData);
-    void startDrag(QPoint pos = QPoint());
-    QString name() const;
-    void setName(const QString &name);
 
+    ElementType elementType();
+    QString auxData() const;
+    QString name() const;
     const QPixmap &pixmapData() const;
+    void setAuxData(const QString &auxData);
+    void setElementType(ElementType elementType);
+    void setName(const QString &name);
     void setPixmapData(const QPixmap &pixmapData);
+    void startDrag(QPoint pos = QPoint());
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
@@ -34,8 +33,7 @@ protected:
 private:
     ElementType m_elementType;
     QPixmap m_pixmapData;
-    QString m_name;
     QString m_auxData;
+    QString m_name;
 };
 
-#endif /* LABEL_H */

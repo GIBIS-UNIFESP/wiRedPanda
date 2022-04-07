@@ -1,15 +1,15 @@
 <RCC>
     <qresource prefix="/basic">
         <file>and.png</file>
+        <file>box.png</file>
+        <file>demux.png</file>
+        <file>mux.png</file>
         <file>nand.png</file>
+        <file>node.png</file>
         <file>nor.png</file>
         <file>not.png</file>
         <file>or.png</file>
         <file>xnor.png</file>
         <file>xor.png</file>
-        <file>box.png</file>
-        <file>mux.png</file>
-        <file>demux.png</file>
-        <file>node.png</file>
     </qresource>
 </RCC>

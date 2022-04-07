@@ -1,10 +1,9 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef SIMPLEWAVEFORM_H
-#define SIMPLEWAVEFORM_H
+#pragma once
 
 #include "editor.h"
 
@@ -12,6 +11,10 @@
 #include <QChartView>
 #include <QDialog>
 #include <QTextStream>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+using namespace QtCharts;
+#endif
 
 namespace Ui
 {
@@ -21,30 +24,28 @@ class SimpleWaveform;
 class SimpleWaveform : public QDialog
 {
     Q_OBJECT
-    enum class SortingMode : uint_fast8_t { INCREASING, DECREASING, POSITION };
+
+    enum class SortingMode : uint_fast8_t { Increasing, Decreasing, Position };
 
 public:
     explicit SimpleWaveform(Editor *editor, QWidget *parent = nullptr);
     ~SimpleWaveform() override;
 
-    void showWaveform();
+    static bool saveToTxt(QTextStream &outStream, Editor *editor);
     static void sortElements(QVector<GraphicElement *> &elements, QVector<GraphicElement *> &inputs, QVector<GraphicElement *> &outputs, SortingMode sorting);
 
-    static bool saveToTxt(QTextStream &outStream, Editor *editor);
-
-private slots:
-    void on_radioButton_Position_clicked();
-    void on_radioButton_Increasing_clicked();
-    void on_radioButton_Decreasing_clicked();
-    void on_pushButton_Copy_clicked();
+    void showWaveform();
 
 private:
-    Ui::SimpleWaveform *m_ui;
-    QtCharts::QChart m_chart;
-    QtCharts::QChartView *m_chartView;
-    Editor *m_editor;
+    void on_pushButton_Copy_clicked();
+    void on_radioButton_Decreasing_clicked();
+    void on_radioButton_Increasing_clicked();
+    void on_radioButton_Position_clicked();
 
+    Ui::SimpleWaveform *m_ui;
+    Editor *m_editor;
+    QChart m_chart;
+    QChartView *m_chartView;
     SortingMode m_sortingMode;
 };
 
-#endif /* SIMPLEWAVEFORM_H */

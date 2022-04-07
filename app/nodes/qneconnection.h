@@ -23,8 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#ifndef QNECONNECTION_H
-#define QNECONNECTION_H
+#pragma once
 
 #include "itemwithid.h"
 
@@ -43,8 +42,8 @@ public:
     explicit QNEConnection(QGraphicsItem *parent = nullptr);
     ~QNEConnection() override;
 
-    void setStartPos(const QPointF &p);
-    void setEndPos(const QPointF &p);
+    void setStartPos(QPointF p);
+    void setEndPos(QPointF p);
     void setStart(QNEOutputPort *p);
     void setEnd(QNEInputPort *p);
     void updatePosFromPorts();
@@ -62,14 +61,14 @@ public:
         return Type;
     }
     QNEPort *otherPort(const QNEPort *port) const;
-    QNEOutputPort *otherPort(const QNEInputPort *) const;
-    QNEInputPort *otherPort(const QNEOutputPort *) const;
+    QNEOutputPort *otherPort(const QNEInputPort * /*port*/) const;
+    QNEInputPort *otherPort(const QNEOutputPort * /*port*/) const;
     Status status() const;
-    void setStatus(const Status &status);
+    void setStatus(Status status);
 
     void updateTheme();
-
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+
 private:
     QPointF m_startPos;
     QPointF m_endPos;
@@ -81,7 +80,6 @@ private:
     QColor m_activeClr;
     QColor m_inactiveClr;
     QColor m_selectedClr;
-    /* QGraphicsItem interface */
 };
 
-#endif /* QNECONNECTION_H */
+QDataStream &operator<<(QDataStream &ds, const QNEConnection *item);

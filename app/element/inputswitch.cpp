@@ -1,4 +1,4 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "inputswitch.h"
@@ -7,10 +7,14 @@
 
 #include <QGraphicsSceneMouseEvent>
 
+namespace {
+int id = qRegisterMetaType<InputSwitch>();
+}
+
 int InputSwitch::current_id_number = 0;
 
 InputSwitch::InputSwitch(QGraphicsItem *parent)
-    : GraphicElement(ElementType::SWITCH, ElementGroup::INPUT, 0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::InputSwitch, ElementGroup::Input, 0, 0, 1, 1, parent)
 {
     m_pixmapSkinName = {
         ":/input/switchOff.png",
@@ -25,6 +29,7 @@ InputSwitch::InputSwitch(QGraphicsItem *parent)
     setHasLabel(true);
     setHasTrigger(true);
     setPortName("Switch");
+    setToolTip(m_translatedName);
 }
 
 bool InputSwitch::getOn(int port) const
@@ -49,7 +54,7 @@ void InputSwitch::setOn(bool value, int port)
 
 void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if ((!locked)&&(event->button() == Qt::LeftButton)) {
+    if ((!locked) && (event->button() == Qt::LeftButton)) {
         setOn(!on);
         event->accept();
     }

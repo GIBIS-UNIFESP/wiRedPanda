@@ -1,23 +1,26 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "clock.h"
+
 #include "common.h"
 #include "globalproperties.h"
 #include "qneport.h"
 
 #include <QDebug>
 
+namespace {
+int id = qRegisterMetaType<Clock>();
+}
+
 bool Clock::reset = false;
 bool Clock::pause = false;
 int Clock::current_id_number = 0;
 
-Clock::~Clock() = default;
-
 Clock::Clock(QGraphicsItem *parent)
-    : GraphicElement(ElementType::CLOCK, ElementGroup::INPUT, 0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::Clock, ElementGroup::Input, 0, 0, 1, 1, parent)
 {
-    COMMENT("Creating clock.", 0);
+    qCDebug(zero) << "Creating clock.";
     locked = false;
     m_pixmapSkinName = {
         ":/input/clock0.png",
@@ -34,13 +37,14 @@ Clock::Clock(QGraphicsItem *parent)
     Clock::pause = false;
     setHasLabel(true);
     setPortName("Clock");
+    setToolTip(m_translatedName);
     Clock::setOn(false);
     setPixmap(m_pixmapSkinName[0]);
 }
 
 void Clock::updateClock()
 {
-    if ((!locked)&&(!disabled())&&(!Clock::pause)) {
+    if ((!locked) && (!disabled()) && (!Clock::pause)) {
         m_elapsed++;
         if ((m_elapsed % m_interval) == 0) {
             setOn(!m_isOn);
@@ -96,7 +100,7 @@ void Clock::setFrequency(float freq)
         return;
     }
 
-    int auxinterval = 500 / (freq * GLOBALCLK);
+    int auxinterval = 500 / (freq * globalClock);
     if (auxinterval <= 0) {
         return;
     }

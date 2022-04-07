@@ -1,39 +1,39 @@
 <RCC>
     <qresource prefix="/toolbar">
-        <file>new.png</file>
-        <file>play.png</file>
-        <file>stop.png</file>
-        <file>pause.png</file>
-        <file>folder.png</file>
-        <file>rotateR.png</file>
-        <file>save.png</file>
-        <file>rotateL.png</file>
-        <file>copy.png</file>
-        <file>cut.png</file>
-        <file>paste.png</file>
-        <file>delete.png</file>
-        <file>undo.png</file>
-        <file>redo.png</file>
-        <file>panelBox.png</file>
-        <file>zoomOut.png</file>
-        <file>zoomIn.png</file>
-        <file>zoomReset.png</file>
         <file>arduino.png</file>
         <file>brasil.png</file>
         <file>cleanSelection.png</file>
+        <file>copy.png</file>
+        <file>cut.png</file>
+        <file>delete.png</file>
+        <file>dolphin_icon.png</file>
+        <file>exit.png</file>
         <file>fast.png</file>
+        <file>folder.png</file>
         <file>help.png</file>
         <file>helpQt.png</file>
+        <file>new.png</file>
+        <file>panelBox.png</file>
+        <file>paste.png</file>
+        <file>pause.png</file>
         <file>pdf.png</file>
+        <file>play.png</file>
         <file>recentFiles.png</file>
+        <file>redo.png</file>
         <file>reloadFile.png</file>
         <file>rename.png</file>
+        <file>rotateL.png</file>
+        <file>rotateR.png</file>
+        <file>save.png</file>
         <file>selectAll.png</file>
+        <file>stop.png</file>
+        <file>undo.png</file>
         <file>usa.png</file>
-        <file>wires.png</file>
-        <file>exit.png</file>
         <file>wavyIcon.png</file>
-        <file>dolphin_icon.png</file>
+        <file>wires.png</file>
+        <file>zoomIn.png</file>
+        <file>zoomOut.png</file>
+        <file>zoomReset.png</file>
     </qresource>
     <qresource prefix="/">
         <file>arduino.png</file>

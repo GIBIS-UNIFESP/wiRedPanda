@@ -1,51 +1,49 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "testelements.h"
 
+#include "and.h"
 #include "demux.h"
+#include "dflipflop.h"
 #include "dlatch.h"
 #include "editor.h"
 #include "globalproperties.h"
 #include "ic.h"
+#include "icmanager.h"
 #include "inputbutton.h"
+#include "inputgnd.h"
+#include "inputswitch.h"
+#include "inputvcc.h"
 #include "iostream"
 #include "jkflipflop.h"
 #include "jklatch.h"
 #include "led.h"
 #include "mux.h"
 #include "node.h"
+#include "or.h"
+#include "qneconnection.h"
+#include "qneport.h"
+#include "simulationcontroller.h"
 #include "srflipflop.h"
 #include "tflipflop.h"
-#include "and.h"
-#include "dflipflop.h"
-#include "icmanager.h"
-#include "inputgnd.h"
-#include "inputvcc.h"
-#include "or.h"
-#include "qneport.h"
 
 #include <QDebug>
+#include <QTest>
 #include <iostream>
-
-TestElements::TestElements(QObject *parent)
-    : QObject(parent)
-{
-}
 
 void TestElements::init()
 {
-    /* Creating connections */
-    for (int i = 0; i < conn.size(); ++i) {
-        conn[i] = new QNEConnection();
-        sw[i] = new InputSwitch();
-        conn.at(i)->setStart(sw.at(i)->output());
+    for (int i = 0; i < connections.size(); ++i) {
+        connections[i] = new QNEConnection();
+        switches[i] = new InputSwitch();
+        connections.at(i)->setStart(switches.at(i)->output());
     }
 }
 
 void TestElements::cleanup()
 {
-    qDeleteAll(sw);
+    qDeleteAll(switches);
 }
 
 void TestElements::testNode()
@@ -56,7 +54,7 @@ void TestElements::testNode()
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSz(), 1);
-    QCOMPARE(elm.elementType(), ElementType::NODE);
+    QCOMPARE(elm.elementType(), ElementType::Node);
 }
 
 void TestElements::testAnd()
@@ -67,7 +65,7 @@ void TestElements::testAnd()
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSz(), 2);
-    QCOMPARE(elm.elementType(), ElementType::AND);
+    QCOMPARE(elm.elementType(), ElementType::And);
 }
 
 void TestElements::testOr()
@@ -78,7 +76,7 @@ void TestElements::testOr()
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSz(), 2);
-    QCOMPARE(elm.elementType(), ElementType::OR);
+    QCOMPARE(elm.elementType(), ElementType::Or);
 }
 
 void TestElements::testVCC()
@@ -105,7 +103,7 @@ void TestElements::testMux()
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSz(), 3);
-    QCOMPARE(elm.elementType(), ElementType::MUX);
+    QCOMPARE(elm.elementType(), ElementType::Mux);
 }
 
 void TestElements::testDemux()
@@ -116,7 +114,7 @@ void TestElements::testDemux()
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 2);
     QCOMPARE(elm.minInputSz(), 2);
-    QCOMPARE(elm.elementType(), ElementType::DEMUX);
+    QCOMPARE(elm.elementType(), ElementType::Demux);
 }
 
 void TestElements::testDFlipFlop()
@@ -130,7 +128,7 @@ void TestElements::testDFlipFlop()
     QCOMPARE(elm.maxInputSz(), 4);
     QCOMPARE(elm.minOutputSz(), 2);
     QCOMPARE(elm.maxOutputSz(), 2);
-    QCOMPARE(elm.elementType(), ElementType::DFLIPFLOP);
+    QCOMPARE(elm.elementType(), ElementType::DFlipFlop);
 }
 
 void TestElements::testDLatch()
@@ -144,7 +142,7 @@ void TestElements::testDLatch()
     QCOMPARE(elm.maxInputSz(), 2);
     QCOMPARE(elm.minOutputSz(), 2);
     QCOMPARE(elm.maxOutputSz(), 2);
-    QCOMPARE(elm.elementType(), ElementType::DLATCH);
+    QCOMPARE(elm.elementType(), ElementType::DLatch);
 }
 
 void TestElements::testJKFlipFlop()
@@ -158,7 +156,7 @@ void TestElements::testJKFlipFlop()
     QCOMPARE(elm.maxInputSz(), 5);
     QCOMPARE(elm.minOutputSz(), 2);
     QCOMPARE(elm.maxOutputSz(), 2);
-    QCOMPARE(elm.elementType(), ElementType::JKFLIPFLOP);
+    QCOMPARE(elm.elementType(), ElementType::JKFlipFlop);
 }
 
 void TestElements::testSRFlipFlop()
@@ -172,7 +170,7 @@ void TestElements::testSRFlipFlop()
     QCOMPARE(elm.maxInputSz(), 5);
     QCOMPARE(elm.minOutputSz(), 2);
     QCOMPARE(elm.maxOutputSz(), 2);
-    QCOMPARE(elm.elementType(), ElementType::SRFLIPFLOP);
+    QCOMPARE(elm.elementType(), ElementType::SRFlipFlop);
 }
 
 void TestElements::testTFlipFlop()
@@ -186,18 +184,18 @@ void TestElements::testTFlipFlop()
     QCOMPARE(elm.maxInputSz(), 4);
     QCOMPARE(elm.minOutputSz(), 2);
     QCOMPARE(elm.maxOutputSz(), 2);
-    QCOMPARE(elm.elementType(), ElementType::TFLIPFLOP);
+    QCOMPARE(elm.elementType(), ElementType::TFlipFlop);
 }
 
-QString testFile(const QString& fname)
+QString TestElements::testFile(const QString &fileName)
 {
-    return QString("%1/../examples/%2").arg(CURRENTDIR, fname);
+    return QString(CURRENTDIR) + "/../examples/" + fileName;
 }
 
 void TestElements::testICData(const IC *ic)
 {
-    QCOMPARE(static_cast<int>(ic->inputSize()), 5);
-    QCOMPARE(static_cast<int>(ic->outputSize()), 2);
+    QCOMPARE(ic->inputSize(), 5);
+    QCOMPARE(ic->outputSize(), 2);
 
     QCOMPARE(ic->input(0)->isRequired(), false);
     QCOMPARE(ic->input(1)->isRequired(), false);
@@ -214,60 +212,60 @@ void TestElements::testICData(const IC *ic)
 
 void TestElements::testIC()
 {
-    Editor *editor = new Editor();
+    auto *editor = new Editor();
     editor->setupWorkspace();
-    GlobalProperties::currentFile = QString("%1/../examples/simple.panda").arg(CURRENTDIR);
-    ICManager *manager(editor->getICManager());
-    QString icFile = testFile("jkflipflop.panda");
-    Scene scene;
+    GlobalProperties::currentFile = QString(CURRENTDIR) + "/../examples/simple.panda";
+    auto *manager(editor->getICManager());
+    const QString icFile = testFile("jkflipflop.panda");
 
-    IC *ic = new IC();
+    auto *ic = new IC();
     manager->loadIC(ic, icFile);
 
     testICData(ic);
 
-    InputButton *clkButton = new InputButton();
+    auto *clkButton = new InputButton();
+    auto *prstButton = new InputButton();
 
-    InputButton *prstButton = new InputButton();
+    auto *led = new Led();
+    auto *led2 = new Led();
 
-    Led *led = new Led();
-    Led *led2 = new Led();
+    auto *connection = new QNEConnection();
+    connection->setStart(clkButton->output());
+    connection->setEnd(ic->input(2));
 
-    QNEConnection *conn = new QNEConnection();
-    conn->setStart(clkButton->output());
-    conn->setEnd(ic->input(2));
+    auto *connection2 = new QNEConnection();
+    connection2->setStart(ic->output(0));
+    connection2->setEnd(led->input());
 
-    QNEConnection *conn2 = new QNEConnection();
-    conn2->setStart(ic->output(0));
-    conn2->setEnd(led->input());
+    auto *connection3 = new QNEConnection();
+    connection3->setStart(prstButton->output());
+    connection3->setEnd(ic->input(0));
 
-    QNEConnection *conn3 = new QNEConnection();
-    conn3->setStart(prstButton->output());
-    conn3->setEnd(ic->input(0));
+    auto *connection4 = new QNEConnection();
+    connection4->setStart(ic->output(1));
+    connection4->setEnd(led2->input());
 
-    QNEConnection *conn4 = new QNEConnection();
-    conn4->setStart(ic->output(1));
-    conn4->setEnd(led2->input());
-
+    Scene scene;
     scene.addItem(led);
     scene.addItem(led2);
     scene.addItem(clkButton);
     scene.addItem(prstButton);
     scene.addItem(ic);
-    scene.addItem(conn);
-    scene.addItem(conn2);
-    scene.addItem(conn3);
-    scene.addItem(conn4);
+    scene.addItem(connection);
+    scene.addItem(connection2);
+    scene.addItem(connection3);
+    scene.addItem(connection4);
 
-    SimulationController sc(&scene);
-    sc.reSortElements();
+    SimulationController controller(&scene);
+    controller.reSortElements();
+
     for (int i = 0; i < 10; ++i) {
         clkButton->setOn(false);
         prstButton->setOn(false);
-        sc.update();
-        sc.update();
-        sc.update();
-        sc.updateScene(scene.itemsBoundingRect());
+        controller.update();
+        controller.update();
+        controller.update();
+        controller.updateScene(scene.itemsBoundingRect());
 
         QCOMPARE(static_cast<int>(ic->input(2)->value()), 0);
 
@@ -276,20 +274,21 @@ void TestElements::testIC()
 
         clkButton->setOn(false);
         prstButton->setOn(true);
-        sc.update();
-        sc.update();
-        sc.update();
-        sc.updateScene(scene.itemsBoundingRect());
+        controller.update();
+        controller.update();
+        controller.update();
+        controller.updateScene(scene.itemsBoundingRect());
+
         QCOMPARE(static_cast<int>(ic->input(2)->value()), 0);
 
         QCOMPARE(static_cast<int>(ic->output(0)->value()), 1);
         QCOMPARE(static_cast<int>(ic->output(1)->value()), 0);
 
         clkButton->setOn(false);
-        sc.update();
-        sc.update();
-        sc.update();
-        sc.updateScene(scene.itemsBoundingRect());
+        controller.update();
+        controller.update();
+        controller.update();
+        controller.updateScene(scene.itemsBoundingRect());
 
         QCOMPARE(static_cast<int>(ic->input(2)->value()), 0);
 
@@ -297,34 +296,31 @@ void TestElements::testIC()
         QCOMPARE(static_cast<int>(ic->output(1)->value()), 0);
 
         clkButton->setOn(true);
-        sc.update();
-        sc.update();
-        sc.update();
-        sc.updateScene(scene.itemsBoundingRect());
+        controller.update();
+        controller.update();
+        controller.update();
+        controller.updateScene(scene.itemsBoundingRect());
 
         QCOMPARE(static_cast<int>(ic->input(2)->value()), 1);
 
         QCOMPARE(static_cast<int>(ic->output(0)->value()), 0);
         QCOMPARE(static_cast<int>(ic->output(1)->value()), 1);
     }
-    delete editor;
 }
 
 void TestElements::testICs()
 {
-    Editor *editor = new Editor();
+    auto *editor = new Editor();
     editor->setupWorkspace();
-    GlobalProperties::currentFile = QString("%1/../examples/simple.panda").arg(CURRENTDIR);
-    ICManager *manager(editor->getICManager());
-    QDir examplesDir(QString("%1/../examples/").arg(CURRENTDIR));
-    /*  qDebug( ) << "Current dir: " << CURRENTDIR; */
-    QStringList entries;
-    entries << "*.panda";
-    QFileInfoList files = examplesDir.entryInfoList(entries);
-    for (const auto &f : qAsConst(files)) {
-        qDebug() << "FILE: " << f.absoluteFilePath();
+    GlobalProperties::currentFile = QString(CURRENTDIR) + "/../examples/simple.panda";
+    auto *manager(editor->getICManager());
+    const QDir examplesDir(QString(CURRENTDIR) + "/../examples/");
+    // qCDebug(zero) << "Current dir:" << CURRENTDIR;
+    const auto files = examplesDir.entryInfoList(QStringList{"*.panda"});
+    // qCDebug(zero) << "files:" << files;
+    for (const auto &fileInfo : qAsConst(files)) {
+        // qCDebug(zero) << "FILE:" << f.absoluteFilePath();
         IC ic;
-        manager->loadIC(&ic, f.absoluteFilePath());
+        manager->loadIC(&ic, fileInfo.absoluteFilePath());
     }
-    delete editor;
 }

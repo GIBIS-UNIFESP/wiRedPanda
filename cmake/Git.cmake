@@ -1,4 +1,4 @@
-# Copyright 2021, Patrick José Pereira <patrickelectric@gmail.com>
+# Copyright 2022, Patrick José Pereira <patrickelectric@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 find_package(Git)

@@ -1,13 +1,13 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "graphicsview.h"
 
+#include "graphicsviewzoom.h"
+
 #include <QApplication>
 #include <QKeyEvent>
 #include <QScrollBar>
-
-#include "graphicsviewzoom.h"
 
 GraphicsView::GraphicsView(QWidget *parent)
     : QGraphicsView(parent)
@@ -24,8 +24,8 @@ void GraphicsView::mousePressEvent(QMouseEvent *e)
 {
     if (e->button() == Qt::MiddleButton) {
         m_pan = true;
-        m_panStartX = e->x();
-        m_panStartY = e->y();
+        m_panStartX = e->pos().x();
+        m_panStartY = e->pos().y();
         QApplication::setOverrideCursor(Qt::ClosedHandCursor);
         e->accept();
         return;
@@ -47,15 +47,15 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *e)
 void GraphicsView::mouseMoveEvent(QMouseEvent *e)
 {
     if (m_pan || m_space) {
-        horizontalScrollBar()->setValue(horizontalScrollBar()->value() - (e->x() - m_panStartX));
-        verticalScrollBar()->setValue(verticalScrollBar()->value() - (e->y() - m_panStartY));
-        m_panStartX = e->x();
-        m_panStartY = e->y();
+        horizontalScrollBar()->setValue(horizontalScrollBar()->value() - (e->pos().x() - m_panStartX));
+        verticalScrollBar()->setValue(verticalScrollBar()->value() - (e->pos().y() - m_panStartY));
+        m_panStartX = e->pos().x();
+        m_panStartY = e->pos().y();
         e->accept();
         return;
     }
-    m_panStartX = e->x();
-    m_panStartY = e->y();
+    m_panStartX = e->pos().x();
+    m_panStartY = e->pos().y();
     QGraphicsView::mouseMoveEvent(e);
 }
 

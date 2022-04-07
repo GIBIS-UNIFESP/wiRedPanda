@@ -1,53 +1,41 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef TESTELEMENTS_H
-#define TESTELEMENTS_H
+#pragma once
 
 #include <QObject>
-#include <QTest>
-
-#include "inputswitch.h"
-#include "qneconnection.h"
+#include <QVector>
 
 class IC;
+class InputSwitch;
+class QNEConnection;
 
 class TestElements : public QObject
 {
     Q_OBJECT
 
-    QVector<QNEConnection *> conn{5};
-    QVector<InputSwitch *> sw{5};
-    void testICData(const IC *ic);
-
-public:
-    explicit TestElements(QObject *parent = nullptr);
-
-signals:
-
-private slots:
-    void init();
+private:
+    QString testFile(const QString &fileName);
     void cleanup();
-
-    void testNode();
+    void init();
     void testAnd();
-    void testOr();
-    void testVCC();
-    void testGND();
-
-    void testMux();
-    void testDemux();
-
     void testDFlipFlop();
     void testDLatch();
+    void testDemux();
+    void testGND();
+    void testIC();
+    void testICData(const IC *ic);
+    void testICs();
     void testJKFlipFlop();
+    void testMux();
+    void testNode();
+    void testOr();
     void testSRFlipFlop();
     void testTFlipFlop();
+    void testVCC();
 
-    void testIC();
-    void testICs();
+    QVector<InputSwitch *> switches{5};
+    QVector<QNEConnection *> connections{5};
 };
-
-#endif /* TESTELEMENTS_H */

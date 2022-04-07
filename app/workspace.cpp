@@ -1,21 +1,22 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
+
+#include "workspace.h"
 
 #include "bewaveddolphin.h"
 #include "editor.h"
 #include "graphicsview.h"
 #include "icmanager.h"
 #include "simulationcontroller.h"
-#include "workspace.h"
 
 WorkSpace::WorkSpace(QDialog *fullscreenDlg, GraphicsView *fullscreenView, Editor *editor)
-    : m_fullscreenDlg(fullscreenDlg)
-    , m_fullscreenView(fullscreenView)
+    : m_fullscreenView(fullscreenView)
+    , m_icManager(editor->getICManager())
+    , m_fullscreenDlg(fullscreenDlg)
+    , m_selectionRect(editor->getSceneRect())
     , m_undoStack(editor->getUndoStack())
     , m_scene(editor->getScene())
     , m_simulationController(editor->getSimulationController())
-    , m_icManager(editor->getICManager())
-    , m_selectionRect(editor->getSceneRect())
 {
 }
 
@@ -63,14 +64,14 @@ QGraphicsRectItem *WorkSpace::sceneRect()
     return m_selectionRect;
 }
 
-void WorkSpace::setCurrentFile(QFileInfo &finfo)
+void WorkSpace::setCurrentFile(const QFileInfo &finfo)
 {
     m_currentFile = finfo;
 }
 
 QFileInfo WorkSpace::currentFile()
 {
-  return m_currentFile;
+    return m_currentFile;
 }
 
 void WorkSpace::setDolphinFileName(const QString &fname)

@@ -1,12 +1,16 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "dflipflop.h"
 
 #include "qneport.h"
 
+namespace {
+int id = qRegisterMetaType<DFlipFlop>();
+}
+
 DFlipFlop::DFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(ElementType::DFLIPFLOP, ElementGroup::MEMORY, 4, 4, 2, 2, parent)
+    : GraphicElement(ElementType::DFlipFlop, ElementGroup::Memory, 4, 4, 2, 2, parent)
 {
     m_pixmapSkinName = {":/memory/D-flipflop.png"};
 
@@ -15,6 +19,7 @@ DFlipFlop::DFlipFlop(QGraphicsItem *parent)
     setCanChangeSkin(true);
     DFlipFlop::updatePorts();
     setPortName("FlipFlop D");
+    setToolTip(m_translatedName);
     input(0)->setName("Data");
     input(1)->setName("Clock");
     input(2)->setName("~Preset");

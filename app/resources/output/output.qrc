@@ -1,25 +1,5 @@
 <RCC>
     <qresource prefix="/output">
-        <file>WhiteLedOff.png</file>
-        <file>BlueLedOff.png</file>
-        <file>GreenLedOff.png</file>
-        <file>PurpleLedOff.png</file>
-        <file>RedLedOff.png</file>
-        <file>BlueLedOn.png</file>
-        <file>WhiteLedOn.png</file>
-        <file>RedLedOn.png</file>
-        <file>PurpleLedOn.png</file>
-        <file>GreenLedOn.png</file>
-        <file>counter/counter_a.png</file>
-        <file>counter/counter_b.png</file>
-        <file>counter/counter_c.png</file>
-        <file>counter/counter_d.png</file>
-        <file>counter/counter_e.png</file>
-        <file>counter/counter_f.png</file>
-        <file>counter/counter_g.png</file>
-        <file>counter/counter_h.png</file>
-        <file>counter/counter_off.png</file>
-        <file>counter/counter_on.png</file>
         <file>16colors/AquaLightLedOn.png</file>
         <file>16colors/BlackLedOn.png</file>
         <file>16colors/DarkGrayLedOn.png</file>
@@ -31,31 +11,51 @@
         <file>16colors/MagentaLedOn.png</file>
         <file>16colors/NavyBlueLedOn.png</file>
         <file>16colors/OrangeLedOn.png</file>
+        <file>16colors/PurpleLedOn.png</file>
         <file>16colors/RedLedOn.png</file>
         <file>16colors/RoyalLedOn.png</file>
         <file>16colors/TealLedOn.png</file>
         <file>16colors/WhiteLedOn.png</file>
         <file>16colors/YellowLedOn.png</file>
+        <file>BlueLedOff.png</file>
+        <file>BlueLedOn.png</file>
         <file>BuzzerOff.png</file>
         <file>BuzzerOn.png</file>
+        <file>GreenLedOff.png</file>
+        <file>GreenLedOn.png</file>
+        <file>PurpleLedOff.png</file>
+        <file>PurpleLedOn.png</file>
+        <file>RedLedOff.png</file>
+        <file>RedLedOn.png</file>
+        <file>WhiteLedOff.png</file>
+        <file>WhiteLedOn.png</file>
         <file>audio/A7.wav</file>
         <file>audio/B7.wav</file>
         <file>audio/C6.wav</file>
+        <file>audio/C7.wav</file>
         <file>audio/D6.wav</file>
         <file>audio/E6.wav</file>
         <file>audio/F6.wav</file>
         <file>audio/G6.wav</file>
-        <file>audio/C7.wav</file>
+        <file>counter/counter_14_off.png</file>
+        <file>counter/counter_14_on.png</file>
+        <file>counter/counter_a.png</file>
+        <file>counter/counter_b.png</file>
+        <file>counter/counter_c.png</file>
+        <file>counter/counter_d.png</file>
         <file>counter/counter_dp.png</file>
+        <file>counter/counter_e.png</file>
+        <file>counter/counter_f.png</file>
+        <file>counter/counter_g.png</file>
         <file>counter/counter_g1.png</file>
         <file>counter/counter_g2.png</file>
+        <file>counter/counter_h.png</file>
         <file>counter/counter_j.png</file>
         <file>counter/counter_k.png</file>
         <file>counter/counter_l.png</file>
         <file>counter/counter_m.png</file>
         <file>counter/counter_n.png</file>
-        <file>counter/counter_14_on.png</file>
-        <file>counter/counter_14_off.png</file>
-        <file>16colors/PurpleLedOn.png</file>
+        <file>counter/counter_off.png</file>
+        <file>counter/counter_on.png</file>
     </qresource>
 </RCC>

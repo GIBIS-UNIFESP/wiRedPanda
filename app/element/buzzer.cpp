@@ -1,34 +1,34 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "buzzer.h"
-#include <array>
 
 #include "qneport.h"
 
 #include <QDebug>
 #include <QGraphicsSceneDragDropEvent>
+#include <array>
+
+namespace {
+int id = qRegisterMetaType<Buzzer>();
+}
 
 int Buzzer::current_id_number = 0;
-// macOS doesn't want to compile a constexpr std::array<const char *> for some reason
-#ifdef Q_OS_MACOS
-static const std::array<const char *, 2> defaultSkins
+
+static constexpr std::array<const char *, 2> defaultSkins
 {
-#else
-static constexpr std::array<const char *, 2> defaultSkins {
-#endif
     ":/output/BuzzerOff.png", ":/output/BuzzerOn.png"
 };
 
 Buzzer::Buzzer(QGraphicsItem *parent)
-    : GraphicElement(ElementType::BUZZER, ElementGroup::OUTPUT, 1, 1, 0, 0, parent)
+    : GraphicElement(ElementType::Buzzer, ElementGroup::Output, 1, 1, 0, 0, parent)
 {
-    //  m_pixmapSkinName.append( ":/output/BuzzerOff.png" );
-    //  m_pixmapSkinName.append( ":/output/BuzzerOn.png" );
+    // m_pixmapSkinName.append(":/output/BuzzerOff.png");
+    // m_pixmapSkinName.append(":/output/BuzzerOn.png");
     setOutputsOnTop(true);
     setRotatable(false);
     setHasAudio(true);
-    //  setPixmap( m_pixmapSkinName[ 0 ] );
+    // setPixmap(m_pixmapSkinName[0]);
     setPixmap(defaultSkins[0]);
     m_alternativeSkins = QVector<QString>({defaultSkins[0], defaultSkins[1]});
     updatePorts();
@@ -38,6 +38,7 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     // All is well, rite?
     m_alternativeSkins.resize(2);
     setPortName("Buzzer");
+    setToolTip(m_translatedName);
     setLabel(objectName() + "_" + QString::number(Buzzer::current_id_number));
     ++Buzzer::current_id_number;
     m_usingDefaultSkin = true;
@@ -63,7 +64,7 @@ void Buzzer::refresh()
 void Buzzer::setAudio(const QString &note)
 {
     m_audio.setSource(QUrl::fromLocalFile(QString(":output/audio/%1.wav").arg(note)));
-    m_audio.setVolume(0.35);
+    m_audio.setVolume(0.35f);
     m_audio.setLoopCount(QSoundEffect::Infinite);
     m_note = note;
 }
@@ -125,6 +126,6 @@ void Buzzer::setSkin(bool defaultSkin, const QString &filename)
         m_usingDefaultSkin = false;
         m_alternativeSkins[m_play] = filename;
         setPixmap(m_alternativeSkins[m_play]);
-        //      std::cerr << "Filename: " << alternativeSkins[ play ].toStdString() << '\n';
+        // qCDebug(zero) << "Filename:" << alternativeSkins[play];
     }
 }
