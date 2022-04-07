@@ -6,14 +6,14 @@
 class LogicRemoteDevice : public LogicElement
 {
 public:
-    explicit LogicRemoteDevice(RemoteDevice* RemoteDevice);
+    explicit LogicRemoteDevice(RemoteDevice *RemoteDevice);
 
     /* LogicElement interface */
 protected:
-    virtual void _updateLogic(const std::vector< bool > &inputs);
+    void _updateLogic(const std::vector<bool> &inputs) override;
 
 private:
-    bool lastClk;
-    bool lastValue;
-    RemoteDevice* elm;
+    //    bool m_lastClk = false;
+    //    bool m_lastValue;
+    RemoteDevice *m_elm;
 };

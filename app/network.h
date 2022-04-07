@@ -1,77 +1,91 @@
 #pragma once
 
 #include <QBuffer>
-#include <QtEndian>
-#include <QTextStream>
 #include <QDataStream>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QTextStream>
+#include <QtEndian>
 
-class NetworkOutgoingMessage : public QByteArray {
-    uint8_t opcode;
+class NetworkOutgoingMessage : public QByteArray
+{
 public:
-    NetworkOutgoingMessage(uint8_t opcode) : opcode(opcode) { addByte<quint8>(opcode); }
+    explicit NetworkOutgoingMessage(uint8_t opcode) : opcode(opcode) { addByte<quint8>(opcode); }
 
-    template<class T>
-    void addByte(T data) {
+    template <class T> void addByte(T data) {
         QBuffer buffer(this);
         buffer.open(QIODevice::Append);
 
         data = qToBigEndian<T>(data);
 
-        buffer.write((char*) &data, sizeof(data));
+        buffer.write(reinterpret_cast<const char *>(data));
     }
 
-    void addString(QString str) {
+    void addString(const QString &str) {
         addByte<quint16>(str.size());
         QByteArray inUtf8 = str.toUtf8();
         append(inUtf8);
     }
 
     void addSize() {
-        // gets message size
-        int siz = size();
-
         // insert size into a new byte array
         QByteArray byteArray;
         QBuffer buffer(&byteArray);
         buffer.open(QIODevice::WriteOnly);
 
-        siz = qToBigEndian<int>(siz);
+        int size_ = qToBigEndian<int>(size());
 
-        buffer.write((char*) &siz, sizeof(siz));
+        buffer.write(reinterpret_cast<const char *>(size_));
 
         // push to NetworkMessage at the beggining
         push_front(byteArray);
     }
 
-    uint8_t getOpcode() { return opcode; }
+    uint8_t getOpcode() const {
+        return opcode;
+    }
+
+private:
+    uint8_t opcode;
 };
 
-class NetworkIncomingMessage {
-    uint8_t opcode;
-    QDataStream stream;
-    uint32_t size;
-    uint32_t remainingBytes;
-
+class NetworkIncomingMessage
+{
 public:
-    NetworkIncomingMessage(uint8_t opcode, QByteArray byteArray) : opcode(opcode), stream(byteArray), size(byteArray.size()), remainingBytes(size) {}
+    NetworkIncomingMessage(uint8_t opcode, const QByteArray &byteArray) : opcode(opcode), stream(byteArray), size(byteArray.size()), remainingBytes(size) {}
 
-    template <class T>
-    T pop() { T ret; stream >> ret; remainingBytes-=sizeof(T); return ret; }
+    template <class T> T pop() {
+        T ret;
+        stream >> ret;
+        remainingBytes -= sizeof(T);
+        return ret;
+    }
     QString popString() {
-        uint16_t size = pop<uint16_t>();
+        auto size = pop<uint16_t>();
 
         QByteArray ba;
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < size; i++) {
             ba.push_back(static_cast<char>(pop<uint8_t>()));
+        }
 
         QString ret(ba);
 
         return ret;
     }
 
-    uint32_t getSize() { return size; }
-    uint8_t getOpcode() { return opcode; }
-    uint32_t getRemainingBytes() { return remainingBytes; }
+    uint32_t getSize() const {
+        return size;
+    }
+    uint8_t getOpcode() const {
+        return opcode;
+    }
+    uint32_t getRemainingBytes() const {
+        return remainingBytes;
+    }
+
+private:
+    uint8_t opcode;
+    QDataStream stream;
+    uint32_t size;
+    uint32_t remainingBytes;
 };

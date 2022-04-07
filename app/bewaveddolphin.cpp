@@ -397,7 +397,7 @@ bool BewavedDolphin::createWaveform(const QString &filename)
     m_sc = m_editor->getSimulationController();
     SCStop scst(m_sc);
     m_mainWindow->setDisabled(true);
-    this->setEnabled(true);
+    setEnabled(true);
     qCDebug(zero) << "Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.";
     if (!loadElements()) {
         QMessageBox::critical(parentWidget(), tr("Error"), tr("Could not load enough elements for the simulation."));
@@ -1111,7 +1111,7 @@ void BewavedDolphin::resizeEvent(QResizeEvent *event)
 
 void BewavedDolphin::resizeScene()
 {
-    m_signalTableView->resize((this->width() - 20) / m_scale, (this->height() - 102) / m_scale);
+    m_signalTableView->resize((width() - 20) / m_scale, (height() - 102) / m_scale);
     QRectF rect = m_scene->itemsBoundingRect();
     m_scene->setSceneRect(rect);
 }

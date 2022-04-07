@@ -3,15 +3,15 @@
 #include "editor.h"
 #include "remotedevice.h"
 
+#include <QAbstractButton>
 #include <QDialog>
-#include <QTextStream>
+#include <QLocalSocket>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
-#include <QAbstractButton>
-#include <QLocalSocket>
+#include <QTextStream>
 
-#define MAJOR_REMOTE_VERSION 1
-#define MINOR_REMOTE_VERSION 0
+constexpr int major_remote_version = 1;
+constexpr int minor_remote_version = 0;
 
 namespace Ui
 {
@@ -24,10 +24,10 @@ class RemoteDeviceConfig : public QDialog
 
 public:
     explicit RemoteDeviceConfig(Editor *editor, QWidget *parent = nullptr, GraphicElement *elm = nullptr);
-    ~RemoteDeviceConfig();
+    ~RemoteDeviceConfig() override;
 
     static QString version() {
-        return QString("%1.%2").arg(QString::number(MAJOR_REMOTE_VERSION), QString::number(MINOR_REMOTE_VERSION));
+        return QString("%1.%2").arg(QString::number(major_remote_version), QString::number(minor_remote_version));
     }
 
     bool savePortMapping();
@@ -37,12 +37,11 @@ public:
     void start();
     void updateServiceInfo(const QString &str);
 
-
 private:
-    void comboboxItemChanged(QString arg);
-    void connectionResponse(QNetworkReply* reply);
+    void comboboxItemChanged(const QString &currentSelected);
+    void connectionResponse(QNetworkReply *reply);
     void onAddPin();
-    void onApplyConfig(QAbstractButton* btn);
+    void onApplyConfig(QAbstractButton *btn);
     void onCopyToClipboard();
     void onEditPortMapping(int row, int column);
     void onQueueTimeRefresh();
