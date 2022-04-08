@@ -12,14 +12,14 @@
 #include <QVector>
 
 class Clock;
+class ElementMapping;
 class GraphicElement;
 class IC;
+class ICMapping;
 class Input;
 class LogicElement;
+class LogicRemoteDevice;
 class QNEPort;
-
-class ElementMapping;
-class ICMapping;
 
 using ElementMap = QMap<GraphicElement *, LogicElement *>;
 using InputMap = QMap<Input *, LogicElement *>;
@@ -42,10 +42,14 @@ public:
     void update();
 
 protected:
+    ElementMap m_elementMap;
+
+private:
     // Methods
     static int calculatePriority(GraphicElement *elm, QHash<GraphicElement *, bool> &beingvisited, QHash<GraphicElement *, int> &priority);
 
     LogicElement *buildLogicElement(GraphicElement *elm);
+    LogicRemoteDevice *remote(GraphicElement *elm);
     void applyConnection(GraphicElement *elm, QNEPort *in);
     void connectElements();
     void generateMap();
@@ -56,7 +60,6 @@ protected:
     void validateElements();
 
     // Attributes
-    ElementMap m_elementMap;
     InputMap m_inputMap;
     LogicInput m_globalGND;
     LogicInput m_globalVCC;

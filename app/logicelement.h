@@ -23,6 +23,8 @@ public:
     bool isValid() const;
     bool operator<(const LogicElement &other) const;
     int calculatePriority();
+    size_t getInputAmount() { return m_inputs.size(); }
+    size_t getOutputAmount() { return m_outputs.size(); }
     void clearPredecessors();
     void clearSucessors();
     void connectPredecessor(int index, LogicElement *elm, int port);

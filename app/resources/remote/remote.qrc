@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/remote">
+        <file>remote_device.png</file>
+        <file>unavailable.png</file>
+        <file>online.png</file>
+        <file>searching.png</file>
+        <file>offline.png</file>
+        <file>loading.gif</file>
+
+        <file>device/base.png</file>
+        <file>device/latency_0.png</file>
+        <file>device/latency_1.png</file>
+        <file>device/latency_2.png</file>
+        <file>device/latency_3.png</file>
+        <file>device/latency_4.png</file>
+        <file>device/status_off.png</file>
+        <file>device/status_on.png</file>
+    </qresource>
+</RCC>

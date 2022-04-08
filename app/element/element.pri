@@ -23,6 +23,7 @@ SOURCES += \
     $$PWD/nor.cpp \
     $$PWD/not.cpp \
     $$PWD/or.cpp \
+    $$PWD/remotedevice.cpp \
     $$PWD/srflipflop.cpp \
     $$PWD/text.cpp \
     $$PWD/tflipflop.cpp \
@@ -55,6 +56,7 @@ HEADERS += \
     $$PWD/nor.h \
     $$PWD/not.h \
     $$PWD/or.h \
+    $$PWD/remotedevice.h \
     $$PWD/srflipflop.h \
     $$PWD/text.h \
     $$PWD/tflipflop.h \

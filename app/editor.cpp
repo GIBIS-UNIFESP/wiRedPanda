@@ -18,6 +18,7 @@
 #include "mainwindow.h"
 #include "qneconnection.h"
 #include "qneport.h"
+#include "remotedeviceconfig.h"
 #include "serializationfunctions.h"
 #include "simulationcontroller.h"
 #include "thememanager.h"
@@ -1008,10 +1009,10 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
             if (m_draggingElement && (mouseEvt->button() == Qt::LeftButton)) {
                 if (!m_movedElements.empty()) {
 
-                  //  if (movedElements.size() != oldPositions.size()) {
-                  //      throw std::runtime_error(ERRORMSG(tr("Invalid coordinates.").toStdString()));
-                  //  }
-                  //  qCDebug(zero) << "OUT.";
+                    //  if (movedElements.size() != oldPositions.size()) {
+                    //      throw std::runtime_error(ERRORMSG(tr("Invalid coordinates.").toStdString()));
+                    //  }
+                    //  qCDebug(zero) << "OUT.";
 
                     bool valid = false;
                     for (int elm = 0; elm < m_movedElements.size(); ++elm) {
@@ -1049,6 +1050,12 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
                 evt->accept();
                 return true;
             }
+
+            auto *remoteDevice = dynamic_cast<RemoteDevice *>(itemAt(m_mousePos));
+            if (remoteDevice) {
+                openConfigAction();
+            }
+
             break;
         }
         case QEvent::KeyPress: {
@@ -1100,4 +1107,15 @@ void Editor::clearSelection()
 {
     m_scene->clearSelection();
     m_elementEditor->disable();
+}
+
+void Editor::openConfigAction() {
+    auto elms = m_scene->selectedElements();
+
+    if (elms.size() != 1) {
+        throw std::runtime_error(QObject::tr("Unable to trigger configure for more than a remote element at once").toStdString());
+    }
+
+    RemoteDeviceConfig fc(this, m_mainWindow, elms.first());
+    fc.start();
 }

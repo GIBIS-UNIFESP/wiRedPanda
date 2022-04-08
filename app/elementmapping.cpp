@@ -11,14 +11,11 @@
 #include "icmapping.h"
 #include "icprototype.h"
 #include "input.h"
-#include "logicelement.h"
-#include "qneconnection.h"
-#include "qneport.h"
-
 #include "logicand.h"
 #include "logicdemux.h"
 #include "logicdflipflop.h"
 #include "logicdlatch.h"
+#include "logicelement.h"
 #include "logicjkflipflop.h"
 #include "logicmux.h"
 #include "logicnand.h"
@@ -28,10 +25,14 @@
 #include "logicnot.h"
 #include "logicor.h"
 #include "logicoutput.h"
+#include "logicremotedevice.h"
 #include "logicsrflipflop.h"
 #include "logictflipflop.h"
 #include "logicxnor.h"
 #include "logicxor.h"
+#include "qneconnection.h"
+#include "qneport.h"
+#include "remotedevice.h"
 
 ElementMapping::ElementMapping(const QVector<GraphicElement *> &elms)
     : m_globalGND(false)
@@ -152,8 +153,17 @@ LogicElement *ElementMapping::buildLogicElement(GraphicElement *elm)
     case ElementType::JKLatch:     return new LogicDLatch();
     case ElementType::Text:
     case ElementType::Line:        return new LogicNone();
+    case ElementType::Remote:      return remote(elm);
     default:                       throw std::runtime_error(QObject::tr("Not implemented yet: ").toStdString() + elm->objectName().toStdString());
     }
+}
+
+LogicRemoteDevice *ElementMapping::remote(GraphicElement *elm) {
+    if (auto remoteDevice = dynamic_cast<RemoteDevice *>(elm)) {
+        return new LogicRemoteDevice(remoteDevice);
+    }
+
+    throw std::runtime_error("Unable to create a remote device logic element: " + elm->objectName().toStdString());
 }
 
 void ElementMapping::initialize()

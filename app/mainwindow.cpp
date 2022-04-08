@@ -20,6 +20,7 @@
 #include "simulationcontroller.h"
 #include "thememanager.h"
 #include "workspace.h"
+#include "remotedeviceconfig.h"
 
 #include <QActionGroup>
 #include <QCheckBox>
@@ -553,12 +554,18 @@ void MainWindow::on_actionSave_triggered()
 
 void MainWindow::on_actionAbout_triggered()
 {
+    QString remoteVersion("");
+
+    remoteVersion = "<p>Remote version: %1</p>";
+    remoteVersion = remoteVersion.arg(RemoteDeviceConfig::version());
+
     QMessageBox::about(
         this,
         "WiRedPanda",
         tr("<p>WiRedPanda is a software developed by the students of the Federal University of São Paulo."
            " This project was created in order to help students learn about logic circuits.</p>"
            "<p>Software version: %1</p>"
+           "%2"
            "<p><strong>Creators:</strong></p>"
            "<ul>"
            "<li> Davi Morales </li>"
@@ -569,7 +576,7 @@ void MainWindow::on_actionAbout_triggered()
            "<p> WiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.</p>"
            "<p> Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.</p>"
            "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
-            .arg(QApplication::applicationVersion()));
+            .arg(QApplication::applicationVersion(), remoteVersion));
 }
 
 void MainWindow::on_actionAbout_Qt_triggered()
@@ -1284,10 +1291,36 @@ void MainWindow::populateMenu(QSpacerItem *spacer, const QString &names, QLayout
     layout->addItem(spacer);
 }
 
+QDomDocument* MainWindow::loadRemoteFunctions() {
+    // Try loading remote lab settings
+    auto* xml = new QDomDocument();
+    // Load xml file as raw data
+
+    qCDebug(zero) << QDir::currentPath();
+
+    QFile f("remotelab.xml");
+    if (!f.open(QIODevice::ReadOnly))
+    {
+      // Error while loading file
+      // Remote functionalities will be disabled
+      return nullptr;
+    }
+
+    // Set data into the QDomDocument before processing
+    xml->setContent(&f);
+    f.close();
+
+    return xml;
+}
+
 void MainWindow::populateLeftMenu()
 {
+    QDomDocument* xml = loadRemoteFunctions();
+    QString remoteItems = (xml && RemoteDevice::loadSettings(*xml)) ? ", Remote" : "";
+    delete xml;
+
     ui->tabWidget->setCurrentIndex(0);
-    populateMenu(ui->verticalSpacer_InOut, "InputVcc, InputGnd, InputButton, InputSwitch, InputRotary, Clock, Led, Display, Display14, Buzzer", ui->scrollAreaWidgetContents_InOut->layout());
+    populateMenu(ui->verticalSpacer_InOut, "InputVcc, InputGnd, InputButton, InputSwitch, InputRotary, Clock, Led, Display, Display14, Buzzer" + remoteItems, ui->scrollAreaWidgetContents_InOut->layout());
     populateMenu(ui->verticalSpacer_Gates, "And, Or, Not, Nand, Nor, Xor, Xnor, Mux, Demux, Node", ui->scrollAreaWidgetContents_Gates->layout());
     populateMenu(ui->verticalSpacer_Memory, "DFlipFlop, DLatch, JKFlipFlop, SRFlipFlop, TFlipFlop", ui->scrollAreaWidgetContents_Memory->layout());
     populateMenu(ui->verticalSpacer_MISC, "Text, Line", ui->scrollAreaWidgetContents_Misc->layout());

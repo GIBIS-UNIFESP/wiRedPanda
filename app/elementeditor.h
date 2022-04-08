@@ -45,6 +45,7 @@ private:
     void defaultSkin();
     void inputIndexChanged(int idx);
     void inputLocked(const bool value);
+    void openCustomConfig();
     void outputIndexChanged(const QString &idx);
     void outputValueChanged(const QString &idx);
     void selectionChanged();
@@ -67,7 +68,7 @@ private:
     Scene *m_scene;
     bool m_canChangeInputSize, m_canChangeOutputSize;
     bool m_defaultSkin;
-    bool m_hasAnyProperty, m_hasLabel, m_hasColors, m_hasFrequency, m_hasAudio;
+    bool m_hasAnyProperty, m_hasLabel, m_hasColors, m_hasFrequency, m_hasAudio, m_hasCustomConfig;
     bool m_hasElements;
     bool m_hasOnlyInputs;
     bool m_hasSameAudio;

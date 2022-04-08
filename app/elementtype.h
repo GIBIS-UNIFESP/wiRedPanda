@@ -34,6 +34,7 @@ public:
         Nor = 8,
         Not = 4,
         Or = 6,
+        Remote = 30,
         SRFlipFlop = 19,
         TFlipFlop = 20,
         Text = 28,

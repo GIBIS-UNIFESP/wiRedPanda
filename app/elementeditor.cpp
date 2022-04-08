@@ -38,29 +38,30 @@ ElementEditor::ElementEditor(QWidget *parent)
 
     m_ui->lineEditTrigger->setValidator(new QRegularExpressionValidator(QRegularExpression("[a-z]| |[A-Z]|[0-9]"), this));
     fillColorComboBox();
-    m_ui->lineEditElementLabel->installEventFilter(this);
-    m_ui->lineEditTrigger->installEventFilter(this);
+
+    m_ui->checkBoxLocked->installEventFilter(this);
+    m_ui->comboBoxAudio->installEventFilter(this);
     m_ui->comboBoxColor->installEventFilter(this);
     m_ui->comboBoxInputSz->installEventFilter(this);
     m_ui->comboBoxOutputSz->installEventFilter(this);
     m_ui->comboBoxValue->installEventFilter(this);
     m_ui->doubleSpinBoxFrequency->installEventFilter(this);
-    m_ui->comboBoxAudio->installEventFilter(this);
-    m_ui->checkBoxLocked->installEventFilter(this);
+    m_ui->lineEditElementLabel->installEventFilter(this);
+    m_ui->lineEditTrigger->installEventFilter(this);
 
-    connect(m_ui->lineEditElementLabel, &QLineEdit::editingFinished, this, &ElementEditor::apply);
-    connect(m_ui->doubleSpinBoxFrequency, &QDoubleSpinBox::editingFinished, this, &ElementEditor::apply);
-    connect(m_ui->lineEditTrigger, &QLineEdit::editingFinished, this, &ElementEditor::apply);
-    connect(m_ui->lineEditTrigger, &QLineEdit::textChanged, this, &ElementEditor::triggerChanged);
-    connect(m_ui->pushButtonChangeSkin, &QPushButton::clicked, this, &ElementEditor::updateElementSkin);
-    connect(m_ui->pushButtonDefaultSkin, &QPushButton::clicked, this, &ElementEditor::defaultSkin);
-
-    connect(m_ui->comboBoxColor, qOverload<int>(&QComboBox::currentIndexChanged), this, &ElementEditor::apply);
+    connect(m_ui->checkBoxLocked, &QCheckBox::clicked, this, &ElementEditor::inputLocked);
     connect(m_ui->comboBoxAudio, qOverload<int>(&QComboBox::currentIndexChanged), this, &ElementEditor::apply);
+    connect(m_ui->comboBoxColor, qOverload<int>(&QComboBox::currentIndexChanged), this, &ElementEditor::apply);
     connect(m_ui->comboBoxInputSz, qOverload<int>(&QComboBox::currentIndexChanged), this, &ElementEditor::inputIndexChanged);
     connect(m_ui->comboBoxOutputSz, &QComboBox::currentTextChanged, this, &ElementEditor::outputIndexChanged);
     connect(m_ui->comboBoxValue, &QComboBox::currentTextChanged, this, &ElementEditor::outputValueChanged);
-    connect(m_ui->checkBoxLocked, &QCheckBox::clicked, this, &ElementEditor::inputLocked);
+    connect(m_ui->doubleSpinBoxFrequency, &QDoubleSpinBox::editingFinished, this, &ElementEditor::apply);
+    connect(m_ui->lineEditElementLabel, &QLineEdit::editingFinished, this, &ElementEditor::apply);
+    connect(m_ui->lineEditTrigger, &QLineEdit::editingFinished, this, &ElementEditor::apply);
+    connect(m_ui->lineEditTrigger, &QLineEdit::textChanged, this, &ElementEditor::triggerChanged);
+    connect(m_ui->pushButtonChangeSkin, &QPushButton::clicked, this, &ElementEditor::updateElementSkin);
+    connect(m_ui->pushButtonCustomConfig, &QPushButton::clicked, this, &ElementEditor::openCustomConfig);
+    connect(m_ui->pushButtonDefaultSkin, &QPushButton::clicked, this, &ElementEditor::defaultSkin);
 }
 
 ElementEditor::~ElementEditor()
@@ -95,6 +96,7 @@ void ElementEditor::contextMenu(QPoint screenPos)
     QString revertSkinText(tr("Set skin to default"));
     QString triggerActionText(tr("Change trigger"));
     QString morphMenuText(tr("Morph to..."));
+    QString remoteConfigMenuText(tr("Config"));
     if (m_hasLabel) {
         menu.addAction(QIcon(QPixmap(":/toolbar/rename.png")), renameActionText)->setData(renameActionText);
     }
@@ -168,6 +170,7 @@ void ElementEditor::contextMenu(QPoint screenPos)
         case ElementGroup::IC:
         case ElementGroup::Mux:
         case ElementGroup::Other:
+        case ElementGroup::Remote:
         case ElementGroup::Unknown:
             break;
         }
@@ -175,7 +178,14 @@ void ElementEditor::contextMenu(QPoint screenPos)
             menu.removeAction(submenumorph->menuAction());
         }
     }
+
+    if (m_hasCustomConfig) {
+      QAction *remoteConfigAction = menu.addAction(remoteConfigMenuText);
+      connect(remoteConfigAction, &QAction::triggered, m_editor, &Editor::openConfigAction);
+    }
+
     menu.addSeparator();
+
     if (m_hasElements) {
         QAction *copyAction = menu.addAction(QIcon(QPixmap(":/toolbar/copy.png")), tr("Copy"));
         QAction *cutAction = menu.addAction(QIcon(QPixmap(":/toolbar/cut.png")), tr("Cut"));
@@ -299,8 +309,10 @@ void ElementEditor::setCurrentElements(const QVector<GraphicElement *> &elms)
         m_hasSameAudio = true;
         m_hasSameType = true;
         m_hasElements = true;
+        m_hasCustomConfig = true;
         GraphicElement *firstElement = m_elements.front();
         ElementType element_type = firstElement->elementType();
+        bool hasRemoteElement = false;
         for (auto *elm : qAsConst(m_elements)) {
             if (elm->elementType() != firstElement->elementType()) {
                 element_type = ElementType::Unknown;
@@ -339,9 +351,14 @@ void ElementEditor::setCurrentElements(const QVector<GraphicElement *> &elms)
             sameElementGroup |= (elm->elementGroup() == ElementGroup::StaticInput && firstElement->elementGroup() == ElementGroup::Input);
             m_hasOnlyInputs &= elm->elementGroup() == ElementGroup::Input;
             m_canMorph &= sameElementGroup;
+            hasRemoteElement |= elm->elementGroup() == ElementGroup::Remote;
+
+            // Custom config will appear only if a single object is selected
+            m_hasCustomConfig &= elm->hasCustomConfig();
+            m_hasCustomConfig &= m_elements.size() == 1;
         }
-        m_canChangeInputSize = (minimum_inputs < maximum_inputs);
-        m_canChangeOutputSize = (minimum_outputs < maximum_outputs);
+        m_canChangeInputSize = (minimum_inputs < maximum_inputs && !hasRemoteElement);
+        m_canChangeOutputSize = (minimum_outputs < maximum_outputs && !hasRemoteElement);
         /* Element type */
         m_ui->label_type->setText(ElementFactory::typeToTitleText(element_type));
         /* Labels */
@@ -494,6 +511,10 @@ void ElementEditor::setCurrentElements(const QVector<GraphicElement *> &elms)
                 m_ui->lineEditTrigger->setText(m_manyTriggers);
             }
         }
+
+        /* Configuration button */
+        m_ui->pushButtonCustomConfig->setVisible(m_hasCustomConfig);
+
         setEnabled(true);
         setVisible(true);
         /* Skin */
@@ -673,4 +694,9 @@ void ElementEditor::defaultSkin()
     m_updatingSkin = true;
     m_defaultSkin = true;
     apply();
+}
+
+void ElementEditor::openCustomConfig()
+{
+    m_editor->openConfigAction();
 }

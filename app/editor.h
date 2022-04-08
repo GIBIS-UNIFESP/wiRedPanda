@@ -71,6 +71,7 @@ public:
     void flipV();
     void handleHoverPort();
     void mute(bool _mute = true);
+    void openConfigAction();
     void paste(QDataStream &ds);
     void pasteAction();
     void receiveCommand(QUndoCommand *cmd);

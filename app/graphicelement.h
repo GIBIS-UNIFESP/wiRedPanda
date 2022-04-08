@@ -19,6 +19,7 @@ enum class ElementGroup : uint_fast8_t {
     Mux = 7,
     Other = 1,
     Output = 6,
+    Remote = 9,
     StaticInput = 8,
     Unknown = 0,
 };
@@ -120,6 +121,7 @@ public:
     bool disabled() const;
     bool hasAudio() const;
     bool hasColors() const;
+    bool hasCustomConfig() const;
     bool hasFrequency() const;
     bool hasLabel() const;
     bool hasTrigger() const;
@@ -162,6 +164,7 @@ protected:
     void setCanChangeSkin(bool canChangeSkin);
     void setHasAudio(bool hasAudio);
     void setHasColors(bool hasColors);
+    void setHasCustomConfig(bool hasCustomConfig);
     void setHasFrequency(bool hasFrequency);
     void setHasLabel(bool hasLabel);
     void setHasTrigger(bool hasTrigger);
@@ -211,20 +214,20 @@ private:
     /**
      * @brief Current pixmap displayed for this GraphicElement.
      */
-    QPixmap *m_pixmap;
-
     ElementGroup m_elementGroup;
     ElementType m_elementType;
     QColor m_selectionBrush;
     QColor m_selectionPen;
     QGraphicsTextItem *m_label;
     QKeySequence m_trigger;
+    QPixmap *m_pixmap;
     QString m_currentPixmapName;
     QString m_labelText;
     bool m_canChangeSkin;
     bool m_disabled;
     bool m_hasAudio;
     bool m_hasColors;
+    bool m_hasCustomConfig;
     bool m_hasFrequency;
     bool m_hasLabel;
     bool m_hasTrigger;

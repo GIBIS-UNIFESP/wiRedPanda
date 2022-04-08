@@ -17,7 +17,7 @@ equals(QT_MAJOR_VERSION, 6) : !versionAtLeast(QT_VERSION, 6.2.0) {
 VERSION = 4.0
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
-QT += core gui printsupport charts multimedia widgets
+QT += core gui printsupport charts multimedia widgets network xml
 
 CONFIG += c++14 warn_on
 
@@ -117,7 +117,9 @@ SOURCES += \
     $$PWD/app/mainwindow.cpp \
     $$PWD/app/nodes/qneconnection.cpp \
     $$PWD/app/nodes/qneport.cpp \
+    $$PWD/app/protocol.cpp \
     $$PWD/app/recentfilescontroller.cpp \
+    $$PWD/app/remotedeviceconfig.cpp \
     $$PWD/app/scene.cpp \
     $$PWD/app/scstop.cpp \
     $$PWD/app/serializationfunctions.cpp \
@@ -156,9 +158,12 @@ HEADERS += \
     $$PWD/app/listitemwidget.h \
     $$PWD/app/logicelement.h \
     $$PWD/app/mainwindow.h \
+    $$PWD/app/network.h \
     $$PWD/app/nodes/qneconnection.h \
     $$PWD/app/nodes/qneport.h \
+    $$PWD/app/protocol.h \
     $$PWD/app/recentfilescontroller.h \
+    $$PWD/app/remotedeviceconfig.h \
     $$PWD/app/scene.h \
     $$PWD/app/scstop.h \
     $$PWD/app/serializationfunctions.h \
@@ -181,12 +186,13 @@ FORMS += \
     $$PWD/app/elementeditor.ui \
     $$PWD/app/lengthdialog.ui \
     $$PWD/app/mainwindow.ui \
+    $$PWD/app/remotedeviceconfig.ui \
     $$PWD/app/simplewaveform.ui
 
 RESOURCES += \
-    $$PWD/app/resources/basic/basic.qrc\
+    $$PWD/app/resources/basic/basic.qrc \
     $$PWD/app/resources/dolphin/dolphin.qrc \
-    $$PWD/app/resources/input/input.qrc\
+    $$PWD/app/resources/input/input.qrc \
     $$PWD/app/resources/memory/dark/memory_dark.qrc \
     $$PWD/app/resources/memory/light/memory_light.qrc \
     $$PWD/app/resources/misc/misc.qrc \

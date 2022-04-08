@@ -60,13 +60,13 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &ds, doub
             ElementType elmType;
             ds >> elmType;
 
-            auto* elm = ElementFactory::buildElement(elmType);
+            auto *elm = ElementFactory::buildElement(elmType);
             itemList.append(elm);
             elm->load(ds, portMap, version);
 
             if (elm->elementType() == ElementType::IC) {
                 qCDebug(three) << "Loading IC.";
-                IC *ic = qgraphicsitem_cast<IC*>(elm);
+                IC *ic = qgraphicsitem_cast<IC *>(elm);
                 ICManager::instance()->loadIC(ic, ic->getFile());
             }
 

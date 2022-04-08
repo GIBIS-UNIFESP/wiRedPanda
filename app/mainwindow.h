@@ -11,6 +11,7 @@
 #include <QFileInfo>
 #include <QMainWindow>
 #include <QTemporaryFile>
+#include <QDomDocument>
 
 class QDialog;
 class QSpacerItem;
@@ -68,6 +69,8 @@ public:
     void setCurrentDir();
     void setDolphinFilename(const QString &filename);
     void setFastMode(bool fastModeEnabled);
+
+    QDomDocument* loadRemoteFunctions();
 
     QDialog *m_fullscreenDlg;
     GraphicsView *m_fullscreenView;

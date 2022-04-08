@@ -175,7 +175,7 @@ bool BewavedDolphin::checkSave()
                 tr("Save simulation before closing?"),
                 QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
 
-    switch(reply){
+    switch (reply) {
     case QMessageBox::Save: on_actionSave_triggered(); return (!m_edited);
     case QMessageBox::Discard: return true;
     case QMessageBox::Cancel: return false;
@@ -397,7 +397,7 @@ bool BewavedDolphin::createWaveform(const QString &filename)
     m_sc = m_editor->getSimulationController();
     SCStop scst(m_sc);
     m_mainWindow->setDisabled(true);
-    this->setEnabled(true);
+    setEnabled(true);
     qCDebug(zero) << "Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.";
     if (!loadElements()) {
         QMessageBox::critical(parentWidget(), tr("Error"), tr("Could not load enough elements for the simulation."));
@@ -738,7 +738,7 @@ void BewavedDolphin::paste(QItemSelection &ranges, QDataStream &ds)
     run();
 }
 
-void BewavedDolphin::associateToWiredPanda(const QString &fname)
+void BewavedDolphin::associateToWiRedPanda(const QString &fname)
 {
     if (m_mainWindow->getDolphinFilename() != fname) {
         auto reply =
@@ -789,7 +789,7 @@ void BewavedDolphin::on_actionSave_as_triggered()
     }
     if (save(fname)) {
         m_currentFile = QFileInfo(fname);
-        associateToWiredPanda(fname);
+        associateToWiRedPanda(fname);
         setWindowTitle(tr("beWavedDolphin Simulator") + " [" + m_currentFile.fileName() + "]");
         m_ui->statusbar->showMessage(tr("Saved file successfully."), 2000);
         m_edited = false;
@@ -952,7 +952,7 @@ bool BewavedDolphin::load(const QString &fname)
     }
     qCDebug(zero) << "Closing file.";
     fl.close();
-    associateToWiredPanda(fname);
+    associateToWiRedPanda(fname);
     setWindowTitle(tr("beWavedDolphin Simulator") + " [" + m_currentFile.fileName() + "]");
     return true;
 }
@@ -1111,7 +1111,7 @@ void BewavedDolphin::resizeEvent(QResizeEvent *event)
 
 void BewavedDolphin::resizeScene()
 {
-    m_signalTableView->resize((this->width() - 20) / m_scale, (this->height() - 102) / m_scale);
+    m_signalTableView->resize((width() - 20) / m_scale, (height() - 102) / m_scale);
     QRectF rect = m_scene->itemsBoundingRect();
     m_scene->setSceneRect(rect);
 }

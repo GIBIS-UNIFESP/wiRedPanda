@@ -29,10 +29,10 @@ static QMap<QString, QPixmap> loadedPixmaps;
 
 GraphicElement::GraphicElement(ElementType type, ElementGroup group, int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent)
     : QGraphicsObject(parent)
-    , m_pixmap(nullptr)
     , m_elementGroup(group)
     , m_elementType(type)
     , m_label(new QGraphicsTextItem(this))
+    , m_pixmap(nullptr)
     , m_canChangeSkin(false)
     , m_disabled(false)
     , m_hasAudio(false)
@@ -123,6 +123,9 @@ void GraphicElement::setPixmap(const QString &pixmapName)
         update(boundingRect());
     }
     m_currentPixmapName = pixmapName;
+
+   // update bottom position for wires to come in the correct place
+   setBottomPosition(getPixmap().rect().height());
 }
 
 void GraphicElement::setPixmap(const QString &pixmapName, QRect size)
@@ -518,9 +521,13 @@ void GraphicElement::updatePorts()
         inputPos = m_bottomPosition;
         outputPos = m_topPosition;
     }
+
+    const QRect& rect = getPixmap().rect();
+    int width = rect.width() / 2;
+
     if (!m_outputs.isEmpty()) {
-        int step = qMax(32 / m_outputs.size(), 6);
-        int x = 32 - m_outputs.size() * step + step;
+        int step = qMax(width / m_outputs.size(), 6);
+        int x = width - m_outputs.size() * step + step;
         for (auto *port : qAsConst(m_outputs)) {
             qCDebug(five) << "Setting output at" << x << "," << outputPos;
             port->setPos(x, outputPos);
@@ -529,8 +536,8 @@ void GraphicElement::updatePorts()
         }
     }
     if (!m_inputs.isEmpty()) {
-        int step = qMax(32 / m_inputs.size(), 6);
-        int x = 32 - m_inputs.size() * step + step;
+        int step = qMax(width / m_inputs.size(), 6);
+        int x = width - m_inputs.size() * step + step;
         for (auto *port : qAsConst(m_inputs)) {
             qCDebug(five) << "Setting input at" << x << "," << inputPos;
             port->setPos(x, inputPos);
@@ -852,6 +859,16 @@ void GraphicElement::setBottomPosition(int bottomPosition)
     updatePorts();
 }
 
+bool GraphicElement::hasCustomConfig() const
+{
+    return m_hasCustomConfig;
+}
+
+void GraphicElement::setHasCustomConfig(bool hasCustomConfig)
+{
+    m_hasCustomConfig = hasCustomConfig;
+}
+
 int GraphicElement::topPosition() const
 {
     return m_topPosition;
@@ -879,7 +896,7 @@ bool GraphicElement::disabled() const
     return m_disabled;
 }
 
-QDataStream &operator<<(QDataStream &ds, const GraphicElement *item){
+QDataStream &operator<<(QDataStream &ds, const GraphicElement *item) {
     qDebug(four) << "Writing element.";
     const auto *elm = qgraphicsitem_cast<const GraphicElement *>(item);
     ds << GraphicElement::Type;
