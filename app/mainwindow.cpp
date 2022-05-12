@@ -1046,8 +1046,8 @@ bool MainWindow::exportToWaveFormFile(const QString &fname)
         if (fname.isEmpty()) {
             return false;
         }
-        m_bd = new BewavedDolphin(m_editor, this);
-        if (!m_bd->createWaveform(m_dolphinFileName)) {
+        m_bd = new BewavedDolphin(m_editor, this, false);
+        if (!m_bd->createWaveform(fname)) {
             qCDebug(zero) << "Could not open waveform file:" << m_currentFile.fileName();
             delete m_bd;
             return false;

@@ -62,8 +62,9 @@ void SignalDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
     QItemDelegate::paint(painter, itemOption, index);
 }
 
-BewavedDolphin::BewavedDolphin(Editor *editor, QWidget *parent)
+BewavedDolphin::BewavedDolphin(Editor *editor, QWidget *parent, bool ask_connection)
     : QMainWindow(parent)
+    , m_ask_connection(ask_connection)
     , m_ui(new Ui::BewavedDolphin)
     , m_editor(editor)
     , m_mainWindow(dynamic_cast<MainWindow *>(parent))
@@ -149,7 +150,7 @@ void BewavedDolphin::drawPixMaps()
 
 void BewavedDolphin::closeEvent(QCloseEvent *e)
 {
-    if (checkSave()) {
+    if (m_ask_connection && checkSave()) {
         m_mainWindow->setEnabled(true);
         e->accept();
     } else {
@@ -338,10 +339,14 @@ void BewavedDolphin::loadNewTable(const QStringList &input_labels, const QString
 {
     int iterations = 32;
     qCDebug(zero) << "Num iter =" << iterations;
-    qCDebug(zero) << "Update table.";
     m_model = new SignalModel(input_labels.size() + output_labels.size(), input_labels.size(), iterations, this);
     m_signalTableView->setModel(m_model);
+    QStringList horizontalHeaderLabels;
+    for( int idx = 0; idx < iterations; ++idx ) {
+      horizontalHeaderLabels.append( QString::fromStdString(std::to_string( idx ) ) );
+    }
     m_model->setVerticalHeaderLabels(input_labels + output_labels);
+    m_model->setHorizontalHeaderLabels(horizontalHeaderLabels);
     m_signalTableView->setAlternatingRowColors(true);
     m_signalTableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Fixed);
     m_signalTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Fixed);
@@ -576,6 +581,11 @@ void BewavedDolphin::setLength(int sim_length, bool run_simulation)
     if (sim_length <= m_model->columnCount()) {
         qCDebug(zero) << "Reducing or keeping the simulation length.";
         m_model->setColumnCount(sim_length);
+        QStringList horizontalHeaderLabels;
+        for( int idx = 0; idx < sim_length; ++idx ) {
+          horizontalHeaderLabels.append( QString::fromStdString(std::to_string( idx ) ) );
+        }
+        m_model->setHorizontalHeaderLabels(horizontalHeaderLabels);
         resizeScene();
         m_edited = true;
         return;
@@ -583,6 +593,11 @@ void BewavedDolphin::setLength(int sim_length, bool run_simulation)
     qCDebug(zero) << "Increasing the simulation length.";
     int old_length = m_model->columnCount();
     m_model->setColumnCount(sim_length);
+    QStringList horizontalHeaderLabels;
+    for( int idx = 0; idx < sim_length; ++idx ) {
+      horizontalHeaderLabels.append( QString::fromStdString(std::to_string( idx ) ) );
+    }
+    m_model->setHorizontalHeaderLabels(horizontalHeaderLabels);
     for (int row = 0; row < m_input_ports; ++row) {
         for (int col = old_length; col < m_model->columnCount(); ++col) {
             CreateZeroElement(row, col, true, false);
@@ -764,7 +779,7 @@ void BewavedDolphin::on_actionSave_as_triggered()
     fileDialog.setNameFilter(tr("Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)"));
     fileDialog.setAcceptMode(QFileDialog::AcceptSave);
     fileDialog.setDirectory(path);
-    // fileDialog.setFileMode(QFileDialog::ExistingFile);
+    fileDialog.setFileMode(QFileDialog::AnyFile);
     connect(&fileDialog, &QFileDialog::directoryEntered, this, [&fileDialog, path](const QString &new_dir) {
         qCDebug(zero) << "Changing dir to" << new_dir << ", home:" << path;
         if (new_dir != path) {
