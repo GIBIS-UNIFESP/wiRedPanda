@@ -1019,7 +1019,7 @@ bool MainWindow::exportToWaveFormFile(const QString& fname)
         if (fname.isEmpty()) {
             return false;
         }
-        m_bd = new BewavedDolphin(m_editor, this);
+        m_bd = new BewavedDolphin(m_editor, this, false);
         if (!m_bd->createWaveform(fname)) {
             std::cerr << ERRORMSG(tr("Could not open waveform file: %1.").arg(m_currentFile.fileName()).toStdString()) << std::endl;
             delete m_bd;

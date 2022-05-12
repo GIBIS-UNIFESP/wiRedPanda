@@ -54,8 +54,11 @@ class BewavedDolphin : public QMainWindow
 {
     Q_OBJECT
 
+private:
+  bool m_ask_connection;
+
 public:
-    explicit BewavedDolphin(Editor *editor, QWidget *parent = nullptr);
+    explicit BewavedDolphin(Editor *editor, QWidget *parent = nullptr, bool ask_connection = true);
     ~BewavedDolphin() override;
     bool createWaveform(const QString& filename);
     void show();
