@@ -1,54 +1,51 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#include <qdialog.h>
-#include <qdir.h>
-#include <qfileinfo.h>
-#include <QGraphicsRectItem>
-#include <qtemporaryfile.h>
-#include <qundostack.h>
+#pragma once
 
-#ifndef WORKSPACE_H
-#define WORKSPACE_H
+#include <QDialog>
+#include <QDir>
+#include <QFileInfo>
+#include <QGraphicsRectItem>
+#include <QTemporaryFile>
+#include <QUndoStack>
 
 class BewavedDolphin;
 class Editor;
 class GraphicsView;
+class ICManager;
 class Scene;
 class SimulationController;
-class ICManager;
 
 class WorkSpace
 {
 public:
+    WorkSpace() = default; // for compiling on Qt 5.7+
     WorkSpace(QDialog *fullscreenDlg, GraphicsView *fullscreenView, Editor *editor);
-    QDialog *fullScreenDlg() const;
+
     GraphicsView *fullscreenView() const;
+    ICManager *icManager();
+    QDialog *fullScreenDlg() const;
+    QFileInfo currentFile();
+    QGraphicsRectItem *sceneRect();
+    QString dolphinFileName();
     QUndoStack *undoStack() const;
     Scene *scene() const;
-    QGraphicsRectItem *sceneRect();
     SimulationController *simulationController();
-    ICManager *icManager();
-
-    void setCurrentFile(QFileInfo &finfo);
-    QFileInfo currentFile();
-    void setDolphinFileName(const QString &fname);
-    QString dolphinFileName();
-
     void free();
+    void setCurrentFile(const QFileInfo &finfo);
+    void setDolphinFileName(const QString &fname);
+
 private:
-    QDialog *m_fullscreenDlg;
     GraphicsView *m_fullscreenView;
+    ICManager *m_icManager;
+    QDialog *m_fullscreenDlg;
+    QFileInfo m_currentFile;
+    QGraphicsRectItem *m_selectionRect;
+    QString m_dolphinFilename;
     QUndoStack *m_undoStack;
     Scene *m_scene;
     SimulationController *m_simulationController;
-    ICManager *m_icManager;
-    QGraphicsRectItem *m_selectionRect;
-    QFileInfo m_currentFile;
-    QString m_dolphinFilename;
-
 };
-
-#endif /* WORKSPACE_H */

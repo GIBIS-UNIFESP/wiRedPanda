@@ -1,12 +1,16 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "node.h"
 
 #include "qneport.h"
 
+namespace {
+int id = qRegisterMetaType<Node>();
+}
+
 Node::Node(QGraphicsItem *parent)
-    : GraphicElement(ElementType::NODE, ElementGroup::GATE, 1, 1, 1, 1, parent)
+    : GraphicElement(ElementType::Node, ElementGroup::Gate, 1, 1, 1, 1, parent)
 {
     m_pixmapSkinName = {":/basic/node.png"};
 
@@ -14,6 +18,7 @@ Node::Node(QGraphicsItem *parent)
     Node::updatePorts();
     setCanChangeSkin(true);
     setPortName("NODE");
+    setToolTip(m_translatedName);
     input()->setRequired(true);
 }
 

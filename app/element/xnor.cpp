@@ -1,10 +1,14 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "xnor.h"
 
+namespace {
+int id = qRegisterMetaType<Xnor>();
+}
+
 Xnor::Xnor(QGraphicsItem *parent)
-    : GraphicElement(ElementType::XNOR, ElementGroup::GATE, 2, 8, 1, 1, parent)
+    : GraphicElement(ElementType::Xnor, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
     m_pixmapSkinName = {":/basic/xnor.png"};
 
@@ -13,6 +17,7 @@ Xnor::Xnor(QGraphicsItem *parent)
     setPixmap(m_pixmapSkinName[0]);
     updatePorts();
     setPortName("XNOR");
+    setToolTip(m_translatedName);
 }
 
 void Xnor::setSkin(bool defaultSkin, const QString &filename)

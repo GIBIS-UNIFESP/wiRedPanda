@@ -1,12 +1,16 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "srflipflop.h"
 
 #include "qneport.h"
 
+namespace {
+int id = qRegisterMetaType<SRFlipFlop>();
+}
+
 SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(ElementType::SRFLIPFLOP, ElementGroup::MEMORY, 5, 5, 2, 2, parent)
+    : GraphicElement(ElementType::SRFlipFlop, ElementGroup::Memory, 5, 5, 2, 2, parent)
 {
     m_pixmapSkinName = {":/memory/SR-flipflop.png"};
     setPixmap(m_pixmapSkinName[0]);
@@ -15,6 +19,7 @@ SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
     SRFlipFlop::updatePorts();
     lastClk = false;
     setPortName("FlipFlop SR");
+    setToolTip(m_translatedName);
 
     input(0)->setName("S");
     input(1)->setName("Clock");

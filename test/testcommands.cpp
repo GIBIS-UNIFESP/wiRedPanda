@@ -1,30 +1,27 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "testcommands.h"
 
 #include "and.h"
 #include "commands.h"
+#include "editor.h"
 
-void TestCommands::init()
-{
-    editor = new Editor(this);
-    editor->setupWorkspace();
-}
-
-void TestCommands::cleanup()
-{
-    editor->deleteLater();
-}
+#include <QTest>
 
 void TestCommands::testAddDeleteCommands()
 {
     /* FIXME: Implementar gerenciamento de memória inteligente. */
-    editor->getUndoStack()->setUndoLimit(1);
     QList<QGraphicsItem *> items;
     items << new And() << new And() << new And() << new And();
+
+    auto *editor = new Editor();
+    editor->setupWorkspace();
+    editor->getUndoStack()->setUndoLimit(1);
     editor->receiveCommand(new AddItemsCommand(items, editor));
+
     QCOMPARE(editor->getScene()->getElements().size(), items.size());
+
     editor->getUndoStack()->undo();
     editor->getUndoStack()->redo();
     editor->getUndoStack()->undo();
@@ -38,6 +35,7 @@ void TestCommands::testAddDeleteCommands()
     editor->getUndoStack()->redo();
     editor->getUndoStack()->undo();
     editor->getUndoStack()->redo();
+
     QCOMPARE(editor->getScene()->getElements().size(), 0);
     QCOMPARE(editor->getUndoStack()->index(), 1);
 }

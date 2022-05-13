@@ -1,10 +1,11 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include <QStringList>
+#include "globalproperties.h"
 
 #include "common.h"
-#include "globalproperties.h"
+
+#include <QStringList>
 
 double GlobalProperties::toDouble(const QString &txtVersion, bool *ok)
 {
@@ -26,12 +27,12 @@ double loadVersion()
     bool ok;
     double version = GlobalProperties::toDouble(txtVersion, &ok);
     if (!ok || (qFuzzyIsNull(version))) {
-        throw std::runtime_error(ERRORMSG("INVALID VERSION NUMBER!"));
+        throw std::runtime_error(ERRORMSG(QObject::tr("Invalid version number!").toStdString()));
     }
     return version;
 }
 
-QString GlobalProperties::currentFile = QString();
+QString GlobalProperties::currentFile = {};
 double GlobalProperties::version = loadVersion();
 bool GlobalProperties::soundEnabled = true;
 bool GlobalProperties::verbose = true;

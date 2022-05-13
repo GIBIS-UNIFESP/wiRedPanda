@@ -1,12 +1,16 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "jkflipflop.h"
 
 #include "qneport.h"
 
+namespace {
+int id = qRegisterMetaType<JKFlipFlop>();
+}
+
 JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(ElementType::JKFLIPFLOP, ElementGroup::MEMORY, 5, 5, 2, 2, parent)
+    : GraphicElement(ElementType::JKFlipFlop, ElementGroup::Memory, 5, 5, 2, 2, parent)
 {
     m_pixmapSkinName = {":/memory/JK-flipflop.png"};
 
@@ -16,6 +20,7 @@ JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
     JKFlipFlop::updatePorts();
     lastClk = false;
     setPortName("FlipFlop JK");
+    setToolTip(m_translatedName);
 
     input(0)->setName("J");
     input(1)->setName("Clock");

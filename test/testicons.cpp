@@ -1,13 +1,17 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "testicons.h"
+
 #include "elementfactory.h"
+
+#include <QTest>
 
 void TestIcons::testIcons()
 {
-    for (int type = static_cast<int>(ElementType::BUTTON); type < static_cast<int>(ElementType::DEMUX); ++type) {
-        QVERIFY2(!ElementFactory::getPixmap(static_cast<ElementType>(type)).isNull(),
-                 QString(ElementFactory::typeToText(static_cast<ElementType>(type)) + " pixmap not found.").toUtf8().constData());
+    for (auto type = ElementType::InputButton; type < ElementType::Demux; ++type) {
+        const auto pixmap = ElementFactory::getPixmap(type);
+        const auto text = ElementFactory::typeToText(type);
+        QVERIFY2(!pixmap.isNull(), QString(text + " pixmap not found.").toUtf8());
     }
 }

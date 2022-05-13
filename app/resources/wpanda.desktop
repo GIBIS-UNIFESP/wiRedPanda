@@ -1,6 +1,6 @@
 [Desktop Entry]
-GenericName=wiRED Panda
-Name=wiRED Panda
+GenericName=WiRedPanda
+Name=WiRedPanda
 Comment=Learn about logic circuits in an easy and friendly way.
 Exec=/bin/sh /usr/bin/wpanda.sh %f
 Icon=wpanda

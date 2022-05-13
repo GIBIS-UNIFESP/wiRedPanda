@@ -1,23 +1,22 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef SCSTOP_H
-#define SCSTOP_H
+#pragma once
 
 class SimulationController;
 
 class SCStop
 {
 public:
-    SCStop(SimulationController *sc);
-    void release();
+    explicit SCStop(SimulationController *sc);
     ~SCStop();
+
+    void release();
 
 private:
     SimulationController *m_sc;
     bool m_restart = false;
 };
 
-#endif /* SCSTOP_H */

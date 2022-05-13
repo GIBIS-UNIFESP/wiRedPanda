@@ -1,12 +1,16 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "mux.h"
 
 #include "qneport.h"
 
+namespace {
+int id = qRegisterMetaType<Mux>();
+}
+
 Mux::Mux(QGraphicsItem *parent)
-    : GraphicElement(ElementType::MUX, ElementGroup::MUX, 3, 3, 1, 1, parent)
+    : GraphicElement(ElementType::Mux, ElementGroup::Mux, 3, 3, 1, 1, parent)
 {
     m_pixmapSkinName = {":/basic/mux.png"};
 
@@ -14,6 +18,7 @@ Mux::Mux(QGraphicsItem *parent)
     setRotatable(true);
     Mux::updatePorts();
     setPortName("MUX");
+    setToolTip(m_translatedName);
     setCanChangeSkin(true);
     input(0)->setName("0");
     input(1)->setName("1");

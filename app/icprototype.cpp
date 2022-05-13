@@ -1,13 +1,13 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "icprototype.h"
 
-#include <QFileInfo>
-
 #include "ic.h"
 #include "icmapping.h"
 #include "qneport.h"
+
+#include <QFileInfo>
 
 ICPrototype::ICPrototype(const QString &fileName)
     : m_fileName(fileName)
@@ -86,12 +86,12 @@ void ICPrototype::clear()
 bool ICPrototype::reload()
 {
     // TODO: Verify file recursion
-    //  verifyRecursion( fname );
+    // verifyRecursion(fname);
     clear();
     if (!m_ICImpl.loadFile(m_fileName)) {
         return false;
     }
-    for (IC *ic : qAsConst(m_icObservers)) {
+    for (auto *ic : qAsConst(m_icObservers)) {
         ic->loadFile(m_fileName);
     }
     return true;
