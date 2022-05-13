@@ -1,13 +1,13 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "label.h"
 
+#include "elementfactory.h"
+
 #include <QDrag>
 #include <QMimeData>
 #include <QMouseEvent>
-
-#include "elementfactory.h"
 
 Label::Label(QWidget *parent)
     : QLabel(parent)
@@ -68,21 +68,14 @@ void Label::startDrag(QPoint pos)
     QPixmap pixMap = pixmapData();
     if (pos.isNull()) {
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
-        pos = pixmap(Qt::ReturnByValue).rect().center();
+        pos = pixmap().rect().center();
 #else
         pos = pixmap()->rect().center();
 #endif
     }
     QByteArray itemData;
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-    QString text = ElementFactory::typeToText(m_elementType);
-    if (text.contains("_")) {
-        text = text.split("_").last();
-    }
-    ElementType type = ElementFactory::textToType(text);
-    /*  qDebug() << objectName(); */
-
-    dataStream << QPointF(pos) << static_cast<qint32>(type) << m_auxData;
+    dataStream << QPointF(pos) << static_cast<qint32>(m_elementType) << m_auxData;
 
     auto *mimeData = new QMimeData;
     mimeData->setData("application/x-dnditemdata", itemData);

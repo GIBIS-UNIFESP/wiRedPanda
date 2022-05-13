@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>lengthDialog</class>
- <widget class="QDialog" name="lengthDialog">
+ <class>LengthDialog</class>
+ <widget class="QDialog" name="LengthDialog">
   <property name="geometry">
    <rect>
     <x>0</x>

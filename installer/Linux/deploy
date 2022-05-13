@@ -43,7 +43,7 @@ pushd $BUILDDIR
 
 qmake -r config+=release ../app;
 
-echo "Building WiredPanda on $BUILDDIR ..."
+echo "Building WiRedPanda on $BUILDDIR ..."
 make clean;
 make -j4;
 
@@ -84,7 +84,7 @@ Package: wpanda-${VERSION}
 Architecture: amd64
 Depends: \${shlibs:Depends}, \${misc:Depends}
 Description: Learn about logic circuits and simulate them in an easy and friendly way.
- wiRed Panda is a free software designed to help students to learn about logic circuits.
+ WiRedPanda is a free software designed to help students to learn about logic circuits.
  It was developed by the students of the Federal University of São Paulo." > $DEBPKGROOT/debian/control
 
 echo \

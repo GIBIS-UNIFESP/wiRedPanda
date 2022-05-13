@@ -1,10 +1,9 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef GRAPHICSVIEWZOOM_H
-#define GRAPHICSVIEWZOOM_H
+#pragma once
 
 #include <QObject>
 #include <QPointF>
@@ -45,34 +44,33 @@ class QGraphicsView;
 class GraphicsViewZoom : public QObject
 {
     Q_OBJECT
+
 public:
+    explicit GraphicsViewZoom(QGraphicsView *view);
+
     static constexpr double maxZoom = 1.5;
     static constexpr double minZoom = 0.2;
-    explicit GraphicsViewZoom(QGraphicsView *view);
-    void gentleZoom(double factor);
-    void setModifiers(Qt::KeyboardModifiers modifiers);
-    void setZoomFactorBase(double value);
-
-    void zoomIn();
-    void zoomOut();
 
     bool canZoomIn();
     bool canZoomOut();
-
+    void gentleZoom(double factor);
     void resetZoom();
+    void setModifiers(Qt::KeyboardModifiers modifiers);
+    void setZoomFactorBase(double value);
+    void zoomIn();
+    void zoomOut();
+
+signals:
+    void zoomed();
 
 private:
+    bool eventFilter(QObject *object, QEvent *event) override;
     double scaleFactor();
     void setScaleFactor(double factor);
 
     QGraphicsView *m_view;
+    QPointF m_targetScenePos, m_targetViewportPos;
     Qt::KeyboardModifiers m_modifiers;
     double m_zoomFactorBase;
-    QPointF m_targetScenePos, m_targetViewportPos;
-    bool eventFilter(QObject *object, QEvent *event) override;
-
-signals:
-    void zoomed();
 };
 
-#endif /* GRAPHICSVIEWZOOM_H */

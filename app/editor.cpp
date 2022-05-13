@@ -1,7 +1,8 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "editor.h"
+
 #include "buzzer.h"
 #include "commands.h"
 #include "common.h"
@@ -15,7 +16,7 @@
 #include "input.h"
 #include "inputrotary.h"
 #include "mainwindow.h"
-#include "nodes/qneconnection.h"
+#include "qneconnection.h"
 #include "qneport.h"
 #include "serializationfunctions.h"
 #include "simulationcontroller.h"
@@ -24,8 +25,8 @@
 
 #include <QApplication>
 #include <QClipboard>
+#include <QDebug>
 #include <QDrag>
-#include <qdebug.h>
 #include <QGraphicsItem>
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsSceneMouseEvent>
@@ -34,9 +35,9 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QMimeData>
-#include <QWheelEvent>
 #include <QUndoCommand>
 #include <QUndoStack>
+#include <QWheelEvent>
 #include <cmath>
 #include <iostream>
 
@@ -59,27 +60,11 @@ Editor::Editor(QObject *parent)
 
 Editor::~Editor() = default;
 
-//! CARMESIM
-//#ifdef Q_OS_WIN
-//#include <windows.h> // for Sleep
-//#endif
-// void _sleep(int ms)
-//{
-//    if (ms <= 0) { return; }
-
-//#ifdef Q_OS_WIN
-//    Sleep(uint(ms));
-//#else
-//    struct timespec ts = { ms / 1000, (ms % 1000) * 1000 * 1000 };
-//    nanosleep(&ts, NULL);
-//#endif
-//}
-
 void Editor::updateTheme()
 {
-    COMMENT("Update theme.", 0);
-    if (ThemeManager::globalMngr) {
-        const ThemeAttrs attrs = ThemeManager::globalMngr->getAttrs();
+    qCDebug(zero) << "Update theme.";
+    if (ThemeManager::globalManager) {
+        const ThemeAttrs attrs = ThemeManager::globalManager->getAttrs();
         if (!m_scene) {
             //! scene could be NULL here
             return;
@@ -88,22 +73,22 @@ void Editor::updateTheme()
         m_scene->setDots(QPen(attrs.scene_bgDots));
         m_selectionRect->setBrush(QBrush(attrs.selectionBrush));
         m_selectionRect->setPen(QPen(attrs.selectionPen, 1, Qt::SolidLine));
-        auto const scene_elements = m_scene->getElements();
-        for (GraphicElement *elm : scene_elements) {
+        const auto scene_elements = m_scene->getElements();
+        for (auto *elm : scene_elements) {
             elm->updateTheme();
         }
-        auto const scene_connections = m_scene->getConnections();
-        for (QNEConnection *conn : scene_connections) {
+        const auto scene_connections = m_scene->getConnections();
+        for (auto *conn : scene_connections) {
             conn->updateTheme();
         }
     }
-    COMMENT("Finished updating theme. ", 0);
+    qCDebug(zero) << "Finished updating theme.";
 }
 
 void Editor::mute(bool _mute)
 {
-    auto const scene_elems = m_scene->getElements();
-    for (GraphicElement *elm : scene_elems) {
+    const auto scene_elems = m_scene->getElements();
+    for (auto *elm : scene_elems) {
         auto *bz = dynamic_cast<Buzzer *>(elm);
         if (bz) {
             bz->mute(_mute);
@@ -124,29 +109,29 @@ void Editor::setupWorkspace()
 void Editor::selectWorkspace(WorkSpace *workspace)
 {
     m_undoStack = workspace->undoStack();
-    COMMENT("editor stack done.", 0);
+    qCDebug(zero) << "editor stack done.";
     m_scene = workspace->scene();
     m_selectionRect = workspace->sceneRect();
-    COMMENT("editor scene done.", 0);
+    qCDebug(zero) << "editor scene done.";
     setSimulationController(workspace->simulationController());
-    COMMENT("editor controller done.", 0);
+    qCDebug(zero) << "editor controller done.";
     setICManager(workspace->icManager());
     m_icManager->wakeUp();
 }
 
 void Editor::buildAndSetRectangle()
 {
-    COMMENT("Building rect.", 0);
+    qCDebug(zero) << "Building rect.";
     buildSelectionRect();
     if (m_scene) {
-        auto const scene_views = m_scene->views();
+        const auto scene_views = m_scene->views();
         if (!scene_views.isEmpty()) {
             m_scene->setSceneRect(scene_views.front()->rect());
         }
     }
-    COMMENT("Updating theme.", 0);
+    qCDebug(zero) << "Updating theme.";
     updateTheme();
-    COMMENT("Finished clear.", 0);
+    qCDebug(zero) << "Finished clear.";
 }
 
 QNEConnection *Editor::getEditedConn() const
@@ -166,13 +151,13 @@ void Editor::setEditedConn(QNEConnection *editedConn)
 
 void Editor::buildSelectionRect()
 {
-    COMMENT("Build Selection Rect.", 0);
+    qCDebug(zero) << "Build Selection Rect.";
     m_selectionRect = new QGraphicsRectItem();
     m_selectionRect->setFlag(QGraphicsItem::ItemIsSelectable, false);
     if (m_scene) {
         m_scene->addItem(m_selectionRect);
     }
-    COMMENT("Finished building rect.", 0);
+    qCDebug(zero) << "Finished building rect.";
 }
 
 //! CARMESIM: reset scene upon deletion in order to avoid SIGSEGV
@@ -198,21 +183,21 @@ void Editor::redoSimulationController()
 void Editor::showWires(bool checked)
 {
     m_showWires = checked;
-    auto const scene_items = m_scene->items();
-    for (QGraphicsItem *item : scene_items) {
+    const auto scene_items = m_scene->items();
+    for (auto *item : scene_items) {
         auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
         if ((item->type() == QNEConnection::Type)) {
             item->setVisible(checked);
         } else if ((item->type() == GraphicElement::Type) && elm) {
-            if (elm->elementType() == ElementType::NODE) {
+            if (elm->elementType() == ElementType::Node) {
                 elm->setVisible(checked);
             } else {
-                auto const elm_inputs = elm->inputs();
-                for (QNEPort *in : elm_inputs) {
+                const auto elm_inputs = elm->inputs();
+                for (auto *in : elm_inputs) {
                     in->setVisible(checked);
                 }
-                auto const elm_outputs = elm->outputs();
-                for (QNEPort *out : elm_outputs) {
+                const auto elm_outputs = elm->outputs();
+                for (auto *out : elm_outputs) {
                     out->setVisible(checked);
                 }
             }
@@ -223,11 +208,11 @@ void Editor::showWires(bool checked)
 void Editor::showGates(bool checked)
 {
     m_showGates = checked;
-    auto const scene_items = m_scene->items();
-    for (QGraphicsItem *item : scene_items) {
+    const auto scene_items = m_scene->items();
+    for (auto *item : scene_items) {
         auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
         if ((item->type() == GraphicElement::Type) && elm) {
-            if ((elm->elementGroup() != ElementGroup::INPUT) && (elm->elementGroup() != ElementGroup::OUTPUT) && (elm->elementGroup() != ElementGroup::OTHER)) {
+            if ((elm->elementGroup() != ElementGroup::Input) && (elm->elementGroup() != ElementGroup::Output) && (elm->elementGroup() != ElementGroup::Other)) {
                 item->setVisible(checked);
             }
         }
@@ -242,7 +227,7 @@ void Editor::rotate(bool rotateRight)
     }
     QList<QGraphicsItem *> list = m_scene->selectedItems();
     QList<GraphicElement *> elms;
-    for (QGraphicsItem *item : qAsConst(list)) {
+    for (auto *item : qAsConst(list)) {
         auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
         if (elm && (elm->type() == GraphicElement::Type)) {
             elms.append(elm);
@@ -257,7 +242,7 @@ void Editor::flipH()
 {
     QList<QGraphicsItem *> list = m_scene->selectedItems();
     QList<GraphicElement *> elms;
-    for (QGraphicsItem *item : qAsConst(list)) {
+    for (auto *item : qAsConst(list)) {
         auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
         if (elm && (elm->type() == GraphicElement::Type)) {
             elms.append(elm);
@@ -272,7 +257,7 @@ void Editor::flipV()
 {
     QList<QGraphicsItem *> list = m_scene->selectedItems();
     QList<GraphicElement *> elms;
-    for (QGraphicsItem *item : qAsConst(list)) {
+    for (auto *item : qAsConst(list)) {
         auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
         if (elm && (elm->type() == GraphicElement::Type)) {
             elms.append(elm);
@@ -293,12 +278,12 @@ QGraphicsItem *Editor::itemAt(QPointF pos)
 {
     QList<QGraphicsItem *> items = m_scene->items(pos);
     items.append(itemsAt(pos));
-    for (QGraphicsItem *item : qAsConst(items)) {
+    for (auto *item : qAsConst(items)) {
         if (item->type() == QNEPort::Type) {
             return item;
         }
     }
-    for (QGraphicsItem *item : qAsConst(items)) {
+    for (auto *item : qAsConst(items)) {
         if (item->type() > QGraphicsItem::UserType) {
             return item;
         }
@@ -321,7 +306,8 @@ SimulationController *Editor::getSimulationController() const
     return m_simulationController;
 }
 
-void Editor::setSimulationController(SimulationController *simulationController) {
+void Editor::setSimulationController(SimulationController *simulationController)
+{
     m_simulationController = simulationController;
     connect(this, &Editor::circuitHasChanged, m_simulationController, &SimulationController::reSortElements);
 }
@@ -399,7 +385,7 @@ bool Editor::mousePressEvt(QGraphicsSceneMouseEvent *mouseEvt)
             } else {
                 auto *endPort = dynamic_cast<QNEInputPort *>(pressedPort);
                 if (endPort) {
-                    if (endPort->connections().size() > 0) {
+                    if (!endPort->connections().empty()) {
                         detachConnection(endPort);
                     } else {
                         startNewConnection(endPort);
@@ -424,7 +410,7 @@ void Editor::resizeScene()
     QVector<GraphicElement *> elms = m_scene->getElements();
     if (!elms.isEmpty()) {
         QRectF rect = m_scene->sceneRect();
-        for (GraphicElement *elm : qAsConst(elms)) {
+        for (auto *elm : qAsConst(elms)) {
             QRectF itemRect = elm->boundingRect().translated(elm->pos());
             rect = rect.united(itemRect.adjusted(-10, -10, 10, 10));
         }
@@ -433,7 +419,7 @@ void Editor::resizeScene()
     QGraphicsItem *item = itemAt(m_mousePos);
     if (item && (m_timer.elapsed() > 100) && m_draggingElement) {
         if (!m_scene->views().isEmpty()) {
-            auto const scene_views = m_scene->views();
+            const auto scene_views = m_scene->views();
             QGraphicsView *view = scene_views.front();
             view->ensureVisible(QRectF(m_mousePos - QPointF(4, 4), QSize(9, 9)).normalized());
         }
@@ -602,25 +588,25 @@ bool Editor::dropEvt(QGraphicsSceneDragDropEvent *dde)
         dataStream >> offset >> type >> label_auxData;
         QPointF pos = dde->scenePos() - offset;
         dde->accept();
-        COMMENT("Droped element of type: " << static_cast<int>(type) << " at position: " << pos.x() << ", " << pos.y() << ", label: " << label_auxData.toStdString(), 0);
+        qCDebug(zero) << "Droped element of type:" << static_cast<int>(type) << " at position:" << pos.x() << ", " << pos.y() << ", label:" << label_auxData;
         GraphicElement *elm = ElementFactory::buildElement(static_cast<ElementType>(type));
-        COMMENT("If element type is unknown, a default element is created with the pixmap received from mimedata", 0);
+        qCDebug(zero) << "If element type is unknown, a default element is created with the pixmap received from mimedata.";
         if (!elm) {
-            COMMENT("Element not valid!", 0);
+            qCDebug(zero) << "Element not valid.";
             return false;
         }
-        COMMENT("Valid element!", 0);
+        qCDebug(zero) << "Valid element.";
         if (elm->elementType() == ElementType::IC) {
             try {
                 IC *box = dynamic_cast<IC *>(elm);
                 if (box) {
-                    const QString& fname = label_auxData;
+                    const QString &fname = label_auxData;
                     if (!m_icManager->loadIC(box, fname)) {
                         return false;
                     }
                 }
-            } catch (std::runtime_error &err) {
-                QMessageBox::warning(m_mainWindow, tr("Error while loading IC."), QString::fromStdString(err.what()));
+            } catch (std::runtime_error &e) {
+                QMessageBox::critical(m_mainWindow, tr("Error while loading IC."), e.what());
                 return false;
             }
         }
@@ -632,16 +618,16 @@ bool Editor::dropEvt(QGraphicsSceneDragDropEvent *dde)
          * TODO: Rotate all element icons, remake the port position logic, and remove the code below.
          * Rotating element in 90 degrees.
          */
-        if (elm->rotatable() && (elm->elementType() != ElementType::NODE) && (elm->elementGroup() != ElementGroup::OTHER)) {
+        if (elm->rotatable() && (elm->elementType() != ElementType::Node) && (elm->elementGroup() != ElementGroup::Other)) {
             elm->setRotation(90);
         }
-        COMMENT("Adding the element to the scene.", 0);
+        qCDebug(zero) << "Adding the element to the scene.";
         receiveCommand(new AddItemsCommand(elm, this));
-        COMMENT("Cleaning the selection.", 0);
+        qCDebug(zero) << "Cleaning the selection.";
         m_scene->clearSelection();
-        COMMENT("Setting created element as selected.", 0);
+        qCDebug(zero) << "Setting created element as selected.";
         elm->setSelected(true);
-        COMMENT("Adjusting the position of the element.", 0);
+        qCDebug(zero) << "Adjusting the position of the element.";
         elm->setPos(pos);
 
         return true;
@@ -663,7 +649,7 @@ bool Editor::dropEvt(QGraphicsSceneDragDropEvent *dde)
         }
         receiveCommand(new AddItemsCommand(itemList, this));
         m_scene->clearSelection();
-        for (QGraphicsItem *item : qAsConst(itemList)) {
+        for (auto *item : qAsConst(itemList)) {
             if (item->type() == GraphicElement::Type) {
                 item->setPos((item->pos() + offset));
                 item->setSelected(true);
@@ -703,11 +689,11 @@ bool Editor::wheelEvt(QWheelEvent *wEvt)
 
 void Editor::ctrlDrag(QPointF pos)
 {
-    COMMENT("Ctrl + Drag action triggered.", 0);
+    qCDebug(zero) << "Ctrl + Drag action triggered.";
     QVector<GraphicElement *> selectedElms = m_scene->selectedElements();
     if (!selectedElms.isEmpty()) {
         QRectF rect;
-        for (GraphicElement *elm : qAsConst(selectedElms)) {
+        for (auto *elm : qAsConst(selectedElms)) {
             rect = rect.united(elm->boundingRect().translated(elm->pos()));
         }
         rect = rect.adjusted(-8, -8, 8, 8);
@@ -774,7 +760,7 @@ void Editor::copy(const QList<QGraphicsItem *> &items, QDataStream &ds)
 {
     QPointF center(static_cast<qreal>(0.0f), static_cast<qreal>(0.0f));
     float elm = 0;
-    for (QGraphicsItem *item : items) {
+    for (auto *item : items) {
         if (item->type() == GraphicElement::Type) {
             center += item->pos();
             elm++;
@@ -797,7 +783,7 @@ void Editor::paste(QDataStream &ds)
         return;
     }
     receiveCommand(new AddItemsCommand(itemList, this));
-    for (QGraphicsItem *item : qAsConst(itemList)) {
+    for (auto *item : qAsConst(itemList)) {
         if (item->type() == GraphicElement::Type) {
             item->setPos((item->pos() + offset));
             item->update();
@@ -809,8 +795,8 @@ void Editor::paste(QDataStream &ds)
 
 void Editor::selectAll()
 {
-    auto const scene_items = m_scene->items();
-    for (QGraphicsItem *item : scene_items) {
+    const auto scene_items = m_scene->items();
+    for (auto *item : scene_items) {
         item->setSelected(true);
     }
 }
@@ -823,40 +809,40 @@ void Editor::save(QDataStream &ds, const QString &dolphinFilename)
 
 void Editor::load(QDataStream &ds)
 {
-    COMMENT("Loading file.", 0);
+    qCDebug(zero) << "Loading file.";
     m_simulationController->stop();
-    COMMENT("Stopped simulation.", 0);
+    qCDebug(zero) << "Stopped simulation.";
     double version = SerializationFunctions::loadVersion(ds);
-    if ((version > GlobalProperties::version) && (GlobalProperties::verbose)) {
-        QMessageBox::warning(m_mainWindow, tr("Newer version file."), tr("Warning! Your Wired Panda is possibly outdated.\n The file you are opening has been saved in a newer version.\n Please, check for updates."));
-    } else if ((version < 4.0) && (GlobalProperties::verbose)) {
-        QMessageBox::warning(m_mainWindow, tr("Old version file."), tr("Warning! This is an old version wiRed Panda project file (version < 4.0). To open it correctly, save all ICs and skins into the main project directory."));
+    if (version > GlobalProperties::version && GlobalProperties::verbose) {
+        QMessageBox::warning(m_mainWindow, tr("Newer version file."), tr("Warning! Your WiRedPanda is possibly outdated.\n The file you are opening has been saved in a newer version.\n Please, check for updates."));
+    } else if (version < 4.0 && GlobalProperties::verbose) {
+        QMessageBox::warning(m_mainWindow, tr("Old version file."), tr("Warning! This is an old version WiRedPanda project file (version < 4.0). To open it correctly, save all ICs and skins into the main project directory."));
     }
-    COMMENT("Version: " << version, 0);
+    qCDebug(zero) << "Version:" << version;
     QString dolphinFilename(SerializationFunctions::loadDolphinFilename(ds, version));
     if (m_mainWindow) {
         m_mainWindow->setDolphinFilename(dolphinFilename);
     }
-    COMMENT("Dolphin name: " << dolphinFilename.toStdString(), 0);
+    qCDebug(zero) << "Dolphin name:" << dolphinFilename;
     QRectF rect(SerializationFunctions::loadRect(ds, version));
-    COMMENT("Header Ok. Version: " << version, 0);
+    qCDebug(zero) << "Header Ok. Version:" << version;
     QList<QGraphicsItem *> items;
     if (!SerializationFunctions::deserialize(ds, items, version)) {
         if (GlobalProperties::verbose) {
-            throw(std::runtime_error(""));
+            throw(std::runtime_error("File data deserialization error."));
         } else {
             Q_ASSERT(false);
         }
     }
-    COMMENT("Finished loading items.", 0);
+    qCDebug(zero) << "Finished loading items.";
     if (m_scene) {
-        for (QGraphicsItem *item : qAsConst(items)) {
+        for (auto *item : qAsConst(items)) {
             m_scene->addItem(item);
         }
-        COMMENT("This code tries to centralize the elements in scene using the rectangle. But it is not working well.", 3);
+        qCDebug(three) << "This code tries to centralize the elements in scene using the rectangle. But it is not working well.";
         m_scene->setSceneRect(m_scene->itemsBoundingRect());
         if (!m_scene->views().empty()) {
-            auto const scene_views = m_scene->views();
+            const auto scene_views = m_scene->views();
             QGraphicsView *view = scene_views.first();
             rect = rect.united(view->rect());
             rect.moveCenter(QPointF(0, 0));
@@ -866,7 +852,7 @@ void Editor::load(QDataStream &ds)
         m_scene->clearSelection();
     }
     m_simulationController->start();
-    COMMENT("Finished loading file.", 0);
+    qCDebug(zero) << "Finished loading file.";
 }
 
 void Editor::setElementEditor(ElementEditor *value)
@@ -932,7 +918,7 @@ void Editor::receiveCommand(QUndoCommand *cmd)
     m_undoStack->push(cmd);
 }
 
-void Editor::checkUpdateRequest(int )
+void Editor::checkUpdateRequest()
 {
     if (m_circuitUpdateRequired) {
         emit circuitHasChanged();
@@ -1017,12 +1003,12 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
                 }
                 m_draggingElement = true;
                 /* STARTING MOVING ELEMENT */
-                /*        qDebug() << "IN"; */
+                // qCDebug(zero) << "IN.";
                 QList<QGraphicsItem *> list = m_scene->selectedItems();
                 list.append(itemsAt(m_mousePos));
                 m_movedElements.clear();
                 m_oldPositions.clear();
-                for (QGraphicsItem *it : qAsConst(list)) {
+                for (auto *it : qAsConst(list)) {
                     auto *elm = qgraphicsitem_cast<GraphicElement *>(it);
                     if (elm) {
                         m_movedElements.append(elm);
@@ -1036,12 +1022,12 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
         if (evt->type() == QEvent::GraphicsSceneMouseRelease) {
             if (m_draggingElement && (mouseEvt->button() == Qt::LeftButton)) {
                 if (!m_movedElements.empty()) {
-                    /*
-                     *          if( movedElements.size( ) != oldPositions.size( ) ) {
-                     *            throw std::runtime_error( ERRORMSG(tr( "Invalid coordinates." ).toStdString( ) ));
-                     *          }
-                     *          qDebug() << "OUT";
-                     */
+
+                  //  if (movedElements.size() != oldPositions.size()) {
+                  //      throw std::runtime_error(ERRORMSG(tr("Invalid coordinates.").toStdString()));
+                  //  }
+                  //  qCDebug(zero) << "OUT.";
+
                     bool valid = false;
                     for (int elm = 0; elm < m_movedElements.size(); ++elm) {
                         if (m_movedElements[elm]->pos() != m_oldPositions[elm]) {
@@ -1058,31 +1044,14 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
             }
         }
         switch (static_cast<int>(evt->type())) {
-        case QEvent::GraphicsSceneMousePress: {
-            ret = mousePressEvt(mouseEvt);
-            break;
-        }
-        case QEvent::GraphicsSceneMouseMove: {
-            ret = mouseMoveEvt(mouseEvt);
-            break;
-        }
-        case QEvent::GraphicsSceneMouseRelease: {
-            ret = mouseReleaseEvt(mouseEvt);
-            break;
-        }
-        case QEvent::GraphicsSceneDrop: {
-            ret = dropEvt(dde);
-            break;
-        }
+        case QEvent::GraphicsSceneMousePress:   ret = mousePressEvt(mouseEvt); break;
+        case QEvent::GraphicsSceneMouseMove:    ret = mouseMoveEvt(mouseEvt); break;
+        case QEvent::GraphicsSceneMouseRelease: ret = mouseReleaseEvt(mouseEvt); break;
+        case QEvent::GraphicsSceneDrop:         ret = dropEvt(dde); break;
         case QEvent::GraphicsSceneDragMove:
-        case QEvent::GraphicsSceneDragEnter: {
-            ret = dragMoveEvt(dde);
-            break;
-        }
-        case QEvent::GraphicsSceneWheel: {
-            ret = wheelEvt(wEvt);
-            break;
-        }
+        case QEvent::GraphicsSceneDragEnter:    ret = dragMoveEvt(dde); break;
+        case QEvent::GraphicsSceneWheel:        ret = wheelEvt(wEvt); break;
+
         case QEvent::GraphicsSceneMouseDoubleClick: {
             auto *connection = dynamic_cast<QNEConnection *>(itemAt(m_mousePos));
             if (connection && (connection->type() == QNEConnection::Type)) {
@@ -1099,14 +1068,14 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
         }
         case QEvent::KeyPress: {
             if (keyEvt && !(keyEvt->modifiers() & Qt::ControlModifier)) {
-                auto const scene_elems = m_scene->getElements();
-                for (GraphicElement *elm : scene_elems) {
+                const auto scene_elems = m_scene->getElements();
+                for (auto *elm : scene_elems) {
                     if (elm->hasTrigger() && !elm->getTrigger().isEmpty()) {
                         auto *in = dynamic_cast<Input *>(elm);
                         if (in && !in->isLocked() && elm->getTrigger().matches(keyEvt->key())) {
-                            if (elm->elementType() == ElementType::SWITCH) {
+                            if (elm->elementType() == ElementType::InputSwitch) {
                                 in->setOn(!in->getOn());
-                            } else if (elm->elementType() == ElementType::ROTARY) {
+                            } else if (elm->elementType() == ElementType::InputRotary) {
                                 int val = in->outputValue();
                                 in->setOn(true, (val + 1) % in->outputSize());
                             } else {
@@ -1120,12 +1089,12 @@ bool Editor::eventFilter(QObject *obj, QEvent *evt)
         }
         case QEvent::KeyRelease: {
             if (keyEvt && !(keyEvt->modifiers() & Qt::ControlModifier)) {
-                auto const scene_elems = m_scene->getElements();
-                for (GraphicElement *elm : scene_elems) {
+                const auto scene_elems = m_scene->getElements();
+                for (auto *elm : scene_elems) {
                     if (elm->hasTrigger() && !elm->getTrigger().isEmpty()) {
                         auto *in = dynamic_cast<Input *>(elm);
                         if (in && !in->isLocked() && (elm->getTrigger().matches(keyEvt->key()) == QKeySequence::ExactMatch)) {
-                            if (elm->elementType() == ElementType::BUTTON) {
+                            if (elm->elementType() == ElementType::InputButton) {
                                 in->setOn(false);
                             }
                         }

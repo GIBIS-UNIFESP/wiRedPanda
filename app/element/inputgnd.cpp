@@ -1,12 +1,16 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "inputgnd.h"
 
 #include "qneport.h"
 
+namespace {
+int id = qRegisterMetaType<InputGnd>();
+}
+
 InputGnd::InputGnd(QGraphicsItem *parent)
-    : GraphicElement(ElementType::GND, ElementGroup::STATICINPUT, 0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::InputGnd, ElementGroup::StaticInput, 0, 0, 1, 1, parent)
 {
     m_pixmapSkinName = {":/input/0.png"};
 
@@ -15,6 +19,7 @@ InputGnd::InputGnd(QGraphicsItem *parent)
     setPixmap(m_pixmapSkinName[0]);
     setRotatable(false);
     setPortName("GND");
+    setToolTip(m_translatedName);
     m_outputs.first()->setValue(false);
 }
 

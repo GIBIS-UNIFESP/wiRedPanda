@@ -1,24 +1,28 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include <iostream>
-#include <stdexcept>
-
-#include <qdir.h>
-#include <QFileInfo>
-#include <QKeyEvent>
-#include <QPainter>
-#include <QStyleOptionGraphicsItem>
-#include <QPixmap>
+#include "graphicelement.h"
 
 #include "common.h"
 #include "elementfactory.h"
-#include "graphicelement.h"
 #include "globalproperties.h"
-#include "nodes/qneconnection.h"
-#include "nodes/qneport.h"
+#include "qneconnection.h"
+#include "qneport.h"
 #include "scene.h"
 #include "thememanager.h"
+
+#include <QDir>
+#include <QFileInfo>
+#include <QKeyEvent>
+#include <QPainter>
+#include <QPixmap>
+#include <QStyleOptionGraphicsItem>
+#include <iostream>
+#include <stdexcept>
+
+namespace {
+int id = qRegisterMetaType<GraphicElement>();
+}
 
 // TODO - WARNING: non-POD static
 static QMap<QString, QPixmap> loadedPixmaps;
@@ -26,30 +30,29 @@ static QMap<QString, QPixmap> loadedPixmaps;
 GraphicElement::GraphicElement(ElementType type, ElementGroup group, int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent)
     : QGraphicsObject(parent)
     , m_pixmap(nullptr)
+    , m_elementGroup(group)
+    , m_elementType(type)
     , m_label(new QGraphicsTextItem(this))
-    , m_topPosition(0)
+    , m_canChangeSkin(false)
+    , m_disabled(false)
+    , m_hasAudio(false)
+    , m_hasColors(false)
+    , m_hasFrequency(false)
+    , m_hasLabel(false)
+    , m_hasTrigger(false)
+    , m_outputsOnTop(true)
+    , m_rotatable(true)
     , m_bottomPosition(64)
+    , m_topPosition(0)
     , m_maxInputSz(maxInputSz)
     , m_maxOutputSz(maxOutputSz)
     , m_minInputSz(minInputSz)
     , m_minOutputSz(minOutputSz)
-    , m_outputsOnTop(true)
-    , m_rotatable(true)
-    , m_hasLabel(false)
-    , m_canChangeSkin(false)
-    , m_hasFrequency(false)
-    , m_hasColors(false)
-    , m_hasTrigger(false)
-    , m_hasAudio(false)
-    , m_disabled(false)
-    , m_elementType(type)
-    , m_elementGroup(group)
 {
-    COMMENT("Setting flags of elements. ", 4);
+    qCDebug(four) << "Setting flags of elements.";
     setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemSendsGeometryChanges);
-    setToolTip(ElementFactory::translatedName(m_elementType));
 
-    COMMENT("Setting attributes. ", 4);
+    qCDebug(four) << "Setting attributes.";
     m_label->hide();
     QFont font("SansSerif");
     font.setBold(true);
@@ -58,7 +61,7 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, int minInpu
     m_label->setParentItem(this);
     m_label->setDefaultTextColor(Qt::black);
 
-    COMMENT("Including input and output ports.", 4);
+    qCDebug(four) << "Including input and output ports.";
     for (int i = 0; i < minInputSz; i++) {
         addInputPort();
     }
@@ -68,7 +71,8 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, int minInpu
     updateTheme();
 }
 
-QPixmap GraphicElement::getPixmap() const {
+QPixmap GraphicElement::getPixmap() const
+{
     if (m_pixmap) {
         return *m_pixmap;
     }
@@ -98,15 +102,11 @@ void GraphicElement::enable()
 void GraphicElement::setPixmap(const QString &pixmapName)
 {
     QString pixmapPath = pixmapName;
-    if (ThemeManager::globalMngr) { // TODO: This has to be changed. Not a good way to do it. Probably better inside the class.
+    if (ThemeManager::globalManager) { // TODO: This has to be changed. Not a good way to do it. Probably better inside the class.
         if (pixmapPath.contains("memory")) {
-            switch (ThemeManager::globalMngr->theme()) {
-            case Theme::Panda_Light:
-                pixmapPath.replace("memory", "memory/light");
-                break;
-            case Theme::Panda_Dark:
-                pixmapPath.replace("memory", "memory/dark");
-                break;
+            switch (ThemeManager::globalManager->theme()) {
+            case Theme::Light: pixmapPath.replace("memory", "memory/light"); break;
+            case Theme::Dark:  pixmapPath.replace("memory", "memory/dark"); break;
             }
         }
     }
@@ -114,8 +114,8 @@ void GraphicElement::setPixmap(const QString &pixmapName)
         if (!loadedPixmaps.contains(pixmapPath)) {
             // TODO: use QPixmap::loadFromData() here
             if (!loadedPixmaps[pixmapPath].load(pixmapPath)) {
-                std::cerr << "Problem loading pixmapPath = " << pixmapPath.toStdString() << '\n';
-                throw std::runtime_error(ERRORMSG("Couldn't load pixmap."));
+                qCDebug(zero) << "Problem loading pixmapPath:" << pixmapPath;
+                throw std::runtime_error(ERRORMSG(QObject::tr("Couldn't load pixmap.").toStdString()));
             }
         }
         m_pixmap = &loadedPixmaps[pixmapPath];
@@ -128,15 +128,11 @@ void GraphicElement::setPixmap(const QString &pixmapName)
 void GraphicElement::setPixmap(const QString &pixmapName, QRect size)
 {
     QString pixmapPath = pixmapName;
-    if (ThemeManager::globalMngr) { // TODO: This has to be changed. Not a good way to do it. Probably better inside the class.
+    if (ThemeManager::globalManager) { // TODO: This has to be changed. Not a good way to do it. Probably better inside the class.
         if (pixmapPath.contains("memory")) {
-            switch (ThemeManager::globalMngr->theme()) {
-            case Theme::Panda_Light:
-                pixmapPath.replace("memory", "memory/light");
-                break;
-            case Theme::Panda_Dark:
-                pixmapPath.replace("memory", "memory/dark");
-                break;
+            switch (ThemeManager::globalManager->theme()) {
+            case Theme::Light: pixmapPath.replace("memory", "memory/light"); break;
+            case Theme::Dark:  pixmapPath.replace("memory", "memory/dark"); break;
             }
         }
     }
@@ -145,7 +141,7 @@ void GraphicElement::setPixmap(const QString &pixmapName, QRect size)
             // TODO: use QPixmap::loadFromData() here
             QPixmap pixmap;
             if (!pixmap.load(pixmapPath)) {
-                throw std::runtime_error(ERRORMSG("Couldn't load pixmap."));
+                throw std::runtime_error(ERRORMSG(QObject::tr("Couldn't load pixmap.").toStdString()));
             }
             loadedPixmaps[pixmapPath] = pixmap.copy(size);
         }
@@ -188,7 +184,7 @@ void GraphicElement::setOutputs(const QVector<QNEOutputPort *> &outputs)
 
 void GraphicElement::save(QDataStream &ds) const
 {
-    COMMENT("Saving element. Type: " << objectName().toStdString(), 4);
+    qCDebug(four) << "Saving element. Type:" << objectName();
     ds << pos();
     ds << rotation();
     /* <Version1.2> */
@@ -204,13 +200,13 @@ void GraphicElement::save(QDataStream &ds) const
     ds << m_trigger;
     /* <\Version1.9> */
     ds << static_cast<quint64>(m_inputs.size());
-    for (QNEPort *port : m_inputs) {
+    for (auto *port : m_inputs) {
         ds << reinterpret_cast<quint64>(port);
         ds << port->portName();
         ds << port->portFlags();
     }
     ds << static_cast<quint64>(m_outputs.size());
-    for (QNEPort *port : m_outputs) {
+    for (auto *port : m_outputs) {
         ds << reinterpret_cast<quint64>(port);
         ds << port->portName();
         ds << port->portFlags();
@@ -220,12 +216,12 @@ void GraphicElement::save(QDataStream &ds) const
     for (const QString &skinName : m_pixmapSkinName) {
         ds << skinName;
     }
-    COMMENT("Finished saving element.", 4);
+    qCDebug(four) << "Finished saving element.";
 }
 
 void GraphicElement::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
 {
-    COMMENT("Loading element. Type: " << objectName().toStdString(), 4);
+    qCDebug(four) << "Loading element. Type:" << objectName();
     loadPos(ds);
     loadAngle(ds);
     /* <Version1.2> */
@@ -241,9 +237,9 @@ void GraphicElement::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, do
     loadOutputPorts(ds, portMap);
     /* <\Version2.7> */
     loadPixmapSkinNames(ds, version);
-    COMMENT("Updating port positions.", 4);
+    qCDebug(four) << "Updating port positions.";
     updatePorts();
-    COMMENT("Finished loading element.", 4);
+    qCDebug(four) << "Finished loading element.";
 }
 
 void GraphicElement::loadPos(QDataStream &ds)
@@ -277,7 +273,7 @@ void GraphicElement::loadMinMax(QDataStream &ds, double version)
         ds >> max_isz;
         ds >> min_osz;
         ds >> max_osz;
-        //     FIXME: Was it a bad decision to store Min and Max input/output sizes?
+        // FIXME: Was it a bad decision to store Min and Max input/output sizes?
         /* Version 2.2 ?? fix ?? */
         if (!((m_minInputSz == m_maxInputSz) && (m_minInputSz > max_isz))) {
             m_minInputSz = min_isz;
@@ -301,11 +297,11 @@ void GraphicElement::loadTrigger(QDataStream &ds, double version)
 
 void GraphicElement::loadInputPorts(QDataStream &ds, QMap<quint64, QNEPort *> &portMap)
 {
-    COMMENT("Loading input ports.", 4);
+    qCDebug(four) << "Loading input ports.";
     quint64 inputSz;
     ds >> inputSz;
-    if (inputSz > MAXIMUMVALIDINPUTSIZE) {
-        throw std::runtime_error(ERRORMSG("Corrupted DataStream!"));
+    if (inputSz > maximumValidInputSize) {
+        throw std::runtime_error(ERRORMSG(QObject::tr("Corrupted DataStream!").toStdString()));
     }
     for (size_t port = 0; port < inputSz; ++port) {
         loadInputPort(ds, portMap, port);
@@ -366,11 +362,11 @@ void GraphicElement::removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPo
 
 void GraphicElement::loadOutputPorts(QDataStream &ds, QMap<quint64, QNEPort *> &portMap)
 {
-    COMMENT("Loading output ports.", 4);
+    qCDebug(four) << "Loading output ports.";
     quint64 outputSz;
     ds >> outputSz;
-    if (outputSz > MAXIMUMVALIDINPUTSIZE) {
-        throw std::runtime_error(ERRORMSG("Corrupted DataStream!"));
+    if (outputSz > maximumValidInputSize) {
+        throw std::runtime_error(ERRORMSG(QObject::tr("Corrupted DataStream!").toStdString()));
     }
     for (size_t port = 0; port < outputSz; ++port) {
         loadOutputPort(ds, portMap, port);
@@ -401,11 +397,11 @@ void GraphicElement::loadOutputPort(QDataStream &ds, QMap<quint64, QNEPort *> &p
 void GraphicElement::loadPixmapSkinNames(QDataStream &ds, double version)
 {
     if (version >= 2.7) {
-        COMMENT("Loading pixmap skin names.", 4);
+        qCDebug(four) << "Loading pixmap skin names.";
         quint64 outputSz;
         ds >> outputSz;
-        if (outputSz > MAXIMUMVALIDINPUTSIZE) {
-            throw std::runtime_error(ERRORMSG("Corrupted DataStream!"));
+        if (outputSz > maximumValidInputSize) {
+            throw std::runtime_error(ERRORMSG(QObject::tr("Corrupted DataStream!").toStdString()));
         }
         for (size_t port = 0; port < outputSz; ++port) {
             loadPixmapSkinName(ds, port);
@@ -419,19 +415,19 @@ void GraphicElement::loadPixmapSkinName(QDataStream &ds, size_t skin)
     QString name;
     ds >> name;
     if ((skin < static_cast<size_t>(m_pixmapSkinName.size()))) {
-        if (name[0] != ":") {
+        if (name[0] != ':') {
             QDir dir(QFileInfo(GlobalProperties::currentFile).absoluteDir());
             QString filename(QFileInfo(name).fileName());
             QFileInfo fileInfo(dir, filename);
-            COMMENT("Skin filename: " << fileInfo.absoluteFilePath().toStdString(), 0);
+            qCDebug(zero) << "Skin filename:" << fileInfo.absoluteFilePath();
             if (fileInfo.isFile()) {
                 m_pixmapSkinName[skin] = fileInfo.absoluteFilePath();
             } else {
-                std::cout << "Could not load some of the skins." << std::endl;
+                qCDebug(zero) << "Could not load some of the skins.";
             }
         }
     } else {
-        std::cout << "Could not load some of the skins." << std::endl;
+        qCDebug(zero) << "Could not load some of the skins.";
     }
 }
 
@@ -464,7 +460,7 @@ void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 
 QNEPort *GraphicElement::addPort(const QString &name, bool isOutput, int flags, int ptr)
 {
-    COMMENT("Adding new port.", 4);
+    qCDebug(four) << "Adding new port.";
     if (isOutput && (static_cast<quint64>(m_outputs.size()) >= m_maxOutputSz)) {
         return nullptr;
     }
@@ -474,18 +470,18 @@ QNEPort *GraphicElement::addPort(const QString &name, bool isOutput, int flags, 
     QNEPort *port = nullptr;
     if (isOutput) {
         m_outputs.push_back(new QNEOutputPort(this));
-        port = dynamic_cast<QNEPort *>(m_outputs.last());
+        port = m_outputs.last();
         port->setIndex(outputSize() - 1);
     } else {
         m_inputs.push_back(new QNEInputPort(this));
-        port = dynamic_cast<QNEPort *>(m_inputs.last());
+        port = m_inputs.last();
         port->setIndex(inputSize() - 1);
     }
     port->setName(name);
     port->setGraphicElement(this);
     port->setPortFlags(flags);
     port->setPtr(ptr);
-    COMMENT("Updating new port.", 4);
+    qCDebug(four) << "Updating new port.";
     GraphicElement::updatePorts();
     port->show();
     return port;
@@ -504,7 +500,7 @@ void GraphicElement::addOutputPort(const QString &name)
 void GraphicElement::setPortName(const QString &name)
 {
     setObjectName(name);
-    //setToolTip(name);
+    // setToolTip(name);
 }
 
 void GraphicElement::setSkin(bool defaultSkin, const QString &filename)
@@ -515,7 +511,7 @@ void GraphicElement::setSkin(bool defaultSkin, const QString &filename)
 
 void GraphicElement::updatePorts()
 {
-    COMMENT("Updating port positions that belong to the IC.", 5);
+    qCDebug(five) << "Updating port positions that belong to the IC.";
     int inputPos = m_topPosition;
     int outputPos = m_bottomPosition;
     if (m_outputsOnTop) {
@@ -525,8 +521,8 @@ void GraphicElement::updatePorts()
     if (!m_outputs.isEmpty()) {
         int step = qMax(32 / m_outputs.size(), 6);
         int x = 32 - m_outputs.size() * step + step;
-        foreach (QNEPort *port, m_outputs) {
-            COMMENT("Setting output at " << x << ", " << outputPos, 5);
+        for (auto *port : qAsConst(m_outputs)) {
+            qCDebug(five) << "Setting output at" << x << "," << outputPos;
             port->setPos(x, outputPos);
             port->update();
             x += step * 2;
@@ -535,8 +531,8 @@ void GraphicElement::updatePorts()
     if (!m_inputs.isEmpty()) {
         int step = qMax(32 / m_inputs.size(), 6);
         int x = 32 - m_inputs.size() * step + step;
-        foreach (QNEPort *port, m_inputs) {
-            COMMENT("Setting input at " << x << ", " << inputPos, 5);
+        for (auto *port : qAsConst(m_inputs)) {
+            qCDebug(five) << "Setting input at" << x << "," << inputPos;
             port->setPos(x, inputPos);
             port->update();
             x += step * 2;
@@ -551,10 +547,10 @@ void GraphicElement::refresh()
 
 QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
 {
-    COMMENT("Align to grid.", 4);
+    qCDebug(four) << "Align to grid.";
     if ((change == ItemPositionChange) && scene()) {
         QPointF newPos = value.toPointF();
-        auto *customScene = dynamic_cast<Scene *>(scene());
+        auto *customScene = qobject_cast<Scene *>(scene());
         if (customScene) {
             int gridSize = customScene->gridSize();
             qreal xV = qRound(newPos.x() / gridSize) * gridSize;
@@ -563,12 +559,12 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
         }
         return newPos;
     }
-    COMMENT("Moves wires.", 4);
+    qCDebug(four) << "Moves wires.";
     if ((change == ItemScenePositionHasChanged) || (change == ItemRotationHasChanged) || (change == ItemTransformHasChanged)) {
-        foreach (QNEPort *port, m_outputs) {
+        for (auto *port : qAsConst(m_outputs)) {
             port->updateConnections();
         }
-        foreach (QNEPort *port, m_inputs) {
+        for (auto *port : qAsConst(m_inputs)) {
             port->updateConnections();
         }
     }
@@ -600,7 +596,7 @@ void GraphicElement::setTrigger(const QKeySequence &trigger)
 
 QString GraphicElement::genericProperties()
 {
-    return QString();
+    return {};
 }
 
 void GraphicElement::updateLabel()
@@ -629,19 +625,19 @@ QString GraphicElement::getLabel() const
 
 void GraphicElement::updateTheme()
 {
-    if (ThemeManager::globalMngr) {
-        const ThemeAttrs attrs = ThemeManager::globalMngr->getAttrs();
+    if (ThemeManager::globalManager) {
+        const ThemeAttrs attrs = ThemeManager::globalManager->getAttrs();
 
         m_label->setDefaultTextColor(attrs.graphicElement_labelColor);
         m_selectionBrush = attrs.selectionBrush;
         m_selectionPen = attrs.selectionPen;
-        for (QNEInputPort *input : qAsConst(m_inputs)) {
+        for (auto *input : qAsConst(m_inputs)) {
             input->updateTheme();
         }
-        for (QNEOutputPort *output : qAsConst(m_outputs)) {
+        for (auto *output : qAsConst(m_outputs)) {
             output->updateTheme();
         }
-        //updateThemeLocal();
+        // updateThemeLocal();
         setPixmap(m_currentPixmapName);
         update();
     }
@@ -653,9 +649,9 @@ void GraphicElement::updateThemeLocal()
 
 bool GraphicElement::isValid()
 {
-    COMMENT("Checking if the element has the required signals to comput its value.", 4);
+    qCDebug(four) << "Checking if the element has the required signals to compute its value.";
     bool valid = true;
-    for (QNEInputPort *input : qAsConst(m_inputs)) {
+    for (auto *input : qAsConst(m_inputs)) {
         /* Required inputs must have exactly one connection. */
         if (!input->isValid()) {
             valid = false;
@@ -663,10 +659,10 @@ bool GraphicElement::isValid()
         }
     }
     if (!valid) {
-        for (QNEOutputPort *output : qAsConst(m_outputs)) {
-            for (QNEConnection *conn : output->connections()) {
+        for (auto *output : qAsConst(m_outputs)) {
+            for (auto *conn : output->connections()) {
                 conn->setStatus(QNEConnection::Status::Invalid);
-                QNEInputPort *port = conn->otherPort(output);
+                auto *port = conn->otherPort(output);
                 if (port) {
                     port->setValue(-1);
                 }
@@ -693,7 +689,7 @@ void GraphicElement::setColor(const QString &color)
 
 QString GraphicElement::getColor() const
 {
-    return QString();
+    return {};
 }
 
 void GraphicElement::setAudio(const QString &audio)
@@ -703,7 +699,7 @@ void GraphicElement::setAudio(const QString &audio)
 
 QString GraphicElement::getAudio() const
 {
-    return QString();
+    return {};
 }
 
 void GraphicElement::setHasColors(bool hasColors)
@@ -806,7 +802,7 @@ float GraphicElement::getFrequency() const
     return 0.0;
 }
 
-void GraphicElement::setFrequency(float)
+void GraphicElement::setFrequency(float /*freq*/)
 {
 }
 
@@ -878,7 +874,16 @@ void GraphicElement::setOutputsOnTop(bool outputsOnTop)
     updatePorts();
 }
 
-bool GraphicElement::disabled()
+bool GraphicElement::disabled() const
 {
     return m_disabled;
+}
+
+QDataStream &operator<<(QDataStream &ds, const GraphicElement *item){
+    qDebug(four) << "Writing element.";
+    const auto *elm = qgraphicsitem_cast<const GraphicElement *>(item);
+    ds << GraphicElement::Type;
+    ds << static_cast<quint64>(elm->elementType());
+    elm->save(ds);
+    return ds;
 }

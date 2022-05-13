@@ -1,39 +1,37 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef SCENE_H
-#define SCENE_H
+#pragma once
 
 #include <QGraphicsScene>
-#include <QObject>
 
 class GraphicElement;
 class QNEConnection;
 
 class Scene : public QGraphicsScene
 {
+    Q_OBJECT
+
 public:
     explicit Scene(QObject *parent = nullptr);
-    Scene(const QRectF &sceneRect, QObject *parent = nullptr);
-    Scene(qreal x, qreal y, qreal width, qreal height, QObject *parent = nullptr);
+    explicit Scene(const QRectF &sceneRect, QObject *parent = nullptr);
+    explicit Scene(qreal x, qreal y, qreal width, qreal height, QObject *parent = nullptr);
 
-    /* QGraphicsScene interface */
-    int gridSize() const;
     QVector<GraphicElement *> getElements();
     QVector<GraphicElement *> getElements(const QRectF &rect);
-    QVector<QNEConnection *> getConnections();
+    QVector<GraphicElement *> getVisibleElements();
     QVector<GraphicElement *> selectedElements();
-
+    QVector<QNEConnection *> getConnections();
+    int gridSize() const;
     void setDots(const QPen &dots);
 
-    QVector<GraphicElement *> getVisibleElements();
-
-protected:
-    void drawBackground(QPainter *painter, const QRectF &rect) override;
+private:
     static constexpr int m_gridSize = 16;
+
+    void drawBackground(QPainter *painter, const QRectF &rect) override;
+
     QPen m_dots;
 };
 
-#endif /* SCENE_H */

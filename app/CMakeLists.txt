@@ -1,8 +1,8 @@
-
 set(
     WPANDA_FILES
+    arduino/codegenerator.cpp
     bewaveddolphin.cpp
-    clockDialog.cpp
+    clockdialog.cpp
     commands.cpp
     common.cpp
     editor.cpp
@@ -22,10 +22,12 @@ set(
     icprototypeimpl.cpp
     itemwithid.cpp
     label.cpp
-    LengthDialog.cpp
+    lengthdialog.cpp
     listitemwidget.cpp
     logicelement.cpp
     mainwindow.cpp
+    nodes/qneconnection.cpp
+    nodes/qneport.cpp
     recentfilescontroller.cpp
     scene.cpp
     scstop.cpp
@@ -33,11 +35,6 @@ set(
     simplewaveform.cpp
     simulationcontroller.cpp
     thememanager.cpp
-
-    arduino/codegenerator.cpp
-
-    nodes/qneconnection.cpp
-    nodes/qneport.cpp
 )
 
 add_library(wpandacommon ${WPANDA_FILES} )
@@ -55,23 +52,23 @@ add_subdirectory(logicelement)
 
 qt5_add_resources(
     WPANDA_RESOURCES
-    resources/dolphin/dolphin.qrc
-    resources/resources.qrc
     resources/basic/basic.qrc
+    resources/dolphin/dolphin.qrc
     resources/input/input.qrc
-    resources/output/output.qrc
-    resources/toolbar/toolbar.qrc
     resources/memory/dark/memory_dark.qrc
     resources/memory/light/memory_light.qrc
+    resources/output/output.qrc
+    resources/resources.qrc
+    resources/toolbar/toolbar.qrc
 )
 
 set (
     WPANDA_FORMS
     bewaveddolphin.ui
-    clockDialog.ui
-    LengthDialog.ui
-    mainwindow.ui
+    clockdialog.ui
     elementeditor.ui
+    lengthdialog.ui
+    mainwindow.ui
     simplewaveform.ui
 )
 

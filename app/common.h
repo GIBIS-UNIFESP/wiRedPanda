@@ -1,33 +1,24 @@
 /*
- * Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef COMMON_H
-#define COMMON_H
+#pragma once
 
+#include <QLoggingCategory>
 #include <iostream>
+
+Q_DECLARE_LOGGING_CATEGORY(zero)
+Q_DECLARE_LOGGING_CATEGORY(one)
+Q_DECLARE_LOGGING_CATEGORY(two)
+Q_DECLARE_LOGGING_CATEGORY(three)
+Q_DECLARE_LOGGING_CATEGORY(four)
+Q_DECLARE_LOGGING_CATEGORY(five)
 
 class Comment
 {
 public:
-    static int verbosity;
-
-    static void setVerbosity(int vb)
-    {
-        verbosity = vb;
-    }
+    static void setVerbosity(const int verbosity);
 };
 
-#ifdef DEBUG
-#define COMMENT(exp, num)                                                                                                                                      \
-    if (Comment::verbosity > num) {                                                                                                                            \
-        std::cerr << __FILE__ << ": " << __LINE__ << ": " << __FUNCTION__ << " => " << exp << std::endl;                                                       \
-    }
-#else
-#define COMMENT(exp, num)
-#endif
-
 #define ERRORMSG(exp) std::string(__FILE__) + ": " + std::to_string(__LINE__) + ": " + std::string(__FUNCTION__) + ": Error: " + exp
-
-#endif // COMMON_H

@@ -1,13 +1,7 @@
-// Copyright 2015 - 2021, GIBIS-Unifesp and the wiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "icmanager.h"
-
-#include <QApplication>
-#include <qdebug.h>
-#include <QFileInfo>
-#include <QMessageBox>
-#include <QSettings>
 
 #include "common.h"
 #include "globalproperties.h"
@@ -15,13 +9,18 @@
 #include "icnotfoundexception.h"
 #include "icprototype.h"
 #include "mainwindow.h"
+#include "settings.h"
+
+#include <QApplication>
+#include <QDebug>
+#include <QFileInfo>
+#include <QMessageBox>
 
 ICManager *ICManager::globalICManager = nullptr;
 
 ICManager::ICManager(MainWindow *mainWindow, QObject *parent)
     : QObject(parent)
     , m_mainWindow(mainWindow)
-    , requiresReload()
 {
     if (globalICManager == nullptr) {
         globalICManager = this;
@@ -32,10 +31,8 @@ ICManager::ICManager(MainWindow *mainWindow, QObject *parent)
 ICManager::~ICManager()
 {
     clear();
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(), QApplication::applicationName());
-    settings.setValue("recentICs", "");
+    Settings::setValue("recentICs", "");
 
-    // fprintf(stderr, "Removing IC manager");
     if (globalICManager == this) {
         globalICManager = nullptr;
     }
@@ -43,19 +40,19 @@ ICManager::~ICManager()
 
 void ICManager::clear()
 {
-    COMMENT("Clear ICManager", 3);
+    qCDebug(three) << "Clear ICManager.";
     QMap<QString, ICPrototype *> ics_aux = m_ics;
     m_ics.clear();
     qDeleteAll(ics_aux);
-    if (m_fileWatcher.files().size() > 0) {
+    if (!m_fileWatcher.files().empty()) {
         m_fileWatcher.removePaths(m_fileWatcher.files());
     }
-    COMMENT("Finished clearing ICManager.", 3);
+    qCDebug(three) << "Finished clearing ICManager.";
 }
 
 bool ICManager::loadIC(IC *ic, QString fname)
 {
-    //qDebug() << "Loading IC file ....... " << fname;
+    // qCDebug(zero) << "Loading IC file ......." << fname;
     if (!loadFile(fname)) {
         return false;
     }
@@ -65,13 +62,13 @@ bool ICManager::loadIC(IC *ic, QString fname)
 
 bool ICManager::loadFile(QString &fname)
 {
-    COMMENT("Loading file " << fname.toStdString(), 3);
+    qCDebug(three) << "Loading file:" << fname;
     QFileInfo finfo;
-    //qDebug() << "Current main window dir: " << QFileInfo(GlobalProperties::currentFile).absolutePath();
+    // qCDebug(zero) << "Current main window dir:" << QFileInfo(GlobalProperties::currentFile).absolutePath();
     finfo.setFile(QFileInfo(GlobalProperties::currentFile).absolutePath(), QFileInfo(fname).fileName());
-    //qDebug() << "IC file: " << finfo.absoluteFilePath();
+    // qCDebug(zero) << "IC file:" << finfo.absoluteFilePath();
     if (GlobalProperties::verbose) {
-        if ((!finfo.exists()) || (!finfo.isFile())) {
+        if (!finfo.exists() || !finfo.isFile()) {
             QMessageBox::warning(m_mainWindow, tr("File error."), tr("Error loading IC file ")+finfo.fileName());
             return false;
         }
@@ -80,10 +77,10 @@ bool ICManager::loadFile(QString &fname)
     }
     m_fileWatcher.addPath(finfo.absoluteFilePath());
     if (m_ics.contains(finfo.baseName())) {
-        COMMENT("IC already inserted: " << finfo.baseName().toStdString(), 3);
+        qCDebug(three) << "IC already inserted:" << finfo.baseName();
     } else {
-        COMMENT("Inserting IC: " << finfo.baseName().toStdString(), 3);
-        //qDebug() << "Inserting IC: " << finfo.absoluteFilePath();
+        qCDebug(three) << "Inserting IC:" << finfo.baseName();
+        // qCDebug(zero) << "Inserting IC:" << finfo.absoluteFilePath();
         auto *prototype = new ICPrototype(finfo.absoluteFilePath());
         if (!prototype->reload()) {
             if (GlobalProperties::verbose) {
@@ -94,19 +91,19 @@ bool ICManager::loadFile(QString &fname)
                 Q_ASSERT(false);
             }
         }
-        //qDebug() << "Really Inserting IC: " << finfo.baseName();
+        // qCDebug(zero) << "Really Inserting IC:" << finfo.baseName();
         m_ics.insert(finfo.baseName(), prototype);
     }
     return true;
 }
 
-void ICManager::openIC(QString fname)
+void ICManager::openIC(const QString &fname)
 {
-    COMMENT("Opening IC file " << fname.toStdString(), 0);
+    qCDebug(zero) << "Opening IC file:" << fname;
     m_mainWindow->loadPandaFile(fname);
 }
 
-ICPrototype *ICManager::getPrototype(const QString& fname)
+ICPrototype *ICManager::getPrototype(const QString &fname)
 {
     Q_ASSERT(!fname.isEmpty());
     QFileInfo finfo(fname);
@@ -126,9 +123,9 @@ void ICManager::setGlobalInstance(ICManager *icManager)
     globalICManager = icManager;
 }
 
-void ICManager::setReloadFile(const QString& fileName)
+void ICManager::setReloadFile(const QString &fileName)
 {
-    COMMENT("Change in IC " << fileName.toStdString() << " detected.", 0);
+    qCDebug(zero) << "Detected change in IC:" << fileName;
     QString bname = QFileInfo(fileName).baseName();
     m_fileWatcher.addPath(fileName);
     if (!requiresReload.contains(bname)) {
@@ -141,12 +138,12 @@ void ICManager::setReloadFile(const QString& fileName)
 
 void ICManager::wakeUp()
 {
-    for (QString &bname: requiresReload) {
+    for (QString &bname : requiresReload) {
         if (m_ics.contains(bname)) {
             try {
                 m_ics[bname]->reload();
-            }  catch (...) {
-                QMessageBox::warning(m_mainWindow, tr("File error."), tr("Error reloading changed IC file. Perhaps it was deleted."));
+            } catch (...) {
+                QMessageBox::critical(m_mainWindow, tr("Error!"), tr("Error reloading changed IC file. Perhaps it was deleted."));
             }
         }
     }
