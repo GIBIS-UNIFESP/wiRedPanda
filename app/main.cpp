@@ -14,7 +14,7 @@
 
 int main(int argc, char *argv[])
 {
-    Comment::setVerbosity(1); // change to -1 to disable comments
+    Comment::setVerbosity(-1);
 
 #ifdef Q_OS_WIN
     if (AttachConsole(ATTACH_PARENT_PROCESS)) {
@@ -41,6 +41,12 @@ int main(int argc, char *argv[])
         parser.addVersionOption();
         parser.addPositionalArgument("file", QCoreApplication::translate("main", "Circuit file to open."));
 
+        QCommandLineOption verbosityOption(
+                    {"v2", "verbosity"},
+                    QCoreApplication::translate("main", "Verbosity level, -1 to disable or 0 to 5"),
+                    QCoreApplication::translate("main", "verbosity level"));
+        parser.addOption(verbosityOption);
+
         QCommandLineOption arduinoFileOption(
                     {"a", "arduino-file"},
                     QCoreApplication::translate("main", "Export circuit to <arduino-file>"),
@@ -55,7 +61,10 @@ int main(int argc, char *argv[])
 
         parser.process(app);
 
-        // TODO: process verbosity level/format
+        QString verbosity = parser.value(verbosityOption);
+        if (!verbosity.isEmpty()) {
+            Comment::setVerbosity(verbosity.toInt());
+        }
 
         QStringList args = parser.positionalArguments();
         auto *window = new MainWindow(nullptr, (!args.empty() ? QString(args[0]) : QString()));
