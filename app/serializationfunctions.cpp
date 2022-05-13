@@ -49,11 +49,9 @@ bool SerializationFunctions::deserialize(QDataStream &ds, QList<QGraphicsItem *>
         int32_t type;
         ds >> type;
         qCDebug(three) << "Type:" << type;
-
         if (type != GraphicElement::Type && type != QNEConnection::Type) {
             throw(std::runtime_error(ERRORMSG(QObject::tr("Invalid type. Data is possibly corrupted.").toStdString())));
         }
-
         if (type == GraphicElement::Type) {
             ElementType elmType;
             ds >> elmType;
@@ -74,11 +72,9 @@ bool SerializationFunctions::deserialize(QDataStream &ds, QList<QGraphicsItem *>
                 qCDebug(zero) << "Could not build element.";
                 return false;
             }
-
             elm->setSelected(true);
         }
-
-        if (type == QNEConnection::Type) {
+        else if (type == QNEConnection::Type) {
             qCDebug(three) << "Reading Connection.";
             QNEConnection *conn = ElementFactory::buildConnection();
             qCDebug(three) << "Connection built.";
