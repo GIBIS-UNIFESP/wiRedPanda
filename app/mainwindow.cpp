@@ -51,7 +51,6 @@ MainWindow::MainWindow(QWidget *parent, const QString &filename)
     , m_loadedAutoSave(false)
 {
     qCDebug(zero) << "WiRedPanda Version =" << APP_VERSION << "OR" << GlobalProperties::version;
-
     ui->setupUi(this);
     ThemeManager::globalManager = new ThemeManager(this);
 
@@ -428,9 +427,12 @@ int MainWindow::closeTabAnyway()
     return msgBox.exec();
 }
 
-
 int MainWindow::recoverAutoSaveFile(const QString &autosaveFilename)
 {
+    if (!GlobalProperties::verbose) {
+        return QMessageBox::NoToAll;
+    }
+
     QMessageBox msgBox;
     msgBox.setParent(this);
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll);
@@ -495,9 +497,8 @@ bool MainWindow::loadPandaFile(const QString &fname)
 {
     QFile fl(fname);
     if (!fl.exists()) {
-        QMessageBox::critical(this, tr("Error!"), tr("File \"%1\" does not exist!").arg(fname), QMessageBox::Ok, QMessageBox::NoButton);
         qCDebug(zero) << "Error: This file does not exist:" << fname;
-        return false;
+        throw std::runtime_error(tr("File \"%1\" does not exist!").arg(fname).toStdString());
     }
     qCDebug(zero) << "File exists";
     if (fl.open(QFile::ReadOnly)) {
@@ -513,10 +514,9 @@ bool MainWindow::loadPandaFile(const QString &fname)
             updateICList();
         } catch (std::runtime_error &e) {
             qCDebug(zero) << "Error loading project:" << e.what();
-            QMessageBox::critical(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
             closeTab(m_tabs.size() - 1);
             selectTab(current_tab);
-            return false;
+            throw std::runtime_error(tr("Could not open file.\nError: %1").arg(e.what()).toStdString());
         }
     } else {
         qCDebug(zero) << "Could not open file in ReadOnly mode:" << fname;
@@ -1033,8 +1033,7 @@ bool MainWindow::exportToArduino(QString fname)
 
         qCDebug(zero) << "Arduino code successfully generated.";
     } catch (std::runtime_error &e) {
-        QMessageBox::critical(this, tr("Error!"), tr("<strong>Error while exporting to Arduino code:</strong><br>%1").arg(e.what()));
-        return false;
+        throw std::runtime_error(tr("<strong>Error while exporting to Arduino code:</strong><br>%1").arg(e.what()).toStdString());
     }
 
     return true;
@@ -1046,7 +1045,7 @@ bool MainWindow::exportToWaveFormFile(const QString &fname)
         if (fname.isEmpty()) {
             return false;
         }
-        m_bd = new BewavedDolphin(m_editor, this, false);
+        m_bd = new BewavedDolphin(m_editor, false, this);
         if (!m_bd->createWaveform(fname)) {
             qCDebug(zero) << "Could not open waveform file:" << m_currentFile.fileName();
             delete m_bd;
@@ -1055,8 +1054,7 @@ bool MainWindow::exportToWaveFormFile(const QString &fname)
         m_bd->print();
     } catch (std::runtime_error &e) {
         setEnabled(true);
-        QMessageBox::critical(this, tr("Error!"), tr("<strong>Error while exporting to waveform file:</strong><br>%1").arg(e.what()));
-        return false;
+        throw std::runtime_error(tr("<strong>Error while exporting to waveform file:</strong><br>%1").arg(e.what()).toStdString());
     }
     return true;
 }
@@ -1144,8 +1142,7 @@ void MainWindow::on_actionPrint_triggered()
     printer.setOutputFileName(pdfFile);
     QPainter p;
     if (!p.begin(&printer)) {
-        QMessageBox::critical(this, tr("Error!"), tr("Could not print this circuit to PDF."), QMessageBox::Ok);
-        return;
+        throw std::runtime_error(tr("Could not print this circuit to PDF.").toStdString());
     }
     m_editor->getScene()->render(&p, QRectF(), m_editor->getScene()->itemsBoundingRect().adjusted(-64, -64, 64, 64));
     p.end();
@@ -1215,15 +1212,13 @@ void MainWindow::loadTranslation(const QString &language)
     m_pandaTranslator = new QTranslator(this);
 
     if (!m_pandaTranslator->load(pandaFile) || !qApp->installTranslator(m_pandaTranslator)) {
-        QMessageBox::critical(this, "Error!", "Error loading WiRedPanda translation!");
-        return;
+        throw std::runtime_error("Error loading WiRedPanda translation!");
     }
 
     m_qtTranslator = new QTranslator(this);
 
     if (!m_qtTranslator->load(qtFile) || !qApp->installTranslator(m_qtTranslator)) {
-        QMessageBox::critical(this, "Error!", "Error loading Qt translation!");
-        return;
+        throw std::runtime_error("Error loading Qt translation!");
     }
 
     retranslateUi();
@@ -1302,7 +1297,7 @@ void MainWindow::on_actionFast_Mode_triggered(bool checked)
 void MainWindow::on_actionWaveform_triggered()
 {
     if (m_bd == nullptr) {
-        m_bd = new BewavedDolphin(m_editor, this);
+        m_bd = new BewavedDolphin(m_editor, true, this);
     }
     if (m_bd->createWaveform(m_dolphinFileName)) {
         qCDebug(zero) << "BD filename:" << m_dolphinFileName;

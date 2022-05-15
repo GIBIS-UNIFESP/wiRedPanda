@@ -805,9 +805,9 @@ void Editor::load(QDataStream &ds)
     m_simulationController->stop();
     qCDebug(zero) << "Stopped simulation.";
     double version = SerializationFunctions::loadVersion(ds);
-    if (version > GlobalProperties::version) {
+    if (version > GlobalProperties::version && GlobalProperties::verbose) {
         QMessageBox::warning(m_mainWindow, tr("Newer version file."), tr("Warning! Your WiRedPanda is possibly outdated.\n The file you are opening has been saved in a newer version.\n Please, check for updates."));
-    } else if (version < 4.0) {
+    } else if (version < 4.0 && GlobalProperties::verbose) {
         QMessageBox::warning(m_mainWindow, tr("Old version file."), tr("Warning! This is an old version WiRedPanda project file (version < 4.0). To open it correctly, save all ICs and skins into the main project directory."));
     }
     qCDebug(zero) << "Version:" << version;

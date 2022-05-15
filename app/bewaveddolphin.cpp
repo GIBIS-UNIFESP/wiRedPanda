@@ -9,6 +9,7 @@
 #include "editor.h"
 #include "elementfactory.h"
 #include "elementmapping.h"
+#include "globalproperties.h"
 #include "graphicelement.h"
 #include "graphicsview.h"
 #include "graphicsviewzoom.h"
@@ -62,13 +63,13 @@ void SignalDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
     QItemDelegate::paint(painter, itemOption, index);
 }
 
-BewavedDolphin::BewavedDolphin(Editor *editor, QWidget *parent, bool ask_connection)
+BewavedDolphin::BewavedDolphin(Editor *editor, bool askConnection, QWidget *parent)
     : QMainWindow(parent)
-    , m_ask_connection(ask_connection)
     , m_ui(new Ui::BewavedDolphin)
     , m_editor(editor)
     , m_mainWindow(dynamic_cast<MainWindow *>(parent))
     , m_type(PlotType::Line)
+    , m_askConnection(askConnection)
 {
     m_ui->setupUi(this);
     m_scale = 1.0;
@@ -150,7 +151,7 @@ void BewavedDolphin::drawPixMaps()
 
 void BewavedDolphin::closeEvent(QCloseEvent *e)
 {
-    if (m_ask_connection && checkSave()) {
+    if (m_askConnection && checkSave()) {
         m_mainWindow->setEnabled(true);
         e->accept();
     } else {
@@ -342,8 +343,8 @@ void BewavedDolphin::loadNewTable(const QStringList &input_labels, const QString
     m_model = new SignalModel(input_labels.size() + output_labels.size(), input_labels.size(), iterations, this);
     m_signalTableView->setModel(m_model);
     QStringList horizontalHeaderLabels;
-    for( int idx = 0; idx < iterations; ++idx ) {
-      horizontalHeaderLabels.append( QString::fromStdString(std::to_string( idx ) ) );
+    for (int idx = 0; idx < iterations; ++idx) {
+      horizontalHeaderLabels.append(QString::number(idx));
     }
     m_model->setVerticalHeaderLabels(input_labels + output_labels);
     m_model->setHorizontalHeaderLabels(horizontalHeaderLabels);
@@ -405,8 +406,7 @@ bool BewavedDolphin::createWaveform(const QString &filename)
     this->setEnabled(true);
     qCDebug(zero) << "Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.";
     if (!loadElements()) {
-        QMessageBox::critical(parentWidget(), tr("Error"), tr("Could not load enough elements for the simulation."));
-        return false;
+        throw std::runtime_error(tr("Could not load enough elements for the simulation.").toStdString());
     }
     QStringList input_labels;
     QStringList output_labels;
@@ -443,7 +443,7 @@ void BewavedDolphin::print()
     std::cout << std::to_string(m_model->rowCount()).c_str() << ",";
     std::cout << std::to_string(m_model->columnCount()).c_str() << ",\n";
     for (int row = 0; row < m_model->rowCount(); ++row) {
-        std::cout << m_model->verticalHeaderItem(row)->text().toStdString() << ": ";
+        // std::cout << m_model->verticalHeaderItem(row)->text().toStdString() << ": ";
         for (int col = 0; col < m_model->columnCount(); ++col) {
             QString val = m_model->item(row, col)->text();
             std::cout << val.toStdString().c_str() << ",";
@@ -582,8 +582,8 @@ void BewavedDolphin::setLength(int sim_length, bool run_simulation)
         qCDebug(zero) << "Reducing or keeping the simulation length.";
         m_model->setColumnCount(sim_length);
         QStringList horizontalHeaderLabels;
-        for( int idx = 0; idx < sim_length; ++idx ) {
-          horizontalHeaderLabels.append( QString::fromStdString(std::to_string( idx ) ) );
+        for (int idx = 0; idx < sim_length; ++idx) {
+          horizontalHeaderLabels.append(QString::number(idx));
         }
         m_model->setHorizontalHeaderLabels(horizontalHeaderLabels);
         resizeScene();
@@ -594,8 +594,8 @@ void BewavedDolphin::setLength(int sim_length, bool run_simulation)
     int old_length = m_model->columnCount();
     m_model->setColumnCount(sim_length);
     QStringList horizontalHeaderLabels;
-    for( int idx = 0; idx < sim_length; ++idx ) {
-      horizontalHeaderLabels.append( QString::fromStdString(std::to_string( idx ) ) );
+    for (int idx = 0; idx < sim_length; ++idx) {
+      horizontalHeaderLabels.append(QString::number(idx));
     }
     m_model->setHorizontalHeaderLabels(horizontalHeaderLabels);
     for (int row = 0; row < m_input_ports; ++row) {
@@ -755,7 +755,7 @@ void BewavedDolphin::paste(QItemSelection &ranges, QDataStream &ds)
 
 void BewavedDolphin::associateToWiredPanda(const QString &fname)
 {
-    if (m_mainWindow->getDolphinFilename() != fname) {
+    if (m_mainWindow->getDolphinFilename() != fname && GlobalProperties::verbose) {
         auto reply =
             QMessageBox::question(
                 this,
@@ -925,8 +925,7 @@ bool BewavedDolphin::load(const QString &fname)
 {
     QFile fl(fname);
     if (!fl.exists()) {
-        QMessageBox::critical(this, tr("Error!"), tr("File \"%1\" does not exist!").arg(fname), QMessageBox::Ok, QMessageBox::NoButton);
-        return false;
+        throw std::runtime_error(tr("File \"%1\" does not exist!").arg(fname).toStdString());
     }
     qCDebug(zero) << "File exists.";
     if (fl.open(QFile::ReadOnly)) {
@@ -941,8 +940,7 @@ bool BewavedDolphin::load(const QString &fname)
                 m_currentFile = QFileInfo(fname);
             } catch (std::runtime_error &e) {
                 qCDebug(zero) << tr("Error loading project:") << e.what();
-                QMessageBox::critical(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
-                return false;
+                throw std::runtime_error(tr("Could not open file.\nError: %1").arg(e.what()).toStdString());
             }
         } else if (fname.endsWith(".csv")) {
             qCDebug(zero) << "CSV file opened.";
@@ -953,8 +951,7 @@ bool BewavedDolphin::load(const QString &fname)
                 m_currentFile = QFileInfo(fname);
             } catch (std::runtime_error &e) {
                 qCDebug(zero) << tr("Error loading project:") << e.what();
-                QMessageBox::critical(this, tr("Error!"), tr("Could not open file.\nError: %1").arg(e.what()), QMessageBox::Ok, QMessageBox::NoButton);
-                return false;
+                throw std::runtime_error(tr("Could not open file.\nError: %1").arg(e.what()).toStdString());
             }
         } else {
             qCDebug(zero) << tr("Format not supported. Could not open file:") << fname;
@@ -962,8 +959,7 @@ bool BewavedDolphin::load(const QString &fname)
         }
     } else {
         qCDebug(zero) << tr("Could not open file in ReadOnly mode :") << fname;
-        QMessageBox::critical(this, tr("Error!"), tr("Could not open file in ReadOnly mode : ") + fname + ".", QMessageBox::Ok, QMessageBox::NoButton);
-        return false;
+        throw std::runtime_error(tr("Could not open file in ReadOnly mode : ").toStdString() + fname.toStdString() + ".");
     }
     qCDebug(zero) << "Closing file.";
     fl.close();
@@ -1089,8 +1085,7 @@ void BewavedDolphin::on_actionExport_to_PDF_triggered()
     printer.setOutputFileName(pdfFile);
     QPainter p;
     if (!p.begin(&printer)) {
-        QMessageBox::critical(this, tr("Error!"), tr("Could not print this circuit to PDF."), QMessageBox::Ok);
-        return;
+        throw std::runtime_error(tr("Could not print this circuit to PDF.").toStdString());
     }
     m_scene->render(&p, QRectF(), m_scene->sceneRect().adjusted(-64, -64, 64, 64));
     p.end();
