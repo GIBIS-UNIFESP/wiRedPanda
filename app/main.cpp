@@ -3,6 +3,7 @@
 
 #include "application.h"
 #include "common.h"
+#include "globalproperties.h"
 #include "mainwindow.h"
 
 #include <QCommandLineParser>
@@ -67,30 +68,36 @@ int main(int argc, char *argv[])
         }
 
         QStringList args = parser.positionalArguments();
-        auto *window = new MainWindow(nullptr, (!args.empty() ? QString(args[0]) : QString()));
 
         QString arduFile = parser.value(arduinoFileOption);
         if (!arduFile.isEmpty()) {
             if (!args.empty()) {
-                window->loadPandaFile(args[0]);
-                exit(!window->exportToArduino(arduFile));
+                GlobalProperties::verbose = false;
+                MainWindow window;
+                window.loadPandaFile(args[0]);
+                exit(!window.exportToArduino(arduFile));
             }
             exit(0);
         }
         QString wfFile = parser.value(waveformFileOption);
         if (!wfFile.isEmpty()) {
             if (!args.empty()) {
-                window->loadPandaFile(args[0]);
-                exit(!window->exportToWaveFormFile(wfFile));
+                GlobalProperties::verbose = false;
+                MainWindow window;
+                window.loadPandaFile(args[0]);
+                exit(!window.exportToWaveFormFile(wfFile));
             }
             exit(0);
         }
+        auto *window = new MainWindow(nullptr, (!args.empty() ? QString(args[0]) : QString()));
         window->show();
         if (!args.empty()) {
             window->loadPandaFile(args[0]);
         }
     } catch (std::exception &e) {
-        QMessageBox::critical(nullptr, QObject::tr("Error!"), e.what());
+        if (GlobalProperties::verbose) {
+            QMessageBox::critical(nullptr, QObject::tr("Error!"), e.what());
+        }
         exit(1);
     }
 

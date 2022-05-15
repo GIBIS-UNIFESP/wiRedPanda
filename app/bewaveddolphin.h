@@ -58,11 +58,8 @@ class BewavedDolphin : public QMainWindow
 {
     Q_OBJECT
 
-private:
-  bool m_ask_connection;
-
 public:
-    explicit BewavedDolphin(Editor *editor, QWidget *parent = nullptr, bool ask_connection = true);
+    explicit BewavedDolphin(Editor *editor, bool askConnection = true, QWidget *parent = nullptr);
     ~BewavedDolphin() override;
 
     bool createWaveform(const QString &filename);
@@ -145,6 +142,7 @@ private:
     QVector<GraphicElement *> m_outputs;
     QVector<char> m_oldInputValues;
     SimulationController *m_sc;
+    bool m_askConnection;
     bool m_edited;
     const double m_SCALE_FACTOR = 0.8;
     double m_scale;
