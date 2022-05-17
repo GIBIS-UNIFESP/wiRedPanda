@@ -25,7 +25,7 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../application.cpp" line="17"/>
+        <location filename="../application.cpp" line="20"/>
         <source>Error!</source>
         <translation>Erro!</translation>
     </message>
@@ -104,7 +104,7 @@
     </message>
     <message>
         <location filename="../bewaveddolphin.ui" line="197"/>
-        <location filename="../bewaveddolphin.cpp" line="1019"/>
+        <location filename="../bewaveddolphin.cpp" line="1034"/>
         <source>Export to PDF</source>
         <translation>Exportar para PDF</translation>
     </message>
@@ -305,125 +305,125 @@
         <translation>Mostrar com Ondas</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="154"/>
+        <location filename="../bewaveddolphin.cpp" line="163"/>
         <source>Save simulation before closing?</source>
         <translation>Salvar a simulação antes de sair?</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="378"/>
+        <location filename="../bewaveddolphin.cpp" line="391"/>
         <source>Could not load enough elements for the simulation.</source>
         <translation>Não foi possível carregar os elementos para a simulação.</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="774"/>
         <location filename="../bewaveddolphin.cpp" line="789"/>
+        <location filename="../bewaveddolphin.cpp" line="804"/>
         <source>Saved file successfully.</source>
         <translation>Arquivo salvo com sucesso.</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="777"/>
         <location filename="../bewaveddolphin.cpp" line="792"/>
+        <location filename="../bewaveddolphin.cpp" line="807"/>
         <source>Could not save file: </source>
         <translation>Não foi possível salvar o arquivo: </translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="810"/>
+        <location filename="../bewaveddolphin.cpp" line="825"/>
         <source>Open File</source>
         <translation>Abrir arquivo</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="812"/>
+        <location filename="../bewaveddolphin.cpp" line="827"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>Todos os arquivos suportados (*.dolphin *.csv);;Arquivos Dolphin (*.dolphin);;Arquivos CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="830"/>
+        <location filename="../bewaveddolphin.cpp" line="845"/>
         <source>File loaded successfully.</source>
         <translation>Arquivo carregado com sucesso.</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="902"/>
+        <location filename="../bewaveddolphin.cpp" line="917"/>
         <source>Format not supported. Could not open file:</source>
         <translation>Formato não suportado. Não foi possível abrir o arquivo:</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="906"/>
+        <location filename="../bewaveddolphin.cpp" line="921"/>
         <source>Could not open file in ReadOnly mode:</source>
         <translation>Não foi possível abrir o arquivo no modo apenas leitura:</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="907"/>
+        <location filename="../bewaveddolphin.cpp" line="922"/>
         <source>Could not open file in ReadOnly mode: </source>
         <translation>Não foi possível abrir o arquivo no modo apenas leitura: </translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="931"/>
-        <location filename="../bewaveddolphin.cpp" line="955"/>
+        <location filename="../bewaveddolphin.cpp" line="946"/>
+        <location filename="../bewaveddolphin.cpp" line="970"/>
         <source>Invalid number of columns.</source>
         <translation>Número inválido de colunas.</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="1043"/>
+        <location filename="../bewaveddolphin.cpp" line="1058"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for the WiRedPanda software developed by the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin é um simulador de forma de onda para o software WiRedPanda desenvolvido pela Universidade Federal de São Paulo. Este projeto foi criado para ajudar os alunos a aprender sobre circuitos lógicos.&lt;/p&gt;&lt;p&gt;Versão do software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Criadores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt; li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin é atualmente mantido pelo Prof. Fábio Cappabianco, Ph.D. e Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Envie um relatório em nossa página do GitHub se forem encontrados bugs ou se desejar que uma nova funcionalidade seja implementada.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http ://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="921"/>
+        <location filename="../bewaveddolphin.cpp" line="936"/>
         <source>Invalid file format. Starts with: </source>
         <translation>Formato de arquivo inválido. Começa com: </translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="999"/>
+        <location filename="../bewaveddolphin.cpp" line="1014"/>
         <source>Export to Image</source>
         <translation>Exportar para Imagem</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="999"/>
+        <location filename="../bewaveddolphin.cpp" line="1014"/>
         <source>PNG files (*.png)</source>
         <translation>Arquivos PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="1019"/>
+        <location filename="../bewaveddolphin.cpp" line="1034"/>
         <source>PDF files (*.pdf)</source>
         <translation>Arquivos PDF(*.pdf)</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="1033"/>
+        <location filename="../bewaveddolphin.cpp" line="1048"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Não foi possível imprimir este circuito no PDF.</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="883"/>
+        <location filename="../bewaveddolphin.cpp" line="898"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>O arquivo &quot;%1&quot; não existe!</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="68"/>
-        <location filename="../bewaveddolphin.cpp" line="388"/>
-        <location filename="../bewaveddolphin.cpp" line="393"/>
-        <location filename="../bewaveddolphin.cpp" line="773"/>
-        <location filename="../bewaveddolphin.cpp" line="912"/>
+        <location filename="../bewaveddolphin.cpp" line="72"/>
+        <location filename="../bewaveddolphin.cpp" line="401"/>
+        <location filename="../bewaveddolphin.cpp" line="406"/>
+        <location filename="../bewaveddolphin.cpp" line="788"/>
+        <location filename="../bewaveddolphin.cpp" line="927"/>
         <source>beWavedDolphin Simulator</source>
         <translation>Simulador beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="743"/>
+        <location filename="../bewaveddolphin.cpp" line="758"/>
         <source>Save File as...</source>
         <translation>Salvar Arquivo como...</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="744"/>
+        <location filename="../bewaveddolphin.cpp" line="759"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Arquivos Dolphin (*.dolphin);;Arquivos CSV (*.csv);;Todos arquivos suportados (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="153"/>
-        <location filename="../bewaveddolphin.cpp" line="727"/>
+        <location filename="../bewaveddolphin.cpp" line="162"/>
+        <location filename="../bewaveddolphin.cpp" line="742"/>
         <source>WiRedPanda - beWavedDolphin</source>
         <translation>WiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="728"/>
+        <location filename="../bewaveddolphin.cpp" line="743"/>
         <source>Do you want to link this beWavedDolphin file to your current WiRedPanda file and save it?</source>
         <translation>Você deseja associar este arquivo do beWavedDolphin ao seu arquivo atual do WiRedPanda e salvá-lo?</translation>
     </message>
@@ -444,7 +444,7 @@
 <context>
     <name>ChangeInputSZCommand</name>
     <message>
-        <location filename="../commands.cpp" line="601"/>
+        <location filename="../commands.cpp" line="603"/>
         <source>Change input size to %1</source>
         <translation>Mudar numero de entradas para %1</translation>
     </message>
@@ -452,7 +452,7 @@
 <context>
     <name>ChangeOutputSZCommand</name>
     <message>
-        <location filename="../commands.cpp" line="743"/>
+        <location filename="../commands.cpp" line="745"/>
         <source>Change input size to %1</source>
         <translation>Mudar numero de entradas para %1</translation>
     </message>
@@ -460,12 +460,12 @@
 <context>
     <name>Clock</name>
     <message>
-        <location filename="../element/clock.h" line="37"/>
+        <location filename="../element/clock.h" line="39"/>
         <source>&lt;b&gt;CLOCK SIGNAL&lt;/b&gt;</source>
         <translation>&lt;b&gt;SINAL DE RELÓGIO&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../element/clock.h" line="38"/>
+        <location filename="../element/clock.h" line="40"/>
         <source>Clock</source>
         <translation>Clock</translation>
     </message>
@@ -511,12 +511,12 @@
 <context>
     <name>CodeGenerator</name>
     <message>
-        <location filename="../arduino/codegenerator.cpp" line="255"/>
+        <location filename="../arduino/codegenerator.cpp" line="254"/>
         <source>BOX element not supported: </source>
         <translation>Elemento BOX não suportado: </translation>
     </message>
     <message>
-        <location filename="../arduino/codegenerator.cpp" line="417"/>
+        <location filename="../arduino/codegenerator.cpp" line="416"/>
         <source>Element type not supported: </source>
         <translation>Tipo de elemento não suportado: </translation>
     </message>
@@ -840,6 +840,7 @@
         <translation>Desconhecido</translation>
     </message>
     <message>
+        <location filename="../elementfactory.cpp" line="79"/>
         <location filename="../elementfactory.cpp" line="85"/>
         <location filename="../elementfactory.cpp" line="91"/>
         <source>Unknown type: </source>
@@ -849,7 +850,7 @@
 <context>
     <name>ElementMapping</name>
     <message>
-        <location filename="../elementmapping.cpp" line="154"/>
+        <location filename="../elementmapping.cpp" line="146"/>
         <source>Not implemented yet: </source>
         <translation>Ainda não implementado: </translation>
     </message>
@@ -857,7 +858,7 @@
 <context>
     <name>FlipHCommand</name>
     <message>
-        <location filename="../commands.cpp" line="677"/>
+        <location filename="../commands.cpp" line="679"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Espelhando %1 portas no eixo %2</translation>
     </message>
@@ -865,15 +866,15 @@
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../graphicelement.cpp" line="104"/>
-        <location filename="../graphicelement.cpp" line="129"/>
+        <location filename="../graphicelement.cpp" line="105"/>
+        <location filename="../graphicelement.cpp" line="130"/>
         <source>Couldn&apos;t load pixmap.</source>
         <translation>Não foi possível carregar o pixmap.</translation>
     </message>
     <message>
-        <location filename="../graphicelement.cpp" line="292"/>
-        <location filename="../graphicelement.cpp" line="357"/>
-        <location filename="../graphicelement.cpp" line="392"/>
+        <location filename="../graphicelement.cpp" line="293"/>
+        <location filename="../graphicelement.cpp" line="358"/>
+        <location filename="../graphicelement.cpp" line="393"/>
         <source>Corrupted DataStream!</source>
         <translation>DataStream corrompido!</translation>
     </message>
@@ -902,12 +903,12 @@
 <context>
     <name>InputButton</name>
     <message>
-        <location filename="../element/inputbutton.h" line="33"/>
+        <location filename="../element/inputbutton.h" line="35"/>
         <source>&lt;b&gt;PUSH BUTTON&lt;/b&gt;</source>
         <translation>&lt;b&gt;BOTÃO DE PRESSÃO&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../element/inputbutton.h" line="34"/>
+        <location filename="../element/inputbutton.h" line="36"/>
         <source>Button</source>
         <translation>Botão</translation>
     </message>
@@ -928,12 +929,12 @@
 <context>
     <name>InputRotary</name>
     <message>
-        <location filename="../element/inputrotary.h" line="37"/>
+        <location filename="../element/inputrotary.h" line="39"/>
         <source>&lt;b&gt;ROTARY SWITCH&lt;/b&gt;</source>
         <translation>&lt;b&gt;COMUTADOR ROTATIVO&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../element/inputrotary.h" line="38"/>
+        <location filename="../element/inputrotary.h" line="40"/>
         <source>Rotary Switch</source>
         <translation>Comutador Rotativo</translation>
     </message>
@@ -941,12 +942,12 @@
 <context>
     <name>InputSwitch</name>
     <message>
-        <location filename="../element/inputswitch.h" line="32"/>
+        <location filename="../element/inputswitch.h" line="34"/>
         <source>&lt;b&gt;INPUT SWITCH&lt;/b&gt;</source>
         <translation>&lt;b&gt; INTERRUPTOR DE ENTRADA&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../element/inputswitch.h" line="33"/>
+        <location filename="../element/inputswitch.h" line="35"/>
         <source>Input Switch</source>
         <translation>Interruptor de entrada</translation>
     </message>
@@ -1167,69 +1168,59 @@
         <translation>&amp;Sair</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="225"/>
-        <source>&amp;Undo</source>
-        <translation>&amp;Desfazer</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="230"/>
-        <source>&amp;Redo</source>
-        <translation>&amp;Refazer</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="273"/>
+        <location filename="../mainwindow.cpp" line="266"/>
         <source>Save File</source>
         <translation>Salvar arquivo</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="273"/>
-        <location filename="../mainwindow.cpp" line="457"/>
-        <location filename="../mainwindow.cpp" line="573"/>
+        <location filename="../mainwindow.cpp" line="266"/>
+        <location filename="../mainwindow.cpp" line="453"/>
+        <location filename="../mainwindow.cpp" line="568"/>
         <source>Panda files (*.panda)</source>
         <translation>Arquivos Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="447"/>
+        <location filename="../mainwindow.cpp" line="443"/>
         <source>File loaded successfully.</source>
         <translation>Arquivo carregado com sucesso.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="457"/>
+        <location filename="../mainwindow.cpp" line="453"/>
         <source>Open File</source>
         <translation>Abrir arquivo</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="573"/>
+        <location filename="../mainwindow.cpp" line="568"/>
         <source>Save File as ...</source>
         <translation>Salvar Arquivo como...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="943"/>
+        <location filename="../mainwindow.cpp" line="936"/>
         <source>Arduino code successfully generated.</source>
         <translation>Código de Arduino gerado com sucesso.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="961"/>
+        <location filename="../mainwindow.cpp" line="954"/>
         <source>Generate Arduino Code</source>
         <translation>Gerar código para Arduino</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="961"/>
+        <location filename="../mainwindow.cpp" line="954"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arquivo Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1039"/>
+        <location filename="../mainwindow.cpp" line="1029"/>
         <source>Export to PDF</source>
         <translation>Exportar para PDF</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1039"/>
+        <location filename="../mainwindow.cpp" line="1029"/>
         <source>PDF files (*.pdf)</source>
         <translation>Arquivos PDF(*.pdf)</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1054"/>
+        <location filename="../mainwindow.cpp" line="1044"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Não foi possível imprimir este circuito no PDF.</translation>
     </message>
@@ -1404,18 +1395,18 @@
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1065"/>
+        <location filename="../mainwindow.cpp" line="1055"/>
         <source>Export to Image</source>
         <translation>Exportar para Imagem</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1065"/>
+        <location filename="../mainwindow.cpp" line="1055"/>
         <source>PNG files (*.png)</source>
         <translation>Arquivos PNG (*.png)</translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="1087"/>
-        <location filename="../mainwindow.cpp" line="1303"/>
+        <location filename="../mainwindow.cpp" line="1294"/>
         <source>Mute</source>
         <translation>Silenciar</translation>
     </message>
@@ -1540,7 +1531,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="289"/>
+        <location filename="../mainwindow.cpp" line="282"/>
         <source>Saved file successfully.</source>
         <translation>Arquivo salvo com sucesso.</translation>
     </message>
@@ -1565,57 +1556,57 @@
         <translation>Ativa e desativa som das campanhias do cuicuito</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1303"/>
+        <location filename="../mainwindow.cpp" line="1294"/>
         <source>Unmute</source>
         <translation>Ativar som</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="386"/>
-        <location filename="../mainwindow.cpp" line="597"/>
-        <location filename="../mainwindow.cpp" line="1254"/>
+        <location filename="../mainwindow.cpp" line="382"/>
+        <location filename="../mainwindow.cpp" line="592"/>
+        <location filename="../mainwindow.cpp" line="1245"/>
         <source>New Project</source>
         <translation>Projeto Novo</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="430"/>
+        <location filename="../mainwindow.cpp" line="426"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>O arquivo &quot;%1&quot; não existe!</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="356"/>
+        <location filename="../mainwindow.cpp" line="349"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>Arquivo não foi salvo. Fechar mesmo assim?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="399"/>
+        <location filename="../mainwindow.cpp" line="395"/>
         <source>Error while opening autosave file. Do you want to delete it ?
  Autosave: </source>
         <translation>Erro ao abrir arquivo de autosave. Você quer apagá-lo?
  Autosave: </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="512"/>
+        <location filename="../mainwindow.cpp" line="508"/>
         <source>Exit </source>
         <translation>Sair do </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="388"/>
+        <location filename="../mainwindow.cpp" line="384"/>
         <source> has been modified. Do you want to save your changes?</source>
         <translation> foi modificado. Deseja salvar suas alterações?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1060"/>
-        <location filename="../mainwindow.cpp" line="1081"/>
+        <location filename="../mainwindow.cpp" line="1050"/>
+        <location filename="../mainwindow.cpp" line="1071"/>
         <source>Exported file successfully.</source>
         <translation>Arquivo exportado com sucesso.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1261"/>
+        <location filename="../mainwindow.cpp" line="1252"/>
         <source>New Project*</source>
         <translation>Projeto Novo*</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="321"/>
+        <location filename="../mainwindow.cpp" line="314"/>
         <source>Don&apos;t show this again.</source>
         <translation>Não mostrar novamente.</translation>
     </message>
@@ -1625,12 +1616,12 @@
         <translation>Sobre esta versão</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="474"/>
+        <location filename="../mainwindow.cpp" line="470"/>
         <source>&lt;p&gt;WiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; WiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;WiRedPanda é um software desenvolvido por estudantes da Universidade Federal de São Paulo. Este projeto foi desenvolvido para ajudar os estudantes a aprenderem mais sobre circuitos digitais.&lt;/p&gt;&lt;p&gt;Versão do software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Desenvolvedores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; WiRedPanda atualmente é mantido por Prof. Fábio Cappabianco, Ph.D. e Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Por favor, informe em nossa página do GitHub sobre eventuais bugs encontrados ou se deseja uma nova funcionalidade.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="329"/>
+        <location filename="../mainwindow.cpp" line="322"/>
         <source>This version is not 100% compatible with previous versions of WiRedPanda.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 WiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
@@ -1641,14 +1632,14 @@ WiRedPanda %1 listará automaticamente todos os outros arquivos .panda localizad
 Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar simulações beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="368"/>
+        <location filename="../mainwindow.cpp" line="364"/>
         <source>An autosave file was found. Do you want to load it?
 </source>
         <translation>Um arquivo de salvamento automático foi encontrado. Você quer carregá-lo?
 </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="513"/>
+        <location filename="../mainwindow.cpp" line="509"/>
         <source>Are you sure?</source>
         <translation>Tem certeza?</translation>
     </message>
@@ -1656,7 +1647,7 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../commands.cpp" line="508"/>
+        <location filename="../commands.cpp" line="510"/>
         <source>Morph %1 elements to %2</source>
         <translation>Transformar %1 portas em %2</translation>
     </message>
@@ -1664,7 +1655,7 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../commands.cpp" line="324"/>
+        <location filename="../commands.cpp" line="326"/>
         <source>Move elements</source>
         <translation>Mover portas</translation>
     </message>
@@ -1764,6 +1755,11 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <source>One or more elements were not found on scene. Expected %1, found %2.</source>
         <translation>Um ou mais elementos não foram encontrados no cenário. Esperado %1, encontrado %2.</translation>
     </message>
+    <message>
+        <location filename="../main.cpp" line="101"/>
+        <source>Error!</source>
+        <translation>Erro!</translation>
+    </message>
 </context>
 <context>
     <name>RotateCommand</name>
@@ -1789,7 +1785,7 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../scene.cpp" line="877"/>
+        <location filename="../scene.cpp" line="535"/>
         <source>Paste</source>
         <translation>Colar</translation>
     </message>
@@ -1875,17 +1871,17 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../commands.cpp" line="420"/>
+        <location filename="../commands.cpp" line="422"/>
         <source>Wire split</source>
         <translation>Dividir fio</translation>
     </message>
     <message>
-        <location filename="../commands.cpp" line="467"/>
+        <location filename="../commands.cpp" line="469"/>
         <source>Error trying to redo </source>
         <translation>Erro ao tentar refazer </translation>
     </message>
     <message>
-        <location filename="../commands.cpp" line="492"/>
+        <location filename="../commands.cpp" line="494"/>
         <source>Error trying to undo </source>
         <translation>Erro ao tentar desfazer </translation>
     </message>
@@ -1919,7 +1915,7 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../commands.cpp" line="358"/>
+        <location filename="../commands.cpp" line="360"/>
         <source>Update %1 elements</source>
         <translation>Atualizar %1 porta(s)</translation>
     </message>
@@ -1927,12 +1923,12 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../workspace.cpp" line="60"/>
+        <location filename="../workspace.cpp" line="61"/>
         <source>Newer version file.</source>
         <translation>Arquivo de versão mais nova.</translation>
     </message>
     <message>
-        <location filename="../workspace.cpp" line="60"/>
+        <location filename="../workspace.cpp" line="61"/>
         <source>Warning! Your WiRedPanda is possibly outdated.
  The file you are opening has been saved in a newer version.
  Please check for updates.</source>
@@ -1941,12 +1937,12 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
   Por favor, verifique se há atualizações.</translation>
     </message>
     <message>
-        <location filename="../workspace.cpp" line="62"/>
+        <location filename="../workspace.cpp" line="63"/>
         <source>Old version file.</source>
         <translation>Arquivo de versão antiga.</translation>
     </message>
     <message>
-        <location filename="../workspace.cpp" line="62"/>
+        <location filename="../workspace.cpp" line="63"/>
         <source>Warning! This is an old version WiRedPanda project file (version &lt; 4.0). To open it correctly, save all ICs and skins the main project directory.</source>
         <translation>Aviso! Este é um arquivo de projeto WiRedPanda da versão antiga (versão &lt; 4.0). Para abri-lo corretamente, salve todos os ICs e skins no diretório principal do projeto.</translation>
     </message>
@@ -1980,27 +1976,37 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>main</name>
     <message>
-        <location filename="../main.cpp" line="42"/>
+        <location filename="../main.cpp" line="43"/>
         <source>Circuit file to open.</source>
         <translation>Arquivo de circuito para abrir.</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="46"/>
+        <location filename="../main.cpp" line="47"/>
+        <source>Verbosity level 0 to 5, disabled by default.</source>
+        <translation>Nível de verbosidade 0 a 5, desabilitado por padrão.</translation>
+    </message>
+    <message>
+        <location filename="../main.cpp" line="48"/>
+        <source>verbosity level</source>
+        <translation>nível de verbosidade</translation>
+    </message>
+    <message>
+        <location filename="../main.cpp" line="53"/>
         <source>Export circuit to &lt;arduino-file&gt;</source>
         <translation>Exportar circuito para &lt;arquivo arduino&gt;</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="47"/>
+        <location filename="../main.cpp" line="54"/>
         <source>arduino file</source>
         <translation>arquivo arduino</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="52"/>
+        <location filename="../main.cpp" line="59"/>
         <source>Export circuit to &lt;waveform&gt; text file</source>
         <translation>Exportar circuito para arquivo de texto &lt;waveform&gt;</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="53"/>
+        <location filename="../main.cpp" line="60"/>
         <source>waveform text file</source>
         <translation>arquivo de texto de forma de onda</translation>
     </message>
