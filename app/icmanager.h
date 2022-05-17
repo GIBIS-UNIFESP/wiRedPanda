@@ -18,31 +18,29 @@ class ICManager : public QObject
     Q_OBJECT
 
 public:
-    explicit ICManager(MainWindow *mainWindow = nullptr, QObject *parent = nullptr);
-    ~ICManager() override;
+    static ICManager &instance()
+    {
+        static ICManager instance;
+        return instance;
+    }
 
-    static ICManager *instance();
-    static void setGlobalInstance(ICManager *icManager);
-
-    ICPrototype *getPrototype(const QString &fname);
-    bool loadIC(IC *ic, QString fname);
-    void clear();
-    void loadFile(QString &fname);
-    void openIC(const QString &fname);
-    void wakeUp();
+    static ICPrototype *prototype(const QString &fileName);
+    static bool loadIC(IC *ic, const QString &fileName);
+    static void loadFile(const QString &fileName);
+    static void wakeUp();
 
 signals:
+    void openIC(const QString &fileName);
     void updatedIC();
 
 private:
-    static ICManager *globalICManager;
+    explicit ICManager(QObject *parent = nullptr);
 
-    void loadFile(QString &fname, const QString &parentFile);
+    void loadFile(QString &fileName, const QString &parentFile);
     void setReloadFile(const QString &fileName);
 
-    MainWindow *m_mainWindow;
     QFileSystemWatcher m_fileWatcher;
-    QList<QString> requiresReload;
+    QList<QString> m_requiresReload;
     QMap<QString, ICPrototype *> m_ics;
 };
 

@@ -3,26 +3,59 @@
 
 #include "led.h"
 
+#include "common.h"
 #include "qneport.h"
 
 #include <bitset>
 
-namespace{
+namespace
+{
 int id = qRegisterMetaType<Led>();
 }
 
-int Led::current_id_number = 0;
-
 /* Color pallets:
- * 2 bit -   00: dark gray,   01: light blue,   10: light green,   11: light red
- * 3 bit -  000: dark gray,  001: light blue,  010: light green,  011: yellow,  100: light red,  101: magenta,  110: cyan,    111: white
- * 4 bit - 0000: black,     0001: blue,       0010: green,       0011: teal,   0100: red,       0101: magenta, 0110: orange, 0111: light gray
- *         1000: dark gray, 1001: light blue, 1010: light green, 1011: cyan,   1100: light red, 1101: pink,    1110: yellow, 1111: white
+ *
+ * 2 bit
+ *     00: dark gray,
+ *     01: light blue,
+ *     10: light green,
+ *     11: light red
+ *
+ * 3 bit
+ *     000: dark gray,
+ *     001: light blue,
+ *     010: light green,
+ *     011: yellow,
+ *     100: light red,
+ *     101: magenta,
+ *     110: cyan,
+ *     111: white
+ *
+ * 4 bit
+ *     0000: black,
+ *     0001: blue,
+ *     0010: green,
+ *     0011: teal,
+ *     0100: red,
+ *     0101: magenta,
+ *     0110: orange,
+ *     0111: light gray
+ *     1000: dark gray,
+ *     1001: light blue,
+ *     1010: light green,
+ *     1011: cyan,
+ *     1100: light red,
+ *     1101: pink,
+ *     1110: yellow,
+ *     1111: white
  */
+
 Led::Led(QGraphicsItem *parent)
     : GraphicElement(ElementType::Led, ElementGroup::Output, 1, 4, 0, 0, parent)
 {
-    m_pixmapSkinName = {
+    qCDebug(zero) << "Creating led.";
+
+    m_pixmapSkinName = QStringList{
         ":/output/WhiteLedOff.png",             // Single input values: 0
         ":/output/WhiteLedOn.png",              // 1
         ":/output/RedLedOff.png",               // 2
@@ -50,13 +83,11 @@ Led::Led(QGraphicsItem *parent)
         ":/output/16colors/YellowLedOn.png",    // 24
         ":/output/16colors/WhiteLedOn.png",     // 25
     };
+    setPixmap(m_pixmapSkinName.first());
 
     setOutputsOnTop(true);
     setRotatable(false);
     setHasColors(true);
-    m_color = "White";
-    m_colorNumber = 0;
-    setPixmap(m_pixmapSkinName[0]);
     Led::updatePorts();
     setHasLabel(true);
     setCanChangeSkin(true);
@@ -66,26 +97,26 @@ Led::Led(QGraphicsItem *parent)
 
 void Led::refresh()
 {
-    int idx = 0;
+    int index = 0;
     if (isValid()) {
-        std::bitset<4> index;
+        std::bitset<4> indexBit;
         for (int i = 0; i < inputSize(); ++i) {
-            index[i] = input(inputSize() - i - 1)->value();
+            indexBit[i] = input(inputSize() - i - 1)->value();
         }
-        idx = index.to_ulong();
+        index = static_cast<int>(indexBit.to_ulong());
     }
     switch (inputSize()) {
     case 1: { /* 1 bit */
-        setPixmap(m_pixmapSkinName[m_colorNumber + idx]);
+        setPixmap(m_pixmapSkinName[m_colorNumber + index]);
         input(0)->setName("");
         input(0)->setPos(32, bottomPosition());
         break;
     }
     case 2: { /* 2 bits */ // TODO: add option to select dark/light colors according to the theme.
-        if (idx == 3) {
+        if (index == 3) {
             setPixmap(m_pixmapSkinName[22]);
         } else {
-            setPixmap(m_pixmapSkinName[18 + idx]);
+            setPixmap(m_pixmapSkinName[18 + index]);
         }
         input(0)->setName("0");
         input(0)->setPos(24, bottomPosition());
@@ -94,7 +125,7 @@ void Led::refresh()
         break;
     }
     case 3: { /* 3 bits */ // TODO: add option to select dark/light colors according to the theme.
-        setPixmap(m_pixmapSkinName[18 + idx]);
+        setPixmap(m_pixmapSkinName[18 + index]);
         input(0)->setName("0");
         input(0)->setPos(16, bottomPosition());
         input(1)->setName("1");
@@ -104,7 +135,7 @@ void Led::refresh()
         break;
     }
     case 4: { /* 4 bits */
-        setPixmap(m_pixmapSkinName[10 + idx]);
+        setPixmap(m_pixmapSkinName[10 + index]);
         input(0)->setName("0");
         input(0)->setPos(8, bottomPosition());
         input(1)->setName("1");
@@ -121,44 +152,38 @@ void Led::refresh()
 void Led::setColor(const QString &color)
 {
     m_color = color;
-    if (color == "White") {
-        m_colorNumber = 0;
-    } else if (color == "Red") {
-        m_colorNumber = 2;
-    } else if (color == "Green") {
-        m_colorNumber = 4;
-    } else if (color == "Blue") {
-        m_colorNumber = 6;
-    } else if (color == "Purple") {
-        m_colorNumber = 8;
-    }
+    if (color == "White")  { m_colorNumber = 0; }
+    if (color == "Red")    { m_colorNumber = 2; }
+    if (color == "Green")  { m_colorNumber = 4; }
+    if (color == "Blue")   { m_colorNumber = 6; }
+    if (color == "Purple") { m_colorNumber = 8; }
     refresh();
 }
 
-QString Led::getColor() const
+QString Led::color() const
 {
     return m_color;
 }
 
-void Led::save(QDataStream &ds) const
+void Led::save(QDataStream &stream) const
 {
-    GraphicElement::save(ds);
-    ds << getColor();
+    GraphicElement::save(stream);
+    stream << color();
 }
 
-void Led::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
+void Led::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
 {
-    GraphicElement::load(ds, portMap, version);
+    GraphicElement::load(stream, portMap, version);
     if (version >= 1.1) {
         QString clr;
-        ds >> clr;
+        stream >> clr;
         setColor(clr);
     }
 }
 
 QString Led::genericProperties()
 {
-    return getColor();
+    return color();
 }
 
 void Led::updatePorts()
@@ -167,44 +192,44 @@ void Led::updatePorts()
     // GraphicElement::updatePorts();
 }
 
-void Led::setSkin(bool defaultSkin, const QString &filename)
+void Led::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    int idx = 0;
+    int index = 0;
     if (isValid()) {
-        std::bitset<4> index;
+        std::bitset<4> indexBit;
         for (int i = 0; i < inputSize(); ++i) {
-            index[i] = input(inputSize() - i - 1)->value();
+            indexBit[i] = input(inputSize() - i - 1)->value();
         }
-        idx = index.to_ulong();
+        index = static_cast<int>(indexBit.to_ulong());
     }
-    int value_idx = 0;
+    int valueIndex = 0;
     switch (inputSize()) {
     case 1: /* 1 bit */
-        value_idx = m_colorNumber + idx;
+        valueIndex = m_colorNumber + index;
         break;
 
     case 2: /* 2 bits */ // TODO: add option to select dark/light colors according to the theme.
-        value_idx = idx == 3 ? 22 : 18 + idx;
+        valueIndex = (index == 3) ? 22 : 18 + index;
         break;
 
     case 3: /* 3 bits */ // TODO: add option to select dark/light colors according to the theme.
-        value_idx = 18 + idx;
+        valueIndex = 18 + index;
         break;
 
     case 4: /* 4 bits */
-        value_idx = 10 + idx;
+        valueIndex = 10 + index;
         break;
     }
 
     if (defaultSkin) {
-        resetLedPixmapName(value_idx);
+        resetLedPixmapName(valueIndex);
     } else {
-        m_pixmapSkinName[value_idx] = filename;
+        m_pixmapSkinName[valueIndex] = fileName;
     }
-    setPixmap(m_pixmapSkinName[value_idx]);
+    setPixmap(m_pixmapSkinName[valueIndex]);
 }
 
-void Led::resetLedPixmapName(int ledNumber)
+void Led::resetLedPixmapName(const int ledNumber)
 {
     switch (ledNumber) {
     case 0:  m_pixmapSkinName[0]  = ":/output/WhiteLedOff.png"; break;

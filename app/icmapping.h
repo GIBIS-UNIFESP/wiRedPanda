@@ -17,8 +17,8 @@ public:
     ICMapping(const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs);
     ~ICMapping() override;
 
-    LogicElement *getInput(int index);
-    LogicElement *getOutput(int index);
+    LogicElement *input(const int index);
+    LogicElement *output(const int index);
     void clearConnections();
     void initialize() override;
 

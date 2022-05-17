@@ -10,7 +10,8 @@
 
 #include <QGraphicsSceneMouseEvent>
 
-namespace {
+namespace
+{
 int id = qRegisterMetaType<IC>();
 }
 
@@ -29,64 +30,60 @@ IC::IC(QGraphicsItem *parent)
 
 IC::~IC()
 {
-    if (ICManager::instance() != nullptr) {
-        ICPrototype *prototype = ICManager::instance()->getPrototype(m_file);
-        if (prototype) {
-            prototype->removeICObserver(this);
-        }
+    if (auto *prototype = ICManager::prototype(m_file)) {
+        prototype->removeICObserver(this);
     }
 }
 
-void IC::save(QDataStream &ds) const
+void IC::save(QDataStream &stream) const
 {
-    GraphicElement::save(ds);
-    ds << m_file;
+    GraphicElement::save(stream);
+    stream << m_file;
 }
 
-void IC::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
+void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
 {
-    GraphicElement::load(ds, portMap, version);
+    GraphicElement::load(stream, portMap, version);
     if (version >= 1.2) {
-        ds >> m_file;
+        stream >> m_file;
     }
 }
 
 void IC::loadInputs(ICPrototype *prototype)
 {
-    setMaxInputSz(prototype->inputSize());
-    setMinInputSz(prototype->inputSize());
+    setMaxInputSize(prototype->inputSize());
+    setMinInputSize(prototype->inputSize());
     setInputSize(prototype->inputSize());
-    qCDebug(three) << "IC" << m_file << "-> Inputs. min:" << minInputSz() << ", max:" << maxInputSz() << ", current:" << inputSize() << ", m_inputs:" << m_inputs.size();
-    for (int inputIdx = 0; inputIdx < prototype->inputSize(); ++inputIdx) {
-        QNEPort *in = input(inputIdx);
-        in->setName(prototype->inputLabel(inputIdx));
-        in->setRequired(prototype->isInputRequired(inputIdx));
-        in->setDefaultValue(prototype->defaultInputValue(inputIdx));
-        in->setValue(prototype->defaultInputValue(inputIdx));
+    qCDebug(three) << "IC" << m_file << "-> Inputs. min:" << minInputSize() << ", max:" << maxInputSize() << ", current:" << inputSize() << ", m_inputs:" << m_inputs.size();
+    for (int inputIndex = 0; inputIndex < prototype->inputSize(); ++inputIndex) {
+        QNEPort *in = input(inputIndex);
+        in->setName(prototype->inputLabel(inputIndex));
+        in->setRequired(prototype->isInputRequired(inputIndex));
+        in->setDefaultValue(prototype->defaultInputValue(inputIndex));
+        in->setValue(static_cast<signed char>(prototype->defaultInputValue(inputIndex)));
     }
 }
 
 void IC::loadOutputs(ICPrototype *prototype)
 {
-    setMaxOutputSz(prototype->outputSize());
-    setMinOutputSz(prototype->outputSize());
+    setMaxOutputSize(prototype->outputSize());
+    setMinOutputSize(prototype->outputSize());
     setOutputSize(prototype->outputSize());
-    for (int outputIdx = 0; outputIdx < prototype->outputSize(); ++outputIdx) {
-        QNEPort *out = output(outputIdx);
-        out->setName(prototype->outputLabel(outputIdx));
+    for (int outputIndex = 0; outputIndex < prototype->outputSize(); ++outputIndex) {
+        QNEPort *out = output(outputIndex);
+        out->setName(prototype->outputLabel(outputIndex));
     }
-    qCDebug(three) << "IC" << m_file << "-> Outputs. min:" << minOutputSz() << ", max:" << maxOutputSz() << ", current:" << outputSize() << ", m_outputs:" << m_outputs.size();
+    qCDebug(three) << "IC" << m_file << "-> Outputs. min:" << minOutputSize() << ", max:" << maxOutputSize() << ", current:" << outputSize() << ", m_outputs:" << m_outputs.size();
 }
 
-void IC::loadFile(const QString &fname)
+void IC::loadFile(const QString &fileName)
 {
-    // qCDebug(zero) << "Opening IC:" << fname;
-    ICPrototype *prototype = ICManager::instance()->getPrototype(fname);
-    Q_ASSERT(prototype);
+    // qCDebug(zero) << "Opening IC:" << fileName;
+    ICPrototype *prototype = ICManager::prototype(fileName);
     m_file = prototype->fileName();
     setToolTip(m_file);
     prototype->insertICObserver(this);
-    if (getLabel().isEmpty()) {
+    if (label().isEmpty()) {
         setLabel(prototype->baseName().toUpper());
     }
     // Loading inputs
@@ -94,31 +91,27 @@ void IC::loadFile(const QString &fname)
     // Loading outputs
     loadOutputs(prototype);
     updatePorts();
-    // qCDebug(zero) << "IC loaded:" << fname;
+    // qCDebug(zero) << "IC loaded:" << fileName;
 }
 
-QString IC::getFile() const
+QString IC::file() const
 {
     return m_file;
 }
 
-ICPrototype *IC::getPrototype()
+ICPrototype *IC::prototype()
 {
-    return ICManager::instance()->getPrototype(m_file);
+    return ICManager::prototype(m_file);
 }
 
 void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     event->accept();
-    ICManager::instance()->openIC(m_file);
+    emit ICManager::instance().openIC(m_file);
 }
 
-void IC::setSkin(bool defaultSkin, const QString &filename)
+void IC::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    if (defaultSkin) {
-        m_pixmapSkinName[0] = ":/basic/box.png";
-    } else {
-        m_pixmapSkinName[0] = filename;
-    }
+    m_pixmapSkinName[0] = (defaultSkin) ? ":/basic/box.png" : fileName;
     setPixmap(m_pixmapSkinName[0]);
 }

@@ -7,16 +7,15 @@
 
 class SimulationController;
 
-class SCStop
+class SimulationControllerStop // RAII
 {
 public:
-    explicit SCStop(SimulationController *sc);
-    ~SCStop();
-
-    void release();
+    explicit SimulationControllerStop(SimulationController *simController);
+    ~SimulationControllerStop();
 
 private:
-    SimulationController *m_sc;
+    SimulationController *m_simController;
     bool m_restart = false;
 };
 
+// TODO: rename file

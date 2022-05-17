@@ -5,49 +5,46 @@
 
 #pragma once
 
-#include <QApplication>
+#include "application.h"
+
 #include <QColor>
 #include <QObject>
 #include <QPalette>
 
-class Editor;
-
 enum class Theme { Light, Dark };
 
-class ThemeManager;
-
-class ThemeAttrs
+class ThemeAttributes
 {
 public:
-    ThemeAttrs();
+    void setTheme(const Theme theme);
 
-    void setTheme(Theme theme);
+    QColor m_sceneBgBrush;
+    QColor m_sceneBgDots;
 
-    QColor scene_bgBrush;
-    QColor scene_bgDots;
+    QColor m_selectionBrush;
+    QColor m_selectionPen;
 
-    QColor selectionBrush;
-    QColor selectionPen;
+    QColor m_graphicElementLabelColor;
 
-    QColor qneConnection_true;
-    QColor qneConnection_false;
-    QColor qneConnection_invalid;
-    QColor qneConnection_selected;
+    QColor m_qneConnectionFalse;
+    QColor m_qneConnectionInvalid;
+    QColor m_qneConnectionSelected;
+    QColor m_qneConnectionTrue;
 
-    QColor graphicElement_labelColor;
+    QColor m_qnePortFalseBrush;
+    QColor m_qnePortInvalidBrush;
+    QColor m_qnePortOutputBrush;
+    QColor m_qnePortTrueBrush;
 
-    QColor qnePort_hoverPort;
-    QColor qnePort_true_pen;
-    QColor qnePort_true_brush;
-    QColor qnePort_false_pen;
-    QColor qnePort_false_brush;
-    QColor qnePort_invalid_pen;
-    QColor qnePort_invalid_brush;
-    QColor qnePort_output_pen;
-    QColor qnePort_output_brush;
+    QColor m_qnePortFalsePen;
+    QColor m_qnePortInvalidPen;
+    QColor m_qnePortOutputPen;
+    QColor m_qnePortTruePen;
+
+    QColor m_qnePortHoverPort;
 
 private:
-    QPalette const defaultPalette = qApp->palette();
+    QPalette const m_defaultPalette = qApp->palette();
 };
 
 class ThemeManager : public QObject
@@ -55,22 +52,23 @@ class ThemeManager : public QObject
     Q_OBJECT
 
 public:
-    explicit ThemeManager(QObject *parent = nullptr);
+    static ThemeManager &instance()
+    {
+        static ThemeManager instance;
+        return instance;
+    }
 
-    static ThemeManager *globalManager;
-
-    QString currentTheme() const;
-    Theme theme() const;
-    ThemeAttrs getAttrs() const;
-    void initialize();
-    void setCurrentTheme(const Theme &theme);
-    void setTheme(Theme theme);
+    static Theme theme();
+    static ThemeAttributes attributes();
+    static void setTheme(const Theme theme);
 
 signals:
     void themeChanged();
 
 private:
-    Theme m_theme;
-    ThemeAttrs m_attrs;
+    explicit ThemeManager(QObject *parent = nullptr);
+
+    Theme m_theme = Theme::Light;
+    ThemeAttributes m_attributes;
 };
 

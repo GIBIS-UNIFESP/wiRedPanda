@@ -10,20 +10,20 @@
 class DLatch : public GraphicElement
 {
     Q_OBJECT
+    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
     Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
     Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
-    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
 
 public:
     explicit DLatch(QGraphicsItem *parent = nullptr);
 
-    void setSkin(bool defaultSkin, const QString &filename) override;
+    void setSkin(const bool defaultSkin, const QString &fileName) override;
     void updatePorts() override;
 
 private:
+    const QString m_pixmap = ":/memory/light/D-latch.png";
     const QString m_titleText = tr("<b>D-LATCH</b>");
     const QString m_translatedName = tr("D-Latch");
-    const QString m_pixmap = ":/memory/light/D-latch.png";
 };
 
 Q_DECLARE_METATYPE(DLatch)

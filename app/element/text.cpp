@@ -3,20 +3,26 @@
 
 #include "text.h"
 
-namespace {
+#include "common.h"
+
+namespace
+{
 int id = qRegisterMetaType<Text>();
 }
 
 Text::Text(QGraphicsItem *parent)
     : GraphicElement(ElementType::Text, ElementGroup::Other, 0, 0, 0, 0, parent)
 {
-    m_pixmapSkinName = {
+    qCDebug(zero) << "Creating text.";
+
+    m_pixmapSkinName = QStringList{
         ":/no_text.png",
         ":/text.png",
     };
+    setPixmap(m_pixmapSkinName.first());
+
     setRotatable(true);
     setOutputsOnTop(true);
-    setPixmap(m_pixmapSkinName[0]);
     setCanChangeSkin(false);
     setHasLabel(true);
     setPortName("TEXT");

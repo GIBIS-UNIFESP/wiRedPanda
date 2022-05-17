@@ -37,14 +37,6 @@
 
 QNEPort::QNEPort(QGraphicsItem *parent)
     : QGraphicsPathItem(parent)
-    , m_defaultValue(-1)
-    , m_label(new QGraphicsTextItem(this))
-    , m_radius(5)
-    , m_margin(2)
-    , m_portFlags(0)
-    , m_required(true)
-    , m_graphicElement(nullptr)
-    , m_value(false)
 {
     QPainterPath p;
     p.addPolygon(QRectF(QPointF(-m_radius, -m_radius), QPointF(m_radius, m_radius)));
@@ -98,6 +90,7 @@ void QNEPort::disconnect(QNEConnection *conn)
     if (conn->end() == this) {
         conn->setEnd(nullptr);
     }
+
     updateConnections();
 }
 
@@ -127,11 +120,6 @@ int QNEPort::portFlags() const
     return m_portFlags;
 }
 
-int QNEPort::type() const
-{
-    return Type;
-}
-
 quint64 QNEPort::ptr() const
 {
     return m_ptr;
@@ -144,12 +132,7 @@ void QNEPort::setPtr(quint64 p)
 
 bool QNEPort::isConnected(QNEPort *other)
 {
-    for (auto *conn : qAsConst(m_connections)) {
-        if ((conn->start() == other) || (conn->end() == other)) {
-            return true;
-        }
-    }
-    return false;
+    return std::any_of(m_connections.cbegin(), m_connections.cend(), [&](auto *conn) { return conn->start() == other || conn->end() == other; });
 }
 
 void QNEPort::updateConnections()
@@ -160,7 +143,7 @@ void QNEPort::updateConnections()
     }
     if (isValid()) {
         if (m_connections.empty() && !isOutput()) {
-            setValue(defaultValue());
+            setValue(static_cast<signed char>(defaultValue()));
         }
     } else {
         setValue(-1);
@@ -185,7 +168,7 @@ void QNEPort::setIndex(int index)
     m_index = index;
 }
 
-QString QNEPort::getName() const
+QString QNEPort::name() const
 {
     return m_name;
 }
@@ -195,10 +178,10 @@ int QNEPort::defaultValue() const
     return m_defaultValue;
 }
 
-void QNEPort::setDefaultValue(int defaultValue)
+void QNEPort::setDefaultValue(const int defaultValue)
 {
     m_defaultValue = defaultValue;
-    setValue(defaultValue);
+    setValue(static_cast<signed char>(defaultValue));
 }
 
 QBrush QNEPort::currentBrush() const
@@ -261,7 +244,7 @@ QNEInputPort::QNEInputPort(QGraphicsItem *parent)
 QNEInputPort::~QNEInputPort()
 {
     while (!m_connections.isEmpty()) {
-        QNEConnection *conn = m_connections.back();
+        QNEConnection *conn = m_connections.last();
         m_connections.removeAll(conn);
         conn->setEnd(nullptr);
         delete conn;
@@ -274,18 +257,16 @@ void QNEInputPort::setValue(signed char value)
     if (!isValid()) {
         m_value = -1;
     }
-    if (ThemeManager::globalManager) {
-        const ThemeAttrs &attrs = ThemeManager::globalManager->getAttrs();
-        if (m_value == -1) {
-            setPen(attrs.qnePort_invalid_pen);
-            setCurrentBrush(attrs.qnePort_invalid_brush);
-        } else if (m_value == 1) {
-            setPen(attrs.qnePort_true_pen);
-            setCurrentBrush(attrs.qnePort_true_brush);
-        } else {
-            setPen(attrs.qnePort_false_pen);
-            setCurrentBrush(attrs.qnePort_false_brush);
-        }
+    const auto theme = ThemeManager::attributes();
+    if (m_value == -1) {
+        setPen(theme.m_qnePortInvalidPen);
+        setCurrentBrush(theme.m_qnePortInvalidBrush);
+    } else if (m_value == 1) {
+        setPen(theme.m_qnePortTruePen);
+        setCurrentBrush(theme.m_qnePortTrueBrush);
+    } else {
+        setPen(theme.m_qnePortFalsePen);
+        setCurrentBrush(theme.m_qnePortFalseBrush);
     }
 }
 
@@ -310,13 +291,13 @@ QNEOutputPort::QNEOutputPort(QGraphicsItem *parent)
     : QNEPort(parent)
 {
     m_label->setPos(m_radius + m_margin, -m_label->boundingRect().height() / 2);
-    updateTheme();
+    QNEOutputPort::updateTheme();
 }
 
 QNEOutputPort::~QNEOutputPort()
 {
     while (!m_connections.isEmpty()) {
-        auto *conn = m_connections.back();
+        auto *conn = m_connections.last();
         m_connections.removeAll(conn);
         conn->setStart(nullptr);
         delete conn;
@@ -353,9 +334,7 @@ bool QNEOutputPort::isValid() const
 
 void QNEOutputPort::updateTheme()
 {
-    if (ThemeManager::globalManager) {
-        const ThemeAttrs &attrs = ThemeManager::globalManager->getAttrs();
-        setPen(attrs.qnePort_output_pen);
-        setCurrentBrush(attrs.qnePort_output_brush);
-    }
+    const auto theme = ThemeManager::attributes();
+    setPen(theme.m_qnePortOutputPen);
+    setCurrentBrush(theme.m_qnePortOutputBrush);
 }

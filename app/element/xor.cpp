@@ -3,28 +3,30 @@
 
 #include "xor.h"
 
-namespace {
+#include "common.h"
+
+namespace
+{
 int id = qRegisterMetaType<Xor>();
 }
 
 Xor::Xor(QGraphicsItem *parent)
     : GraphicElement(ElementType::Xor, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
+    qCDebug(zero) << "Creating xor.";
+
     m_pixmapSkinName.append(":/basic/xor.png");
+    setPixmap(m_pixmapSkinName.first());
+
     setOutputsOnTop(true);
     setCanChangeSkin(true);
-    setPixmap(m_pixmapSkinName[0]);
     updatePorts();
     setPortName("XOR");
     setToolTip(m_translatedName);
 }
 
-void Xor::setSkin(bool defaultSkin, const QString &filename)
+void Xor::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    if (defaultSkin) {
-        m_pixmapSkinName[0] = ":/basic/xor.png";
-    } else {
-        m_pixmapSkinName[0] = filename;
-    }
+    m_pixmapSkinName[0] = (defaultSkin) ? ":/basic/xor.png" : fileName;
     setPixmap(m_pixmapSkinName[0]);
 }

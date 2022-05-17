@@ -3,83 +3,128 @@
 
 #include "graphicsview.h"
 
-#include "graphicsviewzoom.h"
-
 #include <QApplication>
+#include <QDebug>
 #include <QKeyEvent>
 #include <QScrollBar>
 
 GraphicsView::GraphicsView(QWidget *parent)
     : QGraphicsView(parent)
 {
-    m_pan = false;
-    m_space = false;
-    m_panStartX = 0;
-    m_panStartY = 0;
     setAcceptDrops(true);
-    m_gvzoom = new GraphicsViewZoom(this);
+    setMouseTracking(true);
+
+    setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+
+    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+    setResizeAnchor(QGraphicsView::AnchorUnderMouse);
 }
 
-void GraphicsView::mousePressEvent(QMouseEvent *e)
+bool GraphicsView::canZoomIn() const
 {
-    if (e->button() == Qt::MiddleButton) {
+    return m_zoomLevel < 3;
+}
+
+bool GraphicsView::canZoomOut() const
+{
+    return m_zoomLevel > -3;
+}
+
+void GraphicsView::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::MiddleButton) {
         m_pan = true;
-        m_panStartX = e->pos().x();
-        m_panStartY = e->pos().y();
+        m_panStartX = event->pos().x();
+        m_panStartY = event->pos().y();
         QApplication::setOverrideCursor(Qt::ClosedHandCursor);
-        e->accept();
+        event->accept();
         return;
     }
-    QGraphicsView::mousePressEvent(e);
+    QGraphicsView::mousePressEvent(event);
 }
 
-void GraphicsView::mouseReleaseEvent(QMouseEvent *e)
-{
-    if (e->button() == Qt::MiddleButton) {
-        m_pan = false;
-        QApplication::restoreOverrideCursor();
-        e->accept();
-        return;
-    }
-    QGraphicsView::mouseReleaseEvent(e);
-}
-
-void GraphicsView::mouseMoveEvent(QMouseEvent *e)
+void GraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
     if (m_pan || m_space) {
-        horizontalScrollBar()->setValue(horizontalScrollBar()->value() - (e->pos().x() - m_panStartX));
-        verticalScrollBar()->setValue(verticalScrollBar()->value() - (e->pos().y() - m_panStartY));
-        m_panStartX = e->pos().x();
-        m_panStartY = e->pos().y();
-        e->accept();
+        horizontalScrollBar()->setValue(horizontalScrollBar()->value() - (event->pos().x() - m_panStartX));
+        verticalScrollBar()->setValue(verticalScrollBar()->value() - (event->pos().y() - m_panStartY));
+        m_panStartX = event->pos().x();
+        m_panStartY = event->pos().y();
+        event->accept();
         return;
     }
-    m_panStartX = e->pos().x();
-    m_panStartY = e->pos().y();
-    QGraphicsView::mouseMoveEvent(e);
+    m_panStartX = event->pos().x();
+    m_panStartY = event->pos().y();
+    QGraphicsView::mouseMoveEvent(event);
 }
 
-void GraphicsView::keyPressEvent(QKeyEvent *e)
+void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (e->key() == Qt::Key_Space) {
+    if (event->button() == Qt::MiddleButton) {
+        m_pan = false;
+        QApplication::restoreOverrideCursor();
+        event->accept();
+        return;
+    }
+    QGraphicsView::mouseReleaseEvent(event);
+}
+
+void GraphicsView::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Space) {
         m_space = true;
         QApplication::setOverrideCursor(Qt::ClosedHandCursor);
-        e->accept();
+        event->accept();
     }
-    QGraphicsView::keyPressEvent(e);
+    QGraphicsView::keyPressEvent(event);
 }
 
-void GraphicsView::keyReleaseEvent(QKeyEvent *e)
+void GraphicsView::keyReleaseEvent(QKeyEvent *event)
 {
-    if (e->key() == Qt::Key_Space) {
+    if (event->key() == Qt::Key_Space) {
         m_space = false;
         QApplication::restoreOverrideCursor();
-        e->accept();
+        event->accept();
     }
-    QGraphicsView::keyReleaseEvent(e);
+    QGraphicsView::keyReleaseEvent(event);
 }
 
-GraphicsViewZoom *GraphicsView::gvzoom() const
+void GraphicsView::wheelEvent(QWheelEvent *event)
 {
-    return m_gvzoom;
+    if (QApplication::keyboardModifiers() == Qt::ControlModifier) {
+        double deltaY = event->angleDelta().y();
+        (deltaY > 0) ? m_zoomLevel++ : m_zoomLevel--;
+        double factor = (deltaY > 0) ? 1.25 : 0.8;
+        scale(factor, factor);
+        return;
+    }
+
+    QGraphicsView::wheelEvent(event);
+}
+
+void GraphicsView::setFastMode(const bool fastMode)
+{
+    setRenderHint(QPainter::Antialiasing, !fastMode);
+    setRenderHint(QPainter::TextAntialiasing, !fastMode);
+    setRenderHint(QPainter::SmoothPixmapTransform, !fastMode);
+}
+
+void GraphicsView::zoomIn()
+{
+    scale(1.25, 1.25);
+    m_zoomLevel++;
+    emit zoomChanged();
+}
+
+void GraphicsView::zoomOut()
+{
+    scale(0.8, 0.8);
+    m_zoomLevel--;
+    emit zoomChanged();
+}
+
+void GraphicsView::resetZoom()
+{
+    resetTransform();
+    emit zoomChanged();
 }

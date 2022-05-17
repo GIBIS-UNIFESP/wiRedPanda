@@ -3,28 +3,30 @@
 
 #include "nor.h"
 
-namespace {
+#include "common.h"
+
+namespace
+{
 int id = qRegisterMetaType<Nor>();
 }
 
 Nor::Nor(QGraphicsItem *parent)
     : GraphicElement(ElementType::Nor, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
-    m_pixmapSkinName = {":/basic/nor.png"};
+    qCDebug(zero) << "Creating nor.";
+
+    m_pixmapSkinName = QStringList{":/basic/nor.png"};
+    setPixmap(m_pixmapSkinName.first());
+
     setOutputsOnTop(true);
-    setPixmap(m_pixmapSkinName[0]);
     setCanChangeSkin(true);
     updatePorts();
     setPortName("NOR");
     setToolTip(m_translatedName);
 }
 
-void Nor::setSkin(bool defaultSkin, const QString &filename)
+void Nor::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    if (defaultSkin) {
-        m_pixmapSkinName[0] = ":/basic/nor.png";
-    } else {
-        m_pixmapSkinName[0] = filename;
-    }
+    m_pixmapSkinName[0] = (defaultSkin) ? ":/basic/nor.png" : fileName;
     setPixmap(m_pixmapSkinName[0]);
 }

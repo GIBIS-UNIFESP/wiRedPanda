@@ -4,9 +4,16 @@
 
 ElementType &operator++(ElementType &e) { return e = static_cast<ElementType>(static_cast<int>(e) + 1); }
 
-QDataStream &operator>>(QDataStream &ds, ElementType &type) {
+QDataStream &operator>>(QDataStream &stream, ElementType &type)
+{
     quint64 temp;
-    ds >> temp;
+    stream >> temp;
     type = static_cast<ElementType>(temp);
-    return ds;
+    return stream;
+}
+
+QDataStream &operator<<(QDataStream &stream, const ElementType &type)
+{
+    stream << static_cast<quint64>(type);
+    return stream;
 }

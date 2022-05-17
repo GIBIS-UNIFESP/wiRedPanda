@@ -10,22 +10,20 @@
 class JKFlipFlop : public GraphicElement
 {
     Q_OBJECT
+    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
     Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
     Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
-    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
 
 public:
     explicit JKFlipFlop(QGraphicsItem *parent = nullptr);
 
-    void setSkin(bool defaultSkin, const QString &filename) override;
+    void setSkin(const bool defaultSkin, const QString &fileName) override;
     void updatePorts() override;
 
 private:
+    const QString m_pixmap = ":/memory/light/JK-flipflop.png";
     const QString m_titleText = tr("<b>JK-FLIPFLOP</b>");
     const QString m_translatedName = tr("JK-FlipFlop");
-    const QString m_pixmap = ":/memory/light/JK-flipflop.png";
-
-    bool lastClk;
 };
 
 Q_DECLARE_METATYPE(JKFlipFlop)

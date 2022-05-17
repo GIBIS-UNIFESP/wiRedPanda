@@ -13,6 +13,6 @@ public:
     explicit LogicDLatch();
 
 protected:
-    void _updateLogic(const std::vector<bool> &inputs) override;
+    void _updateLogic(const QVector<bool> &inputs) override;
 };
 

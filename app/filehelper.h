@@ -15,6 +15,6 @@ class FileHelper : public QObject
 public:
     FileHelper() = delete;
 
-    static void verifyRecursion(const QString &fname);
+    static void verifyRecursion(const QString &fileName);
 };
 

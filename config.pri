@@ -6,11 +6,11 @@ equals(QT_MAJOR_VERSION, 6) : !versionAtLeast(QT_VERSION, 6.2.0) {
     error("For Qt6 the minimum version is 6.2.0")
 }
 
-!qtHaveModule(charts){
+!qtHaveModule(charts) {
     error("QtCharts is not installed. Please install with Qt Maintenance Tool or with system repository")
 }
 
-!qtHaveModule(multimedia){
+!qtHaveModule(multimedia) {
     error("QtMultimedia is not installed. Please install with Qt Maintenance Tool or with system repository")
 }
 
@@ -19,7 +19,10 @@ DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
 QT += core gui printsupport charts multimedia widgets
 
-CONFIG += c++14 warn_on
+CONFIG += c++17 warn_on strict_c strict_c++
+
+PRECOMPILED_HEADER = $$PWD/pch.h
+CONFIG += precompile_header
 
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
@@ -47,34 +50,36 @@ linux {
     !isEmpty(CCACHE_BIN) {
         QMAKE_CC = ccache $$QMAKE_CC
         QMAKE_CXX = ccache $$QMAKE_CXX
-        QMAKE_CXXFLAGS += -fpch-preprocess # must also set sloppiness to pch_defines,time_macros in ccache.conf
     }
 }
 
-*-msvc {
-    QMAKE_CXXFLAGS += /permissive-
+msvc {
+    QMAKE_CXXFLAGS += /permissive- /std:c++17
 }
 
-*-g++{
+*-g++ {
     QMAKE_CXXFLAGS += -Wl,-rpath,'${ORIGIN}/lib'
     QMAKE_CXXFLAGS += -Wno-deprecated-enum-enum-conversion # can be removed after migrating to Qt6
+    QMAKE_CXXFLAGS += -std=c++17
 }
 
-*-clang{
+*-clang {
     QMAKE_CXXFLAGS += -Wno-deprecated-enum-enum-conversion # can be removed after migrating to Qt6
+    QMAKE_CXXFLAGS += -std=c++17
 }
 
-#mac {
-#TEMPLATE = app
-#QMAKE_MAC_SDK = macosx10.10
-#QMAKE_LFLAGS += -mmacosx-version-min=10.10 -v
-#QMAKE_CXXFLAGS += -stdlib=libc++
-#QMAKE_CXXFLAGS += -mmacosx-version-min=10.10
-#QMAKE_CXXFLAGS_DEBUG = -O
-#QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.10
-#LIBS += -stdlib=libc++
-#CONFIG += app_bundle
-#}
+mac {
+    CONFIG += sdk_no_version_check
+#   TEMPLATE = app
+#   QMAKE_MAC_SDK = macosx10.10
+#   QMAKE_LFLAGS += -mmacosx-version-min=10.10 -v
+#   QMAKE_CXXFLAGS += -stdlib=libc++
+#   QMAKE_CXXFLAGS += -mmacosx-version-min=10.10
+#   QMAKE_CXXFLAGS_DEBUG = -O
+#   QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.10
+#   LIBS += -stdlib=libc++
+#   CONFIG += app_bundle
+}
 
 MOC_DIR        = build_files/moc
 UI_DIR         = build_files/ui
@@ -93,20 +98,16 @@ SOURCES += \
     $$PWD/app/clockdialog.cpp \
     $$PWD/app/commands.cpp \
     $$PWD/app/common.cpp \
-    $$PWD/app/editor.cpp \
     $$PWD/app/elementeditor.cpp \
     $$PWD/app/elementfactory.cpp \
     $$PWD/app/elementmapping.cpp \
     $$PWD/app/elementtype.cpp \
     $$PWD/app/filehelper.cpp \
-    $$PWD/app/globalproperties.cpp \
     $$PWD/app/graphicelement.cpp \
     $$PWD/app/graphicsview.cpp \
-    $$PWD/app/graphicsviewzoom.cpp \
     $$PWD/app/ic.cpp \
     $$PWD/app/icmanager.cpp \
     $$PWD/app/icmapping.cpp \
-    $$PWD/app/icnotfoundexception.cpp \
     $$PWD/app/icprototype.cpp \
     $$PWD/app/icprototypeimpl.cpp \
     $$PWD/app/itemwithid.cpp \
@@ -119,11 +120,11 @@ SOURCES += \
     $$PWD/app/nodes/qneport.cpp \
     $$PWD/app/recentfilescontroller.cpp \
     $$PWD/app/scene.cpp \
-    $$PWD/app/scstop.cpp \
     $$PWD/app/serializationfunctions.cpp \
     $$PWD/app/settings.cpp \
     $$PWD/app/simplewaveform.cpp \
     $$PWD/app/simulationcontroller.cpp \
+    $$PWD/app/simulationcontrollerstop.cpp \
     $$PWD/app/thememanager.cpp \
     $$PWD/app/workspace.cpp
 
@@ -134,7 +135,6 @@ HEADERS += \
     $$PWD/app/clockdialog.h \
     $$PWD/app/commands.h \
     $$PWD/app/common.h \
-    $$PWD/app/editor.h \
     $$PWD/app/elementeditor.h \
     $$PWD/app/elementfactory.h \
     $$PWD/app/elementmapping.h \
@@ -143,11 +143,9 @@ HEADERS += \
     $$PWD/app/globalproperties.h \
     $$PWD/app/graphicelement.h \
     $$PWD/app/graphicsview.h \
-    $$PWD/app/graphicsviewzoom.h \
     $$PWD/app/ic.h \
     $$PWD/app/icmanager.h \
     $$PWD/app/icmapping.h \
-    $$PWD/app/icnotfoundexception.h \
     $$PWD/app/icprototype.h \
     $$PWD/app/icprototypeimpl.h \
     $$PWD/app/itemwithid.h \
@@ -160,11 +158,11 @@ HEADERS += \
     $$PWD/app/nodes/qneport.h \
     $$PWD/app/recentfilescontroller.h \
     $$PWD/app/scene.h \
-    $$PWD/app/scstop.h \
     $$PWD/app/serializationfunctions.h \
     $$PWD/app/settings.h \
     $$PWD/app/simplewaveform.h \
     $$PWD/app/simulationcontroller.h \
+    $$PWD/app/simulationcontrollerstop.h \
     $$PWD/app/thememanager.h \
     $$PWD/app/workspace.h
 
@@ -184,7 +182,7 @@ FORMS += \
     $$PWD/app/simplewaveform.ui
 
 RESOURCES += \
-    $$PWD/app/resources/basic/basic.qrc\
+    $$PWD/app/resources/basic/basic.qrc \
     $$PWD/app/resources/dolphin/dolphin.qrc \
     $$PWD/app/resources/input/input.qrc\
     $$PWD/app/resources/memory/dark/memory_dark.qrc \

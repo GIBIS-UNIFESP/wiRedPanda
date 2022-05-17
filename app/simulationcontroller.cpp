@@ -3,6 +3,7 @@
 
 #include "simulationcontroller.h"
 
+#include "buzzer.h"
 #include "clock.h"
 #include "common.h"
 #include "elementmapping.h"
@@ -17,12 +18,9 @@
 #include <QDebug>
 #include <QGraphicsView>
 
-SimulationController::SimulationController(Scene *scn)
-    : QObject(scn)
-    , m_elMapping(nullptr)
-    , m_simulationTimer(this)
-    , m_scene(scn)
-    , m_shouldRestart(false)
+SimulationController::SimulationController(Scene *scene)
+    : QObject(scene)
+    , m_scene(scene)
 {
     m_simulationTimer.setInterval(globalClock);
     m_viewTimer.setInterval(1000 / 30);
@@ -45,17 +43,17 @@ void SimulationController::updateScene(const QRectF &rect)
         return;
     }
 
-    for (auto *item : m_scene->items(rect)) {
-        auto *connection = qgraphicsitem_cast<QNEConnection *>(item);
-        auto *element = qgraphicsitem_cast<GraphicElement *>(item);
+    const auto items = m_scene->items(rect);
 
-        if (connection) {
-            updateConnection(connection);
+    for (auto *item : items) {
+        if (auto *connection = qgraphicsitem_cast<QNEConnection *>(item)) {
+            updatePort(connection->start());
             continue;
         }
 
-        if (element && element->elementGroup() == ElementGroup::Output) {
-            for (auto *input : element->inputs()) {
+        if (auto *element = qgraphicsitem_cast<GraphicElement *>(item); element && element->elementGroup() == ElementGroup::Output) {
+            const auto inputs = element->inputs();
+            for (auto *input : inputs) {
                 updatePort(input);
             }
         }
@@ -64,8 +62,7 @@ void SimulationController::updateScene(const QRectF &rect)
 
 void SimulationController::updateView()
 {
-    const auto scene_views = m_scene->views();
-    updateScene(scene_views.first()->sceneRect());
+    updateScene(m_scene->views().first()->sceneRect());
 }
 
 void SimulationController::updateAll()
@@ -75,7 +72,7 @@ void SimulationController::updateAll()
 
 bool SimulationController::canRun()
 {
-    return m_elMapping ? m_elMapping->canRun() : false;
+    return (m_elmMapping) ? m_elmMapping->canRun() : false;
 }
 
 bool SimulationController::isRunning()
@@ -94,20 +91,26 @@ void SimulationController::update()
         m_shouldRestart = false;
         clear();
     }
-    if (m_elMapping) { // TODO: Remove this check, if possible. May increse the simulation speed significantly.
-        m_elMapping->update();
+    if (m_elmMapping) { // TODO: Remove this check, if possible. May increse the simulation speed significantly.
+        m_elmMapping->update();
     }
-}
-
-void SimulationController::stop()
-{
-    m_simulationTimer.stop();
 }
 
 void SimulationController::startTimer()
 {
     qCDebug(zero) << "Starting timer.";
     m_simulationTimer.start();
+}
+
+void SimulationController::stop()
+{
+    m_simulationTimer.stop();
+    const auto elms = m_scene->elements();
+    for (auto *elm : elms) {
+        if (auto *buzzer = dynamic_cast<Buzzer *>(elm)) {
+            buzzer->mute(true);
+        }
+    }
 }
 
 void SimulationController::start()
@@ -117,25 +120,31 @@ void SimulationController::start()
     reSortElements();
     m_simulationTimer.start();
     qCDebug(zero) << "Simulation started.";
+    const auto elms = m_scene->elements();
+    for (auto *elm : elms) {
+        if (auto *buzzer = dynamic_cast<Buzzer *>(elm)) {
+            buzzer->mute(false);
+        }
+    }
 }
 
 void SimulationController::reSortElements()
 {
     qCDebug(two) << "GENERATING SIMULATION LAYER.";
-    QVector<GraphicElement *> elements = m_scene->getElements();
+    auto elements = m_scene->elements();
     qCDebug(zero) << "Elements read:" << elements.size();
     if (elements.empty()) {
         return;
     }
     qCDebug(two) << "Deleting existing mapping.";
-    delete m_elMapping;
+    delete m_elmMapping;
     qCDebug(two) << "Recreating mapping for simulation.";
-    m_elMapping = new ElementMapping(elements);
-    if (m_elMapping->canInitialize()) {
+    m_elmMapping = new ElementMapping(elements);
+    if (m_elmMapping->canInitialize()) {
         qCDebug(two) << "Can initialize.";
-        m_elMapping->initialize();
+        m_elmMapping->initialize();
         qCDebug(two) << "Sorting.";
-        m_elMapping->sort();
+        m_elmMapping->sort();
         qCDebug(two) << "Updating.";
         update();
     } else {
@@ -146,27 +155,25 @@ void SimulationController::reSortElements()
 
 void SimulationController::clear()
 {
-    delete m_elMapping;
-    m_elMapping = nullptr;
+    delete m_elmMapping;
+    m_elmMapping = nullptr;
 }
 
 void SimulationController::updatePort(QNEOutputPort *port)
 {
     if (port) {
         GraphicElement *elm = port->graphicElement();
-        Q_ASSERT(elm);
         LogicElement *logElm = nullptr;
         int portIndex = 0;
         if (elm->elementType() == ElementType::IC) {
             IC *ic = dynamic_cast<IC *>(elm);
-            logElm = m_elMapping->getICMapping(ic)->getOutput(port->index());
+            logElm = m_elmMapping->icMapping(ic)->output(port->index());
         } else {
-            logElm = m_elMapping->getLogicElement(elm);
+            logElm = m_elmMapping->logicElement(elm);
             portIndex = port->index();
         }
-        Q_ASSERT(logElm);
         if (logElm->isValid()) {
-            port->setValue(logElm->getOutputValue(portIndex));
+            port->setValue(static_cast<signed char>(logElm->outputValue(portIndex)));
         } else {
             port->setValue(-1);
         }
@@ -175,24 +182,15 @@ void SimulationController::updatePort(QNEOutputPort *port)
 
 void SimulationController::updatePort(QNEInputPort *port)
 {
-    Q_ASSERT(port);
     GraphicElement *elm = port->graphicElement();
-    Q_ASSERT(elm);
-    LogicElement *logElm = m_elMapping->getLogicElement(elm);
-    Q_ASSERT(logElm);
+    LogicElement *logElm = m_elmMapping->logicElement(elm);
     int portIndex = port->index();
     if (logElm->isValid()) {
-        port->setValue(logElm->getInputValue(portIndex));
+        port->setValue(static_cast<signed char>(logElm->inputValue(portIndex)));
     } else {
         port->setValue(-1);
     }
     if (elm->elementGroup() == ElementGroup::Output) {
         elm->refresh();
     }
-}
-
-void SimulationController::updateConnection(QNEConnection *conn)
-{
-    Q_ASSERT(conn);
-    updatePort(conn->start());
 }

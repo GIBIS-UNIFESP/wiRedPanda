@@ -14,10 +14,10 @@ class ListItemWidget : public QFrame
     Q_OBJECT
 
 public:
-    explicit ListItemWidget(const QPixmap *pixmap, ElementType elementType, const QString &icFileName, QWidget *parent = nullptr);
-    explicit ListItemWidget(const QPixmap &pixmap, ElementType elementType, const QString &icFileName, QWidget *parent = nullptr);
+    explicit ListItemWidget(const QPixmap *pixmap, ElementType type, const QString &icFileName, QWidget *parent = nullptr);
+    explicit ListItemWidget(const QPixmap &pixmap, ElementType type, const QString &icFileName, QWidget *parent = nullptr);
 
-    Label *getLabel() const;
+    Label *label() const;
     void updateName();
 
 protected:

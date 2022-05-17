@@ -1,7 +1,5 @@
 #include "settings.h"
 
-QSettings *Settings::settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, "GIBIS-UNIFESP", "WiRedPanda");
-
 QString Settings::fileName()
 {
     return settings->fileName();

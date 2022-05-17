@@ -12,34 +12,33 @@ class QNEPort;
 class Display : public GraphicElement
 {
     Q_OBJECT
+    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
     Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
     Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
-    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
 
 public:
     explicit Display(QGraphicsItem *parent = nullptr);
 
-    static int current_id_number; // Number used to create distinct labels for each instance of this element.
-
-    QString getColor() const override;
-    static QPixmap convertColor(const QImage &src, bool red, bool green, bool blue);
+    static QPixmap convertColor(const QImage &src, const bool red, const bool green, const bool blue);
     static void convertAllColors(QVector<QPixmap> &maps);
-    void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
+
+    QString color() const override;
+    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version) override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void refresh() override;
-    void save(QDataStream &ds) const override;
-    void setColor(const QString &getColor) override;
-    void setSkin(bool defaultSkin, const QString &filename) override;
+    void save(QDataStream &stream) const override;
+    void setColor(const QString &color) override;
+    void setSkin(const bool defaultSkin, const QString &fileName) override;
     void updatePorts() override;
 
 private:
+    const QString m_pixmap = ":/output/counter/counter_on.png";
     const QString m_titleText = tr("<b>7-SEGMENT DISPLAY</b>");
     const QString m_translatedName = tr("Display");
-    const QString m_pixmap = ":/output/counter/counter_on.png";
 
+    QString m_color = "Red";
     QVector<QPixmap> bkg, a, b, c, d, e, f, g, dp;
-    QString m_color;
-    int m_color_number;
+    int m_colorNumber = 1;
 };
 
 Q_DECLARE_METATYPE(Display)

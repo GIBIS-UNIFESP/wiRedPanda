@@ -5,12 +5,12 @@
 
 #include <functional>
 
-LogicXnor::LogicXnor(size_t inputSize)
+LogicXnor::LogicXnor(const int inputSize)
     : LogicElement(inputSize, 1)
 {
 }
 
-void LogicXnor::_updateLogic(const std::vector<bool> &inputs)
+void LogicXnor::_updateLogic(const QVector<bool> &inputs)
 {
     auto result = std::accumulate(inputs.begin(), inputs.end(), false, std::bit_xor<>());
     setOutputValue(!result);

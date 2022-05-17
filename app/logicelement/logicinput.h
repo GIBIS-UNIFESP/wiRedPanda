@@ -10,9 +10,9 @@
 class LogicInput : public LogicElement
 {
 public:
-    explicit LogicInput(bool defaultValue = false, int n_outputs = 1);
+    explicit LogicInput(const bool defaultValue = false, const int n_outputs = 1);
 
 protected:
-    void _updateLogic(const std::vector<bool> & /*inputs*/) override;
+    void _updateLogic(const QVector<bool> &inputs) override;
 };
 

@@ -14,14 +14,12 @@ Label::Label(QWidget *parent)
 {
 }
 
-Label::~Label() = default;
-
 ElementType Label::elementType()
 {
     return m_elementType;
 }
 
-void Label::setElementType(ElementType elementType)
+void Label::setElementType(const ElementType elementType)
 {
     m_elementType = elementType;
 }
@@ -74,8 +72,8 @@ void Label::startDrag(QPoint pos)
 #endif
     }
     QByteArray itemData;
-    QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-    dataStream << QPointF(pos) << static_cast<qint32>(m_elementType) << m_auxData;
+    QDataStream stream(&itemData, QIODevice::WriteOnly);
+    stream << pos << m_elementType << m_auxData;
 
     auto *mimeData = new QMimeData;
     mimeData->setData("application/x-dnditemdata", itemData);

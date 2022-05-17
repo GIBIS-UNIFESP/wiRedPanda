@@ -7,7 +7,6 @@
 #include "demux.h"
 #include "dflipflop.h"
 #include "dlatch.h"
-#include "editor.h"
 #include "globalproperties.h"
 #include "ic.h"
 #include "icmanager.h"
@@ -24,6 +23,7 @@
 #include "or.h"
 #include "qneconnection.h"
 #include "qneport.h"
+#include "scene.h"
 #include "simulationcontroller.h"
 #include "srflipflop.h"
 #include "tflipflop.h"
@@ -53,7 +53,7 @@ void TestElements::testNode()
     QCOMPARE(elm.inputSize(), 1);
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 1);
-    QCOMPARE(elm.minInputSz(), 1);
+    QCOMPARE(elm.minInputSize(), 1);
     QCOMPARE(elm.elementType(), ElementType::Node);
 }
 
@@ -64,7 +64,7 @@ void TestElements::testAnd()
     QCOMPARE(elm.inputSize(), 2);
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 1);
-    QCOMPARE(elm.minInputSz(), 2);
+    QCOMPARE(elm.minInputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::And);
 }
 
@@ -75,7 +75,7 @@ void TestElements::testOr()
     QCOMPARE(elm.inputSize(), 2);
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 1);
-    QCOMPARE(elm.minInputSz(), 2);
+    QCOMPARE(elm.minInputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::Or);
 }
 
@@ -102,7 +102,7 @@ void TestElements::testMux()
     QCOMPARE(elm.inputSize(), 3);
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 1);
-    QCOMPARE(elm.minInputSz(), 3);
+    QCOMPARE(elm.minInputSize(), 3);
     QCOMPARE(elm.elementType(), ElementType::Mux);
 }
 
@@ -113,7 +113,7 @@ void TestElements::testDemux()
     QCOMPARE(elm.inputSize(), 2);
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 2);
-    QCOMPARE(elm.minInputSz(), 2);
+    QCOMPARE(elm.minInputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::Demux);
 }
 
@@ -124,10 +124,10 @@ void TestElements::testDFlipFlop()
     QCOMPARE(elm.inputSize(), 4);
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 2);
-    QCOMPARE(elm.minInputSz(), 4);
-    QCOMPARE(elm.maxInputSz(), 4);
-    QCOMPARE(elm.minOutputSz(), 2);
-    QCOMPARE(elm.maxOutputSz(), 2);
+    QCOMPARE(elm.minInputSize(), 4);
+    QCOMPARE(elm.maxInputSize(), 4);
+    QCOMPARE(elm.minOutputSize(), 2);
+    QCOMPARE(elm.maxOutputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::DFlipFlop);
 }
 
@@ -138,10 +138,10 @@ void TestElements::testDLatch()
     QCOMPARE(elm.inputSize(), 2);
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 2);
-    QCOMPARE(elm.minInputSz(), 2);
-    QCOMPARE(elm.maxInputSz(), 2);
-    QCOMPARE(elm.minOutputSz(), 2);
-    QCOMPARE(elm.maxOutputSz(), 2);
+    QCOMPARE(elm.minInputSize(), 2);
+    QCOMPARE(elm.maxInputSize(), 2);
+    QCOMPARE(elm.minOutputSize(), 2);
+    QCOMPARE(elm.maxOutputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::DLatch);
 }
 
@@ -152,10 +152,10 @@ void TestElements::testJKFlipFlop()
     QCOMPARE(elm.inputSize(), 5);
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 2);
-    QCOMPARE(elm.minInputSz(), 5);
-    QCOMPARE(elm.maxInputSz(), 5);
-    QCOMPARE(elm.minOutputSz(), 2);
-    QCOMPARE(elm.maxOutputSz(), 2);
+    QCOMPARE(elm.minInputSize(), 5);
+    QCOMPARE(elm.maxInputSize(), 5);
+    QCOMPARE(elm.minOutputSize(), 2);
+    QCOMPARE(elm.maxOutputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::JKFlipFlop);
 }
 
@@ -166,10 +166,10 @@ void TestElements::testSRFlipFlop()
     QCOMPARE(elm.inputSize(), 5);
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 2);
-    QCOMPARE(elm.minInputSz(), 5);
-    QCOMPARE(elm.maxInputSz(), 5);
-    QCOMPARE(elm.minOutputSz(), 2);
-    QCOMPARE(elm.maxOutputSz(), 2);
+    QCOMPARE(elm.minInputSize(), 5);
+    QCOMPARE(elm.maxInputSize(), 5);
+    QCOMPARE(elm.minOutputSize(), 2);
+    QCOMPARE(elm.maxOutputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::SRFlipFlop);
 }
 
@@ -180,10 +180,10 @@ void TestElements::testTFlipFlop()
     QCOMPARE(elm.inputSize(), 4);
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 2);
-    QCOMPARE(elm.minInputSz(), 4);
-    QCOMPARE(elm.maxInputSz(), 4);
-    QCOMPARE(elm.minOutputSz(), 2);
-    QCOMPARE(elm.maxOutputSz(), 2);
+    QCOMPARE(elm.minInputSize(), 4);
+    QCOMPARE(elm.maxInputSize(), 4);
+    QCOMPARE(elm.minOutputSize(), 2);
+    QCOMPARE(elm.maxOutputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::TFlipFlop);
 }
 
@@ -212,14 +212,11 @@ void TestElements::testICData(const IC *ic)
 
 void TestElements::testIC()
 {
-    auto *editor = new Editor();
-    editor->setupWorkspace();
     GlobalProperties::currentFile = QString(CURRENTDIR) + "/../examples/simple.panda";
-    auto *manager(editor->getICManager());
     const QString icFile = testFile("jkflipflop.panda");
 
     auto *ic = new IC();
-    manager->loadIC(ic, icFile);
+    ICManager::loadIC(ic, icFile);
 
     testICData(ic);
 
@@ -310,10 +307,7 @@ void TestElements::testIC()
 
 void TestElements::testICs()
 {
-    auto *editor = new Editor();
-    editor->setupWorkspace();
     GlobalProperties::currentFile = QString(CURRENTDIR) + "/../examples/simple.panda";
-    auto *manager(editor->getICManager());
     const QDir examplesDir(QString(CURRENTDIR) + "/../examples/");
     // qCDebug(zero) << "Current dir:" << CURRENTDIR;
     const auto files = examplesDir.entryInfoList(QStringList{"*.panda"});
@@ -321,6 +315,6 @@ void TestElements::testICs()
     for (const auto &fileInfo : qAsConst(files)) {
         // qCDebug(zero) << "FILE:" << f.absoluteFilePath();
         IC ic;
-        manager->loadIC(&ic, fileInfo.absoluteFilePath());
+        ICManager::loadIC(&ic, fileInfo.absoluteFilePath());
     }
 }

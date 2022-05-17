@@ -23,14 +23,10 @@ public:
     explicit ClockDialog(QWidget *parent = nullptr);
     ~ClockDialog() override;
 
-    //! Returns the clock frequency (in Hz)
-    int getFrequency();
+    //! Returns the clock frequency in Hz
+    int frequency();
 
 private:
-    void cancelRequested();
-    void okRequested();
-
     Ui::ClockDialog *m_ui;
-    bool m_canceled;
 };
 

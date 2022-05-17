@@ -22,8 +22,6 @@ int main(int argc, char **argv)
     app.setApplicationName("WiRedPanda");
     app.setApplicationVersion(APP_VERSION);
 
-    ThemeManager::globalManager = new ThemeManager();
-
     int status = 0;
     status |= QTest::qExec(new TestCommands, argc, argv);
     status |= QTest::qExec(new TestElements, argc, argv);

@@ -5,24 +5,23 @@
 
 #include "common.h"
 #include "globalproperties.h"
-#include "icnotfoundexception.h"
 
 #include <QDebug>
 #include <QDir>
 #include <iostream>
 
-void FileHelper::verifyRecursion(const QString &fname)
+void FileHelper::verifyRecursion(const QString &fileName)
 {
-    Q_UNUSED(fname);
+    Q_UNUSED(fileName);
     // TODO: BoxFileHelper::verifyRecursion
-    // std::string msg = "Oh no! I'm my own parent.\nSomething is not ok...";
-    // if (!parentFile.isEmpty() && (fname == parentFile)) {
-    //     throw(std::runtime_error(msg));
-    // }
-    // for (auto *box = parentBox; box != nullptr; box = box->getParentBox()) {
-    //     // qCDebug(zero) << "File:" << box->getFile();
-    //     if (box->getFile() == fname) {
-    //         throw(std::runtime_error(msg));
+    //     QString msg = "Oh no! I'm my own parent.\nSomething is not ok...";
+    //     if (!parentFile.isEmpty() && (fileName == parentFile)) {
+    //         throw Pandaception(msg);
     //     }
-    // }
+    //     for (auto *box = parentBox; box != nullptr; box = box->getParentBox()) {
+    //         // qCDebug(zero) << "File:" << box->getFile();
+    //         if (box->getFile() == fileName) {
+    //             throw Pandaception(msg);
+    //         }
+    //     }
 }

@@ -5,13 +5,9 @@
 
 #pragma once
 
-#include "graphicelement.h"
+#include "workspace.h"
 
 #include <QWidget>
-
-class Editor;
-class QUndoCommand;
-class Scene;
 
 namespace Ui
 {
@@ -33,8 +29,7 @@ public:
     void fillColorComboBox();
     void renameAction();
     void retranslateUi();
-    void setEditor(Editor *value);
-    void setScene(Scene *s);
+    void setScene(Scene *scene);
     void updateElementSkin();
 
 signals:
@@ -43,38 +38,50 @@ signals:
 private:
     void apply();
     void defaultSkin();
-    void inputIndexChanged(int idx);
+    void inputIndexChanged(const int index);
     void inputLocked(const bool value);
-    void outputIndexChanged(const QString &idx);
-    void outputValueChanged(const QString &idx);
+    void outputIndexChanged(const QString &index);
+    void outputValueChanged(const QString &index);
     void selectionChanged();
     void setCurrentElements(const QVector<GraphicElement *> &elms);
     void triggerChanged(const QString &cmd);
     void updateSkins();
 
     Ui::ElementEditor *m_ui;
-    Editor *m_editor;
-    QString m_manyAudios;
-    QString m_manyColors;
-    QString m_manyFreq;
-    QString m_manyIS;
-    QString m_manyLabels;
-    QString m_manyOS;
-    QString m_manyOV;
-    QString m_manyTriggers;
+    QString m_manyAudios = tr("<Many sounds>");
+    QString m_manyColors = tr("<Many colors>");
+    QString m_manyFreq = tr("<Many values>");
+    QString m_manyIS = tr("<Many values>");
+    QString m_manyLabels = tr("<Many labels>");
+    QString m_manyOS = tr("<Many values>");
+    QString m_manyOV = tr("<Many values>");
+    QString m_manyTriggers = tr("<Many triggers>");
     QString m_skinName;
     QVector<GraphicElement *> m_elements;
-    Scene *m_scene;
-    bool m_canChangeInputSize, m_canChangeOutputSize;
-    bool m_defaultSkin;
-    bool m_hasAnyProperty, m_hasLabel, m_hasColors, m_hasFrequency, m_hasAudio;
-    bool m_hasElements;
-    bool m_hasOnlyInputs;
-    bool m_hasSameAudio;
-    bool m_hasSameInputSize, m_hasSameOutputSize, m_hasSameOutputValue;
-    bool m_hasSameLabel, m_hasSameColors, m_hasSameFrequency;
-    bool m_hasSameTrigger, m_canMorph, m_hasSameType;
-    bool m_hasTrigger, m_hasRotation, m_canChangeSkin;
-    bool m_updatingSkin;
+    Scene *m_scene = nullptr;
+    bool m_canChangeInputSize = false;
+    bool m_canChangeOutputSize = false;
+    bool m_canChangeSkin = false;
+    bool m_canMorph = false;
+    bool m_defaultSkin = true;
+    bool m_hasAnyProperty = false;
+    bool m_hasAudio = false;
+    bool m_hasColors = false;
+    bool m_hasElements = false;
+    bool m_hasFrequency = false;
+    bool m_hasLabel = false;
+    bool m_hasOnlyInputs = false;
+    bool m_hasRotation = false;
+    bool m_hasSameAudio = false;
+    bool m_hasSameColors = false;
+    bool m_hasSameFrequency = false;
+    bool m_hasSameInputSize = false;
+    bool m_hasSameLabel = false;
+    bool m_hasSameOutputSize = false;
+    bool m_hasSameOutputValue = false;
+    bool m_hasSameTrigger = false;
+    bool m_hasSameType = false;
+    bool m_hasTrigger = false;
+    bool m_updatingSkin = false;
 };
 
