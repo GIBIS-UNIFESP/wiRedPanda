@@ -3,18 +3,22 @@
 
 #include "node.h"
 
+#include "common.h"
 #include "qneport.h"
 
-namespace {
+namespace
+{
 int id = qRegisterMetaType<Node>();
 }
 
 Node::Node(QGraphicsItem *parent)
     : GraphicElement(ElementType::Node, ElementGroup::Gate, 1, 1, 1, 1, parent)
 {
-    m_pixmapSkinName = {":/basic/node.png"};
+    qCDebug(zero) << "Creating node.";
 
-    setPixmap(m_pixmapSkinName[0], QRect(QPoint(16, 16), QPoint(48, 48)));
+    m_pixmapSkinName = QStringList{":/basic/node.png"};
+    setPixmap(m_pixmapSkinName.first(), QRect(16, 16, 48, 48));
+
     Node::updatePorts();
     setCanChangeSkin(true);
     setPortName("NODE");
@@ -28,12 +32,8 @@ void Node::updatePorts()
     output()->setPos(32, 16);
 }
 
-void Node::setSkin(bool defaultSkin, const QString &filename)
+void Node::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    if (defaultSkin) {
-        m_pixmapSkinName[0] = ":/basic/node.png";
-    } else {
-        m_pixmapSkinName[0] = filename;
-    }
+    m_pixmapSkinName[0] = (defaultSkin) ? ":/basic/node.png" : fileName;
     setPixmap(m_pixmapSkinName[0]);
 }

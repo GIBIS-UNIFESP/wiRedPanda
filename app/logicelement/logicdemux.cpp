@@ -8,7 +8,7 @@ LogicDemux::LogicDemux()
 {
 }
 
-void LogicDemux::_updateLogic(const std::vector<bool> &inputs)
+void LogicDemux::_updateLogic(const QVector<bool> &inputs)
 {
     bool data = inputs[0];
     bool choice = inputs[1];

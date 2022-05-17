@@ -28,7 +28,6 @@ SOURCES += \
     $$PWD/logicmux.cpp \
     $$PWD/logicnand.cpp \
     $$PWD/logicnode.cpp \
-    $$PWD/logicnone.cpp \
     $$PWD/logicnor.cpp \
     $$PWD/logicnot.cpp \
     $$PWD/logicor.cpp \

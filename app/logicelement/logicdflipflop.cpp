@@ -5,24 +5,22 @@
 
 LogicDFlipFlop::LogicDFlipFlop()
     : LogicElement(4, 2)
-    , lastClk(false)
-    , lastValue(true)
 {
     setOutputValue(0, false);
     setOutputValue(1, true);
 }
 
-void LogicDFlipFlop::_updateLogic(const std::vector<bool> &inputs)
+void LogicDFlipFlop::_updateLogic(const QVector<bool> &inputs)
 {
-    bool q0 = getOutputValue(0);
-    bool q1 = getOutputValue(1);
+    bool q0 = outputValue(0);
+    bool q1 = outputValue(1);
     bool D = inputs[0];
     bool clk = inputs[1];
     bool prst = inputs[2];
     bool clr = inputs[3];
-    if (clk && !lastClk) {
-        q0 = lastValue;
-        q1 = !lastValue;
+    if (clk && !m_lastClk) {
+        q0 = m_lastValue;
+        q1 = !m_lastValue;
     }
     if ((!prst) || (!clr)) {
         q0 = !prst;
@@ -30,7 +28,6 @@ void LogicDFlipFlop::_updateLogic(const std::vector<bool> &inputs)
     }
     setOutputValue(0, q0);
     setOutputValue(1, q1);
-    lastClk = clk;
-    lastValue = D;
-    /* Reference: https://en.wikipedia.org/wiki/Flip-flop_(electronics)#T_flip-flop */
+    m_lastClk = clk;
+    m_lastValue = D;
 }

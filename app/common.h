@@ -6,7 +6,7 @@
 #pragma once
 
 #include <QLoggingCategory>
-#include <iostream>
+#include <stdexcept>
 
 Q_DECLARE_LOGGING_CATEGORY(zero)
 Q_DECLARE_LOGGING_CATEGORY(one)
@@ -21,4 +21,14 @@ public:
     static void setVerbosity(const int verbosity);
 };
 
-#define ERRORMSG(exp) std::string(__FILE__) + ": " + std::to_string(__LINE__) + ": " + std::string(__FUNCTION__) + ": Error: " + exp
+class Pandaception : public std::runtime_error
+{
+public:
+    explicit Pandaception(const QString &message);
+};
+
+class Common
+{
+public:
+    inline static bool incrementLabel = false;
+};

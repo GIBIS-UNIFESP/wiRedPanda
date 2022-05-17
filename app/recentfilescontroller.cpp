@@ -10,9 +10,9 @@
 #include <QFile>
 #include <QFileInfo>
 
-RecentFilesController::RecentFilesController(const QString &_attrName, QObject *parent, bool saveSetting)
+RecentFilesController::RecentFilesController(const QString &attrName, bool saveSetting, QObject *parent)
     : QObject(parent)
-    , m_attrName(_attrName)
+    , m_attrName(attrName)
     , m_saveSetting(saveSetting)
 {
     if (Settings::contains(m_attrName)) {
@@ -21,14 +21,14 @@ RecentFilesController::RecentFilesController(const QString &_attrName, QObject *
 }
 
 // TODO: quotes bug
-void RecentFilesController::addRecentFile(const QString &fname)
+void RecentFilesController::addRecentFile(const QString &fileName)
 {
-    qCDebug(three) << "Setting recent file to:" << fname;
-    if (!QFile(fname).exists()) {
+    qCDebug(three) << "Setting recent file to:" << fileName;
+    if (!QFile(fileName).exists()) {
         return;
     }
-    m_files.removeAll(fname);
-    m_files.prepend(fname);
+    m_files.removeAll(fileName);
+    m_files.prepend(fileName);
     if (m_files.size() > MaxRecentFiles) {
         m_files.erase(m_files.begin() + MaxRecentFiles, m_files.end());
     }
@@ -36,7 +36,7 @@ void RecentFilesController::addRecentFile(const QString &fname)
     saveRecentFiles();
 }
 
-QStringList RecentFilesController::getRecentFiles()
+QStringList RecentFilesController::recentFiles()
 {
     int i = 0;
     while (i < m_files.size()) {

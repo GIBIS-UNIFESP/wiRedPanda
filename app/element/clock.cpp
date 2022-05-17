@@ -9,42 +9,39 @@
 
 #include <QDebug>
 
-namespace {
+namespace
+{
 int id = qRegisterMetaType<Clock>();
 }
-
-bool Clock::reset = false;
-bool Clock::pause = false;
-int Clock::current_id_number = 0;
 
 Clock::Clock(QGraphicsItem *parent)
     : GraphicElement(ElementType::Clock, ElementGroup::Input, 0, 0, 1, 1, parent)
 {
     qCDebug(zero) << "Creating clock.";
-    locked = false;
-    m_pixmapSkinName = {
+
+    m_pixmapSkinName = QStringList{
         ":/input/clock0.png",
         ":/input/clock1.png"
     };
+    setPixmap(m_pixmapSkinName.first());
 
     setOutputsOnTop(false);
+    m_locked = false;
     setRotatable(false);
     setCanChangeSkin(true);
     Clock::setFrequency(1.0);
     setHasFrequency(true);
-    m_isOn = false;
-    Clock::reset = true;
-    Clock::pause = false;
+    reset = true;
+    pause = false;
     setHasLabel(true);
     setPortName("Clock");
     setToolTip(m_translatedName);
     Clock::setOn(false);
-    setPixmap(m_pixmapSkinName[0]);
 }
 
 void Clock::updateClock()
 {
-    if ((!locked) && (!disabled()) && (!Clock::pause)) {
+    if ((!m_locked) && (!disabled()) && (!pause)) {
         m_elapsed++;
         if ((m_elapsed % m_interval) == 0) {
             setOn(!m_isOn);
@@ -54,61 +51,71 @@ void Clock::updateClock()
     setOn(m_isOn);
 }
 
-bool Clock::getOn(int port) const
+bool Clock::on(const int port) const
 {
     Q_UNUSED(port);
     return m_isOn;
 }
 
-void Clock::setOn(bool value, int port)
+void Clock::setOff()
+{
+    setOn(false);
+}
+
+void Clock::setOn()
+{
+    setOn(true);
+}
+
+void Clock::setOn(const bool value, const int port)
 {
     Q_UNUSED(port);
     m_isOn = value;
-    setPixmap(m_pixmapSkinName[m_isOn ? 1 : 0]);
-    m_outputs.first()->setValue(m_isOn);
+    setPixmap(m_pixmapSkinName[m_isOn]);
+    m_outputs.first()->setValue(static_cast<signed char>(m_isOn));
 }
 
-void Clock::save(QDataStream &ds) const
+void Clock::save(QDataStream &stream) const
 {
-    GraphicElement::save(ds);
-    ds << getFrequency();
-    ds << locked;
+    GraphicElement::save(stream);
+    stream << frequency();
+    stream << m_locked;
 }
 
-void Clock::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
+void Clock::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
 {
-    GraphicElement::load(ds, portMap, version);
+    GraphicElement::load(stream, portMap, version);
     if (version < 1.1) {
         return;
     }
     float freq;
-    ds >> freq;
+    stream >> freq;
     if (version >= 3.1) {
-        ds >> locked;
+        stream >> m_locked;
     }
     setFrequency(freq);
 }
 
-float Clock::getFrequency() const
+float Clock::frequency() const
 {
     return static_cast<float>(m_frequency);
 }
 
-void Clock::setFrequency(float freq)
+void Clock::setFrequency(const float freq)
 {
     if (qFuzzyIsNull(freq)) {
         return;
     }
 
-    int auxinterval = 500 / (freq * globalClock);
-    if (auxinterval <= 0) {
+    int auxInterval = static_cast<int>(500 / (freq * globalClock));
+    if (auxInterval <= 0) {
         return;
     }
 
-    m_interval = auxinterval;
+    m_interval = auxInterval;
     m_frequency = static_cast<double>(freq);
     m_elapsed = 0;
-    Clock::reset = true;
+    reset = true;
 }
 
 void Clock::resetClock()
@@ -119,16 +126,16 @@ void Clock::resetClock()
 
 QString Clock::genericProperties()
 {
-    return QString("%1 Hz").arg(static_cast<double>(getFrequency()));
+    return QString::number(frequency()) + " Hz";
 }
 
-void Clock::setSkin(bool defaultSkin, const QString &filename)
+void Clock::setSkin(const bool defaultSkin, const QString &fileName)
 {
     if (!m_isOn) {
-        m_pixmapSkinName[0] = defaultSkin ? ":/input/clock0.png" : filename;
-        setPixmap(m_pixmapSkinName[0]);
+        m_pixmapSkinName[0] = defaultSkin ? ":/input/clock0.png" : fileName;
+        setPixmap(m_pixmapSkinName.at(0));
     } else {
-        m_pixmapSkinName[1] = defaultSkin ? ":/input/clock1.png" : filename;
-        setPixmap(m_pixmapSkinName[1]);
+        m_pixmapSkinName[1] = defaultSkin ? ":/input/clock1.png" : fileName;
+        setPixmap(m_pixmapSkinName.at(1));
     }
 }

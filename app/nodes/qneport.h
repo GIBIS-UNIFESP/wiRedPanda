@@ -39,76 +39,58 @@ class QNEPort : public QGraphicsPathItem
 {
 public:
     enum { Type = QGraphicsItem::UserType + 1 };
+    int type() const override { return Type; }
     enum { NamePort = 1, TypePort = 2 };
 
     explicit QNEPort(QGraphicsItem *parent = nullptr);
 
-    void setName(const QString &n);
-    int radius() const;
+    GraphicElement *graphicElement() const;
+    QBrush currentBrush() const;
+    QString name() const;
+    bool isConnected(QNEPort *);
+    bool isRequired() const;
     const QList<QNEConnection *> &connections() const;
+    const QString &portName() const;
+    int defaultValue() const;
+    int index() const;
+    int portFlags() const;
+    int radius() const;
+    quint64 ptr() const;
+    signed char value() const;
+    virtual bool isOutput() const { return false; };
+    virtual bool isValid() const = 0;
+    virtual void setValue(signed char value) = 0;
     void connect(QNEConnection *conn);
     void disconnect(QNEConnection *conn);
-    bool isConnected(QNEPort *);
-    void setPortFlags(int);
-
-    virtual bool isOutput() const = 0;
-
-    const QString &portName() const;
-    int portFlags() const;
-
-    int type() const override;
-
-    quint64 ptr() const;
-    void setPtr(quint64);
-
-    GraphicElement *graphicElement() const;
-    void setGraphicElement(GraphicElement *graphicElement);
-
-    void updateConnections();
-    signed char value() const;
-    virtual void setValue(signed char value) = 0;
-
-    bool isRequired() const;
-    void setRequired(bool required);
-
-    QBrush currentBrush() const;
-    void setCurrentBrush(const QBrush &currentBrush);
-
-    int defaultValue() const;
-    void setDefaultValue(int defaultValue);
-
-    QString getName() const;
-
-    virtual bool isValid() const = 0;
-
-    void hoverLeave();
     void hoverEnter();
-
-    int index() const;
+    void hoverLeave();
+    void setCurrentBrush(const QBrush &currentBrush);
+    void setDefaultValue(const int defaultValue);
+    void setGraphicElement(GraphicElement *graphicElement);
     void setIndex(int index);
+    void setName(const QString &n);
+    void setPortFlags(int);
+    void setPtr(quint64);
+    void setRequired(bool required);
+    void updateConnections();
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
-    int m_defaultValue;
-    int m_index;
-    QString m_name;
-    QGraphicsTextItem *m_label;
-    int m_radius;
-    int m_margin;
-    QList<QNEConnection *> m_connections;
-    int m_portFlags;
-    quint64 m_ptr;
-
-    bool m_required;
-
-    /* WPanda */
-    GraphicElement *m_graphicElement;
-    QBrush m_currentBrush;
-
-    /* QGraphicsItem interface */
-    signed char m_value;
-
     virtual void updateTheme() = 0;
+
+    GraphicElement *m_graphicElement = nullptr;
+    QBrush m_currentBrush;
+    QGraphicsTextItem *m_label = new QGraphicsTextItem(this);
+    QList<QNEConnection *> m_connections;
+    QString m_name;
+    bool m_required = true;
+    int m_defaultValue = -1;
+    int m_index;
+    int m_margin = 2;
+    int m_portFlags = 0;
+    int m_radius = 5;
+    quint64 m_ptr;
+    signed char m_value = false;
 };
 
 class QNEInputPort : public QNEPort
@@ -116,10 +98,10 @@ class QNEInputPort : public QNEPort
 public:
     explicit QNEInputPort(QGraphicsItem *parent);
     ~QNEInputPort() override;
-    /* QNEPort interface */
-    void setValue(signed char value) override;
+
     bool isOutput() const override;
     bool isValid() const override;
+    void setValue(signed char value) override;
     void updateTheme() override;
 };
 
@@ -128,10 +110,10 @@ class QNEOutputPort : public QNEPort
 public:
     explicit QNEOutputPort(QGraphicsItem *parent);
     ~QNEOutputPort() override;
-    /* QNEPort interface */
-    void setValue(signed char value) override;
+
     bool isOutput() const override;
     bool isValid() const override;
+    void setValue(signed char value) override;
     void updateTheme() override;
 };
 

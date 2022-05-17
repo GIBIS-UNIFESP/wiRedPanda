@@ -33,14 +33,12 @@ void ICMapping::clearConnections()
     }
 }
 
-LogicElement *ICMapping::getInput(int index)
+LogicElement *ICMapping::input(const int index)
 {
-    Q_ASSERT(index < m_icInputs.size());
     return m_inputs[index];
 }
 
-LogicElement *ICMapping::getOutput(int index)
+LogicElement *ICMapping::output(const int index)
 {
-    Q_ASSERT(index < m_icOutputs.size());
     return m_outputs[index];
 }

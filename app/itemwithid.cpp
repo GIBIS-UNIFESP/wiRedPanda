@@ -9,6 +9,11 @@ ItemWithId::ItemWithId()
     ElementFactory::addItem(this);
 }
 
+ItemWithId::~ItemWithId()
+{
+    ElementFactory::removeItem(this);
+}
+
 int ItemWithId::id() const
 {
     return m_id;
@@ -17,9 +22,4 @@ int ItemWithId::id() const
 void ItemWithId::setId(int id)
 {
     m_id = id;
-}
-
-ItemWithId::~ItemWithId()
-{
-    ElementFactory::removeItem(this);
 }

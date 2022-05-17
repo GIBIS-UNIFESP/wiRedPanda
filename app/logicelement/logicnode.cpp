@@ -8,7 +8,7 @@ LogicNode::LogicNode()
 {
 }
 
-void LogicNode::_updateLogic(const std::vector<bool> &inputs)
+void LogicNode::_updateLogic(const QVector<bool> &inputs)
 {
     setOutputValue(inputs[0]);
 }

@@ -20,13 +20,9 @@ public:
     explicit LengthDialog(QWidget *parent = nullptr);
     ~LengthDialog() override;
 
-    int getFrequency();
+    int length();
 
 private:
-    void cancelClicked();
-    void okClicked();
-
     Ui::LengthDialog *m_ui;
-    bool m_canceled;
 };
 

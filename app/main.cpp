@@ -43,21 +43,21 @@ int main(int argc, char *argv[])
         parser.addPositionalArgument("file", QCoreApplication::translate("main", "Circuit file to open."));
 
         QCommandLineOption verbosityOption(
-                    {"v2", "verbosity"},
-                    QCoreApplication::translate("main", "Verbosity level, -1 to disable or 0 to 5"),
-                    QCoreApplication::translate("main", "verbosity level"));
+            {"v2", "verbosity"},
+            QCoreApplication::translate("main", "Verbosity level 0 to 5, disabled by default."),
+            QCoreApplication::translate("main", "verbosity level"));
         parser.addOption(verbosityOption);
 
         QCommandLineOption arduinoFileOption(
-                    {"a", "arduino-file"},
-                    QCoreApplication::translate("main", "Export circuit to <arduino-file>"),
-                    QCoreApplication::translate("main", "arduino file"));
+            {"a", "arduino-file"},
+            QCoreApplication::translate("main", "Export circuit to <arduino-file>"),
+            QCoreApplication::translate("main", "arduino file"));
         parser.addOption(arduinoFileOption);
 
         QCommandLineOption waveformFileOption(
-                    {"w", "waveform"},
-                    QCoreApplication::translate("main", "Export circuit to <waveform> text file"),
-                    QCoreApplication::translate("main", "waveform text file"));
+            {"w", "waveform"},
+            QCoreApplication::translate("main", "Export circuit to <waveform> text file"),
+            QCoreApplication::translate("main", "waveform text file"));
         parser.addOption(waveformFileOption);
 
         parser.process(app);
@@ -75,21 +75,23 @@ int main(int argc, char *argv[])
                 GlobalProperties::verbose = false;
                 MainWindow window;
                 window.loadPandaFile(args[0]);
-                exit(!window.exportToArduino(arduFile));
+                window.exportToArduino(arduFile);
             }
             exit(0);
         }
+
         QString wfFile = parser.value(waveformFileOption);
         if (!wfFile.isEmpty()) {
             if (!args.empty()) {
                 GlobalProperties::verbose = false;
                 MainWindow window;
                 window.loadPandaFile(args[0]);
-                exit(!window.exportToWaveFormFile(wfFile));
+                window.exportToWaveFormFile(wfFile);
             }
             exit(0);
         }
-        auto *window = new MainWindow(nullptr, (!args.empty() ? QString(args[0]) : QString()));
+
+        auto *window = new MainWindow();
         window->show();
         if (!args.empty()) {
             window->loadPandaFile(args[0]);
@@ -104,9 +106,8 @@ int main(int argc, char *argv[])
     return app.exec();
 }
 
-/*
- * TODO: Tests for all elements
- * TODO: Create arduino version of all elements
- * TODO: Select some elements, and input wires become input buttons, output wires become leds... Connections are then
- * transferred to the IC's ports.
- */
+// TODO: Tests for all elements
+// TODO: Create arduino version of all elements
+// TODO: Select some elements, and input wires become input buttons, output wires become leds...
+// ...Connections are then transferred to the IC's ports.
+// TODO: ambiguous shortcut overloads (ctrl+y)

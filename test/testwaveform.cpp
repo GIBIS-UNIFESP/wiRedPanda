@@ -3,8 +3,8 @@
 
 #include "testwaveform.h"
 
-#include "editor.h"
 #include "simplewaveform.h"
+#include "workspace.h"
 
 #include <QTemporaryFile>
 #include <QTest>
@@ -12,8 +12,7 @@
 
 void TestWaveForm::testDisplay4Bits()
 {
-    auto *editor = new Editor(this);
-    editor->setupWorkspace();
+    auto *workspace = new WorkSpace();
 
     const QDir examplesDir(QString(CURRENTDIR) + "/../examples/");
     const QString fileName = examplesDir.absoluteFilePath("display-4bits.panda");
@@ -21,8 +20,8 @@ void TestWaveForm::testDisplay4Bits()
     try {
         QFile pandaFile(fileName);
         QVERIFY(pandaFile.open(QFile::ReadOnly));
-        QDataStream ds(&pandaFile);
-        editor->load(ds);
+        QDataStream stream(&pandaFile);
+        workspace->load(stream);
     } catch (std::runtime_error &e) {
         QFAIL("Could not load the file! Error: " + QString(e.what()).toUtf8());
     }
@@ -30,7 +29,7 @@ void TestWaveForm::testDisplay4Bits()
     QTemporaryFile tempFile;
     QVERIFY(tempFile.open());
     QTextStream tempStream(&tempFile);
-    QVERIFY(SimpleWaveform::saveToTxt(tempStream, editor));
+    QVERIFY(SimpleWaveform::saveToTxt(tempStream, workspace));
     tempStream.flush();
     QVERIFY(tempFile.reset());
 

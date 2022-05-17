@@ -10,9 +10,9 @@
 class LogicNone : public LogicElement
 {
 public:
-    explicit LogicNone();
+    explicit LogicNone() : LogicElement(0, 0) {};
 
 protected:
-    void _updateLogic(const std::vector<bool> &inputs) override;
+    void _updateLogic(const QVector<bool> &inputs) override { Q_UNUSED(inputs); };
 };
 

@@ -21,7 +21,7 @@ class SimulationController : public QObject
     Q_OBJECT
 
 public:
-    explicit SimulationController(Scene *scn);
+    explicit SimulationController(Scene *scene);
     ~SimulationController() override;
 
     static QVector<GraphicElement *> sortElements(QVector<GraphicElement *> elms);
@@ -40,15 +40,14 @@ public:
 private:
     bool canRun();
     void tic();
-    void updateConnection(QNEConnection *conn);
     void updatePort(QNEInputPort *port);
     void updatePort(QNEOutputPort *port);
     void updateView();
 
-    ElementMapping *m_elMapping;
+    ElementMapping *m_elmMapping = nullptr;
     QTimer m_simulationTimer;
     QTimer m_viewTimer;
     Scene *m_scene;
-    bool m_shouldRestart;
+    bool m_shouldRestart = false;
 };
 

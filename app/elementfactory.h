@@ -18,29 +18,28 @@ class ElementFactory : public QObject
     Q_OBJECT
 
 public:
-    static ElementFactory *instance;
+    static ElementFactory &instance()
+    {
+        static ElementFactory instance;
+        return instance;
+    }
 
     static ElementType textToType(const QString &text);
-    static QString typeToText(ElementType type);
-    static QString typeToTitleText(ElementType type);
-    static QString translatedName(ElementType type);
-    static QPixmap getPixmap(ElementType type);
-    static GraphicElement *buildElement(ElementType type);
+    static QString typeToText(const ElementType type);
+    static QString typeToTitleText(const ElementType type);
+    static QString translatedName(const ElementType type);
+    static QPixmap pixmap(const ElementType type);
+    static GraphicElement *buildElement(const ElementType type, const bool incrementLabel = false);
     static QNEConnection *buildConnection(QGraphicsItem *parent = nullptr);
-    static ItemWithId *getItemById(int id);
+    static ItemWithId *itemById(const int id);
     static bool contains(int id);
-    static void updateItemId(ItemWithId *item, int newId);
+    static void updateItemId(ItemWithId *item, const int newId);
     static void removeItem(ItemWithId *item);
     static void addItem(ItemWithId *item);
 
-    int getLastId() const;
-    int next_id();
-    void clear();
-
 private:
-    ElementFactory() = default;
+    int next_id();
 
     QMap<int, ItemWithId *> m_map;
     int m_lastId = 0;
 };
-

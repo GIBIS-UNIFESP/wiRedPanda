@@ -3,23 +3,28 @@
 
 #include "mux.h"
 
+#include "common.h"
 #include "qneport.h"
 
-namespace {
+namespace
+{
 int id = qRegisterMetaType<Mux>();
 }
 
 Mux::Mux(QGraphicsItem *parent)
     : GraphicElement(ElementType::Mux, ElementGroup::Mux, 3, 3, 1, 1, parent)
 {
-    m_pixmapSkinName = {":/basic/mux.png"};
+    qCDebug(zero) << "Creating mux.";
 
-    setPixmap(m_pixmapSkinName[0]);
+    m_pixmapSkinName = QStringList{":/basic/mux.png"};
+    setPixmap(m_pixmapSkinName.first());
+
     setRotatable(true);
     Mux::updatePorts();
     setPortName("MUX");
     setToolTip(m_translatedName);
     setCanChangeSkin(true);
+
     input(0)->setName("0");
     input(1)->setName("1");
     input(2)->setName("S");
@@ -27,18 +32,15 @@ Mux::Mux(QGraphicsItem *parent)
 
 void Mux::updatePorts()
 {
-    input(0)->setPos(32 - 12, 48); /* 0 */
-    input(1)->setPos(32 + 12, 48); /* 1 */
-    input(2)->setPos(58, 32); /* S */
-    output(0)->setPos(32, 16); /* Out */
+    input(0)->setPos(32 - 12, 48); /* 0   */
+    input(1)->setPos(32 + 12, 48); /* 1   */
+    input(2)->setPos(58, 32);      /* S   */
+
+    output(0)->setPos(32, 16);     /* Out */
 }
 
-void Mux::setSkin(bool defaultSkin, const QString &filename)
+void Mux::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    if (defaultSkin) {
-        m_pixmapSkinName[0] = ":/basic/mux.png";
-    } else {
-        m_pixmapSkinName[0] = filename;
-    }
+    m_pixmapSkinName[0] = (defaultSkin) ? ":/basic/mux.png" : fileName;
     setPixmap(m_pixmapSkinName[0]);
 }
