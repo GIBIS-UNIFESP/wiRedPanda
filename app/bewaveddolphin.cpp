@@ -789,7 +789,7 @@ void BewavedDolphin::on_actionSaveAs_triggered()
         m_ui->statusbar->showMessage(tr("Saved file successfully."), 4000);
         m_edited = false;
     } else {
-        m_ui->statusbar->showMessage(tr("Could !save file: ") + fileName + ".", 4000);
+        m_ui->statusbar->showMessage(tr("Could not save file: ") + fileName + ".", 4000);
     }
 }
 
@@ -804,7 +804,7 @@ void BewavedDolphin::on_actionSave_triggered()
         m_ui->statusbar->showMessage(tr("Saved file successfully."), 4000);
         m_edited = false;
     } else {
-        m_ui->statusbar->showMessage(tr("Could !save file: ") + fileName + ".", 4000);
+        m_ui->statusbar->showMessage(tr("Could not save file: ") + fileName + ".", 4000);
     }
 }
 
