@@ -3,32 +3,32 @@
 
 #include "inputgnd.h"
 
+#include "common.h"
 #include "qneport.h"
 
-namespace {
+namespace
+{
 int id = qRegisterMetaType<InputGnd>();
 }
 
 InputGnd::InputGnd(QGraphicsItem *parent)
     : GraphicElement(ElementType::InputGnd, ElementGroup::StaticInput, 0, 0, 1, 1, parent)
 {
-    m_pixmapSkinName = {":/input/0.png"};
+    qCDebug(zero) << "Creating gnd.";
+
+    m_pixmapSkinName = QStringList{":/input/0.png"};
+    setPixmap(m_pixmapSkinName.first());
 
     setOutputsOnTop(false);
     setCanChangeSkin(true);
-    setPixmap(m_pixmapSkinName[0]);
     setRotatable(false);
     setPortName("GND");
     setToolTip(m_translatedName);
     m_outputs.first()->setValue(false);
 }
 
-void InputGnd::setSkin(bool defaultSkin, const QString &filename)
+void InputGnd::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    if (defaultSkin) {
-        m_pixmapSkinName[0] = ":/input/0.png";
-    } else {
-        m_pixmapSkinName[0] = filename;
-    }
+    m_pixmapSkinName[0] = (defaultSkin) ? ":/input/0.png" : fileName;
     setPixmap(m_pixmapSkinName[0]);
 }

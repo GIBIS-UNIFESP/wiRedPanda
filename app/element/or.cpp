@@ -3,28 +3,30 @@
 
 #include "or.h"
 
-namespace {
+#include "common.h"
+
+namespace
+{
 int id = qRegisterMetaType<Or>();
 }
 
 Or::Or(QGraphicsItem *parent)
     : GraphicElement(ElementType::Or, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
-    m_pixmapSkinName = {":/basic/or.png"};
+    qCDebug(zero) << "Creating or.";
+
+    m_pixmapSkinName = QStringList{":/basic/or.png"};
+    setPixmap(m_pixmapSkinName.first());
+
     setOutputsOnTop(true);
-    setPixmap(m_pixmapSkinName[0]);
     setCanChangeSkin(true);
     updatePorts();
     setPortName("OR");
     setToolTip(m_translatedName);
 }
 
-void Or::setSkin(bool defaultSkin, const QString &filename)
+void Or::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    if (defaultSkin) {
-        m_pixmapSkinName[0] = ":/basic/or.png";
-    } else {
-        m_pixmapSkinName[0] = filename;
-    }
+    m_pixmapSkinName[0] = (defaultSkin) ? ":/basic/or.png" : fileName;
     setPixmap(m_pixmapSkinName[0]);
 }

@@ -36,50 +36,42 @@ class QNEOutputPort;
 class QNEConnection : public QGraphicsPathItem, public ItemWithId
 {
 public:
-    enum : uint32_t { Type = QGraphicsItem::UserType + 2 };
+    enum { Type = QGraphicsItem::UserType + 2 };
+    int type() const override { return Type; }
     enum class Status { Invalid = -1, Inactive = 0, Active = 1 };
 
     explicit QNEConnection(QGraphicsItem *parent = nullptr);
     ~QNEConnection() override;
 
-    void setStartPos(QPointF p);
-    void setEndPos(QPointF p);
-    void setStart(QNEOutputPort *p);
-    void setEnd(QNEInputPort *p);
-    void updatePosFromPorts();
-    void updatePath();
-    QNEOutputPort *start() const;
     QNEInputPort *end() const;
-
-    double angle();
-
-    void save(QDataStream &) const;
-    bool load(QDataStream &, const QMap<quint64, QNEPort *> &portMap = QMap<quint64, QNEPort *>());
-
-    int type() const override
-    {
-        return Type;
-    }
+    QNEInputPort *otherPort(const QNEOutputPort *port) const;
+    QNEOutputPort *otherPort(const QNEInputPort *port) const;
+    QNEOutputPort *start() const;
     QNEPort *otherPort(const QNEPort *port) const;
-    QNEOutputPort *otherPort(const QNEInputPort * /*port*/) const;
-    QNEInputPort *otherPort(const QNEOutputPort * /*port*/) const;
     Status status() const;
-    void setStatus(Status status);
-
-    void updateTheme();
+    bool load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap = {});
+    double angle();
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void save(QDataStream &stream) const;
+    void setEnd(QNEInputPort *port);
+    void setEndPos(const QPointF point);
+    void setStart(QNEOutputPort *port);
+    void setStartPos(const QPointF point);
+    void setStatus(const Status status);
+    void updatePath();
+    void updatePosFromPorts();
+    void updateTheme();
 
 private:
-    QPointF m_startPos;
-    QPointF m_endPos;
-    QNEOutputPort *m_start;
-    QNEInputPort *m_end;
-    Status m_status;
-
-    QColor m_invalidClr;
     QColor m_activeClr;
     QColor m_inactiveClr;
+    QColor m_invalidClr;
     QColor m_selectedClr;
+    QNEInputPort *m_end = nullptr;
+    QNEOutputPort *m_start = nullptr;
+    QPointF m_endPos;
+    QPointF m_startPos;
+    Status m_status;
 };
 
-QDataStream &operator<<(QDataStream &ds, const QNEConnection *item);
+QDataStream &operator<<(QDataStream &stream, const QNEConnection *item);

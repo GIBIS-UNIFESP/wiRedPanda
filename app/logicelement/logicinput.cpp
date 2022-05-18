@@ -3,7 +3,7 @@
 
 #include "logicinput.h"
 
-LogicInput::LogicInput(bool defaultValue, int n_outputs)
+LogicInput::LogicInput(const bool defaultValue, const int n_outputs)
     : LogicElement(0, n_outputs)
 {
     setOutputValue(0, defaultValue);
@@ -12,7 +12,7 @@ LogicInput::LogicInput(bool defaultValue, int n_outputs)
     }
 }
 
-void LogicInput::_updateLogic(const std::vector<bool> & /*inputs*/)
+void LogicInput::_updateLogic(const QVector<bool> &inputs)
 {
-    // Does nothing on update
+    Q_UNUSED(inputs)
 }

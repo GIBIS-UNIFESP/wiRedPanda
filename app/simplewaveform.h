@@ -5,12 +5,12 @@
 
 #pragma once
 
-#include "editor.h"
+#include "workspace.h"
 
-#include <QChart>
 #include <QChartView>
 #include <QDialog>
-#include <QTextStream>
+
+class QTextStream;
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 using namespace QtCharts;
@@ -28,24 +28,24 @@ class SimpleWaveform : public QDialog
     enum class SortingMode : uint_fast8_t { Increasing, Decreasing, Position };
 
 public:
-    explicit SimpleWaveform(Editor *editor, QWidget *parent = nullptr);
+    explicit SimpleWaveform(WorkSpace *workspace, QWidget *parent = nullptr);
     ~SimpleWaveform() override;
 
-    static bool saveToTxt(QTextStream &outStream, Editor *editor);
+    static bool saveToTxt(QTextStream &outStream, WorkSpace *workspace);
     static void sortElements(QVector<GraphicElement *> &elements, QVector<GraphicElement *> &inputs, QVector<GraphicElement *> &outputs, SortingMode sorting);
 
     void showWaveform();
 
 private:
-    void on_pushButton_Copy_clicked();
-    void on_radioButton_Decreasing_clicked();
-    void on_radioButton_Increasing_clicked();
-    void on_radioButton_Position_clicked();
+    void on_pushButtonCopy_clicked();
+    void on_radioButtonDecreasing_clicked();
+    void on_radioButtonIncreasing_clicked();
+    void on_radioButtonPosition_clicked();
 
     Ui::SimpleWaveform *m_ui;
-    Editor *m_editor;
     QChart m_chart;
     QChartView *m_chartView;
     SortingMode m_sortingMode;
+    WorkSpace *m_workspace;
 };
 

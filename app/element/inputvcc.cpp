@@ -3,32 +3,32 @@
 
 #include "inputvcc.h"
 
+#include "common.h"
 #include "qneport.h"
 
-namespace {
+namespace
+{
 int id = qRegisterMetaType<InputVcc>();
 }
 
 InputVcc::InputVcc(QGraphicsItem *parent)
     : GraphicElement(ElementType::InputVcc, ElementGroup::StaticInput, 0, 0, 1, 1, parent)
 {
-    m_pixmapSkinName = {":/input/1.png"};
+    qCDebug(zero) << "Creating vcc.";
+
+    m_pixmapSkinName = QStringList{":/input/1.png"};
+    setPixmap(m_pixmapSkinName.first());
 
     setOutputsOnTop(false);
     setCanChangeSkin(true);
-    setPixmap(m_pixmapSkinName[0]);
     setRotatable(false);
     setPortName("VCC");
     setToolTip(m_translatedName);
     m_outputs.first()->setValue(true);
 }
 
-void InputVcc::setSkin(bool defaultSkin, const QString &filename)
+void InputVcc::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    if (defaultSkin) {
-        m_pixmapSkinName[0] = ":/input/1.png";
-    } else {
-        m_pixmapSkinName[0] = filename;
-    }
+    m_pixmapSkinName[0] = (defaultSkin) ? ":/input/1.png" : fileName;
     setPixmap(m_pixmapSkinName[0]);
 }

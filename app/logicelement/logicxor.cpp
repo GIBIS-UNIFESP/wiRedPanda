@@ -5,12 +5,12 @@
 
 #include <functional>
 
-LogicXor::LogicXor(size_t inputSize)
+LogicXor::LogicXor(const int inputSize)
     : LogicElement(inputSize, 1)
 {
 }
 
-void LogicXor::_updateLogic(const std::vector<bool> &inputs)
+void LogicXor::_updateLogic(const QVector<bool> &inputs)
 {
     auto result = std::accumulate(inputs.begin(), inputs.end(), false, std::bit_xor<>());
     setOutputValue(result);

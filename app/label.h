@@ -15,23 +15,23 @@ class Label : public QLabel
 
 public:
     explicit Label(QWidget *parent = nullptr);
-    ~Label() override;
+    ~Label() override = default;
 
     ElementType elementType();
     QString auxData() const;
     QString name() const;
     const QPixmap &pixmapData() const;
     void setAuxData(const QString &auxData);
-    void setElementType(ElementType elementType);
+    void setElementType(const ElementType elementType);
     void setName(const QString &name);
     void setPixmapData(const QPixmap &pixmapData);
-    void startDrag(QPoint pos = QPoint());
+    void startDrag(QPoint pos = {});
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
 
 private:
-    ElementType m_elementType;
+    ElementType m_elementType = ElementType::Unknown;
     QPixmap m_pixmapData;
     QString m_auxData;
     QString m_name;

@@ -3,22 +3,24 @@
 
 #include "display_14.h"
 
+#include "common.h"
 #include "display.h"
 #include "qneport.h"
 
 #include <QPainter>
 #include <QPixmap>
 
-namespace {
+namespace
+{
 int id = qRegisterMetaType<Display14>();
 }
-
-int Display14::current_id_number = 0;
 
 Display14::Display14(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display14, ElementGroup::Output, 15, 15, 0, 0, parent)
 {
-    m_pixmapSkinName = {
+    qCDebug(zero) << "Creating display14.";
+
+    m_pixmapSkinName = QStringList{
         ":/output/counter/counter_14_off.png",
         ":/output/counter/counter_a.png",
         ":/output/counter/counter_b.png",
@@ -36,17 +38,6 @@ Display14::Display14(QGraphicsItem *parent)
         ":/output/counter/counter_n.png",
         ":/output/counter/counter_dp.png",
     };
-
-    setRotatable(false);
-    setHasColors(true);
-    setCanChangeSkin(true);
-    setOutputsOnTop(true);
-    Display14::updatePorts();
-    setBottomPosition(58);
-    setTopPosition(6);
-    setHasLabel(true);
-    m_color = "Red";
-    m_color_number = 1;
 
     setPixmap(m_pixmapSkinName[0]);
     a = QVector<QPixmap>(5, m_pixmapSkinName[1]);
@@ -81,6 +72,14 @@ Display14::Display14(QGraphicsItem *parent)
     Display::convertAllColors(n);
     Display::convertAllColors(dp);
 
+    setRotatable(false);
+    setHasColors(true);
+    setCanChangeSkin(true);
+    setOutputsOnTop(true);
+    Display14::updatePorts();
+    setBottomPosition(58);
+    setTopPosition(6);
+    setHasLabel(true);
     setPortName("Display14");
     setToolTip(m_translatedName);
 
@@ -97,21 +96,22 @@ void Display14::refresh()
 
 void Display14::updatePorts()
 {
-    input(0)->setPos(topPosition(), -4); /* G1 */
-    input(1)->setPos(topPosition(), 8); /* F */
-    input(2)->setPos(topPosition(), 20); /* E */
-    input(3)->setPos(topPosition(), 32); /* D */
-    input(4)->setPos(bottomPosition(), -10); /* A */
-    input(5)->setPos(bottomPosition(), 2); /* B */
-    input(6)->setPos(bottomPosition(), 14); /* DP */
-    input(7)->setPos(bottomPosition(), 26); /* C */
-    input(8)->setPos(topPosition(), 44); /* G2 */
-    input(9)->setPos(topPosition(), 56); /* H */
-    input(10)->setPos(topPosition(), 68); /* J */
-    input(11)->setPos(bottomPosition(), 38); /* K */
-    input(12)->setPos(bottomPosition(), 50); /* L */
-    input(13)->setPos(bottomPosition(), 62); /* M */
-    input(14)->setPos(bottomPosition(), 74); /* N */
+    input(0)->setPos(topPosition(), -4);     /* G1 */
+    input(1)->setPos(topPosition(), 8);      /* F  */
+    input(2)->setPos(topPosition(), 20);     /* E  */
+    input(3)->setPos(topPosition(), 32);     /* D  */
+    input(4)->setPos(bottomPosition(), -10); /* A  */
+    input(5)->setPos(bottomPosition(), 2);   /* B  */
+    input(6)->setPos(bottomPosition(), 14);  /* DP */
+    input(7)->setPos(bottomPosition(), 26);  /* C  */
+    input(8)->setPos(topPosition(), 44);     /* G2 */
+    input(9)->setPos(topPosition(), 56);     /* H  */
+    input(10)->setPos(topPosition(), 68);    /* J  */
+    input(11)->setPos(bottomPosition(), 38); /* K  */
+    input(12)->setPos(bottomPosition(), 50); /* L  */
+    input(13)->setPos(bottomPosition(), 62); /* M  */
+    input(14)->setPos(bottomPosition(), 74); /* N  */
+
     input(0)->setName("G1 (mid left)");
     input(1)->setName("F (upper left)");
     input(2)->setName("E (lower left)");
@@ -132,97 +132,57 @@ void Display14::updatePorts()
 void Display14::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     GraphicElement::paint(painter, option, widget);
-    if (input(0)->value() == 1) { /* G1 */
-        painter->drawPixmap(QPoint(0, 0), g1[m_color_number]);
-    }
-    if (input(1)->value() == 1) { /* F */
-        painter->drawPixmap(QPoint(0, 0), f[m_color_number]);
-    }
-    if (input(2)->value() == 1) { /* E */
-        painter->drawPixmap(QPoint(0, 0), e[m_color_number]);
-    }
-    if (input(3)->value() == 1) { /* D */
-        painter->drawPixmap(QPoint(0, 0), d[m_color_number]);
-    }
-    if (input(4)->value() == 1) { /* A */
-        painter->drawPixmap(QPoint(0, 0), a[m_color_number]);
-    }
-    if (input(5)->value() == 1) { /* B */
-        painter->drawPixmap(QPoint(0, 0), b[m_color_number]);
-    }
-    if (input(6)->value() == 1) { /* DP */
-        painter->drawPixmap(QPoint(0, 0), dp[m_color_number]);
-    }
-    if (input(7)->value() == 1) { /* C */
-        painter->drawPixmap(QPoint(0, 0), c[m_color_number]);
-    }
-    if (input(8)->value() == 1) { /* G2 */
-        painter->drawPixmap(QPoint(0, 0), g2[m_color_number]);
-    }
-    if (input(9)->value() == 1) { /* H */
-        painter->drawPixmap(QPoint(0, 0), h[m_color_number]);
-    }
-    if (input(10)->value() == 1) { /* J */
-        painter->drawPixmap(QPoint(0, 0), j[m_color_number]);
-    }
-    if (input(11)->value() == 1) { /* K */
-        painter->drawPixmap(QPoint(0, 0), k[m_color_number]);
-    }
-    if (input(12)->value() == 1) { /* L */
-        painter->drawPixmap(QPoint(0, 0), l[m_color_number]);
-    }
-    if (input(13)->value() == 1) { /* M */
-        painter->drawPixmap(QPoint(0, 0), m[m_color_number]);
-    }
-    if (input(14)->value() == 1) { /* N */
-        painter->drawPixmap(QPoint(0, 0), n[m_color_number]);
-    }
+    if (input(0)->value() == 1)  { painter->drawPixmap(0, 0, g1[m_colorNumber]); }
+    if (input(1)->value() == 1)  { painter->drawPixmap(0, 0, f[m_colorNumber]);  }
+    if (input(2)->value() == 1)  { painter->drawPixmap(0, 0, e[m_colorNumber]);  }
+    if (input(3)->value() == 1)  { painter->drawPixmap(0, 0, d[m_colorNumber]);  }
+    if (input(4)->value() == 1)  { painter->drawPixmap(0, 0, a[m_colorNumber]);  }
+    if (input(5)->value() == 1)  { painter->drawPixmap(0, 0, b[m_colorNumber]);  }
+    if (input(6)->value() == 1)  { painter->drawPixmap(0, 0, dp[m_colorNumber]); }
+    if (input(7)->value() == 1)  { painter->drawPixmap(0, 0, c[m_colorNumber]);  }
+    if (input(8)->value() == 1)  { painter->drawPixmap(0, 0, g2[m_colorNumber]); }
+    if (input(9)->value() == 1)  { painter->drawPixmap(0, 0, h[m_colorNumber]);  }
+    if (input(10)->value() == 1) { painter->drawPixmap(0, 0, j[m_colorNumber]);  }
+    if (input(11)->value() == 1) { painter->drawPixmap(0, 0, k[m_colorNumber]);  }
+    if (input(12)->value() == 1) { painter->drawPixmap(0, 0, l[m_colorNumber]);  }
+    if (input(13)->value() == 1) { painter->drawPixmap(0, 0, m[m_colorNumber]);  }
+    if (input(14)->value() == 1) { painter->drawPixmap(0, 0, n[m_colorNumber]);  }
 }
 
 void Display14::setColor(const QString &color)
 {
     m_color = color;
-    if (color == "White") {
-        m_color_number = 0;
-    } else if (color == "Red") {
-        m_color_number = 1;
-    } else if (color == "Green") {
-        m_color_number = 2;
-    } else if (color == "Blue") {
-        m_color_number = 3;
-    } else if (color == "Purple") {
-        m_color_number = 4;
-    }
+    if (color == "White")  { m_colorNumber = 0; }
+    if (color == "Red")    { m_colorNumber = 1; }
+    if (color == "Green")  { m_colorNumber = 2; }
+    if (color == "Blue")   { m_colorNumber = 3; }
+    if (color == "Purple") { m_colorNumber = 4; }
     refresh();
 }
 
-QString Display14::getColor() const
+QString Display14::color() const
 {
     return m_color;
 }
 
-void Display14::save(QDataStream &ds) const
+void Display14::save(QDataStream &stream) const
 {
-    GraphicElement::save(ds);
-    ds << getColor();
+    GraphicElement::save(stream);
+    stream << color();
 }
 
-void Display14::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
+void Display14::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
 {
-    GraphicElement::load(ds, portMap, version);
+    GraphicElement::load(stream, portMap, version);
     if (version >= 3.1) {
         QString clr;
-        ds >> clr;
+        stream >> clr;
         setColor(clr);
     }
 }
 
-void Display14::setSkin(bool defaultSkin, const QString &filename)
+void Display14::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    if (defaultSkin) {
-        m_pixmapSkinName[0] = ":/output/counter/counter_14_off.png";
-    } else {
-        m_pixmapSkinName[0] = filename;
-    }
+    m_pixmapSkinName[0] = (defaultSkin) ? ":/output/counter/counter_14_off.png" : fileName;
     setPixmap(m_pixmapSkinName[0]);
 }

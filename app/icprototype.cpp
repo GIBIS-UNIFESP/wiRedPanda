@@ -45,32 +45,32 @@ void ICPrototype::removeICObserver(IC *ic)
 
 int ICPrototype::inputSize() const
 {
-    return m_ICImpl.getInputSize();
+    return m_ICImpl.inputSize();
 }
 
 int ICPrototype::outputSize() const
 {
-    return m_ICImpl.getOutputSize();
+    return m_ICImpl.outputSize();
 }
 
 QString ICPrototype::inputLabel(int index) const
 {
-    return m_ICImpl.getInputLabel(index);
+    return m_ICImpl.inputLabel(index);
 }
 
 QString ICPrototype::outputLabel(int index) const
 {
-    return m_ICImpl.getOutputLabel(index);
+    return m_ICImpl.outputLabel(index);
 }
 
 bool ICPrototype::defaultInputValue(int index)
 {
-    return m_ICImpl.getInput(index)->value();
+    return m_ICImpl.input(index)->value();
 }
 
 bool ICPrototype::isInputRequired(int index)
 {
-    return m_ICImpl.getInput(index)->isRequired();
+    return m_ICImpl.input(index)->isRequired();
 }
 
 ICMapping *ICPrototype::generateMapping() const
@@ -86,7 +86,7 @@ void ICPrototype::clear()
 bool ICPrototype::reload()
 {
     // TODO: Verify file recursion
-    // verifyRecursion(fname);
+    // verifyRecursion(fileName);
     clear();
     if (!m_ICImpl.loadFile(m_fileName)) {
         return false;

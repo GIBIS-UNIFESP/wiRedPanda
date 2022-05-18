@@ -9,16 +9,17 @@
 #include <QPainter>
 #include <QPixmap>
 
-namespace {
+namespace
+{
 int id = qRegisterMetaType<Display>();
 }
-
-int Display::current_id_number = 0;
 
 Display::Display(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display, ElementGroup::Output, 8, 8, 0, 0, parent)
 {
-    m_pixmapSkinName = {
+    qCDebug(zero) << "Creating display.";
+
+    m_pixmapSkinName = QStringList{
         ":/output/counter/counter_off.png",
         ":/output/counter/counter_a.png",
         ":/output/counter/counter_b.png",
@@ -30,6 +31,17 @@ Display::Display(QGraphicsItem *parent)
         ":/output/counter/counter_dp.png",
     };
 
+    qCDebug(three) << "Allocating pixmaps.";
+    setPixmap(m_pixmapSkinName[0]);
+    a =  QVector<QPixmap>(5, m_pixmapSkinName[1]);
+    b =  QVector<QPixmap>(5, m_pixmapSkinName[2]);
+    c =  QVector<QPixmap>(5, m_pixmapSkinName[3]);
+    d =  QVector<QPixmap>(5, m_pixmapSkinName[4]);
+    e =  QVector<QPixmap>(5, m_pixmapSkinName[5]);
+    f =  QVector<QPixmap>(5, m_pixmapSkinName[6]);
+    g =  QVector<QPixmap>(5, m_pixmapSkinName[7]);
+    dp = QVector<QPixmap>(5, m_pixmapSkinName[8]);
+
     setRotatable(false);
     setHasColors(true);
     setCanChangeSkin(true);
@@ -38,19 +50,6 @@ Display::Display(QGraphicsItem *parent)
     setBottomPosition(58);
     setTopPosition(6);
     setHasLabel(true);
-    m_color = "Red";
-    m_color_number = 1;
-
-    qCDebug(three) << "Allocating pixmaps.";
-    setPixmap(m_pixmapSkinName[0]);
-    a = QVector<QPixmap>(5, m_pixmapSkinName[1]);
-    b = QVector<QPixmap>(5, m_pixmapSkinName[2]);
-    c = QVector<QPixmap>(5, m_pixmapSkinName[3]);
-    d = QVector<QPixmap>(5, m_pixmapSkinName[4]);
-    e = QVector<QPixmap>(5, m_pixmapSkinName[5]);
-    f = QVector<QPixmap>(5, m_pixmapSkinName[6]);
-    g = QVector<QPixmap>(5, m_pixmapSkinName[7]);
-    dp = QVector<QPixmap>(5, m_pixmapSkinName[8]);
 
     qCDebug(three) << "Converting segments to other colors.";
     convertAllColors(a);
@@ -81,22 +80,22 @@ void Display::convertAllColors(QVector<QPixmap> &maps)
     maps[4] = convertColor(tmp, true, false, true);
 }
 
-QPixmap Display::convertColor(const QImage &src, bool red, bool green, bool blue)
+QPixmap Display::convertColor(const QImage &src, const bool red, const bool green, const bool blue)
 {
     QImage tgt(src);
-    for (int y = 0; y < src.height(); y++) {
-        const uchar *src_line = src.scanLine(y);
-        uchar *tgt_line = tgt.scanLine(y);
-        for (int x = 0; x < src.width(); x++) {
-            src_line += 2;
-            uchar src_red = *src_line;
-            src_line += 2;
-            *tgt_line++ = blue ? src_red : 0;
-            *tgt_line++ = green ? src_red : 0;
-            *tgt_line++ = red ? src_red : 0;
-            tgt_line++;
+
+    for (int y = 0; y < tgt.height(); ++y) {
+        QRgb *line = reinterpret_cast<QRgb *>(tgt.scanLine(y));
+        for (int x = 0; x < tgt.width(); ++x) {
+            QRgb &rgb = line[x];
+            const int value = qRed(rgb);
+            rgb = qRgba(red   ? value : 0,
+                        green ? value : 0,
+                        blue  ? value : 0,
+                        value);
         }
     }
+
     return (QPixmap::fromImage(tgt));
 }
 
@@ -107,14 +106,15 @@ void Display::refresh()
 
 void Display::updatePorts()
 {
-    input(0)->setPos(topPosition(), 10); /* G */
-    input(1)->setPos(topPosition(), 25); /* F */
-    input(2)->setPos(topPosition(), 39); /* E */
-    input(3)->setPos(topPosition(), 54); /* D */
-    input(4)->setPos(bottomPosition(), 10); /* A */
-    input(5)->setPos(bottomPosition(), 25); /* B */
+    input(0)->setPos(topPosition(), 10);    /* G  */
+    input(1)->setPos(topPosition(), 25);    /* F  */
+    input(2)->setPos(topPosition(), 39);    /* E  */
+    input(3)->setPos(topPosition(), 54);    /* D  */
+    input(4)->setPos(bottomPosition(), 10); /* A  */
+    input(5)->setPos(bottomPosition(), 25); /* B  */
     input(6)->setPos(bottomPosition(), 39); /* DP */
-    input(7)->setPos(bottomPosition(), 54); /* C */
+    input(7)->setPos(bottomPosition(), 54); /* C  */
+
     input(0)->setName("G (mid)");
     input(1)->setName("F (upper left)");
     input(2)->setName("E (lower left)");
@@ -128,63 +128,41 @@ void Display::updatePorts()
 void Display::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     GraphicElement::paint(painter, option, widget);
-    if (input(0)->value() == 1) { /* G */
-        painter->drawPixmap(QPoint(0, 0), g[m_color_number]);
-    }
-    if (input(1)->value() == 1) { /* F */
-        painter->drawPixmap(QPoint(0, 0), f[m_color_number]);
-    }
-    if (input(2)->value() == 1) { /* E */
-        painter->drawPixmap(QPoint(0, 0), e[m_color_number]);
-    }
-    if (input(3)->value() == 1) { /* D */
-        painter->drawPixmap(QPoint(0, 0), d[m_color_number]);
-    }
-    if (input(4)->value() == 1) { /* A */
-        painter->drawPixmap(QPoint(0, 0), a[m_color_number]);
-    }
-    if (input(5)->value() == 1) { /* B */
-        painter->drawPixmap(QPoint(0, 0), b[m_color_number]);
-    }
-    if (input(6)->value() == 1) { /* DP */
-        painter->drawPixmap(QPoint(0, 0), dp[m_color_number]);
-    }
-    if (input(7)->value() == 1) { /* C */
-        painter->drawPixmap(QPoint(0, 0), c[m_color_number]);
-    }
+    if (input(0)->value() == 1) { painter->drawPixmap(0, 0, g[m_colorNumber]);  }
+    if (input(1)->value() == 1) { painter->drawPixmap(0, 0, f[m_colorNumber]);  }
+    if (input(2)->value() == 1) { painter->drawPixmap(0, 0, e[m_colorNumber]);  }
+    if (input(3)->value() == 1) { painter->drawPixmap(0, 0, d[m_colorNumber]);  }
+    if (input(4)->value() == 1) { painter->drawPixmap(0, 0, a[m_colorNumber]);  }
+    if (input(5)->value() == 1) { painter->drawPixmap(0, 0, b[m_colorNumber]);  }
+    if (input(6)->value() == 1) { painter->drawPixmap(0, 0, dp[m_colorNumber]); }
+    if (input(7)->value() == 1) { painter->drawPixmap(0, 0, c[m_colorNumber]);  }
 }
 
 void Display::setColor(const QString &color)
 {
     m_color = color;
-    if (color == "White") {
-        m_color_number = 0;
-    } else if (color == "Red") {
-        m_color_number = 1;
-    } else if (color == "Green") {
-        m_color_number = 2;
-    } else if (color == "Blue") {
-        m_color_number = 3;
-    } else if (color == "Purple") {
-        m_color_number = 4;
-    }
+    if (color == "White")  { m_colorNumber = 0; }
+    if (color == "Red")    { m_colorNumber = 1; }
+    if (color == "Green")  { m_colorNumber = 2; }
+    if (color == "Blue")   { m_colorNumber = 3; }
+    if (color == "Purple") { m_colorNumber = 4; }
     refresh();
 }
 
-QString Display::getColor() const
+QString Display::color() const
 {
     return m_color;
 }
 
-void Display::save(QDataStream &ds) const
+void Display::save(QDataStream &stream) const
 {
-    GraphicElement::save(ds);
-    ds << getColor();
+    GraphicElement::save(stream);
+    stream << color();
 }
 
-void Display::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
+void Display::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
 {
-    GraphicElement::load(ds, portMap, version);
+    GraphicElement::load(stream, portMap, version);
     // qCDebug(zero) << "Version:" << version;
     /*
      * 0, 7, 2, 1, 3, 4, 5, 6
@@ -214,17 +192,13 @@ void Display::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double ve
     }
     if (version >= 3.1) {
         QString clr;
-        ds >> clr;
+        stream >> clr;
         setColor(clr);
     }
 }
 
-void Display::setSkin(bool defaultSkin, const QString &filename)
+void Display::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    if (defaultSkin) {
-        m_pixmapSkinName[0] = ":/output/counter/counter_off.png";
-    } else {
-        m_pixmapSkinName[0] = filename;
-    }
+    m_pixmapSkinName[0] = (defaultSkin) ? ":/output/counter/counter_off.png" : fileName;
     setPixmap(m_pixmapSkinName[0]);
 }

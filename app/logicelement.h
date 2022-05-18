@@ -6,7 +6,14 @@
 #pragma once
 
 #include <QSet>
-#include <vector>
+#include <QVector>
+
+class LogicElement;
+
+struct InputPair {
+    LogicElement *elm = nullptr;
+    int port = 0;
+};
 
 /**
  * @brief The LogicElement class was designed to represent logic
@@ -15,19 +22,19 @@
 class LogicElement
 {
 public:
-    explicit LogicElement(size_t inputSize, size_t outputSize);
+    explicit LogicElement(const int inputSize, const int outputSize);
     virtual ~LogicElement();
 
-    bool getInputValue(size_t index = 0) const;
-    bool getOutputValue(size_t index = 0) const;
+    bool inputValue(const int index = 0) const;
+    bool outputValue(const int index = 0) const;
     bool isValid() const;
     bool operator<(const LogicElement &other) const;
     int calculatePriority();
     void clearPredecessors();
     void clearSucessors();
-    void connectPredecessor(int index, LogicElement *elm, int port);
-    void setOutputValue(bool value);
-    void setOutputValue(size_t index, bool value);
+    void connectPredecessor(const int index, LogicElement *elm, const int port);
+    void setOutputValue(const bool value);
+    void setOutputValue(const int index, const bool value);
     void validate();
 
     // Secure call to _updateLogic() with current inputs.
@@ -35,18 +42,15 @@ public:
 
 protected:
     // Main function to update the logic of an element. Computes the outputs, given the inputs
-    virtual void _updateLogic(const std::vector<bool> &inputs) = 0;
+    virtual void _updateLogic(const QVector<bool> &inputs) = 0;
 
 private:
-    /**
-     * @brief m_isValid is calculated at compilation time.
-     */
-    bool m_isValid;
-    bool m_beingVisited;
-    int m_priority;
-    std::vector<std::pair<LogicElement *, int>> m_inputs;
-    std::vector<bool> m_inputvalues;
-    std::vector<bool> m_outputs;
     QSet<LogicElement *> m_successors;
+    QVector<InputPair> m_inputs;
+    QVector<bool> m_inputvalues;
+    QVector<bool> m_outputs;
+    bool m_beingVisited = false;
+    bool m_isValid = true;
+    int m_priority = -1;
 };
 

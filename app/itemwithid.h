@@ -7,7 +7,6 @@
 
 class ItemWithId
 {
-
 public:
     ItemWithId();
     virtual ~ItemWithId();

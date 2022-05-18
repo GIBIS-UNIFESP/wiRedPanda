@@ -10,24 +10,25 @@
 #include "graphicelement.h"
 #include "input.h"
 #include "qneport.h"
-#include "scstop.h"
+#include "scene.h"
 #include "settings.h"
 #include "simulationcontroller.h"
+#include "simulationcontrollerstop.h"
+#include "workspace.h"
 
 #include <QChartView>
 #include <QClipboard>
 #include <QDebug>
 #include <QLineSeries>
-#include <QMessageBox>
 #include <QMimeData>
 #include <QValueAxis>
 #include <bitset>
 #include <cmath>
 
-SimpleWaveform::SimpleWaveform(Editor *editor, QWidget *parent)
+SimpleWaveform::SimpleWaveform(WorkSpace *workspace, QWidget *parent)
     : QDialog(parent)
     , m_ui(new Ui::SimpleWaveform)
-    , m_editor(editor)
+    , m_workspace(workspace)
 {
     m_ui->setupUi(this);
     resize(800, 500);
@@ -44,10 +45,10 @@ SimpleWaveform::SimpleWaveform(Editor *editor, QWidget *parent)
     restoreGeometry(Settings::value("geometry").toByteArray());
     Settings::endGroup();
 
-    connect(m_ui->pushButton_Copy, &QPushButton::clicked, this, &SimpleWaveform::on_pushButton_Copy_clicked);
-    connect(m_ui->radioButton_Decreasing, &QRadioButton::clicked, this, &SimpleWaveform::on_radioButton_Decreasing_clicked);
-    connect(m_ui->radioButton_Increasing, &QRadioButton::clicked, this, &SimpleWaveform::on_radioButton_Increasing_clicked);
-    connect(m_ui->radioButton_Position, &QRadioButton::clicked, this, &SimpleWaveform::on_radioButton_Position_clicked);
+    connect(m_ui->pushButton_Copy, &QPushButton::clicked, this, &SimpleWaveform::on_pushButtonCopy_clicked);
+    connect(m_ui->radioButton_Decreasing, &QRadioButton::clicked, this, &SimpleWaveform::on_radioButtonDecreasing_clicked);
+    connect(m_ui->radioButton_Increasing, &QRadioButton::clicked, this, &SimpleWaveform::on_radioButtonIncreasing_clicked);
+    connect(m_ui->radioButton_Position, &QRadioButton::clicked, this, &SimpleWaveform::on_radioButtonPosition_clicked);
 }
 
 SimpleWaveform::~SimpleWaveform()
@@ -90,24 +91,24 @@ void SimpleWaveform::sortElements(QVector<GraphicElement *> &elements,
         });
     } else if (sorting == SortingMode::Increasing) {
         std::stable_sort(inputs.begin(), inputs.end(), [](const auto &elm1, const auto &elm2) {
-            return QString::compare(elm1->getLabel(), elm2->getLabel(), Qt::CaseInsensitive) < 0;
+            return QString::compare(elm1->label(), elm2->label(), Qt::CaseInsensitive) < 0;
         });
         std::stable_sort(outputs.begin(), outputs.end(), [](const auto &elm1, const auto &elm2) {
-            return QString::compare(elm1->getLabel(), elm2->getLabel(), Qt::CaseInsensitive) < 0;
+            return QString::compare(elm1->label(), elm2->label(), Qt::CaseInsensitive) < 0;
         });
     } else { // if (sorting == SortingMode::Decreasing) {
         std::stable_sort(inputs.begin(), inputs.end(), [](const auto &elm1, const auto &elm2) {
-            return QString::compare(elm1->getLabel(), elm2->getLabel(), Qt::CaseInsensitive) > 0;
+            return QString::compare(elm1->label(), elm2->label(), Qt::CaseInsensitive) > 0;
         });
         std::stable_sort(outputs.begin(), outputs.end(), [](const auto &elm1, const auto &elm2) {
-            return QString::compare(elm1->getLabel(), elm2->getLabel(), Qt::CaseInsensitive) > 0;
+            return QString::compare(elm1->label(), elm2->label(), Qt::CaseInsensitive) > 0;
         });
     }
 }
 
-bool SimpleWaveform::saveToTxt(QTextStream &outStream, Editor *editor)
+bool SimpleWaveform::saveToTxt(QTextStream &outStream, WorkSpace *workspace)
 {
-    QVector<GraphicElement *> elements = editor->getScene()->getElements();
+    QVector<GraphicElement *> elements = workspace->scene()->elements();
     QVector<GraphicElement *> inputs;
     QVector<GraphicElement *> outputs;
 
@@ -117,9 +118,9 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, Editor *editor)
         return false;
     }
     // Getting digital circuit simulator.
-    SimulationController *sc = editor->getSimulationController();
+    auto *simController = workspace->simulationController();
     // Creating class to pause main window simulator while creating waveform.
-    SCStop scst(sc);
+    SimulationControllerStop simControllerStop(simController);
 
     // Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore
     // it after simulation.
@@ -128,15 +129,15 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, Editor *editor)
         oldValues[in] = inputs[in]->output()->value();
     }
     // Computing the number of iterations based on the number of inputs.
-    int num_iter = pow(2, inputs.size());
+    int numIter = static_cast<int>(pow(2, inputs.size()));
     // Getting the number of outputs. Warning: this will not work if any inout element type in created.
     int outputCount = 0;
     for (auto *out : qAsConst(outputs)) {
         outputCount += out->inputSize();
     }
     // Creating results vector containing the output resulting values.
-    QVector<QVector<uchar>> results(outputCount, QVector<uchar>(num_iter));
-    for (int itr = 0; itr < num_iter; ++itr) {
+    QVector<QVector<uchar>> results(outputCount, QVector<uchar>(numIter));
+    for (int itr = 0; itr < numIter; ++itr) {
         // For each iteration, set a distinct value for the inputs. The set value corresponds to the bits from the number of the current iteration.
         std::bitset<std::numeric_limits<unsigned int>::digits> bs(itr);
         for (int in = 0; in < inputs.size(); ++in) {
@@ -144,13 +145,13 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, Editor *editor)
             dynamic_cast<Input *>(inputs[in])->setOn(val);
         }
         // Updating the values of the circuit logic based on current input values.
-        sc->update();
-        sc->updateAll();
+        simController->update();
+        simController->updateAll();
         // Setting the computed output values to the waveform results vector.
         int counter = 0;
         for (auto *output : qAsConst(outputs)) {
-            int inSz = output->inputSize();
-            for (int port = inSz - 1; port >= 0; --port) {
+            int inSize = output->inputSize();
+            for (int port = inSize - 1; port >= 0; --port) {
                 uchar val = output->input(port)->value();
                 results[counter][itr] = val;
                 counter++;
@@ -159,11 +160,11 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, Editor *editor)
     }
     // Writing the input value of each iteration to the output stream.
     for (int in = 0; in < inputs.size(); ++in) {
-        QString label = inputs[in]->getLabel();
+        QString label = inputs[in]->label();
         if (label.isEmpty()) {
             label = ElementFactory::translatedName(inputs[in]->elementType());
         }
-        for (int itr = 0; itr < num_iter; ++itr) {
+        for (int itr = 0; itr < numIter; ++itr) {
             std::bitset<std::numeric_limits<unsigned int>::digits> bs(itr);
             outStream << static_cast<int>(bs[in]);
         }
@@ -173,13 +174,13 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, Editor *editor)
     // Writing the output values at each iteration to the output stream.
     int counter = 0;
     for (auto *output : qAsConst(outputs)) {
-        QString label = output->getLabel();
+        QString label = output->label();
         if (label.isEmpty()) {
             label = ElementFactory::translatedName(output->elementType());
         }
-        int inSz = output->inputSize();
-        for (int port = inSz - 1; port >= 0; --port) {
-            for (int itr = 0; itr < num_iter; ++itr) {
+        int inSize = output->inputSize();
+        for (int port = inSize - 1; port >= 0; --port) {
+            for (int itr = 0; itr < numIter; ++itr) {
                 outStream << static_cast<int>(results[counter][itr]);
             }
             ++counter;
@@ -191,7 +192,6 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, Editor *editor)
         dynamic_cast<Input *>(inputs[in])->setOn(oldValues[in]);
     }
     // Resuming digital circuit main window after waveform simulation is finished.
-    scst.release();
     return true;
 }
 
@@ -215,106 +215,100 @@ void SimpleWaveform::showWaveform()
     qCDebug(zero) << "Clear previous chart.";
     m_chart.removeAllSeries();
     qCDebug(zero) << "Getting digital circuit simulator.";
-    SimulationController *sc = m_editor->getSimulationController();
+    SimulationController *simController = m_workspace->simulationController();
     qCDebug(zero) << "Creating class to pause main window simulator while creating waveform.";
-    SCStop scst(sc);
-    QVector<GraphicElement *> elements = m_editor->getScene()->getElements();
+    SimulationControllerStop simControllerStop(simController);
+    QVector<GraphicElement *> elements = m_workspace->scene()->elements();
     QVector<GraphicElement *> inputs;
     QVector<GraphicElement *> outputs;
     qCDebug(zero) << "Sorting elements according to the radion option. All elements initially in elements vector. Then, inputs and outputs are extracted from it.";
     sortElements(elements, inputs, outputs, m_sortingMode);
     if (elements.isEmpty()) {
-        QMessageBox::critical(parentWidget(), tr("Error!"), tr("Could not find any port for the simulation"));
-        return;
+        throw Pandaception(tr("Could not find any port for the simulation"));
     }
     if (inputs.isEmpty()) {
-        QMessageBox::critical(parentWidget(), tr("Error!"), tr("Could not find any input for the simulation."));
-        return;
+        throw Pandaception(tr("Could not find any input for the simulation."));
     }
     if (outputs.isEmpty()) {
-        QMessageBox::critical(parentWidget(), tr("Error!"), tr("Could not find any output for the simulation."));
-        return;
+        throw Pandaception(tr("Could not find any output for the simulation."));
     }
     if (inputs.size() > 8) {
-        QMessageBox::critical(parentWidget(), tr("Error!"), tr("The simulation is limited to 8 inputs."));
-        return;
+        throw Pandaception(tr("The simulation is limited to 8 inputs."));
     }
-    QVector<QLineSeries *> in_series;
-    qCDebug(zero) <<
-        "Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation. "
-        "Not saving memory states though...";
-    qCDebug(zero) <<
-        "Also getting the name of the inputs. If no label is given, the element type is used as a name. "
-        "Bug here? What if there are 2 inputs without name or two identical labels?";
+    QVector<QLineSeries *> inSeries;
+    qCDebug(zero) << "Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation. "
+                     "Not saving memory states though...";
+    qCDebug(zero) << "Also getting the name of the inputs. If no label is given, the element type is used as a name. "
+                     "Bug here? What if there are 2 inputs without name or two identical labels?";
     QVector<char> oldValues(inputs.size());
+    inSeries.reserve(inputs.size());
     for (int in = 0; in < inputs.size(); ++in) {
-        in_series.append(new QLineSeries(this));
-        QString label = inputs[in]->getLabel();
+        inSeries.append(new QLineSeries(this));
+        QString label = inputs[in]->label();
         if (label.isEmpty()) {
             label = ElementFactory::translatedName(inputs[in]->elementType());
         }
-        in_series[in]->setName(label);
+        inSeries[in]->setName(label);
         oldValues[in] = inputs[in]->output()->value();
     }
-    QVector<QLineSeries *> out_series;
-    qCDebug(zero) <<
-        "Getting the name of the outputs. If no label is given, the element type is used as a name. "
-        "Bug here? What if there are 2 outputs without name or two identical labels?";
+    QVector<QLineSeries *> outSeries;
+    qCDebug(zero) << "Getting the name of the outputs. If no label is given, the element type is used as a name. "
+                     "Bug here? What if there are 2 outputs without name or two identical labels?";
     for (auto *output : qAsConst(outputs)) {
-        QString label = output->getLabel();
+        QString label = output->label();
         if (label.isEmpty()) {
             label = ElementFactory::translatedName(output->elementType());
         }
         for (int port = 0; port < output->inputSize(); ++port) {
-            out_series.append(new QLineSeries(this));
+            outSeries.append(new QLineSeries(this));
             if (output->inputSize() > 1) {
-                out_series.last()->setName(label + "_" + QString::number(port));
+                outSeries.last()->setName(label + "_" + QString::number(port));
             } else {
-                out_series.last()->setName(label);
+                outSeries.last()->setName(label);
             }
         }
     }
-    qCDebug(zero) << in_series.size() << "inputs.";
-    qCDebug(zero) << out_series.size() << "outputs.";
+    qCDebug(zero) << inSeries.size() << "inputs.";
+    qCDebug(zero) << outSeries.size() << "outputs.";
     qCDebug(zero) << "Computing number of iterations based on the number of inputs.";
-    int num_iter = pow(2, in_series.size());
-    qCDebug(zero) << "Num iter = " << num_iter;
+    int numIter = static_cast<int>(pow(2, inSeries.size()));
+    qCDebug(zero) << "Num iter = " << numIter;
     // gap += outputs.size() % 2;
     qCDebug(zero) << "Running simulation.";
-    for (int itr = 0; itr < num_iter; ++itr) {
+    for (int itr = 0; itr < numIter; ++itr) {
         qCDebug(three) << "For each iteration, set a distinct value for the inputs. The value is the bit values corresponding to the number of the current iteration.";
         std::bitset<std::numeric_limits<unsigned int>::digits> bs(itr);
         qCDebug(three) << "itr:" << itr;
         for (int in = 0; in < inputs.size(); ++in) {
             float val = bs[in];
             dynamic_cast<Input *>(inputs[in])->setOn(!qFuzzyIsNull(val));
-            float offset = (in_series.size() - in - 1 + out_series.size()) * 2 + gap + 0.5;
-            in_series[in]->append(itr, static_cast<qreal>(offset + val));
-            in_series[in]->append(itr + 1, static_cast<qreal>(offset + val));
+            float offset = static_cast<float>((inSeries.size() - in - 1 + outSeries.size()) * 2 + gap + 0.5);
+            inSeries[in]->append(itr, static_cast<qreal>(offset + val));
+            inSeries[in]->append(itr + 1, static_cast<qreal>(offset + val));
         }
         qCDebug(three) << "Updating the values of the circuit logic based on current input values.";
-        sc->update();
-        sc->updateAll();
+        simController->update();
+        simController->updateAll();
         qCDebug(three) << "Setting the computed output values to the waveform results.";
         int counter = 0;
         for (auto *output : qAsConst(outputs)) {
-            int inSz = output->inputSize();
-            for (int port = inSz - 1; port >= 0; --port) {
+            int inSize = output->inputSize();
+            for (int port = inSize - 1; port >= 0; --port) {
                 float val = output->input(port)->value() > 0;
-                float offset = (out_series.size() - counter - 1) * 2 + 0.5;
-                out_series[counter]->append(itr, static_cast<qreal>(offset + val));
-                out_series[counter]->append(itr + 1, static_cast<qreal>(offset + val));
+                float offset = static_cast<float>((outSeries.size() - counter - 1) * 2 + 0.5);
+                outSeries.at(counter)->append(itr, static_cast<qreal>(offset + val));
+                outSeries.at(counter)->append(itr + 1, static_cast<qreal>(offset + val));
                 // cout << counter << " " << out;
                 counter++;
             }
         }
     }
     qCDebug(three) << "Inserting input series to the chart.";
-    for (auto *in : qAsConst(in_series)) {
+    for (auto *in : qAsConst(inSeries)) {
         m_chart.addSeries(in);
     }
     qCDebug(three) << "Inserting output series to the chart.";
-    for (auto *out : qAsConst(out_series)) {
+    for (auto *out : qAsConst(outSeries)) {
         m_chart.addSeries(out);
     }
     qCDebug(three) << "Setting graphic axes.";
@@ -322,37 +316,36 @@ void SimpleWaveform::showWaveform()
 
     // chart.axisY()->hide();
     qCDebug(zero) << "Setting range and names to x, y axis.";
-    const auto horizontal_axe = m_chart.axes(Qt::Horizontal);
-    const auto vertical_axe = m_chart.axes(Qt::Vertical);
+    const auto horizontalAxes = m_chart.axes(Qt::Horizontal);
+    const auto verticalAxes = m_chart.axes(Qt::Vertical);
 
-    auto *ax = qobject_cast<QValueAxis *>(horizontal_axe.back());
-    ax->setRange(0, num_iter);
-    ax->setTickCount(num_iter + 1);
-    ax->setLabelFormat("%i");
-    auto *ay = qobject_cast<QValueAxis *>(vertical_axe.back());
+    auto *axisX = qobject_cast<QValueAxis *>(horizontalAxes.last());
+    axisX->setRange(0, numIter);
+    axisX->setTickCount(numIter + 1);
+    axisX->setLabelFormat("%i");
+    auto *axixY = qobject_cast<QValueAxis *>(verticalAxes.last());
     // ay->setShadesBrush(QBrush(Qt::lightGray));
 
     qCDebug(zero) << "Setting graphics waveform color.";
-    ay->setShadesColor(QColor(0, 0, 0, 8));
-    ay->setShadesPen(QPen(QColor(0, 0, 0, 0)));
-    ay->setShadesVisible(true);
-    ay->setGridLineVisible(false);
-    ay->setTickCount((in_series.size() + out_series.size() + gap / 2 + 1));
-    ay->setRange(0, in_series.size() * 2 + out_series.size() * 2 + gap);
-    ay->setGridLineColor(Qt::transparent);
-    ay->setLabelsVisible(false);
+    axixY->setShadesColor(QColor(0, 0, 0, 8));
+    axixY->setShadesPen(QPen(QColor(0, 0, 0, 0)));
+    axixY->setShadesVisible(true);
+    axixY->setGridLineVisible(false);
+    axixY->setTickCount((inSeries.size() + outSeries.size() + gap / 2 + 1));
+    axixY->setRange(0, inSeries.size() * 2 + outSeries.size() * 2 + gap);
+    axixY->setGridLineColor(Qt::transparent);
+    axixY->setLabelsVisible(false);
     // ay->hide();
     qCDebug(zero) << "Executing QDialog. Opens window to the user.";
     exec();
     qCDebug(zero) << "Restoring the old values to the inputs, prior to simulaton.";
     for (int in = 0; in < inputs.size(); ++in) {
-        dynamic_cast<Input *>(inputs[in])->setOn(oldValues[in]);
+        dynamic_cast<Input *>(inputs.at(in))->setOn(oldValues.at(in));
     }
     qCDebug(zero) << "Resuming digital circuit main window after waveform simulation is finished.";
-    scst.release();
 }
 
-void SimpleWaveform::on_radioButton_Position_clicked()
+void SimpleWaveform::on_radioButtonPosition_clicked()
 {
     Settings::beginGroup("waveform");
     m_sortingMode = SortingMode::Position;
@@ -361,7 +354,7 @@ void SimpleWaveform::on_radioButton_Position_clicked()
     showWaveform();
 }
 
-void SimpleWaveform::on_radioButton_Increasing_clicked()
+void SimpleWaveform::on_radioButtonIncreasing_clicked()
 {
     Settings::beginGroup("waveform");
     m_sortingMode = SortingMode::Increasing;
@@ -370,7 +363,7 @@ void SimpleWaveform::on_radioButton_Increasing_clicked()
     showWaveform();
 }
 
-void SimpleWaveform::on_radioButton_Decreasing_clicked()
+void SimpleWaveform::on_radioButtonDecreasing_clicked()
 {
     Settings::beginGroup("waveform");
     m_sortingMode = SortingMode::Decreasing;
@@ -379,7 +372,7 @@ void SimpleWaveform::on_radioButton_Decreasing_clicked()
     showWaveform();
 }
 
-void SimpleWaveform::on_pushButton_Copy_clicked()
+void SimpleWaveform::on_pushButtonCopy_clicked()
 {
     QSize s = m_chart.size().toSize();
     QPixmap p(s);

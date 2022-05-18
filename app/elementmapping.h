@@ -7,33 +7,35 @@
 
 #include "logicinput.h"
 
+#include <QCoreApplication>
 #include <QHash>
 #include <QMap>
 #include <QVector>
 
 class Clock;
+class ElementMapping;
 class GraphicElement;
 class IC;
+class ICMapping;
 class Input;
 class LogicElement;
 class QNEPort;
-
-class ElementMapping;
-class ICMapping;
 
 using ElementMap = QMap<GraphicElement *, LogicElement *>;
 using InputMap = QMap<Input *, LogicElement *>;
 
 class ElementMapping
 {
+    Q_DECLARE_TR_FUNCTIONS(ElementMapping)
+
 public:
     explicit ElementMapping(const QVector<GraphicElement *> &elms);
     virtual ~ElementMapping();
 
     static QVector<GraphicElement *> sortGraphicElements(QVector<GraphicElement *> elms);
 
-    ICMapping *getICMapping(IC *ic) const;
-    LogicElement *getLogicElement(GraphicElement *elm) const;
+    ICMapping *icMapping(IC *ic) const;
+    LogicElement *logicElement(GraphicElement *elm) const;
     bool canInitialize() const;
     bool canRun() const;
     virtual void initialize();
@@ -43,7 +45,7 @@ public:
 
 protected:
     // Methods
-    static int calculatePriority(GraphicElement *elm, QHash<GraphicElement *, bool> &beingvisited, QHash<GraphicElement *, int> &priority);
+    static int calculatePriority(GraphicElement *elm, QHash<GraphicElement *, bool> &beingVisited, QHash<GraphicElement *, int> &priority);
 
     LogicElement *buildLogicElement(GraphicElement *elm);
     void applyConnection(GraphicElement *elm, QNEPort *in);
@@ -66,6 +68,5 @@ protected:
     QVector<GraphicElement *> m_elements;
     QVector<LogicElement *> m_deletableElements;
     QVector<LogicElement *> m_logicElms;
-    bool m_initialized;
+    bool m_initialized = false;
 };
-

@@ -5,47 +5,37 @@
 
 #pragma once
 
-#include <QDialog>
-#include <QDir>
-#include <QFileInfo>
-#include <QGraphicsRectItem>
-#include <QTemporaryFile>
+#include "graphicelement.h"
+#include "graphicsview.h"
+#include "mainwindow.h"
+#include "scene.h"
+
 #include <QUndoStack>
 
-class BewavedDolphin;
-class Editor;
 class GraphicsView;
-class ICManager;
-class Scene;
 class SimulationController;
 
-class WorkSpace
+class WorkSpace : public QWidget
 {
-public:
-    WorkSpace() = default; // for compiling on Qt 5.7+
-    WorkSpace(QDialog *fullscreenDlg, GraphicsView *fullscreenView, Editor *editor);
+    Q_OBJECT
 
-    GraphicsView *fullscreenView() const;
-    ICManager *icManager();
-    QDialog *fullScreenDlg() const;
+public:
+    explicit WorkSpace(QWidget *parent = nullptr);
+
+    GraphicsView *view();
     QFileInfo currentFile();
-    QGraphicsRectItem *sceneRect();
     QString dolphinFileName();
-    QUndoStack *undoStack() const;
-    Scene *scene() const;
+    Scene *scene();
     SimulationController *simulationController();
-    void free();
-    void setCurrentFile(const QFileInfo &finfo);
-    void setDolphinFileName(const QString &fname);
+    void load(QDataStream &stream);
+    void save(QDataStream &stream, const QString &dolphinFileName);
+    void selectWorkspace();
+    void setCurrentFile(const QFileInfo &fileInfo);
+    void setDolphinFileName(const QString &fileName);
 
 private:
-    GraphicsView *m_fullscreenView;
-    ICManager *m_icManager;
-    QDialog *m_fullscreenDlg;
+    GraphicsView m_view;
     QFileInfo m_currentFile;
-    QGraphicsRectItem *m_selectionRect;
-    QString m_dolphinFilename;
-    QUndoStack *m_undoStack;
-    Scene *m_scene;
-    SimulationController *m_simulationController;
+    QString m_dolphinFileName;
+    Scene m_scene;
 };

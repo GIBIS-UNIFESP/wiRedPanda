@@ -7,14 +7,13 @@
 
 #include <QString>
 
-constexpr auto globalClock = 10;
+constexpr int globalClock = 10;
 
 class GlobalProperties
 {
 public:
-    static QString currentFile;
-    static bool soundEnabled;
-    static bool verbose;
-    static double toDouble(const QString &txtVersion, bool *ok);
-    static double version;
+    inline static QString currentFile = {};
+    inline static bool soundEnabled = true;
+    inline static bool verbose = true;
+    inline static const double version = QString(APP_VERSION).toDouble();
 };

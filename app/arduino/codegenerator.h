@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QFile>
 #include <QHash>
 #include <QTextStream>
@@ -17,25 +18,27 @@ class MappedPin
 {
 public:
     MappedPin(GraphicElement *elm, const QString &pin, const QString &varName, QNEPort *port, int portNbr = 0)
-        : elm(elm)
-        , pin(pin)
-        , varName(varName)
-        , port(port)
-        , portNbr(portNbr)
+        : m_elm(elm)
+        , m_port(port)
+        , m_pin(pin)
+        , m_varName(varName)
+        , m_portNbr(portNbr)
     {
     }
 
     MappedPin() = default;
 
-    GraphicElement *elm;
-    QString pin;
-    QString varName;
-    QNEPort *port;
-    int portNbr;
+    GraphicElement *m_elm;
+    QNEPort *m_port;
+    QString m_pin;
+    QString m_varName;
+    int m_portNbr;
 };
 
 class CodeGenerator
 {
+    Q_DECLARE_TR_FUNCTIONS(CodeGenerator)
+
 public:
     CodeGenerator(const QString &fileName, const QVector<GraphicElement *> &aElements);
     ~CodeGenerator();
@@ -54,12 +57,13 @@ private:
     void loop();
     void setup();
 
-    QFile file;
-    QHash<QNEPort *, QString> varMap;
-    QTextStream out;
-    QVector<MappedPin> inputMap, outputMap;
-    QVector<QString> availablePins;
-    const QVector<GraphicElement *> elements;
-    unsigned int globalCounter;
+    QFile m_file;
+    QHash<QNEPort *, QString> m_varMap;
+    QStringList m_availablePins;
+    QTextStream m_stream;
+    QVector<MappedPin> m_inputMap;
+    QVector<MappedPin> m_outputMap;
+    const QVector<GraphicElement *> m_elements;
+    int m_globalCounter = 1;
 };
 

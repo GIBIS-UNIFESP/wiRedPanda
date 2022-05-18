@@ -9,22 +9,11 @@ ClockDialog::ClockDialog(QWidget *parent)
     , m_ui(new Ui::ClockDialog)
 {
     m_ui->setupUi(this);
-    setWindowTitle("Clock Frequency Selection");
-    setWindowFlags(Qt::Window);
-    setModal(true);
 
-    connect(m_ui->cancelPushButton, &QPushButton::clicked, this, &ClockDialog::cancelRequested);
-    connect(m_ui->okPushButton, &QPushButton::clicked, this, &ClockDialog::okRequested);
-}
+    setWindowTitle(tr("Clock Frequency Selection"));
 
-int ClockDialog::getFrequency()
-{
-    m_canceled = false;
-    exec();
-    if (m_canceled) {
-        return -1;
-    }
-    return m_ui->frequencySpinBox->value();
+    connect(m_ui->cancelPushButton, &QPushButton::clicked, this, [this] { reject(); });
+    connect(m_ui->okPushButton, &QPushButton::clicked, this, [this] { accept(); });
 }
 
 ClockDialog::~ClockDialog()
@@ -32,13 +21,9 @@ ClockDialog::~ClockDialog()
     delete m_ui;
 }
 
-void ClockDialog::cancelRequested()
+int ClockDialog::frequency()
 {
-    m_canceled = true;
-    close();
+    return (exec() == QDialog::Accepted) ? m_ui->frequencySpinBox->value() : -1;
 }
 
-void ClockDialog::okRequested()
-{
-    close();
-}
+// TODO: order of buttons is wrong on some operating systems

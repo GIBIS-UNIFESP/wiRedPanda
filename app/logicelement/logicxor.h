@@ -10,9 +10,9 @@
 class LogicXor : public LogicElement
 {
 public:
-    explicit LogicXor(size_t inputSize);
+    explicit LogicXor(const int inputSize);
 
 protected:
-    void _updateLogic(const std::vector<bool> &inputs) override;
+    void _updateLogic(const QVector<bool> &inputs) override;
 };
 

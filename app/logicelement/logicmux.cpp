@@ -8,7 +8,7 @@ LogicMux::LogicMux()
 {
 }
 
-void LogicMux::_updateLogic(const std::vector<bool> &inputs)
+void LogicMux::_updateLogic(const QVector<bool> &inputs)
 {
     bool data1 = inputs[0];
     bool data2 = inputs[1];

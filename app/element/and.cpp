@@ -2,27 +2,32 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "and.h"
+
+#include "common.h"
 #include "elementfactory.h"
 
-namespace {
+namespace
+{
 int id = qRegisterMetaType<And>();
 }
 
 And::And(QGraphicsItem *parent)
     : GraphicElement(ElementType::And, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
-    m_pixmapSkinName = {":/basic/and.png"};
+    qCDebug(zero) << "Creating and.";
 
-    setOutputsOnTop(true);
-    setPixmap(m_pixmapSkinName[0]);
-    updatePorts();
+    m_pixmapSkinName = QStringList{":/basic/and.png"};
+    setPixmap(m_pixmapSkinName.first());
+
     setCanChangeSkin(true);
+    setOutputsOnTop(true);
     setPortName("AND");
     setToolTip(m_translatedName);
+    updatePorts();
 }
 
-void And::setSkin(bool defaultSkin, const QString &filename)
+void And::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    m_pixmapSkinName[0] = defaultSkin ? ":/basic/and.png" : filename;
-    setPixmap(m_pixmapSkinName[0]);
+    m_pixmapSkinName.first() = (defaultSkin) ? m_pixmapSkinName.first() : fileName;
+    setPixmap(m_pixmapSkinName.first());
 }

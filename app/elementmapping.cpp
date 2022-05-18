@@ -34,10 +34,7 @@
 #include "logicxor.h"
 
 ElementMapping::ElementMapping(const QVector<GraphicElement *> &elms)
-    : m_globalGND(false)
-    , m_globalVCC(true)
-    , m_elements(elms)
-    , m_initialized(false)
+    : m_elements(elms)
 {
 }
 
@@ -63,14 +60,13 @@ void ElementMapping::clear()
 
 QVector<GraphicElement *> ElementMapping::sortGraphicElements(QVector<GraphicElement *> elms)
 {
-    //! Clazy warning: Use QHash<K, T> instead of QMap<K, T> when K is a pointer
     QHash<GraphicElement *, bool> beingvisited;
     QHash<GraphicElement *, int> priority;
     for (auto *elm : elms) {
         calculatePriority(elm, beingvisited, priority);
     }
-    std::sort(elms.begin(), elms.end(), [priority](GraphicElement *e1, GraphicElement *e2) {
-        return priority[e2] < priority[e1];
+    std::sort(elms.begin(), elms.end(), [priority](const auto &e1, const auto &e2) {
+        return priority[e1] > priority[e2];
     });
 
     return elms;
@@ -79,7 +75,6 @@ QVector<GraphicElement *> ElementMapping::sortGraphicElements(QVector<GraphicEle
 void ElementMapping::insertElement(GraphicElement *elm)
 {
     LogicElement *logicElm = buildLogicElement(elm);
-    elm->type();
     m_deletableElements.append(logicElm);
     m_logicElms.append(logicElm);
     m_elementMap.insert(elm, logicElm);
@@ -91,12 +86,9 @@ void ElementMapping::insertElement(GraphicElement *elm)
 
 void ElementMapping::insertIC(IC *ic)
 {
-    Q_ASSERT(ic);
-    Q_ASSERT(!m_icMappings.contains(ic));
-    ICPrototype *proto = ic->getPrototype();
+    ICPrototype *proto = ic->prototype();
     if (proto) {
         ICMapping *icMap = proto->generateMapping();
-        Q_ASSERT(icMap);
         icMap->initialize();
         m_icMappings.insert(ic, icMap);
         m_logicElms.append(icMap->m_logicElms);
@@ -108,11 +100,10 @@ void ElementMapping::generateMap()
     for (auto *elm : qAsConst(m_elements)) {
         if (elm->elementType() == ElementType::Clock) {
             auto *clk = dynamic_cast<Clock *>(elm);
-            Q_ASSERT(clk != nullptr);
             m_clocks.append(clk);
         }
         if (elm->elementType() == ElementType::IC) {
-            IC *ic = dynamic_cast<IC *>(elm);
+            auto *ic = dynamic_cast<IC *>(elm);
             insertIC(ic);
         } else {
             insertElement(elm);
@@ -152,7 +143,7 @@ LogicElement *ElementMapping::buildLogicElement(GraphicElement *elm)
     case ElementType::JKLatch:     return new LogicDLatch();
     case ElementType::Text:
     case ElementType::Line:        return new LogicNone();
-    default:                       throw std::runtime_error(QObject::tr("Not implemented yet: ").toStdString() + elm->objectName().toStdString());
+    default:                       throw Pandaception(tr("Not implemented yet: ") + elm->objectName());
     }
 }
 
@@ -176,45 +167,43 @@ void ElementMapping::sort()
 // TODO: This function can easily cause crashes when using the Undo command to delete elements
 void ElementMapping::update()
 {
-    if (canRun()) {
-        for (auto *clk : qAsConst(m_clocks)) {
-            if (!clk) {
-                continue;
-            };
-            if (Clock::reset) {
-                clk->resetClock();
-            } else {
-                clk->updateClock();
-            }
+    if (!canRun()) {
+        return;
+    }
+
+    for (auto *clk : qAsConst(m_clocks)) {
+        if (!clk) {
+            continue;
+        };
+
+        Clock::reset ? clk->resetClock() : clk->updateClock();
+    }
+
+    Clock::reset = false;
+
+    for (auto iter = m_inputMap.begin(); iter != m_inputMap.end(); ++iter) {
+        if (!iter.key() || !iter.value()) {
+            continue;
         }
-        Clock::reset = false;
-        for (auto iter = m_inputMap.begin(); iter != m_inputMap.end(); ++iter) {
-            if (!iter.key()) {
-                continue;
-            }
-            if (!iter.value()) {
-                continue;
-            }
-            for (int port = 0; port < iter.key()->outputSize(); ++port) {
-                iter.value()->setOutputValue(port, iter.key()->getOn(port));
-            }
+
+        for (int port = 0; port < iter.key()->outputSize(); ++port) {
+            iter.value()->setOutputValue(port, iter.key()->on(port));
         }
-        for (auto *elm : qAsConst(m_logicElms)) {
-            elm->updateLogic();
-        }
+    }
+
+    for (auto *elm : qAsConst(m_logicElms)) {
+        elm->updateLogic();
     }
 }
 
-ICMapping *ElementMapping::getICMapping(IC *ic) const
+ICMapping *ElementMapping::icMapping(IC *ic) const
 {
-    Q_ASSERT(ic);
-    return m_icMappings[ic];
+    return m_icMappings.value(ic);
 }
 
-LogicElement *ElementMapping::getLogicElement(GraphicElement *elm) const
+LogicElement *ElementMapping::logicElement(GraphicElement *elm) const
 {
-    Q_ASSERT(elm);
-    return m_elementMap[elm];
+    return m_elementMap.value(elm);
 }
 
 bool ElementMapping::canRun() const
@@ -224,17 +213,14 @@ bool ElementMapping::canRun() const
 
 bool ElementMapping::canInitialize() const
 {
-    for (auto *elm : m_elements) {
-        if (elm->elementType() == ElementType::IC) {
-            auto *ic = dynamic_cast<IC *>(elm);
-            auto *icManager = ICManager::instance();
-            auto *prototype = icManager->getPrototype(ic->getFile());
-            if (!ic || !prototype) {
-                return false;
-            }
+    return std::all_of(m_elements.cbegin(), m_elements.cend(), [](auto &elm) {
+        if (elm->elementType() != ElementType::IC) {
+            return true;
         }
-    }
-    return true;
+        auto *ic = dynamic_cast<IC *>(elm);
+        auto *prototype = ICManager::prototype(ic->file());
+        return ic && prototype;
+    });
 }
 
 void ElementMapping::applyConnection(GraphicElement *elm, QNEPort *in)
@@ -242,37 +228,34 @@ void ElementMapping::applyConnection(GraphicElement *elm, QNEPort *in)
     LogicElement *currentLogElm;
     int inputIndex = 0;
     if (elm->elementType() == ElementType::IC) {
-        IC *ic = dynamic_cast<IC *>(elm);
-        Q_ASSERT(ic);
-        currentLogElm = m_icMappings[ic]->getInput(in->index());
+        auto *ic = dynamic_cast<IC *>(elm);
+        currentLogElm = m_icMappings.value(ic)->input(in->index());
     } else {
-        currentLogElm = m_elementMap[elm];
+        currentLogElm = m_elementMap.value(elm);
         inputIndex = in->index();
     }
-    Q_ASSERT(currentLogElm);
     int connections = in->connections().size();
-    bool connection_required = in->isRequired();
+    bool connectionRequired = in->isRequired();
+    // TODO: and if there is more than one input? use std::any_of?
     if (connections == 1) {
-        QNEPort *other_out = in->connections().first()->otherPort(in);
-        if (other_out) {
-            GraphicElement *predecessor = other_out->graphicElement();
+        QNEPort *otherOut = in->connections().first()->otherPort(in);
+        if (otherOut) {
+            GraphicElement *predecessor = otherOut->graphicElement();
             if (predecessor) {
                 int predOutIndex = 0;
                 LogicElement *predOutElm;
                 if (predecessor->elementType() == ElementType::IC) {
                     IC *ic = dynamic_cast<IC *>(predecessor);
-                    Q_ASSERT(ic);
-                    Q_ASSERT(m_icMappings.contains(ic));
-                    predOutElm = m_icMappings[ic]->getOutput(other_out->index());
+                    predOutElm = m_icMappings.value(ic)->output(otherOut->index());
                 } else {
-                    predOutElm = m_elementMap[predecessor];
-                    predOutIndex = other_out->index();
+                    predOutElm = m_elementMap.value(predecessor);
+                    predOutIndex = otherOut->index();
                 }
                 currentLogElm->connectPredecessor(inputIndex, predOutElm, predOutIndex);
             }
         }
-    } else if ((connections == 0) && (!connection_required)) {
-        LogicElement *pred = in->defaultValue() ? &m_globalVCC : &m_globalGND;
+    } else if ((connections == 0) && (!connectionRequired)) {
+        LogicElement *pred = (in->defaultValue()) ? &m_globalVCC : &m_globalGND;
         currentLogElm->connectPredecessor(inputIndex, pred, 0);
     }
 }
@@ -280,8 +263,8 @@ void ElementMapping::applyConnection(GraphicElement *elm, QNEPort *in)
 void ElementMapping::connectElements()
 {
     for (auto *elm : qAsConst(m_elements)) {
-        const auto elm_inputs = elm->inputs();
-        for (auto *in : elm_inputs) {
+        const auto elmInputs = elm->inputs();
+        for (auto *in : elmInputs) {
             applyConnection(elm, in);
         }
     }
@@ -299,35 +282,35 @@ void ElementMapping::sortLogicElements()
     for (auto *elm : qAsConst(m_logicElms)) {
         elm->calculatePriority();
     }
-    std::sort(m_logicElms.begin(), m_logicElms.end(), [](auto *e1, auto *e2) {
-        return *e2 < *e1;
+    std::sort(m_logicElms.begin(), m_logicElms.end(), [](const auto &e1, const auto &e2) {
+        return e1 > e2;
     });
 }
 
-int ElementMapping::calculatePriority(GraphicElement *elm, QHash<GraphicElement *, bool> &beingvisited, QHash<GraphicElement *, int> &priority)
+int ElementMapping::calculatePriority(GraphicElement *elm, QHash<GraphicElement *, bool> &beingVisited, QHash<GraphicElement *, int> &priority)
 {
     if (!elm) {
         return 0;
     }
-    if (beingvisited.contains(elm) && (beingvisited[elm])) {
+    if (beingVisited.contains(elm) && (beingVisited.value(elm))) {
         return 0;
     }
     if (priority.contains(elm)) {
-        return priority[elm];
+        return priority.value(elm);
     }
-    beingvisited[elm] = true;
+    beingVisited[elm] = true;
     int max = 0;
-    const auto elm_outputs = elm->outputs();
-    for (auto *port : elm_outputs) {
+    const auto elmOutputs = elm->outputs();
+    for (auto *port : elmOutputs) {
         for (auto *conn : port->connections()) {
             auto *successor = conn->otherPort(port);
             if (successor) {
-                max = qMax(calculatePriority(successor->graphicElement(), beingvisited, priority), max);
+                max = qMax(calculatePriority(successor->graphicElement(), beingVisited, priority), max);
             }
         }
     }
     int p = max + 1;
     priority[elm] = p;
-    beingvisited[elm] = false;
+    beingVisited[elm] = false;
     return p;
 }

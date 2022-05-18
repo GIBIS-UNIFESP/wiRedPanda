@@ -7,23 +7,23 @@
 
 #include <QGraphicsSceneMouseEvent>
 
-namespace {
+namespace
+{
 int id = qRegisterMetaType<InputButton>();
 }
-
-int InputButton::current_id_number = 0;
 
 InputButton::InputButton(QGraphicsItem *parent)
     : GraphicElement(ElementType::InputButton, ElementGroup::Input, 0, 0, 1, 1, parent)
 {
-    m_pixmapSkinName = {
+    m_pixmapSkinName = QStringList{
         ":/input/buttonOff.png",
         ":/input/buttonOn.png",
     };
-    locked = false;
+    setPixmap(m_pixmapSkinName.first());
+
+    m_locked = false;
     setOutputsOnTop(false);
     setCanChangeSkin(true);
-    setPixmap(m_pixmapSkinName[0]);
     setRotatable(false);
     m_outputs.first()->setValue(0);
     InputButton::setOn(false);
@@ -35,7 +35,7 @@ InputButton::InputButton(QGraphicsItem *parent)
 
 void InputButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if ((!locked) && (event->button() == Qt::LeftButton)) {
+    if ((!m_locked) && (event->button() == Qt::LeftButton)) {
         setOn(true);
         event->accept();
     }
@@ -44,47 +44,57 @@ void InputButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    if ((!locked) && (event->button() == Qt::LeftButton)) {
+    if ((!m_locked) && (event->button() == Qt::LeftButton)) {
         setOn(false);
         event->accept();
     }
     GraphicElement::mouseReleaseEvent(event);
 }
 
-void InputButton::save(QDataStream &ds) const
+void InputButton::save(QDataStream &stream) const
 {
-    GraphicElement::save(ds);
-    ds << locked;
+    GraphicElement::save(stream);
+    stream << m_locked;
 }
 
-void InputButton::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
+void InputButton::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
 {
-    GraphicElement::load(ds, portMap, version);
+    GraphicElement::load(stream, portMap, version);
     if (version >= 3.1) {
-        ds >> locked;
+        stream >> m_locked;
     }
 }
 
-bool InputButton::getOn(int port) const
+bool InputButton::on(int port) const
 {
     Q_UNUSED(port);
-    return on;
+    return m_on;
+}
+
+void InputButton::setOff()
+{
+    setOn(false);
+}
+
+void InputButton::setOn()
+{
+    setOn(true);
 }
 
 void InputButton::setOn(const bool value, int port)
 {
     Q_UNUSED(port);
-    on = value;
-    setPixmap(on ? m_pixmapSkinName[1] : m_pixmapSkinName[0]);
+    m_on = value;
+    setPixmap(m_on ? m_pixmapSkinName[1] : m_pixmapSkinName[0]);
     if (!disabled()) {
-        output()->setValue(on);
+        output()->setValue(static_cast<signed char>(m_on));
     }
 }
 
-void InputButton::setSkin(bool defaultSkin, const QString &filename)
+void InputButton::setSkin(const bool defaultSkin, const QString &fileName)
 {
     if (defaultSkin) {
-        if (!on) {
+        if (!m_on) {
             m_pixmapSkinName[0] = ":/input/buttonOff.png";
             setPixmap(m_pixmapSkinName[0]);
         } else {
@@ -92,11 +102,11 @@ void InputButton::setSkin(bool defaultSkin, const QString &filename)
             setPixmap(m_pixmapSkinName[1]);
         }
     } else {
-        if (!on) {
-            m_pixmapSkinName[0] = filename;
+        if (!m_on) {
+            m_pixmapSkinName[0] = fileName;
             setPixmap(m_pixmapSkinName[0]);
         } else {
-            m_pixmapSkinName[1] = filename;
+            m_pixmapSkinName[1] = fileName;
             setPixmap(m_pixmapSkinName[1]);
         }
     }

@@ -13,10 +13,10 @@ public:
     explicit LogicDFlipFlop();
 
 protected:
-    void _updateLogic(const std::vector<bool> &inputs) override;
+    void _updateLogic(const QVector<bool> &inputs) override;
 
 private:
-    bool lastClk;
-    bool lastValue;
+    bool m_lastClk = false;
+    bool m_lastValue = true;
 };
 

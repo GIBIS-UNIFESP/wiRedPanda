@@ -3,16 +3,22 @@
 
 #include "jklatch.h"
 
+#include "common.h"
 #include "qneport.h"
 
-namespace {
+namespace
+{
 int id = qRegisterMetaType<JKLatch>();
 }
 
 JKLatch::JKLatch(QGraphicsItem *parent)
     : GraphicElement(ElementType::JKLatch, ElementGroup::Memory, 2, 2, 2, 2, parent)
 {
-    setPixmap(":/memory/JK-latch.png");
+    qCDebug(zero) << "Creating jklatch.";
+
+    m_pixmapSkinName = QStringList{":/memory/JK-latch.png"};
+    setPixmap(m_pixmapSkinName.first());
+
     setRotatable(false);
     setCanChangeSkin(true);
     JKLatch::updatePorts();

@@ -11,31 +11,31 @@
 class InputButton : public GraphicElement, public Input
 {
     Q_OBJECT
+    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
     Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
     Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
-    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
 
 public:
     explicit InputButton(QGraphicsItem *parent = nullptr);
 
-    static int current_id_number; // Number used to create distinct labels for each instance of this element.
-
-    bool getOn(int port = 0) const override;
-    void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
-    void save(QDataStream &ds) const override;
+    bool on(int port = 0) const override;
+    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version) override;
+    void save(QDataStream &stream) const override;
+    void setOff() override;
+    void setOn() override;
     void setOn(const bool value, int port = 0) override;
-    void setSkin(bool defaultSkin, const QString &filename) override;
+    void setSkin(const bool defaultSkin, const QString &fileName) override;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
+    const QString m_pixmap = ":/input/buttonOff.png";
     const QString m_titleText = tr("<b>PUSH BUTTON</b>");
     const QString m_translatedName = tr("Button");
-    const QString m_pixmap = ":/input/buttonOff.png";
 
-    bool on;
+    bool m_on;
 };
 
 Q_DECLARE_METATYPE(InputButton)

@@ -28,3 +28,8 @@ void Comment::setVerbosity(const int verbosity)
 
     qSetMessagePattern("%{if-debug}%{line}: %{function} => %{endif}%{message}");
 }
+
+Pandaception::Pandaception(const QString &message)
+    : std::runtime_error(message.toStdString())
+{
+}

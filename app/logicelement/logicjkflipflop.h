@@ -13,10 +13,10 @@ public:
     explicit LogicJKFlipFlop();
 
 protected:
-    void _updateLogic(const std::vector<bool> &inputs) override;
+    void _updateLogic(const QVector<bool> &inputs) override;
 
 private:
-    bool lastClk;
-    bool lastJ;
-    bool lastK;
+    bool m_lastClk = false;
+    bool m_lastJ = true;
+    bool m_lastK = true;
 };
