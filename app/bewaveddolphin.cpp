@@ -92,29 +92,29 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
     drawPixMaps();
 
     connect(m_ui->actionAbout,         &QAction::triggered, this, &BewavedDolphin::on_actionAbout_triggered);
-    connect(m_ui->actionAbout_Qt,       &QAction::triggered, this, &BewavedDolphin::on_actionAboutQt_triggered);
+    connect(m_ui->actionAboutQt,       &QAction::triggered, this, &BewavedDolphin::on_actionAboutQt_triggered);
     connect(m_ui->actionClear,         &QAction::triggered, this, &BewavedDolphin::on_actionClear_triggered);
     connect(m_ui->actionCombinational, &QAction::triggered, this, &BewavedDolphin::on_actionCombinational_triggered);
     connect(m_ui->actionCopy,          &QAction::triggered, this, &BewavedDolphin::on_actionCopy_triggered);
     connect(m_ui->actionCut,           &QAction::triggered, this, &BewavedDolphin::on_actionCut_triggered);
     connect(m_ui->actionExit,          &QAction::triggered, this, &BewavedDolphin::on_actionExit_triggered);
-    connect(m_ui->actionExport_to_PDF,   &QAction::triggered, this, &BewavedDolphin::on_actionExportToPdf_triggered);
-    connect(m_ui->actionExport_to_PNG,   &QAction::triggered, this, &BewavedDolphin::on_actionExportToPng_triggered);
+    connect(m_ui->actionExportToPdf,   &QAction::triggered, this, &BewavedDolphin::on_actionExportToPdf_triggered);
+    connect(m_ui->actionExportToPng,   &QAction::triggered, this, &BewavedDolphin::on_actionExportToPng_triggered);
     connect(m_ui->actionInvert,        &QAction::triggered, this, &BewavedDolphin::on_actionInvert_triggered);
     connect(m_ui->actionLoad,          &QAction::triggered, this, &BewavedDolphin::on_actionLoad_triggered);
     connect(m_ui->actionPaste,         &QAction::triggered, this, &BewavedDolphin::on_actionPaste_triggered);
-    connect(m_ui->actionReset_Zoom,     &QAction::triggered, this, &BewavedDolphin::on_actionResetZoom_triggered);
+    connect(m_ui->actionResetZoom,     &QAction::triggered, this, &BewavedDolphin::on_actionResetZoom_triggered);
     connect(m_ui->actionSave,          &QAction::triggered, this, &BewavedDolphin::on_actionSave_triggered);
-    connect(m_ui->actionSave_as,        &QAction::triggered, this, &BewavedDolphin::on_actionSaveAs_triggered);
-    connect(m_ui->actionSet_clock_wave,  &QAction::triggered, this, &BewavedDolphin::on_actionSetClockWave_triggered);
-    connect(m_ui->actionSet_Length,     &QAction::triggered, this, &BewavedDolphin::on_actionSetLength_triggered);
-    connect(m_ui->actionSet_to_0,        &QAction::triggered, this, &BewavedDolphin::on_actionSetTo0_triggered);
-    connect(m_ui->actionSet_to_1,        &QAction::triggered, this, &BewavedDolphin::on_actionSetTo1_triggered);
+    connect(m_ui->actionSaveAs,        &QAction::triggered, this, &BewavedDolphin::on_actionSaveAs_triggered);
+    connect(m_ui->actionSetClockWave,  &QAction::triggered, this, &BewavedDolphin::on_actionSetClockWave_triggered);
+    connect(m_ui->actionSetLength,     &QAction::triggered, this, &BewavedDolphin::on_actionSetLength_triggered);
+    connect(m_ui->actionSetTo0,        &QAction::triggered, this, &BewavedDolphin::on_actionSetTo0_triggered);
+    connect(m_ui->actionSetTo1,        &QAction::triggered, this, &BewavedDolphin::on_actionSetTo1_triggered);
     connect(m_ui->actionShowCurve,     &QAction::triggered, this, &BewavedDolphin::on_actionShowCurve_triggered);
     connect(m_ui->actionShowValues,    &QAction::triggered, this, &BewavedDolphin::on_actionShowValues_triggered);
-    connect(m_ui->actionZoom_In,        &QAction::triggered, this, &BewavedDolphin::on_actionZoomIn_triggered);
-    connect(m_ui->actionZoom_out,       &QAction::triggered, this, &BewavedDolphin::on_actionZoomOut_triggered);
-    connect(m_ui->actionZoom_Range,     &QAction::triggered, this, &BewavedDolphin::on_actionZoomRange_triggered);
+    connect(m_ui->actionZoomIn,        &QAction::triggered, this, &BewavedDolphin::on_actionZoomIn_triggered);
+    connect(m_ui->actionZoomOut,       &QAction::triggered, this, &BewavedDolphin::on_actionZoomOut_triggered);
+    connect(m_ui->actionZoomRange,     &QAction::triggered, this, &BewavedDolphin::on_actionZoomRange_triggered);
 }
 
 BewavedDolphin::~BewavedDolphin()
@@ -127,8 +127,8 @@ BewavedDolphin::~BewavedDolphin()
 
 void BewavedDolphin::zoomChanged()
 {
-    m_ui->actionZoom_In->setEnabled(m_view.canZoomIn());
-    m_ui->actionZoom_out->setEnabled(m_view.canZoomOut());
+    m_ui->actionZoomIn->setEnabled(m_view.canZoomIn());
+    m_ui->actionZoomOut->setEnabled(m_view.canZoomOut());
 }
 
 void BewavedDolphin::drawPixMaps()
@@ -417,7 +417,6 @@ void BewavedDolphin::createWaveform(const QString &fileName)
 
 void BewavedDolphin::createWaveform()
 {
-    qDebug() << "Reading...";
     qCDebug(zero) << "Updating window name with current fileName.";
     qCDebug(zero) << "Creating class to pause main window simulator while creating waveform.";
     // TODO: scene is paused twice, once here and again in run()
@@ -990,21 +989,16 @@ void BewavedDolphin::load()
 {
     QTextStream cin(stdin);
     QString str = cin.readLine();
-    qDebug() << "Line read: " << str;
     auto wordList(str.split(','));
-    qDebug() << "Converting";
     int rows = wordList.at(0).toInt();
     int cols = wordList.at(1).toInt();
-    qDebug() << "Rows: " << QString::number(rows) << ", cols: " << QString::number(cols);
     if (rows > m_inputPorts) {
         rows = m_inputPorts;
     }
     if ((cols < 2) || (cols > 2048)) {
         throw Pandaception(tr("Invalid number of columns."));
     }
-    qDebug() << "Setting length...";
     setLength(cols, false);
-    qDebug() << "Update table.";
     for (int row = 0; row < rows; ++row) {
         str = cin.readLine();
         auto wordList(str.split(','));
