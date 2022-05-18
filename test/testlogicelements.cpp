@@ -42,7 +42,7 @@ void TestLogicElements::testLogicNode()
 
         elm.updateLogic();
 
-        QCOMPARE(elm.getOutputValue(), test.at(1));
+        QCOMPARE(elm.outputValue(), test.at(1));
     }
 }
 
@@ -65,7 +65,7 @@ void TestLogicElements::testLogicAnd()
 
         elm.updateLogic();
 
-        QCOMPARE(elm.getOutputValue(), test.at(2));
+        QCOMPARE(elm.outputValue(), test.at(2));
     }
 }
 
@@ -88,18 +88,18 @@ void TestLogicElements::testLogicOr()
 
         elm.updateLogic();
 
-        QCOMPARE(elm.getOutputValue(), test.at(2));
+        QCOMPARE(elm.outputValue(), test.at(2));
     }
 }
 
 void TestLogicElements::testLogicInput()
 {
     LogicInput elm;
-    QCOMPARE(elm.getOutputValue(), false);
+    QCOMPARE(elm.outputValue(), false);
     elm.setOutputValue(true);
-    QCOMPARE(elm.getOutputValue(), true);
+    QCOMPARE(elm.outputValue(), true);
     elm.setOutputValue(false);
-    QCOMPARE(elm.getOutputValue(), false);
+    QCOMPARE(elm.outputValue(), false);
 }
 
 void TestLogicElements::testLogicMux()
@@ -127,7 +127,7 @@ void TestLogicElements::testLogicMux()
 
         elm.updateLogic();
 
-        QCOMPARE(elm.getOutputValue(), test.at(3));
+        QCOMPARE(elm.outputValue(), test.at(3));
     }
 }
 
@@ -151,8 +151,8 @@ void TestLogicElements::testLogicDemux()
 
         elm.updateLogic();
 
-        QCOMPARE(elm.getOutputValue(0), test.at(2));
-        QCOMPARE(elm.getOutputValue(1), test.at(3));
+        QCOMPARE(elm.outputValue(0), test.at(2));
+        QCOMPARE(elm.outputValue(1), test.at(3));
     }
 }
 
@@ -194,8 +194,8 @@ void TestLogicElements::testLogicDFlipFlop()
 
         elm.updateLogic();
 
-        QCOMPARE(elm.getOutputValue(0), test.at(5));
-        QCOMPARE(elm.getOutputValue(1), test.at(6));
+        QCOMPARE(elm.outputValue(0), test.at(5));
+        QCOMPARE(elm.outputValue(1), test.at(6));
     }
 }
 
@@ -225,8 +225,8 @@ void TestLogicElements::testLogicDLatch()
 
         elm.updateLogic();
 
-        QCOMPARE(elm.getOutputValue(0), test.at(2));
-        QCOMPARE(elm.getOutputValue(1), !test.at(2));
+        QCOMPARE(elm.outputValue(0), test.at(2));
+        QCOMPARE(elm.outputValue(1), !test.at(2));
     }
 }
 
@@ -276,8 +276,8 @@ void TestLogicElements::testLogicJKFlipFlop()
 
         elm.updateLogic();
 
-        QCOMPARE(elm.getOutputValue(0), test.at(6));
-        QCOMPARE(elm.getOutputValue(1), test.at(7));
+        QCOMPARE(elm.outputValue(0), test.at(6));
+        QCOMPARE(elm.outputValue(1), test.at(7));
     }
 }
 
@@ -340,8 +340,8 @@ void TestLogicElements::testLogicSRFlipFlop()
 
         elm.updateLogic();
 
-        QCOMPARE(elm.getOutputValue(0), test.at(6));
-        QCOMPARE(elm.getOutputValue(1), test.at(7));
+        QCOMPARE(elm.outputValue(0), test.at(6));
+        QCOMPARE(elm.outputValue(1), test.at(7));
     }
 }
 
@@ -392,7 +392,7 @@ void TestLogicElements::testLogicTFlipFlop()
 
         elm.updateLogic();
 
-        QCOMPARE(elm.getOutputValue(0), test.at(5));
-        QCOMPARE(elm.getOutputValue(1), test.at(6));
+        QCOMPARE(elm.outputValue(0), test.at(5));
+        QCOMPARE(elm.outputValue(1), test.at(6));
     }
 }

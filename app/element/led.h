@@ -10,34 +10,33 @@
 class Led : public GraphicElement
 {
     Q_OBJECT
+    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
     Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
     Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
-    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
 
 public:
     explicit Led(QGraphicsItem *parent = nullptr);
 
-    static int current_id_number; // Number used to create distinct labels for each instance of this element.
-
+    QString color() const override;
     QString genericProperties() override;
-    QString getColor() const override;
-    void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
+    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version) override;
     void refresh() override;
-    void save(QDataStream &ds) const override;
-    void setColor(const QString &getColor) override;
-    void setSkin(bool defaultSkin, const QString &filename) override;
+    void save(QDataStream &stream) const override;
+    void setColor(const QString &color) override;
+    void setSkin(const bool defaultSkin, const QString &fileName) override;
     void updatePorts() override;
 
 private:
-    void resetLedPixmapName(int ledNumber);
+    void resetLedPixmapName(const int ledNumber);
 
+    const QString m_pixmap = ":/output/WhiteLedOff.png";
     const QString m_titleText = tr("<b>LED</b>");
     const QString m_translatedName = tr("Led");
-    const QString m_pixmap = ":/output/WhiteLedOff.png";
 
-    QString m_color;
-    int m_colorNumber; /* white = 0, red = 2, green = 4, blue = 6, purple = 8 */
+    QString m_color = "White";
+    int m_colorNumber = 0; /* white = 0, red = 2, green = 4, blue = 6, purple = 8 */
 };
 
 Q_DECLARE_METATYPE(Led)
 
+// FIXME: connecting more than one source makes led stop working

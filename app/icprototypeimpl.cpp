@@ -43,13 +43,9 @@ bool ICPrototypeImpl::loadFile(const QString &fileName)
     clear();
     QFile file(fileName);
     if (file.open(QFile::ReadOnly)) {
-        QDataStream ds(&file);
-        QList<QGraphicsItem *> items;
-        if (!SerializationFunctions::load(ds, items)) {
-            file.close();
-            return false;
-        }
-        for (auto* item : qAsConst(items)) {
+        QDataStream stream(&file);
+        QList<QGraphicsItem *> items = SerializationFunctions::load(stream);
+        for (auto *item : qAsConst(items)) {
             loadItem(item);
         }
         file.close();
@@ -66,9 +62,9 @@ bool ICPrototypeImpl::loadFile(const QString &fileName)
 
 void ICPrototypeImpl::loadInputs()
 {
-    for (int portIndex = 0; portIndex < getInputSize(); ++portIndex) {
+    for (int portIndex = 0; portIndex < inputSize(); ++portIndex) {
         GraphicElement *elm = m_inputs.at(portIndex)->graphicElement();
-        QString lb = elm->getLabel();
+        QString lb = elm->label();
         if (!m_inputs.at(portIndex)->portName().isEmpty()) {
             lb += " ";
             lb += m_inputs.at(portIndex)->portName();
@@ -82,9 +78,9 @@ void ICPrototypeImpl::loadInputs()
 
 void ICPrototypeImpl::loadOutputs()
 {
-    for (int portIndex = 0; portIndex < getOutputSize(); ++portIndex) {
+    for (int portIndex = 0; portIndex < outputSize(); ++portIndex) {
         GraphicElement *elm = m_outputs.at(portIndex)->graphicElement();
-        QString lb = elm->getLabel();
+        QString lb = elm->label();
         if (!m_outputs.at(portIndex)->portName().isEmpty()) {
             lb += " ";
             lb += m_outputs.at(portIndex)->portName();
@@ -102,13 +98,13 @@ void ICPrototypeImpl::loadInputElement(GraphicElement *elm)
     for (auto *port : outputs) {
         auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
         nodeElm->setPos(elm->pos());
-        nodeElm->setLabel(elm->getLabel());
-        if (elm->getLabel().isEmpty()) {
+        nodeElm->setLabel(elm->label());
+        if (elm->label().isEmpty()) {
             nodeElm->setLabel(ElementFactory::typeToText(elm->elementType()));
         }
         auto *nodeInput = nodeElm->input();
         nodeInput->setPos(port->pos());
-        nodeInput->setName(port->getName());
+        nodeInput->setName(port->name());
         nodeInput->setRequired(false);
         nodeInput->setDefaultValue(port->value());
         nodeInput->setValue(port->value());
@@ -133,13 +129,13 @@ void ICPrototypeImpl::loadOutputElement(GraphicElement *elm)
     for (auto *port : inputs) {
         auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
         nodeElm->setPos(elm->pos());
-        nodeElm->setLabel(elm->getLabel());
-        if (elm->getLabel().isEmpty()) {
+        nodeElm->setLabel(elm->label());
+        if (elm->label().isEmpty()) {
             nodeElm->setLabel(ElementFactory::typeToText(elm->elementType()));
         }
         auto *nodeOutput = nodeElm->output();
         nodeOutput->setPos(port->pos());
-        nodeOutput->setName(port->getName());
+        nodeOutput->setName(port->name());
         m_outputs.append(nodeOutput);
         m_elements.append(nodeElm);
         auto conns = port->connections();
@@ -177,12 +173,12 @@ void ICPrototypeImpl::clear()
     m_elements.clear();
 }
 
-int ICPrototypeImpl::getInputSize() const
+int ICPrototypeImpl::inputSize() const
 {
     return m_inputs.size();
 }
 
-int ICPrototypeImpl::getOutputSize() const
+int ICPrototypeImpl::outputSize() const
 {
     return m_outputs.size();
 }
@@ -197,27 +193,27 @@ void ICPrototypeImpl::setInputSize(int inputSize)
     m_inputLabels = QVector<QString>(inputSize);
 }
 
-GraphicElement *ICPrototypeImpl::getElement(int index)
+GraphicElement *ICPrototypeImpl::element(int index)
 {
     return m_elements[index];
 }
 
-QString ICPrototypeImpl::getInputLabel(int index) const
+QString ICPrototypeImpl::inputLabel(int index) const
 {
     return m_inputLabels[index];
 }
 
-QString ICPrototypeImpl::getOutputLabel(int index) const
+QString ICPrototypeImpl::outputLabel(int index) const
 {
     return m_outputLabels[index];
 }
 
-QNEPort *ICPrototypeImpl::getInput(int index)
+QNEPort *ICPrototypeImpl::input(int index)
 {
     return m_inputs[index];
 }
 
-QNEPort *ICPrototypeImpl::getOutput(int index)
+QNEPort *ICPrototypeImpl::output(int index)
 {
     return m_outputs[index];
 }

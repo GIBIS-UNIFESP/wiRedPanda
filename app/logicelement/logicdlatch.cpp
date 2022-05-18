@@ -10,10 +10,10 @@ LogicDLatch::LogicDLatch()
     setOutputValue(1, true);
 }
 
-void LogicDLatch::_updateLogic(const std::vector<bool> &inputs)
+void LogicDLatch::_updateLogic(const QVector<bool> &inputs)
 {
-    bool q0 = getOutputValue(0);
-    bool q1 = getOutputValue(1);
+    bool q0 = outputValue(0);
+    bool q1 = outputValue(1);
     bool D = inputs[0];
     bool enable = inputs[1];
     if (enable) {

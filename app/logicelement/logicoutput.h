@@ -10,9 +10,9 @@
 class LogicOutput : public LogicElement
 {
 public:
-    explicit LogicOutput(size_t inputSz);
+    explicit LogicOutput(const int inputSize);
 
 protected:
-    void _updateLogic(const std::vector<bool> &inputs) override;
+    void _updateLogic(const QVector<bool> &inputs) override;
 };
 

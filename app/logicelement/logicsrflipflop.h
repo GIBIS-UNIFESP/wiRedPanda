@@ -13,9 +13,8 @@ public:
     explicit LogicSRFlipFlop();
 
 protected:
-    void _updateLogic(const std::vector<bool> &inputs) override;
+    void _updateLogic(const QVector<bool> &inputs) override;
 
 private:
-    bool lastClk;
+    bool m_lastClk = false;
 };
-

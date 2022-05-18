@@ -5,22 +5,14 @@
 
 #pragma once
 
-#include "recentfilescontroller.h"
-
 #include <QDir>
-#include <QFileInfo>
 #include <QMainWindow>
-#include <QTemporaryFile>
+#include <QSpacerItem>
+#include <QTranslator>
 
-class QDialog;
-class QSpacerItem;
-class QTranslator;
-
-class BewavedDolphin;
-class Editor;
-class GraphicsView;
 class Label;
 class ListItemWidget;
+class RecentFilesController;
 class WorkSpace;
 
 namespace Ui
@@ -33,109 +25,97 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr, const QString &filename = {});
+    explicit MainWindow(const QString &fileName = {}, QWidget *parent = nullptr);
     ~MainWindow() override;
 
     //! Creates a new tab with the given tab_name. Used by new and load actions.
     void createNewTab();
     //! Saves the project to a .panda file. Removes the autosave file in the process.
-    bool save(QString fname = {});
+    bool save(QString fileName = {});
     //! Sets the main window as visible, as well as its child widgets. Cleans the editor.
     void show();
     //! Returns the file name of the currently loaded Panda file.
-    QFileInfo getCurrentFile() const;
+    QFileInfo currentFile() const;
     //! Returns the dir name of the currently loaded Panda file.
-    QDir getCurrentDir() const;
+    QDir currentDir() const;
     //! Sets the current file to the given value.
     //! Mostly used by `loadPandaFile` and clearing functions
-    void setCurrentFile(const QString &fname);
+    void setCurrentFile(const QString &fileName = {});
     //! Exports the current simulation to an
-    bool exportToArduino(QString fname);
+    void exportToArduino(QString fileName);
     //! Saves the current beWavedDolphin (waveform simulator) file
-    bool exportToWaveFormFile(const QString &fname);
+    void exportToWaveFormFile(const QString &fileName);
+    void exportToWaveFormTerminal();
     //! Loads a .panda file
-    bool loadPandaFile(const QString &fname);
+    bool loadPandaFile(const QString &fileName);
     //! Opens a message box asking the user if he wishes to save his progress
-    int confirmSave(bool multiple = true);
+    int confirmSave(const bool multiple = true);
 
-    QString getDolphinFilename();
-    bool closeFile();
-    void buildFullScreenDialog();
+    QString dolphinFileName();
+    bool closeFiles();
     void loadTranslation(const QString &language);
-    void populateMenu(QSpacerItem *spacer, const QString &names, QLayout *layout);
+    void populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout);
     void retranslateUi();
-    void setAutoSaveFileName(const QFileInfo &file);
+    void setAutosaveFileName(const QFileInfo &fileInfo);
     void setCurrentDir();
-    void setDolphinFilename(const QString &filename);
-    void setFastMode(bool fastModeEnabled);
-
-    QDialog *m_fullscreenDlg;
-    GraphicsView *m_fullscreenView;
-
+    void setDolphinFileName(const QString &fileName);
+    void setFastMode(const bool fastMode);
 
 signals:
-    void addRecentFile(const QString &fname);
+    void addRecentFile(const QString &fileName);
 
 protected:
-    void closeEvent(QCloseEvent *e) override;
-    void resizeEvent(QResizeEvent * /*event*/) override;
+    void closeEvent(QCloseEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
-    bool closeTabAction(int tab);
+    bool closeTab(const int tabIndex);
     bool hasModifiedFiles();
-    bool on_actionExport_to_Arduino_triggered();
-    int autoSaveFileDeleteAnyway(const QString &autosaveFilename);
+    int autosaveFileDeleteAnyway(const QString &autosaveFileName);
     int closeTabAnyway();
-    int recoverAutoSaveFile(const QString &autosaveFilename);
+    int recoverAutosaveFile(const QString &autosaveFileName);
     void aboutThisVersion();
-    void autoSave();
-    void closeTab(int tab);
+    void autosave();
     void createAutosaveFile();
     void createRecentFileActions();
-    void createUndoRedoMenus();
-    void loadAutoSaveFiles(const QString &filename);
-    void on_actionAbout_Qt_triggered();
+    void loadAutosaveFiles(const QString &fileName);
+    void on_actionAboutQt_triggered();
     void on_actionAbout_triggered();
-    void on_actionChange_Trigger_triggered();
-    void on_actionClear_selection_triggered();
+    void on_actionDarkTheme_triggered();
     void on_actionEnglish_triggered();
     void on_actionExit_triggered();
-    void on_actionExport_to_Image_triggered();
-    void on_actionFast_Mode_triggered(bool checked);
-    void on_actionFlip_horizontally_triggered();
-    void on_actionFlip_vertically_triggered();
+    void on_actionExportToArduino_triggered();
+    void on_actionExportToImage_triggered();
+    void on_actionExportToPdf_triggered();
+    void on_actionFastMode_triggered(const bool checked);
+    void on_actionFlipHorizontally_triggered();
+    void on_actionFlipVertically_triggered();
     void on_actionFullscreen_triggered();
-    void on_actionGates_triggered(bool checked);
-    void on_actionLabels_under_icons_triggered(bool checked);
-    void on_actionMute_triggered();
+    void on_actionGates_triggered(const bool checked);
+    void on_actionLabelsUnderIcons_triggered(const bool checked);
+    void on_actionLightTheme_triggered();
+    void on_actionMute_triggered(const bool checked);
     void on_actionNew_triggered();
     void on_actionOpen_triggered();
-    void on_actionPanda_Dark_triggered();
-    void on_actionPanda_Light_triggered();
-    void on_actionPlay_triggered(bool checked);
+    void on_actionPlay_triggered(const bool checked);
     void on_actionPortuguese_triggered();
-    void on_actionPrint_triggered();
-    void on_actionReload_File_triggered();
-    void on_actionRename_triggered();
-    void on_actionReset_Zoom_triggered() const;
-    void on_actionRotate_left_triggered();
-    void on_actionRotate_right_triggered();
-    void on_actionSave_As_triggered();
+    void on_actionReloadFile_triggered();
+    void on_actionResetZoom_triggered() const;
+    void on_actionRotateLeft_triggered();
+    void on_actionRotateRight_triggered();
+    void on_actionSaveAs_triggered();
     void on_actionSave_triggered();
-    void on_actionSelect_all_triggered();
+    void on_actionSelectAll_triggered();
     void on_actionWaveform_triggered();
-    void on_actionWires_triggered(bool checked);
-    void on_actionZoom_in_triggered() const;
-    void on_actionZoom_out_triggered() const;
+    void on_actionWires_triggered(const bool checked);
+    void on_actionZoomIn_triggered() const;
+    void on_actionZoomOut_triggered() const;
     void on_lineEdit_returnPressed();
     void on_lineEdit_textChanged(const QString &text);
     void openRecentFile();
     void populateLeftMenu();
-    void removeAutosaveFile(int tab);
-    void scrollView(int dx, int dy) const;
-    void selectNextTab();
-    void selectPreviousTab();
-    void selectTab(int tab);
+    void removeAutosaveFile(const int tabIndex);
+    void selectTab(const int tabIndex);
     void updateICList();
     void updateRecentFileActions();
     void updateSettings();
@@ -149,7 +129,7 @@ private:
     /**
      * @brief addUndoRedoMenu: Adds undo and redo of selected tab into the UI menu.
      */
-    void addUndoRedoMenu(int tab);
+    void addUndoRedoMenu();
     /**
      * @brief removeUndoRedoMenu: Removes undo and redo of current tab from the UI menu.
      */
@@ -161,25 +141,21 @@ private:
     /**
      * @brief connectTab: Function called as a tab is selected. The tab is connected to the UI.
      */
-    void connectTab(int tab);
+    void connectTab();
 
-    Ui::MainWindow *ui;
-    BewavedDolphin *m_bd;
-    Editor *m_editor;
-    Label *m_firstResult;
-    QAction *m_recentFileActs[RecentFilesController::MaxRecentFiles];
+    Ui::MainWindow *m_ui;
+    Label *m_firstResult = nullptr;
     QFileInfo m_currentFile;
     QString m_defaultDirectory;
-    QString m_dolphinFileName;
-    QTemporaryFile **m_autoSaveFile; // We had memory leak problems using QVectors for that.
-    QTranslator *m_pandaTranslator;
-    QTranslator *m_qtTranslator;
-    QVector<ListItemWidget *> icItemWidgets, searchItemWidgets;
-    QVector<QAction *> m_redoAction;
-    QVector<QAction *> m_undoAction;
-    QVector<WorkSpace> m_tabs;
-    RecentFilesController *m_rfController;
-    bool m_loadedAutoSave;
-    int m_current_tab;
+    QTranslator *m_pandaTranslator = nullptr;
+    QTranslator *m_qtTranslator = nullptr;
+    QVector<ListItemWidget *> icItemWidgets;
+    QVector<ListItemWidget *> searchItemWidgets;
+    QVector<QAction *> m_recentFilesActions;
+    QVector<QTemporaryFile *> m_autosaveFile;
+    RecentFilesController *m_recentFilesController = nullptr;
+    WorkSpace *m_currentTab = nullptr;
+    bool m_loadedAutosave = false;
+    int m_tabIndex = -1;
 };
 

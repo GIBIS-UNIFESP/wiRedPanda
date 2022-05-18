@@ -5,12 +5,12 @@
 
 #include <functional>
 
-LogicAnd::LogicAnd(size_t inputSize)
+LogicAnd::LogicAnd(const int inputSize)
     : LogicElement(inputSize, 1)
 {
 }
 
-void LogicAnd::_updateLogic(const std::vector<bool> &inputs)
+void LogicAnd::_updateLogic(const QVector<bool> &inputs)
 {
     auto result = std::accumulate(inputs.begin(), inputs.end(), true, std::bit_and<>());
     setOutputValue(result);

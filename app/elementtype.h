@@ -3,7 +3,8 @@
 #include <QObject>
 #include <cstdint>
 
-class Enums {
+class Enums
+{
     Q_GADGET
 
 public:
@@ -47,4 +48,5 @@ public:
 using ElementType = Enums::ElementType;
 
 ElementType &operator++(ElementType &e);
-QDataStream &operator>>(QDataStream &ds, ElementType &type);
+QDataStream &operator>>(QDataStream &stream, ElementType &type);
+QDataStream &operator<<(QDataStream &stream, const ElementType &type);

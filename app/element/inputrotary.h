@@ -11,37 +11,41 @@
 class InputRotary : public GraphicElement, public Input
 {
     Q_OBJECT
+    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
     Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
     Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
-    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
 
 public:
     explicit InputRotary(QGraphicsItem *parent = nullptr);
 
-    static int current_id_number; // Number used to create distinct labels for each instance of this element.
-
-    bool getOn(int port = 0) const override;
+    bool on(int port = 0) const override;
     int outputSize() const override;
     int outputValue() const override;
-    void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
+    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version) override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void refresh() override;
-    void save(QDataStream &ds) const override;
+    void save(QDataStream &stream) const override;
+    void setOff() override;
+    void setOn() override;
     void setOn(bool value, int port = 0) override;
-    void setSkin(bool defaultSkin, const QString &filename) override;
+    void setSkin(const bool defaultSkin, const QString &fileName) override;
     void updatePorts() override;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
+    const QString m_pixmap = ":/input/rotary/rotary_icon.png";
     const QString m_titleText = tr("<b>ROTARY SWITCH</b>");
     const QString m_translatedName = tr("Rotary Switch");
-    const QString m_pixmap = ":/input/rotary/rotary_icon.png";
 
-    QPixmap m_rotary2, m_rotary4, m_rotary8, m_rotary10, m_rotary16;
+    QPixmap m_rotary10;
+    QPixmap m_rotary16;
+    QPixmap m_rotary2;
+    QPixmap m_rotary4;
+    QPixmap m_rotary8;
     QVector<QPixmap> m_pointer;
-    int m_value;
+    int m_value = 0;
 };
 
 Q_DECLARE_METATYPE(InputRotary)

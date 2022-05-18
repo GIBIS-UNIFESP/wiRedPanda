@@ -5,12 +5,12 @@
 
 #include <functional>
 
-LogicOr::LogicOr(size_t inputSize)
+LogicOr::LogicOr(const int inputSize)
     : LogicElement(inputSize, 1)
 {
 }
 
-void LogicOr::_updateLogic(const std::vector<bool> &inputs)
+void LogicOr::_updateLogic(const QVector<bool> &inputs)
 {
     auto result = std::accumulate(inputs.begin(), inputs.end(), false, std::bit_or<>());
     setOutputValue(result);

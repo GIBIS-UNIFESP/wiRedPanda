@@ -9,18 +9,8 @@
 #include <QFileInfo>
 #include <QHBoxLayout>
 
-Label *ListItemWidget::getLabel() const
-{
-    return m_label;
-}
-
-void ListItemWidget::mousePressEvent(QMouseEvent * /*event*/)
-{
-    m_label->startDrag();
-}
-
-ListItemWidget::ListItemWidget(const QPixmap *pixmap, ElementType elementType, const QString &icFileName, QWidget *parent)
-    : ListItemWidget(*pixmap, elementType, icFileName, parent)
+ListItemWidget::ListItemWidget(const QPixmap *pixmap, ElementType type, const QString &icFileName, QWidget *parent)
+    : ListItemWidget(*pixmap, type, icFileName, parent)
 {
     // for compiling on Qt versions < 5.15
 }
@@ -62,4 +52,15 @@ void ListItemWidget::updateName()
         m_nameLabel->setText(name);
         m_label->setName(name);
     }
+}
+
+Label *ListItemWidget::label() const
+{
+    return m_label;
+}
+
+void ListItemWidget::mousePressEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event)
+    m_label->startDrag();
 }

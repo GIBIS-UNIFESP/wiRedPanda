@@ -3,9 +3,10 @@
 
 #include "testfiles.h"
 
-#include "editor.h"
 #include "globalproperties.h"
 #include "qneconnection.h"
+#include "scene.h"
+#include "workspace.h"
 
 #include <QTemporaryFile>
 #include <QTest>
@@ -20,8 +21,7 @@ void TestFiles::testFiles()
     QVERIFY(!files.empty());
 
     for (const auto &fileInfo : files) {
-        auto *editor = new Editor(this);
-        editor->setupWorkspace();
+        auto *workspace = new WorkSpace();
         QVERIFY(fileInfo.exists());
         GlobalProperties::currentFile = fileInfo.absoluteFilePath();
 
@@ -29,13 +29,13 @@ void TestFiles::testFiles()
             QFile pandaFile(fileInfo.absoluteFilePath());
             QVERIFY(pandaFile.exists());
             QVERIFY(pandaFile.open(QFile::ReadOnly));
-            QDataStream ds(&pandaFile);
-            editor->load(ds);
+            QDataStream stream(&pandaFile);
+            workspace->load(stream);
         } catch (std::runtime_error &e) {
             QFAIL("Could not load the file! Error: " + QString(e.what()).toUtf8());
         }
 
-        const auto items = editor->getScene()->items();
+        const auto items = workspace->scene()->items();
 
         for (auto *item : items) {
             if (item->type() == QNEConnection::Type) {
@@ -53,10 +53,10 @@ void TestFiles::testFiles()
         }
 
         // qCDebug(zero) << tempfile.fileName();
-        QDataStream ds(&tempfile);
+        QDataStream stream(&tempfile);
 
         try {
-            editor->save(ds, "");
+            workspace->save(stream, "");
         } catch (std::runtime_error &) {
             QFAIL("Error saving project: " + tempfile.fileName().toUtf8());
         }
@@ -66,8 +66,8 @@ void TestFiles::testFiles()
         try {
             QFile pandaFile(tempfile.fileName());
             QVERIFY(pandaFile.open(QFile::ReadOnly));
-            QDataStream ds2(&pandaFile);
-            editor->load(ds2);
+            QDataStream stream2(&pandaFile);
+            workspace->load(stream2);
         } catch (std::runtime_error &e) {
             QFAIL("Could not load the file! Error: " + QString(e.what()).toUtf8());
         }

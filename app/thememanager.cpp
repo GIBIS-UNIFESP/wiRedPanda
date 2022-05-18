@@ -5,87 +5,71 @@
 
 #include "settings.h"
 
-#include <QApplication>
-
-ThemeManager *ThemeManager::globalManager = nullptr;
-
-Theme ThemeManager::theme() const
-{
-    return m_theme;
-}
-
-void ThemeManager::setTheme(Theme theme)
-{
-    m_attrs.setTheme(theme);
-    if (m_theme != theme) {
-        m_theme = theme;
-        Settings::setValue("theme", static_cast<int>(theme));
-        emit themeChanged();
-    }
-}
-
-void ThemeManager::initialize()
-{
-    emit themeChanged();
-}
-
-ThemeAttrs ThemeManager::getAttrs() const
-{
-    return m_attrs;
-}
-
 ThemeManager::ThemeManager(QObject *parent)
     : QObject(parent)
-    , m_theme(Theme::Light)
 {
     if (Settings::contains("theme")) {
         m_theme = static_cast<Theme>(Settings::value("theme").toInt());
     }
-    setTheme(m_theme);
+    m_attributes.setTheme(m_theme);
 }
 
-ThemeAttrs::ThemeAttrs()
+Theme ThemeManager::theme()
 {
-    setTheme(Theme::Light);
+    return instance().m_theme;
 }
 
-void ThemeAttrs::setTheme(Theme theme)
+void ThemeManager::setTheme(const Theme theme)
+{
+    instance().m_attributes.setTheme(theme);
+    if (instance().m_theme != theme) {
+        instance().m_theme = theme;
+        Settings::setValue("theme", static_cast<int>(theme));
+        emit instance().themeChanged();
+    }
+}
+
+ThemeAttributes ThemeManager::attributes()
+{
+    return instance().m_attributes;
+}
+
+void ThemeAttributes::setTheme(const Theme theme)
 {
     switch (theme) {
     case Theme::Light:
-        scene_bgBrush = QColor(255, 255, 230);
-        scene_bgDots = QColor(Qt::darkGray);
-        selectionBrush = QColor(175, 0, 0, 80);
-        selectionPen = QColor(175, 0, 0, 255);
+        m_sceneBgBrush = QColor(255, 255, 230);
+        m_sceneBgDots = QColor(Qt::darkGray);
 
-        graphicElement_labelColor = QColor(Qt::black);
+        m_selectionBrush = QColor(175, 0, 0, 80);
+        m_selectionPen = QColor(175, 0, 0, 255);
 
-        qneConnection_selected = selectionPen;
+        m_graphicElementLabelColor = QColor(Qt::black);
 
-        qneConnection_true = QColor(Qt::green);
-        qneConnection_false = QColor(Qt::darkGreen);
-        qneConnection_invalid = QColor(Qt::red);
+        m_qneConnectionFalse = QColor(Qt::darkGreen);
+        m_qneConnectionInvalid = QColor(Qt::red);
+        m_qneConnectionSelected = m_selectionPen;
+        m_qneConnectionTrue = QColor(Qt::green);
 
 #ifndef Q_OS_MAC
-        qApp->setPalette(defaultPalette);
+        qApp->setPalette(m_defaultPalette);
         qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
 #endif
-
         break;
+
     case Theme::Dark:
-        scene_bgBrush = QColor(64, 69, 82);
-        scene_bgDots = QColor(Qt::black);
-        selectionBrush = QColor(230, 255, 85, 150);
-        selectionPen = QColor(230, 255, 85, 255);
+        m_sceneBgBrush = QColor(64, 69, 82);
+        m_sceneBgDots = QColor(Qt::black);
 
-        graphicElement_labelColor = QColor(Qt::white);
+        m_selectionBrush = QColor(230, 255, 85, 150);
+        m_selectionPen = QColor(230, 255, 85, 255);
 
-        qneConnection_selected = selectionPen;
+        m_graphicElementLabelColor = QColor(Qt::white);
 
-        qneConnection_true = QColor(115, 255, 220, 255);
-        qneConnection_false = QColor(65, 150, 130, 255);
-
-        qneConnection_invalid = QColor(Qt::red);
+        m_qneConnectionFalse = QColor(65, 150, 130, 255);
+        m_qneConnectionInvalid = QColor(Qt::red);
+        m_qneConnectionSelected = m_selectionPen;
+        m_qneConnectionTrue = QColor(115, 255, 220, 255);
 
 #ifndef Q_OS_MAC
         QPalette darkPalette;
@@ -111,19 +95,18 @@ void ThemeAttrs::setTheme(Theme theme)
         qApp->setPalette(darkPalette);
         qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
 #endif
-
         break;
     }
-    qnePort_true_pen = QColor(Qt::black);
-    qnePort_false_pen = QColor(Qt::black);
-    qnePort_invalid_pen = QColor(Qt::red);
 
-    qnePort_true_brush = qneConnection_true;
-    qnePort_false_brush = qneConnection_false;
-    qnePort_invalid_brush = qneConnection_invalid;
+    m_qnePortFalseBrush = m_qneConnectionFalse;
+    m_qnePortInvalidBrush = m_qneConnectionInvalid;
+    m_qnePortOutputBrush = QColor(243, 83, 105);
+    m_qnePortTrueBrush = m_qneConnectionTrue;
 
-    qnePort_hoverPort = QColor(Qt::yellow);
+    m_qnePortFalsePen = QColor(Qt::black);
+    m_qnePortInvalidPen = QColor(Qt::red);
+    m_qnePortOutputPen = QColor(Qt::darkRed);
+    m_qnePortTruePen = QColor(Qt::black);
 
-    qnePort_output_pen = QColor(Qt::darkRed);
-    qnePort_output_brush = QColor(243, 83, 105);
+    m_qnePortHoverPort = QColor(Qt::yellow);
 }

@@ -3,17 +3,22 @@
 
 #include "demux.h"
 
+#include "common.h"
 #include "qneport.h"
 
-namespace {
+namespace
+{
 int id = qRegisterMetaType<Demux>();
 }
 
 Demux::Demux(QGraphicsItem *parent)
     : GraphicElement(ElementType::Demux, ElementGroup::Mux, 2, 2, 2, 2, parent)
 {
-    m_pixmapSkinName = {":/basic/demux.png"};
-    setPixmap(m_pixmapSkinName[0]);
+    qCDebug(zero) << "Creating demux.";
+
+    m_pixmapSkinName = QStringList{":/basic/demux.png"};
+    setPixmap(m_pixmapSkinName.first());
+
     setRotatable(true);
     setCanChangeSkin(true);
     Demux::updatePorts();
@@ -30,18 +35,15 @@ Demux::Demux(QGraphicsItem *parent)
 
 void Demux::updatePorts()
 {
-    input(0)->setPos(32, 48); /* 0 */
-    input(1)->setPos(58, 32); /* S */
+    input(0)->setPos(32, 48);       /* 0   */
+    input(1)->setPos(58, 32);       /* S   */
+
     output(0)->setPos(32 - 12, 16); /* Out */
     output(1)->setPos(32 + 12, 16); /* Out */
 }
 
-void Demux::setSkin(bool defaultSkin, const QString &filename)
+void Demux::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    if (defaultSkin) {
-        m_pixmapSkinName[0] = ":/basic/demux.png";
-    } else {
-        m_pixmapSkinName[0] = filename;
-    }
+    m_pixmapSkinName[0] = (defaultSkin) ? ":/basic/demux.png" : fileName;
     setPixmap(m_pixmapSkinName[0]);
 }

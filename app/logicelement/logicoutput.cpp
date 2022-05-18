@@ -3,14 +3,14 @@
 
 #include "logicoutput.h"
 
-LogicOutput::LogicOutput(size_t inputSz)
-    : LogicElement(inputSz, inputSz)
+LogicOutput::LogicOutput(const int inputSize)
+    : LogicElement(inputSize, inputSize)
 {
 }
 
-void LogicOutput::_updateLogic(const std::vector<bool> &inputs)
+void LogicOutput::_updateLogic(const QVector<bool> &inputs)
 {
-    for (size_t idx = 0; idx < inputs.size(); ++idx) {
-        setOutputValue(idx, inputs[idx]);
+    for (int index = 0; index < inputs.size(); ++index) {
+        setOutputValue(index, inputs[index]);
     }
 }

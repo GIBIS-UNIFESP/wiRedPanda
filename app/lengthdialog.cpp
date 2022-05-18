@@ -9,21 +9,11 @@ LengthDialog::LengthDialog(QWidget *parent)
     , m_ui(new Ui::LengthDialog)
 {
     m_ui->setupUi(this);
-    setWindowTitle(tr("Simulation Length Selection"));
-    setWindowFlags(Qt::Window);
-    setModal(true);
-    connect(m_ui->cancelPushButton, &QPushButton::clicked, this, &LengthDialog::cancelClicked);
-    connect(m_ui->okPushButton, &QPushButton::clicked, this, &LengthDialog::okClicked);
-}
 
-int LengthDialog::getFrequency()
-{
-    m_canceled = false;
-    exec();
-    if (m_canceled) { // TODO: always false
-        return -1;
-    }
-    return m_ui->lengthSpinBox->value();
+    setWindowTitle(tr("Simulation Length Selection"));
+
+    connect(m_ui->cancelPushButton, &QPushButton::clicked, this, [this] { reject(); });
+    connect(m_ui->okPushButton, &QPushButton::clicked, this, [this] { accept(); });
 }
 
 LengthDialog::~LengthDialog()
@@ -31,15 +21,9 @@ LengthDialog::~LengthDialog()
     delete m_ui;
 }
 
-void LengthDialog::cancelClicked()
+int LengthDialog::length()
 {
-    m_canceled = true;
-    close();
-}
-
-void LengthDialog::okClicked()
-{
-    close();
+    return (exec() == QDialog::Accepted) ? m_ui->lengthSpinBox->value() : -1;
 }
 
 // TODO: order of buttons is wrong on some operating systems

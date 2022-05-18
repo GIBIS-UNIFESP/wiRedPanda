@@ -11,37 +11,38 @@
 class Clock : public GraphicElement, public Input
 {
     Q_OBJECT
+    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
     Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
     Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
-    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
 
 public:
     explicit Clock(QGraphicsItem *parent = nullptr);
 
-    static int current_id_number; // Number used to create distinct labels for each instance of this element.
-    static bool reset;
-    static bool pause; // static var to pause clock counting while simulating.
+    inline static bool pause = false; // pause clock counting while simulating.
+    inline static bool reset = false;
 
     QString genericProperties() override;
-    bool getOn(int port = 0) const override;
-    float getFrequency() const override;
-    void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
+    bool on(const int port = 0) const override;
+    float frequency() const override;
+    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version) override;
     void resetClock();
-    void save(QDataStream &ds) const override;
-    void setFrequency(float freq) override;
-    void setOn(bool value, int port = 0) override;
-    void setSkin(bool defaultSkin, const QString &filename) override;
+    void save(QDataStream &stream) const override;
+    void setFrequency(const float freq) override;
+    void setOff() override;
+    void setOn() override;
+    void setOn(const bool value, const int port = 0) override;
+    void setSkin(const bool defaultSkin, const QString &fileName) override;
     void updateClock();
 
 private:
+    const QString m_pixmap = ":/input/clock1.png";
     const QString m_titleText = tr("<b>CLOCK SIGNAL</b>");
     const QString m_translatedName = tr("Clock");
-    const QString m_pixmap = ":/input/clock1.png";
 
-    int m_interval;
-    int m_elapsed;
-    bool m_isOn;
+    bool m_isOn = false;
     double m_frequency;
+    int m_elapsed;
+    int m_interval;
 };
 
 Q_DECLARE_METATYPE(Clock)

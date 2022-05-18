@@ -16,14 +16,14 @@ class ICPrototypeImpl
 {
 public:
     ~ICPrototypeImpl();
-    GraphicElement *getElement(int index);
+    GraphicElement *element(int index);
     ICMapping *generateMapping() const;
-    QNEPort *getInput(int index);
-    QNEPort *getOutput(int index);
-    QString getInputLabel(int index) const;
-    QString getOutputLabel(int index) const;
-    int getInputSize() const;
-    int getOutputSize() const;
+    QNEPort *input(int index);
+    QNEPort *output(int index);
+    QString inputLabel(int index) const;
+    QString outputLabel(int index) const;
+    int inputSize() const;
+    int outputSize() const;
     void clear();
     bool loadFile(const QString &fileName);
     void loadInputElement(GraphicElement *elm);

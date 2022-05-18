@@ -4,18 +4,18 @@
 #include "testsimulationcontroller.h"
 
 #include "and.h"
-#include "editor.h"
 #include "elementmapping.h"
 #include "inputbutton.h"
 #include "led.h"
 #include "qneconnection.h"
+#include "scene.h"
+#include "workspace.h"
 
 #include <QTest>
 
 void TestSimulationController::testCase1()
 {
-    auto *editor = new Editor(this);
-    editor->setupWorkspace();
+    auto *workspace = new WorkSpace();
 
     auto *btn1 = new InputButton();
     auto *btn2 = new InputButton();
@@ -25,7 +25,7 @@ void TestSimulationController::testCase1()
     auto *conn2 = new QNEConnection();
     auto *conn3 = new QNEConnection();
 
-    auto *scene = editor->getScene();
+    auto *scene = workspace->scene();
     scene->addItem(led);
     scene->addItem(andItem);
     scene->addItem(btn1);
@@ -41,7 +41,7 @@ void TestSimulationController::testCase1()
     conn3->setStart(andItem->output());
     conn3->setEnd(led->input());
 
-    const auto elms(ElementMapping::sortGraphicElements(scene->getElements()));
+    const auto elms(ElementMapping::sortGraphicElements(scene->elements()));
 
     QVERIFY(elms.at(0) == btn1 || elms.at(1) == btn1);
     QVERIFY(elms.at(0) == btn2 || elms.at(1) == btn2);

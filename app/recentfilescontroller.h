@@ -15,12 +15,12 @@ class RecentFilesController : public QObject
     Q_OBJECT
 
 public:
-    explicit RecentFilesController(const QString &_attrName, QObject *parent = nullptr, bool saveSetting = true);
+    explicit RecentFilesController(const QString &attrName, bool saveSetting = true, QObject *parent = nullptr);
 
     static constexpr int MaxRecentFiles = 10;
 
-    QStringList getRecentFiles();
-    void addRecentFile(const QString &fname);
+    QStringList recentFiles();
+    void addRecentFile(const QString &fileName);
 
 signals:
     void recentFilesUpdated();
