@@ -39,9 +39,11 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &stream, 
         int type;
         stream >> type;
         qCDebug(three) << "Type:" << type;
+
         if (type != GraphicElement::Type && type != QNEConnection::Type) {
             throw Pandaception(tr("Invalid type. Data is possibly corrupted."));
         }
+
         if (type == GraphicElement::Type) {
             ElementType elmType;
             stream >> elmType;
@@ -55,9 +57,11 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &stream, 
                 IC *ic = qgraphicsitem_cast<IC *>(elm);
                 ICManager::loadIC(ic, ic->file());
             }
+
             elm->setSelected(true);
         }
-        else if (type == QNEConnection::Type) {
+
+        if (type == QNEConnection::Type) {
             qCDebug(three) << "Reading Connection.";
             QNEConnection *conn = ElementFactory::buildConnection();
             qCDebug(three) << "Connection built.";
@@ -70,11 +74,9 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &stream, 
                 qCDebug(three) << "Appending connection.";
                 itemList.append(conn);
             }
-        } else {
-            qCDebug(zero) << "Invalid type. Data is possibly corrupted: " << type;
-            throw Pandaception(tr("Invalid type. Data is possibly corrupted."));
         }
     }
+
     qCDebug(zero) << "Finished deserializing.";
     return itemList;
 }
@@ -138,3 +140,4 @@ QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &stream)
     qCDebug(zero) << "Finished reading items.";
     return items;
 }
+

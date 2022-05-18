@@ -154,9 +154,9 @@ void addItems(Scene *scene, const QList<QGraphicsItem *> &items)
 
 QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const QVector<int> &ids, QVector<int> &otherIds)
 {
-//    if (itemData.isEmpty()) {
-//        return true;
-//    }
+    if (itemData.isEmpty()) {
+        return {};
+    }
     auto otherElms = findElements(otherIds).toVector();
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     double version = GlobalProperties::version;
