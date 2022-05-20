@@ -1146,6 +1146,10 @@ void MainWindow::on_actionPortuguese_triggered()
 
 void MainWindow::on_actionPlay_triggered(const bool checked)
 {
+    if (!m_currentTab) {
+        return;
+    }
+
     auto *controller = m_currentTab->simulationController();
 
     checked ? controller->start() : controller->stop();
