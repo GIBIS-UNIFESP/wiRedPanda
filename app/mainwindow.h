@@ -52,6 +52,7 @@ public:
 
     QString dolphinFileName();
     bool closeFiles();
+    bool event(QEvent *event) override;
     void exportToWaveFormTerminal();
     void loadTranslation(const QString &language);
     void populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout);

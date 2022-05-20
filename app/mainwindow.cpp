@@ -1306,3 +1306,23 @@ void MainWindow::on_actionLabelsUnderIcons_triggered(const bool checked)
 {
     m_ui->mainToolBar->setToolButtonStyle(checked ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
 }
+
+bool MainWindow::event(QEvent *event)
+{
+    switch (event->type())
+    {
+    case QEvent::WindowActivate:
+        if (m_ui->actionPlay->isChecked()) {
+            on_actionPlay_triggered(true);
+        }
+        break;
+
+    case QEvent::WindowDeactivate:
+            on_actionPlay_triggered(false);
+        break;
+
+    default: break;
+    };
+
+    return QMainWindow::event(event);
+}
