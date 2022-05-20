@@ -66,7 +66,7 @@ QVector<GraphicElement *> ElementMapping::sortGraphicElements(QVector<GraphicEle
         calculatePriority(elm, beingvisited, priority);
     }
     std::sort(elms.begin(), elms.end(), [priority](const auto &e1, const auto &e2) {
-        return priority[e1] > priority[e2];
+        return priority[e2] < priority[e1];
     });
 
     return elms;
@@ -283,7 +283,7 @@ void ElementMapping::sortLogicElements()
         elm->calculatePriority();
     }
     std::sort(m_logicElms.begin(), m_logicElms.end(), [](const auto &e1, const auto &e2) {
-        return e1 > e2;
+        return *e2 < *e1;
     });
 }
 

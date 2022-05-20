@@ -60,8 +60,8 @@ protected:
     // Attributes
     ElementMap m_elementMap;
     InputMap m_inputMap;
-    LogicInput m_globalGND;
-    LogicInput m_globalVCC;
+    LogicInput m_globalGND{false};
+    LogicInput m_globalVCC{true};
     QMap<IC *, ICMapping *> m_icMappings;
     QString m_currentFile;
     QVector<Clock *> m_clocks;
