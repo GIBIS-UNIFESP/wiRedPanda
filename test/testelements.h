@@ -16,7 +16,7 @@ class TestElements : public QObject
 {
     Q_OBJECT
 
-private:
+private slots:
     QString testFile(const QString &fileName);
     void cleanup();
     void init();
@@ -36,6 +36,7 @@ private:
     void testTFlipFlop();
     void testVCC();
 
+private:
     QVector<InputSwitch *> switches{5};
     QVector<QNEConnection *> connections{5};
 };

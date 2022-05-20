@@ -11,6 +11,6 @@ class TestFiles : public QObject
 {
     Q_OBJECT
 
-private:
+private slots:
     void testFiles();
 };
