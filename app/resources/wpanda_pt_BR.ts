@@ -104,7 +104,6 @@
     </message>
     <message>
         <location filename="../bewaveddolphin.ui" line="197"/>
-        <location filename="../bewaveddolphin.cpp" line="1034"/>
         <source>Export to PDF</source>
         <translation>Exportar para PDF</translation>
     </message>
@@ -305,127 +304,28 @@
         <translation>Mostrar com Ondas</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="163"/>
+        <location filename="../bewaveddolphin.cpp" line="167"/>
         <source>Save simulation before closing?</source>
         <translation>Salvar a simulação antes de sair?</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="391"/>
+        <location filename="../bewaveddolphin.cpp" line="395"/>
+        <location filename="../bewaveddolphin.cpp" line="427"/>
         <source>Could not load enough elements for the simulation.</source>
         <translation>Não foi possível carregar os elementos para a simulação.</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="789"/>
-        <location filename="../bewaveddolphin.cpp" line="804"/>
-        <source>Saved file successfully.</source>
-        <translation>Arquivo salvo com sucesso.</translation>
-    </message>
-    <message>
-        <location filename="../bewaveddolphin.cpp" line="792"/>
-        <location filename="../bewaveddolphin.cpp" line="807"/>
-        <source>Could not save file: </source>
-        <translation>Não foi possível salvar o arquivo: </translation>
-    </message>
-    <message>
-        <location filename="../bewaveddolphin.cpp" line="825"/>
-        <source>Open File</source>
-        <translation>Abrir arquivo</translation>
-    </message>
-    <message>
-        <location filename="../bewaveddolphin.cpp" line="827"/>
-        <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
-        <translation>Todos os arquivos suportados (*.dolphin *.csv);;Arquivos Dolphin (*.dolphin);;Arquivos CSV (*.csv)</translation>
-    </message>
-    <message>
-        <location filename="../bewaveddolphin.cpp" line="845"/>
-        <source>File loaded successfully.</source>
-        <translation>Arquivo carregado com sucesso.</translation>
-    </message>
-    <message>
-        <location filename="../bewaveddolphin.cpp" line="917"/>
-        <source>Format not supported. Could not open file:</source>
-        <translation>Formato não suportado. Não foi possível abrir o arquivo:</translation>
-    </message>
-    <message>
-        <location filename="../bewaveddolphin.cpp" line="921"/>
-        <source>Could not open file in ReadOnly mode:</source>
-        <translation>Não foi possível abrir o arquivo no modo apenas leitura:</translation>
-    </message>
-    <message>
-        <location filename="../bewaveddolphin.cpp" line="922"/>
-        <source>Could not open file in ReadOnly mode: </source>
-        <translation>Não foi possível abrir o arquivo no modo apenas leitura: </translation>
-    </message>
-    <message>
-        <location filename="../bewaveddolphin.cpp" line="946"/>
-        <location filename="../bewaveddolphin.cpp" line="970"/>
-        <source>Invalid number of columns.</source>
-        <translation>Número inválido de colunas.</translation>
-    </message>
-    <message>
-        <location filename="../bewaveddolphin.cpp" line="1058"/>
-        <source>&lt;p&gt;beWavedDolphin is a waveform simulator for the WiRedPanda software developed by the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;beWavedDolphin é um simulador de forma de onda para o software WiRedPanda desenvolvido pela Universidade Federal de São Paulo. Este projeto foi criado para ajudar os alunos a aprender sobre circuitos lógicos.&lt;/p&gt;&lt;p&gt;Versão do software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Criadores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt; li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin é atualmente mantido pelo Prof. Fábio Cappabianco, Ph.D. e Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Envie um relatório em nossa página do GitHub se forem encontrados bugs ou se desejar que uma nova funcionalidade seja implementada.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http ://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="../bewaveddolphin.cpp" line="936"/>
-        <source>Invalid file format. Starts with: </source>
-        <translation>Formato de arquivo inválido. Começa com: </translation>
-    </message>
-    <message>
-        <location filename="../bewaveddolphin.cpp" line="1014"/>
-        <source>Export to Image</source>
-        <translation>Exportar para Imagem</translation>
-    </message>
-    <message>
-        <location filename="../bewaveddolphin.cpp" line="1014"/>
-        <source>PNG files (*.png)</source>
-        <translation>Arquivos PNG (*.png)</translation>
-    </message>
-    <message>
-        <location filename="../bewaveddolphin.cpp" line="1034"/>
-        <source>PDF files (*.pdf)</source>
-        <translation>Arquivos PDF(*.pdf)</translation>
-    </message>
-    <message>
-        <location filename="../bewaveddolphin.cpp" line="1048"/>
-        <source>Could not print this circuit to PDF.</source>
-        <translation>Não foi possível imprimir este circuito no PDF.</translation>
-    </message>
-    <message>
-        <location filename="../bewaveddolphin.cpp" line="898"/>
-        <source>File &quot;%1&quot; does not exist!</source>
-        <translation>O arquivo &quot;%1&quot; não existe!</translation>
-    </message>
-    <message>
-        <location filename="../bewaveddolphin.cpp" line="72"/>
-        <location filename="../bewaveddolphin.cpp" line="401"/>
-        <location filename="../bewaveddolphin.cpp" line="406"/>
-        <location filename="../bewaveddolphin.cpp" line="788"/>
-        <location filename="../bewaveddolphin.cpp" line="927"/>
+        <location filename="../bewaveddolphin.cpp" line="75"/>
+        <location filename="../bewaveddolphin.cpp" line="405"/>
+        <location filename="../bewaveddolphin.cpp" line="410"/>
+        <location filename="../bewaveddolphin.cpp" line="437"/>
         <source>beWavedDolphin Simulator</source>
         <translation>Simulador beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../bewaveddolphin.cpp" line="758"/>
-        <source>Save File as...</source>
-        <translation>Salvar Arquivo como...</translation>
-    </message>
-    <message>
-        <location filename="../bewaveddolphin.cpp" line="759"/>
-        <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
-        <translation>Arquivos Dolphin (*.dolphin);;Arquivos CSV (*.csv);;Todos arquivos suportados (*.dolphin *.csv)</translation>
-    </message>
-    <message>
-        <location filename="../bewaveddolphin.cpp" line="162"/>
-        <location filename="../bewaveddolphin.cpp" line="742"/>
+        <location filename="../bewaveddolphin.cpp" line="166"/>
         <source>WiRedPanda - beWavedDolphin</source>
         <translation>WiRedPanda - beWavedDolphin</translation>
-    </message>
-    <message>
-        <location filename="../bewaveddolphin.cpp" line="743"/>
-        <source>Do you want to link this beWavedDolphin file to your current WiRedPanda file and save it?</source>
-        <translation>Você deseja associar este arquivo do beWavedDolphin ao seu arquivo atual do WiRedPanda e salvá-lo?</translation>
     </message>
 </context>
 <context>
@@ -580,6 +480,46 @@
         <source>Display</source>
         <translation>Display de 7 segmentos</translation>
     </message>
+    <message>
+        <location filename="../element/display.cpp" line="118"/>
+        <source>middle</source>
+        <translation>centro</translation>
+    </message>
+    <message>
+        <location filename="../element/display.cpp" line="119"/>
+        <source>upper left</source>
+        <translation>superior esquerdo</translation>
+    </message>
+    <message>
+        <location filename="../element/display.cpp" line="120"/>
+        <source>lower left</source>
+        <translation>inferior esquerdo</translation>
+    </message>
+    <message>
+        <location filename="../element/display.cpp" line="121"/>
+        <source>bottom</source>
+        <translation>inferior</translation>
+    </message>
+    <message>
+        <location filename="../element/display.cpp" line="122"/>
+        <source>top</source>
+        <translation>superior</translation>
+    </message>
+    <message>
+        <location filename="../element/display.cpp" line="123"/>
+        <source>upper right</source>
+        <translation>superior direito</translation>
+    </message>
+    <message>
+        <location filename="../element/display.cpp" line="124"/>
+        <source>dot</source>
+        <translation>ponto</translation>
+    </message>
+    <message>
+        <location filename="../element/display.cpp" line="125"/>
+        <source>lower right</source>
+        <translation>inferior direito</translation>
+    </message>
 </context>
 <context>
     <name>Display14</name>
@@ -592,6 +532,81 @@
         <location filename="../element/display_14.h" line="32"/>
         <source>Display14</source>
         <translation>Display de 14 segmentos</translation>
+    </message>
+    <message>
+        <location filename="../element/display_14.cpp" line="115"/>
+        <source>middle left</source>
+        <translation>centro-esquerdo</translation>
+    </message>
+    <message>
+        <location filename="../element/display_14.cpp" line="116"/>
+        <source>upper left</source>
+        <translation>superior esquerdo</translation>
+    </message>
+    <message>
+        <location filename="../element/display_14.cpp" line="117"/>
+        <source>lower left</source>
+        <translation>inferior esquerdo</translation>
+    </message>
+    <message>
+        <location filename="../element/display_14.cpp" line="118"/>
+        <source>bottom</source>
+        <translation>inferior</translation>
+    </message>
+    <message>
+        <location filename="../element/display_14.cpp" line="119"/>
+        <source>top</source>
+        <translation>superior</translation>
+    </message>
+    <message>
+        <location filename="../element/display_14.cpp" line="120"/>
+        <source>upper right</source>
+        <translation>inferior direito</translation>
+    </message>
+    <message>
+        <location filename="../element/display_14.cpp" line="121"/>
+        <source>dot</source>
+        <translation>ponto</translation>
+    </message>
+    <message>
+        <location filename="../element/display_14.cpp" line="122"/>
+        <source>lower right</source>
+        <translation>inferior direito</translation>
+    </message>
+    <message>
+        <location filename="../element/display_14.cpp" line="123"/>
+        <source>middle right</source>
+        <translation>centro-direito</translation>
+    </message>
+    <message>
+        <location filename="../element/display_14.cpp" line="124"/>
+        <source>middle upper left</source>
+        <translation>centro-superior esquerdo</translation>
+    </message>
+    <message>
+        <location filename="../element/display_14.cpp" line="125"/>
+        <source>middle top</source>
+        <translation>centro-superior</translation>
+    </message>
+    <message>
+        <location filename="../element/display_14.cpp" line="126"/>
+        <source>middle upper right</source>
+        <translation>centro-superior direito</translation>
+    </message>
+    <message>
+        <location filename="../element/display_14.cpp" line="127"/>
+        <source>middle lower right</source>
+        <translation>centro-inferior direito</translation>
+    </message>
+    <message>
+        <location filename="../element/display_14.cpp" line="128"/>
+        <source>middle bottom</source>
+        <translation>centro-inferior</translation>
+    </message>
+    <message>
+        <location filename="../element/display_14.cpp" line="129"/>
+        <source>middle lower left</source>
+        <translation>centro-inferior esquerdo</translation>
     </message>
 </context>
 <context>
@@ -1200,27 +1215,27 @@
         <translation>Código de Arduino gerado com sucesso.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="954"/>
+        <location filename="../mainwindow.cpp" line="962"/>
         <source>Generate Arduino Code</source>
         <translation>Gerar código para Arduino</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="954"/>
+        <location filename="../mainwindow.cpp" line="962"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arquivo Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1029"/>
+        <location filename="../mainwindow.cpp" line="1037"/>
         <source>Export to PDF</source>
         <translation>Exportar para PDF</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1029"/>
+        <location filename="../mainwindow.cpp" line="1037"/>
         <source>PDF files (*.pdf)</source>
         <translation>Arquivos PDF(*.pdf)</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1044"/>
+        <location filename="../mainwindow.cpp" line="1052"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Não foi possível imprimir este circuito no PDF.</translation>
     </message>
@@ -1395,18 +1410,18 @@
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1055"/>
+        <location filename="../mainwindow.cpp" line="1063"/>
         <source>Export to Image</source>
         <translation>Exportar para Imagem</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1055"/>
+        <location filename="../mainwindow.cpp" line="1063"/>
         <source>PNG files (*.png)</source>
         <translation>Arquivos PNG (*.png)</translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="1087"/>
-        <location filename="../mainwindow.cpp" line="1294"/>
+        <location filename="../mainwindow.cpp" line="1302"/>
         <source>Mute</source>
         <translation>Silenciar</translation>
     </message>
@@ -1556,14 +1571,14 @@
         <translation>Ativa e desativa som das campanhias do cuicuito</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1294"/>
+        <location filename="../mainwindow.cpp" line="1302"/>
         <source>Unmute</source>
         <translation>Ativar som</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="382"/>
         <location filename="../mainwindow.cpp" line="592"/>
-        <location filename="../mainwindow.cpp" line="1245"/>
+        <location filename="../mainwindow.cpp" line="1253"/>
         <source>New Project</source>
         <translation>Projeto Novo</translation>
     </message>
@@ -1595,13 +1610,13 @@
         <translation> foi modificado. Deseja salvar suas alterações?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1050"/>
-        <location filename="../mainwindow.cpp" line="1071"/>
+        <location filename="../mainwindow.cpp" line="1058"/>
+        <location filename="../mainwindow.cpp" line="1079"/>
         <source>Exported file successfully.</source>
         <translation>Arquivo exportado com sucesso.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1252"/>
+        <location filename="../mainwindow.cpp" line="1260"/>
         <source>New Project*</source>
         <translation>Projeto Novo*</translation>
     </message>
@@ -1756,7 +1771,7 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <translation>Um ou mais elementos não foram encontrados no cenário. Esperado %1, encontrado %2.</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="101"/>
+        <location filename="../main.cpp" line="120"/>
         <source>Error!</source>
         <translation>Erro!</translation>
     </message>
@@ -1976,39 +1991,44 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>main</name>
     <message>
-        <location filename="../main.cpp" line="43"/>
+        <location filename="../main.cpp" line="45"/>
         <source>Circuit file to open.</source>
         <translation>Arquivo de circuito para abrir.</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="47"/>
+        <location filename="../main.cpp" line="49"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>Nível de verbosidade 0 a 5, desabilitado por padrão.</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="48"/>
+        <location filename="../main.cpp" line="50"/>
         <source>verbosity level</source>
         <translation>nível de verbosidade</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="53"/>
+        <location filename="../main.cpp" line="55"/>
         <source>Export circuit to &lt;arduino-file&gt;</source>
         <translation>Exportar circuito para &lt;arquivo arduino&gt;</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="54"/>
+        <location filename="../main.cpp" line="56"/>
         <source>arduino file</source>
         <translation>arquivo arduino</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="59"/>
-        <source>Export circuit to &lt;waveform&gt; text file</source>
-        <translation>Exportar circuito para arquivo de texto &lt;waveform&gt;</translation>
+        <location filename="../main.cpp" line="61"/>
+        <source>Export circuit to waveform text file</source>
+        <translation>Exportar circuito em arquivo forma de onda textual</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="60"/>
-        <source>waveform text file</source>
-        <translation>arquivo de texto de forma de onda</translation>
+        <location filename="../main.cpp" line="62"/>
+        <source>waveform input text file</source>
+        <translation>arquivo de forma de onda textual de entrada</translation>
+    </message>
+    <message>
+        <location filename="../main.cpp" line="67"/>
+        <source>Export circuit to waveform text file, reading input from terminal</source>
+        <translation>Exportar circuito em arquivo forma de onda textual, lendo a entrada do console</translation>
     </message>
 </context>
 </TS>
