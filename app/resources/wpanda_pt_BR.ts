@@ -25,7 +25,7 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../application.cpp" line="21"/>
+        <location filename="../application.cpp" line="20"/>
         <source>Error!</source>
         <translation>Erro!</translation>
     </message>
@@ -988,15 +988,15 @@
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../graphicelement.cpp" line="105"/>
-        <location filename="../graphicelement.cpp" line="130"/>
+        <location filename="../graphicelement.cpp" line="102"/>
+        <location filename="../graphicelement.cpp" line="127"/>
         <source>Couldn&apos;t load pixmap.</source>
         <translation>Não foi possível carregar o pixmap.</translation>
     </message>
     <message>
-        <location filename="../graphicelement.cpp" line="293"/>
-        <location filename="../graphicelement.cpp" line="358"/>
-        <location filename="../graphicelement.cpp" line="393"/>
+        <location filename="../graphicelement.cpp" line="290"/>
+        <location filename="../graphicelement.cpp" line="355"/>
+        <location filename="../graphicelement.cpp" line="390"/>
         <source>Corrupted DataStream!</source>
         <translation>DataStream corrompido!</translation>
     </message>
@@ -1538,7 +1538,7 @@
     </message>
     <message>
         <location filename="../mainwindow.ui" line="1087"/>
-        <location filename="../mainwindow.cpp" line="1302"/>
+        <location filename="../mainwindow.cpp" line="1306"/>
         <source>Mute</source>
         <translation>Silenciar</translation>
     </message>
@@ -1688,14 +1688,14 @@
         <translation>Ativa e desativa som das campanhias do cuicuito</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1302"/>
+        <location filename="../mainwindow.cpp" line="1306"/>
         <source>Unmute</source>
         <translation>Ativar som</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="382"/>
         <location filename="../mainwindow.cpp" line="592"/>
-        <location filename="../mainwindow.cpp" line="1253"/>
+        <location filename="../mainwindow.cpp" line="1257"/>
         <source>New Project</source>
         <translation>Projeto Novo</translation>
     </message>
@@ -1728,7 +1728,7 @@
         <translation>Arquivo exportado com sucesso.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1260"/>
+        <location filename="../mainwindow.cpp" line="1264"/>
         <source>New Project*</source>
         <translation>Projeto Novo*</translation>
     </message>
@@ -1911,6 +1911,16 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 </context>
 <context>
     <name>Scene</name>
+    <message>
+        <location filename="../scene.cpp" line="37"/>
+        <source>&amp;Undo</source>
+        <translation>&amp;Desfazer</translation>
+    </message>
+    <message>
+        <location filename="../scene.cpp" line="41"/>
+        <source>&amp;Redo</source>
+        <translation>&amp;Refazer</translation>
+    </message>
     <message>
         <location filename="../scene.cpp" line="535"/>
         <source>Paste</source>
