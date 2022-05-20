@@ -23,7 +23,7 @@ enum class ElementGroup : uint_fast8_t {
     Unknown = 0,
 };
 
-constexpr auto maximumValidInputSize = 256;
+constexpr int maximumValidInputSize = 256;
 
 class GraphicElement;
 class QNEPort;
@@ -90,7 +90,6 @@ public:
      * @brief frequency: virtual function overloaded by clock element. Other elements have frequency of 0.
      */
     virtual float frequency() const;
-    virtual void setFrequency(const float freq);
 
     /**
      * @brief updateTheme: Updates the GraphicElement theme according to the dark/light WiRedPanda theme.
@@ -131,12 +130,13 @@ public:
     int minOutputSize() const;
     int outputSize() const;
     int topPosition() const;
-    virtual QString genericProperties();
     virtual QString audio() const;
     virtual QString color() const;
+    virtual QString genericProperties();
     virtual void refresh();
     virtual void setAudio(const QString &audio);
     virtual void setColor(const QString &color);
+    virtual void setFrequency(const float freq);
     virtual void setPortName(const QString &name);
     virtual void setSkin(const bool defaultSkin, const QString &fileName);
     void disable();
@@ -201,8 +201,10 @@ private:
     void loadPixmapSkinNames(QDataStream &stream, const double version);
     void loadTrigger(QDataStream &stream, const double version);
     void removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap);
-    void removeSurplusInputs(quint64 inputSize, QMap<quint64, QNEPort *> &portMap);
-    void removeSurplusOutputs(quint64 outputSize, QMap<quint64, QNEPort *> &portMap);
+    void removeSurplusInputs(const quint64 inputSize_, QMap<quint64, QNEPort *> &portMap);
+    void removeSurplusOutputs(const quint64 outputSize_, QMap<quint64, QNEPort *> &portMap);
+
+    inline static QMap<QString, QPixmap> m_loadedPixmaps;
 
     /**
      * @brief Current pixmap displayed for this GraphicElement.

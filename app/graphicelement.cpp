@@ -25,9 +25,6 @@ namespace
 int id = qRegisterMetaType<GraphicElement>();
 }
 
-// WARNING: non-POD static
-static QMap<QString, QPixmap> loadedPixmaps;
-
 GraphicElement::GraphicElement(ElementType type, ElementGroup group, const int minInputSize, const int maxInputSize, const int minOutputSize, const int maxOutputSize, QGraphicsItem *parent)
     : QGraphicsObject(parent)
     , m_elementGroup(group)
@@ -98,14 +95,14 @@ void GraphicElement::setPixmap(const QString &pixmapName)
         }
     }
     if (pixmapPath != m_currentPixmapName) {
-        if (!loadedPixmaps.contains(pixmapPath)) {
+        if (!m_loadedPixmaps.contains(pixmapPath)) {
             // TODO: use QPixmap::loadFromData() here
-            if (!loadedPixmaps[pixmapPath].load(pixmapPath)) {
+            if (!m_loadedPixmaps[pixmapPath].load(pixmapPath)) {
                 qCDebug(zero) << "Problem loading pixmapPath:" << pixmapPath;
                 throw Pandaception(tr("Couldn't load pixmap."));
             }
         }
-        m_pixmap = &loadedPixmaps[pixmapPath];
+        m_pixmap = &m_loadedPixmaps[pixmapPath];
         setTransformOriginPoint(m_pixmap->rect().center());
         update(GraphicElement::boundingRect());
     }
@@ -123,15 +120,15 @@ void GraphicElement::setPixmap(const QString &pixmapName, QRect size)
         }
     }
     if (pixmapPath != m_currentPixmapName) {
-        if (!loadedPixmaps.contains(pixmapPath)) {
+        if (!m_loadedPixmaps.contains(pixmapPath)) {
             // TODO: use QPixmap::loadFromData() here
             QPixmap pixmap;
             if (!pixmap.load(pixmapPath)) {
                 throw Pandaception(tr("Couldn't load pixmap."));
             }
-            loadedPixmaps[pixmapPath] = pixmap.copy(size);
+            m_loadedPixmaps[pixmapPath] = pixmap.copy(size);
         }
-        m_pixmap = &loadedPixmaps[pixmapPath];
+        m_pixmap = &m_loadedPixmaps[pixmapPath];
         setTransformOriginPoint(m_pixmap->rect().center());
         update(boundingRect());
     }
@@ -318,9 +315,9 @@ void GraphicElement::loadInputPort(QDataStream &stream, QMap<quint64, QNEPort *>
     portMap[ptr] = m_inputs[port];
 }
 
-void GraphicElement::removeSurplusInputs(quint64 inputSize, QMap<quint64, QNEPort *> &portMap)
+void GraphicElement::removeSurplusInputs(const quint64 inputSize_, QMap<quint64, QNEPort *> &portMap)
 {
-    while (inputSize > static_cast<int>(inputSize) && inputSize >= m_minInputSize) {
+    while (inputSize() > static_cast<int>(inputSize_) && inputSize_ >= m_minInputSize) {
         QNEPort *deletedPort = m_inputs.last();
         removePortFromMap(deletedPort, portMap);
         delete deletedPort;
@@ -328,9 +325,9 @@ void GraphicElement::removeSurplusInputs(quint64 inputSize, QMap<quint64, QNEPor
     }
 }
 
-void GraphicElement::removeSurplusOutputs(quint64 outputSize, QMap<quint64, QNEPort *> &portMap)
+void GraphicElement::removeSurplusOutputs(const quint64 outputSize_, QMap<quint64, QNEPort *> &portMap)
 {
-    while (outputSize > static_cast<int>(outputSize) && outputSize >= m_minOutputSize) {
+    while (outputSize() > static_cast<int>(outputSize_) && outputSize_ >= m_minOutputSize) {
         QNEPort *deletedPort = m_outputs.last();
         removePortFromMap(deletedPort, portMap);
         delete deletedPort;

@@ -35,9 +35,9 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     setHasLabel(true);
     setPortName("Buzzer");
     setToolTip(m_translatedName);
-    setLabel(objectName() + "_" + QString::number(labelNumber));
+    setLabel(objectName() + "_" + QString::number(m_labelNumber));
     if (Common::incrementLabel) {
-        ++labelNumber;
+        ++m_labelNumber;
     }
     Buzzer::setAudio("C6");
 }
