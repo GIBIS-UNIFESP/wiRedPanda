@@ -55,27 +55,22 @@ class BewavedDolphin : public QMainWindow
 {
     Q_OBJECT
 
-private:
-  bool m_ask_connection;
-
 public:
     explicit BewavedDolphin(Scene *scene, const bool askConnection = true, MainWindow *parent = nullptr);
     ~BewavedDolphin() override;
 
-    void createWaveform(const QString &fileName);
     void createWaveform();
+    void createWaveform(const QString &fileName);
     void print();
     void show();
 
 protected:
-    void resizeEvent(QResizeEvent *event) override;
     void closeEvent(QCloseEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
     QVector<char> loadSignals(QStringList &inputLabels, QStringList &outputLabels);
     bool checkSave();
-    bool load(const QString &fileName);
-    bool loadElements();
     bool save(const QString &fileName);
     int sectionFirstColumn(const QItemSelection &ranges);
     int sectionFirstRow(const QItemSelection &ranges);
@@ -86,9 +81,11 @@ private:
     void createZeroElement(const int row, const int col, const bool isInput = true, const bool changePrevious = true);
     void cut(const QItemSelection &ranges, QDataStream &stream);
     void drawPixMaps();
+    void load();
     void load(QDataStream &stream);
     void load(QFile &file);
-    void load();
+    void load(const QString &fileName);
+    void loadElements();
     void loadNewTable(const QStringList &inputLabels, const QStringList &outputLabels);
     void on_actionAboutQt_triggered();
     void on_actionAbout_triggered();
@@ -146,7 +143,7 @@ private:
     SimulationController *m_simController = nullptr;
     bool m_edited = false;
     const bool m_askConnection;
-    const double m_SCALE_FACTOR = 0.8;
+    const double m_scaleFactor = 0.8;
     double m_scale = 1.0;
     int m_inputPorts = 0;
 };

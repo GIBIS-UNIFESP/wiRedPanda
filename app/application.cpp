@@ -1,4 +1,5 @@
 #include "application.h"
+
 #include "globalproperties.h"
 
 #include <QDebug>

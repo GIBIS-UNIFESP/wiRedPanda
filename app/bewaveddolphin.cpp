@@ -25,9 +25,8 @@
 #include <QPrinter>
 #include <QSaveFile>
 #include <QTableView>
-#include <iostream>
-
 #include <QTextStream>
+#include <iostream>
 
 SignalModel::SignalModel(const int rows, const int inputs, const int columns, QObject *parent)
     : QStandardItemModel(rows, columns, parent)
@@ -61,7 +60,6 @@ void SignalDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
 
 BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindow *parent)
     : QMainWindow(parent)
-    , m_ask_connection(askConnection)
     , m_ui(new Ui::BewavedDolphin)
     , m_mainWindow(parent)
     , m_externalScene(scene)
@@ -146,7 +144,6 @@ void BewavedDolphin::drawPixMaps()
 void BewavedDolphin::closeEvent(QCloseEvent *event)
 {
     (m_askConnection && checkSave()) ? event->accept() : event->ignore();
-    // "m_mainWindow->setEnabled(true)" was called in case of accepted event. Check it, please, if it will not resume the main window.
 }
 
 void BewavedDolphin::on_actionExit_triggered()
@@ -175,14 +172,14 @@ bool BewavedDolphin::checkSave()
     }
 }
 
-bool BewavedDolphin::loadElements()
+void BewavedDolphin::loadElements()
 {
     auto elements = m_externalScene->elements();
     m_inputs.clear();
     m_outputs.clear();
     m_inputPorts = 0;
     if (elements.isEmpty()) {
-        return false;
+        throw Pandaception(tr("Could not load enough elements for the simulation."));
     }
     elements = ElementMapping::sortGraphicElements(elements);
     for (auto *elm : qAsConst(elements)) {
@@ -202,7 +199,9 @@ bool BewavedDolphin::loadElements()
         return QString::compare(elm1->label(), elm2->label(), Qt::CaseInsensitive) < 0;
     });
 
-    return (!m_inputs.isEmpty() && !m_outputs.isEmpty());
+    if (m_inputs.isEmpty() || m_outputs.isEmpty()) {
+        throw Pandaception(tr("Could not load enough elements for the simulation."));
+    }
 }
 
 void BewavedDolphin::createElement(const int row, const int col, const int value, const bool isInput, const bool changePrevious)
@@ -391,9 +390,7 @@ void BewavedDolphin::createWaveform(const QString &fileName)
     m_simController = m_externalScene->simulationController();
     SimulationControllerStop simControllerStop(m_simController);
     qCDebug(zero) << "Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.";
-    if (!loadElements()) {
-        throw Pandaception(tr("Could not load enough elements for the simulation."));
-    }
+    loadElements();
     QStringList input_labels;
     QStringList output_labels;
     qCDebug(zero) << "Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation. Not saving memory states though...";
@@ -406,10 +403,7 @@ void BewavedDolphin::createWaveform(const QString &fileName)
         m_currentFile = QFileInfo(fileName); // why make a fileInfo using a empty string?
     } else {
         QFileInfo fileInfo(m_mainWindow->currentDir(), QFileInfo(fileName).fileName());
-        if (!load(fileInfo.absoluteFilePath())) {
-            setWindowTitle(tr("beWavedDolphin Simulator"));
-            m_currentFile = {};
-        }
+        load(fileInfo.absoluteFilePath());
     }
     qCDebug(zero) << "Resuming digital circuit main window after waveform simulation is finished.";
     m_edited = false;
@@ -423,9 +417,7 @@ void BewavedDolphin::createWaveform()
     m_simController = m_externalScene->simulationController();
     SimulationControllerStop simControllerStop(m_simController);
     qCDebug(zero) << "Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.";
-    if (!loadElements()) {
-        throw Pandaception(tr("Could not load enough elements for the simulation."));
-    }
+    loadElements();
     QStringList input_labels;
     QStringList output_labels;
     qCDebug(zero) << "Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation. Not saving memory states though...";
@@ -622,7 +614,7 @@ void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
 
 void BewavedDolphin::on_actionZoomOut_triggered()
 {
-    m_scale *= m_SCALE_FACTOR;
+    m_scale *= m_scaleFactor;
     m_view.zoomOut();
     resizeScene();
     zoomChanged();
@@ -630,7 +622,7 @@ void BewavedDolphin::on_actionZoomOut_triggered()
 
 void BewavedDolphin::on_actionZoomIn_triggered()
 {
-    m_scale /= m_SCALE_FACTOR;
+    m_scale /= m_scaleFactor;
     m_view.zoomIn();
     resizeScene();
     zoomChanged();
@@ -919,41 +911,39 @@ void BewavedDolphin::save(QSaveFile &file)
     }
 }
 
-bool BewavedDolphin::load(const QString &fileName)
+void BewavedDolphin::load(const QString &fileName)
 {
     QFile file(fileName);
     if (!file.exists()) {
         throw Pandaception(tr("File \"%1\" does not exist!").arg(fileName));
     }
     qCDebug(zero) << "File exists.";
-    if (file.open(QFile::ReadOnly)) {
-        if (fileName.endsWith(".dolphin")) {
-            qCDebug(zero) << "Dolphin file opened.";
-            QDataStream stream(&file);
-            qCDebug(zero) << "Current file set.";
-            qCDebug(zero) << "Loading in editor.";
-            load(stream);
-            qCDebug(zero) << "Finished updating changed by signal.";
-            m_currentFile = QFileInfo(fileName);
-        } else if (fileName.endsWith(".csv")) {
-            qCDebug(zero) << "CSV file opened.";
-            qCDebug(zero) << "Loading in editor.";
-            load(file);
-            qCDebug(zero) << "Finished updating changed by signal.";
-            m_currentFile = QFileInfo(fileName);
-        } else {
-            qCDebug(zero) << tr("Format not supported. Could not open file:") << fileName;
-            return false;
-        }
+    if (!file.open(QFile::ReadOnly)) {
+        qCDebug(zero) << tr("Could not open file in ReadOnly mode:") << file.errorString();
+        throw Pandaception(tr("Could not open file in ReadOnly mode: ") + file.errorString() + ".");
+    }
+    if (fileName.endsWith(".dolphin")) {
+        qCDebug(zero) << "Dolphin file opened.";
+        QDataStream stream(&file);
+        qCDebug(zero) << "Current file set.";
+        qCDebug(zero) << "Loading in editor.";
+        load(stream);
+        qCDebug(zero) << "Finished updating changed by signal.";
+        m_currentFile = QFileInfo(fileName);
+    } else if (fileName.endsWith(".csv")) {
+        qCDebug(zero) << "CSV file opened.";
+        qCDebug(zero) << "Loading in editor.";
+        load(file);
+        qCDebug(zero) << "Finished updating changed by signal.";
+        m_currentFile = QFileInfo(fileName);
     } else {
-        qCDebug(zero) << tr("Could not open file in ReadOnly mode:") << fileName;
-        throw Pandaception(tr("Could not open file in ReadOnly mode: ") + fileName + ".");
+        qCDebug(zero) << tr("Format not supported. Could not open file:") << fileName;
+        throw Pandaception(tr("Format not supported. Could not open file: ") + fileName);
     }
     qCDebug(zero) << "Closing file.";
     file.close();
     associateToWiredPanda(fileName);
     setWindowTitle(tr("beWavedDolphin Simulator") + " [" + m_currentFile.fileName() + "]");
-    return true;
 }
 
 void BewavedDolphin::load(QDataStream &stream)

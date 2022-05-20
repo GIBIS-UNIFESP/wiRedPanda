@@ -214,7 +214,7 @@ void InputRotary::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     }
 }
 
-bool InputRotary::on(int port) const
+bool InputRotary::on(const int port) const
 {
     return (m_value == port);
 }
@@ -231,7 +231,7 @@ void InputRotary::setOn()
     setOn(true, port);
 }
 
-void InputRotary::setOn(bool value, int port)
+void InputRotary::setOn(const bool value, const int port)
 {
     if (value) {
         m_value = port;

@@ -18,18 +18,20 @@ class ICPrototype
 {
 public:
     explicit ICPrototype(const QString &fileName);
+    ~ICPrototype() = default;
+
     ICMapping *generateMapping() const;
     QString baseName() const;
     QString fileName() const;
-    QString inputLabel(int index) const;
-    QString outputLabel(int index) const;
-    bool defaultInputValue(int index);
-    bool isInputRequired(int index);
+    QString inputLabel(const int index) const;
+    QString outputLabel(const int index) const;
+    bool defaultInputValue(const int index);
+    bool isInputRequired(const int index);
     int inputSize() const;
     int outputSize() const;
     void fileName(const QString &newFileName);
     void insertICObserver(IC *ic);
-    bool reload();
+    void reload();
     void removeICObserver(IC *ic);
 
 private:

@@ -246,10 +246,10 @@ void DeleteItemsCommand::redo()
     m_scene->setCircuitUpdateRequired();
 }
 
-RotateCommand::RotateCommand(const QList<GraphicElement *> &items, int aAngle, Scene *scene, QUndoCommand *parent)
+RotateCommand::RotateCommand(const QList<GraphicElement *> &items, const int angle, Scene *scene, QUndoCommand *parent)
     : QUndoCommand(parent)
     , m_scene(scene)
-    , m_angle(aAngle)
+    , m_angle(angle)
 {
     setText(tr("Rotate %1 degrees").arg(m_angle));
     m_ids.reserve(items.size());
@@ -588,7 +588,7 @@ void MorphCommand::transferConnections(QVector<GraphicElement *> from, QVector<G
     }
 }
 
-ChangeInputSizeCommand::ChangeInputSizeCommand(const QVector<GraphicElement *> &elements, int newInputSize, Scene *scene, QUndoCommand *parent)
+ChangeInputSizeCommand::ChangeInputSizeCommand(const QVector<GraphicElement *> &elements, const int newInputSize, Scene *scene, QUndoCommand *parent)
     : QUndoCommand(parent)
     , m_scene(scene)
 {
@@ -671,7 +671,7 @@ void ChangeInputSizeCommand::undo()
     m_scene->setCircuitUpdateRequired();
 }
 
-FlipCommand::FlipCommand(const QList<GraphicElement *> &items, int axis, Scene *scene, QUndoCommand *parent)
+FlipCommand::FlipCommand(const QList<GraphicElement *> &items, const int axis, Scene *scene, QUndoCommand *parent)
     : QUndoCommand(parent)
     , m_scene(scene)
     , m_axis(axis)
@@ -711,8 +711,8 @@ void FlipCommand::redo()
     qCDebug(zero) << "REDO " + text();
     // TODO: this might detach the QList
     auto list = findElements(m_ids);
-    auto *scn = list[0]->scene();
-    scn->clearSelection();
+    auto *scene = list[0]->scene();
+    scene->clearSelection();
     for (auto *elm : qAsConst(list)) {
         auto pos = elm->pos();
         if (m_axis == 0) {
@@ -730,7 +730,7 @@ void FlipCommand::redo()
     m_scene->setAutosaveRequired();
 }
 
-ChangeOutputSizeCommand::ChangeOutputSizeCommand(const QVector<GraphicElement *> &elements, int newOutputSize, Scene *scene, QUndoCommand *parent)
+ChangeOutputSizeCommand::ChangeOutputSizeCommand(const QVector<GraphicElement *> &elements, const int newOutputSize, Scene *scene, QUndoCommand *parent)
     : QUndoCommand(parent)
     , m_scene(scene)
 {

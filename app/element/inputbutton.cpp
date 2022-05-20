@@ -65,7 +65,7 @@ void InputButton::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, c
     }
 }
 
-bool InputButton::on(int port) const
+bool InputButton::on(const int port) const
 {
     Q_UNUSED(port);
     return m_on;
@@ -81,7 +81,7 @@ void InputButton::setOn()
     setOn(true);
 }
 
-void InputButton::setOn(const bool value, int port)
+void InputButton::setOn(const bool value, const int port)
 {
     Q_UNUSED(port);
     m_on = value;

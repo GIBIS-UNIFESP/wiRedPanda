@@ -53,22 +53,22 @@ int ICPrototype::outputSize() const
     return m_ICImpl.outputSize();
 }
 
-QString ICPrototype::inputLabel(int index) const
+QString ICPrototype::inputLabel(const int index) const
 {
     return m_ICImpl.inputLabel(index);
 }
 
-QString ICPrototype::outputLabel(int index) const
+QString ICPrototype::outputLabel(const int index) const
 {
     return m_ICImpl.outputLabel(index);
 }
 
-bool ICPrototype::defaultInputValue(int index)
+bool ICPrototype::defaultInputValue(const int index)
 {
     return m_ICImpl.input(index)->value();
 }
 
-bool ICPrototype::isInputRequired(int index)
+bool ICPrototype::isInputRequired(const int index)
 {
     return m_ICImpl.input(index)->isRequired();
 }
@@ -83,16 +83,13 @@ void ICPrototype::clear()
     m_ICImpl.clear();
 }
 
-bool ICPrototype::reload()
+void ICPrototype::reload()
 {
     // TODO: Verify file recursion
     // verifyRecursion(fileName);
     clear();
-    if (!m_ICImpl.loadFile(m_fileName)) {
-        return false;
-    }
+    m_ICImpl.loadFile(m_fileName);
     for (auto *ic : qAsConst(m_icObservers)) {
         ic->loadFile(m_fileName);
     }
-    return true;
 }

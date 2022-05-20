@@ -273,31 +273,31 @@ bool MainWindow::save(QString fileName)
         fileName.append(".panda");
     }
     QSaveFile saveFile(fileName);
-    if (saveFile.open(QFile::WriteOnly)) {
-        QDataStream stream(&saveFile);
-        m_currentTab->save(stream, m_currentTab->dolphinFileName());
+    if (!saveFile.open(QFile::WriteOnly)) {
+        throw Pandaception(tr("Error opening file: ") + saveFile.errorString());
     }
-    if (saveFile.commit()) {
-        setCurrentFile(fileName);
-        m_ui->statusBar->showMessage(tr("Saved file successfully."), 4000);
-        m_currentTab->scene()->undoStack()->setClean();
-        qCDebug(zero) << "Remove from autosave list recovered file that has been saved.";
-        if (!autosaveFileName.isEmpty()) {
-            allAutosaveFileNames.remove(autosaveFileName + "\t");
-            Settings::setValue("autosaveFile", allAutosaveFileNames);
-            qCDebug(zero) << "All auto save file names after removing recovered:" << allAutosaveFileNames;
-        }
-        qCDebug(zero) << "Remove autosave from settings and deleting it.";
-        if (m_autosaveFile.at(m_tabIndex)->isOpen()) {
-            allAutosaveFileNames.remove(m_autosaveFile.at(m_tabIndex)->fileName() + "\t");
-            Settings::setValue("autosaveFile", allAutosaveFileNames + "\n");
-            m_autosaveFile.at(m_tabIndex)->remove();
-            qCDebug(zero) << "All auto save file names after removing autosave:" << allAutosaveFileNames;
-        }
-        return true;
+    QDataStream stream(&saveFile);
+    m_currentTab->save(stream, m_currentTab->dolphinFileName());
+    if (!saveFile.commit()) {
+        throw Pandaception(tr("Could not save file: ") + saveFile.errorString());
     }
-    qCDebug(zero) << "Could not save file:" << saveFile.errorString();
-    return false;
+    setCurrentFile(fileName);
+    m_ui->statusBar->showMessage(tr("Saved file successfully."), 4000);
+    m_currentTab->scene()->undoStack()->setClean();
+    qCDebug(zero) << "Remove from autosave list recovered file that has been saved.";
+    if (!autosaveFileName.isEmpty()) {
+        allAutosaveFileNames.remove(autosaveFileName + "\t");
+        Settings::setValue("autosaveFile", allAutosaveFileNames);
+        qCDebug(zero) << "All auto save file names after removing recovered:" << allAutosaveFileNames;
+    }
+    qCDebug(zero) << "Remove autosave from settings and deleting it.";
+    if (m_autosaveFile.at(m_tabIndex)->isOpen()) {
+        allAutosaveFileNames.remove(m_autosaveFile.at(m_tabIndex)->fileName() + "\t");
+        Settings::setValue("autosaveFile", allAutosaveFileNames + "\n");
+        m_autosaveFile.at(m_tabIndex)->remove();
+        qCDebug(zero) << "All auto save file names after removing autosave:" << allAutosaveFileNames;
+    }
+    return true;
 }
 
 void MainWindow::show()
@@ -423,11 +423,11 @@ bool MainWindow::loadPandaFile(const QString &fileName)
     QFile file(fileName);
     if (!file.exists()) {
         qCDebug(zero) << "Error: This file does not exist:" << fileName;
-        throw Pandaception(tr("File \"%1\" does not exist!").arg(fileName));
+        return false;
     }
     qCDebug(zero) << "File exists";
     if (!file.open(QFile::ReadOnly)) {
-        qCDebug(zero) << "Could not open file in ReadOnly mode:" << fileName;
+        qCDebug(zero) << "Could not open file:" << file.errorString();
         return false;
     }
     qCDebug(zero) << "File opened:" << fileName;

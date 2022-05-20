@@ -15,7 +15,7 @@ class RecentFilesController : public QObject
     Q_OBJECT
 
 public:
-    explicit RecentFilesController(const QString &attrName, bool saveSetting = true, QObject *parent = nullptr);
+    explicit RecentFilesController(const QString &attrName, const bool saveSetting = true, QObject *parent = nullptr);
 
     static constexpr int MaxRecentFiles = 10;
 

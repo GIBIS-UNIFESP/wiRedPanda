@@ -19,7 +19,7 @@ int ItemWithId::id() const
     return m_id;
 }
 
-void ItemWithId::setId(int id)
+void ItemWithId::setId(const int id)
 {
     m_id = id;
 }

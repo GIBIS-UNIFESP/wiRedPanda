@@ -12,7 +12,7 @@ public:
     virtual ~ItemWithId();
 
     int id() const;
-    void setId(int id);
+    void setId(const int id);
 
 private:
     int m_id;

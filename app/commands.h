@@ -95,7 +95,7 @@ public:
     //! \param aItems are the items to be rotated
     //! \param angle defines how many degrees will be rotated, in clockwise direction, by this command.
     //!
-    explicit RotateCommand(const QList<GraphicElement *> &items, int angle, Scene *scene, QUndoCommand *parent = nullptr);
+    explicit RotateCommand(const QList<GraphicElement *> &items, const int angle, Scene *scene, QUndoCommand *parent = nullptr);
 
     //!
     //! \brief undo reverts a change on the editor made by RotateCommand::redo
@@ -203,7 +203,7 @@ class ChangeInputSizeCommand : public QUndoCommand
     Q_DECLARE_TR_FUNCTIONS(ChangeInputSZCommand)
 
 public:
-    explicit ChangeInputSizeCommand(const QVector<GraphicElement *> &elements, int newInputSize, Scene *scene, QUndoCommand *parent = nullptr);
+    explicit ChangeInputSizeCommand(const QVector<GraphicElement *> &elements, const int newInputSize, Scene *scene, QUndoCommand *parent = nullptr);
 
     void redo() override;
     void undo() override;
@@ -221,7 +221,7 @@ class FlipCommand : public QUndoCommand
     Q_DECLARE_TR_FUNCTIONS(FlipHCommand)
 
 public:
-    explicit FlipCommand(const QList<GraphicElement *> &items, int axis, Scene *scene, QUndoCommand *parent = nullptr);
+    explicit FlipCommand(const QList<GraphicElement *> &items, const int axis, Scene *scene, QUndoCommand *parent = nullptr);
 
     void redo() override;
     void undo() override;
@@ -239,7 +239,7 @@ class ChangeOutputSizeCommand : public QUndoCommand
     Q_DECLARE_TR_FUNCTIONS(ChangeOutputSZCommand)
 
 public:
-    explicit ChangeOutputSizeCommand(const QVector<GraphicElement *> &elements, int newOutputSize, Scene *scene, QUndoCommand *parent = nullptr);
+    explicit ChangeOutputSizeCommand(const QVector<GraphicElement *> &elements, const int newOutputSize, Scene *scene, QUndoCommand *parent = nullptr);
 
     void redo() override;
     void undo() override;

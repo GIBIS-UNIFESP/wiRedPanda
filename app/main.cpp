@@ -7,7 +7,6 @@
 #include "mainwindow.h"
 
 #include <QCommandLineParser>
-
 #include <QMessageBox>
 
 #ifdef Q_OS_WIN
@@ -37,7 +36,6 @@ int main(int argc, char *argv[])
     app.setStyle("Fusion");
 
     try {
-
         QCommandLineParser parser;
         parser.setApplicationDescription(app.applicationName());
         parser.addHelpOption();
@@ -66,7 +64,6 @@ int main(int argc, char *argv[])
             {"c", "terminal"},
             QCoreApplication::translate("main", "Export circuit to waveform text file, reading input from terminal"));
         parser.addOption(terminalFileOption);
-
 
         parser.process(app);
 

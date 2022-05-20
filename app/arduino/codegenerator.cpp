@@ -152,7 +152,7 @@ void CodeGenerator::declareOutputs()
     m_stream << endl;
 }
 
-void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elms, bool isBox)
+void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elms, const bool isBox)
 {
     for (auto *elm : elms) {
         if (elm->elementType() == ElementType::IC) {

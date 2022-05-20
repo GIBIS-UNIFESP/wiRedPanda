@@ -18,12 +18,12 @@ class InputButton : public GraphicElement, public Input
 public:
     explicit InputButton(QGraphicsItem *parent = nullptr);
 
-    bool on(int port = 0) const override;
+    bool on(const int port = 0) const override;
     void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version) override;
     void save(QDataStream &stream) const override;
     void setOff() override;
     void setOn() override;
-    void setOn(const bool value, int port = 0) override;
+    void setOn(const bool value, const int port = 0) override;
     void setSkin(const bool defaultSkin, const QString &fileName) override;
 
 protected:
