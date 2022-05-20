@@ -32,7 +32,7 @@ private:
     void playbuzzer();
     void stopbuzzer();
 
-    inline static int labelNumber = 0;
+    inline static int m_labelNumber = 0;
 
     const QString m_pixmap = ":/output/BuzzerOff.png";
     const QString m_titleText = tr("<b>BUZZER</b>");

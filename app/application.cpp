@@ -17,9 +17,7 @@ bool Application::notify(QObject *receiver, QEvent *event)
     try {
         done = QApplication::notify(receiver, event);
     } catch (const std::exception &e) {
-        if (GlobalProperties::verbose) {
-            QMessageBox::critical(nullptr, tr("Error!"), e.what());
-        }
+        QMessageBox::critical(nullptr, tr("Error!"), e.what());
     }
 
     return done;
