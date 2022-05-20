@@ -112,21 +112,21 @@ void Display14::updatePorts()
     input(13)->setPos(bottomPosition(), 62); /* M  */
     input(14)->setPos(bottomPosition(), 74); /* N  */
 
-    input(0)->setName("G1 (mid left)");
-    input(1)->setName("F (upper left)");
-    input(2)->setName("E (lower left)");
-    input(3)->setName("D (bottom)");
-    input(4)->setName("A (top)");
-    input(5)->setName("B (upper right)");
-    input(6)->setName("DP (dot)");
-    input(7)->setName("C (lower right)");
-    input(8)->setName("G2 (mid right)");
-    input(9)->setName("H (mid upper left)");
-    input(10)->setName("J (mid top)");
-    input(11)->setName("K (mid upper right)");
-    input(12)->setName("L (mid lower right)");
-    input(13)->setName("M (mid bottom)");
-    input(14)->setName("N (mid lower left)");
+    input(0)->setName("G1 ("+tr("middle left")+")");
+    input(1)->setName("F ("+tr("upper left")+")");
+    input(2)->setName("E ("+tr("lower left")+")");
+    input(3)->setName("D ("+tr("bottom")+")");
+    input(4)->setName("A ("+tr("top")+")");
+    input(5)->setName("B ("+tr("upper right")+")");
+    input(6)->setName("DP ("+tr("dot")+")");
+    input(7)->setName("C ("+tr("lower right")+")");
+    input(8)->setName("G2 ("+tr("middle right")+")");
+    input(9)->setName("H ("+tr("middle upper left")+")");
+    input(10)->setName("J ("+tr("middle top")+")");
+    input(11)->setName("K ("+tr("middle upper right")+")");
+    input(12)->setName("L ("+tr("middle lower right")+")");
+    input(13)->setName("M ("+tr("middle bottom")+")");
+    input(14)->setName("N ("+tr("middle lower left")+")");
 }
 
 void Display14::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
