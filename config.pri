@@ -89,8 +89,8 @@ UI_SOURCES_DIR = build_files/ui
 OBJECTS_DIR    = build_files/obj
 RCC_DIR        = build_files/rcc
 
-include($$PWD/app/element/element.pri)
-include($$PWD/app/logicelement/logicelement.pri)
+include(app/element/element.pri)
+include(app/logicelement/logicelement.pri)
 
 SOURCES += \
     $$PWD/app/application.cpp \
