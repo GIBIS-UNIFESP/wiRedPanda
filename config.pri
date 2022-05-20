@@ -70,15 +70,15 @@ msvc {
 
 mac {
     CONFIG += sdk_no_version_check
-#   TEMPLATE = app
-#   QMAKE_MAC_SDK = macosx10.10
-#   QMAKE_LFLAGS += -mmacosx-version-min=10.10 -v
-#   QMAKE_CXXFLAGS += -stdlib=libc++
-#   QMAKE_CXXFLAGS += -mmacosx-version-min=10.10
-#   QMAKE_CXXFLAGS_DEBUG = -O
-#   QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.10
-#   LIBS += -stdlib=libc++
-#   CONFIG += app_bundle
+#    TEMPLATE = app
+#    QMAKE_MAC_SDK = macosx10.10
+#    QMAKE_LFLAGS += -mmacosx-version-min=10.10 -v
+#    QMAKE_CXXFLAGS += -stdlib=libc++
+#    QMAKE_CXXFLAGS += -mmacosx-version-min=10.10
+#    QMAKE_CXXFLAGS_DEBUG = -O
+#    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.10
+#    LIBS += -stdlib=libc++
+#    CONFIG += app_bundle
 }
 
 MOC_DIR        = build_files/moc

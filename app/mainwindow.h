@@ -45,7 +45,6 @@ public:
     void exportToArduino(QString fileName);
     //! Saves the current beWavedDolphin (waveform simulator) file
     void exportToWaveFormFile(const QString &fileName);
-    void exportToWaveFormTerminal();
     //! Loads a .panda file
     bool loadPandaFile(const QString &fileName);
     //! Opens a message box asking the user if he wishes to save his progress
@@ -53,6 +52,7 @@ public:
 
     QString dolphinFileName();
     bool closeFiles();
+    void exportToWaveFormTerminal();
     void loadTranslation(const QString &language);
     void populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout);
     void retranslateUi();

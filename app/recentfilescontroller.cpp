@@ -10,7 +10,7 @@
 #include <QFile>
 #include <QFileInfo>
 
-RecentFilesController::RecentFilesController(const QString &attrName, bool saveSetting, QObject *parent)
+RecentFilesController::RecentFilesController(const QString &attrName, const bool saveSetting, QObject *parent)
     : QObject(parent)
     , m_attrName(attrName)
     , m_saveSetting(saveSetting)

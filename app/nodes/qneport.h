@@ -67,11 +67,11 @@ public:
     void setCurrentBrush(const QBrush &currentBrush);
     void setDefaultValue(const int defaultValue);
     void setGraphicElement(GraphicElement *graphicElement);
-    void setIndex(int index);
+    void setIndex(const int index);
     void setName(const QString &n);
-    void setPortFlags(int);
-    void setPtr(quint64);
-    void setRequired(bool required);
+    void setPortFlags(const int f);
+    void setPtr(const quint64 p);
+    void setRequired(const bool required);
     void updateConnections();
 
 protected:

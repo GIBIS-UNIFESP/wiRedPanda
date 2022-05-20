@@ -17,7 +17,7 @@ class QNEPort;
 class MappedPin
 {
 public:
-    MappedPin(GraphicElement *elm, const QString &pin, const QString &varName, QNEPort *port, int portNbr = 0)
+    MappedPin(GraphicElement *elm, const QString &pin, const QString &varName, QNEPort *port, const int portNbr = 0)
         : m_elm(elm)
         , m_port(port)
         , m_pin(pin)
@@ -51,7 +51,7 @@ private:
     void assignLogicOperator(GraphicElement *elm);
     void assignVariablesRec(const QVector<GraphicElement *> &elms);
     void declareAuxVariables();
-    void declareAuxVariablesRec(const QVector<GraphicElement *> &elms, bool isBox = false);
+    void declareAuxVariablesRec(const QVector<GraphicElement *> &elms, const bool isBox = false);
     void declareInputs();
     void declareOutputs();
     void loop();

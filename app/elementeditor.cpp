@@ -57,7 +57,7 @@ ElementEditor::~ElementEditor()
     delete m_ui;
 }
 
-QAction *addElementAction(QMenu *menu, GraphicElement *firstElm, ElementType type, bool hasSameType)
+QAction *addElementAction(QMenu *menu, GraphicElement *firstElm, ElementType type, const bool hasSameType)
 {
     if (!hasSameType || (firstElm->elementType() != type)) {
         QAction *action = menu->addAction(QIcon(ElementFactory::pixmap(type)), ElementFactory::translatedName(type));

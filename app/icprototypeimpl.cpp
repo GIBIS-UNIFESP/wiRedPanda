@@ -37,19 +37,20 @@ void ICPrototypeImpl::sortPorts(QVector<QNEPort *> &map)
     std::stable_sort(map.begin(), map.end(), comparePorts);
 }
 
-bool ICPrototypeImpl::loadFile(const QString &fileName)
+void ICPrototypeImpl::loadFile(const QString &fileName)
 {
     qCDebug(zero) << "Reading IC.";
     clear();
     QFile file(fileName);
-    if (file.open(QFile::ReadOnly)) {
-        QDataStream stream(&file);
-        QList<QGraphicsItem *> items = SerializationFunctions::load(stream);
-        for (auto *item : qAsConst(items)) {
-            loadItem(item);
-        }
-        file.close();
+    if (!file.open(QFile::ReadOnly)) {
+        throw Pandaception("Error opening file: " + file.errorString());
     }
+    QDataStream stream(&file);
+    auto items = SerializationFunctions::load(stream);
+    for (auto *item : qAsConst(items)) {
+        loadItem(item);
+    }
+    file.close();
     setInputSize(m_inputs.size());
     setOutputSize(m_outputs.size());
     sortPorts(m_inputs);
@@ -57,7 +58,6 @@ bool ICPrototypeImpl::loadFile(const QString &fileName)
     loadInputs();
     loadOutputs();
     qCDebug(zero) << "Finished Reading IC.";
-    return true;
 }
 
 void ICPrototypeImpl::loadInputs()
@@ -183,37 +183,37 @@ int ICPrototypeImpl::outputSize() const
     return m_outputs.size();
 }
 
-void ICPrototypeImpl::setOutputSize(int outputSize)
+void ICPrototypeImpl::setOutputSize(const int outputSize)
 {
     m_outputLabels = QVector<QString>(outputSize);
 }
 
-void ICPrototypeImpl::setInputSize(int inputSize)
+void ICPrototypeImpl::setInputSize(const int inputSize)
 {
     m_inputLabels = QVector<QString>(inputSize);
 }
 
-GraphicElement *ICPrototypeImpl::element(int index)
+GraphicElement *ICPrototypeImpl::element(const int index)
 {
     return m_elements[index];
 }
 
-QString ICPrototypeImpl::inputLabel(int index) const
+QString ICPrototypeImpl::inputLabel(const int index) const
 {
     return m_inputLabels[index];
 }
 
-QString ICPrototypeImpl::outputLabel(int index) const
+QString ICPrototypeImpl::outputLabel(const int index) const
 {
     return m_outputLabels[index];
 }
 
-QNEPort *ICPrototypeImpl::input(int index)
+QNEPort *ICPrototypeImpl::input(const int index)
 {
     return m_inputs[index];
 }
 
-QNEPort *ICPrototypeImpl::output(int index)
+QNEPort *ICPrototypeImpl::output(const int index)
 {
     return m_outputs[index];
 }

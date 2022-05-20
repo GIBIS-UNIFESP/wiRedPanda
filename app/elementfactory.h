@@ -32,7 +32,7 @@ public:
     static GraphicElement *buildElement(const ElementType type, const bool incrementLabel = false);
     static QNEConnection *buildConnection(QGraphicsItem *parent = nullptr);
     static ItemWithId *itemById(const int id);
-    static bool contains(int id);
+    static bool contains(const int id);
     static void updateItemId(ItemWithId *item, const int newId);
     static void removeItem(ItemWithId *item);
     static void addItem(ItemWithId *item);

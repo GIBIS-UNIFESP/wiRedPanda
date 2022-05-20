@@ -140,4 +140,3 @@ QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &stream)
     qCDebug(zero) << "Finished reading items.";
     return items;
 }
-

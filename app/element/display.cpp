@@ -115,14 +115,14 @@ void Display::updatePorts()
     input(6)->setPos(bottomPosition(), 39); /* DP */
     input(7)->setPos(bottomPosition(), 54); /* C  */
 
-    input(0)->setName("G ("+tr("middle")+")");
-    input(1)->setName("F ("+tr("upper left")+")");
-    input(2)->setName("E ("+tr("lower left")+")");
-    input(3)->setName("D ("+tr("bottom")+")");
-    input(4)->setName("A ("+tr("top")+")");
-    input(5)->setName("B ("+tr("upper right")+")");
-    input(6)->setName("DP ("+tr("dot")+")");
-    input(7)->setName("C ("+tr("lower right")+")");
+    input(0)->setName("G (" + tr("middle") + ")");
+    input(1)->setName("F (" + tr("upper left") + ")");
+    input(2)->setName("E (" + tr("lower left") + ")");
+    input(3)->setName("D (" + tr("bottom") + ")");
+    input(4)->setName("A (" + tr("top") + ")");
+    input(5)->setName("B (" + tr("upper right") + ")");
+    input(6)->setName("DP (" + tr("dot") + ")");
+    input(7)->setName("C (" + tr("lower right") + ")");
 }
 
 void Display::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

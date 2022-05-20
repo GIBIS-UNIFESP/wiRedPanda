@@ -94,7 +94,7 @@ void QNEPort::disconnect(QNEConnection *conn)
     updateConnections();
 }
 
-void QNEPort::setPortFlags(int f)
+void QNEPort::setPortFlags(const int f)
 {
     m_portFlags = f;
     if (m_portFlags & TypePort) {
@@ -125,7 +125,7 @@ quint64 QNEPort::ptr() const
     return m_ptr;
 }
 
-void QNEPort::setPtr(quint64 p)
+void QNEPort::setPtr(const quint64 p)
 {
     m_ptr = p;
 }
@@ -163,7 +163,7 @@ int QNEPort::index() const
     return m_index;
 }
 
-void QNEPort::setIndex(int index)
+void QNEPort::setIndex(const int index)
 {
     m_index = index;
 }
@@ -202,7 +202,7 @@ bool QNEPort::isRequired() const
     return m_required;
 }
 
-void QNEPort::setRequired(bool required)
+void QNEPort::setRequired(const bool required)
 {
     m_required = required;
     setDefaultValue(-1 * required);

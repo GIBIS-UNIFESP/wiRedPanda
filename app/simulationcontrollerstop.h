@@ -17,5 +17,3 @@ private:
     SimulationController *m_simController;
     bool m_restart = false;
 };
-
-// TODO: rename file

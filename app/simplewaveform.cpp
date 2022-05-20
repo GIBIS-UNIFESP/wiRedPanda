@@ -195,9 +195,10 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, WorkSpace *workspace)
     return true;
 }
 
-// Ideia: 1) Dividir essa função em partes. Uma para configurar, uma para carregar valores padrão ou de arquivo, uma para simular e uma para mostrar o
-// resultado. 2) Assim, ao abrir o simulador gráfico, poderia ter botão para simulação padrão e outra opção para carregar arquivo (.dolphin,.csv). 3) Para rodar
-// por linha de comando, o resultado poderia ser salvo em arquivo.
+// Idea:
+// 1) Split this function into parts. One to configure, one to load default or file values, one to simulate and one to show the result.
+// 2) So, when opening the graphic simulator, there could be a button for the default simulation and another option to load a file (.dolphin,.csv).
+// 3) To run by command line, the result could be saved to file.
 void SimpleWaveform::showWaveform()
 {
     Settings::beginGroup("waveform");

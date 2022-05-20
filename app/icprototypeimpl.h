@@ -15,21 +15,23 @@ class ICMapping;
 class ICPrototypeImpl
 {
 public:
+    ICPrototypeImpl() = default;
     ~ICPrototypeImpl();
-    GraphicElement *element(int index);
+
+    GraphicElement *element(const int index);
     ICMapping *generateMapping() const;
-    QNEPort *input(int index);
-    QNEPort *output(int index);
-    QString inputLabel(int index) const;
-    QString outputLabel(int index) const;
+    QNEPort *input(const int index);
+    QNEPort *output(const int index);
+    QString inputLabel(const int index) const;
+    QString outputLabel(const int index) const;
     int inputSize() const;
     int outputSize() const;
     void clear();
-    bool loadFile(const QString &fileName);
+    void loadFile(const QString &fileName);
     void loadInputElement(GraphicElement *elm);
     void loadOutputElement(GraphicElement *elm);
-    void setInputSize(int inputSize);
-    void setOutputSize(int outputSize);
+    void setInputSize(const int inputSize);
+    void setOutputSize(const int outputSize);
 
 private:
     void loadInputs();

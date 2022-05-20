@@ -26,7 +26,7 @@ public:
     static void serialize(const QList<QGraphicsItem *> &items, QDataStream &stream);
     /**
      * @brief deserialize: Deserializes a list of QGraphicItems coming through a binary data stream. It stops at the end of the stream.
-     * @param itemList is used to return the list of deserialized items.
+     * @return the list of deserialized items.
      * @param portMap is used to return a map of all input and output ports. This mapping may be used to check and to create connections between element ports.
      */
     static QList<QGraphicsItem *> deserialize(QDataStream &stream, const double version, QMap<quint64, QNEPort *> portMap = {});
