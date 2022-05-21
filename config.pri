@@ -44,6 +44,8 @@ linux-clang {
     }
 }
 
+unix: QMAKE_RPATHDIR += ${ORIGIN}/lib
+
 linux {
     CCACHE_BIN = $$system(which ccache)
 
@@ -59,7 +61,6 @@ msvc {
 }
 
 *-g++ {
-    QMAKE_CXXFLAGS += -Wl,-rpath,'${ORIGIN}/lib'
     QMAKE_CXXFLAGS += -Wno-deprecated-enum-enum-conversion # can be removed after migrating to Qt6
     QMAKE_CXXFLAGS += -std=c++17
 }
