@@ -18,9 +18,10 @@ int main(int argc, char *argv[])
     Comment::setVerbosity(-1);
 
 #ifdef Q_OS_WIN
+    FILE *fpstdout = stdout, *fpstderr = stderr;
     if (AttachConsole(ATTACH_PARENT_PROCESS)) {
-        freopen("CONOUT$", "w", stdout);
-        freopen("CONOUT$", "w", stderr);
+        freopen_s(&fpstdout, "CONOUT$", "w", stdout);
+        freopen_s(&fpstderr, "CONOUT$", "w", stderr);
     }
 #endif
 

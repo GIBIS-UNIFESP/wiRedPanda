@@ -109,7 +109,7 @@ void GraphicElement::setPixmap(const QString &pixmapName)
     m_currentPixmapName = pixmapName;
 }
 
-void GraphicElement::setPixmap(const QString &pixmapName, QRect size)
+void GraphicElement::setPixmap(const QString &pixmapName, const QRect size)
 {
     QString pixmapPath = pixmapName;
     // TODO: This has to be changed. Not a good way to do it. Probably better inside the class.

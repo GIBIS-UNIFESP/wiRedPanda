@@ -137,7 +137,6 @@ public:
     virtual void setAudio(const QString &audio);
     virtual void setColor(const QString &color);
     virtual void setFrequency(const float freq);
-    virtual void setPortName(const QString &name);
     virtual void setSkin(const bool defaultSkin, const QString &fileName);
     void disable();
     void enable();
@@ -148,7 +147,8 @@ public:
     void setOutputSize(const int size);
     void setOutputs(const QVector<QNEOutputPort *> &outputs);
     void setPixmap(const QString &pixmapName);
-    void setPixmap(const QString &pixmapName, QRect size);
+    void setPixmap(const QString &pixmapName, const QRect size);
+    void setPortName(const QString &name);
     void setTrigger(const QKeySequence &trigger);
     void updateLabel();
 

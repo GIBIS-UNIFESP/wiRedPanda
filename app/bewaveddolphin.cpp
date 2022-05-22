@@ -772,7 +772,6 @@ void BewavedDolphin::associateToWiredPanda(const QString &fileName)
 
 void BewavedDolphin::on_actionSaveAs_triggered()
 {
-    QString fileName = m_currentFile.absoluteFilePath();
     QString path = m_mainWindow->currentFile().absolutePath();
     QFileDialog fileDialog;
     fileDialog.setObjectName(tr("Save File as..."));
@@ -790,7 +789,7 @@ void BewavedDolphin::on_actionSaveAs_triggered()
         return;
     }
     auto files = fileDialog.selectedFiles();
-    fileName = files.first();
+    QString fileName = files.first();
     if (fileName.isEmpty()) {
         return;
     }

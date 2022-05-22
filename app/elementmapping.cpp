@@ -78,14 +78,16 @@ void ElementMapping::insertElement(GraphicElement *elm)
     m_deletableElements.append(logicElm);
     m_logicElms.append(logicElm);
     m_elementMap.insert(elm, logicElm);
-    auto *in = dynamic_cast<Input *>(elm);
-    if (in) {
+    if (auto *in = dynamic_cast<Input *>(elm)) {
         m_inputMap[in] = logicElm;
     }
 }
 
 void ElementMapping::insertIC(IC *ic)
 {
+    if (!ic) {
+        return;
+    }
     ICPrototype *proto = ic->prototype();
     if (proto) {
         ICMapping *icMap = proto->generateMapping();
@@ -99,12 +101,10 @@ void ElementMapping::generateMap()
 {
     for (auto *elm : qAsConst(m_elements)) {
         if (elm->elementType() == ElementType::Clock) {
-            auto *clk = dynamic_cast<Clock *>(elm);
-            m_clocks.append(clk);
+            m_clocks.append(dynamic_cast<Clock *>(elm));
         }
         if (elm->elementType() == ElementType::IC) {
-            auto *ic = dynamic_cast<IC *>(elm);
-            insertIC(ic);
+            insertIC(dynamic_cast<IC *>(elm));
         } else {
             insertElement(elm);
         }
@@ -136,10 +136,10 @@ LogicElement *ElementMapping::buildLogicElement(GraphicElement *elm)
     case ElementType::SRFlipFlop:  return new LogicSRFlipFlop();
     case ElementType::TFlipFlop:   return new LogicTFlipFlop();
     case ElementType::DFlipFlop:   return new LogicDFlipFlop();
-    case ElementType::DLatch:      return new LogicDLatch();
     case ElementType::Mux:         return new LogicMux();
     case ElementType::Demux:       return new LogicDemux();
  // case ElementType::TLATCH:
+    case ElementType::DLatch:
     case ElementType::JKLatch:     return new LogicDLatch();
     case ElementType::Text:
     case ElementType::Line:        return new LogicNone();
@@ -218,8 +218,8 @@ bool ElementMapping::canInitialize() const
             return true;
         }
         auto *ic = dynamic_cast<IC *>(elm);
-        auto *prototype = ICManager::prototype(ic->file());
-        return ic && prototype;
+        auto *prototype = (ic) ? ICManager::prototype(ic->file()) : nullptr;
+        return (ic && prototype);
     });
 }
 
