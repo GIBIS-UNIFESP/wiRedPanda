@@ -348,9 +348,9 @@ void MoveCommand::redo()
 
 UpdateCommand::UpdateCommand(const QVector<GraphicElement *> &elements, const QByteArray &oldData, Scene *scene, QUndoCommand *parent)
     : QUndoCommand(parent)
-    , m_scene(scene)
+    , m_oldData(oldData),
+      m_scene(scene)
 {
-    m_oldData = oldData;
     ids.reserve(elements.size());
     QDataStream stream(&m_newData, QIODevice::WriteOnly);
     for (auto *elm : elements) {

@@ -105,7 +105,7 @@ QString SerializationFunctions::loadDolphinFileName(QDataStream &stream, const d
     if (version >= 3.0) {
         stream >> str;
         if ((version < 3.3) && (str == "none")) {
-            str = "";
+            str.clear();
         }
     }
     return str;
