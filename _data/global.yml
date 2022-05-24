@@ -1,10 +1,10 @@
 # Site Settings
-title: 'WiRed Panda'
+title: 'WiRedPanda'
 description: 'Learn about logic circuits and simulate them in an easy and friendly way.'
 url: 'https://gibis-unifesp.github.io/wiRedPanda/' # the base hostname & protocol for your site
-footer_text: 'Copyright &copy; WiRED Panda Team - 2020'
-keywords: "WiRED Panda,Logic Circuits,Arduino"
+footer_text: 'Copyright &copy; WiRedPanda Team - 2022'
+keywords: "WiRedPanda,Logic Circuits,Arduino"
 
 # Admin Settings
-admin_name: 'WiREDPanda Team'
+admin_name: 'WiRedPanda Team'
 admin_email: 'lucaslellis777@gmail.com'

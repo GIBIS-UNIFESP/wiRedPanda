@@ -8,9 +8,9 @@ html	/home/lellis/projetos/wpanda/index.html	/^<html lang="en">$/;"	function	lin
 head	/home/lellis/projetos/wpanda/index.html	/^<head>$/;"	function	line:20
 meta	/home/lellis/projetos/wpanda/index.html	/^  <meta charset="utf-8">$/;"	function	line:21
 meta	/home/lellis/projetos/wpanda/index.html	/^  <meta http-equiv="X-UA-Compatible" content="IE=edge">$/;"	function	line:22
-meta	/home/lellis/projetos/wpanda/index.html	/^  <meta name="description" content="WiRed Panda is a free software designed to help students to learn about logic circuits and simulate them in an easy and friendly way.">$/;"	function	line:23
+meta	/home/lellis/projetos/wpanda/index.html	/^  <meta name="description" content="WiRedPanda is a free software designed to help students to learn about logic circuits and simulate them in an easy and friendly way.">$/;"	function	line:23
 meta	/home/lellis/projetos/wpanda/index.html	/^  <meta name="viewport" content="width=device-width, initial-scale=1">$/;"	function	line:24
-title	/home/lellis/projetos/wpanda/index.html	/^  <title>WiRED Panda<\/title>$/;"	function	line:26
+title	/home/lellis/projetos/wpanda/index.html	/^  <title>WiRedPanda<\/title>$/;"	function	line:26
 meta	/home/lellis/projetos/wpanda/index.html	/^  <meta name="mobile-web-app-capable" content="yes">$/;"	function	line:29
 link	/home/lellis/projetos/wpanda/index.html	/^  <link rel="icon" sizes="192x192" href="images\/pandaLogo.png">$/;"	function	line:30
 meta	/home/lellis/projetos/wpanda/index.html	/^  <meta name="apple-mobile-web-app-capable" content="yes">$/;"	function	line:33
@@ -31,7 +31,7 @@ body	/home/lellis/projetos/wpanda/index.html	/^<body>$/;"	function	line:67
 div	/home/lellis/projetos/wpanda/index.html	/^  <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-color--grey-100">$/;"	function	line:70
 header	/home/lellis/projetos/wpanda/index.html	/^    <header class="mdl-layout__header mdl-layout__header--waterfall head">$/;"	function	line:71
 div	/home/lellis/projetos/wpanda/index.html	/^      <div class="mdl-layout__header-row">$/;"	function	line:72
-span	/home/lellis/projetos/wpanda/index.html	/^        <span class="mdl-layout-title titulo" >wired panda<\/span>$/;"	function	line:74
+span	/home/lellis/projetos/wpanda/index.html	/^        <span class="mdl-layout-title titulo" >WiRedPanda<\/span>$/;"	function	line:74
 div	/home/lellis/projetos/wpanda/index.html	/^        <div class="mdl-layout-spacer"><\/div>$/;"	function	line:76
 nav	/home/lellis/projetos/wpanda/index.html	/^        <nav class="mdl-navigation large-nav">$/;"	function	line:78
 a	/home/lellis/projetos/wpanda/index.html	/^          <a class="mdl-navigation__link  mdl-color-text--grey-200" href="https:\/\/github.com\/GIBIS-UNIFESP\/wiRedPanda\/">Github<\/a>$/;"	function	line:79
@@ -56,10 +56,10 @@ style	/home/lellis/projetos/wpanda/index.html	/^          <style>$/;"	function	l
 div	/home/lellis/projetos/wpanda/index.html	/^          <div class="demo-card-image mdl-card mdl-shadow--2dp">$/;"	function	line:129
 div	/home/lellis/projetos/wpanda/index.html	/^            <div class="mdl-card__title mdl-card--expand"><\/div>$/;"	function	line:130
 div	/home/lellis/projetos/wpanda/index.html	/^            <div class="mdl-card__actions">$/;"	function	line:131
-span	/home/lellis/projetos/wpanda/index.html	/^              <span class="demo-card-image__filename">WiRED Panda user interface.<\/span>$/;"	function	line:132
+span	/home/lellis/projetos/wpanda/index.html	/^              <span class="demo-card-image__filename">WiRedPanda user interface.<\/span>$/;"	function	line:132
 h	/home/lellis/projetos/wpanda/index.html	/^          <h3 id="downloads">Downloads<\/h3>$/;"	function	line:136
 ul	/home/lellis/projetos/wpanda/index.html	/^          <ul>$/;"	function	line:139
-li	/home/lellis/projetos/wpanda/index.html	/^            <li>Download the <a href="https:\/\/github.com\/GIBIS-UNIFESP\/wiRedPanda\/raw\/master\/installer\/wpanda17_32.exe">windows installer<\/a> of the latest version of WiRed Panda.<\/li>$/;"	function	line:140
+li	/home/lellis/projetos/wpanda/index.html	/^            <li>Download the <a href="https:\/\/github.com\/GIBIS-UNIFESP\/wiRedPanda\/raw\/master\/installer\/wpanda17_32.exe">windows installer<\/a> of the latest version of WiRedPanda.<\/li>$/;"	function	line:140
 li	/home/lellis/projetos/wpanda/index.html	/^            <li>Clone the <a href="https:\/\/github.com\/GIBIS-UNIFESP\/wiRedPanda\/">github repository<\/a> and build the software using Qt 5.5 or later.<\/li>$/;"	function	line:141
 footer	/home/lellis/projetos/wpanda/index.html	/^      <footer class="demo-footer mdl-mini-footer">$/;"	function	line:145
 div	/home/lellis/projetos/wpanda/index.html	/^        <div class="mdl-mini-footer--left-section">$/;"	function	line:146
