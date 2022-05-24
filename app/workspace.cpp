@@ -63,8 +63,8 @@ void WorkSpace::load(QDataStream &stream)
         QMessageBox::warning(this, tr("Old version file."), tr("Warning! This is an old version WiRedPanda project file (version < 4.0). To open it correctly, save all ICs and skins the main project directory."));
     }
     qCDebug(zero) << "Version:" << version;
-    QString dolphinFileName(SerializationFunctions::loadDolphinFileName(stream, version));
-    qCDebug(zero) << "Dolphin name:" << dolphinFileName;
+    m_dolphinFileName = SerializationFunctions::loadDolphinFileName(stream, version);
+    qCDebug(zero) << "Dolphin name:" << m_dolphinFileName;
     QRectF rect(SerializationFunctions::loadRect(stream, version));
     qCDebug(zero) << "Header Ok. Version:" << version;
     QList<QGraphicsItem *> items = SerializationFunctions::deserialize(stream, version);
