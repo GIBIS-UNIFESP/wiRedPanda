@@ -180,7 +180,7 @@ private:
     /**
      * @brief addPort: adds an input or output port at the end of the port vector.
      */
-    QNEPort *addPort(const QString &name, const bool isOutput, const int flags = 0, const int ptr = 0);
+    void addPort(const QString &name, const bool isOutput, const int flags = 0, const int ptr = 0);
 
     /**
      * functions to load GraphicElement atributes through a binary data stream
