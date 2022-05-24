@@ -220,12 +220,6 @@ void ElementEditor::updateElementSkin()
     // fileDialog.setFilter(QDir::Files);
     fileDialog.setNameFilter(tr("Images (*.png *.gif *.jpg *.jpeg)"));
     fileDialog.setDirectory(homeDir);
-    connect(&fileDialog, &QFileDialog::directoryEntered, this, [&fileDialog, homeDir](const QString &new_dir) {
-        qCDebug(zero) << "Changing dir to " << new_dir << ", home:" << homeDir;
-        if (new_dir != homeDir) {
-            fileDialog.setDirectory(homeDir);
-        }
-    });
     if (!fileDialog.exec()) {
         return;
     }
