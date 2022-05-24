@@ -454,14 +454,14 @@ void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     painter->drawPixmap(QPoint(0, 0), pixmap());
 }
 
-QNEPort *GraphicElement::addPort(const QString &name, const bool isOutput, const int flags, const int ptr)
+void GraphicElement::addPort(const QString &name, const bool isOutput, const int flags, const int ptr)
 {
     qCDebug(four) << "Adding new port.";
     if (isOutput && (static_cast<quint64>(m_outputs.size()) >= m_maxOutputSize)) {
-        return nullptr;
+        return;
     }
     if (!isOutput && (static_cast<quint64>(m_inputs.size()) >= m_maxInputSize)) {
-        return nullptr;
+        return;
     }
     QNEPort *port = nullptr;
     if (isOutput) {
@@ -478,7 +478,6 @@ QNEPort *GraphicElement::addPort(const QString &name, const bool isOutput, const
     port->setPortFlags(flags);
     port->setPtr(ptr);
     port->show();
-    return port;
 }
 
 void GraphicElement::addInputPort(const QString &name)

@@ -95,58 +95,58 @@ void InputRotary::updatePorts()
 {
     switch (outputSize()) {
     case 2: {
-        output(0)->setPos(20, rightPosition()); output(0)->setName("0");
-        output(1)->setPos(43, rightPosition()); output(1)->setName("1");
+        output(0)->setPos(20, rightPosition());    output(0)->setName("0");
+        output(1)->setPos(43, rightPosition());    output(1)->setName("1");
         break;
     }
     case 4: {
-        output(0)->setPos(10, rightPosition()); output(0)->setName("0");
-        output(1)->setPos(25, rightPosition()); output(1)->setName("1");
-        output(2)->setPos(39, rightPosition()); output(2)->setName("2");
-        output(3)->setPos(54, rightPosition()); output(3)->setName("3");
+        output(0)->setPos(10, rightPosition());    output(0)->setName("0");
+        output(1)->setPos(25, rightPosition());    output(1)->setName("1");
+        output(2)->setPos(39, rightPosition());    output(2)->setName("2");
+        output(3)->setPos(54, rightPosition());    output(3)->setName("3");
         break;
     }
     case 8: {
-        output(0)->setPos(10, rightPosition()); output(0)->setName("0");
-        output(1)->setPos(25, rightPosition()); output(1)->setName("1");
-        output(2)->setPos(39, rightPosition()); output(2)->setName("2");
-        output(3)->setPos(54, rightPosition()); output(3)->setName("3");
-        output(4)->setPos(10, leftPosition());  output(4)->setName("4");
-        output(5)->setPos(25, leftPosition());  output(5)->setName("5");
-        output(6)->setPos(39, leftPosition());  output(6)->setName("6");
-        output(7)->setPos(54, leftPosition());  output(7)->setName("7");
+        output(0)->setPos(10, rightPosition());    output(0)->setName("0");
+        output(1)->setPos(25, rightPosition());    output(1)->setName("1");
+        output(2)->setPos(39, rightPosition());    output(2)->setName("2");
+        output(3)->setPos(54, rightPosition());    output(3)->setName("3");
+        output(4)->setPos(10, leftPosition());     output(4)->setName("4");
+        output(5)->setPos(25, leftPosition());     output(5)->setName("5");
+        output(6)->setPos(39, leftPosition());     output(6)->setName("6");
+        output(7)->setPos(54, leftPosition());     output(7)->setName("7");
         break;
     }
     case 10: {
-        output(0)->setPos(2,  rightPosition()); output(0)->setName("0");
-        output(1)->setPos(17, rightPosition()); output(1)->setName("1");
-        output(2)->setPos(32, rightPosition()); output(2)->setName("2");
-        output(3)->setPos(47, rightPosition()); output(3)->setName("3");
-        output(4)->setPos(61, rightPosition()); output(4)->setName("4");
-        output(5)->setPos(2,  leftPosition());  output(5)->setName("5");
-        output(6)->setPos(17, leftPosition());  output(6)->setName("6");
-        output(7)->setPos(32, leftPosition());  output(7)->setName("7");
-        output(8)->setPos(47, leftPosition());  output(8)->setName("8");
-        output(9)->setPos(61, leftPosition());  output(9)->setName("9");
+        output(0)->setPos(2,  rightPosition());    output(0)->setName("0");
+        output(1)->setPos(17, rightPosition());    output(1)->setName("1");
+        output(2)->setPos(32, rightPosition());    output(2)->setName("2");
+        output(3)->setPos(47, rightPosition());    output(3)->setName("3");
+        output(4)->setPos(61, rightPosition());    output(4)->setName("4");
+        output(5)->setPos(2,  leftPosition());     output(5)->setName("5");
+        output(6)->setPos(17, leftPosition());     output(6)->setName("6");
+        output(7)->setPos(32, leftPosition());     output(7)->setName("7");
+        output(8)->setPos(47, leftPosition());     output(8)->setName("8");
+        output(9)->setPos(61, leftPosition());     output(9)->setName("9");
         break;
     }
     case 16: {
-        output(0)->setPos(11, rightPosition()); output(0)->setName("0");
-        output(1)->setPos(25, rightPosition()); output(1)->setName("1");
-        output(2)->setPos(39, rightPosition()); output(2)->setName("2");
-        output(3)->setPos(53, rightPosition()); output(3)->setName("3");
-        output(4)->setPos(rightPosition(), 53); output(4)->setName("4");
-        output(5)->setPos(rightPosition(), 39); output(5)->setName("5");
-        output(6)->setPos(rightPosition(), 25); output(6)->setName("6");
-        output(7)->setPos(rightPosition(), 11); output(7)->setName("7");
-        output(8)->setPos(53, leftPosition());  output(8)->setName("8");
-        output(9)->setPos(39, leftPosition());  output(9)->setName("9");
-        output(10)->setPos(25, leftPosition()); output(10)->setName("A");
-        output(11)->setPos(11, leftPosition()); output(11)->setName("B");
-        output(12)->setPos(leftPosition(), 11); output(12)->setName("C");
-        output(13)->setPos(leftPosition(), 25); output(13)->setName("D");
-        output(14)->setPos(leftPosition(), 39); output(14)->setName("E");
-        output(15)->setPos(leftPosition(), 53); output(15)->setName("F");
+        output(0)->setPos(11, rightPosition());    output(0)->setName("0");
+        output(1)->setPos(25, rightPosition());    output(1)->setName("1");
+        output(2)->setPos(39, rightPosition());    output(2)->setName("2");
+        output(3)->setPos(53, rightPosition());    output(3)->setName("3");
+        output(4)->setPos(rightPosition(), 53);    output(4)->setName("4");
+        output(5)->setPos(rightPosition(), 39);    output(5)->setName("5");
+        output(6)->setPos(rightPosition(), 25);    output(6)->setName("6");
+        output(7)->setPos(rightPosition(), 11);    output(7)->setName("7");
+        output(8)->setPos(53, leftPosition());     output(8)->setName("8");
+        output(9)->setPos(39, leftPosition());     output(9)->setName("9");
+        output(10)->setPos(25, leftPosition());    output(10)->setName("A");
+        output(11)->setPos(11, leftPosition());    output(11)->setName("B");
+        output(12)->setPos(leftPosition(), 11);    output(12)->setName("C");
+        output(13)->setPos(leftPosition(), 25);    output(13)->setName("D");
+        output(14)->setPos(leftPosition(), 39);    output(14)->setName("E");
+        output(15)->setPos(leftPosition(), 53);    output(15)->setName("F");
         break;
     }
     }

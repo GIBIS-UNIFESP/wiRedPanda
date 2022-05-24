@@ -611,9 +611,9 @@ void ChangeInputSizeCommand::redo()
         m_scene->clearSelection();
     }
     QVector<GraphicElement *> serializationOrder;
+    serializationOrder.reserve(m_elements.size());
     m_oldData.clear();
     QDataStream stream(&m_oldData, QIODevice::WriteOnly);
-    serializationOrder.reserve(m_elements.size());
     for (auto *elm : m_elements) {
         elm->save(stream);
         serializationOrder.append(elm);
