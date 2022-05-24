@@ -14,16 +14,11 @@ Xor::Xor(QGraphicsItem *parent)
     : GraphicElement(ElementType::Xor, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
     m_defaultSkins.append(":/basic/xor.png");
+    m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 
     setCanChangeSkin(true);
     updatePorts();
     setPortName("XOR");
     setToolTip(m_translatedName);
-}
-
-void Xor::setSkin(const bool defaultSkin, const QString &fileName)
-{
-    m_defaultSkins[0] = (defaultSkin) ? ":/basic/xor.png" : fileName;
-    setPixmap(m_defaultSkins[0]);
 }

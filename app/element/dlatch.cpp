@@ -15,6 +15,7 @@ DLatch::DLatch(QGraphicsItem *parent)
     : GraphicElement(ElementType::DLatch, ElementGroup::Memory, 2, 2, 2, 2, parent)
 {
     m_defaultSkins = QStringList{":/memory/D-latch.png"};
+    m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 
     setRotatable(false);
@@ -38,10 +39,6 @@ void DLatch::updatePorts()
     input(0)->setPos(leftPosition(), 13);   /* Data   */
     input(1)->setPos(leftPosition(), 45);   /* Enable */
 
-void DLatch::setSkin(const bool defaultSkin, const QString &fileName)
-{
-    m_defaultSkins[0] = (defaultSkin) ? ":/memory/D-latch.png" : fileName;
-    setPixmap(m_defaultSkins[0]);
     output(0)->setPos(rightPosition(), 15); /* Q      */
     output(1)->setPos(rightPosition(), 45); /* ~Q     */
 }

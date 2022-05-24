@@ -17,9 +17,9 @@ Text::Text(QGraphicsItem *parent)
         ":/no_text.png",
         ":/text.png",
     };
+    m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 
-    setCanChangeSkin(false);
     setHasLabel(true);
     setPortName("TEXT");
     setToolTip(m_translatedName);

@@ -17,8 +17,6 @@ class Xor : public GraphicElement
 public:
     explicit Xor(QGraphicsItem *parent = nullptr);
 
-    void setSkin(const bool defaultSkin, const QString &fileName) override;
-
 private:
     const QString m_pixmap = ":/basic/xor.png";
     const QString m_titleText = tr("<b>XOR</b>");

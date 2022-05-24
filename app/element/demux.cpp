@@ -15,6 +15,7 @@ Demux::Demux(QGraphicsItem *parent)
     : GraphicElement(ElementType::Demux, ElementGroup::Mux, 2, 2, 2, 2, parent)
 {
     m_defaultSkins = QStringList{":/basic/demux.png"};
+    m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 
     setCanChangeSkin(true);
@@ -34,10 +35,6 @@ void Demux::updatePorts()
     input(0)->setPos(16, 32);       /* 0   */
     input(1)->setPos(32, 58);       /* S   */
 
-void Demux::setSkin(const bool defaultSkin, const QString &fileName)
-{
-    m_defaultSkins[0] = (defaultSkin) ? ":/basic/demux.png" : fileName;
-    setPixmap(m_defaultSkins[0]);
     output(0)->setPos(48, 32 - 12); /* Out */
     output(1)->setPos(48, 32 + 12); /* Out */
 }

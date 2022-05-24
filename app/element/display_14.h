@@ -23,7 +23,6 @@ public:
     void refresh() override;
     void save(QDataStream &stream) const override;
     void setColor(const QString &color) override;
-    void setSkin(const bool defaultSkin, const QString &fileName) override;
     void updatePorts() override;
 
 private:

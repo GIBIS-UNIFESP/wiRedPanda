@@ -14,16 +14,11 @@ Or::Or(QGraphicsItem *parent)
     : GraphicElement(ElementType::Or, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
     m_defaultSkins = QStringList{":/basic/or.png"};
+    m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 
     setCanChangeSkin(true);
     updatePorts();
     setPortName("OR");
     setToolTip(m_translatedName);
-}
-
-void Or::setSkin(const bool defaultSkin, const QString &fileName)
-{
-    m_defaultSkins[0] = (defaultSkin) ? ":/basic/or.png" : fileName;
-    setPixmap(m_defaultSkins[0]);
 }

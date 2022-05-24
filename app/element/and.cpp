@@ -15,16 +15,11 @@ And::And(QGraphicsItem *parent)
     : GraphicElement(ElementType::And, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
     m_defaultSkins = QStringList{":/basic/and.png"};
+    m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 
     setCanChangeSkin(true);
     setPortName("AND");
     setToolTip(m_translatedName);
     updatePorts();
-}
-
-void And::setSkin(const bool defaultSkin, const QString &fileName)
-{
-    m_defaultSkins.first() = (defaultSkin) ? m_defaultSkins.first() : fileName;
-    setPixmap(m_defaultSkins.first());
 }

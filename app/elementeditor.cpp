@@ -85,7 +85,7 @@ void ElementEditor::contextMenu(QPoint screenPos)
     if (m_hasTrigger) {
         menu.addAction(QIcon(ElementFactory::pixmap(ElementType::InputButton)), triggerActionText)->setData(triggerActionText);
     }
-    if ((m_canChangeSkin) && (GlobalProperties::currentFile != "")) {
+    if (m_canChangeSkin) {
         menu.addAction(changeSkinText);
         menu.addAction(revertSkinText);
     }
@@ -296,7 +296,7 @@ void ElementEditor::setCurrentElements(const QVector<GraphicElement *> &elms)
                 break;
             }
             m_hasLabel &= elm->hasLabel();
-            m_canChangeSkin &= elm->canChangeSkin() && !GlobalProperties::currentFile.isEmpty();
+            m_canChangeSkin &= elm->canChangeSkin();
             m_hasColors &= elm->hasColors();
             m_hasAudio &= elm->hasAudio();
             m_hasFrequency &= elm->hasFrequency();

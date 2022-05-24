@@ -17,7 +17,6 @@ class DLatch : public GraphicElement
 public:
     explicit DLatch(QGraphicsItem *parent = nullptr);
 
-    void setSkin(const bool defaultSkin, const QString &fileName) override;
     void updatePorts() override;
 
 private:

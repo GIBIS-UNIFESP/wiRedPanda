@@ -15,6 +15,7 @@ Mux::Mux(QGraphicsItem *parent)
     : GraphicElement(ElementType::Mux, ElementGroup::Mux, 3, 3, 1, 1, parent)
 {
     m_defaultSkins = QStringList{":/basic/mux.png"};
+    m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 
     Mux::updatePorts();
@@ -33,9 +34,5 @@ void Mux::updatePorts()
     input(1)->setPos(16, 32 + 12); /* 1   */
     input(2)->setPos(32, 58);      /* S   */
 
-void Mux::setSkin(const bool defaultSkin, const QString &fileName)
-{
-    m_defaultSkins[0] = (defaultSkin) ? ":/basic/mux.png" : fileName;
-    setPixmap(m_defaultSkins[0]);
     output(0)->setPos(48, 32);     /* Out */
 }

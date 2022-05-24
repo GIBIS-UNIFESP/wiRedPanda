@@ -14,16 +14,11 @@ Xnor::Xnor(QGraphicsItem *parent)
     : GraphicElement(ElementType::Xnor, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
     m_defaultSkins = QStringList{":/basic/xnor.png"};
+    m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 
     setCanChangeSkin(true);
     updatePorts();
     setPortName("XNOR");
     setToolTip(m_translatedName);
-}
-
-void Xnor::setSkin(const bool defaultSkin, const QString &fileName)
-{
-    m_defaultSkins[0] = (defaultSkin) ? ":/basic/xnor.png" : fileName;
-    setPixmap(m_defaultSkins[0]);
 }
