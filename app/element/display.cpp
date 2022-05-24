@@ -43,10 +43,9 @@ Display::Display(QGraphicsItem *parent)
     setRotatable(false);
     setHasColors(true);
     setCanChangeSkin(true);
-    setOutputsOnTop(true);
     Display::updatePorts();
-    setBottomPosition(58);
-    setTopPosition(6);
+    setRightPosition(58);
+    setLeftPosition(6);
     setHasLabel(true);
 
     qCDebug(three) << "Converting segments to other colors.";
@@ -104,21 +103,15 @@ void Display::refresh()
 
 void Display::updatePorts()
 {
-    input(0)->setPos(topPosition(), 10);    /* G  */
-    input(1)->setPos(topPosition(), 25);    /* F  */
-    input(2)->setPos(topPosition(), 39);    /* E  */
-    input(3)->setPos(topPosition(), 54);    /* D  */
-    input(4)->setPos(bottomPosition(), 10); /* A  */
-    input(5)->setPos(bottomPosition(), 25); /* B  */
-    input(6)->setPos(bottomPosition(), 39); /* DP */
-    input(7)->setPos(bottomPosition(), 54); /* C  */
+    input(0)->setPos(leftPosition(), 10);  /* G  */
+    input(1)->setPos(leftPosition(), 25);  /* F  */
+    input(2)->setPos(leftPosition(), 39);  /* E  */
+    input(3)->setPos(leftPosition(), 54);  /* D  */
+    input(4)->setPos(rightPosition(), 10); /* A  */
+    input(5)->setPos(rightPosition(), 25); /* B  */
+    input(6)->setPos(rightPosition(), 39); /* DP */
+    input(7)->setPos(rightPosition(), 54); /* C  */
 
-    input(0)->setName("G (" + tr("middle") + ")");
-    input(1)->setName("F (" + tr("upper left") + ")");
-    input(2)->setName("E (" + tr("lower left") + ")");
-    input(3)->setName("D (" + tr("bottom") + ")");
-    input(4)->setName("A (" + tr("top") + ")");
-    input(5)->setName("B (" + tr("upper right") + ")");
     input(0)->setName("G (" +  tr("middle") + ")");
     input(1)->setName("F (" +  tr("upper left") + ")");
     input(2)->setName("E (" +  tr("lower left") + ")");

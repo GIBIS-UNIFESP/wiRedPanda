@@ -96,14 +96,14 @@ public:
     bool rotatable() const;
     const QNEInputPort *input(const int pos = 0) const;
     const QNEOutputPort *output(const int pos = 0) const;
-    int bottomPosition() const;
     int inputSize() const;
+    int leftPosition() const;
     int maxInputSize() const;
     int maxOutputSize() const;
     int minInputSize() const;
     int minOutputSize() const;
     int outputSize() const;
-    int topPosition() const;
+    int rightPosition() const;
     virtual QString audio() const;
     virtual QString color() const;
     virtual QString genericProperties();
@@ -121,27 +121,27 @@ public:
     void setOutputSize(const int size);
     void setOutputs(const QVector<QNEOutputPort *> &outputs);
     void setPixmap(const QString &pixmapName);
-    void setPixmap(const QString &pixmapName, const QRect rect);
+    void setPixmap(const QString &pixmapName, const QSize size);
     void setPortName(const QString &name);
     void setTrigger(const QKeySequence &trigger);
     void updateLabel();
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
-    void setBottomPosition(const int bottomPosition);
     void setCanChangeSkin(const bool canChangeSkin);
     void setHasAudio(const bool hasAudio);
     void setHasColors(const bool hasColors);
     void setHasFrequency(const bool hasFrequency);
     void setHasLabel(const bool hasLabel);
     void setHasTrigger(const bool hasTrigger);
+    void setLeftPosition(const int leftPosition);
     void setMaxInputSize(const int maxInputSize);
     void setMaxOutputSize(const int maxOutputSize);
     void setMinInputSize(const int minInputSize);
     void setMinOutputSize(const int minOutputSize);
-    void setOutputsOnTop(const bool outputsOnTop);
+    void setOutputsOnRight(const bool outputsOnRight);
+    void setRightPosition(const int rightPosition);
     void setRotatable(const bool rotatable);
-    void setTopPosition(const int topPosition);
 
     /**
      * @brief Path to all default skins. The default skin is in a resource file.
@@ -163,14 +163,10 @@ protected:
      */
     QVector<QNEOutputPort *> m_outputs;
 
+    QGraphicsTextItem *m_label = new QGraphicsTextItem(this);
     bool m_usingDefaultSkin = true;
 
 private:
-    /**
-     * @brief addPort: adds an input or output port at the end of the port vector.
-     */
-    QNEPort *addPort(const QString &name, const bool isOutput, const int flags = 0, const int ptr = 0);
-
     /**
      * @brief addInputPort: adds an input port at the end of the input port vector.
      */
@@ -182,14 +178,14 @@ private:
     void addOutputPort(const QString &name = {});
 
     /**
+     * @brief addPort: adds an input or output port at the end of the port vector.
+     */
+    QNEPort *addPort(const QString &name, const bool isOutput, const int flags = 0, const int ptr = 0);
+
+    /**
      * functions to load GraphicElement atributes through a binary data stream
      */
     void loadPos(QDataStream &stream);
-
-    /**
-     * @brief outputsOnTop: returns true if the output ports are on the top position of the GraphicElement.
-     */
-    bool outputsOnTop() const;
 
     QPixmap pixmap() const;
     void loadAngle(QDataStream &stream);
@@ -217,7 +213,6 @@ private:
     ElementType m_elementType = ElementType::Unknown;
     QColor m_selectionBrush;
     QColor m_selectionPen;
-    QGraphicsTextItem *m_label = new QGraphicsTextItem(this);
     QKeySequence m_trigger;
     QString m_currentPixmapName;
     QString m_labelText;
@@ -228,10 +223,9 @@ private:
     bool m_hasFrequency = false;
     bool m_hasLabel = false;
     bool m_hasTrigger = false;
-    bool m_outputsOnTop = true;
     bool m_rotatable = true;
-    int m_bottomPosition = 64;
-    int m_topPosition = 0;
+    int m_leftPosition = 0;
+    int m_rightPosition = 64;
     quint64 m_maxInputSize = 0;
     quint64 m_maxOutputSize = 0;
     quint64 m_minInputSize = 0;

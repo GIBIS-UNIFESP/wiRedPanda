@@ -16,7 +16,6 @@ Nor::Nor(QGraphicsItem *parent)
     m_defaultSkins = QStringList{":/basic/nor.png"};
     setPixmap(m_defaultSkins.first());
 
-    setOutputsOnTop(true);
     setCanChangeSkin(true);
     updatePorts();
     setPortName("NOR");

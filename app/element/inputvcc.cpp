@@ -17,7 +17,6 @@ InputVcc::InputVcc(QGraphicsItem *parent)
     m_defaultSkins = QStringList{":/input/1.png"};
     setPixmap(m_defaultSkins.first());
 
-    setOutputsOnTop(false);
     setCanChangeSkin(true);
     setRotatable(false);
     setPortName("VCC");

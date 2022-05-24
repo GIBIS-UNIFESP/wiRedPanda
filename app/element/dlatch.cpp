@@ -35,15 +35,13 @@ DLatch::DLatch(QGraphicsItem *parent)
 
 void DLatch::updatePorts()
 {
-    input(0)->setPos(topPosition(), 13);     /* Data   */
-    input(1)->setPos(topPosition(), 45);     /* Enable */
-
-    output(0)->setPos(bottomPosition(), 15); /* Q      */
-    output(1)->setPos(bottomPosition(), 45); /* ~Q     */
-}
+    input(0)->setPos(leftPosition(), 13);   /* Data   */
+    input(1)->setPos(leftPosition(), 45);   /* Enable */
 
 void DLatch::setSkin(const bool defaultSkin, const QString &fileName)
 {
     m_defaultSkins[0] = (defaultSkin) ? ":/memory/D-latch.png" : fileName;
     setPixmap(m_defaultSkins[0]);
+    output(0)->setPos(rightPosition(), 15); /* Q      */
+    output(1)->setPos(rightPosition(), 45); /* ~Q     */
 }

@@ -42,7 +42,7 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const int m
     QFont font("SansSerif");
     font.setBold(true);
     m_label->setFont(font);
-    m_label->setPos(64, 30);
+    m_label->setPos(0, 64);
     m_label->setParentItem(this);
     m_label->setDefaultTextColor(Qt::black);
 
@@ -53,6 +53,7 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const int m
     for (int i = 0; i < minOutputSize; ++i) {
         addOutputPort();
     }
+    GraphicElement::updatePorts();
     updateTheme();
 }
 
@@ -323,6 +324,8 @@ void GraphicElement::removeSurplusInputs(const quint64 inputSize_, QMap<quint64,
         delete deletedPort;
         m_inputs.removeLast();
     }
+
+    updatePorts();
 }
 
 void GraphicElement::removeSurplusOutputs(const quint64 outputSize_, QMap<quint64, QNEPort *> &portMap)
@@ -333,6 +336,8 @@ void GraphicElement::removeSurplusOutputs(const quint64 outputSize_, QMap<quint6
         delete deletedPort;
         m_outputs.removeLast();
     }
+
+    updatePorts();
 }
 
 void GraphicElement::removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap)
@@ -496,30 +501,28 @@ void GraphicElement::setSkin(const bool defaultSkin, const QString &fileName)
 void GraphicElement::updatePorts()
 {
     qCDebug(five) << "Updating port positions that belong to the IC.";
-    int inputPos = m_topPosition;
-    int outputPos = m_bottomPosition;
-    if (m_outputsOnTop) {
-        inputPos = m_bottomPosition;
-        outputPos = m_topPosition;
-    }
-    if (!m_outputs.isEmpty()) {
-        int step = qMax(32 / m_outputs.size(), 6);
-        int x = 32 - m_outputs.size() * step + step;
-        for (auto *port : qAsConst(m_outputs)) {
-            qCDebug(five) << "Setting output at" << x << "," << outputPos;
-            port->setPos(x, outputPos);
+    const int inputPos = m_leftPosition;
+    const int outputPos = m_rightPosition;
+
+    if (!m_inputs.isEmpty()) {
+        const int step = qMax(32 / m_inputs.size(), 6);
+        int y = 32 - m_inputs.size() * step + step;
+        for (auto *port : qAsConst(m_inputs)) {
+            qCDebug(five) << "Setting input at" << inputPos << "," << y;
+            port->setPos(inputPos, y);
             port->update();
-            x += step * 2;
+            y += step * 2;
         }
     }
-    if (!m_inputs.isEmpty()) {
-        int step = qMax(32 / m_inputs.size(), 6);
-        int x = 32 - m_inputs.size() * step + step;
-        for (auto *port : qAsConst(m_inputs)) {
-            qCDebug(five) << "Setting input at" << x << "," << inputPos;
-            port->setPos(x, inputPos);
+
+    if (!m_outputs.isEmpty()) {
+        const int step = qMax(32 / m_outputs.size(), 6);
+        int y = 32 - m_outputs.size() * step + step;
+        for (auto *port : qAsConst(m_outputs)) {
+            qCDebug(five) << "Setting output at" << outputPos << "," << y;
+            port->setPos(outputPos, y);
             port->update();
-            x += step * 2;
+            y += step * 2;
         }
     }
 }
@@ -747,6 +750,7 @@ void GraphicElement::setInputSize(const int size)
             while (inputSize() < size) {
                 addInputPort();
             }
+            updatePorts();
         } else {
             qDeleteAll(m_inputs.begin() + size, m_inputs.end());
             m_inputs.resize(size);
@@ -767,9 +771,11 @@ void GraphicElement::setOutputSize(const int size)
             for (int port = outputSize(); port < size; ++port) {
                 addOutputPort();
             }
+            updatePorts();
         } else {
             qDeleteAll(m_outputs.begin() + size, m_outputs.end());
             m_outputs.resize(size);
+            updatePorts();
         }
     }
 }
@@ -819,36 +825,25 @@ void GraphicElement::setMaxInputSize(const int maxInputSize)
     m_maxInputSize = maxInputSize;
 }
 
-int GraphicElement::bottomPosition() const
+int GraphicElement::rightPosition() const
 {
-    return m_bottomPosition;
+    return m_rightPosition;
 }
 
-void GraphicElement::setBottomPosition(const int bottomPosition)
+void GraphicElement::setRightPosition(const int rightPosition)
 {
-    m_bottomPosition = bottomPosition;
+    m_rightPosition = rightPosition;
     updatePorts();
 }
 
-int GraphicElement::topPosition() const
+int GraphicElement::leftPosition() const
 {
-    return m_topPosition;
+    return m_leftPosition;
 }
 
-void GraphicElement::setTopPosition(const int topPosition)
+void GraphicElement::setLeftPosition(const int leftPosition)
 {
-    m_topPosition = topPosition;
-    updatePorts();
-}
-
-bool GraphicElement::outputsOnTop() const
-{
-    return m_outputsOnTop;
-}
-
-void GraphicElement::setOutputsOnTop(const bool outputsOnTop)
-{
-    m_outputsOnTop = outputsOnTop;
+    m_leftPosition = leftPosition;
     updatePorts();
 }
 

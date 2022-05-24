@@ -18,7 +18,6 @@ And::And(QGraphicsItem *parent)
     setPixmap(m_defaultSkins.first());
 
     setCanChangeSkin(true);
-    setOutputsOnTop(true);
     setPortName("AND");
     setToolTip(m_translatedName);
     updatePorts();

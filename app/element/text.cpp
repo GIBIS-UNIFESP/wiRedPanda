@@ -19,8 +19,6 @@ Text::Text(QGraphicsItem *parent)
     };
     setPixmap(m_defaultSkins.first());
 
-    setRotatable(true);
-    setOutputsOnTop(true);
     setCanChangeSkin(false);
     setHasLabel(true);
     setPortName("TEXT");

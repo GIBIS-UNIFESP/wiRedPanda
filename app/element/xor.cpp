@@ -16,7 +16,6 @@ Xor::Xor(QGraphicsItem *parent)
     m_defaultSkins.append(":/basic/xor.png");
     setPixmap(m_defaultSkins.first());
 
-    setOutputsOnTop(true);
     setCanChangeSkin(true);
     updatePorts();
     setPortName("XOR");

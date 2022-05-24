@@ -23,7 +23,6 @@ Clock::Clock(QGraphicsItem *parent)
     };
     setPixmap(m_defaultSkins.first());
 
-    setOutputsOnTop(false);
     m_locked = false;
     setRotatable(false);
     setCanChangeSkin(true);

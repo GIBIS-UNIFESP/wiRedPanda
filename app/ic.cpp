@@ -20,9 +20,12 @@ IC::IC(QGraphicsItem *parent)
 {
     // qCDebug(zero) << "Creating box.";
     m_defaultSkins.append(":/basic/box.png");
-    setHasLabel(true);
+
+    m_label->setPos(30, 64);
+    m_label->setRotation(90);
+
     setPixmap(m_defaultSkins[0], QRect(0, 0, 64, 64));
-    setOutputsOnTop(true);
+    setHasLabel(true);
     setPortName("IC");
     setToolTip(m_translatedName);
     // qCDebug(zero) << "Box done.";

@@ -46,18 +46,16 @@ SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
 
 void SRFlipFlop::updatePorts()
 {
-    input(0)->setPos(topPosition(), 13);     /* S */
-    input(1)->setPos(topPosition(), 29);     /* Clk */
-    input(2)->setPos(topPosition(), 45);     /* R */
-    input(3)->setPos(32, topPosition());     /* Preset */
-    input(4)->setPos(32, bottomPosition());  /* Clear */
-
-    output(0)->setPos(bottomPosition(), 15); /* Q */
-    output(1)->setPos(bottomPosition(), 45); /* ~Q */
-}
-
 void SRFlipFlop::setSkin(const bool defaultSkin, const QString &fileName)
 {
     m_defaultSkins[0] = (defaultSkin) ? ":/memory/SR-flipflop.png" : fileName;
     setPixmap(m_defaultSkins[0]);
+    input(0)->setPos(leftPosition(), 13);   /* S */
+    input(1)->setPos(leftPosition(), 29);   /* Clk */
+    input(2)->setPos(leftPosition(), 45);   /* R */
+    input(3)->setPos(32, leftPosition());   /* Preset */
+    input(4)->setPos(32, rightPosition());  /* Clear */
+
+    output(0)->setPos(rightPosition(), 15); /* Q */
+    output(1)->setPos(rightPosition(), 45); /* ~Q */
 }
