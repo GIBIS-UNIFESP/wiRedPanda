@@ -105,6 +105,7 @@ void SimulationController::startTimer()
 void SimulationController::stop()
 {
     m_simulationTimer.stop();
+    m_viewTimer.stop();
     const auto elms = m_scene->elements();
     for (auto *elm : elms) {
         if (auto *buzzer = dynamic_cast<Buzzer *>(elm)) {
@@ -119,6 +120,7 @@ void SimulationController::start()
     Clock::reset = true;
     reSortElements();
     m_simulationTimer.start();
+    m_viewTimer.start();
     qCDebug(zero) << "Simulation started.";
     const auto elms = m_scene->elements();
     for (auto *elm : elms) {
