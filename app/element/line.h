@@ -17,8 +17,6 @@ class Line : public GraphicElement
 public:
     explicit Line(QGraphicsItem *parent = nullptr);
 
-    void setSkin(const bool defaultSkin, const QString &fileName) override;
-
 private:
     const QString m_pixmap = ":/line.png";
     const QString m_titleText = tr("<b>LINE</b>");

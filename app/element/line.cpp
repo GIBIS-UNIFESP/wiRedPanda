@@ -14,16 +14,11 @@ Line::Line(QGraphicsItem *parent)
     : GraphicElement(ElementType::Line, ElementGroup::Other, 0, 0, 0, 0, parent)
 {
     m_defaultSkins = QStringList{":/line.png"};
+    m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 
     setCanChangeSkin(true);
     setHasLabel(true);
     setPortName("LINE");
     setToolTip(m_translatedName);
-}
-
-void Line::setSkin(const bool defaultSkin, const QString &fileName)
-{
-    m_defaultSkins[0] = defaultSkin ? ":/line.png" : fileName;
-    setPixmap(m_defaultSkins[0]);
 }

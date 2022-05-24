@@ -14,16 +14,11 @@ Nor::Nor(QGraphicsItem *parent)
     : GraphicElement(ElementType::Nor, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
     m_defaultSkins = QStringList{":/basic/nor.png"};
+    m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 
     setCanChangeSkin(true);
     updatePorts();
     setPortName("NOR");
     setToolTip(m_translatedName);
-}
-
-void Nor::setSkin(const bool defaultSkin, const QString &fileName)
-{
-    m_defaultSkins[0] = (defaultSkin) ? ":/basic/nor.png" : fileName;
-    setPixmap(m_defaultSkins[0]);
 }

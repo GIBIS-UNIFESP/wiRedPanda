@@ -21,6 +21,7 @@ Clock::Clock(QGraphicsItem *parent)
         ":/input/clock0.png",
         ":/input/clock1.png"
     };
+    m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 
     m_locked = false;
@@ -66,7 +67,7 @@ void Clock::setOn(const bool value, const int port)
 {
     Q_UNUSED(port);
     m_isOn = value;
-    setPixmap(m_defaultSkins[m_isOn]);
+    setPixmap(m_usingDefaultSkin ? m_defaultSkins.at(m_isOn) : m_alternativeSkins.at(m_isOn));
     m_outputs.first()->setValue(static_cast<signed char>(m_isOn));
 }
 
@@ -126,11 +127,7 @@ QString Clock::genericProperties()
 
 void Clock::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    if (!m_isOn) {
-        m_defaultSkins[0] = defaultSkin ? ":/input/clock0.png" : fileName;
-        setPixmap(m_defaultSkins.at(0));
-    } else {
-        m_defaultSkins[1] = defaultSkin ? ":/input/clock1.png" : fileName;
-        setPixmap(m_defaultSkins.at(1));
-    }
+    m_usingDefaultSkin = defaultSkin;
+    m_alternativeSkins[m_isOn] = fileName;
+    setPixmap(defaultSkin ? m_defaultSkins.at(m_isOn) : m_alternativeSkins.at(m_isOn));
 }

@@ -17,7 +17,6 @@ class SRFlipFlop : public GraphicElement
 public:
     explicit SRFlipFlop(QGraphicsItem *parent = nullptr);
 
-    void setSkin(const bool defaultSkin, const QString &fileName) override;
     void updatePorts() override;
 
 private:

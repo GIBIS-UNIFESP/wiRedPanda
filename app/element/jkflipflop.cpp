@@ -15,6 +15,7 @@ JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::JKFlipFlop, ElementGroup::Memory, 5, 5, 2, 2, parent)
 {
     m_defaultSkins = QStringList{":/memory/JK-flipflop.png"};
+    m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 
     setRotatable(false);
@@ -48,10 +49,6 @@ JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
 
 void JKFlipFlop::updatePorts()
 {
-void JKFlipFlop::setSkin(const bool defaultSkin, const QString &fileName)
-{
-    m_defaultSkins[0] = (defaultSkin) ? ":/memory/JK-flipflop.png" : fileName;
-    setPixmap(m_defaultSkins[0]);
     input(0)->setPos(leftPosition(), 13);   /* J      */
     input(1)->setPos(leftPosition(), 29);   /* Clk    */
     input(2)->setPos(leftPosition(), 45);   /* K      */

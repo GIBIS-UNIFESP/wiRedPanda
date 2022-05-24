@@ -81,6 +81,7 @@ Led::Led(QGraphicsItem *parent)
         ":/output/16colors/YellowLedOn.png",    // 24
         ":/output/16colors/WhiteLedOn.png",     // 25
     };
+    m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 
     setRotatable(false);
@@ -106,18 +107,12 @@ void Led::refresh()
 
     // TODO: add option to select dark/light colors according to the theme.
     switch (inputSize()) {
-        setPixmap(m_defaultSkins[m_colorNumber + index]);
     case 1: {
         const int index_ = m_colorNumber + index;
         setPixmap(m_usingDefaultSkin ? m_defaultSkins[index_] : m_alternativeSkins[index_]);
         input(0)->setName("");
         break;
     }
-        if (index == 3) {
-            setPixmap(m_defaultSkins[22]);
-        } else {
-            setPixmap(m_defaultSkins[18 + index]);
-        }
     case 2: {
         const int index_ = (index == 3) ? 22 : 18 + index;
         setPixmap(m_usingDefaultSkin ? m_defaultSkins[index_] : m_alternativeSkins[index_]);
@@ -125,7 +120,6 @@ void Led::refresh()
         input(1)->setName("1");
         break;
     }
-        setPixmap(m_defaultSkins[18 + index]);
     case 3: {
         const int index_ = 18 + index;
         setPixmap(m_usingDefaultSkin ? m_defaultSkins[index_] : m_alternativeSkins[index_]);
@@ -134,7 +128,6 @@ void Led::refresh()
         input(2)->setName("2");
         break;
     }
-        setPixmap(m_defaultSkins[10 + index]);
     case 4: {
         const int index_ = 10 + index;
         setPixmap(m_usingDefaultSkin ? m_defaultSkins[index_] : m_alternativeSkins[index_]);
@@ -192,7 +185,10 @@ void Led::updatePorts()
 
 void Led::setSkin(const bool defaultSkin, const QString &fileName)
 {
+    m_usingDefaultSkin = defaultSkin;
+
     int index = 0;
+
     if (isValid()) {
         std::bitset<4> indexBit;
         for (int i = 0; i < inputSize(); ++i) {
@@ -200,31 +196,19 @@ void Led::setSkin(const bool defaultSkin, const QString &fileName)
         }
         index = static_cast<int>(indexBit.to_ulong());
     }
+
     int valueIndex = 0;
+
+    // TODO: add option to select dark/light colors according to the theme.
     switch (inputSize()) {
-    case 1: /* 1 bit */
-        valueIndex = m_colorNumber + index;
-        break;
-
-    case 2: /* 2 bits */ // TODO: add option to select dark/light colors according to the theme.
-        valueIndex = (index == 3) ? 22 : 18 + index;
-        break;
-
-    case 3: /* 3 bits */ // TODO: add option to select dark/light colors according to the theme.
-        valueIndex = 18 + index;
-        break;
-
-    case 4: /* 4 bits */
-        valueIndex = 10 + index;
-        break;
+    case 1: valueIndex = m_colorNumber + index;          break;
+    case 2: valueIndex = (index == 3) ? 22 : 18 + index; break;
+    case 3: valueIndex = 18 + index;                     break;
+    case 4: valueIndex = 10 + index;                     break;
     }
 
-    if (defaultSkin) {
-        resetLedPixmapName(valueIndex);
-    } else {
-        m_defaultSkins[valueIndex] = fileName;
-    }
-    setPixmap(m_defaultSkins[valueIndex]);
+    m_alternativeSkins[valueIndex] = fileName;
+    setPixmap(defaultSkin ? m_defaultSkins.at(valueIndex) : m_alternativeSkins.at(valueIndex));
 }
 
 void Led::resetLedPixmapName(const int ledNumber)

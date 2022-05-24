@@ -36,8 +36,9 @@ Display14::Display14(QGraphicsItem *parent)
         ":/output/counter/counter_n.png",
         ":/output/counter/counter_dp.png",
     };
+    m_alternativeSkins = m_defaultSkins;
+    setPixmap(m_defaultSkins.first());
 
-    setPixmap(m_defaultSkins[0]);
     a = QVector<QPixmap>(5, m_defaultSkins[1]);
     b = QVector<QPixmap>(5, m_defaultSkins[2]);
     c = QVector<QPixmap>(5, m_defaultSkins[3]);
@@ -176,10 +177,4 @@ void Display14::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, con
         stream >> color;
         setColor(color);
     }
-}
-
-void Display14::setSkin(const bool defaultSkin, const QString &fileName)
-{
-    m_defaultSkins[0] = (defaultSkin) ? ":/output/counter/counter_14_off.png" : fileName;
-    setPixmap(m_defaultSkins[0]);
 }

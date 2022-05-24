@@ -17,7 +17,6 @@ class Node : public GraphicElement
 public:
     explicit Node(QGraphicsItem *parent = nullptr);
 
-    void setSkin(const bool defaultSkin, const QString &fileName) override;
     void updatePorts() override;
 
 private:

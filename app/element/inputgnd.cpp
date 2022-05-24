@@ -15,6 +15,7 @@ InputGnd::InputGnd(QGraphicsItem *parent)
     : GraphicElement(ElementType::InputGnd, ElementGroup::StaticInput, 0, 0, 1, 1, parent)
 {
     m_defaultSkins = QStringList{":/input/0.png"};
+    m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 
     setCanChangeSkin(true);
@@ -22,10 +23,4 @@ InputGnd::InputGnd(QGraphicsItem *parent)
     setPortName("GND");
     setToolTip(m_translatedName);
     m_outputs.first()->setValue(false);
-}
-
-void InputGnd::setSkin(const bool defaultSkin, const QString &fileName)
-{
-    m_defaultSkins[0] = (defaultSkin) ? ":/input/0.png" : fileName;
-    setPixmap(m_defaultSkins[0]);
 }

@@ -22,12 +22,12 @@ Buzzer::Buzzer(QGraphicsItem *parent)
         ":/output/BuzzerOff.png",
         ":/output/BuzzerOn.png"
     };
+    m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 
     m_label->setPos(64, 34);
     setRotatable(false);
     setHasAudio(true);
-    m_alternativeSkins = m_defaultSkins;
     updatePorts();
     setCanChangeSkin(true);
     setHasLabel(true);
@@ -103,11 +103,4 @@ void Buzzer::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const 
     QString note;
     stream >> note;
     setAudio(note);
-}
-
-void Buzzer::setSkin(const bool defaultSkin, const QString &fileName)
-{
-    m_usingDefaultSkin = defaultSkin;
-    m_alternativeSkins[m_play] = fileName;
-    setPixmap(defaultSkin ? m_defaultSkins.at(m_play) : m_alternativeSkins.at(m_play));
 }

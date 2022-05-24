@@ -26,7 +26,6 @@ public:
     void refresh() override;
     void save(QDataStream &stream) const override;
     void setAudio(const QString &note) override;
-    void setSkin(const bool defaultSkin, const QString &fileName) override;
 
 private:
     void playBuzzer();

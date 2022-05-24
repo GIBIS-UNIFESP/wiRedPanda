@@ -15,6 +15,7 @@ InputVcc::InputVcc(QGraphicsItem *parent)
     : GraphicElement(ElementType::InputVcc, ElementGroup::StaticInput, 0, 0, 1, 1, parent)
 {
     m_defaultSkins = QStringList{":/input/1.png"};
+    m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 
     setCanChangeSkin(true);
@@ -22,10 +23,4 @@ InputVcc::InputVcc(QGraphicsItem *parent)
     setPortName("VCC");
     setToolTip(m_translatedName);
     m_outputs.first()->setValue(true);
-}
-
-void InputVcc::setSkin(const bool defaultSkin, const QString &fileName)
-{
-    m_defaultSkins[0] = (defaultSkin) ? ":/input/1.png" : fileName;
-    setPixmap(m_defaultSkins[0]);
 }

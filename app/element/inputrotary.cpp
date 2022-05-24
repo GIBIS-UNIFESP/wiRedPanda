@@ -40,6 +40,7 @@ InputRotary::InputRotary(QGraphicsItem *parent)
         ":/input/rotary/rotary_arrow_14.png",
         ":/input/rotary/rotary_arrow_15.png",
     };
+    m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 
     m_rotary2  =    m_defaultSkins[0];
@@ -80,12 +81,12 @@ InputRotary::InputRotary(QGraphicsItem *parent)
 void InputRotary::refresh()
 {
     switch (outputSize()) {
-    case 2:  setPixmap(m_defaultSkins[0]); break;
-    case 4:  setPixmap(m_defaultSkins[1]); break;
-    case 8:  setPixmap(m_defaultSkins[2]); break;
-    case 10: setPixmap(m_defaultSkins[3]); break;
+    case 2:  setPixmap(m_usingDefaultSkin ? m_defaultSkins[0] : m_alternativeSkins[0]); break;
+    case 4:  setPixmap(m_usingDefaultSkin ? m_defaultSkins[1] : m_alternativeSkins[1]); break;
+    case 8:  setPixmap(m_usingDefaultSkin ? m_defaultSkins[2] : m_alternativeSkins[2]); break;
+    case 10: setPixmap(m_usingDefaultSkin ? m_defaultSkins[3] : m_alternativeSkins[3]); break;
  // case 16:
-    default: setPixmap(m_defaultSkins[4]); break;
+    default: setPixmap(m_usingDefaultSkin ? m_defaultSkins[4] : m_alternativeSkins[4]); break;
     }
     update();
 }
@@ -229,52 +230,36 @@ void InputRotary::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, c
 
 void InputRotary::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    if (defaultSkin) {
-        switch (outputSize()) {
-        case 2:
-            m_defaultSkins[0] = ":/input/rotary/rotary_2.png";
-            setPixmap(m_defaultSkins[0]);
-            break;
-        case 4:
-            m_defaultSkins[1] = ":/input/rotary/rotary_4.png";
-            setPixmap(m_defaultSkins[1]);
-            break;
-        case 8:
-            m_defaultSkins[2] = ":/input/rotary/rotary_8.png";
-            setPixmap(m_defaultSkins[2]);
-            break;
-        case 10:
-            m_defaultSkins[3] = ":/input/rotary/rotary_10.png";
-            setPixmap(m_defaultSkins[3]);
-            break;
-        default: // case 16:
-            m_defaultSkins[4] = ":/input/rotary/rotary_16.png";
-            setPixmap(m_defaultSkins[4]);
-            break;
-        }
-    } else {
-        switch (outputSize()) {
-        case 2:
-            m_defaultSkins[0] = fileName;
-            setPixmap(m_defaultSkins[0]);
-            break;
-        case 4:
-            m_defaultSkins[1] = ":/input/rotary/rotary_4.png";
-            setPixmap(m_defaultSkins[1]);
-            break;
-        case 8:
-            m_defaultSkins[2] = ":/input/rotary/rotary_8.png";
-            setPixmap(m_defaultSkins[2]);
-            break;
-        case 10:
-            m_defaultSkins[3] = ":/input/rotary/rotary_10.png";
-            setPixmap(m_defaultSkins[3]);
-            break;
-        default: // case 16:
-            m_defaultSkins[4] = ":/input/rotary/rotary_16.png";
-            setPixmap(m_defaultSkins[4]);
-            break;
-        }
+    m_usingDefaultSkin = defaultSkin;
+    m_alternativeSkins[outputSize()] = fileName;
+
+    switch (outputSize()) {
+    case 2: {
+        m_alternativeSkins[0] = fileName;
+        setPixmap(m_usingDefaultSkin ? m_defaultSkins[0] : m_alternativeSkins[0]);
+        break;
+    }
+    case 4: {
+        m_alternativeSkins[1] = fileName;
+        setPixmap(m_usingDefaultSkin ? m_defaultSkins[1] : m_alternativeSkins[1]);
+        break;
+    }
+    case 8: {
+        m_alternativeSkins[2] = fileName;
+        setPixmap(m_usingDefaultSkin ? m_defaultSkins[2] : m_alternativeSkins[2]);
+        break;
+    }
+    case 10: {
+        m_alternativeSkins[3] = fileName;
+        setPixmap(m_usingDefaultSkin ? m_defaultSkins[3] : m_alternativeSkins[3]);
+        break;
+    }
+ // case 16:
+    default: {
+        m_alternativeSkins[4] = fileName;
+        setPixmap(m_usingDefaultSkin ? m_defaultSkins[4] : m_alternativeSkins[4]);
+        break;
+    }
     }
 }
 

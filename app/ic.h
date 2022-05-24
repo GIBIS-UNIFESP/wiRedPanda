@@ -28,7 +28,6 @@ public:
     void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version) override;
     void loadFile(const QString &fileName);
     void save(QDataStream &stream) const override;
-    void setSkin(const bool defaultSkin, const QString &fileName) override;
 
 protected:
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;

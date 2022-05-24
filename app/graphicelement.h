@@ -202,8 +202,6 @@ private:
     void removeSurplusInputs(const quint64 inputSize_, QMap<quint64, QNEPort *> &portMap);
     void removeSurplusOutputs(const quint64 outputSize_, QMap<quint64, QNEPort *> &portMap);
 
-    inline static QMap<QString, QPixmap> m_loadedPixmaps;
-
     /**
      * @brief Current pixmap displayed for this GraphicElement.
      */
