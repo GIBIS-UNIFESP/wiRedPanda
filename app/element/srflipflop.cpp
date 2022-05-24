@@ -33,16 +33,16 @@ SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
     output(0)->setName("Q");
     output(1)->setName("~Q");
 
+    input(0)->setRequired(false); /* S */
+    input(2)->setRequired(false); /* R */
+    input(3)->setRequired(false); /* p */
+    input(4)->setRequired(false); /* c */
+
     input(3)->setDefaultValue(1);
     input(4)->setDefaultValue(1);
 
     output(0)->setDefaultValue(0);
     output(1)->setDefaultValue(1);
-
-    input(0)->setRequired(false); /* S */
-    input(2)->setRequired(false); /* R */
-    input(3)->setRequired(false); /* p */
-    input(4)->setRequired(false); /* c */
 }
 
 void SRFlipFlop::updatePorts()

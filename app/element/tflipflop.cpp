@@ -32,15 +32,15 @@ TFlipFlop::TFlipFlop(QGraphicsItem *parent)
     output(0)->setName("Q");
     output(1)->setName("~Q");
 
+    input(0)->setRequired(false);
+    input(2)->setRequired(false);
+    input(3)->setRequired(false);
+
     input(2)->setDefaultValue(1);
     input(3)->setDefaultValue(1);
 
     output(0)->setDefaultValue(0);
     output(1)->setDefaultValue(1);
-
-    input(0)->setRequired(false);
-    input(2)->setRequired(false);
-    input(3)->setRequired(false);
 }
 
 void TFlipFlop::updatePorts()

@@ -33,6 +33,11 @@ JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
     output(0)->setName("Q");
     output(1)->setName("~Q");
 
+    input(0)->setRequired(false); /* J */
+    input(2)->setRequired(false); /* K */
+    input(3)->setRequired(false); /* p */
+    input(4)->setRequired(false); /* c */
+
     input(0)->setDefaultValue(1);
     input(2)->setDefaultValue(1);
     input(3)->setDefaultValue(1);
@@ -40,11 +45,6 @@ JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
 
     output(0)->setDefaultValue(0);
     output(1)->setDefaultValue(1);
-
-    input(0)->setRequired(false); /* J */
-    input(2)->setRequired(false); /* K */
-    input(3)->setRequired(false); /* p */
-    input(4)->setRequired(false); /* c */
 }
 
 void JKFlipFlop::updatePorts()
