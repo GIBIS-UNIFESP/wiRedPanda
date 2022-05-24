@@ -13,10 +13,8 @@ int id = qRegisterMetaType<Nor>();
 Nor::Nor(QGraphicsItem *parent)
     : GraphicElement(ElementType::Nor, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
-    qCDebug(zero) << "Creating nor.";
-
-    m_pixmapSkinName = QStringList{":/basic/nor.png"};
-    setPixmap(m_pixmapSkinName.first());
+    m_defaultSkins = QStringList{":/basic/nor.png"};
+    setPixmap(m_defaultSkins.first());
 
     setOutputsOnTop(true);
     setCanChangeSkin(true);
@@ -27,6 +25,6 @@ Nor::Nor(QGraphicsItem *parent)
 
 void Nor::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    m_pixmapSkinName[0] = (defaultSkin) ? ":/basic/nor.png" : fileName;
-    setPixmap(m_pixmapSkinName[0]);
+    m_defaultSkins[0] = (defaultSkin) ? ":/basic/nor.png" : fileName;
+    setPixmap(m_defaultSkins[0]);
 }

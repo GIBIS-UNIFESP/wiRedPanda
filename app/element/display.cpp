@@ -17,9 +17,7 @@ int id = qRegisterMetaType<Display>();
 Display::Display(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display, ElementGroup::Output, 8, 8, 0, 0, parent)
 {
-    qCDebug(zero) << "Creating display.";
-
-    m_pixmapSkinName = QStringList{
+    m_defaultSkins = QStringList{
         ":/output/counter/counter_off.png",
         ":/output/counter/counter_a.png",
         ":/output/counter/counter_b.png",
@@ -32,15 +30,15 @@ Display::Display(QGraphicsItem *parent)
     };
 
     qCDebug(three) << "Allocating pixmaps.";
-    setPixmap(m_pixmapSkinName[0]);
-    a =  QVector<QPixmap>(5, m_pixmapSkinName[1]);
-    b =  QVector<QPixmap>(5, m_pixmapSkinName[2]);
-    c =  QVector<QPixmap>(5, m_pixmapSkinName[3]);
-    d =  QVector<QPixmap>(5, m_pixmapSkinName[4]);
-    e =  QVector<QPixmap>(5, m_pixmapSkinName[5]);
-    f =  QVector<QPixmap>(5, m_pixmapSkinName[6]);
-    g =  QVector<QPixmap>(5, m_pixmapSkinName[7]);
-    dp = QVector<QPixmap>(5, m_pixmapSkinName[8]);
+    setPixmap(m_defaultSkins[0]);
+    a =  QVector<QPixmap>(5, m_defaultSkins[1]);
+    b =  QVector<QPixmap>(5, m_defaultSkins[2]);
+    c =  QVector<QPixmap>(5, m_defaultSkins[3]);
+    d =  QVector<QPixmap>(5, m_defaultSkins[4]);
+    e =  QVector<QPixmap>(5, m_defaultSkins[5]);
+    f =  QVector<QPixmap>(5, m_defaultSkins[6]);
+    g =  QVector<QPixmap>(5, m_defaultSkins[7]);
+    dp = QVector<QPixmap>(5, m_defaultSkins[8]);
 
     setRotatable(false);
     setHasColors(true);
@@ -121,8 +119,14 @@ void Display::updatePorts()
     input(3)->setName("D (" + tr("bottom") + ")");
     input(4)->setName("A (" + tr("top") + ")");
     input(5)->setName("B (" + tr("upper right") + ")");
+    input(0)->setName("G (" +  tr("middle") + ")");
+    input(1)->setName("F (" +  tr("upper left") + ")");
+    input(2)->setName("E (" +  tr("lower left") + ")");
+    input(3)->setName("D (" +  tr("bottom") + ")");
+    input(4)->setName("A (" +  tr("top") + ")");
+    input(5)->setName("B (" +  tr("upper right") + ")");
     input(6)->setName("DP (" + tr("dot") + ")");
-    input(7)->setName("C (" + tr("lower right") + ")");
+    input(7)->setName("C (" +  tr("lower right") + ")");
 }
 
 void Display::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -191,14 +195,14 @@ void Display::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const
         updatePorts();
     }
     if (version >= 3.1) {
-        QString clr;
-        stream >> clr;
-        setColor(clr);
+        QString color;
+        stream >> color;
+        setColor(color);
     }
 }
 
 void Display::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    m_pixmapSkinName[0] = (defaultSkin) ? ":/output/counter/counter_off.png" : fileName;
-    setPixmap(m_pixmapSkinName[0]);
+    m_defaultSkins[0] = (defaultSkin) ? ":/output/counter/counter_off.png" : fileName;
+    setPixmap(m_defaultSkins[0]);
 }

@@ -14,10 +14,8 @@ int id = qRegisterMetaType<Mux>();
 Mux::Mux(QGraphicsItem *parent)
     : GraphicElement(ElementType::Mux, ElementGroup::Mux, 3, 3, 1, 1, parent)
 {
-    qCDebug(zero) << "Creating mux.";
-
-    m_pixmapSkinName = QStringList{":/basic/mux.png"};
-    setPixmap(m_pixmapSkinName.first());
+    m_defaultSkins = QStringList{":/basic/mux.png"};
+    setPixmap(m_defaultSkins.first());
 
     setRotatable(true);
     Mux::updatePorts();
@@ -41,6 +39,6 @@ void Mux::updatePorts()
 
 void Mux::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    m_pixmapSkinName[0] = (defaultSkin) ? ":/basic/mux.png" : fileName;
-    setPixmap(m_pixmapSkinName[0]);
+    m_defaultSkins[0] = (defaultSkin) ? ":/basic/mux.png" : fileName;
+    setPixmap(m_defaultSkins[0]);
 }

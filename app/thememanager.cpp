@@ -37,7 +37,7 @@ ThemeAttributes ThemeManager::attributes()
 void ThemeAttributes::setTheme(const Theme theme)
 {
     switch (theme) {
-    case Theme::Light:
+    case Theme::Light: {
         m_sceneBgBrush = QColor(255, 255, 230);
         m_sceneBgDots = QColor(Qt::darkGray);
 
@@ -56,8 +56,9 @@ void ThemeAttributes::setTheme(const Theme theme)
         qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
 #endif
         break;
+    }
 
-    case Theme::Dark:
+    case Theme::Dark: {
         m_sceneBgBrush = QColor(64, 69, 82);
         m_sceneBgDots = QColor(Qt::black);
 
@@ -96,6 +97,7 @@ void ThemeAttributes::setTheme(const Theme theme)
         qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
 #endif
         break;
+    }
     }
 
     m_qnePortFalseBrush = m_qneConnectionFalse;

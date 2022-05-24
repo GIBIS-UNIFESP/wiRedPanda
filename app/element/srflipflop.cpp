@@ -14,10 +14,8 @@ int id = qRegisterMetaType<SRFlipFlop>();
 SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::SRFlipFlop, ElementGroup::Memory, 5, 5, 2, 2, parent)
 {
-    qCDebug(zero) << "Creating srflipflop.";
-
-    m_pixmapSkinName = QStringList{":/memory/SR-flipflop.png"};
-    setPixmap(m_pixmapSkinName.first());
+    m_defaultSkins = QStringList{":/memory/SR-flipflop.png"};
+    setPixmap(m_defaultSkins.first());
 
     setRotatable(false);
     setCanChangeSkin(true);
@@ -60,6 +58,6 @@ void SRFlipFlop::updatePorts()
 
 void SRFlipFlop::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    m_pixmapSkinName[0] = (defaultSkin) ? ":/memory/SR-flipflop.png" : fileName;
-    setPixmap(m_pixmapSkinName[0]);
+    m_defaultSkins[0] = (defaultSkin) ? ":/memory/SR-flipflop.png" : fileName;
+    setPixmap(m_defaultSkins[0]);
 }

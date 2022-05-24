@@ -1174,7 +1174,7 @@ void MainWindow::populateLeftMenu()
     m_ui->tabElements->setCurrentIndex(0);
     populateMenu(m_ui->verticalSpacer_InOut, {"InputVcc", "InputGnd", "InputButton", "InputSwitch", "InputRotary", "Clock", "Led", "Display", "Display14", "Buzzer"}, m_ui->scrollAreaWidgetContents_InOut->layout());
     populateMenu(m_ui->verticalSpacer_Gates, {"And", "Or", "Not", "Nand", "Nor", "Xor", "Xnor", "Mux", "Demux", "Node"}, m_ui->scrollAreaWidgetContents_Gates->layout());
-    populateMenu(m_ui->verticalSpacer_Memory, {"DFlipFlop", "DLatch", "JKFlipFlop", "SRFlipFlop", "TFlipFlop"}, m_ui->scrollAreaWidgetContents_Memory->layout());
+    populateMenu(m_ui->verticalSpacer_Memory, {"DLatch", "DFlipFlop", "JKFlipFlop", "SRFlipFlop", "TFlipFlop"}, m_ui->scrollAreaWidgetContents_Memory->layout());
     populateMenu(m_ui->verticalSpacer_MISC, {"Text", "Line"}, m_ui->scrollAreaWidgetContents_Misc->layout());
 }
 
@@ -1313,17 +1313,18 @@ void MainWindow::on_actionLabelsUnderIcons_triggered(const bool checked)
 
 bool MainWindow::event(QEvent *event)
 {
-    switch (event->type())
-    {
-    case QEvent::WindowActivate:
+    switch (event->type()) {
+    case QEvent::WindowActivate: {
         if (m_ui->actionPlay->isChecked()) {
             on_actionPlay_triggered(true);
         }
         break;
+    }
 
-    case QEvent::WindowDeactivate:
-            on_actionPlay_triggered(false);
+    case QEvent::WindowDeactivate: {
+        on_actionPlay_triggered(false);
         break;
+    }
 
     default: break;
     };

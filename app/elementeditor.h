@@ -63,7 +63,6 @@ private:
     bool m_canChangeOutputSize = false;
     bool m_canChangeSkin = false;
     bool m_canMorph = false;
-    bool m_defaultSkin = true;
     bool m_hasAnyProperty = false;
     bool m_hasAudio = false;
     bool m_hasColors = false;
@@ -82,6 +81,7 @@ private:
     bool m_hasSameTrigger = false;
     bool m_hasSameType = false;
     bool m_hasTrigger = false;
-    bool m_updatingSkin = false;
+    bool m_isDefaultSkin = true;
+    bool m_isUpdatingSkin = false;
 };
 

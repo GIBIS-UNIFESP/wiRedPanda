@@ -14,7 +14,7 @@ void Comment::setVerbosity(const int verbosity)
 {
     QString rules;
 
-    switch(verbosity){
+    switch (verbosity) {
     default:                         [[fallthrough]];
     case 0:  rules += "0 = false\n"; [[fallthrough]];
     case 1:  rules += "1 = false\n"; [[fallthrough]];

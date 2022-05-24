@@ -17,9 +17,7 @@ int id = qRegisterMetaType<InputRotary>();
 InputRotary::InputRotary(QGraphicsItem *parent)
     : GraphicElement(ElementType::InputRotary, ElementGroup::Input, 0, 0, 2, 16, parent)
 {
-    qCDebug(three) << "Creating rotary.";
-
-    m_pixmapSkinName = QStringList{
+    m_defaultSkins = QStringList{
         ":/input/rotary/rotary_2.png",
         ":/input/rotary/rotary_4.png",
         ":/input/rotary/rotary_8.png",
@@ -42,38 +40,38 @@ InputRotary::InputRotary(QGraphicsItem *parent)
         ":/input/rotary/rotary_arrow_14.png",
         ":/input/rotary/rotary_arrow_15.png",
     };
-    setPixmap(m_pixmapSkinName.first());
+    setPixmap(m_defaultSkins.first());
 
-    m_rotary2  =    m_pixmapSkinName[0];
-    m_rotary4  =    m_pixmapSkinName[1];
-    m_rotary8  =    m_pixmapSkinName[2];
-    m_rotary10 =    m_pixmapSkinName[3];
-    m_rotary16 =    m_pixmapSkinName[4];
+    m_rotary2  =    m_defaultSkins[0];
+    m_rotary4  =    m_defaultSkins[1];
+    m_rotary8  =    m_defaultSkins[2];
+    m_rotary10 =    m_defaultSkins[3];
+    m_rotary16 =    m_defaultSkins[4];
 
     m_pointer =     QVector<QPixmap>(16);
 
-    m_pointer[0]  = m_pixmapSkinName[5];
-    m_pointer[1]  = m_pixmapSkinName[6];
-    m_pointer[2]  = m_pixmapSkinName[7];
-    m_pointer[3]  = m_pixmapSkinName[8];
-    m_pointer[4]  = m_pixmapSkinName[9];
-    m_pointer[5]  = m_pixmapSkinName[10];
-    m_pointer[6]  = m_pixmapSkinName[11];
-    m_pointer[7]  = m_pixmapSkinName[12];
-    m_pointer[8]  = m_pixmapSkinName[13];
-    m_pointer[9]  = m_pixmapSkinName[14];
-    m_pointer[10] = m_pixmapSkinName[15];
-    m_pointer[11] = m_pixmapSkinName[16];
-    m_pointer[12] = m_pixmapSkinName[17];
-    m_pointer[13] = m_pixmapSkinName[18];
-    m_pointer[14] = m_pixmapSkinName[19];
-    m_pointer[15] = m_pixmapSkinName[20];
+    m_pointer[0]  = m_defaultSkins[5];
+    m_pointer[1]  = m_defaultSkins[6];
+    m_pointer[2]  = m_defaultSkins[7];
+    m_pointer[3]  = m_defaultSkins[8];
+    m_pointer[4]  = m_defaultSkins[9];
+    m_pointer[5]  = m_defaultSkins[10];
+    m_pointer[6]  = m_defaultSkins[11];
+    m_pointer[7]  = m_defaultSkins[12];
+    m_pointer[8]  = m_defaultSkins[13];
+    m_pointer[9]  = m_defaultSkins[14];
+    m_pointer[10] = m_defaultSkins[15];
+    m_pointer[11] = m_defaultSkins[16];
+    m_pointer[12] = m_defaultSkins[17];
+    m_pointer[13] = m_defaultSkins[18];
+    m_pointer[14] = m_defaultSkins[19];
+    m_pointer[15] = m_defaultSkins[20];
 
     m_locked = false;
     setRotatable(false);
     setOutputsOnTop(false);
     setCanChangeSkin(true);
-//    InputRotary::updatePorts();
+    InputRotary::updatePorts();
     setHasLabel(true);
     setHasTrigger(true);
     setPortName("Rotary");
@@ -83,12 +81,12 @@ InputRotary::InputRotary(QGraphicsItem *parent)
 void InputRotary::refresh()
 {
     switch (outputSize()) {
-    case 2:  setPixmap(m_pixmapSkinName[0]); break;
-    case 4:  setPixmap(m_pixmapSkinName[1]); break;
-    case 8:  setPixmap(m_pixmapSkinName[2]); break;
-    case 10: setPixmap(m_pixmapSkinName[3]); break;
+    case 2:  setPixmap(m_defaultSkins[0]); break;
+    case 4:  setPixmap(m_defaultSkins[1]); break;
+    case 8:  setPixmap(m_defaultSkins[2]); break;
+    case 10: setPixmap(m_defaultSkins[3]); break;
  // case 16:
-    default: setPixmap(m_pixmapSkinName[4]); break;
+    default: setPixmap(m_defaultSkins[4]); break;
     }
     update();
 }
@@ -230,47 +228,47 @@ void InputRotary::setSkin(const bool defaultSkin, const QString &fileName)
     if (defaultSkin) {
         switch (outputSize()) {
         case 2:
-            m_pixmapSkinName[0] = ":/input/rotary/rotary_2.png";
-            setPixmap(m_pixmapSkinName[0]);
+            m_defaultSkins[0] = ":/input/rotary/rotary_2.png";
+            setPixmap(m_defaultSkins[0]);
             break;
         case 4:
-            m_pixmapSkinName[1] = ":/input/rotary/rotary_4.png";
-            setPixmap(m_pixmapSkinName[1]);
+            m_defaultSkins[1] = ":/input/rotary/rotary_4.png";
+            setPixmap(m_defaultSkins[1]);
             break;
         case 8:
-            m_pixmapSkinName[2] = ":/input/rotary/rotary_8.png";
-            setPixmap(m_pixmapSkinName[2]);
+            m_defaultSkins[2] = ":/input/rotary/rotary_8.png";
+            setPixmap(m_defaultSkins[2]);
             break;
         case 10:
-            m_pixmapSkinName[3] = ":/input/rotary/rotary_10.png";
-            setPixmap(m_pixmapSkinName[3]);
+            m_defaultSkins[3] = ":/input/rotary/rotary_10.png";
+            setPixmap(m_defaultSkins[3]);
             break;
         default: // case 16:
-            m_pixmapSkinName[4] = ":/input/rotary/rotary_16.png";
-            setPixmap(m_pixmapSkinName[4]);
+            m_defaultSkins[4] = ":/input/rotary/rotary_16.png";
+            setPixmap(m_defaultSkins[4]);
             break;
         }
     } else {
         switch (outputSize()) {
         case 2:
-            m_pixmapSkinName[0] = fileName;
-            setPixmap(m_pixmapSkinName[0]);
+            m_defaultSkins[0] = fileName;
+            setPixmap(m_defaultSkins[0]);
             break;
         case 4:
-            m_pixmapSkinName[1] = ":/input/rotary/rotary_4.png";
-            setPixmap(m_pixmapSkinName[1]);
+            m_defaultSkins[1] = ":/input/rotary/rotary_4.png";
+            setPixmap(m_defaultSkins[1]);
             break;
         case 8:
-            m_pixmapSkinName[2] = ":/input/rotary/rotary_8.png";
-            setPixmap(m_pixmapSkinName[2]);
+            m_defaultSkins[2] = ":/input/rotary/rotary_8.png";
+            setPixmap(m_defaultSkins[2]);
             break;
         case 10:
-            m_pixmapSkinName[3] = ":/input/rotary/rotary_10.png";
-            setPixmap(m_pixmapSkinName[3]);
+            m_defaultSkins[3] = ":/input/rotary/rotary_10.png";
+            setPixmap(m_defaultSkins[3]);
             break;
         default: // case 16:
-            m_pixmapSkinName[4] = ":/input/rotary/rotary_16.png";
-            setPixmap(m_pixmapSkinName[4]);
+            m_defaultSkins[4] = ":/input/rotary/rotary_16.png";
+            setPixmap(m_defaultSkins[4]);
             break;
         }
     }

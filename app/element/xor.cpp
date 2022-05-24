@@ -13,10 +13,8 @@ int id = qRegisterMetaType<Xor>();
 Xor::Xor(QGraphicsItem *parent)
     : GraphicElement(ElementType::Xor, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
-    qCDebug(zero) << "Creating xor.";
-
-    m_pixmapSkinName.append(":/basic/xor.png");
-    setPixmap(m_pixmapSkinName.first());
+    m_defaultSkins.append(":/basic/xor.png");
+    setPixmap(m_defaultSkins.first());
 
     setOutputsOnTop(true);
     setCanChangeSkin(true);
@@ -27,6 +25,6 @@ Xor::Xor(QGraphicsItem *parent)
 
 void Xor::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    m_pixmapSkinName[0] = (defaultSkin) ? ":/basic/xor.png" : fileName;
-    setPixmap(m_pixmapSkinName[0]);
+    m_defaultSkins[0] = (defaultSkin) ? ":/basic/xor.png" : fileName;
+    setPixmap(m_defaultSkins[0]);
 }

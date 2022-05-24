@@ -19,7 +19,7 @@ public:
     explicit Clock(QGraphicsItem *parent = nullptr);
 
     inline static bool pause = false; // pause clock counting while simulating.
-    inline static bool reset = false;
+    inline static bool reset = true;
 
     QString genericProperties() override;
     bool on(const int port = 0) const override;

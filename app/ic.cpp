@@ -19,9 +19,9 @@ IC::IC(QGraphicsItem *parent)
     : GraphicElement(ElementType::IC, ElementGroup::IC, 0, 0, 0, 0, parent)
 {
     // qCDebug(zero) << "Creating box.";
-    m_pixmapSkinName.append(":/basic/box.png");
+    m_defaultSkins.append(":/basic/box.png");
     setHasLabel(true);
-    setPixmap(m_pixmapSkinName[0], QRect(0, 0, 64, 64));
+    setPixmap(m_defaultSkins[0], QRect(0, 0, 64, 64));
     setOutputsOnTop(true);
     setPortName("IC");
     setToolTip(m_translatedName);
@@ -112,6 +112,6 @@ void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 void IC::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    m_pixmapSkinName[0] = (defaultSkin) ? ":/basic/box.png" : fileName;
-    setPixmap(m_pixmapSkinName[0]);
+    m_defaultSkins[0] = (defaultSkin) ? ":/basic/box.png" : fileName;
+    setPixmap(m_defaultSkins[0]);
 }

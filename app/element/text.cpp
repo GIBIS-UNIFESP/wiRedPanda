@@ -13,13 +13,11 @@ int id = qRegisterMetaType<Text>();
 Text::Text(QGraphicsItem *parent)
     : GraphicElement(ElementType::Text, ElementGroup::Other, 0, 0, 0, 0, parent)
 {
-    qCDebug(zero) << "Creating text.";
-
-    m_pixmapSkinName = QStringList{
+    m_defaultSkins = QStringList{
         ":/no_text.png",
         ":/text.png",
     };
-    setPixmap(m_pixmapSkinName.first());
+    setPixmap(m_defaultSkins.first());
 
     setRotatable(true);
     setOutputsOnTop(true);

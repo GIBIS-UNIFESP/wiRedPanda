@@ -13,10 +13,8 @@ int id = qRegisterMetaType<Or>();
 Or::Or(QGraphicsItem *parent)
     : GraphicElement(ElementType::Or, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
-    qCDebug(zero) << "Creating or.";
-
-    m_pixmapSkinName = QStringList{":/basic/or.png"};
-    setPixmap(m_pixmapSkinName.first());
+    m_defaultSkins = QStringList{":/basic/or.png"};
+    setPixmap(m_defaultSkins.first());
 
     setOutputsOnTop(true);
     setCanChangeSkin(true);
@@ -27,6 +25,6 @@ Or::Or(QGraphicsItem *parent)
 
 void Or::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    m_pixmapSkinName[0] = (defaultSkin) ? ":/basic/or.png" : fileName;
-    setPixmap(m_pixmapSkinName[0]);
+    m_defaultSkins[0] = (defaultSkin) ? ":/basic/or.png" : fileName;
+    setPixmap(m_defaultSkins[0]);
 }

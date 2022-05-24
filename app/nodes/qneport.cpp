@@ -38,21 +38,18 @@
 QNEPort::QNEPort(QGraphicsItem *parent)
     : QGraphicsPathItem(parent)
 {
-    QPainterPath p;
-    p.addPolygon(QRectF(QPointF(-m_radius, -m_radius), QPointF(m_radius, m_radius)));
-    setPath(p);
-
-    setPen(QPen(Qt::darkRed));
-    setCurrentBrush(Qt::red);
+    QPainterPath path;
+    path.addPolygon(QRectF(QPointF(-m_radius, -m_radius), QPointF(m_radius, m_radius)));
+    setPath(path);
 
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
 }
 
-void QNEPort::setName(const QString &n)
+void QNEPort::setName(const QString &name)
 {
-    m_name = n;
-    // m_label->setPlainText(n);
-    setToolTip(n);
+    m_name = name;
+    // m_label->setPlainText(name);
+    setToolTip(name);
 }
 
 int QNEPort::radius() const
@@ -94,9 +91,9 @@ void QNEPort::disconnect(QNEConnection *conn)
     updateConnections();
 }
 
-void QNEPort::setPortFlags(const int f)
+void QNEPort::setPortFlags(const int flags)
 {
-    m_portFlags = f;
+    m_portFlags = flags;
     if (m_portFlags & TypePort) {
         QFont font(scene()->font());
         font.setItalic(true);
@@ -125,9 +122,9 @@ quint64 QNEPort::ptr() const
     return m_ptr;
 }
 
-void QNEPort::setPtr(const quint64 p)
+void QNEPort::setPtr(const quint64 pointer)
 {
-    m_ptr = p;
+    m_ptr = pointer;
 }
 
 bool QNEPort::isConnected(QNEPort *other)
@@ -280,7 +277,8 @@ bool QNEInputPort::isValid() const
     if (m_connections.isEmpty()) {
         return !isRequired();
     }
-    return m_connections.size() == 1;
+
+    return (m_connections.size() == 1);
 }
 
 void QNEInputPort::updateTheme()
@@ -329,7 +327,7 @@ bool QNEOutputPort::isOutput() const
 
 bool QNEOutputPort::isValid() const
 {
-    return m_value != -1;
+    return (m_value != -1);
 }
 
 void QNEOutputPort::updateTheme()

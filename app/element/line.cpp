@@ -13,10 +13,8 @@ int id = qRegisterMetaType<Line>();
 Line::Line(QGraphicsItem *parent)
     : GraphicElement(ElementType::Line, ElementGroup::Other, 0, 0, 0, 0, parent)
 {
-    qCDebug(zero) << "Creating line.";
-
-    m_pixmapSkinName = QStringList{":/line.png"};
-    setPixmap(m_pixmapSkinName.first());
+    m_defaultSkins = QStringList{":/line.png"};
+    setPixmap(m_defaultSkins.first());
 
     setRotatable(true);
     setOutputsOnTop(true);
@@ -28,6 +26,6 @@ Line::Line(QGraphicsItem *parent)
 
 void Line::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    m_pixmapSkinName[0] = defaultSkin ? ":/line.png" : fileName;
-    setPixmap(m_pixmapSkinName[0]);
+    m_defaultSkins[0] = defaultSkin ? ":/line.png" : fileName;
+    setPixmap(m_defaultSkins[0]);
 }

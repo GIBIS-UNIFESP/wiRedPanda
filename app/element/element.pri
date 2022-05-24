@@ -13,7 +13,6 @@ SOURCES += \
     $$PWD/inputswitch.cpp \
     $$PWD/inputvcc.cpp \
     $$PWD/jkflipflop.cpp \
-    $$PWD/jklatch.cpp \
     $$PWD/led.cpp \
     $$PWD/line.cpp \
     $$PWD/mux.cpp \
@@ -25,7 +24,6 @@ SOURCES += \
     $$PWD/srflipflop.cpp \
     $$PWD/text.cpp \
     $$PWD/tflipflop.cpp \
-#    $$PWD/tlatch.cpp \
     $$PWD/xnor.cpp \
     $$PWD/xor.cpp
 
@@ -45,7 +43,6 @@ HEADERS += \
     $$PWD/inputswitch.h \
     $$PWD/inputvcc.h \
     $$PWD/jkflipflop.h \
-    $$PWD/jklatch.h \
     $$PWD/led.h \
     $$PWD/line.h \
     $$PWD/mux.h \
@@ -57,6 +54,5 @@ HEADERS += \
     $$PWD/srflipflop.h \
     $$PWD/text.h \
     $$PWD/tflipflop.h \
-#    $$PWD/tlatch.h \
     $$PWD/xnor.h \
     $$PWD/xor.h

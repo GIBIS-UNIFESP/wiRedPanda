@@ -14,10 +14,8 @@ int id = qRegisterMetaType<InputVcc>();
 InputVcc::InputVcc(QGraphicsItem *parent)
     : GraphicElement(ElementType::InputVcc, ElementGroup::StaticInput, 0, 0, 1, 1, parent)
 {
-    qCDebug(zero) << "Creating vcc.";
-
-    m_pixmapSkinName = QStringList{":/input/1.png"};
-    setPixmap(m_pixmapSkinName.first());
+    m_defaultSkins = QStringList{":/input/1.png"};
+    setPixmap(m_defaultSkins.first());
 
     setOutputsOnTop(false);
     setCanChangeSkin(true);
@@ -29,6 +27,6 @@ InputVcc::InputVcc(QGraphicsItem *parent)
 
 void InputVcc::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    m_pixmapSkinName[0] = (defaultSkin) ? ":/input/1.png" : fileName;
-    setPixmap(m_pixmapSkinName[0]);
+    m_defaultSkins[0] = (defaultSkin) ? ":/input/1.png" : fileName;
+    setPixmap(m_defaultSkins[0]);
 }

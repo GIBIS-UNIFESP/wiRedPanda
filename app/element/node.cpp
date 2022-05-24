@@ -14,10 +14,8 @@ int id = qRegisterMetaType<Node>();
 Node::Node(QGraphicsItem *parent)
     : GraphicElement(ElementType::Node, ElementGroup::Gate, 1, 1, 1, 1, parent)
 {
-    qCDebug(zero) << "Creating node.";
-
-    m_pixmapSkinName = QStringList{":/basic/node.png"};
-    setPixmap(m_pixmapSkinName.first(), QRect(16, 16, 48, 48));
+    m_defaultSkins = QStringList{":/basic/node.png"};
+    setPixmap(m_defaultSkins.first(), QRect(16, 16, 48, 48));
 
     Node::updatePorts();
     setCanChangeSkin(true);
@@ -34,6 +32,6 @@ void Node::updatePorts()
 
 void Node::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    m_pixmapSkinName[0] = (defaultSkin) ? ":/basic/node.png" : fileName;
-    setPixmap(m_pixmapSkinName[0]);
+    m_defaultSkins[0] = (defaultSkin) ? ":/basic/node.png" : fileName;
+    setPixmap(m_defaultSkins[0]);
 }

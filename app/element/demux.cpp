@@ -14,10 +14,8 @@ int id = qRegisterMetaType<Demux>();
 Demux::Demux(QGraphicsItem *parent)
     : GraphicElement(ElementType::Demux, ElementGroup::Mux, 2, 2, 2, 2, parent)
 {
-    qCDebug(zero) << "Creating demux.";
-
-    m_pixmapSkinName = QStringList{":/basic/demux.png"};
-    setPixmap(m_pixmapSkinName.first());
+    m_defaultSkins = QStringList{":/basic/demux.png"};
+    setPixmap(m_defaultSkins.first());
 
     setRotatable(true);
     setCanChangeSkin(true);
@@ -44,6 +42,6 @@ void Demux::updatePorts()
 
 void Demux::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    m_pixmapSkinName[0] = (defaultSkin) ? ":/basic/demux.png" : fileName;
-    setPixmap(m_pixmapSkinName[0]);
+    m_defaultSkins[0] = (defaultSkin) ? ":/basic/demux.png" : fileName;
+    setPixmap(m_defaultSkins[0]);
 }
