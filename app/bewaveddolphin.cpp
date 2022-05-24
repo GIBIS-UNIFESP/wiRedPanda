@@ -384,7 +384,7 @@ QVector<char> BewavedDolphin::loadSignals(QStringList &inputLabels, QStringList 
 
 void BewavedDolphin::createWaveform(const QString &fileName)
 {
-    qCDebug(zero) << "Updating window name with current fileName.";
+    qCDebug(zero) << "Updating window name with current." << fileName;
     qCDebug(zero) << "Creating class to pause main window simulator while creating waveform.";
     // TODO: scene is paused twice, once here and again in run()
     m_simController = m_externalScene->simulationController();
