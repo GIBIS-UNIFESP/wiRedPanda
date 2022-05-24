@@ -83,6 +83,10 @@ void Buzzer::playBuzzer()
 
 void Buzzer::stopBuzzer()
 {
+    if (!m_isPlaying) {
+        return;
+    }
+
     setPixmap(m_usingDefaultSkin ? m_defaultSkins.at(0) : m_alternativeSkins.at(0));
     m_audio.stop();
     m_isPlaying = false;
