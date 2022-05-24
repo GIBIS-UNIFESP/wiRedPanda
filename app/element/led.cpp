@@ -53,9 +53,7 @@ int id = qRegisterMetaType<Led>();
 Led::Led(QGraphicsItem *parent)
     : GraphicElement(ElementType::Led, ElementGroup::Output, 1, 4, 0, 0, parent)
 {
-    qCDebug(zero) << "Creating led.";
-
-    m_pixmapSkinName = QStringList{
+    m_defaultSkins = QStringList{
         ":/output/WhiteLedOff.png",             // Single input values: 0
         ":/output/WhiteLedOn.png",              // 1
         ":/output/RedLedOff.png",               // 2
@@ -83,7 +81,7 @@ Led::Led(QGraphicsItem *parent)
         ":/output/16colors/YellowLedOn.png",    // 24
         ":/output/16colors/WhiteLedOn.png",     // 25
     };
-    setPixmap(m_pixmapSkinName.first());
+    setPixmap(m_defaultSkins.first());
 
     setOutputsOnTop(true);
     setRotatable(false);
@@ -107,16 +105,16 @@ void Led::refresh()
     }
     switch (inputSize()) {
     case 1: { /* 1 bit */
-        setPixmap(m_pixmapSkinName[m_colorNumber + index]);
+        setPixmap(m_defaultSkins[m_colorNumber + index]);
         input(0)->setName("");
         input(0)->setPos(32, bottomPosition());
         break;
     }
     case 2: { /* 2 bits */ // TODO: add option to select dark/light colors according to the theme.
         if (index == 3) {
-            setPixmap(m_pixmapSkinName[22]);
+            setPixmap(m_defaultSkins[22]);
         } else {
-            setPixmap(m_pixmapSkinName[18 + index]);
+            setPixmap(m_defaultSkins[18 + index]);
         }
         input(0)->setName("0");
         input(0)->setPos(24, bottomPosition());
@@ -125,7 +123,7 @@ void Led::refresh()
         break;
     }
     case 3: { /* 3 bits */ // TODO: add option to select dark/light colors according to the theme.
-        setPixmap(m_pixmapSkinName[18 + index]);
+        setPixmap(m_defaultSkins[18 + index]);
         input(0)->setName("0");
         input(0)->setPos(16, bottomPosition());
         input(1)->setName("1");
@@ -135,7 +133,7 @@ void Led::refresh()
         break;
     }
     case 4: { /* 4 bits */
-        setPixmap(m_pixmapSkinName[10 + index]);
+        setPixmap(m_defaultSkins[10 + index]);
         input(0)->setName("0");
         input(0)->setPos(8, bottomPosition());
         input(1)->setName("1");
@@ -175,9 +173,9 @@ void Led::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const dou
 {
     GraphicElement::load(stream, portMap, version);
     if (version >= 1.1) {
-        QString clr;
-        stream >> clr;
-        setColor(clr);
+        QString color;
+        stream >> color;
+        setColor(color);
     }
 }
 
@@ -189,7 +187,6 @@ QString Led::genericProperties()
 void Led::updatePorts()
 {
     setHasColors(inputSize() == 1);
-    // GraphicElement::updatePorts();
 }
 
 void Led::setSkin(const bool defaultSkin, const QString &fileName)
@@ -224,39 +221,39 @@ void Led::setSkin(const bool defaultSkin, const QString &fileName)
     if (defaultSkin) {
         resetLedPixmapName(valueIndex);
     } else {
-        m_pixmapSkinName[valueIndex] = fileName;
+        m_defaultSkins[valueIndex] = fileName;
     }
-    setPixmap(m_pixmapSkinName[valueIndex]);
+    setPixmap(m_defaultSkins[valueIndex]);
 }
 
 void Led::resetLedPixmapName(const int ledNumber)
 {
     switch (ledNumber) {
-    case 0:  m_pixmapSkinName[0]  = ":/output/WhiteLedOff.png"; break;
-    case 1:  m_pixmapSkinName[1]  = ":/output/WhiteLedOn.png"; break;
-    case 2:  m_pixmapSkinName[2]  = ":/output/RedLedOff.png"; break;
-    case 3:  m_pixmapSkinName[3]  = ":/output/RedLedOn.png"; break;
-    case 4:  m_pixmapSkinName[4]  = ":/output/GreenLedOff.png"; break;
-    case 5:  m_pixmapSkinName[5]  = ":/output/GreenLedOn.png"; break;
-    case 6:  m_pixmapSkinName[6]  = ":/output/BlueLedOff.png"; break;
-    case 7:  m_pixmapSkinName[7]  = ":/output/BlueLedOn.png"; break;
-    case 8:  m_pixmapSkinName[8]  = ":/output/PurpleLedOff.png"; break;
-    case 9:  m_pixmapSkinName[9]  = ":/output/PurpleLedOn.png"; break;
-    case 10: m_pixmapSkinName[10] = ":/output/16colors/BlackLedOn.png"; break;
-    case 11: m_pixmapSkinName[11] = ":/output/16colors/NavyBlueLedOn.png"; break;
-    case 12: m_pixmapSkinName[12] = ":/output/16colors/GreenLedOn.png"; break;
-    case 13: m_pixmapSkinName[13] = ":/output/16colors/TealLedOn.png"; break;
-    case 14: m_pixmapSkinName[14] = ":/output/16colors/DarkRedLedOn.png"; break;
-    case 15: m_pixmapSkinName[15] = ":/output/16colors/MagentaLedOn.png"; break;
-    case 16: m_pixmapSkinName[16] = ":/output/16colors/OrangeLedOn.png"; break;
-    case 17: m_pixmapSkinName[17] = ":/output/16colors/LightGrayLedOn.png"; break;
-    case 18: m_pixmapSkinName[18] = ":/output/16colors/DarkGrayLedOn.png"; break;
-    case 19: m_pixmapSkinName[19] = ":/output/16colors/RoyalLedOn.png"; break;
-    case 20: m_pixmapSkinName[20] = ":/output/16colors/LimeGreenLedOn.png"; break;
-    case 21: m_pixmapSkinName[21] = ":/output/16colors/AquaLightLedOn.png"; break;
-    case 22: m_pixmapSkinName[22] = ":/output/16colors/RedLedOn.png"; break;
-    case 23: m_pixmapSkinName[23] = ":/output/16colors/HotPinkLedOn.png"; break;
-    case 24: m_pixmapSkinName[24] = ":/output/16colors/YellowLedOn.png"; break;
-    case 25: m_pixmapSkinName[25] = ":/output/16colors/WhiteLedOn.png"; break;
+    case 0:  m_defaultSkins[0]  = ":/output/WhiteLedOff.png";             break;
+    case 1:  m_defaultSkins[1]  = ":/output/WhiteLedOn.png";              break;
+    case 2:  m_defaultSkins[2]  = ":/output/RedLedOff.png";               break;
+    case 3:  m_defaultSkins[3]  = ":/output/RedLedOn.png";                break;
+    case 4:  m_defaultSkins[4]  = ":/output/GreenLedOff.png";             break;
+    case 5:  m_defaultSkins[5]  = ":/output/GreenLedOn.png";              break;
+    case 6:  m_defaultSkins[6]  = ":/output/BlueLedOff.png";              break;
+    case 7:  m_defaultSkins[7]  = ":/output/BlueLedOn.png";               break;
+    case 8:  m_defaultSkins[8]  = ":/output/PurpleLedOff.png";            break;
+    case 9:  m_defaultSkins[9]  = ":/output/PurpleLedOn.png";             break;
+    case 10: m_defaultSkins[10] = ":/output/16colors/BlackLedOn.png";     break;
+    case 11: m_defaultSkins[11] = ":/output/16colors/NavyBlueLedOn.png";  break;
+    case 12: m_defaultSkins[12] = ":/output/16colors/GreenLedOn.png";     break;
+    case 13: m_defaultSkins[13] = ":/output/16colors/TealLedOn.png";      break;
+    case 14: m_defaultSkins[14] = ":/output/16colors/DarkRedLedOn.png";   break;
+    case 15: m_defaultSkins[15] = ":/output/16colors/MagentaLedOn.png";   break;
+    case 16: m_defaultSkins[16] = ":/output/16colors/OrangeLedOn.png";    break;
+    case 17: m_defaultSkins[17] = ":/output/16colors/LightGrayLedOn.png"; break;
+    case 18: m_defaultSkins[18] = ":/output/16colors/DarkGrayLedOn.png";  break;
+    case 19: m_defaultSkins[19] = ":/output/16colors/RoyalLedOn.png";     break;
+    case 20: m_defaultSkins[20] = ":/output/16colors/LimeGreenLedOn.png"; break;
+    case 21: m_defaultSkins[21] = ":/output/16colors/AquaLightLedOn.png"; break;
+    case 22: m_defaultSkins[22] = ":/output/16colors/RedLedOn.png";       break;
+    case 23: m_defaultSkins[23] = ":/output/16colors/HotPinkLedOn.png";   break;
+    case 24: m_defaultSkins[24] = ":/output/16colors/YellowLedOn.png";    break;
+    case 25: m_defaultSkins[25] = ":/output/16colors/WhiteLedOn.png";     break;
     }
 }

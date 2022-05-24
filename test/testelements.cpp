@@ -16,7 +16,6 @@
 #include "inputvcc.h"
 #include "iostream"
 #include "jkflipflop.h"
-#include "jklatch.h"
 #include "led.h"
 #include "mux.h"
 #include "node.h"

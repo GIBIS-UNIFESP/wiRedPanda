@@ -34,7 +34,7 @@ private:
     const QString m_titleText = tr("<b>INPUT SWITCH</b>");
     const QString m_translatedName = tr("Input Switch");
 
-    bool m_on = false;
+    bool m_isOn = false;
 };
 
 Q_DECLARE_METATYPE(InputSwitch)

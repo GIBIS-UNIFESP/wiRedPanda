@@ -13,10 +13,8 @@ int id = qRegisterMetaType<Not>();
 Not::Not(QGraphicsItem *parent)
     : GraphicElement(ElementType::Not, ElementGroup::Gate, 1, 1, 1, 1, parent)
 {
-    qCDebug(zero) << "Creating not.";
-
-    m_pixmapSkinName = QStringList{":/basic/not.png"};
-    setPixmap(m_pixmapSkinName.first());
+    m_defaultSkins = QStringList{":/basic/not.png"};
+    setPixmap(m_defaultSkins.first());
 
     setOutputsOnTop(true);
     setCanChangeSkin(true);
@@ -27,6 +25,6 @@ Not::Not(QGraphicsItem *parent)
 
 void Not::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    m_pixmapSkinName[0] = (defaultSkin) ? ":/basic/not.png" : fileName;
-    setPixmap(m_pixmapSkinName[0]);
+    m_defaultSkins[0] = (defaultSkin) ? ":/basic/not.png" : fileName;
+    setPixmap(m_defaultSkins[0]);
 }

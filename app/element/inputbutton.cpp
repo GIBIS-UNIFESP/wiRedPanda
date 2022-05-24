@@ -15,11 +15,11 @@ int id = qRegisterMetaType<InputButton>();
 InputButton::InputButton(QGraphicsItem *parent)
     : GraphicElement(ElementType::InputButton, ElementGroup::Input, 0, 0, 1, 1, parent)
 {
-    m_pixmapSkinName = QStringList{
+    m_defaultSkins = QStringList{
         ":/input/buttonOff.png",
         ":/input/buttonOn.png",
     };
-    setPixmap(m_pixmapSkinName.first());
+    setPixmap(m_defaultSkins.first());
 
     m_locked = false;
     setOutputsOnTop(false);
@@ -68,7 +68,7 @@ void InputButton::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, c
 bool InputButton::on(const int port) const
 {
     Q_UNUSED(port);
-    return m_on;
+    return m_isOn;
 }
 
 void InputButton::setOff()
@@ -84,10 +84,10 @@ void InputButton::setOn()
 void InputButton::setOn(const bool value, const int port)
 {
     Q_UNUSED(port);
-    m_on = value;
-    setPixmap(m_on ? m_pixmapSkinName[1] : m_pixmapSkinName[0]);
+    setPixmap(m_on ? m_defaultSkins[1] : m_defaultSkins[0]);
+    m_isOn = value;
     if (!disabled()) {
-        output()->setValue(static_cast<signed char>(m_on));
+        output()->setValue(static_cast<signed char>(m_isOn));
     }
 }
 
@@ -95,19 +95,19 @@ void InputButton::setSkin(const bool defaultSkin, const QString &fileName)
 {
     if (defaultSkin) {
         if (!m_on) {
-            m_pixmapSkinName[0] = ":/input/buttonOff.png";
-            setPixmap(m_pixmapSkinName[0]);
+            m_defaultSkins[0] = ":/input/buttonOff.png";
+            setPixmap(m_defaultSkins[0]);
         } else {
-            m_pixmapSkinName[1] = ":/input/buttonOn.png";
-            setPixmap(m_pixmapSkinName[1]);
+            m_defaultSkins[1] = ":/input/buttonOn.png";
+            setPixmap(m_defaultSkins[1]);
         }
     } else {
         if (!m_on) {
-            m_pixmapSkinName[0] = fileName;
-            setPixmap(m_pixmapSkinName[0]);
+            m_defaultSkins[0] = fileName;
+            setPixmap(m_defaultSkins[0]);
         } else {
-            m_pixmapSkinName[1] = fileName;
-            setPixmap(m_pixmapSkinName[1]);
+            m_defaultSkins[1] = fileName;
+            setPixmap(m_defaultSkins[1]);
         }
     }
 }

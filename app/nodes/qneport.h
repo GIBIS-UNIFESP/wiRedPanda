@@ -68,9 +68,9 @@ public:
     void setDefaultValue(const int defaultValue);
     void setGraphicElement(GraphicElement *graphicElement);
     void setIndex(const int index);
-    void setName(const QString &n);
-    void setPortFlags(const int f);
-    void setPtr(const quint64 p);
+    void setName(const QString &name);
+    void setPortFlags(const int flags);
+    void setPtr(const quint64 pointer);
     void setRequired(const bool required);
     void updateConnections();
 

@@ -109,7 +109,7 @@ void GraphicElement::setPixmap(const QString &pixmapName)
     m_currentPixmapName = pixmapName;
 }
 
-void GraphicElement::setPixmap(const QString &pixmapName, const QRect size)
+void GraphicElement::setPixmap(const QString &pixmapName, const QRect rect)
 {
     QString pixmapPath = pixmapName;
     // TODO: This has to be changed. Not a good way to do it. Probably better inside the class.
@@ -126,7 +126,7 @@ void GraphicElement::setPixmap(const QString &pixmapName, const QRect size)
             if (!pixmap.load(pixmapPath)) {
                 throw Pandaception(tr("Couldn't load pixmap."));
             }
-            m_loadedPixmaps[pixmapPath] = pixmap.copy(size);
+            m_loadedPixmaps[pixmapPath] = pixmap.copy(rect);
         }
         m_pixmap = &m_loadedPixmaps[pixmapPath];
         setTransformOriginPoint(m_pixmap->rect().center());
@@ -195,8 +195,8 @@ void GraphicElement::save(QDataStream &stream) const
         stream << port->portFlags();
     }
     /* <\Version2.7> */
-    stream << static_cast<quint64>(m_pixmapSkinName.size());
-    for (const QString &skinName : m_pixmapSkinName) {
+    stream << static_cast<quint64>(m_defaultSkins.size());
+    for (const QString &skinName : m_defaultSkins) {
         stream << skinName;
     }
     qCDebug(four) << "Finished saving element.";
@@ -227,9 +227,9 @@ void GraphicElement::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap
 
 void GraphicElement::loadPos(QDataStream &stream)
 {
-    QPointF p;
-    stream >> p;
-    setPos(p);
+    QPointF pos;
+    stream >> pos;
+    setPos(pos);
 }
 
 void GraphicElement::loadAngle(QDataStream &stream)
@@ -242,32 +242,32 @@ void GraphicElement::loadAngle(QDataStream &stream)
 void GraphicElement::loadLabel(QDataStream &stream, const double version)
 {
     if (version >= 1.2) {
-        QString label_text;
-        stream >> label_text;
-        setLabel(label_text);
+        QString labelText;
+        stream >> labelText;
+        setLabel(labelText);
     }
 }
 
 void GraphicElement::loadMinMax(QDataStream &stream, const double version)
 {
     if (version >= 1.3) {
-        quint64 min_isz;
-        quint64 max_isz;
-        quint64 min_osz;
-        quint64 max_osz;
-        stream >> min_isz;
-        stream >> max_isz;
-        stream >> min_osz;
-        stream >> max_osz;
+        quint64 minInputSize;
+        quint64 maxInputSize;
+        quint64 minOutputSize;
+        quint64 maxOutputSize;
+        stream >> minInputSize;
+        stream >> maxInputSize;
+        stream >> minOutputSize;
+        stream >> maxOutputSize;
         // FIXME: Was it a bad decision to store Min and Max input/output sizes?
         /* Version 2.2 ?? fix ?? */
-        if (!((m_minInputSize == m_maxInputSize) && (m_minInputSize > max_isz))) {
-            m_minInputSize = min_isz;
-            m_maxInputSize = max_isz;
+        if (!((m_minInputSize == m_maxInputSize) && (m_minInputSize > maxInputSize))) {
+            m_minInputSize = minInputSize;
+            m_maxInputSize = maxInputSize;
         }
-        if (!((m_minOutputSize == m_maxOutputSize) && (m_minOutputSize > max_osz))) {
-            m_minOutputSize = min_osz;
-            m_maxOutputSize = max_osz;
+        if (!((m_minOutputSize == m_maxOutputSize) && (m_minOutputSize > maxOutputSize))) {
+            m_minOutputSize = minOutputSize;
+            m_maxOutputSize = maxOutputSize;
         }
     }
 }
@@ -401,7 +401,7 @@ void GraphicElement::loadPixmapSkinName(QDataStream &stream, const int skin)
     QString name;
     stream >> name;
 
-    if (skin >= m_pixmapSkinName.size()) {
+    if (skin >= m_defaultSkins.size()) {
         qCDebug(zero) << "Could not load some of the skins.";
     }
 
@@ -413,7 +413,7 @@ void GraphicElement::loadPixmapSkinName(QDataStream &stream, const int skin)
         if (!fileInfo.isFile()) {
             qCDebug(zero) << "Could not load some of the skins.";
         }
-        m_pixmapSkinName[skin] = fileInfo.absoluteFilePath();
+        m_defaultSkins[skin] = fileInfo.absoluteFilePath();
     }
 }
 
@@ -467,8 +467,6 @@ QNEPort *GraphicElement::addPort(const QString &name, const bool isOutput, const
     port->setGraphicElement(this);
     port->setPortFlags(flags);
     port->setPtr(ptr);
-    qCDebug(four) << "Updating new port.";
-    GraphicElement::updatePorts();
     port->show();
     return port;
 }
@@ -528,7 +526,7 @@ void GraphicElement::updatePorts()
 
 void GraphicElement::refresh()
 {
-    setPixmap(m_pixmapSkinName[0]);
+    setPixmap(m_defaultSkins[0]);
 }
 
 QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
@@ -564,9 +562,9 @@ bool GraphicElement::hasAudio() const
     return m_hasAudio;
 }
 
-void GraphicElement::setHasAudio(const bool hasaudio)
+void GraphicElement::setHasAudio(const bool hasAudio)
 {
-    m_hasAudio = hasaudio;
+    m_hasAudio = hasAudio;
 }
 
 QKeySequence GraphicElement::trigger() const
@@ -622,13 +620,8 @@ void GraphicElement::updateTheme()
     for (auto *output : qAsConst(m_outputs)) {
         output->updateTheme();
     }
-    // updateThemeLocal();
     setPixmap(m_currentPixmapName);
     update();
-}
-
-void GraphicElement::updateThemeLocal()
-{
 }
 
 bool GraphicElement::isValid()

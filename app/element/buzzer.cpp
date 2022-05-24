@@ -18,18 +18,16 @@ int id = qRegisterMetaType<Buzzer>();
 Buzzer::Buzzer(QGraphicsItem *parent)
     : GraphicElement(ElementType::Buzzer, ElementGroup::Output, 1, 1, 0, 0, parent)
 {
-    qCDebug(zero) << "Creating buzzer.";
-
-    m_pixmapSkinName = QStringList{
+    m_defaultSkins = QStringList{
         ":/output/BuzzerOff.png",
         ":/output/BuzzerOn.png"
     };
-    setPixmap(m_pixmapSkinName.first());
+    setPixmap(m_defaultSkins.first());
 
     setOutputsOnTop(true);
     setRotatable(false);
     setHasAudio(true);
-    m_alternativeSkins = m_pixmapSkinName;
+    m_alternativeSkins = m_defaultSkins;
     updatePorts();
     setCanChangeSkin(true);
     setHasLabel(true);
@@ -45,16 +43,13 @@ Buzzer::Buzzer(QGraphicsItem *parent)
 void Buzzer::refresh()
 {
     if (!isValid()) {
-        stopbuzzer();
+        stopBuzzer();
         return;
     }
 
-    const bool value = m_inputs.first()->value(); // why only the first input?
-    if (value == 1) {
-        playbuzzer();
-    } else if (m_play) { // move this up?
-        stopbuzzer();
-    }
+    const bool inputValue = m_inputs.first()->value(); // TODO: why only the first input?
+
+    inputValue ? playBuzzer() : stopBuzzer();
 }
 
 void Buzzer::setAudio(const QString &note)
@@ -75,22 +70,22 @@ void Buzzer::mute(const bool mute)
     m_audio.setMuted(mute);
 }
 
-void Buzzer::playbuzzer()
+void Buzzer::playBuzzer()
 {
-    if (m_play) {
+    if (m_isPlaying) {
         return;
     }
 
-    setPixmap(m_usingDefaultSkin ? m_pixmapSkinName.at(1) : m_alternativeSkins.at(1));
+    setPixmap(m_usingDefaultSkin ? m_defaultSkins.at(1) : m_alternativeSkins.at(1));
     m_audio.play();
-    m_play = true;
+    m_isPlaying = true;
 }
 
-void Buzzer::stopbuzzer()
+void Buzzer::stopBuzzer()
 {
-    setPixmap(m_usingDefaultSkin ? m_pixmapSkinName.at(0) : m_alternativeSkins.at(0));
+    setPixmap(m_usingDefaultSkin ? m_defaultSkins.at(0) : m_alternativeSkins.at(0));
     m_audio.stop();
-    m_play = false;
+    m_isPlaying = false;
 }
 
 void Buzzer::save(QDataStream &stream) const
@@ -114,5 +109,5 @@ void Buzzer::setSkin(const bool defaultSkin, const QString &fileName)
 {
     m_usingDefaultSkin = defaultSkin;
     m_alternativeSkins[m_play] = fileName;
-    setPixmap(defaultSkin ? m_pixmapSkinName.at(m_play) : m_alternativeSkins.at(m_play));
+    setPixmap(defaultSkin ? m_defaultSkins.at(m_play) : m_alternativeSkins.at(m_play));
 }

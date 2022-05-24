@@ -67,26 +67,6 @@ public:
     virtual void updatePorts();
 
     /**
-     * @brief addPort: adds an input or output port at the end of the port vector.
-     */
-    QNEPort *addPort(const QString &name, const bool isOutput, const int flags = 0, const int ptr = 0);
-
-    /**
-     * @brief addInputPort: adds an input port at the end of the input port vector.
-     */
-    void addInputPort(const QString &name = {});
-
-    /**
-     * @brief addOutputPort: adds an output port at the end of the output port vector.
-     */
-    void addOutputPort(const QString &name = {});
-
-    /**
-     * @brief outputsOnTop: returns true if the output ports are on the top position of the GraphicElement.
-     */
-    bool outputsOnTop() const;
-
-    /**
      * @brief frequency: virtual function overloaded by clock element. Other elements have frequency of 0.
      */
     virtual float frequency() const;
@@ -96,17 +76,11 @@ public:
      */
     void updateTheme();
 
-    /**
-     * @brief updateThemeLocal: unfinished function with no current use.
-     */
-    virtual void updateThemeLocal();
-
     ElementGroup elementGroup() const;
     ElementType elementType() const;
     QKeySequence trigger() const;
     QNEInputPort *input(const int pos = 0);
     QNEOutputPort *output(const int pos = 0);
-    QPixmap pixmap() const;
     QRectF boundingRect() const override;
     QString label() const;
     QVector<QNEInputPort *> inputs() const;
@@ -147,7 +121,7 @@ public:
     void setOutputSize(const int size);
     void setOutputs(const QVector<QNEOutputPort *> &outputs);
     void setPixmap(const QString &pixmapName);
-    void setPixmap(const QString &pixmapName, const QRect size);
+    void setPixmap(const QString &pixmapName, const QRect rect);
     void setPortName(const QString &name);
     void setTrigger(const QKeySequence &trigger);
     void updateLabel();
@@ -170,13 +144,20 @@ protected:
     void setTopPosition(const int topPosition);
 
     /**
-     * @brief Path to all current skins. The default skin is in a resource file. Custom skin names are system file paths defined by the user.
+     * @brief Path to all default skins. The default skin is in a resource file.
      */
-    QStringList m_pixmapSkinName;
+    QStringList m_defaultSkins;
+
+    /**
+     * @brief Path to all custom skins. Custom skin names are system file paths defined by the user.
+     */
+    QStringList m_alternativeSkins;
+
     /**
      * @brief m_inputs: input port vector
      */
     QVector<QNEInputPort *> m_inputs;
+
     /**
      * @brief m_outputs: output port vector
      */
@@ -186,10 +167,31 @@ protected:
 
 private:
     /**
+     * @brief addPort: adds an input or output port at the end of the port vector.
+     */
+    QNEPort *addPort(const QString &name, const bool isOutput, const int flags = 0, const int ptr = 0);
+
+    /**
+     * @brief addInputPort: adds an input port at the end of the input port vector.
+     */
+    void addInputPort(const QString &name = {});
+
+    /**
+     * @brief addOutputPort: adds an output port at the end of the output port vector.
+     */
+    void addOutputPort(const QString &name = {});
+
+    /**
      * functions to load GraphicElement atributes through a binary data stream
      */
     void loadPos(QDataStream &stream);
 
+    /**
+     * @brief outputsOnTop: returns true if the output ports are on the top position of the GraphicElement.
+     */
+    bool outputsOnTop() const;
+
+    QPixmap pixmap() const;
     void loadAngle(QDataStream &stream);
     void loadInputPort(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const int port);
     void loadInputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);

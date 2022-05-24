@@ -35,7 +35,7 @@ private:
     const QString m_titleText = tr("<b>PUSH BUTTON</b>");
     const QString m_translatedName = tr("Button");
 
-    bool m_on;
+    bool m_isOn = false;
 };
 
 Q_DECLARE_METATYPE(InputButton)

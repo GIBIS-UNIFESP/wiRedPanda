@@ -14,10 +14,8 @@ int id = qRegisterMetaType<And>();
 And::And(QGraphicsItem *parent)
     : GraphicElement(ElementType::And, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
-    qCDebug(zero) << "Creating and.";
-
-    m_pixmapSkinName = QStringList{":/basic/and.png"};
-    setPixmap(m_pixmapSkinName.first());
+    m_defaultSkins = QStringList{":/basic/and.png"};
+    setPixmap(m_defaultSkins.first());
 
     setCanChangeSkin(true);
     setOutputsOnTop(true);
@@ -28,6 +26,6 @@ And::And(QGraphicsItem *parent)
 
 void And::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    m_pixmapSkinName.first() = (defaultSkin) ? m_pixmapSkinName.first() : fileName;
-    setPixmap(m_pixmapSkinName.first());
+    m_defaultSkins.first() = (defaultSkin) ? m_defaultSkins.first() : fileName;
+    setPixmap(m_defaultSkins.first());
 }

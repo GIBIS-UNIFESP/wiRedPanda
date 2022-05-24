@@ -29,8 +29,8 @@ public:
     void setSkin(const bool defaultSkin, const QString &fileName) override;
 
 private:
-    void playbuzzer();
-    void stopbuzzer();
+    void playBuzzer();
+    void stopBuzzer();
 
     inline static int m_labelNumber = 0;
 
@@ -40,8 +40,8 @@ private:
 
     QSoundEffect m_audio;
     QString m_note;
-    QStringList m_alternativeSkins;
-    bool m_play = false;
+    bool m_isPlaying = false;
+
 };
 
 Q_DECLARE_METATYPE(Buzzer)

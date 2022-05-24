@@ -70,14 +70,15 @@ QAction *addElementAction(QMenu *menu, GraphicElement *firstElm, ElementType typ
 void ElementEditor::contextMenu(QPoint screenPos)
 {
     QMenu menu;
-    QString renameActionText(tr("Rename"));
-    QString rotateActionText(tr("Rotate"));
-    QString freqActionText(tr("Change frequency"));
-    QString colorMenuText(tr("Change color to..."));
     QString changeSkinText(tr("Change skin to ..."));
-    QString revertSkinText(tr("Set skin to default"));
-    QString triggerActionText(tr("Change trigger"));
+    QString colorMenuText(tr("Change color to..."));
+    QString freqActionText(tr("Change frequency"));
     QString morphMenuText(tr("Morph to..."));
+    QString renameActionText(tr("Rename"));
+    QString revertSkinText(tr("Set skin to default"));
+    QString rotateActionText(tr("Rotate"));
+    QString triggerActionText(tr("Change trigger"));
+
     if (m_hasLabel) {
         menu.addAction(QIcon(QPixmap(":/toolbar/rename.png")), renameActionText)->setData(renameActionText);
     }
@@ -94,68 +95,65 @@ void ElementEditor::contextMenu(QPoint screenPos)
     if (m_hasFrequency) {
         menu.addAction(QIcon(ElementFactory::pixmap(ElementType::Clock)), freqActionText)->setData(freqActionText);
     }
-    QMenu *submenucolors = nullptr;
+    QMenu *submenuColors = nullptr;
     if (m_hasColors) {
-        submenucolors = menu.addMenu(colorMenuText);
+        submenuColors = menu.addMenu(colorMenuText);
         for (int i = 0; i < m_ui->comboBoxColor->count(); ++i) {
             if (m_ui->comboBoxColor->currentIndex() != i) {
-                submenucolors->addAction(m_ui->comboBoxColor->itemIcon(i), m_ui->comboBoxColor->itemText(i));
+                submenuColors->addAction(m_ui->comboBoxColor->itemIcon(i), m_ui->comboBoxColor->itemText(i));
             }
         }
     }
-    QMenu *submenumorph = nullptr;
+    QMenu *submenuMorph = nullptr;
     if (m_canMorph) {
-        submenumorph = menu.addMenu(morphMenuText);
+        submenuMorph = menu.addMenu(morphMenuText);
         GraphicElement *firstElm = m_elements.first();
         switch (firstElm->elementGroup()) {
         case ElementGroup::Gate: {
             if (firstElm->inputSize() == 1) {
-                addElementAction(submenumorph, firstElm, ElementType::Not, m_hasSameType);
-                addElementAction(submenumorph, firstElm, ElementType::Node, m_hasSameType);
+                addElementAction(submenuMorph, firstElm, ElementType::Node, m_hasSameType);
+                addElementAction(submenuMorph, firstElm, ElementType::Not, m_hasSameType);
             } else {
-                addElementAction(submenumorph, firstElm, ElementType::And, m_hasSameType);
-                addElementAction(submenumorph, firstElm, ElementType::Or, m_hasSameType);
-                addElementAction(submenumorph, firstElm, ElementType::Nand, m_hasSameType);
-                addElementAction(submenumorph, firstElm, ElementType::Nor, m_hasSameType);
-                addElementAction(submenumorph, firstElm, ElementType::Xor, m_hasSameType);
-                addElementAction(submenumorph, firstElm, ElementType::Xnor, m_hasSameType);
+                addElementAction(submenuMorph, firstElm, ElementType::And, m_hasSameType);
+                addElementAction(submenuMorph, firstElm, ElementType::Nand, m_hasSameType);
+                addElementAction(submenuMorph, firstElm, ElementType::Nor, m_hasSameType);
+                addElementAction(submenuMorph, firstElm, ElementType::Or, m_hasSameType);
+                addElementAction(submenuMorph, firstElm, ElementType::Xnor, m_hasSameType);
+                addElementAction(submenuMorph, firstElm, ElementType::Xor, m_hasSameType);
             }
             break;
         }
         case ElementGroup::StaticInput:
         case ElementGroup::Input: {
-            addElementAction(submenumorph, firstElm, ElementType::InputButton, m_hasSameType);
-            addElementAction(submenumorph, firstElm, ElementType::InputSwitch, m_hasSameType);
-            addElementAction(submenumorph, firstElm, ElementType::Clock, m_hasSameType);
-            addElementAction(submenumorph, firstElm, ElementType::InputVcc, m_hasSameType);
-            addElementAction(submenumorph, firstElm, ElementType::InputGnd, m_hasSameType);
-            addElementAction(submenumorph, firstElm, ElementType::InputRotary, m_hasSameType);
+            addElementAction(submenuMorph, firstElm, ElementType::Clock, m_hasSameType);
+            addElementAction(submenuMorph, firstElm, ElementType::InputButton, m_hasSameType);
+            addElementAction(submenuMorph, firstElm, ElementType::InputGnd, m_hasSameType);
+            addElementAction(submenuMorph, firstElm, ElementType::InputRotary, m_hasSameType);
+            addElementAction(submenuMorph, firstElm, ElementType::InputSwitch, m_hasSameType);
+            addElementAction(submenuMorph, firstElm, ElementType::InputVcc, m_hasSameType);
             break;
         }
         case ElementGroup::Memory: {
             if (firstElm->inputSize() == 2) {
-                // addElementAction(submenumorph, firstElm, ElementType::TLATCH, hasSameType);
-                addElementAction(submenumorph, firstElm, ElementType::DLatch, m_hasSameType);
-                addElementAction(submenumorph, firstElm, ElementType::JKLatch, m_hasSameType);
+                addElementAction(submenuMorph, firstElm, ElementType::DLatch, m_hasSameType);
             } else if (firstElm->inputSize() == 4) {
-                addElementAction(submenumorph, firstElm, ElementType::DFlipFlop, m_hasSameType);
-                addElementAction(submenumorph, firstElm, ElementType::TFlipFlop, m_hasSameType);
+                addElementAction(submenuMorph, firstElm, ElementType::DFlipFlop, m_hasSameType);
+                addElementAction(submenuMorph, firstElm, ElementType::TFlipFlop, m_hasSameType);
             }
             break;
         }
         case ElementGroup::Output: {
-            addElementAction(submenumorph, firstElm, ElementType::Led, m_hasSameType);
-            addElementAction(submenumorph, firstElm, ElementType::Buzzer, m_hasSameType);
+            addElementAction(submenuMorph, firstElm, ElementType::Buzzer, m_hasSameType);
+            addElementAction(submenuMorph, firstElm, ElementType::Led, m_hasSameType);
             break;
         }
         case ElementGroup::IC:
         case ElementGroup::Mux:
         case ElementGroup::Other:
-        case ElementGroup::Unknown:
-            break;
+        case ElementGroup::Unknown: break;
         }
-        if (submenumorph->actions().empty()) {
-            menu.removeAction(submenumorph->menuAction());
+        if (submenuMorph->actions().empty()) {
+            menu.removeAction(submenuMorph->menuAction());
         }
     }
     menu.addSeparator();
@@ -169,33 +167,33 @@ void ElementEditor::contextMenu(QPoint screenPos)
     QAction *deleteAction = menu.addAction(QIcon(QPixmap(":/toolbar/delete.png")), tr("Delete"));
     connect(deleteAction, &QAction::triggered, m_scene, &Scene::deleteAction);
 
-    QAction *a = menu.exec(screenPos);
-    if (a) {
-        if (a->data().toString() == renameActionText) {
+    QAction *action = menu.exec(screenPos);
+    if (action) {
+        if (action->data().toString() == renameActionText) {
             renameAction();
-        } else if (a->data().toString() == rotateActionText) {
+        } else if (action->data().toString() == rotateActionText) {
             emit sendCommand(new RotateCommand(m_elements.toList(), 90.0, m_scene));
-        } else if (a->data().toString() == triggerActionText) {
+        } else if (action->data().toString() == triggerActionText) {
             changeTriggerAction();
-        } else if (a->text() == changeSkinText) {
+        } else if (action->text() == changeSkinText) {
             // Reads a new sprite and applies it to the element
             updateElementSkin();
-        } else if (a->text() == revertSkinText) {
+        } else if (action->text() == revertSkinText) {
             // Reset the icon to its default
-            m_defaultSkin = true;
-            m_updatingSkin = true;
+            m_isDefaultSkin = true;
+            m_isUpdatingSkin = true;
             apply();
-        } else if (a->data().toString() == freqActionText) {
+        } else if (action->data().toString() == freqActionText) {
             m_ui->doubleSpinBoxFrequency->setFocus();
-        } else if (submenumorph && submenumorph->actions().contains(a)) {
-            ElementType type = static_cast<ElementType>(a->data().toInt());
+        } else if (submenuMorph && submenuMorph->actions().contains(action)) {
+            ElementType type = static_cast<ElementType>(action->data().toInt());
             if (type != ElementType::Unknown) {
                 emit sendCommand(new MorphCommand(m_elements, type, m_scene));
             }
-        } else if (submenucolors && submenucolors->actions().contains(a)) {
-            m_ui->comboBoxColor->setCurrentText(a->text());
+        } else if (submenuColors && submenuColors->actions().contains(action)) {
+            m_ui->comboBoxColor->setCurrentText(action->text());
         } else {
-            qDebug(zero) << "uncaught text " + a->text();
+            qDebug(zero) << "uncaught text " + action->text();
         }
     }
 }
@@ -237,9 +235,9 @@ void ElementEditor::updateElementSkin()
         return;
     }
     qCDebug(zero) << "File name:" << fileName;
-    m_updatingSkin = true;
+    m_isUpdatingSkin = true;
     m_skinName = fileName;
-    m_defaultSkin = false;
+    m_isDefaultSkin = false;
     apply();
 }
 
@@ -537,12 +535,12 @@ void ElementEditor::apply()
                 elm->setTrigger(QKeySequence(m_ui->lineEditTrigger->text()));
             }
         }
-        if (m_updatingSkin) {
-            elm->setSkin(m_defaultSkin, m_skinName);
+        if (m_isUpdatingSkin) {
+            elm->setSkin(m_isDefaultSkin, m_skinName);
         }
     }
-    if (m_updatingSkin) {
-        m_updatingSkin = false;
+    if (m_isUpdatingSkin) {
+        m_isUpdatingSkin = false;
     }
     emit sendCommand(new UpdateCommand(m_elements, itemData, m_scene));
 }
@@ -654,7 +652,7 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
 
 void ElementEditor::defaultSkin()
 {
-    m_updatingSkin = true;
-    m_defaultSkin = true;
+    m_isUpdatingSkin = true;
+    m_isDefaultSkin = true;
     apply();
 }

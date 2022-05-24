@@ -18,9 +18,7 @@ int id = qRegisterMetaType<Display14>();
 Display14::Display14(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display14, ElementGroup::Output, 15, 15, 0, 0, parent)
 {
-    qCDebug(zero) << "Creating display14.";
-
-    m_pixmapSkinName = QStringList{
+    m_defaultSkins = QStringList{
         ":/output/counter/counter_14_off.png",
         ":/output/counter/counter_a.png",
         ":/output/counter/counter_b.png",
@@ -39,22 +37,22 @@ Display14::Display14(QGraphicsItem *parent)
         ":/output/counter/counter_dp.png",
     };
 
-    setPixmap(m_pixmapSkinName[0]);
-    a = QVector<QPixmap>(5, m_pixmapSkinName[1]);
-    b = QVector<QPixmap>(5, m_pixmapSkinName[2]);
-    c = QVector<QPixmap>(5, m_pixmapSkinName[3]);
-    d = QVector<QPixmap>(5, m_pixmapSkinName[4]);
-    e = QVector<QPixmap>(5, m_pixmapSkinName[5]);
-    f = QVector<QPixmap>(5, m_pixmapSkinName[6]);
-    g1 = QVector<QPixmap>(5, m_pixmapSkinName[7]);
-    g2 = QVector<QPixmap>(5, m_pixmapSkinName[8]);
-    h = QVector<QPixmap>(5, m_pixmapSkinName[9]);
-    j = QVector<QPixmap>(5, m_pixmapSkinName[10]);
-    k = QVector<QPixmap>(5, m_pixmapSkinName[11]);
-    l = QVector<QPixmap>(5, m_pixmapSkinName[12]);
-    m = QVector<QPixmap>(5, m_pixmapSkinName[13]);
-    n = QVector<QPixmap>(5, m_pixmapSkinName[14]);
-    dp = QVector<QPixmap>(5, m_pixmapSkinName[15]);
+    setPixmap(m_defaultSkins[0]);
+    a = QVector<QPixmap>(5, m_defaultSkins[1]);
+    b = QVector<QPixmap>(5, m_defaultSkins[2]);
+    c = QVector<QPixmap>(5, m_defaultSkins[3]);
+    d = QVector<QPixmap>(5, m_defaultSkins[4]);
+    e = QVector<QPixmap>(5, m_defaultSkins[5]);
+    f = QVector<QPixmap>(5, m_defaultSkins[6]);
+    g1 = QVector<QPixmap>(5, m_defaultSkins[7]);
+    g2 = QVector<QPixmap>(5, m_defaultSkins[8]);
+    h = QVector<QPixmap>(5, m_defaultSkins[9]);
+    j = QVector<QPixmap>(5, m_defaultSkins[10]);
+    k = QVector<QPixmap>(5, m_defaultSkins[11]);
+    l = QVector<QPixmap>(5, m_defaultSkins[12]);
+    m = QVector<QPixmap>(5, m_defaultSkins[13]);
+    n = QVector<QPixmap>(5, m_defaultSkins[14]);
+    dp = QVector<QPixmap>(5, m_defaultSkins[15]);
 
     Display::convertAllColors(a);
     Display::convertAllColors(b);
@@ -113,15 +111,15 @@ void Display14::updatePorts()
     input(14)->setPos(bottomPosition(), 74); /* N  */
 
     input(0)->setName("G1 (" + tr("middle left") + ")");
-    input(1)->setName("F (" + tr("upper left") + ")");
-    input(2)->setName("E (" + tr("lower left") + ")");
-    input(3)->setName("D (" + tr("bottom") + ")");
-    input(4)->setName("A (" + tr("top") + ")");
-    input(5)->setName("B (" + tr("upper right") + ")");
+    input(1)->setName("F (" +  tr("upper left") + ")");
+    input(2)->setName("E (" +  tr("lower left") + ")");
+    input(3)->setName("D (" +  tr("bottom") + ")");
+    input(4)->setName("A (" +  tr("top") + ")");
+    input(5)->setName("B (" +  tr("upper right") + ")");
     input(6)->setName("DP (" + tr("dot") + ")");
-    input(7)->setName("C (" + tr("lower right") + ")");
+    input(7)->setName("C (" +  tr("lower right") + ")");
     input(8)->setName("G2 (" + tr("middle right") + ")");
-    input(9)->setName("H (" + tr("middle upper left") + ")");
+    input(9)->setName("H (" +  tr("middle upper left") + ")");
     input(10)->setName("J (" + tr("middle top") + ")");
     input(11)->setName("K (" + tr("middle upper right") + ")");
     input(12)->setName("L (" + tr("middle lower right") + ")");
@@ -175,14 +173,14 @@ void Display14::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, con
 {
     GraphicElement::load(stream, portMap, version);
     if (version >= 3.1) {
-        QString clr;
-        stream >> clr;
-        setColor(clr);
+        QString color;
+        stream >> color;
+        setColor(color);
     }
 }
 
 void Display14::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    m_pixmapSkinName[0] = (defaultSkin) ? ":/output/counter/counter_14_off.png" : fileName;
-    setPixmap(m_pixmapSkinName[0]);
+    m_defaultSkins[0] = (defaultSkin) ? ":/output/counter/counter_14_off.png" : fileName;
+    setPixmap(m_defaultSkins[0]);
 }
