@@ -22,7 +22,6 @@ InputButton::InputButton(QGraphicsItem *parent)
     setPixmap(m_defaultSkins.first());
 
     m_locked = false;
-    setOutputsOnTop(false);
     setCanChangeSkin(true);
     setRotatable(false);
     m_outputs.first()->setValue(0);

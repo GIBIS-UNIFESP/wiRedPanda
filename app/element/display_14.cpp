@@ -73,10 +73,9 @@ Display14::Display14(QGraphicsItem *parent)
     setRotatable(false);
     setHasColors(true);
     setCanChangeSkin(true);
-    setOutputsOnTop(true);
     Display14::updatePorts();
-    setBottomPosition(58);
-    setTopPosition(6);
+    setRightPosition(58);
+    setLeftPosition(6);
     setHasLabel(true);
     setPortName("Display14");
     setToolTip(m_translatedName);
@@ -94,21 +93,21 @@ void Display14::refresh()
 
 void Display14::updatePorts()
 {
-    input(0)->setPos(topPosition(), -4);     /* G1 */
-    input(1)->setPos(topPosition(), 8);      /* F  */
-    input(2)->setPos(topPosition(), 20);     /* E  */
-    input(3)->setPos(topPosition(), 32);     /* D  */
-    input(4)->setPos(bottomPosition(), -10); /* A  */
-    input(5)->setPos(bottomPosition(), 2);   /* B  */
-    input(6)->setPos(bottomPosition(), 14);  /* DP */
-    input(7)->setPos(bottomPosition(), 26);  /* C  */
-    input(8)->setPos(topPosition(), 44);     /* G2 */
-    input(9)->setPos(topPosition(), 56);     /* H  */
-    input(10)->setPos(topPosition(), 68);    /* J  */
-    input(11)->setPos(bottomPosition(), 38); /* K  */
-    input(12)->setPos(bottomPosition(), 50); /* L  */
-    input(13)->setPos(bottomPosition(), 62); /* M  */
-    input(14)->setPos(bottomPosition(), 74); /* N  */
+    input(0)->setPos(leftPosition(), -4);   /* G1 */
+    input(1)->setPos(leftPosition(), 8);    /* F  */
+    input(2)->setPos(leftPosition(), 20);   /* E  */
+    input(3)->setPos(leftPosition(), 32);   /* D  */
+    input(4)->setPos(rightPosition(), -10); /* A  */
+    input(5)->setPos(rightPosition(), 2);   /* B  */
+    input(6)->setPos(rightPosition(), 14);  /* DP */
+    input(7)->setPos(rightPosition(), 26);  /* C  */
+    input(8)->setPos(leftPosition(), 44);   /* G2 */
+    input(9)->setPos(leftPosition(), 56);   /* H  */
+    input(10)->setPos(leftPosition(), 68);  /* J  */
+    input(11)->setPos(rightPosition(), 38); /* K  */
+    input(12)->setPos(rightPosition(), 50); /* L  */
+    input(13)->setPos(rightPosition(), 62); /* M  */
+    input(14)->setPos(rightPosition(), 74); /* N  */
 
     input(0)->setName("G1 (" + tr("middle left") + ")");
     input(1)->setName("F (" +  tr("upper left") + ")");

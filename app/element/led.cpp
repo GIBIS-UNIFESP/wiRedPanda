@@ -83,7 +83,6 @@ Led::Led(QGraphicsItem *parent)
     };
     setPixmap(m_defaultSkins.first());
 
-    setOutputsOnTop(true);
     setRotatable(false);
     setHasColors(true);
     Led::updatePorts();
@@ -96,6 +95,7 @@ Led::Led(QGraphicsItem *parent)
 void Led::refresh()
 {
     int index = 0;
+
     if (isValid()) {
         std::bitset<4> indexBit;
         for (int i = 0; i < inputSize(); ++i) {
@@ -103,45 +103,45 @@ void Led::refresh()
         }
         index = static_cast<int>(indexBit.to_ulong());
     }
+
+    // TODO: add option to select dark/light colors according to the theme.
     switch (inputSize()) {
-    case 1: { /* 1 bit */
         setPixmap(m_defaultSkins[m_colorNumber + index]);
+    case 1: {
+        const int index_ = m_colorNumber + index;
+        setPixmap(m_usingDefaultSkin ? m_defaultSkins[index_] : m_alternativeSkins[index_]);
         input(0)->setName("");
-        input(0)->setPos(32, bottomPosition());
         break;
     }
-    case 2: { /* 2 bits */ // TODO: add option to select dark/light colors according to the theme.
         if (index == 3) {
             setPixmap(m_defaultSkins[22]);
         } else {
             setPixmap(m_defaultSkins[18 + index]);
         }
+    case 2: {
+        const int index_ = (index == 3) ? 22 : 18 + index;
+        setPixmap(m_usingDefaultSkin ? m_defaultSkins[index_] : m_alternativeSkins[index_]);
         input(0)->setName("0");
-        input(0)->setPos(24, bottomPosition());
         input(1)->setName("1");
-        input(1)->setPos(40, bottomPosition());
         break;
     }
-    case 3: { /* 3 bits */ // TODO: add option to select dark/light colors according to the theme.
         setPixmap(m_defaultSkins[18 + index]);
+    case 3: {
+        const int index_ = 18 + index;
+        setPixmap(m_usingDefaultSkin ? m_defaultSkins[index_] : m_alternativeSkins[index_]);
         input(0)->setName("0");
-        input(0)->setPos(16, bottomPosition());
         input(1)->setName("1");
-        input(1)->setPos(32, bottomPosition());
         input(2)->setName("2");
-        input(2)->setPos(48, bottomPosition());
         break;
     }
-    case 4: { /* 4 bits */
         setPixmap(m_defaultSkins[10 + index]);
+    case 4: {
+        const int index_ = 10 + index;
+        setPixmap(m_usingDefaultSkin ? m_defaultSkins[index_] : m_alternativeSkins[index_]);
         input(0)->setName("0");
-        input(0)->setPos(8, bottomPosition());
         input(1)->setName("1");
-        input(1)->setPos(24, bottomPosition());
         input(2)->setName("2");
-        input(2)->setPos(40, bottomPosition());
         input(3)->setName("3");
-        input(3)->setPos(56, bottomPosition());
         break;
     }
     }
@@ -187,6 +187,7 @@ QString Led::genericProperties()
 void Led::updatePorts()
 {
     setHasColors(inputSize() == 1);
+    GraphicElement::updatePorts();
 }
 
 void Led::setSkin(const bool defaultSkin, const QString &fileName)

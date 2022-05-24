@@ -23,7 +23,6 @@ InputSwitch::InputSwitch(QGraphicsItem *parent)
     setPixmap(m_defaultSkins.first());
 
     m_locked = false;
-    setOutputsOnTop(false);
     setCanChangeSkin(true);
     setRotatable(false);
     setHasLabel(true);

@@ -17,7 +17,6 @@ Mux::Mux(QGraphicsItem *parent)
     m_defaultSkins = QStringList{":/basic/mux.png"};
     setPixmap(m_defaultSkins.first());
 
-    setRotatable(true);
     Mux::updatePorts();
     setPortName("MUX");
     setToolTip(m_translatedName);
@@ -30,15 +29,13 @@ Mux::Mux(QGraphicsItem *parent)
 
 void Mux::updatePorts()
 {
-    input(0)->setPos(32 - 12, 48); /* 0   */
-    input(1)->setPos(32 + 12, 48); /* 1   */
-    input(2)->setPos(58, 32);      /* S   */
-
-    output(0)->setPos(32, 16);     /* Out */
-}
+    input(0)->setPos(16, 32 - 12); /* 0   */
+    input(1)->setPos(16, 32 + 12); /* 1   */
+    input(2)->setPos(32, 58);      /* S   */
 
 void Mux::setSkin(const bool defaultSkin, const QString &fileName)
 {
     m_defaultSkins[0] = (defaultSkin) ? ":/basic/mux.png" : fileName;
     setPixmap(m_defaultSkins[0]);
+    output(0)->setPos(48, 32);     /* Out */
 }

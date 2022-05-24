@@ -16,7 +16,6 @@ Xnor::Xnor(QGraphicsItem *parent)
     m_defaultSkins = QStringList{":/basic/xnor.png"};
     setPixmap(m_defaultSkins.first());
 
-    setOutputsOnTop(true);
     setCanChangeSkin(true);
     updatePorts();
     setPortName("XNOR");

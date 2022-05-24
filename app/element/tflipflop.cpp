@@ -44,17 +44,15 @@ TFlipFlop::TFlipFlop(QGraphicsItem *parent)
 
 void TFlipFlop::updatePorts()
 {
-    input(0)->setPos(topPosition(), 13);     /* T */
-    input(1)->setPos(topPosition(), 45);     /* Clock */
-    input(2)->setPos(32, topPosition());     /* Preset */
-    input(3)->setPos(32, bottomPosition());  /* Clear */
-
-    output(0)->setPos(bottomPosition(), 15); /* Q */
-    output(1)->setPos(bottomPosition(), 45); /* ~Q */
-}
+    input(0)->setPos(leftPosition(), 13);   /* T */
+    input(1)->setPos(leftPosition(), 45);   /* Clock */
+    input(2)->setPos(32, leftPosition());   /* Preset */
+    input(3)->setPos(32, rightPosition());  /* Clear */
 
 void TFlipFlop::setSkin(const bool defaultSkin, const QString &fileName)
 {
     m_defaultSkins[0] = (defaultSkin) ? ":/memory/T-flipflop.png" : fileName;
     setPixmap(m_defaultSkins[0]);
+    output(0)->setPos(rightPosition(), 15); /* Q */
+    output(1)->setPos(rightPosition(), 45); /* ~Q */
 }

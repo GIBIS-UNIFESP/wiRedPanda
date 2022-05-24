@@ -16,7 +16,6 @@ Not::Not(QGraphicsItem *parent)
     m_defaultSkins = QStringList{":/basic/not.png"};
     setPixmap(m_defaultSkins.first());
 
-    setOutputsOnTop(true);
     setCanChangeSkin(true);
     updatePorts();
     setPortName("NOT");

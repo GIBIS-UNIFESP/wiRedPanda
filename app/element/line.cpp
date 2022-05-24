@@ -16,8 +16,6 @@ Line::Line(QGraphicsItem *parent)
     m_defaultSkins = QStringList{":/line.png"};
     setPixmap(m_defaultSkins.first());
 
-    setRotatable(true);
-    setOutputsOnTop(true);
     setCanChangeSkin(true);
     setHasLabel(true);
     setPortName("LINE");

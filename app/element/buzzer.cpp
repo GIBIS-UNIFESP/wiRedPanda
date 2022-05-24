@@ -24,7 +24,7 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     };
     setPixmap(m_defaultSkins.first());
 
-    setOutputsOnTop(true);
+    m_label->setPos(64, 34);
     setRotatable(false);
     setHasAudio(true);
     m_alternativeSkins = m_defaultSkins;

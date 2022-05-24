@@ -16,7 +16,6 @@ Nand::Nand(QGraphicsItem *parent)
     m_defaultSkins = QStringList{":/basic/nand.png"};
     setPixmap(m_defaultSkins.first());
 
-    setOutputsOnTop(true);
     setCanChangeSkin(true);
     updatePorts();
     setCanChangeSkin(true);

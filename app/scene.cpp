@@ -747,13 +747,6 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         if (widthOffset > 0) {
             pos += QPointF(widthOffset, widthOffset);
         }
-        /*
-   * TODO: Rotate all element icons, remake the port position logic, and remove the code below.
-   * Rotating element in 90 degrees.
-   */
-        if (elm->rotatable() && (elm->elementType() != ElementType::Node) && (elm->elementGroup() != ElementGroup::Other)) {
-            elm->setRotation(90);
-        }
         qCDebug(zero) << "Adding the element to the scene.";
         receiveCommand(new AddItemsCommand({elm}, this));
         qCDebug(zero) << "Cleaning the selection.";

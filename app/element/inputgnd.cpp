@@ -17,7 +17,6 @@ InputGnd::InputGnd(QGraphicsItem *parent)
     m_defaultSkins = QStringList{":/input/0.png"};
     setPixmap(m_defaultSkins.first());
 
-    setOutputsOnTop(false);
     setCanChangeSkin(true);
     setRotatable(false);
     setPortName("GND");

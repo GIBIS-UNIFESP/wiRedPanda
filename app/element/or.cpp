@@ -16,7 +16,6 @@ Or::Or(QGraphicsItem *parent)
     m_defaultSkins = QStringList{":/basic/or.png"};
     setPixmap(m_defaultSkins.first());
 
-    setOutputsOnTop(true);
     setCanChangeSkin(true);
     updatePorts();
     setPortName("OR");

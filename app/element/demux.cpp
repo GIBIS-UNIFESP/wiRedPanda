@@ -17,12 +17,10 @@ Demux::Demux(QGraphicsItem *parent)
     m_defaultSkins = QStringList{":/basic/demux.png"};
     setPixmap(m_defaultSkins.first());
 
-    setRotatable(true);
     setCanChangeSkin(true);
     Demux::updatePorts();
     setPortName("DEMUX");
     setToolTip(m_translatedName);
-    setRotation(180.0);
 
     input(0)->setName("in");
     input(1)->setName("S");
@@ -33,15 +31,13 @@ Demux::Demux(QGraphicsItem *parent)
 
 void Demux::updatePorts()
 {
-    input(0)->setPos(32, 48);       /* 0   */
-    input(1)->setPos(58, 32);       /* S   */
-
-    output(0)->setPos(32 - 12, 16); /* Out */
-    output(1)->setPos(32 + 12, 16); /* Out */
-}
+    input(0)->setPos(16, 32);       /* 0   */
+    input(1)->setPos(32, 58);       /* S   */
 
 void Demux::setSkin(const bool defaultSkin, const QString &fileName)
 {
     m_defaultSkins[0] = (defaultSkin) ? ":/basic/demux.png" : fileName;
     setPixmap(m_defaultSkins[0]);
+    output(0)->setPos(48, 32 - 12); /* Out */
+    output(1)->setPos(48, 32 + 12); /* Out */
 }
