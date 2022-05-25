@@ -867,15 +867,16 @@ void BewavedDolphin::on_actionLoad_triggered()
 bool BewavedDolphin::save(const QString &fileName)
 {
     QSaveFile file(fileName);
-    if (file.open(QFile::WriteOnly)) { // TODO: throw if open fails?
-        if (fileName.endsWith(".dolphin")) {
-            qCDebug(zero) << "Saving dolphin file.";
-            QDataStream stream(&file);
-            save(stream);
-        } else {
-            qCDebug(zero) << "Saving CSV file.";
-            save(file);
-        }
+    if (!file.open(QFile::WriteOnly)) {
+        throw Pandaception("Error opening file: " + file.errorString());
+    }
+    if (fileName.endsWith(".dolphin")) {
+        qCDebug(zero) << "Saving dolphin file.";
+        QDataStream stream(&file);
+        save(stream);
+    } else {
+        qCDebug(zero) << "Saving CSV file.";
+        save(file);
     }
     return file.commit();
 }
