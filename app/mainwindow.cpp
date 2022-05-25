@@ -660,20 +660,21 @@ void MainWindow::updateICList()
 
 bool MainWindow::closeTab(const int tabIndex)
 {
-    qCDebug(zero) << "Closing tab" << tabIndex << ", #tabs:" << m_ui->tab->count() << ", current tab:" << m_tabIndex;
+    selectTab(tabIndex);
+    qCDebug(zero) << "Closing tab" << tabIndex + 1 << ", #tabs:" << m_ui->tab->count();
     QString allAutosaveFileNames;
     QString autosaveFileName;
     qCDebug(zero) << "Reading autosave file names.";
     if (Settings::contains("autosaveFile")) {
         allAutosaveFileNames = Settings::value("autosaveFile").toString();
         qCDebug(zero) << "Verifying if this is a recovered autosave file.";
-        if (allAutosaveFileNames.contains(m_currentTab->currentFile().fileName())) { // TODO: m_currentTab can be null here
+        if (allAutosaveFileNames.contains(m_currentTab->currentFile().fileName())) {
             autosaveFileName = m_currentTab->currentFile().absoluteFilePath();
         }
     }
     qCDebug(zero) << "All auto save file names before closing tab:" << allAutosaveFileNames;
     qCDebug(zero) << "Checking if needs to save file.";
-    if ((!m_currentTab->scene()->undoStack()->isClean()) || (!autosaveFileName.isEmpty())) { // TODO: m_currentTab can be null here
+    if ((!m_currentTab->scene()->undoStack()->isClean()) || (!autosaveFileName.isEmpty())) {
         selectTab(tabIndex);
         bool discardAutosaves = false;
         int selectedButton = confirmSave(false);
