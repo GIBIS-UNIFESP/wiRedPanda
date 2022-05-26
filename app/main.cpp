@@ -15,7 +15,7 @@
 
 int main(int argc, char *argv[])
 {
-    Comment::setVerbosity(1);
+    Comment::setVerbosity(-1);
 
 #ifdef Q_OS_WIN
     FILE *fpstdout = stdout, *fpstderr = stderr;
