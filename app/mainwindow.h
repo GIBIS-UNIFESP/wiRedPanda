@@ -10,8 +10,7 @@
 #include <QSpacerItem>
 #include <QTranslator>
 
-class Label;
-class ListItemWidget;
+class ElementLabel;
 class RecentFilesController;
 class WorkSpace;
 
@@ -30,23 +29,32 @@ public:
 
     //! Creates a new tab with the given tab_name. Used by new and load actions.
     void createNewTab();
+
     //! Saves the project to a .panda file. Removes the autosave file in the process.
-    bool save(QString fileName = {});
+    bool save(const QString &fileName = {});
+
     //! Sets the main window as visible, as well as its child widgets. Cleans the editor.
     void show();
+
     //! Returns the file name of the currently loaded Panda file.
     QFileInfo currentFile() const;
+
     //! Returns the dir name of the currently loaded Panda file.
     QDir currentDir() const;
+
     //! Sets the current file to the given value.
     //! Mostly used by `loadPandaFile` and clearing functions
-    void setCurrentFile(const QString &fileName = {});
+    void setCurrentFile(const QString &fileName);
+
     //! Exports the current simulation to an
     void exportToArduino(QString fileName);
+
     //! Saves the current beWavedDolphin (waveform simulator) file
     void exportToWaveFormFile(const QString &fileName);
+
     //! Loads a .panda file
-    bool loadPandaFile(const QString &fileName);
+    void loadPandaFile(const QString &fileName);
+
     //! Opens a message box asking the user if he wishes to save his progress
     int confirmSave(const bool multiple = true);
 
@@ -57,8 +65,6 @@ public:
     void loadTranslation(const QString &language);
     void populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout);
     void retranslateUi();
-    void setAutosaveFileName(const QFileInfo &fileInfo);
-    void setCurrentDir();
     void setDolphinFileName(const QString &fileName);
     void setFastMode(const bool fastMode);
 
@@ -72,14 +78,10 @@ protected:
 private:
     bool closeTab(const int tabIndex);
     bool hasModifiedFiles();
-    int autosaveFileDeleteAnyway(const QString &autosaveFileName);
     int closeTabAnyway();
-    int recoverAutosaveFile(const QString &autosaveFileName);
     void aboutThisVersion();
-    void autosave();
-    void createAutosaveFile();
     void createRecentFileActions();
-    void loadAutosaveFiles(const QString &fileName);
+    void loadAutosaveFiles();
     void on_actionAboutQt_triggered();
     void on_actionAbout_triggered();
     void on_actionDarkTheme_triggered();
@@ -111,11 +113,10 @@ private:
     void on_actionWires_triggered(const bool checked);
     void on_actionZoomIn_triggered() const;
     void on_actionZoomOut_triggered() const;
-    void on_lineEdit_returnPressed();
-    void on_lineEdit_textChanged(const QString &text);
+    void on_lineEditSearch_returnPressed();
+    void on_lineEditSearch_textChanged(const QString &text);
     void openRecentFile();
     void populateLeftMenu();
-    void removeAutosaveFile(const int tabIndex);
     void selectTab(const int tabIndex);
     void updateICList();
     void updateRecentFileActions();
@@ -123,40 +124,26 @@ private:
     void updateTheme();
     void zoomChanged();
 
-    /**
-     * @brief createNewWorkspace: Creates a new workspace in a new tab. Called by load and new functions.
-     */
-    void createNewWorkspace();
-    /**
-     * @brief addUndoRedoMenu: Adds undo and redo of selected tab into the UI menu.
-     */
+    //! Adds undo and redo of selected tab into the UI menu.
     void addUndoRedoMenu();
-    /**
-     * @brief removeUndoRedoMenu: Removes undo and redo of current tab from the UI menu.
-     */
+
+    //! Removes undo and redo of current tab from the UI menu.
     void removeUndoRedoMenu();
-    /**
-     * @brief disconnectTab: Function used to disconnect elements of current tab, to safely change or close a tab.
-     */
+
+    //! Function used to disconnect elements of current tab, to safely change or close a tab.
     void disconnectTab();
-    /**
-     * @brief connectTab: Function called as a tab is selected. The tab is connected to the UI.
-     */
+
+    //! Function called as a tab is selected. The tab is connected to the UI.
     void connectTab();
 
     Ui::MainWindow *m_ui;
-    Label *m_firstResult = nullptr;
-    QFileInfo m_currentFile;
-    QString m_defaultDirectory;
+
     QTranslator *m_pandaTranslator = nullptr;
     QTranslator *m_qtTranslator = nullptr;
-    QVector<ListItemWidget *> icItemWidgets;
-    QVector<ListItemWidget *> searchItemWidgets;
-    QVector<QAction *> m_recentFilesActions;
-    QVector<QTemporaryFile *> m_autosaveFile;
+
     RecentFilesController *m_recentFilesController = nullptr;
+
+    QFileInfo m_currentFile;
     WorkSpace *m_currentTab = nullptr;
-    bool m_loadedAutosave = false;
     int m_tabIndex = -1;
 };
-

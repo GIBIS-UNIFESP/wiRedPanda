@@ -71,4 +71,3 @@ private:
     Theme m_theme = Theme::Light;
     ThemeAttributes m_attributes;
 };
-

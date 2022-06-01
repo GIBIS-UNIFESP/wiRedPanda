@@ -43,4 +43,3 @@ private:
     QList<QString> m_requiresReload;
     QMap<QString, ICPrototype *> m_ics;
 };
-

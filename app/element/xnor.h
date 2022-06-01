@@ -10,7 +10,7 @@
 class Xnor : public GraphicElement
 {
     Q_OBJECT
-    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
+    Q_PROPERTY(QString pixmapPath MEMBER m_pixmapPath CONSTANT)
     Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
     Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
 
@@ -18,7 +18,7 @@ public:
     explicit Xnor(QGraphicsItem *parent = nullptr);
 
 private:
-    const QString m_pixmap = ":/basic/xnor.png";
+    const QString m_pixmapPath = ":/basic/xnor.png";
     const QString m_titleText = tr("<b>XNOR</b>");
     const QString m_translatedName = tr("Xnor");
 };

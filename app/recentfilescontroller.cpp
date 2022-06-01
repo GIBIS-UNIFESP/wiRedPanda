@@ -10,13 +10,11 @@
 #include <QFile>
 #include <QFileInfo>
 
-RecentFilesController::RecentFilesController(const QString &attrName, const bool saveSetting, QObject *parent)
+RecentFilesController::RecentFilesController(QObject *parent)
     : QObject(parent)
-    , m_attrName(attrName)
-    , m_saveSetting(saveSetting)
 {
-    if (Settings::contains(m_attrName)) {
-        m_files = Settings::value(m_attrName).toStringList();
+    if (Settings::contains("recentFileList")) {
+        m_files = Settings::value("recentFileList").toStringList();
     }
 }
 
@@ -54,7 +52,5 @@ QStringList RecentFilesController::recentFiles()
 
 void RecentFilesController::saveRecentFiles()
 {
-    if (m_saveSetting) {
-        Settings::setValue(m_attrName, m_files);
-    }
+    Settings::setValue("recentFileList", m_files);
 }

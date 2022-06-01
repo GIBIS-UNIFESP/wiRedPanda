@@ -8,6 +8,7 @@
 #include "icprototype.h"
 #include "qneport.h"
 
+#include <QFileInfo>
 #include <QGraphicsSceneMouseEvent>
 
 namespace
@@ -18,10 +19,10 @@ int id = qRegisterMetaType<IC>();
 IC::IC(QGraphicsItem *parent)
     : GraphicElement(ElementType::IC, ElementGroup::IC, 0, 0, 0, 0, parent)
 {
-    // qCDebug(zero) << "Creating box.";
-    m_defaultSkins.append(":/basic/box.png");
+    // qCDebug(zero) << "Creating IC.";
+    m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;
-    setPixmap(m_defaultSkins[0]);
+    setPixmap(m_defaultSkins.first());
 
     m_label->setPos(30, 64);
     m_label->setRotation(90);
@@ -29,7 +30,7 @@ IC::IC(QGraphicsItem *parent)
     setHasLabel(true);
     setPortName("IC");
     setToolTip(m_translatedName);
-    // qCDebug(zero) << "Box done.";
+    // qCDebug(zero) << "IC done.";
 }
 
 IC::~IC()
@@ -42,7 +43,7 @@ IC::~IC()
 void IC::save(QDataStream &stream) const
 {
     GraphicElement::save(stream);
-    stream << m_file;
+    stream << QFileInfo(m_file).fileName();
 }
 
 void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
@@ -64,7 +65,7 @@ void IC::loadInputs(ICPrototype *prototype)
         in->setName(prototype->inputLabel(inputIndex));
         in->setRequired(prototype->isInputRequired(inputIndex));
         in->setDefaultValue(prototype->defaultInputValue(inputIndex));
-        in->setValue(static_cast<signed char>(prototype->defaultInputValue(inputIndex)));
+        in->setValue(prototype->defaultInputValue(inputIndex));
     }
 }
 

@@ -17,4 +17,3 @@ public:
 
     static void verifyRecursion(const QString &fileName);
 };
-

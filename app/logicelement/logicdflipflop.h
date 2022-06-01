@@ -19,4 +19,3 @@ private:
     bool m_lastClk = false;
     bool m_lastValue = true;
 };
-

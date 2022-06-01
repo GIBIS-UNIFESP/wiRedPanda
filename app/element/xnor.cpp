@@ -13,7 +13,7 @@ int id = qRegisterMetaType<Xnor>();
 Xnor::Xnor(QGraphicsItem *parent)
     : GraphicElement(ElementType::Xnor, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
-    m_defaultSkins = QStringList{":/basic/xnor.png"};
+    m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 

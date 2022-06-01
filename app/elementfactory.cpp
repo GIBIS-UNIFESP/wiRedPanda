@@ -61,7 +61,7 @@ QPixmap ElementFactory::pixmap(const ElementType type)
     }
 
     if (auto *elm = buildElement(type)) {
-        return elm->property("pixmap").toString();
+        return QPixmap{elm->property("pixmapPath").toString()};
     }
 
     return {};

@@ -10,7 +10,7 @@
 class Display14 : public GraphicElement
 {
     Q_OBJECT
-    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
+    Q_PROPERTY(QString pixmapPath MEMBER m_pixmapPath CONSTANT)
     Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
     Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
 
@@ -26,7 +26,7 @@ public:
     void updatePorts() override;
 
 private:
-    const QString m_pixmap = ":/output/counter/counter_14_on.png";
+    const QString m_pixmapPath = ":/output/counter/counter_14_on.png";
     const QString m_titleText = tr("<b>14-SEGMENT DISPLAY</b>");
     const QString m_translatedName = tr("Display14");
 

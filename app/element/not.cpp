@@ -13,7 +13,7 @@ int id = qRegisterMetaType<Not>();
 Not::Not(QGraphicsItem *parent)
     : GraphicElement(ElementType::Not, ElementGroup::Gate, 1, 1, 1, 1, parent)
 {
-    m_defaultSkins = QStringList{":/basic/not.png"};
+    m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 

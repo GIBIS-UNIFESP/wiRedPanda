@@ -14,5 +14,5 @@ LogicInput::LogicInput(const bool defaultValue, const int n_outputs)
 
 void LogicInput::_updateLogic(const QVector<bool> &inputs)
 {
-    Q_UNUSED(inputs)
+    Q_UNUSED(inputs);
 }

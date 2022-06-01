@@ -43,7 +43,7 @@ private:
     void outputIndexChanged(const QString &index);
     void outputValueChanged(const QString &index);
     void selectionChanged();
-    void setCurrentElements(const QVector<GraphicElement *> &elms);
+    void setCurrentElements(const QList<GraphicElement *> &elms);
     void triggerChanged(const QString &cmd);
     void updateSkins();
 
@@ -57,7 +57,7 @@ private:
     QString m_manyOV = tr("<Many values>");
     QString m_manyTriggers = tr("<Many triggers>");
     QString m_skinName;
-    QVector<GraphicElement *> m_elements;
+    QList<GraphicElement *> m_elements;
     Scene *m_scene = nullptr;
     bool m_canChangeInputSize = false;
     bool m_canChangeOutputSize = false;
@@ -84,4 +84,3 @@ private:
     bool m_isDefaultSkin = true;
     bool m_isUpdatingSkin = false;
 };
-

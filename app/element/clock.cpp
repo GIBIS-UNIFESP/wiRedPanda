@@ -37,7 +37,7 @@ Clock::Clock(QGraphicsItem *parent)
 
 void Clock::updateClock()
 {
-    if ((!m_locked) && (!disabled()) && (!pause)) {
+    if ((!m_locked) && (!isDisabled()) && (!pause)) {
         m_elapsed++;
         if ((m_elapsed % m_interval) == 0) {
             setOn(!m_isOn);

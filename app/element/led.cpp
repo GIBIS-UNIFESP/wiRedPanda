@@ -211,7 +211,7 @@ void Led::setSkin(const bool defaultSkin, const QString &fileName)
     setPixmap(defaultSkin ? m_defaultSkins.at(valueIndex) : m_alternativeSkins.at(valueIndex));
 }
 
-void Led::resetLedPixmapName(const int ledNumber)
+void Led::resetSkin(const int ledNumber)
 {
     switch (ledNumber) {
     case 0:  m_defaultSkins[0]  = ":/output/WhiteLedOff.png";             break;

@@ -25,4 +25,3 @@ public:
 private:
     Ui::LengthDialog *m_ui;
 };
-

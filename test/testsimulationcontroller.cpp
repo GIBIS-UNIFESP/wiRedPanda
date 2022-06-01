@@ -15,36 +15,36 @@
 
 void TestSimulationController::testCase1()
 {
-    auto *workspace = new WorkSpace();
+    WorkSpace workspace;
 
-    auto *btn1 = new InputButton();
-    auto *btn2 = new InputButton();
-    auto *andItem = new And();
-    auto *led = new Led();
-    auto *conn = new QNEConnection();
-    auto *conn2 = new QNEConnection();
-    auto *conn3 = new QNEConnection();
+    InputButton btn1;
+    InputButton btn2;
+    And andItem;
+    Led led;
+    QNEConnection conn;
+    QNEConnection conn2;
+    QNEConnection conn3;
 
-    auto *scene = workspace->scene();
-    scene->addItem(led);
-    scene->addItem(andItem);
-    scene->addItem(btn1);
-    scene->addItem(btn2);
-    scene->addItem(conn);
-    scene->addItem(conn2);
-    scene->addItem(conn3);
+    auto *scene = workspace.scene();
+    scene->addItem(&led);
+    scene->addItem(&andItem);
+    scene->addItem(&btn1);
+    scene->addItem(&btn2);
+    scene->addItem(&conn);
+    scene->addItem(&conn2);
+    scene->addItem(&conn3);
 
-    conn->setStart(btn1->output());
-    conn->setEnd(andItem->input(0));
-    conn2->setStart(btn2->output());
-    conn2->setEnd(andItem->input(1));
-    conn3->setStart(andItem->output());
-    conn3->setEnd(led->input());
+    conn.setStart(btn1.output());
+    conn.setEnd(andItem.input(0));
+    conn2.setStart(btn2.output());
+    conn2.setEnd(andItem.input(1));
+    conn3.setStart(andItem.output());
+    conn3.setEnd(led.input());
 
     const auto elms(ElementMapping::sortGraphicElements(scene->elements()));
 
-    QVERIFY(elms.at(0) == btn1 || elms.at(1) == btn1);
-    QVERIFY(elms.at(0) == btn2 || elms.at(1) == btn2);
-    QVERIFY(elms.at(2) == andItem);
-    QVERIFY(elms.at(3) == led);
+    QVERIFY(elms.at(0) == &btn1 || elms.at(1) == &btn1);
+    QVERIFY(elms.at(0) == &btn2 || elms.at(1) == &btn2);
+    QVERIFY(elms.at(2) == &andItem);
+    QVERIFY(elms.at(3) == &led);
 }
