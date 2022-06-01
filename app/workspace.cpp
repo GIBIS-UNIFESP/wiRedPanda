@@ -104,7 +104,7 @@ void WorkSpace::save(const QString &fileName)
 
     qCDebug(zero) << "Remove autosave from settings and deleting it.";
 
-    if (m_autosaveFile.isOpen()) {
+    if (m_autosaveFile.exists()) {
         autosaves.removeAll(m_autosaveFile.fileName()); // TODO: shoulndt this be the complete path?
         Settings::setValue("autosaveFile", autosaves);
         m_autosaveFile.remove();
