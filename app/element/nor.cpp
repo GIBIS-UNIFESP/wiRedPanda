@@ -13,7 +13,7 @@ int id = qRegisterMetaType<Nor>();
 Nor::Nor(QGraphicsItem *parent)
     : GraphicElement(ElementType::Nor, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
-    m_defaultSkins = QStringList{":/basic/nor.png"};
+    m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 

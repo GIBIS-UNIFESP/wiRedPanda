@@ -50,4 +50,3 @@ private:
     Scene *m_scene;
     bool m_shouldRestart = false;
 };
-

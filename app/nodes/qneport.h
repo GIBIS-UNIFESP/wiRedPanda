@@ -51,7 +51,7 @@ public:
     bool isRequired() const;
     const QList<QNEConnection *> &connections() const;
     const QString &portName() const;
-    int defaultValue() const;
+    signed char defaultValue() const;
     int index() const;
     int portFlags() const;
     int radius() const;
@@ -65,7 +65,7 @@ public:
     void hoverEnter();
     void hoverLeave();
     void setCurrentBrush(const QBrush &currentBrush);
-    void setDefaultValue(const int defaultValue);
+    void setDefaultValue(const signed char defaultValue);
     void setGraphicElement(GraphicElement *graphicElement);
     void setIndex(const int index);
     void setName(const QString &name);
@@ -84,7 +84,7 @@ protected:
     QList<QNEConnection *> m_connections;
     QString m_name;
     bool m_required = true;
-    int m_defaultValue = -1;
+    signed char m_defaultValue = -1;
     int m_index;
     int m_margin = 2;
     int m_portFlags = 0;
@@ -116,4 +116,3 @@ public:
     void setValue(signed char value) override;
     void updateTheme() override;
 };
-

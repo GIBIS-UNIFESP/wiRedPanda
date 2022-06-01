@@ -17,4 +17,3 @@ public:
 
     bool notify(QObject *receiver, QEvent *event) override;
 };
-

@@ -6,9 +6,13 @@
 #include "common.h"
 #include "globalproperties.h"
 #include "serializationfunctions.h"
+#include "settings.h"
 
+#include <QFileDialog>
 #include <QHBoxLayout>
 #include <QMessageBox>
+#include <QSaveFile>
+#include <QTemporaryFile>
 
 WorkSpace::WorkSpace(QWidget *parent)
     : QWidget(parent)
@@ -18,6 +22,11 @@ WorkSpace::WorkSpace(QWidget *parent)
     m_scene.setSceneRect(m_scene.sceneRect().united(m_view.rect()));
     setLayout(new QHBoxLayout);
     layout()->addWidget(&m_view);
+
+    connect(scene(), &Scene::circuitAppearenceHasChanged, this, &WorkSpace::autosave);
+    connect(scene(), &Scene::circuitHasChanged,           this, &WorkSpace::autosave);
+
+    setAutosaveFileName();
 }
 
 Scene *WorkSpace::scene()
@@ -35,20 +44,101 @@ SimulationController *WorkSpace::simulationController()
     return m_scene.simulationController();
 }
 
-void WorkSpace::setCurrentFile(const QFileInfo &fileInfo)
+QFileInfo WorkSpace::fileInfo()
 {
-    m_currentFile = fileInfo;
+    return m_fileInfo;
 }
 
-QFileInfo WorkSpace::currentFile()
+void WorkSpace::save(const QString &fileName)
 {
-    return m_currentFile;
+    QString fileName_ = fileName.isEmpty() ? m_fileInfo.absoluteFilePath() : fileName;
+    QString path = fileName.isEmpty() ? m_fileInfo.absolutePath() : QFileInfo(fileName).absolutePath();
+
+    qCDebug(zero) << "fileName:" << fileName_;
+    qCDebug(zero) << "Getting autosave settings info.";
+    QStringList autosaves = Settings::value("autosaveFile").toStringList();
+    qCDebug(zero) << "All auto save file names before save:" << autosaves;
+    qCDebug(zero) << "Checking if it is an autosave file or a new project, and ask for a fileName.";
+    QString autosaveFileName;
+
+    if (fileName_.isEmpty() || (!autosaves.isEmpty() && autosaves.contains(fileName_))) {
+        qCDebug(zero) << "Should open window.";
+        autosaveFileName = fileName_;
+
+        if (m_fileInfo.fileName().isEmpty()) {
+            fileName_ = QFileDialog::getSaveFileName(this, tr("Save File"), path, tr("Panda files (*.panda)"));
+        }
+    }
+
+    if (fileName_.isEmpty()) {
+        return;
+    }
+
+    if (!fileName_.endsWith(".panda")) {
+        fileName_.append(".panda");
+    }
+
+    QSaveFile saveFile(fileName_);
+
+    if (!saveFile.open(QFile::WriteOnly)) {
+        throw Pandaception(tr("Error opening file: ") + saveFile.errorString());
+    }
+
+    QDataStream stream(&saveFile);
+    save(stream, m_dolphinFileName);
+
+    if (!saveFile.commit()) {
+        throw Pandaception(tr("Could not save file: ") + saveFile.errorString());
+    }
+
+    emit fileChanged(fileName_);
+    m_fileInfo = QFileInfo(fileName_);
+    scene()->undoStack()->setClean();
+    qCDebug(zero) << "Remove from autosave list recovered file that has been saved.";
+
+    if (!autosaveFileName.isEmpty()) {
+        autosaves.removeAll(autosaveFileName);
+        Settings::setValue("autosaveFile", autosaves);
+        qCDebug(zero) << "All auto save file names after removing recovered:" << autosaves;
+    }
+
+    qCDebug(zero) << "Remove autosave from settings and deleting it.";
+
+    if (m_autosaveFile.isOpen()) {
+        autosaves.removeAll(m_autosaveFile.fileName()); // TODO: shoulndt this be the complete path?
+        Settings::setValue("autosaveFile", autosaves);
+        m_autosaveFile.remove();
+        qCDebug(zero) << "All auto save file names after removing autosave:" << autosaves;
+    }
 }
 
 void WorkSpace::save(QDataStream &stream, const QString &dolphinFileName)
 {
     SerializationFunctions::saveHeader(stream, dolphinFileName, m_scene.sceneRect());
     SerializationFunctions::serialize(m_scene.items(), stream);
+}
+
+void WorkSpace::load(const QString &fileName)
+{
+    QFile file(fileName);
+
+    if (!file.exists()) {
+        qCDebug(zero) << "Error: This file does not exist:" << fileName;
+        return;
+    }
+
+    qCDebug(zero) << "File exists";
+    if (!file.open(QFile::ReadOnly)) {
+        qCDebug(zero) << "Could not open file:" << file.errorString();
+        return;
+    }
+
+    QDataStream stream(&file);
+    load(stream);
+    qCDebug(zero) << "Closing file.";
+    file.close();
+
+    m_fileInfo = QFileInfo(fileName);
 }
 
 void WorkSpace::load(QDataStream &stream)
@@ -75,8 +165,8 @@ void WorkSpace::load(QDataStream &stream)
     qCDebug(three) << "This code tries to centralize the elements in scene using the rectangle. But it is not working well.";
     m_scene.setSceneRect(m_scene.itemsBoundingRect());
     if (!m_scene.views().empty()) {
-        const auto scene_views = m_scene.views();
-        auto *view = static_cast<GraphicsView *>(scene_views.first());
+        const auto views = m_scene.views();
+        auto *view = dynamic_cast<GraphicsView *>(views.first());
         rect = rect.united(view->rect());
         rect.moveCenter(QPointF(0, 0));
         m_scene.setSceneRect(m_scene.sceneRect().united(rect));
@@ -100,4 +190,96 @@ QString WorkSpace::dolphinFileName()
 void WorkSpace::selectWorkspace()
 {
     ICManager::wakeUp();
+}
+
+void WorkSpace::setAutosaveFileName()
+{
+    qCDebug(zero) << "Defining autosave path.";
+    qCDebug(zero) << "Default file does not exist:" << m_fileInfo.absoluteFilePath();
+    QDir autosavePath(QDir::temp());
+    qCDebug(zero) << "Autosavepath:" << autosavePath.absolutePath();
+    m_autosaveFile.setFileTemplate(autosavePath.absoluteFilePath(".XXXXXX.panda"));
+    qCDebug(zero) << "Setting current file to random file in tmp.";
+}
+
+void WorkSpace::autosave()
+{
+    qCDebug(two) << "Starting autosave.";
+    QStringList autosaves = Settings::value("autosaveFile").toStringList();
+    qCDebug(zero) << "Cheking if autosavefile exists and if it contains current project file. If so, remove autosavefile from it.";
+    qCDebug(three) << "All auto save file names before autosaving:" << autosaves;
+
+    if (!m_autosaveFile.fileName().isEmpty() && autosaves.contains(m_autosaveFile.fileName())) {
+        qCDebug(three) << "Removing current autosave file name.";
+        autosaves.removeAll(m_autosaveFile.fileName());
+        Settings::setValue("autosaveFile", autosaves);
+    }
+
+    qCDebug(zero) << "All auto save file names after possibly removing autosave:" << autosaves;
+    qCDebug(zero) << "If autosave exists and undo stack is clean, remove it.";
+    auto *undoStack = scene()->undoStack();
+    qCDebug(zero) << "undostack element:" << undoStack->index() << "of" << undoStack->count();
+
+    if (undoStack->isClean()) {
+        emit fileChanged(m_fileInfo.exists() ? m_fileInfo.fileName() : tr("New Project"));
+        qCDebug(three) << "Undo stack is clean.";
+
+        if (m_autosaveFile.exists()) {
+            m_autosaveFile.remove();
+        }
+
+        return;
+    }
+
+    qCDebug(three) << "Undo is !clean. Must set autosave file.";
+    emit fileChanged(m_fileInfo.exists() ? m_fileInfo.fileName() + "*" : tr("New Project*"));
+
+    if (m_autosaveFile.exists()) {
+        qCDebug(three) << "Autosave file already exists. Delete it to update.";
+        m_autosaveFile.remove();
+
+        if (m_fileInfo.fileName().isEmpty()) {
+            qCDebug(three) << "Default value not set yet.";
+            QDir autosavePath(QDir::temp());
+            qCDebug(three) << "Autosavepath:" << autosavePath.absolutePath();
+            m_autosaveFile.setFileTemplate(autosavePath.absoluteFilePath(".XXXXXX.panda"));
+            qCDebug(three) << "Setting current file to random file in tmp.";
+        } else {
+            qCDebug(three) << "Autosave path set to the current file's directory, if there is one.";
+            QDir autosavePath(m_fileInfo.absolutePath());
+            qCDebug(three) << "Autosavepath:" << autosavePath.absolutePath();
+            m_autosaveFile.setFileTemplate(autosavePath.absoluteFilePath("." + m_fileInfo.baseName() + "XXXXXX.panda"));
+            qCDebug(three) << "Setting current file to:" << m_fileInfo.absoluteFilePath();
+        }
+    }
+
+    if (!m_autosaveFile.open()) {
+        throw Pandaception(tr("Error opening autosave file: ") + m_autosaveFile.errorString());
+    }
+
+    qCDebug(three) << "Writing to autosave file.";
+    QDataStream stream(&m_autosaveFile);
+    QString autosaveFileName = m_autosaveFile.fileName();
+
+    try {
+        save(stream, dolphinFileName());
+    } catch (std::runtime_error &e) {
+        qCDebug(zero) << "Error autosaving project:" << e.what();
+        m_autosaveFile.remove();
+        throw;
+    }
+
+    autosaves.append(autosaveFileName);
+    Settings::setValue("autosaveFile", autosaves);
+    qCDebug(three) << "All auto save file names after adding autosave:" << autosaves;
+    m_autosaveFile.close();
+}
+
+void WorkSpace::setIsAutosave()
+{
+    if (m_autosaveFile.exists()) {
+        m_autosaveFile.remove();
+    }
+
+    m_autosaveFile.setFileName(m_fileInfo.filePath());
 }

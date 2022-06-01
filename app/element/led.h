@@ -10,7 +10,7 @@
 class Led : public GraphicElement
 {
     Q_OBJECT
-    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
+    Q_PROPERTY(QString pixmapPath MEMBER m_pixmapPath CONSTANT)
     Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
     Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
 
@@ -27,9 +27,9 @@ public:
     void updatePorts() override;
 
 private:
-    void resetLedPixmapName(const int ledNumber);
+    void resetSkin(const int ledNumber);
 
-    const QString m_pixmap = ":/output/WhiteLedOff.png";
+    const QString m_pixmapPath = ":/output/WhiteLedOff.png";
     const QString m_titleText = tr("<b>LED</b>");
     const QString m_translatedName = tr("Led");
 

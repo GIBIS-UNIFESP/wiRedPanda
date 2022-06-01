@@ -26,8 +26,6 @@ public:
     {
     }
 
-    MappedPin() = default;
-
     GraphicElement *m_elm;
     QNEPort *m_port;
     QString m_pin;
@@ -41,13 +39,13 @@ class CodeGenerator
 
 public:
     CodeGenerator(const QString &fileName, const QVector<GraphicElement *> &aElements);
-    ~CodeGenerator();
 
-    bool generate();
+    void generate();
 
 private:
-    QString otherPortName(QNEPort *port);
     static QString removeForbiddenChars(const QString &input);
+
+    QString otherPortName(QNEPort *port);
     void assignLogicOperator(GraphicElement *elm);
     void assignVariablesRec(const QVector<GraphicElement *> &elms);
     void declareAuxVariables();
@@ -66,4 +64,3 @@ private:
     const QVector<GraphicElement *> m_elements;
     int m_globalCounter = 1;
 };
-

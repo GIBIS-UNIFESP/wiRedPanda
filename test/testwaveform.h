@@ -14,4 +14,3 @@ class TestWaveForm : public QObject
 private slots:
     void testDisplay4Bits();
 };
-

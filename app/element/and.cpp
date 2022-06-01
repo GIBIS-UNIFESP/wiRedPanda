@@ -14,7 +14,7 @@ int id = qRegisterMetaType<And>();
 And::And(QGraphicsItem *parent)
     : GraphicElement(ElementType::And, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
-    m_defaultSkins = QStringList{":/basic/and.png"};
+    m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 

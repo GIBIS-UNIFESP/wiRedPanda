@@ -12,7 +12,7 @@
 
 void TestWaveForm::testDisplay4Bits()
 {
-    auto *workspace = new WorkSpace();
+    WorkSpace workspace;
 
     const QDir examplesDir(QString(CURRENTDIR) + "/../examples/");
     const QString fileName = examplesDir.absoluteFilePath("display-4bits.panda");
@@ -21,7 +21,7 @@ void TestWaveForm::testDisplay4Bits()
         QFile pandaFile(fileName);
         QVERIFY(pandaFile.open(QFile::ReadOnly));
         QDataStream stream(&pandaFile);
-        workspace->load(stream);
+        workspace.load(stream);
     } catch (std::runtime_error &e) {
         QFAIL("Could not load the file! Error: " + QString(e.what()).toUtf8());
     }
@@ -29,7 +29,7 @@ void TestWaveForm::testDisplay4Bits()
     QTemporaryFile tempFile;
     QVERIFY(tempFile.open());
     QTextStream tempStream(&tempFile);
-    QVERIFY(SimpleWaveform::saveToTxt(tempStream, workspace));
+    QVERIFY(SimpleWaveform::saveToTxt(tempStream, &workspace));
     tempStream.flush();
     QVERIFY(tempFile.reset());
 

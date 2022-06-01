@@ -28,34 +28,30 @@
 SimpleWaveform::SimpleWaveform(WorkSpace *workspace, QWidget *parent)
     : QDialog(parent)
     , m_ui(new Ui::SimpleWaveform)
+    , m_chartView(new QChartView(&m_chart, this))
+    , m_sortingMode(SortingMode::Increasing)
     , m_workspace(workspace)
 {
     m_ui->setupUi(this);
     resize(800, 500);
     m_chart.legend()->setAlignment(Qt::AlignLeft);
 
-    m_chartView = new QChartView(&m_chart, this);
     m_chartView->setRenderHint(QPainter::Antialiasing);
     m_ui->gridLayout->addWidget(m_chartView);
     setWindowTitle("Simple WaveForm - beWavedDolphin Beta");
     setWindowFlags(Qt::Window);
     setModal(true);
-    m_sortingMode = SortingMode::Increasing;
-    Settings::beginGroup("SimpleWaveform");
-    restoreGeometry(Settings::value("geometry").toByteArray());
-    Settings::endGroup();
+    restoreGeometry(Settings::value("SimpleWaveform/geometry").toByteArray());
 
-    connect(m_ui->pushButton_Copy, &QPushButton::clicked, this, &SimpleWaveform::on_pushButtonCopy_clicked);
-    connect(m_ui->radioButton_Decreasing, &QRadioButton::clicked, this, &SimpleWaveform::on_radioButtonDecreasing_clicked);
-    connect(m_ui->radioButton_Increasing, &QRadioButton::clicked, this, &SimpleWaveform::on_radioButtonIncreasing_clicked);
-    connect(m_ui->radioButton_Position, &QRadioButton::clicked, this, &SimpleWaveform::on_radioButtonPosition_clicked);
+    connect(m_ui->pushButtonCopy,        &QPushButton::clicked,  this, &SimpleWaveform::on_pushButtonCopy_clicked);
+    connect(m_ui->radioButtonDecreasing, &QRadioButton::clicked, this, &SimpleWaveform::on_radioButtonDecreasing_clicked);
+    connect(m_ui->radioButtonIncreasing, &QRadioButton::clicked, this, &SimpleWaveform::on_radioButtonIncreasing_clicked);
+    connect(m_ui->radioButtonPosition,   &QRadioButton::clicked, this, &SimpleWaveform::on_radioButtonPosition_clicked);
 }
 
 SimpleWaveform::~SimpleWaveform()
 {
-    Settings::beginGroup("SimpleWaveform");
-    Settings::setValue("geometry", saveGeometry());
-    Settings::endGroup();
+    Settings::setValue("SimpleWaveform/geometry", saveGeometry());
     delete m_ui;
 }
 
@@ -201,22 +197,20 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, WorkSpace *workspace)
 // 3) To run by command line, the result could be saved to file.
 void SimpleWaveform::showWaveform()
 {
-    Settings::beginGroup("waveform");
     qCDebug(zero) << "Getting sorting type.";
-    if (Settings::contains("sortingType")) {
-        m_sortingMode = static_cast<SortingMode>(Settings::value("sortingType").toInt());
+    if (Settings::contains("waveform/sortingType")) {
+        m_sortingMode = static_cast<SortingMode>(Settings::value("waveform/sortingType").toInt());
     }
-    Settings::endGroup();
     switch (m_sortingMode) {
-    case SortingMode::Decreasing: m_ui->radioButton_Decreasing->setChecked(true); break;
-    case SortingMode::Increasing: m_ui->radioButton_Increasing->setChecked(true); break;
-    case SortingMode::Position:   m_ui->radioButton_Position->setChecked(true); break;
+    case SortingMode::Decreasing: m_ui->radioButtonDecreasing->setChecked(true); break;
+    case SortingMode::Increasing: m_ui->radioButtonIncreasing->setChecked(true); break;
+    case SortingMode::Position:   m_ui->radioButtonPosition->setChecked(true); break;
     }
     int gap = 2;
     qCDebug(zero) << "Clear previous chart.";
     m_chart.removeAllSeries();
     qCDebug(zero) << "Getting digital circuit simulator.";
-    SimulationController *simController = m_workspace->simulationController();
+    auto *simController = m_workspace->simulationController();
     qCDebug(zero) << "Creating class to pause main window simulator while creating waveform.";
     SimulationControllerStop simControllerStop(simController);
     QVector<GraphicElement *> elements = m_workspace->scene()->elements();
@@ -348,44 +342,38 @@ void SimpleWaveform::showWaveform()
 
 void SimpleWaveform::on_radioButtonPosition_clicked()
 {
-    Settings::beginGroup("waveform");
     m_sortingMode = SortingMode::Position;
-    Settings::setValue("sortingType", static_cast<int>(m_sortingMode));
-    Settings::endGroup();
+    Settings::setValue("waveform/sortingType", static_cast<int>(m_sortingMode));
     showWaveform();
 }
 
 void SimpleWaveform::on_radioButtonIncreasing_clicked()
 {
-    Settings::beginGroup("waveform");
     m_sortingMode = SortingMode::Increasing;
-    Settings::setValue("sortingType", static_cast<int>(m_sortingMode));
-    Settings::endGroup();
+    Settings::setValue("waveform/sortingType", static_cast<int>(m_sortingMode));
     showWaveform();
 }
 
 void SimpleWaveform::on_radioButtonDecreasing_clicked()
 {
-    Settings::beginGroup("waveform");
     m_sortingMode = SortingMode::Decreasing;
-    Settings::setValue("sortingType", static_cast<int>(m_sortingMode));
-    Settings::endGroup();
+    Settings::setValue("waveform/sortingType", static_cast<int>(m_sortingMode));
     showWaveform();
 }
 
 void SimpleWaveform::on_pushButtonCopy_clicked()
 {
-    QSize s = m_chart.size().toSize();
-    QPixmap p(s);
-    p.fill(Qt::white);
+    QSize size = m_chart.size().toSize();
+    QPixmap pixmap(size);
+    pixmap.fill(Qt::white);
     QPainter painter;
-    painter.begin(&p);
+    painter.begin(&pixmap);
     painter.setRenderHint(QPainter::Antialiasing);
     m_chart.paint(&painter, nullptr, nullptr); /* This gives 0 items in 1 group */
     m_chartView->render(&painter); /* m_view has app->chart() in it, and this one gives right image */
     qCDebug(zero) << "Copied.";
     painter.end();
-    auto *d = new QMimeData();
-    d->setImageData(p);
-    QApplication::clipboard()->setMimeData(d, QClipboard::Clipboard);
+    auto *mimeData = new QMimeData();
+    mimeData->setImageData(pixmap);
+    QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
 }

@@ -93,7 +93,7 @@ void InputRotary::refresh()
 
 void InputRotary::updatePorts()
 {
-    switch (outputSize()) {
+    switch (InputRotary::outputSize()) {
     case 2: {
         output(0)->setPos(20, rightPosition());    output(0)->setName("0");
         output(1)->setPos(43, rightPosition());    output(1)->setName("1");

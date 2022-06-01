@@ -44,7 +44,9 @@ public:
     void update();
 
 protected:
-    // Methods
+    ElementMap m_elementMap;
+
+private:
     static int calculatePriority(GraphicElement *elm, QHash<GraphicElement *, bool> &beingVisited, QHash<GraphicElement *, int> &priority);
 
     LogicElement *buildLogicElement(GraphicElement *elm);
@@ -57,8 +59,6 @@ protected:
     void sortLogicElements();
     void validateElements();
 
-    // Attributes
-    ElementMap m_elementMap;
     InputMap m_inputMap;
     LogicInput m_globalGND{false};
     LogicInput m_globalVCC{true};
