@@ -288,14 +288,14 @@ bool MainWindow::save(QString fileName)
     if (!autosaveFileName.isEmpty()) {
         allAutosaveFileNames.remove(autosaveFileName + "\t");
         Settings::setValue("autosaveFile", allAutosaveFileNames);
-        qCDebug(zero) << "All auto save file names after removing recovered:" << allAutosaveFileNames;
+        qCDebug(zero) << "Allautosavefilenames after removing recovered:" << allAutosaveFileNames << ", removed: " << autosaveFileName;
     }
     qCDebug(zero) << "Remove autosave from settings and deleting it.";
-    if (m_autosaveFile.at(m_tabIndex)->isOpen()) {
+    if (m_autosaveFile.at(m_tabIndex)->exists()) {
         allAutosaveFileNames.remove(m_autosaveFile.at(m_tabIndex)->fileName() + "\t");
         Settings::setValue("autosaveFile", allAutosaveFileNames + "\n");
         m_autosaveFile.at(m_tabIndex)->remove();
-        qCDebug(zero) << "All auto save file names after removing autosave:" << allAutosaveFileNames;
+        qCDebug(zero) << "Allautosavefilenames after removing autosave:" << allAutosaveFileNames << ", removed: " << autosaveFileName;
     }
     return true;
 }
