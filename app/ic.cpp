@@ -8,6 +8,7 @@
 #include "icprototype.h"
 #include "qneport.h"
 
+#include <QFileInfo>
 #include <QGraphicsSceneMouseEvent>
 
 namespace
@@ -42,7 +43,7 @@ IC::~IC()
 void IC::save(QDataStream &stream) const
 {
     GraphicElement::save(stream);
-    stream << m_file;
+    stream << QFileInfo(m_file).fileName();
 }
 
 void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
