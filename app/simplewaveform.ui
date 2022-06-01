@@ -26,7 +26,7 @@
     </widget>
    </item>
    <item row="1" column="3">
-    <widget class="QRadioButton" name="radioButton_Decreasing">
+    <widget class="QRadioButton" name="radioButtonDecreasing">
      <property name="text">
       <string>Decreasing</string>
      </property>
@@ -56,7 +56,7 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QRadioButton" name="radioButton_Position">
+    <widget class="QRadioButton" name="radioButtonPosition">
      <property name="enabled">
       <bool>true</bool>
      </property>
@@ -69,7 +69,7 @@
     </widget>
    </item>
    <item row="1" column="2">
-    <widget class="QRadioButton" name="radioButton_Increasing">
+    <widget class="QRadioButton" name="radioButtonIncreasing">
      <property name="text">
       <string>I&amp;ncreasing</string>
      </property>
@@ -79,7 +79,7 @@
     </widget>
    </item>
    <item row="1" column="5">
-    <widget class="QPushButton" name="pushButton_Copy">
+    <widget class="QPushButton" name="pushButtonCopy">
      <property name="text">
       <string>Copy to Clipboard</string>
      </property>

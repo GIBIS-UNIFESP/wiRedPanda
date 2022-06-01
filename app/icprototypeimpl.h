@@ -45,4 +45,3 @@ private:
     QVector<QString> m_inputLabels;
     QVector<QString> m_outputLabels;
 };
-

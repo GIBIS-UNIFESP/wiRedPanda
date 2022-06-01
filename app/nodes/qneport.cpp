@@ -42,6 +42,9 @@ QNEPort::QNEPort(QGraphicsItem *parent)
     path.addPolygon(QRectF(QPointF(-m_radius, -m_radius), QPointF(m_radius, m_radius)));
     setPath(path);
 
+    setPen(QPen(Qt::darkRed));
+    setCurrentBrush(Qt::red);
+
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
 }
 
@@ -140,7 +143,7 @@ void QNEPort::updateConnections()
     }
     if (isValid()) {
         if (m_connections.empty() && !isOutput()) {
-            setValue(static_cast<signed char>(defaultValue()));
+            setValue(defaultValue());
         }
     } else {
         setValue(-1);
@@ -170,15 +173,15 @@ QString QNEPort::name() const
     return m_name;
 }
 
-int QNEPort::defaultValue() const
+signed char QNEPort::defaultValue() const
 {
     return m_defaultValue;
 }
 
-void QNEPort::setDefaultValue(const int defaultValue)
+void QNEPort::setDefaultValue(const signed char defaultValue)
 {
     m_defaultValue = defaultValue;
-    setValue(static_cast<signed char>(defaultValue));
+    setValue(defaultValue);
 }
 
 QBrush QNEPort::currentBrush() const

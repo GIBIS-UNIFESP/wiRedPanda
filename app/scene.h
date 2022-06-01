@@ -11,6 +11,7 @@
 
 #include <QElapsedTimer>
 #include <QGraphicsScene>
+#include <QMimeData>
 #include <QUndoCommand>
 
 class GraphicElement;
@@ -21,6 +22,8 @@ class Scene : public QGraphicsScene
     Q_OBJECT
 
 public:
+    using QGraphicsScene::addItem;
+
     explicit Scene(QObject *parent = nullptr);
 
     QAction *redoAction() const;
@@ -28,10 +31,11 @@ public:
     QUndoStack *undoStack();
     QVector<GraphicElement *> elements();
     QVector<GraphicElement *> elements(const QRectF &rect);
-    QVector<GraphicElement *> selectedElements();
+    QList<GraphicElement *> selectedElements();
     QVector<GraphicElement *> visibleElements();
     SimulationController *simulationController();
     int gridSize() const;
+    void addItem(QMimeData *mimeData);
     void copyAction();
     void cutAction();
     void deleteAction();
@@ -53,7 +57,7 @@ public:
 signals:
     void circuitAppearenceHasChanged();
     void circuitHasChanged();
-    void contextMenuPos(QPoint screenPos); // TODO: instead of sending position send item?
+    void contextMenuPos(QPoint screenPos);
 
 protected:
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event) override;
@@ -118,4 +122,3 @@ private:
     int m_hoverPortElm_id = 0;
     int m_hoverPort_nbr = 0;
 };
-

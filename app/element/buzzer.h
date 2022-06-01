@@ -12,7 +12,7 @@
 class Buzzer : public GraphicElement
 {
     Q_OBJECT
-    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
+    Q_PROPERTY(QString pixmapPath MEMBER m_pixmapPath CONSTANT)
     Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
     Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
 
@@ -33,14 +33,13 @@ private:
 
     inline static int m_labelNumber = 0;
 
-    const QString m_pixmap = ":/output/BuzzerOff.png";
+    const QString m_pixmapPath = ":/output/BuzzerOff.png";
     const QString m_titleText = tr("<b>BUZZER</b>");
     const QString m_translatedName = tr("Buzzer");
 
     QSoundEffect m_audio;
     QString m_note;
     bool m_isPlaying = false;
-
 };
 
 Q_DECLARE_METATYPE(Buzzer)

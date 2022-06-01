@@ -84,9 +84,11 @@ void InputButton::setOn()
 void InputButton::setOn(const bool value, const int port)
 {
     Q_UNUSED(port);
+
     m_isOn = value;
     setPixmap(m_usingDefaultSkin ? m_defaultSkins.at(m_isOn) : m_alternativeSkins.at(m_isOn));
-    if (!disabled()) {
+
+    if (!isDisabled()) {
         output()->setValue(static_cast<signed char>(m_isOn));
     }
 }

@@ -15,10 +15,7 @@ struct InputPair {
     int port = 0;
 };
 
-/**
- * @brief The LogicElement class was designed to represent logic
- *        elements in the simulation layer of WiRedPanda.
- */
+//! Represent logic elements in the simulation layer
 class LogicElement
 {
 public:
@@ -53,4 +50,3 @@ private:
     bool m_isValid = true;
     int m_priority = -1;
 };
-

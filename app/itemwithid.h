@@ -17,4 +17,3 @@ public:
 private:
     int m_id;
 };
-

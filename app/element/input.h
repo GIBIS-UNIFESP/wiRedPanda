@@ -20,4 +20,3 @@ public:
 protected:
     bool m_locked;
 };
-

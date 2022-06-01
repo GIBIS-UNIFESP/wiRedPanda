@@ -29,4 +29,3 @@ public:
 private:
     Ui::ClockDialog *m_ui;
 };
-

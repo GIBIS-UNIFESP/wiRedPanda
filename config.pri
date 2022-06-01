@@ -102,6 +102,7 @@ SOURCES += \
     $$PWD/app/common.cpp \
     $$PWD/app/elementeditor.cpp \
     $$PWD/app/elementfactory.cpp \
+    $$PWD/app/elementlabel.cpp \
     $$PWD/app/elementmapping.cpp \
     $$PWD/app/elementtype.cpp \
     $$PWD/app/filehelper.cpp \
@@ -113,9 +114,7 @@ SOURCES += \
     $$PWD/app/icprototype.cpp \
     $$PWD/app/icprototypeimpl.cpp \
     $$PWD/app/itemwithid.cpp \
-    $$PWD/app/label.cpp \
     $$PWD/app/lengthdialog.cpp \
-    $$PWD/app/listitemwidget.cpp \
     $$PWD/app/logicelement.cpp \
     $$PWD/app/mainwindow.cpp \
     $$PWD/app/nodes/qneconnection.cpp \
@@ -139,6 +138,7 @@ HEADERS += \
     $$PWD/app/common.h \
     $$PWD/app/elementeditor.h \
     $$PWD/app/elementfactory.h \
+    $$PWD/app/elementlabel.h \
     $$PWD/app/elementmapping.h \
     $$PWD/app/elementtype.h \
     $$PWD/app/filehelper.h \
@@ -151,9 +151,7 @@ HEADERS += \
     $$PWD/app/icprototype.h \
     $$PWD/app/icprototypeimpl.h \
     $$PWD/app/itemwithid.h \
-    $$PWD/app/label.h \
     $$PWD/app/lengthdialog.h \
-    $$PWD/app/listitemwidget.h \
     $$PWD/app/logicelement.h \
     $$PWD/app/mainwindow.h \
     $$PWD/app/nodes/qneconnection.h \

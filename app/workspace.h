@@ -10,6 +10,7 @@
 #include "mainwindow.h"
 #include "scene.h"
 
+#include <QTemporaryFile>
 #include <QUndoStack>
 
 class GraphicsView;
@@ -23,19 +24,28 @@ public:
     explicit WorkSpace(QWidget *parent = nullptr);
 
     GraphicsView *view();
-    QFileInfo currentFile();
+    QFileInfo fileInfo();
     QString dolphinFileName();
     Scene *scene();
     SimulationController *simulationController();
     void load(QDataStream &stream);
+    void load(const QString &fileName);
     void save(QDataStream &stream, const QString &dolphinFileName);
+    void save(const QString &fileName = {});
     void selectWorkspace();
-    void setCurrentFile(const QFileInfo &fileInfo);
     void setDolphinFileName(const QString &fileName);
+    void setIsAutosave();
+
+signals:
+    void fileChanged(const QString &fileName);
 
 private:
+    void autosave();
+    void setAutosaveFileName();
+
     GraphicsView m_view;
-    QFileInfo m_currentFile;
+    QFileInfo m_fileInfo;
     QString m_dolphinFileName;
+    QTemporaryFile m_autosaveFile;
     Scene m_scene;
 };

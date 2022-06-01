@@ -14,7 +14,7 @@ int id = qRegisterMetaType<DLatch>();
 DLatch::DLatch(QGraphicsItem *parent)
     : GraphicElement(ElementType::DLatch, ElementGroup::Memory, 2, 2, 2, 2, parent)
 {
-    m_defaultSkins = QStringList{":/memory/D-latch.png"};
+    m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 
@@ -41,4 +41,10 @@ void DLatch::updatePorts()
 
     output(0)->setPos(rightPosition(), 15); /* Q      */
     output(1)->setPos(rightPosition(), 45); /* ~Q     */
+}
+
+void DLatch::updateTheme()
+{
+    setPixmap(pixmapPath());
+    GraphicElement::updateTheme();
 }

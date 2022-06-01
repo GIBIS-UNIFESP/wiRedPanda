@@ -11,7 +11,7 @@
 class InputButton : public GraphicElement, public Input
 {
     Q_OBJECT
-    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
+    Q_PROPERTY(QString pixmapPath MEMBER m_pixmapPath CONSTANT)
     Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
     Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
 
@@ -31,7 +31,7 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
-    const QString m_pixmap = ":/input/buttonOff.png";
+    const QString m_pixmapPath = ":/input/buttonOff.png";
     const QString m_titleText = tr("<b>PUSH BUTTON</b>");
     const QString m_translatedName = tr("Button");
 

@@ -13,8 +13,6 @@ public:
     static QString fileName();
     static QVariant value(const QString &key);
     static bool contains(const QString &key);
-    static void beginGroup(const QString &prefix);
-    static void endGroup();
     static void remove(const QString &key);
     static void setValue(const QString &key, const QVariant &value);
 

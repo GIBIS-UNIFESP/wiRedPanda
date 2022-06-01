@@ -15,4 +15,3 @@ public:
 protected:
     void _updateLogic(const QVector<bool> &inputs) override { Q_UNUSED(inputs); };
 };
-

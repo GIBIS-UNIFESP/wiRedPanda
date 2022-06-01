@@ -54,15 +54,12 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const int m
         addOutputPort();
     }
     GraphicElement::updatePorts();
-    updateTheme();
+    GraphicElement::updateTheme();
 }
 
 QPixmap GraphicElement::pixmap() const
 {
-    if (m_pixmap) {
-        return *m_pixmap;
-    }
-    return {};
+    return m_pixmap ? *m_pixmap : QPixmap();
 }
 
 ElementType GraphicElement::elementType() const
@@ -85,60 +82,54 @@ void GraphicElement::enable()
     m_disabled = false;
 }
 
-void GraphicElement::setPixmap(const QString &pixmapName)
+void GraphicElement::setPixmap(const QString &pixmapPath)
 {
-    QString pixmapPath = pixmapName;
-    // TODO: This has to be changed. Not a good way to do it. Probably better inside the class.
-    if (pixmapPath.startsWith(":/memory/")) {
-        switch (ThemeManager::theme()) {
-        case Theme::Light: pixmapPath.replace(":/memory/", ":/memory/light/"); break;
-        case Theme::Dark:  pixmapPath.replace(":/memory/", ":/memory/dark/");  break;
-        }
+    if (pixmapPath.isEmpty()) {
+        return;
     }
-    if (pixmapPath != m_currentPixmapName) {
-        if (!m_pixmap) {
-            m_pixmap = new QPixmap();
-        }
 
-        if (!m_pixmap->load(pixmapPath)) {
-            m_pixmap->load(m_defaultSkins.first());
-            qCDebug(zero) << "Problem loading pixmapPath:" << pixmapPath;
-            throw Pandaception(tr("Couldn't load pixmap."));
-        }
-
-        m_pixmap = new QPixmap(m_pixmap->scaled(64, 64));
-        setTransformOriginPoint(m_pixmap->rect().center());
-        update(GraphicElement::boundingRect());
+    if (pixmapPath == m_currentPixmapPath) {
+        return;
     }
-    m_currentPixmapName = pixmapName;
+
+    if (!m_pixmap) {
+        m_pixmap = new QPixmap();
+    }
+
+    if (!m_pixmap->load(pixmapPath)) {
+        m_pixmap->load(m_defaultSkins.first());
+        qCDebug(zero) << "Problem loading pixmapPath:" << pixmapPath;
+        throw Pandaception(tr("Couldn't load pixmap."));
+    }
+
+    m_pixmap = new QPixmap(m_pixmap->scaled(64, 64));
+    setTransformOriginPoint(m_pixmap->rect().center());
+    update(GraphicElement::boundingRect());
+
+    m_currentPixmapPath = pixmapPath;
 }
 
-void GraphicElement::setPixmap(const QString &pixmapName, const QSize size)
+void GraphicElement::setPixmap(const QString &pixmapPath, const QSize size)
 {
-    QString pixmapPath = pixmapName;
-    // TODO: This has to be changed. Not a good way to do it. Probably better inside the class.
-    if (pixmapPath.startsWith(":/memory/")) {
-        switch (ThemeManager::theme()) {
-        case Theme::Light: pixmapPath.replace(":/memory/", ":/memory/light/"); break;
-        case Theme::Dark:  pixmapPath.replace(":/memory/", ":/memory/dark/");  break;
-        }
+    if (pixmapPath == m_currentPixmapPath) {
+        return;
     }
-    if (pixmapPath != m_currentPixmapName) {
-        if (!m_pixmap) {
-            m_pixmap = new QPixmap();
-        }
 
-        if (!m_pixmap->load(pixmapPath)) {
-            m_pixmap->load(m_defaultSkins.first());
-            qCDebug(zero) << "Problem loading pixmapPath:" << pixmapPath;
-            throw Pandaception(tr("Couldn't load pixmap."));
-        }
-
-        m_pixmap = new QPixmap(m_pixmap->scaled(size));
-        setTransformOriginPoint(m_pixmap->rect().center());
-        update(boundingRect());
+    if (!m_pixmap) {
+        m_pixmap = new QPixmap();
     }
-    m_currentPixmapName = pixmapName;
+
+    if (!m_pixmap->load(pixmapPath)) {
+        m_pixmap->load(m_defaultSkins.first());
+        qCDebug(zero) << "Problem loading pixmapPath:" << pixmapPath;
+        throw Pandaception(tr("Couldn't load pixmap."));
+    }
+
+    m_pixmap = new QPixmap(m_pixmap->scaled(size));
+    setTransformOriginPoint(m_pixmap->rect().center());
+    update(boundingRect());
+
+    m_currentPixmapPath = pixmapPath;
 }
 
 QVector<QNEOutputPort *> GraphicElement::outputs() const
@@ -415,7 +406,7 @@ void GraphicElement::loadPixmapSkinName(QDataStream &stream, const int skin)
         qCDebug(zero) << "Could not load some of the skins.";
     }
 
-    if (name.at(0) != ':') {
+    if (!name.startsWith(":/")) {
         QDir dir(QFileInfo(GlobalProperties::currentFile).absoluteDir());
         QString fileName(QFileInfo(name).fileName());
         QFileInfo fileInfo(dir, fileName);
@@ -444,7 +435,7 @@ QRectF GraphicElement::boundingRect() const
 
 void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    Q_UNUSED(widget)
+    Q_UNUSED(widget);
     painter->setClipRect(option->exposedRect);
     if (isSelected()) {
         painter->setBrush(m_selectionBrush);
@@ -628,7 +619,6 @@ void GraphicElement::updateTheme()
     for (auto *output : qAsConst(m_outputs)) {
         output->updateTheme();
     }
-    setPixmap(m_currentPixmapName);
     update();
 }
 
@@ -728,7 +718,7 @@ void GraphicElement::setHasLabel(const bool hasLabel)
     m_label->setVisible(hasLabel);
 }
 
-bool GraphicElement::rotatable() const
+bool GraphicElement::isRotatable() const
 {
     return m_rotatable;
 }
@@ -792,7 +782,7 @@ float GraphicElement::frequency() const
 
 void GraphicElement::setFrequency(const float freq)
 {
-    Q_UNUSED(freq)
+    Q_UNUSED(freq);
 }
 
 void GraphicElement::setMinOutputSize(const int minOutputSize)
@@ -852,7 +842,7 @@ void GraphicElement::setLeftPosition(const int leftPosition)
     updatePorts();
 }
 
-bool GraphicElement::disabled() const
+bool GraphicElement::isDisabled() const
 {
     return m_disabled;
 }
