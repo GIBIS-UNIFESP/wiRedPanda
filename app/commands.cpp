@@ -376,8 +376,6 @@ void UpdateCommand::loadData(QByteArray &itemData)
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     QMap<quint64, QNEPort *> portMap;
 
-    m_scene->clearSelection();
-
     double version = GlobalProperties::version;
 
     for (auto *elm : qAsConst(elements)) {
