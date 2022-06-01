@@ -42,6 +42,9 @@ QNEPort::QNEPort(QGraphicsItem *parent)
     path.addPolygon(QRectF(QPointF(-m_radius, -m_radius), QPointF(m_radius, m_radius)));
     setPath(path);
 
+    setPen(QPen(Qt::darkRed));
+    setCurrentBrush(Qt::red);
+
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
 }
 
