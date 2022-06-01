@@ -23,4 +23,5 @@ void Settings::remove(const QString &key)
 void Settings::setValue(const QString &key, const QVariant &value)
 {
     settings->setValue(key, value);
+    settings->sync();
 }
