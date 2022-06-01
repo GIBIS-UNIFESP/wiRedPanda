@@ -60,10 +60,10 @@ void ElementMapping::clear()
 
 QVector<GraphicElement *> ElementMapping::sortGraphicElements(QVector<GraphicElement *> elms)
 {
-    QHash<GraphicElement *, bool> beingvisited;
+    QHash<GraphicElement *, bool> beingVisited;
     QHash<GraphicElement *, int> priority;
     for (auto *elm : elms) {
-        calculatePriority(elm, beingvisited, priority);
+        calculatePriority(elm, beingVisited, priority);
     }
     std::sort(elms.begin(), elms.end(), [priority](const auto &e1, const auto &e2) {
         return priority[e2] < priority[e1];

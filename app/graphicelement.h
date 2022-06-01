@@ -50,9 +50,7 @@ public:
     explicit GraphicElement(QGraphicsItem *parent = nullptr) : QGraphicsObject(parent) {};
     GraphicElement(const GraphicElement &other) : GraphicElement(other.parentItem()) {};
 
-    /**
-     * @brief Saves the graphic element through a binary data stream.
-     */
+    //! Saves the graphic element through a binary data stream.
     virtual void save(QDataStream &stream) const;
 
     /**
@@ -61,20 +59,14 @@ public:
      */
     virtual void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version);
 
-    /**
-     * @brief updatePorts: Updates the number and the connected elements to the ports whenever needed (e.g. loading the element, changing the number of inputs/outputs).
-     */
+    //! Updates the number and the connected elements to the ports whenever needed (e.g. loading the element, changing the number of inputs/outputs).
     virtual void updatePorts();
 
-    /**
-     * @brief frequency: virtual function overloaded by clock element. Other elements have frequency of 0.
-     */
+    //! virtual function overloaded by clock element. Other elements have frequency of 0.
     virtual float frequency() const;
 
-    /**
-     * @brief updateTheme: Updates the GraphicElement theme according to the dark/light WiRedPanda theme.
-     */
-    void updateTheme();
+    //! Updates the GraphicElement theme according to the dark/light WiRedPanda theme.
+    virtual void updateTheme();
 
     ElementGroup elementGroup() const;
     ElementType elementType() const;
@@ -86,14 +78,14 @@ public:
     QVector<QNEInputPort *> inputs() const;
     QVector<QNEOutputPort *> outputs() const;
     bool canChangeSkin() const;
-    bool disabled() const;
     bool hasAudio() const;
     bool hasColors() const;
     bool hasFrequency() const;
     bool hasLabel() const;
     bool hasTrigger() const;
+    bool isDisabled() const;
+    bool isRotatable() const;
     bool isValid();
-    bool rotatable() const;
     const QNEInputPort *input(const int pos = 0) const;
     const QNEOutputPort *output(const int pos = 0) const;
     int inputSize() const;
@@ -120,8 +112,8 @@ public:
     void setLabel(const QString &label);
     void setOutputSize(const int size);
     void setOutputs(const QVector<QNEOutputPort *> &outputs);
-    void setPixmap(const QString &pixmapName);
-    void setPixmap(const QString &pixmapName, const QSize size);
+    void setPixmap(const QString &pixmapPath);
+    void setPixmap(const QString &pixmapPath, const QSize size);
     void setPortName(const QString &name);
     void setTrigger(const QKeySequence &trigger);
     void updateLabel();
@@ -143,48 +135,32 @@ protected:
     void setRightPosition(const int rightPosition);
     void setRotatable(const bool rotatable);
 
-    /**
-     * @brief Path to all default skins. The default skin is in a resource file.
-     */
+    //! Path to all default skins. The default skin is in a resource file.
     QStringList m_defaultSkins;
 
-    /**
-     * @brief Path to all custom skins. Custom skin names are system file paths defined by the user.
-     */
+    //! Path to all custom skins. Custom skin names are system file paths defined by the user.
     QStringList m_alternativeSkins;
 
-    /**
-     * @brief m_inputs: input port vector
-     */
+    //! input port vector
     QVector<QNEInputPort *> m_inputs;
 
-    /**
-     * @brief m_outputs: output port vector
-     */
+    //! output port vector
     QVector<QNEOutputPort *> m_outputs;
 
     QGraphicsTextItem *m_label = new QGraphicsTextItem(this);
     bool m_usingDefaultSkin = true;
 
 private:
-    /**
-     * @brief addInputPort: adds an input port at the end of the input port vector.
-     */
+    //! adds an input port at the end of the input port vector.
     void addInputPort(const QString &name = {});
 
-    /**
-     * @brief addOutputPort: adds an output port at the end of the output port vector.
-     */
+    //! adds an output port at the end of the output port vector.
     void addOutputPort(const QString &name = {});
 
-    /**
-     * @brief addPort: adds an input or output port at the end of the port vector.
-     */
+    //! adds an input or output port at the end of the port vector.
     void addPort(const QString &name, const bool isOutput, const int flags = 0, const int ptr = 0);
 
-    /**
-     * functions to load GraphicElement atributes through a binary data stream
-     */
+    //! functions to load GraphicElement atributes through a binary data stream
     void loadPos(QDataStream &stream);
 
     QPixmap pixmap() const;
@@ -202,9 +178,7 @@ private:
     void removeSurplusInputs(const quint64 inputSize_, QMap<quint64, QNEPort *> &portMap);
     void removeSurplusOutputs(const quint64 outputSize_, QMap<quint64, QNEPort *> &portMap);
 
-    /**
-     * @brief Current pixmap displayed for this GraphicElement.
-     */
+    //! Current pixmap displayed for this GraphicElement.
     QPixmap *m_pixmap = nullptr;
 
     ElementGroup m_elementGroup = ElementGroup::Unknown;
@@ -212,7 +186,7 @@ private:
     QColor m_selectionBrush;
     QColor m_selectionPen;
     QKeySequence m_trigger;
-    QString m_currentPixmapName;
+    QString m_currentPixmapPath;
     QString m_labelText;
     bool m_canChangeSkin = false;
     bool m_disabled = false;

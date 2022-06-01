@@ -62,6 +62,8 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
     : QMainWindow(parent)
     , m_ui(new Ui::BewavedDolphin)
     , m_mainWindow(parent)
+    , m_scene(new QGraphicsScene(this))
+    , m_signalTableView(new QTableView)
     , m_externalScene(scene)
     , m_askConnection(askConnection)
 {
@@ -74,14 +76,10 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
 
     resize(800, 500);
 
-    Settings::beginGroup("beWavedDolphin");
-    restoreGeometry(Settings::value("geometry").toByteArray());
-    Settings::endGroup();
+    restoreGeometry(Settings::value("beWavedDolphin/geometry").toByteArray());
 
-    m_signalTableView = new QTableView;
     m_signalTableView->setItemDelegate(new SignalDelegate(4, this));
 
-    m_scene = new QGraphicsScene(this);
     m_scene->addWidget(m_signalTableView);
 
     m_view.setScene(m_scene);
@@ -117,9 +115,7 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
 
 BewavedDolphin::~BewavedDolphin()
 {
-    Settings::beginGroup("beWavedDolphin");
-    Settings::setValue("geometry", saveGeometry());
-    Settings::endGroup();
+    Settings::setValue("beWavedDolphin/geometry", saveGeometry());
     delete m_ui;
 }
 
@@ -206,10 +202,7 @@ void BewavedDolphin::loadElements()
 
 void BewavedDolphin::createElement(const int row, const int col, const int value, const bool isInput, const bool changePrevious)
 {
-    if (value == 0) {
-        return createZeroElement(row, col, isInput, changePrevious);
-    }
-    return createOneElement(row, col, isInput, changePrevious);
+    return (value == 0) ? createZeroElement(row, col, isInput, changePrevious) : createOneElement(row, col, isInput, changePrevious);
 }
 
 void BewavedDolphin::createZeroElement(const int row, const int col, const bool isInput, const bool changePrevious)
@@ -329,6 +322,7 @@ void BewavedDolphin::loadNewTable(const QStringList &inputLabels, const QStringL
     m_model = new SignalModel(inputLabels.size() + outputLabels.size(), inputLabels.size(), iterations, this);
     m_signalTableView->setModel(m_model);
     QStringList horizontalHeaderLabels;
+    horizontalHeaderLabels.reserve(iterations);
     for (int index = 0; index < iterations; ++index) {
         horizontalHeaderLabels.append(QString::number(index));
     }
@@ -583,6 +577,7 @@ void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
         qCDebug(zero) << "Reducing or keeping the simulation length.";
         m_model->setColumnCount(simLength);
         QStringList horizontalHeaderLabels;
+        horizontalHeaderLabels.reserve(simLength);
         for (int index = 0; index < simLength; ++index) {
             horizontalHeaderLabels.append(QString::number(index));
         }
@@ -595,6 +590,7 @@ void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
     int old_length = m_model->columnCount();
     m_model->setColumnCount(simLength);
     QStringList horizontalHeaderLabels;
+    horizontalHeaderLabels.reserve(simLength);
     for (int index = 0; index < simLength; ++index) {
         horizontalHeaderLabels.append(QString::number(index));
     }
@@ -801,15 +797,12 @@ void BewavedDolphin::on_actionSaveAs_triggered()
             fileName.append(".csv");
         }
     }
-    if (save(fileName)) {
-        m_currentFile = QFileInfo(fileName);
-        associateToWiredPanda(fileName);
-        setWindowTitle(tr("beWavedDolphin Simulator") + " [" + m_currentFile.fileName() + "]");
-        m_ui->statusbar->showMessage(tr("Saved file successfully."), 4000);
-        m_edited = false;
-    } else {
-        m_ui->statusbar->showMessage(tr("Could not save file: ") + fileName + ".", 4000);
-    }
+    save(fileName);
+    m_currentFile = QFileInfo(fileName);
+    associateToWiredPanda(fileName);
+    setWindowTitle(tr("beWavedDolphin Simulator") + " [" + m_currentFile.fileName() + "]");
+    m_ui->statusbar->showMessage(tr("Saved file successfully."), 4000);
+    m_edited = false;
 }
 
 void BewavedDolphin::on_actionSave_triggered()
@@ -819,12 +812,9 @@ void BewavedDolphin::on_actionSave_triggered()
         return;
     }
     QString fileName = m_currentFile.absoluteFilePath();
-    if (save(fileName)) {
-        m_ui->statusbar->showMessage(tr("Saved file successfully."), 4000);
-        m_edited = false;
-    } else {
-        m_ui->statusbar->showMessage(tr("Could not save file: ") + fileName + ".", 4000);
-    }
+    save(fileName);
+    m_ui->statusbar->showMessage(tr("Saved file successfully."), 4000);
+    m_edited = false;
 }
 
 void BewavedDolphin::on_actionLoad_triggered()
@@ -864,7 +854,7 @@ void BewavedDolphin::on_actionLoad_triggered()
     m_ui->statusbar->showMessage(tr("File loaded successfully."), 4000);
 }
 
-bool BewavedDolphin::save(const QString &fileName)
+void BewavedDolphin::save(const QString &fileName)
 {
     QSaveFile file(fileName);
     if (!file.open(QFile::WriteOnly)) {
@@ -878,7 +868,9 @@ bool BewavedDolphin::save(const QString &fileName)
         qCDebug(zero) << "Saving CSV file.";
         save(file);
     }
-    return file.commit();
+    if (!file.commit()) {
+        throw Pandaception("Error saving file: " + file.errorString());
+    }
 }
 
 void BewavedDolphin::save(QDataStream &stream)
@@ -1129,4 +1121,3 @@ void BewavedDolphin::resizeScene()
     m_signalTableView->resize(width_, height_);
     m_scene->setSceneRect(m_scene->itemsBoundingRect());
 }
-

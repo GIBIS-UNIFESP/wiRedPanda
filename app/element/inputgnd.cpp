@@ -14,7 +14,7 @@ int id = qRegisterMetaType<InputGnd>();
 InputGnd::InputGnd(QGraphicsItem *parent)
     : GraphicElement(ElementType::InputGnd, ElementGroup::StaticInput, 0, 0, 1, 1, parent)
 {
-    m_defaultSkins = QStringList{":/input/0.png"};
+    m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 

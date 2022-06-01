@@ -28,4 +28,3 @@ private:
     QVector<LogicElement *> m_inputs;
     QVector<LogicElement *> m_outputs;
 };
-

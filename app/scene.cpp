@@ -3,7 +3,6 @@
 
 #include "scene.h"
 
-#include "application.h"
 #include "buzzer.h"
 #include "commands.h"
 #include "common.h"
@@ -13,19 +12,14 @@
 #include "ic.h"
 #include "input.h"
 #include "qneconnection.h"
-#include "qneport.h"
 #include "serializationfunctions.h"
 #include "thememanager.h"
 
 #include <QClipboard>
 #include <QDrag>
 #include <QGraphicsSceneDragDropEvent>
-#include <QGraphicsView>
-#include <QIODevice>
 #include <QKeyEvent>
 #include <QMenu>
-#include <QMimeData>
-#include <QPainter>
 
 Scene::Scene(QObject *parent)
     : QGraphicsScene(parent)
@@ -42,10 +36,10 @@ Scene::Scene(QObject *parent)
     m_redoAction->setIcon(QIcon(":/toolbar/redo.png"));
     m_redoAction->setShortcut(QKeySequence::Redo);
 
-    connect(&ICManager::instance(), &ICManager::updatedIC, this, &Scene::redoSimulationController);
-    connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, &Scene::updateTheme);
-    connect(&m_undoStack, &QUndoStack::indexChanged, this, &Scene::checkUpdateRequest);
-    connect(this, &Scene::circuitHasChanged, &m_simulationController, &SimulationController::reSortElements);
+    connect(&ICManager::instance(),    &ICManager::updatedIC,       this,                    &Scene::redoSimulationController);
+    connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this,                    &Scene::updateTheme);
+    connect(&m_undoStack,              &QUndoStack::indexChanged,   this,                    &Scene::checkUpdateRequest);
+    connect(this,                      &Scene::circuitHasChanged,   &m_simulationController, &SimulationController::reSortElements);
 }
 
 void Scene::checkUpdateRequest()
@@ -154,9 +148,9 @@ QVector<QNEConnection *> Scene::connections()
     return conns;
 }
 
-QVector<GraphicElement *> Scene::selectedElements()
+QList<GraphicElement *> Scene::selectedElements()
 {
-    QVector<GraphicElement *> elements;
+    QList<GraphicElement *> elements;
     const auto selectedItems_ = selectedItems();
     for (auto *item : selectedItems_) {
         if (item->type() == GraphicElement::Type) {
@@ -386,7 +380,7 @@ void Scene::redoSimulationController()
 void Scene::cloneDrag(const QPointF pos)
 {
     qCDebug(zero) << "Ctrl + Drag action triggered.";
-    QVector<GraphicElement *> selectedElms = selectedElements();
+    QList<GraphicElement *> selectedElms = selectedElements();
     if (!selectedElms.isEmpty()) {
         QRectF rect;
         for (auto *elm : qAsConst(selectedElms)) {
@@ -638,7 +632,7 @@ void Scene::rotateRight()
             elms.append(elm);
         }
     }
-    if ((elms.size() > 1) || ((elms.size() == 1) && elms.first()->rotatable())) {
+    if ((elms.size() > 1) || ((elms.size() == 1) && elms.first()->isRotatable())) {
         receiveCommand(new RotateCommand(elms, static_cast<int>(angle), this));
     }
 }
@@ -665,7 +659,7 @@ void Scene::rotateLeft()
             elms.append(elm);
         }
     }
-    if ((elms.size() > 1) || ((elms.size() == 1) && elms.first()->rotatable())) {
+    if ((elms.size() > 1) || ((elms.size() == 1) && elms.first()->isRotatable())) {
         receiveCommand(new RotateCommand(elms, static_cast<int>(angle), this));
     }
 }
@@ -965,4 +959,37 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
     }
 
     QGraphicsScene::mouseDoubleClickEvent(event);
+}
+
+void Scene::addItem(QMimeData *mimeData)
+{
+    QByteArray itemData = mimeData->data("application/x-dnditemdata");
+    QDataStream stream(&itemData, QIODevice::ReadOnly);
+    QPoint offset;
+    ElementType type;
+    QString labelAuxData;
+    stream >> offset >> type >> labelAuxData;
+    QPointF pos;
+
+    auto *elm = ElementFactory::buildElement(type, true);
+    qCDebug(zero) << "Valid element.";
+    if (elm->elementType() == ElementType::IC) {
+        if (auto *ic = dynamic_cast<IC *>(elm)) {
+            ICManager::loadIC(ic, labelAuxData);
+        }
+    }
+    int widthOffset = static_cast<int>((64 - elm->boundingRect().width()) / 2);
+    if (widthOffset > 0) {
+        pos += QPointF(widthOffset, widthOffset);
+    }
+    qCDebug(zero) << "Adding the element to the scene.";
+    receiveCommand(new AddItemsCommand({elm}, this));
+    qCDebug(zero) << "Cleaning the selection.";
+    clearSelection();
+    qCDebug(zero) << "Setting created element as selected.";
+    elm->setSelected(true);
+    qCDebug(zero) << "Adjusting the position of the element.";
+    elm->setPos(pos);
+
+    mimeData->deleteLater();
 }

@@ -13,9 +13,7 @@
 #include "icmapping.h"
 #include "qneconnection.h"
 #include "scene.h"
-#include "simulationcontroller.h"
 
-#include <QDebug>
 #include <QGraphicsView>
 
 SimulationController::SimulationController(Scene *scene)
@@ -25,7 +23,7 @@ SimulationController::SimulationController(Scene *scene)
     m_simulationTimer.setInterval(globalClock);
     m_viewTimer.setInterval(1000 / 30);
     m_viewTimer.start();
-    connect(&m_viewTimer, &QTimer::timeout, this, &SimulationController::updateView);
+    connect(&m_viewTimer,       &QTimer::timeout, this, &SimulationController::updateView);
     connect(&m_simulationTimer, &QTimer::timeout, this, &SimulationController::tic);
 }
 

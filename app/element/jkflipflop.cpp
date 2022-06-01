@@ -14,7 +14,7 @@ int id = qRegisterMetaType<JKFlipFlop>();
 JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::JKFlipFlop, ElementGroup::Memory, 5, 5, 2, 2, parent)
 {
-    m_defaultSkins = QStringList{":/memory/JK-flipflop.png"};
+    m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 
@@ -57,4 +57,10 @@ void JKFlipFlop::updatePorts()
 
     output(0)->setPos(rightPosition(), 15); /* Q      */
     output(1)->setPos(rightPosition(), 45); /* ~Q     */
+}
+
+void JKFlipFlop::updateTheme()
+{
+    setPixmap(pixmapPath());
+    GraphicElement::updateTheme();
 }

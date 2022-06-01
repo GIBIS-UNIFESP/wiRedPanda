@@ -71,7 +71,6 @@ protected:
 private:
     QVector<char> loadSignals(QStringList &inputLabels, QStringList &outputLabels);
     bool checkSave();
-    bool save(const QString &fileName);
     int sectionFirstColumn(const QItemSelection &ranges);
     int sectionFirstRow(const QItemSelection &ranges);
     void associateToWiredPanda(const QString &fileName);
@@ -117,6 +116,7 @@ private:
     void run();
     void save(QDataStream &stream);
     void save(QSaveFile &file);
+    void save(const QString &fileName);
     void setLength(const int simLength, const bool runSimulation = true);
     void zoomChanged();
 

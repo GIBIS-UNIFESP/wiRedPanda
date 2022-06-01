@@ -39,4 +39,3 @@ private:
     int m_panStartY = 0;
     int m_zoomLevel = 0;
 };
-

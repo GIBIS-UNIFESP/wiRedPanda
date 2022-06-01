@@ -25,7 +25,7 @@ public:
     QString fileName() const;
     QString inputLabel(const int index) const;
     QString outputLabel(const int index) const;
-    bool defaultInputValue(const int index);
+    signed char defaultInputValue(const int index);
     bool isInputRequired(const int index);
     int inputSize() const;
     int outputSize() const;
@@ -41,4 +41,3 @@ private:
     QString m_fileName;
     QVector<IC *> m_icObservers;
 };
-

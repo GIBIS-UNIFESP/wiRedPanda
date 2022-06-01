@@ -48,11 +48,6 @@ CodeGenerator::CodeGenerator(const QString &fileName, const QVector<GraphicEleme
     };
 }
 
-CodeGenerator::~CodeGenerator()
-{
-    m_file.close();
-}
-
 static inline QString highLow(const int val)
 {
     return (val == 1) ? "HIGH" : "LOW";
@@ -82,7 +77,7 @@ QString CodeGenerator::otherPortName(QNEPort *port)
     return m_varMap.value(other);
 }
 
-bool CodeGenerator::generate()
+void CodeGenerator::generate()
 {
     m_stream << "// ==================================================================== //" << endl;
     m_stream << "// ======= This code was generated automatically by WiRedPanda ======== //" << endl;
@@ -99,7 +94,6 @@ bool CodeGenerator::generate()
 
     /* Loop section */
     loop();
-    return true;
 }
 
 void CodeGenerator::declareInputs()
@@ -156,16 +150,16 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elms
 {
     for (auto *elm : elms) {
         if (elm->elementType() == ElementType::IC) {
-            //      Box *box = qgraphicsitem_cast<Box*>(elm);
+            //      IC *ic = qgraphicsitem_cast<IC *>(elm);
 
             // FIXME: Get code generator to work again
-            //      if (box) {
-            //        out << "// " << box->getLabel() << endl;
-            //        declareAuxVariablesRec(box->getElements(), true);
-            //        out << "// END of " << box->getLabel() << endl;
-            //        for (int i = 0; i < box->outputSize(); ++i) {
-            //          QNEPort *port = box->outputMap.at(i);
-            //          varMap[box->output(i)] = otherPortName(port);
+            //      if (ic) {
+            //        out << "// " << ic->getLabel() << endl;
+            //        declareAuxVariablesRec(ic->getElements(), true);
+            //        out << "// END of " << ic->getLabel() << endl;
+            //        for (int i = 0; i < ic->outputSize(); ++i) {
+            //          QNEPort *port = ic->outputMap.at(i);
+            //          varMap[ic->output(i)] = otherPortName(port);
             //        }
             //      }
         } else {
@@ -251,26 +245,26 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elms)
 {
     for (auto *elm : elms) {
         if (elm->elementType() == ElementType::IC) {
-            throw Pandaception(tr("BOX element not supported: ") + elm->objectName());
-            // TODO: CodeGenerator::assignVariablesRec for Box Element
-            //      Box *box = qgraphicsitem_cast<Box*>(elm);
-            //      out << "    // " << box->getLabel() << endl;
-            //      for (int i = 0; i < box->inputSize(); ++i) {
-            //          QNEPort *port = box->input(i);
+            throw Pandaception(tr("IC element not supported: ") + elm->objectName());
+            // TODO: CodeGenerator::assignVariablesRec for IC Element
+            //      IC *ic = qgraphicsitem_cast<IC *>(elm);
+            //      out << "    // " << ic->getLabel() << endl;
+            //      for (int i = 0; i < ic->inputSize(); ++i) {
+            //          QNEPort *port = ic->input(i);
             //          QNEPort *otherPort = port->connections().first()->otherPort(port);
             //          QString value = highLow(port->defaultValue());
             //          if (!varMap[otherPort].isEmpty()) {
             //              value = varMap[otherPort];
             //          }
-            //          out << "    " << varMap[box->inputMap.at(i)] << " = " << value << ";" << endl;
+            //          out << "    " << varMap[ic->inputMap.at(i)] << " = " << value << ";" << endl;
             //      }
-            //      QVector<GraphicElement*> boxElms = box->getElements();
-            //      if (boxElms.isEmpty()) {
+            //      QVector<GraphicElement*> icElms = ic->getElements();
+            //      if (icElms.isEmpty()) {
             //          continue;
             //      }
-            //      boxElms = SimulationController::sortElements(boxElms);
-            //      assignVariablesRec(boxElms);
-            //      out << "    // End of " << box->getLabel() << endl;
+            //      icElms = SimulationController::sortElements(icElms);
+            //      assignVariablesRec(icElms);
+            //      out << "    // End of " << ic->getLabel() << endl;
         }
         if (elm->inputs().isEmpty() || elm->outputs().isEmpty()) {
             continue;

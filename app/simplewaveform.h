@@ -48,4 +48,3 @@ private:
     SortingMode m_sortingMode;
     WorkSpace *m_workspace;
 };
-

@@ -92,90 +92,6 @@
         <item>
          <layout class="QGridLayout" name="gridLayout">
           <item row="1" column="0" colspan="3">
-           <widget class="QScrollArea" name="searchScrollArea">
-            <property name="widgetResizable">
-             <bool>true</bool>
-            </property>
-            <widget class="QWidget" name="searchContents">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>276</width>
-               <height>303</height>
-              </rect>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_7">
-              <item row="0" column="0">
-               <layout class="QVBoxLayout" name="searchLayout">
-                <item>
-                 <spacer name="VSpacer">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>20</width>
-                    <height>184</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </widget>
-          </item>
-          <item row="4" column="0" colspan="3">
-           <widget class="ElementEditor" name="elementEditor" native="true">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QLineEdit" name="lineEdit">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="clearButtonEnabled">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Search:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" colspan="3">
            <widget class="QTabWidget" name="tabElements">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -189,8 +105,22 @@
               <height>0</height>
              </size>
             </property>
+            <property name="styleSheet">
+             <string notr="true">QTabBar::tab:disabled {
+	 width: 0;
+	 height: 0;
+	 margin: 0;
+	 padding: 0;
+	 border: none; 
+}
+
+QTabWidget::pane {
+	margin: 0px 0px 0px 0px; 
+}
+</string>
+            </property>
             <property name="currentIndex">
-             <number>3</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="io">
              <attribute name="icon">
@@ -217,8 +147,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>256</width>
-                   <height>255</height>
+                   <width>260</width>
+                   <height>581</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -266,8 +196,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>256</width>
-                   <height>255</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -315,8 +245,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>256</width>
-                   <height>255</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -342,7 +272,7 @@
             <widget class="QWidget" name="ic">
              <attribute name="icon">
               <iconset resource="resources/basic/basic.qrc">
-               <normaloff>:/basic/box.png</normaloff>:/basic/box.png</iconset>
+               <normaloff>:/basic/ic.png</normaloff>:/basic/ic.png</iconset>
              </attribute>
              <attribute name="title">
               <string/>
@@ -359,13 +289,13 @@
                 <property name="widgetResizable">
                  <bool>true</bool>
                 </property>
-                <widget class="QWidget" name="scrollAreaWidgetContents_Box">
+                <widget class="QWidget" name="scrollAreaWidgetContents_IC">
                  <property name="geometry">
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>256</width>
-                   <height>255</height>
+                   <width>98</width>
+                   <height>28</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -413,8 +343,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>256</width>
-                   <height>255</height>
+                   <width>228</width>
+                   <height>18</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -425,7 +355,7 @@
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_6">
                   <item>
-                   <spacer name="verticalSpacer_MISC">
+                   <spacer name="verticalSpacer_Misc">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
                     </property>
@@ -443,23 +373,94 @@
               </item>
              </layout>
             </widget>
+            <widget class="QWidget" name="search">
+             <attribute name="title">
+              <string/>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_9">
+              <item row="0" column="0">
+               <widget class="QScrollArea" name="scrollArea_Search">
+                <property name="widgetResizable">
+                 <bool>true</bool>
+                </property>
+                <widget class="QWidget" name="scrollAreaWidgetContents_Search">
+                 <property name="geometry">
+                  <rect>
+                   <x>0</x>
+                   <y>0</y>
+                   <width>98</width>
+                   <height>28</height>
+                  </rect>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_7">
+                  <item>
+                   <spacer name="verticalSpacer_Search">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>234</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </widget>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </widget>
           </item>
-          <item row="2" column="1">
-           <spacer name="verticalSpacer_5">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
+          <item row="2" column="0" colspan="3">
+           <widget class="ElementEditor" name="elementEditor" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Fixed</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
+            <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>4</height>
+              <height>0</height>
              </size>
             </property>
-           </spacer>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Search:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="2">
+           <widget class="QLineEdit" name="lineEditSearch">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -539,7 +540,7 @@
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -549,7 +550,7 @@
     <property name="toolTipsVisible">
      <bool>false</bool>
     </property>
-    <widget class="QMenu" name="menuRecent_files">
+    <widget class="QMenu" name="menuRecentFiles">
      <property name="enabled">
       <bool>false</bool>
      </property>
@@ -565,7 +566,7 @@
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
     <addaction name="separator"/>
-    <addaction name="menuRecent_files"/>
+    <addaction name="menuRecentFiles"/>
     <addaction name="actionReloadFile"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
@@ -1117,7 +1118,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>lineEdit</tabstop>
+  <tabstop>lineEditSearch</tabstop>
   <tabstop>tabElements</tabstop>
   <tabstop>scrollAreaInOut</tabstop>
   <tabstop>scrollAreaMemory</tabstop>
@@ -1125,13 +1126,13 @@
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
+  <include location="resources/output/output.qrc"/>
   <include location="resources/memory/light/memory_light.qrc"/>
   <include location="resources/misc/misc.qrc"/>
-  <include location="resources/output/output.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
  </resources>
  <connections/>
 </ui>
