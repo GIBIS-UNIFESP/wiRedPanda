@@ -537,11 +537,6 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
         if (newElm->isRotatable() && oldElm->isRotatable()) {
             newElm->setRotation(oldElm->rotation());
         }
-        if ((newElm->elementType() == ElementType::Not) && (oldElm->elementType() == ElementType::Node)) {
-            newElm->setRotation(oldElm->rotation() + 90.0);
-        } else if ((newElm->elementType() == ElementType::Node) && (oldElm->elementType() == ElementType::Not)) {
-            newElm->setRotation(oldElm->rotation() - 90.0);
-        }
         if (newElm->hasLabel() && oldElm->hasLabel()) {
             newElm->setLabel(oldElm->label());
         }
