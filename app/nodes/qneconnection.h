@@ -35,6 +35,8 @@ class QNEOutputPort;
 
 class QNEConnection : public QGraphicsPathItem, public ItemWithId
 {
+    Q_DECLARE_TR_FUNCTIONS(QNEConnection)
+
 public:
     enum { Type = QGraphicsItem::UserType + 2 };
     int type() const override { return Type; }
