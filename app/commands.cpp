@@ -470,9 +470,11 @@ void SplitCommand::undo()
     auto *node = findElm(m_node_id);
     auto *elm1 = findElm(m_elm1_id);
     auto *elm2 = findElm(m_elm2_id);
+
     if (!conn1 || !conn2 || !elm1 || !elm2 || !node) {
         throw Pandaception(tr("Error trying to undo ") + text());
     }
+
     conn1->setEnd(conn2->end());
 
     conn1->updatePosFromPorts();
@@ -532,23 +534,28 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
         auto *oldElm = from[elm];
         auto *newElm = to[elm];
         newElm->setInputSize(oldElm->inputSize());
-
         newElm->setPos(oldElm->pos());
+
         if (newElm->isRotatable() && oldElm->isRotatable()) {
             newElm->setRotation(oldElm->rotation());
         }
+
         if (newElm->hasLabel() && oldElm->hasLabel()) {
             newElm->setLabel(oldElm->label());
         }
+
         if (newElm->hasColors() && oldElm->hasColors()) {
             newElm->setColor(oldElm->color());
         }
+
         if (newElm->hasFrequency() && oldElm->hasFrequency()) {
             newElm->setFrequency(oldElm->frequency());
         }
+
         if (newElm->hasTrigger() && oldElm->hasTrigger()) {
             newElm->setTrigger(oldElm->trigger());
         }
+
         for (int in = 0; in < oldElm->inputSize(); ++in) {
             while (!oldElm->input(in)->connections().isEmpty()) {
                 QNEConnection *conn = oldElm->input(in)->connections().first();
@@ -557,6 +564,7 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
                 }
             }
         }
+
         for (int out = 0; out < oldElm->outputSize(); ++out) {
             while (!oldElm->output(out)->connections().isEmpty()) {
                 QNEConnection *conn = oldElm->output(out)->connections().first();
@@ -565,6 +573,7 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
                 }
             }
         }
+
         int oldId = oldElm->id();
         m_scene->removeItem(oldElm);
         delete oldElm;
@@ -591,13 +600,16 @@ void ChangeInputSizeCommand::redo()
 {
     qCDebug(zero) << "REDO " + text();
     const auto m_elements = findElements(m_elms).toVector();
+
     if (!m_elements.isEmpty()) {
         m_scene->clearSelection();
     }
+
     QList<GraphicElement *> serializationOrder;
     serializationOrder.reserve(m_elements.size());
     m_oldData.clear();
     QDataStream stream(&m_oldData, QIODevice::WriteOnly);
+
     for (auto *elm : m_elements) {
         elm->save(stream);
         serializationOrder.append(elm);
@@ -609,6 +621,7 @@ void ChangeInputSizeCommand::redo()
             }
         }
     }
+
     for (auto *elm : m_elements) {
         for (int in = m_newInputSize; in < elm->inputSize(); ++in) {
             while (!elm->input(in)->connections().isEmpty()) {
@@ -623,10 +636,13 @@ void ChangeInputSizeCommand::redo()
         elm->setInputSize(m_newInputSize);
         elm->setSelected(true);
     }
+
     m_order.clear();
+
     for (auto *elm : serializationOrder) {
         m_order.append(elm->id());
     }
+
     m_scene->setCircuitUpdateRequired();
 }
 

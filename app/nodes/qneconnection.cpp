@@ -157,6 +157,7 @@ bool QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
     quint64 ptr2;
     stream >> ptr1;
     stream >> ptr2;
+
     if (portMap.isEmpty()) {
         qCDebug(three) << "Empty port map.";
         auto *port1 = reinterpret_cast<QNEPort *>(ptr1);

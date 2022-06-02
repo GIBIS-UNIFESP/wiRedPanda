@@ -40,6 +40,7 @@ class QNEConnection : public QGraphicsPathItem, public ItemWithId
 public:
     enum { Type = QGraphicsItem::UserType + 2 };
     int type() const override { return Type; }
+
     enum class Status { Invalid = -1, Inactive = 0, Active = 1 };
 
     explicit QNEConnection(QGraphicsItem *parent = nullptr);
