@@ -191,7 +191,7 @@ bool QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
             qCDebug(three) << "After ifs.";
         }
     } else {
-        return false;
+        throw Pandaception(tr("Error loading connection."));
     }
     qCDebug(three) << "Updating pos from ports.";
     updatePosFromPorts();

@@ -25,6 +25,9 @@ void SerializationFunctions::serialize(const QList<QGraphicsItem *> &items, QDat
         if (auto *element = qgraphicsitem_cast<GraphicElement *>(item)) {
             stream << element;
         }
+    }
+
+    for (auto *item : items) {
         if (auto *connection = qgraphicsitem_cast<QNEConnection *>(item)) {
             stream << connection;
         }
@@ -67,13 +70,9 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &stream, 
             qCDebug(three) << "Connection built.";
             conn->setSelected(true);
             qCDebug(three) << "Selected true.";
-            if (!conn->load(stream, portMap)) {
-                qCDebug(three) << "Deleting connection.";
-                delete conn;
-            } else {
-                qCDebug(three) << "Appending connection.";
-                itemList.append(conn);
-            }
+            conn->load(stream, portMap);
+            qCDebug(three) << "Appending connection.";
+            itemList.append(conn);
         }
     }
 
