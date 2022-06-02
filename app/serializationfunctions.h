@@ -37,5 +37,6 @@ public:
 
     //! returns the canvas pose from the last saved session.
     static QRectF loadRect(QDataStream &stream, const double version);
+
     static QString loadDolphinFileName(QDataStream &stream, const double version);
 };

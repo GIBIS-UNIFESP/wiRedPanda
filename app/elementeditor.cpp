@@ -58,13 +58,13 @@ ElementEditor::~ElementEditor()
 
 QAction *addElementAction(QMenu *menu, GraphicElement *firstElm, ElementType type, const bool hasSameType)
 {
-    if (!hasSameType || (firstElm->elementType() != type)) {
-        QAction *action = menu->addAction(QIcon(ElementFactory::pixmap(type)), ElementFactory::translatedName(type));
-        action->setData(static_cast<int>(type));
-        return action;
+    if (hasSameType && firstElm->elementType() == type) {
+        return nullptr;
     }
 
-    return nullptr;
+    QAction *action = menu->addAction(QIcon(ElementFactory::pixmap(type)), ElementFactory::translatedName(type));
+    action->setData(static_cast<int>(type));
+    return action;
 }
 
 void ElementEditor::contextMenu(QPoint screenPos)

@@ -1116,8 +1116,8 @@ void BewavedDolphin::resizeEvent(QResizeEvent *event)
 
 void BewavedDolphin::resizeScene()
 {
-    const int width_ = static_cast<int>(width() / m_scale);
-    const int height_ = static_cast<int>(height() / m_scale);
-    m_signalTableView->resize(width_, height_);
+    const int newWidth = static_cast<int>(width() / m_scale);
+    const int newHeight = static_cast<int>(height() / m_scale);
+    m_signalTableView->resize(newWidth, newHeight);
     m_scene->setSceneRect(m_scene->itemsBoundingRect());
 }

@@ -151,11 +151,10 @@ QVector<QNEConnection *> Scene::connections()
 QList<GraphicElement *> Scene::selectedElements()
 {
     QList<GraphicElement *> elements;
-    const auto selectedItems_ = selectedItems();
-    for (auto *item : selectedItems_) {
+    const auto items = selectedItems();
+    for (auto *item : items) {
         if (item->type() == GraphicElement::Type) {
-            auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
-            if (elm) {
+            if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
                 elements.append(elm);
             }
         }
@@ -220,8 +219,7 @@ QNEConnection *Scene::editedConnection() const
 
 void Scene::deleteEditedConnection()
 {
-    QNEConnection *connection = editedConnection();
-    if (connection) {
+    if (auto *connection = editedConnection()) {
         removeItem(connection);
         delete connection;
     }
@@ -424,7 +422,7 @@ void Scene::copy(const QList<QGraphicsItem *> &items, QDataStream &stream)
         }
     }
     stream << center / static_cast<qreal>(elm);
-    SerializationFunctions::serialize(selectedItems(), stream);
+    SerializationFunctions::serialize(items, stream);
 }
 
 void Scene::handleHoverPort()
@@ -622,8 +620,8 @@ void Scene::selectAll()
 
 void Scene::rotateRight()
 {
-    double angle = 90.0;
-    auto list = selectedItems();
+    const double angle = 90.0;
+    const auto list = selectedItems();
     QList<GraphicElement *> elms;
     elms.reserve(list.size());
     for (auto *item : qAsConst(list)) {
@@ -649,8 +647,8 @@ void Scene::mute(const bool mute)
 
 void Scene::rotateLeft()
 {
-    double angle = -90.0;
-    auto list = selectedItems();
+    const double angle = -90.0;
+    const auto list = selectedItems();
     QList<GraphicElement *> elms;
     elms.reserve(list.size());
     for (auto *item : qAsConst(list)) {

@@ -40,6 +40,7 @@ class QNEPort : public QGraphicsPathItem
 public:
     enum { Type = QGraphicsItem::UserType + 1 };
     int type() const override { return Type; }
+
     enum { NamePort = 1, TypePort = 2 };
 
     explicit QNEPort(QGraphicsItem *parent = nullptr);
