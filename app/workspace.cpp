@@ -164,6 +164,7 @@ void WorkSpace::load(QDataStream &stream)
         m_scene.addItem(item);
     }
     qCDebug(three) << "This code tries to centralize the elements in scene using the rectangle. But it is not working well.";
+    // TODO: improve this
     m_scene.setSceneRect(m_scene.itemsBoundingRect());
     if (!m_scene.views().empty()) {
         const auto views = m_scene.views();
@@ -241,15 +242,15 @@ void WorkSpace::autosave()
 
     if (m_fileInfo.fileName().isEmpty()) {
         qCDebug(three) << "Default value not set yet.";
-        QDir autosavePath(QDir::temp());
-        qCDebug(three) << "Autosavepath:" << autosavePath.absolutePath();
-        m_autosaveFile.setFileTemplate(autosavePath.absoluteFilePath(".XXXXXX.panda"));
+        QDir path(QDir::temp());
+        qCDebug(three) << "Autosavepath:" << path.absolutePath();
+        m_autosaveFile.setFileTemplate(path.absoluteFilePath(".XXXXXX.panda"));
         qCDebug(three) << "Setting current file to random file in tmp.";
     } else {
         qCDebug(three) << "Autosave path set to the current file's directory, if there is one.";
-        QDir autosavePath(m_fileInfo.absolutePath());
-        qCDebug(three) << "Autosavepath:" << autosavePath.absolutePath();
-        m_autosaveFile.setFileTemplate(autosavePath.absoluteFilePath("." + m_fileInfo.baseName() + ".XXXXXX.panda"));
+        QDir path(m_fileInfo.absolutePath());
+        qCDebug(three) << "Autosavepath:" << path.absolutePath();
+        m_autosaveFile.setFileTemplate(path.absoluteFilePath("." + m_fileInfo.baseName() + ".XXXXXX.panda"));
         qCDebug(three) << "Setting current file to:" << m_fileInfo.absoluteFilePath();
     }
 
