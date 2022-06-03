@@ -11,7 +11,6 @@
 #include <QAbstractItemModel>
 #include <QAbstractProxyModel>
 #include <QAction>
-#include <QApplication>
 #include <QBrush>
 #include <QBuffer>
 #include <QByteArray>
@@ -142,7 +141,6 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 #include <QtGlobal>
-#include <QtGui>
 #include <QtMath>
 #include <algorithm>
 #include <cmath>
