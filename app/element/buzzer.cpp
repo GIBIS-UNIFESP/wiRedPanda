@@ -37,7 +37,6 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     if (Common::incrementLabel) {
         ++m_labelNumber;
     }
-    Buzzer::setAudio("C6");
 }
 
 void Buzzer::refresh()
@@ -74,6 +73,10 @@ void Buzzer::playBuzzer()
 {
     if (m_isPlaying) {
         return;
+    }
+
+    if (m_audio.source().isEmpty()) {
+        setAudio("C6");
     }
 
     setPixmap(m_usingDefaultSkin ? m_defaultSkins.at(1) : m_alternativeSkins.at(1));
