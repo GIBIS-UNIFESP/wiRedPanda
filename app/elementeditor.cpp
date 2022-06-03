@@ -602,8 +602,6 @@ void ElementEditor::apply()
 
 void ElementEditor::inputIndexChanged(const int index)
 {
-    Q_UNUSED(index);
-
     if ((m_elements.isEmpty()) || (!isEnabled())) {
         return;
     }
@@ -611,6 +609,9 @@ void ElementEditor::inputIndexChanged(const int index)
     if (m_canChangeInputSize && (m_ui->comboBoxInputSize->currentText() != m_manyIS)) {
         emit sendCommand(new ChangeInputSizeCommand(m_elements, m_ui->comboBoxInputSize->currentData().toInt(), m_scene));
     }
+
+    qCDebug(zero) << "Input size changed to " << index;
+    apply();
 }
 
 void ElementEditor::outputIndexChanged(const QString &index)
@@ -665,6 +666,7 @@ void ElementEditor::inputLocked(const bool value)
 void ElementEditor::triggerChanged(const QString &cmd)
 {
     m_ui->lineEditTrigger->setText(cmd.toUpper());
+    apply();
 }
 
 bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
