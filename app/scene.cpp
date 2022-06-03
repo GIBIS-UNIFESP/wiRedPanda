@@ -25,6 +25,8 @@ Scene::Scene(QObject *parent)
     : QGraphicsScene(parent)
     , m_simulationController(this)
 {
+    installEventFilter(this);
+
     m_selectionRect.setFlag(QGraphicsItem::ItemIsSelectable, false);
     addItem(&m_selectionRect);
 
@@ -807,26 +809,40 @@ void Scene::keyReleaseEvent(QKeyEvent *event)
     QGraphicsScene::keyReleaseEvent(event);
 }
 
+bool Scene::eventFilter(QObject *watched, QEvent *event)
+{
+    if (auto *mouseEvent = dynamic_cast<QGraphicsSceneMouseEvent *>(event)) {
+        if (mouseEvent->modifiers() & Qt::ShiftModifier) {
+            mouseEvent->setModifiers(Qt::ControlModifier);
+            return false;
+        }
+
+        auto *item = itemAt(mouseEvent->scenePos());
+
+        if (item
+        && (item->type() == GraphicElement::Type || item->type() == QNEConnection::Type)
+        && (mouseEvent->button() == Qt::LeftButton)
+        && (mouseEvent->modifiers() & Qt::ControlModifier))
+        {
+            item->setSelected(true);
+            cloneDrag(mouseEvent->scenePos());
+            return true;
+        }
+    }
+
+    return QGraphicsScene::eventFilter(watched, event);
+}
+
 void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     m_mousePos = event->scenePos();
     resizeScene();
     handleHoverPort();
 
-    if (event->modifiers() & Qt::ShiftModifier) {
-        event->setModifiers(Qt::ControlModifier);
-    }
-
     auto *item = itemAt(m_mousePos);
 
     if (item) {
         if (event->button() == Qt::LeftButton) {
-            if ((event->modifiers() & Qt::ControlModifier) && (item->type() == GraphicElement::Type)) {
-                item->setSelected(true);
-                cloneDrag(event->scenePos());
-                return;
-            }
-
             m_draggingElement = true;
             auto list = selectedItems();
             list.append(itemsAt(m_mousePos));
@@ -883,10 +899,6 @@ void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     m_mousePos = event->scenePos();
     resizeScene();
     handleHoverPort();
-
-    if (event->modifiers() & Qt::ShiftModifier) {
-        event->setModifiers(Qt::ControlModifier);
-    }
 
     if (auto *connection = editedConnection()) {
         if (connection->start()) {
@@ -950,6 +962,10 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
+    if (event->modifiers() & Qt::ControlModifier) {
+        return;
+    }
+
     auto *connection = dynamic_cast<QNEConnection *>(itemAt(m_mousePos));
 
     if (connection && connection->start() && connection->end()) {
