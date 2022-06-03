@@ -34,6 +34,7 @@ public:
     QList<GraphicElement *> selectedElements();
     QVector<GraphicElement *> visibleElements();
     SimulationController *simulationController();
+    bool eventFilter(QObject *watched, QEvent *event) override;
     int gridSize() const;
     void addItem(QMimeData *mimeData);
     void copyAction();

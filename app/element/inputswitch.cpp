@@ -63,6 +63,9 @@ void InputSwitch::setOn(const bool value, const int port)
 
 void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    if(event->modifiers() & Qt::ControlModifier){
+        return;
+    }
     if ((!m_locked) && (event->button() == Qt::LeftButton)) {
         setOn(!m_isOn);
         event->accept();
