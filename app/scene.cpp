@@ -386,17 +386,32 @@ void Scene::cloneDrag(const QPointF pos)
         return;
     }
 
+    for (auto *item : items()) {
+        if ((item->type() == GraphicElement::Type || item->type() == QNEConnection::Type) && !item->isSelected()) {
+            item->hide();
+        }
+    }
+
     QRectF rect;
+
     for (auto *elm : qAsConst(selectedElms)) {
         rect = rect.united(elm->boundingRect().translated(elm->pos()));
     }
+
     rect = rect.adjusted(-8, -8, 8, 8);
-    QImage image(rect.size().toSize(), QImage::Format_ARGB32);
+    QImage image(rect.size().toSize(), QImage::Format_ARGB32_Premultiplied);
     image.fill(Qt::transparent);
 
     QPainter painter(&image);
-    painter.setOpacity(0.25);
+    painter.setOpacity(0.0);
     render(&painter, image.rect(), rect);
+    // TODO: fix zoom glitch
+
+    for (auto *item : items()) {
+        if ((item->type() == GraphicElement::Type || item->type() == QNEConnection::Type) && !item->isSelected()) {
+            item->show();
+        }
+    }
 
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
