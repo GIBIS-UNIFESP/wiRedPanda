@@ -178,7 +178,7 @@ void MainWindow::createNewTab()
     qCDebug(zero) << "Creating the tab structure.";
     qCDebug(zero) << "Adding tab. #tabs:" << m_ui->tab->count() << ", current tab:" << m_tabIndex;
     auto *workspace = new WorkSpace(this);
-    connect(workspace, &WorkSpace::fileChanged, this, &MainWindow::setCurrentFile);
+    connect(workspace, &WorkSpace::fileChanged, this, &MainWindow::setTabText);
     workspace->view()->setFastMode(m_ui->actionFastMode->isChecked());
     workspace->scene()->updateTheme();
     m_ui->tab->addTab(workspace, tr("New Project"));
@@ -481,9 +481,11 @@ void MainWindow::setCurrentFile(const QString &fileName)
 
     qCDebug(zero) << "Adding file to controller.";
     emit addRecentFile(fileInfo.absoluteFilePath());
+}
 
-    qCDebug(zero) << "Setting global current file and dir.";
-    GlobalProperties::currentFile = fileInfo.absoluteFilePath();
+void MainWindow::setTabText(const QString &tabText)
+{
+    m_ui->tab->setTabText(m_tabIndex, tabText);
 }
 
 void MainWindow::on_actionSelectAll_triggered()
@@ -591,7 +593,6 @@ void MainWindow::connectTab()
     addUndoRedoMenu();
     qCDebug(zero) << "Setting Panda and Dolphin file info.";
     m_currentFile = m_currentTab->fileInfo();
-    GlobalProperties::currentFile = m_currentFile.absoluteFilePath();
     updateICList();
     qCDebug(zero) << "Connecting current tab to element editor menu in UI.";
     m_ui->elementEditor->setScene(m_currentTab->scene());

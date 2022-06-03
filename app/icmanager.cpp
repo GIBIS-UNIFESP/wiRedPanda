@@ -31,7 +31,7 @@ void ICManager::loadFile(const QString &fileName)
     fileInfo.setFile(QFileInfo(GlobalProperties::currentFile).absolutePath(), QFileInfo(fileName).fileName());
     // qCDebug(zero) << "IC file:" << fileInfo.absoluteFilePath();
     if (!fileInfo.exists() || !fileInfo.isFile()) {
-        throw Pandaception(fileName + tr(" not found."));
+        throw Pandaception(fileInfo.absoluteFilePath() + tr(" not found."));
     }
     instance().m_fileWatcher.addPath(fileInfo.absoluteFilePath());
     if (instance().m_ics.contains(fileInfo.baseName())) {

@@ -67,6 +67,7 @@ public:
     void retranslateUi();
     void setDolphinFileName(const QString &fileName);
     void setFastMode(const bool fastMode);
+    void setTabText(const QString &tabText);
 
 signals:
     void addRecentFile(const QString &fileName);
