@@ -42,7 +42,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->comboBoxAudio,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
     connect(m_ui->comboBoxColor,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
     connect(m_ui->comboBoxInputSize,      qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::inputIndexChanged);
-    connect(m_ui->comboBoxOutputSize,     &QComboBox::currentTextChanged,                   this, &ElementEditor::outputIndexChanged);
+    connect(m_ui->comboBoxOutputSize,     qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::outputIndexChanged);
     connect(m_ui->comboBoxValue,          &QComboBox::currentTextChanged,                   this, &ElementEditor::outputValueChanged);
     connect(m_ui->doubleSpinBoxFrequency, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &ElementEditor::apply);
     connect(m_ui->lineEditElementLabel,   &QLineEdit::textChanged,                          this, &ElementEditor::apply);
@@ -614,7 +614,7 @@ void ElementEditor::inputIndexChanged(const int index)
     apply();
 }
 
-void ElementEditor::outputIndexChanged(const QString &index)
+void ElementEditor::outputIndexChanged(const int index)
 {
     if ((m_elements.isEmpty()) || (!isEnabled())) {
         return;
@@ -624,25 +624,23 @@ void ElementEditor::outputIndexChanged(const QString &index)
         emit sendCommand(new ChangeOutputSizeCommand(m_elements, m_ui->comboBoxOutputSize->currentData().toInt(), m_scene));
     }
 
-    qCDebug(zero) << "Output size changed to " << index.toInt();
+    qCDebug(zero) << "Output size changed to " << index;
     apply();
 }
 
-void ElementEditor::outputValueChanged(const QString &index)
+void ElementEditor::outputValueChanged(const QString &value)
 {
-    Q_UNUSED(index);
-
     if ((m_elements.isEmpty()) || (!isEnabled())) {
         return;
     }
 
-    int new_value = m_ui->comboBoxValue->currentText().toInt();
+    const int newValue = value.toInt();
 
     for (auto *elm : qAsConst(m_elements)) {
         if (elm->elementType() == ElementType::InputRotary) {
-            dynamic_cast<InputRotary *>(elm)->setOn(true, new_value);
+            dynamic_cast<InputRotary *>(elm)->setOn(true, newValue);
         } else {
-            dynamic_cast<Input *>(elm)->setOn(new_value);
+            dynamic_cast<Input *>(elm)->setOn(newValue);
         }
     }
 

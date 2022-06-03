@@ -17,7 +17,6 @@ class TestElements : public QObject
     Q_OBJECT
 
 private slots:
-    QString testFile(const QString &fileName);
     void cleanup();
     void init();
     void testAnd();

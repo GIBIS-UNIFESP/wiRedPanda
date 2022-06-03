@@ -28,10 +28,10 @@ public:
 
     QAction *redoAction() const;
     QAction *undoAction() const;
+    QList<GraphicElement *> selectedElements();
     QUndoStack *undoStack();
     QVector<GraphicElement *> elements();
     QVector<GraphicElement *> elements(const QRectF &rect);
-    QList<GraphicElement *> selectedElements();
     QVector<GraphicElement *> visibleElements();
     SimulationController *simulationController();
     bool eventFilter(QObject *watched, QEvent *event) override;

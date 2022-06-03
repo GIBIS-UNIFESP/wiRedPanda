@@ -34,15 +34,13 @@ public:
     void startTimer();
     void stop();
     void update();
-    void updateAll();
-    void updateScene(const QRectF &rect);
+    void updateScene();
 
 private:
     bool canRun();
     void tic();
     void updatePort(QNEInputPort *port);
     void updatePort(QNEOutputPort *port);
-    void updateView();
 
     ElementMapping *m_elmMapping = nullptr;
     QTimer m_simulationTimer;

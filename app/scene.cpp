@@ -380,37 +380,40 @@ void Scene::redoSimulationController()
 void Scene::cloneDrag(const QPointF pos)
 {
     qCDebug(zero) << "Ctrl + Drag action triggered.";
-    QList<GraphicElement *> selectedElms = selectedElements();
-    if (!selectedElms.isEmpty()) {
-        QRectF rect;
-        for (auto *elm : qAsConst(selectedElms)) {
-            rect = rect.united(elm->boundingRect().translated(elm->pos()));
-        }
-        rect = rect.adjusted(-8, -8, 8, 8);
-        QImage image(rect.size().toSize(), QImage::Format_ARGB32);
-        image.fill(Qt::transparent);
+    auto selectedElms = selectedElements();
 
-        QPainter painter(&image);
-        painter.setOpacity(0.25);
-        render(&painter, image.rect(), rect);
-
-        QByteArray itemData;
-        QDataStream stream(&itemData, QIODevice::WriteOnly);
-
-        QPointF offset = pos - rect.topLeft();
-        stream << pos;
-
-        copy(selectedItems(), stream);
-
-        auto *mimeData = new QMimeData;
-        mimeData->setData("application/ctrlDragData", itemData);
-
-        auto *drag = new QDrag(this);
-        drag->setMimeData(mimeData);
-        drag->setPixmap(QPixmap::fromImage(image));
-        drag->setHotSpot(offset.toPoint());
-        drag->exec(Qt::CopyAction, Qt::CopyAction);
+    if (selectedElms.isEmpty()) {
+        return;
     }
+
+    QRectF rect;
+    for (auto *elm : qAsConst(selectedElms)) {
+        rect = rect.united(elm->boundingRect().translated(elm->pos()));
+    }
+    rect = rect.adjusted(-8, -8, 8, 8);
+    QImage image(rect.size().toSize(), QImage::Format_ARGB32);
+    image.fill(Qt::transparent);
+
+    QPainter painter(&image);
+    painter.setOpacity(0.25);
+    render(&painter, image.rect(), rect);
+
+    QByteArray itemData;
+    QDataStream stream(&itemData, QIODevice::WriteOnly);
+
+    QPointF offset = pos - rect.topLeft();
+    stream << pos;
+
+    copy(selectedItems(), stream);
+
+    auto *mimeData = new QMimeData;
+    mimeData->setData("application/ctrlDragData", itemData);
+
+    auto *drag = new QDrag(this);
+    drag->setMimeData(mimeData);
+    drag->setPixmap(QPixmap::fromImage(image));
+    drag->setHotSpot(offset.toPoint());
+    drag->exec(Qt::CopyAction, Qt::CopyAction);
 }
 
 void Scene::copy(const QList<QGraphicsItem *> &items, QDataStream &stream)

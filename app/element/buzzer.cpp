@@ -55,7 +55,7 @@ void Buzzer::setAudio(const QString &note)
 {
     m_audio.setSource(QUrl::fromLocalFile(":output/audio/" + note + ".wav"));
     m_audio.setVolume(0.35f);
-    m_audio.setLoopCount(QSoundEffect::Infinite);
+    m_audio.setLoopCount(QSoundEffect::Infinite); // TODO: fix audio clipping when repeating
     m_note = note;
 }
 
