@@ -23,7 +23,7 @@ SimulationController::SimulationController(Scene *scene)
     m_simulationTimer.setInterval(globalClock);
     m_viewTimer.setInterval(1000 / 30);
     m_viewTimer.start();
-    connect(&m_viewTimer,       &QTimer::timeout, this, &SimulationController::updateView);
+    connect(&m_viewTimer,       &QTimer::timeout, this, &SimulationController::updateScene);
     connect(&m_simulationTimer, &QTimer::timeout, this, &SimulationController::tic);
 }
 
@@ -35,13 +35,13 @@ SimulationController::~SimulationController()
 // If (m_shouldRestart) then the simulation controller will be cleared the next time that it is updated.
 void SimulationController::setRestart() { m_shouldRestart = true; }
 
-void SimulationController::updateScene(const QRectF &rect)
+void SimulationController::updateScene()
 {
     if (!canRun()) {
         return;
     }
 
-    const auto items = m_scene->items(rect);
+    const auto items = m_scene->items();
 
     for (auto *item : items) {
         if (auto *connection = qgraphicsitem_cast<QNEConnection *>(item)) {
@@ -56,16 +56,6 @@ void SimulationController::updateScene(const QRectF &rect)
             }
         }
     }
-}
-
-void SimulationController::updateView()
-{
-    updateScene(m_scene->views().first()->sceneRect());
-}
-
-void SimulationController::updateAll()
-{
-    updateScene(m_scene->itemsBoundingRect());
 }
 
 bool SimulationController::canRun()

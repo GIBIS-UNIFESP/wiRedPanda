@@ -298,7 +298,7 @@ void BewavedDolphin::run()
         }
         qCDebug(four) << "Updating the values of the circuit logic based on current input values.";
         m_simController->update();
-        m_simController->updateAll();
+        m_simController->updateScene();
         qCDebug(four) << "Setting the computed output values to the waveform results.";
         int counter = m_inputPorts;
         for (auto *output : qAsConst(m_outputs)) {

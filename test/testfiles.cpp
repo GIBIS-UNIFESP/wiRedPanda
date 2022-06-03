@@ -23,7 +23,6 @@ void TestFiles::testFiles()
     for (const auto &fileInfo : files) {
         auto *workspace = new WorkSpace();
         QVERIFY(fileInfo.exists());
-        GlobalProperties::currentFile = fileInfo.absoluteFilePath();
 
         try {
             QFile pandaFile(fileInfo.absoluteFilePath());

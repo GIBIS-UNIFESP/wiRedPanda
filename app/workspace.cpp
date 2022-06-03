@@ -52,7 +52,6 @@ QFileInfo WorkSpace::fileInfo()
 void WorkSpace::save(const QString &fileName)
 {
     QString fileName_ = fileName.isEmpty() ? m_fileInfo.absoluteFilePath() : fileName;
-    QString path = fileName.isEmpty() ? m_fileInfo.absolutePath() : QFileInfo(fileName).absolutePath();
 
     qCDebug(zero) << "fileName:" << fileName_;
     qCDebug(zero) << "Getting autosave settings info.";
@@ -66,6 +65,7 @@ void WorkSpace::save(const QString &fileName)
         autosaveFileName = fileName_;
 
         if (m_fileInfo.fileName().isEmpty()) {
+            const QString path = fileName.isEmpty() ? m_fileInfo.absolutePath() : QFileInfo(fileName).absolutePath();
             fileName_ = QFileDialog::getSaveFileName(this, tr("Save File"), path, tr("Panda files (*.panda)"));
         }
     }

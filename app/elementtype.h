@@ -43,9 +43,23 @@ public:
         Xor = 10,
     };
     Q_ENUM(ElementType);
+
+    enum class ElementGroup : uint_fast8_t {
+        Gate = 4,
+        IC = 2,
+        Input = 3,
+        Memory = 5,
+        Mux = 7,
+        Other = 1,
+        Output = 6,
+        StaticInput = 8,
+        Unknown = 0,
+    };
+    Q_ENUM(ElementGroup);
 };
 
 using ElementType = Enums::ElementType;
+using ElementGroup = Enums::ElementGroup;
 
 ElementType &operator++(ElementType &e);
 QDataStream &operator>>(QDataStream &stream, ElementType &type);

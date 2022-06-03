@@ -40,8 +40,8 @@ private:
     void defaultSkin();
     void inputIndexChanged(const int index);
     void inputLocked(const bool value);
-    void outputIndexChanged(const QString &index);
-    void outputValueChanged(const QString &index);
+    void outputIndexChanged(const int index);
+    void outputValueChanged(const QString &value);
     void selectionChanged();
     void setCurrentElements(const QList<GraphicElement *> &elms);
     void triggerChanged(const QString &cmd);

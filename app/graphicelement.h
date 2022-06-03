@@ -11,18 +11,6 @@
 #include <QGraphicsItem>
 #include <QKeySequence>
 
-enum class ElementGroup : uint_fast8_t {
-    Gate = 4,
-    IC = 2,
-    Input = 3,
-    Memory = 5,
-    Mux = 7,
-    Other = 1,
-    Output = 6,
-    StaticInput = 8,
-    Unknown = 0,
-};
-
 constexpr int maximumValidInputSize = 256;
 
 class GraphicElement;

@@ -186,11 +186,6 @@ void TestElements::testTFlipFlop()
     QCOMPARE(elm.elementType(), ElementType::TFlipFlop);
 }
 
-QString TestElements::testFile(const QString &fileName)
-{
-    return QString(CURRENTDIR) + "/../examples/" + fileName;
-}
-
 void TestElements::testICData(const IC *ic)
 {
     QCOMPARE(ic->inputSize(), 5);
@@ -211,8 +206,8 @@ void TestElements::testICData(const IC *ic)
 
 void TestElements::testIC()
 {
-    GlobalProperties::currentFile = QString(CURRENTDIR) + "/../examples/simple.panda";
-    const QString icFile = testFile("jkflipflop.panda");
+    const QString icFile = QString(CURRENTDIR) + "/../examples/jkflipflop.panda";
+    GlobalProperties::currentFile = icFile;
 
     auto *ic = new IC();
     ICManager::loadIC(ic, icFile);
@@ -261,7 +256,7 @@ void TestElements::testIC()
         controller.update();
         controller.update();
         controller.update();
-        controller.updateScene(scene.itemsBoundingRect());
+        controller.updateScene();
 
         QCOMPARE(static_cast<int>(ic->input(2)->value()), 0);
 
@@ -273,7 +268,7 @@ void TestElements::testIC()
         controller.update();
         controller.update();
         controller.update();
-        controller.updateScene(scene.itemsBoundingRect());
+        controller.updateScene();
 
         QCOMPARE(static_cast<int>(ic->input(2)->value()), 0);
 
@@ -284,7 +279,7 @@ void TestElements::testIC()
         controller.update();
         controller.update();
         controller.update();
-        controller.updateScene(scene.itemsBoundingRect());
+        controller.updateScene();
 
         QCOMPARE(static_cast<int>(ic->input(2)->value()), 0);
 
@@ -295,7 +290,7 @@ void TestElements::testIC()
         controller.update();
         controller.update();
         controller.update();
-        controller.updateScene(scene.itemsBoundingRect());
+        controller.updateScene();
 
         QCOMPARE(static_cast<int>(ic->input(2)->value()), 1);
 
@@ -306,12 +301,12 @@ void TestElements::testIC()
 
 void TestElements::testICs()
 {
-    GlobalProperties::currentFile = QString(CURRENTDIR) + "/../examples/simple.panda";
     const QDir examplesDir(QString(CURRENTDIR) + "/../examples/");
     // qCDebug(zero) << "Current dir:" << CURRENTDIR;
     const auto files = examplesDir.entryInfoList(QStringList{"*.panda"});
     // qCDebug(zero) << "files:" << files;
     for (const auto &fileInfo : qAsConst(files)) {
+        GlobalProperties::currentFile = fileInfo.absoluteFilePath();
         // qCDebug(zero) << "FILE:" << f.absoluteFilePath();
         IC ic;
         ICManager::loadIC(&ic, fileInfo.absoluteFilePath());
