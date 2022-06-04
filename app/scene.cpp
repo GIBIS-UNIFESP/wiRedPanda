@@ -755,10 +755,6 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
                 ICManager::loadIC(ic, labelAuxData);
             }
         }
-        int widthOffset = static_cast<int>((64 - elm->boundingRect().width()) / 2);
-        if (widthOffset > 0) {
-            pos += QPointF(widthOffset, widthOffset);
-        }
         qCDebug(zero) << "Adding the element to the scene.";
         receiveCommand(new AddItemsCommand({elm}, this));
         qCDebug(zero) << "Cleaning the selection.";
@@ -1001,18 +997,12 @@ void Scene::addItem(QMimeData *mimeData)
     ElementType type;
     QString labelAuxData;
     stream >> offset >> type >> labelAuxData;
-    QPointF pos;
-
     auto *elm = ElementFactory::buildElement(type);
     qCDebug(zero) << "Valid element.";
     if (elm->elementType() == ElementType::IC) {
         if (auto *ic = dynamic_cast<IC *>(elm)) {
             ICManager::loadIC(ic, labelAuxData);
         }
-    }
-    int widthOffset = static_cast<int>((64 - elm->boundingRect().width()) / 2);
-    if (widthOffset > 0) {
-        pos += QPointF(widthOffset, widthOffset);
     }
     qCDebug(zero) << "Adding the element to the scene.";
     receiveCommand(new AddItemsCommand({elm}, this));
@@ -1021,7 +1011,6 @@ void Scene::addItem(QMimeData *mimeData)
     qCDebug(zero) << "Setting created element as selected.";
     elm->setSelected(true);
     qCDebug(zero) << "Adjusting the position of the element.";
-    elm->setPos(pos);
 
     mimeData->deleteLater();
 }
