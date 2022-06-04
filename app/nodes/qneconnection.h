@@ -27,6 +27,7 @@
 
 #include "itemwithid.h"
 
+#include <QCoreApplication>
 #include <QGraphicsPathItem>
 
 class QNEPort;
