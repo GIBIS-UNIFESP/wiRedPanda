@@ -5,7 +5,9 @@
 
 #pragma once
 
+#include "common.h"
 #include "elementtype.h"
+#include "globalproperties.h"
 #include "itemwithid.h"
 
 #include <QGraphicsItem>

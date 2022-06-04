@@ -4,6 +4,7 @@
 #include "elementfactory.h"
 
 #include "common.h"
+#include "globalproperties.h"
 #include "graphicelement.h"
 #include "qneconnection.h"
 
@@ -34,7 +35,9 @@ QString ElementFactory::typeToTitleText(const ElementType type)
         return tr("<b>MULTIPLE TYPES</b>");
     }
 
+    GlobalProperties::skipInit = true;
     if (auto *elm = buildElement(type)) {
+        GlobalProperties::skipInit = false;
         return elm->property("titleText").toString();
     }
 
@@ -47,7 +50,9 @@ QString ElementFactory::translatedName(const ElementType type)
         return tr("Unknown");
     }
 
+    GlobalProperties::skipInit = true;
     if (auto *elm = buildElement(type)) {
+        GlobalProperties::skipInit = false;
         return elm->property("translatedName").toString();
     }
 
@@ -60,20 +65,18 @@ QPixmap ElementFactory::pixmap(const ElementType type)
         return {};
     }
 
+    GlobalProperties::skipInit = true;
     if (auto *elm = buildElement(type)) {
+        GlobalProperties::skipInit = false;
         return QPixmap{elm->property("pixmapPath").toString()};
     }
 
     return {};
 }
 
-GraphicElement *ElementFactory::buildElement(const ElementType type, const bool incrementLabel)
+GraphicElement *ElementFactory::buildElement(const ElementType type)
 {
     qCDebug(four) << "Creating Element. Building it." << type;
-
-    if (incrementLabel) { // to avoid incrementing label when metatype is asked for class properties
-        Common::incrementLabel = true;
-    }
 
     if (type == ElementType::Unknown) {
         throw Pandaception(tr("Unknown type: ") + typeToText(type));
@@ -92,10 +95,6 @@ GraphicElement *ElementFactory::buildElement(const ElementType type, const bool 
     }
     auto *elm = static_cast<GraphicElement *>(metaType.create());
 #endif
-
-    if (incrementLabel) {
-        Common::incrementLabel = false;
-    }
 
     return elm;
 }

@@ -3,11 +3,7 @@
 
 #include "clock.h"
 
-#include "common.h"
-#include "globalproperties.h"
 #include "qneport.h"
-
-#include <QDebug>
 
 namespace
 {
@@ -17,6 +13,8 @@ int id = qRegisterMetaType<Clock>();
 Clock::Clock(QGraphicsItem *parent)
     : GraphicElement(ElementType::Clock, ElementGroup::Input, 0, 0, 1, 1, parent)
 {
+    if (GlobalProperties::skipInit) { return; }
+
     m_defaultSkins = QStringList{
         ":/input/clock0.png",
         ":/input/clock1.png"

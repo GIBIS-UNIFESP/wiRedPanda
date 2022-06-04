@@ -3,7 +3,6 @@
 
 #include "led.h"
 
-#include "common.h"
 #include "qneport.h"
 
 #include <bitset>
@@ -53,6 +52,8 @@ int id = qRegisterMetaType<Led>();
 Led::Led(QGraphicsItem *parent)
     : GraphicElement(ElementType::Led, ElementGroup::Output, 1, 4, 0, 0, parent)
 {
+    if (GlobalProperties::skipInit) { return; }
+
     m_defaultSkins = QStringList{
         ":/output/WhiteLedOff.png",             // Single input values: 0
         ":/output/WhiteLedOn.png",              // 1
@@ -95,6 +96,10 @@ Led::Led(QGraphicsItem *parent)
 
 void Led::refresh()
 {
+    if (!isValid()) {
+        return;
+    }
+
     int index = 0;
 
     if (isValid()) {

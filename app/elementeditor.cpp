@@ -263,6 +263,7 @@ void ElementEditor::setScene(Scene *scene)
 
 void ElementEditor::fillColorComboBox()
 {
+    QSignalBlocker blocker(m_ui->comboBoxColor);
     m_ui->comboBoxColor->clear();
     m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/output/GreenLedOn.png")), tr("Green"), "Green");
     m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/output/BlueLedOn.png")), tr("Blue"), "Blue");

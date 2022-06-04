@@ -34,6 +34,8 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const int m
     , m_minInputSize(minInputSize)
     , m_minOutputSize(minOutputSize)
 {
+    if (GlobalProperties::skipInit) { return; }
+
     qCDebug(four) << "Setting flags of elements.";
     setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemSendsGeometryChanges);
 
@@ -91,6 +93,8 @@ void GraphicElement::setPixmap(const QString &pixmapPath)
     if (pixmapPath == m_currentPixmapPath) {
         return;
     }
+
+    qCDebug(zero) << "setPixmap: " << pixmapPath;
 
     if (!m_pixmap) {
         m_pixmap = new QPixmap();
@@ -530,8 +534,12 @@ void GraphicElement::refresh()
 
 QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
 {
-    qCDebug(four) << "Align to grid.";
-    if ((change == ItemPositionChange) && scene()) {
+    if (!scene()) {
+        return QGraphicsItem::itemChange(change, value);
+    }
+
+    if (change == ItemPositionChange) {
+        qCDebug(four) << "Align to grid.";
         QPointF newPos = value.toPointF();
         auto *customScene = qobject_cast<Scene *>(scene());
         if (customScene) {
@@ -542,8 +550,9 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
         }
         return newPos;
     }
-    qCDebug(four) << "Moves wires.";
+
     if ((change == ItemScenePositionHasChanged) || (change == ItemRotationHasChanged) || (change == ItemTransformHasChanged)) {
+        qCDebug(four) << "Moves wires.";
         for (auto *port : qAsConst(m_outputs)) {
             port->updateConnections();
         }
@@ -551,6 +560,7 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
             port->updateConnections();
         }
     }
+
     update();
 
     return QGraphicsItem::itemChange(change, value);
@@ -626,6 +636,7 @@ bool GraphicElement::isValid()
 {
     qCDebug(four) << "Checking if the element has the required signals to compute its value.";
     bool valid = true;
+
     for (auto *input : qAsConst(m_inputs)) {
         /* Required inputs must have exactly one connection. */
         if (!input->isValid()) {
@@ -633,6 +644,7 @@ bool GraphicElement::isValid()
             break;
         }
     }
+
     if (!valid) {
         for (auto *output : qAsConst(m_outputs)) {
             for (auto *conn : output->connections()) {
@@ -644,6 +656,7 @@ bool GraphicElement::isValid()
             }
         }
     }
+
     return valid;
 }
 

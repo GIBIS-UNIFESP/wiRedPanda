@@ -3,12 +3,10 @@
 
 #include "display_14.h"
 
-#include "common.h"
 #include "display.h"
 #include "qneport.h"
 
 #include <QPainter>
-#include <QPixmap>
 
 namespace
 {
@@ -18,6 +16,8 @@ int id = qRegisterMetaType<Display14>();
 Display14::Display14(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display14, ElementGroup::Output, 15, 15, 0, 0, parent)
 {
+    if (GlobalProperties::skipInit) { return; }
+
     m_defaultSkins = QStringList{
         ":/output/counter/counter_14_off.png",
         ":/output/counter/counter_a.png",

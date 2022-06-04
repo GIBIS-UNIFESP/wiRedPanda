@@ -26,9 +26,3 @@ class Pandaception : public std::runtime_error
 public:
     explicit Pandaception(const QString &message);
 };
-
-class Common
-{
-public:
-    inline static bool incrementLabel = false;
-};

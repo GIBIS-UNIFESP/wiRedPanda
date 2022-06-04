@@ -151,22 +151,22 @@ void SimulationController::clear()
 
 void SimulationController::updatePort(QNEOutputPort *port)
 {
-    if (port) {
-        GraphicElement *elm = port->graphicElement();
-        LogicElement *logElm = nullptr;
-        int portIndex = 0;
-        if (elm->elementType() == ElementType::IC) {
-            IC *ic = dynamic_cast<IC *>(elm);
-            logElm = m_elmMapping->icMapping(ic)->output(port->index());
-        } else {
-            logElm = m_elmMapping->logicElement(elm);
-            portIndex = port->index();
-        }
-        if (logElm->isValid()) {
-            port->setValue(static_cast<signed char>(logElm->outputValue(portIndex)));
-        } else {
-            port->setValue(-1);
-        }
+    if (!port) { return; }
+
+    GraphicElement *elm = port->graphicElement();
+    LogicElement *logElm = nullptr;
+    int portIndex = 0;
+    if (elm->elementType() == ElementType::IC) {
+        IC *ic = dynamic_cast<IC *>(elm);
+        logElm = m_elmMapping->icMapping(ic)->output(port->index());
+    } else {
+        logElm = m_elmMapping->logicElement(elm);
+        portIndex = port->index();
+    }
+    if (logElm->isValid()) {
+        port->setValue(static_cast<signed char>(logElm->outputValue(portIndex)));
+    } else {
+        port->setValue(-1);
     }
 }
 

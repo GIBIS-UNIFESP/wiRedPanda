@@ -3,12 +3,7 @@
 
 #include "buzzer.h"
 
-#include "common.h"
 #include "qneport.h"
-
-#include <QDebug>
-#include <QGraphicsSceneDragDropEvent>
-#include <array>
 
 namespace
 {
@@ -18,6 +13,8 @@ int id = qRegisterMetaType<Buzzer>();
 Buzzer::Buzzer(QGraphicsItem *parent)
     : GraphicElement(ElementType::Buzzer, ElementGroup::Output, 1, 1, 0, 0, parent)
 {
+    if (GlobalProperties::skipInit) { return; }
+
     m_defaultSkins = QStringList{
         ":/output/BuzzerOff.png",
         ":/output/BuzzerOn.png"
@@ -33,10 +30,7 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     setHasLabel(true);
     setPortName("Buzzer");
     setToolTip(m_translatedName);
-    setLabel(objectName() + "_" + QString::number(m_labelNumber));
-    if (Common::incrementLabel) {
-        ++m_labelNumber;
-    }
+    setLabel(objectName() + "_" + QString::number(++m_labelNumber));
 }
 
 void Buzzer::refresh()

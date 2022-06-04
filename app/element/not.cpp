@@ -3,8 +3,6 @@
 
 #include "not.h"
 
-#include "common.h"
-
 namespace
 {
 int id = qRegisterMetaType<Not>();
@@ -13,6 +11,8 @@ int id = qRegisterMetaType<Not>();
 Not::Not(QGraphicsItem *parent)
     : GraphicElement(ElementType::Not, ElementGroup::Gate, 1, 1, 1, 1, parent)
 {
+    if (GlobalProperties::skipInit) { return; }
+
     m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());

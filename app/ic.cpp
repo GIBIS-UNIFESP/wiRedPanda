@@ -4,6 +4,7 @@
 #include "ic.h"
 
 #include "common.h"
+#include "globalproperties.h"
 #include "icmanager.h"
 #include "icprototype.h"
 #include "qneport.h"
@@ -19,6 +20,8 @@ int id = qRegisterMetaType<IC>();
 IC::IC(QGraphicsItem *parent)
     : GraphicElement(ElementType::IC, ElementGroup::IC, 0, 0, 0, 0, parent)
 {
+    if (GlobalProperties::skipInit) { return; }
+
     // qCDebug(zero) << "Creating IC.";
     m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;

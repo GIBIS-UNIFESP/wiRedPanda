@@ -3,7 +3,6 @@
 
 #include "inputrotary.h"
 
-#include "common.h"
 #include "qneport.h"
 
 #include <QGraphicsSceneMouseEvent>
@@ -17,6 +16,8 @@ int id = qRegisterMetaType<InputRotary>();
 InputRotary::InputRotary(QGraphicsItem *parent)
     : GraphicElement(ElementType::InputRotary, ElementGroup::Input, 0, 0, 2, 16, parent)
 {
+    if (GlobalProperties::skipInit) { return; }
+
     m_defaultSkins = QStringList{
         ":/input/rotary/rotary_2.png",
         ":/input/rotary/rotary_4.png",

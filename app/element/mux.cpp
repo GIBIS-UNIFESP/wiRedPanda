@@ -3,7 +3,6 @@
 
 #include "mux.h"
 
-#include "common.h"
 #include "qneport.h"
 
 namespace
@@ -14,6 +13,8 @@ int id = qRegisterMetaType<Mux>();
 Mux::Mux(QGraphicsItem *parent)
     : GraphicElement(ElementType::Mux, ElementGroup::Mux, 3, 3, 1, 1, parent)
 {
+    if (GlobalProperties::skipInit) { return; }
+
     m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
