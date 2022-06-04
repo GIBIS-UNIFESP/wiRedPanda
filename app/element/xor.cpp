@@ -3,8 +3,6 @@
 
 #include "xor.h"
 
-#include "common.h"
-
 namespace
 {
 int id = qRegisterMetaType<Xor>();
@@ -13,6 +11,8 @@ int id = qRegisterMetaType<Xor>();
 Xor::Xor(QGraphicsItem *parent)
     : GraphicElement(ElementType::Xor, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
+    if (GlobalProperties::skipInit) { return; }
+
     m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());

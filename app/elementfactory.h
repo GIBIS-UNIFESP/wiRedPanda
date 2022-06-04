@@ -29,7 +29,7 @@ public:
     static QString typeToTitleText(const ElementType type);
     static QString translatedName(const ElementType type);
     static QPixmap pixmap(const ElementType type);
-    static GraphicElement *buildElement(const ElementType type, const bool incrementLabel = false);
+    static GraphicElement *buildElement(const ElementType type);
     static QNEConnection *buildConnection(QGraphicsItem *parent = nullptr);
     static ItemWithId *itemById(const int id);
     static bool contains(const int id);

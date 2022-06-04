@@ -3,8 +3,6 @@
 
 #include "text.h"
 
-#include "common.h"
-
 namespace
 {
 int id = qRegisterMetaType<Text>();
@@ -13,6 +11,8 @@ int id = qRegisterMetaType<Text>();
 Text::Text(QGraphicsItem *parent)
     : GraphicElement(ElementType::Text, ElementGroup::Other, 0, 0, 0, 0, parent)
 {
+    if (GlobalProperties::skipInit) { return; }
+
     m_defaultSkins = QStringList{
         ":/no_text.png",
         ":/text.png",

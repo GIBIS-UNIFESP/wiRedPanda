@@ -3,7 +3,6 @@
 
 #include "inputvcc.h"
 
-#include "common.h"
 #include "qneport.h"
 
 namespace
@@ -14,6 +13,8 @@ int id = qRegisterMetaType<InputVcc>();
 InputVcc::InputVcc(QGraphicsItem *parent)
     : GraphicElement(ElementType::InputVcc, ElementGroup::StaticInput, 0, 0, 1, 1, parent)
 {
+    if (GlobalProperties::skipInit) { return; }
+
     m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());

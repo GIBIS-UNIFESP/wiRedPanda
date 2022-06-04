@@ -3,7 +3,6 @@
 
 #include "display.h"
 
-#include "common.h"
 #include "qneport.h"
 
 #include <QPainter>
@@ -17,6 +16,8 @@ int id = qRegisterMetaType<Display>();
 Display::Display(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display, ElementGroup::Output, 8, 8, 0, 0, parent)
 {
+    if (GlobalProperties::skipInit) { return; }
+
     m_defaultSkins = QStringList{
         ":/output/counter/counter_off.png",
         ":/output/counter/counter_a.png",

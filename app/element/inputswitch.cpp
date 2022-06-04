@@ -3,7 +3,6 @@
 
 #include "inputswitch.h"
 
-#include "common.h"
 #include "qneport.h"
 
 #include <QGraphicsSceneMouseEvent>
@@ -16,6 +15,8 @@ int id = qRegisterMetaType<InputSwitch>();
 InputSwitch::InputSwitch(QGraphicsItem *parent)
     : GraphicElement(ElementType::InputSwitch, ElementGroup::Input, 0, 0, 1, 1, parent)
 {
+    if (GlobalProperties::skipInit) { return; }
+
     m_defaultSkins = QStringList{
         ":/input/switchOff.png",
         ":/input/switchOn.png",

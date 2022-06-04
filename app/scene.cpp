@@ -748,7 +748,7 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         stream >> offset >> type >> labelAuxData;
         QPointF pos = event->scenePos() - offset;
         qCDebug(zero) << "Dropped element of type:" << type << " at position:" << pos.x() << ", " << pos.y() << ", label:" << labelAuxData;
-        auto *elm = ElementFactory::buildElement(type, true);
+        auto *elm = ElementFactory::buildElement(type);
         qCDebug(zero) << "Valid element.";
         if (elm->elementType() == ElementType::IC) {
             if (auto *ic = dynamic_cast<IC *>(elm)) {
@@ -1003,7 +1003,7 @@ void Scene::addItem(QMimeData *mimeData)
     stream >> offset >> type >> labelAuxData;
     QPointF pos;
 
-    auto *elm = ElementFactory::buildElement(type, true);
+    auto *elm = ElementFactory::buildElement(type);
     qCDebug(zero) << "Valid element.";
     if (elm->elementType() == ElementType::IC) {
         if (auto *ic = dynamic_cast<IC *>(elm)) {
