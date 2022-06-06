@@ -38,6 +38,7 @@ void Clock::updateClock()
     if ((!m_locked) && (!isDisabled()) && (!pause)) {
         m_elapsed++;
         if ((m_elapsed % m_interval) == 0) {
+            m_elapsed = 0;
             setOn(!m_isOn);
             return;
         }
@@ -101,6 +102,7 @@ void Clock::setFrequency(const float freq)
         return;
     }
 
+    // FIXME: auxInterval gets the same value for many frequencies
     int auxInterval = static_cast<int>(500 / (freq * globalClock));
     if (auxInterval <= 0) {
         return;

@@ -23,9 +23,9 @@ public:
     virtual ~LogicElement();
 
     bool inputValue(const int index = 0) const;
-    bool outputValue(const int index = 0) const;
     bool isValid() const;
     bool operator<(const LogicElement &other) const;
+    bool outputValue(const int index = 0) const;
     int calculatePriority();
     void clearPredecessors();
     void clearSucessors();
@@ -37,11 +37,10 @@ public:
     // Secure call to _updateLogic() with current inputs.
     void updateLogic();
 
-protected:
+private:
     // Main function to update the logic of an element. Computes the outputs, given the inputs
     virtual void _updateLogic(const QVector<bool> &inputs) = 0;
 
-private:
     QSet<LogicElement *> m_successors;
     QVector<InputPair> m_inputs;
     QVector<bool> m_inputvalues;

@@ -3,7 +3,7 @@
 
 #include "icmapping.h"
 
-ICMapping::ICMapping(const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs)
+ICMapping::ICMapping(const QVector<GraphicElement *> &elms, const QVector<QNEPort *> &inputs, const QVector<QNEPort *> &outputs)
     : ElementMapping(elms)
     , m_icInputs(inputs)
     , m_icOutputs(outputs)

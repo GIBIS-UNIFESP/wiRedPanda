@@ -327,6 +327,7 @@ void MainWindow::on_actionRotateLeft_triggered()
 
 void MainWindow::loadPandaFile(const QString &fileName)
 {
+    // FIXME: if paused dont start simulation
     createNewTab();
     qCDebug(zero) << "Current file set.";
     setCurrentFile(fileName);
@@ -350,7 +351,7 @@ void MainWindow::on_actionOpen_triggered()
 
 void MainWindow::on_actionSave_triggered()
 {
-    save();
+    save(); // TODO: if current file is autosave ask for filename
 }
 
 void MainWindow::on_actionAbout_triggered()

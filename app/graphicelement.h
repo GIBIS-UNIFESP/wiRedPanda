@@ -16,11 +16,9 @@
 constexpr int maximumValidInputSize = 256;
 
 class GraphicElement;
-class QNEPort;
 class QNEInputPort;
 class QNEOutputPort;
-
-using ElementVector = QVector<GraphicElement *>;
+class QNEPort;
 
 /**
  * @brief Virtual class to implement graphical element appearance, input and output ports, and tooltips.
