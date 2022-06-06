@@ -118,7 +118,7 @@ void WorkSpace::save(QDataStream &stream, const QString &dolphinFileName)
     SerializationFunctions::serialize(m_scene.items(), stream);
 }
 
-void WorkSpace::load(const QString &fileName)
+void WorkSpace::load(const QString &fileName, const bool isPlaying)
 {
     QFile file(fileName);
 
@@ -137,12 +137,12 @@ void WorkSpace::load(const QString &fileName)
     }
 
     QDataStream stream(&file);
-    load(stream);
+    load(stream, isPlaying);
     qCDebug(zero) << "Closing file.";
     file.close();
 }
 
-void WorkSpace::load(QDataStream &stream)
+void WorkSpace::load(QDataStream &stream, const bool isPlaying)
 {
     qCDebug(zero) << "Loading file.";
     m_scene.simulationController()->stop();
@@ -175,7 +175,9 @@ void WorkSpace::load(QDataStream &stream)
         view->centerOn(m_scene.itemsBoundingRect().center());
     }
     m_scene.clearSelection();
-    m_scene.simulationController()->start();
+    if (isPlaying) {
+        m_scene.simulationController()->start();
+    }
     qCDebug(zero) << "Finished loading file.";
 }
 
