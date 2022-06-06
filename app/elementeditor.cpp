@@ -331,8 +331,8 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
             max_current_output_size = std::min(max_current_output_size, elm->outputSize());
 
             if ((elm->elementGroup() == ElementGroup::Input) && (firstElement->elementGroup() == ElementGroup::Input)) {
-                m_hasSameOutputValue &= dynamic_cast<Input *>(elm)->outputValue() == dynamic_cast<Input *>(firstElement)->outputValue();
-                sameCheckState &= dynamic_cast<Input *>(elm)->isLocked() == dynamic_cast<Input *>(firstElement)->isLocked();
+                m_hasSameOutputValue &= dynamic_cast<GraphicElementInput *>(elm)->outputValue() == dynamic_cast<GraphicElementInput *>(firstElement)->outputValue();
+                sameCheckState &= dynamic_cast<GraphicElementInput *>(elm)->isLocked() == dynamic_cast<GraphicElementInput *>(firstElement)->isLocked();
             }
 
             m_hasSameTrigger &= elm->trigger() == firstElement->trigger();
@@ -491,7 +491,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
 
         if (m_hasOnlyInputs) {
             if (m_hasSameOutputValue) {
-                QString outputValue = QString::number(dynamic_cast<Input *>(firstElement)->outputValue());
+                QString outputValue = QString::number(dynamic_cast<GraphicElementInput *>(firstElement)->outputValue());
                 m_ui->comboBoxValue->removeItem(m_ui->comboBoxValue->findText(m_manyOV));
                 m_ui->comboBoxValue->setCurrentText(outputValue);
             } else {
@@ -506,7 +506,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
 
         if (m_hasOnlyInputs) {
             if (sameCheckState) {
-                if (dynamic_cast<Input *>(firstElement)->isLocked()) {
+                if (dynamic_cast<GraphicElementInput *>(firstElement)->isLocked()) {
                     m_ui->checkBoxLocked->setCheckState(Qt::CheckState::Checked);
                 } else {
                     m_ui->checkBoxLocked->setCheckState(Qt::CheckState::Unchecked);
@@ -641,7 +641,7 @@ void ElementEditor::outputValueChanged(const QString &value)
         if (elm->elementType() == ElementType::InputRotary) {
             dynamic_cast<InputRotary *>(elm)->setOn(true, newValue);
         } else {
-            dynamic_cast<Input *>(elm)->setOn(newValue);
+            dynamic_cast<GraphicElementInput *>(elm)->setOn(newValue);
         }
     }
 
@@ -655,7 +655,7 @@ void ElementEditor::inputLocked(const bool value)
     }
 
     for (auto *elm : qAsConst(m_elements)) {
-        dynamic_cast<Input *>(elm)->setLocked(value);
+        dynamic_cast<GraphicElementInput *>(elm)->setLocked(value);
     }
 
     qCDebug(zero) << "Input locked.";

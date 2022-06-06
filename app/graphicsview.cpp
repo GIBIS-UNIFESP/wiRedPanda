@@ -14,7 +14,7 @@ GraphicsView::GraphicsView(QWidget *parent)
     setAcceptDrops(true);
     setMouseTracking(true);
 
-    setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+    setViewportUpdateMode(QGraphicsView::FullViewportUpdate); // to avoid tearing
 
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
     setResizeAnchor(QGraphicsView::AnchorUnderMouse);

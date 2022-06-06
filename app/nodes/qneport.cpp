@@ -48,6 +48,11 @@ QNEPort::QNEPort(QGraphicsItem *parent)
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
 }
 
+LogicElement *QNEPort::logicElement() const
+{
+    return graphicElement() ? graphicElement()->logic() : nullptr;
+}
+
 void QNEPort::setName(const QString &name)
 {
     m_name = name;

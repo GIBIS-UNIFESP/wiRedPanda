@@ -990,7 +990,6 @@ void MainWindow::on_actionPlay_triggered(const bool checked)
     auto *simController = m_currentTab->simulationController();
 
     checked ? simController->start() : simController->stop();
-    simController->updateScene();
 }
 
 // TODO: call this function with the list of files and set directory watcher.

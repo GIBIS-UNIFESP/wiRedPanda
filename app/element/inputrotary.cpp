@@ -14,7 +14,7 @@ int id = qRegisterMetaType<InputRotary>();
 }
 
 InputRotary::InputRotary(QGraphicsItem *parent)
-    : GraphicElement(ElementType::InputRotary, ElementGroup::Input, 0, 0, 2, 16, parent)
+    : GraphicElementInput(ElementType::InputRotary, ElementGroup::Input, 0, 0, 2, 16, parent)
 {
     if (GlobalProperties::skipInit) { return; }
 

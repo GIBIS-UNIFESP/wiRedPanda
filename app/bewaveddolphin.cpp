@@ -10,7 +10,7 @@
 #include "elementmapping.h"
 #include "globalproperties.h"
 #include "graphicelement.h"
-#include "input.h"
+#include "graphicelementinput.h"
 #include "lengthdialog.h"
 #include "mainwindow.h"
 #include "settings.h"
@@ -274,9 +274,9 @@ void BewavedDolphin::restoreInputs()
     for (int in = 0; in < m_inputs.size(); ++in) {
         for (int port = 0; port < m_inputs[in]->outputSize(); ++port) {
             if (m_inputs[in]->outputSize() > 1) {
-                dynamic_cast<Input *>(m_inputs[in])->setOn(m_oldInputValues[in], port);
+                dynamic_cast<GraphicElementInput *>(m_inputs[in])->setOn(m_oldInputValues[in], port);
             } else {
-                dynamic_cast<Input *>(m_inputs[in])->setOn(m_oldInputValues[in]);
+                dynamic_cast<GraphicElementInput *>(m_inputs[in])->setOn(m_oldInputValues[in]);
             }
         }
     }
@@ -292,7 +292,7 @@ void BewavedDolphin::run()
             int outSize = input->outputSize();
             for (int port = 0; port < outSize; ++port) {
                 int val = m_model->item(table_line, itr)->text().toInt();
-                dynamic_cast<Input *>(input)->setOn(val, port);
+                dynamic_cast<GraphicElementInput *>(input)->setOn(val, port);
                 ++table_line;
             }
         }

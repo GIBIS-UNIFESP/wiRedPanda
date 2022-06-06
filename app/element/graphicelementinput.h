@@ -5,9 +5,14 @@
 
 #pragma once
 
-class Input
+#include "graphicelement.h"
+
+class GraphicElementInput : public GraphicElement
 {
 public:
+    explicit GraphicElementInput(ElementType type, ElementGroup group, const int minInputSize, const int maxInputSize, const int minOutputSize, const int maxOutputSize, QGraphicsItem *parent = nullptr)
+        : GraphicElement(type, group, minInputSize, maxInputSize, minOutputSize, maxOutputSize, parent){};
+
     bool isLocked() const { return m_locked; }
     virtual bool on(const int port = 0) const = 0;
     virtual int outputSize() const { return 1; }

@@ -11,7 +11,7 @@ int id = qRegisterMetaType<Clock>();
 }
 
 Clock::Clock(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Clock, ElementGroup::Input, 0, 0, 1, 1, parent)
+    : GraphicElementInput(ElementType::Clock, ElementGroup::Input, 0, 0, 1, 1, parent)
 {
     if (GlobalProperties::skipInit) { return; }
 

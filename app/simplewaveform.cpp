@@ -8,7 +8,7 @@
 #include "elementfactory.h"
 #include "elementmapping.h"
 #include "graphicelement.h"
-#include "input.h"
+#include "graphicelementinput.h"
 #include "qneport.h"
 #include "scene.h"
 #include "settings.h"
@@ -138,7 +138,7 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, WorkSpace *workspace)
         std::bitset<std::numeric_limits<unsigned int>::digits> bs(itr);
         for (int in = 0; in < inputs.size(); ++in) {
             uchar val = bs[in];
-            dynamic_cast<Input *>(inputs[in])->setOn(val);
+            dynamic_cast<GraphicElementInput *>(inputs[in])->setOn(val);
         }
         // Updating the values of the circuit logic based on current input values.
         simController->update();
@@ -185,7 +185,7 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, WorkSpace *workspace)
     }
     // Restoring the old values to the inputs, prior to simulaton.
     for (int in = 0; in < inputs.size(); ++in) {
-        dynamic_cast<Input *>(inputs[in])->setOn(oldValues[in]);
+        dynamic_cast<GraphicElementInput *>(inputs[in])->setOn(oldValues[in]);
     }
     // Resuming digital circuit main window after waveform simulation is finished.
     return true;
@@ -276,7 +276,7 @@ void SimpleWaveform::showWaveform()
         qCDebug(three) << "itr:" << itr;
         for (int in = 0; in < inputs.size(); ++in) {
             float val = bs[in];
-            dynamic_cast<Input *>(inputs[in])->setOn(!qFuzzyIsNull(val));
+            dynamic_cast<GraphicElementInput *>(inputs[in])->setOn(!qFuzzyIsNull(val));
             float offset = static_cast<float>((inSeries.size() - in - 1 + outSeries.size()) * 2 + gap + 0.5);
             inSeries[in]->append(itr, static_cast<qreal>(offset + val));
             inSeries[in]->append(itr + 1, static_cast<qreal>(offset + val));
@@ -335,7 +335,7 @@ void SimpleWaveform::showWaveform()
     exec();
     qCDebug(zero) << "Restoring the old values to the inputs, prior to simulaton.";
     for (int in = 0; in < inputs.size(); ++in) {
-        dynamic_cast<Input *>(inputs.at(in))->setOn(oldValues.at(in));
+        dynamic_cast<GraphicElementInput *>(inputs.at(in))->setOn(oldValues.at(in));
     }
     qCDebug(zero) << "Resuming digital circuit main window after waveform simulation is finished.";
 }

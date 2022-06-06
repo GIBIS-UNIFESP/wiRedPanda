@@ -30,6 +30,7 @@
 #include <QGraphicsPathItem>
 
 class GraphicElement;
+class LogicElement;
 class QNEConnection;
 class QNEPort;
 
@@ -44,6 +45,7 @@ public:
     explicit QNEPort(QGraphicsItem *parent = nullptr);
 
     GraphicElement *graphicElement() const;
+    LogicElement *logicElement() const;
     QBrush currentBrush() const;
     QString name() const;
     bool isConnected(QNEPort *);
