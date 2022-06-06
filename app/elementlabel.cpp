@@ -29,6 +29,9 @@ ElementLabel::ElementLabel(const QPixmap &pixmap, ElementType type, const QStrin
     }
 
     m_iconLabel.setPixmap(pixmap);
+    m_iconLabel.setScaledContents(true);
+    m_iconLabel.setFixedSize(64, 64);
+
     m_nameLabel.setText(name_);
 
     auto *itemLayout = new QHBoxLayout();
