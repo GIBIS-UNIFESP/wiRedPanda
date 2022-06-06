@@ -327,12 +327,11 @@ void MainWindow::on_actionRotateLeft_triggered()
 
 void MainWindow::loadPandaFile(const QString &fileName)
 {
-    // FIXME: if paused dont start simulation
     createNewTab();
     qCDebug(zero) << "Current file set.";
     setCurrentFile(fileName);
     qCDebug(zero) << "Loading in editor.";
-    m_currentTab->load(fileName);
+    m_currentTab->load(fileName, m_ui->actionPlay->isChecked());
     updateICList();
     m_ui->statusBar->showMessage(tr("File loaded successfully."), 4000);
 }
@@ -606,9 +605,11 @@ void MainWindow::connectTab()
     connect(m_ui->actionPaste,          &QAction::triggered,        m_currentTab->scene(), &Scene::pasteAction);
 
     qCDebug(zero) << "Reinitialize simulation controller.";
-    m_currentTab->simulationController()->start();
-    m_currentTab->scene()->setHandlingEvents(true);
-    m_currentTab->scene()->clearSelection();
+    if (m_ui->actionPlay->isChecked()) {
+        m_currentTab->simulationController()->start();
+        m_currentTab->scene()->setHandlingEvents(true);
+        m_currentTab->scene()->clearSelection();
+    }
     m_currentTab->view()->setFastMode(m_ui->actionFastMode->isChecked());
 }
 
