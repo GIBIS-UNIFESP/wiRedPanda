@@ -60,7 +60,7 @@ void ThemeAttributes::setTheme(const Theme theme)
 
     case Theme::Dark: {
         m_sceneBgBrush = QColor(64, 69, 82);
-        m_sceneBgDots = QColor(Qt::black);
+        m_sceneBgDots = QColor(Qt::lightGray);
 
         m_selectionBrush = QColor(230, 255, 85, 150);
         m_selectionPen = QColor(230, 255, 85, 255);
