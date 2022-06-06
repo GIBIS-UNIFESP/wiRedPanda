@@ -9,8 +9,8 @@
 #include "elementfactory.h"
 #include "globalproperties.h"
 #include "graphicelement.h"
+#include "graphicelementinput.h"
 #include "ic.h"
-#include "input.h"
 #include "qneconnection.h"
 #include "serializationfunctions.h"
 #include "thememanager.h"
@@ -795,7 +795,7 @@ void Scene::keyPressEvent(QKeyEvent *event)
         const auto elms = elements();
         for (auto *elm : elms) {
             if (elm->hasTrigger() && !elm->trigger().isEmpty() && elm->trigger().matches(event->key())) {
-                auto *input = dynamic_cast<Input *>(elm);
+                auto *input = dynamic_cast<GraphicElementInput *>(elm);
                 if (input && !input->isLocked()) {
                     input->setOn();
                 }
@@ -812,7 +812,7 @@ void Scene::keyReleaseEvent(QKeyEvent *event)
         const auto elms = elements();
         for (auto *elm : elms) {
             if (elm->hasTrigger() && !elm->trigger().isEmpty() && elm->trigger().matches(event->key())) {
-                auto *input = dynamic_cast<Input *>(elm);
+                auto *input = dynamic_cast<GraphicElementInput *>(elm);
                 if (input && !input->isLocked() && (elm->elementType() == ElementType::InputButton)) {
                     input->setOff();
                 }

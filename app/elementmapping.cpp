@@ -4,16 +4,13 @@
 #include "elementmapping.h"
 
 #include "clock.h"
-#include "common.h"
 #include "graphicelement.h"
+#include "graphicelementinput.h"
 #include "ic.h"
 #include "icmanager.h"
 #include "icmapping.h"
 #include "icprototype.h"
-#include "input.h"
-#include "logicelement.h"
 #include "qneconnection.h"
-#include "qneport.h"
 
 #include "logicand.h"
 #include "logicdemux.h"
@@ -52,8 +49,7 @@ void ElementMapping::clear()
     m_deletableElements.clear();
     qDeleteAll(m_icMappings);
     m_icMappings.clear();
-    m_elementMap.clear();
-    m_inputMap.clear();
+    m_inputs.clear();
     m_clocks.clear();
     m_logicElms.clear();
 }
@@ -75,11 +71,11 @@ QVector<GraphicElement *> ElementMapping::sortGraphicElements(QVector<GraphicEle
 void ElementMapping::insertElement(GraphicElement *elm)
 {
     LogicElement *logicElm = buildLogicElement(elm);
+    elm->setLogic(logicElm);
     m_deletableElements.append(logicElm);
     m_logicElms.append(logicElm);
-    m_elementMap.insert(elm, logicElm);
-    if (auto *in = dynamic_cast<Input *>(elm)) {
-        m_inputMap[in] = logicElm;
+    if (auto *in = dynamic_cast<GraphicElementInput *>(elm)) {
+        m_inputs.append(in);
     }
 }
 
@@ -184,29 +180,19 @@ void ElementMapping::update()
 
     Clock::reset = false;
 
-    for (auto iter = m_inputMap.begin(); iter != m_inputMap.end(); ++iter) {
-        if (!iter.key() || !iter.value()) {
-            continue;
-        }
-
-        for (int port = 0; port < iter.key()->outputSize(); ++port) {
-            iter.value()->setOutputValue(port, iter.key()->on(port));
-        }
+    for (auto *input : m_inputs) {
+      for (int port = 0; port < input->outputSize(); ++port) {
+          input->logic()->setOutputValue(port, input->on(port)); }
     }
 
-    for (auto *elm : qAsConst(m_logicElms)) {
-        elm->updateLogic();
+    for (auto *logic : qAsConst(m_logicElms)) {
+        logic->updateLogic();
     }
 }
 
 ICMapping *ElementMapping::icMapping(IC *ic) const
 {
     return m_icMappings.value(ic);
-}
-
-LogicElement *ElementMapping::logicElement(GraphicElement *elm) const
-{
-    return m_elementMap.value(elm);
 }
 
 bool ElementMapping::canRun() const
@@ -234,24 +220,22 @@ void ElementMapping::applyConnection(GraphicElement *elm, QNEPort *in)
         auto *ic = dynamic_cast<IC *>(elm);
         currentLogElm = m_icMappings.value(ic)->input(in->index());
     } else {
-        currentLogElm = m_elementMap.value(elm);
+        currentLogElm = elm->logic();
         inputIndex = in->index();
     }
     int connections = in->connections().size();
     bool connectionRequired = in->isRequired();
     // TODO: and if there is more than one input? use std::any_of?
     if (connections == 1) {
-        QNEPort *otherOut = in->connections().first()->otherPort(in);
-        if (otherOut) {
-            GraphicElement *predecessor = otherOut->graphicElement();
-            if (predecessor) {
+        if (QNEPort *otherOut = in->connections().first()->otherPort(in)) {
+            if (GraphicElement *predecessor = otherOut->graphicElement()) {
                 int predOutIndex = 0;
                 LogicElement *predOutElm;
                 if (predecessor->elementType() == ElementType::IC) {
                     IC *ic = dynamic_cast<IC *>(predecessor);
                     predOutElm = m_icMappings.value(ic)->output(otherOut->index());
                 } else {
-                    predOutElm = m_elementMap.value(predecessor);
+                    predOutElm = predecessor->logic();
                     predOutIndex = otherOut->index();
                 }
                 currentLogElm->connectPredecessor(inputIndex, predOutElm, predOutIndex);
@@ -275,18 +259,18 @@ void ElementMapping::connectElements()
 
 void ElementMapping::validateElements()
 {
-    for (auto *elm : qAsConst(m_logicElms)) {
-        elm->validate();
+    for (auto *logic : qAsConst(m_logicElms)) {
+        logic->validate();
     }
 }
 
 void ElementMapping::sortLogicElements()
 {
-    for (auto *elm : qAsConst(m_logicElms)) {
-        elm->calculatePriority();
+    for (auto *logic : qAsConst(m_logicElms)) {
+        logic->calculatePriority();
     }
-    std::sort(m_logicElms.begin(), m_logicElms.end(), [](const auto &e1, const auto &e2) {
-        return *e2 < *e1;
+    std::sort(m_logicElms.begin(), m_logicElms.end(), [](const auto &logic1, const auto &logic2) {
+        return *logic2 < *logic1;
     });
 }
 

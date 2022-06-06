@@ -9,6 +9,7 @@
 #include "elementtype.h"
 #include "globalproperties.h"
 #include "itemwithid.h"
+#include "logicelement.h"
 
 #include <QGraphicsItem>
 #include <QKeySequence>
@@ -58,6 +59,7 @@ public:
 
     ElementGroup elementGroup() const;
     ElementType elementType() const;
+    LogicElement *logic() const;
     QKeySequence trigger() const;
     QNEInputPort *input(const int pos = 0);
     QNEOutputPort *output(const int pos = 0);
@@ -98,6 +100,7 @@ public:
     void setInputSize(const int size);
     void setInputs(const QVector<QNEInputPort *> &inputs);
     void setLabel(const QString &label);
+    void setLogic(LogicElement *newLogic);
     void setOutputSize(const int size);
     void setOutputs(const QVector<QNEOutputPort *> &outputs);
     void setPixmap(const QString &pixmapPath);
@@ -171,6 +174,7 @@ private:
 
     ElementGroup m_elementGroup = ElementGroup::Unknown;
     ElementType m_elementType = ElementType::Unknown;
+    LogicElement *m_logic = nullptr;
     QColor m_selectionBrush;
     QColor m_selectionPen;
     QKeySequence m_trigger;

@@ -150,7 +150,7 @@ void SimulationController::updatePort(QNEOutputPort *port)
         IC *ic = dynamic_cast<IC *>(elm);
         logElm = m_elmMapping->icMapping(ic)->output(port->index());
     } else {
-        logElm = m_elmMapping->logicElement(elm);
+        logElm = elm->logic();;
         portIndex = port->index();
     }
     if (logElm->isValid()) {
@@ -163,7 +163,7 @@ void SimulationController::updatePort(QNEOutputPort *port)
 void SimulationController::updatePort(QNEInputPort *port)
 {
     GraphicElement *elm = port->graphicElement();
-    LogicElement *logElm = m_elmMapping->logicElement(elm);
+    LogicElement *logElm = elm->logic();
     int portIndex = port->index();
     if (logElm->isValid()) {
         port->setValue(static_cast<signed char>(logElm->inputValue(portIndex)));

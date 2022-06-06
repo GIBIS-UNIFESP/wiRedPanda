@@ -5,10 +5,9 @@
 
 #pragma once
 
-#include "graphicelement.h"
-#include "input.h"
+#include "graphicelementinput.h"
 
-class Clock : public GraphicElement, public Input
+class Clock : public GraphicElementInput
 {
     Q_OBJECT
     Q_PROPERTY(QString pixmapPath MEMBER m_pixmapPath CONSTANT)
