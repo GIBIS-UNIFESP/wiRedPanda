@@ -445,7 +445,7 @@
 <context>
     <name>ChangeInputSZCommand</name>
     <message>
-        <location filename="../commands.cpp" line="590"/>
+        <location filename="../commands.cpp" line="596"/>
         <source>Change input size to %1</source>
         <translation>Mudar numero de entradas para %1</translation>
     </message>
@@ -453,7 +453,7 @@
 <context>
     <name>ChangeOutputSZCommand</name>
     <message>
-        <location filename="../commands.cpp" line="732"/>
+        <location filename="../commands.cpp" line="741"/>
         <source>Change input size to %1</source>
         <translation>Mudar numero de entradas para %1</translation>
     </message>
@@ -582,42 +582,42 @@
         <translation>Display de 7 segmentos</translation>
     </message>
     <message>
-        <location filename="../element/display.cpp" line="116"/>
+        <location filename="../element/display.cpp" line="117"/>
         <source>middle</source>
         <translation>centro</translation>
     </message>
     <message>
-        <location filename="../element/display.cpp" line="117"/>
+        <location filename="../element/display.cpp" line="118"/>
         <source>upper left</source>
         <translation>superior esquerdo</translation>
     </message>
     <message>
-        <location filename="../element/display.cpp" line="118"/>
+        <location filename="../element/display.cpp" line="119"/>
         <source>lower left</source>
         <translation>inferior esquerdo</translation>
     </message>
     <message>
-        <location filename="../element/display.cpp" line="119"/>
+        <location filename="../element/display.cpp" line="120"/>
         <source>bottom</source>
         <translation>inferior</translation>
     </message>
     <message>
-        <location filename="../element/display.cpp" line="120"/>
+        <location filename="../element/display.cpp" line="121"/>
         <source>top</source>
         <translation>superior</translation>
     </message>
     <message>
-        <location filename="../element/display.cpp" line="121"/>
+        <location filename="../element/display.cpp" line="122"/>
         <source>upper right</source>
         <translation>superior direito</translation>
     </message>
     <message>
-        <location filename="../element/display.cpp" line="122"/>
+        <location filename="../element/display.cpp" line="123"/>
         <source>dot</source>
         <translation>ponto</translation>
     </message>
     <message>
-        <location filename="../element/display.cpp" line="123"/>
+        <location filename="../element/display.cpp" line="124"/>
         <source>lower right</source>
         <translation>inferior direito</translation>
     </message>
@@ -733,27 +733,27 @@
         <translation>Rótulo:</translation>
     </message>
     <message>
-        <location filename="../elementeditor.cpp" line="268"/>
+        <location filename="../elementeditor.cpp" line="269"/>
         <source>Blue</source>
         <translation>Azul</translation>
     </message>
     <message>
-        <location filename="../elementeditor.cpp" line="267"/>
+        <location filename="../elementeditor.cpp" line="268"/>
         <source>Green</source>
         <translation>Verde</translation>
     </message>
     <message>
-        <location filename="../elementeditor.cpp" line="269"/>
+        <location filename="../elementeditor.cpp" line="270"/>
         <source>Purple</source>
         <translation>Roxo</translation>
     </message>
     <message>
-        <location filename="../elementeditor.cpp" line="270"/>
+        <location filename="../elementeditor.cpp" line="271"/>
         <source>Red</source>
         <translation>Vermelho</translation>
     </message>
     <message>
-        <location filename="../elementeditor.cpp" line="271"/>
+        <location filename="../elementeditor.cpp" line="272"/>
         <source>White</source>
         <translation>Branco</translation>
     </message>
@@ -944,21 +944,21 @@
         <translation>&lt;b&gt;LATCH D&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../elementfactory.cpp" line="34"/>
-        <location filename="../elementfactory.cpp" line="41"/>
+        <location filename="../elementfactory.cpp" line="35"/>
+        <location filename="../elementfactory.cpp" line="44"/>
         <source>&lt;b&gt;MULTIPLE TYPES&lt;/b&gt;</source>
         <translation>&lt;b&gt;VÁRIOS TIPOS&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../elementfactory.cpp" line="47"/>
-        <location filename="../elementfactory.cpp" line="54"/>
+        <location filename="../elementfactory.cpp" line="50"/>
+        <location filename="../elementfactory.cpp" line="59"/>
         <source>Unknown</source>
         <translation>Desconhecido</translation>
     </message>
     <message>
-        <location filename="../elementfactory.cpp" line="79"/>
-        <location filename="../elementfactory.cpp" line="85"/>
-        <location filename="../elementfactory.cpp" line="91"/>
+        <location filename="../elementfactory.cpp" line="82"/>
+        <location filename="../elementfactory.cpp" line="88"/>
+        <location filename="../elementfactory.cpp" line="94"/>
         <source>Unknown type: </source>
         <translation>Tipo desconhecido: </translation>
     </message>
@@ -974,7 +974,7 @@
 <context>
     <name>FlipHCommand</name>
     <message>
-        <location filename="../commands.cpp" line="666"/>
+        <location filename="../commands.cpp" line="679"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Espelhando %1 portas no eixo %2</translation>
     </message>
@@ -982,15 +982,15 @@
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../graphicelement.cpp" line="102"/>
-        <location filename="../graphicelement.cpp" line="125"/>
+        <location filename="../graphicelement.cpp" line="106"/>
+        <location filename="../graphicelement.cpp" line="129"/>
         <source>Couldn&apos;t load pixmap.</source>
         <translation>Não foi possível carregar o pixmap.</translation>
     </message>
     <message>
-        <location filename="../graphicelement.cpp" line="287"/>
-        <location filename="../graphicelement.cpp" line="356"/>
-        <location filename="../graphicelement.cpp" line="391"/>
+        <location filename="../graphicelement.cpp" line="291"/>
+        <location filename="../graphicelement.cpp" line="360"/>
+        <location filename="../graphicelement.cpp" line="395"/>
         <source>Corrupted DataStream!</source>
         <translation>DataStream corrompido!</translation>
     </message>
@@ -1292,32 +1292,32 @@
         <translation>Salvar Arquivo como...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="755"/>
+        <location filename="../mainwindow.cpp" line="756"/>
         <source>Arduino code successfully generated.</source>
         <translation>Código de Arduino gerado com sucesso.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="785"/>
+        <location filename="../mainwindow.cpp" line="786"/>
         <source>Generate Arduino Code</source>
         <translation>Gerar código para Arduino</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="785"/>
+        <location filename="../mainwindow.cpp" line="786"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arquivo Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="867"/>
+        <location filename="../mainwindow.cpp" line="868"/>
         <source>Export to PDF</source>
         <translation>Exportar para PDF</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="867"/>
+        <location filename="../mainwindow.cpp" line="868"/>
         <source>PDF files (*.pdf)</source>
         <translation>Arquivos PDF(*.pdf)</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="882"/>
+        <location filename="../mainwindow.cpp" line="883"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Não foi possível imprimir este circuito no PDF.</translation>
     </message>
@@ -1492,18 +1492,18 @@
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="898"/>
+        <location filename="../mainwindow.cpp" line="899"/>
         <source>Export to Image</source>
         <translation>Exportar para Imagem</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="898"/>
+        <location filename="../mainwindow.cpp" line="899"/>
         <source>PNG files (*.png)</source>
         <translation>Arquivos PNG (*.png)</translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="1088"/>
-        <location filename="../mainwindow.cpp" line="1090"/>
+        <location filename="../mainwindow.cpp" line="1091"/>
         <source>Mute</source>
         <translation>Silenciar</translation>
     </message>
@@ -1648,7 +1648,7 @@
         <translation>Ativa e desativa som das campanhias do cuicuito</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1090"/>
+        <location filename="../mainwindow.cpp" line="1091"/>
         <source>Unmute</source>
         <translation>Ativar som</translation>
     </message>
@@ -1674,8 +1674,8 @@
         <translation> foi modificado. Deseja salvar suas alterações?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="888"/>
-        <location filename="../mainwindow.cpp" line="914"/>
+        <location filename="../mainwindow.cpp" line="889"/>
+        <location filename="../mainwindow.cpp" line="915"/>
         <source>Exported file successfully.</source>
         <translation>Arquivo exportado com sucesso.</translation>
     </message>
@@ -1714,7 +1714,7 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../commands.cpp" line="500"/>
+        <location filename="../commands.cpp" line="502"/>
         <source>Morph %1 elements to %2</source>
         <translation>Transformar %1 portas em %2</translation>
     </message>
@@ -1806,6 +1806,14 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
     </message>
 </context>
 <context>
+    <name>QNEConnection</name>
+    <message>
+        <location filename="../nodes/qneconnection.cpp" line="195"/>
+        <source>Error loading connection.</source>
+        <translation>Erro ao carregar a conexão.</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <location filename="../commands.cpp" line="107"/>
@@ -1852,17 +1860,17 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../scene.cpp" line="31"/>
+        <location filename="../scene.cpp" line="33"/>
         <source>&amp;Undo</source>
         <translation>&amp;Desfazer</translation>
     </message>
     <message>
-        <location filename="../scene.cpp" line="35"/>
+        <location filename="../scene.cpp" line="37"/>
         <source>&amp;Redo</source>
         <translation>&amp;Refazer</translation>
     </message>
     <message>
-        <location filename="../scene.cpp" line="529"/>
+        <location filename="../scene.cpp" line="547"/>
         <source>Paste</source>
         <translation>Colar</translation>
     </message>
@@ -1870,19 +1878,19 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>SerializationFunctions</name>
     <message>
-        <location filename="../serializationfunctions.cpp" line="44"/>
+        <location filename="../serializationfunctions.cpp" line="47"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>Tipo inválido. Os dados estão possivelmente corrompidos.</translation>
     </message>
     <message>
-        <location filename="../serializationfunctions.cpp" line="90"/>
-        <location filename="../serializationfunctions.cpp" line="129"/>
+        <location filename="../serializationfunctions.cpp" line="89"/>
+        <location filename="../serializationfunctions.cpp" line="128"/>
         <source>Invalid file format.</source>
         <translation>Formato de arquivo inválido.</translation>
     </message>
     <message>
-        <location filename="../serializationfunctions.cpp" line="97"/>
-        <location filename="../serializationfunctions.cpp" line="134"/>
+        <location filename="../serializationfunctions.cpp" line="96"/>
+        <location filename="../serializationfunctions.cpp" line="133"/>
         <source>Invalid version number.</source>
         <translation>Número de versão inválido.</translation>
     </message>
@@ -1958,7 +1966,7 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <translation>Erro ao tentar refazer </translation>
     </message>
     <message>
-        <location filename="../commands.cpp" line="474"/>
+        <location filename="../commands.cpp" line="475"/>
         <source>Error trying to undo </source>
         <translation>Erro ao tentar desfazer </translation>
     </message>
@@ -2020,41 +2028,41 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <translation>Não foi possível salvar o arquivo: </translation>
     </message>
     <message>
-        <location filename="../workspace.cpp" line="151"/>
+        <location filename="../workspace.cpp" line="152"/>
         <source>Newer version file.</source>
         <translation>Arquivo de versão mais nova.</translation>
     </message>
     <message>
-        <location filename="../workspace.cpp" line="151"/>
-        <source>Warning! Your WiRedPanda is possibly outdated.
- The file you are opening has been saved in a newer version.
+        <location filename="../workspace.cpp" line="152"/>
+        <source>Warning! Your WiRedPanda is possibly out of date.
+ The file you are opening was saved in a newer version.
  Please check for updates.</source>
-        <translation>Aviso! Seu WiRedPanda está possivelmente desatualizado.
-  O arquivo que você está abrindo foi salvo em uma versão mais recente.
-  Por favor, verifique se há atualizações.</translation>
+        <translation>Aviso! Seu WiRedPanda possivelmente está desatualizado.
+ O arquivo que você está abrindo foi salvo em uma versão mais recente.
+ Por favor, verifique se há atualizações.</translation>
     </message>
     <message>
-        <location filename="../workspace.cpp" line="153"/>
+        <location filename="../workspace.cpp" line="154"/>
+        <source>Warning! This is an old version WiRedPanda project file (version &lt; 4.0). To open it correctly, save all the ICs and skins in the main project directory.</source>
+        <translation>Aviso! Este é um arquivo de projeto WiRedPanda da versão antiga (versão &lt; 4.0). Para abri-lo corretamente, salve todos os ICs e skins no diretório principal do projeto.</translation>
+    </message>
+    <message>
+        <location filename="../workspace.cpp" line="154"/>
         <source>Old version file.</source>
         <translation>Arquivo de versão antiga.</translation>
     </message>
     <message>
-        <location filename="../workspace.cpp" line="153"/>
-        <source>Warning! This is an old version WiRedPanda project file (version &lt; 4.0). To open it correctly, save all ICs and skins the main project directory.</source>
-        <translation>Aviso! Este é um arquivo de projeto WiRedPanda da versão antiga (versão &lt; 4.0). Para abri-lo corretamente, salve todos os ICs e skins no diretório principal do projeto.</translation>
-    </message>
-    <message>
-        <location filename="../workspace.cpp" line="224"/>
+        <location filename="../workspace.cpp" line="226"/>
         <source>New Project</source>
         <translation>Novo Projeto</translation>
     </message>
     <message>
-        <location filename="../workspace.cpp" line="235"/>
+        <location filename="../workspace.cpp" line="278"/>
         <source>New Project*</source>
         <translation>Novo Projeto*</translation>
     </message>
     <message>
-        <location filename="../workspace.cpp" line="257"/>
+        <location filename="../workspace.cpp" line="258"/>
         <source>Error opening autosave file: </source>
         <translation>Erro ao abrir o arquivo de salvamento automático: </translation>
     </message>

@@ -149,9 +149,9 @@ void WorkSpace::load(QDataStream &stream)
     qCDebug(zero) << "Stopped simulation.";
     const double version = SerializationFunctions::loadVersion(stream);
     if (version > GlobalProperties::version && GlobalProperties::verbose) {
-        QMessageBox::warning(this, tr("Newer version file."), tr("Warning! Your WiRedPanda is possibly outdated.\n The file you are opening has been saved in a newer version.\n Please check for updates."));
+        QMessageBox::warning(this, tr("Newer version file."), tr("Warning! Your WiRedPanda is possibly out of date.\n The file you are opening was saved in a newer version.\n Please check for updates."));
     } else if (version < 4.0 && GlobalProperties::verbose) {
-        QMessageBox::warning(this, tr("Old version file."), tr("Warning! This is an old version WiRedPanda project file (version < 4.0). To open it correctly, save all ICs and skins the main project directory."));
+        QMessageBox::warning(this, tr("Old version file."), tr("Warning! This is an old version WiRedPanda project file (version < 4.0). To open it correctly, save all the ICs and skins in the main project directory."));
     }
     qCDebug(zero) << "Version:" << version;
     m_dolphinFileName = SerializationFunctions::loadDolphinFileName(stream, version);
