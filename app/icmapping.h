@@ -14,7 +14,7 @@ class LogicElement;
 class ICMapping : public ElementMapping
 {
 public:
-    ICMapping(const ElementVector &elms, const QNEPortVector &inputs, const QNEPortVector &outputs);
+    ICMapping(const QVector<GraphicElement *> &elms, const QVector<QNEPort *> &inputs, const QVector<QNEPort *> &outputs);
     ~ICMapping() override;
 
     LogicElement *input(const int index);
@@ -23,8 +23,8 @@ public:
     void initialize() override;
 
 private:
-    QNEPortVector m_icInputs;
-    QNEPortVector m_icOutputs;
     QVector<LogicElement *> m_inputs;
     QVector<LogicElement *> m_outputs;
+    QVector<QNEPort *> m_icInputs;
+    QVector<QNEPort *> m_icOutputs;
 };

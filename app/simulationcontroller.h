@@ -29,16 +29,14 @@ public:
     bool isRunning();
     void clear();
     void reSortElements();
-    void setRestart();
+    void restart();
     void start();
-    void startTimer();
     void stop();
     void update();
     void updateScene();
 
 private:
     bool canRun();
-    void tic();
     void updatePort(QNEInputPort *port);
     void updatePort(QNEOutputPort *port);
 

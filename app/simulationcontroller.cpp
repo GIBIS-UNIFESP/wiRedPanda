@@ -21,10 +21,11 @@ SimulationController::SimulationController(Scene *scene)
     , m_scene(scene)
 {
     m_simulationTimer.setInterval(globalClock);
+    connect(&m_simulationTimer, &QTimer::timeout, this, &SimulationController::update);
+
     m_viewTimer.setInterval(1000 / 30);
     m_viewTimer.start();
     connect(&m_viewTimer,       &QTimer::timeout, this, &SimulationController::updateScene);
-    connect(&m_simulationTimer, &QTimer::timeout, this, &SimulationController::tic);
 }
 
 SimulationController::~SimulationController()
@@ -33,7 +34,7 @@ SimulationController::~SimulationController()
 }
 
 // If (m_shouldRestart) then the simulation controller will be cleared the next time that it is updated.
-void SimulationController::setRestart() { m_shouldRestart = true; }
+void SimulationController::restart() { m_shouldRestart = true; }
 
 void SimulationController::updateScene()
 {
@@ -68,11 +69,6 @@ bool SimulationController::isRunning()
     return m_simulationTimer.isActive();
 }
 
-void SimulationController::tic()
-{
-    update();
-}
-
 void SimulationController::update()
 {
     if (m_shouldRestart) {
@@ -82,12 +78,6 @@ void SimulationController::update()
     if (m_elmMapping) { // TODO: Remove this check, if possible. May increse the simulation speed significantly.
         m_elmMapping->update();
     }
-}
-
-void SimulationController::startTimer()
-{
-    qCDebug(zero) << "Starting timer.";
-    m_simulationTimer.start();
 }
 
 void SimulationController::stop()

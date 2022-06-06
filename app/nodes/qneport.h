@@ -29,11 +29,9 @@
 
 #include <QGraphicsPathItem>
 
-class QNEConnection;
 class GraphicElement;
+class QNEConnection;
 class QNEPort;
-
-using QNEPortVector = QVector<QNEPort *>;
 
 class QNEPort : public QGraphicsPathItem
 {
@@ -52,11 +50,11 @@ public:
     bool isRequired() const;
     const QList<QNEConnection *> &connections() const;
     const QString &portName() const;
-    signed char defaultValue() const;
     int index() const;
     int portFlags() const;
     int radius() const;
     quint64 ptr() const;
+    signed char defaultValue() const;
     signed char value() const;
     virtual bool isOutput() const { return false; };
     virtual bool isValid() const = 0;
@@ -85,12 +83,12 @@ protected:
     QList<QNEConnection *> m_connections;
     QString m_name;
     bool m_required = true;
-    signed char m_defaultValue = -1;
     int m_index;
     int m_margin = 2;
     int m_portFlags = 0;
     int m_radius = 5;
     quint64 m_ptr;
+    signed char m_defaultValue = -1;
     signed char m_value = false;
 };
 
