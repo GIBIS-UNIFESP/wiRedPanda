@@ -125,6 +125,7 @@ void GraphicsView::zoomOut()
 
 void GraphicsView::resetZoom()
 {
+    m_zoomLevel = 0;
     resetTransform();
     emit zoomChanged();
 }
