@@ -149,7 +149,6 @@ void Led::setColor(const QString &color)
     if (color == "Green")  { m_colorNumber = 4; }
     if (color == "Blue")   { m_colorNumber = 6; }
     if (color == "Purple") { m_colorNumber = 8; }
-    refresh();
 }
 
 QString Led::color() const
