@@ -195,7 +195,7 @@ AddItemsCommand::AddItemsCommand(const QList<QGraphicsItem *> &items, Scene *sce
 
 void AddItemsCommand::undo()
 {
-    qCDebug(zero) << "UNDO " + text();
+    qCDebug(zero) << text();
     auto items = findItems(m_ids);
 
     auto *simController = m_scene->simulationController();
@@ -210,7 +210,7 @@ void AddItemsCommand::undo()
 
 void AddItemsCommand::redo()
 {
-    qCDebug(zero) << "REDO " + text();
+    qCDebug(zero) << text();
     loadItems(m_scene, m_itemData, m_ids, m_otherIds);
     m_scene->setCircuitUpdateRequired();
 }
@@ -225,14 +225,14 @@ DeleteItemsCommand::DeleteItemsCommand(const QList<QGraphicsItem *> &items, Scen
 
 void DeleteItemsCommand::undo()
 {
-    qCDebug(zero) << "UNDO " + text();
+    qCDebug(zero) << text();
     loadItems(m_scene, m_itemData, m_ids, m_otherIds);
     m_scene->setCircuitUpdateRequired();
 }
 
 void DeleteItemsCommand::redo()
 {
-    qCDebug(zero) << "REDO " + text();
+    qCDebug(zero) << text();
     auto items = findItems(m_ids);
     saveItems(m_itemData, items, m_otherIds);
     deleteItems(m_scene, items);
@@ -256,7 +256,7 @@ RotateCommand::RotateCommand(const QList<GraphicElement *> &items, const int ang
 
 void RotateCommand::undo()
 {
-    qCDebug(zero) << "UNDO " + text();
+    qCDebug(zero) << text();
     auto elements = findElements(m_ids);
     m_scene->clearSelection();
     for (int i = 0; i < elements.size(); ++i) {
@@ -273,7 +273,7 @@ void RotateCommand::undo()
 
 void RotateCommand::redo()
 {
-    qCDebug(zero) << "REDO " + text();
+    qCDebug(zero) << text();
     auto elements = findElements(m_ids);
     m_scene->clearSelection();
     double cx = 0;
@@ -319,7 +319,7 @@ MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPoint
 
 void MoveCommand::undo()
 {
-    qCDebug(zero) << "UNDO " + text();
+    qCDebug(zero) << text();
     auto elms = findElements(m_ids).toVector();
     for (int i = 0; i < elms.size(); ++i) {
         elms[i]->setPos(m_oldPositions[i]);
@@ -329,7 +329,7 @@ void MoveCommand::undo()
 
 void MoveCommand::redo()
 {
-    qCDebug(zero) << "REDO " + text();
+    qCDebug(zero) << text();
     auto elms = findElements(m_ids).toVector();
     for (int i = 0; i < elms.size(); ++i) {
         elms[i]->setPos(m_newPositions[i]);
@@ -353,14 +353,14 @@ UpdateCommand::UpdateCommand(const QList<GraphicElement *> &elements, const QByt
 
 void UpdateCommand::undo()
 {
-    qCDebug(zero) << "UNDO " + text();
+    qCDebug(zero) << text();
     loadData(m_oldData);
     m_scene->setCircuitUpdateRequired();
 }
 
 void UpdateCommand::redo()
 {
-    qCDebug(zero) << "REDO " + text();
+    qCDebug(zero) << text();
     loadData(m_newData);
     m_scene->setCircuitUpdateRequired();
 }
@@ -425,7 +425,7 @@ GraphicElement *findElm(const int id)
 
 void SplitCommand::redo()
 {
-    qCDebug(zero) << "REDO " + text();
+    qCDebug(zero) << text();
     auto *conn1 = findConn(m_c1_id);
     auto *conn2 = findConn(m_c2_id);
     auto *node = findElm(m_node_id);
@@ -464,7 +464,7 @@ void SplitCommand::redo()
 
 void SplitCommand::undo()
 {
-    qCDebug(zero) << "UNDO " + text();
+    qCDebug(zero) << text();
     auto *conn1 = findConn(m_c1_id);
     auto *conn2 = findConn(m_c2_id);
     auto *node = findElm(m_node_id);
@@ -504,7 +504,7 @@ MorphCommand::MorphCommand(const QList<GraphicElement *> &elements, ElementType 
 
 void MorphCommand::undo()
 {
-    qCDebug(zero) << "UNDO " + text();
+    qCDebug(zero) << text();
     QList<GraphicElement *> newElms = findElements(m_ids);
     QList<GraphicElement *> oldElms;
     oldElms.reserve(m_ids.size());
@@ -517,7 +517,7 @@ void MorphCommand::undo()
 
 void MorphCommand::redo()
 {
-    qCDebug(zero) << "REDO " + text();
+    qCDebug(zero) << text();
     QList<GraphicElement *> oldElms = findElements(m_ids);
     QList<GraphicElement *> newElms;
     oldElms.reserve(m_ids.size());
@@ -598,7 +598,7 @@ ChangeInputSizeCommand::ChangeInputSizeCommand(const QList<GraphicElement *> &el
 
 void ChangeInputSizeCommand::redo()
 {
-    qCDebug(zero) << "REDO " + text();
+    qCDebug(zero) << text();
     const auto m_elements = findElements(m_elms).toVector();
 
     if (!m_elements.isEmpty()) {
@@ -648,7 +648,7 @@ void ChangeInputSizeCommand::redo()
 
 void ChangeInputSizeCommand::undo()
 {
-    qCDebug(zero) << "UNDO " + text();
+    qCDebug(zero) << text();
     const QList<GraphicElement *> m_elements = findElements(m_elms);
     const QList<GraphicElement *> serializationOrder = findElements(m_order);
     if (!m_elements.isEmpty()) {
@@ -702,13 +702,13 @@ FlipCommand::FlipCommand(const QList<GraphicElement *> &items, const int axis, S
 
 void FlipCommand::undo()
 {
-    qCDebug(zero) << "UNDO " + text();
+    qCDebug(zero) << text();
     redo();
 }
 
 void FlipCommand::redo()
 {
-    qCDebug(zero) << "REDO " + text();
+    qCDebug(zero) << text();
     // TODO: this might detach the QList
     auto list = findElements(m_ids);
     m_scene->clearSelection();
@@ -743,7 +743,7 @@ ChangeOutputSizeCommand::ChangeOutputSizeCommand(const QList<GraphicElement *> &
 
 void ChangeOutputSizeCommand::redo()
 {
-    qCDebug(zero) << "REDO " + text();
+    qCDebug(zero) << text();
     const QList<GraphicElement *> m_elements = findElements(m_elms);
     if (!m_elements.isEmpty() && m_elements.first()->scene()) {
         m_scene->clearSelection();
@@ -786,7 +786,7 @@ void ChangeOutputSizeCommand::redo()
 
 void ChangeOutputSizeCommand::undo()
 {
-    qCDebug(zero) << "UNDO " + text();
+    qCDebug(zero) << text();
     const auto elements = findElements(m_elms);
     const auto serializationOrder = findElements(m_order);
     if (!elements.isEmpty() && elements.first()->scene()) {

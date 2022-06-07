@@ -94,7 +94,7 @@ void SimulationController::stop()
 
 void SimulationController::start()
 {
-    qCDebug(zero) << "Start simulation controller.";
+    qCDebug(zero) << "Starting simulation controller.";
     Clock::reset = true;
     reSortElements();
     m_simulationTimer.start();

@@ -311,7 +311,7 @@ void Scene::detachConnection(QNEInputPort *endPort)
 
 void Scene::updateTheme()
 {
-    qCDebug(zero) << "Update theme.";
+    qCDebug(zero) << "Updating theme.";
     const ThemeAttributes theme = ThemeManager::attributes();
     setBackgroundBrush(theme.m_sceneBgBrush);
     setDots(QPen(theme.m_sceneBgDots));
@@ -747,7 +747,7 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         QString labelAuxData;
         stream >> offset >> type >> labelAuxData;
         QPointF pos = event->scenePos() - offset;
-        qCDebug(zero) << "Dropped element of type:" << type << " at position:" << pos.x() << ", " << pos.y() << ", label:" << labelAuxData;
+        qCDebug(zero) << type << "at position:" << pos.x() << "," << pos.y() << ", label:" << labelAuxData;
         auto *elm = ElementFactory::buildElement(type);
         qCDebug(zero) << "Valid element.";
         if (elm->elementType() == ElementType::IC) {

@@ -94,7 +94,7 @@ void GraphicElement::setPixmap(const QString &pixmapPath)
         return;
     }
 
-    qCDebug(zero) << "setPixmap: " << pixmapPath;
+    qCDebug(zero) << pixmapPath;
 
     if (!m_pixmap) {
         m_pixmap = new QPixmap();
@@ -461,13 +461,13 @@ void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 
 void GraphicElement::addPort(const QString &name, const bool isOutput, const int flags, const int ptr)
 {
-    qCDebug(four) << "Adding new port.";
     if (isOutput && (static_cast<quint64>(m_outputs.size()) >= m_maxOutputSize)) {
         return;
     }
     if (!isOutput && (static_cast<quint64>(m_inputs.size()) >= m_maxInputSize)) {
         return;
     }
+    qCDebug(four) << "New port.";
     QNEPort *port = nullptr;
     if (isOutput) {
         m_outputs.push_back(new QNEOutputPort(this));
@@ -659,8 +659,7 @@ bool GraphicElement::isValid()
         for (auto *output : qAsConst(m_outputs)) {
             for (auto *conn : output->connections()) {
                 conn->setStatus(QNEConnection::Status::Invalid);
-                auto *port = conn->otherPort(output);
-                if (port) {
+                if (auto *port = conn->otherPort(output)) {
                     port->setValue(-1);
                 }
             }

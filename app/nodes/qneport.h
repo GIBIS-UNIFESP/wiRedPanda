@@ -58,6 +58,7 @@ public:
     quint64 ptr() const;
     signed char defaultValue() const;
     signed char value() const;
+    virtual bool isInput() const = 0;
     virtual bool isOutput() const { return false; };
     virtual bool isValid() const = 0;
     virtual void setValue(signed char value) = 0;
@@ -100,6 +101,7 @@ public:
     explicit QNEInputPort(QGraphicsItem *parent);
     ~QNEInputPort() override;
 
+    bool isInput() const override;
     bool isOutput() const override;
     bool isValid() const override;
     void setValue(signed char value) override;
@@ -112,6 +114,7 @@ public:
     explicit QNEOutputPort(QGraphicsItem *parent);
     ~QNEOutputPort() override;
 
+    bool isInput() const override;
     bool isOutput() const override;
     bool isValid() const override;
     void setValue(signed char value) override;

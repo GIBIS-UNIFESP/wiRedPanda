@@ -12,13 +12,13 @@
 
 ElementType ElementFactory::textToType(const QString &text)
 {
-    qCDebug(four) << "Creating Element Type conversion text to type.";
+    qCDebug(four) << text;
     return static_cast<ElementType>(QMetaEnum::fromType<ElementType>().keyToValue(text.toLatin1()));
 }
 
 QString ElementFactory::typeToText(const ElementType type)
 {
-    qCDebug(four) << "Creating Element Type conversion type to text.";
+    qCDebug(four) << type;
 
     if (type == ElementType::Unknown) {
         return "UNKNOWN";
@@ -29,7 +29,7 @@ QString ElementFactory::typeToText(const ElementType type)
 
 QString ElementFactory::typeToTitleText(const ElementType type)
 {
-    qCDebug(four) << "Creating Element Type conversion type to text.";
+    qCDebug(four) << type;
 
     if (type == ElementType::Unknown) {
         return tr("<b>MULTIPLE TYPES</b>");
@@ -76,7 +76,7 @@ QPixmap ElementFactory::pixmap(const ElementType type)
 
 GraphicElement *ElementFactory::buildElement(const ElementType type)
 {
-    qCDebug(four) << "Creating Element. Building it." << type;
+    qCDebug(four) << type;
 
     if (type == ElementType::Unknown) {
         throw Pandaception(tr("Unknown type: ") + typeToText(type));
