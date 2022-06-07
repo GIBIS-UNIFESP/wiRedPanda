@@ -43,11 +43,8 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &stream, 
         stream >> type;
         qCDebug(three) << "Type:" << type;
 
-        if (type != GraphicElement::Type && type != QNEConnection::Type) {
-            throw Pandaception(tr("Invalid type. Data is possibly corrupted."));
-        }
-
-        if (type == GraphicElement::Type) {
+        switch (type) {
+        case GraphicElement::Type: {
             ElementType elmType;
             stream >> elmType;
 
@@ -61,18 +58,20 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &stream, 
                 ICManager::loadIC(ic, ic->file());
             }
 
-            elm->setSelected(true);
+            break;
         }
 
-        if (type == QNEConnection::Type) {
-            qCDebug(three) << "Reading Connection.";
-            QNEConnection *conn = ElementFactory::buildConnection();
-            qCDebug(three) << "Connection built.";
-            conn->setSelected(true);
-            qCDebug(three) << "Selected true.";
+        case QNEConnection::Type: {
+            qCDebug(three) << "Building connection.";
+            auto *conn = ElementFactory::buildConnection();
+            qCDebug(three) << "Loading connection.";
             conn->load(stream, portMap);
             qCDebug(three) << "Appending connection.";
             itemList.append(conn);
+            break;
+        }
+
+        default: throw Pandaception(tr("Invalid type. Data is possibly corrupted."));
         }
     }
 
