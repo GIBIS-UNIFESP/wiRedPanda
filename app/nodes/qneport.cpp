@@ -275,6 +275,11 @@ void QNEInputPort::setValue(signed char value)
     }
 }
 
+bool QNEInputPort::isInput() const
+{
+    return true;
+}
+
 bool QNEInputPort::isOutput() const
 {
     return false;
@@ -326,6 +331,11 @@ void QNEOutputPort::setValue(signed char value)
             port->setValue(value);
         }
     }
+}
+
+bool QNEOutputPort::isInput() const
+{
+    return false;
 }
 
 bool QNEOutputPort::isOutput() const

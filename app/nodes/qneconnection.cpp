@@ -178,12 +178,12 @@ bool QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
         qCDebug(three) << "Before if 1.";
         if (port1 && port2) {
             qCDebug(three) << "Before if 2.";
-            if (!port1->isOutput() && port2->isOutput()) {
+            if (port1->isInput() && port2->isOutput()) {
                 qCDebug(three) << "Setting start 1.";
                 setStart(dynamic_cast<QNEOutputPort *>(port2));
                 qCDebug(three) << "Setting end 1.";
                 setEnd(dynamic_cast<QNEInputPort *>(port1));
-            } else if (port1->isOutput() && !port2->isOutput()) {
+            } else if (port1->isOutput() && port2->isInput()) {
                 qCDebug(three) << "Setting start 2.";
                 setStart(dynamic_cast<QNEOutputPort *>(port1));
                 qCDebug(three) << "Setting end 2.";

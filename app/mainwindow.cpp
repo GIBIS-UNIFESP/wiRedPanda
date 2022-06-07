@@ -175,12 +175,11 @@ void MainWindow::loadAutosaveFiles()
 void MainWindow::createNewTab()
 {
     qCDebug(zero) << "Creating new workspace.";
-    qCDebug(zero) << "Creating the tab structure.";
-    qCDebug(zero) << "Adding tab. #tabs:" << m_ui->tab->count() << ", current tab:" << m_tabIndex;
     auto *workspace = new WorkSpace(this);
     connect(workspace, &WorkSpace::fileChanged, this, &MainWindow::setTabText);
     workspace->view()->setFastMode(m_ui->actionFastMode->isChecked());
     workspace->scene()->updateTheme();
+    qCDebug(zero) << "Adding tab. #tabs:" << m_ui->tab->count() << ", current tab:" << m_tabIndex;
     m_ui->tab->addTab(workspace, tr("New Project"));
     qCDebug(zero) << "Selecting the newly created tab.";
     m_ui->tab->setCurrentIndex(m_ui->tab->count() - 1);
@@ -587,11 +586,11 @@ void MainWindow::disconnectTab()
 
 void MainWindow::connectTab()
 {
-    qCDebug(zero) << "Setting editor elements to current tab: undo stack, scene, rectangle, simulation controller, IC manager. Also connecting IC Manager and simulation controller signals and setting global IC manager. Updating ICs if changed.";
+    qCDebug(zero) << "Selecting workspace.";
     m_currentTab->selectWorkspace();
     qCDebug(zero) << "Connecting undo and redo functions to UI menu.";
     addUndoRedoMenu();
-    qCDebug(zero) << "Setting Panda and Dolphin file info.";
+    qCDebug(zero) << "Setting Panda file info.";
     m_currentFile = m_currentTab->fileInfo();
     updateICList();
     qCDebug(zero) << "Connecting current tab to element editor menu in UI.";
@@ -604,8 +603,8 @@ void MainWindow::connectTab()
     connect(m_ui->actionDelete,         &QAction::triggered,        m_currentTab->scene(), &Scene::deleteAction);
     connect(m_ui->actionPaste,          &QAction::triggered,        m_currentTab->scene(), &Scene::pasteAction);
 
-    qCDebug(zero) << "Reinitialize simulation controller.";
     if (m_ui->actionPlay->isChecked()) {
+        qCDebug(zero) << "Restarting simulation controller.";
         m_currentTab->simulationController()->start();
         m_currentTab->scene()->setHandlingEvents(true);
         m_currentTab->scene()->clearSelection();
@@ -627,7 +626,7 @@ void MainWindow::selectTab(const int tabIndex)
     m_tabIndex = m_ui->tab->currentIndex();
     qCDebug(zero) << "Selecting tab:" << tabIndex;
     connectTab();
-    qCDebug(zero) << "New tab selected. BD fileName:" << m_currentTab->dolphinFileName();
+    qCDebug(zero) << "New tab selected. Dolphin fileName:" << m_currentTab->dolphinFileName();
 }
 
 void MainWindow::on_lineEditSearch_textChanged(const QString &text)
