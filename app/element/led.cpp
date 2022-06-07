@@ -96,10 +96,6 @@ Led::Led(QGraphicsItem *parent)
 
 void Led::refresh()
 {
-    if (!isValid()) {
-        return;
-    }
-
     int index = 0;
 
     if (isValid()) {
