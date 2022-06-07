@@ -30,9 +30,9 @@ private:
     const QString m_titleText = tr("<b>14-SEGMENT DISPLAY</b>");
     const QString m_translatedName = tr("Display14");
 
-    QString m_color;
+    QString m_color = "Red";
     QVector<QPixmap> bkg, a, b, c, d, e, f, g1, g2, h, j, k, l, m, n, dp;
-    int m_colorNumber;
+    int m_colorNumber = 1;
 };
 
 Q_DECLARE_METATYPE(Display14)

@@ -39,20 +39,20 @@ Display14::Display14(QGraphicsItem *parent)
     m_alternativeSkins = m_defaultSkins;
     setPixmap(m_defaultSkins.first());
 
-    a = QVector<QPixmap>(5, m_defaultSkins[1]);
-    b = QVector<QPixmap>(5, m_defaultSkins[2]);
-    c = QVector<QPixmap>(5, m_defaultSkins[3]);
-    d = QVector<QPixmap>(5, m_defaultSkins[4]);
-    e = QVector<QPixmap>(5, m_defaultSkins[5]);
-    f = QVector<QPixmap>(5, m_defaultSkins[6]);
+    a  = QVector<QPixmap>(5, m_defaultSkins[1]);
+    b  = QVector<QPixmap>(5, m_defaultSkins[2]);
+    c  = QVector<QPixmap>(5, m_defaultSkins[3]);
+    d  = QVector<QPixmap>(5, m_defaultSkins[4]);
+    e  = QVector<QPixmap>(5, m_defaultSkins[5]);
+    f  = QVector<QPixmap>(5, m_defaultSkins[6]);
     g1 = QVector<QPixmap>(5, m_defaultSkins[7]);
     g2 = QVector<QPixmap>(5, m_defaultSkins[8]);
-    h = QVector<QPixmap>(5, m_defaultSkins[9]);
-    j = QVector<QPixmap>(5, m_defaultSkins[10]);
-    k = QVector<QPixmap>(5, m_defaultSkins[11]);
-    l = QVector<QPixmap>(5, m_defaultSkins[12]);
-    m = QVector<QPixmap>(5, m_defaultSkins[13]);
-    n = QVector<QPixmap>(5, m_defaultSkins[14]);
+    h  = QVector<QPixmap>(5, m_defaultSkins[9]);
+    j  = QVector<QPixmap>(5, m_defaultSkins[10]);
+    k  = QVector<QPixmap>(5, m_defaultSkins[11]);
+    l  = QVector<QPixmap>(5, m_defaultSkins[12]);
+    m  = QVector<QPixmap>(5, m_defaultSkins[13]);
+    n  = QVector<QPixmap>(5, m_defaultSkins[14]);
     dp = QVector<QPixmap>(5, m_defaultSkins[15]);
 
     Display::convertAllColors(a);
@@ -155,7 +155,6 @@ void Display14::setColor(const QString &color)
     if (color == "Green")  { m_colorNumber = 2; }
     if (color == "Blue")   { m_colorNumber = 3; }
     if (color == "Purple") { m_colorNumber = 4; }
-    refresh();
 }
 
 QString Display14::color() const

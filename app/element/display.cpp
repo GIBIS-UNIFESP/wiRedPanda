@@ -145,7 +145,6 @@ void Display::setColor(const QString &color)
     if (color == "Green")  { m_colorNumber = 2; }
     if (color == "Blue")   { m_colorNumber = 3; }
     if (color == "Purple") { m_colorNumber = 4; }
-    refresh();
 }
 
 QString Display::color() const
