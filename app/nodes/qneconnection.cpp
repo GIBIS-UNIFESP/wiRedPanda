@@ -171,7 +171,13 @@ bool QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
                 setEnd(dynamic_cast<QNEInputPort *>(port2));
             }
         }
-    } else if (portMap.contains(ptr1) && portMap.contains(ptr2)) {
+    }
+
+    if (!portMap.isEmpty()) {
+        if (!portMap.contains(ptr1) || !portMap.contains(ptr2)) {
+            throw Pandaception(tr("Error loading connection."));
+        }
+
         qCDebug(three) << "Port map with elements: ptr1:" << ptr1 << ", ptr2:" << ptr2;
         QNEPort *port1 = portMap[ptr1];
         QNEPort *port2 = portMap[ptr2];
@@ -191,9 +197,8 @@ bool QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
             }
             qCDebug(three) << "After ifs.";
         }
-    } else {
-        throw Pandaception(tr("Error loading connection."));
     }
+
     qCDebug(three) << "Updating pos from ports.";
     updatePosFromPorts();
     qCDebug(three) << "Updating path.";
