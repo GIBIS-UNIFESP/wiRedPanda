@@ -292,22 +292,22 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
         m_hasRotation = m_canChangeSkin = m_hasOnlyInputs = true;
         setVisible(true);
         setEnabled(false);
-        int minimum_inputs = 0;
-        int maximum_inputs = 100000000;
-        int minimum_outputs = 0;
-        int maximum_outputs = 100000000;
-        int max_current_output_size = 100000000;
+        int minimumInputs = 0;
+        int maximumInputs = 100000000;
+        int minimumOutputs = 0;
+        int maximumOutputs = 100000000;
+        int maxCurrentOutputSize = 100000000;
         m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = true;
         m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = true;
         m_hasSameAudio = true;
         m_hasSameType = true;
         m_hasElements = true;
         GraphicElement *firstElement = m_elements.first();
-        ElementType element_type = firstElement->elementType();
+        ElementType elementType = firstElement->elementType();
 
         for (auto *elm : qAsConst(m_elements)) {
             if (elm->elementType() != firstElement->elementType()) {
-                element_type = ElementType::Unknown;
+                elementType = ElementType::Unknown;
                 break;
             }
 
@@ -316,10 +316,10 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
             m_hasColors &= elm->hasColors();
             m_hasAudio &= elm->hasAudio();
             m_hasFrequency &= elm->hasFrequency();
-            minimum_inputs = std::max(minimum_inputs, elm->minInputSize());
-            maximum_inputs = std::min(maximum_inputs, elm->maxInputSize());
-            minimum_outputs = std::max(minimum_outputs, elm->minOutputSize());
-            maximum_outputs = std::min(maximum_outputs, elm->maxOutputSize());
+            minimumInputs = std::max(minimumInputs, elm->minInputSize());
+            maximumInputs = std::min(maximumInputs, elm->maxInputSize());
+            minimumOutputs = std::max(minimumOutputs, elm->minOutputSize());
+            maximumOutputs = std::min(maximumOutputs, elm->maxOutputSize());
             m_hasTrigger &= elm->hasTrigger();
             m_hasRotation &= elm->isRotatable();
 
@@ -328,7 +328,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
             m_hasSameFrequency &= qFuzzyCompare(elm->frequency(), firstElement->frequency());
             m_hasSameInputSize &= elm->inputSize() == firstElement->inputSize();
             m_hasSameOutputSize &= elm->outputSize() == firstElement->outputSize();
-            max_current_output_size = std::min(max_current_output_size, elm->outputSize());
+            maxCurrentOutputSize = std::min(maxCurrentOutputSize, elm->outputSize());
 
             if ((elm->elementGroup() == ElementGroup::Input) && (firstElement->elementGroup() == ElementGroup::Input)) {
                 m_hasSameOutputValue &= dynamic_cast<GraphicElementInput *>(elm)->outputValue() == dynamic_cast<GraphicElementInput *>(firstElement)->outputValue();
@@ -348,10 +348,10 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
             m_canMorph &= sameElementGroup;
         }
 
-        m_canChangeInputSize = (minimum_inputs < maximum_inputs);
-        m_canChangeOutputSize = (minimum_outputs < maximum_outputs);
+        m_canChangeInputSize = (minimumInputs < maximumInputs);
+        m_canChangeOutputSize = (minimumOutputs < maximumOutputs);
         /* Element type */
-        m_ui->labelType->setText(ElementFactory::typeToTitleText(element_type));
+        m_ui->labelType->setText(ElementFactory::typeToTitleText(elementType));
         /* Labels */
         m_ui->lineEditElementLabel->setVisible(m_hasLabel);
         m_ui->lineEditElementLabel->setEnabled(m_hasLabel);
@@ -424,7 +424,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
         m_ui->comboBoxInputSize->setVisible(m_canChangeInputSize);
         m_ui->comboBoxInputSize->setEnabled(m_canChangeInputSize);
 
-        for (int port = minimum_inputs; port <= maximum_inputs; ++port) {
+        for (int port = minimumInputs; port <= maximumInputs; ++port) {
             m_ui->comboBoxInputSize->addItem(QString::number(port), port);
         }
 
@@ -477,10 +477,10 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
         m_ui->comboBoxValue->setEnabled(m_hasOnlyInputs);
 
         if (m_hasOnlyInputs) {
-            if (max_current_output_size == 1) {
-                max_current_output_size++;
+            if (maxCurrentOutputSize == 1) {
+                maxCurrentOutputSize++;
             }
-            for (int val = 0; val < max_current_output_size; ++val) {
+            for (int val = 0; val < maxCurrentOutputSize; ++val) {
                 m_ui->comboBoxValue->addItem(QString::number(val), val);
             }
         }

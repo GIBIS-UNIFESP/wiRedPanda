@@ -36,12 +36,9 @@ QString ElementFactory::typeToTitleText(const ElementType type)
     }
 
     GlobalProperties::skipInit = true;
-    if (auto *elm = buildElement(type)) {
-        GlobalProperties::skipInit = false;
-        return elm->property("titleText").toString();
-    }
-
-    return tr("<b>MULTIPLE TYPES</b>");
+    auto *elm = buildElement(type);
+    GlobalProperties::skipInit = false;
+    return elm->property("titleText").toString();
 }
 
 QString ElementFactory::translatedName(const ElementType type)
@@ -51,12 +48,9 @@ QString ElementFactory::translatedName(const ElementType type)
     }
 
     GlobalProperties::skipInit = true;
-    if (auto *elm = buildElement(type)) {
-        GlobalProperties::skipInit = false;
-        return elm->property("translatedName").toString();
-    }
-
-    return tr("Unknown");
+    auto *elm = buildElement(type);
+    GlobalProperties::skipInit = false;
+    return elm->property("translatedName").toString();
 }
 
 QPixmap ElementFactory::pixmap(const ElementType type)
@@ -66,12 +60,9 @@ QPixmap ElementFactory::pixmap(const ElementType type)
     }
 
     GlobalProperties::skipInit = true;
-    if (auto *elm = buildElement(type)) {
-        GlobalProperties::skipInit = false;
-        return QPixmap{elm->property("pixmapPath").toString()};
-    }
-
-    return {};
+    auto *elm = buildElement(type);
+    GlobalProperties::skipInit = false;
+    return QPixmap{elm->property("pixmapPath").toString()};
 }
 
 GraphicElement *ElementFactory::buildElement(const ElementType type)
