@@ -117,9 +117,8 @@ bool ElementFactory::contains(const int id)
 void ElementFactory::addItem(ItemWithId *item)
 {
     if (item) {
-        const int newId = instance().next_id();
-        instance().m_map[newId] = item;
-        item->setId(newId);
+        item->setId(instance().nextId());
+        instance().m_map[item->id()] = item;
     }
 }
 
@@ -135,7 +134,7 @@ void ElementFactory::updateItemId(ItemWithId *item, const int newId)
     item->setId(newId);
 }
 
-int ElementFactory::next_id()
+int ElementFactory::nextId()
 {
     return m_lastId++;
 }

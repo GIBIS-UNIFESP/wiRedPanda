@@ -89,9 +89,11 @@ void QNEPort::connect(QNEConnection *conn)
 void QNEPort::disconnect(QNEConnection *conn)
 {
     m_connections.removeAll(conn);
+
     if (conn->start() == this) {
         conn->setStart(nullptr);
     }
+
     if (conn->end() == this) {
         conn->setEnd(nullptr);
     }
@@ -102,6 +104,7 @@ void QNEPort::disconnect(QNEConnection *conn)
 void QNEPort::setPortFlags(const int flags)
 {
     m_portFlags = flags;
+
     if (m_portFlags & TypePort) {
         QFont font(scene()->font());
         font.setItalic(true);
@@ -146,8 +149,9 @@ void QNEPort::updateConnections()
         conn->updatePosFromPorts();
         conn->updatePath();
     }
+
     if (isValid()) {
-        if (m_connections.empty() && !isOutput()) {
+        if (m_connections.empty() && isInput()) {
             setValue(defaultValue());
         }
     } else {
@@ -160,6 +164,7 @@ QVariant QNEPort::itemChange(GraphicsItemChange change, const QVariant &value)
     if (change == ItemScenePositionHasChanged) {
         updateConnections();
     }
+
     return value;
 }
 
@@ -197,6 +202,7 @@ QBrush QNEPort::currentBrush() const
 void QNEPort::setCurrentBrush(const QBrush &currentBrush)
 {
     m_currentBrush = currentBrush;
+
     if (brush().color() != Qt::yellow) {
         setBrush(currentBrush);
     }
@@ -258,20 +264,26 @@ QNEInputPort::~QNEInputPort()
 
 void QNEInputPort::setValue(signed char value)
 {
-    m_value = value;
-    if (!isValid()) {
-        m_value = -1;
-    }
+    m_value = isValid() ? value : -1;
+
     const auto theme = ThemeManager::attributes();
-    if (m_value == -1) {
+
+    switch (m_value) {
+    case -1: {
         setPen(theme.m_qnePortInvalidPen);
         setCurrentBrush(theme.m_qnePortInvalidBrush);
-    } else if (m_value == 1) {
-        setPen(theme.m_qnePortTruePen);
-        setCurrentBrush(theme.m_qnePortTrueBrush);
-    } else {
+        break;
+    }
+    case  0: {
         setPen(theme.m_qnePortFalsePen);
         setCurrentBrush(theme.m_qnePortFalseBrush);
+        break;
+    }
+    case  1: {
+        setPen(theme.m_qnePortTruePen);
+        setCurrentBrush(theme.m_qnePortTrueBrush);
+        break;
+    }
     }
 }
 
@@ -318,16 +330,15 @@ QNEOutputPort::~QNEOutputPort()
 void QNEOutputPort::setValue(signed char value)
 {
     m_value = value;
+
     for (auto *conn : connections()) {
-        if (value == -1) {
-            conn->setStatus(QNEConnection::Status::Invalid);
-        } else if (value == 0) {
-            conn->setStatus(QNEConnection::Status::Inactive);
-        } else {
-            conn->setStatus(QNEConnection::Status::Active);
+        switch (m_value) {
+        case -1: conn->setStatus(QNEConnection::Status::Invalid); break;
+        case  0: conn->setStatus(QNEConnection::Status::Inactive); break;
+        case  1: conn->setStatus(QNEConnection::Status::Active); break;
         }
-        auto *port = conn->otherPort(this);
-        if (port) {
+
+        if (auto *port = conn->otherPort(this)) {
             port->setValue(value);
         }
     }

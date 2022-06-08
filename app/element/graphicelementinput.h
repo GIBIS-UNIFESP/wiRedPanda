@@ -9,6 +9,8 @@
 
 class GraphicElementInput : public GraphicElement
 {
+    Q_OBJECT
+
 public:
     explicit GraphicElementInput(ElementType type, ElementGroup group, const int minInputSize, const int maxInputSize, const int minOutputSize, const int maxOutputSize, QGraphicsItem *parent = nullptr)
         : GraphicElement(type, group, minInputSize, maxInputSize, minOutputSize, maxOutputSize, parent){};

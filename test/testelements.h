@@ -25,7 +25,6 @@ private slots:
     void testDemux();
     void testGND();
     void testIC();
-    void testICData(const IC *ic);
     void testICs();
     void testJKFlipFlop();
     void testMux();
@@ -36,6 +35,8 @@ private slots:
     void testVCC();
 
 private:
+    void testICData(const IC *ic);
+
     QVector<InputSwitch *> switches{5};
     QVector<QNEConnection *> connections{5};
 };

@@ -14,6 +14,7 @@
 #include <QMimeData>
 #include <QUndoCommand>
 
+class GraphicsView;
 class GraphicElement;
 class QNEConnection;
 
@@ -26,6 +27,7 @@ public:
 
     explicit Scene(QObject *parent = nullptr);
 
+    GraphicsView *view() const;
     QAction *redoAction() const;
     QAction *undoAction() const;
     QList<GraphicElement *> selectedElements();
@@ -51,6 +53,7 @@ public:
     void setAutosaveRequired();
     void setCircuitUpdateRequired();
     void setHandlingEvents(const bool value);
+    void setView(GraphicsView *view);
     void showGates(const bool checked);
     void showWires(const bool checked);
     void updateTheme();
@@ -100,7 +103,7 @@ private:
     void startNewConnection(QNEOutputPort *startPort);
     void startSelectionRect();
 
-    // TODO: store a pointer to the view?
+    GraphicsView *m_view;
     QAction *m_redoAction;
     QAction *m_undoAction;
     QElapsedTimer m_timer;
@@ -119,7 +122,7 @@ private:
     bool m_markingSelectionBox = false;
     bool m_showGates = true;
     bool m_showWires = true;
-    int m_editedConnection_id = 0;
-    int m_hoverPortElm_id = 0;
-    int m_hoverPort_nbr = 0;
+    int m_editedConnectionId = 0;
+    int m_hoverPortElmId = 0;
+    int m_hoverPortNbr = 0;
 };

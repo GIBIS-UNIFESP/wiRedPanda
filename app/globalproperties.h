@@ -7,11 +7,10 @@
 
 #include <QString>
 
-constexpr int globalClock = 10;
-
 class GlobalProperties
 {
 public:
+    inline const static int globalClock = 10;
     inline static QString currentFile = {};
     inline static bool skipInit = false;
     inline static bool verbose = true;

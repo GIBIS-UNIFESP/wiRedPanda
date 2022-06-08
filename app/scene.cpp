@@ -98,12 +98,7 @@ void Scene::setCircuitUpdateRequired()
 
 QVector<GraphicElement *> Scene::visibleElements()
 {
-    const auto gviews = views();
-    auto *graphicsView = gviews.first();
-    if (!graphicsView->isActiveWindow()) {
-        graphicsView = gviews.last();
-    }
-    auto visibleRect = graphicsView->mapToScene(graphicsView->viewport()->geometry()).boundingRect();
+    auto visibleRect = m_view->mapToScene(m_view->viewport()->geometry()).boundingRect();
 
     return elements(visibleRect);
 }
@@ -194,7 +189,8 @@ void Scene::receiveCommand(QUndoCommand *cmd)
 
 void Scene::resizeScene()
 {
-    QVector<GraphicElement *> elms = elements();
+    auto elms = elements();
+
     if (!elms.isEmpty()) {
         QRectF rect = sceneRect();
         for (auto *elm : qAsConst(elms)) {
@@ -203,20 +199,18 @@ void Scene::resizeScene()
         }
         setSceneRect(rect);
     }
-    QGraphicsItem *item = itemAt(m_mousePos);
+
+    auto *item = itemAt(m_mousePos);
+
     if (item && (m_timer.elapsed() > 100) && m_draggingElement) {
-        if (!views().isEmpty()) {
-            const auto scene_views = views();
-            QGraphicsView *view = scene_views.first();
-            view->ensureVisible(QRectF(m_mousePos - QPointF(4, 4), QSize(9, 9)).normalized());
-        }
+        m_view->ensureVisible(QRectF(m_mousePos - QPointF(4, 4), QSize(9, 9)).normalized());
         m_timer.restart();
     }
 }
 
 QNEConnection *Scene::editedConnection() const
 {
-    return dynamic_cast<QNEConnection *>(ElementFactory::itemById(m_editedConnection_id));
+    return dynamic_cast<QNEConnection *>(ElementFactory::itemById(m_editedConnectionId));
 }
 
 void Scene::deleteEditedConnection()
@@ -232,9 +226,9 @@ void Scene::setEditedConnection(QNEConnection *connection)
 {
     if (connection) {
         connection->setFocus();
-        m_editedConnection_id = connection->id();
+        m_editedConnectionId = connection->id();
     } else {
-        m_editedConnection_id = 0;
+        m_editedConnectionId = 0;
     }
 }
 
@@ -478,32 +472,32 @@ void Scene::setHoverPort(QNEPort *port)
         auto *hoverElm = port->graphicElement();
         port->hoverEnter();
         if (hoverElm && ElementFactory::contains(hoverElm->id())) {
-            m_hoverPortElm_id = hoverElm->id();
+            m_hoverPortElmId = hoverElm->id();
             for (int i = 0; i < (hoverElm->inputSize() + hoverElm->outputSize()); ++i) {
                 if (i < hoverElm->inputSize()) {
                     if (port == hoverElm->input(i)) {
-                        m_hoverPort_nbr = i;
+                        m_hoverPortNbr = i;
                     }
                 } else if (port == hoverElm->output(i - hoverElm->inputSize())) {
-                    m_hoverPort_nbr = i;
+                    m_hoverPortNbr = i;
                 }
             }
         }
     } else {
-        m_hoverPortElm_id = 0;
-        m_hoverPort_nbr = 0;
+        m_hoverPortElmId = 0;
+        m_hoverPortNbr = 0;
     }
 }
 
 QNEPort *Scene::hoverPort()
 {
-    auto *hoverElm = dynamic_cast<GraphicElement *>(ElementFactory::itemById(m_hoverPortElm_id));
+    auto *hoverElm = dynamic_cast<GraphicElement *>(ElementFactory::itemById(m_hoverPortElmId));
     QNEPort *hoverPort = nullptr;
     if (hoverElm) {
-        if (m_hoverPort_nbr < hoverElm->inputSize()) {
-            hoverPort = hoverElm->input(m_hoverPort_nbr);
-        } else if (((m_hoverPort_nbr - hoverElm->inputSize()) < hoverElm->outputSize())) {
-            hoverPort = hoverElm->output(m_hoverPort_nbr - hoverElm->inputSize());
+        if (m_hoverPortNbr < hoverElm->inputSize()) {
+            hoverPort = hoverElm->input(m_hoverPortNbr);
+        } else if (((m_hoverPortNbr - hoverElm->inputSize()) < hoverElm->outputSize())) {
+            hoverPort = hoverElm->output(m_hoverPortNbr - hoverElm->inputSize());
         }
     }
     if (!hoverPort) {
@@ -521,6 +515,16 @@ void Scene::startSelectionRect()
     m_selectionRect.update();
 }
 
+GraphicsView *Scene::view() const
+{
+    return m_view;
+}
+
+void Scene::setView(GraphicsView *view)
+{
+    m_view = view;
+}
+
 QAction *Scene::undoAction() const
 {
     return m_undoAction;
@@ -533,8 +537,7 @@ QAction *Scene::redoAction() const
 
 void Scene::contextMenu(const QPoint screenPos)
 {
-    auto *item = itemAt(m_mousePos);
-    if (item) {
+    if (auto *item = itemAt(m_mousePos)) {
         if (selectedItems().contains(item)) {
             emit contextMenuPos(screenPos);
         } else if ((item->type() == GraphicElement::Type)) {
@@ -657,8 +660,8 @@ void Scene::rotateRight()
 
 void Scene::mute(const bool mute)
 {
-    const auto scene_elems = elements();
-    for (auto *elm : scene_elems) {
+    const auto sceneElems = elements();
+    for (auto *elm : sceneElems) {
         if (auto *buzzer = dynamic_cast<Buzzer *>(elm)) {
             buzzer->mute(mute);
         }
@@ -911,8 +914,11 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     m_mousePos = event->scenePos();
-    resizeScene();
     handleHoverPort();
+
+    if (m_draggingElement) {
+        resizeScene();
+    }
 
     if (auto *connection = editedConnection()) {
         if (connection->start()) {
@@ -948,7 +954,7 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (m_draggingElement && (event->button() == Qt::LeftButton)) {
         if (!m_movedElements.empty()) {
-            bool valid = false; // std::any_of?
+            bool valid = false; // TODO: std::any_of?
             for (int elm = 0; elm < m_movedElements.size(); ++elm) {
                 if (m_movedElements[elm]->pos() != m_oldPositions[elm]) {
                     valid = true;

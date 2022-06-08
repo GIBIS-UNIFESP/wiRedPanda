@@ -84,9 +84,9 @@ void ElementMapping::insertIC(IC *ic)
     if (!ic) {
         return;
     }
-    ICPrototype *proto = ic->prototype();
-    if (proto) {
-        ICMapping *icMap = proto->generateMapping();
+
+    if (ICPrototype *prototype = ic->prototype()) {
+        ICMapping *icMap = prototype->generateMapping();
         icMap->initialize();
         m_icMappings.insert(ic, icMap);
         m_logicElms.append(icMap->m_logicElms);
@@ -182,7 +182,8 @@ void ElementMapping::update()
 
     for (auto *input : m_inputs) {
       for (int port = 0; port < input->outputSize(); ++port) {
-          input->logic()->setOutputValue(port, input->on(port)); }
+          input->logic()->setOutputValue(port, input->on(port));
+      }
     }
 
     for (auto *logic : qAsConst(m_logicElms)) {
@@ -212,22 +213,22 @@ bool ElementMapping::canInitialize() const
     });
 }
 
-void ElementMapping::applyConnection(GraphicElement *elm, QNEPort *in)
+void ElementMapping::applyConnection(GraphicElement *elm, QNEPort *portIn)
 {
     LogicElement *currentLogElm;
     int inputIndex = 0;
     if (elm->elementType() == ElementType::IC) {
         auto *ic = dynamic_cast<IC *>(elm);
-        currentLogElm = m_icMappings.value(ic)->input(in->index());
+        currentLogElm = m_icMappings.value(ic)->input(portIn->index());
     } else {
         currentLogElm = elm->logic();
-        inputIndex = in->index();
+        inputIndex = portIn->index();
     }
-    int connections = in->connections().size();
-    bool connectionRequired = in->isRequired();
+    int connections = portIn->connections().size();
+    bool connectionRequired = portIn->isRequired();
     // TODO: and if there is more than one input? use std::any_of?
     if (connections == 1) {
-        if (QNEPort *otherOut = in->connections().first()->otherPort(in)) {
+        if (QNEPort *otherOut = portIn->connections().first()->otherPort(portIn)) {
             if (GraphicElement *predecessor = otherOut->graphicElement()) {
                 int predOutIndex = 0;
                 LogicElement *predOutElm;
@@ -242,7 +243,7 @@ void ElementMapping::applyConnection(GraphicElement *elm, QNEPort *in)
             }
         }
     } else if ((connections == 0) && (!connectionRequired)) {
-        LogicElement *pred = (in->defaultValue()) ? &m_globalVCC : &m_globalGND;
+        LogicElement *pred = (portIn->defaultValue()) ? &m_globalVCC : &m_globalGND;
         currentLogElm->connectPredecessor(inputIndex, pred, 0);
     }
 }
