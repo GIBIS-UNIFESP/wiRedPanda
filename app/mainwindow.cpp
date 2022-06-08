@@ -78,7 +78,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     m_ui->tabElements->setTabIcon(0, QIcon(":/input/buttonOff.png"));
     m_ui->tabElements->setTabIcon(1, QIcon(":/basic/xor.png"));
     m_ui->tabElements->setTabIcon(2, QIcon(DFlipFlop::pixmapPath()));
-    m_ui->tabElements->setTabIcon(3, QIcon(":/basic/ic.png"));
+    m_ui->tabElements->setTabIcon(3, QIcon(":/basic/ic-panda.png"));
     m_ui->tabElements->setTabIcon(4, QIcon(":/text.png"));
     m_ui->tabElements->setTabEnabled(5, false);
 
@@ -514,7 +514,7 @@ void MainWindow::updateICList()
         }
         qCDebug(zero) << "Files:" << files.join(", ");
         for (const QString &file : qAsConst(files)) {
-            QPixmap pixmap(QString::fromUtf8(":/basic/ic.png"));
+            QPixmap pixmap(":/basic/ic-panda.png");
             auto *item = new ElementLabel(pixmap, ElementType::IC, file, this);
             m_ui->scrollAreaWidgetContents_IC->layout()->addWidget(item);
         }

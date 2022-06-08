@@ -37,7 +37,7 @@ private:
     void loadOutputs(ICPrototype *prototype);
 
     QString m_file;
-    const QString m_pixmapPath = ":/basic/ic.png";
+    const QString m_pixmapPath = ":/basic/ic-panda.png";
     const QString m_titleText = tr("<b>INTEGRATED CIRCUIT</b>");
     const QString m_translatedName = tr("IC");
 };

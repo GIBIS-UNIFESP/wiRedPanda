@@ -1,8 +1,9 @@
 <RCC>
     <qresource prefix="/basic">
         <file>and.png</file>
-        <file>ic.png</file>
         <file>demux.png</file>
+        <file>ic-panda.png</file>
+        <file>ic.png</file>
         <file>mux.png</file>
         <file>nand.png</file>
         <file>node.png</file>
