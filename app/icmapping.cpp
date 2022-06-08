@@ -10,35 +10,28 @@ ICMapping::ICMapping(const QVector<GraphicElement *> &elms, const QVector<QNEPor
 {
 }
 
-ICMapping::~ICMapping() = default;
-
 void ICMapping::initialize()
 {
     ElementMapping::initialize();
-    for (auto *port : qAsConst(m_icInputs)) {
-        m_inputs.append(port->logicElement());
-    }
-    for (auto *port : qAsConst(m_icOutputs)) {
-        m_outputs.append(port->logicElement());
-    }
 }
 
 void ICMapping::clearConnections()
 {
-    for (auto *in : qAsConst(m_inputs)) {
-        in->clearPredecessors();
+    for (auto *portIn : qAsConst(m_icInputs)) {
+        portIn->logicElement()->clearPredecessors();
     }
-    for (auto *out : qAsConst(m_outputs)) {
-        out->clearSucessors();
+
+    for (auto *portOut : qAsConst(m_icOutputs)) {
+        portOut->logicElement()->clearSucessors();
     }
 }
 
 LogicElement *ICMapping::input(const int index)
 {
-    return m_inputs[index];
+    return m_icInputs.at(index)->logicElement();
 }
 
 LogicElement *ICMapping::output(const int index)
 {
-    return m_outputs[index];
+    return m_icOutputs.at(index)->logicElement();
 }

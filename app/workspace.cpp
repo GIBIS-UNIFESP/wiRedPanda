@@ -19,6 +19,7 @@ WorkSpace::WorkSpace(QWidget *parent)
 {
     m_view.setCacheMode(QGraphicsView::CacheBackground);
     m_view.setScene(&m_scene);
+    m_scene.setView(&m_view);
     m_scene.setSceneRect(m_scene.sceneRect().united(m_view.rect()));
     setLayout(new QHBoxLayout);
     layout()->addWidget(&m_view);
@@ -158,7 +159,7 @@ void WorkSpace::load(QDataStream &stream, const bool isPlaying)
     qCDebug(zero) << "Dolphin name:" << m_dolphinFileName;
     QRectF rect(SerializationFunctions::loadRect(stream, version));
     qCDebug(zero) << "Header Ok. Version:" << version;
-    QList<QGraphicsItem *> items = SerializationFunctions::deserialize(stream, version);
+    auto items = SerializationFunctions::deserialize(stream, version);
     qCDebug(zero) << "Finished loading items.";
     for (auto *item : qAsConst(items)) {
         m_scene.addItem(item);
@@ -166,9 +167,7 @@ void WorkSpace::load(QDataStream &stream, const bool isPlaying)
     qCDebug(three) << "This code tries to centralize the elements in scene using the rectangle. But it is not working well.";
     // TODO: improve this
     m_scene.setSceneRect(m_scene.itemsBoundingRect());
-    if (!m_scene.views().empty()) {
-        const auto views = m_scene.views();
-        auto *view = dynamic_cast<GraphicsView *>(views.first());
+    if (auto view = m_scene.view()) {
         rect = rect.united(view->rect());
         rect.moveCenter(QPointF(0, 0));
         m_scene.setSceneRect(m_scene.sceneRect().united(rect));

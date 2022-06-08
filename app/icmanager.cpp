@@ -36,14 +36,14 @@ void ICManager::loadFile(const QString &fileName)
     instance().m_fileWatcher.addPath(fileInfo.absoluteFilePath());
     if (instance().m_ics.contains(fileInfo.baseName())) {
         qCDebug(three) << "IC already inserted:" << fileInfo.baseName();
-    } else {
-        qCDebug(three) << "Inserting IC:" << fileInfo.baseName();
-        // qCDebug(zero) << "Inserting IC:" << fileInfo.absoluteFilePath();
-        auto *prototype = new ICPrototype(fileInfo.absoluteFilePath());
-        prototype->reload();
-        // qCDebug(zero) << "Really Inserting IC:" << fileInfo.baseName();
-        instance().m_ics.insert(fileInfo.baseName(), prototype);
+        return;
     }
+    qCDebug(three) << "Inserting IC:" << fileInfo.baseName();
+    // qCDebug(zero) << "Inserting IC:" << fileInfo.absoluteFilePath();
+    auto *prototype = new ICPrototype(fileInfo.absoluteFilePath());
+    prototype->reload();
+    // qCDebug(zero) << "Really Inserting IC:" << fileInfo.baseName();
+    instance().m_ics.insert(fileInfo.baseName(), prototype);
 }
 
 ICPrototype *ICManager::prototype(const QString &fileName)

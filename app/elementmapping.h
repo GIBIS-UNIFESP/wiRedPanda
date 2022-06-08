@@ -39,7 +39,7 @@ private:
     static LogicElement *buildLogicElement(GraphicElement *elm);
     static int calculatePriority(GraphicElement *elm, QHash<GraphicElement *, bool> &beingVisited, QHash<GraphicElement *, int> &priority);
 
-    void applyConnection(GraphicElement *elm, QNEPort *in);
+    void applyConnection(GraphicElement *elm, QNEPort *portIn);
     void connectElements();
     void generateMap();
     void insertElement(GraphicElement *elm);

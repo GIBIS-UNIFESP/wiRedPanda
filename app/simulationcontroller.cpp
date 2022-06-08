@@ -20,7 +20,7 @@ SimulationController::SimulationController(Scene *scene)
     : QObject(scene)
     , m_scene(scene)
 {
-    m_simulationTimer.setInterval(globalClock);
+    m_simulationTimer.setInterval(GlobalProperties::globalClock);
     connect(&m_simulationTimer, &QTimer::timeout, this, &SimulationController::update);
 
     m_viewTimer.setInterval(1000 / 30);
@@ -74,9 +74,12 @@ void SimulationController::update()
         m_shouldRestart = false;
         reSortElements();
     }
-    if (m_elmMapping) { // TODO: Remove this check, if possible. May increse the simulation speed significantly.
-        m_elmMapping->update();
+
+    if (!m_elmMapping) { // TODO: Remove this check, if possible. May increse the simulation speed significantly.
+        return;
     }
+
+    m_elmMapping->update();
 }
 
 void SimulationController::stop()

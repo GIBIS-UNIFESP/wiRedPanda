@@ -40,10 +40,8 @@ void Clock::updateClock()
         if ((m_elapsed % m_interval) == 0) {
             m_elapsed = 0;
             setOn(!m_isOn);
-            return;
         }
     }
-    setOn(m_isOn);
 }
 
 bool Clock::on(const int port) const
@@ -103,7 +101,7 @@ void Clock::setFrequency(const float freq)
     }
 
     // FIXME: auxInterval gets the same value for many frequencies
-    int auxInterval = static_cast<int>(500 / (freq * globalClock));
+    int auxInterval = static_cast<int>(500 / (freq * GlobalProperties::globalClock));
     if (auxInterval <= 0) {
         return;
     }

@@ -38,7 +38,7 @@ public:
     static void addItem(ItemWithId *item);
 
 private:
-    int next_id();
+    int nextId();
 
     QMap<int, ItemWithId *> m_map;
     int m_lastId = 0;
