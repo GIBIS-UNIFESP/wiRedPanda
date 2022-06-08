@@ -33,7 +33,6 @@ SimulationController::~SimulationController()
     clear();
 }
 
-// If (m_shouldRestart) then the simulation controller will be cleared the next time that it is updated.
 void SimulationController::restart() { m_shouldRestart = true; }
 
 void SimulationController::updateScene()
@@ -73,7 +72,7 @@ void SimulationController::update()
 {
     if (m_shouldRestart) {
         m_shouldRestart = false;
-        clear();
+        reSortElements();
     }
     if (m_elmMapping) { // TODO: Remove this check, if possible. May increse the simulation speed significantly.
         m_elmMapping->update();
