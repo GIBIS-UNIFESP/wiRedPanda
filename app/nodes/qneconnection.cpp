@@ -175,7 +175,7 @@ bool QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
 
     if (!portMap.isEmpty()) {
         if (!portMap.contains(ptr1) || !portMap.contains(ptr2)) {
-            throw Pandaception(tr("Error loading connection."));
+            return false;
         }
 
         qCDebug(three) << "Port map with elements: ptr1:" << ptr1 << ", ptr2:" << ptr2;
