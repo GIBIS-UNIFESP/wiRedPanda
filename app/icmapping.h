@@ -23,6 +23,8 @@ public:
     void initialize() override;
 
 private:
+    QVector<LogicElement *> m_inputs;
+    QVector<LogicElement *> m_outputs;
     QVector<QNEPort *> m_icInputs;
     QVector<QNEPort *> m_icOutputs;
 };
