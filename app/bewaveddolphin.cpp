@@ -14,7 +14,7 @@
 #include "lengthdialog.h"
 #include "mainwindow.h"
 #include "settings.h"
-#include "simulationcontrollerstop.h"
+#include "simulationblocker.h"
 
 #include <QClipboard>
 #include <QCloseEvent>
@@ -284,7 +284,7 @@ void BewavedDolphin::restoreInputs()
 
 void BewavedDolphin::run()
 {
-    SimulationControllerStop simControllerStop(m_simController);
+    SimulationBlocker simulationBlocker(m_simController);
     for (int itr = 0; itr < m_model->columnCount(); ++itr) {
         qCDebug(four) << "itr:" << itr << ", inputs:" << m_inputs.size();
         int table_line = 0;
@@ -382,7 +382,7 @@ void BewavedDolphin::createWaveform(const QString &fileName)
     qCDebug(zero) << "Creating class to pause main window simulator while creating waveform.";
     // TODO: scene is paused twice, once here and again in run()
     m_simController = m_externalScene->simulationController();
-    SimulationControllerStop simControllerStop(m_simController);
+    SimulationBlocker simulationBlocker(m_simController);
     qCDebug(zero) << "Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.";
     loadElements();
     QStringList input_labels;
@@ -409,7 +409,7 @@ void BewavedDolphin::createWaveform()
     qCDebug(zero) << "Creating class to pause main window simulator while creating waveform.";
     // TODO: scene is paused twice, once here and again in run()
     m_simController = m_externalScene->simulationController();
-    SimulationControllerStop simControllerStop(m_simController);
+    SimulationBlocker simulationBlocker(m_simController);
     qCDebug(zero) << "Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.";
     loadElements();
     QStringList input_labels;

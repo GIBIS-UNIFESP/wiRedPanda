@@ -6,6 +6,8 @@ CONFIG += testcase
 
 TARGET = WPanda-test
 
+DEFINES += CURRENTDIR=\\\"$$_PRO_FILE_PWD_\\\"
+
 SOURCES += \
     testmain.cpp \
     testelements.cpp \
@@ -24,5 +26,3 @@ HEADERS += \
     testwaveform.h \
     testicons.h \
     testlogicelements.h
-
-DEFINES += CURRENTDIR=\\\"$$_PRO_FILE_PWD_\\\"
