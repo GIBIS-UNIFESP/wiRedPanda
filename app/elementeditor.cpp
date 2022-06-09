@@ -688,8 +688,6 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
                 return elm1->pos().rx() < elm2->pos().rx();
             });
 
-            apply();
-
             int elmPos = elms.indexOf(elm);
             qCDebug(zero) << "Pos =" << elmPos << "from" << elms.size();
             int step = 1;
