@@ -398,8 +398,8 @@ void Scene::cloneDrag(const QPointF pos)
 
     QPainter painter(&image);
     painter.setOpacity(0.0);
+    // FIXME: if zoomed in or out the image is not scaled
     render(&painter, image.rect(), rect);
-    // TODO: fix zoom glitch
 
     for (auto *item : items()) {
         if ((item->type() == GraphicElement::Type || item->type() == QNEConnection::Type) && !item->isSelected()) {

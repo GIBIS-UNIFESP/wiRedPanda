@@ -7,11 +7,11 @@
 
 class SimulationController;
 
-class SimulationControllerStop // RAII
+class SimulationBlocker
 {
 public:
-    explicit SimulationControllerStop(SimulationController *simController);
-    ~SimulationControllerStop();
+    explicit SimulationBlocker(SimulationController *simController);
+    ~SimulationBlocker();
 
 private:
     SimulationController *m_simController;

@@ -13,7 +13,7 @@
 #include "scene.h"
 #include "settings.h"
 #include "simulationcontroller.h"
-#include "simulationcontrollerstop.h"
+#include "simulationblocker.h"
 #include "workspace.h"
 
 #include <QChartView>
@@ -116,7 +116,7 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, WorkSpace *workspace)
     // Getting digital circuit simulator.
     auto *simController = workspace->simulationController();
     // Creating class to pause main window simulator while creating waveform.
-    SimulationControllerStop simControllerStop(simController);
+    SimulationBlocker simulationBlocker(simController);
 
     // Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore
     // it after simulation.
@@ -212,7 +212,7 @@ void SimpleWaveform::showWaveform()
     qCDebug(zero) << "Getting digital circuit simulator.";
     auto *simController = m_workspace->simulationController();
     qCDebug(zero) << "Creating class to pause main window simulator while creating waveform.";
-    SimulationControllerStop simControllerStop(simController);
+    SimulationBlocker simulationBlocker(simController);
     QVector<GraphicElement *> elements = m_workspace->scene()->elements();
     QVector<GraphicElement *> inputs;
     QVector<GraphicElement *> outputs;

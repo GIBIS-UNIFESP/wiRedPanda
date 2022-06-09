@@ -1,13 +1,13 @@
 // Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "simulationcontrollerstop.h"
+#include "simulationblocker.h"
 
 #include "clock.h"
 #include "common.h"
 #include "simulationcontroller.h"
 
-SimulationControllerStop::SimulationControllerStop(SimulationController *simController)
+SimulationBlocker::SimulationBlocker(SimulationController *simController)
     : m_simController(simController)
 {
     qCDebug(zero) << "Stopping.";
@@ -19,7 +19,7 @@ SimulationControllerStop::SimulationControllerStop(SimulationController *simCont
     }
 }
 
-SimulationControllerStop::~SimulationControllerStop()
+SimulationBlocker::~SimulationBlocker()
 {
     qCDebug(zero) << "Releasing.";
     if (m_restart) {
