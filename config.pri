@@ -29,6 +29,9 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 DEFINES += QT_MESSAGELOGCONTEXT
 
 linux-g++ {
+    QMAKE_CXXFLAGS += --coverage
+    QMAKE_LFLAGS += --coverage
+
     GOLD_BIN = $$system(which gold)
 
     !isEmpty(GOLD_BIN) {
