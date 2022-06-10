@@ -34,6 +34,15 @@ jobs:
         make -j2
         cd test
         xvfb-run ./WPanda-test
+        cd ../../test
+        sudo apt install -y lcov
+        chmod +x ./runCoverage.sh
+        ./runCoverage.sh
+
+    - name: Upload code coverage
+      uses: codecov/codecov-action@v2
+      with: 
+        files: ./coverage/coverage-filtered.info
 
     - name: Deploy
       uses: actions/upload-artifact@v3
