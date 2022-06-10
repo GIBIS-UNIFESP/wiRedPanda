@@ -83,7 +83,7 @@ private:
     QNEPort *hoverPort();
     QVector<QNEConnection *> connections();
     void checkUpdateRequest();
-    void cloneDrag(const QPointF pos);
+    void cloneDrag(const QPointF mousePos);
     void contextMenu(const QPoint screenPos);
     void copy(const QList<QGraphicsItem *> &items, QDataStream &stream);
     void cut(const QList<QGraphicsItem *> &items, QDataStream &stream);

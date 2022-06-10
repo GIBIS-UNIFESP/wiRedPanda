@@ -371,7 +371,7 @@ void Scene::redoSimulationController()
     }
 }
 
-void Scene::cloneDrag(const QPointF pos)
+void Scene::cloneDrag(const QPointF mousePos)
 {
     qCDebug(zero) << "Ctrl + Drag action triggered.";
     auto selectedElms = selectedElements();
@@ -389,17 +389,20 @@ void Scene::cloneDrag(const QPointF pos)
     QRectF rect;
 
     for (auto *elm : qAsConst(selectedElms)) {
-        rect = rect.united(elm->boundingRect().translated(elm->pos()));
+        rect = rect.united(elm->sceneBoundingRect());
     }
 
     rect = rect.adjusted(-8, -8, 8, 8);
-    QImage image(rect.size().toSize(), QImage::Format_ARGB32_Premultiplied);
+
+    auto mappedSize = m_view->transform().mapRect(rect).size().toSize();
+    QImage image(mappedSize, QImage::Format_ARGB32_Premultiplied);
     image.fill(Qt::transparent);
 
     QPainter painter(&image);
     painter.setOpacity(0.0);
-    // FIXME: if zoomed in or out the image is not scaled
-    render(&painter, image.rect(), rect);
+    QRectF target = image.rect();
+    QRectF source = rect;
+    render(&painter, target, source);
 
     for (auto *item : items()) {
         if ((item->type() == GraphicElement::Type || item->type() == QNEConnection::Type) && !item->isSelected()) {
@@ -409,10 +412,7 @@ void Scene::cloneDrag(const QPointF pos)
 
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
-
-    QPointF offset = pos - rect.topLeft();
-    stream << pos;
-
+    stream << mousePos;
     copy(selectedItems(), stream);
 
     auto *mimeData = new QMimeData;
@@ -421,6 +421,7 @@ void Scene::cloneDrag(const QPointF pos)
     auto *drag = new QDrag(this);
     drag->setMimeData(mimeData);
     drag->setPixmap(QPixmap::fromImage(image));
+    QPointF offset = m_view->transform().map(mousePos - rect.topLeft());
     drag->setHotSpot(offset.toPoint());
     drag->exec(Qt::CopyAction, Qt::CopyAction);
 }
