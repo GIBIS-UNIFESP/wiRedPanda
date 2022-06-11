@@ -39,7 +39,7 @@ class CodeGenerator
     Q_DECLARE_TR_FUNCTIONS(CodeGenerator)
 
 public:
-    CodeGenerator(const QString &fileName, const QVector<GraphicElement *> &aElements);
+    CodeGenerator(const QString &fileName, const QVector<GraphicElement *> &elements);
 
     void generate();
 

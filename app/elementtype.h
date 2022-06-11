@@ -61,6 +61,6 @@ public:
 using ElementType = Enums::ElementType;
 using ElementGroup = Enums::ElementGroup;
 
-ElementType &operator++(ElementType &e);
+ElementType &operator++(ElementType &type);
 QDataStream &operator>>(QDataStream &stream, ElementType &type);
 QDataStream &operator<<(QDataStream &stream, const ElementType &type);
