@@ -933,35 +933,37 @@ void MainWindow::loadTranslation(const QString &language)
         return;
     }
 
+    Settings::setValue("language", language);
+
     qApp->removeTranslator(m_pandaTranslator);
     qApp->removeTranslator(m_qtTranslator);
 
     QString pandaFile;
     QString qtFile;
 
-    if (language == "://wpanda_pt_BR.qm") {
-        pandaFile = "://wpanda_pt_BR.qm";
-        qtFile = "://qt_pt_BR.qm";
+    if (language == ":/translations/wpanda_pt_BR.qm") {
+        pandaFile = ":/translations/wpanda_pt_BR.qm";
+        qtFile = ":/translations/qt_pt_BR.qm";
     }
 
-    if (language == "://wpanda_en.qm") {
+    if (language == "default") {
         return retranslateUi();
     }
 
-    if (pandaFile.isEmpty() || qtFile.isEmpty()) {
-        return;
+    if (!pandaFile.isEmpty()) {
+        m_pandaTranslator = new QTranslator(this);
+
+        if (!m_pandaTranslator->load(pandaFile) || !qApp->installTranslator(m_pandaTranslator)) {
+            throw Pandaception("Error loading WiRedPanda translation!");
+        }
     }
 
-    m_pandaTranslator = new QTranslator(this);
+    if (!qtFile.isEmpty()) {
+        m_qtTranslator = new QTranslator(this);
 
-    if (!m_pandaTranslator->load(pandaFile) || !qApp->installTranslator(m_pandaTranslator)) {
-        throw Pandaception("Error loading WiRedPanda translation!");
-    }
-
-    m_qtTranslator = new QTranslator(this);
-
-    if (!m_qtTranslator->load(qtFile) || !qApp->installTranslator(m_qtTranslator)) {
-        throw Pandaception("Error loading Qt translation!");
+        if (!m_qtTranslator->load(qtFile) || !qApp->installTranslator(m_qtTranslator)) {
+            throw Pandaception("Error loading Qt translation!");
+        }
     }
 
     retranslateUi();
@@ -969,16 +971,12 @@ void MainWindow::loadTranslation(const QString &language)
 
 void MainWindow::on_actionEnglish_triggered()
 {
-    const QString language = "://wpanda_en.qm";
-    Settings::setValue("language", language);
-    loadTranslation(language);
+    loadTranslation("default");
 }
 
 void MainWindow::on_actionPortuguese_triggered()
 {
-    const QString language = "://wpanda_pt_BR.qm";
-    Settings::setValue("language", language);
-    loadTranslation(language);
+    loadTranslation(":/translations/wpanda_pt_BR.qm");
 }
 
 void MainWindow::on_actionPlay_triggered(const bool checked)

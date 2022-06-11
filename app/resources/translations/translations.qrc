@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/translations">
         <file>qt_pt_BR.qm</file>
         <file>wpanda_pt_BR.qm</file>
     </qresource>

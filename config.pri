@@ -193,4 +193,4 @@ RESOURCES += \
     $$PWD/app/resources/misc/misc.qrc \
     $$PWD/app/resources/output/output.qrc\
     $$PWD/app/resources/toolbar/toolbar.qrc \
-    $$PWD/app/resources/translations.qrc
+    $$PWD/app/resources/translations/translations.qrc
