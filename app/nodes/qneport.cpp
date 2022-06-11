@@ -155,7 +155,7 @@ void QNEPort::updateConnections()
             setValue(defaultValue());
         }
     } else {
-        setValue(-1);
+        setValue(Status::Invalid);
     }
 }
 
@@ -183,12 +183,12 @@ QString QNEPort::name() const
     return m_name;
 }
 
-signed char QNEPort::defaultValue() const
+Status QNEPort::defaultValue() const
 {
     return m_defaultValue;
 }
 
-void QNEPort::setDefaultValue(const signed char defaultValue)
+void QNEPort::setDefaultValue(const Status defaultValue)
 {
     m_defaultValue = defaultValue;
     setValue(defaultValue);
@@ -216,10 +216,10 @@ bool QNEPort::isRequired() const
 void QNEPort::setRequired(const bool required)
 {
     m_required = required;
-    setDefaultValue(-1 * required);
+    setDefaultValue(required ? Status::Invalid : Status::Inactive);
 }
 
-signed char QNEPort::value() const
+Status QNEPort::value() const
 {
     return m_value;
 }
@@ -262,24 +262,24 @@ QNEInputPort::~QNEInputPort()
     }
 }
 
-void QNEInputPort::setValue(signed char value)
+void QNEInputPort::setValue(Status value)
 {
-    m_value = isValid() ? value : -1;
+    m_value = isValid() ? value : Status::Invalid;
 
     const auto theme = ThemeManager::attributes();
 
     switch (m_value) {
-    case -1: {
+    case Status::Invalid: {
         setPen(theme.m_qnePortInvalidPen);
         setCurrentBrush(theme.m_qnePortInvalidBrush);
         break;
     }
-    case  0: {
+    case Status::Inactive: {
         setPen(theme.m_qnePortFalsePen);
         setCurrentBrush(theme.m_qnePortFalseBrush);
         break;
     }
-    case  1: {
+    case Status::Active: {
         setPen(theme.m_qnePortTruePen);
         setCurrentBrush(theme.m_qnePortTrueBrush);
         break;
@@ -327,16 +327,12 @@ QNEOutputPort::~QNEOutputPort()
     }
 }
 
-void QNEOutputPort::setValue(signed char value)
+void QNEOutputPort::setValue(Status value)
 {
     m_value = value;
 
     for (auto *conn : connections()) {
-        switch (m_value) {
-        case -1: conn->setStatus(QNEConnection::Status::Invalid); break;
-        case  0: conn->setStatus(QNEConnection::Status::Inactive); break;
-        case  1: conn->setStatus(QNEConnection::Status::Active); break;
-        }
+        conn->setStatus(value);
 
         if (auto *port = conn->otherPort(this)) {
             port->setValue(value);
@@ -356,7 +352,7 @@ bool QNEOutputPort::isOutput() const
 
 bool QNEOutputPort::isValid() const
 {
-    return (m_value != -1);
+    return (m_value != Status::Invalid);
 }
 
 void QNEOutputPort::updateTheme()

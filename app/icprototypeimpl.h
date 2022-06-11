@@ -34,10 +34,11 @@ public:
     void setOutputSize(const int outputSize);
 
 private:
+    static void sortPorts(QVector<QNEPort *> &map);
+
     void loadInputs();
     void loadItem(QGraphicsItem *item);
     void loadOutputs();
-    void sortPorts(QVector<QNEPort *> &map);
 
     QVector<GraphicElement *> m_elements;
     QVector<QNEPort *> m_inputs;

@@ -69,7 +69,7 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private:
-    QVector<char> loadSignals(QStringList &inputLabels, QStringList &outputLabels);
+    QVector<Status> loadSignals(QStringList &inputLabels, QStringList &outputLabels);
     bool checkSave();
     int sectionFirstColumn(const QItemSelection &ranges);
     int sectionFirstRow(const QItemSelection &ranges);
@@ -138,7 +138,7 @@ private:
     QTableView *m_signalTableView = nullptr;
     QVector<GraphicElement *> m_inputs;
     QVector<GraphicElement *> m_outputs;
-    QVector<char> m_oldInputValues;
+    QVector<Status> m_oldInputValues;
     Scene *m_externalScene = nullptr;
     SimulationController *m_simController = nullptr;
     bool m_edited = false;

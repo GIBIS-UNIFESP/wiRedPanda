@@ -19,7 +19,7 @@ void TestWaveForm::testDisplay4Bits()
 
     try {
         QFile pandaFile(fileName);
-        QVERIFY(pandaFile.open(QFile::ReadOnly));
+        QVERIFY(pandaFile.open(QIODevice::ReadOnly));
         QDataStream stream(&pandaFile);
         workspace.load(stream);
     } catch (std::runtime_error &e) {
@@ -35,7 +35,7 @@ void TestWaveForm::testDisplay4Bits()
 
     QFile referenceFile(examplesDir.absoluteFilePath("display-4bits.txt"));
 
-    QVERIFY(referenceFile.open(QFile::ReadOnly));
+    QVERIFY(referenceFile.open(QIODevice::ReadOnly));
 
     QCOMPARE(tempFile.readAll().replace("\r\n", "\n"), referenceFile.readAll().replace("\r\n", "\n"));
 }

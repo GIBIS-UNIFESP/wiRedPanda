@@ -158,11 +158,11 @@ void InputRotary::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     GraphicElement::paint(painter, option, widget);
     if (m_value >= outputSize()) {
         m_value = 0;
-        output(0)->setValue(1);
+        output(0)->setValue(Status::Active);
     }
     for (int port = 0; port < outputSize(); ++port) {
         if (m_value == port) {
-            output(port)->setValue(1);
+            output(port)->setValue(Status::Active);
 
             const int size = outputSize();
             int index = port;
@@ -173,7 +173,7 @@ void InputRotary::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
             painter->drawPixmap(0, 0, m_pointer[index]);
         } else {
-            output(port)->setValue(0);
+            output(port)->setValue(Status::Inactive);
         }
     }
 }

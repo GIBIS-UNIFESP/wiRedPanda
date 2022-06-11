@@ -37,11 +37,11 @@ TFlipFlop::TFlipFlop(QGraphicsItem *parent)
     input(2)->setRequired(false);
     input(3)->setRequired(false);
 
-    input(2)->setDefaultValue(1);
-    input(3)->setDefaultValue(1);
+    input(2)->setDefaultValue(Status::Active);
+    input(3)->setDefaultValue(Status::Active);
 
-    output(0)->setDefaultValue(0);
-    output(1)->setDefaultValue(1);
+    output(0)->setDefaultValue(Status::Inactive);
+    output(1)->setDefaultValue(Status::Active);
 }
 
 void TFlipFlop::updatePorts()

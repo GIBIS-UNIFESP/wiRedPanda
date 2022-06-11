@@ -180,7 +180,7 @@ void ElementMapping::update()
 
     Clock::reset = false;
 
-    for (auto *input : m_inputs) {
+    for (auto *input : qAsConst(m_inputs)) {
       for (int port = 0; port < input->outputSize(); ++port) {
           input->logic()->setOutputValue(port, input->on(port));
       }
@@ -243,7 +243,7 @@ void ElementMapping::applyConnection(GraphicElement *elm, QNEPort *portIn)
             }
         }
     } else if ((connections == 0) && (!connectionRequired)) {
-        LogicElement *pred = (portIn->defaultValue()) ? &m_globalVCC : &m_globalGND;
+        LogicElement *pred = (portIn->defaultValue() == Status::Active) ? &m_globalVCC : &m_globalGND;
         currentLogElm->connectPredecessor(inputIndex, pred, 0);
     }
 }

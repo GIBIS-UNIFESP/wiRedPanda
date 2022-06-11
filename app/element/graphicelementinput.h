@@ -22,7 +22,7 @@ public:
     virtual void setOff() = 0;
     virtual void setOn() = 0;
     virtual void setOn(const bool value, const int port = 0) = 0;
-    void setLocked(const bool value) { m_locked = value; }
+    void setLocked(const bool locked) { m_locked = locked; }
 
 protected:
     bool m_locked;

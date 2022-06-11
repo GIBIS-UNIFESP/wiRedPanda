@@ -83,7 +83,7 @@ Display14::Display14(QGraphicsItem *parent)
 
     for (auto *in : qAsConst(m_inputs)) {
         in->setRequired(false);
-        in->setDefaultValue(0);
+        in->setDefaultValue(Status::Inactive);
     }
 }
 
@@ -110,41 +110,41 @@ void Display14::updatePorts()
     input(13)->setPos(rightPosition(), 62); /* M  */
     input(14)->setPos(rightPosition(), 74); /* N  */
 
-    input(0)->setName("G1 (" + tr("middle left") + ")");
-    input(1)->setName("F (" +  tr("upper left") + ")");
-    input(2)->setName("E (" +  tr("lower left") + ")");
-    input(3)->setName("D (" +  tr("bottom") + ")");
-    input(4)->setName("A (" +  tr("top") + ")");
-    input(5)->setName("B (" +  tr("upper right") + ")");
-    input(6)->setName("DP (" + tr("dot") + ")");
-    input(7)->setName("C (" +  tr("lower right") + ")");
-    input(8)->setName("G2 (" + tr("middle right") + ")");
-    input(9)->setName("H (" +  tr("middle upper left") + ")");
-    input(10)->setName("J (" + tr("middle top") + ")");
+    input(0)->setName("G1 (" + tr("middle left")        + ")");
+    input(1)->setName("F (" +  tr("upper left")         + ")");
+    input(2)->setName("E (" +  tr("lower left")         + ")");
+    input(3)->setName("D (" +  tr("bottom")             + ")");
+    input(4)->setName("A (" +  tr("top")                + ")");
+    input(5)->setName("B (" +  tr("upper right")        + ")");
+    input(6)->setName("DP (" + tr("dot")                + ")");
+    input(7)->setName("C (" +  tr("lower right")        + ")");
+    input(8)->setName("G2 (" + tr("middle right")       + ")");
+    input(9)->setName("H (" +  tr("middle upper left")  + ")");
+    input(10)->setName("J (" + tr("middle top")         + ")");
     input(11)->setName("K (" + tr("middle upper right") + ")");
     input(12)->setName("L (" + tr("middle lower right") + ")");
-    input(13)->setName("M (" + tr("middle bottom") + ")");
-    input(14)->setName("N (" + tr("middle lower left") + ")");
+    input(13)->setName("M (" + tr("middle bottom")      + ")");
+    input(14)->setName("N (" + tr("middle lower left")  + ")");
 }
 
 void Display14::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     GraphicElement::paint(painter, option, widget);
-    if (input(0)->value() == 1)  { painter->drawPixmap(0, 0, g1[m_colorNumber]); }
-    if (input(1)->value() == 1)  { painter->drawPixmap(0, 0, f[m_colorNumber]);  }
-    if (input(2)->value() == 1)  { painter->drawPixmap(0, 0, e[m_colorNumber]);  }
-    if (input(3)->value() == 1)  { painter->drawPixmap(0, 0, d[m_colorNumber]);  }
-    if (input(4)->value() == 1)  { painter->drawPixmap(0, 0, a[m_colorNumber]);  }
-    if (input(5)->value() == 1)  { painter->drawPixmap(0, 0, b[m_colorNumber]);  }
-    if (input(6)->value() == 1)  { painter->drawPixmap(0, 0, dp[m_colorNumber]); }
-    if (input(7)->value() == 1)  { painter->drawPixmap(0, 0, c[m_colorNumber]);  }
-    if (input(8)->value() == 1)  { painter->drawPixmap(0, 0, g2[m_colorNumber]); }
-    if (input(9)->value() == 1)  { painter->drawPixmap(0, 0, h[m_colorNumber]);  }
-    if (input(10)->value() == 1) { painter->drawPixmap(0, 0, j[m_colorNumber]);  }
-    if (input(11)->value() == 1) { painter->drawPixmap(0, 0, k[m_colorNumber]);  }
-    if (input(12)->value() == 1) { painter->drawPixmap(0, 0, l[m_colorNumber]);  }
-    if (input(13)->value() == 1) { painter->drawPixmap(0, 0, m[m_colorNumber]);  }
-    if (input(14)->value() == 1) { painter->drawPixmap(0, 0, n[m_colorNumber]);  }
+    if (input(0)->value() == Status::Active)  { painter->drawPixmap(0, 0, g1[m_colorNumber]); }
+    if (input(1)->value() == Status::Active)  { painter->drawPixmap(0, 0, f[m_colorNumber]);  }
+    if (input(2)->value() == Status::Active)  { painter->drawPixmap(0, 0, e[m_colorNumber]);  }
+    if (input(3)->value() == Status::Active)  { painter->drawPixmap(0, 0, d[m_colorNumber]);  }
+    if (input(4)->value() == Status::Active)  { painter->drawPixmap(0, 0, a[m_colorNumber]);  }
+    if (input(5)->value() == Status::Active)  { painter->drawPixmap(0, 0, b[m_colorNumber]);  }
+    if (input(6)->value() == Status::Active)  { painter->drawPixmap(0, 0, dp[m_colorNumber]); }
+    if (input(7)->value() == Status::Active)  { painter->drawPixmap(0, 0, c[m_colorNumber]);  }
+    if (input(8)->value() == Status::Active)  { painter->drawPixmap(0, 0, g2[m_colorNumber]); }
+    if (input(9)->value() == Status::Active)  { painter->drawPixmap(0, 0, h[m_colorNumber]);  }
+    if (input(10)->value() == Status::Active) { painter->drawPixmap(0, 0, j[m_colorNumber]);  }
+    if (input(11)->value() == Status::Active) { painter->drawPixmap(0, 0, k[m_colorNumber]);  }
+    if (input(12)->value() == Status::Active) { painter->drawPixmap(0, 0, l[m_colorNumber]);  }
+    if (input(13)->value() == Status::Active) { painter->drawPixmap(0, 0, m[m_colorNumber]);  }
+    if (input(14)->value() == Status::Active) { painter->drawPixmap(0, 0, n[m_colorNumber]);  }
 }
 
 void Display14::setColor(const QString &color)

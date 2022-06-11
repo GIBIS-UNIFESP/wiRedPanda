@@ -84,38 +84,9 @@ void GraphicElement::enable()
     m_disabled = false;
 }
 
-void GraphicElement::setPixmap(const QString &pixmapPath)
-{
-    if (pixmapPath.isEmpty()) {
-        return;
-    }
-
-    if (pixmapPath == m_currentPixmapPath) {
-        return;
-    }
-
-    qCDebug(zero) << pixmapPath;
-
-    if (!m_pixmap) {
-        m_pixmap = new QPixmap();
-    }
-
-    if (!m_pixmap->load(pixmapPath)) {
-        m_pixmap->load(m_defaultSkins.first());
-        qCDebug(zero) << "Problem loading pixmapPath:" << pixmapPath;
-        throw Pandaception(tr("Couldn't load pixmap."));
-    }
-
-    m_pixmap = new QPixmap(m_pixmap->scaled(64, 64));
-    setTransformOriginPoint(m_pixmap->rect().center());
-    update(GraphicElement::boundingRect());
-
-    m_currentPixmapPath = pixmapPath;
-}
-
 void GraphicElement::setPixmap(const QString &pixmapPath, const QSize size)
 {
-    if (pixmapPath == m_currentPixmapPath) {
+    if (pixmapPath.isEmpty() || (pixmapPath == m_currentPixmapPath)) {
         return;
     }
 
@@ -553,7 +524,7 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
         QPointF newPos = value.toPointF();
         auto *customScene = qobject_cast<Scene *>(scene());
         if (customScene) {
-            int gridSize = customScene->gridSize();
+            const int gridSize = GlobalProperties::gridSize;
             qreal xV = qRound(newPos.x() / gridSize) * gridSize;
             qreal yV = qRound(newPos.y() / gridSize) * gridSize;
             return QPointF(xV, yV);
@@ -658,9 +629,9 @@ bool GraphicElement::isValid()
     if (!valid) {
         for (auto *output : qAsConst(m_outputs)) {
             for (auto *conn : output->connections()) {
-                conn->setStatus(QNEConnection::Status::Invalid);
+                conn->setStatus(Status::Invalid);
                 if (auto *port = conn->otherPort(output)) {
-                    port->setValue(-1);
+                    port->setValue(Status::Invalid);
                 }
             }
         }

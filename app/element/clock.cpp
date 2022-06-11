@@ -65,7 +65,7 @@ void Clock::setOn(const bool value, const int port)
     Q_UNUSED(port);
     m_isOn = value;
     setPixmap(m_usingDefaultSkin ? m_defaultSkins.at(m_isOn) : m_alternativeSkins.at(m_isOn));
-    m_outputs.first()->setValue(static_cast<signed char>(m_isOn));
+    m_outputs.first()->setValue(static_cast<Status>(m_isOn));
 }
 
 void Clock::save(QDataStream &stream) const

@@ -37,7 +37,6 @@ public:
     QVector<GraphicElement *> visibleElements();
     SimulationController *simulationController();
     bool eventFilter(QObject *watched, QEvent *event) override;
-    int gridSize() const;
     void addItem(QMimeData *mimeData);
     void copyAction();
     void cutAction();
@@ -75,7 +74,7 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
-    static constexpr int m_gridSize = 16;
+    static void copy(const QList<QGraphicsItem *> &items, QDataStream &stream);
 
     QGraphicsItem *itemAt(const QPointF pos);
     QList<QGraphicsItem *> itemsAt(const QPointF pos);
@@ -85,7 +84,6 @@ private:
     void checkUpdateRequest();
     void cloneDrag(const QPointF mousePos);
     void contextMenu(const QPoint screenPos);
-    void copy(const QList<QGraphicsItem *> &items, QDataStream &stream);
     void cut(const QList<QGraphicsItem *> &items, QDataStream &stream);
     void deleteEditedConnection();
     void detachConnection(QNEInputPort *endPort);

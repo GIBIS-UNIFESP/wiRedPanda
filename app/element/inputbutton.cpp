@@ -27,7 +27,7 @@ InputButton::InputButton(QGraphicsItem *parent)
     m_locked = false;
     setCanChangeSkin(true);
     setRotatable(false);
-    m_outputs.first()->setValue(0);
+    m_outputs.first()->setValue(Status::Inactive);
     InputButton::setOn(false);
     setHasLabel(true);
     setHasTrigger(true);
@@ -94,7 +94,7 @@ void InputButton::setOn(const bool value, const int port)
     setPixmap(m_usingDefaultSkin ? m_defaultSkins.at(m_isOn) : m_alternativeSkins.at(m_isOn));
 
     if (!isDisabled()) {
-        output()->setValue(static_cast<signed char>(m_isOn));
+        output()->setValue(static_cast<Status>(m_isOn));
     }
 }
 

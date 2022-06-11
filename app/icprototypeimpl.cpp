@@ -42,7 +42,7 @@ void ICPrototypeImpl::loadFile(const QString &fileName)
     qCDebug(zero) << "Reading IC.";
     clear();
     QFile file(fileName);
-    if (!file.open(QFile::ReadOnly)) {
+    if (!file.open(QIODevice::ReadOnly)) {
         throw Pandaception("Error opening file: " + file.errorString());
     }
     QDataStream stream(&file);

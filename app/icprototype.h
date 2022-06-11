@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "common.h"
 #include "icprototypeimpl.h"
 
 #include <QString>
@@ -25,7 +26,7 @@ public:
     QString fileName() const;
     QString inputLabel(const int index) const;
     QString outputLabel(const int index) const;
-    signed char defaultInputValue(const int index);
+    Status defaultInputValue(const int index);
     bool isInputRequired(const int index);
     int inputSize() const;
     int outputSize() const;

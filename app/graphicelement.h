@@ -103,8 +103,7 @@ public:
     void setLogic(LogicElement *newLogic);
     void setOutputSize(const int size);
     void setOutputs(const QVector<QNEOutputPort *> &outputs);
-    void setPixmap(const QString &pixmapPath);
-    void setPixmap(const QString &pixmapPath, const QSize size);
+    void setPixmap(const QString &pixmapPath, const QSize size = {64, 64});
     void setPortName(const QString &name);
     void setTrigger(const QKeySequence &trigger);
     void updateLabel();
@@ -142,6 +141,8 @@ protected:
     bool m_usingDefaultSkin = true;
 
 private:
+    static void removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap);
+
     //! adds an input port at the end of the input port vector.
     void addInputPort(const QString &name = {});
 
@@ -165,7 +166,6 @@ private:
     void loadPixmapSkinName(QDataStream &stream, const int skin);
     void loadPixmapSkinNames(QDataStream &stream, const double version);
     void loadTrigger(QDataStream &stream, const double version);
-    void removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap);
     void removeSurplusInputs(const quint64 inputSize_, QMap<quint64, QNEPort *> &portMap);
     void removeSurplusOutputs(const quint64 outputSize_, QMap<quint64, QNEPort *> &portMap);
 

@@ -36,8 +36,9 @@ public:
     void updateScene();
 
 private:
+    static void updatePort(QNEInputPort *port);
+
     bool canRun();
-    void updatePort(QNEInputPort *port);
     void updatePort(QNEOutputPort *port);
 
     ElementMapping *m_elmMapping = nullptr;

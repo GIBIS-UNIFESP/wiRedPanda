@@ -27,7 +27,7 @@ void TestFiles::testFiles()
         try {
             QFile pandaFile(fileInfo.absoluteFilePath());
             QVERIFY(pandaFile.exists());
-            QVERIFY(pandaFile.open(QFile::ReadOnly));
+            QVERIFY(pandaFile.open(QIODevice::ReadOnly));
             QDataStream stream(&pandaFile);
             workspace->load(stream);
         } catch (std::runtime_error &e) {
@@ -64,7 +64,7 @@ void TestFiles::testFiles()
 
         try {
             QFile pandaFile(tempfile.fileName());
-            QVERIFY(pandaFile.open(QFile::ReadOnly));
+            QVERIFY(pandaFile.open(QIODevice::ReadOnly));
             QDataStream stream2(&pandaFile);
             workspace->load(stream2);
         } catch (std::runtime_error &e) {

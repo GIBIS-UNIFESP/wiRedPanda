@@ -105,9 +105,9 @@ void QNEConnection::updatePosFromPorts()
 
 void QNEConnection::updatePath()
 {
-    QPainterPath p;
+    QPainterPath path;
 
-    p.moveTo(m_startPos);
+    path.moveTo(m_startPos);
 
     qreal dx = m_endPos.x() - m_startPos.x();
     qreal dy = m_endPos.y() - m_startPos.y();
@@ -115,10 +115,10 @@ void QNEConnection::updatePath()
     QPointF ctr1(m_startPos.x() + dx * 0.25, m_startPos.y() + dy * 0.1);
     QPointF ctr2(m_startPos.x() + dx * 0.75, m_startPos.y() + dy * 0.9);
 
-    p.cubicTo(ctr1, ctr2, m_endPos);
+    path.cubicTo(ctr1, ctr2, m_endPos);
 
-    // p.lineTo(pos2);
-    setPath(p);
+    // path.lineTo(pos2);
+    setPath(path);
 }
 
 QNEOutputPort *QNEConnection::start() const
@@ -151,7 +151,7 @@ void QNEConnection::save(QDataStream &stream) const
     stream << reinterpret_cast<quint64>(m_end);
 }
 
-bool QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap)
+void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap)
 {
     quint64 ptr1;
     quint64 ptr2;
@@ -175,7 +175,7 @@ bool QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
 
     if (!portMap.isEmpty()) {
         if (!portMap.contains(ptr1) || !portMap.contains(ptr2)) {
-            return false;
+            return;
         }
 
         qCDebug(three) << "Port map with elements: ptr1:" << ptr1 << ", ptr2:" << ptr2;
@@ -203,8 +203,6 @@ bool QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
     updatePosFromPorts();
     qCDebug(three) << "Updating path.";
     updatePath();
-    qCDebug(three) << "returning.";
-    return (m_start != nullptr && m_end != nullptr);
 }
 
 QNEPort *QNEConnection::otherPort(const QNEPort *port) const
@@ -227,7 +225,7 @@ QNEInputPort *QNEConnection::otherPort(const QNEOutputPort *port) const
     return m_end;
 }
 
-QNEConnection::Status QNEConnection::status() const
+Status QNEConnection::status() const
 {
     return m_status;
 }
@@ -236,26 +234,26 @@ void QNEConnection::setStatus(const Status status)
 {
     m_status = status;
     switch (status) {
-    case Status::Active:   setPen(QPen(m_activeClr,   3)); break;
-    case Status::Inactive: setPen(QPen(m_inactiveClr, 3)); break;
-    case Status::Invalid:  setPen(QPen(m_invalidClr,  5)); break;
+    case Status::Active:   setPen(QPen(m_activeColor,   3)); break;
+    case Status::Inactive: setPen(QPen(m_inactiveColor, 3)); break;
+    case Status::Invalid:  setPen(QPen(m_invalidColor,  5)); break;
     }
 }
 
 void QNEConnection::updateTheme()
 {
     const ThemeAttributes theme = ThemeManager::attributes();
-    m_inactiveClr = theme.m_qneConnectionFalse;
-    m_activeClr = theme.m_qneConnectionTrue;
-    m_invalidClr = theme.m_qneConnectionInvalid;
-    m_selectedClr = theme.m_qneConnectionSelected;
+    m_inactiveColor = theme.m_qneConnectionFalse;
+    m_activeColor = theme.m_qneConnectionTrue;
+    m_invalidColor = theme.m_qneConnectionInvalid;
+    m_selectedColor = theme.m_qneConnectionSelected;
 }
 
 void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(widget);
     painter->setClipRect(option->exposedRect);
-    painter->setPen(isSelected() ? QPen(m_selectedClr, 5) : pen());
+    painter->setPen(isSelected() ? QPen(m_selectedColor, 5) : pen());
     painter->drawPath(path());
 }
 

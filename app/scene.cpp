@@ -55,21 +55,17 @@ void Scene::checkUpdateRequest()
     }
 }
 
-int Scene::gridSize() const
-{
-    return m_gridSize;
-}
-
 void Scene::drawBackground(QPainter *painter, const QRectF &rect)
 {
+    const int gridSize = GlobalProperties::gridSize;
     painter->setRenderHint(QPainter::Antialiasing, true);
     QGraphicsScene::drawBackground(painter, rect);
     painter->setPen(m_dots);
-    qreal left = static_cast<int>(rect.left()) - (static_cast<int>(rect.left()) % m_gridSize);
-    qreal top = static_cast<int>(rect.top()) - (static_cast<int>(rect.top()) % m_gridSize);
+    qreal left = static_cast<int>(rect.left()) - (static_cast<int>(rect.left()) % gridSize);
+    qreal top = static_cast<int>(rect.top()) - (static_cast<int>(rect.top()) % gridSize);
     QVector<QPointF> points;
-    for (qreal x = left; x < rect.right(); x += m_gridSize) { // TODO: dont use qreal as counter
-        for (qreal y = top; y < rect.bottom(); y += m_gridSize) { // TODO: dont use qreal as counter
+    for (qreal x = left; x < rect.right(); x += gridSize) { // TODO: dont use qreal as counter
+        for (qreal y = top; y < rect.bottom(); y += gridSize) { // TODO: dont use qreal as counter
             points.append(QPointF(x, y));
         }
     }
@@ -380,7 +376,9 @@ void Scene::cloneDrag(const QPointF mousePos)
         return;
     }
 
-    for (auto *item : items()) {
+    const auto items_ = items();
+
+    for (auto *item : items_) {
         if ((item->type() == GraphicElement::Type || item->type() == QNEConnection::Type) && !item->isSelected()) {
             item->hide();
         }
@@ -404,7 +402,7 @@ void Scene::cloneDrag(const QPointF mousePos)
     QRectF source = rect;
     render(&painter, target, source);
 
-    for (auto *item : items()) {
+    for (auto *item : items_) {
         if ((item->type() == GraphicElement::Type || item->type() == QNEConnection::Type) && !item->isSelected()) {
             item->show();
         }

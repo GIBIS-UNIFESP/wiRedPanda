@@ -1053,7 +1053,7 @@ void MainWindow::updateTheme()
 
     auto labels = m_ui->memory->findChildren<ElementLabel *>();
 
-    for (auto label : labels) {
+    for (auto* label : labels) {
         label->updateTheme();
     }
 }

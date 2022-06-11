@@ -20,7 +20,7 @@ class LogicElement
 {
 public:
     explicit LogicElement(const int inputSize, const int outputSize);
-    virtual ~LogicElement();
+    virtual ~LogicElement() = default;
 
     bool inputValue(const int index = 0) const;
     bool isValid() const;
@@ -43,7 +43,7 @@ private:
 
     QSet<LogicElement *> m_successors;
     QVector<InputPair> m_inputs;
-    QVector<bool> m_inputvalues;
+    QVector<bool> m_inputValues;
     QVector<bool> m_outputs;
     bool m_beingVisited = false;
     bool m_isValid = true;

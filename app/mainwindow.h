@@ -77,6 +77,9 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private:
+    static void on_actionDarkTheme_triggered();
+    static void on_actionLightTheme_triggered();
+
     bool closeTab(const int tabIndex);
     bool hasModifiedFiles();
     int closeTabAnyway();
@@ -85,7 +88,6 @@ private:
     void loadAutosaveFiles();
     void on_actionAboutQt_triggered();
     void on_actionAbout_triggered();
-    void on_actionDarkTheme_triggered();
     void on_actionEnglish_triggered();
     void on_actionExit_triggered();
     void on_actionExportToArduino_triggered();
@@ -97,7 +99,6 @@ private:
     void on_actionFullscreen_triggered();
     void on_actionGates_triggered(const bool checked);
     void on_actionLabelsUnderIcons_triggered(const bool checked);
-    void on_actionLightTheme_triggered();
     void on_actionMute_triggered(const bool checked);
     void on_actionNew_triggered();
     void on_actionOpen_triggered();

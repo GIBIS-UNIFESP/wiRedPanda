@@ -11,6 +11,7 @@ class GlobalProperties
 {
 public:
     inline const static int globalClock = 10;
+    inline const static int gridSize = 16;
     inline static QString currentFile = {};
     inline static bool skipInit = false;
     inline static bool verbose = true;

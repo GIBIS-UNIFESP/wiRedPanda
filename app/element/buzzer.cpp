@@ -40,9 +40,9 @@ void Buzzer::refresh()
         return;
     }
 
-    const bool inputValue = m_inputs.first()->value(); // TODO: why only the first input?
+    const Status inputValue = m_inputs.first()->value(); // TODO: why only the first input?
 
-    inputValue ? playBuzzer() : stopBuzzer();
+    (inputValue == Status::Active) ? playBuzzer() : stopBuzzer();
 }
 
 void Buzzer::setAudio(const QString &note)
