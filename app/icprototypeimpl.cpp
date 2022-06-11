@@ -39,11 +39,11 @@ void ICPrototypeImpl::sortPorts(QVector<QNEPort *> &map)
 
 void ICPrototypeImpl::loadFile(const QString &fileName)
 {
-    qCDebug(zero) << "Reading IC.";
+    qCDebug(zero) << QObject::tr("Reading IC.");
     clear();
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly)) {
-        throw Pandaception("Error opening file: " + file.errorString());
+        throw Pandaception(QObject::tr("Error opening file: ") + file.errorString());
     }
     QDataStream stream(&file);
     auto items = SerializationFunctions::load(stream);
@@ -57,7 +57,7 @@ void ICPrototypeImpl::loadFile(const QString &fileName)
     sortPorts(m_outputs);
     loadInputs();
     loadOutputs();
-    qCDebug(zero) << "Finished Reading IC.";
+    qCDebug(zero) << QObject::tr("Finished Reading IC.");
 }
 
 void ICPrototypeImpl::loadInputs()

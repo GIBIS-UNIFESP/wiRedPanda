@@ -159,7 +159,7 @@ void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
     stream >> ptr2;
 
     if (portMap.isEmpty()) {
-        qCDebug(three) << "Empty port map.";
+        qCDebug(three) << tr("Empty port map.");
         auto *port1 = reinterpret_cast<QNEPort *>(ptr1);
         auto *port2 = reinterpret_cast<QNEPort *>(ptr2);
         if (port2 && port1) {
@@ -178,30 +178,30 @@ void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
             return;
         }
 
-        qCDebug(three) << "Port map with elements: ptr1:" << ptr1 << ", ptr2:" << ptr2;
+        qCDebug(three) << tr("Port map with elements: ptr1:") << ptr1 << tr(", ptr2:") << ptr2;
         QNEPort *port1 = portMap[ptr1];
         QNEPort *port2 = portMap[ptr2];
-        qCDebug(three) << "Before if 1.";
+        qCDebug(three) << tr("Before if 1.");
         if (port1 && port2) {
-            qCDebug(three) << "Before if 2.";
+            qCDebug(three) << tr("Before if 2.");
             if (port1->isInput() && port2->isOutput()) {
-                qCDebug(three) << "Setting start 1.";
+                qCDebug(three) << tr("Setting start 1.");
                 setStart(dynamic_cast<QNEOutputPort *>(port2));
-                qCDebug(three) << "Setting end 1.";
+                qCDebug(three) << tr("Setting end 1.");
                 setEnd(dynamic_cast<QNEInputPort *>(port1));
             } else if (port1->isOutput() && port2->isInput()) {
-                qCDebug(three) << "Setting start 2.";
+                qCDebug(three) << tr("Setting start 2.");
                 setStart(dynamic_cast<QNEOutputPort *>(port1));
-                qCDebug(three) << "Setting end 2.";
+                qCDebug(three) << tr("Setting end 2.");
                 setEnd(dynamic_cast<QNEInputPort *>(port2));
             }
-            qCDebug(three) << "After ifs.";
+            qCDebug(three) << tr("After ifs.");
         }
     }
 
-    qCDebug(three) << "Updating pos from ports.";
+    qCDebug(three) << tr("Updating pos from ports.");
     updatePosFromPorts();
-    qCDebug(three) << "Updating path.";
+    qCDebug(three) << tr("Updating path.");
     updatePath();
 }
 
@@ -259,7 +259,7 @@ void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 
 QDataStream &operator<<(QDataStream &stream, const QNEConnection *item)
 {
-    qCDebug(zero) << "Writing Connection.";
+    qCDebug(zero) << QObject::tr("Writing Connection.");
     const auto *conn = qgraphicsitem_cast<const QNEConnection *>(item);
     stream << QNEConnection::Type;
     conn->save(stream);

@@ -148,11 +148,11 @@ LogicElement *ElementMapping::buildLogicElement(GraphicElement *elm)
 
 void ElementMapping::initialize()
 {
-    qCDebug(three) << "Clear.";
+    qCDebug(three) << tr("Clear.");
     clear();
-    qCDebug(three) << "Generate Map.";
+    qCDebug(three) << tr("Generate Map.");
     generateMap();
-    qCDebug(three) << "Connect.";
+    qCDebug(three) << tr("Connect.");
     connectElements();
     m_initialized = true;
 }

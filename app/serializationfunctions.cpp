@@ -41,7 +41,7 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &stream, 
     while (!stream.atEnd()) {
         int type;
         stream >> type;
-        qCDebug(three) << "Type:" << type;
+        qCDebug(three) << tr("Type:") << type;
 
         switch (type) {
         case GraphicElement::Type: {
@@ -53,7 +53,7 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &stream, 
             elm->load(stream, portMap, version);
 
             if (elm->elementType() == ElementType::IC) {
-                qCDebug(three) << "Loading IC.";
+                qCDebug(three) << tr("Loading IC.");
                 IC *ic = qgraphicsitem_cast<IC *>(elm);
                 ICManager::loadIC(ic, ic->file());
             }
@@ -62,11 +62,11 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &stream, 
         }
 
         case QNEConnection::Type: {
-            qCDebug(three) << "Building connection.";
+            qCDebug(three) << tr("Building connection.");
             auto *conn = ElementFactory::buildConnection();
-            qCDebug(three) << "Loading connection.";
+            qCDebug(three) << tr("Loading connection.");
             conn->load(stream, portMap);
-            qCDebug(three) << "Appending connection.";
+            qCDebug(three) << tr("Appending connection.");
             itemList.append(conn);
             break;
         }
@@ -75,22 +75,22 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &stream, 
         }
     }
 
-    qCDebug(zero) << "Finished deserializing.";
+    qCDebug(zero) << tr("Finished deserializing.");
     return itemList;
 }
 
 double SerializationFunctions::loadVersion(QDataStream &stream)
 {
-    qCDebug(zero) << "Loading version.";
+    qCDebug(zero) << tr("Loading version.");
     QString str;
     stream >> str;
     if (!str.startsWith(QApplication::applicationName(), Qt::CaseInsensitive)) {
         throw Pandaception(tr("Invalid file format."));
     }
-    qCDebug(zero) << "String:" << str;
+    qCDebug(zero) << tr("String:") << str;
     bool ok;
     double version = str.remove(QApplication::applicationName(), Qt::CaseInsensitive).toDouble(&ok);
-    qCDebug(zero) << "Version:" << version;
+    qCDebug(zero) << tr("Version:") << version;
     if (!ok) {
         throw Pandaception(tr("Invalid version number."));
     }
@@ -120,7 +120,7 @@ QRectF SerializationFunctions::loadRect(QDataStream &stream, const double versio
 
 QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &stream)
 {
-    qCDebug(zero) << "Started loading file.";
+    qCDebug(zero) << tr("Started loading file.");
     QString str;
     stream >> str;
     if (!str.startsWith(QApplication::applicationName(), Qt::CaseInsensitive)) {
@@ -133,8 +133,8 @@ QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &stream)
     }
     loadDolphinFileName(stream, version);
     loadRect(stream, version);
-    qCDebug(zero) << "Header Ok. Version:" << version;
+    qCDebug(zero) << tr("Header Ok. Version:") << version;
     auto items = deserialize(stream, version);
-    qCDebug(zero) << "Finished reading items.";
+    qCDebug(zero) << tr("Finished reading items.");
     return items;
 }

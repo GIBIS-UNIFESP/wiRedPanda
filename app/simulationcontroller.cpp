@@ -96,12 +96,12 @@ void SimulationController::stop()
 
 void SimulationController::start()
 {
-    qCDebug(zero) << "Starting simulation controller.";
+    qCDebug(zero) << tr("Starting simulation controller.");
     Clock::reset = true;
     reSortElements();
     m_simulationTimer.start();
     m_viewTimer.start();
-    qCDebug(zero) << "Simulation started.";
+    qCDebug(zero) << tr("Simulation started.");
     const auto elms = m_scene->elements();
     for (auto *elm : elms) {
         if (auto *buzzer = dynamic_cast<Buzzer *>(elm)) {
@@ -112,27 +112,27 @@ void SimulationController::start()
 
 void SimulationController::reSortElements()
 {
-    qCDebug(two) << "GENERATING SIMULATION LAYER.";
+    qCDebug(two) << tr("GENERATING SIMULATION LAYER.");
     auto elements = m_scene->elements();
-    qCDebug(zero) << "Elements read:" << elements.size();
+    qCDebug(zero) << tr("Elements read:") << elements.size();
     if (elements.empty()) {
         return;
     }
-    qCDebug(two) << "Deleting existing mapping.";
+    qCDebug(two) << tr("Deleting existing mapping.");
     delete m_elmMapping;
-    qCDebug(two) << "Recreating mapping for simulation.";
+    qCDebug(two) << tr("Recreating mapping for simulation.");
     m_elmMapping = new ElementMapping(elements);
     if (m_elmMapping->canInitialize()) {
-        qCDebug(two) << "Can initialize.";
+        qCDebug(two) << tr("Can initialize.");
         m_elmMapping->initialize();
-        qCDebug(two) << "Sorting.";
+        qCDebug(two) << tr("Sorting.");
         m_elmMapping->sort();
-        qCDebug(two) << "Updating.";
+        qCDebug(two) << tr("Updating.");
         update();
     } else {
-        qCDebug(zero) << "Cannot initialize simulation.";
+        qCDebug(zero) << tr("Cannot initialize simulation.");
     }
-    qCDebug(zero) << "Finished simulation layer.";
+    qCDebug(zero) << tr("Finished simulation layer.");
 }
 
 void SimulationController::clear()

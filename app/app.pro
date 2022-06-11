@@ -14,4 +14,6 @@ SOURCES += main.cpp
 
 DISTFILES += resources/postinst
 
-TRANSLATIONS += resources/wpanda_pt_BR.ts
+TRANSLATIONS += \
+    resources/translations/wpanda_en.ts \
+    resources/translations/wpanda_pt_BR.ts
