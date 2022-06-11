@@ -22,7 +22,6 @@ IC::IC(QGraphicsItem *parent)
 {
     if (GlobalProperties::skipInit) { return; }
 
-    // qCDebug(zero) << "Creating IC.";
     m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);
@@ -33,7 +32,6 @@ IC::IC(QGraphicsItem *parent)
     setHasLabel(true);
     setPortName("IC");
     setToolTip(m_translatedName);
-    // qCDebug(zero) << "IC done.";
 }
 
 IC::~IC()
@@ -62,7 +60,7 @@ void IC::loadInputs(ICPrototype *prototype)
     setMaxInputSize(prototype->inputSize());
     setMinInputSize(prototype->inputSize());
     setInputSize(prototype->inputSize());
-    qCDebug(three) << "IC" << m_file << "-> Inputs. min:" << minInputSize() << ", max:" << maxInputSize() << ", current:" << inputSize() << ", m_inputs:" << m_inputs.size();
+    qCDebug(three) << tr("IC") << m_file << tr("-> Inputs. min:") << minInputSize() << tr(", max:") << maxInputSize() << tr(", current:") << inputSize() << tr(", m_inputs:") << m_inputs.size();
     for (int inputIndex = 0; inputIndex < prototype->inputSize(); ++inputIndex) {
         QNEPort *portIn = input(inputIndex);
         portIn->setName(prototype->inputLabel(inputIndex));
@@ -81,12 +79,11 @@ void IC::loadOutputs(ICPrototype *prototype)
         QNEPort *portOut = output(outputIndex);
         portOut->setName(prototype->outputLabel(outputIndex));
     }
-    qCDebug(three) << "IC" << m_file << "-> Outputs. min:" << minOutputSize() << ", max:" << maxOutputSize() << ", current:" << outputSize() << ", m_outputs:" << m_outputs.size();
+    qCDebug(three) << tr("IC") << m_file << tr("-> Outputs. min:") << minOutputSize() << tr(", max:") << maxOutputSize() << tr(", current:") << outputSize() << tr(", m_outputs:") << m_outputs.size();
 }
 
 void IC::loadFile(const QString &fileName)
 {
-    // qCDebug(zero) << "Opening IC:" << fileName;
     ICPrototype *prototype = ICManager::prototype(fileName);
     m_file = prototype->fileName();
     setToolTip(m_file);
@@ -99,7 +96,6 @@ void IC::loadFile(const QString &fileName)
     // Loading outputs
     loadOutputs(prototype);
     updatePorts();
-    // qCDebug(zero) << "IC loaded:" << fileName;
 }
 
 QString IC::file() const

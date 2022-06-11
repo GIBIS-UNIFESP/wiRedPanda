@@ -301,7 +301,7 @@ void Scene::detachConnection(QNEInputPort *endPort)
 
 void Scene::updateTheme()
 {
-    qCDebug(zero) << "Updating theme.";
+    qCDebug(zero) << tr("Updating theme.");
     const ThemeAttributes theme = ThemeManager::attributes();
     setBackgroundBrush(theme.m_sceneBgBrush);
     setDots(QPen(theme.m_sceneBgDots));
@@ -315,7 +315,7 @@ void Scene::updateTheme()
     for (auto *conn : scene_connections) {
         conn->updateTheme();
     }
-    qCDebug(zero) << "Finished updating theme.";
+    qCDebug(zero) << tr("Finished updating theme.");
 }
 
 void Scene::showGates(const bool checked)
@@ -369,7 +369,7 @@ void Scene::redoSimulationController()
 
 void Scene::cloneDrag(const QPointF mousePos)
 {
-    qCDebug(zero) << "Ctrl + Drag action triggered.";
+    qCDebug(zero) << tr("Ctrl + Drag action triggered.");
     auto selectedElms = selectedElements();
 
     if (selectedElms.isEmpty()) {
@@ -749,21 +749,21 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         QString labelAuxData;
         stream >> offset >> type >> labelAuxData;
         QPointF pos = event->scenePos() - offset;
-        qCDebug(zero) << type << "at position:" << pos.x() << "," << pos.y() << ", label:" << labelAuxData;
+        qCDebug(zero) << type << tr("at position:") << pos.x() << tr(",") << pos.y() << tr(", label:") << labelAuxData;
         auto *elm = ElementFactory::buildElement(type);
-        qCDebug(zero) << "Valid element.";
+        qCDebug(zero) << tr("Valid element.");
         if (elm->elementType() == ElementType::IC) {
             if (auto *ic = dynamic_cast<IC *>(elm)) {
                 ICManager::loadIC(ic, labelAuxData);
             }
         }
-        qCDebug(zero) << "Adding the element to the scene.";
+        qCDebug(zero) << tr("Adding the element to the scene.");
         receiveCommand(new AddItemsCommand({elm}, this));
-        qCDebug(zero) << "Cleaning the selection.";
+        qCDebug(zero) << tr("Cleaning the selection.");
         clearSelection();
-        qCDebug(zero) << "Setting created element as selected.";
+        qCDebug(zero) << tr("Setting created element as selected.");
         elm->setSelected(true);
-        qCDebug(zero) << "Adjusting the position of the element.";
+        qCDebug(zero) << tr("Adjusting the position of the element.");
         elm->setPos(pos);
     }
 
@@ -1003,19 +1003,19 @@ void Scene::addItem(QMimeData *mimeData)
     QString labelAuxData;
     stream >> offset >> type >> labelAuxData;
     auto *elm = ElementFactory::buildElement(type);
-    qCDebug(zero) << "Valid element.";
+    qCDebug(zero) << tr("Valid element.");
     if (elm->elementType() == ElementType::IC) {
         if (auto *ic = dynamic_cast<IC *>(elm)) {
             ICManager::loadIC(ic, labelAuxData);
         }
     }
-    qCDebug(zero) << "Adding the element to the scene.";
+    qCDebug(zero) << tr("Adding the element to the scene.");
     receiveCommand(new AddItemsCommand({elm}, this));
-    qCDebug(zero) << "Cleaning the selection.";
+    qCDebug(zero) << tr("Cleaning the selection.");
     clearSelection();
-    qCDebug(zero) << "Setting created element as selected.";
+    qCDebug(zero) << tr("Setting created element as selected.");
     elm->setSelected(true);
-    qCDebug(zero) << "Adjusting the position of the element.";
+    qCDebug(zero) << tr("Adjusting the position of the element.");
 
     mimeData->deleteLater();
 }

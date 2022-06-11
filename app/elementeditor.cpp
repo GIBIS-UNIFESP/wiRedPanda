@@ -246,7 +246,7 @@ void ElementEditor::updateElementSkin()
         return;
     }
 
-    qCDebug(zero) << "File name:" << fileName;
+    qCDebug(zero) << tr("File name:") << fileName;
     m_isUpdatingSkin = true;
     m_skinName = fileName;
     m_isDefaultSkin = false;
@@ -555,7 +555,7 @@ void ElementEditor::selectionChanged()
 
 void ElementEditor::apply()
 {
-    qCDebug(three) << "Apply.";
+    qCDebug(three) << tr("Apply.");
 
     if ((m_elements.isEmpty()) || (!isEnabled())) {
         return;
@@ -611,7 +611,7 @@ void ElementEditor::inputIndexChanged(const int index)
         emit sendCommand(new ChangeInputSizeCommand(m_elements, m_ui->comboBoxInputSize->currentData().toInt(), m_scene));
     }
 
-    qCDebug(zero) << "Input size changed to " << index;
+    qCDebug(zero) << tr("Input size changed to ") << index;
     apply();
 }
 
@@ -625,7 +625,7 @@ void ElementEditor::outputIndexChanged(const int index)
         emit sendCommand(new ChangeOutputSizeCommand(m_elements, m_ui->comboBoxOutputSize->currentData().toInt(), m_scene));
     }
 
-    qCDebug(zero) << "Output size changed to " << index;
+    qCDebug(zero) << tr("Output size changed to ") << index;
     apply();
 }
 
@@ -658,7 +658,7 @@ void ElementEditor::inputLocked(const bool value)
         dynamic_cast<GraphicElementInput *>(elm)->setLocked(value);
     }
 
-    qCDebug(zero) << "Input locked.";
+    qCDebug(zero) << tr("Input locked.");
     apply();
 }
 
@@ -689,7 +689,7 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
             });
 
             int elmPos = elms.indexOf(elm);
-            qCDebug(zero) << "Pos =" << elmPos << "from" << elms.size();
+            qCDebug(zero) << tr("Pos =") << elmPos << tr("from") << elms.size();
             int step = 1;
 
             if (moveBack) {
@@ -699,7 +699,7 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
             int pos = (elms.size() + elmPos + step) % elms.size();
 
             for (; pos != elmPos; pos = ((elms.size() + pos + step) % elms.size())) {
-                qCDebug(zero) << "Pos =" << pos;
+                qCDebug(zero) << tr("Pos =") << pos;
                 elm = elms[pos];
 
                 setCurrentElements({elm});

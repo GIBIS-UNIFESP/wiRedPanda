@@ -21,7 +21,7 @@ RecentFilesController::RecentFilesController(QObject *parent)
 // TODO: quotes bug
 void RecentFilesController::addRecentFile(const QString &fileName)
 {
-    qCDebug(three) << "Setting recent file to:" << fileName;
+    qCDebug(three) << tr("Setting recent file to:") << fileName;
     if (!QFile(fileName).exists()) {
         return;
     }
