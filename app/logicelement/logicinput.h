@@ -10,7 +10,7 @@
 class LogicInput : public LogicElement
 {
 public:
-    explicit LogicInput(const bool defaultValue = false, const int n_outputs = 1);
+    explicit LogicInput(const bool defaultValue = false, const int nOutputs = 1);
 
 protected:
     void _updateLogic(const QVector<bool> &inputs) override;

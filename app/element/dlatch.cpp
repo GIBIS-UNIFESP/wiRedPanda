@@ -31,8 +31,8 @@ DLatch::DLatch(QGraphicsItem *parent)
     output(0)->setName("Q");
     output(1)->setName("~Q");
 
-    output(0)->setDefaultValue(0);
-    output(1)->setDefaultValue(1);
+    output(0)->setDefaultValue(Status::Inactive);
+    output(1)->setDefaultValue(Status::Active);
 }
 
 void DLatch::updatePorts()

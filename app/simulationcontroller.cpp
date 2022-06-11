@@ -156,9 +156,9 @@ void SimulationController::updatePort(QNEOutputPort *port)
         portIndex = port->index();
     }
     if (logElm->isValid()) {
-        port->setValue(static_cast<signed char>(logElm->outputValue(portIndex)));
+        port->setValue(static_cast<Status>(logElm->outputValue(portIndex)));
     } else {
-        port->setValue(-1);
+        port->setValue(Status::Invalid);
     }
 }
 
@@ -168,9 +168,9 @@ void SimulationController::updatePort(QNEInputPort *port)
     LogicElement *logElm = elm->logic();
     int portIndex = port->index();
     if (logElm->isValid()) {
-        port->setValue(static_cast<signed char>(logElm->inputValue(portIndex)));
+        port->setValue(static_cast<Status>(logElm->inputValue(portIndex)));
     } else {
-        port->setValue(-1);
+        port->setValue(Status::Invalid);
     }
     if (elm->elementGroup() == ElementGroup::Output) {
         elm->refresh();

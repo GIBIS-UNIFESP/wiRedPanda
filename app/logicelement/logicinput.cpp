@@ -3,11 +3,11 @@
 
 #include "logicinput.h"
 
-LogicInput::LogicInput(const bool defaultValue, const int n_outputs)
-    : LogicElement(0, n_outputs)
+LogicInput::LogicInput(const bool defaultValue, const int nOutputs)
+    : LogicElement(0, nOutputs)
 {
     setOutputValue(0, defaultValue);
-    for (int port = 1; port < n_outputs; ++port) {
+    for (int port = 1; port < nOutputs; ++port) {
         setOutputValue(port, false);
     }
 }

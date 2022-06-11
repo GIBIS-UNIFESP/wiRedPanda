@@ -23,6 +23,8 @@ class WorkSpace : public QWidget
 public:
     explicit WorkSpace(QWidget *parent = nullptr);
 
+    static void selectWorkspace();
+
     GraphicsView *view();
     QFileInfo fileInfo();
     QString dolphinFileName();
@@ -32,7 +34,6 @@ public:
     void load(const QString &fileName, const bool isPlaying = true);
     void save(QDataStream &stream, const QString &dolphinFileName);
     void save(const QString &fileName = {});
-    void selectWorkspace();
     void setDolphinFileName(const QString &fileName);
     void setIsAutosave();
 

@@ -48,9 +48,9 @@ CodeGenerator::CodeGenerator(const QString &fileName, const QVector<GraphicEleme
     };
 }
 
-static inline QString highLow(const int val)
+static inline QString highLow(const Status val)
 {
-    return (val == 1) ? "HIGH" : "LOW";
+    return (val == Status::Active) ? "HIGH" : "LOW";
 }
 
 QString CodeGenerator::removeForbiddenChars(const QString &input)

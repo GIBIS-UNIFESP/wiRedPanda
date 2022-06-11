@@ -5,12 +5,10 @@
 
 LogicElement::LogicElement(const int inputSize, const int outputSize)
     : m_inputs(inputSize, {})
-    , m_inputvalues(inputSize, false)
+    , m_inputValues(inputSize, false)
     , m_outputs(outputSize, false)
 {
 }
-
-LogicElement::~LogicElement() = default;
 
 bool LogicElement::isValid() const
 {
@@ -39,9 +37,9 @@ void LogicElement::updateLogic()
 {
     if (m_isValid) {
         for (int index = 0; index < m_inputs.size(); ++index) {
-            m_inputvalues[index] = inputValue(index);
+            m_inputValues[index] = inputValue(index);
         }
-        _updateLogic(m_inputvalues);
+        _updateLogic(m_inputValues);
     }
 }
 

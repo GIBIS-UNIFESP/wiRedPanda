@@ -393,7 +393,7 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
 
     /* Align node to Grid */
     m_nodePos = mousePos - node->boundingRect().center();
-    int gridSize = m_scene->gridSize();
+    const int gridSize = GlobalProperties::gridSize;
     qreal xV = qRound(m_nodePos.x() / gridSize) * gridSize;
     qreal yV = qRound(m_nodePos.y() / gridSize) * gridSize;
     m_nodePos = QPointF(xV, yV);
@@ -520,7 +520,7 @@ void MorphCommand::redo()
     qCDebug(zero) << text();
     QList<GraphicElement *> oldElms = findElements(m_ids);
     QList<GraphicElement *> newElms;
-    oldElms.reserve(m_ids.size());
+    newElms.reserve(m_ids.size());
     for (int i = 0; i < m_ids.size(); ++i) {
         newElms << ElementFactory::buildElement(m_newtype);
     }

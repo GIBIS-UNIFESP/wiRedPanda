@@ -25,6 +25,7 @@
 
 #pragma once
 
+#include "common.h"
 #include "itemwithid.h"
 
 #include <QCoreApplication>
@@ -42,8 +43,6 @@ public:
     enum { Type = QGraphicsItem::UserType + 2 };
     int type() const override { return Type; }
 
-    enum class Status { Invalid = -1, Inactive = 0, Active = 1 };
-
     explicit QNEConnection(QGraphicsItem *parent = nullptr);
     ~QNEConnection() override;
 
@@ -53,7 +52,7 @@ public:
     QNEOutputPort *start() const;
     QNEPort *otherPort(const QNEPort *port) const;
     Status status() const;
-    bool load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap = {});
+    void load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap = {});
     double angle();
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void save(QDataStream &stream) const;
@@ -67,10 +66,10 @@ public:
     void updateTheme();
 
 private:
-    QColor m_activeClr;
-    QColor m_inactiveClr;
-    QColor m_invalidClr;
-    QColor m_selectedClr;
+    QColor m_activeColor;
+    QColor m_inactiveColor;
+    QColor m_invalidColor;
+    QColor m_selectedColor;
     QNEInputPort *m_end = nullptr;
     QNEOutputPort *m_start = nullptr;
     QPointF m_endPos;

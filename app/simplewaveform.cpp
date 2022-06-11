@@ -12,8 +12,8 @@
 #include "qneport.h"
 #include "scene.h"
 #include "settings.h"
-#include "simulationcontroller.h"
 #include "simulationblocker.h"
+#include "simulationcontroller.h"
 #include "workspace.h"
 
 #include <QChartView>
@@ -120,7 +120,7 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, WorkSpace *workspace)
 
     // Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore
     // it after simulation.
-    QVector<char> oldValues(inputs.size());
+    QVector<Status> oldValues(inputs.size());
     for (int in = 0; in < inputs.size(); ++in) {
         oldValues[in] = inputs[in]->output()->value();
     }
@@ -148,7 +148,7 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, WorkSpace *workspace)
         for (auto *output : qAsConst(outputs)) {
             int inSize = output->inputSize();
             for (int port = inSize - 1; port >= 0; --port) {
-                uchar val = output->input(port)->value();
+                uchar val = static_cast<uchar>(output->input(port)->value());
                 results[counter][itr] = val;
                 counter++;
             }
@@ -185,7 +185,8 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, WorkSpace *workspace)
     }
     // Restoring the old values to the inputs, prior to simulaton.
     for (int in = 0; in < inputs.size(); ++in) {
-        dynamic_cast<GraphicElementInput *>(inputs[in])->setOn(oldValues[in]);
+        auto *input = dynamic_cast<GraphicElementInput *>(inputs.at(in));
+        input->setOn(static_cast<bool>(oldValues.at(in)));
     }
     // Resuming digital circuit main window after waveform simulation is finished.
     return true;
@@ -235,7 +236,7 @@ void SimpleWaveform::showWaveform()
                      "Not saving memory states though...";
     qCDebug(zero) << "Also getting the name of the inputs. If no label is given, the element type is used as a name. "
                      "Bug here? What if there are 2 inputs without name or two identical labels?";
-    QVector<char> oldValues(inputs.size());
+    QVector<Status> oldValues(inputs.size());
     inSeries.reserve(inputs.size());
     for (int in = 0; in < inputs.size(); ++in) {
         inSeries.append(new QLineSeries(this));
@@ -289,7 +290,7 @@ void SimpleWaveform::showWaveform()
         for (auto *output : qAsConst(outputs)) {
             int inSize = output->inputSize();
             for (int port = inSize - 1; port >= 0; --port) {
-                float val = output->input(port)->value() > 0;
+                float val = (output->input(port)->value() == Status::Active);
                 float offset = static_cast<float>((outSeries.size() - counter - 1) * 2 + 0.5);
                 outSeries.at(counter)->append(itr, static_cast<qreal>(offset + val));
                 outSeries.at(counter)->append(itr + 1, static_cast<qreal>(offset + val));
@@ -335,7 +336,8 @@ void SimpleWaveform::showWaveform()
     exec();
     qCDebug(zero) << "Restoring the old values to the inputs, prior to simulaton.";
     for (int in = 0; in < inputs.size(); ++in) {
-        dynamic_cast<GraphicElementInput *>(inputs.at(in))->setOn(oldValues.at(in));
+        auto *input = dynamic_cast<GraphicElementInput *>(inputs.at(in));
+        input->setOn(static_cast<bool>(oldValues.at(in)));
     }
     qCDebug(zero) << "Resuming digital circuit main window after waveform simulation is finished.";
 }

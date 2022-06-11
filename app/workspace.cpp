@@ -81,7 +81,7 @@ void WorkSpace::save(const QString &fileName)
 
     QSaveFile saveFile(fileName_);
 
-    if (!saveFile.open(QFile::WriteOnly)) {
+    if (!saveFile.open(QIODevice::WriteOnly)) {
         throw Pandaception(tr("Error opening file: ") + saveFile.errorString());
     }
 
@@ -132,7 +132,7 @@ void WorkSpace::load(const QString &fileName, const bool isPlaying)
     m_fileInfo = QFileInfo(fileName);
 
     qCDebug(zero) << "File exists";
-    if (!file.open(QFile::ReadOnly)) {
+    if (!file.open(QIODevice::ReadOnly)) {
         qCDebug(zero) << "Could not open file:" << file.errorString();
         return;
     }
@@ -167,7 +167,7 @@ void WorkSpace::load(QDataStream &stream, const bool isPlaying)
     qCDebug(three) << "This code tries to centralize the elements in scene using the rectangle. But it is not working well.";
     // TODO: improve this
     m_scene.setSceneRect(m_scene.itemsBoundingRect());
-    if (auto view = m_scene.view()) {
+    if (auto *view = m_scene.view()) {
         rect = rect.united(view->rect());
         rect.moveCenter(QPointF(0, 0));
         m_scene.setSceneRect(m_scene.sceneRect().united(rect));

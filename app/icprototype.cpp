@@ -63,7 +63,7 @@ QString ICPrototype::outputLabel(const int index) const
     return m_ICImpl.outputLabel(index);
 }
 
-signed char ICPrototype::defaultInputValue(const int index)
+Status ICPrototype::defaultInputValue(const int index)
 {
     return m_ICImpl.input(index)->value();
 }

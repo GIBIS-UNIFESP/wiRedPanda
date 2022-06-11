@@ -202,7 +202,8 @@ void BewavedDolphin::loadElements()
 
 void BewavedDolphin::createElement(const int row, const int col, const int value, const bool isInput, const bool changePrevious)
 {
-    return (value == 0) ? createZeroElement(row, col, isInput, changePrevious) : createOneElement(row, col, isInput, changePrevious);
+    (value == 0) ? createZeroElement(row, col, isInput, changePrevious)
+                 : createOneElement(row, col, isInput, changePrevious);
 }
 
 void BewavedDolphin::createZeroElement(const int row, const int col, const bool isInput, const bool changePrevious)
@@ -273,10 +274,12 @@ void BewavedDolphin::restoreInputs()
     qCDebug(zero) << "Restoring old values to inputs, prior to simulation.";
     for (int in = 0; in < m_inputs.size(); ++in) {
         for (int port = 0; port < m_inputs[in]->outputSize(); ++port) {
+            auto *input = dynamic_cast<GraphicElementInput *>(m_inputs.at(in));
+            bool oldValue = static_cast<bool>(m_oldInputValues.at(in));
             if (m_inputs[in]->outputSize() > 1) {
-                dynamic_cast<GraphicElementInput *>(m_inputs[in])->setOn(m_oldInputValues[in], port);
+                input->setOn(oldValue, port);
             } else {
-                dynamic_cast<GraphicElementInput *>(m_inputs[in])->setOn(m_oldInputValues[in]);
+                input->setOn(oldValue);
             }
         }
     }
@@ -336,9 +339,9 @@ void BewavedDolphin::loadNewTable(const QStringList &inputLabels, const QStringL
     on_actionClear_triggered();
 }
 
-QVector<char> BewavedDolphin::loadSignals(QStringList &inputLabels, QStringList &outputLabels)
+QVector<Status> BewavedDolphin::loadSignals(QStringList &inputLabels, QStringList &outputLabels)
 {
-    QVector<char> oldValues(m_inputPorts);
+    QVector<Status> oldValues(m_inputPorts);
     int oldIndex = 0;
     for (auto *input : qAsConst(m_inputs)) {
         QString label = input->label();
@@ -857,7 +860,7 @@ void BewavedDolphin::on_actionLoad_triggered()
 void BewavedDolphin::save(const QString &fileName)
 {
     QSaveFile file(fileName);
-    if (!file.open(QFile::WriteOnly)) {
+    if (!file.open(QIODevice::WriteOnly)) {
         throw Pandaception("Error opening file: " + file.errorString());
     }
     if (fileName.endsWith(".dolphin")) {
@@ -910,7 +913,7 @@ void BewavedDolphin::load(const QString &fileName)
         throw Pandaception(tr("File \"%1\" does not exist!").arg(fileName));
     }
     qCDebug(zero) << "File exists.";
-    if (!file.open(QFile::ReadOnly)) {
+    if (!file.open(QIODevice::ReadOnly)) {
         qCDebug(zero) << tr("Could not open file in ReadOnly mode:") << file.errorString();
         throw Pandaception(tr("Could not open file in ReadOnly mode: ") + file.errorString() + ".");
     }

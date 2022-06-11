@@ -29,7 +29,6 @@
 
 #include <QDebug>
 #include <QTest>
-#include <iostream>
 
 void TestElements::init()
 {
