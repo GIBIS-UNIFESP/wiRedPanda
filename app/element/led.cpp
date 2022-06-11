@@ -90,7 +90,7 @@ Led::Led(QGraphicsItem *parent)
     Led::updatePorts();
     setHasLabel(true);
     setCanChangeSkin(true);
-    setPortName("Led");
+    setPortName("LED");
     setToolTip(m_translatedName);
 }
 
