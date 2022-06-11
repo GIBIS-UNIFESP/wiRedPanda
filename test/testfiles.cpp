@@ -14,26 +14,18 @@
 
 void TestFiles::testFiles()
 {
-    // qCDebug(zero) << "CURRENTDIR:" << CURRENTDIR;
     const QDir examplesDir(QString(CURRENTDIR) + "/../examples/");
-    // qCDebug(zero) << "Examples dir:" << examplesDir.absolutePath();
     const auto files = examplesDir.entryInfoList(QStringList("*.panda"));
     QVERIFY(!files.empty());
 
     for (const auto &fileInfo : files) {
         auto *workspace = new WorkSpace();
         QVERIFY(fileInfo.exists());
-
-        try {
-            QFile pandaFile(fileInfo.absoluteFilePath());
-            QVERIFY(pandaFile.exists());
-            QVERIFY(pandaFile.open(QIODevice::ReadOnly));
-            QDataStream stream(&pandaFile);
-            workspace->load(stream);
-        } catch (std::runtime_error &e) {
-            QFAIL("Could not load the file! Error: " + QString(e.what()).toUtf8());
-        }
-
+        QFile pandaFile(fileInfo.absoluteFilePath());
+        QVERIFY(pandaFile.exists());
+        QVERIFY(pandaFile.open(QIODevice::ReadOnly));
+        QDataStream stream(&pandaFile);
+        workspace->load(stream);
         const auto items = workspace->scene()->items();
 
         for (auto *item : items) {
@@ -45,30 +37,15 @@ void TestFiles::testFiles()
             }
         }
 
-        QTemporaryFile tempfile;
+        QTemporaryFile tempFile;
+        QVERIFY(tempFile.open());
+        QDataStream stream2(&tempFile);
+        workspace->save(stream2, "");
+        tempFile.close();
+        QFile pandaFile2(tempFile.fileName());
+        QVERIFY(pandaFile2.open(QIODevice::ReadOnly));
 
-        if (!tempfile.open()) {
-            QFAIL("Could not open temporary file in ReadWrite mode: " + tempfile.fileName().toUtf8());
-        }
-
-        // qCDebug(zero) << tempfile.fileName();
-        QDataStream stream(&tempfile);
-
-        try {
-            workspace->save(stream, "");
-        } catch (std::runtime_error &) {
-            QFAIL("Error saving project: " + tempfile.fileName().toUtf8());
-        }
-
-        tempfile.close();
-
-        try {
-            QFile pandaFile(tempfile.fileName());
-            QVERIFY(pandaFile.open(QIODevice::ReadOnly));
-            QDataStream stream2(&pandaFile);
-            workspace->load(stream2);
-        } catch (std::runtime_error &e) {
-            QFAIL("Could not load the file! Error: " + QString(e.what()).toUtf8());
-        }
+        QDataStream stream3(&pandaFile2);
+        workspace->load(stream3);
     }
 }

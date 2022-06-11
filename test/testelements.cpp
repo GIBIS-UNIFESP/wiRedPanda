@@ -301,12 +301,10 @@ void TestElements::testIC()
 void TestElements::testICs()
 {
     const QDir examplesDir(QString(CURRENTDIR) + "/../examples/");
-    // qCDebug(zero) << "Current dir:" << CURRENTDIR;
     const auto files = examplesDir.entryInfoList(QStringList{"*.panda"});
-    // qCDebug(zero) << "files:" << files;
+
     for (const auto &fileInfo : qAsConst(files)) {
         GlobalProperties::currentFile = fileInfo.absoluteFilePath();
-        // qCDebug(zero) << "FILE:" << f.absoluteFilePath();
         IC ic;
         ICManager::loadIC(&ic, fileInfo.absoluteFilePath());
     }
