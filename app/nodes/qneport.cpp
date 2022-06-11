@@ -150,12 +150,12 @@ void QNEPort::updateConnections()
         conn->updatePath();
     }
 
-    if (isValid()) {
-        if (m_connections.empty() && isInput()) {
-            setValue(defaultValue());
-        }
-    } else {
-        setValue(Status::Invalid);
+    if (!isValid()) {
+        return setValue(Status::Invalid);
+    }
+
+    if (m_connections.empty() && isInput()) {
+        setValue(defaultValue());
     }
 }
 
