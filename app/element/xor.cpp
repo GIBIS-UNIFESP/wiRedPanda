@@ -15,7 +15,7 @@ Xor::Xor(QGraphicsItem *parent)
 
     m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;
-    setPixmap(m_defaultSkins.first());
+    setPixmap(0);
 
     setCanChangeSkin(true);
     updatePorts();

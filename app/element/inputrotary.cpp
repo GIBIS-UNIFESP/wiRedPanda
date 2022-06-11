@@ -42,7 +42,7 @@ InputRotary::InputRotary(QGraphicsItem *parent)
         ":/input/rotary/rotary_arrow_15.png",
     };
     m_alternativeSkins = m_defaultSkins;
-    setPixmap(m_defaultSkins.first());
+    setPixmap(0);
 
     m_rotary2  =    m_defaultSkins[0];
     m_rotary4  =    m_defaultSkins[1];
@@ -82,12 +82,11 @@ InputRotary::InputRotary(QGraphicsItem *parent)
 void InputRotary::refresh()
 {
     switch (outputSize()) {
-    case 2:  setPixmap(m_usingDefaultSkin ? m_defaultSkins[0] : m_alternativeSkins[0]); break;
-    case 4:  setPixmap(m_usingDefaultSkin ? m_defaultSkins[1] : m_alternativeSkins[1]); break;
-    case 8:  setPixmap(m_usingDefaultSkin ? m_defaultSkins[2] : m_alternativeSkins[2]); break;
-    case 10: setPixmap(m_usingDefaultSkin ? m_defaultSkins[3] : m_alternativeSkins[3]); break;
- // case 16:
-    default: setPixmap(m_usingDefaultSkin ? m_defaultSkins[4] : m_alternativeSkins[4]); break;
+    case 2:  setPixmap(0); break;
+    case 4:  setPixmap(1); break;
+    case 8:  setPixmap(2); break;
+    case 10: setPixmap(3); break;
+    case 16: setPixmap(4); break;
     }
     update();
 }
@@ -240,28 +239,27 @@ void InputRotary::setSkin(const bool defaultSkin, const QString &fileName)
     switch (outputSize()) {
     case 2: {
         m_alternativeSkins[0] = fileName;
-        setPixmap(m_usingDefaultSkin ? m_defaultSkins[0] : m_alternativeSkins[0]);
+        setPixmap(0);
         break;
     }
     case 4: {
         m_alternativeSkins[1] = fileName;
-        setPixmap(m_usingDefaultSkin ? m_defaultSkins[1] : m_alternativeSkins[1]);
+        setPixmap(1);
         break;
     }
     case 8: {
         m_alternativeSkins[2] = fileName;
-        setPixmap(m_usingDefaultSkin ? m_defaultSkins[2] : m_alternativeSkins[2]);
+        setPixmap(2);
         break;
     }
     case 10: {
         m_alternativeSkins[3] = fileName;
-        setPixmap(m_usingDefaultSkin ? m_defaultSkins[3] : m_alternativeSkins[3]);
+        setPixmap(3);
         break;
     }
- // case 16:
-    default: {
+    case 16: {
         m_alternativeSkins[4] = fileName;
-        setPixmap(m_usingDefaultSkin ? m_defaultSkins[4] : m_alternativeSkins[4]);
+        setPixmap(4);
         break;
     }
     }

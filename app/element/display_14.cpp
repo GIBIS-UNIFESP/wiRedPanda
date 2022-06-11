@@ -37,7 +37,7 @@ Display14::Display14(QGraphicsItem *parent)
         ":/output/counter/counter_dp.png",
     };
     m_alternativeSkins = m_defaultSkins;
-    setPixmap(m_defaultSkins.first());
+    setPixmap(0);
 
     a  = QVector<QPixmap>(5, m_defaultSkins[1]);
     b  = QVector<QPixmap>(5, m_defaultSkins[2]);

@@ -17,7 +17,7 @@ Node::Node(QGraphicsItem *parent)
 
     m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;
-    setPixmap(m_defaultSkins.first(), QSize(32, 32));
+    setPixmap(0, QSize(32, 32));
 
     Node::updatePorts();
     setCanChangeSkin(true);

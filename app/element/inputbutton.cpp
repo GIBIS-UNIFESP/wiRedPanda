@@ -22,7 +22,7 @@ InputButton::InputButton(QGraphicsItem *parent)
         ":/input/buttonOn.png",
     };
     m_alternativeSkins = m_defaultSkins;
-    setPixmap(m_defaultSkins.first());
+    setPixmap(0);
 
     m_locked = false;
     setCanChangeSkin(true);
@@ -91,7 +91,7 @@ void InputButton::setOn(const bool value, const int port)
     Q_UNUSED(port);
 
     m_isOn = value;
-    setPixmap(m_usingDefaultSkin ? m_defaultSkins.at(m_isOn) : m_alternativeSkins.at(m_isOn));
+    setPixmap(m_isOn);
 
     if (!isDisabled()) {
         output()->setValue(static_cast<Status>(m_isOn));
@@ -102,5 +102,5 @@ void InputButton::setSkin(const bool defaultSkin, const QString &fileName)
 {
     m_usingDefaultSkin = defaultSkin;
     m_alternativeSkins[m_isOn] = fileName;
-    setPixmap(defaultSkin ? m_defaultSkins.at(m_isOn) : m_alternativeSkins.at(m_isOn));
+    setPixmap(m_isOn);
 }

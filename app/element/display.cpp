@@ -30,7 +30,7 @@ Display::Display(QGraphicsItem *parent)
         ":/output/counter/counter_dp.png",
     };
     m_alternativeSkins = m_defaultSkins;
-    setPixmap(m_defaultSkins.first());
+    setPixmap(0);
 
     qCDebug(three) << "Allocating pixmaps.";
     a =  QVector<QPixmap>(5, m_defaultSkins[1]);
