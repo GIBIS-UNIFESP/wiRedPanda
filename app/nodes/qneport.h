@@ -60,7 +60,7 @@ public:
     int radius() const;
     quint64 ptr() const;
     virtual bool isInput() const = 0;
-    virtual bool isOutput() const { return false; };
+    virtual bool isOutput() const = 0;
     virtual bool isValid() const = 0;
     virtual void setValue(Status value) = 0;
     void connect(QNEConnection *conn);

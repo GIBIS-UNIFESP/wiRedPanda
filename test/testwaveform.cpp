@@ -17,14 +17,10 @@ void TestWaveForm::testDisplay4Bits()
     const QDir examplesDir(QString(CURRENTDIR) + "/../examples/");
     const QString fileName = examplesDir.absoluteFilePath("display-4bits.panda");
 
-    try {
-        QFile pandaFile(fileName);
-        QVERIFY(pandaFile.open(QIODevice::ReadOnly));
-        QDataStream stream(&pandaFile);
-        workspace.load(stream);
-    } catch (std::runtime_error &e) {
-        QFAIL("Could not load the file! Error: " + QString(e.what()).toUtf8());
-    }
+    QFile pandaFile(fileName);
+    QVERIFY(pandaFile.open(QIODevice::ReadOnly));
+    QDataStream stream(&pandaFile);
+    workspace.load(stream);
 
     QTemporaryFile tempFile;
     QVERIFY(tempFile.open());
