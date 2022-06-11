@@ -84,6 +84,11 @@ void GraphicElement::enable()
     m_disabled = false;
 }
 
+void GraphicElement::setPixmap(const int index, const QSize size)
+{
+    setPixmap(m_usingDefaultSkin ? m_defaultSkins.at(index) : m_alternativeSkins.at(index), size);
+}
+
 void GraphicElement::setPixmap(const QString &pixmapPath, const QSize size)
 {
     if (pixmapPath.isEmpty() || (pixmapPath == m_currentPixmapPath)) {
@@ -476,7 +481,7 @@ void GraphicElement::setSkin(const bool defaultSkin, const QString &fileName)
 {
     m_usingDefaultSkin = defaultSkin;
     m_alternativeSkins.first() = fileName;
-    setPixmap(defaultSkin ? m_defaultSkins.first() : m_alternativeSkins.first());
+    setPixmap(0);
 }
 
 void GraphicElement::updatePorts()
@@ -510,7 +515,7 @@ void GraphicElement::updatePorts()
 
 void GraphicElement::refresh()
 {
-    setPixmap(m_usingDefaultSkin ? m_defaultSkins[0] : m_alternativeSkins[0]);
+    setPixmap(0);
 }
 
 QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)

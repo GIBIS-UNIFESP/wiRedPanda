@@ -83,7 +83,7 @@ Led::Led(QGraphicsItem *parent)
         ":/output/16colors/WhiteLedOn.png",     // 25
     };
     m_alternativeSkins = m_defaultSkins;
-    setPixmap(m_defaultSkins.first());
+    setPixmap(0);
 
     setRotatable(false);
     setHasColors(true);
@@ -109,29 +109,25 @@ void Led::refresh()
     // TODO: add option to select dark/light colors according to the theme.
     switch (inputSize()) {
     case 1: {
-        const int index_ = m_colorNumber + index;
-        setPixmap(m_usingDefaultSkin ? m_defaultSkins[index_] : m_alternativeSkins[index_]);
+        setPixmap(m_colorNumber + index);
         input(0)->setName("");
         break;
     }
     case 2: {
-        const int index_ = (index == 3) ? 22 : 18 + index;
-        setPixmap(m_usingDefaultSkin ? m_defaultSkins[index_] : m_alternativeSkins[index_]);
+        setPixmap((index == 3) ? 22 : 18 + index);
         input(0)->setName("0");
         input(1)->setName("1");
         break;
     }
     case 3: {
-        const int index_ = 18 + index;
-        setPixmap(m_usingDefaultSkin ? m_defaultSkins[index_] : m_alternativeSkins[index_]);
+        setPixmap(18 + index);
         input(0)->setName("0");
         input(1)->setName("1");
         input(2)->setName("2");
         break;
     }
     case 4: {
-        const int index_ = 10 + index;
-        setPixmap(m_usingDefaultSkin ? m_defaultSkins[index_] : m_alternativeSkins[index_]);
+        setPixmap(10 + index);
         input(0)->setName("0");
         input(1)->setName("1");
         input(2)->setName("2");
@@ -197,18 +193,18 @@ void Led::setSkin(const bool defaultSkin, const QString &fileName)
         index = static_cast<int>(indexBit.to_ulong());
     }
 
-    int valueIndex = 0;
+    int index2 = 0;
 
     // TODO: add option to select dark/light colors according to the theme.
     switch (inputSize()) {
-    case 1: valueIndex = m_colorNumber + index;          break;
-    case 2: valueIndex = (index == 3) ? 22 : 18 + index; break;
-    case 3: valueIndex = 18 + index;                     break;
-    case 4: valueIndex = 10 + index;                     break;
+    case 1: index2 = m_colorNumber + index;          break;
+    case 2: index2 = (index == 3) ? 22 : 18 + index; break;
+    case 3: index2 = 18 + index;                     break;
+    case 4: index2 = 10 + index;                     break;
     }
 
-    m_alternativeSkins[valueIndex] = fileName;
-    setPixmap(defaultSkin ? m_defaultSkins.at(valueIndex) : m_alternativeSkins.at(valueIndex));
+    m_alternativeSkins[index2] = fileName;
+    setPixmap(index2);
 }
 
 void Led::resetSkin(const int ledNumber)

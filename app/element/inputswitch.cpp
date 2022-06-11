@@ -22,7 +22,7 @@ InputSwitch::InputSwitch(QGraphicsItem *parent)
         ":/input/switchOn.png",
     };
     m_alternativeSkins = m_defaultSkins;
-    setPixmap(m_defaultSkins.first());
+    setPixmap(0);
 
     m_locked = false;
     setCanChangeSkin(true);
@@ -59,7 +59,7 @@ void InputSwitch::setOn(const bool value, const int port)
         output()->setValue(static_cast<Status>(m_isOn));
     }
 
-    setPixmap(m_usingDefaultSkin ? m_defaultSkins.at(m_isOn) : m_alternativeSkins.at(m_isOn));
+    setPixmap(m_isOn);
 }
 
 void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -96,5 +96,5 @@ void InputSwitch::setSkin(const bool defaultSkin, const QString &fileName)
 {
     m_usingDefaultSkin = defaultSkin;
     m_alternativeSkins[m_isOn] = fileName;
-    setPixmap(defaultSkin ? m_defaultSkins.at(m_isOn) : m_alternativeSkins.at(m_isOn));
+    setPixmap(m_isOn);
 }

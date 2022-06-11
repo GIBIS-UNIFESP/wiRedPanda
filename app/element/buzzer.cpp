@@ -20,7 +20,7 @@ Buzzer::Buzzer(QGraphicsItem *parent)
         ":/output/BuzzerOn.png"
     };
     m_alternativeSkins = m_defaultSkins;
-    setPixmap(m_defaultSkins.first());
+    setPixmap(0);
 
     m_label->setPos(64, 34);
     setRotatable(false);
@@ -73,7 +73,7 @@ void Buzzer::playBuzzer()
         setAudio("C6");
     }
 
-    setPixmap(m_usingDefaultSkin ? m_defaultSkins.at(1) : m_alternativeSkins.at(1));
+    setPixmap(1);
     m_audio.play();
     m_isPlaying = true;
 }
@@ -84,7 +84,7 @@ void Buzzer::stopBuzzer()
         return;
     }
 
-    setPixmap(m_usingDefaultSkin ? m_defaultSkins.at(0) : m_alternativeSkins.at(0));
+    setPixmap(0);
     m_audio.stop();
     m_isPlaying = false;
 }

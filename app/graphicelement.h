@@ -104,6 +104,7 @@ public:
     void setOutputSize(const int size);
     void setOutputs(const QVector<QNEOutputPort *> &outputs);
     void setPixmap(const QString &pixmapPath, const QSize size = {64, 64});
+    void setPixmap(const int index, const QSize size = {64, 64});
     void setPortName(const QString &name);
     void setTrigger(const QKeySequence &trigger);
     void updateLabel();

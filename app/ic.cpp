@@ -25,7 +25,7 @@ IC::IC(QGraphicsItem *parent)
     // qCDebug(zero) << "Creating IC.";
     m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;
-    setPixmap(m_defaultSkins.first());
+    setPixmap(0);
 
     m_label->setPos(30, 64);
     m_label->setRotation(90);
