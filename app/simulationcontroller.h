@@ -26,8 +26,8 @@ public:
 
     bool isRunning();
     void clear();
+    void initialize();
     void restart();
-    void sortElements();
     void start();
     void stop();
     void update();

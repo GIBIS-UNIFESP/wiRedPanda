@@ -72,7 +72,7 @@ void SimulationController::update()
 {
     if (m_shouldRestart) {
         m_shouldRestart = false;
-        sortElements();
+        initialize();
     }
 
     if (!m_elmMapping) { // TODO: Remove this check, if possible. May increse the simulation speed significantly.
@@ -93,14 +93,14 @@ void SimulationController::start()
 {
     qCDebug(zero) << tr("Starting simulation controller.");
     Clock::reset = true;
-    sortElements();
+    initialize();
     m_simulationTimer.start();
     m_viewTimer.start();
     qCDebug(zero) << tr("Simulation started.");
     m_scene->mute(false);
 }
 
-void SimulationController::sortElements()
+void SimulationController::initialize()
 {
     qCDebug(two) << tr("GENERATING SIMULATION LAYER.");
     auto elements = m_scene->elements();
@@ -112,16 +112,16 @@ void SimulationController::sortElements()
     delete m_elmMapping;
     qCDebug(two) << tr("Recreating mapping for simulation.");
     m_elmMapping = new ElementMapping(elements);
-    if (m_elmMapping->canInitialize()) {
-        qCDebug(two) << tr("Can initialize.");
-        m_elmMapping->initialize();
-        qCDebug(two) << tr("Sorting.");
-        m_elmMapping->sort();
-        qCDebug(two) << tr("Updating.");
-        update();
-    } else {
+    if (!m_elmMapping->canInitialize()) {
         qCDebug(zero) << tr("Cannot initialize simulation.");
+        return;
     }
+    qCDebug(two) << tr("Can initialize.");
+    m_elmMapping->initialize();
+    qCDebug(two) << tr("Sorting.");
+    m_elmMapping->sort();
+    qCDebug(two) << tr("Updating.");
+    update();
     qCDebug(zero) << tr("Finished simulation layer.");
 }
 
@@ -133,7 +133,9 @@ void SimulationController::clear()
 
 void SimulationController::updatePort(QNEOutputPort *port)
 {
-    if (!port) { return; }
+    if (!port) {
+        return;
+    }
 
     GraphicElement *elm = port->graphicElement();
     LogicElement *logElm = nullptr;
