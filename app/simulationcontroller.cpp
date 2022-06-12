@@ -72,7 +72,7 @@ void SimulationController::update()
 {
     if (m_shouldRestart) {
         m_shouldRestart = false;
-        reSortElements();
+        sortElements();
     }
 
     if (!m_elmMapping) { // TODO: Remove this check, if possible. May increse the simulation speed significantly.
@@ -93,14 +93,14 @@ void SimulationController::start()
 {
     qCDebug(zero) << tr("Starting simulation controller.");
     Clock::reset = true;
-    reSortElements();
+    sortElements();
     m_simulationTimer.start();
     m_viewTimer.start();
     qCDebug(zero) << tr("Simulation started.");
     m_scene->mute(false);
 }
 
-void SimulationController::reSortElements()
+void SimulationController::sortElements()
 {
     qCDebug(two) << tr("GENERATING SIMULATION LAYER.");
     auto elements = m_scene->elements();
