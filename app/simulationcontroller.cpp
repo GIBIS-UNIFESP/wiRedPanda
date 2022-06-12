@@ -86,12 +86,7 @@ void SimulationController::stop()
 {
     m_simulationTimer.stop();
     m_viewTimer.stop();
-    const auto elms = m_scene->elements();
-    for (auto *elm : elms) {
-        if (auto *buzzer = dynamic_cast<Buzzer *>(elm)) {
-            buzzer->mute(true);
-        }
-    }
+    m_scene->mute(true);
 }
 
 void SimulationController::start()
@@ -102,12 +97,7 @@ void SimulationController::start()
     m_simulationTimer.start();
     m_viewTimer.start();
     qCDebug(zero) << tr("Simulation started.");
-    const auto elms = m_scene->elements();
-    for (auto *elm : elms) {
-        if (auto *buzzer = dynamic_cast<Buzzer *>(elm)) {
-            buzzer->mute(false);
-        }
-    }
+    m_scene->mute(false);
 }
 
 void SimulationController::reSortElements()

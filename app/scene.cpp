@@ -659,8 +659,8 @@ void Scene::rotateRight()
 
 void Scene::mute(const bool mute)
 {
-    const auto sceneElems = elements();
-    for (auto *elm : sceneElems) {
+    const auto elms = elements();
+    for (auto *elm : elms) {
         if (auto *buzzer = dynamic_cast<Buzzer *>(elm)) {
             buzzer->mute(mute);
         }
