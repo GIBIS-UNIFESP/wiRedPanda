@@ -247,7 +247,7 @@ void TestElements::testIC()
     scene.addItem(connection4);
 
     SimulationController controller(&scene);
-    controller.reSortElements();
+    controller.sortElements();
 
     for (int i = 0; i < 10; ++i) {
         clkButton->setOn(false);

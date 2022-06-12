@@ -41,7 +41,7 @@ Scene::Scene(QObject *parent)
     connect(&ICManager::instance(),    &ICManager::updatedIC,       this,                    &Scene::redoSimulationController);
     connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this,                    &Scene::updateTheme);
     connect(&m_undoStack,              &QUndoStack::indexChanged,   this,                    &Scene::checkUpdateRequest);
-    connect(this,                      &Scene::circuitHasChanged,   &m_simulationController, &SimulationController::reSortElements);
+    connect(this,                      &Scene::circuitHasChanged,   &m_simulationController, &SimulationController::sortElements);
 }
 
 void Scene::checkUpdateRequest()

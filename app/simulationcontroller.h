@@ -24,12 +24,10 @@ public:
     explicit SimulationController(Scene *scene);
     ~SimulationController() override;
 
-    static QVector<GraphicElement *> sortElements(QVector<GraphicElement *> elms);
-
     bool isRunning();
     void clear();
-    void reSortElements();
     void restart();
+    void sortElements();
     void start();
     void stop();
     void update();
