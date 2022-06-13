@@ -117,12 +117,12 @@ QVector<QNEOutputPort *> GraphicElement::outputs() const
     return m_outputs;
 }
 
-QNEInputPort *GraphicElement::input(const int pos)
+QNEInputPort *GraphicElement::inputPort(const int pos)
 {
     return m_inputs.at(pos);
 }
 
-QNEOutputPort *GraphicElement::output(const int pos)
+QNEOutputPort *GraphicElement::outputPort(const int pos)
 {
     return m_outputs.at(pos);
 }

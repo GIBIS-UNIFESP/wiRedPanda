@@ -25,23 +25,23 @@ DLatch::DLatch(QGraphicsItem *parent)
     setPortName("D Latch");
     setToolTip(m_translatedName);
 
-    input(0)->setName("Data");
-    input(1)->setName("Enable");
+    inputPort(0)->setName("Data");
+    inputPort(1)->setName("Enable");
 
-    output(0)->setName("Q");
-    output(1)->setName("~Q");
+    outputPort(0)->setName("Q");
+    outputPort(1)->setName("~Q");
 
-    output(0)->setDefaultValue(Status::Inactive);
-    output(1)->setDefaultValue(Status::Active);
+    outputPort(0)->setDefaultValue(Status::Inactive);
+    outputPort(1)->setDefaultValue(Status::Active);
 }
 
 void DLatch::updatePorts()
 {
-    input(0)->setPos(leftPosition(), 13);   /* Data   */
-    input(1)->setPos(leftPosition(), 45);   /* Enable */
+    inputPort(0)->setPos(leftPosition(), 13);   /* Data   */
+    inputPort(1)->setPos(leftPosition(), 45);   /* Enable */
 
-    output(0)->setPos(rightPosition(), 15); /* Q      */
-    output(1)->setPos(rightPosition(), 45); /* ~Q     */
+    outputPort(0)->setPos(rightPosition(), 15); /* Q      */
+    outputPort(1)->setPos(rightPosition(), 45); /* ~Q     */
 }
 
 void DLatch::updateTheme()

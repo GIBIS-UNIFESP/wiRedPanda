@@ -56,7 +56,7 @@ void InputSwitch::setOn(const bool value, const int port)
     m_isOn = value;
 
     if (!isDisabled()) {
-        output()->setValue(static_cast<Status>(m_isOn));
+        outputPort()->setValue(static_cast<Status>(m_isOn));
     }
 
     setPixmap(m_isOn);
@@ -89,7 +89,7 @@ void InputSwitch::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, c
         stream >> m_locked;
     }
     setOn(m_isOn);
-    output()->setValue(static_cast<Status>(m_isOn));
+    outputPort()->setValue(static_cast<Status>(m_isOn));
 }
 
 void InputSwitch::setSkin(const bool defaultSkin, const QString &fileName)

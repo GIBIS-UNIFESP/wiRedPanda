@@ -102,7 +102,7 @@ void ICPrototypeImpl::loadInputElement(GraphicElement *elm)
         if (elm->label().isEmpty()) {
             nodeElm->setLabel(ElementFactory::typeToText(elm->elementType()));
         }
-        auto *nodeInput = nodeElm->input();
+        auto *nodeInput = nodeElm->inputPort();
         nodeInput->setPos(port->pos());
         nodeInput->setName(port->name());
         nodeInput->setRequired(false);
@@ -116,7 +116,7 @@ void ICPrototypeImpl::loadInputElement(GraphicElement *elm)
         auto conns = port->connections();
         for (auto *conn : conns) {
             if (port == conn->start()) {
-                conn->setStart(nodeElm->output());
+                conn->setStart(nodeElm->outputPort());
             }
         }
     }
@@ -133,7 +133,7 @@ void ICPrototypeImpl::loadOutputElement(GraphicElement *elm)
         if (elm->label().isEmpty()) {
             nodeElm->setLabel(ElementFactory::typeToText(elm->elementType()));
         }
-        auto *nodeOutput = nodeElm->output();
+        auto *nodeOutput = nodeElm->outputPort();
         nodeOutput->setPos(port->pos());
         nodeOutput->setName(port->name());
         m_outputs.append(nodeOutput);
@@ -141,7 +141,7 @@ void ICPrototypeImpl::loadOutputElement(GraphicElement *elm)
         auto conns = port->connections();
         for (auto *conn : conns) {
             if (port == conn->end()) {
-                conn->setEnd(nodeElm->input());
+                conn->setEnd(nodeElm->inputPort());
             }
         }
     }

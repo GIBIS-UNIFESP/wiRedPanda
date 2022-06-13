@@ -105,36 +105,36 @@ void Display::refresh()
 
 void Display::updatePorts()
 {
-    input(0)->setPos(leftPosition(), 10);  /* G  */
-    input(1)->setPos(leftPosition(), 25);  /* F  */
-    input(2)->setPos(leftPosition(), 39);  /* E  */
-    input(3)->setPos(leftPosition(), 54);  /* D  */
-    input(4)->setPos(rightPosition(), 10); /* A  */
-    input(5)->setPos(rightPosition(), 25); /* B  */
-    input(6)->setPos(rightPosition(), 39); /* DP */
-    input(7)->setPos(rightPosition(), 54); /* C  */
+    inputPort(0)->setPos(leftPosition(), 10);  /* G  */
+    inputPort(1)->setPos(leftPosition(), 25);  /* F  */
+    inputPort(2)->setPos(leftPosition(), 39);  /* E  */
+    inputPort(3)->setPos(leftPosition(), 54);  /* D  */
+    inputPort(4)->setPos(rightPosition(), 10); /* A  */
+    inputPort(5)->setPos(rightPosition(), 25); /* B  */
+    inputPort(6)->setPos(rightPosition(), 39); /* DP */
+    inputPort(7)->setPos(rightPosition(), 54); /* C  */
 
-    input(0)->setName("G (" +  tr("middle")      + ")");
-    input(1)->setName("F (" +  tr("upper left")  + ")");
-    input(2)->setName("E (" +  tr("lower left")  + ")");
-    input(3)->setName("D (" +  tr("bottom")      + ")");
-    input(4)->setName("A (" +  tr("top")         + ")");
-    input(5)->setName("B (" +  tr("upper right") + ")");
-    input(6)->setName("DP (" + tr("dot")         + ")");
-    input(7)->setName("C (" +  tr("lower right") + ")");
+    inputPort(0)->setName("G (" +  tr("middle")      + ")");
+    inputPort(1)->setName("F (" +  tr("upper left")  + ")");
+    inputPort(2)->setName("E (" +  tr("lower left")  + ")");
+    inputPort(3)->setName("D (" +  tr("bottom")      + ")");
+    inputPort(4)->setName("A (" +  tr("top")         + ")");
+    inputPort(5)->setName("B (" +  tr("upper right") + ")");
+    inputPort(6)->setName("DP (" + tr("dot")         + ")");
+    inputPort(7)->setName("C (" +  tr("lower right") + ")");
 }
 
 void Display::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     GraphicElement::paint(painter, option, widget);
-    if (input(0)->value() == Status::Active) { painter->drawPixmap(0, 0, g[m_colorNumber]);  }
-    if (input(1)->value() == Status::Active) { painter->drawPixmap(0, 0, f[m_colorNumber]);  }
-    if (input(2)->value() == Status::Active) { painter->drawPixmap(0, 0, e[m_colorNumber]);  }
-    if (input(3)->value() == Status::Active) { painter->drawPixmap(0, 0, d[m_colorNumber]);  }
-    if (input(4)->value() == Status::Active) { painter->drawPixmap(0, 0, a[m_colorNumber]);  }
-    if (input(5)->value() == Status::Active) { painter->drawPixmap(0, 0, b[m_colorNumber]);  }
-    if (input(6)->value() == Status::Active) { painter->drawPixmap(0, 0, dp[m_colorNumber]); }
-    if (input(7)->value() == Status::Active) { painter->drawPixmap(0, 0, c[m_colorNumber]);  }
+    if (inputPort(0)->value() == Status::Active) { painter->drawPixmap(0, 0, g[m_colorNumber]);  }
+    if (inputPort(1)->value() == Status::Active) { painter->drawPixmap(0, 0, f[m_colorNumber]);  }
+    if (inputPort(2)->value() == Status::Active) { painter->drawPixmap(0, 0, e[m_colorNumber]);  }
+    if (inputPort(3)->value() == Status::Active) { painter->drawPixmap(0, 0, d[m_colorNumber]);  }
+    if (inputPort(4)->value() == Status::Active) { painter->drawPixmap(0, 0, a[m_colorNumber]);  }
+    if (inputPort(5)->value() == Status::Active) { painter->drawPixmap(0, 0, b[m_colorNumber]);  }
+    if (inputPort(6)->value() == Status::Active) { painter->drawPixmap(0, 0, dp[m_colorNumber]); }
+    if (inputPort(7)->value() == Status::Active) { painter->drawPixmap(0, 0, c[m_colorNumber]);  }
 }
 
 void Display::setColor(const QString &color)

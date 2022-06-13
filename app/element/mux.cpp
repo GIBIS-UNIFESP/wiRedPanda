@@ -24,16 +24,16 @@ Mux::Mux(QGraphicsItem *parent)
     setToolTip(m_translatedName);
     setCanChangeSkin(true);
 
-    input(0)->setName("0");
-    input(1)->setName("1");
-    input(2)->setName("S");
+    inputPort(0)->setName("0");
+    inputPort(1)->setName("1");
+    inputPort(2)->setName("S");
 }
 
 void Mux::updatePorts()
 {
-    input(0)->setPos(16, 32 - 12); /* 0   */
-    input(1)->setPos(16, 32 + 12); /* 1   */
-    input(2)->setPos(32, 58);      /* S   */
+    inputPort(0)->setPos(16, 32 - 12); /* 0   */
+    inputPort(1)->setPos(16, 32 + 12); /* 1   */
+    inputPort(2)->setPos(32, 58);      /* S   */
 
-    output(0)->setPos(48, 32);     /* Out */
+    outputPort(0)->setPos(48, 32);     /* Out */
 }

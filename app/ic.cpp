@@ -62,7 +62,7 @@ void IC::loadInputs(ICPrototype *prototype)
     setInputSize(prototype->inputSize());
     qCDebug(three) << tr("IC") << m_file << tr("-> Inputs. min:") << minInputSize() << tr(", max:") << maxInputSize() << tr(", current:") << inputSize() << tr(", m_inputs:") << m_inputs.size();
     for (int inputIndex = 0; inputIndex < prototype->inputSize(); ++inputIndex) {
-        QNEPort *portIn = input(inputIndex);
+        QNEPort *portIn = inputPort(inputIndex);
         portIn->setName(prototype->inputLabel(inputIndex));
         portIn->setRequired(prototype->isInputRequired(inputIndex));
         portIn->setDefaultValue(prototype->defaultInputValue(inputIndex));
@@ -76,7 +76,7 @@ void IC::loadOutputs(ICPrototype *prototype)
     setMinOutputSize(prototype->outputSize());
     setOutputSize(prototype->outputSize());
     for (int outputIndex = 0; outputIndex < prototype->outputSize(); ++outputIndex) {
-        QNEPort *portOut = output(outputIndex);
+        QNEPort *portOut = outputPort(outputIndex);
         portOut->setName(prototype->outputLabel(outputIndex));
     }
     qCDebug(three) << tr("IC") << m_file << tr("-> Outputs. min:") << minOutputSize() << tr(", max:") << maxOutputSize() << tr(", current:") << outputSize() << tr(", m_outputs:") << m_outputs.size();

@@ -465,10 +465,10 @@ void Scene::setHoverPort(QNEPort *port)
             m_hoverPortElmId = hoverElm->id();
             for (int i = 0; i < (hoverElm->inputSize() + hoverElm->outputSize()); ++i) {
                 if (i < hoverElm->inputSize()) {
-                    if (port == hoverElm->input(i)) {
+                    if (port == hoverElm->inputPort(i)) {
                         m_hoverPortNbr = i;
                     }
-                } else if (port == hoverElm->output(i - hoverElm->inputSize())) {
+                } else if (port == hoverElm->outputPort(i - hoverElm->inputSize())) {
                     m_hoverPortNbr = i;
                 }
             }
@@ -485,9 +485,9 @@ QNEPort *Scene::hoverPort()
     QNEPort *hoverPort = nullptr;
     if (hoverElm) {
         if (m_hoverPortNbr < hoverElm->inputSize()) {
-            hoverPort = hoverElm->input(m_hoverPortNbr);
+            hoverPort = hoverElm->inputPort(m_hoverPortNbr);
         } else if (((m_hoverPortNbr - hoverElm->inputSize()) < hoverElm->outputSize())) {
-            hoverPort = hoverElm->output(m_hoverPortNbr - hoverElm->inputSize());
+            hoverPort = hoverElm->outputPort(m_hoverPortNbr - hoverElm->inputSize());
         }
     }
     if (!hoverPort) {

@@ -34,12 +34,12 @@ void TestSimulationController::testCase1()
     scene->addItem(&conn2);
     scene->addItem(&conn3);
 
-    conn.setStart(btn1.output());
-    conn.setEnd(andItem.input(0));
-    conn2.setStart(btn2.output());
-    conn2.setEnd(andItem.input(1));
-    conn3.setStart(andItem.output());
-    conn3.setEnd(led.input());
+    conn.setStart(btn1.outputPort());
+    conn.setEnd(andItem.inputPort(0));
+    conn2.setStart(btn2.outputPort());
+    conn2.setEnd(andItem.inputPort(1));
+    conn3.setStart(andItem.outputPort());
+    conn3.setEnd(led.inputPort());
 
     const auto elms(ElementMapping::sortGraphicElements(scene->elements()));
 

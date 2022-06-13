@@ -25,37 +25,37 @@ SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
     setPortName("FlipFlop SR");
     setToolTip(m_translatedName);
 
-    input(0)->setName("S");
-    input(1)->setName("Clock");
-    input(2)->setName("R");
-    input(3)->setName("~Preset");
-    input(4)->setName("~Clear");
+    inputPort(0)->setName("S");
+    inputPort(1)->setName("Clock");
+    inputPort(2)->setName("R");
+    inputPort(3)->setName("~Preset");
+    inputPort(4)->setName("~Clear");
 
-    output(0)->setName("Q");
-    output(1)->setName("~Q");
+    outputPort(0)->setName("Q");
+    outputPort(1)->setName("~Q");
 
-    input(0)->setRequired(false); /* S */
-    input(2)->setRequired(false); /* R */
-    input(3)->setRequired(false); /* p */
-    input(4)->setRequired(false); /* c */
+    inputPort(0)->setRequired(false); /* S */
+    inputPort(2)->setRequired(false); /* R */
+    inputPort(3)->setRequired(false); /* p */
+    inputPort(4)->setRequired(false); /* c */
 
-    input(3)->setDefaultValue(Status::Active);
-    input(4)->setDefaultValue(Status::Active);
+    inputPort(3)->setDefaultValue(Status::Active);
+    inputPort(4)->setDefaultValue(Status::Active);
 
-    output(0)->setDefaultValue(Status::Inactive);
-    output(1)->setDefaultValue(Status::Active);
+    outputPort(0)->setDefaultValue(Status::Inactive);
+    outputPort(1)->setDefaultValue(Status::Active);
 }
 
 void SRFlipFlop::updatePorts()
 {
-    input(0)->setPos(leftPosition(), 13);   /* S */
-    input(1)->setPos(leftPosition(), 29);   /* Clk */
-    input(2)->setPos(leftPosition(), 45);   /* R */
-    input(3)->setPos(32, leftPosition());   /* Preset */
-    input(4)->setPos(32, rightPosition());  /* Clear */
+    inputPort(0)->setPos(leftPosition(), 13);   /* S */
+    inputPort(1)->setPos(leftPosition(), 29);   /* Clk */
+    inputPort(2)->setPos(leftPosition(), 45);   /* R */
+    inputPort(3)->setPos(32, leftPosition());   /* Preset */
+    inputPort(4)->setPos(32, rightPosition());  /* Clear */
 
-    output(0)->setPos(rightPosition(), 15); /* Q */
-    output(1)->setPos(rightPosition(), 45); /* ~Q */
+    outputPort(0)->setPos(rightPosition(), 15); /* Q */
+    outputPort(1)->setPos(rightPosition(), 45); /* ~Q */
 }
 
 void SRFlipFlop::updateTheme()
