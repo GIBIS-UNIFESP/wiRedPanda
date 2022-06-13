@@ -33,7 +33,7 @@ SimulationController::~SimulationController()
     clear();
 }
 
-void SimulationController::restart() { m_shouldRestart = true; }
+void SimulationController::restart() { m_initialized = false; }
 
 void SimulationController::updateScene()
 {
@@ -60,7 +60,7 @@ void SimulationController::updateScene()
 
 bool SimulationController::canRun()
 {
-    return (m_elmMapping) ? m_elmMapping->canRun() : false;
+    return m_initialized;
 }
 
 bool SimulationController::isRunning()
@@ -70,8 +70,7 @@ bool SimulationController::isRunning()
 
 void SimulationController::update()
 {
-    if (m_shouldRestart) {
-        m_shouldRestart = false;
+    if (!m_initialized) {
         initialize();
     }
 
@@ -92,8 +91,10 @@ void SimulationController::stop()
 void SimulationController::start()
 {
     qCDebug(zero) << tr("Starting simulation controller.");
-    Clock::reset = true;
-    initialize();
+    if (!m_initialized) {
+        Clock::reset = true;
+        initialize();
+    }
     m_simulationTimer.start();
     m_viewTimer.start();
     qCDebug(zero) << tr("Simulation started.");
@@ -120,8 +121,7 @@ void SimulationController::initialize()
     m_elmMapping->initialize();
     qCDebug(two) << tr("Sorting.");
     m_elmMapping->sort();
-    qCDebug(two) << tr("Updating.");
-    update();
+    m_initialized = true;
     qCDebug(zero) << tr("Finished simulation layer.");
 }
 
@@ -140,6 +140,7 @@ void SimulationController::updatePort(QNEOutputPort *port)
     GraphicElement *elm = port->graphicElement();
     LogicElement *logElm = nullptr;
     int portIndex = 0;
+
     if (elm->elementType() == ElementType::IC) {
         IC *ic = dynamic_cast<IC *>(elm);
         logElm = m_elmMapping->icMapping(ic)->output(port->index());
@@ -147,6 +148,7 @@ void SimulationController::updatePort(QNEOutputPort *port)
         logElm = elm->logic();;
         portIndex = port->index();
     }
+
     if (logElm->isValid()) {
         port->setValue(static_cast<Status>(logElm->outputValue(portIndex)));
     } else {
@@ -159,11 +161,13 @@ void SimulationController::updatePort(QNEInputPort *port)
     GraphicElement *elm = port->graphicElement();
     LogicElement *logElm = elm->logic();
     int portIndex = port->index();
+
     if (logElm->isValid()) {
         port->setValue(static_cast<Status>(logElm->inputValue(portIndex)));
     } else {
         port->setValue(Status::Invalid);
     }
+
     if (elm->elementGroup() == ElementGroup::Output) {
         elm->refresh();
     }

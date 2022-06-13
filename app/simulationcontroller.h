@@ -25,7 +25,6 @@ public:
     ~SimulationController() override;
 
     bool isRunning();
-    void clear();
     void initialize();
     void restart();
     void start();
@@ -37,11 +36,12 @@ private:
     static void updatePort(QNEInputPort *port);
 
     bool canRun();
+    void clear();
     void updatePort(QNEOutputPort *port);
 
     ElementMapping *m_elmMapping = nullptr;
     QTimer m_simulationTimer;
     QTimer m_viewTimer;
     Scene *m_scene;
-    bool m_shouldRestart = false;
+    bool m_initialized = false;
 };

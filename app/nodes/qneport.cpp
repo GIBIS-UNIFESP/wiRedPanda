@@ -151,7 +151,8 @@ void QNEPort::updateConnections()
     }
 
     if (!isValid()) {
-        return setValue(Status::Invalid);
+        setValue(Status::Invalid);
+        return;
     }
 
     if (m_connections.empty() && isInput()) {

@@ -91,7 +91,6 @@ private:
     void handleHoverPort();
     void makeConnection(QNEConnection *connection);
     void paste(QDataStream &stream);
-    void redoSimulationController();
     void releaseHoverPort();
     void resizeScene();
     void setDots(const QPen &dots);

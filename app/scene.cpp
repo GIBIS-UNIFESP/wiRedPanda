@@ -38,7 +38,7 @@ Scene::Scene(QObject *parent)
     m_redoAction->setIcon(QIcon(":/toolbar/redo.png"));
     m_redoAction->setShortcut(QKeySequence::Redo);
 
-    connect(&ICManager::instance(),    &ICManager::updatedIC,       this,                    &Scene::redoSimulationController);
+    connect(&ICManager::instance(),    &ICManager::updatedIC,       &m_simulationController, &SimulationController::restart);
     connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this,                    &Scene::updateTheme);
     connect(&m_undoStack,              &QUndoStack::indexChanged,   this,                    &Scene::checkUpdateRequest);
     connect(this,                      &Scene::circuitHasChanged,   &m_simulationController, &SimulationController::initialize);
@@ -358,15 +358,6 @@ void Scene::showWires(const bool checked)
     }
 }
 
-void Scene::redoSimulationController()
-{
-    bool simulationWasRunning = m_simulationController.isRunning();
-    m_simulationController.clear();
-    if (simulationWasRunning) {
-        m_simulationController.start();
-    }
-}
-
 void Scene::cloneDrag(const QPointF mousePos)
 {
     qCDebug(zero) << tr("Ctrl + Drag action triggered.");
@@ -628,7 +619,7 @@ void Scene::deleteAction()
     clearSelection();
     if (!items.isEmpty()) {
         receiveCommand(new DeleteItemsCommand(items, this));
-        redoSimulationController();
+        m_simulationController.restart();
     }
 }
 
@@ -660,6 +651,7 @@ void Scene::rotateRight()
 void Scene::mute(const bool mute)
 {
     const auto elms = elements();
+
     for (auto *elm : elms) {
         if (auto *buzzer = dynamic_cast<Buzzer *>(elm)) {
             buzzer->mute(mute);
