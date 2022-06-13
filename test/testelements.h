@@ -35,7 +35,7 @@ private slots:
     void testVCC();
 
 private:
-    void testICData(const IC *ic);
+    void testICData(IC *ic);
 
     QVector<InputSwitch *> switches{5};
     QVector<QNEConnection *> connections{5};
