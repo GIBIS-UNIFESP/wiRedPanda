@@ -335,8 +335,8 @@ void QNEOutputPort::setValue(Status value)
     for (auto *conn : connections()) {
         conn->setStatus(value);
 
-        if (auto *port = conn->otherPort(this)) {
-            port->setValue(value);
+        if (auto *otherPort = conn->otherPort(this)) {
+            otherPort->setValue(value);
         }
     }
 }

@@ -33,7 +33,7 @@ InputSwitch::InputSwitch(QGraphicsItem *parent)
     setToolTip(m_translatedName);
 }
 
-bool InputSwitch::on(const int port) const
+bool InputSwitch::isOn(const int port) const
 {
     Q_UNUSED(port);
     return m_isOn;
@@ -41,12 +41,12 @@ bool InputSwitch::on(const int port) const
 
 void InputSwitch::setOff()
 {
-    setOn(!on());
+    setOn(!isOn());
 }
 
 void InputSwitch::setOn()
 {
-    setOn(!on());
+    setOn(!isOn());
 }
 
 void InputSwitch::setOn(const bool value, const int port)
@@ -64,13 +64,15 @@ void InputSwitch::setOn(const bool value, const int port)
 
 void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if(event->modifiers() & Qt::ControlModifier){
+    if (event->modifiers() & Qt::ControlModifier) {
         return;
     }
+
     if ((!m_locked) && (event->button() == Qt::LeftButton)) {
         setOn(!m_isOn);
         event->accept();
     }
+
     QGraphicsItem::mousePressEvent(event);
 }
 

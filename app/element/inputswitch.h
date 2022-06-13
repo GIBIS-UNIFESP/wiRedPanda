@@ -17,7 +17,7 @@ class InputSwitch : public GraphicElementInput
 public:
     explicit InputSwitch(QGraphicsItem *parent = nullptr);
 
-    bool on(const int port = 0) const override;
+    bool isOn(const int port = 0) const override;
     void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version) override;
     void save(QDataStream &stream) const override;
     void setOff() override;

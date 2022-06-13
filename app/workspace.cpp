@@ -167,12 +167,10 @@ void WorkSpace::load(QDataStream &stream, const bool isPlaying)
     qCDebug(three) << tr("This code tries to centralize the elements in scene using the rectangle. But it is not working well.");
     // TODO: improve this
     m_scene.setSceneRect(m_scene.itemsBoundingRect());
-    if (auto *view = m_scene.view()) {
-        rect = rect.united(view->rect());
-        rect.moveCenter(QPointF(0, 0));
-        m_scene.setSceneRect(m_scene.sceneRect().united(rect));
-        view->centerOn(m_scene.itemsBoundingRect().center());
-    }
+    rect = rect.united(m_view.rect());
+    rect.moveCenter(QPointF(0, 0));
+    m_scene.setSceneRect(m_scene.sceneRect().united(rect));
+    m_view.centerOn(m_scene.itemsBoundingRect().center());
     m_scene.clearSelection();
     if (isPlaying) {
         m_scene.simulationController()->start();

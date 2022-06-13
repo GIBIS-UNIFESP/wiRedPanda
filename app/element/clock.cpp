@@ -30,21 +30,24 @@ Clock::Clock(QGraphicsItem *parent)
     setHasLabel(true);
     setPortName("Clock");
     setToolTip(m_translatedName);
-    Clock::setOn(false);
+    Clock::setOff();
 }
 
 void Clock::updateClock()
 {
-    if ((!m_locked) && (!isDisabled()) && (!pause)) {
-        m_elapsed++;
-        if ((m_elapsed % m_interval) == 0) {
-            m_elapsed = 0;
-            setOn(!m_isOn);
-        }
+    if (m_locked || isDisabled() || pause) {
+        return;
+    }
+
+    m_elapsed++;
+
+    if ((m_elapsed % m_interval) == 0) {
+        m_elapsed = 0;
+        setOn(!m_isOn);
     }
 }
 
-bool Clock::on(const int port) const
+bool Clock::isOn(const int port) const
 {
     Q_UNUSED(port);
     return m_isOn;

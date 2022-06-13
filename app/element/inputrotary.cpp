@@ -177,7 +177,7 @@ void InputRotary::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     }
 }
 
-bool InputRotary::on(const int port) const
+bool InputRotary::isOn(const int port) const
 {
     return (m_value == port);
 }
@@ -204,13 +204,15 @@ void InputRotary::setOn(const bool value, const int port)
 
 void InputRotary::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if(event->modifiers() & Qt::ControlModifier){
+    if (event->modifiers() & Qt::ControlModifier) {
         return;
     }
+
     if ((!m_locked) && (event->button() == Qt::LeftButton)) {
         setOn(true, (m_value + 1) % outputSize());
         event->accept();
     }
+
     QGraphicsItem::mousePressEvent(event);
 }
 

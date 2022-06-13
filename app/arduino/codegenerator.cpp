@@ -159,7 +159,7 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elms
             //        out << "// END of " << ic->getLabel() << endl;
             //        for (int i = 0; i < ic->outputSize(); ++i) {
             //          QNEPort *port = ic->outputMap.at(i);
-            //          varMap[ic->output(i)] = otherPortName(port);
+            //          varMap[ic->outputPort(i)] = otherPortName(port);
             //        }
             //      }
         } else {
