@@ -75,7 +75,7 @@ void SimulationController::updatePort(QNEOutputPort *port)
         IC *ic = dynamic_cast<IC *>(elm);
         logic = m_elmMapping->icMapping(ic)->output(port->index());
     } else {
-        logic = elm->logic();;
+        logic = elm->logic();
         portIndex = port->index();
     }
 

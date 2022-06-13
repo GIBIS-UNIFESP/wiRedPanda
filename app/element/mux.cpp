@@ -13,7 +13,9 @@ int id = qRegisterMetaType<Mux>();
 Mux::Mux(QGraphicsItem *parent)
     : GraphicElement(ElementType::Mux, ElementGroup::Mux, 3, 3, 1, 1, parent)
 {
-    if (GlobalProperties::skipInit) { return; }
+    if (GlobalProperties::skipInit) {
+        return;
+    }
 
     m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;

@@ -16,7 +16,9 @@ int id = qRegisterMetaType<Display>();
 Display::Display(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display, ElementGroup::Output, 8, 8, 0, 0, parent)
 {
-    if (GlobalProperties::skipInit) { return; }
+    if (GlobalProperties::skipInit) {
+        return;
+    }
 
     m_defaultSkins = QStringList{
         ":/output/counter/counter_off.png",

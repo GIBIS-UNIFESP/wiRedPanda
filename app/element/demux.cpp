@@ -13,7 +13,9 @@ int id = qRegisterMetaType<Demux>();
 Demux::Demux(QGraphicsItem *parent)
     : GraphicElement(ElementType::Demux, ElementGroup::Mux, 2, 2, 2, 2, parent)
 {
-    if (GlobalProperties::skipInit) { return; }
+    if (GlobalProperties::skipInit) {
+        return;
+    }
 
     m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;

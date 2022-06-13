@@ -18,7 +18,8 @@ class JKFlipFlop : public GraphicElement
 public:
     explicit JKFlipFlop(QGraphicsItem *parent = nullptr);
 
-    static QString pixmapPath() {
+    static QString pixmapPath()
+    {
         return (ThemeManager::theme() == Theme::Light) ? ":/memory/light/JK-flipflop.png"
                                                        : ":/memory/dark/JK-flipflop.png";
     }

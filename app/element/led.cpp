@@ -52,7 +52,9 @@ int id = qRegisterMetaType<Led>();
 Led::Led(QGraphicsItem *parent)
     : GraphicElement(ElementType::Led, ElementGroup::Output, 1, 4, 0, 0, parent)
 {
-    if (GlobalProperties::skipInit) { return; }
+    if (GlobalProperties::skipInit) {
+        return;
+    }
 
     m_defaultSkins = QStringList{
         ":/output/WhiteLedOff.png",             // Single input values: 0

@@ -13,7 +13,9 @@ int id = qRegisterMetaType<Buzzer>();
 Buzzer::Buzzer(QGraphicsItem *parent)
     : GraphicElement(ElementType::Buzzer, ElementGroup::Output, 1, 1, 0, 0, parent)
 {
-    if (GlobalProperties::skipInit) { return; }
+    if (GlobalProperties::skipInit) {
+        return;
+    }
 
     m_defaultSkins = QStringList{
         ":/output/BuzzerOff.png",

@@ -13,7 +13,9 @@ int id = qRegisterMetaType<JKFlipFlop>();
 JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::JKFlipFlop, ElementGroup::Memory, 5, 5, 2, 2, parent)
 {
-    if (GlobalProperties::skipInit) { return; }
+    if (GlobalProperties::skipInit) {
+        return;
+    }
 
     m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;

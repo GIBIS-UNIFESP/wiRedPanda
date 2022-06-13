@@ -11,7 +11,9 @@ int id = qRegisterMetaType<Nand>();
 Nand::Nand(QGraphicsItem *parent)
     : GraphicElement(ElementType::Nand, ElementGroup::Gate, 2, 8, 1, 1, parent)
 {
-    if (GlobalProperties::skipInit) { return; }
+    if (GlobalProperties::skipInit) {
+        return;
+    }
 
     m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;

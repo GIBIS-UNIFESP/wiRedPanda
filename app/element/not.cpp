@@ -11,7 +11,9 @@ int id = qRegisterMetaType<Not>();
 Not::Not(QGraphicsItem *parent)
     : GraphicElement(ElementType::Not, ElementGroup::Gate, 1, 1, 1, 1, parent)
 {
-    if (GlobalProperties::skipInit) { return; }
+    if (GlobalProperties::skipInit) {
+        return;
+    }
 
     m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;

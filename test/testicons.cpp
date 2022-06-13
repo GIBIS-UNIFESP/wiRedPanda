@@ -10,7 +10,10 @@
 void TestIcons::testIcons()
 {
     for (auto type = ElementType::InputButton; type < ElementType::Demux; ++type) {
-        if (type == ElementType::JKLatch) { continue; }
+        if (type == ElementType::JKLatch) {
+            continue;
+        }
+
         const auto pixmap = ElementFactory::pixmap(type);
         const auto text = ElementFactory::typeToText(type);
         QVERIFY2(!pixmap.isNull(), QString(text + " pixmap not found.").toUtf8());

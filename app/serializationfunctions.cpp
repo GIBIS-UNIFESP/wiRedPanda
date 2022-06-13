@@ -71,7 +71,8 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &stream, 
             break;
         }
 
-        default: throw Pandaception(tr("Invalid type. Data is possibly corrupted."));
+        default:
+            throw Pandaception(tr("Invalid type. Data is possibly corrupted."));
         }
     }
 
