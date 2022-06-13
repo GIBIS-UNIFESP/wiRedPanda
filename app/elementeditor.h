@@ -24,7 +24,7 @@ public:
 
     bool eventFilter(QObject *obj, QEvent *event) override;
     void changeTriggerAction();
-    void contextMenu(QPoint screenPos);
+    void contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse);
     void disable();
     void fillColorComboBox();
     void renameAction();
