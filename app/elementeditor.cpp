@@ -255,7 +255,14 @@ void ElementEditor::updateElementSkin()
 
 void ElementEditor::setScene(Scene *scene)
 {
+    if (m_scene) {
+        disconnect(m_scene, &QGraphicsScene::selectionChanged, this,    &ElementEditor::selectionChanged);
+        disconnect(m_scene, &Scene::contextMenuPos,            this,    &ElementEditor::contextMenu);
+        disconnect(this,    &ElementEditor::sendCommand,       m_scene, &Scene::receiveCommand);
+    }
+
     m_scene = scene;
+
     connect(m_scene, &QGraphicsScene::selectionChanged, this,    &ElementEditor::selectionChanged);
     connect(m_scene, &Scene::contextMenuPos,            this,    &ElementEditor::contextMenu);
     connect(this,    &ElementEditor::sendCommand,       m_scene, &Scene::receiveCommand);
