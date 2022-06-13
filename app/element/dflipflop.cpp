@@ -25,33 +25,33 @@ DFlipFlop::DFlipFlop(QGraphicsItem *parent)
     setPortName("FlipFlop D");
     setToolTip(m_translatedName);
 
-    input(0)->setName("Data");
-    input(1)->setName("Clock");
-    input(2)->setName("~Preset");
-    input(3)->setName("~Clear");
+    inputPort(0)->setName("Data");
+    inputPort(1)->setName("Clock");
+    inputPort(2)->setName("~Preset");
+    inputPort(3)->setName("~Clear");
 
-    output(0)->setName("Q");
-    output(1)->setName("~Q");
+    outputPort(0)->setName("Q");
+    outputPort(1)->setName("~Q");
 
-    input(2)->setRequired(false);
-    input(3)->setRequired(false);
+    inputPort(2)->setRequired(false);
+    inputPort(3)->setRequired(false);
 
-    input(2)->setDefaultValue(Status::Active);
-    input(3)->setDefaultValue(Status::Active);
+    inputPort(2)->setDefaultValue(Status::Active);
+    inputPort(3)->setDefaultValue(Status::Active);
 
-    output(0)->setDefaultValue(Status::Inactive);
-    output(1)->setDefaultValue(Status::Active);
+    outputPort(0)->setDefaultValue(Status::Inactive);
+    outputPort(1)->setDefaultValue(Status::Active);
 }
 
 void DFlipFlop::updatePorts()
 {
-    input(0)->setPos(leftPosition(), 13);   /* Data   */
-    input(1)->setPos(leftPosition(), 45);   /* Clock  */
-    input(2)->setPos(32, leftPosition());   /* Preset */
-    input(3)->setPos(32, rightPosition());  /* Clear  */
+    inputPort(0)->setPos(leftPosition(), 13);   /* Data   */
+    inputPort(1)->setPos(leftPosition(), 45);   /* Clock  */
+    inputPort(2)->setPos(32, leftPosition());   /* Preset */
+    inputPort(3)->setPos(32, rightPosition());  /* Clear  */
 
-    output(0)->setPos(rightPosition(), 15); /* Q      */
-    output(1)->setPos(rightPosition(), 45); /* ~Q     */
+    outputPort(0)->setPos(rightPosition(), 15); /* Q      */
+    outputPort(1)->setPos(rightPosition(), 45); /* ~Q     */
 }
 
 void DFlipFlop::updateTheme()

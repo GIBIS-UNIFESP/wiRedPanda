@@ -122,7 +122,7 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, WorkSpace *workspace)
     // it after simulation.
     QVector<Status> oldValues(inputs.size());
     for (int in = 0; in < inputs.size(); ++in) {
-        oldValues[in] = inputs[in]->output()->value();
+        oldValues[in] = inputs[in]->outputPort()->value();
     }
     // Computing the number of iterations based on the number of inputs.
     int numIter = static_cast<int>(pow(2, inputs.size()));
@@ -148,7 +148,7 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, WorkSpace *workspace)
         for (auto *output : qAsConst(outputs)) {
             int inSize = output->inputSize();
             for (int port = inSize - 1; port >= 0; --port) {
-                uchar val = static_cast<uchar>(output->input(port)->value());
+                uchar val = static_cast<uchar>(output->inputPort(port)->value());
                 results[counter][itr] = val;
                 counter++;
             }
@@ -245,7 +245,7 @@ void SimpleWaveform::showWaveform()
             label = ElementFactory::translatedName(inputs[in]->elementType());
         }
         inSeries[in]->setName(label);
-        oldValues[in] = inputs[in]->output()->value();
+        oldValues[in] = inputs[in]->outputPort()->value();
     }
     QVector<QLineSeries *> outSeries;
     qCDebug(zero) << tr("Getting the name of the outputs. If no label is given, the element type is used as a name. "
@@ -290,7 +290,7 @@ void SimpleWaveform::showWaveform()
         for (auto *output : qAsConst(outputs)) {
             int inSize = output->inputSize();
             for (int port = inSize - 1; port >= 0; --port) {
-                float val = (output->input(port)->value() == Status::Active);
+                float val = (output->inputPort(port)->value() == Status::Active);
                 float offset = static_cast<float>((outSeries.size() - counter - 1) * 2 + 0.5);
                 outSeries.at(counter)->append(itr, static_cast<qreal>(offset + val));
                 outSeries.at(counter)->append(itr + 1, static_cast<qreal>(offset + val));

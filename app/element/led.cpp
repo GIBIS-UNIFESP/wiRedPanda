@@ -101,7 +101,7 @@ void Led::refresh()
     if (isValid()) {
         std::bitset<4> indexBit;
         for (int i = 0; i < inputSize(); ++i) {
-            indexBit[i] = static_cast<int>(input(inputSize() - i - 1)->value());
+            indexBit[i] = static_cast<int>(inputPort(inputSize() - i - 1)->value());
         }
         index = static_cast<int>(indexBit.to_ulong());
     }
@@ -110,28 +110,28 @@ void Led::refresh()
     switch (inputSize()) {
     case 1: {
         setPixmap(m_colorNumber + index);
-        input(0)->setName("");
+        inputPort(0)->setName("");
         break;
     }
     case 2: {
         setPixmap((index == 3) ? 22 : 18 + index);
-        input(0)->setName("0");
-        input(1)->setName("1");
+        inputPort(0)->setName("0");
+        inputPort(1)->setName("1");
         break;
     }
     case 3: {
         setPixmap(18 + index);
-        input(0)->setName("0");
-        input(1)->setName("1");
-        input(2)->setName("2");
+        inputPort(0)->setName("0");
+        inputPort(1)->setName("1");
+        inputPort(2)->setName("2");
         break;
     }
     case 4: {
         setPixmap(10 + index);
-        input(0)->setName("0");
-        input(1)->setName("1");
-        input(2)->setName("2");
-        input(3)->setName("3");
+        inputPort(0)->setName("0");
+        inputPort(1)->setName("1");
+        inputPort(2)->setName("2");
+        inputPort(3)->setName("3");
         break;
     }
     }
@@ -188,7 +188,7 @@ void Led::setSkin(const bool defaultSkin, const QString &fileName)
     if (isValid()) {
         std::bitset<4> indexBit;
         for (int i = 0; i < inputSize(); ++i) {
-            indexBit[i] = static_cast<int>(input(inputSize() - i - 1)->value());
+            indexBit[i] = static_cast<int>(inputPort(inputSize() - i - 1)->value());
         }
         index = static_cast<int>(indexBit.to_ulong());
     }

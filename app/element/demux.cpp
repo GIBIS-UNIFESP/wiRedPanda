@@ -24,18 +24,18 @@ Demux::Demux(QGraphicsItem *parent)
     setPortName("DEMUX");
     setToolTip(m_translatedName);
 
-    input(0)->setName("in");
-    input(1)->setName("S");
+    inputPort(0)->setName("in");
+    inputPort(1)->setName("S");
 
-    output(0)->setName("out0");
-    output(1)->setName("out1");
+    outputPort(0)->setName("out0");
+    outputPort(1)->setName("out1");
 }
 
 void Demux::updatePorts()
 {
-    input(0)->setPos(16, 32);       /* 0   */
-    input(1)->setPos(32, 58);       /* S   */
+    inputPort(0)->setPos(16, 32);       /* 0   */
+    inputPort(1)->setPos(32, 58);       /* S   */
 
-    output(0)->setPos(48, 32 - 12); /* Out */
-    output(1)->setPos(48, 32 + 12); /* Out */
+    outputPort(0)->setPos(48, 32 - 12); /* Out */
+    outputPort(1)->setPos(48, 32 + 12); /* Out */
 }

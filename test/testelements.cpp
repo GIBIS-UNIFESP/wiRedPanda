@@ -35,7 +35,7 @@ void TestElements::init()
     for (int i = 0; i < connections.size(); ++i) {
         connections[i] = new QNEConnection();
         switches[i] = new InputSwitch();
-        connections.at(i)->setStart(switches.at(i)->output());
+        connections.at(i)->setStart(switches.at(i)->outputPort());
     }
 }
 
@@ -82,7 +82,7 @@ void TestElements::testVCC()
     InputVcc vcc;
     QCOMPARE(vcc.outputSize(), 1);
     QCOMPARE(vcc.inputSize(), 0);
-    QCOMPARE(static_cast<int>(vcc.output()->value()), 1);
+    QCOMPARE(static_cast<int>(vcc.outputPort()->value()), 1);
 }
 
 void TestElements::testGND()
@@ -90,7 +90,7 @@ void TestElements::testGND()
     InputGnd gnd;
     QCOMPARE(gnd.outputSize(), 1);
     QCOMPARE(gnd.inputSize(), 0);
-    QCOMPARE(static_cast<int>(gnd.output()->value()), 0);
+    QCOMPARE(static_cast<int>(gnd.outputPort()->value()), 0);
 }
 
 void TestElements::testMux()
@@ -190,17 +190,17 @@ void TestElements::testICData(IC *ic)
     QCOMPARE(ic->inputSize(), 5);
     QCOMPARE(ic->outputSize(), 2);
 
-    QCOMPARE(ic->input(0)->isRequired(), false);
-    QCOMPARE(ic->input(1)->isRequired(), false);
-    QCOMPARE(ic->input(2)->isRequired(), true);
-    QCOMPARE(ic->input(3)->isRequired(), false);
-    QCOMPARE(ic->input(4)->isRequired(), false);
+    QCOMPARE(ic->inputPort(0)->isRequired(), false);
+    QCOMPARE(ic->inputPort(1)->isRequired(), false);
+    QCOMPARE(ic->inputPort(2)->isRequired(), true);
+    QCOMPARE(ic->inputPort(3)->isRequired(), false);
+    QCOMPARE(ic->inputPort(4)->isRequired(), false);
 
-    QCOMPARE(static_cast<int>(ic->input(0)->value()), 1);
-    QCOMPARE(static_cast<int>(ic->input(1)->value()), 1);
-    QCOMPARE(static_cast<int>(ic->input(2)->value()), -1);
-    QCOMPARE(static_cast<int>(ic->input(3)->value()), 1);
-    QCOMPARE(static_cast<int>(ic->input(4)->value()), 1);
+    QCOMPARE(static_cast<int>(ic->inputPort(0)->value()), 1);
+    QCOMPARE(static_cast<int>(ic->inputPort(1)->value()), 1);
+    QCOMPARE(static_cast<int>(ic->inputPort(2)->value()), -1);
+    QCOMPARE(static_cast<int>(ic->inputPort(3)->value()), 1);
+    QCOMPARE(static_cast<int>(ic->inputPort(4)->value()), 1);
 }
 
 void TestElements::testIC()
@@ -220,20 +220,20 @@ void TestElements::testIC()
     auto *led2 = new Led();
 
     auto *connection = new QNEConnection();
-    connection->setStart(clkButton->output());
-    connection->setEnd(ic->input(2));
+    connection->setStart(clkButton->outputPort());
+    connection->setEnd(ic->inputPort(2));
 
     auto *connection2 = new QNEConnection();
-    connection2->setStart(ic->output(0));
-    connection2->setEnd(led->input());
+    connection2->setStart(ic->outputPort(0));
+    connection2->setEnd(led->inputPort());
 
     auto *connection3 = new QNEConnection();
-    connection3->setStart(prstButton->output());
-    connection3->setEnd(ic->input(0));
+    connection3->setStart(prstButton->outputPort());
+    connection3->setEnd(ic->inputPort(0));
 
     auto *connection4 = new QNEConnection();
-    connection4->setStart(ic->output(1));
-    connection4->setEnd(led2->input());
+    connection4->setStart(ic->outputPort(1));
+    connection4->setEnd(led2->inputPort());
 
     Scene scene;
     scene.addItem(led);
@@ -257,10 +257,10 @@ void TestElements::testIC()
         controller.update();
         controller.updateScene();
 
-        QCOMPARE(static_cast<int>(ic->input(2)->value()), 0);
+        QCOMPARE(static_cast<int>(ic->inputPort(2)->value()), 0);
 
-        QCOMPARE(static_cast<int>(ic->output(0)->value()), 1);
-        QCOMPARE(static_cast<int>(ic->output(1)->value()), 0);
+        QCOMPARE(static_cast<int>(ic->outputPort(0)->value()), 1);
+        QCOMPARE(static_cast<int>(ic->outputPort(1)->value()), 0);
 
         clkButton->setOn(false);
         prstButton->setOn(true);
@@ -269,10 +269,10 @@ void TestElements::testIC()
         controller.update();
         controller.updateScene();
 
-        QCOMPARE(static_cast<int>(ic->input(2)->value()), 0);
+        QCOMPARE(static_cast<int>(ic->inputPort(2)->value()), 0);
 
-        QCOMPARE(static_cast<int>(ic->output(0)->value()), 1);
-        QCOMPARE(static_cast<int>(ic->output(1)->value()), 0);
+        QCOMPARE(static_cast<int>(ic->outputPort(0)->value()), 1);
+        QCOMPARE(static_cast<int>(ic->outputPort(1)->value()), 0);
 
         clkButton->setOn(false);
         controller.update();
@@ -280,10 +280,10 @@ void TestElements::testIC()
         controller.update();
         controller.updateScene();
 
-        QCOMPARE(static_cast<int>(ic->input(2)->value()), 0);
+        QCOMPARE(static_cast<int>(ic->inputPort(2)->value()), 0);
 
-        QCOMPARE(static_cast<int>(ic->output(0)->value()), 1);
-        QCOMPARE(static_cast<int>(ic->output(1)->value()), 0);
+        QCOMPARE(static_cast<int>(ic->outputPort(0)->value()), 1);
+        QCOMPARE(static_cast<int>(ic->outputPort(1)->value()), 0);
 
         clkButton->setOn(true);
         controller.update();
@@ -291,10 +291,10 @@ void TestElements::testIC()
         controller.update();
         controller.updateScene();
 
-        QCOMPARE(static_cast<int>(ic->input(2)->value()), 1);
+        QCOMPARE(static_cast<int>(ic->inputPort(2)->value()), 1);
 
-        QCOMPARE(static_cast<int>(ic->output(0)->value()), 0);
-        QCOMPARE(static_cast<int>(ic->output(1)->value()), 1);
+        QCOMPARE(static_cast<int>(ic->outputPort(0)->value()), 0);
+        QCOMPARE(static_cast<int>(ic->outputPort(1)->value()), 1);
     }
 }
 

@@ -61,8 +61,8 @@ public:
     ElementType elementType() const;
     LogicElement *logic() const;
     QKeySequence trigger() const;
-    QNEInputPort *input(const int pos = 0);
-    QNEOutputPort *output(const int pos = 0);
+    QNEInputPort *inputPort(const int pos = 0);
+    QNEOutputPort *outputPort(const int pos = 0);
     QRectF boundingRect() const override;
     QString label() const;
     QVector<QNEInputPort *> inputs() const;

@@ -447,9 +447,9 @@ void SplitCommand::redo()
 
     // auto *startPort = c1->start();
     auto *endPort = conn1->end();
-    conn2->setStart(node->output());
+    conn2->setStart(node->outputPort());
     conn2->setEnd(endPort);
-    conn1->setEnd(node->input());
+    conn1->setEnd(node->inputPort());
 
     m_scene->addItem(node);
     m_scene->addItem(conn2);
@@ -557,19 +557,19 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
         }
 
         for (int in = 0; in < oldElm->inputSize(); ++in) {
-            while (!oldElm->input(in)->connections().isEmpty()) {
-                QNEConnection *conn = oldElm->input(in)->connections().first();
-                if (conn->end() == oldElm->input(in)) {
-                    conn->setEnd(newElm->input(in));
+            while (!oldElm->inputPort(in)->connections().isEmpty()) {
+                QNEConnection *conn = oldElm->inputPort(in)->connections().first();
+                if (conn->end() == oldElm->inputPort(in)) {
+                    conn->setEnd(newElm->inputPort(in));
                 }
             }
         }
 
         for (int out = 0; out < oldElm->outputSize(); ++out) {
-            while (!oldElm->output(out)->connections().isEmpty()) {
-                QNEConnection *conn = oldElm->output(out)->connections().first();
-                if (conn->start() == oldElm->output(out)) {
-                    conn->setStart(newElm->output(out));
+            while (!oldElm->outputPort(out)->connections().isEmpty()) {
+                QNEConnection *conn = oldElm->outputPort(out)->connections().first();
+                if (conn->start() == oldElm->outputPort(out)) {
+                    conn->setStart(newElm->outputPort(out));
                 }
             }
         }
@@ -614,8 +614,8 @@ void ChangeInputSizeCommand::redo()
         elm->save(stream);
         serializationOrder.append(elm);
         for (int in = m_newInputSize; in < elm->inputSize(); ++in) {
-            for (auto *conn : elm->input(in)->connections()) {
-                auto *otherPort = conn->otherPort(elm->input(in));
+            for (auto *conn : elm->inputPort(in)->connections()) {
+                auto *otherPort = conn->otherPort(elm->inputPort(in));
                 otherPort->graphicElement()->save(stream);
                 serializationOrder.append(otherPort->graphicElement());
             }
@@ -624,12 +624,12 @@ void ChangeInputSizeCommand::redo()
 
     for (auto *elm : m_elements) {
         for (int in = m_newInputSize; in < elm->inputSize(); ++in) {
-            while (!elm->input(in)->connections().isEmpty()) {
-                auto *conn = elm->input(in)->connections().first();
+            while (!elm->inputPort(in)->connections().isEmpty()) {
+                auto *conn = elm->inputPort(in)->connections().first();
                 conn->save(stream);
                 m_scene->removeItem(conn);
-                auto *otherPort = conn->otherPort(elm->input(in));
-                elm->input(in)->disconnect(conn);
+                auto *otherPort = conn->otherPort(elm->inputPort(in));
+                elm->inputPort(in)->disconnect(conn);
                 otherPort->disconnect(conn);
             }
         }
@@ -756,8 +756,8 @@ void ChangeOutputSizeCommand::redo()
         elm->save(stream);
         serializationOrder.append(elm);
         for (int out = m_newOutputSize; out < elm->outputSize(); ++out) {
-            for (auto *conn : elm->output(out)->connections()) {
-                auto *otherPort = conn->otherPort(elm->output(out));
+            for (auto *conn : elm->outputPort(out)->connections()) {
+                auto *otherPort = conn->otherPort(elm->outputPort(out));
                 otherPort->graphicElement()->save(stream);
                 serializationOrder.append(otherPort->graphicElement());
             }
@@ -765,12 +765,12 @@ void ChangeOutputSizeCommand::redo()
     }
     for (auto *elm : m_elements) {
         for (int out = m_newOutputSize; out < elm->outputSize(); ++out) {
-            while (!elm->output(out)->connections().isEmpty()) {
-                auto *conn = elm->output(out)->connections().first();
+            while (!elm->outputPort(out)->connections().isEmpty()) {
+                auto *conn = elm->outputPort(out)->connections().first();
                 conn->save(stream);
                 m_scene->removeItem(conn);
-                auto *otherPort = conn->otherPort(elm->output(out));
-                elm->output(out)->disconnect(conn);
+                auto *otherPort = conn->otherPort(elm->outputPort(out));
+                elm->outputPort(out)->disconnect(conn);
                 otherPort->disconnect(conn);
             }
         }
