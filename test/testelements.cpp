@@ -185,7 +185,7 @@ void TestElements::testTFlipFlop()
     QCOMPARE(elm.elementType(), ElementType::TFlipFlop);
 }
 
-void TestElements::testICData(const IC *ic)
+void TestElements::testICData(IC *ic)
 {
     QCOMPARE(ic->inputSize(), 5);
     QCOMPARE(ic->outputSize(), 2);

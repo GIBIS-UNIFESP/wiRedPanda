@@ -76,8 +76,6 @@ public:
     bool isDisabled() const;
     bool isRotatable() const;
     bool isValid();
-    const QNEInputPort *input(const int pos = 0) const;
-    const QNEOutputPort *output(const int pos = 0) const;
     int inputSize() const;
     int leftPosition() const;
     int maxInputSize() const;
