@@ -60,7 +60,7 @@ public:
 signals:
     void circuitAppearenceHasChanged();
     void circuitHasChanged();
-    void contextMenuPos(QPoint screenPos);
+    void contextMenuPos(QPoint screenPos, QGraphicsItem *itemAtMouse);
 
 protected:
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event) override;

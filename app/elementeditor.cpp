@@ -67,7 +67,7 @@ QAction *addElementAction(QMenu *menu, GraphicElement *firstElm, ElementType typ
     return action;
 }
 
-void ElementEditor::contextMenu(QPoint screenPos)
+void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
 {
     QMenu menu;
     QString changeSkinText(tr("Change skin to ..."));
@@ -113,50 +113,49 @@ void ElementEditor::contextMenu(QPoint screenPos)
 
     QMenu *submenuMorph = nullptr;
 
-    if (m_canMorph) {
+    if (auto *selectedElm = dynamic_cast<GraphicElement *>(itemAtMouse); selectedElm && m_canMorph) {
         submenuMorph = menu.addMenu(morphMenuText);
-        GraphicElement *firstElm = m_elements.first();
 
-        switch (firstElm->elementGroup()) {
+        switch (selectedElm->elementGroup()) {
         case ElementGroup::Gate: {
-            if (firstElm->inputSize() == 1) {
-                addElementAction(submenuMorph, firstElm, ElementType::Node, m_hasSameType);
-                addElementAction(submenuMorph, firstElm, ElementType::Not, m_hasSameType);
+            if (selectedElm->inputSize() == 1) {
+                addElementAction(submenuMorph, selectedElm, ElementType::Node, m_hasSameType);
+                addElementAction(submenuMorph, selectedElm, ElementType::Not, m_hasSameType);
             } else {
-                addElementAction(submenuMorph, firstElm, ElementType::And, m_hasSameType);
-                addElementAction(submenuMorph, firstElm, ElementType::Nand, m_hasSameType);
-                addElementAction(submenuMorph, firstElm, ElementType::Nor, m_hasSameType);
-                addElementAction(submenuMorph, firstElm, ElementType::Or, m_hasSameType);
-                addElementAction(submenuMorph, firstElm, ElementType::Xnor, m_hasSameType);
-                addElementAction(submenuMorph, firstElm, ElementType::Xor, m_hasSameType);
+                addElementAction(submenuMorph, selectedElm, ElementType::And, m_hasSameType);
+                addElementAction(submenuMorph, selectedElm, ElementType::Nand, m_hasSameType);
+                addElementAction(submenuMorph, selectedElm, ElementType::Nor, m_hasSameType);
+                addElementAction(submenuMorph, selectedElm, ElementType::Or, m_hasSameType);
+                addElementAction(submenuMorph, selectedElm, ElementType::Xnor, m_hasSameType);
+                addElementAction(submenuMorph, selectedElm, ElementType::Xor, m_hasSameType);
             }
             break;
         }
 
         case ElementGroup::StaticInput: [[fallthrough]];
         case ElementGroup::Input: {
-            addElementAction(submenuMorph, firstElm, ElementType::Clock, m_hasSameType);
-            addElementAction(submenuMorph, firstElm, ElementType::InputButton, m_hasSameType);
-            addElementAction(submenuMorph, firstElm, ElementType::InputGnd, m_hasSameType);
-            addElementAction(submenuMorph, firstElm, ElementType::InputRotary, m_hasSameType);
-            addElementAction(submenuMorph, firstElm, ElementType::InputSwitch, m_hasSameType);
-            addElementAction(submenuMorph, firstElm, ElementType::InputVcc, m_hasSameType);
+            addElementAction(submenuMorph, selectedElm, ElementType::Clock, m_hasSameType);
+            addElementAction(submenuMorph, selectedElm, ElementType::InputButton, m_hasSameType);
+            addElementAction(submenuMorph, selectedElm, ElementType::InputGnd, m_hasSameType);
+            addElementAction(submenuMorph, selectedElm, ElementType::InputRotary, m_hasSameType);
+            addElementAction(submenuMorph, selectedElm, ElementType::InputSwitch, m_hasSameType);
+            addElementAction(submenuMorph, selectedElm, ElementType::InputVcc, m_hasSameType);
             break;
         }
 
         case ElementGroup::Memory: {
-            if (firstElm->inputSize() == 2) {
-                addElementAction(submenuMorph, firstElm, ElementType::DLatch, m_hasSameType);
-            } else if (firstElm->inputSize() == 4) {
-                addElementAction(submenuMorph, firstElm, ElementType::DFlipFlop, m_hasSameType);
-                addElementAction(submenuMorph, firstElm, ElementType::TFlipFlop, m_hasSameType);
+            if (selectedElm->inputSize() == 2) {
+                addElementAction(submenuMorph, selectedElm, ElementType::DLatch, m_hasSameType);
+            } else if (selectedElm->inputSize() == 4) {
+                addElementAction(submenuMorph, selectedElm, ElementType::DFlipFlop, m_hasSameType);
+                addElementAction(submenuMorph, selectedElm, ElementType::TFlipFlop, m_hasSameType);
             }
             break;
         }
 
         case ElementGroup::Output: {
-            addElementAction(submenuMorph, firstElm, ElementType::Buzzer, m_hasSameType);
-            addElementAction(submenuMorph, firstElm, ElementType::Led, m_hasSameType);
+            addElementAction(submenuMorph, selectedElm, ElementType::Buzzer, m_hasSameType);
+            addElementAction(submenuMorph, selectedElm, ElementType::Led, m_hasSameType);
             break;
         }
 

@@ -538,11 +538,11 @@ void Scene::contextMenu(const QPoint screenPos)
 {
     if (auto *item = itemAt(m_mousePos)) {
         if (selectedItems().contains(item)) {
-            emit contextMenuPos(screenPos);
+            emit contextMenuPos(screenPos, item);
         } else if ((item->type() == GraphicElement::Type)) {
             clearSelection();
             item->setSelected(true);
-            emit contextMenuPos(screenPos);
+            emit contextMenuPos(screenPos, item);
         }
     } else {
         QMenu menu;
