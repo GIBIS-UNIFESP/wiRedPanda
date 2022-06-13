@@ -1,0 +1,10 @@
+extraction:
+  cpp:
+    prepare:
+      packages:
+        - libqt5charts5-dev
+        - libqt5multimedia5
+        - qtmultimedia5-dev
+    configure:
+      command:
+        - qmake
