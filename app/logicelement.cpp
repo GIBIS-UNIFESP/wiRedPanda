@@ -4,9 +4,9 @@
 #include "logicelement.h"
 
 LogicElement::LogicElement(const int inputSize, const int outputSize)
-    : m_inputs(inputSize, {})
+    : m_inputPairs(inputSize, {})
     , m_inputValues(inputSize, false)
-    , m_outputs(outputSize, false)
+    , m_outputValues(outputSize, false)
 {
 }
 
@@ -17,68 +17,72 @@ bool LogicElement::isValid() const
 
 void LogicElement::clearPredecessors()
 {
-    std::fill(m_inputs.begin(), m_inputs.end(), InputPair{});
+    std::fill(m_inputPairs.begin(), m_inputPairs.end(), InputPair{});
 }
 
 void LogicElement::clearSucessors()
 {
-    for (const auto &elm : qAsConst(m_successors)) {
-        for (auto &input : elm->m_inputs) {
-            if (input.elm == this) {
-                input.elm = nullptr;
-                input.port = 0;
+    for (const auto &logic : qAsConst(m_successors)) {
+        for (auto &inputPair : logic->m_inputPairs) {
+            if (inputPair.logic == this) {
+                inputPair.logic = nullptr;
+                inputPair.port = 0;
             }
         }
     }
+
     m_successors.clear();
 }
 
 void LogicElement::updateLogic()
 {
-    if (m_isValid) {
-        for (int index = 0; index < m_inputs.size(); ++index) {
-            m_inputValues[index] = inputValue(index);
-        }
-        _updateLogic(m_inputValues);
+    if (!m_isValid) {
+        return;
     }
+
+    for (int index = 0; index < m_inputPairs.size(); ++index) {
+        m_inputValues[index] = inputValue(index);
+    }
+
+    _updateLogic(m_inputValues);
 }
 
-void LogicElement::connectPredecessor(const int index, LogicElement *elm, const int port)
+void LogicElement::connectPredecessor(const int index, LogicElement *logic, const int port)
 {
-    m_inputs[index] = {elm, port};
-    elm->m_successors.insert(this);
+    m_inputPairs[index] = {logic, port};
+    logic->m_successors.insert(this);
 }
 
 void LogicElement::setOutputValue(const int index, const bool value)
 {
-    m_outputs[index] = value;
+    m_outputValues[index] = value;
 }
 
 void LogicElement::setOutputValue(const bool value)
 {
-    m_outputs[0] = value;
+    setOutputValue(0, value);
 }
 
 void LogicElement::validate()
 {
     m_isValid = true;
 
-    for (int index = 0; index < m_inputs.size() && m_isValid; ++index) {
-        if (m_inputs[index].elm == nullptr) {
+    for (int index = 0; index < m_inputPairs.size() && m_isValid; ++index) {
+        if (m_inputPairs[index].logic == nullptr) {
             m_isValid = false;
         }
     }
 
     if (!m_isValid) {
-        for (auto *elm : qAsConst(m_successors)) {
-            elm->m_isValid = false;
+        for (auto *logic : qAsConst(m_successors)) {
+            logic->m_isValid = false;
         }
     }
 }
 
 bool LogicElement::operator<(const LogicElement &other) const
 {
-    return m_priority < other.m_priority;
+    return (m_priority < other.m_priority);
 }
 
 int LogicElement::calculatePriority()
@@ -86,28 +90,32 @@ int LogicElement::calculatePriority()
     if (m_beingVisited) {
         return 0;
     }
+
     if (m_priority != -1) {
         return m_priority;
     }
+
     m_beingVisited = true;
     int max = 0;
-    for (auto *s : qAsConst(m_successors)) {
-        max = qMax(s->calculatePriority(), max);
+
+    for (auto *logic : qAsConst(m_successors)) {
+        max = qMax(logic->calculatePriority(), max);
     }
-    const int p = max + 1;
-    m_priority = p;
+
+    const int priority = max + 1;
+    m_priority = priority;
     m_beingVisited = false;
-    return p;
+    return priority;
 }
 
 bool LogicElement::outputValue(const int index) const
 {
-    return m_outputs.at(index);
+    return m_outputValues.at(index);
 }
 
 bool LogicElement::inputValue(const int index) const
 {
-    LogicElement *pred = m_inputs[index].elm;
-    int port = m_inputs[index].port;
+    auto *pred = m_inputPairs[index].logic;
+    int port = m_inputPairs[index].port;
     return pred->outputValue(port);
 }

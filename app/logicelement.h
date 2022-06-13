@@ -11,7 +11,7 @@
 class LogicElement;
 
 struct InputPair {
-    LogicElement *elm = nullptr;
+    LogicElement *logic = nullptr;
     int port = 0;
 };
 
@@ -21,15 +21,15 @@ class LogicElement
 public:
     explicit LogicElement(const int inputSize, const int outputSize);
     virtual ~LogicElement() = default;
+    bool operator<(const LogicElement &other) const;
 
     bool inputValue(const int index = 0) const;
     bool isValid() const;
-    bool operator<(const LogicElement &other) const;
     bool outputValue(const int index = 0) const;
     int calculatePriority();
     void clearPredecessors();
     void clearSucessors();
-    void connectPredecessor(const int index, LogicElement *elm, const int port);
+    void connectPredecessor(const int index, LogicElement *logic, const int port);
     void setOutputValue(const bool value);
     void setOutputValue(const int index, const bool value);
     void validate();
@@ -42,9 +42,9 @@ private:
     virtual void _updateLogic(const QVector<bool> &inputs) = 0;
 
     QSet<LogicElement *> m_successors;
-    QVector<InputPair> m_inputs;
+    QVector<InputPair> m_inputPairs;
     QVector<bool> m_inputValues;
-    QVector<bool> m_outputs;
+    QVector<bool> m_outputValues;
     bool m_beingVisited = false;
     bool m_isValid = true;
     int m_priority = -1;
