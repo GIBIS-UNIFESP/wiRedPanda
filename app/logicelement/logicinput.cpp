@@ -7,6 +7,7 @@ LogicInput::LogicInput(const bool defaultValue, const int nOutputs)
     : LogicElement(0, nOutputs)
 {
     setOutputValue(0, defaultValue);
+
     for (int port = 1; port < nOutputs; ++port) {
         setOutputValue(port, false);
     }

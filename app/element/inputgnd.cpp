@@ -23,5 +23,5 @@ InputGnd::InputGnd(QGraphicsItem *parent)
     setRotatable(false);
     setPortName("GND");
     setToolTip(m_translatedName);
-    m_outputs.first()->setValue(Status::Inactive);
+    m_outputPorts.first()->setValue(Status::Inactive);
 }

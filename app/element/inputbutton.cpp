@@ -27,7 +27,7 @@ InputButton::InputButton(QGraphicsItem *parent)
     m_locked = false;
     setCanChangeSkin(true);
     setRotatable(false);
-    m_outputs.first()->setValue(Status::Inactive);
+    m_outputPorts.first()->setValue(Status::Inactive);
     InputButton::setOn(false);
     setHasLabel(true);
     setHasTrigger(true);
