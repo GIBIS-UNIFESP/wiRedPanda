@@ -233,9 +233,9 @@ void SimpleWaveform::showWaveform()
     }
     QVector<QLineSeries *> inSeries;
     qCDebug(zero) << tr("Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation. "
-                     "Not saving memory states though...");
+                        "Not saving memory states though...");
     qCDebug(zero) << tr("Also getting the name of the inputs. If no label is given, the element type is used as a name. "
-                     "Bug here? What if there are 2 inputs without name or two identical labels?");
+                        "Bug here? What if there are 2 inputs without name or two identical labels?");
     QVector<Status> oldValues(inputs.size());
     inSeries.reserve(inputs.size());
     for (int in = 0; in < inputs.size(); ++in) {
@@ -249,7 +249,7 @@ void SimpleWaveform::showWaveform()
     }
     QVector<QLineSeries *> outSeries;
     qCDebug(zero) << tr("Getting the name of the outputs. If no label is given, the element type is used as a name. "
-                     "Bug here? What if there are 2 outputs without name or two identical labels?");
+                        "Bug here? What if there are 2 outputs without name or two identical labels?");
     for (auto *output : qAsConst(outputs)) {
         QString label = output->label();
         if (label.isEmpty()) {

@@ -34,7 +34,9 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const int m
     , m_minInputSize(minInputSize)
     , m_minOutputSize(minOutputSize)
 {
-    if (GlobalProperties::skipInit) { return; }
+    if (GlobalProperties::skipInit) {
+        return;
+    }
 
     qCDebug(four) << tr("Setting flags of elements.");
     setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemSendsGeometryChanges);

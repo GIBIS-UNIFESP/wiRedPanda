@@ -16,7 +16,9 @@ int id = qRegisterMetaType<InputRotary>();
 InputRotary::InputRotary(QGraphicsItem *parent)
     : GraphicElementInput(ElementType::InputRotary, ElementGroup::Input, 0, 0, 2, 16, parent)
 {
-    if (GlobalProperties::skipInit) { return; }
+    if (GlobalProperties::skipInit) {
+        return;
+    }
 
     m_defaultSkins = QStringList{
         ":/input/rotary/rotary_2.png",

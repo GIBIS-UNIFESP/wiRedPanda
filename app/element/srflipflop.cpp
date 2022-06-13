@@ -13,7 +13,9 @@ int id = qRegisterMetaType<SRFlipFlop>();
 SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::SRFlipFlop, ElementGroup::Memory, 5, 5, 2, 2, parent)
 {
-    if (GlobalProperties::skipInit) { return; }
+    if (GlobalProperties::skipInit) {
+        return;
+    }
 
     m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;

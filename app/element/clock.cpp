@@ -13,7 +13,9 @@ int id = qRegisterMetaType<Clock>();
 Clock::Clock(QGraphicsItem *parent)
     : GraphicElementInput(ElementType::Clock, ElementGroup::Input, 0, 0, 1, 1, parent)
 {
-    if (GlobalProperties::skipInit) { return; }
+    if (GlobalProperties::skipInit) {
+        return;
+    }
 
     m_defaultSkins = QStringList{
         ":/input/clock0.png",

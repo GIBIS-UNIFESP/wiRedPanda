@@ -540,7 +540,7 @@ bool MainWindow::closeTab(const int tabIndex)
         if (selectedButton == QMessageBox::Yes) {
             try {
                 workspace->save();
-            }  catch (std::exception &) {
+            } catch (std::exception &) {
                 if (closeTabAnyway() == QMessageBox::No) {
                     return false;
                 }
@@ -1053,7 +1053,7 @@ void MainWindow::updateTheme()
 
     auto labels = m_ui->memory->findChildren<ElementLabel *>();
 
-    for (auto* label : labels) {
+    for (auto *label : labels) {
         label->updateTheme();
     }
 }

@@ -18,7 +18,8 @@ class DFlipFlop : public GraphicElement
 public:
     explicit DFlipFlop(QGraphicsItem *parent = nullptr);
 
-    static QString pixmapPath() {
+    static QString pixmapPath()
+    {
         return (ThemeManager::theme() == Theme::Light) ? ":/memory/light/D-flipflop.png"
                                                        : ":/memory/dark/D-flipflop.png";
     }

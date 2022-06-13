@@ -13,7 +13,9 @@ int id = qRegisterMetaType<InputVcc>();
 InputVcc::InputVcc(QGraphicsItem *parent)
     : GraphicElement(ElementType::InputVcc, ElementGroup::StaticInput, 0, 0, 1, 1, parent)
 {
-    if (GlobalProperties::skipInit) { return; }
+    if (GlobalProperties::skipInit) {
+        return;
+    }
 
     m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;

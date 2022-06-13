@@ -180,8 +180,8 @@ void TestLogicElements::testLogicDFlipFlop()
     for (const auto &test : truthTable) {
         switches.at(0)->setOutputValue(test.at(1)); /* DATA */
         switches.at(1)->setOutputValue(test.at(0)); /*  CLK */
-        switches.at(2)->setOutputValue(false); /* PRST */
-        switches.at(3)->setOutputValue(false); /* CLR */
+        switches.at(2)->setOutputValue(false);      /* PRST */
+        switches.at(3)->setOutputValue(false);      /* CLR */
 
         elm.updateLogic();
 

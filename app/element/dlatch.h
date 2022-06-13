@@ -18,7 +18,8 @@ class DLatch : public GraphicElement
 public:
     explicit DLatch(QGraphicsItem *parent = nullptr);
 
-    static QString pixmapPath() {
+    static QString pixmapPath()
+    {
         return (ThemeManager::theme() == Theme::Light) ? ":/memory/light/D-latch.png"
                                                        : ":/memory/dark/D-latch.png";
     }

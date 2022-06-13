@@ -13,7 +13,9 @@ int id = qRegisterMetaType<Node>();
 Node::Node(QGraphicsItem *parent)
     : GraphicElement(ElementType::Node, ElementGroup::Gate, 1, 1, 1, 1, parent)
 {
-    if (GlobalProperties::skipInit) { return; }
+    if (GlobalProperties::skipInit) {
+        return;
+    }
 
     m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;

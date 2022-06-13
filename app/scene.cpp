@@ -838,10 +838,9 @@ bool Scene::eventFilter(QObject *watched, QEvent *event)
         auto *item = itemAt(mouseEvent->scenePos());
 
         if (item
-        && (item->type() == GraphicElement::Type || item->type() == QNEConnection::Type)
-        && (mouseEvent->button() == Qt::LeftButton)
-        && (mouseEvent->modifiers() & Qt::ControlModifier))
-        {
+            && (item->type() == GraphicElement::Type || item->type() == QNEConnection::Type)
+            && (mouseEvent->button() == Qt::LeftButton)
+            && (mouseEvent->modifiers() & Qt::ControlModifier)) {
             item->setSelected(true);
             cloneDrag(mouseEvent->scenePos());
             return true;
