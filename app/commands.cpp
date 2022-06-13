@@ -257,7 +257,7 @@ RotateCommand::RotateCommand(const QList<GraphicElement *> &items, const int ang
 void RotateCommand::undo()
 {
     qCDebug(zero) << text();
-    auto elements = findElements(m_ids);
+    const auto elements = findElements(m_ids);
     m_scene->clearSelection();
     for (int i = 0; i < elements.size(); ++i) {
         auto *elm = elements[i];
@@ -274,12 +274,12 @@ void RotateCommand::undo()
 void RotateCommand::redo()
 {
     qCDebug(zero) << text();
-    auto elements = findElements(m_ids);
+    const auto elements = findElements(m_ids);
     m_scene->clearSelection();
     double cx = 0;
     double cy = 0;
     int sz = 0;
-    for (auto *item : qAsConst(elements)) {
+    for (auto *item : elements) {
         cx += item->pos().x();
         cy += item->pos().y();
         sz++;
@@ -288,7 +288,7 @@ void RotateCommand::redo()
         cx /= sz;
         cy /= sz;
     }
-    for (auto *elm : qAsConst(elements)) {
+    for (auto *elm : elements) {
         QTransform transform;
         transform.translate(cx, cy);
         transform.rotate(m_angle);
@@ -320,7 +320,7 @@ MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPoint
 void MoveCommand::undo()
 {
     qCDebug(zero) << text();
-    auto elms = findElements(m_ids).toVector();
+    const auto elms = findElements(m_ids);
     for (int i = 0; i < elms.size(); ++i) {
         elms[i]->setPos(m_oldPositions[i]);
     }
@@ -330,7 +330,7 @@ void MoveCommand::undo()
 void MoveCommand::redo()
 {
     qCDebug(zero) << text();
-    auto elms = findElements(m_ids).toVector();
+    const auto elms = findElements(m_ids);
     for (int i = 0; i < elms.size(); ++i) {
         elms[i]->setPos(m_newPositions[i]);
     }
@@ -367,7 +367,7 @@ void UpdateCommand::redo()
 
 void UpdateCommand::loadData(QByteArray &itemData)
 {
-    auto elements = findElements(ids).toVector();
+    const auto elements = findElements(ids);
 
     if (elements.isEmpty()) {
         return;
@@ -378,7 +378,7 @@ void UpdateCommand::loadData(QByteArray &itemData)
 
     double version = GlobalProperties::version;
 
-    for (auto *elm : qAsConst(elements)) {
+    for (auto *elm : elements) {
         elm->load(stream, portMap, version);
         elm->setSelected(true);
     }
@@ -558,8 +558,8 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
 
         for (int in = 0; in < oldElm->inputSize(); ++in) {
             while (!oldElm->inputPort(in)->connections().isEmpty()) {
-                QNEConnection *conn = oldElm->inputPort(in)->connections().first();
-                if (conn->end() == oldElm->inputPort(in)) {
+                if (auto *conn = oldElm->inputPort(in)->connections().first();
+                        conn && conn->end() == oldElm->inputPort(in)) {
                     conn->setEnd(newElm->inputPort(in));
                 }
             }
@@ -567,8 +567,8 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
 
         for (int out = 0; out < oldElm->outputSize(); ++out) {
             while (!oldElm->outputPort(out)->connections().isEmpty()) {
-                QNEConnection *conn = oldElm->outputPort(out)->connections().first();
-                if (conn->start() == oldElm->outputPort(out)) {
+                if (auto *conn = oldElm->outputPort(out)->connections().first();
+                        conn && conn->start() == oldElm->outputPort(out)) {
                     conn->setStart(newElm->outputPort(out));
                 }
             }
@@ -599,7 +599,7 @@ ChangeInputSizeCommand::ChangeInputSizeCommand(const QList<GraphicElement *> &el
 void ChangeInputSizeCommand::redo()
 {
     qCDebug(zero) << text();
-    const auto m_elements = findElements(m_elms).toVector();
+    const auto m_elements = findElements(m_elms);
 
     if (!m_elements.isEmpty()) {
         m_scene->clearSelection();
@@ -683,21 +683,22 @@ FlipCommand::FlipCommand(const QList<GraphicElement *> &items, const int axis, S
     double xmax;
     double ymin;
     double ymax;
-    if (!items.empty()) {
-        xmin = xmax = items.first()->pos().rx();
-        ymin = ymax = items.first()->pos().ry();
-        for (auto *item : items) {
-            m_positions.append(item->pos());
-            item->setPos(item->pos());
-            m_ids.append(item->id());
-            xmin = qMin(xmin, item->pos().rx());
-            xmax = qMax(xmax, item->pos().rx());
-            ymin = qMin(ymin, item->pos().ry());
-            ymax = qMax(ymax, item->pos().ry());
-        }
-        m_minPos = QPointF(xmin, ymin);
-        m_maxPos = QPointF(xmax, ymax);
+    if (items.isEmpty()) {
+        return;
     }
+    xmin = xmax = items.first()->pos().rx();
+    ymin = ymax = items.first()->pos().ry();
+    for (auto *item : items) {
+        m_positions.append(item->pos());
+        item->setPos(item->pos());
+        m_ids.append(item->id());
+        xmin = qMin(xmin, item->pos().rx());
+        xmax = qMax(xmax, item->pos().rx());
+        ymin = qMin(ymin, item->pos().ry());
+        ymax = qMax(ymax, item->pos().ry());
+    }
+    m_minPos = QPointF(xmin, ymin);
+    m_maxPos = QPointF(xmax, ymax);
 }
 
 void FlipCommand::undo()
@@ -710,15 +711,12 @@ void FlipCommand::redo()
 {
     qCDebug(zero) << text();
     // TODO: this might detach the QList
-    auto list = findElements(m_ids);
+    const auto list = findElements(m_ids);
     m_scene->clearSelection();
-    for (auto *elm : qAsConst(list)) {
+    for (auto *elm : list) {
         auto pos = elm->pos();
-        if (m_axis == 0) {
-            pos.setX(m_minPos.rx() + (m_maxPos.rx() - pos.rx()));
-        } else {
-            pos.setY(m_minPos.ry() + (m_maxPos.ry() - pos.ry()));
-        }
+        (m_axis == 0) ? pos.setX(m_minPos.rx() + (m_maxPos.rx() - pos.rx()))
+                      : pos.setY(m_minPos.ry() + (m_maxPos.ry() - pos.ry()));
         elm->setPos(pos);
         elm->update();
         elm->setSelected(true);
@@ -744,7 +742,7 @@ ChangeOutputSizeCommand::ChangeOutputSizeCommand(const QList<GraphicElement *> &
 void ChangeOutputSizeCommand::redo()
 {
     qCDebug(zero) << text();
-    const QList<GraphicElement *> m_elements = findElements(m_elms);
+    const auto m_elements = findElements(m_elms);
     if (!m_elements.isEmpty() && m_elements.first()->scene()) {
         m_scene->clearSelection();
     }
