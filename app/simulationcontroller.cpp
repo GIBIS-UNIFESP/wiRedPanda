@@ -28,11 +28,6 @@ SimulationController::SimulationController(Scene *scene)
     connect(&m_viewTimer,       &QTimer::timeout, this, &SimulationController::updateScene);
 }
 
-SimulationController::~SimulationController()
-{
-    clear();
-}
-
 void SimulationController::restart() { m_initialized = false; }
 
 void SimulationController::updateScene()
@@ -49,7 +44,8 @@ void SimulationController::updateScene()
             continue;
         }
 
-        if (auto *element = qgraphicsitem_cast<GraphicElement *>(item); element && element->elementGroup() == ElementGroup::Output) {
+        if (auto *element = qgraphicsitem_cast<GraphicElement *>(item);
+                element && (element->elementGroup() == ElementGroup::Output)) {
             const auto inputs = element->inputs();
             for (auto *input : inputs) {
                 updatePort(input);
@@ -70,11 +66,7 @@ bool SimulationController::isRunning()
 
 void SimulationController::update()
 {
-    if (!m_initialized) {
-        initialize();
-    }
-
-    if (!m_elmMapping) { // TODO: Remove this check, if possible. May increse the simulation speed significantly.
+    if (!m_initialized && !initialize()) {
         return;
     }
 
@@ -101,21 +93,19 @@ void SimulationController::start()
     m_scene->mute(false);
 }
 
-void SimulationController::initialize()
+bool SimulationController::initialize()
 {
     qCDebug(two) << tr("GENERATING SIMULATION LAYER.");
     auto elements = m_scene->elements();
     qCDebug(zero) << tr("Elements read:") << elements.size();
     if (elements.empty()) {
-        return;
+        return false;
     }
-    qCDebug(two) << tr("Deleting existing mapping.");
-    delete m_elmMapping;
     qCDebug(two) << tr("Recreating mapping for simulation.");
-    m_elmMapping = new ElementMapping(elements);
+    m_elmMapping = std::make_unique<ElementMapping>(elements);
     if (!m_elmMapping->canInitialize()) {
         qCDebug(zero) << tr("Cannot initialize simulation.");
-        return;
+        return false;
     }
     qCDebug(two) << tr("Can initialize.");
     m_elmMapping->initialize();
@@ -123,12 +113,7 @@ void SimulationController::initialize()
     m_elmMapping->sort();
     m_initialized = true;
     qCDebug(zero) << tr("Finished simulation layer.");
-}
-
-void SimulationController::clear()
-{
-    delete m_elmMapping;
-    m_elmMapping = nullptr;
+    return true;
 }
 
 void SimulationController::updatePort(QNEOutputPort *port)
@@ -138,19 +123,19 @@ void SimulationController::updatePort(QNEOutputPort *port)
     }
 
     GraphicElement *elm = port->graphicElement();
-    LogicElement *logElm = nullptr;
+    LogicElement *logic = nullptr;
     int portIndex = 0;
 
     if (elm->elementType() == ElementType::IC) {
         IC *ic = dynamic_cast<IC *>(elm);
-        logElm = m_elmMapping->icMapping(ic)->output(port->index());
+        logic = m_elmMapping->icMapping(ic)->output(port->index());
     } else {
-        logElm = elm->logic();;
+        logic = elm->logic();;
         portIndex = port->index();
     }
 
-    if (logElm->isValid()) {
-        port->setValue(static_cast<Status>(logElm->outputValue(portIndex)));
+    if (logic->isValid()) {
+        port->setValue(static_cast<Status>(logic->outputValue(portIndex)));
     } else {
         port->setValue(Status::Invalid);
     }
@@ -159,11 +144,11 @@ void SimulationController::updatePort(QNEOutputPort *port)
 void SimulationController::updatePort(QNEInputPort *port)
 {
     GraphicElement *elm = port->graphicElement();
-    LogicElement *logElm = elm->logic();
+    LogicElement *logic = elm->logic();
     int portIndex = port->index();
 
-    if (logElm->isValid()) {
-        port->setValue(static_cast<Status>(logElm->inputValue(portIndex)));
+    if (logic->isValid()) {
+        port->setValue(static_cast<Status>(logic->inputValue(portIndex)));
     } else {
         port->setValue(Status::Invalid);
     }

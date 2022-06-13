@@ -5,13 +5,12 @@
 
 #pragma once
 
+#include "elementmapping.h"
+
 #include <QObject>
 #include <QTimer>
+#include <memory>
 
-class Clock;
-class ElementMapping;
-class GraphicElement;
-class QNEConnection;
 class QNEInputPort;
 class QNEOutputPort;
 class Scene;
@@ -22,10 +21,10 @@ class SimulationController : public QObject
 
 public:
     explicit SimulationController(Scene *scene);
-    ~SimulationController() override;
+    ~SimulationController() override = default;
 
+    bool initialize();
     bool isRunning();
-    void initialize();
     void restart();
     void start();
     void stop();
@@ -36,12 +35,11 @@ private:
     static void updatePort(QNEInputPort *port);
 
     bool canRun();
-    void clear();
     void updatePort(QNEOutputPort *port);
 
-    ElementMapping *m_elmMapping = nullptr;
     QTimer m_simulationTimer;
     QTimer m_viewTimer;
     Scene *m_scene;
     bool m_initialized = false;
+    std::unique_ptr<ElementMapping> m_elmMapping;
 };

@@ -21,7 +21,7 @@ public:
     inline static bool reset = true;
 
     QString genericProperties() override;
-    bool on(const int port = 0) const override;
+    bool isOn(const int port = 0) const override;
     float frequency() const override;
     void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version) override;
     void resetClock();

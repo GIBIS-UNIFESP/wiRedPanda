@@ -76,10 +76,6 @@ void ElementMapping::insertElement(GraphicElement *elm)
     elm->setLogic(logicElm);
     m_deletableElements.append(logicElm);
     m_logicElms.append(logicElm);
-
-    if (auto *in = dynamic_cast<GraphicElementInput *>(elm)) {
-        m_inputs.append(in);
-    }
 }
 
 void ElementMapping::insertIC(IC *ic)
@@ -99,15 +95,20 @@ void ElementMapping::insertIC(IC *ic)
 void ElementMapping::generateMap()
 {
     for (auto *elm : qAsConst(m_elements)) {
+        if (elm->elementType() == ElementType::IC) {
+            insertIC(dynamic_cast<IC *>(elm));
+            continue;
+        }
+
         if (elm->elementType() == ElementType::Clock) {
             m_clocks.append(dynamic_cast<Clock *>(elm));
         }
 
-        if (elm->elementType() == ElementType::IC) {
-            insertIC(dynamic_cast<IC *>(elm));
-        } else {
-            insertElement(elm);
+        if (elm->elementGroup() == ElementGroup::Input) {
+            m_inputs.append(dynamic_cast<GraphicElementInput *>(elm));
         }
+
+        insertElement(elm);
     }
 }
 
@@ -186,7 +187,7 @@ void ElementMapping::update()
 
     for (auto *input : qAsConst(m_inputs)) {
       for (int port = 0; port < input->outputSize(); ++port) {
-          input->logic()->setOutputValue(port, input->on(port));
+          input->logic()->setOutputValue(port, input->isOn(port));
       }
     }
 

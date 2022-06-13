@@ -17,7 +17,7 @@ class InputRotary : public GraphicElementInput
 public:
     explicit InputRotary(QGraphicsItem *parent = nullptr);
 
-    bool on(const int port = 0) const override;
+    bool isOn(const int port = 0) const override;
     int outputSize() const override;
     int outputValue() const override;
     void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version) override;

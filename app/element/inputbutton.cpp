@@ -37,13 +37,15 @@ InputButton::InputButton(QGraphicsItem *parent)
 
 void InputButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if(event->modifiers() & Qt::ControlModifier){
+    if (event->modifiers() & Qt::ControlModifier) {
         return;
     }
+
     if ((!m_locked) && (event->button() == Qt::LeftButton)) {
         setOn(true);
         event->accept();
     }
+
     QGraphicsItem::mousePressEvent(event);
 }
 
@@ -53,6 +55,7 @@ void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         setOn(false);
         event->accept();
     }
+
     GraphicElement::mouseReleaseEvent(event);
 }
 
@@ -65,12 +68,13 @@ void InputButton::save(QDataStream &stream) const
 void InputButton::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
 {
     GraphicElement::load(stream, portMap, version);
+
     if (version >= 3.1) {
         stream >> m_locked;
     }
 }
 
-bool InputButton::on(const int port) const
+bool InputButton::isOn(const int port) const
 {
     Q_UNUSED(port);
     return m_isOn;

@@ -101,15 +101,16 @@ QVector<GraphicElement *> Scene::visibleElements()
 
 QVector<GraphicElement *> Scene::elements()
 {
-    QVector<GraphicElement *> elements_;
     const auto items_ = items();
+    QVector<GraphicElement *> elements_;
     elements_.reserve(items_.size());
+
     for (auto *item : items_) {
-        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
-        if (elm) {
+        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
             elements_.append(elm);
         }
     }
+
     return elements_;
 }
 
@@ -617,6 +618,7 @@ void Scene::deleteAction()
 {
     const auto &items = selectedItems();
     clearSelection();
+
     if (!items.isEmpty()) {
         receiveCommand(new DeleteItemsCommand(items, this));
         m_simulationController.restart();
@@ -626,6 +628,7 @@ void Scene::deleteAction()
 void Scene::selectAll()
 {
     const auto sceneItems = items();
+
     for (auto *item : sceneItems) {
         item->setSelected(true);
     }
@@ -637,12 +640,14 @@ void Scene::rotateRight()
     const auto list = selectedItems();
     QList<GraphicElement *> elms;
     elms.reserve(list.size());
+
     for (auto *item : qAsConst(list)) {
-        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
-        if (elm && (elm->type() == GraphicElement::Type)) {
+        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
+                elm && (elm->type() == GraphicElement::Type)) {
             elms.append(elm);
         }
     }
+
     if ((elms.size() > 1) || ((elms.size() == 1) && elms.first()->isRotatable())) {
         receiveCommand(new RotateCommand(elms, static_cast<int>(angle), this));
     }
@@ -665,12 +670,14 @@ void Scene::rotateLeft()
     const auto list = selectedItems();
     QList<GraphicElement *> elms;
     elms.reserve(list.size());
+
     for (auto *item : qAsConst(list)) {
-        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
-        if (elm && (elm->type() == GraphicElement::Type)) {
+        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
+                elm && (elm->type() == GraphicElement::Type)) {
             elms.append(elm);
         }
     }
+
     if ((elms.size() > 1) || ((elms.size() == 1) && elms.first()->isRotatable())) {
         receiveCommand(new RotateCommand(elms, static_cast<int>(angle), this));
     }
@@ -681,9 +688,10 @@ void Scene::flipHorizontally()
     auto list = selectedItems();
     QList<GraphicElement *> elms;
     elms.reserve(list.size());
+
     for (auto *item : qAsConst(list)) {
-        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
-        if (elm && (elm->type() == GraphicElement::Type)) {
+        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
+                elm && (elm->type() == GraphicElement::Type)) {
             elms.append(elm);
         }
     }
@@ -698,12 +706,14 @@ void Scene::flipVertically()
     auto list = selectedItems();
     QList<GraphicElement *> elms;
     elms.reserve(list.size());
+
     for (auto *item : qAsConst(list)) {
-        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
-        if (elm && (elm->type() == GraphicElement::Type)) {
+        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
+                elm && (elm->type() == GraphicElement::Type)) {
             elms.append(elm);
         }
     }
+
     if ((elms.size() > 1) || ((elms.size() == 1))) {
         receiveCommand(new FlipCommand(elms, 1, this));
     }
@@ -789,8 +799,8 @@ void Scene::keyPressEvent(QKeyEvent *event)
         const auto elms = elements();
         for (auto *elm : elms) {
             if (elm->hasTrigger() && !elm->trigger().isEmpty() && elm->trigger().matches(event->key())) {
-                auto *input = dynamic_cast<GraphicElementInput *>(elm);
-                if (input && !input->isLocked()) {
+                if (auto *input = dynamic_cast<GraphicElementInput *>(elm);
+                        input && !input->isLocked()) {
                     input->setOn();
                 }
             }
@@ -806,8 +816,8 @@ void Scene::keyReleaseEvent(QKeyEvent *event)
         const auto elms = elements();
         for (auto *elm : elms) {
             if (elm->hasTrigger() && !elm->trigger().isEmpty() && elm->trigger().matches(event->key())) {
-                auto *input = dynamic_cast<GraphicElementInput *>(elm);
-                if (input && !input->isLocked() && (elm->elementType() == ElementType::InputButton)) {
+                if (auto *input = dynamic_cast<GraphicElementInput *>(elm);
+                        input && !input->isLocked() && (elm->elementType() == ElementType::InputButton)) {
                     input->setOff();
                 }
             }
@@ -963,7 +973,8 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     m_selectionRect.hide();
     m_markingSelectionBox = false;
 
-    if (auto *connection = editedConnection(); connection && (event->buttons() == Qt::NoButton)) {
+    if (auto *connection = editedConnection();
+            connection && (event->buttons() == Qt::NoButton)) {
         makeConnection(connection);
         return;
     }
@@ -977,9 +988,8 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
         return;
     }
 
-    auto *connection = dynamic_cast<QNEConnection *>(itemAt(m_mousePos));
-
-    if (connection && connection->start() && connection->end()) {
+    if (auto *connection = dynamic_cast<QNEConnection *>(itemAt(m_mousePos));
+            connection && connection->start() && connection->end()) {
         receiveCommand(new SplitCommand(connection, m_mousePos, this));
     }
 
