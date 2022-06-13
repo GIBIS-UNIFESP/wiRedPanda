@@ -263,38 +263,44 @@ QUndoStack *Scene::undoStack()
 void Scene::makeConnection(QNEConnection *connection)
 {
     auto *port = dynamic_cast<QNEPort *>(itemAt(m_mousePos));
-    if (port && connection) {
-        /* The mouse is released over a QNEPort. */
-        QNEOutputPort *startPort = nullptr;
-        QNEInputPort *endPort = nullptr;
-        if (connection->start() != nullptr) {
-            startPort = connection->start();
-            endPort = dynamic_cast<QNEInputPort *>(port);
-        } else if (connection->end() != nullptr) {
-            startPort = dynamic_cast<QNEOutputPort *>(port);
-            endPort = connection->end();
-        }
-        if (!startPort || !endPort) {
-            return;
-        }
-        /* Verifying if the connection is valid. */
-        if ((startPort->graphicElement() != endPort->graphicElement()) && !startPort->isConnected(endPort)) {
-            /* Making connection. */
-            connection->setStart(startPort);
-            connection->setEnd(endPort);
-            receiveCommand(new AddItemsCommand({connection}, this));
-            setEditedConnection(nullptr);
-        } else {
-            deleteEditedConnection();
-        }
+
+    if (!port || !connection) {
+        return;
+    }
+
+    /* The mouse is released over a QNEPort. */
+    QNEOutputPort *startPort = nullptr;
+    QNEInputPort *endPort = nullptr;
+
+    if (connection->start() != nullptr) {
+        startPort = connection->start();
+        endPort = dynamic_cast<QNEInputPort *>(port);
+    } else if (connection->end() != nullptr) {
+        startPort = dynamic_cast<QNEOutputPort *>(port);
+        endPort = connection->end();
+    }
+
+    if (!startPort || !endPort) {
+        return;
+    }
+
+    /* Verifying if the connection is valid. */
+    if ((startPort->graphicElement() != endPort->graphicElement()) && !startPort->isConnected(endPort)) {
+        /* Making connection. */
+        connection->setStart(startPort);
+        connection->setEnd(endPort);
+        receiveCommand(new AddItemsCommand({connection}, this));
+        setEditedConnection(nullptr);
+    } else {
+        deleteEditedConnection();
     }
 }
 
 void Scene::detachConnection(QNEInputPort *endPort)
 {
-    QNEConnection *connection = endPort->connections().last();
-    QNEOutputPort *startPort = connection->start();
-    if (startPort) {
+    auto *connection = endPort->connections().last();
+
+    if (auto *startPort = connection->start()) {
         receiveCommand(new DeleteItemsCommand({connection}, this));
         startNewConnection(startPort);
     }
@@ -482,18 +488,20 @@ void Scene::setHoverPort(QNEPort *port)
 
 QNEPort *Scene::hoverPort()
 {
-    auto *hoverElm = dynamic_cast<GraphicElement *>(ElementFactory::itemById(m_hoverPortElmId));
     QNEPort *hoverPort = nullptr;
-    if (hoverElm) {
+
+    if (auto *hoverElm = dynamic_cast<GraphicElement *>(ElementFactory::itemById(m_hoverPortElmId))) {
         if (m_hoverPortNbr < hoverElm->inputSize()) {
             hoverPort = hoverElm->inputPort(m_hoverPortNbr);
         } else if (((m_hoverPortNbr - hoverElm->inputSize()) < hoverElm->outputSize())) {
             hoverPort = hoverElm->outputPort(m_hoverPortNbr - hoverElm->inputSize());
         }
     }
+
     if (!hoverPort) {
         setHoverPort(nullptr);
     }
+
     return hoverPort;
 }
 
