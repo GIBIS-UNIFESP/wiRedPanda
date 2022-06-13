@@ -63,7 +63,7 @@ Display::Display(QGraphicsItem *parent)
     setPortName("Display");
     setToolTip(m_translatedName);
 
-    for (auto *in : qAsConst(m_inputs)) {
+    for (auto *in : qAsConst(m_inputPorts)) {
         in->setRequired(false);
         in->setDefaultValue(Status::Inactive);
     }
@@ -172,7 +172,7 @@ void Display::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const
         QVector<int> order = {2, 1, 4, 5, 0, 7, 3, 6};
         QVector<QNEInputPort *> aux = inputs();
         for (int i = 0; i < aux.size(); ++i) {
-            aux[order[i]] = m_inputs[i];
+            aux[order[i]] = m_inputPorts[i];
         }
         setInputs(aux);
         updatePorts();
@@ -182,7 +182,7 @@ void Display::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const
         QVector<int> order = {2, 5, 4, 0, 7, 3, 6, 1};
         QVector<QNEInputPort *> aux = inputs();
         for (int i = 0; i < aux.size(); ++i) {
-            aux[order[i]] = m_inputs[i];
+            aux[order[i]] = m_inputPorts[i];
         }
         setInputs(aux);
         updatePorts();

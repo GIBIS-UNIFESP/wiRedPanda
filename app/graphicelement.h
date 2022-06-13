@@ -131,10 +131,10 @@ protected:
     QStringList m_alternativeSkins;
 
     //! input port vector
-    QVector<QNEInputPort *> m_inputs;
+    QVector<QNEInputPort *> m_inputPorts;
 
     //! output port vector
-    QVector<QNEOutputPort *> m_outputs;
+    QVector<QNEOutputPort *> m_outputPorts;
 
     QGraphicsTextItem *m_label = new QGraphicsTextItem(this);
     bool m_usingDefaultSkin = true;

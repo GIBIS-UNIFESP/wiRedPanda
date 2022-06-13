@@ -40,7 +40,7 @@ void Buzzer::refresh()
         return;
     }
 
-    const Status inputValue = m_inputs.first()->value(); // TODO: why only the first input?
+    const Status inputValue = m_inputPorts.first()->value(); // TODO: why only the first input?
 
     (inputValue == Status::Active) ? playBuzzer() : stopBuzzer();
 }

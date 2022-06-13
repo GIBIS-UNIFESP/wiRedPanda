@@ -81,7 +81,7 @@ Display14::Display14(QGraphicsItem *parent)
     setPortName("Display14");
     setToolTip(m_translatedName);
 
-    for (auto *in : qAsConst(m_inputs)) {
+    for (auto *in : qAsConst(m_inputPorts)) {
         in->setRequired(false);
         in->setDefaultValue(Status::Inactive);
     }
