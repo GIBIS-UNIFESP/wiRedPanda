@@ -176,7 +176,7 @@ void MainWindow::createNewTab()
 {
     qCDebug(zero) << tr("Creating new workspace.");
     auto *workspace = new WorkSpace(this);
-    connect(workspace, &WorkSpace::fileChanged, this, &MainWindow::setTabText);
+    connect(workspace, &WorkSpace::fileChanged, this, &MainWindow::setCurrentFile);
     workspace->view()->setFastMode(m_ui->actionFastMode->isChecked());
     workspace->scene()->updateTheme();
     qCDebug(zero) << tr("Adding tab. #tabs:") << m_ui->tab->count() << tr(", current tab:") << m_tabIndex;
@@ -325,8 +325,6 @@ void MainWindow::on_actionRotateLeft_triggered()
 void MainWindow::loadPandaFile(const QString &fileName)
 {
     createNewTab();
-    qCDebug(zero) << tr("Current file set.");
-    setCurrentFile(fileName);
     qCDebug(zero) << tr("Loading in editor.");
     m_currentTab->load(fileName, m_ui->actionPlay->isChecked());
     updateICList();
@@ -447,16 +445,21 @@ bool MainWindow::hasModifiedFiles()
 void MainWindow::on_actionSaveAs_triggered()
 {
     QString path;
+
     if (!m_currentFile.fileName().isEmpty()) {
         path = m_currentFile.absoluteFilePath();
     }
+
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File as ..."), path, tr("Panda files (*.panda)"));
+
     if (fileName.isEmpty()) {
         return;
     }
+
     if (!fileName.endsWith(".panda")) {
         fileName.append(".panda");
     }
+
     save(fileName);
 }
 
@@ -478,11 +481,6 @@ void MainWindow::setCurrentFile(const QString &fileName)
 
     qCDebug(zero) << tr("Adding file to controller.");
     emit addRecentFile(fileInfo.absoluteFilePath());
-}
-
-void MainWindow::setTabText(const QString &tabText)
-{
-    m_ui->tab->setTabText(m_tabIndex, tabText);
 }
 
 void MainWindow::on_actionSelectAll_triggered()
