@@ -92,6 +92,7 @@ void WorkSpace::save(const QString &fileName)
         throw Pandaception(tr("Could not save file: ") + saveFile.errorString());
     }
 
+    GlobalProperties::currentFile = fileName_;
     m_fileInfo = QFileInfo(fileName_);
     emit fileChanged(m_fileInfo.fileName());
     scene()->undoStack()->setClean();
@@ -130,6 +131,7 @@ void WorkSpace::load(const QString &fileName, const bool isPlaying)
 
     GlobalProperties::currentFile = fileName;
     m_fileInfo = QFileInfo(fileName);
+    emit fileChanged(m_fileInfo.fileName());
 
     qCDebug(zero) << tr("File exists");
     if (!file.open(QIODevice::ReadOnly)) {
