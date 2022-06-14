@@ -312,11 +312,6 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
         ElementType elementType = firstElement->elementType();
 
         for (auto *elm : qAsConst(m_elements)) {
-            if (elm->elementType() != firstElement->elementType()) {
-                elementType = ElementType::Unknown;
-                break;
-            }
-
             m_hasLabel &= elm->hasLabel();
             m_canChangeSkin &= elm->canChangeSkin();
             m_hasColors &= elm->hasColors();
@@ -352,6 +347,10 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
             sameElementGroup |= (elm->elementGroup() == ElementGroup::StaticInput && firstElement->elementGroup() == ElementGroup::Input);
             m_hasOnlyInputs &= elm->elementGroup() == ElementGroup::Input;
             m_canMorph &= sameElementGroup;
+        }
+
+        if (!m_hasSameType) {
+            elementType = ElementType::Unknown;
         }
 
         m_canChangeInputSize = (minimumInputs < maximumInputs);
