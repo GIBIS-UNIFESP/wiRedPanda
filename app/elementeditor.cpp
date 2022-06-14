@@ -56,9 +56,9 @@ ElementEditor::~ElementEditor()
     delete m_ui;
 }
 
-QAction *addElementAction(QMenu *menu, GraphicElement *firstElm, ElementType type, const bool hasSameType)
+QAction *addElementAction(QMenu *menu, GraphicElement *selectedElm, ElementType type, const bool hasSameType)
 {
-    if (hasSameType && firstElm->elementType() == type) {
+    if (hasSameType && selectedElm->elementType() == type) {
         return nullptr;
     }
 
@@ -287,263 +287,253 @@ void ElementEditor::retranslateUi()
 void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
 {
     m_elements = elms;
-    m_hasLabel = m_hasColors = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = m_hasAudio = false;
+    m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = false;
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = false;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = false;
+    m_canChangeSkin = false;
     m_hasElements = false;
 
-    if (!elms.isEmpty()) {
-        bool sameCheckState = true;
-        m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = true;
-        m_hasRotation = m_canChangeSkin = m_hasOnlyInputs = true;
-        setVisible(true);
-        setEnabled(false);
-        int minimumInputs = 0;
-        int maximumInputs = 100000000;
-        int minimumOutputs = 0;
-        int maximumOutputs = 100000000;
-        int maxCurrentOutputSize = 100000000;
-        m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = true;
-        m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = true;
-        m_hasSameAudio = true;
-        m_hasSameType = true;
-        m_hasElements = true;
-        GraphicElement *firstElement = m_elements.first();
-        ElementType elementType = firstElement->elementType();
-
-        for (auto *elm : qAsConst(m_elements)) {
-            m_hasLabel &= elm->hasLabel();
-            m_canChangeSkin &= elm->canChangeSkin();
-            m_hasColors &= elm->hasColors();
-            m_hasAudio &= elm->hasAudio();
-            m_hasFrequency &= elm->hasFrequency();
-            minimumInputs = std::max(minimumInputs, elm->minInputSize());
-            maximumInputs = std::min(maximumInputs, elm->maxInputSize());
-            minimumOutputs = std::max(minimumOutputs, elm->minOutputSize());
-            maximumOutputs = std::min(maximumOutputs, elm->maxOutputSize());
-            m_hasTrigger &= elm->hasTrigger();
-            m_hasRotation &= elm->isRotatable();
-
-            m_hasSameLabel &= elm->label() == firstElement->label();
-            m_hasSameColors &= elm->color() == firstElement->color();
-            m_hasSameFrequency &= qFuzzyCompare(elm->frequency(), firstElement->frequency());
-            m_hasSameInputSize &= elm->inputSize() == firstElement->inputSize();
-            m_hasSameOutputSize &= elm->outputSize() == firstElement->outputSize();
-            maxCurrentOutputSize = std::min(maxCurrentOutputSize, elm->outputSize());
-
-            if ((elm->elementGroup() == ElementGroup::Input) && (firstElement->elementGroup() == ElementGroup::Input)) {
-                m_hasSameOutputValue &= dynamic_cast<GraphicElementInput *>(elm)->outputValue() == dynamic_cast<GraphicElementInput *>(firstElement)->outputValue();
-                sameCheckState &= dynamic_cast<GraphicElementInput *>(elm)->isLocked() == dynamic_cast<GraphicElementInput *>(firstElement)->isLocked();
-            }
-
-            m_hasSameTrigger &= elm->trigger() == firstElement->trigger();
-            m_hasSameType &= elm->elementType() == firstElement->elementType();
-            m_hasSameAudio &= elm->audio() == firstElement->audio();
-            m_canMorph &= elm->inputSize() == firstElement->inputSize();
-            m_canMorph &= elm->outputSize() == firstElement->outputSize();
-
-            bool sameElementGroup = elm->elementGroup() == firstElement->elementGroup();
-            sameElementGroup |= (elm->elementGroup() == ElementGroup::Input && firstElement->elementGroup() == ElementGroup::StaticInput);
-            sameElementGroup |= (elm->elementGroup() == ElementGroup::StaticInput && firstElement->elementGroup() == ElementGroup::Input);
-            m_hasOnlyInputs &= elm->elementGroup() == ElementGroup::Input;
-            m_canMorph &= sameElementGroup;
-        }
-
-        if (!m_hasSameType) {
-            elementType = ElementType::Unknown;
-        }
-
-        m_canChangeInputSize = (minimumInputs < maximumInputs);
-        m_canChangeOutputSize = (minimumOutputs < maximumOutputs);
-        /* Element type */
-        m_ui->labelType->setText(ElementFactory::typeToTitleText(elementType));
-        /* Labels */
-        m_ui->lineEditElementLabel->setVisible(m_hasLabel);
-        m_ui->lineEditElementLabel->setEnabled(m_hasLabel);
-        m_ui->labelLabels->setVisible(m_hasLabel);
-
-        if (m_hasLabel) {
-            if (m_hasSameLabel) {
-                m_ui->lineEditElementLabel->setText(firstElement->label());
-            } else {
-                m_ui->lineEditElementLabel->setText(m_manyLabels);
-            }
-        }
-
-        /* Color */
-        m_ui->labelColor->setVisible(m_hasColors);
-        m_ui->comboBoxColor->setVisible(m_hasColors);
-        m_ui->comboBoxColor->setEnabled(m_hasColors);
-
-        if (m_ui->comboBoxColor->findText(m_manyColors) == -1) {
-            m_ui->comboBoxColor->addItem(m_manyColors);
-        }
-
-        if (m_hasColors) {
-            if (m_hasSameColors) {
-                m_ui->comboBoxColor->removeItem(m_ui->comboBoxColor->findText(m_manyColors));
-                m_ui->comboBoxColor->setCurrentIndex(m_ui->comboBoxColor->findData(firstElement->color()));
-            } else {
-                m_ui->comboBoxColor->setCurrentText(m_manyColors);
-            }
-        }
-
-        /* Sound */
-        m_ui->labelAudio->setVisible(m_hasAudio);
-        m_ui->comboBoxAudio->setVisible(m_hasAudio);
-        m_ui->comboBoxAudio->setEnabled(m_hasAudio);
-
-        if (m_ui->comboBoxAudio->findText(m_manyAudios) == -1) {
-            m_ui->comboBoxAudio->addItem(m_manyAudios);
-        }
-
-        if (m_hasAudio) {
-            if (m_hasSameAudio) {
-                m_ui->comboBoxAudio->removeItem(m_ui->comboBoxAudio->findText(m_manyAudios));
-                m_ui->comboBoxAudio->setCurrentText(firstElement->audio());
-            } else {
-                m_ui->comboBoxAudio->setCurrentText(m_manyAudios);
-            }
-        }
-
-        /* Frequency */
-        m_ui->doubleSpinBoxFrequency->setVisible(m_hasFrequency);
-        m_ui->doubleSpinBoxFrequency->setEnabled(m_hasFrequency);
-        m_ui->labelFrequency->setVisible(m_hasFrequency);
-
-        if (m_hasFrequency) {
-            if (m_hasSameFrequency) {
-                m_ui->doubleSpinBoxFrequency->setMinimum(0.5);
-                m_ui->doubleSpinBoxFrequency->setSpecialValueText({});
-                m_ui->doubleSpinBoxFrequency->setValue(static_cast<double>(firstElement->frequency()));
-            } else {
-                m_ui->doubleSpinBoxFrequency->setMinimum(0.0);
-                m_ui->doubleSpinBoxFrequency->setSpecialValueText(m_manyFreq);
-                m_ui->doubleSpinBoxFrequency->setValue(0.0);
-            }
-        }
-
-        /* Input size */
-        m_ui->comboBoxInputSize->clear();
-        m_ui->labelInputs->setVisible(m_canChangeInputSize);
-        m_ui->comboBoxInputSize->setVisible(m_canChangeInputSize);
-        m_ui->comboBoxInputSize->setEnabled(m_canChangeInputSize);
-
-        for (int port = minimumInputs; port <= maximumInputs; ++port) {
-            m_ui->comboBoxInputSize->addItem(QString::number(port), port);
-        }
-
-        if (m_ui->comboBoxInputSize->findText(m_manyIS) == -1) {
-            m_ui->comboBoxInputSize->addItem(m_manyIS);
-        }
-
-        if (m_canChangeInputSize) {
-            if (m_hasSameInputSize) {
-                QString inputSize = QString::number(firstElement->inputSize());
-                m_ui->comboBoxInputSize->removeItem(m_ui->comboBoxInputSize->findText(m_manyIS));
-                m_ui->comboBoxInputSize->setCurrentText(inputSize);
-            } else {
-                m_ui->comboBoxInputSize->setCurrentText(m_manyIS);
-            }
-        }
-
-        /* Output size */
-        m_ui->comboBoxOutputSize->clear();
-        m_ui->labelOutputs->setVisible(m_canChangeOutputSize);
-        m_ui->comboBoxOutputSize->setVisible(m_canChangeOutputSize);
-        m_ui->comboBoxOutputSize->setEnabled(m_canChangeOutputSize);
-
-        if (m_canChangeOutputSize) {
-            m_ui->comboBoxOutputSize->addItem(QString::number(2), 2);
-            m_ui->comboBoxOutputSize->addItem(QString::number(4), 4);
-            m_ui->comboBoxOutputSize->addItem(QString::number(8), 8);
-            m_ui->comboBoxOutputSize->addItem(QString::number(10), 10);
-            m_ui->comboBoxOutputSize->addItem(QString::number(16), 16);
-        }
-
-        if (m_ui->comboBoxOutputSize->findText(m_manyOS) == -1) {
-            m_ui->comboBoxOutputSize->addItem(m_manyOS);
-        }
-
-        if (m_canChangeOutputSize) {
-            if (m_hasSameOutputSize) {
-                QString outputSize = QString::number(firstElement->outputSize());
-                m_ui->comboBoxOutputSize->removeItem(m_ui->comboBoxOutputSize->findText(m_manyOS));
-                m_ui->comboBoxOutputSize->setCurrentText(outputSize);
-            } else {
-                m_ui->comboBoxOutputSize->setCurrentText(m_manyOS);
-            }
-        }
-
-        /* Output value */
-        m_ui->comboBoxValue->clear();
-        m_ui->labelValue->setVisible(m_hasOnlyInputs);
-        m_ui->comboBoxValue->setVisible(m_hasOnlyInputs);
-        m_ui->comboBoxValue->setEnabled(m_hasOnlyInputs);
-
-        if (m_hasOnlyInputs) {
-            if (maxCurrentOutputSize == 1) {
-                maxCurrentOutputSize++;
-            }
-            for (int val = 0; val < maxCurrentOutputSize; ++val) {
-                m_ui->comboBoxValue->addItem(QString::number(val), val);
-            }
-        }
-
-        if (m_ui->comboBoxValue->findText(m_manyOV) == -1) {
-            m_ui->comboBoxValue->addItem(m_manyOV);
-        }
-
-        if (m_hasOnlyInputs) {
-            if (m_hasSameOutputValue) {
-                QString outputValue = QString::number(dynamic_cast<GraphicElementInput *>(firstElement)->outputValue());
-                m_ui->comboBoxValue->removeItem(m_ui->comboBoxValue->findText(m_manyOV));
-                m_ui->comboBoxValue->setCurrentText(outputValue);
-            } else {
-                m_ui->comboBoxValue->setCurrentText(m_manyOV);
-            }
-        }
-
-        /* Input locked */
-        m_ui->labelLocked->setVisible(m_hasOnlyInputs);
-        m_ui->checkBoxLocked->setVisible(m_hasOnlyInputs);
-        m_ui->checkBoxLocked->setEnabled(m_hasOnlyInputs);
-
-        if (m_hasOnlyInputs) {
-            if (sameCheckState) {
-                if (dynamic_cast<GraphicElementInput *>(firstElement)->isLocked()) {
-                    m_ui->checkBoxLocked->setCheckState(Qt::CheckState::Checked);
-                } else {
-                    m_ui->checkBoxLocked->setCheckState(Qt::CheckState::Unchecked);
-                }
-            } else {
-                m_ui->checkBoxLocked->setCheckState(Qt::CheckState::PartiallyChecked);
-            }
-        }
-
-        /* Trigger */
-        m_ui->lineEditTrigger->setVisible(m_hasTrigger);
-        m_ui->lineEditTrigger->setEnabled(m_hasTrigger);
-        m_ui->labelTrigger->setVisible(m_hasTrigger);
-
-        if (m_hasTrigger) {
-            if (m_hasSameTrigger) {
-                m_ui->lineEditTrigger->setText(firstElement->trigger().toString());
-            } else {
-                m_ui->lineEditTrigger->setText(m_manyTriggers);
-            }
-        }
-
-        setEnabled(true);
-        setVisible(true);
-        /* Skin */
-        m_ui->pushButtonChangeSkin->setVisible(m_canChangeSkin);
-        m_ui->pushButtonDefaultSkin->setVisible(m_canChangeSkin);
-    } else {
-        m_hasElements = false;
+    if (elms.isEmpty()) {
         setVisible(false);
         m_ui->lineEditElementLabel->setText("");
+        return;
     }
+
+    bool sameCheckState = true;
+    m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = true;
+    m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = true;
+    m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = true;
+    m_canChangeSkin = true;
+    m_hasElements = true;
+    setVisible(true);
+    setEnabled(false);
+    int minimumInputs = 0;
+    int maximumInputs = 100000000;
+    int minimumOutputs = 0;
+    int maximumOutputs = 100000000;
+    int maxCurrentOutputSize = 100000000;
+    auto *firstElement = m_elements.first();
+    auto *firstInput = dynamic_cast<GraphicElementInput *>(firstElement);
+    auto elementType = firstElement->elementType();
+
+    for (auto *elm : qAsConst(m_elements)) {
+        auto *elmInput = dynamic_cast<GraphicElementInput *>(elm);
+
+        m_hasLabel &= elm->hasLabel();
+        m_canChangeSkin &= elm->canChangeSkin();
+        m_hasColors &= elm->hasColors();
+        m_hasAudio &= elm->hasAudio();
+        m_hasFrequency &= elm->hasFrequency();
+        minimumInputs = std::max(minimumInputs, elm->minInputSize());
+        maximumInputs = std::min(maximumInputs, elm->maxInputSize());
+        minimumOutputs = std::max(minimumOutputs, elm->minOutputSize());
+        maximumOutputs = std::min(maximumOutputs, elm->maxOutputSize());
+        m_hasTrigger &= elm->hasTrigger();
+        m_hasRotation &= elm->isRotatable();
+
+        m_hasSameLabel &= (elm->label() == firstElement->label());
+        m_hasSameColors &= (elm->color() == firstElement->color());
+        m_hasSameFrequency &= qFuzzyCompare(elm->frequency(), firstElement->frequency());
+        m_hasSameInputSize &= (elm->inputSize() == firstElement->inputSize());
+        m_hasSameOutputSize &= (elm->outputSize() == firstElement->outputSize());
+        maxCurrentOutputSize = std::min(maxCurrentOutputSize, elm->outputSize());
+
+        if ((elm->elementGroup() == ElementGroup::Input) && (firstElement->elementGroup() == ElementGroup::Input)) {
+            m_hasSameOutputValue &= (elmInput->outputValue() == firstInput->outputValue());
+            sameCheckState &= (elmInput->isLocked() == firstInput->isLocked());
+        }
+
+        m_hasSameTrigger &= (elm->trigger() == firstElement->trigger());
+        m_hasSameType &= (elm->elementType() == firstElement->elementType());
+        m_hasSameAudio &= (elm->audio() == firstElement->audio());
+        m_canMorph &= (elm->inputSize() == firstElement->inputSize());
+        m_canMorph &= (elm->outputSize() == firstElement->outputSize());
+
+        bool sameElementGroup = (elm->elementGroup() == firstElement->elementGroup());
+        sameElementGroup |= (elm->elementGroup() == ElementGroup::Input && firstElement->elementGroup() == ElementGroup::StaticInput);
+        sameElementGroup |= (elm->elementGroup() == ElementGroup::StaticInput && firstElement->elementGroup() == ElementGroup::Input);
+        m_hasOnlyInputs &= (elm->elementGroup() == ElementGroup::Input);
+        m_canMorph &= sameElementGroup;
+    }
+
+    if (!m_hasSameType) {
+        elementType = ElementType::Unknown;
+    }
+
+    m_canChangeInputSize = (minimumInputs < maximumInputs);
+    m_canChangeOutputSize = (minimumOutputs < maximumOutputs);
+    /* Element type */
+    m_ui->labelType->setText(ElementFactory::typeToTitleText(elementType));
+    /* Labels */
+    m_ui->lineEditElementLabel->setVisible(m_hasLabel);
+    m_ui->lineEditElementLabel->setEnabled(m_hasLabel);
+    m_ui->labelLabels->setVisible(m_hasLabel);
+
+    if (m_hasLabel) {
+        m_ui->lineEditElementLabel->setText(m_hasSameLabel ? firstElement->label() : m_manyLabels);
+    }
+
+    /* Color */
+    m_ui->labelColor->setVisible(m_hasColors);
+    m_ui->comboBoxColor->setVisible(m_hasColors);
+    m_ui->comboBoxColor->setEnabled(m_hasColors);
+
+    if (m_ui->comboBoxColor->findText(m_manyColors) == -1) {
+        m_ui->comboBoxColor->addItem(m_manyColors);
+    }
+
+    if (m_hasColors) {
+        if (m_hasSameColors) {
+            m_ui->comboBoxColor->removeItem(m_ui->comboBoxColor->findText(m_manyColors));
+            m_ui->comboBoxColor->setCurrentIndex(m_ui->comboBoxColor->findData(firstElement->color()));
+        } else {
+            m_ui->comboBoxColor->setCurrentText(m_manyColors);
+        }
+    }
+
+    /* Sound */
+    m_ui->labelAudio->setVisible(m_hasAudio);
+    m_ui->comboBoxAudio->setVisible(m_hasAudio);
+    m_ui->comboBoxAudio->setEnabled(m_hasAudio);
+
+    if (m_ui->comboBoxAudio->findText(m_manyAudios) == -1) {
+        m_ui->comboBoxAudio->addItem(m_manyAudios);
+    }
+
+    if (m_hasAudio) {
+        if (m_hasSameAudio) {
+            m_ui->comboBoxAudio->removeItem(m_ui->comboBoxAudio->findText(m_manyAudios));
+            m_ui->comboBoxAudio->setCurrentText(firstElement->audio());
+        } else {
+            m_ui->comboBoxAudio->setCurrentText(m_manyAudios);
+        }
+    }
+
+    /* Frequency */
+    m_ui->doubleSpinBoxFrequency->setVisible(m_hasFrequency);
+    m_ui->doubleSpinBoxFrequency->setEnabled(m_hasFrequency);
+    m_ui->labelFrequency->setVisible(m_hasFrequency);
+
+    if (m_hasFrequency) {
+        if (m_hasSameFrequency) {
+            m_ui->doubleSpinBoxFrequency->setMinimum(0.5);
+            m_ui->doubleSpinBoxFrequency->setSpecialValueText({});
+            m_ui->doubleSpinBoxFrequency->setValue(static_cast<double>(firstElement->frequency()));
+        } else {
+            m_ui->doubleSpinBoxFrequency->setMinimum(0.0);
+            m_ui->doubleSpinBoxFrequency->setSpecialValueText(m_manyFreq);
+            m_ui->doubleSpinBoxFrequency->setValue(0.0);
+        }
+    }
+
+    /* Input size */
+    m_ui->comboBoxInputSize->clear();
+    m_ui->labelInputs->setVisible(m_canChangeInputSize);
+    m_ui->comboBoxInputSize->setVisible(m_canChangeInputSize);
+    m_ui->comboBoxInputSize->setEnabled(m_canChangeInputSize);
+
+    for (int port = minimumInputs; port <= maximumInputs; ++port) {
+        m_ui->comboBoxInputSize->addItem(QString::number(port), port);
+    }
+
+    if (m_ui->comboBoxInputSize->findText(m_manyIS) == -1) {
+        m_ui->comboBoxInputSize->addItem(m_manyIS);
+    }
+
+    if (m_canChangeInputSize) {
+        if (m_hasSameInputSize) {
+            m_ui->comboBoxInputSize->removeItem(m_ui->comboBoxInputSize->findText(m_manyIS));
+            QString inputSize = QString::number(firstElement->inputSize());
+            m_ui->comboBoxInputSize->setCurrentText(inputSize);
+        } else {
+            m_ui->comboBoxInputSize->setCurrentText(m_manyIS);
+        }
+    }
+
+    /* Output size */
+    m_ui->comboBoxOutputSize->clear();
+    m_ui->labelOutputs->setVisible(m_canChangeOutputSize);
+    m_ui->comboBoxOutputSize->setVisible(m_canChangeOutputSize);
+    m_ui->comboBoxOutputSize->setEnabled(m_canChangeOutputSize);
+
+    if (m_canChangeOutputSize) {
+        m_ui->comboBoxOutputSize->addItem(QString::number(2), 2);
+        m_ui->comboBoxOutputSize->addItem(QString::number(4), 4);
+        m_ui->comboBoxOutputSize->addItem(QString::number(8), 8);
+        m_ui->comboBoxOutputSize->addItem(QString::number(10), 10);
+        m_ui->comboBoxOutputSize->addItem(QString::number(16), 16);
+    }
+
+    if (m_ui->comboBoxOutputSize->findText(m_manyOS) == -1) {
+        m_ui->comboBoxOutputSize->addItem(m_manyOS);
+    }
+
+    if (m_canChangeOutputSize) {
+        if (m_hasSameOutputSize) {
+            m_ui->comboBoxOutputSize->removeItem(m_ui->comboBoxOutputSize->findText(m_manyOS));
+            QString outputSize = QString::number(firstElement->outputSize());
+            m_ui->comboBoxOutputSize->setCurrentText(outputSize);
+        } else {
+            m_ui->comboBoxOutputSize->setCurrentText(m_manyOS);
+        }
+    }
+
+    /* Output value */
+    m_ui->comboBoxValue->clear();
+    m_ui->labelValue->setVisible(m_hasOnlyInputs);
+    m_ui->comboBoxValue->setVisible(m_hasOnlyInputs);
+    m_ui->comboBoxValue->setEnabled(m_hasOnlyInputs);
+
+    if (m_hasOnlyInputs) {
+        if (maxCurrentOutputSize == 1) {
+            maxCurrentOutputSize++;
+        }
+        for (int val = 0; val < maxCurrentOutputSize; ++val) {
+            m_ui->comboBoxValue->addItem(QString::number(val), val);
+        }
+    }
+
+    if (m_ui->comboBoxValue->findText(m_manyOV) == -1) {
+        m_ui->comboBoxValue->addItem(m_manyOV);
+    }
+
+    if (m_hasOnlyInputs) {
+        if (m_hasSameOutputValue) {
+            m_ui->comboBoxValue->removeItem(m_ui->comboBoxValue->findText(m_manyOV));
+            QString outputValue = QString::number(firstInput->outputValue());
+            m_ui->comboBoxValue->setCurrentText(outputValue);
+        } else {
+            m_ui->comboBoxValue->setCurrentText(m_manyOV);
+        }
+    }
+
+    /* Input locked */
+    m_ui->labelLocked->setVisible(m_hasOnlyInputs);
+    m_ui->checkBoxLocked->setVisible(m_hasOnlyInputs);
+    m_ui->checkBoxLocked->setEnabled(m_hasOnlyInputs);
+
+    if (m_hasOnlyInputs) {
+        if (sameCheckState) {
+            m_ui->checkBoxLocked->setCheckState(firstInput->isLocked() ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+        } else {
+            m_ui->checkBoxLocked->setCheckState(Qt::CheckState::PartiallyChecked);
+        }
+    }
+
+    /* Trigger */
+    m_ui->lineEditTrigger->setVisible(m_hasTrigger);
+    m_ui->lineEditTrigger->setEnabled(m_hasTrigger);
+    m_ui->labelTrigger->setVisible(m_hasTrigger);
+
+    if (m_hasTrigger) {
+        m_ui->lineEditTrigger->setText(m_hasSameTrigger ? firstElement->trigger().toString() : m_manyTriggers);
+    }
+
+    setEnabled(true);
+    setVisible(true);
+    /* Skin */
+    m_ui->pushButtonChangeSkin->setVisible(m_canChangeSkin);
+    m_ui->pushButtonDefaultSkin->setVisible(m_canChangeSkin);
 }
 
 void ElementEditor::disable()

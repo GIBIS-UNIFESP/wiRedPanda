@@ -533,6 +533,7 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
     for (int elm = 0; elm < from.size(); ++elm) {
         auto *oldElm = from[elm];
         auto *newElm = to[elm];
+
         newElm->setInputSize(oldElm->inputSize());
         newElm->setPos(oldElm->pos());
 
@@ -556,25 +557,25 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
             newElm->setTrigger(oldElm->trigger());
         }
 
-        for (int in = 0; in < oldElm->inputSize(); ++in) {
-            while (!oldElm->inputPort(in)->connections().isEmpty()) {
-                if (auto *conn = oldElm->inputPort(in)->connections().first();
-                        conn && conn->end() == oldElm->inputPort(in)) {
-                    conn->setEnd(newElm->inputPort(in));
+        for (int port = 0; port < oldElm->inputSize(); ++port) {
+            while (!oldElm->inputPort(port)->connections().isEmpty()) {
+                if (auto *conn = oldElm->inputPort(port)->connections().first();
+                        conn && conn->end() == oldElm->inputPort(port)) {
+                    conn->setEnd(newElm->inputPort(port));
                 }
             }
         }
 
-        for (int out = 0; out < oldElm->outputSize(); ++out) {
-            while (!oldElm->outputPort(out)->connections().isEmpty()) {
-                if (auto *conn = oldElm->outputPort(out)->connections().first();
-                        conn && conn->start() == oldElm->outputPort(out)) {
-                    conn->setStart(newElm->outputPort(out));
+        for (int port = 0; port < oldElm->outputSize(); ++port) {
+            while (!oldElm->outputPort(port)->connections().isEmpty()) {
+                if (auto *conn = oldElm->outputPort(port)->connections().first();
+                        conn && conn->start() == oldElm->outputPort(port)) {
+                    conn->setStart(newElm->outputPort(port));
                 }
             }
         }
 
-        int oldId = oldElm->id();
+        const int oldId = oldElm->id();
         m_scene->removeItem(oldElm);
         delete oldElm;
 
