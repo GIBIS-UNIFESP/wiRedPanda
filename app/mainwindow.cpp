@@ -215,13 +215,11 @@ void MainWindow::on_actionExit_triggered()
     close();
 }
 
-bool MainWindow::save(const QString &fileName)
+void MainWindow::save(const QString &fileName)
 {
     if (m_currentTab) {
         m_currentTab->save(fileName);
     }
-
-    return true;
 }
 
 void MainWindow::show()
@@ -540,7 +538,9 @@ bool MainWindow::closeTab(const int tabIndex)
         if (selectedButton == QMessageBox::Yes) {
             try {
                 workspace->save();
-            } catch (std::exception &) {
+            } catch (std::exception &e) {
+                QMessageBox::critical(this, tr("Error"), e.what());
+
                 if (closeTabAnyway() == QMessageBox::No) {
                     return false;
                 }
@@ -704,19 +704,26 @@ void MainWindow::on_actionReloadFile_triggered()
     }
 
     auto *undostack = m_currentTab->scene()->undoStack();
+
     if (!undostack->isClean()) {
         const int selectedButton = confirmSave(false);
+
         if (selectedButton == QMessageBox::Cancel) {
             return;
         }
 
         if (selectedButton == QMessageBox::Yes) {
-            if (!save()) {
+            try {
+                save();
+            }  catch (std::exception &e) {
+                QMessageBox::critical(this, tr("Error"), e.what());
+
                 if (closeTabAnyway() == QMessageBox::No) {
                     return;
                 }
             }
         }
+
         m_currentTab->scene()->selectAll();
         m_currentTab->scene()->deleteAction();
         m_currentTab->scene()->undoStack()->clear();

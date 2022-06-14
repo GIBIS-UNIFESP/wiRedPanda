@@ -31,7 +31,7 @@ public:
     void createNewTab();
 
     //! Saves the project to a .panda file. Removes the autosave file in the process.
-    bool save(const QString &fileName = {});
+    void save(const QString &fileName = {});
 
     //! Sets the main window as visible, as well as its child widgets. Cleans the editor.
     void show();
