@@ -1121,6 +1121,12 @@ void BewavedDolphin::resizeScene()
 {
     const int newWidth = static_cast<int>(width() / m_scale);
     const int newHeight = static_cast<int>(height() / m_scale);
+
+    if (newWidth > 4000 or newHeight > 4000) {
+        on_actionResetZoom_triggered();
+        throw Pandaception(tr("Size too big! Resetting zoom."));
+    }
+
     m_signalTableView->resize(newWidth, newHeight);
     m_scene->setSceneRect(m_scene->itemsBoundingRect());
 }
