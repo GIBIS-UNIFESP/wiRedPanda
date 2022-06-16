@@ -620,6 +620,8 @@ void MainWindow::selectTab(const int tabIndex)
         disconnectTab(); // disconnect previously selected tab
     }
 
+    m_ui->elementEditor->hide();
+
     m_currentTab = dynamic_cast<WorkSpace *>(m_ui->tab->currentWidget());
     m_tabIndex = m_ui->tab->currentIndex();
     qCDebug(zero) << tr("Selecting tab:") << tabIndex;
