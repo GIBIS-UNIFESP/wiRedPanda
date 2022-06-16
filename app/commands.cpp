@@ -541,7 +541,7 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
             newElm->setRotation(oldElm->rotation());
         }
 
-        if (newElm->hasLabel() && oldElm->hasLabel()) {
+        if (newElm->hasLabel() && oldElm->hasLabel() && (oldElm->elementType() != ElementType::Buzzer)) {
             newElm->setLabel(oldElm->label());
         }
 
