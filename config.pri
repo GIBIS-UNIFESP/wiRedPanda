@@ -32,11 +32,27 @@ linux-g++ {
     QMAKE_CXXFLAGS += --coverage
     QMAKE_LFLAGS += --coverage
 
+    #------------------------------
+
     GOLD_BIN = $$system(which gold)
 
     !isEmpty(GOLD_BIN) {
         QMAKE_LFLAGS += -fuse-ld=gold
     }
+}
+
+linux-clang {
+#    QMAKE_CXXFLAGS += -fsanitize=memory -fPIE
+#    QMAKE_LFLAGS += -fsanitize=memory -fPIE
+
+#    QMAKE_CXXFLAGS += -fsanitize=undefined,implicit-integer-truncation,implicit-integer-arithmetic-value-change,implicit-conversion,integer,nullability
+#    QMAKE_LFLAGS += -fsanitize=undefined,implicit-integer-truncation,implicit-integer-arithmetic-value-change,implicit-conversion,integer,nullability
+
+#    QMAKE_CXXFLAGS += -fsanitize=address
+#    QMAKE_LFLAGS += -fsanitize=address
+
+#    QMAKE_CXXFLAGS += -fsanitize=thread
+#    QMAKE_LFLAGS += -fsanitize=thread
 }
 
 linux-clang {
