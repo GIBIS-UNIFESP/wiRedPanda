@@ -98,7 +98,7 @@ void GraphicElement::setPixmap(const QString &pixmapPath, const QSize size)
     }
 
     if (!m_pixmap) {
-        m_pixmap = new QPixmap();
+        m_pixmap = std::make_unique<QPixmap>();
     }
 
     if (!m_pixmap->load(pixmapPath)) {
@@ -107,7 +107,7 @@ void GraphicElement::setPixmap(const QString &pixmapPath, const QSize size)
         throw Pandaception(tr("Couldn't load pixmap."));
     }
 
-    m_pixmap = new QPixmap(m_pixmap->scaled(size));
+    m_pixmap = std::make_unique<QPixmap>(m_pixmap->scaled(size));
     setTransformOriginPoint(m_pixmap->rect().center());
     update(boundingRect());
 
