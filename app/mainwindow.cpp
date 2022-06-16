@@ -16,6 +16,7 @@
 #include "icmanager.h"
 #include "recentfilescontroller.h"
 #include "settings.h"
+#include "simulationblocker.h"
 #include "simulationcontroller.h"
 #include "thememanager.h"
 #include "workspace.h"
@@ -50,7 +51,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     qCDebug(zero) << tr("Settings fileName:") << Settings::fileName();
     loadTranslation(Settings::value("language").toString());
 
-    connect(m_ui->tab, &QTabWidget::currentChanged,    this, &MainWindow::selectTab);
+    connect(m_ui->tab, &QTabWidget::currentChanged,    this, &MainWindow::tabChanged);
     connect(m_ui->tab, &QTabWidget::tabCloseRequested, this, &MainWindow::closeTab);
 
     qCDebug(zero) << tr("Restoring geometry and setting zoom controls.");
@@ -492,9 +493,9 @@ void MainWindow::updateICList()
 {
     m_ui->scrollAreaWidgetContents_IC->layout()->removeItem(m_ui->verticalSpacer_IC);
 
-    auto items = m_ui->scrollAreaWidgetContents_IC->findChildren<ElementLabel *>();
+    const auto items = m_ui->scrollAreaWidgetContents_IC->findChildren<ElementLabel *>();
 
-    for (auto *item : qAsConst(items)) {
+    for (auto *item : items) {
         item->deleteLater();
     }
 
@@ -503,11 +504,13 @@ void MainWindow::updateICList()
         QDir directory(m_currentFile.absoluteDir());
         QStringList files = directory.entryList({"*.panda", "*.PANDA"}, QDir::Files);
         files.removeAll(m_currentFile.fileName());
+
         for (int i = files.size() - 1; i >= 0; --i) {
             if (files[i][0] == '.') {
                 files.removeAt(i);
             }
         }
+
         qCDebug(zero) << tr("Files:") << files.join(", ");
         for (const QString &file : qAsConst(files)) {
             QPixmap pixmap(":/basic/ic-panda.png");
@@ -549,12 +552,6 @@ bool MainWindow::closeTab(const int tabIndex)
     qCDebug(zero) << tr("Deleting tab.");
     workspace->deleteLater();
     m_ui->tab->removeTab(tabIndex);
-
-    if (m_ui->tab->count() == 0) {
-        m_currentTab = nullptr;
-        m_tabIndex = -1;
-    }
-
     qCDebug(zero) << tr("Closed tab") << tabIndex << tr(", #tabs:") << m_ui->tab->count() << tr(", current tab:") << m_tabIndex;
 
     return true;
@@ -607,10 +604,11 @@ void MainWindow::connectTab()
         m_currentTab->scene()->setHandlingEvents(true);
         m_currentTab->scene()->clearSelection();
     }
+
     m_currentTab->view()->setFastMode(m_ui->actionFastMode->isChecked());
 }
 
-void MainWindow::selectTab(const int tabIndex)
+void MainWindow::tabChanged(const int newTabIndex)
 {
     disconnectTab(); // disconnect previously selected tab
     m_tabIndex = newTabIndex;
@@ -644,9 +642,9 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
         QRegularExpression regex(QString(".*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
         QRegularExpression regex2(QString("^label_.*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
         auto searchResults = m_ui->scrollArea_Search->findChildren<ElementLabel *>(regex2);
-        auto allItems = m_ui->scrollArea_Search->findChildren<ElementLabel *>();
+        const auto allItems = m_ui->scrollArea_Search->findChildren<ElementLabel *>();
 
-        for (auto *item : qAsConst(allItems)) {
+        for (auto *item : allItems) {
             if (regex.match(item->name()).hasMatch()) {
                 if (!searchResults.contains(item)) {
                     searchResults.append(item);
@@ -660,7 +658,7 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
             }
         }
 
-        for (auto *item : qAsConst(allItems)) {
+        for (auto *item : allItems) {
             item->setHidden(true);
         }
 
@@ -668,6 +666,7 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
             item->setVisible(true);
         }
     }
+
     m_ui->scrollAreaWidgetContents_Search->layout()->addItem(m_ui->verticalSpacer_Search);
 }
 
@@ -695,6 +694,10 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     if (!m_currentTab) {
         return;
     }
+
+    auto *scene = m_currentTab->scene();
+    auto *view = m_currentTab->view();
+    scene->setSceneRect(scene->sceneRect().united(view->rect()));
 }
 
 void MainWindow::on_actionReloadFile_triggered()
@@ -757,8 +760,8 @@ void MainWindow::exportToArduino(QString fileName)
         throw Pandaception(tr("The panda file is empty."));
     }
 
-    auto *simController = m_currentTab->simulationController();
-    simController->stop();
+    auto simBlocker = SimulationBlocker(m_currentTab->simulationController());
+
     if (!fileName.endsWith(".ino")) {
         fileName.append(".ino");
     }
@@ -768,7 +771,6 @@ void MainWindow::exportToArduino(QString fileName)
     // TODO: why home()? why not the current folder? what if the user type a path?
     CodeGenerator arduino(QDir::home().absoluteFilePath(fileName), elements);
     arduino.generate();
-    simController->start();
     m_ui->statusBar->showMessage(tr("Arduino code successfully generated."), 4000);
 
     qCDebug(zero) << tr("Arduino code successfully generated.");
@@ -799,6 +801,7 @@ void MainWindow::on_actionExportToArduino_triggered()
     }
 
     QString path;
+
     if (m_currentFile.exists()) {
         path = m_currentFile.absolutePath();
     }
@@ -815,6 +818,8 @@ void MainWindow::on_actionZoomIn_triggered() const
     if (!m_currentTab) {
         return;
     }
+
+    m_currentTab->view()->zoomIn();
 }
 
 void MainWindow::on_actionZoomOut_triggered() const
@@ -822,6 +827,8 @@ void MainWindow::on_actionZoomOut_triggered() const
     if (!m_currentTab) {
         return;
     }
+
+    m_currentTab->view()->zoomOut();
 }
 
 void MainWindow::on_actionResetZoom_triggered() const
@@ -829,6 +836,8 @@ void MainWindow::on_actionResetZoom_triggered() const
     if (!m_currentTab) {
         return;
     }
+
+    m_currentTab->view()->resetZoom();
 }
 
 void MainWindow::zoomChanged()
@@ -845,16 +854,20 @@ void MainWindow::updateRecentFileActions()
 {
     const auto files = m_recentFilesController->recentFiles();
     const int numRecentFiles = qMin(files.size(), RecentFilesController::MaxRecentFiles);
+
     if (numRecentFiles > 0) {
         m_ui->menuRecentFiles->setEnabled(true);
     }
+
     auto actions = m_ui->menuRecentFiles->actions();
+
     for (int i = 0; i < numRecentFiles; ++i) {
         const QString text = "&" + QString::number(i + 1) + " " + QFileInfo(files.at(i)).fileName();
         actions.at(i)->setText(text);
         actions.at(i)->setData(files[i]);
         actions.at(i)->setVisible(true);
     }
+
     for (int i = numRecentFiles; i < RecentFilesController::MaxRecentFiles; ++i) {
         actions.at(i)->setVisible(false);
     }
@@ -862,9 +875,7 @@ void MainWindow::updateRecentFileActions()
 
 void MainWindow::openRecentFile()
 {
-    auto *action = qobject_cast<QAction *>(sender());
-
-    if (action) {
+    if (auto *action = qobject_cast<QAction *>(sender())) {
         loadPandaFile(action->data().toString());
     }
 }
@@ -879,6 +890,7 @@ void MainWindow::createRecentFileActions()
         connect(action, &QAction::triggered, this, &MainWindow::openRecentFile);
         m_ui->menuRecentFiles->addAction(action);
     }
+
     updateRecentFileActions();
 }
 
@@ -924,17 +936,21 @@ void MainWindow::on_actionExportToImage_triggered()
     }
 
     QString path;
+
     if (m_currentFile.exists()) {
         path = m_currentFile.absolutePath();
     }
 
     QString pngFile = QFileDialog::getSaveFileName(this, tr("Export to Image"), path, tr("PNG files (*.png)"));
+
     if (pngFile.isEmpty()) {
         return;
     }
+
     if (!pngFile.endsWith(".png", Qt::CaseInsensitive)) {
         pngFile.append(".png");
     }
+
     QRectF rect = m_currentTab->scene()->itemsBoundingRect().adjusted(-64, -64, 64, 64);
     QPixmap pixmap(rect.size().toSize());
     QPainter painter;
@@ -952,8 +968,9 @@ void MainWindow::retranslateUi()
     m_ui->retranslateUi(this);
     m_ui->elementEditor->retranslateUi();
 
-    auto items = m_ui->tabElements->findChildren<ElementLabel *>();
-    for (auto *item : qAsConst(items)) {
+    const auto items = m_ui->tabElements->findChildren<ElementLabel *>();
+
+    for (auto *item : items) {
         item->updateName();
     }
 }
@@ -969,6 +986,12 @@ void MainWindow::loadTranslation(const QString &language)
     qApp->removeTranslator(m_pandaTranslator);
     qApp->removeTranslator(m_qtTranslator);
 
+    if (language == "default") {
+        return retranslateUi();
+    }
+
+    // ---------------------------------------------
+
     QString pandaFile;
     QString qtFile;
 
@@ -977,9 +1000,6 @@ void MainWindow::loadTranslation(const QString &language)
         qtFile = ":/translations/qt_pt_BR.qm";
     }
 
-    if (language == "default") {
-        return retranslateUi();
-    }
 
     if (!pandaFile.isEmpty()) {
         m_pandaTranslator = new QTranslator(this);
@@ -1082,7 +1102,7 @@ void MainWindow::updateTheme()
 
     m_ui->tabElements->setTabIcon(2, QIcon(DFlipFlop::pixmapPath()));
 
-    auto labels = m_ui->memory->findChildren<ElementLabel *>();
+    const auto labels = m_ui->memory->findChildren<ElementLabel *>();
 
     for (auto *label : labels) {
         label->updateTheme();

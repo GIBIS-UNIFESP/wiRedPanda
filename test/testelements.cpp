@@ -303,7 +303,7 @@ void TestElements::testICs()
     const QDir examplesDir(QString(CURRENTDIR) + "/../examples/");
     const auto files = examplesDir.entryInfoList(QStringList{"*.panda"});
 
-    for (const auto &fileInfo : qAsConst(files)) {
+    for (const auto &fileInfo : files) {
         GlobalProperties::currentFile = fileInfo.absoluteFilePath();
         IC ic;
         ICManager::loadIC(&ic, fileInfo.absoluteFilePath());

@@ -46,8 +46,8 @@ void ICPrototypeImpl::loadFile(const QString &fileName)
         throw Pandaception(QObject::tr("Error opening file: ") + file.errorString());
     }
     QDataStream stream(&file);
-    auto items = SerializationFunctions::load(stream);
-    for (auto *item : qAsConst(items)) {
+    const auto items = SerializationFunctions::load(stream);
+    for (auto *item : items) {
         loadItem(item);
     }
     file.close();
