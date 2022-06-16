@@ -186,11 +186,11 @@ void Scene::receiveCommand(QUndoCommand *cmd)
 
 void Scene::resizeScene()
 {
-    auto elms = elements();
+    const auto elms = elements();
 
     if (!elms.isEmpty()) {
         QRectF rect = sceneRect();
-        for (auto *elm : qAsConst(elms)) {
+        for (auto *elm : elms) {
             QRectF itemRect = elm->boundingRect().translated(elm->pos());
             rect = rect.united(itemRect.adjusted(-10, -10, 10, 10));
         }
@@ -368,7 +368,7 @@ void Scene::showWires(const bool checked)
 void Scene::cloneDrag(const QPointF mousePos)
 {
     qCDebug(zero) << tr("Ctrl + Drag action triggered.");
-    auto selectedElms = selectedElements();
+    const auto selectedElms = selectedElements();
 
     if (selectedElms.isEmpty()) {
         return;
@@ -384,7 +384,7 @@ void Scene::cloneDrag(const QPointF mousePos)
 
     QRectF rect;
 
-    for (auto *elm : qAsConst(selectedElms)) {
+    for (auto *elm : selectedElms) {
         rect = rect.united(elm->sceneBoundingRect());
     }
 
@@ -604,9 +604,9 @@ void Scene::paste(QDataStream &stream)
     stream >> ctr;
     QPointF offset = m_mousePos - ctr - QPointF(static_cast<qreal>(32.0f), static_cast<qreal>(32.0f));
     double version = GlobalProperties::version;
-    auto itemList = SerializationFunctions::deserialize(stream, version);
+    const auto itemList = SerializationFunctions::deserialize(stream, version);
     receiveCommand(new AddItemsCommand(itemList, this));
-    for (auto *item : qAsConst(itemList)) {
+    for (auto *item : itemList) {
         if (item->type() == GraphicElement::Type) {
             item->setPos((item->pos() + offset));
             item->update();
@@ -649,7 +649,7 @@ void Scene::rotateRight()
     QList<GraphicElement *> elms;
     elms.reserve(list.size());
 
-    for (auto *item : qAsConst(list)) {
+    for (auto *item : list) {
         if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
                 elm && (elm->type() == GraphicElement::Type)) {
             elms.append(elm);
@@ -679,7 +679,7 @@ void Scene::rotateLeft()
     QList<GraphicElement *> elms;
     elms.reserve(list.size());
 
-    for (auto *item : qAsConst(list)) {
+    for (auto *item : list) {
         if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
                 elm && (elm->type() == GraphicElement::Type)) {
             elms.append(elm);
@@ -693,11 +693,11 @@ void Scene::rotateLeft()
 
 void Scene::flipHorizontally()
 {
-    auto list = selectedItems();
+    const auto list = selectedItems();
     QList<GraphicElement *> elms;
     elms.reserve(list.size());
 
-    for (auto *item : qAsConst(list)) {
+    for (auto *item : list) {
         if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
                 elm && (elm->type() == GraphicElement::Type)) {
             elms.append(elm);
@@ -711,11 +711,11 @@ void Scene::flipHorizontally()
 
 void Scene::flipVertically()
 {
-    auto list = selectedItems();
+    const auto list = selectedItems();
     QList<GraphicElement *> elms;
     elms.reserve(list.size());
 
-    for (auto *item : qAsConst(list)) {
+    for (auto *item : list) {
         if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
                 elm && (elm->type() == GraphicElement::Type)) {
             elms.append(elm);
@@ -785,10 +785,10 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         stream >> offset >> ctr;
         offset = event->scenePos() - offset;
         double version = GlobalProperties::version;
-        auto itemList = SerializationFunctions::deserialize(stream, version);
+        const auto itemList = SerializationFunctions::deserialize(stream, version);
         receiveCommand(new AddItemsCommand(itemList, this));
         clearSelection();
-        for (auto *item : qAsConst(itemList)) {
+        for (auto *item : itemList) {
             if (item->type() == GraphicElement::Type) {
                 item->setPos((item->pos() + offset));
                 item->setSelected(true);

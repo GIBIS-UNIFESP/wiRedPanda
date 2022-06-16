@@ -149,6 +149,7 @@ void WorkSpace::load(QDataStream &stream, const bool isPlaying)
 {
     qCDebug(zero) << tr("Loading file.");
     m_scene.simulationController()->stop();
+
     qCDebug(zero) << tr("Stopped simulation.");
     const double version = SerializationFunctions::loadVersion(stream);
     if (version > GlobalProperties::version && GlobalProperties::verbose) {
@@ -156,16 +157,21 @@ void WorkSpace::load(QDataStream &stream, const bool isPlaying)
     } else if (version < 4.0 && GlobalProperties::verbose) {
         QMessageBox::warning(this, tr("Old version file."), tr("Warning! This is an old version WiRedPanda project file (version < 4.0). To open it correctly, save all the ICs and skins in the main project directory."));
     }
+
     qCDebug(zero) << tr("Version:") << version;
     m_dolphinFileName = SerializationFunctions::loadDolphinFileName(stream, version);
+
     qCDebug(zero) << tr("Dolphin name:") << m_dolphinFileName;
     QRectF rect(SerializationFunctions::loadRect(stream, version));
+
     qCDebug(zero) << tr("Header Ok. Version:") << version;
-    auto items = SerializationFunctions::deserialize(stream, version);
+    const auto items = SerializationFunctions::deserialize(stream, version);
+
     qCDebug(zero) << tr("Finished loading items.");
-    for (auto *item : qAsConst(items)) {
+    for (auto *item : items) {
         m_scene.addItem(item);
     }
+
     qCDebug(three) << tr("This code tries to centralize the elements in scene using the rectangle. But it is not working well.");
     // TODO: improve this
     m_scene.setSceneRect(m_scene.itemsBoundingRect());
@@ -177,6 +183,7 @@ void WorkSpace::load(QDataStream &stream, const bool isPlaying)
     if (isPlaying) {
         m_scene.simulationController()->start();
     }
+
     qCDebug(zero) << tr("Finished loading file.");
 }
 

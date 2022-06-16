@@ -128,8 +128,8 @@ void saveItems(QByteArray &itemData, const QList<QGraphicsItem *> &items, const 
 {
     itemData.clear();
     QDataStream stream(&itemData, QIODevice::WriteOnly);
-    auto others = findElements(otherIds);
-    for (auto *elm : qAsConst(others)) {
+    const auto others = findElements(otherIds);
+    for (auto *elm : others) {
         elm->save(stream);
     }
     SerializationFunctions::serialize(items, stream);
@@ -153,11 +153,11 @@ QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const QList
     if (itemData.isEmpty()) {
         return {};
     }
-    auto otherElms = findElements(otherIds);
+    const auto otherElms = findElements(otherIds);
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     double version = GlobalProperties::version;
     QMap<quint64, QNEPort *> portMap;
-    for (auto *elm : qAsConst(otherElms)) {
+    for (auto *elm : otherElms) {
         elm->load(stream, portMap, version);
     }
     /* Assuming that all connections are stored after the elements, we will deserialize the elements first.

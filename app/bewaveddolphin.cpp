@@ -454,8 +454,8 @@ void BewavedDolphin::on_actionSetTo0_triggered()
 {
     qCDebug(zero) << tr("Pressed 0.");
     // auto itemList = signalTableView->selectedItems();
-    auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
-    for (const auto &item : qAsConst(itemList)) {
+    const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
+    for (const auto &item : itemList) {
         int row = item.row();
         int col = item.column();
         qCDebug(zero) << tr("Editing value.");
@@ -469,8 +469,8 @@ void BewavedDolphin::on_actionSetTo0_triggered()
 void BewavedDolphin::on_actionSetTo1_triggered()
 {
     qCDebug(zero) << tr("Pressed 0.");
-    auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
-    for (const auto &item : qAsConst(itemList)) {
+    const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
+    for (const auto &item : itemList) {
         int row = item.row();
         int col = item.column();
         qCDebug(zero) << tr("Editing value.");
@@ -484,8 +484,8 @@ void BewavedDolphin::on_actionSetTo1_triggered()
 void BewavedDolphin::on_actionInvert_triggered()
 {
     qCDebug(zero) << tr("Pressed Not.");
-    auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
-    for (const auto &item : qAsConst(itemList)) {
+    const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
+    for (const auto &item : itemList) {
         int row = item.row();
         int col = item.column();
         int value = m_model->index(row, col, QModelIndex()).data().toInt();
@@ -532,8 +532,8 @@ void BewavedDolphin::on_actionSetClockWave_triggered()
         return;
     }
     int half_clock_period = clock_period / 2;
-    auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
-    for (const auto &item : qAsConst(itemList)) {
+    const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
+    for (const auto &item : itemList) {
         int row = item.row();
         int col = item.column();
         int value = ((col - first_col) % clock_period < half_clock_period ? 0 : 1);
@@ -719,9 +719,9 @@ void BewavedDolphin::copy(const QItemSelection &ranges, QDataStream &stream)
     qCDebug(zero) << tr("Serializing data into data stream.");
     int first_row = sectionFirstRow(ranges);
     int first_col = sectionFirstColumn(ranges);
-    auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
+    const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
     stream << static_cast<qint64>(itemList.size());
-    for (const auto &item : qAsConst(itemList)) {
+    for (const auto &item : itemList) {
         int row = item.row();
         int col = item.column();
         int data = m_model->item(row, col)->text().toInt();

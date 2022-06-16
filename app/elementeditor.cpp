@@ -23,7 +23,7 @@ ElementEditor::ElementEditor(QWidget *parent)
 {
     m_ui->setupUi(this);
     setEnabled(false);
-    setVisible(false);
+    hide();
 
     m_ui->lineEditTrigger->setValidator(new QRegularExpressionValidator(QRegularExpression("[a-z]| |[A-Z]|[0-9]"), this));
     fillColorComboBox();
@@ -294,7 +294,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
     m_hasElements = false;
 
     if (elms.isEmpty()) {
-        setVisible(false);
+        hide();
         m_ui->lineEditElementLabel->setText("");
         return;
     }
@@ -305,7 +305,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = true;
     m_canChangeSkin = true;
     m_hasElements = true;
-    setVisible(true);
+    show();
     setEnabled(false);
     int minimumInputs = 0;
     int maximumInputs = 100000000;
@@ -530,7 +530,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
     }
 
     setEnabled(true);
-    setVisible(true);
+    show();
     /* Skin */
     m_ui->pushButtonChangeSkin->setVisible(m_canChangeSkin);
     m_ui->pushButtonDefaultSkin->setVisible(m_canChangeSkin);
@@ -539,7 +539,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
 void ElementEditor::disable()
 {
     m_hasElements = false;
-    setVisible(false);
+    hide();
     m_ui->lineEditElementLabel->setText("");
 }
 

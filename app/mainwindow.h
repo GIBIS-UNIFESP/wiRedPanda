@@ -118,7 +118,7 @@ private:
     void on_lineEditSearch_textChanged(const QString &text);
     void openRecentFile();
     void populateLeftMenu();
-    void selectTab(const int tabIndex);
+    void tabChanged(const int newTabIndex);
     void updateICList();
     void updateRecentFileActions();
     void updateSettings();
