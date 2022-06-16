@@ -169,7 +169,7 @@ private:
     void removeSurplusOutputs(const quint64 outputSize_, QMap<quint64, QNEPort *> &portMap);
 
     //! Current pixmap displayed for this GraphicElement.
-    QPixmap *m_pixmap = nullptr;
+    std::unique_ptr<QPixmap> m_pixmap;
 
     ElementGroup m_elementGroup = ElementGroup::Unknown;
     ElementType m_elementType = ElementType::Unknown;

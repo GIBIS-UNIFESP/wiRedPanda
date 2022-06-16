@@ -35,10 +35,7 @@ QString ElementFactory::typeToTitleText(const ElementType type)
         return tr("<b>MULTIPLE TYPES</b>");
     }
 
-    GlobalProperties::skipInit = true;
-    auto *elm = buildElement(type);
-    GlobalProperties::skipInit = false;
-    return elm->property("titleText").toString();
+    return property(type, "titleText");
 }
 
 QString ElementFactory::translatedName(const ElementType type)
@@ -47,10 +44,7 @@ QString ElementFactory::translatedName(const ElementType type)
         return tr("Unknown");
     }
 
-    GlobalProperties::skipInit = true;
-    auto *elm = buildElement(type);
-    GlobalProperties::skipInit = false;
-    return elm->property("translatedName").toString();
+    return property(type, "translatedName");
 }
 
 QPixmap ElementFactory::pixmap(const ElementType type)
@@ -59,10 +53,7 @@ QPixmap ElementFactory::pixmap(const ElementType type)
         return {};
     }
 
-    GlobalProperties::skipInit = true;
-    auto *elm = buildElement(type);
-    GlobalProperties::skipInit = false;
-    return QPixmap{elm->property("pixmapPath").toString()};
+    return QPixmap{property(type, "pixmapPath")};
 }
 
 GraphicElement *ElementFactory::buildElement(const ElementType type)
@@ -88,6 +79,19 @@ GraphicElement *ElementFactory::buildElement(const ElementType type)
 #endif
 
     return elm;
+}
+
+QString ElementFactory::property(const ElementType type, const QString &property)
+{
+    GlobalProperties::skipInit = true;
+    auto *elm = buildElement(type);
+    GlobalProperties::skipInit = false;
+
+    QString value = elm->property(property.toUtf8()).toString();
+
+    delete elm;
+
+    return value;
 }
 
 QNEConnection *ElementFactory::buildConnection(QGraphicsItem *parent)

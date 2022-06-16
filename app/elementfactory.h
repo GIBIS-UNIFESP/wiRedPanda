@@ -25,17 +25,18 @@ public:
     }
 
     static ElementType textToType(const QString &text);
+    static GraphicElement *buildElement(const ElementType type);
+    static ItemWithId *itemById(const int id);
+    static QNEConnection *buildConnection(QGraphicsItem *parent = nullptr);
+    static QPixmap pixmap(const ElementType type);
+    static QString property(const ElementType type, const QString &property);
+    static QString translatedName(const ElementType type);
     static QString typeToText(const ElementType type);
     static QString typeToTitleText(const ElementType type);
-    static QString translatedName(const ElementType type);
-    static QPixmap pixmap(const ElementType type);
-    static GraphicElement *buildElement(const ElementType type);
-    static QNEConnection *buildConnection(QGraphicsItem *parent = nullptr);
-    static ItemWithId *itemById(const int id);
     static bool contains(const int id);
-    static void updateItemId(ItemWithId *item, const int newId);
-    static void removeItem(ItemWithId *item);
     static void addItem(ItemWithId *item);
+    static void removeItem(ItemWithId *item);
+    static void updateItemId(ItemWithId *item, const int newId);
 
 private:
     int nextId();
