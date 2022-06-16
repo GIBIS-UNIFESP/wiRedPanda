@@ -612,19 +612,17 @@ void MainWindow::connectTab()
 
 void MainWindow::selectTab(const int tabIndex)
 {
-    if (tabIndex == -1) {
+    disconnectTab(); // disconnect previously selected tab
+    m_tabIndex = newTabIndex;
+    m_ui->elementEditor->hide();
+
+    if (newTabIndex == -1) {
+        m_currentTab = nullptr;
         return;
     }
 
-    if (m_currentTab) {
-        disconnectTab(); // disconnect previously selected tab
-    }
-
-    m_ui->elementEditor->hide();
-
     m_currentTab = dynamic_cast<WorkSpace *>(m_ui->tab->currentWidget());
-    m_tabIndex = m_ui->tab->currentIndex();
-    qCDebug(zero) << tr("Selecting tab:") << tabIndex;
+    qCDebug(zero) << tr("Selecting tab:") << newTabIndex;
     connectTab();
     qCDebug(zero) << tr("New tab selected. Dolphin fileName:") << m_currentTab->dolphinFileName();
 }
@@ -675,6 +673,10 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
 
 void MainWindow::on_lineEditSearch_returnPressed()
 {
+    if (!m_currentTab) {
+        return;
+    }
+
     auto allLabels = m_ui->scrollArea_Search->findChildren<ElementLabel *>();
 
     for (auto *label : allLabels) {
@@ -690,16 +692,14 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
 
-    if (m_currentTab) {
-        auto *scene = m_currentTab->scene();
-        auto *view = m_currentTab->view();
-        scene->setSceneRect(scene->sceneRect().united(view->rect()));
+    if (!m_currentTab) {
+        return;
     }
 }
 
 void MainWindow::on_actionReloadFile_triggered()
 {
-    if (!m_currentFile.exists()) {
+    if (!m_currentFile.exists() || !m_currentTab) {
         return;
     }
 
@@ -733,6 +733,10 @@ void MainWindow::on_actionReloadFile_triggered()
 
 void MainWindow::on_actionGates_triggered(const bool checked)
 {
+    if (!m_currentTab) {
+        return;
+    }
+
     m_ui->actionWires->setEnabled(checked);
     m_currentTab->scene()->showWires(checked ? m_ui->actionWires->isChecked() : checked);
     m_currentTab->scene()->showGates(checked);
@@ -740,6 +744,10 @@ void MainWindow::on_actionGates_triggered(const bool checked)
 
 void MainWindow::exportToArduino(QString fileName)
 {
+    if (!m_currentTab) {
+        return;
+    }
+
     if (fileName.isEmpty()) {
         throw Pandaception(tr("Missing file name."));
     }
@@ -786,6 +794,10 @@ void MainWindow::exportToWaveFormTerminal()
 
 void MainWindow::on_actionExportToArduino_triggered()
 {
+    if (!m_currentTab) {
+        return;
+    }
+
     QString path;
     if (m_currentFile.exists()) {
         path = m_currentFile.absolutePath();
@@ -800,27 +812,31 @@ void MainWindow::on_actionExportToArduino_triggered()
 
 void MainWindow::on_actionZoomIn_triggered() const
 {
-    if (m_currentTab) {
-        m_currentTab->view()->zoomIn();
+    if (!m_currentTab) {
+        return;
     }
 }
 
 void MainWindow::on_actionZoomOut_triggered() const
 {
-    if (m_currentTab) {
-        m_currentTab->view()->zoomOut();
+    if (!m_currentTab) {
+        return;
     }
 }
 
 void MainWindow::on_actionResetZoom_triggered() const
 {
-    if (m_currentTab) {
-        m_currentTab->view()->resetZoom();
+    if (!m_currentTab) {
+        return;
     }
 }
 
 void MainWindow::zoomChanged()
 {
+    if (!m_currentTab) {
+        return;
+    }
+
     m_ui->actionZoomIn->setEnabled(m_currentTab->view()->canZoomIn());
     m_ui->actionZoomOut->setEnabled(m_currentTab->view()->canZoomOut());
 }
@@ -868,6 +884,10 @@ void MainWindow::createRecentFileActions()
 
 void MainWindow::on_actionExportToPdf_triggered()
 {
+    if (!m_currentTab) {
+        return;
+    }
+
     QString path;
     if (m_currentFile.exists()) {
         path = m_currentFile.absolutePath();
@@ -899,6 +919,10 @@ void MainWindow::on_actionExportToPdf_triggered()
 
 void MainWindow::on_actionExportToImage_triggered()
 {
+    if (!m_currentTab) {
+        return;
+    }
+
     QString path;
     if (m_currentFile.exists()) {
         path = m_currentFile.absolutePath();
@@ -1067,21 +1091,37 @@ void MainWindow::updateTheme()
 
 void MainWindow::on_actionFlipHorizontally_triggered()
 {
+    if (!m_currentTab) {
+        return;
+    }
+
     m_currentTab->scene()->flipHorizontally();
 }
 
 void MainWindow::on_actionFlipVertically_triggered()
 {
+    if (!m_currentTab) {
+        return;
+    }
+
     m_currentTab->scene()->flipVertically();
 }
 
 QString MainWindow::dolphinFileName()
 {
+    if (!m_currentTab) {
+        return {};
+    }
+
     return m_currentTab->dolphinFileName();
 }
 
 void MainWindow::setDolphinFileName(const QString &fileName)
 {
+    if (!m_currentTab) {
+        return;
+    }
+
     m_currentTab->setDolphinFileName(fileName);
 }
 
@@ -1092,6 +1132,10 @@ void MainWindow::on_actionFullscreen_triggered()
 
 void MainWindow::on_actionMute_triggered(const bool checked)
 {
+    if (!m_currentTab) {
+        return;
+    }
+
     m_currentTab->scene()->mute(checked);
     m_ui->actionMute->setText(checked ? tr("Unmute") : tr("Mute"));
 }
