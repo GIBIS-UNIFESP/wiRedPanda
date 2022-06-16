@@ -37,6 +37,7 @@ public:
     QVector<GraphicElement *> visibleElements();
     SimulationController *simulationController();
     bool eventFilter(QObject *watched, QEvent *event) override;
+    void addItem(QGraphicsItem *item);
     void addItem(QMimeData *mimeData);
     void copyAction();
     void cutAction();
@@ -122,4 +123,5 @@ private:
     int m_editedConnectionId = 0;
     int m_hoverPortElmId = 0;
     int m_hoverPortNbr = 0;
+    int m_labelNumber = 0;
 };
