@@ -21,6 +21,6 @@ Xnor::Xnor(QGraphicsItem *parent)
 
     setCanChangeSkin(true);
     updatePorts();
-    setPortName("XNOR");
+    setPortName(m_translatedName);
     setToolTip(m_translatedName);
 }

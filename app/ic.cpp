@@ -32,7 +32,7 @@ IC::IC(QGraphicsItem *parent)
     m_label->setRotation(90);
 
     setHasLabel(true);
-    setPortName("IC");
+    setPortName(m_translatedName);
     setToolTip(m_translatedName);
 }
 

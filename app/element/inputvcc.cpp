@@ -23,7 +23,7 @@ InputVcc::InputVcc(QGraphicsItem *parent)
 
     setCanChangeSkin(true);
     setRotatable(false);
-    setPortName("VCC");
+    setPortName(m_translatedName);
     setToolTip(m_translatedName);
     m_outputPorts.first()->setValue(Status::Active);
 }

@@ -30,7 +30,7 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     updatePorts();
     setCanChangeSkin(true);
     setHasLabel(true);
-    setPortName("Buzzer");
+    setPortName(m_translatedName);
     setToolTip(m_translatedName);
     setLabel(objectName() + "_" + QString::number(++m_labelNumber));
 }

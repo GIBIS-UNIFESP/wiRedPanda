@@ -80,7 +80,7 @@ Display14::Display14(QGraphicsItem *parent)
     setRightPosition(58);
     setLeftPosition(6);
     setHasLabel(true);
-    setPortName("Display14");
+    setPortName(m_translatedName);
     setToolTip(m_translatedName);
 
     for (auto *in : qAsConst(m_inputPorts)) {

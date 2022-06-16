@@ -23,7 +23,7 @@ Node::Node(QGraphicsItem *parent)
 
     Node::updatePorts();
     setCanChangeSkin(true);
-    setPortName("NODE");
+    setPortName(m_translatedName);
     setToolTip(m_translatedName);
     inputPort()->setRequired(true);
 }

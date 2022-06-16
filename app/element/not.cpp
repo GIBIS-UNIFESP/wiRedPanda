@@ -21,6 +21,6 @@ Not::Not(QGraphicsItem *parent)
 
     setCanChangeSkin(true);
     updatePorts();
-    setPortName("NOT");
+    setPortName(m_translatedName);
     setToolTip(m_translatedName);
 }

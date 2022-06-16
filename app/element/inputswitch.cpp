@@ -31,7 +31,7 @@ InputSwitch::InputSwitch(QGraphicsItem *parent)
     setRotatable(false);
     setHasLabel(true);
     setHasTrigger(true);
-    setPortName("Switch");
+    setPortName(m_translatedName);
     setToolTip(m_translatedName);
 }
 

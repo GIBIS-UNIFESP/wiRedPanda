@@ -21,6 +21,6 @@ Or::Or(QGraphicsItem *parent)
 
     setCanChangeSkin(true);
     updatePorts();
-    setPortName("OR");
+    setPortName(m_translatedName);
     setToolTip(m_translatedName);
 }

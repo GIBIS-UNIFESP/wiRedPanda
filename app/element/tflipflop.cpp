@@ -24,7 +24,7 @@ TFlipFlop::TFlipFlop(QGraphicsItem *parent)
     setRotatable(false);
     setCanChangeSkin(true);
     TFlipFlop::updatePorts();
-    setPortName("FlipFlop T");
+    setPortName(m_translatedName);
     setToolTip(m_translatedName);
 
     inputPort(0)->setName("T");

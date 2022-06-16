@@ -23,7 +23,7 @@ InputGnd::InputGnd(QGraphicsItem *parent)
 
     setCanChangeSkin(true);
     setRotatable(false);
-    setPortName("GND");
+    setPortName(m_translatedName);
     setToolTip(m_translatedName);
     m_outputPorts.first()->setValue(Status::Inactive);
 }

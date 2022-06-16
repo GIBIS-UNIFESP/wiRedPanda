@@ -22,7 +22,7 @@ And::And(QGraphicsItem *parent)
     setPixmap(0);
 
     setCanChangeSkin(true);
-    setPortName("AND");
+    setPortName(m_translatedName);
     setToolTip(m_translatedName);
     updatePorts();
 }

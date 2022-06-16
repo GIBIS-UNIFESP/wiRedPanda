@@ -24,7 +24,7 @@ DLatch::DLatch(QGraphicsItem *parent)
     setRotatable(false);
     setCanChangeSkin(true);
     DLatch::updatePorts();
-    setPortName("D Latch");
+    setPortName(m_translatedName);
     setToolTip(m_translatedName);
 
     inputPort(0)->setName("Data");

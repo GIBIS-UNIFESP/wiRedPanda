@@ -62,7 +62,7 @@ Display::Display(QGraphicsItem *parent)
     convertAllColors(g);
     convertAllColors(dp);
 
-    setPortName("Display");
+    setPortName(m_translatedName);
     setToolTip(m_translatedName);
 
     for (auto *in : qAsConst(m_inputPorts)) {
