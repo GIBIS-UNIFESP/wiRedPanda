@@ -21,6 +21,6 @@ Nor::Nor(QGraphicsItem *parent)
 
     setCanChangeSkin(true);
     updatePorts();
-    setPortName("NOR");
+    setPortName(m_translatedName);
     setToolTip(m_translatedName);
 }

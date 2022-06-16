@@ -77,7 +77,7 @@ InputRotary::InputRotary(QGraphicsItem *parent)
     InputRotary::updatePorts();
     setHasLabel(true);
     setHasTrigger(true);
-    setPortName("Rotary");
+    setPortName(m_translatedName);
     setToolTip(m_translatedName);
 }
 

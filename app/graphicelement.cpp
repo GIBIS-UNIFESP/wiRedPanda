@@ -466,7 +466,6 @@ void GraphicElement::addOutputPort(const QString &name)
 void GraphicElement::setPortName(const QString &name)
 {
     setObjectName(name);
-    // setToolTip(name);
 }
 
 void GraphicElement::setSkin(const bool defaultSkin, const QString &fileName)

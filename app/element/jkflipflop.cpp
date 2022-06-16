@@ -24,7 +24,7 @@ JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
     setRotatable(false);
     setCanChangeSkin(true);
     JKFlipFlop::updatePorts();
-    setPortName("FlipFlop JK");
+    setPortName(m_translatedName);
     setToolTip(m_translatedName);
 
     inputPort(0)->setName("J");
