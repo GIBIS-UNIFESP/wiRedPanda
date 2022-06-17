@@ -101,8 +101,8 @@ public:
     void setLogic(LogicElement *newLogic);
     void setOutputSize(const int size);
     void setOutputs(const QVector<QNEOutputPort *> &outputs);
-    void setPixmap(const QString &pixmapPath, const QSize size = {64, 64});
-    void setPixmap(const int index, const QSize size = {64, 64});
+    void setPixmap(const QString &pixmapPath);
+    void setPixmap(const int index);
     void setPortName(const QString &name);
     void setTrigger(const QKeySequence &trigger);
     void updateLabel();
@@ -169,7 +169,7 @@ private:
     void removeSurplusOutputs(const quint64 outputSize_, QMap<quint64, QNEPort *> &portMap);
 
     //! Current pixmap displayed for this GraphicElement.
-    std::unique_ptr<QPixmap> m_pixmap;
+    std::unique_ptr<QPixmap> m_pixmap = std::make_unique<QPixmap>();
 
     ElementGroup m_elementGroup = ElementGroup::Unknown;
     ElementType m_elementType = ElementType::Unknown;

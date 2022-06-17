@@ -86,19 +86,15 @@ void GraphicElement::enable()
     m_disabled = false;
 }
 
-void GraphicElement::setPixmap(const int index, const QSize size)
+void GraphicElement::setPixmap(const int index)
 {
-    setPixmap(m_usingDefaultSkin ? m_defaultSkins.at(index) : m_alternativeSkins.at(index), size);
+    setPixmap(m_usingDefaultSkin ? m_defaultSkins.at(index) : m_alternativeSkins.at(index));
 }
 
-void GraphicElement::setPixmap(const QString &pixmapPath, const QSize size)
+void GraphicElement::setPixmap(const QString &pixmapPath)
 {
     if (pixmapPath.isEmpty() || (pixmapPath == m_currentPixmapPath)) {
         return;
-    }
-
-    if (!m_pixmap) {
-        m_pixmap = std::make_unique<QPixmap>();
     }
 
     if (!m_pixmap->load(pixmapPath)) {
@@ -107,7 +103,6 @@ void GraphicElement::setPixmap(const QString &pixmapPath, const QSize size)
         throw Pandaception(tr("Couldn't load pixmap."));
     }
 
-    m_pixmap = std::make_unique<QPixmap>(m_pixmap->scaled(size));
     setTransformOriginPoint(m_pixmap->rect().center());
     update(boundingRect());
 
