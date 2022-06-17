@@ -131,7 +131,7 @@ void WorkSpace::load(const QString &fileName, const bool isPlaying)
 
     GlobalProperties::currentFile = fileName;
     m_fileInfo = QFileInfo(fileName);
-    emit fileChanged(m_fileInfo.fileName());
+    emit fileChanged(m_fileInfo);
 
     qCDebug(zero) << tr("File exists");
     if (!file.open(QIODevice::ReadOnly)) {

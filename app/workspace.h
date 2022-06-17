@@ -38,7 +38,7 @@ public:
     void setIsAutosave();
 
 signals:
-    void fileChanged(const QString &fileName);
+    void fileChanged(const QFileInfo &fileInfo);
 
 private:
     void autosave();

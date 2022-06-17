@@ -20,7 +20,7 @@ public:
     static constexpr int MaxRecentFiles = 10;
 
     QStringList recentFiles();
-    void addRecentFile(const QString &fileName);
+    void addRecentFile(const QString &filePath);
 
 signals:
     void recentFilesUpdated();

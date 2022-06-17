@@ -44,7 +44,7 @@ public:
 
     //! Sets the current file to the given value.
     //! Mostly used by `loadPandaFile` and clearing functions
-    void setCurrentFile(const QString &fileName);
+    void setCurrentFile(const QFileInfo &fileInfo);
 
     //! Exports the current simulation to an
     void exportToArduino(QString fileName);
