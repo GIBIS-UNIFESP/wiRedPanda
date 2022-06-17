@@ -72,19 +72,20 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
     QMenu menu;
     QString changeSkinText(tr("Change skin to ..."));
     QString colorMenuText(tr("Change color to..."));
-    QString freqActionText(tr("Change frequency"));
+    QString frequencyText(tr("Change frequency"));
     QString morphMenuText(tr("Morph to..."));
-    QString renameActionText(tr("Rename"));
+    QString renameText(tr("Rename"));
     QString revertSkinText(tr("Set skin to default"));
-    QString rotateActionText(tr("Rotate"));
-    QString triggerActionText(tr("Change trigger"));
+    QString rotateLeftText(tr("Rotate left"));
+    QString rotateRightText(tr("Rotate right"));
+    QString triggerText(tr("Change trigger"));
 
     if (m_hasLabel) {
-        menu.addAction(QIcon(QPixmap(":/toolbar/rename.png")), renameActionText)->setData(renameActionText);
+        menu.addAction(QIcon(QPixmap(":/toolbar/rename.png")), renameText)->setData(renameText);
     }
 
     if (m_hasTrigger) {
-        menu.addAction(QIcon(ElementFactory::pixmap(ElementType::InputButton)), triggerActionText)->setData(triggerActionText);
+        menu.addAction(QIcon(ElementFactory::pixmap(ElementType::InputButton)), triggerText)->setData(triggerText);
     }
 
     if (m_canChangeSkin) {
@@ -93,11 +94,12 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
     }
 
     if (m_hasRotation) {
-        menu.addAction(QIcon(QPixmap(":/toolbar/rotateR.png")), rotateActionText)->setData(rotateActionText);
+        menu.addAction(QIcon(QPixmap(":/toolbar/rotateL.png")), rotateLeftText)->setData(rotateLeftText);
+        menu.addAction(QIcon(QPixmap(":/toolbar/rotateR.png")), rotateRightText)->setData(rotateRightText);
     }
 
     if (m_hasFrequency) {
-        menu.addAction(QIcon(ElementFactory::pixmap(ElementType::Clock)), freqActionText)->setData(freqActionText);
+        menu.addAction(QIcon(ElementFactory::pixmap(ElementType::Clock)), frequencyText)->setData(frequencyText);
     }
 
     QMenu *submenuColors = nullptr;
@@ -186,11 +188,13 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
     QAction *action = menu.exec(screenPos);
 
     if (action) {
-        if (action->data().toString() == renameActionText) {
+        if (action->data().toString() == renameText) {
             renameAction();
-        } else if (action->data().toString() == rotateActionText) {
+        } else if (action->data().toString() == rotateLeftText) {
+            emit sendCommand(new RotateCommand(m_elements, -90.0, m_scene));
+        } else if (action->data().toString() == rotateRightText) {
             emit sendCommand(new RotateCommand(m_elements, 90.0, m_scene));
-        } else if (action->data().toString() == triggerActionText) {
+        } else if (action->data().toString() == triggerText) {
             changeTriggerAction();
         } else if (action->text() == changeSkinText) {
             // Reads a new sprite and applies it to the element
@@ -200,7 +204,7 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
             m_isDefaultSkin = true;
             m_isUpdatingSkin = true;
             apply();
-        } else if (action->data().toString() == freqActionText) {
+        } else if (action->data().toString() == frequencyText) {
             m_ui->doubleSpinBoxFrequency->setFocus();
         } else if (submenuMorph && submenuMorph->actions().contains(action)) {
             ElementType type = static_cast<ElementType>(action->data().toInt());
