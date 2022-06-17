@@ -220,6 +220,7 @@ void MainWindow::save(const QString &fileName)
 {
     if (m_currentTab) {
         m_currentTab->save(fileName);
+        updateICList();
     }
 }
 
