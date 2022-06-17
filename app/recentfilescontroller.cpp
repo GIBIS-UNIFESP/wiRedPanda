@@ -19,14 +19,14 @@ RecentFilesController::RecentFilesController(QObject *parent)
 }
 
 // TODO: quotes bug
-void RecentFilesController::addRecentFile(const QString &fileName)
+void RecentFilesController::addRecentFile(const QString &filePath)
 {
-    qCDebug(three) << tr("Setting recent file to:") << fileName;
-    if (!QFile(fileName).exists()) {
+    qCDebug(three) << tr("Setting recent file to:") << filePath;
+    if (!QFile(filePath).exists()) {
         return;
     }
-    m_files.removeAll(fileName);
-    m_files.prepend(fileName);
+    m_files.removeAll(filePath);
+    m_files.prepend(filePath);
     if (m_files.size() > MaxRecentFiles) {
         m_files.erase(m_files.begin() + MaxRecentFiles, m_files.end());
     }

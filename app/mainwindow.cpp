@@ -475,9 +475,8 @@ QDir MainWindow::currentDir() const
     return m_currentTab ? m_currentTab->fileInfo().absoluteDir() : QDir();
 }
 
-void MainWindow::setCurrentFile(const QString &fileName)
+void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
 {
-    QFileInfo fileInfo(fileName);
     m_currentFile = fileInfo;
     m_ui->tab->setTabText(m_tabIndex, fileInfo.fileName());
 
