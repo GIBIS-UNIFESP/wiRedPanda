@@ -206,6 +206,7 @@ void MainWindow::addUndoRedoMenu()
 void MainWindow::setFastMode(const bool fastMode)
 {
     m_ui->actionFastMode->setChecked(fastMode);
+
     if (m_currentTab) {
         m_currentTab->view()->setFastMode(fastMode);
     }
@@ -218,10 +219,12 @@ void MainWindow::on_actionExit_triggered()
 
 void MainWindow::save(const QString &fileName)
 {
-    if (m_currentTab) {
-        m_currentTab->save(fileName);
-        updateICList();
+    if (!m_currentTab) {
+        return;
     }
+
+    m_currentTab->save(fileName);
+    updateICList();
 }
 
 void MainWindow::show()
@@ -280,7 +283,6 @@ int MainWindow::closeTabAnyway()
 
 int MainWindow::confirmSave(const bool multiple)
 {
-    // TODO: if current tab is empty dont ask user
     QMessageBox msgBox;
     msgBox.setParent(this);
     if (multiple) {
@@ -328,7 +330,7 @@ void MainWindow::loadPandaFile(const QString &fileName)
 {
     createNewTab();
     qCDebug(zero) << tr("Loading in editor.");
-    m_currentTab->load(fileName, m_ui->actionPlay->isChecked());
+    m_currentTab->load(fileName);
     updateICList();
     m_ui->statusBar->showMessage(tr("File loaded successfully."), 4000);
 }
@@ -347,7 +349,44 @@ void MainWindow::on_actionOpen_triggered()
 
 void MainWindow::on_actionSave_triggered()
 {
-    save(); // TODO: if current file is autosave ask for filename
+    // TODO: if current file is autosave ask for filename
+
+    QString fileName = m_currentFile.absoluteFilePath();
+
+    if (fileName.isEmpty()) {
+        fileName = QFileDialog::getSaveFileName(this, tr("Save File as ..."), "", tr("Panda files (*.panda)"));
+
+        if (fileName.isEmpty()) {
+            return;
+        }
+
+        if (!fileName.endsWith(".panda")) {
+            fileName.append(".panda");
+        }
+    }
+
+    save(fileName);
+}
+
+void MainWindow::on_actionSaveAs_triggered()
+{
+    QString path;
+
+    if (!m_currentFile.fileName().isEmpty()) {
+        path = m_currentFile.absoluteFilePath();
+    }
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File as ..."), path, tr("Panda files (*.panda)"));
+
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    if (!fileName.endsWith(".panda")) {
+        fileName.append(".panda");
+    }
+
+    save(fileName);
 }
 
 void MainWindow::on_actionAbout_triggered()
@@ -444,27 +483,6 @@ bool MainWindow::hasModifiedFiles()
     return false;
 }
 
-void MainWindow::on_actionSaveAs_triggered()
-{
-    QString path;
-
-    if (!m_currentFile.fileName().isEmpty()) {
-        path = m_currentFile.absoluteFilePath();
-    }
-
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File as ..."), path, tr("Panda files (*.panda)"));
-
-    if (fileName.isEmpty()) {
-        return;
-    }
-
-    if (!fileName.endsWith(".panda")) {
-        fileName.append(".panda");
-    }
-
-    save(fileName);
-}
-
 QFileInfo MainWindow::currentFile() const
 {
     return m_currentTab ? m_currentTab->fileInfo() : QFileInfo();
@@ -478,7 +496,11 @@ QDir MainWindow::currentDir() const
 void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
 {
     m_currentFile = fileInfo;
-    m_ui->tab->setTabText(m_tabIndex, fileInfo.fileName());
+    m_ui->tab->setTabText(m_tabIndex, fileInfo.exists() ? fileInfo.fileName() : tr("New Project"));
+
+    if (!m_currentTab->scene()->undoStack()->isClean()) {
+        m_ui->tab->setTabText(m_tabIndex, m_ui->tab->tabText(m_tabIndex) + "*");
+    }
 
     qCDebug(zero) << tr("Adding file to controller.");
     emit addRecentFile(fileInfo.absoluteFilePath());
@@ -525,11 +547,10 @@ void MainWindow::updateICList()
 bool MainWindow::closeTab(const int tabIndex)
 {
     qCDebug(zero) << tr("Closing tab") << tabIndex + 1 << tr(", #tabs:") << m_ui->tab->count();
-
-    auto *workspace = dynamic_cast<WorkSpace *>(m_ui->tab->widget(tabIndex));
+    m_ui->tab->setCurrentIndex(tabIndex);
 
     qCDebug(zero) << tr("Checking if needs to save file.");
-    if (!workspace->scene()->undoStack()->isClean()) {
+    if (!m_currentTab->scene()->undoStack()->isClean()) {
         const int selectedButton = confirmSave(false);
 
         if (selectedButton == QMessageBox::Cancel) {
@@ -538,7 +559,7 @@ bool MainWindow::closeTab(const int tabIndex)
 
         if (selectedButton == QMessageBox::Yes) {
             try {
-                workspace->save();
+                save();
             } catch (std::exception &e) {
                 QMessageBox::critical(this, tr("Error"), e.what());
 
@@ -550,7 +571,7 @@ bool MainWindow::closeTab(const int tabIndex)
     }
 
     qCDebug(zero) << tr("Deleting tab.");
-    workspace->deleteLater();
+    m_currentTab->deleteLater();
     m_ui->tab->removeTab(tabIndex);
     qCDebug(zero) << tr("Closed tab") << tabIndex << tr(", #tabs:") << m_ui->tab->count() << tr(", current tab:") << m_tabIndex;
 
@@ -563,8 +584,7 @@ void MainWindow::disconnectTab()
         return;
     }
 
-    qCDebug(zero) << tr("Stopping simulation controller and event handling.");
-    m_currentTab->scene()->setHandlingEvents(false);
+    qCDebug(zero) << tr("Stopping simulation controller.");
     m_currentTab->simulationController()->stop();
     qCDebug(zero) << tr("Disconnecting zoom from UI controllers.");
     disconnect(m_currentTab->view(), &GraphicsView::zoomChanged, this, &MainWindow::zoomChanged);
@@ -601,7 +621,6 @@ void MainWindow::connectTab()
     if (m_ui->actionPlay->isChecked()) {
         qCDebug(zero) << tr("Restarting simulation controller.");
         m_currentTab->simulationController()->start();
-        m_currentTab->scene()->setHandlingEvents(true);
         m_currentTab->scene()->clearSelection();
     }
 
@@ -706,32 +725,10 @@ void MainWindow::on_actionReloadFile_triggered()
         return;
     }
 
-    auto *undostack = m_currentTab->scene()->undoStack();
+    const QString file = m_currentFile.absoluteFilePath();
 
-    if (!undostack->isClean()) {
-        const int selectedButton = confirmSave(false);
-
-        if (selectedButton == QMessageBox::Cancel) {
-            return;
-        }
-
-        if (selectedButton == QMessageBox::Yes) {
-            try {
-                save();
-            }  catch (std::exception &e) {
-                QMessageBox::critical(this, tr("Error"), e.what());
-
-                if (closeTabAnyway() == QMessageBox::No) {
-                    return;
-                }
-            }
-        }
-
-        m_currentTab->scene()->selectAll();
-        m_currentTab->scene()->deleteAction();
-        m_currentTab->scene()->undoStack()->clear();
-        loadPandaFile(m_currentFile.absoluteFilePath());
-    }
+    closeTab(m_tabIndex);
+    loadPandaFile(file);
 }
 
 void MainWindow::on_actionGates_triggered(const bool checked)

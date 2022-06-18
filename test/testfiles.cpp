@@ -40,7 +40,7 @@ void TestFiles::testFiles()
         QTemporaryFile tempFile;
         QVERIFY(tempFile.open());
         QDataStream stream2(&tempFile);
-        workspace->save(stream2, "");
+        workspace->save(stream2);
         tempFile.close();
         QFile pandaFile2(tempFile.fileName());
         QVERIFY(pandaFile2.open(QIODevice::ReadOnly));

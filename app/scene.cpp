@@ -250,11 +250,6 @@ void Scene::startNewConnection(QNEOutputPort *startPort)
     connection->updatePath();
 }
 
-void Scene::setHandlingEvents(const bool value)
-{
-    m_handlingEvents = value;
-}
-
 QUndoStack *Scene::undoStack()
 {
     return &m_undoStack;

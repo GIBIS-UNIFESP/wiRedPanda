@@ -52,7 +52,6 @@ public:
     void selectAll();
     void setAutosaveRequired();
     void setCircuitUpdateRequired();
-    void setHandlingEvents(const bool value);
     void setView(GraphicsView *view);
     void showGates(const bool checked);
     void showWires(const bool checked);
@@ -116,7 +115,6 @@ private:
     bool m_autosaveRequired = false;
     bool m_circuitUpdateRequired = false;
     bool m_draggingElement = false;
-    bool m_handlingEvents = true;
     bool m_markingSelectionBox = false;
     bool m_showGates = true;
     bool m_showWires = true;
