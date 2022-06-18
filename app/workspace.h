@@ -30,10 +30,10 @@ public:
     QString dolphinFileName();
     Scene *scene();
     SimulationController *simulationController();
-    void load(QDataStream &stream, const bool isPlaying = true);
-    void load(const QString &fileName, const bool isPlaying = true);
-    void save(QDataStream &stream, const QString &dolphinFileName);
-    void save(const QString &fileName = {});
+    void load(QDataStream &stream);
+    void load(const QString &fileName);
+    void save(QDataStream &stream);
+    void save(const QString &fileName);
     void setDolphinFileName(const QString &fileName);
     void setIsAutosave();
 
