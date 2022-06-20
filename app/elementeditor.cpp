@@ -187,36 +187,63 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
 
     QAction *action = menu.exec(screenPos);
 
-    if (action) {
-        if (action->data().toString() == renameText) {
-            renameAction();
-        } else if (action->data().toString() == rotateLeftText) {
-            emit sendCommand(new RotateCommand(m_elements, -90.0, m_scene));
-        } else if (action->data().toString() == rotateRightText) {
-            emit sendCommand(new RotateCommand(m_elements, 90.0, m_scene));
-        } else if (action->data().toString() == triggerText) {
-            changeTriggerAction();
-        } else if (action->text() == changeSkinText) {
-            // Reads a new sprite and applies it to the element
-            updateElementSkin();
-        } else if (action->text() == revertSkinText) {
-            // Reset the icon to its default
-            m_isDefaultSkin = true;
-            m_isUpdatingSkin = true;
-            apply();
-        } else if (action->data().toString() == frequencyText) {
-            m_ui->doubleSpinBoxFrequency->setFocus();
-        } else if (submenuMorph && submenuMorph->actions().contains(action)) {
-            ElementType type = static_cast<ElementType>(action->data().toInt());
-            if (type != ElementType::Unknown) {
-                emit sendCommand(new MorphCommand(m_elements, type, m_scene));
-            }
-        } else if (submenuColors && submenuColors->actions().contains(action)) {
-            m_ui->comboBoxColor->setCurrentText(action->text());
-        } else {
-            qDebug(zero) << "uncaught text " + action->text();
-        }
+    if (!action) {
+        return;
     }
+
+    const QString actionData = action->data().toString();
+    const QString actionText = action->text();
+
+    if (actionData == renameText) {
+        renameAction();
+        return;
+    }
+
+    if (actionData == rotateLeftText) {
+        emit sendCommand(new RotateCommand(m_elements, -90.0, m_scene));
+        return;
+    }
+
+    if (actionData == rotateRightText) {
+        emit sendCommand(new RotateCommand(m_elements, 90.0, m_scene));
+        return;
+    }
+
+    if (actionData == triggerText) {
+        changeTriggerAction();
+        return;
+    }
+
+    if (actionText == changeSkinText) {
+        updateElementSkin();
+        return;
+    }
+
+    if (actionText == revertSkinText) {
+        m_isDefaultSkin = true;
+        m_isUpdatingSkin = true;
+        apply();
+        return;
+    }
+
+    if (actionData == frequencyText) {
+        m_ui->doubleSpinBoxFrequency->setFocus();
+        return;
+    }
+
+    if (submenuMorph && submenuMorph->actions().contains(action)) {
+        if (auto type = static_cast<ElementType>(action->data().toInt()); type != ElementType::Unknown) {
+            emit sendCommand(new MorphCommand(m_elements, type, m_scene));
+        }
+        return;
+    }
+
+    if (submenuColors && submenuColors->actions().contains(action)) {
+        m_ui->comboBoxColor->setCurrentText(action->text());
+        return;
+    }
+
+    throw Pandaception(tr("Unknown context menu option."));
 }
 
 void ElementEditor::renameAction()
@@ -321,8 +348,6 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
     auto elementType = firstElement->elementType();
 
     for (auto *elm : qAsConst(m_elements)) {
-        auto *elmInput = dynamic_cast<GraphicElementInput *>(elm);
-
         m_hasLabel &= elm->hasLabel();
         m_canChangeSkin &= elm->canChangeSkin();
         m_hasColors &= elm->hasColors();
@@ -342,7 +367,8 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
         m_hasSameOutputSize &= (elm->outputSize() == firstElement->outputSize());
         maxCurrentOutputSize = std::min(maxCurrentOutputSize, elm->outputSize());
 
-        if ((elm->elementGroup() == ElementGroup::Input) && (firstElement->elementGroup() == ElementGroup::Input)) {
+        if (auto *elmInput = dynamic_cast<GraphicElementInput *>(elm);
+                elmInput && (elm->elementGroup() == ElementGroup::Input) && (firstElement->elementGroup() == ElementGroup::Input)) {
             m_hasSameOutputValue &= (elmInput->outputValue() == firstInput->outputValue());
             sameCheckState &= (elmInput->isLocked() == firstInput->isLocked());
         }
@@ -492,6 +518,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
         if (maxCurrentOutputSize == 1) {
             maxCurrentOutputSize++;
         }
+
         for (int val = 0; val < maxCurrentOutputSize; ++val) {
             m_ui->comboBoxValue->addItem(QString::number(val), val);
         }
@@ -556,7 +583,7 @@ void ElementEditor::apply()
 {
     qCDebug(three) << tr("Apply.");
 
-    if ((m_elements.isEmpty()) || (!isEnabled())) {
+    if (m_elements.isEmpty() || !isEnabled()) {
         return;
     }
 
@@ -602,7 +629,7 @@ void ElementEditor::apply()
 
 void ElementEditor::inputIndexChanged(const int index)
 {
-    if ((m_elements.isEmpty()) || (!isEnabled())) {
+    if (m_elements.isEmpty() || !isEnabled()) {
         return;
     }
 
@@ -616,7 +643,7 @@ void ElementEditor::inputIndexChanged(const int index)
 
 void ElementEditor::outputIndexChanged(const int index)
 {
-    if ((m_elements.isEmpty()) || (!isEnabled())) {
+    if (m_elements.isEmpty() || !isEnabled()) {
         return;
     }
 
@@ -630,7 +657,7 @@ void ElementEditor::outputIndexChanged(const int index)
 
 void ElementEditor::outputValueChanged(const QString &value)
 {
-    if ((m_elements.isEmpty()) || (!isEnabled())) {
+    if (m_elements.isEmpty() || !isEnabled()) {
         return;
     }
 
@@ -638,9 +665,13 @@ void ElementEditor::outputValueChanged(const QString &value)
 
     for (auto *elm : qAsConst(m_elements)) {
         if (elm->elementType() == ElementType::InputRotary) {
-            dynamic_cast<InputRotary *>(elm)->setOn(true, newValue);
+            if (auto *input = dynamic_cast<InputRotary *>(elm)) {
+                input->setOn(true, newValue);
+            }
         } else {
-            dynamic_cast<GraphicElementInput *>(elm)->setOn(newValue);
+            if (auto *input = dynamic_cast<GraphicElementInput *>(elm)) {
+                input->setOn(newValue);
+            }
         }
     }
 
@@ -649,12 +680,14 @@ void ElementEditor::outputValueChanged(const QString &value)
 
 void ElementEditor::inputLocked(const bool value)
 {
-    if ((m_elements.isEmpty()) || (!isEnabled())) {
+    if (m_elements.isEmpty() || !isEnabled()) {
         return;
     }
 
     for (auto *elm : qAsConst(m_elements)) {
-        dynamic_cast<GraphicElementInput *>(elm)->setLocked(value);
+        if (auto *input = dynamic_cast<GraphicElementInput *>(elm)) {
+            input->setLocked(value);
+        }
     }
 
     qCDebug(zero) << tr("Input locked.");
@@ -683,6 +716,7 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
             std::stable_sort(elms.begin(), elms.end(), [](const auto &elm1, const auto &elm2) {
                 return elm1->pos().ry() < elm2->pos().ry();
             });
+
             std::stable_sort(elms.begin(), elms.end(), [](const auto &elm1, const auto &elm2) {
                 return elm1->pos().rx() < elm2->pos().rx();
             });
@@ -702,6 +736,7 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
                 elm = elms[pos];
 
                 setCurrentElements({elm});
+
                 if (widget->isEnabled()) {
                     break;
                 }

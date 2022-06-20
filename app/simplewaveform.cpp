@@ -132,13 +132,14 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, WorkSpace *workspace)
         outputCount += out->inputSize();
     }
     // Creating results vector containing the output resulting values.
-    QVector<QVector<uchar>> results(outputCount, QVector<uchar>(numIter));
+    QVector<QVector<int>> results(outputCount, QVector<int>(numIter));
     for (int itr = 0; itr < numIter; ++itr) {
         // For each iteration, set a distinct value for the inputs. The set value corresponds to the bits from the number of the current iteration.
         std::bitset<std::numeric_limits<unsigned int>::digits> bs(itr);
         for (int in = 0; in < inputs.size(); ++in) {
-            uchar val = bs[in];
-            dynamic_cast<GraphicElementInput *>(inputs[in])->setOn(val);
+            if (auto *input = dynamic_cast<GraphicElementInput *>(inputs.at(in))) {
+                input->setOn(bs[in]);
+            }
         }
         // Updating the values of the circuit logic based on current input values.
         simController->update();
@@ -146,9 +147,9 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, WorkSpace *workspace)
         // Setting the computed output values to the waveform results vector.
         int counter = 0;
         for (auto *output : qAsConst(outputs)) {
-            int inSize = output->inputSize();
+            const int inSize = output->inputSize();
             for (int port = inSize - 1; port >= 0; --port) {
-                uchar val = static_cast<uchar>(output->inputPort(port)->value());
+                const int val = static_cast<int>(output->inputPort(port)->value());
                 results[counter][itr] = val;
                 counter++;
             }
