@@ -13,6 +13,7 @@
 
 #include <QGraphicsItem>
 #include <QKeySequence>
+#include <memory>
 
 constexpr int maximumValidInputSize = 256;
 
