@@ -238,5 +238,7 @@ void Led::resetSkin(const int ledNumber)
     case 23: m_defaultSkins[23] = ":/output/16colors/HotPinkLedOn.png";   break;
     case 24: m_defaultSkins[24] = ":/output/16colors/YellowLedOn.png";    break;
     case 25: m_defaultSkins[25] = ":/output/16colors/WhiteLedOn.png";     break;
+    default:
+        throw Pandaception(tr("Invalid skin number!"));
     }
 }

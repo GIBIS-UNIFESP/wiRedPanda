@@ -39,9 +39,9 @@ private:
     const QString m_translatedName = tr("Clock");
 
     bool m_isOn = false;
-    double m_frequency;
-    int m_elapsed;
-    int m_interval;
+    double m_frequency = 0;
+    int m_elapsed = 0;
+    int m_interval = 0;
 };
 
 Q_DECLARE_METATYPE(Clock)

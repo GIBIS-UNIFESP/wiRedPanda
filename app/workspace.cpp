@@ -149,7 +149,7 @@ void WorkSpace::load(const QString &fileName)
 void WorkSpace::load(QDataStream &stream)
 {
     qCDebug(zero) << tr("Loading file.");
-    SimulationBlocker blocker(m_scene.simulationController());
+    SimulationBlocker simulationBlocker(m_scene.simulationController());
     qCDebug(zero) << tr("Stopped simulation.");
     const double version = SerializationFunctions::loadVersion(stream);
 

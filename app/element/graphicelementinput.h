@@ -25,5 +25,5 @@ public:
     void setLocked(const bool locked) { m_locked = locked; }
 
 protected:
-    bool m_locked;
+    bool m_locked = false;
 };

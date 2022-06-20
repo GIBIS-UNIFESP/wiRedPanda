@@ -34,7 +34,7 @@ public:
 private:
     static void updatePort(QNEInputPort *port);
 
-    bool canRun();
+    bool canRun() const;
     void updatePort(QNEOutputPort *port);
 
     QTimer m_simulationTimer;

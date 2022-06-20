@@ -100,7 +100,7 @@ private:
     void startNewConnection(QNEOutputPort *startPort);
     void startSelectionRect();
 
-    GraphicsView *m_view;
+    GraphicsView *m_view = nullptr;
     QAction *m_redoAction;
     QAction *m_undoAction;
     QElapsedTimer m_timer;

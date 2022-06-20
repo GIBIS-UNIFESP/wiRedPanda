@@ -727,7 +727,8 @@ void Scene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
     const auto formats = event->mimeData()->formats();
 
     if (formats.contains("application/x-dnditemdata") || formats.contains("application/ctrlDragData")) {
-        return event->accept();
+        event->accept();
+        return;
     }
 
     QGraphicsScene::dragEnterEvent(event);
@@ -738,7 +739,8 @@ void Scene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
     const auto formats = event->mimeData()->formats();
 
     if (formats.contains("application/x-dnditemdata") || formats.contains("application/ctrlDragData")) {
-        return event->accept();
+        event->accept();
+        return;
     }
 
     QGraphicsScene::dragMoveEvent(event);

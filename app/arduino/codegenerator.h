@@ -27,11 +27,11 @@ public:
     {
     }
 
-    GraphicElement *m_elm;
-    QNEPort *m_port;
+    GraphicElement *m_elm = nullptr;
+    QNEPort *m_port = nullptr;
     QString m_pin;
     QString m_varName;
-    int m_portNbr;
+    int m_portNbr = 0;
 };
 
 class CodeGenerator

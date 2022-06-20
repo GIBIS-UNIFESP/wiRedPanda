@@ -74,7 +74,7 @@ private:
     QNEOutputPort *m_start = nullptr;
     QPointF m_endPos;
     QPointF m_startPos;
-    Status m_status;
+    Status m_status = Status::Invalid;
 };
 
 QDataStream &operator<<(QDataStream &stream, const QNEConnection *item);
