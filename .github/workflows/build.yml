@@ -10,7 +10,7 @@ env:
 
 jobs:
 
-  Ubuntu-Qt5_9:
+  Ubuntu-Qt5_9_9-Code_Coverage:
     runs-on: ubuntu-latest
 
     steps:
@@ -43,12 +43,114 @@ jobs:
     - name: Deploy
       uses: actions/upload-artifact@v3
       with:
-        name: 'WiRedPanda-Qt5.9-Ubuntu-glibc'
+        name: 'WiRedPanda-Ubuntu-Qt5.9.9'
         path: build/app/wpanda
 
 # =================================
 
-  Ubuntu-Qt5_15:
+  Ubuntu-Qt5_12_12:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with: 
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: 5.12.12
+        modules: qtcharts
+        aqtversion: ==2.1.0
+
+    - name: Build and test
+      run: |
+        sudo apt install libgstreamer-gl1.0-0
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j2
+        cd test
+        xvfb-run ./WPanda-test
+
+    - name: Deploy
+      uses: actions/upload-artifact@v3
+      with:
+        name: 'WiRedPanda-Ubuntu-Qt5.12.12'
+        path: build/app/wpanda
+        
+# =================================
+
+  Ubuntu-Qt5_13_2:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with: 
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: 5.13.2
+        modules: qtcharts
+        aqtversion: ==2.1.0
+
+    - name: Build and test
+      run: |
+        sudo apt install libgstreamer-gl1.0-0
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j2
+        cd test
+        xvfb-run ./WPanda-test
+
+    - name: Deploy
+      uses: actions/upload-artifact@v3
+      with:
+        name: 'WiRedPanda-Ubuntu-Qt5.13.2'
+        path: build/app/wpanda
+
+# =================================
+
+  Ubuntu-Qt5_14_2:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with: 
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: 5.14.2
+        modules: qtcharts
+        aqtversion: ==2.1.0
+
+    - name: Build and test
+      run: |
+        sudo apt install libgstreamer-gl1.0-0
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j2
+        cd test
+        xvfb-run ./WPanda-test
+
+    - name: Deploy
+      uses: actions/upload-artifact@v3
+      with:
+        name: 'WiRedPanda-Ubuntu-Qt5.14.2'
+        path: build/app/wpanda
+        
+# =================================
+
+  Ubuntu-Qt5_15_2:
     runs-on: ubuntu-latest
 
     steps:
@@ -77,12 +179,46 @@ jobs:
     - name: Deploy
       uses: actions/upload-artifact@v3
       with:
-        name: 'WiRedPanda-Qt5.15-Ubuntu-glibc'
+        name: 'WiRedPanda-Ubuntu-Qt5.15.2'
+        path: build/app/wpanda
+
+# =================================
+
+  Ubuntu-Qt6_2_4:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with: 
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: 6.2.4
+        modules: qtcharts qtmultimedia
+        aqtversion: ==2.1.0
+
+    - name: Build and test
+      run: |
+        sudo apt install libgstreamer-gl1.0-0
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j2
+        cd test
+        xvfb-run ./WPanda-test
+
+    - name: Deploy
+      uses: actions/upload-artifact@v3
+      with:
+        name: 'WiRedPanda-Ubuntu-Qt6.2.4'
         path: build/app/wpanda
         
 # =================================
 
-  Ubuntu-Qt6_3:
+  Ubuntu-Qt6_3_1:
     runs-on: ubuntu-latest
 
     steps:
@@ -111,12 +247,12 @@ jobs:
     - name: Deploy
       uses: actions/upload-artifact@v3
       with:
-        name: 'WiRedPanda-Qt6.3-Ubuntu-glibc'
+        name: 'WiRedPanda-Ubuntu-Qt6.3.1'
         path: build/app/wpanda
         
 # =================================
 
-  Windows-Qt5_9-MSVC:
+  Windows-Qt5_9_9:
     runs-on: windows-latest
 
     steps:
@@ -163,12 +299,168 @@ jobs:
       continue-on-error: true
       uses: actions/upload-artifact@v3
       with:
-        name: WiRedPanda Qt5.9 Windows MSVC (64-bit) build
+        name: WiRedPanda-Windows-Qt5.9.9
         path: build\app\wpanda\
 
 # =================================
 
-  Windows-Qt5_15-MSVC:
+  Windows-Qt5_12_12:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with: 
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Set up Git for properly handling symlinks on Windows
+      run: git config --global core.symlinks true
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        arch: win64_msvc2017_64
+        version: 5.12.12
+        modules: qtcharts
+        aqtversion: ==2.1.0
+
+    - name: Setup MSVC Toolchain [Windows]
+      uses: seanmiddleditch/gha-setup-vsdevenv@v4
+
+    - name: Build and test
+      shell: cmd
+      run: |
+        choco install jom
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        jom
+        jom check
+
+    - name: Make WiRedPanda package
+      run : |
+        cp -r examples build\app\release
+        cd build\app\release
+        windeployqt --compiler-runtime wpanda.exe
+        rm wpanda_pch.obj
+        rm wpanda_pch.pch
+        cd ..
+        ren release wpanda
+
+    - name: Deploy
+      continue-on-error: true
+      uses: actions/upload-artifact@v3
+      with:
+        name: WiRedPanda-Windows-Qt5.12.12
+        path: build\app\wpanda\
+        
+# =================================
+
+  Windows-Qt5_13_2:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with: 
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Set up Git for properly handling symlinks on Windows
+      run: git config --global core.symlinks true
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        arch: win64_msvc2017_64
+        version: 5.13.2
+        modules: qtcharts
+        aqtversion: ==2.1.0
+
+    - name: Setup MSVC Toolchain [Windows]
+      uses: seanmiddleditch/gha-setup-vsdevenv@v4
+
+    - name: Build and test
+      shell: cmd
+      run: |
+        choco install jom
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        jom
+        jom check
+
+    - name: Make WiRedPanda package
+      run : |
+        cp -r examples build\app\release
+        cd build\app\release
+        windeployqt --compiler-runtime wpanda.exe
+        rm wpanda_pch.obj
+        rm wpanda_pch.pch
+        cd ..
+        ren release wpanda
+
+    - name: Deploy
+      continue-on-error: true
+      uses: actions/upload-artifact@v3
+      with:
+        name: WiRedPanda-Windows-Qt5.13.2
+        path: build\app\wpanda\
+        
+# =================================
+
+  Windows-Qt5_14_2:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with: 
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Set up Git for properly handling symlinks on Windows
+      run: git config --global core.symlinks true
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        arch: win64_msvc2017_64
+        version: 5.14.2
+        modules: qtcharts
+        aqtversion: ==2.1.0
+
+    - name: Setup MSVC Toolchain [Windows]
+      uses: seanmiddleditch/gha-setup-vsdevenv@v4
+
+    - name: Build and test
+      shell: cmd
+      run: |
+        choco install jom
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        jom
+        jom check
+
+    - name: Make WiRedPanda package
+      run : |
+        cp -r examples build\app\release
+        cd build\app\release
+        windeployqt --compiler-runtime wpanda.exe
+        rm wpanda_pch.obj
+        rm wpanda_pch.pch
+        cd ..
+        ren release wpanda
+
+    - name: Deploy
+      continue-on-error: true
+      uses: actions/upload-artifact@v3
+      with:
+        name: WiRedPanda-Windows-Qt5.14.2
+        path: build\app\wpanda\
+        
+# =================================
+
+  Windows-Qt5_15:
     runs-on: windows-latest
 
     steps:
@@ -215,12 +507,64 @@ jobs:
       continue-on-error: true
       uses: actions/upload-artifact@v3
       with:
-        name: WiRedPanda Qt5.15 Windows MSVC (64-bit) build
+        name: WiRedPanda-Windows-Qt5.15.2
         path: build\app\wpanda\
 
 # =================================
 
-  Windows-Qt6_3-MSVC:
+  Windows-Qt6_2_4:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with: 
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Set up Git for properly handling symlinks on Windows
+      run: git config --global core.symlinks true
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        arch: win64_msvc2019_64
+        version: 6.2.4
+        modules: qtcharts qtmultimedia
+        aqtversion: ==2.1.0
+
+    - name: Setup MSVC Toolchain [Windows]
+      uses: seanmiddleditch/gha-setup-vsdevenv@v4
+
+    - name: Build and test
+      shell: cmd
+      run: |
+        choco install jom
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        jom
+        jom check
+
+    - name: Make WiRedPanda package
+      run : |
+        cp -r examples build\app\release
+        cd build\app\release
+        windeployqt --compiler-runtime wpanda.exe
+        rm wpanda_pch.obj
+        rm wpanda_pch.pch
+        cd ..
+        ren release wpanda
+
+    - name: Deploy
+      continue-on-error: true
+      uses: actions/upload-artifact@v3
+      with:
+        name: WiRedPanda-Windows-Qt6.2.4
+        path: build\app\wpanda\
+        
+# =================================
+
+  Windows-Qt6_3_1:
     runs-on: windows-latest
 
     steps:
@@ -267,7 +611,7 @@ jobs:
       continue-on-error: true
       uses: actions/upload-artifact@v3
       with:
-        name: WiRedPanda Qt6.3 Windows MSVC (64-bit) build
+        name: WiRedPanda-Windows-Qt6.3.1
         path: build\app\wpanda\
 
 # =================================
@@ -296,7 +640,7 @@ jobs:
     - name: Deploy
       uses: actions/upload-artifact@v3
       with:
-        name: 'WiRedPanda-Qt5-macOS'
+        name: WiRedPanda-macOS-Qt5
         path: build/app/wpanda.app/Contents/MacOS/wpanda
 
 # =================================
@@ -325,5 +669,5 @@ jobs:
     - name: Deploy
       uses: actions/upload-artifact@v3
       with:
-        name: 'WiRedPanda-Qt6-macOS'
+        name: WiRedPanda-macOS-Qt6
         path: build/app/wpanda.app/Contents/MacOS/wpanda
