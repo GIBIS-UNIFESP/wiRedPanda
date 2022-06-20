@@ -108,7 +108,7 @@ void SimulationController::restart()
     m_initialized = false;
 }
 
-bool SimulationController::canRun()
+bool SimulationController::canRun() const
 {
     return m_initialized;
 }

@@ -89,11 +89,11 @@ protected:
     Status m_defaultValue = Status::Invalid;
     Status m_value = Status::Inactive;
     bool m_required = true;
-    int m_index;
+    int m_index = 0;
     int m_margin = 2;
     int m_portFlags = 0;
     int m_radius = 5;
-    quint64 m_ptr;
+    quint64 m_ptr = 0;
 };
 
 class QNEInputPort : public QNEPort

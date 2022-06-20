@@ -34,6 +34,8 @@ public:
     void setOutputSize(const int outputSize);
 
 private:
+    Q_DISABLE_COPY(ICPrototypeImpl)
+
     static void sortPorts(QVector<QNEPort *> &map);
 
     void loadInputs();

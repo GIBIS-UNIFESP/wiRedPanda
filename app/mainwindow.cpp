@@ -59,7 +59,6 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     restoreState(Settings::value("MainWindow/windowState").toByteArray());
     m_ui->splitter->restoreGeometry(Settings::value("MainWindow/splitter/geometry").toByteArray());
     m_ui->splitter->restoreState(Settings::value("MainWindow/splitter/state").toByteArray());
-    m_ui->actionExportToArduino->setEnabled(false);
 
     qCDebug(zero) << tr("Preparing theme and UI modes.");
     auto *themeGroup = new QActionGroup(this);
@@ -103,6 +102,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->actionDarkTheme,        &QAction::triggered,       this,                &MainWindow::on_actionDarkTheme_triggered);
     connect(m_ui->actionEnglish,          &QAction::triggered,       this,                &MainWindow::on_actionEnglish_triggered);
     connect(m_ui->actionExit,             &QAction::triggered,       this,                &MainWindow::on_actionExit_triggered);
+    connect(m_ui->actionExportToArduino,  &QAction::triggered,       this,                &MainWindow::on_actionExportToArduino_triggered);
     connect(m_ui->actionExportToImage,    &QAction::triggered,       this,                &MainWindow::on_actionExportToImage_triggered);
     connect(m_ui->actionExportToPdf,      &QAction::triggered,       this,                &MainWindow::on_actionExportToPdf_triggered);
     connect(m_ui->actionFastMode,         &QAction::triggered,       this,                &MainWindow::on_actionFastMode_triggered);
@@ -142,6 +142,9 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     if (!fileName.isEmpty()) {
         loadPandaFile(fileName);
     }
+
+    qCDebug(zero) << tr("Disabling Arduino export.");
+    m_ui->actionExportToArduino->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -753,11 +756,12 @@ void MainWindow::exportToArduino(QString fileName)
     }
 
     auto elements = m_currentTab->scene()->elements();
+
     if (elements.isEmpty()) {
         throw Pandaception(tr("The panda file is empty."));
     }
 
-    auto simBlocker = SimulationBlocker(m_currentTab->simulationController());
+    SimulationBlocker simulationBlocker(m_currentTab->simulationController());
 
     if (!fileName.endsWith(".ino")) {
         fileName.append(".ino");
@@ -984,7 +988,8 @@ void MainWindow::loadTranslation(const QString &language)
     qApp->removeTranslator(m_qtTranslator);
 
     if (language == "default") {
-        return retranslateUi();
+        retranslateUi();
+        return;
     }
 
     // ---------------------------------------------

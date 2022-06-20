@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <QObject>
+
 class SimulationController;
 
 class SimulationBlocker
@@ -14,6 +16,8 @@ public:
     ~SimulationBlocker();
 
 private:
+    Q_DISABLE_COPY(SimulationBlocker)
+
     SimulationController *m_simController;
     bool m_restart = false;
 };

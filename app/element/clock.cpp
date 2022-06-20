@@ -57,12 +57,12 @@ bool Clock::isOn(const int port) const
 
 void Clock::setOff()
 {
-    setOn(false);
+    Clock::setOn(false);
 }
 
 void Clock::setOn()
 {
-    setOn(true);
+    Clock::setOn(true);
 }
 
 void Clock::setOn(const bool value, const int port)

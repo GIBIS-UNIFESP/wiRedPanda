@@ -389,7 +389,6 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
     , m_scene(scene)
 {
     auto *node = ElementFactory::buildElement(ElementType::Node);
-    auto *conn2 = ElementFactory::buildConnection();
 
     /* Align node to Grid */
     m_nodePos = mousePos - node->boundingRect().center();
@@ -398,15 +397,15 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
     qreal yV = qRound(m_nodePos.y() / gridSize) * gridSize;
     m_nodePos = QPointF(xV, yV);
     /* Rotate line according to angle between p1 and p2 */
-    m_nodeAngle = static_cast<int>(conn->angle());
-    m_nodeAngle = static_cast<int>(360 - 90 * (std::round(m_nodeAngle / 90.0)));
+    const int angle = static_cast<int>(conn->angle());
+    m_nodeAngle = static_cast<int>(360 - 90 * (std::round(angle / 90.0)));
 
     /* Assigning class attributes */
     m_elm1_id = conn->start()->graphicElement()->id();
     m_elm2_id = conn->end()->graphicElement()->id();
 
     m_c1_id = conn->id();
-    m_c2_id = conn2->id();
+    m_c2_id = ElementFactory::buildConnection()->id();
 
     m_node_id = node->id();
 
@@ -596,12 +595,12 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
 ChangeInputSizeCommand::ChangeInputSizeCommand(const QList<GraphicElement *> &elements, const int newInputSize, Scene *scene, QUndoCommand *parent)
     : QUndoCommand(parent)
     , m_scene(scene)
+    , m_newInputSize(newInputSize)
 {
     m_elms.reserve(elements.size());
     for (auto *elm : elements) {
         m_elms.append(elm->id());
     }
-    m_newInputSize = newInputSize;
     setText(tr("Change input size to %1").arg(newInputSize));
 }
 
@@ -739,12 +738,12 @@ void FlipCommand::redo()
 ChangeOutputSizeCommand::ChangeOutputSizeCommand(const QList<GraphicElement *> &elements, const int newOutputSize, Scene *scene, QUndoCommand *parent)
     : QUndoCommand(parent)
     , m_scene(scene)
+    , m_newOutputSize(newOutputSize)
 {
     m_elms.reserve(elements.size());
     for (auto *elm : elements) {
         m_elms.append(elm->id());
     }
-    m_newOutputSize = newOutputSize;
     setText(tr("Change input size to %1").arg(newOutputSize));
 }
 
