@@ -290,13 +290,14 @@ void BewavedDolphin::run()
     SimulationBlocker simulationBlocker(m_simController);
     for (int itr = 0; itr < m_model->columnCount(); ++itr) {
         qCDebug(four) << tr("itr:") << itr << tr(", inputs:") << m_inputs.size();
-        int table_line = 0;
+        int tableLine = 0;
         for (auto *input : qAsConst(m_inputs)) {
-            int outSize = input->outputSize();
-            for (int port = 0; port < outSize; ++port) {
-                int val = m_model->item(table_line, itr)->text().toInt();
-                dynamic_cast<GraphicElementInput *>(input)->setOn(val, port);
-                ++table_line;
+            for (int port = 0; port < input->outputSize(); ++port) {
+                if (auto* input2 = dynamic_cast<GraphicElementInput *>(input)) {
+                    int val = m_model->item(tableLine, itr)->text().toInt();
+                    input2->setOn(val, port);
+                }
+                ++tableLine;
             }
         }
         qCDebug(four) << tr("Updating the values of the circuit logic based on current input values.");
@@ -305,9 +306,8 @@ void BewavedDolphin::run()
         qCDebug(four) << tr("Setting the computed output values to the waveform results.");
         int counter = m_inputPorts;
         for (auto *output : qAsConst(m_outputs)) {
-            int inSize = output->inputSize();
-            for (int port = 0; port < inSize; ++port) {
-                int value = static_cast<int>(static_cast<uchar>(output->inputPort(port)->value()));
+            for (int port = 0; port < output->inputSize(); ++port) {
+                int value = static_cast<int>(output->inputPort(port)->value());
                 createElement(counter, itr, value, false);
                 counter++;
             }

@@ -32,14 +32,11 @@ void storeIds(const QList<QGraphicsItem *> &items, QList<int> &ids)
 void storeOtherIds(const QList<QGraphicsItem *> &connections, const QList<int> &ids, QList<int> &otherIds)
 {
     for (auto *item : connections) {
-        auto *conn = qgraphicsitem_cast<QNEConnection *>(item);
-        if ((item->type() == QNEConnection::Type) && conn) {
-            auto *p1 = conn->start();
-            if (p1 && p1->graphicElement() && !ids.contains(p1->graphicElement()->id())) {
+        if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item); item->type() == QNEConnection::Type && conn) {
+            if (auto *p1 = conn->start(); p1 && p1->graphicElement() && !ids.contains(p1->graphicElement()->id())) {
                 otherIds.append(p1->graphicElement()->id());
             }
-            auto *p2 = conn->end();
-            if (p2 && p2->graphicElement() && !ids.contains(p2->graphicElement()->id())) {
+            if (auto *p2 = conn->end(); p2 && p2->graphicElement() && !ids.contains(p2->graphicElement()->id())) {
                 otherIds.append(p2->graphicElement()->id());
             }
         }
@@ -188,7 +185,7 @@ AddItemsCommand::AddItemsCommand(const QList<QGraphicsItem *> &items, Scene *sce
     : QUndoCommand(parent)
     , m_scene(scene)
 {
-    auto items_ = loadList(items, m_ids, m_otherIds);
+    const auto items_ = loadList(items, m_ids, m_otherIds);
     addItems(m_scene, items_);
     setText(tr("Add %1 elements").arg(items_.size()));
 }
@@ -196,7 +193,7 @@ AddItemsCommand::AddItemsCommand(const QList<QGraphicsItem *> &items, Scene *sce
 void AddItemsCommand::undo()
 {
     qCDebug(zero) << text();
-    auto items = findItems(m_ids);
+    const auto items = findItems(m_ids);
 
     auto *simController = m_scene->simulationController();
     // We need to restart the simulation controller when deleting through the Undo command to
@@ -621,9 +618,9 @@ void ChangeInputSizeCommand::redo()
     for (auto *elm : m_elements) {
         elm->save(stream);
         serializationOrder.append(elm);
-        for (int in = m_newInputSize; in < elm->inputSize(); ++in) {
-            for (auto *conn : elm->inputPort(in)->connections()) {
-                auto *otherPort = conn->otherPort(elm->inputPort(in));
+        for (int port = m_newInputSize; port < elm->inputSize(); ++port) {
+            for (auto *conn : elm->inputPort(port)->connections()) {
+                auto *otherPort = conn->otherPort(elm->inputPort(port));
                 otherPort->graphicElement()->save(stream);
                 serializationOrder.append(otherPort->graphicElement());
             }
@@ -631,13 +628,13 @@ void ChangeInputSizeCommand::redo()
     }
 
     for (auto *elm : m_elements) {
-        for (int in = m_newInputSize; in < elm->inputSize(); ++in) {
-            while (!elm->inputPort(in)->connections().isEmpty()) {
-                auto *conn = elm->inputPort(in)->connections().first();
+        for (int port = m_newInputSize; port < elm->inputSize(); ++port) {
+            while (!elm->inputPort(port)->connections().isEmpty()) {
+                auto *conn = elm->inputPort(port)->connections().first();
                 conn->save(stream);
                 m_scene->removeItem(conn);
-                auto *otherPort = conn->otherPort(elm->inputPort(in));
-                elm->inputPort(in)->disconnect(conn);
+                auto *otherPort = conn->otherPort(elm->inputPort(port));
+                elm->inputPort(port)->disconnect(conn);
                 otherPort->disconnect(conn);
             }
         }
@@ -684,27 +681,27 @@ FlipCommand::FlipCommand(const QList<GraphicElement *> &items, const int axis, S
     , m_scene(scene)
     , m_axis(axis)
 {
-    setText(tr("Flip %1 elements in axis %2").arg(items.size(), axis));
-    m_ids.reserve(items.size());
-    m_positions.reserve(items.size());
-    double xmin;
-    double xmax;
-    double ymin;
-    double ymax;
     if (items.isEmpty()) {
         return;
     }
-    xmin = xmax = items.first()->pos().rx();
-    ymin = ymax = items.first()->pos().ry();
+
+    setText(tr("Flip %1 elements in axis %2").arg(items.size(), axis));
+    m_ids.reserve(items.size());
+    m_positions.reserve(items.size());
+    double xmin = items.first()->pos().rx();
+    double ymin = items.first()->pos().ry();
+    double xmax = xmin;
+    double ymax = ymin;
+
     for (auto *item : items) {
         m_positions.append(item->pos());
-        item->setPos(item->pos());
         m_ids.append(item->id());
         xmin = qMin(xmin, item->pos().rx());
-        xmax = qMax(xmax, item->pos().rx());
         ymin = qMin(ymin, item->pos().ry());
+        xmax = qMax(xmax, item->pos().rx());
         ymax = qMax(ymax, item->pos().ry());
     }
+
     m_minPos = QPointF(xmin, ymin);
     m_maxPos = QPointF(xmax, ymax);
 }
@@ -718,7 +715,6 @@ void FlipCommand::undo()
 void FlipCommand::redo()
 {
     qCDebug(zero) << text();
-    // TODO: this might detach the QList
     const auto list = findElements(m_ids);
     m_scene->clearSelection();
     for (auto *elm : list) {

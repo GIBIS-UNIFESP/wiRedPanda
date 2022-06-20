@@ -833,7 +833,7 @@ bool GraphicElement::isDisabled() const
 
 QDataStream &operator<<(QDataStream &stream, const GraphicElement *item)
 {
-    qDebug(four) << "Writing element.";
+    qCDebug(four) << "Writing element.";
     const auto *elm = qgraphicsitem_cast<const GraphicElement *>(item);
     stream << GraphicElement::Type;
     stream << elm->elementType();
