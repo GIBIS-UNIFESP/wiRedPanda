@@ -120,8 +120,7 @@ QVector<GraphicElement *> Scene::elements(const QRectF &rect)
     const auto items_ = items(rect);
     elements.reserve(items_.size());
     for (auto *item : items_) {
-        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
-        if (elm) {
+        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
             elements.append(elm);
         }
     }
@@ -134,8 +133,7 @@ QVector<QNEConnection *> Scene::connections()
     const auto items_ = items();
     conns.reserve(items_.size());
     for (auto *item : items_) {
-        auto *conn = qgraphicsitem_cast<QNEConnection *>(item);
-        if (conn) {
+        if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
             conns.append(conn);
         }
     }
@@ -341,7 +339,7 @@ void Scene::showWires(const bool checked)
     const auto sceneItems = items();
     for (auto *item : sceneItems) {
         auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
-        if ((item->type() == QNEConnection::Type)) {
+        if (item->type() == QNEConnection::Type) {
             item->setVisible(checked);
         } else if ((item->type() == GraphicElement::Type) && elm) {
             if (elm->elementType() == ElementType::Node) {
@@ -653,8 +651,7 @@ void Scene::rotate(const int angle) {
     elms.reserve(list.size());
 
     for (auto *item : list) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
-                elm && (elm->type() == GraphicElement::Type)) {
+        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
             elms.append(elm);
         }
     }
@@ -682,8 +679,7 @@ void Scene::flipHorizontally()
     elms.reserve(list.size());
 
     for (auto *item : list) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
-                elm && (elm->type() == GraphicElement::Type)) {
+        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
             elms.append(elm);
         }
     }
@@ -700,8 +696,7 @@ void Scene::flipVertically()
     elms.reserve(list.size());
 
     for (auto *item : list) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
-                elm && (elm->type() == GraphicElement::Type)) {
+        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
             elms.append(elm);
         }
     }

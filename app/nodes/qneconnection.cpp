@@ -260,8 +260,8 @@ void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 QDataStream &operator<<(QDataStream &stream, const QNEConnection *item)
 {
     qCDebug(zero) << QObject::tr("Writing Connection.");
-    const auto *conn = qgraphicsitem_cast<const QNEConnection *>(item);
     stream << QNEConnection::Type;
+    const auto *conn = qgraphicsitem_cast<const QNEConnection *>(item);
     conn->save(stream);
     return stream;
 }
