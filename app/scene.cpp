@@ -639,7 +639,15 @@ void Scene::selectAll()
 
 void Scene::rotateRight()
 {
-    const double angle = 90.0;
+    rotate(90);
+}
+
+void Scene::rotateLeft()
+{
+    rotate(-90);
+}
+
+void Scene::rotate(const int angle) {
     const auto list = selectedItems();
     QList<GraphicElement *> elms;
     elms.reserve(list.size());
@@ -651,8 +659,8 @@ void Scene::rotateRight()
         }
     }
 
-    if ((elms.size() > 1) || ((elms.size() == 1) && elms.first()->isRotatable())) {
-        receiveCommand(new RotateCommand(elms, static_cast<int>(angle), this));
+    if (!elms.isEmpty()) {
+        receiveCommand(new RotateCommand(elms, angle, this));
     }
 }
 
@@ -664,25 +672,6 @@ void Scene::mute(const bool mute)
         if (auto *buzzer = dynamic_cast<Buzzer *>(elm)) {
             buzzer->mute(mute);
         }
-    }
-}
-
-void Scene::rotateLeft()
-{
-    const double angle = -90.0;
-    const auto list = selectedItems();
-    QList<GraphicElement *> elms;
-    elms.reserve(list.size());
-
-    for (auto *item : list) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
-                elm && (elm->type() == GraphicElement::Type)) {
-            elms.append(elm);
-        }
-    }
-
-    if ((elms.size() > 1) || ((elms.size() == 1) && elms.first()->isRotatable())) {
-        receiveCommand(new RotateCommand(elms, static_cast<int>(angle), this));
     }
 }
 

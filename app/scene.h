@@ -93,6 +93,7 @@ private:
     void paste(QDataStream &stream);
     void releaseHoverPort();
     void resizeScene();
+    void rotate(const int angle);
     void setDots(const QPen &dots);
     void setEditedConnection(QNEConnection *connection);
     void setHoverPort(QNEPort *port);

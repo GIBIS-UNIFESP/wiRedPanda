@@ -292,6 +292,8 @@ void RotateCommand::redo()
         transform.translate(-cx, -cy);
         if (elm->isRotatable()) {
             elm->setRotation(elm->rotation() + m_angle);
+        } else {
+            elm->rotatePorts(m_angle);
         }
         elm->setPos(transform.map(elm->pos()));
         elm->update();
