@@ -499,11 +499,14 @@ QDir MainWindow::currentDir() const
 void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
 {
     m_currentFile = fileInfo;
-    m_ui->tab->setTabText(m_tabIndex, fileInfo.exists() ? fileInfo.fileName() : tr("New Project"));
+
+    QString text = fileInfo.exists() ? fileInfo.fileName() : tr("New Project");
 
     if (!m_currentTab->scene()->undoStack()->isClean()) {
-        m_ui->tab->setTabText(m_tabIndex, m_ui->tab->tabText(m_tabIndex) + "*");
+        text += "*";
     }
+
+    m_ui->tab->setTabText(m_tabIndex, text);
 
     qCDebug(zero) << tr("Adding file to controller.");
     emit addRecentFile(fileInfo.absoluteFilePath());
@@ -974,6 +977,20 @@ void MainWindow::retranslateUi()
     for (auto *item : items) {
         item->updateName();
     }
+
+    for (int index = 0; index < m_ui->tab->count(); ++index) {
+        auto workspace = dynamic_cast<WorkSpace *>(m_ui->tab->widget(index));
+        auto undoStack = workspace->scene()->undoStack();
+        auto fileInfo = workspace->fileInfo();
+
+        QString text = fileInfo.exists() ? fileInfo.fileName() : tr("New Project");
+
+        if (!undoStack->isClean()) {
+            text += "*";
+        }
+
+        m_ui->tab->setTabText(index, text);
+    }
 }
 
 void MainWindow::loadTranslation(const QString &language)
@@ -987,7 +1004,13 @@ void MainWindow::loadTranslation(const QString &language)
     qApp->removeTranslator(m_pandaTranslator);
     qApp->removeTranslator(m_qtTranslator);
 
-    if (language == "default") {
+    delete m_pandaTranslator;
+    delete m_qtTranslator;
+
+    m_pandaTranslator = nullptr;
+    m_qtTranslator = nullptr;
+
+    if (language == "en") {
         retranslateUi();
         return;
     }
@@ -997,11 +1020,10 @@ void MainWindow::loadTranslation(const QString &language)
     QString pandaFile;
     QString qtFile;
 
-    if (language == ":/translations/wpanda_pt_BR.qm") {
+    if (language == "pt_BR") {
         pandaFile = ":/translations/wpanda_pt_BR.qm";
         qtFile = ":/translations/qt_pt_BR.qm";
     }
-
 
     if (!pandaFile.isEmpty()) {
         m_pandaTranslator = new QTranslator(this);
@@ -1024,12 +1046,12 @@ void MainWindow::loadTranslation(const QString &language)
 
 void MainWindow::on_actionEnglish_triggered()
 {
-    loadTranslation("default");
+    loadTranslation("en");
 }
 
 void MainWindow::on_actionPortuguese_triggered()
 {
-    loadTranslation(":/translations/wpanda_pt_BR.qm");
+    loadTranslation("pt_BR");
 }
 
 void MainWindow::on_actionPlay_triggered(const bool checked)
