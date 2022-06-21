@@ -604,6 +604,21 @@ void GraphicElement::updateTheme()
     update();
 }
 
+void GraphicElement::rotatePorts(const int angle)
+{
+    for (auto *port : m_inputPorts) {
+        port->setTransformOriginPoint(mapToItem(port, boundingRect().center()));
+        port->setRotation(port->rotation() + angle);
+        port->updateConnections();
+    }
+
+    for (auto *port : m_outputPorts) {
+        port->setTransformOriginPoint(mapToItem(port, boundingRect().center()));
+        port->setRotation(port->rotation() + angle);
+        port->updateConnections();
+    }
+}
+
 bool GraphicElement::isValid()
 {
     qCDebug(four) << tr("Checking if the element has the required signals to compute its value.");

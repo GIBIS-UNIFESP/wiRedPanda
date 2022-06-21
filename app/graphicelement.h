@@ -96,6 +96,7 @@ public:
     void disable();
     void enable();
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void rotatePorts(const int angle);
     void setInputSize(const int size);
     void setInputs(const QVector<QNEInputPort *> &inputs);
     void setLabel(const QString &label);
