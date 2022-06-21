@@ -427,11 +427,14 @@ void GraphicElement::addPort(const QString &name, const bool isOutput, const int
     if (isOutput && (static_cast<quint64>(m_outputPorts.size()) >= m_maxOutputSize)) {
         return;
     }
+
     if (!isOutput && (static_cast<quint64>(m_inputPorts.size()) >= m_maxInputSize)) {
         return;
     }
+
     qCDebug(four) << tr("New port.");
     QNEPort *port = nullptr;
+
     if (isOutput) {
         m_outputPorts.push_back(new QNEOutputPort(this));
         port = m_outputPorts.last();
@@ -441,6 +444,7 @@ void GraphicElement::addPort(const QString &name, const bool isOutput, const int
         port = m_inputPorts.last();
         port->setIndex(inputSize() - 1);
     }
+
     port->setName(name);
     port->setGraphicElement(this);
     port->setPortFlags(flags);
@@ -513,14 +517,10 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
     if (change == ItemPositionChange) {
         qCDebug(four) << tr("Align to grid.");
         QPointF newPos = value.toPointF();
-        auto *customScene = qobject_cast<Scene *>(scene());
-        if (customScene) {
-            const int gridSize = GlobalProperties::gridSize;
-            qreal xV = qRound(newPos.x() / gridSize) * gridSize;
-            qreal yV = qRound(newPos.y() / gridSize) * gridSize;
-            return QPointF(xV, yV);
-        }
-        return newPos;
+        const int gridSize = GlobalProperties::gridSize;
+        qreal xV = qRound(newPos.x() / gridSize) * gridSize;
+        qreal yV = qRound(newPos.y() / gridSize) * gridSize;
+        return QPointF(xV, yV);
     }
 
     if ((change == ItemScenePositionHasChanged) || (change == ItemRotationHasChanged) || (change == ItemTransformHasChanged)) {
@@ -528,6 +528,7 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
         for (auto *port : qAsConst(m_outputPorts)) {
             port->updateConnections();
         }
+
         for (auto *port : qAsConst(m_inputPorts)) {
             port->updateConnections();
         }

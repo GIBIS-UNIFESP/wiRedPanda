@@ -29,8 +29,7 @@ void TestFiles::testFiles()
         const auto items = workspace->scene()->items();
 
         for (auto *item : items) {
-            if (item->type() == QNEConnection::Type) {
-                auto *conn = qgraphicsitem_cast<QNEConnection *>(item);
+            if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
                 QVERIFY(conn != nullptr);
                 QVERIFY(conn->start() != nullptr);
                 QVERIFY(conn->end() != nullptr);
