@@ -78,13 +78,11 @@ public:
     bool isRotatable() const;
     bool isValid();
     int inputSize() const;
-    int leftPosition() const;
     int maxInputSize() const;
     int maxOutputSize() const;
     int minInputSize() const;
     int minOutputSize() const;
     int outputSize() const;
-    int rightPosition() const;
     virtual QString audio() const;
     virtual QString color() const;
     virtual QString genericProperties();
@@ -117,13 +115,11 @@ protected:
     void setHasFrequency(const bool hasFrequency);
     void setHasLabel(const bool hasLabel);
     void setHasTrigger(const bool hasTrigger);
-    void setLeftPosition(const int leftPosition);
     void setMaxInputSize(const int maxInputSize);
     void setMaxOutputSize(const int maxOutputSize);
     void setMinInputSize(const int minInputSize);
     void setMinOutputSize(const int minOutputSize);
     void setOutputsOnRight(const bool outputsOnRight);
-    void setRightPosition(const int rightPosition);
     void setRotatable(const bool rotatable);
 
     //! Path to all default skins. The default skin is in a resource file.
@@ -189,8 +185,6 @@ private:
     bool m_hasLabel = false;
     bool m_hasTrigger = false;
     bool m_rotatable = true;
-    int m_leftPosition = 0;
-    int m_rightPosition = 64;
     quint64 m_maxInputSize = 0;
     quint64 m_maxOutputSize = 0;
     quint64 m_minInputSize = 0;

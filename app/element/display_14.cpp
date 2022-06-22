@@ -77,8 +77,6 @@ Display14::Display14(QGraphicsItem *parent)
     setHasColors(true);
     setCanChangeSkin(true);
     Display14::updatePorts();
-    setRightPosition(58);
-    setLeftPosition(6);
     setHasLabel(true);
     setPortName(m_translatedName);
     setToolTip(m_translatedName);
@@ -96,21 +94,21 @@ void Display14::refresh()
 
 void Display14::updatePorts()
 {
-    inputPort(0)->setPos(leftPosition(), -4);   /* G1 */
-    inputPort(1)->setPos(leftPosition(), 8);    /* F  */
-    inputPort(2)->setPos(leftPosition(), 20);   /* E  */
-    inputPort(3)->setPos(leftPosition(), 32);   /* D  */
-    inputPort(4)->setPos(rightPosition(), -10); /* A  */
-    inputPort(5)->setPos(rightPosition(), 2);   /* B  */
-    inputPort(6)->setPos(rightPosition(), 14);  /* DP */
-    inputPort(7)->setPos(rightPosition(), 26);  /* C  */
-    inputPort(8)->setPos(leftPosition(), 44);   /* G2 */
-    inputPort(9)->setPos(leftPosition(), 56);   /* H  */
-    inputPort(10)->setPos(leftPosition(), 68);  /* J  */
-    inputPort(11)->setPos(rightPosition(), 38); /* K  */
-    inputPort(12)->setPos(rightPosition(), 50); /* L  */
-    inputPort(13)->setPos(rightPosition(), 62); /* M  */
-    inputPort(14)->setPos(rightPosition(), 74); /* N  */
+    inputPort(0)->setPos(6, -4);   /* G1 */
+    inputPort(1)->setPos(6, 8);    /* F  */
+    inputPort(2)->setPos(6, 20);   /* E  */
+    inputPort(3)->setPos(6, 32);   /* D  */
+    inputPort(4)->setPos(58, -10); /* A  */
+    inputPort(5)->setPos(58, 2);   /* B  */
+    inputPort(6)->setPos(58, 14);  /* DP */
+    inputPort(7)->setPos(58, 26);  /* C  */
+    inputPort(8)->setPos(6, 44);   /* G2 */
+    inputPort(9)->setPos(6, 56);   /* H  */
+    inputPort(10)->setPos(6, 68);  /* J  */
+    inputPort(11)->setPos(58, 38); /* K  */
+    inputPort(12)->setPos(58, 50); /* L  */
+    inputPort(13)->setPos(58, 62); /* M  */
+    inputPort(14)->setPos(58, 74); /* N  */
 
     inputPort(0)->setName("G1 (" + tr("middle left")        + ")");
     inputPort(1)->setName("F (" +  tr("upper left")         + ")");
