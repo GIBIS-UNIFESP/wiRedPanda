@@ -68,15 +68,13 @@ int main(int argc, char *argv[])
 
         parser.process(app);
 
-        QString verbosity = parser.value(verbosityOption);
-        if (!verbosity.isEmpty()) {
+        if (const QString verbosity = parser.value(verbosityOption); !verbosity.isEmpty()) {
             Comment::setVerbosity(verbosity.toInt());
         }
 
         QStringList args = parser.positionalArguments();
 
-        QString arduFile = parser.value(arduinoFileOption);
-        if (!arduFile.isEmpty()) {
+        if (const QString arduFile = parser.value(arduinoFileOption); !arduFile.isEmpty()) {
             if (!args.empty()) {
                 GlobalProperties::verbose = false;
                 MainWindow window;
@@ -86,8 +84,7 @@ int main(int argc, char *argv[])
             exit(0);
         }
 
-        QString wfFile = parser.value(waveformFileOption);
-        if (!wfFile.isEmpty()) {
+        if (const QString wfFile = parser.value(waveformFileOption); !wfFile.isEmpty()) {
             if (!args.empty()) {
                 GlobalProperties::verbose = false;
                 MainWindow window;
@@ -97,8 +94,7 @@ int main(int argc, char *argv[])
             exit(0);
         }
 
-        bool isTerminal = parser.isSet(terminalFileOption);
-        if (isTerminal) {
+        if (const bool isTerminal = parser.isSet(terminalFileOption); isTerminal) {
             if (!args.empty()) {
                 GlobalProperties::verbose = false;
                 MainWindow window;

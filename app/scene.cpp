@@ -61,14 +61,16 @@ void Scene::drawBackground(QPainter *painter, const QRectF &rect)
     painter->setRenderHint(QPainter::Antialiasing, true);
     QGraphicsScene::drawBackground(painter, rect);
     painter->setPen(m_dots);
-    qreal left = static_cast<int>(rect.left()) - (static_cast<int>(rect.left()) % gridSize);
-    qreal top = static_cast<int>(rect.top()) - (static_cast<int>(rect.top()) % gridSize);
-    QVector<QPointF> points;
-    for (qreal x = left; x < rect.right(); x += gridSize) { // TODO: dont use qreal as counter
-        for (qreal y = top; y < rect.bottom(); y += gridSize) { // TODO: dont use qreal as counter
-            points.append(QPointF(x, y));
+    const int left = static_cast<int>(rect.left()) - (static_cast<int>(rect.left()) % gridSize);
+    const int top = static_cast<int>(rect.top()) - (static_cast<int>(rect.top()) % gridSize);
+    QVector<QPoint> points;
+
+    for (int x = left; x < rect.right(); x += gridSize) {
+        for (int y = top; y < rect.bottom(); y += gridSize) {
+            points.append(QPoint(x, y));
         }
     }
+
     painter->drawPoints(points.data(), points.size());
 }
 
