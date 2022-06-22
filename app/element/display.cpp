@@ -48,8 +48,6 @@ Display::Display(QGraphicsItem *parent)
     setHasColors(true);
     setCanChangeSkin(true);
     Display::updatePorts();
-    setRightPosition(58);
-    setLeftPosition(6);
     setHasLabel(true);
 
     qCDebug(three) << tr("Converting segments to other colors.");
@@ -107,14 +105,14 @@ void Display::refresh()
 
 void Display::updatePorts()
 {
-    inputPort(0)->setPos(leftPosition(), 10);  /* G  */
-    inputPort(1)->setPos(leftPosition(), 25);  /* F  */
-    inputPort(2)->setPos(leftPosition(), 39);  /* E  */
-    inputPort(3)->setPos(leftPosition(), 54);  /* D  */
-    inputPort(4)->setPos(rightPosition(), 10); /* A  */
-    inputPort(5)->setPos(rightPosition(), 25); /* B  */
-    inputPort(6)->setPos(rightPosition(), 39); /* DP */
-    inputPort(7)->setPos(rightPosition(), 54); /* C  */
+    inputPort(0)->setPos(6, 10);  /* G  */
+    inputPort(1)->setPos(6, 25);  /* F  */
+    inputPort(2)->setPos(6, 39);  /* E  */
+    inputPort(3)->setPos(6, 54);  /* D  */
+    inputPort(4)->setPos(58, 10); /* A  */
+    inputPort(5)->setPos(58, 25); /* B  */
+    inputPort(6)->setPos(58, 39); /* DP */
+    inputPort(7)->setPos(58, 54); /* C  */
 
     inputPort(0)->setName("G (" +  tr("middle")      + ")");
     inputPort(1)->setName("F (" +  tr("upper left")  + ")");

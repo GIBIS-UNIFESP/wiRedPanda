@@ -477,15 +477,13 @@ void GraphicElement::setSkin(const bool defaultSkin, const QString &fileName)
 void GraphicElement::updatePorts()
 {
     qCDebug(five) << tr("Updating port positions that belong to the IC.");
-    const int inputPos = m_leftPosition;
-    const int outputPos = m_rightPosition;
 
     if (!m_inputPorts.isEmpty()) {
         const int step = qMax(32 / m_inputPorts.size(), 6);
         int y = 32 - m_inputPorts.size() * step + step;
         for (auto *port : qAsConst(m_inputPorts)) {
-            qCDebug(five) << tr("Setting input at") << inputPos << tr(",") << y;
-            port->setPos(inputPos, y);
+            qCDebug(five) << tr("Setting input at") << 0 << tr(",") << y;
+            port->setPos(0, y);
             port->update();
             y += step * 2;
         }
@@ -495,8 +493,8 @@ void GraphicElement::updatePorts()
         const int step = qMax(32 / m_outputPorts.size(), 6);
         int y = 32 - m_outputPorts.size() * step + step;
         for (auto *port : qAsConst(m_outputPorts)) {
-            qCDebug(five) << tr("Setting output at") << outputPos << tr(",") << y;
-            port->setPos(outputPos, y);
+            qCDebug(five) << tr("Setting output at") << 64 << tr(",") << y;
+            port->setPos(64, y);
             port->update();
             y += step * 2;
         }
@@ -818,28 +816,6 @@ int GraphicElement::maxInputSize() const
 void GraphicElement::setMaxInputSize(const int maxInputSize)
 {
     m_maxInputSize = maxInputSize;
-}
-
-int GraphicElement::rightPosition() const
-{
-    return m_rightPosition;
-}
-
-void GraphicElement::setRightPosition(const int rightPosition)
-{
-    m_rightPosition = rightPosition;
-    updatePorts();
-}
-
-int GraphicElement::leftPosition() const
-{
-    return m_leftPosition;
-}
-
-void GraphicElement::setLeftPosition(const int leftPosition)
-{
-    m_leftPosition = leftPosition;
-    updatePorts();
 }
 
 bool GraphicElement::isDisabled() const

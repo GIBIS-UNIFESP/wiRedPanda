@@ -50,14 +50,14 @@ SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
 
 void SRFlipFlop::updatePorts()
 {
-    inputPort(0)->setPos(leftPosition(), 13);   /* S */
-    inputPort(1)->setPos(leftPosition(), 29);   /* Clk */
-    inputPort(2)->setPos(leftPosition(), 45);   /* R */
-    inputPort(3)->setPos(32, leftPosition());   /* Preset */
-    inputPort(4)->setPos(32, rightPosition());  /* Clear */
+    inputPort(0)->setPos(0, 13);   /* S      */
+    inputPort(1)->setPos(0, 29);   /* Clk    */
+    inputPort(2)->setPos(0, 45);   /* R      */
+    inputPort(3)->setPos(32, 0);   /* Preset */
+    inputPort(4)->setPos(32, 64);  /* Clear  */
 
-    outputPort(0)->setPos(rightPosition(), 15); /* Q */
-    outputPort(1)->setPos(rightPosition(), 45); /* ~Q */
+    outputPort(0)->setPos(64, 15); /* Q      */
+    outputPort(1)->setPos(64, 45); /* ~Q     */
 }
 
 void SRFlipFlop::updateTheme()

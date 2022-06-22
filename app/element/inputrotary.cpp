@@ -97,58 +97,58 @@ void InputRotary::updatePorts()
 {
     switch (InputRotary::outputSize()) {
     case 2: {
-        outputPort(0)->setPos(20, rightPosition());    outputPort(0)->setName("0");
-        outputPort(1)->setPos(43, rightPosition());    outputPort(1)->setName("1");
+        outputPort(0)->setPos(20, 64);    outputPort(0)->setName("0");
+        outputPort(1)->setPos(43, 64);    outputPort(1)->setName("1");
         break;
     }
     case 4: {
-        outputPort(0)->setPos(10, rightPosition());    outputPort(0)->setName("0");
-        outputPort(1)->setPos(25, rightPosition());    outputPort(1)->setName("1");
-        outputPort(2)->setPos(39, rightPosition());    outputPort(2)->setName("2");
-        outputPort(3)->setPos(54, rightPosition());    outputPort(3)->setName("3");
+        outputPort(0)->setPos(10, 64);    outputPort(0)->setName("0");
+        outputPort(1)->setPos(25, 64);    outputPort(1)->setName("1");
+        outputPort(2)->setPos(39, 64);    outputPort(2)->setName("2");
+        outputPort(3)->setPos(54, 64);    outputPort(3)->setName("3");
         break;
     }
     case 8: {
-        outputPort(0)->setPos(10, rightPosition());    outputPort(0)->setName("0");
-        outputPort(1)->setPos(25, rightPosition());    outputPort(1)->setName("1");
-        outputPort(2)->setPos(39, rightPosition());    outputPort(2)->setName("2");
-        outputPort(3)->setPos(54, rightPosition());    outputPort(3)->setName("3");
-        outputPort(4)->setPos(10, leftPosition());     outputPort(4)->setName("4");
-        outputPort(5)->setPos(25, leftPosition());     outputPort(5)->setName("5");
-        outputPort(6)->setPos(39, leftPosition());     outputPort(6)->setName("6");
-        outputPort(7)->setPos(54, leftPosition());     outputPort(7)->setName("7");
+        outputPort(0)->setPos(10, 64);    outputPort(0)->setName("0");
+        outputPort(1)->setPos(25, 64);    outputPort(1)->setName("1");
+        outputPort(2)->setPos(39, 64);    outputPort(2)->setName("2");
+        outputPort(3)->setPos(54, 64);    outputPort(3)->setName("3");
+        outputPort(4)->setPos(10, 0);     outputPort(4)->setName("4");
+        outputPort(5)->setPos(25, 0);     outputPort(5)->setName("5");
+        outputPort(6)->setPos(39, 0);     outputPort(6)->setName("6");
+        outputPort(7)->setPos(54, 0);     outputPort(7)->setName("7");
         break;
     }
     case 10: {
-        outputPort(0)->setPos(2,  rightPosition());    outputPort(0)->setName("0");
-        outputPort(1)->setPos(17, rightPosition());    outputPort(1)->setName("1");
-        outputPort(2)->setPos(32, rightPosition());    outputPort(2)->setName("2");
-        outputPort(3)->setPos(47, rightPosition());    outputPort(3)->setName("3");
-        outputPort(4)->setPos(61, rightPosition());    outputPort(4)->setName("4");
-        outputPort(5)->setPos(2,  leftPosition());     outputPort(5)->setName("5");
-        outputPort(6)->setPos(17, leftPosition());     outputPort(6)->setName("6");
-        outputPort(7)->setPos(32, leftPosition());     outputPort(7)->setName("7");
-        outputPort(8)->setPos(47, leftPosition());     outputPort(8)->setName("8");
-        outputPort(9)->setPos(61, leftPosition());     outputPort(9)->setName("9");
+        outputPort(0)->setPos(2,  64);    outputPort(0)->setName("0");
+        outputPort(1)->setPos(17, 64);    outputPort(1)->setName("1");
+        outputPort(2)->setPos(32, 64);    outputPort(2)->setName("2");
+        outputPort(3)->setPos(47, 64);    outputPort(3)->setName("3");
+        outputPort(4)->setPos(61, 64);    outputPort(4)->setName("4");
+        outputPort(5)->setPos(2,  0);     outputPort(5)->setName("5");
+        outputPort(6)->setPos(17, 0);     outputPort(6)->setName("6");
+        outputPort(7)->setPos(32, 0);     outputPort(7)->setName("7");
+        outputPort(8)->setPos(47, 0);     outputPort(8)->setName("8");
+        outputPort(9)->setPos(61, 0);     outputPort(9)->setName("9");
         break;
     }
     case 16: {
-        outputPort(0)->setPos(11, rightPosition());    outputPort(0)->setName("0");
-        outputPort(1)->setPos(25, rightPosition());    outputPort(1)->setName("1");
-        outputPort(2)->setPos(39, rightPosition());    outputPort(2)->setName("2");
-        outputPort(3)->setPos(53, rightPosition());    outputPort(3)->setName("3");
-        outputPort(4)->setPos(rightPosition(), 53);    outputPort(4)->setName("4");
-        outputPort(5)->setPos(rightPosition(), 39);    outputPort(5)->setName("5");
-        outputPort(6)->setPos(rightPosition(), 25);    outputPort(6)->setName("6");
-        outputPort(7)->setPos(rightPosition(), 11);    outputPort(7)->setName("7");
-        outputPort(8)->setPos(53, leftPosition());     outputPort(8)->setName("8");
-        outputPort(9)->setPos(39, leftPosition());     outputPort(9)->setName("9");
-        outputPort(10)->setPos(25, leftPosition());    outputPort(10)->setName("A");
-        outputPort(11)->setPos(11, leftPosition());    outputPort(11)->setName("B");
-        outputPort(12)->setPos(leftPosition(), 11);    outputPort(12)->setName("C");
-        outputPort(13)->setPos(leftPosition(), 25);    outputPort(13)->setName("D");
-        outputPort(14)->setPos(leftPosition(), 39);    outputPort(14)->setName("E");
-        outputPort(15)->setPos(leftPosition(), 53);    outputPort(15)->setName("F");
+        outputPort(0)->setPos(11, 64);    outputPort(0)->setName("0");
+        outputPort(1)->setPos(25, 64);    outputPort(1)->setName("1");
+        outputPort(2)->setPos(39, 64);    outputPort(2)->setName("2");
+        outputPort(3)->setPos(53, 64);    outputPort(3)->setName("3");
+        outputPort(4)->setPos(64, 53);    outputPort(4)->setName("4");
+        outputPort(5)->setPos(64, 39);    outputPort(5)->setName("5");
+        outputPort(6)->setPos(64, 25);    outputPort(6)->setName("6");
+        outputPort(7)->setPos(64, 11);    outputPort(7)->setName("7");
+        outputPort(8)->setPos(53, 0);     outputPort(8)->setName("8");
+        outputPort(9)->setPos(39, 0);     outputPort(9)->setName("9");
+        outputPort(10)->setPos(25, 0);    outputPort(10)->setName("A");
+        outputPort(11)->setPos(11, 0);    outputPort(11)->setName("B");
+        outputPort(12)->setPos(0, 11);    outputPort(12)->setName("C");
+        outputPort(13)->setPos(0, 25);    outputPort(13)->setName("D");
+        outputPort(14)->setPos(0, 39);    outputPort(14)->setName("E");
+        outputPort(15)->setPos(0, 53);    outputPort(15)->setName("F");
         break;
     }
     }

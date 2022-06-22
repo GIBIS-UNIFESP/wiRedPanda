@@ -39,11 +39,11 @@ DLatch::DLatch(QGraphicsItem *parent)
 
 void DLatch::updatePorts()
 {
-    inputPort(0)->setPos(leftPosition(), 13);   /* Data   */
-    inputPort(1)->setPos(leftPosition(), 45);   /* Enable */
+    inputPort(0)->setPos(0, 13);   /* Data   */
+    inputPort(1)->setPos(0, 45);   /* Enable */
 
-    outputPort(0)->setPos(rightPosition(), 15); /* Q      */
-    outputPort(1)->setPos(rightPosition(), 45); /* ~Q     */
+    outputPort(0)->setPos(64, 15); /* Q      */
+    outputPort(1)->setPos(64, 45); /* ~Q     */
 }
 
 void DLatch::updateTheme()
