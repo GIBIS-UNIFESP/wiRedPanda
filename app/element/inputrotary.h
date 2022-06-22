@@ -34,17 +34,17 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
-    const QString m_pixmapPath = ":/input/rotary/rotary_icon.png";
+    const QString m_pixmapPath = ":/input/rotary/rotary_icon.svg";
     const QString m_titleText = tr("<b>ROTARY SWITCH</b>");
     const QString m_translatedName = tr("Rotary Switch");
 
+    QPixmap m_arrow;
     QPixmap m_rotary10;
     QPixmap m_rotary16;
     QPixmap m_rotary2;
     QPixmap m_rotary4;
     QPixmap m_rotary8;
-    QVector<QPixmap> m_pointer;
-    int m_value = 0;
+    int m_currentPort = 0;
 };
 
 Q_DECLARE_METATYPE(InputRotary)
