@@ -590,6 +590,8 @@ void MainWindow::disconnectTab()
         return;
     }
 
+    m_ui->elementEditor->setScene(nullptr);
+
     qCDebug(zero) << tr("Stopping simulation controller.");
     m_currentTab->simulationController()->stop();
     qCDebug(zero) << tr("Disconnecting zoom from UI controllers.");

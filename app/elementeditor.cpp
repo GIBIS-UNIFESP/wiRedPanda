@@ -293,9 +293,11 @@ void ElementEditor::setScene(Scene *scene)
 
     m_scene = scene;
 
-    connect(m_scene, &QGraphicsScene::selectionChanged, this,    &ElementEditor::selectionChanged);
-    connect(m_scene, &Scene::contextMenuPos,            this,    &ElementEditor::contextMenu);
-    connect(this,    &ElementEditor::sendCommand,       m_scene, &Scene::receiveCommand);
+    if (m_scene) {
+        connect(m_scene, &QGraphicsScene::selectionChanged, this,    &ElementEditor::selectionChanged);
+        connect(m_scene, &Scene::contextMenuPos,            this,    &ElementEditor::contextMenu);
+        connect(this,    &ElementEditor::sendCommand,       m_scene, &Scene::receiveCommand);
+    }
 }
 
 void ElementEditor::fillColorComboBox()
