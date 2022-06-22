@@ -639,8 +639,8 @@ void ElementEditor::inputIndexChanged(const int index)
         emit sendCommand(new ChangeInputSizeCommand(m_elements, m_ui->comboBoxInputSize->currentData().toInt(), m_scene));
     }
 
-    qCDebug(zero) << tr("Input size changed to ") << index;
-    apply();
+    qCDebug(zero) << tr("Input size changed to") << index;
+    update();
 }
 
 void ElementEditor::outputIndexChanged(const int index)
@@ -653,8 +653,8 @@ void ElementEditor::outputIndexChanged(const int index)
         emit sendCommand(new ChangeOutputSizeCommand(m_elements, m_ui->comboBoxOutputSize->currentData().toInt(), m_scene));
     }
 
-    qCDebug(zero) << tr("Output size changed to ") << index;
-    apply();
+    qCDebug(zero) << tr("Output size changed to") << index;
+    update();
 }
 
 void ElementEditor::outputValueChanged(const QString &value)
@@ -767,4 +767,8 @@ void ElementEditor::defaultSkin()
     m_isUpdatingSkin = true;
     m_isDefaultSkin = true;
     apply();
+}
+
+void ElementEditor::update() {
+    setCurrentElements(m_elements);
 }
