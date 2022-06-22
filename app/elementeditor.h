@@ -30,6 +30,7 @@ public:
     void renameAction();
     void retranslateUi();
     void setScene(Scene *scene);
+    void update();
     void updateElementSkin();
 
 signals:
