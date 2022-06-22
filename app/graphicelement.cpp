@@ -287,8 +287,6 @@ void GraphicElement::removeSurplusInputs(const quint64 inputSize_, QMap<quint64,
         delete deletedPort;
         m_inputPorts.removeLast();
     }
-
-    updatePorts();
 }
 
 void GraphicElement::removeSurplusOutputs(const quint64 outputSize_, QMap<quint64, QNEPort *> &portMap)
@@ -299,8 +297,6 @@ void GraphicElement::removeSurplusOutputs(const quint64 outputSize_, QMap<quint6
         delete deletedPort;
         m_outputPorts.removeLast();
     }
-
-    updatePorts();
 }
 
 void GraphicElement::setLogic(LogicElement *newLogic)

@@ -168,7 +168,7 @@ void ElementMapping::sort()
     validateElements();
 }
 
-// TODO: This function can easily cause crashes when using the Undo command to delete elements
+// FIXME: This function can easily cause crashes when using the Undo command to delete elements
 void ElementMapping::update()
 {
     if (!canRun()) {

@@ -158,19 +158,27 @@ void MainWindow::loadAutosaveFiles()
 
     qCDebug(zero) << tr("all autosave files:") << autosaves;
 
-    for (auto i = autosaves.begin(); i != autosaves.end();) {
-        QFile file(*i);
+    for (auto it = autosaves.begin(); it != autosaves.end();) {
+        QFile file(*it);
 
         if (!file.exists()) {
-            qCDebug(zero) << tr("Removing autosave file name from config that does not exist.");
-            i = autosaves.erase(i);
+            qCDebug(zero) << tr("Removing from config the autosave file that does not exist.");
+            it = autosaves.erase(it);
             continue;
         }
 
-        loadPandaFile(*i);
+        try {
+            loadPandaFile(*it);
+        } catch (const std::exception &e) {
+            QMessageBox::critical(nullptr, tr("Error!"), e.what());
+            qCDebug(zero) << tr("Removing autosave file that is corrupted.");
+            it = autosaves.erase(it);
+            continue;
+        }
+
         m_currentTab->setIsAutosave();
 
-        ++i;
+        ++it;
     }
 
     Settings::setValue("autosaveFile", autosaves);
@@ -566,7 +574,7 @@ bool MainWindow::closeTab(const int tabIndex)
         if (selectedButton == QMessageBox::Yes) {
             try {
                 save();
-            } catch (std::exception &e) {
+            } catch (const std::exception &e) {
                 QMessageBox::critical(this, tr("Error"), e.what());
 
                 if (closeTabAnyway() == QMessageBox::No) {

@@ -116,7 +116,7 @@ private:
 
     QByteArray m_newData;
     QByteArray m_oldData;
-    QList<int> ids;
+    QList<int> m_ids;
     Scene *m_scene;
 };
 
@@ -133,10 +133,12 @@ public:
 private:
     QPointF m_nodePos;
     Scene *m_scene;
-    int m_c1_id, m_c2_id;
-    int m_elm1_id, m_elm2_id;
+    int m_c1Id;
+    int m_c2Id;
+    int m_elm1Id;
+    int m_elm2Id;
     int m_nodeAngle;
-    int m_node_id;
+    int m_nodeId;
 };
 
 class MorphCommand : public QUndoCommand
@@ -152,7 +154,7 @@ public:
 private:
     void transferConnections(QList<GraphicElement *> from, QList<GraphicElement *> to);
 
-    ElementType m_newtype;
+    ElementType m_newType;
     QList<ElementType> m_types;
     QList<int> m_ids;
     Scene *m_scene;
@@ -170,7 +172,7 @@ public:
 
 private:
     QByteArray m_oldData;
-    QList<int> m_elms;
+    QList<int> m_ids;
     QList<int> m_order;
     Scene *m_scene;
     int m_newInputSize;
@@ -187,9 +189,10 @@ public:
     void undo() override;
 
 private:
-    QPointF m_minPos, m_maxPos;
     QList<QPointF> m_positions;
     QList<int> m_ids;
+    QPointF m_maxPos;
+    QPointF m_minPos;
     Scene *m_scene;
     int m_axis;
 };
@@ -206,7 +209,7 @@ public:
 
 private:
     QByteArray m_oldData;
-    QList<int> m_elms;
+    QList<int> m_ids;
     QList<int> m_order;
     Scene *m_scene;
     int m_newOutputSize;
