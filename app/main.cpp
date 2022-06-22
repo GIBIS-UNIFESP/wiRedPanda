@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
         if (!args.empty()) {
             window->loadPandaFile(args[0]);
         }
-    } catch (std::exception &e) {
+    } catch (const std::exception &e) {
         if (GlobalProperties::verbose) {
             QMessageBox::critical(nullptr, QObject::tr("Error!"), e.what());
         }
