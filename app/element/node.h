@@ -20,7 +20,7 @@ public:
     void updatePorts() override;
 
 private:
-    const QString m_pixmapPath = ":/basic/node.png";
+    const QString m_pixmapPath = ":/basic/node.svg";
     const QString m_titleText = tr("<b>NODE</b>");
     const QString m_translatedName = tr("Node");
 };

@@ -20,8 +20,8 @@ InputSwitch::InputSwitch(QGraphicsItem *parent)
     }
 
     m_defaultSkins = QStringList{
-        ":/input/switchOff.png",
-        ":/input/switchOn.png",
+        ":/input/switchOff.svg",
+        ":/input/switchOn.svg",
     };
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);

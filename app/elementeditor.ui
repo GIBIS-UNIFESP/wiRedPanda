@@ -220,7 +220,7 @@
           </property>
           <property name="icon">
            <iconset resource="resources/toolbar/toolbar.qrc">
-            <normaloff>:/default.svg</normaloff>:/default.svg</iconset>
+            <normaloff>:/toolbar/default.svg</normaloff>:/toolbar/default.svg</iconset>
           </property>
           <property name="iconSize">
            <size>

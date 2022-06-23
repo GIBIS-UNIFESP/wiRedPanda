@@ -18,7 +18,7 @@ public:
     explicit InputVcc(QGraphicsItem *parent = nullptr);
 
 private:
-    const QString m_pixmapPath = ":/input/1.png";
+    const QString m_pixmapPath = ":/input/1.svg";
     const QString m_titleText = tr("<b>VCC</b>");
     const QString m_translatedName = tr("VCC");
 };

@@ -21,15 +21,15 @@ Display::Display(QGraphicsItem *parent)
     }
 
     m_defaultSkins = QStringList{
-        ":/output/counter/counter_off.png",
-        ":/output/counter/counter_a.png",
-        ":/output/counter/counter_b.png",
-        ":/output/counter/counter_c.png",
-        ":/output/counter/counter_d.png",
-        ":/output/counter/counter_e.png",
-        ":/output/counter/counter_f.png",
-        ":/output/counter/counter_g.png",
-        ":/output/counter/counter_dp.png",
+        ":/output/counter/counter_off.svg",
+        ":/output/counter/counter_a.svg",
+        ":/output/counter/counter_b.svg",
+        ":/output/counter/counter_c.svg",
+        ":/output/counter/counter_d.svg",
+        ":/output/counter/counter_e.svg",
+        ":/output/counter/counter_f.svg",
+        ":/output/counter/counter_g.svg",
+        ":/output/counter/counter_dp.svg",
     };
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);

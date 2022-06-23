@@ -1,11 +1,11 @@
 <RCC>
     <qresource prefix="/input">
-        <file>0.png</file>
-        <file>1.png</file>
-        <file>buttonOff.png</file>
-        <file>buttonOn.png</file>
-        <file>clock0.png</file>
-        <file>clock1.png</file>
+        <file>0.svg</file>
+        <file>1.svg</file>
+        <file>buttonOff.svg</file>
+        <file>buttonOn.svg</file>
+        <file>clock0.svg</file>
+        <file>clock1.svg</file>
         <file>input.qrc</file>
         <file>rotary/rotary_10.svg</file>
         <file>rotary/rotary_16.svg</file>
@@ -14,8 +14,8 @@
         <file>rotary/rotary_8.svg</file>
         <file>rotary/rotary_arrow.svg</file>
         <file>rotary/rotary_icon.svg</file>
-        <file>switchOff.png</file>
-        <file>switchOn.png</file>
+        <file>switchOff.svg</file>
+        <file>switchOn.svg</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

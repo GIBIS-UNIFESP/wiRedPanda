@@ -17,18 +17,19 @@
         <file>16colors/TealLedOn.png</file>
         <file>16colors/WhiteLedOn.png</file>
         <file>16colors/YellowLedOn.png</file>
-        <file>BlueLedOff.png</file>
-        <file>BlueLedOn.png</file>
-        <file>BuzzerOff.png</file>
-        <file>BuzzerOn.png</file>
-        <file>GreenLedOff.png</file>
-        <file>GreenLedOn.png</file>
-        <file>PurpleLedOff.png</file>
-        <file>PurpleLedOn.png</file>
-        <file>RedLedOff.png</file>
-        <file>RedLedOn.png</file>
-        <file>WhiteLedOff.png</file>
-        <file>WhiteLedOn.png</file>
+        <file>BlueLedOff.svg</file>
+        <file>BlueLedOn.svg</file>
+        <file>Buzzer.svg</file>
+        <file>BuzzerOff.svg</file>
+        <file>BuzzerOn.svg</file>
+        <file>GreenLedOff.svg</file>
+        <file>GreenLedOn.svg</file>
+        <file>PurpleLedOff.svg</file>
+        <file>PurpleLedOn.svg</file>
+        <file>RedLedOff.svg</file>
+        <file>RedLedOn.svg</file>
+        <file>WhiteLedOff.svg</file>
+        <file>WhiteLedOn.svg</file>
         <file>audio/A7.wav</file>
         <file>audio/B7.wav</file>
         <file>audio/C6.wav</file>
@@ -37,25 +38,25 @@
         <file>audio/E6.wav</file>
         <file>audio/F6.wav</file>
         <file>audio/G6.wav</file>
-        <file>counter/counter_14_off.png</file>
-        <file>counter/counter_14_on.png</file>
-        <file>counter/counter_a.png</file>
-        <file>counter/counter_b.png</file>
-        <file>counter/counter_c.png</file>
-        <file>counter/counter_d.png</file>
-        <file>counter/counter_dp.png</file>
-        <file>counter/counter_e.png</file>
-        <file>counter/counter_f.png</file>
-        <file>counter/counter_g.png</file>
-        <file>counter/counter_g1.png</file>
-        <file>counter/counter_g2.png</file>
-        <file>counter/counter_h.png</file>
-        <file>counter/counter_j.png</file>
-        <file>counter/counter_k.png</file>
-        <file>counter/counter_l.png</file>
-        <file>counter/counter_m.png</file>
-        <file>counter/counter_n.png</file>
-        <file>counter/counter_off.png</file>
-        <file>counter/counter_on.png</file>
+        <file>counter/counter_14_off.svg</file>
+        <file>counter/counter_14_on.svg</file>
+        <file>counter/counter_a.svg</file>
+        <file>counter/counter_b.svg</file>
+        <file>counter/counter_c.svg</file>
+        <file>counter/counter_d.svg</file>
+        <file>counter/counter_dp.svg</file>
+        <file>counter/counter_e.svg</file>
+        <file>counter/counter_f.svg</file>
+        <file>counter/counter_g.svg</file>
+        <file>counter/counter_g1.svg</file>
+        <file>counter/counter_g2.svg</file>
+        <file>counter/counter_h.svg</file>
+        <file>counter/counter_j.svg</file>
+        <file>counter/counter_k.svg</file>
+        <file>counter/counter_l.svg</file>
+        <file>counter/counter_m.svg</file>
+        <file>counter/counter_n.svg</file>
+        <file>counter/counter_off.svg</file>
+        <file>counter/counter_on.svg</file>
     </qresource>
 </RCC>

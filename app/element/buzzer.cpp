@@ -18,8 +18,8 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     }
 
     m_defaultSkins = QStringList{
-        ":/output/BuzzerOff.png",
-        ":/output/BuzzerOn.png"
+        ":/output/BuzzerOff.svg",
+        ":/output/BuzzerOn.svg"
     };
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);

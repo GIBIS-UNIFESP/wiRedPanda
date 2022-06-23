@@ -22,7 +22,7 @@ public:
     void updatePorts() override;
 
 private:
-    const QString m_pixmapPath = ":/basic/mux.png";
+    const QString m_pixmapPath = ":/basic/mux.svg";
     const QString m_titleText = tr("<b>MULTIPLEXER</b>");
     const QString m_translatedName = tr("Mux");
 };

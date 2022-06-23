@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="resources/toolbar/toolbar.qrc">
-    <normaloff>:/toolbar/wavyIcon.png</normaloff>:/toolbar/wavyIcon.png</iconset>
+    <normaloff>:/toolbar/wavyIcon.svg</normaloff>:/toolbar/wavyIcon.svg</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="4" column="0">

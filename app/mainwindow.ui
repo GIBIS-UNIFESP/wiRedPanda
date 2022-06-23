@@ -20,8 +20,8 @@
    <string notr="true"/>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>:/pandaLogo.png</normaloff>:/pandaLogo.png</iconset>
+   <iconset resource="resources/toolbar/toolbar.qrc">
+    <normaloff>:/toolbar/wpanda.svg</normaloff>:/toolbar/wpanda.svg</iconset>
   </property>
   <property name="toolButtonStyle">
    <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -125,7 +125,7 @@ QTabWidget::pane {
             <widget class="QWidget" name="io">
              <attribute name="icon">
               <iconset resource="resources/input/input.qrc">
-               <normaloff>:/input/buttonOff.png</normaloff>:/input/buttonOff.png</iconset>
+               <normaloff>:/input/buttonOff.svg</normaloff>:/input/buttonOff.svg</iconset>
              </attribute>
              <attribute name="title">
               <string/>
@@ -148,7 +148,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>581</height>
+                   <height>578</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -173,8 +173,8 @@ QTabWidget::pane {
             </widget>
             <widget class="QWidget" name="gates">
              <attribute name="icon">
-              <iconset resource="resources/basic/basic.qrc">
-               <normaloff>:/basic/xor.png</normaloff>:/basic/xor.png</iconset>
+              <iconset>
+               <normaloff>:/basic/xor.svg</normaloff>:/basic/xor.svg</iconset>
              </attribute>
              <attribute name="title">
               <string/>
@@ -196,8 +196,8 @@ QTabWidget::pane {
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>260</width>
+                   <height>578</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -223,7 +223,7 @@ QTabWidget::pane {
             <widget class="QWidget" name="memory">
              <attribute name="icon">
               <iconset resource="resources/memory/light/memory_light.qrc">
-               <normaloff>:/memory/light/D-flipflop.png</normaloff>:/memory/light/D-flipflop.png</iconset>
+               <normaloff>:/memory/light/D-flipflop.svg</normaloff>:/memory/light/D-flipflop.svg</iconset>
              </attribute>
              <attribute name="title">
               <string/>
@@ -245,8 +245,8 @@ QTabWidget::pane {
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>260</width>
+                   <height>578</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -271,8 +271,8 @@ QTabWidget::pane {
             </widget>
             <widget class="QWidget" name="ic">
              <attribute name="icon">
-              <iconset resource="resources/basic/basic.qrc">
-               <normaloff>:/basic/ic.png</normaloff>:/basic/ic.png</iconset>
+              <iconset>
+               <normaloff>:/basic/ic.svg</normaloff>:/basic/ic.svg</iconset>
              </attribute>
              <attribute name="title">
               <string/>
@@ -294,8 +294,8 @@ QTabWidget::pane {
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>260</width>
+                   <height>578</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -320,8 +320,8 @@ QTabWidget::pane {
             </widget>
             <widget class="QWidget" name="misc">
              <attribute name="icon">
-              <iconset resource="resources/misc/misc.qrc">
-               <normaloff>:/text.png</normaloff>:/text.png</iconset>
+              <iconset>
+               <normaloff>:/misc/text.png</normaloff>:/misc/text.png</iconset>
              </attribute>
              <attribute name="title">
               <string/>
@@ -343,8 +343,8 @@ QTabWidget::pane {
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>228</width>
-                   <height>18</height>
+                   <width>260</width>
+                   <height>578</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -388,8 +388,8 @@ QTabWidget::pane {
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>258</width>
+                   <height>576</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -540,7 +540,7 @@ QTabWidget::pane {
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -559,7 +559,7 @@ QTabWidget::pane {
      </property>
      <property name="icon">
       <iconset resource="resources/toolbar/toolbar.qrc">
-       <normaloff>:/toolbar/recentFiles.png</normaloff>:/toolbar/recentFiles.png</iconset>
+       <normaloff>:/toolbar/recentFiles.svg</normaloff>:/toolbar/recentFiles.svg</iconset>
      </property>
      <addaction name="separator"/>
     </widget>
@@ -656,7 +656,7 @@ QTabWidget::pane {
   <action name="actionOpen">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/folder.png</normaloff>:/toolbar/folder.png</iconset>
+     <normaloff>:/toolbar/folder.svg</normaloff>:/toolbar/folder.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Open...</string>
@@ -671,7 +671,7 @@ QTabWidget::pane {
   <action name="actionSave">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/save.png</normaloff>:/toolbar/save.png</iconset>
+     <normaloff>:/toolbar/save.svg</normaloff>:/toolbar/save.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Save</string>
@@ -683,7 +683,7 @@ QTabWidget::pane {
   <action name="actionSaveAs">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/save.png</normaloff>:/toolbar/save.png</iconset>
+     <normaloff>:/toolbar/save.svg</normaloff>:/toolbar/save.svg</iconset>
    </property>
    <property name="text">
     <string>Save &amp;As...</string>
@@ -695,7 +695,7 @@ QTabWidget::pane {
   <action name="actionCut">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/cut.png</normaloff>:/toolbar/cut.png</iconset>
+     <normaloff>:/toolbar/cut.svg</normaloff>:/toolbar/cut.svg</iconset>
    </property>
    <property name="text">
     <string>Cu&amp;t</string>
@@ -707,7 +707,7 @@ QTabWidget::pane {
   <action name="actionCopy">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/copy.png</normaloff>:/toolbar/copy.png</iconset>
+     <normaloff>:/toolbar/copy.svg</normaloff>:/toolbar/copy.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Copy</string>
@@ -719,7 +719,7 @@ QTabWidget::pane {
   <action name="actionPaste">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/paste.png</normaloff>:/toolbar/paste.png</iconset>
+     <normaloff>:/toolbar/paste.svg</normaloff>:/toolbar/paste.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Paste</string>
@@ -731,7 +731,7 @@ QTabWidget::pane {
   <action name="actionDelete">
    <property name="icon">
     <iconset>
-     <normalon>:/toolbar/delete.png</normalon>
+     <normalon>:/toolbar/delete.svg</normalon>
     </iconset>
    </property>
    <property name="text">
@@ -744,7 +744,7 @@ QTabWidget::pane {
   <action name="actionNew">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/new.png</normaloff>:/toolbar/new.png</iconset>
+     <normaloff>:/toolbar/new.svg</normaloff>:/toolbar/new.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;New</string>
@@ -756,7 +756,7 @@ QTabWidget::pane {
   <action name="actionZoomIn">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/zoomIn.png</normaloff>:/toolbar/zoomIn.png</iconset>
+     <normaloff>:/toolbar/zoomIn.svg</normaloff>:/toolbar/zoomIn.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom &amp;in</string>
@@ -768,7 +768,7 @@ QTabWidget::pane {
   <action name="actionZoomOut">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/zoomOut.png</normaloff>:/toolbar/zoomOut.png</iconset>
+     <normaloff>:/toolbar/zoomOut.svg</normaloff>:/toolbar/zoomOut.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom &amp;out</string>
@@ -786,7 +786,7 @@ QTabWidget::pane {
    </property>
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/wires.png</normaloff>:/toolbar/wires.png</iconset>
+     <normaloff>:/toolbar/wires.svg</normaloff>:/toolbar/wires.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Wires</string>
@@ -803,8 +803,8 @@ QTabWidget::pane {
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="resources/basic/basic.qrc">
-     <normaloff>:/basic/nor.png</normaloff>:/basic/nor.png</iconset>
+    <iconset>
+     <normaloff>:/basic/nor.svg</normaloff>:/basic/nor.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Gates</string>
@@ -816,7 +816,7 @@ QTabWidget::pane {
   <action name="actionAbout">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/help.png</normaloff>:/toolbar/help.png</iconset>
+     <normaloff>:/toolbar/help.svg</normaloff>:/toolbar/help.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;About</string>
@@ -828,7 +828,7 @@ QTabWidget::pane {
   <action name="actionExit">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/exit.png</normaloff>:/toolbar/exit.png</iconset>
+     <normaloff>:/toolbar/exit.svg</normaloff>:/toolbar/exit.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Exit</string>
@@ -840,7 +840,7 @@ QTabWidget::pane {
   <action name="actionRotateRight">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/rotateR.png</normaloff>:/toolbar/rotateR.png</iconset>
+     <normaloff>:/toolbar/rotateR.svg</normaloff>:/toolbar/rotateR.svg</iconset>
    </property>
    <property name="text">
     <string>R&amp;otate right</string>
@@ -852,7 +852,7 @@ QTabWidget::pane {
   <action name="actionRotateLeft">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/rotateL.png</normaloff>:/toolbar/rotateL.png</iconset>
+     <normaloff>:/toolbar/rotateL.svg</normaloff>:/toolbar/rotateL.svg</iconset>
    </property>
    <property name="text">
     <string>Rotate &amp;left</string>
@@ -864,7 +864,7 @@ QTabWidget::pane {
   <action name="actionAboutQt">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/helpQt.png</normaloff>:/toolbar/helpQt.png</iconset>
+     <normaloff>:/toolbar/helpQt.svg</normaloff>:/toolbar/helpQt.svg</iconset>
    </property>
    <property name="text">
     <string>About &amp;Qt</string>
@@ -873,7 +873,7 @@ QTabWidget::pane {
   <action name="actionSelectAll">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/selectAll.png</normaloff>:/toolbar/selectAll.png</iconset>
+     <normaloff>:/toolbar/selectAll.svg</normaloff>:/toolbar/selectAll.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Select all</string>
@@ -885,7 +885,7 @@ QTabWidget::pane {
   <action name="actionReloadFile">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/reloadFile.png</normaloff>:/toolbar/reloadFile.png</iconset>
+     <normaloff>:/toolbar/reloadFile.svg</normaloff>:/toolbar/reloadFile.svg</iconset>
    </property>
    <property name="text">
     <string>Re&amp;load File</string>
@@ -897,7 +897,7 @@ QTabWidget::pane {
   <action name="actionExportToArduino">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/arduino.png</normaloff>:/toolbar/arduino.png</iconset>
+     <normaloff>:/toolbar/arduino.svg</normaloff>:/toolbar/arduino.svg</iconset>
    </property>
    <property name="text">
     <string>E&amp;xport to Arduino</string>
@@ -909,7 +909,7 @@ QTabWidget::pane {
   <action name="actionResetZoom">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/zoomReset.png</normaloff>:/toolbar/zoomReset.png</iconset>
+     <normaloff>:/toolbar/zoomReset.svg</normaloff>:/toolbar/zoomReset.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Reset Zoom</string>
@@ -921,7 +921,7 @@ QTabWidget::pane {
   <action name="actionExportToPdf">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/pdf.png</normaloff>:/toolbar/pdf.png</iconset>
+     <normaloff>:/toolbar/pdf.svg</normaloff>:/toolbar/pdf.svg</iconset>
    </property>
    <property name="text">
     <string>Export to &amp;PDF</string>
@@ -933,7 +933,7 @@ QTabWidget::pane {
   <action name="actionEnglish">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/usa.png</normaloff>:/toolbar/usa.png</iconset>
+     <normaloff>:/toolbar/usa.svg</normaloff>:/toolbar/usa.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;English</string>
@@ -942,7 +942,7 @@ QTabWidget::pane {
   <action name="actionPortuguese">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/brasil.png</normaloff>:/toolbar/brasil.png</iconset>
+     <normaloff>:/toolbar/brasil.svg</normaloff>:/toolbar/brasil.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Portuguese</string>
@@ -954,8 +954,8 @@ QTabWidget::pane {
    </property>
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/play.png</normaloff>
-     <normalon>:/toolbar/pause.png</normalon>:/toolbar/play.png</iconset>
+     <normaloff>:/toolbar/play.svg</normaloff>
+     <normalon>:/toolbar/pause.svg</normalon>:/toolbar/play.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Play/Pause</string>
@@ -970,7 +970,7 @@ QTabWidget::pane {
   <action name="actionRename">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/rename.png</normaloff>:/toolbar/rename.png</iconset>
+     <normaloff>:/toolbar/rename.svg</normaloff>:/toolbar/rename.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Rename</string>
@@ -982,7 +982,7 @@ QTabWidget::pane {
   <action name="actionChangeTrigger">
    <property name="icon">
     <iconset resource="resources/input/input.qrc">
-     <normaloff>:/input/buttonOff.png</normaloff>:/input/buttonOff.png</iconset>
+     <normaloff>:/input/buttonOff.svg</normaloff>:/input/buttonOff.svg</iconset>
    </property>
    <property name="text">
     <string>Cha&amp;nge Trigger</string>
@@ -994,7 +994,7 @@ QTabWidget::pane {
   <action name="actionClearSelection">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/cleanSelection.png</normaloff>:/toolbar/cleanSelection.png</iconset>
+     <normaloff>:/toolbar/cleanSelection.svg</normaloff>:/toolbar/cleanSelection.svg</iconset>
    </property>
    <property name="text">
     <string>Cl&amp;ear selection</string>
@@ -1009,7 +1009,7 @@ QTabWidget::pane {
    </property>
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/fast.png</normaloff>:/toolbar/fast.png</iconset>
+     <normaloff>:/toolbar/fast.svg</normaloff>:/toolbar/fast.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Fast Mode</string>
@@ -1037,7 +1037,7 @@ QTabWidget::pane {
   <action name="actionWaveform">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/dolphin_icon.png</normaloff>:/toolbar/dolphin_icon.png</iconset>
+     <normaloff>:/toolbar/dolphin_icon.svg</normaloff>:/toolbar/dolphin_icon.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Waveform</string>
@@ -1081,8 +1081,8 @@ QTabWidget::pane {
    </property>
    <property name="icon">
     <iconset resource="resources/output/output.qrc">
-     <normaloff>:/output/BuzzerOff.png</normaloff>
-     <normalon>:/mute.png</normalon>:/output/BuzzerOff.png</iconset>
+     <normaloff>:/output/BuzzerOff.svg</normaloff>
+     <normalon>:/toolbar/mute.svg</normalon>:/output/BuzzerOff.svg</iconset>
    </property>
    <property name="text">
     <string>Mute</string>
@@ -1126,13 +1126,11 @@ QTabWidget::pane {
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
   <include location="resources/output/output.qrc"/>
-  <include location="resources/memory/light/memory_light.qrc"/>
-  <include location="resources/misc/misc.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/memory/light/memory_light.qrc"/>
  </resources>
  <connections/>
 </ui>

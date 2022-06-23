@@ -1,11 +1,11 @@
 <RCC>
     <qresource prefix="/memory/light">
-        <file>D-flipflop.png</file>
-        <file>D-latch.png</file>
-        <file>JK-flipflop.png</file>
-        <file>JK-latch.png</file>
-        <file>SR-flipflop.png</file>
-        <file>T-flipflop.png</file>
-        <file>T-latch.png</file>
+        <file>JK-flipflop.svg</file>
+        <file>T-flipflop.svg</file>
+        <file>D-flipflop.svg</file>
+        <file>SR-flipflop.svg</file>
+        <file>D-latch.svg</file>
+        <file>T-latch.svg</file>
+        <file>JK-latch.svg</file>
     </qresource>
 </RCC>

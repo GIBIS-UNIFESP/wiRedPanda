@@ -18,7 +18,7 @@ public:
     explicit Text(QGraphicsItem *parent = nullptr);
 
 private:
-    const QString m_pixmapPath = ":/text.png";
+    const QString m_pixmapPath = ":/misc/text.png";
     const QString m_titleText = tr("<b>TEXT</b>");
     const QString m_translatedName = tr("Text");
 };

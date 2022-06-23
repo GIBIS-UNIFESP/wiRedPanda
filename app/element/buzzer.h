@@ -31,7 +31,7 @@ private:
     void playBuzzer();
     void stopBuzzer();
 
-    const QString m_pixmapPath = ":/output/BuzzerOff.png";
+    const QString m_pixmapPath = ":/output/BuzzerOff.svg";
     const QString m_titleText = tr("<b>BUZZER</b>");
     const QString m_translatedName = tr("Buzzer");
 

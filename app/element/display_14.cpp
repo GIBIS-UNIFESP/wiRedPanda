@@ -21,22 +21,22 @@ Display14::Display14(QGraphicsItem *parent)
     }
 
     m_defaultSkins = QStringList{
-        ":/output/counter/counter_14_off.png",
-        ":/output/counter/counter_a.png",
-        ":/output/counter/counter_b.png",
-        ":/output/counter/counter_c.png",
-        ":/output/counter/counter_d.png",
-        ":/output/counter/counter_e.png",
-        ":/output/counter/counter_f.png",
-        ":/output/counter/counter_g1.png",
-        ":/output/counter/counter_g2.png",
-        ":/output/counter/counter_h.png",
-        ":/output/counter/counter_j.png",
-        ":/output/counter/counter_k.png",
-        ":/output/counter/counter_l.png",
-        ":/output/counter/counter_m.png",
-        ":/output/counter/counter_n.png",
-        ":/output/counter/counter_dp.png",
+        ":/output/counter/counter_14_off.svg",
+        ":/output/counter/counter_a.svg",
+        ":/output/counter/counter_b.svg",
+        ":/output/counter/counter_c.svg",
+        ":/output/counter/counter_d.svg",
+        ":/output/counter/counter_e.svg",
+        ":/output/counter/counter_f.svg",
+        ":/output/counter/counter_g1.svg",
+        ":/output/counter/counter_g2.svg",
+        ":/output/counter/counter_h.svg",
+        ":/output/counter/counter_j.svg",
+        ":/output/counter/counter_k.svg",
+        ":/output/counter/counter_l.svg",
+        ":/output/counter/counter_m.svg",
+        ":/output/counter/counter_n.svg",
+        ":/output/counter/counter_dp.svg",
     };
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);

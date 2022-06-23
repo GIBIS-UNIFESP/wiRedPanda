@@ -1,6 +1,6 @@
 <RCC>
-    <qresource prefix="/">
-        <file>line.png</file>
+    <qresource prefix="/misc">
+        <file>line.svg</file>
         <file>no_text.png</file>
         <file>text.png</file>
     </qresource>

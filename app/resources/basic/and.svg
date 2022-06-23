@@ -2,22 +2,22 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="64px"
    height="64px"
    id="svg2985"
    version="1.1"
-   inkscape:version="0.91 r13725"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
    sodipodi:docname="and.svg"
    inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/basic/and.png"
    inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+   inkscape:export-ydpi="90"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs2987">
     <linearGradient
@@ -56,24 +56,22 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="8.0000004"
-     inkscape:cx="-3.1522086"
-     inkscape:cy="34.7747"
+     inkscape:cx="29.562499"
+     inkscape:cy="34.812498"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1920"
-     inkscape:window-height="1016"
-     inkscape:window-x="0"
-     inkscape:window-y="28"
-     inkscape:window-maximized="1">
-    <sodipodi:guide
-       orientation="1,0"
-       position="32.003906,43.21875"
-       id="guide2993" />
-  </sodipodi:namedview>
+     inkscape:window-width="1350"
+     inkscape:window-height="1230"
+     inkscape:window-x="1092"
+     inkscape:window-y="633"
+     inkscape:window-maximized="0"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
   <metadata
      id="metadata2990">
     <rdf:RDF>
@@ -92,11 +90,11 @@
      inkscape:groupmode="layer">
     <path
        style="fill:#262626;fill-opacity:1;stroke:none"
-       d="M 32 10.439453 A 22 17.794409 0 0 0 10 28.234375 A 22 17.794409 0 0 0 10.035156 29.046875 C 10.02548 29.163991 10 29.276787 10 29.396484 L 10 49.279297 C 10 51.617102 11.882898 53.5 14.220703 53.5 L 49.779297 53.5 C 52.117102 53.5 54 51.617102 54 49.279297 L 54 29.396484 C 54 29.24534 53.970426 29.102027 53.955078 28.955078 A 22 17.794409 0 0 0 54 28.234375 A 22 17.794409 0 0 0 32 10.439453 z "
+       d="M 53.530273,31.969726 A 17.794409,22 0 0 0 35.735351,9.9697265 a 17.794409,22 0 0 0 -0.8125,0.03516 c -0.117116,-0.00968 -0.229911,-0.03516 -0.349609,-0.03516 H 14.69043 c -2.337806,0 -4.220703,1.8828985 -4.220703,4.2207035 v 35.558593 c 0,2.337806 1.882897,4.220703 4.220703,4.220703 h 19.882812 c 0.151144,0 0.294457,-0.02957 0.441406,-0.04492 a 17.794409,22 0 0 0 0.720703,0.04492 17.794409,22 0 0 0 17.794922,-22 z"
        id="rect3901-8" />
     <path
        style="fill:#fcfcfc;fill-opacity:1;stroke:none"
-       d="m 32,13.375977 a 19,15.367897 0 0 0 -19,15.367187 19,15.367897 0 0 0 0.03125,0.703125 C 13.022933,29.547195 13,29.643945 13,29.74707 l 0,17.171875 c 0,2.019013 1.625518,3.644531 3.644531,3.644531 l 30.710938,0 C 49.374482,50.563476 51,48.937958 51,46.918945 L 51,29.74707 c 0,-0.131225 -0.02567,-0.25525 -0.03906,-0.382813 A 19,15.367897 0 0 0 51,28.743164 19,15.367897 0 0 0 32,13.375977 Z"
+       d="m 50.59375,31.969726 a 15.367897,19 0 0 0 -15.367188,-18.999999 15.367897,19 0 0 0 -0.703125,0.03125 c -0.100905,-0.0083 -0.197655,-0.03125 -0.300781,-0.03125 H 17.050781 c -2.019013,0 -3.644531,1.625518 -3.644531,3.64453 v 30.710938 c 0,2.019013 1.625518,3.644531 3.644531,3.644531 h 17.171875 c 0.131225,0 0.255251,-0.02567 0.382813,-0.03906 a 15.367897,19 0 0 0 0.621093,0.03906 15.367897,19 0 0 0 15.367188,-19 z"
        id="rect3901-8-1"
        inkscape:connector-curvature="0" />
   </g>
