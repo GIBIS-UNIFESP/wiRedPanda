@@ -647,7 +647,8 @@ void Scene::rotateLeft()
     rotate(-90);
 }
 
-void Scene::rotate(const int angle) {
+void Scene::rotate(const int angle)
+{
     const auto list = selectedItems();
     QList<GraphicElement *> elms;
     elms.reserve(list.size());

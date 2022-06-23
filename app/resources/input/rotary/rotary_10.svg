@@ -29,8 +29,8 @@
      inkscape:pageshadow="2"
      inkscape:zoom="11"
      inkscape:cx="30.681818"
-     inkscape:cy="33.409091"
-     inkscape:current-layer="layer3"
+     inkscape:cy="33.5"
+     inkscape:current-layer="layer9"
      showgrid="false"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
@@ -199,33 +199,34 @@
        y="7.8053408"
        inkscape:transform-center-x="0.18019438"
        inkscape:transform-center-y="-19.980537" />
-    <g
-       id="g838"
-       transform="translate(1.9073486e-6,-1)"
-       style="display:none">
-      <path
-         transform="matrix(0.64498262,0,0,1,11.276343,1.1779193)"
-         inkscape:transform-center-y="-1.4112886"
-         d="m 36.681473,23.701316 -9.777695,0 4.888847,-8.467732 z"
-         inkscape:randomized="0"
-         inkscape:rounded="0"
-         inkscape:flatsided="true"
-         sodipodi:arg2="1.5707963"
-         sodipodi:arg1="0.52359878"
-         sodipodi:r2="2.8225772"
-         sodipodi:r1="5.6451545"
-         sodipodi:cy="20.878738"
-         sodipodi:cx="31.792625"
-         sodipodi:sides="3"
-         id="path1530"
-         style="fill:#d38d5f;fill-opacity:1;stroke-width:10;stroke-miterlimit:4;stroke-dasharray:none"
-         sodipodi:type="star" />
-      <circle
-         r="8.2120094"
-         cy="32"
-         cx="31.999998"
-         id="path1532-5"
-         style="fill:#c87137;fill-opacity:1;stroke-width:8.57375;stroke-miterlimit:4;stroke-dasharray:none" />
-    </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer9"
+     inkscape:label="Layer 5"
+     style="display:none">
+    <path
+       transform="matrix(0.64498262,0,0,1,11.276343,1.1779193)"
+       inkscape:transform-center-y="-1.4112886"
+       d="m 36.681473,23.701316 -9.777695,0 4.888847,-8.467732 z"
+       inkscape:randomized="0"
+       inkscape:rounded="0"
+       inkscape:flatsided="true"
+       sodipodi:arg2="1.5707963"
+       sodipodi:arg1="0.52359878"
+       sodipodi:r2="2.8225772"
+       sodipodi:r1="5.6451545"
+       sodipodi:cy="20.878738"
+       sodipodi:cx="31.792625"
+       sodipodi:sides="3"
+       id="path1530"
+       style="fill:#d38d5f;fill-opacity:1;stroke-width:10;stroke-miterlimit:4;stroke-dasharray:none"
+       sodipodi:type="star" />
+    <circle
+       r="8.2120094"
+       cy="32"
+       cx="31.999998"
+       id="path1532-5"
+       style="fill:#c87137;fill-opacity:1;stroke-width:8.57375;stroke-miterlimit:4;stroke-dasharray:none" />
   </g>
 </svg>
