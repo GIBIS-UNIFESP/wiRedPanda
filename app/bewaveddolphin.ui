@@ -143,7 +143,7 @@
   <action name="actionAbout">
    <property name="icon">
     <iconset resource="resources/dolphin/dolphin.qrc">
-     <normaloff>:/dolphin/help.png</normaloff>:/dolphin/help.png</iconset>
+     <normaloff>:/dolphin/help.svg</normaloff>:/dolphin/help.svg</iconset>
    </property>
    <property name="text">
     <string>About</string>
@@ -155,7 +155,7 @@
   <action name="actionLoad">
    <property name="icon">
     <iconset resource="resources/dolphin/dolphin.qrc">
-     <normaloff>:/dolphin/folder.png</normaloff>:/dolphin/folder.png</iconset>
+     <normaloff>:/dolphin/folder.svg</normaloff>:/dolphin/folder.svg</iconset>
    </property>
    <property name="text">
     <string>Load</string>
@@ -167,7 +167,7 @@
   <action name="actionExit">
    <property name="icon">
     <iconset resource="resources/dolphin/dolphin.qrc">
-     <normaloff>:/dolphin/exit.png</normaloff>:/dolphin/exit.png</iconset>
+     <normaloff>:/dolphin/exit.svg</normaloff>:/dolphin/exit.svg</iconset>
    </property>
    <property name="text">
     <string>Exit</string>
@@ -191,7 +191,7 @@
   <action name="actionExportToPdf">
    <property name="icon">
     <iconset resource="resources/dolphin/dolphin.qrc">
-     <normaloff>:/dolphin/pdf.png</normaloff>:/dolphin/pdf.png</iconset>
+     <normaloff>:/dolphin/pdf.svg</normaloff>:/dolphin/pdf.svg</iconset>
    </property>
    <property name="text">
     <string>Export to PDF</string>
@@ -203,7 +203,7 @@
   <action name="actionSave">
    <property name="icon">
     <iconset resource="resources/dolphin/dolphin.qrc">
-     <normaloff>:/dolphin/save.png</normaloff>:/dolphin/save.png</iconset>
+     <normaloff>:/dolphin/save.svg</normaloff>:/dolphin/save.svg</iconset>
    </property>
    <property name="text">
     <string>Save</string>
@@ -215,7 +215,7 @@
   <action name="actionSaveAs">
    <property name="icon">
     <iconset resource="resources/dolphin/dolphin.qrc">
-     <normaloff>:/dolphin/save.png</normaloff>:/dolphin/save.png</iconset>
+     <normaloff>:/dolphin/save.svg</normaloff>:/dolphin/save.svg</iconset>
    </property>
    <property name="text">
     <string>Save As...</string>
@@ -239,7 +239,7 @@
   <action name="actionPaste">
    <property name="icon">
     <iconset resource="resources/dolphin/dolphin.qrc">
-     <normaloff>:/dolphin/paste.png</normaloff>:/dolphin/paste.png</iconset>
+     <normaloff>:/dolphin/paste.svg</normaloff>:/dolphin/paste.svg</iconset>
    </property>
    <property name="text">
     <string>Paste</string>
@@ -289,8 +289,8 @@
   </action>
   <action name="actionInvert">
    <property name="icon">
-    <iconset resource="resources/dolphin/dolphin.qrc">
-     <normaloff>:/dolphin/not.png</normaloff>:/dolphin/not.png</iconset>
+    <iconset resource="resources/basic/basic.qrc">
+     <normaloff>:/basic/not.svg</normaloff>:/basic/not.svg</iconset>
    </property>
    <property name="text">
     <string>Invert</string>
@@ -318,7 +318,7 @@
   <action name="actionExportToPng">
    <property name="icon">
     <iconset resource="resources/dolphin/dolphin.qrc">
-     <normaloff>:/dolphin/png.png</normaloff>:/dolphin/png.png</iconset>
+     <normaloff>:/dolphin/png.svg</normaloff>:/dolphin/png.svg</iconset>
    </property>
    <property name="text">
     <string>Export to PNG</string>
@@ -330,7 +330,7 @@
   <action name="actionSetLength">
    <property name="icon">
     <iconset resource="resources/dolphin/dolphin.qrc">
-     <normaloff>:/dolphin/range.png</normaloff>:/dolphin/range.png</iconset>
+     <normaloff>:/dolphin/range.svg</normaloff>:/dolphin/range.svg</iconset>
    </property>
    <property name="text">
     <string>Set Length</string>
@@ -354,7 +354,7 @@
   <action name="actionZoomIn">
    <property name="icon">
     <iconset resource="resources/dolphin/dolphin.qrc">
-     <normaloff>:/dolphin/zoomIn.png</normaloff>:/dolphin/zoomIn.png</iconset>
+     <normaloff>:/dolphin/zoomIn.svg</normaloff>:/dolphin/zoomIn.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom In</string>
@@ -366,7 +366,7 @@
   <action name="actionZoomOut">
    <property name="icon">
     <iconset resource="resources/dolphin/dolphin.qrc">
-     <normaloff>:/dolphin/zoomOut.png</normaloff>:/dolphin/zoomOut.png</iconset>
+     <normaloff>:/dolphin/zoomOut.svg</normaloff>:/dolphin/zoomOut.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom Out</string>
@@ -378,7 +378,7 @@
   <action name="actionZoomRange">
    <property name="icon">
     <iconset resource="resources/dolphin/dolphin.qrc">
-     <normaloff>:/dolphin/zoomRange.png</normaloff>:/dolphin/zoomRange.png</iconset>
+     <normaloff>:/dolphin/zoomRange.svg</normaloff>:/dolphin/zoomRange.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom Range</string>
@@ -390,7 +390,7 @@
   <action name="actionResetZoom">
    <property name="icon">
     <iconset resource="resources/dolphin/dolphin.qrc">
-     <normaloff>:/dolphin/zoomReset.png</normaloff>:/dolphin/zoomReset.png</iconset>
+     <normaloff>:/dolphin/zoomReset.svg</normaloff>:/dolphin/zoomReset.svg</iconset>
    </property>
    <property name="text">
     <string>Reset Zoom</string>
@@ -414,7 +414,7 @@
   <action name="actionCut">
    <property name="icon">
     <iconset resource="resources/dolphin/dolphin.qrc">
-     <normaloff>:/dolphin/cut.png</normaloff>:/dolphin/cut.png</iconset>
+     <normaloff>:/dolphin/cut.svg</normaloff>:/dolphin/cut.svg</iconset>
    </property>
    <property name="text">
     <string>Cut</string>

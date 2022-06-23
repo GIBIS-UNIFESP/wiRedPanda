@@ -2,23 +2,23 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="64"
    height="64"
    id="svg4152"
    version="1.1"
-   inkscape:version="0.91 r13725"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
    viewBox="0 0 64 64"
    sodipodi:docname="save.svg"
    inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/toolbar/save.png"
    inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+   inkscape:export-ydpi="90"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs4154" />
   <sodipodi:namedview
@@ -28,18 +28,21 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.5"
-     inkscape:cx="-0.28277027"
-     inkscape:cy="56.642046"
+     inkscape:zoom="15.556349"
+     inkscape:cx="28.927096"
+     inkscape:cy="36.223152"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
-     inkscape:window-width="1920"
-     inkscape:window-height="1016"
-     inkscape:window-x="0"
-     inkscape:window-y="28"
-     inkscape:window-maximized="1">
+     inkscape:window-width="1350"
+     inkscape:window-height="1230"
+     inkscape:window-x="78"
+     inkscape:window-y="78"
+     inkscape:window-maximized="0"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
     <inkscape:grid
        type="xygrid"
        id="grid4700" />
@@ -61,19 +64,19 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
     <rect
-       style="opacity:1;fill:#bd2812;fill-opacity:1;stroke:#bd2812;stroke-width:3.56879997;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:1;fill:#30449f;fill-opacity:1;stroke:#30449f;stroke-width:3.56879997;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect4702"
        width="44.431202"
        height="44.431202"
        x="9.7844"
        y="9.7843981" />
     <path
-       style="opacity:1;fill:#881c0c;fill-opacity:1;stroke:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:1;fill:#623259;fill-opacity:1;stroke:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 12.509833,31 c -0.764473,0 -1.381038,0.487433 -1.381038,1.091797 l 0,6.044922 0,16.771484 0,1.091797 1.381038,0 38.980335,0 1.381038,0 0,-1.091797 0,-16.771484 0,-6.044922 C 52.871206,31.487433 52.254641,31 51.490168,31 l -38.980335,0 z"
        id="rect4704"
        inkscape:connector-curvature="0" />
     <path
-       style="opacity:1;fill:#881c0c;fill-opacity:1;stroke:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:1;fill:#623259;fill-opacity:1;stroke:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 15.5,9.136719 0,0.802734 0,12.31836 0,4.441406 C 15.5,27.143152 15.987433,27.5 16.591797,27.5 l 30.816406,0 C 48.012567,27.5 48.5,27.143152 48.5,26.699219 l 0,-4.441406 0,-12.31836 0,-0.802734 -1.091797,0 -30.816406,0 -1.091797,0 z m 21.492188,1.84375 7.015624,0 0,14.300781 -7.015624,0 0,-14.300781 z"
        id="rect4704-7"
        inkscape:connector-curvature="0" />
