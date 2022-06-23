@@ -2,23 +2,23 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="64"
    height="64"
    id="svg4152"
    version="1.1"
-   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
    viewBox="0 0 64 64"
    sodipodi:docname="Range.svg"
    inkscape:export-filename="/home/fabio/experimentos/wired_panda_project/app/resources/dolphin/range.png"
    inkscape:export-xdpi="96"
-   inkscape:export-ydpi="96">
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs4154" />
   <sodipodi:namedview
@@ -29,17 +29,20 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="11"
-     inkscape:cx="-33.404391"
-     inkscape:cy="36.508777"
+     inkscape:cx="21"
+     inkscape:cy="36.5"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
-     inkscape:window-width="2560"
-     inkscape:window-height="1030"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1">
+     inkscape:window-width="1350"
+     inkscape:window-height="1230"
+     inkscape:window-x="52"
+     inkscape:window-y="52"
+     inkscape:window-maximized="0"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
     <inkscape:grid
        type="xygrid"
        id="grid4700" />
@@ -61,17 +64,17 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
     <path
-       style="fill:#ab311f;fill-opacity:1;fill-rule:evenodd;stroke:#bd2812;stroke-width:7.54006529;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#30449f;fill-opacity:1;fill-rule:evenodd;stroke:#30449f;stroke-width:7.54006529;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 10.823728,32 H 53.176272"
        id="path4717"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:#ab311f;fill-opacity:1;fill-rule:evenodd;stroke:#bd2812;stroke-width:7.54006529;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#30449f;fill-opacity:1;fill-rule:evenodd;stroke:#30449f;stroke-width:7.54006529;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 53.155398,10.823726 V 53.176272"
        id="path4719-3"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:#ab311f;fill-opacity:1;fill-rule:evenodd;stroke:#bd2812;stroke-width:7.54006529;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#30449f;fill-opacity:1;fill-rule:evenodd;stroke:#30449f;stroke-width:7.54006529;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 10.820466,10.823726 V 53.176272"
        id="path4719-6"
        inkscape:connector-curvature="0" />

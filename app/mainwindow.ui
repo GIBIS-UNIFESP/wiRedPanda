@@ -148,7 +148,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>578</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -173,7 +173,7 @@ QTabWidget::pane {
             </widget>
             <widget class="QWidget" name="gates">
              <attribute name="icon">
-              <iconset>
+              <iconset resource="resources/basic/basic.qrc">
                <normaloff>:/basic/xor.svg</normaloff>:/basic/xor.svg</iconset>
              </attribute>
              <attribute name="title">
@@ -197,7 +197,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>578</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -246,7 +246,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>578</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -271,7 +271,7 @@ QTabWidget::pane {
             </widget>
             <widget class="QWidget" name="ic">
              <attribute name="icon">
-              <iconset>
+              <iconset resource="resources/basic/basic.qrc">
                <normaloff>:/basic/ic.svg</normaloff>:/basic/ic.svg</iconset>
              </attribute>
              <attribute name="title">
@@ -295,7 +295,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>578</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -320,7 +320,7 @@ QTabWidget::pane {
             </widget>
             <widget class="QWidget" name="misc">
              <attribute name="icon">
-              <iconset>
+              <iconset resource="resources/misc/misc.qrc">
                <normaloff>:/misc/text.png</normaloff>:/misc/text.png</iconset>
              </attribute>
              <attribute name="title">
@@ -344,7 +344,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>578</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -389,7 +389,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>258</width>
-                   <height>576</height>
+                   <height>579</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -540,7 +540,7 @@ QTabWidget::pane {
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -803,7 +803,7 @@ QTabWidget::pane {
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="resources/basic/basic.qrc">
      <normaloff>:/basic/nor.svg</normaloff>:/basic/nor.svg</iconset>
    </property>
    <property name="text">
@@ -1047,6 +1047,10 @@ QTabWidget::pane {
    </property>
   </action>
   <action name="actionExportToImage">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/png.svg</normaloff>:/toolbar/png.svg</iconset>
+   </property>
    <property name="text">
     <string>Export to &amp;Image</string>
    </property>
@@ -1126,11 +1130,13 @@ QTabWidget::pane {
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/output/output.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/memory/light/memory_light.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/misc/misc.qrc"/>
  </resources>
  <connections/>
 </ui>
