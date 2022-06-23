@@ -31,7 +31,7 @@ public:
     void updatePorts() override;
 
 private:
-    const QString m_pixmapPath = ":/output/counter/counter_on.png";
+    const QString m_pixmapPath = ":/output/counter/counter_on.svg";
     const QString m_titleText = tr("<b>7-SEGMENT DISPLAY</b>");
     const QString m_translatedName = tr("Display");
 

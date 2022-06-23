@@ -30,7 +30,7 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
-    const QString m_pixmapPath = ":/input/buttonOff.png";
+    const QString m_pixmapPath = ":/input/buttonOff.svg";
     const QString m_titleText = tr("<b>PUSH BUTTON</b>");
     const QString m_translatedName = tr("Button");
 

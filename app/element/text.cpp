@@ -16,8 +16,8 @@ Text::Text(QGraphicsItem *parent)
     }
 
     m_defaultSkins = QStringList{
-        ":/no_text.png",
-        ":/text.png",
+        ":/misc/no_text.png",
+        ":/misc/text.png",
     };
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);

@@ -29,7 +29,7 @@ public:
 private:
     void resetSkin(const int ledNumber);
 
-    const QString m_pixmapPath = ":/output/WhiteLedOff.png";
+    const QString m_pixmapPath = ":/output/WhiteLedOff.svg";
     const QString m_titleText = tr("<b>LED</b>");
     const QString m_translatedName = tr("LED");
 

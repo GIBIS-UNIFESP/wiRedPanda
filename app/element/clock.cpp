@@ -18,8 +18,8 @@ Clock::Clock(QGraphicsItem *parent)
     }
 
     m_defaultSkins = QStringList{
-        ":/input/clock0.png",
-        ":/input/clock1.png"
+        ":/input/clock0.svg",
+        ":/input/clock1.svg"
     };
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);

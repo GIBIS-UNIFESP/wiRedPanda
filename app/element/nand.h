@@ -18,7 +18,7 @@ public:
     explicit Nand(QGraphicsItem *parent = nullptr);
 
 private:
-    const QString m_pixmapPath = ":/basic/nand.png";
+    const QString m_pixmapPath = ":/basic/nand.svg";
     const QString m_titleText = tr("<b>NAND</b>");
     const QString m_translatedName = tr("Nand");
 };

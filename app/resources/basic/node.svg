@@ -2,22 +2,22 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="64px"
-   height="64px"
+   width="32"
+   height="32"
    id="svg2985"
    version="1.1"
-   inkscape:version="0.91 r13725"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
    sodipodi:docname="node.svg"
    inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/basic/node.png"
    inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+   inkscape:export-ydpi="90"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs2987">
     <linearGradient
@@ -56,24 +56,22 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="6.7421875"
-     inkscape:cx="9.6872015"
-     inkscape:cy="32.310727"
+     inkscape:cx="9.7149479"
+     inkscape:cy="32.482039"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1920"
-     inkscape:window-height="1016"
-     inkscape:window-x="0"
-     inkscape:window-y="28"
-     inkscape:window-maximized="1">
-    <sodipodi:guide
-       orientation="1,0"
-       position="32.003906,43.21875"
-       id="guide2993" />
-  </sodipodi:namedview>
+     inkscape:window-width="3840"
+     inkscape:window-height="2097"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
   <metadata
      id="metadata2990">
     <rdf:RDF>
@@ -82,7 +80,6 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -92,12 +89,8 @@
      inkscape:groupmode="layer">
     <path
        style="fill:#262626;fill-opacity:1;stroke:none;stroke-opacity:1"
-       d="m 41.993759,31.957645 c 0.246179,6.484708 -6.837208,11.696743 -12.952523,9.553031 -6.262622,-1.682363 -9.158867,-9.987635 -5.297059,-15.199257 3.457775,-5.488936 12.245981,-5.800206 16.083299,-0.569655 1.395601,1.749929 2.171733,3.977757 2.166283,6.215881 z"
+       d="M 25.993759,15.957645 C 26.239938,22.442353 19.156551,27.654388 13.041236,25.510676 6.7786138,23.828313 3.8823688,15.523041 7.7441768,10.311419 11.201952,4.822483 19.990158,4.511213 23.827476,9.741764 c 1.395601,1.749929 2.171733,3.977757 2.166283,6.215881 z"
        id="path3347"
        inkscape:connector-curvature="0" />
   </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer4"
-     inkscape:label="Camada" />
 </svg>

@@ -20,8 +20,8 @@ InputButton::InputButton(QGraphicsItem *parent)
     }
 
     m_defaultSkins = QStringList{
-        ":/input/buttonOff.png",
-        ":/input/buttonOn.png",
+        ":/input/buttonOff.svg",
+        ":/input/buttonOn.svg",
     };
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);

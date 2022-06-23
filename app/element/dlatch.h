@@ -20,8 +20,8 @@ public:
 
     static QString pixmapPath()
     {
-        return (ThemeManager::theme() == Theme::Light) ? ":/memory/light/D-latch.png"
-                                                       : ":/memory/dark/D-latch.png";
+        return (ThemeManager::theme() == Theme::Light) ? ":/memory/light/D-latch.svg"
+                                                       : ":/memory/dark/D-latch.svg";
     }
 
     void updatePorts() override;

@@ -18,7 +18,7 @@ public:
     explicit Or(QGraphicsItem *parent = nullptr);
 
 private:
-    const QString m_pixmapPath = ":/basic/or.png";
+    const QString m_pixmapPath = ":/basic/or.svg";
     const QString m_titleText = tr("<b>OR</b>");
     const QString m_translatedName = tr("Or");
 };

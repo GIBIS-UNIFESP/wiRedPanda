@@ -20,8 +20,8 @@ public:
 
     static QString pixmapPath()
     {
-        return (ThemeManager::theme() == Theme::Light) ? ":/memory/light/SR-flipflop.png"
-                                                       : ":/memory/dark/SR-flipflop.png";
+        return (ThemeManager::theme() == Theme::Light) ? ":/memory/light/SR-flipflop.svg"
+                                                       : ":/memory/dark/SR-flipflop.svg";
     }
 
     void updatePorts() override;

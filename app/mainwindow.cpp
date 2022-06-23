@@ -75,11 +75,11 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     auto *shortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
     connect(shortcut, &QShortcut::activated, m_ui->lineEditSearch, qOverload<>(&QWidget::setFocus));
     populateLeftMenu();
-    m_ui->tabElements->setTabIcon(0, QIcon(":/input/buttonOff.png"));
-    m_ui->tabElements->setTabIcon(1, QIcon(":/basic/xor.png"));
+    m_ui->tabElements->setTabIcon(0, QIcon(":/input/buttonOff.svg"));
+    m_ui->tabElements->setTabIcon(1, QIcon(":/basic/xor.svg"));
     m_ui->tabElements->setTabIcon(2, QIcon(DFlipFlop::pixmapPath()));
-    m_ui->tabElements->setTabIcon(3, QIcon(":/basic/ic-panda.png"));
-    m_ui->tabElements->setTabIcon(4, QIcon(":/text.png"));
+    m_ui->tabElements->setTabIcon(3, QIcon(":/basic/ic-panda.svg"));
+    m_ui->tabElements->setTabIcon(4, QIcon(":/misc/text.png"));
     m_ui->tabElements->setTabEnabled(5, false);
 
     qCDebug(zero) << tr("Loading recent file list.");
@@ -549,7 +549,7 @@ void MainWindow::updateICList()
 
         qCDebug(zero) << tr("Files:") << files.join(", ");
         for (const QString &file : qAsConst(files)) {
-            QPixmap pixmap(":/basic/ic-panda.png");
+            QPixmap pixmap(":/basic/ic-panda.svg");
             auto *item = new ElementLabel(pixmap, ElementType::IC, file, this);
             m_ui->scrollAreaWidgetContents_IC->layout()->addWidget(item);
         }

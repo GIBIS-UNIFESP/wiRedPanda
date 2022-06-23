@@ -18,7 +18,7 @@ public:
     explicit And(QGraphicsItem *parent = nullptr);
 
 private:
-    const QString m_pixmapPath = ":/basic/and.png";
+    const QString m_pixmapPath = ":/basic/and.svg";
     const QString m_titleText = tr("<b>AND</b>");
     const QString m_translatedName = tr("And");
 };

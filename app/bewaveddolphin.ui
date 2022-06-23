@@ -179,7 +179,7 @@
   <action name="actionCombinational">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/wavyIcon.png</normaloff>:/toolbar/wavyIcon.png</iconset>
+     <normaloff>:/toolbar/wavyIcon.svg</normaloff>:/toolbar/wavyIcon.svg</iconset>
    </property>
    <property name="text">
     <string>Combinational</string>
@@ -227,7 +227,7 @@
   <action name="actionCopy">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/copy.png</normaloff>:/toolbar/copy.png</iconset>
+     <normaloff>:/toolbar/copy.svg</normaloff>:/toolbar/copy.svg</iconset>
    </property>
    <property name="text">
     <string>Copy</string>
@@ -251,7 +251,7 @@
   <action name="actionSetTo0">
    <property name="icon">
     <iconset resource="resources/input/input.qrc">
-     <normaloff>:/input/0.png</normaloff>:/input/0.png</iconset>
+     <normaloff>:/input/0.svg</normaloff>:/input/0.svg</iconset>
    </property>
    <property name="text">
     <string>Set to 0</string>
@@ -263,7 +263,7 @@
   <action name="actionSetTo1">
    <property name="icon">
     <iconset resource="resources/input/input.qrc">
-     <normaloff>:/input/1.png</normaloff>:/input/1.png</iconset>
+     <normaloff>:/input/1.svg</normaloff>:/input/1.svg</iconset>
    </property>
    <property name="text">
     <string>Set to 1</string>
@@ -275,7 +275,7 @@
   <action name="actionSetClockWave">
    <property name="icon">
     <iconset resource="resources/input/input.qrc">
-     <normaloff>:/input/clock1.png</normaloff>:/input/clock1.png</iconset>
+     <normaloff>:/input/clock1.svg</normaloff>:/input/clock1.svg</iconset>
    </property>
    <property name="text">
     <string>Set clock frequency</string>
@@ -342,7 +342,7 @@
   <action name="actionAboutQt">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/helpQt.png</normaloff>:/toolbar/helpQt.png</iconset>
+     <normaloff>:/toolbar/helpQt.svg</normaloff>:/toolbar/helpQt.svg</iconset>
    </property>
    <property name="text">
     <string>About Qt</string>
@@ -402,7 +402,7 @@
   <action name="actionClear">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/reloadFile.png</normaloff>:/toolbar/reloadFile.png</iconset>
+     <normaloff>:/toolbar/reloadFile.svg</normaloff>:/toolbar/reloadFile.svg</iconset>
    </property>
    <property name="text">
     <string>Clear</string>

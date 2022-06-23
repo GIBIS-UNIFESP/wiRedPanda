@@ -18,7 +18,7 @@ public:
     explicit Line(QGraphicsItem *parent = nullptr);
 
 private:
-    const QString m_pixmapPath = ":/line.png";
+    const QString m_pixmapPath = ":/misc/line.svg";
     const QString m_titleText = tr("<b>LINE</b>");
     const QString m_translatedName = tr("Line");
 };

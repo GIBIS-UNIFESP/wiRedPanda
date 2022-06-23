@@ -18,7 +18,7 @@ public:
     explicit InputGnd(QGraphicsItem *parent = nullptr);
 
 private:
-    const QString m_pixmapPath = ":/input/0.png";
+    const QString m_pixmapPath = ":/input/0.svg";
     const QString m_titleText = tr("<b>GROUND</b>");
     const QString m_translatedName = tr("GND");
 };

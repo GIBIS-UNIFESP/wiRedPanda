@@ -18,7 +18,7 @@ public:
     explicit Nor(QGraphicsItem *parent = nullptr);
 
 private:
-    const QString m_pixmapPath = ":/basic/nor.png";
+    const QString m_pixmapPath = ":/basic/nor.svg";
     const QString m_titleText = tr("<b>NOR</b>");
     const QString m_translatedName = tr("Nor");
 };

@@ -22,7 +22,7 @@ public:
     void updatePorts() override;
 
 private:
-    const QString m_pixmapPath = ":/basic/demux.png";
+    const QString m_pixmapPath = ":/basic/demux.svg";
     const QString m_titleText = tr("<b>DEMULTIPLEXER</b>");
     const QString m_translatedName = tr("Demux");
 };

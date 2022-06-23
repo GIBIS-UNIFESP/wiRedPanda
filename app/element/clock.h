@@ -34,7 +34,7 @@ public:
     void updateClock();
 
 private:
-    const QString m_pixmapPath = ":/input/clock1.png";
+    const QString m_pixmapPath = ":/input/clock1.svg";
     const QString m_titleText = tr("<b>CLOCK SIGNAL</b>");
     const QString m_translatedName = tr("Clock");
 

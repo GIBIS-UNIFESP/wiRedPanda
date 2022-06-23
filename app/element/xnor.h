@@ -18,7 +18,7 @@ public:
     explicit Xnor(QGraphicsItem *parent = nullptr);
 
 private:
-    const QString m_pixmapPath = ":/basic/xnor.png";
+    const QString m_pixmapPath = ":/basic/xnor.svg";
     const QString m_titleText = tr("<b>XNOR</b>");
     const QString m_translatedName = tr("Xnor");
 };

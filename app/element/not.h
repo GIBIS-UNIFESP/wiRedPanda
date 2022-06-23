@@ -18,7 +18,7 @@ public:
     explicit Not(QGraphicsItem *parent = nullptr);
 
 private:
-    const QString m_pixmapPath = ":/basic/not.png";
+    const QString m_pixmapPath = ":/basic/not.svg";
     const QString m_titleText = tr("<b>NOT</b>");
     const QString m_translatedName = tr("Not");
 };

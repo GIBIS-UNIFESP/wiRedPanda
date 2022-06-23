@@ -18,7 +18,7 @@ public:
     explicit Xor(QGraphicsItem *parent = nullptr);
 
 private:
-    const QString m_pixmapPath = ":/basic/xor.png";
+    const QString m_pixmapPath = ":/basic/xor.svg";
     const QString m_titleText = tr("<b>XOR</b>");
     const QString m_translatedName = tr("Xor");
 };

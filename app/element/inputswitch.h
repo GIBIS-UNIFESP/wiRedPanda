@@ -29,7 +29,7 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
-    const QString m_pixmapPath = ":/input/switchOn.png";
+    const QString m_pixmapPath = ":/input/switchOn.svg";
     const QString m_titleText = tr("<b>INPUT SWITCH</b>");
     const QString m_translatedName = tr("Input Switch");
 
