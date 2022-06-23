@@ -500,14 +500,8 @@ QTabWidget::pane {
    <property name="contextMenuPolicy">
     <enum>Qt::PreventContextMenu</enum>
    </property>
-   <property name="movable">
-    <bool>false</bool>
-   </property>
    <property name="toolButtonStyle">
     <enum>Qt::ToolButtonFollowStyle</enum>
-   </property>
-   <property name="floatable">
-    <bool>false</bool>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
