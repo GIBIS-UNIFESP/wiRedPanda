@@ -769,6 +769,7 @@ void ElementEditor::defaultSkin()
     apply();
 }
 
-void ElementEditor::update() {
+void ElementEditor::update()
+{
     setCurrentElements(m_elements);
 }

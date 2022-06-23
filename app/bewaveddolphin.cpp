@@ -293,7 +293,7 @@ void BewavedDolphin::run()
         int tableLine = 0;
         for (auto *input : qAsConst(m_inputs)) {
             for (int port = 0; port < input->outputSize(); ++port) {
-                if (auto* input2 = dynamic_cast<GraphicElementInput *>(input)) {
+                if (auto *input2 = dynamic_cast<GraphicElementInput *>(input)) {
                     int val = m_model->item(tableLine, itr)->text().toInt();
                     input2->setOn(val, port);
                 }
