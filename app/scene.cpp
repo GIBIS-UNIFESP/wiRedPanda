@@ -572,6 +572,13 @@ void Scene::copyAction()
 
 void Scene::cutAction()
 {
+    const auto elms = selectedElements();
+
+    if (elms.isEmpty()) {
+        QApplication::clipboard()->clear();
+        return;
+    }
+
     auto *clipboard = QApplication::clipboard();
     auto *mimeData = new QMimeData();
     QByteArray itemData;
