@@ -175,7 +175,7 @@ void GraphicElement::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap
     loadLabel(stream, version);
     /* <\Version1.2> */
     /* <Version1.3> */
-    loadMinMax(stream, version);
+    loadPortsSize(stream, version);
     /* <\Version1.3> */
     /* <Version1.9> */
     loadTrigger(stream, version);
@@ -212,7 +212,7 @@ void GraphicElement::loadLabel(QDataStream &stream, const double version)
     }
 }
 
-void GraphicElement::loadMinMax(QDataStream &stream, const double version)
+void GraphicElement::loadPortsSize(QDataStream &stream, const double version)
 {
     if (version >= 1.3) {
         quint64 minInputSize;
@@ -410,11 +410,13 @@ void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 {
     Q_UNUSED(widget);
     painter->setClipRect(option->exposedRect);
+
     if (isSelected()) {
         painter->setBrush(m_selectionBrush);
         painter->setPen(QPen(m_selectionPen, 0.5, Qt::SolidLine));
         painter->drawRoundedRect(boundingRect(), 5, 5);
     }
+
     painter->drawPixmap(QPoint(0, 0), pixmap());
 }
 

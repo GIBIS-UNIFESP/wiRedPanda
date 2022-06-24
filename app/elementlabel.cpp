@@ -84,7 +84,7 @@ void ElementLabel::startDrag()
     stream << offset << m_elementType << m_icFileName;
 
     auto *mimeData_ = new QMimeData;
-    mimeData_->setData("application/x-dnditemdata", itemData);
+    mimeData_->setData("wpanda/x-dnditemdata", itemData);
     auto *drag = new QDrag(parent());
     drag->setMimeData(mimeData_);
     drag->setPixmap(pixMap);
@@ -104,7 +104,7 @@ QMimeData *ElementLabel::mimeData()
     stream << offset << m_elementType << m_icFileName;
 
     auto *mimeData = new QMimeData;
-    mimeData->setData("application/x-dnditemdata", itemData);
+    mimeData->setData("wpanda/x-dnditemdata", itemData);
 
     return mimeData;
 }

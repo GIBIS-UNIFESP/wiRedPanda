@@ -407,7 +407,7 @@ void Scene::cloneDrag(const QPointF mousePos)
     copy(selectedItems(), stream);
 
     auto *mimeData = new QMimeData;
-    mimeData->setData("application/ctrlDragData", itemData);
+    mimeData->setData("wpanda/ctrlDragData", itemData);
 
     auto *drag = new QDrag(this);
     drag->setMimeData(mimeData);
@@ -419,15 +419,17 @@ void Scene::cloneDrag(const QPointF mousePos)
 
 void Scene::copy(const QList<QGraphicsItem *> &items, QDataStream &stream)
 {
-    QPointF center(static_cast<qreal>(0.0f), static_cast<qreal>(0.0f));
-    float elm = 0;
+    QPointF center(0.0, 0.0);
+    int itemsQuantity = 0;
+
     for (auto *item : items) {
         if (item->type() == GraphicElement::Type) {
             center += item->pos();
-            elm++;
+            itemsQuantity++;
         }
     }
-    stream << center / static_cast<qreal>(elm);
+
+    stream << center / static_cast<qreal>(itemsQuantity);
     SerializationFunctions::serialize(items, stream);
 }
 
@@ -555,19 +557,20 @@ void Scene::contextMenu(const QPoint screenPos)
 
 void Scene::copyAction()
 {
-    auto elms = selectedElements();
+    const auto elms = selectedElements();
+
     if (elms.empty()) {
-        QClipboard *clipboard = QApplication::clipboard();
-        clipboard->clear();
-    } else {
-        QClipboard *clipboard = QApplication::clipboard();
-        auto *mimeData = new QMimeData;
-        QByteArray itemData;
-        QDataStream stream(&itemData, QIODevice::WriteOnly);
-        copy(selectedItems(), stream);
-        mimeData->setData("wpanda/copydata", itemData);
-        clipboard->setMimeData(mimeData);
+        QApplication::clipboard()->clear();
+        return;
     }
+
+    auto *clipboard = QApplication::clipboard();
+    auto *mimeData = new QMimeData;
+    QByteArray itemData;
+    QDataStream stream(&itemData, QIODevice::WriteOnly);
+    copy(selectedItems(), stream);
+    mimeData->setData("wpanda/copydata", itemData);
+    clipboard->setMimeData(mimeData);
 }
 
 void Scene::cutAction()
@@ -720,7 +723,7 @@ void Scene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
     const auto formats = event->mimeData()->formats();
 
-    if (formats.contains("application/x-dnditemdata") || formats.contains("application/ctrlDragData")) {
+    if (formats.contains("wpanda/x-dnditemdata") || formats.contains("wpanda/ctrlDragData")) {
         event->accept();
         return;
     }
@@ -732,7 +735,7 @@ void Scene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
     const auto formats = event->mimeData()->formats();
 
-    if (formats.contains("application/x-dnditemdata") || formats.contains("application/ctrlDragData")) {
+    if (formats.contains("wpanda/x-dnditemdata") || formats.contains("wpanda/ctrlDragData")) {
         event->accept();
         return;
     }
@@ -742,8 +745,8 @@ void Scene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 
 void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
-    if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
-        QByteArray itemData = event->mimeData()->data("application/x-dnditemdata");
+    if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")) {
+        QByteArray itemData = event->mimeData()->data("wpanda/x-dnditemdata");
         QDataStream stream(&itemData, QIODevice::ReadOnly);
         QPoint offset;
         ElementType type;
@@ -768,8 +771,8 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         elm->setPos(pos);
     }
 
-    if (event->mimeData()->hasFormat("application/ctrlDragData")) {
-        QByteArray itemData = event->mimeData()->data("application/ctrlDragData");
+    if (event->mimeData()->hasFormat("wpanda/ctrlDragData")) {
+        QByteArray itemData = event->mimeData()->data("wpanda/ctrlDragData");
         QDataStream stream(&itemData, QIODevice::ReadOnly);
         QPointF offset;
         QPointF ctr;
@@ -1005,7 +1008,7 @@ void Scene::addItem(QGraphicsItem *item)
 
 void Scene::addItem(QMimeData *mimeData)
 {
-    QByteArray itemData = mimeData->data("application/x-dnditemdata");
+    QByteArray itemData = mimeData->data("wpanda/x-dnditemdata");
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     QPoint offset;
     ElementType type;

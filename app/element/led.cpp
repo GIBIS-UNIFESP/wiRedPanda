@@ -163,6 +163,7 @@ void Led::save(QDataStream &stream) const
 void Led::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
 {
     GraphicElement::load(stream, portMap, version);
+
     if (version >= 1.1) {
         QString color;
         stream >> color;
