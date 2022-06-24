@@ -83,6 +83,7 @@ public:
     int minInputSize() const;
     int minOutputSize() const;
     int outputSize() const;
+    qreal rotation() const;
     virtual QString audio() const;
     virtual QString color() const;
     virtual QString genericProperties();
@@ -104,6 +105,7 @@ public:
     void setPixmap(const QString &pixmapPath);
     void setPixmap(const int index);
     void setPortName(const QString &name);
+    void setRotation(const qreal angle);
     void setTrigger(const QKeySequence &trigger);
     void updateLabel();
 
@@ -153,7 +155,6 @@ private:
     void loadPos(QDataStream &stream);
 
     QPixmap pixmap() const;
-    void loadAngle(QDataStream &stream);
     void loadInputPort(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const int port);
     void loadInputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
     void loadLabel(QDataStream &stream, const double version);
@@ -162,6 +163,7 @@ private:
     void loadOutputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
     void loadPixmapSkinName(QDataStream &stream, const int skin);
     void loadPixmapSkinNames(QDataStream &stream, const double version);
+    void loadRotation(QDataStream &stream);
     void loadTrigger(QDataStream &stream, const double version);
     void removeSurplusInputs(const quint64 inputSize_, QMap<quint64, QNEPort *> &portMap);
     void removeSurplusOutputs(const quint64 outputSize_, QMap<quint64, QNEPort *> &portMap);
@@ -185,6 +187,7 @@ private:
     bool m_hasLabel = false;
     bool m_hasTrigger = false;
     bool m_rotatable = true;
+    qreal m_angle = 0;
     quint64 m_maxInputSize = 0;
     quint64 m_maxOutputSize = 0;
     quint64 m_minInputSize = 0;

@@ -23,7 +23,6 @@ DLatch::DLatch(QGraphicsItem *parent)
 
     setCanChangeSkin(true);
     setPortName(m_translatedName);
-    setRotatable(false);
     setToolTip(m_translatedName);
 
     DLatch::updatePorts();

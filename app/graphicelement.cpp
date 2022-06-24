@@ -170,7 +170,7 @@ void GraphicElement::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap
 {
     qCDebug(four) << tr("Loading element. Type:") << objectName();
     loadPos(stream);
-    loadAngle(stream);
+    loadRotation(stream);
     /* <Version1.2> */
     loadLabel(stream, version);
     /* <\Version1.2> */
@@ -196,7 +196,7 @@ void GraphicElement::loadPos(QDataStream &stream)
     setPos(pos);
 }
 
-void GraphicElement::loadAngle(QDataStream &stream)
+void GraphicElement::loadRotation(QDataStream &stream)
 {
     qreal angle;
     stream >> angle;
@@ -463,6 +463,32 @@ void GraphicElement::setPortName(const QString &name)
     setObjectName(name);
 }
 
+void GraphicElement::setRotation(const qreal angle)
+{
+    m_angle = std::fmod(angle, 360);
+    isRotatable() ? QGraphicsItem::setRotation(m_angle) : rotatePorts(m_angle);
+}
+
+void GraphicElement::rotatePorts(const int angle)
+{
+    for (auto *port : m_inputPorts) {
+        port->setTransformOriginPoint(mapToItem(port, boundingRect().center()));
+        port->setRotation(angle);
+        port->updateConnections();
+    }
+
+    for (auto *port : m_outputPorts) {
+        port->setTransformOriginPoint(mapToItem(port, boundingRect().center()));
+        port->setRotation(angle);
+        port->updateConnections();
+    }
+}
+
+qreal GraphicElement::rotation() const
+{
+    return m_angle;
+}
+
 void GraphicElement::setSkin(const bool defaultSkin, const QString &fileName)
 {
     m_usingDefaultSkin = defaultSkin;
@@ -599,21 +625,6 @@ void GraphicElement::updateTheme()
         output->updateTheme();
     }
     update();
-}
-
-void GraphicElement::rotatePorts(const int angle)
-{
-    for (auto *port : m_inputPorts) {
-        port->setTransformOriginPoint(mapToItem(port, boundingRect().center()));
-        port->setRotation(port->rotation() + angle);
-        port->updateConnections();
-    }
-
-    for (auto *port : m_outputPorts) {
-        port->setTransformOriginPoint(mapToItem(port, boundingRect().center()));
-        port->setRotation(port->rotation() + angle);
-        port->updateConnections();
-    }
 }
 
 bool GraphicElement::isValid()
