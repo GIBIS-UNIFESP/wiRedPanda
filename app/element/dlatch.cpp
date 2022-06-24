@@ -21,29 +21,24 @@ DLatch::DLatch(QGraphicsItem *parent)
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);
 
-    setRotatable(false);
     setCanChangeSkin(true);
-    DLatch::updatePorts();
     setPortName(m_translatedName);
+    setRotatable(false);
     setToolTip(m_translatedName);
 
-    inputPort(0)->setName("Data");
-    inputPort(1)->setName("Enable");
-
-    outputPort(0)->setName("Q");
-    outputPort(1)->setName("~Q");
-
-    outputPort(0)->setDefaultValue(Status::Inactive);
-    outputPort(1)->setDefaultValue(Status::Active);
+    DLatch::updatePorts();
 }
 
 void DLatch::updatePorts()
 {
-    inputPort(0)->setPos(0, 13);   /* Data   */
-    inputPort(1)->setPos(0, 45);   /* Enable */
+    inputPort(0)->setPos(0, 16);      inputPort(0)->setName("Data");
+    inputPort(1)->setPos(0, 48);      inputPort(1)->setName("Enable");
 
-    outputPort(0)->setPos(64, 15); /* Q      */
-    outputPort(1)->setPos(64, 45); /* ~Q     */
+    outputPort(0)->setPos(64, 16);    outputPort(0)->setName("Q");
+    outputPort(1)->setPos(64, 48);    outputPort(1)->setName("~Q");
+
+    outputPort(0)->setDefaultValue(Status::Inactive);
+    outputPort(1)->setDefaultValue(Status::Active);
 }
 
 void DLatch::updateTheme()

@@ -22,22 +22,17 @@ Demux::Demux(QGraphicsItem *parent)
     setPixmap(0);
 
     setCanChangeSkin(true);
-    Demux::updatePorts();
     setPortName(m_translatedName);
     setToolTip(m_translatedName);
 
-    inputPort(0)->setName("in");
-    inputPort(1)->setName("S");
-
-    outputPort(0)->setName("out0");
-    outputPort(1)->setName("out1");
+    Demux::updatePorts();
 }
 
 void Demux::updatePorts()
 {
-    inputPort(0)->setPos(16, 32);       /* 0   */
-    inputPort(1)->setPos(32, 58);       /* S   */
+    inputPort(0)->setPos(16, 32);     inputPort(0)->setName("In");
+    inputPort(1)->setPos(32, 56);     inputPort(1)->setName("S");
 
-    outputPort(0)->setPos(48, 32 - 12); /* Out */
-    outputPort(1)->setPos(48, 32 + 12); /* Out */
+    outputPort(0)->setPos(48, 16);    outputPort(0)->setName("Out0");
+    outputPort(1)->setPos(48, 48);    outputPort(1)->setName("Out1");
 }

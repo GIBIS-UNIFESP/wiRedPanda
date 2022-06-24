@@ -103,7 +103,7 @@ void GraphicElement::setPixmap(const QString &pixmapPath)
         throw Pandaception(tr("Couldn't load pixmap."));
     }
 
-    setTransformOriginPoint(m_pixmap->rect().center());
+    setTransformOriginPoint(boundingRect().center());
     update(boundingRect());
 
     m_currentPixmapPath = pixmapPath;
@@ -474,9 +474,11 @@ void GraphicElement::updatePorts()
 {
     qCDebug(five) << tr("Updating port positions that belong to the IC.");
 
+    const int step = GlobalProperties::gridSize / 2;
+
     if (!m_inputPorts.isEmpty()) {
-        const int step = qMax(32 / m_inputPorts.size(), 6);
-        int y = 32 - m_inputPorts.size() * step + step;
+        int y = 32 - (m_inputPorts.size() * step) + step;
+
         for (auto *port : qAsConst(m_inputPorts)) {
             qCDebug(five) << tr("Setting input at") << 0 << tr(",") << y;
             port->setPos(0, y);
@@ -486,8 +488,8 @@ void GraphicElement::updatePorts()
     }
 
     if (!m_outputPorts.isEmpty()) {
-        const int step = qMax(32 / m_outputPorts.size(), 6);
-        int y = 32 - m_outputPorts.size() * step + step;
+        int y = 32 - (m_outputPorts.size() * step) + step;
+
         for (auto *port : qAsConst(m_outputPorts)) {
             qCDebug(five) << tr("Setting output at") << 64 << tr(",") << y;
             port->setPos(64, y);
@@ -511,10 +513,10 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
     if (change == ItemPositionChange) {
         qCDebug(four) << tr("Align to grid.");
         QPointF newPos = value.toPointF();
-        const int gridSize = GlobalProperties::gridSize;
-        qreal xV = qRound(newPos.x() / gridSize) * gridSize;
-        qreal yV = qRound(newPos.y() / gridSize) * gridSize;
-        return QPointF(xV, yV);
+        const int gridSize = GlobalProperties::gridSize / 2;
+        const int xV = qRound(newPos.x() / gridSize) * gridSize;
+        const int yV = qRound(newPos.y() / gridSize) * gridSize;
+        return QPoint(xV, yV);
     }
 
     if ((change == ItemScenePositionHasChanged) || (change == ItemRotationHasChanged) || (change == ItemTransformHasChanged)) {

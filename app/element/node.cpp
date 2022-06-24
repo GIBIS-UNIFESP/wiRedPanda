@@ -30,6 +30,6 @@ Node::Node(QGraphicsItem *parent)
 
 void Node::updatePorts()
 {
-    inputPort()->setPos(0, 16);
+    inputPort()->setPos(  0, 16);
     outputPort()->setPos(32, 16);
 }
