@@ -67,22 +67,22 @@ Led::Led(QGraphicsItem *parent)
         ":/output/BlueLedOn.svg",               // 7
         ":/output/PurpleLedOff.svg",            // 8
         ":/output/PurpleLedOn.svg",             // 9
-        ":/output/16colors/BlackLedOn.svg",     // Multiple input values: 10
-        ":/output/16colors/NavyBlueLedOn.svg",  // 11
-        ":/output/16colors/GreenLedOn.svg",     // 12
-        ":/output/16colors/TealLedOn.svg",      // 13
-        ":/output/16colors/DarkRedLedOn.svg",   // 14
-        ":/output/16colors/MagentaLedOn.svg",   // 15
-        ":/output/16colors/OrangeLedOn.svg",    // 16
-        ":/output/16colors/LightGrayLedOn.svg", // 17
-        ":/output/16colors/DarkGrayLedOn.svg",  // 18
-        ":/output/16colors/RoyalLedOn.svg",     // 19
-        ":/output/16colors/LimeGreenLedOn.svg", // 20
-        ":/output/16colors/AquaLightLedOn.svg", // 21
-        ":/output/16colors/RedLedOn.svg",       // 22
-        ":/output/16colors/HotPinkLedOn.svg",   // 23
-        ":/output/16colors/YellowLedOn.svg",    // 24
-        ":/output/16colors/WhiteLedOn.svg",     // 25
+        ":/output/16colors/BlackLedOn.png",     // Multiple input values: 10
+        ":/output/16colors/NavyBlueLedOn.png",  // 11
+        ":/output/16colors/GreenLedOn.png",     // 12
+        ":/output/16colors/TealLedOn.png",      // 13
+        ":/output/16colors/DarkRedLedOn.png",   // 14
+        ":/output/16colors/MagentaLedOn.png",   // 15
+        ":/output/16colors/OrangeLedOn.png",    // 16
+        ":/output/16colors/LightGrayLedOn.png", // 17
+        ":/output/16colors/DarkGrayLedOn.png",  // 18
+        ":/output/16colors/RoyalLedOn.png",     // 19
+        ":/output/16colors/LimeGreenLedOn.png", // 20
+        ":/output/16colors/AquaLightLedOn.png", // 21
+        ":/output/16colors/RedLedOn.png",       // 22
+        ":/output/16colors/HotPinkLedOn.png",   // 23
+        ":/output/16colors/YellowLedOn.png",    // 24
+        ":/output/16colors/WhiteLedOn.png",     // 25
     };
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);
@@ -222,22 +222,22 @@ void Led::resetSkin(const int ledNumber)
     case 7:  m_defaultSkins[7]  = ":/output/BlueLedOn.svg";               break;
     case 8:  m_defaultSkins[8]  = ":/output/PurpleLedOff.svg";            break;
     case 9:  m_defaultSkins[9]  = ":/output/PurpleLedOn.svg";             break;
-    case 10: m_defaultSkins[10] = ":/output/16colors/BlackLedOn.svg";     break;
-    case 11: m_defaultSkins[11] = ":/output/16colors/NavyBlueLedOn.svg";  break;
-    case 12: m_defaultSkins[12] = ":/output/16colors/GreenLedOn.svg";     break;
-    case 13: m_defaultSkins[13] = ":/output/16colors/TealLedOn.svg";      break;
-    case 14: m_defaultSkins[14] = ":/output/16colors/DarkRedLedOn.svg";   break;
-    case 15: m_defaultSkins[15] = ":/output/16colors/MagentaLedOn.svg";   break;
-    case 16: m_defaultSkins[16] = ":/output/16colors/OrangeLedOn.svg";    break;
-    case 17: m_defaultSkins[17] = ":/output/16colors/LightGrayLedOn.svg"; break;
-    case 18: m_defaultSkins[18] = ":/output/16colors/DarkGrayLedOn.svg";  break;
-    case 19: m_defaultSkins[19] = ":/output/16colors/RoyalLedOn.svg";     break;
-    case 20: m_defaultSkins[20] = ":/output/16colors/LimeGreenLedOn.svg"; break;
-    case 21: m_defaultSkins[21] = ":/output/16colors/AquaLightLedOn.svg"; break;
-    case 22: m_defaultSkins[22] = ":/output/16colors/RedLedOn.svg";       break;
-    case 23: m_defaultSkins[23] = ":/output/16colors/HotPinkLedOn.svg";   break;
-    case 24: m_defaultSkins[24] = ":/output/16colors/YellowLedOn.svg";    break;
-    case 25: m_defaultSkins[25] = ":/output/16colors/WhiteLedOn.svg";     break;
+    case 10: m_defaultSkins[10] = ":/output/16colors/BlackLedOn.png";     break;
+    case 11: m_defaultSkins[11] = ":/output/16colors/NavyBlueLedOn.png";  break;
+    case 12: m_defaultSkins[12] = ":/output/16colors/GreenLedOn.png";     break;
+    case 13: m_defaultSkins[13] = ":/output/16colors/TealLedOn.png";      break;
+    case 14: m_defaultSkins[14] = ":/output/16colors/DarkRedLedOn.png";   break;
+    case 15: m_defaultSkins[15] = ":/output/16colors/MagentaLedOn.png";   break;
+    case 16: m_defaultSkins[16] = ":/output/16colors/OrangeLedOn.png";    break;
+    case 17: m_defaultSkins[17] = ":/output/16colors/LightGrayLedOn.png"; break;
+    case 18: m_defaultSkins[18] = ":/output/16colors/DarkGrayLedOn.png";  break;
+    case 19: m_defaultSkins[19] = ":/output/16colors/RoyalLedOn.png";     break;
+    case 20: m_defaultSkins[20] = ":/output/16colors/LimeGreenLedOn.png"; break;
+    case 21: m_defaultSkins[21] = ":/output/16colors/AquaLightLedOn.png"; break;
+    case 22: m_defaultSkins[22] = ":/output/16colors/RedLedOn.png";       break;
+    case 23: m_defaultSkins[23] = ":/output/16colors/HotPinkLedOn.png";   break;
+    case 24: m_defaultSkins[24] = ":/output/16colors/YellowLedOn.png";    break;
+    case 25: m_defaultSkins[25] = ":/output/16colors/WhiteLedOn.png";     break;
     default:
         throw Pandaception(tr("Invalid skin number!"));
     }
