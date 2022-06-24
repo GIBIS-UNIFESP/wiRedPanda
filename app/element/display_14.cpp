@@ -73,18 +73,14 @@ Display14::Display14(QGraphicsItem *parent)
     Display::convertAllColors(n);
     Display::convertAllColors(dp);
 
-    setRotatable(false);
-    setHasColors(true);
     setCanChangeSkin(true);
-    Display14::updatePorts();
+    setHasColors(true);
     setHasLabel(true);
     setPortName(m_translatedName);
+    setRotatable(false);
     setToolTip(m_translatedName);
 
-    for (auto *in : qAsConst(m_inputPorts)) {
-        in->setRequired(false);
-        in->setDefaultValue(Status::Inactive);
-    }
+    Display14::updatePorts();
 }
 
 void Display14::refresh()
@@ -94,42 +90,32 @@ void Display14::refresh()
 
 void Display14::updatePorts()
 {
-    inputPort(0)->setPos(6, -4);   /* G1 */
-    inputPort(1)->setPos(6, 8);    /* F  */
-    inputPort(2)->setPos(6, 20);   /* E  */
-    inputPort(3)->setPos(6, 32);   /* D  */
-    inputPort(4)->setPos(58, -10); /* A  */
-    inputPort(5)->setPos(58, 2);   /* B  */
-    inputPort(6)->setPos(58, 14);  /* DP */
-    inputPort(7)->setPos(58, 26);  /* C  */
-    inputPort(8)->setPos(6, 44);   /* G2 */
-    inputPort(9)->setPos(6, 56);   /* H  */
-    inputPort(10)->setPos(6, 68);  /* J  */
-    inputPort(11)->setPos(58, 38); /* K  */
-    inputPort(12)->setPos(58, 50); /* L  */
-    inputPort(13)->setPos(58, 62); /* M  */
-    inputPort(14)->setPos(58, 74); /* N  */
+    inputPort( 0)->setPos( 0,  -8);    inputPort(0)->setName("G1 (" + tr("middle left")        + ")");
+    inputPort( 1)->setPos( 0,   8);    inputPort(1)->setName("F (" +  tr("upper left")         + ")");
+    inputPort( 2)->setPos( 0,  24);    inputPort(2)->setName("E (" +  tr("lower left")         + ")");
+    inputPort( 3)->setPos( 0,  40);    inputPort(3)->setName("D (" +  tr("bottom")             + ")");
+    inputPort( 4)->setPos(64,  -8);    inputPort(4)->setName("A (" +  tr("top")                + ")");
+    inputPort( 5)->setPos(64,   8);    inputPort(5)->setName("B (" +  tr("upper right")        + ")");
+    inputPort( 6)->setPos(64,  24);    inputPort(6)->setName("DP (" + tr("dot")                + ")");
+    inputPort( 7)->setPos(64,  40);    inputPort(7)->setName("C (" +  tr("lower right")        + ")");
+    inputPort( 8)->setPos( 0,  56);    inputPort(8)->setName("G2 (" + tr("middle right")       + ")");
+    inputPort( 9)->setPos( 0,  72);    inputPort(9)->setName("H (" +  tr("middle upper left")  + ")");
+    inputPort(10)->setPos( 0,  88);    inputPort(10)->setName("J (" + tr("middle top")         + ")");
+    inputPort(11)->setPos(64,  56);    inputPort(11)->setName("K (" + tr("middle upper right") + ")");
+    inputPort(12)->setPos(64,  72);    inputPort(12)->setName("L (" + tr("middle lower right") + ")");
+    inputPort(13)->setPos(64,  88);    inputPort(13)->setName("M (" + tr("middle bottom")      + ")");
+    inputPort(14)->setPos(64, 104);    inputPort(14)->setName("N (" + tr("middle lower left")  + ")");
 
-    inputPort(0)->setName("G1 (" + tr("middle left")        + ")");
-    inputPort(1)->setName("F (" +  tr("upper left")         + ")");
-    inputPort(2)->setName("E (" +  tr("lower left")         + ")");
-    inputPort(3)->setName("D (" +  tr("bottom")             + ")");
-    inputPort(4)->setName("A (" +  tr("top")                + ")");
-    inputPort(5)->setName("B (" +  tr("upper right")        + ")");
-    inputPort(6)->setName("DP (" + tr("dot")                + ")");
-    inputPort(7)->setName("C (" +  tr("lower right")        + ")");
-    inputPort(8)->setName("G2 (" + tr("middle right")       + ")");
-    inputPort(9)->setName("H (" +  tr("middle upper left")  + ")");
-    inputPort(10)->setName("J (" + tr("middle top")         + ")");
-    inputPort(11)->setName("K (" + tr("middle upper right") + ")");
-    inputPort(12)->setName("L (" + tr("middle lower right") + ")");
-    inputPort(13)->setName("M (" + tr("middle bottom")      + ")");
-    inputPort(14)->setName("N (" + tr("middle lower left")  + ")");
+    for (auto *port : qAsConst(m_inputPorts)) {
+        port->setRequired(false);
+        port->setDefaultValue(Status::Inactive);
+    }
 }
 
 void Display14::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     GraphicElement::paint(painter, option, widget);
+
     if (inputPort(0)->value() == Status::Active)  { painter->drawPixmap(0, 0, g1[m_colorNumber]); }
     if (inputPort(1)->value() == Status::Active)  { painter->drawPixmap(0, 0, f[m_colorNumber]);  }
     if (inputPort(2)->value() == Status::Active)  { painter->drawPixmap(0, 0, e[m_colorNumber]);  }
@@ -150,6 +136,7 @@ void Display14::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 void Display14::setColor(const QString &color)
 {
     m_color = color;
+
     if (color == "White")  { m_colorNumber = 0; }
     if (color == "Red")    { m_colorNumber = 1; }
     if (color == "Green")  { m_colorNumber = 2; }
@@ -171,6 +158,7 @@ void Display14::save(QDataStream &stream) const
 void Display14::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
 {
     GraphicElement::load(stream, portMap, version);
+
     if (version >= 3.1) {
         QString color;
         stream >> color;

@@ -44,12 +44,6 @@ Display::Display(QGraphicsItem *parent)
     g =  QVector<QPixmap>(5, m_defaultSkins[7]);
     dp = QVector<QPixmap>(5, m_defaultSkins[8]);
 
-    setRotatable(false);
-    setHasColors(true);
-    setCanChangeSkin(true);
-    Display::updatePorts();
-    setHasLabel(true);
-
     qCDebug(three) << tr("Converting segments to other colors.");
     convertAllColors(a);
     convertAllColors(b);
@@ -60,13 +54,14 @@ Display::Display(QGraphicsItem *parent)
     convertAllColors(g);
     convertAllColors(dp);
 
+    setCanChangeSkin(true);
+    setHasColors(true);
+    setHasLabel(true);
     setPortName(m_translatedName);
+    setRotatable(false);
     setToolTip(m_translatedName);
 
-    for (auto *in : qAsConst(m_inputPorts)) {
-        in->setRequired(false);
-        in->setDefaultValue(Status::Inactive);
-    }
+    Display::updatePorts();
 }
 
 void Display::convertAllColors(QVector<QPixmap> &maps)
@@ -105,23 +100,19 @@ void Display::refresh()
 
 void Display::updatePorts()
 {
-    inputPort(0)->setPos(6, 10);  /* G  */
-    inputPort(1)->setPos(6, 25);  /* F  */
-    inputPort(2)->setPos(6, 39);  /* E  */
-    inputPort(3)->setPos(6, 54);  /* D  */
-    inputPort(4)->setPos(58, 10); /* A  */
-    inputPort(5)->setPos(58, 25); /* B  */
-    inputPort(6)->setPos(58, 39); /* DP */
-    inputPort(7)->setPos(58, 54); /* C  */
+    inputPort(0)->setPos( 0,  8);    inputPort(0)->setName("G (" +  tr("middle")      + ")");
+    inputPort(1)->setPos( 0, 24);    inputPort(1)->setName("F (" +  tr("upper left")  + ")");
+    inputPort(2)->setPos( 0, 40);    inputPort(2)->setName("E (" +  tr("lower left")  + ")");
+    inputPort(3)->setPos( 0, 56);    inputPort(3)->setName("D (" +  tr("bottom")      + ")");
+    inputPort(4)->setPos(64,  8);    inputPort(4)->setName("A (" +  tr("top")         + ")");
+    inputPort(5)->setPos(64, 24);    inputPort(5)->setName("B (" +  tr("upper right") + ")");
+    inputPort(6)->setPos(64, 40);    inputPort(6)->setName("DP (" + tr("dot")         + ")");
+    inputPort(7)->setPos(64, 56);    inputPort(7)->setName("C (" +  tr("lower right") + ")");
 
-    inputPort(0)->setName("G (" +  tr("middle")      + ")");
-    inputPort(1)->setName("F (" +  tr("upper left")  + ")");
-    inputPort(2)->setName("E (" +  tr("lower left")  + ")");
-    inputPort(3)->setName("D (" +  tr("bottom")      + ")");
-    inputPort(4)->setName("A (" +  tr("top")         + ")");
-    inputPort(5)->setName("B (" +  tr("upper right") + ")");
-    inputPort(6)->setName("DP (" + tr("dot")         + ")");
-    inputPort(7)->setName("C (" +  tr("lower right") + ")");
+    for (auto *in : qAsConst(m_inputPorts)) {
+        in->setRequired(false);
+        in->setDefaultValue(Status::Inactive);
+    }
 }
 
 void Display::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

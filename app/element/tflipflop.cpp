@@ -21,19 +21,23 @@ TFlipFlop::TFlipFlop(QGraphicsItem *parent)
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);
 
-    setRotatable(false);
     setCanChangeSkin(true);
-    TFlipFlop::updatePorts();
     setPortName(m_translatedName);
+    setRotatable(false);
     setToolTip(m_translatedName);
 
-    inputPort(0)->setName("T");
-    inputPort(1)->setName("Clock");
-    inputPort(2)->setName("~Preset");
-    inputPort(3)->setName("~Clear");
+    TFlipFlop::updatePorts();
+}
 
-    outputPort(0)->setName("Q");
-    outputPort(1)->setName("~Q");
+void TFlipFlop::updatePorts()
+{
+    inputPort(0)->setPos( 0, 16);     inputPort(0)->setName("T");
+    inputPort(1)->setPos( 0, 48);     inputPort(1)->setName("Clock");
+    inputPort(2)->setPos(32,  0);     inputPort(2)->setName("~Preset");
+    inputPort(3)->setPos(32, 64);     inputPort(3)->setName("~Clear");
+
+    outputPort(0)->setPos(64, 16);    outputPort(0)->setName("Q");
+    outputPort(1)->setPos(64, 48);    outputPort(1)->setName("~Q");
 
     inputPort(0)->setRequired(false);
     inputPort(2)->setRequired(false);
@@ -44,17 +48,6 @@ TFlipFlop::TFlipFlop(QGraphicsItem *parent)
 
     outputPort(0)->setDefaultValue(Status::Inactive);
     outputPort(1)->setDefaultValue(Status::Active);
-}
-
-void TFlipFlop::updatePorts()
-{
-    inputPort(0)->setPos(0, 13);   /* T      */
-    inputPort(1)->setPos(0, 45);   /* Clock  */
-    inputPort(2)->setPos(32, 0);   /* Preset */
-    inputPort(3)->setPos(32, 64);  /* Clear  */
-
-    outputPort(0)->setPos(64, 15); /* Q      */
-    outputPort(1)->setPos(64, 45); /* ~Q     */
 }
 
 void TFlipFlop::updateTheme()
