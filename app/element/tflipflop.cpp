@@ -23,7 +23,6 @@ TFlipFlop::TFlipFlop(QGraphicsItem *parent)
 
     setCanChangeSkin(true);
     setPortName(m_translatedName);
-    setRotatable(false);
     setToolTip(m_translatedName);
 
     TFlipFlop::updatePorts();

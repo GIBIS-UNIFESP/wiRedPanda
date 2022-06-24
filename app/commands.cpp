@@ -290,11 +290,7 @@ void RotateCommand::undo()
 
     for (int i = 0; i < elements.size(); ++i) {
         auto *elm = elements[i];
-
-        if (elm->isRotatable()) {
-            elm->setRotation(elm->rotation() - m_angle);
-        }
-
+        elm->setRotation(elm->rotation() - m_angle);
         elm->setPos(m_positions[i]);
         elm->update();
         elm->setSelected(true);
@@ -327,14 +323,9 @@ void RotateCommand::redo()
         transform.translate(cx, cy);
         transform.rotate(m_angle);
         transform.translate(-cx, -cy);
-
-        if (elm->isRotatable()) {
-            elm->setRotation(elm->rotation() + m_angle);
-        } else {
-            elm->rotatePorts(m_angle);
-        }
-
         elm->setPos(transform.map(elm->pos()));
+
+        elm->setRotation(elm->rotation() + m_angle);
         elm->update();
         elm->setSelected(true);
     }

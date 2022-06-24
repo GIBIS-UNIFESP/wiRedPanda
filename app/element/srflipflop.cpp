@@ -23,7 +23,6 @@ SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
 
     setCanChangeSkin(true);
     setPortName(m_translatedName);
-    setRotatable(false);
     setToolTip(m_translatedName);
 
     SRFlipFlop::updatePorts();
