@@ -66,8 +66,8 @@
    <addaction name="actionInvert"/>
    <addaction name="actionSetClockWave"/>
    <addaction name="separator"/>
-   <addaction name="actionZoomOut"/>
    <addaction name="actionZoomIn"/>
+   <addaction name="actionZoomOut"/>
    <addaction name="actionResetZoom"/>
    <addaction name="actionZoomRange"/>
    <addaction name="actionSetLength"/>
@@ -80,7 +80,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -400,8 +400,8 @@
   </action>
   <action name="actionClear">
    <property name="icon">
-    <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/reloadFile.svg</normaloff>:/toolbar/reloadFile.svg</iconset>
+    <iconset resource="resources/dolphin/dolphin.qrc">
+     <normaloff>:/dolphin/reloadFile.svg</normaloff>:/dolphin/reloadFile.svg</iconset>
    </property>
    <property name="text">
     <string>Clear</string>
@@ -434,11 +434,11 @@
   </action>
  </widget>
  <resources>
-  <include location="resources/dolphin/dolphin.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
   <include location="resources/basic/basic.qrc"/>
+  <include location="resources/dolphin/dolphin.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
  </resources>
  <connections/>
 </ui>

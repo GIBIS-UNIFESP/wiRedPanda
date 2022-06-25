@@ -5,6 +5,8 @@
 
 #include "settings.h"
 
+#include <QDebug>
+
 ThemeManager::ThemeManager(QObject *parent)
     : QObject(parent)
 {
@@ -55,10 +57,14 @@ void ThemeAttributes::setTheme(const Theme theme)
         m_qneConnectionSelected = m_selectionPen;
         m_qneConnectionTrue = QColor(Qt::green);
 
+        QPalette newPalette = m_defaultPalette;
+        newPalette.setColor(QPalette::AlternateBase, QColor("#e9e7e3"));
+
 #ifndef Q_OS_MAC
-        qApp->setPalette(m_defaultPalette);
+        qApp->setPalette(newPalette);
         qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
 #endif
+
         break;
     }
 
