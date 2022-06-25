@@ -492,8 +492,8 @@ void CodeGenerator::loop()
     m_stream << "    // Updating clocks. //" << endl;
     for (auto *elm : m_elements) {
         if (elm->elementType() == ElementType::Clock) {
-            const auto elm_outputs = elm->outputs();
-            QString varName = m_varMap[elm_outputs.first()];
+            const auto elmOutputs = elm->outputs();
+            QString varName = m_varMap[elmOutputs.first()];
             m_stream << QString("    if (%1_elapsed > %1_interval){").arg(varName) << endl;
             m_stream << QString("        %1_elapsed = 0;").arg(varName) << endl;
             m_stream << QString("        %1 = ! %1;").arg(varName) << endl;
