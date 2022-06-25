@@ -2,7 +2,7 @@
     <qresource prefix="/toolbar">
         <file>arduino.svg</file>
         <file>brasil.svg</file>
-        <file>cleanSelection.svg</file>
+        <file>clearSelection.svg</file>
         <file>copy.svg</file>
         <file>cut.svg</file>
         <file>default.svg</file>

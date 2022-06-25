@@ -2,22 +2,22 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg:svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="64"
    height="64"
    id="svg4716"
    version="1.1"
-   inkscape:version="0.91 r13725"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
    viewBox="0 0 64 64"
    sodipodi:docname="arduino.svg"
    inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/toolbar/arduino.png"
    inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+   inkscape:export-ydpi="90"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <svg:defs
      id="defs4718" />
   <sodipodi:namedview
@@ -28,17 +28,21 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="7.7781745"
-     inkscape:cx="-13.082183"
-     inkscape:cy="44.895129"
+     inkscape:cx="21.92031"
+     inkscape:cy="44.933422"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
-     inkscape:window-width="1920"
-     inkscape:window-height="1016"
-     inkscape:window-x="0"
-     inkscape:window-y="28"
-     inkscape:window-maximized="1">
+     inkscape:window-width="1350"
+     inkscape:window-height="1230"
+     inkscape:window-x="234"
+     inkscape:window-y="234"
+     inkscape:window-maximized="0"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:lockguides="true">
     <inkscape:grid
        type="xygrid"
        id="grid6019" />
@@ -58,7 +62,8 @@
   <svg:g
      id="layer1"
      inkscape:label="Layer 1"
-     inkscape:groupmode="layer">
+     inkscape:groupmode="layer"
+     style="display:inline">
     <svg:g
        transform="matrix(0.06656599,0,0,0.06656599,8.1028103,21.352172)"
        style="fill:none;stroke:#00979c;stroke-width:60;stroke-opacity:1"
@@ -79,7 +84,7 @@
          style="stroke:#00979c;stroke-opacity:1">
         <svg:path
            inkscape:connector-curvature="0"
-           d="m 528.06885,194.67432 0,-32.78028 -32.53565,0 0,-13.69922 32.53565,0 0,-32.53564 13.8623,0 0,32.53564 32.53565,0 0,13.69922 -32.53565,0 0,32.78028 z"
+           d="M 528.06885,194.67432 V 161.89404 H 495.5332 v -13.69922 h 32.53565 v -32.53564 h 13.8623 v 32.53564 h 32.53565 v 13.69922 h -32.53565 v 32.78028 z"
            id="path3075"
            style="stroke:#00979c;stroke-opacity:1" />
       </svg:g>
@@ -88,9 +93,7 @@
          y="218"
          dy="0"
          id="text12"
-         style="stroke:#00979c;stroke-opacity:1">
-        <ndash />
-      </svg:text>
+         style="stroke:#00979c;stroke-opacity:1"><ndash /></svg:text>
     </svg:g>
     <svg:g
        transform="matrix(0.06656599,0,0,0.06656599,8.1028103,21.352172)"
@@ -102,7 +105,7 @@
          style="fill:#00979c;fill-opacity:1;stroke:#00979c;stroke-opacity:1">
         <svg:path
            inkscape:connector-curvature="0"
-           d="m 681.55078,29.285156 0,-13.554687 -5.15625,0 0,-2.363281 13.00781,0 0,2.363281 -5.19531,0 0,13.554687 z m 9.62891,0 0,-15.917968 3.90625,0 4.02343,12.714843 3.88672,-12.714843 3.82813,0 0,15.917968 -2.42188,0 0,-13.359375 -4.10156,13.359375 -2.40234,0 -4.27735,-13.554687 0,13.554687 z"
+           d="M 681.55078,29.285156 V 15.730469 h -5.15625 v -2.363281 h 13.00781 v 2.363281 h -5.19531 v 13.554687 z m 9.62891,0 V 13.367188 h 3.90625 l 4.02343,12.714843 3.88672,-12.714843 h 3.82813 v 15.917968 h -2.42188 V 15.925781 l -4.10156,13.359375 h -2.40234 l -4.27735,-13.554687 v 13.554687 z"
            id="path3072"
            style="fill:#00979c;fill-opacity:1;stroke:#00979c;stroke-opacity:1" />
       </svg:g>
@@ -114,12 +117,12 @@
        style="font-size:167px;font-family:sans-serif;text-anchor:middle;fill:#00979c;stroke:#00979c;stroke-width:20;stroke-opacity:1">
       <svg:g
          transform="scale(1.5645974,0.63914206)"
-         style="font-size:197.21893311px;stroke:#00979c;stroke-width:23.61903381;stroke-opacity:1"
+         style="font-size:197.219px;stroke:#00979c;stroke-width:23.619;stroke-opacity:1"
          id="text10-7">
         <svg:path
            inkscape:connector-curvature="0"
-           d="m 321.41756,266.30877 0,-17.43 53.25297,0 0,17.43 z"
-           style="font-size:197.21893311px;stroke:#00979c;stroke-width:23.61903381;stroke-opacity:1"
+           d="m 321.41756,266.30877 v -17.43 h 53.25297 v 17.43 z"
+           style="font-size:197.219px;stroke:#00979c;stroke-width:23.619;stroke-opacity:1"
            id="path3078" />
       </svg:g>
       <svg:g

@@ -2,24 +2,24 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="64"
    height="64"
    id="svg4711"
    version="1.1"
-   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
    viewBox="0 0 64 64"
-   sodipodi:docname="bdolphin.svg"
+   sodipodi:docname="dolphin_icon.svg"
    inkscape:export-filename="/home/fabio/experimentos/wiRedPanda/app/resources/toolbar/dolphin_icon-new.png"
    inkscape:export-xdpi="96"
-   inkscape:export-ydpi="96">
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs4713">
     <linearGradient
@@ -92,18 +92,21 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="8.0000004"
-     inkscape:cx="56.499845"
-     inkscape:cy="43.026347"
+     inkscape:cx="54.562497"
+     inkscape:cy="43.124998"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      showguides="false"
-     inkscape:window-width="2560"
-     inkscape:window-height="1030"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1" />
+     inkscape:window-width="3840"
+     inkscape:window-height="2097"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
   <metadata
      id="metadata4716">
     <rdf:RDF>
@@ -119,7 +122,8 @@
   <g
      id="layer1"
      inkscape:label="Layer 1"
-     inkscape:groupmode="layer">
+     inkscape:groupmode="layer"
+     style="display:inline">
     <rect
        style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect5398-5-3-3"
@@ -151,17 +155,7 @@
        y="0.0056311321"
        x="0.016465954"
        id="image833"
-       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAcBJREFU
-eJztmkFygzAMRRWmq7TdNix7g265VC+TU2XZY2RyiWSljmEwtmwZyUJvmQDW//p2wATAcRznwJxa
-DzB+Tc/lZ/fHrfm4uTQtZE18iAYjRA1AJI0QmQIxJIzYZUCKCQD7GrHbQFQTtuA0SGUCKNSa0b0B
-SKkRqhbBWkpMUPEzyA3FiKFVEVLicezxMl1zjm2SAEnxS1JpYE+AJvE5sCZAq/itFDRbAzSx1Ri2
-BGjtfshaElgM6EE8sjShegr0JH6NqgT0Kj5MwSEWwS2KE9Br9xFMQVECehcf4lOAeoKl7t8ft9Ob
-dAGx7z4/vv/ez+NP6xpIBnB0P/dZnSoer0utkTQFSg0o2amp3U7PPT+7MImt7ZwxU+OkrtHEAO59
-fY73i7H62Q3Q8L4vxpqGrGItiEeWWtgM6EF8CGoSvQ+QBBuW7JrF7odUPwv0LB7AH4bqDOi9+wCe
-gHIDLHQfwBNQZoCV7gN4ArYNsLT9FSMa5Zh4S/EHiCTgCJ1HZgaMl+maEm/NnHkCnvArVIcY//NZ
-899ZWzIA2Is1heHI4gEqboSsGDfbEgvntRWBKar21i0shKQpYEGw4ziOE/ACNiq2NQ1SXnoAAAAA
-SUVORK5CYII=
-"
+       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAcBJREFU eJztmkFygzAMRRWmq7TdNix7g265VC+TU2XZY2RyiWSljmEwtmwZyUJvmQDW//p2wATAcRznwJxa DzB+Tc/lZ/fHrfm4uTQtZE18iAYjRA1AJI0QmQIxJIzYZUCKCQD7GrHbQFQTtuA0SGUCKNSa0b0B SKkRqhbBWkpMUPEzyA3FiKFVEVLicezxMl1zjm2SAEnxS1JpYE+AJvE5sCZAq/itFDRbAzSx1Ri2 BGjtfshaElgM6EE8sjShegr0JH6NqgT0Kj5MwSEWwS2KE9Br9xFMQVECehcf4lOAeoKl7t8ft9Ob dAGx7z4/vv/ez+NP6xpIBnB0P/dZnSoer0utkTQFSg0o2amp3U7PPT+7MImt7ZwxU+OkrtHEAO59 fY73i7H62Q3Q8L4vxpqGrGItiEeWWtgM6EF8CGoSvQ+QBBuW7JrF7odUPwv0LB7AH4bqDOi9+wCe gHIDLHQfwBNQZoCV7gN4ArYNsLT9FSMa5Zh4S/EHiCTgCJ1HZgaMl+maEm/NnHkCnvArVIcY//NZ 899ZWzIA2Is1heHI4gEqboSsGDfbEgvntRWBKar21i0shKQpYEGw4ziOE/ACNiq2NQ1SXnoAAAAA SUVORK5CYII= "
        style="image-rendering:optimizeSpeed"
        preserveAspectRatio="none"
        height="64"

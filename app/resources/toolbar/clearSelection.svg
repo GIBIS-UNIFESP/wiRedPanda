@@ -8,7 +8,7 @@
    version="1.1"
    inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
    viewBox="0 0 64 64"
-   sodipodi:docname="selectAll.svg"
+   sodipodi:docname="clearSelection.svg"
    inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/toolbar/zoomOut.png"
    inkscape:export-xdpi="300"
    inkscape:export-ydpi="300"
@@ -28,9 +28,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.5"
-     inkscape:cx="31.818182"
-     inkscape:cy="47.090909"
+     inkscape:zoom="3.8890873"
+     inkscape:cx="-37.798072"
+     inkscape:cy="51.940207"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
@@ -40,6 +40,7 @@
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
+     showguides="false"
      inkscape:showpageshadow="2"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1">
@@ -69,14 +70,6 @@
        d="M 9.2386504,9.2386506 V 20.719899 H 13.631919 V 13.63192 h 7.08798 V 9.2386506 Z m 34.0414496,0 V 13.63192 h 7.081596 v 7.087979 h 4.399653 V 9.2386506 Z M 9.2386504,43.273718 V 54.76135 H 20.719899 v -4.399653 h -7.08798 v -7.087979 z m 41.1230456,0 v 7.087979 H 43.2801 V 54.76135 H 54.761349 V 43.273718 Z"
        id="rect3420"
        inkscape:connector-curvature="0" />
-    <rect
-       style="opacity:1;fill:none;fill-opacity:1;stroke:#bd2812;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect4185"
-       width="21.999992"
-       height="21.999992"
-       x="21.000004"
-       y="21.000004"
-       rx="1.2469121" />
     <rect
        style="opacity:1;fill:#bd2812;fill-opacity:1;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect4187"
@@ -111,5 +104,15 @@
        y="-37"
        rx="0"
        transform="rotate(90)" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#bd2812;stroke-width:2.271;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 20.646788,20.646789 43.353211,43.353212"
+       id="path4253"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#bd2812;stroke-width:2.27064;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 43.353211,20.646789 20.646788,43.353212"
+       id="path4253-5"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>

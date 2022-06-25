@@ -988,7 +988,7 @@ QTabWidget::pane {
   <action name="actionClearSelection">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/cleanSelection.svg</normaloff>:/toolbar/cleanSelection.svg</iconset>
+     <normaloff>:/toolbar/clearSelection.svg</normaloff>:/toolbar/clearSelection.svg</iconset>
    </property>
    <property name="text">
     <string>Cl&amp;ear selection</string>
