@@ -2,22 +2,22 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="64px"
    height="64px"
    id="svg2985"
    version="1.1"
-   inkscape:version="0.91 r13725"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
    sodipodi:docname="WhiteLedOn.svg"
    inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/output/WhiteLedOn.png"
    inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+   inkscape:export-ydpi="90"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs2987">
     <filter
@@ -41,17 +41,20 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="7.7781746"
-     inkscape:cx="22.774908"
-     inkscape:cy="41.764325"
+     inkscape:cx="20.891791"
+     inkscape:cy="41.783582"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
-     inkscape:window-width="1920"
-     inkscape:window-height="1016"
-     inkscape:window-x="0"
-     inkscape:window-y="28"
-     inkscape:window-maximized="1">
+     inkscape:window-width="3840"
+     inkscape:window-height="2097"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
     <inkscape:grid
        type="xygrid"
        id="grid2993" />
@@ -71,36 +74,33 @@
   <g
      id="layer1"
      inkscape:label="Layer 1"
-     inkscape:groupmode="layer">
-    <path
-       sodipodi:type="arc"
-       style="opacity:0.81907893;fill:none;stroke:#9b9b9b;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       id="path2995"
-       sodipodi:cx="35"
-       sodipodi:cy="31.5"
-       sodipodi:rx="25"
-       sodipodi:ry="22.5"
-       d="m 60,31.5 a 25,22.5 0 1 1 -50,0 25,22.5 0 1 1 50,0 z"
-       transform="matrix(0.98181818,0,0,0.98181818,-2.3636364,4.5272728)" />
-    <path
-       sodipodi:type="arc"
-       style="fill:#dedede;fill-opacity:1;stroke:#e1dada;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       id="path2995-1"
-       sodipodi:cx="35"
-       sodipodi:cy="31.5"
-       sodipodi:rx="25"
-       sodipodi:ry="22.5"
-       d="m 60,31.5 a 25,22.5 0 1 1 -50,0 25,22.5 0 1 1 50,0 z"
-       transform="matrix(0.98181818,0,0,0.98181818,-2.3636364,2.5272726)" />
+     inkscape:groupmode="layer"
+     style="display:inline">
     <ellipse
-       style="opacity:0.45394736;fill:#e6e6e6;fill-opacity:1;stroke:none"
+       style="opacity:0.819079;fill:none;stroke:#9b9b9b;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path2995"
+       transform="matrix(0.98181818,0,0,0.98181818,-2.3636364,4.5272728)"
+       cx="35"
+       cy="31.5"
+       rx="25"
+       ry="22.5" />
+    <ellipse
+       style="fill:#dedede;fill-opacity:1;stroke:#e1dada;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path2995-1"
+       transform="matrix(0.98181818,0,0,0.98181818,-2.3636364,2.5272726)"
+       cx="35"
+       cy="31.5"
+       rx="25"
+       ry="22.5" />
+    <ellipse
+       style="opacity:0.453947;fill:#e6e6e6;fill-opacity:1;stroke:none"
        id="path2995-1-9"
        cx="32"
        cy="30.561834"
        rx="24.545454"
        ry="24.983618" />
     <ellipse
-       style="opacity:0.91118421;fill:#f7f7f7;fill-opacity:1;stroke:none;filter:url(#filter3764)"
+       style="opacity:0.911184;fill:#f7f7f7;fill-opacity:1;stroke:none;filter:url(#filter3764)"
        id="path2995-1-9-0"
        transform="matrix(0.98181818,0,0,1.110383,-2.3693559,-3.28134)"
        cx="35"

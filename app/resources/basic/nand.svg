@@ -45,8 +45,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="7.9999996"
-     inkscape:cx="35.562502"
-     inkscape:cy="33.562502"
+     inkscape:cx="33.687502"
+     inkscape:cy="33.687502"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:document-units="px"
@@ -76,7 +76,8 @@
   <g
      id="layer1"
      inkscape:label="Layer 1"
-     inkscape:groupmode="layer">
+     inkscape:groupmode="layer"
+     style="display:inline">
     <path
        style="fill:#262626;fill-opacity:1;stroke:none"
        d="m 48.710547,32.15 a 17.794409,22 0 0 0 -17.794922,-22 17.794409,22 0 0 0 -0.8125,0.03516 C 29.986009,10.17548 29.873213,10.15 29.753516,10.15 H 9.8707031 c -2.337805,0 -4.220703,1.882898 -4.220703,4.220703 v 35.558594 c 0,2.337805 1.882898,4.220703 4.220703,4.220703 H 29.753516 c 0.151144,0 0.294457,-0.02957 0.441406,-0.04492 a 17.794409,22 0 0 0 0.720703,0.04492 17.794409,22 0 0 0 17.794922,-22 z"

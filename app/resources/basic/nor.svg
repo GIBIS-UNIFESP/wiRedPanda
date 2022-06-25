@@ -36,19 +36,19 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="6.625"
-     inkscape:cx="19.09434"
-     inkscape:cy="22.792453"
+     inkscape:cx="16.830189"
+     inkscape:cy="22.867925"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="3840"
-     inkscape:window-height="2097"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1"
+     inkscape:window-width="1350"
+     inkscape:window-height="1230"
+     inkscape:window-x="390"
+     inkscape:window-y="390"
+     inkscape:window-maximized="0"
      inkscape:showpageshadow="2"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1">
@@ -71,7 +71,8 @@
   <g
      id="layer1"
      inkscape:label="Layer 1"
-     inkscape:groupmode="layer">
+     inkscape:groupmode="layer"
+     style="display:inline">
     <circle
        style="fill:#262626;fill-opacity:1;stroke:none"
        id="path4140"
