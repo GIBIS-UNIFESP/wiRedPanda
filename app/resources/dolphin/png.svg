@@ -29,16 +29,16 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.5"
-     inkscape:cx="18.909091"
-     inkscape:cy="45.727273"
+     inkscape:cx="18.363636"
+     inkscape:cy="45.909091"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      inkscape:window-width="1350"
      inkscape:window-height="1230"
-     inkscape:window-x="26"
-     inkscape:window-y="26"
+     inkscape:window-x="1171"
+     inkscape:window-y="759"
      inkscape:window-maximized="0"
      inkscape:showpageshadow="2"
      inkscape:pagecheckerboard="0"
@@ -65,7 +65,7 @@
      inkscape:groupmode="layer">
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#30449f;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#758eff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="3.3046303"
        y="42"
        id="text4161"><tspan
@@ -73,6 +73,6 @@
          id="tspan4163"
          x="3.3046303"
          y="42"
-         style="font-size:26.7858px;line-height:1.25;fill:#30449f;fill-opacity:1">PNG</tspan></text>
+         style="font-size:26.7858px;line-height:1.25;fill:#758eff;fill-opacity:1">PNG</tspan></text>
   </g>
 </svg>

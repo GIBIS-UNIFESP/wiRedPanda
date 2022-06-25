@@ -8,8 +8,8 @@
    version="1.1"
    inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
    viewBox="0 0 64 64"
-   sodipodi:docname="exit.svg"
-   inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/toolbar/exit.png"
+   sodipodi:docname="reloadFile.svg"
+   inkscape:export-filename="/home/davi/Imagens/Projetos/wirRed Panda/RedShadow.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -28,17 +28,17 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.75"
-     inkscape:cx="14.545455"
-     inkscape:cy="37.636364"
+     inkscape:zoom="7.7781745"
+     inkscape:cx="33.491149"
+     inkscape:cy="23.334524"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      inkscape:window-width="1350"
      inkscape:window-height="1230"
-     inkscape:window-x="299"
-     inkscape:window-y="719"
+     inkscape:window-x="1091"
+     inkscape:window-y="633"
      inkscape:window-maximized="0"
      inkscape:showpageshadow="2"
      inkscape:pagecheckerboard="0"
@@ -63,19 +63,23 @@
      id="layer1"
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
-    <rect
-       style="fill:none;fill-opacity:1;stroke:#758eff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect6220-0"
-       width="38.84655"
-       height="50.84655"
-       x="12.576725"
-       y="6.576725"
-       rx="0.21904609"
-       ry="1.5953909" />
-    <path
-       style="fill:#758eff;fill-opacity:1;fill-rule:evenodd;stroke:#758eff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-       d="m 62.974395,31.537067 -19.687534,-16.875029 0,11.25002 -22.500037,0 0,11.250018 22.500037,0 0,11.250019 z"
-       id="path4157"
-       inkscape:connector-curvature="0" />
+    <g
+       id="g9409"
+       transform="translate(-3,-2.750225)">
+      <rect
+         style="fill:#f9fdfd;fill-opacity:1;stroke:#623259;stroke-width:1.153;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect6220-0"
+         width="38.84655"
+         height="50.84655"
+         x="12.5765"
+         y="6.5769501"
+         rx="0.21904609"
+         ry="1.5953909" />
+      <path
+         style="opacity:1;fill:#758eff;fill-opacity:1;stroke:none;stroke-width:8.22876;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="M 58,34.549146 V 48.810102 H 43.739045 l 5.067466,-5.067467 a 8.556573,8.5565742 0 0 0 -6.545556,-3.060163 8.556573,8.5565742 0 0 0 -8.556573,8.556573 8.556573,8.5565742 0 0 0 8.556573,8.556573 8.556573,8.5565742 0 0 0 7.015352,-3.676653 l 4.072171,4.072171 A 14.260955,14.260957 0 0 1 42.260955,63.5 14.260955,14.260957 0 0 1 28,49.239045 14.260955,14.260957 0 0 1 42.260955,34.978089 14.260955,14.260957 0 0 1 52.839687,39.709458 Z"
+         id="path5524"
+         inkscape:connector-curvature="0" />
+    </g>
   </g>
 </svg>
