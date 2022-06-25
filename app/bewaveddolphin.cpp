@@ -423,13 +423,13 @@ void BewavedDolphin::createWaveform(const QString &fileName)
     SimulationBlocker simulationBlocker(m_simController);
     qCDebug(zero) << tr("Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.");
     loadElements();
-    QStringList input_labels;
-    QStringList output_labels;
+    QStringList inputLabels;
+    QStringList outputLabels;
     qCDebug(zero) << tr("Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation. Not saving memory states though...");
     qCDebug(zero) << tr("Also getting the name of the inputs. If no label is given, the element type is used as a name. Bug here? What if there are 2 inputs without name or two identical labels?");
-    m_oldInputValues = loadSignals(input_labels, output_labels);
+    m_oldInputValues = loadSignals(inputLabels, outputLabels);
     qCDebug(zero) << tr("Loading initial data into the table.");
-    loadNewTable(input_labels, output_labels);
+    loadNewTable(inputLabels, outputLabels);
 
     if (fileName.isEmpty()) {
         setWindowTitle(tr("beWavedDolphin Simulator"));
@@ -452,13 +452,13 @@ void BewavedDolphin::createWaveform()
     SimulationBlocker simulationBlocker(m_simController);
     qCDebug(zero) << tr("Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.");
     loadElements();
-    QStringList input_labels;
-    QStringList output_labels;
+    QStringList inputLabels;
+    QStringList outputLabels;
     qCDebug(zero) << tr("Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation. Not saving memory states though...");
     qCDebug(zero) << tr("Also getting the name of the inputs. If no label is given, the element type is used as a name. Bug here? What if there are 2 inputs without name or two identical labels?");
-    m_oldInputValues = loadSignals(input_labels, output_labels);
+    m_oldInputValues = loadSignals(inputLabels, outputLabels);
     qCDebug(zero) << tr("Loading initial data into the table.");
-    loadNewTable(input_labels, output_labels);
+    loadNewTable(inputLabels, outputLabels);
     load();
     setWindowTitle(tr("beWavedDolphin Simulator"));
     m_currentFile = {};
@@ -544,50 +544,50 @@ void BewavedDolphin::on_actionInvert_triggered()
 
 int BewavedDolphin::sectionFirstColumn(const QItemSelection &ranges)
 {
-    int first_col = m_model->columnCount() - 1;
+    int firstCol = m_model->columnCount() - 1;
 
     for (const auto &range : ranges) {
-        if (range.left() < first_col) {
-            first_col = range.left();
+        if (range.left() < firstCol) {
+            firstCol = range.left();
         }
     }
 
-    return first_col;
+    return firstCol;
 }
 
 int BewavedDolphin::sectionFirstRow(const QItemSelection &ranges)
 {
-    int first_row = m_model->rowCount() - 1;
+    int firstRow = m_model->rowCount() - 1;
 
     for (const auto &range : ranges) {
-        if (range.top() < first_row) {
-            first_row = range.top();
+        if (range.top() < firstRow) {
+            firstRow = range.top();
         }
     }
 
-    return first_row;
+    return firstRow;
 }
 
 void BewavedDolphin::on_actionSetClockWave_triggered()
 {
     qCDebug(zero) << tr("Getting first column.");
     QItemSelection ranges = m_signalTableView->selectionModel()->selection();
-    int first_col = sectionFirstColumn(ranges);
+    int firstCol = sectionFirstColumn(ranges);
     qCDebug(zero) << tr("Setting the signal according to its column and clock period.");
     ClockDialog dialog(this);
-    int clock_period = dialog.frequency();
+    int clockPeriod = dialog.frequency();
 
-    if (clock_period < 0) {
+    if (clockPeriod < 0) {
         return;
     }
 
-    int half_clock_period = clock_period / 2;
+    int halfClockPeriod = clockPeriod / 2;
     const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
 
     for (const auto &item : itemList) {
         int row = item.row();
         int col = item.column();
-        int value = ((col - first_col) % clock_period < half_clock_period ? 0 : 1);
+        int value = ((col - firstCol) % clockPeriod < halfClockPeriod ? 0 : 1);
         qCDebug(zero) << tr("Editing value.");
         createElement(row, col, value);
     }
@@ -600,17 +600,17 @@ void BewavedDolphin::on_actionSetClockWave_triggered()
 void BewavedDolphin::on_actionCombinational_triggered()
 {
     qCDebug(zero) << tr("Setting the signal according to its columns and clock period.");
-    int clock_period = 2;
-    int half_clock_period = 1;
+    int clockPeriod = 2;
+    int halfClockPeriod = 1;
 
     for (int row = 0; row < m_inputPorts; ++row) {
         for (int col = 0; col < m_model->columnCount(); ++col) {
-            int value = (col % clock_period < half_clock_period ? 0 : 1);
+            int value = (col % clockPeriod < halfClockPeriod ? 0 : 1);
             createElement(row, col, value);
         }
 
-        half_clock_period = std::min(clock_period, 524'288);
-        clock_period = std::min(2 * clock_period, 1'048'576);
+        halfClockPeriod = std::min(clockPeriod, 524'288);
+        clockPeriod = std::min(2 * clockPeriod, 1'048'576);
     }
 
     m_edited = true;
@@ -650,7 +650,7 @@ void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
     }
 
     qCDebug(zero) << tr("Increasing the simulation length.");
-    int old_length = m_model->columnCount();
+    int oldLength = m_model->columnCount();
     m_model->setColumnCount(simLength);
     QStringList horizontalHeaderLabels;
     horizontalHeaderLabels.reserve(simLength);
@@ -662,7 +662,7 @@ void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
     m_model->setHorizontalHeaderLabels(horizontalHeaderLabels);
 
     for (int row = 0; row < m_inputPorts; ++row) {
-        for (int col = old_length; col < m_model->columnCount(); ++col) {
+        for (int col = oldLength; col < m_model->columnCount(); ++col) {
             createZeroElement(row, col, true, false);
         }
     }
@@ -791,8 +791,8 @@ void BewavedDolphin::cut(const QItemSelection &ranges, QDataStream &stream)
 void BewavedDolphin::copy(const QItemSelection &ranges, QDataStream &stream)
 {
     qCDebug(zero) << tr("Serializing data into data stream.");
-    int first_row = sectionFirstRow(ranges);
-    int first_col = sectionFirstColumn(ranges);
+    int firstRow = sectionFirstRow(ranges);
+    int firstCol = sectionFirstColumn(ranges);
     const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
     stream << static_cast<qint64>(itemList.size());
 
@@ -800,16 +800,16 @@ void BewavedDolphin::copy(const QItemSelection &ranges, QDataStream &stream)
         int row = item.row();
         int col = item.column();
         int data = m_model->item(row, col)->text().toInt();
-        stream << static_cast<qint64>(row - first_row);
-        stream << static_cast<qint64>(col - first_col);
+        stream << static_cast<qint64>(row - firstRow);
+        stream << static_cast<qint64>(col - firstCol);
         stream << static_cast<qint64>(data);
     }
 }
 
 void BewavedDolphin::paste(QItemSelection &ranges, QDataStream &stream)
 {
-    int first_col = sectionFirstColumn(ranges);
-    int first_row = sectionFirstRow(ranges);
+    int firstCol = sectionFirstColumn(ranges);
+    int firstRow = sectionFirstRow(ranges);
     quint64 itemListSize;
     stream >> itemListSize;
 
@@ -820,11 +820,11 @@ void BewavedDolphin::paste(QItemSelection &ranges, QDataStream &stream)
         stream >> row;
         stream >> col;
         stream >> data;
-        int new_row = static_cast<int>(first_row + row);
-        int new_col = static_cast<int>(first_col + col);
+        int newRow = static_cast<int>(firstRow + row);
+        int newCol = static_cast<int>(firstCol + col);
 
-        if ((new_row < m_inputPorts) && (new_col < m_model->columnCount())) {
-            createElement(new_row, new_col, static_cast<int>(data));
+        if ((newRow < m_inputPorts) && (newCol < m_model->columnCount())) {
+            createElement(newRow, newCol, static_cast<int>(data));
         }
     }
 
@@ -858,9 +858,9 @@ void BewavedDolphin::on_actionSaveAs_triggered()
     fileDialog.setDirectory(path);
     fileDialog.setFileMode(QFileDialog::AnyFile);
 
-    connect(&fileDialog, &QFileDialog::directoryEntered, this, [&fileDialog, path](const QString &new_dir) {
-        qCDebug(zero) << tr("Changing dir to") << new_dir << tr(", home:") << path;
-        if (new_dir != path) {
+    connect(&fileDialog, &QFileDialog::directoryEntered, this, [&fileDialog, path](const QString &newDir) {
+        qCDebug(zero) << tr("Changing dir to") << newDir << tr(", home:") << path;
+        if (newDir != path) {
             fileDialog.setDirectory(path);
         }
     });

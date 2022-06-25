@@ -309,12 +309,12 @@ void Scene::updateTheme()
     setDots(QPen(theme.m_sceneBgDots));
     m_selectionRect.setBrush(QBrush(theme.m_selectionBrush));
     m_selectionRect.setPen(QPen(theme.m_selectionPen, 1, Qt::SolidLine));
-    const auto scene_elements = elements();
-    for (auto *elm : scene_elements) {
+    const auto sceneElements = elements();
+    for (auto *elm : sceneElements) {
         elm->updateTheme();
     }
-    const auto scene_connections = connections();
-    for (auto *conn : scene_connections) {
+    const auto sceneConnections = connections();
+    for (auto *conn : sceneConnections) {
         conn->updateTheme();
     }
     qCDebug(zero) << tr("Finished updating theme.");
