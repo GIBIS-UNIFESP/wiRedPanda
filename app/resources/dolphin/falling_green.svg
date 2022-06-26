@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="100mm"
+   width="8mm"
    height="30mm"
-   viewBox="0 0 100 30"
+   viewBox="0 0 8 30"
    version="1.1"
    id="svg3873"
    xml:space="preserve"
@@ -25,12 +25,12 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="1.829812"
-     inkscape:cx="172.96859"
-     inkscape:cy="57.929448"
-     inkscape:window-width="1350"
+     inkscape:cx="94.818484"
+     inkscape:cy="56.83644"
+     inkscape:window-width="933"
      inkscape:window-height="817"
-     inkscape:window-x="1769"
-     inkscape:window-y="512"
+     inkscape:window-x="77"
+     inkscape:window-y="1238"
      inkscape:window-maximized="0"
      inkscape:current-layer="layer1" /><defs
      id="defs3870" /><g
@@ -40,13 +40,13 @@
      transform="translate(-129.49995,-58.635001)"><rect
        style="display:inline;opacity:0.502146;fill:#008000;fill-opacity:1;stroke-width:0;paint-order:markers stroke fill"
        id="rect4736"
-       width="99.999992"
+       width="7.9999914"
        height="17.999996"
        x="129.49995"
        y="70.635002" /><path
        style="display:inline;fill:#008000;stroke-width:0;paint-order:markers stroke fill"
-       d="m 129.49995,66.635001 h 100 v 4 h -100 z"
+       d="m 129.49995,66.635001 h 8 v 4 h -8 z"
        id="path11296" /><path
        style="display:inline;fill:#008000;stroke-width:0;paint-order:markers stroke fill"
-       d="m 225.49995,66.635001 h 4 v 16 h -4 z"
+       d="m 133.49995,66.635001 h 4 v 16 h -4 z"
        id="rect9073" /></g></svg>

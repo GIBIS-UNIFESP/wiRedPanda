@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="100mm"
+   width="8mm"
    height="30mm"
-   viewBox="0 0 100 30"
+   viewBox="0 0 8 30"
    version="1.1"
    id="svg7724"
    xml:space="preserve"
@@ -25,12 +25,12 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="1.829812"
-     inkscape:cx="189.09046"
-     inkscape:cy="57.109692"
-     inkscape:window-width="1352"
-     inkscape:window-height="942"
-     inkscape:window-x="640"
-     inkscape:window-y="1012"
+     inkscape:cx="94.545232"
+     inkscape:cy="56.83644"
+     inkscape:window-width="874"
+     inkscape:window-height="759"
+     inkscape:window-x="2935"
+     inkscape:window-y="1223"
      inkscape:window-maximized="0"
      inkscape:current-layer="layer1" /><defs
      id="defs7721" /><g
@@ -40,13 +40,13 @@
      transform="translate(-105.12395,-61.093132)"><rect
        style="opacity:0.5;fill:#008000;fill-opacity:1;stroke-width:0;paint-order:markers stroke fill"
        id="rect7740"
-       width="100"
+       width="8.0000057"
        height="5.9999952"
        x="105.12395"
        y="85.093132" /><rect
        style="fill:#008000;fill-opacity:1;stroke-width:0;paint-order:markers stroke fill"
        id="rect14266"
-       width="100"
+       width="8.0000076"
        height="4"
        x="105.12395"
        y="81.093132" /><rect
@@ -54,5 +54,5 @@
        id="rect14268"
        width="4"
        height="16"
-       x="201.12395"
+       x="109.12395"
        y="69.093132" /></g></svg>
