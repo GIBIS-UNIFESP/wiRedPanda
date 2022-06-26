@@ -187,7 +187,7 @@ void BewavedDolphin::loadElements()
     for (auto *elm : qAsConst(elements)) {
         if (elm && (elm->type() == GraphicElement::Type)) {
             if (elm->elementGroup() == ElementGroup::Input) {
-                m_inputs.append(elm);
+                m_inputs.append(dynamic_cast<GraphicElementInput *>(elm));
                 m_inputPorts += elm->outputSize();
             } else if (elm->elementGroup() == ElementGroup::Output) {
                 m_outputs.append(elm);
@@ -236,7 +236,11 @@ void BewavedDolphin::createZeroElement(const int row, const int col, const bool 
     if (m_type == PlotType::Line) {
         m_model->setData(index, Qt::AlignLeft, Qt::TextAlignmentRole);
 
-        if ((col != m_model->columnCount() - 1) && (m_model->item(row, col + 1) != nullptr) && (m_model->item(row, col + 1)->text().toInt() == 1)) {
+        const bool isLastColumn = (col == m_model->columnCount() - 1);
+        const bool hasNextItem = (m_model->item(row, col + 1) != nullptr);
+        const bool isNextHigh = hasNextItem ? (m_model->item(row, col + 1)->text().toInt() == 1) : false;
+
+        if (!isLastColumn && hasNextItem && isNextHigh) {
             m_model->setData(index, m_risingGreen, Qt::DecorationRole);
         } else {
             m_model->setData(index, m_lowGreen, Qt::DecorationRole);
@@ -246,7 +250,7 @@ void BewavedDolphin::createZeroElement(const int row, const int col, const bool 
     }
 
     qCDebug(three) << tr("Changing previous item, if needed.");
-    if ((changePrevious) && (col != 0) && (previousValue == 1)) {
+    if (changePrevious && (col != 0) && (previousValue == 1)) {
         createElement(row, col - 1, m_model->item(row, col - 1)->text().toInt(), isInput, false);
     }
 }
@@ -272,7 +276,11 @@ void BewavedDolphin::createOneElement(const int row, const int col, const bool i
     if (m_type == PlotType::Line) {
         m_model->setData(index, Qt::AlignLeft, Qt::TextAlignmentRole);
 
-        if ((col != m_model->columnCount() - 1) && (m_model->item(row, col + 1) != nullptr) && (m_model->item(row, col + 1)->text().toInt() == 0)) {
+        const bool isLastColumn = (col == m_model->columnCount() - 1);
+        const bool hasNextItem = (m_model->item(row, col + 1) != nullptr);
+        const bool isNextLow = hasNextItem ? (m_model->item(row, col + 1)->text().toInt() == 0) : false;
+
+        if (!isLastColumn && hasNextItem && isNextLow) {
             m_model->setData(index, m_fallingGreen, Qt::DecorationRole);
         } else {
             m_model->setData(index, m_highGreen, Qt::DecorationRole);
@@ -282,7 +290,7 @@ void BewavedDolphin::createOneElement(const int row, const int col, const bool i
     }
 
     qCDebug(three) << tr("Changing previous item, if needed.");
-    if ((changePrevious) && (col != 0) && (previousValue == 0)) {
+    if (changePrevious && (col != 0) && (previousValue == 0)) {
         createElement(row, col - 1, m_model->item(row, col - 1)->text().toInt(), isInput, false);
     }
 }
@@ -293,7 +301,7 @@ void BewavedDolphin::restoreInputs()
 
     for (int in = 0; in < m_inputs.size(); ++in) {
         for (int port = 0; port < m_inputs[in]->outputSize(); ++port) {
-            auto *input = dynamic_cast<GraphicElementInput *>(m_inputs.at(in));
+            auto *input = m_inputs.at(in);
             bool oldValue = static_cast<bool>(m_oldInputValues.at(in));
 
             if (m_inputs[in]->outputSize() > 1) {
@@ -309,17 +317,17 @@ void BewavedDolphin::run()
 {
     SimulationBlocker simulationBlocker(m_simController);
 
-    for (int itr = 0; itr < m_model->columnCount(); ++itr) {
-        qCDebug(four) << tr("itr:") << itr << tr(", inputs:") << m_inputs.size();
-        int tableLine = 0;
+    for (int column = 0; column < m_model->columnCount(); ++column) {
+        qCDebug(four) << tr("itr:") << column << tr(", inputs:") << m_inputs.size();
+        int row = 0;
 
         for (auto *input : qAsConst(m_inputs)) {
             for (int port = 0; port < input->outputSize(); ++port) {
                 if (auto *input2 = dynamic_cast<GraphicElementInput *>(input)) {
-                    int val = m_model->item(tableLine, itr)->text().toInt();
-                    input2->setOn(val, port);
+                    int value = m_model->item(row, column)->text().toInt();
+                    input2->setOn(value, port);
                 }
-                ++tableLine;
+                ++row;
             }
         }
 
@@ -332,7 +340,7 @@ void BewavedDolphin::run()
         for (auto *output : qAsConst(m_outputs)) {
             for (int port = 0; port < output->inputSize(); ++port) {
                 int value = static_cast<int>(output->inputPort(port)->value());
-                createElement(counter, itr, value, false);
+                createElement(counter, column, value, false);
                 counter++;
             }
         }
@@ -426,7 +434,8 @@ void BewavedDolphin::createWaveform(const QString &fileName)
     QStringList inputLabels;
     QStringList outputLabels;
     qCDebug(zero) << tr("Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation. Not saving memory states though...");
-    qCDebug(zero) << tr("Also getting the name of the inputs. If no label is given, the element type is used as a name. Bug here? What if there are 2 inputs without name or two identical labels?");
+    qCDebug(zero) << tr("Also getting the name of the inputs. If no label is given, the element type is used as a name.");
+    // NOTE: Bug here? What if there are 2 inputs without name or two identical labels?
     m_oldInputValues = loadSignals(inputLabels, outputLabels);
     qCDebug(zero) << tr("Loading initial data into the table.");
     loadNewTable(inputLabels, outputLabels);
@@ -876,9 +885,8 @@ void BewavedDolphin::on_actionSaveAs_triggered()
         return;
     }
 
-    if ((!fileName.endsWith(".dolphin")) && (!fileName.endsWith(".csv"))) {
+    if (!fileName.endsWith(".dolphin") && !fileName.endsWith(".csv")) {
         if (fileDialog.selectedNameFilter().contains("dolphin")) {
-            // if (selected_filter->contains("dolphin")) {
             fileName.append(".dolphin");
         } else {
             fileName.append(".csv");
@@ -1078,13 +1086,13 @@ void BewavedDolphin::load(QDataStream &stream)
     run();
 }
 
-void BewavedDolphin::load()
+void BewavedDolphin::loadFromTerminal()
 {
     QTextStream cin(stdin);
     QString str = cin.readLine();
-    auto wordList(str.split(','));
+    const auto wordList(str.split(','));
     int rows = wordList.at(0).toInt();
-    int cols = wordList.at(1).toInt();
+    const int cols = wordList.at(1).toInt();
 
     if (rows > m_inputPorts) {
         rows = m_inputPorts;
@@ -1100,7 +1108,7 @@ void BewavedDolphin::load()
         str = cin.readLine();
         auto wordList(str.split(','));
         for (int col = 0; col < cols; ++col) {
-            int value = wordList[col].toInt();
+            const int value = wordList2[col].toInt();
             createElement(row, col, value, true);
         }
     }

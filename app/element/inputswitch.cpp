@@ -70,7 +70,7 @@ void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)
         return;
     }
 
-    if ((!m_locked) && (event->button() == Qt::LeftButton)) {
+    if (!m_locked && (event->button() == Qt::LeftButton)) {
         setOn(!m_isOn);
         event->accept();
     }

@@ -350,6 +350,9 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
     auto elementType = firstElement->elementType();
 
     for (auto *elm : qAsConst(m_elements)) {
+        const auto group = elm->elementGroup();
+        const auto firstGroup = firstElement->elementGroup();
+
         m_hasLabel &= elm->hasLabel();
         m_canChangeSkin &= elm->canChangeSkin();
         m_hasColors &= elm->hasColors();
@@ -370,7 +373,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
         maxCurrentOutputSize = std::min(maxCurrentOutputSize, elm->outputSize());
 
         if (auto *elmInput = dynamic_cast<GraphicElementInput *>(elm);
-                elmInput && (elm->elementGroup() == ElementGroup::Input) && (firstElement->elementGroup() == ElementGroup::Input)) {
+                elmInput && (group == ElementGroup::Input) && (firstElement->elementGroup() == ElementGroup::Input)) {
             m_hasSameOutputValue &= (elmInput->outputValue() == firstInput->outputValue());
             sameCheckState &= (elmInput->isLocked() == firstInput->isLocked());
         }
@@ -381,10 +384,10 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
         m_canMorph &= (elm->inputSize() == firstElement->inputSize());
         m_canMorph &= (elm->outputSize() == firstElement->outputSize());
 
-        bool sameElementGroup = (elm->elementGroup() == firstElement->elementGroup());
-        sameElementGroup |= (elm->elementGroup() == ElementGroup::Input && firstElement->elementGroup() == ElementGroup::StaticInput);
-        sameElementGroup |= (elm->elementGroup() == ElementGroup::StaticInput && firstElement->elementGroup() == ElementGroup::Input);
-        m_hasOnlyInputs &= (elm->elementGroup() == ElementGroup::Input);
+        bool sameElementGroup = (group == firstGroup);
+        sameElementGroup |= (group == ElementGroup::Input && firstGroup == ElementGroup::StaticInput);
+        sameElementGroup |= (group == ElementGroup::StaticInput && firstGroup == ElementGroup::Input);
+        m_hasOnlyInputs &= (group == ElementGroup::Input);
         m_canMorph &= sameElementGroup;
     }
 

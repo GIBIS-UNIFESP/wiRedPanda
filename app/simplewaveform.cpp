@@ -328,7 +328,7 @@ void SimpleWaveform::showWaveform()
     axixY->setShadesPen(QPen(QColor(0, 0, 0, 0)));
     axixY->setShadesVisible(true);
     axixY->setGridLineVisible(false);
-    axixY->setTickCount((inSeries.size() + outSeries.size() + gap / 2 + 1));
+    axixY->setTickCount(inSeries.size() + outSeries.size() + gap / 2 + 1);
     axixY->setRange(0, inSeries.size() * 2 + outSeries.size() * 2 + gap);
     axixY->setGridLineColor(Qt::transparent);
     axixY->setLabelsVisible(false);

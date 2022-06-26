@@ -254,7 +254,7 @@ void ElementMapping::applyConnection(GraphicElement *elm, QNEPort *portIn)
         }
     }
 
-    if ((connections == 0) && (!connectionRequired)) {
+    if ((connections == 0) && !connectionRequired) {
         LogicElement *pred = (portIn->defaultValue() == Status::Active) ? &m_globalVCC : &m_globalGND;
         currentLogElm->connectPredecessor(inputIndex, pred, 0);
     }
