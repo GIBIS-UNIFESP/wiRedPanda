@@ -111,6 +111,7 @@ private:
     void on_actionZoomOut_triggered();
     void on_actionZoomRange_triggered();
     void paste(QItemSelection &ranges, QDataStream &stream);
+    void prepare(const QString &fileName = {});
     void resizeScene();
     void restoreInputs();
     void run();

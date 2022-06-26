@@ -315,6 +315,7 @@ void BewavedDolphin::restoreInputs()
 
 void BewavedDolphin::run()
 {
+    qCDebug(zero) << tr("Creating class to pause main window simulator while creating waveform.");
     SimulationBlocker simulationBlocker(m_simController);
 
     for (int column = 0; column < m_model->columnCount(); ++column) {
@@ -422,13 +423,10 @@ QVector<Status> BewavedDolphin::loadSignals(QStringList &inputLabels, QStringLis
     return oldValues;
 }
 
-void BewavedDolphin::createWaveform(const QString &fileName)
+void BewavedDolphin::prepare(const QString &fileName)
 {
-    qCDebug(zero) << tr("Updating window name with current.") << fileName;
-    qCDebug(zero) << tr("Creating class to pause main window simulator while creating waveform.");
-    // TODO: scene is paused twice, once here and again in run()
+    qCDebug(zero) << tr("Updating window name with current:") << fileName;
     m_simController = m_externalScene->simulationController();
-    SimulationBlocker simulationBlocker(m_simController);
     qCDebug(zero) << tr("Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.");
     loadElements();
     QStringList inputLabels;
@@ -439,10 +437,15 @@ void BewavedDolphin::createWaveform(const QString &fileName)
     m_oldInputValues = loadSignals(inputLabels, outputLabels);
     qCDebug(zero) << tr("Loading initial data into the table.");
     loadNewTable(inputLabels, outputLabels);
+}
+
+void BewavedDolphin::createWaveform(const QString &fileName)
+{
+    prepare(fileName);
 
     if (fileName.isEmpty()) {
         setWindowTitle(tr("beWavedDolphin Simulator"));
-        m_currentFile = QFileInfo(fileName); // why make a fileInfo using a empty string?
+        run();
     } else {
         QFileInfo fileInfo(m_mainWindow->currentDir(), QFileInfo(fileName).fileName());
         load(fileInfo.absoluteFilePath());
@@ -454,25 +457,8 @@ void BewavedDolphin::createWaveform(const QString &fileName)
 
 void BewavedDolphin::createWaveform()
 {
-    qCDebug(zero) << tr("Updating window name with current fileName.");
-    qCDebug(zero) << tr("Creating class to pause main window simulator while creating waveform.");
-    // TODO: scene is paused twice, once here and again in run()
-    m_simController = m_externalScene->simulationController();
-    SimulationBlocker simulationBlocker(m_simController);
-    qCDebug(zero) << tr("Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.");
-    loadElements();
-    QStringList inputLabels;
-    QStringList outputLabels;
-    qCDebug(zero) << tr("Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation. Not saving memory states though...");
-    qCDebug(zero) << tr("Also getting the name of the inputs. If no label is given, the element type is used as a name. Bug here? What if there are 2 inputs without name or two identical labels?");
-    m_oldInputValues = loadSignals(inputLabels, outputLabels);
-    qCDebug(zero) << tr("Loading initial data into the table.");
-    loadNewTable(inputLabels, outputLabels);
-    load();
-    setWindowTitle(tr("beWavedDolphin Simulator"));
-    m_currentFile = {};
-    qCDebug(zero) << tr("Resuming digital circuit main window after waveform simulation is finished.");
-    m_edited = false;
+    prepare();
+    loadFromTerminal();
 }
 
 void BewavedDolphin::show()
@@ -867,13 +853,6 @@ void BewavedDolphin::on_actionSaveAs_triggered()
     fileDialog.setDirectory(path);
     fileDialog.setFileMode(QFileDialog::AnyFile);
 
-    connect(&fileDialog, &QFileDialog::directoryEntered, this, [&fileDialog, path](const QString &newDir) {
-        qCDebug(zero) << tr("Changing dir to") << newDir << tr(", home:") << path;
-        if (newDir != path) {
-            fileDialog.setDirectory(path);
-        }
-    });
-
     if (!fileDialog.exec()) {
         return;
     }
@@ -1091,6 +1070,11 @@ void BewavedDolphin::loadFromTerminal()
     QTextStream cin(stdin);
     QString str = cin.readLine();
     const auto wordList(str.split(','));
+
+    if (wordList.size() < 2) {
+        throw Pandaception("");
+    }
+
     int rows = wordList.at(0).toInt();
     const int cols = wordList.at(1).toInt();
 
@@ -1099,14 +1083,19 @@ void BewavedDolphin::loadFromTerminal()
     }
 
     if ((cols < 2) || (cols > 2048)) {
-        throw Pandaception(tr("Invalid number of columns."));
+        throw Pandaception("");
     }
 
     setLength(cols, false);
 
     for (int row = 0; row < rows; ++row) {
         str = cin.readLine();
-        auto wordList(str.split(','));
+        const auto wordList2(str.split(','));
+
+        if (wordList2.size() < cols) {
+            throw Pandaception("");
+        }
+
         for (int col = 0; col < cols; ++col) {
             const int value = wordList2[col].toInt();
             createElement(row, col, value, true);
