@@ -80,11 +80,11 @@ private:
     void createZeroElement(const int row, const int col, const bool isInput = true, const bool changePrevious = true);
     void cut(const QItemSelection &ranges, QDataStream &stream);
     void drawPixMaps();
-    void load();
     void load(QDataStream &stream);
     void load(QFile &file);
     void load(const QString &fileName);
     void loadElements();
+    void loadFromTerminal();
     void loadNewTable(const QStringList &inputLabels, const QStringList &outputLabels);
     void on_actionAboutQt_triggered();
     void on_actionAbout_triggered();
@@ -136,8 +136,8 @@ private:
     QPixmap m_risingGreen;
     QStandardItemModel *m_model = nullptr;
     QTableView *m_signalTableView = nullptr;
-    QVector<GraphicElement *> m_inputs;
     QVector<GraphicElement *> m_outputs;
+    QVector<GraphicElementInput *> m_inputs;
     QVector<Status> m_oldInputValues;
     Scene *m_externalScene = nullptr;
     SimulationController *m_simController = nullptr;

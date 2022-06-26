@@ -43,7 +43,7 @@ void InputButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
         return;
     }
 
-    if ((!m_locked) && (event->button() == Qt::LeftButton)) {
+    if (!m_locked && (event->button() == Qt::LeftButton)) {
         setOn(true);
         event->accept();
     }
@@ -53,7 +53,7 @@ void InputButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    if ((!m_locked) && (event->button() == Qt::LeftButton)) {
+    if (!m_locked && (event->button() == Qt::LeftButton)) {
         setOn(false);
         event->accept();
     }
