@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="100mm"
+   width="8mm"
    height="30mm"
-   viewBox="0 0 100 30"
+   viewBox="0 0 8 30"
    version="1.1"
    id="svg7697"
    xml:space="preserve"
@@ -25,12 +25,12 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="2"
-     inkscape:cx="178.75"
-     inkscape:cy="59"
-     inkscape:window-width="1350"
-     inkscape:window-height="995"
-     inkscape:window-x="1936"
-     inkscape:window-y="1016"
+     inkscape:cx="94.5"
+     inkscape:cy="56.75"
+     inkscape:window-width="954"
+     inkscape:window-height="786"
+     inkscape:window-x="2873"
+     inkscape:window-y="401"
      inkscape:window-maximized="0"
      inkscape:current-layer="layer1" /><defs
      id="defs7694" /><g
@@ -38,15 +38,15 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-95.29142,-73.169861)"><rect
-       style="display:inline;fill:#008000;fill-opacity:1;stroke-width:0;paint-order:markers stroke fill;opacity:0.5"
+       style="display:inline;opacity:0.5;fill:#008000;fill-opacity:1;stroke-width:0;paint-order:markers stroke fill"
        id="rect7713"
-       width="100"
+       width="8"
        height="6.0156212"
        x="95.29142"
        y="97.169861" /><rect
        style="fill:#008000;fill-opacity:1;stroke-width:0;paint-order:markers stroke fill"
        id="rect11292"
-       width="100"
+       width="8"
        height="4"
        x="95.29142"
        y="93.169861" /></g></svg>

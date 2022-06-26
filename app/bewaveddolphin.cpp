@@ -364,12 +364,18 @@ void BewavedDolphin::loadNewTable(const QStringList &inputLabels, const QStringL
         horizontalHeaderLabels.append(QString::number(index));
     }
 
-    m_model->setVerticalHeaderLabels(inputLabels + outputLabels);
     m_model->setHorizontalHeaderLabels(horizontalHeaderLabels);
+    m_model->setVerticalHeaderLabels(inputLabels + outputLabels);
+
     m_signalTableView->setAlternatingRowColors(true);
     m_signalTableView->setShowGrid(false);
-    m_signalTableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Fixed);
+
     m_signalTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Fixed);
+    m_signalTableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Fixed);
+
+    m_signalTableView->horizontalHeader()->setDefaultSectionSize(55);
+    m_signalTableView->verticalHeader()->setDefaultSectionSize(30);
+
     qCDebug(zero) << tr("Inputs:") << inputLabels.size() << tr(", outputs:") << outputLabels.size();
     m_edited = false;
     on_actionClear_triggered();
