@@ -57,12 +57,11 @@ void ThemeAttributes::setTheme(const Theme theme)
         m_qneConnectionSelected = m_selectionPen;
         m_qneConnectionTrue = QColor(Qt::green);
 
-        QPalette newPalette = m_defaultPalette;
-        newPalette.setColor(QPalette::AlternateBase, QColor("#e9e7e3"));
-
 #ifndef Q_OS_MAC
-        qApp->setPalette(newPalette);
-        qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
+        QPalette lightPalette = m_defaultPalette;
+        lightPalette.setColor(QPalette::AlternateBase, QColor("#e9e7e3"));
+
+        qApp->setPalette(lightPalette);
 #endif
 
         break;
@@ -104,11 +103,15 @@ void ThemeAttributes::setTheme(const Theme theme)
         darkPalette.setColor(QPalette::Disabled, QPalette::WindowText, QColor(120, 120, 120));
 
         qApp->setPalette(darkPalette);
-        qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
 #endif
+
         break;
     }
     }
+
+#ifndef Q_OS_MAC
+    qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
+#endif
 
     m_qnePortFalseBrush = m_qneConnectionFalse;
     m_qnePortInvalidBrush = m_qneConnectionInvalid;
