@@ -307,9 +307,9 @@ void RotateCommand::redo()
     double cy = 0;
     int sz = 0;
 
-    for (auto *item : elements) {
-        cx += item->pos().x();
-        cy += item->pos().y();
+    for (auto *elm : elements) {
+        cx += elm->pos().x();
+        cy += elm->pos().y();
         sz++;
     }
 
@@ -318,16 +318,14 @@ void RotateCommand::redo()
         cy /= sz;
     }
 
-    for (auto *elm : elements) {
-        QTransform transform;
-        transform.translate(cx, cy);
-        transform.rotate(m_angle);
-        transform.translate(-cx, -cy);
-        elm->setPos(transform.map(elm->pos()));
+    QTransform transform;
+    transform.translate(cx, cy);
+    transform.rotate(m_angle);
+    transform.translate(-cx, -cy);
 
+    for (auto *elm : elements) {
+        elm->setPos(transform.map(elm->pos()));
         elm->setRotation(elm->rotation() + m_angle);
-        elm->update();
-        elm->setSelected(true);
     }
 
     m_scene->setAutosaveRequired();
@@ -739,7 +737,6 @@ void ChangeInputSizeCommand::redo()
         }
 
         elm->setInputSize(m_newInputSize);
-        elm->setSelected(true);
     }
 
     m_order.clear();

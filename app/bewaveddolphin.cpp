@@ -324,10 +324,8 @@ void BewavedDolphin::run()
 
         for (auto *input : qAsConst(m_inputs)) {
             for (int port = 0; port < input->outputSize(); ++port) {
-                if (auto *input2 = dynamic_cast<GraphicElementInput *>(input)) {
-                    int value = m_model->item(row, column)->text().toInt();
-                    input2->setOn(value, port);
-                }
+                int value = m_model->item(row, column)->text().toInt();
+                input->setOn(value, port);
                 ++row;
             }
         }

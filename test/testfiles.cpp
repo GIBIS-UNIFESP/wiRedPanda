@@ -19,7 +19,7 @@ void TestFiles::testFiles()
     QVERIFY(!files.empty());
 
     for (const auto &fileInfo : files) {
-        auto *workspace = new WorkSpace();
+        auto workspace = std::make_unique<WorkSpace>();
         QVERIFY(fileInfo.exists());
         QFile pandaFile(fileInfo.absoluteFilePath());
         QVERIFY(pandaFile.exists());

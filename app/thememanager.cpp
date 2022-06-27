@@ -59,7 +59,7 @@ void ThemeAttributes::setTheme(const Theme theme)
 
 #ifndef Q_OS_MAC
         QPalette lightPalette = m_defaultPalette;
-        lightPalette.setColor(QPalette::AlternateBase, QColor("#e9e7e3"));
+        lightPalette.setColor(QPalette::AlternateBase, QColor(233, 231, 227));
 
         qApp->setPalette(lightPalette);
 #endif
