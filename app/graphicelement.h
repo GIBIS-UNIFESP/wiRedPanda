@@ -110,6 +110,7 @@ public:
     void updateLabel();
 
 protected:
+    QPixmap pixmap() const;
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     void setCanChangeSkin(const bool canChangeSkin);
     void setHasAudio(const bool hasAudio);
@@ -136,6 +137,8 @@ protected:
     //! output port vector
     QVector<QNEOutputPort *> m_outputPorts;
 
+    QColor m_selectionBrush;
+    QColor m_selectionPen;
     QGraphicsTextItem *m_label = new QGraphicsTextItem(this);
     bool m_usingDefaultSkin = true;
 
@@ -154,7 +157,6 @@ private:
     //! functions to load GraphicElement atributes through a binary data stream
     void loadPos(QDataStream &stream);
 
-    QPixmap pixmap() const;
     void loadInputPort(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const int port);
     void loadInputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
     void loadLabel(QDataStream &stream, const double version);
@@ -174,8 +176,6 @@ private:
     ElementGroup m_elementGroup = ElementGroup::Unknown;
     ElementType m_elementType = ElementType::Unknown;
     LogicElement *m_logic = nullptr;
-    QColor m_selectionBrush;
-    QColor m_selectionPen;
     QKeySequence m_trigger;
     QString m_currentPixmapPath;
     QString m_labelText;
