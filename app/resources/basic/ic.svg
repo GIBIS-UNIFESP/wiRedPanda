@@ -18,6 +18,18 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <style
+     id="style2305">
+.measure-arrow
+{
+}
+.measure-label
+{
+
+}
+.measure-line
+{
+}</style>
   <defs
      id="defs3854">
     <inkscape:perspective
@@ -44,18 +56,18 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="6.625"
-     inkscape:cx="59.245283"
-     inkscape:cy="44.90566"
-     inkscape:current-layer="layer1"
+     inkscape:zoom="13.25"
+     inkscape:cx="28.867925"
+     inkscape:cy="32.490566"
+     inkscape:current-layer="svg3852"
      showgrid="false"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1350"
+     inkscape:window-width="2024"
      inkscape:window-height="1230"
-     inkscape:window-x="1338"
+     inkscape:window-x="664"
      inkscape:window-y="851"
      inkscape:window-maximized="0"
      inkscape:showpageshadow="2"
@@ -91,7 +103,8 @@
        style="opacity:0.98;fill:#7e7e7e;fill-opacity:1;stroke:none;stroke-width:2.15649;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 6.7039353,3.5000013 c -0.667318,0 -1.203932,0.661954 -1.203932,1.483568 V 55.40795 c 0,0.82161 0.536614,1.48115 1.203932,1.48115 H 57.296069 c 0.66732,0 1.20393,-0.65954 1.20393,-1.48115 V 4.9835693 c 0,-0.821614 -0.53661,-1.483568 -1.20393,-1.483568 H 43.521738 v 2.478261 H 20.478264 v -2.478261 z"
        id="path4228"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       class="UnoptimicedTransforms" />
     <path
        style="opacity:1;fill:#4e4e4e;fill-opacity:1;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 32.000002,17.476214 A 11.521739,12.391304 0 0 1 20.478263,5.0849103 H 43.521739 A 11.521739,12.391304 0 0 1 32.000002,17.476214 Z"
