@@ -54,9 +54,11 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const int m
     for (int i = 0; i < minInputSize; ++i) {
         addInputPort();
     }
+
     for (int i = 0; i < minOutputSize; ++i) {
         addOutputPort();
     }
+
     GraphicElement::updatePorts();
     GraphicElement::updateTheme();
 }
@@ -224,12 +226,15 @@ void GraphicElement::loadPortsSize(QDataStream &stream, const double version)
         stream >> maxInputSize;
         stream >> minOutputSize;
         stream >> maxOutputSize;
+
         // FIXME: Was it a bad decision to store Min and Max input/output sizes?
         /* Version 2.2 ?? fix ?? */
+
         if (!((m_minInputSize == m_maxInputSize) && (m_minInputSize > maxInputSize))) {
             m_minInputSize = minInputSize;
             m_maxInputSize = maxInputSize;
         }
+
         if (!((m_minOutputSize == m_maxOutputSize) && (m_minOutputSize > maxOutputSize))) {
             m_minOutputSize = minOutputSize;
             m_maxOutputSize = maxOutputSize;
@@ -251,12 +256,15 @@ void GraphicElement::loadInputPorts(QDataStream &stream, QMap<quint64, QNEPort *
     qCDebug(four) << tr("Loading input ports.");
     quint64 inputSize;
     stream >> inputSize;
+
     if (inputSize > maximumValidInputSize) {
         throw Pandaception(tr("Corrupted DataStream!"));
     }
+
     for (size_t port = 0; port < inputSize; ++port) {
         loadInputPort(stream, portMap, static_cast<int>(port));
     }
+
     removeSurplusInputs(inputSize, portMap);
 }
 
@@ -268,15 +276,18 @@ void GraphicElement::loadInputPort(QDataStream &stream, QMap<quint64, QNEPort *>
     stream >> ptr;
     stream >> name;
     stream >> flags;
+
     if (port < m_inputPorts.size()) {
         if (elementType() == ElementType::IC) {
             m_inputPorts[port]->setName(name);
         }
+
         m_inputPorts[port]->setPortFlags(flags);
         m_inputPorts[port]->setPtr(ptr);
     } else {
         addPort(name, false, flags, static_cast<int>(ptr));
     }
+
     portMap[ptr] = m_inputPorts[port];
 }
 
@@ -326,12 +337,15 @@ void GraphicElement::loadOutputPorts(QDataStream &stream, QMap<quint64, QNEPort 
     qCDebug(four) << tr("Loading output ports.");
     quint64 outputSize;
     stream >> outputSize;
+
     if (outputSize > maximumValidInputSize) {
         throw Pandaception(tr("Corrupted DataStream!"));
     }
+
     for (size_t port = 0; port < outputSize; ++port) {
         loadOutputPort(stream, portMap, static_cast<int>(port));
     }
+
     removeSurplusOutputs(outputSize, portMap);
 }
 
@@ -343,15 +357,18 @@ void GraphicElement::loadOutputPort(QDataStream &stream, QMap<quint64, QNEPort *
     stream >> ptr;
     stream >> name;
     stream >> flags;
+
     if (port < m_outputPorts.size()) {
         if (elementType() == ElementType::IC) {
             m_outputPorts[port]->setName(name);
         }
+
         m_outputPorts[port]->setPortFlags(flags);
         m_outputPorts[port]->setPtr(ptr);
     } else {
         addPort(name, true, flags, static_cast<int>(ptr));
     }
+
     portMap[ptr] = m_outputPorts[port];
 }
 
@@ -361,12 +378,15 @@ void GraphicElement::loadPixmapSkinNames(QDataStream &stream, const double versi
         qCDebug(four) << tr("Loading pixmap skin names.");
         quint64 outputSize;
         stream >> outputSize;
+
         if (outputSize > maximumValidInputSize) {
             throw Pandaception(tr("Corrupted DataStream!"));
         }
+
         for (size_t skin = 0; skin < outputSize; ++skin) {
             loadPixmapSkinName(stream, static_cast<int>(skin));
         }
+
         refresh();
     }
 }
@@ -385,9 +405,11 @@ void GraphicElement::loadPixmapSkinName(QDataStream &stream, const int skin)
         QString fileName(QFileInfo(name).fileName());
         QFileInfo fileInfo(dir, fileName);
         qCDebug(zero) << tr("Skin fileName:") << fileInfo.absoluteFilePath();
+
         if (!fileInfo.isFile()) {
             qCDebug(zero) << tr("Could not load some of the skins.");
         }
+
         m_defaultSkins[skin] = fileInfo.absoluteFilePath();
     }
 }
@@ -404,7 +426,7 @@ void GraphicElement::setInputs(const QVector<QNEInputPort *> &inputs)
 
 QRectF GraphicElement::boundingRect() const
 {
-    return m_pixmap->rect();
+    return pixmap().rect();
 }
 
 void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -595,12 +617,14 @@ QString GraphicElement::genericProperties()
 void GraphicElement::updateLabel()
 {
     QString label = m_labelText;
+
     if (!hasTrigger() || trigger().toString().isEmpty()) {
         m_label->setPlainText(label);
     } else {
         if (!label.isEmpty()) {
             label += " ";
         }
+
         m_label->setPlainText(label + QString("(%1)").arg(trigger().toString()));
     }
 }
@@ -623,12 +647,15 @@ void GraphicElement::updateTheme()
     m_label->setDefaultTextColor(theme.m_graphicElementLabelColor);
     m_selectionBrush = theme.m_selectionBrush;
     m_selectionPen = theme.m_selectionPen;
+
     for (auto *input : qAsConst(m_inputPorts)) {
         input->updateTheme();
     }
+
     for (auto *output : qAsConst(m_outputPorts)) {
         output->updateTheme();
     }
+
     update();
 }
 
@@ -649,6 +676,7 @@ bool GraphicElement::isValid()
         for (auto *output : qAsConst(m_outputPorts)) {
             for (auto *conn : output->connections()) {
                 conn->setStatus(Status::Invalid);
+
                 if (auto *port = conn->otherPort(output)) {
                     port->setValue(Status::Invalid);
                 }
@@ -757,12 +785,12 @@ void GraphicElement::setInputSize(const int size)
             while (inputSize() < size) {
                 addInputPort();
             }
-            updatePorts();
         } else {
             qDeleteAll(m_inputPorts.begin() + size, m_inputPorts.end());
             m_inputPorts.resize(size);
-            updatePorts();
         }
+
+        updatePorts();
     }
 }
 
@@ -778,12 +806,12 @@ void GraphicElement::setOutputSize(const int size)
             for (int port = outputSize(); port < size; ++port) {
                 addOutputPort();
             }
-            updatePorts();
         } else {
             qDeleteAll(m_outputPorts.begin() + size, m_outputPorts.end());
             m_outputPorts.resize(size);
-            updatePorts();
         }
+
+        updatePorts();
     }
 }
 

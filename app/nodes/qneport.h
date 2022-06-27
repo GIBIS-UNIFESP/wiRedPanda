@@ -91,7 +91,7 @@ protected:
     bool m_required = true;
     int m_index = 0;
     int m_margin = 2;
-    int m_portFlags = 0;
+    int m_portFlags = 0; // change this to std::bitset?
     int m_radius = 5;
     quint64 m_ptr = 0;
 };

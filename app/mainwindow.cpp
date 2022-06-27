@@ -991,8 +991,8 @@ void MainWindow::retranslateUi()
     }
 
     for (int index = 0; index < m_ui->tab->count(); ++index) {
-        auto workspace = dynamic_cast<WorkSpace *>(m_ui->tab->widget(index));
-        auto undoStack = workspace->scene()->undoStack();
+        auto *workspace = dynamic_cast<WorkSpace *>(m_ui->tab->widget(index));
+        auto *undoStack = workspace->scene()->undoStack();
         auto fileInfo = workspace->fileInfo();
 
         QString text = fileInfo.exists() ? fileInfo.fileName() : tr("New Project");

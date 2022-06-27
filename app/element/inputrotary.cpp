@@ -50,11 +50,11 @@ InputRotary::InputRotary(QGraphicsItem *parent)
 
 void InputRotary::refresh()
 {
-    if (m_currentPort >= outputSize()) {
+    if (m_currentPort >= InputRotary::outputSize()) {
         m_currentPort = 0;
     }
 
-    switch (outputSize()) {
+    switch (InputRotary::outputSize()) {
     case 2:  setPixmap(0); break;
     case 4:  setPixmap(1); break;
     case 8:  setPixmap(2); break;
@@ -125,7 +125,7 @@ void InputRotary::updatePorts()
     }
     }
 
-    refresh();
+    InputRotary::refresh();
 }
 
 void InputRotary::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
