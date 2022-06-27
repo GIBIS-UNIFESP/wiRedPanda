@@ -186,6 +186,7 @@ void GraphicElement::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap
     loadPixmapSkinNames(stream, version);
     qCDebug(four) << tr("Updating port positions.");
     updatePorts();
+    setRotation(m_angle);
     qCDebug(four) << tr("Finished loading element.");
 }
 
@@ -200,7 +201,7 @@ void GraphicElement::loadRotation(QDataStream &stream)
 {
     qreal angle;
     stream >> angle;
-    setRotation(angle);
+    m_angle = angle;
 }
 
 void GraphicElement::loadLabel(QDataStream &stream, const double version)
