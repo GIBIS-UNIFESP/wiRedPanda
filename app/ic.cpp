@@ -168,8 +168,9 @@ void IC::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidge
 QRectF IC::portsBoundingRect() const
 {
     QRectF rectChildren(0, 0, 64, 64);
+    const auto children = childItems();
 
-    for (auto *child : childItems()) {
+    for (auto *child : children) {
         if (auto *port = qgraphicsitem_cast<QNEPort *>(child)) {
             rectChildren = rectChildren.united(mapRectFromItem(port, port->boundingRect()));
         }

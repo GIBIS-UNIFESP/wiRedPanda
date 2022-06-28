@@ -707,7 +707,7 @@ void Scene::flipHorizontally()
         }
     }
 
-    if (elms.size() >= 1) {
+    if (!elms.isEmpty()) {
         receiveCommand(new FlipCommand(elms, 0, this));
     }
 }
@@ -724,7 +724,7 @@ void Scene::flipVertically()
         }
     }
 
-    if (elms.size() >= 1) {
+    if (!elms.isEmpty()) {
         receiveCommand(new FlipCommand(elms, 1, this));
     }
 }
