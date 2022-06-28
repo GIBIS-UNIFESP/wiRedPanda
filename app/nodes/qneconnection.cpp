@@ -265,3 +265,18 @@ QDataStream &operator<<(QDataStream &stream, const QNEConnection *item)
     conn->save(stream);
     return stream;
 }
+
+QVariant QNEConnection::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    if (change == ItemSelectedChange) {
+        if (value.toBool()) {
+            start()->hoverEnter();
+            end()->hoverEnter();
+        } else {
+            start()->hoverLeave();
+            end()->hoverLeave();
+        }
+    }
+
+    return QGraphicsPathItem::itemChange(change, value);
+}

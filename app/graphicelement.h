@@ -112,6 +112,7 @@ public:
 protected:
     QPixmap pixmap() const;
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     void setCanChangeSkin(const bool canChangeSkin);
     void setHasAudio(const bool hasAudio);
     void setHasColors(const bool hasColors);
@@ -187,6 +188,7 @@ private:
     bool m_hasLabel = false;
     bool m_hasTrigger = false;
     bool m_rotatable = true;
+    bool m_selected = false;
     qreal m_angle = 0;
     quint64 m_maxInputSize = 0;
     quint64 m_maxOutputSize = 0;

@@ -65,6 +65,9 @@ public:
     void updatePosFromPorts();
     void updateTheme();
 
+protected:
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+
 private:
     QColor m_activeColor;
     QColor m_inactiveColor;

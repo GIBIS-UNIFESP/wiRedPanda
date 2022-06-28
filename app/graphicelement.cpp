@@ -583,6 +583,9 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
         }
     }
 
+    if (change == ItemSelectedHasChanged) {
+        m_selected = value.toBool();
+    }
 
     return QGraphicsItem::itemChange(change, value);
 }
@@ -872,4 +875,23 @@ QDataStream &operator<<(QDataStream &stream, const GraphicElement *item)
     stream << elm->elementType();
     elm->save(stream);
     return stream;
+}
+
+
+void GraphicElement::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    // the base class clears selection, reselect after
+    QGraphicsItem::mouseReleaseEvent(event);
+
+    for (auto *port : m_inputPorts) {
+        for (auto *connection : port->connections()) {
+            connection->setSelected(m_selected);
+        }
+    }
+
+    for (auto *port : m_outputPorts) {
+        for (auto *connection : port->connections()) {
+            connection->setSelected(m_selected);
+        }
+    }
 }
