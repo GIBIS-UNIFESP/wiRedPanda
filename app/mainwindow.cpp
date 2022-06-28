@@ -1109,10 +1109,6 @@ void MainWindow::on_actionFastMode_triggered(const bool checked)
 
 void MainWindow::on_actionWaveform_triggered()
 {
-    if (!m_currentFile.exists()) {
-        throw Pandaception(tr("Save file before opening waveform!"));
-    }
-
     auto *bewavedDolphin = new BewavedDolphin(m_currentTab->scene(), true, this);
     bewavedDolphin->createWaveform(m_currentTab->dolphinFileName());
     qCDebug(zero) << tr("BD fileName:") << m_currentTab->dolphinFileName();
