@@ -17,6 +17,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QStyleOptionGraphicsItem>
+#include <cmath>
 #include <iostream>
 #include <stdexcept>
 
@@ -496,13 +497,13 @@ void GraphicElement::setRotation(const qreal angle)
 
 void GraphicElement::rotatePorts(const int angle)
 {
-    for (auto *port : m_inputPorts) {
+    for (auto *port : qAsConst(m_inputPorts)) {
         port->setTransformOriginPoint(mapToItem(port, boundingRect().center()));
         port->setRotation(angle);
         port->updateConnections();
     }
 
-    for (auto *port : m_outputPorts) {
+    for (auto *port : qAsConst(m_outputPorts)) {
         port->setTransformOriginPoint(mapToItem(port, boundingRect().center()));
         port->setRotation(angle);
         port->updateConnections();
@@ -899,13 +900,13 @@ void GraphicElement::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     // the base class clears selection, reselect after
     QGraphicsItem::mouseReleaseEvent(event);
 
-    for (auto *port : m_inputPorts) {
+    for (auto *port : qAsConst(m_inputPorts)) {
         for (auto *connection : port->connections()) {
             connection->setSelected(m_selected);
         }
     }
 
-    for (auto *port : m_outputPorts) {
+    for (auto *port : qAsConst(m_outputPorts)) {
         for (auto *connection : port->connections()) {
             connection->setSelected(m_selected);
         }
