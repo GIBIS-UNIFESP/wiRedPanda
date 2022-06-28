@@ -121,6 +121,6 @@ private:
     bool m_showWires = true;
     int m_editedConnectionId = 0;
     int m_hoverPortElmId = 0;
-    int m_hoverPortNbr = 0;
+    int m_hoverPortNumber = 0;
     int m_labelNumber = 0;
 };

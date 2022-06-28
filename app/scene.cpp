@@ -121,11 +121,13 @@ QVector<GraphicElement *> Scene::elements(const QRectF &rect)
     QVector<GraphicElement *> elements;
     const auto items_ = items(rect);
     elements.reserve(items_.size());
+
     for (auto *item : items_) {
         if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
             elements.append(elm);
         }
     }
+
     return elements;
 }
 
@@ -134,11 +136,13 @@ QVector<QNEConnection *> Scene::connections()
     QVector<QNEConnection *> conns;
     const auto items_ = items();
     conns.reserve(items_.size());
+
     for (auto *item : items_) {
         if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
             conns.append(conn);
         }
     }
+
     return conns;
 }
 
@@ -146,6 +150,7 @@ QList<GraphicElement *> Scene::selectedElements()
 {
     QList<GraphicElement *> elements;
     const auto items = selectedItems();
+
     for (auto *item : items) {
         if (item->type() == GraphicElement::Type) {
             if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
@@ -153,6 +158,7 @@ QList<GraphicElement *> Scene::selectedElements()
             }
         }
     }
+
     return elements;
 }
 
@@ -160,16 +166,19 @@ QGraphicsItem *Scene::itemAt(const QPointF pos)
 {
     auto items_ = items(pos);
     items_.append(itemsAt(pos));
+
     for (auto *item : qAsConst(items_)) {
         if (item->type() == QNEPort::Type) {
             return item;
         }
     }
+
     for (auto *item : qAsConst(items_)) {
         if (item->type() > QGraphicsItem::UserType) {
             return item;
         }
     }
+
     return nullptr;
 }
 
@@ -437,9 +446,11 @@ void Scene::handleHoverPort()
 {
     auto *port = dynamic_cast<QNEPort *>(itemAt(m_mousePos));
     auto *hoverPort_ = hoverPort();
+
     if (hoverPort_ && (port != hoverPort_)) {
         releaseHoverPort();
     }
+
     if (port && (port->type() == QNEPort::Type)) {
         QNEConnection *editedConn = editedConnection();
         releaseHoverPort();
@@ -452,8 +463,7 @@ void Scene::handleHoverPort()
 
 void Scene::releaseHoverPort()
 {
-    auto *hoverPort_ = hoverPort();
-    if (hoverPort_) {
+    if (auto *hoverPort_ = hoverPort()) {
         hoverPort_->hoverLeave();
         setHoverPort(nullptr);
         QApplication::restoreOverrideCursor();
@@ -462,24 +472,26 @@ void Scene::releaseHoverPort()
 
 void Scene::setHoverPort(QNEPort *port)
 {
-    if (port) {
-        auto *hoverElm = port->graphicElement();
-        port->hoverEnter();
-        if (hoverElm && ElementFactory::contains(hoverElm->id())) {
-            m_hoverPortElmId = hoverElm->id();
-            for (int i = 0; i < (hoverElm->inputSize() + hoverElm->outputSize()); ++i) {
-                if (i < hoverElm->inputSize()) {
-                    if (port == hoverElm->inputPort(i)) {
-                        m_hoverPortNbr = i;
-                    }
-                } else if (port == hoverElm->outputPort(i - hoverElm->inputSize())) {
-                    m_hoverPortNbr = i;
+    if (!port) {
+        m_hoverPortElmId = 0;
+        m_hoverPortNumber = 0;
+        return;
+    }
+
+    auto *hoverElm = port->graphicElement();
+    port->hoverEnter();
+
+    if (hoverElm && ElementFactory::contains(hoverElm->id())) {
+        m_hoverPortElmId = hoverElm->id();
+        for (int i = 0; i < (hoverElm->inputSize() + hoverElm->outputSize()); ++i) {
+            if (i < hoverElm->inputSize()) {
+                if (port == hoverElm->inputPort(i)) {
+                    m_hoverPortNumber = i;
                 }
+            } else if (port == hoverElm->outputPort(i - hoverElm->inputSize())) {
+                m_hoverPortNumber = i;
             }
         }
-    } else {
-        m_hoverPortElmId = 0;
-        m_hoverPortNbr = 0;
     }
 }
 
@@ -488,10 +500,10 @@ QNEPort *Scene::hoverPort()
     QNEPort *hoverPort = nullptr;
 
     if (auto *hoverElm = dynamic_cast<GraphicElement *>(ElementFactory::itemById(m_hoverPortElmId))) {
-        if (m_hoverPortNbr < hoverElm->inputSize()) {
-            hoverPort = hoverElm->inputPort(m_hoverPortNbr);
-        } else if (((m_hoverPortNbr - hoverElm->inputSize()) < hoverElm->outputSize())) {
-            hoverPort = hoverElm->outputPort(m_hoverPortNbr - hoverElm->inputSize());
+        if (m_hoverPortNumber < hoverElm->inputSize()) {
+            hoverPort = hoverElm->inputPort(m_hoverPortNumber);
+        } else if (((m_hoverPortNumber - hoverElm->inputSize()) < hoverElm->outputSize())) {
+            hoverPort = hoverElm->outputPort(m_hoverPortNumber - hoverElm->inputSize());
         }
     }
 
@@ -614,8 +626,6 @@ void Scene::paste(QDataStream &stream)
     for (auto *item : itemList) {
         if (item->type() == GraphicElement::Type) {
             item->setPos((item->pos() + offset));
-            item->update();
-            item->setSelected(true);
         }
     }
     resizeScene();
@@ -697,7 +707,7 @@ void Scene::flipHorizontally()
         }
     }
 
-    if ((elms.size() > 1) || ((elms.size() == 1))) {
+    if (elms.size() >= 1) {
         receiveCommand(new FlipCommand(elms, 0, this));
     }
 }
@@ -714,7 +724,7 @@ void Scene::flipVertically()
         }
     }
 
-    if ((elms.size() > 1) || ((elms.size() == 1))) {
+    if (elms.size() >= 1) {
         receiveCommand(new FlipCommand(elms, 1, this));
     }
 }
@@ -778,17 +788,18 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         QPointF ctr;
         stream >> offset >> ctr;
         offset = event->scenePos() - offset;
-        double version = GlobalProperties::version;
+        const double version = GlobalProperties::version;
         const auto itemList = SerializationFunctions::deserialize(stream, version);
         receiveCommand(new AddItemsCommand(itemList, this));
         clearSelection();
+
         for (auto *item : itemList) {
             if (item->type() == GraphicElement::Type) {
                 item->setPos((item->pos() + offset));
                 item->setSelected(true);
-                item->update();
             }
         }
+
         resizeScene();
     }
 
@@ -863,12 +874,12 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     if (item) {
         if (event->button() == Qt::LeftButton) {
             m_draggingElement = true;
-            auto list = selectedItems();
-            list.append(itemsAt(m_mousePos));
+            auto selectedList = selectedItems();
+            selectedList.append(itemsAt(m_mousePos));
             m_movedElements.clear();
             m_oldPositions.clear();
 
-            for (auto *item : qAsConst(list)) {
+            for (auto *item : qAsConst(selectedList)) {
                 if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
                     m_movedElements.append(elm);
                     m_oldPositions.append(elm->pos());
@@ -957,16 +968,19 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     if (m_draggingElement && (event->button() == Qt::LeftButton)) {
         if (!m_movedElements.empty()) {
             bool valid = false; // TODO: std::any_of?
+
             for (int elm = 0; elm < m_movedElements.size(); ++elm) {
                 if (m_movedElements[elm]->pos() != m_oldPositions[elm]) {
                     valid = true;
                     break;
                 }
             }
+
             if (valid) {
                 receiveCommand(new MoveCommand(m_movedElements, m_oldPositions, this));
             }
         }
+
         m_draggingElement = false;
         m_movedElements.clear();
     }

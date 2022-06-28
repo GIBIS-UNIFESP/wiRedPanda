@@ -583,7 +583,6 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
         }
     }
 
-    update();
 
     return QGraphicsItem::itemChange(change, value);
 }
