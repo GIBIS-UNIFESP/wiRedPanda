@@ -497,11 +497,13 @@ void GraphicElement::setRotation(const qreal angle)
 void GraphicElement::rotatePorts(const int angle)
 {
     for (auto *port : m_inputPorts) {
+        port->setTransformOriginPoint(mapToItem(port, boundingRect().center()));
         port->setRotation(angle);
         port->updateConnections();
     }
 
     for (auto *port : m_outputPorts) {
+        port->setTransformOriginPoint(mapToItem(port, boundingRect().center()));
         port->setRotation(angle);
         port->updateConnections();
     }
@@ -530,10 +532,17 @@ void GraphicElement::updatePorts()
 
         for (auto *port : qAsConst(m_inputPorts)) {
             qCDebug(five) << tr("Setting input at") << 0 << tr(",") << y;
-            port->setRotation(0);
+            if (!isRotatable()) {
+                port->setRotation(0);
+            }
+
             port->setPos(0, y);
-            port->setTransformOriginPoint(mapToItem(port, boundingRect().center()));
-            port->setRotation(m_angle);
+
+            if (!isRotatable()) {
+                port->setTransformOriginPoint(mapToItem(port, boundingRect().center()));
+                port->setRotation(m_angle);
+            }
+
             y += step * 2;
         }
     }
@@ -543,10 +552,17 @@ void GraphicElement::updatePorts()
 
         for (auto *port : qAsConst(m_outputPorts)) {
             qCDebug(five) << tr("Setting output at") << 64 << tr(",") << y;
-            port->setRotation(0);
+            if (!isRotatable()) {
+                port->setRotation(0);
+            }
+
             port->setPos(64, y);
-            port->setTransformOriginPoint(mapToItem(port, boundingRect().center()));
-            port->setRotation(m_angle);
+
+            if (!isRotatable()) {
+                port->setTransformOriginPoint(mapToItem(port, boundingRect().center()));
+                port->setRotation(m_angle);
+            }
+
             y += step * 2;
         }
     }
