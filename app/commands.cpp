@@ -676,8 +676,6 @@ void FlipCommand::redo()
                       : pos.setY(m_minPos.ry() + (m_maxPos.ry() - pos.ry()));
 
         elm->setPos(pos);
-        elm->update();
-        elm->setSelected(true);
 
         if (elm->isRotatable()) {
             elm->setRotation(elm->rotation() + 180);

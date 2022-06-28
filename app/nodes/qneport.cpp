@@ -238,13 +238,11 @@ void QNEPort::setGraphicElement(GraphicElement *graphicElement)
 void QNEPort::hoverLeave()
 {
     setBrush(currentBrush());
-    update();
 }
 
 void QNEPort::hoverEnter()
 {
-    setBrush(QBrush(Qt::yellow));
-    update();
+    setBrush(QBrush(ThemeManager::attributes().m_qnePortHoverPort));
 }
 
 QNEInputPort::QNEInputPort(QGraphicsItem *parent)
