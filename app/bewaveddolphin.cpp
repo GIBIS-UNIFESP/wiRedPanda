@@ -452,6 +452,12 @@ void BewavedDolphin::createWaveform(const QString &fileName)
         run();
     } else {
         QFileInfo fileInfo(m_mainWindow->currentDir(), QFileInfo(fileName).fileName());
+
+        if (!fileInfo.exists()) {
+            m_ui->statusbar->showMessage(tr("File \"%1\" does not exist!").arg(fileName), 4000);
+            return;
+        }
+
         load(fileInfo.absoluteFilePath());
     }
 
