@@ -236,6 +236,7 @@ void MainWindow::save(const QString &fileName)
 
     m_currentTab->save(fileName);
     updateICList();
+    m_ui->statusBar->showMessage(tr("File saved successfully."), 4000);
 }
 
 void MainWindow::show()
