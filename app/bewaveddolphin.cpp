@@ -38,10 +38,8 @@ Qt::ItemFlags SignalModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags flags;
 
-    if (index.row() >= m_inputs) {
-        flags = ~(Qt::ItemIsEditable | Qt::ItemIsSelectable);
-    } else {
-        flags = ~(Qt::ItemIsEditable | Qt::ItemIsSelectable) | Qt::ItemIsSelectable;
+    if (index.row() < m_inputs) {
+        flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     }
 
     return flags;
@@ -98,6 +96,7 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
     connect(m_ui->actionExit,          &QAction::triggered, this, &BewavedDolphin::on_actionExit_triggered);
     connect(m_ui->actionExportToPdf,   &QAction::triggered, this, &BewavedDolphin::on_actionExportToPdf_triggered);
     connect(m_ui->actionExportToPng,   &QAction::triggered, this, &BewavedDolphin::on_actionExportToPng_triggered);
+    connect(m_ui->actionFitScreen,     &QAction::triggered, this, &BewavedDolphin::on_actionFitScreen_triggered);
     connect(m_ui->actionInvert,        &QAction::triggered, this, &BewavedDolphin::on_actionInvert_triggered);
     connect(m_ui->actionLoad,          &QAction::triggered, this, &BewavedDolphin::on_actionLoad_triggered);
     connect(m_ui->actionPaste,         &QAction::triggered, this, &BewavedDolphin::on_actionPaste_triggered);
@@ -112,7 +111,6 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
     connect(m_ui->actionShowValues,    &QAction::triggered, this, &BewavedDolphin::on_actionShowValues_triggered);
     connect(m_ui->actionZoomIn,        &QAction::triggered, this, &BewavedDolphin::on_actionZoomIn_triggered);
     connect(m_ui->actionZoomOut,       &QAction::triggered, this, &BewavedDolphin::on_actionZoomOut_triggered);
-    connect(m_ui->actionZoomRange,     &QAction::triggered, this, &BewavedDolphin::on_actionZoomRange_triggered);
 }
 
 BewavedDolphin::~BewavedDolphin()
@@ -710,7 +708,7 @@ void BewavedDolphin::on_actionResetZoom_triggered()
     zoomChanged();
 }
 
-void BewavedDolphin::on_actionZoomRange_triggered()
+void BewavedDolphin::on_actionFitScreen_triggered()
 {
     m_view.scale(1.0 / m_scale, 1.0 / m_scale);
     double wScale = static_cast<double>(m_view.width()) / (m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0));

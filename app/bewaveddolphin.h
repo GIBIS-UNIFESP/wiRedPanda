@@ -95,6 +95,7 @@ private:
     void on_actionExit_triggered();
     void on_actionExportToPdf_triggered();
     void on_actionExportToPng_triggered();
+    void on_actionFitScreen_triggered();
     void on_actionInvert_triggered();
     void on_actionLoad_triggered();
     void on_actionPaste_triggered();
@@ -109,7 +110,6 @@ private:
     void on_actionShowValues_triggered();
     void on_actionZoomIn_triggered();
     void on_actionZoomOut_triggered();
-    void on_actionZoomRange_triggered();
     void paste(QItemSelection &ranges, QDataStream &stream);
     void prepare(const QString &fileName = {});
     void resizeScene();
