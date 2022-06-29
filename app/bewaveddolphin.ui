@@ -260,7 +260,7 @@
     <string>Set to 0</string>
    </property>
    <property name="shortcut">
-    <string>Alt+0, 0</string>
+    <string>0</string>
    </property>
   </action>
   <action name="actionSetTo1">
@@ -272,7 +272,7 @@
     <string>Set to 1</string>
    </property>
    <property name="shortcut">
-    <string>Alt+1, 1</string>
+    <string>1</string>
    </property>
   </action>
   <action name="actionSetClockWave">
@@ -299,7 +299,7 @@
     <string>Invert</string>
    </property>
    <property name="shortcut">
-    <string>Alt+N</string>
+    <string>Space</string>
    </property>
   </action>
   <action name="actionMerge">
