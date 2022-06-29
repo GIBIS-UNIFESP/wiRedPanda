@@ -858,7 +858,12 @@ void BewavedDolphin::on_actionSaveAs_triggered()
     QString path = m_mainWindow->currentFile().absolutePath();
     QFileDialog fileDialog;
     fileDialog.setObjectName(tr("Save File as..."));
-    fileDialog.setNameFilter(tr("Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)"));
+
+    const QString fileFilter = m_currentFile.fileName().endsWith(".csv") ?
+                tr("CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)")
+              : tr("Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)");
+
+    fileDialog.setNameFilter(fileFilter);
     fileDialog.setAcceptMode(QFileDialog::AcceptSave);
     fileDialog.setDirectory(path);
     fileDialog.setFileMode(QFileDialog::AnyFile);
