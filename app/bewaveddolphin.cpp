@@ -375,6 +375,8 @@ void BewavedDolphin::loadNewTable(const QStringList &inputLabels, const QStringL
     qCDebug(zero) << tr("Inputs:") << inputLabels.size() << tr(", outputs:") << outputLabels.size();
     m_edited = false;
     on_actionClear_triggered();
+
+    connect(m_signalTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &BewavedDolphin::tableView_selectionChanged);
 }
 
 QVector<Status> BewavedDolphin::loadSignals(QStringList &inputLabels, QStringList &outputLabels)
@@ -1275,4 +1277,14 @@ void BewavedDolphin::resizeScene()
 
     m_signalTableView->resize(newWidth, newHeight);
     m_scene->setSceneRect(m_scene->itemsBoundingRect());
+}
+
+void BewavedDolphin::tableView_selectionChanged() {
+    m_externalScene->clearSelection();
+
+    for (auto index : m_signalTableView->selectionModel()->selectedIndexes()) {
+        m_inputs.at(index.row())->setSelected(true);
+    }
+
+    m_externalScene->view()->update();
 }
