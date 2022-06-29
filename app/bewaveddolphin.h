@@ -119,6 +119,7 @@ private:
     void save(QSaveFile &file);
     void save(const QString &fileName);
     void setLength(const int simLength, const bool runSimulation = true);
+    void tableView_selectionChanged();
     void zoomChanged();
 
     Ui::BewavedDolphin *m_ui;
