@@ -20,7 +20,7 @@ class ClockDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ClockDialog(QWidget *parent = nullptr);
+    explicit ClockDialog(const int currentClock, QWidget *parent = nullptr);
     ~ClockDialog() override;
 
     //! Returns the clock frequency in Hz

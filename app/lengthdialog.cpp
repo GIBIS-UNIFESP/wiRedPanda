@@ -4,11 +4,13 @@
 #include "lengthdialog.h"
 #include "ui_lengthdialog.h"
 
-LengthDialog::LengthDialog(QWidget *parent)
+LengthDialog::LengthDialog(const int currentLength, QWidget *parent)
     : QDialog(parent)
     , m_ui(new Ui::LengthDialog)
 {
     m_ui->setupUi(this);
+
+    m_ui->lengthSpinBox->setValue(currentLength);
 
     setWindowTitle(tr("Simulation Length Selection"));
 

@@ -4,11 +4,13 @@
 #include "clockdialog.h"
 #include "ui_clockdialog.h"
 
-ClockDialog::ClockDialog(QWidget *parent)
+ClockDialog::ClockDialog(const int currentFrequency, QWidget *parent)
     : QDialog(parent)
     , m_ui(new Ui::ClockDialog)
 {
     m_ui->setupUi(this);
+
+    m_ui->frequencySpinBox->setValue(currentFrequency);
 
     setWindowTitle(tr("Clock Frequency Selection"));
 

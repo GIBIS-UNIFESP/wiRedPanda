@@ -17,7 +17,7 @@ class LengthDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit LengthDialog(QWidget *parent = nullptr);
+    explicit LengthDialog(const int currentLength, QWidget *parent = nullptr);
     ~LengthDialog() override;
 
     int length();
