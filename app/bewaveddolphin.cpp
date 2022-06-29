@@ -577,22 +577,24 @@ void BewavedDolphin::on_actionSetClockWave_triggered()
 {
     qCDebug(zero) << tr("Getting first column.");
     QItemSelection ranges = m_signalTableView->selectionModel()->selection();
-    int firstCol = sectionFirstColumn(ranges);
+    const int firstCol = sectionFirstColumn(ranges);
     qCDebug(zero) << tr("Setting the signal according to its column and clock period.");
-    ClockDialog dialog(this);
-    int clockPeriod = dialog.frequency();
+    ClockDialog dialog(m_clockPeriod, this);
+    const int clockPeriod = dialog.frequency();
 
     if (clockPeriod < 0) {
         return;
     }
 
-    int halfClockPeriod = clockPeriod / 2;
+    m_clockPeriod = clockPeriod;
+
+    const int halfClockPeriod = clockPeriod / 2;
     const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
 
     for (const auto &item : itemList) {
-        int row = item.row();
-        int col = item.column();
-        int value = ((col - firstCol) % clockPeriod < halfClockPeriod ? 0 : 1);
+        const int row = item.row();
+        const int col = item.column();
+        const int value = ((col - firstCol) % clockPeriod < halfClockPeriod ? 0 : 1);
         qCDebug(zero) << tr("Editing value.");
         createElement(row, col, value);
     }
@@ -626,12 +628,15 @@ void BewavedDolphin::on_actionCombinational_triggered()
 void BewavedDolphin::on_actionSetLength_triggered()
 {
     qCDebug(zero) << tr("Setting the simulation length.");
-    LengthDialog dialog(this);
-    int simLength = dialog.length();
+    const int currentLength = m_length > 0 ? m_length : m_model->columnCount();
+    LengthDialog dialog(currentLength, this);
+    const int simLength = dialog.length();
 
     if (simLength < 0) {
         return;
     }
+
+    m_length = simLength;
 
     setLength(simLength);
 }
@@ -655,7 +660,7 @@ void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
     }
 
     qCDebug(zero) << tr("Increasing the simulation length.");
-    int oldLength = m_model->columnCount();
+    const int oldLength = m_model->columnCount();
     m_model->setColumnCount(simLength);
     QStringList horizontalHeaderLabels;
     horizontalHeaderLabels.reserve(simLength);
@@ -856,6 +861,7 @@ void BewavedDolphin::associateToWiredPanda(const QString &fileName)
 void BewavedDolphin::on_actionSaveAs_triggered()
 {
     QString path = m_mainWindow->currentFile().absolutePath();
+
     QFileDialog fileDialog;
     fileDialog.setObjectName(tr("Save File as..."));
 
@@ -1266,7 +1272,7 @@ void BewavedDolphin::resizeScene()
 
     if (newWidth > 4000 or newHeight > 4000) {
         on_actionResetZoom_triggered();
-        throw Pandaception(tr("Size too big! Resetting zoom."));
+        throw Pandaception(tr("Waveform would be too big! Resetting zoom."));
     }
 
     m_signalTableView->resize(newWidth, newHeight);
