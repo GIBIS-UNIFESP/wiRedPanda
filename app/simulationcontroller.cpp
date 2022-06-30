@@ -45,7 +45,7 @@ void SimulationController::updateScene()
         return;
     }
 
-    const auto items = m_scene->items();
+    const auto items = m_scene->items(Qt::SortOrder(-1));
 
     for (auto *item : items) {
         if (auto *connection = qgraphicsitem_cast<QNEConnection *>(item)) {

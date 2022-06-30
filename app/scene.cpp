@@ -106,7 +106,7 @@ QVector<GraphicElement *> Scene::visibleElements()
 
 QVector<GraphicElement *> Scene::elements()
 {
-    const auto items_ = items();
+    const auto items_ = items(Qt::SortOrder(-1));
     QVector<GraphicElement *> elements_;
     elements_.reserve(items_.size());
 
@@ -137,7 +137,7 @@ QVector<GraphicElement *> Scene::elements(const QRectF &rect)
 QVector<QNEConnection *> Scene::connections()
 {
     QVector<QNEConnection *> conns;
-    const auto items_ = items();
+    const auto items_ = items(Qt::SortOrder(-1));
     conns.reserve(items_.size());
 
     for (auto *item : items_) {
@@ -335,7 +335,7 @@ void Scene::updateTheme()
 void Scene::showGates(const bool checked)
 {
     m_showGates = checked;
-    const auto sceneItems = items();
+    const auto sceneItems = items(Qt::SortOrder(-1));
 
     for (auto *item : sceneItems) {
         if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
@@ -351,7 +351,7 @@ void Scene::showGates(const bool checked)
 void Scene::showWires(const bool checked)
 {
     m_showWires = checked;
-    const auto sceneItems = items();
+    const auto sceneItems = items(Qt::SortOrder(-1));
 
     for (auto *item : sceneItems) {
         if (item->type() == QNEConnection::Type) {
@@ -385,7 +385,7 @@ void Scene::cloneDrag(const QPointF mousePos)
         return;
     }
 
-    const auto items_ = items();
+    const auto items_ = items(Qt::SortOrder(-1));
 
     for (auto *item : items_) {
         if ((item->type() == GraphicElement::Type || item->type() == QNEConnection::Type) && !item->isSelected()) {
@@ -657,7 +657,7 @@ void Scene::deleteAction()
 
 void Scene::selectAll()
 {
-    const auto sceneItems = items();
+    const auto sceneItems = items(Qt::SortOrder(-1));
 
     for (auto *item : sceneItems) {
         item->setSelected(true);
