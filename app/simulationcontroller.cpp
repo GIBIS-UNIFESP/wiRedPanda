@@ -53,9 +53,10 @@ void SimulationController::updateScene()
 
         if (auto *element = qgraphicsitem_cast<GraphicElement *>(item);
                 element && (element->elementGroup() == ElementGroup::Output)) {
-            const auto inputs = element->inputs();
-            for (auto *input : inputs) {
-                updatePort(input);
+            const auto ports = element->inputs();
+
+            for (auto *port : ports) {
+                updatePort(port);
             }
         }
     }
