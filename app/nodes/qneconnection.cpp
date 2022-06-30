@@ -41,7 +41,6 @@ QNEConnection::QNEConnection(QGraphicsItem *parent)
 {
     setFlag(QGraphicsItem::ItemIsSelectable);
     setBrush(Qt::NoBrush);
-    setStatus(Status::Inactive);
     setZValue(-1);
     updateTheme();
 }
@@ -77,8 +76,9 @@ void QNEConnection::setStart(QNEOutputPort *port)
     }
 
     if (port) {
-        setStartPos(port->scenePos());
         port->connect(this);
+        setStartPos(port->scenePos());
+        setStatus(port->status());
     }
 }
 
@@ -94,6 +94,7 @@ void QNEConnection::setEnd(QNEInputPort *port)
     if (port) {
         port->connect(this);
         setEndPos(port->scenePos());
+        port->setStatus(status());
     }
 }
 
@@ -244,6 +245,10 @@ Status QNEConnection::status() const
 
 void QNEConnection::setStatus(const Status status)
 {
+    if (status == m_status) {
+        return;
+    }
+
     m_status = status;
 
     switch (status) {
