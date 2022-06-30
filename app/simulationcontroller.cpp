@@ -48,17 +48,19 @@ void SimulationController::updateScene()
     const auto items = m_scene->items(Qt::SortOrder(-1));
 
     for (auto *item : items) {
-        if (auto *connection = qgraphicsitem_cast<QNEConnection *>(item)) {
+        if (item->type() == QNEConnection::Type) {
+            auto *connection = qgraphicsitem_cast<QNEConnection *>(item);
             updatePort(connection->start());
             continue;
         }
 
-        if (auto *element = qgraphicsitem_cast<GraphicElement *>(item);
-                element && (element->elementGroup() == ElementGroup::Output)) {
-            const auto ports = element->inputs();
+        if (item->type() == GraphicElement::Type) {
+            auto *element = qgraphicsitem_cast<GraphicElement *>(item);
 
-            for (auto *port : ports) {
-                updatePort(port);
+            if (element && (element->elementGroup() == ElementGroup::Output)) {
+                for (auto *port : element->inputs()) {
+                    updatePort(port);
+                }
             }
         }
     }
