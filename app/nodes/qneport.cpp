@@ -23,9 +23,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#include "qneport.h"
+#include "enums.h"
 #include "graphicelement.h"
 #include "qneconnection.h"
+#include "qneport.h"
 #include "thememanager.h"
 
 #include <QCursor>

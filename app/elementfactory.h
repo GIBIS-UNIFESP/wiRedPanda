@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "elementtype.h"
+#include "enums.h"
 
 #include <QGraphicsItem>
 

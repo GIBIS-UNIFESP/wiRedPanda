@@ -1,4 +1,4 @@
-#include "elementtype.h"
+#include "enums.h"
 
 #include <QDataStream>
 
