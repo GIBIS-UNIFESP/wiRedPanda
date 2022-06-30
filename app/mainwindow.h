@@ -101,7 +101,7 @@ private:
     void on_actionMute_triggered(const bool checked);
     void on_actionNew_triggered();
     void on_actionOpen_triggered();
-    void on_actionPlay_triggered(const bool checked);
+    void on_actionPlay_toggled(const bool checked);
     void on_actionPortuguese_triggered();
     void on_actionReloadFile_triggered();
     void on_actionResetZoom_triggered() const;

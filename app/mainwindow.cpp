@@ -115,7 +115,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->actionMute,             &QAction::triggered,       this,                &MainWindow::on_actionMute_triggered);
     connect(m_ui->actionNew,              &QAction::triggered,       this,                &MainWindow::on_actionNew_triggered);
     connect(m_ui->actionOpen,             &QAction::triggered,       this,                &MainWindow::on_actionOpen_triggered);
-    connect(m_ui->actionPlay,             &QAction::triggered,       this,                &MainWindow::on_actionPlay_triggered);
+    connect(m_ui->actionPlay,             &QAction::toggled,         this,                &MainWindow::on_actionPlay_toggled);
     connect(m_ui->actionPortuguese,       &QAction::triggered,       this,                &MainWindow::on_actionPortuguese_triggered);
     connect(m_ui->actionReloadFile,       &QAction::triggered,       this,                &MainWindow::on_actionReloadFile_triggered);
     connect(m_ui->actionRename,           &QAction::triggered,       m_ui->elementEditor, &ElementEditor::renameAction);
@@ -1067,7 +1067,7 @@ void MainWindow::on_actionPortuguese_triggered()
     loadTranslation("pt_BR");
 }
 
-void MainWindow::on_actionPlay_triggered(const bool checked)
+void MainWindow::on_actionPlay_toggled(const bool checked)
 {
     if (!m_currentTab) {
         return;
@@ -1203,13 +1203,13 @@ bool MainWindow::event(QEvent *event)
     switch (event->type()) {
     case QEvent::WindowActivate: {
         if (m_ui->actionPlay->isChecked()) {
-            on_actionPlay_triggered(true);
+            on_actionPlay_toggled(true);
         }
         break;
     }
 
     case QEvent::WindowDeactivate: {
-        on_actionPlay_triggered(false);
+        on_actionPlay_toggled(false);
         break;
     }
 
