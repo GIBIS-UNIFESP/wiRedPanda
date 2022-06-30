@@ -264,6 +264,10 @@ QNEInputPort::~QNEInputPort()
 
 void QNEInputPort::setStatus(Status status)
 {
+    if (status == m_status) {
+        return;
+    }
+
     m_status = isValid() ? status : Status::Invalid;
 
     const auto theme = ThemeManager::attributes();
@@ -329,6 +333,10 @@ QNEOutputPort::~QNEOutputPort()
 
 void QNEOutputPort::setStatus(Status status)
 {
+    if (status == m_status) {
+        return;
+    }
+
     m_status = status;
 
     for (auto *conn : connections()) {
