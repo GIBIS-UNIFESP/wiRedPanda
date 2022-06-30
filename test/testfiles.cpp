@@ -26,7 +26,7 @@ void TestFiles::testFiles()
         QVERIFY(pandaFile.open(QIODevice::ReadOnly));
         QDataStream stream(&pandaFile);
         workspace->load(stream);
-        const auto items = workspace->scene()->items();
+        const auto items = workspace->scene()->items(Qt::SortOrder(-1));
 
         for (auto *item : items) {
             if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
