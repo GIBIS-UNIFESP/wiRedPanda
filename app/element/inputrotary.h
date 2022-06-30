@@ -39,11 +39,7 @@ private:
     const QString m_translatedName = tr("Rotary Switch");
 
     QPixmap m_arrow;
-    QPixmap m_rotary10;
-    QPixmap m_rotary16;
-    QPixmap m_rotary2;
-    QPixmap m_rotary4;
-    QPixmap m_rotary8;
+    QPixmap m_rotary;
     int m_currentPort = 0;
 };
 
