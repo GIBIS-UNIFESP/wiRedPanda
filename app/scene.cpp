@@ -91,6 +91,9 @@ void Scene::setAutosaveRequired()
 
 void Scene::setCircuitUpdateRequired()
 {
+    showWires(m_showWires);
+    showGates(m_showGates);
+
     m_circuitUpdateRequired = true;
 }
 
