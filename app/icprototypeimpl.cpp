@@ -106,8 +106,8 @@ void ICPrototypeImpl::loadInputElement(GraphicElement *elm)
         nodeInput->setPos(port->pos());
         nodeInput->setName(port->name());
         nodeInput->setRequired(false);
-        nodeInput->setDefaultValue(port->value());
-        nodeInput->setValue(port->value());
+        nodeInput->setDefaultStatus(port->status());
+        nodeInput->setStatus(port->status());
         if (elm->elementType() == ElementType::Clock) {
             nodeInput->setRequired(true);
         }

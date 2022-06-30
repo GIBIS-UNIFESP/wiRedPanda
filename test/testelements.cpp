@@ -82,7 +82,7 @@ void TestElements::testVCC()
     InputVcc vcc;
     QCOMPARE(vcc.outputSize(), 1);
     QCOMPARE(vcc.inputSize(), 0);
-    QCOMPARE(vcc.outputPort()->value(), Status::Active);
+    QCOMPARE(vcc.outputPort()->status(), Status::Active);
 }
 
 void TestElements::testGND()
@@ -90,7 +90,7 @@ void TestElements::testGND()
     InputGnd gnd;
     QCOMPARE(gnd.outputSize(), 1);
     QCOMPARE(gnd.inputSize(), 0);
-    QCOMPARE(gnd.outputPort()->value(), Status::Inactive);
+    QCOMPARE(gnd.outputPort()->status(), Status::Inactive);
 }
 
 void TestElements::testMux()
@@ -196,11 +196,11 @@ void TestElements::testICData(IC *ic)
     QCOMPARE(ic->inputPort(3)->isRequired(), false);
     QCOMPARE(ic->inputPort(4)->isRequired(), false);
 
-    QCOMPARE(ic->inputPort(0)->value(), Status::Active);
-    QCOMPARE(ic->inputPort(1)->value(), Status::Active);
-    QCOMPARE(ic->inputPort(2)->value(), Status::Invalid);
-    QCOMPARE(ic->inputPort(3)->value(), Status::Active);
-    QCOMPARE(ic->inputPort(4)->value(), Status::Active);
+    QCOMPARE(ic->inputPort(0)->status(), Status::Active);
+    QCOMPARE(ic->inputPort(1)->status(), Status::Active);
+    QCOMPARE(ic->inputPort(2)->status(), Status::Invalid);
+    QCOMPARE(ic->inputPort(3)->status(), Status::Active);
+    QCOMPARE(ic->inputPort(4)->status(), Status::Active);
 }
 
 void TestElements::testIC()
@@ -257,10 +257,10 @@ void TestElements::testIC()
         controller.update();
         controller.updateScene();
 
-        QCOMPARE(ic->inputPort(2)->value(), Status::Inactive);
+        QCOMPARE(ic->inputPort(2)->status(), Status::Inactive);
 
-        QCOMPARE(ic->outputPort(0)->value(), Status::Active);
-        QCOMPARE(ic->outputPort(1)->value(), Status::Inactive);
+        QCOMPARE(ic->outputPort(0)->status(), Status::Active);
+        QCOMPARE(ic->outputPort(1)->status(), Status::Inactive);
 
         clkButton->setOn(false);
         prstButton->setOn(true);
@@ -269,10 +269,10 @@ void TestElements::testIC()
         controller.update();
         controller.updateScene();
 
-        QCOMPARE(ic->inputPort(2)->value(), Status::Inactive);
+        QCOMPARE(ic->inputPort(2)->status(), Status::Inactive);
 
-        QCOMPARE(ic->outputPort(0)->value(), Status::Active);
-        QCOMPARE(ic->outputPort(1)->value(), Status::Inactive);
+        QCOMPARE(ic->outputPort(0)->status(), Status::Active);
+        QCOMPARE(ic->outputPort(1)->status(), Status::Inactive);
 
         clkButton->setOn(false);
         controller.update();
@@ -280,10 +280,10 @@ void TestElements::testIC()
         controller.update();
         controller.updateScene();
 
-        QCOMPARE(ic->inputPort(2)->value(), Status::Inactive);
+        QCOMPARE(ic->inputPort(2)->status(), Status::Inactive);
 
-        QCOMPARE(ic->outputPort(0)->value(), Status::Active);
-        QCOMPARE(ic->outputPort(1)->value(), Status::Inactive);
+        QCOMPARE(ic->outputPort(0)->status(), Status::Active);
+        QCOMPARE(ic->outputPort(1)->status(), Status::Inactive);
 
         clkButton->setOn(true);
         controller.update();
@@ -291,10 +291,10 @@ void TestElements::testIC()
         controller.update();
         controller.updateScene();
 
-        QCOMPARE(ic->inputPort(2)->value(), Status::Active);
+        QCOMPARE(ic->inputPort(2)->status(), Status::Active);
 
-        QCOMPARE(ic->outputPort(0)->value(), Status::Inactive);
-        QCOMPARE(ic->outputPort(1)->value(), Status::Active);
+        QCOMPARE(ic->outputPort(0)->status(), Status::Inactive);
+        QCOMPARE(ic->outputPort(1)->status(), Status::Active);
     }
 }
 

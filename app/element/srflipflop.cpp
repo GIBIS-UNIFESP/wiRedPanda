@@ -44,11 +44,11 @@ void SRFlipFlop::updatePorts()
     inputPort(3)->setRequired(false);
     inputPort(4)->setRequired(false);
 
-    inputPort(3)->setDefaultValue(Status::Active);
-    inputPort(4)->setDefaultValue(Status::Active);
+    inputPort(3)->setDefaultStatus(Status::Active);
+    inputPort(4)->setDefaultStatus(Status::Active);
 
-    outputPort(0)->setDefaultValue(Status::Inactive);
-    outputPort(1)->setDefaultValue(Status::Active);
+    outputPort(0)->setDefaultStatus(Status::Inactive);
+    outputPort(1)->setDefaultStatus(Status::Active);
 }
 
 void SRFlipFlop::updateTheme()

@@ -53,8 +53,8 @@ public:
     QNEOutputPort *start() const;
     QNEPort *otherPort(const QNEPort *port) const;
     Status status() const;
-    void load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap = {});
     double angle();
+    void load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap = {});
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void save(QDataStream &stream) const;
     void setEnd(QNEInputPort *port);

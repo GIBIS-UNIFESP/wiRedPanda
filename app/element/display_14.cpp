@@ -108,7 +108,7 @@ void Display14::updatePorts()
 
     for (auto *port : qAsConst(m_inputPorts)) {
         port->setRequired(false);
-        port->setDefaultValue(Status::Inactive);
+        port->setDefaultStatus(Status::Inactive);
     }
 }
 
@@ -116,21 +116,21 @@ void Display14::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 {
     GraphicElement::paint(painter, option, widget);
 
-    if (inputPort(0)->value() == Status::Active)  { painter->drawPixmap(0, 0, g1[m_colorNumber]); }
-    if (inputPort(1)->value() == Status::Active)  { painter->drawPixmap(0, 0, f[m_colorNumber]);  }
-    if (inputPort(2)->value() == Status::Active)  { painter->drawPixmap(0, 0, e[m_colorNumber]);  }
-    if (inputPort(3)->value() == Status::Active)  { painter->drawPixmap(0, 0, d[m_colorNumber]);  }
-    if (inputPort(4)->value() == Status::Active)  { painter->drawPixmap(0, 0, a[m_colorNumber]);  }
-    if (inputPort(5)->value() == Status::Active)  { painter->drawPixmap(0, 0, b[m_colorNumber]);  }
-    if (inputPort(6)->value() == Status::Active)  { painter->drawPixmap(0, 0, dp[m_colorNumber]); }
-    if (inputPort(7)->value() == Status::Active)  { painter->drawPixmap(0, 0, c[m_colorNumber]);  }
-    if (inputPort(8)->value() == Status::Active)  { painter->drawPixmap(0, 0, g2[m_colorNumber]); }
-    if (inputPort(9)->value() == Status::Active)  { painter->drawPixmap(0, 0, h[m_colorNumber]);  }
-    if (inputPort(10)->value() == Status::Active) { painter->drawPixmap(0, 0, j[m_colorNumber]);  }
-    if (inputPort(11)->value() == Status::Active) { painter->drawPixmap(0, 0, k[m_colorNumber]);  }
-    if (inputPort(12)->value() == Status::Active) { painter->drawPixmap(0, 0, l[m_colorNumber]);  }
-    if (inputPort(13)->value() == Status::Active) { painter->drawPixmap(0, 0, m[m_colorNumber]);  }
-    if (inputPort(14)->value() == Status::Active) { painter->drawPixmap(0, 0, n[m_colorNumber]);  }
+    if (inputPort(0)->status() == Status::Active)  { painter->drawPixmap(0, 0, g1[m_colorNumber]); }
+    if (inputPort(1)->status() == Status::Active)  { painter->drawPixmap(0, 0, f[m_colorNumber]);  }
+    if (inputPort(2)->status() == Status::Active)  { painter->drawPixmap(0, 0, e[m_colorNumber]);  }
+    if (inputPort(3)->status() == Status::Active)  { painter->drawPixmap(0, 0, d[m_colorNumber]);  }
+    if (inputPort(4)->status() == Status::Active)  { painter->drawPixmap(0, 0, a[m_colorNumber]);  }
+    if (inputPort(5)->status() == Status::Active)  { painter->drawPixmap(0, 0, b[m_colorNumber]);  }
+    if (inputPort(6)->status() == Status::Active)  { painter->drawPixmap(0, 0, dp[m_colorNumber]); }
+    if (inputPort(7)->status() == Status::Active)  { painter->drawPixmap(0, 0, c[m_colorNumber]);  }
+    if (inputPort(8)->status() == Status::Active)  { painter->drawPixmap(0, 0, g2[m_colorNumber]); }
+    if (inputPort(9)->status() == Status::Active)  { painter->drawPixmap(0, 0, h[m_colorNumber]);  }
+    if (inputPort(10)->status() == Status::Active) { painter->drawPixmap(0, 0, j[m_colorNumber]);  }
+    if (inputPort(11)->status() == Status::Active) { painter->drawPixmap(0, 0, k[m_colorNumber]);  }
+    if (inputPort(12)->status() == Status::Active) { painter->drawPixmap(0, 0, l[m_colorNumber]);  }
+    if (inputPort(13)->status() == Status::Active) { painter->drawPixmap(0, 0, m[m_colorNumber]);  }
+    if (inputPort(14)->status() == Status::Active) { painter->drawPixmap(0, 0, n[m_colorNumber]);  }
 }
 
 void Display14::setColor(const QString &color)

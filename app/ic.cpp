@@ -68,8 +68,8 @@ void IC::loadInputs(ICPrototype *prototype)
         QNEPort *portIn = inputPort(inputIndex);
         portIn->setName(prototype->inputLabel(inputIndex));
         portIn->setRequired(prototype->isInputRequired(inputIndex));
-        portIn->setDefaultValue(prototype->defaultInputValue(inputIndex));
-        portIn->setValue(prototype->defaultInputValue(inputIndex));
+        portIn->setDefaultStatus(prototype->defaultInputValue(inputIndex));
+        portIn->setStatus(prototype->defaultInputValue(inputIndex));
     }
 }
 

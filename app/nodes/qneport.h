@@ -51,7 +51,7 @@ public:
     QBrush currentBrush() const;
     QString name() const;
     Status defaultValue() const;
-    Status value() const;
+    Status status() const;
     bool isConnected(QNEPort *);
     bool isRequired() const;
     const QList<QNEConnection *> &connections() const;
@@ -63,13 +63,13 @@ public:
     virtual bool isInput() const = 0;
     virtual bool isOutput() const = 0;
     virtual bool isValid() const = 0;
-    virtual void setValue(Status value) = 0;
+    virtual void setStatus(Status status) = 0;
     void connect(QNEConnection *conn);
     void disconnect(QNEConnection *conn);
     void hoverEnter();
     void hoverLeave();
     void setCurrentBrush(const QBrush &currentBrush);
-    void setDefaultValue(const Status defaultValue);
+    void setDefaultStatus(const Status defaultStatus);
     void setGraphicElement(GraphicElement *graphicElement);
     void setIndex(const int index);
     void setName(const QString &name);
@@ -87,8 +87,8 @@ protected:
     QGraphicsTextItem *m_label = new QGraphicsTextItem(this);
     QList<QNEConnection *> m_connections;
     QString m_name;
-    Status m_defaultValue = Status::Invalid;
-    Status m_value = Status::Inactive;
+    Status m_defaultStatus = Status::Invalid;
+    Status m_status = Status::Inactive;
     bool m_required = true;
     int m_index = 0;
     int m_margin = 2;
@@ -106,7 +106,7 @@ public:
     bool isInput() const override;
     bool isOutput() const override;
     bool isValid() const override;
-    void setValue(Status value) override;
+    void setStatus(Status status) override;
     void updateTheme() override;
 };
 
@@ -119,6 +119,6 @@ public:
     bool isInput() const override;
     bool isOutput() const override;
     bool isValid() const override;
-    void setValue(Status value) override;
+    void setStatus(Status status) override;
     void updateTheme() override;
 };

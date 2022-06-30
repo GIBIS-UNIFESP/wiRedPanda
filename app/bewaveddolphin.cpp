@@ -336,7 +336,7 @@ void BewavedDolphin::run()
 
         for (auto *output : qAsConst(m_outputs)) {
             for (int port = 0; port < output->inputSize(); ++port) {
-                int value = static_cast<int>(output->inputPort(port)->value());
+                const int value = static_cast<int>(output->inputPort(port)->status());
                 createElement(counter, column, value, false);
                 counter++;
             }
@@ -395,11 +395,11 @@ QVector<Status> BewavedDolphin::loadSignals(QStringList &inputLabels, QStringLis
             if (input->outputSize() > 1) {
                 // QMessageBox::warning(this, "Append", "Appending label: " + label + ", port: " + QString::number(port));
                 inputLabels.append(label + "_" + QString::number(port));
-                oldValues[oldIndex] = input->outputPort(port)->value();
+                oldValues[oldIndex] = input->outputPort(port)->status();
             } else {
                 // QMessageBox::warning(this, "Append", "Appending label " + label);
                 inputLabels.append(label);
-                oldValues[oldIndex] = input->outputPort()->value();
+                oldValues[oldIndex] = input->outputPort()->status();
             }
 
             ++oldIndex;

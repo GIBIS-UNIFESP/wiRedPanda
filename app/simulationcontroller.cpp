@@ -81,9 +81,9 @@ void SimulationController::updatePort(QNEOutputPort *port)
     }
 
     if (logic->isValid()) {
-        port->setValue(static_cast<Status>(logic->outputValue(portIndex)));
+        port->setStatus(static_cast<Status>(logic->outputValue(portIndex)));
     } else {
-        port->setValue(Status::Invalid);
+        port->setStatus(Status::Invalid);
     }
 }
 
@@ -94,9 +94,9 @@ void SimulationController::updatePort(QNEInputPort *port)
     int portIndex = port->index();
 
     if (logic->isValid()) {
-        port->setValue(static_cast<Status>(logic->inputValue(portIndex)));
+        port->setStatus(static_cast<Status>(logic->inputValue(portIndex)));
     } else {
-        port->setValue(Status::Invalid);
+        port->setStatus(Status::Invalid);
     }
 
     if (elm->elementGroup() == ElementGroup::Output) {
