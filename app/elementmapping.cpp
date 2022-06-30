@@ -186,9 +186,7 @@ void ElementMapping::update()
     Clock::reset = false;
 
     for (auto *input : qAsConst(m_inputs)) {
-        for (int port = 0; port < input->outputSize(); ++port) {
-            input->logic()->setOutputValue(port, input->isOn(port));
-        }
+        input->updatePortsOutputs();
     }
 
     for (auto *logic : qAsConst(m_logicElms)) {

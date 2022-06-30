@@ -23,7 +23,15 @@ public:
     virtual void setOn() = 0;
     virtual void setOn(const bool value, const int port = 0) = 0;
     void setLocked(const bool locked) { m_locked = locked; }
+    void updatePortsOutputs();
 
 protected:
     bool m_locked = false;
 };
+
+inline void GraphicElementInput::updatePortsOutputs()
+{
+    for (int port = 0; port < outputSize(); ++port) {
+        logic()->setOutputValue(port, isOn(port));
+    }
+}
