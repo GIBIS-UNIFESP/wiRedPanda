@@ -6,6 +6,7 @@
 #pragma once
 
 #include "common.h"
+#include "enums.h"
 #include "icprototypeimpl.h"
 
 #include <QString>

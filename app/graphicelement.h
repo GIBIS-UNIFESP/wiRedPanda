@@ -6,7 +6,7 @@
 #pragma once
 
 #include "common.h"
-#include "elementtype.h"
+#include "enums.h"
 #include "globalproperties.h"
 #include "itemwithid.h"
 #include "logicelement.h"

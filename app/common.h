@@ -26,5 +26,3 @@ class Pandaception : public std::runtime_error
 public:
     explicit Pandaception(const QString &message);
 };
-
-enum class Status { Invalid = -1, Inactive = 0, Active = 1 };

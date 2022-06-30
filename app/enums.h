@@ -10,6 +10,9 @@ class Enums
 public:
     Enums() = delete;
 
+    enum class Status { Invalid = -1, Inactive = 0, Active = 1 };
+    Q_ENUM(Status);
+
     enum class ElementType : uint_fast8_t {
         And = 5,
         Buzzer = 26,
@@ -58,6 +61,7 @@ public:
     Q_ENUM(ElementGroup);
 };
 
+using Status = Enums::Status;
 using ElementType = Enums::ElementType;
 using ElementGroup = Enums::ElementGroup;
 
