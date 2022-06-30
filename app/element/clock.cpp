@@ -74,7 +74,7 @@ void Clock::setOn(const bool value, const int port)
     Q_UNUSED(port);
     m_isOn = value;
     setPixmap(m_isOn);
-    m_outputPorts.first()->setValue(static_cast<Status>(m_isOn));
+    m_outputPorts.first()->setStatus(static_cast<Status>(m_isOn));
     update();
 }
 

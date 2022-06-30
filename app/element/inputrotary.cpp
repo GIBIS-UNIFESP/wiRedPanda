@@ -202,7 +202,7 @@ void InputRotary::setOn(const bool value, const int port)
     }
 
     for (int port = 0; port < outputSize(); ++port) {
-        outputPort(port)->setValue((m_currentPort == port) ? Status::Active : Status::Inactive);
+        outputPort(port)->setStatus((m_currentPort == port) ? Status::Active : Status::Inactive);
     }
 
     refresh();

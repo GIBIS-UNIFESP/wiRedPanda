@@ -99,7 +99,7 @@ void InputButton::setOn(const bool value, const int port)
     setPixmap(m_isOn);
 
     if (!isDisabled()) {
-        outputPort()->setValue(static_cast<Status>(m_isOn));
+        outputPort()->setStatus(static_cast<Status>(m_isOn));
     }
 }
 

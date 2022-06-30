@@ -41,11 +41,11 @@ void DFlipFlop::updatePorts()
     inputPort(2)->setRequired(false);
     inputPort(3)->setRequired(false);
 
-    inputPort(2)->setDefaultValue(Status::Active);
-    inputPort(3)->setDefaultValue(Status::Active);
+    inputPort(2)->setDefaultStatus(Status::Active);
+    inputPort(3)->setDefaultStatus(Status::Active);
 
-    outputPort(0)->setDefaultValue(Status::Inactive);
-    outputPort(1)->setDefaultValue(Status::Active);
+    outputPort(0)->setDefaultStatus(Status::Inactive);
+    outputPort(1)->setDefaultStatus(Status::Active);
 }
 
 void DFlipFlop::updateTheme()

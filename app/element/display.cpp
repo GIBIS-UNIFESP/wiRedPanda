@@ -111,21 +111,21 @@ void Display::updatePorts()
 
     for (auto *in : qAsConst(m_inputPorts)) {
         in->setRequired(false);
-        in->setDefaultValue(Status::Inactive);
+        in->setDefaultStatus(Status::Inactive);
     }
 }
 
 void Display::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     GraphicElement::paint(painter, option, widget);
-    if (inputPort(0)->value() == Status::Active) { painter->drawPixmap(0, 0, g[m_colorNumber]);  }
-    if (inputPort(1)->value() == Status::Active) { painter->drawPixmap(0, 0, f[m_colorNumber]);  }
-    if (inputPort(2)->value() == Status::Active) { painter->drawPixmap(0, 0, e[m_colorNumber]);  }
-    if (inputPort(3)->value() == Status::Active) { painter->drawPixmap(0, 0, d[m_colorNumber]);  }
-    if (inputPort(4)->value() == Status::Active) { painter->drawPixmap(0, 0, a[m_colorNumber]);  }
-    if (inputPort(5)->value() == Status::Active) { painter->drawPixmap(0, 0, b[m_colorNumber]);  }
-    if (inputPort(6)->value() == Status::Active) { painter->drawPixmap(0, 0, dp[m_colorNumber]); }
-    if (inputPort(7)->value() == Status::Active) { painter->drawPixmap(0, 0, c[m_colorNumber]);  }
+    if (inputPort(0)->status() == Status::Active) { painter->drawPixmap(0, 0, g[m_colorNumber]);  }
+    if (inputPort(1)->status() == Status::Active) { painter->drawPixmap(0, 0, f[m_colorNumber]);  }
+    if (inputPort(2)->status() == Status::Active) { painter->drawPixmap(0, 0, e[m_colorNumber]);  }
+    if (inputPort(3)->status() == Status::Active) { painter->drawPixmap(0, 0, d[m_colorNumber]);  }
+    if (inputPort(4)->status() == Status::Active) { painter->drawPixmap(0, 0, a[m_colorNumber]);  }
+    if (inputPort(5)->status() == Status::Active) { painter->drawPixmap(0, 0, b[m_colorNumber]);  }
+    if (inputPort(6)->status() == Status::Active) { painter->drawPixmap(0, 0, dp[m_colorNumber]); }
+    if (inputPort(7)->status() == Status::Active) { painter->drawPixmap(0, 0, c[m_colorNumber]);  }
 }
 
 void Display::setColor(const QString &color)

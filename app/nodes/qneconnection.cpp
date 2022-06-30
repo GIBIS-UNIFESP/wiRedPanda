@@ -51,6 +51,7 @@ QNEConnection::~QNEConnection()
     if (m_start) {
         m_start->disconnect(this);
     }
+
     if (m_end) {
         m_end->disconnect(this);
     }
@@ -70,9 +71,11 @@ void QNEConnection::setStart(QNEOutputPort *port)
 {
     QNEOutputPort *old = m_start;
     m_start = port;
+
     if (old && (old != port)) {
         old->disconnect(this);
     }
+
     if (port) {
         setStartPos(port->scenePos());
         port->connect(this);
@@ -83,9 +86,11 @@ void QNEConnection::setEnd(QNEInputPort *port)
 {
     QNEInputPort *old = m_end;
     m_end = port;
+
     if (old && (old != port)) {
         old->disconnect(this);
     }
+
     if (port) {
         port->connect(this);
         setEndPos(port->scenePos());
@@ -97,9 +102,11 @@ void QNEConnection::updatePosFromPorts()
     if (m_start) {
         m_startPos = m_start->scenePos();
     }
+
     if (m_end) {
         m_endPos = m_end->scenePos();
     }
+
     updatePath();
 }
 
@@ -135,13 +142,16 @@ double QNEConnection::angle()
 {
     QNEPort *p1 = m_start;
     QNEPort *p2 = m_end;
+
     if (p1 && p2) {
         if (p2->isOutput()) {
             std::swap(p1, p2);
         }
+
         QLineF line(p1->scenePos(), p2->scenePos());
         return line.angle();
     }
+
     return 0.0;
 }
 
@@ -162,6 +172,7 @@ void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
         qCDebug(three) << tr("Empty port map.");
         auto *port1 = reinterpret_cast<QNEPort *>(ptr1);
         auto *port2 = reinterpret_cast<QNEPort *>(ptr2);
+
         if (port2 && port1) {
             if (!port1->isOutput() && port2->isOutput()) {
                 setStart(dynamic_cast<QNEOutputPort *>(port2));
@@ -210,6 +221,7 @@ QNEPort *QNEConnection::otherPort(const QNEPort *port) const
     if (port == m_start) {
         return m_end;
     }
+
     return m_start;
 }
 
@@ -233,6 +245,7 @@ Status QNEConnection::status() const
 void QNEConnection::setStatus(const Status status)
 {
     m_status = status;
+
     switch (status) {
     case Status::Active:   setPen(QPen(m_activeColor,   3)); break;
     case Status::Inactive: setPen(QPen(m_inactiveColor, 3)); break;

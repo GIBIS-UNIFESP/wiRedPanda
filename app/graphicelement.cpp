@@ -700,7 +700,7 @@ bool GraphicElement::isValid()
                 conn->setStatus(Status::Invalid);
 
                 if (auto *port = conn->otherPort(output)) {
-                    port->setValue(Status::Invalid);
+                    port->setStatus(Status::Invalid);
                 }
             }
         }

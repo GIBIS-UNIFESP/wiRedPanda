@@ -36,8 +36,8 @@ void DLatch::updatePorts()
     outputPort(0)->setPos(64, 16);    outputPort(0)->setName("Q");
     outputPort(1)->setPos(64, 48);    outputPort(1)->setName("~Q");
 
-    outputPort(0)->setDefaultValue(Status::Inactive);
-    outputPort(1)->setDefaultValue(Status::Active);
+    outputPort(0)->setDefaultStatus(Status::Inactive);
+    outputPort(1)->setDefaultStatus(Status::Active);
 }
 
 void DLatch::updateTheme()

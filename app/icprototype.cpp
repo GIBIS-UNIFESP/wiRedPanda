@@ -65,7 +65,7 @@ QString ICPrototype::outputLabel(const int index) const
 
 Status ICPrototype::defaultInputValue(const int index)
 {
-    return m_ICImpl.input(index)->value();
+    return m_ICImpl.input(index)->status();
 }
 
 bool ICPrototype::isInputRequired(const int index)

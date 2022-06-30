@@ -103,7 +103,7 @@ void Led::refresh()
     if (isValid()) {
         std::bitset<4> indexBit;
         for (int i = 0; i < inputSize(); ++i) {
-            indexBit[i] = static_cast<int>(inputPort(inputSize() - i - 1)->value());
+            indexBit[i] = static_cast<int>(inputPort(inputSize() - i - 1)->status());
         }
         index = static_cast<int>(indexBit.to_ulong());
     }
@@ -191,7 +191,7 @@ void Led::setSkin(const bool defaultSkin, const QString &fileName)
     if (isValid()) {
         std::bitset<4> indexBit;
         for (int i = 0; i < inputSize(); ++i) {
-            indexBit[i] = static_cast<int>(inputPort(inputSize() - i - 1)->value());
+            indexBit[i] = static_cast<int>(inputPort(inputSize() - i - 1)->status());
         }
         index = static_cast<int>(indexBit.to_ulong());
     }
