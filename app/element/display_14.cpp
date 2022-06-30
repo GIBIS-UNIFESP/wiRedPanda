@@ -14,7 +14,7 @@ int id = qRegisterMetaType<Display14>();
 }
 
 Display14::Display14(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Display14, ElementGroup::Output, 15, 15, 0, 0, parent)
+    : GraphicElement(ElementType::Display14, ElementGroup::Output, ":/output/counter/counter_14_on.svg", tr("<b>14-SEGMENT DISPLAY</b>"), tr("Display14"), 15, 15, 0, 0, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

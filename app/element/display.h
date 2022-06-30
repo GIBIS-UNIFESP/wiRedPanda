@@ -12,9 +12,6 @@ class QNEPort;
 class Display : public GraphicElement
 {
     Q_OBJECT
-    Q_PROPERTY(QString pixmapPath MEMBER m_pixmapPath CONSTANT)
-    Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
-    Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
 
 public:
     explicit Display(QGraphicsItem *parent = nullptr);
@@ -31,10 +28,6 @@ public:
     void updatePorts() override;
 
 private:
-    const QString m_pixmapPath = ":/output/counter/counter_on.svg";
-    const QString m_titleText = tr("<b>7-SEGMENT DISPLAY</b>");
-    const QString m_translatedName = tr("Display");
-
     QString m_color = "Red";
     QVector<QPixmap> bkg, a, b, c, d, e, f, g, dp;
     int m_colorNumber = 1;

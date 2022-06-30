@@ -13,7 +13,7 @@ int id = qRegisterMetaType<InputButton>();
 }
 
 InputButton::InputButton(QGraphicsItem *parent)
-    : GraphicElementInput(ElementType::InputButton, ElementGroup::Input, 0, 0, 1, 1, parent)
+    : GraphicElementInput(ElementType::InputButton, ElementGroup::Input, ":/input/buttonOff.svg", tr("<b>PUSH BUTTON</b>"), tr("Button"), 0, 0, 1, 1, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

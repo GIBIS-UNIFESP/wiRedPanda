@@ -26,8 +26,11 @@ namespace
 int id = qRegisterMetaType<GraphicElement>();
 }
 
-GraphicElement::GraphicElement(ElementType type, ElementGroup group, const int minInputSize, const int maxInputSize, const int minOutputSize, const int maxOutputSize, QGraphicsItem *parent)
+GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QString &pixmapPath, const QString &titleText, const QString &translatedName, const int minInputSize, const int maxInputSize, const int minOutputSize, const int maxOutputSize, QGraphicsItem *parent)
     : QGraphicsObject(parent)
+    , m_pixmapPath(pixmapPath)
+    , m_titleText(titleText)
+    , m_translatedName(translatedName)
     , m_elementGroup(group)
     , m_elementType(type)
     , m_maxInputSize(maxInputSize)

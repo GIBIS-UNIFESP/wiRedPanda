@@ -12,9 +12,6 @@ class ICPrototype;
 class IC : public GraphicElement
 {
     Q_OBJECT
-    Q_PROPERTY(QString pixmapPath MEMBER m_pixmapPath CONSTANT)
-    Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
-    Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
 
     friend class CodeGenerator;
 
@@ -40,9 +37,6 @@ private:
     void loadOutputs(ICPrototype *prototype);
 
     QString m_file;
-    const QString m_pixmapPath = ":/basic/ic-panda.svg";
-    const QString m_titleText = tr("<b>INTEGRATED CIRCUIT</b>");
-    const QString m_translatedName = tr("IC");
 };
 
 Q_DECLARE_METATYPE(IC)

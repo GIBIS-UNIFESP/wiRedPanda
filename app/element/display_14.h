@@ -10,9 +10,6 @@
 class Display14 : public GraphicElement
 {
     Q_OBJECT
-    Q_PROPERTY(QString pixmapPath MEMBER m_pixmapPath CONSTANT)
-    Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
-    Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
 
 public:
     explicit Display14(QGraphicsItem *parent = nullptr);
@@ -26,10 +23,6 @@ public:
     void updatePorts() override;
 
 private:
-    const QString m_pixmapPath = ":/output/counter/counter_14_on.svg";
-    const QString m_titleText = tr("<b>14-SEGMENT DISPLAY</b>");
-    const QString m_translatedName = tr("Display14");
-
     QString m_color = "Red";
     QVector<QPixmap> bkg, a, b, c, d, e, f, g1, g2, h, j, k, l, m, n, dp;
     int m_colorNumber = 1;

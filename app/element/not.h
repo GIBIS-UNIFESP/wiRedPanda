@@ -10,17 +10,9 @@
 class Not : public GraphicElement
 {
     Q_OBJECT
-    Q_PROPERTY(QString pixmapPath MEMBER m_pixmapPath CONSTANT)
-    Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
-    Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
 
 public:
     explicit Not(QGraphicsItem *parent = nullptr);
-
-private:
-    const QString m_pixmapPath = ":/basic/not.svg";
-    const QString m_titleText = tr("<b>NOT</b>");
-    const QString m_translatedName = tr("Not");
 };
 
 Q_DECLARE_METATYPE(Not)

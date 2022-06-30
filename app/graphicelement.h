@@ -31,12 +31,16 @@ class QNEPort;
 class GraphicElement : public QGraphicsObject, public ItemWithId
 {
     Q_OBJECT
+    Q_PROPERTY(QString pixmapPath MEMBER m_pixmapPath CONSTANT)
+    Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
+    Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
 
 public:
     enum { Type = QGraphicsItem::UserType + 3 };
     int type() const override { return Type; }
 
-    explicit GraphicElement(ElementType type, ElementGroup group, const int minInputSize, const int maxInputSize, const int minOutputSize, const int maxOutputSize, QGraphicsItem *parent = nullptr);
+    explicit GraphicElement(ElementType type, ElementGroup group, const QString &pixmapPath, const QString &titleText, const QString &translatedName,
+                            const int minInputSize, const int maxInputSize, const int minOutputSize, const int maxOutputSize, QGraphicsItem *parent = nullptr);
     explicit GraphicElement(QGraphicsItem *parent = nullptr) : QGraphicsObject(parent) {};
     GraphicElement(const GraphicElement &other) : GraphicElement(other.parentItem()) {};
 
@@ -142,6 +146,10 @@ protected:
     QColor m_selectionPen;
     QGraphicsTextItem *m_label = new QGraphicsTextItem(this);
     bool m_usingDefaultSkin = true;
+
+    QString m_pixmapPath;
+    QString m_titleText;
+    QString m_translatedName;
 
 private:
     static void removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap);

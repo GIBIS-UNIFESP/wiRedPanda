@@ -10,17 +10,9 @@
 class Line : public GraphicElement
 {
     Q_OBJECT
-    Q_PROPERTY(QString pixmapPath MEMBER m_pixmapPath CONSTANT)
-    Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
-    Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
 
 public:
     explicit Line(QGraphicsItem *parent = nullptr);
-
-private:
-    const QString m_pixmapPath = ":/misc/line.svg";
-    const QString m_titleText = tr("<b>LINE</b>");
-    const QString m_translatedName = tr("Line");
 };
 
 Q_DECLARE_METATYPE(Line)

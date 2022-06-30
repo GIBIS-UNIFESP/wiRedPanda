@@ -50,7 +50,7 @@ int id = qRegisterMetaType<Led>();
  */
 
 Led::Led(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Led, ElementGroup::Output, 1, 4, 0, 0, parent)
+    : GraphicElement(ElementType::Led, ElementGroup::Output, ":/output/WhiteLedOff.svg", tr("<b>LED</b>"), tr("LED"), 1, 4, 0, 0, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

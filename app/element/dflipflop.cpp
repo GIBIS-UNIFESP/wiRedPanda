@@ -11,7 +11,7 @@ int id = qRegisterMetaType<DFlipFlop>();
 }
 
 DFlipFlop::DFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(ElementType::DFlipFlop, ElementGroup::Memory, 4, 4, 2, 2, parent)
+    : GraphicElement(ElementType::DFlipFlop, ElementGroup::Memory, pixmapPath(), tr("<b>D-FLIPFLOP</b>"), tr("D-FlipFlop"), 4, 4, 2, 2, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

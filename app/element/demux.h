@@ -12,19 +12,11 @@
 class Demux : public GraphicElement
 {
     Q_OBJECT
-    Q_PROPERTY(QString pixmapPath MEMBER m_pixmapPath CONSTANT)
-    Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
-    Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
 
 public:
     explicit Demux(QGraphicsItem *parent = nullptr);
 
     void updatePorts() override;
-
-private:
-    const QString m_pixmapPath = ":/basic/demux.svg";
-    const QString m_titleText = tr("<b>DEMULTIPLEXER</b>");
-    const QString m_translatedName = tr("Demux");
 };
 
 Q_DECLARE_METATYPE(Demux)

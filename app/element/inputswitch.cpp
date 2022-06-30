@@ -13,7 +13,7 @@ int id = qRegisterMetaType<InputSwitch>();
 }
 
 InputSwitch::InputSwitch(QGraphicsItem *parent)
-    : GraphicElementInput(ElementType::InputSwitch, ElementGroup::Input, 0, 0, 1, 1, parent)
+    : GraphicElementInput(ElementType::InputSwitch, ElementGroup::Input, ":/input/switchOn.svg", tr("<b>INPUT SWITCH</b>"), tr("Input Switch"), 0, 0, 1, 1, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

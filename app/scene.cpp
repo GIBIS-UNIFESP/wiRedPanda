@@ -336,10 +336,11 @@ void Scene::showGates(const bool checked)
 {
     m_showGates = checked;
     const auto sceneItems = items();
+
     for (auto *item : sceneItems) {
-        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
-        if ((item->type() == GraphicElement::Type) && elm) {
+        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
             const auto group = elm->elementGroup();
+
             if ((group != ElementGroup::Input) && (group != ElementGroup::Output) && (group != ElementGroup::Other)) {
                 item->setVisible(checked);
             }
@@ -351,19 +352,26 @@ void Scene::showWires(const bool checked)
 {
     m_showWires = checked;
     const auto sceneItems = items();
+
     for (auto *item : sceneItems) {
-        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
         if (item->type() == QNEConnection::Type) {
             item->setVisible(checked);
-        } else if ((item->type() == GraphicElement::Type) && elm) {
+        }
+
+        if (item->type() == GraphicElement::Type) {
+            auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
+
             if (elm->elementType() == ElementType::Node) {
                 elm->setVisible(checked);
             } else {
                 const auto elmInputs = elm->inputs();
+
                 for (auto *in : elmInputs) {
                     in->setVisible(checked);
                 }
+
                 const auto elmOutputs = elm->outputs();
+
                 for (auto *out : elmOutputs) {
                     out->setVisible(checked);
                 }

@@ -58,6 +58,7 @@ public:
         return instance;
     }
 
+    static QString themePath();
     static Theme theme();
     static ThemeAttributes attributes();
     static void setTheme(const Theme theme);

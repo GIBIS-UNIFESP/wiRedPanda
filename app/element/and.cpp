@@ -11,7 +11,7 @@ int id = qRegisterMetaType<And>();
 }
 
 And::And(QGraphicsItem *parent)
-    : GraphicElement(ElementType::And, ElementGroup::Gate, 2, 8, 1, 1, parent)
+    : GraphicElement(ElementType::And, ElementGroup::Gate, ":/basic/and.svg", tr("<b>AND</b>"), tr("And"), 2, 8, 1, 1, parent)
 {
     if (GlobalProperties::skipInit) {
         return;
