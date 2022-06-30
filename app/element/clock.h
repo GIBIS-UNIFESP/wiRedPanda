@@ -40,8 +40,8 @@ private:
 
     bool m_isOn = false;
     double m_frequency = 0;
-    int m_elapsed = 0;
-    int m_interval = 0;
+    std::chrono::duration<float, std::milli> m_interval;
+    std::chrono::steady_clock::time_point m_timePoint;
 };
 
 Q_DECLARE_METATYPE(Clock)
