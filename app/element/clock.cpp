@@ -5,6 +5,10 @@
 
 #include "qneport.h"
 
+#include <chrono>
+
+using namespace std::chrono_literals;
+
 namespace
 {
 int id = qRegisterMetaType<Clock>();
@@ -41,10 +45,10 @@ void Clock::updateClock()
         return;
     }
 
-    m_elapsed++;
+    const auto duration = std::chrono::duration<float, std::micro>(std::chrono::steady_clock::now() - m_timePoint);
 
-    if ((m_elapsed % m_interval) == 0) {
-        m_elapsed = 0;
+    if (duration > m_interval) {
+        m_timePoint = std::chrono::steady_clock::now();
         setOn(!m_isOn);
     }
 }
@@ -71,6 +75,7 @@ void Clock::setOn(const bool value, const int port)
     m_isOn = value;
     setPixmap(m_isOn);
     m_outputPorts.first()->setValue(static_cast<Status>(m_isOn));
+    update();
 }
 
 void Clock::save(QDataStream &stream) const
@@ -83,14 +88,18 @@ void Clock::save(QDataStream &stream) const
 void Clock::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
 {
     GraphicElement::load(stream, portMap, version);
+
     if (version < 1.1) {
         return;
     }
+
     float freq;
     stream >> freq;
+
     if (version >= 3.1) {
         stream >> m_locked;
     }
+
     setFrequency(freq);
 }
 
@@ -105,22 +114,22 @@ void Clock::setFrequency(const float freq)
         return;
     }
 
-    // FIXME: auxInterval gets the same value for many frequencies
-    int auxInterval = static_cast<int>(500 / (freq * GlobalProperties::globalClock));
-    if (auxInterval <= 0) {
+    std::chrono::duration<float, std::milli> auxInterval = 1s / (2 * freq);
+
+    if (auxInterval.count() <= 0) {
         return;
     }
 
     m_interval = auxInterval;
     m_frequency = static_cast<double>(freq);
-    m_elapsed = 0;
+    m_timePoint = std::chrono::steady_clock::now();
     reset = true;
 }
 
 void Clock::resetClock()
 {
     setOn(true);
-    m_elapsed = 0;
+    m_timePoint = std::chrono::steady_clock::now();
 }
 
 QString Clock::genericProperties()
