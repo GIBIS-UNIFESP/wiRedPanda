@@ -10,17 +10,9 @@
 class And : public GraphicElement
 {
     Q_OBJECT
-    Q_PROPERTY(QString pixmapPath MEMBER m_pixmapPath CONSTANT)
-    Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
-    Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
 
 public:
     explicit And(QGraphicsItem *parent = nullptr);
-
-private:
-    const QString m_pixmapPath = ":/basic/and.svg";
-    const QString m_titleText = tr("<b>AND</b>");
-    const QString m_translatedName = tr("And");
 };
 
 Q_DECLARE_METATYPE(And)

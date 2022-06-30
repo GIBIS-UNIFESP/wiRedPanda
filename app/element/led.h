@@ -10,9 +10,6 @@
 class Led : public GraphicElement
 {
     Q_OBJECT
-    Q_PROPERTY(QString pixmapPath MEMBER m_pixmapPath CONSTANT)
-    Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
-    Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
 
 public:
     explicit Led(QGraphicsItem *parent = nullptr);
@@ -28,10 +25,6 @@ public:
 
 private:
     void resetSkin(const int ledNumber);
-
-    const QString m_pixmapPath = ":/output/WhiteLedOff.svg";
-    const QString m_titleText = tr("<b>LED</b>");
-    const QString m_translatedName = tr("LED");
 
     QString m_color = "White";
     int m_colorNumber = 0; /* white = 0, red = 2, green = 4, blue = 6, purple = 8 */

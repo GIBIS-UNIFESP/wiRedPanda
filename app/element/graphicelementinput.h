@@ -12,8 +12,9 @@ class GraphicElementInput : public GraphicElement
     Q_OBJECT
 
 public:
-    explicit GraphicElementInput(ElementType type, ElementGroup group, const int minInputSize, const int maxInputSize, const int minOutputSize, const int maxOutputSize, QGraphicsItem *parent = nullptr)
-        : GraphicElement(type, group, minInputSize, maxInputSize, minOutputSize, maxOutputSize, parent){};
+    explicit GraphicElementInput(ElementType type, ElementGroup group, const QString &pixmapPath, const QString &titleText, const QString &translatedName,
+                                 const int minInputSize, const int maxInputSize, const int minOutputSize, const int maxOutputSize, QGraphicsItem *parent = nullptr)
+        : GraphicElement(type, group, pixmapPath, titleText, translatedName, minInputSize, maxInputSize, minOutputSize, maxOutputSize, parent) {};
 
     bool isLocked() const { return m_locked; }
     virtual bool isOn(const int port = 0) const = 0;

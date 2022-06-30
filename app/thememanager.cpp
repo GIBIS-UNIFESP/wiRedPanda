@@ -17,6 +17,11 @@ ThemeManager::ThemeManager(QObject *parent)
     m_attributes.setTheme(m_theme);
 }
 
+QString ThemeManager::themePath()
+{
+    return (ThemeManager::theme() == Theme::Light) ? "light" : "dark";
+}
+
 Theme ThemeManager::theme()
 {
     return instance().m_theme;

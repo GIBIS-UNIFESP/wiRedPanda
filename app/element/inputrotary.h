@@ -10,9 +10,6 @@
 class InputRotary : public GraphicElementInput
 {
     Q_OBJECT
-    Q_PROPERTY(QString pixmapPath MEMBER m_pixmapPath CONSTANT)
-    Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
-    Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
 
 public:
     explicit InputRotary(QGraphicsItem *parent = nullptr);
@@ -34,10 +31,6 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
-    const QString m_pixmapPath = ":/input/rotary/rotary_icon.svg";
-    const QString m_titleText = tr("<b>ROTARY SWITCH</b>");
-    const QString m_translatedName = tr("Rotary Switch");
-
     QPixmap m_arrow;
     QPixmap m_rotary;
     int m_currentPort = 0;

@@ -11,7 +11,7 @@ int id = qRegisterMetaType<InputVcc>();
 }
 
 InputVcc::InputVcc(QGraphicsItem *parent)
-    : GraphicElement(ElementType::InputVcc, ElementGroup::StaticInput, 0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::InputVcc, ElementGroup::StaticInput, ":/input/1.svg", tr("<b>VCC</b>"), tr("VCC"), 0, 0, 1, 1, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

@@ -11,7 +11,7 @@ int id = qRegisterMetaType<DLatch>();
 }
 
 DLatch::DLatch(QGraphicsItem *parent)
-    : GraphicElement(ElementType::DLatch, ElementGroup::Memory, 2, 2, 2, 2, parent)
+    : GraphicElement(ElementType::DLatch, ElementGroup::Memory, pixmapPath(), tr("<b>D-LATCH</b>"), tr("D-Latch"), 2, 2, 2, 2, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

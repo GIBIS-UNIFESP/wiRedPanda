@@ -10,9 +10,6 @@
 class Clock : public GraphicElementInput
 {
     Q_OBJECT
-    Q_PROPERTY(QString pixmapPath MEMBER m_pixmapPath CONSTANT)
-    Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
-    Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
 
 public:
     explicit Clock(QGraphicsItem *parent = nullptr);
@@ -34,10 +31,6 @@ public:
     void updateClock();
 
 private:
-    const QString m_pixmapPath = ":/input/clock1.svg";
-    const QString m_titleText = tr("<b>CLOCK SIGNAL</b>");
-    const QString m_translatedName = tr("Clock");
-
     bool m_isOn = false;
     double m_frequency = 0;
     std::chrono::duration<float, std::milli> m_interval;

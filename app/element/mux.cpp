@@ -11,7 +11,7 @@ int id = qRegisterMetaType<Mux>();
 }
 
 Mux::Mux(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Mux, ElementGroup::Mux, 3, 3, 1, 1, parent)
+    : GraphicElement(ElementType::Mux, ElementGroup::Mux, ":/basic/mux.svg", tr("<b>MULTIPLEXER</b>"), tr("Mux"), 3, 3, 1, 1, parent)
 {
     if (GlobalProperties::skipInit) {
         return;
