@@ -115,7 +115,7 @@ void GraphicElement::setPixmap(const QString &pixmapPath)
     m_currentPixmapPath = pixmapPath;
 }
 
-QVector<QNEOutputPort *> GraphicElement::outputs() const
+const QVector<QNEOutputPort *> &GraphicElement::outputs() const
 {
     return m_outputPorts;
 }
@@ -418,7 +418,7 @@ void GraphicElement::loadPixmapSkinName(QDataStream &stream, const int skin)
     }
 }
 
-QVector<QNEInputPort *> GraphicElement::inputs() const
+const QVector<QNEInputPort *>& GraphicElement::inputs() const
 {
     return m_inputPorts;
 }
@@ -498,7 +498,7 @@ void GraphicElement::setRotation(const qreal angle)
     isRotatable() ? QGraphicsItem::setRotation(m_angle) : rotatePorts(m_angle);
 }
 
-void GraphicElement::rotatePorts(const int angle)
+void GraphicElement::rotatePorts(const qreal angle)
 {
     for (auto *port : qAsConst(m_inputPorts)) {
         port->setTransformOriginPoint(mapToItem(port, boundingRect().center()));

@@ -1282,7 +1282,9 @@ void BewavedDolphin::resizeScene()
 void BewavedDolphin::tableView_selectionChanged() {
     m_externalScene->clearSelection();
 
-    for (auto index : m_signalTableView->selectionModel()->selectedIndexes()) {
+    const auto indexes = m_signalTableView->selectionModel()->selectedIndexes();
+
+    for (auto index : indexes) {
         m_inputs.at(index.row())->setSelected(true);
     }
 

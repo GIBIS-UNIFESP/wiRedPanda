@@ -60,9 +60,7 @@ QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList<int> 
     /* Stores all the wires linked to these elements */
     for (auto *item : elements) {
         if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
-            const auto inputs = elm->inputs();
-
-            for (auto *port : inputs) {
+            for (auto *port : elm->inputs()) {
                 for (auto *conn : port->connections()) {
                     if (!connections.contains(conn)) {
                         connections.append(conn);
@@ -70,9 +68,7 @@ QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList<int> 
                 }
             }
 
-            const auto outputs = elm->outputs();
-
-            for (auto *port : outputs) {
+            for (auto *port : elm->outputs()) {
                 for (auto *conn : port->connections()) {
                     if (!connections.contains(conn)) {
                         connections.append(conn);

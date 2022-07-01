@@ -125,21 +125,22 @@ void ICPrototypeImpl::loadInputElement(GraphicElement *elm)
 
 void ICPrototypeImpl::loadOutputElement(GraphicElement *elm)
 {
-    const auto inputs = elm->inputs();
-    for (auto *port : inputs) {
+    for (auto *port : elm->inputs()) {
         auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
         nodeElm->setPos(elm->pos());
         nodeElm->setLabel(elm->label());
+
         if (elm->label().isEmpty()) {
             nodeElm->setLabel(ElementFactory::typeToText(elm->elementType()));
         }
+
         auto *nodeOutput = nodeElm->outputPort();
         nodeOutput->setPos(port->pos());
         nodeOutput->setName(port->name());
         m_outputs.append(nodeOutput);
         m_elements.append(nodeElm);
-        auto conns = port->connections();
-        for (auto *conn : conns) {
+
+        for (auto *conn : port->connections()) {
             if (port == conn->end()) {
                 conn->setEnd(nodeElm->inputPort());
             }

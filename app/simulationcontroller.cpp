@@ -16,14 +16,16 @@
 
 #include <QGraphicsView>
 
+using namespace std::chrono_literals;
+
 SimulationController::SimulationController(Scene *scene)
     : QObject(scene)
     , m_scene(scene)
 {
-    m_simulationTimer.setInterval(1);
+    m_simulationTimer.setInterval(1ms);
     connect(&m_simulationTimer, &QTimer::timeout, this, &SimulationController::update);
 
-    m_viewTimer.setInterval(33);
+    m_viewTimer.setInterval(33ms);
     m_viewTimer.start();
     connect(&m_viewTimer,       &QTimer::timeout, this, &SimulationController::updateScene);
 }

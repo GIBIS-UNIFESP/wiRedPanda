@@ -70,8 +70,6 @@ public:
     QNEOutputPort *outputPort(const int pos = 0);
     QRectF boundingRect() const override;
     QString label() const;
-    QVector<QNEInputPort *> inputs() const;
-    QVector<QNEOutputPort *> outputs() const;
     bool canChangeSkin() const;
     bool hasAudio() const;
     bool hasColors() const;
@@ -81,6 +79,8 @@ public:
     bool isDisabled() const;
     bool isRotatable() const;
     bool isValid();
+    const QVector<QNEInputPort *> &inputs() const;
+    const QVector<QNEOutputPort *> &outputs() const;
     int inputSize() const;
     int maxInputSize() const;
     int maxOutputSize() const;
@@ -99,7 +99,7 @@ public:
     void disable();
     void enable();
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-    void rotatePorts(const int angle);
+    void rotatePorts(const qreal angle);
     void setInputSize(const int size);
     void setInputs(const QVector<QNEInputPort *> &inputs);
     void setLabel(const QString &label);

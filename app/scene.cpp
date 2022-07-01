@@ -364,15 +364,11 @@ void Scene::showWires(const bool checked)
             if (elm->elementType() == ElementType::Node) {
                 elm->setVisible(checked);
             } else {
-                const auto elmInputs = elm->inputs();
-
-                for (auto *in : elmInputs) {
+                for (auto *in : elm->inputs()) {
                     in->setVisible(checked);
                 }
 
-                const auto elmOutputs = elm->outputs();
-
-                for (auto *out : elmOutputs) {
+                for (auto *out : elm->outputs()) {
                     out->setVisible(checked);
                 }
             }
