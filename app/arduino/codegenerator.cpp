@@ -100,14 +100,18 @@ void CodeGenerator::declareInputs()
 {
     int counter = 1;
     m_stream << "/* ========= Inputs ========== */" << endl;
+
     for (auto *elm : m_elements) {
         const auto type = elm->elementType();
+
         if (type == ElementType::InputButton || type == ElementType::InputSwitch) {
             QString varName = elm->objectName() + QString::number(counter);
             QString label = elm->label();
+
             if (!label.isEmpty()) {
                 varName += "_" + label;
             }
+
             varName = removeForbiddenChars(varName);
             m_stream << QString("const int %1 = %2;").arg(varName, m_availablePins.first()) << endl;
             m_inputMap.append(MappedPin(elm, m_availablePins.first(), varName, elm->outputPort(0), 0));
@@ -116,6 +120,7 @@ void CodeGenerator::declareInputs()
             counter++;
         }
     }
+
     m_stream << endl;
 }
 
@@ -466,8 +471,7 @@ void CodeGenerator::assignLogicOperator(GraphicElement *elm)
         if (!inPort->connections().isEmpty()) {
             m_stream << otherPortName(inPort);
             for (int i = 1; i < elm->inputs().size(); ++i) {
-                const auto elmInputs = elm->inputs();
-                inPort = elmInputs[i];
+                inPort = elm->inputs().at(i);
                 m_stream << " " << logicOperator << " ";
                 m_stream << otherPortName(inPort);
             }
