@@ -25,9 +25,9 @@ Binários vinculados dinamicamente para macOS estão disponíveis [aqui](https:/
 
 #### Dependências
 
-Qt 5.7.0+ ou 6.2.0+ é necessário para compilar, assim como QtCharts e QtMultimedia.
+Qt 5.9.0+ ou 6.2.0+ é necessário para compilar, assim como QtCharts e QtMultimedia.
 
-Em distribuições como Arch Linux, Gentoo, Manjaro, Debian Testing, etc., o Qt 5.7+ pode ser instalado a partir dos repositórios padrão.
+Em distribuições como Arch Linux, Gentoo, Manjaro, Debian Testing, etc., o Qt 5.9+ pode ser instalado a partir dos repositórios padrão.
 
 * Debian Testing
 
