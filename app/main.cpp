@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
     app.setApplicationName("WiRedPanda");
     app.setApplicationVersion(APP_VERSION);
     app.setStyle("Fusion");
+    app.setWindowIcon(QIcon(":/toolbar/wpanda.svg"));
 
     try {
         QCommandLineParser parser;
