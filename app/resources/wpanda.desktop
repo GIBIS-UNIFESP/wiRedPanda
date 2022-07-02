@@ -1,11 +1,12 @@
 [Desktop Entry]
-GenericName=WiRedPanda
-Name=WiRedPanda
-Comment=Learn about logic circuits in an easy and friendly way.
-Exec=/bin/sh /usr/bin/wpanda.sh %f
-Icon=wpanda
 Type=Application
-Categories=Utility;
+Name=WiRedPanda
+GenericName=WiRedPanda
+Comment=Learn about logic circuits in an easy and friendly way.
+Icon=wpanda_icon
+Exec=wpanda
 Terminal=false
+Categories=Science;
 StartupNotify=false
 MimeType=application/x-wpanda;
+X-AppImage-Version=4.0.0
