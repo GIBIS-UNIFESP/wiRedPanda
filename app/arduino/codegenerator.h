@@ -18,12 +18,12 @@ class MappedPin
 {
 public:
     MappedPin() = default;
-    MappedPin(GraphicElement *elm, const QString &pin, const QString &varName, QNEPort *port, const int portNbr = 0)
+    MappedPin(GraphicElement *elm, const QString &pin, const QString &varName, QNEPort *port, const int portNumber = 0)
         : m_elm(elm)
         , m_port(port)
         , m_pin(pin)
         , m_varName(varName)
-        , m_portNbr(portNbr)
+        , m_portNumber(portNumber)
     {
     }
 
@@ -31,7 +31,7 @@ public:
     QNEPort *m_port = nullptr;
     QString m_pin;
     QString m_varName;
-    int m_portNbr = 0;
+    int m_portNumber = 0;
 };
 
 class CodeGenerator
