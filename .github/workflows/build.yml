@@ -35,16 +35,13 @@ jobs:
         make -j2
         cd test
         xvfb-run ./WPanda-test
+        
+    - name: Upload coverage data
+      run: |        
         gcov -abcfu build_files/obj/*.o
         curl -Os https://uploader.codecov.io/latest/linux/codecov
         chmod +x ./codecov
         ./codecov
-
-    - name: Deploy
-      uses: actions/upload-artifact@v3
-      with:
-        name: 'WiRedPanda-Ubuntu-Qt5.9.9'
-        path: build/app/wpanda
 
 # =================================
 
@@ -73,12 +70,6 @@ jobs:
         make -j2
         cd test
         xvfb-run ./WPanda-test
-
-    - name: Deploy
-      uses: actions/upload-artifact@v3
-      with:
-        name: 'WiRedPanda-Ubuntu-Qt5.12.12'
-        path: build/app/wpanda
         
 # =================================
 
@@ -108,12 +99,6 @@ jobs:
         cd test
         xvfb-run ./WPanda-test
 
-    - name: Deploy
-      uses: actions/upload-artifact@v3
-      with:
-        name: 'WiRedPanda-Ubuntu-Qt5.13.2'
-        path: build/app/wpanda
-
 # =================================
 
   Ubuntu-Qt5_14_2:
@@ -141,17 +126,11 @@ jobs:
         make -j2
         cd test
         xvfb-run ./WPanda-test
-
-    - name: Deploy
-      uses: actions/upload-artifact@v3
-      with:
-        name: 'WiRedPanda-Ubuntu-Qt5.14.2'
-        path: build/app/wpanda
         
 # =================================
 
-  Ubuntu-Qt5_15_2:
-    runs-on: ubuntu-latest
+  Ubuntu-Qt5_15_2-AppImage:
+    runs-on: ubuntu-18.04
 
     steps:
     - uses: actions/checkout@v3
@@ -176,11 +155,21 @@ jobs:
         cd test
         xvfb-run ./WPanda-test
 
+    - name: Make AppImage
+      run: |
+        mkdir appimage
+        cp app/resources/wpanda.desktop appimage/wpanda.desktop
+        cp app/resources/wpanda.svg appimage/wpanda_icon.svg
+        cp build/app/wpanda appimage/
+        wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
+        chmod +x ./linuxdeployqt-continuous-x86_64.AppImage
+        ./linuxdeployqt-continuous-x86_64.AppImage appimage/wpanda -appimage
+
     - name: Deploy
       uses: actions/upload-artifact@v3
       with:
-        name: 'WiRedPanda-Ubuntu-Qt5.15.2'
-        path: build/app/wpanda
+        name: WiRedPanda-Ubuntu-Qt5.15.2-AppImage
+        path: WiRedPanda-*.AppImage
 
 # =================================
 
@@ -209,12 +198,6 @@ jobs:
         make -j2
         cd test
         xvfb-run ./WPanda-test
-
-    - name: Deploy
-      uses: actions/upload-artifact@v3
-      with:
-        name: 'WiRedPanda-Ubuntu-Qt6.2.4'
-        path: build/app/wpanda
         
 # =================================
 
@@ -243,12 +226,6 @@ jobs:
         make -j2
         cd test
         xvfb-run ./WPanda-test
-
-    - name: Deploy
-      uses: actions/upload-artifact@v3
-      with:
-        name: 'WiRedPanda-Ubuntu-Qt6.3.1'
-        path: build/app/wpanda
         
 # =================================
 
@@ -285,23 +262,6 @@ jobs:
         jom
         jom check
 
-    - name: Make WiRedPanda package
-      run : |
-        cp -r examples build\app\release
-        cd build\app\release
-        windeployqt --compiler-runtime wpanda.exe
-        rm wpanda_pch.obj
-        rm wpanda_pch.pch
-        cd ..
-        ren release wpanda
-
-    - name: Deploy
-      continue-on-error: true
-      uses: actions/upload-artifact@v3
-      with:
-        name: WiRedPanda-Windows-Qt5.9.9
-        path: build\app\wpanda\
-
 # =================================
 
   Windows-Qt5_12_12:
@@ -336,23 +296,6 @@ jobs:
         qmake ../WPanda.pro
         jom
         jom check
-
-    - name: Make WiRedPanda package
-      run : |
-        cp -r examples build\app\release
-        cd build\app\release
-        windeployqt --compiler-runtime wpanda.exe
-        rm wpanda_pch.obj
-        rm wpanda_pch.pch
-        cd ..
-        ren release wpanda
-
-    - name: Deploy
-      continue-on-error: true
-      uses: actions/upload-artifact@v3
-      with:
-        name: WiRedPanda-Windows-Qt5.12.12
-        path: build\app\wpanda\
         
 # =================================
 
@@ -388,23 +331,6 @@ jobs:
         qmake ../WPanda.pro
         jom
         jom check
-
-    - name: Make WiRedPanda package
-      run : |
-        cp -r examples build\app\release
-        cd build\app\release
-        windeployqt --compiler-runtime wpanda.exe
-        rm wpanda_pch.obj
-        rm wpanda_pch.pch
-        cd ..
-        ren release wpanda
-
-    - name: Deploy
-      continue-on-error: true
-      uses: actions/upload-artifact@v3
-      with:
-        name: WiRedPanda-Windows-Qt5.13.2
-        path: build\app\wpanda\
         
 # =================================
 
@@ -440,23 +366,6 @@ jobs:
         qmake ../WPanda.pro
         jom
         jom check
-
-    - name: Make WiRedPanda package
-      run : |
-        cp -r examples build\app\release
-        cd build\app\release
-        windeployqt --compiler-runtime wpanda.exe
-        rm wpanda_pch.obj
-        rm wpanda_pch.pch
-        cd ..
-        ren release wpanda
-
-    - name: Deploy
-      continue-on-error: true
-      uses: actions/upload-artifact@v3
-      with:
-        name: WiRedPanda-Windows-Qt5.14.2
-        path: build\app\wpanda\
         
 # =================================
 
@@ -504,10 +413,9 @@ jobs:
         ren release wpanda
 
     - name: Deploy
-      continue-on-error: true
       uses: actions/upload-artifact@v3
       with:
-        name: WiRedPanda-Windows-Qt5.15.2
+        name: WiRedPanda-Windows-Qt5.15.2-Portable
         path: build\app\wpanda\
 
 # =================================
@@ -544,23 +452,6 @@ jobs:
         qmake ../WPanda.pro
         jom
         jom check
-
-    - name: Make WiRedPanda package
-      run : |
-        cp -r examples build\app\release
-        cd build\app\release
-        windeployqt --compiler-runtime wpanda.exe
-        rm wpanda_pch.obj
-        rm wpanda_pch.pch
-        cd ..
-        ren release wpanda
-
-    - name: Deploy
-      continue-on-error: true
-      uses: actions/upload-artifact@v3
-      with:
-        name: WiRedPanda-Windows-Qt6.2.4
-        path: build\app\wpanda\
         
 # =================================
 
@@ -596,23 +487,6 @@ jobs:
         qmake ../WPanda.pro
         jom
         jom check
-
-    - name: Make WiRedPanda package
-      run : |
-        cp -r examples build\app\release
-        cd build\app\release
-        windeployqt --compiler-runtime wpanda.exe
-        rm wpanda_pch.obj
-        rm wpanda_pch.pch
-        cd ..
-        ren release wpanda
-
-    - name: Deploy
-      continue-on-error: true
-      uses: actions/upload-artifact@v3
-      with:
-        name: WiRedPanda-Windows-Qt6.3.1
-        path: build\app\wpanda\
 
 # =================================
 
@@ -665,9 +539,3 @@ jobs:
         qmake ../WPanda.pro
         make -j3
         make check
-
-    - name: Deploy
-      uses: actions/upload-artifact@v3
-      with:
-        name: WiRedPanda-macOS-Qt6
-        path: build/app/wpanda.app/Contents/MacOS/wpanda
