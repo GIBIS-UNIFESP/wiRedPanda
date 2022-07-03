@@ -145,14 +145,17 @@ jobs:
         modules: qtcharts
         aqtversion: ==2.1.0
 
-    - name: Build and test
+    - name: Build
       run: |
         sudo apt install libgstreamer-gl1.0-0
         mkdir build
         cd build
         qmake ../WPanda.pro
         make -j2
-        cd test
+        
+    - name: Test
+      run: |
+        cd build/test
         xvfb-run ./WPanda-test
 
     - name: Make AppImage
@@ -163,13 +166,16 @@ jobs:
         cp build/app/wpanda appimage/
         wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
         chmod +x ./linuxdeployqt-continuous-x86_64.AppImage
-        ./linuxdeployqt-continuous-x86_64.AppImage appimage/wpanda -appimage
+        VERSION=4 ./linuxdeployqt-continuous-x86_64.AppImage appimage/wpanda -appimage
+        rm ./linuxdeployqt-continuous-x86_64.AppImage
+        mv WiRedPanda-4-x86_64.AppImage WiRedPanda-Ubuntu-Qt5.AppImage
 
-    - name: Deploy
-      uses: actions/upload-artifact@v3
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
-        name: WiRedPanda-Ubuntu-Qt5.15.2-AppImage
-        path: WiRedPanda-*.AppImage
+        fail_on_unmatched_files: true
+        files: '*.AppImage'
 
 # =================================
 
@@ -392,7 +398,7 @@ jobs:
     - name: Setup MSVC Toolchain [Windows]
       uses: seanmiddleditch/gha-setup-vsdevenv@v4
 
-    - name: Build and test
+    - name: Build
       shell: cmd
       run: |
         choco install jom
@@ -400,23 +406,31 @@ jobs:
         cd build
         qmake ../WPanda.pro
         jom
+        
+    - name: Test
+      shell: cmd
+      run: |
+        cd build
         jom check
 
     - name: Make WiRedPanda package
+      if: startsWith(github.ref, 'refs/tags/')
       run : |
-        cp -r examples build\app\release
-        cd build\app\release
+        cp -r examples build/app/release
+        cd build/app/release
         windeployqt --compiler-runtime wpanda.exe
         rm wpanda_pch.obj
         rm wpanda_pch.pch
         cd ..
         ren release wpanda
-
-    - name: Deploy
-      uses: actions/upload-artifact@v3
+        Compress-Archive -Path wpanda -DestinationPath WiRedPanda-Windows-Qt5-Portable.zip
+        
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
-        name: WiRedPanda-Windows-Qt5.15.2-Portable
-        path: build\app\wpanda\
+        fail_on_unmatched_files: true
+        files: 'build/app/*.zip'
 
 # =================================
 
@@ -502,20 +516,30 @@ jobs:
     - name: Install Qt
       run: brew install qt5 gdb
 
-    - name: Build and test
+    - name: Build
       run: |
         QTDIR="/usr/local/opt/qt5/" && PATH="${QTDIR}/bin:$PATH" && LDFLAGS=-L${QTDIR}/lib && CPPFLAGS=-I${QTDIR}/include;
         mkdir build
         cd build
         qmake ../WPanda.pro
         make -j3
-        make check
 
-    - name: Deploy
-      uses: actions/upload-artifact@v3
+    - name: Test
+      run: |
+        cd build
+        make check
+        
+    - name: Rename file
+      run: |
+        cd build/app
+        zip -r WiRedPanda-macOS-Qt5.zip wpanda.app
+        
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
-        name: WiRedPanda-macOS-Qt5
-        path: build/app/wpanda.app/Contents/MacOS/wpanda
+        fail_on_unmatched_files: true
+        files: 'build/app/*.zip'
 
 # =================================
 
