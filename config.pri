@@ -29,10 +29,12 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 DEFINES += QT_MESSAGELOGCONTEXT
 
 linux-g++ {
-    QMAKE_CXXFLAGS += --coverage
-    QMAKE_LFLAGS += --coverage
+    GITHUB_ACTIONS = $$(GITHUB_ACTIONS)
 
-    #------------------------------
+    contains(GITHUB_ACTIONS, true) {
+        QMAKE_CXXFLAGS += --coverage
+        QMAKE_LFLAGS += --coverage
+    }
 
     GOLD_BIN = $$system(which gold)
 
