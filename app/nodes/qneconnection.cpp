@@ -36,6 +36,11 @@
 #include <QPen>
 #include <QStyleOptionGraphicsItem>
 
+namespace
+{
+int id = qRegisterMetaType<QNEConnection>();
+}
+
 QNEConnection::QNEConnection(QGraphicsItem *parent)
     : QGraphicsPathItem(parent)
 {
