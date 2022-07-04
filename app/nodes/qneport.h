@@ -100,8 +100,9 @@ protected:
 class QNEInputPort : public QNEPort
 {
 public:
-    explicit QNEInputPort(QGraphicsItem *parent);
+    explicit QNEInputPort(QGraphicsItem *parent = nullptr);
     ~QNEInputPort() override;
+    QNEInputPort(const QNEInputPort &other) : QNEInputPort(other.parentItem()) {}
 
     bool isInput() const override;
     bool isOutput() const override;
@@ -109,12 +110,15 @@ public:
     void setStatus(Status status) override;
     void updateTheme() override;
 };
+
+Q_DECLARE_METATYPE(QNEInputPort)
 
 class QNEOutputPort : public QNEPort
 {
 public:
-    explicit QNEOutputPort(QGraphicsItem *parent);
+    explicit QNEOutputPort(QGraphicsItem *parent = nullptr);
     ~QNEOutputPort() override;
+    QNEOutputPort(const QNEOutputPort &other) : QNEOutputPort(other.parentItem()) {}
 
     bool isInput() const override;
     bool isOutput() const override;
@@ -122,3 +126,5 @@ public:
     void setStatus(Status status) override;
     void updateTheme() override;
 };
+
+Q_DECLARE_METATYPE(QNEOutputPort)

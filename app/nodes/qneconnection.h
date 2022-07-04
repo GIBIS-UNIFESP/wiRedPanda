@@ -46,6 +46,7 @@ public:
 
     explicit QNEConnection(QGraphicsItem *parent = nullptr);
     ~QNEConnection() override;
+    QNEConnection(const QNEConnection &other) : QNEConnection(other.parentItem()) {}
 
     QNEInputPort *end() const;
     QNEInputPort *otherPort(const QNEOutputPort *port) const;
@@ -80,5 +81,7 @@ private:
     QPointF m_startPos;
     Status m_status = Status::Invalid;
 };
+
+Q_DECLARE_METATYPE(QNEConnection)
 
 QDataStream &operator<<(QDataStream &stream, const QNEConnection *item);
