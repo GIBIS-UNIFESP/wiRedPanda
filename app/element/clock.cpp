@@ -3,6 +3,7 @@
 
 #include "clock.h"
 
+#include "globalproperties.h"
 #include "qneport.h"
 
 #include <chrono>

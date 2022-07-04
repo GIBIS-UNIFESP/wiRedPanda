@@ -3,7 +3,7 @@
 
 #include "and.h"
 
-#include "elementfactory.h"
+#include "globalproperties.h"
 
 namespace
 {

@@ -3,6 +3,7 @@
 
 #include "jkflipflop.h"
 
+#include "globalproperties.h"
 #include "qneport.h"
 
 namespace

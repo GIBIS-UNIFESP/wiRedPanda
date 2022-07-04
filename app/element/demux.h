@@ -7,8 +7,6 @@
 
 #include "graphicelement.h"
 
-#include <QObject>
-
 class Demux : public GraphicElement
 {
     Q_OBJECT

@@ -3,6 +3,7 @@
 
 #include "inputgnd.h"
 
+#include "globalproperties.h"
 #include "qneport.h"
 
 namespace

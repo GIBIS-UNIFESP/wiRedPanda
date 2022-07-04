@@ -3,6 +3,8 @@
 
 #include "nor.h"
 
+#include "globalproperties.h"
+
 namespace
 {
 int id = qRegisterMetaType<Nor>();

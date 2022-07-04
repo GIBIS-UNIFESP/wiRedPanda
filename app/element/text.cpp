@@ -3,6 +3,8 @@
 
 #include "text.h"
 
+#include "globalproperties.h"
+
 namespace
 {
 int id = qRegisterMetaType<Text>();

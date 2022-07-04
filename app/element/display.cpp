@@ -3,6 +3,8 @@
 
 #include "display.h"
 
+#include "common.h"
+#include "globalproperties.h"
 #include "qneport.h"
 
 #include <QPainter>

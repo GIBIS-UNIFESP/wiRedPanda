@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include "icmanager.h"
 #include "qneport.h"
 #include "simulationcontroller.h"
 

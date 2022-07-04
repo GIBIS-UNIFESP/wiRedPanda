@@ -3,6 +3,8 @@
 
 #include "xor.h"
 
+#include "globalproperties.h"
+
 namespace
 {
 int id = qRegisterMetaType<Xor>();

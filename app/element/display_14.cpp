@@ -4,6 +4,7 @@
 #include "display_14.h"
 
 #include "display.h"
+#include "globalproperties.h"
 #include "qneport.h"
 
 #include <QPainter>

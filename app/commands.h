@@ -5,7 +5,8 @@
 
 #pragma once
 
-#include "workspace.h"
+#include "graphicelement.h"
+#include "scene.h"
 
 #include <QCoreApplication>
 

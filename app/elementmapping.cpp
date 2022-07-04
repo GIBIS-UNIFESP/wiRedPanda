@@ -4,6 +4,7 @@
 #include "elementmapping.h"
 
 #include "clock.h"
+#include "common.h"
 #include "graphicelement.h"
 #include "graphicelementinput.h"
 #include "ic.h"

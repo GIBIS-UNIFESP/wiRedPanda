@@ -3,6 +3,8 @@
 
 #include "nand.h"
 
+#include "globalproperties.h"
+
 namespace
 {
 int id = qRegisterMetaType<Nand>();

@@ -3,6 +3,7 @@
 
 #include "inputswitch.h"
 
+#include "globalproperties.h"
 #include "qneport.h"
 
 #include <QGraphicsSceneMouseEvent>

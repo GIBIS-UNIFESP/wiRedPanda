@@ -3,6 +3,7 @@
 
 #include "node.h"
 
+#include "globalproperties.h"
 #include "qneport.h"
 
 namespace
