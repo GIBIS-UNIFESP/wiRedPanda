@@ -243,6 +243,10 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
         return;
     }
 
+    if (actionText == tr("Copy") || actionText == tr("Cut") || actionText == tr("Delete")) {
+        return;
+    }
+
     throw Pandaception(tr("Unknown context menu option."));
 }
 
