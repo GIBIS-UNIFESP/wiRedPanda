@@ -14,6 +14,7 @@
 #include <QStandardItemModel>
 
 class GraphicsView;
+class MainWindow;
 class QItemSelection;
 class QSaveFile;
 class QTableView;

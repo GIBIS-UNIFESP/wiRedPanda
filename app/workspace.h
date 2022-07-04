@@ -5,11 +5,10 @@
 
 #pragma once
 
-#include "graphicelement.h"
 #include "graphicsview.h"
-#include "mainwindow.h"
 #include "scene.h"
 
+#include <QFileInfo>
 #include <QTemporaryFile>
 #include <QUndoStack>
 

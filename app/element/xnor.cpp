@@ -3,6 +3,8 @@
 
 #include "xnor.h"
 
+#include "globalproperties.h"
+
 namespace
 {
 int id = qRegisterMetaType<Xnor>();

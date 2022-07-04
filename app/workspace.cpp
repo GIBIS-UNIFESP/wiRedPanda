@@ -5,6 +5,7 @@
 
 #include "common.h"
 #include "globalproperties.h"
+#include "icmanager.h"
 #include "serializationfunctions.h"
 #include "settings.h"
 #include "simulationblocker.h"

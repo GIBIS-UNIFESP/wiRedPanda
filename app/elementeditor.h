@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "workspace.h"
+#include "scene.h"
 
 #include <QWidget>
 

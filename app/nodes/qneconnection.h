@@ -25,7 +25,6 @@
 
 #pragma once
 
-#include "common.h"
 #include "enums.h"
 #include "itemwithid.h"
 

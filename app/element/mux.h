@@ -7,8 +7,6 @@
 
 #include "graphicelement.h"
 
-#include <QObject>
-
 class Mux : public GraphicElement
 {
     Q_OBJECT

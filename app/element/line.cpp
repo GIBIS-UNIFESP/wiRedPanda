@@ -3,6 +3,8 @@
 
 #include "line.h"
 
+#include "globalproperties.h"
+
 namespace
 {
 int id = qRegisterMetaType<Line>();

@@ -3,6 +3,7 @@
 
 #include "mux.h"
 
+#include "globalproperties.h"
 #include "qneport.h"
 
 namespace

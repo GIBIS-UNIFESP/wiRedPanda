@@ -3,6 +3,7 @@
 
 #include "inputvcc.h"
 
+#include "globalproperties.h"
 #include "qneport.h"
 
 namespace
