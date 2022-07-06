@@ -23,5 +23,7 @@ public:
     int length();
 
 private:
+    Q_DISABLE_COPY(LengthDialog)
+
     Ui::LengthDialog *m_ui;
 };

@@ -38,6 +38,8 @@ public:
     void updateLogic();
 
 private:
+    Q_DISABLE_COPY(LogicElement)
+
     // Main function to update the logic of an element. Computes the outputs, given the inputs
     virtual void _updateLogic(const QVector<bool> &inputs) = 0;
 

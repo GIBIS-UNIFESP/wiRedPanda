@@ -37,6 +37,8 @@ signals:
     void sendCommand(QUndoCommand *cmd);
 
 private:
+    Q_DISABLE_COPY(ElementEditor)
+
     void apply();
     void defaultSkin();
     void inputIndexChanged(const int index);

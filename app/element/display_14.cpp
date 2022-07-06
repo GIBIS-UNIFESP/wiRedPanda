@@ -161,8 +161,8 @@ void Display14::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, con
     GraphicElement::load(stream, portMap, version);
 
     if (version >= 3.1) {
-        QString color;
-        stream >> color;
-        setColor(color);
+        QString color_;
+        stream >> color_;
+        setColor(color_);
     }
 }

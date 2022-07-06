@@ -106,7 +106,9 @@ int main(int argc, char *argv[])
         }
 
         auto *window = new MainWindow();
+        app.setMainWindow(window);
         window->show();
+
         if (!args.empty()) {
             window->loadPandaFile(args[0]);
         }

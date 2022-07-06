@@ -13,11 +13,10 @@
 #include "elementmapping.h"
 #include "globalproperties.h"
 #include "graphicsview.h"
-#include "icmanager.h"
-#include "recentfilescontroller.h"
+#include "recentfiles.h"
 #include "settings.h"
+#include "simulation.h"
 #include "simulationblocker.h"
-#include "simulationcontroller.h"
 #include "thememanager.h"
 #include "workspace.h"
 
@@ -83,16 +82,13 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     m_ui->tabElements->setTabEnabled(5, false);
 
     qCDebug(zero) << tr("Loading recent file list.");
-    m_recentFilesController = new RecentFilesController(this);
-    connect(this, &MainWindow::addRecentFile, m_recentFilesController, &RecentFilesController::addRecentFile);
+    m_recentFiles = new RecentFiles(this);
+    connect(this, &MainWindow::addRecentFile, m_recentFiles, &RecentFiles::addRecentFile);
     createRecentFileActions();
-    connect(m_recentFilesController, &RecentFilesController::recentFilesUpdated, this, &MainWindow::updateRecentFileActions);
+    connect(m_recentFiles, &RecentFiles::recentFilesUpdated, this, &MainWindow::updateRecentFileActions);
 
     qCDebug(zero) << tr("Checking playing simulation.");
     m_ui->actionPlay->setChecked(true);
-
-    qCDebug(zero) << tr("Connecting ICManager to MainWindow");
-    connect(&ICManager::instance(), &ICManager::openIC, this, &MainWindow::loadPandaFile);
 
     qCDebug(zero) << tr("Setting connections");
     connect(m_ui->actionAbout,            &QAction::triggered,       this,                &MainWindow::on_actionAbout_triggered);
@@ -517,7 +513,7 @@ void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
 
     m_ui->tab->setTabText(m_tabIndex, text);
 
-    qCDebug(zero) << tr("Adding file to controller.");
+    qCDebug(zero) << tr("Adding file to recent files.");
     emit addRecentFile(fileInfo.absoluteFilePath());
 }
 
@@ -601,9 +597,9 @@ void MainWindow::disconnectTab()
 
     m_ui->elementEditor->setScene(nullptr);
 
-    qCDebug(zero) << tr("Stopping simulation controller.");
-    m_currentTab->simulationController()->stop();
-    qCDebug(zero) << tr("Disconnecting zoom from UI controllers.");
+    qCDebug(zero) << tr("Stopping simulation.");
+    m_currentTab->simulation()->stop();
+    qCDebug(zero) << tr("Disconnecting zoom from UI.");
     disconnect(m_currentTab->view(), &GraphicsView::zoomChanged, this, &MainWindow::zoomChanged);
     qCDebug(zero) << tr("Removing undo and redo actions from UI menu.");
     removeUndoRedoMenu();
@@ -618,8 +614,6 @@ void MainWindow::disconnectTab()
 
 void MainWindow::connectTab()
 {
-    qCDebug(zero) << tr("Selecting workspace.");
-    m_currentTab->selectWorkspace();
     qCDebug(zero) << tr("Connecting undo and redo functions to UI menu.");
     addUndoRedoMenu();
     qCDebug(zero) << tr("Setting Panda file info.");
@@ -636,8 +630,8 @@ void MainWindow::connectTab()
     connect(m_ui->actionPaste,          &QAction::triggered,        m_currentTab->scene(), &Scene::pasteAction);
 
     if (m_ui->actionPlay->isChecked()) {
-        qCDebug(zero) << tr("Restarting simulation controller.");
-        m_currentTab->simulationController()->start();
+        qCDebug(zero) << tr("Restarting simulation.");
+        m_currentTab->simulation()->start();
         m_currentTab->scene()->clearSelection();
     }
 
@@ -657,7 +651,7 @@ void MainWindow::tabChanged(const int newTabIndex)
         return;
     }
 
-    m_currentTab = dynamic_cast<WorkSpace *>(m_ui->tab->currentWidget());
+    m_currentTab = qobject_cast<WorkSpace *>(m_ui->tab->currentWidget());
     qCDebug(zero) << tr("Selecting tab:") << newTabIndex;
     connectTab();
     qCDebug(zero) << tr("New tab selected. Dolphin fileName:") << m_currentTab->dolphinFileName();
@@ -777,7 +771,7 @@ void MainWindow::exportToArduino(QString fileName)
         throw Pandaception(tr("The panda file is empty."));
     }
 
-    SimulationBlocker simulationBlocker(m_currentTab->simulationController());
+    SimulationBlocker simulationBlocker(m_currentTab->simulation());
 
     if (!fileName.endsWith(".ino")) {
         fileName.append(".ino");
@@ -869,8 +863,8 @@ void MainWindow::zoomChanged()
 
 void MainWindow::updateRecentFileActions()
 {
-    const auto files = m_recentFilesController->recentFiles();
-    const int numRecentFiles = qMin(files.size(), RecentFilesController::MaxRecentFiles);
+    const auto files = m_recentFiles->recentFiles();
+    const int numRecentFiles = qMin(files.size(), RecentFiles::MaxRecentFiles);
 
     if (numRecentFiles > 0) {
         m_ui->menuRecentFiles->setEnabled(true);
@@ -885,7 +879,7 @@ void MainWindow::updateRecentFileActions()
         actions.at(i)->setVisible(true);
     }
 
-    for (int i = numRecentFiles; i < RecentFilesController::MaxRecentFiles; ++i) {
+    for (int i = numRecentFiles; i < RecentFiles::MaxRecentFiles; ++i) {
         actions.at(i)->setVisible(false);
     }
 }
@@ -901,7 +895,7 @@ void MainWindow::createRecentFileActions()
 {
     m_ui->menuRecentFiles->clear();
 
-    for (int i = 0; i < RecentFilesController::MaxRecentFiles; ++i) {
+    for (int i = 0; i < RecentFiles::MaxRecentFiles; ++i) {
         auto *action = new QAction(this);
         action->setVisible(false);
         connect(action, &QAction::triggered, this, &MainWindow::openRecentFile);
@@ -992,7 +986,7 @@ void MainWindow::retranslateUi()
     }
 
     for (int index = 0; index < m_ui->tab->count(); ++index) {
-        auto *workspace = dynamic_cast<WorkSpace *>(m_ui->tab->widget(index));
+        auto *workspace = qobject_cast<WorkSpace *>(m_ui->tab->widget(index));
         auto *undoStack = workspace->scene()->undoStack();
         auto fileInfo = workspace->fileInfo();
 
@@ -1073,9 +1067,9 @@ void MainWindow::on_actionPlay_toggled(const bool checked)
         return;
     }
 
-    auto *simController = m_currentTab->simulationController();
+    auto *simulation = m_currentTab->simulation();
 
-    checked ? simController->start() : simController->stop();
+    checked ? simulation->start() : simulation->stop();
 }
 
 // TODO: call this function with the list of files and set directory watcher.

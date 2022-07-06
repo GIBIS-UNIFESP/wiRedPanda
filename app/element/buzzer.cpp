@@ -42,7 +42,7 @@ void Buzzer::refresh()
         return;
     }
 
-    const Status inputValue = m_inputPorts.first()->status(); // TODO: why only the first input?
+    const Status inputValue = m_inputPorts.constFirst()->status(); // TODO: why only the first input?
 
     (inputValue == Status::Active) ? playBuzzer() : stopBuzzer();
 }
@@ -54,7 +54,7 @@ void Buzzer::setAudio(const QString &note)
     }
 
     m_audio.setSource(QUrl::fromLocalFile(":output/audio/" + note + ".wav"));
-    m_audio.setVolume(0.35f);
+    m_audio.setVolume(0.35);
     m_audio.setLoopCount(QSoundEffect::Infinite); // TODO: fix audio clipping when repeating
     m_note = note;
 }

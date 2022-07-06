@@ -7,7 +7,6 @@
 #include "elementfactory.h"
 #include "globalproperties.h"
 #include "ic.h"
-#include "icmanager.h"
 #include "qneconnection.h"
 
 #include <QApplication>
@@ -51,13 +50,6 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &stream, 
             auto *elm = ElementFactory::buildElement(elmType);
             itemList.append(elm);
             elm->load(stream, portMap, version);
-
-            if (elm->elementType() == ElementType::IC) {
-                qCDebug(three) << tr("Loading IC.");
-                IC *ic = qgraphicsitem_cast<IC *>(elm);
-                ICManager::loadIC(ic, ic->file());
-            }
-
             break;
         }
 

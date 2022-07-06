@@ -37,6 +37,8 @@ public:
     void showWaveform();
 
 private:
+    Q_DISABLE_COPY(SimpleWaveform)
+
     void on_pushButtonCopy_clicked();
     void on_radioButtonDecreasing_clicked();
     void on_radioButtonIncreasing_clicked();

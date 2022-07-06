@@ -5,7 +5,6 @@
 
 #include "common.h"
 #include "globalproperties.h"
-#include "icmanager.h"
 #include "serializationfunctions.h"
 #include "settings.h"
 #include "simulationblocker.h"
@@ -42,9 +41,9 @@ GraphicsView *WorkSpace::view()
     return &m_view;
 }
 
-SimulationController *WorkSpace::simulationController()
+Simulation *WorkSpace::simulation()
 {
-    return m_scene.simulationController();
+    return m_scene.simulation();
 }
 
 QFileInfo WorkSpace::fileInfo()
@@ -150,7 +149,7 @@ void WorkSpace::load(const QString &fileName)
 void WorkSpace::load(QDataStream &stream)
 {
     qCDebug(zero) << tr("Loading file.");
-    SimulationBlocker simulationBlocker(m_scene.simulationController());
+    SimulationBlocker simulationBlocker(m_scene.simulation());
     qCDebug(zero) << tr("Stopped simulation.");
     const double version = SerializationFunctions::loadVersion(stream);
 
@@ -196,11 +195,6 @@ void WorkSpace::setDolphinFileName(const QString &fileName)
 QString WorkSpace::dolphinFileName()
 {
     return m_dolphinFileName;
-}
-
-void WorkSpace::selectWorkspace()
-{
-    ICManager::wakeUp();
 }
 
 void WorkSpace::setAutosaveFileName()

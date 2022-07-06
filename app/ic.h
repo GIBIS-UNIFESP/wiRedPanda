@@ -5,7 +5,10 @@
 
 #pragma once
 
+#include "elementmapping.h"
 #include "graphicelement.h"
+
+#include <QFileSystemWatcher>
 
 class ICPrototype;
 
@@ -17,9 +20,12 @@ class IC : public GraphicElement
 
 public:
     explicit IC(QGraphicsItem *parent = nullptr);
-    ~IC() override;
+    ~IC() override = default;
+    IC(const IC &other) : IC(other.parentItem()) {}
 
-    ICPrototype *prototype();
+    ElementMapping *generateMap() const;
+    LogicElement *icInput(const int index);
+    LogicElement *icOutput(const int index);
     QRectF boundingRect() const override;
     QString file() const;
     QVector<GraphicElement *> elements() const;
@@ -32,11 +38,24 @@ protected:
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
-    QRectF portsBoundingRect() const;
-    void loadInputs(ICPrototype *prototype);
-    void loadOutputs(ICPrototype *prototype);
+    static bool comparePorts(QNEPort *port1, QNEPort *port2);
+    static void sortPorts(QVector<QNEPort *> &map);
 
+    QRectF portsBoundingRect() const;
+    void loadInputElement(GraphicElement *elm);
+    void loadInputs();
+    void loadInputsLabels();
+    void loadOutputElement(GraphicElement *elm);
+    void loadOutputs();
+    void loadOutputsLabels();
+
+    QFileSystemWatcher m_fileWatcher;
     QString m_file;
+    QVector<GraphicElement *> m_icElements;
+    QVector<QNEPort *> m_icInputs;
+    QVector<QNEPort *> m_icOutputs;
+    QVector<QString> m_icInputLabels;
+    QVector<QString> m_icOutputLabels;
 };
 
 Q_DECLARE_METATYPE(IC)

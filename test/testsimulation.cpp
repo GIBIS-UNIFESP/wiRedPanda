@@ -1,7 +1,7 @@
 // Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "testsimulationcontroller.h"
+#include "testsimulation.h"
 
 #include "and.h"
 #include "elementmapping.h"
@@ -13,7 +13,7 @@
 
 #include <QTest>
 
-void TestSimulationController::testCase1()
+void TestSimulation::testCase1()
 {
     WorkSpace workspace;
 

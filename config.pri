@@ -130,23 +130,19 @@ SOURCES += \
     $$PWD/app/graphicelement.cpp \
     $$PWD/app/graphicsview.cpp \
     $$PWD/app/ic.cpp \
-    $$PWD/app/icmanager.cpp \
-    $$PWD/app/icmapping.cpp \
-    $$PWD/app/icprototype.cpp \
-    $$PWD/app/icprototypeimpl.cpp \
     $$PWD/app/itemwithid.cpp \
     $$PWD/app/lengthdialog.cpp \
     $$PWD/app/logicelement.cpp \
     $$PWD/app/mainwindow.cpp \
     $$PWD/app/nodes/qneconnection.cpp \
     $$PWD/app/nodes/qneport.cpp \
-    $$PWD/app/recentfilescontroller.cpp \
+    $$PWD/app/recentfiles.cpp \
     $$PWD/app/scene.cpp \
     $$PWD/app/serializationfunctions.cpp \
     $$PWD/app/settings.cpp \
     $$PWD/app/simplewaveform.cpp \
+    $$PWD/app/simulation.cpp \
     $$PWD/app/simulationblocker.cpp \
-    $$PWD/app/simulationcontroller.cpp \
     $$PWD/app/thememanager.cpp \
     $$PWD/app/workspace.cpp
 
@@ -167,23 +163,19 @@ HEADERS += \
     $$PWD/app/graphicelement.h \
     $$PWD/app/graphicsview.h \
     $$PWD/app/ic.h \
-    $$PWD/app/icmanager.h \
-    $$PWD/app/icmapping.h \
-    $$PWD/app/icprototype.h \
-    $$PWD/app/icprototypeimpl.h \
     $$PWD/app/itemwithid.h \
     $$PWD/app/lengthdialog.h \
     $$PWD/app/logicelement.h \
     $$PWD/app/mainwindow.h \
     $$PWD/app/nodes/qneconnection.h \
     $$PWD/app/nodes/qneport.h \
-    $$PWD/app/recentfilescontroller.h \
+    $$PWD/app/recentfiles.h \
     $$PWD/app/scene.h \
     $$PWD/app/serializationfunctions.h \
     $$PWD/app/settings.h \
     $$PWD/app/simplewaveform.h \
+    $$PWD/app/simulation.h \
     $$PWD/app/simulationblocker.h \
-    $$PWD/app/simulationcontroller.h \
     $$PWD/app/thememanager.h \
     $$PWD/app/workspace.h
 

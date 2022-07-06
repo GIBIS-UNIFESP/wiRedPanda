@@ -105,7 +105,7 @@ void Led::refresh()
     if (isValid()) {
         std::bitset<4> indexBit;
         for (int i = 0; i < inputSize(); ++i) {
-            indexBit[i] = static_cast<int>(inputPort(inputSize() - i - 1)->status());
+            indexBit[i] = static_cast<bool>(inputPort(inputSize() - i - 1)->status() == Status::Active);
         }
         index = static_cast<int>(indexBit.to_ulong());
     }
@@ -167,9 +167,9 @@ void Led::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const dou
     GraphicElement::load(stream, portMap, version);
 
     if (version >= 1.1) {
-        QString color;
-        stream >> color;
-        setColor(color);
+        QString color_;
+        stream >> color_;
+        setColor(color_);
     }
 }
 
@@ -193,7 +193,7 @@ void Led::setSkin(const bool defaultSkin, const QString &fileName)
     if (isValid()) {
         std::bitset<4> indexBit;
         for (int i = 0; i < inputSize(); ++i) {
-            indexBit[i] = static_cast<int>(inputPort(inputSize() - i - 1)->status());
+            indexBit[i] = static_cast<bool>(inputPort(inputSize() - i - 1)->status() == Status::Active);
         }
         index = static_cast<int>(indexBit.to_ulong());
     }

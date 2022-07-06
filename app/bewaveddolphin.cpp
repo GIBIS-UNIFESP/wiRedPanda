@@ -185,7 +185,7 @@ void BewavedDolphin::loadElements()
     for (auto *elm : qAsConst(elements)) {
         if (elm && (elm->type() == GraphicElement::Type)) {
             if (elm->elementGroup() == ElementGroup::Input) {
-                m_inputs.append(dynamic_cast<GraphicElementInput *>(elm));
+                m_inputs.append(qobject_cast<GraphicElementInput *>(elm));
                 m_inputPorts += elm->outputSize();
             } else if (elm->elementGroup() == ElementGroup::Output) {
                 m_outputs.append(elm);
@@ -298,11 +298,11 @@ void BewavedDolphin::restoreInputs()
     qCDebug(zero) << tr("Restoring old values to inputs, prior to simulation.");
 
     for (int in = 0; in < m_inputs.size(); ++in) {
-        for (int port = 0; port < m_inputs[in]->outputSize(); ++port) {
+        for (int port = 0; port < m_inputs.value(in)->outputSize(); ++port) {
             auto *input = m_inputs.at(in);
             bool oldValue = static_cast<bool>(m_oldInputValues.at(in));
 
-            if (m_inputs[in]->outputSize() > 1) {
+            if (m_inputs.value(in)->outputSize() > 1) {
                 input->setOn(oldValue, port);
             } else {
                 input->setOn(oldValue);
@@ -314,7 +314,7 @@ void BewavedDolphin::restoreInputs()
 void BewavedDolphin::run()
 {
     qCDebug(zero) << tr("Creating class to pause main window simulator while creating waveform.");
-    SimulationBlocker simulationBlocker(m_simController);
+    SimulationBlocker simulationBlocker(m_simulation);
 
     for (int column = 0; column < m_model->columnCount(); ++column) {
         qCDebug(four) << tr("itr:") << column << tr(", inputs:") << m_inputs.size();
@@ -322,15 +322,15 @@ void BewavedDolphin::run()
 
         for (auto *input : qAsConst(m_inputs)) {
             for (int port = 0; port < input->outputSize(); ++port) {
-                int value = m_model->item(row, column)->text().toInt();
+                const bool value = static_cast<bool>(m_model->item(row, column)->text().toInt());
                 input->setOn(value, port);
                 ++row;
             }
         }
 
         qCDebug(four) << tr("Updating the values of the circuit logic based on current input values.");
-        m_simController->update();
-        m_simController->updateScene();
+        m_simulation->update();
+        m_simulation->updateScene();
         qCDebug(four) << tr("Setting the computed output values to the waveform results.");
         int counter = m_inputPorts;
 
@@ -430,7 +430,7 @@ QVector<Status> BewavedDolphin::loadSignals(QStringList &inputLabels, QStringLis
 void BewavedDolphin::prepare(const QString &fileName)
 {
     qCDebug(zero) << tr("Updating window name with current:") << fileName;
-    m_simController = m_externalScene->simulationController();
+    m_simulation = m_externalScene->simulation();
     qCDebug(zero) << tr("Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.");
     loadElements();
     QStringList inputLabels;
@@ -874,7 +874,7 @@ void BewavedDolphin::on_actionSaveAs_triggered()
     fileDialog.setDirectory(path);
     fileDialog.setFileMode(QFileDialog::AnyFile);
 
-    if (!fileDialog.exec()) {
+    if (fileDialog.exec() == QDialog::Rejected) {
         return;
     }
 
@@ -941,7 +941,7 @@ void BewavedDolphin::on_actionLoad_triggered()
         }
     });
 
-    if (!fileDialog.exec()) {
+    if (fileDialog.exec() == QDialog::Rejected) {
         return;
     }
 

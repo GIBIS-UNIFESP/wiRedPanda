@@ -16,5 +16,7 @@ protected:
     void _updateLogic(const QVector<bool> &inputs) override;
 
 private:
+    Q_DISABLE_COPY(LogicSRFlipFlop)
+
     bool m_lastClk = false;
 };

@@ -57,17 +57,13 @@ void InputSwitch::setOn(const bool value, const int port)
     Q_UNUSED(port);
 
     m_isOn = value;
-
-    if (!isDisabled()) {
-        outputPort()->setStatus(static_cast<Status>(m_isOn));
-    }
-
-    setPixmap(m_isOn);
+    outputPort()->setStatus(static_cast<Status>(m_isOn));
+    setPixmap(static_cast<int>(m_isOn));
 }
 
 void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (event->modifiers() & Qt::ControlModifier) {
+    if (event->modifiers().testFlag(Qt::ControlModifier)) {
         return;
     }
 
@@ -100,6 +96,6 @@ void InputSwitch::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, c
 void InputSwitch::setSkin(const bool defaultSkin, const QString &fileName)
 {
     m_usingDefaultSkin = defaultSkin;
-    m_alternativeSkins[m_isOn] = fileName;
-    setPixmap(m_isOn);
+    m_alternativeSkins[static_cast<int>(m_isOn)] = fileName;
+    setPixmap(static_cast<int>(m_isOn));
 }

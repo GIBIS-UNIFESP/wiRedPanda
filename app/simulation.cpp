@@ -1,7 +1,7 @@
 // Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "simulationcontroller.h"
+#include "simulation.h"
 
 #include "buzzer.h"
 #include "clock.h"
@@ -10,7 +10,6 @@
 #include "globalproperties.h"
 #include "graphicelement.h"
 #include "ic.h"
-#include "icmapping.h"
 #include "qneconnection.h"
 #include "scene.h"
 
@@ -18,36 +17,45 @@
 
 using namespace std::chrono_literals;
 
-SimulationController::SimulationController(Scene *scene)
+Simulation::Simulation(Scene *scene)
     : QObject(scene)
     , m_scene(scene)
 {
-    m_simulationTimer.setInterval(1ms);
-    connect(&m_simulationTimer, &QTimer::timeout, this, &SimulationController::update);
-
-    m_viewTimer.setInterval(33ms);
-    m_viewTimer.start();
-    connect(&m_viewTimer,       &QTimer::timeout, this, &SimulationController::updateScene);
+    m_timer.setInterval(1ms);
+    connect(&m_timer, &QTimer::timeout, this, &Simulation::update);
 }
 
-void SimulationController::update()
+void Simulation::update()
 {
     if (!m_initialized && !initialize()) {
         return;
     }
 
-    m_elmMapping->update();
-}
+    for (auto *clock : qAsConst(m_clocks)) {
+        if (!clock) {
+            continue;
+        };
 
-void SimulationController::updateScene()
-{
-    if (!canRun()) {
-        return;
+        Clock::reset ? clock->resetClock() : clock->updateClock();
     }
 
-    const auto items = m_scene->items(Qt::SortOrder(-1));
+    Clock::reset = false;
 
-    for (auto *item : items) {
+    for (auto *input : qAsConst(m_inputs)) {
+        input->updatePortsOutputs();
+    }
+
+    // FIXME: This can easily cause crashes when using the Undo command to delete elements
+    for (auto *logic : m_elmMapping->logicElms()) {
+        logic->updateLogic();
+    }
+
+    updateScene();
+}
+
+void Simulation::updateScene()
+{
+    for (auto *item : qAsConst(m_items)) {
         if (item->type() == QNEConnection::Type) {
             auto *connection = qgraphicsitem_cast<QNEConnection *>(item);
             updatePort(connection->start());
@@ -66,7 +74,7 @@ void SimulationController::updateScene()
     }
 }
 
-void SimulationController::updatePort(QNEOutputPort *port)
+void Simulation::updatePort(QNEOutputPort *port)
 {
     if (!port) {
         return;
@@ -77,91 +85,90 @@ void SimulationController::updatePort(QNEOutputPort *port)
     int portIndex = 0;
 
     if (elm->elementType() == ElementType::IC) {
-        IC *ic = dynamic_cast<IC *>(elm);
-        logic = m_elmMapping->icMapping(ic)->output(port->index());
+        IC *ic = qobject_cast<IC *>(elm);
+        logic = ic->icOutput(port->index());
     } else {
         logic = elm->logic();
         portIndex = port->index();
     }
 
-    if (logic->isValid()) {
-        port->setStatus(static_cast<Status>(logic->outputValue(portIndex)));
-    } else {
-        port->setStatus(Status::Invalid);
-    }
+    port->setStatus(logic->isValid() ? static_cast<Status>(logic->outputValue(portIndex)) : Status::Invalid);
 }
 
-void SimulationController::updatePort(QNEInputPort *port)
+void Simulation::updatePort(QNEInputPort *port)
 {
     GraphicElement *elm = port->graphicElement();
     LogicElement *logic = elm->logic();
-    int portIndex = port->index();
 
-    if (logic->isValid()) {
-        port->setStatus(static_cast<Status>(logic->inputValue(portIndex)));
-    } else {
-        port->setStatus(Status::Invalid);
-    }
+    port->setStatus(logic->isValid() ? static_cast<Status>(logic->inputValue(port->index())) : Status::Invalid);
 
     if (elm->elementGroup() == ElementGroup::Output) {
         elm->refresh();
     }
 }
 
-void SimulationController::restart()
+void Simulation::restart()
 {
     m_initialized = false;
 }
 
-bool SimulationController::canRun() const
+bool Simulation::isRunning()
 {
-    return m_initialized;
+    return m_timer.isActive();
 }
 
-bool SimulationController::isRunning()
+void Simulation::stop()
 {
-    return m_simulationTimer.isActive();
-}
-
-void SimulationController::stop()
-{
-    m_simulationTimer.stop();
-    m_viewTimer.stop();
+    m_timer.stop();
     m_scene->mute(true);
 }
 
-void SimulationController::start()
+void Simulation::start()
 {
-    qCDebug(zero) << tr("Starting simulation controller.");
+    qCDebug(zero) << tr("Starting simulation.");
     if (!m_initialized) {
         Clock::reset = true;
         initialize();
     }
-    m_simulationTimer.start();
-    m_viewTimer.start();
-    qCDebug(zero) << tr("Simulation started.");
+
+    m_timer.start();
     m_scene->mute(false);
+    qCDebug(zero) << tr("Simulation started.");
 }
 
-bool SimulationController::initialize()
+bool Simulation::initialize()
 {
+    m_clocks.clear();
+    m_inputs.clear();
+    m_items.clear();
+
     qCDebug(two) << tr("GENERATING SIMULATION LAYER.");
-    auto elements = m_scene->elements();
+    const auto elements = m_scene->elements();
+
     qCDebug(zero) << tr("Elements read:") << elements.size();
     if (elements.empty()) {
         return false;
     }
+
+    for (auto *elm : elements) {
+        if (elm->elementType() == ElementType::Clock) {
+            m_clocks.append(qobject_cast<Clock *>(elm));
+        }
+
+        if (elm->elementGroup() == ElementGroup::Input) {
+            m_inputs.append(qobject_cast<GraphicElementInput *>(elm));
+        }
+    }
+
+    m_items = m_scene->items(Qt::SortOrder(-1));
+
     qCDebug(two) << tr("Recreating mapping for simulation.");
     m_elmMapping = std::make_unique<ElementMapping>(elements);
-    if (!m_elmMapping->canInitialize()) {
-        qCDebug(zero) << tr("Cannot initialize simulation.");
-        return false;
-    }
-    qCDebug(two) << tr("Can initialize.");
-    m_elmMapping->initialize();
+
     qCDebug(two) << tr("Sorting.");
     m_elmMapping->sort();
     m_initialized = true;
+
     qCDebug(zero) << tr("Finished simulation layer.");
     return true;
 }

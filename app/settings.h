@@ -17,5 +17,5 @@ public:
     static void setValue(const QString &key, const QVariant &value);
 
 private:
-    inline static QSettings *settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, "GIBIS-UNIFESP", "WiRedPanda");
+    inline static QSettings *const settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, "GIBIS-UNIFESP", "WiRedPanda");
 };

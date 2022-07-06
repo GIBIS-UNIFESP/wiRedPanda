@@ -55,7 +55,7 @@ QNEPort::QNEPort(QGraphicsItem *parent)
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
 }
 
-LogicElement *QNEPort::logicElement() const
+LogicElement *QNEPort::logic() const
 {
     return graphicElement() ? graphicElement()->logic() : nullptr;
 }
@@ -261,7 +261,7 @@ QNEInputPort::QNEInputPort(QGraphicsItem *parent)
 QNEInputPort::~QNEInputPort()
 {
     while (!m_connections.isEmpty()) {
-        QNEConnection *conn = m_connections.last();
+        auto *conn = m_connections.constLast();
         m_connections.removeAll(conn);
         conn->setEnd(nullptr);
         delete conn;
@@ -330,7 +330,7 @@ QNEOutputPort::QNEOutputPort(QGraphicsItem *parent)
 QNEOutputPort::~QNEOutputPort()
 {
     while (!m_connections.isEmpty()) {
-        auto *conn = m_connections.last();
+        auto *conn = m_connections.constLast();
         m_connections.removeAll(conn);
         conn->setStart(nullptr);
         delete conn;

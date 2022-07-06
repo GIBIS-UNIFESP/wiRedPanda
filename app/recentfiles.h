@@ -10,12 +10,12 @@
 /**
  * Class to hold the list of recent open files
  */
-class RecentFilesController : public QObject
+class RecentFiles : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit RecentFilesController(QObject *parent = nullptr);
+    explicit RecentFiles(QObject *parent = nullptr);
 
     static constexpr int MaxRecentFiles = 10;
 

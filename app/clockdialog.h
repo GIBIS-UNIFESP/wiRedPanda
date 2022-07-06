@@ -27,5 +27,7 @@ public:
     int frequency();
 
 private:
+    Q_DISABLE_COPY(ClockDialog)
+
     Ui::ClockDialog *m_ui;
 };

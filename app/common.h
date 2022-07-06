@@ -25,4 +25,8 @@ class Pandaception : public std::runtime_error
 {
 public:
     explicit Pandaception(const QString &message);
+
+private:
+    Q_DISABLE_COPY(Pandaception)
+
 };

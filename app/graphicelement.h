@@ -74,7 +74,6 @@ public:
     bool hasFrequency() const;
     bool hasLabel() const;
     bool hasTrigger() const;
-    bool isDisabled() const;
     bool isRotatable() const;
     bool isValid();
     const QVector<QNEInputPort *> &inputs() const;
@@ -94,8 +93,6 @@ public:
     virtual void setColor(const QString &color);
     virtual void setFrequency(const float freq);
     virtual void setSkin(const bool defaultSkin, const QString &fileName);
-    void disable();
-    void enable();
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void rotatePorts(const qreal angle);
     void setInputSize(const int size);
@@ -143,11 +140,10 @@ protected:
     QColor m_selectionBrush;
     QColor m_selectionPen;
     QGraphicsTextItem *m_label = new QGraphicsTextItem(this);
-    bool m_usingDefaultSkin = true;
-
     QString m_pixmapPath;
     QString m_titleText;
     QString m_translatedName;
+    bool m_usingDefaultSkin = true;
 
 private:
     static void removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap);
@@ -187,7 +183,6 @@ private:
     QString m_currentPixmapPath;
     QString m_labelText;
     bool m_canChangeSkin = false;
-    bool m_disabled = false;
     bool m_hasAudio = false;
     bool m_hasColors = false;
     bool m_hasFrequency = false;

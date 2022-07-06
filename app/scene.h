@@ -6,7 +6,7 @@
 #pragma once
 
 #include "qneport.h"
-#include "simulationcontroller.h"
+#include "simulation.h"
 
 #include <QElapsedTimer>
 #include <QGraphicsScene>
@@ -34,7 +34,7 @@ public:
     QVector<GraphicElement *> elements();
     QVector<GraphicElement *> elements(const QRectF &rect);
     QVector<GraphicElement *> visibleElements();
-    SimulationController *simulationController();
+    Simulation *simulation();
     bool eventFilter(QObject *watched, QEvent *event) override;
     void addItem(QGraphicsItem *item);
     void addItem(QMimeData *mimeData);
@@ -111,7 +111,7 @@ private:
     QPointF m_mousePos;
     QPointF m_selectionStartPoint;
     QUndoStack m_undoStack;
-    SimulationController m_simulationController;
+    Simulation m_simulation;
     bool m_autosaveRequired = false;
     bool m_circuitUpdateRequired = false;
     bool m_draggingElement = false;

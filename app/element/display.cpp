@@ -165,7 +165,7 @@ void Display::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const
         QVector<int> order = {2, 1, 4, 5, 0, 7, 3, 6};
         QVector<QNEInputPort *> aux = inputs();
         for (int i = 0; i < aux.size(); ++i) {
-            aux[order[i]] = m_inputPorts[i];
+            aux[order[i]] = m_inputPorts.value(i);
         }
         setInputs(aux);
         updatePorts();
@@ -175,14 +175,14 @@ void Display::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const
         QVector<int> order = {2, 5, 4, 0, 7, 3, 6, 1};
         QVector<QNEInputPort *> aux = inputs();
         for (int i = 0; i < aux.size(); ++i) {
-            aux[order[i]] = m_inputPorts[i];
+            aux[order[i]] = m_inputPorts.value(i);
         }
         setInputs(aux);
         updatePorts();
     }
     if (version >= 3.1) {
-        QString color;
-        stream >> color;
-        setColor(color);
+        QString color_;
+        stream >> color_;
+        setColor(color_);
     }
 }

@@ -82,16 +82,6 @@ ElementGroup GraphicElement::elementGroup() const
     return m_elementGroup;
 }
 
-void GraphicElement::disable()
-{
-    m_disabled = true;
-}
-
-void GraphicElement::enable()
-{
-    m_disabled = false;
-}
-
 void GraphicElement::setPixmap(const int index)
 {
     setPixmap(m_usingDefaultSkin ? m_defaultSkins.at(index) : m_alternativeSkins.at(index));
@@ -104,7 +94,7 @@ void GraphicElement::setPixmap(const QString &pixmapPath)
     }
 
     if (!m_pixmap->load(pixmapPath)) {
-        m_pixmap->load(m_defaultSkins.first());
+        m_pixmap->load(m_defaultSkins.constFirst());
         qCDebug(zero) << tr("Problem loading pixmapPath:") << pixmapPath;
         throw Pandaception(tr("Couldn't load pixmap."));
     }
@@ -153,22 +143,28 @@ void GraphicElement::save(QDataStream &stream) const
     stream << m_trigger;
     /* <\Version1.9> */
     stream << static_cast<quint64>(m_inputPorts.size());
+
     for (auto *port : m_inputPorts) {
         stream << reinterpret_cast<quint64>(port);
         stream << port->portName();
         stream << port->portFlags();
     }
+
     stream << static_cast<quint64>(m_outputPorts.size());
+
     for (auto *port : m_outputPorts) {
         stream << reinterpret_cast<quint64>(port);
         stream << port->portName();
         stream << port->portFlags();
     }
+
     /* <\Version2.7> */
     stream << static_cast<quint64>(m_defaultSkins.size());
+
     for (const QString &skinName : m_defaultSkins) {
         stream << skinName;
     }
+
     qCDebug(four) << tr("Finished saving element.");
 }
 
@@ -283,22 +279,22 @@ void GraphicElement::loadInputPort(QDataStream &stream, QMap<quint64, QNEPort *>
 
     if (port < m_inputPorts.size()) {
         if (elementType() == ElementType::IC) {
-            m_inputPorts[port]->setName(name);
+            m_inputPorts.value(port)->setName(name);
         }
 
-        m_inputPorts[port]->setPortFlags(flags);
-        m_inputPorts[port]->setPtr(ptr);
+        m_inputPorts.value(port)->setPortFlags(flags);
+        m_inputPorts.value(port)->setPtr(ptr);
     } else {
         addPort(name, false, flags, static_cast<int>(ptr));
     }
 
-    portMap[ptr] = m_inputPorts[port];
+    portMap[ptr] = m_inputPorts.value(port);
 }
 
 void GraphicElement::removeSurplusInputs(const quint64 inputSize_, QMap<quint64, QNEPort *> &portMap)
 {
     while (inputSize() > static_cast<int>(inputSize_) && inputSize_ >= m_minInputSize) {
-        QNEPort *deletedPort = m_inputPorts.last();
+        QNEPort *deletedPort = m_inputPorts.constLast();
         removePortFromMap(deletedPort, portMap);
         delete deletedPort;
         m_inputPorts.removeLast();
@@ -308,7 +304,7 @@ void GraphicElement::removeSurplusInputs(const quint64 inputSize_, QMap<quint64,
 void GraphicElement::removeSurplusOutputs(const quint64 outputSize_, QMap<quint64, QNEPort *> &portMap)
 {
     while (outputSize() > static_cast<int>(outputSize_) && outputSize_ >= m_minOutputSize) {
-        QNEPort *deletedPort = m_outputPorts.last();
+        QNEPort *deletedPort = m_outputPorts.constLast();
         removePortFromMap(deletedPort, portMap);
         delete deletedPort;
         m_outputPorts.removeLast();
@@ -364,16 +360,16 @@ void GraphicElement::loadOutputPort(QDataStream &stream, QMap<quint64, QNEPort *
 
     if (port < m_outputPorts.size()) {
         if (elementType() == ElementType::IC) {
-            m_outputPorts[port]->setName(name);
+            m_outputPorts.value(port)->setName(name);
         }
 
-        m_outputPorts[port]->setPortFlags(flags);
-        m_outputPorts[port]->setPtr(ptr);
+        m_outputPorts.value(port)->setPortFlags(flags);
+        m_outputPorts.value(port)->setPtr(ptr);
     } else {
         addPort(name, true, flags, static_cast<int>(ptr));
     }
 
-    portMap[ptr] = m_outputPorts[port];
+    portMap[ptr] = m_outputPorts.value(port);
 }
 
 void GraphicElement::loadPixmapSkinNames(QDataStream &stream, const double version)
@@ -462,11 +458,11 @@ void GraphicElement::addPort(const QString &name, const bool isOutput, const int
 
     if (isOutput) {
         m_outputPorts.push_back(new QNEOutputPort(this));
-        port = m_outputPorts.last();
+        port = m_outputPorts.constLast();
         port->setIndex(outputSize() - 1);
     } else {
         m_inputPorts.push_back(new QNEInputPort(this));
-        port = m_inputPorts.last();
+        port = m_inputPorts.constLast();
         port->setIndex(inputSize() - 1);
     }
 
@@ -882,22 +878,6 @@ void GraphicElement::setMaxInputSize(const int maxInputSize)
     m_maxInputSize = maxInputSize;
 }
 
-bool GraphicElement::isDisabled() const
-{
-    return m_disabled;
-}
-
-QDataStream &operator<<(QDataStream &stream, const GraphicElement *item)
-{
-    qCDebug(four) << "Writing element.";
-    const auto *elm = qgraphicsitem_cast<const GraphicElement *>(item);
-    stream << GraphicElement::Type;
-    stream << elm->elementType();
-    elm->save(stream);
-    return stream;
-}
-
-
 void GraphicElement::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     // the base class clears selection, reselect after
@@ -914,4 +894,14 @@ void GraphicElement::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
             connection->setSelected(m_selected);
         }
     }
+}
+
+QDataStream &operator<<(QDataStream &stream, const GraphicElement *item)
+{
+    qCDebug(four) << "Writing element.";
+    const auto *elm = qgraphicsitem_cast<const GraphicElement *>(item);
+    stream << GraphicElement::Type;
+    stream << elm->elementType();
+    elm->save(stream);
+    return stream;
 }

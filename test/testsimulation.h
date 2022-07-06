@@ -7,7 +7,7 @@
 
 #include <QObject>
 
-class TestSimulationController : public QObject
+class TestSimulation : public QObject
 {
     Q_OBJECT
 

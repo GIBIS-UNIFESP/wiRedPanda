@@ -42,7 +42,7 @@ Clock::Clock(QGraphicsItem *parent)
 
 void Clock::updateClock()
 {
-    if (m_locked || isDisabled() || pause) {
+    if (m_locked) {
         return;
     }
 
@@ -74,8 +74,8 @@ void Clock::setOn(const bool value, const int port)
 {
     Q_UNUSED(port);
     m_isOn = value;
-    setPixmap(m_isOn);
-    m_outputPorts.first()->setStatus(static_cast<Status>(m_isOn));
+    setPixmap(static_cast<int>(m_isOn));
+    m_outputPorts.constFirst()->setStatus(static_cast<Status>(m_isOn));
     update();
 }
 
@@ -141,6 +141,6 @@ QString Clock::genericProperties()
 void Clock::setSkin(const bool defaultSkin, const QString &fileName)
 {
     m_usingDefaultSkin = defaultSkin;
-    m_alternativeSkins[m_isOn] = fileName;
-    setPixmap(m_isOn);
+    m_alternativeSkins[static_cast<int>(m_isOn)] = fileName;
+    setPixmap(static_cast<int>(m_isOn));
 }

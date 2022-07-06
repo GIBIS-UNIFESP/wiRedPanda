@@ -11,7 +11,7 @@
 #include <QTranslator>
 
 class ElementLabel;
-class RecentFilesController;
+class RecentFiles;
 class WorkSpace;
 
 namespace Ui
@@ -76,6 +76,8 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private:
+    Q_DISABLE_COPY(MainWindow)
+
     static void on_actionDarkTheme_triggered();
     static void on_actionLightTheme_triggered();
 
@@ -142,7 +144,7 @@ private:
     QTranslator *m_pandaTranslator = nullptr;
     QTranslator *m_qtTranslator = nullptr;
 
-    RecentFilesController *m_recentFilesController = nullptr;
+    RecentFiles *m_recentFiles = nullptr;
 
     QFileInfo m_currentFile;
     WorkSpace *m_currentTab = nullptr;
