@@ -22,3 +22,13 @@ bool Application::notify(QObject *receiver, QEvent *event)
 
     return done;
 }
+
+MainWindow *Application::mainWindow() const
+{
+    return m_mainWindow;
+}
+
+void Application::setMainWindow(MainWindow *newMainWindow)
+{
+    m_mainWindow = newMainWindow;
+}

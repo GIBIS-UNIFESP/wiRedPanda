@@ -7,7 +7,7 @@
 #include "testfiles.h"
 #include "testicons.h"
 #include "testlogicelements.h"
-#include "testsimulationcontroller.h"
+#include "testsimulation.h"
 #include "testwaveform.h"
 #include "thememanager.h"
 
@@ -22,16 +22,16 @@ int main(int argc, char **argv)
     app.setApplicationName("WiRedPanda");
     app.setApplicationVersion(APP_VERSION);
 
-    int status = 0;
+    size_t status = 0;
     status |= QTest::qExec(new TestCommands, argc, argv);
     status |= QTest::qExec(new TestElements, argc, argv);
     status |= QTest::qExec(new TestFiles, argc, argv);
     status |= QTest::qExec(new TestIcons, argc, argv);
     status |= QTest::qExec(new TestLogicElements, argc, argv);
-    status |= QTest::qExec(new TestSimulationController, argc, argv);
+    status |= QTest::qExec(new TestSimulation, argc, argv);
     status |= QTest::qExec(new TestWaveForm, argc, argv);
 
-    qInfo() << (status ? "Some test failed!" : "All tests have passed!");
+    qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
 
-    return status;
+    return static_cast<int>(status);
 }

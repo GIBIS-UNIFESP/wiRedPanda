@@ -269,7 +269,7 @@ void ElementEditor::updateElementSkin()
     fileDialog.setFileMode(QFileDialog::ExistingFile);
     fileDialog.setNameFilter(tr("Images (*.png *.gif *.jpg *.jpeg)"));
 
-    if (!fileDialog.exec()) {
+    if (fileDialog.exec() == QDialog::Rejected) {
         return;
     }
 
@@ -349,8 +349,8 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
     int minimumOutputs = 0;
     int maximumOutputs = 100000000;
     int maxCurrentOutputSize = 100000000;
-    auto *firstElement = m_elements.first();
-    auto *firstInput = dynamic_cast<GraphicElementInput *>(firstElement);
+    auto *firstElement = m_elements.constFirst();
+    auto *firstInput = qobject_cast<GraphicElementInput *>(firstElement);
     auto elementType = firstElement->elementType();
 
     for (auto *elm : qAsConst(m_elements)) {
@@ -376,7 +376,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
         m_hasSameOutputSize &= (elm->outputSize() == firstElement->outputSize());
         maxCurrentOutputSize = std::min(maxCurrentOutputSize, elm->outputSize());
 
-        if (auto *elmInput = dynamic_cast<GraphicElementInput *>(elm);
+        if (auto *elmInput = qobject_cast<GraphicElementInput *>(elm);
                 elmInput && (group == ElementGroup::Input) && (firstElement->elementGroup() == ElementGroup::Input)) {
             m_hasSameOutputValue &= (elmInput->outputValue() == firstInput->outputValue());
             sameCheckState &= (elmInput->isLocked() == firstInput->isLocked());
@@ -677,12 +677,12 @@ void ElementEditor::outputValueChanged(const QString &value)
 
     for (auto *elm : qAsConst(m_elements)) {
         if (elm->elementType() == ElementType::InputRotary) {
-            if (auto *input = dynamic_cast<InputRotary *>(elm)) {
+            if (auto *input = qobject_cast<InputRotary *>(elm)) {
                 input->setOn(true, newValue);
             }
         } else {
-            if (auto *input = dynamic_cast<GraphicElementInput *>(elm)) {
-                input->setOn(newValue);
+            if (auto *input = qobject_cast<GraphicElementInput *>(elm)) {
+                input->setOn(static_cast<bool>(newValue));
             }
         }
     }
@@ -697,7 +697,7 @@ void ElementEditor::inputLocked(const bool value)
     }
 
     for (auto *elm : qAsConst(m_elements)) {
-        if (auto *input = dynamic_cast<GraphicElementInput *>(elm)) {
+        if (auto *input = qobject_cast<GraphicElementInput *>(elm)) {
             input->setLocked(value);
         }
     }
@@ -722,7 +722,7 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
         bool moveBack = (keyEvent->key() == Qt::Key_Backtab);
 
         if (moveBack || moveFwd) {
-            auto *elm = m_elements.first();
+            auto *elm = m_elements.constFirst();
             auto elms = m_scene->visibleElements();
 
             std::stable_sort(elms.begin(), elms.end(), [](const auto &elm1, const auto &elm2) {

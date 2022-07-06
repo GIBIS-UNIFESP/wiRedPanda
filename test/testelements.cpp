@@ -9,7 +9,6 @@
 #include "dlatch.h"
 #include "globalproperties.h"
 #include "ic.h"
-#include "icmanager.h"
 #include "inputbutton.h"
 #include "inputgnd.h"
 #include "inputswitch.h"
@@ -23,7 +22,7 @@
 #include "qneconnection.h"
 #include "qneport.h"
 #include "scene.h"
-#include "simulationcontroller.h"
+#include "simulation.h"
 #include "srflipflop.h"
 #include "tflipflop.h"
 
@@ -209,7 +208,7 @@ void TestElements::testIC()
     GlobalProperties::currentFile = icFile;
 
     auto *ic = new IC();
-    ICManager::loadIC(ic, icFile);
+    ic->loadFile(icFile);
 
     testICData(ic);
 
@@ -246,16 +245,16 @@ void TestElements::testIC()
     scene.addItem(connection3);
     scene.addItem(connection4);
 
-    SimulationController controller(&scene);
-    controller.initialize();
+    Simulation simulation(&scene);
+    simulation.initialize();
 
     for (int i = 0; i < 10; ++i) {
         clkButton->setOn(false);
         prstButton->setOn(false);
-        controller.update();
-        controller.update();
-        controller.update();
-        controller.updateScene();
+        simulation.update();
+        simulation.update();
+        simulation.update();
+        simulation.updateScene();
 
         QCOMPARE(ic->inputPort(2)->status(), Status::Inactive);
 
@@ -264,10 +263,10 @@ void TestElements::testIC()
 
         clkButton->setOn(false);
         prstButton->setOn(true);
-        controller.update();
-        controller.update();
-        controller.update();
-        controller.updateScene();
+        simulation.update();
+        simulation.update();
+        simulation.update();
+        simulation.updateScene();
 
         QCOMPARE(ic->inputPort(2)->status(), Status::Inactive);
 
@@ -275,10 +274,10 @@ void TestElements::testIC()
         QCOMPARE(ic->outputPort(1)->status(), Status::Inactive);
 
         clkButton->setOn(false);
-        controller.update();
-        controller.update();
-        controller.update();
-        controller.updateScene();
+        simulation.update();
+        simulation.update();
+        simulation.update();
+        simulation.updateScene();
 
         QCOMPARE(ic->inputPort(2)->status(), Status::Inactive);
 
@@ -286,10 +285,10 @@ void TestElements::testIC()
         QCOMPARE(ic->outputPort(1)->status(), Status::Inactive);
 
         clkButton->setOn(true);
-        controller.update();
-        controller.update();
-        controller.update();
-        controller.updateScene();
+        simulation.update();
+        simulation.update();
+        simulation.update();
+        simulation.updateScene();
 
         QCOMPARE(ic->inputPort(2)->status(), Status::Active);
 
@@ -306,6 +305,6 @@ void TestElements::testICs()
     for (const auto &fileInfo : files) {
         GlobalProperties::currentFile = fileInfo.absoluteFilePath();
         IC ic;
-        ICManager::loadIC(&ic, fileInfo.absoluteFilePath());
+        ic.loadFile(fileInfo.absoluteFilePath());
     }
 }

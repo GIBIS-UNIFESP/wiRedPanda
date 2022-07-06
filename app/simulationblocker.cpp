@@ -5,17 +5,16 @@
 
 #include "clock.h"
 #include "common.h"
-#include "simulationcontroller.h"
+#include "simulation.h"
 
-SimulationBlocker::SimulationBlocker(SimulationController *simController)
-    : m_simController(simController)
+SimulationBlocker::SimulationBlocker(Simulation *simulation)
+    : m_simulation(simulation)
 {
     qCDebug(zero) << QObject::tr("Stopping.");
-    if (m_simController->isRunning()) {
+    if (m_simulation->isRunning()) {
         m_restart = true;
-        m_simController->stop();
+        m_simulation->stop();
         Clock::reset = true;
-        Clock::pause = true;
     }
 }
 
@@ -23,7 +22,6 @@ SimulationBlocker::~SimulationBlocker()
 {
     qCDebug(zero) << QObject::tr("Releasing.");
     if (m_restart) {
-        m_simController->start();
-        Clock::pause = false;
+        m_simulation->start();
     }
 }

@@ -70,6 +70,8 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private:
+    Q_DISABLE_COPY(BewavedDolphin)
+
     QVector<Status> loadSignals(QStringList &inputLabels, QStringList &outputLabels);
     bool checkSave();
     int sectionFirstColumn(const QItemSelection &ranges);
@@ -143,7 +145,7 @@ private:
     QVector<GraphicElementInput *> m_inputs;
     QVector<Status> m_oldInputValues;
     Scene *m_externalScene = nullptr;
-    SimulationController *m_simController = nullptr;
+    Simulation *m_simulation = nullptr;
     bool m_edited = false;
     const bool m_askConnection;
     const double m_scaleFactor = 0.8;

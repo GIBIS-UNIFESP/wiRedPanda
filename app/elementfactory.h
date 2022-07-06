@@ -11,6 +11,7 @@
 
 class GraphicElement;
 class ItemWithId;
+class LogicElement;
 class QNEConnection;
 
 class ElementFactory : public QObject
@@ -27,6 +28,7 @@ public:
     static ElementType textToType(const QString &text);
     static GraphicElement *buildElement(const ElementType type);
     static ItemWithId *itemById(const int id);
+    static LogicElement *buildLogicElement(GraphicElement *elm);
     static QNEConnection *buildConnection(QGraphicsItem *parent = nullptr);
     static QPixmap pixmap(const ElementType type);
     static QString property(const ElementType type, const QString &property);

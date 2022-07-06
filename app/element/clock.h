@@ -14,7 +14,6 @@ class Clock : public GraphicElementInput
 public:
     explicit Clock(QGraphicsItem *parent = nullptr);
 
-    inline static bool pause = false; // pause clock counting while simulating.
     inline static bool reset = true;
 
     QString genericProperties() override;

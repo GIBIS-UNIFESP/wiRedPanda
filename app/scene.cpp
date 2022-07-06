@@ -12,7 +12,6 @@
 #include "graphicelementinput.h"
 #include "graphicsview.h"
 #include "ic.h"
-#include "icmanager.h"
 #include "qneconnection.h"
 #include "serializationfunctions.h"
 #include "thememanager.h"
@@ -25,7 +24,7 @@
 
 Scene::Scene(QObject *parent)
     : QGraphicsScene(parent)
-    , m_simulationController(this)
+    , m_simulation(this)
 {
     installEventFilter(this);
 
@@ -40,10 +39,9 @@ Scene::Scene(QObject *parent)
     m_redoAction->setIcon(QIcon(":/toolbar/redo.svg"));
     m_redoAction->setShortcut(QKeySequence::Redo);
 
-    connect(&ICManager::instance(),    &ICManager::updatedIC,       &m_simulationController, &SimulationController::restart);
     connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this,                    &Scene::updateTheme);
     connect(&m_undoStack,              &QUndoStack::indexChanged,   this,                    &Scene::checkUpdateRequest);
-    connect(this,                      &Scene::circuitHasChanged,   &m_simulationController, &SimulationController::initialize);
+    connect(this,                      &Scene::circuitHasChanged,   &m_simulation, &Simulation::initialize);
 }
 
 void Scene::checkUpdateRequest()
@@ -81,9 +79,9 @@ void Scene::setDots(const QPen &dots)
     m_dots = dots;
 }
 
-SimulationController *Scene::simulationController()
+Simulation *Scene::simulation()
 {
-    return &m_simulationController;
+    return &m_simulation;
 }
 
 void Scene::setAutosaveRequired()
@@ -113,8 +111,8 @@ QVector<GraphicElement *> Scene::elements()
     elements_.reserve(items_.size());
 
     for (auto *item : items_) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
-            elements_.append(elm);
+        if (item->type() == GraphicElement::Type) {
+            elements_.append(qgraphicsitem_cast<GraphicElement *>(item));
         }
     }
 
@@ -123,17 +121,17 @@ QVector<GraphicElement *> Scene::elements()
 
 QVector<GraphicElement *> Scene::elements(const QRectF &rect)
 {
-    QVector<GraphicElement *> elements;
-    const auto items_ = items(rect);
-    elements.reserve(items_.size());
+    QVector<GraphicElement *> elements_;
+    const auto items_ = items(rect, Qt::IntersectsItemShape, Qt::SortOrder(-1));
+    elements_.reserve(items_.size());
 
     for (auto *item : items_) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
-            elements.append(elm);
+        if (item->type() == GraphicElement::Type) {
+            elements_.append(qgraphicsitem_cast<GraphicElement *>(item));
         }
     }
 
-    return elements;
+    return elements_;
 }
 
 QVector<QNEConnection *> Scene::connections()
@@ -143,8 +141,8 @@ QVector<QNEConnection *> Scene::connections()
     conns.reserve(items_.size());
 
     for (auto *item : items_) {
-        if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
-            conns.append(conn);
+        if (item->type() == QNEConnection::Type) {
+            conns.append(qgraphicsitem_cast<QNEConnection *>(item));
         }
     }
 
@@ -153,23 +151,21 @@ QVector<QNEConnection *> Scene::connections()
 
 QList<GraphicElement *> Scene::selectedElements()
 {
-    QList<GraphicElement *> elements;
+    QList<GraphicElement *> elements_;
     const auto items = selectedItems();
 
     for (auto *item : items) {
         if (item->type() == GraphicElement::Type) {
-            if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
-                elements.append(elm);
-            }
+            elements_.append(qgraphicsitem_cast<GraphicElement *>(item));
         }
     }
 
-    return elements;
+    return elements_;
 }
 
 QGraphicsItem *Scene::itemAt(const QPointF pos)
 {
-    auto items_ = items(pos);
+    auto items_ = items(pos, Qt::IntersectsItemShape, Qt::SortOrder(-1));
     items_.append(itemsAt(pos));
 
     for (auto *item : qAsConst(items_)) {
@@ -190,7 +186,7 @@ QGraphicsItem *Scene::itemAt(const QPointF pos)
 QList<QGraphicsItem *> Scene::itemsAt(const QPointF pos)
 {
     QRectF rect(pos - QPointF(4, 4), QSize(9, 9));
-    return items(rect.normalized());
+    return items(rect.normalized(), Qt::IntersectsItemShape, Qt::SortOrder(-1));
 }
 
 void Scene::receiveCommand(QUndoCommand *cmd)
@@ -200,14 +196,16 @@ void Scene::receiveCommand(QUndoCommand *cmd)
 
 void Scene::resizeScene()
 {
-    const auto elms = elements();
+    const auto elements_ = elements();
 
-    if (!elms.isEmpty()) {
+    if (!elements_.isEmpty()) {
         QRectF rect = sceneRect();
-        for (auto *elm : elms) {
-            QRectF itemRect = elm->boundingRect().translated(elm->pos());
+
+        for (auto *element : elements_) {
+            QRectF itemRect = element->boundingRect().translated(element->pos());
             rect = rect.united(itemRect.adjusted(-10, -10, 10, 10));
         }
+
         setSceneRect(rect);
     }
 
@@ -230,6 +228,7 @@ void Scene::deleteEditedConnection()
         removeItem(connection);
         delete connection;
     }
+
     setEditedConnection(nullptr);
 }
 
@@ -245,9 +244,10 @@ void Scene::setEditedConnection(QNEConnection *connection)
 
 void Scene::startNewConnection(QNEInputPort *endPort)
 {
-    QNEConnection *connection = ElementFactory::buildConnection();
+    auto *connection = ElementFactory::buildConnection();
     connection->setEnd(endPort);
     connection->setStartPos(m_mousePos);
+
     addItem(connection);
     setEditedConnection(connection);
     connection->updatePath();
@@ -255,7 +255,7 @@ void Scene::startNewConnection(QNEInputPort *endPort)
 
 void Scene::startNewConnection(QNEOutputPort *startPort)
 {
-    QNEConnection *connection = ElementFactory::buildConnection();
+    auto *connection = ElementFactory::buildConnection();
     connection->setStart(startPort);
     connection->setEndPos(m_mousePos);
 
@@ -323,29 +323,35 @@ void Scene::updateTheme()
     setDots(QPen(theme.m_sceneBgDots));
     m_selectionRect.setBrush(QBrush(theme.m_selectionBrush));
     m_selectionRect.setPen(QPen(theme.m_selectionPen, 1, Qt::SolidLine));
-    const auto sceneElements = elements();
-    for (auto *elm : sceneElements) {
-        elm->updateTheme();
+
+    const auto elements_ = elements();
+
+    for (auto *element : elements_) {
+        element->updateTheme();
     }
+
     const auto sceneConnections = connections();
+
     for (auto *conn : sceneConnections) {
         conn->updateTheme();
     }
+
     qCDebug(zero) << tr("Finished updating theme.");
 }
 
 void Scene::showGates(const bool checked)
 {
     m_showGates = checked;
-    const auto sceneItems = items(Qt::SortOrder(-1));
+    const auto items_ = items(Qt::SortOrder(-1));
 
-    for (auto *item : sceneItems) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
-            const auto group = elm->elementGroup();
+    for (auto *item : items_) {
+        if (item->type() == GraphicElement::Type) {
+            const auto group = qgraphicsitem_cast<GraphicElement *>(item)->elementGroup();
 
             if ((group != ElementGroup::Input) && (group != ElementGroup::Output) && (group != ElementGroup::Other)) {
                 item->setVisible(checked);
             }
+
         }
     }
 }
@@ -353,25 +359,26 @@ void Scene::showGates(const bool checked)
 void Scene::showWires(const bool checked)
 {
     m_showWires = checked;
-    const auto sceneItems = items(Qt::SortOrder(-1));
+    const auto items_ = items(Qt::SortOrder(-1));
 
-    for (auto *item : sceneItems) {
+    for (auto *item : items_) {
         if (item->type() == QNEConnection::Type) {
             item->setVisible(checked);
+            continue;
         }
 
         if (item->type() == GraphicElement::Type) {
-            auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
+            auto *element = qgraphicsitem_cast<GraphicElement *>(item);
 
-            if (elm->elementType() == ElementType::Node) {
-                elm->setVisible(checked);
+            if (element->elementType() == ElementType::Node) {
+                element->setVisible(checked);
             } else {
-                for (auto *in : elm->inputs()) {
-                    in->setVisible(checked);
+                for (auto *inputPort : element->inputs()) {
+                    inputPort->setVisible(checked);
                 }
 
-                for (auto *out : elm->outputs()) {
-                    out->setVisible(checked);
+                for (auto *outputPort : element->outputs()) {
+                    outputPort->setVisible(checked);
                 }
             }
         }
@@ -381,9 +388,9 @@ void Scene::showWires(const bool checked)
 void Scene::cloneDrag(const QPointF mousePos)
 {
     qCDebug(zero) << tr("Ctrl + Drag action triggered.");
-    const auto selectedElms = selectedElements();
+    const auto selectedElements_ = selectedElements();
 
-    if (selectedElms.isEmpty()) {
+    if (selectedElements_.isEmpty()) {
         return;
     }
 
@@ -397,8 +404,8 @@ void Scene::cloneDrag(const QPointF mousePos)
 
     QRectF rect;
 
-    for (auto *elm : selectedElms) {
-        rect = rect.united(elm->sceneBoundingRect());
+    for (auto *element : selectedElements_) {
+        rect = rect.united(element->sceneBoundingRect());
     }
 
     rect = rect.adjusted(-8, -8, 8, 8);
@@ -492,6 +499,7 @@ void Scene::setHoverPort(QNEPort *port)
 
     if (hoverElm && ElementFactory::contains(hoverElm->id())) {
         m_hoverPortElmId = hoverElm->id();
+
         for (int i = 0; i < (hoverElm->inputSize() + hoverElm->outputSize()); ++i) {
             if (i < hoverElm->inputSize()) {
                 if (port == hoverElm->inputPort(i)) {
@@ -557,7 +565,7 @@ void Scene::contextMenu(const QPoint screenPos)
     if (auto *item = itemAt(m_mousePos)) {
         if (selectedItems().contains(item)) {
             emit contextMenuPos(screenPos, item);
-        } else if ((item->type() == GraphicElement::Type)) {
+        } else if (item->type() == GraphicElement::Type) {
             clearSelection();
             item->setSelected(true);
             emit contextMenuPos(screenPos, item);
@@ -567,20 +575,22 @@ void Scene::contextMenu(const QPoint screenPos)
         auto *pasteAction = menu.addAction(QIcon(QPixmap(":/toolbar/paste.svg")), tr("Paste"));
         const auto *clipboard = QApplication::clipboard();
         const auto *mimeData = clipboard->mimeData();
+
         if (mimeData->hasFormat("wpanda/copydata")) {
             connect(pasteAction, &QAction::triggered, this, &Scene::pasteAction);
         } else {
             pasteAction->setEnabled(false);
         }
+
         menu.exec(screenPos);
     }
 }
 
 void Scene::copyAction()
 {
-    const auto elms = selectedElements();
+    const auto selectedElements_ = selectedElements();
 
-    if (elms.empty()) {
+    if (selectedElements_.empty()) {
         QApplication::clipboard()->clear();
         return;
     }
@@ -596,9 +606,9 @@ void Scene::copyAction()
 
 void Scene::cutAction()
 {
-    const auto elms = selectedElements();
+    const auto selectedElements_ = selectedElements();
 
-    if (elms.isEmpty()) {
+    if (selectedElements_.isEmpty()) {
         QApplication::clipboard()->clear();
         return;
     }
@@ -616,6 +626,7 @@ void Scene::pasteAction()
 {
     const auto *clipboard = QApplication::clipboard();
     const auto *mimeData = clipboard->mimeData();
+
     if (mimeData->hasFormat("wpanda/copydata")) {
         QByteArray itemData = mimeData->data("wpanda/copydata");
         QDataStream stream(&itemData, QIODevice::ReadOnly);
@@ -628,15 +639,17 @@ void Scene::paste(QDataStream &stream)
     clearSelection();
     QPointF ctr;
     stream >> ctr;
-    QPointF offset = m_mousePos - ctr - QPointF(static_cast<qreal>(32.0f), static_cast<qreal>(32.0f));
+    QPointF offset = m_mousePos - ctr - QPointF(32.0, 32.0);
     double version = GlobalProperties::version;
     const auto itemList = SerializationFunctions::deserialize(stream, version);
     receiveCommand(new AddItemsCommand(itemList, this));
+
     for (auto *item : itemList) {
         if (item->type() == GraphicElement::Type) {
             item->setPos((item->pos() + offset));
         }
     }
+
     resizeScene();
 }
 
@@ -648,20 +661,20 @@ void Scene::cut(const QList<QGraphicsItem *> &items, QDataStream &stream)
 
 void Scene::deleteAction()
 {
-    const auto &items = selectedItems();
+    const auto &selectedItems_ = selectedItems();
     clearSelection();
 
-    if (!items.isEmpty()) {
-        receiveCommand(new DeleteItemsCommand(items, this));
-        m_simulationController.restart();
+    if (!selectedItems_.isEmpty()) {
+        receiveCommand(new DeleteItemsCommand(selectedItems_, this));
+        m_simulation.restart();
     }
 }
 
 void Scene::selectAll()
 {
-    const auto sceneItems = items(Qt::SortOrder(-1));
+    const auto items_ = items(Qt::SortOrder(-1));
 
-    for (auto *item : sceneItems) {
+    for (auto *item : items_) {
         item->setSelected(true);
     }
 }
@@ -678,63 +691,63 @@ void Scene::rotateLeft()
 
 void Scene::rotate(const int angle)
 {
-    const auto list = selectedItems();
-    QList<GraphicElement *> elms;
-    elms.reserve(list.size());
+    const auto selectedItems_ = selectedItems();
+    QList<GraphicElement *> elements_;
+    elements_.reserve(selectedItems_.size());
 
-    for (auto *item : list) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
-            elms.append(elm);
+    for (auto *item : selectedItems_) {
+        if (item->type() == GraphicElement::Type) {
+            elements_.append(qgraphicsitem_cast<GraphicElement *>(item));
         }
     }
 
-    if (!elms.isEmpty()) {
-        receiveCommand(new RotateCommand(elms, angle, this));
+    if (!elements_.isEmpty()) {
+        receiveCommand(new RotateCommand(elements_, angle, this));
     }
 }
 
 void Scene::mute(const bool mute)
 {
-    const auto elms = elements();
+    const auto elements_ = elements();
 
-    for (auto *elm : elms) {
-        if (auto *buzzer = dynamic_cast<Buzzer *>(elm)) {
-            buzzer->mute(mute);
+    for (auto *element : elements_) {
+        if (element->elementType() == ElementType::Buzzer) {
+            qobject_cast<Buzzer *>(element)->mute(mute);
         }
     }
 }
 
 void Scene::flipHorizontally()
 {
-    const auto list = selectedItems();
-    QList<GraphicElement *> elms;
-    elms.reserve(list.size());
+    const auto selectedItems_ = selectedItems();
+    QList<GraphicElement *> elements_;
+    elements_.reserve(selectedItems_.size());
 
-    for (auto *item : list) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
-            elms.append(elm);
+    for (auto *item : selectedItems_) {
+        if (item->type() == GraphicElement::Type) {
+            elements_.append(qgraphicsitem_cast<GraphicElement *>(item));
         }
     }
 
-    if (!elms.isEmpty()) {
-        receiveCommand(new FlipCommand(elms, 0, this));
+    if (!elements_.isEmpty()) {
+        receiveCommand(new FlipCommand(elements_, 0, this));
     }
 }
 
 void Scene::flipVertically()
 {
-    const auto list = selectedItems();
-    QList<GraphicElement *> elms;
-    elms.reserve(list.size());
+    const auto selectedItems_ = selectedItems();
+    QList<GraphicElement *> elements_;
+    elements_.reserve(selectedItems_.size());
 
-    for (auto *item : list) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
-            elms.append(elm);
+    for (auto *item : selectedItems_) {
+        if (item->type() == GraphicElement::Type) {
+            elements_.append(qgraphicsitem_cast<GraphicElement *>(item));
         }
     }
 
-    if (!elms.isEmpty()) {
-        receiveCommand(new FlipCommand(elms, 1, this));
+    if (!elements_.isEmpty()) {
+        receiveCommand(new FlipCommand(elements_, 1, this));
     }
 }
 
@@ -773,21 +786,23 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         stream >> offset >> type >> labelAuxData;
         QPointF pos = event->scenePos() - offset;
         qCDebug(zero) << type << tr("at position:") << pos.x() << tr(",") << pos.y() << tr(", label:") << labelAuxData;
-        auto *elm = ElementFactory::buildElement(type);
+        auto *element = ElementFactory::buildElement(type);
         qCDebug(zero) << tr("Valid element.");
-        if (elm->elementType() == ElementType::IC) {
-            if (auto *ic = dynamic_cast<IC *>(elm)) {
-                ICManager::loadIC(ic, labelAuxData);
+
+        if (element->elementType() == ElementType::IC) {
+            if (auto *ic = qobject_cast<IC *>(element)) {
+                ic->loadFile(labelAuxData);
             }
         }
+
         qCDebug(zero) << tr("Adding the element to the scene.");
-        receiveCommand(new AddItemsCommand({elm}, this));
+        receiveCommand(new AddItemsCommand({element}, this));
         qCDebug(zero) << tr("Cleaning the selection.");
         clearSelection();
         qCDebug(zero) << tr("Setting created element as selected.");
-        elm->setSelected(true);
+        element->setSelected(true);
         qCDebug(zero) << tr("Adjusting the position of the element.");
-        elm->setPos(pos);
+        element->setPos(pos);
     }
 
     if (event->mimeData()->hasFormat("wpanda/ctrlDragData")) {
@@ -818,10 +833,11 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
 void Scene::keyPressEvent(QKeyEvent *event)
 {
     if (!(event->modifiers() & Qt::ControlModifier)) {
-        const auto elms = elements();
-        for (auto *elm : elms) {
-            if (elm->hasTrigger() && !elm->trigger().isEmpty() && elm->trigger().matches(event->key())) {
-                if (auto *input = dynamic_cast<GraphicElementInput *>(elm);
+        const auto elements_ = elements();
+
+        for (auto *element : elements_) {
+            if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {
+                if (auto *input = qobject_cast<GraphicElementInput *>(element);
                         input && !input->isLocked()) {
                     input->setOn();
                 }
@@ -835,11 +851,11 @@ void Scene::keyPressEvent(QKeyEvent *event)
 void Scene::keyReleaseEvent(QKeyEvent *event)
 {
     if (!(event->modifiers() & Qt::ControlModifier)) {
-        const auto elms = elements();
-        for (auto *elm : elms) {
-            if (elm->hasTrigger() && !elm->trigger().isEmpty() && elm->trigger().matches(event->key())) {
-                if (auto *input = dynamic_cast<GraphicElementInput *>(elm);
-                        input && !input->isLocked() && (elm->elementType() == ElementType::InputButton)) {
+        const auto elements_ = elements();
+        for (auto *element : elements_) {
+            if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {
+                if (auto *input = qobject_cast<GraphicElementInput *>(element);
+                        input && !input->isLocked() && (element->elementType() == ElementType::InputButton)) {
                     input->setOff();
                 }
             }
@@ -883,15 +899,15 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     if (item) {
         if (event->button() == Qt::LeftButton) {
             m_draggingElement = true;
-            auto selectedList = selectedItems();
-            selectedList.append(itemsAt(m_mousePos));
+            auto selectedItems_ = selectedItems();
+            selectedItems_.append(itemsAt(m_mousePos));
             m_movedElements.clear();
             m_oldPositions.clear();
 
-            for (auto *item : qAsConst(selectedList)) {
-                if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
-                    m_movedElements.append(elm);
-                    m_oldPositions.append(elm->pos());
+            for (auto *item : qAsConst(selectedItems_)) {
+                if (auto *element = qgraphicsitem_cast<GraphicElement *>(item)) {
+                    m_movedElements.append(element);
+                    m_oldPositions.append(element->pos());
                 }
             }
         }
@@ -978,8 +994,8 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         if (!m_movedElements.empty()) {
             bool valid = false; // TODO: std::any_of?
 
-            for (int elm = 0; elm < m_movedElements.size(); ++elm) {
-                if (m_movedElements[elm]->pos() != m_oldPositions[elm]) {
+            for (int index = 0; index < m_movedElements.size(); ++index) {
+                if (m_movedElements[index]->pos() != m_oldPositions[index]) {
                     valid = true;
                     break;
                 }
@@ -1022,8 +1038,8 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 void Scene::addItem(QGraphicsItem *item)
 {
-    if (auto *elm = dynamic_cast<Buzzer *>(item)) {
-        elm->setLabel(elm->objectName() + "_" + QString::number(++m_labelNumber));
+    if (auto *element = dynamic_cast<Buzzer *>(item)) {
+        element->setLabel(element->objectName() + "_" + QString::number(++m_labelNumber));
     }
 
     QGraphicsScene::addItem(item);
@@ -1037,19 +1053,21 @@ void Scene::addItem(QMimeData *mimeData)
     ElementType type;
     QString labelAuxData;
     stream >> offset >> type >> labelAuxData;
-    auto *elm = ElementFactory::buildElement(type);
+    auto *element = ElementFactory::buildElement(type);
     qCDebug(zero) << tr("Valid element.");
-    if (elm->elementType() == ElementType::IC) {
-        if (auto *ic = dynamic_cast<IC *>(elm)) {
-            ICManager::loadIC(ic, labelAuxData);
+
+    if (element->elementType() == ElementType::IC) {
+        if (auto *ic = qobject_cast<IC *>(element)) {
+            ic->loadFile(labelAuxData);
         }
     }
+
     qCDebug(zero) << tr("Adding the element to the scene.");
-    receiveCommand(new AddItemsCommand({elm}, this));
+    receiveCommand(new AddItemsCommand({element}, this));
     qCDebug(zero) << tr("Cleaning the selection.");
     clearSelection();
     qCDebug(zero) << tr("Setting created element as selected.");
-    elm->setSelected(true);
+    element->setSelected(true);
     qCDebug(zero) << tr("Adjusting the position of the element.");
 
     mimeData->deleteLater();

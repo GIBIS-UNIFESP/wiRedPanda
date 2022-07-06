@@ -7,17 +7,17 @@
 
 #include <QObject>
 
-class SimulationController;
+class Simulation;
 
 class SimulationBlocker
 {
 public:
-    explicit SimulationBlocker(SimulationController *simController);
+    explicit SimulationBlocker(Simulation *simulation);
     ~SimulationBlocker();
 
 private:
     Q_DISABLE_COPY(SimulationBlocker)
 
-    SimulationController *m_simController;
+    Simulation *m_simulation;
     bool m_restart = false;
 };

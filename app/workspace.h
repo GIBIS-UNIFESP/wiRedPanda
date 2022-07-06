@@ -13,7 +13,7 @@
 #include <QUndoStack>
 
 class GraphicsView;
-class SimulationController;
+class Simulation;
 
 class WorkSpace : public QWidget
 {
@@ -22,13 +22,11 @@ class WorkSpace : public QWidget
 public:
     explicit WorkSpace(QWidget *parent = nullptr);
 
-    static void selectWorkspace();
-
     GraphicsView *view();
     QFileInfo fileInfo();
     QString dolphinFileName();
     Scene *scene();
-    SimulationController *simulationController();
+    Simulation *simulation();
     void load(QDataStream &stream);
     void load(const QString &fileName);
     void save(QDataStream &stream);

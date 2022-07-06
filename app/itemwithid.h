@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <QtGlobal>
+
 class ItemWithId
 {
 public:
@@ -15,5 +17,7 @@ public:
     void setId(const int id);
 
 private:
+    Q_DISABLE_COPY(ItemWithId)
+
     int m_id = 0;
 };

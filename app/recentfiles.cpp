@@ -1,7 +1,7 @@
 // Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "recentfilescontroller.h"
+#include "recentfiles.h"
 
 #include "common.h"
 #include "settings.h"
@@ -10,7 +10,7 @@
 #include <QFile>
 #include <QFileInfo>
 
-RecentFilesController::RecentFilesController(QObject *parent)
+RecentFiles::RecentFiles(QObject *parent)
     : QObject(parent)
 {
     if (Settings::contains("recentFileList")) {
@@ -19,7 +19,7 @@ RecentFilesController::RecentFilesController(QObject *parent)
 }
 
 // TODO: quotes bug
-void RecentFilesController::addRecentFile(const QString &filePath)
+void RecentFiles::addRecentFile(const QString &filePath)
 {
     qCDebug(three) << tr("Setting recent file to:") << filePath;
     if (!QFile(filePath).exists()) {
@@ -34,7 +34,7 @@ void RecentFilesController::addRecentFile(const QString &filePath)
     saveRecentFiles();
 }
 
-QStringList RecentFilesController::recentFiles()
+QStringList RecentFiles::recentFiles()
 {
     int i = 0;
     while (i < m_files.size()) {
@@ -50,7 +50,7 @@ QStringList RecentFilesController::recentFiles()
     return m_files;
 }
 
-void RecentFilesController::saveRecentFiles()
+void RecentFiles::saveRecentFiles()
 {
     Settings::setValue("recentFileList", m_files);
 }

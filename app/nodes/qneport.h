@@ -46,7 +46,7 @@ public:
     explicit QNEPort(QGraphicsItem *parent = nullptr);
 
     GraphicElement *graphicElement() const;
-    LogicElement *logicElement() const;
+    LogicElement *logic() const;
     QBrush currentBrush() const;
     QString name() const;
     Status defaultValue() const;
@@ -84,7 +84,7 @@ protected:
     GraphicElement *m_graphicElement = nullptr;
     QBrush m_currentBrush;
     QGraphicsTextItem *m_label = new QGraphicsTextItem(this);
-    QList<QNEConnection *> m_connections;
+    QList<QNEConnection *> m_connections; // use smart pointers
     QString m_name;
     Status m_defaultStatus = Status::Invalid;
     Status m_status = Status::Inactive;

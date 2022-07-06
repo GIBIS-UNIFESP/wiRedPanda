@@ -7,6 +7,7 @@
 
 #include "elementmapping.h"
 
+#include <QGraphicsItem>
 #include <QObject>
 #include <QTimer>
 #include <memory>
@@ -15,13 +16,13 @@ class QNEInputPort;
 class QNEOutputPort;
 class Scene;
 
-class SimulationController : public QObject
+class Simulation : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit SimulationController(Scene *scene);
-    ~SimulationController() override = default;
+    explicit Simulation(Scene *scene);
+    ~Simulation() override = default;
 
     bool initialize();
     bool isRunning();
@@ -32,13 +33,15 @@ public:
     void updateScene();
 
 private:
+    Q_DISABLE_COPY(Simulation)
+
     static void updatePort(QNEInputPort *port);
+    static void updatePort(QNEOutputPort *port);
 
-    bool canRun() const;
-    void updatePort(QNEOutputPort *port);
-
-    QTimer m_simulationTimer;
-    QTimer m_viewTimer;
+    QList<QGraphicsItem *> m_items;
+    QTimer m_timer;
+    QVector<Clock *> m_clocks;
+    QVector<GraphicElementInput *> m_inputs;
     Scene *m_scene;
     bool m_initialized = false;
     std::unique_ptr<ElementMapping> m_elmMapping;

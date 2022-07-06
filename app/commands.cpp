@@ -11,7 +11,7 @@
 #include "qneport.h"
 #include "scene.h"
 #include "serializationfunctions.h"
-#include "simulationcontroller.h"
+#include "simulation.h"
 
 #include <QDrag>
 #include <QGraphicsItem>
@@ -222,10 +222,10 @@ void AddItemsCommand::undo()
     qCDebug(zero) << text();
     const auto items = findItems(m_ids);
 
-    auto *simController = m_scene->simulationController();
-    // We need to restart the simulation controller when deleting through the Undo command to
+    auto *simulation = m_scene->simulation();
+    // We need to restart the simulation when deleting through the Undo command to
     // guarantee that no crashes occur when deleting input elements (clocks, input buttons, etc.)
-    simController->restart();
+    simulation->restart();
 
     saveItems(m_itemData, items, m_otherIds);
     deleteItems(m_scene, items);

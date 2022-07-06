@@ -68,7 +68,7 @@ void LogicElement::validate()
     m_isValid = true;
 
     for (int index = 0; index < m_inputPairs.size() && m_isValid; ++index) {
-        if (m_inputPairs[index].logic == nullptr) {
+        if (m_inputPairs.value(index).logic == nullptr) {
             m_isValid = false;
         }
     }
