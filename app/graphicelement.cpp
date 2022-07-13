@@ -159,9 +159,9 @@ void GraphicElement::save(QDataStream &stream) const
     }
 
     /* <\Version2.7> */
-    stream << static_cast<quint64>(m_defaultSkins.size());
+    stream << static_cast<quint64>(m_alternativeSkins.size());
 
-    for (const QString &skinName : m_defaultSkins) {
+    for (const auto &skinName : m_alternativeSkins) {
         stream << skinName;
     }
 
@@ -387,6 +387,8 @@ void GraphicElement::loadPixmapSkinNames(QDataStream &stream, const double versi
             loadPixmapSkinName(stream, static_cast<int>(skin));
         }
 
+        m_usingDefaultSkin = (m_defaultSkins == m_alternativeSkins);
+
         refresh();
     }
 }
@@ -396,21 +398,12 @@ void GraphicElement::loadPixmapSkinName(QDataStream &stream, const int skin)
     QString name;
     stream >> name;
 
-    if (skin >= m_defaultSkins.size()) {
+    if (skin >= m_alternativeSkins.size()) {
         qCDebug(zero) << tr("Could not load some of the skins.");
     }
 
     if (!name.startsWith(":/")) {
-        QDir dir(QFileInfo(GlobalProperties::currentFile).absoluteDir());
-        QString fileName(QFileInfo(name).fileName());
-        QFileInfo fileInfo(dir, fileName);
-        qCDebug(zero) << tr("Skin fileName:") << fileInfo.absoluteFilePath();
-
-        if (!fileInfo.isFile()) {
-            qCDebug(zero) << tr("Could not load some of the skins.");
-        }
-
-        m_defaultSkins[skin] = fileInfo.absoluteFilePath();
+        m_alternativeSkins[skin] = name;
     }
 }
 
@@ -516,8 +509,13 @@ qreal GraphicElement::rotation() const
 
 void GraphicElement::setSkin(const bool defaultSkin, const QString &fileName)
 {
+    if (defaultSkin) {
+        m_alternativeSkins = m_defaultSkins;
+    } else {
+        m_alternativeSkins[0] = fileName;
+    }
+
     m_usingDefaultSkin = defaultSkin;
-    m_alternativeSkins.first() = fileName;
     setPixmap(0);
 }
 
