@@ -1,4 +1,4 @@
-TARGET = wpanda
+TARGET = wiredpanda
 
 TEMPLATE = app
 

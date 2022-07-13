@@ -26,14 +26,17 @@ jobs:
         modules: qtcharts
         aqtversion: ==2.1.0
 
-    - name: Build and test
+    - name: Build
       run: |
         sudo apt install libgstreamer-gl1.0-0
         mkdir build
         cd build
         qmake ../WPanda.pro
         make -j2
-        cd test
+
+    - name: Test
+      run: |
+        cd build/test
         xvfb-run ./WPanda-test
         
     - name: Upload coverage data
@@ -61,14 +64,17 @@ jobs:
         modules: qtcharts
         aqtversion: ==2.1.0
 
-    - name: Build and test
+    - name: Build
       run: |
         sudo apt install libgstreamer-gl1.0-0
         mkdir build
         cd build
         qmake ../WPanda.pro
         make -j2
-        cd test
+
+    - name: Test
+      run: |
+        cd build/test
         xvfb-run ./WPanda-test
         
 # =================================
@@ -89,14 +95,17 @@ jobs:
         modules: qtcharts
         aqtversion: ==2.1.0
 
-    - name: Build and test
+    - name: Build
       run: |
         sudo apt install libgstreamer-gl1.0-0
         mkdir build
         cd build
         qmake ../WPanda.pro
         make -j2
-        cd test
+
+    - name: Test
+      run: |
+        cd build/test
         xvfb-run ./WPanda-test
 
 # =================================
@@ -117,14 +126,17 @@ jobs:
         modules: qtcharts
         aqtversion: ==2.1.0
 
-    - name: Build and test
+    - name: Build
       run: |
         sudo apt install libgstreamer-gl1.0-0
         mkdir build
         cd build
         qmake ../WPanda.pro
         make -j2
-        cd test
+        
+    - name: Test
+      run: |
+        cd build/test
         xvfb-run ./WPanda-test
         
 # =================================
@@ -163,10 +175,10 @@ jobs:
         mkdir appimage
         cp app/resources/wpanda.desktop appimage/wpanda.desktop
         cp app/resources/wpanda.svg appimage/wpanda_icon.svg
-        cp build/app/wpanda appimage/
+        cp build/app/wiredpanda appimage/
         wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
         chmod +x ./linuxdeployqt-continuous-x86_64.AppImage
-        VERSION=4 ./linuxdeployqt-continuous-x86_64.AppImage appimage/wpanda -appimage
+        VERSION=4 ./linuxdeployqt-continuous-x86_64.AppImage appimage/wiredpanda -appimage
         rm ./linuxdeployqt-continuous-x86_64.AppImage
         mv WiRedPanda-4-x86_64.AppImage WiRedPanda-Ubuntu-Qt5.AppImage
 
@@ -195,14 +207,17 @@ jobs:
         modules: qtcharts qtmultimedia
         aqtversion: ==2.1.0
 
-    - name: Build and test
+    - name: Build
       run: |
         sudo apt install libgstreamer-gl1.0-0
         mkdir build
         cd build
         qmake ../WPanda.pro
         make -j2
-        cd test
+
+    - name: Test
+      run: |
+        cd build/test
         xvfb-run ./WPanda-test
         
 # =================================
@@ -223,14 +238,17 @@ jobs:
         modules: qtcharts qtmultimedia
         aqtversion: ==2.1.0
 
-    - name: Build and test
+    - name: Build
       run: |
         sudo apt install libgstreamer-gl1.0-0
         mkdir build
         cd build
         qmake ../WPanda.pro
         make -j2
-        cd test
+
+    - name: Test
+      run: |
+        cd build/test
         xvfb-run ./WPanda-test
         
 # =================================
@@ -258,7 +276,7 @@ jobs:
     - name: Setup MSVC Toolchain [Windows]
       uses: seanmiddleditch/gha-setup-vsdevenv@v4
 
-    - name: Build and test
+    - name: Build
       shell: cmd
       run: |
         choco install jom
@@ -266,8 +284,13 @@ jobs:
         cd build
         qmake ../WPanda.pro
         jom
-        jom check
 
+    - name: Test
+      shell: cmd
+      run: |
+        cd build
+        jom check
+        
 # =================================
 
   Windows-Qt5_12_12:
@@ -293,7 +316,7 @@ jobs:
     - name: Setup MSVC Toolchain [Windows]
       uses: seanmiddleditch/gha-setup-vsdevenv@v4
 
-    - name: Build and test
+    - name: Build
       shell: cmd
       run: |
         choco install jom
@@ -301,6 +324,11 @@ jobs:
         cd build
         qmake ../WPanda.pro
         jom
+ 
+    - name: Test
+      shell: cmd
+      run: |
+        cd build
         jom check
         
 # =================================
@@ -328,7 +356,7 @@ jobs:
     - name: Setup MSVC Toolchain [Windows]
       uses: seanmiddleditch/gha-setup-vsdevenv@v4
 
-    - name: Build and test
+    - name: Build
       shell: cmd
       run: |
         choco install jom
@@ -336,6 +364,11 @@ jobs:
         cd build
         qmake ../WPanda.pro
         jom
+
+    - name: Test
+      shell: cmd
+      run: |
+        cd build
         jom check
         
 # =================================
@@ -363,7 +396,7 @@ jobs:
     - name: Setup MSVC Toolchain [Windows]
       uses: seanmiddleditch/gha-setup-vsdevenv@v4
 
-    - name: Build and test
+    - name: Build
       shell: cmd
       run: |
         choco install jom
@@ -371,6 +404,11 @@ jobs:
         cd build
         qmake ../WPanda.pro
         jom
+
+    - name: Test
+      shell: cmd
+      run: |
+        cd build
         jom check
         
 # =================================
@@ -418,7 +456,7 @@ jobs:
       run : |
         cp -r examples build/app/release
         cd build/app/release
-        windeployqt --compiler-runtime wpanda.exe
+        windeployqt --compiler-runtime wiredpanda.exe
         rm wpanda_pch.obj
         rm wpanda_pch.pch
         cd ..
@@ -457,7 +495,7 @@ jobs:
     - name: Setup MSVC Toolchain [Windows]
       uses: seanmiddleditch/gha-setup-vsdevenv@v4
 
-    - name: Build and test
+    - name: Build
       shell: cmd
       run: |
         choco install jom
@@ -465,6 +503,11 @@ jobs:
         cd build
         qmake ../WPanda.pro
         jom
+
+    - name: Test
+      shell: cmd
+      run: |
+        cd build
         jom check
         
 # =================================
@@ -492,7 +535,7 @@ jobs:
     - name: Setup MSVC Toolchain [Windows]
       uses: seanmiddleditch/gha-setup-vsdevenv@v4
 
-    - name: Build and test
+    - name: Build
       shell: cmd
       run: |
         choco install jom
@@ -500,8 +543,13 @@ jobs:
         cd build
         qmake ../WPanda.pro
         jom
-        jom check
 
+    - name: Test
+      shell: cmd
+      run: |
+        cd build
+        jom check
+        
 # =================================
 
   macOS-Qt5:
@@ -532,7 +580,7 @@ jobs:
     - name: Rename file
       run: |
         cd build/app
-        zip -r WiRedPanda-macOS-Qt5.zip wpanda.app
+        zip -r WiRedPanda-macOS-Qt5.zip wiredpanda.app
         
     - name: Release
       uses: softprops/action-gh-release@v1
@@ -555,11 +603,15 @@ jobs:
     - name: Install Qt
       run: brew install qt6 gdb
 
-    - name: Build and test
+    - name: Build
       run: |
         QTDIR="/usr/local/opt/qt6/" && PATH="${QTDIR}/bin:$PATH" && LDFLAGS=-L${QTDIR}/lib && CPPFLAGS=-I${QTDIR}/include;
         mkdir build
         cd build
         qmake ../WPanda.pro
         make -j3
+        
+    - name: Test
+      run: |
+        cd build
         make check
