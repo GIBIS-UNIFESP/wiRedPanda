@@ -244,8 +244,14 @@ void InputRotary::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, c
 
 void InputRotary::setSkin(const bool defaultSkin, const QString &fileName)
 {
+    if (defaultSkin) {
+        m_alternativeSkins = m_defaultSkins;
+    } else {
+        m_alternativeSkins[0] = fileName;
+    }
+
     m_usingDefaultSkin = defaultSkin;
-    m_alternativeSkins[0] = fileName;
+    setPixmap(0);
 }
 
 int InputRotary::outputSize() const

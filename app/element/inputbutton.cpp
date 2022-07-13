@@ -103,7 +103,12 @@ void InputButton::setOn(const bool value, const int port)
 
 void InputButton::setSkin(const bool defaultSkin, const QString &fileName)
 {
+    if (defaultSkin) {
+        m_alternativeSkins = m_defaultSkins;
+    } else {
+        m_alternativeSkins[static_cast<int>(m_isOn)] = fileName;
+    }
+
     m_usingDefaultSkin = defaultSkin;
-    m_alternativeSkins[static_cast<int>(m_isOn)] = fileName;
     setPixmap(static_cast<int>(m_isOn));
 }
