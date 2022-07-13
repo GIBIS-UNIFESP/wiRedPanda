@@ -457,8 +457,8 @@ jobs:
         cp -r examples build/app/release
         cd build/app/release
         windeployqt --compiler-runtime wiredpanda.exe
-        rm wpanda_pch.obj
-        rm wpanda_pch.pch
+        rm wiredpanda_pch.obj
+        rm wiredpanda_pch.pch
         cd ..
         ren release wpanda
         Compress-Archive -Path wpanda -DestinationPath WiRedPanda-Windows-Qt5-Portable.zip
