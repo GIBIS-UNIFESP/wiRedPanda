@@ -525,7 +525,7 @@ MorphCommand::MorphCommand(const QList<GraphicElement *> &elements, ElementType 
         m_types.append(oldElm->elementType());
     }
 
-    setText(tr("Morph %1 elements to %2").arg(elements.size()).arg(elements.first()->objectName()));
+    setText(tr("Morph %1 elements to %2").arg(elements.size()).arg(elements.constFirst()->objectName()));
 }
 
 void MorphCommand::undo()
@@ -597,7 +597,7 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
 
         for (int port = 0; port < oldElm->inputSize(); ++port) {
             while (!oldElm->inputPort(port)->connections().isEmpty()) {
-                if (auto *conn = oldElm->inputPort(port)->connections().first();
+                if (auto *conn = oldElm->inputPort(port)->connections().constFirst();
                         conn && conn->end() == oldElm->inputPort(port)) {
                     conn->setEnd(newElm->inputPort(port));
                 }
@@ -606,7 +606,7 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
 
         for (int port = 0; port < oldElm->outputSize(); ++port) {
             while (!oldElm->outputPort(port)->connections().isEmpty()) {
-                if (auto *conn = oldElm->outputPort(port)->connections().first();
+                if (auto *conn = oldElm->outputPort(port)->connections().constFirst();
                         conn && conn->start() == oldElm->outputPort(port)) {
                     conn->setStart(newElm->outputPort(port));
                 }
@@ -636,8 +636,8 @@ FlipCommand::FlipCommand(const QList<GraphicElement *> &items, const int axis, S
     setText(tr("Flip %1 elements in axis %2").arg(items.size(), axis));
     m_ids.reserve(items.size());
     m_positions.reserve(items.size());
-    double xmin = items.first()->pos().rx();
-    double ymin = items.first()->pos().ry();
+    double xmin = items.constFirst()->pos().rx();
+    double ymin = items.constFirst()->pos().ry();
     double xmax = xmin;
     double ymax = ymin;
 
@@ -721,7 +721,7 @@ void ChangeInputSizeCommand::redo()
     for (auto *elm : m_elements) {
         for (int port = m_newInputSize; port < elm->inputSize(); ++port) {
             while (!elm->inputPort(port)->connections().isEmpty()) {
-                auto *conn = elm->inputPort(port)->connections().first();
+                auto *conn = elm->inputPort(port)->connections().constFirst();
                 conn->save(stream);
                 m_scene->removeItem(conn);
                 auto *otherPort = conn->otherPort(elm->inputPort(port));
@@ -809,7 +809,7 @@ void ChangeOutputSizeCommand::redo()
     for (auto *elm : m_elements) {
         for (int port = m_newOutputSize; port < elm->outputSize(); ++port) {
             while (!elm->outputPort(port)->connections().isEmpty()) {
-                auto *conn = elm->outputPort(port)->connections().first();
+                auto *conn = elm->outputPort(port)->connections().constFirst();
                 conn->save(stream);
                 m_scene->removeItem(conn);
                 auto *otherPort = conn->otherPort(elm->outputPort(port));

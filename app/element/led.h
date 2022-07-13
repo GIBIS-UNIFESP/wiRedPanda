@@ -24,8 +24,6 @@ public:
     void updatePorts() override;
 
 private:
-    void resetSkin(const int ledNumber);
-
     QString m_color = "White";
     int m_colorNumber = 0; /* white = 0, red = 2, green = 4, blue = 6, purple = 8 */
 };

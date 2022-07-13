@@ -878,8 +878,8 @@ void BewavedDolphin::on_actionSaveAs_triggered()
         return;
     }
 
-    auto files = fileDialog.selectedFiles();
-    QString fileName = files.first();
+    const auto files = fileDialog.selectedFiles();
+    QString fileName = files.constFirst();
 
     if (fileName.isEmpty()) {
         return;
@@ -945,8 +945,8 @@ void BewavedDolphin::on_actionLoad_triggered()
         return;
     }
 
-    auto files = fileDialog.selectedFiles();
-    QString fileName = files.first();
+    const auto files = fileDialog.selectedFiles();
+    QString fileName = files.constFirst();
     if (fileName.isEmpty()) {
         return;
     }

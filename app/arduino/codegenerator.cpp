@@ -68,7 +68,7 @@ QString CodeGenerator::otherPortName(QNEPort *port)
         return highLow(port->defaultValue());
     }
 
-    QNEPort *other = port->connections().first()->otherPort(port);
+    QNEPort *other = port->connections().constFirst()->otherPort(port);
 
     if (!other) {
         return highLow(port->defaultValue());
@@ -171,7 +171,7 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elms
             QString varName = QString("aux_%1_%2").arg(removeForbiddenChars(elm->objectName()), m_globalCounter++);
             const auto outputs = elm->outputs();
             if (outputs.size() == 1) {
-                QNEPort *port = outputs.first();
+                QNEPort *port = outputs.constFirst();
                 if (elm->elementType() == ElementType::InputVcc) {
                     m_varMap[port] = "HIGH";
                     continue;
@@ -256,7 +256,7 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elms)
             //      out << "    // " << ic->getLabel() << endl;
             //      for (int i = 0; i < ic->inputSize(); ++i) {
             //          QNEPort *port = ic->inputPort(i);
-            //          QNEPort *otherPort = port->connections().first()->otherPort(port);
+            //          QNEPort *otherPort = port->connections().constFirst()->otherPort(port);
             //          QString value = highLow(port->defaultValue());
             //          if (!varMap[otherPort].isEmpty()) {
             //              value = varMap[otherPort];
@@ -497,7 +497,7 @@ void CodeGenerator::loop()
     for (auto *elm : m_elements) {
         if (elm->elementType() == ElementType::Clock) {
             const auto elmOutputs = elm->outputs();
-            QString varName = m_varMap.value(elmOutputs.first());
+            QString varName = m_varMap.value(elmOutputs.constFirst());
             m_stream << QString("    if (%1_elapsed > %1_interval){").arg(varName) << endl;
             m_stream << QString("        %1_elapsed = 0;").arg(varName) << endl;
             m_stream << QString("        %1 = ! %1;").arg(varName) << endl;
