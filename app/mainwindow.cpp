@@ -200,8 +200,8 @@ void MainWindow::removeUndoRedoMenu()
         return;
     }
 
-    m_ui->menuEdit->removeAction(m_ui->menuEdit->actions().first());
-    m_ui->menuEdit->removeAction(m_ui->menuEdit->actions().first());
+    m_ui->menuEdit->removeAction(m_ui->menuEdit->actions().constFirst());
+    m_ui->menuEdit->removeAction(m_ui->menuEdit->actions().constFirst());
 }
 
 void MainWindow::addUndoRedoMenu()

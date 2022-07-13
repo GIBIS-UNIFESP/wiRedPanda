@@ -85,7 +85,7 @@ void ElementMapping::applyConnection(GraphicElement *elm, QNEInputPort *inputPor
 
     // TODO: and if there is more than one input? use std::any_of?
     if (connections == 1) {
-        if (QNEPort *otherPort = inputPort->connections().first()->otherPort(inputPort)) {
+        if (QNEPort *otherPort = inputPort->connections().constFirst()->otherPort(inputPort)) {
             if (GraphicElement *predecessor = otherPort->graphicElement()) {
                 LogicElement *predOutElm;
                 int predOutIndex = 0;
