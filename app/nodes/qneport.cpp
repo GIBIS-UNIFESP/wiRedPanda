@@ -79,18 +79,20 @@ const QList<QNEConnection *> &QNEPort::connections() const
 
 void QNEPort::connect(QNEConnection *conn)
 {
-    if (conn) {
-        if (!m_connections.contains(conn)) {
-            m_connections.append(conn);
-        }
-        updateConnections();
-        // if (graphicElement()) {
-        //     graphicElement()->updatePorts();
-        //     if (isOutput()) {
-        //         graphicElement()->updateLogic();
-        //     }
-        // }
+    if (!conn) {
+        return;
     }
+
+    if (!m_connections.contains(conn)) {
+        m_connections.append(conn);
+    }
+    updateConnections();
+    // if (graphicElement()) {
+    //     graphicElement()->updatePorts();
+    //     if (isOutput()) {
+    //         graphicElement()->updateLogic();
+    //     }
+    // }
 }
 
 void QNEPort::disconnect(QNEConnection *conn)

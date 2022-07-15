@@ -173,8 +173,8 @@ void TestLogicElements::testLogicDFlipFlop()
         {0, 0, 1, 1, 0, 0, 1}, /* Clear = false */
         {0, 0, 1, 0, 0, 1, 1}, /* Clear and Preset = false */
 
-        {1, 0, 0, 1, 1, 1, 0}, /* Clk dwn and D = 0 (must mantain current state)*/
-        {1, 1, 0, 1, 1, 1, 0}, /* Clk dwn and D = 1 (must mantain current state)*/
+        {1, 0, 0, 1, 1, 1, 0}, /* Clk dwn and D = 0 (must maintain current state)*/
+        {1, 1, 0, 1, 1, 1, 0}, /* Clk dwn and D = 1 (must maintain current state)*/
     };
 
     for (const auto &test : truthTable) {
@@ -244,8 +244,8 @@ void TestLogicElements::testLogicJKFlipFlop()
         {0, 0, 0, 0, 0, 1, 1, 0, 0}, /* Preset = false */
         {0, 0, 0, 0, 1, 0, 0, 1, 0}, /* Clear = false */
         {0, 0, 0, 1, 0, 0, 1, 1, 0}, /* Clear and Preset = false*/
-        {1, 1, 0, 0, 1, 1, 0, 1, 0}, /* Clk dwn and J = 0 (must mantain current state)*/
-        {1, 1, 0, 0, 1, 1, 0, 1, 0}, /* Clk dwn and J = 1 (must mantain current state)*/
+        {1, 1, 0, 0, 1, 1, 0, 1, 0}, /* Clk dwn and J = 0 (must maintain current state)*/
+        {1, 1, 0, 0, 1, 1, 0, 1, 0}, /* Clk dwn and J = 1 (must maintain current state)*/
         {0, 1, 1, 1, 1, 1, 1, 0, 0}, /* Clk up J = 1 K = 1 (must swap Q and ~Q)*/
         {0, 1, 1, 1, 1, 1, 0, 1, 1}, /* Clk up J = 1 K = 1 (must swap Q and ~Q)*/
         {0, 1, 1, 0, 1, 1, 1, 0, 0}, /* Clk up J = 1 K = 0 */

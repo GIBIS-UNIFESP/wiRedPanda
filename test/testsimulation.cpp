@@ -21,7 +21,7 @@ void TestSimulation::testCase1()
     InputButton btn2;
     And andItem;
     Led led;
-    QNEConnection conn;
+    QNEConnection conn1;
     QNEConnection conn2;
     QNEConnection conn3;
 
@@ -30,12 +30,12 @@ void TestSimulation::testCase1()
     scene->addItem(&andItem);
     scene->addItem(&btn1);
     scene->addItem(&btn2);
-    scene->addItem(&conn);
+    scene->addItem(&conn1);
     scene->addItem(&conn2);
     scene->addItem(&conn3);
 
-    conn.setStart(btn1.outputPort());
-    conn.setEnd(andItem.inputPort(0));
+    conn1.setStart(btn1.outputPort());
+    conn1.setEnd(andItem.inputPort(0));
     conn2.setStart(btn2.outputPort());
     conn2.setEnd(andItem.inputPort(1));
     conn3.setStart(andItem.outputPort());
