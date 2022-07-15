@@ -46,6 +46,11 @@ void Clock::updateClock()
         return;
     }
 
+    if (m_reset) {
+        resetClock();
+        return;
+    }
+
     const auto duration = std::chrono::duration<float, std::micro>(std::chrono::steady_clock::now() - m_timePoint);
 
     if (duration > m_interval) {
@@ -124,13 +129,14 @@ void Clock::setFrequency(const float freq)
     m_interval = auxInterval;
     m_frequency = static_cast<double>(freq);
     m_timePoint = std::chrono::steady_clock::now();
-    reset = true;
+    m_reset = true;
 }
 
 void Clock::resetClock()
 {
-    setOn(true);
+    setOn();
     m_timePoint = std::chrono::steady_clock::now();
+    m_reset = false;
 }
 
 QString Clock::genericProperties()

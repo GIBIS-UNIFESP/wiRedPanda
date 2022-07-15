@@ -14,8 +14,6 @@ class Clock : public GraphicElementInput
 public:
     explicit Clock(QGraphicsItem *parent = nullptr);
 
-    inline static bool reset = true;
-
     QString genericProperties() override;
     bool isOn(const int port = 0) const override;
     float frequency() const override;
@@ -31,6 +29,7 @@ public:
 
 private:
     bool m_isOn = false;
+    bool m_reset = true;
     double m_frequency = 0;
     std::chrono::duration<float, std::milli> m_interval{};
     std::chrono::steady_clock::time_point m_timePoint;

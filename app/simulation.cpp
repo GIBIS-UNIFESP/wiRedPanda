@@ -32,17 +32,11 @@ void Simulation::update()
     }
 
     for (auto *clock : qAsConst(m_clocks)) {
-        if (!clock) {
-            continue;
-        };
-
-        Clock::reset ? clock->resetClock() : clock->updateClock();
+        clock->updateClock();
     }
 
-    Clock::reset = false;
-
-    for (auto *input : qAsConst(m_inputs)) {
-        input->updatePortsOutputs();
+    for (auto *inputElm : qAsConst(m_inputs)) {
+        inputElm->updateOutputs();
     }
 
     // FIXME: This can easily cause crashes when using the Undo command to delete elements
@@ -50,26 +44,13 @@ void Simulation::update()
         logic->updateLogic();
     }
 
-    updateScene();
-}
+    for (auto *conn : qAsConst(m_connections)) {
+        updatePort(conn->start());
+    }
 
-void Simulation::updateScene()
-{
-    for (auto *item : qAsConst(m_items)) {
-        if (item->type() == QNEConnection::Type) {
-            auto *connection = qgraphicsitem_cast<QNEConnection *>(item);
-            updatePort(connection->start());
-            continue;
-        }
-
-        if (item->type() == GraphicElement::Type) {
-            auto *element = qgraphicsitem_cast<GraphicElement *>(item);
-
-            if (element && (element->elementGroup() == ElementGroup::Output)) {
-                for (auto *port : element->inputs()) {
-                    updatePort(port);
-                }
-            }
+    for (auto *elm : qAsConst(m_outputs)) {
+        for (auto *port : elm->inputs()) {
+            updatePort(port);
         }
     }
 }
@@ -127,7 +108,6 @@ void Simulation::start()
 {
     qCDebug(zero) << tr("Starting simulation.");
     if (!m_initialized) {
-        Clock::reset = true;
         initialize();
     }
 
@@ -139,34 +119,49 @@ void Simulation::start()
 bool Simulation::initialize()
 {
     m_clocks.clear();
+    m_connections.clear();
     m_inputs.clear();
-    m_items.clear();
 
     qCDebug(two) << tr("GENERATING SIMULATION LAYER.");
-    const auto elements = m_scene->elements();
+
+    QVector<GraphicElement *> elements;
+    const auto items = m_scene->items(Qt::SortOrder(-1));
+
+    for (auto *item : items) {
+        if (item->type() == QNEConnection::Type) {
+            m_connections.append(qgraphicsitem_cast<QNEConnection *>(item));
+        }
+
+        if (item->type() == GraphicElement::Type) {
+            auto *element = qgraphicsitem_cast<GraphicElement *>(item);
+            elements.append(element);
+
+            if (element->elementType() == ElementType::Clock) {
+                m_clocks.append(qobject_cast<Clock *>(element));
+                m_clocks.last()->resetClock();
+            }
+
+            if (element->elementGroup() == ElementGroup::Input) {
+                m_inputs.append(qobject_cast<GraphicElementInput *>(element));
+            }
+
+            if (element->elementGroup() == ElementGroup::Output) {
+                m_outputs.append(element);
+            }
+        }
+    }
 
     qCDebug(zero) << tr("Elements read:") << elements.size();
     if (elements.empty()) {
         return false;
     }
 
-    for (auto *elm : elements) {
-        if (elm->elementType() == ElementType::Clock) {
-            m_clocks.append(qobject_cast<Clock *>(elm));
-        }
-
-        if (elm->elementGroup() == ElementGroup::Input) {
-            m_inputs.append(qobject_cast<GraphicElementInput *>(elm));
-        }
-    }
-
-    m_items = m_scene->items(Qt::SortOrder(-1));
-
     qCDebug(two) << tr("Recreating mapping for simulation.");
     m_elmMapping = std::make_unique<ElementMapping>(elements);
 
     qCDebug(two) << tr("Sorting.");
     m_elmMapping->sort();
+
     m_initialized = true;
 
     qCDebug(zero) << tr("Finished simulation layer.");

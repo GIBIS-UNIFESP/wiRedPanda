@@ -30,7 +30,7 @@ InputButton::InputButton(QGraphicsItem *parent)
     m_locked = false;
     setCanChangeSkin(true);
     setRotatable(false);
-    InputButton::setOn(false);
+    InputButton::setOff();
     setHasLabel(true);
     setHasTrigger(true);
     setPortName(m_translatedName);
@@ -44,7 +44,7 @@ void InputButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
 
     if (!m_locked && (event->button() == Qt::LeftButton)) {
-        setOn(true);
+        setOn();
         event->accept();
     }
 
@@ -54,7 +54,7 @@ void InputButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (!m_locked && (event->button() == Qt::LeftButton)) {
-        setOn(false);
+        setOff();
         event->accept();
     }
 

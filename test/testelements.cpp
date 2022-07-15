@@ -215,32 +215,32 @@ void TestElements::testIC()
     auto *clkButton = new InputButton();
     auto *prstButton = new InputButton();
 
-    auto *led = new Led();
+    auto *led1 = new Led();
     auto *led2 = new Led();
 
-    auto *connection = new QNEConnection();
-    connection->setStart(clkButton->outputPort());
-    connection->setEnd(ic->inputPort(2));
+    auto *connection1 = new QNEConnection();
+    connection1->setStart(clkButton->outputPort());
+    connection1->setEnd(ic->inputPort(2));
 
     auto *connection2 = new QNEConnection();
-    connection2->setStart(ic->outputPort(0));
-    connection2->setEnd(led->inputPort());
+    connection2->setStart(prstButton->outputPort());
+    connection2->setEnd(ic->inputPort(0));
 
     auto *connection3 = new QNEConnection();
-    connection3->setStart(prstButton->outputPort());
-    connection3->setEnd(ic->inputPort(0));
+    connection3->setStart(ic->outputPort(0));
+    connection3->setEnd(led1->inputPort());
 
     auto *connection4 = new QNEConnection();
     connection4->setStart(ic->outputPort(1));
     connection4->setEnd(led2->inputPort());
 
     Scene scene;
-    scene.addItem(led);
+    scene.addItem(led1);
     scene.addItem(led2);
     scene.addItem(clkButton);
     scene.addItem(prstButton);
     scene.addItem(ic);
-    scene.addItem(connection);
+    scene.addItem(connection1);
     scene.addItem(connection2);
     scene.addItem(connection3);
     scene.addItem(connection4);
@@ -249,46 +249,48 @@ void TestElements::testIC()
     simulation.initialize();
 
     for (int i = 0; i < 10; ++i) {
-        clkButton->setOn(false);
-        prstButton->setOn(false);
+        clkButton->setOff();
+        prstButton->setOff();
         simulation.update();
         simulation.update();
         simulation.update();
-        simulation.updateScene();
 
         QCOMPARE(ic->inputPort(2)->status(), Status::Inactive);
 
         QCOMPARE(ic->outputPort(0)->status(), Status::Active);
         QCOMPARE(ic->outputPort(1)->status(), Status::Inactive);
 
-        clkButton->setOn(false);
-        prstButton->setOn(true);
+        // -------------------------------
+
+        clkButton->setOff();
+        prstButton->setOn();
         simulation.update();
         simulation.update();
         simulation.update();
-        simulation.updateScene();
 
         QCOMPARE(ic->inputPort(2)->status(), Status::Inactive);
 
         QCOMPARE(ic->outputPort(0)->status(), Status::Active);
         QCOMPARE(ic->outputPort(1)->status(), Status::Inactive);
 
-        clkButton->setOn(false);
+        // -------------------------------
+
+        clkButton->setOff();
         simulation.update();
         simulation.update();
         simulation.update();
-        simulation.updateScene();
 
         QCOMPARE(ic->inputPort(2)->status(), Status::Inactive);
 
         QCOMPARE(ic->outputPort(0)->status(), Status::Active);
         QCOMPARE(ic->outputPort(1)->status(), Status::Inactive);
 
-        clkButton->setOn(true);
+        // -------------------------------
+
+        clkButton->setOn();
         simulation.update();
         simulation.update();
         simulation.update();
-        simulation.updateScene();
 
         QCOMPARE(ic->inputPort(2)->status(), Status::Active);
 

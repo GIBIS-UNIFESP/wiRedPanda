@@ -143,7 +143,6 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, WorkSpace *workspace)
         }
         // Updating the values of the circuit logic based on current input values.
         simulation->update();
-        simulation->updateScene();
         // Setting the computed output values to the waveform results vector.
         int counter = 0;
         for (auto *output : qAsConst(outputs)) {
@@ -285,7 +284,6 @@ void SimpleWaveform::showWaveform()
         }
         qCDebug(three) << tr("Updating the values of the circuit logic based on current input values.");
         simulation->update();
-        simulation->updateScene();
         qCDebug(three) << tr("Setting the computed output values to the waveform results.");
         int counter = 0;
         for (auto *output : qAsConst(outputs)) {
