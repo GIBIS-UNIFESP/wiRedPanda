@@ -14,7 +14,6 @@ SimulationBlocker::SimulationBlocker(Simulation *simulation)
     if (m_simulation->isRunning()) {
         m_restart = true;
         m_simulation->stop();
-        Clock::reset = true;
     }
 }
 

@@ -24,13 +24,13 @@ public:
     virtual void setOn() = 0;
     virtual void setOn(const bool value, const int port = 0) = 0;
     void setLocked(const bool locked) { m_locked = locked; }
-    void updatePortsOutputs();
+    void updateOutputs();
 
 protected:
     bool m_locked = false;
 };
 
-inline void GraphicElementInput::updatePortsOutputs()
+inline void GraphicElementInput::updateOutputs()
 {
     for (int portIndex = 0; portIndex < outputSize(); ++portIndex) {
         logic()->setOutputValue(portIndex, isOn(portIndex));
