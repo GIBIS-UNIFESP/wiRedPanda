@@ -29,13 +29,13 @@ public:
     GraphicsView *view() const;
     QAction *redoAction() const;
     QAction *undoAction() const;
-    QList<GraphicElement *> selectedElements();
     QUndoStack *undoStack();
-    QVector<GraphicElement *> elements();
-    QVector<GraphicElement *> elements(const QRectF &rect);
-    QVector<GraphicElement *> visibleElements();
     Simulation *simulation();
     bool eventFilter(QObject *watched, QEvent *event) override;
+    const QList<GraphicElement *> selectedElements() const;
+    const QVector<GraphicElement *> elements() const;
+    const QVector<GraphicElement *> elements(const QRectF &rect) const;
+    const QVector<GraphicElement *> visibleElements() const;
     void addItem(QGraphicsItem *item);
     void addItem(QMimeData *mimeData);
     void copyAction();

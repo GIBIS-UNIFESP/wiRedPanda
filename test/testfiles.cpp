@@ -19,14 +19,14 @@ void TestFiles::testFiles()
     QVERIFY(!files.empty());
 
     for (const auto &fileInfo : files) {
-        auto workspace = std::make_unique<WorkSpace>();
+        WorkSpace workspace;
         QVERIFY(fileInfo.exists());
         QFile pandaFile(fileInfo.absoluteFilePath());
         QVERIFY(pandaFile.exists());
         QVERIFY(pandaFile.open(QIODevice::ReadOnly));
         QDataStream stream(&pandaFile);
-        workspace->load(stream);
-        const auto items = workspace->scene()->items(Qt::SortOrder(-1));
+        workspace.load(stream);
+        const auto items = workspace.scene()->items(Qt::SortOrder(-1));
 
         for (auto *item : items) {
             if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
@@ -39,12 +39,12 @@ void TestFiles::testFiles()
         QTemporaryFile tempFile;
         QVERIFY(tempFile.open());
         QDataStream stream2(&tempFile);
-        workspace->save(stream2);
+        workspace.save(stream2);
         tempFile.close();
         QFile pandaFile2(tempFile.fileName());
         QVERIFY(pandaFile2.open(QIODevice::ReadOnly));
 
         QDataStream stream3(&pandaFile2);
-        workspace->load(stream3);
+        workspace.load(stream3);
     }
 }

@@ -604,12 +604,12 @@ void MainWindow::disconnectTab()
     qCDebug(zero) << tr("Removing undo and redo actions from UI menu.");
     removeUndoRedoMenu();
 
-    disconnect(m_ui->actionClearSelection, &QAction::triggered, m_currentTab->scene(), &Scene::clearSelection);
-    disconnect(m_ui->actionCopy, &QAction::triggered, m_currentTab->scene(), &Scene::copyAction);
-    disconnect(m_ui->actionCut, &QAction::triggered, m_currentTab->scene(), &Scene::cutAction);
-    disconnect(m_ui->actionDelete, &QAction::triggered, m_currentTab->scene(), &Scene::deleteAction);
-    disconnect(m_ui->actionPaste, &QAction::triggered, m_currentTab->scene(), &Scene::pasteAction);
-    disconnect(m_ui->elementEditor, &ElementEditor::sendCommand, m_currentTab->scene(), &Scene::receiveCommand);
+    disconnect(m_ui->actionClearSelection, &QAction::triggered,         m_currentTab->scene(), &Scene::clearSelection);
+    disconnect(m_ui->actionCopy,           &QAction::triggered,         m_currentTab->scene(), &Scene::copyAction);
+    disconnect(m_ui->actionCut,            &QAction::triggered,         m_currentTab->scene(), &Scene::cutAction);
+    disconnect(m_ui->actionDelete,         &QAction::triggered,         m_currentTab->scene(), &Scene::deleteAction);
+    disconnect(m_ui->actionPaste,          &QAction::triggered,         m_currentTab->scene(), &Scene::pasteAction);
+    disconnect(m_ui->elementEditor,        &ElementEditor::sendCommand, m_currentTab->scene(), &Scene::receiveCommand);
 }
 
 void MainWindow::connectTab()

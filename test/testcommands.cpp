@@ -15,8 +15,8 @@ void TestCommands::testAddDeleteCommands()
     /* FIXME: Implement intelligent memory management. */
     QList<QGraphicsItem *> items{new And(), new And(), new And(), new And()};
 
-    auto *workspace = new WorkSpace();
-    auto *scene = workspace->scene();
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
     undoStack->setUndoLimit(1);
     scene->receiveCommand(new AddItemsCommand(items, scene));

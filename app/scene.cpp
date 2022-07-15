@@ -97,14 +97,14 @@ void Scene::setCircuitUpdateRequired()
     m_circuitUpdateRequired = true;
 }
 
-QVector<GraphicElement *> Scene::visibleElements()
+const QVector<GraphicElement *> Scene::visibleElements() const
 {
     auto visibleRect = m_view->mapToScene(m_view->viewport()->geometry()).boundingRect();
 
     return elements(visibleRect);
 }
 
-QVector<GraphicElement *> Scene::elements()
+const QVector<GraphicElement *> Scene::elements() const
 {
     const auto items_ = items(Qt::SortOrder(-1));
     QVector<GraphicElement *> elements_;
@@ -119,7 +119,7 @@ QVector<GraphicElement *> Scene::elements()
     return elements_;
 }
 
-QVector<GraphicElement *> Scene::elements(const QRectF &rect)
+const QVector<GraphicElement *> Scene::elements(const QRectF &rect) const
 {
     QVector<GraphicElement *> elements_;
     const auto items_ = items(rect, Qt::IntersectsItemShape, Qt::SortOrder(-1));
@@ -149,7 +149,7 @@ QVector<QNEConnection *> Scene::connections()
     return conns;
 }
 
-QList<GraphicElement *> Scene::selectedElements()
+const QList<GraphicElement *> Scene::selectedElements() const
 {
     QList<GraphicElement *> elements_;
     const auto items = selectedItems();
