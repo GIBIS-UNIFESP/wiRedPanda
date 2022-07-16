@@ -4,6 +4,7 @@
 #include "testsimulation.h"
 
 #include "and.h"
+#include "common.h"
 #include "elementmapping.h"
 #include "inputbutton.h"
 #include "led.h"
@@ -41,7 +42,7 @@ void TestSimulation::testCase1()
     conn3.setStart(andItem.outputPort());
     conn3.setEnd(led.inputPort());
 
-    const auto elms(ElementMapping::sortGraphicElements(scene->elements()));
+    const auto elms(Common::sortGraphicElements(scene->elements()));
 
     QVERIFY(elms.at(0) == &btn1 || elms.at(1) == &btn1);
     QVERIFY(elms.at(0) == &btn2 || elms.at(1) == &btn2);

@@ -30,3 +30,12 @@ private:
     Q_DISABLE_COPY(Pandaception)
 
 };
+
+class GraphicElement;
+
+class Common
+{
+public:
+    static QVector<GraphicElement *> sortGraphicElements(QVector<GraphicElement *> elms);
+    static int calculatePriority(GraphicElement *elm, QHash<GraphicElement *, bool> &beingVisited, QHash<GraphicElement *, int> &priorities);
+};

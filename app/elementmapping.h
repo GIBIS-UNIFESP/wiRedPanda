@@ -25,15 +25,11 @@ public:
     explicit ElementMapping(const QVector<GraphicElement *> &elms);
     ~ElementMapping();
 
-    static QVector<GraphicElement *> sortGraphicElements(QVector<GraphicElement *> elms);
-
     const QVector<LogicElement *> &logicElms() const;
     void sort();
 
 private:
     Q_DISABLE_COPY(ElementMapping)
-
-    static int calculatePriority(GraphicElement *elm, QHash<GraphicElement *, bool> &beingVisited, QHash<GraphicElement *, int> &priorities);
 
     void applyConnection(GraphicElement *elm, QNEInputPort *inputPort);
     void clear();

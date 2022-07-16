@@ -128,53 +128,6 @@ void ElementMapping::validateElements()
     }
 }
 
-QVector<GraphicElement *> ElementMapping::sortGraphicElements(QVector<GraphicElement *> elms)
-{
-    QHash<GraphicElement *, bool> beingVisited;
-    QHash<GraphicElement *, int> priorities;
-
-    for (auto *elm : elms) {
-        calculatePriority(elm, beingVisited, priorities);
-    }
-
-    std::sort(elms.begin(), elms.end(), [priorities](const auto &e1, const auto &e2) {
-        return priorities[e2] < priorities[e1];
-    });
-
-    return elms;
-}
-
-int ElementMapping::calculatePriority(GraphicElement *elm, QHash<GraphicElement *, bool> &beingVisited, QHash<GraphicElement *, int> &priorities)
-{
-    if (!elm) {
-        return 0;
-    }
-
-    if (beingVisited.contains(elm) && (beingVisited.value(elm))) {
-        return 0;
-    }
-
-    if (priorities.contains(elm)) {
-        return priorities.value(elm);
-    }
-
-    beingVisited[elm] = true;
-    int max = 0;
-
-    for (auto *port : elm->outputs()) {
-        for (auto *conn : port->connections()) {
-            if (auto *successor = conn->otherPort(port)) {
-                max = qMax(calculatePriority(successor->graphicElement(), beingVisited, priorities), max);
-            }
-        }
-    }
-
-    int priority = max + 1;
-    priorities[elm] = priority;
-    beingVisited[elm] = false;
-    return priority;
-}
-
 const QVector<LogicElement *> &ElementMapping::logicElms() const
 {
     return m_logicElms;

@@ -777,7 +777,7 @@ void MainWindow::exportToArduino(QString fileName)
         fileName.append(".ino");
     }
 
-    elements = ElementMapping::sortGraphicElements(elements);
+    elements = Common::sortGraphicElements(elements);
 
     // TODO: why home()? why not the current folder? what if the user type a path?
     CodeGenerator arduino(QDir::home().absoluteFilePath(fileName), elements);

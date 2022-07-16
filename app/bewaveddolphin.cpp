@@ -180,7 +180,7 @@ void BewavedDolphin::loadElements()
         throw Pandaception(tr("Could not load enough elements for the simulation."));
     }
 
-    elements = ElementMapping::sortGraphicElements(elements);
+    elements = Common::sortGraphicElements(elements);
 
     for (auto *elm : qAsConst(elements)) {
         if (elm && (elm->type() == GraphicElement::Type)) {
