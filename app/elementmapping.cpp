@@ -11,6 +11,7 @@
 #include "ic.h"
 #include "qneconnection.h"
 #include "qneport.h"
+#include "simulation.h"
 
 ElementMapping::ElementMapping(const QVector<GraphicElement *> &elms)
     : m_elements(elms)
@@ -79,21 +80,21 @@ void ElementMapping::applyConnection(GraphicElement *elm, QNEInputPort *inputPor
     const int connections = inputPort->connections().size();
 
     if ((connections == 0) && !inputPort->isRequired()) {
-        LogicElement *predecessor = (inputPort->defaultValue() == Status::Active) ? &m_globalVCC : &m_globalGND;
-        currentLogElm->connectPredecessor(inputIndex, predecessor, 0);
+        auto *predecessorLogic = (inputPort->defaultValue() == Status::Active) ? &m_globalVCC : &m_globalGND;
+        currentLogElm->connectPredecessor(inputIndex, predecessorLogic, 0);
     }
 
     // TODO: and if there is more than one input? use std::any_of?
     if (connections == 1) {
         if (QNEPort *otherPort = inputPort->connections().constFirst()->otherPort(inputPort)) {
-            if (GraphicElement *predecessor = otherPort->graphicElement()) {
+            if (auto *predecessorElement = otherPort->graphicElement()) {
                 LogicElement *predOutElm;
                 int predOutIndex = 0;
 
-                if (auto *ic = qobject_cast<IC *>(predecessor)) {
+                if (auto *ic = qobject_cast<IC *>(predecessorElement)) {
                     predOutElm = ic->icOutput(otherPort->index());
                 } else {
-                    predOutElm = predecessor->logic();
+                    predOutElm = predecessorElement->logic();
                     predOutIndex = otherPort->index();
                 }
 
