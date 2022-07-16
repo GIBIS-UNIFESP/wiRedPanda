@@ -41,13 +41,13 @@ Scene::Scene(QObject *parent)
 
     connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this,                    &Scene::updateTheme);
     connect(&m_undoStack,              &QUndoStack::indexChanged,   this,                    &Scene::checkUpdateRequest);
-    connect(this,                      &Scene::circuitHasChanged,   &m_simulation, &Simulation::initialize);
 }
 
 void Scene::checkUpdateRequest()
 {
     if (m_circuitUpdateRequired) {
         emit circuitHasChanged();
+        m_simulation.initialize();
         m_circuitUpdateRequired = false;
     } else if (m_autosaveRequired) {
         emit circuitAppearenceHasChanged();
