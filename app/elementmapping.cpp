@@ -31,7 +31,6 @@ void ElementMapping::clear()
 {
     m_globalGND.clearSucessors();
     m_globalVCC.clearSucessors();
-    qDeleteAll(m_deletableLogics);
 }
 
 void ElementMapping::generateMap()
@@ -49,9 +48,8 @@ void ElementMapping::generateMap()
 
 void ElementMapping::generateLogic(GraphicElement *elm)
 {
-    auto *logicElm = ElementFactory::buildLogicElement(elm);
-    elm->setLogic(logicElm);
-    m_deletableLogics.append(logicElm);
+    auto logicElm = ElementFactory::buildLogicElement(elm);
+    elm->setLogic(logicElm.get());
     m_logicElms.append(logicElm);
 }
 
@@ -112,7 +110,7 @@ void ElementMapping::sort()
 
 void ElementMapping::sortLogicElements()
 {
-    for (auto *logic : qAsConst(m_logicElms)) {
+    for (auto logic : qAsConst(m_logicElms)) {
         logic->calculatePriority();
     }
 
@@ -123,12 +121,12 @@ void ElementMapping::sortLogicElements()
 
 void ElementMapping::validateElements()
 {
-    for (auto *logic : qAsConst(m_logicElms)) {
+    for (auto logic : qAsConst(m_logicElms)) {
         logic->validate();
     }
 }
 
-const QVector<LogicElement *> &ElementMapping::logicElms() const
+const QVector<std::shared_ptr<LogicElement>> &ElementMapping::logicElms() const
 {
     return m_logicElms;
 }
