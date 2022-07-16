@@ -60,7 +60,8 @@ void SimpleWaveform::sortElements(QVector<GraphicElement *> &elements,
                                   QVector<GraphicElement *> &outputs,
                                   SortingMode sorting)
 {
-    elements = ElementMapping::sortGraphicElements(elements);
+    elements = Common::sortGraphicElements(elements);
+
     for (auto *elm : qAsConst(elements)) {
         if (!elm || elm->type() != GraphicElement::Type) {
             continue;
@@ -72,6 +73,7 @@ void SimpleWaveform::sortElements(QVector<GraphicElement *> &elements,
             outputs.append(elm);
         }
     }
+
     if (sorting == SortingMode::Position) {
         std::stable_sort(inputs.begin(), inputs.end(), [](const auto &elm1, const auto &elm2) {
             return elm1->pos().ry() < elm2->pos().ry();
