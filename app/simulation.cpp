@@ -119,8 +119,9 @@ void Simulation::start()
 bool Simulation::initialize()
 {
     m_clocks.clear();
-    m_connections.clear();
+    m_outputs.clear();
     m_inputs.clear();
+    m_connections.clear();
 
     qCDebug(two) << tr("GENERATING SIMULATION LAYER.");
 
