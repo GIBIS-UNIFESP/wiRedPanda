@@ -84,12 +84,12 @@ bool InputButton::isOn(const int port) const
 
 void InputButton::setOff()
 {
-    setOn(false);
+    InputButton::setOn(false);
 }
 
 void InputButton::setOn()
 {
-    setOn(true);
+    InputButton::setOn(true);
 }
 
 void InputButton::setOn(const bool value, const int port)

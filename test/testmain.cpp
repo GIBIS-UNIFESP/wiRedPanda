@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     app.setApplicationName("WiRedPanda");
     app.setApplicationVersion(APP_VERSION);
 
-    size_t status = 0;
+    int status = 0;
     status |= QTest::qExec(new TestCommands, argc, argv);
     status |= QTest::qExec(new TestElements, argc, argv);
     status |= QTest::qExec(new TestFiles, argc, argv);
@@ -33,5 +33,5 @@ int main(int argc, char **argv)
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
 
-    return static_cast<int>(status);
+    return status;
 }

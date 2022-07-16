@@ -189,7 +189,7 @@ void InputRotary::setOff()
 void InputRotary::setOn()
 {
     const int port = (outputValue() + 1) % outputSize();
-    setOn(true, port);
+    InputRotary::setOn(true, port);
 }
 
 void InputRotary::setOn(const bool value, const int port)

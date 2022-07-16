@@ -44,12 +44,12 @@ bool InputSwitch::isOn(const int port) const
 
 void InputSwitch::setOff()
 {
-    setOn(!isOn());
+    InputSwitch::setOn(!isOn());
 }
 
 void InputSwitch::setOn()
 {
-    setOn(!isOn());
+    InputSwitch::setOn(!isOn());
 }
 
 void InputSwitch::setOn(const bool value, const int port)
