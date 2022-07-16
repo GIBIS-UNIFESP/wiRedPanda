@@ -25,8 +25,7 @@ WorkSpace::WorkSpace(QWidget *parent)
     setLayout(new QHBoxLayout);
     layout()->addWidget(&m_view);
 
-    connect(scene(), &Scene::circuitAppearenceHasChanged, this, &WorkSpace::autosave);
-    connect(scene(), &Scene::circuitHasChanged,           this, &WorkSpace::autosave);
+    connect(scene(), &Scene::circuitHasChanged, this, &WorkSpace::autosave);
 
     setAutosaveFileName();
 }

@@ -39,18 +39,14 @@ Scene::Scene(QObject *parent)
     m_redoAction->setIcon(QIcon(":/toolbar/redo.svg"));
     m_redoAction->setShortcut(QKeySequence::Redo);
 
-    connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this,                    &Scene::updateTheme);
-    connect(&m_undoStack,              &QUndoStack::indexChanged,   this,                    &Scene::checkUpdateRequest);
+    connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, &Scene::updateTheme);
+    connect(&m_undoStack,              &QUndoStack::indexChanged,   this, &Scene::checkUpdateRequest);
 }
 
 void Scene::checkUpdateRequest()
 {
-    if (m_circuitUpdateRequired) {
+    if (m_autosaveRequired) {
         emit circuitHasChanged();
-        m_simulation.initialize();
-        m_circuitUpdateRequired = false;
-    } else if (m_autosaveRequired) {
-        emit circuitAppearenceHasChanged();
         m_autosaveRequired = false;
     }
 }
@@ -91,10 +87,13 @@ void Scene::setAutosaveRequired()
 
 void Scene::setCircuitUpdateRequired()
 {
+    // set these again to avoid having new ports showing when elements are invisible
     showWires(m_showWires);
     showGates(m_showGates);
 
-    m_circuitUpdateRequired = true;
+    m_simulation.initialize();
+
+    m_autosaveRequired = true;
 }
 
 const QVector<GraphicElement *> Scene::visibleElements() const

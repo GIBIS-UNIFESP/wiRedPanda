@@ -39,7 +39,6 @@ void Simulation::update()
         inputElm->updateOutputs();
     }
 
-    // FIXME: This can easily cause crashes when using the Undo command to delete elements
     for (auto *logic : m_elmMapping->logicElms()) {
         logic->updateLogic();
     }

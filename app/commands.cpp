@@ -12,6 +12,7 @@
 #include "scene.h"
 #include "serializationfunctions.h"
 #include "simulation.h"
+#include "simulationblocker.h"
 
 #include <QDrag>
 #include <QGraphicsItem>
@@ -212,6 +213,7 @@ AddItemsCommand::AddItemsCommand(const QList<QGraphicsItem *> &items, Scene *sce
     : QUndoCommand(parent)
     , m_scene(scene)
 {
+    SimulationBlocker blocker(m_scene->simulation());
     const auto items_ = loadList(items, m_ids, m_otherIds);
     addItems(m_scene, items_);
     setText(tr("Add %1 elements").arg(items_.size()));
@@ -220,13 +222,8 @@ AddItemsCommand::AddItemsCommand(const QList<QGraphicsItem *> &items, Scene *sce
 void AddItemsCommand::undo()
 {
     qCDebug(zero) << text();
+    SimulationBlocker blocker(m_scene->simulation());
     const auto items = findItems(m_ids);
-
-    auto *simulation = m_scene->simulation();
-    // We need to restart the simulation when deleting through the Undo command to
-    // guarantee that no crashes occur when deleting input elements (clocks, input buttons, etc.)
-    simulation->restart();
-
     saveItems(m_itemData, items, m_otherIds);
     deleteItems(m_scene, items);
     m_scene->setCircuitUpdateRequired();
@@ -235,6 +232,7 @@ void AddItemsCommand::undo()
 void AddItemsCommand::redo()
 {
     qCDebug(zero) << text();
+    SimulationBlocker blocker(m_scene->simulation());
     loadItems(m_scene, m_itemData, m_ids, m_otherIds);
     m_scene->setCircuitUpdateRequired();
 }
@@ -243,6 +241,7 @@ DeleteItemsCommand::DeleteItemsCommand(const QList<QGraphicsItem *> &items, Scen
     : QUndoCommand(parent)
     , m_scene(scene)
 {
+    SimulationBlocker blocker(m_scene->simulation());
     auto items_ = loadList(items, m_ids, m_otherIds);
     setText(tr("Delete %1 elements").arg(items_.size()));
 }
@@ -250,6 +249,7 @@ DeleteItemsCommand::DeleteItemsCommand(const QList<QGraphicsItem *> &items, Scen
 void DeleteItemsCommand::undo()
 {
     qCDebug(zero) << text();
+    SimulationBlocker blocker(m_scene->simulation());
     loadItems(m_scene, m_itemData, m_ids, m_otherIds);
     m_scene->setCircuitUpdateRequired();
 }
@@ -257,6 +257,7 @@ void DeleteItemsCommand::undo()
 void DeleteItemsCommand::redo()
 {
     qCDebug(zero) << text();
+    SimulationBlocker blocker(m_scene->simulation());
     auto items = findItems(m_ids);
     saveItems(m_itemData, items, m_otherIds);
     deleteItems(m_scene, items);
