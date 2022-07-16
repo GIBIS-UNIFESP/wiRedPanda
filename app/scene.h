@@ -57,7 +57,6 @@ public:
     void updateTheme();
 
 signals:
-    void circuitAppearenceHasChanged();
     void circuitHasChanged();
     void contextMenuPos(QPoint screenPos, QGraphicsItem *itemAtMouse);
 
@@ -113,7 +112,6 @@ private:
     QUndoStack m_undoStack;
     Simulation m_simulation;
     bool m_autosaveRequired = false;
-    bool m_circuitUpdateRequired = false;
     bool m_draggingElement = false;
     bool m_markingSelectionBox = false;
     bool m_showGates = true;
