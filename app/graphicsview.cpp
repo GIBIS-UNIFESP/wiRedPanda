@@ -38,6 +38,7 @@ void GraphicsView::mousePressEvent(QMouseEvent *event)
         event->accept();
         return;
     }
+
     QGraphicsView::mousePressEvent(event);
 }
 
@@ -51,8 +52,10 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
         event->accept();
         return;
     }
+
     m_panStartX = event->pos().x();
     m_panStartY = event->pos().y();
+
     QGraphicsView::mouseMoveEvent(event);
 }
 
@@ -64,6 +67,7 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
         event->accept();
         return;
     }
+
     QGraphicsView::mouseReleaseEvent(event);
 }
 
@@ -74,6 +78,7 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
         QApplication::setOverrideCursor(Qt::ClosedHandCursor);
         event->accept();
     }
+
     QGraphicsView::keyPressEvent(event);
 }
 
@@ -84,6 +89,7 @@ void GraphicsView::keyReleaseEvent(QKeyEvent *event)
         QApplication::restoreOverrideCursor();
         event->accept();
     }
+
     QGraphicsView::keyReleaseEvent(event);
 }
 

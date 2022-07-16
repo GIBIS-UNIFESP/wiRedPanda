@@ -138,7 +138,7 @@ bool Simulation::initialize()
 
             if (element->elementType() == ElementType::Clock) {
                 m_clocks.append(qobject_cast<Clock *>(element));
-                m_clocks.last()->resetClock();
+                m_clocks.constLast()->resetClock();
             }
 
             if (element->elementGroup() == ElementGroup::Input) {
