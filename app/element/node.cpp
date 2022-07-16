@@ -22,14 +22,14 @@ Node::Node(QGraphicsItem *parent)
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);
 
-    Node::updatePorts();
+    Node::updatePortsProperties();
     setCanChangeSkin(true);
     setPortName(m_translatedName);
     setToolTip(m_translatedName);
     inputPort()->setRequired(true);
 }
 
-void Node::updatePorts()
+void Node::updatePortsProperties()
 {
     inputPort()->setPos(  0, 16);
     outputPort()->setPos(32, 16);

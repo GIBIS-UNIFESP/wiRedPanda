@@ -21,7 +21,7 @@ public:
     void save(QDataStream &stream) const override;
     void setColor(const QString &color) override;
     void setSkin(const bool defaultSkin, const QString &fileName) override;
-    void updatePorts() override;
+    void updatePortsProperties() override;
 
 private:
     QString m_color = "White";

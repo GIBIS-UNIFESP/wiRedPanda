@@ -28,7 +28,7 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     m_label->setPos(64, 34);
     setRotatable(false);
     setHasAudio(true);
-    updatePorts();
+    updatePortsProperties();
     setCanChangeSkin(true);
     setHasLabel(true);
     setPortName(m_translatedName);

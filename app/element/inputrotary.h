@@ -25,7 +25,7 @@ public:
     void setOn() override;
     void setOn(const bool value, const int port = 0) override;
     void setSkin(const bool defaultSkin, const QString &fileName) override;
-    void updatePorts() override;
+    void updatePortsProperties() override;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;

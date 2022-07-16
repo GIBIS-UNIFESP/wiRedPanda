@@ -20,7 +20,7 @@ public:
         return ":/memory/" + ThemeManager::themePath() + "/JK-flipflop.svg";
     }
 
-    void updatePorts() override;
+    void updatePortsProperties() override;
     void updateTheme() override;
 };
 

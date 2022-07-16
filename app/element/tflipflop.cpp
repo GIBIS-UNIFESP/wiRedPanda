@@ -26,10 +26,10 @@ TFlipFlop::TFlipFlop(QGraphicsItem *parent)
     setPortName(m_translatedName);
     setToolTip(m_translatedName);
 
-    TFlipFlop::updatePorts();
+    TFlipFlop::updatePortsProperties();
 }
 
-void TFlipFlop::updatePorts()
+void TFlipFlop::updatePortsProperties()
 {
     inputPort(0)->setPos( 0, 16);     inputPort(0)->setName("T");
     inputPort(1)->setPos( 0, 48);     inputPort(1)->setName("Clock");

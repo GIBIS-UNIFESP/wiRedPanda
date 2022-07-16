@@ -52,7 +52,7 @@ public:
     virtual void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version);
 
     //! Updates the number and the connected elements to the ports whenever needed (e.g. loading the element, changing the number of inputs/outputs).
-    virtual void updatePorts();
+    virtual void updatePortsProperties();
 
     //! virtual function overloaded by clock element. Other elements have frequency of 0.
     virtual float frequency() const;
