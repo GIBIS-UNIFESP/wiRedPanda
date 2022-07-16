@@ -39,7 +39,7 @@ void Simulation::update()
         inputElm->updateOutputs();
     }
 
-    for (auto *logic : m_elmMapping->logicElms()) {
+    for (auto logic : m_elmMapping->logicElms()) {
         logic->updateLogic();
     }
 

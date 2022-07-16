@@ -8,6 +8,7 @@
 #include "logicinput.h"
 
 #include <QCoreApplication>
+#include <memory>
 
 class Clock;
 class GraphicElement;
@@ -25,7 +26,7 @@ public:
     explicit ElementMapping(const QVector<GraphicElement *> &elms);
     ~ElementMapping();
 
-    const QVector<LogicElement *> &logicElms() const;
+    const QVector<std::shared_ptr<LogicElement> > &logicElms() const;
     void sort();
 
 private:
@@ -43,6 +44,5 @@ private:
     LogicInput m_globalGND{false};
     LogicInput m_globalVCC{true};
     QVector<GraphicElement *> m_elements;
-    QVector<LogicElement *> m_deletableLogics;
-    QVector<LogicElement *> m_logicElms;
+    QVector<std::shared_ptr<LogicElement>> m_logicElms;
 };
