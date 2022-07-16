@@ -14,7 +14,7 @@ class Demux : public GraphicElement
 public:
     explicit Demux(QGraphicsItem *parent = nullptr);
 
-    void updatePorts() override;
+    void updatePortsProperties() override;
 };
 
 Q_DECLARE_METATYPE(Demux)

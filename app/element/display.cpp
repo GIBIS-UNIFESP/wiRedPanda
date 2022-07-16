@@ -63,7 +63,7 @@ Display::Display(QGraphicsItem *parent)
     setRotatable(false);
     setToolTip(m_translatedName);
 
-    Display::updatePorts();
+    Display::updatePortsProperties();
 }
 
 void Display::convertAllColors(QVector<QPixmap> &maps)
@@ -100,7 +100,7 @@ void Display::refresh()
     update();
 }
 
-void Display::updatePorts()
+void Display::updatePortsProperties()
 {
     inputPort(0)->setPos( 0,  8);    inputPort(0)->setName("G (" +  tr("middle")      + ")");
     inputPort(1)->setPos( 0, 24);    inputPort(1)->setName("F (" +  tr("upper left")  + ")");
@@ -168,7 +168,7 @@ void Display::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const
             aux[order[i]] = m_inputPorts.value(i);
         }
         setInputs(aux);
-        updatePorts();
+        updatePortsProperties();
     }
     if (version < 1.7) {
         qCDebug(zero) << tr("Remapping inputs.");
@@ -178,7 +178,7 @@ void Display::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const
             aux[order[i]] = m_inputPorts.value(i);
         }
         setInputs(aux);
-        updatePorts();
+        updatePortsProperties();
     }
     if (version >= 3.1) {
         QString color_;

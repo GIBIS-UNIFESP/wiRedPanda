@@ -38,7 +38,7 @@ InputRotary::InputRotary(QGraphicsItem *parent)
     setPortName(m_translatedName);
     setToolTip(m_translatedName);
 
-    InputRotary::updatePorts();
+    InputRotary::updatePortsProperties();
 }
 
 void InputRotary::refresh()
@@ -50,7 +50,7 @@ void InputRotary::refresh()
     update();
 }
 
-void InputRotary::updatePorts()
+void InputRotary::updatePortsProperties()
 {
     switch (InputRotary::outputSize()) {
     case 2: {

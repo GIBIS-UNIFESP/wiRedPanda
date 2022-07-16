@@ -20,7 +20,7 @@ public:
         return ":/memory/" + ThemeManager::themePath() + "/D-latch.svg";
     }
 
-    void updatePorts() override;
+    void updatePortsProperties() override;
     void updateTheme() override;
 };
 

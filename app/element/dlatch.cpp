@@ -26,10 +26,10 @@ DLatch::DLatch(QGraphicsItem *parent)
     setPortName(m_translatedName);
     setToolTip(m_translatedName);
 
-    DLatch::updatePorts();
+    DLatch::updatePortsProperties();
 }
 
-void DLatch::updatePorts()
+void DLatch::updatePortsProperties()
 {
     inputPort(0)->setPos(0, 16);      inputPort(0)->setName("Data");
     inputPort(1)->setPos(0, 48);      inputPort(1)->setName("Enable");

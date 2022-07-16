@@ -24,5 +24,5 @@ And::And(QGraphicsItem *parent)
     setCanChangeSkin(true);
     setPortName(m_translatedName);
     setToolTip(m_translatedName);
-    updatePorts();
+    updatePortsProperties();
 }

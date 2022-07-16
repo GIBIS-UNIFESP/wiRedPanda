@@ -26,10 +26,10 @@ Mux::Mux(QGraphicsItem *parent)
     setPortName(m_translatedName);
     setToolTip(m_translatedName);
 
-    Mux::updatePorts();
+    Mux::updatePortsProperties();
 }
 
-void Mux::updatePorts()
+void Mux::updatePortsProperties()
 {
     inputPort(0)->setPos(16, 16); inputPort(0)->setName("In0");
     inputPort(1)->setPos(16, 48); inputPort(1)->setName("In1");

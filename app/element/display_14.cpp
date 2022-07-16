@@ -81,7 +81,7 @@ Display14::Display14(QGraphicsItem *parent)
     setRotatable(false);
     setToolTip(m_translatedName);
 
-    Display14::updatePorts();
+    Display14::updatePortsProperties();
 }
 
 void Display14::refresh()
@@ -89,7 +89,7 @@ void Display14::refresh()
     update();
 }
 
-void Display14::updatePorts()
+void Display14::updatePortsProperties()
 {
     inputPort( 0)->setPos( 0,  -8);    inputPort(0)->setName("G1 (" + tr("middle left")        + ")");
     inputPort( 1)->setPos( 0,   8);    inputPort(1)->setName("F (" +  tr("upper left")         + ")");

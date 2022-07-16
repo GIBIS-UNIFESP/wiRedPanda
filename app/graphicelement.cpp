@@ -63,7 +63,7 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QStri
         addOutputPort();
     }
 
-    GraphicElement::updatePorts();
+    GraphicElement::updatePortsProperties();
     GraphicElement::updateTheme();
 }
 
@@ -187,7 +187,7 @@ void GraphicElement::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap
     /* <\Version2.7> */
     loadPixmapSkinNames(stream, version);
     qCDebug(four) << tr("Updating port positions.");
-    updatePorts();
+    updatePortsProperties();
     setRotation(m_angle);
     qCDebug(four) << tr("Finished loading element.");
 }
@@ -519,7 +519,7 @@ void GraphicElement::setSkin(const bool defaultSkin, const QString &fileName)
     setPixmap(0);
 }
 
-void GraphicElement::updatePorts()
+void GraphicElement::updatePortsProperties()
 {
     qCDebug(five) << tr("Updating port positions that belong to the IC.");
 
@@ -806,7 +806,7 @@ void GraphicElement::setInputSize(const int size)
             m_inputPorts.resize(size);
         }
 
-        updatePorts();
+        updatePortsProperties();
     }
 }
 
@@ -827,7 +827,7 @@ void GraphicElement::setOutputSize(const int size)
             m_outputPorts.resize(size);
         }
 
-        updatePorts();
+        updatePortsProperties();
     }
 }
 

@@ -619,7 +619,7 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
 
         ElementFactory::updateItemId(newElm, oldId);
         m_scene->addItem(newElm);
-        newElm->updatePorts();
+        newElm->updatePortsProperties();
     }
 }
 

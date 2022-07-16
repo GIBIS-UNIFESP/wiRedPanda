@@ -26,10 +26,10 @@ Demux::Demux(QGraphicsItem *parent)
     setPortName(m_translatedName);
     setToolTip(m_translatedName);
 
-    Demux::updatePorts();
+    Demux::updatePortsProperties();
 }
 
-void Demux::updatePorts()
+void Demux::updatePortsProperties()
 {
     inputPort(0)->setPos(16, 32);     inputPort(0)->setName("In");
     inputPort(1)->setPos(32, 56);     inputPort(1)->setName("S");

@@ -20,7 +20,7 @@ public:
     void refresh() override;
     void save(QDataStream &stream) const override;
     void setColor(const QString &color) override;
-    void updatePorts() override;
+    void updatePortsProperties() override;
 
 private:
     QString m_color = "Red";

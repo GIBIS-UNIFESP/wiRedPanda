@@ -165,7 +165,7 @@ void IC::loadFile(const QString &fileName)
 
     loadInputs();
     loadOutputs();
-    updatePorts();
+    updatePortsProperties();
 
     const qreal bottom = portsBoundingRect().bottom();
     m_label->setPos(30, bottom + 5);

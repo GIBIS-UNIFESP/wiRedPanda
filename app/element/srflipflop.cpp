@@ -26,10 +26,10 @@ SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
     setPortName(m_translatedName);
     setToolTip(m_translatedName);
 
-    SRFlipFlop::updatePorts();
+    SRFlipFlop::updatePortsProperties();
 }
 
-void SRFlipFlop::updatePorts()
+void SRFlipFlop::updatePortsProperties()
 {
     inputPort(0)->setPos( 0, 16);     inputPort(0)->setName("S");
     inputPort(1)->setPos( 0, 32);     inputPort(1)->setName("Clock");

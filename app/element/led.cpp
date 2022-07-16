@@ -91,7 +91,7 @@ Led::Led(QGraphicsItem *parent)
 
     setRotatable(false);
     setHasColors(true);
-    Led::updatePorts();
+    Led::updatePortsProperties();
     setHasLabel(true);
     setCanChangeSkin(true);
     setPortName(m_translatedName);
@@ -104,9 +104,11 @@ void Led::refresh()
 
     if (isValid()) {
         std::bitset<4> indexBit;
+
         for (int i = 0; i < inputSize(); ++i) {
             indexBit[i] = static_cast<bool>(inputPort(inputSize() - i - 1)->status() == Status::Active);
         }
+
         index = static_cast<int>(indexBit.to_ulong());
     }
 
@@ -144,6 +146,7 @@ void Led::refresh()
 void Led::setColor(const QString &color)
 {
     m_color = color;
+
     if (color == "White")  { m_colorNumber = 0; }
     if (color == "Red")    { m_colorNumber = 2; }
     if (color == "Green")  { m_colorNumber = 4; }
@@ -178,10 +181,10 @@ QString Led::genericProperties()
     return color();
 }
 
-void Led::updatePorts()
+void Led::updatePortsProperties()
 {
     setHasColors(inputSize() == 1);
-    GraphicElement::updatePorts();
+    GraphicElement::updatePortsProperties();
 }
 
 void Led::setSkin(const bool defaultSkin, const QString &fileName)
@@ -192,9 +195,11 @@ void Led::setSkin(const bool defaultSkin, const QString &fileName)
 
     if (isValid()) {
         std::bitset<4> indexBit;
+
         for (int i = 0; i < inputSize(); ++i) {
             indexBit[i] = static_cast<bool>(inputPort(inputSize() - i - 1)->status() == Status::Active);
         }
+
         index = static_cast<int>(indexBit.to_ulong());
     }
 

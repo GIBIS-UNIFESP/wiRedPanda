@@ -14,7 +14,7 @@ class Mux : public GraphicElement
 public:
     explicit Mux(QGraphicsItem *parent = nullptr);
 
-    void updatePorts() override;
+    void updatePortsProperties() override;
 };
 
 Q_DECLARE_METATYPE(Mux)
