@@ -111,6 +111,7 @@ private:
     void on_actionShowValues_triggered();
     void on_actionZoomIn_triggered();
     void on_actionZoomOut_triggered();
+    void on_tableView_selectionChanged();
     void paste(QItemSelection &ranges, QDataStream &stream);
     void prepare(const QString &fileName = {});
     void resizeScene();
@@ -120,7 +121,6 @@ private:
     void save(QSaveFile &file);
     void save(const QString &fileName);
     void setLength(const int simLength, const bool runSimulation = true);
-    void tableView_selectionChanged();
     void zoomChanged();
 
     Ui::BewavedDolphin *m_ui;
