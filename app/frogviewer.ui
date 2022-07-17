@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>630</width>
-    <height>223</height>
+    <width>324</width>
+    <height>105</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,7 +34,7 @@
    <item row="2" column="2">
     <widget class="QPushButton" name="gif_button">
      <property name="text">
-      <string/>
+      <string>Gif</string>
      </property>
     </widget>
    </item>

@@ -897,6 +897,10 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
     if (item) {
         if (event->button() == Qt::LeftButton) {
+            if (item->type() == GraphicElementInput::Type) {
+                emit clickedElement(qgraphicsitem_cast<GraphicElementInput *>(item));
+            }
+
             m_draggingElement = true;
             auto selectedItems_ = selectedItems();
             selectedItems_.append(itemsAt(m_mousePos));

@@ -1,7 +1,11 @@
+/*
+ * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+#pragma once
 
 #include "workspace.h"
-#ifndef FROGVIEWER_H
-#define FROGVIEWER_H
 
 #include <QWidget>
 
@@ -19,23 +23,14 @@ public:
 
     void setTab(WorkSpace *newTab);
 
-private slots:
-
-
-    void on_previous_button_clicked();
-
-    void on_rec_button_clicked();
-
-    void on_close_button_clicked();
-
-    void on_next_button_clicked();
-
-    void on_gif_button_clicked();
-
 private:
-    Ui::FrogViewer *ui;
-    WorkSpace *m_currentTab;
-    void processaSinal(GraphicElementInput *elm);
-};
+    void on_closeButton_clicked();
+    void on_gifButton_clicked();
+    void on_nextButton_clicked();
+    void on_previousButton_clicked();
+    void on_recButton_clicked();
+    void processSignal(GraphicElementInput *elm);
 
-#endif // FROGVIEWER_H
+    Ui::FrogViewer *ui;
+    WorkSpace *m_currentTab = nullptr;
+};

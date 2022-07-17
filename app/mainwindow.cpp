@@ -610,6 +610,8 @@ void MainWindow::disconnectTab()
     disconnect(m_ui->actionDelete,         &QAction::triggered,         m_currentTab->scene(), &Scene::deleteAction);
     disconnect(m_ui->actionPaste,          &QAction::triggered,         m_currentTab->scene(), &Scene::pasteAction);
     disconnect(m_ui->elementEditor,        &ElementEditor::sendCommand, m_currentTab->scene(), &Scene::receiveCommand);
+
+    m_ui->frogViewer->setTab(nullptr);
 }
 
 void MainWindow::connectTab()
@@ -655,6 +657,8 @@ void MainWindow::tabChanged(const int newTabIndex)
     qCDebug(zero) << tr("Selecting tab:") << newTabIndex;
     connectTab();
     qCDebug(zero) << tr("New tab selected. Dolphin fileName:") << m_currentTab->dolphinFileName();
+
+    m_ui->frogViewer->setTab(m_currentTab);
 }
 
 void MainWindow::on_lineEditSearch_textChanged(const QString &text)

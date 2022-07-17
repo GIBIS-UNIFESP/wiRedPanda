@@ -1,20 +1,29 @@
+// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "frogviewer.h"
 #include "ui_frogviewer.h"
 
+#include "gif.h"
+#include "gifwriter.h"
 #include "graphicelementinput.h"
 
-
 #include <QDebug>
-#include <QSaveFile>
 #include <QFileDialog>
+#include <QSaveFile>
 
-FrogViewer::FrogViewer(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::FrogViewer)
+FrogViewer::FrogViewer(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::FrogViewer)
 {
     ui->setupUi(this);
     qDebug() <<  "construtor do frogviewer";
 
+    connect(ui->close_button,    &QPushButton::clicked, this, &FrogViewer::on_closeButton_clicked);
+    connect(ui->gif_button,      &QPushButton::clicked, this, &FrogViewer::on_gifButton_clicked);
+    connect(ui->next_button,     &QPushButton::clicked, this, &FrogViewer::on_nextButton_clicked);
+    connect(ui->previous_button, &QPushButton::clicked, this, &FrogViewer::on_previousButton_clicked);
+    connect(ui->rec_button,      &QPushButton::clicked, this, &FrogViewer::on_recButton_clicked);
 }
 
 FrogViewer::~FrogViewer()
@@ -32,13 +41,12 @@ void FrogViewer::setTab(WorkSpace *newTab)
 // aqui eh so criar um slot para cada botao do forms
 // do frog e acessar os elementos usando 'm_tab'
 
-
-void FrogViewer::on_previous_button_clicked()
+void FrogViewer::on_previousButton_clicked()
 {
 
 }
 
-void FrogViewer::processaSinal(GraphicElementInput *elm){
+void FrogViewer::processSignal(GraphicElementInput *elm){
     // verifica o tipo do elemento, ex: botao, rotativo, interruptor
     // verifica para qual estado ele foi, ex: foi para ligado/desligado, rotativo girou
     // insere na tabela o elemento e o estado alterado
@@ -46,12 +54,17 @@ void FrogViewer::processaSinal(GraphicElementInput *elm){
     qDebug() << "clicked elm: " << elm;
 }
 
-void FrogViewer::on_rec_button_clicked()
+void FrogViewer::on_recButton_clicked()
 {
+    if (!m_currentTab) {
+        qDebug() << "no tab";
+        return;
+    }
+
     if(ui->rec_button->isChecked()){
-//        connect(m_currentTab->scene(), &Scene::clickedElement, this, &FrogViewer::processaSinal);
+        connect(m_currentTab->scene(), &Scene::clickedElement, this, &FrogViewer::processSignal);
     } else{
-//        disconnect(m_currentTab->scene(), &Scene::clickedElement, this, &FrogViewer::processaSinal);
+        disconnect(m_currentTab->scene(), &Scene::clickedElement, this, &FrogViewer::processSignal);
     }
     //    QVector<int> vetor = { 1, 0, 2 };
 //    (vetor << 1) << 2;
@@ -71,8 +84,7 @@ void FrogViewer::on_rec_button_clicked()
 //    Qvector<int> nome = m_tab->scene()->elements();
 }
 
-
-void FrogViewer::on_close_button_clicked()
+void FrogViewer::on_closeButton_clicked()
 {
     this->hide();
     if(ui->rec_button->isChecked()){
@@ -81,7 +93,7 @@ void FrogViewer::on_close_button_clicked()
 
 }
 
-void FrogViewer::on_next_button_clicked()
+void FrogViewer::on_nextButton_clicked()
 {
     // para salvar os estados dos elementos usar BewavedDolphin::restoreInputs
     // e loadSignals
@@ -90,7 +102,7 @@ void FrogViewer::on_next_button_clicked()
     m_currentTab->simulation()->update();
 }
 
-void FrogViewer::on_gif_button_clicked()
+void FrogViewer::on_gifButton_clicked()
 {
     if (!m_currentTab) {
         return;
@@ -102,20 +114,36 @@ void FrogViewer::on_gif_button_clicked()
      //   path = m_currentFile.absolutePath();
     //}
 
-    QString pngFile = QFileDialog::getSaveFileName(this, tr("Export to GIF"), path, tr("PNG files (*.png)"));
-    QString pngFilebkp = pngFile;
-    QString file_name = pngFilebkp.remove(0, pngFile.lastIndexOf("/")+1);
+    QString filePath = QFileDialog::getSaveFileName(this, tr("Export to GIF"), path, tr("PNG files (*.png)"));
+
+    if (filePath.isEmpty()) {
+        return;
+    }
+
+    if (!filePath.endsWith(".gif")) {
+        filePath += ".gif";
+    }
+
+    QFileInfo fileInfo(filePath);
+    QString fileName = fileInfo.fileName();
+
+//    QString pngFilebkp = filePath;
+//    QString file_name = pngFilebkp.remove(0, filePath.lastIndexOf("/")+1);
+
+    std::vector<QImage> imgs;
+
     for(int i=0; i < 30; ++i ){
-        qDebug() << file_name;
+        qDebug() << fileName;
 
-        pngFile.replace(pngFile.lastIndexOf("/")+1, (pngFile.size() - pngFile.lastIndexOf("/")+1), file_name+"_"+QString::number(i)+".png");
+        fileName = fileInfo.baseName() + "_" + QString::number(i) + ".png";
+//        filePath.replace(filePath.lastIndexOf("/")+1, (filePath.size() - filePath.lastIndexOf("/")+1), file_name+"_"+QString::number(i)+".png");
 
-        if (pngFile.isEmpty()) {
+        if (filePath.isEmpty()) {
             return;
         }
 
-        if (!pngFile.endsWith(".png", Qt::CaseInsensitive)) {
-            pngFile.append(".png");
+        if (!filePath.endsWith(".png", Qt::CaseInsensitive)) {
+            filePath.append(".png");
         }
 
         QRectF rect = m_currentTab->scene()->itemsBoundingRect().adjusted(-64, -64, 64, 64);
@@ -125,11 +153,27 @@ void FrogViewer::on_gif_button_clicked()
         painter.setRenderHint(QPainter::Antialiasing);
         m_currentTab->scene()->render(&painter, QRectF(), rect);
         painter.end();
-        pixmap.save(pngFile);
+
+        imgs.push_back(pixmap.toImage());
+
+//        pixmap.save(pngFile);
         m_currentTab->simulation()->update();
-        qDebug() << pngFile;
+//        qDebug() << filePath;
     }
+
+    int delay = 20;
+    bool dither = false;
+
+    QFile file(fileInfo.absoluteFilePath());
+
+    if (!file.open(QIODevice::WriteOnly)) {
+        qDebug() << "couldn't open file for writing: " + file.errorString();
+        return;
+    }
+
+    file.write(MyLib::GifWriter::encode(imgs, delay, dither));
+    file.close();
+
 //    ->statusBar->showMessage(tr("Exported file successfully."), 4000);
     //dynamic_cast<MainWindow *>(parentWidget());
 }
-

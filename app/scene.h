@@ -58,6 +58,7 @@ public:
 
 signals:
     void circuitHasChanged();
+    void clickedElement(GraphicElementInput *elm);
     void contextMenuPos(QPoint screenPos, QGraphicsItem *itemAtMouse);
 
 protected:
