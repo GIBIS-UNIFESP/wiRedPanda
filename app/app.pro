@@ -9,7 +9,7 @@ win32 {
     QMAKE_TARGET_COMPANY = GIBIS-UNIFESP
     QMAKE_TARGET_PRODUCT = WiRedPanda
     QMAKE_TARGET_DESCRIPTION = Logic Circuit Simulator
-    QMAKE_TARGET_COPYRIGHT = Davi Morales, Fábio Cappabianco, Lucas Lellis, Rodrigo Torres and Vinícius Miguel
+    QMAKE_TARGET_COPYRIGHT = GIBIS-UNIFESP and the WiRedPanda contributors
 
     RC_ICONS = resources/wpanda.ico
 }
