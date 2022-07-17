@@ -229,11 +229,11 @@ QByteArray GifWriter::encode(const std::vector<QImage>& frames, int delay, bool 
     const QSize size = frames.front().size();
     QBuffer buffer(&data);
     buffer.open(QIODevice::WriteOnly);
-    assert(buffer.isWritable());
+    Q_ASSERT(buffer.isWritable());
     GifWriter writer(frames.front().size(), delay, buffer);
     writer.dither = dither;
     for (const QImage& image : frames) {
-      assert(image.size() == size);
+      Q_ASSERT(image.size() == size);
       writer.write_frame(image);
     }
   }
@@ -248,7 +248,7 @@ void GifWriter::puts(const char* str)
 void GifWriter::puts(const char* str, std::size_t n)
 {
   const std::size_t m = m_buffer.write(str, n);
-  assert(n == m);
+  Q_ASSERT(n == m);
   Q_UNUSED(m)
 }
 
@@ -377,7 +377,7 @@ void GifWriter::threshold_image(const uint8_t* last_frame, const uint8_t* next_f
 
 void GifWriter::write_lzw_image(const GifWriter::GifPalette& palette)
 {
-  assert(!m_old_image.isNull());
+  Q_ASSERT(!m_old_image.isNull());
   const uint8_t* image_bits = m_old_image.bits();
 
   // graphics control extension
@@ -502,7 +502,7 @@ GifWriter::GifPalette::GifPalette(const QImage& last_frame, const QImage& next_f
 
   const int width = next_frame.width();
   const int height = next_frame.height();
-  assert(last_frame.isNull() || last_frame.size() == next_frame.size());
+  Q_ASSERT(last_frame.isNull() || last_frame.size() == next_frame.size());
 
   // SplitPalette is destructive (it sorts the pixels by color) so
   // we must create a copy of the image for it to destroy
