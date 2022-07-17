@@ -148,7 +148,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>581</height>
+                   <height>565</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -197,7 +197,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>581</height>
+                   <height>565</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -246,7 +246,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>581</height>
+                   <height>565</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -295,7 +295,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>581</height>
+                   <height>565</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -344,7 +344,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>581</height>
+                   <height>565</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -389,7 +389,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>258</width>
-                   <height>579</height>
+                   <height>563</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -493,6 +493,9 @@ QTabWidget::pane {
        </property>
       </widget>
      </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="FrogViewer" name="widget" native="true"/>
     </item>
    </layout>
   </widget>
@@ -1114,6 +1117,12 @@ QTabWidget::pane {
    <header>elementeditor.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>FrogViewer</class>
+   <extends>QWidget</extends>
+   <header>frogviewer.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>lineEditSearch</tabstop>
@@ -1125,12 +1134,12 @@ QTabWidget::pane {
  </tabstops>
  <resources>
   <include location="resources/memory/light/memory_light.qrc"/>
-  <include location="resources/output/output.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
   <include location="resources/misc/misc.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/output/output.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -127,6 +127,8 @@ SOURCES += \
     $$PWD/app/elementmapping.cpp \
     $$PWD/app/enums.cpp \
     $$PWD/app/filehelper.cpp \
+    $$PWD/app/frogviewer.cpp \
+    $$PWD/app/gifwriter.cpp \
     $$PWD/app/graphicelement.cpp \
     $$PWD/app/graphicsview.cpp \
     $$PWD/app/ic.cpp \
@@ -159,6 +161,9 @@ HEADERS += \
     $$PWD/app/elementmapping.h \
     $$PWD/app/enums.h \
     $$PWD/app/filehelper.h \
+    $$PWD/app/frogviewer.h \
+    $$PWD/app/gif.h \
+    $$PWD/app/gifwriter.h \
     $$PWD/app/globalproperties.h \
     $$PWD/app/graphicelement.h \
     $$PWD/app/graphicsview.h \
@@ -190,6 +195,7 @@ FORMS += \
     $$PWD/app/bewaveddolphin.ui \
     $$PWD/app/clockdialog.ui \
     $$PWD/app/elementeditor.ui \
+    $$PWD/app/frogviewer.ui \
     $$PWD/app/lengthdialog.ui \
     $$PWD/app/mainwindow.ui \
     $$PWD/app/simplewaveform.ui
