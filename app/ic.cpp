@@ -88,7 +88,7 @@ void IC::loadOutputs()
 
     for (int outputIndex = 0; outputIndex < m_icOutputs.size(); ++outputIndex) {
         auto *outPort = outputPort(outputIndex);
-        outPort->setName(m_icOutputLabels[outputIndex]);
+        outPort->setName(m_icOutputLabels.at(outputIndex));
     }
 
     qCDebug(three) << tr("IC") << m_file << tr("-> Outputs. min:") << minOutputSize() << tr(", max:") << maxOutputSize() << tr(", current:") << outputSize() << tr(", m_outputs:") << m_outputPorts.size();
@@ -349,18 +349,18 @@ void IC::loadOutputsLabels()
     for (int portIndex = 0; portIndex < outputSize(); ++portIndex) {
         auto *outputPort = m_icOutputs.at(portIndex);
         auto *elm = outputPort->graphicElement();
-        QString lb = elm->label();
+        QString label = elm->label();
 
         if (!outputPort->portName().isEmpty()) {
-            lb += " ";
-            lb += outputPort->portName();
+            label += " ";
+            label += outputPort->portName();
         }
 
         if (!elm->genericProperties().isEmpty()) {
-            lb += " [" + elm->genericProperties() + "]";
+            label += " [" + elm->genericProperties() + "]";
         }
 
-        m_icOutputLabels[portIndex] = lb;
+        m_icOutputLabels[portIndex] = label;
     }
 }
 

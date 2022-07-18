@@ -10,12 +10,9 @@ LogicMux::LogicMux()
 
 void LogicMux::_updateLogic(const QVector<bool> &inputs)
 {
-    bool data1 = inputs[0];
-    bool data2 = inputs[1];
-    bool choice = inputs[2];
-    if (!choice) {
-        setOutputValue(data1);
-    } else {
-        setOutputValue(data2);
-    }
+    const bool data1 = inputs.at(0);
+    const bool data2 = inputs.at(1);
+    const bool choice = inputs.at(2);
+
+    setOutputValue(choice ? data2 : data1);
 }

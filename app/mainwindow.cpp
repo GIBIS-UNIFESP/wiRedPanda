@@ -539,7 +539,7 @@ void MainWindow::updateICList()
         files.removeAll(m_currentFile.fileName());
 
         for (int i = files.size() - 1; i >= 0; --i) {
-            if (files[i][0] == '.') {
+            if (files.at(i).at(0) == '.') {
                 files.removeAt(i);
             }
         }
@@ -875,7 +875,7 @@ void MainWindow::updateRecentFileActions()
     for (int i = 0; i < numRecentFiles; ++i) {
         const QString text = "&" + QString::number(i + 1) + " " + QFileInfo(files.at(i)).fileName();
         actions.at(i)->setText(text);
-        actions.at(i)->setData(files[i]);
+        actions.at(i)->setData(files.at(i));
         actions.at(i)->setVisible(true);
     }
 

@@ -11,6 +11,6 @@ LogicOutput::LogicOutput(const int inputSize)
 void LogicOutput::_updateLogic(const QVector<bool> &inputs)
 {
     for (int index = 0; index < inputs.size(); ++index) {
-        setOutputValue(index, inputs[index]);
+        setOutputValue(index, inputs.at(index));
     }
 }
