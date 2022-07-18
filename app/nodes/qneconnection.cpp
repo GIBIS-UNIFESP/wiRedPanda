@@ -275,7 +275,9 @@ void QNEConnection::updateTheme()
 void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(widget);
-    painter->setClipRect(option->exposedRect);
+    Q_UNUSED(option);
+    painter->setPen(m_highLight ? QPen(Qt::blue, 10) : pen());
+    painter->drawPath(path());
     painter->setPen(isSelected() ? QPen(m_selectedColor, 5) : pen());
     painter->drawPath(path());
 }
@@ -302,4 +304,15 @@ QVariant QNEConnection::itemChange(GraphicsItemChange change, const QVariant &va
     }
 
     return QGraphicsPathItem::itemChange(change, value);
+}
+
+bool QNEConnection::highLight()
+{
+    return m_highLight;
+}
+
+void QNEConnection::setHighLight(bool newHighLight)
+{
+    m_highLight = newHighLight;
+    update();
 }

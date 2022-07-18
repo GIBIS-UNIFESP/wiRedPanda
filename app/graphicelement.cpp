@@ -599,6 +599,7 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
 
     if (change == ItemSelectedHasChanged) {
         m_selected = value.toBool();
+        highlight(m_selected);
     }
 
     return QGraphicsItem::itemChange(change, value);
@@ -876,20 +877,31 @@ void GraphicElement::setMaxInputSize(const int maxInputSize)
     m_maxInputSize = maxInputSize;
 }
 
-void GraphicElement::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void GraphicElement::highlight(const bool isSelected)
 {
-    // the base class clears selection, reselect after
-    QGraphicsItem::mouseReleaseEvent(event);
+    QVector<QNEPort *> ports;
 
     for (auto *port : qAsConst(m_inputPorts)) {
-        for (auto *connection : port->connections()) {
-            connection->setSelected(m_selected);
-        }
+        ports << port;
     }
 
     for (auto *port : qAsConst(m_outputPorts)) {
+        ports << port;
+    }
+
+    for (auto *port : qAsConst(ports)) {
         for (auto *connection : port->connections()) {
-            connection->setSelected(m_selected);
+            if (connection->highLight() == isSelected) {
+                continue;
+            }
+
+            connection->setHighLight(isSelected);
+
+            if (auto *otherPort = connection->otherPort(port)) {
+                if (auto *elm = otherPort->graphicElement(); elm && elm->elementType() == ElementType::Node) {
+                    elm->highlight(isSelected);
+                }
+            }
         }
     }
 }
