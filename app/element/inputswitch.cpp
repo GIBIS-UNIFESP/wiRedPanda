@@ -38,7 +38,7 @@ InputSwitch::InputSwitch(QGraphicsItem *parent)
 
 bool InputSwitch::isOn(const int port) const
 {
-    Q_UNUSED(port);
+    Q_UNUSED(port)
     return m_isOn;
 }
 
@@ -54,7 +54,7 @@ void InputSwitch::setOn()
 
 void InputSwitch::setOn(const bool value, const int port)
 {
-    Q_UNUSED(port);
+    Q_UNUSED(port)
 
     m_isOn = value;
     outputPort()->setStatus(static_cast<Status>(m_isOn));

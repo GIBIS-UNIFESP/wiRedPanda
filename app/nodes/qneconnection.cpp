@@ -233,13 +233,13 @@ QNEPort *QNEConnection::otherPort(const QNEPort *port) const
 
 QNEOutputPort *QNEConnection::otherPort(const QNEInputPort *port) const
 {
-    Q_UNUSED(port);
+    Q_UNUSED(port)
     return m_start;
 }
 
 QNEInputPort *QNEConnection::otherPort(const QNEOutputPort *port) const
 {
-    Q_UNUSED(port);
+    Q_UNUSED(port)
     return m_end;
 }
 
@@ -274,8 +274,8 @@ void QNEConnection::updateTheme()
 
 void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    Q_UNUSED(widget);
-    Q_UNUSED(option);
+    Q_UNUSED(widget)
+    Q_UNUSED(option)
     painter->setPen(m_highLight ? QPen(Qt::blue, 10) : pen());
     painter->drawPath(path());
     painter->setPen(isSelected() ? QPen(m_selectedColor, 5) : pen());

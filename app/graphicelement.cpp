@@ -424,8 +424,8 @@ QRectF GraphicElement::boundingRect() const
 
 void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    Q_UNUSED(widget);
-    painter->setClipRect(option->exposedRect);
+    Q_UNUSED(widget)
+    Q_UNUSED(option)
 
     if (isSelected()) {
         painter->setBrush(m_selectionBrush);
@@ -716,7 +716,7 @@ bool GraphicElement::hasTrigger() const
 
 void GraphicElement::setColor(const QString &color)
 {
-    Q_UNUSED(color);
+    Q_UNUSED(color)
 }
 
 QString GraphicElement::color() const
@@ -726,7 +726,7 @@ QString GraphicElement::color() const
 
 void GraphicElement::setAudio(const QString &audio)
 {
-    Q_UNUSED(audio);
+    Q_UNUSED(audio)
 }
 
 QString GraphicElement::audio() const
@@ -839,7 +839,7 @@ float GraphicElement::frequency() const
 
 void GraphicElement::setFrequency(const float freq)
 {
-    Q_UNUSED(freq);
+    Q_UNUSED(freq)
 }
 
 void GraphicElement::setMinOutputSize(const int minOutputSize)

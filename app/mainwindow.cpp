@@ -721,7 +721,7 @@ void MainWindow::on_lineEditSearch_returnPressed()
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(event)
 
     if (!m_currentTab) {
         return;
