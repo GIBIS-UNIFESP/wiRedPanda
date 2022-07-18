@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
             if (!args.empty()) {
                 GlobalProperties::verbose = false;
                 MainWindow window;
-                window.loadPandaFile(args[0]);
+                window.loadPandaFile(args.at(0));
                 window.exportToArduino(arduFile);
             }
             exit(0);
@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
             if (!args.empty()) {
                 GlobalProperties::verbose = false;
                 MainWindow window;
-                window.loadPandaFile(args[0]);
+                window.loadPandaFile(args.at(0));
                 window.exportToWaveFormFile(wfFile);
             }
             exit(0);
@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
             if (!args.empty()) {
                 GlobalProperties::verbose = false;
                 MainWindow window;
-                window.loadPandaFile(args[0]);
+                window.loadPandaFile(args.at(0));
                 window.exportToWaveFormTerminal();
             }
             exit(0);
@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
         window->show();
 
         if (!args.empty()) {
-            window->loadPandaFile(args[0]);
+            window->loadPandaFile(args.at(0));
         }
     } catch (const std::exception &e) {
         if (GlobalProperties::verbose) {

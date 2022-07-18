@@ -32,7 +32,7 @@ void TestLogicElements::testLogicNode()
     LogicNode elm;
     elm.connectPredecessor(0, switches.at(0), 0);
 
-    const QVector<QVector<bool>> truthTable = {
+    const QVector<QVector<bool>> truthTable{
         {1, 1},
         {0, 0},
     };
@@ -52,7 +52,7 @@ void TestLogicElements::testLogicAnd()
     elm.connectPredecessor(0, switches.at(0), 0);
     elm.connectPredecessor(1, switches.at(1), 0);
 
-    const QVector<QVector<bool>> truthTable = {
+    const QVector<QVector<bool>> truthTable{
         {1, 1, 1},
         {1, 0, 0},
         {0, 1, 0},
@@ -75,7 +75,7 @@ void TestLogicElements::testLogicOr()
     elm.connectPredecessor(0, switches.at(0), 0);
     elm.connectPredecessor(1, switches.at(1), 0);
 
-    const QVector<QVector<bool>> truthTable = {
+    const QVector<QVector<bool>> truthTable{
         {1, 1, 1},
         {1, 0, 1},
         {0, 1, 1},
@@ -109,7 +109,7 @@ void TestLogicElements::testLogicMux()
     elm.connectPredecessor(1, switches.at(1), 0);
     elm.connectPredecessor(2, switches.at(2), 0);
 
-    const QVector<QVector<bool>> truthTable = {
+    const QVector<QVector<bool>> truthTable{
         {0, 0, 0, 0},
         {0, 0, 1, 0},
         {0, 1, 0, 0},
@@ -137,7 +137,7 @@ void TestLogicElements::testLogicDemux()
     elm.connectPredecessor(0, switches.at(0), 0);
     elm.connectPredecessor(1, switches.at(1), 0);
 
-    const QVector<QVector<bool>> truthTable = {
+    const QVector<QVector<bool>> truthTable{
       /* i  S  o0 o1 */
         {0, 0, 0, 0},
         {0, 1, 0, 0},
@@ -164,7 +164,7 @@ void TestLogicElements::testLogicDFlipFlop()
     elm.connectPredecessor(2, switches.at(2), 0);
     elm.connectPredecessor(3, switches.at(3), 0);
 
-    const QVector<QVector<bool>> truthTable = {
+    const QVector<QVector<bool>> truthTable{
       /* L  D  C  p  c  Q ~Q */
         {0, 0, 1, 1, 1, 0, 1}, /* Clk up and D = 0 */
         {0, 1, 1, 1, 1, 1, 0}, /* Clk up and D = 1 */
@@ -205,7 +205,7 @@ void TestLogicElements::testLogicDLatch()
     elm.connectPredecessor(0, switches.at(0), 0);
     elm.connectPredecessor(1, switches.at(1), 0);
 
-    const QVector<QVector<bool>> truthTable = {
+    const QVector<QVector<bool>> truthTable{
       /* D  E  Q  A */
         {0, 0, 0, 0},
         {0, 0, 1, 1},
@@ -239,7 +239,7 @@ void TestLogicElements::testLogicJKFlipFlop()
     elm.connectPredecessor(3, switches.at(3), 0);
     elm.connectPredecessor(4, switches.at(4), 0);
 
-    const QVector<QVector<bool>> truthTable = {
+    const QVector<QVector<bool>> truthTable{
       /* L  J  C  K  p  c  Q  Q  A */
         {0, 0, 0, 0, 0, 1, 1, 0, 0}, /* Preset = false */
         {0, 0, 0, 0, 1, 0, 0, 1, 0}, /* Clear = false */
@@ -290,7 +290,7 @@ void TestLogicElements::testLogicSRFlipFlop()
     elm.connectPredecessor(3, switches.at(3), 0);
     elm.connectPredecessor(4, switches.at(4), 0);
 
-    const QVector<QVector<bool>> truthTable = {
+    const QVector<QVector<bool>> truthTable{
       /* L  S  C  R  p  c  Q  Q  A */
         {0, 0, 0, 0, 0, 1, 1, 0, 0}, /* Preset = false */
         {0, 0, 0, 0, 1, 0, 0, 1, 1}, /* Clear = false*/
@@ -353,7 +353,7 @@ void TestLogicElements::testLogicTFlipFlop()
     elm.connectPredecessor(2, switches.at(2), 0);
     elm.connectPredecessor(3, switches.at(3), 0);
 
-    const QVector<QVector<bool>> truthTable = {
+    const QVector<QVector<bool>> truthTable{
       /* L  T  C  p  c  Q ~Q  A */
         {1, 0, 1, 1, 1, 0, 1, 0}, /* No change */
         {1, 1, 1, 1, 1, 0, 1, 0}, /* No change */

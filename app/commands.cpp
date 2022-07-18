@@ -191,8 +191,8 @@ QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const QList
     }
 
     for (int i = 0; i < items.size(); ++i) {
-        if (auto *itemId = dynamic_cast<ItemWithId *>(items[i])) {
-            ElementFactory::updateItemId(itemId, ids[i]);
+        if (auto *itemId = dynamic_cast<ItemWithId *>(items.at(i))) {
+            ElementFactory::updateItemId(itemId, ids.at(i));
         }
     }
 
@@ -286,9 +286,9 @@ void RotateCommand::undo()
     const auto elements = findElements(m_ids);
 
     for (int i = 0; i < elements.size(); ++i) {
-        auto *elm = elements[i];
+        auto *elm = elements.at(i);
         elm->setRotation(elm->rotation() - m_angle);
-        elm->setPos(m_positions[i]);
+        elm->setPos(m_positions.at(i));
         elm->update();
         elm->setSelected(true);
     }
@@ -350,7 +350,7 @@ void MoveCommand::undo()
     const auto elms = findElements(m_ids);
 
     for (int i = 0; i < elms.size(); ++i) {
-        elms[i]->setPos(m_oldPositions[i]);
+        elms.at(i)->setPos(m_oldPositions.at(i));
     }
 
     m_scene->setAutosaveRequired();
@@ -362,7 +362,7 @@ void MoveCommand::redo()
     const auto elms = findElements(m_ids);
 
     for (int i = 0; i < elms.size(); ++i) {
-        elms[i]->setPos(m_newPositions[i]);
+        elms.at(i)->setPos(m_newPositions.at(i));
     }
 
     m_scene->setAutosaveRequired();
@@ -537,7 +537,7 @@ void MorphCommand::undo()
     oldElms.reserve(m_ids.size());
 
     for (int i = 0; i < m_ids.size(); ++i) {
-        oldElms << ElementFactory::buildElement(m_types[i]);
+        oldElms << ElementFactory::buildElement(m_types.at(i));
     }
 
     transferConnections(newElms, oldElms);
@@ -562,8 +562,8 @@ void MorphCommand::redo()
 void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<GraphicElement *> to)
 {
     for (int elm = 0; elm < from.size(); ++elm) {
-        auto *oldElm = from[elm];
-        auto *newElm = to[elm];
+        auto *oldElm = from.at(elm);
+        auto *newElm = to.at(elm);
 
         newElm->setInputSize(oldElm->inputSize());
         newElm->setPos(oldElm->pos());

@@ -745,7 +745,7 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
 
             for (; pos != elmPos; pos = ((elms.size() + pos + step) % elms.size())) {
                 qCDebug(zero) << tr("Pos =") << pos;
-                elm = elms[pos];
+                elm = elms.at(pos);
 
                 setCurrentElements({elm});
 
@@ -757,7 +757,7 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
             m_scene->clearSelection();
 
             if (!widget->isEnabled()) {
-                elm = elms[elmPos];
+                elm = elms.at(elmPos);
             }
 
             elm->setSelected(true);

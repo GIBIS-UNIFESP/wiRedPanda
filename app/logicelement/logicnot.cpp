@@ -10,5 +10,5 @@ LogicNot::LogicNot()
 
 void LogicNot::_updateLogic(const QVector<bool> &inputs)
 {
-    setOutputValue(!inputs[0]);
+    setOutputValue(!inputs.at(0));
 }

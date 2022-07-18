@@ -1117,7 +1117,7 @@ void BewavedDolphin::loadFromTerminal()
         }
 
         for (int col = 0; col < cols; ++col) {
-            const int value = wordList2[col].toInt();
+            const int value = wordList2.at(col).toInt();
             createElement(row, col, value, true);
         }
     }
@@ -1144,7 +1144,7 @@ void BewavedDolphin::load(QFile &file)
     qCDebug(zero) << tr("Update table.");
     for (int row = 0; row < rows; ++row) {
         for (int col = 0; col < cols; ++col) {
-            int value = wordList[2 + col + row * cols].toInt();
+            int value = wordList.at(2 + col + row * cols).toInt();
             createElement(row, col, value, true);
         }
     }

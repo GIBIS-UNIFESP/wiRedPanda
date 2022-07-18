@@ -12,6 +12,6 @@ LogicXnor::LogicXnor(const int inputSize)
 
 void LogicXnor::_updateLogic(const QVector<bool> &inputs)
 {
-    auto result = std::accumulate(inputs.begin(), inputs.end(), false, std::bit_xor<>());
+    const auto result = std::accumulate(inputs.begin(), inputs.end(), false, std::bit_xor<>());
     setOutputValue(!result);
 }
