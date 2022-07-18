@@ -109,7 +109,6 @@ public:
 protected:
     QPixmap pixmap() const;
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     void setCanChangeSkin(const bool canChangeSkin);
     void setHasAudio(const bool hasAudio);
     void setHasColors(const bool hasColors);
@@ -158,6 +157,7 @@ private:
     //! functions to load GraphicElement atributes through a binary data stream
     void loadPos(QDataStream &stream);
 
+    void highlight(const bool isSelected);
     void loadInputPort(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const int port);
     void loadInputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
     void loadLabel(QDataStream &stream, const double version);

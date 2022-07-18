@@ -53,12 +53,14 @@ public:
     QNEOutputPort *start() const;
     QNEPort *otherPort(const QNEPort *port) const;
     Status status() const;
+    bool highLight();
     double angle();
     void load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap = {});
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void save(QDataStream &stream) const;
     void setEnd(QNEInputPort *port);
     void setEndPos(const QPointF point);
+    void setHighLight(bool newHighLight);
     void setStart(QNEOutputPort *port);
     void setStartPos(const QPointF point);
     void setStatus(const Status status);
@@ -79,6 +81,7 @@ private:
     QPointF m_endPos;
     QPointF m_startPos;
     Status m_status = Status::Invalid;
+    bool m_highLight = false;
 };
 
 Q_DECLARE_METATYPE(QNEConnection)
