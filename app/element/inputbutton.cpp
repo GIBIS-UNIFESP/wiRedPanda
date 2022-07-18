@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "inputbutton.h"
@@ -78,7 +78,7 @@ void InputButton::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, c
 
 bool InputButton::isOn(const int port) const
 {
-    Q_UNUSED(port);
+    Q_UNUSED(port)
     return m_isOn;
 }
 
@@ -94,7 +94,7 @@ void InputButton::setOn()
 
 void InputButton::setOn(const bool value, const int port)
 {
-    Q_UNUSED(port);
+    Q_UNUSED(port)
 
     m_isOn = value;
     setPixmap(static_cast<int>(m_isOn));

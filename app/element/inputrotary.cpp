@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "inputrotary.h"
@@ -28,8 +28,8 @@ InputRotary::InputRotary(QGraphicsItem *parent)
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);
 
-    m_rotary = m_defaultSkins[0];
-    m_arrow  = m_defaultSkins[1];
+    m_rotary = m_defaultSkins.at(0);
+    m_arrow  = m_defaultSkins.at(1);
 
     setCanChangeSkin(true);
     setHasLabel(true);

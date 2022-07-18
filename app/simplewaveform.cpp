@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "simplewaveform.h"
@@ -123,8 +123,8 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, WorkSpace *workspace)
     // Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore
     // it after simulation.
     QVector<Status> oldValues(inputs.size());
-    for (int in = 0; in < inputs.size(); ++in) {
-        oldValues[in] = inputs[in]->outputPort()->status();
+    for (int index = 0; index < inputs.size(); ++index) {
+        oldValues[index] = inputs.at(index)->outputPort()->status();
     }
     // Computing the number of iterations based on the number of inputs.
     int numIter = static_cast<int>(pow(2, inputs.size()));
@@ -137,10 +137,10 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, WorkSpace *workspace)
     QVector<QVector<int>> results(outputCount, QVector<int>(numIter));
     for (int itr = 0; itr < numIter; ++itr) {
         // For each iteration, set a distinct value for the inputs. The set value corresponds to the bits from the number of the current iteration.
-        std::bitset<std::numeric_limits<unsigned int>::digits> bs(itr);
-        for (int in = 0; in < inputs.size(); ++in) {
-            if (auto *input = qobject_cast<GraphicElementInput *>(inputs.at(in))) {
-                input->setOn(bs[in]);
+        std::bitset<std::numeric_limits<unsigned int>::digits> bitset(itr);
+        for (int index = 0; index < inputs.size(); ++index) {
+            if (auto *input = qobject_cast<GraphicElementInput *>(inputs.at(index))) {
+                input->setOn(bitset[index]);
             }
         }
         // Updating the values of the circuit logic based on current input values.
@@ -157,14 +157,14 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, WorkSpace *workspace)
         }
     }
     // Writing the input value of each iteration to the output stream.
-    for (int in = 0; in < inputs.size(); ++in) {
-        QString label = inputs[in]->label();
+    for (int index = 0; index < inputs.size(); ++index) {
+        QString label = inputs.at(index)->label();
         if (label.isEmpty()) {
-            label = ElementFactory::translatedName(inputs[in]->elementType());
+            label = ElementFactory::translatedName(inputs.at(index)->elementType());
         }
         for (int itr = 0; itr < numIter; ++itr) {
-            std::bitset<std::numeric_limits<unsigned int>::digits> bs(itr);
-            outStream << static_cast<int>(bs[in]);
+            std::bitset<std::numeric_limits<unsigned int>::digits> bitset(itr);
+            outStream << static_cast<int>(bitset[index]);
         }
         outStream << " : \"" << label << "\"\n";
     }
@@ -179,7 +179,7 @@ bool SimpleWaveform::saveToTxt(QTextStream &outStream, WorkSpace *workspace)
         int inSize = output->inputSize();
         for (int port = inSize - 1; port >= 0; --port) {
             for (int itr = 0; itr < numIter; ++itr) {
-                outStream << static_cast<int>(results[counter][itr]);
+                outStream << static_cast<int>(results.at(counter).at(itr));
             }
             ++counter;
             outStream << " : \"" << label << "[" << port << "]\"\n";
@@ -242,12 +242,12 @@ void SimpleWaveform::showWaveform()
     inSeries.reserve(inputs.size());
     for (int in = 0; in < inputs.size(); ++in) {
         inSeries.append(new QLineSeries(this));
-        QString label = inputs[in]->label();
+        QString label = inputs.at(in)->label();
         if (label.isEmpty()) {
-            label = ElementFactory::translatedName(inputs[in]->elementType());
+            label = ElementFactory::translatedName(inputs.at(in)->elementType());
         }
-        inSeries[in]->setName(label);
-        oldValues[in] = inputs[in]->outputPort()->status();
+        inSeries.at(in)->setName(label);
+        oldValues[in] = inputs.at(in)->outputPort()->status();
     }
     QVector<QLineSeries *> outSeries;
     qCDebug(zero) << tr("Getting the name of the outputs. If no label is given, the element type is used as a name. "
@@ -275,14 +275,14 @@ void SimpleWaveform::showWaveform()
     qCDebug(zero) << tr("Running simulation.");
     for (int itr = 0; itr < numIter; ++itr) {
         qCDebug(three) << tr("For each iteration, set a distinct value for the inputs. The value is the bit values corresponding to the number of the current iteration.");
-        std::bitset<std::numeric_limits<unsigned int>::digits> bs(itr);
+        std::bitset<std::numeric_limits<unsigned int>::digits> bitset(itr);
         qCDebug(three) << tr("itr:") << itr;
         for (int in = 0; in < inputs.size(); ++in) {
-            float val = static_cast<float>(bs[in]);
-            qobject_cast<GraphicElementInput *>(inputs[in])->setOn(!qFuzzyIsNull(val));
+            float val = static_cast<float>(bitset[in]);
+            qobject_cast<GraphicElementInput *>(inputs.at(in))->setOn(!qFuzzyIsNull(val));
             float offset = static_cast<float>((inSeries.size() - in - 1 + outSeries.size()) * 2 + gap + 0.5);
-            inSeries[in]->append(itr, static_cast<qreal>(offset + val));
-            inSeries[in]->append(itr + 1, static_cast<qreal>(offset + val));
+            inSeries.at(in)->append(itr, static_cast<qreal>(offset + val));
+            inSeries.at(in)->append(itr + 1, static_cast<qreal>(offset + val));
         }
         qCDebug(three) << tr("Updating the values of the circuit logic based on current input values.");
         simulation->update();

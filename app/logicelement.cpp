@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "logicelement.h"
@@ -115,7 +115,7 @@ bool LogicElement::outputValue(const int index) const
 
 bool LogicElement::inputValue(const int index) const
 {
-    auto *pred = m_inputPairs[index].logic;
-    int port = m_inputPairs[index].port;
+    auto *pred = m_inputPairs.at(index).logic;
+    int port = m_inputPairs.at(index).port;
     return pred->outputValue(port);
 }

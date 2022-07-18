@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "display_14.h"
@@ -42,21 +42,21 @@ Display14::Display14(QGraphicsItem *parent)
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);
 
-    a  = QVector<QPixmap>(5, m_defaultSkins[1]);
-    b  = QVector<QPixmap>(5, m_defaultSkins[2]);
-    c  = QVector<QPixmap>(5, m_defaultSkins[3]);
-    d  = QVector<QPixmap>(5, m_defaultSkins[4]);
-    e  = QVector<QPixmap>(5, m_defaultSkins[5]);
-    f  = QVector<QPixmap>(5, m_defaultSkins[6]);
-    g1 = QVector<QPixmap>(5, m_defaultSkins[7]);
-    g2 = QVector<QPixmap>(5, m_defaultSkins[8]);
-    h  = QVector<QPixmap>(5, m_defaultSkins[9]);
-    j  = QVector<QPixmap>(5, m_defaultSkins[10]);
-    k  = QVector<QPixmap>(5, m_defaultSkins[11]);
-    l  = QVector<QPixmap>(5, m_defaultSkins[12]);
-    m  = QVector<QPixmap>(5, m_defaultSkins[13]);
-    n  = QVector<QPixmap>(5, m_defaultSkins[14]);
-    dp = QVector<QPixmap>(5, m_defaultSkins[15]);
+    a  = QVector<QPixmap>(5, m_defaultSkins.at(1));
+    b  = QVector<QPixmap>(5, m_defaultSkins.at(2));
+    c  = QVector<QPixmap>(5, m_defaultSkins.at(3));
+    d  = QVector<QPixmap>(5, m_defaultSkins.at(4));
+    e  = QVector<QPixmap>(5, m_defaultSkins.at(5));
+    f  = QVector<QPixmap>(5, m_defaultSkins.at(6));
+    g1 = QVector<QPixmap>(5, m_defaultSkins.at(7));
+    g2 = QVector<QPixmap>(5, m_defaultSkins.at(8));
+    h  = QVector<QPixmap>(5, m_defaultSkins.at(9));
+    j  = QVector<QPixmap>(5, m_defaultSkins.at(10));
+    k  = QVector<QPixmap>(5, m_defaultSkins.at(11));
+    l  = QVector<QPixmap>(5, m_defaultSkins.at(12));
+    m  = QVector<QPixmap>(5, m_defaultSkins.at(13));
+    n  = QVector<QPixmap>(5, m_defaultSkins.at(14));
+    dp = QVector<QPixmap>(5, m_defaultSkins.at(15));
 
     Display::convertAllColors(a);
     Display::convertAllColors(b);
@@ -117,21 +117,21 @@ void Display14::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 {
     GraphicElement::paint(painter, option, widget);
 
-    if (inputPort(0)->status() == Status::Active)  { painter->drawPixmap(0, 0, g1[m_colorNumber]); }
-    if (inputPort(1)->status() == Status::Active)  { painter->drawPixmap(0, 0, f[m_colorNumber]);  }
-    if (inputPort(2)->status() == Status::Active)  { painter->drawPixmap(0, 0, e[m_colorNumber]);  }
-    if (inputPort(3)->status() == Status::Active)  { painter->drawPixmap(0, 0, d[m_colorNumber]);  }
-    if (inputPort(4)->status() == Status::Active)  { painter->drawPixmap(0, 0, a[m_colorNumber]);  }
-    if (inputPort(5)->status() == Status::Active)  { painter->drawPixmap(0, 0, b[m_colorNumber]);  }
-    if (inputPort(6)->status() == Status::Active)  { painter->drawPixmap(0, 0, dp[m_colorNumber]); }
-    if (inputPort(7)->status() == Status::Active)  { painter->drawPixmap(0, 0, c[m_colorNumber]);  }
-    if (inputPort(8)->status() == Status::Active)  { painter->drawPixmap(0, 0, g2[m_colorNumber]); }
-    if (inputPort(9)->status() == Status::Active)  { painter->drawPixmap(0, 0, h[m_colorNumber]);  }
-    if (inputPort(10)->status() == Status::Active) { painter->drawPixmap(0, 0, j[m_colorNumber]);  }
-    if (inputPort(11)->status() == Status::Active) { painter->drawPixmap(0, 0, k[m_colorNumber]);  }
-    if (inputPort(12)->status() == Status::Active) { painter->drawPixmap(0, 0, l[m_colorNumber]);  }
-    if (inputPort(13)->status() == Status::Active) { painter->drawPixmap(0, 0, m[m_colorNumber]);  }
-    if (inputPort(14)->status() == Status::Active) { painter->drawPixmap(0, 0, n[m_colorNumber]);  }
+    if (inputPort(0)->status() == Status::Active)  { painter->drawPixmap(0, 0, g1.at(m_colorNumber)); }
+    if (inputPort(1)->status() == Status::Active)  { painter->drawPixmap(0, 0, f.at(m_colorNumber));  }
+    if (inputPort(2)->status() == Status::Active)  { painter->drawPixmap(0, 0, e.at(m_colorNumber));  }
+    if (inputPort(3)->status() == Status::Active)  { painter->drawPixmap(0, 0, d.at(m_colorNumber));  }
+    if (inputPort(4)->status() == Status::Active)  { painter->drawPixmap(0, 0, a.at(m_colorNumber));  }
+    if (inputPort(5)->status() == Status::Active)  { painter->drawPixmap(0, 0, b.at(m_colorNumber));  }
+    if (inputPort(6)->status() == Status::Active)  { painter->drawPixmap(0, 0, dp.at(m_colorNumber)); }
+    if (inputPort(7)->status() == Status::Active)  { painter->drawPixmap(0, 0, c.at(m_colorNumber));  }
+    if (inputPort(8)->status() == Status::Active)  { painter->drawPixmap(0, 0, g2.at(m_colorNumber)); }
+    if (inputPort(9)->status() == Status::Active)  { painter->drawPixmap(0, 0, h.at(m_colorNumber));  }
+    if (inputPort(10)->status() == Status::Active) { painter->drawPixmap(0, 0, j.at(m_colorNumber));  }
+    if (inputPort(11)->status() == Status::Active) { painter->drawPixmap(0, 0, k.at(m_colorNumber));  }
+    if (inputPort(12)->status() == Status::Active) { painter->drawPixmap(0, 0, l.at(m_colorNumber));  }
+    if (inputPort(13)->status() == Status::Active) { painter->drawPixmap(0, 0, m.at(m_colorNumber));  }
+    if (inputPort(14)->status() == Status::Active) { painter->drawPixmap(0, 0, n.at(m_colorNumber));  }
 }
 
 void Display14::setColor(const QString &color)

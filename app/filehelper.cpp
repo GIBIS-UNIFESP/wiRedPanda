@@ -1,4 +1,4 @@
-﻿// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+﻿// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "filehelper.h"
@@ -12,7 +12,7 @@
 
 void FileHelper::verifyRecursion(const QString &fileName)
 {
-    Q_UNUSED(fileName);
+    Q_UNUSED(fileName)
 
     // TODO: BoxFileHelper::verifyRecursion
     //     QString msg = "Oh no! I'm my own parent.\nSomething is not ok...";

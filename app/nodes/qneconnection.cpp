@@ -196,8 +196,8 @@ void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
         }
 
         qCDebug(three) << tr("Port map with elements: ptr1:") << ptr1 << tr(", ptr2:") << ptr2;
-        QNEPort *port1 = portMap[ptr1];
-        QNEPort *port2 = portMap[ptr2];
+        QNEPort *port1 = portMap.value(ptr1);
+        QNEPort *port2 = portMap.value(ptr2);
         qCDebug(three) << tr("Before if 1.");
         if (port1 && port2) {
             qCDebug(three) << tr("Before if 2.");
@@ -233,13 +233,13 @@ QNEPort *QNEConnection::otherPort(const QNEPort *port) const
 
 QNEOutputPort *QNEConnection::otherPort(const QNEInputPort *port) const
 {
-    Q_UNUSED(port);
+    Q_UNUSED(port)
     return m_start;
 }
 
 QNEInputPort *QNEConnection::otherPort(const QNEOutputPort *port) const
 {
-    Q_UNUSED(port);
+    Q_UNUSED(port)
     return m_end;
 }
 
@@ -274,8 +274,10 @@ void QNEConnection::updateTheme()
 
 void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    Q_UNUSED(widget);
-    painter->setClipRect(option->exposedRect);
+    Q_UNUSED(widget)
+    Q_UNUSED(option)
+    painter->setPen(m_highLight ? QPen(Qt::blue, 10) : pen());
+    painter->drawPath(path());
     painter->setPen(isSelected() ? QPen(m_selectedColor, 5) : pen());
     painter->drawPath(path());
 }
@@ -302,4 +304,15 @@ QVariant QNEConnection::itemChange(GraphicsItemChange change, const QVariant &va
     }
 
     return QGraphicsPathItem::itemChange(change, value);
+}
+
+bool QNEConnection::highLight()
+{
+    return m_highLight;
+}
+
+void QNEConnection::setHighLight(bool newHighLight)
+{
+    m_highLight = newHighLight;
+    update();
 }

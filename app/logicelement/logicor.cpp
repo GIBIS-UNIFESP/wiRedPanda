@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "logicor.h"
@@ -12,6 +12,6 @@ LogicOr::LogicOr(const int inputSize)
 
 void LogicOr::_updateLogic(const QVector<bool> &inputs)
 {
-    auto result = std::accumulate(inputs.begin(), inputs.end(), false, std::bit_or<>());
+    const auto result = std::accumulate(inputs.begin(), inputs.end(), false, std::bit_or<>());
     setOutputValue(result);
 }

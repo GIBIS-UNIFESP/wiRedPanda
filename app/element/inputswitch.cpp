@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "inputswitch.h"
@@ -38,7 +38,7 @@ InputSwitch::InputSwitch(QGraphicsItem *parent)
 
 bool InputSwitch::isOn(const int port) const
 {
-    Q_UNUSED(port);
+    Q_UNUSED(port)
     return m_isOn;
 }
 
@@ -54,7 +54,7 @@ void InputSwitch::setOn()
 
 void InputSwitch::setOn(const bool value, const int port)
 {
-    Q_UNUSED(port);
+    Q_UNUSED(port)
 
     m_isOn = value;
     outputPort()->setStatus(static_cast<Status>(m_isOn));

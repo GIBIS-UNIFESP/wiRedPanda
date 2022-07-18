@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "scene.h"
@@ -998,7 +998,7 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
             bool valid = false; // TODO: std::any_of?
 
             for (int index = 0; index < m_movedElements.size(); ++index) {
-                if (m_movedElements[index]->pos() != m_oldPositions[index]) {
+                if (m_movedElements.at(index)->pos() != m_oldPositions.at(index)) {
                     valid = true;
                     break;
                 }

@@ -1,7 +1,5 @@
-/*
- * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
 
@@ -163,7 +161,7 @@ private:
 
 class ChangeInputSizeCommand : public QUndoCommand
 {
-    Q_DECLARE_TR_FUNCTIONS(ChangeInputSZCommand)
+    Q_DECLARE_TR_FUNCTIONS(ChangeInputSizeCommand)
 
 public:
     explicit ChangeInputSizeCommand(const QList<GraphicElement *> &elements, const int newInputSize, Scene *scene, QUndoCommand *parent = nullptr);
@@ -181,7 +179,7 @@ private:
 
 class FlipCommand : public QUndoCommand
 {
-    Q_DECLARE_TR_FUNCTIONS(FlipHCommand)
+    Q_DECLARE_TR_FUNCTIONS(FlipCommand)
 
 public:
     explicit FlipCommand(const QList<GraphicElement *> &items, const int axis, Scene *scene, QUndoCommand *parent = nullptr);
@@ -200,7 +198,7 @@ private:
 
 class ChangeOutputSizeCommand : public QUndoCommand
 {
-    Q_DECLARE_TR_FUNCTIONS(ChangeOutputSZCommand)
+    Q_DECLARE_TR_FUNCTIONS(ChangeOutputSizeCommand)
 
 public:
     explicit ChangeOutputSizeCommand(const QList<GraphicElement *> &elements, const int newOutputSize, Scene *scene, QUndoCommand *parent = nullptr);

@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "display.h"
@@ -37,14 +37,14 @@ Display::Display(QGraphicsItem *parent)
     setPixmap(0);
 
     qCDebug(three) << tr("Allocating pixmaps.");
-    a =  QVector<QPixmap>(5, m_defaultSkins[1]);
-    b =  QVector<QPixmap>(5, m_defaultSkins[2]);
-    c =  QVector<QPixmap>(5, m_defaultSkins[3]);
-    d =  QVector<QPixmap>(5, m_defaultSkins[4]);
-    e =  QVector<QPixmap>(5, m_defaultSkins[5]);
-    f =  QVector<QPixmap>(5, m_defaultSkins[6]);
-    g =  QVector<QPixmap>(5, m_defaultSkins[7]);
-    dp = QVector<QPixmap>(5, m_defaultSkins[8]);
+    a =  QVector<QPixmap>(5, m_defaultSkins.at(1));
+    b =  QVector<QPixmap>(5, m_defaultSkins.at(2));
+    c =  QVector<QPixmap>(5, m_defaultSkins.at(3));
+    d =  QVector<QPixmap>(5, m_defaultSkins.at(4));
+    e =  QVector<QPixmap>(5, m_defaultSkins.at(5));
+    f =  QVector<QPixmap>(5, m_defaultSkins.at(6));
+    g =  QVector<QPixmap>(5, m_defaultSkins.at(7));
+    dp = QVector<QPixmap>(5, m_defaultSkins.at(8));
 
     qCDebug(three) << tr("Converting segments to other colors.");
     convertAllColors(a);
@@ -68,7 +68,7 @@ Display::Display(QGraphicsItem *parent)
 
 void Display::convertAllColors(QVector<QPixmap> &maps)
 {
-    QImage tmp(maps[1].toImage());
+    QImage tmp(maps.at(1).toImage());
     maps[0] = convertColor(tmp, true, true, true);
     maps[1] = convertColor(tmp, true, false, false);
     maps[2] = convertColor(tmp, false, true, false);
@@ -120,19 +120,21 @@ void Display::updatePortsProperties()
 void Display::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     GraphicElement::paint(painter, option, widget);
-    if (inputPort(0)->status() == Status::Active) { painter->drawPixmap(0, 0, g[m_colorNumber]);  }
-    if (inputPort(1)->status() == Status::Active) { painter->drawPixmap(0, 0, f[m_colorNumber]);  }
-    if (inputPort(2)->status() == Status::Active) { painter->drawPixmap(0, 0, e[m_colorNumber]);  }
-    if (inputPort(3)->status() == Status::Active) { painter->drawPixmap(0, 0, d[m_colorNumber]);  }
-    if (inputPort(4)->status() == Status::Active) { painter->drawPixmap(0, 0, a[m_colorNumber]);  }
-    if (inputPort(5)->status() == Status::Active) { painter->drawPixmap(0, 0, b[m_colorNumber]);  }
-    if (inputPort(6)->status() == Status::Active) { painter->drawPixmap(0, 0, dp[m_colorNumber]); }
-    if (inputPort(7)->status() == Status::Active) { painter->drawPixmap(0, 0, c[m_colorNumber]);  }
+
+    if (inputPort(0)->status() == Status::Active) { painter->drawPixmap(0, 0, g.at(m_colorNumber));  }
+    if (inputPort(1)->status() == Status::Active) { painter->drawPixmap(0, 0, f.at(m_colorNumber));  }
+    if (inputPort(2)->status() == Status::Active) { painter->drawPixmap(0, 0, e.at(m_colorNumber));  }
+    if (inputPort(3)->status() == Status::Active) { painter->drawPixmap(0, 0, d.at(m_colorNumber));  }
+    if (inputPort(4)->status() == Status::Active) { painter->drawPixmap(0, 0, a.at(m_colorNumber));  }
+    if (inputPort(5)->status() == Status::Active) { painter->drawPixmap(0, 0, b.at(m_colorNumber));  }
+    if (inputPort(6)->status() == Status::Active) { painter->drawPixmap(0, 0, dp.at(m_colorNumber)); }
+    if (inputPort(7)->status() == Status::Active) { painter->drawPixmap(0, 0, c.at(m_colorNumber));  }
 }
 
 void Display::setColor(const QString &color)
 {
     m_color = color;
+
     if (color == "White")  { m_colorNumber = 0; }
     if (color == "Red")    { m_colorNumber = 1; }
     if (color == "Green")  { m_colorNumber = 2; }
@@ -162,7 +164,7 @@ void Display::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const
      */
     if (version < 1.6) {
         qCDebug(zero) << tr("Remapping inputs.");
-        QVector<int> order = {2, 1, 4, 5, 0, 7, 3, 6};
+        QVector<int> order{2, 1, 4, 5, 0, 7, 3, 6};
         QVector<QNEInputPort *> aux = inputs();
         for (int i = 0; i < aux.size(); ++i) {
             aux[order[i]] = m_inputPorts.value(i);
@@ -172,7 +174,7 @@ void Display::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const
     }
     if (version < 1.7) {
         qCDebug(zero) << tr("Remapping inputs.");
-        QVector<int> order = {2, 5, 4, 0, 7, 3, 6, 1};
+        QVector<int> order{2, 5, 4, 0, 7, 3, 6, 1};
         QVector<QNEInputPort *> aux = inputs();
         for (int i = 0; i < aux.size(); ++i) {
             aux[order[i]] = m_inputPorts.value(i);

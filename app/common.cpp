@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common.h"
@@ -47,7 +47,7 @@ QVector<GraphicElement *> Common::sortGraphicElements(QVector<GraphicElement *> 
     }
 
     std::sort(elms.begin(), elms.end(), [priorities](const auto &e1, const auto &e2) {
-        return priorities[e2] < priorities[e1];
+        return priorities.value(e2) < priorities.value(e1);
     });
 
     return elms;

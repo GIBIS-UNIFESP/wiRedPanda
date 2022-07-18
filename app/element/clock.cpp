@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "clock.h"
@@ -61,7 +61,7 @@ void Clock::updateClock()
 
 bool Clock::isOn(const int port) const
 {
-    Q_UNUSED(port);
+    Q_UNUSED(port)
     return m_isOn;
 }
 
@@ -77,7 +77,7 @@ void Clock::setOn()
 
 void Clock::setOn(const bool value, const int port)
 {
-    Q_UNUSED(port);
+    Q_UNUSED(port)
     m_isOn = value;
     setPixmap(static_cast<int>(m_isOn));
     m_outputPorts.constFirst()->setStatus(static_cast<Status>(m_isOn));

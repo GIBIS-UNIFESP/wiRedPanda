@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "codegenerator.h"
@@ -258,10 +258,10 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elms)
             //          QNEPort *port = ic->inputPort(i);
             //          QNEPort *otherPort = port->connections().constFirst()->otherPort(port);
             //          QString value = highLow(port->defaultValue());
-            //          if (!varMap[otherPort].isEmpty()) {
-            //              value = varMap[otherPort];
+            //          if (!m_varMap.value(otherPort).isEmpty()) {
+            //              value = m_varMap.value(otherPort);
             //          }
-            //          out << "    " << varMap[ic->inputMap.at(i)] << " = " << value << ";" << endl;
+            //          out << "    " << m_varMap.value(ic->inputMap.at(i)) << " = " << value << ";" << endl;
             //      }
             //      QVector<GraphicElement*> icElms = ic->getElements();
             //      if (icElms.isEmpty()) {

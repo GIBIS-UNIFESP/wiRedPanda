@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "bewaveddolphin.h"
@@ -375,7 +375,7 @@ void BewavedDolphin::loadNewTable(const QStringList &inputLabels, const QStringL
     m_edited = false;
     on_actionClear_triggered();
 
-    connect(m_signalTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &BewavedDolphin::tableView_selectionChanged);
+    connect(m_signalTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &BewavedDolphin::on_tableView_selectionChanged);
 }
 
 QVector<Status> BewavedDolphin::loadSignals(QStringList &inputLabels, QStringList &outputLabels)
@@ -1117,7 +1117,7 @@ void BewavedDolphin::loadFromTerminal()
         }
 
         for (int col = 0; col < cols; ++col) {
-            const int value = wordList2[col].toInt();
+            const int value = wordList2.at(col).toInt();
             createElement(row, col, value, true);
         }
     }
@@ -1144,7 +1144,7 @@ void BewavedDolphin::load(QFile &file)
     qCDebug(zero) << tr("Update table.");
     for (int row = 0; row < rows; ++row) {
         for (int col = 0; col < cols; ++col) {
-            int value = wordList[2 + col + row * cols].toInt();
+            int value = wordList.at(2 + col + row * cols).toInt();
             createElement(row, col, value, true);
         }
     }
@@ -1278,7 +1278,7 @@ void BewavedDolphin::resizeScene()
     m_scene->setSceneRect(m_scene->itemsBoundingRect());
 }
 
-void BewavedDolphin::tableView_selectionChanged() {
+void BewavedDolphin::on_tableView_selectionChanged() {
     m_externalScene->clearSelection();
 
     const auto indexes = m_signalTableView->selectionModel()->selectedIndexes();

@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "logicand.h"
@@ -12,6 +12,6 @@ LogicAnd::LogicAnd(const int inputSize)
 
 void LogicAnd::_updateLogic(const QVector<bool> &inputs)
 {
-    auto result = std::accumulate(inputs.begin(), inputs.end(), true, std::bit_and<>());
+    const auto result = std::accumulate(inputs.begin(), inputs.end(), true, std::bit_and<>());
     setOutputValue(result);
 }

@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "graphicelement.h"
@@ -424,8 +424,8 @@ QRectF GraphicElement::boundingRect() const
 
 void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    Q_UNUSED(widget);
-    painter->setClipRect(option->exposedRect);
+    Q_UNUSED(widget)
+    Q_UNUSED(option)
 
     if (isSelected()) {
         painter->setBrush(m_selectionBrush);
@@ -599,6 +599,7 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
 
     if (change == ItemSelectedHasChanged) {
         m_selected = value.toBool();
+        highlight(m_selected);
     }
 
     return QGraphicsItem::itemChange(change, value);
@@ -715,7 +716,7 @@ bool GraphicElement::hasTrigger() const
 
 void GraphicElement::setColor(const QString &color)
 {
-    Q_UNUSED(color);
+    Q_UNUSED(color)
 }
 
 QString GraphicElement::color() const
@@ -725,7 +726,7 @@ QString GraphicElement::color() const
 
 void GraphicElement::setAudio(const QString &audio)
 {
-    Q_UNUSED(audio);
+    Q_UNUSED(audio)
 }
 
 QString GraphicElement::audio() const
@@ -838,7 +839,7 @@ float GraphicElement::frequency() const
 
 void GraphicElement::setFrequency(const float freq)
 {
-    Q_UNUSED(freq);
+    Q_UNUSED(freq)
 }
 
 void GraphicElement::setMinOutputSize(const int minOutputSize)
@@ -876,20 +877,31 @@ void GraphicElement::setMaxInputSize(const int maxInputSize)
     m_maxInputSize = maxInputSize;
 }
 
-void GraphicElement::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void GraphicElement::highlight(const bool isSelected)
 {
-    // the base class clears selection, reselect after
-    QGraphicsItem::mouseReleaseEvent(event);
+    QVector<QNEPort *> ports;
 
     for (auto *port : qAsConst(m_inputPorts)) {
-        for (auto *connection : port->connections()) {
-            connection->setSelected(m_selected);
-        }
+        ports << port;
     }
 
     for (auto *port : qAsConst(m_outputPorts)) {
+        ports << port;
+    }
+
+    for (auto *port : qAsConst(ports)) {
         for (auto *connection : port->connections()) {
-            connection->setSelected(m_selected);
+            if (connection->highLight() == isSelected) {
+                continue;
+            }
+
+            connection->setHighLight(isSelected);
+
+            if (auto *otherPort = connection->otherPort(port)) {
+                if (auto *elm = otherPort->graphicElement(); elm && elm->elementType() == ElementType::Node) {
+                    elm->highlight(isSelected);
+                }
+            }
         }
     }
 }
