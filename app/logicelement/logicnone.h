@@ -11,5 +11,5 @@ public:
     explicit LogicNone() : LogicElement(0, 0) {};
 
 protected:
-    void _updateLogic(const QVector<bool> &inputs) override { Q_UNUSED(inputs); };
+    void _updateLogic(const QVector<bool> &inputs) override { Q_UNUSED(inputs) };
 };

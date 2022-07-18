@@ -191,8 +191,8 @@ QRectF IC::boundingRect() const
 
 void IC::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    Q_UNUSED(widget);
-    painter->setClipRect(option->exposedRect);
+    Q_UNUSED(widget)
+    Q_UNUSED(option)
 
     if (isSelected()) {
         painter->setBrush(m_selectionBrush);

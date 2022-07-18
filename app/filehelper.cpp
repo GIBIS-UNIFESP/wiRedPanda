@@ -12,7 +12,7 @@
 
 void FileHelper::verifyRecursion(const QString &fileName)
 {
-    Q_UNUSED(fileName);
+    Q_UNUSED(fileName)
 
     // TODO: BoxFileHelper::verifyRecursion
     //     QString msg = "Oh no! I'm my own parent.\nSomething is not ok...";

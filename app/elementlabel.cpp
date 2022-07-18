@@ -52,7 +52,7 @@ void ElementLabel::updateName()
 
 void ElementLabel::mousePressEvent(QMouseEvent *event)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(event)
     startDrag();
 }
 
