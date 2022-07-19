@@ -56,6 +56,11 @@ void ElementLabel::mousePressEvent(QMouseEvent *event)
     startDrag();
 }
 
+const ElementType &ElementLabel::elementType() const
+{
+    return m_elementType;
+}
+
 const QPixmap &ElementLabel::pixmap() const
 {
     return m_pixmap;
