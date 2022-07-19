@@ -20,6 +20,7 @@ public:
     QMimeData *mimeData();
     QString icFileName() const;
     QString name() const;
+    const ElementType &elementType() const;
     const QPixmap &pixmap() const;
     void startDrag();
     void updateName();

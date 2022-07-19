@@ -62,9 +62,11 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     qCDebug(zero) << tr("Preparing theme and UI modes.");
     auto *themeGroup = new QActionGroup(this);
     const auto actions = m_ui->menuTheme->actions();
+
     for (auto *action : actions) {
         themeGroup->addAction(action);
     }
+
     themeGroup->setExclusive(true);
     connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, &MainWindow::updateTheme);
     updateTheme();
@@ -532,6 +534,14 @@ void MainWindow::updateICList()
         item->deleteLater();
     }
 
+    const auto items2 = m_ui->scrollAreaWidgetContents_Search->findChildren<ElementLabel *>();
+
+    for (auto *item : items2) {
+        if (item->elementType() == ElementType::IC) {
+            item->deleteLater();
+        }
+    }
+
     if (m_currentFile.exists()) {
         qCDebug(zero) << tr("Show files.");
         QDir directory(m_currentFile.absoluteDir());
@@ -549,10 +559,15 @@ void MainWindow::updateICList()
             QPixmap pixmap(":/basic/ic-panda.svg");
             auto *item = new ElementLabel(pixmap, ElementType::IC, file, this);
             m_ui->scrollAreaWidgetContents_IC->layout()->addWidget(item);
+
+            auto *item2 = new ElementLabel(pixmap, ElementType::IC, file, this);
+            m_ui->scrollAreaWidgetContents_Search->layout()->addWidget(item2);
         }
     }
 
     m_ui->scrollAreaWidgetContents_IC->layout()->addItem(m_ui->verticalSpacer_IC);
+
+    on_lineEditSearch_textChanged(m_ui->lineEditSearch->text());
 }
 
 bool MainWindow::closeTab(const int tabIndex)
@@ -670,22 +685,25 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
         m_ui->tabElements->setCurrentIndex(5);
         m_ui->tabElements->setTabEnabled(5, true);
 
-        auto ics = m_ui->scrollArea_Search->findChildren<ElementLabel *>("label_ic");
-        QRegularExpression regex(QString(".*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
-        QRegularExpression regex2(QString("^label_.*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
-        auto searchResults = m_ui->scrollArea_Search->findChildren<ElementLabel *>(regex2);
         const auto allItems = m_ui->scrollArea_Search->findChildren<ElementLabel *>();
 
+        QRegularExpression regex1(QString("^label_.*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
+        auto searchResults = m_ui->scrollArea_Search->findChildren<ElementLabel *>(regex1);
+
+        QRegularExpression regex2(QString(".*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
+
         for (auto *item : allItems) {
-            if (regex.match(item->name()).hasMatch()) {
+            if (regex2.match(item->name()).hasMatch()) {
                 if (!searchResults.contains(item)) {
                     searchResults.append(item);
                 }
             }
         }
 
-        for (auto *ic : qAsConst(ics)) {
-            if (regex.match(ic->icFileName()).hasMatch()) {
+        const auto ics = m_ui->scrollArea_Search->findChildren<ElementLabel *>("label_ic");
+
+        for (auto *ic : ics) {
+            if (regex2.match(ic->icFileName()).hasMatch()) {
                 searchResults.append(ic);
             }
         }
