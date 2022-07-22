@@ -3,7 +3,6 @@
 
 #include "led.h"
 
-#include "common.h"
 #include "globalproperties.h"
 #include "qneport.h"
 

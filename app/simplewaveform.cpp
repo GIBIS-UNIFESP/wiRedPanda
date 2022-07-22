@@ -6,7 +6,6 @@
 
 #include "common.h"
 #include "elementfactory.h"
-#include "elementmapping.h"
 #include "graphicelement.h"
 #include "graphicelementinput.h"
 #include "qneport.h"

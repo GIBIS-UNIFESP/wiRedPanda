@@ -13,7 +13,6 @@
 #include "inputgnd.h"
 #include "inputswitch.h"
 #include "inputvcc.h"
-#include "iostream"
 #include "jkflipflop.h"
 #include "led.h"
 #include "mux.h"

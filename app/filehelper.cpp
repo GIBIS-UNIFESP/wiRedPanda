@@ -3,9 +3,6 @@
 
 #include "filehelper.h"
 
-#include "common.h"
-#include "globalproperties.h"
-
 #include <QDebug>
 #include <QDir>
 #include <iostream>

@@ -3,15 +3,12 @@
 
 #include "elementmapping.h"
 
-#include "clock.h"
 #include "common.h"
 #include "elementfactory.h"
 #include "graphicelement.h"
-#include "graphicelementinput.h"
 #include "ic.h"
 #include "qneconnection.h"
 #include "qneport.h"
-#include "simulation.h"
 
 ElementMapping::ElementMapping(const QVector<GraphicElement *> &elms)
     : m_elements(elms)
