@@ -4,11 +4,9 @@
 #include "graphicelement.h"
 
 #include "common.h"
-#include "elementfactory.h"
 #include "globalproperties.h"
 #include "qneconnection.h"
 #include "qneport.h"
-#include "scene.h"
 #include "thememanager.h"
 
 #include <QDir>

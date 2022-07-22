@@ -6,7 +6,7 @@
 #include "common.h"
 #include "elementfactory.h"
 #include "globalproperties.h"
-#include "ic.h"
+#include "graphicelement.h"
 #include "qneconnection.h"
 
 #include <QApplication>

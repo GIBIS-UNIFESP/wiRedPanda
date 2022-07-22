@@ -7,7 +7,6 @@
 #include "clockdialog.h"
 #include "common.h"
 #include "elementfactory.h"
-#include "elementmapping.h"
 #include "globalproperties.h"
 #include "graphicelement.h"
 #include "graphicelementinput.h"

@@ -10,7 +10,6 @@
 #include "dflipflop.h"
 #include "elementfactory.h"
 #include "elementlabel.h"
-#include "elementmapping.h"
 #include "globalproperties.h"
 #include "graphicsview.h"
 #include "recentfiles.h"

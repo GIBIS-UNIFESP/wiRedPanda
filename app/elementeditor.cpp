@@ -7,7 +7,6 @@
 #include "commands.h"
 #include "common.h"
 #include "elementfactory.h"
-#include "globalproperties.h"
 #include "inputrotary.h"
 #include "scene.h"
 

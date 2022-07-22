@@ -3,11 +3,9 @@
 
 #include "simulation.h"
 
-#include "buzzer.h"
 #include "clock.h"
 #include "common.h"
 #include "elementmapping.h"
-#include "globalproperties.h"
 #include "graphicelement.h"
 #include "ic.h"
 #include "qneconnection.h"

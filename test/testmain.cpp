@@ -9,7 +9,6 @@
 #include "testlogicelements.h"
 #include "testsimulation.h"
 #include "testwaveform.h"
-#include "thememanager.h"
 
 #include <QtTest>
 

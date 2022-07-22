@@ -5,7 +5,6 @@
 
 #include "and.h"
 #include "common.h"
-#include "elementmapping.h"
 #include "inputbutton.h"
 #include "led.h"
 #include "qneconnection.h"

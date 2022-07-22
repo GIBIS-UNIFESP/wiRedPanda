@@ -3,7 +3,6 @@
 
 #include "testfiles.h"
 
-#include "globalproperties.h"
 #include "qneconnection.h"
 #include "scene.h"
 #include "workspace.h"
