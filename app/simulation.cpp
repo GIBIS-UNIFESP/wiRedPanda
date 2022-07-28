@@ -149,6 +149,10 @@ bool Simulation::initialize()
         }
     }
 
+    std::sort(elements.begin(),elements.end(),[](GraphicElement *a, GraphicElement *b) {
+        return a->priority() > b->priority();
+    });
+
     qCDebug(zero) << tr("Elements read:") << elements.size();
     if (elements.empty()) {
         return false;

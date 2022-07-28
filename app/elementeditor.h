@@ -22,6 +22,7 @@ public:
 
     bool eventFilter(QObject *obj, QEvent *event) override;
     void changeTriggerAction();
+    void updatePriorityAction();
     void contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse);
     void disable();
     void fillColorComboBox();
@@ -46,6 +47,7 @@ private:
     void selectionChanged();
     void setCurrentElements(const QList<GraphicElement *> &elms);
     void triggerChanged(const QString &cmd);
+    void priorityChanged(const int value);
     void updateSkins();
 
     Ui::ElementEditor *m_ui;
@@ -56,6 +58,7 @@ private:
     QString m_manyLabels = tr("<Many labels>");
     QString m_manyOS = tr("<Many values>");
     QString m_manyOV = tr("<Many values>");
+    QString m_manyPriorities = tr("<Many priorities>");
     QString m_manyTriggers = tr("<Many triggers>");
     QString m_skinName;
     QList<GraphicElement *> m_elements;
@@ -79,6 +82,7 @@ private:
     bool m_hasSameLabel = false;
     bool m_hasSameOutputSize = false;
     bool m_hasSameOutputValue = false;
+    bool m_hasSamePriority = false;
     bool m_hasSameTrigger = false;
     bool m_hasSameType = false;
     bool m_hasTrigger = false;

@@ -139,6 +139,8 @@ void GraphicElement::save(QDataStream &stream) const
     /* <\Version1.3> */
     /* <Version1.9> */
     stream << m_trigger;
+    /* <\Version4.01> */
+    stream << m_priority;
     /* <\Version1.9> */
     stream << static_cast<quint64>(m_inputPorts.size());
 
@@ -179,6 +181,8 @@ void GraphicElement::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap
     /* <\Version1.3> */
     /* <Version1.9> */
     loadTrigger(stream, version);
+    /* <\Version4.01> */
+    loadPriority(stream, version);
     /* <\Version1.9> */
     loadInputPorts(stream, portMap);
     loadOutputPorts(stream, portMap);
@@ -247,6 +251,14 @@ void GraphicElement::loadTrigger(QDataStream &stream, const double version)
         stream >> trigger;
         setTrigger(trigger);
     }
+}
+
+void GraphicElement::loadPriority(QDataStream &stream, const double version) {
+  if (version >= 4.01) {
+      quint64 priority;
+      stream >> priority;
+      setPriority(priority);
+  }
 }
 
 void GraphicElement::loadInputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap)
@@ -477,6 +489,11 @@ void GraphicElement::addOutputPort(const QString &name)
 void GraphicElement::setPortName(const QString &name)
 {
     setObjectName(name);
+}
+
+void GraphicElement::setPriority(const int value)
+{
+    m_priority = value;
 }
 
 void GraphicElement::setRotation(const qreal angle)
@@ -812,6 +829,11 @@ void GraphicElement::setInputSize(const int size)
 int GraphicElement::outputSize() const
 {
     return m_outputPorts.size();
+}
+
+int GraphicElement::priority() const
+{
+    return m_priority;
 }
 
 void GraphicElement::setOutputSize(const int size)
