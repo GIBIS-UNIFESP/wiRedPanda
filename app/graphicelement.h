@@ -82,6 +82,7 @@ public:
     int minInputSize() const;
     int minOutputSize() const;
     int outputSize() const;
+    int priority() const;
     qreal rotation() const;
     virtual QString audio() const;
     virtual QString color() const;
@@ -102,6 +103,7 @@ public:
     void setPixmap(const QString &pixmapPath);
     void setPixmap(const int index);
     void setPortName(const QString &name);
+    void setPriority(const int value);
     void setRotation(const qreal angle);
     void setTrigger(const QKeySequence &trigger);
     void updateLabel();
@@ -168,6 +170,7 @@ private:
     void loadPortsSize(QDataStream &stream, const double version);
     void loadRotation(QDataStream &stream);
     void loadTrigger(QDataStream &stream, const double version);
+    void loadPriority(QDataStream &stream, const double version);
     void removeSurplusInputs(const quint64 inputSize_, QMap<quint64, QNEPort *> &portMap);
     void removeSurplusOutputs(const quint64 outputSize_, QMap<quint64, QNEPort *> &portMap);
 
@@ -193,6 +196,7 @@ private:
     quint64 m_maxOutputSize = 0;
     quint64 m_minInputSize = 0;
     quint64 m_minOutputSize = 0;
+    quint64 m_priority = 0;
 };
 
 Q_DECLARE_METATYPE(GraphicElement)

@@ -36,6 +36,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     m_ui->doubleSpinBoxFrequency->installEventFilter(this);
     m_ui->lineEditElementLabel->installEventFilter(this);
     m_ui->lineEditTrigger->installEventFilter(this);
+    m_ui->spinBoxPriority->installEventFilter(this);
 
     connect(m_ui->checkBoxLocked,         &QCheckBox::clicked,                              this, &ElementEditor::inputLocked);
     connect(m_ui->comboBoxAudio,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
@@ -48,6 +49,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->lineEditTrigger,        &QLineEdit::textChanged,                          this, &ElementEditor::triggerChanged);
     connect(m_ui->pushButtonChangeSkin,   &QPushButton::clicked,                            this, &ElementEditor::updateElementSkin);
     connect(m_ui->pushButtonDefaultSkin,  &QPushButton::clicked,                            this, &ElementEditor::defaultSkin);
+    connect(m_ui->spinBoxPriority,        &QSpinBox::valueChanged,                          this, &ElementEditor::priorityChanged);
 }
 
 ElementEditor::~ElementEditor()
@@ -78,6 +80,9 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
     QString rotateLeftText(tr("Rotate left"));
     QString rotateRightText(tr("Rotate right"));
     QString triggerText(tr("Change trigger"));
+    QString priorityText(tr("Change priority"));
+
+    menu.addAction(priorityText)->setData(priorityText);
 
     if (m_hasLabel) {
         menu.addAction(QIcon(QPixmap(":/toolbar/rename.svg")), renameText)->setData(renameText);
@@ -213,6 +218,11 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
         return;
     }
 
+    if (actionData == priorityText) {
+        updatePriorityAction();
+        return;
+    }
+
     if (actionText == changeSkinText) {
         updateElementSkin();
         return;
@@ -259,6 +269,12 @@ void ElementEditor::changeTriggerAction()
 {
     m_ui->lineEditTrigger->setFocus();
     m_ui->lineEditTrigger->selectAll();
+}
+
+void ElementEditor::updatePriorityAction()
+{
+    m_ui->spinBoxPriority->setFocus();
+    m_ui->spinBoxPriority->selectAll();
 }
 
 void ElementEditor::updateElementSkin()
@@ -326,7 +342,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
     m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = false;
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = false;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = false;
-    m_canChangeSkin = false;
+    m_canChangeSkin = m_hasSamePriority = false;
     m_hasElements = false;
 
     if (elms.isEmpty()) {
@@ -339,7 +355,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
     m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = true;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = true;
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = true;
-    m_canChangeSkin = true;
+    m_canChangeSkin = m_hasSamePriority = true;
     m_hasElements = true;
     show();
     setEnabled(false);
@@ -384,6 +400,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
         m_hasSameTrigger &= (elm->trigger() == firstElement->trigger());
         m_hasSameType &= (elm->elementType() == firstElement->elementType());
         m_hasSameAudio &= (elm->audio() == firstElement->audio());
+        m_hasSamePriority &= (elm->priority() == firstElement->priority());
         m_canMorph &= (elm->inputSize() == firstElement->inputSize());
         m_canMorph &= (elm->outputSize() == firstElement->outputSize());
 
@@ -445,6 +462,13 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
         } else {
             m_ui->comboBoxAudio->setCurrentText(m_manyAudios);
         }
+    }
+
+    /* Priority */
+    if (m_hasSamePriority) {
+        m_ui->spinBoxPriority->setValue(firstElement->priority());
+    } else {
+        m_ui->spinBoxPriority->setValue(0);
     }
 
     /* Frequency */
@@ -604,6 +628,8 @@ void ElementEditor::apply()
     for (auto *elm : qAsConst(m_elements)) {
         elm->save(stream);
 
+        elm->setPriority(m_ui->spinBoxPriority->value());
+
         if (elm->hasColors() && (m_ui->comboBoxColor->currentData().isValid())) {
             elm->setColor(m_ui->comboBoxColor->currentData().toString());
         }
@@ -708,6 +734,11 @@ void ElementEditor::inputLocked(const bool value)
 void ElementEditor::triggerChanged(const QString &cmd)
 {
     m_ui->lineEditTrigger->setText(cmd.toUpper());
+    apply();
+}
+
+void ElementEditor::priorityChanged(const int value) {
+    m_ui->spinBoxPriority->setValue(value);
     apply();
 }
 
