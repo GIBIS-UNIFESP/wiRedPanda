@@ -22,7 +22,6 @@ public:
 
     bool eventFilter(QObject *obj, QEvent *event) override;
     void changeTriggerAction();
-    void updatePriorityAction();
     void contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse);
     void disable();
     void fillColorComboBox();
@@ -31,6 +30,7 @@ public:
     void setScene(Scene *scene);
     void update();
     void updateElementSkin();
+    void updatePriorityAction();
 
 signals:
     void sendCommand(QUndoCommand *cmd);
@@ -51,6 +51,7 @@ private:
     void updateSkins();
 
     Ui::ElementEditor *m_ui;
+    QList<GraphicElement *> m_elements;
     QString m_manyAudios = tr("<Many sounds>");
     QString m_manyColors = tr("<Many colors>");
     QString m_manyFreq = tr("<Many values>");
@@ -61,7 +62,6 @@ private:
     QString m_manyPriorities = tr("<Many priorities>");
     QString m_manyTriggers = tr("<Many triggers>");
     QString m_skinName;
-    QList<GraphicElement *> m_elements;
     Scene *m_scene = nullptr;
     bool m_canChangeInputSize = false;
     bool m_canChangeOutputSize = false;
