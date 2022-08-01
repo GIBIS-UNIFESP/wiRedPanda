@@ -25,9 +25,9 @@ Dynamically-linked binaries for macOS are available [here](https://github.com/GI
 
 #### Dependencies 
 
-Qt 5.9.0+ or 6.2.0+ is needed for building, as well as QtCharts and QtMultimedia. 
+Qt 5.12.0+ or 6.2.0+ is needed for building, as well as QtCharts and QtMultimedia. 
 
-On distros such as Arch Linux, Gentoo, Manjaro, Debian Testing, etc., Qt 5.9+ can be installed from the standard repos.
+On distros such as Arch Linux, Gentoo, Manjaro, Debian Testing, etc., Qt 5.12+ can be installed from the standard repos.
 
 * Debian Testing
 

@@ -1,5 +1,5 @@
-equals(QT_MAJOR_VERSION, 5) : lessThan(QT_MINOR_VERSION, 9) {
-    error("Use Qt 5.9 or newer")
+equals(QT_MAJOR_VERSION, 5) : lessThan(QT_MINOR_VERSION, 12) {
+    error("Use Qt 5.12 or newer")
 }
 
 equals(QT_MAJOR_VERSION, 6) : !versionAtLeast(QT_VERSION, 6.2.0) {
@@ -78,17 +78,15 @@ linux {
 }
 
 msvc {
-    QMAKE_CXXFLAGS += /permissive- /std:c++17
+    QMAKE_CXXFLAGS += /permissive-
 }
 
 *-g++ {
     QMAKE_CXXFLAGS += -Wno-deprecated-enum-enum-conversion # can be removed after migrating to Qt6
-    QMAKE_CXXFLAGS += -std=c++17
 }
 
 *-clang {
     QMAKE_CXXFLAGS += -Wno-deprecated-enum-enum-conversion # can be removed after migrating to Qt6
-    QMAKE_CXXFLAGS += -std=c++17
 }
 
 mac {
