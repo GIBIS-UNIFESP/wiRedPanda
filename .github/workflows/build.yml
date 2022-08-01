@@ -20,7 +20,7 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v2
       with:
         version: 5.9.9
         modules: qtcharts
@@ -58,7 +58,7 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v2
       with:
         version: 5.12.12
         modules: qtcharts
@@ -89,7 +89,7 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v2
       with:
         version: 5.13.2
         modules: qtcharts
@@ -120,7 +120,7 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v2
       with:
         version: 5.14.2
         modules: qtcharts
@@ -151,7 +151,7 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v2
       with:
         version: 5.15.2
         modules: qtcharts
@@ -201,7 +201,7 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v2
       with:
         version: 6.2.4
         modules: qtcharts qtmultimedia
@@ -232,7 +232,7 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v2
       with:
         version: 6.3.1
         modules: qtcharts qtmultimedia
@@ -266,7 +266,7 @@ jobs:
       run: git config --global core.symlinks true
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v2
       with:
         arch: win64_msvc2017_64
         version: 5.9.9
@@ -306,7 +306,7 @@ jobs:
       run: git config --global core.symlinks true
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v2
       with:
         arch: win64_msvc2017_64
         version: 5.12.12
@@ -346,7 +346,7 @@ jobs:
       run: git config --global core.symlinks true
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v2
       with:
         arch: win64_msvc2017_64
         version: 5.13.2
@@ -386,7 +386,7 @@ jobs:
       run: git config --global core.symlinks true
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v2
       with:
         arch: win64_msvc2017_64
         version: 5.14.2
@@ -426,7 +426,7 @@ jobs:
       run: git config --global core.symlinks true
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v2
       with:
         arch: win64_msvc2019_64
         version: 5.15.2
@@ -485,7 +485,7 @@ jobs:
       run: git config --global core.symlinks true
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v2
       with:
         arch: win64_msvc2019_64
         version: 6.2.4
@@ -525,7 +525,7 @@ jobs:
       run: git config --global core.symlinks true
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v2
       with:
         arch: win64_msvc2019_64
         version: 6.3.1
