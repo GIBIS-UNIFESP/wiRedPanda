@@ -53,8 +53,13 @@ void Buzzer::setAudio(const QString &note)
         return;
     }
 
-    m_audio.setSource(QUrl::fromLocalFile(":output/audio/" + note + ".wav"));
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    m_audio.setVolume(0.35f);
+#else
     m_audio.setVolume(0.35);
+#endif
+
+    m_audio.setSource(QUrl::fromLocalFile(":output/audio/" + note + ".wav"));
     m_audio.setLoopCount(QSoundEffect::Infinite); // TODO: fix audio clipping when repeating
     m_note = note;
 }
