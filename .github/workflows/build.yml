@@ -10,45 +10,7 @@ env:
 
 jobs:
 
-  Ubuntu-Qt5_9_9-Code_Coverage:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with: 
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v2
-      with:
-        version: 5.9.9
-        modules: qtcharts
-        aqtversion: ==2.1.0
-
-    - name: Build
-      run: |
-        sudo apt install libgstreamer-gl1.0-0
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j2
-
-    - name: Test
-      run: |
-        cd build/test
-        xvfb-run ./WPanda-test
-        
-    - name: Upload coverage data
-      run: |        
-        gcov -abcfu build_files/obj/*.o
-        curl -Os https://uploader.codecov.io/latest/linux/codecov
-        chmod +x ./codecov
-        ./codecov
-
-# =================================
-
-  Ubuntu-Qt5_12_12:
+  Ubuntu-Qt5_12_12-Code_Coverage:
     runs-on: ubuntu-latest
 
     steps:
@@ -76,6 +38,13 @@ jobs:
       run: |
         cd build/test
         xvfb-run ./WPanda-test
+        
+    - name: Upload coverage data
+      run: |        
+        gcov -abcfu build_files/obj/*.o
+        curl -Os https://uploader.codecov.io/latest/linux/codecov
+        chmod +x ./codecov
+        ./codecov
         
 # =================================
 
@@ -253,46 +222,6 @@ jobs:
         
 # =================================
 
-  Windows-Qt5_9_9:
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with: 
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Set up Git for properly handling symlinks on Windows
-      run: git config --global core.symlinks true
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v2
-      with:
-        arch: win64_msvc2017_64
-        version: 5.9.9
-        modules: qtcharts
-        aqtversion: ==2.1.0
-
-    - name: Setup MSVC Toolchain [Windows]
-      uses: seanmiddleditch/gha-setup-vsdevenv@v4
-
-    - name: Build
-      shell: cmd
-      run: |
-        choco install jom
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        jom
-
-    - name: Test
-      shell: cmd
-      run: |
-        cd build
-        jom check
-        
-# =================================
-
   Windows-Qt5_12_12:
     runs-on: windows-latest
 
@@ -413,7 +342,7 @@ jobs:
         
 # =================================
 
-  Windows-Qt5_15:
+  Windows-Qt5_15_2-Release:
     runs-on: windows-latest
 
     steps:
@@ -552,7 +481,7 @@ jobs:
         
 # =================================
 
-  macOS-Qt5:
+  macOS-Qt5_12_12:
     runs-on: macos-latest
 
     steps:
@@ -562,16 +491,109 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      run: brew install qt5 gdb
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: 5.12.12
+        modules: qtcharts
+        aqtversion: ==2.1.0
 
     - name: Build
       run: |
-        QTDIR="/usr/local/opt/qt5/" && PATH="${QTDIR}/bin:$PATH" && LDFLAGS=-L${QTDIR}/lib && CPPFLAGS=-I${QTDIR}/include;
         mkdir build
         cd build
         qmake ../WPanda.pro
         make -j3
+        
+    - name: Test
+      run: |
+        cd build
+        make check
+        
+# =================================
 
+  macOS-Qt5_13_2:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with: 
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: 5.13.2
+        modules: qtcharts
+        aqtversion: ==2.1.0
+
+    - name: Build
+      run: |
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j3
+        
+    - name: Test
+      run: |
+        cd build
+        make check
+        
+# =================================
+
+  macOS-Qt5_14_2:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with: 
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: 5.14.2
+        modules: qtcharts
+        aqtversion: ==2.1.0
+
+    - name: Build
+      run: |
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j3
+        
+    - name: Test
+      run: |
+        cd build
+        make check
+        
+# =================================
+
+  macOS-Qt5_15_2-Release:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with: 
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: 5.15.2
+        modules: qtcharts
+        aqtversion: ==2.1.0
+
+    - name: Build
+      run: |
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j3
+        
     - name: Test
       run: |
         cd build
@@ -588,10 +610,10 @@ jobs:
       with:
         fail_on_unmatched_files: true
         files: 'build/app/*.zip'
-
+        
 # =================================
 
-  macOS-Qt6:
+  macOS-Qt6_2_4:
     runs-on: macos-latest
 
     steps:
@@ -601,11 +623,44 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      run: brew install qt6 gdb
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: 6.2.4
+        modules: qtcharts qtmultimedia
+        aqtversion: ==2.1.0
 
     - name: Build
       run: |
-        QTDIR="/usr/local/opt/qt6/" && PATH="${QTDIR}/bin:$PATH" && LDFLAGS=-L${QTDIR}/lib && CPPFLAGS=-I${QTDIR}/include;
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j3
+        
+    - name: Test
+      run: |
+        cd build
+        make check
+        
+# =================================
+
+  macOS-Qt6_3_1:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with: 
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: 6.3.1
+        modules: qtcharts qtmultimedia
+        aqtversion: ==2.1.0
+
+    - name: Build
+      run: |
         mkdir build
         cd build
         qmake ../WPanda.pro
