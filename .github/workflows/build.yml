@@ -31,7 +31,7 @@ jobs:
         sudo apt install libgstreamer-gl1.0-0
         mkdir build
         cd build
-        qmake ../WPanda.pro
+        qmake ../WPanda.pro CONFIG+=coverage
         make -j2
 
     - name: Test
