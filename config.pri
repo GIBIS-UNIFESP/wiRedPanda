@@ -29,9 +29,7 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 DEFINES += QT_MESSAGELOGCONTEXT
 
 linux-g++ {
-    GITHUB_ACTIONS = $$(GITHUB_ACTIONS)
-
-    contains(GITHUB_ACTIONS, true) {
+    contains(CONFIG, coverage) {
         QMAKE_CXXFLAGS += --coverage
         QMAKE_LFLAGS += --coverage
     }
@@ -44,17 +42,25 @@ linux-g++ {
 }
 
 linux-clang {
-#    QMAKE_CXXFLAGS += -fsanitize=memory -fPIE
-#    QMAKE_LFLAGS += -fsanitize=memory -fPIE
+    contains(CONFIG, MemorySanitizer) {
+        QMAKE_CXXFLAGS += -fsanitize=memory -fPIE
+        QMAKE_LFLAGS += -fsanitize=memory -fPIE
+    }
 
-#    QMAKE_CXXFLAGS += -fsanitize=undefined,implicit-integer-truncation,implicit-integer-arithmetic-value-change,implicit-conversion,integer,nullability
-#    QMAKE_LFLAGS += -fsanitize=undefined,implicit-integer-truncation,implicit-integer-arithmetic-value-change,implicit-conversion,integer,nullability
+    contains(CONFIG, UBSan) {
+        QMAKE_CXXFLAGS += -fsanitize=undefined,implicit-integer-truncation,implicit-integer-arithmetic-value-change,implicit-conversion,integer,nullability
+        QMAKE_LFLAGS += -fsanitize=undefined,implicit-integer-truncation,implicit-integer-arithmetic-value-change,implicit-conversion,integer,nullability
+    }
 
-#    QMAKE_CXXFLAGS += -fsanitize=address
-#    QMAKE_LFLAGS += -fsanitize=address
+    contains(CONFIG, AddressSanitizer) {
+        QMAKE_CXXFLAGS += -fsanitize=address
+        QMAKE_LFLAGS += -fsanitize=address
+    }
 
-#    QMAKE_CXXFLAGS += -fsanitize=thread
-#    QMAKE_LFLAGS += -fsanitize=thread
+    contains(CONFIG, ThreadSanitizer) {
+        QMAKE_CXXFLAGS += -fsanitize=thread
+        QMAKE_LFLAGS += -fsanitize=thread
+    }
 }
 
 linux-clang {
