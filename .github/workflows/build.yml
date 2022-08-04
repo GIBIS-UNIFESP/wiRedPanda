@@ -25,6 +25,9 @@ jobs:
         version: 5.12.12
         modules: qtcharts
         aqtversion: ==2.1.0
+        
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
 
     - name: Build
       run: |
@@ -64,6 +67,9 @@ jobs:
         modules: qtcharts
         aqtversion: ==2.1.0
 
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      
     - name: Build
       run: |
         sudo apt install libgstreamer-gl1.0-0
@@ -94,6 +100,9 @@ jobs:
         version: 5.14.2
         modules: qtcharts
         aqtversion: ==2.1.0
+        
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
 
     - name: Build
       run: |
@@ -125,6 +134,9 @@ jobs:
         version: 5.15.2
         modules: qtcharts
         aqtversion: ==2.1.0
+        
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
 
     - name: Build
       run: |
@@ -140,6 +152,7 @@ jobs:
         xvfb-run ./WPanda-test
 
     - name: Make AppImage
+      if: startsWith(github.ref, 'refs/tags/')
       run: |
         mkdir appimage
         cp app/resources/wpanda.desktop appimage/wpanda.desktop
@@ -175,6 +188,9 @@ jobs:
         version: 6.2.4
         modules: qtcharts qtmultimedia
         aqtversion: ==2.1.0
+        
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
 
     - name: Build
       run: |
@@ -206,6 +222,9 @@ jobs:
         version: 6.3.1
         modules: qtcharts qtmultimedia
         aqtversion: ==2.1.0
+        
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
 
     - name: Build
       run: |
@@ -496,6 +515,9 @@ jobs:
         version: 5.12.12
         modules: qtcharts
         aqtversion: ==2.1.0
+        
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
 
     - name: Build
       run: |
@@ -526,6 +548,9 @@ jobs:
         version: 5.13.2
         modules: qtcharts
         aqtversion: ==2.1.0
+        
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
 
     - name: Build
       run: |
@@ -557,6 +582,9 @@ jobs:
         modules: qtcharts
         aqtversion: ==2.1.0
 
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      
     - name: Build
       run: |
         mkdir build
@@ -587,6 +615,9 @@ jobs:
         modules: qtcharts
         aqtversion: ==2.1.0
 
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      
     - name: Build
       run: |
         mkdir build
@@ -600,6 +631,7 @@ jobs:
         make check
         
     - name: Rename file
+      if: startsWith(github.ref, 'refs/tags/')
       run: |
         cd build/app
         zip -r WiRedPanda-macOS-Qt5.zip wiredpanda.app
@@ -629,6 +661,9 @@ jobs:
         modules: qtcharts qtmultimedia
         aqtversion: ==2.1.0
 
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      
     - name: Build
       run: |
         mkdir build
@@ -659,6 +694,9 @@ jobs:
         modules: qtcharts qtmultimedia
         aqtversion: ==2.1.0
 
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      
     - name: Build
       run: |
         mkdir build
