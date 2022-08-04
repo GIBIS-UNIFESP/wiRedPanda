@@ -37,8 +37,8 @@ public:
 
     explicit GraphicElement(ElementType type, ElementGroup group, const QString &pixmapPath, const QString &titleText, const QString &translatedName,
                             const int minInputSize, const int maxInputSize, const int minOutputSize, const int maxOutputSize, QGraphicsItem *parent = nullptr);
-    explicit GraphicElement(QGraphicsItem *parent = nullptr) : QGraphicsObject(parent) {};
-    GraphicElement(const GraphicElement &other) : GraphicElement(other.parentItem()) {};
+    explicit GraphicElement(QGraphicsItem *parent = nullptr) : QGraphicsObject(parent) {}
+    GraphicElement(const GraphicElement &other) : GraphicElement(other.parentItem()) {}
 
     //! Saves the graphic element through a binary data stream.
     virtual void save(QDataStream &stream) const;

@@ -109,9 +109,11 @@ void Buzzer::save(QDataStream &stream) const
 void Buzzer::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
 {
     GraphicElement::load(stream, portMap, version);
+
     if (version < 2.4) {
         return;
     }
+
     QString note;
     stream >> note;
     setAudio(note);
