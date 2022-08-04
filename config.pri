@@ -21,9 +21,6 @@ QT += core gui printsupport charts multimedia widgets
 
 CONFIG += c++17 warn_on strict_c strict_c++
 
-PRECOMPILED_HEADER = $$PWD/pch.h
-CONFIG += precompile_header
-
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 DEFINES += QT_MESSAGELOGCONTEXT
@@ -79,8 +76,15 @@ linux {
     !isEmpty(CCACHE_BIN) {
         QMAKE_CC = ccache $$QMAKE_CC
         QMAKE_CXX = ccache $$QMAKE_CXX
-        QMAKE_CXXFLAGS += -fpch-preprocess # must also set sloppiness to pch_defines,time_macros in ccache.conf
+    } else {
+        PRECOMPILED_HEADER = $$PWD/pch.h
+        CONFIG += precompile_header
     }
+}
+
+!linux {
+    PRECOMPILED_HEADER = $$PWD/pch.h
+    CONFIG += precompile_header
 }
 
 msvc {
