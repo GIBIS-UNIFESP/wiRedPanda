@@ -6,6 +6,7 @@
 #include "enums.h"
 
 #include <QGraphicsItem>
+#include <memory>
 
 class GraphicElement;
 class ItemWithId;

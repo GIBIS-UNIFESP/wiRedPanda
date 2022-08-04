@@ -13,7 +13,7 @@ class Buzzer : public GraphicElement
 
 public:
     explicit Buzzer(QGraphicsItem *parent = nullptr);
-    Buzzer(const Buzzer &other) : Buzzer(other.parentItem()) {};
+    Buzzer(const Buzzer &other) : Buzzer(other.parentItem()) {}
 
     QString audio() const override;
     void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version) override;

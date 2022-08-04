@@ -79,10 +79,10 @@ QString ElementLabel::icFileName() const
 void ElementLabel::startDrag()
 {
     QPixmap pixMap = pixmap();
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
-    QPoint offset = m_iconLabel.pixmap().rect().center();
-#else
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
     QPoint offset = m_iconLabel.pixmap()->rect().center();
+#else
+    QPoint offset = m_iconLabel.pixmap().rect().center();
 #endif
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
@@ -99,10 +99,10 @@ void ElementLabel::startDrag()
 
 QMimeData *ElementLabel::mimeData()
 {
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
-    QPoint offset = m_iconLabel.pixmap().rect().center();
-#else
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
     QPoint offset = m_iconLabel.pixmap()->rect().center();
+#else
+    QPoint offset = m_iconLabel.pixmap().rect().center();
 #endif
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
