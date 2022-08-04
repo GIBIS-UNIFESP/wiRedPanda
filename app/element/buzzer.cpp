@@ -6,6 +6,15 @@
 #include "globalproperties.h"
 #include "qneport.h"
 
+#include <QAudio>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QAudioDeviceInfo>
+#else
+#include <QAudioDevice>
+#include <QMediaDevices>
+#endif
+#include <QDebug>
+
 namespace
 {
 int id = qRegisterMetaType<Buzzer>();
@@ -33,6 +42,17 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     setHasLabel(true);
     setPortName(m_translatedName);
     setToolTip(m_translatedName);
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    m_hasOutputDevice = !QAudioDeviceInfo::defaultOutputDevice().deviceName().isEmpty();
+
+#else
+    m_hasOutputDevice = !QMediaDevices::defaultAudioOutput().description().isEmpty();
+#endif
+
+    if (m_hasOutputDevice) {
+        m_audio = new QSoundEffect(this);
+    }
 }
 
 void Buzzer::refresh()
@@ -53,15 +73,20 @@ void Buzzer::setAudio(const QString &note)
         return;
     }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-    m_audio.setVolume(0.35f);
+    m_note = note;
+
+    if (!m_hasOutputDevice) {
+        return;
+    }
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    m_audio->setVolume(0.35);
 #else
-    m_audio.setVolume(0.35);
+    m_audio->setVolume(0.35f);
 #endif
 
-    m_audio.setSource(QUrl::fromLocalFile(":output/audio/" + note + ".wav"));
-    m_audio.setLoopCount(QSoundEffect::Infinite); // TODO: fix audio clipping when repeating
-    m_note = note;
+    m_audio->setSource(QUrl::fromLocalFile(":output/audio/" + note + ".wav"));
+    m_audio->setLoopCount(QSoundEffect::Infinite); // TODO: fix audio clipping when repeating
 }
 
 QString Buzzer::audio() const
@@ -71,7 +96,11 @@ QString Buzzer::audio() const
 
 void Buzzer::mute(const bool mute)
 {
-    m_audio.setMuted(mute);
+    if (!m_hasOutputDevice) {
+        return;
+    }
+
+    m_audio->setMuted(mute);
 }
 
 void Buzzer::playBuzzer()
@@ -80,12 +109,16 @@ void Buzzer::playBuzzer()
         return;
     }
 
-    if (m_audio.source().isEmpty()) {
-        setAudio("C6");
+    setPixmap(1);
+
+    if (m_hasOutputDevice) {
+        if (m_audio->source().isEmpty()) {
+            setAudio("C6");
+        }
+
+        m_audio->play();
     }
 
-    setPixmap(1);
-    m_audio.play();
     m_isPlaying = true;
 }
 
@@ -96,7 +129,11 @@ void Buzzer::stopBuzzer()
     }
 
     setPixmap(0);
-    m_audio.stop();
+
+    if (m_hasOutputDevice) {
+        m_audio->stop();
+    }
+
     m_isPlaying = false;
 }
 

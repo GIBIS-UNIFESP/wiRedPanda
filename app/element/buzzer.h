@@ -26,9 +26,10 @@ private:
     void playBuzzer();
     void stopBuzzer();
 
-    QSoundEffect m_audio;
+    QSoundEffect *m_audio = nullptr;
     QString m_note;
     bool m_isPlaying = false;
+    bool m_hasOutputDevice = false;
 };
 
 Q_DECLARE_METATYPE(Buzzer)
