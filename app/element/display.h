@@ -14,8 +14,8 @@ class Display : public GraphicElement
 public:
     explicit Display(QGraphicsItem *parent = nullptr);
 
-    static QPixmap convertColor(const QImage &src, const bool red, const bool green, const bool blue);
-    static void convertAllColors(QVector<QPixmap> &maps);
+    static QPixmap convertColor(const QImage &source, const bool red, const bool green, const bool blue);
+    static void convertAllColors(QVector<QPixmap> &pixmaps);
 
     QString color() const override;
     void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version) override;
@@ -27,7 +27,7 @@ public:
 
 private:
     QString m_color = "Red";
-    QVector<QPixmap> bkg, a, b, c, d, e, f, g, dp;
+    QVector<QPixmap> a, b, c, d, e, f, g, dp;
     int m_colorNumber = 1;
 };
 

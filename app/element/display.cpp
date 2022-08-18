@@ -66,23 +66,23 @@ Display::Display(QGraphicsItem *parent)
     Display::updatePortsProperties();
 }
 
-void Display::convertAllColors(QVector<QPixmap> &maps)
+void Display::convertAllColors(QVector<QPixmap> &pixmaps)
 {
-    QImage tmp(maps.at(1).toImage());
-    maps[0] = convertColor(tmp, true, true, true);
-    maps[1] = convertColor(tmp, true, false, false);
-    maps[2] = convertColor(tmp, false, true, false);
-    maps[3] = convertColor(tmp, false, false, true);
-    maps[4] = convertColor(tmp, true, false, true);
+    QImage tmp(pixmaps.at(0).toImage());
+    pixmaps[0] = convertColor(tmp, true, true, true);
+    pixmaps[1] = convertColor(tmp, true, false, false);
+    pixmaps[2] = convertColor(tmp, false, true, false);
+    pixmaps[3] = convertColor(tmp, false, false, true);
+    pixmaps[4] = convertColor(tmp, true, false, true);
 }
 
-QPixmap Display::convertColor(const QImage &src, const bool red, const bool green, const bool blue)
+QPixmap Display::convertColor(const QImage &source, const bool red, const bool green, const bool blue)
 {
-    QImage tgt(src);
+    QImage target(source);
 
-    for (int y = 0; y < tgt.height(); ++y) {
-        QRgb *line = reinterpret_cast<QRgb *>(tgt.scanLine(y));
-        for (int x = 0; x < tgt.width(); ++x) {
+    for (int y = 0; y < target.height(); ++y) {
+        QRgb *line = reinterpret_cast<QRgb *>(target.scanLine(y));
+        for (int x = 0; x < target.width(); ++x) {
             QRgb &rgb = line[x];
             const int value = qRed(rgb);
             rgb = qRgba(red   ? value : 0,
@@ -92,7 +92,7 @@ QPixmap Display::convertColor(const QImage &src, const bool red, const bool gree
         }
     }
 
-    return (QPixmap::fromImage(tgt));
+    return QPixmap::fromImage(target);
 }
 
 void Display::refresh()
