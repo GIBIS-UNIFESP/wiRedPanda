@@ -63,6 +63,8 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QStri
 
     GraphicElement::updatePortsProperties();
     GraphicElement::updateTheme();
+
+    setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 }
 
 QPixmap GraphicElement::pixmap() const
@@ -91,10 +93,14 @@ void GraphicElement::setPixmap(const QString &pixmapPath)
         return;
     }
 
-    if (!m_pixmap->load(pixmapPath)) {
-        m_pixmap->load(m_defaultSkins.constFirst());
-        qCDebug(zero) << tr("Problem loading pixmapPath:") << pixmapPath;
-        throw Pandaception(tr("Couldn't load pixmap."));
+    if (!QPixmapCache::find(pixmapPath, m_pixmap.get())) {
+        if (!m_pixmap->load(pixmapPath)) {
+            m_pixmap->load(m_defaultSkins.constFirst());
+            qCDebug(zero) << tr("Problem loading pixmapPath:") << pixmapPath;
+            throw Pandaception(tr("Couldn't load pixmap."));
+        }
+
+        QPixmapCache::insert(pixmapPath, *m_pixmap);
     }
 
     setTransformOriginPoint(boundingRect().center());
@@ -438,9 +444,11 @@ void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     Q_UNUSED(option)
 
     if (isSelected()) {
+        painter->save();
         painter->setBrush(m_selectionBrush);
         painter->setPen(QPen(m_selectionPen, 0.5, Qt::SolidLine));
         painter->drawRoundedRect(boundingRect(), 5, 5);
+        painter->restore();
     }
 
     painter->drawPixmap(QPoint(0, 0), pixmap());
@@ -583,7 +591,6 @@ void GraphicElement::updatePortsProperties()
 
 void GraphicElement::refresh()
 {
-    setPixmap(0);
 }
 
 QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)

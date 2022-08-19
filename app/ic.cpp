@@ -29,10 +29,6 @@ IC::IC(QGraphicsItem *parent)
         return;
     }
 
-    m_defaultSkins << m_pixmapPath;
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
-
     m_label->setRotation(90);
 
     setHasLabel(true);
@@ -170,6 +166,8 @@ void IC::loadFile(const QString &fileName)
     const qreal bottom = portsBoundingRect().bottom();
     m_label->setPos(30, bottom + 5);
 
+    QPixmapCache::remove(m_cacheKey);
+
     qCDebug(zero) << QObject::tr("Finished Reading IC.");
 }
 
@@ -186,7 +184,7 @@ void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 QRectF IC::boundingRect() const
 {
-    return portsBoundingRect().united(pixmap().rect());
+    return portsBoundingRect();
 }
 
 void IC::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -195,38 +193,55 @@ void IC::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidge
     Q_UNUSED(option)
 
     if (isSelected()) {
+        painter->save();
         painter->setBrush(m_selectionBrush);
         painter->setPen(QPen(m_selectionPen, 0.5, Qt::SolidLine));
         painter->drawRoundedRect(boundingRect(), 5, 5);
+        painter->restore();
     }
 
-    painter->setBrush(QColor(126, 126, 126));
-    painter->setPen(QPen(QBrush(QColor(78, 78, 78)), 0.5, Qt::SolidLine));
+    QPixmap pixmap;
 
-    QRectF rectChildren = portsBoundingRect();
+    if (!QPixmapCache::find(m_cacheKey, &pixmap)) {
+        // make pixmap
+        pixmap = QPixmap(portsBoundingRect().size().toSize());
+        pixmap.fill(Qt::transparent);
 
-    // draw package
-    QPointF topLeft = rectChildren.topLeft();
-    topLeft.setX(topLeft.x() + 7);
-    QSizeF sizeFinal = rectChildren.size();
-    sizeFinal.setWidth(sizeFinal.width() - 14);
-    QRectF rectFinal = QRectF(topLeft, sizeFinal);
+        QPainter tmpPainter(&pixmap);
 
-    painter->drawRoundedRect(rectFinal, 3, 3);
-    QPixmap panda(":/basic/ic-panda2.svg");
-    QPointF pandaCenter = QRectF(rectFinal.center(), panda.size()).center();
-    painter->drawPixmap(pandaCenter - rectFinal.center(), panda);
+        tmpPainter.setBrush(QColor(126, 126, 126));
+        tmpPainter.setPen(QPen(QBrush(QColor(78, 78, 78)), 0.5, Qt::SolidLine));
 
-    // draw shadow
-    painter->setBrush(QColor(78, 78, 78));
-    painter->setPen(QPen(QBrush(QColor(78, 78, 78)), 0.5, Qt::SolidLine));
-    QRectF rec(rectFinal.bottomLeft(), rectFinal.bottomRight());
-    rec.adjust(0, -3, 0, 0);
-    painter->drawRoundedRect(rec, 3, 3);
+        // draw package
+        QPoint topLeft = pixmap.rect().topLeft();
+        topLeft.setX(topLeft.x() + 7);
+        QSize finalSize = pixmap.rect().size();
+        finalSize.setWidth(finalSize.width() - 14);
+        QRectF finalRect = QRectF(topLeft, finalSize);
+        tmpPainter.drawRoundedRect(finalRect, 3, 3);
 
-    // draw semicircle
-    QRectF topCenter = QRectF(rectFinal.topLeft() + QPointF(+18, -12), QSize(24, 24));
-    painter->drawChord(topCenter, 0, -180 * 16);
+        QPixmap panda(":/basic/ic-panda2.svg");
+        QPointF pandaOrigin = finalRect.center();
+        pandaOrigin.setX(pandaOrigin.x() - panda.width() / 2);
+        pandaOrigin.setY(pandaOrigin.y() - panda.height() / 2);
+        tmpPainter.drawPixmap(pandaOrigin, panda);
+
+        // draw shadow
+        tmpPainter.setBrush(QColor(78, 78, 78));
+        tmpPainter.setPen(QPen(QBrush(QColor(78, 78, 78)), 0.5, Qt::SolidLine));
+
+        QRectF shadowRect(finalRect.bottomLeft(), finalRect.bottomRight());
+        shadowRect.adjust(0, -3, 0, 0);
+        tmpPainter.drawRoundedRect(shadowRect, 3, 3);
+
+        // draw semicircle
+        QRectF topCenter = QRectF(finalRect.topLeft() + QPointF(+18, -12), QSize(24, 24));
+        tmpPainter.drawChord(topCenter, 0, -180 * 16);
+
+        m_cacheKey = QPixmapCache::insert(pixmap);
+    }
+
+    painter->drawPixmap(portsBoundingRect().topLeft(), pixmap);
 }
 
 QRectF IC::portsBoundingRect() const
