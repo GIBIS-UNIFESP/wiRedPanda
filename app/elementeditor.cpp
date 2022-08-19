@@ -9,6 +9,7 @@
 #include "elementfactory.h"
 #include "inputrotary.h"
 #include "scene.h"
+#include "thememanager.h"
 
 #include <QDebug>
 #include <QFileDialog>
@@ -418,7 +419,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
     m_canChangeInputSize = (minimumInputs < maximumInputs);
     m_canChangeOutputSize = (minimumOutputs < maximumOutputs);
     /* Element type */
-    m_ui->labelType->setText(ElementFactory::typeToTitleText(elementType));
+    m_ui->groupBox->setTitle(ElementFactory::typeToTitleText(elementType));
     /* Labels */
     m_ui->lineEditElementLabel->setVisible(m_hasLabel);
     m_ui->lineEditElementLabel->setEnabled(m_hasLabel);
@@ -812,4 +813,22 @@ void ElementEditor::defaultSkin()
 void ElementEditor::update()
 {
     setCurrentElements(m_elements);
+}
+
+void ElementEditor::updateTheme()
+{
+    const QString borderColor = (ThemeManager::theme() == Theme::Light) ? "216" : "66";
+    const QString styleSheet =
+            "QGroupBox {"
+            "   border: 1px solid rgb(%1,%1,%1);"
+            "   border-radius: 2px;"
+            "   margin-top: 8px;"
+            "}"
+            ""
+            "QGroupBox::title {"
+            "   subcontrol-origin: margin;"
+            "   subcontrol-position: top;"
+            "}";
+
+    m_ui->groupBox->setStyleSheet(styleSheet.arg(borderColor));
 }

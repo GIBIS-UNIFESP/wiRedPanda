@@ -11,7 +11,7 @@ int id = qRegisterMetaType<Nor>();
 }
 
 Nor::Nor(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Nor, ElementGroup::Gate, ":/basic/nor.svg", tr("<b>NOR</b>"), tr("Nor"), 2, 8, 1, 1, parent)
+    : GraphicElement(ElementType::Nor, ElementGroup::Gate, ":/basic/nor.svg", tr("NOR"), tr("Nor"), 2, 8, 1, 1, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

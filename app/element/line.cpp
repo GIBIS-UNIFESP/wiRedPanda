@@ -11,7 +11,7 @@ int id = qRegisterMetaType<Line>();
 }
 
 Line::Line(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Line, ElementGroup::Other, ":/misc/line.svg", tr("<b>LINE</b>"), tr("Line"), 0, 0, 0, 0, parent)
+    : GraphicElement(ElementType::Line, ElementGroup::Other, ":/misc/line.svg", tr("LINE"), tr("Line"), 0, 0, 0, 0, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

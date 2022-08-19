@@ -21,7 +21,7 @@ int id = qRegisterMetaType<Buzzer>();
 }
 
 Buzzer::Buzzer(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Buzzer, ElementGroup::Output, ":/output/BuzzerOff.svg", tr("<b>BUZZER</b>"), tr("Buzzer"), 1, 1, 0, 0, parent)
+    : GraphicElement(ElementType::Buzzer, ElementGroup::Output, ":/output/BuzzerOff.svg", tr("BUZZER"), tr("Buzzer"), 1, 1, 0, 0, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

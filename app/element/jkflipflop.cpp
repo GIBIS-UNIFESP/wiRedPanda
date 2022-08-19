@@ -12,7 +12,7 @@ int id = qRegisterMetaType<JKFlipFlop>();
 }
 
 JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(ElementType::JKFlipFlop, ElementGroup::Memory, pixmapPath(), tr("<b>JK-FLIPFLOP</b>"), tr("JK-FlipFlop"), 5, 5, 2, 2, parent)
+    : GraphicElement(ElementType::JKFlipFlop, ElementGroup::Memory, pixmapPath(), tr("JK-FLIPFLOP"), tr("JK-FlipFlop"), 5, 5, 2, 2, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

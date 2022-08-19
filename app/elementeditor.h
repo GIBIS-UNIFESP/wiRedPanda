@@ -31,6 +31,7 @@ public:
     void update();
     void updateElementSkin();
     void updatePriorityAction();
+    void updateTheme();
 
 signals:
     void sendCommand(QUndoCommand *cmd);
