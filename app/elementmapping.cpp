@@ -112,7 +112,7 @@ void ElementMapping::sortLogicElements()
     }
 
     std::sort(m_logicElms.begin(), m_logicElms.end(), [](const auto &logic1, const auto &logic2) {
-        return *logic2 < *logic1;
+        return *logic1 > *logic2;
     });
 }
 

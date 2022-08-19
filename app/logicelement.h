@@ -19,7 +19,7 @@ class LogicElement
 public:
     explicit LogicElement(const int inputSize, const int outputSize);
     virtual ~LogicElement() = default;
-    bool operator<(const LogicElement &other) const;
+    bool operator>(const LogicElement &other) const;
 
     bool inputValue(const int index = 0) const;
     bool isValid() const;
