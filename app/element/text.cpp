@@ -11,7 +11,7 @@ int id = qRegisterMetaType<Text>();
 }
 
 Text::Text(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Text, ElementGroup::Other, ":/misc/text.png", tr("<b>TEXT</b>"), tr("Text"), 0, 0, 0, 0, parent)
+    : GraphicElement(ElementType::Text, ElementGroup::Other, ":/misc/text.png", tr("TEXT"), tr("Text"), 0, 0, 0, 0, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

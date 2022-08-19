@@ -11,7 +11,7 @@ int id = qRegisterMetaType<Xnor>();
 }
 
 Xnor::Xnor(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Xnor, ElementGroup::Gate, ":/basic/xnor.svg", tr("<b>XNOR</b>"), tr("Xnor"), 2, 8, 1, 1, parent)
+    : GraphicElement(ElementType::Xnor, ElementGroup::Gate, ":/basic/xnor.svg", tr("XNOR"), tr("Xnor"), 2, 8, 1, 1, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

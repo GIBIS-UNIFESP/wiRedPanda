@@ -23,7 +23,7 @@ int id = qRegisterMetaType<IC>();
 }
 
 IC::IC(QGraphicsItem *parent)
-    : GraphicElement(ElementType::IC, ElementGroup::IC, ":/basic/ic-panda.svg", tr("<b>INTEGRATED CIRCUIT</b>"), tr("IC"), 0, 0, 0, 0, parent)
+    : GraphicElement(ElementType::IC, ElementGroup::IC, "", tr("INTEGRATED CIRCUIT"), tr("IC"), 0, 0, 0, 0, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

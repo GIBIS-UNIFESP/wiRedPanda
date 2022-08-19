@@ -1153,6 +1153,8 @@ void MainWindow::updateTheme()
     for (auto *label : labels) {
         label->updateTheme();
     }
+
+    m_ui->elementEditor->updateTheme();
 }
 
 void MainWindow::on_actionFlipHorizontally_triggered()

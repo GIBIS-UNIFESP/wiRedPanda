@@ -12,7 +12,7 @@ int id = qRegisterMetaType<Demux>();
 }
 
 Demux::Demux(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Demux, ElementGroup::Mux, ":/basic/demux.svg", tr("<b>DEMULTIPLEXER</b>"), tr("Demux"), 2, 2, 2, 2, parent)
+    : GraphicElement(ElementType::Demux, ElementGroup::Mux, ":/basic/demux.svg", tr("DEMULTIPLEXER"), tr("Demux"), 2, 2, 2, 2, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

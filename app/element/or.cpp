@@ -11,7 +11,7 @@ int id = qRegisterMetaType<Or>();
 }
 
 Or::Or(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Or, ElementGroup::Gate, ":/basic/or.svg", tr("<b>OR</b>"), tr("Or"), 2, 8, 1, 1, parent)
+    : GraphicElement(ElementType::Or, ElementGroup::Gate, ":/basic/or.svg", tr("OR"), tr("Or"), 2, 8, 1, 1, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

@@ -50,7 +50,7 @@ QString ElementFactory::typeToTitleText(const ElementType type)
     qCDebug(four) << type;
 
     if (type == ElementType::Unknown) {
-        return tr("<b>MULTIPLE TYPES</b>");
+        return tr("MULTIPLE TYPES");
     }
 
     return property(type, "titleText");

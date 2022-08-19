@@ -15,7 +15,7 @@ int id = qRegisterMetaType<InputRotary>();
 }
 
 InputRotary::InputRotary(QGraphicsItem *parent)
-    : GraphicElementInput(ElementType::InputRotary, ElementGroup::Input, ":/input/rotary/rotary_icon.svg", tr("<b>ROTARY SWITCH</b>"), tr("Rotary Switch"), 0, 0, 2, 16, parent)
+    : GraphicElementInput(ElementType::InputRotary, ElementGroup::Input, ":/input/rotary/rotary_icon.svg", tr("ROTARY SWITCH"), tr("Rotary Switch"), 0, 0, 2, 16, parent)
 {
     if (GlobalProperties::skipInit) {
         return;
