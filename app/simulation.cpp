@@ -41,13 +41,13 @@ void Simulation::update()
         logic->updateLogic();
     }
 
-    for (auto *conn : qAsConst(m_connections)) {
-        updatePort(conn->start());
+    for (auto *connection : qAsConst(m_connections)) {
+        updatePort(connection->start());
     }
 
-    for (auto *elm : qAsConst(m_outputs)) {
-        for (auto *port : elm->inputs()) {
-            updatePort(port);
+    for (auto *outputElm : qAsConst(m_outputs)) {
+        for (auto *inputPort : outputElm->inputs()) {
+            updatePort(inputPort);
         }
     }
 }

@@ -81,7 +81,6 @@ void Clock::setOn(const bool value, const int port)
     m_isOn = value;
     setPixmap(static_cast<int>(m_isOn));
     m_outputPorts.constFirst()->setStatus(static_cast<Status>(m_isOn));
-    update();
 }
 
 void Clock::save(QDataStream &stream) const
