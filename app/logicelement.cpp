@@ -80,9 +80,9 @@ void LogicElement::validate()
     }
 }
 
-bool LogicElement::operator<(const LogicElement &other) const
+bool LogicElement::operator>(const LogicElement &other) const
 {
-    return (m_priority < other.m_priority);
+    return (m_priority > other.m_priority);
 }
 
 int LogicElement::calculatePriority()

@@ -149,7 +149,7 @@ bool Simulation::initialize()
         }
     }
 
-    std::sort(elements.begin(),elements.end(),[](GraphicElement *a, GraphicElement *b) {
+    std::sort(elements.begin(), elements.end(), [](const auto &a, const auto &b) {
         return a->priority() > b->priority();
     });
 
