@@ -125,6 +125,10 @@ bool Simulation::initialize()
     QVector<GraphicElement *> elements;
     const auto items = m_scene->items(Qt::SortOrder(-1));
 
+    if (items.size() == 1) {
+        return false;
+    }
+
     for (auto *item : items) {
         if (item->type() == QNEConnection::Type) {
             m_connections.append(qgraphicsitem_cast<QNEConnection *>(item));
