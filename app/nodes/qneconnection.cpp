@@ -130,7 +130,6 @@ void QNEConnection::updatePath()
 
     path.cubicTo(ctr1, ctr2, m_endPos);
 
-    // path.lineTo(pos2);
     setPath(path);
 }
 
@@ -257,9 +256,9 @@ void QNEConnection::setStatus(const Status status)
     m_status = status;
 
     switch (status) {
-    case Status::Active:   setPen(QPen(m_activeColor,   3)); break;
-    case Status::Inactive: setPen(QPen(m_inactiveColor, 3)); break;
     case Status::Invalid:  setPen(QPen(m_invalidColor,  5)); break;
+    case Status::Inactive: setPen(QPen(m_inactiveColor, 3)); break;
+    case Status::Active:   setPen(QPen(m_activeColor,   3)); break;
     }
 }
 
@@ -282,15 +281,6 @@ void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
     painter->drawPath(path());
 }
 
-QDataStream &operator<<(QDataStream &stream, const QNEConnection *item)
-{
-    qCDebug(zero) << QObject::tr("Writing Connection.");
-    stream << QNEConnection::Type;
-    const auto *conn = qgraphicsitem_cast<const QNEConnection *>(item);
-    conn->save(stream);
-    return stream;
-}
-
 QVariant QNEConnection::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     if (change == ItemSelectedChange) {
@@ -311,8 +301,17 @@ bool QNEConnection::highLight()
     return m_highLight;
 }
 
-void QNEConnection::setHighLight(bool newHighLight)
+void QNEConnection::setHighLight(const bool newHighLight)
 {
     m_highLight = newHighLight;
     update();
+}
+
+QDataStream &operator<<(QDataStream &stream, const QNEConnection *item)
+{
+    qCDebug(zero) << QObject::tr("Writing Connection.");
+    stream << QNEConnection::Type;
+    const auto *conn = qgraphicsitem_cast<const QNEConnection *>(item);
+    conn->save(stream);
+    return stream;
 }
