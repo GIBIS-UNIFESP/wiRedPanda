@@ -142,6 +142,8 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 
     qCDebug(zero) << tr("Disabling Arduino export.");
     m_ui->actionExportToArduino->setEnabled(false);
+
+    QPixmapCache::setCacheLimit(100'000);
 }
 
 MainWindow::~MainWindow()

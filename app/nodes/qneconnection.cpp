@@ -48,6 +48,8 @@ QNEConnection::QNEConnection(QGraphicsItem *parent)
     setBrush(Qt::NoBrush);
     setZValue(-1);
     updateTheme();
+
+    setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 }
 
 QNEConnection::~QNEConnection()
@@ -275,6 +277,7 @@ void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 {
     Q_UNUSED(widget)
     Q_UNUSED(option)
+
     painter->setPen(m_highLight ? QPen(Qt::blue, 10) : pen());
     painter->drawPath(path());
     painter->setPen(isSelected() ? QPen(m_selectedColor, 5) : pen());

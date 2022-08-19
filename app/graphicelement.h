@@ -9,6 +9,7 @@
 
 #include <QGraphicsItem>
 #include <QKeySequence>
+#include <QPixmapCache>
 #include <memory>
 
 constexpr int maximumValidInputSize = 256;
@@ -139,6 +140,7 @@ protected:
     QColor m_selectionBrush;
     QColor m_selectionPen;
     QGraphicsTextItem *m_label = new QGraphicsTextItem(this);
+    QPixmapCache::Key m_cacheKey;
     QString m_pixmapPath;
     QString m_titleText;
     QString m_translatedName;

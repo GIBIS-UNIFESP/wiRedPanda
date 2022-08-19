@@ -53,6 +53,8 @@ QNEPort::QNEPort(QGraphicsItem *parent)
     setCurrentBrush(Qt::red);
 
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
+
+    setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 }
 
 LogicElement *QNEPort::logic() const

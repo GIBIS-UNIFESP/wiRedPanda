@@ -16,6 +16,10 @@ GraphicsView::GraphicsView(QWidget *parent)
 
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
     setResizeAnchor(QGraphicsView::AnchorUnderMouse);
+
+    setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+
+    setCacheMode(QGraphicsView::CacheBackground);
 }
 
 bool GraphicsView::canZoomIn() const
