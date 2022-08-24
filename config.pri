@@ -25,16 +25,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 DEFINES += QT_MESSAGELOGCONTEXT
 
+linux {
+    MOLD_BIN = $$system(which mold)
+
+    !isEmpty(MOLD_BIN) {
+        QMAKE_LFLAGS += -fuse-ld=mold
+    }
+}
+
 linux-g++ {
     contains(CONFIG, coverage) {
         QMAKE_CXXFLAGS += --coverage
         QMAKE_LFLAGS += --coverage
-    }
-
-    GOLD_BIN = $$system(which gold)
-
-    !isEmpty(GOLD_BIN) {
-        QMAKE_LFLAGS += -fuse-ld=gold
     }
 }
 
@@ -57,14 +59,6 @@ linux-clang {
     contains(CONFIG, ThreadSanitizer) {
         QMAKE_CXXFLAGS += -fsanitize=thread
         QMAKE_LFLAGS += -fsanitize=thread
-    }
-}
-
-linux-clang {
-    LLD_BIN = $$system(which lld)
-
-    !isEmpty(LLD_BIN) {
-        QMAKE_LFLAGS += -fuse-ld=lld
     }
 }
 
