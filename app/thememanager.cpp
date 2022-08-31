@@ -57,10 +57,9 @@ void ThemeAttributes::setTheme(const Theme theme)
 
         m_graphicElementLabelColor = QColor(Qt::black);
 
-        m_qneConnectionFalse = QColor(Qt::darkGreen);
-        m_qneConnectionInvalid = QColor(Qt::red);
-        m_qneConnectionSelected = m_selectionPen;
-        m_qneConnectionTrue = QColor(Qt::green);
+        m_connectionInactive = QColor(Qt::darkGreen);
+        m_connectionActive = QColor(Qt::green);
+        m_connectionSelected = m_selectionPen;
 
 #ifndef Q_OS_MAC
         QPalette lightPalette = m_defaultPalette;
@@ -81,10 +80,9 @@ void ThemeAttributes::setTheme(const Theme theme)
 
         m_graphicElementLabelColor = QColor(Qt::white);
 
-        m_qneConnectionFalse = QColor(65, 150, 130, 255);
-        m_qneConnectionInvalid = QColor(Qt::red);
-        m_qneConnectionSelected = m_selectionPen;
-        m_qneConnectionTrue = QColor(115, 255, 220, 255);
+        m_connectionInactive = QColor(65, 150, 130, 255);
+        m_connectionActive = QColor(115, 255, 220, 255);
+        m_connectionSelected = m_selectionPen;
 
 #ifndef Q_OS_MAC
         QPalette darkPalette;
@@ -118,15 +116,15 @@ void ThemeAttributes::setTheme(const Theme theme)
     qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
 #endif
 
-    m_qnePortFalseBrush = m_qneConnectionFalse;
-    m_qnePortInvalidBrush = m_qneConnectionInvalid;
-    m_qnePortOutputBrush = QColor(243, 83, 105);
-    m_qnePortTrueBrush = m_qneConnectionTrue;
+    m_portInvalidBrush = m_connectionInvalid;
+    m_portInactiveBrush = m_connectionInactive;
+    m_portActiveBrush = m_connectionActive;
+    m_portOutputBrush = QColor(243, 83, 105);
 
-    m_qnePortFalsePen = QColor(Qt::black);
-    m_qnePortInvalidPen = QColor(Qt::red);
-    m_qnePortOutputPen = QColor(Qt::darkRed);
-    m_qnePortTruePen = QColor(Qt::black);
+    m_portInvalidPen = QColor(Qt::red);
+    m_portInactivePen = QColor(Qt::black);
+    m_portActivePen = QColor(Qt::black);
+    m_portOutputPen = QColor(Qt::darkRed);
 
-    m_qnePortHoverPort = QColor(Qt::yellow);
+    m_portHoverPort = QColor(Qt::yellow);
 }

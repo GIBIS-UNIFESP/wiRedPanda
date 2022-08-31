@@ -24,22 +24,22 @@ public:
 
     QColor m_graphicElementLabelColor;
 
-    QColor m_qneConnectionFalse;
-    QColor m_qneConnectionInvalid;
-    QColor m_qneConnectionSelected;
-    QColor m_qneConnectionTrue;
+    QColor m_connectionInvalid = QColor(Qt::red);
+    QColor m_connectionInactive;
+    QColor m_connectionActive;
+    QColor m_connectionSelected;
 
-    QColor m_qnePortFalseBrush;
-    QColor m_qnePortInvalidBrush;
-    QColor m_qnePortOutputBrush;
-    QColor m_qnePortTrueBrush;
+    QColor m_portInvalidBrush;
+    QColor m_portInactiveBrush;
+    QColor m_portActiveBrush;
+    QColor m_portOutputBrush;
 
-    QColor m_qnePortFalsePen;
-    QColor m_qnePortInvalidPen;
-    QColor m_qnePortOutputPen;
-    QColor m_qnePortTruePen;
+    QColor m_portInvalidPen;
+    QColor m_portInactivePen;
+    QColor m_portActivePen;
+    QColor m_portOutputPen;
 
-    QColor m_qnePortHoverPort;
+    QColor m_portHoverPort;
 
 private:
     QPalette const m_defaultPalette = qApp->palette();
