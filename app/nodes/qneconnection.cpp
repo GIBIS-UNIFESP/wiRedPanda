@@ -310,6 +310,11 @@ void QNEConnection::setHighLight(const bool newHighLight)
     update();
 }
 
+QRectF QNEConnection::boundingRect() const
+{
+    return path().boundingRect().adjusted(-10, -10, 10, 10);
+}
+
 QDataStream &operator<<(QDataStream &stream, const QNEConnection *item)
 {
     qCDebug(zero) << QObject::tr("Writing Connection.");

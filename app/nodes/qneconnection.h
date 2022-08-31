@@ -52,6 +52,7 @@ public:
     QNEOutputPort *otherPort(const QNEInputPort *port) const;
     QNEOutputPort *start() const;
     QNEPort *otherPort(const QNEPort *port) const;
+    QRectF boundingRect() const override;
     Status status() const;
     bool highLight();
     double angle();
