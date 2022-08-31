@@ -65,7 +65,6 @@ LogicElement *QNEPort::logic() const
 void QNEPort::setName(const QString &name)
 {
     m_name = name;
-    // m_label->setPlainText(name);
     setToolTip(name);
 }
 
@@ -89,12 +88,6 @@ void QNEPort::connect(QNEConnection *conn)
         m_connections.append(conn);
     }
     updateConnections();
-    // if (graphicElement()) {
-    //     graphicElement()->updatePorts();
-    //     if (isOutput()) {
-    //         graphicElement()->updateLogic();
-    //     }
-    // }
 }
 
 void QNEPort::disconnect(QNEConnection *conn)
@@ -253,7 +246,7 @@ void QNEPort::hoverLeave()
 
 void QNEPort::hoverEnter()
 {
-    setBrush(QBrush(ThemeManager::attributes().m_qnePortHoverPort));
+    setBrush(QBrush(ThemeManager::attributes().m_portHoverPort));
 }
 
 QNEInputPort::QNEInputPort(QGraphicsItem *parent)
@@ -284,18 +277,18 @@ void QNEInputPort::setStatus(Status status)
 
     switch (m_status) {
     case Status::Invalid: {
-        setPen(theme.m_qnePortInvalidPen);
-        setCurrentBrush(theme.m_qnePortInvalidBrush);
+        setPen(theme.m_portInvalidPen);
+        setCurrentBrush(theme.m_portInvalidBrush);
         break;
     }
     case Status::Inactive: {
-        setPen(theme.m_qnePortFalsePen);
-        setCurrentBrush(theme.m_qnePortFalseBrush);
+        setPen(theme.m_portInactivePen);
+        setCurrentBrush(theme.m_portInactiveBrush);
         break;
     }
     case Status::Active: {
-        setPen(theme.m_qnePortTruePen);
-        setCurrentBrush(theme.m_qnePortTrueBrush);
+        setPen(theme.m_portActivePen);
+        setCurrentBrush(theme.m_portActiveBrush);
         break;
     }
     }
@@ -376,6 +369,6 @@ bool QNEOutputPort::isValid() const
 void QNEOutputPort::updateTheme()
 {
     const auto theme = ThemeManager::attributes();
-    setPen(theme.m_qnePortOutputPen);
-    setCurrentBrush(theme.m_qnePortOutputBrush);
+    setPen(theme.m_portOutputPen);
+    setCurrentBrush(theme.m_portOutputBrush);
 }

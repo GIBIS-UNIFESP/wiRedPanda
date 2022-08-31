@@ -267,10 +267,10 @@ void QNEConnection::setStatus(const Status status)
 void QNEConnection::updateTheme()
 {
     const ThemeAttributes theme = ThemeManager::attributes();
-    m_inactiveColor = theme.m_qneConnectionFalse;
-    m_activeColor = theme.m_qneConnectionTrue;
-    m_invalidColor = theme.m_qneConnectionInvalid;
-    m_selectedColor = theme.m_qneConnectionSelected;
+    m_invalidColor = theme.m_connectionInvalid;
+    m_inactiveColor = theme.m_connectionInactive;
+    m_activeColor = theme.m_connectionActive;
+    m_selectedColor = theme.m_connectionSelected;
 }
 
 void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -278,8 +278,13 @@ void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
     Q_UNUSED(widget)
     Q_UNUSED(option)
 
-    painter->setPen(m_highLight ? QPen(Qt::blue, 10) : pen());
-    painter->drawPath(path());
+    if (m_highLight) {
+        painter->save();
+        painter->setPen(QPen(Qt::blue, 10));
+        painter->drawPath(path());
+        painter->restore();
+    }
+
     painter->setPen(isSelected() ? QPen(m_selectedColor, 5) : pen());
     painter->drawPath(path());
 }
