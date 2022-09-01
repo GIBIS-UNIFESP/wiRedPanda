@@ -623,8 +623,8 @@ void ElementEditor::apply()
         return;
     }
 
-    QByteArray itemData;
-    QDataStream stream(&itemData, QIODevice::WriteOnly);
+    QByteArray oldData;
+    QDataStream stream(&oldData, QIODevice::WriteOnly);
 
     for (auto *elm : qAsConst(m_elements)) {
         elm->save(stream);
@@ -662,7 +662,7 @@ void ElementEditor::apply()
         m_isUpdatingSkin = false;
     }
 
-    emit sendCommand(new UpdateCommand(m_elements, itemData, m_scene));
+    emit sendCommand(new UpdateCommand(m_elements, oldData, m_scene));
 }
 
 void ElementEditor::inputIndexChanged(const int index)

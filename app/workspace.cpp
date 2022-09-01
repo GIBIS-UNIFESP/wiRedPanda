@@ -95,17 +95,16 @@ void WorkSpace::save(const QString &fileName)
     GlobalProperties::currentFile = fileName_;
     m_fileInfo = QFileInfo(fileName_);
     scene()->undoStack()->setClean();
-    qCDebug(zero) << tr("Remove from autosave list recovered file that has been saved.");
 
     if (!autosaveFileName.isEmpty()) {
+        qCDebug(zero) << tr("Remove from autosave list recovered file that has been saved.");
         autosaves.removeAll(autosaveFileName);
         Settings::setValue("autosaveFile", autosaves);
         qCDebug(zero) << tr("All auto save file names after removing recovered:") << autosaves;
     }
 
-    qCDebug(zero) << tr("Remove autosave from settings and deleting it.");
-
     if (m_autosaveFile.exists()) {
+        qCDebug(zero) << tr("Remove autosave from settings and deleting it.");
         autosaves.removeAll(m_autosaveFile.fileName());
         Settings::setValue("autosaveFile", autosaves);
         m_autosaveFile.remove();
@@ -134,6 +133,7 @@ void WorkSpace::load(const QString &fileName)
     m_fileInfo = QFileInfo(fileName);
 
     qCDebug(zero) << tr("File exists");
+
     if (!file.open(QIODevice::ReadOnly)) {
         qCDebug(zero) << tr("Could not open file:") << file.errorString();
         return;

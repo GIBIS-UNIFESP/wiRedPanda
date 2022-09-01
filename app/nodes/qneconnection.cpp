@@ -200,8 +200,10 @@ void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
         QNEPort *port1 = portMap.value(ptr1);
         QNEPort *port2 = portMap.value(ptr2);
         qCDebug(three) << tr("Before if 1.");
+
         if (port1 && port2) {
             qCDebug(three) << tr("Before if 2.");
+
             if (port1->isInput() && port2->isOutput()) {
                 qCDebug(three) << tr("Setting start 1.");
                 setStart(dynamic_cast<QNEOutputPort *>(port2));
@@ -213,14 +215,13 @@ void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
                 qCDebug(three) << tr("Setting end 2.");
                 setEnd(dynamic_cast<QNEInputPort *>(port2));
             }
+
             qCDebug(three) << tr("After ifs.");
         }
     }
 
     qCDebug(three) << tr("Updating pos from ports.");
     updatePosFromPorts();
-    qCDebug(three) << tr("Updating path.");
-    updatePath();
 }
 
 QNEPort *QNEConnection::otherPort(const QNEPort *port) const
