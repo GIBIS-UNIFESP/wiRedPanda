@@ -151,7 +151,6 @@ void QNEPort::updateConnections()
 {
     for (auto *conn : qAsConst(m_connections)) {
         conn->updatePosFromPorts();
-        conn->updatePath();
     }
 
     if (!isValid()) {

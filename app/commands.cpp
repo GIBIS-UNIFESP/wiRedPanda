@@ -480,9 +480,7 @@ void SplitCommand::redo()
     m_scene->addItem(conn2);
 
     conn1->updatePosFromPorts();
-    conn1->updatePath();
     conn2->updatePosFromPorts();
-    conn2->updatePath();
 
     m_scene->setCircuitUpdateRequired();
 }
@@ -503,7 +501,6 @@ void SplitCommand::undo()
     conn1->setEnd(conn2->end());
 
     conn1->updatePosFromPorts();
-    conn1->updatePath();
 
     m_scene->removeItem(conn2);
     m_scene->removeItem(node);

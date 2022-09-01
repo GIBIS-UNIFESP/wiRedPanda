@@ -162,26 +162,33 @@ void Display::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const
      * 4, 5, 7, 3, 2, 1, 0, 6
      * 2, 1, 4, 5, 0, 7, 3, 6
      */
+
     if (version < 1.6) {
         qCDebug(zero) << tr("Remapping inputs.");
         QVector<int> order{2, 1, 4, 5, 0, 7, 3, 6};
         QVector<QNEInputPort *> aux = inputs();
+
         for (int i = 0; i < aux.size(); ++i) {
             aux[order[i]] = m_inputPorts.value(i);
         }
+
         setInputs(aux);
         updatePortsProperties();
     }
+
     if (version < 1.7) {
         qCDebug(zero) << tr("Remapping inputs.");
         QVector<int> order{2, 5, 4, 0, 7, 3, 6, 1};
         QVector<QNEInputPort *> aux = inputs();
+
         for (int i = 0; i < aux.size(); ++i) {
             aux[order[i]] = m_inputPorts.value(i);
         }
+
         setInputs(aux);
         updatePortsProperties();
     }
+
     if (version >= 3.1) {
         QString color_;
         stream >> color_;
