@@ -45,11 +45,11 @@ QNEConnection::QNEConnection(QGraphicsItem *parent)
     : QGraphicsPathItem(parent)
 {
     setFlag(QGraphicsItem::ItemIsSelectable);
-    setBrush(Qt::NoBrush);
     setZValue(-1);
-    updateTheme();
-
     setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+
+    updateTheme();
+    setPen(QPen(m_invalidColor,  5));
 }
 
 QNEConnection::~QNEConnection()
