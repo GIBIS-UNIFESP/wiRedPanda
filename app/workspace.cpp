@@ -202,7 +202,12 @@ void WorkSpace::setAutosaveFileName()
 {
     qCDebug(zero) << tr("Defining autosave path.");
     qCDebug(zero) << tr("Default file does not exist:") << m_fileInfo.absoluteFilePath();
-    QDir autosavePath(QDir::temp()); // TODO: don't use tmp folder
+    QDir autosavePath(QDir::currentPath() + "/autosaves");
+
+    if (!autosavePath.exists()) {
+        autosavePath.mkpath(autosavePath.absolutePath());
+    }
+
     qCDebug(zero) << tr("Autosavepath:") << autosavePath.absolutePath();
     m_autosaveFile.setFileTemplate(autosavePath.absoluteFilePath(".XXXXXX.panda"));
     qCDebug(zero) << tr("Setting current file to random file in tmp.");
@@ -238,7 +243,12 @@ void WorkSpace::autosave()
 
     if (m_fileInfo.fileName().isEmpty()) {
         qCDebug(three) << tr("Default value not set yet.");
-        QDir path(QDir::temp()); // TODO: don't use tmp folder
+        QDir path(QDir::currentPath() + "/autosaves");
+
+        if (!path.exists()) {
+            path.mkpath(path.absolutePath());
+        }
+
         qCDebug(three) << tr("Autosavepath:") << path.absolutePath();
         m_autosaveFile.setFileTemplate(path.absoluteFilePath(".XXXXXX.panda"));
         qCDebug(three) << tr("Setting current file to random file in tmp.");
