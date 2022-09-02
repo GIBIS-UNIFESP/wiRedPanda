@@ -79,6 +79,9 @@ void WorkSpace::save(const QString &fileName)
         fileName_.append(".panda");
     }
 
+    GlobalProperties::currentFile = fileName_;
+    m_fileInfo = QFileInfo(fileName_);
+
     QSaveFile saveFile(fileName_);
 
     if (!saveFile.open(QIODevice::WriteOnly)) {
@@ -93,8 +96,6 @@ void WorkSpace::save(const QString &fileName)
         throw Pandaception(tr("Could not save file: ") + saveFile.errorString());
     }
 
-    GlobalProperties::currentFile = fileName_;
-    m_fileInfo = QFileInfo(fileName_);
     scene()->undoStack()->setClean();
 
     if (!autosaveFileName.isEmpty()) {

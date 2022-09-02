@@ -181,8 +181,22 @@ void GraphicElement::save(QDataStream &stream) const
     QList<QMap<QString, QVariant>> skinsMap;
 
     for (const auto &skinName : m_alternativeSkins) {
+        QString skinName2 = skinName;
+        QFileInfo fileInfo(skinName2);
+
+        if (!skinName2.startsWith(":/") && fileInfo.absoluteDir() != GlobalProperties::currentFile) {
+            QFileInfo globalInfo(GlobalProperties::currentFile);
+            const QString newFile = globalInfo.absolutePath() + "/" + fileInfo.fileName();
+
+            QFile::copy(skinName2, newFile);
+
+            skinName2 = newFile;
+        }
+
+        // -------------------------------------------
+
         QMap<QString, QVariant> tempMap;
-        tempMap.insert("skinName", skinName);
+        tempMap.insert("skinName", skinName2);
 
         skinsMap << tempMap;
     }
