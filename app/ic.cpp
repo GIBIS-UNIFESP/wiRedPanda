@@ -398,3 +398,7 @@ ElementMapping *IC::generateMap() const
 {
     return new ElementMapping(m_icElements);
 }
+
+void IC::refresh()
+{
+}
