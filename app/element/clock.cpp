@@ -86,8 +86,12 @@ void Clock::setOn(const bool value, const int port)
 void Clock::save(QDataStream &stream) const
 {
     GraphicElement::save(stream);
-    stream << frequency();
-    stream << m_locked;
+
+    QMap<QString, QVariant> map;
+    map.insert("frequency", frequency());
+    map.insert("locked", m_locked);
+
+    stream << map;
 }
 
 void Clock::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
@@ -98,14 +102,28 @@ void Clock::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const d
         return;
     }
 
-    float freq;
-    stream >> freq;
+    if (version < 4.1) {
+        float freq;
+        stream >> freq;
+        setFrequency(freq);
 
-    if (version >= 3.1) {
-        stream >> m_locked;
+        if (version >= 3.1) {
+            stream >> m_locked;
+        }
     }
 
-    setFrequency(freq);
+    if (version >= 4.1) {
+        QMap<QString, QVariant> map;
+        stream >> map;
+
+        if (map.contains("frequency")) {
+            setFrequency(map.value("frequency").toFloat());
+        }
+
+        if (map.contains("locked")) {
+            m_locked = map.value("locked").toBool();
+        }
+    }
 }
 
 float Clock::frequency() const

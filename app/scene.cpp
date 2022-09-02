@@ -427,6 +427,7 @@ void Scene::cloneDrag(const QPointF mousePos)
 
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
+    stream.setVersion(QDataStream::Qt_5_12);
     stream << mousePos;
     copy(selectedItems(), stream);
 
@@ -598,6 +599,7 @@ void Scene::copyAction()
     auto *mimeData = new QMimeData;
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
+    stream.setVersion(QDataStream::Qt_5_12);
     copy(selectedItems(), stream);
     mimeData->setData("wpanda/copydata", itemData);
     clipboard->setMimeData(mimeData);
@@ -616,6 +618,7 @@ void Scene::cutAction()
     auto *mimeData = new QMimeData();
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
+    stream.setVersion(QDataStream::Qt_5_12);
     cut(selectedItems(), stream);
     mimeData->setData("wpanda/copydata", itemData);
     clipboard->setMimeData(mimeData);
@@ -629,6 +632,7 @@ void Scene::pasteAction()
     if (mimeData->hasFormat("wpanda/copydata")) {
         QByteArray itemData = mimeData->data("wpanda/copydata");
         QDataStream stream(&itemData, QIODevice::ReadOnly);
+        stream.setVersion(QDataStream::Qt_5_12);
         paste(stream);
     }
 }
@@ -779,6 +783,7 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
     if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")) {
         QByteArray itemData = event->mimeData()->data("wpanda/x-dnditemdata");
         QDataStream stream(&itemData, QIODevice::ReadOnly);
+        stream.setVersion(QDataStream::Qt_5_12);
         QPoint offset;
         ElementType type;
         QString labelAuxData;
@@ -807,6 +812,7 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
     if (event->mimeData()->hasFormat("wpanda/ctrlDragData")) {
         QByteArray itemData = event->mimeData()->data("wpanda/ctrlDragData");
         QDataStream stream(&itemData, QIODevice::ReadOnly);
+        stream.setVersion(QDataStream::Qt_5_12);
         QPointF offset;
         QPointF ctr;
         stream >> offset >> ctr;
@@ -1048,6 +1054,7 @@ void Scene::addItem(QMimeData *mimeData)
 {
     QByteArray itemData = mimeData->data("wpanda/x-dnditemdata");
     QDataStream stream(&itemData, QIODevice::ReadOnly);
+    stream.setVersion(QDataStream::Qt_5_12);
     QPoint offset;
     ElementType type;
     QString labelAuxData;

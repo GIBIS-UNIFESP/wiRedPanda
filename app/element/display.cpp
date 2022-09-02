@@ -150,7 +150,11 @@ QString Display::color() const
 void Display::save(QDataStream &stream) const
 {
     GraphicElement::save(stream);
-    stream << color();
+
+    QMap<QString, QVariant> map;
+    map.insert("color", color());
+
+    stream << map;
 }
 
 void Display::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
@@ -189,9 +193,18 @@ void Display::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const
         updatePortsProperties();
     }
 
-    if (version >= 3.1) {
+    if (3.1 <= version && version < 4.1) {
         QString color_;
         stream >> color_;
         setColor(color_);
+    }
+
+    if (version >= 4.1) {
+        QMap<QString, QVariant> map;
+        stream >> map;
+
+        if (map.contains("color")) {
+            setColor(map.value("color").toString());
+        }
     }
 }

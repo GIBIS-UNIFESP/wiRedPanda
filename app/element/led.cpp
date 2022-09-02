@@ -161,17 +161,30 @@ QString Led::color() const
 void Led::save(QDataStream &stream) const
 {
     GraphicElement::save(stream);
-    stream << color();
+
+    QMap<QString, QVariant> map;
+    map.insert("color", color());
+
+    stream << map;
 }
 
 void Led::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
 {
     GraphicElement::load(stream, portMap, version);
 
-    if (version >= 1.1) {
+    if (1.1 <= version && version < 4.1) {
         QString color_;
         stream >> color_;
         setColor(color_);
+    }
+
+    if (version >= 4.1) {
+        QMap<QString, QVariant> map;
+        stream >> map;
+
+        if (map.contains("color")) {
+            setColor(map.value("color").toString());
+        }
     }
 }
 

@@ -165,6 +165,8 @@ private:
     void loadInputPort(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const int port);
     void loadInputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
     void loadLabel(QDataStream &stream, const double version);
+    void loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
+    void loadOldFormat(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version);
     void loadOutputPort(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const int port);
     void loadOutputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
     void loadPixmapSkinName(QDataStream &stream, const int skin);

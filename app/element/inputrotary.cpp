@@ -226,17 +226,37 @@ void InputRotary::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void InputRotary::save(QDataStream &stream) const
 {
     GraphicElement::save(stream);
-    stream << m_currentPort;
-    stream << m_locked;
+
+    QMap<QString, QVariant> map;
+    map.insert("currentPort", m_currentPort);
+    map.insert("locked", m_locked);
+
+    stream << map;
 }
 
 void InputRotary::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
 {
     GraphicElement::load(stream, portMap, version);
-    stream >> m_currentPort;
 
-    if (version >= 3.1) {
-        stream >> m_locked;
+    if (version < 4.1) {
+        stream >> m_currentPort;
+
+        if (version >= 3.1) {
+            stream >> m_locked;
+        }
+    }
+
+    if (version >= 4.1) {
+        QMap<QString, QVariant> map;
+        stream >> map;
+
+        if (map.contains("currentPort")) {
+            m_currentPort = map.value("currentPort").toInt();
+        }
+
+        if (map.contains("locked")) {
+            m_locked = map.value("locked").toBool();
+        }
     }
 
     setOn(true, m_currentPort);

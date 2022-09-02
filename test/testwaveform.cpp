@@ -20,6 +20,7 @@ void TestWaveForm::testDisplay4Bits()
     QFile pandaFile(fileName);
     QVERIFY(pandaFile.open(QIODevice::ReadOnly));
     QDataStream stream(&pandaFile);
+    stream.setVersion(QDataStream::Qt_5_12);
     workspace.load(stream);
 
     QTemporaryFile tempFile;

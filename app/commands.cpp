@@ -145,6 +145,7 @@ void saveItems(QByteArray &itemData, const QList<QGraphicsItem *> &items, const 
 {
     itemData.clear();
     QDataStream stream(&itemData, QIODevice::WriteOnly);
+    stream.setVersion(QDataStream::Qt_5_12);
     const auto others = findElements(otherIds);
 
     for (auto *elm : others) {
@@ -175,6 +176,7 @@ QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const QList
 
     const auto otherElms = findElements(otherIds);
     QDataStream stream(&itemData, QIODevice::ReadOnly);
+    stream.setVersion(QDataStream::Qt_5_12);
     double version = GlobalProperties::version;
     QMap<quint64, QNEPort *> portMap;
 
@@ -375,6 +377,7 @@ UpdateCommand::UpdateCommand(const QList<GraphicElement *> &elements, const QByt
 {
     m_ids.reserve(elements.size());
     QDataStream stream(&m_newData, QIODevice::WriteOnly);
+    stream.setVersion(QDataStream::Qt_5_12);
 
     for (auto *elm : elements) {
         elm->save(stream);
@@ -407,6 +410,7 @@ void UpdateCommand::loadData(QByteArray &itemData)
     }
 
     QDataStream stream(&itemData, QIODevice::ReadOnly);
+    stream.setVersion(QDataStream::Qt_5_12);
     QMap<quint64, QNEPort *> portMap;
 
     double version = GlobalProperties::version;
@@ -702,6 +706,7 @@ void ChangeInputSizeCommand::redo()
     serializationOrder.reserve(m_elements.size());
     m_oldData.clear();
     QDataStream stream(&m_oldData, QIODevice::WriteOnly);
+    stream.setVersion(QDataStream::Qt_5_12);
 
     for (auto *elm : m_elements) {
         elm->save(stream);
@@ -747,6 +752,7 @@ void ChangeInputSizeCommand::undo()
     const auto serializationOrder = findElements(m_order);
 
     QDataStream stream(&m_oldData, QIODevice::ReadOnly);
+    stream.setVersion(QDataStream::Qt_5_12);
     double version = GlobalProperties::version;
     QMap<quint64, QNEPort *> portMap;
 
@@ -789,6 +795,7 @@ void ChangeOutputSizeCommand::redo()
     QList<GraphicElement *> serializationOrder;
     m_oldData.clear();
     QDataStream stream(&m_oldData, QIODevice::WriteOnly);
+    stream.setVersion(QDataStream::Qt_5_12);
     serializationOrder.reserve(m_elements.size());
 
     for (auto *elm : m_elements) {
@@ -836,6 +843,7 @@ void ChangeOutputSizeCommand::undo()
     const auto serializationOrder = findElements(m_order);
 
     QDataStream stream(&m_oldData, QIODevice::ReadOnly);
+    stream.setVersion(QDataStream::Qt_5_12);
     double version = GlobalProperties::version;
     QMap<quint64, QNEPort *> portMap;
 

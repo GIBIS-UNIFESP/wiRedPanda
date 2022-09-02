@@ -625,6 +625,7 @@ void ElementEditor::apply()
 
     QByteArray oldData;
     QDataStream stream(&oldData, QIODevice::WriteOnly);
+    stream.setVersion(QDataStream::Qt_5_12);
 
     for (auto *elm : qAsConst(m_elements)) {
         elm->save(stream);

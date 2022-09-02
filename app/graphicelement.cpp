@@ -132,44 +132,64 @@ void GraphicElement::setOutputs(const QVector<QNEOutputPort *> &outputs)
 void GraphicElement::save(QDataStream &stream) const
 {
     qCDebug(four) << tr("Saving element. Type:") << objectName();
-    stream << pos();
-    stream << rotation();
-    /* <Version1.2> */
-    stream << label();
-    /* <\Version1.2> */
-    /* <Version1.3> */
-    stream << m_minInputSize;
-    stream << m_maxInputSize;
-    stream << m_minOutputSize;
-    stream << m_maxOutputSize;
-    /* <\Version1.3> */
-    /* <Version1.9> */
-    stream << m_trigger;
-    /* <\Version4.01> */
-    stream << m_priority;
-    /* <\Version1.9> */
-    stream << static_cast<quint64>(m_inputPorts.size());
+
+    QMap<QString, QVariant> map;
+    map.insert("pos", pos());
+    map.insert("rotation", rotation());
+    map.insert("label", label());
+    map.insert("minInputSize", m_minInputSize);
+    map.insert("maxInputSize", m_maxInputSize);
+    map.insert("minOutputSize", m_minOutputSize);
+    map.insert("maxOutputSize", m_maxOutputSize);
+    map.insert("trigger", m_trigger);
+    map.insert("priority", m_priority);
+
+    stream << map;
+
+    // -------------------------------------------
+
+    QList<QMap<QString, QVariant>> inputMap;
 
     for (auto *port : m_inputPorts) {
-        stream << reinterpret_cast<quint64>(port);
-        stream << port->portName();
-        stream << port->portFlags();
+        QMap<QString, QVariant> tempMap;
+        tempMap.insert("ptr", reinterpret_cast<quint64>(port));
+        tempMap.insert("name", port->portName());
+        tempMap.insert("flags", port->portFlags());
+
+        inputMap << tempMap;
     }
 
-    stream << static_cast<quint64>(m_outputPorts.size());
+    stream << inputMap;
+
+    // -------------------------------------------
+
+    QList<QMap<QString, QVariant>> outputMap;
 
     for (auto *port : m_outputPorts) {
-        stream << reinterpret_cast<quint64>(port);
-        stream << port->portName();
-        stream << port->portFlags();
+        QMap<QString, QVariant> tempMap;
+        tempMap.insert("ptr", reinterpret_cast<quint64>(port));
+        tempMap.insert("name", port->portName());
+        tempMap.insert("flags", port->portFlags());
+
+        outputMap << tempMap;
     }
 
-    /* <\Version2.7> */
-    stream << static_cast<quint64>(m_alternativeSkins.size());
+    stream << outputMap;
+
+    // -------------------------------------------
+
+    QList<QMap<QString, QVariant>> skinsMap;
 
     for (const auto &skinName : m_alternativeSkins) {
-        stream << skinName;
+        QMap<QString, QVariant> tempMap;
+        tempMap.insert("skinName", skinName);
+
+        skinsMap << tempMap;
     }
+
+    stream << skinsMap;
+
+    // -------------------------------------------
 
     qCDebug(four) << tr("Finished saving element.");
 }
@@ -177,6 +197,17 @@ void GraphicElement::save(QDataStream &stream) const
 void GraphicElement::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
 {
     qCDebug(four) << tr("Loading element. Type:") << objectName();
+
+    (version < 4.1) ? loadOldFormat(stream, portMap, version) : loadNewFormat(stream, portMap);
+
+    qCDebug(four) << tr("Updating port positions.");
+    updatePortsProperties();
+    setRotation(m_angle);
+    qCDebug(four) << tr("Finished loading element.");
+}
+
+void GraphicElement::loadOldFormat(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
+{
     loadPos(stream);
     loadRotation(stream);
     /* <Version1.2> */
@@ -194,10 +225,127 @@ void GraphicElement::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap
     loadOutputPorts(stream, portMap);
     /* <\Version2.7> */
     loadPixmapSkinNames(stream, version);
-    qCDebug(four) << tr("Updating port positions.");
-    updatePortsProperties();
-    setRotation(m_angle);
-    qCDebug(four) << tr("Finished loading element.");
+}
+
+void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *> &portMap)
+{
+    QMap<QString, QVariant> map;
+    stream >> map;
+
+    if (map.contains("pos")) {
+        setPos(map.value("pos").toPointF());
+    }
+
+    if (map.contains("rotation")) {
+        m_angle = map.value("rotation").toReal();
+    }
+
+    if (map.contains("label")) {
+        setLabel(map.value("label").toString());
+    }
+
+    quint64 minInputSize = map.value("minInputSize").toULongLong();
+    quint64 maxInputSize = map.value("maxInputSize").toULongLong();
+    quint64 minOutputSize = map.value("minOutputSize").toULongLong();
+    quint64 maxOutputSize = map.value("maxOutputSize").toULongLong();
+
+    if (!((m_minInputSize == m_maxInputSize) && (m_minInputSize > maxInputSize))) {
+        m_minInputSize = minInputSize;
+        m_maxInputSize = maxInputSize;
+    }
+
+    if (!((m_minOutputSize == m_maxOutputSize) && (m_minOutputSize > maxOutputSize))) {
+        m_minOutputSize = minOutputSize;
+        m_maxOutputSize = maxOutputSize;
+    }
+
+    if (map.contains("trigger")) {
+        setTrigger(map.value("trigger").toString());
+    }
+
+    if (map.contains("priority")) {
+        setPriority(map.value("priority").toULongLong());
+    }
+
+    // -------------------------------------------
+
+    QList<QMap<QString, QVariant>> inputMap;
+    stream >> inputMap;
+    int port = 0;
+
+    for (const auto &input : inputMap) {
+        quint64 ptr = input.value("ptr").toULongLong();
+        QString name = input.value("name").toString();
+        int flags = input.value("flags").toInt();
+
+        if (port < m_inputPorts.size()) {
+            m_inputPorts.value(port)->setPtr(ptr);
+
+            if (ElementType() == ElementType::IC) {
+                m_inputPorts.value(port)->setName(name);
+            }
+
+            m_inputPorts.value(port)->setPortFlags(flags);
+        } else {
+            addPort(name, false, flags, static_cast<int>(ptr));
+        }
+
+        portMap[ptr] = m_inputPorts.value(port);
+
+        port++;
+    }
+
+    removeSurplusInputs(inputMap.size(), portMap);
+
+    // -------------------------------------------
+
+    QList<QMap<QString, QVariant>> outputMap;
+    stream >> outputMap;
+    port = 0;
+
+    for (const auto &output : outputMap) {
+        quint64 ptr = output.value("ptr").toULongLong();
+        QString name = output.value("name").toString();
+        int flags = output.value("flags").toInt();
+
+        if (port < m_outputPorts.size()) {
+            m_outputPorts.value(port)->setPtr(ptr);
+
+            if(elementType() == ElementType::IC) {
+                m_outputPorts.value(port)->setName(name);
+            }
+
+            m_outputPorts.value(port)->setPortFlags(flags);
+        } else {
+            addPort(name, true, flags, static_cast<int>(ptr));
+        }
+
+        portMap[ptr] = m_outputPorts.value(port);
+
+        port++;
+    }
+
+    removeSurplusOutputs(outputMap.size(), portMap);
+
+    // -------------------------------------------
+
+    QList<QMap<QString, QVariant>> skinsMap;
+    stream >> skinsMap;
+    int skin = 0;
+
+    for (const auto &skinName : skinsMap) {
+        QString name = skinName.value("skinName").toString();
+
+        if (!name.startsWith(":/")) {
+            m_alternativeSkins[skin] = name;
+        }
+
+        skin++;
+    }
+
+    m_usingDefaultSkin = (m_defaultSkins == m_alternativeSkins);
+
+    refresh();
 }
 
 void GraphicElement::loadPos(QDataStream &stream)

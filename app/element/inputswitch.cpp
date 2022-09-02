@@ -78,17 +78,39 @@ void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void InputSwitch::save(QDataStream &stream) const
 {
     GraphicElement::save(stream);
-    stream << m_isOn;
-    stream << m_locked;
+
+    QMap<QString, QVariant> map;
+    map.insert("isOn", m_isOn);
+    map.insert("locked", m_locked);
+
+    stream << map;
 }
 
 void InputSwitch::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
 {
     GraphicElement::load(stream, portMap, version);
-    stream >> m_isOn;
-    if (version >= 3.1) {
-        stream >> m_locked;
+
+    if (version < 4.1) {
+        stream >> m_isOn;
+
+        if (version >= 3.1) {
+            stream >> m_locked;
+        }
     }
+
+    if (version >= 4.1) {
+        QMap<QString, QVariant> map;
+        stream >> map;
+
+        if (map.contains("isOn")) {
+            m_isOn = map.value("isOn").toBool();
+        }
+
+        if (map.contains("locked")) {
+            m_locked = map.value("locked").toBool();
+        }
+    }
+
     setOn(m_isOn);
     outputPort()->setStatus(static_cast<Status>(m_isOn));
 }
