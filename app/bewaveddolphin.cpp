@@ -316,7 +316,7 @@ void BewavedDolphin::run()
     SimulationBlocker simulationBlocker(m_simulation);
 
     for (int column = 0; column < m_model->columnCount(); ++column) {
-        qCDebug(four) << tr("itr:") << column << tr(", inputs:") << m_inputs.size();
+        qCDebug(four) << tr("Itr: ") << column << tr(", inputs:" ) << m_inputs.size();
         int row = 0;
 
         for (auto *input : qAsConst(m_inputs)) {
@@ -348,7 +348,7 @@ void BewavedDolphin::run()
 void BewavedDolphin::loadNewTable(const QStringList &inputLabels, const QStringList &outputLabels)
 {
     int iterations = 32;
-    qCDebug(zero) << tr("Num iter =") << iterations;
+    qCDebug(zero) << tr("Num iter = ") << iterations;
     m_model = new SignalModel(inputLabels.size() + outputLabels.size(), inputLabels.size(), iterations, this);
     m_signalTableView->setModel(m_model);
     QStringList horizontalHeaderLabels;
@@ -370,7 +370,7 @@ void BewavedDolphin::loadNewTable(const QStringList &inputLabels, const QStringL
     m_signalTableView->horizontalHeader()->setDefaultSectionSize(55);
     m_signalTableView->verticalHeader()->setDefaultSectionSize(30);
 
-    qCDebug(zero) << tr("Inputs:") << inputLabels.size() << tr(", outputs:") << outputLabels.size();
+    qCDebug(zero) << tr("Inputs: ") << inputLabels.size() << tr(", outputs: ") << outputLabels.size();
     m_edited = false;
     on_actionClear_triggered();
 
@@ -404,7 +404,8 @@ QVector<Status> BewavedDolphin::loadSignals(QStringList &inputLabels, QStringLis
         }
     }
 
-    qCDebug(zero) << tr("Getting the name of the outputs. If no label is given, element type is used as a name. What if there are 2 outputs without name or 2 identical labels?");
+    qCDebug(zero) << tr("Getting the name of the outputs. If no label is given, element type is used as a name.");
+    // NOTE: What if there are 2 outputs without name or 2 identical labels?
     for (auto *output : qAsConst(m_outputs)) {
         QString label = output->label();
 
@@ -427,7 +428,7 @@ QVector<Status> BewavedDolphin::loadSignals(QStringList &inputLabels, QStringLis
 
 void BewavedDolphin::prepare(const QString &fileName)
 {
-    qCDebug(zero) << tr("Updating window name with current:") << fileName;
+    qCDebug(zero) << tr("Updating window name with current: ") << fileName;
     m_simulation = m_externalScene->simulation();
     qCDebug(zero) << tr("Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.");
     loadElements();
@@ -936,7 +937,7 @@ void BewavedDolphin::on_actionLoad_triggered()
     fileDialog.setNameFilter(tr("All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)"));
     fileDialog.setDirectory(homeDir);
     connect(&fileDialog, &QFileDialog::directoryEntered, this, [&fileDialog, homeDir](const QString &newDir) {
-        qCDebug(zero) << tr("Changing dir to") << newDir << tr(", home:") << homeDir;
+        qCDebug(zero) << tr("Changing dir to ") << newDir << tr(", home: ") << homeDir;
         if (newDir != homeDir) {
             fileDialog.setDirectory(homeDir);
         }
@@ -1023,7 +1024,7 @@ void BewavedDolphin::load(const QString &fileName)
 
     qCDebug(zero) << tr("File exists.");
     if (!file.open(QIODevice::ReadOnly)) {
-        qCDebug(zero) << tr("Could not open file in ReadOnly mode:") << file.errorString();
+        qCDebug(zero) << tr("Could not open file in ReadOnly mode: ") << file.errorString();
         throw Pandaception(tr("Could not open file in ReadOnly mode: ") + file.errorString() + ".");
     }
 
@@ -1043,7 +1044,7 @@ void BewavedDolphin::load(const QString &fileName)
         qCDebug(zero) << tr("Finished updating changed by signal.");
         m_currentFile = QFileInfo(fileName);
     } else {
-        qCDebug(zero) << tr("Format not supported. Could not open file:") << fileName;
+        qCDebug(zero) << tr("Format not supported. Could not open file: ") << fileName;
         throw Pandaception(tr("Format not supported. Could not open file: ") + fileName);
     }
 

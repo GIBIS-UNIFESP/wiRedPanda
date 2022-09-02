@@ -40,7 +40,7 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &stream, 
     while (!stream.atEnd()) {
         int type;
         stream >> type;
-        qCDebug(three) << tr("Type:") << type;
+        qCDebug(three) << tr("Type: ") << type;
 
         switch (type) {
         case GraphicElement::Type: {
@@ -80,10 +80,10 @@ double SerializationFunctions::loadVersion(QDataStream &stream)
     if (!str.startsWith(QApplication::applicationName(), Qt::CaseInsensitive)) {
         throw Pandaception(tr("Invalid file format."));
     }
-    qCDebug(zero) << tr("String:") << str;
+    qCDebug(zero) << tr("String: ") << str;
     bool ok;
     double version = str.remove(QApplication::applicationName(), Qt::CaseInsensitive).toDouble(&ok);
-    qCDebug(zero) << tr("Version:") << version;
+    qCDebug(zero) << tr("Version: ") << version;
     if (!ok) {
         throw Pandaception(tr("Invalid version number."));
     }
@@ -126,7 +126,7 @@ QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &stream)
     }
     loadDolphinFileName(stream, version);
     loadRect(stream, version);
-    qCDebug(zero) << tr("Header Ok. Version:") << version;
+    qCDebug(zero) << tr("Header Ok. Version: ") << version;
     auto items = deserialize(stream, version);
     qCDebug(zero) << tr("Finished reading items.");
     return items;

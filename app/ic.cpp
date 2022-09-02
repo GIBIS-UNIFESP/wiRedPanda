@@ -79,7 +79,7 @@ void IC::loadInputs()
     setMaxInputSize(m_icInputs.size());
     setMinInputSize(m_icInputs.size());
     setInputSize(m_icInputs.size());
-    qCDebug(three) << tr("IC") << m_file << tr("-> Inputs. min:") << minInputSize() << tr(", max:") << maxInputSize() << tr(", current:") << inputSize() << tr(", m_inputs:") << m_inputPorts.size();
+    qCDebug(three) << tr("IC ") << m_file << tr(" -> Inputs. min: ") << minInputSize() << tr(", max: ") << maxInputSize() << tr(", current: ") << inputSize() << tr(", m_inputs: ") << m_inputPorts.size();
 
     for (int inputIndex = 0; inputIndex < m_icInputs.size(); ++inputIndex) {
         auto *inpPort = inputPort(inputIndex);
@@ -101,7 +101,7 @@ void IC::loadOutputs()
         outPort->setName(m_icOutputLabels.at(outputIndex));
     }
 
-    qCDebug(three) << tr("IC") << m_file << tr("-> Outputs. min:") << minOutputSize() << tr(", max:") << maxOutputSize() << tr(", current:") << outputSize() << tr(", m_outputs:") << m_outputPorts.size();
+    qCDebug(three) << tr("IC ") << m_file << tr(" -> Outputs. min: ") << minOutputSize() << tr(", max: ") << maxOutputSize() << tr(", current: ") << outputSize() << tr(", m_outputs: ") << m_outputPorts.size();
 }
 
 void IC::loadFile(const QString &fileName)

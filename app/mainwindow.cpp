@@ -43,10 +43,10 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     : QMainWindow(parent)
     , m_ui(new Ui::MainWindow)
 {
-    qCDebug(zero) << tr("WiRedPanda Version =") << APP_VERSION << tr("OR") << GlobalProperties::version;
+    qCDebug(zero) << tr("WiRedPanda Version = ") << APP_VERSION << tr(" OR ") << GlobalProperties::version;
     m_ui->setupUi(this);
 
-    qCDebug(zero) << tr("Settings fileName:") << Settings::fileName();
+    qCDebug(zero) << tr("Settings fileName: ") << Settings::fileName();
     loadTranslation(Settings::value("language").toString());
 
     connect(m_ui->tab, &QTabWidget::currentChanged,    this, &MainWindow::tabChanged);
@@ -155,7 +155,7 @@ void MainWindow::loadAutosaveFiles()
 {
     QStringList autosaves(Settings::value("autosaveFile").toStringList());
 
-    qCDebug(zero) << tr("all autosave files:") << autosaves;
+    qCDebug(zero) << tr("All autosave files: ") << autosaves;
 
     for (auto it = autosaves.begin(); it != autosaves.end();) {
         QFile file(*it);
@@ -190,11 +190,11 @@ void MainWindow::createNewTab()
     connect(workspace, &WorkSpace::fileChanged, this, &MainWindow::setCurrentFile);
     workspace->view()->setFastMode(m_ui->actionFastMode->isChecked());
     workspace->scene()->updateTheme();
-    qCDebug(zero) << tr("Adding tab. #tabs:") << m_ui->tab->count() << tr(", current tab:") << m_tabIndex;
+    qCDebug(zero) << tr("Adding tab. #tabs: ") << m_ui->tab->count() << tr(", current tab: ") << m_tabIndex;
     m_ui->tab->addTab(workspace, tr("New Project"));
     qCDebug(zero) << tr("Selecting the newly created tab.");
     m_ui->tab->setCurrentIndex(m_ui->tab->count() - 1);
-    qCDebug(zero) << tr("Finished #tabs:") << m_ui->tab->count() << tr(", current tab:") << m_tabIndex;
+    qCDebug(zero) << tr("Finished #tabs: ") << m_ui->tab->count() << tr(", current tab: ") << m_tabIndex;
 }
 
 void MainWindow::removeUndoRedoMenu()
@@ -555,7 +555,7 @@ void MainWindow::updateICList()
             }
         }
 
-        qCDebug(zero) << tr("Files:") << files.join(", ");
+        qCDebug(zero) << tr("Files: ") << files.join(", ");
         for (const QString &file : qAsConst(files)) {
             QPixmap pixmap(":/basic/ic-panda.svg");
             auto *item = new ElementLabel(pixmap, ElementType::IC, file, this);
@@ -573,7 +573,7 @@ void MainWindow::updateICList()
 
 bool MainWindow::closeTab(const int tabIndex)
 {
-    qCDebug(zero) << tr("Closing tab") << tabIndex + 1 << tr(", #tabs:") << m_ui->tab->count();
+    qCDebug(zero) << tr("Closing tab ") << tabIndex + 1 << tr(", #tabs: ") << m_ui->tab->count();
     m_ui->tab->setCurrentIndex(tabIndex);
 
     qCDebug(zero) << tr("Checking if needs to save file.");
@@ -600,7 +600,7 @@ bool MainWindow::closeTab(const int tabIndex)
     qCDebug(zero) << tr("Deleting tab.");
     m_currentTab->deleteLater();
     m_ui->tab->removeTab(tabIndex);
-    qCDebug(zero) << tr("Closed tab") << tabIndex << tr(", #tabs:") << m_ui->tab->count() << tr(", current tab:") << m_tabIndex;
+    qCDebug(zero) << tr("Closed tab ") << tabIndex << tr(", #tabs: ") << m_ui->tab->count() << tr(", current tab: ") << m_tabIndex;
 
     return true;
 }
@@ -668,9 +668,9 @@ void MainWindow::tabChanged(const int newTabIndex)
     }
 
     m_currentTab = qobject_cast<WorkSpace *>(m_ui->tab->currentWidget());
-    qCDebug(zero) << tr("Selecting tab:") << newTabIndex;
+    qCDebug(zero) << tr("Selecting tab: ") << newTabIndex;
     connectTab();
-    qCDebug(zero) << tr("New tab selected. Dolphin fileName:") << m_currentTab->dolphinFileName();
+    qCDebug(zero) << tr("New tab selected. Dolphin fileName: ") << m_currentTab->dolphinFileName();
 }
 
 void MainWindow::on_lineEditSearch_textChanged(const QString &text)
@@ -1125,7 +1125,7 @@ void MainWindow::on_actionWaveform_triggered()
 {
     auto *bewavedDolphin = new BewavedDolphin(m_currentTab->scene(), true, this);
     bewavedDolphin->createWaveform(m_currentTab->dolphinFileName());
-    qCDebug(zero) << tr("BD fileName:") << m_currentTab->dolphinFileName();
+    qCDebug(zero) << tr("BD fileName: ") << m_currentTab->dolphinFileName();
     bewavedDolphin->show();
 }
 

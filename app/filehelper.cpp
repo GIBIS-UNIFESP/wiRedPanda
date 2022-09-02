@@ -17,7 +17,7 @@ void FileHelper::verifyRecursion(const QString &fileName)
     //         throw Pandaception(msg);
     //     }
     //     for (auto *ic = parentIc; ic != nullptr; ic = ic->getParentIc()) {
-    //         // qCDebug(zero) << tr("File:") << ic->getFile();
+    //         // qCDebug(zero) << tr("File: ") << ic->getFile();
     //         if (ic->getFile() == fileName) {
     //             throw Pandaception(msg);
     //         }

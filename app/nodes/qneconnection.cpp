@@ -196,7 +196,7 @@ void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
             return;
         }
 
-        qCDebug(three) << tr("Port map with elements: ptr1:") << ptr1 << tr(", ptr2:") << ptr2;
+        qCDebug(three) << tr("Port map with elements: ptr1(") << ptr1 << tr("), ptr2(") << ptr2 << ")";
         QNEPort *port1 = portMap.value(ptr1);
         QNEPort *port2 = portMap.value(ptr2);
         qCDebug(three) << tr("Before if 1.");

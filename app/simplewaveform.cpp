@@ -235,8 +235,8 @@ void SimpleWaveform::showWaveform()
     QVector<QLineSeries *> inSeries;
     qCDebug(zero) << tr("Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation. "
                         "Not saving memory states though...");
-    qCDebug(zero) << tr("Also getting the name of the inputs. If no label is given, the element type is used as a name. "
-                        "Bug here? What if there are 2 inputs without name or two identical labels?");
+    qCDebug(zero) << tr("Also getting the name of the inputs. If no label is given, the element type is used as a name.");
+    // NOTE: Bug here? What if there are 2 inputs without name or two identical labels?
     QVector<Status> oldValues(inputs.size());
     inSeries.reserve(inputs.size());
     for (int in = 0; in < inputs.size(); ++in) {
@@ -249,8 +249,8 @@ void SimpleWaveform::showWaveform()
         oldValues[in] = inputs.at(in)->outputPort()->status();
     }
     QVector<QLineSeries *> outSeries;
-    qCDebug(zero) << tr("Getting the name of the outputs. If no label is given, the element type is used as a name. "
-                        "Bug here? What if there are 2 outputs without name or two identical labels?");
+    qCDebug(zero) << tr("Getting the name of the outputs. If no label is given, the element type is used as a name.");
+    // NOTE: Bug here? What if there are 2 outputs without name or two identical labels?
     for (auto *output : qAsConst(outputs)) {
         QString label = output->label();
         if (label.isEmpty()) {
@@ -265,8 +265,8 @@ void SimpleWaveform::showWaveform()
             }
         }
     }
-    qCDebug(zero) << inSeries.size() << tr("inputs.");
-    qCDebug(zero) << outSeries.size() << tr("outputs.");
+    qCDebug(zero) << inSeries.size() << tr(" inputs.");
+    qCDebug(zero) << outSeries.size() << tr(" outputs.");
     qCDebug(zero) << tr("Computing number of iterations based on the number of inputs.");
     int numIter = static_cast<int>(pow(2, inSeries.size()));
     qCDebug(zero) << tr("Num iter = ") << numIter;
@@ -275,7 +275,7 @@ void SimpleWaveform::showWaveform()
     for (int itr = 0; itr < numIter; ++itr) {
         qCDebug(three) << tr("For each iteration, set a distinct value for the inputs. The value is the bit values corresponding to the number of the current iteration.");
         std::bitset<std::numeric_limits<unsigned int>::digits> bitset(itr);
-        qCDebug(three) << tr("itr:") << itr;
+        qCDebug(three) << tr("Itr: ") << itr;
         for (int in = 0; in < inputs.size(); ++in) {
             float val = static_cast<float>(bitset[in]);
             qobject_cast<GraphicElementInput *>(inputs.at(in))->setOn(!qFuzzyIsNull(val));

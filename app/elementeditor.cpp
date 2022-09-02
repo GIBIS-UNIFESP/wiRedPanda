@@ -296,7 +296,7 @@ void ElementEditor::updateElementSkin()
         return;
     }
 
-    qCDebug(zero) << tr("File name:") << fileName;
+    qCDebug(zero) << tr("File name: ") << fileName;
     m_isUpdatingSkin = true;
     m_skinName = fileName;
     m_isDefaultSkin = false;
@@ -676,7 +676,7 @@ void ElementEditor::inputIndexChanged(const int index)
         emit sendCommand(new ChangeInputSizeCommand(m_elements, m_ui->comboBoxInputSize->currentData().toInt(), m_scene));
     }
 
-    qCDebug(zero) << tr("Input size changed to") << index;
+    qCDebug(zero) << tr("Input size changed to ") << index;
     update();
 }
 
@@ -690,7 +690,7 @@ void ElementEditor::outputIndexChanged(const int index)
         emit sendCommand(new ChangeOutputSizeCommand(m_elements, m_ui->comboBoxOutputSize->currentData().toInt(), m_scene));
     }
 
-    qCDebug(zero) << tr("Output size changed to") << index;
+    qCDebug(zero) << tr("Output size changed to ") << index;
     update();
 }
 
@@ -766,7 +766,7 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
             });
 
             int elmPos = elms.indexOf(elm);
-            qCDebug(zero) << tr("Pos =") << elmPos << tr("from") << elms.size();
+            qCDebug(zero) << tr("Pos = ") << elmPos << tr(" from ") << elms.size();
             int step = 1;
 
             if (moveBack) {
@@ -776,7 +776,7 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
             int pos = (elms.size() + elmPos + step) % elms.size();
 
             for (; pos != elmPos; pos = ((elms.size() + pos + step) % elms.size())) {
-                qCDebug(zero) << tr("Pos =") << pos;
+                qCDebug(zero) << tr("Pos = ") << pos;
                 elm = elms.at(pos);
 
                 setCurrentElements({elm});
