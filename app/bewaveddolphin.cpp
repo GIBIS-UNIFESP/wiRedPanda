@@ -931,17 +931,12 @@ void BewavedDolphin::on_actionLoad_triggered()
     }
 
     const QString homeDir(m_mainWindow->currentDir().absolutePath());
+
     QFileDialog fileDialog;
     fileDialog.setObjectName(tr("Open File"));
     fileDialog.setFileMode(QFileDialog::ExistingFile);
     fileDialog.setNameFilter(tr("All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)"));
     fileDialog.setDirectory(homeDir);
-    connect(&fileDialog, &QFileDialog::directoryEntered, this, [&fileDialog, homeDir](const QString &newDir) {
-        qCDebug(zero) << tr("Changing dir to ") << newDir << tr(", home: ") << homeDir;
-        if (newDir != homeDir) {
-            fileDialog.setDirectory(homeDir);
-        }
-    });
 
     if (fileDialog.exec() == QDialog::Rejected) {
         return;
@@ -949,6 +944,7 @@ void BewavedDolphin::on_actionLoad_triggered()
 
     const auto files = fileDialog.selectedFiles();
     QString fileName = files.constFirst();
+
     if (fileName.isEmpty()) {
         return;
     }
