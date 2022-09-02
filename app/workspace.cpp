@@ -264,14 +264,18 @@ void WorkSpace::autosave()
         throw Pandaception(tr("Error opening autosave file: ") + m_autosaveFile.errorString());
     }
 
+    QString autosaveFileName = m_autosaveFile.fileName();
+    GlobalProperties::currentFile = autosaveFileName;
+
     qCDebug(three) << tr("Writing to autosave file.");
     QDataStream stream(&m_autosaveFile);
     stream.setVersion(QDataStream::Qt_5_12);
-    QString autosaveFileName = m_autosaveFile.fileName();
     save(stream);
     m_autosaveFile.close();
+
     autosaves.append(autosaveFileName);
     Settings::setValue("autosaveFile", autosaves);
+
     qCDebug(three) << tr("All auto save file names after adding autosave:") << autosaves;
 
     emit fileChanged(m_fileInfo);
