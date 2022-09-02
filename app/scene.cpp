@@ -896,24 +896,23 @@ bool Scene::eventFilter(QObject *watched, QEvent *event)
 void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     m_mousePos = event->scenePos();
-    resizeScene();
     handleHoverPort();
 
     auto *item = itemAt(m_mousePos);
 
     if (item) {
         if (event->button() == Qt::LeftButton) {
-            m_draggingElement = true;
-            auto selectedItems_ = selectedItems();
-            selectedItems_.append(itemsAt(m_mousePos));
+            if (item->type() == GraphicElement::Type) {
+                item->setSelected(true);
+                m_draggingElement = true;
+            }
+
             m_movedElements.clear();
             m_oldPositions.clear();
 
-            for (auto *item : qAsConst(selectedItems_)) {
-                if (auto *element = qgraphicsitem_cast<GraphicElement *>(item)) {
-                    m_movedElements.append(element);
-                    m_oldPositions.append(element->pos());
-                }
+            for (auto *element : selectedElements()) {
+                m_movedElements.append(element);
+                m_oldPositions.append(element->pos());
             }
         }
 
