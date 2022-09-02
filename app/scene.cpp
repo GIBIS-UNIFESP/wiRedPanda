@@ -789,7 +789,7 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         QString labelAuxData;
         stream >> offset >> type >> labelAuxData;
         QPointF pos = event->scenePos() - offset;
-        qCDebug(zero) << type << tr("at position:") << pos.x() << tr(",") << pos.y() << tr(", label:") << labelAuxData;
+        qCDebug(zero) << type << tr(" at position: ") << pos.x() << tr(", ") << pos.y() << tr(", label: ") << labelAuxData;
         auto *element = ElementFactory::buildElement(type);
         qCDebug(zero) << tr("Valid element.");
 

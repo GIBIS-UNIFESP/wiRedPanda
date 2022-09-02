@@ -96,7 +96,7 @@ void GraphicElement::setPixmap(const QString &pixmapPath)
     if (!QPixmapCache::find(pixmapPath, m_pixmap.get())) {
         if (!m_pixmap->load(pixmapPath)) {
             m_pixmap->load(m_defaultSkins.constFirst());
-            qCDebug(zero) << tr("Problem loading pixmapPath:") << pixmapPath;
+            qCDebug(zero) << tr("Problem loading pixmapPath: ") << pixmapPath;
             throw Pandaception(tr("Couldn't load pixmap."));
         }
 
@@ -131,7 +131,7 @@ void GraphicElement::setOutputs(const QVector<QNEOutputPort *> &outputs)
 
 void GraphicElement::save(QDataStream &stream) const
 {
-    qCDebug(four) << tr("Saving element. Type:") << objectName();
+    qCDebug(four) << tr("Saving element. Type: ") << objectName();
 
     QMap<QString, QVariant> map;
     map.insert("pos", pos());
@@ -210,7 +210,7 @@ void GraphicElement::save(QDataStream &stream) const
 
 void GraphicElement::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
 {
-    qCDebug(four) << tr("Loading element. Type:") << objectName();
+    qCDebug(four) << tr("Loading element. Type: ") << objectName();
 
     (version < 4.1) ? loadOldFormat(stream, portMap, version) : loadNewFormat(stream, portMap);
 
@@ -716,7 +716,7 @@ void GraphicElement::updatePortsProperties()
         int y = 32 - (m_inputPorts.size() * step) + step;
 
         for (auto *port : qAsConst(m_inputPorts)) {
-            qCDebug(five) << tr("Setting input at") << 0 << tr(",") << y;
+            qCDebug(five) << tr("Setting input at ") << 0 << tr(", ") << y;
             if (!isRotatable()) {
                 port->setRotation(0);
             }
@@ -736,7 +736,7 @@ void GraphicElement::updatePortsProperties()
         int y = 32 - (m_outputPorts.size() * step) + step;
 
         for (auto *port : qAsConst(m_outputPorts)) {
-            qCDebug(five) << tr("Setting output at") << 64 << tr(",") << y;
+            qCDebug(five) << tr("Setting output at ") << 64 << tr(", ") << y;
             if (!isRotatable()) {
                 port->setRotation(0);
             }
@@ -1100,7 +1100,7 @@ void GraphicElement::highlight(const bool isSelected)
 
 QDataStream &operator<<(QDataStream &stream, const GraphicElement *item)
 {
-    qCDebug(four) << "Writing element.";
+    qCDebug(four) << QObject::tr("Writing element.");
     const auto *elm = qgraphicsitem_cast<const GraphicElement *>(item);
     stream << GraphicElement::Type;
     stream << elm->elementType();

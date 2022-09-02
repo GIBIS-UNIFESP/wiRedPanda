@@ -120,14 +120,14 @@ bool Simulation::initialize()
     m_inputs.clear();
     m_connections.clear();
 
-    qCDebug(two) << tr("GENERATING SIMULATION LAYER.");
-
     QVector<GraphicElement *> elements;
     const auto items = m_scene->items(Qt::SortOrder(-1));
 
     if (items.size() == 1) {
         return false;
     }
+
+    qCDebug(two) << tr("GENERATING SIMULATION LAYER.");
 
     for (auto *item : items) {
         if (item->type() == QNEConnection::Type) {
@@ -157,7 +157,7 @@ bool Simulation::initialize()
         return a->priority() > b->priority();
     });
 
-    qCDebug(zero) << tr("Elements read:") << elements.size();
+    qCDebug(zero) << tr("Elements read: ") << elements.size();
     if (elements.empty()) {
         return false;
     }

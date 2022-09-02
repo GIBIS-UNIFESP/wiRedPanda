@@ -54,10 +54,10 @@ void WorkSpace::save(const QString &fileName)
 {
     QString fileName_ = fileName.isEmpty() ? m_fileInfo.absoluteFilePath() : fileName;
 
-    qCDebug(zero) << tr("fileName:") << fileName_;
+    qCDebug(zero) << tr("FileName: ") << fileName_;
     qCDebug(zero) << tr("Getting autosave settings info.");
     QStringList autosaves = Settings::value("autosaveFile").toStringList();
-    qCDebug(zero) << tr("All auto save file names before save:") << autosaves;
+    qCDebug(zero) << tr("All auto save file names before save: ") << autosaves;
     qCDebug(zero) << tr("Checking if it is an autosave file or a new project, and ask for a fileName.");
     QString autosaveFileName;
 
@@ -102,7 +102,7 @@ void WorkSpace::save(const QString &fileName)
         qCDebug(zero) << tr("Remove from autosave list recovered file that has been saved.");
         autosaves.removeAll(autosaveFileName);
         Settings::setValue("autosaveFile", autosaves);
-        qCDebug(zero) << tr("All auto save file names after removing recovered:") << autosaves;
+        qCDebug(zero) << tr("All auto save file names after removing recovered: ") << autosaves;
     }
 
     if (m_autosaveFile.exists()) {
@@ -110,7 +110,7 @@ void WorkSpace::save(const QString &fileName)
         autosaves.removeAll(m_autosaveFile.fileName());
         Settings::setValue("autosaveFile", autosaves);
         m_autosaveFile.remove();
-        qCDebug(zero) << tr("All auto save file names after removing autosave:") << autosaves;
+        qCDebug(zero) << tr("All auto save file names after removing autosave: ") << autosaves;
     }
 
     emit fileChanged(m_fileInfo);
@@ -127,7 +127,7 @@ void WorkSpace::load(const QString &fileName)
     QFile file(fileName);
 
     if (!file.exists()) {
-        qCDebug(zero) << tr("Error: This file does not exist:") << fileName;
+        qCDebug(zero) << tr("This file does not exist: ") << fileName;
         return;
     }
 
@@ -137,7 +137,7 @@ void WorkSpace::load(const QString &fileName)
     qCDebug(zero) << tr("File exists");
 
     if (!file.open(QIODevice::ReadOnly)) {
-        qCDebug(zero) << tr("Could not open file:") << file.errorString();
+        qCDebug(zero) << tr("Could not open file: ") << file.errorString();
         return;
     }
 
@@ -163,13 +163,13 @@ void WorkSpace::load(QDataStream &stream)
         }
     }
 
-    qCDebug(zero) << tr("Version:") << version;
+    qCDebug(zero) << tr("Version: ") << version;
     m_dolphinFileName = SerializationFunctions::loadDolphinFileName(stream, version);
 
-    qCDebug(zero) << tr("Dolphin name:") << m_dolphinFileName;
+    qCDebug(zero) << tr("Dolphin name: ") << m_dolphinFileName;
     QRectF rect(SerializationFunctions::loadRect(stream, version));
 
-    qCDebug(zero) << tr("Header Ok. Version:") << version;
+    qCDebug(zero) << tr("Header Ok. Version: ") << version;
     const auto items = SerializationFunctions::deserialize(stream, version);
 
     qCDebug(zero) << tr("Finished loading items.");
@@ -202,16 +202,16 @@ QString WorkSpace::dolphinFileName()
 void WorkSpace::setAutosaveFileName()
 {
     qCDebug(zero) << tr("Defining autosave path.");
-    qCDebug(zero) << tr("Default file does not exist:") << m_fileInfo.absoluteFilePath();
+    qCDebug(zero) << tr("Default file does not exist: ") << m_fileInfo.absoluteFilePath();
     QDir autosavePath(QDir::currentPath() + "/autosaves");
 
     if (!autosavePath.exists()) {
         autosavePath.mkpath(autosavePath.absolutePath());
     }
 
-    qCDebug(zero) << tr("Autosavepath:") << autosavePath.absolutePath();
+    qCDebug(zero) << tr("Autosavepath: ") << autosavePath.absolutePath();
     m_autosaveFile.setFileTemplate(autosavePath.absoluteFilePath(".XXXXXX.panda"));
-    qCDebug(zero) << tr("Setting current file to random file in tmp.");
+    qCDebug(zero) << tr("Setting current file to random file.");
 }
 
 void WorkSpace::autosave()
@@ -219,7 +219,7 @@ void WorkSpace::autosave()
     qCDebug(two) << tr("Starting autosave.");
     QStringList autosaves = Settings::value("autosaveFile").toStringList();
     qCDebug(zero) << tr("Cheking if autosavefile exists and if it contains current project file. If so, remove autosavefile from it.");
-    qCDebug(three) << tr("All auto save file names before autosaving:") << autosaves;
+    qCDebug(three) << tr("All auto save file names before autosaving: ") << autosaves;
 
     if (!m_autosaveFile.fileName().isEmpty() && autosaves.contains(m_autosaveFile.fileName())) {
         qCDebug(three) << tr("Removing current autosave file name.");
@@ -227,10 +227,10 @@ void WorkSpace::autosave()
         Settings::setValue("autosaveFile", autosaves);
     }
 
-    qCDebug(zero) << tr("All auto save file names after possibly removing autosave:") << autosaves;
+    qCDebug(zero) << tr("All auto save file names after possibly removing autosave: ") << autosaves;
     qCDebug(zero) << tr("If autosave exists and undo stack is clean, remove it.");
     auto *undoStack = scene()->undoStack();
-    qCDebug(zero) << tr("undostack element:") << undoStack->index() << tr("of") << undoStack->count();
+    qCDebug(zero) << tr("Undostack element: ") << undoStack->index() << tr(" of ") << undoStack->count();
 
     if (undoStack->isClean()) {
         qCDebug(three) << tr("Undo stack is clean.");
@@ -250,15 +250,15 @@ void WorkSpace::autosave()
             path.mkpath(path.absolutePath());
         }
 
-        qCDebug(three) << tr("Autosavepath:") << path.absolutePath();
+        qCDebug(three) << tr("Autosavepath: ") << path.absolutePath();
         m_autosaveFile.setFileTemplate(path.absoluteFilePath(".XXXXXX.panda"));
-        qCDebug(three) << tr("Setting current file to random file in tmp.");
+        qCDebug(three) << tr("Setting current file to random file.");
     } else {
         qCDebug(three) << tr("Autosave path set to the current file's directory, if there is one.");
         QDir path(m_fileInfo.absolutePath());
-        qCDebug(three) << tr("Autosavepath:") << path.absolutePath();
+        qCDebug(three) << tr("Autosavepath: ") << path.absolutePath();
         m_autosaveFile.setFileTemplate(path.absoluteFilePath("." + m_fileInfo.baseName() + ".XXXXXX.panda"));
-        qCDebug(three) << tr("Setting current file to:") << m_fileInfo.absoluteFilePath();
+        qCDebug(three) << tr("Setting current file to: ") << m_fileInfo.absoluteFilePath();
     }
 
     if (!m_autosaveFile.open()) {
@@ -277,7 +277,7 @@ void WorkSpace::autosave()
     autosaves.append(autosaveFileName);
     Settings::setValue("autosaveFile", autosaves);
 
-    qCDebug(three) << tr("All auto save file names after adding autosave:") << autosaves;
+    qCDebug(three) << tr("All auto save file names after adding autosave: ") << autosaves;
 
     emit fileChanged(m_fileInfo);
 }
