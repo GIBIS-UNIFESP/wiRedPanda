@@ -64,15 +64,28 @@ void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 void InputButton::save(QDataStream &stream) const
 {
     GraphicElement::save(stream);
-    stream << m_locked;
+
+    QMap<QString, QVariant> map;
+    map.insert("locked", m_locked);
+
+    stream << map;
 }
 
 void InputButton::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
 {
     GraphicElement::load(stream, portMap, version);
 
-    if (version >= 3.1) {
+    if (3.1 <= version && version < 4.1) {
         stream >> m_locked;
+    }
+
+    if (version >= 4.1) {
+        QMap<QString, QVariant> map;
+        stream >> map;
+
+        if (map.contains("locked")) {
+            m_locked = map.value("locked").toBool();
+        }
     }
 }
 

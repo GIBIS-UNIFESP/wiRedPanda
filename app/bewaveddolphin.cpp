@@ -745,6 +745,7 @@ void BewavedDolphin::on_actionCopy_triggered()
     auto *mimeData = new QMimeData;
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
+    stream.setVersion(QDataStream::Qt_5_12);
     copy(ranges, stream);
     mimeData->setData("bdolphin/copydata", itemData);
     clipboard->setMimeData(mimeData);
@@ -764,6 +765,7 @@ void BewavedDolphin::on_actionCut_triggered()
     auto *mimeData = new QMimeData();
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
+    stream.setVersion(QDataStream::Qt_5_12);
     cut(ranges, stream);
     mimeData->setData("bdolphin/copydata", itemData);
     clipboard->setMimeData(mimeData);
@@ -784,6 +786,7 @@ void BewavedDolphin::on_actionPaste_triggered()
     if (mimeData->hasFormat("bdolphin/copydata")) {
         QByteArray itemData = mimeData->data("bdolphin/copydata");
         QDataStream stream(&itemData, QIODevice::ReadOnly);
+        stream.setVersion(QDataStream::Qt_5_12);
         paste(ranges, stream);
     }
 
@@ -965,6 +968,7 @@ void BewavedDolphin::save(const QString &fileName)
     if (fileName.endsWith(".dolphin")) {
         qCDebug(zero) << tr("Saving dolphin file.");
         QDataStream stream(&file);
+        stream.setVersion(QDataStream::Qt_5_12);
         save(stream);
     } else {
         qCDebug(zero) << tr("Saving CSV file.");
@@ -1026,6 +1030,7 @@ void BewavedDolphin::load(const QString &fileName)
     if (fileName.endsWith(".dolphin")) {
         qCDebug(zero) << tr("Dolphin file opened.");
         QDataStream stream(&file);
+        stream.setVersion(QDataStream::Qt_5_12);
         qCDebug(zero) << tr("Current file set.");
         qCDebug(zero) << tr("Loading in editor.");
         load(stream);

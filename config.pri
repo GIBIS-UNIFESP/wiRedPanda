@@ -14,7 +14,7 @@ equals(QT_MAJOR_VERSION, 6) : !versionAtLeast(QT_VERSION, 6.2.0) {
     error("QtMultimedia is not installed. Please install with Qt Maintenance Tool or with system repository")
 }
 
-VERSION = 4.01
+VERSION = 4.1
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
 QT += core gui printsupport charts multimedia widgets

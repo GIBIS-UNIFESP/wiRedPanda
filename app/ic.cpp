@@ -47,16 +47,30 @@ IC::IC(QGraphicsItem *parent)
 void IC::save(QDataStream &stream) const
 {
     GraphicElement::save(stream);
-    stream << QFileInfo(m_file).fileName();
+
+    QMap<QString, QVariant> map;
+    map.insert("fileName", QFileInfo(m_file).fileName());
+
+    stream << map;
 }
 
 void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
 {
     GraphicElement::load(stream, portMap, version);
 
-    if (version >= 1.2) {
+    if (1.2 <= version && version < 4.1) {
         stream >> m_file;
         loadFile(m_file);
+    }
+
+    if (version >= 4.1) {
+        QMap<QString, QVariant> map;
+        stream >> map;
+
+        if (map.contains("fileName")) {
+            m_file = map.value("fileName").toString();
+            loadFile(m_file);
+        }
     }
 }
 
@@ -125,6 +139,7 @@ void IC::loadFile(const QString &fileName)
     }
 
     QDataStream stream(&file);
+    stream.setVersion(QDataStream::Qt_5_12);
     const auto items = SerializationFunctions::load(stream);
 
     for (auto *item : items) {

@@ -86,6 +86,7 @@ void ElementLabel::startDrag()
 #endif
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
+    stream.setVersion(QDataStream::Qt_5_12);
     stream << offset << m_elementType << m_icFileName;
 
     auto *mimeData_ = new QMimeData;
@@ -106,6 +107,7 @@ QMimeData *ElementLabel::mimeData()
 #endif
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
+    stream.setVersion(QDataStream::Qt_5_12);
     stream << offset << m_elementType << m_icFileName;
 
     auto *mimeData = new QMimeData;

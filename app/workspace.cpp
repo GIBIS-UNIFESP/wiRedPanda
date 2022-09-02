@@ -86,6 +86,7 @@ void WorkSpace::save(const QString &fileName)
     }
 
     QDataStream stream(&saveFile);
+    stream.setVersion(QDataStream::Qt_5_12);
     save(stream);
 
     if (!saveFile.commit()) {
@@ -140,6 +141,7 @@ void WorkSpace::load(const QString &fileName)
     }
 
     QDataStream stream(&file);
+    stream.setVersion(QDataStream::Qt_5_12);
     load(stream);
 
     emit fileChanged(m_fileInfo);
@@ -254,6 +256,7 @@ void WorkSpace::autosave()
 
     qCDebug(three) << tr("Writing to autosave file.");
     QDataStream stream(&m_autosaveFile);
+    stream.setVersion(QDataStream::Qt_5_12);
     QString autosaveFileName = m_autosaveFile.fileName();
     save(stream);
     m_autosaveFile.close();

@@ -140,7 +140,11 @@ void Buzzer::stopBuzzer()
 void Buzzer::save(QDataStream &stream) const
 {
     GraphicElement::save(stream);
-    stream << audio();
+
+    QMap<QString, QVariant> map;
+    map.insert("note", audio());
+
+    stream << map;
 }
 
 void Buzzer::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
@@ -151,7 +155,18 @@ void Buzzer::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const 
         return;
     }
 
-    QString note;
-    stream >> note;
-    setAudio(note);
+    if (version < 4.1) {
+        QString note;
+        stream >> note;
+        setAudio(note);
+    }
+
+    if (version >= 4.1) {
+        QMap<QString, QVariant> map;
+        stream >> map;
+
+        if (map.contains("note")) {
+            setAudio(map.value("note").toString());
+        }
+    }
 }
