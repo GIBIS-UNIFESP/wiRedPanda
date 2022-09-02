@@ -755,6 +755,7 @@ void GraphicElement::updatePortsProperties()
 
 void GraphicElement::refresh()
 {
+    setPixmap(0);
 }
 
 QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)

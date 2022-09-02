@@ -30,6 +30,7 @@ public:
     void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version) override;
     void loadFile(const QString &fileName);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void refresh() override;
     void save(QDataStream &stream) const override;
 
 protected:
