@@ -201,8 +201,6 @@ void Led::updatePortsProperties()
 
 void Led::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    m_usingDefaultSkin = defaultSkin;
-
     int index = 0;
 
     if (isValid()) {
@@ -215,6 +213,8 @@ void Led::setSkin(const bool defaultSkin, const QString &fileName)
         index = static_cast<int>(indexBit.to_ulong());
     }
 
+    // ----------------------------------
+
     int index2 = 0;
 
     // TODO: add option to select dark/light colors according to the theme.
@@ -225,6 +225,14 @@ void Led::setSkin(const bool defaultSkin, const QString &fileName)
     case 4: index2 = 10 + index;                     break;
     }
 
-    m_alternativeSkins[index2] = fileName;
+    // ----------------------------------
+
+    if (defaultSkin) {
+        m_alternativeSkins = m_defaultSkins;
+    } else {
+        m_alternativeSkins[index2] = fileName;
+    }
+
+    m_usingDefaultSkin = defaultSkin;
     setPixmap(index2);
 }
