@@ -76,7 +76,7 @@ private:
     QList<QGraphicsItem *> itemsAt(const QPointF pos);
     QNEConnection *editedConnection() const;
     QNEPort *hoverPort();
-    QVector<QNEConnection *> connections();
+    const QVector<QNEConnection *> connections();
     void checkUpdateRequest();
     void cloneDrag(const QPointF mousePos);
     void contextMenu(const QPoint screenPos);

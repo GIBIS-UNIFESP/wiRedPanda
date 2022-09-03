@@ -258,10 +258,12 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
         setLabel(map.value("label").toString());
     }
 
-    quint64 minInputSize = map.value("minInputSize").toULongLong();
-    quint64 maxInputSize = map.value("maxInputSize").toULongLong();
-    quint64 minOutputSize = map.value("minOutputSize").toULongLong();
-    quint64 maxOutputSize = map.value("maxOutputSize").toULongLong();
+    // -------------------------------------------
+
+    const quint64 minInputSize = map.value("minInputSize").toULongLong();
+    const quint64 maxInputSize = map.value("maxInputSize").toULongLong();
+    const quint64 minOutputSize = map.value("minOutputSize").toULongLong();
+    const quint64 maxOutputSize = map.value("maxOutputSize").toULongLong();
 
     if (!((m_minInputSize == m_maxInputSize) && (m_minInputSize > maxInputSize))) {
         m_minInputSize = minInputSize;
@@ -272,6 +274,8 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
         m_minOutputSize = minOutputSize;
         m_maxOutputSize = maxOutputSize;
     }
+
+    // -------------------------------------------
 
     if (map.contains("trigger")) {
         setTrigger(map.value("trigger").toString());
@@ -287,10 +291,10 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
     stream >> inputMap;
     int port = 0;
 
-    for (const auto &input : inputMap) {
-        quint64 ptr = input.value("ptr").toULongLong();
-        QString name = input.value("name").toString();
-        int flags = input.value("flags").toInt();
+    for (const auto &input : qAsConst(inputMap)) {
+        const quint64 ptr = input.value("ptr").toULongLong();
+        const QString name = input.value("name").toString();
+        const int flags = input.value("flags").toInt();
 
         if (port < m_inputPorts.size()) {
             m_inputPorts.value(port)->setPtr(ptr);
@@ -317,15 +321,15 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
     stream >> outputMap;
     port = 0;
 
-    for (const auto &output : outputMap) {
-        quint64 ptr = output.value("ptr").toULongLong();
-        QString name = output.value("name").toString();
-        int flags = output.value("flags").toInt();
+    for (const auto &output : qAsConst(outputMap)) {
+        const quint64 ptr = output.value("ptr").toULongLong();
+        const QString name = output.value("name").toString();
+        const int flags = output.value("flags").toInt();
 
         if (port < m_outputPorts.size()) {
             m_outputPorts.value(port)->setPtr(ptr);
 
-            if(elementType() == ElementType::IC) {
+            if (elementType() == ElementType::IC) {
                 m_outputPorts.value(port)->setName(name);
             }
 
@@ -347,8 +351,8 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
     stream >> skinsMap;
     int skin = 0;
 
-    for (const auto &skinName : skinsMap) {
-        QString name = skinName.value("skinName").toString();
+    for (const auto &skinName : qAsConst(skinsMap)) {
+        const QString name = skinName.value("skinName").toString();
 
         if (!name.startsWith(":/")) {
             m_alternativeSkins[skin] = name;

@@ -58,8 +58,9 @@ void WorkSpace::save(const QString &fileName)
     qCDebug(zero) << tr("Getting autosave settings info.");
     QStringList autosaves = Settings::value("autosaveFile").toStringList();
     qCDebug(zero) << tr("All auto save file names before save: ") << autosaves;
-    qCDebug(zero) << tr("Checking if it is an autosave file or a new project, and ask for a fileName.");
+
     QString autosaveFileName;
+    qCDebug(zero) << tr("Checking if it is an autosave file or a new project, and ask for a fileName.");
 
     if (fileName_.isEmpty() || autosaves.contains(fileName_)) {
         qCDebug(zero) << tr("Should open window.");
@@ -108,7 +109,7 @@ void WorkSpace::save(const QString &fileName)
     }
 
     if (m_autosaveFile.exists()) {
-        qCDebug(zero) << tr("Remove autosave from settings and deleting it.");
+        qCDebug(zero) << tr("Remove autosave from settings and delete it.");
         autosaves.removeAll(m_autosaveFile.fileName());
         Settings::setValue("autosaveFile", autosaves);
         m_autosaveFile.remove();
@@ -136,7 +137,7 @@ void WorkSpace::load(const QString &fileName)
     GlobalProperties::currentFile = fileName;
     m_fileInfo = QFileInfo(fileName);
 
-    qCDebug(zero) << tr("File exists");
+    qCDebug(zero) << tr("File exists.");
 
     if (!file.open(QIODevice::ReadOnly)) {
         qCDebug(zero) << tr("Could not open file: ") << file.errorString();
@@ -156,6 +157,7 @@ void WorkSpace::load(QDataStream &stream)
     SimulationBlocker simulationBlocker(m_scene.simulation());
     qCDebug(zero) << tr("Stopped simulation.");
     const double version = SerializationFunctions::loadVersion(stream);
+    qCDebug(zero) << tr("Version: ") << version;
 
     if (GlobalProperties::verbose) {
         if (version > GlobalProperties::version) {
@@ -165,21 +167,18 @@ void WorkSpace::load(QDataStream &stream)
         }
     }
 
-    qCDebug(zero) << tr("Version: ") << version;
     m_dolphinFileName = SerializationFunctions::loadDolphinFileName(stream, version);
-
     qCDebug(zero) << tr("Dolphin name: ") << m_dolphinFileName;
+
     QRectF rect(SerializationFunctions::loadRect(stream, version));
-
-    qCDebug(zero) << tr("Header Ok. Version: ") << version;
     const auto items = SerializationFunctions::deserialize(stream, version);
-
     qCDebug(zero) << tr("Finished loading items.");
+
     for (auto *item : items) {
         m_scene.addItem(item);
     }
 
-    qCDebug(three) << tr("This code tries to centralize the elements in scene using the rectangle. But it is not working well.");
+    // NOTE: This code tries to centralize the elements in scene using the rectangle. But it is not working well.
     // TODO: improve this
     m_scene.setSceneRect(m_scene.itemsBoundingRect());
     rect = rect.united(m_view.rect());
@@ -204,7 +203,6 @@ QString WorkSpace::dolphinFileName()
 void WorkSpace::setAutosaveFileName()
 {
     qCDebug(zero) << tr("Defining autosave path.");
-    qCDebug(zero) << tr("Default file does not exist: ") << m_fileInfo.absoluteFilePath();
     QDir autosavePath(QDir::currentPath() + "/autosaves");
 
     if (!autosavePath.exists()) {
@@ -220,8 +218,9 @@ void WorkSpace::autosave()
 {
     qCDebug(two) << tr("Starting autosave.");
     QStringList autosaves = Settings::value("autosaveFile").toStringList();
-    qCDebug(zero) << tr("Cheking if autosavefile exists and if it contains current project file. If so, remove autosavefile from it.");
     qCDebug(three) << tr("All auto save file names before autosaving: ") << autosaves;
+
+    qCDebug(zero) << tr("Checking if autosave file exists and if it contains current project file. If so, remove autosave file from it.");
 
     if (!m_autosaveFile.fileName().isEmpty() && autosaves.contains(m_autosaveFile.fileName())) {
         qCDebug(three) << tr("Removing current autosave file name.");
@@ -232,7 +231,7 @@ void WorkSpace::autosave()
     qCDebug(zero) << tr("All auto save file names after possibly removing autosave: ") << autosaves;
     qCDebug(zero) << tr("If autosave exists and undo stack is clean, remove it.");
     auto *undoStack = scene()->undoStack();
-    qCDebug(zero) << tr("Undostack element: ") << undoStack->index() << tr(" of ") << undoStack->count();
+    qCDebug(zero) << tr("Undo stack element: ") << undoStack->index() << tr(" of ") << undoStack->count();
 
     if (undoStack->isClean()) {
         qCDebug(three) << tr("Undo stack is clean.");
