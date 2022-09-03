@@ -214,7 +214,6 @@ void BewavedDolphin::createElement(const int row, const int col, const int value
 void BewavedDolphin::createZeroElement(const int row, const int col, const bool isInput, const bool changePrevious)
 {
     qCDebug(three) << tr("Getting previous value to check previous cell refresh requirement.");
-    // QMessageBox::warning(this, "Zero: row, col", (row + 48) + QString(" ") + (col + 48));
     int previousValue;
 
     if (m_model->item(row, col) == nullptr) {
@@ -226,7 +225,7 @@ void BewavedDolphin::createZeroElement(const int row, const int col, const bool 
     }
 
     qCDebug(three) << tr("Changing current item.");
-    auto index = m_model->index(row, col);
+    const auto index = m_model->index(row, col);
     m_model->setData(index, "0", Qt::DisplayRole);
     m_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
 
@@ -246,8 +245,8 @@ void BewavedDolphin::createZeroElement(const int row, const int col, const bool 
         m_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
     }
 
-    qCDebug(three) << tr("Changing previous item, if needed.");
     if (changePrevious && (col != 0) && (previousValue == 1)) {
+        qCDebug(three) << tr("Changing previous item.");
         createElement(row, col - 1, m_model->item(row, col - 1)->text().toInt(), isInput, false);
     }
 }
@@ -1019,6 +1018,7 @@ void BewavedDolphin::load(const QString &fileName)
     }
 
     qCDebug(zero) << tr("File exists.");
+
     if (!file.open(QIODevice::ReadOnly)) {
         qCDebug(zero) << tr("Could not open file in ReadOnly mode: ") << file.errorString();
         throw Pandaception(tr("Could not open file in ReadOnly mode: ") + file.errorString() + ".");
@@ -1028,16 +1028,15 @@ void BewavedDolphin::load(const QString &fileName)
         qCDebug(zero) << tr("Dolphin file opened.");
         QDataStream stream(&file);
         stream.setVersion(QDataStream::Qt_5_12);
-        qCDebug(zero) << tr("Current file set.");
         qCDebug(zero) << tr("Loading in editor.");
         load(stream);
-        qCDebug(zero) << tr("Finished updating changed by signal.");
+        qCDebug(zero) << tr("Current file set.");
         m_currentFile = QFileInfo(fileName);
     } else if (fileName.endsWith(".csv")) {
         qCDebug(zero) << tr("CSV file opened.");
         qCDebug(zero) << tr("Loading in editor.");
         load(file);
-        qCDebug(zero) << tr("Finished updating changed by signal.");
+        qCDebug(zero) << tr("Current file set.");
         m_currentFile = QFileInfo(fileName);
     } else {
         qCDebug(zero) << tr("Format not supported. Could not open file: ") << fileName;
@@ -1142,7 +1141,9 @@ void BewavedDolphin::load(QFile &file)
     }
 
     setLength(cols, false);
+
     qCDebug(zero) << tr("Update table.");
+
     for (int row = 0; row < rows; ++row) {
         for (int col = 0; col < cols; ++col) {
             int value = wordList.at(2 + col + row * cols).toInt();

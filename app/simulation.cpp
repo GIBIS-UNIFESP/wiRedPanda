@@ -104,6 +104,7 @@ void Simulation::stop()
 void Simulation::start()
 {
     qCDebug(zero) << tr("Starting simulation.");
+
     if (!m_initialized) {
         initialize();
     }
@@ -158,6 +159,7 @@ bool Simulation::initialize()
     });
 
     qCDebug(zero) << tr("Elements read: ") << elements.size();
+
     if (elements.empty()) {
         return false;
     }

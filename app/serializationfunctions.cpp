@@ -56,8 +56,10 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &stream, 
         case QNEConnection::Type: {
             qCDebug(three) << tr("Building connection.");
             auto *conn = ElementFactory::buildConnection();
+
             qCDebug(three) << tr("Loading connection.");
             conn->load(stream, portMap);
+
             qCDebug(three) << tr("Appending connection.");
             itemList.append(conn);
             break;
@@ -75,59 +77,77 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &stream, 
 double SerializationFunctions::loadVersion(QDataStream &stream)
 {
     qCDebug(zero) << tr("Loading version.");
+
     QString str;
     stream >> str;
+
     if (!str.startsWith(QApplication::applicationName(), Qt::CaseInsensitive)) {
         throw Pandaception(tr("Invalid file format."));
     }
+
     qCDebug(zero) << tr("String: ") << str;
+
     bool ok;
     double version = str.remove(QApplication::applicationName(), Qt::CaseInsensitive).toDouble(&ok);
     qCDebug(zero) << tr("Version: ") << version;
+
     if (!ok) {
         throw Pandaception(tr("Invalid version number."));
     }
+
     return version;
 }
 
 QString SerializationFunctions::loadDolphinFileName(QDataStream &stream, const double version)
 {
     QString str = "";
+
     if (version >= 3.0) {
         stream >> str;
+
         if ((version < 3.3) && (str == "none")) {
             str.clear();
         }
     }
+
     return str;
 }
 
 QRectF SerializationFunctions::loadRect(QDataStream &stream, const double version)
 {
     QRectF rect;
+
     if (version >= 1.4) {
         stream >> rect;
     }
+
     return rect;
 }
 
 QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &stream)
 {
     qCDebug(zero) << tr("Started loading file.");
+
     QString str;
     stream >> str;
+
     if (!str.startsWith(QApplication::applicationName(), Qt::CaseInsensitive)) {
         throw Pandaception(tr("Invalid file format."));
     }
+
     bool ok;
     const double version = str.remove(QApplication::applicationName(), Qt::CaseInsensitive).toDouble(&ok);
+    qCDebug(zero) << tr("Header Ok. Version: ") << version;
+
     if (!ok) {
         throw Pandaception(tr("Invalid version number."));
     }
+
     loadDolphinFileName(stream, version);
     loadRect(stream, version);
-    qCDebug(zero) << tr("Header Ok. Version: ") << version;
+
     auto items = deserialize(stream, version);
+
     qCDebug(zero) << tr("Finished reading items.");
     return items;
 }

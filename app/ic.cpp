@@ -183,7 +183,7 @@ void IC::loadFile(const QString &fileName)
 
     QPixmapCache::remove(m_cacheKey);
 
-    qCDebug(zero) << QObject::tr("Finished Reading IC.");
+    qCDebug(zero) << QObject::tr("Finished reading IC.");
 }
 
 QString IC::file() const

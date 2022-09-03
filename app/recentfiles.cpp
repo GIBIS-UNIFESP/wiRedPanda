@@ -22,14 +22,18 @@ RecentFiles::RecentFiles(QObject *parent)
 void RecentFiles::addRecentFile(const QString &filePath)
 {
     qCDebug(three) << tr("Setting recent file to: ") << filePath;
+
     if (!QFile(filePath).exists()) {
         return;
     }
+
     m_files.removeAll(filePath);
     m_files.prepend(filePath);
+
     if (m_files.size() > MaxRecentFiles) {
         m_files.erase(m_files.begin() + MaxRecentFiles, m_files.end());
     }
+
     emit recentFilesUpdated();
     saveRecentFiles();
 }
@@ -37,14 +41,18 @@ void RecentFiles::addRecentFile(const QString &filePath)
 QStringList RecentFiles::recentFiles()
 {
     int i = 0;
+
     while (i < m_files.size()) {
         QFileInfo fileInfo(m_files.at(i));
+
         if (!fileInfo.exists()) {
             m_files.removeAt(i);
             continue;
         }
+
         ++i;
     }
+
     saveRecentFiles();
 
     return m_files;

@@ -84,15 +84,19 @@ GraphicElement *ElementFactory::buildElement(const ElementType type)
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     int id = QMetaType::type(typeToText(type).toLatin1());
+
     if (id == QMetaType::UnknownType) {
         throw Pandaception(tr("Unknown type: ") + typeToText(type));
     }
+
     auto *elm = static_cast<GraphicElement *>(QMetaType::create(id));
 #else
     const auto metaType = QMetaType::fromName(typeToText(type).toLatin1());
+
     if (!metaType.isValid() || metaType.id() == QMetaType::UnknownType) {
         throw Pandaception(tr("Unknown type: ") + typeToText(type));
     }
+
     auto *elm = static_cast<GraphicElement *>(metaType.create());
 #endif
 

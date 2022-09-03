@@ -187,13 +187,18 @@ void MainWindow::createNewTab()
 {
     qCDebug(zero) << tr("Creating new workspace.");
     auto *workspace = new WorkSpace(this);
+
     connect(workspace, &WorkSpace::fileChanged, this, &MainWindow::setCurrentFile);
+
     workspace->view()->setFastMode(m_ui->actionFastMode->isChecked());
     workspace->scene()->updateTheme();
+
     qCDebug(zero) << tr("Adding tab. #tabs: ") << m_ui->tab->count() << tr(", current tab: ") << m_tabIndex;
     m_ui->tab->addTab(workspace, tr("New Project"));
+
     qCDebug(zero) << tr("Selecting the newly created tab.");
     m_ui->tab->setCurrentIndex(m_ui->tab->count() - 1);
+
     qCDebug(zero) << tr("Finished #tabs: ") << m_ui->tab->count() << tr(", current tab: ") << m_tabIndex;
 }
 
@@ -241,6 +246,7 @@ void MainWindow::save(const QString &fileName)
 void MainWindow::show()
 {
     QMainWindow::show();
+
     if (!Settings::contains("hideV4Warning")) {
         aboutThisVersion();
     }
@@ -252,7 +258,9 @@ void MainWindow::show()
 void MainWindow::aboutThisVersion()
 {
     qCDebug(zero) << tr("'hideV4Warning' message box.");
+
     auto *checkBox = new QCheckBox(tr("Don't show this again."));
+
     QMessageBox msgBox;
     msgBox.setParent(this);
     msgBox.setStandardButtons(QMessageBox::Ok);
@@ -271,6 +279,7 @@ void MainWindow::aboutThisVersion()
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Ok);
     msgBox.setCheckBox(checkBox);
+
     connect(checkBox, &QCheckBox::stateChanged, this, [](int state) {
         if (static_cast<Qt::CheckState>(state) == Qt::CheckState::Checked) {
             Settings::setValue("hideV4Warning", "true");
@@ -278,6 +287,7 @@ void MainWindow::aboutThisVersion()
             Settings::remove("hideV4Warning");
         }
     });
+
     msgBox.exec();
 }
 
@@ -296,15 +306,19 @@ int MainWindow::confirmSave(const bool multiple)
 {
     QMessageBox msgBox;
     msgBox.setParent(this);
+
     if (multiple) {
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel);
     } else {
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
     }
+
     QString fileName = m_currentFile.absoluteFilePath();
+
     if (fileName.isEmpty()) {
         fileName = tr("New Project");
     }
+
     msgBox.setText(fileName + tr(" has been modified. Do you want to save your changes?"));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Yes);
@@ -558,6 +572,7 @@ void MainWindow::updateICList()
         qCDebug(zero) << tr("Files: ") << files.join(", ");
         for (const QString &file : qAsConst(files)) {
             QPixmap pixmap(":/basic/ic-panda.svg");
+
             auto *item = new ElementLabel(pixmap, ElementType::IC, file, this);
             m_ui->scrollAreaWidgetContents_IC->layout()->addWidget(item);
 
@@ -577,6 +592,7 @@ bool MainWindow::closeTab(const int tabIndex)
     m_ui->tab->setCurrentIndex(tabIndex);
 
     qCDebug(zero) << tr("Checking if needs to save file.");
+
     if (!m_currentTab->scene()->undoStack()->isClean()) {
         const int selectedButton = confirmSave(false);
 
@@ -600,6 +616,7 @@ bool MainWindow::closeTab(const int tabIndex)
     qCDebug(zero) << tr("Deleting tab.");
     m_currentTab->deleteLater();
     m_ui->tab->removeTab(tabIndex);
+
     qCDebug(zero) << tr("Closed tab ") << tabIndex << tr(", #tabs: ") << m_ui->tab->count() << tr(", current tab: ") << m_tabIndex;
 
     return true;
@@ -615,8 +632,10 @@ void MainWindow::disconnectTab()
 
     qCDebug(zero) << tr("Stopping simulation.");
     m_currentTab->simulation()->stop();
+
     qCDebug(zero) << tr("Disconnecting zoom from UI.");
     disconnect(m_currentTab->view(), &GraphicsView::zoomChanged, this, &MainWindow::zoomChanged);
+
     qCDebug(zero) << tr("Removing undo and redo actions from UI menu.");
     removeUndoRedoMenu();
 
@@ -632,9 +651,12 @@ void MainWindow::connectTab()
 {
     qCDebug(zero) << tr("Connecting undo and redo functions to UI menu.");
     addUndoRedoMenu();
+
     qCDebug(zero) << tr("Setting Panda file info.");
     m_currentFile = m_currentTab->fileInfo();
+
     updateICList();
+
     qCDebug(zero) << tr("Connecting current tab to element editor menu in UI.");
     m_ui->elementEditor->setScene(m_currentTab->scene());
 
@@ -1123,9 +1145,9 @@ void MainWindow::on_actionFastMode_triggered(const bool checked)
 
 void MainWindow::on_actionWaveform_triggered()
 {
+    qCDebug(zero) << tr("BD fileName: ") << m_currentTab->dolphinFileName();
     auto *bewavedDolphin = new BewavedDolphin(m_currentTab->scene(), true, this);
     bewavedDolphin->createWaveform(m_currentTab->dolphinFileName());
-    qCDebug(zero) << tr("BD fileName: ") << m_currentTab->dolphinFileName();
     bewavedDolphin->show();
 }
 
