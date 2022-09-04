@@ -88,6 +88,8 @@ void WorkSpace::save(const QString &fileName)
         throw Pandaception(tr("Error opening file: ") + saveFile.errorString());
     }
 
+    scene()->setSceneRect(scene()->itemsBoundingRect());
+
     QDataStream stream(&saveFile);
     stream.setVersion(QDataStream::Qt_5_12);
     save(stream);
