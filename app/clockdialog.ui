@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>186</width>
-    <height>118</height>
+    <width>184</width>
+    <height>116</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,30 +18,10 @@
     <normaloff>:/toolbar/wavyIcon.svg</normaloff>:/toolbar/wavyIcon.svg</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="4" column="0">
-    <widget class="QLabel" name="minLabel">
-     <property name="text">
-      <string>2</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="titleLabel">
-     <property name="text">
-      <string>Clock Frequency</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QLabel" name="maxLabel">
-     <property name="text">
-      <string>1024</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+   <item row="6" column="0" colspan="2">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -77,29 +57,32 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="buttonHorizontalLayout">
-     <item>
-      <widget class="QPushButton" name="cancelPushButton">
-       <property name="text">
-        <string>Cancel</string>
-       </property>
-       <property name="autoDefault">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="okPushButton">
-       <property name="text">
-        <string>OK</string>
-       </property>
-       <property name="default">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
+   <item row="0" column="0">
+    <widget class="QLabel" name="titleLabel">
+     <property name="text">
+      <string>Clock Frequency</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLabel" name="maxLabel">
+     <property name="text">
+      <string>1024</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="minLabel">
+     <property name="text">
+      <string>2</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
