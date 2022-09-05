@@ -14,8 +14,8 @@ ClockDialog::ClockDialog(const int currentFrequency, QWidget *parent)
 
     setWindowTitle(tr("Clock Frequency Selection"));
 
-    connect(m_ui->cancelPushButton, &QPushButton::clicked, this, [this] { reject(); });
-    connect(m_ui->okPushButton,     &QPushButton::clicked, this, [this] { accept(); });
+    connect(m_ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(m_ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 }
 
 ClockDialog::~ClockDialog()
@@ -27,5 +27,3 @@ int ClockDialog::frequency()
 {
     return (exec() == QDialog::Accepted) ? m_ui->frequencySpinBox->value() : -1;
 }
-
-// TODO: order of buttons is wrong on some operating systems

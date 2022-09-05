@@ -14,8 +14,8 @@ LengthDialog::LengthDialog(const int currentLength, QWidget *parent)
 
     setWindowTitle(tr("Simulation Length Selection"));
 
-    connect(m_ui->cancelPushButton, &QPushButton::clicked, this, [this] { reject(); });
-    connect(m_ui->okPushButton,     &QPushButton::clicked, this, [this] { accept(); });
+    connect(m_ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(m_ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 }
 
 LengthDialog::~LengthDialog()
@@ -27,5 +27,3 @@ int LengthDialog::length()
 {
     return (exec() == QDialog::Accepted) ? m_ui->lengthSpinBox->value() : -1;
 }
-
-// TODO: order of buttons is wrong on some operating systems
