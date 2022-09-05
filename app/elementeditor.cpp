@@ -136,6 +136,7 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
                 addElementAction(submenuMorph, selectedElm, ElementType::Xnor, m_hasSameType);
                 addElementAction(submenuMorph, selectedElm, ElementType::Xor, m_hasSameType);
             }
+
             break;
         }
 
@@ -147,22 +148,39 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
             addElementAction(submenuMorph, selectedElm, ElementType::InputRotary, m_hasSameType);
             addElementAction(submenuMorph, selectedElm, ElementType::InputSwitch, m_hasSameType);
             addElementAction(submenuMorph, selectedElm, ElementType::InputVcc, m_hasSameType);
+
             break;
         }
 
         case ElementGroup::Memory: {
             if (selectedElm->inputSize() == 2) {
                 addElementAction(submenuMorph, selectedElm, ElementType::DLatch, m_hasSameType);
-            } else if (selectedElm->inputSize() == 4) {
+                break;
+            }
+
+            if (selectedElm->inputSize() == 4) {
                 addElementAction(submenuMorph, selectedElm, ElementType::DFlipFlop, m_hasSameType);
                 addElementAction(submenuMorph, selectedElm, ElementType::TFlipFlop, m_hasSameType);
+                break;
             }
+
+            if (selectedElm->inputSize() == 5) {
+                addElementAction(submenuMorph, selectedElm, ElementType::JKFlipFlop, m_hasSameType);
+                addElementAction(submenuMorph, selectedElm, ElementType::SRFlipFlop, m_hasSameType);
+            }
+
             break;
         }
 
         case ElementGroup::Output: {
-            addElementAction(submenuMorph, selectedElm, ElementType::Buzzer, m_hasSameType);
-            addElementAction(submenuMorph, selectedElm, ElementType::Led, m_hasSameType);
+            if (selectedElm->elementType() == ElementType::Display || selectedElm->elementType() == ElementType::Display14) {
+                addElementAction(submenuMorph, selectedElm, ElementType::Display, m_hasSameType);
+                addElementAction(submenuMorph, selectedElm, ElementType::Display14, m_hasSameType);
+            } else {
+                addElementAction(submenuMorph, selectedElm, ElementType::Buzzer, m_hasSameType);
+                addElementAction(submenuMorph, selectedElm, ElementType::Led, m_hasSameType);
+            }
+
             break;
         }
 
@@ -402,8 +420,6 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
         m_hasSameType &= (elm->elementType() == firstElement->elementType());
         m_hasSameAudio &= (elm->audio() == firstElement->audio());
         m_hasSamePriority &= (elm->priority() == firstElement->priority());
-        m_canMorph &= (elm->inputSize() == firstElement->inputSize());
-        m_canMorph &= (elm->outputSize() == firstElement->outputSize());
 
         bool sameElementGroup = (group == firstGroup);
         sameElementGroup |= (group == ElementGroup::Input && firstGroup == ElementGroup::StaticInput);
