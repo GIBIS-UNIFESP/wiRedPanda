@@ -39,6 +39,8 @@ Scene::Scene(QObject *parent)
     m_redoAction->setIcon(QIcon(":/toolbar/redo.svg"));
     m_redoAction->setShortcut(QKeySequence::Redo);
 
+    m_timer.start();
+
     connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, &Scene::updateTheme);
     connect(&m_undoStack,              &QUndoStack::indexChanged,   this, &Scene::checkUpdateRequest);
 }
