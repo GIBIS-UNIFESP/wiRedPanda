@@ -44,6 +44,7 @@ jobs:
         
     - name: Upload coverage data
       run: |        
+        cd build/test
         gcov -abcfu build_files/obj/*.o
         curl -Os https://uploader.codecov.io/latest/linux/codecov
         chmod +x ./codecov
