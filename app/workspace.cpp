@@ -21,11 +21,11 @@ WorkSpace::WorkSpace(QWidget *parent)
     m_view.setCacheMode(QGraphicsView::CacheBackground);
     m_view.setScene(&m_scene);
     m_scene.setView(&m_view);
-    m_scene.setSceneRect(m_scene.sceneRect().united(m_view.rect()));
+    m_scene.setSceneRect(m_view.rect());
     setLayout(new QHBoxLayout);
     layout()->addWidget(&m_view);
 
-    connect(scene(), &Scene::circuitHasChanged, this, &WorkSpace::autosave);
+    connect(&m_scene, &Scene::circuitHasChanged, this, &WorkSpace::autosave);
 
     setAutosaveFileName();
 }
@@ -89,7 +89,7 @@ void WorkSpace::save(const QString &fileName)
         throw Pandaception(tr("Error opening file: ") + saveFile.errorString());
     }
 
-    scene()->setSceneRect(scene()->itemsBoundingRect());
+    m_scene.setSceneRect(m_scene.itemsBoundingRect());
 
     QDataStream stream(&saveFile);
     stream.setVersion(QDataStream::Qt_5_12);
@@ -99,7 +99,7 @@ void WorkSpace::save(const QString &fileName)
         throw Pandaception(tr("Could not save file: ") + saveFile.errorString());
     }
 
-    scene()->undoStack()->setClean();
+    m_scene.undoStack()->setClean();
 
     if (!autosaveFileName.isEmpty()) {
         qCDebug(zero) << tr("Remove from autosave list recovered file that has been saved.");
@@ -170,7 +170,7 @@ void WorkSpace::load(QDataStream &stream)
     m_dolphinFileName = SerializationFunctions::loadDolphinFileName(stream, version);
     qCDebug(zero) << tr("Dolphin name: ") << m_dolphinFileName;
 
-    QRectF rect(SerializationFunctions::loadRect(stream, version));
+    SerializationFunctions::loadRect(stream, version);
     const auto items = SerializationFunctions::deserialize(stream, version);
     qCDebug(zero) << tr("Finished loading items.");
 
@@ -178,14 +178,7 @@ void WorkSpace::load(QDataStream &stream)
         m_scene.addItem(item);
     }
 
-    // NOTE: This code tries to centralize the elements in scene using the rectangle. But it is not working well.
-    // TODO: improve this
     m_scene.setSceneRect(m_scene.itemsBoundingRect());
-    rect = rect.united(m_view.rect());
-    rect.moveCenter(QPointF(0, 0));
-    m_scene.setSceneRect(m_scene.sceneRect().united(rect));
-    m_view.centerOn(m_scene.itemsBoundingRect().center());
-    m_scene.clearSelection();
 
     qCDebug(zero) << tr("Finished loading file.");
 }
@@ -230,7 +223,7 @@ void WorkSpace::autosave()
 
     qCDebug(zero) << tr("All auto save file names after possibly removing autosave: ") << autosaves;
     qCDebug(zero) << tr("If autosave exists and undo stack is clean, remove it.");
-    auto *undoStack = scene()->undoStack();
+    auto *undoStack = m_scene.undoStack();
     qCDebug(zero) << tr("Undo stack element: ") << undoStack->index() << tr(" of ") << undoStack->count();
 
     if (undoStack->isClean()) {

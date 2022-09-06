@@ -760,19 +760,6 @@ void MainWindow::on_lineEditSearch_returnPressed()
     }
 }
 
-void MainWindow::resizeEvent(QResizeEvent *event)
-{
-    Q_UNUSED(event)
-
-    if (!m_currentTab) {
-        return;
-    }
-
-    auto *scene = m_currentTab->scene();
-    auto *view = m_currentTab->view();
-    scene->setSceneRect(scene->sceneRect().united(view->rect()));
-}
-
 void MainWindow::on_actionReloadFile_triggered()
 {
     if (!m_currentFile.exists() || !m_currentTab) {

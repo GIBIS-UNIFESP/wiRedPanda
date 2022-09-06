@@ -198,23 +198,13 @@ void Scene::receiveCommand(QUndoCommand *cmd)
 
 void Scene::resizeScene()
 {
-    const auto elements_ = elements();
-
-    if (!elements_.isEmpty()) {
-        QRectF rect = sceneRect();
-
-        for (auto *element : elements_) {
-            QRectF itemRect = element->boundingRect().translated(element->pos());
-            rect = rect.united(itemRect.adjusted(-10, -10, 10, 10));
-        }
-
-        setSceneRect(rect);
-    }
+    setSceneRect(itemsBoundingRect());
 
     auto *item = itemAt(m_mousePos);
 
     if (item && (m_timer.elapsed() > 100) && m_draggingElement) {
-        m_view->ensureVisible(QRectF(m_mousePos - QPointF(4, 4), QSize(9, 9)).normalized());
+        // FIXME: sometimes this goes into a infinite loop and crashes
+        item->ensureVisible();
         m_timer.restart();
     }
 }
@@ -641,8 +631,8 @@ void Scene::paste(QDataStream &stream)
     QPointF ctr;
     stream >> ctr;
 
-    QPointF offset = m_mousePos - ctr - QPointF(32.0, 32.0);
-    double version = GlobalProperties::version;
+    const QPointF offset = m_mousePos - ctr - QPointF(32.0, 32.0);
+    const double version = GlobalProperties::version;
     const auto itemList = SerializationFunctions::deserialize(stream, version);
 
     receiveCommand(new AddItemsCommand(itemList, this));
@@ -929,6 +919,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         contextMenu(event->screenPos());
     }
 
+    // TODO: need to move this to the start of the function to select/unselect the item at mouse position
     QGraphicsScene::mousePressEvent(event);
 }
 
@@ -959,7 +950,7 @@ void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     }
 
     if (m_markingSelectionBox) {
-        QRectF rect = QRectF(m_selectionStartPoint, m_mousePos).normalized();
+        const QRectF rect = QRectF(m_selectionStartPoint, m_mousePos).normalized();
         m_selectionRect.setRect(rect);
         QPainterPath selectionBox;
         selectionBox.addRect(rect);
