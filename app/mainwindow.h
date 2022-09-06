@@ -71,7 +71,6 @@ signals:
 
 protected:
     void closeEvent(QCloseEvent *event) override;
-    void resizeEvent(QResizeEvent *event) override;
 
 private:
     Q_DISABLE_COPY(MainWindow)
