@@ -15,7 +15,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-      with: 
+      with:
         submodules: recursive
         fetch-depth: 0
 
@@ -25,7 +25,7 @@ jobs:
         version: 5.12.12
         modules: qtcharts
         aqtversion: ==2.1.0
-        
+
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
 
@@ -41,15 +41,15 @@ jobs:
       run: |
         cd build/test
         xvfb-run ./WPanda-test
-        
+
     - name: Upload coverage data
-      run: |        
+      run: |
         cd build/test
         gcov -abcfu build_files/obj/*.o
         curl -Os https://uploader.codecov.io/latest/linux/codecov
         chmod +x ./codecov
         ./codecov
-        
+
 # =================================
 
   Ubuntu-Qt5_13_2:
@@ -70,7 +70,7 @@ jobs:
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
-      
+
     - name: Build
       run: |
         sudo apt install libgstreamer-gl1.0-0
@@ -91,7 +91,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-      with: 
+      with:
         submodules: recursive
         fetch-depth: 0
 
@@ -101,7 +101,7 @@ jobs:
         version: 5.14.2
         modules: qtcharts
         aqtversion: ==2.1.0
-        
+
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
 
@@ -112,12 +112,12 @@ jobs:
         cd build
         qmake ../WPanda.pro
         make -j2
-        
+
     - name: Test
       run: |
         cd build/test
         xvfb-run ./WPanda-test
-        
+
 # =================================
 
   Ubuntu-Qt5_15_2-AppImage:
@@ -125,7 +125,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-      with: 
+      with:
         submodules: recursive
         fetch-depth: 0
 
@@ -135,7 +135,7 @@ jobs:
         version: 5.15.2
         modules: qtcharts
         aqtversion: ==2.1.0
-        
+
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
 
@@ -146,7 +146,7 @@ jobs:
         cd build
         qmake ../WPanda.pro
         make -j2
-        
+
     - name: Test
       run: |
         cd build/test
@@ -189,7 +189,7 @@ jobs:
         version: 6.2.4
         modules: qtcharts qtmultimedia
         aqtversion: ==2.1.0
-        
+
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
 
@@ -205,7 +205,7 @@ jobs:
       run: |
         cd build/test
         xvfb-run ./WPanda-test
-        
+
 # =================================
 
   Ubuntu-Qt6_3_1:
@@ -223,7 +223,7 @@ jobs:
         version: 6.3.1
         modules: qtcharts qtmultimedia
         aqtversion: ==2.1.0
-        
+
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
 
@@ -239,7 +239,7 @@ jobs:
       run: |
         cd build/test
         xvfb-run ./WPanda-test
-        
+
 # =================================
 
   Windows-Qt5_12_12:
@@ -279,7 +279,7 @@ jobs:
       run: |
         cd build
         jom check
-        
+
 # =================================
 
   Windows-Qt5_13_2:
@@ -319,7 +319,7 @@ jobs:
       run: |
         cd build
         jom check
-        
+
 # =================================
 
   Windows-Qt5_14_2:
@@ -359,7 +359,7 @@ jobs:
       run: |
         cd build
         jom check
-        
+
 # =================================
 
   Windows-Qt5_15_2-Release:
@@ -393,7 +393,7 @@ jobs:
         cd build
         qmake ../WPanda.pro
         jom
-        
+
     - name: Test
       shell: cmd
       run: |
@@ -411,7 +411,7 @@ jobs:
         cd ..
         ren release wpanda
         Compress-Archive -Path wpanda -DestinationPath WiRedPanda-Windows-Qt5-Portable.zip
-        
+
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
@@ -426,7 +426,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-      with: 
+      with:
         submodules: recursive
         fetch-depth: 0
 
@@ -458,7 +458,7 @@ jobs:
       run: |
         cd build
         jom check
-        
+
 # =================================
 
   Windows-Qt6_3_1:
@@ -466,7 +466,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-      with: 
+      with:
         submodules: recursive
         fetch-depth: 0
 
@@ -498,7 +498,7 @@ jobs:
       run: |
         cd build
         jom check
-        
+
 # =================================
 
   macOS-Qt5_12_12:
@@ -506,7 +506,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-      with: 
+      with:
         submodules: recursive
         fetch-depth: 0
 
@@ -516,7 +516,7 @@ jobs:
         version: 5.12.12
         modules: qtcharts
         aqtversion: ==2.1.0
-        
+
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
 
@@ -526,12 +526,12 @@ jobs:
         cd build
         qmake ../WPanda.pro
         make -j3
-        
+
     - name: Test
       run: |
         cd build
         make check
-        
+
 # =================================
 
   macOS-Qt5_13_2:
@@ -539,7 +539,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-      with: 
+      with:
         submodules: recursive
         fetch-depth: 0
 
@@ -549,7 +549,7 @@ jobs:
         version: 5.13.2
         modules: qtcharts
         aqtversion: ==2.1.0
-        
+
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
 
@@ -559,12 +559,12 @@ jobs:
         cd build
         qmake ../WPanda.pro
         make -j3
-        
+
     - name: Test
       run: |
         cd build
         make check
-        
+
 # =================================
 
   macOS-Qt5_14_2:
@@ -572,7 +572,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-      with: 
+      with:
         submodules: recursive
         fetch-depth: 0
 
@@ -592,12 +592,12 @@ jobs:
         cd build
         qmake ../WPanda.pro
         make -j3
-        
+
     - name: Test
       run: |
         cd build
         make check
-        
+
 # =================================
 
   macOS-Qt5_15_2-Release:
@@ -605,7 +605,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-      with: 
+      with:
         submodules: recursive
         fetch-depth: 0
 
@@ -618,32 +618,32 @@ jobs:
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
-      
+
     - name: Build
       run: |
         mkdir build
         cd build
         qmake ../WPanda.pro
         make -j3
-        
+
     - name: Test
       run: |
         cd build
         make check
-        
+
     - name: Rename file
       if: startsWith(github.ref, 'refs/tags/')
       run: |
         cd build/app
         zip -r WiRedPanda-macOS-Qt5.zip wiredpanda.app
-        
+
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
         fail_on_unmatched_files: true
         files: 'build/app/*.zip'
-        
+
 # =================================
 
   macOS-Qt6_2_4:
@@ -651,7 +651,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-      with: 
+      with:
         submodules: recursive
         fetch-depth: 0
 
@@ -664,19 +664,19 @@ jobs:
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
-      
+
     - name: Build
       run: |
         mkdir build
         cd build
         qmake ../WPanda.pro
         make -j3
-        
+
     - name: Test
       run: |
         cd build
         make check
-        
+
 # =================================
 
   macOS-Qt6_3_1:
@@ -684,7 +684,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-      with: 
+      with:
         submodules: recursive
         fetch-depth: 0
 
@@ -697,14 +697,14 @@ jobs:
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
-      
+
     - name: Build
       run: |
         mkdir build
         cd build
         qmake ../WPanda.pro
         make -j3
-        
+
     - name: Test
       run: |
         cd build

@@ -45,7 +45,6 @@ Buzzer::Buzzer(QGraphicsItem *parent)
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     m_hasOutputDevice = !QAudioDeviceInfo::defaultOutputDevice().deviceName().isEmpty();
-
 #else
     m_hasOutputDevice = !QMediaDevices::defaultAudioOutput().description().isEmpty();
 #endif
