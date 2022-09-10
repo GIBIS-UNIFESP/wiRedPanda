@@ -84,7 +84,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -135,8 +135,8 @@
     <addaction name="actionFitScreen"/>
     <addaction name="actionSetLength"/>
     <addaction name="separator"/>
-    <addaction name="actionShowValues"/>
-    <addaction name="actionShowCurve"/>
+    <addaction name="actionShowNumbers"/>
+    <addaction name="actionShowWaveforms"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -429,23 +429,23 @@
     <string>Ctrl+X</string>
    </property>
   </action>
-  <action name="actionShowValues">
+  <action name="actionShowNumbers">
    <property name="text">
-    <string>Show Numeric</string>
+    <string>Show Numbers</string>
    </property>
   </action>
-  <action name="actionShowCurve">
+  <action name="actionShowWaveforms">
    <property name="text">
-    <string>Show Waves</string>
+    <string>Show Waveforms</string>
    </property>
   </action>
  </widget>
  <resources>
-  <include location="resources/dolphin/dolphin.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/basic/basic.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/input/input.qrc"/>
+  <include location="resources/dolphin/dolphin.qrc"/>
  </resources>
  <connections/>
 </ui>
