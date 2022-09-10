@@ -42,12 +42,9 @@ class SignalDelegate : public QItemDelegate
     Q_OBJECT
 
 public:
-    SignalDelegate(const int margin, QObject *parent);
+    SignalDelegate(QObject *parent);
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
-
-private:
-    int m_margin;
 };
 
 class BewavedDolphin : public QMainWindow
@@ -70,23 +67,23 @@ protected:
 private:
     Q_DISABLE_COPY(BewavedDolphin)
 
-    QVector<Status> loadSignals(QStringList &inputLabels, QStringList &outputLabels);
     bool checkSave();
     int sectionFirstColumn(const QItemSelection &ranges);
     int sectionFirstRow(const QItemSelection &ranges);
     void associateToWiredPanda(const QString &fileName);
     void copy(const QItemSelection &ranges, QDataStream &stream);
-    void createElement(const int row, const int col, const int value, const bool isInput = true, const bool changePrevious = true);
-    void createOneElement(const int row, const int col, const bool isInput = true, const bool changePrevious = true);
-    void createZeroElement(const int row, const int col, const bool isInput = true, const bool changePrevious = true);
+    void createElement(const int row, const int col, const int value, const bool isInput = true, const bool changeNext = true);
+    void createOneElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
+    void createZeroElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
     void cut(const QItemSelection &ranges, QDataStream &stream);
-    void drawPixMaps();
     void load(QDataStream &stream);
     void load(QFile &file);
     void load(const QString &fileName);
     void loadElements();
     void loadFromTerminal();
     void loadNewTable(const QStringList &inputLabels, const QStringList &outputLabels);
+    void loadPixmaps();
+    void loadSignals(QStringList &inputLabels, QStringList &outputLabels);
     void on_actionAboutQt_triggered();
     void on_actionAbout_triggered();
     void on_actionClear_triggered();
@@ -107,12 +104,12 @@ private:
     void on_actionSetLength_triggered();
     void on_actionSetTo0_triggered();
     void on_actionSetTo1_triggered();
-    void on_actionShowCurve_triggered();
-    void on_actionShowValues_triggered();
+    void on_actionShowNumbers_triggered();
+    void on_actionShowWaveforms_triggered();
     void on_actionZoomIn_triggered();
     void on_actionZoomOut_triggered();
     void on_tableView_selectionChanged();
-    void paste(QItemSelection &ranges, QDataStream &stream);
+    void paste(const QItemSelection &ranges, QDataStream &stream);
     void prepare(const QString &fileName = {});
     void resizeScene();
     void restoreInputs();
