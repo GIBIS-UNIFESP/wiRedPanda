@@ -355,16 +355,16 @@ void ElementEditor::retranslateUi()
     fillColorComboBox();
 }
 
-void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elms)
+void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 {
-    m_elements = elms;
+    m_elements = elements;
     m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = false;
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = false;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = false;
     m_canChangeSkin = m_hasSamePriority = false;
     m_hasElements = false;
 
-    if (elms.isEmpty()) {
+    if (elements.isEmpty()) {
         hide();
         m_ui->lineEditElementLabel->setText("");
         return;
@@ -766,34 +766,34 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
     auto *keyEvent = dynamic_cast<QKeyEvent *>(event);
 
     if ((event->type() == QEvent::KeyPress) && keyEvent && (m_elements.size() == 1)) {
-        bool moveFwd = (keyEvent->key() == Qt::Key_Tab);
-        bool moveBack = (keyEvent->key() == Qt::Key_Backtab);
+        const bool moveFwd = (keyEvent->key() == Qt::Key_Tab);
+        const bool moveBack = (keyEvent->key() == Qt::Key_Backtab);
 
         if (moveBack || moveFwd) {
             auto *elm = m_elements.constFirst();
-            auto elms = m_scene->visibleElements();
+            auto elements = m_scene->visibleElements();
 
-            std::stable_sort(elms.begin(), elms.end(), [](const auto &elm1, const auto &elm2) {
+            std::stable_sort(elements.begin(), elements.end(), [](const auto &elm1, const auto &elm2) {
                 return elm1->pos().ry() < elm2->pos().ry();
             });
 
-            std::stable_sort(elms.begin(), elms.end(), [](const auto &elm1, const auto &elm2) {
+            std::stable_sort(elements.begin(), elements.end(), [](const auto &elm1, const auto &elm2) {
                 return elm1->pos().rx() < elm2->pos().rx();
             });
 
-            int elmPos = elms.indexOf(elm);
-            qCDebug(zero) << tr("Pos = ") << elmPos << tr(" from ") << elms.size();
+            const int elmPos = elements.indexOf(elm);
+            qCDebug(zero) << tr("Pos = ") << elmPos << tr(" from ") << elements.size();
             int step = 1;
 
             if (moveBack) {
                 step = -1;
             }
 
-            int pos = (elms.size() + elmPos + step) % elms.size();
+            int pos = (elements.size() + elmPos + step) % elements.size();
 
-            for (; pos != elmPos; pos = ((elms.size() + pos + step) % elms.size())) {
+            for (; pos != elmPos; pos = ((elements.size() + pos + step) % elements.size())) {
                 qCDebug(zero) << tr("Pos = ") << pos;
-                elm = elms.at(pos);
+                elm = elements.at(pos);
 
                 setCurrentElements({elm});
 
@@ -805,7 +805,7 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
             m_scene->clearSelection();
 
             if (!widget->isEnabled()) {
-                elm = elms.at(elmPos);
+                elm = elements.at(elmPos);
             }
 
             elm->setSelected(true);

@@ -21,7 +21,7 @@ class ElementMapping
     Q_DECLARE_TR_FUNCTIONS(ElementMapping)
 
 public:
-    explicit ElementMapping(const QVector<GraphicElement *> &elms);
+    explicit ElementMapping(const QVector<GraphicElement *> &elements);
     ~ElementMapping();
 
     const QVector<std::shared_ptr<LogicElement> > &logicElms() const;

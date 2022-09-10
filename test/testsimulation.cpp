@@ -17,34 +17,34 @@ void TestSimulation::testCase1()
 {
     WorkSpace workspace;
 
-    InputButton btn1;
-    InputButton btn2;
+    InputButton button1;
+    InputButton button2;
     And andItem;
     Led led;
-    QNEConnection conn1;
-    QNEConnection conn2;
-    QNEConnection conn3;
+    QNEConnection connection1;
+    QNEConnection connection2;
+    QNEConnection connection3;
 
     auto *scene = workspace.scene();
     scene->addItem(&led);
     scene->addItem(&andItem);
-    scene->addItem(&btn1);
-    scene->addItem(&btn2);
-    scene->addItem(&conn1);
-    scene->addItem(&conn2);
-    scene->addItem(&conn3);
+    scene->addItem(&button1);
+    scene->addItem(&button2);
+    scene->addItem(&connection1);
+    scene->addItem(&connection2);
+    scene->addItem(&connection3);
 
-    conn1.setStart(btn1.outputPort());
-    conn1.setEnd(andItem.inputPort(0));
-    conn2.setStart(btn2.outputPort());
-    conn2.setEnd(andItem.inputPort(1));
-    conn3.setStart(andItem.outputPort());
-    conn3.setEnd(led.inputPort());
+    connection1.setStart(button1.outputPort());
+    connection1.setEnd(andItem.inputPort(0));
+    connection2.setStart(button2.outputPort());
+    connection2.setEnd(andItem.inputPort(1));
+    connection3.setStart(andItem.outputPort());
+    connection3.setEnd(led.inputPort());
 
-    const auto elms(Common::sortGraphicElements(scene->elements()));
+    const auto elements(Common::sortGraphicElements(scene->elements()));
 
-    QVERIFY(elms.at(0) == &btn1 || elms.at(1) == &btn1);
-    QVERIFY(elms.at(0) == &btn2 || elms.at(1) == &btn2);
-    QVERIFY(elms.at(2) == &andItem);
-    QVERIFY(elms.at(3) == &led);
+    QVERIFY(elements.at(0) == &button1 || elements.at(1) == &button1);
+    QVERIFY(elements.at(0) == &button2 || elements.at(1) == &button2);
+    QVERIFY(elements.at(2) == &andItem);
+    QVERIFY(elements.at(3) == &led);
 }

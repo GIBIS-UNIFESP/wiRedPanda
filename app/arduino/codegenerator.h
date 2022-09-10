@@ -46,9 +46,9 @@ private:
 
     QString otherPortName(QNEPort *port);
     void assignLogicOperator(GraphicElement *elm);
-    void assignVariablesRec(const QVector<GraphicElement *> &elms);
+    void assignVariablesRec(const QVector<GraphicElement *> &elements);
     void declareAuxVariables();
-    void declareAuxVariablesRec(const QVector<GraphicElement *> &elms, const bool isBox = false);
+    void declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox = false);
     void declareInputs();
     void declareOutputs();
     void loop();

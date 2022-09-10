@@ -151,9 +151,9 @@ void CodeGenerator::declareOutputs()
     m_stream << endl;
 }
 
-void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elms, const bool isBox)
+void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox)
 {
-    for (auto *elm : elms) {
+    for (auto *elm : elements) {
         if (elm->elementType() == ElementType::IC) {
             //      IC *ic = qgraphicsitem_cast<IC *>(elm);
 
@@ -170,33 +170,42 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elms
         } else {
             QString varName = QString("aux_%1_%2").arg(removeForbiddenChars(elm->objectName()), m_globalCounter++);
             const auto outputs = elm->outputs();
+
             if (outputs.size() == 1) {
                 QNEPort *port = outputs.constFirst();
+
                 if (elm->elementType() == ElementType::InputVcc) {
                     m_varMap[port] = "HIGH";
                     continue;
                 }
+
                 if (elm->elementType() == ElementType::InputGnd) {
                     m_varMap[port] = "LOW";
                     continue;
                 }
+
                 if (m_varMap.value(port).isEmpty()) {
                     m_varMap[port] = varName;
                 }
             } else {
                 int portCounter = 0;
+
                 for (auto *port : outputs) {
                     QString portName = varName;
                     portName.append(QString("_%1").arg(portCounter++));
+
                     if (!port->name().isEmpty()) {
                         portName.append(QString("_%1").arg(removeForbiddenChars(port->name())));
                     }
+
                     m_varMap[port] = portName;
                 }
             }
+
             for (auto *port : outputs) {
                 QString varName2 = m_varMap.value(port);
                 m_stream << "boolean " << varName2 << " = " << highLow(port->defaultValue()) << ";" << endl;
+
                 switch (elm->elementType()) {
                 case ElementType::Clock: {
                     if (!isBox) {
@@ -246,9 +255,9 @@ void CodeGenerator::setup()
              << endl;
 }
 
-void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elms)
+void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements)
 {
-    for (auto *elm : elms) {
+    for (auto *elm : elements) {
         if (elm->elementType() == ElementType::IC) {
             throw Pandaception(tr("IC element not supported: ") + elm->objectName());
             // TODO: CodeGenerator::assignVariablesRec for IC Element

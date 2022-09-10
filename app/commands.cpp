@@ -349,10 +349,10 @@ MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPoint
 void MoveCommand::undo()
 {
     qCDebug(zero) << text();
-    const auto elms = findElements(m_ids);
+    const auto elements = findElements(m_ids);
 
-    for (int i = 0; i < elms.size(); ++i) {
-        elms.at(i)->setPos(m_oldPositions.at(i));
+    for (int i = 0; i < elements.size(); ++i) {
+        elements.at(i)->setPos(m_oldPositions.at(i));
     }
 
     m_scene->setAutosaveRequired();
@@ -361,10 +361,10 @@ void MoveCommand::undo()
 void MoveCommand::redo()
 {
     qCDebug(zero) << text();
-    const auto elms = findElements(m_ids);
+    const auto elements = findElements(m_ids);
 
-    for (int i = 0; i < elms.size(); ++i) {
-        elms.at(i)->setPos(m_newPositions.at(i));
+    for (int i = 0; i < elements.size(); ++i) {
+        elements.at(i)->setPos(m_newPositions.at(i));
     }
 
     m_scene->setAutosaveRequired();

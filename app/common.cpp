@@ -37,20 +37,20 @@ Pandaception::Pandaception(const QString &message)
 {
 }
 
-QVector<GraphicElement *> Common::sortGraphicElements(QVector<GraphicElement *> elms)
+QVector<GraphicElement *> Common::sortGraphicElements(QVector<GraphicElement *> elements)
 {
     QHash<GraphicElement *, bool> beingVisited;
     QHash<GraphicElement *, int> priorities;
 
-    for (auto *elm : elms) {
+    for (auto *elm : elements) {
         calculatePriority(elm, beingVisited, priorities);
     }
 
-    std::sort(elms.begin(), elms.end(), [priorities](const auto &e1, const auto &e2) {
+    std::sort(elements.begin(), elements.end(), [priorities](const auto &e1, const auto &e2) {
         return priorities.value(e1) > priorities.value(e2);
     });
 
-    return elms;
+    return elements;
 }
 
 int Common::calculatePriority(GraphicElement *elm, QHash<GraphicElement *, bool> &beingVisited, QHash<GraphicElement *, int> &priorities)
