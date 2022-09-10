@@ -46,7 +46,7 @@ private:
     void outputIndexChanged(const int index);
     void outputValueChanged(const QString &value);
     void selectionChanged();
-    void setCurrentElements(const QList<GraphicElement *> &elms);
+    void setCurrentElements(const QList<GraphicElement *> &elements);
     void triggerChanged(const QString &cmd);
     void priorityChanged(const int value);
     void updateSkins();

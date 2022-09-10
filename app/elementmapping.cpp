@@ -10,8 +10,8 @@
 #include "qneconnection.h"
 #include "qneport.h"
 
-ElementMapping::ElementMapping(const QVector<GraphicElement *> &elms)
-    : m_elements(elms)
+ElementMapping::ElementMapping(const QVector<GraphicElement *> &elements)
+    : m_elements(elements)
 {
     qCDebug(three) << tr("Generate Map.");
     generateMap();
