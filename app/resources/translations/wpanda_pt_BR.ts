@@ -1296,120 +1296,120 @@
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../graphicelement.cpp" line="43"/>
+        <location filename="../../graphicelement.cpp" line="44"/>
         <source>Setting flags of elements.</source>
         <translation>Configurando flags dos elementos.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="46"/>
+        <location filename="../../graphicelement.cpp" line="47"/>
         <source>Setting attributes.</source>
         <translation>Configurando atributos.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="55"/>
+        <location filename="../../graphicelement.cpp" line="56"/>
         <source>Including input and output ports.</source>
         <translation>Incluindo portas de entrada e saída.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="100"/>
+        <location filename="../../graphicelement.cpp" line="101"/>
         <source>Couldn&apos;t load pixmap.</source>
         <translation>Não foi possível carregar o pixmap.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="99"/>
+        <location filename="../../graphicelement.cpp" line="100"/>
         <source>Problem loading pixmapPath: </source>
         <translation>Problema ao carregar pixmapPath: </translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="134"/>
+        <location filename="../../graphicelement.cpp" line="135"/>
         <source>Saving element. Type: </source>
         <translation>Salvando elemento. Tipo: </translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="208"/>
+        <location filename="../../graphicelement.cpp" line="209"/>
         <source>Finished saving element.</source>
         <translation>Concluído salvamento do elemento.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="213"/>
+        <location filename="../../graphicelement.cpp" line="214"/>
         <source>Loading element. Type: </source>
         <translation>Carregando elemento. Tipo: </translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="217"/>
+        <location filename="../../graphicelement.cpp" line="218"/>
         <source>Updating port positions.</source>
         <translation>Atualizando posição das portas.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="220"/>
+        <location filename="../../graphicelement.cpp" line="221"/>
         <source>Finished loading element.</source>
         <translation>Concluído carregamento do elemento.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="438"/>
+        <location filename="../../graphicelement.cpp" line="439"/>
         <source>Loading input ports.</source>
         <translation>Carregando portas de entrada.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="443"/>
-        <location filename="../../graphicelement.cpp" line="525"/>
-        <location filename="../../graphicelement.cpp" line="567"/>
+        <location filename="../../graphicelement.cpp" line="444"/>
+        <location filename="../../graphicelement.cpp" line="526"/>
+        <location filename="../../graphicelement.cpp" line="568"/>
         <source>Corrupted DataStream!</source>
         <translation>DataStream corrompido!</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="520"/>
+        <location filename="../../graphicelement.cpp" line="521"/>
         <source>Loading output ports.</source>
         <translation>Carregando portas de saída.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="562"/>
+        <location filename="../../graphicelement.cpp" line="563"/>
         <source>Loading pixmap skin names.</source>
         <translation>Carregando nome das skins dos pixmaps.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="586"/>
+        <location filename="../../graphicelement.cpp" line="587"/>
         <source>Could not load some of the skins.</source>
         <translation>Não foi possível carregar algumas das skins.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="723"/>
+        <location filename="../../graphicelement.cpp" line="724"/>
         <source>Setting input at </source>
         <translation>Configurando entrada em </translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="723"/>
-        <location filename="../../graphicelement.cpp" line="743"/>
+        <location filename="../../graphicelement.cpp" line="724"/>
+        <location filename="../../graphicelement.cpp" line="744"/>
         <source>, </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="743"/>
+        <location filename="../../graphicelement.cpp" line="744"/>
         <source>Setting output at </source>
         <translation>Configurando saída em </translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="635"/>
+        <location filename="../../graphicelement.cpp" line="636"/>
         <source>New port.</source>
         <translation>Nova porta.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="715"/>
+        <location filename="../../graphicelement.cpp" line="716"/>
         <source>Updating port positions that belong to the IC.</source>
         <translation>Atualizando posição das portas que pertencem ao CI.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="772"/>
+        <location filename="../../graphicelement.cpp" line="773"/>
         <source>Align to grid.</source>
         <translation>Alinhar à grade.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="781"/>
+        <location filename="../../graphicelement.cpp" line="782"/>
         <source>Moves wires.</source>
         <translation>Move os fios.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="872"/>
+        <location filename="../../graphicelement.cpp" line="884"/>
         <source>Checking if the element has the required signals to compute its value.</source>
         <translation>Verificando se o elemento possui os sinais necessários para calcular seu valor.</translation>
     </message>
@@ -1822,6 +1822,12 @@
         <location filename="../../mainwindow.cpp" line="260"/>
         <source>&apos;hideV4Warning&apos; message box.</source>
         <translation>caixa de mensagem &apos;hideV4Warning&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="322"/>
+        <source> has been modified. 
+Do you want to save your changes?</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="357"/>
@@ -2357,11 +2363,6 @@
         <translation>Sair do </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="322"/>
-        <source> has been modified. Do you want to save your changes?</source>
-        <translation> foi modificado. Deseja salvar suas alterações?</translation>
-    </message>
-    <message>
         <location filename="../../mainwindow.cpp" line="968"/>
         <location filename="../../mainwindow.cpp" line="1002"/>
         <source>Exported file successfully.</source>
@@ -2496,57 +2497,57 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../nodes/qneconnection.cpp" line="179"/>
+        <location filename="../../nodes/qneconnection.cpp" line="180"/>
         <source>Empty port map.</source>
         <translation>Mapa das portas vazio.</translation>
     </message>
     <message>
-        <location filename="../../nodes/qneconnection.cpp" line="199"/>
+        <location filename="../../nodes/qneconnection.cpp" line="200"/>
         <source>Port map with elements: ptr1(</source>
         <translation>Mapa das portas com elementos: ptr1(</translation>
     </message>
     <message>
-        <location filename="../../nodes/qneconnection.cpp" line="199"/>
+        <location filename="../../nodes/qneconnection.cpp" line="200"/>
         <source>), ptr2(</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../nodes/qneconnection.cpp" line="202"/>
+        <location filename="../../nodes/qneconnection.cpp" line="203"/>
         <source>Before if 1.</source>
         <translation>Antes do if 1.</translation>
     </message>
     <message>
-        <location filename="../../nodes/qneconnection.cpp" line="205"/>
+        <location filename="../../nodes/qneconnection.cpp" line="206"/>
         <source>Before if 2.</source>
         <translation>Antes do if 2.</translation>
     </message>
     <message>
-        <location filename="../../nodes/qneconnection.cpp" line="208"/>
+        <location filename="../../nodes/qneconnection.cpp" line="209"/>
         <source>Setting start 1.</source>
         <translation>Setando começo 1.</translation>
     </message>
     <message>
-        <location filename="../../nodes/qneconnection.cpp" line="210"/>
+        <location filename="../../nodes/qneconnection.cpp" line="211"/>
         <source>Setting end 1.</source>
         <translation>Setando fim 1.</translation>
     </message>
     <message>
-        <location filename="../../nodes/qneconnection.cpp" line="213"/>
+        <location filename="../../nodes/qneconnection.cpp" line="214"/>
         <source>Setting start 2.</source>
         <translation>Setando começo 2.</translation>
     </message>
     <message>
-        <location filename="../../nodes/qneconnection.cpp" line="215"/>
+        <location filename="../../nodes/qneconnection.cpp" line="216"/>
         <source>Setting end 2.</source>
         <translation>Setando fim 2.</translation>
     </message>
     <message>
-        <location filename="../../nodes/qneconnection.cpp" line="219"/>
+        <location filename="../../nodes/qneconnection.cpp" line="220"/>
         <source>After ifs.</source>
         <translation>Depois dos ifs.</translation>
     </message>
     <message>
-        <location filename="../../nodes/qneconnection.cpp" line="223"/>
+        <location filename="../../nodes/qneconnection.cpp" line="224"/>
         <source>Updating pos from ports.</source>
         <translation>Atualizando pos das portas.</translation>
     </message>
@@ -2589,7 +2590,7 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <translation>Concluído leitura do CI.</translation>
     </message>
     <message>
-        <location filename="../../nodes/qneconnection.cpp" line="326"/>
+        <location filename="../../nodes/qneconnection.cpp" line="338"/>
         <source>Writing Connection.</source>
         <translation>Escrevendo conexão.</translation>
     </message>
@@ -2604,7 +2605,7 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <translation>Liberando.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="1107"/>
+        <location filename="../../graphicelement.cpp" line="1119"/>
         <source>Writing element.</source>
         <translation>Escrevendo elemento.</translation>
     </message>
@@ -2687,25 +2688,25 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
     </message>
     <message>
         <location filename="../../scene.cpp" line="761"/>
-        <location filename="../../scene.cpp" line="1032"/>
+        <location filename="../../scene.cpp" line="1038"/>
         <source>Valid element.</source>
         <translation>Elemento válido.</translation>
     </message>
     <message>
         <location filename="../../scene.cpp" line="769"/>
-        <location filename="../../scene.cpp" line="1040"/>
+        <location filename="../../scene.cpp" line="1046"/>
         <source>Adding the element to the scene.</source>
         <translation>Adicionando o elemento para o cenário.</translation>
     </message>
     <message>
         <location filename="../../scene.cpp" line="772"/>
-        <location filename="../../scene.cpp" line="1043"/>
+        <location filename="../../scene.cpp" line="1049"/>
         <source>Cleaning the selection.</source>
         <translation>Limpando a seleção.</translation>
     </message>
     <message>
         <location filename="../../scene.cpp" line="775"/>
-        <location filename="../../scene.cpp" line="1046"/>
+        <location filename="../../scene.cpp" line="1052"/>
         <source>Setting created element as selected.</source>
         <translation>Setando elemento criado como selecionado.</translation>
     </message>
