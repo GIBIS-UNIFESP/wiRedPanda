@@ -717,8 +717,7 @@ void BewavedDolphin::on_actionClear_triggered()
 {
     for (int row = 0; row < m_inputPorts; ++row) {
         for (int col = 0; col < m_model->columnCount(); ++col) {
-            const auto index = m_model->index(row, col);
-            m_model->setData(index, 0, Qt::DisplayRole);
+            createZeroElement(row, col);
         }
     }
 
