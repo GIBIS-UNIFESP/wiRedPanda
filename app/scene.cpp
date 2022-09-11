@@ -810,7 +810,7 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
 
 void Scene::keyPressEvent(QKeyEvent *event)
 {
-    if (!(event->modifiers() & Qt::ControlModifier)) {
+    if (!(event->modifiers().testFlag(Qt::ControlModifier))) {
         for (auto *element : elements()) {
             if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {
                 if (auto *input = qobject_cast<GraphicElementInput *>(element);
@@ -826,7 +826,7 @@ void Scene::keyPressEvent(QKeyEvent *event)
 
 void Scene::keyReleaseEvent(QKeyEvent *event)
 {
-    if (!(event->modifiers() & Qt::ControlModifier)) {
+    if (!(event->modifiers().testFlag(Qt::ControlModifier))) {
         for (auto *element : elements()) {
             if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {
                 if (auto *input = qobject_cast<GraphicElementInput *>(element);
@@ -843,13 +843,13 @@ void Scene::keyReleaseEvent(QKeyEvent *event)
 bool Scene::eventFilter(QObject *watched, QEvent *event)
 {
     if (auto *mouseEvent = dynamic_cast<QGraphicsSceneMouseEvent *>(event)) {
-        if (mouseEvent->modifiers() & Qt::ShiftModifier) {
+        if (mouseEvent->modifiers().testFlag(Qt::ShiftModifier)) {
             mouseEvent->setModifiers(Qt::ControlModifier);
             return false;
         }
 
         if ((mouseEvent->button() == Qt::LeftButton)
-                && (mouseEvent->modifiers() & Qt::ControlModifier)) {
+                && (mouseEvent->modifiers().testFlag(Qt::ControlModifier))) {
             if (auto *item = itemAt(mouseEvent->scenePos());
                     item && (item->type() == GraphicElement::Type || item->type() == QNEConnection::Type)) {
                 item->setSelected(true);
@@ -1002,7 +1002,7 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (event->modifiers() & Qt::ControlModifier) {
+    if (event->modifiers().testFlag(Qt::ControlModifier)) {
         return;
     }
 
