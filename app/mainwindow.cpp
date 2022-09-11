@@ -319,7 +319,7 @@ int MainWindow::confirmSave(const bool multiple)
         fileName = tr("New Project");
     }
 
-    msgBox.setText(fileName + tr(" has been modified. Do you want to save your changes?"));
+    msgBox.setText(m_currentFile.fileName() + tr(" has been modified. \nDo you want to save your changes?"));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Yes);
     return msgBox.exec();
