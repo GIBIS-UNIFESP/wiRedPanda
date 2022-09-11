@@ -871,15 +871,22 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
     if (item) {
         if (event->button() == Qt::LeftButton) {
-            if (item->type() == GraphicElement::Type) {
-                item->setSelected(true);
-                m_draggingElement = true;
+            if (event->modifiers().testFlag(Qt::ControlModifier)) {
+                item->setSelected(!item->isSelected());
             }
+
+            auto selectedElements_ = selectedElements();
+
+            if (auto *element = qgraphicsitem_cast<GraphicElement *>(item)) {
+                selectedElements_ << element;
+            }
+
+            m_draggingElement = (item->type() == GraphicElement::Type && !selectedElements_.isEmpty());
 
             m_movedElements.clear();
             m_oldPositions.clear();
 
-            for (auto *element : selectedElements()) {
+            for (auto *element : qAsConst(selectedElements_)) {
                 m_movedElements.append(element);
                 m_oldPositions.append(element->pos());
             }
@@ -919,7 +926,6 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         contextMenu(event->screenPos());
     }
 
-    // TODO: need to move this to the start of the function to select/unselect the item at mouse position
     QGraphicsScene::mousePressEvent(event);
 }
 

@@ -32,6 +32,7 @@
 #include <QBrush>
 #include <QDebug>
 #include <QGraphicsScene>
+#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QPen>
 #include <QStyleOptionGraphicsItem>
@@ -319,6 +320,17 @@ void QNEConnection::setHighLight(const bool newHighLight)
 QRectF QNEConnection::boundingRect() const
 {
     return path().boundingRect().adjusted(-10, -10, 10, 10);
+}
+
+bool QNEConnection::sceneEvent(QEvent *event)
+{
+    if (auto mouseEvent = dynamic_cast<QGraphicsSceneMouseEvent *>(event)) {
+        if (mouseEvent->modifiers().testFlag(Qt::ControlModifier)) {
+            return true;
+        }
+    }
+
+    return QGraphicsPathItem::sceneEvent(event);
 }
 
 QDataStream &operator<<(QDataStream &stream, const QNEConnection *item)

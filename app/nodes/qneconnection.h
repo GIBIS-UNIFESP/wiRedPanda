@@ -71,6 +71,7 @@ public:
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+    bool sceneEvent(QEvent *event) override;
 
 private:
     QColor m_activeColor;

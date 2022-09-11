@@ -11,6 +11,7 @@
 
 #include <QDir>
 #include <QFileInfo>
+#include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
 #include <QPainter>
 #include <QPixmap>
@@ -794,6 +795,17 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
     }
 
     return QGraphicsItem::itemChange(change, value);
+}
+
+bool GraphicElement::sceneEvent(QEvent *event)
+{
+    if (auto mouseEvent = dynamic_cast<QGraphicsSceneMouseEvent *>(event)) {
+        if (mouseEvent->modifiers().testFlag(Qt::ControlModifier)) {
+            return true;
+        }
+    }
+
+    return QGraphicsItem::sceneEvent(event);
 }
 
 bool GraphicElement::hasAudio() const
