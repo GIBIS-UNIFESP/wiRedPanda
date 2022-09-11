@@ -104,7 +104,7 @@
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="200"/>
-        <location filename="../../bewaveddolphin.cpp" line="1216"/>
+        <location filename="../../bewaveddolphin.cpp" line="1212"/>
         <source>Export to PDF</source>
         <translation type="unfinished"></translation>
     </message>
@@ -177,6 +177,16 @@
         <location filename="../../bewaveddolphin.ui" line="387"/>
         <location filename="../../bewaveddolphin.ui" line="390"/>
         <source>Fit to screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.ui" line="434"/>
+        <source>Show Numbers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.ui" line="439"/>
+        <source>Show Waveforms</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -296,375 +306,361 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="434"/>
-        <source>Show Numeric</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../bewaveddolphin.ui" line="439"/>
-        <source>Show Waves</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../bewaveddolphin.cpp" line="74"/>
-        <location filename="../../bewaveddolphin.cpp" line="449"/>
-        <location filename="../../bewaveddolphin.cpp" line="900"/>
-        <location filename="../../bewaveddolphin.cpp" line="1049"/>
+        <location filename="../../bewaveddolphin.cpp" line="73"/>
+        <location filename="../../bewaveddolphin.cpp" line="445"/>
+        <location filename="../../bewaveddolphin.cpp" line="895"/>
+        <location filename="../../bewaveddolphin.cpp" line="1043"/>
         <source>beWavedDolphin Simulator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="159"/>
-        <location filename="../../bewaveddolphin.cpp" line="851"/>
+        <location filename="../../bewaveddolphin.cpp" line="153"/>
+        <location filename="../../bewaveddolphin.cpp" line="846"/>
         <source>WiRedPanda - beWavedDolphin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="160"/>
+        <location filename="../../bewaveddolphin.cpp" line="154"/>
         <source>Save simulation before closing?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="179"/>
-        <location filename="../../bewaveddolphin.cpp" line="204"/>
+        <location filename="../../bewaveddolphin.cpp" line="174"/>
+        <location filename="../../bewaveddolphin.cpp" line="201"/>
         <source>Could not load enough elements for the simulation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="216"/>
+        <location filename="../../bewaveddolphin.cpp" line="218"/>
         <location filename="../../bewaveddolphin.cpp" line="256"/>
-        <source>Getting previous value to check previous cell refresh requirement.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../bewaveddolphin.cpp" line="227"/>
-        <location filename="../../bewaveddolphin.cpp" line="268"/>
         <source>Changing current item.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="288"/>
-        <source>Changing previous item, if needed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../bewaveddolphin.cpp" line="296"/>
+        <location filename="../../bewaveddolphin.cpp" line="289"/>
         <source>Restoring old values to inputs, prior to simulation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="318"/>
+        <location filename="../../bewaveddolphin.cpp" line="311"/>
         <source>, inputs:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="318"/>
+        <location filename="../../bewaveddolphin.cpp" line="311"/>
         <source>Itr: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="329"/>
+        <location filename="../../bewaveddolphin.cpp" line="322"/>
         <source>Updating the values of the circuit logic based on current input values.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="331"/>
+        <location filename="../../bewaveddolphin.cpp" line="325"/>
         <source>Setting the computed output values to the waveform results.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="342"/>
+        <location filename="../../bewaveddolphin.cpp" line="337"/>
         <source>Setting inputs back to old values.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="314"/>
+        <location filename="../../bewaveddolphin.cpp" line="307"/>
         <source>Creating class to pause main window simulator while creating waveform.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="249"/>
-        <source>Changing previous item.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../bewaveddolphin.cpp" line="350"/>
+        <location filename="../../bewaveddolphin.cpp" line="345"/>
         <source>Num iter = </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="372"/>
+        <location filename="../../bewaveddolphin.cpp" line="369"/>
         <source>Inputs: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="372"/>
+        <location filename="../../bewaveddolphin.cpp" line="369"/>
         <source>, outputs: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="406"/>
+        <location filename="../../bewaveddolphin.cpp" line="400"/>
         <source>Getting the name of the outputs. If no label is given, element type is used as a name.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="430"/>
+        <location filename="../../bewaveddolphin.cpp" line="423"/>
         <source>Updating window name with current: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="432"/>
+        <location filename="../../bewaveddolphin.cpp" line="426"/>
         <source>Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="436"/>
+        <location filename="../../bewaveddolphin.cpp" line="429"/>
         <source>Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation. Not saving memory states though...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="440"/>
+        <location filename="../../bewaveddolphin.cpp" line="436"/>
         <source>Loading initial data into the table.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="462"/>
+        <location filename="../../bewaveddolphin.cpp" line="458"/>
         <source>Resuming digital circuit main window after waveform simulation is finished.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="475"/>
+        <location filename="../../bewaveddolphin.cpp" line="471"/>
         <source>Getting table dimensions.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="496"/>
-        <location filename="../../bewaveddolphin.cpp" line="514"/>
+        <location filename="../../bewaveddolphin.cpp" line="491"/>
+        <location filename="../../bewaveddolphin.cpp" line="508"/>
         <source>Pressed 0.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="503"/>
-        <location filename="../../bewaveddolphin.cpp" line="520"/>
-        <location filename="../../bewaveddolphin.cpp" line="539"/>
-        <location filename="../../bewaveddolphin.cpp" line="596"/>
+        <location filename="../../bewaveddolphin.cpp" line="497"/>
+        <location filename="../../bewaveddolphin.cpp" line="514"/>
+        <location filename="../../bewaveddolphin.cpp" line="533"/>
+        <location filename="../../bewaveddolphin.cpp" line="591"/>
         <source>Editing value.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="508"/>
-        <location filename="../../bewaveddolphin.cpp" line="525"/>
-        <location filename="../../bewaveddolphin.cpp" line="544"/>
-        <location filename="../../bewaveddolphin.cpp" line="601"/>
-        <location filename="../../bewaveddolphin.cpp" line="622"/>
-        <location filename="../../bewaveddolphin.cpp" line="680"/>
-        <location filename="../../bewaveddolphin.cpp" line="729"/>
-        <location filename="../../bewaveddolphin.cpp" line="1173"/>
-        <location filename="../../bewaveddolphin.cpp" line="1187"/>
+        <location filename="../../bewaveddolphin.cpp" line="502"/>
+        <location filename="../../bewaveddolphin.cpp" line="519"/>
+        <location filename="../../bewaveddolphin.cpp" line="538"/>
+        <location filename="../../bewaveddolphin.cpp" line="596"/>
+        <location filename="../../bewaveddolphin.cpp" line="617"/>
+        <location filename="../../bewaveddolphin.cpp" line="675"/>
+        <location filename="../../bewaveddolphin.cpp" line="725"/>
+        <location filename="../../bewaveddolphin.cpp" line="1167"/>
+        <location filename="../../bewaveddolphin.cpp" line="1181"/>
         <source>Running simulation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="531"/>
+        <location filename="../../bewaveddolphin.cpp" line="525"/>
         <source>Pressed Not.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="576"/>
+        <location filename="../../bewaveddolphin.cpp" line="570"/>
         <source>Getting first column.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="579"/>
+        <location filename="../../bewaveddolphin.cpp" line="574"/>
         <source>Setting the signal according to its column and clock period.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="607"/>
+        <location filename="../../bewaveddolphin.cpp" line="602"/>
         <source>Setting the signal according to its columns and clock period.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="628"/>
+        <location filename="../../bewaveddolphin.cpp" line="623"/>
         <source>Setting the simulation length.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="645"/>
+        <location filename="../../bewaveddolphin.cpp" line="640"/>
         <source>Reducing or keeping the simulation length.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="660"/>
+        <location filename="../../bewaveddolphin.cpp" line="655"/>
         <source>Increasing the simulation length.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="804"/>
-        <location filename="../../bewaveddolphin.cpp" line="982"/>
+        <location filename="../../bewaveddolphin.cpp" line="799"/>
+        <location filename="../../bewaveddolphin.cpp" line="976"/>
         <source>Serializing data into data stream.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="852"/>
+        <location filename="../../bewaveddolphin.cpp" line="847"/>
         <source>Do you want to link this beWavedDolphin file to your current WiRedPanda file and save it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="867"/>
+        <location filename="../../bewaveddolphin.cpp" line="862"/>
         <source>Save File as...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="870"/>
+        <location filename="../../bewaveddolphin.cpp" line="865"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="871"/>
+        <location filename="../../bewaveddolphin.cpp" line="866"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="901"/>
-        <location filename="../../bewaveddolphin.cpp" line="914"/>
+        <location filename="../../bewaveddolphin.cpp" line="896"/>
+        <location filename="../../bewaveddolphin.cpp" line="908"/>
         <source>Saved file successfully.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="935"/>
+        <location filename="../../bewaveddolphin.cpp" line="929"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="937"/>
+        <location filename="../../bewaveddolphin.cpp" line="931"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="953"/>
+        <location filename="../../bewaveddolphin.cpp" line="947"/>
         <source>File loaded successfully.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="961"/>
+        <location filename="../../bewaveddolphin.cpp" line="955"/>
         <source>Error opening file: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="965"/>
+        <location filename="../../bewaveddolphin.cpp" line="959"/>
         <source>Saving dolphin file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="970"/>
+        <location filename="../../bewaveddolphin.cpp" line="964"/>
         <source>Saving CSV file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="975"/>
+        <location filename="../../bewaveddolphin.cpp" line="969"/>
         <source>Error saving file: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1020"/>
+        <location filename="../../bewaveddolphin.cpp" line="1014"/>
         <source>File exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1023"/>
-        <location filename="../../bewaveddolphin.cpp" line="1024"/>
+        <location filename="../../bewaveddolphin.cpp" line="1017"/>
+        <location filename="../../bewaveddolphin.cpp" line="1018"/>
         <source>Could not open file in ReadOnly mode: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1028"/>
+        <location filename="../../bewaveddolphin.cpp" line="1022"/>
         <source>Dolphin file opened.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../bewaveddolphin.cpp" line="1025"/>
         <location filename="../../bewaveddolphin.cpp" line="1031"/>
-        <location filename="../../bewaveddolphin.cpp" line="1037"/>
         <source>Loading in editor.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../bewaveddolphin.cpp" line="1027"/>
         <location filename="../../bewaveddolphin.cpp" line="1033"/>
-        <location filename="../../bewaveddolphin.cpp" line="1039"/>
         <source>Current file set.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1036"/>
+        <location filename="../../bewaveddolphin.cpp" line="1030"/>
         <source>CSV file opened.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1042"/>
-        <location filename="../../bewaveddolphin.cpp" line="1043"/>
+        <location filename="../../bewaveddolphin.cpp" line="1036"/>
+        <location filename="../../bewaveddolphin.cpp" line="1037"/>
         <source>Format not supported. Could not open file: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1046"/>
+        <location filename="../../bewaveddolphin.cpp" line="1040"/>
         <source>Closing file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1058"/>
+        <location filename="../../bewaveddolphin.cpp" line="1052"/>
         <source>Invalid file format. Starts with: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1071"/>
-        <location filename="../../bewaveddolphin.cpp" line="1140"/>
+        <location filename="../../bewaveddolphin.cpp" line="1065"/>
+        <location filename="../../bewaveddolphin.cpp" line="1134"/>
         <source>Invalid number of columns.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1075"/>
-        <location filename="../../bewaveddolphin.cpp" line="1145"/>
+        <location filename="../../bewaveddolphin.cpp" line="1069"/>
+        <location filename="../../bewaveddolphin.cpp" line="1139"/>
         <source>Update table.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1193"/>
+        <location filename="../../bewaveddolphin.cpp" line="1187"/>
         <source>Export to Image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1193"/>
+        <location filename="../../bewaveddolphin.cpp" line="1187"/>
         <source>PNG files (*.png)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1216"/>
+        <location filename="../../bewaveddolphin.cpp" line="1212"/>
         <source>PDF files (*.pdf)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1234"/>
+        <location filename="../../bewaveddolphin.cpp" line="1231"/>
         <source>Could not print this circuit to PDF.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1245"/>
+        <location filename="../../bewaveddolphin.cpp" line="1242"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for the WiRedPanda software developed by the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1276"/>
+        <location filename="../../bewaveddolphin.cpp" line="1273"/>
         <source>Waveform would be too big! Resetting zoom.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="455"/>
-        <location filename="../../bewaveddolphin.cpp" line="1017"/>
+        <location filename="../../bewaveddolphin.cpp" line="451"/>
+        <location filename="../../bewaveddolphin.cpp" line="1011"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="437"/>
+        <location filename="../../bewaveddolphin.cpp" line="215"/>
+        <location filename="../../bewaveddolphin.cpp" line="253"/>
+        <source>Getting current value to check if need to refresh next cell</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.cpp" line="243"/>
+        <location filename="../../bewaveddolphin.cpp" line="281"/>
+        <source>Changing next item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.cpp" line="430"/>
         <source>Also getting the name of the inputs. If no label is given, the element type is used as a name.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -719,28 +715,18 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../clockdialog.ui" line="24"/>
+        <location filename="../../clockdialog.ui" line="80"/>
         <source>2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../clockdialog.ui" line="34"/>
+        <location filename="../../clockdialog.ui" line="63"/>
         <source>Clock Frequency</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../clockdialog.ui" line="41"/>
+        <location filename="../../clockdialog.ui" line="70"/>
         <source>1024</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../clockdialog.ui" line="85"/>
-        <source>Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../clockdialog.ui" line="95"/>
-        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -752,12 +738,12 @@
 <context>
     <name>CodeGenerator</name>
     <message>
-        <location filename="../../arduino/codegenerator.cpp" line="253"/>
+        <location filename="../../arduino/codegenerator.cpp" line="262"/>
         <source>IC element not supported: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../arduino/codegenerator.cpp" line="415"/>
+        <location filename="../../arduino/codegenerator.cpp" line="424"/>
         <source>Element type not supported: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1130,96 +1116,96 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="183"/>
-        <location filename="../../elementeditor.cpp" line="256"/>
+        <location filename="../../elementeditor.cpp" line="201"/>
+        <location filename="../../elementeditor.cpp" line="274"/>
         <source>Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="184"/>
-        <location filename="../../elementeditor.cpp" line="256"/>
+        <location filename="../../elementeditor.cpp" line="202"/>
+        <location filename="../../elementeditor.cpp" line="274"/>
         <source>Cut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="190"/>
-        <location filename="../../elementeditor.cpp" line="256"/>
+        <location filename="../../elementeditor.cpp" line="208"/>
+        <location filename="../../elementeditor.cpp" line="274"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="260"/>
+        <location filename="../../elementeditor.cpp" line="278"/>
         <source>Unknown context menu option.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="284"/>
+        <location filename="../../elementeditor.cpp" line="302"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="286"/>
+        <location filename="../../elementeditor.cpp" line="304"/>
         <source>Images (*.png *.gif *.jpg *.jpeg)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="299"/>
+        <location filename="../../elementeditor.cpp" line="317"/>
         <source>File name: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="679"/>
+        <location filename="../../elementeditor.cpp" line="695"/>
         <source>Input size changed to </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="693"/>
+        <location filename="../../elementeditor.cpp" line="709"/>
         <source>Output size changed to </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="769"/>
-        <location filename="../../elementeditor.cpp" line="779"/>
+        <location filename="../../elementeditor.cpp" line="785"/>
+        <location filename="../../elementeditor.cpp" line="795"/>
         <source>Pos = </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="769"/>
+        <location filename="../../elementeditor.cpp" line="785"/>
         <source> from </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="327"/>
+        <location filename="../../elementeditor.cpp" line="345"/>
         <source>Green</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="328"/>
+        <location filename="../../elementeditor.cpp" line="346"/>
         <source>Blue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="329"/>
+        <location filename="../../elementeditor.cpp" line="347"/>
         <source>Purple</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="330"/>
+        <location filename="../../elementeditor.cpp" line="348"/>
         <source>Red</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="331"/>
+        <location filename="../../elementeditor.cpp" line="349"/>
         <source>White</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="620"/>
+        <location filename="../../elementeditor.cpp" line="636"/>
         <source>Apply.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="732"/>
+        <location filename="../../elementeditor.cpp" line="748"/>
         <source>Input locked.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1569,27 +1555,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../lengthdialog.ui" line="24"/>
+        <location filename="../../lengthdialog.ui" line="43"/>
         <source>2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../lengthdialog.ui" line="55"/>
-        <source>Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../lengthdialog.ui" line="65"/>
-        <source>OK</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../lengthdialog.ui" line="77"/>
+        <location filename="../../lengthdialog.ui" line="53"/>
         <source>Simulation Length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../lengthdialog.ui" line="84"/>
+        <location filename="../../lengthdialog.ui" line="60"/>
         <source>2048</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2021,7 +1997,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1086"/>
-        <location filename="../../mainwindow.cpp" line="1230"/>
+        <location filename="../../mainwindow.cpp" line="1217"/>
         <source>Mute</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2136,7 +2112,7 @@
         <location filename="../../mainwindow.cpp" line="197"/>
         <location filename="../../mainwindow.cpp" line="319"/>
         <location filename="../../mainwindow.cpp" line="525"/>
-        <location filename="../../mainwindow.cpp" line="1034"/>
+        <location filename="../../mainwindow.cpp" line="1021"/>
         <source>New Project</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2323,80 +2299,80 @@ You have to save new projects before accessing ICs and skins, or running beWaved
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="806"/>
-        <location filename="../../mainwindow.cpp" line="834"/>
+        <location filename="../../mainwindow.cpp" line="793"/>
+        <location filename="../../mainwindow.cpp" line="821"/>
         <source>Missing file name.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="812"/>
+        <location filename="../../mainwindow.cpp" line="799"/>
         <source>The panda file is empty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="826"/>
-        <location filename="../../mainwindow.cpp" line="828"/>
+        <location filename="../../mainwindow.cpp" line="813"/>
+        <location filename="../../mainwindow.cpp" line="815"/>
         <source>Arduino code successfully generated.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="861"/>
+        <location filename="../../mainwindow.cpp" line="848"/>
         <source>Generate Arduino Code</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="861"/>
+        <location filename="../../mainwindow.cpp" line="848"/>
         <source>Arduino file (*.ino)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="960"/>
+        <location filename="../../mainwindow.cpp" line="947"/>
         <source>Export to PDF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="960"/>
+        <location filename="../../mainwindow.cpp" line="947"/>
         <source>PDF files (*.pdf)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="975"/>
+        <location filename="../../mainwindow.cpp" line="962"/>
         <source>Could not print this circuit to PDF.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="981"/>
-        <location filename="../../mainwindow.cpp" line="1015"/>
+        <location filename="../../mainwindow.cpp" line="968"/>
+        <location filename="../../mainwindow.cpp" line="1002"/>
         <source>Exported file successfully.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="996"/>
+        <location filename="../../mainwindow.cpp" line="983"/>
         <source>Export to Image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="996"/>
+        <location filename="../../mainwindow.cpp" line="983"/>
         <source>PNG files (*.png)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1080"/>
+        <location filename="../../mainwindow.cpp" line="1067"/>
         <source>Error loading WiRedPanda translation!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1088"/>
+        <location filename="../../mainwindow.cpp" line="1075"/>
         <source>Error loading Qt translation!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1148"/>
+        <location filename="../../mainwindow.cpp" line="1135"/>
         <source>BD fileName: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1230"/>
+        <location filename="../../mainwindow.cpp" line="1217"/>
         <source>Unmute</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2668,66 +2644,66 @@ You have to save new projects before accessing ICs and skins, or running beWaved
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="320"/>
+        <location filename="../../scene.cpp" line="312"/>
         <source>Updating theme.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="335"/>
+        <location filename="../../scene.cpp" line="327"/>
         <source>Finished updating theme.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="386"/>
+        <location filename="../../scene.cpp" line="378"/>
         <source>Ctrl + Drag action triggered.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="573"/>
+        <location filename="../../scene.cpp" line="565"/>
         <source>Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="766"/>
+        <location filename="../../scene.cpp" line="758"/>
         <source> at position: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="766"/>
+        <location filename="../../scene.cpp" line="758"/>
         <source>, </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="766"/>
+        <location filename="../../scene.cpp" line="758"/>
         <source>, label: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="769"/>
-        <location filename="../../scene.cpp" line="1039"/>
+        <location filename="../../scene.cpp" line="761"/>
+        <location filename="../../scene.cpp" line="1032"/>
         <source>Valid element.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="777"/>
-        <location filename="../../scene.cpp" line="1047"/>
+        <location filename="../../scene.cpp" line="769"/>
+        <location filename="../../scene.cpp" line="1040"/>
         <source>Adding the element to the scene.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="780"/>
-        <location filename="../../scene.cpp" line="1050"/>
+        <location filename="../../scene.cpp" line="772"/>
+        <location filename="../../scene.cpp" line="1043"/>
         <source>Cleaning the selection.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="783"/>
-        <location filename="../../scene.cpp" line="1053"/>
+        <location filename="../../scene.cpp" line="775"/>
+        <location filename="../../scene.cpp" line="1046"/>
         <source>Setting created element as selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="786"/>
+        <location filename="../../scene.cpp" line="778"/>
         <source>Adjusting the position of the element.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3178,40 +3154,40 @@ You have to save new projects before accessing ICs and skins, or running beWaved
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="212"/>
-        <location filename="../../workspace.cpp" line="254"/>
-        <location filename="../../workspace.cpp" line="260"/>
+        <location filename="../../workspace.cpp" line="205"/>
+        <location filename="../../workspace.cpp" line="247"/>
+        <location filename="../../workspace.cpp" line="253"/>
         <source>Autosavepath: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="214"/>
-        <location filename="../../workspace.cpp" line="256"/>
+        <location filename="../../workspace.cpp" line="207"/>
+        <location filename="../../workspace.cpp" line="249"/>
         <source>Setting current file to random file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="221"/>
+        <location filename="../../workspace.cpp" line="214"/>
         <source>All auto save file names before autosaving: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="231"/>
+        <location filename="../../workspace.cpp" line="224"/>
         <source>All auto save file names after possibly removing autosave: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="234"/>
+        <location filename="../../workspace.cpp" line="227"/>
         <source> of </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="262"/>
+        <location filename="../../workspace.cpp" line="255"/>
         <source>Setting current file to: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="281"/>
+        <location filename="../../workspace.cpp" line="274"/>
         <source>All auto save file names after adding autosave: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -3253,67 +3229,67 @@ You have to save new projects before accessing ICs and skins, or running beWaved
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="190"/>
+        <location filename="../../workspace.cpp" line="183"/>
         <source>Finished loading file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="205"/>
+        <location filename="../../workspace.cpp" line="198"/>
         <source>Defining autosave path.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="219"/>
+        <location filename="../../workspace.cpp" line="212"/>
         <source>Starting autosave.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="223"/>
+        <location filename="../../workspace.cpp" line="216"/>
         <source>Checking if autosave file exists and if it contains current project file. If so, remove autosave file from it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="226"/>
+        <location filename="../../workspace.cpp" line="219"/>
         <source>Removing current autosave file name.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="232"/>
+        <location filename="../../workspace.cpp" line="225"/>
         <source>If autosave exists and undo stack is clean, remove it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="234"/>
+        <location filename="../../workspace.cpp" line="227"/>
         <source>Undo stack element: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="237"/>
+        <location filename="../../workspace.cpp" line="230"/>
         <source>Undo stack is clean.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="244"/>
+        <location filename="../../workspace.cpp" line="237"/>
         <source>Undo is !clean. Must set autosave file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="247"/>
+        <location filename="../../workspace.cpp" line="240"/>
         <source>Default value not set yet.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="258"/>
+        <location filename="../../workspace.cpp" line="251"/>
         <source>Autosave path set to the current file&apos;s directory, if there is one.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="266"/>
+        <location filename="../../workspace.cpp" line="259"/>
         <source>Error opening autosave file: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="272"/>
+        <location filename="../../workspace.cpp" line="265"/>
         <source>Writing to autosave file.</source>
         <translation type="unfinished"></translation>
     </message>
