@@ -363,7 +363,7 @@ void BewavedDolphin::loadNewTable(const QStringList &inputLabels, const QStringL
     m_signalTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Fixed);
     m_signalTableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Fixed);
 
-    m_signalTableView->horizontalHeader()->setDefaultSectionSize(55);
+    m_signalTableView->horizontalHeader()->setDefaultSectionSize(35);
     m_signalTableView->verticalHeader()->setDefaultSectionSize(30);
 
     qCDebug(zero) << tr("Inputs: ") << inputLabels.size() << tr(", outputs: ") << outputLabels.size();
