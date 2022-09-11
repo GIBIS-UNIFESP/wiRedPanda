@@ -78,7 +78,7 @@ qmake ../WPanda.pro
 make -j
 ```
 
-Este proceso podría llevar un tiempo. Una vez concluido, el binario se ubicará en `wiredpanda/build/app/wpanda`, en Linux, y en `wiredpanda/build/app/wpanda.app/Contents/MacOS/wpanda` en macOS.
+Este proceso podría llevar un tiempo. Una vez concluido, el binario se ubicará en `wiredpanda/build/app/wiredpanda`, en Linux, y en `wiredpanda/build/app/wiredpanda.app/Contents/MacOS/wiredpanda` en macOS.
 
 ## Licencia
 
