@@ -7,7 +7,7 @@
 #include "scene.h"
 
 #include <QFileInfo>
-#include <QItemDelegate>
+#include <QStyledItemDelegate>
 #include <QMainWindow>
 #include <QStandardItemModel>
 
@@ -29,15 +29,15 @@ class SignalModel : public QStandardItemModel
     Q_OBJECT
 
 public:
-    SignalModel(const int rows, const int inputs, const int columns, QObject *parent = nullptr);
+    SignalModel(const int inputs, const int rows, const int columns, QObject *parent = nullptr);
 
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
 private:
-    int m_inputs;
+    const int m_inputCount;
 };
 
-class SignalDelegate : public QItemDelegate
+class SignalDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
@@ -126,13 +126,9 @@ private:
     PlotType m_type = PlotType::Line;
     QFileInfo m_currentFile;
     QGraphicsScene *m_scene = nullptr;
-    QPixmap m_fallingBlue;
     QPixmap m_fallingGreen;
-    QPixmap m_highBlue;
     QPixmap m_highGreen;
-    QPixmap m_lowBlue;
     QPixmap m_lowGreen;
-    QPixmap m_risingBlue;
     QPixmap m_risingGreen;
     QStandardItemModel *m_model = nullptr;
     QTableView *m_signalTableView = nullptr;

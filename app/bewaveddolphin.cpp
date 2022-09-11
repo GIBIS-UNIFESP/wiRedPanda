@@ -27,25 +27,25 @@
 #include <QTextStream>
 #include <iostream>
 
-SignalModel::SignalModel(const int rows, const int inputs, const int columns, QObject *parent)
+SignalModel::SignalModel(const int inputs, const int rows, const int columns, QObject *parent)
     : QStandardItemModel(rows, columns, parent)
-    , m_inputs(inputs)
+    , m_inputCount(inputs)
 {
 }
 
 Qt::ItemFlags SignalModel::flags(const QModelIndex &index) const
 {
-    Qt::ItemFlags flags;
+    Qt::ItemFlags flags = Qt::ItemIsEnabled;
 
-    if (index.row() < m_inputs) {
-        flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+    if (index.row() < m_inputCount) {
+        flags |= Qt::ItemIsSelectable;
     }
 
     return flags;
 }
 
 SignalDelegate::SignalDelegate(QObject *parent)
-    : QItemDelegate(parent)
+    : QStyledItemDelegate(parent)
 {
 }
 
@@ -53,7 +53,7 @@ void SignalDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
 {
     QStyleOptionViewItem itemOption(option);
     itemOption.rect.adjust(-4, 0, 0, 0);
-    QItemDelegate::paint(painter, itemOption, index);
+    QStyledItemDelegate::paint(painter, itemOption, index);
 }
 
 BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindow *parent)
@@ -129,11 +129,6 @@ void BewavedDolphin::loadPixmaps()
     m_highGreen = QPixmap(":/dolphin/high_green.svg").scaled(100, 38);
     m_fallingGreen = QPixmap(":/dolphin/falling_green.svg").scaled(100, 38);
     m_risingGreen = QPixmap(":/dolphin/rising_green.svg").scaled(100, 38);
-
-    m_lowBlue = QPixmap(":/dolphin/low_blue.svg").scaled(100, 38);
-    m_highBlue = QPixmap(":/dolphin/high_blue.svg").scaled(100, 38);
-    m_fallingBlue = QPixmap(":/dolphin/falling_blue.svg").scaled(100, 38);
-    m_risingBlue = QPixmap(":/dolphin/rising_blue.svg").scaled(100, 38);
 }
 
 void BewavedDolphin::closeEvent(QCloseEvent *event)
@@ -349,7 +344,7 @@ void BewavedDolphin::loadNewTable(const QStringList &inputLabels, const QStringL
     const int iterations = 32;
     qCDebug(zero) << tr("Num iter = ") << iterations;
 
-    m_model = new SignalModel(inputLabels.size() + outputLabels.size(), inputLabels.size(), iterations, this);
+    m_model = new SignalModel(inputLabels.size(), inputLabels.size() + outputLabels.size(), iterations, this);
     m_signalTableView->setModel(m_model);
 
     QStringList horizontalHeaderLabels;
