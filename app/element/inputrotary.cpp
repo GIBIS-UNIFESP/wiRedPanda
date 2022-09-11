@@ -211,10 +211,6 @@ void InputRotary::setOn(const bool value, const int port)
 
 void InputRotary::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (event->modifiers().testFlag(Qt::ControlModifier)) {
-        return;
-    }
-
     if (!m_locked && (event->button() == Qt::LeftButton)) {
         setOn(true, (m_currentPort + 1) % outputSize());
         event->accept();

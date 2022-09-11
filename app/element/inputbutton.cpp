@@ -39,10 +39,6 @@ InputButton::InputButton(QGraphicsItem *parent)
 
 void InputButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (event->modifiers().testFlag(Qt::ControlModifier)) {
-        return;
-    }
-
     if (!m_locked && (event->button() == Qt::LeftButton)) {
         setOn();
         event->accept();
@@ -58,7 +54,7 @@ void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         event->accept();
     }
 
-    GraphicElement::mouseReleaseEvent(event);
+    QGraphicsItem::mouseReleaseEvent(event);
 }
 
 void InputButton::save(QDataStream &stream) const

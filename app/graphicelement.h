@@ -112,6 +112,7 @@ public:
 protected:
     QPixmap pixmap() const;
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+    bool sceneEvent(QEvent *event) override;
     void setCanChangeSkin(const bool canChangeSkin);
     void setHasAudio(const bool hasAudio);
     void setHasColors(const bool hasColors);
