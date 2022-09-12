@@ -35,17 +35,17 @@ SignalModel::SignalModel(const int inputs, const int rows, const int columns, QO
 
 Qt::ItemFlags SignalModel::flags(const QModelIndex &index) const
 {
-    Qt::ItemFlags flags = Qt::ItemIsEnabled;
+    Qt::ItemFlags flags;
 
     if (index.row() < m_inputCount) {
-        flags |= Qt::ItemIsSelectable;
+        flags |= Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     }
 
     return flags;
 }
 
 SignalDelegate::SignalDelegate(QObject *parent)
-    : QStyledItemDelegate(parent)
+    : QItemDelegate(parent)
 {
 }
 
@@ -53,7 +53,7 @@ void SignalDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
 {
     QStyleOptionViewItem itemOption(option);
     itemOption.rect.adjust(-4, 0, 0, 0);
-    QStyledItemDelegate::paint(painter, itemOption, index);
+    QItemDelegate::paint(painter, itemOption, index);
 }
 
 BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindow *parent)
@@ -81,6 +81,8 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
     m_scene->addWidget(m_signalTableView);
 
     m_view.setScene(m_scene);
+    m_view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_ui->verticalLayout->addWidget(&m_view);
 
     loadPixmaps();
@@ -1257,8 +1259,8 @@ void BewavedDolphin::resizeEvent(QResizeEvent *event)
 
 void BewavedDolphin::resizeScene()
 {
-    const int newWidth = static_cast<int>(width() / m_scale);
-    const int newHeight = static_cast<int>(height() / m_scale);
+    const int newWidth = static_cast<int>((width() - 3) / m_scale);
+    const int newHeight = static_cast<int>((height() - 85) / m_scale);
 
     if (newWidth > 4000 or newHeight > 4000) {
         on_actionResetZoom_triggered();
