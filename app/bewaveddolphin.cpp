@@ -347,14 +347,6 @@ void BewavedDolphin::loadNewTable(const QStringList &inputLabels, const QStringL
     m_model = new SignalModel(inputLabels.size(), inputLabels.size() + outputLabels.size(), iterations, this);
     m_signalTableView->setModel(m_model);
 
-    QStringList horizontalHeaderLabels;
-    horizontalHeaderLabels.reserve(iterations);
-
-    for (int index = 0; index < iterations; ++index) {
-        horizontalHeaderLabels.append(QString::number(index));
-    }
-
-    m_model->setHorizontalHeaderLabels(horizontalHeaderLabels);
     m_model->setVerticalHeaderLabels(inputLabels + outputLabels);
 
     m_signalTableView->setAlternatingRowColors(true);
