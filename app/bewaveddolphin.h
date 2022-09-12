@@ -7,7 +7,7 @@
 #include "scene.h"
 
 #include <QFileInfo>
-#include <QStyledItemDelegate>
+#include <QItemDelegate>
 #include <QMainWindow>
 #include <QStandardItemModel>
 
@@ -37,7 +37,7 @@ private:
     const int m_inputCount;
 };
 
-class SignalDelegate : public QStyledItemDelegate
+class SignalDelegate : public QItemDelegate
 {
     Q_OBJECT
 
