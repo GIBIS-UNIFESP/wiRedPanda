@@ -633,14 +633,6 @@ void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
     if (simLength <= m_model->columnCount()) {
         qCDebug(zero) << tr("Reducing or keeping the simulation length.");
         m_model->setColumnCount(simLength);
-        QStringList horizontalHeaderLabels;
-        horizontalHeaderLabels.reserve(simLength);
-
-        for (int index = 0; index < simLength; ++index) {
-            horizontalHeaderLabels.append(QString::number(index));
-        }
-
-        m_model->setHorizontalHeaderLabels(horizontalHeaderLabels);
         resizeScene();
         m_edited = true;
         return;
@@ -649,14 +641,6 @@ void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
     qCDebug(zero) << tr("Increasing the simulation length.");
     const int oldLength = m_model->columnCount();
     m_model->setColumnCount(simLength);
-    QStringList horizontalHeaderLabels;
-    horizontalHeaderLabels.reserve(simLength);
-
-    for (int index = 0; index < simLength; ++index) {
-        horizontalHeaderLabels.append(QString::number(index));
-    }
-
-    m_model->setHorizontalHeaderLabels(horizontalHeaderLabels);
 
     for (int row = 0; row < m_inputPorts; ++row) {
         for (int col = oldLength; col < m_model->columnCount(); ++col) {
