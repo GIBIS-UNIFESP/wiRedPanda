@@ -313,13 +313,9 @@ int MainWindow::confirmSave(const bool multiple)
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
     }
 
-    QString fileName = m_currentFile.absoluteFilePath();
+    const QString fileName = m_currentFile.fileName().isEmpty() ? tr("New Project") : m_currentFile.fileName();
 
-    if (fileName.isEmpty()) {
-        fileName = tr("New Project");
-    }
-
-    msgBox.setText(m_currentFile.fileName() + tr(" has been modified. \nDo you want to save your changes?"));
+    msgBox.setText(fileName + tr(" has been modified. \nDo you want to save your changes?"));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Yes);
     return msgBox.exec();
