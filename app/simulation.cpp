@@ -29,8 +29,10 @@ void Simulation::update()
         return;
     }
 
-    for (auto *clock : qAsConst(m_clocks)) {
-        clock->updateClock();
+    if (m_timer.isActive()) {
+        for (auto *clock : qAsConst(m_clocks)) {
+            clock->updateClock();
+        }
     }
 
     for (auto *inputElm : qAsConst(m_inputs)) {
