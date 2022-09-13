@@ -24,8 +24,6 @@ Node::Node(QGraphicsItem *parent)
 
     Node::updatePortsProperties();
     setCanChangeSkin(true);
-    setPortName(m_translatedName);
-    setToolTip(m_translatedName);
     inputPort()->setRequired(true);
 }
 

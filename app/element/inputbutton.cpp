@@ -33,8 +33,6 @@ InputButton::InputButton(QGraphicsItem *parent)
     InputButton::setOff();
     setHasLabel(true);
     setHasTrigger(true);
-    setPortName(m_translatedName);
-    setToolTip(m_translatedName);
 }
 
 void InputButton::mousePressEvent(QGraphicsSceneMouseEvent *event)

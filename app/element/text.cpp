@@ -25,6 +25,4 @@ Text::Text(QGraphicsItem *parent)
     setPixmap(0);
 
     setHasLabel(true);
-    setPortName(m_translatedName);
-    setToolTip(m_translatedName);
 }

@@ -4,6 +4,7 @@
 #include "graphicelement.h"
 
 #include "common.h"
+#include "elementfactory.h"
 #include "globalproperties.h"
 #include "qneconnection.h"
 #include "qneport.h"
@@ -52,6 +53,9 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QStri
     m_label->setPos(0, 64);
     m_label->setParentItem(this);
     m_label->setDefaultTextColor(Qt::black);
+
+    setPortName(m_translatedName);
+    setToolTip(m_translatedName);
 
     qCDebug(four) << tr("Including input and output ports.");
     for (int i = 0; i < minInputSize; ++i) {
@@ -1112,6 +1116,14 @@ void GraphicElement::highlight(const bool isSelected)
             }
         }
     }
+}
+
+void GraphicElement::retranslate()
+{
+    m_translatedName = ElementFactory::translatedName(m_elementType);
+
+    setPortName(m_translatedName);
+    setToolTip(m_translatedName);
 }
 
 QDataStream &operator<<(QDataStream &stream, const GraphicElement *item)

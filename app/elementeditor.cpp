@@ -353,6 +353,10 @@ void ElementEditor::retranslateUi()
 {
     m_ui->retranslateUi(this);
     fillColorComboBox();
+
+    if (m_scene) {
+        selectionChanged();
+    }
 }
 
 void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)

@@ -77,9 +77,7 @@ Display14::Display14(QGraphicsItem *parent)
     setCanChangeSkin(true);
     setHasColors(true);
     setHasLabel(true);
-    setPortName(m_translatedName);
     setRotatable(false);
-    setToolTip(m_translatedName);
 
     Display14::updatePortsProperties();
 }

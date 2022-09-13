@@ -40,8 +40,6 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     updatePortsProperties();
     setCanChangeSkin(true);
     setHasLabel(true);
-    setPortName(m_translatedName);
-    setToolTip(m_translatedName);
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     m_hasOutputDevice = !QAudioDeviceInfo::defaultOutputDevice().deviceName().isEmpty();

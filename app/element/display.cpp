@@ -59,9 +59,7 @@ Display::Display(QGraphicsItem *parent)
     setCanChangeSkin(true);
     setHasColors(true);
     setHasLabel(true);
-    setPortName(m_translatedName);
     setRotatable(false);
-    setToolTip(m_translatedName);
 
     Display::updatePortsProperties();
 }
