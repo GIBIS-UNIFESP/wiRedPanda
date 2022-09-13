@@ -70,6 +70,8 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, &MainWindow::updateTheme);
     updateTheme();
     setFastMode(Settings::value("fastMode").toBool());
+    m_ui->actionLabelsUnderIcons->setChecked(Settings::value("labelsUnderIcons").toBool());
+    m_ui->mainToolBar->setToolButtonStyle(Settings::value("labelsUnderIcons").toBool() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
 
     qCDebug(zero) << tr("Setting left side menus.");
     auto *shortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
@@ -1216,6 +1218,7 @@ void MainWindow::on_actionMute_triggered(const bool checked)
 void MainWindow::on_actionLabelsUnderIcons_triggered(const bool checked)
 {
     m_ui->mainToolBar->setToolButtonStyle(checked ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
+    Settings::setValue("labelsUnderIcons", checked);
 }
 
 bool MainWindow::event(QEvent *event)
