@@ -890,7 +890,7 @@ void MainWindow::zoomChanged()
 void MainWindow::updateRecentFileActions()
 {
     const auto files = m_recentFiles->recentFiles();
-    const int numRecentFiles = qMin(files.size(), RecentFiles::MaxRecentFiles);
+    const int numRecentFiles = qMin(files.size(), GlobalProperties::maxRecentFiles);
 
     if (numRecentFiles > 0) {
         m_ui->menuRecentFiles->setEnabled(true);
@@ -905,7 +905,7 @@ void MainWindow::updateRecentFileActions()
         actions.at(i)->setVisible(true);
     }
 
-    for (int i = numRecentFiles; i < RecentFiles::MaxRecentFiles; ++i) {
+    for (int i = numRecentFiles; i < GlobalProperties::maxRecentFiles; ++i) {
         actions.at(i)->setVisible(false);
     }
 }
@@ -921,7 +921,7 @@ void MainWindow::createRecentFileActions()
 {
     m_ui->menuRecentFiles->clear();
 
-    for (int i = 0; i < RecentFiles::MaxRecentFiles; ++i) {
+    for (int i = 0; i < GlobalProperties::maxRecentFiles; ++i) {
         auto *action = new QAction(this);
         action->setVisible(false);
         connect(action, &QAction::triggered, this, &MainWindow::openRecentFile);

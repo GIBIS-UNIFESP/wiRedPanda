@@ -12,8 +12,6 @@
 #include <QPixmapCache>
 #include <memory>
 
-constexpr int maximumValidInputSize = 256;
-
 class GraphicElement;
 class QNEInputPort;
 class QNEOutputPort;

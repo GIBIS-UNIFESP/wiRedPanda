@@ -13,4 +13,5 @@ public:
     inline static bool verbose = true;
     inline static const double version = QString(APP_VERSION).toDouble();
     inline static const int gridSize = 16;
+    inline static const int maxRecentFiles = 10;
 };
