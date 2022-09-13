@@ -1023,6 +1023,10 @@ void MainWindow::retranslateUi()
         }
 
         m_ui->tab->setTabText(index, text);
+
+        for (auto *elm : workspace->scene()->elements()) {
+            elm->retranslate();
+        }
     }
 }
 

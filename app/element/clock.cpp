@@ -35,8 +35,6 @@ Clock::Clock(QGraphicsItem *parent)
     Clock::setFrequency(1.0);
     setHasFrequency(true);
     setHasLabel(true);
-    setPortName(m_translatedName);
-    setToolTip(m_translatedName);
     Clock::setOff();
 }
 

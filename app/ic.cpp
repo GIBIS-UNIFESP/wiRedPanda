@@ -32,8 +32,6 @@ IC::IC(QGraphicsItem *parent)
     m_label->setRotation(90);
 
     setHasLabel(true);
-    setPortName(m_translatedName);
-    setToolTip(m_translatedName);
 
     connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this, [=](const QString &fileName) {
         loadFile(fileName);

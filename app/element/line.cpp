@@ -23,6 +23,4 @@ Line::Line(QGraphicsItem *parent)
 
     setCanChangeSkin(true);
     setHasLabel(true);
-    setPortName(m_translatedName);
-    setToolTip(m_translatedName);
 }

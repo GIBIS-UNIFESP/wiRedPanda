@@ -93,8 +93,6 @@ Led::Led(QGraphicsItem *parent)
     Led::updatePortsProperties();
     setHasLabel(true);
     setCanChangeSkin(true);
-    setPortName(m_translatedName);
-    setToolTip(m_translatedName);
 }
 
 void Led::refresh()

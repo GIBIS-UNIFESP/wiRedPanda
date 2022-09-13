@@ -23,8 +23,6 @@ Mux::Mux(QGraphicsItem *parent)
     setPixmap(0);
 
     setCanChangeSkin(true);
-    setPortName(m_translatedName);
-    setToolTip(m_translatedName);
 
     Mux::updatePortsProperties();
 }

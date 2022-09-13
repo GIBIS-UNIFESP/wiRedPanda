@@ -24,6 +24,4 @@ Nand::Nand(QGraphicsItem *parent)
     setCanChangeSkin(true);
     updatePortsProperties();
     setCanChangeSkin(true);
-    setPortName(m_translatedName);
-    setToolTip(m_translatedName);
 }

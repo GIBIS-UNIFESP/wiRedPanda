@@ -35,8 +35,6 @@ InputRotary::InputRotary(QGraphicsItem *parent)
     setHasLabel(true);
     setHasTrigger(true);
     setLocked(false);
-    setPortName(m_translatedName);
-    setToolTip(m_translatedName);
 
     InputRotary::updatePortsProperties();
 }

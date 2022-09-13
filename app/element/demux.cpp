@@ -23,8 +23,6 @@ Demux::Demux(QGraphicsItem *parent)
     setPixmap(0);
 
     setCanChangeSkin(true);
-    setPortName(m_translatedName);
-    setToolTip(m_translatedName);
 
     Demux::updatePortsProperties();
 }
