@@ -15,8 +15,6 @@ class RecentFiles : public QObject
 public:
     explicit RecentFiles(QObject *parent = nullptr);
 
-    static constexpr int MaxRecentFiles = 10;
-
     QStringList recentFiles();
     void addRecentFile(const QString &filePath);
 

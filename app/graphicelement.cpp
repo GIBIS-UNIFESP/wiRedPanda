@@ -26,6 +26,8 @@ namespace
 int id = qRegisterMetaType<GraphicElement>();
 }
 
+const int maximumValidInputSize = 256;
+
 GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QString &pixmapPath, const QString &titleText, const QString &translatedName, const int minInputSize, const int maxInputSize, const int minOutputSize, const int maxOutputSize, QGraphicsItem *parent)
     : QGraphicsObject(parent)
     , m_pixmapPath(pixmapPath)

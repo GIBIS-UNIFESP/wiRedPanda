@@ -4,6 +4,7 @@
 #include "recentfiles.h"
 
 #include "common.h"
+#include "globalproperties.h"
 #include "settings.h"
 
 #include <QApplication>
@@ -30,8 +31,8 @@ void RecentFiles::addRecentFile(const QString &filePath)
     m_files.removeAll(filePath);
     m_files.prepend(filePath);
 
-    if (m_files.size() > MaxRecentFiles) {
-        m_files.erase(m_files.begin() + MaxRecentFiles, m_files.end());
+    if (m_files.size() > GlobalProperties::maxRecentFiles) {
+        m_files.erase(m_files.begin() + GlobalProperties::maxRecentFiles, m_files.end());
     }
 
     emit recentFilesUpdated();
