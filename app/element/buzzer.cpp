@@ -35,11 +35,11 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     setPixmap(0);
 
     m_label->setPos(64, 34);
-    setRotatable(false);
-    setHasAudio(true);
-    updatePortsProperties();
+
     setCanChangeSkin(true);
+    setHasAudio(true);
     setHasLabel(true);
+    setRotatable(false);
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     m_hasOutputDevice = !QAudioDeviceInfo::defaultOutputDevice().deviceName().isEmpty();

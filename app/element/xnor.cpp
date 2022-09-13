@@ -22,5 +22,4 @@ Xnor::Xnor(QGraphicsItem *parent)
     setPixmap(0);
 
     setCanChangeSkin(true);
-    updatePortsProperties();
 }

@@ -35,6 +35,7 @@ SignalModel::SignalModel(const int inputs, const int rows, const int columns, QO
 
 Qt::ItemFlags SignalModel::flags(const QModelIndex &index) const
 {
+    // TODO: add ItemIsEditable
     Qt::ItemFlags flags;
 
     if (index.row() < m_inputCount) {
@@ -55,6 +56,8 @@ void SignalDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
     itemOption.rect.adjust(-4, 0, 0, 0);
     QItemDelegate::paint(painter, itemOption, index);
 }
+
+// TODO: split waveform in 2 tables, one for inputs and another for outputs
 
 BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindow *parent)
     : QMainWindow(parent)

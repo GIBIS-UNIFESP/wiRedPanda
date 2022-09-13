@@ -28,11 +28,13 @@ InputButton::InputButton(QGraphicsItem *parent)
     setPixmap(0);
 
     m_locked = false;
+
     setCanChangeSkin(true);
-    setRotatable(false);
-    InputButton::setOff();
     setHasLabel(true);
     setHasTrigger(true);
+    setRotatable(false);
+
+    InputButton::setOff();
 }
 
 void InputButton::mousePressEvent(QGraphicsSceneMouseEvent *event)

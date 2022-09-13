@@ -30,11 +30,13 @@ Clock::Clock(QGraphicsItem *parent)
     setPixmap(0);
 
     m_locked = false;
-    setRotatable(false);
+
     setCanChangeSkin(true);
-    Clock::setFrequency(1.0);
     setHasFrequency(true);
     setHasLabel(true);
+    setRotatable(false);
+
+    Clock::setFrequency(1.0);
     Clock::setOff();
 }
 

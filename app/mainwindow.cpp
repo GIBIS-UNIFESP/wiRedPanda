@@ -93,6 +93,22 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     qCDebug(zero) << tr("Checking playing simulation.");
     m_ui->actionPlay->setChecked(true);
 
+    qCDebug(zero) << tr("Window title.");
+    setWindowTitle("WiRedPanda " + QString(APP_VERSION));
+
+    qCDebug(zero) << tr("Building a new tab.");
+    createNewTab();
+
+    qCDebug(zero) << tr("Opening file if not empty.");
+    if (!fileName.isEmpty()) {
+        loadPandaFile(fileName);
+    }
+
+    qCDebug(zero) << tr("Disabling Arduino export.");
+    m_ui->actionExportToArduino->setEnabled(false);
+
+    QPixmapCache::setCacheLimit(100'000);
+
     qCDebug(zero) << tr("Setting connections");
     connect(m_ui->actionAbout,            &QAction::triggered,       this,                &MainWindow::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,          &QAction::triggered,       this,                &MainWindow::on_actionAboutQt_triggered);
@@ -130,22 +146,6 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->actionZoomOut,          &QAction::triggered,       this,                &MainWindow::on_actionZoomOut_triggered);
     connect(m_ui->lineEditSearch,         &QLineEdit::returnPressed, this,                &MainWindow::on_lineEditSearch_returnPressed);
     connect(m_ui->lineEditSearch,         &QLineEdit::textChanged,   this,                &MainWindow::on_lineEditSearch_textChanged);
-
-    qCDebug(zero) << tr("Window title.");
-    setWindowTitle("WiRedPanda " + QString(APP_VERSION));
-
-    qCDebug(zero) << tr("Building a new tab.");
-    createNewTab();
-
-    qCDebug(zero) << tr("Opening file if not empty.");
-    if (!fileName.isEmpty()) {
-        loadPandaFile(fileName);
-    }
-
-    qCDebug(zero) << tr("Disabling Arduino export.");
-    m_ui->actionExportToArduino->setEnabled(false);
-
-    QPixmapCache::setCacheLimit(100'000);
 }
 
 MainWindow::~MainWindow()

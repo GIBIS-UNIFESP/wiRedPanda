@@ -24,5 +24,6 @@ InputVcc::InputVcc(QGraphicsItem *parent)
 
     setCanChangeSkin(true);
     setRotatable(false);
+
     m_outputPorts.constFirst()->setStatus(Status::Active);
 }

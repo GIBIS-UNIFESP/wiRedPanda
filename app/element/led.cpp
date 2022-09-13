@@ -88,11 +88,12 @@ Led::Led(QGraphicsItem *parent)
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);
 
-    setRotatable(false);
-    setHasColors(true);
-    Led::updatePortsProperties();
-    setHasLabel(true);
     setCanChangeSkin(true);
+    setHasColors(true);
+    setHasLabel(true);
+    setRotatable(false);
+
+    Led::updatePortsProperties();
 }
 
 void Led::refresh()
