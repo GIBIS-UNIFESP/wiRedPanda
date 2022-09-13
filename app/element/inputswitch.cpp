@@ -28,10 +28,11 @@ InputSwitch::InputSwitch(QGraphicsItem *parent)
     setPixmap(0);
 
     m_locked = false;
+
     setCanChangeSkin(true);
-    setRotatable(false);
     setHasLabel(true);
     setHasTrigger(true);
+    setRotatable(false);
 }
 
 bool InputSwitch::isOn(const int port) const

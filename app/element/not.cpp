@@ -22,5 +22,4 @@ Not::Not(QGraphicsItem *parent)
     setPixmap(0);
 
     setCanChangeSkin(true);
-    updatePortsProperties();
 }

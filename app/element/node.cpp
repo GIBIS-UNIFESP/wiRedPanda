@@ -22,9 +22,10 @@ Node::Node(QGraphicsItem *parent)
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);
 
-    Node::updatePortsProperties();
     setCanChangeSkin(true);
     inputPort()->setRequired(true);
+
+    Node::updatePortsProperties();
 }
 
 void Node::updatePortsProperties()

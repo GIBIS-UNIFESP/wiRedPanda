@@ -22,6 +22,4 @@ Nand::Nand(QGraphicsItem *parent)
     setPixmap(0);
 
     setCanChangeSkin(true);
-    updatePortsProperties();
-    setCanChangeSkin(true);
 }
