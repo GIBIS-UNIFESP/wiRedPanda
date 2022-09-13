@@ -85,6 +85,8 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
     m_view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_ui->verticalLayout->addWidget(&m_view);
 
+    m_ui->mainToolBar->setToolButtonStyle(Settings::value("labelsUnderIcons").toBool() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
+
     loadPixmaps();
 
     connect(m_ui->actionAbout,         &QAction::triggered, this, &BewavedDolphin::on_actionAbout_triggered);
