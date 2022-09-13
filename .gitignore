@@ -5,5 +5,5 @@ _site
 .sass-cache
 .DS_Store
 *.swp
-*.pro.user
+*.pro.user*
 .vscode
