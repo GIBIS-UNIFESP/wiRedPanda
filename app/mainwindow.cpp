@@ -805,7 +805,6 @@ void MainWindow::exportToArduino(QString fileName)
 
     elements = Common::sortGraphicElements(elements);
 
-    // TODO: why home()? why not the current folder? what if the user type a path?
     CodeGenerator arduino(QDir::home().absoluteFilePath(fileName), elements);
     arduino.generate();
     m_ui->statusBar->showMessage(tr("Arduino code successfully generated."), 4000);

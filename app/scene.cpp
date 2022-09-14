@@ -970,18 +970,11 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (m_draggingElement && (event->button() == Qt::LeftButton)) {
         if (!m_movedElements.empty()) {
-            bool valid = false; // TODO: std::any_of?
+            const bool valid = std::any_of(m_movedElements.cbegin(), m_movedElements.cend(), [this](auto *elm) {
+                return (elm->pos() != m_oldPositions.at(m_movedElements.indexOf(elm)));
+            });
 
-            for (int index = 0; index < m_movedElements.size(); ++index) {
-                if (m_movedElements.at(index)->pos() != m_oldPositions.at(index)) {
-                    valid = true;
-                    break;
-                }
-            }
-
-            if (valid) {
-                receiveCommand(new MoveCommand(m_movedElements, m_oldPositions, this));
-            }
+            if (valid) { receiveCommand(new MoveCommand(m_movedElements, m_oldPositions, this)); }
         }
 
         m_draggingElement = false;
@@ -1006,7 +999,7 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
         return;
     }
 
-    if (auto *connection = dynamic_cast<QNEConnection *>(itemAt(m_mousePos));
+    if (auto *connection = qgraphicsitem_cast<QNEConnection *>(itemAt(m_mousePos));
             connection && connection->start() && connection->end()) {
         receiveCommand(new SplitCommand(connection, m_mousePos, this));
     }

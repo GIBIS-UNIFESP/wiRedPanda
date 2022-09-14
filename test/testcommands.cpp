@@ -12,7 +12,6 @@
 
 void TestCommands::testAddDeleteCommands()
 {
-    /* FIXME: Implement intelligent memory management. */
     QList<QGraphicsItem *> items{new And(), new And(), new And(), new And()};
 
     WorkSpace workspace;

@@ -49,11 +49,7 @@ QNEPort::QNEPort(QGraphicsItem *parent)
     path.addPolygon(QRectF(QPointF(-m_radius, -m_radius), QPointF(m_radius, m_radius)));
     setPath(path);
 
-    setPen(QPen(Qt::darkRed));
-    setCurrentBrush(Qt::red);
-
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
-
     setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 }
 
@@ -87,6 +83,7 @@ void QNEPort::connect(QNEConnection *conn)
     if (!m_connections.contains(conn)) {
         m_connections.append(conn);
     }
+
     updateConnections();
 }
 
@@ -103,23 +100,6 @@ void QNEPort::disconnect(QNEConnection *conn)
     }
 
     updateConnections();
-}
-
-void QNEPort::setPortFlags(const int flags)
-{
-    m_portFlags = flags;
-
-    if (m_portFlags & TypePort) {
-        QFont font(scene()->font());
-        font.setItalic(true);
-        m_label->setFont(font);
-        setPath(QPainterPath());
-    } else if (m_portFlags & NamePort) {
-        QFont font(scene()->font());
-        font.setBold(true);
-        m_label->setFont(font);
-        setPath(QPainterPath());
-    }
 }
 
 const QString &QNEPort::portName() const
@@ -144,7 +124,8 @@ void QNEPort::setPtr(const quint64 pointer)
 
 bool QNEPort::isConnected(QNEPort *other)
 {
-    return std::any_of(m_connections.cbegin(), m_connections.cend(), [&](auto *conn) { return conn->start() == other || conn->end() == other; });
+    return std::any_of(m_connections.cbegin(), m_connections.cend(),
+                       [&](auto *conn) { return conn->start() == other || conn->end() == other; });
 }
 
 void QNEPort::updateConnections()
@@ -251,7 +232,10 @@ void QNEPort::hoverEnter()
 QNEInputPort::QNEInputPort(QGraphicsItem *parent)
     : QNEPort(parent)
 {
-    m_label->setPos(-m_radius - m_margin - m_label->boundingRect().width(), -m_label->boundingRect().height() / 2);
+    m_label->setPos(-m_radius - m_margin - m_label->boundingRect().width(),
+                    -m_label->boundingRect().height() / 2);
+
+    setStatus(defaultValue());
 }
 
 QNEInputPort::~QNEInputPort()
@@ -319,7 +303,9 @@ void QNEInputPort::updateTheme()
 QNEOutputPort::QNEOutputPort(QGraphicsItem *parent)
     : QNEPort(parent)
 {
-    m_label->setPos(m_radius + m_margin, -m_label->boundingRect().height() / 2);
+    m_label->setPos(m_radius + m_margin,
+                    -m_label->boundingRect().height() / 2);
+
     QNEOutputPort::updateTheme();
 }
 

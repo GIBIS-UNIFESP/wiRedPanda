@@ -302,7 +302,6 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
     for (const auto &input : qAsConst(inputMap)) {
         const quint64 ptr = input.value("ptr").toULongLong();
         const QString name = input.value("name").toString();
-        const int flags = input.value("flags").toInt();
 
         if (port < m_inputPorts.size()) {
             m_inputPorts.value(port)->setPtr(ptr);
@@ -310,10 +309,8 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
             if (ElementType() == ElementType::IC) {
                 m_inputPorts.value(port)->setName(name);
             }
-
-            m_inputPorts.value(port)->setPortFlags(flags);
         } else {
-            addPort(name, false, flags, static_cast<int>(ptr));
+            addPort(name, false, static_cast<int>(ptr));
         }
 
         portMap[ptr] = m_inputPorts.value(port);
@@ -332,7 +329,6 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
     for (const auto &output : qAsConst(outputMap)) {
         const quint64 ptr = output.value("ptr").toULongLong();
         const QString name = output.value("name").toString();
-        const int flags = output.value("flags").toInt();
 
         if (port < m_outputPorts.size()) {
             m_outputPorts.value(port)->setPtr(ptr);
@@ -340,10 +336,8 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
             if (elementType() == ElementType::IC) {
                 m_outputPorts.value(port)->setName(name);
             }
-
-            m_outputPorts.value(port)->setPortFlags(flags);
         } else {
-            addPort(name, true, flags, static_cast<int>(ptr));
+            addPort(name, true, static_cast<int>(ptr));
         }
 
         portMap[ptr] = m_outputPorts.value(port);
@@ -426,15 +420,14 @@ void GraphicElement::loadPortsSize(QDataStream &stream, const double version)
         stream >> minOutputSize;
         stream >> maxOutputSize;
 
-        // FIXME: Was it a bad decision to store Min and Max input/output sizes?
-        /* Version 2.2 ?? fix ?? */
-
-        if (!((m_minInputSize == m_maxInputSize) && (m_minInputSize > maxInputSize))) {
+        if (m_minInputSize != m_maxInputSize
+                || m_minInputSize <= maxInputSize) {
             m_minInputSize = minInputSize;
             m_maxInputSize = maxInputSize;
         }
 
-        if (!((m_minOutputSize == m_maxOutputSize) && (m_minOutputSize > maxOutputSize))) {
+        if (m_minOutputSize != m_maxOutputSize
+                || m_minOutputSize <= maxOutputSize) {
             m_minOutputSize = minOutputSize;
             m_maxOutputSize = maxOutputSize;
         }
@@ -450,12 +443,13 @@ void GraphicElement::loadTrigger(QDataStream &stream, const double version)
     }
 }
 
-void GraphicElement::loadPriority(QDataStream &stream, const double version) {
-  if (version >= 4.01) {
-      quint64 priority;
-      stream >> priority;
-      setPriority(priority);
-  }
+void GraphicElement::loadPriority(QDataStream &stream, const double version)
+{
+    if (version >= 4.01) {
+        quint64 priority;
+        stream >> priority;
+        setPriority(priority);
+    }
 }
 
 void GraphicElement::loadInputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap)
@@ -490,10 +484,8 @@ void GraphicElement::loadInputPort(QDataStream &stream, QMap<quint64, QNEPort *>
         if (elementType() == ElementType::IC) {
             m_inputPorts.value(port)->setName(name);
         }
-
-        m_inputPorts.value(port)->setPortFlags(flags);
     } else {
-        addPort(name, false, flags, static_cast<int>(ptr));
+        addPort(name, false, static_cast<int>(ptr));
     }
 
     portMap[ptr] = m_inputPorts.value(port);
@@ -572,10 +564,8 @@ void GraphicElement::loadOutputPort(QDataStream &stream, QMap<quint64, QNEPort *
         if (elementType() == ElementType::IC) {
             m_outputPorts.value(port)->setName(name);
         }
-
-        m_outputPorts.value(port)->setPortFlags(flags);
     } else {
-        addPort(name, true, flags, static_cast<int>(ptr));
+        addPort(name, true, static_cast<int>(ptr));
     }
 
     portMap[ptr] = m_outputPorts.value(port);
@@ -647,7 +637,7 @@ void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     painter->drawPixmap(QPoint(0, 0), pixmap());
 }
 
-void GraphicElement::addPort(const QString &name, const bool isOutput, const int flags, const int ptr)
+void GraphicElement::addPort(const QString &name, const bool isOutput, const int ptr)
 {
     if (isOutput && (static_cast<quint64>(m_outputPorts.size()) >= m_maxOutputSize)) {
         return;
@@ -673,7 +663,6 @@ void GraphicElement::addPort(const QString &name, const bool isOutput, const int
     port->setGraphicElement(this);
     port->setPtr(ptr);
     port->setName(name);
-    port->setPortFlags(flags);
     port->show();
 }
 
@@ -908,15 +897,8 @@ void GraphicElement::updateTheme()
 bool GraphicElement::isValid()
 {
     qCDebug(four) << tr("Checking if the element has the required signals to compute its value.");
-    bool valid = true;
-
-    for (auto *input : qAsConst(m_inputPorts)) {
-        /* Required inputs must have exactly one connection. */
-        if (!input->isValid()) {
-            valid = false;
-            break;
-        }
-    }
+    const bool valid = std::all_of(m_inputPorts.cbegin(), m_inputPorts.cend(),
+                                   [](auto *input) { return input->isValid(); });
 
     if (!valid) {
         for (auto *output : qAsConst(m_outputPorts)) {

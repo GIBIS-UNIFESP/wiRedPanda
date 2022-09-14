@@ -41,8 +41,6 @@ public:
     enum { Type = QGraphicsItem::UserType + 1 };
     int type() const override { return Type; }
 
-    enum { NamePort = 1, TypePort = 2 };
-
     explicit QNEPort(QGraphicsItem *parent = nullptr);
 
     GraphicElement *graphicElement() const;
@@ -72,7 +70,6 @@ public:
     void setGraphicElement(GraphicElement *graphicElement);
     void setIndex(const int index);
     void setName(const QString &name);
-    void setPortFlags(const int flags);
     void setPtr(const quint64 pointer);
     void setRequired(const bool required);
     void updateConnections();
