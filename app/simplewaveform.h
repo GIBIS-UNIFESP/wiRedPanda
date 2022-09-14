@@ -23,7 +23,7 @@ class SimpleWaveform : public QDialog
 {
     Q_OBJECT
 
-    enum class SortingMode : uint_fast8_t { Increasing, Decreasing, Position };
+    enum class SortingMode { Increasing, Decreasing, Position };
 
 public:
     explicit SimpleWaveform(WorkSpace *workspace, QWidget *parent = nullptr);

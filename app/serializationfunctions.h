@@ -25,7 +25,7 @@ public:
      * @return the list of deserialized items.
      * @param portMap is used to return a map of all input and output ports. This mapping may be used to check and to create connections between element ports.
      */
-    static QList<QGraphicsItem *> deserialize(QDataStream &stream, const double version, QMap<quint64, QNEPort *> portMap = {});
+    static QList<QGraphicsItem *> deserialize(QDataStream &stream, QMap<quint64, QNEPort *> portMap, const double version);
 
     //! Loads a .panda file project. The procedure includes loading and checking file header information, canvas status, and deserializing the graphical elements through a binary data stream.
     static QList<QGraphicsItem *> load(QDataStream &stream);

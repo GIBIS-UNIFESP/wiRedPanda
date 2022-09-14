@@ -224,6 +224,7 @@ void GraphicElement::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap
     qCDebug(four) << tr("Updating port positions.");
     updatePortsProperties();
     setRotation(m_angle);
+
     qCDebug(four) << tr("Finished loading element.");
 }
 
@@ -728,6 +729,7 @@ void GraphicElement::updatePortsProperties()
 
         for (auto *port : qAsConst(m_inputPorts)) {
             qCDebug(five) << tr("Setting input at ") << 0 << tr(", ") << y;
+
             if (!isRotatable()) {
                 port->setRotation(0);
             }
@@ -748,6 +750,7 @@ void GraphicElement::updatePortsProperties()
 
         for (auto *port : qAsConst(m_outputPorts)) {
             qCDebug(five) << tr("Setting output at ") << 64 << tr(", ") << y;
+
             if (!isRotatable()) {
                 port->setRotation(0);
             }
