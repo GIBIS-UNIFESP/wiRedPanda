@@ -15,9 +15,7 @@ _Leia-me em [português](README_pt_BR.md). Léame en [español](README_es.md)._
 ![Main screen](https://gibis-unifesp.github.io/wiRedPanda/images/ffms.gif)
 
 ## Downloads
-Compiled binaries for Windows and Linux are available [here](http://gibis-unifesp.github.io/wiRedPanda/downloads/).
-
-Dynamically-linked binaries for macOS are available [here](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
+Compiled binaries for Windows, Linux and macOS are available [here](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
 
 ## Building
 

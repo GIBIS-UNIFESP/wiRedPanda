@@ -15,9 +15,7 @@ _Read me in [english](README.md). Léame en [español](README_es.md)._
 ![Tela principal](https://gibis-unifesp.github.io/wiRedPanda/images/ffms.gif)
 
 ## Downloads
-Binários compilados para Windows e Linux estão disponíveis [aqui](http://gibis-unifesp.github.io/wiRedPanda/downloads/).
-
-Binários vinculados dinamicamente para macOS estão disponíveis [aqui](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
+Binários compilados para Windows, Linux e macOS estão disponíveis [aqui](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
 
 ## Compilação
 
