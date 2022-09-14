@@ -33,7 +33,7 @@ void SerializationFunctions::serialize(const QList<QGraphicsItem *> &items, QDat
     }
 }
 
-QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &stream, const double version, QMap<quint64, QNEPort *> portMap)
+QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &stream, QMap<quint64, QNEPort *> portMap, const double version)
 {
     QList<QGraphicsItem *> itemList;
 
@@ -146,7 +146,7 @@ QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &stream)
     loadDolphinFileName(stream, version);
     loadRect(stream, version);
 
-    auto items = deserialize(stream, version);
+    auto items = deserialize(stream, {}, version);
 
     qCDebug(zero) << tr("Finished reading items.");
     return items;

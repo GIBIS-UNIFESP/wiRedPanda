@@ -171,7 +171,7 @@ void WorkSpace::load(QDataStream &stream)
     qCDebug(zero) << tr("Dolphin name: ") << m_dolphinFileName;
 
     SerializationFunctions::loadRect(stream, version);
-    const auto items = SerializationFunctions::deserialize(stream, version);
+    const auto items = SerializationFunctions::deserialize(stream, {}, version);
     qCDebug(zero) << tr("Finished loading items.");
 
     for (auto *item : items) {

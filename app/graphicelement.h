@@ -173,7 +173,7 @@ private:
     void loadPixmapSkinNames(QDataStream &stream, const double version);
     void loadPortsSize(QDataStream &stream, const double version);
     void loadPriority(QDataStream &stream, const double version);
-    void loadRotation(QDataStream &stream);
+    void loadRotation(QDataStream &stream, const double version);
     void loadTrigger(QDataStream &stream, const double version);
     void removeSurplusInputs(const quint64 inputSize_, QMap<quint64, QNEPort *> &portMap);
     void removeSurplusOutputs(const quint64 outputSize_, QMap<quint64, QNEPort *> &portMap);
