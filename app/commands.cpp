@@ -413,7 +413,7 @@ void UpdateCommand::loadData(QByteArray &itemData)
     stream.setVersion(QDataStream::Qt_5_12);
     QMap<quint64, QNEPort *> portMap;
 
-    double version = GlobalProperties::version;
+    const double version = GlobalProperties::version;
 
     for (auto *elm : elements) {
         elm->load(stream, portMap, version);
@@ -433,6 +433,7 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
     qreal xV = qRound(m_nodePos.x() / gridSize) * gridSize;
     qreal yV = qRound(m_nodePos.y() / gridSize) * gridSize;
     m_nodePos = QPointF(xV, yV);
+
     /* Rotate line according to angle between p1 and p2 */
     const int angle = static_cast<int>(conn->angle());
     m_nodeAngle = static_cast<int>(360 - 90 * (std::round(angle / 90.0)));
