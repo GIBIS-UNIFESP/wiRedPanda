@@ -231,7 +231,7 @@ void GraphicElement::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap
 void GraphicElement::loadOldFormat(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
 {
     loadPos(stream);
-    loadRotation(stream);
+    loadRotation(stream, version);
     /* <Version1.2> */
     loadLabel(stream, version);
     /* <\Version1.2> */
@@ -381,11 +381,28 @@ void GraphicElement::loadPos(QDataStream &stream)
     setPos(pos);
 }
 
-void GraphicElement::loadRotation(QDataStream &stream)
+void GraphicElement::loadRotation(QDataStream &stream, const double version)
 {
     qreal angle;
     stream >> angle;
     m_angle = angle;
+
+    if (version < 4.0) {
+        if (m_elementGroup == ElementGroup::Input
+                || m_elementGroup == ElementGroup::StaticInput) {
+            m_angle += 90;
+        }
+
+        if (m_elementGroup == ElementGroup::Output
+                || m_elementGroup == ElementGroup::IC
+                || m_elementGroup == ElementGroup::Gate) {
+            if (m_elementType == ElementType::Display) { return; }
+            if (m_elementType == ElementType::Display14) { return; }
+            if (m_elementType == ElementType::Node) { return; }
+
+            m_angle -= 90;
+        }
+    }
 }
 
 void GraphicElement::loadLabel(QDataStream &stream, const double version)

@@ -116,11 +116,7 @@ void IC::loadFile(const QString &fileName)
     // ----------------------------------------------
 
     QFileInfo fileInfo;
-    fileInfo.setFile(fileName);
-
-    if (fileInfo.isRelative()) {
-        fileInfo.setFile(QFileInfo(GlobalProperties::currentFile).absolutePath(), QFileInfo(fileName).fileName());
-    }
+    fileInfo.setFile(QFileInfo(GlobalProperties::currentFile).absolutePath(), QFileInfo(fileName).fileName());
 
     if (!fileInfo.exists() || !fileInfo.isFile()) {
         throw Pandaception(fileInfo.absoluteFilePath() + tr(" not found."));
