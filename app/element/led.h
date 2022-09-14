@@ -18,12 +18,14 @@ public:
     void refresh() override;
     void save(QDataStream &stream) const override;
     void setColor(const QString &color) override;
-    void setSkin(const bool defaultSkin, const QString &fileName) override;
+    void setSkin(const bool useDefaultSkin, const QString &fileName) override;
     void updatePortsProperties() override;
 
 private:
+    int colorIndex();
+
     QString m_color = "White";
-    int m_colorNumber = 0; /* white = 0, red = 2, green = 4, blue = 6, purple = 8 */
+    int m_colorIndex = 0; /* white = 0, red = 2, green = 4, blue = 6, purple = 8 */
 };
 
 Q_DECLARE_METATYPE(Led)
