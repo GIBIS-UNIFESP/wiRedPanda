@@ -1017,7 +1017,7 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 void Scene::addItem(QGraphicsItem *item)
 {
     if (auto *element = dynamic_cast<Buzzer *>(item); element && element->label().isEmpty()) {
-        element->setLabel(element->objectName() + "_" + QString::number(++m_labelNumber));
+        element->setLabel(element->objectName() + "_" + QString::number(++m_buzzerLabelNumber));
     }
 
     QGraphicsScene::addItem(item);

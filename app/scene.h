@@ -114,8 +114,8 @@ private:
     bool m_markingSelectionBox = false;
     bool m_showGates = true;
     bool m_showWires = true;
+    int m_buzzerLabelNumber = 0;
     int m_editedConnectionId = 0;
     int m_hoverPortElmId = 0;
     int m_hoverPortNumber = 0;
-    int m_labelNumber = 0;
 };
