@@ -20,7 +20,7 @@ public:
         DFlipFlop = 17,
         DLatch = 15,
         Demux = 25,
-        Display = 14,
+        Display7 = 14,
         Display14 = 27,
         IC = 22,
         InputButton = 1,

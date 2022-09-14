@@ -3,7 +3,7 @@
 
 #include "display_14.h"
 
-#include "display.h"
+#include "display_7.h"
 #include "globalproperties.h"
 #include "qneport.h"
 
@@ -58,21 +58,21 @@ Display14::Display14(QGraphicsItem *parent)
     n  = QVector<QPixmap>(5, m_defaultSkins.at(14));
     dp = QVector<QPixmap>(5, m_defaultSkins.at(15));
 
-    Display::convertAllColors(a);
-    Display::convertAllColors(b);
-    Display::convertAllColors(c);
-    Display::convertAllColors(d);
-    Display::convertAllColors(e);
-    Display::convertAllColors(f);
-    Display::convertAllColors(g1);
-    Display::convertAllColors(g2);
-    Display::convertAllColors(h);
-    Display::convertAllColors(j);
-    Display::convertAllColors(k);
-    Display::convertAllColors(l);
-    Display::convertAllColors(m);
-    Display::convertAllColors(n);
-    Display::convertAllColors(dp);
+    Display7::convertAllColors(a);
+    Display7::convertAllColors(b);
+    Display7::convertAllColors(c);
+    Display7::convertAllColors(d);
+    Display7::convertAllColors(e);
+    Display7::convertAllColors(f);
+    Display7::convertAllColors(g1);
+    Display7::convertAllColors(g2);
+    Display7::convertAllColors(h);
+    Display7::convertAllColors(j);
+    Display7::convertAllColors(k);
+    Display7::convertAllColors(l);
+    Display7::convertAllColors(m);
+    Display7::convertAllColors(n);
+    Display7::convertAllColors(dp);
 
     setCanChangeSkin(true);
     setHasColors(true);

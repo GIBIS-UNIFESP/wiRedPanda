@@ -166,7 +166,7 @@ std::shared_ptr<LogicElement> ElementFactory::buildLogicElement(GraphicElement *
 
     case ElementType::Buzzer:
     case ElementType::Display14:
-    case ElementType::Display:
+    case ElementType::Display7:
     case ElementType::Led:         return std::make_shared<LogicOutput>(elm->inputSize());
 
     case ElementType::And:         return std::make_shared<LogicAnd>(elm->inputSize());

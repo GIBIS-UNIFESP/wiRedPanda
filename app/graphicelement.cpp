@@ -396,7 +396,7 @@ void GraphicElement::loadRotation(QDataStream &stream, const double version)
         if (m_elementGroup == ElementGroup::Output
                 || m_elementGroup == ElementGroup::IC
                 || m_elementGroup == ElementGroup::Gate) {
-            if (m_elementType == ElementType::Display) { return; }
+            if (m_elementType == ElementType::Display7) { return; }
             if (m_elementType == ElementType::Display14) { return; }
             if (m_elementType == ElementType::Node) { return; }
 

@@ -1,7 +1,7 @@
 // Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "display.h"
+#include "display_7.h"
 
 #include "common.h"
 #include "globalproperties.h"
@@ -12,11 +12,11 @@
 
 namespace
 {
-int id = qRegisterMetaType<Display>();
+int id = qRegisterMetaType<Display7>();
 }
 
-Display::Display(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Display, ElementGroup::Output, ":/output/counter/counter_on.svg", tr("7-SEGMENT DISPLAY"), tr("7-Segment Display"), 8, 8, 0, 0, parent)
+Display7::Display7(QGraphicsItem *parent)
+    : GraphicElement(ElementType::Display7, ElementGroup::Output, ":/output/counter/counter_on.svg", tr("7-SEGMENT DISPLAY"), tr("7-Segment Display"), 8, 8, 0, 0, parent)
 {
     if (GlobalProperties::skipInit) {
         return;
@@ -61,10 +61,10 @@ Display::Display(QGraphicsItem *parent)
     setHasLabel(true);
     setRotatable(false);
 
-    Display::updatePortsProperties();
+    Display7::updatePortsProperties();
 }
 
-void Display::convertAllColors(QVector<QPixmap> &pixmaps)
+void Display7::convertAllColors(QVector<QPixmap> &pixmaps)
 {
     QImage tmp(pixmaps.at(0).toImage());
     pixmaps[0] = convertColor(tmp, true, true, true);
@@ -74,7 +74,7 @@ void Display::convertAllColors(QVector<QPixmap> &pixmaps)
     pixmaps[4] = convertColor(tmp, true, false, true);
 }
 
-QPixmap Display::convertColor(const QImage &source, const bool red, const bool green, const bool blue)
+QPixmap Display7::convertColor(const QImage &source, const bool red, const bool green, const bool blue)
 {
     QImage target(source);
 
@@ -93,12 +93,12 @@ QPixmap Display::convertColor(const QImage &source, const bool red, const bool g
     return QPixmap::fromImage(target);
 }
 
-void Display::refresh()
+void Display7::refresh()
 {
     update();
 }
 
-void Display::updatePortsProperties()
+void Display7::updatePortsProperties()
 {
     inputPort(0)->setPos( 0,  8);    inputPort(0)->setName("G (" +  tr("middle")      + ")");
     inputPort(1)->setPos( 0, 24);    inputPort(1)->setName("F (" +  tr("upper left")  + ")");
@@ -115,7 +115,7 @@ void Display::updatePortsProperties()
     }
 }
 
-void Display::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void Display7::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     GraphicElement::paint(painter, option, widget);
 
@@ -129,7 +129,7 @@ void Display::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     if (inputPort(7)->status() == Status::Active) { painter->drawPixmap(0, 0, c.at(m_colorNumber));  }
 }
 
-void Display::setColor(const QString &color)
+void Display7::setColor(const QString &color)
 {
     m_color = color;
 
@@ -140,12 +140,12 @@ void Display::setColor(const QString &color)
     if (color == "Purple") { m_colorNumber = 4; }
 }
 
-QString Display::color() const
+QString Display7::color() const
 {
     return m_color;
 }
 
-void Display::save(QDataStream &stream) const
+void Display7::save(QDataStream &stream) const
 {
     GraphicElement::save(stream);
 
@@ -155,7 +155,7 @@ void Display::save(QDataStream &stream) const
     stream << map;
 }
 
-void Display::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
+void Display7::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
 {
     GraphicElement::load(stream, portMap, version);
     /*
