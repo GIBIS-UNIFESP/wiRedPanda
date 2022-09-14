@@ -117,7 +117,7 @@ private:
     void save(QDataStream &stream);
     void save(QSaveFile &file);
     void save(const QString &fileName);
-    void setLength(const int simLength, const bool runSimulation = true);
+    void setLength(const int simLength, const bool runSimulation);
     void zoomChanged();
 
     Ui::BewavedDolphin *m_ui;

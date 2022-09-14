@@ -343,7 +343,6 @@ void BewavedDolphin::run()
 
     qCDebug(three) << tr("Setting inputs back to old values.");
     restoreInputs();
-    m_signalTableView->viewport()->update();
 }
 
 void BewavedDolphin::loadNewTable(const QStringList &inputLabels, const QStringList &outputLabels)
@@ -626,13 +625,17 @@ void BewavedDolphin::on_actionSetLength_triggered()
         return;
     }
 
-    m_length = simLength;
-
-    setLength(simLength);
+    setLength(simLength, true);
 }
 
 void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
 {
+    if (m_length == simLength) {
+        return;
+    }
+
+    m_length = simLength;
+
     if (simLength <= m_model->columnCount()) {
         qCDebug(zero) << tr("Reducing or keeping the simulation length.");
         m_model->setColumnCount(simLength);
