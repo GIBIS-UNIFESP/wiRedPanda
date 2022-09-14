@@ -4,7 +4,7 @@ SOURCES += \
     $$PWD/clock.cpp \
     $$PWD/demux.cpp \
     $$PWD/dflipflop.cpp \
-    $$PWD/display.cpp \
+    $$PWD/display_7.cpp \
     $$PWD/display_14.cpp \
     $$PWD/dlatch.cpp \
     $$PWD/inputbutton.cpp \
@@ -33,7 +33,7 @@ HEADERS += \
     $$PWD/clock.h \
     $$PWD/demux.h \
     $$PWD/dflipflop.h \
-    $$PWD/display.h \
+    $$PWD/display_7.h \
     $$PWD/display_14.h \
     $$PWD/dlatch.h \
     $$PWD/graphicelementinput.h \

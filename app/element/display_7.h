@@ -7,12 +7,12 @@
 
 class QNEPort;
 
-class Display : public GraphicElement
+class Display7 : public GraphicElement
 {
     Q_OBJECT
 
 public:
-    explicit Display(QGraphicsItem *parent = nullptr);
+    explicit Display7(QGraphicsItem *parent = nullptr);
 
     static QPixmap convertColor(const QImage &source, const bool red, const bool green, const bool blue);
     static void convertAllColors(QVector<QPixmap> &pixmaps);
@@ -31,4 +31,4 @@ private:
     int m_colorNumber = 1;
 };
 
-Q_DECLARE_METATYPE(Display)
+Q_DECLARE_METATYPE(Display7)

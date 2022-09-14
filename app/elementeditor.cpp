@@ -173,8 +173,8 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
         }
 
         case ElementGroup::Output: {
-            if (selectedElm->elementType() == ElementType::Display || selectedElm->elementType() == ElementType::Display14) {
-                addElementAction(submenuMorph, selectedElm, ElementType::Display, m_hasSameType);
+            if (selectedElm->elementType() == ElementType::Display7 || selectedElm->elementType() == ElementType::Display14) {
+                addElementAction(submenuMorph, selectedElm, ElementType::Display7, m_hasSameType);
                 addElementAction(submenuMorph, selectedElm, ElementType::Display14, m_hasSameType);
             } else {
                 addElementAction(submenuMorph, selectedElm, ElementType::Buzzer, m_hasSameType);
