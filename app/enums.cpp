@@ -2,7 +2,10 @@
 
 #include <QDataStream>
 
-ElementType &operator++(ElementType &type) { return type = static_cast<ElementType>(static_cast<int>(type) + 1); }
+ElementType &operator++(ElementType &type)
+{
+    return type = static_cast<ElementType>(static_cast<int>(type) + 1);
+}
 
 QDataStream &operator>>(QDataStream &stream, ElementType &type)
 {

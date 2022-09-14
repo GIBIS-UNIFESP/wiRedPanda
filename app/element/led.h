@@ -29,5 +29,3 @@ private:
 };
 
 Q_DECLARE_METATYPE(Led)
-
-// FIXME: connecting more than one source makes led stop working

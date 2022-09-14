@@ -397,7 +397,7 @@ void BewavedDolphin::loadSignals(QStringList &inputLabels, QStringList &outputLa
     }
 
     qCDebug(zero) << tr("Getting the name of the outputs. If no label is given, element type is used as a name.");
-    // NOTE: What if there are 2 outputs without name or 2 identical labels?
+
     for (auto *output : qAsConst(m_outputs)) {
         QString label = output->label();
 
@@ -427,7 +427,6 @@ void BewavedDolphin::prepare(const QString &fileName)
 
     qCDebug(zero) << tr("Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation. Not saving memory states though...");
     qCDebug(zero) << tr("Also getting the name of the inputs. If no label is given, the element type is used as a name.");
-    // NOTE: Bug here? What if there are 2 inputs without name or two identical labels?
     QStringList inputLabels;
     QStringList outputLabels;
     loadSignals(inputLabels, outputLabels);
@@ -1260,7 +1259,8 @@ void BewavedDolphin::resizeScene()
     m_scene->setSceneRect(m_scene->itemsBoundingRect());
 }
 
-void BewavedDolphin::on_tableView_selectionChanged() {
+void BewavedDolphin::on_tableView_selectionChanged()
+{
     m_externalScene->clearSelection();
 
     const auto indexes = m_signalTableView->selectionModel()->selectedIndexes();

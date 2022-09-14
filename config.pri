@@ -119,7 +119,6 @@ SOURCES += \
     $$PWD/app/elementlabel.cpp \
     $$PWD/app/elementmapping.cpp \
     $$PWD/app/enums.cpp \
-    $$PWD/app/filehelper.cpp \
     $$PWD/app/graphicelement.cpp \
     $$PWD/app/graphicsview.cpp \
     $$PWD/app/ic.cpp \
@@ -151,7 +150,6 @@ HEADERS += \
     $$PWD/app/elementlabel.h \
     $$PWD/app/elementmapping.h \
     $$PWD/app/enums.h \
-    $$PWD/app/filehelper.h \
     $$PWD/app/globalproperties.h \
     $$PWD/app/graphicelement.h \
     $$PWD/app/graphicsview.h \

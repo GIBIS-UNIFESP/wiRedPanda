@@ -156,7 +156,7 @@ private:
     void addOutputPort(const QString &name = {});
 
     //! adds an input or output port at the end of the port vector.
-    void addPort(const QString &name, const bool isOutput, const int flags = 0, const int ptr = 0);
+    void addPort(const QString &name, const bool isOutput, const int ptr = 0);
 
     //! functions to load GraphicElement atributes through a binary data stream
     void loadPos(QDataStream &stream);
@@ -206,3 +206,5 @@ private:
 Q_DECLARE_METATYPE(GraphicElement)
 
 QDataStream &operator<<(QDataStream &stream, const GraphicElement *item);
+
+// FIXME: connecting more than one source makes element stop working

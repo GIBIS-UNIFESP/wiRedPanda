@@ -759,7 +759,8 @@ void ElementEditor::triggerChanged(const QString &cmd)
     apply();
 }
 
-void ElementEditor::priorityChanged(const int value) {
+void ElementEditor::priorityChanged(const int value)
+{
     m_ui->spinBoxPriority->setValue(value);
     apply();
 }
