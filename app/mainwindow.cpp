@@ -109,6 +109,26 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 
     QPixmapCache::setCacheLimit(100'000);
 
+    qCDebug(zero) << tr("Adding examples to menu");
+    QDir examplesDir("examples");
+
+    if (examplesDir.exists()) {
+        for (auto entry : examplesDir.entryList({"*.panda"}, QDir::Files)) {
+            auto *action = new QAction(entry);
+
+            connect(action, &QAction::triggered, this, [this] {
+                if (auto *action = qobject_cast<QAction *>(sender())) {
+                    loadPandaFile("examples/" + action->text());
+                }});
+
+            m_ui->menuExamples->addAction(action);
+        }
+    }
+
+    if (m_ui->menuExamples->isEmpty()) {
+        m_ui->menuExamples->menuAction()->setVisible(false);
+    }
+
     qCDebug(zero) << tr("Setting connections");
     connect(m_ui->actionAbout,            &QAction::triggered,       this,                &MainWindow::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,          &QAction::triggered,       this,                &MainWindow::on_actionAboutQt_triggered);

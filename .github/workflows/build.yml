@@ -158,7 +158,7 @@ jobs:
         mkdir appimage
         cp app/resources/wpanda.desktop appimage/wpanda.desktop
         cp app/resources/wpanda.svg appimage/wpanda_icon.svg
-        cp build/app/wiredpanda appimage/
+        cp build/app/wiredpanda appimage
         wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
         chmod +x ./linuxdeployqt-continuous-x86_64.AppImage
         VERSION=4 ./linuxdeployqt-continuous-x86_64.AppImage appimage/wiredpanda -appimage
