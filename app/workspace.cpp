@@ -131,7 +131,7 @@ void WorkSpace::load(const QString &fileName)
 
     if (!file.exists()) {
         qCDebug(zero) << tr("This file does not exist: ") << fileName;
-        return;
+        throw Pandaception(tr("This file does not exist: ") + fileName);
     }
 
     GlobalProperties::currentFile = fileName;
@@ -141,7 +141,7 @@ void WorkSpace::load(const QString &fileName)
 
     if (!file.open(QIODevice::ReadOnly)) {
         qCDebug(zero) << tr("Could not open file: ") << file.errorString();
-        return;
+        throw Pandaception(tr("Could not open file: ") + file.errorString());
     }
 
     QDataStream stream(&file);
