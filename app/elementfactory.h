@@ -28,7 +28,6 @@ public:
     static GraphicElement *buildElement(const ElementType type);
     static ItemWithId *itemById(const int id);
     static std::shared_ptr<LogicElement> buildLogicElement(GraphicElement *elm);
-    static QNEConnection *buildConnection(QGraphicsItem *parent = nullptr);
     static QPixmap pixmap(const ElementType type);
     static QString property(const ElementType type, const QString &property);
     static QString translatedName(const ElementType type);

@@ -169,7 +169,7 @@ void Led::updatePortsProperties()
 {
     setHasColors(inputSize() == 1);
 
-    for (auto *port : m_inputPorts) {
+    for (auto *port : qAsConst(m_inputPorts)) {
         port->setName(QString::number(m_inputPorts.indexOf(port)));
         port->setRequired(false);
     }
