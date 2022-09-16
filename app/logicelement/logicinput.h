@@ -10,6 +10,8 @@ class LogicInput : public LogicElement
 public:
     explicit LogicInput(const bool defaultValue = false, const int nOutputs = 1);
 
-protected:
-    void _updateLogic(const QVector<bool> &inputs) override;
+    void updateLogic() override;
+
+private:
+    Q_DISABLE_COPY(LogicInput)
 };

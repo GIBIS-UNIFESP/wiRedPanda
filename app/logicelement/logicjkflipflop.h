@@ -10,10 +10,11 @@ class LogicJKFlipFlop : public LogicElement
 public:
     explicit LogicJKFlipFlop();
 
-protected:
-    void _updateLogic(const QVector<bool> &inputs) override;
+    void updateLogic() override;
 
 private:
+    Q_DISABLE_COPY(LogicJKFlipFlop)
+
     bool m_lastClk = false;
     bool m_lastJ = true;
     bool m_lastK = true;

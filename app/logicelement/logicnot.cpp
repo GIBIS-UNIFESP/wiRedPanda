@@ -8,7 +8,11 @@ LogicNot::LogicNot()
 {
 }
 
-void LogicNot::_updateLogic(const QVector<bool> &inputs)
+void LogicNot::updateLogic()
 {
-    setOutputValue(!inputs.at(0));
+    if (!updateInputs()) {
+        return;
+    }
+
+    setOutputValue(!m_inputValues.at(0));
 }

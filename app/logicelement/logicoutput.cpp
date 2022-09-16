@@ -8,9 +8,13 @@ LogicOutput::LogicOutput(const int inputSize)
 {
 }
 
-void LogicOutput::_updateLogic(const QVector<bool> &inputs)
+void LogicOutput::updateLogic()
 {
-    for (int index = 0; index < inputs.size(); ++index) {
-        setOutputValue(index, inputs.at(index));
+    if (!updateInputs()) {
+        return;
+    }
+
+    for (int index = 0; index < m_inputValues.size(); ++index) {
+        setOutputValue(index, m_inputValues.at(index));
     }
 }

@@ -10,6 +10,8 @@ class LogicNode : public LogicElement
 public:
     explicit LogicNode();
 
-protected:
-    void _updateLogic(const QVector<bool> &inputs) override;
+    void updateLogic() override;
+
+private:
+    Q_DISABLE_COPY(LogicNode)
 };

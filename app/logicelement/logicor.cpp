@@ -10,8 +10,12 @@ LogicOr::LogicOr(const int inputSize)
 {
 }
 
-void LogicOr::_updateLogic(const QVector<bool> &inputs)
+void LogicOr::updateLogic()
 {
-    const auto result = std::accumulate(inputs.begin(), inputs.end(), false, std::bit_or<>());
+    if (!updateInputs()) {
+        return;
+    }
+
+    const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), false, std::bit_or<>());
     setOutputValue(result);
 }

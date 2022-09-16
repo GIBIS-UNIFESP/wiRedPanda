@@ -10,8 +10,12 @@ LogicXor::LogicXor(const int inputSize)
 {
 }
 
-void LogicXor::_updateLogic(const QVector<bool> &inputs)
+void LogicXor::updateLogic()
 {
-    const auto result = std::accumulate(inputs.begin(), inputs.end(), false, std::bit_xor<>());
+    if (!updateInputs()) {
+        return;
+    }
+
+    const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), false, std::bit_xor<>());
     setOutputValue(result);
 }

@@ -4,8 +4,8 @@
 #include "logicelement.h"
 
 LogicElement::LogicElement(const int inputSize, const int outputSize)
-    : m_inputPairs(inputSize, {})
-    , m_inputValues(inputSize, false)
+    : m_inputValues(inputSize, false)
+    , m_inputPairs(inputSize, {})
     , m_outputValues(outputSize, false)
 {
 }
@@ -34,17 +34,17 @@ void LogicElement::clearSucessors()
     m_successors.clear();
 }
 
-void LogicElement::updateLogic()
+bool LogicElement::updateInputs()
 {
     if (!m_isValid) {
-        return;
+        return false;
     }
 
     for (int index = 0; index < m_inputPairs.size(); ++index) {
         m_inputValues[index] = inputValue(index);
     }
 
-    _updateLogic(m_inputValues);
+    return true;
 }
 
 void LogicElement::connectPredecessor(const int index, LogicElement *logic, const int port)
@@ -65,13 +65,8 @@ void LogicElement::setOutputValue(const bool value)
 
 void LogicElement::validate()
 {
-    m_isValid = true;
-
-    for (int index = 0; index < m_inputPairs.size() && m_isValid; ++index) {
-        if (m_inputPairs.value(index).logic == nullptr) {
-            m_isValid = false;
-        }
-    }
+    m_isValid = std::all_of(m_inputPairs.cbegin(), m_inputPairs.cend(),
+                            [](auto pair) { return pair.logic != nullptr; });
 
     if (!m_isValid) {
         for (auto *logic : qAsConst(m_successors)) {

@@ -10,12 +10,16 @@ LogicDLatch::LogicDLatch()
     setOutputValue(1, true);
 }
 
-void LogicDLatch::_updateLogic(const QVector<bool> &inputs)
+void LogicDLatch::updateLogic()
 {
+    if (!updateInputs()) {
+        return;
+    }
+
     bool q0 = outputValue(0);
     bool q1 = outputValue(1);
-    const bool D = inputs.at(0);
-    const bool enable = inputs.at(1);
+    const bool D = m_inputValues.at(0);
+    const bool enable = m_inputValues.at(1);
 
     if (enable) {
         q0 = D;

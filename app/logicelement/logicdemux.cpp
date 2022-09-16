@@ -8,10 +8,14 @@ LogicDemux::LogicDemux()
 {
 }
 
-void LogicDemux::_updateLogic(const QVector<bool> &inputs)
+void LogicDemux::updateLogic()
 {
-    const bool data = inputs.at(0);
-    const bool choice = inputs.at(1);
+    if (!updateInputs()) {
+        return;
+    }
+
+    const bool data = m_inputValues.at(0);
+    const bool choice = m_inputValues.at(1);
 
     bool out0 = false;
     bool out1 = false;
