@@ -38,7 +38,7 @@ void GraphicsView::mousePressEvent(QMouseEvent *event)
         m_pan = true;
         m_panStartX = event->pos().x();
         m_panStartY = event->pos().y();
-        QApplication::setOverrideCursor(Qt::ClosedHandCursor);
+        viewport()->setCursor(Qt::ClosedHandCursor);
         event->accept();
         return;
     }
@@ -67,7 +67,7 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::MiddleButton) {
         m_pan = false;
-        QApplication::restoreOverrideCursor();
+        viewport()->unsetCursor();
         event->accept();
         return;
     }
@@ -79,7 +79,7 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Space) {
         m_space = true;
-        QApplication::setOverrideCursor(Qt::ClosedHandCursor);
+        viewport()->setCursor(Qt::ClosedHandCursor);
         event->accept();
     }
 
@@ -90,7 +90,7 @@ void GraphicsView::keyReleaseEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Space) {
         m_space = false;
-        QApplication::restoreOverrideCursor();
+        viewport()->unsetCursor();
         event->accept();
     }
 
