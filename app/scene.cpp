@@ -613,8 +613,7 @@ void Scene::cutAction()
 
 void Scene::pasteAction()
 {
-    const auto *clipboard = QApplication::clipboard();
-    const auto *mimeData = clipboard->mimeData();
+    const auto *mimeData = QApplication::clipboard()->mimeData();
 
     if (mimeData->hasFormat("wpanda/copydata")) {
         QByteArray itemData = mimeData->data("wpanda/copydata");
