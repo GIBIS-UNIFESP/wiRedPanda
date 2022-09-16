@@ -462,7 +462,7 @@ void Scene::handleHoverPort()
         setHoverPort(port);
 
         if (editedConn && editedConn->start() && (editedConn->start()->isOutput() == port->isOutput())) {
-            QApplication::setOverrideCursor(QCursor(Qt::ForbiddenCursor));
+            m_view->viewport()->setCursor(Qt::ForbiddenCursor);
         }
     }
 }
@@ -472,7 +472,7 @@ void Scene::releaseHoverPort()
     if (auto *hoverPort_ = hoverPort()) {
         hoverPort_->hoverLeave();
         setHoverPort(nullptr);
-        QApplication::restoreOverrideCursor();
+        m_view->viewport()->unsetCursor();
     }
 }
 
