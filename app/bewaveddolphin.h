@@ -81,7 +81,7 @@ private:
     void load(const QString &fileName);
     void loadElements();
     void loadFromTerminal();
-    void loadNewTable(const QStringList &inputLabels, const QStringList &outputLabels);
+    void loadNewTable();
     void loadPixmaps();
     void loadSignals(QStringList &inputLabels, QStringList &outputLabels);
     void on_actionAboutQt_triggered();

@@ -345,8 +345,16 @@ void BewavedDolphin::run()
     restoreInputs();
 }
 
-void BewavedDolphin::loadNewTable(const QStringList &inputLabels, const QStringList &outputLabels)
+void BewavedDolphin::loadNewTable()
 {
+    qCDebug(zero) << tr("Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation. Not saving memory states though...");
+    qCDebug(zero) << tr("Also getting the name of the inputs. If no label is given, the element type is used as a name.");
+    QStringList inputLabels;
+    QStringList outputLabels;
+    loadSignals(inputLabels, outputLabels);
+
+    // ---------------------------------------
+
     const int iterations = 32;
     qCDebug(zero) << tr("Num iter = ") << iterations;
 
@@ -423,14 +431,8 @@ void BewavedDolphin::prepare(const QString &fileName)
     qCDebug(zero) << tr("Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.");
     loadElements();
 
-    qCDebug(zero) << tr("Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation. Not saving memory states though...");
-    qCDebug(zero) << tr("Also getting the name of the inputs. If no label is given, the element type is used as a name.");
-    QStringList inputLabels;
-    QStringList outputLabels;
-    loadSignals(inputLabels, outputLabels);
-
     qCDebug(zero) << tr("Loading initial data into the table.");
-    loadNewTable(inputLabels, outputLabels);
+    loadNewTable();
 }
 
 void BewavedDolphin::createWaveform(const QString &fileName)
