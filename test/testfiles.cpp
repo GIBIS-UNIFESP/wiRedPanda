@@ -26,7 +26,7 @@ void TestFiles::testFiles()
         QDataStream stream(&pandaFile);
         stream.setVersion(QDataStream::Qt_5_12);
         workspace.load(stream);
-        const auto items = workspace.scene()->items(Qt::SortOrder(-1));
+        const auto items = workspace.scene()->items();
 
         for (auto *item : items) {
             if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {

@@ -124,7 +124,7 @@ bool Simulation::initialize()
     m_connections.clear();
 
     QVector<GraphicElement *> elements;
-    const auto items = m_scene->items(Qt::SortOrder(-1));
+    const auto items = m_scene->items();
 
     if (items.size() == 1) {
         return false;

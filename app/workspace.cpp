@@ -122,7 +122,7 @@ void WorkSpace::save(const QString &fileName)
 void WorkSpace::save(QDataStream &stream)
 {
     SerializationFunctions::saveHeader(stream, m_dolphinFileName, m_scene.sceneRect());
-    SerializationFunctions::serialize(m_scene.items(Qt::SortOrder(-1)), stream);
+    SerializationFunctions::serialize(m_scene.items(), stream);
 }
 
 void WorkSpace::load(const QString &fileName)

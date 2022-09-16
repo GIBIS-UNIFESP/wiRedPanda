@@ -108,7 +108,7 @@ const QVector<GraphicElement *> Scene::visibleElements() const
 
 const QVector<GraphicElement *> Scene::elements() const
 {
-    const auto items_ = items(Qt::SortOrder(-1));
+    const auto items_ = items();
     QVector<GraphicElement *> elements_;
     elements_.reserve(items_.size());
 
@@ -123,7 +123,7 @@ const QVector<GraphicElement *> Scene::elements() const
 
 const QVector<GraphicElement *> Scene::elements(const QRectF &rect) const
 {
-    const auto items_ = items(rect, Qt::IntersectsItemShape, Qt::SortOrder(-1));
+    const auto items_ = items(rect);
     QVector<GraphicElement *> elements_;
     elements_.reserve(items_.size());
 
@@ -138,7 +138,7 @@ const QVector<GraphicElement *> Scene::elements(const QRectF &rect) const
 
 const QVector<QNEConnection *> Scene::connections()
 {
-    const auto items_ = items(Qt::SortOrder(-1));
+    const auto items_ = items();
     QVector<QNEConnection *> conns;
     conns.reserve(items_.size());
 
@@ -167,7 +167,7 @@ const QList<GraphicElement *> Scene::selectedElements() const
 
 QGraphicsItem *Scene::itemAt(const QPointF pos)
 {
-    auto items_ = items(pos, Qt::IntersectsItemShape, Qt::SortOrder(-1));
+    auto items_ = items(pos);
     items_.append(itemsAt(pos));
 
     for (auto *item : qAsConst(items_)) {
@@ -188,7 +188,7 @@ QGraphicsItem *Scene::itemAt(const QPointF pos)
 QList<QGraphicsItem *> Scene::itemsAt(const QPointF pos)
 {
     QRectF rect(pos - QPointF(4, 4), QSize(9, 9));
-    return items(rect.normalized(), Qt::IntersectsItemShape, Qt::SortOrder(-1));
+    return items(rect.normalized());
 }
 
 void Scene::receiveCommand(QUndoCommand *cmd)
@@ -327,10 +327,35 @@ void Scene::updateTheme()
     qCDebug(zero) << tr("Finished updating theme.");
 }
 
+QList<QGraphicsItem *> Scene::items(Qt::SortOrder order) const
+{
+    return QGraphicsScene::items(order);
+}
+
+QList<QGraphicsItem *> Scene::items(const QPointF &pos, Qt::ItemSelectionMode mode, Qt::SortOrder order, const QTransform &deviceTransform) const
+{
+    return QGraphicsScene::items(pos, mode, order, deviceTransform);
+}
+
+QList<QGraphicsItem *> Scene::items(const QRectF &rect, Qt::ItemSelectionMode mode, Qt::SortOrder order, const QTransform &deviceTransform) const
+{
+    return QGraphicsScene::items(rect, mode, order, deviceTransform);
+}
+
+QList<QGraphicsItem *> Scene::items(const QPolygonF &polygon, Qt::ItemSelectionMode mode, Qt::SortOrder order, const QTransform &deviceTransform) const
+{
+    return QGraphicsScene::items(polygon, mode, order, deviceTransform);
+}
+
+QList<QGraphicsItem *> Scene::items(const QPainterPath &path, Qt::ItemSelectionMode mode, Qt::SortOrder order, const QTransform &deviceTransform) const
+{
+    return QGraphicsScene::items(path, mode, order, deviceTransform);
+}
+
 void Scene::showGates(const bool checked)
 {
     m_showGates = checked;
-    const auto items_ = items(Qt::SortOrder(-1));
+    const auto items_ = items();
 
     for (auto *item : items_) {
         if (item->type() == GraphicElement::Type) {
@@ -347,7 +372,7 @@ void Scene::showGates(const bool checked)
 void Scene::showWires(const bool checked)
 {
     m_showWires = checked;
-    const auto items_ = items(Qt::SortOrder(-1));
+    const auto items_ = items();
 
     for (auto *item : items_) {
         if (item->type() == QNEConnection::Type) {
@@ -382,7 +407,7 @@ void Scene::cloneDrag(const QPointF mousePos)
         return;
     }
 
-    const auto items_ = items(Qt::SortOrder(-1));
+    const auto items_ = items();
 
     for (auto *item : items_) {
         if ((item->type() == GraphicElement::Type || item->type() == QNEConnection::Type) && !item->isSelected()) {
@@ -664,7 +689,7 @@ void Scene::deleteAction()
 
 void Scene::selectAll()
 {
-    const auto items_ = items(Qt::SortOrder(-1));
+    const auto items_ = items();
 
     for (auto *item : items_) {
         item->setSelected(true);

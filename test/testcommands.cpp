@@ -28,7 +28,7 @@ void TestCommands::testAddDeleteCommands()
     undoStack->redo();
     undoStack->undo();
     undoStack->redo();
-    scene->receiveCommand(new DeleteItemsCommand(scene->items(Qt::SortOrder(-1)), scene));
+    scene->receiveCommand(new DeleteItemsCommand(scene->items(), scene));
     undoStack->undo();
     undoStack->redo();
     undoStack->undo();
