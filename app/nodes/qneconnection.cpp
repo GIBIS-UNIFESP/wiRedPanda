@@ -264,6 +264,10 @@ void QNEConnection::setStatus(const Status status)
     case Status::Inactive: setPen(QPen(m_inactiveColor, 3)); break;
     case Status::Active:   setPen(QPen(m_activeColor,   3)); break;
     }
+
+    if (end()) {
+        end()->setStatus(status);
+    }
 }
 
 void QNEConnection::updateTheme()

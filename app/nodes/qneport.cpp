@@ -329,10 +329,6 @@ void QNEOutputPort::setStatus(Status status)
 
     for (auto *conn : connections()) {
         conn->setStatus(status);
-
-        if (auto *otherPort = conn->otherPort(this)) {
-            otherPort->setStatus(status);
-        }
     }
 }
 
