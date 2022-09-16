@@ -362,8 +362,7 @@ void BewavedDolphin::loadNewTable(const QStringList &inputLabels, const QStringL
     m_signalTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Fixed);
     m_signalTableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Fixed);
 
-    m_signalTableView->horizontalHeader()->setDefaultSectionSize(35);
-    m_signalTableView->verticalHeader()->setDefaultSectionSize(30);
+    m_signalTableView->horizontalHeader()->setDefaultSectionSize(1);
 
     qCDebug(zero) << tr("Inputs: ") << inputLabels.size() << tr(", outputs: ") << outputLabels.size();
 
@@ -1248,7 +1247,7 @@ void BewavedDolphin::resizeEvent(QResizeEvent *event)
 void BewavedDolphin::resizeScene()
 {
     const int newWidth = static_cast<int>((width() - 3) / m_scale);
-    const int newHeight = static_cast<int>((height() - 85) / m_scale);
+    const int newHeight = static_cast<int>((height() - 100) / m_scale);
 
     if (newWidth > 4000 or newHeight > 4000) {
         on_actionResetZoom_triggered();
