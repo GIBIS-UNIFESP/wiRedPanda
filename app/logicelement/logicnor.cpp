@@ -10,8 +10,12 @@ LogicNor::LogicNor(const int inputSize)
 {
 }
 
-void LogicNor::_updateLogic(const QVector<bool> &inputs)
+void LogicNor::updateLogic()
 {
-    const auto result = std::accumulate(inputs.begin(), inputs.end(), false, std::bit_or<>());
+    if (!updateInputs()) {
+        return;
+    }
+
+    const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), false, std::bit_or<>());
     setOutputValue(!result);
 }

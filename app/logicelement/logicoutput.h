@@ -10,8 +10,7 @@ class LogicOutput : public LogicElement
 public:
     explicit LogicOutput(const int inputSize);
 
-protected:
-    void _updateLogic(const QVector<bool> &inputs) override;
+    void updateLogic() override;
 
 private:
     Q_DISABLE_COPY(LogicOutput)

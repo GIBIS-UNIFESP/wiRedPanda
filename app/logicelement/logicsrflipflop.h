@@ -10,8 +10,7 @@ class LogicSRFlipFlop : public LogicElement
 public:
     explicit LogicSRFlipFlop();
 
-protected:
-    void _updateLogic(const QVector<bool> &inputs) override;
+    void updateLogic() override;
 
 private:
     Q_DISABLE_COPY(LogicSRFlipFlop)

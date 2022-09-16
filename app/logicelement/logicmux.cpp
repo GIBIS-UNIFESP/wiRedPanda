@@ -8,11 +8,15 @@ LogicMux::LogicMux()
 {
 }
 
-void LogicMux::_updateLogic(const QVector<bool> &inputs)
+void LogicMux::updateLogic()
 {
-    const bool data1 = inputs.at(0);
-    const bool data2 = inputs.at(1);
-    const bool choice = inputs.at(2);
+    if (!updateInputs()) {
+        return;
+    }
+
+    const bool data1 = m_inputValues.at(0);
+    const bool data2 = m_inputValues.at(1);
+    const bool choice = m_inputValues.at(2);
 
     setOutputValue(choice ? data2 : data1);
 }

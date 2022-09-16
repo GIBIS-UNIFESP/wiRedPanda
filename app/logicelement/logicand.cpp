@@ -10,8 +10,12 @@ LogicAnd::LogicAnd(const int inputSize)
 {
 }
 
-void LogicAnd::_updateLogic(const QVector<bool> &inputs)
+void LogicAnd::updateLogic()
 {
-    const auto result = std::accumulate(inputs.begin(), inputs.end(), true, std::bit_and<>());
+    if (!updateInputs()) {
+        return;
+    }
+
+    const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), true, std::bit_and<>());
     setOutputValue(result);
 }

@@ -8,7 +8,11 @@ LogicNode::LogicNode()
 {
 }
 
-void LogicNode::_updateLogic(const QVector<bool> &inputs)
+void LogicNode::updateLogic()
 {
-    setOutputValue(inputs.at(0));
+    if (!updateInputs()) {
+        return;
+    }
+
+    setOutputValue(m_inputValues.at(0));
 }
