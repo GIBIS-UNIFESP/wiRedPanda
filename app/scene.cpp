@@ -236,7 +236,7 @@ void Scene::setEditedConnection(QNEConnection *connection)
 
 void Scene::startNewConnection(QNEInputPort *endPort)
 {
-    auto *connection = ElementFactory::buildConnection();
+    auto *connection = new QNEConnection();
     connection->setEnd(endPort);
     connection->setStartPos(m_mousePos);
 
@@ -247,7 +247,7 @@ void Scene::startNewConnection(QNEInputPort *endPort)
 
 void Scene::startNewConnection(QNEOutputPort *startPort)
 {
-    auto *connection = ElementFactory::buildConnection();
+    auto *connection = new QNEConnection();
     connection->setStart(startPort);
     connection->setEndPos(m_mousePos);
 

@@ -193,7 +193,6 @@ void InputRotary::setOn()
 void InputRotary::setOn(const bool value, const int port)
 {
     Q_UNUSED(value)
-
     m_currentPort = port;
 
     if (m_currentPort >= outputSize()) {
@@ -204,7 +203,7 @@ void InputRotary::setOn(const bool value, const int port)
         outputPort(index)->setStatus((m_currentPort == index) ? Status::Active : Status::Inactive);
     }
 
-    refresh();
+    update();
 }
 
 void InputRotary::mousePressEvent(QGraphicsSceneMouseEvent *event)

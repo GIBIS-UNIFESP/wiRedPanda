@@ -235,7 +235,7 @@ QNEInputPort::QNEInputPort(QGraphicsItem *parent)
     m_label->setPos(-m_radius - m_margin - m_label->boundingRect().width(),
                     -m_label->boundingRect().height() / 2);
 
-    setStatus(defaultValue());
+    QNEInputPort::setStatus(defaultValue());
 }
 
 QNEInputPort::~QNEInputPort()
@@ -254,7 +254,7 @@ void QNEInputPort::setStatus(Status status)
         return;
     }
 
-    m_status = isValid() ? status : Status::Invalid;
+    m_status = QNEInputPort::isValid() ? status : Status::Invalid;
 
     const auto theme = ThemeManager::attributes();
 

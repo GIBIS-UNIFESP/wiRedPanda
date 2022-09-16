@@ -24,7 +24,6 @@
 #include "logictflipflop.h"
 #include "logicxnor.h"
 #include "logicxor.h"
-#include "qneconnection.h"
 
 #include <QMetaEnum>
 
@@ -83,7 +82,7 @@ GraphicElement *ElementFactory::buildElement(const ElementType type)
     }
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    int id = QMetaType::type(typeToText(type).toLatin1());
+    const int id = QMetaType::type(typeToText(type).toLatin1());
 
     if (id == QMetaType::UnknownType) {
         throw Pandaception(tr("Unknown type: ") + typeToText(type));
@@ -114,11 +113,6 @@ QString ElementFactory::property(const ElementType type, const QString &property
     delete elm;
 
     return value;
-}
-
-QNEConnection *ElementFactory::buildConnection(QGraphicsItem *parent)
-{
-    return new QNEConnection(parent);
 }
 
 ItemWithId *ElementFactory::itemById(const int id)

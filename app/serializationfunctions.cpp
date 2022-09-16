@@ -55,7 +55,7 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &stream, 
 
         case QNEConnection::Type: {
             qCDebug(three) << tr("Building connection.");
-            auto *conn = ElementFactory::buildConnection();
+            auto *conn = new QNEConnection();
 
             qCDebug(three) << tr("Loading connection.");
             conn->load(stream, portMap);

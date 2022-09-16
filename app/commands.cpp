@@ -443,7 +443,7 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
     m_elm2Id = conn->end()->graphicElement()->id();
 
     m_c1Id = conn->id();
-    m_c2Id = ElementFactory::buildConnection()->id();
+    m_c2Id = (new QNEConnection())->id();
 
     m_nodeId = node->id();
 
@@ -460,7 +460,7 @@ void SplitCommand::redo()
     auto *elm2 = findElm(m_elm2Id);
 
     if (!conn2) {
-        conn2 = ElementFactory::buildConnection();
+        conn2 = new QNEConnection();
         ElementFactory::updateItemId(conn2, m_c2Id);
     }
 
@@ -763,7 +763,7 @@ void ChangeInputSizeCommand::undo()
 
     for (auto *elm : m_elements) {
         for (int in = m_newInputSize; in < elm->inputSize(); ++in) {
-            auto *conn = ElementFactory::buildConnection();
+            auto *conn = new QNEConnection();
             conn->load(stream, portMap);
             m_scene->addItem(conn);
         }
@@ -854,7 +854,7 @@ void ChangeOutputSizeCommand::undo()
 
     for (auto *elm : elements) {
         for (int out = m_newOutputSize; out < elm->outputSize(); ++out) {
-            auto *conn = ElementFactory::buildConnection();
+            auto *conn = new QNEConnection;
             conn->load(stream, portMap);
             m_scene->addItem(conn);
         }

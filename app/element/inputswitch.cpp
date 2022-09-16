@@ -54,10 +54,9 @@ void InputSwitch::setOn()
 void InputSwitch::setOn(const bool value, const int port)
 {
     Q_UNUSED(port)
-
     m_isOn = value;
-    outputPort()->setStatus(static_cast<Status>(m_isOn));
     setPixmap(static_cast<int>(m_isOn));
+    outputPort()->setStatus(static_cast<Status>(m_isOn));
 }
 
 void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)

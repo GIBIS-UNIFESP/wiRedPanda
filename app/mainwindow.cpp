@@ -113,7 +113,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     QDir examplesDir("examples");
 
     if (examplesDir.exists()) {
-        for (auto entry : examplesDir.entryList({"*.panda"}, QDir::Files)) {
+        for (const auto &entry : examplesDir.entryList({"*.panda"}, QDir::Files)) {
             auto *action = new QAction(entry);
 
             connect(action, &QAction::triggered, this, [this] {
