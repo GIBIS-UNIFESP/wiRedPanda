@@ -20,11 +20,12 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
         version: 5.12.12
         modules: qtcharts
-        aqtversion: ==2.1.0
+        cache: true
+        aqtversion: ==2.2.3
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -62,11 +63,12 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
         version: 5.13.2
         modules: qtcharts
-        aqtversion: ==2.1.0
+        cache: true
+        aqtversion: ==2.2.3
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -96,11 +98,12 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
         version: 5.14.2
         modules: qtcharts
-        aqtversion: ==2.1.0
+        cache: true
+        aqtversion: ==2.2.3
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -130,11 +133,12 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
         version: 5.15.2
         modules: qtcharts
-        aqtversion: ==2.1.0
+        cache: true
+        aqtversion: ==2.2.3
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -184,11 +188,12 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
         version: 6.2.4
         modules: qtcharts qtmultimedia
-        aqtversion: ==2.1.0
+        cache: true
+        aqtversion: ==2.2.3
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -218,11 +223,12 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
         version: 6.3.2
         modules: qtcharts qtmultimedia
-        aqtversion: ==2.1.0
+        cache: true
+        aqtversion: ==2.2.3
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -255,12 +261,13 @@ jobs:
       run: git config --global core.symlinks true
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
         arch: win64_msvc2017_64
         version: 5.12.12
         modules: qtcharts
-        aqtversion: ==2.1.0
+        cache: true
+        aqtversion: ==2.2.3
 
     - name: Setup MSVC Toolchain [Windows]
       uses: seanmiddleditch/gha-setup-vsdevenv@v4
@@ -295,12 +302,13 @@ jobs:
       run: git config --global core.symlinks true
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
         arch: win64_msvc2017_64
         version: 5.13.2
         modules: qtcharts
-        aqtversion: ==2.1.0
+        cache: true
+        aqtversion: ==2.2.3
 
     - name: Setup MSVC Toolchain [Windows]
       uses: seanmiddleditch/gha-setup-vsdevenv@v4
@@ -335,12 +343,13 @@ jobs:
       run: git config --global core.symlinks true
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
         arch: win64_msvc2017_64
         version: 5.14.2
         modules: qtcharts
-        aqtversion: ==2.1.0
+        cache: true
+        aqtversion: ==2.2.3
 
     - name: Setup MSVC Toolchain [Windows]
       uses: seanmiddleditch/gha-setup-vsdevenv@v4
@@ -375,12 +384,13 @@ jobs:
       run: git config --global core.symlinks true
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
         arch: win64_msvc2019_64
         version: 5.15.2
         modules: qtcharts
-        aqtversion: ==2.1.0
+        cache: true
+        aqtversion: ==2.2.3
 
     - name: Setup MSVC Toolchain [Windows]
       uses: seanmiddleditch/gha-setup-vsdevenv@v4
@@ -434,12 +444,13 @@ jobs:
       run: git config --global core.symlinks true
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
         arch: win64_msvc2019_64
         version: 6.2.4
         modules: qtcharts qtmultimedia
-        aqtversion: ==2.1.0
+        cache: true
+        aqtversion: ==2.2.3
 
     - name: Setup MSVC Toolchain [Windows]
       uses: seanmiddleditch/gha-setup-vsdevenv@v4
@@ -474,12 +485,13 @@ jobs:
       run: git config --global core.symlinks true
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
         arch: win64_msvc2019_64
         version: 6.3.2
         modules: qtcharts qtmultimedia
-        aqtversion: ==2.1.0
+        cache: true
+        aqtversion: ==2.2.3
 
     - name: Setup MSVC Toolchain [Windows]
       uses: seanmiddleditch/gha-setup-vsdevenv@v4
@@ -511,11 +523,12 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
         version: 5.12.12
         modules: qtcharts
-        aqtversion: ==2.1.0
+        cache: true
+        aqtversion: ==2.2.3
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -544,11 +557,12 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
         version: 5.13.2
         modules: qtcharts
-        aqtversion: ==2.1.0
+        cache: true
+        aqtversion: ==2.2.3
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -577,11 +591,12 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
         version: 5.14.2
         modules: qtcharts
-        aqtversion: ==2.1.0
+        cache: true
+        aqtversion: ==2.2.3
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -610,11 +625,12 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
         version: 5.15.2
         modules: qtcharts
-        aqtversion: ==2.1.0
+        cache: true
+        aqtversion: ==2.2.3
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -657,11 +673,12 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
         version: 6.2.4
         modules: qtcharts qtmultimedia
-        aqtversion: ==2.1.0
+        cache: true
+        aqtversion: ==2.2.3
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -690,11 +707,12 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
         version: 6.3.2
         modules: qtcharts qtmultimedia
-        aqtversion: ==2.1.0
+        cache: true
+        aqtversion: ==2.2.3
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
