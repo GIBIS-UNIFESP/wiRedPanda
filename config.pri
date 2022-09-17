@@ -82,7 +82,9 @@ linux {
 }
 
 msvc {
-    QMAKE_CXXFLAGS += /permissive-
+    QMAKE_CXXFLAGS +=/permissive-
+    QMAKE_CXXFLAGS_RELEASE += /GL
+    QMAKE_LFLAGS_RELEASE += /LTCG
 }
 
 *-g++ {
