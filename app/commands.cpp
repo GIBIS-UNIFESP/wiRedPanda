@@ -715,9 +715,9 @@ void ChangeInputSizeCommand::redo()
 
         for (int port = m_newInputSize; port < elm->inputSize(); ++port) {
             for (auto *conn : elm->inputPort(port)->connections()) {
-                auto *otherPort = conn->otherPort(elm->inputPort(port));
-                otherPort->graphicElement()->save(stream);
-                serializationOrder.append(otherPort->graphicElement());
+                auto *outputPort = conn->start();
+                outputPort->graphicElement()->save(stream);
+                serializationOrder.append(outputPort->graphicElement());
             }
         }
     }
@@ -728,9 +728,9 @@ void ChangeInputSizeCommand::redo()
                 auto *conn = elm->inputPort(port)->connections().constFirst();
                 conn->save(stream);
                 m_scene->removeItem(conn);
-                auto *otherPort = conn->otherPort(elm->inputPort(port));
+                auto *outputPort = conn->start();
                 elm->inputPort(port)->disconnect(conn);
-                otherPort->disconnect(conn);
+                outputPort->disconnect(conn);
             }
         }
 
@@ -805,9 +805,9 @@ void ChangeOutputSizeCommand::redo()
 
         for (int port = m_newOutputSize; port < elm->outputSize(); ++port) {
             for (auto *conn : elm->outputPort(port)->connections()) {
-                auto *otherPort = conn->otherPort(elm->outputPort(port));
-                otherPort->graphicElement()->save(stream);
-                serializationOrder.append(otherPort->graphicElement());
+                auto *inputPort = conn->end();
+                inputPort->graphicElement()->save(stream);
+                serializationOrder.append(inputPort->graphicElement());
             }
         }
     }
@@ -818,9 +818,9 @@ void ChangeOutputSizeCommand::redo()
                 auto *conn = elm->outputPort(port)->connections().constFirst();
                 conn->save(stream);
                 m_scene->removeItem(conn);
-                auto *otherPort = conn->otherPort(elm->outputPort(port));
+                auto *inputPort = conn->end();
                 elm->outputPort(port)->disconnect(conn);
-                otherPort->disconnect(conn);
+                inputPort->disconnect(conn);
             }
         }
 

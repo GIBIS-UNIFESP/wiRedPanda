@@ -338,12 +338,12 @@ void IC::sortPorts(QVector<QNEPort *> &map)
     std::stable_sort(map.begin(), map.end(), comparePorts);
 }
 
-LogicElement *IC::icInput(const int index)
+LogicElement *IC::inputLogic(const int index)
 {
     return m_icInputs.at(index)->logic();
 }
 
-LogicElement *IC::icOutput(const int index)
+LogicElement *IC::outputLogic(const int index)
 {
     return m_icOutputs.at(index)->logic();
 }
