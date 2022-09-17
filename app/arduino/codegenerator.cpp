@@ -68,13 +68,13 @@ QString CodeGenerator::otherPortName(QNEPort *port)
         return highLow(port->defaultValue());
     }
 
-    QNEPort *other = port->connections().constFirst()->otherPort(port);
+    auto *otherPort = port->connections().constFirst()->otherPort(port);
 
-    if (!other) {
+    if (!otherPort) {
         return highLow(port->defaultValue());
     }
 
-    return m_varMap.value(other);
+    return m_varMap.value(otherPort);
 }
 
 void CodeGenerator::generate()

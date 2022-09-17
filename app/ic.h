@@ -22,8 +22,8 @@ public:
     IC(const IC &other) : IC(other.parentItem()) {}
 
     ElementMapping *generateMap() const;
-    LogicElement *icInput(const int index);
-    LogicElement *icOutput(const int index);
+    LogicElement *inputLogic(const int index);
+    LogicElement *outputLogic(const int index);
     QRectF boundingRect() const override;
     QString file() const;
     QVector<GraphicElement *> elements() const;

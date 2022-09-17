@@ -66,33 +66,28 @@ void ElementMapping::applyConnection(GraphicElement *elm, QNEInputPort *inputPor
 
     if (elm->elementType() == ElementType::IC) {
         auto *ic = qobject_cast<IC *>(elm);
-        currentLogElm = ic->icInput(inputPort->index());
+        currentLogElm = ic->inputLogic(inputPort->index());
     } else {
         currentLogElm = elm->logic();
         inputIndex = inputPort->index();
     }
 
-    const int connections = inputPort->connections().size();
+    const auto connections = inputPort->connections();
 
-    if ((connections == 0) && !inputPort->isRequired()) {
+    if ((connections.size() == 0) && !inputPort->isRequired()) {
         auto *predecessorLogic = (inputPort->defaultValue() == Status::Active) ? &m_globalVCC : &m_globalGND;
         currentLogElm->connectPredecessor(inputIndex, predecessorLogic, 0);
     }
 
-    if (connections == 1) {
-        if (QNEPort *otherPort = inputPort->connections().constFirst()->otherPort(inputPort)) {
-            if (auto *predecessorElement = otherPort->graphicElement()) {
-                LogicElement *predOutElm;
-                int predOutIndex = 0;
-
-                if (auto *ic = qobject_cast<IC *>(predecessorElement)) {
-                    predOutElm = ic->icOutput(otherPort->index());
+    if (connections.size() == 1) {
+        if (auto *outputPort = connections.constFirst()->start()) {
+            if (auto *predecessorElement = outputPort->graphicElement()) {
+                if (predecessorElement->elementType() == ElementType::IC) {
+                    auto *logic = qobject_cast<IC *>(predecessorElement)->outputLogic(outputPort->index());
+                    currentLogElm->connectPredecessor(inputIndex, logic, 0);
                 } else {
-                    predOutElm = predecessorElement->logic();
-                    predOutIndex = otherPort->index();
+                    currentLogElm->connectPredecessor(inputIndex, predecessorElement->logic(), outputPort->index());
                 }
-
-                currentLogElm->connectPredecessor(inputIndex, predOutElm, predOutIndex);
             }
         }
     }
