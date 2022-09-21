@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <QFileSystemWatcher>
 #include <QObject>
 
 /**
@@ -25,4 +26,5 @@ private:
     void saveRecentFiles();
 
     QStringList m_files;
+    QFileSystemWatcher m_fileWatcher;
 };
