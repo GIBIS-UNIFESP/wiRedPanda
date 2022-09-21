@@ -27,9 +27,6 @@ public:
      */
     static QList<QGraphicsItem *> deserialize(QDataStream &stream, QMap<quint64, QNEPort *> portMap, const double version);
 
-    //! Loads a .panda file project. The procedure includes loading and checking file header information, canvas status, and deserializing the graphical elements through a binary data stream.
-    static QList<QGraphicsItem *> load(QDataStream &stream);
-
     //! Checks if it is a WiRedPanda project file and reads its version.
     static double loadVersion(QDataStream &stream);
 
