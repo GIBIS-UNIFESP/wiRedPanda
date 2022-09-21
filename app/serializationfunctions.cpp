@@ -123,31 +123,3 @@ QRectF SerializationFunctions::loadRect(QDataStream &stream, const double versio
 
     return rect;
 }
-
-QList<QGraphicsItem *> SerializationFunctions::load(QDataStream &stream)
-{
-    qCDebug(zero) << tr("Started loading file.");
-
-    QString str;
-    stream >> str;
-
-    if (!str.startsWith(QApplication::applicationName(), Qt::CaseInsensitive)) {
-        throw Pandaception(tr("Invalid file format."));
-    }
-
-    bool ok;
-    const double version = str.remove(QApplication::applicationName(), Qt::CaseInsensitive).toDouble(&ok);
-    qCDebug(zero) << tr("Header Ok. Version: ") << version;
-
-    if (!ok) {
-        throw Pandaception(tr("Invalid version number."));
-    }
-
-    loadDolphinFileName(stream, version);
-    loadRect(stream, version);
-
-    auto items = deserialize(stream, {}, version);
-
-    qCDebug(zero) << tr("Finished reading items.");
-    return items;
-}

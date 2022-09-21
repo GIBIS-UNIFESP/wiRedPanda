@@ -134,7 +134,13 @@ void IC::loadFile(const QString &fileName)
 
     QDataStream stream(&file);
     stream.setVersion(QDataStream::Qt_5_12);
-    const auto items = SerializationFunctions::load(stream);
+
+    const double version = SerializationFunctions::loadVersion(stream);
+
+    SerializationFunctions::loadDolphinFileName(stream, version);
+    SerializationFunctions::loadRect(stream, version);
+
+    const auto items = SerializationFunctions::deserialize(stream, {}, version);
 
     for (auto *item : items) {
         if (item->type() != GraphicElement::Type) {
