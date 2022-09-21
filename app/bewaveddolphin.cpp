@@ -136,6 +136,11 @@ void BewavedDolphin::loadPixmaps()
     m_highGreen = QPixmap(":/dolphin/high_green.svg").scaled(100, 38);
     m_fallingGreen = QPixmap(":/dolphin/falling_green.svg").scaled(100, 38);
     m_risingGreen = QPixmap(":/dolphin/rising_green.svg").scaled(100, 38);
+
+    m_lowBlue = QPixmap(":/dolphin/low_blue.svg").scaled(100, 38);
+    m_highBlue = QPixmap(":/dolphin/high_blue.svg").scaled(100, 38);
+    m_fallingBlue = QPixmap(":/dolphin/falling_blue.svg").scaled(100, 38);
+    m_risingBlue = QPixmap(":/dolphin/rising_blue.svg").scaled(100, 38);
 }
 
 void BewavedDolphin::closeEvent(QCloseEvent *event)
@@ -236,9 +241,15 @@ void BewavedDolphin::createZeroElement(const int row, const int col, const bool 
         const bool hasPreviousItem = previousIndex.isValid();
         const bool isPreviousHigh = hasPreviousItem ? previousIndex.data().toInt() == 1 : false;
 
-        m_model->setData(index,
-                         hasPreviousItem && isPreviousHigh ? m_fallingGreen : m_lowGreen,
-                         Qt::DecorationRole);
+        if (isInput) {
+            m_model->setData(index,
+                             hasPreviousItem && isPreviousHigh ? m_fallingBlue : m_lowBlue,
+                             Qt::DecorationRole);
+        } else {
+            m_model->setData(index,
+                             hasPreviousItem && isPreviousHigh ? m_fallingGreen : m_lowGreen,
+                             Qt::DecorationRole);
+        }
 
         if (!changeNext) {
             return;
@@ -274,9 +285,15 @@ void BewavedDolphin::createOneElement(const int row, const int col, const bool i
         const bool hasPreviousItem = previousIndex.isValid();
         const bool isPreviousLow = hasPreviousItem ? previousIndex.data().toInt() == 0 : false;
 
-        m_model->setData(index,
-                         hasPreviousItem && isPreviousLow ? m_risingGreen : m_highGreen,
-                         Qt::DecorationRole);
+        if (isInput) {
+            m_model->setData(index,
+                             hasPreviousItem && isPreviousLow ? m_risingBlue : m_highBlue,
+                             Qt::DecorationRole);
+        } else {
+            m_model->setData(index,
+                             hasPreviousItem && isPreviousLow ? m_risingGreen : m_highGreen,
+                             Qt::DecorationRole);
+        }
 
         if (!changeNext) {
             return;

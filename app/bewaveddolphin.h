@@ -126,9 +126,13 @@ private:
     PlotType m_type = PlotType::Line;
     QFileInfo m_currentFile;
     QGraphicsScene *m_scene = nullptr;
+    QPixmap m_fallingBlue;
     QPixmap m_fallingGreen;
+    QPixmap m_highBlue;
     QPixmap m_highGreen;
+    QPixmap m_lowBlue;
     QPixmap m_lowGreen;
+    QPixmap m_risingBlue;
     QPixmap m_risingGreen;
     QStandardItemModel *m_model = nullptr;
     QTableView *m_signalTableView = nullptr;
