@@ -115,6 +115,7 @@ private:
     void on_actionZoomOut_triggered() const;
     void on_lineEditSearch_returnPressed();
     void on_lineEditSearch_textChanged(const QString &text);
+    void on_pushButtonAddIC_clicked();
     void openRecentFile();
     void populateLeftMenu();
     void tabChanged(const int newTabIndex);

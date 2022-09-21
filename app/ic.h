@@ -21,6 +21,8 @@ public:
     ~IC() override = default;
     IC(const IC &other) : IC(other.parentItem()) {}
 
+    static void copyFiles(const QFileInfo &srcFile);
+
     ElementMapping *generateMap() const;
     LogicElement *inputLogic(const int index);
     LogicElement *outputLogic(const int index);
@@ -39,8 +41,11 @@ protected:
 private:
     static bool comparePorts(QNEPort *port1, QNEPort *port2);
     static void sortPorts(QVector<QNEPort *> &map);
+    inline static bool needToCopyFiles = false;
+    inline static QString path;
 
     QRectF portsBoundingRect() const;
+    void copyFile();
     void loadInputElement(GraphicElement *elm);
     void loadInputs();
     void loadInputsLabels();
