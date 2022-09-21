@@ -58,6 +58,11 @@ void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const doub
 
     if (1.2 <= version && version < 4.1) {
         stream >> m_file;
+
+        if (IC::needToCopyFiles) {
+            copyFile();
+        }
+
         loadFile(m_file);
     }
 
@@ -67,8 +72,29 @@ void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const doub
 
         if (map.contains("fileName")) {
             m_file = map.value("fileName").toString();
+
+            if (IC::needToCopyFiles) {
+                copyFile();
+            }
+
             loadFile(m_file);
         }
+    }
+}
+
+void IC::copyFile()
+{
+    QFileInfo globalInfo(GlobalProperties::currentFile);
+
+    QFileInfo fileInfo;
+    fileInfo.setFile(globalInfo.absolutePath(), QFileInfo(m_file).fileName());
+
+    const QString srcFile = IC::path + "/" + m_file;
+    const QString destFile = globalInfo.absolutePath() + "/" + fileInfo.fileName();
+    QFile file;
+
+    if (!file.exists(destFile) && !file.copy(srcFile, destFile)) {
+        throw Pandaception(tr("Error copying file: ") + file.errorString());
     }
 }
 
@@ -401,4 +427,38 @@ ElementMapping *IC::generateMap() const
 
 void IC::refresh()
 {
+}
+
+void IC::copyFiles(const QFileInfo &srcFile)
+{
+    IC::needToCopyFiles = true;
+
+    QFileInfo globalInfo(GlobalProperties::currentFile);
+
+    const QString destFile = globalInfo.absolutePath() + "/" + srcFile.fileName();
+    QFile file;
+
+    if (!file.exists(destFile) && !file.copy(srcFile.absoluteFilePath(), destFile)) {
+        throw Pandaception(tr("Error copying file: ") + file.errorString());
+    }
+
+    file.setFileName(destFile);
+
+    if (!file.open(QIODevice::ReadOnly)) {
+        throw Pandaception(QObject::tr("Error opening file: ") + file.errorString());
+    }
+
+    QDataStream stream(&file);
+    stream.setVersion(QDataStream::Qt_5_12);
+
+    const double version = SerializationFunctions::loadVersion(stream);
+
+    SerializationFunctions::loadDolphinFileName(stream, version);
+    SerializationFunctions::loadRect(stream, version);
+
+    IC::path = srcFile.absolutePath();
+    const auto items = SerializationFunctions::deserialize(stream, {}, version);
+
+    IC::needToCopyFiles = false;
+    IC::path.clear();
 }

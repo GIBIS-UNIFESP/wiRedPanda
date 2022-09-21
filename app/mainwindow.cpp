@@ -12,6 +12,7 @@
 #include "elementlabel.h"
 #include "globalproperties.h"
 #include "graphicsview.h"
+#include "ic.h"
 #include "recentfiles.h"
 #include "settings.h"
 #include "simulation.h"
@@ -166,6 +167,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->actionZoomOut,          &QAction::triggered,       this,                &MainWindow::on_actionZoomOut_triggered);
     connect(m_ui->lineEditSearch,         &QLineEdit::returnPressed, this,                &MainWindow::on_lineEditSearch_returnPressed);
     connect(m_ui->lineEditSearch,         &QLineEdit::textChanged,   this,                &MainWindow::on_lineEditSearch_textChanged);
+    connect(m_ui->pushButtonAddIC,        &QPushButton::clicked,     this,                &MainWindow::on_pushButtonAddIC_clicked);
 }
 
 MainWindow::~MainWindow()
@@ -1268,3 +1270,34 @@ bool MainWindow::event(QEvent *event)
 
     return QMainWindow::event(event);
 }
+
+void MainWindow::on_pushButtonAddIC_clicked()
+{    
+    if (!m_currentTab->fileInfo().isReadable()) {
+        throw Pandaception(tr("Save file first."));
+    }
+
+    QFileDialog fileDialog;
+    fileDialog.setObjectName(tr("Open File"));
+    fileDialog.setFileMode(QFileDialog::ExistingFile);
+    fileDialog.setNameFilter(tr("Panda (*.panda)"));
+
+    if (fileDialog.exec() == QDialog::Rejected) {
+        return;
+    }
+
+    const auto files = fileDialog.selectedFiles();
+
+    if (files.isEmpty()) {
+        return;
+    }
+
+    QMessageBox::information(this, tr("Info"), tr("Selected files will be copied to current file folder."));
+
+    for (const auto &file : files) {
+        IC::copyFiles(file);
+    }
+
+    updateICList();
+}
+

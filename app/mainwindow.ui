@@ -300,6 +300,13 @@ QTabWidget::pane {
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
                   <item>
+                   <widget class="QPushButton" name="pushButtonAddIC">
+                    <property name="text">
+                     <string>Add IC files</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
                    <spacer name="verticalSpacer_IC">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
