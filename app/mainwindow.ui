@@ -272,7 +272,7 @@ QTabWidget::pane {
             <widget class="QWidget" name="ic">
              <attribute name="icon">
               <iconset resource="resources/basic/basic.qrc">
-               <normaloff>:/basic/ic.svg</normaloff>:/basic/ic.svg</iconset>
+               <normaloff>:/basic/ic-panda.svg</normaloff>:/basic/ic-panda.svg</iconset>
              </attribute>
              <attribute name="title">
               <string/>
@@ -1137,12 +1137,12 @@ QTabWidget::pane {
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
   <include location="resources/output/output.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
   <include location="resources/misc/misc.qrc"/>
   <include location="resources/memory/light/memory_light.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>

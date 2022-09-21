@@ -12,7 +12,6 @@
 #include "scene.h"
 #include "serializationfunctions.h"
 
-#include <QFileInfo>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -84,13 +83,11 @@ void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const doub
 
 void IC::copyFile()
 {
-    QFileInfo globalInfo(GlobalProperties::currentFile);
-
     QFileInfo fileInfo;
-    fileInfo.setFile(globalInfo.absolutePath(), QFileInfo(m_file).fileName());
+    fileInfo.setFile(GlobalProperties::currentDir, QFileInfo(m_file).fileName());
 
     const QString srcFile = IC::path + "/" + m_file;
-    const QString destFile = globalInfo.absolutePath() + "/" + fileInfo.fileName();
+    const QString destFile = GlobalProperties::currentDir + "/" + fileInfo.fileName();
     QFile file;
 
     if (!file.exists(destFile) && !file.copy(srcFile, destFile)) {
@@ -142,7 +139,7 @@ void IC::loadFile(const QString &fileName)
     // ----------------------------------------------
 
     QFileInfo fileInfo;
-    fileInfo.setFile(QFileInfo(GlobalProperties::currentFile).absolutePath(), QFileInfo(fileName).fileName());
+    fileInfo.setFile(GlobalProperties::currentDir, QFileInfo(fileName).fileName());
 
     if (!fileInfo.exists() || !fileInfo.isFile()) {
         throw Pandaception(fileInfo.absoluteFilePath() + tr(" not found."));
@@ -433,9 +430,7 @@ void IC::copyFiles(const QFileInfo &srcFile)
 {
     IC::needToCopyFiles = true;
 
-    QFileInfo globalInfo(GlobalProperties::currentFile);
-
-    const QString destFile = globalInfo.absolutePath() + "/" + srcFile.fileName();
+    const QString destFile = GlobalProperties::currentDir + "/" + srcFile.fileName();
     QFile file;
 
     if (!file.exists(destFile) && !file.copy(srcFile.absoluteFilePath(), destFile)) {
