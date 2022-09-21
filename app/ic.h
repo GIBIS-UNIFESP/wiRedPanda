@@ -6,6 +6,7 @@
 #include "elementmapping.h"
 #include "graphicelement.h"
 
+#include <QFileInfo>
 #include <QFileSystemWatcher>
 
 class ICPrototype;

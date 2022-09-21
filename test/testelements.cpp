@@ -204,7 +204,7 @@ void TestElements::testICData(IC *ic)
 void TestElements::testIC()
 {
     const QString icFile = QString(CURRENTDIR) + "/../examples/jkflipflop.panda";
-    GlobalProperties::currentFile = icFile;
+    GlobalProperties::currentDir = QString(CURRENTDIR) + "/../examples/";
 
     auto *ic = new IC();
     ic->loadFile(icFile);
@@ -304,7 +304,7 @@ void TestElements::testICs()
     const auto files = examplesDir.entryInfoList(QStringList{"*.panda"});
 
     for (const auto &fileInfo : files) {
-        GlobalProperties::currentFile = fileInfo.absoluteFilePath();
+        GlobalProperties::currentDir = fileInfo.absolutePath();
         IC ic;
         ic.loadFile(fileInfo.absoluteFilePath());
     }

@@ -191,9 +191,8 @@ void GraphicElement::save(QDataStream &stream) const
         QString skinName2 = skinName;
         QFileInfo fileInfo(skinName2);
 
-        if (!skinName2.startsWith(":/") && fileInfo.absoluteDir() != GlobalProperties::currentFile) {
-            QFileInfo globalInfo(GlobalProperties::currentFile);
-            const QString newFile = globalInfo.absolutePath() + "/" + fileInfo.fileName();
+        if (!skinName2.startsWith(":/") && fileInfo.absoluteDir() != GlobalProperties::currentDir) {
+            const QString newFile = GlobalProperties::currentDir + "/" + fileInfo.fileName();
 
             QFile::copy(skinName2, newFile);
 
