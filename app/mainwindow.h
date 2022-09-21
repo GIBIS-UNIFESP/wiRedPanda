@@ -146,4 +146,6 @@ private:
     QFileInfo m_currentFile;
     WorkSpace *m_currentTab = nullptr;
     int m_tabIndex = -1;
+
+    int m_lastTabIndex = -1;
 };
