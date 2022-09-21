@@ -600,8 +600,6 @@ void MainWindow::updateICList()
     }
 
     m_ui->scrollAreaWidgetContents_IC->layout()->addItem(m_ui->verticalSpacer_IC);
-
-    on_lineEditSearch_textChanged(m_ui->lineEditSearch->text());
 }
 
 bool MainWindow::closeTab(const int tabIndex)
@@ -719,9 +717,15 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
 
     if (text.isEmpty()) {
         m_ui->tabElements->tabBar()->show();
-        m_ui->tabElements->setCurrentIndex(0);
+        m_ui->tabElements->setCurrentIndex(m_lastTabIndex);
         m_ui->tabElements->setTabEnabled(5, false);
+
+        m_lastTabIndex = -1;
     } else {
+        if (m_lastTabIndex == -1) {
+            m_lastTabIndex = m_ui->tabElements->currentIndex();
+        }
+
         m_ui->tabElements->tabBar()->hide();
         m_ui->tabElements->setCurrentIndex(5);
         m_ui->tabElements->setTabEnabled(5, true);
