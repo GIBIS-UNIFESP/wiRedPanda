@@ -80,7 +80,7 @@ void WorkSpace::save(const QString &fileName)
         fileName_.append(".panda");
     }
 
-    GlobalProperties::currentFile = fileName_;
+    GlobalProperties::currentDir = QFileInfo(fileName_).absolutePath();
     m_fileInfo = QFileInfo(fileName_);
 
     QSaveFile saveFile(fileName_);
@@ -134,7 +134,7 @@ void WorkSpace::load(const QString &fileName)
         throw Pandaception(tr("This file does not exist: ") + fileName);
     }
 
-    GlobalProperties::currentFile = fileName;
+    GlobalProperties::currentDir = QFileInfo(fileName).absolutePath();
     m_fileInfo = QFileInfo(fileName);
 
     qCDebug(zero) << tr("File exists.");
@@ -236,9 +236,11 @@ void WorkSpace::autosave()
 
     qCDebug(three) << tr("Undo is !clean. Must set autosave file.");
 
+    QDir path;
+
     if (m_fileInfo.fileName().isEmpty()) {
         qCDebug(three) << tr("Default value not set yet.");
-        QDir path(QDir::currentPath() + "/autosaves");
+        path.setPath(QDir::currentPath() + "/autosaves");
 
         if (!path.exists()) {
             path.mkpath(path.absolutePath());
@@ -249,7 +251,7 @@ void WorkSpace::autosave()
         qCDebug(three) << tr("Setting current file to random file.");
     } else {
         qCDebug(three) << tr("Autosave path set to the current file's directory, if there is one.");
-        QDir path(m_fileInfo.absolutePath());
+        path.setPath(m_fileInfo.absolutePath());
         qCDebug(three) << tr("Autosavepath: ") << path.absolutePath();
         m_autosaveFile.setFileTemplate(path.absoluteFilePath("." + m_fileInfo.baseName() + ".XXXXXX.panda"));
         qCDebug(three) << tr("Setting current file to: ") << m_fileInfo.absoluteFilePath();
@@ -260,7 +262,7 @@ void WorkSpace::autosave()
     }
 
     QString autosaveFileName = m_autosaveFile.fileName();
-    GlobalProperties::currentFile = autosaveFileName;
+    GlobalProperties::currentDir = path.absolutePath();
 
     qCDebug(three) << tr("Writing to autosave file.");
     QDataStream stream(&m_autosaveFile);

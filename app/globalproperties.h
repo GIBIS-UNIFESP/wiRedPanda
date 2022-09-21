@@ -8,7 +8,7 @@
 class GlobalProperties
 {
 public:
-    inline static QString currentFile = {};
+    inline static QString currentDir = {};
     inline static bool skipInit = false;
     inline static bool verbose = true;
     inline static const double version = QString(APP_VERSION).toDouble();
