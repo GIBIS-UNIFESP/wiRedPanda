@@ -276,7 +276,7 @@ void WorkSpace::autosave()
     emit fileChanged(m_fileInfo);
 }
 
-void WorkSpace::setIsAutosave()
+void WorkSpace::setAutosaveFile()
 {
     m_autosaveFile.setFileName(m_fileInfo.filePath());
 }
