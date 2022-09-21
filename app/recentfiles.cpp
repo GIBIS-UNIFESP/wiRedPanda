@@ -17,6 +17,13 @@ RecentFiles::RecentFiles(QObject *parent)
     if (Settings::contains("recentFileList")) {
         m_files = Settings::value("recentFileList").toStringList();
     }
+
+    connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this, [=](const QString &filePath) {
+        if (!QFile::exists(filePath)) {
+            m_files.removeAll(filePath);
+            emit recentFilesUpdated();
+        }
+    });
 }
 
 // TODO: quotes bug
@@ -27,6 +34,8 @@ void RecentFiles::addRecentFile(const QString &filePath)
     if (!QFile(filePath).exists()) {
         return;
     }
+
+    m_fileWatcher.addPath(filePath);
 
     m_files.removeAll(filePath);
     m_files.prepend(filePath);
