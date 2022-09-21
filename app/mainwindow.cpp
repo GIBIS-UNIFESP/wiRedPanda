@@ -197,7 +197,7 @@ void MainWindow::loadAutosaveFiles()
             continue;
         }
 
-        m_currentTab->setIsAutosave();
+        m_currentTab->setAutosaveFile();
 
         ++it;
     }

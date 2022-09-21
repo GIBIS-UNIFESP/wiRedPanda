@@ -33,8 +33,8 @@ IC::IC(QGraphicsItem *parent)
 
     setHasLabel(true);
 
-    connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this, [=](const QString &fileName) {
-        loadFile(fileName);
+    connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this, [=](const QString &filePath) {
+        loadFile(filePath);
 
         if (auto *scene_ = qobject_cast<Scene *>(scene())) {
             scene_->simulation()->restart();

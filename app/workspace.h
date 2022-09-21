@@ -29,8 +29,8 @@ public:
     void load(const QString &fileName);
     void save(QDataStream &stream);
     void save(const QString &fileName);
+    void setAutosaveFile();
     void setDolphinFileName(const QString &fileName);
-    void setIsAutosave();
 
 signals:
     void fileChanged(const QFileInfo &fileInfo);

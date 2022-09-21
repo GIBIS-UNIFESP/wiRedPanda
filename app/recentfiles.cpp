@@ -35,8 +35,9 @@ void RecentFiles::addRecentFile(const QString &filePath)
         m_files.erase(m_files.begin() + GlobalProperties::maxRecentFiles, m_files.end());
     }
 
-    emit recentFilesUpdated();
     saveRecentFiles();
+
+    emit recentFilesUpdated();
 }
 
 QStringList RecentFiles::recentFiles()
