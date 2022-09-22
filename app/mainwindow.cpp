@@ -1295,7 +1295,7 @@ void MainWindow::on_pushButtonAddIC_clicked()
     QMessageBox::information(this, tr("Info"), tr("Selected files will be copied to current file folder."));
 
     for (const auto &file : files) {
-        IC::copyFiles(file);
+        IC::copyFiles(QFileInfo(file));
     }
 
     updateICList();

@@ -1,7 +1,7 @@
 // Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "serializationfunctions.h"
+#include "serialization.h"
 
 #include "common.h"
 #include "elementfactory.h"
@@ -11,14 +11,14 @@
 
 #include <QApplication>
 
-void SerializationFunctions::saveHeader(QDataStream &stream, const QString &dolphinFileName, const QRectF &rect)
+void Serialization::saveHeader(QDataStream &stream, const QString &dolphinFileName, const QRectF &rect)
 {
     stream << QApplication::applicationName() + " " + QString::number(GlobalProperties::version);
     stream << dolphinFileName;
     stream << rect;
 }
 
-void SerializationFunctions::serialize(const QList<QGraphicsItem *> &items, QDataStream &stream)
+void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &stream)
 {
     for (auto *item : items) {
         if (auto *element = qgraphicsitem_cast<GraphicElement *>(item)) {
@@ -33,7 +33,7 @@ void SerializationFunctions::serialize(const QList<QGraphicsItem *> &items, QDat
     }
 }
 
-QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &stream, QMap<quint64, QNEPort *> portMap, const double version)
+QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, QMap<quint64, QNEPort *> portMap, const double version)
 {
     QList<QGraphicsItem *> itemList;
 
@@ -74,7 +74,7 @@ QList<QGraphicsItem *> SerializationFunctions::deserialize(QDataStream &stream, 
     return itemList;
 }
 
-double SerializationFunctions::loadVersion(QDataStream &stream)
+double Serialization::loadVersion(QDataStream &stream)
 {
     qCDebug(zero) << tr("Loading version.");
 
@@ -98,7 +98,7 @@ double SerializationFunctions::loadVersion(QDataStream &stream)
     return version;
 }
 
-QString SerializationFunctions::loadDolphinFileName(QDataStream &stream, const double version)
+QString Serialization::loadDolphinFileName(QDataStream &stream, const double version)
 {
     QString str = "";
 
@@ -113,7 +113,7 @@ QString SerializationFunctions::loadDolphinFileName(QDataStream &stream, const d
     return str;
 }
 
-QRectF SerializationFunctions::loadRect(QDataStream &stream, const double version)
+QRectF Serialization::loadRect(QDataStream &stream, const double version)
 {
     QRectF rect;
 

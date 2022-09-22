@@ -5,7 +5,7 @@
 
 #include "common.h"
 #include "globalproperties.h"
-#include "serializationfunctions.h"
+#include "serialization.h"
 #include "settings.h"
 #include "simulationblocker.h"
 
@@ -121,8 +121,8 @@ void WorkSpace::save(const QString &fileName)
 
 void WorkSpace::save(QDataStream &stream)
 {
-    SerializationFunctions::saveHeader(stream, m_dolphinFileName, m_scene.sceneRect());
-    SerializationFunctions::serialize(m_scene.items(), stream);
+    Serialization::saveHeader(stream, m_dolphinFileName, m_scene.sceneRect());
+    Serialization::serialize(m_scene.items(), stream);
 }
 
 void WorkSpace::load(const QString &fileName)
@@ -156,7 +156,7 @@ void WorkSpace::load(QDataStream &stream)
     qCDebug(zero) << tr("Loading file.");
     SimulationBlocker simulationBlocker(m_scene.simulation());
     qCDebug(zero) << tr("Stopped simulation.");
-    const double version = SerializationFunctions::loadVersion(stream);
+    const double version = Serialization::loadVersion(stream);
     qCDebug(zero) << tr("Version: ") << version;
 
     if (GlobalProperties::verbose) {
@@ -167,11 +167,11 @@ void WorkSpace::load(QDataStream &stream)
         }
     }
 
-    m_dolphinFileName = SerializationFunctions::loadDolphinFileName(stream, version);
+    m_dolphinFileName = Serialization::loadDolphinFileName(stream, version);
     qCDebug(zero) << tr("Dolphin name: ") << m_dolphinFileName;
 
-    SerializationFunctions::loadRect(stream, version);
-    const auto items = SerializationFunctions::deserialize(stream, {}, version);
+    Serialization::loadRect(stream, version);
+    const auto items = Serialization::deserialize(stream, {}, version);
     qCDebug(zero) << tr("Finished loading items.");
 
     for (auto *item : items) {
