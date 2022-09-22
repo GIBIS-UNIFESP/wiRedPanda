@@ -36,7 +36,7 @@ void LogicJKFlipFlop::updateLogic()
         }
     }
 
-    if ((!prst) || (!clr)) {
+    if (!prst || !clr) {
         q0 = !prst;
         q1 = !clr;
     }

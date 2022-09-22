@@ -10,7 +10,7 @@
 void TestIcons::testIcons()
 {
     for (auto type = ElementType::InputButton; type < ElementType::Demux; ++type) {
-        if (type == ElementType::JKLatch || type == ElementType::IC) {
+        if ((type == ElementType::JKLatch) || (type == ElementType::IC)) {
             continue;
         }
 

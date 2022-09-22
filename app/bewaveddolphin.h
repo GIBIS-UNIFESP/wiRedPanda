@@ -10,12 +10,12 @@
 #include <QItemDelegate>
 #include <QMainWindow>
 #include <QStandardItemModel>
+#include <QTableView>
 
 class GraphicsView;
 class MainWindow;
 class QItemSelection;
 class QSaveFile;
-class QTableView;
 
 namespace Ui
 {
@@ -125,7 +125,7 @@ private:
     MainWindow *m_mainWindow = nullptr;
     PlotType m_type = PlotType::Line;
     QFileInfo m_currentFile;
-    QGraphicsScene *m_scene = nullptr;
+    QGraphicsScene *m_scene = new QGraphicsScene(this);
     QPixmap m_fallingBlue;
     QPixmap m_fallingGreen;
     QPixmap m_highBlue;
@@ -135,7 +135,7 @@ private:
     QPixmap m_risingBlue;
     QPixmap m_risingGreen;
     QStandardItemModel *m_model = nullptr;
-    QTableView *m_signalTableView = nullptr;
+    QTableView *m_signalTableView = new QTableView;
     QVector<GraphicElement *> m_outputs;
     QVector<GraphicElementInput *> m_inputs;
     QVector<Status> m_oldInputValues;

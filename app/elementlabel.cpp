@@ -78,7 +78,6 @@ QString ElementLabel::icFileName() const
 
 void ElementLabel::startDrag()
 {
-    QPixmap pixMap = pixmap();
 #if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
     QPoint offset = m_iconLabel.pixmap()->rect().center();
 #else
@@ -89,11 +88,12 @@ void ElementLabel::startDrag()
     stream.setVersion(QDataStream::Qt_5_12);
     stream << offset << m_elementType << m_icFileName;
 
-    auto *mimeData_ = new QMimeData;
-    mimeData_->setData("wpanda/x-dnditemdata", itemData);
+    auto *mimeData = new QMimeData;
+    mimeData->setData("wpanda/x-dnditemdata", itemData);
+
     auto *drag = new QDrag(parent());
-    drag->setMimeData(mimeData_);
-    drag->setPixmap(pixMap);
+    drag->setMimeData(mimeData);
+    drag->setPixmap(pixmap());
     drag->setHotSpot(offset);
     drag->exec(Qt::CopyAction, Qt::CopyAction);
 }

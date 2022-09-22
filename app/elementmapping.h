@@ -31,7 +31,6 @@ private:
     Q_DISABLE_COPY(ElementMapping)
 
     void applyConnection(GraphicElement *elm, QNEInputPort *inputPort);
-    void clear();
     void connectElements();
     void generateLogic(GraphicElement *elm);
     void generateMap();

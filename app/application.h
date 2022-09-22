@@ -20,7 +20,7 @@ public:
     bool notify(QObject *receiver, QEvent *event) override;
 
     MainWindow *mainWindow() const;
-    void setMainWindow(MainWindow *newMainWindow);
+    void setMainWindow(MainWindow *mainWindow);
 
 private:
     Q_DISABLE_COPY(Application)

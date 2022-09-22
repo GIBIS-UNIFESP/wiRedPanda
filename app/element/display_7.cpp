@@ -191,15 +191,13 @@ void Display7::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, cons
         updatePortsProperties();
     }
 
-    if (3.1 <= version && version < 4.1) {
-        QString color_;
-        stream >> color_;
+    if ((3.1 <= version) && (version < 4.1)) {
+        QString color_; stream >> color_;
         setColor(color_);
     }
 
     if (version >= 4.1) {
-        QMap<QString, QVariant> map;
-        stream >> map;
+        QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("color")) {
             setColor(map.value("color").toString());

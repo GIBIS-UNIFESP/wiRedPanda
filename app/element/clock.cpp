@@ -103,8 +103,7 @@ void Clock::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const d
     }
 
     if (version < 4.1) {
-        float freq;
-        stream >> freq;
+        float freq; stream >> freq;
         setFrequency(freq);
 
         if (version >= 3.1) {
@@ -113,8 +112,7 @@ void Clock::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const d
     }
 
     if (version >= 4.1) {
-        QMap<QString, QVariant> map;
-        stream >> map;
+        QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("frequency")) {
             setFrequency(map.value("frequency").toFloat());

@@ -65,7 +65,7 @@ void SimpleWaveform::sortElements(QVector<GraphicElement *> &elements,
     elements = Common::sortGraphicElements(elements);
 
     for (auto *elm : qAsConst(elements)) {
-        if (!elm || elm->type() != GraphicElement::Type) {
+        if (!elm || (elm->type() != GraphicElement::Type)) {
             continue;
         }
 

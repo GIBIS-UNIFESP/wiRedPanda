@@ -47,10 +47,8 @@ public:
     ~QNEConnection() override;
     QNEConnection(const QNEConnection &other) : QNEConnection(other.parentItem()) {}
 
-    QNEInputPort *end() const;
-    QNEInputPort *otherPort(const QNEOutputPort *port) const;
-    QNEOutputPort *otherPort(const QNEInputPort *port) const;
-    QNEOutputPort *start() const;
+    QNEInputPort *endPort() const;
+    QNEOutputPort *startPort() const;
     QNEPort *otherPort(const QNEPort *port) const;
     QRectF boundingRect() const override;
     Status status() const;
@@ -59,10 +57,10 @@ public:
     void load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap = {});
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void save(QDataStream &stream) const;
-    void setEnd(QNEInputPort *port);
+    void setEndPort(QNEInputPort *port);
     void setEndPos(const QPointF point);
-    void setHighLight(const bool newHighLight) ;
-    void setStart(QNEOutputPort *port);
+    void setHighLight(const bool highLight) ;
+    void setStartPort(QNEOutputPort *port);
     void setStartPos(const QPointF point);
     void setStatus(const Status status);
     void updatePath();
@@ -78,8 +76,8 @@ private:
     QColor m_inactiveColor;
     QColor m_invalidColor;
     QColor m_selectedColor;
-    QNEInputPort *m_end = nullptr;
-    QNEOutputPort *m_start = nullptr;
+    QNEInputPort *m_endPort = nullptr;
+    QNEOutputPort *m_startPort = nullptr;
     QPointF m_endPos;
     QPointF m_startPos;
     Status m_status = Status::Invalid;
@@ -88,4 +86,4 @@ private:
 
 Q_DECLARE_METATYPE(QNEConnection)
 
-QDataStream &operator<<(QDataStream &stream, const QNEConnection *item);
+QDataStream &operator<<(QDataStream &stream, const QNEConnection *conn);

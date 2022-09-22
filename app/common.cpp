@@ -59,7 +59,7 @@ int Common::calculatePriority(GraphicElement *elm, QHash<GraphicElement *, bool>
         return 0;
     }
 
-    if (beingVisited.contains(elm) && (beingVisited.value(elm))) {
+    if (beingVisited.contains(elm) && beingVisited.value(elm)) {
         return 0;
     }
 
@@ -72,7 +72,7 @@ int Common::calculatePriority(GraphicElement *elm, QHash<GraphicElement *, bool>
 
     for (auto *port : elm->outputs()) {
         for (auto *conn : port->connections()) {
-            if (auto *successor = conn->otherPort(port)) {
+            if (auto *successor = conn->endPort()) {
                 max = qMax(calculatePriority(successor->graphicElement(), beingVisited, priorities), max);
             }
         }
