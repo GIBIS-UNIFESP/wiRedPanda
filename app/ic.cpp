@@ -10,7 +10,7 @@
 #include "qneconnection.h"
 #include "qneport.h"
 #include "scene.h"
-#include "serializationfunctions.h"
+#include "serialization.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
@@ -158,12 +158,12 @@ void IC::loadFile(const QString &fileName)
     QDataStream stream(&file);
     stream.setVersion(QDataStream::Qt_5_12);
 
-    const double version = SerializationFunctions::loadVersion(stream);
+    const double version = Serialization::loadVersion(stream);
 
-    SerializationFunctions::loadDolphinFileName(stream, version);
-    SerializationFunctions::loadRect(stream, version);
+    Serialization::loadDolphinFileName(stream, version);
+    Serialization::loadRect(stream, version);
 
-    const auto items = SerializationFunctions::deserialize(stream, {}, version);
+    const auto items = Serialization::deserialize(stream, {}, version);
 
     for (auto *item : items) {
         if (item->type() != GraphicElement::Type) {
@@ -446,13 +446,13 @@ void IC::copyFiles(const QFileInfo &srcFile)
     QDataStream stream(&file);
     stream.setVersion(QDataStream::Qt_5_12);
 
-    const double version = SerializationFunctions::loadVersion(stream);
+    const double version = Serialization::loadVersion(stream);
 
-    SerializationFunctions::loadDolphinFileName(stream, version);
-    SerializationFunctions::loadRect(stream, version);
+    Serialization::loadDolphinFileName(stream, version);
+    Serialization::loadRect(stream, version);
 
     IC::path = srcFile.absolutePath();
-    const auto items = SerializationFunctions::deserialize(stream, {}, version);
+    const auto items = Serialization::deserialize(stream, {}, version);
 
     IC::needToCopyFiles = false;
     IC::path.clear();

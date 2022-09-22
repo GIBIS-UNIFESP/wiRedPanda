@@ -9,9 +9,9 @@
 class QGraphicsItem;
 class QNEPort;
 
-class SerializationFunctions
+class Serialization
 {
-    Q_DECLARE_TR_FUNCTIONS(SerializationFunctions)
+    Q_DECLARE_TR_FUNCTIONS(Serialization)
 
 public:
     //! Saves the following header information into the panda file, in this order: app name, app version, associated dolphin fileName, scene rectangle.
