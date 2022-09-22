@@ -10,7 +10,7 @@
 #include "qneconnection.h"
 #include "qneport.h"
 #include "scene.h"
-#include "serializationfunctions.h"
+#include "serialization.h"
 #include "simulation.h"
 #include "simulationblocker.h"
 
@@ -152,7 +152,7 @@ void saveItems(QByteArray &itemData, const QList<QGraphicsItem *> &items, const 
         elm->save(stream);
     }
 
-    SerializationFunctions::serialize(items, stream);
+    Serialization::serialize(items, stream);
 }
 
 void addItems(Scene *scene, const QList<QGraphicsItem *> &items)
@@ -186,7 +186,7 @@ QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const QList
 
     /* Assuming that all connections are stored after the elements, we will deserialize the elements first.
      * We will store one additional information: The element IDs! */
-    auto items = SerializationFunctions::deserialize(stream, portMap, version);
+    auto items = Serialization::deserialize(stream, portMap, version);
 
     if (items.size() != ids.size()) {
         throw Pandaception(QObject::tr("One or more elements were not found on scene. Expected %1, found %2.").arg(ids.size(), items.size()));

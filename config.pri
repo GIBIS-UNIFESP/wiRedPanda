@@ -132,7 +132,7 @@ SOURCES += \
     $$PWD/app/nodes/qneport.cpp \
     $$PWD/app/recentfiles.cpp \
     $$PWD/app/scene.cpp \
-    $$PWD/app/serializationfunctions.cpp \
+    $$PWD/app/serialization.cpp \
     $$PWD/app/settings.cpp \
     $$PWD/app/simplewaveform.cpp \
     $$PWD/app/simulation.cpp \
@@ -164,7 +164,7 @@ HEADERS += \
     $$PWD/app/nodes/qneport.h \
     $$PWD/app/recentfiles.h \
     $$PWD/app/scene.h \
-    $$PWD/app/serializationfunctions.h \
+    $$PWD/app/serialization.h \
     $$PWD/app/settings.h \
     $$PWD/app/simplewaveform.h \
     $$PWD/app/simulation.h \
