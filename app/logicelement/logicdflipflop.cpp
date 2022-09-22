@@ -28,7 +28,7 @@ void LogicDFlipFlop::updateLogic()
         q1 = !m_lastValue;
     }
 
-    if ((!prst) || (!clr)) {
+    if (!prst || !clr) {
         q0 = !prst;
         q1 = !clr;
     }

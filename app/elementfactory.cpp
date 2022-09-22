@@ -92,7 +92,7 @@ GraphicElement *ElementFactory::buildElement(const ElementType type)
 #else
     const auto metaType = QMetaType::fromName(typeToText(type).toLatin1());
 
-    if (!metaType.isValid() || metaType.id() == QMetaType::UnknownType) {
+    if (!metaType.isValid() || (metaType.id() == QMetaType::UnknownType)) {
         throw Pandaception(tr("Unknown type: ") + typeToText(type));
     }
 

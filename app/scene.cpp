@@ -237,7 +237,7 @@ void Scene::setEditedConnection(QNEConnection *connection)
 void Scene::startNewConnection(QNEInputPort *endPort)
 {
     auto *connection = new QNEConnection();
-    connection->setEnd(endPort);
+    connection->setEndPort(endPort);
     connection->setStartPos(m_mousePos);
 
     addItem(connection);
@@ -248,7 +248,7 @@ void Scene::startNewConnection(QNEInputPort *endPort)
 void Scene::startNewConnection(QNEOutputPort *startPort)
 {
     auto *connection = new QNEConnection();
-    connection->setStart(startPort);
+    connection->setStartPort(startPort);
     connection->setEndPos(m_mousePos);
 
     addItem(connection);
@@ -273,12 +273,12 @@ void Scene::makeConnection(QNEConnection *connection)
     QNEOutputPort *startPort = nullptr;
     QNEInputPort *endPort = nullptr;
 
-    if (connection->start() != nullptr) {
-        startPort = connection->start();
+    if (connection->startPort() != nullptr) {
+        startPort = connection->startPort();
         endPort = dynamic_cast<QNEInputPort *>(port);
-    } else if (connection->end() != nullptr) {
+    } else if (connection->endPort() != nullptr) {
         startPort = dynamic_cast<QNEOutputPort *>(port);
-        endPort = connection->end();
+        endPort = connection->endPort();
     }
 
     if (!startPort || !endPort) {
@@ -288,8 +288,8 @@ void Scene::makeConnection(QNEConnection *connection)
     /* Verifying if the connection is valid. */
     if ((startPort->graphicElement() != endPort->graphicElement()) && !startPort->isConnected(endPort)) {
         /* Making connection. */
-        connection->setStart(startPort);
-        connection->setEnd(endPort);
+        connection->setStartPort(startPort);
+        connection->setEndPort(endPort);
         receiveCommand(new AddItemsCommand({connection}, this));
         setEditedConnection(nullptr);
     } else {
@@ -301,7 +301,7 @@ void Scene::detachConnection(QNEInputPort *endPort)
 {
     auto *connection = endPort->connections().last();
 
-    if (auto *startPort = connection->start()) {
+    if (auto *startPort = connection->startPort()) {
         receiveCommand(new DeleteItemsCommand({connection}, this));
         startNewConnection(startPort);
     }
@@ -410,7 +410,7 @@ void Scene::cloneDrag(const QPointF mousePos)
     const auto items_ = items();
 
     for (auto *item : items_) {
-        if ((item->type() == GraphicElement::Type || item->type() == QNEConnection::Type) && !item->isSelected()) {
+        if (((item->type() == GraphicElement::Type) || (item->type() == QNEConnection::Type)) && !item->isSelected()) {
             item->hide();
         }
     }
@@ -434,7 +434,7 @@ void Scene::cloneDrag(const QPointF mousePos)
     render(&painter, target, source);
 
     for (auto *item : items_) {
-        if ((item->type() == GraphicElement::Type || item->type() == QNEConnection::Type) && !item->isSelected()) {
+        if (((item->type() == GraphicElement::Type) || (item->type() == QNEConnection::Type)) && !item->isSelected()) {
             item->show();
         }
     }
@@ -486,7 +486,7 @@ void Scene::handleHoverPort()
         releaseHoverPort();
         setHoverPort(port);
 
-        if (editedConn && editedConn->start() && (editedConn->start()->isOutput() == port->isOutput())) {
+        if (editedConn && editedConn->startPort() && (editedConn->startPort()->isOutput() == port->isOutput())) {
             m_view->viewport()->setCursor(Qt::ForbiddenCursor);
         }
     }
@@ -652,12 +652,11 @@ void Scene::paste(QDataStream &stream)
 {
     clearSelection();
 
-    QPointF ctr;
-    stream >> ctr;
+    QPointF ctr; stream >> ctr;
 
-    const QPointF offset = m_mousePos - ctr - QPointF(32.0, 32.0);
     const double version = GlobalProperties::version;
     const auto itemList = Serialization::deserialize(stream, {}, version);
+    const QPointF offset = m_mousePos - ctr - QPointF(32.0, 32.0);
 
     receiveCommand(new AddItemsCommand(itemList, this));
 
@@ -773,10 +772,9 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         QDataStream stream(&itemData, QIODevice::ReadOnly);
         stream.setVersion(QDataStream::Qt_5_12);
 
-        QPoint offset;
-        ElementType type;
-        QString labelAuxData;
-        stream >> offset >> type >> labelAuxData;
+        QPoint offset;        stream >> offset;
+        ElementType type;     stream >> type;
+        QString labelAuxData; stream >> labelAuxData;
 
         QPointF pos = event->scenePos() - offset;
         qCDebug(zero) << type << tr(" at position: ") << pos.x() << tr(", ") << pos.y() << tr(", label: ") << labelAuxData;
@@ -808,9 +806,8 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         QDataStream stream(&itemData, QIODevice::ReadOnly);
         stream.setVersion(QDataStream::Qt_5_12);
 
-        QPointF offset;
-        QPointF ctr;
-        stream >> offset >> ctr;
+        QPointF offset; stream >> offset;
+        QPointF ctr;    stream >> ctr;
         offset = event->scenePos() - offset;
 
         const double version = GlobalProperties::version;
@@ -837,8 +834,7 @@ void Scene::keyPressEvent(QKeyEvent *event)
     if (!(event->modifiers().testFlag(Qt::ControlModifier))) {
         for (auto *element : elements()) {
             if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {
-                if (auto *input = qobject_cast<GraphicElementInput *>(element);
-                        input && !input->isLocked()) {
+                if (auto *input = qobject_cast<GraphicElementInput *>(element); input && !input->isLocked()) {
                     input->setOn();
                 }
             }
@@ -853,8 +849,7 @@ void Scene::keyReleaseEvent(QKeyEvent *event)
     if (!(event->modifiers().testFlag(Qt::ControlModifier))) {
         for (auto *element : elements()) {
             if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {
-                if (auto *input = qobject_cast<GraphicElementInput *>(element);
-                        input && !input->isLocked() && (element->elementType() == ElementType::InputButton)) {
+                if (auto *input = qobject_cast<GraphicElementInput *>(element); input && !input->isLocked() && (element->elementType() == ElementType::InputButton)) {
                     input->setOff();
                 }
             }
@@ -872,10 +867,8 @@ bool Scene::eventFilter(QObject *watched, QEvent *event)
             return false;
         }
 
-        if ((mouseEvent->button() == Qt::LeftButton)
-                && (mouseEvent->modifiers().testFlag(Qt::ControlModifier))) {
-            if (auto *item = itemAt(mouseEvent->scenePos());
-                    item && (item->type() == GraphicElement::Type || item->type() == QNEConnection::Type)) {
+        if ((mouseEvent->button() == Qt::LeftButton) && mouseEvent->modifiers().testFlag(Qt::ControlModifier)) {
+            if (auto *item = itemAt(mouseEvent->scenePos()); item && ((item->type() == GraphicElement::Type) || (item->type() == QNEConnection::Type))) {
                 item->setSelected(true);
                 cloneDrag(mouseEvent->scenePos());
                 return true;
@@ -905,7 +898,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                 selectedElements_ << element;
             }
 
-            m_draggingElement = (item->type() == GraphicElement::Type && !selectedElements_.isEmpty());
+            m_draggingElement = ((item->type() == GraphicElement::Type) && !selectedElements_.isEmpty());
 
             m_movedElements.clear();
             m_oldPositions.clear();
@@ -963,13 +956,13 @@ void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     }
 
     if (auto *connection = editedConnection()) {
-        if (connection->start()) {
+        if (connection->startPort()) {
             connection->setEndPos(m_mousePos);
             connection->updatePath();
             return;
         }
 
-        if (connection->end()) {
+        if (connection->endPort()) {
             connection->setStartPos(m_mousePos);
             connection->updatePath();
             return;
@@ -1024,7 +1017,7 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
     }
 
     if (auto *connection = qgraphicsitem_cast<QNEConnection *>(itemAt(m_mousePos));
-            connection && connection->start() && connection->end()) {
+            connection && connection->startPort() && connection->endPort()) {
         receiveCommand(new SplitCommand(connection, m_mousePos, this));
     }
 
@@ -1046,10 +1039,9 @@ void Scene::addItem(QMimeData *mimeData)
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     stream.setVersion(QDataStream::Qt_5_12);
 
-    QPoint offset;
-    ElementType type;
-    QString labelAuxData;
-    stream >> offset >> type >> labelAuxData;
+    QPoint offset;        stream >> offset;
+    ElementType type;     stream >> type;
+    QString labelAuxData; stream >> labelAuxData;
 
     auto *element = ElementFactory::buildElement(type);
     qCDebug(zero) << tr("Valid element.");

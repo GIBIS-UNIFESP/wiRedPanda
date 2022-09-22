@@ -49,10 +49,9 @@ public:
     QString name() const;
     Status defaultValue() const;
     Status status() const;
-    bool isConnected(QNEPort *);
+    bool isConnected(QNEPort *otherPort);
     bool isRequired() const;
     const QList<QNEConnection *> &connections() const;
-    const QString &portName() const;
     int index() const;
     int portFlags() const;
     int radius() const;
@@ -70,7 +69,7 @@ public:
     void setGraphicElement(GraphicElement *graphicElement);
     void setIndex(const int index);
     void setName(const QString &name);
-    void setPtr(const quint64 pointer);
+    void setPtr(const quint64 ptr);
     void setRequired(const bool required);
     void updateConnections();
 
@@ -103,7 +102,7 @@ public:
     bool isInput() const override;
     bool isOutput() const override;
     bool isValid() const override;
-    void setStatus(Status status) override;
+    void setStatus(const Status status) override;
     void updateTheme() override;
 };
 
@@ -119,7 +118,7 @@ public:
     bool isInput() const override;
     bool isOutput() const override;
     bool isValid() const override;
-    void setStatus(Status status) override;
+    void setStatus(const Status status) override;
     void updateTheme() override;
 };
 

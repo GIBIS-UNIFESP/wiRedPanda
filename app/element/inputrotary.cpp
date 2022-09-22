@@ -241,8 +241,7 @@ void InputRotary::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, c
     }
 
     if (version >= 4.1) {
-        QMap<QString, QVariant> map;
-        stream >> map;
+        QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("currentPort")) {
             m_currentPort = map.value("currentPort").toInt();

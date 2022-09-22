@@ -55,7 +55,7 @@ void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const doub
 {
     GraphicElement::load(stream, portMap, version);
 
-    if (1.2 <= version && version < 4.1) {
+    if ((1.2 <= version) && (version < 4.1)) {
         stream >> m_file;
 
         if (IC::needToCopyFiles) {
@@ -66,8 +66,7 @@ void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const doub
     }
 
     if (version >= 4.1) {
-        QMap<QString, QVariant> map;
-        stream >> map;
+        QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("fileName")) {
             m_file = map.value("fileName").toString();
@@ -317,7 +316,7 @@ void IC::loadInputElement(GraphicElement *elm)
         const auto conns = outputPort->connections();
 
         for (auto *conn : conns) {
-            conn->setStart(nodeElm->outputPort());
+            conn->setStartPort(nodeElm->outputPort());
         }
     }
 
@@ -340,7 +339,7 @@ void IC::loadOutputElement(GraphicElement *elm)
         m_icElements.append(nodeElm);
 
         for (auto *conn : inputPort->connections()) {
-            conn->setEnd(nodeElm->inputPort());
+            conn->setEndPort(nodeElm->inputPort());
         }
     }
 
@@ -353,13 +352,13 @@ bool IC::comparePorts(QNEPort *port1, QNEPort *port2)
     QPointF p2 = port2->graphicElement()->pos();
 
     if (p1 != p2) {
-        return p1.y() < p2.y() || (qFuzzyCompare(p1.y(), p2.y()) && p1.x() < p2.x());
+        return (p1.y() < p2.y()) || (qFuzzyCompare(p1.y(), p2.y()) && (p1.x() < p2.x()));
     }
 
     p1 = port1->pos();
     p2 = port2->pos();
 
-    return p1.x() < p2.x() || (qFuzzyCompare(p1.x(), p2.x()) && p1.y() < p2.y());
+    return (p1.x() < p2.x()) || (qFuzzyCompare(p1.x(), p2.x()) && (p1.y() < p2.y()));
 }
 
 void IC::sortPorts(QVector<QNEPort *> &map)
@@ -384,9 +383,9 @@ void IC::loadInputsLabels()
         auto *elm = inputPort->graphicElement();
         QString lb = elm->label();
 
-        if (!inputPort->portName().isEmpty()) {
+        if (!inputPort->name().isEmpty()) {
             lb += " ";
-            lb += inputPort->portName();
+            lb += inputPort->name();
         }
 
         if (!elm->genericProperties().isEmpty()) {
@@ -404,9 +403,9 @@ void IC::loadOutputsLabels()
         auto *elm = outputPort->graphicElement();
         QString label = elm->label();
 
-        if (!outputPort->portName().isEmpty()) {
+        if (!outputPort->name().isEmpty()) {
             label += " ";
-            label += outputPort->portName();
+            label += outputPort->name();
         }
 
         if (!elm->genericProperties().isEmpty()) {
@@ -452,7 +451,7 @@ void IC::copyFiles(const QFileInfo &srcFile)
     Serialization::loadRect(stream, version);
 
     IC::path = srcFile.absolutePath();
-    const auto items = Serialization::deserialize(stream, {}, version);
+    Serialization::deserialize(stream, {}, version);
 
     IC::needToCopyFiles = false;
     IC::path.clear();

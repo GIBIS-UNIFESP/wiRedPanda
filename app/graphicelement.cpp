@@ -74,11 +74,6 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QStri
     setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 }
 
-QPixmap GraphicElement::pixmap() const
-{
-    return m_pixmap ? *m_pixmap : QPixmap();
-}
-
 ElementType GraphicElement::elementType() const
 {
     return m_elementType;
@@ -87,6 +82,11 @@ ElementType GraphicElement::elementType() const
 ElementGroup GraphicElement::elementGroup() const
 {
     return m_elementGroup;
+}
+
+QPixmap GraphicElement::pixmap() const
+{
+    return m_pixmap ? *m_pixmap : QPixmap();
 }
 
 void GraphicElement::setPixmap(const int index)
@@ -121,6 +121,11 @@ const QVector<QNEOutputPort *> &GraphicElement::outputs() const
     return m_outputPorts;
 }
 
+void GraphicElement::setOutputs(const QVector<QNEOutputPort *> &outputs)
+{
+    m_outputPorts = outputs;
+}
+
 QNEInputPort *GraphicElement::inputPort(const int pos)
 {
     return m_inputPorts.at(pos);
@@ -129,11 +134,6 @@ QNEInputPort *GraphicElement::inputPort(const int pos)
 QNEOutputPort *GraphicElement::outputPort(const int pos)
 {
     return m_outputPorts.at(pos);
-}
-
-void GraphicElement::setOutputs(const QVector<QNEOutputPort *> &outputs)
-{
-    m_outputPorts = outputs;
 }
 
 void GraphicElement::save(QDataStream &stream) const
@@ -160,7 +160,7 @@ void GraphicElement::save(QDataStream &stream) const
     for (auto *port : m_inputPorts) {
         QMap<QString, QVariant> tempMap;
         tempMap.insert("ptr", reinterpret_cast<quint64>(port));
-        tempMap.insert("name", port->portName());
+        tempMap.insert("name", port->name());
         tempMap.insert("flags", port->portFlags());
 
         inputMap << tempMap;
@@ -175,7 +175,7 @@ void GraphicElement::save(QDataStream &stream) const
     for (auto *port : m_outputPorts) {
         QMap<QString, QVariant> tempMap;
         tempMap.insert("ptr", reinterpret_cast<quint64>(port));
-        tempMap.insert("name", port->portName());
+        tempMap.insert("name", port->name());
         tempMap.insert("flags", port->portFlags());
 
         outputMap << tempMap;
@@ -191,7 +191,7 @@ void GraphicElement::save(QDataStream &stream) const
         QString skinName2 = skinName;
         QFileInfo fileInfo(skinName2);
 
-        if (!skinName2.startsWith(":/") && fileInfo.absoluteDir() != GlobalProperties::currentDir) {
+        if (!skinName2.startsWith(":/") && (fileInfo.absoluteDir() != GlobalProperties::currentDir)) {
             const QString newFile = GlobalProperties::currentDir + "/" + fileInfo.fileName();
 
             QFile::copy(skinName2, newFile);
@@ -250,8 +250,7 @@ void GraphicElement::loadOldFormat(QDataStream &stream, QMap<quint64, QNEPort *>
 
 void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *> &portMap)
 {
-    QMap<QString, QVariant> map;
-    stream >> map;
+    QMap<QString, QVariant> map; stream >> map;
 
     if (map.contains("pos")) {
         setPos(map.value("pos").toPointF());
@@ -272,12 +271,12 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
     const quint64 minOutputSize = map.value("minOutputSize").toULongLong();
     const quint64 maxOutputSize = map.value("maxOutputSize").toULongLong();
 
-    if (!((m_minInputSize == m_maxInputSize) && (m_minInputSize > maxInputSize))) {
+    if ((m_minInputSize != m_maxInputSize) || (m_minInputSize <= maxInputSize)) {
         m_minInputSize = minInputSize;
         m_maxInputSize = maxInputSize;
     }
 
-    if (!((m_minOutputSize == m_maxOutputSize) && (m_minOutputSize > maxOutputSize))) {
+    if ((m_minOutputSize != m_maxOutputSize) || (m_minOutputSize <= maxOutputSize)) {
         m_minOutputSize = minOutputSize;
         m_maxOutputSize = maxOutputSize;
     }
@@ -294,8 +293,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
 
     // -------------------------------------------
 
-    QList<QMap<QString, QVariant>> inputMap;
-    stream >> inputMap;
+    QList<QMap<QString, QVariant>> inputMap; stream >> inputMap;
     int port = 0;
 
     for (const auto &input : qAsConst(inputMap)) {
@@ -321,8 +319,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
 
     // -------------------------------------------
 
-    QList<QMap<QString, QVariant>> outputMap;
-    stream >> outputMap;
+    QList<QMap<QString, QVariant>> outputMap; stream >> outputMap;
     port = 0;
 
     for (const auto &output : qAsConst(outputMap)) {
@@ -348,8 +345,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
 
     // -------------------------------------------
 
-    QList<QMap<QString, QVariant>> skinsMap;
-    stream >> skinsMap;
+    QList<QMap<QString, QVariant>> skinsMap; stream >> skinsMap;
     int skin = 0;
 
     for (const auto &skinName : qAsConst(skinsMap)) {
@@ -369,29 +365,24 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
 
 void GraphicElement::loadPos(QDataStream &stream)
 {
-    QPointF pos;
-    stream >> pos;
+    QPointF pos; stream >> pos;
     setPos(pos);
 }
 
 void GraphicElement::loadRotation(QDataStream &stream, const double version)
 {
-    qreal angle;
-    stream >> angle;
+    qreal angle; stream >> angle;
     m_angle = angle;
 
     if (version < 4.0) {
-        if (m_elementGroup == ElementGroup::Input
-                || m_elementGroup == ElementGroup::StaticInput) {
+        if ((m_elementGroup == ElementGroup::Input) || (m_elementGroup == ElementGroup::StaticInput)) {
             m_angle += 90;
         }
 
-        if (m_elementGroup == ElementGroup::Output
-                || m_elementGroup == ElementGroup::IC
-                || m_elementGroup == ElementGroup::Gate) {
-            if (m_elementType == ElementType::Display7) { return; }
-            if (m_elementType == ElementType::Display14) { return; }
-            if (m_elementType == ElementType::Node) { return; }
+        if ((m_elementGroup == ElementGroup::Output) || (m_elementGroup == ElementGroup::IC) || (m_elementGroup == ElementGroup::Gate)) {
+            if ((m_elementType == ElementType::Display7) || (m_elementType == ElementType::Display14) || (m_elementType == ElementType::Node)) {
+                return;
+            }
 
             m_angle -= 90;
         }
@@ -401,8 +392,7 @@ void GraphicElement::loadRotation(QDataStream &stream, const double version)
 void GraphicElement::loadLabel(QDataStream &stream, const double version)
 {
     if (version >= 1.2) {
-        QString labelText;
-        stream >> labelText;
+        QString labelText; stream >> labelText;
         setLabel(labelText);
     }
 }
@@ -410,23 +400,17 @@ void GraphicElement::loadLabel(QDataStream &stream, const double version)
 void GraphicElement::loadPortsSize(QDataStream &stream, const double version)
 {
     if (version >= 1.3) {
-        quint64 minInputSize;
-        quint64 maxInputSize;
-        quint64 minOutputSize;
-        quint64 maxOutputSize;
-        stream >> minInputSize;
-        stream >> maxInputSize;
-        stream >> minOutputSize;
-        stream >> maxOutputSize;
+        quint64 minInputSize;  stream >> minInputSize;
+        quint64 maxInputSize;  stream >> maxInputSize;
+        quint64 minOutputSize; stream >> minOutputSize;
+        quint64 maxOutputSize; stream >> maxOutputSize;
 
-        if (m_minInputSize != m_maxInputSize
-                || m_minInputSize <= maxInputSize) {
+        if ((m_minInputSize != m_maxInputSize) || (m_minInputSize <= maxInputSize)) {
             m_minInputSize = minInputSize;
             m_maxInputSize = maxInputSize;
         }
 
-        if (m_minOutputSize != m_maxOutputSize
-                || m_minOutputSize <= maxOutputSize) {
+        if ((m_minOutputSize != m_maxOutputSize) || (m_minOutputSize <= maxOutputSize)) {
             m_minOutputSize = minOutputSize;
             m_maxOutputSize = maxOutputSize;
         }
@@ -436,8 +420,7 @@ void GraphicElement::loadPortsSize(QDataStream &stream, const double version)
 void GraphicElement::loadTrigger(QDataStream &stream, const double version)
 {
     if (version >= 1.9) {
-        QKeySequence trigger;
-        stream >> trigger;
+        QKeySequence trigger; stream >> trigger;
         setTrigger(trigger);
     }
 }
@@ -445,8 +428,7 @@ void GraphicElement::loadTrigger(QDataStream &stream, const double version)
 void GraphicElement::loadPriority(QDataStream &stream, const double version)
 {
     if (version >= 4.01) {
-        quint64 priority;
-        stream >> priority;
+        quint64 priority; stream >> priority;
         setPriority(priority);
     }
 }
@@ -454,8 +436,7 @@ void GraphicElement::loadPriority(QDataStream &stream, const double version)
 void GraphicElement::loadInputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap)
 {
     qCDebug(four) << tr("Loading input ports.");
-    quint64 inputSize;
-    stream >> inputSize;
+    quint64 inputSize; stream >> inputSize;
 
     if (inputSize > maximumValidInputSize) {
         throw Pandaception(tr("Corrupted DataStream!"));
@@ -470,12 +451,9 @@ void GraphicElement::loadInputPorts(QDataStream &stream, QMap<quint64, QNEPort *
 
 void GraphicElement::loadInputPort(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const int port)
 {
-    quint64 ptr;
-    QString name;
-    int flags;
-    stream >> ptr;
-    stream >> name;
-    stream >> flags;
+    quint64 ptr;  stream >> ptr;
+    QString name; stream >> name;
+    int flags;    stream >> flags;
 
     if (port < m_inputPorts.size()) {
         m_inputPorts.value(port)->setPtr(ptr);
@@ -492,8 +470,8 @@ void GraphicElement::loadInputPort(QDataStream &stream, QMap<quint64, QNEPort *>
 
 void GraphicElement::removeSurplusInputs(const quint64 inputSize_, QMap<quint64, QNEPort *> &portMap)
 {
-    while (inputSize() > static_cast<int>(inputSize_) && inputSize_ >= m_minInputSize) {
-        QNEPort *deletedPort = m_inputPorts.constLast();
+    while ((inputSize() > static_cast<int>(inputSize_)) && (inputSize_ >= m_minInputSize)) {
+        auto *deletedPort = m_inputPorts.constLast();
         removePortFromMap(deletedPort, portMap);
         delete deletedPort;
         m_inputPorts.removeLast();
@@ -502,8 +480,8 @@ void GraphicElement::removeSurplusInputs(const quint64 inputSize_, QMap<quint64,
 
 void GraphicElement::removeSurplusOutputs(const quint64 outputSize_, QMap<quint64, QNEPort *> &portMap)
 {
-    while (outputSize() > static_cast<int>(outputSize_) && outputSize_ >= m_minOutputSize) {
-        QNEPort *deletedPort = m_outputPorts.constLast();
+    while ((outputSize() > static_cast<int>(outputSize_)) && (outputSize_ >= m_minOutputSize)) {
+        auto *deletedPort = m_outputPorts.constLast();
         removePortFromMap(deletedPort, portMap);
         delete deletedPort;
         m_outputPorts.removeLast();
@@ -534,8 +512,7 @@ void GraphicElement::removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPo
 void GraphicElement::loadOutputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap)
 {
     qCDebug(four) << tr("Loading output ports.");
-    quint64 outputSize;
-    stream >> outputSize;
+    quint64 outputSize; stream >> outputSize;
 
     if (outputSize > maximumValidInputSize) {
         throw Pandaception(tr("Corrupted DataStream!"));
@@ -550,12 +527,9 @@ void GraphicElement::loadOutputPorts(QDataStream &stream, QMap<quint64, QNEPort 
 
 void GraphicElement::loadOutputPort(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const int port)
 {
-    quint64 ptr;
-    QString name;
-    int flags;
-    stream >> ptr;
-    stream >> name;
-    stream >> flags;
+    quint64 ptr;  stream >> ptr;
+    QString name; stream >> name;
+    int flags;    stream >> flags;
 
     if (port < m_outputPorts.size()) {
         m_outputPorts.value(port)->setPtr(ptr);
@@ -574,8 +548,7 @@ void GraphicElement::loadPixmapSkinNames(QDataStream &stream, const double versi
 {
     if (version >= 2.7) {
         qCDebug(four) << tr("Loading pixmap skin names.");
-        quint64 outputSize;
-        stream >> outputSize;
+        quint64 outputSize; stream >> outputSize;
 
         if (outputSize > maximumValidInputSize) {
             throw Pandaception(tr("Corrupted DataStream!"));
@@ -593,8 +566,7 @@ void GraphicElement::loadPixmapSkinNames(QDataStream &stream, const double versi
 
 void GraphicElement::loadPixmapSkinName(QDataStream &stream, const int skin)
 {
-    QString name;
-    stream >> name;
+    QString name; stream >> name;
 
     if (skin >= m_alternativeSkins.size()) {
         qCDebug(zero) << tr("Could not load some of the skins.");
@@ -1113,7 +1085,7 @@ void GraphicElement::highlight(const bool isSelected)
             connection->setHighLight(isSelected);
 
             if (auto *otherPort = connection->otherPort(port)) {
-                if (auto *elm = otherPort->graphicElement(); elm && elm->elementType() == ElementType::Node) {
+                if (auto *elm = otherPort->graphicElement(); elm && (elm->elementType() == ElementType::Node)) {
                     elm->highlight(isSelected);
                 }
             }
