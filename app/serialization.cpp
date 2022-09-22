@@ -38,14 +38,12 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, QMap<quin
     QList<QGraphicsItem *> itemList;
 
     while (!stream.atEnd()) {
-        int type;
-        stream >> type;
+        int type; stream >> type;
         qCDebug(three) << tr("Type: ") << type;
 
         switch (type) {
         case GraphicElement::Type: {
-            ElementType elmType;
-            stream >> elmType;
+            ElementType elmType; stream >> elmType;
 
             auto *elm = ElementFactory::buildElement(elmType);
             itemList.append(elm);
@@ -78,8 +76,7 @@ double Serialization::loadVersion(QDataStream &stream)
 {
     qCDebug(zero) << tr("Loading version.");
 
-    QString str;
-    stream >> str;
+    QString str; stream >> str;
 
     if (!str.startsWith(QApplication::applicationName(), Qt::CaseInsensitive)) {
         throw Pandaception(tr("Invalid file format."));
@@ -100,7 +97,7 @@ double Serialization::loadVersion(QDataStream &stream)
 
 QString Serialization::loadDolphinFileName(QDataStream &stream, const double version)
 {
-    QString str = "";
+    QString str;
 
     if (version >= 3.0) {
         stream >> str;

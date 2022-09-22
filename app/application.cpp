@@ -10,7 +10,7 @@ Application::Application(int &argc, char **argv)
 
 bool Application::notify(QObject *receiver, QEvent *event)
 {
-    bool done = true;
+    bool done;
 
     try {
         done = QApplication::notify(receiver, event);
@@ -26,7 +26,7 @@ MainWindow *Application::mainWindow() const
     return m_mainWindow;
 }
 
-void Application::setMainWindow(MainWindow *newMainWindow)
+void Application::setMainWindow(MainWindow *mainWindow)
 {
-    m_mainWindow = newMainWindow;
+    m_mainWindow = mainWindow;
 }

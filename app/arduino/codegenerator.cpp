@@ -104,9 +104,9 @@ void CodeGenerator::declareInputs()
     for (auto *elm : m_elements) {
         const auto type = elm->elementType();
 
-        if (type == ElementType::InputButton || type == ElementType::InputSwitch) {
+        if ((type == ElementType::InputButton) || (type == ElementType::InputSwitch)) {
             QString varName = elm->objectName() + QString::number(counter);
-            QString label = elm->label();
+            const QString label = elm->label();
 
             if (!label.isEmpty()) {
                 varName += "_" + label;

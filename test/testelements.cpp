@@ -33,7 +33,7 @@ void TestElements::init()
     for (int i = 0; i < connections.size(); ++i) {
         connections[i] = new QNEConnection();
         switches[i] = new InputSwitch();
-        connections.at(i)->setStart(switches.at(i)->outputPort());
+        connections.at(i)->setStartPort(switches.at(i)->outputPort());
     }
 }
 
@@ -218,20 +218,20 @@ void TestElements::testIC()
     auto *led2 = new Led();
 
     auto *connection1 = new QNEConnection();
-    connection1->setStart(clkButton->outputPort());
-    connection1->setEnd(ic->inputPort(2));
+    connection1->setStartPort(clkButton->outputPort());
+    connection1->setEndPort(ic->inputPort(2));
 
     auto *connection2 = new QNEConnection();
-    connection2->setStart(prstButton->outputPort());
-    connection2->setEnd(ic->inputPort(0));
+    connection2->setStartPort(prstButton->outputPort());
+    connection2->setEndPort(ic->inputPort(0));
 
     auto *connection3 = new QNEConnection();
-    connection3->setStart(ic->outputPort(0));
-    connection3->setEnd(led1->inputPort());
+    connection3->setStartPort(ic->outputPort(0));
+    connection3->setEndPort(led1->inputPort());
 
     auto *connection4 = new QNEConnection();
-    connection4->setStart(ic->outputPort(1));
-    connection4->setEnd(led2->inputPort());
+    connection4->setStartPort(ic->outputPort(1));
+    connection4->setEndPort(led2->inputPort());
 
     Scene scene;
     scene.addItem(led1);

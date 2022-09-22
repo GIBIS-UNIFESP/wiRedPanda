@@ -114,7 +114,9 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     QDir examplesDir("examples");
 
     if (examplesDir.exists()) {
-        for (const auto &entry : examplesDir.entryList({"*.panda"}, QDir::Files)) {
+        const auto entryList = examplesDir.entryList({"*.panda"}, QDir::Files);
+
+        for (const auto &entry : entryList) {
             auto *action = new QAction(entry);
 
             connect(action, &QAction::triggered, this, [this] {

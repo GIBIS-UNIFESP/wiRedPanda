@@ -45,23 +45,17 @@ int id2 = qRegisterMetaType<QNEOutputPort>();
 QNEPort::QNEPort(QGraphicsItem *parent)
     : QGraphicsPathItem(parent)
 {
-    QPainterPath path;
-    path.addPolygon(QRectF(QPointF(-m_radius, -m_radius), QPointF(m_radius, m_radius)));
-    setPath(path);
-
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
     setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+    QPainterPath path;
+
+    path.addPolygon(QRectF(QPointF(-m_radius, -m_radius), QPointF(m_radius, m_radius)));
+    setPath(path);
 }
 
 LogicElement *QNEPort::logic() const
 {
     return graphicElement() ? graphicElement()->logic() : nullptr;
-}
-
-void QNEPort::setName(const QString &name)
-{
-    m_name = name;
-    setToolTip(name);
 }
 
 int QNEPort::radius() const
@@ -91,20 +85,15 @@ void QNEPort::disconnect(QNEConnection *conn)
 {
     m_connections.removeAll(conn);
 
-    if (conn->start() == this) {
-        conn->setStart(nullptr);
+    if (conn->startPort() == this) {
+        conn->setStartPort(nullptr);
     }
 
-    if (conn->end() == this) {
-        conn->setEnd(nullptr);
+    if (conn->endPort() == this) {
+        conn->setEndPort(nullptr);
     }
 
     updateConnections();
-}
-
-const QString &QNEPort::portName() const
-{
-    return m_name;
 }
 
 int QNEPort::portFlags() const
@@ -117,15 +106,15 @@ quint64 QNEPort::ptr() const
     return m_ptr;
 }
 
-void QNEPort::setPtr(const quint64 pointer)
+void QNEPort::setPtr(const quint64 ptr)
 {
-    m_ptr = pointer;
+    m_ptr = ptr;
 }
 
-bool QNEPort::isConnected(QNEPort *other)
+bool QNEPort::isConnected(QNEPort *otherPort)
 {
     return std::any_of(m_connections.cbegin(), m_connections.cend(),
-                       [&](auto *conn) { return conn->start() == other || conn->end() == other; });
+                       [&](auto *conn) { return (conn->startPort() == otherPort) || (conn->endPort() == otherPort); });
 }
 
 void QNEPort::updateConnections()
@@ -150,7 +139,7 @@ QVariant QNEPort::itemChange(GraphicsItemChange change, const QVariant &value)
         updateConnections();
     }
 
-    return value;
+    return QGraphicsPathItem::itemChange(change, value);
 }
 
 int QNEPort::index() const
@@ -166,6 +155,12 @@ void QNEPort::setIndex(const int index)
 QString QNEPort::name() const
 {
     return m_name;
+}
+
+void QNEPort::setName(const QString &name)
+{
+    m_name = name;
+    setToolTip(name);
 }
 
 Status QNEPort::defaultValue() const
@@ -243,12 +238,12 @@ QNEInputPort::~QNEInputPort()
     while (!m_connections.isEmpty()) {
         auto *conn = m_connections.constLast();
         m_connections.removeAll(conn);
-        conn->setEnd(nullptr);
+        conn->setEndPort(nullptr);
         delete conn;
     }
 }
 
-void QNEInputPort::setStatus(Status status)
+void QNEInputPort::setStatus(const Status status)
 {
     if (status == m_status) {
         return;
@@ -289,11 +284,7 @@ bool QNEInputPort::isOutput() const
 
 bool QNEInputPort::isValid() const
 {
-    if (m_connections.isEmpty()) {
-        return !isRequired();
-    }
-
-    return (m_connections.size() == 1);
+    return m_connections.isEmpty() ? !isRequired() : (m_connections.size() == 1);
 }
 
 void QNEInputPort::updateTheme()
@@ -314,12 +305,12 @@ QNEOutputPort::~QNEOutputPort()
     while (!m_connections.isEmpty()) {
         auto *conn = m_connections.constLast();
         m_connections.removeAll(conn);
-        conn->setStart(nullptr);
+        conn->setStartPort(nullptr);
         delete conn;
     }
 }
 
-void QNEOutputPort::setStatus(Status status)
+void QNEOutputPort::setStatus(const Status status)
 {
     if (status == m_status) {
         return;

@@ -31,8 +31,8 @@ void TestFiles::testFiles()
         for (auto *item : items) {
             if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
                 QVERIFY(conn != nullptr);
-                QVERIFY(conn->start() != nullptr);
-                QVERIFY(conn->end() != nullptr);
+                QVERIFY(conn->startPort() != nullptr);
+                QVERIFY(conn->endPort() != nullptr);
             }
         }
 

@@ -153,14 +153,12 @@ void Buzzer::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const 
     }
 
     if (version < 4.1) {
-        QString note;
-        stream >> note;
+        QString note; stream >> note;
         setAudio(note);
     }
 
     if (version >= 4.1) {
-        QMap<QString, QVariant> map;
-        stream >> map;
+        QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("note")) {
             setAudio(map.value("note").toString());

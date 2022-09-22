@@ -60,11 +60,11 @@ ElementEditor::~ElementEditor()
 
 QAction *addElementAction(QMenu *menu, GraphicElement *selectedElm, ElementType type, const bool hasSameType)
 {
-    if (hasSameType && selectedElm->elementType() == type) {
+    if (hasSameType && (selectedElm->elementType() == type)) {
         return nullptr;
     }
 
-    QAction *action = menu->addAction(QIcon(ElementFactory::pixmap(type)), ElementFactory::translatedName(type));
+    auto *action = menu->addAction(QIcon(ElementFactory::pixmap(type)), ElementFactory::translatedName(type));
     action->setData(static_cast<int>(type));
     return action;
 }
@@ -173,7 +173,7 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
         }
 
         case ElementGroup::Output: {
-            if (selectedElm->elementType() == ElementType::Display7 || selectedElm->elementType() == ElementType::Display14) {
+            if ((selectedElm->elementType() == ElementType::Display7) || (selectedElm->elementType() == ElementType::Display14)) {
                 addElementAction(submenuMorph, selectedElm, ElementType::Display7, m_hasSameType);
                 addElementAction(submenuMorph, selectedElm, ElementType::Display14, m_hasSameType);
             } else {
@@ -271,7 +271,7 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
         return;
     }
 
-    if (actionText == tr("Copy") || actionText == tr("Cut") || actionText == tr("Delete")) {
+    if ((actionText == tr("Copy")) || (actionText == tr("Cut")) || (actionText == tr("Delete"))) {
         return;
     }
 
@@ -426,8 +426,8 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         m_hasSamePriority &= (elm->priority() == firstElement->priority());
 
         bool sameElementGroup = (group == firstGroup);
-        sameElementGroup |= (group == ElementGroup::Input && firstGroup == ElementGroup::StaticInput);
-        sameElementGroup |= (group == ElementGroup::StaticInput && firstGroup == ElementGroup::Input);
+        sameElementGroup |= (group == ElementGroup::Input && (firstGroup == ElementGroup::StaticInput));
+        sameElementGroup |= (group == ElementGroup::StaticInput && (firstGroup == ElementGroup::Input));
         m_hasOnlyInputs &= (group == ElementGroup::Input);
         m_canMorph &= sameElementGroup;
     }
@@ -652,7 +652,7 @@ void ElementEditor::apply()
 
         elm->setPriority(m_ui->spinBoxPriority->value());
 
-        if (elm->hasColors() && (m_ui->comboBoxColor->currentData().isValid())) {
+        if (elm->hasColors() && m_ui->comboBoxColor->currentData().isValid()) {
             elm->setColor(m_ui->comboBoxColor->currentData().toString());
         }
 
@@ -767,61 +767,62 @@ void ElementEditor::priorityChanged(const int value)
 
 bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
 {
-    auto *widget = qobject_cast<QWidget *>(obj);
-    auto *keyEvent = dynamic_cast<QKeyEvent *>(event);
+    if (event->type() == QEvent::KeyPress) {
+        auto *keyEvent = dynamic_cast<QKeyEvent *>(event);
 
-    if ((event->type() == QEvent::KeyPress) && keyEvent && (m_elements.size() == 1)) {
-        const bool moveFwd = (keyEvent->key() == Qt::Key_Tab);
-        const bool moveBack = (keyEvent->key() == Qt::Key_Backtab);
+        if (keyEvent && (m_elements.size() == 1)) {
+            const bool moveFwd = (keyEvent->key() == Qt::Key_Tab);
+            const bool moveBack = (keyEvent->key() == Qt::Key_Backtab);
 
-        if (moveBack || moveFwd) {
-            auto *elm = m_elements.constFirst();
-            auto elements = m_scene->visibleElements();
+            if (moveBack || moveFwd) {
+                auto *elm = m_elements.constFirst();
+                auto elements = m_scene->visibleElements();
 
-            std::stable_sort(elements.begin(), elements.end(), [](const auto &elm1, const auto &elm2) {
-                return elm1->pos().ry() < elm2->pos().ry();
-            });
+                std::stable_sort(elements.begin(), elements.end(), [](const auto &elm1, const auto &elm2) {
+                    return elm1->pos().ry() < elm2->pos().ry();
+                });
 
-            std::stable_sort(elements.begin(), elements.end(), [](const auto &elm1, const auto &elm2) {
-                return elm1->pos().rx() < elm2->pos().rx();
-            });
+                std::stable_sort(elements.begin(), elements.end(), [](const auto &elm1, const auto &elm2) {
+                    return elm1->pos().rx() < elm2->pos().rx();
+                });
 
-            const int elmPos = elements.indexOf(elm);
-            qCDebug(zero) << tr("Pos = ") << elmPos << tr(" from ") << elements.size();
-            int step = 1;
+                const int elmPos = elements.indexOf(elm);
+                qCDebug(zero) << tr("Pos = ") << elmPos << tr(" from ") << elements.size();
+                int step = 1;
 
-            if (moveBack) {
-                step = -1;
-            }
-
-            int pos = (elements.size() + elmPos + step) % elements.size();
-
-            for (; pos != elmPos; pos = ((elements.size() + pos + step) % elements.size())) {
-                qCDebug(zero) << tr("Pos = ") << pos;
-                elm = elements.at(pos);
-
-                setCurrentElements({elm});
-
-                if (widget->isEnabled()) {
-                    break;
+                if (moveBack) {
+                    step = -1;
                 }
+
+                auto *widget = qobject_cast<QWidget *>(obj);
+                int pos = (elements.size() + elmPos + step) % elements.size();
+
+                for (; pos != elmPos; pos = ((elements.size() + pos + step) % elements.size())) {
+                    qCDebug(zero) << tr("Pos = ") << pos;
+                    elm = elements.at(pos);
+
+                    setCurrentElements({elm});
+
+                    if (widget->isEnabled()) {
+                        break;
+                    }
+                }
+
+                m_scene->clearSelection();
+
+                if (!widget->isEnabled()) {
+                    elm = elements.at(elmPos);
+                }
+
+                elm->setSelected(true);
+                elm->ensureVisible();
+                widget->setFocus();
+                event->accept();
+                return true;
             }
-
-            m_scene->clearSelection();
-
-            if (!widget->isEnabled()) {
-                elm = elements.at(elmPos);
-            }
-
-            elm->setSelected(true);
-            elm->ensureVisible();
-            widget->setFocus();
-            event->accept();
-            return true;
         }
     }
 
-    /* pass the event on to the parent class */
     return QWidget::eventFilter(obj, event);
 }
 

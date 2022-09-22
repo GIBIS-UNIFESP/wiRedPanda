@@ -21,11 +21,6 @@ ElementMapping::ElementMapping(const QVector<GraphicElement *> &elements)
 
 ElementMapping::~ElementMapping()
 {
-    clear();
-}
-
-void ElementMapping::clear()
-{
     m_globalGND.clearSucessors();
     m_globalVCC.clearSucessors();
 }
@@ -80,7 +75,7 @@ void ElementMapping::applyConnection(GraphicElement *elm, QNEInputPort *inputPor
     }
 
     if (connections.size() == 1) {
-        if (auto *outputPort = connections.constFirst()->start()) {
+        if (auto *outputPort = connections.constFirst()->startPort()) {
             if (auto *predecessorElement = outputPort->graphicElement()) {
                 if (predecessorElement->elementType() == ElementType::IC) {
                     auto *logic = qobject_cast<IC *>(predecessorElement)->outputLogic(outputPort->index());

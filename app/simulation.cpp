@@ -44,7 +44,7 @@ void Simulation::update()
     }
 
     for (auto *connection : qAsConst(m_connections)) {
-        updatePort(connection->start());
+        updatePort(connection->startPort());
     }
 
     for (auto *outputElm : qAsConst(m_outputs)) {

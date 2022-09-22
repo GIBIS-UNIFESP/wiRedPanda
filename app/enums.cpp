@@ -9,8 +9,7 @@ ElementType &operator++(ElementType &type)
 
 QDataStream &operator>>(QDataStream &stream, ElementType &type)
 {
-    quint64 temp;
-    stream >> temp;
+    quint64 temp; stream >> temp;
     type = static_cast<ElementType>(temp);
     return stream;
 }

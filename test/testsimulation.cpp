@@ -34,17 +34,17 @@ void TestSimulation::testCase1()
     scene->addItem(&connection2);
     scene->addItem(&connection3);
 
-    connection1.setStart(button1.outputPort());
-    connection1.setEnd(andItem.inputPort(0));
-    connection2.setStart(button2.outputPort());
-    connection2.setEnd(andItem.inputPort(1));
-    connection3.setStart(andItem.outputPort());
-    connection3.setEnd(led.inputPort());
+    connection1.setStartPort(button1.outputPort());
+    connection1.setEndPort(andItem.inputPort(0));
+    connection2.setStartPort(button2.outputPort());
+    connection2.setEndPort(andItem.inputPort(1));
+    connection3.setStartPort(andItem.outputPort());
+    connection3.setEndPort(led.inputPort());
 
     const auto elements(Common::sortGraphicElements(scene->elements()));
 
-    QVERIFY(elements.at(0) == &button1 || elements.at(1) == &button1);
-    QVERIFY(elements.at(0) == &button2 || elements.at(1) == &button2);
+    QVERIFY((elements.at(0) == &button1) || (elements.at(1) == &button1));
+    QVERIFY((elements.at(0) == &button2) || (elements.at(1) == &button2));
     QVERIFY(elements.at(2) == &andItem);
     QVERIFY(elements.at(3) == &led);
 }
