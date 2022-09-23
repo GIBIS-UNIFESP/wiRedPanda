@@ -24,6 +24,7 @@
 #include <QPrinter>
 #include <QSaveFile>
 #include <QTextStream>
+#include <cmath>
 #include <iostream>
 
 SignalModel::SignalModel(const int inputs, const int rows, const int columns, QObject *parent)
@@ -261,10 +262,9 @@ void BewavedDolphin::loadNewTable()
 
     // ---------------------------------------
 
-    const int iterations = 32;
-    qCDebug(zero) << tr("Num iter = ") << iterations;
+    qCDebug(zero) << tr("Num iter = ") << m_length;
 
-    m_model = new SignalModel(inputLabels.size(), inputLabels.size() + outputLabels.size(), iterations, this);
+    m_model = new SignalModel(inputLabels.size(), inputLabels.size() + outputLabels.size(), m_length, this);
     m_signalTableView->setModel(m_model);
 
     m_model->setVerticalHeaderLabels(inputLabels + outputLabels);
@@ -677,6 +677,12 @@ void BewavedDolphin::on_actionSetClockWave_triggered()
 
 void BewavedDolphin::on_actionCombinational_triggered()
 {
+    const int truthTableSize = std::pow(2, m_inputPorts);
+
+    if (m_length < truthTableSize) {
+        setLength(truthTableSize, false);
+    }
+
     qCDebug(zero) << tr("Setting the signal according to its columns and clock period.");
     int halfClockPeriod = 1;
     int clockPeriod = 2;
