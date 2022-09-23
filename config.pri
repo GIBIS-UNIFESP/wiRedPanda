@@ -83,6 +83,7 @@ linux {
 
 msvc {
     QMAKE_CXXFLAGS += /permissive-
+    QMAKE_CXXFLAGS_DEBUG += /Ob1
     QMAKE_CXXFLAGS_RELEASE += /GL
     QMAKE_LFLAGS_RELEASE += /LTCG
 }
