@@ -34,11 +34,10 @@ SignalModel::SignalModel(const int inputs, const int rows, const int columns, QO
 
 Qt::ItemFlags SignalModel::flags(const QModelIndex &index) const
 {
-    // TODO: add ItemIsEditable so all cells can be selected but only inputs changed
-    Qt::ItemFlags flags;
+    Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
     if (index.row() < m_inputCount) {
-        flags |= Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+        flags |= Qt::ItemIsEditable;
     }
 
     return flags;
@@ -292,7 +291,9 @@ void BewavedDolphin::on_tableView_selectionChanged()
     const auto indexes = m_signalTableView->selectionModel()->selectedIndexes();
 
     for (auto index : indexes) {
-        m_inputs.at(index.row())->setSelected(true);
+        if (index.row() < m_inputs.size()) {
+            m_inputs.at(index.row())->setSelected(true);
+        }
     }
 
     m_externalScene->view()->update();
