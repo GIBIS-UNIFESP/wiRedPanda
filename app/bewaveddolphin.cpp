@@ -818,7 +818,7 @@ void BewavedDolphin::on_actionCopy_triggered()
     stream.setVersion(QDataStream::Qt_5_12);
     copy(ranges, stream);
 
-    auto *mimeData = new QMimeData;
+    auto *mimeData = new QMimeData();
     mimeData->setData("bdolphin/copydata", itemData);
 
     QApplication::clipboard()->setMimeData(mimeData);

@@ -135,7 +135,7 @@ private:
     QPixmap m_risingBlue;
     QPixmap m_risingGreen;
     QStandardItemModel *m_model = nullptr;
-    QTableView *m_signalTableView = new QTableView;
+    QTableView *m_signalTableView = new QTableView();
     QVector<GraphicElement *> m_outputs;
     QVector<GraphicElementInput *> m_inputs;
     QVector<Status> m_oldInputValues;

@@ -105,7 +105,6 @@ void InputSwitch::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, c
     }
 
     setOn(m_isOn);
-    outputPort()->setStatus(static_cast<Status>(m_isOn));
 }
 
 void InputSwitch::setSkin(const bool defaultSkin, const QString &fileName)
