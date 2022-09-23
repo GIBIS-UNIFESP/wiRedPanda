@@ -22,7 +22,7 @@ WorkSpace::WorkSpace(QWidget *parent)
     m_view.setScene(&m_scene);
     m_scene.setView(&m_view);
     m_scene.setSceneRect(m_view.rect());
-    setLayout(new QHBoxLayout);
+    setLayout(new QHBoxLayout());
     layout()->addWidget(&m_view);
 
     connect(&m_scene, &Scene::circuitHasChanged, this, &WorkSpace::autosave);
