@@ -445,7 +445,7 @@ void Scene::cloneDrag(const QPointF mousePos)
     stream << mousePos;
     copy(selectedItems(), stream);
 
-    auto *mimeData = new QMimeData;
+    auto *mimeData = new QMimeData();
     mimeData->setData("wpanda/ctrlDragData", itemData);
 
     auto *drag = new QDrag(this);
@@ -612,7 +612,7 @@ void Scene::copyAction()
     stream.setVersion(QDataStream::Qt_5_12);
     copy(selectedItems(), stream);
 
-    auto *mimeData = new QMimeData;
+    auto *mimeData = new QMimeData();
     mimeData->setData("wpanda/copydata", itemData);
 
     QApplication::clipboard()->setMimeData(mimeData);
@@ -772,19 +772,19 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         QDataStream stream(&itemData, QIODevice::ReadOnly);
         stream.setVersion(QDataStream::Qt_5_12);
 
-        QPoint offset;        stream >> offset;
-        ElementType type;     stream >> type;
-        QString labelAuxData; stream >> labelAuxData;
+        QPoint offset;      stream >> offset;
+        ElementType type;   stream >> type;
+        QString icFileName; stream >> icFileName;
 
         QPointF pos = event->scenePos() - offset;
-        qCDebug(zero) << type << tr(" at position: ") << pos.x() << tr(", ") << pos.y() << tr(", label: ") << labelAuxData;
+        qCDebug(zero) << type << tr(" at position: ") << pos.x() << tr(", ") << pos.y() << tr(", label: ") << icFileName;
 
         auto *element = ElementFactory::buildElement(type);
         qCDebug(zero) << tr("Valid element.");
 
         if (element->elementType() == ElementType::IC) {
             if (auto *ic = qobject_cast<IC *>(element)) {
-                ic->loadFile(labelAuxData);
+                ic->loadFile(icFileName);
             }
         }
 
@@ -1039,16 +1039,16 @@ void Scene::addItem(QMimeData *mimeData)
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     stream.setVersion(QDataStream::Qt_5_12);
 
-    QPoint offset;        stream >> offset;
-    ElementType type;     stream >> type;
-    QString labelAuxData; stream >> labelAuxData;
+    QPoint offset;      stream >> offset;
+    ElementType type;   stream >> type;
+    QString icFileName; stream >> icFileName;
 
     auto *element = ElementFactory::buildElement(type);
     qCDebug(zero) << tr("Valid element.");
 
     if (element->elementType() == ElementType::IC) {
         if (auto *ic = qobject_cast<IC *>(element)) {
-            ic->loadFile(labelAuxData);
+            ic->loadFile(icFileName);
         }
     }
 
