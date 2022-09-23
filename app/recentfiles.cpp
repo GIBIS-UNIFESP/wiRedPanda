@@ -26,7 +26,6 @@ RecentFiles::RecentFiles(QObject *parent)
     });
 }
 
-// TODO: quotes bug
 void RecentFiles::addRecentFile(const QString &filePath)
 {
     qCDebug(three) << tr("Setting recent file to: ") << filePath;

@@ -1129,7 +1129,6 @@ void MainWindow::on_actionPlay_toggled(const bool checked)
     checked ? simulation->start() : simulation->stop();
 }
 
-// TODO: call this function with the list of files and set directory watcher.
 void MainWindow::populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout)
 {
     layout->removeItem(spacer);
