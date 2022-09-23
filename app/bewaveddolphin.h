@@ -147,5 +147,5 @@ private:
     double m_scale = 1.0;
     int m_clockPeriod = 0;
     int m_inputPorts = 0;
-    int m_length = 0;
+    int m_length = 32;
 };
