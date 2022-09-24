@@ -7,10 +7,10 @@
         <file>clock0.svg</file>
         <file>clock1.svg</file>
         <file>input.qrc</file>
-        <file>rotary/rotary.svg</file>
-        <file>rotary/rotary_arrow.svg</file>
-        <file>rotary/rotary_icon.svg</file>
         <file>switchOff.svg</file>
         <file>switchOn.svg</file>
+        <file>rotary.svg</file>
+        <file>rotary_arrow.svg</file>
+        <file>rotary_icon.svg</file>
     </qresource>
 </RCC>

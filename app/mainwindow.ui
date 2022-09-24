@@ -1091,9 +1091,9 @@ QTabWidget::pane {
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="resources/output/output.qrc">
-     <normaloff>:/output/BuzzerOff.svg</normaloff>
-     <normalon>:/toolbar/mute.svg</normalon>:/output/BuzzerOff.svg</iconset>
+    <iconset>
+     <normaloff>:/output/buzzer/BuzzerOff.svg</normaloff>
+     <normalon>:/toolbar/mute.svg</normalon>:/output/buzzer/BuzzerOff.svg</iconset>
    </property>
    <property name="text">
     <string>Mute</string>

@@ -15,15 +15,15 @@ int id = qRegisterMetaType<InputRotary>();
 }
 
 InputRotary::InputRotary(QGraphicsItem *parent)
-    : GraphicElementInput(ElementType::InputRotary, ElementGroup::Input, ":/input/rotary/rotary_icon.svg", tr("ROTARY SWITCH"), tr("Rotary Switch"), 0, 0, 2, 16, parent)
+    : GraphicElementInput(ElementType::InputRotary, ElementGroup::Input, ":/input/rotary_icon.svg", tr("ROTARY SWITCH"), tr("Rotary Switch"), 0, 0, 2, 16, parent)
 {
     if (GlobalProperties::skipInit) {
         return;
     }
 
     m_defaultSkins = QStringList{
-        ":/input/rotary/rotary.svg",
-        ":/input/rotary/rotary_arrow.svg"
+        ":/input/rotary.svg",
+        ":/input/rotary_arrow.svg"
     };
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);
