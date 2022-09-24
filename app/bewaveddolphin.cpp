@@ -346,6 +346,12 @@ void BewavedDolphin::loadSignals(QStringList &inputLabels, QStringList &outputLa
 
 void BewavedDolphin::run()
 {
+    run2();
+    run2();
+}
+
+void BewavedDolphin::run2()
+{
     qCDebug(zero) << tr("Creating class to pause main window simulator while creating waveform.");
     SimulationBlocker simulationBlocker(m_simulation);
 
@@ -362,6 +368,8 @@ void BewavedDolphin::run()
         }
 
         qCDebug(four) << tr("Updating the values of the circuit logic based on current input values.");
+        m_simulation->update();
+        m_simulation->update();
         m_simulation->update();
 
         qCDebug(four) << tr("Setting the computed output values to the waveform results.");
