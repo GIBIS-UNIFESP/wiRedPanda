@@ -1,28 +1,5 @@
 <RCC>
     <qresource prefix="/output">
-        <file>16colors/AquaLightLed.png</file>
-        <file>16colors/BlackLed.png</file>
-        <file>16colors/DarkRedLed.png</file>
-        <file>16colors/GreenLed.png</file>
-        <file>16colors/HotPinkLed.png</file>
-        <file>16colors/LightGrayLed.png</file>
-        <file>16colors/LimeGreenLed.png</file>
-        <file>16colors/MagentaLed.png</file>
-        <file>16colors/NavyBlueLed.png</file>
-        <file>16colors/OrangeLed.png</file>
-        <file>16colors/RedLed.png</file>
-        <file>16colors/RoyalLed.png</file>
-        <file>16colors/TealLed.png</file>
-        <file>16colors/WhiteLed.png</file>
-        <file>16colors/YellowLed.png</file>
-        <file>BlueLed.svg</file>
-        <file>BuzzerOff.svg</file>
-        <file>BuzzerOn.svg</file>
-        <file>GreenLed.svg</file>
-        <file>LedOff.svg</file>
-        <file>PurpleLed.svg</file>
-        <file>RedLed.svg</file>
-        <file>WhiteLed.svg</file>
         <file>audio/A7.wav</file>
         <file>audio/B7.wav</file>
         <file>audio/C6.wav</file>
@@ -31,6 +8,8 @@
         <file>audio/E6.wav</file>
         <file>audio/F6.wav</file>
         <file>audio/G6.wav</file>
+        <file>buzzer/BuzzerOff.svg</file>
+        <file>buzzer/BuzzerOn.svg</file>
         <file>counter/counter_14_off.svg</file>
         <file>counter/counter_14_on.svg</file>
         <file>counter/counter_a.svg</file>
@@ -51,5 +30,26 @@
         <file>counter/counter_n.svg</file>
         <file>counter/counter_off.svg</file>
         <file>counter/counter_on.svg</file>
+        <file>led/AquaLightLed.png</file>
+        <file>led/BlackLed.png</file>
+        <file>led/BlueLed.svg</file>
+        <file>led/DarkRedLed.png</file>
+        <file>led/GreenLed.png</file>
+        <file>led/GreenLed.svg</file>
+        <file>led/HotPinkLed.png</file>
+        <file>led/LedOff.svg</file>
+        <file>led/LightGrayLed.png</file>
+        <file>led/LimeGreenLed.png</file>
+        <file>led/MagentaLed.png</file>
+        <file>led/NavyBlueLed.png</file>
+        <file>led/OrangeLed.png</file>
+        <file>led/PurpleLed.svg</file>
+        <file>led/RedLed.png</file>
+        <file>led/RedLed.svg</file>
+        <file>led/RoyalLed.png</file>
+        <file>led/TealLed.png</file>
+        <file>led/WhiteLed.png</file>
+        <file>led/WhiteLed.svg</file>
+        <file>led/YellowLed.png</file>
     </qresource>
 </RCC>
