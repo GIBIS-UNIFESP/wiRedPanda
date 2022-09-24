@@ -170,6 +170,8 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->lineEditSearch,         &QLineEdit::returnPressed, this,                &MainWindow::on_lineEditSearch_returnPressed);
     connect(m_ui->lineEditSearch,         &QLineEdit::textChanged,   this,                &MainWindow::on_lineEditSearch_textChanged);
     connect(m_ui->pushButtonAddIC,        &QPushButton::clicked,     this,                &MainWindow::on_pushButtonAddIC_clicked);
+    connect(m_ui->pushButtonRemoveIC,     &QPushButton::clicked,     this,                &MainWindow::on_pushButtonRemoveIC_clicked);
+    connect(m_ui->pushButtonRemoveIC,     &TrashButton::removeICFile, this,               &MainWindow::removeICFile);
 }
 
 MainWindow::~MainWindow()
@@ -1293,7 +1295,7 @@ void MainWindow::on_pushButtonAddIC_clicked()
         return;
     }
 
-    QMessageBox::information(this, tr("Info"), tr("Selected files will be copied to current file folder."));
+    QMessageBox::information(this, tr("Info"), tr("Selected files (and their dependencies) will be copied to current file folder."));
 
     for (const auto &file : files) {
         IC::copyFiles(QFileInfo(file));
@@ -1302,3 +1304,35 @@ void MainWindow::on_pushButtonAddIC_clicked()
     updateICList();
 }
 
+void MainWindow::on_pushButtonRemoveIC_clicked()
+{
+    QMessageBox::information(this, tr("Info"), tr("Drag here to remove."));
+}
+
+void MainWindow::removeICFile(const QString &icFileName)
+{
+    if (!m_currentTab) {
+        return;
+    }
+
+    SimulationBlocker blocker(m_currentTab->simulation());
+
+    auto elements = m_currentTab->scene()->elements();
+
+    for (auto it = elements.rbegin(); it != elements.rend(); ++it) {
+        if ((*it)->label().append(".panda").toLower() == icFileName) {
+            m_currentTab->scene()->removeItem(*it);
+            delete *it;
+        }
+    }
+
+    QFile file(icFileName);
+
+    if (!file.remove()) {
+        throw Pandaception(tr("Error removing file: ") + file.errorString());
+    }
+
+    updateICList();
+
+    on_actionSave_triggered();
+}

@@ -281,7 +281,7 @@ QTabWidget::pane {
               <string>Integrated Circuits</string>
              </attribute>
              <layout class="QGridLayout" name="gridLayout_4">
-              <item row="0" column="0">
+              <item row="1" column="0">
                <widget class="QScrollArea" name="scrollArea_Box">
                 <property name="frameShape">
                  <enum>QFrame::NoFrame</enum>
@@ -295,17 +295,10 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>581</height>
+                   <height>549</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
-                  <item>
-                   <widget class="QPushButton" name="pushButtonAddIC">
-                    <property name="text">
-                     <string>Add IC files</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item>
                    <spacer name="verticalSpacer_IC">
                     <property name="orientation">
@@ -322,6 +315,34 @@ QTabWidget::pane {
                  </layout>
                 </widget>
                </widget>
+              </item>
+              <item row="0" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout">
+                <item>
+                 <widget class="QPushButton" name="pushButtonAddIC">
+                  <property name="text">
+                   <string>Add IC files</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="TrashButton" name="pushButtonRemoveIC">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Remove IC</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="resources/toolbar/toolbar.qrc">
+                    <normaloff>:/toolbar/trashcan.svg</normaloff>:/toolbar/trashcan.svg</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
              </layout>
             </widget>
@@ -1091,7 +1112,7 @@ QTabWidget::pane {
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="resources/output/output.qrc">
      <normaloff>:/output/buzzer/BuzzerOff.svg</normaloff>
      <normalon>:/toolbar/mute.svg</normalon>:/output/buzzer/BuzzerOff.svg</iconset>
    </property>
@@ -1127,6 +1148,11 @@ QTabWidget::pane {
    <header>elementeditor.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>TrashButton</class>
+   <extends>QPushButton</extends>
+   <header>trashbutton.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>lineEditSearch</tabstop>
@@ -1139,11 +1165,11 @@ QTabWidget::pane {
  <resources>
   <include location="resources/output/output.qrc"/>
   <include location="resources/basic/basic.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
   <include location="resources/misc/misc.qrc"/>
   <include location="resources/memory/light/memory_light.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>
 </ui>
