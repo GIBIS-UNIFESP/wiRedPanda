@@ -342,11 +342,11 @@ void ElementEditor::fillColorComboBox()
 {
     QSignalBlocker blocker(m_ui->comboBoxColor);
     m_ui->comboBoxColor->clear();
-    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/output/WhiteLed.svg")),  tr("White"),  "White");
-    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/output/RedLed.svg")),    tr("Red"),    "Red");
-    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/output/GreenLed.svg")),  tr("Green"),  "Green");
-    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/output/BlueLed.svg")),   tr("Blue"),   "Blue");
-    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/output/PurpleLed.svg")), tr("Purple"), "Purple");
+    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/output/led/WhiteLed.svg")),  tr("White"),  "White");
+    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/output/led/RedLed.svg")),    tr("Red"),    "Red");
+    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/output/led/GreenLed.svg")),  tr("Green"),  "Green");
+    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/output/led/BlueLed.svg")),   tr("Blue"),   "Blue");
+    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/output/led/PurpleLed.svg")), tr("Purple"), "Purple");
 }
 
 void ElementEditor::retranslateUi()

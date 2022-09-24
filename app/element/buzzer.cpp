@@ -21,15 +21,15 @@ int id = qRegisterMetaType<Buzzer>();
 }
 
 Buzzer::Buzzer(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Buzzer, ElementGroup::Output, ":/output/BuzzerOff.svg", tr("BUZZER"), tr("Buzzer"), 1, 1, 0, 0, parent)
+    : GraphicElement(ElementType::Buzzer, ElementGroup::Output, ":/output/buzzer/BuzzerOff.svg", tr("BUZZER"), tr("Buzzer"), 1, 1, 0, 0, parent)
 {
     if (GlobalProperties::skipInit) {
         return;
     }
 
     m_defaultSkins = QStringList{
-        ":/output/BuzzerOff.svg",
-        ":/output/BuzzerOn.svg"
+        ":/output/buzzer/BuzzerOff.svg",
+        ":/output/buzzer/BuzzerOn.svg"
     };
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);
