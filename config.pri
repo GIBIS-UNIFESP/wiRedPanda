@@ -139,6 +139,7 @@ SOURCES += \
     $$PWD/app/simulation.cpp \
     $$PWD/app/simulationblocker.cpp \
     $$PWD/app/thememanager.cpp \
+    $$PWD/app/trashbutton.cpp \
     $$PWD/app/workspace.cpp
 
 HEADERS += \
@@ -171,6 +172,7 @@ HEADERS += \
     $$PWD/app/simulation.h \
     $$PWD/app/simulationblocker.h \
     $$PWD/app/thememanager.h \
+    $$PWD/app/trashbutton.h \
     $$PWD/app/workspace.h
 
 INCLUDEPATH += \
