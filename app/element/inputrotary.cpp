@@ -149,7 +149,7 @@ void InputRotary::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
         painter->save();
 
         const double angle = 360. / outputSize() * port;
-        const QPointF center = boundingRect().center();
+        const QPointF center = pixmapCenter();
         QRectF mark{30.2, 8.727, 3.6, 6.4};
 
         painter->setBrush(QBrush{QColor{255, 246, 213}});

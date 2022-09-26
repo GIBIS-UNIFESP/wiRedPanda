@@ -110,8 +110,8 @@ void GraphicElement::setPixmap(const QString &pixmapPath)
         QPixmapCache::insert(pixmapPath, *m_pixmap);
     }
 
-    setTransformOriginPoint(boundingRect().center());
-    update(boundingRect());
+    setTransformOriginPoint(pixmapCenter());
+    update();
 
     m_currentPixmapPath = pixmapPath;
 }
@@ -587,9 +587,28 @@ void GraphicElement::setInputs(const QVector<QNEInputPort *> &inputs)
     m_inputPorts = inputs;
 }
 
+QPointF GraphicElement::pixmapCenter() const
+{
+    return QRectF(pixmap().rect()).center();
+}
+
 QRectF GraphicElement::boundingRect() const
 {
-    return pixmap().rect();
+    return portsBoundingRect().united(pixmap().rect());
+}
+
+QRectF GraphicElement::portsBoundingRect() const
+{
+    QRectF rectChildren;
+    const auto children = childItems();
+
+    for (auto *child : children) {
+        if (auto *port = qgraphicsitem_cast<QNEPort *>(child)) {
+            rectChildren = rectChildren.united(mapRectFromItem(port, port->boundingRect()));
+        }
+    }
+
+    return rectChildren;
 }
 
 void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -666,13 +685,13 @@ void GraphicElement::setRotation(const qreal angle)
 void GraphicElement::rotatePorts(const qreal angle)
 {
     for (auto *port : qAsConst(m_inputPorts)) {
-        port->setTransformOriginPoint(mapToItem(port, boundingRect().center()));
+        port->setTransformOriginPoint(mapToItem(port, pixmapCenter()));
         port->setRotation(angle);
         port->updateConnections();
     }
 
     for (auto *port : qAsConst(m_outputPorts)) {
-        port->setTransformOriginPoint(mapToItem(port, boundingRect().center()));
+        port->setTransformOriginPoint(mapToItem(port, pixmapCenter()));
         port->setRotation(angle);
         port->updateConnections();
     }
@@ -714,7 +733,7 @@ void GraphicElement::updatePortsProperties()
             port->setPos(0, y);
 
             if (!isRotatable()) {
-                port->setTransformOriginPoint(mapToItem(port, boundingRect().center()));
+                port->setTransformOriginPoint(mapToItem(port, pixmapCenter()));
                 port->setRotation(m_angle);
             }
 
@@ -735,7 +754,7 @@ void GraphicElement::updatePortsProperties()
             port->setPos(64, y);
 
             if (!isRotatable()) {
-                port->setTransformOriginPoint(mapToItem(port, boundingRect().center()));
+                port->setTransformOriginPoint(mapToItem(port, pixmapCenter()));
                 port->setRotation(m_angle);
             }
 

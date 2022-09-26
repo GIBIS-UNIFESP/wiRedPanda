@@ -427,7 +427,7 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
     auto *node = ElementFactory::buildElement(ElementType::Node);
 
     /* Align node to Grid */
-    m_nodePos = mousePos - node->boundingRect().center();
+    m_nodePos = mousePos - node->pixmapCenter();
     const int gridSize = GlobalProperties::gridSize;
     qreal xV = qRound(m_nodePos.x() / gridSize) * gridSize;
     qreal yV = qRound(m_nodePos.y() / gridSize) * gridSize;
