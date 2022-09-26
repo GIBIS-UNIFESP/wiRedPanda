@@ -28,7 +28,7 @@ void TrashButton::dropEvent(QDropEvent *event)
         msgBox.setWindowModality(Qt::WindowModal);
         msgBox.setDefaultButton(QMessageBox::No);
 
-        if (msgBox.exec() == QDialog::Rejected) {
+        if (msgBox.exec() != QMessageBox::Yes) {
             event->setAccepted(false);
             return;
         }
