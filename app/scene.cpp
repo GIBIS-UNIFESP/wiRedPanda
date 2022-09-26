@@ -94,6 +94,8 @@ void Scene::setCircuitUpdateRequired()
     showWires(m_showWires);
     showGates(m_showGates);
 
+    update();
+
     m_simulation.initialize();
 
     m_autosaveRequired = true;
@@ -194,6 +196,7 @@ QList<QGraphicsItem *> Scene::itemsAt(const QPointF pos)
 void Scene::receiveCommand(QUndoCommand *cmd)
 {
     m_undoStack.push(cmd);
+    update();
 }
 
 void Scene::resizeScene()
