@@ -356,7 +356,7 @@ void BewavedDolphin::run2()
     SimulationBlocker simulationBlocker(m_simulation);
 
     for (int column = 0; column < m_model->columnCount(); ++column) {
-        qCDebug(four) << tr("Itr: ") << column << tr(", inputs:" ) << m_inputs.size();
+        qCDebug(four) << tr("Itr: ") << column << tr(", inputs: ") << m_inputs.size();
         int row = 0;
 
         for (auto *input : qAsConst(m_inputs)) {

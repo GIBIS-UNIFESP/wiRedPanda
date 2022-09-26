@@ -208,11 +208,6 @@ void IC::loadFile(const QString &fileName)
     qCDebug(zero) << QObject::tr("Finished reading IC.");
 }
 
-QString IC::file() const
-{
-    return m_file;
-}
-
 void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     event->accept();

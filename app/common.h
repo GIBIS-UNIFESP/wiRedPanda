@@ -36,7 +36,6 @@ public:
 
 private:
     Q_DISABLE_COPY(Pandaception)
-
 };
 
 class GraphicElement;

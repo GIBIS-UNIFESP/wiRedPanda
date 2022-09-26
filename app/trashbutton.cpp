@@ -6,7 +6,8 @@
 #include <QMessageBox>
 #include <QMimeData>
 
-TrashButton::TrashButton(QWidget *parent) : QPushButton(parent)
+TrashButton::TrashButton(QWidget *parent)
+    : QPushButton(parent)
 {
     setAcceptDrops(true);
 }

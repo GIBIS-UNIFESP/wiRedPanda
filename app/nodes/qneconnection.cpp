@@ -50,7 +50,7 @@ QNEConnection::QNEConnection(QGraphicsItem *parent)
     setZValue(-1);
 
     updateTheme();
-    setPen(QPen(m_invalidColor,  5));
+    setPen(QPen(m_invalidColor, 5));
 }
 
 QNEConnection::~QNEConnection()
