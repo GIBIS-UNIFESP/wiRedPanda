@@ -374,7 +374,7 @@ void GraphicElement::loadRotation(QDataStream &stream, const double version)
     qreal angle; stream >> angle;
     m_angle = angle;
 
-    if (version < 4.0) {
+    if (version < 4.1) {
         if ((m_elementGroup == ElementGroup::Input) || (m_elementGroup == ElementGroup::StaticInput)) {
             m_angle += 90;
         }
