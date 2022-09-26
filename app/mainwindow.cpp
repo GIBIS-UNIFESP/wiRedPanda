@@ -1320,19 +1320,18 @@ void MainWindow::removeICFile(const QString &icFileName)
     auto elements = m_currentTab->scene()->elements();
 
     for (auto it = elements.rbegin(); it != elements.rend(); ++it) {
-        if ((*it)->label().append(".panda").toLower() == icFileName) {
+        if ((*it)->elementType() == ElementType::IC && (*it)->label().append(".panda").toLower() == icFileName) {
             m_currentTab->scene()->removeItem(*it);
             delete *it;
         }
     }
 
-    QFile file(icFileName);
+    QFile file(GlobalProperties::currentDir + "/" + icFileName);
 
     if (!file.remove()) {
         throw Pandaception(tr("Error removing file: ") + file.errorString());
     }
 
     updateICList();
-
     on_actionSave_triggered();
 }
