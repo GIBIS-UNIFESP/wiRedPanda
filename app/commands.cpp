@@ -186,7 +186,7 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
 
     /* Assuming that all connections are stored after the elements, we will deserialize the elements first.
      * We will store one additional information: The element IDs! */
-    auto items = Serialization::deserialize(stream, portMap, version);
+    const auto items = Serialization::deserialize(stream, portMap, version);
 
     if (items.size() != ids.size()) {
         throw Pandaception(QObject::tr("One or more elements were not found on scene. Expected %1, found %2.").arg(ids.size(), items.size()));
