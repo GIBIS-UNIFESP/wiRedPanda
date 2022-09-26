@@ -1275,7 +1275,7 @@ bool MainWindow::event(QEvent *event)
 }
 
 void MainWindow::on_pushButtonAddIC_clicked()
-{    
+{
     if (!m_currentTab->fileInfo().isReadable()) {
         throw Pandaception(tr("Save file first."));
     }

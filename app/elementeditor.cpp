@@ -414,8 +414,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         m_hasSameOutputSize &= (elm->outputSize() == firstElement->outputSize());
         maxCurrentOutputSize = std::min(maxCurrentOutputSize, elm->outputSize());
 
-        if (auto *elmInput = qobject_cast<GraphicElementInput *>(elm);
-                elmInput && (group == ElementGroup::Input) && (firstElement->elementGroup() == ElementGroup::Input)) {
+        if (auto *elmInput = qobject_cast<GraphicElementInput *>(elm); elmInput && (group == ElementGroup::Input) && (firstElement->elementGroup() == ElementGroup::Input)) {
             m_hasSameOutputValue &= (elmInput->outputValue() == firstInput->outputValue());
             sameCheckState &= (elmInput->isLocked() == firstInput->isLocked());
         }

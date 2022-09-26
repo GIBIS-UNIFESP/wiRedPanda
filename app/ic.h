@@ -28,8 +28,6 @@ public:
     LogicElement *inputLogic(const int index);
     LogicElement *outputLogic(const int index);
     QRectF boundingRect() const override;
-    QString file() const;
-    QVector<GraphicElement *> elements() const;
     void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version) override;
     void loadFile(const QString &fileName);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;

@@ -577,7 +577,7 @@ void GraphicElement::loadPixmapSkinName(QDataStream &stream, const int skin)
     }
 }
 
-const QVector<QNEInputPort *>& GraphicElement::inputs() const
+const QVector<QNEInputPort *> &GraphicElement::inputs() const
 {
     return m_inputPorts;
 }
