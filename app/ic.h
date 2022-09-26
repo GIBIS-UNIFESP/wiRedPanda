@@ -27,7 +27,6 @@ public:
     ElementMapping *generateMap() const;
     LogicElement *inputLogic(const int index);
     LogicElement *outputLogic(const int index);
-    QRectF boundingRect() const override;
     void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version) override;
     void loadFile(const QString &fileName);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
@@ -43,8 +42,8 @@ private:
     inline static bool needToCopyFiles = false;
     inline static QString path;
 
-    QRectF portsBoundingRect() const;
     void copyFile();
+    void generatePixmap();
     void loadInputElement(GraphicElement *elm);
     void loadInputs();
     void loadInputsLabels();

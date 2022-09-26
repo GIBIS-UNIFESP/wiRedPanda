@@ -63,6 +63,7 @@ public:
     QKeySequence trigger() const;
     QNEInputPort *inputPort(const int pos = 0);
     QNEOutputPort *outputPort(const int pos = 0);
+    QPointF pixmapCenter() const;
     QRectF boundingRect() const override;
     QString label() const;
     bool canChangeSkin() const;
@@ -110,6 +111,7 @@ public:
 
 protected:
     QPixmap pixmap() const;
+    QRectF portsBoundingRect() const;
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     bool sceneEvent(QEvent *event) override;
     void setCanChangeSkin(const bool canChangeSkin);
@@ -137,10 +139,12 @@ protected:
     //! output port vector
     QVector<QNEOutputPort *> m_outputPorts;
 
+    //! Current pixmap displayed for this GraphicElement.
+    std::unique_ptr<QPixmap> m_pixmap = std::make_unique<QPixmap>();
+
     QColor m_selectionBrush;
     QColor m_selectionPen;
     QGraphicsTextItem *m_label = new QGraphicsTextItem(this);
-    QPixmapCache::Key m_cacheKey;
     QString m_pixmapPath;
     QString m_titleText;
     QString m_translatedName;
@@ -177,9 +181,6 @@ private:
     void loadTrigger(QDataStream &stream, const double version);
     void removeSurplusInputs(const quint64 inputSize_, QMap<quint64, QNEPort *> &portMap);
     void removeSurplusOutputs(const quint64 outputSize_, QMap<quint64, QNEPort *> &portMap);
-
-    //! Current pixmap displayed for this GraphicElement.
-    std::unique_ptr<QPixmap> m_pixmap = std::make_unique<QPixmap>();
 
     ElementGroup m_elementGroup = ElementGroup::Unknown;
     ElementType m_elementType = ElementType::Unknown;
