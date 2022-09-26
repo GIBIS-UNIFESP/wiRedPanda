@@ -600,8 +600,7 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
 
         for (int port = 0; port < oldElm->inputSize(); ++port) {
             while (!oldElm->inputPort(port)->connections().isEmpty()) {
-                if (auto *conn = oldElm->inputPort(port)->connections().constFirst();
-                        conn && (conn->endPort() == oldElm->inputPort(port))) {
+                if (auto *conn = oldElm->inputPort(port)->connections().constFirst(); conn && (conn->endPort() == oldElm->inputPort(port))) {
                     conn->setEndPort(newElm->inputPort(port));
                 }
             }
@@ -609,8 +608,7 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
 
         for (int port = 0; port < oldElm->outputSize(); ++port) {
             while (!oldElm->outputPort(port)->connections().isEmpty()) {
-                if (auto *conn = oldElm->outputPort(port)->connections().constFirst();
-                        conn && (conn->startPort() == oldElm->outputPort(port))) {
+                if (auto *conn = oldElm->outputPort(port)->connections().constFirst(); conn && (conn->startPort() == oldElm->outputPort(port))) {
                     conn->setStartPort(newElm->outputPort(port));
                 }
             }

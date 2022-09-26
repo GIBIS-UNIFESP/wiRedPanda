@@ -364,7 +364,6 @@ void Scene::showGates(const bool checked)
             if ((group != ElementGroup::Input) && (group != ElementGroup::Output) && (group != ElementGroup::Other)) {
                 item->setVisible(checked);
             }
-
         }
     }
 }
@@ -706,7 +705,7 @@ void Scene::rotateLeft()
 }
 
 void Scene::rotate(const int angle)
-{ 
+{
     const auto elements_ = selectedElements();
 
     if (!elements_.isEmpty()) {
@@ -991,7 +990,9 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
                 return (elm->pos() != m_oldPositions.at(m_movedElements.indexOf(elm)));
             });
 
-            if (valid) { receiveCommand(new MoveCommand(m_movedElements, m_oldPositions, this)); }
+            if (valid) {
+                receiveCommand(new MoveCommand(m_movedElements, m_oldPositions, this));
+            }
         }
 
         m_draggingElement = false;
@@ -1001,8 +1002,7 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     m_selectionRect.hide();
     m_markingSelectionBox = false;
 
-    if (auto *connection = editedConnection();
-            connection && (event->buttons() == Qt::NoButton)) {
+    if (auto *connection = editedConnection(); connection && (event->buttons() == Qt::NoButton)) {
         makeConnection(connection);
         return;
     }
@@ -1016,8 +1016,7 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
         return;
     }
 
-    if (auto *connection = qgraphicsitem_cast<QNEConnection *>(itemAt(m_mousePos));
-            connection && connection->startPort() && connection->endPort()) {
+    if (auto *connection = qgraphicsitem_cast<QNEConnection *>(itemAt(m_mousePos)); connection && connection->startPort() && connection->endPort()) {
         receiveCommand(new SplitCommand(connection, m_mousePos, this));
     }
 

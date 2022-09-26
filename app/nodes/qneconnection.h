@@ -59,7 +59,7 @@ public:
     void save(QDataStream &stream) const;
     void setEndPort(QNEInputPort *port);
     void setEndPos(const QPointF point);
-    void setHighLight(const bool highLight) ;
+    void setHighLight(const bool highLight);
     void setStartPort(QNEOutputPort *port);
     void setStartPos(const QPointF point);
     void setStatus(const Status status);
