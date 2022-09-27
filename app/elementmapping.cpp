@@ -40,9 +40,9 @@ void ElementMapping::generateMap()
 
 void ElementMapping::generateLogic(GraphicElement *elm)
 {
-    auto logicElm = ElementFactory::buildLogicElement(elm);
-    elm->setLogic(logicElm.get());
-    m_logicElms.append(logicElm);
+    auto logic = ElementFactory::buildLogicElement(elm);
+    elm->setLogic(logic.get());
+    m_logicElms.append(logic);
 }
 
 void ElementMapping::connectElements()
@@ -56,14 +56,14 @@ void ElementMapping::connectElements()
 
 void ElementMapping::applyConnection(GraphicElement *elm, QNEInputPort *inputPort)
 {
-    LogicElement *currentLogElm;
+    LogicElement *currentLogic;
     int inputIndex = 0;
 
     if (elm->elementType() == ElementType::IC) {
         auto *ic = qobject_cast<IC *>(elm);
-        currentLogElm = ic->inputLogic(inputPort->index());
+        currentLogic = ic->inputLogic(inputPort->index());
     } else {
-        currentLogElm = elm->logic();
+        currentLogic = elm->logic();
         inputIndex = inputPort->index();
     }
 
@@ -71,17 +71,17 @@ void ElementMapping::applyConnection(GraphicElement *elm, QNEInputPort *inputPor
 
     if ((connections.size() == 0) && !inputPort->isRequired()) {
         auto *predecessorLogic = (inputPort->defaultValue() == Status::Active) ? &m_globalVCC : &m_globalGND;
-        currentLogElm->connectPredecessor(inputIndex, predecessorLogic, 0);
+        currentLogic->connectPredecessor(inputIndex, predecessorLogic, 0);
     }
 
     if (connections.size() == 1) {
         if (auto *outputPort = connections.constFirst()->startPort()) {
             if (auto *predecessorElement = outputPort->graphicElement()) {
                 if (predecessorElement->elementType() == ElementType::IC) {
-                    auto *logic = qobject_cast<IC *>(predecessorElement)->outputLogic(outputPort->index());
-                    currentLogElm->connectPredecessor(inputIndex, logic, 0);
+                    auto *predecessorLogic = qobject_cast<IC *>(predecessorElement)->outputLogic(outputPort->index());
+                    currentLogic->connectPredecessor(inputIndex, predecessorLogic, 0);
                 } else {
-                    currentLogElm->connectPredecessor(inputIndex, predecessorElement->logic(), outputPort->index());
+                    currentLogic->connectPredecessor(inputIndex, predecessorElement->logic(), outputPort->index());
                 }
             }
         }
