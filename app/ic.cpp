@@ -145,6 +145,8 @@ void IC::loadFile(const QString &fileName)
     }
 
     m_fileWatcher.addPath(fileInfo.absoluteFilePath());
+    m_file = fileInfo.absoluteFilePath();
+    setToolTip(m_file);
 
     // ----------------------------------------------
 
@@ -186,18 +188,14 @@ void IC::loadFile(const QString &fileName)
     sortPorts(m_icOutputs);
     loadInputsLabels();
     loadOutputsLabels();
+    loadInputs();
+    loadOutputs();
 
     // ----------------------------------------------
-
-    m_file = fileInfo.absoluteFilePath();
-    setToolTip(m_file);
 
     if (label().isEmpty()) {
         setLabel(fileInfo.baseName().toUpper());
     }
-
-    loadInputs();
-    loadOutputs();
 
     const qreal bottom = portsBoundingRect().united(QRectF(0, 0, 64, 64)).bottom();
     m_label->setPos(30, bottom + 5);
