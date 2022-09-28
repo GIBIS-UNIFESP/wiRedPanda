@@ -23,20 +23,20 @@ Binários compilados para Windows, Linux e macOS estão disponíveis [aqui](http
 
 #### Dependências
 
-Qt 5.12.0+ ou 6.2.0+ é necessário para compilar, assim como QtCharts e QtMultimedia.
+Qt 5.12.0+ ou 6.2.0+ e o módulo QtMultimedia são necessários para compilar.
 
 Em distribuições como Arch Linux, Gentoo, Manjaro, Debian Testing, etc., o Qt 5.12+ pode ser instalado a partir dos repositórios padrão.
 
 * Debian Testing
 
 ```bash
-sudo apt install qtbase5-dev qt5-make qtbase5-dev-tools qtchooser libqt5charts5-dev libqt5multimedia5-dev
+sudo apt install qtbase5-dev qt5-make qtbase5-dev-tools qtchooser libqt5multimedia5-dev
 ```
 
 * Baseado em Arch Linux
 
 ```bash
-sudo pacman -S qt5-base qt5-charts qt5-multimedia
+sudo pacman -S qt5-base qt5-multimedia
 ```
 
 * macOS
@@ -58,7 +58,7 @@ python3 -m pip install setuptools wheel
 python3 -m pip install py7zr==0.10.1
 python3 -m pip install aqtinstall==0.9.7
 python3 -m pip install importlib-metadata==2.0.0
-python3 -m aqt install 5.15.1 linux desktop -m qtcharts qtmultimedia -O ~/Qt
+python3 -m aqt install 5.15.1 linux desktop -m qtmultimedia -O ~/Qt
 export Qt5_Dir=~/Qt5/5.15.1
 export Qt5_DIR=~/Qt5/5.15.1
 export QT_PLUGIN_PATH=~/Qt/5.15.1/gcc_64/plugins

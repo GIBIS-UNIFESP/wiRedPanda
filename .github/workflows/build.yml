@@ -23,7 +23,6 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: 5.12.12
-        modules: qtcharts
         cache: true
         aqtversion: ==2.2.3
 
@@ -66,7 +65,6 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: 5.13.2
-        modules: qtcharts
         cache: true
         aqtversion: ==2.2.3
 
@@ -101,7 +99,6 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: 5.14.2
-        modules: qtcharts
         cache: true
         aqtversion: ==2.2.3
 
@@ -136,7 +133,6 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: 5.15.2
-        modules: qtcharts
         cache: true
         aqtversion: ==2.2.3
 
@@ -191,7 +187,7 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: 6.2.4
-        modules: qtcharts qtmultimedia
+        modules: qtmultimedia
         cache: true
         aqtversion: ==2.2.3
 
@@ -226,7 +222,7 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: 6.3.2
-        modules: qtcharts qtmultimedia
+        modules: qtmultimedia
         cache: true
         aqtversion: ==2.2.3
 
@@ -265,7 +261,6 @@ jobs:
       with:
         arch: win64_msvc2017_64
         version: 5.12.12
-        modules: qtcharts
         cache: true
         aqtversion: ==2.2.3
 
@@ -306,7 +301,6 @@ jobs:
       with:
         arch: win64_msvc2017_64
         version: 5.13.2
-        modules: qtcharts
         cache: true
         aqtversion: ==2.2.3
 
@@ -347,7 +341,6 @@ jobs:
       with:
         arch: win64_msvc2017_64
         version: 5.14.2
-        modules: qtcharts
         cache: true
         aqtversion: ==2.2.3
 
@@ -388,7 +381,6 @@ jobs:
       with:
         arch: win64_msvc2019_64
         version: 5.15.2
-        modules: qtcharts
         cache: true
         aqtversion: ==2.2.3
 
@@ -448,7 +440,7 @@ jobs:
       with:
         arch: win64_msvc2019_64
         version: 6.2.4
-        modules: qtcharts qtmultimedia
+        modules: qtmultimedia
         cache: true
         aqtversion: ==2.2.3
 
@@ -489,7 +481,7 @@ jobs:
       with:
         arch: win64_msvc2019_64
         version: 6.3.2
-        modules: qtcharts qtmultimedia
+        modules: qtmultimedia
         cache: true
         aqtversion: ==2.2.3
 
@@ -526,7 +518,6 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: 5.12.12
-        modules: qtcharts
         cache: true
         aqtversion: ==2.2.3
 
@@ -560,7 +551,6 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: 5.13.2
-        modules: qtcharts
         cache: true
         aqtversion: ==2.2.3
 
@@ -594,7 +584,6 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: 5.14.2
-        modules: qtcharts
         cache: true
         aqtversion: ==2.2.3
 
@@ -628,7 +617,6 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: 5.15.2
-        modules: qtcharts
         cache: true
         aqtversion: ==2.2.3
 
@@ -676,7 +664,7 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: 6.2.4
-        modules: qtcharts qtmultimedia
+        modules: qtmultimedia
         cache: true
         aqtversion: ==2.2.3
 
@@ -710,7 +698,7 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: 6.3.2
-        modules: qtcharts qtmultimedia
+        modules: qtmultimedia
         cache: true
         aqtversion: ==2.2.3
 
