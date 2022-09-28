@@ -8,7 +8,6 @@
 
 #include <QTemporaryFile>
 #include <QTest>
-#include <stdexcept>
 
 void TestWaveForm::testDisplay4Bits()
 {

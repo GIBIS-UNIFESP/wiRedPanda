@@ -10,7 +10,6 @@
 #include "qneport.h"
 
 #include <QRegularExpression>
-#include <stdexcept>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
 using Qt::endl;
