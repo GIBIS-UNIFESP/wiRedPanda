@@ -6,10 +6,6 @@ equals(QT_MAJOR_VERSION, 6) : !versionAtLeast(QT_VERSION, 6.2.0) {
     error("For Qt6 the minimum version is 6.2.0")
 }
 
-!qtHaveModule(charts) {
-    error("QtCharts is not installed. Please install with Qt Maintenance Tool or with system repository")
-}
-
 !qtHaveModule(multimedia) {
     error("QtMultimedia is not installed. Please install with Qt Maintenance Tool or with system repository")
 }
@@ -17,7 +13,7 @@ equals(QT_MAJOR_VERSION, 6) : !versionAtLeast(QT_VERSION, 6.2.0) {
 VERSION = 4.1
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
-QT += core gui printsupport charts multimedia widgets svg
+QT += core gui printsupport multimedia widgets svg
 
 CONFIG += c++17 warn_on strict_c strict_c++
 
@@ -135,7 +131,6 @@ SOURCES += \
     $$PWD/app/scene.cpp \
     $$PWD/app/serialization.cpp \
     $$PWD/app/settings.cpp \
-    $$PWD/app/simplewaveform.cpp \
     $$PWD/app/simulation.cpp \
     $$PWD/app/simulationblocker.cpp \
     $$PWD/app/thememanager.cpp \
@@ -168,7 +163,6 @@ HEADERS += \
     $$PWD/app/scene.h \
     $$PWD/app/serialization.h \
     $$PWD/app/settings.h \
-    $$PWD/app/simplewaveform.h \
     $$PWD/app/simulation.h \
     $$PWD/app/simulationblocker.h \
     $$PWD/app/thememanager.h \
@@ -187,8 +181,7 @@ FORMS += \
     $$PWD/app/clockdialog.ui \
     $$PWD/app/elementeditor.ui \
     $$PWD/app/lengthdialog.ui \
-    $$PWD/app/mainwindow.ui \
-    $$PWD/app/simplewaveform.ui
+    $$PWD/app/mainwindow.ui
 
 RESOURCES += \
     $$PWD/app/resources/basic/basic.qrc \
