@@ -9,7 +9,6 @@
 
 #include <QTemporaryFile>
 #include <QTest>
-#include <stdexcept>
 
 void TestFiles::testFiles()
 {
