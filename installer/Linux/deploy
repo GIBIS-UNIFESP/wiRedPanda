@@ -127,7 +127,7 @@ done;
 
 
 for lib in libQt5PrintSupport.so.5 libQt5XcbQpa.so.5 libQt5DBus.so.5\
-           libQt5Charts.so.5 libQt5Widgets.so.5 libQt5Gui.so.5 \
+           libQt5Widgets.so.5 libQt5Gui.so.5 \
            libQt5Core.so.5 libicui18n.so.56 libicuuc.so.56 libicudata.so.56;
   do
   echo "Copying $lib";
