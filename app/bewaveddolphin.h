@@ -58,6 +58,7 @@ public:
     void createWaveform();
     void createWaveform(const QString &fileName);
     void print();
+    void saveToTxt(QTextStream &stream);
     void show();
 
 protected:

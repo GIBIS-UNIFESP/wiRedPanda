@@ -313,7 +313,7 @@ void BewavedDolphin::loadSignals(QStringList &inputLabels, QStringList &outputLa
 
         for (int port = 0; port < input->outputSize(); ++port) {
             if (input->outputSize() > 1) {
-                inputLabels.append(label + "_" + QString::number(port));
+                inputLabels.append(label + "[" + QString::number(port) + "]");
             } else {
                 inputLabels.append(label);
             }
@@ -334,7 +334,7 @@ void BewavedDolphin::loadSignals(QStringList &inputLabels, QStringList &outputLa
 
         for (int port = 0; port < output->inputSize(); ++port) {
             if (output->inputSize() > 1) {
-                outputLabels.append(label + "_" + QString::number(port));
+                outputLabels.append(label + "[" + QString::number(port) + "]");
             } else {
                 outputLabels.append(label);
             }
@@ -569,6 +569,34 @@ void BewavedDolphin::print()
         }
 
         std::cout << "\n";
+    }
+}
+
+void BewavedDolphin::saveToTxt(QTextStream &stream)
+{
+    on_actionCombinational_triggered();
+
+    const int truthTableSize = std::pow(2, m_inputPorts);
+    setLength(truthTableSize, false);
+
+    for (int row = 0; row < m_inputs.size(); ++row) {
+        for (int col = 0; col < m_model->columnCount(); ++col) {
+            stream << m_model->item(row, col)->text();
+        }
+
+        QString label = m_model->verticalHeaderItem(row)->text();
+        stream << " : \"" << label << "\"\n";
+    }
+
+    stream << "\n";
+
+    for (int row = m_inputs.size(); row < m_model->rowCount(); ++row) {
+        for (int col = 0; col < m_model->columnCount(); ++col) {
+            stream << m_model->item(row, col)->text();
+        }
+
+        QString label = m_model->verticalHeaderItem(row)->text();
+        stream << " : \"" << label << "\"\n";
     }
 }
 

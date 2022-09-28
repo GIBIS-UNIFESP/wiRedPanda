@@ -3,7 +3,7 @@
 
 #include "testwaveform.h"
 
-#include "simplewaveform.h"
+#include "bewaveddolphin.h"
 #include "workspace.h"
 
 #include <QTemporaryFile>
@@ -22,10 +22,13 @@ void TestWaveForm::testDisplay4Bits()
     stream.setVersion(QDataStream::Qt_5_12);
     workspace.load(stream);
 
+    BewavedDolphin bewavedDolphin(workspace.scene(), false);
+    bewavedDolphin.createWaveform("");
+
     QTemporaryFile tempFile;
     QVERIFY(tempFile.open());
     QTextStream tempStream(&tempFile);
-    QVERIFY(SimpleWaveform::saveToTxt(tempStream, &workspace));
+    bewavedDolphin.saveToTxt(tempStream);
     tempStream.flush();
     QVERIFY(tempFile.reset());
 
