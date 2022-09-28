@@ -25,7 +25,6 @@
 #include "srflipflop.h"
 #include "tflipflop.h"
 
-#include <QDebug>
 #include <QTest>
 
 void TestElements::init()

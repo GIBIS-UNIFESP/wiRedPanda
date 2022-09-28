@@ -19,7 +19,6 @@
 #include <QStyleOptionGraphicsItem>
 #include <cmath>
 #include <iostream>
-#include <stdexcept>
 
 namespace
 {

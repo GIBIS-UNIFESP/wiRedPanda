@@ -1,6 +1,5 @@
 #include "application.h"
 
-#include <QDebug>
 #include <QMessageBox>
 
 Application::Application(int &argc, char **argv)

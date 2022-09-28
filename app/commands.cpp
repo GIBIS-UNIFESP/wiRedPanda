@@ -14,11 +14,8 @@
 #include "simulation.h"
 #include "simulationblocker.h"
 
-#include <QDrag>
-#include <QGraphicsItem>
 #include <QIODevice>
 #include <cmath>
-#include <stdexcept>
 
 void storeIds(const QList<QGraphicsItem *> &items, QList<int> &ids)
 {
