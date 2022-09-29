@@ -241,6 +241,41 @@ jobs:
       run: |
         cd build/test
         xvfb-run ./WPanda-test
+        
+# =================================
+
+  Ubuntu-Qt6_4_0:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with: 
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: 6.4.0
+        modules: qtmultimedia
+        cache: true
+        aqtversion: ==2.2.3
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+
+    - name: Build
+      run: |
+        sudo apt install libgstreamer-gl1.0-0
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j2
+
+    - name: Test
+      run: |
+        cd build/test
+        xvfb-run ./WPanda-test
 
 # =================================
 
@@ -502,6 +537,47 @@ jobs:
       run: |
         cd build
         jom check
+        
+# =================================
+
+  Windows-Qt6_4_0:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Set up Git for properly handling symlinks on Windows
+      run: git config --global core.symlinks true
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        arch: win64_msvc2019_64
+        version: 6.4.0
+        modules: qtmultimedia
+        cache: true
+        aqtversion: ==2.2.3
+
+    - name: Setup MSVC Toolchain [Windows]
+      uses: seanmiddleditch/gha-setup-vsdevenv@v4
+
+    - name: Build
+      shell: cmd
+      run: |
+        choco install jom
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        jom
+
+    - name: Test
+      shell: cmd
+      run: |
+        cd build
+        jom check
 
 # =================================
 
@@ -698,6 +774,40 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: 6.3.2
+        modules: qtmultimedia
+        cache: true
+        aqtversion: ==2.2.3
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+
+    - name: Build
+      run: |
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j3
+
+    - name: Test
+      run: |
+        cd build
+        make check
+
+# =================================
+
+  macOS-Qt6_4_0:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: 6.4.0
         modules: qtmultimedia
         cache: true
         aqtversion: ==2.2.3
