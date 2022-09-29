@@ -683,6 +683,11 @@ void BewavedDolphin::on_actionSetClockWave_triggered()
 {
     qCDebug(zero) << tr("Getting first column.");
     const auto ranges = m_signalTableView->selectionModel()->selection();
+
+    if (ranges.isEmpty()) {
+        throw Pandaception(tr("No cells selected."));
+    }
+
     const int firstCol = sectionFirstColumn(ranges);
 
     qCDebug(zero) << tr("Setting the signal according to its column and clock period.");
