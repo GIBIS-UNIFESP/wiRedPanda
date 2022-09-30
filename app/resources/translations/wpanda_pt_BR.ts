@@ -4,7 +4,7 @@
 <context>
     <name>AddItemsCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="221"/>
+        <location filename="../../commands.cpp" line="218"/>
         <source>Add %1 elements</source>
         <translation>Adicionar%1 portas</translation>
     </message>
@@ -25,7 +25,7 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../application.cpp" line="18"/>
+        <location filename="../../application.cpp" line="17"/>
         <source>Error!</source>
         <translation>Erro!</translation>
     </message>
@@ -104,7 +104,7 @@
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="200"/>
-        <location filename="../../bewaveddolphin.cpp" line="1249"/>
+        <location filename="../../bewaveddolphin.cpp" line="1282"/>
         <source>Export to PDF</source>
         <translation>Exportar para PDF</translation>
     </message>
@@ -329,11 +329,6 @@
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="359"/>
-        <source>, inputs:</source>
-        <translation>, entradas:</translation>
-    </message>
-    <message>
-        <location filename="../../bewaveddolphin.cpp" line="359"/>
         <source>Itr: </source>
         <translation></translation>
     </message>
@@ -403,95 +398,105 @@
         <translation>Retomar a janela principal do circuito digital após a conclusão da simulação da forma de onda.</translation>
     </message>
     <message>
+        <location filename="../../bewaveddolphin.cpp" line="359"/>
+        <source>, inputs: </source>
+        <translation>, entradas: </translation>
+    </message>
+    <message>
         <location filename="../../bewaveddolphin.cpp" line="557"/>
         <source>Getting table dimensions.</source>
         <translation>Obtendo as dimensões da tabela.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="577"/>
-        <location filename="../../bewaveddolphin.cpp" line="594"/>
+        <location filename="../../bewaveddolphin.cpp" line="605"/>
+        <location filename="../../bewaveddolphin.cpp" line="622"/>
         <source>Pressed 0.</source>
         <translation>Pressionado 0.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="583"/>
-        <location filename="../../bewaveddolphin.cpp" line="600"/>
-        <location filename="../../bewaveddolphin.cpp" line="619"/>
-        <location filename="../../bewaveddolphin.cpp" line="677"/>
+        <location filename="../../bewaveddolphin.cpp" line="611"/>
+        <location filename="../../bewaveddolphin.cpp" line="628"/>
+        <location filename="../../bewaveddolphin.cpp" line="647"/>
+        <location filename="../../bewaveddolphin.cpp" line="710"/>
         <source>Editing value.</source>
         <translation>Editando valor.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="588"/>
-        <location filename="../../bewaveddolphin.cpp" line="605"/>
-        <location filename="../../bewaveddolphin.cpp" line="624"/>
-        <location filename="../../bewaveddolphin.cpp" line="682"/>
-        <location filename="../../bewaveddolphin.cpp" line="709"/>
-        <location filename="../../bewaveddolphin.cpp" line="755"/>
-        <location filename="../../bewaveddolphin.cpp" line="811"/>
-        <location filename="../../bewaveddolphin.cpp" line="1205"/>
-        <location filename="../../bewaveddolphin.cpp" line="1219"/>
+        <location filename="../../bewaveddolphin.cpp" line="616"/>
+        <location filename="../../bewaveddolphin.cpp" line="633"/>
+        <location filename="../../bewaveddolphin.cpp" line="652"/>
+        <location filename="../../bewaveddolphin.cpp" line="715"/>
+        <location filename="../../bewaveddolphin.cpp" line="742"/>
+        <location filename="../../bewaveddolphin.cpp" line="788"/>
+        <location filename="../../bewaveddolphin.cpp" line="844"/>
+        <location filename="../../bewaveddolphin.cpp" line="1238"/>
+        <location filename="../../bewaveddolphin.cpp" line="1252"/>
         <source>Running simulation.</source>
         <translation>Rodando simulação.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="611"/>
+        <location filename="../../bewaveddolphin.cpp" line="639"/>
         <source>Pressed Not.</source>
         <translation>Pressionado Not.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="656"/>
+        <location filename="../../bewaveddolphin.cpp" line="684"/>
         <source>Getting first column.</source>
         <translation>Obtendo a primeira coluna.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="660"/>
+        <location filename="../../bewaveddolphin.cpp" line="688"/>
+        <source>No cells selected.</source>
+        <translation>Nenhuma célula selecionada.</translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.cpp" line="693"/>
         <source>Setting the signal according to its column and clock period.</source>
         <translation>Configurando o sinal de acordo com sua coluna e período de clock.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="694"/>
+        <location filename="../../bewaveddolphin.cpp" line="727"/>
         <source>Setting the signal according to its columns and clock period.</source>
         <translation>Configurando o sinal de acordo com suas colunas e período de clock.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="715"/>
+        <location filename="../../bewaveddolphin.cpp" line="748"/>
         <source>Setting the simulation length.</source>
         <translation>Configurando a duração da simulação.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="736"/>
+        <location filename="../../bewaveddolphin.cpp" line="769"/>
         <source>Reducing or keeping the simulation length.</source>
         <translation>Reduzir ou manter a duração da simulação.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="743"/>
+        <location filename="../../bewaveddolphin.cpp" line="776"/>
         <source>Increasing the simulation length.</source>
         <translation>Aumentando a duração da simulação.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="837"/>
-        <location filename="../../bewaveddolphin.cpp" line="1003"/>
+        <location filename="../../bewaveddolphin.cpp" line="870"/>
+        <location filename="../../bewaveddolphin.cpp" line="1036"/>
         <source>Serializing data into data stream.</source>
         <translation>Serializando dados em fluxo de dados.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1040"/>
+        <location filename="../../bewaveddolphin.cpp" line="1073"/>
         <source>Do you want to link this beWavedDolphin file to your current WiRedPanda file and save it?</source>
         <translation>Deseja vincular este arquivo beWavedDolphin ao seu arquivo WiRedPanda atual e salvá-lo?</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="939"/>
+        <location filename="../../bewaveddolphin.cpp" line="972"/>
         <source>Save File as...</source>
         <translation>Salvar arquivo como...</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="942"/>
+        <location filename="../../bewaveddolphin.cpp" line="975"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>Arquivos CSV (*.csv);;Arquivos Dolphin (*.dolphin);;Todos os arquivos suportados (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="943"/>
+        <location filename="../../bewaveddolphin.cpp" line="976"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Arquivos Dolphin (*.dolphin);;Arquivos CSV (*.csv);;Todos os arquivos suportados (*.dolphin *.csv)</translation>
     </message>
@@ -501,49 +506,49 @@
         <translation>A forma de onda seria muito grande! Redefinindo o zoom.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="930"/>
-        <location filename="../../bewaveddolphin.cpp" line="973"/>
+        <location filename="../../bewaveddolphin.cpp" line="963"/>
+        <location filename="../../bewaveddolphin.cpp" line="1006"/>
         <source>Saved file successfully.</source>
         <translation>Arquivo salvo com sucesso.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1067"/>
+        <location filename="../../bewaveddolphin.cpp" line="1100"/>
         <source>Open File</source>
         <translation>Abrir arquivo</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1069"/>
+        <location filename="../../bewaveddolphin.cpp" line="1102"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>Todos os arquivos suportados (*.dolphin *.csv);;Arquivos Dolphin (*.dolphin);;Arquivos CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1085"/>
+        <location filename="../../bewaveddolphin.cpp" line="1118"/>
         <source>File loaded successfully.</source>
         <translation>Arquivo carregado com sucesso.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="982"/>
+        <location filename="../../bewaveddolphin.cpp" line="1015"/>
         <source>Error opening file: </source>
         <translation>Erro ao abrir arquivo: </translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="986"/>
+        <location filename="../../bewaveddolphin.cpp" line="1019"/>
         <source>Saving dolphin file.</source>
         <translation>Salvando arquivo dolphin.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="991"/>
+        <location filename="../../bewaveddolphin.cpp" line="1024"/>
         <source>Saving CSV file.</source>
         <translation>Salvando arquivo CSV.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="996"/>
+        <location filename="../../bewaveddolphin.cpp" line="1029"/>
         <source>Error saving file: </source>
         <translation>Erro ao salvar arquivo: </translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="146"/>
-        <location filename="../../bewaveddolphin.cpp" line="1093"/>
+        <location filename="../../bewaveddolphin.cpp" line="1126"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>O arquivo &quot;%1&quot; não existe!</translation>
     </message>
@@ -553,30 +558,30 @@
         <translation>Obtendo também o nome das entradas. Se nenhum rótulo for fornecido, o tipo de elemento será usado como um nome.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1096"/>
+        <location filename="../../bewaveddolphin.cpp" line="1129"/>
         <source>File exists.</source>
         <translation>O arquivo existe.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1099"/>
-        <location filename="../../bewaveddolphin.cpp" line="1100"/>
+        <location filename="../../bewaveddolphin.cpp" line="1132"/>
+        <location filename="../../bewaveddolphin.cpp" line="1133"/>
         <source>Could not open file in ReadOnly mode: </source>
         <translation>Não foi possível abrir o arquivo no modo ReadOnly: </translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1104"/>
+        <location filename="../../bewaveddolphin.cpp" line="1137"/>
         <source>Dolphin file opened.</source>
         <translation>Arquivo Dolphin aberto.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1109"/>
-        <location filename="../../bewaveddolphin.cpp" line="1115"/>
+        <location filename="../../bewaveddolphin.cpp" line="1142"/>
+        <location filename="../../bewaveddolphin.cpp" line="1148"/>
         <source>Current file set.</source>
         <translation>Configurado arquivo atual.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1107"/>
-        <location filename="../../bewaveddolphin.cpp" line="1113"/>
+        <location filename="../../bewaveddolphin.cpp" line="1140"/>
+        <location filename="../../bewaveddolphin.cpp" line="1146"/>
         <source>Loading in editor.</source>
         <translation>Carregando no editor.</translation>
     </message>
@@ -593,74 +598,74 @@
         <translation>Alterando o próximo item.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1112"/>
+        <location filename="../../bewaveddolphin.cpp" line="1145"/>
         <source>CSV file opened.</source>
         <translation>Arquivo CSV aberto.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1118"/>
-        <location filename="../../bewaveddolphin.cpp" line="1119"/>
+        <location filename="../../bewaveddolphin.cpp" line="1151"/>
+        <location filename="../../bewaveddolphin.cpp" line="1152"/>
         <source>Format not supported. Could not open file: </source>
         <translation>Formato não suportado. Não pode abrir arquivo: </translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1122"/>
+        <location filename="../../bewaveddolphin.cpp" line="1155"/>
         <source>Closing file.</source>
         <translation>Fechando arquivo.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1133"/>
+        <location filename="../../bewaveddolphin.cpp" line="1166"/>
         <source>Invalid file format. Starts with: </source>
         <translation>Formato de arquivo inválido. Começa com: </translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1144"/>
-        <location filename="../../bewaveddolphin.cpp" line="1172"/>
+        <location filename="../../bewaveddolphin.cpp" line="1177"/>
+        <location filename="../../bewaveddolphin.cpp" line="1205"/>
         <source>Invalid number of columns.</source>
         <translation>Número inválido de colunas.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1148"/>
-        <location filename="../../bewaveddolphin.cpp" line="1177"/>
+        <location filename="../../bewaveddolphin.cpp" line="1181"/>
+        <location filename="../../bewaveddolphin.cpp" line="1210"/>
         <source>Update table.</source>
         <translation>Atualizar tabela.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1225"/>
+        <location filename="../../bewaveddolphin.cpp" line="1258"/>
         <source>Export to Image</source>
         <translation>Exportar para Imagem</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1225"/>
+        <location filename="../../bewaveddolphin.cpp" line="1258"/>
         <source>PNG files (*.png)</source>
         <translation>Arquivos PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1249"/>
+        <location filename="../../bewaveddolphin.cpp" line="1282"/>
         <source>PDF files (*.pdf)</source>
         <translation>Arquivos PDF(*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1268"/>
+        <location filename="../../bewaveddolphin.cpp" line="1301"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Não foi possível imprimir este circuito em PDF.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1279"/>
+        <location filename="../../bewaveddolphin.cpp" line="1312"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for the WiRedPanda software developed by the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin é um simulador de forma de onda para o software WiRedPanda desenvolvido pela Universidade Federal de São Paulo. Este projeto foi criado para ajudar os alunos a aprender sobre circuitos lógicos.&lt;/p&gt;&lt;p&gt;Versão do software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Criadores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt; li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin é atualmente mantido pelo Prof. Fábio Cappabianco, Ph.D. e Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Envie um relatório em nossa página do GitHub se forem encontrados bugs ou se desejar que uma nova funcionalidade seja implementada.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="71"/>
         <location filename="../../bewaveddolphin.cpp" line="140"/>
-        <location filename="../../bewaveddolphin.cpp" line="972"/>
-        <location filename="../../bewaveddolphin.cpp" line="1125"/>
+        <location filename="../../bewaveddolphin.cpp" line="1005"/>
+        <location filename="../../bewaveddolphin.cpp" line="1158"/>
         <source>beWavedDolphin Simulator</source>
         <translation>Simulador beWavedDolphin</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="448"/>
-        <location filename="../../bewaveddolphin.cpp" line="1039"/>
+        <location filename="../../bewaveddolphin.cpp" line="1072"/>
         <source>WiRedPanda - beWavedDolphin</source>
         <translation>WiRedPanda - beWavedDolphin</translation>
     </message>
@@ -681,7 +686,7 @@
 <context>
     <name>ChangeInputSizeCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="696"/>
+        <location filename="../../commands.cpp" line="691"/>
         <source>Change input size to %1</source>
         <translation>Mudar número de entradas para %1</translation>
     </message>
@@ -689,7 +694,7 @@
 <context>
     <name>ChangeOutputSizeCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="786"/>
+        <location filename="../../commands.cpp" line="781"/>
         <source>Change input size to %1</source>
         <translation>Mudar número de entradas para %1</translation>
     </message>
@@ -738,12 +743,12 @@
 <context>
     <name>CodeGenerator</name>
     <message>
-        <location filename="../../arduino/codegenerator.cpp" line="262"/>
+        <location filename="../../arduino/codegenerator.cpp" line="261"/>
         <source>IC element not supported: </source>
         <translation>Elemento IC não suportado: </translation>
     </message>
     <message>
-        <location filename="../../arduino/codegenerator.cpp" line="424"/>
+        <location filename="../../arduino/codegenerator.cpp" line="423"/>
         <source>Element type not supported: </source>
         <translation>Tipo de elemento não suportado: </translation>
     </message>
@@ -777,7 +782,7 @@
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="248"/>
+        <location filename="../../commands.cpp" line="245"/>
         <source>Delete %1 elements</source>
         <translation>Remover %1 portas(s)</translation>
     </message>
@@ -1015,12 +1020,12 @@
         <translation>Branco</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="640"/>
+        <location filename="../../elementeditor.cpp" line="639"/>
         <source>Apply.</source>
         <translation>Aplicar.</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="752"/>
+        <location filename="../../elementeditor.cpp" line="751"/>
         <source>Input locked.</source>
         <translation>Entrada bloqueada.</translation>
     </message>
@@ -1106,23 +1111,23 @@
         <translation>Nome do arquivo: </translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="699"/>
+        <location filename="../../elementeditor.cpp" line="698"/>
         <source>Input size changed to </source>
         <translation>Número de entradas alterado para </translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="713"/>
+        <location filename="../../elementeditor.cpp" line="712"/>
         <source>Output size changed to </source>
         <translation>Número de saídas alterado para </translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="790"/>
-        <location filename="../../elementeditor.cpp" line="801"/>
+        <location filename="../../elementeditor.cpp" line="789"/>
+        <location filename="../../elementeditor.cpp" line="800"/>
         <source>Pos = </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="790"/>
+        <location filename="../../elementeditor.cpp" line="789"/>
         <source> from </source>
         <translation> de </translation>
     </message>
@@ -1288,7 +1293,7 @@
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="639"/>
+        <location filename="../../commands.cpp" line="634"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Espelhando %1 portas no eixo %2</translation>
     </message>
@@ -1296,120 +1301,120 @@
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../graphicelement.cpp" line="47"/>
+        <location filename="../../graphicelement.cpp" line="46"/>
         <source>Setting flags of elements.</source>
         <translation>Configurando flags dos elementos.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="50"/>
+        <location filename="../../graphicelement.cpp" line="49"/>
         <source>Setting attributes.</source>
         <translation>Configurando atributos.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="62"/>
+        <location filename="../../graphicelement.cpp" line="61"/>
         <source>Including input and output ports.</source>
         <translation>Incluindo portas de entrada e saída.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="107"/>
+        <location filename="../../graphicelement.cpp" line="106"/>
         <source>Couldn&apos;t load pixmap.</source>
         <translation>Não foi possível carregar o pixmap.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="106"/>
+        <location filename="../../graphicelement.cpp" line="105"/>
         <source>Problem loading pixmapPath: </source>
         <translation>Problema ao carregar pixmapPath: </translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="141"/>
+        <location filename="../../graphicelement.cpp" line="140"/>
         <source>Saving element. Type: </source>
         <translation>Salvando elemento. Tipo: </translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="214"/>
+        <location filename="../../graphicelement.cpp" line="213"/>
         <source>Finished saving element.</source>
         <translation>Concluído salvamento do elemento.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="219"/>
+        <location filename="../../graphicelement.cpp" line="218"/>
         <source>Loading element. Type: </source>
         <translation>Carregando elemento. Tipo: </translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="223"/>
+        <location filename="../../graphicelement.cpp" line="222"/>
         <source>Updating port positions.</source>
         <translation>Atualizando posição das portas.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="227"/>
+        <location filename="../../graphicelement.cpp" line="226"/>
         <source>Finished loading element.</source>
         <translation>Concluído carregamento do elemento.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="438"/>
+        <location filename="../../graphicelement.cpp" line="437"/>
         <source>Loading input ports.</source>
         <translation>Carregando portas de entrada.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="442"/>
-        <location filename="../../graphicelement.cpp" line="518"/>
-        <location filename="../../graphicelement.cpp" line="554"/>
+        <location filename="../../graphicelement.cpp" line="441"/>
+        <location filename="../../graphicelement.cpp" line="517"/>
+        <location filename="../../graphicelement.cpp" line="553"/>
         <source>Corrupted DataStream!</source>
         <translation>DataStream corrompido!</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="514"/>
+        <location filename="../../graphicelement.cpp" line="513"/>
         <source>Loading output ports.</source>
         <translation>Carregando portas de saída.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="550"/>
+        <location filename="../../graphicelement.cpp" line="549"/>
         <source>Loading pixmap skin names.</source>
         <translation>Carregando nome das skins dos pixmaps.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="572"/>
+        <location filename="../../graphicelement.cpp" line="571"/>
         <source>Could not load some of the skins.</source>
         <translation>Não foi possível carregar algumas das skins.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="708"/>
+        <location filename="../../graphicelement.cpp" line="726"/>
         <source>Setting input at </source>
         <translation>Configurando entrada em </translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="708"/>
-        <location filename="../../graphicelement.cpp" line="729"/>
+        <location filename="../../graphicelement.cpp" line="726"/>
+        <location filename="../../graphicelement.cpp" line="747"/>
         <source>, </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="729"/>
+        <location filename="../../graphicelement.cpp" line="747"/>
         <source>Setting output at </source>
         <translation>Configurando saída em </translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="621"/>
+        <location filename="../../graphicelement.cpp" line="639"/>
         <source>New port.</source>
         <translation>Nova porta.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="700"/>
+        <location filename="../../graphicelement.cpp" line="718"/>
         <source>Updating port positions that belong to the IC.</source>
         <translation>Atualizando posição das portas que pertencem ao CI.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="759"/>
+        <location filename="../../graphicelement.cpp" line="777"/>
         <source>Align to grid.</source>
         <translation>Alinhar à grade.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="768"/>
+        <location filename="../../graphicelement.cpp" line="786"/>
         <source>Moves wires.</source>
         <translation>Move os fios.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="870"/>
+        <location filename="../../graphicelement.cpp" line="888"/>
         <source>Checking if the element has the required signals to compute its value.</source>
         <translation>Verificando se o elemento possui os sinais necessários para calcular seu valor.</translation>
     </message>
@@ -1428,7 +1433,7 @@
     </message>
     <message>
         <location filename="../../ic.cpp" line="93"/>
-        <location filename="../../ic.cpp" line="436"/>
+        <location filename="../../ic.cpp" line="409"/>
         <source>Error copying file: </source>
         <translation>Erro copiando arquivo: </translation>
     </message>
@@ -2462,7 +2467,7 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="531"/>
+        <location filename="../../commands.cpp" line="528"/>
         <source>Morph %1 elements to %2</source>
         <translation>Transformar %1 portas em %2</translation>
     </message>
@@ -2470,7 +2475,7 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="346"/>
+        <location filename="../../commands.cpp" line="343"/>
         <source>Move elements</source>
         <translation>Mover portas</translation>
     </message>
@@ -2614,17 +2619,17 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../commands.cpp" line="111"/>
+        <location filename="../../commands.cpp" line="108"/>
         <source>One or more items was not found on the scene.</source>
         <translation>Um ou mais itens não foram encontrados no cenário.</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="129"/>
+        <location filename="../../commands.cpp" line="126"/>
         <source>One or more elements was not found on the scene.</source>
         <translation>Um ou mais elementos não foram encontrados no cenário.</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="192"/>
+        <location filename="../../commands.cpp" line="189"/>
         <source>One or more elements were not found on scene. Expected %1, found %2.</source>
         <translation>Um ou mais elementos não foram encontrados no cenário. Esperado %1, encontrado %2.</translation>
     </message>
@@ -2639,13 +2644,13 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <translation>Lendo CI.</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="154"/>
-        <location filename="../../ic.cpp" line="442"/>
+        <location filename="../../ic.cpp" line="156"/>
+        <location filename="../../ic.cpp" line="415"/>
         <source>Error opening file: </source>
         <translation>Erro ao abrir o arquivo: </translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="208"/>
+        <location filename="../../ic.cpp" line="205"/>
         <source>Finished reading IC.</source>
         <translation>Concluído leitura do CI.</translation>
     </message>
@@ -2665,7 +2670,7 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <translation>Liberando.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="1106"/>
+        <location filename="../../graphicelement.cpp" line="1124"/>
         <source>Writing element.</source>
         <translation>Escrevendo elemento.</translation>
     </message>
@@ -2681,7 +2686,7 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="274"/>
+        <location filename="../../commands.cpp" line="271"/>
         <source>Rotate %1 degrees</source>
         <translation>Girar %1 graus</translation>
     </message>
@@ -2712,66 +2717,66 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <translation>&amp;Refazer</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="312"/>
+        <location filename="../../scene.cpp" line="315"/>
         <source>Updating theme.</source>
         <translation>Atualizando tema.</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="327"/>
+        <location filename="../../scene.cpp" line="330"/>
         <source>Finished updating theme.</source>
         <translation>Concluído atualização do tema.</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="403"/>
+        <location filename="../../scene.cpp" line="405"/>
         <source>Ctrl + Drag action triggered.</source>
         <translation>Ação Ctrl + Arrastar acionada.</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="590"/>
+        <location filename="../../scene.cpp" line="592"/>
         <source>Paste</source>
         <translation>Colar</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="780"/>
+        <location filename="../../scene.cpp" line="782"/>
         <source> at position: </source>
         <translation> na posição: </translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="780"/>
+        <location filename="../../scene.cpp" line="782"/>
         <source>, </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="780"/>
+        <location filename="../../scene.cpp" line="782"/>
         <source>, label: </source>
         <translation>, rótulo: </translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="783"/>
-        <location filename="../../scene.cpp" line="1047"/>
+        <location filename="../../scene.cpp" line="785"/>
+        <location filename="../../scene.cpp" line="1049"/>
         <source>Valid element.</source>
         <translation>Elemento válido.</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="791"/>
-        <location filename="../../scene.cpp" line="1055"/>
+        <location filename="../../scene.cpp" line="793"/>
+        <location filename="../../scene.cpp" line="1057"/>
         <source>Adding the element to the scene.</source>
         <translation>Adicionando o elemento para o cenário.</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="794"/>
-        <location filename="../../scene.cpp" line="1058"/>
+        <location filename="../../scene.cpp" line="796"/>
+        <location filename="../../scene.cpp" line="1060"/>
         <source>Cleaning the selection.</source>
         <translation>Limpando a seleção.</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="797"/>
-        <location filename="../../scene.cpp" line="1061"/>
+        <location filename="../../scene.cpp" line="799"/>
+        <location filename="../../scene.cpp" line="1063"/>
         <source>Setting created element as selected.</source>
         <translation>Setando elemento criado como selecionado.</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="800"/>
+        <location filename="../../scene.cpp" line="802"/>
         <source>Adjusting the position of the element.</source>
         <translation>Ajustando a posição do elemento.</translation>
     </message>
@@ -2835,194 +2840,6 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
     </message>
 </context>
 <context>
-    <name>SimpleWaveform</name>
-    <message>
-        <location filename="../../simplewaveform.ui" line="31"/>
-        <source>Decreasing</source>
-        <translation>Decrescente</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.ui" line="54"/>
-        <source>Sorting</source>
-        <translation>Ordem</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.ui" line="64"/>
-        <source>Position</source>
-        <translation>Posição</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.ui" line="74"/>
-        <source>I&amp;ncreasing</source>
-        <translation>&amp;Crescente</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.ui" line="84"/>
-        <source>Copy to Clipboard</source>
-        <translation>Copiar para Área de Transferência</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="240"/>
-        <source>Getting sorting type.</source>
-        <translation>Obtendo tipo de ordenação.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="250"/>
-        <source>Clear previous chart.</source>
-        <translation>Limpar gráfico anterior.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="253"/>
-        <source>Getting digital circuit simulator.</source>
-        <translation>Obtendo simulador de circuito digital.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="256"/>
-        <source>Creating class to pause main window simulator while creating waveform.</source>
-        <translation>Criando classe para pausar o simulador da janela principal durante a criação da forma de onda.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="271"/>
-        <source>Could not find any input for the simulation.</source>
-        <translation>Não foi possível encontrar nenhuma entrada para a simulação.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="275"/>
-        <source>Could not find any output for the simulation.</source>
-        <translation>Não foi possível encontrar nenhuma saída para a simulação.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="279"/>
-        <source>The simulation is limited to 8 inputs.</source>
-        <translation>A simulação é limitada a 8 entradas.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="282"/>
-        <source>Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation. Not saving memory states though...</source>
-        <translation>Obtendo o valor inicial das entradas e gravando-os em valores antigos. Usado para salvar o estado atual das entradas e restaurá-lo após a simulação. Não salvando estados de memória embora ...</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="321"/>
-        <source>Computing number of iterations based on the number of inputs.</source>
-        <translation>Calcular o número de iterações com base no número de entradas.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="323"/>
-        <source>Num iter = </source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="327"/>
-        <source>Running simulation.</source>
-        <translation>Rodando simulação.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="328"/>
-        <source>For each iteration, set a distinct value for the inputs. The value is the bit values corresponding to the number of the current iteration.</source>
-        <translation>Para cada iteração, defina um valor distinto para as entradas. O valor são os valores de bit correspondentes ao número da iteração atual.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="284"/>
-        <source>Also getting the name of the inputs. If no label is given, the element type is used as a name.</source>
-        <translation>Obtendo também o nome das entradas. Se nenhum rótulo for fornecido, o tipo de elemento será usado como um nome.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="263"/>
-        <source>Sorting elements according to the radioButton option. All elements initially in elements vector. Then, inputs and outputs are extracted from it.</source>
-        <translation>Classificando os elementos de acordo com a opção radioButton. Todos os elementos inicialmente no vetor de elementos. Então, entradas e saídas são extraídas dele.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="303"/>
-        <source>Getting the name of the outputs. If no label is given, the element type is used as a name.</source>
-        <translation>Obtendo o nome das saídas. Se nenhum rótulo for fornecido, o tipo de elemento será usado como um nome.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="318"/>
-        <source> inputs.</source>
-        <translation> entradas.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="319"/>
-        <source> outputs.</source>
-        <translation> saídas.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="331"/>
-        <source>Itr: </source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="343"/>
-        <source>Updating the values of the circuit logic based on current input values.</source>
-        <translation>Atualizando os valores da lógica do circuito com base nos valores de entrada atuais.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="346"/>
-        <source>Setting the computed output values to the waveform results.</source>
-        <translation>Configurando os valores de saída calculados para os resultados da forma de onda.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="362"/>
-        <source>Inserting input series to the chart.</source>
-        <translation>Inserindo séries de entrada no gráfico.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="368"/>
-        <source>Inserting output series to the chart.</source>
-        <translation>Inserindo séries de saída no gráfico.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="374"/>
-        <source>Setting graphic axes.</source>
-        <translation>Configurando eixos do gráfico.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="377"/>
-        <source>Setting range and names to axes.</source>
-        <translation>Configurando intervalo e nomes dos eixos.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="386"/>
-        <source>Setting graphics waveform color.</source>
-        <translation>Configurando a cor da forma de onda dos gráficos.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="397"/>
-        <source>Executing QDialog. Opens window to the user.</source>
-        <translation>Executando o QDialog. Abre janela para o usuário.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="400"/>
-        <source>Restoring old values to inputs, prior to simulation.</source>
-        <translation>Restaurando valores antigos para entradas, antes da simulação.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="407"/>
-        <source>Resuming digital circuit main window after waveform simulation is finished.</source>
-        <translation>Retomar a janela principal do circuito digital após a conclusão da simulação da forma de onda.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="445"/>
-        <source>Copied.</source>
-        <translation>Copiado.</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.ui" line="14"/>
-        <source>Dialog</source>
-        <translation>Diálogo</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.ui" line="24"/>
-        <source>OK</source>
-        <translation>OK</translation>
-    </message>
-    <message>
-        <location filename="../../simplewaveform.cpp" line="267"/>
-        <source>Could not find any port for the simulation</source>
-        <translation>Não foi possível encontrar nenhuma porta para a simulação</translation>
-    </message>
-</context>
-<context>
     <name>Simulation</name>
     <message>
         <location filename="../../simulation.cpp" line="104"/>
@@ -3063,17 +2880,17 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="449"/>
+        <location filename="../../commands.cpp" line="446"/>
         <source>Wire split</source>
         <translation>Dividir fio</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="472"/>
+        <location filename="../../commands.cpp" line="469"/>
         <source>Error trying to redo </source>
         <translation>Erro ao tentar refazer </translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="502"/>
+        <location filename="../../commands.cpp" line="499"/>
         <source>Error trying to undo </source>
         <translation>Erro ao tentar desfazer </translation>
     </message>
@@ -3107,7 +2924,7 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>TrashButton</name>
     <message>
-        <location filename="../../trashbutton.cpp" line="27"/>
+        <location filename="../../trashbutton.cpp" line="28"/>
         <source>File will be deleted. Are you sure?</source>
         <translation>Arquivo será deletado. Tem certeza?</translation>
     </message>
@@ -3115,7 +2932,7 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="387"/>
+        <location filename="../../commands.cpp" line="384"/>
         <source>Update %1 elements</source>
         <translation>Atualizar %1 porta(s)</translation>
     </message>
