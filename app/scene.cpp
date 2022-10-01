@@ -656,7 +656,7 @@ void Scene::paste(QDataStream &stream)
 
     QPointF ctr; stream >> ctr;
 
-    const double version = GlobalProperties::version;
+    const QVersionNumber version = GlobalProperties::version;
     const auto itemList = Serialization::deserialize(stream, {}, version);
     const QPointF offset = m_mousePos - ctr - QPointF(32.0, 32.0);
 
@@ -812,7 +812,7 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         QPointF ctr;    stream >> ctr;
         offset = event->scenePos() - offset;
 
-        const double version = GlobalProperties::version;
+        const QVersionNumber version = GlobalProperties::version;
         const auto itemList = Serialization::deserialize(stream, {}, version);
 
         receiveCommand(new AddItemsCommand(itemList, this));

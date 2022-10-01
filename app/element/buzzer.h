@@ -6,6 +6,7 @@
 #include "graphicelement.h"
 
 #include <QSoundEffect>
+#include <QVersionNumber>
 
 class Buzzer : public GraphicElement
 {
@@ -16,7 +17,7 @@ public:
     Buzzer(const Buzzer &other) : Buzzer(other.parentItem()) {}
 
     QString audio() const override;
-    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version) override;
+    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
     void mute(const bool mute = true);
     void refresh() override;
     void save(QDataStream &stream) const override;

@@ -14,7 +14,7 @@ public:
 
     QString color() const override;
     QString genericProperties() override;
-    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version) override;
+    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
     void refresh() override;
     void save(QDataStream &stream) const override;
     void setColor(const QString &color) override;

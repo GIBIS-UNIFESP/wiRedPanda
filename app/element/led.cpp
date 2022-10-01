@@ -140,16 +140,16 @@ void Led::save(QDataStream &stream) const
     stream << map;
 }
 
-void Led::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
+void Led::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
 {
     GraphicElement::load(stream, portMap, version);
 
-    if ((1.1 <= version) && (version < 4.1)) {
+    if ((VERSION("1.1") <= version) && (version < VERSION("4.1"))) {
         QString color_; stream >> color_;
         setColor(color_);
     }
 
-    if (version >= 4.1) {
+    if (version >= VERSION("4.1")) {
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("color")) {

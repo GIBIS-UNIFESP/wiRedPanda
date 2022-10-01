@@ -10,6 +10,7 @@
 #include <QGraphicsItem>
 #include <QKeySequence>
 #include <QPixmapCache>
+#include <QVersionNumber>
 #include <memory>
 
 class GraphicElement;
@@ -46,7 +47,7 @@ public:
      * @brief Loads the graphic element through a binary data stream.
      * @param portMap receives a reference to each input and output port.
      */
-    virtual void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version);
+    virtual void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version);
 
     //! Updates the number and the connected elements to the ports whenever needed (e.g. loading the element, changing the number of inputs/outputs).
     virtual void updatePortsProperties();
@@ -168,17 +169,17 @@ private:
     void highlight(const bool isSelected);
     void loadInputPort(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const int port);
     void loadInputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
-    void loadLabel(QDataStream &stream, const double version);
+    void loadLabel(QDataStream &stream, const QVersionNumber version);
     void loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
-    void loadOldFormat(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version);
+    void loadOldFormat(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version);
     void loadOutputPort(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const int port);
     void loadOutputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
     void loadPixmapSkinName(QDataStream &stream, const int skin);
-    void loadPixmapSkinNames(QDataStream &stream, const double version);
-    void loadPortsSize(QDataStream &stream, const double version);
-    void loadPriority(QDataStream &stream, const double version);
-    void loadRotation(QDataStream &stream, const double version);
-    void loadTrigger(QDataStream &stream, const double version);
+    void loadPixmapSkinNames(QDataStream &stream, const QVersionNumber version);
+    void loadPortsSize(QDataStream &stream, const QVersionNumber version);
+    void loadPriority(QDataStream &stream, const QVersionNumber version);
+    void loadRotation(QDataStream &stream, const QVersionNumber version);
+    void loadTrigger(QDataStream &stream, const QVersionNumber version);
     void removeSurplusInputs(const quint64 inputSize_, QMap<quint64, QNEPort *> &portMap);
     void removeSurplusOutputs(const quint64 outputSize_, QMap<quint64, QNEPort *> &portMap);
 

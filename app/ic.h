@@ -27,7 +27,7 @@ public:
     ElementMapping *generateMap() const;
     LogicElement *inputLogic(const int index);
     LogicElement *outputLogic(const int index);
-    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version) override;
+    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
     void loadFile(const QString &fileName);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void refresh() override;

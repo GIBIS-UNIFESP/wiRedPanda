@@ -144,20 +144,20 @@ void Buzzer::save(QDataStream &stream) const
     stream << map;
 }
 
-void Buzzer::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
+void Buzzer::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
 {
     GraphicElement::load(stream, portMap, version);
 
-    if (version < 2.4) {
+    if (version < VERSION("2.4")) {
         return;
     }
 
-    if (version < 4.1) {
+    if (version < VERSION("4.1")) {
         QString note; stream >> note;
         setAudio(note);
     }
 
-    if (version >= 4.1) {
+    if (version >= VERSION("4.1")) {
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("note")) {
