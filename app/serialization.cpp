@@ -13,7 +13,7 @@
 
 void Serialization::saveHeader(QDataStream &stream, const QString &dolphinFileName, const QRectF &rect)
 {
-    stream << QApplication::applicationName() + " " + QString::number(GlobalProperties::version);
+    stream << QApplication::applicationName() + " " + GlobalProperties::version.toString();
     stream << dolphinFileName;
     stream << rect;
 }
@@ -33,7 +33,7 @@ void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &
     }
 }
 
-QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, QMap<quint64, QNEPort *> portMap, const double version)
+QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, QMap<quint64, QNEPort *> portMap, const QVersionNumber version)
 {
     QList<QGraphicsItem *> itemList;
 
@@ -72,7 +72,7 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, QMap<quin
     return itemList;
 }
 
-double Serialization::loadVersion(QDataStream &stream)
+QVersionNumber Serialization::loadVersion(QDataStream &stream)
 {
     qCDebug(zero) << tr("Loading version.");
 
@@ -84,25 +84,24 @@ double Serialization::loadVersion(QDataStream &stream)
 
     qCDebug(zero) << tr("String: ") << str;
 
-    bool ok;
-    double version = str.remove(QApplication::applicationName(), Qt::CaseInsensitive).toDouble(&ok);
+    QVersionNumber version = VERSION(str.remove(QApplication::applicationName(), Qt::CaseInsensitive));
     qCDebug(zero) << tr("Version: ") << version;
 
-    if (!ok) {
+    if (version.isNull()) {
         throw Pandaception(tr("Invalid version number."));
     }
 
     return version;
 }
 
-QString Serialization::loadDolphinFileName(QDataStream &stream, const double version)
+QString Serialization::loadDolphinFileName(QDataStream &stream, const QVersionNumber version)
 {
     QString str;
 
-    if (version >= 3.0) {
+    if (version >= VERSION("3.0")) {
         stream >> str;
 
-        if ((version < 3.3) && (str == "none")) {
+        if ((version < VERSION("3.3")) && (str == "none")) {
             str.clear();
         }
     }
@@ -110,11 +109,11 @@ QString Serialization::loadDolphinFileName(QDataStream &stream, const double ver
     return str;
 }
 
-QRectF Serialization::loadRect(QDataStream &stream, const double version)
+QRectF Serialization::loadRect(QDataStream &stream, const QVersionNumber version)
 {
     QRectF rect;
 
-    if (version >= 1.4) {
+    if (version >= VERSION("1.4")) {
         stream >> rect;
     }
 

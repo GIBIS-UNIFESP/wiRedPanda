@@ -4,6 +4,9 @@
 #pragma once
 
 #include <QString>
+#include <QVersionNumber>
+
+#define VERSION(string) QVersionNumber::fromString(string)
 
 class GlobalProperties
 {
@@ -11,7 +14,7 @@ public:
     inline static QString currentDir = {};
     inline static bool skipInit = false;
     inline static bool verbose = true;
-    inline static const double version = QString(APP_VERSION).toDouble();
+    inline static const QVersionNumber version = VERSION(QString(APP_VERSION));
     inline static const int gridSize = 16;
     inline static const int maxRecentFiles = 10;
 };

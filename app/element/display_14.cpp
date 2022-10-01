@@ -158,16 +158,16 @@ void Display14::save(QDataStream &stream) const
     stream << map;
 }
 
-void Display14::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
+void Display14::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
 {
     GraphicElement::load(stream, portMap, version);
 
-    if ((3.1 <= version) && (version < 4.1)) {
+    if ((VERSION("3.1") <= version) && (version < VERSION("4.1"))) {
         QString color_; stream >> color_;
         setColor(color_);
     }
 
-    if (version >= 4.1) {
+    if (version >= VERSION("4.1")) {
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("color")) {

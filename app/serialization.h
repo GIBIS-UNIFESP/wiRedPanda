@@ -5,6 +5,7 @@
 
 #include <QCoreApplication>
 #include <QMap>
+#include <QVersionNumber>
 
 class QGraphicsItem;
 class QNEPort;
@@ -25,13 +26,13 @@ public:
      * @return the list of deserialized items.
      * @param portMap is used to return a map of all input and output ports. This mapping may be used to check and to create connections between element ports.
      */
-    static QList<QGraphicsItem *> deserialize(QDataStream &stream, QMap<quint64, QNEPort *> portMap, const double version);
+    static QList<QGraphicsItem *> deserialize(QDataStream &stream, QMap<quint64, QNEPort *> portMap, const QVersionNumber version);
 
     //! Checks if it is a WiRedPanda project file and reads its version.
-    static double loadVersion(QDataStream &stream);
+    static QVersionNumber loadVersion(QDataStream &stream);
 
     //! returns the canvas pose from the last saved session.
-    static QRectF loadRect(QDataStream &stream, const double version);
+    static QRectF loadRect(QDataStream &stream, const QVersionNumber version);
 
-    static QString loadDolphinFileName(QDataStream &stream, const double version);
+    static QString loadDolphinFileName(QDataStream &stream, const QVersionNumber version);
 };

@@ -13,7 +13,7 @@ public:
     explicit Display14(QGraphicsItem *parent = nullptr);
 
     QString color() const override;
-    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version) override;
+    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void refresh() override;
     void save(QDataStream &stream) const override;

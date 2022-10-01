@@ -213,11 +213,11 @@ void GraphicElement::save(QDataStream &stream) const
     qCDebug(four) << tr("Finished saving element.");
 }
 
-void GraphicElement::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
+void GraphicElement::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
 {
     qCDebug(four) << tr("Loading element. Type: ") << objectName();
 
-    (version < 4.1) ? loadOldFormat(stream, portMap, version) : loadNewFormat(stream, portMap);
+    (version < VERSION("4.1")) ? loadOldFormat(stream, portMap, version) : loadNewFormat(stream, portMap);
 
     qCDebug(four) << tr("Updating port positions.");
     updatePortsProperties();
@@ -226,7 +226,7 @@ void GraphicElement::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap
     qCDebug(four) << tr("Finished loading element.");
 }
 
-void GraphicElement::loadOldFormat(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
+void GraphicElement::loadOldFormat(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
 {
     loadPos(stream);
     loadRotation(stream, version);
@@ -368,12 +368,12 @@ void GraphicElement::loadPos(QDataStream &stream)
     setPos(pos);
 }
 
-void GraphicElement::loadRotation(QDataStream &stream, const double version)
+void GraphicElement::loadRotation(QDataStream &stream, const QVersionNumber version)
 {
     qreal angle; stream >> angle;
     m_angle = angle;
 
-    if (version < 4.1) {
+    if (version < VERSION("4.1")) {
         if ((m_elementGroup == ElementGroup::Input) || (m_elementGroup == ElementGroup::StaticInput)) {
             m_angle += 90;
         }
@@ -388,17 +388,17 @@ void GraphicElement::loadRotation(QDataStream &stream, const double version)
     }
 }
 
-void GraphicElement::loadLabel(QDataStream &stream, const double version)
+void GraphicElement::loadLabel(QDataStream &stream, const QVersionNumber version)
 {
-    if (version >= 1.2) {
+    if (version >= VERSION("1.2")) {
         QString labelText; stream >> labelText;
         setLabel(labelText);
     }
 }
 
-void GraphicElement::loadPortsSize(QDataStream &stream, const double version)
+void GraphicElement::loadPortsSize(QDataStream &stream, const QVersionNumber version)
 {
-    if (version >= 1.3) {
+    if (version >= VERSION("1.3")) {
         quint64 minInputSize;  stream >> minInputSize;
         quint64 maxInputSize;  stream >> maxInputSize;
         quint64 minOutputSize; stream >> minOutputSize;
@@ -416,17 +416,17 @@ void GraphicElement::loadPortsSize(QDataStream &stream, const double version)
     }
 }
 
-void GraphicElement::loadTrigger(QDataStream &stream, const double version)
+void GraphicElement::loadTrigger(QDataStream &stream, const QVersionNumber version)
 {
-    if (version >= 1.9) {
+    if (version >= VERSION("1.9")) {
         QKeySequence trigger; stream >> trigger;
         setTrigger(trigger);
     }
 }
 
-void GraphicElement::loadPriority(QDataStream &stream, const double version)
+void GraphicElement::loadPriority(QDataStream &stream, const QVersionNumber version)
 {
-    if (version >= 4.01) {
+    if (version >= VERSION("4.01")) {
         quint64 priority; stream >> priority;
         setPriority(priority);
     }
@@ -543,9 +543,9 @@ void GraphicElement::loadOutputPort(QDataStream &stream, QMap<quint64, QNEPort *
     portMap[ptr] = m_outputPorts.value(port);
 }
 
-void GraphicElement::loadPixmapSkinNames(QDataStream &stream, const double version)
+void GraphicElement::loadPixmapSkinNames(QDataStream &stream, const QVersionNumber version)
 {
-    if (version >= 2.7) {
+    if (version >= VERSION("2.7")) {
         qCDebug(four) << tr("Loading pixmap skin names.");
         quint64 outputSize; stream >> outputSize;
 
