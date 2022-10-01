@@ -13,7 +13,7 @@ public:
     explicit InputSwitch(QGraphicsItem *parent = nullptr);
 
     bool isOn(const int port = 0) const override;
-    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version) override;
+    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
     void save(QDataStream &stream) const override;
     void setOff() override;
     void setOn() override;

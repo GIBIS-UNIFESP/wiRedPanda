@@ -51,11 +51,11 @@ void IC::save(QDataStream &stream) const
     stream << map;
 }
 
-void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
+void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
 {
     GraphicElement::load(stream, portMap, version);
 
-    if ((1.2 <= version) && (version < 4.1)) {
+    if ((VERSION("1.2") <= version) && (version < VERSION("4.1"))) {
         stream >> m_file;
 
         if (IC::needToCopyFiles) {
@@ -65,7 +65,7 @@ void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const doub
         loadFile(m_file);
     }
 
-    if (version >= 4.1) {
+    if (version >= VERSION("4.1")) {
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("fileName")) {
@@ -159,7 +159,7 @@ void IC::loadFile(const QString &fileName)
     QDataStream stream(&file);
     stream.setVersion(QDataStream::Qt_5_12);
 
-    const double version = Serialization::loadVersion(stream);
+    const QVersionNumber version = Serialization::loadVersion(stream);
 
     Serialization::loadDolphinFileName(stream, version);
     Serialization::loadRect(stream, version);
@@ -418,7 +418,7 @@ void IC::copyFiles(const QFileInfo &srcFile)
     QDataStream stream(&file);
     stream.setVersion(QDataStream::Qt_5_12);
 
-    const double version = Serialization::loadVersion(stream);
+    const QVersionNumber version = Serialization::loadVersion(stream);
 
     Serialization::loadDolphinFileName(stream, version);
     Serialization::loadRect(stream, version);

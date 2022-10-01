@@ -175,7 +175,7 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     stream.setVersion(QDataStream::Qt_5_12);
     QMap<quint64, QNEPort *> portMap;
-    const double version = GlobalProperties::version;
+    const QVersionNumber version = GlobalProperties::version;
 
     for (auto *elm : findElements(otherIds)) {
         elm->load(stream, portMap, version);
@@ -409,7 +409,7 @@ void UpdateCommand::loadData(QByteArray &itemData)
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     stream.setVersion(QDataStream::Qt_5_12);
     QMap<quint64, QNEPort *> portMap;
-    const double version = GlobalProperties::version;
+    const QVersionNumber version = GlobalProperties::version;
 
     for (auto *elm : elements) {
         elm->load(stream, portMap, version);
@@ -748,7 +748,7 @@ void ChangeInputSizeCommand::undo()
     QDataStream stream(&m_oldData, QIODevice::ReadOnly);
     stream.setVersion(QDataStream::Qt_5_12);
     QMap<quint64, QNEPort *> portMap;
-    const double version = GlobalProperties::version;
+    const QVersionNumber version = GlobalProperties::version;
 
     for (auto *elm : serializationOrder) {
         elm->load(stream, portMap, version);
@@ -839,7 +839,7 @@ void ChangeOutputSizeCommand::undo()
     QDataStream stream(&m_oldData, QIODevice::ReadOnly);
     stream.setVersion(QDataStream::Qt_5_12);
     QMap<quint64, QNEPort *> portMap;
-    const double version = GlobalProperties::version;
+    const QVersionNumber version = GlobalProperties::version;
 
     for (auto *elm : serializationOrder) {
         elm->load(stream, portMap, version);

@@ -15,7 +15,7 @@ public:
     QString genericProperties() override;
     bool isOn(const int port = 0) const override;
     float frequency() const override;
-    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version) override;
+    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
     void resetClock();
     void save(QDataStream &stream) const override;
     void setFrequency(const float freq) override;

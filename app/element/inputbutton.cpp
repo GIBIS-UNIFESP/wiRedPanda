@@ -67,15 +67,15 @@ void InputButton::save(QDataStream &stream) const
     stream << map;
 }
 
-void InputButton::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
+void InputButton::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
 {
     GraphicElement::load(stream, portMap, version);
 
-    if ((3.1 <= version) && (version < 4.1)) {
+    if ((VERSION("3.1") <= version) && (version < VERSION("4.1"))) {
         stream >> m_locked;
     }
 
-    if (version >= 4.1) {
+    if (version >= VERSION("4.1")) {
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("locked")) {

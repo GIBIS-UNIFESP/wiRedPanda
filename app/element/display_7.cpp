@@ -155,7 +155,7 @@ void Display7::save(QDataStream &stream) const
     stream << map;
 }
 
-void Display7::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const double version)
+void Display7::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
 {
     GraphicElement::load(stream, portMap, version);
     /*
@@ -165,7 +165,7 @@ void Display7::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, cons
      * 2, 1, 4, 5, 0, 7, 3, 6
      */
 
-    if (version < 1.6) {
+    if (version < VERSION("1.6")) {
         qCDebug(zero) << tr("Remapping inputs.");
         QVector<int> order{2, 1, 4, 5, 0, 7, 3, 6};
         QVector<QNEInputPort *> aux = inputs();
@@ -178,7 +178,7 @@ void Display7::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, cons
         updatePortsProperties();
     }
 
-    if (version < 1.7) {
+    if (version < VERSION("1.7")) {
         qCDebug(zero) << tr("Remapping inputs.");
         QVector<int> order{2, 5, 4, 0, 7, 3, 6, 1};
         QVector<QNEInputPort *> aux = inputs();
@@ -191,12 +191,12 @@ void Display7::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, cons
         updatePortsProperties();
     }
 
-    if ((3.1 <= version) && (version < 4.1)) {
+    if ((VERSION("3.1") <= version) && (version < VERSION("4.1"))) {
         QString color_; stream >> color_;
         setColor(color_);
     }
 
-    if (version >= 4.1) {
+    if (version >= VERSION("4.1")) {
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("color")) {

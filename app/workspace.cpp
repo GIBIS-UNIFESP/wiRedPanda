@@ -156,13 +156,13 @@ void WorkSpace::load(QDataStream &stream)
     qCDebug(zero) << tr("Loading file.");
     SimulationBlocker simulationBlocker(m_scene.simulation());
     qCDebug(zero) << tr("Stopped simulation.");
-    const double version = Serialization::loadVersion(stream);
+    const QVersionNumber version = Serialization::loadVersion(stream);
     qCDebug(zero) << tr("Version: ") << version;
 
     if (GlobalProperties::verbose) {
         if (version > GlobalProperties::version) {
             QMessageBox::warning(this, tr("Newer version file."), tr("Warning! Your WiRedPanda is possibly out of date.\n The file you are opening was saved in a newer version.\n Please check for updates."));
-        } else if (version < 4.0) {
+        } else if (version < VERSION("4.0")) {
             QMessageBox::warning(this, tr("Old version file."), tr("Warning! This is an old version WiRedPanda project file (version < 4.0). To open it correctly, save all the ICs and skins in the main project directory."));
         }
     }
