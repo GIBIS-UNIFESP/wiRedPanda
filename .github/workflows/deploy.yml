@@ -1,0 +1,142 @@
+# Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Deploy
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-18.04, windows-latest, macos-latest]
+    
+# =================================
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: 5.15.2
+        cache: true
+        aqtversion: ==2.2.3
+        
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+        
+# =================================
+
+    - name: Build Ubuntu
+      if: startsWith(matrix.os, 'ubuntu')
+      run: |
+        sudo apt install libgstreamer-gl1.0-0
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j2
+
+    - name: Test Ubuntu
+      if: startsWith(matrix.os, 'ubuntu')
+      run: |
+        cd build/test
+        xvfb-run ./WPanda-test
+
+    - name: linuxdeployqt
+      if: startsWith(matrix.os, 'ubuntu')
+      run: |
+        mkdir appimage
+        cp app/resources/wpanda.desktop appimage/wpanda.desktop
+        cp app/resources/wpanda.svg appimage/wpanda_icon.svg
+        cp build/app/wiredpanda appimage
+        wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
+        chmod +x ./linuxdeployqt-continuous-x86_64.AppImage
+        VERSION=4 ./linuxdeployqt-continuous-x86_64.AppImage appimage/wiredpanda -appimage
+        rm ./linuxdeployqt-continuous-x86_64.AppImage
+        mv WiRedPanda-4-x86_64.AppImage WiRedPanda-Ubuntu-Qt5.AppImage
+
+    - name: Publish
+      uses: softprops/action-gh-release@v1
+      if: startsWith(matrix.os, 'ubuntu')
+      with:
+        fail_on_unmatched_files: true
+        files: '*.AppImage'
+        
+# =================================
+
+    - name: Setup MSVC Toolchain
+      if: startsWith(matrix.os, 'windows')
+      uses: seanmiddleditch/gha-setup-vsdevenv@v4
+
+    - name: Build Windows
+      if: startsWith(matrix.os, 'windows')
+      run: |
+        choco install jom
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        jom
+
+    - name: Test Windows
+      if: startsWith(matrix.os, 'windows')
+      run: |
+        cd build
+        jom check
+
+    - name: windeployqt
+      if: startsWith(matrix.os, 'windows')
+      run : |
+        cp -r examples build/app/release
+        cd build/app/release
+        windeployqt --compiler-runtime wiredpanda.exe
+        rm wiredpanda_pch.obj
+        rm wiredpanda_pch.pch
+        cd ..
+        ren release wpanda
+        Compress-Archive -Path wpanda -DestinationPath WiRedPanda-Windows-Qt5-Portable.zip
+
+    - name: Publish
+      uses: softprops/action-gh-release@v1
+      if: startsWith(matrix.os, 'windows')
+      with:
+        fail_on_unmatched_files: true
+        files: 'build/app/*.zip'
+
+# =================================
+
+    - name: Build macOS
+      if: startsWith(matrix.os, 'macos')
+      run: |
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j3
+
+    - name: Test macOS
+      if: startsWith(matrix.os, 'mac')
+      run: |
+        cd build
+        make check
+
+    - name: macdeployqt
+      if: startsWith(matrix.os, 'mac')
+      run: |
+        cd build/app
+        macdeployqt wiredpanda.app -dmg
+        mv wiredpanda.dmg WiRedPanda-macOS-Qt5.dmg
+
+    - name: Publish
+      uses: softprops/action-gh-release@v1
+      if: startsWith(matrix.os, 'mac')
+      with:
+        fail_on_unmatched_files: true
+        files: 'build/app/*.dmg'

@@ -6,85 +6,16 @@ name: Build
 on: [push]
 
 jobs:
-
-  Ubuntu-Qt5_12_12-Code_Coverage:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
-      with:
-        version: 5.12.12
-        cache: true
-        aqtversion: ==2.2.3
-
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-
-    - name: Build
-      run: |
-        sudo apt install libgstreamer-gl1.0-0
-        mkdir build
-        cd build
-        qmake ../WPanda.pro CONFIG+=coverage
-        make -j2
-
-    - name: Test
-      run: |
-        cd build/test
-        xvfb-run ./WPanda-test
-
-    - name: Upload coverage data
-      run: |
-        cd build/test
-        gcov -abcfu build_files/obj/*.o
-        curl -Os https://uploader.codecov.io/latest/linux/codecov
-        chmod +x ./codecov
-        ./codecov
-
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        qt_version: [5.12.12, 5.13.2, 5.14.2, 5.15.2, 6.2.4, 6.3.2, 6.4.0]
+    
 # =================================
 
-  Ubuntu-Qt5_13_2:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with: 
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
-      with:
-        version: 5.13.2
-        cache: true
-        aqtversion: ==2.2.3
-
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-
-    - name: Build
-      run: |
-        sudo apt install libgstreamer-gl1.0-0
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j2
-
-    - name: Test
-      run: |
-        cd build/test
-        xvfb-run ./WPanda-test
-
-# =================================
-
-  Ubuntu-Qt5_14_2:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v3
@@ -92,734 +23,76 @@ jobs:
         submodules: recursive
         fetch-depth: 0
 
-    - name: Install Qt
+    - name: Install Qt5
+      if: startsWith(matrix.qt_version, '5')
       uses: jurplel/install-qt-action@v3
       with:
-        version: 5.14.2
+        version: ${{ matrix.qt_version }}
         cache: true
         aqtversion: ==2.2.3
-
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-
-    - name: Build
-      run: |
-        sudo apt install libgstreamer-gl1.0-0
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j2
-
-    - name: Test
-      run: |
-        cd build/test
-        xvfb-run ./WPanda-test
-
-# =================================
-
-  Ubuntu-Qt5_15_2-AppImage:
-    runs-on: ubuntu-18.04
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
-      with:
-        version: 5.15.2
-        cache: true
-        aqtversion: ==2.2.3
-
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-
-    - name: Build
-      run: |
-        sudo apt install libgstreamer-gl1.0-0
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j2
-
-    - name: Test
-      run: |
-        cd build/test
-        xvfb-run ./WPanda-test
-
-    - name: linuxdeployqt
-      if: startsWith(github.ref, 'refs/tags/')
-      run: |
-        mkdir appimage
-        cp app/resources/wpanda.desktop appimage/wpanda.desktop
-        cp app/resources/wpanda.svg appimage/wpanda_icon.svg
-        cp build/app/wiredpanda appimage
-        wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
-        chmod +x ./linuxdeployqt-continuous-x86_64.AppImage
-        VERSION=4 ./linuxdeployqt-continuous-x86_64.AppImage appimage/wiredpanda -appimage
-        rm ./linuxdeployqt-continuous-x86_64.AppImage
-        mv WiRedPanda-4-x86_64.AppImage WiRedPanda-Ubuntu-Qt5.AppImage
-
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
-      with:
-        fail_on_unmatched_files: true
-        files: '*.AppImage'
-
-# =================================
-
-  Ubuntu-Qt6_2_4:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with: 
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
-      with:
-        version: 6.2.4
-        modules: qtmultimedia
-        cache: true
-        aqtversion: ==2.2.3
-
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-
-    - name: Build
-      run: |
-        sudo apt install libgstreamer-gl1.0-0
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j2
-
-    - name: Test
-      run: |
-        cd build/test
-        xvfb-run ./WPanda-test
-
-# =================================
-
-  Ubuntu-Qt6_3_2:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with: 
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
-      with:
-        version: 6.3.2
-        modules: qtmultimedia
-        cache: true
-        aqtversion: ==2.2.3
-
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-
-    - name: Build
-      run: |
-        sudo apt install libgstreamer-gl1.0-0
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j2
-
-    - name: Test
-      run: |
-        cd build/test
-        xvfb-run ./WPanda-test
-        
-# =================================
-
-  Ubuntu-Qt6_4_0:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with: 
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
-      with:
-        version: 6.4.0
-        modules: qtmultimedia
-        cache: true
-        aqtversion: ==2.2.3
-
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-
-    - name: Build
-      run: |
-        sudo apt install libgstreamer-gl1.0-0
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j2
-
-    - name: Test
-      run: |
-        cd build/test
-        xvfb-run ./WPanda-test
-
-# =================================
-
-  Windows-Qt5_12_12:
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with: 
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Set up Git for properly handling symlinks on Windows
-      run: git config --global core.symlinks true
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
-      with:
-        arch: win64_msvc2017_64
-        version: 5.12.12
-        cache: true
-        aqtversion: ==2.2.3
-
-    - name: Setup MSVC Toolchain [Windows]
-      uses: seanmiddleditch/gha-setup-vsdevenv@v4
-
-    - name: Build
-      shell: cmd
-      run: |
-        choco install jom
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        jom
- 
-    - name: Test
-      shell: cmd
-      run: |
-        cd build
-        jom check
-
-# =================================
-
-  Windows-Qt5_13_2:
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with: 
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Set up Git for properly handling symlinks on Windows
-      run: git config --global core.symlinks true
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
-      with:
-        arch: win64_msvc2017_64
-        version: 5.13.2
-        cache: true
-        aqtversion: ==2.2.3
-
-    - name: Setup MSVC Toolchain [Windows]
-      uses: seanmiddleditch/gha-setup-vsdevenv@v4
-
-    - name: Build
-      shell: cmd
-      run: |
-        choco install jom
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        jom
-
-    - name: Test
-      shell: cmd
-      run: |
-        cd build
-        jom check
-
-# =================================
-
-  Windows-Qt5_14_2:
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with: 
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Set up Git for properly handling symlinks on Windows
-      run: git config --global core.symlinks true
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
-      with:
-        arch: win64_msvc2017_64
-        version: 5.14.2
-        cache: true
-        aqtversion: ==2.2.3
-
-    - name: Setup MSVC Toolchain [Windows]
-      uses: seanmiddleditch/gha-setup-vsdevenv@v4
-
-    - name: Build
-      shell: cmd
-      run: |
-        choco install jom
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        jom
-
-    - name: Test
-      shell: cmd
-      run: |
-        cd build
-        jom check
-
-# =================================
-
-  Windows-Qt5_15_2-Release:
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with: 
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Set up Git for properly handling symlinks on Windows
-      run: git config --global core.symlinks true
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
-      with:
-        arch: win64_msvc2019_64
-        version: 5.15.2
-        cache: true
-        aqtversion: ==2.2.3
-
-    - name: Setup MSVC Toolchain [Windows]
-      uses: seanmiddleditch/gha-setup-vsdevenv@v4
-
-    - name: Build
-      shell: cmd
-      run: |
-        choco install jom
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        jom
-
-    - name: Test
-      shell: cmd
-      run: |
-        cd build
-        jom check
-
-    - name: windeployqt
-      if: startsWith(github.ref, 'refs/tags/')
-      run : |
-        cp -r examples build/app/release
-        cd build/app/release
-        windeployqt --compiler-runtime wiredpanda.exe
-        rm wiredpanda_pch.obj
-        rm wiredpanda_pch.pch
-        cd ..
-        ren release wpanda
-        Compress-Archive -Path wpanda -DestinationPath WiRedPanda-Windows-Qt5-Portable.zip
-
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
-      with:
-        fail_on_unmatched_files: true
-        files: 'build/app/*.zip'
-
-# =================================
-
-  Windows-Qt6_2_4:
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Set up Git for properly handling symlinks on Windows
-      run: git config --global core.symlinks true
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
-      with:
-        arch: win64_msvc2019_64
-        version: 6.2.4
-        modules: qtmultimedia
-        cache: true
-        aqtversion: ==2.2.3
-
-    - name: Setup MSVC Toolchain [Windows]
-      uses: seanmiddleditch/gha-setup-vsdevenv@v4
-
-    - name: Build
-      shell: cmd
-      run: |
-        choco install jom
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        jom
-
-    - name: Test
-      shell: cmd
-      run: |
-        cd build
-        jom check
-
-# =================================
-
-  Windows-Qt6_3_2:
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Set up Git for properly handling symlinks on Windows
-      run: git config --global core.symlinks true
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
-      with:
-        arch: win64_msvc2019_64
-        version: 6.3.2
-        modules: qtmultimedia
-        cache: true
-        aqtversion: ==2.2.3
-
-    - name: Setup MSVC Toolchain [Windows]
-      uses: seanmiddleditch/gha-setup-vsdevenv@v4
-
-    - name: Build
-      shell: cmd
-      run: |
-        choco install jom
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        jom
-
-    - name: Test
-      shell: cmd
-      run: |
-        cd build
-        jom check
-        
-# =================================
-
-  Windows-Qt6_4_0:
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Set up Git for properly handling symlinks on Windows
-      run: git config --global core.symlinks true
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
-      with:
-        arch: win64_msvc2019_64
-        version: 6.4.0
-        modules: qtmultimedia
-        cache: true
-        aqtversion: ==2.2.3
-
-    - name: Setup MSVC Toolchain [Windows]
-      uses: seanmiddleditch/gha-setup-vsdevenv@v4
-
-    - name: Build
-      shell: cmd
-      run: |
-        choco install jom
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        jom
-
-    - name: Test
-      shell: cmd
-      run: |
-        cd build
-        jom check
-
-# =================================
-
-  macOS-Qt5_12_12:
-    runs-on: macos-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
-      with:
-        version: 5.12.12
-        cache: true
-        aqtversion: ==2.2.3
-
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-
-    - name: Build
-      run: |
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j3
-
-    - name: Test
-      run: |
-        cd build
-        make check
-
-# =================================
-
-  macOS-Qt5_13_2:
-    runs-on: macos-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
-      with:
-        version: 5.13.2
-        cache: true
-        aqtversion: ==2.2.3
-
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-
-    - name: Build
-      run: |
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j3
-
-    - name: Test
-      run: |
-        cd build
-        make check
-
-# =================================
-
-  macOS-Qt5_14_2:
-    runs-on: macos-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
-      with:
-        version: 5.14.2
-        cache: true
-        aqtversion: ==2.2.3
-
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
       
-    - name: Build
-      run: |
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j3
-
-    - name: Test
-      run: |
-        cd build
-        make check
-
-# =================================
-
-  macOS-Qt5_15_2-Release:
-    runs-on: macos-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Install Qt
+    - name: Install Qt6
+      if: startsWith(matrix.qt_version, '6')
       uses: jurplel/install-qt-action@v3
       with:
-        version: 5.15.2
-        cache: true
-        aqtversion: ==2.2.3
-
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-
-    - name: Build
-      run: |
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j3
-
-    - name: Test
-      run: |
-        cd build
-        make check
-
-    - name: macdeployqt
-      if: startsWith(github.ref, 'refs/tags/')
-      run: |
-        cd build/app
-        macdeployqt wiredpanda.app -dmg
-        mv wiredpanda.dmg WiRedPanda-macOS-Qt5.dmg
-
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
-      with:
-        fail_on_unmatched_files: true
-        files: 'build/app/*.dmg'
-
-# =================================
-
-  macOS-Qt6_2_4:
-    runs-on: macos-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
-      with:
-        version: 6.2.4
+        version: ${{ matrix.qt_version }}
         modules: qtmultimedia
         cache: true
         aqtversion: ==2.2.3
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
-
-    - name: Build
-      run: |
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j3
-
-    - name: Test
-      run: |
-        cd build
-        make check
-
+            
 # =================================
 
-  macOS-Qt6_3_2:
-    runs-on: macos-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
-      with:
-        version: 6.3.2
-        modules: qtmultimedia
-        cache: true
-        aqtversion: ==2.2.3
-
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-
-    - name: Build
+    - name: Build Ubuntu
+      if: startsWith(matrix.os, 'ubuntu')
       run: |
+        sudo apt install libgstreamer-gl1.0-0
         mkdir build
         cd build
         qmake ../WPanda.pro
-        make -j3
-
-    - name: Test
+        make -j2
+        
+    - name: Test Ubuntu
+      if: startsWith(matrix.os, 'ubuntu')
       run: |
-        cd build
-        make check
-
+        cd build/test
+        xvfb-run ./WPanda-test
+        
 # =================================
 
-  macOS-Qt6_4_0:
-    runs-on: macos-latest
+    - name: Setup MSVC Toolchain
+      if: startsWith(matrix.os, 'windows')
+      uses: seanmiddleditch/gha-setup-vsdevenv@v4
 
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
-      with:
-        version: 6.4.0
-        modules: qtmultimedia
-        cache: true
-        aqtversion: ==2.2.3
-
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-
-    - name: Build
+    - name: Build Windows
+      if: startsWith(matrix.os, 'windows')
+      run: |
+        choco install jom
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        jom
+        
+    - name: Test Windows
+      if: startsWith(matrix.os, 'windows')
+      run: |
+        cd build
+        jom check
+        
+# =================================
+      
+    - name: Build macOS
+      if: startsWith(matrix.os, 'macos')
       run: |
         mkdir build
         cd build
         qmake ../WPanda.pro
         make -j3
-
-    - name: Test
+    
+    - name: Test macOS
+      if: startsWith(matrix.os, 'mac')
       run: |
         cd build
         make check
