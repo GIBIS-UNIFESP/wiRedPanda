@@ -414,8 +414,8 @@ void BewavedDolphin::resizeEvent(QResizeEvent *event)
 
 void BewavedDolphin::resizeScene()
 {
-    const int newWidth = static_cast<int>((width() - 3) / m_scale);
-    const int newHeight = static_cast<int>((height() - 105) / m_scale);
+    const int newWidth = m_ui->centralwidget->width();
+    const int newHeight = m_ui->centralwidget->height() - 2;
 
     if (newWidth > 4000 or newHeight > 4000) {
         on_actionResetZoom_triggered();
