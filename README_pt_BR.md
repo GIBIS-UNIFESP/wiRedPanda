@@ -12,7 +12,7 @@ As principais características do software são:
 
 _Read me in [english](README.md). Léame en [español](README_es.md)._
 
-![Tela principal](https://gibis-unifesp.github.io/wiRedPanda/images/ffms.gif)
+![Tela principal](https://gibis-unifesp.github.io/wiRedPanda/images/demo.gif)
 
 ## Downloads
 Binários compilados para Windows, Linux e macOS estão disponíveis [aqui](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
