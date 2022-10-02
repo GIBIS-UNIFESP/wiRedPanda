@@ -12,7 +12,7 @@ The main features of the software are:
 
 _Leia-me em [português](README_pt_BR.md). Léame en [español](README_es.md)._
 
-![Main screen](https://gibis-unifesp.github.io/wiRedPanda/images/ffms.gif)
+![Main screen](https://gibis-unifesp.github.io/wiRedPanda/images/demo.gif)
 
 ## Downloads
 Compiled binaries for Windows, Linux and macOS are available [here](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
