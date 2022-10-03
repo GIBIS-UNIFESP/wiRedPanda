@@ -76,12 +76,12 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
     QString colorMenuText(tr("Change color to..."));
     QString frequencyText(tr("Change frequency"));
     QString morphMenuText(tr("Morph to..."));
+    QString priorityText(tr("Change priority"));
     QString renameText(tr("Rename"));
     QString revertSkinText(tr("Set skin to default"));
     QString rotateLeftText(tr("Rotate left"));
     QString rotateRightText(tr("Rotate right"));
     QString triggerText(tr("Change trigger"));
-    QString priorityText(tr("Change priority"));
 
     menu.addAction(priorityText)->setData(priorityText);
 
@@ -615,6 +615,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 
     setEnabled(true);
     show();
+
     /* Skin */
     m_ui->pushButtonChangeSkin->setVisible(m_canChangeSkin);
     m_ui->pushButtonDefaultSkin->setVisible(m_canChangeSkin);
