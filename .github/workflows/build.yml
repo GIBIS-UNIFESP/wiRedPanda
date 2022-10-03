@@ -12,7 +12,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         qt_version: [5.12.12, 5.13.2, 5.14.2, 5.15.2, 6.2.4, 6.3.2, 6.4.0]
-    
+
 # =================================
 
     runs-on: ${{ matrix.os }}
@@ -30,7 +30,7 @@ jobs:
         version: ${{ matrix.qt_version }}
         cache: true
         aqtversion: ==2.2.3
-      
+
     - name: Install Qt6
       if: startsWith(matrix.qt_version, '6')
       uses: jurplel/install-qt-action@v3
@@ -42,57 +42,59 @@ jobs:
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
-            
+      with:
+        key: ${{ matrix.os }}
+
 # =================================
 
     - name: Build Ubuntu
-      if: startsWith(matrix.os, 'ubuntu')
+      if: runner.os == 'Linux'
       run: |
         sudo apt install libgstreamer-gl1.0-0
         mkdir build
         cd build
         qmake ../WPanda.pro
         make -j2
-        
+
     - name: Test Ubuntu
-      if: startsWith(matrix.os, 'ubuntu')
+      if: runner.os == 'Linux'
       run: |
         cd build/test
         xvfb-run ./WPanda-test
-        
+
 # =================================
 
     - name: Setup MSVC Toolchain
-      if: startsWith(matrix.os, 'windows')
+      if: runner.os == 'Windows'
       uses: seanmiddleditch/gha-setup-vsdevenv@v4
 
     - name: Build Windows
-      if: startsWith(matrix.os, 'windows')
+      if: runner.os == 'Windows'
       run: |
         choco install jom
         mkdir build
         cd build
         qmake ../WPanda.pro
         jom
-        
+
     - name: Test Windows
-      if: startsWith(matrix.os, 'windows')
+      if: runner.os == 'Windows'
       run: |
         cd build
         jom check
-        
+
 # =================================
-      
+
     - name: Build macOS
-      if: startsWith(matrix.os, 'macos')
+      if: runner.os == 'macOS'
       run: |
         mkdir build
         cd build
         qmake ../WPanda.pro
         make -j3
-    
+
     - name: Test macOS
-      if: startsWith(matrix.os, 'mac')
+      if: runner.os == 'macOS'
       run: |
         cd build
         make check
