@@ -104,6 +104,7 @@ private:
     void on_actionPortuguese_triggered();
     void on_actionReloadFile_triggered();
     void on_actionResetZoom_triggered() const;
+    void on_actionRestart_triggered();
     void on_actionRotateLeft_triggered();
     void on_actionRotateRight_triggered();
     void on_actionSaveAs_triggered();

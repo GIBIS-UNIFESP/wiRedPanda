@@ -6,7 +6,7 @@
    height="64"
    id="svg4152"
    version="1.1"
-   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
    viewBox="0 0 64 64"
    sodipodi:docname="zoomReset.svg"
    inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/toolbar/zoomReset.png"
@@ -29,8 +29,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.5"
-     inkscape:cx="-37.363636"
-     inkscape:cy="21.181818"
+     inkscape:cx="-40.090909"
+     inkscape:cy="21.363636"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
@@ -69,10 +69,26 @@
        d="M 9.2386504,9.2386506 V 20.719899 H 13.631919 V 13.63192 h 7.08798 V 9.2386506 Z m 34.0414496,0 V 13.63192 h 7.081596 v 7.087979 h 4.399653 V 9.2386506 Z M 9.2386504,43.273718 V 54.76135 H 20.719899 v -4.399653 h -7.08798 v -7.087979 z m 41.1230456,0 v 7.087979 H 43.2801 V 54.76135 H 54.761349 V 43.273718 Z"
        id="rect3420"
        inkscape:connector-curvature="0" />
-    <path
-       style="display:inline;opacity:1;fill:#bd2812;fill-opacity:1;stroke:none;stroke-width:8.22876;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 44.5,19.937144 v 11.88413 H 32.615871 l 4.222888,-4.222889 a 7.1304775,7.1304785 0 0 0 -5.45463,-2.550136 7.1304775,7.1304785 0 0 0 -7.130477,7.130478 7.1304775,7.1304785 0 0 0 7.130477,7.130477 7.1304775,7.1304785 0 0 0 5.846127,-3.063877 l 3.393476,3.393476 A 11.884129,11.884131 0 0 1 31.384129,44.062856 11.884129,11.884131 0 0 1 19.5,32.178727 a 11.884129,11.884131 0 0 1 11.884129,-11.88413 11.884129,11.884131 0 0 1 8.81561,3.942807 z"
-       id="path5524"
-       inkscape:connector-curvature="0" />
+    <g
+       id="Layer_3_copy_2"
+       style="fill:#bd2812;fill-opacity:1"
+       transform="matrix(0.45454545,0,0,0.43148829,17.227273,17.976415)">
+	<g
+   fill="#555753"
+   id="g137"
+   style="fill:#bd2812;fill-opacity:1">
+		<path
+   d="m 32.5,4.999 c -5.405,0 -10.444,1.577 -14.699,4.282 l -5.75,-5.75 v 16.11 h 16.11 l -6.395,-6.395 c 3.18,-1.787 6.834,-2.82 10.734,-2.82 12.171,0 22.073,9.902 22.073,22.074 0,2.899 -0.577,5.664 -1.599,8.202 l 4.738,2.762 C 59.182,40.101 60,36.396 60,32.5 60,17.336 47.663,4.999 32.5,4.999 Z"
+   id="path133"
+   style="fill:#bd2812;fill-opacity:1" />
+
+		<path
+   d="m 43.227,51.746 c -3.179,1.786 -6.826,2.827 -10.726,2.827 -12.171,0 -22.073,-9.902 -22.073,-22.073 0,-2.739 0.524,-5.35 1.439,-7.771 L 7.136,21.878 C 5.761,25.149 5,28.736 5,32.5 5,47.664 17.336,60 32.5,60 c 5.406,0 10.434,-1.584 14.691,-4.289 l 5.758,5.759 V 45.358 H 36.838 Z"
+   id="path135"
+   style="fill:#bd2812;fill-opacity:1" />
+
+	</g>
+
+</g>
   </g>
 </svg>
