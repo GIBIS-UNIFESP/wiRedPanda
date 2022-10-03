@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-18.04, windows-latest, macos-latest]
-    
+
 # =================================
 
     runs-on: ${{ matrix.os }}
@@ -30,14 +30,16 @@ jobs:
         version: 5.15.2
         cache: true
         aqtversion: ==2.2.3
-        
+
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
-        
+      with:
+        key: ${{ matrix.os }}
+
 # =================================
 
     - name: Build Ubuntu
-      if: startsWith(matrix.os, 'ubuntu')
+      if: runner.os == 'Linux'
       run: |
         sudo apt install libgstreamer-gl1.0-0
         mkdir build
@@ -46,13 +48,13 @@ jobs:
         make -j2
 
     - name: Test Ubuntu
-      if: startsWith(matrix.os, 'ubuntu')
+      if: runner.os == 'Linux'
       run: |
         cd build/test
         xvfb-run ./WPanda-test
 
     - name: linuxdeployqt
-      if: startsWith(matrix.os, 'ubuntu')
+      if: runner.os == 'Linux'
       run: |
         mkdir appimage
         cp app/resources/wpanda.desktop appimage/wpanda.desktop
@@ -64,13 +66,13 @@ jobs:
         rm ./linuxdeployqt-continuous-x86_64.AppImage
         mv WiRedPanda-4-x86_64.AppImage WiRedPanda-Ubuntu-Qt5.AppImage
 
-    - name: Publish
+    - name: Publish Ubuntu
       uses: softprops/action-gh-release@v1
-      if: startsWith(matrix.os, 'ubuntu')
+      if: runner.os == 'Linux'
       with:
         fail_on_unmatched_files: true
         files: '*.AppImage'
-        
+
 # =================================
 
     - name: Setup MSVC Toolchain
@@ -78,7 +80,7 @@ jobs:
       uses: seanmiddleditch/gha-setup-vsdevenv@v4
 
     - name: Build Windows
-      if: startsWith(matrix.os, 'windows')
+      if: runner.os == 'Windows'
       run: |
         choco install jom
         mkdir build
@@ -87,13 +89,13 @@ jobs:
         jom
 
     - name: Test Windows
-      if: startsWith(matrix.os, 'windows')
+      if: runner.os == 'Windows'
       run: |
         cd build
         jom check
 
     - name: windeployqt
-      if: startsWith(matrix.os, 'windows')
+      if: runner.os == 'Windows'
       run : |
         cp -r examples build/app/release
         cd build/app/release
@@ -104,7 +106,7 @@ jobs:
         ren release wpanda
         Compress-Archive -Path wpanda -DestinationPath WiRedPanda-Windows-Qt5-Portable.zip
 
-    - name: Publish
+    - name: Publish Windows
       uses: softprops/action-gh-release@v1
       if: startsWith(matrix.os, 'windows')
       with:
@@ -114,7 +116,7 @@ jobs:
 # =================================
 
     - name: Build macOS
-      if: startsWith(matrix.os, 'macos')
+      if: runner.os == 'macOS'
       run: |
         mkdir build
         cd build
@@ -122,21 +124,21 @@ jobs:
         make -j3
 
     - name: Test macOS
-      if: startsWith(matrix.os, 'mac')
+      if: runner.os == 'macOS'
       run: |
         cd build
         make check
 
     - name: macdeployqt
-      if: startsWith(matrix.os, 'mac')
+      if: runner.os == 'macOS'
       run: |
         cd build/app
         macdeployqt wiredpanda.app -dmg
         mv wiredpanda.dmg WiRedPanda-macOS-Qt5.dmg
 
-    - name: Publish
+    - name: Publish macOS
       uses: softprops/action-gh-release@v1
-      if: startsWith(matrix.os, 'mac')
+      if: runner.os == 'macOS'
       with:
         fail_on_unmatched_files: true
         files: 'build/app/*.dmg'
