@@ -1,73 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
-   width="64"
-   height="64"
-   id="svg4958"
-   version="1.1"
-   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
-   viewBox="0 0 64 64"
+   enable-background="new 0 0 24 24"
+   id="Layer_1"
+   version="1.0"
+   viewBox="0 0 24 24"
+   xml:space="preserve"
    sodipodi:docname="undo.svg"
-   inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/toolbar/undo.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:dc="http://purl.org/dc/elements/1.1/">
-  <defs
-     id="defs4960" />
-  <sodipodi:namedview
-     id="base"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+     id="defs9" /><sodipodi:namedview
+     id="namedview7"
      pagecolor="#ffffff"
      bordercolor="#666666"
      borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="4.9202844"
-     inkscape:cx="-39.733476"
-     inkscape:cy="55.484598"
-     inkscape:current-layer="layer1"
-     showgrid="false"
-     inkscape:document-units="px"
-     inkscape:grid-bbox="true"
-     inkscape:window-width="3840"
-     inkscape:window-height="2097"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1"
      inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1">
-    <inkscape:grid
-       type="xygrid"
-       id="grid5506" />
-  </sodipodi:namedview>
-  <metadata
-     id="metadata4963">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <g
-     id="layer1"
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     style="display:inline">
-    <path
-       style="opacity:1;fill:#4e4e4e;fill-opacity:1;stroke:none;stroke-width:8.22876;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 7,8.7485766 V 32.516836 H 30.768259 L 22.322481,24.071058 A 14.260955,14.260957 0 0 1 33.231741,18.970786 14.260955,14.260957 0 0 1 47.492696,33.231741 14.260955,14.260957 0 0 1 33.231741,47.492696 14.260955,14.260957 0 0 1 21.539489,41.364941 l -6.786952,6.786952 A 23.768259,23.768261 0 0 0 33.231741,57 23.768259,23.768261 0 0 0 57,33.231741 23.768259,23.768261 0 0 0 33.231741,9.4634812 23.768259,23.768261 0 0 0 15.600521,17.349096 Z"
-       id="path5524"
-       inkscape:connector-curvature="0" />
-  </g>
-</svg>
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="42.791667"
+     inkscape:cx="11.579357"
+     inkscape:cy="12.023369"
+     inkscape:window-width="1350"
+     inkscape:window-height="1230"
+     inkscape:window-x="896"
+     inkscape:window-y="741"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="Layer_1" /><polygon
+     points="9,2 9,12 2,7 "
+     id="polygon2"
+     style="display:inline;fill:#bd2812;fill-opacity:1" /><path
+     style="color:#000000;display:inline;fill:#bd2812;stroke-miterlimit:10;-inkscape-stroke:none"
+     d="m 6,5 v 4 h 7.5 c 2.525923,0 4.5,1.974077 4.5,4.5 0,2.525923 -1.974077,4.5 -4.5,4.5 H 2 v 4 H 13.5 C 18.174069,22 22,18.174069 22,13.5 22,8.8259306 18.174069,5 13.5,5 Z"
+     id="path11167" /></svg>

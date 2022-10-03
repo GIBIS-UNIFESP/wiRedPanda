@@ -1,73 +1,45 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
-   width="64"
-   height="64"
-   id="svg4958"
-   version="1.1"
-   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
-   viewBox="0 0 64 64"
+   enable-background="new 0 0 24 24"
+   id="Layer_1"
+   version="1.0"
+   viewBox="0 0 24 24"
+   xml:space="preserve"
    sodipodi:docname="redo.svg"
-   inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/toolbar/redo.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:dc="http://purl.org/dc/elements/1.1/">
-  <defs
-     id="defs4960" />
-  <sodipodi:namedview
-     id="base"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+     id="defs9"><linearGradient
+       id="linearGradient8034"
+       inkscape:swatch="solid"><stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop8032" /></linearGradient></defs><sodipodi:namedview
+     id="namedview7"
      pagecolor="#ffffff"
      bordercolor="#666666"
      borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="9.8405688"
-     inkscape:cx="4.6237165"
-     inkscape:cy="36.888112"
-     inkscape:current-layer="layer1"
-     showgrid="false"
-     inkscape:document-units="px"
-     inkscape:grid-bbox="true"
-     inkscape:window-width="3840"
-     inkscape:window-height="2097"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1"
      inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1">
-    <inkscape:grid
-       type="xygrid"
-       id="grid5506" />
-  </sodipodi:namedview>
-  <metadata
-     id="metadata4963">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <g
-     id="layer1"
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     style="display:inline">
-    <path
-       style="opacity:1;fill:#4e4e4e;fill-opacity:1;stroke:none;stroke-width:8.22876;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 57,8.7485771 V 32.516836 H 33.231741 l 8.445778,-8.445778 A 14.260955,14.260957 0 0 0 30.768259,18.970786 14.260955,14.260957 0 0 0 16.507304,33.231741 14.260955,14.260957 0 0 0 30.768259,47.492696 14.260955,14.260957 0 0 0 42.460511,41.364941 l 6.786952,6.786952 A 23.768259,23.768261 0 0 1 30.768259,57 23.768259,23.768261 0 0 1 7,33.231741 23.768259,23.768261 0 0 1 30.768259,9.4634817 23.768259,23.768261 0 0 1 48.399479,17.349097 Z"
-       id="path5524"
-       inkscape:connector-curvature="0" />
-  </g>
-</svg>
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="42.791667"
+     inkscape:cx="12.023369"
+     inkscape:cy="11.988315"
+     inkscape:window-width="1765"
+     inkscape:window-height="1679"
+     inkscape:window-x="1767"
+     inkscape:window-y="309"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="Layer_1" /><polygon
+     points="22,7 15,2 15,12 "
+     id="polygon2"
+     style="display:inline;mix-blend-mode:normal;fill:#bd2812;fill-opacity:1" /><g
+     id="path4"
+     style="stroke:none;stroke-opacity:1;fill:#bd2812;fill-opacity:1"><path
+       style="color:#000000;mix-blend-mode:darken;fill:#bd2812;stroke-miterlimit:10;-inkscape-stroke:none;fill-opacity:1;stroke:none;stroke-opacity:1"
+       d="M 10.5,5 C 5.8259306,5 2,8.8259306 2,13.5 2,18.174069 5.8259306,22 10.5,22 H 22 V 18 H 10.5 C 7.9740766,18 6,16.025923 6,13.5 6,10.974077 7.9740766,9 10.5,9 H 18 V 5 Z"
+       id="path9554" /></g></svg>
