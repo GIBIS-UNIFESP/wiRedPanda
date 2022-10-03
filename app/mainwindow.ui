@@ -553,6 +553,7 @@ QTabWidget::pane {
    <addaction name="actionResetZoom"/>
    <addaction name="separator"/>
    <addaction name="actionPlay"/>
+   <addaction name="actionRestart"/>
    <addaction name="actionWaveform"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -665,6 +666,7 @@ QTabWidget::pane {
      <string>Sim&amp;ulation</string>
     </property>
     <addaction name="actionPlay"/>
+    <addaction name="actionRestart"/>
     <addaction name="actionWaveform"/>
     <addaction name="actionMute"/>
    </widget>
@@ -1139,6 +1141,18 @@ QTabWidget::pane {
     <string>About this version</string>
    </property>
   </action>
+  <action name="actionRestart">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/reset.svg</normaloff>:/toolbar/reset.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Restart</string>
+   </property>
+   <property name="toolTip">
+    <string>Restart simulation.</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1163,13 +1177,13 @@ QTabWidget::pane {
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
+  <include location="resources/memory/light/memory_light.qrc"/>
+  <include location="resources/misc/misc.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
   <include location="resources/output/output.qrc"/>
   <include location="resources/basic/basic.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/misc/misc.qrc"/>
-  <include location="resources/memory/light/memory_light.qrc"/>
  </resources>
  <connections/>
 </ui>

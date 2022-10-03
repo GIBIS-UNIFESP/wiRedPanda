@@ -158,6 +158,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->actionReloadFile,       &QAction::triggered,       this,                &MainWindow::on_actionReloadFile_triggered);
     connect(m_ui->actionRename,           &QAction::triggered,       m_ui->elementEditor, &ElementEditor::renameAction);
     connect(m_ui->actionResetZoom,        &QAction::triggered,       this,                &MainWindow::on_actionResetZoom_triggered);
+    connect(m_ui->actionRestart,          &QAction::triggered,       this,                &MainWindow::on_actionRestart_triggered);
     connect(m_ui->actionRotateLeft,       &QAction::triggered,       this,                &MainWindow::on_actionRotateLeft_triggered);
     connect(m_ui->actionRotateRight,      &QAction::triggered,       this,                &MainWindow::on_actionRotateRight_triggered);
     connect(m_ui->actionSave,             &QAction::triggered,       this,                &MainWindow::on_actionSave_triggered);
@@ -1129,6 +1130,15 @@ void MainWindow::on_actionPlay_toggled(const bool checked)
     auto *simulation = m_currentTab->simulation();
 
     checked ? simulation->start() : simulation->stop();
+}
+
+void MainWindow::on_actionRestart_triggered()
+{
+    if (!m_currentTab) {
+        return;
+    }
+
+    m_currentTab->simulation()->restart();
 }
 
 void MainWindow::populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout)
