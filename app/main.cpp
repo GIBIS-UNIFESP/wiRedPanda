@@ -1,8 +1,9 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "application.h"
 #include "common.h"
+#include "globalproperties.h"
 #include "mainwindow.h"
 #include "protocol.h"
 
@@ -15,12 +16,13 @@
 
 int main(int argc, char *argv[])
 {
-    Comment::setVerbosity(1); // change to -1 to disable comments
+    Comment::setVerbosity(-1);
 
 #ifdef Q_OS_WIN
+    FILE *fpstdout = stdout, *fpstderr = stderr;
     if (AttachConsole(ATTACH_PARENT_PROCESS)) {
-        freopen("CONOUT$", "w", stdout);
-        freopen("CONOUT$", "w", stderr);
+        freopen_s(&fpstdout, "CONOUT$", "w", stdout);
+        freopen_s(&fpstderr, "CONOUT$", "w", stderr);
     }
 #endif
 
@@ -34,6 +36,7 @@ int main(int argc, char *argv[])
     app.setApplicationName("WiRedPanda");
     app.setApplicationVersion(APP_VERSION);
     app.setStyle("Fusion");
+    app.setWindowIcon(QIcon(":/toolbar/wpanda.svg"));
 
     try {
         QCommandLineParser parser;
@@ -42,61 +45,88 @@ int main(int argc, char *argv[])
         parser.addVersionOption();
         parser.addPositionalArgument("file", QCoreApplication::translate("main", "Circuit file to open."));
 
+        QCommandLineOption verbosityOption(
+            {"v2", "verbosity"},
+            QCoreApplication::translate("main", "Verbosity level 0 to 5, disabled by default."),
+            QCoreApplication::translate("main", "verbosity level"));
+        parser.addOption(verbosityOption);
+
         QCommandLineOption arduinoFileOption(
-                    {"a", "arduino-file"},
-                    QCoreApplication::translate("main", "Export circuit to <arduino-file>"),
-                    QCoreApplication::translate("main", "arduino file"));
+            {"a", "arduino-file"},
+            QCoreApplication::translate("main", "Export circuit to <arduino-file>"),
+            QCoreApplication::translate("main", "arduino file"));
         parser.addOption(arduinoFileOption);
 
         QCommandLineOption waveformFileOption(
-                    {"w", "waveform"},
-                    QCoreApplication::translate("main", "Export circuit to <waveform> text file"),
-                    QCoreApplication::translate("main", "waveform text file"));
+            {"w", "waveform"},
+            QCoreApplication::translate("main", "Export circuit to waveform text file"),
+            QCoreApplication::translate("main", "waveform input text file"));
         parser.addOption(waveformFileOption);
+
+        QCommandLineOption terminalFileOption(
+            {"c", "terminal"},
+            QCoreApplication::translate("main", "Export circuit to waveform text file, reading input from terminal"));
+        parser.addOption(terminalFileOption);
 
         parser.process(app);
 
-        // TODO: process verbosity level/format
+        if (const QString verbosity = parser.value(verbosityOption); !verbosity.isEmpty()) {
+            Comment::setVerbosity(verbosity.toInt());
+        }
 
         QStringList args = parser.positionalArguments();
-        auto *window = new MainWindow(nullptr, (!args.empty() ? QString(args[0]) : QString()));
 
-        QString arduFile = parser.value(arduinoFileOption);
-        if (!arduFile.isEmpty()) {
+        if (const QString arduFile = parser.value(arduinoFileOption); !arduFile.isEmpty()) {
             if (!args.empty()) {
-                window->loadPandaFile(args[0]);
-                exit(!window->exportToArduino(arduFile));
-            }
-            exit(0);
-        }
-        QString wfFile = parser.value(waveformFileOption);
-        if (!wfFile.isEmpty()) {
-            if (!args.empty()) {
-                window->loadPandaFile(args[0]);
-                exit(!window->exportToWaveFormFile(wfFile));
+                GlobalProperties::verbose = false;
+                MainWindow window;
+                window.loadPandaFile(args.at(0));
+                window.exportToArduino(arduFile);
             }
             exit(0);
         }
 
+        if (const QString wfFile = parser.value(waveformFileOption); !wfFile.isEmpty()) {
+            if (!args.empty()) {
+                GlobalProperties::verbose = false;
+                MainWindow window;
+                window.loadPandaFile(args.at(0));
+                window.exportToWaveFormFile(wfFile);
+            }
+            exit(0);
+        }
+
+        if (const bool isTerminal = parser.isSet(terminalFileOption); isTerminal) {
+            if (!args.empty()) {
+                GlobalProperties::verbose = false;
+                MainWindow window;
+                window.loadPandaFile(args.at(0));
+                window.exportToWaveFormTerminal();
+            }
+            exit(0);
+        }
+
+        auto *window = new MainWindow();
+        app.setMainWindow(window);
         window->show();
 
-        // Initialize TCP Network Protocol
         RemoteProtocol::init(window);
 
         if (!args.empty()) {
-            window->loadPandaFile(args[0]);
+            window->loadPandaFile(args.at(0));
         }
-    } catch (std::exception &e) {
-        QMessageBox::critical(nullptr, QObject::tr("Error!"), e.what());
+    } catch (const std::exception &e) {
+        if (GlobalProperties::verbose) {
+            QMessageBox::critical(nullptr, QObject::tr("Error!"), e.what());
+        }
         exit(1);
     }
 
     return app.exec();
 }
 
-/*
- * TODO: Tests for all elements
- * TODO: Create arduino version of all elements
- * TODO: Select some elements, and input wires become input buttons, output wires become leds... Connections are then
- * transferred to the IC's ports.
- */
+// TODO: Tests for all elements
+// TODO: Create arduino version of all elements
+// TODO: Select some elements, and input wires become input buttons, output wires become leds...
+// ...Connections are then transferred to the IC's ports.
+// TODO: ambiguous shortcut overloads (ctrl+y)

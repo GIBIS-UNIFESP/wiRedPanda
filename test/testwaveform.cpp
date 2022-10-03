@@ -1,42 +1,40 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "testwaveform.h"
 
-#include "editor.h"
-#include "simplewaveform.h"
+#include "bewaveddolphin.h"
+#include "workspace.h"
 
 #include <QTemporaryFile>
 #include <QTest>
-#include <stdexcept>
 
 void TestWaveForm::testDisplay4Bits()
 {
-    auto *editor = new Editor(this);
-    editor->setupWorkspace();
+    WorkSpace workspace;
 
     const QDir examplesDir(QString(CURRENTDIR) + "/../examples/");
     const QString fileName = examplesDir.absoluteFilePath("display-4bits.panda");
 
-    try {
-        QFile pandaFile(fileName);
-        QVERIFY(pandaFile.open(QFile::ReadOnly));
-        QDataStream ds(&pandaFile);
-        editor->load(ds);
-    } catch (std::runtime_error &e) {
-        QFAIL("Could not load the file! Error: " + QString(e.what()).toUtf8());
-    }
+    QFile pandaFile(fileName);
+    QVERIFY(pandaFile.open(QIODevice::ReadOnly));
+    QDataStream stream(&pandaFile);
+    stream.setVersion(QDataStream::Qt_5_12);
+    workspace.load(stream);
+
+    BewavedDolphin bewavedDolphin(workspace.scene(), false);
+    bewavedDolphin.createWaveform("");
 
     QTemporaryFile tempFile;
     QVERIFY(tempFile.open());
     QTextStream tempStream(&tempFile);
-    QVERIFY(SimpleWaveform::saveToTxt(tempStream, editor));
+    bewavedDolphin.saveToTxt(tempStream);
     tempStream.flush();
     QVERIFY(tempFile.reset());
 
     QFile referenceFile(examplesDir.absoluteFilePath("display-4bits.txt"));
 
-    QVERIFY(referenceFile.open(QFile::ReadOnly));
+    QVERIFY(referenceFile.open(QIODevice::ReadOnly));
 
     QCOMPARE(tempFile.readAll().replace("\r\n", "\n"), referenceFile.readAll().replace("\r\n", "\n"));
 }

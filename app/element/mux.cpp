@@ -1,44 +1,37 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "mux.h"
 
+#include "globalproperties.h"
 #include "qneport.h"
 
-namespace {
+namespace
+{
 int id = qRegisterMetaType<Mux>();
 }
 
 Mux::Mux(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Mux, ElementGroup::Mux, 3, 3, 1, 1, parent)
+    : GraphicElement(ElementType::Mux, ElementGroup::Mux, ":/basic/mux.svg", tr("MULTIPLEXER"), tr("Mux"), 3, 3, 1, 1, parent)
 {
-    m_pixmapSkinName = {":/basic/mux.png"};
-
-    setPixmap(m_pixmapSkinName[0]);
-    setRotatable(true);
-    Mux::updatePorts();
-    setPortName("MUX");
-    setToolTip(m_translatedName);
-    setCanChangeSkin(true);
-    input(0)->setName("0");
-    input(1)->setName("1");
-    input(2)->setName("S");
-}
-
-void Mux::updatePorts()
-{
-    input(0)->setPos(32 - 12, 48); /* 0 */
-    input(1)->setPos(32 + 12, 48); /* 1 */
-    input(2)->setPos(58, 32); /* S */
-    output(0)->setPos(32, 16); /* Out */
-}
-
-void Mux::setSkin(bool defaultSkin, const QString &filename)
-{
-    if (defaultSkin) {
-        m_pixmapSkinName[0] = ":/basic/mux.png";
-    } else {
-        m_pixmapSkinName[0] = filename;
+    if (GlobalProperties::skipInit) {
+        return;
     }
-    setPixmap(m_pixmapSkinName[0]);
+
+    m_defaultSkins << m_pixmapPath;
+    m_alternativeSkins = m_defaultSkins;
+    setPixmap(0);
+
+    setCanChangeSkin(true);
+
+    Mux::updatePortsProperties();
+}
+
+void Mux::updatePortsProperties()
+{
+    inputPort(0)->setPos(16, 16); inputPort(0)->setName("In0");
+    inputPort(1)->setPos(16, 48); inputPort(1)->setName("In1");
+    inputPort(2)->setPos(32, 56); inputPort(2)->setName("S");
+
+    outputPort(0)->setPos(48, 32); outputPort(0)->setName("Out");
 }

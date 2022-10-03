@@ -1,19 +1,20 @@
-/*
- * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
 
 #include <QString>
+#include <QVersionNumber>
 
-constexpr auto globalClock = 10;
+#define VERSION(string) QVersionNumber::fromString(string)
 
 class GlobalProperties
 {
 public:
-    static QString currentFile;
-    static bool soundEnabled;
-    static double toDouble(const QString &txtVersion, bool *ok);
-    static double version;
+    inline static QString currentDir = {};
+    inline static bool skipInit = false;
+    inline static bool verbose = true;
+    inline static const QVersionNumber version = VERSION(QString(APP_VERSION));
+    inline static const int gridSize = 16;
+    inline static const int maxRecentFiles = 10;
 };

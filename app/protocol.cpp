@@ -22,7 +22,7 @@ void RemoteProtocol::init(QWidget *parent)
     }
 }
 
-void RemoteProtocol::parse_session_start(RemoteDevice *elm, NetworkIncomingMessage &imsg)
+void RemoteProtocol::parse_session_start(Remote *elm, NetworkIncomingMessage &imsg)
 {
     auto token = imsg.popString();
     auto device_id = imsg.pop<quint16>();
@@ -74,7 +74,7 @@ void RemoteProtocol::parse_session_start(RemoteDevice *elm, NetworkIncomingMessa
     auto pin_amount = imsg.pop<quint16>();
 
     bool alreadyLoaded = false;
-    if (!elm->getAvailablePins().isEmpty()) {
+    if (!elm->availablePins().isEmpty()) {
         alreadyLoaded = true;
     }
 
@@ -87,13 +87,13 @@ void RemoteProtocol::parse_session_start(RemoteDevice *elm, NetworkIncomingMessa
 
         qDebug() << "> pin " << i << ": " << static_cast<int>(id) << ", " << pinName << ", " << static_cast<int>(type);
 
-        const QList<Pin> &availablePins = elm->getAvailablePins();
+        const QList<Pin> &availablePins = elm->availablePins();
         if (alreadyLoaded) {
             // we must verify that all the available pins are present on this new connection
             auto it = availablePins.begin();
             bool found = false;
             while (it != availablePins.end()) {
-                if (it->getId() == id && it->getName() == pinName && static_cast<uint8_t>(it->getType()) == type) {
+                if (it->id() == id && it->name() == pinName && static_cast<uint8_t>(it->type()) == type) {
                     found = true;
                     break;
                 }
@@ -145,7 +145,7 @@ void RemoteProtocol::parse_session_start(RemoteDevice *elm, NetworkIncomingMessa
     msgBox->raise();
 }
 
-void RemoteProtocol::parse_pong(RemoteDevice *elm, NetworkIncomingMessage &imsg)
+void RemoteProtocol::parse_pong(Remote *elm, NetworkIncomingMessage &imsg)
 {
     qDebug() << "PONG";
 
@@ -157,7 +157,7 @@ void RemoteProtocol::parse_pong(RemoteDevice *elm, NetworkIncomingMessage &imsg)
     elm->setAliveSince(QDateTime::currentMSecsSinceEpoch() / 1000);
 }
 
-void RemoteProtocol::parse_output(RemoteDevice *elm, NetworkIncomingMessage &imsg)
+void RemoteProtocol::parse_output(Remote *elm, NetworkIncomingMessage &imsg)
 {
     qDebug() << "OUTPUT";
     auto pinId = imsg.pop<quint32>();
@@ -166,14 +166,14 @@ void RemoteProtocol::parse_output(RemoteDevice *elm, NetworkIncomingMessage &ims
     elm->setOutput(pinId, value);
 }
 
-void RemoteProtocol::parse_time_warning(RemoteDevice *elm, NetworkIncomingMessage &imsg)
+void RemoteProtocol::parse_time_warning(Remote *elm, NetworkIncomingMessage &imsg)
 {
     qDebug() << "TIME WARNING";
     auto isWarning = imsg.pop<quint8>();
 
     // the second time the connection is disconnected
     if (isWarning == 0) {
-        uint64_t startedEpoch = elm->getStartedTimeEpoch();
+        uint64_t startedEpoch = elm->startedTimeEpoch();
 
         long amountOfSeconds = static_cast<long>(QDateTime::currentMSecsSinceEpoch() / 1000 - static_cast<int64_t>(startedEpoch));
         QString time = QDateTime::fromMSecsSinceEpoch(static_cast<uint32_t>(amountOfSeconds * 1000), Qt::UTC).toString("hh:mm:ss");
@@ -193,10 +193,10 @@ void RemoteProtocol::parse_time_warning(RemoteDevice *elm, NetworkIncomingMessag
     uint64_t afterTimeStartedEpoch = imsg.pop<quint64>();
 
     QString time;
-    if (elm->getMinWaitTime() > 60) {
-        time = QString::number(static_cast<int>(static_cast<long>(elm->getMinWaitTime()) / 60)) + " more minutes";
+    if (elm->minWaitTime() > 60) {
+        time = QString::number(static_cast<int>(static_cast<long>(elm->minWaitTime()) / 60)) + " more minutes";
     } else {
-        time = QString::number(static_cast<int>(elm->getMinWaitTime())) + " more seconds";
+        time = QString::number(static_cast<int>(elm->minWaitTime())) + " more seconds";
     }
 
     elm->startAfterTime(afterTimeStartedEpoch);
@@ -211,7 +211,7 @@ void RemoteProtocol::parse_time_warning(RemoteDevice *elm, NetworkIncomingMessag
 }
 
 // TODO: Needs to update minWaitTime (it's on default state, minWaitTime = 0)
-void RemoteProtocol::parse_queue_info(RemoteDevice *elm, NetworkIncomingMessage &imsg)
+void RemoteProtocol::parse_queue_info(Remote *elm, NetworkIncomingMessage &imsg)
 {
     qDebug() << "QUEUE INFO";
 
@@ -235,18 +235,18 @@ void RemoteProtocol::parse_queue_info(RemoteDevice *elm, NetworkIncomingMessage 
         elm->setQueuePos(currPos);
 
         // the estimated time shall only decrease, never increase.
-        if (elm->getQueueEstimatedEpoch() > estimatedEpoch) {
+        if (elm->queueEstimatedEpoch() > estimatedEpoch) {
             elm->setQueueEstimatedEpoch(estimatedEpoch);
         }
         // if time is increasing more than the minimum wait time in seconds
         // (plus 20 seconds from connect/disconnect required time and clock diferences), then update.
-        else if (static_cast<int>(estimatedEpoch - elm->getQueueEstimatedEpoch()) > static_cast<int>(elm->getMinWaitTime() + 20)) {
+        else if (static_cast<int>(estimatedEpoch - elm->queueEstimatedEpoch()) > static_cast<int>(elm->minWaitTime() + 20)) {
             elm->setQueueEstimatedEpoch(estimatedEpoch); // FIX: this else is a copy of the if above
         }
     }
 }
 
-void RemoteProtocol::parse(RemoteDevice *elm, uint8_t opcode, const QByteArray &byteArray)
+void RemoteProtocol::parse(Remote *elm, uint8_t opcode, const QByteArray &byteArray)
 {
     Q_ASSERT(initialized);
 
@@ -279,8 +279,8 @@ NetworkOutgoingMessage RemoteProtocol::sendIOInfo(uint16_t latency, const QList<
     msg.addByte<quint16>(mappedPins.size());
 
     for (const Pin &pin : mappedPins) {
-        msg.addByte<quint32>(static_cast<quint32>(pin.getId()));
-        msg.addByte<quint8>(static_cast<quint8>(pin.getType()));
+        msg.addByte<quint32>(static_cast<quint32>(pin.id()));
+        msg.addByte<quint8>(static_cast<quint8>(pin.type()));
     }
 
     msg.addSize();
@@ -300,13 +300,13 @@ NetworkOutgoingMessage RemoteProtocol::sendUpdateInput(uint32_t id, uint8_t valu
 }
 
 // TODO: send device type id
-NetworkOutgoingMessage RemoteProtocol::sendRequestToWaitOnQueue(RemoteDevice *remoteDevice, const QString &token)
+NetworkOutgoingMessage RemoteProtocol::sendRequestToWaitOnQueue(Remote *remoteDevice, const QString &token)
 {
     qDebug() << "sendRequestToWaitOnQueue";
     NetworkOutgoingMessage msg(5);
     msg.addString(token);
-    msg.addByte<quint8>(remoteDevice->getDeviceTypeId());
-    msg.addByte<quint8>(remoteDevice->getDeviceMethodId());
+    msg.addByte<quint8>(remoteDevice->deviceTypeId());
+    msg.addByte<quint8>(remoteDevice->deviceMethodId());
     msg.addSize();
 
     return msg;

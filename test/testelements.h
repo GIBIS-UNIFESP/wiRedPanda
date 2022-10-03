@@ -1,7 +1,5 @@
-/*
- * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
 
@@ -16,8 +14,7 @@ class TestElements : public QObject
 {
     Q_OBJECT
 
-private:
-    QString testFile(const QString &fileName);
+private slots:
     void cleanup();
     void init();
     void testAnd();
@@ -26,7 +23,6 @@ private:
     void testDemux();
     void testGND();
     void testIC();
-    void testICData(const IC *ic);
     void testICs();
     void testJKFlipFlop();
     void testMux();
@@ -35,6 +31,9 @@ private:
     void testSRFlipFlop();
     void testTFlipFlop();
     void testVCC();
+
+private:
+    void testICData(IC *ic);
 
     QVector<InputSwitch *> switches{5};
     QVector<QNEConnection *> connections{5};

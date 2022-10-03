@@ -1,63 +1,55 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "tflipflop.h"
 
+#include "globalproperties.h"
 #include "qneport.h"
 
-namespace {
+namespace
+{
 int id = qRegisterMetaType<TFlipFlop>();
 }
 
 TFlipFlop::TFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(ElementType::TFlipFlop, ElementGroup::Memory, 4, 4, 2, 2, parent)
+    : GraphicElement(ElementType::TFlipFlop, ElementGroup::Memory, pixmapPath(), tr("T-FLIPFLOP"), tr("T-FlipFlop"), 4, 4, 2, 2, parent)
 {
-    m_pixmapSkinName = {":/memory/T-flipflop.png"};
-
-    setPixmap(m_pixmapSkinName[0]);
-    setRotatable(false);
-    setCanChangeSkin(true);
-    TFlipFlop::updatePorts();
-    lastClk = false;
-    lastT = 0;
-    lastQ = 0;
-    setPortName("FlipFlop T");
-    setToolTip(m_translatedName);
-
-    input(0)->setName("T");
-    input(1)->setName("Clock");
-    input(2)->setName("~Preset");
-    input(3)->setName("~Clear");
-    output(0)->setName("Q");
-    output(1)->setName("~Q");
-
-    output(0)->setDefaultValue(0);
-    output(1)->setDefaultValue(1);
-
-    input(0)->setRequired(false);
-    input(2)->setRequired(false);
-    input(3)->setRequired(false);
-    input(2)->setDefaultValue(1);
-    input(3)->setDefaultValue(1);
-}
-
-void TFlipFlop::updatePorts()
-{
-    input(0)->setPos(topPosition(), 13); /* T */
-    input(1)->setPos(topPosition(), 45); /* Clock */
-    input(2)->setPos(32, topPosition()); /* Preset */
-    input(3)->setPos(32, bottomPosition()); /* Clear */
-
-    output(0)->setPos(bottomPosition(), 15); /* Q */
-    output(1)->setPos(bottomPosition(), 45); /* ~Q */
-}
-
-void TFlipFlop::setSkin(bool defaultSkin, const QString &filename)
-{
-    if (defaultSkin) {
-        m_pixmapSkinName[0] = ":/memory/T-flipflop.png";
-    } else {
-        m_pixmapSkinName[0] = filename;
+    if (GlobalProperties::skipInit) {
+        return;
     }
-    setPixmap(m_pixmapSkinName[0]);
+
+    m_defaultSkins << m_pixmapPath;
+    m_alternativeSkins = m_defaultSkins;
+    setPixmap(0);
+
+    setCanChangeSkin(true);
+
+    TFlipFlop::updatePortsProperties();
+}
+
+void TFlipFlop::updatePortsProperties()
+{
+    inputPort(0)->setPos( 0, 16);     inputPort(0)->setName("T");
+    inputPort(1)->setPos( 0, 48);     inputPort(1)->setName("Clock");
+    inputPort(2)->setPos(32,  0);     inputPort(2)->setName("~Preset");
+    inputPort(3)->setPos(32, 64);     inputPort(3)->setName("~Clear");
+
+    outputPort(0)->setPos(64, 16);    outputPort(0)->setName("Q");
+    outputPort(1)->setPos(64, 48);    outputPort(1)->setName("~Q");
+
+    inputPort(0)->setRequired(false);
+    inputPort(2)->setRequired(false);
+    inputPort(3)->setRequired(false);
+
+    inputPort(2)->setDefaultStatus(Status::Active);
+    inputPort(3)->setDefaultStatus(Status::Active);
+
+    outputPort(0)->setDefaultStatus(Status::Inactive);
+    outputPort(1)->setDefaultStatus(Status::Active);
+}
+
+void TFlipFlop::updateTheme()
+{
+    setPixmap(pixmapPath());
+    GraphicElement::updateTheme();
 }

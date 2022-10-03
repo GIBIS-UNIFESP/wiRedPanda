@@ -1,59 +1,54 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "dflipflop.h"
 
+#include "globalproperties.h"
 #include "qneport.h"
 
-namespace {
+namespace
+{
 int id = qRegisterMetaType<DFlipFlop>();
 }
 
 DFlipFlop::DFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(ElementType::DFlipFlop, ElementGroup::Memory, 4, 4, 2, 2, parent)
+    : GraphicElement(ElementType::DFlipFlop, ElementGroup::Memory, pixmapPath(), tr("D-FLIPFLOP"), tr("D-FlipFlop"), 4, 4, 2, 2, parent)
 {
-    m_pixmapSkinName = {":/memory/D-flipflop.png"};
-
-    setPixmap(m_pixmapSkinName[0]);
-    setRotatable(false);
-    setCanChangeSkin(true);
-    DFlipFlop::updatePorts();
-    setPortName("FlipFlop D");
-    setToolTip(m_translatedName);
-    input(0)->setName("Data");
-    input(1)->setName("Clock");
-    input(2)->setName("~Preset");
-    input(3)->setName("~Clear");
-    output(0)->setName("Q");
-    output(1)->setName("~Q");
-
-    output(0)->setDefaultValue(0);
-    output(1)->setDefaultValue(1);
-
-    input(2)->setRequired(false);
-    input(3)->setRequired(false);
-    input(2)->setDefaultValue(1);
-    input(3)->setDefaultValue(1);
-    lastValue = false;
-    lastClk = false;
-}
-
-void DFlipFlop::updatePorts()
-{
-    input(0)->setPos(topPosition(), 13); /* Data */
-    input(1)->setPos(topPosition(), 45); /* Clock */
-    input(2)->setPos(32, topPosition()); /* Preset */
-    input(3)->setPos(32, bottomPosition()); /* Clear */
-    output(0)->setPos(bottomPosition(), 15); /* Q */
-    output(1)->setPos(bottomPosition(), 45); /* ~Q */
-}
-
-void DFlipFlop::setSkin(bool defaultSkin, const QString &filename)
-{
-    if (defaultSkin) {
-        m_pixmapSkinName[0] = ":/memory/D-flipflop.png";
-    } else {
-        m_pixmapSkinName[0] = filename;
+    if (GlobalProperties::skipInit) {
+        return;
     }
-    setPixmap(m_pixmapSkinName[0]);
+
+    m_defaultSkins << m_pixmapPath;
+    m_alternativeSkins = m_defaultSkins;
+    setPixmap(0);
+
+    setCanChangeSkin(true);
+
+    DFlipFlop::updatePortsProperties();
+}
+
+void DFlipFlop::updatePortsProperties()
+{
+    inputPort(0)->setPos( 0, 16);     inputPort(0)->setName("Data");
+    inputPort(1)->setPos( 0, 48);     inputPort(1)->setName("Clock");
+    inputPort(2)->setPos(32,  0);     inputPort(2)->setName("~Preset");
+    inputPort(3)->setPos(32, 64);     inputPort(3)->setName("~Clear");
+
+    outputPort(0)->setPos(64, 16);    outputPort(0)->setName("Q");
+    outputPort(1)->setPos(64, 48);    outputPort(1)->setName("~Q");
+
+    inputPort(2)->setRequired(false);
+    inputPort(3)->setRequired(false);
+
+    inputPort(2)->setDefaultStatus(Status::Active);
+    inputPort(3)->setDefaultStatus(Status::Active);
+
+    outputPort(0)->setDefaultStatus(Status::Inactive);
+    outputPort(1)->setDefaultStatus(Status::Active);
+}
+
+void DFlipFlop::updateTheme()
+{
+    setPixmap(pixmapPath());
+    GraphicElement::updateTheme();
 }

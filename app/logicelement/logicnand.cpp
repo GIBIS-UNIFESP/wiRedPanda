@@ -1,17 +1,21 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "logicnand.h"
 
 #include <functional>
 
-LogicNand::LogicNand(size_t inputSize)
+LogicNand::LogicNand(const int inputSize)
     : LogicElement(inputSize, 1)
 {
 }
 
-void LogicNand::_updateLogic(const std::vector<bool> &inputs)
+void LogicNand::updateLogic()
 {
-    auto result = std::accumulate(inputs.begin(), inputs.end(), true, std::bit_and<>());
+    if (!updateInputs()) {
+        return;
+    }
+
+    const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), true, std::bit_and<>());
     setOutputValue(!result);
 }

@@ -1,47 +1,37 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "demux.h"
 
+#include "globalproperties.h"
 #include "qneport.h"
 
-namespace {
+namespace
+{
 int id = qRegisterMetaType<Demux>();
 }
 
 Demux::Demux(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Demux, ElementGroup::Mux, 2, 2, 2, 2, parent)
+    : GraphicElement(ElementType::Demux, ElementGroup::Mux, ":/basic/demux.svg", tr("DEMULTIPLEXER"), tr("Demux"), 2, 2, 2, 2, parent)
 {
-    m_pixmapSkinName = {":/basic/demux.png"};
-    setPixmap(m_pixmapSkinName[0]);
-    setRotatable(true);
-    setCanChangeSkin(true);
-    Demux::updatePorts();
-    setPortName("DEMUX");
-    setToolTip(m_translatedName);
-    setRotation(180.0);
-
-    input(0)->setName("in");
-    input(1)->setName("S");
-
-    output(0)->setName("out0");
-    output(1)->setName("out1");
-}
-
-void Demux::updatePorts()
-{
-    input(0)->setPos(32, 48); /* 0 */
-    input(1)->setPos(58, 32); /* S */
-    output(0)->setPos(32 - 12, 16); /* Out */
-    output(1)->setPos(32 + 12, 16); /* Out */
-}
-
-void Demux::setSkin(bool defaultSkin, const QString &filename)
-{
-    if (defaultSkin) {
-        m_pixmapSkinName[0] = ":/basic/demux.png";
-    } else {
-        m_pixmapSkinName[0] = filename;
+    if (GlobalProperties::skipInit) {
+        return;
     }
-    setPixmap(m_pixmapSkinName[0]);
+
+    m_defaultSkins << m_pixmapPath;
+    m_alternativeSkins = m_defaultSkins;
+    setPixmap(0);
+
+    setCanChangeSkin(true);
+
+    Demux::updatePortsProperties();
+}
+
+void Demux::updatePortsProperties()
+{
+    inputPort(0)->setPos(16, 32);     inputPort(0)->setName("In");
+    inputPort(1)->setPos(32, 56);     inputPort(1)->setName("S");
+
+    outputPort(0)->setPos(48, 16);    outputPort(0)->setName("Out0");
+    outputPort(1)->setPos(48, 48);    outputPort(1)->setName("Out1");
 }

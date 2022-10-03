@@ -1,21 +1,21 @@
-/*
- * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
 
+#include <QtGlobal>
+
 class ItemWithId
 {
-
 public:
     ItemWithId();
     virtual ~ItemWithId();
 
     int id() const;
-    void setId(int id);
+    void setId(const int id);
 
 private:
-    int m_id;
-};
+    Q_DISABLE_COPY(ItemWithId)
 
+    int m_id = 0;
+};

@@ -32,7 +32,6 @@ Description: Learn about logic circuits and simulate them in an easy and friendl
 /home/lellis/Qt5.7.1/5.7/gcc_64/lib/libQt5PrintSupport.so.5 -> libQt5PrintSupport.so.5 -> /usr/local/lib/wpanda
 /home/lellis/Qt5.7.1/5.7/gcc_64/lib/libQt5XcbQpa.so.5 -> libQt5XcbQpa.so.5 -> /usr/local/lib/wpanda
 /home/lellis/Qt5.7.1/5.7/gcc_64/lib/libQt5DBus.so.5 -> libQt5DBus.so.5 -> /usr/local/lib/wpanda
-/home/lellis/Qt5.7.1/5.7/gcc_64/lib/libQt5Charts.so.5 -> libQt5Charts.so.5 -> /usr/local/lib/wpanda
 /home/lellis/Qt5.7.1/5.7/gcc_64/lib/libQt5Widgets.so.5 -> libQt5Widgets.so.5 -> /usr/local/lib/wpanda
 /home/lellis/Qt5.7.1/5.7/gcc_64/lib/libQt5Gui.so.5 -> libQt5Gui.so.5 -> /usr/local/lib/wpanda
 /home/lellis/Qt5.7.1/5.7/gcc_64/lib/libQt5Core.so.5 -> libQt5Core.so.5 -> /usr/local/lib/wpanda

@@ -1,28 +1,25 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "and.h"
-#include "elementfactory.h"
 
-namespace {
+#include "globalproperties.h"
+
+namespace
+{
 int id = qRegisterMetaType<And>();
 }
 
 And::And(QGraphicsItem *parent)
-    : GraphicElement(ElementType::And, ElementGroup::Gate, 2, 8, 1, 1, parent)
+    : GraphicElement(ElementType::And, ElementGroup::Gate, ":/basic/and.svg", tr("AND"), tr("And"), 2, 8, 1, 1, parent)
 {
-    m_pixmapSkinName = {":/basic/and.png"};
+    if (GlobalProperties::skipInit) {
+        return;
+    }
 
-    setOutputsOnTop(true);
-    setPixmap(m_pixmapSkinName[0]);
-    updatePorts();
+    m_defaultSkins << m_pixmapPath;
+    m_alternativeSkins = m_defaultSkins;
+    setPixmap(0);
+
     setCanChangeSkin(true);
-    setPortName("AND");
-    setToolTip(m_translatedName);
-}
-
-void And::setSkin(bool defaultSkin, const QString &filename)
-{
-    m_pixmapSkinName[0] = defaultSkin ? ":/basic/and.png" : filename;
-    setPixmap(m_pixmapSkinName[0]);
 }

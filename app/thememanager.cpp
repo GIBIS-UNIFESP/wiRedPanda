@@ -1,91 +1,88 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "thememanager.h"
 
 #include "settings.h"
 
-#include <QApplication>
-
-ThemeManager *ThemeManager::globalManager = nullptr;
-
-Theme ThemeManager::theme() const
-{
-    return m_theme;
-}
-
-void ThemeManager::setTheme(Theme theme)
-{
-    m_attrs.setTheme(theme);
-    if (m_theme != theme) {
-        m_theme = theme;
-        Settings::setValue("theme", static_cast<int>(theme));
-        emit themeChanged();
-    }
-}
-
-void ThemeManager::initialize()
-{
-    emit themeChanged();
-}
-
-ThemeAttrs ThemeManager::getAttrs() const
-{
-    return m_attrs;
-}
+#include <QDebug>
 
 ThemeManager::ThemeManager(QObject *parent)
     : QObject(parent)
-    , m_theme(Theme::Light)
 {
     if (Settings::contains("theme")) {
         m_theme = static_cast<Theme>(Settings::value("theme").toInt());
     }
-    setTheme(m_theme);
+
+    m_attributes.setTheme(m_theme);
 }
 
-ThemeAttrs::ThemeAttrs()
+QString ThemeManager::themePath()
 {
-    setTheme(Theme::Light);
+    return (ThemeManager::theme() == Theme::Light) ? "light" : "dark";
 }
 
-void ThemeAttrs::setTheme(Theme theme)
+Theme ThemeManager::theme()
+{
+    return instance().m_theme;
+}
+
+void ThemeManager::setTheme(const Theme theme)
+{
+    instance().m_attributes.setTheme(theme);
+
+    if (instance().m_theme == theme) {
+        return;
+    }
+
+    instance().m_theme = theme;
+    Settings::setValue("theme", static_cast<int>(theme));
+    emit instance().themeChanged();
+}
+
+ThemeAttributes ThemeManager::attributes()
+{
+    return instance().m_attributes;
+}
+
+void ThemeAttributes::setTheme(const Theme theme)
 {
     switch (theme) {
-    case Theme::Light:
-        scene_bgBrush = QColor(255, 255, 230);
-        scene_bgDots = QColor(Qt::darkGray);
-        selectionBrush = QColor(175, 0, 0, 80);
-        selectionPen = QColor(175, 0, 0, 255);
+    case Theme::Light: {
+        m_sceneBgBrush = QColor(255, 255, 230);
+        m_sceneBgDots = QColor(Qt::darkGray);
 
-        graphicElement_labelColor = QColor(Qt::black);
+        m_selectionBrush = QColor(175, 0, 0, 80);
+        m_selectionPen = QColor(175, 0, 0, 255);
 
-        qneConnection_selected = selectionPen;
+        m_graphicElementLabelColor = QColor(Qt::black);
 
-        qneConnection_true = QColor(Qt::green);
-        qneConnection_false = QColor(Qt::darkGreen);
-        qneConnection_invalid = QColor(Qt::red);
+        m_connectionInactive = QColor(Qt::darkGreen);
+        m_connectionActive = QColor(Qt::green);
+        m_connectionSelected = m_selectionPen;
 
 #ifndef Q_OS_MAC
-        qApp->setPalette(defaultPalette);
-        qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
+        QPalette lightPalette = m_defaultPalette;
+        lightPalette.setColor(QPalette::AlternateBase, QColor(233, 231, 227));
+
+        qApp->setPalette(lightPalette);
 #endif
 
         break;
-    case Theme::Dark:
-        scene_bgBrush = QColor(64, 69, 82);
-        scene_bgDots = QColor(Qt::black);
-        selectionBrush = QColor(230, 255, 85, 150);
-        selectionPen = QColor(230, 255, 85, 255);
+    }
 
-        graphicElement_labelColor = QColor(Qt::white);
+    case Theme::Dark: {
+        m_sceneBgBrush = QColor(64, 69, 82);
+        m_sceneBgDots = QColor(Qt::lightGray);
 
-        qneConnection_selected = selectionPen;
+        m_selectionBrush = QColor(230, 255, 85, 150);
+        m_selectionPen = QColor(230, 255, 85, 255);
 
-        qneConnection_true = QColor(115, 255, 220, 255);
-        qneConnection_false = QColor(65, 150, 130, 255);
+        m_graphicElementLabelColor = QColor(Qt::white);
 
-        qneConnection_invalid = QColor(Qt::red);
+        m_connectionInactive = QColor(65, 150, 130, 255);
+        m_connectionActive = QColor(115, 255, 220, 255);
+        m_connectionSelected = m_selectionPen;
 
 #ifndef Q_OS_MAC
         QPalette darkPalette;
@@ -109,21 +106,25 @@ void ThemeAttrs::setTheme(Theme theme)
         darkPalette.setColor(QPalette::Disabled, QPalette::WindowText, QColor(120, 120, 120));
 
         qApp->setPalette(darkPalette);
-        qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
 #endif
 
         break;
     }
-    qnePort_true_pen = QColor(Qt::black);
-    qnePort_false_pen = QColor(Qt::black);
-    qnePort_invalid_pen = QColor(Qt::red);
+    }
 
-    qnePort_true_brush = qneConnection_true;
-    qnePort_false_brush = qneConnection_false;
-    qnePort_invalid_brush = qneConnection_invalid;
+#ifndef Q_OS_MAC
+    qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
+#endif
 
-    qnePort_hoverPort = QColor(Qt::yellow);
+    m_portInvalidBrush = m_connectionInvalid;
+    m_portInactiveBrush = m_connectionInactive;
+    m_portActiveBrush = m_connectionActive;
+    m_portOutputBrush = QColor(243, 83, 105);
 
-    qnePort_output_pen = QColor(Qt::darkRed);
-    qnePort_output_brush = QColor(243, 83, 105);
+    m_portInvalidPen = QColor(Qt::red);
+    m_portInactivePen = QColor(Qt::black);
+    m_portActivePen = QColor(Qt::black);
+    m_portOutputPen = QColor(Qt::darkRed);
+
+    m_portHoverPort = QColor(Qt::yellow);
 }

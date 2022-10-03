@@ -1,16 +1,20 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "logicoutput.h"
 
-LogicOutput::LogicOutput(size_t inputSz)
-    : LogicElement(inputSz, inputSz)
+LogicOutput::LogicOutput(const int inputSize)
+    : LogicElement(inputSize, inputSize)
 {
 }
 
-void LogicOutput::_updateLogic(const std::vector<bool> &inputs)
+void LogicOutput::updateLogic()
 {
-    for (size_t idx = 0; idx < inputs.size(); ++idx) {
-        setOutputValue(idx, inputs[idx]);
+    if (!updateInputs()) {
+        return;
+    }
+
+    for (int index = 0; index < m_inputValues.size(); ++index) {
+        setOutputValue(index, m_inputValues.at(index));
     }
 }

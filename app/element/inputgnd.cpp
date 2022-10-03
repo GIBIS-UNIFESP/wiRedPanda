@@ -1,34 +1,26 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "inputgnd.h"
 
-#include "qneport.h"
+#include "globalproperties.h"
 
-namespace {
+namespace
+{
 int id = qRegisterMetaType<InputGnd>();
 }
 
 InputGnd::InputGnd(QGraphicsItem *parent)
-    : GraphicElement(ElementType::InputGnd, ElementGroup::StaticInput, 0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::InputGnd, ElementGroup::StaticInput, ":/input/0.svg", tr("GROUND"), tr("GND"), 0, 0, 1, 1, parent)
 {
-    m_pixmapSkinName = {":/input/0.png"};
-
-    setOutputsOnTop(false);
-    setCanChangeSkin(true);
-    setPixmap(m_pixmapSkinName[0]);
-    setRotatable(false);
-    setPortName("GND");
-    setToolTip(m_translatedName);
-    m_outputs.first()->setValue(false);
-}
-
-void InputGnd::setSkin(bool defaultSkin, const QString &filename)
-{
-    if (defaultSkin) {
-        m_pixmapSkinName[0] = ":/input/0.png";
-    } else {
-        m_pixmapSkinName[0] = filename;
+    if (GlobalProperties::skipInit) {
+        return;
     }
-    setPixmap(m_pixmapSkinName[0]);
+
+    m_defaultSkins << m_pixmapPath;
+    m_alternativeSkins = m_defaultSkins;
+    setPixmap(0);
+
+    setCanChangeSkin(true);
+    setRotatable(false);
 }

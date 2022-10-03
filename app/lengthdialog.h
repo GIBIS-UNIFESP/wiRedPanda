@@ -1,7 +1,5 @@
-/*
- * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
 
@@ -17,16 +15,13 @@ class LengthDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit LengthDialog(QWidget *parent = nullptr);
+    explicit LengthDialog(const int currentLength, QWidget *parent = nullptr);
     ~LengthDialog() override;
 
-    int getFrequency();
+    int length();
 
 private:
-    void cancelClicked();
-    void okClicked();
+    Q_DISABLE_COPY(LengthDialog)
 
     Ui::LengthDialog *m_ui;
-    bool m_canceled;
 };
-

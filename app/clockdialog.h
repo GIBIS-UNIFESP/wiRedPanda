@@ -1,7 +1,5 @@
-/*
- * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
 
@@ -20,17 +18,14 @@ class ClockDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ClockDialog(QWidget *parent = nullptr);
+    explicit ClockDialog(const int currentFrequency, QWidget *parent = nullptr);
     ~ClockDialog() override;
 
-    //! Returns the clock frequency (in Hz)
-    int getFrequency();
+    //! Returns the clock frequency in Hz
+    int frequency();
 
 private:
-    void cancelRequested();
-    void okRequested();
+    Q_DISABLE_COPY(ClockDialog)
 
     Ui::ClockDialog *m_ui;
-    bool m_canceled;
 };
-

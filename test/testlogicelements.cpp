@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "testlogicelements.h"
@@ -32,7 +32,7 @@ void TestLogicElements::testLogicNode()
     LogicNode elm;
     elm.connectPredecessor(0, switches.at(0), 0);
 
-    const QVector<QVector<bool>> truthTable = {
+    const QVector<QVector<bool>> truthTable{
         {1, 1},
         {0, 0},
     };
@@ -42,7 +42,7 @@ void TestLogicElements::testLogicNode()
 
         elm.updateLogic();
 
-        QCOMPARE(elm.getOutputValue(), test.at(1));
+        QCOMPARE(elm.outputValue(), test.at(1));
     }
 }
 
@@ -52,7 +52,7 @@ void TestLogicElements::testLogicAnd()
     elm.connectPredecessor(0, switches.at(0), 0);
     elm.connectPredecessor(1, switches.at(1), 0);
 
-    const QVector<QVector<bool>> truthTable = {
+    const QVector<QVector<bool>> truthTable{
         {1, 1, 1},
         {1, 0, 0},
         {0, 1, 0},
@@ -65,7 +65,7 @@ void TestLogicElements::testLogicAnd()
 
         elm.updateLogic();
 
-        QCOMPARE(elm.getOutputValue(), test.at(2));
+        QCOMPARE(elm.outputValue(), test.at(2));
     }
 }
 
@@ -75,7 +75,7 @@ void TestLogicElements::testLogicOr()
     elm.connectPredecessor(0, switches.at(0), 0);
     elm.connectPredecessor(1, switches.at(1), 0);
 
-    const QVector<QVector<bool>> truthTable = {
+    const QVector<QVector<bool>> truthTable{
         {1, 1, 1},
         {1, 0, 1},
         {0, 1, 1},
@@ -88,18 +88,18 @@ void TestLogicElements::testLogicOr()
 
         elm.updateLogic();
 
-        QCOMPARE(elm.getOutputValue(), test.at(2));
+        QCOMPARE(elm.outputValue(), test.at(2));
     }
 }
 
 void TestLogicElements::testLogicInput()
 {
     LogicInput elm;
-    QCOMPARE(elm.getOutputValue(), false);
+    QCOMPARE(elm.outputValue(), false);
     elm.setOutputValue(true);
-    QCOMPARE(elm.getOutputValue(), true);
+    QCOMPARE(elm.outputValue(), true);
     elm.setOutputValue(false);
-    QCOMPARE(elm.getOutputValue(), false);
+    QCOMPARE(elm.outputValue(), false);
 }
 
 void TestLogicElements::testLogicMux()
@@ -109,7 +109,7 @@ void TestLogicElements::testLogicMux()
     elm.connectPredecessor(1, switches.at(1), 0);
     elm.connectPredecessor(2, switches.at(2), 0);
 
-    const QVector<QVector<bool>> truthTable = {
+    const QVector<QVector<bool>> truthTable{
         {0, 0, 0, 0},
         {0, 0, 1, 0},
         {0, 1, 0, 0},
@@ -127,7 +127,7 @@ void TestLogicElements::testLogicMux()
 
         elm.updateLogic();
 
-        QCOMPARE(elm.getOutputValue(), test.at(3));
+        QCOMPARE(elm.outputValue(), test.at(3));
     }
 }
 
@@ -137,7 +137,7 @@ void TestLogicElements::testLogicDemux()
     elm.connectPredecessor(0, switches.at(0), 0);
     elm.connectPredecessor(1, switches.at(1), 0);
 
-    const QVector<QVector<bool>> truthTable = {
+    const QVector<QVector<bool>> truthTable{
       /* i  S  o0 o1 */
         {0, 0, 0, 0},
         {0, 1, 0, 0},
@@ -151,8 +151,8 @@ void TestLogicElements::testLogicDemux()
 
         elm.updateLogic();
 
-        QCOMPARE(elm.getOutputValue(0), test.at(2));
-        QCOMPARE(elm.getOutputValue(1), test.at(3));
+        QCOMPARE(elm.outputValue(0), test.at(2));
+        QCOMPARE(elm.outputValue(1), test.at(3));
     }
 }
 
@@ -164,7 +164,7 @@ void TestLogicElements::testLogicDFlipFlop()
     elm.connectPredecessor(2, switches.at(2), 0);
     elm.connectPredecessor(3, switches.at(3), 0);
 
-    const QVector<QVector<bool>> truthTable = {
+    const QVector<QVector<bool>> truthTable{
       /* L  D  C  p  c  Q ~Q */
         {0, 0, 1, 1, 1, 0, 1}, /* Clk up and D = 0 */
         {0, 1, 1, 1, 1, 1, 0}, /* Clk up and D = 1 */
@@ -173,15 +173,15 @@ void TestLogicElements::testLogicDFlipFlop()
         {0, 0, 1, 1, 0, 0, 1}, /* Clear = false */
         {0, 0, 1, 0, 0, 1, 1}, /* Clear and Preset = false */
 
-        {1, 0, 0, 1, 1, 1, 0}, /* Clk dwn and D = 0 (must mantain current state)*/
-        {1, 1, 0, 1, 1, 1, 0}, /* Clk dwn and D = 1 (must mantain current state)*/
+        {1, 0, 0, 1, 1, 1, 0}, /* Clk dwn and D = 0 (must maintain current state)*/
+        {1, 1, 0, 1, 1, 1, 0}, /* Clk dwn and D = 1 (must maintain current state)*/
     };
 
     for (const auto &test : truthTable) {
         switches.at(0)->setOutputValue(test.at(1)); /* DATA */
         switches.at(1)->setOutputValue(test.at(0)); /*  CLK */
-        switches.at(2)->setOutputValue(false); /* PRST */
-        switches.at(3)->setOutputValue(false); /* CLR */
+        switches.at(2)->setOutputValue(false);      /* PRST */
+        switches.at(3)->setOutputValue(false);      /* CLR */
 
         elm.updateLogic();
 
@@ -194,8 +194,8 @@ void TestLogicElements::testLogicDFlipFlop()
 
         elm.updateLogic();
 
-        QCOMPARE(elm.getOutputValue(0), test.at(5));
-        QCOMPARE(elm.getOutputValue(1), test.at(6));
+        QCOMPARE(elm.outputValue(0), test.at(5));
+        QCOMPARE(elm.outputValue(1), test.at(6));
     }
 }
 
@@ -205,7 +205,7 @@ void TestLogicElements::testLogicDLatch()
     elm.connectPredecessor(0, switches.at(0), 0);
     elm.connectPredecessor(1, switches.at(1), 0);
 
-    const QVector<QVector<bool>> truthTable = {
+    const QVector<QVector<bool>> truthTable{
       /* D  E  Q  A */
         {0, 0, 0, 0},
         {0, 0, 1, 1},
@@ -225,8 +225,8 @@ void TestLogicElements::testLogicDLatch()
 
         elm.updateLogic();
 
-        QCOMPARE(elm.getOutputValue(0), test.at(2));
-        QCOMPARE(elm.getOutputValue(1), !test.at(2));
+        QCOMPARE(elm.outputValue(0), test.at(2));
+        QCOMPARE(elm.outputValue(1), !test.at(2));
     }
 }
 
@@ -239,13 +239,13 @@ void TestLogicElements::testLogicJKFlipFlop()
     elm.connectPredecessor(3, switches.at(3), 0);
     elm.connectPredecessor(4, switches.at(4), 0);
 
-    const QVector<QVector<bool>> truthTable = {
+    const QVector<QVector<bool>> truthTable{
       /* L  J  C  K  p  c  Q  Q  A */
         {0, 0, 0, 0, 0, 1, 1, 0, 0}, /* Preset = false */
         {0, 0, 0, 0, 1, 0, 0, 1, 0}, /* Clear = false */
         {0, 0, 0, 1, 0, 0, 1, 1, 0}, /* Clear and Preset = false*/
-        {1, 1, 0, 0, 1, 1, 0, 1, 0}, /* Clk dwn and J = 0 (must mantain current state)*/
-        {1, 1, 0, 0, 1, 1, 0, 1, 0}, /* Clk dwn and J = 1 (must mantain current state)*/
+        {1, 1, 0, 0, 1, 1, 0, 1, 0}, /* Clk dwn and J = 0 (must maintain current state)*/
+        {1, 1, 0, 0, 1, 1, 0, 1, 0}, /* Clk dwn and J = 1 (must maintain current state)*/
         {0, 1, 1, 1, 1, 1, 1, 0, 0}, /* Clk up J = 1 K = 1 (must swap Q and ~Q)*/
         {0, 1, 1, 1, 1, 1, 0, 1, 1}, /* Clk up J = 1 K = 1 (must swap Q and ~Q)*/
         {0, 1, 1, 0, 1, 1, 1, 0, 0}, /* Clk up J = 1 K = 0 */
@@ -276,8 +276,8 @@ void TestLogicElements::testLogicJKFlipFlop()
 
         elm.updateLogic();
 
-        QCOMPARE(elm.getOutputValue(0), test.at(6));
-        QCOMPARE(elm.getOutputValue(1), test.at(7));
+        QCOMPARE(elm.outputValue(0), test.at(6));
+        QCOMPARE(elm.outputValue(1), test.at(7));
     }
 }
 
@@ -290,7 +290,7 @@ void TestLogicElements::testLogicSRFlipFlop()
     elm.connectPredecessor(3, switches.at(3), 0);
     elm.connectPredecessor(4, switches.at(4), 0);
 
-    const QVector<QVector<bool>> truthTable = {
+    const QVector<QVector<bool>> truthTable{
       /* L  S  C  R  p  c  Q  Q  A */
         {0, 0, 0, 0, 0, 1, 1, 0, 0}, /* Preset = false */
         {0, 0, 0, 0, 1, 0, 0, 1, 1}, /* Clear = false*/
@@ -340,8 +340,8 @@ void TestLogicElements::testLogicSRFlipFlop()
 
         elm.updateLogic();
 
-        QCOMPARE(elm.getOutputValue(0), test.at(6));
-        QCOMPARE(elm.getOutputValue(1), test.at(7));
+        QCOMPARE(elm.outputValue(0), test.at(6));
+        QCOMPARE(elm.outputValue(1), test.at(7));
     }
 }
 
@@ -353,7 +353,7 @@ void TestLogicElements::testLogicTFlipFlop()
     elm.connectPredecessor(2, switches.at(2), 0);
     elm.connectPredecessor(3, switches.at(3), 0);
 
-    const QVector<QVector<bool>> truthTable = {
+    const QVector<QVector<bool>> truthTable{
       /* L  T  C  p  c  Q ~Q  A */
         {1, 0, 1, 1, 1, 0, 1, 0}, /* No change */
         {1, 1, 1, 1, 1, 0, 1, 0}, /* No change */
@@ -392,7 +392,7 @@ void TestLogicElements::testLogicTFlipFlop()
 
         elm.updateLogic();
 
-        QCOMPARE(elm.getOutputValue(0), test.at(5));
-        QCOMPARE(elm.getOutputValue(1), test.at(6));
+        QCOMPARE(elm.outputValue(0), test.at(5));
+        QCOMPARE(elm.outputValue(1), test.at(6));
     }
 }

@@ -2,24 +2,23 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="64px"
    height="64px"
    id="svg2989"
    version="1.1"
-   inkscape:version="0.91 r13725"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
    sodipodi:docname="pause.svg"
    inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/toolbar/pause.png"
    inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+   inkscape:export-ydpi="90"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs2991">
     <linearGradient
@@ -88,7 +87,7 @@
     </pattern>
     <linearGradient
        id="linearGradient5943"
-       osb:paint="solid">
+       inkscape:swatch="solid">
       <stop
          style="stop-color:#f49789;stop-opacity:1;"
          offset="0"
@@ -194,19 +193,22 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="8"
-     inkscape:cx="6.892336"
-     inkscape:cy="22.661296"
+     inkscape:cx="4.6875"
+     inkscape:cy="22.75"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1920"
-     inkscape:window-height="1016"
-     inkscape:window-x="0"
-     inkscape:window-y="28"
-     inkscape:window-maximized="1">
+     inkscape:window-width="3840"
+     inkscape:window-height="2097"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
     <inkscape:grid
        type="xygrid"
        id="grid4293" />
@@ -227,23 +229,27 @@
      id="layer1"
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
-    <rect
-       style="fill:#bd2812;fill-opacity:1;stroke:none"
-       id="rect6496-3-5"
-       width="21.961958"
-       height="53"
-       x="36.53804"
-       y="9"
-       rx="0.45046356"
-       ry="1.195985" />
-    <rect
-       style="fill:#bd2812;fill-opacity:1;stroke:none"
-       id="rect6496-3"
-       width="21.961958"
-       height="53"
-       x="5.5380416"
-       y="9"
-       rx="0.45046356"
-       ry="1.195985" />
+    <g
+       id="g8062"
+       transform="translate(-0.01901984,-3.5)">
+      <rect
+         style="fill:#bd2812;fill-opacity:1;stroke:none"
+         id="rect6496-3-5"
+         width="21.961958"
+         height="53"
+         x="36.53804"
+         y="9"
+         rx="0.45046356"
+         ry="1.195985" />
+      <rect
+         style="fill:#bd2812;fill-opacity:1;stroke:none"
+         id="rect6496-3"
+         width="21.961958"
+         height="53"
+         x="5.5380416"
+         y="9"
+         rx="0.45046356"
+         ry="1.195985" />
+    </g>
   </g>
 </svg>

@@ -1,54 +1,50 @@
-/*
- * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
 
 #include <QSet>
-#include <vector>
+#include <QVector>
 
-/**
- * @brief The LogicElement class was designed to represent logic
- *        elements in the simulation layer of WiRedPanda.
- */
+class LogicElement;
+
+struct InputPair {
+    LogicElement *logic = nullptr;
+    int port = 0;
+};
+
+//! Represent logic elements in the simulation layer
 class LogicElement
 {
 public:
-    explicit LogicElement(size_t inputSize, size_t outputSize);
-    virtual ~LogicElement();
+    explicit LogicElement(const int inputSize, const int outputSize);
+    virtual ~LogicElement() = default;
+    bool operator>(const LogicElement &other) const;
 
-    bool getInputValue(size_t index = 0) const;
-    bool getOutputValue(size_t index = 0) const;
+    bool inputValue(const int index = 0) const;
     bool isValid() const;
-    bool operator<(const LogicElement &other) const;
+    bool outputValue(const int index = 0) const;
     int calculatePriority();
-    size_t getInputAmount() { return m_inputs.size(); }
-    size_t getOutputAmount() { return m_outputs.size(); }
+    virtual void updateLogic() = 0;
     void clearPredecessors();
     void clearSucessors();
-    void connectPredecessor(int index, LogicElement *elm, int port);
-    void setOutputValue(bool value);
-    void setOutputValue(size_t index, bool value);
+    void connectPredecessor(const int index, LogicElement *logic, const int port);
+    void setOutputValue(const bool value);
+    void setOutputValue(const int index, const bool value);
     void validate();
 
-    // Secure call to _updateLogic() with current inputs.
-    void updateLogic();
-
 protected:
-    // Main function to update the logic of an element. Computes the outputs, given the inputs
-    virtual void _updateLogic(const std::vector<bool> &inputs) = 0;
+    bool updateInputs();
+
+    QVector<bool> m_inputValues;
+    QVector<bool> m_outputValues;
 
 private:
-    /**
-     * @brief m_isValid is calculated at compilation time.
-     */
-    bool m_isValid;
-    bool m_beingVisited;
-    int m_priority;
-    std::vector<std::pair<LogicElement *, int>> m_inputs;
-    std::vector<bool> m_inputvalues;
-    std::vector<bool> m_outputs;
-    QSet<LogicElement *> m_successors;
-};
+    Q_DISABLE_COPY(LogicElement)
 
+    QSet<LogicElement *> m_successors;
+    QVector<InputPair> m_inputPairs;
+    bool m_beingVisited = false;
+    bool m_isValid = true;
+    int m_priority = -1;
+};

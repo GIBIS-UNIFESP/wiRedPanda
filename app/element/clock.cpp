@@ -1,134 +1,172 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "clock.h"
 
-#include "common.h"
 #include "globalproperties.h"
 #include "qneport.h"
 
-#include <QDebug>
+#include <chrono>
 
-namespace {
+using namespace std::chrono_literals;
+
+namespace
+{
 int id = qRegisterMetaType<Clock>();
 }
 
-bool Clock::reset = false;
-bool Clock::pause = false;
-int Clock::current_id_number = 0;
-
 Clock::Clock(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Clock, ElementGroup::Input, 0, 0, 1, 1, parent)
+    : GraphicElementInput(ElementType::Clock, ElementGroup::Input, ":/input/clock1.svg", tr("CLOCK SIGNAL"), tr("Clock"), 0, 0, 1, 1, parent)
 {
-    qCDebug(zero) << "Creating clock.";
-    locked = false;
-    m_pixmapSkinName = {
-        ":/input/clock0.png",
-        ":/input/clock1.png"
-    };
+    if (GlobalProperties::skipInit) {
+        return;
+    }
 
-    setOutputsOnTop(false);
-    setRotatable(false);
+    m_defaultSkins = QStringList{
+        ":/input/clock0.svg",
+        ":/input/clock1.svg"
+    };
+    m_alternativeSkins = m_defaultSkins;
+    setPixmap(0);
+
+    m_locked = false;
+
     setCanChangeSkin(true);
-    Clock::setFrequency(1.0);
     setHasFrequency(true);
-    m_isOn = false;
-    Clock::reset = true;
-    Clock::pause = false;
     setHasLabel(true);
-    setPortName("Clock");
-    setToolTip(m_translatedName);
-    Clock::setOn(false);
-    setPixmap(m_pixmapSkinName[0]);
+    setRotatable(false);
+
+    Clock::setFrequency(1.0);
+    Clock::setOff();
 }
 
 void Clock::updateClock()
 {
-    if ((!locked) && (!disabled()) && (!Clock::pause)) {
-        m_elapsed++;
-        if ((m_elapsed % m_interval) == 0) {
-            setOn(!m_isOn);
-            return;
-        }
+    if (m_locked) {
+        return;
     }
-    setOn(m_isOn);
+
+    if (m_reset) {
+        resetClock();
+        return;
+    }
+
+    const auto duration = std::chrono::duration<float, std::micro>(std::chrono::steady_clock::now() - m_timePoint);
+
+    if (duration > m_interval) {
+        m_timePoint = std::chrono::steady_clock::now();
+        setOn(!m_isOn);
+    }
 }
 
-bool Clock::getOn(int port) const
+bool Clock::isOn(const int port) const
 {
-    Q_UNUSED(port);
+    Q_UNUSED(port)
     return m_isOn;
 }
 
-void Clock::setOn(bool value, int port)
+void Clock::setOff()
 {
-    Q_UNUSED(port);
+    Clock::setOn(false);
+}
+
+void Clock::setOn()
+{
+    Clock::setOn(true);
+}
+
+void Clock::setOn(const bool value, const int port)
+{
+    Q_UNUSED(port)
     m_isOn = value;
-    setPixmap(m_pixmapSkinName[m_isOn ? 1 : 0]);
-    m_outputs.first()->setValue(m_isOn);
+    setPixmap(static_cast<int>(m_isOn));
+    outputPort()->setStatus(static_cast<Status>(m_isOn));
 }
 
-void Clock::save(QDataStream &ds) const
+void Clock::save(QDataStream &stream) const
 {
-    GraphicElement::save(ds);
-    ds << getFrequency();
-    ds << locked;
+    GraphicElement::save(stream);
+
+    QMap<QString, QVariant> map;
+    map.insert("frequency", frequency());
+    map.insert("locked", m_locked);
+
+    stream << map;
 }
 
-void Clock::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
+void Clock::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
 {
-    GraphicElement::load(ds, portMap, version);
-    if (version < 1.1) {
+    GraphicElement::load(stream, portMap, version);
+
+    if (version < VERSION("1.1")) {
         return;
     }
-    float freq;
-    ds >> freq;
-    if (version >= 3.1) {
-        ds >> locked;
+
+    if (version < VERSION("4.1")) {
+        float freq; stream >> freq;
+        setFrequency(freq);
+
+        if (version >= VERSION("3.1")) {
+            stream >> m_locked;
+        }
     }
-    setFrequency(freq);
+
+    if (version >= VERSION("4.1")) {
+        QMap<QString, QVariant> map; stream >> map;
+
+        if (map.contains("frequency")) {
+            setFrequency(map.value("frequency").toFloat());
+        }
+
+        if (map.contains("locked")) {
+            m_locked = map.value("locked").toBool();
+        }
+    }
 }
 
-float Clock::getFrequency() const
+float Clock::frequency() const
 {
     return static_cast<float>(m_frequency);
 }
 
-void Clock::setFrequency(float freq)
+void Clock::setFrequency(const float freq)
 {
     if (qFuzzyIsNull(freq)) {
         return;
     }
 
-    int auxinterval = 500 / (freq * globalClock);
-    if (auxinterval <= 0) {
+    std::chrono::duration<float, std::milli> auxInterval = 1s / (2 * freq);
+
+    if (auxInterval.count() <= 0) {
         return;
     }
 
-    m_interval = auxinterval;
+    m_interval = auxInterval;
     m_frequency = static_cast<double>(freq);
-    m_elapsed = 0;
-    Clock::reset = true;
+    m_timePoint = std::chrono::steady_clock::now();
+    m_reset = true;
 }
 
 void Clock::resetClock()
 {
-    setOn(true);
-    m_elapsed = 0;
+    setOn();
+    m_timePoint = std::chrono::steady_clock::now();
+    m_reset = false;
 }
 
 QString Clock::genericProperties()
 {
-    return QString("%1 Hz").arg(static_cast<double>(getFrequency()));
+    return QString::number(frequency()) + " Hz";
 }
 
-void Clock::setSkin(bool defaultSkin, const QString &filename)
+void Clock::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    if (!m_isOn) {
-        m_pixmapSkinName[0] = defaultSkin ? ":/input/clock0.png" : filename;
-        setPixmap(m_pixmapSkinName[0]);
+    if (defaultSkin) {
+        m_alternativeSkins = m_defaultSkins;
     } else {
-        m_pixmapSkinName[1] = defaultSkin ? ":/input/clock1.png" : filename;
-        setPixmap(m_pixmapSkinName[1]);
+        m_alternativeSkins[static_cast<int>(m_isOn)] = fileName;
     }
+
+    m_usingDefaultSkin = defaultSkin;
+    setPixmap(static_cast<int>(m_isOn));
 }

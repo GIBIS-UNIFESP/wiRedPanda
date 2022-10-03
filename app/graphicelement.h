@@ -1,37 +1,22 @@
-/*
- * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
 
-#include "elementtype.h"
+#include "enums.h"
 #include "itemwithid.h"
+#include "logicelement.h"
 
 #include <QGraphicsItem>
 #include <QKeySequence>
-
-enum class ElementGroup : uint_fast8_t {
-    Gate = 4,
-    IC = 2,
-    Input = 3,
-    Memory = 5,
-    Mux = 7,
-    Other = 1,
-    Output = 6,
-    Remote = 9,
-    StaticInput = 8,
-    Unknown = 0,
-};
-
-constexpr auto maximumValidInputSize = 256;
+#include <QPixmapCache>
+#include <QVersionNumber>
+#include <memory>
 
 class GraphicElement;
-class QNEPort;
 class QNEInputPort;
 class QNEOutputPort;
-
-using ElementVector = QVector<GraphicElement *>;
+class QNEPort;
 
 /**
  * @brief Virtual class to implement graphical element appearance, input and output ports, and tooltips.
@@ -42,205 +27,189 @@ using ElementVector = QVector<GraphicElement *>;
 class GraphicElement : public QGraphicsObject, public ItemWithId
 {
     Q_OBJECT
+    Q_PROPERTY(QString pixmapPath MEMBER m_pixmapPath CONSTANT)
+    Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
+    Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
 
 public:
-    enum : uint32_t { Type = QGraphicsItem::UserType + 3 };
+    enum { Type = QGraphicsItem::UserType + 3 };
+    int type() const override { return Type; }
 
-    GraphicElement(ElementType type, ElementGroup group, int minInputSz, int maxInputSz, int minOutputSz, int maxOutputSz, QGraphicsItem *parent = nullptr);
-    GraphicElement(QGraphicsItem *parent = nullptr) : QGraphicsObject(parent) {};
-    GraphicElement(const GraphicElement &other) : GraphicElement(other.parentItem()) {};
+    explicit GraphicElement(ElementType type, ElementGroup group, const QString &pixmapPath, const QString &titleText, const QString &translatedName,
+                            const int minInputSize, const int maxInputSize, const int minOutputSize, const int maxOutputSize, QGraphicsItem *parent = nullptr);
+    explicit GraphicElement(QGraphicsItem *parent = nullptr) : QGraphicsObject(parent) {}
+    GraphicElement(const GraphicElement &other) : GraphicElement(other.parentItem()) {}
 
-    /**
-     * @brief Saves the graphic element through a binary data stream.
-     */
-    virtual void save(QDataStream &ds) const;
+    //! Saves the graphic element through a binary data stream.
+    virtual void save(QDataStream &stream) const;
 
     /**
      * @brief Loads the graphic element through a binary data stream.
      * @param portMap receives a reference to each input and output port.
      */
-    virtual void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version);
+    virtual void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version);
 
-    /**
-     * @brief updatePorts: Updates the number and the connected elements to the ports whenever needed (e.g. loading the element, changing the number of inputs/outputs).
-     */
-    virtual void updatePorts();
+    //! Updates the number and the connected elements to the ports whenever needed (e.g. loading the element, changing the number of inputs/outputs).
+    virtual void updatePortsProperties();
 
-    int type() const override
-    {
-        return Type;
-    }
+    //! virtual function overloaded by clock element. Other elements have frequency of 0.
+    virtual float frequency() const;
 
-    /**
-     * @brief addPort: adds an input or output port at the end of the port vector.
-     */
-    QNEPort *addPort(const QString &name, bool isOutput, int flags = 0, int ptr = 0);
-
-    /**
-     * @brief addInputPort: adds an input port at the end of the input port vector.
-     */
-    void addInputPort(const QString &name = {});
-
-    /**
-     * @brief addOutputPort: adds an output port at the end of the output port vector.
-     */
-    void addOutputPort(const QString &name = {});
-
-    /**
-     * @brief outputsOnTop: returns true if the output ports are on the top position of the GraphicElement.
-     */
-    bool outputsOnTop() const;
-
-    /**
-     * @brief getFrequency: virtual function overloaded by clock element. Other elements have frequency of 0.
-     */
-    virtual float getFrequency() const;
-    virtual void setFrequency(float /*freq*/);
-
-    /**
-     * @brief updateTheme: Updates the GraphicElement theme according to the dark/light WiRedPanda theme.
-     */
-    void updateTheme();
-
-    /**
-     * @brief updateThemeLocal: unfinished function with no current use.
-     */
-    virtual void updateThemeLocal();
+    //! Updates the GraphicElement theme according to the dark/light WiRedPanda theme.
+    virtual void updateTheme();
 
     ElementGroup elementGroup() const;
     ElementType elementType() const;
-    QKeySequence getTrigger() const;
-    QNEInputPort *input(int pos = 0);
-    QNEOutputPort *output(int pos = 0);
-    QPixmap getPixmap() const;
+    LogicElement *logic() const;
+    QKeySequence trigger() const;
+    QNEInputPort *inputPort(const int pos = 0);
+    QNEOutputPort *outputPort(const int pos = 0);
+    QPointF pixmapCenter() const;
     QRectF boundingRect() const override;
-    QString getLabel() const;
-    QVector<QNEInputPort *> inputs() const;
-    QVector<QNEOutputPort *> outputs() const;
+    QString label() const;
     bool canChangeSkin() const;
-    bool disabled() const;
     bool hasAudio() const;
     bool hasColors() const;
     bool hasCustomConfig() const;
     bool hasFrequency() const;
     bool hasLabel() const;
     bool hasTrigger() const;
+    bool isRotatable() const;
     bool isValid();
-    bool rotatable() const;
-    const QNEInputPort *input(int pos = 0) const;
-    const QNEOutputPort *output(int pos = 0) const;
-    int bottomPosition() const;
+    const QVector<QNEInputPort *> &inputs() const;
+    const QVector<QNEOutputPort *> &outputs() const;
     int inputSize() const;
-    int maxInputSz() const;
-    int maxOutputSz() const;
-    int minInputSz() const;
-    int minOutputSz() const;
+    int maxInputSize() const;
+    int maxOutputSize() const;
+    int minInputSize() const;
+    int minOutputSize() const;
     int outputSize() const;
-    int topPosition() const;
+    int priority() const;
+    qreal rotation() const;
+    virtual QString audio() const;
+    virtual QString color() const;
     virtual QString genericProperties();
-    virtual QString getAudio() const;
-    virtual QString getColor() const;
     virtual void refresh();
     virtual void setAudio(const QString &audio);
     virtual void setColor(const QString &color);
-    virtual void setPortName(const QString &name);
-    virtual void setSkin(bool defaultSkin, const QString &filename);
-    void disable();
-    void enable();
+    virtual void setFrequency(const float freq);
+    virtual void setSkin(const bool defaultSkin, const QString &fileName);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-    void setInputSize(int size);
+    void retranslate();
+    void rotatePorts(const qreal angle);
+    void setHasCustomConfig(const bool hasCustomConfig);
+    void setInputSize(const int size);
     void setInputs(const QVector<QNEInputPort *> &inputs);
     void setLabel(const QString &label);
+    void setLogic(LogicElement *newLogic);
     void setOutputSize(const int size);
     void setOutputs(const QVector<QNEOutputPort *> &outputs);
-    void setPixmap(const QString &pixmapName);
-    void setPixmap(const QString &pixmapName, QRect size);
+    void setPixmap(const QString &pixmapPath);
+    void setPixmap(const int index);
+    void setPortName(const QString &name);
+    void setPriority(const int value);
+    void setRotation(const qreal angle);
     void setTrigger(const QKeySequence &trigger);
     void updateLabel();
 
 protected:
+    QPixmap pixmap() const;
+    QRectF portsBoundingRect() const;
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
-    void setBottomPosition(int bottomPosition);
-    void setCanChangeSkin(bool canChangeSkin);
-    void setHasAudio(bool hasAudio);
-    void setHasColors(bool hasColors);
-    void setHasCustomConfig(bool hasCustomConfig);
-    void setHasFrequency(bool hasFrequency);
-    void setHasLabel(bool hasLabel);
-    void setHasTrigger(bool hasTrigger);
-    void setMaxInputSz(int maxInputSz);
-    void setMaxOutputSz(int maxOutputSz);
-    void setMinInputSz(const int minInputSz);
-    void setMinOutputSz(int minOutputSz);
-    void setOutputsOnTop(bool outputsOnTop);
-    void setRotatable(bool rotatable);
-    void setTopPosition(int topPosition);
+    bool sceneEvent(QEvent *event) override;
+    void setCanChangeSkin(const bool canChangeSkin);
+    void setHasAudio(const bool hasAudio);
+    void setHasColors(const bool hasColors);
+    void setHasFrequency(const bool hasFrequency);
+    void setHasLabel(const bool hasLabel);
+    void setHasTrigger(const bool hasTrigger);
+    void setMaxInputSize(const int maxInputSize);
+    void setMaxOutputSize(const int maxOutputSize);
+    void setMinInputSize(const int minInputSize);
+    void setMinOutputSize(const int minOutputSize);
+    void setOutputsOnRight(const bool outputsOnRight);
+    void setRotatable(const bool rotatable);
 
-    /**
-     * @brief Path to all current skins. The default skin is in a research file. Custom skin names are system file paths defined by the user.
-     */
-    QVector<QString> m_pixmapSkinName;
-    /**
-     * @brief m_inputs: input port vector
-     */
-    QVector<QNEInputPort *> m_inputs;
-    /**
-     * @brief m_outputs: output port vector
-     */
-    QVector<QNEOutputPort *> m_outputs;
+    //! Path to all default skins. The default skin is in a resource file.
+    QStringList m_defaultSkins;
 
-    bool m_usingDefaultSkin;
+    //! Path to all custom skins. Custom skin names are system file paths defined by the user.
+    QStringList m_alternativeSkins;
 
-private:
-    /**
-     * functions to load GraphicElement atributes through a binary data stream
-     */
-    void loadPos(QDataStream &ds);
+    //! input port vector
+    QVector<QNEInputPort *> m_inputPorts;
 
-    void loadAngle(QDataStream &ds);
-    void loadInputPort(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, size_t port);
-    void loadInputPorts(QDataStream &ds, QMap<quint64, QNEPort *> &portMap);
-    void loadLabel(QDataStream &ds, double version);
-    void loadMinMax(QDataStream &ds, double version);
-    void loadOutputPort(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, size_t port);
-    void loadOutputPorts(QDataStream &ds, QMap<quint64, QNEPort *> &portMap);
-    void loadPixmapSkinName(QDataStream &ds, size_t skin);
-    void loadPixmapSkinNames(QDataStream &ds, double version);
-    void loadTrigger(QDataStream &ds, double version);
-    void removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap);
-    void removeSurplusInputs(quint64 inputSz, QMap<quint64, QNEPort *> &portMap);
-    void removeSurplusOutputs(quint64 outputSz, QMap<quint64, QNEPort *> &portMap);
+    //! output port vector
+    QVector<QNEOutputPort *> m_outputPorts;
 
-    /**
-     * @brief Current pixmap displayed for this GraphicElement.
-     */
-    ElementGroup m_elementGroup;
-    ElementType m_elementType;
+    //! Current pixmap displayed for this GraphicElement.
+    std::unique_ptr<QPixmap> m_pixmap = std::make_unique<QPixmap>();
+
     QColor m_selectionBrush;
     QColor m_selectionPen;
-    QGraphicsTextItem *m_label;
+    QGraphicsTextItem *m_label = new QGraphicsTextItem(this);
+    QString m_pixmapPath;
+    QString m_titleText;
+    QString m_translatedName;
+    bool m_usingDefaultSkin = true;
+
+private:
+    static void removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap);
+
+    //! adds an input port at the end of the input port vector.
+    void addInputPort(const QString &name = {});
+
+    //! adds an output port at the end of the output port vector.
+    void addOutputPort(const QString &name = {});
+
+    //! adds an input or output port at the end of the port vector.
+    void addPort(const QString &name, const bool isOutput, const int ptr = 0);
+
+    //! functions to load GraphicElement atributes through a binary data stream
+    void loadPos(QDataStream &stream);
+
+    void highlight(const bool isSelected);
+    void loadInputPort(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const int port);
+    void loadInputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
+    void loadLabel(QDataStream &stream, const QVersionNumber version);
+    void loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
+    void loadOldFormat(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version);
+    void loadOutputPort(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const int port);
+    void loadOutputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
+    void loadPixmapSkinName(QDataStream &stream, const int skin);
+    void loadPixmapSkinNames(QDataStream &stream, const QVersionNumber version);
+    void loadPortsSize(QDataStream &stream, const QVersionNumber version);
+    void loadPriority(QDataStream &stream, const QVersionNumber version);
+    void loadRotation(QDataStream &stream, const QVersionNumber version);
+    void loadTrigger(QDataStream &stream, const QVersionNumber version);
+    void removeSurplusInputs(const quint64 inputSize_, QMap<quint64, QNEPort *> &portMap);
+    void removeSurplusOutputs(const quint64 outputSize_, QMap<quint64, QNEPort *> &portMap);
+
+    ElementGroup m_elementGroup = ElementGroup::Unknown;
+    ElementType m_elementType = ElementType::Unknown;
+    LogicElement *m_logic = nullptr;
     QKeySequence m_trigger;
-    QPixmap *m_pixmap;
-    QString m_currentPixmapName;
+    QString m_currentPixmapPath;
     QString m_labelText;
-    bool m_canChangeSkin;
-    bool m_disabled;
-    bool m_hasAudio;
-    bool m_hasColors;
-    bool m_hasCustomConfig;
-    bool m_hasFrequency;
-    bool m_hasLabel;
-    bool m_hasTrigger;
-    bool m_outputsOnTop;
-    bool m_rotatable;
-    int m_bottomPosition;
-    int m_topPosition;
-    quint64 m_maxInputSz;
-    quint64 m_maxOutputSz;
-    quint64 m_minInputSz;
-    quint64 m_minOutputSz;
+    bool m_canChangeSkin = false;
+    bool m_hasAudio = false;
+    bool m_hasColors = false;
+    bool m_hasCustomConfig = false;
+    bool m_hasFrequency = false;
+    bool m_hasLabel = false;
+    bool m_hasTrigger = false;
+    bool m_rotatable = true;
+    bool m_selected = false;
+    qreal m_angle = 0;
+    quint64 m_maxInputSize = 0;
+    quint64 m_maxOutputSize = 0;
+    quint64 m_minInputSize = 0;
+    quint64 m_minOutputSize = 0;
+    quint64 m_priority = 0;
 };
 
 Q_DECLARE_METATYPE(GraphicElement)
 
-QDataStream &operator<<(QDataStream &ds, const GraphicElement *item);
+QDataStream &operator<<(QDataStream &stream, const GraphicElement *item);
+
+// FIXME: connecting more than one source makes element stop working

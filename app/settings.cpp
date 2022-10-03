@@ -1,7 +1,5 @@
 #include "settings.h"
 
-QSettings *Settings::settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, "GIBIS-UNIFESP", "WiRedPanda");
-
 QString Settings::fileName()
 {
     return settings->fileName();
@@ -17,16 +15,6 @@ bool Settings::contains(const QString &key)
     return settings->contains(key);
 }
 
-void Settings::beginGroup(const QString &prefix)
-{
-    settings->beginGroup(prefix);
-}
-
-void Settings::endGroup()
-{
-    settings->endGroup();
-}
-
 void Settings::remove(const QString &key)
 {
     settings->remove(key);
@@ -35,4 +23,5 @@ void Settings::remove(const QString &key)
 void Settings::setValue(const QString &key, const QVariant &value)
 {
     settings->setValue(key, value);
+    settings->sync();
 }

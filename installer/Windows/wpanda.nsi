@@ -17,13 +17,13 @@
   !define MUI_PRODUCT "WiRedPanda"
   !define MUI_FILE "wpanda"
   # These three must be integers
-  !define VERSIONMAJOR 2
-  !define VERSIONMINOR 6
+  !define VERSIONMAJOR 4
+  !define VERSIONMINOR 0
   !define VERSIONBUILD 0
   !define MUI_VERSION "${VERSIONMAJOR}.{VERSIONMINOR}"
   !define MUI_BRANDINGTEXT "${MUI_PRODUCT} ${MUI_VERSION}"
   !define COMPANYNAME "UNIFESP"
-  !define DESCRIPTION "WiRedPanda is a software designed to help students to learn about logic circuits and simulate them in an easy and friendly way."
+  !define DESCRIPTION "WiRedPanda is a software designed to help students learn about logic circuits and simulate them in an easy and friendly way."
   !define FILEICON "pandaFile.ico"
   !define BUILD_DIR "Build/release"
   CRCCheck On
@@ -88,27 +88,7 @@ Section "WiRedPanda" Installationinfo
 
 ;Add files
   SetOutPath "$INSTDIR"
-
-  File "${BUILD_DIR}\${MUI_FILE}.exe"
-  File "logo.ico"
-  File "${FILEICON}"
-  ; File "${MUI_FILE}.ini"
-  File "..\..\LICENSE"
-  File "${BUILD_DIR}\*.dll"
-  SetOutPath "$INSTDIR\iconengines"
-  File "${BUILD_DIR}\iconengines\qsvgicon.dll"
-  SetOutPath "$INSTDIR\imageformats"
-  File "${BUILD_DIR}\imageformats\*.dll"
-  SetOutPath "$INSTDIR\platforms"
-  File "${BUILD_DIR}\platforms\*.dll"
-  SetOutPath "$INSTDIR\translations"
-  File "${BUILD_DIR}\translations\*.qm"
-
-  ; hier komen dan nog de bestanden die in de playlist staan
-  #SetOutPath "$INSTDIR"
-  #file /r mpg
-  SetOutPath "$INSTDIR"
-  #file /r xtras
+  File /nonfatal /a /r "${BUILD_DIR}\"
 
 ;create desktop shortcut
   CreateShortCut "$DESKTOP\${MUI_PRODUCT}.lnk" "$INSTDIR\${MUI_FILE}.exe" "" "$INSTDIR\logo.ico" 0

@@ -25,8 +25,10 @@
 
 #pragma once
 
+#include "enums.h"
 #include "itemwithid.h"
 
+#include <QCoreApplication>
 #include <QGraphicsPathItem>
 
 class QNEPort;
@@ -35,51 +37,53 @@ class QNEOutputPort;
 
 class QNEConnection : public QGraphicsPathItem, public ItemWithId
 {
+    Q_DECLARE_TR_FUNCTIONS(QNEConnection)
+
 public:
-    enum : uint32_t { Type = QGraphicsItem::UserType + 2 };
-    enum class Status { Invalid = -1, Inactive = 0, Active = 1 };
+    enum { Type = QGraphicsItem::UserType + 2 };
+    int type() const override { return Type; }
 
     explicit QNEConnection(QGraphicsItem *parent = nullptr);
     ~QNEConnection() override;
+    QNEConnection(const QNEConnection &other) : QNEConnection(other.parentItem()) {}
 
-    void setStartPos(QPointF p);
-    void setEndPos(QPointF p);
-    void setStart(QNEOutputPort *p);
-    void setEnd(QNEInputPort *p);
-    void updatePosFromPorts();
-    void updatePath();
-    QNEOutputPort *start() const;
-    QNEInputPort *end() const;
-
-    double angle();
-
-    void save(QDataStream &) const;
-    bool load(QDataStream &, const QMap<quint64, QNEPort *> &portMap = QMap<quint64, QNEPort *>());
-
-    int type() const override
-    {
-        return Type;
-    }
+    QNEInputPort *endPort() const;
+    QNEOutputPort *startPort() const;
     QNEPort *otherPort(const QNEPort *port) const;
-    QNEOutputPort *otherPort(const QNEInputPort * /*port*/) const;
-    QNEInputPort *otherPort(const QNEOutputPort * /*port*/) const;
+    QRectF boundingRect() const override;
     Status status() const;
-    void setStatus(Status status);
-
-    void updateTheme();
+    bool highLight();
+    double angle();
+    void load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap = {});
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void save(QDataStream &stream) const;
+    void setEndPort(QNEInputPort *port);
+    void setEndPos(const QPointF point);
+    void setHighLight(const bool highLight);
+    void setStartPort(QNEOutputPort *port);
+    void setStartPos(const QPointF point);
+    void setStatus(const Status status);
+    void updatePath();
+    void updatePosFromPorts();
+    void updateTheme();
+
+protected:
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+    bool sceneEvent(QEvent *event) override;
 
 private:
-    QPointF m_startPos;
+    QColor m_activeColor;
+    QColor m_inactiveColor;
+    QColor m_invalidColor;
+    QColor m_selectedColor;
+    QNEInputPort *m_endPort = nullptr;
+    QNEOutputPort *m_startPort = nullptr;
     QPointF m_endPos;
-    QNEOutputPort *m_start;
-    QNEInputPort *m_end;
-    Status m_status;
-
-    QColor m_invalidClr;
-    QColor m_activeClr;
-    QColor m_inactiveClr;
-    QColor m_selectedClr;
+    QPointF m_startPos;
+    Status m_status = Status::Invalid;
+    bool m_highLight = false;
 };
 
-QDataStream &operator<<(QDataStream &ds, const QNEConnection *item);
+Q_DECLARE_METATYPE(QNEConnection)
+
+QDataStream &operator<<(QDataStream &stream, const QNEConnection *conn);

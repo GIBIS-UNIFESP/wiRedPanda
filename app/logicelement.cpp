@@ -1,19 +1,14 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "logicelement.h"
 
-LogicElement::LogicElement(size_t inputSize, size_t outputSize)
-    : m_isValid(true)
-    , m_beingVisited(false)
-    , m_priority(-1)
-    , m_inputs(inputSize, std::make_pair(nullptr, 0))
-    , m_inputvalues(inputSize, false)
-    , m_outputs(outputSize, false)
+LogicElement::LogicElement(const int inputSize, const int outputSize)
+    : m_inputValues(inputSize, false)
+    , m_inputPairs(inputSize, {})
+    , m_outputValues(outputSize, false)
 {
 }
-
-LogicElement::~LogicElement() = default;
 
 bool LogicElement::isValid() const
 {
@@ -22,66 +17,67 @@ bool LogicElement::isValid() const
 
 void LogicElement::clearPredecessors()
 {
-    std::fill(m_inputs.begin(), m_inputs.end(), std::make_pair(nullptr, 0));
+    std::fill(m_inputPairs.begin(), m_inputPairs.end(), InputPair{});
 }
 
 void LogicElement::clearSucessors()
 {
-    for (const auto &elm : qAsConst(m_successors)) {
-        for (auto &input : elm->m_inputs) {
-            if (input.first == this) {
-                input.first = nullptr;
-                input.second = 0;
+    for (const auto &logic : qAsConst(m_successors)) {
+        for (auto &inputPair : logic->m_inputPairs) {
+            if (inputPair.logic == this) {
+                inputPair.logic = nullptr;
+                inputPair.port = 0;
             }
         }
     }
+
     m_successors.clear();
 }
 
-void LogicElement::updateLogic()
+bool LogicElement::updateInputs()
 {
-    if (m_isValid) {
-        for (size_t idx = 0; idx < m_inputs.size(); ++idx) {
-            m_inputvalues[idx] = getInputValue(idx);
-        }
-        _updateLogic(m_inputvalues);
+    if (!m_isValid) {
+        return false;
     }
+
+    for (int index = 0; index < m_inputPairs.size(); ++index) {
+        m_inputValues[index] = inputValue(index);
+    }
+
+    return true;
 }
 
-void LogicElement::connectPredecessor(int index, LogicElement *elm, int port)
+void LogicElement::connectPredecessor(const int index, LogicElement *logic, const int port)
 {
-    m_inputs.at(index) = std::make_pair(elm, port);
-    elm->m_successors.insert(this);
+    m_inputPairs[index] = {logic, port};
+    logic->m_successors.insert(this);
 }
 
-void LogicElement::setOutputValue(size_t index, bool value)
+void LogicElement::setOutputValue(const int index, const bool value)
 {
-    m_outputs.at(index) = value;
+    m_outputValues[index] = value;
 }
 
-void LogicElement::setOutputValue(bool value)
+void LogicElement::setOutputValue(const bool value)
 {
-    m_outputs.at(0) = value;
+    setOutputValue(0, value);
 }
 
 void LogicElement::validate()
 {
-    m_isValid = true;
-    for (size_t in = 0; in < m_inputs.size() && m_isValid; ++in) {
-        if (m_inputs[in].first == nullptr) {
-            m_isValid = false;
-        }
-    }
+    m_isValid = std::all_of(m_inputPairs.cbegin(), m_inputPairs.cend(),
+                            [](auto pair) { return pair.logic != nullptr; });
+
     if (!m_isValid) {
-        for (auto *elm : qAsConst(m_successors)) {
-            elm->m_isValid = false;
+        for (auto *logic : qAsConst(m_successors)) {
+            logic->m_isValid = false;
         }
     }
 }
 
-bool LogicElement::operator<(const LogicElement &other) const
+bool LogicElement::operator>(const LogicElement &other) const
 {
-    return m_priority < other.m_priority;
+    return (m_priority > other.m_priority);
 }
 
 int LogicElement::calculatePriority()
@@ -89,30 +85,32 @@ int LogicElement::calculatePriority()
     if (m_beingVisited) {
         return 0;
     }
+
     if (m_priority != -1) {
         return m_priority;
     }
+
     m_beingVisited = true;
     int max = 0;
-    for (auto *s : qAsConst(m_successors)) {
-        max = qMax(s->calculatePriority(), max);
+
+    for (auto *logic : qAsConst(m_successors)) {
+        max = qMax(logic->calculatePriority(), max);
     }
-    const int p = max + 1;
-    m_priority = p;
+
+    const int priority = max + 1;
+    m_priority = priority;
     m_beingVisited = false;
-    return p;
+    return priority;
 }
 
-bool LogicElement::getOutputValue(size_t index) const
+bool LogicElement::outputValue(const int index) const
 {
-    return m_outputs.at(index);
+    return m_outputValues.at(index);
 }
 
-bool LogicElement::getInputValue(size_t index) const
+bool LogicElement::inputValue(const int index) const
 {
-    Q_ASSERT(m_isValid);
-    LogicElement *pred = m_inputs[index].first;
-    Q_ASSERT(pred);
-    int port = m_inputs[index].second;
-    return pred->getOutputValue(port);
+    auto *pred = m_inputPairs.at(index).logic;
+    int port = m_inputPairs.at(index).port;
+    return pred->outputValue(port);
 }

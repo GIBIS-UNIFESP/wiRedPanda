@@ -1,131 +1,167 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "buzzer.h"
 
+#include "globalproperties.h"
 #include "qneport.h"
 
+#include <QAudio>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QAudioDeviceInfo>
+#else
+#include <QAudioDevice>
+#include <QMediaDevices>
+#endif
 #include <QDebug>
-#include <QGraphicsSceneDragDropEvent>
-#include <array>
 
-namespace {
+namespace
+{
 int id = qRegisterMetaType<Buzzer>();
 }
 
-int Buzzer::current_id_number = 0;
-
-static constexpr std::array<const char *, 2> defaultSkins
-{
-    ":/output/BuzzerOff.png", ":/output/BuzzerOn.png"
-};
-
 Buzzer::Buzzer(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Buzzer, ElementGroup::Output, 1, 1, 0, 0, parent)
+    : GraphicElement(ElementType::Buzzer, ElementGroup::Output, ":/output/buzzer/BuzzerOff.svg", tr("BUZZER"), tr("Buzzer"), 1, 1, 0, 0, parent)
 {
-    // m_pixmapSkinName.append(":/output/BuzzerOff.png");
-    // m_pixmapSkinName.append(":/output/BuzzerOn.png");
-    setOutputsOnTop(true);
-    setRotatable(false);
-    setHasAudio(true);
-    // setPixmap(m_pixmapSkinName[0]);
-    setPixmap(defaultSkins[0]);
-    m_alternativeSkins = QVector<QString>({defaultSkins[0], defaultSkins[1]});
-    updatePorts();
+    if (GlobalProperties::skipInit) {
+        return;
+    }
+
+    m_defaultSkins = QStringList{
+        ":/output/buzzer/BuzzerOff.svg",
+        ":/output/buzzer/BuzzerOn.svg"
+    };
+    m_alternativeSkins = m_defaultSkins;
+    setPixmap(0);
+
+    m_label->setPos(64, 34);
+
     setCanChangeSkin(true);
+    setHasAudio(true);
     setHasLabel(true);
-    // Let's reserve space for alternativeSkins :D
-    // All is well, rite?
-    m_alternativeSkins.resize(2);
-    setPortName("Buzzer");
-    setToolTip(m_translatedName);
-    setLabel(objectName() + "_" + QString::number(Buzzer::current_id_number));
-    ++Buzzer::current_id_number;
-    m_usingDefaultSkin = true;
-    Buzzer::setAudio("C6");
-    m_play = 0;
+    setRotatable(false);
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    m_hasOutputDevice = !QAudioDeviceInfo::defaultOutputDevice().deviceName().isEmpty();
+#else
+    m_hasOutputDevice = !QMediaDevices::defaultAudioOutput().description().isEmpty();
+#endif
+
+    if (m_hasOutputDevice) {
+        m_audio = new QSoundEffect(this);
+    }
 }
 
 void Buzzer::refresh()
 {
     if (!isValid()) {
-        stopbuzzer();
+        stopBuzzer();
         return;
     }
 
-    const bool value = m_inputs.first()->value();
-    if (value == 1) {
-        playbuzzer();
-    } else if (m_play == 1) {
-        stopbuzzer();
-    }
+    const Status inputValue = m_inputPorts.constFirst()->status();
+
+    (inputValue == Status::Active) ? playBuzzer() : stopBuzzer();
 }
 
 void Buzzer::setAudio(const QString &note)
 {
-    m_audio.setSource(QUrl::fromLocalFile(QString(":output/audio/%1.wav").arg(note)));
-    m_audio.setVolume(0.35f);
-    m_audio.setLoopCount(QSoundEffect::Infinite);
+    if (note.isEmpty()) {
+        return;
+    }
+
     m_note = note;
+
+    if (!m_hasOutputDevice) {
+        return;
+    }
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    m_audio->setVolume(0.35);
+#else
+    m_audio->setVolume(0.35f);
+#endif
+
+    m_audio->setSource(QUrl::fromLocalFile(":output/audio/" + note + ".wav"));
+    m_audio->setLoopCount(QSoundEffect::Infinite); // TODO: fix audio clipping when repeating
 }
 
-QString Buzzer::getAudio() const
+QString Buzzer::audio() const
 {
     return m_note;
 }
 
-void Buzzer::mute(bool _mute)
+void Buzzer::mute(const bool mute)
 {
-    m_audio.setMuted(_mute);
-}
-
-void Buzzer::playbuzzer()
-{
-    if (m_play != 0) {
+    if (!m_hasOutputDevice) {
         return;
     }
 
-    m_usingDefaultSkin ? setPixmap(defaultSkins[1]) : setPixmap(m_alternativeSkins[1]);
-    m_audio.play();
-    m_play = 1;
+    m_audio->setMuted(mute);
 }
 
-void Buzzer::stopbuzzer()
+void Buzzer::playBuzzer()
 {
-    m_usingDefaultSkin ? setPixmap(defaultSkins[0]) : setPixmap(m_alternativeSkins[0]);
-    m_play = 0;
-    m_audio.stop();
-}
-
-void Buzzer::save(QDataStream &ds) const
-{
-    GraphicElement::save(ds);
-    ds << getAudio();
-}
-
-void Buzzer::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
-{
-    GraphicElement::load(ds, portMap, version);
-    if (version < 2.4) {
+    if (m_isPlaying) {
         return;
     }
-    QString note;
-    ds >> note;
-    setAudio(note);
+
+    setPixmap(1);
+
+    if (m_hasOutputDevice) {
+        if (m_audio->source().isEmpty()) {
+            setAudio("C6");
+        }
+
+        m_audio->play();
+    }
+
+    m_isPlaying = true;
 }
 
-void Buzzer::setSkin(bool defaultSkin, const QString &filename)
+void Buzzer::stopBuzzer()
 {
-    if (m_play > 0) {
-        m_play = 1;
+    if (!m_isPlaying) {
+        return;
     }
-    if (defaultSkin) {
-        m_usingDefaultSkin = true;
-        setPixmap(defaultSkins[m_play]);
-    } else {
-        m_usingDefaultSkin = false;
-        m_alternativeSkins[m_play] = filename;
-        setPixmap(m_alternativeSkins[m_play]);
-        // qCDebug(zero) << "Filename:" << alternativeSkins[play];
+
+    setPixmap(0);
+
+    if (m_hasOutputDevice) {
+        m_audio->stop();
+    }
+
+    m_isPlaying = false;
+}
+
+void Buzzer::save(QDataStream &stream) const
+{
+    GraphicElement::save(stream);
+
+    QMap<QString, QVariant> map;
+    map.insert("note", audio());
+
+    stream << map;
+}
+
+void Buzzer::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
+{
+    GraphicElement::load(stream, portMap, version);
+
+    if (version < VERSION("2.4")) {
+        return;
+    }
+
+    if (version < VERSION("4.1")) {
+        QString note; stream >> note;
+        setAudio(note);
+    }
+
+    if (version >= VERSION("4.1")) {
+        QMap<QString, QVariant> map; stream >> map;
+
+        if (map.contains("note")) {
+            setAudio(map.value("note").toString());
+        }
     }
 }

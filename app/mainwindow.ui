@@ -20,8 +20,8 @@
    <string notr="true"/>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>:/pandaLogo.png</normaloff>:/pandaLogo.png</iconset>
+   <iconset resource="resources/toolbar/toolbar.qrc">
+    <normaloff>:/toolbar/wpanda.svg</normaloff>:/toolbar/wpanda.svg</iconset>
   </property>
   <property name="toolButtonStyle">
    <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -74,10 +74,25 @@
         </size>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_5">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
         <item>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="4" column="0" colspan="3">
-           <widget class="QTabWidget" name="tabWidget">
+          <item row="1" column="0" colspan="3">
+           <widget class="QTabWidget" name="tabElements">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
               <horstretch>0</horstretch>
@@ -90,13 +105,27 @@
               <height>0</height>
              </size>
             </property>
+            <property name="styleSheet">
+             <string notr="true">QTabBar::tab:disabled {
+	 width: 0;
+	 height: 0;
+	 margin: 0;
+	 padding: 0;
+	 border: none; 
+}
+
+QTabWidget::pane {
+	margin: 0px 0px 0px 0px; 
+}
+</string>
+            </property>
             <property name="currentIndex">
              <number>0</number>
             </property>
             <widget class="QWidget" name="io">
              <attribute name="icon">
               <iconset resource="resources/input/input.qrc">
-               <normaloff>:/input/buttonOff.png</normaloff>:/input/buttonOff.png</iconset>
+               <normaloff>:/input/buttonOff.svg</normaloff>:/input/buttonOff.svg</iconset>
              </attribute>
              <attribute name="title">
               <string/>
@@ -118,8 +147,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>248</width>
-                   <height>248</height>
+                   <width>260</width>
+                   <height>581</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -145,7 +174,7 @@
             <widget class="QWidget" name="gates">
              <attribute name="icon">
               <iconset resource="resources/basic/basic.qrc">
-               <normaloff>:/basic/xor.png</normaloff>:/basic/xor.png</iconset>
+               <normaloff>:/basic/xor.svg</normaloff>:/basic/xor.svg</iconset>
              </attribute>
              <attribute name="title">
               <string/>
@@ -167,8 +196,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>248</width>
-                   <height>248</height>
+                   <width>260</width>
+                   <height>581</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -194,7 +223,7 @@
             <widget class="QWidget" name="memory">
              <attribute name="icon">
               <iconset resource="resources/memory/light/memory_light.qrc">
-               <normaloff>:/memory/light/D-flipflop.png</normaloff>:/memory/light/D-flipflop.png</iconset>
+               <normaloff>:/memory/light/D-flipflop.svg</normaloff>:/memory/light/D-flipflop.svg</iconset>
              </attribute>
              <attribute name="title">
               <string/>
@@ -216,8 +245,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>248</width>
-                   <height>248</height>
+                   <width>260</width>
+                   <height>581</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -243,7 +272,7 @@
             <widget class="QWidget" name="ic">
              <attribute name="icon">
               <iconset resource="resources/basic/basic.qrc">
-               <normaloff>:/basic/box.png</normaloff>:/basic/box.png</iconset>
+               <normaloff>:/basic/ic-panda.svg</normaloff>:/basic/ic-panda.svg</iconset>
              </attribute>
              <attribute name="title">
               <string/>
@@ -252,7 +281,7 @@
               <string>Integrated Circuits</string>
              </attribute>
              <layout class="QGridLayout" name="gridLayout_4">
-              <item row="0" column="0">
+              <item row="1" column="0">
                <widget class="QScrollArea" name="scrollArea_Box">
                 <property name="frameShape">
                  <enum>QFrame::NoFrame</enum>
@@ -260,13 +289,13 @@
                 <property name="widgetResizable">
                  <bool>true</bool>
                 </property>
-                <widget class="QWidget" name="scrollAreaWidgetContents_Box">
+                <widget class="QWidget" name="scrollAreaWidgetContents_IC">
                  <property name="geometry">
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>248</width>
-                   <height>248</height>
+                   <width>260</width>
+                   <height>549</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -287,12 +316,40 @@
                 </widget>
                </widget>
               </item>
+              <item row="0" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout">
+                <item>
+                 <widget class="QPushButton" name="pushButtonAddIC">
+                  <property name="text">
+                   <string>Add IC files</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="TrashButton" name="pushButtonRemoveIC">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Remove IC</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="resources/toolbar/toolbar.qrc">
+                    <normaloff>:/toolbar/trashcan.svg</normaloff>:/toolbar/trashcan.svg</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
              </layout>
             </widget>
             <widget class="QWidget" name="misc">
              <attribute name="icon">
               <iconset resource="resources/misc/misc.qrc">
-               <normaloff>:/text.png</normaloff>:/text.png</iconset>
+               <normaloff>:/misc/text.png</normaloff>:/misc/text.png</iconset>
              </attribute>
              <attribute name="title">
               <string/>
@@ -314,8 +371,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>248</width>
-                   <height>248</height>
+                   <width>260</width>
+                   <height>581</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -326,7 +383,7 @@
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_6">
                   <item>
-                   <spacer name="verticalSpacer_MISC">
+                   <spacer name="verticalSpacer_Misc">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
                     </property>
@@ -344,26 +401,49 @@
               </item>
              </layout>
             </widget>
+            <widget class="QWidget" name="search">
+             <attribute name="title">
+              <string/>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_9">
+              <item row="0" column="0">
+               <widget class="QScrollArea" name="scrollArea_Search">
+                <property name="widgetResizable">
+                 <bool>true</bool>
+                </property>
+                <widget class="QWidget" name="scrollAreaWidgetContents_Search">
+                 <property name="geometry">
+                  <rect>
+                   <x>0</x>
+                   <y>0</y>
+                   <width>258</width>
+                   <height>579</height>
+                  </rect>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_7">
+                  <item>
+                   <spacer name="verticalSpacer_Search">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>234</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </widget>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </widget>
           </item>
-          <item row="2" column="1">
-           <spacer name="verticalSpacer_5">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Fixed</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>4</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="5" column="0" colspan="3">
-           <widget class="ElementEditor" name="widgetElementEditor" native="true">
+          <item row="2" column="0" colspan="3">
+           <widget class="ElementEditor" name="elementEditor" native="true">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -398,7 +478,7 @@
            </widget>
           </item>
           <item row="0" column="1" colspan="2">
-           <widget class="QLineEdit" name="lineEdit">
+           <widget class="QLineEdit" name="lineEditSearch">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -410,47 +490,11 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="3">
-           <widget class="QScrollArea" name="searchScrollArea">
-            <property name="widgetResizable">
-             <bool>true</bool>
-            </property>
-            <widget class="QWidget" name="searchContents">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>268</width>
-               <height>295</height>
-              </rect>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_7">
-              <item row="0" column="0">
-               <layout class="QVBoxLayout" name="searchLayout">
-                <item>
-                 <spacer name="VSpacer">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>20</width>
-                    <height>184</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </widget>
-          </item>
          </layout>
         </item>
        </layout>
       </widget>
-      <widget class="QTabWidget" name="tabWidget_mainWindow">
+      <widget class="QTabWidget" name="tab">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>255</horstretch>
@@ -484,14 +528,8 @@
    <property name="contextMenuPolicy">
     <enum>Qt::PreventContextMenu</enum>
    </property>
-   <property name="movable">
-    <bool>false</bool>
-   </property>
    <property name="toolButtonStyle">
     <enum>Qt::ToolButtonFollowStyle</enum>
-   </property>
-   <property name="floatable">
-    <bool>false</bool>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -503,18 +541,19 @@
    <addaction name="actionOpen"/>
    <addaction name="actionSave"/>
    <addaction name="separator"/>
-   <addaction name="actionRotate_left"/>
-   <addaction name="actionRotate_right"/>
+   <addaction name="actionRotateLeft"/>
+   <addaction name="actionRotateRight"/>
    <addaction name="actionCut"/>
    <addaction name="actionCopy"/>
    <addaction name="actionPaste"/>
    <addaction name="actionDelete"/>
    <addaction name="separator"/>
-   <addaction name="actionZoom_in"/>
-   <addaction name="actionZoom_out"/>
-   <addaction name="actionReset_Zoom"/>
+   <addaction name="actionZoomIn"/>
+   <addaction name="actionZoomOut"/>
+   <addaction name="actionResetZoom"/>
    <addaction name="separator"/>
    <addaction name="actionPlay"/>
+   <addaction name="actionRestart"/>
    <addaction name="actionWaveform"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -534,7 +573,7 @@
     <property name="toolTipsVisible">
      <bool>false</bool>
     </property>
-    <widget class="QMenu" name="menuRecent_files">
+    <widget class="QMenu" name="menuRecentFiles">
      <property name="enabled">
       <bool>false</bool>
      </property>
@@ -543,21 +582,21 @@
      </property>
      <property name="icon">
       <iconset resource="resources/toolbar/toolbar.qrc">
-       <normaloff>:/toolbar/recentFiles.png</normaloff>:/toolbar/recentFiles.png</iconset>
+       <normaloff>:/toolbar/recentFiles.svg</normaloff>:/toolbar/recentFiles.svg</iconset>
      </property>
      <addaction name="separator"/>
     </widget>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
     <addaction name="separator"/>
-    <addaction name="menuRecent_files"/>
-    <addaction name="actionReload_File"/>
+    <addaction name="menuRecentFiles"/>
+    <addaction name="actionReloadFile"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
-    <addaction name="actionSave_As"/>
-    <addaction name="actionExport_to_Arduino"/>
-    <addaction name="actionPrint"/>
-    <addaction name="actionExport_to_Image"/>
+    <addaction name="actionSaveAs"/>
+    <addaction name="actionExportToArduino"/>
+    <addaction name="actionExportToPdf"/>
+    <addaction name="actionExportToImage"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
     <addaction name="separator"/>
@@ -573,23 +612,23 @@
     <addaction name="actionDelete"/>
     <addaction name="separator"/>
     <addaction name="actionRename"/>
-    <addaction name="actionChange_Trigger"/>
+    <addaction name="actionChangeTrigger"/>
     <addaction name="separator"/>
-    <addaction name="actionRotate_left"/>
-    <addaction name="actionRotate_right"/>
-    <addaction name="actionFlip_horizontally"/>
-    <addaction name="actionFlip_vertically"/>
+    <addaction name="actionRotateLeft"/>
+    <addaction name="actionRotateRight"/>
+    <addaction name="actionFlipHorizontally"/>
+    <addaction name="actionFlipVertically"/>
     <addaction name="separator"/>
-    <addaction name="actionSelect_all"/>
-    <addaction name="actionClear_selection"/>
+    <addaction name="actionSelectAll"/>
+    <addaction name="actionClearSelection"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
      <string>&amp;Help</string>
     </property>
     <addaction name="actionAbout"/>
-    <addaction name="actionAbout_Qt"/>
-    <addaction name="actionAbout_this_version"/>
+    <addaction name="actionAboutQt"/>
+    <addaction name="actionAboutThisVersion"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -599,21 +638,21 @@
      <property name="title">
       <string>&amp;Theme</string>
      </property>
-     <addaction name="actionPanda_Light"/>
-     <addaction name="actionPanda_Dark"/>
+     <addaction name="actionLightTheme"/>
+     <addaction name="actionDarkTheme"/>
     </widget>
-    <addaction name="actionZoom_in"/>
-    <addaction name="actionZoom_out"/>
-    <addaction name="actionReset_Zoom"/>
+    <addaction name="actionZoomIn"/>
+    <addaction name="actionZoomOut"/>
+    <addaction name="actionResetZoom"/>
     <addaction name="separator"/>
     <addaction name="actionWires"/>
     <addaction name="actionGates"/>
     <addaction name="separator"/>
-    <addaction name="actionFast_Mode"/>
+    <addaction name="actionFastMode"/>
     <addaction name="separator"/>
     <addaction name="menuTheme"/>
     <addaction name="actionFullscreen"/>
-    <addaction name="actionLabels_under_icons"/>
+    <addaction name="actionLabelsUnderIcons"/>
    </widget>
    <widget class="QMenu" name="menuLanguage">
     <property name="title">
@@ -627,20 +666,27 @@
      <string>Sim&amp;ulation</string>
     </property>
     <addaction name="actionPlay"/>
+    <addaction name="actionRestart"/>
     <addaction name="actionWaveform"/>
     <addaction name="actionMute"/>
+   </widget>
+   <widget class="QMenu" name="menuExamples">
+    <property name="title">
+     <string>Examples</string>
+    </property>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
    <addaction name="menuSimulation"/>
+   <addaction name="menuExamples"/>
    <addaction name="menuLanguage"/>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionOpen">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/folder.png</normaloff>:/toolbar/folder.png</iconset>
+     <normaloff>:/toolbar/folder.svg</normaloff>:/toolbar/folder.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Open...</string>
@@ -655,7 +701,7 @@
   <action name="actionSave">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/save.png</normaloff>:/toolbar/save.png</iconset>
+     <normaloff>:/toolbar/save.svg</normaloff>:/toolbar/save.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Save</string>
@@ -664,10 +710,10 @@
     <string>Ctrl+S</string>
    </property>
   </action>
-  <action name="actionSave_As">
+  <action name="actionSaveAs">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/save.png</normaloff>:/toolbar/save.png</iconset>
+     <normaloff>:/toolbar/save.svg</normaloff>:/toolbar/save.svg</iconset>
    </property>
    <property name="text">
     <string>Save &amp;As...</string>
@@ -679,7 +725,7 @@
   <action name="actionCut">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/cut.png</normaloff>:/toolbar/cut.png</iconset>
+     <normaloff>:/toolbar/cut.svg</normaloff>:/toolbar/cut.svg</iconset>
    </property>
    <property name="text">
     <string>Cu&amp;t</string>
@@ -691,7 +737,7 @@
   <action name="actionCopy">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/copy.png</normaloff>:/toolbar/copy.png</iconset>
+     <normaloff>:/toolbar/copy.svg</normaloff>:/toolbar/copy.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Copy</string>
@@ -703,7 +749,7 @@
   <action name="actionPaste">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/paste.png</normaloff>:/toolbar/paste.png</iconset>
+     <normaloff>:/toolbar/paste.svg</normaloff>:/toolbar/paste.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Paste</string>
@@ -715,7 +761,7 @@
   <action name="actionDelete">
    <property name="icon">
     <iconset>
-     <normalon>:/toolbar/delete.png</normalon>
+     <normalon>:/toolbar/delete.svg</normalon>
     </iconset>
    </property>
    <property name="text">
@@ -728,7 +774,7 @@
   <action name="actionNew">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/new.png</normaloff>:/toolbar/new.png</iconset>
+     <normaloff>:/toolbar/new.svg</normaloff>:/toolbar/new.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;New</string>
@@ -737,22 +783,22 @@
     <string>Ctrl+N</string>
    </property>
   </action>
-  <action name="actionZoom_in">
+  <action name="actionZoomIn">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/zoomIn.png</normaloff>:/toolbar/zoomIn.png</iconset>
+     <normaloff>:/toolbar/zoomIn.svg</normaloff>:/toolbar/zoomIn.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom &amp;in</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl++</string>
+    <string>Ctrl+=</string>
    </property>
   </action>
-  <action name="actionZoom_out">
+  <action name="actionZoomOut">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/zoomOut.png</normaloff>:/toolbar/zoomOut.png</iconset>
+     <normaloff>:/toolbar/zoomOut.svg</normaloff>:/toolbar/zoomOut.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom &amp;out</string>
@@ -770,7 +816,7 @@
    </property>
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/wires.png</normaloff>:/toolbar/wires.png</iconset>
+     <normaloff>:/toolbar/wires.svg</normaloff>:/toolbar/wires.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Wires</string>
@@ -788,7 +834,7 @@
    </property>
    <property name="icon">
     <iconset resource="resources/basic/basic.qrc">
-     <normaloff>:/basic/nor.png</normaloff>:/basic/nor.png</iconset>
+     <normaloff>:/basic/nor.svg</normaloff>:/basic/nor.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Gates</string>
@@ -800,7 +846,7 @@
   <action name="actionAbout">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/help.png</normaloff>:/toolbar/help.png</iconset>
+     <normaloff>:/toolbar/help.svg</normaloff>:/toolbar/help.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;About</string>
@@ -812,7 +858,7 @@
   <action name="actionExit">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/exit.png</normaloff>:/toolbar/exit.png</iconset>
+     <normaloff>:/toolbar/exit.svg</normaloff>:/toolbar/exit.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Exit</string>
@@ -821,10 +867,10 @@
     <string>Ctrl+Q</string>
    </property>
   </action>
-  <action name="actionRotate_right">
+  <action name="actionRotateRight">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/rotateR.png</normaloff>:/toolbar/rotateR.png</iconset>
+     <normaloff>:/toolbar/rotateR.svg</normaloff>:/toolbar/rotateR.svg</iconset>
    </property>
    <property name="text">
     <string>R&amp;otate right</string>
@@ -833,10 +879,10 @@
     <string>Ctrl+R</string>
    </property>
   </action>
-  <action name="actionRotate_left">
+  <action name="actionRotateLeft">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/rotateL.png</normaloff>:/toolbar/rotateL.png</iconset>
+     <normaloff>:/toolbar/rotateL.svg</normaloff>:/toolbar/rotateL.svg</iconset>
    </property>
    <property name="text">
     <string>Rotate &amp;left</string>
@@ -845,19 +891,19 @@
     <string>Ctrl+Shift+R</string>
    </property>
   </action>
-  <action name="actionAbout_Qt">
+  <action name="actionAboutQt">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/helpQt.png</normaloff>:/toolbar/helpQt.png</iconset>
+     <normaloff>:/toolbar/helpQt.svg</normaloff>:/toolbar/helpQt.svg</iconset>
    </property>
    <property name="text">
     <string>About &amp;Qt</string>
    </property>
   </action>
-  <action name="actionSelect_all">
+  <action name="actionSelectAll">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/selectAll.png</normaloff>:/toolbar/selectAll.png</iconset>
+     <normaloff>:/toolbar/selectAll.svg</normaloff>:/toolbar/selectAll.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Select all</string>
@@ -866,10 +912,10 @@
     <string>Ctrl+A</string>
    </property>
   </action>
-  <action name="actionReload_File">
+  <action name="actionReloadFile">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/reloadFile.png</normaloff>:/toolbar/reloadFile.png</iconset>
+     <normaloff>:/toolbar/reloadFile.svg</normaloff>:/toolbar/reloadFile.svg</iconset>
    </property>
    <property name="text">
     <string>Re&amp;load File</string>
@@ -878,10 +924,10 @@
     <string>Ctrl+F5</string>
    </property>
   </action>
-  <action name="actionExport_to_Arduino">
+  <action name="actionExportToArduino">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/arduino.png</normaloff>:/toolbar/arduino.png</iconset>
+     <normaloff>:/toolbar/arduino.svg</normaloff>:/toolbar/arduino.svg</iconset>
    </property>
    <property name="text">
     <string>E&amp;xport to Arduino</string>
@@ -890,10 +936,10 @@
     <string>Ctrl+Alt+I</string>
    </property>
   </action>
-  <action name="actionReset_Zoom">
+  <action name="actionResetZoom">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/zoomReset.png</normaloff>:/toolbar/zoomReset.png</iconset>
+     <normaloff>:/toolbar/zoomReset.svg</normaloff>:/toolbar/zoomReset.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Reset Zoom</string>
@@ -902,10 +948,10 @@
     <string>Ctrl+0</string>
    </property>
   </action>
-  <action name="actionPrint">
+  <action name="actionExportToPdf">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/pdf.png</normaloff>:/toolbar/pdf.png</iconset>
+     <normaloff>:/toolbar/pdf.svg</normaloff>:/toolbar/pdf.svg</iconset>
    </property>
    <property name="text">
     <string>Export to &amp;PDF</string>
@@ -917,7 +963,7 @@
   <action name="actionEnglish">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/usa.png</normaloff>:/toolbar/usa.png</iconset>
+     <normaloff>:/toolbar/usa.svg</normaloff>:/toolbar/usa.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;English</string>
@@ -926,7 +972,7 @@
   <action name="actionPortuguese">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/brasil.png</normaloff>:/toolbar/brasil.png</iconset>
+     <normaloff>:/toolbar/brasil.svg</normaloff>:/toolbar/brasil.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Portuguese</string>
@@ -938,8 +984,8 @@
    </property>
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/play.png</normaloff>
-     <normalon>:/toolbar/pause.png</normalon>:/toolbar/play.png</iconset>
+     <normaloff>:/toolbar/play.svg</normaloff>
+     <normalon>:/toolbar/pause.svg</normalon>:/toolbar/play.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Play/Pause</string>
@@ -954,7 +1000,7 @@
   <action name="actionRename">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/rename.png</normaloff>:/toolbar/rename.png</iconset>
+     <normaloff>:/toolbar/rename.svg</normaloff>:/toolbar/rename.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Rename</string>
@@ -963,10 +1009,10 @@
     <string>F2</string>
    </property>
   </action>
-  <action name="actionChange_Trigger">
+  <action name="actionChangeTrigger">
    <property name="icon">
     <iconset resource="resources/input/input.qrc">
-     <normaloff>:/input/buttonOff.png</normaloff>:/input/buttonOff.png</iconset>
+     <normaloff>:/input/buttonOff.svg</normaloff>:/input/buttonOff.svg</iconset>
    </property>
    <property name="text">
     <string>Cha&amp;nge Trigger</string>
@@ -975,10 +1021,10 @@
     <string>F3</string>
    </property>
   </action>
-  <action name="actionClear_selection">
+  <action name="actionClearSelection">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/cleanSelection.png</normaloff>:/toolbar/cleanSelection.png</iconset>
+     <normaloff>:/toolbar/clearSelection.svg</normaloff>:/toolbar/clearSelection.svg</iconset>
    </property>
    <property name="text">
     <string>Cl&amp;ear selection</string>
@@ -987,19 +1033,19 @@
     <string>Esc</string>
    </property>
   </action>
-  <action name="actionFast_Mode">
+  <action name="actionFastMode">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/fast.png</normaloff>:/toolbar/fast.png</iconset>
+     <normaloff>:/toolbar/fast.svg</normaloff>:/toolbar/fast.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Fast Mode</string>
    </property>
   </action>
-  <action name="actionPanda_Light">
+  <action name="actionLightTheme">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -1010,7 +1056,7 @@
     <string>&amp;Panda Light</string>
    </property>
   </action>
-  <action name="actionPanda_Dark">
+  <action name="actionDarkTheme">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -1021,7 +1067,7 @@
   <action name="actionWaveform">
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/dolphin_icon.png</normaloff>:/toolbar/dolphin_icon.png</iconset>
+     <normaloff>:/toolbar/dolphin_icon.svg</normaloff>:/toolbar/dolphin_icon.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Waveform</string>
@@ -1030,7 +1076,11 @@
     <string>Ctrl+W</string>
    </property>
   </action>
-  <action name="actionExport_to_Image">
+  <action name="actionExportToImage">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/png.svg</normaloff>:/toolbar/png.svg</iconset>
+   </property>
    <property name="text">
     <string>Export to &amp;Image</string>
    </property>
@@ -1038,7 +1088,7 @@
     <string>Ctrl+E</string>
    </property>
   </action>
-  <action name="actionFlip_horizontally">
+  <action name="actionFlipHorizontally">
    <property name="text">
     <string>&amp;Flip horizontally</string>
    </property>
@@ -1046,12 +1096,9 @@
     <string>Ctrl+H</string>
    </property>
   </action>
-  <action name="actionFlip_vertically">
+  <action name="actionFlipVertically">
    <property name="text">
     <string>Flip &amp;vertically</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Y</string>
    </property>
   </action>
   <action name="actionFullscreen">
@@ -1068,8 +1115,8 @@
    </property>
    <property name="icon">
     <iconset resource="resources/output/output.qrc">
-     <normaloff>:/output/BuzzerOff.png</normaloff>
-     <normalon>:/mute.png</normalon>:/output/BuzzerOff.png</iconset>
+     <normaloff>:/output/buzzer/BuzzerOff.svg</normaloff>
+     <normalon>:/toolbar/mute.svg</normalon>:/output/buzzer/BuzzerOff.svg</iconset>
    </property>
    <property name="text">
     <string>Mute</string>
@@ -1081,7 +1128,7 @@
     <string>Ctrl+M</string>
    </property>
   </action>
-  <action name="actionLabels_under_icons">
+  <action name="actionLabelsUnderIcons">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -1089,9 +1136,21 @@
     <string>Labels under icons</string>
    </property>
   </action>
-  <action name="actionAbout_this_version">
+  <action name="actionAboutThisVersion">
    <property name="text">
     <string>About this version</string>
+   </property>
+  </action>
+  <action name="actionRestart">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/reset.svg</normaloff>:/toolbar/reset.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Restart</string>
+   </property>
+   <property name="toolTip">
+    <string>Restart simulation.</string>
    </property>
   </action>
  </widget>
@@ -1103,21 +1162,27 @@
    <header>elementeditor.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>TrashButton</class>
+   <extends>QPushButton</extends>
+   <header>trashbutton.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>lineEdit</tabstop>
-  <tabstop>tabWidget</tabstop>
+  <tabstop>lineEditSearch</tabstop>
+  <tabstop>tabElements</tabstop>
   <tabstop>scrollAreaInOut</tabstop>
   <tabstop>scrollAreaMemory</tabstop>
   <tabstop>scrollArea_Box</tabstop>
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/basic/basic.qrc"/>
-  <include location="resources/input/input.qrc"/>
   <include location="resources/memory/light/memory_light.qrc"/>
   <include location="resources/misc/misc.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
   <include location="resources/output/output.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>

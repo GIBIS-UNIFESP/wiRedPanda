@@ -1,7 +1,5 @@
-/*
- * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
 
@@ -14,7 +12,7 @@ class TestLogicElements : public QObject
 {
     Q_OBJECT
 
-private:
+private slots:
     void cleanup();
     void init();
     void testLogicAnd();
@@ -29,5 +27,6 @@ private:
     void testLogicSRFlipFlop();
     void testLogicTFlipFlop();
 
+private:
     QVector<LogicInput *> switches{5};
 };

@@ -1,30 +1,21 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "clockdialog.h"
 #include "ui_clockdialog.h"
 
-ClockDialog::ClockDialog(QWidget *parent)
+ClockDialog::ClockDialog(const int currentFrequency, QWidget *parent)
     : QDialog(parent)
     , m_ui(new Ui::ClockDialog)
 {
     m_ui->setupUi(this);
-    setWindowTitle("Clock Frequency Selection");
-    setWindowFlags(Qt::Window);
-    setModal(true);
 
-    connect(m_ui->cancelPushButton, &QPushButton::clicked, this, &ClockDialog::cancelRequested);
-    connect(m_ui->okPushButton, &QPushButton::clicked, this, &ClockDialog::okRequested);
-}
+    m_ui->frequencySpinBox->setValue(currentFrequency);
 
-int ClockDialog::getFrequency()
-{
-    m_canceled = false;
-    exec();
-    if (m_canceled) {
-        return -1;
-    }
-    return m_ui->frequencySpinBox->value();
+    setWindowTitle(tr("Clock Frequency Selection"));
+
+    connect(m_ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(m_ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 }
 
 ClockDialog::~ClockDialog()
@@ -32,13 +23,7 @@ ClockDialog::~ClockDialog()
     delete m_ui;
 }
 
-void ClockDialog::cancelRequested()
+int ClockDialog::frequency()
 {
-    m_canceled = true;
-    close();
-}
-
-void ClockDialog::okRequested()
-{
-    close();
+    return (exec() == QDialog::Accepted) ? m_ui->frequencySpinBox->value() : -1;
 }

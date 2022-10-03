@@ -1,30 +1,25 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "not.h"
 
-namespace {
+#include "globalproperties.h"
+
+namespace
+{
 int id = qRegisterMetaType<Not>();
 }
 
 Not::Not(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Not, ElementGroup::Gate, 1, 1, 1, 1, parent)
+    : GraphicElement(ElementType::Not, ElementGroup::Gate, ":/basic/not.svg", tr("NOT"), tr("Not"), 1, 1, 1, 1, parent)
 {
-    m_pixmapSkinName = {":/basic/not.png"};
-    setOutputsOnTop(true);
-    setPixmap(m_pixmapSkinName[0]);
-    setCanChangeSkin(true);
-    updatePorts();
-    setPortName("NOT");
-    setToolTip(m_translatedName);
-}
-
-void Not::setSkin(bool defaultSkin, const QString &filename)
-{
-    if (defaultSkin) {
-        m_pixmapSkinName[0] = ":/basic/not.png";
-    } else {
-        m_pixmapSkinName[0] = filename;
+    if (GlobalProperties::skipInit) {
+        return;
     }
-    setPixmap(m_pixmapSkinName[0]);
+
+    m_defaultSkins << m_pixmapPath;
+    m_alternativeSkins = m_defaultSkins;
+    setPixmap(0);
+
+    setCanChangeSkin(true);
 }

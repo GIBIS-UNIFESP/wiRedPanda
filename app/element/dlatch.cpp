@@ -1,49 +1,46 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "dlatch.h"
 
+#include "globalproperties.h"
 #include "qneport.h"
 
-namespace {
+namespace
+{
 int id = qRegisterMetaType<DLatch>();
 }
 
 DLatch::DLatch(QGraphicsItem *parent)
-    : GraphicElement(ElementType::DLatch, ElementGroup::Memory, 2, 2, 2, 2, parent)
+    : GraphicElement(ElementType::DLatch, ElementGroup::Memory, pixmapPath(), tr("D-LATCH"), tr("D-Latch"), 2, 2, 2, 2, parent)
 {
-    m_pixmapSkinName = {":/memory/D-latch.png"};
-
-    setPixmap(m_pixmapSkinName[0]);
-    setRotatable(false);
-    setCanChangeSkin(true);
-    DLatch::updatePorts();
-    setPortName("D Latch");
-    setToolTip(m_translatedName);
-    input(0)->setName("Data");
-    input(1)->setName("Enable");
-    output(0)->setName("Q");
-    output(1)->setName("~Q");
-
-    output(0)->setDefaultValue(0);
-    output(1)->setDefaultValue(1);
-}
-
-void DLatch::updatePorts()
-{
-    input(0)->setPos(topPosition(), 13); /* Data */
-    input(1)->setPos(topPosition(), 45); /* Enable */
-
-    output(0)->setPos(bottomPosition(), 15); /* Q */
-    output(1)->setPos(bottomPosition(), 45); /* ~Q */
-}
-
-void DLatch::setSkin(bool defaultSkin, const QString &filename)
-{
-    if (defaultSkin) {
-        m_pixmapSkinName[0] = ":/memory/D-latch.png";
-    } else {
-        m_pixmapSkinName[0] = filename;
+    if (GlobalProperties::skipInit) {
+        return;
     }
-    setPixmap(m_pixmapSkinName[0]);
+
+    m_defaultSkins << m_pixmapPath;
+    m_alternativeSkins = m_defaultSkins;
+    setPixmap(0);
+
+    setCanChangeSkin(true);
+
+    DLatch::updatePortsProperties();
+}
+
+void DLatch::updatePortsProperties()
+{
+    inputPort(0)->setPos(0, 16);      inputPort(0)->setName("Data");
+    inputPort(1)->setPos(0, 48);      inputPort(1)->setName("Enable");
+
+    outputPort(0)->setPos(64, 16);    outputPort(0)->setName("Q");
+    outputPort(1)->setPos(64, 48);    outputPort(1)->setName("~Q");
+
+    outputPort(0)->setDefaultStatus(Status::Inactive);
+    outputPort(1)->setDefaultStatus(Status::Active);
+}
+
+void DLatch::updateTheme()
+{
+    setPixmap(pixmapPath());
+    GraphicElement::updateTheme();
 }

@@ -1,13 +1,9 @@
-/*
- * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
 
 #include <QGraphicsView>
-
-class GraphicsViewZoom;
 
 class GraphicsView : public QGraphicsView
 {
@@ -16,20 +12,28 @@ class GraphicsView : public QGraphicsView
 public:
     explicit GraphicsView(QWidget *parent = nullptr);
 
-    GraphicsViewZoom *gvzoom() const;
+    bool canZoomIn() const;
+    bool canZoomOut() const;
+    void resetZoom();
+    void setFastMode(const bool fastMode);
+    void zoomIn();
+    void zoomOut();
+
+signals:
+    void zoomChanged();
 
 protected:
-    void keyPressEvent(QKeyEvent *e) override;
-    void keyReleaseEvent(QKeyEvent *e) override;
-    void mouseMoveEvent(QMouseEvent *e) override;
-    void mousePressEvent(QMouseEvent *e) override;
-    void mouseReleaseEvent(QMouseEvent *e) override;
+    void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
 
 private:
-    GraphicsViewZoom *m_gvzoom;
-    bool m_pan;
-    bool m_space;
-    int m_panStartX;
-    int m_panStartY;
+    bool m_pan = false;
+    bool m_space = false;
+    int m_panStartX = 0;
+    int m_panStartY = 0;
+    int m_zoomLevel = 0;
 };
-

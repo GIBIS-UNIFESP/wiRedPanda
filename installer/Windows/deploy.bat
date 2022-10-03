@@ -4,7 +4,7 @@ del WiredPanda_*
 if not exist Build mkdir Build
 cd Build
 qmake.exe ..\..\..\app\
-mingw32-make.exe -j4
+mingw32-make.exe -j
 cd ..
 
 windeployqt.exe "Build\release\wpanda.exe"

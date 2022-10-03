@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "testelements.h"
@@ -7,37 +7,32 @@
 #include "demux.h"
 #include "dflipflop.h"
 #include "dlatch.h"
-#include "editor.h"
 #include "globalproperties.h"
 #include "ic.h"
-#include "icmanager.h"
 #include "inputbutton.h"
 #include "inputgnd.h"
 #include "inputswitch.h"
 #include "inputvcc.h"
-#include "iostream"
 #include "jkflipflop.h"
-#include "jklatch.h"
 #include "led.h"
 #include "mux.h"
 #include "node.h"
 #include "or.h"
 #include "qneconnection.h"
 #include "qneport.h"
-#include "simulationcontroller.h"
+#include "scene.h"
+#include "simulation.h"
 #include "srflipflop.h"
 #include "tflipflop.h"
 
-#include <QDebug>
 #include <QTest>
-#include <iostream>
 
 void TestElements::init()
 {
     for (int i = 0; i < connections.size(); ++i) {
         connections[i] = new QNEConnection();
         switches[i] = new InputSwitch();
-        connections.at(i)->setStart(switches.at(i)->output());
+        connections.at(i)->setStartPort(switches.at(i)->outputPort());
     }
 }
 
@@ -53,7 +48,7 @@ void TestElements::testNode()
     QCOMPARE(elm.inputSize(), 1);
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 1);
-    QCOMPARE(elm.minInputSz(), 1);
+    QCOMPARE(elm.minInputSize(), 1);
     QCOMPARE(elm.elementType(), ElementType::Node);
 }
 
@@ -64,7 +59,7 @@ void TestElements::testAnd()
     QCOMPARE(elm.inputSize(), 2);
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 1);
-    QCOMPARE(elm.minInputSz(), 2);
+    QCOMPARE(elm.minInputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::And);
 }
 
@@ -75,7 +70,7 @@ void TestElements::testOr()
     QCOMPARE(elm.inputSize(), 2);
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 1);
-    QCOMPARE(elm.minInputSz(), 2);
+    QCOMPARE(elm.minInputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::Or);
 }
 
@@ -84,7 +79,7 @@ void TestElements::testVCC()
     InputVcc vcc;
     QCOMPARE(vcc.outputSize(), 1);
     QCOMPARE(vcc.inputSize(), 0);
-    QCOMPARE(static_cast<int>(vcc.output()->value()), 1);
+    QCOMPARE(vcc.outputPort()->status(), Status::Active);
 }
 
 void TestElements::testGND()
@@ -92,7 +87,7 @@ void TestElements::testGND()
     InputGnd gnd;
     QCOMPARE(gnd.outputSize(), 1);
     QCOMPARE(gnd.inputSize(), 0);
-    QCOMPARE(static_cast<int>(gnd.output()->value()), 0);
+    QCOMPARE(gnd.outputPort()->status(), Status::Inactive);
 }
 
 void TestElements::testMux()
@@ -102,7 +97,7 @@ void TestElements::testMux()
     QCOMPARE(elm.inputSize(), 3);
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 1);
-    QCOMPARE(elm.minInputSz(), 3);
+    QCOMPARE(elm.minInputSize(), 3);
     QCOMPARE(elm.elementType(), ElementType::Mux);
 }
 
@@ -113,7 +108,7 @@ void TestElements::testDemux()
     QCOMPARE(elm.inputSize(), 2);
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 2);
-    QCOMPARE(elm.minInputSz(), 2);
+    QCOMPARE(elm.minInputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::Demux);
 }
 
@@ -124,10 +119,10 @@ void TestElements::testDFlipFlop()
     QCOMPARE(elm.inputSize(), 4);
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 2);
-    QCOMPARE(elm.minInputSz(), 4);
-    QCOMPARE(elm.maxInputSz(), 4);
-    QCOMPARE(elm.minOutputSz(), 2);
-    QCOMPARE(elm.maxOutputSz(), 2);
+    QCOMPARE(elm.minInputSize(), 4);
+    QCOMPARE(elm.maxInputSize(), 4);
+    QCOMPARE(elm.minOutputSize(), 2);
+    QCOMPARE(elm.maxOutputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::DFlipFlop);
 }
 
@@ -138,10 +133,10 @@ void TestElements::testDLatch()
     QCOMPARE(elm.inputSize(), 2);
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 2);
-    QCOMPARE(elm.minInputSz(), 2);
-    QCOMPARE(elm.maxInputSz(), 2);
-    QCOMPARE(elm.minOutputSz(), 2);
-    QCOMPARE(elm.maxOutputSz(), 2);
+    QCOMPARE(elm.minInputSize(), 2);
+    QCOMPARE(elm.maxInputSize(), 2);
+    QCOMPARE(elm.minOutputSize(), 2);
+    QCOMPARE(elm.maxOutputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::DLatch);
 }
 
@@ -152,10 +147,10 @@ void TestElements::testJKFlipFlop()
     QCOMPARE(elm.inputSize(), 5);
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 2);
-    QCOMPARE(elm.minInputSz(), 5);
-    QCOMPARE(elm.maxInputSz(), 5);
-    QCOMPARE(elm.minOutputSz(), 2);
-    QCOMPARE(elm.maxOutputSz(), 2);
+    QCOMPARE(elm.minInputSize(), 5);
+    QCOMPARE(elm.maxInputSize(), 5);
+    QCOMPARE(elm.minOutputSize(), 2);
+    QCOMPARE(elm.maxOutputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::JKFlipFlop);
 }
 
@@ -166,10 +161,10 @@ void TestElements::testSRFlipFlop()
     QCOMPARE(elm.inputSize(), 5);
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 2);
-    QCOMPARE(elm.minInputSz(), 5);
-    QCOMPARE(elm.maxInputSz(), 5);
-    QCOMPARE(elm.minOutputSz(), 2);
-    QCOMPARE(elm.maxOutputSz(), 2);
+    QCOMPARE(elm.minInputSize(), 5);
+    QCOMPARE(elm.maxInputSize(), 5);
+    QCOMPARE(elm.minOutputSize(), 2);
+    QCOMPARE(elm.maxOutputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::SRFlipFlop);
 }
 
@@ -180,147 +175,136 @@ void TestElements::testTFlipFlop()
     QCOMPARE(elm.inputSize(), 4);
     QCOMPARE(elm.outputSize(), elm.outputs().size());
     QCOMPARE(elm.outputSize(), 2);
-    QCOMPARE(elm.minInputSz(), 4);
-    QCOMPARE(elm.maxInputSz(), 4);
-    QCOMPARE(elm.minOutputSz(), 2);
-    QCOMPARE(elm.maxOutputSz(), 2);
+    QCOMPARE(elm.minInputSize(), 4);
+    QCOMPARE(elm.maxInputSize(), 4);
+    QCOMPARE(elm.minOutputSize(), 2);
+    QCOMPARE(elm.maxOutputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::TFlipFlop);
 }
 
-QString TestElements::testFile(const QString &fileName)
-{
-    return QString(CURRENTDIR) + "/../examples/" + fileName;
-}
-
-void TestElements::testICData(const IC *ic)
+void TestElements::testICData(IC *ic)
 {
     QCOMPARE(ic->inputSize(), 5);
     QCOMPARE(ic->outputSize(), 2);
 
-    QCOMPARE(ic->input(0)->isRequired(), false);
-    QCOMPARE(ic->input(1)->isRequired(), false);
-    QCOMPARE(ic->input(2)->isRequired(), true);
-    QCOMPARE(ic->input(3)->isRequired(), false);
-    QCOMPARE(ic->input(4)->isRequired(), false);
+    QCOMPARE(ic->inputPort(0)->isRequired(), false);
+    QCOMPARE(ic->inputPort(1)->isRequired(), false);
+    QCOMPARE(ic->inputPort(2)->isRequired(), true);
+    QCOMPARE(ic->inputPort(3)->isRequired(), false);
+    QCOMPARE(ic->inputPort(4)->isRequired(), false);
 
-    QCOMPARE(static_cast<int>(ic->input(0)->value()), 1);
-    QCOMPARE(static_cast<int>(ic->input(1)->value()), 1);
-    QCOMPARE(static_cast<int>(ic->input(2)->value()), -1);
-    QCOMPARE(static_cast<int>(ic->input(3)->value()), 1);
-    QCOMPARE(static_cast<int>(ic->input(4)->value()), 1);
+    QCOMPARE(ic->inputPort(0)->status(), Status::Active);
+    QCOMPARE(ic->inputPort(1)->status(), Status::Active);
+    QCOMPARE(ic->inputPort(2)->status(), Status::Invalid);
+    QCOMPARE(ic->inputPort(3)->status(), Status::Active);
+    QCOMPARE(ic->inputPort(4)->status(), Status::Active);
 }
 
 void TestElements::testIC()
 {
-    auto *editor = new Editor();
-    editor->setupWorkspace();
-    GlobalProperties::currentFile = QString(CURRENTDIR) + "/../examples/simple.panda";
-    auto *manager(editor->getICManager());
-    const QString icFile = testFile("jkflipflop.panda");
+    const QString icFile = QString(CURRENTDIR) + "/../examples/jkflipflop.panda";
+    GlobalProperties::currentDir = QString(CURRENTDIR) + "/../examples/";
 
     auto *ic = new IC();
-    manager->loadIC(ic, icFile);
+    ic->loadFile(icFile);
 
     testICData(ic);
 
     auto *clkButton = new InputButton();
     auto *prstButton = new InputButton();
 
-    auto *led = new Led();
+    auto *led1 = new Led();
     auto *led2 = new Led();
 
-    auto *connection = new QNEConnection();
-    connection->setStart(clkButton->output());
-    connection->setEnd(ic->input(2));
+    auto *connection1 = new QNEConnection();
+    connection1->setStartPort(clkButton->outputPort());
+    connection1->setEndPort(ic->inputPort(2));
 
     auto *connection2 = new QNEConnection();
-    connection2->setStart(ic->output(0));
-    connection2->setEnd(led->input());
+    connection2->setStartPort(prstButton->outputPort());
+    connection2->setEndPort(ic->inputPort(0));
 
     auto *connection3 = new QNEConnection();
-    connection3->setStart(prstButton->output());
-    connection3->setEnd(ic->input(0));
+    connection3->setStartPort(ic->outputPort(0));
+    connection3->setEndPort(led1->inputPort());
 
     auto *connection4 = new QNEConnection();
-    connection4->setStart(ic->output(1));
-    connection4->setEnd(led2->input());
+    connection4->setStartPort(ic->outputPort(1));
+    connection4->setEndPort(led2->inputPort());
 
     Scene scene;
-    scene.addItem(led);
+    scene.addItem(led1);
     scene.addItem(led2);
     scene.addItem(clkButton);
     scene.addItem(prstButton);
     scene.addItem(ic);
-    scene.addItem(connection);
+    scene.addItem(connection1);
     scene.addItem(connection2);
     scene.addItem(connection3);
     scene.addItem(connection4);
 
-    SimulationController controller(&scene);
-    controller.reSortElements();
+    Simulation simulation(&scene);
+    simulation.initialize();
 
     for (int i = 0; i < 10; ++i) {
-        clkButton->setOn(false);
-        prstButton->setOn(false);
-        controller.update();
-        controller.update();
-        controller.update();
-        controller.updateScene(scene.itemsBoundingRect());
+        clkButton->setOff();
+        prstButton->setOff();
+        simulation.update();
+        simulation.update();
+        simulation.update();
 
-        QCOMPARE(static_cast<int>(ic->input(2)->value()), 0);
+        QCOMPARE(ic->inputPort(2)->status(), Status::Inactive);
 
-        QCOMPARE(static_cast<int>(ic->output(0)->value()), 1);
-        QCOMPARE(static_cast<int>(ic->output(1)->value()), 0);
+        QCOMPARE(ic->outputPort(0)->status(), Status::Active);
+        QCOMPARE(ic->outputPort(1)->status(), Status::Inactive);
 
-        clkButton->setOn(false);
-        prstButton->setOn(true);
-        controller.update();
-        controller.update();
-        controller.update();
-        controller.updateScene(scene.itemsBoundingRect());
+        // -------------------------------
 
-        QCOMPARE(static_cast<int>(ic->input(2)->value()), 0);
+        clkButton->setOff();
+        prstButton->setOn();
+        simulation.update();
+        simulation.update();
+        simulation.update();
 
-        QCOMPARE(static_cast<int>(ic->output(0)->value()), 1);
-        QCOMPARE(static_cast<int>(ic->output(1)->value()), 0);
+        QCOMPARE(ic->inputPort(2)->status(), Status::Inactive);
 
-        clkButton->setOn(false);
-        controller.update();
-        controller.update();
-        controller.update();
-        controller.updateScene(scene.itemsBoundingRect());
+        QCOMPARE(ic->outputPort(0)->status(), Status::Active);
+        QCOMPARE(ic->outputPort(1)->status(), Status::Inactive);
 
-        QCOMPARE(static_cast<int>(ic->input(2)->value()), 0);
+        // -------------------------------
 
-        QCOMPARE(static_cast<int>(ic->output(0)->value()), 1);
-        QCOMPARE(static_cast<int>(ic->output(1)->value()), 0);
+        clkButton->setOff();
+        simulation.update();
+        simulation.update();
+        simulation.update();
 
-        clkButton->setOn(true);
-        controller.update();
-        controller.update();
-        controller.update();
-        controller.updateScene(scene.itemsBoundingRect());
+        QCOMPARE(ic->inputPort(2)->status(), Status::Inactive);
 
-        QCOMPARE(static_cast<int>(ic->input(2)->value()), 1);
+        QCOMPARE(ic->outputPort(0)->status(), Status::Active);
+        QCOMPARE(ic->outputPort(1)->status(), Status::Inactive);
 
-        QCOMPARE(static_cast<int>(ic->output(0)->value()), 0);
-        QCOMPARE(static_cast<int>(ic->output(1)->value()), 1);
+        // -------------------------------
+
+        clkButton->setOn();
+        simulation.update();
+        simulation.update();
+        simulation.update();
+
+        QCOMPARE(ic->inputPort(2)->status(), Status::Active);
+
+        QCOMPARE(ic->outputPort(0)->status(), Status::Inactive);
+        QCOMPARE(ic->outputPort(1)->status(), Status::Active);
     }
 }
 
 void TestElements::testICs()
 {
-    auto *editor = new Editor();
-    editor->setupWorkspace();
-    GlobalProperties::currentFile = QString(CURRENTDIR) + "/../examples/simple.panda";
-    auto *manager(editor->getICManager());
     const QDir examplesDir(QString(CURRENTDIR) + "/../examples/");
-    // qCDebug(zero) << "Current dir:" << CURRENTDIR;
     const auto files = examplesDir.entryInfoList(QStringList{"*.panda"});
-    // qCDebug(zero) << "files:" << files;
-    for (const auto &fileInfo : qAsConst(files)) {
-        // qCDebug(zero) << "FILE:" << f.absoluteFilePath();
+
+    for (const auto &fileInfo : files) {
+        GlobalProperties::currentDir = fileInfo.absolutePath();
         IC ic;
-        manager->loadIC(&ic, fileInfo.absoluteFilePath());
+        ic.loadFile(fileInfo.absoluteFilePath());
     }
 }

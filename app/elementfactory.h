@@ -1,16 +1,16 @@
-/*
- * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
 
-#include "elementtype.h"
+#include "enums.h"
 
 #include <QGraphicsItem>
+#include <memory>
 
 class GraphicElement;
 class ItemWithId;
+class LogicElement;
 class QNEConnection;
 
 class ElementFactory : public QObject
@@ -18,29 +18,29 @@ class ElementFactory : public QObject
     Q_OBJECT
 
 public:
-    static ElementFactory *instance;
+    static ElementFactory &instance()
+    {
+        static ElementFactory instance;
+        return instance;
+    }
 
     static ElementType textToType(const QString &text);
-    static QString typeToText(ElementType type);
-    static QString typeToTitleText(ElementType type);
-    static QString translatedName(ElementType type);
-    static QPixmap getPixmap(ElementType type);
-    static GraphicElement *buildElement(ElementType type);
-    static QNEConnection *buildConnection(QGraphicsItem *parent = nullptr);
-    static ItemWithId *getItemById(int id);
-    static bool contains(int id);
-    static void updateItemId(ItemWithId *item, int newId);
-    static void removeItem(ItemWithId *item);
+    static GraphicElement *buildElement(const ElementType type);
+    static ItemWithId *itemById(const int id);
+    static std::shared_ptr<LogicElement> buildLogicElement(GraphicElement *elm);
+    static QPixmap pixmap(const ElementType type);
+    static QString property(const ElementType type, const QString &property);
+    static QString translatedName(const ElementType type);
+    static QString typeToText(const ElementType type);
+    static QString typeToTitleText(const ElementType type);
+    static bool contains(const int id);
     static void addItem(ItemWithId *item);
-
-    int getLastId() const;
-    int next_id();
-    void clear();
+    static void removeItem(ItemWithId *item);
+    static void updateItemId(ItemWithId *item, const int newId);
 
 private:
-    ElementFactory() = default;
+    int nextId();
 
     QMap<int, ItemWithId *> m_map;
     int m_lastId = 0;
 };
-

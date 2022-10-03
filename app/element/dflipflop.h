@@ -1,32 +1,25 @@
-/*
- * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
 
 #include "graphicelement.h"
+#include "thememanager.h"
 
 class DFlipFlop : public GraphicElement
 {
     Q_OBJECT
-    Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
-    Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
-    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
 
 public:
     explicit DFlipFlop(QGraphicsItem *parent = nullptr);
 
-    void setSkin(bool defaultSkin, const QString &filename) override;
-    void updatePorts() override;
+    static QString pixmapPath()
+    {
+        return ":/memory/" + ThemeManager::themePath() + "/D-flipflop.svg";
+    }
 
-private:
-    const QString m_titleText = tr("<b>D-FLIPFLOP</b>");
-    const QString m_translatedName = tr("D-FlipFlop");
-    const QString m_pixmap = ":/memory/light/D-flipflop.png";
-
-    bool lastClk;
-    bool lastValue;
+    void updatePortsProperties() override;
+    void updateTheme() override;
 };
 
 Q_DECLARE_METATYPE(DFlipFlop)

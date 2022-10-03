@@ -3,113 +3,98 @@
 
 name: Build
 
-on: [push, pull_request]
-
-env:
-  BUILD_TYPE: MinSizeRel
+on: [push]
 
 jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        qt_version: [5.12.12, 5.13.2, 5.14.2, 5.15.2, 6.2.4, 6.3.2, 6.4.0]
 
-# === Ubuntu ===
-  Ubuntu-Qt5:
-    runs-on: ubuntu-latest
+# =================================
+
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v3
-      with: 
+      with:
         submodules: recursive
         fetch-depth: 0
 
     - name: Install Qt5
+      if: startsWith(matrix.qt_version, '5')
       uses: jurplel/install-qt-action@v3
       with:
-        version: 5.15.2
-        modules: qtcharts
+        version: ${{ matrix.qt_version }}
+        cache: true
+        aqtversion: ==2.2.3
 
-    - name: Build
+    - name: Install Qt6
+      if: startsWith(matrix.qt_version, '6')
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: ${{ matrix.qt_version }}
+        modules: qtmultimedia
+        cache: true
+        aqtversion: ==2.2.3
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: ${{ matrix.os }}
+
+# =================================
+
+    - name: Build Ubuntu
+      if: runner.os == 'Linux'
       run: |
+        sudo apt install libgstreamer-gl1.0-0
         mkdir build
         cd build
         qmake ../WPanda.pro
         make -j2
-        cd test
+
+    - name: Test Ubuntu
+      if: runner.os == 'Linux'
+      run: |
+        cd build/test
         xvfb-run ./WPanda-test
 
-    - name: Deploy
-      uses: actions/upload-artifact@v3
-      with:
-        name: 'WiRedPanda-Qt5-Ubuntu-glibc'
-        path: build/app/wpanda
+# =================================
 
-# === Windows ===
-  Windows-Qt5:
-    runs-on: windows-latest
+    - name: Setup MSVC Toolchain
+      if: runner.os == 'Windows'
+      uses: seanmiddleditch/gha-setup-vsdevenv@v4
 
-    steps:
-    - uses: actions/checkout@v3
-      with: 
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Set up Git for properly handling symlinks on Windows
-      run: git config --global core.symlinks true
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
-      with:
-        arch: win64_mingw81
-        version: 5.15.2
-        modules: qtcharts
-
-    - name: Build
+    - name: Build Windows
+      if: runner.os == 'Windows'
       run: |
+        choco install jom
         mkdir build
         cd build
         qmake ../WPanda.pro
-        make -j2
-        make check
-        
-    - name: Deploy WiRedPanda binary
-      run : |
-        cd build\app\release
-        windeployqt --compiler-runtime wpanda.exe
-        cp $env:Qt5_Dir\bin\libgcc_s_seh-1.dll .
-        cp $env:Qt5_Dir\bin\libstdc++-6.dll .
-        cp $env:Qt5_Dir\bin\libwinpthread-1.dll .
-        cd ..
-        ren release wpanda
-        
-    - name: Upload WiRedPanda build
-      continue-on-error: true
-      uses: actions/upload-artifact@v3
-      with:
-        name: WiRedPanda Qt5 Windows (64-bit) build
-        path: build\app\wpanda\
+        jom
 
-# === macOS ===
-  macOS-Qt5:
-    runs-on: macos-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with: 
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: Install
-      run: brew install qt5 gdb
-
-    - name: Build
+    - name: Test Windows
+      if: runner.os == 'Windows'
       run: |
-        QTDIR="/usr/local/opt/qt5/" && PATH="${QTDIR}/bin:$PATH" && LDFLAGS=-L${QTDIR}/lib && CPPFLAGS=-I${QTDIR}/include;
+        cd build
+        jom check
+
+# =================================
+
+    - name: Build macOS
+      if: runner.os == 'macOS'
+      run: |
         mkdir build
         cd build
         qmake ../WPanda.pro
         make -j3
+
+    - name: Test macOS
+      if: runner.os == 'macOS'
+      run: |
+        cd build
         make check
-        
-    - name: Deploy
-      uses: actions/upload-artifact@v3
-      with:
-        name: 'WiRedPanda-Qt5-macOS'
-        path: build/app/wpanda.app/Contents/MacOS/wpanda

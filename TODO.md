@@ -1,13 +1,13 @@
 ## TODO List
-- [x] Add `.panda` to files when saving.  [link](https://github.com/lellisls/wiRedPanda/issues/10)
-- [x] Undo/Redo. [link](https://github.com/lellisls/wiRedPanda/issues/1)
-- [x] Boxes.  [link](https://github.com/lellisls/wiRedPanda/issues/9)
-- [ ] Installer. [link](https://github.com/lellisls/wiRedPanda/issues/3)
-- [x] Add keyboard shortcuts to inputs. [link](https://github.com/lellisls/wiRedPanda/issues/11)
+- [x] Add `.panda` to files when saving.  [link](https://github.com/GIBIS-UNIFESP/wiRedPanda/issues/10)
+- [x] Undo/Redo. [link](https://github.com/GIBIS-UNIFESP/wiRedPanda/issues/1)
+- [x] Boxes.  [link](https://github.com/GIBIS-UNIFESP/wiRedPanda/issues/9)
+- [ ] Installer. [link](https://github.com/GIBIS-UNIFESP/wiRedPanda/issues/3)
+- [x] Add keyboard shortcuts to inputs. [link](https://github.com/GIBIS-UNIFESP/wiRedPanda/issues/11)
 - [x] Line Split.
 - [x] Zoom.
 - [x] Dynamic scene resizing
-- [x] Align to grid [link](https://github.com/lellisls/wiRedPanda/issues/14).
+- [x] Align to grid [link](https://github.com/GIBIS-UNIFESP/wiRedPanda/issues/14).
 - [ ] ~~Align lines to grid ()~~
 - [x] Hide Lines, Wires and Ports.
 - [x] Show Lines with issues.

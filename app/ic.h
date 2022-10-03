@@ -1,47 +1,63 @@
-/*
- * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
 
+#include "elementmapping.h"
 #include "graphicelement.h"
 
-class Editor;
+#include <QFileInfo>
+#include <QFileSystemWatcher>
+
 class ICPrototype;
 
 class IC : public GraphicElement
 {
     Q_OBJECT
-    Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
-    Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
-    Q_PROPERTY(QString pixmap MEMBER m_pixmap CONSTANT)
 
     friend class CodeGenerator;
 
 public:
     explicit IC(QGraphicsItem *parent = nullptr);
-    ~IC() override;
+    ~IC() override = default;
+    IC(const IC &other) : IC(other.parentItem()) {}
 
-    ICPrototype *getPrototype();
-    QString getFile() const;
-    QVector<GraphicElement *> getElements() const;
-    void load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version) override;
-    void loadFile(const QString &fname);
-    void save(QDataStream &ds) const override;
-    void setSkin(bool defaultSkin, const QString &filename) override;
+    static void copyFiles(const QFileInfo &srcFile);
+
+    ElementMapping *generateMap() const;
+    LogicElement *inputLogic(const int index);
+    LogicElement *outputLogic(const int index);
+    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
+    void loadFile(const QString &fileName);
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void refresh() override;
+    void save(QDataStream &stream) const override;
 
 protected:
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
-    void loadInputs(ICPrototype *prototype);
-    void loadOutputs(ICPrototype *prototype);
+    static bool comparePorts(QNEPort *port1, QNEPort *port2);
+    static void sortPorts(QVector<QNEPort *> &map);
+    inline static bool needToCopyFiles = false;
+    inline static QString path;
 
+    void copyFile();
+    void generatePixmap();
+    void loadInputElement(GraphicElement *elm);
+    void loadInputs();
+    void loadInputsLabels();
+    void loadOutputElement(GraphicElement *elm);
+    void loadOutputs();
+    void loadOutputsLabels();
+
+    QFileSystemWatcher m_fileWatcher;
     QString m_file;
-    const QString m_titleText = tr("<b>INTEGRATED CIRCUIT</b>");
-    const QString m_translatedName = tr("IC");
-    const QString m_pixmap = ":/basic/box.png";
+    QVector<GraphicElement *> m_icElements;
+    QVector<QNEPort *> m_icInputs;
+    QVector<QNEPort *> m_icOutputs;
+    QVector<QString> m_icInputLabels;
+    QVector<QString> m_icOutputLabels;
 };
 
 Q_DECLARE_METATYPE(IC)

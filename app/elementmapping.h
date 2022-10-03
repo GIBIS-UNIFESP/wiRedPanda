@@ -1,74 +1,45 @@
-/*
- * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
 
 #include "logicinput.h"
 
-#include <QHash>
-#include <QMap>
-#include <QVector>
+#include <QCoreApplication>
+#include <memory>
 
 class Clock;
-class ElementMapping;
 class GraphicElement;
+class GraphicElementInput;
 class IC;
 class ICMapping;
-class Input;
-class LogicElement;
-class LogicRemoteDevice;
+class QNEInputPort;
 class QNEPort;
-
-using ElementMap = QMap<GraphicElement *, LogicElement *>;
-using InputMap = QMap<Input *, LogicElement *>;
 
 class ElementMapping
 {
+    Q_DECLARE_TR_FUNCTIONS(ElementMapping)
+
 public:
-    explicit ElementMapping(const QVector<GraphicElement *> &elms);
-    virtual ~ElementMapping();
+    explicit ElementMapping(const QVector<GraphicElement *> &elements);
+    ~ElementMapping();
 
-    static QVector<GraphicElement *> sortGraphicElements(QVector<GraphicElement *> elms);
-
-    ICMapping *getICMapping(IC *ic) const;
-    LogicElement *getLogicElement(GraphicElement *elm) const;
-    bool canInitialize() const;
-    bool canRun() const;
-    virtual void initialize();
-    void clear();
+    const QVector<std::shared_ptr<LogicElement> > &logicElms() const;
     void sort();
-    void update();
-
-protected:
-    ElementMap m_elementMap;
 
 private:
-    // Methods
-    static int calculatePriority(GraphicElement *elm, QHash<GraphicElement *, bool> &beingvisited, QHash<GraphicElement *, int> &priority);
+    Q_DISABLE_COPY(ElementMapping)
 
-    LogicElement *buildLogicElement(GraphicElement *elm);
-    LogicRemoteDevice *remote(GraphicElement *elm);
-    void applyConnection(GraphicElement *elm, QNEPort *in);
+    void applyConnection(GraphicElement *elm, QNEInputPort *inputPort);
     void connectElements();
+    void generateLogic(GraphicElement *elm);
     void generateMap();
-    void insertElement(GraphicElement *elm);
-    void insertIC(IC *ic);
     void setDefaultValue(GraphicElement *elm, QNEPort *in);
     void sortLogicElements();
     void validateElements();
 
-    // Attributes
-    InputMap m_inputMap;
-    LogicInput m_globalGND;
-    LogicInput m_globalVCC;
-    QMap<IC *, ICMapping *> m_icMappings;
-    QString m_currentFile;
-    QVector<Clock *> m_clocks;
+    LogicInput m_globalGND{false};
+    LogicInput m_globalVCC{true};
     QVector<GraphicElement *> m_elements;
-    QVector<LogicElement *> m_deletableElements;
-    QVector<LogicElement *> m_logicElms;
-    bool m_initialized;
+    QVector<std::shared_ptr<LogicElement>> m_logicElms;
 };
-

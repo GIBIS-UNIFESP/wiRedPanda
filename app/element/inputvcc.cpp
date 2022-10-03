@@ -1,34 +1,29 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "inputvcc.h"
 
+#include "globalproperties.h"
 #include "qneport.h"
 
-namespace {
+namespace
+{
 int id = qRegisterMetaType<InputVcc>();
 }
 
 InputVcc::InputVcc(QGraphicsItem *parent)
-    : GraphicElement(ElementType::InputVcc, ElementGroup::StaticInput, 0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::InputVcc, ElementGroup::StaticInput, ":/input/1.svg", tr("VCC"), tr("VCC"), 0, 0, 1, 1, parent)
 {
-    m_pixmapSkinName = {":/input/1.png"};
-
-    setOutputsOnTop(false);
-    setCanChangeSkin(true);
-    setPixmap(m_pixmapSkinName[0]);
-    setRotatable(false);
-    setPortName("VCC");
-    setToolTip(m_translatedName);
-    m_outputs.first()->setValue(true);
-}
-
-void InputVcc::setSkin(bool defaultSkin, const QString &filename)
-{
-    if (defaultSkin) {
-        m_pixmapSkinName[0] = ":/input/1.png";
-    } else {
-        m_pixmapSkinName[0] = filename;
+    if (GlobalProperties::skipInit) {
+        return;
     }
-    setPixmap(m_pixmapSkinName[0]);
+
+    m_defaultSkins << m_pixmapPath;
+    m_alternativeSkins = m_defaultSkins;
+    setPixmap(0);
+
+    setCanChangeSkin(true);
+    setRotatable(false);
+
+    m_outputPorts.constFirst()->setStatus(Status::Active);
 }

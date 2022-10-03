@@ -1,4 +1,4 @@
-# WiRedPanda ![GitHub All Releases](https://img.shields.io/github/downloads/gibis-unifesp/wiredpanda/total?style=flat-square) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/gibis-unifesp/wiredpanda?style=flat-square) ![GitHub](https://img.shields.io/github/license/gibis-unifesp/wiredpanda?style=flat-square)
+# WiRedPanda ![GitHub All Releases](https://img.shields.io/github/downloads/gibis-unifesp/wiredpanda/total?style=flat-square) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/gibis-unifesp/wiredpanda?style=flat-square) ![GitHub](https://img.shields.io/github/license/gibis-unifesp/wiredpanda?style=flat-square) [![codecov](https://codecov.io/gh/GIBIS-UNIFESP/wiRedPanda/branch/master/graph/badge.svg?token=5YBYB4J705)](https://codecov.io/gh/GIBIS-UNIFESP/wiRedPanda)
 
 
 WiRedPanda is a free software designed to help students learn about logic circuits and simulate them in an easy and friendly way.
@@ -12,12 +12,10 @@ The main features of the software are:
 
 _Leia-me em [português](README_pt_BR.md). Léame en [español](README_es.md)._
 
-![Main screen](https://gibis-unifesp.github.io/wiRedPanda/images/ffms.gif)
+![Main screen](https://gibis-unifesp.github.io/wiRedPanda/images/demo.gif)
 
 ## Downloads
-Compiled binaries for Windows and Linux are available [here](http://gibis-unifesp.github.io/wiRedPanda/downloads/).
-
-Dynamically-linked binaries for macOS are available [here](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
+Compiled binaries for Windows, Linux and macOS are available [here](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
 
 ## Building
 
@@ -25,20 +23,20 @@ Dynamically-linked binaries for macOS are available [here](https://github.com/GI
 
 #### Dependencies 
 
-Qt 5.7.0+ or 6.2.0+ is needed for building, as well as QtCharts and QtMultimedia. 
+Qt 5.12.0+ or 6.2.0+ and the QtMultimedia module is needed for building.
 
-On distros such as Arch Linux, Gentoo, Manjaro, Debian Testing, etc., Qt 5.7+ can be installed from the standard repos.
+On distros such as Arch Linux, Gentoo, Manjaro, Debian Testing, etc., Qt 5.12+ can be installed from the standard repos.
 
 * Debian Testing
 
 ```bash
-sudo apt install qtbase5-dev qt5-make qtbase5-dev-tools qtchooser libqt5charts5-dev libqt5multimedia5-dev
+sudo apt install qtbase5-dev qt5-make qtbase5-dev-tools qtchooser libqt5multimedia5-dev
 ```
 
 * Arch Linux-based
 
 ```bash
-sudo pacman -S qt5-base qt5-charts qt5-multimedia
+sudo pacman -S qt5-base qt5-multimedia
 ```
 
 * macOS
@@ -60,7 +58,7 @@ python3 -m pip install setuptools wheel
 python3 -m pip install py7zr==0.10.1
 python3 -m pip install aqtinstall==0.9.7
 python3 -m pip install importlib-metadata==2.0.0
-python3 -m aqt install 5.15.1 linux desktop -m qtcharts qtmultimedia -O ~/Qt
+python3 -m aqt install 5.15.1 linux desktop -m qtmultimedia -O ~/Qt
 export Qt5_Dir=~/Qt5/5.15.1
 export Qt5_DIR=~/Qt5/5.15.1
 export QT_PLUGIN_PATH=~/Qt/5.15.1/gcc_64/plugins
@@ -78,7 +76,7 @@ qmake ../WPanda.pro
 make -j
 ```
 
-This process could take a while. Once concluded, the binary will be located at `wiredpanda/build/app/wpanda`, on Linux, and at `wiredpanda/build/app/wpanda.app/Contents/MacOS/wpanda` on macOS.
+This process could take a while. Once concluded, the binary will be located at `wiredpanda/build/app/wiredpanda`, on Linux, and at `wiredpanda/build/app/wiredpanda.app/Contents/MacOS/wiredpanda` on macOS.
 
 ## Licensing
 

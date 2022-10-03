@@ -1,29 +1,21 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "lengthdialog.h"
 #include "ui_lengthdialog.h"
 
-LengthDialog::LengthDialog(QWidget *parent)
+LengthDialog::LengthDialog(const int currentLength, QWidget *parent)
     : QDialog(parent)
     , m_ui(new Ui::LengthDialog)
 {
     m_ui->setupUi(this);
-    setWindowTitle(tr("Simulation Length Selection"));
-    setWindowFlags(Qt::Window);
-    setModal(true);
-    connect(m_ui->cancelPushButton, &QPushButton::clicked, this, &LengthDialog::cancelClicked);
-    connect(m_ui->okPushButton, &QPushButton::clicked, this, &LengthDialog::okClicked);
-}
 
-int LengthDialog::getFrequency()
-{
-    m_canceled = false;
-    exec();
-    if (m_canceled) { // TODO: always false
-        return -1;
-    }
-    return m_ui->lengthSpinBox->value();
+    m_ui->lengthSpinBox->setValue(currentLength);
+
+    setWindowTitle(tr("Simulation Length Selection"));
+
+    connect(m_ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(m_ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 }
 
 LengthDialog::~LengthDialog()
@@ -31,15 +23,7 @@ LengthDialog::~LengthDialog()
     delete m_ui;
 }
 
-void LengthDialog::cancelClicked()
+int LengthDialog::length()
 {
-    m_canceled = true;
-    close();
+    return (exec() == QDialog::Accepted) ? m_ui->lengthSpinBox->value() : -1;
 }
-
-void LengthDialog::okClicked()
-{
-    close();
-}
-
-// TODO: order of buttons is wrong on some operating systems

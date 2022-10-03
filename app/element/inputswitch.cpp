@@ -1,101 +1,120 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "inputswitch.h"
 
+#include "globalproperties.h"
 #include "qneport.h"
 
 #include <QGraphicsSceneMouseEvent>
 
-namespace {
+namespace
+{
 int id = qRegisterMetaType<InputSwitch>();
 }
 
-int InputSwitch::current_id_number = 0;
-
 InputSwitch::InputSwitch(QGraphicsItem *parent)
-    : GraphicElement(ElementType::InputSwitch, ElementGroup::Input, 0, 0, 1, 1, parent)
+    : GraphicElementInput(ElementType::InputSwitch, ElementGroup::Input, ":/input/switchOn.svg", tr("INPUT SWITCH"), tr("Input Switch"), 0, 0, 1, 1, parent)
 {
-    m_pixmapSkinName = {
-        ":/input/switchOff.png",
-        ":/input/switchOn.png",
+    if (GlobalProperties::skipInit) {
+        return;
+    }
+
+    m_defaultSkins = QStringList{
+        ":/input/switchOff.svg",
+        ":/input/switchOn.svg",
     };
-    locked = false;
-    setOutputsOnTop(false);
+    m_alternativeSkins = m_defaultSkins;
+    setPixmap(0);
+
+    m_locked = false;
+
     setCanChangeSkin(true);
-    setRotatable(false);
-    setPixmap(m_pixmapSkinName[0]);
-    on = false;
     setHasLabel(true);
     setHasTrigger(true);
-    setPortName("Switch");
-    setToolTip(m_translatedName);
+    setRotatable(false);
 }
 
-bool InputSwitch::getOn(int port) const
+bool InputSwitch::isOn(const int port) const
 {
-    Q_UNUSED(port);
-    return on;
+    Q_UNUSED(port)
+    return m_isOn;
 }
 
-void InputSwitch::setOn(bool value, int port)
+void InputSwitch::setOff()
 {
-    Q_UNUSED(port);
-    on = value;
-    if (!disabled()) {
-        output()->setValue(on);
-    }
-    if (on) {
-        setPixmap(m_pixmapSkinName[1]);
-    } else {
-        setPixmap(m_pixmapSkinName[0]);
-    }
+    InputSwitch::setOn(!isOn());
+}
+
+void InputSwitch::setOn()
+{
+    InputSwitch::setOn(!isOn());
+}
+
+void InputSwitch::setOn(const bool value, const int port)
+{
+    Q_UNUSED(port)
+    m_isOn = value;
+    setPixmap(static_cast<int>(m_isOn));
+    outputPort()->setStatus(static_cast<Status>(m_isOn));
 }
 
 void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if ((!locked) && (event->button() == Qt::LeftButton)) {
-        setOn(!on);
+    if (!m_locked && (event->button() == Qt::LeftButton)) {
+        setOn(!m_isOn);
         event->accept();
     }
+
     QGraphicsItem::mousePressEvent(event);
 }
 
-void InputSwitch::save(QDataStream &ds) const
+void InputSwitch::save(QDataStream &stream) const
 {
-    GraphicElement::save(ds);
-    ds << on;
-    ds << locked;
+    GraphicElement::save(stream);
+
+    QMap<QString, QVariant> map;
+    map.insert("isOn", m_isOn);
+    map.insert("locked", m_locked);
+
+    stream << map;
 }
 
-void InputSwitch::load(QDataStream &ds, QMap<quint64, QNEPort *> &portMap, double version)
+void InputSwitch::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
 {
-    GraphicElement::load(ds, portMap, version);
-    ds >> on;
-    if (version >= 3.1) {
-        ds >> locked;
+    GraphicElement::load(stream, portMap, version);
+
+    if (version < VERSION("4.1")) {
+        stream >> m_isOn;
+
+        if (version >= VERSION("3.1")) {
+            stream >> m_locked;
+        }
     }
-    setOn(on);
-    output()->setValue(on);
+
+    if (version >= VERSION("4.1")) {
+        QMap<QString, QVariant> map; stream >> map;
+
+        if (map.contains("isOn")) {
+            m_isOn = map.value("isOn").toBool();
+        }
+
+        if (map.contains("locked")) {
+            m_locked = map.value("locked").toBool();
+        }
+    }
+
+    setOn(m_isOn);
 }
 
-void InputSwitch::setSkin(bool defaultSkin, const QString &filename)
+void InputSwitch::setSkin(const bool defaultSkin, const QString &fileName)
 {
     if (defaultSkin) {
-        if (!on) {
-            m_pixmapSkinName[0] = ":/input/switchOff.png";
-            setPixmap(m_pixmapSkinName[0]);
-        } else {
-            m_pixmapSkinName[1] = ":/input/switchOn.png";
-            setPixmap(m_pixmapSkinName[1]);
-        }
+        m_alternativeSkins = m_defaultSkins;
     } else {
-        if (!on) {
-            m_pixmapSkinName[0] = filename;
-            setPixmap(m_pixmapSkinName[0]);
-        } else {
-            m_pixmapSkinName[1] = filename;
-            setPixmap(m_pixmapSkinName[1]);
-        }
+        m_alternativeSkins[static_cast<int>(m_isOn)] = fileName;
     }
+
+    m_usingDefaultSkin = defaultSkin;
+    setPixmap(static_cast<int>(m_isOn));
 }

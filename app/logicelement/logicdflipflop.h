@@ -1,7 +1,5 @@
-/*
- * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
 
@@ -12,11 +10,11 @@ class LogicDFlipFlop : public LogicElement
 public:
     explicit LogicDFlipFlop();
 
-protected:
-    void _updateLogic(const std::vector<bool> &inputs) override;
+    void updateLogic() override;
 
 private:
-    bool lastClk;
-    bool lastValue;
-};
+    Q_DISABLE_COPY(LogicDFlipFlop)
 
+    bool m_lastClk = false;
+    bool m_lastValue = true;
+};

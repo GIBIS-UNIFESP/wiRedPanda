@@ -1,75 +1,51 @@
-// Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "testfiles.h"
 
-#include "editor.h"
-#include "globalproperties.h"
 #include "qneconnection.h"
+#include "scene.h"
+#include "workspace.h"
 
 #include <QTemporaryFile>
 #include <QTest>
-#include <stdexcept>
 
 void TestFiles::testFiles()
 {
-    // qCDebug(zero) << "CURRENTDIR:" << CURRENTDIR;
     const QDir examplesDir(QString(CURRENTDIR) + "/../examples/");
-    // qCDebug(zero) << "Examples dir:" << examplesDir.absolutePath();
     const auto files = examplesDir.entryInfoList(QStringList("*.panda"));
     QVERIFY(!files.empty());
 
     for (const auto &fileInfo : files) {
-        auto *editor = new Editor(this);
-        editor->setupWorkspace();
+        WorkSpace workspace;
         QVERIFY(fileInfo.exists());
-        GlobalProperties::currentFile = fileInfo.absoluteFilePath();
-
-        try {
-            QFile pandaFile(fileInfo.absoluteFilePath());
-            QVERIFY(pandaFile.exists());
-            QVERIFY(pandaFile.open(QFile::ReadOnly));
-            QDataStream ds(&pandaFile);
-            editor->load(ds);
-        } catch (std::runtime_error &e) {
-            QFAIL("Could not load the file! Error: " + QString(e.what()).toUtf8());
-        }
-
-        const auto items = editor->getScene()->items();
+        QFile pandaFile(fileInfo.absoluteFilePath());
+        QVERIFY(pandaFile.exists());
+        QVERIFY(pandaFile.open(QIODevice::ReadOnly));
+        QDataStream stream(&pandaFile);
+        stream.setVersion(QDataStream::Qt_5_12);
+        workspace.load(stream);
+        const auto items = workspace.scene()->items();
 
         for (auto *item : items) {
-            if (item->type() == QNEConnection::Type) {
-                auto *conn = qgraphicsitem_cast<QNEConnection *>(item);
+            if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
                 QVERIFY(conn != nullptr);
-                QVERIFY(conn->start() != nullptr);
-                QVERIFY(conn->end() != nullptr);
+                QVERIFY(conn->startPort() != nullptr);
+                QVERIFY(conn->endPort() != nullptr);
             }
         }
 
-        QTemporaryFile tempfile;
+        QTemporaryFile tempFile;
+        QVERIFY(tempFile.open());
+        QDataStream stream2(&tempFile);
+        stream2.setVersion(QDataStream::Qt_5_12);
+        workspace.save(stream2);
+        tempFile.close();
+        QFile pandaFile2(tempFile.fileName());
+        QVERIFY(pandaFile2.open(QIODevice::ReadOnly));
 
-        if (!tempfile.open()) {
-            QFAIL("Could not open temporary file in ReadWrite mode: " + tempfile.fileName().toUtf8());
-        }
-
-        // qCDebug(zero) << tempfile.fileName();
-        QDataStream ds(&tempfile);
-
-        try {
-            editor->save(ds, "");
-        } catch (std::runtime_error &) {
-            QFAIL("Error saving project: " + tempfile.fileName().toUtf8());
-        }
-
-        tempfile.close();
-
-        try {
-            QFile pandaFile(tempfile.fileName());
-            QVERIFY(pandaFile.open(QFile::ReadOnly));
-            QDataStream ds2(&pandaFile);
-            editor->load(ds2);
-        } catch (std::runtime_error &e) {
-            QFAIL("Could not load the file! Error: " + QString(e.what()).toUtf8());
-        }
+        QDataStream stream3(&pandaFile2);
+        stream3.setVersion(QDataStream::Qt_5_12);
+        workspace.load(stream3);
     }
 }

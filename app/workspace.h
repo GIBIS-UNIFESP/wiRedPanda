@@ -1,51 +1,47 @@
-/*
- * Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
 
-#include <QDialog>
-#include <QDir>
+#include "graphicsview.h"
+#include "scene.h"
+
 #include <QFileInfo>
-#include <QGraphicsRectItem>
 #include <QTemporaryFile>
 #include <QUndoStack>
 
-class BewavedDolphin;
-class Editor;
 class GraphicsView;
-class ICManager;
-class Scene;
-class SimulationController;
+class Simulation;
 
-class WorkSpace
+class WorkSpace : public QWidget
 {
-public:
-    WorkSpace() = default; // for compiling on Qt 5.7+
-    WorkSpace(QDialog *fullscreenDlg, GraphicsView *fullscreenView, Editor *editor);
+    Q_OBJECT
 
-    GraphicsView *fullscreenView() const;
-    ICManager *icManager();
-    QDialog *fullScreenDlg() const;
-    QFileInfo currentFile();
-    QGraphicsRectItem *sceneRect();
+public:
+    explicit WorkSpace(QWidget *parent = nullptr);
+
+    GraphicsView *view();
+    QFileInfo fileInfo();
     QString dolphinFileName();
-    QUndoStack *undoStack() const;
-    Scene *scene() const;
-    SimulationController *simulationController();
-    void free();
-    void setCurrentFile(const QFileInfo &finfo);
-    void setDolphinFileName(const QString &fname);
+    Scene *scene();
+    Simulation *simulation();
+    void load(QDataStream &stream);
+    void load(const QString &fileName);
+    void save(QDataStream &stream);
+    void save(const QString &fileName);
+    void setAutosaveFile();
+    void setDolphinFileName(const QString &fileName);
+
+signals:
+    void fileChanged(const QFileInfo &fileInfo);
 
 private:
-    GraphicsView *m_fullscreenView;
-    ICManager *m_icManager;
-    QDialog *m_fullscreenDlg;
-    QFileInfo m_currentFile;
-    QGraphicsRectItem *m_selectionRect;
-    QString m_dolphinFilename;
-    QUndoStack *m_undoStack;
-    Scene *m_scene;
-    SimulationController *m_simulationController;
+    void autosave();
+    void setAutosaveFileName();
+
+    GraphicsView m_view;
+    QFileInfo m_fileInfo;
+    QString m_dolphinFileName;
+    QTemporaryFile m_autosaveFile;
+    Scene m_scene;
 };
