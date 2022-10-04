@@ -125,14 +125,14 @@ void GraphicElement::setOutputs(const QVector<QNEOutputPort *> &outputs)
     m_outputPorts = outputs;
 }
 
-QNEInputPort *GraphicElement::inputPort(const int pos)
+QNEInputPort *GraphicElement::inputPort(const int index)
 {
-    return m_inputPorts.at(pos);
+    return m_inputPorts.at(index);
 }
 
-QNEOutputPort *GraphicElement::outputPort(const int pos)
+QNEOutputPort *GraphicElement::outputPort(const int index)
 {
-    return m_outputPorts.at(pos);
+    return m_outputPorts.at(index);
 }
 
 void GraphicElement::save(QDataStream &stream) const

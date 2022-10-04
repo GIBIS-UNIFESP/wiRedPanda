@@ -62,8 +62,8 @@ public:
     ElementType elementType() const;
     LogicElement *logic() const;
     QKeySequence trigger() const;
-    QNEInputPort *inputPort(const int pos = 0);
-    QNEOutputPort *outputPort(const int pos = 0);
+    QNEInputPort *inputPort(const int index = 0);
+    QNEOutputPort *outputPort(const int index = 0);
     QPointF pixmapCenter() const;
     QRectF boundingRect() const override;
     QString label() const;
@@ -125,7 +125,6 @@ protected:
     void setMaxOutputSize(const int maxOutputSize);
     void setMinInputSize(const int minInputSize);
     void setMinOutputSize(const int minOutputSize);
-    void setOutputsOnRight(const bool outputsOnRight);
     void setRotatable(const bool rotatable);
 
     //! Path to all default skins. The default skin is in a resource file.

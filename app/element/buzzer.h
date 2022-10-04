@@ -24,8 +24,8 @@ public:
     void setAudio(const QString &note) override;
 
 private:
-    void playBuzzer();
-    void stopBuzzer();
+    void play();
+    void stop();
 
     QSoundEffect *m_audio = nullptr;
     QString m_note;
