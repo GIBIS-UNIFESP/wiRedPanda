@@ -55,13 +55,13 @@ Buzzer::Buzzer(QGraphicsItem *parent)
 void Buzzer::refresh()
 {
     if (!isValid()) {
-        stopBuzzer();
+        stop();
         return;
     }
 
     const Status inputValue = m_inputPorts.constFirst()->status();
 
-    (inputValue == Status::Active) ? playBuzzer() : stopBuzzer();
+    (inputValue == Status::Active) ? play() : stop();
 }
 
 void Buzzer::setAudio(const QString &note)
@@ -100,7 +100,7 @@ void Buzzer::mute(const bool mute)
     m_audio->setMuted(mute);
 }
 
-void Buzzer::playBuzzer()
+void Buzzer::play()
 {
     if (m_isPlaying) {
         return;
@@ -119,7 +119,7 @@ void Buzzer::playBuzzer()
     m_isPlaying = true;
 }
 
-void Buzzer::stopBuzzer()
+void Buzzer::stop()
 {
     if (!m_isPlaying) {
         return;
