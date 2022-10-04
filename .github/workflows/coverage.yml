@@ -1,0 +1,52 @@
+# Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Coverage
+
+on:
+  push:
+    branches: 
+     - 'master'
+
+jobs:
+  Ubuntu-Qt5_12_12-Code_Coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: 5.12.12
+        cache: true
+        aqtversion: ==2.2.3
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: ubuntu-latest
+
+    - name: Build
+      run: |
+        sudo apt install libgstreamer-gl1.0-0
+        mkdir build
+        cd build
+        qmake ../WPanda.pro CONFIG+=coverage
+        make -j2
+        
+    - name: Test
+      run: |
+        cd build/test
+        xvfb-run ./WPanda-test
+        
+    - name: Upload coverage data
+      run: |
+        cd build/test
+        gcov -abcfu build_files/obj/*.o
+        curl -Os https://uploader.codecov.io/latest/linux/codecov
+        chmod +x ./codecov
+        ./codecov
