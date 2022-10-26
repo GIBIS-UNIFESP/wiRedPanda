@@ -7,8 +7,8 @@ include(install.pri)
 
 win32 {
     QMAKE_TARGET_COMPANY = GIBIS-UNIFESP
-    QMAKE_TARGET_PRODUCT = WiRedPanda
-    QMAKE_TARGET_DESCRIPTION = Logic Circuit Simulator
+    QMAKE_TARGET_PRODUCT = WiRedPanda - Logic Circuit Simulator
+    QMAKE_TARGET_DESCRIPTION = WiRedPanda - Logic Circuit Simulator
     QMAKE_TARGET_COPYRIGHT = GIBIS-UNIFESP and the WiRedPanda contributors
 
     RC_ICONS = resources/wpanda.ico
