@@ -36,7 +36,6 @@ HEADERS += \
     $$PWD/display_14.h \
     $$PWD/display_7.h \
     $$PWD/dlatch.h \
-    $$PWD/graphicelementinput.h \
     $$PWD/inputbutton.h \
     $$PWD/inputgnd.h \
     $$PWD/inputrotary.h \

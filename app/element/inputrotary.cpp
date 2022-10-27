@@ -11,7 +11,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<InputRotary>();
+    int id = qRegisterMetaType<InputRotary>();
 }
 
 InputRotary::InputRotary(QGraphicsItem *parent)

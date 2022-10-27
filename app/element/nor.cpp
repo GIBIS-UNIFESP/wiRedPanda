@@ -7,7 +7,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<Nor>();
+    int id = qRegisterMetaType<Nor>();
 }
 
 Nor::Nor(QGraphicsItem *parent)

@@ -17,7 +17,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<Buzzer>();
+    int id = qRegisterMetaType<Buzzer>();
 }
 
 Buzzer::Buzzer(QGraphicsItem *parent)

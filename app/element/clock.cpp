@@ -12,7 +12,7 @@ using namespace std::chrono_literals;
 
 namespace
 {
-int id = qRegisterMetaType<Clock>();
+    int id = qRegisterMetaType<Clock>();
 }
 
 Clock::Clock(QGraphicsItem *parent)

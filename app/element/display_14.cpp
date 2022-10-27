@@ -11,7 +11,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<Display14>();
+    int id = qRegisterMetaType<Display14>();
 }
 
 Display14::Display14(QGraphicsItem *parent)

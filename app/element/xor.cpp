@@ -7,7 +7,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<Xor>();
+    int id = qRegisterMetaType<Xor>();
 }
 
 Xor::Xor(QGraphicsItem *parent)

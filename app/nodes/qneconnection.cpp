@@ -39,7 +39,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<QNEConnection>();
+    int id = qRegisterMetaType<QNEConnection>();
 }
 
 QNEConnection::QNEConnection(QGraphicsItem *parent)

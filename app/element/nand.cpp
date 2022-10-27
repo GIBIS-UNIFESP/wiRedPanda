@@ -7,7 +7,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<Nand>();
+    int id = qRegisterMetaType<Nand>();
 }
 
 Nand::Nand(QGraphicsItem *parent)

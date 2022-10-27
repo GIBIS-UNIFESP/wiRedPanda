@@ -8,7 +8,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<DFlipFlop>();
+    int id = qRegisterMetaType<DFlipFlop>();
 }
 
 DFlipFlop::DFlipFlop(QGraphicsItem *parent)

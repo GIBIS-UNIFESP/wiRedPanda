@@ -7,7 +7,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<Xnor>();
+    int id = qRegisterMetaType<Xnor>();
 }
 
 Xnor::Xnor(QGraphicsItem *parent)

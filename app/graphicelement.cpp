@@ -22,7 +22,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<GraphicElement>();
+    int id = qRegisterMetaType<GraphicElement>();
 }
 
 const int maximumValidInputSize = 256;
@@ -302,7 +302,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
         if (port < m_inputPorts.size()) {
             m_inputPorts.value(port)->setPtr(ptr);
 
-            if (ElementType() == ElementType::IC) {
+            if (elementType() == ElementType::IC) {
                 m_inputPorts.value(port)->setName(name);
             }
         } else {

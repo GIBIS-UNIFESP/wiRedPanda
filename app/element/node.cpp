@@ -8,7 +8,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<Node>();
+    int id = qRegisterMetaType<Node>();
 }
 
 Node::Node(QGraphicsItem *parent)

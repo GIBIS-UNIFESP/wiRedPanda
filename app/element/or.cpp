@@ -7,7 +7,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<Or>();
+    int id = qRegisterMetaType<Or>();
 }
 
 Or::Or(QGraphicsItem *parent)

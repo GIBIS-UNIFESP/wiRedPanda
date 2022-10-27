@@ -7,7 +7,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<InputGnd>();
+    int id = qRegisterMetaType<InputGnd>();
 }
 
 InputGnd::InputGnd(QGraphicsItem *parent)

@@ -10,7 +10,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<Led>();
+    int id = qRegisterMetaType<Led>();
 }
 
 Led::Led(QGraphicsItem *parent)

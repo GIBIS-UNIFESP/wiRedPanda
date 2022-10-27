@@ -12,7 +12,7 @@
 #include <QRegularExpression>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
-using Qt::endl;
+#define endl Qt::endl
 #endif
 
 CodeGenerator::CodeGenerator(const QString &fileName, const QVector<GraphicElement *> &elements)

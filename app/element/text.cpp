@@ -7,7 +7,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<Text>();
+    int id = qRegisterMetaType<Text>();
 }
 
 Text::Text(QGraphicsItem *parent)

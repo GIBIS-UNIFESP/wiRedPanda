@@ -8,7 +8,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<JKFlipFlop>();
+    int id = qRegisterMetaType<JKFlipFlop>();
 }
 
 JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
