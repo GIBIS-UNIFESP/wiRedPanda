@@ -10,7 +10,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<InputButton>();
+    int id = qRegisterMetaType<InputButton>();
 }
 
 InputButton::InputButton(QGraphicsItem *parent)

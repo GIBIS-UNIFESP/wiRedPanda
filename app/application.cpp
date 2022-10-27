@@ -9,7 +9,7 @@ Application::Application(int &argc, char **argv)
 
 bool Application::notify(QObject *receiver, QEvent *event)
 {
-    bool done;
+    bool done = false;
 
     try {
         done = QApplication::notify(receiver, event);

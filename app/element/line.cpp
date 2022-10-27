@@ -7,7 +7,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<Line>();
+    int id = qRegisterMetaType<Line>();
 }
 
 Line::Line(QGraphicsItem *parent)

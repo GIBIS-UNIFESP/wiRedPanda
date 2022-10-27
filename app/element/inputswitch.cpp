@@ -10,7 +10,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<InputSwitch>();
+    int id = qRegisterMetaType<InputSwitch>();
 }
 
 InputSwitch::InputSwitch(QGraphicsItem *parent)

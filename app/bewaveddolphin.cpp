@@ -876,10 +876,10 @@ void BewavedDolphin::copy(const QItemSelection &ranges, QDataStream &stream)
     for (const auto &item : itemList) {
         const int row = item.row();
         const int col = item.column();
-        const int data = m_model->index(row, col).data().toInt();
+        const int data_ = m_model->index(row, col).data().toInt();
         stream << static_cast<qint64>(row - firstRow);
         stream << static_cast<qint64>(col - firstCol);
-        stream << static_cast<qint64>(data);
+        stream << static_cast<qint64>(data_);
     }
 }
 
@@ -940,12 +940,12 @@ void BewavedDolphin::paste(const QItemSelection &ranges, QDataStream &stream)
     for (int i = 0; i < static_cast<int>(itemListSize); ++i) {
         quint64 row;  stream >> row;
         quint64 col;  stream >> col;
-        quint64 data; stream >> data;
+        quint64 data_; stream >> data_;
         const int newRow = static_cast<int>(firstRow + row);
         const int newCol = static_cast<int>(firstCol + col);
 
         if ((newRow < m_inputPorts) && (newCol < m_model->columnCount())) {
-            createElement(newRow, newCol, static_cast<int>(data));
+            createElement(newRow, newCol, static_cast<int>(data_));
         }
     }
 

@@ -7,7 +7,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<Not>();
+    int id = qRegisterMetaType<Not>();
 }
 
 Not::Not(QGraphicsItem *parent)

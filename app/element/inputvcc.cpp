@@ -8,7 +8,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<InputVcc>();
+    int id = qRegisterMetaType<InputVcc>();
 }
 
 InputVcc::InputVcc(QGraphicsItem *parent)

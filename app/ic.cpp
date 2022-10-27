@@ -18,7 +18,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<IC>();
+    int id = qRegisterMetaType<IC>();
 }
 
 IC::IC(QGraphicsItem *parent)

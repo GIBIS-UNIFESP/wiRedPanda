@@ -8,7 +8,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<DLatch>();
+    int id = qRegisterMetaType<DLatch>();
 }
 
 DLatch::DLatch(QGraphicsItem *parent)

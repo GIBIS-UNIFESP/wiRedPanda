@@ -78,7 +78,8 @@ linux {
 }
 
 msvc {
-    QMAKE_CXXFLAGS += /permissive-
+    QMAKE_CXXFLAGS_WARN_ON ~= s/-W3/-W4
+    QMAKE_CXXFLAGS += /permissive- /external:I $$[QT_INSTALL_PREFIX] /external:W0
     QMAKE_CXXFLAGS_DEBUG += /Ob1
     QMAKE_CXXFLAGS_RELEASE += /GL
     QMAKE_LFLAGS_RELEASE += /LTCG
@@ -151,6 +152,7 @@ HEADERS += \
     $$PWD/app/enums.h \
     $$PWD/app/globalproperties.h \
     $$PWD/app/graphicelement.h \
+    $$PWD/app/graphicelementinput.h \
     $$PWD/app/graphicsview.h \
     $$PWD/app/ic.h \
     $$PWD/app/itemwithid.h \

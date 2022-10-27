@@ -38,8 +38,8 @@
 
 namespace
 {
-int id = qRegisterMetaType<QNEInputPort>();
-int id2 = qRegisterMetaType<QNEOutputPort>();
+    int id = qRegisterMetaType<QNEInputPort>();
+    int id2 = qRegisterMetaType<QNEOutputPort>();
 }
 
 QNEPort::QNEPort(QGraphicsItem *parent)

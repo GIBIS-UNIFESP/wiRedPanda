@@ -8,7 +8,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<Demux>();
+    int id = qRegisterMetaType<Demux>();
 }
 
 Demux::Demux(QGraphicsItem *parent)

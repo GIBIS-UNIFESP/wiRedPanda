@@ -7,7 +7,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<And>();
+    int id = qRegisterMetaType<And>();
 }
 
 And::And(QGraphicsItem *parent)

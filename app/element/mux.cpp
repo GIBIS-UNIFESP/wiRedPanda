@@ -8,7 +8,7 @@
 
 namespace
 {
-int id = qRegisterMetaType<Mux>();
+    int id = qRegisterMetaType<Mux>();
 }
 
 Mux::Mux(QGraphicsItem *parent)
