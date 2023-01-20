@@ -24,7 +24,17 @@ jobs:
         submodules: recursive
         fetch-depth: 0
 
-    - name: Install Qt
+    - name: Install Qt 32bit
+      if: matrix.os == 'windows-latest'
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: 5.15.2
+        cache: true
+        aqtversion: ==2.2.3
+        arch: win32_msvc2019
+
+    - name: Install Qt 64bit
+      if: matrix.os != 'windows-latest'
       uses: jurplel/install-qt-action@v3
       with:
         version: 5.15.2
@@ -78,6 +88,8 @@ jobs:
     - name: Setup MSVC Toolchain
       if: startsWith(matrix.os, 'windows')
       uses: seanmiddleditch/gha-setup-vsdevenv@v4
+      with:
+        arch: x86
 
     - name: Build Windows
       if: runner.os == 'Windows'
