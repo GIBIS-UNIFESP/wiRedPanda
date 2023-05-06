@@ -968,15 +968,20 @@ void MainWindow::on_actionExportToPdf_triggered()
         return;
     }
 
+    m_currentTab->scene()->clearSelection();
+
     QString path;
+
     if (m_currentFile.exists()) {
         path = m_currentFile.absolutePath();
     }
 
     QString pdfFile = QFileDialog::getSaveFileName(this, tr("Export to PDF"), path, tr("PDF files (*.pdf)"));
+
     if (pdfFile.isEmpty()) {
         return;
     }
+
     if (!pdfFile.endsWith(".pdf", Qt::CaseInsensitive)) {
         pdfFile.append(".pdf");
     }
@@ -987,9 +992,11 @@ void MainWindow::on_actionExportToPdf_triggered()
     printer.setOutputFormat(QPrinter::PdfFormat);
     printer.setOutputFileName(pdfFile);
     QPainter painter;
+
     if (!painter.begin(&printer)) {
         throw Pandaception(tr("Could not print this circuit to PDF."));
     }
+
     auto *scene = m_currentTab->scene();
     scene->render(&painter, QRectF(), scene->itemsBoundingRect().adjusted(-64, -64, 64, 64));
     painter.end();
@@ -1004,6 +1011,8 @@ void MainWindow::on_actionExportToImage_triggered()
     if (!m_currentTab) {
         return;
     }
+
+    m_currentTab->scene()->clearSelection();
 
     QString path;
 
