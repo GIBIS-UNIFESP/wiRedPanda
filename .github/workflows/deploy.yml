@@ -30,7 +30,7 @@ jobs:
       with:
         version: 5.15.2
         cache: true
-        aqtversion: ==2.2.3
+        aqtversion: ==3.1.6
         arch: win32_msvc2019
 
     - name: Install Qt 64bit
@@ -39,7 +39,7 @@ jobs:
       with:
         version: 5.15.2
         cache: true
-        aqtversion: ==2.2.3
+        aqtversion: ==3.1.6
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -61,7 +61,7 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         cd build/test
-        xvfb-run ./WPanda-test
+        ./WPanda-test -platform offscreen
 
     - name: linuxdeployqt
       if: runner.os == 'Linux'
