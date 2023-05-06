@@ -1101,12 +1101,6 @@ void GraphicElement::highlight(const bool isSelected)
             }
 
             connection->setHighLight(isSelected);
-
-            if (auto *otherPort = connection->otherPort(port)) {
-                if (auto *elm = otherPort->graphicElement(); elm && (elm->elementType() == ElementType::Node)) {
-                    elm->highlight(isSelected);
-                }
-            }
         }
     }
 }
