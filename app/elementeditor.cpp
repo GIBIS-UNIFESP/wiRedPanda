@@ -621,13 +621,6 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_ui->pushButtonDefaultSkin->setVisible(m_canChangeSkin);
 }
 
-void ElementEditor::disable()
-{
-    m_hasElements = false;
-    hide();
-    m_ui->lineEditElementLabel->setText("");
-}
-
 void ElementEditor::selectionChanged()
 {
     setCurrentElements(m_scene->selectedElements());

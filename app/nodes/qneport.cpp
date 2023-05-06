@@ -58,11 +58,6 @@ LogicElement *QNEPort::logic() const
     return graphicElement() ? graphicElement()->logic() : nullptr;
 }
 
-int QNEPort::radius() const
-{
-    return m_radius;
-}
-
 const QList<QNEConnection *> &QNEPort::connections() const
 {
     return m_connections;
@@ -99,11 +94,6 @@ void QNEPort::disconnect(QNEConnection *conn)
 int QNEPort::portFlags() const
 {
     return m_portFlags;
-}
-
-quint64 QNEPort::ptr() const
-{
-    return m_ptr;
 }
 
 void QNEPort::setPtr(const quint64 ptr)

@@ -54,8 +54,6 @@ public:
     const QList<QNEConnection *> &connections() const;
     int index() const;
     int portFlags() const;
-    int radius() const;
-    quint64 ptr() const;
     virtual bool isInput() const = 0;
     virtual bool isOutput() const = 0;
     virtual bool isValid() const = 0;
