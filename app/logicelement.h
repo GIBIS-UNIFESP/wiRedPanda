@@ -26,7 +26,6 @@ public:
     bool outputValue(const int index = 0) const;
     int calculatePriority();
     virtual void updateLogic() = 0;
-    void clearPredecessors();
     void clearSucessors();
     void connectPredecessor(const int index, LogicElement *logic, const int port);
     void setOutputValue(const bool value);

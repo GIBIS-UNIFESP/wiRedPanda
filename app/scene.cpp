@@ -345,16 +345,6 @@ QList<QGraphicsItem *> Scene::items(const QRectF &rect, Qt::ItemSelectionMode mo
     return QGraphicsScene::items(rect, mode, order, deviceTransform);
 }
 
-QList<QGraphicsItem *> Scene::items(const QPolygonF &polygon, Qt::ItemSelectionMode mode, Qt::SortOrder order, const QTransform &deviceTransform) const
-{
-    return QGraphicsScene::items(polygon, mode, order, deviceTransform);
-}
-
-QList<QGraphicsItem *> Scene::items(const QPainterPath &path, Qt::ItemSelectionMode mode, Qt::SortOrder order, const QTransform &deviceTransform) const
-{
-    return QGraphicsScene::items(path, mode, order, deviceTransform);
-}
-
 void Scene::showGates(const bool checked)
 {
     m_showGates = checked;

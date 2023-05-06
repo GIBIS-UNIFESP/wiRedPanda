@@ -15,11 +15,6 @@ bool LogicElement::isValid() const
     return m_isValid;
 }
 
-void LogicElement::clearPredecessors()
-{
-    std::fill(m_inputPairs.begin(), m_inputPairs.end(), InputPair{});
-}
-
 void LogicElement::clearSucessors()
 {
     for (const auto &logic : qAsConst(m_successors)) {
