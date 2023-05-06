@@ -24,6 +24,7 @@
 #include <QCheckBox>
 #include <QCloseEvent>
 #include <QDebug>
+#include <QDesktopServices>
 #include <QFileDialog>
 #include <QLoggingCategory>
 #include <QMessageBox>
@@ -994,6 +995,8 @@ void MainWindow::on_actionExportToPdf_triggered()
     painter.end();
 
     m_ui->statusBar->showMessage(tr("Exported file successfully."), 4000);
+
+    QDesktopServices::openUrl(QUrl::fromLocalFile(pdfFile));
 }
 
 void MainWindow::on_actionExportToImage_triggered()
@@ -1028,6 +1031,8 @@ void MainWindow::on_actionExportToImage_triggered()
     pixmap.save(pngFile);
 
     m_ui->statusBar->showMessage(tr("Exported file successfully."), 4000);
+
+    QDesktopServices::openUrl(QUrl::fromLocalFile(pngFile));
 }
 
 void MainWindow::retranslateUi()
