@@ -1186,6 +1186,10 @@ void MainWindow::on_actionFastMode_triggered(const bool checked)
 
 void MainWindow::on_actionWaveform_triggered()
 {
+    if (!m_currentTab) {
+        return;
+    }
+
     qCDebug(zero) << tr("BD fileName: ") << m_currentTab->dolphinFileName();
     auto *bewavedDolphin = new BewavedDolphin(m_currentTab->scene(), true, this);
     bewavedDolphin->createWaveform(m_currentTab->dolphinFileName());
@@ -1300,6 +1304,10 @@ bool MainWindow::event(QEvent *event)
 
 void MainWindow::on_pushButtonAddIC_clicked()
 {
+    if (!m_currentTab) {
+        return;
+    }
+
     if (!m_currentTab->fileInfo().isReadable()) {
         throw Pandaception(tr("Save file first."));
     }
