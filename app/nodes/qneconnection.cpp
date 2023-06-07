@@ -284,11 +284,11 @@ QVariant QNEConnection::itemChange(GraphicsItemChange change, const QVariant &va
 {
     if (change == ItemSelectedChange) {
         if (value.toBool()) {
-            startPort()->hoverEnter();
-            endPort()->hoverEnter();
+            if (startPort()) startPort()->hoverEnter();
+            if (endPort()) endPort()->hoverEnter();
         } else {
-            startPort()->hoverLeave();
-            endPort()->hoverLeave();
+            if (startPort()) startPort()->hoverLeave();
+            if (endPort()) endPort()->hoverLeave();
         }
     }
 
