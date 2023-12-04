@@ -84,6 +84,7 @@ public:
     int minOutputSize() const;
     int outputSize() const;
     int priority() const;
+    int key() const;
     qreal rotation() const;
     virtual QString audio() const;
     virtual QString color() const;
@@ -126,6 +127,7 @@ protected:
     void setMinInputSize(const int minInputSize);
     void setMinOutputSize(const int minOutputSize);
     void setRotatable(const bool rotatable);
+    void setkey(const int key);
 
     //! Path to all default skins. The default skin is in a resource file.
     QStringList m_defaultSkins;
@@ -197,6 +199,7 @@ private:
     bool m_rotatable = true;
     bool m_selected = false;
     qreal m_angle = 0;
+    quint8 m_key = 0;
     quint64 m_maxInputSize = 0;
     quint64 m_maxOutputSize = 0;
     quint64 m_minInputSize = 0;

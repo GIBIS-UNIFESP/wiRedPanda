@@ -1082,6 +1082,14 @@ void GraphicElement::setMaxInputSize(const int maxInputSize)
     m_maxInputSize = maxInputSize;
 }
 
+int GraphicElement::key() const
+{
+    return static_cast<int>(m_key);
+}
+void GraphicElement::setkey(const int key)
+{
+    m_key = key;
+}
 void GraphicElement::highlight(const bool isSelected)
 {
     QVector<QNEPort *> ports;
