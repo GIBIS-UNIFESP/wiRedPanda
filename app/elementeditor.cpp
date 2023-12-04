@@ -49,9 +49,10 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->lineEditElementLabel,   &QLineEdit::textChanged,                          this, &ElementEditor::apply);
     connect(m_ui->lineEditTrigger,        &QLineEdit::textChanged,                          this, &ElementEditor::triggerChanged);
     connect(m_ui->pushButtonChangeSkin,   &QPushButton::clicked,                            this, &ElementEditor::updateElementSkin);
-    connect(m_ui->pushButtonTruthTable,   &QPushButton::clicked,                            this, &ElementEditor::TruthTable);
     connect(m_ui->pushButtonDefaultSkin,  &QPushButton::clicked,                            this, &ElementEditor::defaultSkin);
     connect(m_ui->spinBoxPriority,        qOverload<int>(&QSpinBox::valueChanged),          this, &ElementEditor::priorityChanged);
+    //connect(m_ui->pushButtonTruthTable,   &QPushButton::clicked,                            this, &ElementEditor::TruthTable);
+
 }
 
 ElementEditor::~ElementEditor()
@@ -634,12 +635,6 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 void ElementEditor::selectionChanged()
 {
     setCurrentElements(m_scene->selectedElements());
-}
-
-void ElementEditor::TruthTable()
-{
-    if(!m_hasTruthTable) return;
-    emit createTT(m_elements);
 }
 
 void ElementEditor::apply()
