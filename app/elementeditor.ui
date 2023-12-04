@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>205</width>
-    <height>346</height>
+    <width>247</width>
+    <height>401</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -186,9 +186,22 @@
       </item>
       <item row="17" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="spacing">
+         <number>6</number>
+        </property>
         <property name="sizeConstraint">
          <enum>QLayout::SetNoConstraint</enum>
         </property>
+        <item>
+         <widget class="QPushButton" name="pushButtonTruthTable">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>TruthTable</string>
+          </property>
+         </widget>
+        </item>
         <item>
          <widget class="QPushButton" name="pushButtonChangeSkin">
           <property name="text">

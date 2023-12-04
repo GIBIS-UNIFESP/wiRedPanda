@@ -8,7 +8,8 @@
 LogicTruthTable::LogicTruthTable(const int inputSize, const int key)
     : LogicElement(inputSize, 1)
 {
-    proposition.fromBits(QString::number(key,2).toLatin1(), inputSize);
+    auto bitString = QString::number(6,2).toLatin1().leftJustified(256, '0');
+    proposition = proposition.fromBits(bitString, 256);
 }
 
 void LogicTruthTable::updateLogic()
@@ -17,7 +18,7 @@ void LogicTruthTable::updateLogic()
         return;
     }
 
-    const auto pos = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), QString(""), [](QString acc, bool b){acc+= b == 1 ? '1' : '0'; return acc;}).toInt();
+    const auto pos = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), QString(""), [](QString acc, bool b){acc+= b == 1 ? '1' : '0'; return acc;}).toUInt(nullptr, 2);
     const bool result = proposition.at(pos);
     setOutputValue(result);
 }

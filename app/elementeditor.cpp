@@ -49,6 +49,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->lineEditElementLabel,   &QLineEdit::textChanged,                          this, &ElementEditor::apply);
     connect(m_ui->lineEditTrigger,        &QLineEdit::textChanged,                          this, &ElementEditor::triggerChanged);
     connect(m_ui->pushButtonChangeSkin,   &QPushButton::clicked,                            this, &ElementEditor::updateElementSkin);
+    connect(m_ui->pushButtonTruthTable,   &QPushButton::clicked,                            this, &ElementEditor::TruthTable);
     connect(m_ui->pushButtonDefaultSkin,  &QPushButton::clicked,                            this, &ElementEditor::defaultSkin);
     connect(m_ui->spinBoxPriority,        qOverload<int>(&QSpinBox::valueChanged),          this, &ElementEditor::priorityChanged);
 }
@@ -360,7 +361,7 @@ void ElementEditor::retranslateUi()
 void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 {
     m_elements = elements;
-    m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = false;
+    m_hasTruthTable = m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = false;
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = false;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = false;
     m_canChangeSkin = m_hasSamePriority = false;
@@ -373,7 +374,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     }
 
     bool sameCheckState = true;
-    m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = true;
+    m_hasTruthTable = m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = true;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = true;
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = true;
     m_canChangeSkin = m_hasSamePriority = true;
@@ -393,6 +394,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         const auto group = elm->elementGroup();
         const auto firstGroup = firstElement->elementGroup();
 
+        m_hasTruthTable &= elm->hasTruthTable();
         m_hasLabel &= elm->hasLabel();
         m_canChangeSkin &= elm->canChangeSkin();
         m_hasColors &= elm->hasColors();
@@ -506,7 +508,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         }
     }
 
-    /* Input size */
+    /* Input size  */
     m_ui->comboBoxInputSize->clear();
     m_ui->labelInputs->setVisible(m_canChangeInputSize);
     m_ui->comboBoxInputSize->setVisible(m_canChangeInputSize);
@@ -613,6 +615,14 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         m_ui->lineEditTrigger->setText(m_hasSameTrigger ? firstElement->trigger().toString() : m_manyTriggers);
     }
 
+    /* TruthTable */
+
+    m_ui->pushButtonTruthTable->setVisible(m_hasTruthTable);
+    if(m_hasTruthTable)
+    {
+    }
+
+
     setEnabled(true);
     show();
 
@@ -624,6 +634,12 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 void ElementEditor::selectionChanged()
 {
     setCurrentElements(m_scene->selectedElements());
+}
+
+void ElementEditor::TruthTable()
+{
+    if(!m_hasTruthTable) return;
+    emit createTT(m_elements);
 }
 
 void ElementEditor::apply()

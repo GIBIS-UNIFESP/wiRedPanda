@@ -36,7 +36,7 @@ signals:
     void sendCommand(QUndoCommand *cmd);
 
 private:
-    Q_DISABLE_COPY(ElementEditor)
+        Q_DISABLE_COPY(ElementEditor)
 
     void apply();
     void defaultSkin();
@@ -88,4 +88,5 @@ private:
     bool m_hasTrigger = false;
     bool m_isDefaultSkin = true;
     bool m_isUpdatingSkin = false;
+    bool m_hasTruthTable = false;
 };

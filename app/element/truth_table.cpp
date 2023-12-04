@@ -11,7 +11,7 @@ namespace
 }
 
 TruthTable::TruthTable(QGraphicsItem *parent)
-    : GraphicElement(ElementType::And, ElementGroup::IC, ":/basic/and.svg", tr("TruthTable"), tr("TruthTable"), 2, 8, 1, 1, parent)
+    : GraphicElement(ElementType::TruthTable, ElementGroup::IC, ":/basic/and.svg", tr("TruthTable"), tr("TruthTable"), 2, 8, 1, 1, parent)
 {
     if (GlobalProperties::skipInit) {
         return;
@@ -20,6 +20,6 @@ TruthTable::TruthTable(QGraphicsItem *parent)
     m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);
-
+    setHasTruthTable(true);
     setCanChangeSkin(true);
 }

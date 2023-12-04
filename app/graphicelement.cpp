@@ -963,7 +963,14 @@ bool GraphicElement::hasLabel() const
 {
     return m_hasLabel;
 }
-
+bool GraphicElement::hasTruthTable() const
+{
+    return m_hasTruthTable;
+}
+void GraphicElement::setHasTruthTable(const bool hasTruthTable)
+{
+    m_hasTruthTable = hasTruthTable;
+}
 bool GraphicElement::canChangeSkin() const
 {
     return m_canChangeSkin;
