@@ -10,7 +10,7 @@
 #include "inputrotary.h"
 #include "scene.h"
 #include "thememanager.h"
-
+#include "truth_table.h"
 #include <QDebug>
 #include <QFileDialog>
 #include <QKeyEvent>
@@ -39,6 +39,8 @@ ElementEditor::ElementEditor(QWidget *parent)
     m_ui->lineEditTrigger->installEventFilter(this);
     m_ui->spinBoxPriority->installEventFilter(this);
 
+    m_ui->truthTable->setVisible(false);
+
     connect(m_ui->checkBoxLocked,         &QCheckBox::clicked,                              this, &ElementEditor::inputLocked);
     connect(m_ui->comboBoxAudio,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
     connect(m_ui->comboBoxColor,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
@@ -51,6 +53,10 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->pushButtonChangeSkin,   &QPushButton::clicked,                            this, &ElementEditor::updateElementSkin);
     connect(m_ui->pushButtonDefaultSkin,  &QPushButton::clicked,                            this, &ElementEditor::defaultSkin);
     connect(m_ui->spinBoxPriority,        qOverload<int>(&QSpinBox::valueChanged),          this, &ElementEditor::priorityChanged);
+    //Truth Table
+    connect(m_ui->pushButtonTruthTable,   &QPushButton::clicked,                            this, &ElementEditor::TruthTable);
+    connect(m_ui->truthTable,             &QTableWidget::cellDoubleClicked,                 this, &ElementEditor::SetTruthTableProposition);
+
 }
 
 ElementEditor::~ElementEditor()
@@ -360,6 +366,7 @@ void ElementEditor::retranslateUi()
 void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 {
     m_elements = elements;
+    m_hasTruthTable = 0;
     m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = false;
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = false;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = false;
@@ -378,6 +385,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = true;
     m_canChangeSkin = m_hasSamePriority = true;
     m_hasElements = true;
+
     show();
     setEnabled(false);
     int minimumInputs = 0;
@@ -389,10 +397,13 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     auto *firstInput = qobject_cast<GraphicElementInput *>(firstElement);
     auto elementType = firstElement->elementType();
 
+    m_hasRotarySwitch = (elementType == ElementType::InputRotary);
+
     for (auto *elm : qAsConst(m_elements)) {
         const auto group = elm->elementGroup();
         const auto firstGroup = firstElement->elementGroup();
 
+        m_hasTruthTable += elm->hasTruthTable();
         m_hasLabel &= elm->hasLabel();
         m_canChangeSkin &= elm->canChangeSkin();
         m_hasColors &= elm->hasColors();
@@ -434,7 +445,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     }
 
     m_canChangeInputSize = (minimumInputs < maximumInputs);
-    m_canChangeOutputSize = (minimumOutputs < maximumOutputs);
+    m_canChangeOutputSize = (minimumOutputs < maximumOutputs) && (!m_hasRotarySwitch || m_hasTruthTable == 0);
     /* Element type */
     m_ui->groupBox->setTitle(ElementFactory::typeToTitleText(elementType));
     /* Labels */
@@ -506,7 +517,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         }
     }
 
-    /* Input size */
+    /* Input size  */
     m_ui->comboBoxInputSize->clear();
     m_ui->labelInputs->setVisible(m_canChangeInputSize);
     m_ui->comboBoxInputSize->setVisible(m_canChangeInputSize);
@@ -532,19 +543,28 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 
     /* Output size */
     m_ui->comboBoxOutputSize->clear();
+
     m_ui->labelOutputs->setVisible(m_canChangeOutputSize);
     m_ui->comboBoxOutputSize->setVisible(m_canChangeOutputSize);
     m_ui->comboBoxOutputSize->setEnabled(m_canChangeOutputSize);
 
     if (m_canChangeOutputSize) {
+
+        if(!m_hasRotarySwitch)
+            m_ui->comboBoxOutputSize->addItem("1", 1);
         m_ui->comboBoxOutputSize->addItem("2", 2);
         m_ui->comboBoxOutputSize->addItem("3", 3);
         m_ui->comboBoxOutputSize->addItem("4", 4);
+        m_ui->comboBoxOutputSize->addItem("5", 5);
         m_ui->comboBoxOutputSize->addItem("6", 6);
+        m_ui->comboBoxOutputSize->addItem("7", 7);
         m_ui->comboBoxOutputSize->addItem("8", 8);
-        m_ui->comboBoxOutputSize->addItem("10", 10);
-        m_ui->comboBoxOutputSize->addItem("12", 12);
-        m_ui->comboBoxOutputSize->addItem("16", 16);
+
+        if(m_hasRotarySwitch) {
+            m_ui->comboBoxOutputSize->addItem("10", 10);
+            m_ui->comboBoxOutputSize->addItem("12", 12);
+            m_ui->comboBoxOutputSize->addItem("16", 16);
+        }
     }
 
     if (m_ui->comboBoxOutputSize->findText(m_manyOS) == -1) {
@@ -552,13 +572,16 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     }
 
     if (m_canChangeOutputSize) {
-        if (m_hasSameOutputSize) {
-            m_ui->comboBoxOutputSize->removeItem(m_ui->comboBoxOutputSize->findText(m_manyOS));
-            QString outputSize = QString::number(firstElement->outputSize());
-            m_ui->comboBoxOutputSize->setCurrentText(outputSize);
-        } else {
-            m_ui->comboBoxOutputSize->setCurrentText(m_manyOS);
+        if (!m_hasRotarySwitch || m_hasTruthTable == 0) {
+            if (m_hasSameOutputSize) {
+                m_ui->comboBoxOutputSize->removeItem(m_ui->comboBoxOutputSize->findText(m_manyOS));
+                QString outputSize = QString::number(firstElement->outputSize());
+                m_ui->comboBoxOutputSize->setCurrentText(outputSize);
+            } else {
+                m_ui->comboBoxOutputSize->setCurrentText(m_manyOS);
+            }
         }
+
     }
 
     /* Output value */
@@ -612,6 +635,12 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     if (m_hasTrigger) {
         m_ui->lineEditTrigger->setText(m_hasSameTrigger ? firstElement->trigger().toString() : m_manyTriggers);
     }
+
+    /* TruthTable */
+
+    m_ui->pushButtonTruthTable->setVisible(elements.size() == m_hasTruthTable);
+    m_ui->truthTable->setVisible(false);
+    m_ui->pushButtonTruthTable->setEnabled(m_hasTruthTable == 1);
 
     setEnabled(true);
     show();
@@ -815,6 +844,120 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
     }
 
     return QWidget::eventFilter(obj, event);
+}
+
+void ElementEditor::TruthTable()
+{
+    if (!m_hasTruthTable) return;
+
+     class TruthTable* truthtable = dynamic_cast<class TruthTable *>(m_elements[0]);
+
+    //Assuming only one element selected for now...
+
+    int nInputs  = truthtable->inputSize();
+    int nOutputs = truthtable->outputSize();
+
+    QStringList inputLabels;
+    m_ui->truthTable->setColumnCount(nInputs + nOutputs);
+    m_ui->truthTable->setRowCount(pow(2,nInputs));
+
+    for(int i = 0; i < nInputs; i ++)
+    {
+        auto nextLabel = new QString(QChar::fromLatin1('A' + i));
+        inputLabels.append(*nextLabel);
+    }
+
+    for(int i = 0; i < truthtable->outputSize(); i ++)
+    {
+        inputLabels.append("S"+QString::number(i));
+        m_ui->truthTable->setColumnWidth(nInputs + i,14);
+    }
+
+    m_ui->truthTable->setHorizontalHeaderLabels(inputLabels);
+
+    // int columnCount = m_ui->truthTable->columnCount();
+
+
+    // if(m_ui->truthTable->columnCount() != 0 && m_ui->truthTable->columnCount() -1  != m_elements[0]->inputSize()) hasInputPortsChange = true;
+
+
+    for(int i =0; i < pow(2,nInputs); i++)
+    {
+        for(int j =0; j < nInputs; j++)
+        {
+            m_ui->truthTable->setColumnWidth(j,14);
+            auto newItemValue = QString::number(i, 2);
+
+            if(newItemValue.size() < nInputs){
+                newItemValue = newItemValue.rightJustified(nInputs, '0');
+            }
+
+            if(m_ui->truthTable->item(i, j) == nullptr)
+            {
+                auto *newItem = new QTableWidgetItem(newItemValue.at(j), QTableWidgetItem::Type);
+                newItem->setTextAlignment(Qt::AlignCenter);
+                m_ui->truthTable->setItem(i, j, newItem);
+                m_ui->truthTable->item(i,j)->setFlags(Qt::ItemIsEnabled);
+            }
+
+                m_ui->truthTable->item(i,j)->setText(newItemValue.at(j));
+        }
+
+        auto arr = truthtable->key();
+
+        for(int z = 0; z < nOutputs; z++)
+        {
+            int output = arr.at(256 * z + i);
+
+            if(m_ui->truthTable->item(i, nInputs + z) == nullptr)
+            {
+                auto *newOutItem = new QTableWidgetItem(QString(QChar::fromLatin1('0' + output)));
+                newOutItem->setTextAlignment(Qt::AlignCenter);
+                m_ui->truthTable->setItem(i, nInputs + z, newOutItem);
+                m_ui->truthTable->item(i,nInputs + z)->setFlags(Qt::ItemIsEnabled);
+            }
+                m_ui->truthTable->item(i, nInputs + z)->setText(QString::number(output));
+
+        }
+
+    }
+
+    m_ui->truthTable->setVisible(true);
+}
+
+void ElementEditor::SetTruthTableProposition(int row, int column)
+{
+    if(m_elements.size() > 1) return;
+
+    if(column < m_elements[0]->inputSize()) return;
+
+    auto truthtable = m_elements[0];
+
+    auto cellItem = m_ui->truthTable->item(row,column);
+
+    QString newItemValue;
+
+    if(cellItem->text() == "0")
+    {
+       newItemValue = "1";
+    }
+    else
+    {
+       newItemValue = "0";
+    }
+    cellItem->setText(newItemValue);
+
+    int nInputs = truthtable->inputSize();
+
+    int positionToChange = 256 * (column - nInputs) + row;
+
+    emit sendCommand(new ToggleTruthTableOutputCommand(truthtable, positionToChange, m_scene, this));
+
+    ElementEditor::TruthTable();
+
+    m_scene->setCircuitUpdateRequired();
+
+    return;
 }
 
 void ElementEditor::defaultSkin()

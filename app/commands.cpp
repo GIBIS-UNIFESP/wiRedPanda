@@ -13,6 +13,7 @@
 #include "serialization.h"
 #include "simulation.h"
 #include "simulationblocker.h"
+#include "truth_table.h"
 
 #include <QIODevice>
 #include <cmath>
@@ -856,4 +857,40 @@ void ChangeOutputSizeCommand::undo()
     }
 
     m_scene->setCircuitUpdateRequired();
+}
+
+ToggleTruthTableOutputCommand::ToggleTruthTableOutputCommand(GraphicElement* &element,int pos, Scene* scene, ElementEditor *elementeditor, QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , m_pos(pos)
+{
+    m_id = element->id();
+    m_scene = scene;
+    m_elementeditor = elementeditor;
+    setText(tr("Toggle TruthTable Output at position: %1").arg(m_pos));
+}
+
+void ToggleTruthTableOutputCommand::redo(){
+    qCDebug(zero) << text();
+
+    TruthTable* truthtable = dynamic_cast<TruthTable *>(findElm(m_id));
+
+    if(!truthtable) throw Pandaception("Could not find truthtable element!");
+    truthtable->key().toggleBit(m_pos);
+
+    m_scene->setCircuitUpdateRequired();
+    m_elementeditor->TruthTable();
+}
+
+void ToggleTruthTableOutputCommand::undo(){
+    qCDebug(zero) << text();
+
+    TruthTable* truthtable = dynamic_cast<TruthTable *>(findElm(m_id));
+
+    if(!truthtable) throw Pandaception("Could not find truthtable element!");
+
+    truthtable->key().toggleBit(m_pos);
+
+    m_scene->setCircuitUpdateRequired();
+    m_elementeditor->TruthTable();
+
 }

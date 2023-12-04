@@ -31,12 +31,15 @@ public:
     void updateElementSkin();
     void updatePriorityAction();
     void updateTheme();
+    void TruthTable();
+
 
 signals:
     void sendCommand(QUndoCommand *cmd);
+    void createTT(QList<GraphicElement *>);
 
 private:
-    Q_DISABLE_COPY(ElementEditor)
+        Q_DISABLE_COPY(ElementEditor)
 
     void apply();
     void defaultSkin();
@@ -49,6 +52,8 @@ private:
     void triggerChanged(const QString &cmd);
     void priorityChanged(const int value);
     void updateSkins();
+    void SetTruthTableProposition(int row, int column);
+
 
     Ui::ElementEditor *m_ui;
     QList<GraphicElement *> m_elements;
@@ -65,6 +70,7 @@ private:
     Scene *m_scene = nullptr;
     bool m_canChangeInputSize = false;
     bool m_canChangeOutputSize = false;
+    bool m_hasRotarySwitch = false;
     bool m_canChangeSkin = false;
     bool m_canMorph = false;
     bool m_hasAnyProperty = false;
@@ -88,4 +94,6 @@ private:
     bool m_hasTrigger = false;
     bool m_isDefaultSkin = true;
     bool m_isUpdatingSkin = false;
+    unsigned int m_hasTruthTable = 0;
+
 };

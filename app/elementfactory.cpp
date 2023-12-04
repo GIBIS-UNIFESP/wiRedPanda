@@ -6,6 +6,7 @@
 #include "common.h"
 #include "globalproperties.h"
 #include "graphicelement.h"
+#include "truth_table.h"
 #include "logicand.h"
 #include "logicdemux.h"
 #include "logicdflipflop.h"
@@ -24,6 +25,8 @@
 #include "logictflipflop.h"
 #include "logicxnor.h"
 #include "logicxor.h"
+#include "logictruthtable.h"
+
 
 #include <QMetaEnum>
 
@@ -161,30 +164,31 @@ std::shared_ptr<LogicElement> ElementFactory::buildLogicElement(GraphicElement *
     case ElementType::Buzzer:
     case ElementType::Display14:
     case ElementType::Display7:
-    case ElementType::Led:         return std::make_shared<LogicOutput>(elm->inputSize());
+    case ElementType::Led:          return std::make_shared<LogicOutput>(elm->inputSize());
 
-    case ElementType::And:         return std::make_shared<LogicAnd>(elm->inputSize());
-    case ElementType::DFlipFlop:   return std::make_shared<LogicDFlipFlop>();
-    case ElementType::Demux:       return std::make_shared<LogicDemux>();
-    case ElementType::InputGnd:    return std::make_shared<LogicInput>(false);
-    case ElementType::InputVcc:    return std::make_shared<LogicInput>(true);
-    case ElementType::JKFlipFlop:  return std::make_shared<LogicJKFlipFlop>();
-    case ElementType::Mux:         return std::make_shared<LogicMux>();
-    case ElementType::Nand:        return std::make_shared<LogicNand>(elm->inputSize());
-    case ElementType::Node:        return std::make_shared<LogicNode>();
-    case ElementType::Nor:         return std::make_shared<LogicNor>(elm->inputSize());
-    case ElementType::Not:         return std::make_shared<LogicNot>();
-    case ElementType::Or:          return std::make_shared<LogicOr>(elm->inputSize());
-    case ElementType::SRFlipFlop:  return std::make_shared<LogicSRFlipFlop>();
-    case ElementType::TFlipFlop:   return std::make_shared<LogicTFlipFlop>();
-    case ElementType::Xnor:        return std::make_shared<LogicXnor>(elm->inputSize());
-    case ElementType::Xor:         return std::make_shared<LogicXor>(elm->inputSize());
+    case ElementType::And:          return std::make_shared<LogicAnd>(elm->inputSize());
+    case ElementType::DFlipFlop:    return std::make_shared<LogicDFlipFlop>();
+    case ElementType::Demux:        return std::make_shared<LogicDemux>();
+    case ElementType::InputGnd:     return std::make_shared<LogicInput>(false);
+    case ElementType::InputVcc:     return std::make_shared<LogicInput>(true);
+    case ElementType::JKFlipFlop:   return std::make_shared<LogicJKFlipFlop>();
+    case ElementType::Mux:          return std::make_shared<LogicMux>();
+    case ElementType::Nand:         return std::make_shared<LogicNand>(elm->inputSize());
+    case ElementType::Node:         return std::make_shared<LogicNode>();
+    case ElementType::Nor:          return std::make_shared<LogicNor>(elm->inputSize());
+    case ElementType::Not:          return std::make_shared<LogicNot>();
+    case ElementType::Or:           return std::make_shared<LogicOr>(elm->inputSize());
+    case ElementType::SRFlipFlop:   return std::make_shared<LogicSRFlipFlop>();
+    case ElementType::TFlipFlop:    return std::make_shared<LogicTFlipFlop>();
+    case ElementType::Xnor:         return std::make_shared<LogicXnor>(elm->inputSize());
+    case ElementType::Xor:          return std::make_shared<LogicXor>(elm->inputSize());
+    case ElementType::TruthTable:   return std::make_shared<LogicTruthTable>(elm->inputSize(), elm->outputSize(), (dynamic_cast<TruthTable*>(elm))->key());
 
-    case ElementType::DLatch:      return std::make_shared<LogicDLatch>();
+    case ElementType::DLatch:       return std::make_shared<LogicDLatch>();
 
     case ElementType::Line:
-    case ElementType::Text:        return std::make_shared<LogicNone>();
+    case ElementType::Text:         return std::make_shared<LogicNone>();
 
-    default:                       throw Pandaception(tr("Not implemented yet: ") + elm->objectName());
+    default:                        throw Pandaception(tr("Not implemented yet: ") + elm->objectName());
     }
 }

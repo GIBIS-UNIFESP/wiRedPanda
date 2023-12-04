@@ -44,6 +44,7 @@ public:
         Unknown = 0,
         Xnor = 11,
         Xor = 10,
+        TruthTable = 30
     };
     Q_ENUM(ElementType)
 

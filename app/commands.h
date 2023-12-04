@@ -5,6 +5,7 @@
 
 #include "graphicelement.h"
 #include "scene.h"
+#include "elementeditor.h"
 
 #include <QCoreApplication>
 
@@ -212,4 +213,21 @@ private:
     QList<int> m_order;
     Scene *m_scene;
     int m_newOutputSize;
+};
+class ToggleTruthTableOutputCommand : public QUndoCommand
+{
+    Q_DECLARE_TR_FUNCTIONS(ToggleTruthTableOutputCommand)
+
+public:
+    explicit ToggleTruthTableOutputCommand(GraphicElement* &element, int pos, Scene *scene, ElementEditor *ElementEditor, QUndoCommand *parent = nullptr);
+
+    void redo() override;
+    void undo() override;
+
+private:
+    int m_pos;
+    int m_id;
+    Scene *m_scene;
+    ElementEditor *m_elementeditor;
+
 };

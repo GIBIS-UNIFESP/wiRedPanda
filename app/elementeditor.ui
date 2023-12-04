@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>205</width>
-    <height>346</height>
+    <width>263</width>
+    <height>716</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,12 +40,8 @@
       <string>Title</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="2" column="0">
-       <widget class="QLabel" name="labelInputs">
-        <property name="text">
-         <string>Input Ports:</string>
-        </property>
-       </widget>
+      <item row="6" column="1">
+       <widget class="QComboBox" name="comboBoxValue"/>
       </item>
       <item row="6" column="0">
        <widget class="QLabel" name="labelValue">
@@ -54,19 +50,58 @@
         </property>
        </widget>
       </item>
-      <item row="13" column="0">
-       <widget class="QLabel" name="labelAudio">
-        <property name="text">
-         <string>Audio:</string>
+      <item row="17" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="spacing">
+         <number>6</number>
         </property>
-       </widget>
-      </item>
-      <item row="15" column="0">
-       <widget class="QLabel" name="labelTrigger">
-        <property name="text">
-         <string>Trigger:</string>
+        <property name="sizeConstraint">
+         <enum>QLayout::SetNoConstraint</enum>
         </property>
-       </widget>
+        <item>
+         <widget class="QPushButton" name="pushButtonTruthTable">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>TruthTable</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonChangeSkin">
+          <property name="text">
+           <string>Change skin to ...</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonDefaultSkin">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip">
+           <string>Default</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="resources/toolbar/toolbar.qrc">
+            <normaloff>:/toolbar/default.svg</normaloff>:/toolbar/default.svg</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>16</width>
+            <height>16</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item row="4" column="0">
        <widget class="QLabel" name="labelOutputs">
@@ -88,16 +123,6 @@
          <string>Label:</string>
         </property>
        </widget>
-      </item>
-      <item row="11" column="0">
-       <widget class="QLabel" name="labelColor">
-        <property name="text">
-         <string>Color:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="15" column="1">
-       <widget class="QLineEdit" name="lineEditTrigger"/>
       </item>
       <item row="13" column="1">
        <widget class="QComboBox" name="comboBoxAudio">
@@ -143,12 +168,21 @@
         </item>
        </widget>
       </item>
-      <item row="11" column="1">
-       <widget class="QComboBox" name="comboBoxColor">
-        <property name="currentText">
-         <string/>
+      <item row="7" column="0">
+       <widget class="QLabel" name="labelLocked">
+        <property name="text">
+         <string>Locked:</string>
         </property>
        </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="lineEditElementLabel"/>
+      </item>
+      <item row="15" column="1">
+       <widget class="QLineEdit" name="lineEditTrigger"/>
+      </item>
+      <item row="4" column="1">
+       <widget class="QComboBox" name="comboBoxOutputSize"/>
       </item>
       <item row="9" column="1">
        <widget class="QDoubleSpinBox" name="doubleSpinBoxFrequency">
@@ -172,69 +206,17 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="1">
-       <widget class="QComboBox" name="comboBoxValue"/>
-      </item>
-      <item row="4" column="1">
-       <widget class="QComboBox" name="comboBoxOutputSize"/>
-      </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="comboBoxInputSize"/>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="lineEditElementLabel"/>
-      </item>
-      <item row="17" column="0" colspan="2">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <property name="sizeConstraint">
-         <enum>QLayout::SetNoConstraint</enum>
-        </property>
-        <item>
-         <widget class="QPushButton" name="pushButtonChangeSkin">
-          <property name="text">
-           <string>Change skin to ...</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonDefaultSkin">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="toolTip">
-           <string>Default</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="resources/toolbar/toolbar.qrc">
-            <normaloff>:/toolbar/default.svg</normaloff>:/toolbar/default.svg</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>16</width>
-            <height>16</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="7" column="1">
-       <widget class="QCheckBox" name="checkBoxLocked">
+      <item row="11" column="0">
+       <widget class="QLabel" name="labelColor">
         <property name="text">
-         <string/>
+         <string>Color:</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="labelLocked">
+      <item row="15" column="0">
+       <widget class="QLabel" name="labelTrigger">
         <property name="text">
-         <string>Locked:</string>
+         <string>Trigger:</string>
         </property>
        </widget>
       </item>
@@ -245,10 +227,48 @@
         </property>
        </widget>
       </item>
+      <item row="13" column="0">
+       <widget class="QLabel" name="labelAudio">
+        <property name="text">
+         <string>Audio:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelInputs">
+        <property name="text">
+         <string>Input Ports:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="comboBoxInputSize"/>
+      </item>
       <item row="16" column="1">
        <widget class="QSpinBox" name="spinBoxPriority">
         <property name="maximum">
          <number>9</number>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="1">
+       <widget class="QComboBox" name="comboBoxColor">
+        <property name="currentText">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QCheckBox" name="checkBoxLocked">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="18" column="0" colspan="2">
+       <widget class="QTableWidget" name="truthTable">
+        <property name="enabled">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
