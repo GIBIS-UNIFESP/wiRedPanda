@@ -5,11 +5,10 @@
 
 #include <functional>
 
-LogicTruthTable::LogicTruthTable(const int inputSize, const int key)
+LogicTruthTable::LogicTruthTable(const int inputSize, const QBitArray& key)
     : LogicElement(inputSize, 1)
 {
-    auto bitString = QString::number(6,2).toLatin1().leftJustified(256, '0');
-    proposition = proposition.fromBits(bitString, 256);
+    proposition = key;
 }
 
 void LogicTruthTable::updateLogic()

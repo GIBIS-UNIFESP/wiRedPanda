@@ -54,7 +54,8 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QStri
     m_label->setPos(0, 64);
     m_label->setParentItem(this);
     m_label->setDefaultTextColor(Qt::black);
-
+    m_key.resize(256);
+    m_key.fill(0);
     setPortName(m_translatedName);
     setToolTip(m_translatedName);
 
@@ -1089,11 +1090,11 @@ void GraphicElement::setMaxInputSize(const int maxInputSize)
     m_maxInputSize = maxInputSize;
 }
 
-int GraphicElement::key() const
+QBitArray GraphicElement::key() const
 {
-    return static_cast<int>(m_key);
+    return m_key;
 }
-void GraphicElement::setkey(const int key)
+void GraphicElement::setkey(const QBitArray &key)
 {
     m_key = key;
 }

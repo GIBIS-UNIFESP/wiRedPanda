@@ -16,7 +16,6 @@ TruthTable::TruthTable(QGraphicsItem *parent)
     if (GlobalProperties::skipInit) {
         return;
     }
-
     m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);

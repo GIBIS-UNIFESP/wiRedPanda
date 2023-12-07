@@ -39,6 +39,8 @@ ElementEditor::ElementEditor(QWidget *parent)
     m_ui->lineEditTrigger->installEventFilter(this);
     m_ui->spinBoxPriority->installEventFilter(this);
 
+    m_ui->truthTable->setVisible(false);
+
     connect(m_ui->checkBoxLocked,         &QCheckBox::clicked,                              this, &ElementEditor::inputLocked);
     connect(m_ui->comboBoxAudio,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
     connect(m_ui->comboBoxColor,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
@@ -51,7 +53,8 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->pushButtonChangeSkin,   &QPushButton::clicked,                            this, &ElementEditor::updateElementSkin);
     connect(m_ui->pushButtonDefaultSkin,  &QPushButton::clicked,                            this, &ElementEditor::defaultSkin);
     connect(m_ui->spinBoxPriority,        qOverload<int>(&QSpinBox::valueChanged),          this, &ElementEditor::priorityChanged);
-    //connect(m_ui->pushButtonTruthTable,   &QPushButton::clicked,                            this, &ElementEditor::TruthTable);
+    connect(m_ui->pushButtonTruthTable,   &QPushButton::clicked,                            this, &ElementEditor::TruthTable);
+    connect(m_ui->truthTable, &QTableWidget::cellDoubleClicked, this, &ElementEditor::ChangeKeyTruthTable);
 
 }
 
@@ -619,6 +622,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     /* TruthTable */
 
     m_ui->pushButtonTruthTable->setVisible(m_hasTruthTable);
+    m_ui->truthTable->setVisible(false);
     if(m_hasTruthTable)
     {
     }
@@ -826,6 +830,67 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
     }
 
     return QWidget::eventFilter(obj, event);
+}
+
+void ElementEditor::TruthTable()
+{
+    if (!m_hasTruthTable) return;
+
+
+    //Assuming only one element selected for now...
+
+    int nInputs = m_elements[0]->inputSize();
+    QVector<QString> InputLabels;
+
+    for(int i = 0; i < nInputs; i ++ )
+    {
+        auto nextLabel = new QString(QChar::fromLatin1('A' + i));
+        InputLabels.append(*nextLabel);
+    }
+    InputLabels.append("S");
+
+    m_ui->truthTable->setHorizontalHeaderLabels(InputLabels);
+    m_ui->truthTable->setColumnCount(nInputs +1);
+    m_ui->truthTable->setRowCount(pow(2,nInputs));
+    m_ui->truthTable->setColumnWidth(nInputs,14);
+    m_ui->truthTable->setColumnWidth(0,14);
+
+    for(int i =0; i < pow(2,nInputs); i++)
+    {
+        for(int j =0; j < nInputs; j++)
+        {
+
+            auto newItemValue = new QString(QString::number(i, 2));
+
+            if(newItemValue->size() < nInputs){
+                newItemValue->assign(newItemValue->rightJustified(nInputs, '0'));
+            }
+            QTableWidgetItem *newItem = new QTableWidgetItem((*new QString(*newItemValue))[j], QTableWidgetItem::Type);
+            newItem->setTextAlignment(Qt::AlignCenter);
+            m_ui->truthTable->setItem(i, j, newItem);
+        }
+        auto arr = m_elements[0]->key();
+        int output = arr.at(i);
+        QTableWidgetItem *newOutItem = new QTableWidgetItem(QString(QChar::fromLatin1('0' + output)));
+
+        newOutItem->setTextAlignment(Qt::AlignCenter);
+       m_ui->truthTable->setItem(i, nInputs, newOutItem);
+    }
+
+
+    m_ui->truthTable->setVisible(true);
+
+}
+
+void ElementEditor::ChangeKeyTruthTable(int row, int column)
+{
+    if (!m_hasTruthTable) return;
+
+    if(m_elements.size() > 1) return;
+
+    auto arr =  m_elements[0]->key();
+    arr.toggleBit(row);
+    m_elements[0]->setkey(arr);
 }
 
 void ElementEditor::defaultSkin()

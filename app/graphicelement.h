@@ -12,6 +12,7 @@
 #include <QPixmapCache>
 #include <QVersionNumber>
 #include <memory>
+#include <QBitArray>
 
 class GraphicElement;
 class QNEInputPort;
@@ -85,7 +86,7 @@ public:
     int minOutputSize() const;
     int outputSize() const;
     int priority() const;
-    int key() const;
+    QBitArray key() const;
     qreal rotation() const;
     virtual QString audio() const;
     virtual QString color() const;
@@ -111,6 +112,7 @@ public:
     void setRotation(const qreal angle);
     void setTrigger(const QKeySequence &trigger);
     void updateLabel();
+    void setkey(const QBitArray& key);
 
 protected:
     QPixmap pixmap() const;
@@ -129,7 +131,7 @@ protected:
     void setMinInputSize(const int minInputSize);
     void setMinOutputSize(const int minOutputSize);
     void setRotatable(const bool rotatable);
-    void setkey(const int key);
+
 
     //! Path to all default skins. The default skin is in a resource file.
     QStringList m_defaultSkins;
@@ -202,7 +204,7 @@ private:
     bool m_selected = false;
     bool m_hasTruthTable = false;
     qreal m_angle = 0;
-    quint8 m_key = 0;
+    QBitArray m_key;
     quint64 m_maxInputSize = 0;
     quint64 m_maxOutputSize = 0;
     quint64 m_minInputSize = 0;
