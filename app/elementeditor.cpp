@@ -53,8 +53,9 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->pushButtonChangeSkin,   &QPushButton::clicked,                            this, &ElementEditor::updateElementSkin);
     connect(m_ui->pushButtonDefaultSkin,  &QPushButton::clicked,                            this, &ElementEditor::defaultSkin);
     connect(m_ui->spinBoxPriority,        qOverload<int>(&QSpinBox::valueChanged),          this, &ElementEditor::priorityChanged);
+    //Truth Table
     connect(m_ui->pushButtonTruthTable,   &QPushButton::clicked,                            this, &ElementEditor::TruthTable);
-    connect(m_ui->truthTable, &QTableWidget::cellDoubleClicked, this, &ElementEditor::ChangeKeyTruthTable);
+    connect(m_ui->truthTable,             &QTableWidget::cellDoubleClicked,                 this, &ElementEditor::ChangeKeyTruthTable);
 
 }
 
