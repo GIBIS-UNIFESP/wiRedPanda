@@ -13,5 +13,6 @@
         <file>or.svg</file>
         <file>xnor.svg</file>
         <file>xor.svg</file>
+        <file>truthtable.svg</file>
     </qresource>
 </RCC>

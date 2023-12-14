@@ -55,7 +55,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->spinBoxPriority,        qOverload<int>(&QSpinBox::valueChanged),          this, &ElementEditor::priorityChanged);
     //Truth Table
     connect(m_ui->pushButtonTruthTable,   &QPushButton::clicked,                            this, &ElementEditor::TruthTable);
-    connect(m_ui->truthTable,             &QTableWidget::cellDoubleClicked,                 this, &ElementEditor::ChangeKeyTruthTable);
+    connect(m_ui->truthTable,             &QTableWidget::cellDoubleClicked,                 this, &ElementEditor::SetTruthTableProposition);
 
 }
 
@@ -843,6 +843,8 @@ void ElementEditor::TruthTable()
     int nInputs = m_elements[0]->inputSize();
     QVector<QString> InputLabels;
 
+    bool hasInputPortsChange = false;
+
     for(int i = 0; i < nInputs; i ++ )
     {
         auto nextLabel = new QString(QChar::fromLatin1('A' + i));
@@ -850,36 +852,93 @@ void ElementEditor::TruthTable()
     }
     InputLabels.append("S");
 
+    int columnCount = m_ui->truthTable->columnCount();
+
+
+    if(m_ui->truthTable->columnCount() != 0 && m_ui->truthTable->columnCount() -1  != m_elements[0]->inputSize()) hasInputPortsChange = true;
+
+
     m_ui->truthTable->setHorizontalHeaderLabels(InputLabels);
     m_ui->truthTable->setColumnCount(nInputs +1);
     m_ui->truthTable->setRowCount(pow(2,nInputs));
     m_ui->truthTable->setColumnWidth(nInputs,14);
-    m_ui->truthTable->setColumnWidth(0,14);
+
+
 
     for(int i =0; i < pow(2,nInputs); i++)
     {
         for(int j =0; j < nInputs; j++)
         {
-
+            m_ui->truthTable->setColumnWidth(j,14);
             auto newItemValue = new QString(QString::number(i, 2));
 
             if(newItemValue->size() < nInputs){
                 newItemValue->assign(newItemValue->rightJustified(nInputs, '0'));
             }
-            QTableWidgetItem *newItem = new QTableWidgetItem((*new QString(*newItemValue))[j], QTableWidgetItem::Type);
-            newItem->setTextAlignment(Qt::AlignCenter);
-            m_ui->truthTable->setItem(i, j, newItem);
+
+            if(m_ui->truthTable->item(i, j) == nullptr)
+            {
+                QTableWidgetItem *newItem = new QTableWidgetItem((*new QString(*newItemValue))[j], QTableWidgetItem::Type);
+                newItem->setTextAlignment(Qt::AlignCenter);
+                m_ui->truthTable->setItem(i, j, newItem);
+                m_ui->truthTable->item(i,j)->setFlags(Qt::ItemIsEnabled);
+            }
+
+            if(hasInputPortsChange)
+            {
+                m_ui->truthTable->item(i,j)->setText((*new QString(*newItemValue))[j]);
+                continue;
+            }
+
+
         }
         auto arr = m_elements[0]->key();
         int output = arr.at(i);
-        QTableWidgetItem *newOutItem = new QTableWidgetItem(QString(QChar::fromLatin1('0' + output)));
 
-        newOutItem->setTextAlignment(Qt::AlignCenter);
-       m_ui->truthTable->setItem(i, nInputs, newOutItem);
+
+
+        if(m_ui->truthTable->item(i, nInputs) == nullptr)
+        {
+            QTableWidgetItem *newOutItem = new QTableWidgetItem(QString(QChar::fromLatin1('0' + output)));
+            newOutItem->setTextAlignment(Qt::AlignCenter);
+            m_ui->truthTable->setItem(i, nInputs, newOutItem);
+            m_ui->truthTable->item(i,nInputs)->setFlags(Qt::ItemIsEnabled);
+        }
+
+
+        if(hasInputPortsChange)
+        {
+            m_ui->truthTable->item(i,nInputs)->setText(QString::number(output));
+            continue;
+        }
     }
 
 
     m_ui->truthTable->setVisible(true);
+
+}
+
+void ElementEditor::SetTruthTableProposition(int row, int column)
+{
+    if(m_elements.size() > 1) return;
+
+    if(column != m_elements[0]->inputSize()) return;
+
+    auto cellItem = m_ui->truthTable->item(row,column);
+
+    QString newItemValue;
+
+    if(cellItem->text() == "0")
+    {
+       newItemValue = "1";
+    }
+    else
+    {
+       newItemValue = "0";
+    }
+    cellItem->setText(newItemValue);
+
+    ChangeKeyTruthTable(row, column);
 
 }
 
@@ -892,6 +951,8 @@ void ElementEditor::ChangeKeyTruthTable(int row, int column)
     auto arr =  m_elements[0]->key();
     arr.toggleBit(row);
     m_elements[0]->setkey(arr);
+
+    m_elements[0]->logic()->updateLogic();
 }
 
 void ElementEditor::defaultSkin()
