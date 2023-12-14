@@ -150,6 +150,7 @@ void GraphicElement::save(QDataStream &stream) const
     map.insert("maxOutputSize", m_maxOutputSize);
     map.insert("trigger", m_trigger);
     map.insert("priority", m_priority);
+    map.insert("key", m_key);
 
     stream << map;
 
@@ -263,6 +264,11 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
     if (map.contains("label")) {
         setLabel(map.value("label").toString());
     }
+
+    if (map.contains("key")) {
+        setkey(map.value("key").toBitArray());
+    }
+
 
     // -------------------------------------------
 
