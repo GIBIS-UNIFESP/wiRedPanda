@@ -952,7 +952,6 @@ void ElementEditor::ChangeKeyTruthTable(int row, int column)
     arr.toggleBit(row);
     m_elements[0]->setkey(arr);
 
-    m_elements[0]->logic()->updateLogic();
 }
 
 void ElementEditor::defaultSkin()
