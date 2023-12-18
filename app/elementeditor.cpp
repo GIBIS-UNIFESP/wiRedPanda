@@ -840,29 +840,34 @@ void ElementEditor::TruthTable()
 
     //Assuming only one element selected for now...
 
-    int nInputs = m_elements[0]->inputSize();
+    int nInputs  = m_elements[0]->inputSize();
+    int nOutputs = m_elements[0]->outputSize();
     QVector<QString> InputLabels;
 
     bool hasInputPortsChange = false;
+
+    m_ui->truthTable->setColumnCount(nInputs + nOutputs);
+    m_ui->truthTable->setRowCount(pow(2,nInputs));
 
     for(int i = 0; i < nInputs; i ++ )
     {
         auto nextLabel = new QString(QChar::fromLatin1('A' + i));
         InputLabels.append(*nextLabel);
     }
-    InputLabels.append("S");
+
+    for(int i = 0; i < m_elements[0]->outputSize(); i ++)
+    {
+        InputLabels.append("S"+QString::number(i));
+        m_ui->truthTable->setColumnWidth(nInputs + i,14);
+
+    }
+    m_ui->truthTable->setHorizontalHeaderLabels(InputLabels);
+
 
     int columnCount = m_ui->truthTable->columnCount();
 
 
     if(m_ui->truthTable->columnCount() != 0 && m_ui->truthTable->columnCount() -1  != m_elements[0]->inputSize()) hasInputPortsChange = true;
-
-
-    m_ui->truthTable->setHorizontalHeaderLabels(InputLabels);
-    m_ui->truthTable->setColumnCount(nInputs +1);
-    m_ui->truthTable->setRowCount(pow(2,nInputs));
-    m_ui->truthTable->setColumnWidth(nInputs,14);
-
 
 
     for(int i =0; i < pow(2,nInputs); i++)
@@ -892,25 +897,30 @@ void ElementEditor::TruthTable()
 
 
         }
+
         auto arr = m_elements[0]->key();
-        int output = arr.at(i);
 
-
-
-        if(m_ui->truthTable->item(i, nInputs) == nullptr)
+        for(int z = 0; z < nOutputs; z++)
         {
-            QTableWidgetItem *newOutItem = new QTableWidgetItem(QString(QChar::fromLatin1('0' + output)));
-            newOutItem->setTextAlignment(Qt::AlignCenter);
-            m_ui->truthTable->setItem(i, nInputs, newOutItem);
-            m_ui->truthTable->item(i,nInputs)->setFlags(Qt::ItemIsEnabled);
+            int output = arr.at(256 * z + i);
+
+            if(m_ui->truthTable->item(i, nInputs + z) == nullptr)
+            {
+                QTableWidgetItem *newOutItem = new QTableWidgetItem(QString(QChar::fromLatin1('0' + output)));
+                newOutItem->setTextAlignment(Qt::AlignCenter);
+                m_ui->truthTable->setItem(i, nInputs + z, newOutItem);
+                m_ui->truthTable->item(i,nInputs + z)->setFlags(Qt::ItemIsEnabled);
+            }
+            if(hasInputPortsChange)
+            {
+                m_ui->truthTable->item(i,nInputs + z)->setText(QString::number(output));
+                continue;
+            }
         }
 
 
-        if(hasInputPortsChange)
-        {
-            m_ui->truthTable->item(i,nInputs)->setText(QString::number(output));
-            continue;
-        }
+
+
     }
 
 
@@ -922,7 +932,7 @@ void ElementEditor::SetTruthTableProposition(int row, int column)
 {
     if(m_elements.size() > 1) return;
 
-    if(column != m_elements[0]->inputSize()) return;
+    if(column < m_elements[0]->inputSize()) return;
 
     auto cellItem = m_ui->truthTable->item(row,column);
 
@@ -948,8 +958,10 @@ void ElementEditor::ChangeKeyTruthTable(int row, int column)
 
     if(m_elements.size() > 1) return;
 
+    int nInputs = m_elements[0]->inputSize();
+
     auto arr =  m_elements[0]->key();
-    arr.toggleBit(row);
+    arr.toggleBit(256 * (column - nInputs) + row);
     m_elements[0]->setkey(arr);
 
 }

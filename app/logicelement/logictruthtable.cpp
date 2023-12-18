@@ -5,10 +5,11 @@
 
 #include <functional>
 
-LogicTruthTable::LogicTruthTable(const int inputSize, const QBitArray& key)
-    : LogicElement(inputSize, 1)
+LogicTruthTable::LogicTruthTable(const int inputSize, const int outputSize, const QBitArray& key)
+    : LogicElement(inputSize, outputSize)
 {
     proposition = key;
+    nOutputs = outputSize;
 }
 
 void LogicTruthTable::updateLogic()
@@ -17,7 +18,11 @@ void LogicTruthTable::updateLogic()
         return;
     }
 
-    const auto pos = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), QString(""), [](QString acc, bool b){acc+= b == 1 ? '1' : '0'; return acc;}).toUInt(nullptr, 2);
-    const bool result = proposition.at(pos);
-    setOutputValue(result);
+    for(int i = 0; i < this->nOutputs; i++)
+    {
+        const auto pos = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), QString(""), [](QString acc, bool b){acc+= b == 1 ? '1' : '0'; return acc;}).toUInt(nullptr, 2);
+        const bool result = proposition.at(256 * i + pos);
+        setOutputValue(i, result);
+    }
+
 }

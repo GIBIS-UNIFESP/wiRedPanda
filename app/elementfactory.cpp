@@ -180,7 +180,7 @@ std::shared_ptr<LogicElement> ElementFactory::buildLogicElement(GraphicElement *
     case ElementType::TFlipFlop:   return std::make_shared<LogicTFlipFlop>();
     case ElementType::Xnor:        return std::make_shared<LogicXnor>(elm->inputSize());
     case ElementType::Xor:         return std::make_shared<LogicXor>(elm->inputSize());
-    case ElementType::TruthTable:   return std::make_shared<LogicTruthTable>(elm->inputSize(), elm->key());
+    case ElementType::TruthTable:   return std::make_shared<LogicTruthTable>(elm->inputSize(), elm->outputSize(), elm->key());
 
     case ElementType::DLatch:      return std::make_shared<LogicDLatch>();
 

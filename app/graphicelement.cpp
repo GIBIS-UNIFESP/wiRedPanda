@@ -54,7 +54,7 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QStri
     m_label->setPos(0, 64);
     m_label->setParentItem(this);
     m_label->setDefaultTextColor(Qt::black);
-    m_key.resize(256);
+    m_key.resize(2048);
     m_key.fill(0);
     setPortName(m_translatedName);
     setToolTip(m_translatedName);
