@@ -84,7 +84,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     m_ui->tabElements->setTabIcon(2, QIcon(DFlipFlop::pixmapPath()));
     m_ui->tabElements->setTabIcon(3, QIcon(":/basic/ic-panda.svg"));
     m_ui->tabElements->setTabIcon(4, QIcon(":/misc/text.png"));
-    m_ui->tabElements->setTabEnabled(5, false);
+    m_ui->tabElements->setTabEnabled(6, false);
 
     qCDebug(zero) << tr("Loading recent file list.");
     m_recentFiles = new RecentFiles(this);
@@ -726,7 +726,7 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
     if (text.isEmpty()) {
         m_ui->tabElements->tabBar()->show();
         m_ui->tabElements->setCurrentIndex(m_lastTabIndex);
-        m_ui->tabElements->setTabEnabled(5, false);
+        m_ui->tabElements->setTabEnabled(6, false);
 
         m_lastTabIndex = -1;
     } else {
@@ -735,8 +735,8 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
         }
 
         m_ui->tabElements->tabBar()->hide();
-        m_ui->tabElements->setCurrentIndex(5);
-        m_ui->tabElements->setTabEnabled(5, true);
+        m_ui->tabElements->setCurrentIndex(6);
+        m_ui->tabElements->setTabEnabled(6, true);
 
         const auto allItems = m_ui->scrollArea_Search->findChildren<ElementLabel *>();
 
@@ -1175,7 +1175,9 @@ void MainWindow::populateLeftMenu()
     populateMenu(m_ui->verticalSpacer_InOut, {"InputVcc", "InputGnd", "InputButton", "InputSwitch", "InputRotary", "Clock", "Led", "Display7", "Display14", "Buzzer"}, m_ui->scrollAreaWidgetContents_InOut->layout());
     populateMenu(m_ui->verticalSpacer_Gates, {"And", "Or", "Not", "Nand", "Nor", "Xor", "Xnor", "Mux", "Demux", "Node"}, m_ui->scrollAreaWidgetContents_Gates->layout());
     populateMenu(m_ui->verticalSpacer_Memory, {"DLatch", "DFlipFlop", "JKFlipFlop", "SRFlipFlop", "TFlipFlop"}, m_ui->scrollAreaWidgetContents_Memory->layout());
-    populateMenu(m_ui->verticalSpacer_Misc, {"Text", "Line", "TruthTable"}, m_ui->scrollAreaWidgetContents_Misc->layout());
+    populateMenu(m_ui->verticalSpacer_Misc, {"Text", "Line"}, m_ui->scrollAreaWidgetContents_Misc->layout());
+    populateMenu(m_ui->verticalSpacer_Truthtable, {"TruthTable"}, m_ui->scrollAreaWidgetContents_Truthtable->layout());
+
 }
 
 void MainWindow::on_actionFastMode_triggered(const bool checked)
