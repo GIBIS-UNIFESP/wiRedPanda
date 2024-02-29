@@ -545,14 +545,20 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_ui->comboBoxOutputSize->setEnabled(m_canChangeOutputSize);
 
     if (m_canChangeOutputSize) {
+
+        if(elementType != ElementType::InputRotary)
+            m_ui->comboBoxOutputSize->addItem("1", 1);
         m_ui->comboBoxOutputSize->addItem("2", 2);
         m_ui->comboBoxOutputSize->addItem("3", 3);
         m_ui->comboBoxOutputSize->addItem("4", 4);
         m_ui->comboBoxOutputSize->addItem("6", 6);
         m_ui->comboBoxOutputSize->addItem("8", 8);
-        m_ui->comboBoxOutputSize->addItem("10", 10);
-        m_ui->comboBoxOutputSize->addItem("12", 12);
-        m_ui->comboBoxOutputSize->addItem("16", 16);
+
+        if(elementType == ElementType::InputRotary) {
+            m_ui->comboBoxOutputSize->addItem("10", 10);
+            m_ui->comboBoxOutputSize->addItem("12", 12);
+            m_ui->comboBoxOutputSize->addItem("16", 16);
+        }
     }
 
     if (m_ui->comboBoxOutputSize->findText(m_manyOS) == -1) {
