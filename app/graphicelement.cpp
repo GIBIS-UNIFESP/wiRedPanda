@@ -1096,7 +1096,7 @@ void GraphicElement::setMaxInputSize(const int maxInputSize)
     m_maxInputSize = maxInputSize;
 }
 
-QBitArray GraphicElement::key() const
+QBitArray& GraphicElement::key()
 {
     return m_key;
 }
