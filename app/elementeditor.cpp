@@ -875,6 +875,10 @@ void ElementEditor::TruthTable()
 
     // int columnCount = m_ui->truthTable->columnCount();
 
+
+    if(m_ui->truthTable->columnCount() != 0 && m_ui->truthTable->columnCount() -1  != m_elements[0]->inputSize()) hasInputPortsChange = true;
+
+
     for(int i =0; i < pow(2,nInputs); i++)
     {
         for(int j =0; j < nInputs; j++)
