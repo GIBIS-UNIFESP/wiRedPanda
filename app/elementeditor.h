@@ -92,5 +92,6 @@ private:
     bool m_hasTrigger = false;
     bool m_isDefaultSkin = true;
     bool m_isUpdatingSkin = false;
-    bool m_hasTruthTable = false;
+    unsigned int m_hasTruthTable = 0;
+
 };

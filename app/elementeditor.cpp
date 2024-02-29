@@ -366,7 +366,8 @@ void ElementEditor::retranslateUi()
 void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 {
     m_elements = elements;
-    m_hasTruthTable = m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = false;
+    m_hasTruthTable = 0;
+    m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = false;
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = false;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = false;
     m_canChangeSkin = m_hasSamePriority = false;
@@ -379,7 +380,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     }
 
     bool sameCheckState = true;
-    m_hasTruthTable = m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = true;
+    m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = true;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = true;
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = true;
     m_canChangeSkin = m_hasSamePriority = true;
@@ -399,7 +400,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         const auto group = elm->elementGroup();
         const auto firstGroup = firstElement->elementGroup();
 
-        m_hasTruthTable &= elm->hasTruthTable();
+        m_hasTruthTable += elm->hasTruthTable();
         m_hasLabel &= elm->hasLabel();
         m_canChangeSkin &= elm->canChangeSkin();
         m_hasColors &= elm->hasColors();
@@ -624,10 +625,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 
     m_ui->pushButtonTruthTable->setVisible(m_hasTruthTable);
     m_ui->truthTable->setVisible(false);
-    if(m_hasTruthTable)
-    {
-    }
-
+    m_ui->pushButtonTruthTable->setEnabled(m_hasTruthTable == 1);
 
     setEnabled(true);
     show();
@@ -864,7 +862,7 @@ void ElementEditor::TruthTable()
     m_ui->truthTable->setHorizontalHeaderLabels(InputLabels);
 
 
-    int columnCount = m_ui->truthTable->columnCount();
+    // int columnCount = m_ui->truthTable->columnCount();
 
 
     if(m_ui->truthTable->columnCount() != 0 && m_ui->truthTable->columnCount() -1  != m_elements[0]->inputSize()) hasInputPortsChange = true;
