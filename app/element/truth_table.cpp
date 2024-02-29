@@ -21,5 +21,5 @@ TruthTable::TruthTable(QGraphicsItem *parent)
     setPixmap(0);
     setHasTruthTable(true);
     setCanChangeSkin(true);
-
+    setHasLabel(true);
 }

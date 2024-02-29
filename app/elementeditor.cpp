@@ -366,7 +366,8 @@ void ElementEditor::retranslateUi()
 void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 {
     m_elements = elements;
-    m_hasTruthTable = m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = false;
+    m_hasTruthTable = 0;
+    m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = false;
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = false;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = false;
     m_canChangeSkin = m_hasSamePriority = false;
@@ -379,11 +380,12 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     }
 
     bool sameCheckState = true;
-    m_hasTruthTable = m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = true;
+    m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = true;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = true;
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = true;
     m_canChangeSkin = m_hasSamePriority = true;
     m_hasElements = true;
+
     show();
     setEnabled(false);
     int minimumInputs = 0;
@@ -395,11 +397,13 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     auto *firstInput = qobject_cast<GraphicElementInput *>(firstElement);
     auto elementType = firstElement->elementType();
 
+    m_hasRotarySwitch = (elementType == ElementType::InputRotary);
+
     for (auto *elm : qAsConst(m_elements)) {
         const auto group = elm->elementGroup();
         const auto firstGroup = firstElement->elementGroup();
 
-        m_hasTruthTable &= elm->hasTruthTable();
+        m_hasTruthTable += elm->hasTruthTable();
         m_hasLabel &= elm->hasLabel();
         m_canChangeSkin &= elm->canChangeSkin();
         m_hasColors &= elm->hasColors();
@@ -441,7 +445,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     }
 
     m_canChangeInputSize = (minimumInputs < maximumInputs);
-    m_canChangeOutputSize = (minimumOutputs < maximumOutputs);
+    m_canChangeOutputSize = (minimumOutputs < maximumOutputs) && (!m_hasRotarySwitch || m_hasTruthTable == 0);
     /* Element type */
     m_ui->groupBox->setTitle(ElementFactory::typeToTitleText(elementType));
     /* Labels */
@@ -539,19 +543,26 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 
     /* Output size */
     m_ui->comboBoxOutputSize->clear();
+
     m_ui->labelOutputs->setVisible(m_canChangeOutputSize);
     m_ui->comboBoxOutputSize->setVisible(m_canChangeOutputSize);
     m_ui->comboBoxOutputSize->setEnabled(m_canChangeOutputSize);
 
     if (m_canChangeOutputSize) {
+
+        if(!m_hasRotarySwitch)
+            m_ui->comboBoxOutputSize->addItem("1", 1);
         m_ui->comboBoxOutputSize->addItem("2", 2);
         m_ui->comboBoxOutputSize->addItem("3", 3);
         m_ui->comboBoxOutputSize->addItem("4", 4);
         m_ui->comboBoxOutputSize->addItem("6", 6);
         m_ui->comboBoxOutputSize->addItem("8", 8);
-        m_ui->comboBoxOutputSize->addItem("10", 10);
-        m_ui->comboBoxOutputSize->addItem("12", 12);
-        m_ui->comboBoxOutputSize->addItem("16", 16);
+
+        if(m_hasRotarySwitch) {
+            m_ui->comboBoxOutputSize->addItem("10", 10);
+            m_ui->comboBoxOutputSize->addItem("12", 12);
+            m_ui->comboBoxOutputSize->addItem("16", 16);
+        }
     }
 
     if (m_ui->comboBoxOutputSize->findText(m_manyOS) == -1) {
@@ -559,13 +570,16 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     }
 
     if (m_canChangeOutputSize) {
-        if (m_hasSameOutputSize) {
-            m_ui->comboBoxOutputSize->removeItem(m_ui->comboBoxOutputSize->findText(m_manyOS));
-            QString outputSize = QString::number(firstElement->outputSize());
-            m_ui->comboBoxOutputSize->setCurrentText(outputSize);
-        } else {
-            m_ui->comboBoxOutputSize->setCurrentText(m_manyOS);
+        if (!m_hasRotarySwitch || m_hasTruthTable == 0) {
+            if (m_hasSameOutputSize) {
+                m_ui->comboBoxOutputSize->removeItem(m_ui->comboBoxOutputSize->findText(m_manyOS));
+                QString outputSize = QString::number(firstElement->outputSize());
+                m_ui->comboBoxOutputSize->setCurrentText(outputSize);
+            } else {
+                m_ui->comboBoxOutputSize->setCurrentText(m_manyOS);
+            }
         }
+
     }
 
     /* Output value */
@@ -622,12 +636,9 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 
     /* TruthTable */
 
-    m_ui->pushButtonTruthTable->setVisible(m_hasTruthTable);
+    m_ui->pushButtonTruthTable->setVisible(!(m_hasRotarySwitch && m_hasTruthTable));
     m_ui->truthTable->setVisible(false);
-    if(m_hasTruthTable)
-    {
-    }
-
+    m_ui->pushButtonTruthTable->setEnabled(m_hasTruthTable == 1);
 
     setEnabled(true);
     show();
@@ -862,7 +873,7 @@ void ElementEditor::TruthTable()
     m_ui->truthTable->setHorizontalHeaderLabels(InputLabels);
 
 
-    int columnCount = m_ui->truthTable->columnCount();
+    // int columnCount = m_ui->truthTable->columnCount();
 
     for(int i =0; i < pow(2,nInputs); i++)
     {
