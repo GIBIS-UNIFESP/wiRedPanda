@@ -636,7 +636,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 
     /* TruthTable */
 
-    m_ui->pushButtonTruthTable->setVisible(!(m_hasRotarySwitch && m_hasTruthTable));
+    m_ui->pushButtonTruthTable->setVisible(elements.size() == m_hasTruthTable);
     m_ui->truthTable->setVisible(false);
     m_ui->pushButtonTruthTable->setEnabled(m_hasTruthTable == 1);
 
