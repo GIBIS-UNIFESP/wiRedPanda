@@ -86,7 +86,7 @@ public:
     int minOutputSize() const;
     int outputSize() const;
     int priority() const;
-    QBitArray key() const;
+    QBitArray& key();
     qreal rotation() const;
     virtual QString audio() const;
     virtual QString color() const;

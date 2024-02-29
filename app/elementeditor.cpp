@@ -842,14 +842,12 @@ void ElementEditor::TruthTable()
 
     int nInputs  = m_elements[0]->inputSize();
     int nOutputs = m_elements[0]->outputSize();
+
     QVector<QString> InputLabels;
-
-    bool hasInputPortsChange = false;
-
     m_ui->truthTable->setColumnCount(nInputs + nOutputs);
     m_ui->truthTable->setRowCount(pow(2,nInputs));
 
-    for(int i = 0; i < nInputs; i ++ )
+    for(int i = 0; i < nInputs; i ++)
     {
         auto nextLabel = new QString(QChar::fromLatin1('A' + i));
         InputLabels.append(*nextLabel);
@@ -865,10 +863,6 @@ void ElementEditor::TruthTable()
 
 
     int columnCount = m_ui->truthTable->columnCount();
-
-
-    if(m_ui->truthTable->columnCount() != 0 && m_ui->truthTable->columnCount() -1  != m_elements[0]->inputSize()) hasInputPortsChange = true;
-
 
     for(int i =0; i < pow(2,nInputs); i++)
     {
@@ -889,13 +883,7 @@ void ElementEditor::TruthTable()
                 m_ui->truthTable->item(i,j)->setFlags(Qt::ItemIsEnabled);
             }
 
-            if(hasInputPortsChange)
-            {
                 m_ui->truthTable->item(i,j)->setText((*new QString(*newItemValue))[j]);
-                continue;
-            }
-
-
         }
 
         auto arr = m_elements[0]->key();
@@ -911,15 +899,9 @@ void ElementEditor::TruthTable()
                 m_ui->truthTable->setItem(i, nInputs + z, newOutItem);
                 m_ui->truthTable->item(i,nInputs + z)->setFlags(Qt::ItemIsEnabled);
             }
-            if(hasInputPortsChange)
-            {
-                m_ui->truthTable->item(i,nInputs + z)->setText(QString::number(output));
-                continue;
-            }
+                m_ui->truthTable->item(i, nInputs + z)->setText(QString::number(output));
+
         }
-
-
-
 
     }
 
@@ -933,6 +915,8 @@ void ElementEditor::SetTruthTableProposition(int row, int column)
     if(m_elements.size() > 1) return;
 
     if(column < m_elements[0]->inputSize()) return;
+
+    auto truthtable = m_elements[0];
 
     auto cellItem = m_ui->truthTable->item(row,column);
 
@@ -948,22 +932,17 @@ void ElementEditor::SetTruthTableProposition(int row, int column)
     }
     cellItem->setText(newItemValue);
 
-    ChangeKeyTruthTable(row, column);
+    int nInputs = truthtable->inputSize();
 
-}
+    int positionToChange = 256 * (column - nInputs) + row;
 
-void ElementEditor::ChangeKeyTruthTable(int row, int column)
-{
-    if (!m_hasTruthTable) return;
+    emit sendCommand(new ToggleTruthTableOutputCommand(truthtable, positionToChange, m_scene, this));
 
-    if(m_elements.size() > 1) return;
+    ElementEditor::TruthTable();
 
-    int nInputs = m_elements[0]->inputSize();
+    m_scene->setCircuitUpdateRequired();
 
-    auto arr =  m_elements[0]->key();
-    arr.toggleBit(256 * (column - nInputs) + row);
-    m_elements[0]->setkey(arr);
-
+    return;
 }
 
 void ElementEditor::defaultSkin()

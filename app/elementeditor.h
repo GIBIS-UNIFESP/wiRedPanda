@@ -31,6 +31,8 @@ public:
     void updateElementSkin();
     void updatePriorityAction();
     void updateTheme();
+    void TruthTable();
+
 
 signals:
     void sendCommand(QUndoCommand *cmd);
@@ -49,9 +51,7 @@ private:
     void triggerChanged(const QString &cmd);
     void priorityChanged(const int value);
     void updateSkins();
-    void TruthTable();
     void SetTruthTableProposition(int row, int column);
-    void ChangeKeyTruthTable(int row, int column);
 
 
     Ui::ElementEditor *m_ui;
