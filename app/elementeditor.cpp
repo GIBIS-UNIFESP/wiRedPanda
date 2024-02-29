@@ -385,6 +385,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = true;
     m_canChangeSkin = m_hasSamePriority = true;
     m_hasElements = true;
+
     show();
     setEnabled(false);
     int minimumInputs = 0;
@@ -395,6 +396,8 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     auto *firstElement = m_elements.constFirst();
     auto *firstInput = qobject_cast<GraphicElementInput *>(firstElement);
     auto elementType = firstElement->elementType();
+
+    m_hasRotarySwitch = (elementType == ElementType::InputRotary);
 
     for (auto *elm : qAsConst(m_elements)) {
         const auto group = elm->elementGroup();
@@ -442,7 +445,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     }
 
     m_canChangeInputSize = (minimumInputs < maximumInputs);
-    m_canChangeOutputSize = (minimumOutputs < maximumOutputs);
+    m_canChangeOutputSize = (minimumOutputs < maximumOutputs) && (!m_hasRotarySwitch || m_hasTruthTable == 0);
     /* Element type */
     m_ui->groupBox->setTitle(ElementFactory::typeToTitleText(elementType));
     /* Labels */
@@ -540,13 +543,14 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 
     /* Output size */
     m_ui->comboBoxOutputSize->clear();
+
     m_ui->labelOutputs->setVisible(m_canChangeOutputSize);
     m_ui->comboBoxOutputSize->setVisible(m_canChangeOutputSize);
     m_ui->comboBoxOutputSize->setEnabled(m_canChangeOutputSize);
 
     if (m_canChangeOutputSize) {
 
-        if(elementType != ElementType::InputRotary)
+        if(!m_hasRotarySwitch)
             m_ui->comboBoxOutputSize->addItem("1", 1);
         m_ui->comboBoxOutputSize->addItem("2", 2);
         m_ui->comboBoxOutputSize->addItem("3", 3);
@@ -554,7 +558,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         m_ui->comboBoxOutputSize->addItem("6", 6);
         m_ui->comboBoxOutputSize->addItem("8", 8);
 
-        if(elementType == ElementType::InputRotary) {
+        if(m_hasRotarySwitch) {
             m_ui->comboBoxOutputSize->addItem("10", 10);
             m_ui->comboBoxOutputSize->addItem("12", 12);
             m_ui->comboBoxOutputSize->addItem("16", 16);
@@ -566,13 +570,16 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     }
 
     if (m_canChangeOutputSize) {
-        if (m_hasSameOutputSize) {
-            m_ui->comboBoxOutputSize->removeItem(m_ui->comboBoxOutputSize->findText(m_manyOS));
-            QString outputSize = QString::number(firstElement->outputSize());
-            m_ui->comboBoxOutputSize->setCurrentText(outputSize);
-        } else {
-            m_ui->comboBoxOutputSize->setCurrentText(m_manyOS);
+        if (!m_hasRotarySwitch || m_hasTruthTable == 0) {
+            if (m_hasSameOutputSize) {
+                m_ui->comboBoxOutputSize->removeItem(m_ui->comboBoxOutputSize->findText(m_manyOS));
+                QString outputSize = QString::number(firstElement->outputSize());
+                m_ui->comboBoxOutputSize->setCurrentText(outputSize);
+            } else {
+                m_ui->comboBoxOutputSize->setCurrentText(m_manyOS);
+            }
         }
+
     }
 
     /* Output value */
@@ -629,7 +636,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 
     /* TruthTable */
 
-    m_ui->pushButtonTruthTable->setVisible(m_hasTruthTable);
+    m_ui->pushButtonTruthTable->setVisible(!(m_hasRotarySwitch && m_hasTruthTable));
     m_ui->truthTable->setVisible(false);
     m_ui->pushButtonTruthTable->setEnabled(m_hasTruthTable == 1);
 

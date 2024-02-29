@@ -69,6 +69,7 @@ private:
     Scene *m_scene = nullptr;
     bool m_canChangeInputSize = false;
     bool m_canChangeOutputSize = false;
+    bool m_hasRotarySwitch = false;
     bool m_canChangeSkin = false;
     bool m_canMorph = false;
     bool m_hasAnyProperty = false;
