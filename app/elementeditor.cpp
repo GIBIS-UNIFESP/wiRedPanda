@@ -848,30 +848,28 @@ void ElementEditor::TruthTable()
 {
     if (!m_hasTruthTable) return;
 
-
     //Assuming only one element selected for now...
 
     int nInputs  = m_elements[0]->inputSize();
     int nOutputs = m_elements[0]->outputSize();
 
-    QStringList InputLabels;
+    QStringList inputLabels;
     m_ui->truthTable->setColumnCount(nInputs + nOutputs);
     m_ui->truthTable->setRowCount(pow(2,nInputs));
 
     for(int i = 0; i < nInputs; i ++)
     {
         auto nextLabel = new QString(QChar::fromLatin1('A' + i));
-        InputLabels.append(*nextLabel);
+        inputLabels.append(*nextLabel);
     }
 
     for(int i = 0; i < m_elements[0]->outputSize(); i ++)
     {
-        InputLabels.append("S"+QString::number(i));
+        inputLabels.append("S"+QString::number(i));
         m_ui->truthTable->setColumnWidth(nInputs + i,14);
-
     }
-    m_ui->truthTable->setHorizontalHeaderLabels(InputLabels);
 
+    m_ui->truthTable->setHorizontalHeaderLabels(inputLabels);
 
     // int columnCount = m_ui->truthTable->columnCount();
 
@@ -920,9 +918,7 @@ void ElementEditor::TruthTable()
 
     }
 
-
     m_ui->truthTable->setVisible(true);
-
 }
 
 void ElementEditor::SetTruthTableProposition(int row, int column)
