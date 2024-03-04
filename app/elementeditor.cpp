@@ -854,7 +854,7 @@ void ElementEditor::TruthTable()
     int nInputs  = m_elements[0]->inputSize();
     int nOutputs = m_elements[0]->outputSize();
 
-    QVector<QString> InputLabels;
+    QStringList InputLabels;
     m_ui->truthTable->setColumnCount(nInputs + nOutputs);
     m_ui->truthTable->setRowCount(pow(2,nInputs));
 
@@ -884,21 +884,21 @@ void ElementEditor::TruthTable()
         for(int j =0; j < nInputs; j++)
         {
             m_ui->truthTable->setColumnWidth(j,14);
-            auto newItemValue = new QString(QString::number(i, 2));
+            auto newItemValue = QString::number(i, 2);
 
-            if(newItemValue->size() < nInputs){
-                newItemValue->assign(newItemValue->rightJustified(nInputs, '0'));
+            if(newItemValue.size() < nInputs){
+                newItemValue = newItemValue.rightJustified(nInputs, '0');
             }
 
             if(m_ui->truthTable->item(i, j) == nullptr)
             {
-                QTableWidgetItem *newItem = new QTableWidgetItem((*new QString(*newItemValue))[j], QTableWidgetItem::Type);
+                auto *newItem = new QTableWidgetItem(newItemValue.at(j), QTableWidgetItem::Type);
                 newItem->setTextAlignment(Qt::AlignCenter);
                 m_ui->truthTable->setItem(i, j, newItem);
                 m_ui->truthTable->item(i,j)->setFlags(Qt::ItemIsEnabled);
             }
 
-                m_ui->truthTable->item(i,j)->setText((*new QString(*newItemValue))[j]);
+                m_ui->truthTable->item(i,j)->setText(newItemValue.at(j));
         }
 
         auto arr = m_elements[0]->key();
@@ -909,7 +909,7 @@ void ElementEditor::TruthTable()
 
             if(m_ui->truthTable->item(i, nInputs + z) == nullptr)
             {
-                QTableWidgetItem *newOutItem = new QTableWidgetItem(QString(QChar::fromLatin1('0' + output)));
+                auto *newOutItem = new QTableWidgetItem(QString(QChar::fromLatin1('0' + output)));
                 newOutItem->setTextAlignment(Qt::AlignCenter);
                 m_ui->truthTable->setItem(i, nInputs + z, newOutItem);
                 m_ui->truthTable->item(i,nInputs + z)->setFlags(Qt::ItemIsEnabled);
