@@ -11,6 +11,8 @@ class TruthTable : public GraphicElement
 
 public:
     explicit TruthTable(QGraphicsItem *parent = nullptr);
+
+    void updatePortsProperties();
 };
 
 Q_DECLARE_METATYPE(TruthTable)
