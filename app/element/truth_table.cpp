@@ -30,7 +30,7 @@ TruthTable::TruthTable(QGraphicsItem *parent)
 
 void TruthTable::updatePortsProperties()
 {
-    int index = 1;
+    int index = 0;
     const int step = GlobalProperties::gridSize / 2;
 
     if (!m_inputPorts.isEmpty()) {
@@ -46,12 +46,12 @@ void TruthTable::updatePortsProperties()
 
             y += step * 2;
 
-            port->setName("Input (" + QString::number(index)  + ")");
+            port->setName(QChar::fromLatin1('A' + index));
             index++;
         }
     }
 
-    index = 1;
+    index = 0;
 
     if (!m_outputPorts.isEmpty()) {
         int y = 32 - (m_outputPorts.size() * step) + step;
@@ -66,7 +66,7 @@ void TruthTable::updatePortsProperties()
 
             y += step * 2;
 
-            port->setName("Output (" + QString::number(index)  + ")");
+            port->setName("S" + QString::number(index));
             index++;
         }
     }
