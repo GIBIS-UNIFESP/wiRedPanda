@@ -84,6 +84,8 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     m_ui->tabElements->setTabIcon(2, QIcon(DFlipFlop::pixmapPath()));
     m_ui->tabElements->setTabIcon(3, QIcon(":/basic/ic-panda.svg"));
     m_ui->tabElements->setTabIcon(4, QIcon(":/misc/text.png"));
+    m_ui->tabElements->setTabIcon(5, QIcon(":/basic/truthtable-rotated.svg"));
+    m_ui->tabElements->setTabText(5, "");
     m_ui->tabElements->setTabEnabled(6, false);
 
     qCDebug(zero) << tr("Loading recent file list.");
