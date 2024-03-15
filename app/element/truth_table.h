@@ -12,7 +12,13 @@ class TruthTable : public GraphicElement
 public:
     explicit TruthTable(QGraphicsItem *parent = nullptr);
 
-    void updatePortsProperties();
+    void updatePortsProperties() override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void update();
+
+private:
+    void generatePixmap();
+
 };
 
 Q_DECLARE_METATYPE(TruthTable)
