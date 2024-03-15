@@ -555,7 +555,9 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         m_ui->comboBoxOutputSize->addItem("2", 2);
         m_ui->comboBoxOutputSize->addItem("3", 3);
         m_ui->comboBoxOutputSize->addItem("4", 4);
+        m_ui->comboBoxOutputSize->addItem("5", 5);
         m_ui->comboBoxOutputSize->addItem("6", 6);
+        m_ui->comboBoxOutputSize->addItem("7", 7);
         m_ui->comboBoxOutputSize->addItem("8", 8);
 
         if(m_hasRotarySwitch) {
