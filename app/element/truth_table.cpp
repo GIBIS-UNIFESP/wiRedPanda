@@ -118,6 +118,7 @@ void TruthTable::generatePixmap()
     tmpPainter.drawChord(topCenter, 0, -180 * 16);*/
 
     m_pixmap = std::make_unique<QPixmap>(tempPixmap);
+
     GraphicElement::update();
 }
 
