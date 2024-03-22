@@ -13,6 +13,7 @@
 #include "serialization.h"
 #include "simulation.h"
 #include "simulationblocker.h"
+#include "truth_table.h"
 
 #include <QIODevice>
 #include <cmath>
@@ -871,7 +872,7 @@ ToggleTruthTableOutputCommand::ToggleTruthTableOutputCommand(GraphicElement* &el
 void ToggleTruthTableOutputCommand::redo(){
     qCDebug(zero) << text();
 
-    auto truthtable = findElm(m_id);
+    TruthTable* truthtable = dynamic_cast<TruthTable *>(findElm(m_id));
 
     if(!truthtable) throw Pandaception("Could not find truthtable element!");
     truthtable->key().toggleBit(m_pos);
@@ -883,7 +884,7 @@ void ToggleTruthTableOutputCommand::redo(){
 void ToggleTruthTableOutputCommand::undo(){
     qCDebug(zero) << text();
 
-    auto truthtable = findElm(m_id);
+    TruthTable* truthtable = dynamic_cast<TruthTable *>(findElm(m_id));
 
     if(!truthtable) throw Pandaception("Could not find truthtable element!");
 

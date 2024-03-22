@@ -15,9 +15,16 @@ public:
     void updatePortsProperties() override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void update();
+    void setkey(const QBitArray& key);
+    void save(QDataStream &stream) const override;
+    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
+
+    QBitArray& key();
 
 private:
     void generatePixmap();
+    QBitArray m_key;
+
 
 };
 

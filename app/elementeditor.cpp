@@ -10,7 +10,7 @@
 #include "inputrotary.h"
 #include "scene.h"
 #include "thememanager.h"
-
+#include "truth_table.h"
 #include <QDebug>
 #include <QFileDialog>
 #include <QKeyEvent>
@@ -850,10 +850,12 @@ void ElementEditor::TruthTable()
 {
     if (!m_hasTruthTable) return;
 
+     class TruthTable* truthtable = dynamic_cast<class TruthTable *>(m_elements[0]);
+
     //Assuming only one element selected for now...
 
-    int nInputs  = m_elements[0]->inputSize();
-    int nOutputs = m_elements[0]->outputSize();
+    int nInputs  = truthtable->inputSize();
+    int nOutputs = truthtable->outputSize();
 
     QStringList inputLabels;
     m_ui->truthTable->setColumnCount(nInputs + nOutputs);
@@ -865,7 +867,7 @@ void ElementEditor::TruthTable()
         inputLabels.append(*nextLabel);
     }
 
-    for(int i = 0; i < m_elements[0]->outputSize(); i ++)
+    for(int i = 0; i < truthtable->outputSize(); i ++)
     {
         inputLabels.append("S"+QString::number(i));
         m_ui->truthTable->setColumnWidth(nInputs + i,14);
@@ -897,7 +899,7 @@ void ElementEditor::TruthTable()
                 m_ui->truthTable->item(i,j)->setText(newItemValue.at(j));
         }
 
-        auto arr = m_elements[0]->key();
+        auto arr = truthtable->key();
 
         for(int z = 0; z < nOutputs; z++)
         {

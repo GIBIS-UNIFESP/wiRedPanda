@@ -2,10 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "truth_table.h"
-
-#include "elementfactory.h"
 #include "globalproperties.h"
-#include "qneconnection.h"
 #include "qneport.h"
 
 namespace
@@ -26,7 +23,8 @@ TruthTable::TruthTable(QGraphicsItem *parent)
     setHasTruthTable(true);
     setCanChangeSkin(true);
     setHasLabel(true);
-
+    m_key.resize(2048);
+    m_key.fill(0);
     TruthTable::updatePortsProperties();
     TruthTable::generatePixmap();
 }
@@ -145,3 +143,33 @@ void TruthTable::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     qDebug() << "Tamanho painter->drawRoundedRect: " << painter;
 
 }
+
+QBitArray& TruthTable::key()
+{
+    return m_key;
+}
+void TruthTable::setkey(const QBitArray &key)
+{
+    m_key = key;
+}
+void TruthTable::save(QDataStream &stream) const
+{
+    GraphicElement::save(stream);
+    QMap<QString, QVariant> map;
+    map.insert("key", m_key);
+    stream << map;
+}
+
+void TruthTable::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
+{
+    GraphicElement::load(stream, portMap, version);
+
+    if (version >= VERSION("4.2")) {
+        QMap<QString, QVariant> map; stream >> map;
+
+        if (map.contains("key")) {
+            setkey(map.value("key").toBitArray());
+        }
+    }
+}
+
