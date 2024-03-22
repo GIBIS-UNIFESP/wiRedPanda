@@ -54,8 +54,6 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QStri
     m_label->setPos(0, 64);
     m_label->setParentItem(this);
     m_label->setDefaultTextColor(Qt::black);
-    m_key.resize(2048);
-    m_key.fill(0);
     setPortName(m_translatedName);
     setToolTip(m_translatedName);
 
@@ -150,7 +148,6 @@ void GraphicElement::save(QDataStream &stream) const
     map.insert("maxOutputSize", m_maxOutputSize);
     map.insert("trigger", m_trigger);
     map.insert("priority", m_priority);
-    map.insert("key", m_key);
 
     stream << map;
 
@@ -263,10 +260,6 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
 
     if (map.contains("label")) {
         setLabel(map.value("label").toString());
-    }
-
-    if (map.contains("key")) {
-        setkey(map.value("key").toBitArray());
     }
 
 
@@ -1094,15 +1087,6 @@ int GraphicElement::maxInputSize() const
 void GraphicElement::setMaxInputSize(const int maxInputSize)
 {
     m_maxInputSize = maxInputSize;
-}
-
-QBitArray& GraphicElement::key()
-{
-    return m_key;
-}
-void GraphicElement::setkey(const QBitArray &key)
-{
-    m_key = key;
 }
 void GraphicElement::highlight(const bool isSelected)
 {

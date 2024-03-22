@@ -86,7 +86,6 @@ public:
     int minOutputSize() const;
     int outputSize() const;
     int priority() const;
-    QBitArray& key();
     qreal rotation() const;
     virtual QString audio() const;
     virtual QString color() const;
@@ -112,7 +111,6 @@ public:
     void setRotation(const qreal angle);
     void setTrigger(const QKeySequence &trigger);
     void updateLabel();
-    void setkey(const QBitArray& key);
 
 protected:
     QPixmap pixmap() const;
@@ -204,7 +202,6 @@ private:
     bool m_selected = false;
     bool m_hasTruthTable = false;
     qreal m_angle = 0;
-    QBitArray m_key;
     quint64 m_maxInputSize = 0;
     quint64 m_maxOutputSize = 0;
     quint64 m_minInputSize = 0;
