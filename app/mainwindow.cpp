@@ -299,7 +299,8 @@ void MainWindow::aboutThisVersion()
     msgBox.setIcon(QMessageBox::Icon::Information);
     msgBox.setWindowTitle("WiRedPanda " + QString(APP_VERSION));
     msgBox.setText(
-        tr("This version is not 100% compatible with previous versions of WiRedPanda.\n"
+        tr("Version 4.2: NEW: implementation of truth tables."
+           "wiRed Panda version >= 4.0 is not 100% compatible with previous versions.\n"
            "To open old version projects containing ICs (or boxes), skins, and/or "
            "beWavedDolphin simulations, their files must be moved to the same directory "
            "as the main project file.\n"
