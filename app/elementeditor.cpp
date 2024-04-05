@@ -35,6 +35,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     m_ui->comboBoxOutputSize->installEventFilter(this);
     m_ui->comboBoxValue->installEventFilter(this);
     m_ui->doubleSpinBoxFrequency->installEventFilter(this);
+    m_ui->doubleSpinBoxDelay->installEventFilter(this);
     m_ui->lineEditElementLabel->installEventFilter(this);
     m_ui->lineEditTrigger->installEventFilter(this);
     m_ui->spinBoxPriority->installEventFilter(this);
@@ -48,6 +49,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->comboBoxOutputSize,     qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::outputIndexChanged);
     connect(m_ui->comboBoxValue,          &QComboBox::currentTextChanged,                   this, &ElementEditor::outputValueChanged);
     connect(m_ui->doubleSpinBoxFrequency, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &ElementEditor::apply);
+    connect(m_ui->doubleSpinBoxDelay,     qOverload<double>(&QDoubleSpinBox::valueChanged), this, &ElementEditor::apply);
     connect(m_ui->lineEditElementLabel,   &QLineEdit::textChanged,                          this, &ElementEditor::apply);
     connect(m_ui->lineEditTrigger,        &QLineEdit::textChanged,                          this, &ElementEditor::triggerChanged);
     connect(m_ui->pushButtonChangeSkin,   &QPushButton::clicked,                            this, &ElementEditor::updateElementSkin);
@@ -367,8 +369,8 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 {
     m_elements = elements;
     m_hasTruthTable = 0;
-    m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = false;
-    m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = false;
+    m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_hasDelay = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = false;
+    m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameDelay = m_hasSameAudio = m_hasOnlyInputs = false;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = false;
     m_canChangeSkin = m_hasSamePriority = false;
     m_hasElements = false;
@@ -380,9 +382,9 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     }
 
     bool sameCheckState = true;
-    m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = true;
+    m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_hasDelay = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = true;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = true;
-    m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = true;
+    m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameDelay = m_hasSameAudio = m_hasOnlyInputs = true;
     m_canChangeSkin = m_hasSamePriority = true;
     m_hasElements = true;
 
@@ -409,6 +411,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         m_hasColors &= elm->hasColors();
         m_hasAudio &= elm->hasAudio();
         m_hasFrequency &= elm->hasFrequency();
+        m_hasDelay &= elm->hasDelay();
         minimumInputs = std::max(minimumInputs, elm->minInputSize());
         maximumInputs = std::min(maximumInputs, elm->maxInputSize());
         minimumOutputs = std::max(minimumOutputs, elm->minOutputSize());
@@ -419,6 +422,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         m_hasSameLabel &= (elm->label() == firstElement->label());
         m_hasSameColors &= (elm->color() == firstElement->color());
         m_hasSameFrequency &= qFuzzyCompare(elm->frequency(), firstElement->frequency());
+        m_hasSameDelay &= qFuzzyCompare(elm->delay(), firstElement->delay());
         m_hasSameInputSize &= (elm->inputSize() == firstElement->inputSize());
         m_hasSameOutputSize &= (elm->outputSize() == firstElement->outputSize());
         maxCurrentOutputSize = std::min(maxCurrentOutputSize, elm->outputSize());
@@ -505,6 +509,10 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_ui->doubleSpinBoxFrequency->setEnabled(m_hasFrequency);
     m_ui->labelFrequency->setVisible(m_hasFrequency);
 
+    m_ui->doubleSpinBoxDelay->setVisible(m_hasDelay);
+    m_ui->doubleSpinBoxDelay->setEnabled(m_hasDelay);
+    m_ui->labelDelay->setVisible(m_hasDelay);
+
     if (m_hasFrequency) {
         if (m_hasSameFrequency) {
             m_ui->doubleSpinBoxFrequency->setMinimum(0.1);
@@ -514,6 +522,18 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
             m_ui->doubleSpinBoxFrequency->setMinimum(0.0);
             m_ui->doubleSpinBoxFrequency->setSpecialValueText(m_manyFreq);
             m_ui->doubleSpinBoxFrequency->setValue(0.0);
+        }
+    }
+
+    if (m_hasDelay) {
+        if (m_hasSameDelay) {
+            m_ui->doubleSpinBoxDelay->setMinimum(0.0);
+            m_ui->doubleSpinBoxDelay->setSpecialValueText({});
+            m_ui->doubleSpinBoxDelay->setValue(static_cast<double>(firstElement->delay()));
+        } else {
+            m_ui->doubleSpinBoxDelay->setMinimum(0.0);
+            m_ui->doubleSpinBoxDelay->setSpecialValueText(m_manyDelay);
+            m_ui->doubleSpinBoxDelay->setValue(0.0);
         }
     }
 
@@ -686,6 +706,10 @@ void ElementEditor::apply()
 
         if (elm->hasFrequency() && (m_ui->doubleSpinBoxFrequency->text() != m_manyFreq)) {
             elm->setFrequency(static_cast<float>(m_ui->doubleSpinBoxFrequency->value()));
+        }
+
+        if (elm->hasDelay() && (m_ui->doubleSpinBoxDelay->text() != m_manyDelay)) {
+            elm->setDelay(static_cast<float>(m_ui->doubleSpinBoxDelay->value()));
         }
 
         if (elm->hasTrigger() && (m_ui->lineEditTrigger->text() != m_manyTriggers)) {

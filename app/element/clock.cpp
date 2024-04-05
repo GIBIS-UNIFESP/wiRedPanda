@@ -35,8 +35,10 @@ Clock::Clock(QGraphicsItem *parent)
     setHasFrequency(true);
     setHasLabel(true);
     setRotatable(false);
+    setHasDelay(true);
 
     Clock::setFrequency(1.0);
+    Clock::setDelay(0.0);
     Clock::setOff();
 }
 
@@ -89,6 +91,7 @@ void Clock::save(QDataStream &stream) const
 
     QMap<QString, QVariant> map;
     map.insert("frequency", frequency());
+    map.insert("delay", delay());
     map.insert("locked", m_locked);
 
     stream << map;
@@ -104,8 +107,9 @@ void Clock::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const Q
 
     if (version < VERSION("4.1")) {
         float freq; stream >> freq;
+        float delay; stream >> delay;
         setFrequency(freq);
-
+        setDelay(delay);
         if (version >= VERSION("3.1")) {
             stream >> m_locked;
         }
@@ -116,6 +120,9 @@ void Clock::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const Q
 
         if (map.contains("frequency")) {
             setFrequency(map.value("frequency").toFloat());
+        }
+        if (map.contains("delay")) {
+            setDelay(map.value("delay").toFloat());
         }
 
         if (map.contains("locked")) {
@@ -147,10 +154,24 @@ void Clock::setFrequency(const float freq)
     m_reset = true;
 }
 
+float Clock::delay() const
+{
+    return static_cast<float>(m_delay);
+}
+void Clock::setDelay(const float delay)
+{
+    m_delay = static_cast<double>(delay);
+    m_reset = true;
+
+}
+
 void Clock::resetClock()
 {
+
     setOn();
+    auto delay_ms = static_cast<uint>(m_delay * 1000);
     m_timePoint = std::chrono::steady_clock::now();
+    m_timePoint += std::chrono::milliseconds(delay_ms);
     m_reset = false;
 }
 

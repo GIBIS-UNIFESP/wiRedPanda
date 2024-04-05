@@ -56,6 +56,9 @@ public:
     //! virtual function overloaded by clock element. Other elements have frequency of 0.
     virtual float frequency() const;
 
+    //! virtual function overloaded by clock element. Other elements have frequency of 0.
+    virtual float delay() const;
+
     //! Updates the GraphicElement theme according to the dark/light WiRedPanda theme.
     virtual void updateTheme();
 
@@ -72,6 +75,7 @@ public:
     bool hasAudio() const;
     bool hasColors() const;
     bool hasFrequency() const;
+    bool hasDelay() const;
     bool hasLabel() const;
     bool hasTruthTable() const;
     bool hasTrigger() const;
@@ -94,6 +98,7 @@ public:
     virtual void setAudio(const QString &audio);
     virtual void setColor(const QString &color);
     virtual void setFrequency(const float freq);
+    virtual void setDelay(const float delay);
     virtual void setSkin(const bool defaultSkin, const QString &fileName);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void retranslate();
@@ -121,6 +126,7 @@ protected:
     void setHasAudio(const bool hasAudio);
     void setHasColors(const bool hasColors);
     void setHasFrequency(const bool hasFrequency);
+    void setHasDelay(const bool hasDelay);
     void setHasLabel(const bool hasLabel);
     void setHasTruthTable(const bool hasTruthTable);
     void setHasTrigger(const bool hasTrigger);
@@ -201,6 +207,7 @@ private:
     bool m_rotatable = true;
     bool m_selected = false;
     bool m_hasTruthTable = false;
+    bool m_hasDelay = false;
     qreal m_angle = 0;
     quint64 m_maxInputSize = 0;
     quint64 m_maxOutputSize = 0;

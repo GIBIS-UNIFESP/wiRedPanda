@@ -4,6 +4,7 @@
 #include "truth_table.h"
 #include "globalproperties.h"
 #include "qneport.h"
+#include "QPainter"
 
 namespace
 {
