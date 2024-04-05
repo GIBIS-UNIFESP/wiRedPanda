@@ -6,6 +6,7 @@
 #include "qneport.h"
 
 #include <QPainter>
+#include <QDebug>
 
 namespace
 {
