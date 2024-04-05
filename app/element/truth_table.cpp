@@ -5,6 +5,8 @@
 #include "globalproperties.h"
 #include "qneport.h"
 
+#include <QPainter>
+
 namespace
 {
     int id = qRegisterMetaType<TruthTable>();
