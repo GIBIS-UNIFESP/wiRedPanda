@@ -196,7 +196,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>581</height>
+                   <height>558</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -245,7 +245,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>581</height>
+                   <height>558</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -404,7 +404,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>581</height>
+                   <height>558</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -453,7 +453,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>549</height>
+                   <height>520</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -530,7 +530,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>581</height>
+                   <height>558</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -585,7 +585,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>581</height>
+                   <height>558</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -630,7 +630,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>258</width>
-                   <height>579</height>
+                   <height>556</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -729,7 +729,7 @@ QTabWidget::pane {
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>21</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -792,6 +792,7 @@ QTabWidget::pane {
     <property name="title">
      <string>&amp;Help</string>
     </property>
+    <addaction name="actionHotkeysAndTips"/>
     <addaction name="actionAbout"/>
     <addaction name="actionAboutQt"/>
     <addaction name="actionAboutThisVersion"/>
@@ -1321,22 +1322,12 @@ QTabWidget::pane {
     <string>Restart simulation.</string>
    </property>
   </action>
-  <action name="actionTemporalSimulation">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
+  <action name="actionHotkeysAndTips">
    <property name="icon">
-    <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/timerRed.svg</normaloff>:/toolbar/timerRed.svg</iconset>
+    <iconset theme="help-about"/>
    </property>
    <property name="text">
-    <string>Temporal Simulation</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+T</string>
+    <string>Hotkeys and tips</string>
    </property>
   </action>
  </widget>
@@ -1366,10 +1357,10 @@ QTabWidget::pane {
   <include location="resources/input/input.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/basic/basic.qrc"/>
-  <include location="resources/memory/light/memory_light.qrc"/>
-  <include location="resources/output/output.qrc"/>
   <include location="resources/misc/misc.qrc"/>
+  <include location="resources/output/output.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/memory/light/memory_light.qrc"/>
  </resources>
  <connections/>
 </ui>
