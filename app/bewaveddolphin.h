@@ -128,6 +128,7 @@ private:
     void on_actionZoomOut_triggered();
     void on_tableView_cellDoubleClicked();
     void on_tableView_selectionChanged();
+    void on_tableView_cellDoubleClicked();
     void paste(const QItemSelection &ranges, QDataStream &stream);
     void prepare(const QString &fileName = {});
     void resizeScene();
