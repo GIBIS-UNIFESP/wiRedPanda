@@ -16,6 +16,7 @@
 #include "settings.h"
 #include "simulationblocker.h"
 
+#include <QAbstractItemView>
 #include <QClipboard>
 #include <QCloseEvent>
 #include <QFileDialog>
@@ -36,13 +37,8 @@ SignalModel::SignalModel(const int inputs, const int rows, const int columns, QO
 
 Qt::ItemFlags SignalModel::flags(const QModelIndex &index) const
 {
-    Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
-
-    if (index.row() < m_inputCount) {
-        flags |= Qt::ItemIsEditable;
-    }
-
-    return flags;
+    Q_UNUSED(index)
+    return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
 
 SignalDelegate::SignalDelegate(QObject *parent)
@@ -282,7 +278,20 @@ void BewavedDolphin::loadNewTable()
 
     on_actionClear_triggered();
 
+    connect(m_signalTableView,                   &QAbstractItemView::doubleClicked,      this, &BewavedDolphin::on_tableView_cellDoubleClicked);
     connect(m_signalTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &BewavedDolphin::on_tableView_selectionChanged);
+}
+
+void BewavedDolphin::on_tableView_cellDoubleClicked() {
+    const auto indexes = m_signalTableView->selectionModel()->selectedIndexes();
+
+    for (auto index : indexes) {
+        int value = m_model->index(index.row(), index.column(), QModelIndex()).data().toInt();
+        value = (value + 1) % 2;
+        createElement(index.row(), index.column(), value);
+    }
+
+    run();
 }
 
 void BewavedDolphin::on_tableView_selectionChanged()

@@ -109,6 +109,7 @@ private:
     void on_actionShowWaveforms_triggered();
     void on_actionZoomIn_triggered();
     void on_actionZoomOut_triggered();
+    void on_tableView_cellDoubleClicked();
     void on_tableView_selectionChanged();
     void paste(const QItemSelection &ranges, QDataStream &stream);
     void prepare(const QString &fileName = {});
