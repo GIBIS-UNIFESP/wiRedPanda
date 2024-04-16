@@ -8,6 +8,9 @@
 #include <QDebug>
 #include <QPainter>
 
+#include <QPainter>
+#include <QDebug>
+
 namespace
 {
     int id = qRegisterMetaType<TruthTable>();
