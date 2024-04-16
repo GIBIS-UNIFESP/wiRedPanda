@@ -16,6 +16,7 @@
 #include "settings.h"
 #include "simulationblocker.h"
 
+#include <QAbstractItemView>
 #include <QClipboard>
 #include <QCloseEvent>
 #include <QFileDialog>
@@ -283,6 +284,19 @@ void BewavedDolphin::loadNewTable()
     on_actionClear_triggered();
 
     connect(m_signalTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &BewavedDolphin::on_tableView_selectionChanged);
+    connect(m_signalTableView,                   &QAbstractItemView::doubleClicked,      this, &BewavedDolphin::on_tableView_cellDoubleClicked);
+}
+
+void BewavedDolphin::on_tableView_cellDoubleClicked() {
+    const auto indexes = m_signalTableView->selectionModel()->selectedIndexes();
+
+    for (auto index : indexes) {
+        int value = m_model->index(index.row(), index.column(), QModelIndex()).data().toInt();
+        value = (value + 1) % 2;
+        createElement(index.row(), index.column(), value);
+    }
+
+    run();
 }
 
 void BewavedDolphin::on_tableView_selectionChanged()
