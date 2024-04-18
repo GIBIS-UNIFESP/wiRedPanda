@@ -57,6 +57,8 @@ public:
     void showWires(const bool checked);
     void updateTheme();
 
+    bool isMousePositionInBorder(QPointF mousePos);
+
 signals:
     void circuitHasChanged();
     void contextMenuPos(QPoint screenPos, QGraphicsItem *itemAtMouse);
@@ -105,6 +107,7 @@ private:
     QAction *m_undoAction;
     QElapsedTimer m_timer;
     QGraphicsRectItem m_selectionRect;
+    QGraphicsRectItem m_subRect;            // adicionado 18/04
     QList<GraphicElement *> m_movedElements;
     QList<QPointF> m_oldPositions;
     QPen m_dots;
