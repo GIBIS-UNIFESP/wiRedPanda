@@ -1120,12 +1120,32 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsScene::mousePressEvent(event);
 }
 
+bool Scene::isMousePositionInBorder(QPointF mousePos)
+{
+    auto visibleRect = m_view->mapToScene(m_view->viewport()->geometry()).boundingRect();
+    //m_subRect.setRect(visibleRect); // Definir tamanho do retângulo da câmera
+    //m_subRect.setBrush(Qt::red);
+    //addItem(&m_subRect);
+    //m_subRect.show();
+    int margin = 100;
+
+    if (mousePos.x() <= visibleRect.left() + margin || mousePos.x() >= visibleRect.right() - margin ||
+        mousePos.y() <= visibleRect.top() + margin || mousePos.y() >= visibleRect.bottom() - margin) {
+            m_view->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+            return true;
+    } else {
+        // Caso contrário, defina uma ancoragem padrão
+        m_view->setTransformationAnchor(QGraphicsView::AnchorViewCenter);
+        return false;
+    }
+}
+
 void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     m_mousePos = event->scenePos();
     handleHoverPort();
 
-    if (m_draggingElement) {
+    if (m_draggingElement && isMousePositionInBorder(m_mousePos)) {
         resizeScene();
     }
 
