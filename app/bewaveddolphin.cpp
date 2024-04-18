@@ -102,7 +102,10 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
 
     m_scene->addWidget(m_signalTableView);
 
-    m_ui->graphicsView->setScene(m_scene);
+    m_view.setScene(m_scene);
+    m_view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_ui->verticalLayout->addWidget(&m_view);
 
     m_ui->actionZoomOut->setEnabled(false);
 
