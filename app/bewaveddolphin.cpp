@@ -39,10 +39,6 @@ Qt::ItemFlags SignalModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
-    if (index.row() < m_inputCount) {
-        flags |= Qt::ItemIsEditable;
-    }
-
     return flags;
 }
 
@@ -84,6 +80,8 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
     m_view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_ui->verticalLayout->addWidget(&m_view);
+
+    m_ui->actionZoomOut->setEnabled(false);
 
     m_ui->mainToolBar->setToolButtonStyle(Settings::value("labelsUnderIcons").toBool() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
 
