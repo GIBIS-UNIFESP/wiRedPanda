@@ -56,13 +56,7 @@ public:
     void showWires(const bool checked);
     void updateTheme();
 
-    // Element shortcuts
-    void addInputPort();
-    void addOutputPort();
-    void nextElm();
-    void prevElm();
-    void removeInputPort();
-    void removeOutputPort();
+    bool isMousePositionInBorder(QPointF mousePos);
 
 signals:
     void circuitHasChanged();
@@ -112,6 +106,7 @@ private:
     QAction *m_undoAction;
     QElapsedTimer m_timer;
     QGraphicsRectItem m_selectionRect;
+    QGraphicsRectItem m_subRect;            // adicionado 18/04
     QList<GraphicElement *> m_movedElements;
     QList<QPointF> m_oldPositions;
     QPen m_dots;
