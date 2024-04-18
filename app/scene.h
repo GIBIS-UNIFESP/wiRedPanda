@@ -33,6 +33,7 @@ public:
     QUndoStack *undoStack();
     Simulation *simulation();
     bool eventFilter(QObject *watched, QEvent *event) override;
+    bool isMousePositionInBorder(QPointF mousePos);
     const QList<GraphicElement *> selectedElements() const;
     const QVector<GraphicElement *> elements() const;
     const QVector<GraphicElement *> elements(const QRectF &rect) const;
@@ -61,8 +62,6 @@ public:
     void removeOutputPort();
     void addInputPort();
     void addOutputPort();
-
-    bool isMousePositionInBorder(QPointF mousePos);
 
 signals:
     void circuitHasChanged();
