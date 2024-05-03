@@ -64,6 +64,7 @@ public:
     void addInputPort();
     void addOutputPort();
 
+    void addItem(QGraphicsItem *item);
 signals:
     void circuitHasChanged();
     void contextMenuPos(QPoint screenPos, QGraphicsItem *itemAtMouse);

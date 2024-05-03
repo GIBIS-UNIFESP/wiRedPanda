@@ -19,7 +19,7 @@ class AudioBox : public GraphicElement
 
 public:
     explicit AudioBox(QGraphicsItem* parent = nullptr);
-    AudioBox(const AudioBox &other) : AudioBox(other.parentItem()) {};
+    AudioBox(const AudioBox &other) : AudioBox(other.parentItem()) {}
 
     QString audio() const override;
     void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
