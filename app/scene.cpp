@@ -205,7 +205,7 @@ void Scene::resizeScene()
 
     auto *item = itemAt(m_mousePos);
 
-    if (item && (m_timer.elapsed() > 100) && m_draggingElement) {
+    if (item && (m_timer.elapsed() > 70)/* && m_draggingElement*/) {
         // FIXME: sometimes this goes into a infinite loop and crashes
         item->ensureVisible();
         m_timer.restart();
@@ -1102,19 +1102,14 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 bool Scene::isMousePositionInBorder(QPointF mousePos)
 {
-    auto visibleRect = m_view->mapToScene(m_view->viewport()->geometry()).boundingRect();
-    //m_subRect.setRect(visibleRect); // Definir tamanho do retângulo da câmera
-    //m_subRect.setBrush(Qt::red);
-    //addItem(&m_subRect);
-    //m_subRect.show();
-    int margin = 100;
+    const auto visibleRect = m_view->mapToScene(m_view->viewport()->geometry()).boundingRect();
+    int margin = 10;
 
     if (mousePos.x() <= visibleRect.left() + margin || mousePos.x() >= visibleRect.right() - margin ||
         mousePos.y() <= visibleRect.top() + margin || mousePos.y() >= visibleRect.bottom() - margin) {
             m_view->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
             return true;
     } else {
-        // Caso contrário, defina uma ancoragem padrão
         m_view->setTransformationAnchor(QGraphicsView::AnchorViewCenter);
         return false;
     }
@@ -1174,6 +1169,13 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         m_movedElements.clear();
     }
 
+    if (!InputsButtonsInScene.empty()) {
+        for (int index = 0; index < InputsButtonsInScene.length(); index++) {
+            InputsButtonsInScene[index]->setOff();
+            event->accept();
+        }
+    }
+
     m_selectionRect.hide();
     m_markingSelectionBox = false;
 
@@ -1196,6 +1198,19 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
     }
 
     QGraphicsScene::mouseDoubleClickEvent(event);
+}
+
+void Scene::addItem(QGraphicsItem *item)
+{
+    if (auto *element = dynamic_cast<Buzzer *>(item); element && element->label().isEmpty()) {
+        element->setLabel(element->objectName() + "_" + QString::number(++m_buzzerLabelNumber));
+    }
+
+    if (auto *element = dynamic_cast<InputButton *>(item); element) {
+        InputsButtonsInScene.append(element);
+    }
+
+    QGraphicsScene::addItem(item);
 }
 
 void Scene::addItem(QMimeData *mimeData)
