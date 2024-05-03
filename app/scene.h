@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "inputbutton.h"
 #include "qneport.h"
 #include "simulation.h"
 
@@ -131,4 +132,6 @@ private:
     int m_editedConnectionId = 0;
     int m_hoverPortElmId = 0;
     int m_hoverPortNumber = 0;
+
+    QVector<InputButton *> InputsButtonsInScene;
 };
