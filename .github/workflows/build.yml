@@ -1,4 +1,4 @@
-# Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+# Copyright 2015 - 2024, GIBIS-Unifesp and the WiRedPanda contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 name: Build
@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        qt_version: [5.12.12, 5.13.2, 5.14.2, 5.15.2, 6.2.4, 6.3.2, 6.4.3, 6.5.2, 6.6.0]
+        qt_version: [5.12.12, 5.13.2, 5.14.2, 5.15.2, 6.2.4, 6.3.2, 6.4.3, 6.5.3, 6.6.3, 6.7.0]
 
 # =================================
 
@@ -20,7 +20,7 @@ jobs:
 
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: recursive
         fetch-depth: 0
@@ -31,7 +31,7 @@ jobs:
       with:
         version: ${{ matrix.qt_version }}
         cache: true
-        aqtversion: ==3.1.7
+        aqtversion: ==3.1.*
 
     - name: Install Qt6
       if: startsWith(matrix.qt_version, '6')
@@ -40,7 +40,7 @@ jobs:
         version: ${{ matrix.qt_version }}
         modules: qtmultimedia
         cache: true
-        aqtversion: ==3.1.7
+        aqtversion: ==3.1.*
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -68,7 +68,7 @@ jobs:
 
     - name: Setup MSVC Toolchain
       if: runner.os == 'Windows'
-      uses: seanmiddleditch/gha-setup-vsdevenv@v4
+      uses: pbeast/gha-setup-vsdevenv@master
 
     - name: Build Windows
       if: runner.os == 'Windows'
@@ -86,13 +86,14 @@ jobs:
         jom check
 
 # =================================
+# https://bugreports.qt.io/browse/QTBUG-117225
 
     - name: Build macOS
       if: runner.os == 'macOS'
       run: |
         mkdir build
         cd build
-        qmake ../WPanda.pro
+        qmake ../WPanda.pro -early QMAKE_DEFAULT_LIBDIRS=$(xcrun -show-sdk-path)/usr/lib
         make -j3
 
     - name: Test macOS
