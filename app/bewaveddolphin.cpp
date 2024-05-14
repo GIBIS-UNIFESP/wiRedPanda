@@ -79,6 +79,7 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
     m_view.setScene(m_scene);
     m_view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_view.setAlignment(Qt::AlignLeft | Qt::AlignTop);
     m_ui->verticalLayout->addWidget(&m_view);
 
     m_ui->actionZoomOut->setEnabled(false);
@@ -96,7 +97,6 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
     connect(m_ui->actionExit,          &QAction::triggered, this, &BewavedDolphin::on_actionExit_triggered);
     connect(m_ui->actionExportToPdf,   &QAction::triggered, this, &BewavedDolphin::on_actionExportToPdf_triggered);
     connect(m_ui->actionExportToPng,   &QAction::triggered, this, &BewavedDolphin::on_actionExportToPng_triggered);
-    connect(m_ui->actionFitScreen,     &QAction::triggered, this, &BewavedDolphin::on_actionFitScreen_triggered);
     connect(m_ui->actionInvert,        &QAction::triggered, this, &BewavedDolphin::on_actionInvert_triggered);
     connect(m_ui->actionLoad,          &QAction::triggered, this, &BewavedDolphin::on_actionLoad_triggered);
     connect(m_ui->actionPaste,         &QAction::triggered, this, &BewavedDolphin::on_actionPaste_triggered);
@@ -843,16 +843,6 @@ void BewavedDolphin::zoomChanged()
 {
     m_ui->actionZoomIn->setEnabled(m_view.canZoomIn());
     m_ui->actionZoomOut->setEnabled(m_view.canZoomOut());
-}
-
-void BewavedDolphin::on_actionFitScreen_triggered()
-{
-    m_view.scale(1.0 / m_scale, 1.0 / m_scale);
-    const double wScale = static_cast<double>(m_view.width()) / (m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0));
-    const double hScale = static_cast<double>(m_view.height()) / (m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0) + 10);
-    m_scale = std::min(wScale, hScale);
-    m_view.scale(1.0 * m_scale, 1.0 * m_scale);
-    resizeScene();
 }
 
 void BewavedDolphin::on_actionClear_triggered()

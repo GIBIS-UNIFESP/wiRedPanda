@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>833</width>
+    <height>628</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -73,7 +73,6 @@
    <addaction name="actionZoomIn"/>
    <addaction name="actionZoomOut"/>
    <addaction name="actionResetZoom"/>
-   <addaction name="actionFitScreen"/>
    <addaction name="actionSetLength"/>
    <addaction name="separator"/>
    <addaction name="actionExit"/>
@@ -83,8 +82,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
-     <height>21</height>
+     <width>833</width>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -132,7 +131,6 @@
     <addaction name="actionZoomOut"/>
     <addaction name="actionZoomIn"/>
     <addaction name="actionResetZoom"/>
-    <addaction name="actionFitScreen"/>
     <addaction name="actionSetLength"/>
     <addaction name="separator"/>
     <addaction name="actionShowNumbers"/>
@@ -378,21 +376,6 @@
     <string>Ctrl+-</string>
    </property>
   </action>
-  <action name="actionFitScreen">
-   <property name="icon">
-    <iconset resource="resources/dolphin/dolphin.qrc">
-     <normaloff>:/dolphin/zoomRange.svg</normaloff>:/dolphin/zoomRange.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Fit to screen</string>
-   </property>
-   <property name="toolTip">
-    <string>Fit to screen</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+R</string>
-   </property>
-  </action>
   <action name="actionResetZoom">
    <property name="icon">
     <iconset resource="resources/dolphin/dolphin.qrc">
@@ -442,10 +425,10 @@
  </widget>
  <resources>
   <include location="resources/dolphin/dolphin.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
  </resources>
  <connections/>
 </ui>
