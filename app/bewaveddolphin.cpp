@@ -54,6 +54,11 @@ void SignalDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
     QItemDelegate::paint(painter, itemOption, index);
 }
 
+void DolphinGraphicsView::wheelEvent(QWheelEvent *event)
+{
+    event->ignore();
+}
+
 BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindow *parent)
     : QMainWindow(parent)
     , m_ui(new Ui::BewavedDolphin)
