@@ -47,6 +47,14 @@ public:
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 };
 
+class DolphinGraphicsView : public GraphicsView
+{
+    Q_OBJECT
+
+protected:
+    void wheelEvent(QWheelEvent *event) override;
+};
+
 class BewavedDolphin : public QMainWindow
 {
     Q_OBJECT
@@ -123,7 +131,7 @@ private:
     void zoomChanged();
 
     Ui::BewavedDolphin *m_ui;
-    GraphicsView m_view;
+    DolphinGraphicsView m_view;
     MainWindow *m_mainWindow = nullptr;
     PlotType m_type = PlotType::Line;
     QFileInfo m_currentFile;
