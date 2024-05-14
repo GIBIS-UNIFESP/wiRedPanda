@@ -56,28 +56,9 @@ void SignalDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
     QItemDelegate::paint(painter, itemOption, index);
 }
 
-DolphinGraphicsView::DolphinGraphicsView(QWidget *parent) : GraphicsView(parent)
-{
-}
-
-bool DolphinGraphicsView::canZoomOut() const
-{
-    return m_zoomLevel > 0;
-}
-
 void DolphinGraphicsView::wheelEvent(QWheelEvent *event)
 {
-    const int zoomDirection = event->angleDelta().y();
-
-    if (zoomDirection > 0 && canZoomIn()) {
-        emit scaleIn();
-    } else if (zoomDirection < 0 && canZoomOut()) {
-        emit scaleOut();
-    }
-
-    centerOn(QPoint(0, 0));
-
-    event->accept();
+    event->ignore();
 }
 
 BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindow *parent)

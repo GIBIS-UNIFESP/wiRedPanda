@@ -51,16 +51,6 @@ class DolphinGraphicsView : public GraphicsView
 {
     Q_OBJECT
 
-public:
-    explicit DolphinGraphicsView(QWidget *parent = nullptr);
-    bool canZoomOut() const;
-
-    inline static bool canNavigateWithArrowKeys = true;
-
-signals:
-    void scaleIn();
-    void scaleOut();
-
 protected:
     void wheelEvent(QWheelEvent *event) override;
 };
@@ -142,6 +132,7 @@ private:
     void zoomChanged();
 
     Ui::BewavedDolphin *m_ui;
+    DolphinGraphicsView m_view;
     MainWindow *m_mainWindow = nullptr;
     PlotType m_type = PlotType::Line;
     QFileInfo m_currentFile;
