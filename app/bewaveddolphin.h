@@ -94,7 +94,6 @@ private:
     void on_actionExit_triggered();
     void on_actionExportToPdf_triggered();
     void on_actionExportToPng_triggered();
-    void on_actionFitScreen_triggered();
     void on_actionInvert_triggered();
     void on_actionLoad_triggered();
     void on_actionPaste_triggered();
