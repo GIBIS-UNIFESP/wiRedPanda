@@ -5,13 +5,16 @@
         <file>exit.svg</file>
         <file>falling_blue.svg</file>
         <file>falling_green.svg</file>
+        <file>falling_green_1_8_cut.svg</file>
         <file>folder.svg</file>
         <file>help.svg</file>
         <file>helpQt.svg</file>
         <file>high_blue.svg</file>
         <file>high_green.svg</file>
+        <file>high_green_1_8_cut.svg</file>
         <file>low_blue.svg</file>
         <file>low_green.svg</file>
+        <file>low_green_1_8_cut.svg</file>
         <file>new.svg</file>
         <file>paste.svg</file>
         <file>pdf.svg</file>
@@ -21,7 +24,9 @@
         <file>reloadFile.svg</file>
         <file>rising_blue.svg</file>
         <file>rising_green.svg</file>
+        <file>rising_green_1_8_cut.svg</file>
         <file>save.svg</file>
+        <file>timerBlue.svg</file>
         <file>zoomIn.svg</file>
         <file>zoomOut.svg</file>
         <file>zoomRange.svg</file>

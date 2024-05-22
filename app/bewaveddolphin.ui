@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>BewavedDolphin</class>
  <widget class="QMainWindow" name="BewavedDolphin">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -69,6 +72,7 @@
    <addaction name="actionSetTo1"/>
    <addaction name="actionInvert"/>
    <addaction name="actionSetClockWave"/>
+   <addaction name="actionTemporalSimulation"/>
    <addaction name="separator"/>
    <addaction name="actionZoomIn"/>
    <addaction name="actionZoomOut"/>
@@ -437,6 +441,29 @@
   <action name="actionShowWaveforms">
    <property name="text">
     <string>Show Waveforms</string>
+   </property>
+  </action>
+  <action name="actionTemporalSimulation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/dolphin/dolphin.qrc">
+     <normaloff>:/dolphin/timerBlue.svg</normaloff>
+     <disabledoff>:/dolphin/timerBlue.svg</disabledoff>
+     <disabledon>:/dolphin/timerBlue.svg</disabledon>:/dolphin/timerBlue.svg</iconset>
+   </property>
+   <property name="text">
+    <string>TemporalSimulation</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
    </property>
   </action>
  </widget>
