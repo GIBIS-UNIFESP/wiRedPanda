@@ -120,7 +120,7 @@ QTabWidget::pane {
 </string>
             </property>
             <property name="currentIndex">
-             <number>4</number>
+             <number>5</number>
             </property>
             <widget class="QWidget" name="io">
              <attribute name="icon">
@@ -148,7 +148,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>584</height>
+                   <height>578</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -197,7 +197,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>584</height>
+                   <height>578</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -246,7 +246,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>584</height>
+                   <height>578</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -295,7 +295,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>552</height>
+                   <height>545</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -368,7 +368,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>584</height>
+                   <height>578</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -423,7 +423,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>584</height>
+                   <height>578</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -468,7 +468,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>258</width>
-                   <height>582</height>
+                   <height>576</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -606,6 +606,7 @@ QTabWidget::pane {
    <addaction name="actionPlay"/>
    <addaction name="actionRestart"/>
    <addaction name="actionWaveform"/>
+   <addaction name="actionTemporalSimulation"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QMenuBar" name="menuBar">
@@ -614,7 +615,7 @@ QTabWidget::pane {
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -720,6 +721,7 @@ QTabWidget::pane {
     <addaction name="actionRestart"/>
     <addaction name="actionWaveform"/>
     <addaction name="actionMute"/>
+    <addaction name="actionTemporalSimulation"/>
    </widget>
    <widget class="QMenu" name="menuExamples">
     <property name="title">
@@ -1204,6 +1206,21 @@ QTabWidget::pane {
     <string>Restart simulation.</string>
    </property>
   </action>
+  <action name="actionTemporalSimulation">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/timer.svg</normaloff>:/toolbar/timer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Temporal Simulation</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1229,11 +1246,11 @@ QTabWidget::pane {
  </tabstops>
  <resources>
   <include location="resources/memory/light/memory_light.qrc"/>
-  <include location="resources/misc/misc.qrc"/>
-  <include location="resources/output/output.qrc"/>
   <include location="resources/basic/basic.qrc"/>
+  <include location="resources/misc/misc.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/input/input.qrc"/>
+  <include location="resources/output/output.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>
