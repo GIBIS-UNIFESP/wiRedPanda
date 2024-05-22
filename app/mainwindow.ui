@@ -610,6 +610,7 @@ QTabWidget::pane {
    <addaction name="actionPlay"/>
    <addaction name="actionRestart"/>
    <addaction name="actionWaveform"/>
+   <addaction name="actionTemporalSimulation"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QMenuBar" name="menuBar">
@@ -726,6 +727,7 @@ QTabWidget::pane {
     <addaction name="actionRestart"/>
     <addaction name="actionWaveform"/>
     <addaction name="actionMute"/>
+    <addaction name="actionTemporalSimulation"/>
    </widget>
    <widget class="QMenu" name="menuExamples">
     <property name="title">
@@ -1217,6 +1219,21 @@ QTabWidget::pane {
    </property>
    <property name="text">
     <string>Spanish</string>
+   </property>
+  </action>
+  <action name="actionTemporalSimulation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/timer.svg</normaloff>:/toolbar/timer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Temporal Simulation</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
    </property>
   </action>
   <action name="actionShortcutsAndTips">
