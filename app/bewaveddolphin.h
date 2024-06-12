@@ -51,6 +51,9 @@ class DolphinGraphicsView : public GraphicsView
 {
     Q_OBJECT
 
+public:
+    bool canZoomOut() const;
+
 protected:
     void wheelEvent(QWheelEvent *event) override;
 };
