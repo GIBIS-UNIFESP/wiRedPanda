@@ -54,9 +54,24 @@ void SignalDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
     QItemDelegate::paint(painter, itemOption, index);
 }
 
+bool DolphinGraphicsView::canZoomOut() const
+{
+    return m_zoomLevel > 0;
+}
+
 void DolphinGraphicsView::wheelEvent(QWheelEvent *event)
 {
-    event->ignore();
+    int zoomDirection = event->angleDelta().y();
+
+    if (zoomDirection > 0 && canZoomIn()) {
+        zoomIn();
+    } else if (zoomDirection < 0 && canZoomOut()) {
+        zoomOut();
+    }
+
+    centerOn(QPoint(0, 0));
+
+    event->accept();
 }
 
 BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindow *parent)
@@ -93,6 +108,7 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
 
     loadPixmaps();
 
+    connect(&m_view,     &DolphinGraphicsView::zoomChanged, this, &BewavedDolphin::zoomChanged);
     connect(m_ui->actionAbout,         &QAction::triggered, this, &BewavedDolphin::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,       &QAction::triggered, this, &BewavedDolphin::on_actionAboutQt_triggered);
     connect(m_ui->actionClear,         &QAction::triggered, this, &BewavedDolphin::on_actionClear_triggered);
