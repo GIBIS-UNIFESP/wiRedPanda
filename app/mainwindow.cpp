@@ -146,7 +146,6 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(removeOutPortShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::removeOutputPort);
 
     qCDebug(zero) << tr("Setting connections");
-    connect(m_ui->actionHotkeysAndTips,   &QAction::triggered,        this,                &MainWindow::on_actionHotkeysAndTips_triggered);
     connect(m_ui->actionAbout,            &QAction::triggered,        this,                &MainWindow::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,          &QAction::triggered,        this,                &MainWindow::on_actionAboutQt_triggered);
     connect(m_ui->actionAboutThisVersion, &QAction::triggered,        this,                &MainWindow::aboutThisVersion);
@@ -451,31 +450,6 @@ void MainWindow::on_actionSaveAs_triggered()
     }
 
     save(fileName);
-}
-
-void MainWindow::on_actionHotkeysAndTips_triggered()
-{
-    QMessageBox::about(
-        this,
-        "Hotkeys and Tips",
-        "<strong>Hotkeys</strong>"
-        "<ul>"
-        "<li> Undo: Ctrl+Z </li>"
-        "<li> Redo: Ctrl+Shift+Z </li>"
-        "<li> Open Dolphin: Ctrl+W </li>"
-        "<li> Exit wiRedPanda: Ctrl+Q </li>"
-        "<li> Export to image: Ctrl+E </li>"
-        "<li> Save file: Ctrl+S </li>"
-        "<li> Search element: Ctrl+F </li>"
-        "<li> New file: Ctrl+N </li>"
-        "<li> Open file: Ctrl+O </li>"
-        "<li> Change trigger: F3 </li>"
-        "<li> Combinational(Dolphin): Alt+C </li>"
-
-        "<h1><strong>Tips</strong></h1>"
-        "<p> Double-click a wire to create a new node! </p>"
-        "</ul>"
-    );
 }
 
 void MainWindow::on_actionAbout_triggered()

@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QKeyEvent>
 #include <QScrollBar>
+#include <QCursor>
 
 GraphicsView::GraphicsView(QWidget *parent)
     : QGraphicsView(parent)
@@ -30,7 +31,7 @@ bool GraphicsView::canZoomIn() const
 
 bool GraphicsView::canZoomOut() const
 {
-    return m_zoomLevel > 0;
+    return m_zoomLevel > -5;
 }
 
 void GraphicsView::mousePressEvent(QMouseEvent *event)
