@@ -1,3 +1,6 @@
+# Copyright 2015 - 2024, GIBIS-Unifesp and the WiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 name: "CodeQL"
 
 on:
@@ -20,19 +23,18 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
+      uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v4
       with:
         version: 5.15.2
         cache: true
-        aqtversion: ==3.1.6
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -53,4 +55,4 @@ jobs:
         ./WPanda-test -platform offscreen
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+      uses: github/codeql-action/analyze@v3
