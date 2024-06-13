@@ -19,11 +19,10 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v4
       with:
         version: 5.12.12
         cache: true
-        aqtversion: ==3.1.*
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
