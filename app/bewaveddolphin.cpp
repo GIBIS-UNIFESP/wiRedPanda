@@ -66,9 +66,9 @@ void DolphinGraphicsView::wheelEvent(QWheelEvent *event)
     int zoomDirection = event->angleDelta().y();
 
     if (zoomDirection > 0 && canZoomIn()) {
-        zoomIn();
+        emit scaleIn();
     } else if (zoomDirection < 0 && canZoomOut()) {
-        zoomOut();
+        emit scaleOut();
     }
 
     centerOn(QPoint(0, 0));
@@ -124,7 +124,8 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
 
     loadPixmaps();
 
-    connect(&m_view,     &DolphinGraphicsView::zoomChanged, this, &BewavedDolphin::zoomChanged);
+    connect(&m_view,         &DolphinGraphicsView::scaleIn, this, &BewavedDolphin::on_actionZoomIn_triggered);
+    connect(&m_view,        &DolphinGraphicsView::scaleOut, this, &BewavedDolphin::on_actionZoomOut_triggered);
     connect(m_ui->actionAbout,         &QAction::triggered, this, &BewavedDolphin::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,       &QAction::triggered, this, &BewavedDolphin::on_actionAboutQt_triggered);
     connect(m_ui->actionClear,         &QAction::triggered, this, &BewavedDolphin::on_actionClear_triggered);
@@ -871,7 +872,7 @@ void BewavedDolphin::on_actionZoomIn_triggered()
 
 void BewavedDolphin::on_actionResetZoom_triggered()
 {
-    m_ui->graphicsView->resetZoom();
+    m_view.resetZoom();
     m_scale = 1.25;
     resizeScene();
     zoomChanged();
