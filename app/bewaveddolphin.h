@@ -54,6 +54,12 @@ class DolphinGraphicsView : public GraphicsView
 public:
     bool canZoomOut() const;
 
+    inline static bool canNavigateWithArrowKeys = true;
+
+signals:
+    void scaleIn();
+    void scaleOut();
+
 protected:
     void wheelEvent(QWheelEvent *event) override;
 };
