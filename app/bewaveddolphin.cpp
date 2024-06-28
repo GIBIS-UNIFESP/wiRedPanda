@@ -10,6 +10,7 @@
 #include "globalproperties.h"
 #include "graphicelement.h"
 #include "graphicelementinput.h"
+#include "inputrotary.h"
 #include "lengthdialog.h"
 #include "mainwindow.h"
 #include "settings.h"
@@ -347,7 +348,7 @@ void BewavedDolphin::loadSignals(QStringList &inputLabels, QStringList &outputLa
 void BewavedDolphin::run()
 {
     run2();
-    run2();
+    //run2();
 }
 
 void BewavedDolphin::run2()
@@ -360,17 +361,27 @@ void BewavedDolphin::run2()
         int row = 0;
 
         for (auto *input : qAsConst(m_inputs)) {
-            for (int port = 0; port < input->outputSize(); ++port) {
-                const bool value = static_cast<bool>(m_model->index(row, column).data().toInt());
-                input->setOn(value, port);
-                ++row;
+            if(dynamic_cast<InputRotary*>(input)) {
+                for (int port = 0; port < input->outputSize(); ++port) {
+                    if(m_model->index(row, column).data().toInt()) {
+                        input->setOn(1, port);
+                    }
+                    ++row;
+                }
+            }
+            else {
+                for (int port = 0; port < input->outputSize(); ++port) {
+                    const bool value = static_cast<bool>(m_model->index(row, column).data().toInt());
+                    input->setOn(value, port);
+                    ++row;
+                }
             }
         }
 
         qCDebug(four) << tr("Updating the values of the circuit logic based on current input values.");
         m_simulation->update();
-        m_simulation->update();
-        m_simulation->update();
+        //m_simulation->update();
+        //m_simulation->update();
 
         qCDebug(four) << tr("Setting the computed output values to the waveform results.");
         row = m_inputPorts;
