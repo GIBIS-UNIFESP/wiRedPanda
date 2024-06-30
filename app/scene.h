@@ -39,6 +39,7 @@ public:
     const QVector<GraphicElement *> elements() const;
     const QVector<GraphicElement *> elements(const QRectF &rect) const;
     const QVector<GraphicElement *> visibleElements() const;
+    void addItem(QGraphicsItem *item);
     void addItem(QMimeData *mimeData);
     void copyAction();
     void cutAction();
@@ -57,14 +58,13 @@ public:
     void showGates(const bool checked);
     void showWires(const bool checked);
     void updateTheme();
-    void nextElm();
-    void prevElm();
-    void removeInputPort();
-    void removeOutputPort();
-    void addInputPort();
-    void addOutputPort();
 
-    void addItem(QGraphicsItem *item);
+    // Element shortcuts
+    void addInputPort();
+    void removeInputPort();
+    void addOutputPort();
+    void removeOutputPort();
+
 signals:
     void circuitHasChanged();
     void contextMenuPos(QPoint screenPos, QGraphicsItem *itemAtMouse);
