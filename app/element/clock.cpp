@@ -131,7 +131,7 @@ float Clock::frequency() const
 
 void Clock::setFrequency(const float freq)
 {
-    if (qFuzzyIsNull(freq)) {
+    if (qFuzzyIsNull(freq) || freq < 0.5 || freq > 50.0) {
         return;
     }
 

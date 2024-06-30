@@ -44,7 +44,13 @@ public:
     void flipHorizontally();
     void flipVertically();
     void mute(const bool mute = true);
+    void nextElm();
+    void nextMainPropShortcut();
+    void nextSecndPropShortcut();
     void pasteAction();
+    void prevElm();
+    void prevMainPropShortcut();
+    void prevSecndPropShortcut();
     void receiveCommand(QUndoCommand *cmd);
     void rotateLeft();
     void rotateRight();

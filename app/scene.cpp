@@ -313,6 +313,186 @@ void Scene::detachConnection(QNEInputPort *endPort)
     }
 }
 
+void Scene::prevMainPropShortcut()
+{
+    for (auto *element : selectedElements()) {
+        switch(element->elementType()) {
+        // Logic Elements
+        case ElementType::And:
+        case ElementType::Or:
+        case ElementType::Nand:
+        case ElementType::Nor:
+        case ElementType::Xor:
+        case ElementType::Xnor:
+        // Output and truthtable
+        case ElementType::Led:
+        case ElementType::TruthTable:
+            if (element->inputSize() > element->minInputSize())
+                receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement* >{element},
+                                                          element->inputSize() - 1, this));
+            break;
+
+        // Input ports
+        case ElementType::InputRotary:
+            if (element->outputSize() > element->minOutputSize())
+                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement* >{element},
+                                                           element->outputSize() - 1, this));
+            break;
+
+        case ElementType::Clock:
+            if (element->hasFrequency())
+                element->setFrequency(element->frequency() - 0.5);
+            break;
+
+        case ElementType::Buzzer:
+            if (element->hasAudio())
+                element->setAudio(element->previousAudio());
+            break;
+
+        case ElementType::Display14:
+        case ElementType::Display7:
+            if (element->hasColors())
+                element->setColor(element->previousColor());
+            break;
+
+        default: // Not implemented
+            break;
+        }
+
+        element->setSelected(false);
+        element->setSelected(true);
+    }
+}
+
+void Scene::nextMainPropShortcut()
+{
+    for (auto *element : selectedElements()) {
+        switch(element->elementType()) {
+        // Logic Elements
+        case ElementType::And:
+        case ElementType::Or:
+        case ElementType::Nand:
+        case ElementType::Nor:
+        case ElementType::Xor:
+        case ElementType::Xnor:
+        // Output and truthtable
+        case ElementType::Led:
+        case ElementType::TruthTable:
+            if (element->inputSize() < element->maxInputSize())
+                receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement* >{element},
+                                                          element->inputSize() + 1, this));
+            break;
+
+        // Input ports
+        case ElementType::InputRotary:
+            if (element->outputSize() < element->maxOutputSize())
+                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement* >{element},
+                                                           element->outputSize() + 1, this));
+            break;
+
+        case ElementType::Clock:
+            if (element->hasFrequency())
+                element->setFrequency(element->frequency() + 0.5);
+            break;
+
+        case ElementType::Buzzer:
+            if (element->hasAudio())
+                element->setAudio(element->nextAudio());
+            break;
+
+        case ElementType::Display14:
+        case ElementType::Display7:
+            if (element->hasColors())
+                element->setColor(element->nextColor());
+            break;
+
+        default: // Not implemented
+            break;
+        }
+
+        element->setSelected(false);
+        element->setSelected(true);
+    }
+}
+
+void Scene::prevSecndPropShortcut()
+{
+    for (auto *element: selectedElements()) {
+        switch (element->elementType()) {
+        case ElementType::TruthTable:
+            if (element->outputSize() > element->minOutputSize())
+                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
+                                                           element->outputSize() - 1, this));
+            break;
+
+        case ElementType::Led:
+            if (element->hasColors())
+                element->setColor(element->previousColor());
+            break;
+
+        default:
+            break;
+        }
+
+        element->setSelected(false);
+        element->setSelected(true);
+    }
+}
+
+void Scene::nextSecndPropShortcut()
+{
+    for (auto *element: selectedElements()) {
+        switch (element->elementType()) {
+        case ElementType::TruthTable:
+            if (element->outputSize() < element->maxOutputSize())
+                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
+                                                           element->outputSize() + 1, this));
+            break;
+
+        case ElementType::Led:
+            if (element->hasColors())
+                element->setColor(element->nextColor());
+            break;
+
+        default:
+            break;
+        }
+
+        element->setSelected(false);
+        element->setSelected(true);
+    }
+}
+
+void Scene::nextElm()
+{
+    for (auto *element : selectedElements()) {
+        const QPointF elmPosition = element->scenePos();
+        auto nextType = Enums::nextElmType(element->elementType());
+
+        if (nextType == ElementType::Unknown) { continue; }
+
+        receiveCommand(new MorphCommand(QList<GraphicElement *>{element},
+                       Enums::nextElmType(element->elementType()), this));
+
+        itemAt(elmPosition)->setSelected(true);
+    }
+}
+
+void Scene::prevElm()
+{
+    for (auto *element : selectedElements()) {
+        const QPointF elmPosition = element->scenePos();
+        auto prevType = Enums::prevElmType(element->elementType());
+
+        if (prevType == ElementType::Unknown) { continue; }
+
+        receiveCommand(new MorphCommand(QList<GraphicElement *>{element},
+                                        Enums::prevElmType(element->elementType()), this));
+
+        itemAt(elmPosition)->setSelected(true);
+    }
+}
+
 void Scene::updateTheme()
 {
     qCDebug(zero) << "Updating theme.";
