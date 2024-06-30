@@ -684,6 +684,7 @@ QTabWidget::pane {
     <addaction name="actionAbout"/>
     <addaction name="actionAboutQt"/>
     <addaction name="actionAboutThisVersion"/>
+    <addaction name="actionShortcutsAndTips"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -1216,6 +1217,14 @@ QTabWidget::pane {
    </property>
    <property name="text">
     <string>Spanish</string>
+   </property>
+  </action>
+  <action name="actionShortcutsAndTips">
+   <property name="icon">
+    <iconset theme="help-about"/>
+   </property>
+   <property name="text">
+    <string>Shortcuts and Tips</string>
    </property>
   </action>
  </widget>

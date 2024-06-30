@@ -80,8 +80,6 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     m_ui->mainToolBar->setToolButtonStyle(Settings::value("labelsUnderIcons").toBool() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
 
     qCDebug(zero) << "Setting left side menus.";
-    auto *shortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
-    connect(shortcut, &QShortcut::activated, m_ui->lineEditSearch, qOverload<>(&QWidget::setFocus));
     populateLeftMenu();
     m_ui->tabElements->setTabIcon(0, QIcon(":/input/buttonOff.svg"));
     m_ui->tabElements->setTabIcon(1, QIcon(":/basic/xor.svg"));
@@ -138,6 +136,23 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
         m_ui->menuExamples->menuAction()->setVisible(false);
     }
 
+    // Shortcuts
+    auto *searchShortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
+    auto *prevMainPropShortcut = new QShortcut(QKeySequence("["), this);
+    auto *nextMainPropShortcut = new QShortcut(QKeySequence("]"), this);
+    auto *prevSecndPropShortcut = new QShortcut(QKeySequence("{"), this);
+    auto *nextSecndPropShortcut = new QShortcut(QKeySequence("}"), this);
+    auto *changePrevElmShortcut = new QShortcut(QKeySequence("<"), this);
+    auto *changeNextElmShortcut = new QShortcut(QKeySequence(">"), this);
+
+    connect(searchShortcut,               &QShortcut::activated,      m_ui->lineEditSearch,  qOverload<>(&QWidget::setFocus));
+    connect(prevMainPropShortcut,         &QShortcut::activated,      m_currentTab->scene(), &Scene::prevMainPropShortcut);
+    connect(nextMainPropShortcut,         &QShortcut::activated,      m_currentTab->scene(), &Scene::nextMainPropShortcut);
+    connect(prevSecndPropShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::prevSecndPropShortcut);
+    connect(nextSecndPropShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::nextSecndPropShortcut);
+    connect(changePrevElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::prevElm);
+    connect(changeNextElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::nextElm);
+
     qCDebug(zero) << "Setting connections";
     connect(m_ui->actionAbout,            &QAction::triggered,        this,                &MainWindow::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,          &QAction::triggered,        this,                &MainWindow::on_actionAboutQt_triggered);
@@ -170,6 +185,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->actionSave,             &QAction::triggered,        this,                &MainWindow::on_actionSave_triggered);
     connect(m_ui->actionSaveAs,           &QAction::triggered,        this,                &MainWindow::on_actionSaveAs_triggered);
     connect(m_ui->actionSelectAll,        &QAction::triggered,        this,                &MainWindow::on_actionSelectAll_triggered);
+    connect(m_ui->actionShortcutsAndTips, &QAction::triggered,        this,                &MainWindow::on_actionShortcuts_and_Tips_triggered);
     connect(m_ui->actionSpanish,          &QAction::triggered,        this,                &MainWindow::on_actionSpanish_triggered);
     connect(m_ui->actionWaveform,         &QAction::triggered,        this,                &MainWindow::on_actionWaveform_triggered);
     connect(m_ui->actionWires,            &QAction::triggered,        this,                &MainWindow::on_actionWires_triggered);
@@ -483,6 +499,34 @@ void MainWindow::on_actionAbout_triggered()
            "<p> Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.</p>"
            "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
             .arg(QApplication::applicationVersion()));
+}
+
+void MainWindow::on_actionShortcuts_and_Tips_triggered()
+{
+    QMessageBox::information(this,
+        tr("Shortcuts and Tips"),
+        tr("<h1>Canvas Shortcuts</h1>"
+           "<ul style=\"list-style:none;\">"
+           "<li> Ctrl+= : Zoom in </li>"
+           "<li> Ctrl+- : Zoom out </li>"
+           "<li> Ctrl+1 : Hide/Show wires </li>"
+           "<li> Ctrl+2 : Hide/Show gates </li>"
+           "<li> Ctrl+F : Search elements </li>"
+           "<li> Ctrl+W : Open beWaveDolphin </li>"
+           "<li> Ctrl+S : Save project </li>"
+           "<li> Ctrl+Q : Exit wiRedPanda </li>"
+           "<li> F5 : Start/Pause simulation </li>"
+           "<li> [ : Previous primary element property </li>"
+           "<li> ] : Next primary element property </li>"
+           "<li> { : Previous secondary element property </li>"
+           "<li> } : Next secondary element property </li>"
+           "<li> &lt; : Morph to previous element </li>"
+           "<li> &gt; : Morph to next element </li>"
+           "</ul>"
+
+           "<h1>General Tips</h1>"
+           "<p>Double click in a wire to create a node</p>"
+        ));
 }
 
 void MainWindow::on_actionAboutQt_triggered()
