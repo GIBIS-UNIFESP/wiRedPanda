@@ -131,19 +131,16 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     }
 
     // Element shortcuts
-    auto *addInPortShortcut = new QShortcut(QKeySequence("]"), this);
-    auto *addOutPortShortcut = new QShortcut(QKeySequence("}"), this);
-    auto *changeNextElmShortcut = new QShortcut(QKeySequence(">"), this);
-    auto *changePrevElmShortcut = new QShortcut(QKeySequence("<"), this);
-    auto *removeInPortShortcut = new QShortcut(QKeySequence("["), this);
-    auto *removeOutPortShortcut = new QShortcut(QKeySequence("{"), this);
 
-    connect(addInPortShortcut,            &QShortcut::activated,      m_currentTab->scene(), &Scene::addInputPort);
-    connect(addOutPortShortcut,           &QShortcut::activated,      m_currentTab->scene(), &Scene::addOutputPort);
-    connect(changeNextElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::nextElm);
-    connect(changePrevElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::prevElm);
-    connect(removeInPortShortcut,         &QShortcut::activated,      m_currentTab->scene(), &Scene::removeInputPort);
-    connect(removeOutPortShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::removeOutputPort);
+    auto *removeInPortShortcut = new QShortcut(QKeySequence("["), this);
+    auto *addInPortShortcut = new QShortcut(QKeySequence("]"), this);
+    auto *removeOutPortShortcut = new QShortcut(QKeySequence("{"), this);
+    auto *addOutPortShortcut = new QShortcut(QKeySequence("}"), this);
+
+    connect(addInPortShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::addInputPort);
+    connect(removeInPortShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::removeInputPort);
+    connect(addOutPortShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::addOutputPort);
+    connect(removeOutPortShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::removeOutputPort);
 
     qCDebug(zero) << tr("Setting connections");
     connect(m_ui->actionAbout,            &QAction::triggered,        this,                &MainWindow::on_actionAbout_triggered);
