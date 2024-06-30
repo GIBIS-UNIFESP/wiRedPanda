@@ -57,6 +57,12 @@ public:
     void showWires(const bool checked);
     void updateTheme();
 
+    // Element shortcuts
+    void addInputPort();
+    void removeInputPort();
+    void addOutputPort();
+    void removeOutputPort();
+
 signals:
     void circuitHasChanged();
     void contextMenuPos(QPoint screenPos, QGraphicsItem *itemAtMouse);
