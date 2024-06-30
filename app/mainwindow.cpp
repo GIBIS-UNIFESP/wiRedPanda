@@ -32,6 +32,7 @@
 #include <QPrinter>
 #include <QSaveFile>
 #include <QShortcut>
+#include <QKeySequence>
 #include <QTemporaryFile>
 #include <QTranslator>
 
@@ -76,8 +77,8 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     m_ui->mainToolBar->setToolButtonStyle(Settings::value("labelsUnderIcons").toBool() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
 
     qCDebug(zero) << tr("Setting left side menus.");
-    auto *shortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
-    connect(shortcut, &QShortcut::activated, m_ui->lineEditSearch, qOverload<>(&QWidget::setFocus));
+    auto *searchShortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
+    connect(searchShortcut, &QShortcut::activated, m_ui->lineEditSearch, qOverload<>(&QWidget::setFocus));
     populateLeftMenu();
     m_ui->tabElements->setTabIcon(0, QIcon(":/input/buttonOff.svg"));
     m_ui->tabElements->setTabIcon(1, QIcon(":/basic/xor.svg"));
@@ -134,6 +135,18 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     if (m_ui->menuExamples->isEmpty()) {
         m_ui->menuExamples->menuAction()->setVisible(false);
     }
+
+    // Element shortcuts
+
+    auto *removeInPortShortcut = new QShortcut(QKeySequence("["), this);
+    auto *addInPortShortcut = new QShortcut(QKeySequence("]"), this);
+    auto *removeOutPortShortcut = new QShortcut(QKeySequence("{"), this);
+    auto *addOutPortShortcut = new QShortcut(QKeySequence("}"), this);
+
+    connect(addInPortShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::addInputPort);
+    connect(removeInPortShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::removeInputPort);
+    connect(addOutPortShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::addOutputPort);
+    connect(removeOutPortShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::removeOutputPort);
 
     qCDebug(zero) << tr("Setting connections");
     connect(m_ui->actionAbout,            &QAction::triggered,        this,                &MainWindow::on_actionAbout_triggered);
