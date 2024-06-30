@@ -310,6 +310,38 @@ void Scene::detachConnection(QNEInputPort *endPort)
     }
 }
 
+void Scene::addInputPort() {
+    for (auto element : selectedElements()) {
+        element->setInputSize(element->inputSize() + 1);
+        element->updatePortsProperties();
+        element->updateTheme();
+    }
+}
+
+void Scene::removeInputPort() {
+    for (auto element : selectedElements()) {
+        element->setInputSize(element->inputSize() - 1);
+        element->updatePortsProperties();
+        element->updateTheme();
+    }
+}
+
+void Scene::addOutputPort() {
+    for (auto element : selectedElements()) {
+        element->setOutputSize(element->outputSize() + 1);
+        element->updatePortsProperties();
+        element->updateTheme();
+    }
+}
+
+void Scene::removeOutputPort() {
+    for (auto element : selectedElements()) {
+        element->setOutputSize(element->outputSize() - 1);
+        element->updatePortsProperties();
+        element->updateTheme();
+    }
+}
+
 void Scene::updateTheme()
 {
     qCDebug(zero) << tr("Updating theme.");
