@@ -58,13 +58,8 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QStri
     setToolTip(m_translatedName);
 
     qCDebug(four) << tr("Including input and output ports.");
-    for (int i = 0; i < minInputSize; ++i) {
-        addInputPort();
-    }
-
-    for (int i = 0; i < minOutputSize; ++i) {
-        addOutputPort();
-    }
+    setInputSize(minInputSize);
+    setOutputSize(minOutputSize);
 
     GraphicElement::updatePortsProperties();
     GraphicElement::updateTheme();

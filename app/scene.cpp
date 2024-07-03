@@ -310,35 +310,47 @@ void Scene::detachConnection(QNEInputPort *endPort)
     }
 }
 
-void Scene::addInputPort() {
+void Scene::addInputPort()
+{
     for (auto element : selectedElements()) {
-        element->setInputSize(element->inputSize() + 1);
-        element->updatePortsProperties();
-        element->updateTheme();
+        receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement *>{element}, element->inputSize() + 1, this));
     }
 }
 
-void Scene::removeInputPort() {
+void Scene::removeInputPort()
+{
     for (auto element : selectedElements()) {
-        element->setInputSize(element->inputSize() - 1);
-        element->updatePortsProperties();
-        element->updateTheme();
+        receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement *>{element}, element->inputSize() - 1, this));
     }
 }
 
-void Scene::addOutputPort() {
+void Scene::addOutputPort()
+{
     for (auto element : selectedElements()) {
-        element->setOutputSize(element->outputSize() + 1);
-        element->updatePortsProperties();
-        element->updateTheme();
+        receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element}, element->outputSize() + 1, this));
     }
 }
 
-void Scene::removeOutputPort() {
+void Scene::removeOutputPort()
+{
     for (auto element : selectedElements()) {
-        element->setOutputSize(element->outputSize() - 1);
-        element->updatePortsProperties();
-        element->updateTheme();
+        receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element}, element->outputSize() - 1, this));
+    }
+}
+
+void Scene::nextElm()
+{
+    for (auto element : selectedElements()) {
+        receiveCommand(new MorphCommand(QList<GraphicElement *>{element},
+                       Enums::nextElmType(element->elementType()), this));
+    }
+}
+
+void Scene::prevElm()
+{
+    for (auto element : selectedElements()) {
+        receiveCommand(new MorphCommand(QList<GraphicElement *>{element},
+                                        Enums::prevElmType(element->elementType()), this));
     }
 }
 

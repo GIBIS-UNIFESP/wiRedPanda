@@ -62,6 +62,8 @@ public:
     void removeInputPort();
     void addOutputPort();
     void removeOutputPort();
+    void nextElm();
+    void prevElm();
 
 signals:
     void circuitHasChanged();
