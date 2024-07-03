@@ -342,16 +342,24 @@ void Scene::removeOutputPort()
 void Scene::nextElm()
 {
     for (auto element : selectedElements()) {
+        QPointF elmPosition = element->scenePos();
+
         receiveCommand(new MorphCommand(QList<GraphicElement *>{element},
                        Enums::nextElmType(element->elementType()), this));
+
+        itemAt(elmPosition)->setSelected(true);
     }
 }
 
 void Scene::prevElm()
 {
     for (auto element : selectedElements()) {
+        QPointF elmPosition = element->scenePos();
+
         receiveCommand(new MorphCommand(QList<GraphicElement *>{element},
                                         Enums::prevElmType(element->elementType()), this));
+
+        itemAt(elmPosition)->setSelected(true);
     }
 }
 
