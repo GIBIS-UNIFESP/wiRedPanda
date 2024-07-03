@@ -5,78 +5,126 @@
 ElementType Enums::nextElmType(ElementType type) {
     switch (type) {
         // Not and Node
-        case ElementType::Not:         return ElementType::Node;
-        case ElementType::Node:        return ElementType::Not;
+        case ElementType::Not:
+            return ElementType::Node;
+        case ElementType::Node:
+            return ElementType::Not;
 
         // Gates
-        case ElementType::And:         return ElementType::Or;
-        case ElementType::Or:          return ElementType::Nand;
-        case ElementType::Nand:        return ElementType::Nor;
-        case ElementType::Nor:         return ElementType::Xor;
-        case ElementType::Xor:         return ElementType::Xnor;
-        case ElementType::Xnor:        return ElementType::And;
+        case ElementType::And:
+            return ElementType::Or;
+        case ElementType::Or:
+            return ElementType::Nand;
+        case ElementType::Nand:
+            return ElementType::Nor;
+        case ElementType::Nor:
+            return ElementType::Xor;
+        case ElementType::Xor:
+            return ElementType::Xnor;
+        case ElementType::Xnor:
+            return ElementType::And;
 
         // StaticInput and Input
-        case ElementType::InputVcc:    return ElementType::InputGnd;
-        case ElementType::InputGnd:    return ElementType::InputButton;
-        case ElementType::InputButton: return ElementType::InputSwitch;
-        case ElementType::InputSwitch: return ElementType::InputRotary;
-        case ElementType::InputRotary: return ElementType::Clock;
-        case ElementType::Clock:       return ElementType::InputVcc;
+        case ElementType::InputVcc:
+            return ElementType::InputGnd;
+        case ElementType::InputGnd:
+            return ElementType::InputButton;
+        case ElementType::InputButton:
+            return ElementType::InputSwitch;
+        case ElementType::InputSwitch:
+            return ElementType::InputRotary;
+        case ElementType::InputRotary:
+            return ElementType::Clock;
+        case ElementType::Clock:
+            return ElementType::InputVcc;
 
         // FipFlops
-        case ElementType::DFlipFlop:   return ElementType::TFlipFlop;
-        case ElementType::TFlipFlop:   return ElementType::DFlipFlop;
+        case ElementType::DFlipFlop:
+            return ElementType::TFlipFlop;
+        case ElementType::TFlipFlop:
+            return ElementType::DFlipFlop;
 
-        case ElementType::JKFlipFlop:  return ElementType::SRFlipFlop;
-        case ElementType::SRFlipFlop:  return ElementType::JKFlipFlop;
+        case ElementType::JKFlipFlop:
+            return ElementType::SRFlipFlop;
+        case ElementType::SRFlipFlop:
+            return ElementType::JKFlipFlop;
 
         // Output
-        case ElementType::Led:         return ElementType::Buzzer;
-        case ElementType::Buzzer:      return ElementType::AudioBox;
-        case ElementType::AudioBox:    return ElementType::Led;
+        case ElementType::Display7:
+            return ElementType::Display14;
+        case ElementType::Display14:
+            return ElementType::Buzzer;
+        case ElementType::Buzzer:
+            return ElementType::Led;
+        case ElementType::Led:
+            return ElementType::Display7;
 
-        // Other Cases
-        default:                       return ElementType::Unknown;
+        // Other Cases (falltrought)
+        default:
+            return ElementType::Unknown;
     }
 }
 
 ElementType Enums::prevElmType(ElementType type) {
     switch (type) {
         // Not and Node
-        case ElementType::Not:         return ElementType::Node;
-        case ElementType::Node:        return ElementType::Not;
+        case ElementType::Not:
+            return ElementType::Node;
+        case ElementType::Node:
+            return ElementType::Not;
 
         // Gates
-        case ElementType::And:         return ElementType::Xnor;
-        case ElementType::Xnor:        return ElementType::Xor;
-        case ElementType::Xor:         return ElementType::Nor;
-        case ElementType::Nor:         return ElementType::Nand;
-        case ElementType::Nand:        return ElementType::Or;
-        case ElementType::Or:          return ElementType::And;
+        case ElementType::And:
+            return ElementType::Xnor;
+        case ElementType::Xnor:
+            return ElementType::Xor;
+        case ElementType::Xor:
+            return ElementType::Nor;
+        case ElementType::Nor:
+            return ElementType::Nand;
+        case ElementType::Nand:
+            return ElementType::Or;
+        case ElementType::Or:
+            return ElementType::And;
 
         // StaticInput and Input
-        case ElementType::InputVcc:    return ElementType::Clock;
-        case ElementType::Clock:       return ElementType::InputRotary;
-        case ElementType::InputRotary: return ElementType::InputSwitch;
-        case ElementType::InputSwitch: return ElementType::InputButton;
-        case ElementType::InputButton: return ElementType::InputGnd;
-        case ElementType::InputGnd:    return ElementType::InputVcc;
+        case ElementType::InputVcc:
+            return ElementType::Clock;
+        case ElementType::Clock:
+            return ElementType::InputRotary;
+        case ElementType::InputRotary:
+            return ElementType::InputSwitch;
+        case ElementType::InputSwitch:
+            return ElementType::InputButton;
+        case ElementType::InputButton:
+            return ElementType::InputGnd;
+        case ElementType::InputGnd:
+            return ElementType::InputVcc;
 
         // FipFlops
-        case ElementType::DFlipFlop:   return ElementType::TFlipFlop;
-        case ElementType::TFlipFlop:   return ElementType::DFlipFlop;
+        case ElementType::DFlipFlop:
+            return ElementType::TFlipFlop;
+        case ElementType::TFlipFlop:
+            return ElementType::DFlipFlop;
 
-        case ElementType::JKFlipFlop:  return ElementType::SRFlipFlop;
-        case ElementType::SRFlipFlop:  return ElementType::JKFlipFlop;
+        case ElementType::JKFlipFlop:
+            return ElementType::SRFlipFlop;
+        case ElementType::SRFlipFlop:
+            return ElementType::JKFlipFlop;
 
         // Output
-        case ElementType::Led:         return ElementType::AudioBox;
-        case ElementType::AudioBox:    return ElementType::Buzzer;
-        case ElementType::Buzzer:      return ElementType::Led;
+        case ElementType::Display7:
+            return ElementType::Led;
+        case ElementType::Led:
+            return ElementType::Buzzer;
+        case ElementType::Buzzer:
+            return ElementType::Display14;
+        case ElementType::Display14:
+            return ElementType::Display7;
 
-        // Other Cases
-        default:                       return ElementType::Unknown;
+        // Other Cases (falltrought)
+        default:
+            return ElementType::Unknown;
     }
 }
 
