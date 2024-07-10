@@ -84,6 +84,7 @@ private:
     void aboutThisVersion();
     void createRecentFileActions();
     void loadAutosaveFiles();
+    void on_actionShortcuts_and_Tips_triggered();
     void on_actionAboutQt_triggered();
     void on_actionAbout_triggered();
     void on_actionEnglish_triggered();
