@@ -313,14 +313,16 @@ void Scene::detachConnection(QNEInputPort *endPort)
 void Scene::addInputPort()
 {
     for (auto element : selectedElements()) {
-        receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement *>{element}, element->inputSize() + 1, this));
+        if (element->inputSize() != element->maxInputSize())
+            receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement *>{element}, element->inputSize() + 1, this));
     }
 }
 
 void Scene::removeInputPort()
 {
     for (auto element : selectedElements()) {
-        receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement *>{element}, element->inputSize() - 1, this));
+        if (element->inputSize() != element->minInputSize())
+            receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement *>{element}, element->inputSize() - 1, this));
     }
 }
 
