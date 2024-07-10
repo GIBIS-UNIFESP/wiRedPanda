@@ -153,6 +153,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(changeNextElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::nextElm);
 
     qCDebug(zero) << tr("Setting connections");
+    connect(m_ui->actionShortcutsAndTips, &QAction::triggered,        this,                &MainWindow::on_actionShortcuts_and_Tips_triggered);
     connect(m_ui->actionAbout,            &QAction::triggered,        this,                &MainWindow::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,          &QAction::triggered,        this,                &MainWindow::on_actionAboutQt_triggered);
     connect(m_ui->actionAboutThisVersion, &QAction::triggered,        this,                &MainWindow::aboutThisVersion);
@@ -479,6 +480,25 @@ void MainWindow::on_actionAbout_triggered()
            "<p> Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.</p>"
            "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
             .arg(QApplication::applicationVersion()));
+}
+
+void MainWindow::on_actionShortcuts_and_Tips_triggered()
+{
+    QMessageBox::information(this,
+        tr("Shortcuts and Tips"),
+        tr("<h1>Element Shortcuts</h1>"
+           "<ul>"
+           "<li> [ : Remove one input port </li>"
+           "<li> ] : Add one input port </li>"
+           "<li> { : Remove one output port </li>"
+           "<li> } : Add one output port </li>"
+           "<li> &lt; : Morph to previous element </li>"
+           "<li> &gt; : Morph to next element </li>"
+           "</ul>"
+
+           "<h1>General Tips</h1>"
+           "<p>Double click in a wire to create a node</p>"
+        ));
 }
 
 void MainWindow::on_actionAboutQt_triggered()
