@@ -120,7 +120,7 @@ QTabWidget::pane {
 </string>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="io">
              <attribute name="icon">
@@ -148,7 +148,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>558</height>
+                   <height>582</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -197,7 +197,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>558</height>
+                   <height>582</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -246,7 +246,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>558</height>
+                   <height>582</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -295,7 +295,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>520</height>
+                   <height>549</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -372,7 +372,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>558</height>
+                   <height>582</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -427,7 +427,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>558</height>
+                   <height>582</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -472,7 +472,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>258</width>
-                   <height>556</height>
+                   <height>580</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -618,7 +618,7 @@ QTabWidget::pane {
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>27</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -684,6 +684,7 @@ QTabWidget::pane {
     <addaction name="actionAbout"/>
     <addaction name="actionAboutQt"/>
     <addaction name="actionAboutThisVersion"/>
+    <addaction name="actionShortcutsAndTips"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -1216,6 +1217,14 @@ QTabWidget::pane {
     <string>Hotkeys and tips</string>
    </property>
   </action>
+  <action name="actionShortcutsAndTips">
+   <property name="icon">
+    <iconset theme="help-about"/>
+   </property>
+   <property name="text">
+    <string>Shortcuts and Tips</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1240,13 +1249,13 @@ QTabWidget::pane {
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/memory/light/memory_light.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
   <include location="resources/misc/misc.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/memory/light/memory_light.qrc"/>
   <include location="resources/output/output.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
  </resources>
  <connections/>
 </ui>
