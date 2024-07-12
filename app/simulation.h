@@ -25,10 +25,12 @@ public:
 
     bool initialize();
     bool isRunning();
+    bool isTemporalSimulation();
     void restart();
+    void setTemporalSimulation(bool isOn);
     void start();
     void stop();
-    void update();
+    void update();    
 
 private:
     Q_DISABLE_COPY(Simulation)
@@ -44,4 +46,6 @@ private:
     Scene *m_scene;
     bool m_initialized = false;
     std::unique_ptr<ElementMapping> m_elmMapping;
+
+    bool m_temporalSimulation = false;
 };
