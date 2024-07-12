@@ -6,7 +6,7 @@
 #include <functional>
 
 LogicOr::LogicOr(const int inputSize)
-    : LogicElement(inputSize, 1)
+    : LogicElement(inputSize, 1, inputSize)
 {
 }
 
@@ -16,6 +16,15 @@ void LogicOr::updateLogic()
         return;
     }
 
-    const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), false, std::bit_or<>());
-    setOutputValue(result);
+    if (!isTempSimulationOn()) {
+        const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), false, std::bit_or<>());
+        setOutputValue(result);
+    }
+    else {
+        updateInputBuffer();
+        const auto result = std::accumulate(inputBuffer.last().cbegin(), inputBuffer.last().cend(), false, std::bit_or<>());
+        setOutputValue(result);
+    }
+
 }
+

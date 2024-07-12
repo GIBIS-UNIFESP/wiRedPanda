@@ -18,3 +18,4 @@ void LogicOutput::updateLogic()
         setOutputValue(index, m_inputValues.at(index));
     }
 }
+

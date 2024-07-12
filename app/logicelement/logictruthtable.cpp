@@ -26,3 +26,4 @@ void LogicTruthTable::updateLogic()
         setOutputValue(i, result);
     }
 }
+
