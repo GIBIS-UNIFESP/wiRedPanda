@@ -110,6 +110,7 @@ private:
     void on_actionSaveAs_triggered();
     void on_actionSave_triggered();
     void on_actionSelectAll_triggered();
+    void on_actionStartTemporalSimulation_toggled(const bool checked);
     void on_actionWaveform_triggered();
     void on_actionWires_triggered(const bool checked);
     void on_actionZoomIn_triggered() const;
