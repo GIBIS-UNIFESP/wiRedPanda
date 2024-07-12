@@ -11,6 +11,7 @@
 #include "qneconnection.h"
 #include "scene.h"
 
+// #include <unistd.h>
 #include <QGraphicsView>
 
 using namespace std::chrono_literals;
@@ -41,6 +42,7 @@ void Simulation::update()
 
     for (auto logic : m_elmMapping->logicElms()) {
         logic->updateLogic();
+        logic->setTemporalSimulationIsOn(m_temporalSimulation);
     }
 
     for (auto *connection : qAsConst(m_connections)) {
@@ -172,4 +174,15 @@ bool Simulation::initialize()
 
     qCDebug(zero) << tr("Finished simulation layer.");
     return true;
+}
+
+void Simulation::setTemporalSimulation(bool isOn)
+{
+    m_temporalSimulation = isOn;
+}
+
+bool Simulation::isTemporalSimulation()
+{
+    qDebug() << "Simulation: está retornando " << m_temporalSimulation;
+    return m_temporalSimulation;
 }
