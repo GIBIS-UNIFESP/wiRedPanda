@@ -13,6 +13,7 @@
 #include "globalproperties.h"
 #include "graphicsview.h"
 #include "ic.h"
+#include "logicelement.h"
 #include "recentfiles.h"
 #include "settings.h"
 #include "simulation.h"
@@ -170,6 +171,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->actionReloadFile,       &QAction::triggered,        this,                &MainWindow::on_actionReloadFile_triggered);
     connect(m_ui->actionRename,           &QAction::triggered,        m_ui->elementEditor, &ElementEditor::renameAction);
     connect(m_ui->actionResetZoom,        &QAction::triggered,        this,                &MainWindow::on_actionResetZoom_triggered);
+    connect(m_ui->actionTemporalSimulation, &QAction::triggered,      this,                &MainWindow::on_actionStartTemporalSimulation_toggled);
     connect(m_ui->actionRestart,          &QAction::triggered,        this,                &MainWindow::on_actionRestart_triggered);
     connect(m_ui->actionRotateLeft,       &QAction::triggered,        this,                &MainWindow::on_actionRotateLeft_triggered);
     connect(m_ui->actionRotateRight,      &QAction::triggered,        this,                &MainWindow::on_actionRotateRight_triggered);
@@ -1186,6 +1188,8 @@ void MainWindow::on_actionPlay_toggled(const bool checked)
     checked ? simulation->start() : simulation->stop();
 }
 
+
+
 void MainWindow::on_actionRestart_triggered()
 {
     if (!m_currentTab) {
@@ -1193,6 +1197,17 @@ void MainWindow::on_actionRestart_triggered()
     }
 
     m_currentTab->simulation()->restart();
+}
+
+void MainWindow::on_actionStartTemporalSimulation_toggled(const bool checked)
+{
+    if (!m_currentTab) {
+        return;
+    }
+
+    auto *simulation = m_currentTab->simulation();
+
+    checked ? simulation->setTemporalSimulation(true) : simulation->setTemporalSimulation(false);
 }
 
 void MainWindow::populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout)
