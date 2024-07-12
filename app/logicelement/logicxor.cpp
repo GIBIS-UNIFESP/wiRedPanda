@@ -7,7 +7,7 @@
 #include <functional>
 
 LogicXor::LogicXor(const int inputSize)
-    : LogicElement(inputSize, 1, pow(2, inputSize - 1) + 3)
+    : LogicElement(inputSize, 1, std::pow(2, inputSize - 1) + 3)
 {
 }
 
