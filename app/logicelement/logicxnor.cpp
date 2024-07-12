@@ -3,10 +3,11 @@
 
 #include "logicxnor.h"
 
+#include <cmath>
 #include <functional>
 
 LogicXnor::LogicXnor(const int inputSize)
-    : LogicElement(inputSize, 1)
+    : LogicElement(inputSize, 1, pow(2, inputSize - 1) + 4)
 {
 }
 
@@ -16,6 +17,13 @@ void LogicXnor::updateLogic()
         return;
     }
 
-    const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), false, std::bit_xor<>());
-    setOutputValue(!result);
+    if (!isTempSimulationOn()) {
+        const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), false, std::bit_xor<>());
+        setOutputValue(!result);
+    }
+    else {
+        updateInputBuffer();
+        const auto result = std::accumulate(inputBuffer.last().cbegin(), inputBuffer.last().cend(), false, std::bit_xor<>());
+        setOutputValue(!result);
+    }
 }
