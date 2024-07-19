@@ -134,6 +134,7 @@ void LogicElement::updateInputBuffer() {
 void LogicElement::setTemporalSimulationIsOn(bool isOn)
 {
     m_tempSimulationIsOn = isOn;
+    updateLogic();
 }
 
 bool LogicElement::isTempSimulationOn()
