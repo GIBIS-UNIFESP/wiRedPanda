@@ -183,6 +183,5 @@ void Simulation::setTemporalSimulation(bool isOn)
 
 bool Simulation::isTemporalSimulation()
 {
-    qDebug() << "Simulation: está retornando " << m_temporalSimulation;
     return m_temporalSimulation;
 }
