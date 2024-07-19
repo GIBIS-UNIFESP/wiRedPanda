@@ -17,9 +17,9 @@ void LogicAnd::updateLogic()
     }
 
     if (isTempSimulationOn()) {
-        updateInputBuffer();
         const auto result = std::accumulate(m_inputBuffer.last().cbegin(), m_inputBuffer.last().cend(), true, std::bit_and<>());
         setOutputValue(result);
+        updateInputBuffer();
     } else {
         const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), true, std::bit_and<>());
         setOutputValue(result);

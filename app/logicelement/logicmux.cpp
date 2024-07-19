@@ -15,12 +15,12 @@ void LogicMux::updateLogic()
     }
 
     if (isTempSimulationOn()) {
-        updateInputBuffer();
         const bool data1 = m_inputBuffer.last().at(0);
         const bool data2 = m_inputBuffer.last().at(1);
         const bool choice = m_inputBuffer.last().at(2);
 
         setOutputValue(choice ? data2 : data1);
+        updateInputBuffer();
     } else {
         const bool data1 = m_inputValues.at(0);
         const bool data2 = m_inputValues.at(1);

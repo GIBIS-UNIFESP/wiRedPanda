@@ -15,8 +15,8 @@ void LogicNot::updateLogic()
     }
 
     if (isTempSimulationOn()) {
-        updateInputBuffer();
         setOutputValue(!m_inputBuffer.last()[0]);
+        updateInputBuffer();
     } else {
         setOutputValue(!m_inputValues.at(0));
     }

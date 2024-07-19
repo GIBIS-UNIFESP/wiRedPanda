@@ -15,8 +15,6 @@ void LogicDemux::updateLogic()
     }
 
     if (isTempSimulationOn()) {
-        updateInputBuffer();
-
         const bool data = m_inputBuffer.last().at(0);
         const bool choice = m_inputBuffer.last().at(1);
 
@@ -31,6 +29,7 @@ void LogicDemux::updateLogic()
 
         setOutputValue(0, out0);
         setOutputValue(1, out1);
+        updateInputBuffer();
     } else {
         const bool data = m_inputValues.at(0);
         const bool choice = m_inputValues.at(1);
