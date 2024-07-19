@@ -21,8 +21,8 @@ void LogicNand::updateLogic()
         setOutputValue(!result);
     }
     else {
-        updateInputBuffer();
         const auto result = std::accumulate(inputBuffer.last().cbegin(), inputBuffer.last().cend(), true, std::bit_and<>());
         setOutputValue(!result);
+        updateInputBuffer();
     }
 }
