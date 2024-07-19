@@ -4,7 +4,7 @@
 #include "logicnot.h"
 
 LogicNot::LogicNot()
-    : LogicElement(1, 1, 100000)
+    : LogicElement(1, 1, 1)
 {
 }
 
