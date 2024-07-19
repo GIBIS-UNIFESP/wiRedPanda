@@ -21,9 +21,9 @@ void LogicOr::updateLogic()
         setOutputValue(result);
     }
     else {
-        updateInputBuffer();
         const auto result = std::accumulate(inputBuffer.last().cbegin(), inputBuffer.last().cend(), false, std::bit_or<>());
         setOutputValue(result);
+        updateInputBuffer();
     }
 
 }
