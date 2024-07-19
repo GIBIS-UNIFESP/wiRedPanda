@@ -31,8 +31,6 @@ void LogicDemux::updateLogic()
         setOutputValue(1, out1);
     }
     else {
-        updateInputBuffer();
-
         const bool data = inputBuffer.last().at(0);
         const bool choice = inputBuffer.last().at(1);
 
@@ -47,6 +45,7 @@ void LogicDemux::updateLogic()
 
         setOutputValue(0, out0);
         setOutputValue(1, out1);
+        updateInputBuffer();
     }
 }
 

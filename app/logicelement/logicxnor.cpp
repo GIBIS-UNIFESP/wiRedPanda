@@ -22,8 +22,8 @@ void LogicXnor::updateLogic()
         setOutputValue(!result);
     }
     else {
-        updateInputBuffer();
         const auto result = std::accumulate(inputBuffer.last().cbegin(), inputBuffer.last().cend(), false, std::bit_xor<>());
         setOutputValue(!result);
+        updateInputBuffer();
     }
 }

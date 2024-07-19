@@ -22,11 +22,11 @@ void LogicMux::updateLogic()
         setOutputValue(choice ? data2 : data1);
     }
     else {
-        updateInputBuffer();
         const bool data1 = inputBuffer.last().at(0);
         const bool data2 = inputBuffer.last().at(1);
         const bool choice = inputBuffer.last().at(2);
 
         setOutputValue(choice ? data2 : data1);
+        updateInputBuffer();
     }
 }
