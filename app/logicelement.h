@@ -33,10 +33,8 @@ public:
     void setOutputValue(const bool value);
     void setOutputValue(const int index, const bool value);
     void setTemporalSimulationIsOn(bool isOn);
-    void validate();
-
     void updateInputBuffer();
-    //MEXI AQUI, MEXI NO NOT, NO AND E NO SIMULATION
+    void validate();
 
 protected:
     bool updateInputs();
