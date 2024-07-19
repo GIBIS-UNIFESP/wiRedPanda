@@ -4,7 +4,7 @@
 #include "logicsrflipflop.h"
 
 LogicSRFlipFlop::LogicSRFlipFlop()
-    : LogicElement(5, 2)
+    : LogicElement(5, 2, 13)
 {
     setOutputValue(0, false);
     setOutputValue(1, true);
@@ -16,31 +16,63 @@ void LogicSRFlipFlop::updateLogic()
         return;
     }
 
-    bool q0 = outputValue(0);
-    bool q1 = outputValue(1);
-    const bool s = m_inputValues.at(0);
-    const bool clk = m_inputValues.at(1);
-    const bool r = m_inputValues.at(2);
-    const bool prst = m_inputValues.at(3);
-    const bool clr = m_inputValues.at(4);
+    if (!isTempSimulationOn()) {
+        bool q0 = outputValue(0);
+        bool q1 = outputValue(1);
+        const bool s = m_inputValues.at(0);
+        const bool clk = m_inputValues.at(1);
+        const bool r = m_inputValues.at(2);
+        const bool prst = m_inputValues.at(3);
+        const bool clr = m_inputValues.at(4);
 
-    if (clk && !m_lastClk) {
-        if (s && r) {
-            q0 = true;
-            q1 = true;
-        } else if (s != r) {
-            q0 = s;
-            q1 = r;
+        if (clk && !m_lastClk) {
+            if (s && r) {
+                q0 = true;
+                q1 = true;
+            } else if (s != r) {
+                q0 = s;
+                q1 = r;
+            }
         }
+
+        if (!prst || !clr) {
+            q0 = !prst;
+            q1 = !clr;
+        }
+
+        m_lastClk = clk;
+
+        setOutputValue(0, q0);
+        setOutputValue(1, q1);
     }
+    else {
+        bool q0 = outputValue(0);
+        bool q1 = outputValue(1);
+        const bool s = inputBuffer.last()[0];
+        const bool clk = inputBuffer.last()[1];
+        const bool r = inputBuffer.last()[2];
+        const bool prst = inputBuffer.last()[3];
+        const bool clr = inputBuffer.last()[4];
 
-    if (!prst || !clr) {
-        q0 = !prst;
-        q1 = !clr;
+        if (clk && !m_lastClk) {
+            if (s && r) {
+                q0 = true;
+                q1 = true;
+            } else if (s != r) {
+                q0 = s;
+                q1 = r;
+            }
+        }
+
+        if (!prst || !clr) {
+            q0 = !prst;
+            q1 = !clr;
+        }
+
+        m_lastClk = clk;
+
+        setOutputValue(0, q0);
+        setOutputValue(1, q1);
+        updateInputBuffer();
     }
-
-    m_lastClk = clk;
-
-    setOutputValue(0, q0);
-    setOutputValue(1, q1);
 }

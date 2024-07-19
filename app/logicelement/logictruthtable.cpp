@@ -3,10 +3,8 @@
 
 #include "logictruthtable.h"
 
-#include <functional>
-
 LogicTruthTable::LogicTruthTable(const int inputSize, const int outputSize, const QBitArray& key)
-    : LogicElement(inputSize, outputSize)
+    : LogicElement(inputSize, outputSize, inputSize)
 {
     proposition = key;
     nOutputs = outputSize;
@@ -18,12 +16,22 @@ void LogicTruthTable::updateLogic()
         return;
     }
 
-    for(int i = 0; i < this->nOutputs; i++)
-    {
-        const auto pos = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), QString(""), [](QString acc, bool b){acc+= b == 1 ? '1' : '0'; return acc;}).toUInt(nullptr, 2);
-        const bool result = proposition.at(256 * i + pos);
-        setOutputValue(i, result);
+    if (!isTempSimulationOn()) {
+        for(int i = 0; i < this->nOutputs; i++)
+        {
+            const auto pos = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), QString(""), [](QString acc, bool b){acc+= b == 1 ? '1' : '0'; return acc;}).toUInt(nullptr, 2);
+            const bool result = proposition.at(256 * i + pos);
+            setOutputValue(i, result);
+        }
     }
-
+    else {
+        for(int i = 0; i < this->nOutputs; i++)
+        {
+            const auto pos = std::accumulate(inputBuffer.last().cbegin(), inputBuffer.last().cend(), QString(""), [](QString acc, bool b){acc+= b == 1 ? '1' : '0'; return acc;}).toUInt(nullptr, 2);
+            const bool result = proposition.at(256 * i + pos);
+            setOutputValue(i, result);
+        }
+        updateInputBuffer();
+    }
 }
 
