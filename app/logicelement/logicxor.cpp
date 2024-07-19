@@ -18,9 +18,9 @@ void LogicXor::updateLogic()
     }
 
     if (isTempSimulationOn()) {
-        updateInputBuffer();
         const auto result = std::accumulate(m_inputBuffer.last().cbegin(), m_inputBuffer.last().cend(), false, std::bit_xor<>());
         setOutputValue(result);
+        updateInputBuffer();
     } else {
         const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), false, std::bit_xor<>());
         setOutputValue(result);
