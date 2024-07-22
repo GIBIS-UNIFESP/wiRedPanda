@@ -17,6 +17,6 @@ public:
 private:
     Q_DISABLE_COPY(LogicTruthTable)
 
-    QBitArray proposition;
-    int nOutputs;
+    QBitArray m_proposition;
+    int m_nOutputs;
 };

@@ -14,7 +14,24 @@ void LogicDemux::updateLogic()
         return;
     }
 
-    if (!isTempSimulationOn()) {
+    if (isTempSimulationOn()) {
+        const bool data = m_inputBuffer.last().at(0);
+        const bool choice = m_inputBuffer.last().at(1);
+
+        bool out0 = false;
+        bool out1 = false;
+
+        if (!choice) {
+            out0 = data;
+        } else {
+            out1 = data;
+        }
+
+        setOutputValue(0, out0);
+        setOutputValue(1, out1);
+        updateInputBuffer();
+    }
+    else {
         const bool data = m_inputValues.at(0);
         const bool choice = m_inputValues.at(1);
 
@@ -30,22 +47,4 @@ void LogicDemux::updateLogic()
         setOutputValue(0, out0);
         setOutputValue(1, out1);
     }
-    else {
-        const bool data = inputBuffer.last().at(0);
-        const bool choice = inputBuffer.last().at(1);
-
-        bool out0 = false;
-        bool out1 = false;
-
-        if (!choice) {
-            out0 = data;
-        } else {
-            out1 = data;
-        }
-
-        setOutputValue(0, out0);
-        setOutputValue(1, out1);
-        updateInputBuffer();
-    }
 }
-

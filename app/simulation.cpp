@@ -11,7 +11,6 @@
 #include "qneconnection.h"
 #include "scene.h"
 
-#include <unistd.h>
 #include <QGraphicsView>
 
 using namespace std::chrono_literals;

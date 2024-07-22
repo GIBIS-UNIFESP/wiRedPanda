@@ -3,7 +3,6 @@
 
 #pragma once
 
-#include "inputbutton.h"
 #include "qneport.h"
 #include "simulation.h"
 
@@ -15,6 +14,7 @@
 class GraphicsView;
 class GraphicElement;
 class QNEConnection;
+class InputButton;
 
 class Scene : public QGraphicsScene
 {
@@ -106,13 +106,14 @@ private:
     QAction *m_undoAction;
     QElapsedTimer m_timer;
     QGraphicsRectItem m_selectionRect;
-    QGraphicsRectItem m_subRect;            // adicionado 18/04
+    QGraphicsRectItem m_subRect;
     QList<GraphicElement *> m_movedElements;
     QList<QPointF> m_oldPositions;
     QPen m_dots;
     QPointF m_mousePos;
     QPointF m_selectionStartPoint;
     QUndoStack m_undoStack;
+    QVector<InputButton *> m_inputsButtonsInScene;
     Simulation m_simulation;
     bool m_autosaveRequired = false;
     bool m_draggingElement = false;
@@ -122,6 +123,4 @@ private:
     int m_editedConnectionId = 0;
     int m_hoverPortElmId = 0;
     int m_hoverPortNumber = 0;
-
-    QVector<InputButton *> InputsButtonsInScene;
 };
