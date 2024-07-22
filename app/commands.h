@@ -5,11 +5,11 @@
 
 #include "graphicelement.h"
 #include "scene.h"
-#include "elementeditor.h"
 
 #include <QCoreApplication>
 
 class QNEConnection;
+class ElementEditor;
 
 const QList<GraphicElement *> findElements(const QList<int> &ids);
 const QList<QGraphicsItem *> findItems(const QList<int> &ids);
@@ -214,6 +214,7 @@ private:
     Scene *m_scene;
     int m_newOutputSize;
 };
+
 class ToggleTruthTableOutputCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(ToggleTruthTableOutputCommand)
@@ -225,9 +226,8 @@ public:
     void undo() override;
 
 private:
-    int m_pos;
-    int m_id;
-    Scene *m_scene;
     ElementEditor *m_elementeditor;
-
+    Scene *m_scene;
+    int m_id;
+    int m_pos;
 };

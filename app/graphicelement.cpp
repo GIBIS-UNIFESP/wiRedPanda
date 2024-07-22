@@ -262,7 +262,6 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
         setLabel(map.value("label").toString());
     }
 
-
     // -------------------------------------------
 
     const quint64 minInputSize = map.value("minInputSize").toULongLong();
@@ -963,14 +962,17 @@ bool GraphicElement::hasLabel() const
 {
     return m_hasLabel;
 }
+
 bool GraphicElement::hasTruthTable() const
 {
     return m_hasTruthTable;
 }
+
 void GraphicElement::setHasTruthTable(const bool hasTruthTable)
 {
     m_hasTruthTable = hasTruthTable;
 }
+
 bool GraphicElement::canChangeSkin() const
 {
     return m_canChangeSkin;
@@ -1088,6 +1090,7 @@ void GraphicElement::setMaxInputSize(const int maxInputSize)
 {
     m_maxInputSize = maxInputSize;
 }
+
 void GraphicElement::highlight(const bool isSelected)
 {
     QVector<QNEPort *> ports;

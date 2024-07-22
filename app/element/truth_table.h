@@ -5,6 +5,8 @@
 
 #include "graphicelement.h"
 
+#include <QBitArray>
+
 class TruthTable : public GraphicElement
 {
     Q_OBJECT
@@ -12,20 +14,19 @@ class TruthTable : public GraphicElement
 public:
     explicit TruthTable(QGraphicsItem *parent = nullptr);
 
-    void updatePortsProperties() override;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-    void update();
-    void setkey(const QBitArray& key);
-    void save(QDataStream &stream) const override;
     void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void save(QDataStream &stream) const override;
+    void setkey(const QBitArray& key);
+    void update();
+    void updatePortsProperties() override;
 
     QBitArray& key();
 
 private:
     void generatePixmap();
+
     QBitArray m_key;
-
-
 };
 
 Q_DECLARE_METATYPE(TruthTable)

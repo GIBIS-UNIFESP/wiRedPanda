@@ -30,7 +30,7 @@ public:
     void setTemporalSimulation(bool isOn);
     void start();
     void stop();
-    void update();    
+    void update();
 
 private:
     Q_DISABLE_COPY(Simulation)
@@ -45,7 +45,6 @@ private:
     QVector<QNEConnection *> m_connections;
     Scene *m_scene;
     bool m_initialized = false;
-    std::unique_ptr<ElementMapping> m_elmMapping;
-
     bool m_temporalSimulation = false;
+    std::unique_ptr<ElementMapping> m_elmMapping;
 };

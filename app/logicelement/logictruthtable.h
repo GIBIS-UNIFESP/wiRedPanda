@@ -4,7 +4,9 @@
 #pragma once
 
 #include "logicelement.h"
+
 #include <QBitArray>
+
 class LogicTruthTable : public LogicElement
 {
 public:
@@ -14,6 +16,7 @@ public:
 
 private:
     Q_DISABLE_COPY(LogicTruthTable)
-    QBitArray proposition;
-    int nOutputs;
+
+    QBitArray m_proposition;
+    int m_nOutputs;
 };
