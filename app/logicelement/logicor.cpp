@@ -16,15 +16,12 @@ void LogicOr::updateLogic()
         return;
     }
 
-    if (!isTempSimulationOn()) {
+    if (isTempSimulationOn()) {
+        const auto result = std::accumulate(m_inputBuffer.last().cbegin(), m_inputBuffer.last().cend(), false, std::bit_or<>());
+        setOutputValue(result);
+        updateInputBuffer();
+    } else {
         const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), false, std::bit_or<>());
         setOutputValue(result);
     }
-    else {
-        const auto result = std::accumulate(inputBuffer.last().cbegin(), inputBuffer.last().cend(), false, std::bit_or<>());
-        setOutputValue(result);
-        updateInputBuffer();
-    }
-
 }
-

@@ -16,7 +16,21 @@ void LogicDLatch::updateLogic()
         return;
     }
 
-    if (!isTempSimulationOn()) {
+    if (isTempSimulationOn()) {
+        bool q0 = outputValue(0);
+        bool q1 = outputValue(1);
+        const bool D = m_inputBuffer.last()[0];
+        const bool enable = m_inputBuffer.last()[1];
+
+        if (enable) {
+            q0 = D;
+            q1 = !D;
+        }
+
+        setOutputValue(0, q0);
+        setOutputValue(1, q1);
+        updateInputBuffer();
+    } else {
         bool q0 = outputValue(0);
         bool q1 = outputValue(1);
         const bool D = m_inputValues.at(0);
@@ -30,20 +44,4 @@ void LogicDLatch::updateLogic()
         setOutputValue(0, q0);
         setOutputValue(1, q1);
     }
-    else {
-        bool q0 = outputValue(0);
-        bool q1 = outputValue(1);
-        const bool D = inputBuffer.last()[0];
-        const bool enable = inputBuffer.last()[1];
-
-        if (enable) {
-            q0 = D;
-            q1 = !D;
-        }
-
-        setOutputValue(0, q0);
-        setOutputValue(1, q1);
-        updateInputBuffer();
-    }
 }
-

@@ -16,4 +16,3 @@ void LogicNode::updateLogic()
 
     setOutputValue(m_inputValues.at(0));
 }
-

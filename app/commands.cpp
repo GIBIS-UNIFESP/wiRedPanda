@@ -4,6 +4,7 @@
 #include "commands.h"
 
 #include "common.h"
+#include "elementeditor.h"
 #include "elementfactory.h"
 #include "globalproperties.h"
 #include "graphicelement.h"

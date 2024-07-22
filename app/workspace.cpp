@@ -169,9 +169,7 @@ void WorkSpace::load(QDataStream &stream)
 
             QMessageBox::warning(this, tr("Newer version file."), message);
         } else if (version < VERSION("4.0")) {
-            QMessageBox::warning(this, tr("Old version file."),
-                                 tr("Warning! This is an old version WiRedPanda project file (version < 4.0). "
-                                    "To open it correctly, save all the ICs and skins in the main project directory."));
+            QMessageBox::warning(this, tr("Old version file."), tr("Warning! This is an old version WiRedPanda project file (version < 4.0). To open it correctly, save all the ICs and skins in the main project directory."));
         }
     }
 

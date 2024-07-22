@@ -14,10 +14,10 @@ void LogicNot::updateLogic()
         return;
     }
 
-    if (!isTempSimulationOn())
-        setOutputValue(!m_inputValues.at(0));
-    else {
-        setOutputValue(!inputBuffer.last()[0]);
+    if (isTempSimulationOn()) {
+        setOutputValue(!m_inputBuffer.last()[0]);
         updateInputBuffer();
+    } else {
+        setOutputValue(!m_inputValues.at(0));
     }
 }
