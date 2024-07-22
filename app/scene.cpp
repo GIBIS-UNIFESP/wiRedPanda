@@ -12,6 +12,7 @@
 #include "graphicelementinput.h"
 #include "graphicsview.h"
 #include "ic.h"
+#include "inputbutton.h"
 #include "qneconnection.h"
 #include "serialization.h"
 #include "thememanager.h"
@@ -1189,9 +1190,9 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         m_movedElements.clear();
     }
 
-    if (!InputsButtonsInScene.empty()) {
-        for (int index = 0; index < InputsButtonsInScene.length(); index++) {
-            InputsButtonsInScene[index]->setOff();
+    if (!m_inputsButtonsInScene.empty()) {
+        for (int index = 0; index < m_inputsButtonsInScene.length(); index++) {
+            m_inputsButtonsInScene[index]->setOff();
             event->accept();
         }
     }
@@ -1227,7 +1228,7 @@ void Scene::addItem(QGraphicsItem *item)
     }
 
     if (auto *element = dynamic_cast<InputButton *>(item); element) {
-        InputsButtonsInScene.append(element);
+        m_inputsButtonsInScene.append(element);
     }
 
     QGraphicsScene::addItem(item);

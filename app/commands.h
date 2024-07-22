@@ -10,6 +10,7 @@
 #include <QCoreApplication>
 
 class QNEConnection;
+class ElementEditor;
 
 const QList<GraphicElement *> findElements(const QList<int> &ids);
 const QList<QGraphicsItem *> findItems(const QList<int> &ids);

@@ -16,4 +16,3 @@ LogicInput::LogicInput(const bool defaultValue, const int nOutputs)
 void LogicInput::updateLogic()
 {
 }
-
