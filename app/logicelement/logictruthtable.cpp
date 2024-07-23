@@ -16,7 +16,7 @@ void LogicTruthTable::updateLogic()
         return;
     }
 
-    for(int i = 0; i < this->nOutputs; i++) {
+    for (int i = 0; i < this->nOutputs; i++) {
         const auto pos = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), QString(""),
                                          [](QString acc, bool b) {
                                              acc += (b == 1) ? '1' : '0';

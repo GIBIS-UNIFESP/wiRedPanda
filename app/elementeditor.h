@@ -32,6 +32,7 @@ public:
     void updateElementSkin();
     void updatePriorityAction();
     void updateTheme();
+    void truthTable();
 
 signals:
     void sendCommand(QUndoCommand *cmd);
