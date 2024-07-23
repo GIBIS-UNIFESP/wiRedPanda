@@ -859,7 +859,7 @@ void ChangeOutputSizeCommand::undo()
     m_scene->setCircuitUpdateRequired();
 }
 
-ToggleTruthTableOutputCommand::ToggleTruthTableOutputCommand(GraphicElement* &element,int pos, Scene* scene, ElementEditor *elementeditor, QUndoCommand *parent)
+ToggleTruthTableOutputCommand::ToggleTruthTableOutputCommand(GraphicElement *element, int pos, Scene *scene, ElementEditor *elementeditor, QUndoCommand *parent)
     : QUndoCommand(parent)
     , m_pos(pos)
 {
@@ -872,25 +872,29 @@ ToggleTruthTableOutputCommand::ToggleTruthTableOutputCommand(GraphicElement* &el
 void ToggleTruthTableOutputCommand::redo(){
     qCDebug(zero) << text();
 
-    TruthTable* truthtable = dynamic_cast<TruthTable *>(findElm(m_id));
+    auto *truthtable = dynamic_cast<TruthTable *>(findElm(m_id));
 
-    if(!truthtable) throw Pandaception("Could not find truthtable element!");
+    if (!truthtable) {
+        throw Pandaception("Could not find truthtable element!");
+    }
+
     truthtable->key().toggleBit(m_pos);
 
     m_scene->setCircuitUpdateRequired();
-    m_elementeditor->TruthTable();
+    m_elementeditor->truthTable();
 }
 
 void ToggleTruthTableOutputCommand::undo(){
     qCDebug(zero) << text();
 
-    TruthTable* truthtable = dynamic_cast<TruthTable *>(findElm(m_id));
+    auto *truthtable = dynamic_cast<TruthTable *>(findElm(m_id));
 
-    if(!truthtable) throw Pandaception("Could not find truthtable element!");
+    if (!truthtable) {
+        throw Pandaception("Could not find truthtable element!");
+    }
 
     truthtable->key().toggleBit(m_pos);
 
     m_scene->setCircuitUpdateRequired();
-    m_elementeditor->TruthTable();
-
+    m_elementeditor->truthTable();
 }

@@ -11,6 +11,7 @@
 #include "scene.h"
 #include "thememanager.h"
 #include "truth_table.h"
+
 #include <QDebug>
 #include <QFileDialog>
 #include <QKeyEvent>
@@ -52,11 +53,9 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->lineEditTrigger,        &QLineEdit::textChanged,                          this, &ElementEditor::triggerChanged);
     connect(m_ui->pushButtonChangeSkin,   &QPushButton::clicked,                            this, &ElementEditor::updateElementSkin);
     connect(m_ui->pushButtonDefaultSkin,  &QPushButton::clicked,                            this, &ElementEditor::defaultSkin);
+    connect(m_ui->pushButtonTruthTable,   &QPushButton::clicked,                            this, &ElementEditor::truthTable);
     connect(m_ui->spinBoxPriority,        qOverload<int>(&QSpinBox::valueChanged),          this, &ElementEditor::priorityChanged);
-    //Truth Table
-    connect(m_ui->pushButtonTruthTable,   &QPushButton::clicked,                            this, &ElementEditor::TruthTable);
-    connect(m_ui->truthTable,             &QTableWidget::cellDoubleClicked,                 this, &ElementEditor::SetTruthTableProposition);
-
+    connect(m_ui->truthTable,             &QTableWidget::cellDoubleClicked,                 this, &ElementEditor::setTruthTableProposition);
 }
 
 ElementEditor::~ElementEditor()
@@ -517,7 +516,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         }
     }
 
-    /* Input size  */
+    /* Input size */
     m_ui->comboBoxInputSize->clear();
     m_ui->labelInputs->setVisible(m_canChangeInputSize);
     m_ui->comboBoxInputSize->setVisible(m_canChangeInputSize);
@@ -543,15 +542,15 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 
     /* Output size */
     m_ui->comboBoxOutputSize->clear();
-
     m_ui->labelOutputs->setVisible(m_canChangeOutputSize);
     m_ui->comboBoxOutputSize->setVisible(m_canChangeOutputSize);
     m_ui->comboBoxOutputSize->setEnabled(m_canChangeOutputSize);
 
     if (m_canChangeOutputSize) {
-
-        if(!m_hasRotarySwitch)
+        if (!m_hasRotarySwitch) {
             m_ui->comboBoxOutputSize->addItem("1", 1);
+        }
+
         m_ui->comboBoxOutputSize->addItem("2", 2);
         m_ui->comboBoxOutputSize->addItem("3", 3);
         m_ui->comboBoxOutputSize->addItem("4", 4);
@@ -560,7 +559,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         m_ui->comboBoxOutputSize->addItem("7", 7);
         m_ui->comboBoxOutputSize->addItem("8", 8);
 
-        if(m_hasRotarySwitch) {
+        if (m_hasRotarySwitch) {
             m_ui->comboBoxOutputSize->addItem("10", 10);
             m_ui->comboBoxOutputSize->addItem("12", 12);
             m_ui->comboBoxOutputSize->addItem("16", 16);
@@ -581,7 +580,6 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
                 m_ui->comboBoxOutputSize->setCurrentText(m_manyOS);
             }
         }
-
     }
 
     /* Output value */
@@ -637,8 +635,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     }
 
     /* TruthTable */
-
-    m_ui->pushButtonTruthTable->setVisible(elements.size() == m_hasTruthTable);
+    m_ui->pushButtonTruthTable->setVisible(static_cast<uint>(elements.size()) == m_hasTruthTable);
     m_ui->truthTable->setVisible(false);
     m_ui->pushButtonTruthTable->setEnabled(m_hasTruthTable == 1);
 
@@ -846,29 +843,28 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
     return QWidget::eventFilter(obj, event);
 }
 
-void ElementEditor::TruthTable()
+void ElementEditor::truthTable()
 {
-    if (!m_hasTruthTable) return;
+    if (!m_hasTruthTable) {
+        return;
+    }
 
-     class TruthTable* truthtable = dynamic_cast<class TruthTable *>(m_elements[0]);
+    auto *truthtable = dynamic_cast<TruthTable *>(m_elements[0]);
 
     //Assuming only one element selected for now...
 
-    int nInputs  = truthtable->inputSize();
-    int nOutputs = truthtable->outputSize();
+    const int nInputs  = truthtable->inputSize();
+    const int nOutputs = truthtable->outputSize();
 
     QStringList inputLabels;
     m_ui->truthTable->setColumnCount(nInputs + nOutputs);
-    m_ui->truthTable->setRowCount(pow(2,nInputs));
+    m_ui->truthTable->setRowCount(pow(2, nInputs));
 
-    for(int i = 0; i < nInputs; i ++)
-    {
-        auto nextLabel = new QString(QChar::fromLatin1('A' + i));
-        inputLabels.append(*nextLabel);
+    for (int i = 0; i < nInputs; i++) {
+        inputLabels.append(QChar::fromLatin1('A' + i));
     }
 
-    for(int i = 0; i < truthtable->outputSize(); i ++)
-    {
+    for (int i = 0; i < truthtable->outputSize(); i++) {
         inputLabels.append("S"+QString::number(i));
         m_ui->truthTable->setColumnWidth(nInputs + i,14);
     }
@@ -877,87 +873,66 @@ void ElementEditor::TruthTable()
 
     // int columnCount = m_ui->truthTable->columnCount();
 
-
-    // if(m_ui->truthTable->columnCount() != 0 && m_ui->truthTable->columnCount() -1  != m_elements[0]->inputSize()) hasInputPortsChange = true;
-
-
-    for(int i =0; i < pow(2,nInputs); i++)
-    {
-        for(int j =0; j < nInputs; j++)
-        {
+    for (int i = 0; i < pow(2, nInputs); i++) {
+        for (int j = 0; j < nInputs; j++) {
             m_ui->truthTable->setColumnWidth(j,14);
             auto newItemValue = QString::number(i, 2);
 
-            if(newItemValue.size() < nInputs){
+            if (newItemValue.size() < nInputs) {
                 newItemValue = newItemValue.rightJustified(nInputs, '0');
             }
 
-            if(m_ui->truthTable->item(i, j) == nullptr)
-            {
+            if (m_ui->truthTable->item(i, j) == nullptr) {
                 auto *newItem = new QTableWidgetItem(newItemValue.at(j), QTableWidgetItem::Type);
                 newItem->setTextAlignment(Qt::AlignCenter);
                 m_ui->truthTable->setItem(i, j, newItem);
                 m_ui->truthTable->item(i,j)->setFlags(Qt::ItemIsEnabled);
             }
 
-                m_ui->truthTable->item(i,j)->setText(newItemValue.at(j));
+            m_ui->truthTable->item(i,j)->setText(newItemValue.at(j));
         }
 
-        auto arr = truthtable->key();
+        auto bitArray = truthtable->key();
 
-        for(int z = 0; z < nOutputs; z++)
-        {
-            int output = arr.at(256 * z + i);
+        for (int z = 0; z < nOutputs; z++) {
+            const int output = bitArray.at(256 * z + i);
 
-            if(m_ui->truthTable->item(i, nInputs + z) == nullptr)
-            {
+            if (m_ui->truthTable->item(i, nInputs + z) == nullptr) {
                 auto *newOutItem = new QTableWidgetItem(QString(QChar::fromLatin1('0' + output)));
                 newOutItem->setTextAlignment(Qt::AlignCenter);
                 m_ui->truthTable->setItem(i, nInputs + z, newOutItem);
                 m_ui->truthTable->item(i,nInputs + z)->setFlags(Qt::ItemIsEnabled);
             }
-                m_ui->truthTable->item(i, nInputs + z)->setText(QString::number(output));
 
+            m_ui->truthTable->item(i, nInputs + z)->setText(QString::number(output));
         }
-
     }
 
     m_ui->truthTable->setVisible(true);
 }
 
-void ElementEditor::SetTruthTableProposition(int row, int column)
+void ElementEditor::setTruthTableProposition(const int row, const int column)
 {
-    if(m_elements.size() > 1) return;
+    if (m_elements.size() > 1) {
+        return;
+    }
 
-    if(column < m_elements[0]->inputSize()) return;
-
-    auto truthtable = m_elements[0];
+    if (column < m_elements[0]->inputSize()) {
+        return;
+    }
 
     auto cellItem = m_ui->truthTable->item(row,column);
+    cellItem->setText((cellItem->text() == "0") ? "1" : "0");
 
-    QString newItemValue;
-
-    if(cellItem->text() == "0")
-    {
-       newItemValue = "1";
-    }
-    else
-    {
-       newItemValue = "0";
-    }
-    cellItem->setText(newItemValue);
-
-    int nInputs = truthtable->inputSize();
-
-    int positionToChange = 256 * (column - nInputs) + row;
+    auto truthtable = m_elements[0];
+    const int nInputs = truthtable->inputSize();
+    const int positionToChange = 256 * (column - nInputs) + row;
 
     emit sendCommand(new ToggleTruthTableOutputCommand(truthtable, positionToChange, m_scene, this));
 
-    ElementEditor::TruthTable();
+    ElementEditor::truthTable();
 
     m_scene->setCircuitUpdateRequired();
-
-    return;
 }
 
 void ElementEditor::defaultSkin()
