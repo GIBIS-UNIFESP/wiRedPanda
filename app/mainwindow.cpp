@@ -81,12 +81,6 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     auto *searchShortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
     connect(searchShortcut, &QShortcut::activated, m_ui->lineEditSearch, qOverload<>(&QWidget::setFocus));
     populateLeftMenu();
-    m_ui->tabElements->setTabIcon(0, QIcon(":/input/buttonOff.svg"));
-    m_ui->tabElements->setTabIcon(1, QIcon(":/basic/xor.svg"));
-    m_ui->tabElements->setTabIcon(2, QIcon(":/basic/truthtable-rotated.svg"));
-    m_ui->tabElements->setTabIcon(3, QIcon(DFlipFlop::pixmapPath()));
-    m_ui->tabElements->setTabIcon(4, QIcon(":/basic/ic-panda.svg"));
-    m_ui->tabElements->setTabIcon(5, QIcon(":/misc/text.png"));
     m_ui->tabElements->setTabEnabled(6, false);
 
     qCDebug(zero) << tr("Loading recent file list.");
@@ -137,23 +131,21 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     }
 
     // Element shortcuts
-
-    auto *prevMainPropShortcut = new QShortcut(QKeySequence("["), this);
-    auto *nextMainPropShortcut = new QShortcut(QKeySequence("]"), this);
-    auto *prevSecndPropShortcut = new QShortcut(QKeySequence("{"), this);
-    auto *nextSecndPropShortcut = new QShortcut(QKeySequence("}"), this);
-    auto *changePrevElmShortcut = new QShortcut(QKeySequence("<"), this);
+    auto *addInPortShortcut = new QShortcut(QKeySequence("]"), this);
+    auto *addOutPortShortcut = new QShortcut(QKeySequence("}"), this);
     auto *changeNextElmShortcut = new QShortcut(QKeySequence(">"), this);
+    auto *changePrevElmShortcut = new QShortcut(QKeySequence("<"), this);
+    auto *removeInPortShortcut = new QShortcut(QKeySequence("["), this);
+    auto *removeOutPortShortcut = new QShortcut(QKeySequence("{"), this);
 
-    connect(prevMainPropShortcut,         &QShortcut::activated,      m_currentTab->scene(), &Scene::prevMainPropShortcut);
-    connect(nextMainPropShortcut,         &QShortcut::activated,      m_currentTab->scene(), &Scene::nextMainPropShortcut);
-    connect(prevSecndPropShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::prevSecndPropShortcut);
-    connect(nextSecndPropShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::nextSecndPropShortcut);
-    connect(changePrevElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::prevElm);
+    connect(addInPortShortcut,            &QShortcut::activated,      m_currentTab->scene(), &Scene::addInputPort);
+    connect(addOutPortShortcut,           &QShortcut::activated,      m_currentTab->scene(), &Scene::addOutputPort);
     connect(changeNextElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::nextElm);
+    connect(changePrevElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::prevElm);
+    connect(removeInPortShortcut,         &QShortcut::activated,      m_currentTab->scene(), &Scene::removeInputPort);
+    connect(removeOutPortShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::removeOutputPort);
 
     qCDebug(zero) << tr("Setting connections");
-    connect(m_ui->actionShortcutsAndTips, &QAction::triggered,        this,                &MainWindow::on_actionShortcuts_and_Tips_triggered);
     connect(m_ui->actionAbout,            &QAction::triggered,        this,                &MainWindow::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,          &QAction::triggered,        this,                &MainWindow::on_actionAboutQt_triggered);
     connect(m_ui->actionAboutThisVersion, &QAction::triggered,        this,                &MainWindow::aboutThisVersion);
@@ -185,6 +177,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->actionSave,             &QAction::triggered,        this,                &MainWindow::on_actionSave_triggered);
     connect(m_ui->actionSaveAs,           &QAction::triggered,        this,                &MainWindow::on_actionSaveAs_triggered);
     connect(m_ui->actionSelectAll,        &QAction::triggered,        this,                &MainWindow::on_actionSelectAll_triggered);
+    connect(m_ui->actionShortcutsAndTips, &QAction::triggered,        this,                &MainWindow::on_actionShortcuts_and_Tips_triggered);
     connect(m_ui->actionWaveform,         &QAction::triggered,        this,                &MainWindow::on_actionWaveform_triggered);
     connect(m_ui->actionWires,            &QAction::triggered,        this,                &MainWindow::on_actionWires_triggered);
     connect(m_ui->actionZoomIn,           &QAction::triggered,        this,                &MainWindow::on_actionZoomIn_triggered);
@@ -1233,6 +1226,7 @@ void MainWindow::populateLeftMenu()
     populateMenu(m_ui->verticalSpacer_Combinational, {"TruthTable", "Mux", "Demux"}, m_ui->scrollAreaWidgetContents_Combinational->layout());
     populateMenu(m_ui->verticalSpacer_Memory, {"DLatch", "DFlipFlop", "JKFlipFlop", "SRFlipFlop", "TFlipFlop"}, m_ui->scrollAreaWidgetContents_Memory->layout());
     populateMenu(m_ui->verticalSpacer_Misc, {"Text", "Line"}, m_ui->scrollAreaWidgetContents_Misc->layout());
+    populateMenu(m_ui->verticalSpacer_Truthtable, {"TruthTable"}, m_ui->scrollAreaWidgetContents_Truthtable->layout());
 }
 
 void MainWindow::on_actionFastMode_triggered(const bool checked)

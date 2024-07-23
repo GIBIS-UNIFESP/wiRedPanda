@@ -8,9 +8,6 @@
 #include <QDebug>
 #include <QPainter>
 
-#include <QPainter>
-#include <QDebug>
-
 namespace
 {
     int id = qRegisterMetaType<TruthTable>();
@@ -83,11 +80,11 @@ void TruthTable::generatePixmap()
 {
     // make pixmap
     const QSize size = portsBoundingRect().united(QRectF(0, 0, 64, 64)).size().toSize();
-    // qDebug() << "Tamanho de portBounding: " << portsBoundingRect();
-    // qDebug() << "Tamanho de size: " << size;
+    qDebug() << "Ports BoundingRect: " << portsBoundingRect();
+    qDebug() << "Size: " << size;
 
     QPixmap tempPixmap(size);
-    // qDebug() << "Tamanho de tempPixmap: " << tempPixmap;
+    qDebug() << "tempPixmap size: " << tempPixmap;
     tempPixmap.fill(Qt::transparent);
 
     QPainter tmpPainter(&tempPixmap);
@@ -146,8 +143,7 @@ void TruthTable::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 
     generatePixmap();
     painter->drawPixmap(boundingRect().topLeft(), pixmap());
-    // qDebug() << "Tamanho painter->drawRoundedRect: " << painter;
-
+    qDebug() << "Tamanho painter->drawRoundedRect: " << painter;
 }
 
 QBitArray& TruthTable::key()

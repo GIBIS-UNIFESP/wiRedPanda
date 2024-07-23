@@ -8,7 +8,6 @@
 #include <QDebug>
 #include <QKeyEvent>
 #include <QScrollBar>
-#include <QCursor>
 
 GraphicsView::GraphicsView(QWidget *parent)
     : QGraphicsView(parent)
