@@ -472,6 +472,16 @@ void Scene::prevElm()
     }
 }
 
+void Scene::removeInputPort()
+{
+
+}
+
+void Scene::removeOutputPort()
+{
+
+}
+
 void Scene::updateTheme()
 {
     qCDebug(zero) << tr("Updating theme.");
@@ -490,6 +500,16 @@ void Scene::updateTheme()
     }
 
     qCDebug(zero) << tr("Finished updating theme.");
+}
+
+void Scene::addInputPort()
+{
+
+}
+
+void Scene::addOutputPort()
+{
+
 }
 
 QList<QGraphicsItem *> Scene::items(Qt::SortOrder order) const

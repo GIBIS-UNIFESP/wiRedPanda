@@ -57,12 +57,12 @@ public:
     void updateTheme();
 
     // Element shortcuts
-    void prevMainPropShortcut();
-    void nextMainPropShortcut();
-    void prevSecndPropShortcut();
-    void nextSecndPropShortcut();
+    void addInputPort();
+    void addOutputPort();
     void nextElm();
     void prevElm();
+    void removeInputPort();
+    void removeOutputPort();
 
 signals:
     void circuitHasChanged();
@@ -106,6 +106,10 @@ private:
     void startNewConnection(QNEInputPort *endPort);
     void startNewConnection(QNEOutputPort *startPort);
     void startSelectionRect();
+    void prevMainPropShortcut();
+    void nextMainPropShortcut();
+    void prevSecndPropShortcut();
+    void nextSecndPropShortcut();
 
     GraphicsView *m_view = nullptr;
     QAction *m_redoAction;
