@@ -361,15 +361,15 @@ void BewavedDolphin::run2()
         int row = 0;
 
         for (auto *input : qAsConst(m_inputs)) {
-            if(dynamic_cast<InputRotary*>(input)) {
+            if (dynamic_cast<InputRotary*>(input)) {
                 for (int port = 0; port < input->outputSize(); ++port) {
-                    if(m_model->index(row, column).data().toInt()) {
+                    if (m_model->index(row, column).data().toInt()) {
                         input->setOn(1, port);
                     }
+
                     ++row;
                 }
-            }
-            else {
+            } else {
                 for (int port = 0; port < input->outputSize(); ++port) {
                     const bool value = static_cast<bool>(m_model->index(row, column).data().toInt());
                     input->setOn(value, port);

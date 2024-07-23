@@ -79,13 +79,6 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     auto *shortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
     connect(shortcut, &QShortcut::activated, m_ui->lineEditSearch, qOverload<>(&QWidget::setFocus));
     populateLeftMenu();
-    m_ui->tabElements->setTabIcon(0, QIcon(":/input/buttonOff.svg"));
-    m_ui->tabElements->setTabIcon(1, QIcon(":/basic/xor.svg"));
-    m_ui->tabElements->setTabIcon(2, QIcon(DFlipFlop::pixmapPath()));
-    m_ui->tabElements->setTabIcon(3, QIcon(":/basic/ic-panda.svg"));
-    m_ui->tabElements->setTabIcon(4, QIcon(":/basic/truthtable-rotated.svg"));
-    m_ui->tabElements->setTabText(4, "");
-    m_ui->tabElements->setTabIcon(5, QIcon(":/misc/text.png"));
     m_ui->tabElements->setTabEnabled(6, false);
 
     qCDebug(zero) << tr("Loading recent file list.");
@@ -299,8 +292,7 @@ void MainWindow::aboutThisVersion()
     msgBox.setIcon(QMessageBox::Icon::Information);
     msgBox.setWindowTitle("WiRedPanda " + QString(APP_VERSION));
     msgBox.setText(
-        tr("Version 4.2: NEW: implementation of truth tables."
-           "wiRed Panda version >= 4.0 is not 100% compatible with previous versions.\n"
+        tr("WiRedPanda version >= 4.0 is not 100% compatible with previous versions.\n"
            "To open old version projects containing ICs (or boxes), skins, and/or "
            "beWavedDolphin simulations, their files must be moved to the same directory "
            "as the main project file.\n"
@@ -1180,7 +1172,6 @@ void MainWindow::populateLeftMenu()
     populateMenu(m_ui->verticalSpacer_Memory, {"DLatch", "DFlipFlop", "JKFlipFlop", "SRFlipFlop", "TFlipFlop"}, m_ui->scrollAreaWidgetContents_Memory->layout());
     populateMenu(m_ui->verticalSpacer_Misc, {"Text", "Line"}, m_ui->scrollAreaWidgetContents_Misc->layout());
     populateMenu(m_ui->verticalSpacer_Truthtable, {"TruthTable"}, m_ui->scrollAreaWidgetContents_Truthtable->layout());
-
 }
 
 void MainWindow::on_actionFastMode_triggered(const bool checked)
