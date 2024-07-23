@@ -95,7 +95,6 @@ msvc {
 
 mac {
     CONFIG += sdk_no_version_check
-    LIBS += -Wl,-ld_classic
 }
 
 MOC_DIR        = build_files/moc

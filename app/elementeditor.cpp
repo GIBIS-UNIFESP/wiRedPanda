@@ -547,6 +547,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_ui->comboBoxOutputSize->setEnabled(m_canChangeOutputSize);
 
     if (m_canChangeOutputSize) {
+
         if (!m_hasRotarySwitch) {
             m_ui->comboBoxOutputSize->addItem("1", 1);
         }
@@ -860,21 +861,21 @@ void ElementEditor::truthTable()
     m_ui->truthTable->setColumnCount(nInputs + nOutputs);
     m_ui->truthTable->setRowCount(pow(2, nInputs));
 
-    for (int i = 0; i < nInputs; i++) {
+    for (int i = 0; i < nInputs; i ++) {
         inputLabels.append(QChar::fromLatin1('A' + i));
     }
 
-    for (int i = 0; i < truthtable->outputSize(); i++) {
-        inputLabels.append("S"+QString::number(i));
-        m_ui->truthTable->setColumnWidth(nInputs + i,14);
+    for (int i = 0; i < truthtable->outputSize(); i ++) {
+        inputLabels.append("S" + QString::number(i));
+        m_ui->truthTable->setColumnWidth(nInputs + i, 14);
     }
 
     m_ui->truthTable->setHorizontalHeaderLabels(inputLabels);
 
     // int columnCount = m_ui->truthTable->columnCount();
 
-    for (int i = 0; i < pow(2, nInputs); i++) {
-        for (int j = 0; j < nInputs; j++) {
+    for (int i =0; i < pow(2,nInputs); i++) {
+        for (int j =0; j < nInputs; j++) {
             m_ui->truthTable->setColumnWidth(j,14);
             auto newItemValue = QString::number(i, 2);
 
@@ -895,7 +896,7 @@ void ElementEditor::truthTable()
         auto bitArray = truthtable->key();
 
         for (int z = 0; z < nOutputs; z++) {
-            const int output = bitArray.at(256 * z + i);
+            int output = bitArray.at(256 * z + i);
 
             if (m_ui->truthTable->item(i, nInputs + z) == nullptr) {
                 auto *newOutItem = new QTableWidgetItem(QString(QChar::fromLatin1('0' + output)));
@@ -921,11 +922,16 @@ void ElementEditor::setTruthTableProposition(const int row, const int column)
         return;
     }
 
-    auto cellItem = m_ui->truthTable->item(row,column);
-    cellItem->setText((cellItem->text() == "0") ? "1" : "0");
-
     auto truthtable = m_elements[0];
+
+    auto cellItem = m_ui->truthTable->item(row,column);
+
+    const QString newItemValue = (cellItem->text() == "0") ? "1" : "0";
+
+    cellItem->setText(newItemValue);
+
     const int nInputs = truthtable->inputSize();
+
     const int positionToChange = 256 * (column - nInputs) + row;
 
     emit sendCommand(new ToggleTruthTableOutputCommand(truthtable, positionToChange, m_scene, this));

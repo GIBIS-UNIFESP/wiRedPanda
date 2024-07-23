@@ -6,7 +6,6 @@
 #include "common.h"
 #include "globalproperties.h"
 #include "graphicelement.h"
-#include "truth_table.h"
 #include "logicand.h"
 #include "logicdemux.h"
 #include "logicdflipflop.h"
@@ -23,10 +22,10 @@
 #include "logicoutput.h"
 #include "logicsrflipflop.h"
 #include "logictflipflop.h"
+#include "logictruthtable.h"
 #include "logicxnor.h"
 #include "logicxor.h"
-#include "logictruthtable.h"
-
+#include "truth_table.h"
 
 #include <QMetaEnum>
 
