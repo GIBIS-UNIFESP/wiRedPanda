@@ -84,7 +84,6 @@ private:
     void aboutThisVersion();
     void createRecentFileActions();
     void loadAutosaveFiles();
-    void on_actionShortcuts_and_Tips_triggered();
     void on_actionAboutQt_triggered();
     void on_actionAbout_triggered();
     void on_actionEnglish_triggered();
@@ -111,7 +110,7 @@ private:
     void on_actionSaveAs_triggered();
     void on_actionSave_triggered();
     void on_actionSelectAll_triggered();
-    void on_actionStartTemporalSimulation_toggled(const bool checked);
+    void on_actionShortcuts_and_Tips_triggered();
     void on_actionWaveform_triggered();
     void on_actionWires_triggered(const bool checked);
     void on_actionZoomIn_triggered() const;

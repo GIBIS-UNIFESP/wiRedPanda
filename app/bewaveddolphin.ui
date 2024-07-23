@@ -40,6 +40,19 @@
     <property name="bottomMargin">
      <number>0</number>
     </property>
+    <item>
+     <widget class="DolphinGraphicsView" name="graphicsView">
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -84,7 +97,7 @@
      <x>0</x>
      <y>0</y>
      <width>833</width>
-     <height>27</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -450,11 +463,11 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="resources/dolphin/dolphin.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/dolphin/dolphin.qrc"/>
   <include location="resources/basic/basic.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
  </resources>
  <connections/>
 </ui>

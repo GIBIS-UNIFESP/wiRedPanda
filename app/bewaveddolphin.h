@@ -52,6 +52,7 @@ class DolphinGraphicsView : public GraphicsView
     Q_OBJECT
 
 public:
+    explicit DolphinGraphicsView(QWidget *parent = nullptr);
     bool canZoomOut() const;
 
     inline static bool canNavigateWithArrowKeys = true;
@@ -127,7 +128,6 @@ private:
     void on_actionZoomOut_triggered();
     void on_tableView_cellDoubleClicked();
     void on_tableView_selectionChanged();
-    void on_tableView_cellDoubleClicked();
     void paste(const QItemSelection &ranges, QDataStream &stream);
     void prepare(const QString &fileName = {});
     void resizeScene();
@@ -141,7 +141,6 @@ private:
     void zoomChanged();
 
     Ui::BewavedDolphin *m_ui;
-    DolphinGraphicsView m_view;
     MainWindow *m_mainWindow = nullptr;
     PlotType m_type = PlotType::Line;
     QFileInfo m_currentFile;

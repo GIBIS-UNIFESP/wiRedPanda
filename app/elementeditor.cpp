@@ -547,6 +547,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_ui->comboBoxOutputSize->setEnabled(m_canChangeOutputSize);
 
     if (m_canChangeOutputSize) {
+
         if (!m_hasRotarySwitch) {
             m_ui->comboBoxOutputSize->addItem("1", 1);
         }
@@ -849,7 +850,7 @@ void ElementEditor::truthTable()
         return;
     }
 
-     auto *truthtable = dynamic_cast<TruthTable *>(m_elements[0]);
+    auto *truthtable = dynamic_cast<TruthTable *>(m_elements[0]);
 
     //Assuming only one element selected for now...
 
@@ -873,8 +874,8 @@ void ElementEditor::truthTable()
 
     // int columnCount = m_ui->truthTable->columnCount();
 
-    for (int i = 0; i < pow(2, nInputs); i++) {
-        for (int j = 0; j < nInputs; j++) {
+    for (int i =0; i < pow(2,nInputs); i++) {
+        for (int j =0; j < nInputs; j++) {
             m_ui->truthTable->setColumnWidth(j,14);
             auto newItemValue = QString::number(i, 2);
 
@@ -889,13 +890,13 @@ void ElementEditor::truthTable()
                 m_table->item(i,j)->setFlags(Qt::ItemIsEnabled);
             }
 
-            m_table->item(i,j)->setText(newItemValue.at(j));
+            m_ui->truthTable->item(i,j)->setText(newItemValue.at(j));
         }
 
         auto bitArray = truthtable->key();
 
         for (int z = 0; z < nOutputs; z++) {
-            const int output = bitArray.at(256 * z + i);
+            int output = bitArray.at(256 * z + i);
 
             if (m_ui->truthTable->item(i, nInputs + z) == nullptr) {
                 auto *newOutItem = new QTableWidgetItem(QString(QChar::fromLatin1('0' + output)));
@@ -904,7 +905,7 @@ void ElementEditor::truthTable()
                 m_table->item(i,nInputs + z)->setFlags(Qt::ItemIsEnabled);
             }
 
-             m_ui->truthTable->item(i, nInputs + z)->setText(QString::number(output));
+            m_ui->truthTable->item(i, nInputs + z)->setText(QString::number(output));
         }
     }
 
