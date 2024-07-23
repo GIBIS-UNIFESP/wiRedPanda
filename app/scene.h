@@ -60,13 +60,17 @@ public:
     void updateTheme();
 
     // Element shortcuts
+    void addInputPort();
+    void addOutputPort();
+    void nextElm();
+    void prevElm();
+    void removeInputPort();
+    void removeOutputPort();
+
     void prevMainPropShortcut();
     void nextMainPropShortcut();
     void prevSecndPropShortcut();
     void nextSecndPropShortcut();
-    void nextElm();
-    void prevElm();
-
 signals:
     void circuitHasChanged();
     void contextMenuPos(QPoint screenPos, QGraphicsItem *itemAtMouse);
