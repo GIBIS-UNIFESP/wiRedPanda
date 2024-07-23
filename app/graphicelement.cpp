@@ -18,7 +18,6 @@
 #include <QPixmap>
 #include <QStyleOptionGraphicsItem>
 #include <cmath>
-#include <iostream>
 
 namespace
 {
@@ -54,6 +53,7 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QStri
     m_label->setPos(0, 64);
     m_label->setParentItem(this);
     m_label->setDefaultTextColor(Qt::black);
+
     setPortName(m_translatedName);
     setToolTip(m_translatedName);
 
@@ -261,7 +261,6 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
     if (map.contains("label")) {
         setLabel(map.value("label").toString());
     }
-
 
     // -------------------------------------------
 
@@ -963,14 +962,17 @@ bool GraphicElement::hasLabel() const
 {
     return m_hasLabel;
 }
+
 bool GraphicElement::hasTruthTable() const
 {
     return m_hasTruthTable;
 }
+
 void GraphicElement::setHasTruthTable(const bool hasTruthTable)
 {
     m_hasTruthTable = hasTruthTable;
 }
+
 bool GraphicElement::canChangeSkin() const
 {
     return m_canChangeSkin;
@@ -1088,6 +1090,7 @@ void GraphicElement::setMaxInputSize(const int maxInputSize)
 {
     m_maxInputSize = maxInputSize;
 }
+
 void GraphicElement::highlight(const bool isSelected)
 {
     QVector<QNEPort *> ports;
