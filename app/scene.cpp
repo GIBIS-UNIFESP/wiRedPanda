@@ -826,9 +826,6 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         qCDebug(zero) << type << tr(" at position: ") << pos.x() << tr(", ") << pos.y() << tr(", label: ") << icFileName;
 
         auto *element = ElementFactory::buildElement(type);
-
-
-
         qCDebug(zero) << tr("Valid element.");
 
         if (element->elementType() == ElementType::IC) {

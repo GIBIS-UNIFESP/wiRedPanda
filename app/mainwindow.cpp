@@ -80,13 +80,6 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     auto *searchShortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
     connect(searchShortcut, &QShortcut::activated, m_ui->lineEditSearch, qOverload<>(&QWidget::setFocus));
     populateLeftMenu();
-    m_ui->tabElements->setTabIcon(0, QIcon(":/input/buttonOff.svg"));
-    m_ui->tabElements->setTabIcon(1, QIcon(":/basic/xor.svg"));
-    m_ui->tabElements->setTabIcon(2, QIcon(DFlipFlop::pixmapPath()));
-    m_ui->tabElements->setTabIcon(3, QIcon(":/basic/ic-panda.svg"));
-    m_ui->tabElements->setTabIcon(4, QIcon(":/basic/truthtable-rotated.svg"));
-    m_ui->tabElements->setTabText(4, "");
-    m_ui->tabElements->setTabIcon(5, QIcon(":/misc/text.png"));
     m_ui->tabElements->setTabEnabled(6, false);
 
     qCDebug(zero) << tr("Loading recent file list.");
@@ -137,23 +130,21 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     }
 
     // Element shortcuts
-
-    auto *removeInPortShortcut = new QShortcut(QKeySequence("["), this);
     auto *addInPortShortcut = new QShortcut(QKeySequence("]"), this);
-    auto *removeOutPortShortcut = new QShortcut(QKeySequence("{"), this);
     auto *addOutPortShortcut = new QShortcut(QKeySequence("}"), this);
-    auto *changePrevElmShortcut = new QShortcut(QKeySequence("<"), this);
     auto *changeNextElmShortcut = new QShortcut(QKeySequence(">"), this);
+    auto *changePrevElmShortcut = new QShortcut(QKeySequence("<"), this);
+    auto *removeInPortShortcut = new QShortcut(QKeySequence("["), this);
+    auto *removeOutPortShortcut = new QShortcut(QKeySequence("{"), this);
 
     connect(addInPortShortcut,            &QShortcut::activated,      m_currentTab->scene(), &Scene::addInputPort);
-    connect(removeInPortShortcut,         &QShortcut::activated,      m_currentTab->scene(), &Scene::removeInputPort);
     connect(addOutPortShortcut,           &QShortcut::activated,      m_currentTab->scene(), &Scene::addOutputPort);
-    connect(removeOutPortShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::removeOutputPort);
-    connect(changePrevElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::prevElm);
     connect(changeNextElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::nextElm);
+    connect(changePrevElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::prevElm);
+    connect(removeInPortShortcut,         &QShortcut::activated,      m_currentTab->scene(), &Scene::removeInputPort);
+    connect(removeOutPortShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::removeOutputPort);
 
     qCDebug(zero) << tr("Setting connections");
-    connect(m_ui->actionShortcutsAndTips, &QAction::triggered,        this,                &MainWindow::on_actionShortcuts_and_Tips_triggered);
     connect(m_ui->actionAbout,            &QAction::triggered,        this,                &MainWindow::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,          &QAction::triggered,        this,                &MainWindow::on_actionAboutQt_triggered);
     connect(m_ui->actionAboutThisVersion, &QAction::triggered,        this,                &MainWindow::aboutThisVersion);
@@ -185,6 +176,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->actionSave,             &QAction::triggered,        this,                &MainWindow::on_actionSave_triggered);
     connect(m_ui->actionSaveAs,           &QAction::triggered,        this,                &MainWindow::on_actionSaveAs_triggered);
     connect(m_ui->actionSelectAll,        &QAction::triggered,        this,                &MainWindow::on_actionSelectAll_triggered);
+    connect(m_ui->actionShortcutsAndTips, &QAction::triggered,        this,                &MainWindow::on_actionShortcuts_and_Tips_triggered);
     connect(m_ui->actionWaveform,         &QAction::triggered,        this,                &MainWindow::on_actionWaveform_triggered);
     connect(m_ui->actionWires,            &QAction::triggered,        this,                &MainWindow::on_actionWires_triggered);
     connect(m_ui->actionZoomIn,           &QAction::triggered,        this,                &MainWindow::on_actionZoomIn_triggered);
@@ -317,8 +309,7 @@ void MainWindow::aboutThisVersion()
     msgBox.setIcon(QMessageBox::Icon::Information);
     msgBox.setWindowTitle("WiRedPanda " + QString(APP_VERSION));
     msgBox.setText(
-        tr("Version 4.2: NEW: implementation of truth tables."
-           "wiRed Panda version >= 4.0 is not 100% compatible with previous versions.\n"
+        tr("WiRedPanda version >= 4.0 is not 100% compatible with previous versions.\n"
            "To open old version projects containing ICs (or boxes), skins, and/or "
            "beWavedDolphin simulations, their files must be moved to the same directory "
            "as the main project file.\n"
@@ -1217,7 +1208,6 @@ void MainWindow::populateLeftMenu()
     populateMenu(m_ui->verticalSpacer_Memory, {"DLatch", "DFlipFlop", "JKFlipFlop", "SRFlipFlop", "TFlipFlop"}, m_ui->scrollAreaWidgetContents_Memory->layout());
     populateMenu(m_ui->verticalSpacer_Misc, {"Text", "Line"}, m_ui->scrollAreaWidgetContents_Misc->layout());
     populateMenu(m_ui->verticalSpacer_Truthtable, {"TruthTable"}, m_ui->scrollAreaWidgetContents_Truthtable->layout());
-
 }
 
 void MainWindow::on_actionFastMode_triggered(const bool checked)

@@ -59,11 +59,11 @@ public:
 
     // Element shortcuts
     void addInputPort();
-    void removeInputPort();
     void addOutputPort();
-    void removeOutputPort();
     void nextElm();
     void prevElm();
+    void removeInputPort();
+    void removeOutputPort();
 
 signals:
     void circuitHasChanged();
