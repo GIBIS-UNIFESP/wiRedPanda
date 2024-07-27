@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
@@ -31,14 +31,13 @@ public:
     void updateElementSkin();
     void updatePriorityAction();
     void updateTheme();
-    void TruthTable();
-
+    void truthTable();
 
 signals:
     void sendCommand(QUndoCommand *cmd);
 
 private:
-        Q_DISABLE_COPY(ElementEditor)
+    Q_DISABLE_COPY(ElementEditor)
 
     void apply();
     void defaultSkin();
@@ -46,13 +45,12 @@ private:
     void inputLocked(const bool value);
     void outputIndexChanged(const int index);
     void outputValueChanged(const QString &value);
+    void priorityChanged(const int value);
     void selectionChanged();
     void setCurrentElements(const QList<GraphicElement *> &elements);
+    void setTruthTableProposition(const int row, const int column);
     void triggerChanged(const QString &cmd);
-    void priorityChanged(const int value);
     void updateSkins();
-    void SetTruthTableProposition(int row, int column);
-
 
     Ui::ElementEditor *m_ui;
     QList<GraphicElement *> m_elements;
@@ -69,7 +67,6 @@ private:
     Scene *m_scene = nullptr;
     bool m_canChangeInputSize = false;
     bool m_canChangeOutputSize = false;
-    bool m_hasRotarySwitch = false;
     bool m_canChangeSkin = false;
     bool m_canMorph = false;
     bool m_hasAnyProperty = false;
@@ -79,6 +76,7 @@ private:
     bool m_hasFrequency = false;
     bool m_hasLabel = false;
     bool m_hasOnlyInputs = false;
+    bool m_hasRotarySwitch = false;
     bool m_hasRotation = false;
     bool m_hasSameAudio = false;
     bool m_hasSameColors = false;
@@ -94,5 +92,4 @@ private:
     bool m_isDefaultSkin = true;
     bool m_isUpdatingSkin = false;
     unsigned int m_hasTruthTable = 0;
-
 };

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QObject>
-#include <cstdint>
 
 class Enums
 {
@@ -41,11 +40,10 @@ public:
         SRFlipFlop = 19,
         TFlipFlop = 20,
         Text = 28,
+        TruthTable = 30,
         Unknown = 0,
         Xnor = 11,
         Xor = 10,
-        TruthTable = 30,
-        Unkown = 40,
     };
     Q_ENUM(ElementType)
 

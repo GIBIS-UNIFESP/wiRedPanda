@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
@@ -12,7 +12,6 @@
 #include <QPixmapCache>
 #include <QVersionNumber>
 #include <memory>
-#include <QBitArray>
 
 class GraphicElement;
 class QNEInputPort;
@@ -77,8 +76,8 @@ public:
     bool hasColors() const;
     bool hasFrequency() const;
     bool hasLabel() const;
-    bool hasTruthTable() const;
     bool hasTrigger() const;
+    bool hasTruthTable() const;
     bool isRotatable() const;
     bool isValid();
     const QVector<QNEInputPort *> &inputs() const;
@@ -126,14 +125,13 @@ protected:
     void setHasColors(const bool hasColors);
     void setHasFrequency(const bool hasFrequency);
     void setHasLabel(const bool hasLabel);
-    void setHasTruthTable(const bool hasTruthTable);
     void setHasTrigger(const bool hasTrigger);
+    void setHasTruthTable(const bool hasTruthTable);
     void setMaxInputSize(const int maxInputSize);
     void setMaxOutputSize(const int maxOutputSize);
     void setMinInputSize(const int minInputSize);
     void setMinOutputSize(const int minOutputSize);
     void setRotatable(const bool rotatable);
-
 
     //! Path to all default skins. The default skin is in a resource file.
     QStringList m_defaultSkins;
@@ -202,9 +200,9 @@ private:
     bool m_hasFrequency = false;
     bool m_hasLabel = false;
     bool m_hasTrigger = false;
+    bool m_hasTruthTable = false;
     bool m_rotatable = true;
     bool m_selected = false;
-    bool m_hasTruthTable = false;
     qreal m_angle = 0;
     quint64 m_maxInputSize = 0;
     quint64 m_maxOutputSize = 0;
