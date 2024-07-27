@@ -68,6 +68,10 @@ public:
     QPointF pixmapCenter() const;
     QRectF boundingRect() const override;
     QString label() const;
+    QString previousColor() const;
+    QString nextColor() const;
+    QString previousAudio() const;
+    QString nextAudio() const;
     bool canChangeSkin() const;
     bool hasAudio() const;
     bool hasColors() const;
