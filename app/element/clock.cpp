@@ -131,6 +131,10 @@ float Clock::frequency() const
 
 void Clock::setFrequency(const float freq)
 {
+    if (freq > 10) {
+        return;
+    }
+
     if (qFuzzyIsNull(freq)) {
         return;
     }
