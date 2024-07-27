@@ -37,7 +37,6 @@ public:
     const QVector<GraphicElement *> elements() const;
     const QVector<GraphicElement *> elements(const QRectF &rect) const;
     const QVector<GraphicElement *> visibleElements() const;
-    void addItem(QGraphicsItem *item);
     void addItem(QMimeData *mimeData);
     void copyAction();
     void cutAction();
@@ -58,10 +57,10 @@ public:
     void updateTheme();
 
     // Element shortcuts
-    void addInputPort();
-    void removeInputPort();
-    void addOutputPort();
-    void removeOutputPort();
+    void prevMainPropShortcut();
+    void nextMainPropShortcut();
+    void prevSecndPropShortcut();
+    void nextSecndPropShortcut();
     void nextElm();
     void prevElm();
 
@@ -125,7 +124,6 @@ private:
     bool m_markingSelectionBox = false;
     bool m_showGates = true;
     bool m_showWires = true;
-    int m_buzzerLabelNumber = 0;
     int m_editedConnectionId = 0;
     int m_hoverPortElmId = 0;
     int m_hoverPortNumber = 0;
