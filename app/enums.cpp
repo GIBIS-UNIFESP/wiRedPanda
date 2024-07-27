@@ -50,14 +50,10 @@ ElementType Enums::nextElmType(ElementType type) {
             return ElementType::JKFlipFlop;
 
         // Output
-        case ElementType::Display7:
-            return ElementType::Display14;
-        case ElementType::Display14:
-            return ElementType::Buzzer;
         case ElementType::Buzzer:
             return ElementType::Led;
         case ElementType::Led:
-            return ElementType::Display7;
+            return ElementType::Buzzer;
 
         // Other Cases (falltrought)
         default:
@@ -113,14 +109,10 @@ ElementType Enums::prevElmType(ElementType type) {
             return ElementType::JKFlipFlop;
 
         // Output
-        case ElementType::Display7:
-            return ElementType::Led;
         case ElementType::Led:
             return ElementType::Buzzer;
         case ElementType::Buzzer:
-            return ElementType::Display14;
-        case ElementType::Display14:
-            return ElementType::Display7;
+            return ElementType::Led;
 
         // Other Cases (falltrought)
         default:
