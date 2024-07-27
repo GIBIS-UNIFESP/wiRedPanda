@@ -138,17 +138,17 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 
     // Element shortcuts
 
-    auto *removeInPortShortcut = new QShortcut(QKeySequence("["), this);
-    auto *addInPortShortcut = new QShortcut(QKeySequence("]"), this);
-    auto *removeOutPortShortcut = new QShortcut(QKeySequence("{"), this);
-    auto *addOutPortShortcut = new QShortcut(QKeySequence("}"), this);
+    auto *prevMainPropShortcut = new QShortcut(QKeySequence("["), this);
+    auto *nextMainPropShortcut = new QShortcut(QKeySequence("]"), this);
+    auto *prevSecndPropShortcut = new QShortcut(QKeySequence("{"), this);
+    auto *nextSecndPropShortcut = new QShortcut(QKeySequence("}"), this);
     auto *changePrevElmShortcut = new QShortcut(QKeySequence("<"), this);
     auto *changeNextElmShortcut = new QShortcut(QKeySequence(">"), this);
 
-    connect(addInPortShortcut,            &QShortcut::activated,      m_currentTab->scene(), &Scene::addInputPort);
-    connect(removeInPortShortcut,         &QShortcut::activated,      m_currentTab->scene(), &Scene::removeInputPort);
-    connect(addOutPortShortcut,           &QShortcut::activated,      m_currentTab->scene(), &Scene::addOutputPort);
-    connect(removeOutPortShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::removeOutputPort);
+    connect(prevMainPropShortcut,         &QShortcut::activated,      m_currentTab->scene(), &Scene::prevMainPropShortcut);
+    connect(nextMainPropShortcut,         &QShortcut::activated,      m_currentTab->scene(), &Scene::nextMainPropShortcut);
+    connect(prevSecndPropShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::prevSecndPropShortcut);
+    connect(nextSecndPropShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::nextSecndPropShortcut);
     connect(changePrevElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::prevElm);
     connect(changeNextElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::nextElm);
 
@@ -485,12 +485,21 @@ void MainWindow::on_actionShortcuts_and_Tips_triggered()
 {
     QMessageBox::information(this,
         tr("Shortcuts and Tips"),
-        tr("<h1>Element Shortcuts</h1>"
-           "<ul>"
-           "<li> [ : Remove one input port </li>"
-           "<li> ] : Add one input port </li>"
-           "<li> { : Remove one output port </li>"
-           "<li> } : Add one output port </li>"
+        tr("<h1>Canvas Shortcuts</h1>"
+           "<ul style=\"list-style:none;\">"
+           "<li> Ctrl+= : Zoom in </li>"
+           "<li> Ctrl+- : Zoom out </li>"
+           "<li> Ctrl+1 : Hide/Show wires </li>"
+           "<li> Ctrl+2 : Hide/Show gates </li>"
+           "<li> Ctrl+F : Search elements </li>"
+           "<li> Ctrl+W : Open beWaveDolphin </li>"
+           "<li> Ctrl+S : Save project </li>"
+           "<li> Ctrl+Q : Exit wiRedPanda </li>"
+           "<li> F5 : Start/Pause simulation </li>"
+           "<li> [ : Previous primary element property </li>"
+           "<li> ] : Next primary element property </li>"
+           "<li> { : Previous secondary element property </li>"
+           "<li> } : Next secondary element property </li>"
            "<li> &lt; : Morph to previous element </li>"
            "<li> &gt; : Morph to next element </li>"
            "</ul>"
