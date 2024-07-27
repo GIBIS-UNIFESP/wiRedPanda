@@ -39,7 +39,7 @@ public:
     const QVector<GraphicElement *> elements() const;
     const QVector<GraphicElement *> elements(const QRectF &rect) const;
     const QVector<GraphicElement *> visibleElements() const;
-    void addItem(QGraphicsItem *item);
+    // void addItem(QGraphicsItem *item);
     void addItem(QMimeData *mimeData);
     void copyAction();
     void cutAction();
@@ -60,10 +60,10 @@ public:
     void updateTheme();
 
     // Element shortcuts
-    void addInputPort();
-    void removeInputPort();
-    void addOutputPort();
-    void removeOutputPort();
+    void prevMainPropShortcut();
+    void nextMainPropShortcut();
+    void prevSecndPropShortcut();
+    void nextSecndPropShortcut();
     void nextElm();
     void prevElm();
 
@@ -109,10 +109,6 @@ private:
     void startNewConnection(QNEInputPort *endPort);
     void startNewConnection(QNEOutputPort *startPort);
     void startSelectionRect();
-    void prevMainPropShortcut();
-    void nextMainPropShortcut();
-    void prevSecndPropShortcut();
-    void nextSecndPropShortcut();
 
     GraphicsView *m_view = nullptr;
     QAction *m_redoAction;
