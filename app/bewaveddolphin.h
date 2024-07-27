@@ -47,6 +47,24 @@ public:
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 };
 
+class DolphinGraphicsView : public GraphicsView
+{
+    Q_OBJECT
+
+public:
+    explicit DolphinGraphicsView(QWidget *parent = nullptr);
+    bool canZoomOut() const;
+
+    inline static bool canNavigateWithArrowKeys = true;
+
+signals:
+    void scaleIn();
+    void scaleOut();
+
+protected:
+    void wheelEvent(QWheelEvent *event) override;
+};
+
 class BewavedDolphin : public QMainWindow
 {
     Q_OBJECT
@@ -94,7 +112,6 @@ private:
     void on_actionExit_triggered();
     void on_actionExportToPdf_triggered();
     void on_actionExportToPng_triggered();
-    void on_actionFitScreen_triggered();
     void on_actionInvert_triggered();
     void on_actionLoad_triggered();
     void on_actionPaste_triggered();
@@ -109,6 +126,7 @@ private:
     void on_actionShowWaveforms_triggered();
     void on_actionZoomIn_triggered();
     void on_actionZoomOut_triggered();
+    void on_tableView_cellDoubleClicked();
     void on_tableView_selectionChanged();
     void paste(const QItemSelection &ranges, QDataStream &stream);
     void prepare(const QString &fileName = {});
@@ -123,7 +141,6 @@ private:
     void zoomChanged();
 
     Ui::BewavedDolphin *m_ui;
-    GraphicsView m_view;
     MainWindow *m_mainWindow = nullptr;
     PlotType m_type = PlotType::Line;
     QFileInfo m_currentFile;
@@ -146,7 +163,7 @@ private:
     bool m_edited = false;
     const bool m_askConnection;
     const double m_scaleFactor = 0.8;
-    double m_scale = 1.0;
+    double m_scale = 1.25;
     int m_clockPeriod = 0;
     int m_inputPorts = 0;
     int m_length = 32;

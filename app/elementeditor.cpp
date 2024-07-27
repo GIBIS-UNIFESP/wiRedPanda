@@ -926,6 +926,11 @@ void ElementEditor::setTruthTableProposition(const int row, const int column)
 
     auto truthtable = m_elements[0];
     const int nInputs = truthtable->inputSize();
+
+    const QString newItemValue = (cellItem->text() == "0") ? "1" : "0";
+
+    cellItem->setText(newItemValue);
+
     const int positionToChange = 256 * (column - nInputs) + row;
 
     emit sendCommand(new ToggleTruthTableOutputCommand(truthtable, positionToChange, m_scene, this));

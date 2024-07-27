@@ -32,6 +32,7 @@
 #include <QPrinter>
 #include <QSaveFile>
 #include <QShortcut>
+#include <QKeySequence>
 #include <QTemporaryFile>
 #include <QTranslator>
 
@@ -76,9 +77,16 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     m_ui->mainToolBar->setToolButtonStyle(Settings::value("labelsUnderIcons").toBool() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
 
     qCDebug(zero) << tr("Setting left side menus.");
-    auto *shortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
-    connect(shortcut, &QShortcut::activated, m_ui->lineEditSearch, qOverload<>(&QWidget::setFocus));
+    auto *searchShortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
+    connect(searchShortcut, &QShortcut::activated, m_ui->lineEditSearch, qOverload<>(&QWidget::setFocus));
     populateLeftMenu();
+
+    m_ui->tabElements->setTabIcon(0, QIcon(":/input/buttonOff.svg"));
+    m_ui->tabElements->setTabIcon(1, QIcon(":/basic/xor.svg"));
+    m_ui->tabElements->setTabIcon(2, QIcon(":/basic/truthtable-rotated.svg"));
+    m_ui->tabElements->setTabIcon(3, QIcon(DFlipFlop::pixmapPath()));
+    m_ui->tabElements->setTabIcon(4, QIcon(":/basic/ic-panda.svg"));
+    m_ui->tabElements->setTabIcon(5, QIcon(":/misc/text.png"));
     m_ui->tabElements->setTabEnabled(6, false);
 
     qCDebug(zero) << tr("Loading recent file list.");
@@ -128,6 +136,22 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
         m_ui->menuExamples->menuAction()->setVisible(false);
     }
 
+    // Element shortcuts
+    auto *prevMainPropShortcut = new QShortcut(QKeySequence("["), this);
+    auto *nextMainPropShortcut = new QShortcut(QKeySequence("]"), this);
+    auto *prevSecndPropShortcut = new QShortcut(QKeySequence("{"), this);
+    auto *nextSecndPropShortcut = new QShortcut(QKeySequence("}"), this);
+    auto *changePrevElmShortcut = new QShortcut(QKeySequence("<"), this);
+    auto *changeNextElmShortcut = new QShortcut(QKeySequence(">"), this);
+
+    connect(prevMainPropShortcut,         &QShortcut::activated,      m_currentTab->scene(), &Scene::prevMainPropShortcut);
+    connect(nextMainPropShortcut,         &QShortcut::activated,      m_currentTab->scene(), &Scene::nextMainPropShortcut);
+    connect(prevSecndPropShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::prevSecndPropShortcut);
+    connect(nextSecndPropShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::nextSecndPropShortcut);
+    connect(changePrevElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::prevElm);
+    connect(changeNextElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::nextElm);
+    connect(changePrevElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::prevElm);
+
     qCDebug(zero) << tr("Setting connections");
     connect(m_ui->actionAbout,            &QAction::triggered,        this,                &MainWindow::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,          &QAction::triggered,        this,                &MainWindow::on_actionAboutQt_triggered);
@@ -160,6 +184,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->actionSave,             &QAction::triggered,        this,                &MainWindow::on_actionSave_triggered);
     connect(m_ui->actionSaveAs,           &QAction::triggered,        this,                &MainWindow::on_actionSaveAs_triggered);
     connect(m_ui->actionSelectAll,        &QAction::triggered,        this,                &MainWindow::on_actionSelectAll_triggered);
+    connect(m_ui->actionShortcutsAndTips, &QAction::triggered,        this,                &MainWindow::on_actionShortcuts_and_Tips_triggered);
     connect(m_ui->actionWaveform,         &QAction::triggered,        this,                &MainWindow::on_actionWaveform_triggered);
     connect(m_ui->actionWires,            &QAction::triggered,        this,                &MainWindow::on_actionWires_triggered);
     connect(m_ui->actionZoomIn,           &QAction::triggered,        this,                &MainWindow::on_actionZoomIn_triggered);
@@ -450,10 +475,38 @@ void MainWindow::on_actionAbout_triggered()
            "<li> Rodrigo Torres </li>"
            "<li> Prof. Fábio Cappabianco, Ph.D. </li>"
            "</ul>"
-           "<p> WiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.</p>"
+           "<p> WiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves e Maycon A. Santana.</p>"
            "<p> Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.</p>"
            "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
             .arg(QApplication::applicationVersion()));
+}
+
+void MainWindow::on_actionShortcuts_and_Tips_triggered()
+{
+    QMessageBox::information(this,
+        tr("Shortcuts and Tips"),
+        tr("<h1>Canvas Shortcuts</h1>"
+           "<ul style=\"list-style:none;\">"
+           "<li> Ctrl+= : Zoom in </li>"
+           "<li> Ctrl+- : Zoom out </li>"
+           "<li> Ctrl+1 : Hide/Show wires </li>"
+           "<li> Ctrl+2 : Hide/Show gates </li>"
+           "<li> Ctrl+F : Search elements </li>"
+           "<li> Ctrl+W : Open beWaveDolphin </li>"
+           "<li> Ctrl+S : Save project </li>"
+           "<li> Ctrl+Q : Exit wiRedPanda </li>"
+           "<li> F5 : Start/Pause simulation </li>"
+           "<li> [ : Previous primary element property </li>"
+           "<li> ] : Next primary element property </li>"
+           "<li> { : Previous secondary element property </li>"
+           "<li> } : Next secondary element property </li>"
+           "<li> &lt; : Morph to previous element </li>"
+           "<li> &gt; : Morph to next element </li>"
+           "</ul>"
+
+           "<h1>General Tips</h1>"
+           "<p>Double click in a wire to create a node</p>"
+        ));
 }
 
 void MainWindow::on_actionAboutQt_triggered()
@@ -1168,10 +1221,10 @@ void MainWindow::populateLeftMenu()
 {
     m_ui->tabElements->setCurrentIndex(0);
     populateMenu(m_ui->verticalSpacer_InOut, {"InputVcc", "InputGnd", "InputButton", "InputSwitch", "InputRotary", "Clock", "Led", "Display7", "Display14", "Buzzer"}, m_ui->scrollAreaWidgetContents_InOut->layout());
-    populateMenu(m_ui->verticalSpacer_Gates, {"And", "Or", "Not", "Nand", "Nor", "Xor", "Xnor", "Mux", "Demux", "Node"}, m_ui->scrollAreaWidgetContents_Gates->layout());
+    populateMenu(m_ui->verticalSpacer_Gates, {"And", "Or", "Not", "Nand", "Nor", "Xor", "Xnor", "Node"}, m_ui->scrollAreaWidgetContents_Gates->layout());
+    populateMenu(m_ui->verticalSpacer_Combinational, {"TruthTable", "Mux", "Demux"}, m_ui->scrollAreaWidgetContents_Combinational->layout());
     populateMenu(m_ui->verticalSpacer_Memory, {"DLatch", "DFlipFlop", "JKFlipFlop", "SRFlipFlop", "TFlipFlop"}, m_ui->scrollAreaWidgetContents_Memory->layout());
     populateMenu(m_ui->verticalSpacer_Misc, {"Text", "Line"}, m_ui->scrollAreaWidgetContents_Misc->layout());
-    populateMenu(m_ui->verticalSpacer_Truthtable, {"TruthTable"}, m_ui->scrollAreaWidgetContents_Truthtable->layout());
 }
 
 void MainWindow::on_actionFastMode_triggered(const bool checked)

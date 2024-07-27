@@ -4,6 +4,7 @@
 #include "graphicsview.h"
 
 #include <QApplication>
+#include <QCursor>
 #include <QDebug>
 #include <QKeyEvent>
 #include <QScrollBar>
@@ -29,7 +30,7 @@ bool GraphicsView::canZoomIn() const
 
 bool GraphicsView::canZoomOut() const
 {
-    return m_zoomLevel > -3;
+    return m_zoomLevel > -5;
 }
 
 void GraphicsView::mousePressEvent(QMouseEvent *event)
@@ -99,15 +100,17 @@ void GraphicsView::keyReleaseEvent(QKeyEvent *event)
 
 void GraphicsView::wheelEvent(QWheelEvent *event)
 {
-    if (QApplication::keyboardModifiers() == Qt::ControlModifier) {
-        double deltaY = event->angleDelta().y();
-        (deltaY > 0) ? m_zoomLevel++ : m_zoomLevel--;
-        double factor = (deltaY > 0) ? 1.25 : 0.8;
-        scale(factor, factor);
-        return;
+    int zoomDirection = event->angleDelta().y();
+
+    if (zoomDirection > 0 && canZoomIn()) {
+        zoomIn();
+    } else if (zoomDirection < 0 && canZoomOut()) {
+        zoomOut();
     }
 
-    QGraphicsView::wheelEvent(event);
+    centerOn(QCursor::pos());
+
+    event->accept();
 }
 
 void GraphicsView::setFastMode(const bool fastMode)

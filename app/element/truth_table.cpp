@@ -14,7 +14,7 @@ namespace
 }
 
 TruthTable::TruthTable(QGraphicsItem *parent)
-    : GraphicElement(ElementType::TruthTable, ElementGroup::IC, ":/basic/truthtable-rotated.svg", tr("TruthTable"), tr("TruthTable"), 2, 8, 1, 8, parent)
+    : GraphicElement(ElementType::TruthTable, ElementGroup::IC, ":/basic/truthtable-rotated.svg", tr("Truth Table"), tr("Truth Table"), 2, 8, 1, 8, parent)
 {
     if (GlobalProperties::skipInit) {
         return;
@@ -80,11 +80,13 @@ void TruthTable::generatePixmap()
 {
     // make pixmap
     const QSize size = portsBoundingRect().united(QRectF(0, 0, 64, 64)).size().toSize();
+
     qDebug() << "Ports BoundingRect: " << portsBoundingRect();
     qDebug() << "Size: " << size;
 
     QPixmap tempPixmap(size);
     qDebug() << "tempPixmap size: " << tempPixmap;
+
     tempPixmap.fill(Qt::transparent);
 
     QPainter tmpPainter(&tempPixmap);
@@ -143,6 +145,7 @@ void TruthTable::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 
     generatePixmap();
     painter->drawPixmap(boundingRect().topLeft(), pixmap());
+
     qDebug() << "Tamanho painter->drawRoundedRect: " << painter;
 }
 

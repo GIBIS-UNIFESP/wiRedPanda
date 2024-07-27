@@ -220,6 +220,61 @@ QTabWidget::pane {
               </item>
              </layout>
             </widget>
+            <widget class="QWidget" name="combinational">
+             <attribute name="icon">
+              <iconset resource="resources/basic/basic.qrc">
+               <normaloff>:/basic/truthtable-rotated.svg</normaloff>:/basic/truthtable-rotated.svg</iconset>
+             </attribute>
+             <attribute name="title">
+              <string/>
+             </attribute>
+             <attribute name="toolTip">
+              <string>Combinational</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_10">
+              <item row="0" column="0">
+               <widget class="QScrollArea" name="scrollArea_Combinational">
+                <property name="frameShape">
+                 <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="widgetResizable">
+                 <bool>true</bool>
+                </property>
+                <widget class="QWidget" name="scrollAreaWidgetContents_Combinational">
+                 <property name="geometry">
+                  <rect>
+                   <x>0</x>
+                   <y>0</y>
+                   <width>260</width>
+                   <height>582</height>
+                  </rect>
+                 </property>
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_8">
+                  <item>
+                   <spacer name="verticalSpacer_Combinational">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>560</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </widget>
+               </widget>
+              </item>
+             </layout>
+            </widget>
             <widget class="QWidget" name="memory">
              <attribute name="icon">
               <iconset resource="resources/memory/light/memory_light.qrc">
@@ -401,6 +456,7 @@ QTabWidget::pane {
               </item>
              </layout>
             </widget>
+>>>>>>> a888d70e2f6a7e1ec0f69dd2a3e8ed8472954d7a
             <widget class="QWidget" name="misc">
              <attribute name="icon">
               <iconset resource="resources/misc/misc.qrc">
@@ -684,6 +740,7 @@ QTabWidget::pane {
     <addaction name="actionAbout"/>
     <addaction name="actionAboutQt"/>
     <addaction name="actionAboutThisVersion"/>
+    <addaction name="actionShortcutsAndTips"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -1208,6 +1265,22 @@ QTabWidget::pane {
     <string>Restart simulation.</string>
    </property>
   </action>
+  <action name="actionHotkeysAndTips">
+   <property name="icon">
+    <iconset theme="help-about"/>
+   </property>
+   <property name="text">
+    <string>Hotkeys and tips</string>
+   </property>
+  </action>
+  <action name="actionShortcutsAndTips">
+   <property name="icon">
+    <iconset theme="help-about"/>
+   </property>
+   <property name="text">
+    <string>Shortcuts and Tips</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1233,7 +1306,6 @@ QTabWidget::pane {
  </tabstops>
  <resources>
   <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/input/input.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/misc/misc.qrc"/>
   <include location="resources/memory/light/memory_light.qrc"/>

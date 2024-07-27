@@ -59,6 +59,9 @@ public:
         Unknown = 0,
     };
     Q_ENUM(ElementGroup)
+
+    static ElementType nextElmType(ElementType type);
+    static ElementType prevElmType(ElementType type);
 };
 
 using Status = Enums::Status;
