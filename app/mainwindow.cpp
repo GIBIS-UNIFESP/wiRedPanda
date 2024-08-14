@@ -35,6 +35,10 @@
 #include <QTemporaryFile>
 #include <QTranslator>
 
+#ifdef Q_OS_WASM
+    #include <emscripten/emscripten.h>
+#endif
+
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #define SKIPEMPTYPARTS QString::SkipEmptyParts
 #else
@@ -394,6 +398,19 @@ void MainWindow::loadPandaFile(const QString &fileName)
 
 void MainWindow::on_actionOpen_triggered()
 {
+#ifdef Q_OS_WASM
+    auto fileContentReady = [this](const QString &fileName, const QByteArray &fileContent) {
+        if (!fileName.isEmpty()) {
+            // Write file content to a temporary file
+            QFile file(fileName);
+            file.open(QIODevice::WriteOnly);
+            file.write(fileContent);
+            file.close();
+            loadPandaFile(fileName);
+        }
+    };
+    QFileDialog::getOpenFileContent("Panda files (*.panda)",  fileContentReady);
+#else
     const QString path = m_currentFile.exists() ? "" : "./examples";
     const QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), path, tr("Panda files (*.panda)"));
 
@@ -402,6 +419,7 @@ void MainWindow::on_actionOpen_triggered()
     }
 
     loadPandaFile(fileName);
+#endif
 }
 
 void MainWindow::on_actionSave_triggered()
