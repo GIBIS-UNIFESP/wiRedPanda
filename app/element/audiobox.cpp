@@ -79,8 +79,8 @@ void AudioBox::setAudio(const QString &audioPath)
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     m_player->setVolume(50);
-    playlist->addMedia(QUrl(audioPath));
-    playlist->setPlaybackMode(QMediaPlaylist::Loop);
+    m_playlist->addMedia(QUrl(audioPath));
+    m_playlist->setPlaybackMode(QMediaPlaylist::Loop);
     m_player->setPlaylist(playlist);
 #else
     m_audioOutput->setVolume(0.5f);
@@ -102,7 +102,11 @@ void AudioBox::mute(const bool mute)
         return;
     }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    m_player->setMuted(mute);
+#else
     m_audioOutput->setMuted(mute);
+#endif
 }
 
 void AudioBox::play()
