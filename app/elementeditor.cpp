@@ -11,6 +11,7 @@
 #include "scene.h"
 #include "thememanager.h"
 #include "truth_table.h"
+#include "audiobox.h"
 
 #include <QDebug>
 #include <QFileDialog>
@@ -54,6 +55,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->pushButtonTruthTable,   &QPushButton::clicked,                            this, &ElementEditor::truthTable);
     connect(m_ui->spinBoxPriority,        qOverload<int>(&QSpinBox::valueChanged),          this, &ElementEditor::priorityChanged);
     connect(m_ui->truthTable,             &QTableWidget::cellDoubleClicked,                 this, &ElementEditor::setTruthTableProposition);
+    connect(m_ui->pushButtonAudioBox,     &QPushButton::clicked,                            this, &ElementEditor::audioBox);
 }
 
 ElementEditor::~ElementEditor()
@@ -635,6 +637,19 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         m_ui->lineEditTrigger->setText(m_hasSameTrigger ? firstElement->trigger().toString() : m_manyTriggers);
     }
 
+    /* AudioBox */
+    m_ui->pushButtonAudioBox->setVisible(m_hasAudioBox);
+    m_ui->pushButtonAudioBox->setEnabled(m_hasAudioBox);
+    m_ui->labelAudioBox->setVisible(m_hasAudioBox);
+    m_ui->labelCurrentAudioBox->setVisible(m_hasAudioBox);
+    if (m_hasAudioBox) {
+        if (elements.size() > 1) {
+            m_ui->labelCurrentAudioBox->setText(m_manyAudios);
+        }
+
+        m_ui->labelCurrentAudioBox->setText(elements[0]->audio());
+    }
+
     /* TruthTable */
     m_ui->pushButtonTruthTable->setVisible(static_cast<uint>(elements.size()) == m_hasTruthTable);
     m_ui->truthTable->setVisible(false);
@@ -942,6 +957,15 @@ void ElementEditor::setTruthTableProposition(const int row, const int column)
     ElementEditor::truthTable();
 
     m_scene->setCircuitUpdateRequired();
+}
+
+void ElementEditor::audioBox() {
+    auto *audiobox = dynamic_cast<AudioBox *>(m_elements[0]);
+
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Select any audio"),
+                                                    QString(), tr("Audio (*.mp3 *.mp4 *.wav *.ogg)"));
+
+    audiobox->setAudio(filePath);
 }
 
 void ElementEditor::audioBox() {

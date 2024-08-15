@@ -47,34 +47,10 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="QComboBox" name="comboBoxOutputSize"/>
-      </item>
       <item row="11" column="1">
        <widget class="QComboBox" name="comboBoxColor">
         <property name="currentText">
          <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="labelInputs">
-        <property name="text">
-         <string>Input Ports:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="19" column="0">
-       <widget class="QLabel" name="labelPriority">
-        <property name="text">
-         <string>Priority:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="labelOutputs">
-        <property name="text">
-         <string>Output Ports:</string>
         </property>
        </widget>
       </item>
@@ -112,10 +88,23 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
-       <widget class="QCheckBox" name="checkBoxLocked">
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="lineEditElementLabel"/>
+      </item>
+      <item row="14" column="0" colspan="2">
+       <widget class="QPushButton" name="pushButtonAudioBox">
         <property name="text">
-         <string/>
+         <string>Browse Audio</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="comboBoxInputSize"/>
+      </item>
+      <item row="18" column="0">
+       <widget class="QLabel" name="labelTrigger">
+        <property name="text">
+         <string>Trigger:</string>
         </property>
        </widget>
       </item>
@@ -166,27 +155,44 @@
         </item>
        </widget>
       </item>
-      <item row="18" column="0">
-       <widget class="QLabel" name="labelTrigger">
+      <item row="6" column="0">
+       <widget class="QLabel" name="labelValue">
         <property name="text">
-         <string>Trigger:</string>
+         <string>Value:</string>
         </property>
        </widget>
       </item>
-      <item row="9" column="0">
-       <widget class="QLabel" name="labelFrequency">
+      <item row="19" column="0">
+       <widget class="QLabel" name="labelPriority">
         <property name="text">
-         <string>Frequency:</string>
+         <string>Priority:</string>
         </property>
        </widget>
       </item>
-      <item row="6" column="1">
-       <widget class="QComboBox" name="comboBoxValue"/>
+      <item row="18" column="1">
+       <widget class="QLineEdit" name="lineEditTrigger"/>
       </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="labelLocked">
+      <item row="7" column="1">
+       <widget class="QCheckBox" name="checkBoxLocked">
         <property name="text">
-         <string>Locked:</string>
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QComboBox" name="comboBoxOutputSize"/>
+      </item>
+      <item row="22" column="0" colspan="2">
+       <widget class="QTableWidget" name="truthTable">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="19" column="1">
+       <widget class="QSpinBox" name="spinBoxPriority">
+        <property name="maximum">
+         <number>9</number>
         </property>
        </widget>
       </item>
@@ -212,24 +218,24 @@
         </property>
        </widget>
       </item>
-      <item row="14" column="0" colspan="2">
-       <widget class="QPushButton" name="pushButtonAudioBox">
+      <item row="15" column="0">
+       <widget class="QLabel" name="labelAudioBox">
+        <property name="text">
+         <string>Audio:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="0">
+       <widget class="QLabel" name="labelColor">
         <property name="text">
          <string>Browse Audio</string>
         </property>
        </widget>
       </item>
-      <item row="15" column="1">
-       <widget class="QLabel" name="labelCurrentAudioBox">
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelInputs">
         <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="labelValue">
-        <property name="text">
-         <string>Value:</string>
+         <string>Input Ports:</string>
         </property>
        </widget>
       </item>
@@ -238,8 +244,32 @@
         <property name="spacing">
          <number>6</number>
         </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="labelLocked">
+        <property name="text">
+         <string>Locked:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="labelOutputs">
+        <property name="text">
+         <string>Output Ports:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QComboBox" name="comboBoxValue"/>
+      </item>
+      <item row="21" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="spacing">
+         <number>6</number>
+        </property>
         <property name="sizeConstraint">
-         <enum>QLayout::SizeConstraint::SetNoConstraint</enum>
+         <enum>QLayout::SetNoConstraint</enum>
         </property>
         <item>
          <widget class="QPushButton" name="pushButtonTruthTable">
@@ -285,6 +315,13 @@
          </widget>
         </item>
        </layout>
+      </item>
+      <item row="15" column="1">
+       <widget class="QLabel" name="labelCurrentAudioBox">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

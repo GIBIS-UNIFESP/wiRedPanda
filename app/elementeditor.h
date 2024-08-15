@@ -36,6 +36,7 @@ public:
     void updatePriorityAction();
     void updateTheme();
     void truthTable();
+    void audioBox();
 
 signals:
     void sendCommand(QUndoCommand *cmd);
