@@ -1225,9 +1225,12 @@ QTabWidget::pane {
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/timer.svg</normaloff>:/toolbar/timer.svg</iconset>
+     <normaloff>:/toolbar/timerRed.svg</normaloff>:/toolbar/timerRed.svg</iconset>
    </property>
    <property name="text">
     <string>Temporal Simulation</string>
