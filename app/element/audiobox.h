@@ -5,10 +5,6 @@
 
 #include "graphicelement.h"
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <QMediaPlaylist>
-#endif
-
 #include <QMediaPlayer>
 #include <QAudioOutput>
 #include <QFileInfo>
@@ -31,10 +27,6 @@ public:
 private:
     void play();
     void stop();
-
-    #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QMediaPlaylist *m_playlist = nullptr;
-    #endif
 
     QMediaPlayer *m_player = nullptr;
     QAudioOutput *m_audioOutput = nullptr;
