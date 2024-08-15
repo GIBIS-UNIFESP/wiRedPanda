@@ -1014,6 +1014,16 @@ void GraphicElement::setHasTruthTable(const bool hasTruthTable)
     m_hasTruthTable = hasTruthTable;
 }
 
+void GraphicElement::setHasAudioBox(const bool hasAudioBox)
+{
+    m_hasAudioBox = hasAudioBox;
+}
+
+bool GraphicElement::hasAudioBox() const
+{
+    return m_hasAudioBox;
+}
+
 bool GraphicElement::canChangeSkin() const
 {
     return m_canChangeSkin;
