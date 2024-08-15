@@ -1,0 +1,62 @@
+# Copyright 2015 - 2024, GIBIS-Unifesp and the WiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Build WebAssembly
+
+on:
+  push:
+    branches:
+      - wasm
+
+jobs:
+  build-wasm:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        fetch-depth: 0
+
+    # doesn't work with WASM 6.7.*, must wait for aqtinstall fix
+    - name: Setup Qt for Wasm
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: 6.6.3
+        arch: wasm_multithread
+        modules: qtmultimedia
+        cache: true
+        
+    - name: Setup emscripten
+      run: |
+        git clone https://github.com/emscripten-core/emsdk
+        cd emsdk
+        ./emsdk install 3.1.37
+        ./emsdk activate 3.1.37
+
+    - name: Setup ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: wasm-ubuntu-6.6.3
+
+    - name: Build and Test (Wasm)
+      run: |
+        source ./emsdk/emsdk_env.sh
+        mkdir build
+        cd build
+        qmake ../app/app.pro
+        make -j$(nproc)
+        rm -rf ./build_files
+        cp wiredpanda.html index.html
+        wget https://github.com/gzuidhof/coi-serviceworker/raw/master/coi-serviceworker.min.js
+        sed -i '/<script src="wiredpanda.js"><\/script>/a <script src="coi-serviceworker.min.js"><\/script>' index.html
+
+    - name: Deploy to GitHub Pages
+      if: success()
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./build
+        destination_dir: wasm
+        enable_jekyll: true
+
