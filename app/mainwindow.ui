@@ -1321,9 +1321,12 @@ QTabWidget::pane {
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/timer.svg</normaloff>:/toolbar/timer.svg</iconset>
+     <normaloff>:/toolbar/timerRed.svg</normaloff>:/toolbar/timerRed.svg</iconset>
    </property>
    <property name="text">
     <string>Temporal Simulation</string>
@@ -1356,13 +1359,13 @@ QTabWidget::pane {
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/misc/misc.qrc"/>
-  <include location="resources/output/output.qrc"/>
   <include location="resources/memory/light/memory_light.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/misc/misc.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/output/output.qrc"/>
  </resources>
  <connections/>
 </ui>
