@@ -11,6 +11,7 @@
 #include "scene.h"
 #include "thememanager.h"
 #include "truth_table.h"
+#include "audiobox.h"
 
 #include <QDebug>
 #include <QFileDialog>
@@ -56,6 +57,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->pushButtonTruthTable,   &QPushButton::clicked,                            this, &ElementEditor::truthTable);
     connect(m_ui->spinBoxPriority,        qOverload<int>(&QSpinBox::valueChanged),          this, &ElementEditor::priorityChanged);
     connect(m_ui->truthTable,             &QTableWidget::cellDoubleClicked,                 this, &ElementEditor::setTruthTableProposition);
+    connect(m_ui->pushButtonAudioBox,     &QPushButton::clicked,                            this, &ElementEditor::audioBox);
 }
 
 ElementEditor::~ElementEditor()
@@ -384,6 +386,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = true;
     m_canChangeSkin = m_hasSamePriority = true;
     m_hasElements = true;
+    m_hasAudioBox = true;
 
     show();
     setEnabled(false);
@@ -407,6 +410,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         m_canChangeSkin &= elm->canChangeSkin();
         m_hasColors &= elm->hasColors();
         m_hasAudio &= elm->hasAudio();
+        m_hasAudioBox &= elm->hasAudioBox();
         m_hasFrequency &= elm->hasFrequency();
         minimumInputs = std::max(minimumInputs, elm->minInputSize());
         maximumInputs = std::min(maximumInputs, elm->maxInputSize());
@@ -635,6 +639,19 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 
     if (m_hasTrigger) {
         m_ui->lineEditTrigger->setText(m_hasSameTrigger ? firstElement->trigger().toString() : m_manyTriggers);
+    }
+
+    /* AudioBox */
+    m_ui->pushButtonAudioBox->setVisible(m_hasAudioBox);
+    m_ui->pushButtonAudioBox->setEnabled(m_hasAudioBox);
+    m_ui->labelAudioBox->setVisible(m_hasAudioBox);
+    m_ui->labelCurrentAudioBox->setVisible(m_hasAudioBox);
+    if (m_hasAudioBox) {
+        if (elements.size() > 1) {
+            m_ui->labelCurrentAudioBox->setText(m_manyAudios);
+        }
+
+        m_ui->labelCurrentAudioBox->setText(elements[0]->audio());
     }
 
     /* TruthTable */
@@ -943,6 +960,15 @@ void ElementEditor::setTruthTableProposition(const int row, const int column)
     m_scene->setCircuitUpdateRequired();
 
     return;
+}
+
+void ElementEditor::audioBox() {
+    auto *audiobox = dynamic_cast<AudioBox *>(m_elements[0]);
+
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Select any audio"),
+                                                    QString(), tr("Audio (*.mp3 *.mp4 *.wav *.ogg)"));
+
+    audiobox->setAudio(filePath);
 }
 
 void ElementEditor::defaultSkin()

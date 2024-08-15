@@ -32,6 +32,7 @@ public:
     void updatePriorityAction();
     void updateTheme();
     void truthTable();
+    void audioBox();
 
 signals:
     void sendCommand(QUndoCommand *cmd);
@@ -71,6 +72,7 @@ private:
     bool m_canMorph = false;
     bool m_hasAnyProperty = false;
     bool m_hasAudio = false;
+    bool m_hasAudioBox = false;
     bool m_hasColors = false;
     bool m_hasElements = false;
     bool m_hasFrequency = false;

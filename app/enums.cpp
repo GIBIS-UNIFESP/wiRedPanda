@@ -32,8 +32,9 @@ ElementType Enums::nextElmType(ElementType type) {
         case ElementType::SRFlipFlop:  return ElementType::JKFlipFlop;
 
         // Output
-        case ElementType::Buzzer:      return ElementType::Led;
         case ElementType::Led:         return ElementType::Buzzer;
+        case ElementType::Buzzer:      return ElementType::AudioBox;
+        case ElementType::AudioBox:    return ElementType::Led;
 
         // Other Cases
         default:                       return ElementType::Unknown;
@@ -70,7 +71,8 @@ ElementType Enums::prevElmType(ElementType type) {
         case ElementType::SRFlipFlop:  return ElementType::JKFlipFlop;
 
         // Output
-        case ElementType::Led:         return ElementType::Buzzer;
+        case ElementType::Led:         return ElementType::AudioBox;
+        case ElementType::AudioBox:    return ElementType::Buzzer;
         case ElementType::Buzzer:      return ElementType::Led;
 
         // Other Cases
