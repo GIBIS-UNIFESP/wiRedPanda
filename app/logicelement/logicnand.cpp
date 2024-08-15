@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "logicnand.h"
@@ -16,13 +16,12 @@ void LogicNand::updateLogic()
         return;
     }
 
-    if (!isTempSimulationOn()) {
-        const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), true, std::bit_and<>());
-        setOutputValue(!result);
-    }
-    else {
-        const auto result = std::accumulate(inputBuffer.last().cbegin(), inputBuffer.last().cend(), true, std::bit_and<>());
+    if (isTempSimulationOn()) {
+        const auto result = std::accumulate(m_inputBuffer.last().cbegin(), m_inputBuffer.last().cend(), true, std::bit_and<>());
         setOutputValue(!result);
         updateInputBuffer();
+    } else {
+        const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), true, std::bit_and<>());
+        setOutputValue(!result);
     }
 }

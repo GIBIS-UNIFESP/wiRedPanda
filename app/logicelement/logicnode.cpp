@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "logicnode.h"
@@ -16,4 +16,3 @@ void LogicNode::updateLogic()
 
     setOutputValue(m_inputValues.at(0));
 }
-

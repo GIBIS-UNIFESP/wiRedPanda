@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "mainwindow.h"
@@ -80,13 +80,6 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     auto *shortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
     connect(shortcut, &QShortcut::activated, m_ui->lineEditSearch, qOverload<>(&QWidget::setFocus));
     populateLeftMenu();
-    m_ui->tabElements->setTabIcon(0, QIcon(":/input/buttonOff.svg"));
-    m_ui->tabElements->setTabIcon(1, QIcon(":/basic/xor.svg"));
-    m_ui->tabElements->setTabIcon(2, QIcon(DFlipFlop::pixmapPath()));
-    m_ui->tabElements->setTabIcon(3, QIcon(":/basic/ic-panda.svg"));
-    m_ui->tabElements->setTabIcon(4, QIcon(":/basic/truthtable-rotated.svg"));
-    m_ui->tabElements->setTabText(4, "");
-    m_ui->tabElements->setTabIcon(5, QIcon(":/misc/text.png"));
     m_ui->tabElements->setTabEnabled(6, false);
 
     qCDebug(zero) << tr("Loading recent file list.");
@@ -137,47 +130,47 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     }
 
     qCDebug(zero) << tr("Setting connections");
-    connect(m_ui->actionAbout,            &QAction::triggered,        this,                &MainWindow::on_actionAbout_triggered);
-    connect(m_ui->actionAboutQt,          &QAction::triggered,        this,                &MainWindow::on_actionAboutQt_triggered);
-    connect(m_ui->actionAboutThisVersion, &QAction::triggered,        this,                &MainWindow::aboutThisVersion);
-    connect(m_ui->actionChangeTrigger,    &QAction::triggered,        m_ui->elementEditor, &ElementEditor::changeTriggerAction);
-    connect(m_ui->actionDarkTheme,        &QAction::triggered,        this,                &MainWindow::on_actionDarkTheme_triggered);
-    connect(m_ui->actionEnglish,          &QAction::triggered,        this,                &MainWindow::on_actionEnglish_triggered);
-    connect(m_ui->actionExit,             &QAction::triggered,        this,                &MainWindow::on_actionExit_triggered);
-    connect(m_ui->actionExportToArduino,  &QAction::triggered,        this,                &MainWindow::on_actionExportToArduino_triggered);
-    connect(m_ui->actionExportToImage,    &QAction::triggered,        this,                &MainWindow::on_actionExportToImage_triggered);
-    connect(m_ui->actionExportToPdf,      &QAction::triggered,        this,                &MainWindow::on_actionExportToPdf_triggered);
-    connect(m_ui->actionFastMode,         &QAction::triggered,        this,                &MainWindow::on_actionFastMode_triggered);
-    connect(m_ui->actionFlipHorizontally, &QAction::triggered,        this,                &MainWindow::on_actionFlipHorizontally_triggered);
-    connect(m_ui->actionFlipVertically,   &QAction::triggered,        this,                &MainWindow::on_actionFlipVertically_triggered);
-    connect(m_ui->actionFullscreen,       &QAction::triggered,        this,                &MainWindow::on_actionFullscreen_triggered);
-    connect(m_ui->actionGates,            &QAction::triggered,        this,                &MainWindow::on_actionGates_triggered);
-    connect(m_ui->actionLabelsUnderIcons, &QAction::triggered,        this,                &MainWindow::on_actionLabelsUnderIcons_triggered);
-    connect(m_ui->actionLightTheme,       &QAction::triggered,        this,                &MainWindow::on_actionLightTheme_triggered);
-    connect(m_ui->actionMute,             &QAction::triggered,        this,                &MainWindow::on_actionMute_triggered);
-    connect(m_ui->actionNew,              &QAction::triggered,        this,                &MainWindow::on_actionNew_triggered);
-    connect(m_ui->actionOpen,             &QAction::triggered,        this,                &MainWindow::on_actionOpen_triggered);
-    connect(m_ui->actionPlay,             &QAction::toggled,          this,                &MainWindow::on_actionPlay_toggled);
-    connect(m_ui->actionPortuguese,       &QAction::triggered,        this,                &MainWindow::on_actionPortuguese_triggered);
-    connect(m_ui->actionReloadFile,       &QAction::triggered,        this,                &MainWindow::on_actionReloadFile_triggered);
-    connect(m_ui->actionRename,           &QAction::triggered,        m_ui->elementEditor, &ElementEditor::renameAction);
-    connect(m_ui->actionResetZoom,        &QAction::triggered,        this,                &MainWindow::on_actionResetZoom_triggered);
-    connect(m_ui->actionTemporalSimulation, &QAction::triggered,      this,                &MainWindow::on_actionStartTemporalSimulation_toggled);
-    connect(m_ui->actionRestart,          &QAction::triggered,        this,                &MainWindow::on_actionRestart_triggered);
-    connect(m_ui->actionRotateLeft,       &QAction::triggered,        this,                &MainWindow::on_actionRotateLeft_triggered);
-    connect(m_ui->actionRotateRight,      &QAction::triggered,        this,                &MainWindow::on_actionRotateRight_triggered);
-    connect(m_ui->actionSave,             &QAction::triggered,        this,                &MainWindow::on_actionSave_triggered);
-    connect(m_ui->actionSaveAs,           &QAction::triggered,        this,                &MainWindow::on_actionSaveAs_triggered);
-    connect(m_ui->actionSelectAll,        &QAction::triggered,        this,                &MainWindow::on_actionSelectAll_triggered);
-    connect(m_ui->actionWaveform,         &QAction::triggered,        this,                &MainWindow::on_actionWaveform_triggered);
-    connect(m_ui->actionWires,            &QAction::triggered,        this,                &MainWindow::on_actionWires_triggered);
-    connect(m_ui->actionZoomIn,           &QAction::triggered,        this,                &MainWindow::on_actionZoomIn_triggered);
-    connect(m_ui->actionZoomOut,          &QAction::triggered,        this,                &MainWindow::on_actionZoomOut_triggered);
-    connect(m_ui->lineEditSearch,         &QLineEdit::returnPressed,  this,                &MainWindow::on_lineEditSearch_returnPressed);
-    connect(m_ui->lineEditSearch,         &QLineEdit::textChanged,    this,                &MainWindow::on_lineEditSearch_textChanged);
-    connect(m_ui->pushButtonAddIC,        &QPushButton::clicked,      this,                &MainWindow::on_pushButtonAddIC_clicked);
-    connect(m_ui->pushButtonRemoveIC,     &QPushButton::clicked,      this,                &MainWindow::on_pushButtonRemoveIC_clicked);
-    connect(m_ui->pushButtonRemoveIC,     &TrashButton::removeICFile, this,                &MainWindow::removeICFile);
+    connect(m_ui->actionAbout,              &QAction::triggered,        this,                &MainWindow::on_actionAbout_triggered);
+    connect(m_ui->actionAboutQt,            &QAction::triggered,        this,                &MainWindow::on_actionAboutQt_triggered);
+    connect(m_ui->actionAboutThisVersion,   &QAction::triggered,        this,                &MainWindow::aboutThisVersion);
+    connect(m_ui->actionChangeTrigger,      &QAction::triggered,        m_ui->elementEditor, &ElementEditor::changeTriggerAction);
+    connect(m_ui->actionDarkTheme,          &QAction::triggered,        this,                &MainWindow::on_actionDarkTheme_triggered);
+    connect(m_ui->actionEnglish,            &QAction::triggered,        this,                &MainWindow::on_actionEnglish_triggered);
+    connect(m_ui->actionExit,               &QAction::triggered,        this,                &MainWindow::on_actionExit_triggered);
+    connect(m_ui->actionExportToArduino,    &QAction::triggered,        this,                &MainWindow::on_actionExportToArduino_triggered);
+    connect(m_ui->actionExportToImage,      &QAction::triggered,        this,                &MainWindow::on_actionExportToImage_triggered);
+    connect(m_ui->actionExportToPdf,        &QAction::triggered,        this,                &MainWindow::on_actionExportToPdf_triggered);
+    connect(m_ui->actionFastMode,           &QAction::triggered,        this,                &MainWindow::on_actionFastMode_triggered);
+    connect(m_ui->actionFlipHorizontally,   &QAction::triggered,        this,                &MainWindow::on_actionFlipHorizontally_triggered);
+    connect(m_ui->actionFlipVertically,     &QAction::triggered,        this,                &MainWindow::on_actionFlipVertically_triggered);
+    connect(m_ui->actionFullscreen,         &QAction::triggered,        this,                &MainWindow::on_actionFullscreen_triggered);
+    connect(m_ui->actionGates,              &QAction::triggered,        this,                &MainWindow::on_actionGates_triggered);
+    connect(m_ui->actionLabelsUnderIcons,   &QAction::triggered,        this,                &MainWindow::on_actionLabelsUnderIcons_triggered);
+    connect(m_ui->actionLightTheme,         &QAction::triggered,        this,                &MainWindow::on_actionLightTheme_triggered);
+    connect(m_ui->actionMute,               &QAction::triggered,        this,                &MainWindow::on_actionMute_triggered);
+    connect(m_ui->actionNew,                &QAction::triggered,        this,                &MainWindow::on_actionNew_triggered);
+    connect(m_ui->actionOpen,               &QAction::triggered,        this,                &MainWindow::on_actionOpen_triggered);
+    connect(m_ui->actionPlay,               &QAction::toggled,          this,                &MainWindow::on_actionPlay_toggled);
+    connect(m_ui->actionPortuguese,         &QAction::triggered,        this,                &MainWindow::on_actionPortuguese_triggered);
+    connect(m_ui->actionReloadFile,         &QAction::triggered,        this,                &MainWindow::on_actionReloadFile_triggered);
+    connect(m_ui->actionRename,             &QAction::triggered,        m_ui->elementEditor, &ElementEditor::renameAction);
+    connect(m_ui->actionResetZoom,          &QAction::triggered,        this,                &MainWindow::on_actionResetZoom_triggered);
+    connect(m_ui->actionTemporalSimulation, &QAction::triggered,        this,                &MainWindow::on_actionStartTemporalSimulation_toggled);
+    connect(m_ui->actionRestart,            &QAction::triggered,        this,                &MainWindow::on_actionRestart_triggered);
+    connect(m_ui->actionRotateLeft,         &QAction::triggered,        this,                &MainWindow::on_actionRotateLeft_triggered);
+    connect(m_ui->actionRotateRight,        &QAction::triggered,        this,                &MainWindow::on_actionRotateRight_triggered);
+    connect(m_ui->actionSave,               &QAction::triggered,        this,                &MainWindow::on_actionSave_triggered);
+    connect(m_ui->actionSaveAs,             &QAction::triggered,        this,                &MainWindow::on_actionSaveAs_triggered);
+    connect(m_ui->actionSelectAll,          &QAction::triggered,        this,                &MainWindow::on_actionSelectAll_triggered);
+    connect(m_ui->actionWaveform,           &QAction::triggered,        this,                &MainWindow::on_actionWaveform_triggered);
+    connect(m_ui->actionWires,              &QAction::triggered,        this,                &MainWindow::on_actionWires_triggered);
+    connect(m_ui->actionZoomIn,             &QAction::triggered,        this,                &MainWindow::on_actionZoomIn_triggered);
+    connect(m_ui->actionZoomOut,            &QAction::triggered,        this,                &MainWindow::on_actionZoomOut_triggered);
+    connect(m_ui->lineEditSearch,           &QLineEdit::returnPressed,  this,                &MainWindow::on_lineEditSearch_returnPressed);
+    connect(m_ui->lineEditSearch,           &QLineEdit::textChanged,    this,                &MainWindow::on_lineEditSearch_textChanged);
+    connect(m_ui->pushButtonAddIC,          &QPushButton::clicked,      this,                &MainWindow::on_pushButtonAddIC_clicked);
+    connect(m_ui->pushButtonRemoveIC,       &QPushButton::clicked,      this,                &MainWindow::on_pushButtonRemoveIC_clicked);
+    connect(m_ui->pushButtonRemoveIC,       &TrashButton::removeICFile, this,                &MainWindow::removeICFile);
 }
 
 MainWindow::~MainWindow()
@@ -301,8 +294,7 @@ void MainWindow::aboutThisVersion()
     msgBox.setIcon(QMessageBox::Icon::Information);
     msgBox.setWindowTitle("WiRedPanda " + QString(APP_VERSION));
     msgBox.setText(
-        tr("Version 4.2: NEW: implementation of truth tables."
-           "wiRed Panda version >= 4.0 is not 100% compatible with previous versions.\n"
+        tr("WiRedPanda version >= 4.0 is not 100% compatible with previous versions.\n"
            "To open old version projects containing ICs (or boxes), skins, and/or "
            "beWavedDolphin simulations, their files must be moved to the same directory "
            "as the main project file.\n"
@@ -1147,11 +1139,8 @@ void MainWindow::on_actionPlay_toggled(const bool checked)
     }
 
     auto *simulation = m_currentTab->simulation();
-
     checked ? simulation->start() : simulation->stop();
 }
-
-
 
 void MainWindow::on_actionRestart_triggered()
 {
@@ -1168,9 +1157,7 @@ void MainWindow::on_actionStartTemporalSimulation_toggled(const bool checked)
         return;
     }
 
-    auto *simulation = m_currentTab->simulation();
-
-    checked ? simulation->setTemporalSimulation(true) : simulation->setTemporalSimulation(false);
+    m_currentTab->simulation()->setTemporalSimulation(checked);
 }
 
 void MainWindow::populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout)

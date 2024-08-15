@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "simulation.h"
@@ -11,7 +11,6 @@
 #include "qneconnection.h"
 #include "scene.h"
 
-#include <unistd.h>
 #include <QGraphicsView>
 
 using namespace std::chrono_literals;

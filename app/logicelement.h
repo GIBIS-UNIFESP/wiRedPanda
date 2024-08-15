@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
@@ -23,8 +23,8 @@ public:
     bool operator>(const LogicElement &other) const;
 
     bool inputValue(const int index = 0) const;
-    bool isValid() const;
     bool isTempSimulationOn();
+    bool isValid() const;
     bool outputValue(const int index = 0) const;
     int calculatePriority();
     virtual void updateLogic() = 0;
@@ -39,8 +39,8 @@ public:
 protected:
     bool updateInputs();
 
+    QVector<QVector<bool>> m_inputBuffer;
     QVector<bool> m_inputValues;
-    QVector<QVector<bool>> inputBuffer;
     int m_delayLength;
 
 private:

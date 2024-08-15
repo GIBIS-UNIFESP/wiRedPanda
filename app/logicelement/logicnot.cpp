@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "logicnot.h"
@@ -14,10 +14,10 @@ void LogicNot::updateLogic()
         return;
     }
 
-    if (!isTempSimulationOn())
-        setOutputValue(!m_inputValues.at(0));
-    else {
-        setOutputValue(!inputBuffer.last()[0]);
+    if (isTempSimulationOn()) {
+        setOutputValue(!m_inputBuffer.last()[0]);
         updateInputBuffer();
+    } else {
+        setOutputValue(!m_inputValues.at(0));
     }
 }
