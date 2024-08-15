@@ -81,7 +81,7 @@ void AudioBox::setAudio(const QString &audioPath)
     m_player->setVolume(50);
     m_playlist->addMedia(QUrl(audioPath));
     m_playlist->setPlaybackMode(QMediaPlaylist::Loop);
-    m_player->setPlaylist(playlist);
+    m_player->setPlaylist(m_playlist);
 #else
     m_audioOutput->setVolume(0.5f);
     m_player->setAudioOutput(m_audioOutput);
