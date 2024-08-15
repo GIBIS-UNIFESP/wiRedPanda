@@ -148,7 +148,11 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
+<<<<<<< HEAD
                    <height>581</height>
+=======
+                   <height>558</height>
+>>>>>>> dolphin
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -197,7 +201,11 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
+<<<<<<< HEAD
                    <height>581</height>
+=======
+                   <height>558</height>
+>>>>>>> dolphin
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -246,7 +254,11 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
+<<<<<<< HEAD
                    <height>581</height>
+=======
+                   <height>558</height>
+>>>>>>> dolphin
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -295,7 +307,11 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
+<<<<<<< HEAD
                    <height>549</height>
+=======
+                   <height>520</height>
+>>>>>>> dolphin
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -372,7 +388,11 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
+<<<<<<< HEAD
                    <height>581</height>
+=======
+                   <height>558</height>
+>>>>>>> dolphin
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -427,7 +447,11 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
+<<<<<<< HEAD
                    <height>581</height>
+=======
+                   <height>558</height>
+>>>>>>> dolphin
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -472,7 +496,11 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>258</width>
+<<<<<<< HEAD
                    <height>579</height>
+=======
+                   <height>556</height>
+>>>>>>> dolphin
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -619,7 +647,11 @@ QTabWidget::pane {
      <x>0</x>
      <y>0</y>
      <width>886</width>
+<<<<<<< HEAD
      <height>21</height>
+=======
+     <height>27</height>
+>>>>>>> dolphin
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -682,6 +714,7 @@ QTabWidget::pane {
     <property name="title">
      <string>&amp;Help</string>
     </property>
+    <addaction name="actionHotkeysAndTips"/>
     <addaction name="actionAbout"/>
     <addaction name="actionAboutQt"/>
     <addaction name="actionAboutThisVersion"/>
@@ -1210,6 +1243,7 @@ QTabWidget::pane {
     <string>Restart simulation.</string>
    </property>
   </action>
+<<<<<<< HEAD
   <action name="actionTemporalSimulation">
    <property name="checkable">
     <bool>true</bool>
@@ -1226,6 +1260,14 @@ QTabWidget::pane {
    </property>
    <property name="shortcut">
     <string>Ctrl+T</string>
+=======
+  <action name="actionHotkeysAndTips">
+   <property name="icon">
+    <iconset theme="help-about"/>
+   </property>
+   <property name="text">
+    <string>Hotkeys and tips</string>
+>>>>>>> dolphin
    </property>
   </action>
  </widget>
@@ -1253,6 +1295,7 @@ QTabWidget::pane {
  </tabstops>
  <resources>
 <<<<<<< HEAD
+<<<<<<< HEAD
   <include location="resources/memory/light/memory_light.qrc"/>
   <include location="resources/basic/basic.qrc"/>
   <include location="resources/misc/misc.qrc"/>
@@ -1269,6 +1312,15 @@ QTabWidget::pane {
   <include location="resources/misc/misc.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
 >>>>>>> origin/temporal_simulation
+=======
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/misc/misc.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/memory/light/memory_light.qrc"/>
+>>>>>>> dolphin
  </resources>
  <connections/>
 </ui>
