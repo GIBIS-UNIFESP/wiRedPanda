@@ -102,7 +102,7 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
 
     m_scene->addWidget(m_signalTableView);
 
-    m_ui->graphicsView->setScene(m_scene);
+    // m_ui->graphicsView->setScene(m_scene);
 
     m_ui->actionZoomOut->setEnabled(false);
 
@@ -133,8 +133,8 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
     connect(m_ui->actionShowWaveforms, &QAction::triggered,            this, &BewavedDolphin::on_actionShowWaveforms_triggered);
     connect(m_ui->actionZoomIn,        &QAction::triggered,            this, &BewavedDolphin::on_actionZoomIn_triggered);
     connect(m_ui->actionZoomOut,       &QAction::triggered,            this, &BewavedDolphin::on_actionZoomOut_triggered);
-    connect(m_ui->graphicsView,        &DolphinGraphicsView::scaleIn,  this, &BewavedDolphin::on_actionZoomIn_triggered);
-    connect(m_ui->graphicsView,        &DolphinGraphicsView::scaleOut, this, &BewavedDolphin::on_actionZoomOut_triggered);
+    // connect(m_ui->graphicsView,        &DolphinGraphicsView::scaleIn,  this, &BewavedDolphin::on_actionZoomIn_triggered);
+    // connect(m_ui->graphicsView,        &DolphinGraphicsView::scaleOut, this, &BewavedDolphin::on_actionZoomOut_triggered);
 }
 
 BewavedDolphin::~BewavedDolphin()
@@ -843,7 +843,7 @@ void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
 void BewavedDolphin::on_actionZoomOut_triggered()
 {
     m_scale *= m_scaleFactor;
-    m_ui->graphicsView->zoomOut();
+    // m_ui->graphicsView->zoomOut();
     resizeScene();
     zoomChanged();
 }
@@ -851,14 +851,14 @@ void BewavedDolphin::on_actionZoomOut_triggered()
 void BewavedDolphin::on_actionZoomIn_triggered()
 {
     m_scale /= m_scaleFactor;
-    m_ui->graphicsView->zoomIn();
+    // m_ui->graphicsView->zoomIn();
     resizeScene();
     zoomChanged();
 }
 
 void BewavedDolphin::on_actionResetZoom_triggered()
 {
-    m_ui->graphicsView->resetZoom();
+    // m_ui->graphicsView->resetZoom();
     m_scale = 1.25;
     resizeScene();
     zoomChanged();
@@ -866,8 +866,8 @@ void BewavedDolphin::on_actionResetZoom_triggered()
 
 void BewavedDolphin::zoomChanged()
 {
-    m_ui->actionZoomIn->setEnabled(m_ui->graphicsView->canZoomIn());
-    m_ui->actionZoomOut->setEnabled(m_ui->graphicsView->canZoomOut());
+    // m_ui->actionZoomIn->setEnabled(m_ui->graphicsView->canZoomIn());
+    // m_ui->actionZoomOut->setEnabled(m_ui->graphicsView->canZoomOut());
 }
 
 void BewavedDolphin::on_actionClear_triggered()
