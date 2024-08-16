@@ -41,5 +41,7 @@
         <file>zoomOut.svg</file>
         <file>zoomReset.svg</file>
         <file>timer.svg</file>
+        <file>timerRed.svg</file>
     </qresource>
+    <qresource prefix="/"/>
 </RCC>
