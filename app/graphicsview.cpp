@@ -30,7 +30,7 @@ bool GraphicsView::canZoomIn() const
 
 bool GraphicsView::canZoomOut() const
 {
-    return m_zoomLevel > -5;
+    return m_zoomLevel > 0;
 }
 
 void GraphicsView::mousePressEvent(QMouseEvent *event)
