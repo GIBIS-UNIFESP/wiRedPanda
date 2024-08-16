@@ -146,7 +146,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(removeOutPortShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::removeOutputPort);
 
     qCDebug(zero) << tr("Setting connections");
-    connect(m_ui->actionHotkeysAndTips,   &QAction::triggered,        this,                &MainWindow::on_actionHotkeysAndTips_triggered);
+    // connect(m_ui->actionHotkeysAndTips,   &QAction::triggered,        this,                &MainWindow::on_actionHotkeysAndTips_triggered);
     connect(m_ui->actionAbout,            &QAction::triggered,        this,                &MainWindow::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,          &QAction::triggered,        this,                &MainWindow::on_actionAboutQt_triggered);
     connect(m_ui->actionAboutThisVersion, &QAction::triggered,        this,                &MainWindow::aboutThisVersion);

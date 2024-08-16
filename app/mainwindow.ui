@@ -196,7 +196,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>558</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -245,7 +245,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>558</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -404,7 +404,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>558</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -453,7 +453,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>520</height>
+                   <height>549</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -530,7 +530,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>558</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -585,7 +585,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>558</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -630,7 +630,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>258</width>
-                   <height>556</height>
+                   <height>579</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -729,7 +729,7 @@ QTabWidget::pane {
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>27</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1322,12 +1322,22 @@ QTabWidget::pane {
     <string>Restart simulation.</string>
    </property>
   </action>
-  <action name="actionHotkeysAndTips">
+  <action name="actionTemporalSimulation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="icon">
-    <iconset theme="help-about"/>
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/timerRed.svg</normaloff>:/toolbar/timerRed.svg</iconset>
    </property>
    <property name="text">
-    <string>Hotkeys and tips</string>
+    <string>Temporal Simulation</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
    </property>
   </action>
  </widget>
@@ -1357,10 +1367,10 @@ QTabWidget::pane {
   <include location="resources/input/input.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/basic/basic.qrc"/>
-  <include location="resources/misc/misc.qrc"/>
-  <include location="resources/output/output.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/memory/light/memory_light.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/misc/misc.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>
 </ui>
