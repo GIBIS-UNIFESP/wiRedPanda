@@ -12,7 +12,7 @@
 #include "graphicelementinput.h"
 #include "lengthdialog.h"
 #include "mainwindow.h"
-#include "settings.h"
+//#include "settings.h"
 #include "simulationblocker.h"
 
 #include <QClipboard>
@@ -72,7 +72,7 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
 
     resize(800, 500);
 
-    restoreGeometry(Settings::value("beWavedDolphin/geometry").toByteArray());
+    //restoreGeometry(Settings::value("beWavedDolphin/geometry").toByteArray());
 
     m_signalTableView->setItemDelegate(new SignalDelegate(this));
 
@@ -83,7 +83,7 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
     m_view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_ui->verticalLayout->addWidget(&m_view);
 
-    m_ui->mainToolBar->setToolButtonStyle(Settings::value("labelsUnderIcons").toBool() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
+    //m_ui->mainToolBar->setToolButtonStyle(Settings::value("labelsUnderIcons").toBool() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
 
     loadPixmaps();
 
@@ -115,7 +115,7 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
 
 BewavedDolphin::~BewavedDolphin()
 {
-    Settings::setValue("beWavedDolphin/geometry", saveGeometry());
+    //Settings::setValue("beWavedDolphin/geometry", saveGeometry());
     delete m_ui;
 }
 

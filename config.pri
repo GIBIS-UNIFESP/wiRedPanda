@@ -16,7 +16,7 @@ DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 QT += core gui printsupport multimedia widgets svg
 
 CONFIG += c++17 warn_on strict_c strict_c++
-
+QMAKE_LFLAGS += -sASYNCIFY -Os
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 DEFINES += QT_MESSAGELOGCONTEXT
@@ -131,7 +131,6 @@ SOURCES += \
     $$PWD/app/recentfiles.cpp \
     $$PWD/app/scene.cpp \
     $$PWD/app/serialization.cpp \
-    $$PWD/app/settings.cpp \
     $$PWD/app/simulation.cpp \
     $$PWD/app/simulationblocker.cpp \
     $$PWD/app/thememanager.cpp \
@@ -164,7 +163,7 @@ HEADERS += \
     $$PWD/app/recentfiles.h \
     $$PWD/app/scene.h \
     $$PWD/app/serialization.h \
-    $$PWD/app/settings.h \
+    #$$PWD/app/settings.h \
     $$PWD/app/simulation.h \
     $$PWD/app/simulationblocker.h \
     $$PWD/app/thememanager.h \

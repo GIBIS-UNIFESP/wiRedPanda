@@ -5,7 +5,7 @@
 
 #include "common.h"
 #include "globalproperties.h"
-#include "settings.h"
+//#include "settings.h"
 
 #include <QApplication>
 #include <QFile>
@@ -14,9 +14,9 @@
 RecentFiles::RecentFiles(QObject *parent)
     : QObject(parent)
 {
-    if (Settings::contains("recentFileList")) {
+   /* if (Settings::contains("recentFileList")) {
         m_files = Settings::value("recentFileList").toStringList();
-    }
+    }*/
 
     connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this, [=](const QString &filePath) {
         if (!QFile::exists(filePath)) {
@@ -70,5 +70,5 @@ QStringList RecentFiles::recentFiles()
 
 void RecentFiles::saveRecentFiles()
 {
-    Settings::setValue("recentFileList", m_files);
+    //Settings::setValue("recentFileList", m_files);
 }

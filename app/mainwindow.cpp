@@ -14,7 +14,7 @@
 #include "graphicsview.h"
 #include "ic.h"
 #include "recentfiles.h"
-#include "settings.h"
+//#include "settings.h"
 #include "simulation.h"
 #include "simulationblocker.h"
 #include "thememanager.h"
@@ -48,17 +48,17 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     qCDebug(zero) << tr("WiRedPanda Version = ") << APP_VERSION << tr(" OR ") << GlobalProperties::version;
     m_ui->setupUi(this);
 
-    qCDebug(zero) << tr("Settings fileName: ") << Settings::fileName();
-    loadTranslation(Settings::value("language").toString());
+    //qCDebug(zero) << tr("Settings fileName: ") << Settings::fileName();
+    //loadTranslation(Settings::value("language").toString());
 
     connect(m_ui->tab, &QTabWidget::currentChanged,    this, &MainWindow::tabChanged);
     connect(m_ui->tab, &QTabWidget::tabCloseRequested, this, &MainWindow::closeTab);
 
     qCDebug(zero) << tr("Restoring geometry and setting zoom controls.");
-    restoreGeometry(Settings::value("MainWindow/geometry").toByteArray());
-    restoreState(Settings::value("MainWindow/windowState").toByteArray());
-    m_ui->splitter->restoreGeometry(Settings::value("MainWindow/splitter/geometry").toByteArray());
-    m_ui->splitter->restoreState(Settings::value("MainWindow/splitter/state").toByteArray());
+    //restoreGeometry(Settings::value("MainWindow/geometry").toByteArray());
+    //restoreState(Settings::value("MainWindow/windowState").toByteArray());
+    //m_ui->splitter->restoreGeometry(Settings::value("MainWindow/splitter/geometry").toByteArray());
+    //m_ui->splitter->restoreState(Settings::value("MainWindow/splitter/state").toByteArray());
 
     qCDebug(zero) << tr("Preparing theme and UI modes.");
     auto *themeGroup = new QActionGroup(this);
@@ -71,9 +71,9 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     themeGroup->setExclusive(true);
     connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, &MainWindow::updateTheme);
     updateTheme();
-    setFastMode(Settings::value("fastMode").toBool());
-    m_ui->actionLabelsUnderIcons->setChecked(Settings::value("labelsUnderIcons").toBool());
-    m_ui->mainToolBar->setToolButtonStyle(Settings::value("labelsUnderIcons").toBool() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
+    //setFastMode(Settings::value("fastMode").toBool());
+    //m_ui->actionLabelsUnderIcons->setChecked(Settings::value("labelsUnderIcons").toBool());
+    //m_ui->mainToolBar->setToolButtonStyle(Settings::value("labelsUnderIcons").toBool() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
 
     qCDebug(zero) << tr("Setting left side menus.");
     auto *shortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
@@ -185,7 +185,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::loadAutosaveFiles()
 {
-    QStringList autosaves(Settings::value("autosaveFile").toStringList());
+    QStringList autosaves/*(Settings::value("autosaveFile").toStringList())*/;
 
     qCDebug(zero) << tr("All autosave files: ") << autosaves;
 
@@ -212,7 +212,7 @@ void MainWindow::loadAutosaveFiles()
         ++it;
     }
 
-    Settings::setValue("autosaveFile", autosaves);
+    //Settings::setValue("autosaveFile", autosaves);
 }
 
 void MainWindow::createNewTab()
@@ -279,9 +279,9 @@ void MainWindow::show()
 {
     QMainWindow::show();
 
-    if (!Settings::contains("hideV4Warning")) {
+    /*if (!Settings::contains("hideV4Warning")) {
         aboutThisVersion();
-    }
+    }*/
 
     qCDebug(zero) << tr("Checking for autosave file recovery.");
     loadAutosaveFiles();
@@ -313,13 +313,13 @@ void MainWindow::aboutThisVersion()
     msgBox.setDefaultButton(QMessageBox::Ok);
     msgBox.setCheckBox(checkBox);
 
-    connect(checkBox, &QCheckBox::stateChanged, this, [](int state) {
+    /*connect(checkBox, &QCheckBox::stateChanged, this, [](int state) {
         if (static_cast<Qt::CheckState>(state) == Qt::CheckState::Checked) {
             Settings::setValue("hideV4Warning", "true");
         } else {
             Settings::remove("hideV4Warning");
         }
-    });
+    });*/
 
     msgBox.exec();
 }
@@ -394,11 +394,21 @@ void MainWindow::on_actionOpen_triggered()
     const QString path = m_currentFile.exists() ? "" : "./examples";
     const QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), path, tr("Panda files (*.panda)"));
 
+    auto fileContentReady = [](const QString &fileName, const QByteArray &fileContent) {
+        if (fileName.isEmpty()) {
+            // No file was selected
+        } else {
+            // Use fileName and fileContent
+        }
+    };
+    QFileDialog::getOpenFileContent("Images (*.png *.xpm *.jpg)",  fileContentReady);
+
     if (fileName.isEmpty()) {
         return;
     }
 
-    loadPandaFile(fileName);
+    //loadPandaFile(fileName);
+
 }
 
 void MainWindow::on_actionSave_triggered()
@@ -508,15 +518,15 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::updateSettings()
 {
-    Settings::setValue("MainWindow/geometry", saveGeometry());
+    /*Settings::setValue("MainWindow/geometry", saveGeometry());
     Settings::setValue("MainWindow/windowState", saveState());
     Settings::setValue("MainWindow/splitter/geometry", m_ui->splitter->saveGeometry());
-    Settings::setValue("MainWindow/splitter/state", m_ui->splitter->saveState());
+    Settings::setValue("MainWindow/splitter/state", m_ui->splitter->saveState());*/
 }
 
 bool MainWindow::hasModifiedFiles()
 {
-    const QStringList autosaves = Settings::value("autosaveFile").toStringList();
+    const QStringList autosaves /*= Settings::value("autosaveFile").toStringList()*/;
 
     const auto workspaces = m_ui->tab->findChildren<WorkSpace *>();
 
@@ -1083,7 +1093,7 @@ void MainWindow::loadTranslation(const QString &language)
         return;
     }
 
-    Settings::setValue("language", language);
+    //Settings::setValue("language", language);
 
     qApp->removeTranslator(m_pandaTranslator);
     qApp->removeTranslator(m_qtTranslator);
@@ -1186,7 +1196,7 @@ void MainWindow::populateLeftMenu()
 void MainWindow::on_actionFastMode_triggered(const bool checked)
 {
     setFastMode(checked);
-    Settings::setValue("fastMode", checked);
+   // Settings::setValue("fastMode", checked);
 }
 
 void MainWindow::on_actionWaveform_triggered()
@@ -1283,7 +1293,7 @@ void MainWindow::on_actionMute_triggered(const bool checked)
 void MainWindow::on_actionLabelsUnderIcons_triggered(const bool checked)
 {
     m_ui->mainToolBar->setToolButtonStyle(checked ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
-    Settings::setValue("labelsUnderIcons", checked);
+    //Settings::setValue("labelsUnderIcons", checked);
 }
 
 bool MainWindow::event(QEvent *event)

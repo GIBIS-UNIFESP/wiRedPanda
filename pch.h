@@ -40,7 +40,6 @@
 #include <QRegularExpression>
 #include <QScrollBar>
 #include <QSet>
-#include <QSettings>
 #include <QShortcut>
 #include <QStandardItemModel>
 #include <QString>
