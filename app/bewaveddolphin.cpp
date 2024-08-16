@@ -85,6 +85,20 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
 
     m_ui->mainToolBar->setToolButtonStyle(Settings::value("labelsUnderIcons").toBool() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
 
+    QSlider *slider = new QSlider(Qt::Horizontal);
+    QSize sliderSize(130, 30);
+    slider->setFixedSize(sliderSize);
+    slider->setRange(0, 64);
+
+    QList<QAction*> actions = m_ui->mainToolBar->actions();
+
+    for (int i = 0; i < actions.size(); ++i) {
+        if (actions[i] == m_ui->actionZoomOut) {
+            m_ui->mainToolBar->insertWidget(actions[i], slider);
+            break;
+        }
+    }
+
     loadPixmaps();
 
     connect(m_ui->actionAbout,         &QAction::triggered, this, &BewavedDolphin::on_actionAbout_triggered);
