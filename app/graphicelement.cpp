@@ -18,7 +18,6 @@
 #include <QPixmap>
 #include <QStyleOptionGraphicsItem>
 #include <cmath>
-#include <iostream>
 
 namespace
 {
@@ -54,17 +53,13 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QStri
     m_label->setPos(0, 64);
     m_label->setParentItem(this);
     m_label->setDefaultTextColor(Qt::black);
+
     setPortName(m_translatedName);
     setToolTip(m_translatedName);
 
     qCDebug(four) << tr("Including input and output ports.");
-    for (int i = 0; i < minInputSize; ++i) {
-        addInputPort();
-    }
-
-    for (int i = 0; i < minOutputSize; ++i) {
-        addOutputPort();
-    }
+    setInputSize(minInputSize);
+    setOutputSize(minOutputSize);
 
     GraphicElement::updatePortsProperties();
     GraphicElement::updateTheme();
@@ -863,6 +858,52 @@ QString GraphicElement::label() const
     return m_labelText;
 }
 
+QString GraphicElement::previousColor() const
+{
+    if (color() == "White") return "Purple";
+    if (color() == "Red") return "White";
+    if (color() == "Green") return "Red";
+    if (color() == "Blue") return "Green";
+    if (color() == "Purple") return "Blue";
+    return "White"; // Standard
+}
+
+QString GraphicElement::nextColor() const
+{
+    if (color() == "White") return "Red";
+    if (color() == "Red") return "Green";
+    if (color() == "Green") return "Blue";
+    if (color() == "Blue") return "Purple";
+    if (color() == "Purple") return "White";
+    return "White"; // Standard
+}
+
+QString GraphicElement::previousAudio() const
+{
+    if (audio() == "C6") return "C7";
+    if (audio() == "D6") return "C6";
+    if (audio() == "E6") return "D6";
+    if (audio() == "F6") return "E6";
+    if (audio() == "G6") return "F6";
+    if (audio() == "A7") return "G6";
+    if (audio() == "B7") return "A7";
+    if (audio() == "C7") return "B7";
+    return "C6";
+}
+
+QString GraphicElement::nextAudio() const
+{
+    if (audio() == "C6") return "D6";
+    if (audio() == "D6") return "E6";
+    if (audio() == "E6") return "F6";
+    if (audio() == "F6") return "G6";
+    if (audio() == "G6") return "A7";
+    if (audio() == "A7") return "B7";
+    if (audio() == "B7") return "C7";
+    if (audio() == "C7") return "C6";
+    return "C6";
+}
+
 void GraphicElement::updateTheme()
 {
     const ThemeAttributes theme = ThemeManager::attributes();
@@ -971,6 +1012,16 @@ bool GraphicElement::hasTruthTable() const
 void GraphicElement::setHasTruthTable(const bool hasTruthTable)
 {
     m_hasTruthTable = hasTruthTable;
+}
+
+void GraphicElement::setHasAudioBox(const bool hasAudioBox)
+{
+    m_hasAudioBox = hasAudioBox;
+}
+
+bool GraphicElement::hasAudioBox() const
+{
+    return m_hasAudioBox;
 }
 
 bool GraphicElement::canChangeSkin() const

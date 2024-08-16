@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "elementeditor.h"
 #include "graphicelement.h"
 #include "scene.h"
 
@@ -220,7 +221,7 @@ class ToggleTruthTableOutputCommand : public QUndoCommand
     Q_DECLARE_TR_FUNCTIONS(ToggleTruthTableOutputCommand)
 
 public:
-    explicit ToggleTruthTableOutputCommand(GraphicElement* &element, int pos, Scene *scene, ElementEditor *ElementEditor, QUndoCommand *parent = nullptr);
+    explicit ToggleTruthTableOutputCommand(GraphicElement *element, int pos, Scene *scene, ElementEditor *ElementEditor, QUndoCommand *parent = nullptr);
 
     void redo() override;
     void undo() override;

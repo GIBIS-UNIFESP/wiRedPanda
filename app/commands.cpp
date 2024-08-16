@@ -860,7 +860,7 @@ void ChangeOutputSizeCommand::undo()
     m_scene->setCircuitUpdateRequired();
 }
 
-ToggleTruthTableOutputCommand::ToggleTruthTableOutputCommand(GraphicElement* &element,int pos, Scene* scene, ElementEditor *elementeditor, QUndoCommand *parent)
+ToggleTruthTableOutputCommand::ToggleTruthTableOutputCommand(GraphicElement *element, int pos, Scene *scene, ElementEditor *elementeditor, QUndoCommand *parent)
     : QUndoCommand(parent)
     , m_pos(pos)
 {

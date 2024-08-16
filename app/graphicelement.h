@@ -67,6 +67,10 @@ public:
     QPointF pixmapCenter() const;
     QRectF boundingRect() const override;
     QString label() const;
+    QString previousColor() const;
+    QString nextColor() const;
+    QString previousAudio() const;
+    QString nextAudio() const;
     bool canChangeSkin() const;
     bool hasAudio() const;
     bool hasColors() const;
@@ -74,6 +78,7 @@ public:
     bool hasLabel() const;
     bool hasTrigger() const;
     bool hasTruthTable() const;
+    bool hasAudioBox() const;
     bool isRotatable() const;
     bool isValid();
     const QVector<QNEInputPort *> &inputs() const;
@@ -123,6 +128,7 @@ protected:
     void setHasLabel(const bool hasLabel);
     void setHasTrigger(const bool hasTrigger);
     void setHasTruthTable(const bool hasTruthTable);
+    void setHasAudioBox(const bool hasAudioBox);
     void setMaxInputSize(const int maxInputSize);
     void setMaxOutputSize(const int maxOutputSize);
     void setMinInputSize(const int minInputSize);
@@ -197,6 +203,7 @@ private:
     bool m_hasLabel = false;
     bool m_hasTrigger = false;
     bool m_hasTruthTable = false;
+    bool m_hasAudioBox = false;
     bool m_rotatable = true;
     bool m_selected = false;
     qreal m_angle = 0;

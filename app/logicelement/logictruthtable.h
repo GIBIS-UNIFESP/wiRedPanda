@@ -10,7 +10,7 @@
 class LogicTruthTable : public LogicElement
 {
 public:
-    explicit LogicTruthTable(const int inputSize, const int outputSize, const QBitArray& key);
+    explicit LogicTruthTable(const int inputSize, const int outputSize, const QBitArray &key);
 
     void updateLogic() override;
 
