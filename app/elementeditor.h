@@ -6,6 +6,9 @@
 #include "scene.h"
 
 #include <QWidget>
+#include <QDialog>
+#include <QVBoxLayout>
+#include <QTableWidget>
 
 namespace Ui
 {
@@ -66,6 +69,9 @@ private:
     QString m_manyTriggers = tr("<Many triggers>");
     QString m_skinName;
     Scene *m_scene = nullptr;
+    QDialog *m_tableBox = new QDialog(this);
+    QVBoxLayout *m_tableLayout = new QVBoxLayout(m_tableBox);
+    QTableWidget *m_table = new QTableWidget(m_tableBox);
     bool m_canChangeInputSize = false;
     bool m_canChangeOutputSize = false;
     bool m_canChangeSkin = false;

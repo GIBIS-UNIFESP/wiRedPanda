@@ -1,6 +1,7 @@
 // Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "common.h"
 #include "globalproperties.h"
 #include "qneport.h"
 #include "truth_table.h"
@@ -81,11 +82,11 @@ void TruthTable::generatePixmap()
     // make pixmap
     const QSize size = portsBoundingRect().united(QRectF(0, 0, 64, 64)).size().toSize();
 
-    qDebug() << "Ports BoundingRect: " << portsBoundingRect();
-    qDebug() << "Size: " << size;
+    qCDebug(zero) << "Ports BoundingRect: " << portsBoundingRect();
+    qCDebug(zero) << "Size: " << size;
 
     QPixmap tempPixmap(size);
-    qDebug() << "tempPixmap size: " << tempPixmap;
+    qCDebug(zero) << "tempPixmap size: " << tempPixmap;
 
     tempPixmap.fill(Qt::transparent);
 
@@ -146,7 +147,7 @@ void TruthTable::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     generatePixmap();
     painter->drawPixmap(boundingRect().topLeft(), pixmap());
 
-    qDebug() << "Tamanho painter->drawRoundedRect: " << painter;
+    qCDebug(zero) << "Tamanho painter->drawRoundedRect: " << painter;
 }
 
 QBitArray& TruthTable::key()
