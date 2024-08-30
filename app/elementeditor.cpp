@@ -958,6 +958,8 @@ void ElementEditor::setTruthTableProposition(const int row, const int column)
 
     ElementEditor::truthTable();
 
+    update();
+
     m_scene->setCircuitUpdateRequired();
 }
 
