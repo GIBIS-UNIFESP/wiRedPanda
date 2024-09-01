@@ -925,7 +925,7 @@ void ElementEditor::truthTable()
     m_tableLayout->addWidget(m_table);
     m_tableBox->setLayout(m_tableLayout);
     m_tableBox->setWindowTitle(tr("Truth Table"));
-    m_tableBox->show();
+    m_tableBox->exec();
 }
 
 void ElementEditor::setTruthTableProposition(const int row, const int column)
