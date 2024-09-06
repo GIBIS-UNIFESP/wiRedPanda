@@ -93,6 +93,7 @@ private:
     void copy(const QItemSelection &ranges, QDataStream &stream);
     void createElement(const int row, const int col, const int value, const bool isInput = true, const bool changeNext = true);
     void createOneElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
+    void createTemporalSimulationElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
     void createZeroElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
     void cut(const QItemSelection &ranges, QDataStream &stream);
     void load(QDataStream &stream);
@@ -124,6 +125,7 @@ private:
     void on_actionSetTo1_triggered();
     void on_actionShowNumbers_triggered();
     void on_actionShowWaveforms_triggered();
+    void on_actionTemporalSimulation_toggled(const bool checked);
     void on_actionZoomIn_triggered();
     void on_actionZoomOut_triggered();
     void on_tableView_cellDoubleClicked();
@@ -139,6 +141,7 @@ private:
     void save(const QString &fileName);
     void setLength(const int simLength, const bool runSimulation);
     void zoomChanged();
+    QPixmap composeWaveParts(const QVector<QPixmap> waveparts);
 
     Ui::BewavedDolphin *m_ui;
     MainWindow *m_mainWindow = nullptr;
@@ -153,6 +156,14 @@ private:
     QPixmap m_lowGreen;
     QPixmap m_risingBlue;
     QPixmap m_risingGreen;
+    QPixmap m_smallFallingBlue;
+    QPixmap m_smallFallingGreen;
+    QPixmap m_smallHighBlue;
+    QPixmap m_smallHighGreen;
+    QPixmap m_smallLowBlue;
+    QPixmap m_smallLowGreen;
+    QPixmap m_smallRisingBlue;
+    QPixmap m_smallRisingGreen;
     QStandardItemModel *m_model = nullptr;
     QTableView *m_signalTableView = new QTableView();
     QVector<GraphicElement *> m_outputs;
@@ -161,6 +172,7 @@ private:
     Scene *m_externalScene = nullptr;
     Simulation *m_simulation = nullptr;
     bool m_edited = false;
+    bool m_isTemporalSimulation = false;
     const bool m_askConnection;
     const double m_scaleFactor = 0.8;
     double m_scale = 1.25;
