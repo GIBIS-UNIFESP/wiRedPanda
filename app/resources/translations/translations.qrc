@@ -2,5 +2,6 @@
     <qresource prefix="/translations">
         <file>qt_pt_BR.qm</file>
         <file>wpanda_pt_BR.qm</file>
+        <file>wpanda_es.qm</file>
     </qresource>
 </RCC>
