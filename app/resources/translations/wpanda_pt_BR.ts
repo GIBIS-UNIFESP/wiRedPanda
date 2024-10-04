@@ -980,52 +980,52 @@
         <translation>Rótulo:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="348"/>
+        <location filename="../../elementeditor.cpp" line="346"/>
         <source>Blue</source>
         <translation>Azul</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="347"/>
+        <location filename="../../elementeditor.cpp" line="345"/>
         <source>Green</source>
         <translation>Verde</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="81"/>
+        <location filename="../../elementeditor.cpp" line="82"/>
         <source>Rotate left</source>
         <translation>Rotacionar à esquerda</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="82"/>
+        <location filename="../../elementeditor.cpp" line="83"/>
         <source>Rotate right</source>
         <translation>Rotacionar à direita</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="278"/>
+        <location filename="../../elementeditor.cpp" line="276"/>
         <source>Unknown context menu option.</source>
         <translation>Opção de menu de contexto desconhecida.</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="349"/>
+        <location filename="../../elementeditor.cpp" line="347"/>
         <source>Purple</source>
         <translation>Roxo</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="346"/>
+        <location filename="../../elementeditor.cpp" line="344"/>
         <source>Red</source>
         <translation>Vermelho</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="345"/>
+        <location filename="../../elementeditor.cpp" line="343"/>
         <source>White</source>
         <translation>Branco</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="639"/>
+        <location filename="../../elementeditor.cpp" line="631"/>
         <source>Apply.</source>
         <translation>Aplicar.</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="751"/>
+        <location filename="../../elementeditor.cpp" line="743"/>
         <source>Input locked.</source>
         <translation>Entrada bloqueada.</translation>
     </message>
@@ -1035,41 +1035,41 @@
         <translation>Cor:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="60"/>
+        <location filename="../../elementeditor.h" line="59"/>
         <source>&lt;Many labels&gt;</source>
         <translation>&lt;Vários rótulos&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="57"/>
+        <location filename="../../elementeditor.h" line="56"/>
         <source>&lt;Many colors&gt;</source>
         <translation>&lt;Várias cores&gt;</translation>
     </message>
     <message>
+        <location filename="../../elementeditor.h" line="57"/>
         <location filename="../../elementeditor.h" line="58"/>
-        <location filename="../../elementeditor.h" line="59"/>
+        <location filename="../../elementeditor.h" line="60"/>
         <location filename="../../elementeditor.h" line="61"/>
-        <location filename="../../elementeditor.h" line="62"/>
         <source>&lt;Many values&gt;</source>
         <translation>&lt;Vários valores&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="63"/>
+        <location filename="../../elementeditor.h" line="62"/>
         <source>&lt;Many priorities&gt;</source>
         <translation>&lt;Várias prioridades&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="64"/>
+        <location filename="../../elementeditor.h" line="63"/>
         <source>&lt;Many triggers&gt;</source>
         <translation>&lt;Vários atalhos&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="79"/>
+        <location filename="../../elementeditor.cpp" line="80"/>
         <source>Rename</source>
         <translation>Renomear</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="208"/>
-        <location filename="../../elementeditor.cpp" line="274"/>
+        <location filename="../../elementeditor.cpp" line="206"/>
+        <location filename="../../elementeditor.cpp" line="272"/>
         <source>Delete</source>
         <translation>Remover</translation>
     </message>
@@ -1084,50 +1084,50 @@
         <translation>Mudar frequência</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="83"/>
+        <location filename="../../elementeditor.cpp" line="84"/>
         <source>Change trigger</source>
         <translation>Mudar atalho</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="84"/>
+        <location filename="../../elementeditor.cpp" line="79"/>
         <source>Change priority</source>
         <translation>Mudar prioridade</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="201"/>
-        <location filename="../../elementeditor.cpp" line="274"/>
+        <location filename="../../elementeditor.cpp" line="199"/>
+        <location filename="../../elementeditor.cpp" line="272"/>
         <source>Copy</source>
         <translation>Copiar</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="202"/>
-        <location filename="../../elementeditor.cpp" line="274"/>
+        <location filename="../../elementeditor.cpp" line="200"/>
+        <location filename="../../elementeditor.cpp" line="272"/>
         <source>Cut</source>
         <translation>Recortar</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="317"/>
+        <location filename="../../elementeditor.cpp" line="315"/>
         <source>File name: </source>
         <translation>Nome do arquivo: </translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="698"/>
+        <location filename="../../elementeditor.cpp" line="690"/>
         <source>Input size changed to </source>
         <translation>Número de entradas alterado para </translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="712"/>
+        <location filename="../../elementeditor.cpp" line="704"/>
         <source>Output size changed to </source>
         <translation>Número de saídas alterado para </translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="789"/>
-        <location filename="../../elementeditor.cpp" line="800"/>
+        <location filename="../../elementeditor.cpp" line="781"/>
+        <location filename="../../elementeditor.cpp" line="792"/>
         <source>Pos = </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="789"/>
+        <location filename="../../elementeditor.cpp" line="781"/>
         <source> from </source>
         <translation> de </translation>
     </message>
@@ -1137,7 +1137,7 @@
         <translation>F6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="302"/>
+        <location filename="../../elementeditor.cpp" line="300"/>
         <source>Open File</source>
         <translation>Abrir arquivo</translation>
     </message>
@@ -1218,7 +1218,7 @@
         <translation>Prioridade:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="56"/>
+        <location filename="../../elementeditor.h" line="55"/>
         <source>&lt;Many sounds&gt;</source>
         <translation>&lt;Muitos sons&gt;</translation>
     </message>
@@ -1228,7 +1228,7 @@
         <translation>Alterar cor para...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="80"/>
+        <location filename="../../elementeditor.cpp" line="81"/>
         <source>Set skin to default</source>
         <translation>Colocar aparência padrão</translation>
     </message>
@@ -1243,7 +1243,7 @@
         <translation>Valor:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="304"/>
+        <location filename="../../elementeditor.cpp" line="302"/>
         <source>Images (*.png *.gif *.jpg *.jpeg)</source>
         <translation>Imagens (*.png *.gif *.jpg *.jpeg)</translation>
     </message>
@@ -1621,459 +1621,459 @@
         <translation>Buscar:</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="570"/>
+        <location filename="../../mainwindow.ui" line="571"/>
         <source>&amp;File</source>
         <translation>&amp;Arquivo</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="605"/>
+        <location filename="../../mainwindow.ui" line="606"/>
         <source>&amp;Edit</source>
         <translation>&amp;Editar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="626"/>
+        <location filename="../../mainwindow.ui" line="627"/>
         <source>&amp;Help</source>
         <translation>&amp;Ajuda</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="634"/>
+        <location filename="../../mainwindow.ui" line="635"/>
         <source>&amp;View</source>
         <translation>&amp;Exibir</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="690"/>
+        <location filename="../../mainwindow.ui" line="693"/>
         <source>&amp;Open...</source>
         <translation>&amp;Abrir...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="693"/>
+        <location filename="../../mainwindow.ui" line="696"/>
         <source>Open</source>
         <translation>Abrir</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="705"/>
+        <location filename="../../mainwindow.ui" line="708"/>
         <source>&amp;Save</source>
         <translation>&amp;Salvar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="717"/>
+        <location filename="../../mainwindow.ui" line="720"/>
         <source>Save &amp;As...</source>
         <translation>Salvar &amp;Como...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="729"/>
+        <location filename="../../mainwindow.ui" line="732"/>
         <source>Cu&amp;t</source>
         <translation>Recor&amp;tar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="741"/>
+        <location filename="../../mainwindow.ui" line="744"/>
         <source>&amp;Copy</source>
         <translation>&amp;Copiar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="753"/>
+        <location filename="../../mainwindow.ui" line="756"/>
         <source>&amp;Paste</source>
         <translation>Co&amp;lar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="766"/>
+        <location filename="../../mainwindow.ui" line="769"/>
         <source>&amp;Delete</source>
         <translation>&amp;Remover</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="778"/>
+        <location filename="../../mainwindow.ui" line="781"/>
         <source>&amp;New</source>
         <translation>&amp;Novo projeto</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="790"/>
+        <location filename="../../mainwindow.ui" line="793"/>
         <source>Zoom &amp;in</source>
         <translation>A&amp;mpliar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="802"/>
+        <location filename="../../mainwindow.ui" line="805"/>
         <source>Zoom &amp;out</source>
         <translation>Red&amp;uzir</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="820"/>
+        <location filename="../../mainwindow.ui" line="823"/>
         <source>&amp;Wires</source>
         <translation>&amp;Fios</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="838"/>
+        <location filename="../../mainwindow.ui" line="841"/>
         <source>&amp;Gates</source>
         <translation>Portas &amp;Lógicas</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="850"/>
+        <location filename="../../mainwindow.ui" line="853"/>
         <source>&amp;About</source>
         <translation>&amp;Sobre</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="862"/>
+        <location filename="../../mainwindow.ui" line="865"/>
         <source>&amp;Exit</source>
         <translation>&amp;Sair</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="390"/>
-        <location filename="../../mainwindow.cpp" line="406"/>
-        <location filename="../../mainwindow.cpp" line="428"/>
+        <location filename="../../mainwindow.cpp" line="393"/>
+        <location filename="../../mainwindow.cpp" line="409"/>
+        <location filename="../../mainwindow.cpp" line="431"/>
         <source>Panda files (*.panda)</source>
         <translation>Arquivos Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="384"/>
+        <location filename="../../mainwindow.cpp" line="387"/>
         <source>File loaded successfully.</source>
         <translation>Arquivo carregado com sucesso.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="56"/>
+        <location filename="../../mainwindow.cpp" line="57"/>
         <source>Restoring geometry and setting zoom controls.</source>
         <translation>Restaurando a geometria e configurando os controles de zoom.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="62"/>
+        <location filename="../../mainwindow.cpp" line="63"/>
         <source>Preparing theme and UI modes.</source>
         <translation>Preparando o tema e os modos de interface do usuário.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="77"/>
+        <location filename="../../mainwindow.cpp" line="78"/>
         <source>Setting left side menus.</source>
         <translation>Configurando menus do lado esquerdo.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="88"/>
+        <location filename="../../mainwindow.cpp" line="89"/>
         <source>Loading recent file list.</source>
         <translation>Carregando lista de arquivos recentes.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="94"/>
+        <location filename="../../mainwindow.cpp" line="95"/>
         <source>Checking playing simulation.</source>
         <translation>Marcando botão de play.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="113"/>
+        <location filename="../../mainwindow.cpp" line="114"/>
         <source>Adding examples to menu</source>
         <translation>Adicionando exemplos ao menu</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="135"/>
+        <location filename="../../mainwindow.cpp" line="136"/>
         <source>Setting connections</source>
         <translation>Configurando conexões</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="97"/>
+        <location filename="../../mainwindow.cpp" line="98"/>
         <source>Window title.</source>
         <translation>Título da janela.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="100"/>
+        <location filename="../../mainwindow.cpp" line="101"/>
         <source>Building a new tab.</source>
         <translation>Construindo uma nova aba.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="103"/>
+        <location filename="../../mainwindow.cpp" line="104"/>
         <source>Opening file if not empty.</source>
         <translation>Abrindo o arquivo se não estiver vazio.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="108"/>
+        <location filename="../../mainwindow.cpp" line="109"/>
         <source>Disabling Arduino export.</source>
         <translation>Desativando a exportação do Arduino.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="186"/>
+        <location filename="../../mainwindow.cpp" line="189"/>
         <source>All autosave files: </source>
         <translation>Todos os arquivos de salvamento automático: </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="192"/>
+        <location filename="../../mainwindow.cpp" line="195"/>
         <source>Removing from config the autosave file that does not exist.</source>
         <translation>Removendo da configuração o arquivo de salvamento automático que não existe.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="201"/>
+        <location filename="../../mainwindow.cpp" line="204"/>
         <source>Removing autosave file that is corrupted.</source>
         <translation>Removendo o arquivo de salvamento automático que está corrompido.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="216"/>
+        <location filename="../../mainwindow.cpp" line="219"/>
         <source>Creating new workspace.</source>
         <translation>Criando novo espaço de trabalho.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="224"/>
+        <location filename="../../mainwindow.cpp" line="227"/>
         <source>Adding tab. #tabs: </source>
         <translation>Adicionando guia. #guias: </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="224"/>
-        <location filename="../../mainwindow.cpp" line="230"/>
-        <location filename="../../mainwindow.cpp" line="642"/>
+        <location filename="../../mainwindow.cpp" line="227"/>
+        <location filename="../../mainwindow.cpp" line="233"/>
+        <location filename="../../mainwindow.cpp" line="645"/>
         <source>, current tab: </source>
         <translation>, guia atual: </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="227"/>
+        <location filename="../../mainwindow.cpp" line="230"/>
         <source>Selecting the newly created tab.</source>
         <translation>Selecionando a guia recém-criada.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="230"/>
+        <location filename="../../mainwindow.cpp" line="233"/>
         <source>Finished #tabs: </source>
         <translation>#guias concluídas: </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="271"/>
+        <location filename="../../mainwindow.cpp" line="274"/>
         <source>File saved successfully.</source>
         <translation>Arquivo salvo com sucesso.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="282"/>
+        <location filename="../../mainwindow.cpp" line="285"/>
         <source>Checking for autosave file recovery.</source>
         <translation>Verificando a recuperação de arquivo de salvamento automático.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="288"/>
+        <location filename="../../mainwindow.cpp" line="291"/>
         <source>&apos;hideV4Warning&apos; message box.</source>
         <translation>caixa de mensagem &apos;hideV4Warning&apos;.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="346"/>
+        <location filename="../../mainwindow.cpp" line="349"/>
         <source> has been modified. 
 Do you want to save your changes?</source>
         <translation> foi modificado. 
 Você quer salvar suas alterações?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="381"/>
+        <location filename="../../mainwindow.cpp" line="384"/>
         <source>Loading in editor.</source>
         <translation>Carregando no editor.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="390"/>
-        <location filename="../../mainwindow.cpp" line="1284"/>
+        <location filename="../../mainwindow.cpp" line="393"/>
+        <location filename="../../mainwindow.cpp" line="1323"/>
         <source>Open File</source>
         <translation>Abrir arquivo</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="406"/>
-        <location filename="../../mainwindow.cpp" line="428"/>
+        <location filename="../../mainwindow.cpp" line="409"/>
+        <location filename="../../mainwindow.cpp" line="431"/>
         <source>Save File as ...</source>
         <translation>Salvar Arquivo como...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="557"/>
+        <location filename="../../mainwindow.cpp" line="560"/>
         <source>Adding file to recent files.</source>
         <translation>Adicionando arquivo a arquivos recentes.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="585"/>
+        <location filename="../../mainwindow.cpp" line="588"/>
         <source>Show files.</source>
         <translation>Mostrar arquivos.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="596"/>
+        <location filename="../../mainwindow.cpp" line="599"/>
         <source>Files: </source>
         <translation>Arquivos: </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="613"/>
+        <location filename="../../mainwindow.cpp" line="616"/>
         <source>Closing tab </source>
         <translation>Fechando aba </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="613"/>
-        <location filename="../../mainwindow.cpp" line="642"/>
+        <location filename="../../mainwindow.cpp" line="616"/>
+        <location filename="../../mainwindow.cpp" line="645"/>
         <source>, #tabs: </source>
         <translation>, #guias: </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="616"/>
+        <location filename="../../mainwindow.cpp" line="619"/>
         <source>Checking if needs to save file.</source>
         <translation>Verificando se precisa salvar o arquivo.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="629"/>
+        <location filename="../../mainwindow.cpp" line="632"/>
         <source>Error</source>
         <translation>Erro</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="638"/>
+        <location filename="../../mainwindow.cpp" line="641"/>
         <source>Deleting tab.</source>
         <translation>Excluindo guia.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="642"/>
+        <location filename="../../mainwindow.cpp" line="645"/>
         <source>Closed tab </source>
         <translation>Aba fechada </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="655"/>
+        <location filename="../../mainwindow.cpp" line="658"/>
         <source>Stopping simulation.</source>
         <translation>Parando a simulação.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="658"/>
+        <location filename="../../mainwindow.cpp" line="661"/>
         <source>Disconnecting zoom from UI.</source>
         <translation>Desconectando o zoom da interface do usuário.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="661"/>
+        <location filename="../../mainwindow.cpp" line="664"/>
         <source>Removing undo and redo actions from UI menu.</source>
         <translation>Removendo ações de desfazer e refazer do menu da interface do usuário.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="674"/>
+        <location filename="../../mainwindow.cpp" line="677"/>
         <source>Connecting undo and redo functions to UI menu.</source>
         <translation>Conectando as funções de desfazer e refazer ao menu da interface do usuário.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="677"/>
+        <location filename="../../mainwindow.cpp" line="680"/>
         <source>Setting Panda file info.</source>
         <translation>Configurando as informações do arquivo Panda.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="682"/>
+        <location filename="../../mainwindow.cpp" line="685"/>
         <source>Connecting current tab to element editor menu in UI.</source>
         <translation>Conectando a guia atual ao menu do editor de elementos na interface do usuário.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="693"/>
+        <location filename="../../mainwindow.cpp" line="696"/>
         <source>Restarting simulation.</source>
         <translation>Reiniciando a simulação.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="715"/>
+        <location filename="../../mainwindow.cpp" line="718"/>
         <source>Selecting tab: </source>
         <translation>Selecionando a aba: </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="717"/>
+        <location filename="../../mainwindow.cpp" line="720"/>
         <source>New tab selected. Dolphin fileName: </source>
         <translation>Nova guia selecionada. Nome do arquivo Dolphin: </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="821"/>
-        <location filename="../../mainwindow.cpp" line="848"/>
+        <location filename="../../mainwindow.cpp" line="824"/>
+        <location filename="../../mainwindow.cpp" line="851"/>
         <source>Missing file name.</source>
         <translation>Falta o nome do arquivo.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="827"/>
+        <location filename="../../mainwindow.cpp" line="830"/>
         <source>The panda file is empty.</source>
         <translation>O arquivo panda está vazio.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="840"/>
-        <location filename="../../mainwindow.cpp" line="842"/>
+        <location filename="../../mainwindow.cpp" line="843"/>
+        <location filename="../../mainwindow.cpp" line="845"/>
         <source>Arduino code successfully generated.</source>
         <translation>Código de Arduino gerado com sucesso.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="875"/>
+        <location filename="../../mainwindow.cpp" line="878"/>
         <source>Generate Arduino Code</source>
         <translation>Gerar código para Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="875"/>
+        <location filename="../../mainwindow.cpp" line="878"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arquivo Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="974"/>
+        <location filename="../../mainwindow.cpp" line="980"/>
         <source>Export to PDF</source>
         <translation>Exportar para PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="974"/>
+        <location filename="../../mainwindow.cpp" line="980"/>
         <source>PDF files (*.pdf)</source>
         <translation>Arquivos PDF(*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="989"/>
+        <location filename="../../mainwindow.cpp" line="998"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Não foi possível imprimir este circuito no PDF.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1098"/>
+        <location filename="../../mainwindow.cpp" line="1114"/>
         <source>Error loading WiRedPanda translation!</source>
         <translation>Erro ao carregar a tradução do WiRedPanda!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1106"/>
+        <location filename="../../mainwindow.cpp" line="1122"/>
         <source>Error loading Qt translation!</source>
         <translation>Erro ao carregar a tradução do Qt!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1165"/>
+        <location filename="../../mainwindow.cpp" line="1200"/>
         <source>BD fileName: </source>
         <translation>Nome do arquivo BD: </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1280"/>
+        <location filename="../../mainwindow.cpp" line="1319"/>
         <source>Save file first.</source>
         <translation>Salve o arquivo primeiro.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1286"/>
+        <location filename="../../mainwindow.cpp" line="1325"/>
         <source>Panda (*.panda)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1298"/>
-        <location filename="../../mainwindow.cpp" line="1309"/>
+        <location filename="../../mainwindow.cpp" line="1337"/>
+        <location filename="../../mainwindow.cpp" line="1348"/>
         <source>Info</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1298"/>
+        <location filename="../../mainwindow.cpp" line="1337"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>Os arquivos selecionados (e suas dependências) serão copiados para a pasta de arquivos atual.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1309"/>
+        <location filename="../../mainwindow.cpp" line="1348"/>
         <source>Drag here to remove.</source>
         <translation>Arraste aqui para remover.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1332"/>
+        <location filename="../../mainwindow.cpp" line="1371"/>
         <source>Error removing file: </source>
         <translation>Erro removendo arquivo: </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="853"/>
+        <location filename="../../mainwindow.ui" line="856"/>
         <source>F1</source>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="992"/>
+        <location filename="../../mainwindow.ui" line="995"/>
         <source>Play or Pause simulation.</source>
         <translation>Iniciar ou Pausar simulação.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="995"/>
+        <location filename="../../mainwindow.ui" line="998"/>
         <source>F5</source>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1007"/>
+        <location filename="../../mainwindow.ui" line="1010"/>
         <source>F2</source>
         <translation>F2</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1019"/>
+        <location filename="../../mainwindow.ui" line="1022"/>
         <source>F3</source>
         <translation>F3</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1031"/>
+        <location filename="../../mainwindow.ui" line="1034"/>
         <source>Esc</source>
         <translation>Esc</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="580"/>
+        <location filename="../../mainwindow.ui" line="581"/>
         <source>&amp;Recent files:</source>
         <translation>&amp;Arquivos recentes:</translation>
     </message>
@@ -2088,278 +2088,293 @@ Você quer salvar suas alterações?</translation>
         <translation>Remover CI</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="638"/>
+        <location filename="../../mainwindow.ui" line="639"/>
         <source>&amp;Theme</source>
         <translation>&amp;Tema</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="658"/>
+        <location filename="../../mainwindow.ui" line="659"/>
         <source>&amp;Language</source>
         <translation>&amp;Idioma</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="665"/>
+        <location filename="../../mainwindow.ui" line="667"/>
         <source>Sim&amp;ulation</source>
         <translation>&amp;Simulação</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="673"/>
+        <location filename="../../mainwindow.ui" line="676"/>
         <source>Examples</source>
         <translation>Exemplos</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="793"/>
+        <location filename="../../mainwindow.ui" line="796"/>
         <source>Ctrl+=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="874"/>
+        <location filename="../../mainwindow.ui" line="877"/>
         <source>R&amp;otate right</source>
         <translation>Girar à &amp;direita</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="886"/>
+        <location filename="../../mainwindow.ui" line="889"/>
         <source>Rotate &amp;left</source>
         <translation>Girar à &amp;esquerda</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="898"/>
+        <location filename="../../mainwindow.ui" line="901"/>
         <source>About &amp;Qt</source>
         <translation>Sobre o &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="907"/>
+        <location filename="../../mainwindow.ui" line="910"/>
         <source>&amp;Select all</source>
         <translation>Selecionar &amp;tudo</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="919"/>
+        <location filename="../../mainwindow.ui" line="922"/>
         <source>Re&amp;load File</source>
         <translation>Recarregar &amp;Arquivo</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="931"/>
+        <location filename="../../mainwindow.ui" line="934"/>
         <source>E&amp;xport to Arduino</source>
         <translation>Exportar para &amp;Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="943"/>
+        <location filename="../../mainwindow.ui" line="946"/>
         <source>&amp;Reset Zoom</source>
         <translation>&amp;Zoom Padrão</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="955"/>
+        <location filename="../../mainwindow.ui" line="958"/>
         <source>Export to &amp;PDF</source>
         <translation>Exportar para &amp;PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="967"/>
+        <location filename="../../mainwindow.ui" line="970"/>
         <source>&amp;English</source>
         <translation>&amp;Inglês</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="976"/>
+        <location filename="../../mainwindow.ui" line="979"/>
         <source>&amp;Portuguese</source>
         <translation>&amp;Português</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="989"/>
+        <location filename="../../mainwindow.ui" line="992"/>
         <source>&amp;Play/Pause</source>
         <translation>&amp;Play/Pause</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1004"/>
+        <location filename="../../mainwindow.ui" line="1007"/>
         <source>&amp;Rename</source>
         <translation>&amp;Renomear</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1016"/>
+        <location filename="../../mainwindow.ui" line="1019"/>
         <source>Cha&amp;nge Trigger</source>
         <translation>&amp;Alterar atalho</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1028"/>
+        <location filename="../../mainwindow.ui" line="1031"/>
         <source>Cl&amp;ear selection</source>
         <translation>&amp;Limpar seleção</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1043"/>
+        <location filename="../../mainwindow.ui" line="1046"/>
         <source>&amp;Fast Mode</source>
         <translation>&amp;Modo Rápido</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1054"/>
+        <location filename="../../mainwindow.ui" line="1057"/>
         <source>&amp;Panda Light</source>
         <translation>Panda &amp;Claro</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1062"/>
+        <location filename="../../mainwindow.ui" line="1065"/>
         <source>Panda &amp;Dark</source>
         <translation>Panda &amp;Escuro</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1071"/>
+        <location filename="../../mainwindow.ui" line="1074"/>
         <source>&amp;Waveform</source>
         <translation>&amp;Forma de Onda</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1083"/>
+        <location filename="../../mainwindow.ui" line="1086"/>
         <source>Export to &amp;Image</source>
         <translation>Exportar para &amp;Imagem</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1091"/>
+        <location filename="../../mainwindow.ui" line="1094"/>
         <source>&amp;Flip horizontally</source>
         <translation>Espelhar &amp;horizontalmente</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1099"/>
+        <location filename="../../mainwindow.ui" line="1102"/>
         <source>Flip &amp;vertically</source>
         <translation>Espelhar &amp;verticalmente</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1104"/>
+        <location filename="../../mainwindow.ui" line="1107"/>
         <source>F&amp;ullscreen</source>
         <translation>&amp;Tela cheia</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1107"/>
+        <location filename="../../mainwindow.ui" line="1110"/>
         <source>F11</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1010"/>
+        <location filename="../../mainwindow.ui" line="1151"/>
+        <source>&amp;Restart</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1154"/>
+        <source>Restart simulation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1163"/>
+        <source>Spanish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="1024"/>
         <source>Export to Image</source>
         <translation>Exportar para Imagem</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1010"/>
+        <location filename="../../mainwindow.cpp" line="1024"/>
         <source>PNG files (*.png)</source>
         <translation>Arquivos PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1120"/>
-        <location filename="../../mainwindow.cpp" line="1247"/>
+        <location filename="../../mainwindow.ui" line="1123"/>
+        <location filename="../../mainwindow.cpp" line="1282"/>
         <source>Mute</source>
         <translation>Silenciar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1134"/>
+        <location filename="../../mainwindow.ui" line="1137"/>
         <source>Labels under icons</source>
         <translation>Nomes abaixo dos ícones</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="696"/>
+        <location filename="../../mainwindow.ui" line="699"/>
         <source>Ctrl+O</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="708"/>
+        <location filename="../../mainwindow.ui" line="711"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="720"/>
+        <location filename="../../mainwindow.ui" line="723"/>
         <source>Ctrl+Shift+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="732"/>
+        <location filename="../../mainwindow.ui" line="735"/>
         <source>Ctrl+X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="744"/>
+        <location filename="../../mainwindow.ui" line="747"/>
         <source>Ctrl+C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="756"/>
+        <location filename="../../mainwindow.ui" line="759"/>
         <source>Ctrl+V</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="769"/>
+        <location filename="../../mainwindow.ui" line="772"/>
         <source>Del</source>
         <translation>Del</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="781"/>
+        <location filename="../../mainwindow.ui" line="784"/>
         <source>Ctrl+N</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="805"/>
+        <location filename="../../mainwindow.ui" line="808"/>
         <source>Ctrl+-</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="823"/>
+        <location filename="../../mainwindow.ui" line="826"/>
         <source>Ctrl+1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="841"/>
+        <location filename="../../mainwindow.ui" line="844"/>
         <source>Ctrl+2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="865"/>
+        <location filename="../../mainwindow.ui" line="868"/>
         <source>Ctrl+Q</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="877"/>
+        <location filename="../../mainwindow.ui" line="880"/>
         <source>Ctrl+R</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="889"/>
+        <location filename="../../mainwindow.ui" line="892"/>
         <source>Ctrl+Shift+R</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="910"/>
+        <location filename="../../mainwindow.ui" line="913"/>
         <source>Ctrl+A</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="922"/>
+        <location filename="../../mainwindow.ui" line="925"/>
         <source>Ctrl+F5</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="934"/>
+        <location filename="../../mainwindow.ui" line="937"/>
         <source>Ctrl+Alt+I</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="946"/>
+        <location filename="../../mainwindow.ui" line="949"/>
         <source>Ctrl+0</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="958"/>
+        <location filename="../../mainwindow.ui" line="961"/>
         <source>Ctrl+Shift+P</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1074"/>
+        <location filename="../../mainwindow.ui" line="1077"/>
         <source>Ctrl+W</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1086"/>
+        <location filename="../../mainwindow.ui" line="1089"/>
         <source>Ctrl+E</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1094"/>
+        <location filename="../../mainwindow.ui" line="1097"/>
         <source>Ctrl+H</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1126"/>
+        <location filename="../../mainwindow.ui" line="1129"/>
         <source>Ctrl+M</source>
         <translation></translation>
     </message>
@@ -2379,76 +2394,76 @@ Você quer salvar suas alterações?</translation>
         <translation>Circuitos Integrados</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1123"/>
+        <location filename="../../mainwindow.ui" line="1126"/>
         <source>Mutes and unmutes circuit buzzers</source>
         <translation>Ativa e desativa som das campanhias do cuicuito</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1247"/>
+        <location filename="../../mainwindow.cpp" line="1282"/>
         <source>Unmute</source>
         <translation>Ativar som</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="225"/>
-        <location filename="../../mainwindow.cpp" line="344"/>
-        <location filename="../../mainwindow.cpp" line="549"/>
-        <location filename="../../mainwindow.cpp" line="1048"/>
+        <location filename="../../mainwindow.cpp" line="228"/>
+        <location filename="../../mainwindow.cpp" line="347"/>
+        <location filename="../../mainwindow.cpp" line="552"/>
+        <location filename="../../mainwindow.cpp" line="1064"/>
         <source>New Project</source>
         <translation>Projeto Novo</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="47"/>
+        <location filename="../../mainwindow.cpp" line="48"/>
         <source>WiRedPanda Version = </source>
         <translation>Versão WiRedPanda = </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="47"/>
+        <location filename="../../mainwindow.cpp" line="48"/>
         <source> OR </source>
         <translation> OU </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="50"/>
+        <location filename="../../mainwindow.cpp" line="51"/>
         <source>Settings fileName: </source>
         <translation>Nome do arquivo de configurações: </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="200"/>
+        <location filename="../../mainwindow.cpp" line="203"/>
         <source>Error!</source>
         <translation>Erro!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="327"/>
+        <location filename="../../mainwindow.cpp" line="330"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>Arquivo não foi salvo. Fechar mesmo assim?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="484"/>
+        <location filename="../../mainwindow.cpp" line="487"/>
         <source>Exit </source>
         <translation>Sair do </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="995"/>
-        <location filename="../../mainwindow.cpp" line="1029"/>
+        <location filename="../../mainwindow.cpp" line="1005"/>
+        <location filename="../../mainwindow.cpp" line="1043"/>
         <source>Exported file successfully.</source>
         <translation>Arquivo exportado com sucesso.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="290"/>
+        <location filename="../../mainwindow.cpp" line="293"/>
         <source>Don&apos;t show this again.</source>
         <translation>Não mostrar novamente.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1139"/>
+        <location filename="../../mainwindow.ui" line="1142"/>
         <source>About this version</source>
         <translation>Sobre esta versão</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="446"/>
+        <location filename="../../mainwindow.cpp" line="449"/>
         <source>&lt;p&gt;WiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; WiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;WiRedPanda é um software desenvolvido por estudantes da Universidade Federal de São Paulo. Este projeto foi desenvolvido para ajudar os estudantes a aprenderem mais sobre circuitos digitais.&lt;/p&gt;&lt;p&gt;Versão do software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Desenvolvedores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; WiRedPanda atualmente é mantido por Prof. Fábio Cappabianco, Ph.D. e Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Por favor, informe em nossa página do GitHub sobre eventuais bugs encontrados ou se deseja uma nova funcionalidade.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="298"/>
+        <location filename="../../mainwindow.cpp" line="301"/>
         <source>This version is not 100% compatible with previous versions of WiRedPanda.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 WiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
@@ -2459,7 +2474,7 @@ WiRedPanda %1 listará automaticamente todos os outros arquivos .panda localizad
 Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar simulações beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="485"/>
+        <location filename="../../mainwindow.cpp" line="488"/>
         <source>Are you sure?</source>
         <translation>Tem certeza?</translation>
     </message>
@@ -2670,7 +2685,7 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <translation>Liberando.</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="1124"/>
+        <location filename="../../graphicelement.cpp" line="1118"/>
         <source>Writing element.</source>
         <translation>Escrevendo elemento.</translation>
     </message>
@@ -2727,56 +2742,56 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <translation>Concluído atualização do tema.</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="405"/>
+        <location filename="../../scene.cpp" line="395"/>
         <source>Ctrl + Drag action triggered.</source>
         <translation>Ação Ctrl + Arrastar acionada.</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="592"/>
+        <location filename="../../scene.cpp" line="582"/>
         <source>Paste</source>
         <translation>Colar</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="782"/>
+        <location filename="../../scene.cpp" line="772"/>
         <source> at position: </source>
         <translation> na posição: </translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="782"/>
+        <location filename="../../scene.cpp" line="772"/>
         <source>, </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="782"/>
+        <location filename="../../scene.cpp" line="772"/>
         <source>, label: </source>
         <translation>, rótulo: </translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="785"/>
-        <location filename="../../scene.cpp" line="1049"/>
+        <location filename="../../scene.cpp" line="775"/>
+        <location filename="../../scene.cpp" line="1039"/>
         <source>Valid element.</source>
         <translation>Elemento válido.</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="793"/>
-        <location filename="../../scene.cpp" line="1057"/>
+        <location filename="../../scene.cpp" line="783"/>
+        <location filename="../../scene.cpp" line="1047"/>
         <source>Adding the element to the scene.</source>
         <translation>Adicionando o elemento para o cenário.</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="796"/>
-        <location filename="../../scene.cpp" line="1060"/>
+        <location filename="../../scene.cpp" line="786"/>
+        <location filename="../../scene.cpp" line="1050"/>
         <source>Cleaning the selection.</source>
         <translation>Limpando a seleção.</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="799"/>
-        <location filename="../../scene.cpp" line="1063"/>
+        <location filename="../../scene.cpp" line="789"/>
+        <location filename="../../scene.cpp" line="1053"/>
         <source>Setting created element as selected.</source>
         <translation>Setando elemento criado como selecionado.</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="802"/>
+        <location filename="../../scene.cpp" line="792"/>
         <source>Adjusting the position of the element.</source>
         <translation>Ajustando a posição do elemento.</translation>
     </message>
@@ -2829,12 +2844,12 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <translation></translation>
     </message>
     <message>
-        <location filename="../../serialization.cpp" line="89"/>
+        <location filename="../../serialization.cpp" line="88"/>
         <source>Version: </source>
         <translation>Versão: </translation>
     </message>
     <message>
-        <location filename="../../serialization.cpp" line="92"/>
+        <location filename="../../serialization.cpp" line="91"/>
         <source>Invalid version number.</source>
         <translation>Número de versão inválido.</translation>
     </message>
