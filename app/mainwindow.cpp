@@ -165,6 +165,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->actionSave,             &QAction::triggered,        this,                &MainWindow::on_actionSave_triggered);
     connect(m_ui->actionSaveAs,           &QAction::triggered,        this,                &MainWindow::on_actionSaveAs_triggered);
     connect(m_ui->actionSelectAll,        &QAction::triggered,        this,                &MainWindow::on_actionSelectAll_triggered);
+    connect(m_ui->actionSpanish,          &QAction::triggered,        this,                &MainWindow::on_actionSpanish_triggered);
     connect(m_ui->actionWaveform,         &QAction::triggered,        this,                &MainWindow::on_actionWaveform_triggered);
     connect(m_ui->actionWires,            &QAction::triggered,        this,                &MainWindow::on_actionWires_triggered);
     connect(m_ui->actionZoomIn,           &QAction::triggered,        this,                &MainWindow::on_actionZoomIn_triggered);
@@ -1106,6 +1107,11 @@ void MainWindow::loadTranslation(const QString &language)
         qtFile = ":/translations/qt_pt_BR.qm";
     }
 
+    if (language == "es") {
+        pandaFile = ":/translations/wpanda_es.qm";
+        qtFile = ":/translations/qt_es.qm";
+    }
+
     if (!pandaFile.isEmpty()) {
         m_pandaTranslator = new QTranslator(this);
 
@@ -1134,6 +1140,12 @@ void MainWindow::on_actionPortuguese_triggered()
 {
     loadTranslation("pt_BR");
 }
+
+void MainWindow::on_actionSpanish_triggered()
+{
+    loadTranslation("es");
+}
+
 
 void MainWindow::on_actionPlay_toggled(const bool checked)
 {
