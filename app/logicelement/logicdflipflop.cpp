@@ -19,10 +19,10 @@ void LogicDFlipFlop::updateLogic()
     if (isTempSimulationOn()) {
         bool q0 = outputValue(0);
         bool q1 = outputValue(1);
-        const bool D = m_inputValues.at(0);
-        const bool clk = m_inputValues.at(1);
-        const bool prst = m_inputValues.at(2);
-        const bool clr = m_inputValues.at(3);
+        const bool D = m_inputBuffer.last()[0];
+        const bool clk = m_inputBuffer.last()[1];
+        const bool prst = m_inputBuffer.last()[2];
+        const bool clr = m_inputBuffer.last()[3];
 
         if (clk && !m_lastClk) {
             q0 = m_lastValue;
