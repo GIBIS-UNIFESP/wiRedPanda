@@ -86,7 +86,15 @@ protected:
 private:
     Q_DISABLE_COPY(BewavedDolphin)
 
+    /**
+     * creates an image composed of eight parts, following the pattern given by the vector of booleans.
+     * @param waveparts contains the values useds to create the final waveform.
+     * @param isInput is used to knows if the color will be blue (if is True) or green (if is False).
+     * @param lastValue is used to knows the last state to create the first state of the current waveform.
+     * @return a Pixmap containing the waveform image 64x38 pixels.
+    */
     QPixmap composeWaveParts(const QVector<bool> waveparts, const bool isInput = true, std::optional<bool> lastValue = NULL);
+
     bool checkSave();
     int sectionFirstColumn(const QItemSelection &ranges);
     int sectionFirstRow(const QItemSelection &ranges);
@@ -94,9 +102,30 @@ private:
     void copy(const QItemSelection &ranges, QDataStream &stream);
     void createElement(const int row, const int col, const int value, const bool isInput = true, const bool changeNext = true);
     void createOneElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
+
+    /**
+     * Plot the composedWaveform in the row and column correctly.
+     * @param row is the number of the line that you want to plot.
+     * @param col is the number of the column that you want to plot.
+     * @param composedWaveform is the pixmap that will be ploted.
+     * @param isInput is True if is about an input waveform or False if you want an output waveform.
+     * @param changeNext is True if you want to change next value in the row, and False if you don't.
+    */
     void createTemporalSimulationElement(const int row, const int col, QPixmap composedWaveForm, const bool isInput = true, const bool changeNext = true);
+
     void createZeroElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
+
+    /**
+     * Calls the composeWaveParts to create the composed waveform, then calls the CreateTemporalSimulationElement to plot the pixmap corretly.
+     * @param row is the number of the line that you want to plot.
+     * @param col is the number of the column that you want to plot.
+     * @param output contains the values useds to create the final waveform in composeWaveParts().
+     * @param lastValue is used to knows the last state to create the first state of the current waveform.
+     * @param isInput is True if is about an input waveform or False if you want an output waveform.
+     * @param changeNext is True if you want to change next value in the row, and False if you don't.
+    */
     void createComposedWaveFormElement(const int row, const int column, QVector<bool> output, std::optional<bool> lastValue = NULL, const bool isInput = true, const bool changeNext = true);
+
     void cut(const QItemSelection &ranges, QDataStream &stream);
     void load(QDataStream &stream);
     void load(QFile &file);
