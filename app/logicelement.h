@@ -38,10 +38,10 @@ public:
 
 protected:
     bool updateInputs();
+    void updateInputsInBuffer();
 
     QVector<QVector<bool>> m_inputBuffer;
     QVector<bool> m_inputValues;
-    int m_delayLength;
 
 private:
     Q_DISABLE_COPY(LogicElement)
@@ -53,4 +53,5 @@ private:
     bool m_isValid = true;
     bool m_TempSimulationIsOn = false;
     int m_priority = -1;
+    int m_delayCount = 0;
 };
