@@ -267,6 +267,7 @@ void MainWindow::createNewTab()
     m_ui->tab->setCurrentIndex(m_ui->tab->count() - 1);
 
     qCDebug(zero) << "Finished #tabs: " << m_ui->tab->count() << ", current tab: " << m_tabIndex;
+    // m_ui->actionTemporalSimulation->setChecked(false);
 }
 
 void MainWindow::removeUndoRedoMenu()
@@ -804,6 +805,9 @@ void MainWindow::tabChanged(const int newTabIndex)
     qCDebug(zero) << "Selecting tab: " << newTabIndex;
     connectTab();
     qCDebug(zero) << "New tab selected. Dolphin fileName: " << m_currentTab->dolphinFileName();
+
+    auto isTempSimulation = m_currentTab->simulation()->isTemporalSimulation();
+    m_ui->actionTemporalSimulation->setChecked(isTempSimulation);
 }
 
 void MainWindow::on_lineEditSearch_textChanged(const QString &text)
