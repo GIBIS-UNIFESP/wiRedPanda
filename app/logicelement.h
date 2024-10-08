@@ -46,6 +46,8 @@ protected:
 private:
     Q_DISABLE_COPY(LogicElement)
 
+    void updateInputsInBuffer();
+
     QSet<LogicElement *> m_successors;
     QVector<InputPair> m_inputPairs;
     QVector<bool> m_outputValues;
