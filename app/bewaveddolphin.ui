@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>BewavedDolphin</class>
  <widget class="QMainWindow" name="BewavedDolphin">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -97,7 +100,7 @@
      <x>0</x>
      <y>0</y>
      <width>833</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -440,9 +443,14 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="resources/dolphin/dolphin.qrc">
-     <normaloff>:/dolphin/timerBlue.svg</normaloff>:/dolphin/timerBlue.svg</iconset>
+     <normaloff>:/dolphin/timerBlue.svg</normaloff>
+     <disabledoff>:/dolphin/timerBlue.svg</disabledoff>
+     <disabledon>:/dolphin/timerBlue.svg</disabledon>:/dolphin/timerBlue.svg</iconset>
    </property>
    <property name="text">
     <string>TemporalSimulation</string>
@@ -463,10 +471,10 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/dolphin/dolphin.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/basic/basic.qrc"/>
  </resources>
  <connections/>
