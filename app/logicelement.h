@@ -25,7 +25,7 @@ public:
     bool inputValue(const int index = 0) const;
 
     /**
-     * Verifys that Temporal Simulation is activated.
+     * Checks if Temporal Simulation is activated.
      * @return True if Temporal Simulation is activated, and False if it's not activated.
     */
     bool isTempSimulationOn();
