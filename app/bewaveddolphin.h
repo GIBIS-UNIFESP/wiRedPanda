@@ -86,6 +86,7 @@ protected:
 private:
     Q_DISABLE_COPY(BewavedDolphin)
 
+    QPixmap composeWaveParts(const QVector<bool> waveparts, const bool isInput = true, std::optional<bool> lastValue = NULL);
     bool checkSave();
     int sectionFirstColumn(const QItemSelection &ranges);
     int sectionFirstRow(const QItemSelection &ranges);
@@ -93,8 +94,9 @@ private:
     void copy(const QItemSelection &ranges, QDataStream &stream);
     void createElement(const int row, const int col, const int value, const bool isInput = true, const bool changeNext = true);
     void createOneElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
-    void createTemporalSimulationElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
+    void createTemporalSimulationElement(const int row, const int col, QPixmap composedWaveForm, const bool isInput = true, const bool changeNext = true);
     void createZeroElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
+    void createComposedWaveFormElement(const int row, const int column, QVector<bool> output, std::optional<bool> lastValue = NULL, const bool isInput = true, const bool changeNext = true);
     void cut(const QItemSelection &ranges, QDataStream &stream);
     void load(QDataStream &stream);
     void load(QFile &file);
@@ -141,7 +143,6 @@ private:
     void save(const QString &fileName);
     void setLength(const int simLength, const bool runSimulation);
     void zoomChanged();
-    QPixmap composeWaveParts(const QVector<QPixmap> waveparts);
 
     Ui::BewavedDolphin *m_ui;
     MainWindow *m_mainWindow = nullptr;
@@ -169,6 +170,7 @@ private:
     QVector<GraphicElement *> m_outputs;
     QVector<GraphicElementInput *> m_inputs;
     QVector<Status> m_oldInputValues;
+    QVector<QVector<bool>> output_values;
     Scene *m_externalScene = nullptr;
     Simulation *m_simulation = nullptr;
     bool m_edited = false;
