@@ -41,12 +41,9 @@ protected:
 
     QVector<QVector<bool>> m_inputBuffer;
     QVector<bool> m_inputValues;
-    int m_delayLength;
 
 private:
     Q_DISABLE_COPY(LogicElement)
-
-    void updateInputsInBuffer();
 
     QSet<LogicElement *> m_successors;
     QVector<InputPair> m_inputPairs;
@@ -54,5 +51,6 @@ private:
     bool m_beingVisited = false;
     bool m_isValid = true;
     bool m_tempSimulationIsOn = false;
+    int m_delayCount = 0;
     int m_priority = -1;
 };
