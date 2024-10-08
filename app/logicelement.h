@@ -53,4 +53,5 @@ private:
     bool m_isValid = true;
     bool m_TempSimulationIsOn = false;
     int m_priority = -1;
+    void updateInputsInBuffer();
 };
