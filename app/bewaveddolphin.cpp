@@ -39,7 +39,6 @@ SignalModel::SignalModel(const int inputs, const int rows, const int columns, QO
 
 Qt::ItemFlags SignalModel::flags(const QModelIndex &index) const
 {
-    //Q_UNUSED(index)
     Qt::ItemFlags flags;
 
     if (index.row() >= m_inputCount)
