@@ -122,12 +122,6 @@ bool LogicElement::inputValue(const int index) const
     return pred->outputValue(port);
 }
 
-void LogicElement::updateInputsInBuffer() {
-    for (int j = 0; j < m_inputValues.length(); j++) {
-        m_inputBuffer[0][j] = inputValue(j);
-    }
-}
-
 void LogicElement::updateInputBuffer() {
     /*for (int j = 0; j < m_inputValues.length(); j++) {
         //m_inputBuffer[0][j] = inputValue(j);
