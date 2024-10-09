@@ -39,9 +39,13 @@ SignalModel::SignalModel(const int inputs, const int rows, const int columns, QO
 
 Qt::ItemFlags SignalModel::flags(const QModelIndex &index) const
 {
-    Q_UNUSED(index)
+    //Q_UNUSED(index)
+    Qt::ItemFlags flags;
 
-    Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+    if (index.row() >= m_inputCount)
+        flags = Qt::ItemIsEnabled;
+    else
+        flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
     return flags;
 }
@@ -1541,7 +1545,6 @@ void BewavedDolphin::createTemporalSimulationElement(const int row, const int co
         m_model->setData(index, Qt::AlignLeft, Qt::TextAlignmentRole);
 
         m_model->setData(index, composedWaveForm, Qt::DecorationRole);
-
         if (!changeNext) {
             return;
         }
