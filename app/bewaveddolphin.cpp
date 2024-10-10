@@ -30,6 +30,7 @@
 #include <bitset>
 #include <cmath>
 #include <iostream>
+#include <sstream>
 
 SignalModel::SignalModel(const int inputs, const int rows, const int columns, QObject *parent)
     : QStandardItemModel(rows, columns, parent)
