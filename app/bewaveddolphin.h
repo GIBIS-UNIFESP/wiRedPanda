@@ -93,7 +93,14 @@ private:
      * @param lastValue is used to knows the last state to create the first state of the current waveform.
      * @return a Pixmap containing the waveform image 64x38 pixels.
     */
-    QPixmap composeWaveParts(const QVector<bool> waveparts, const bool isInput = true, std::optional<bool> lastValue = NULL);
+    QPixmap composeWaveParts(const QVector<bool> waveparts, const bool isInput = true);
+
+    /**
+     * This function converts a boolean vector into a string of hexadecimal values.
+     * @param binaryVector is a boolean vector with eight positions.
+     * @return returns a string with the corresponding hexadecimal of the binaryVector.
+    */
+    std::string convertBinaryToHex(const QVector<bool> binaryVector) const;
 
     bool checkSave();
     int sectionFirstColumn(const QItemSelection &ranges);
@@ -111,7 +118,7 @@ private:
      * @param isInput is True if is about an input waveform or False if you want an output waveform.
      * @param changeNext is True if you want to change next value in the row, and False if you don't.
     */
-    void createTemporalSimulationElement(const int row, const int col, QPixmap composedWaveForm, const bool isInput = true, const bool changeNext = true);
+    void createTemporalSimulationElement(const int row, const int col, QPixmap composedWaveForm, const std::string hex, const bool isInput = true, const bool changeNext = true);
 
     void createZeroElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
 
@@ -124,7 +131,7 @@ private:
      * @param isInput is True if is about an input waveform or False if you want an output waveform.
      * @param changeNext is True if you want to change next value in the row, and False if you don't.
     */
-    void createComposedWaveFormElement(const int row, const int column, QVector<bool> output, std::optional<bool> lastValue = NULL, const bool isInput = true, const bool changeNext = true);
+    void createComposedWaveFormElement(const int row, const int column, QVector<bool> output, const bool isInput = true, const bool changeNext = true);
 
     void cut(const QItemSelection &ranges, QDataStream &stream);
     void load(QDataStream &stream);
