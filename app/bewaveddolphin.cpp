@@ -29,8 +29,10 @@
 #include <QPrinter>
 #include <QSaveFile>
 #include <QTextStream>
+#include <bitset>
 #include <cmath>
 #include <iostream>
+#include <sstream>
 
 SignalModel::SignalModel(const int inputs, const int rows, const int columns, QObject *parent)
     : QStandardItemModel(rows, columns, parent)
@@ -43,7 +45,7 @@ Qt::ItemFlags SignalModel::flags(const QModelIndex &index) const
     Qt::ItemFlags flags;
 
     if (index.row() >= m_inputCount)
-        flags = Qt::ItemIsEnabled;
+        flags = Qt::NoItemFlags;
     else
         flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
@@ -404,13 +406,13 @@ void BewavedDolphin::run()
             }
         }
 
+        m_output_values = QVector<QVector<bool>>(nPorts);
+
+        for (int i = 0; i < m_output_values.length(); ++i) {
+            m_output_values[i] = QVector<bool>(8);
+        }
+
         if (m_isTemporalSimulation) {
-            m_output_values = QVector<QVector<bool>>(nPorts);
-
-            for (int i = 0; i < m_output_values.length(); ++i) {
-                m_output_values[i] = QVector<bool>(8);
-            }
-
             for (int delta = 0; delta < 8; ++delta) {
                 row = 0;
 
@@ -426,12 +428,10 @@ void BewavedDolphin::run()
             }
 
             row = m_inputPorts;
-            std::optional<bool> lastOutput = NULL;
 
             for (const auto &output : m_output_values) {
-                createComposedWaveFormElement(row, column, output, lastOutput, false);
+                createComposedWaveFormElement(row, column, output, false);
                 ++row;
-                lastOutput = output.last();
             }
         } else {
             qCDebug(four) << tr("Updating the values of the circuit logic based on current input values.");
@@ -455,10 +455,11 @@ void BewavedDolphin::run()
     restoreInputs();
 }
 
-void BewavedDolphin::createComposedWaveFormElement(const int row, const int column, QVector<bool> output, std::optional<bool> lastValue, const bool isInput, const bool changeNext)
+void BewavedDolphin::createComposedWaveFormElement(const int row, const int column, QVector<bool> output, const bool isInput, const bool changeNext)
 {
-    QPixmap composedWave = composeWaveParts(output, isInput, lastValue);
-    createTemporalSimulationElement(row, column, composedWave, isInput, changeNext);
+    QPixmap composedWave = composeWaveParts(output, isInput);
+    const QString hex = convertBinaryToHex(output);
+    createTemporalSimulationElement(row, column, composedWave, hex, isInput, changeNext);
 }
 
 void BewavedDolphin::restoreInputs()
@@ -1411,7 +1412,7 @@ void BewavedDolphin::on_actionTemporalSimulation_toggled(const bool checked)
     run();
 }
 
-QPixmap BewavedDolphin::composeWaveParts(const QVector<bool> waveparts, const bool isInput, std::optional<bool> lastValue)
+QPixmap BewavedDolphin::composeWaveParts(const QVector<bool> waveparts, const bool isInput)
 {
     int partWidth = 64;
     int partHeight = 38;
@@ -1444,34 +1445,14 @@ QPixmap BewavedDolphin::composeWaveParts(const QVector<bool> waveparts, const bo
         int x = i * (partWidth / 8);
 
         if (i == 0) {
-            if (lastValue != NULL) {
-                if (waveparts[i] == true && lastValue.value() == true) {
-                    painter.drawPixmap(x, 0, high);
-                    previousIsLow = false;
-                    previousIsHigh = true;
-                } else if (waveparts[i] == true && lastValue.value() == false) {
-                    painter.drawPixmap(x, 0, rising);
-                    previousIsLow = false;
-                    previousIsHigh = true;
-                } else if (waveparts[i] == false && lastValue.value() == true) {
-                    painter.drawPixmap(x, 0, falling);
-                    previousIsLow = true;
-                    previousIsHigh = false;
-                } else {
-                    painter.drawPixmap(x, 0, low);
-                    previousIsLow = true;
-                    previousIsHigh = false;
-                }
+            if (waveparts[i] == true) {
+                painter.drawPixmap(x, 0, high);
+                previousIsLow = false;
+                previousIsHigh = true;
             } else {
-                if (waveparts[i] == true) {
-                    painter.drawPixmap(x, 0, high);
-                    previousIsLow = false;
-                    previousIsHigh = true;
-                } else {
-                    painter.drawPixmap(x, 0, low);
-                    previousIsLow = true;
-                    previousIsHigh = false;
-                }
+                painter.drawPixmap(x, 0, low);
+                previousIsLow = true;
+                previousIsHigh = false;
             }
         } else if (waveparts[i] == true) {
             (previousIsLow) ? painter.drawPixmap(x, 0, rising)
@@ -1492,14 +1473,14 @@ QPixmap BewavedDolphin::composeWaveParts(const QVector<bool> waveparts, const bo
     return composedPixmap;
 }
 
-void BewavedDolphin::createTemporalSimulationElement(const int row, const int col, QPixmap composedWaveForm, const bool isInput, const bool changeNext)
+void BewavedDolphin::createTemporalSimulationElement(const int row, const int col, QPixmap composedWaveForm, const QString hex, const bool isInput, const bool changeNext)
 {
     const auto index = m_model->index(row, col);
 
     const int currentValue = index.data().toInt();
 
     qCDebug(three) << tr("Changing current item.");
-    m_model->setData(index, 0, Qt::DisplayRole);
+    m_model->setData(index, hex, Qt::DisplayRole);
 
 
     if (m_type == PlotType::Number) {
@@ -1522,4 +1503,24 @@ void BewavedDolphin::createTemporalSimulationElement(const int row, const int co
 
         }
     }
+}
+
+QString BewavedDolphin::convertBinaryToHex(const QVector<bool> &binaryVector) const
+{
+    QString bin;
+
+    for (bool bit : binaryVector) {
+        bin.append(bit ? "1" : "0");
+    }
+
+    bool ok = false;
+    quint64 decimalValue = bin.toULongLong(&ok, 2); // Convert binary string to decimal (base 2)
+    if (!ok) {
+        qWarning() << "Failed to convert binary to decimal:" << bin;
+        return QString(); // Return an empty string on failure
+    }
+
+    QString hexValue = QString::number(decimalValue, 16).toUpper(); // Convert decimal to hex (uppercase)
+
+    return hexValue;
 }
