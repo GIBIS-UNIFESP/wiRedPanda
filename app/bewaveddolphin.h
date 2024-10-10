@@ -11,6 +11,7 @@
 #include <QMainWindow>
 #include <QStandardItemModel>
 #include <QTableView>
+#include <optional>
 
 class GraphicsView;
 class MainWindow;
