@@ -31,7 +31,6 @@
 #include <bitset>
 #include <cmath>
 #include <iostream>
-#include <optional>
 #include <sstream>
 
 SignalModel::SignalModel(const int inputs, const int rows, const int columns, QObject *parent)
