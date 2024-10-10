@@ -471,11 +471,11 @@
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="resources/basic/basic.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/dolphin/dolphin.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
  </resources>
  <connections/>
 </ui>
