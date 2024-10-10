@@ -406,6 +406,7 @@ void BewavedDolphin::run2()
     SimulationBlocker simulationBlocker(m_simulation);
 
     int nPorts = 0;
+    std::optional<bool> previousWaveEnd = std::nullopt;
 
     for (auto *output : std::as_const(m_outputs)) {
         nPorts += output->inputSize();
@@ -453,7 +454,8 @@ void BewavedDolphin::run2()
             row = m_inputPorts;
 
             for (const auto &output : m_output_values) {
-                createComposedWaveFormElement(row, column, output, false);
+                createComposedWaveFormElement(row, column, output, previousWaveEnd, false);
+                previousWaveEnd = output.last();
                 ++row;
             }
         } else {
@@ -479,9 +481,9 @@ void BewavedDolphin::run2()
     restoreInputs();
 }
 
-void BewavedDolphin::createComposedWaveFormElement(const int row, const int column, QVector<bool> output, const bool isInput, const bool changeNext)
+void BewavedDolphin::createComposedWaveFormElement(const int row, const int column, QVector<bool> output, std::optional<bool> previousWaveEnd, const bool isInput, const bool changeNext)
 {
-    QPixmap composedWave = composeWaveParts(output, isInput);
+    QPixmap composedWave = composeWaveParts(output, previousWaveEnd, isInput);
     const QString hex = convertBinaryToHex(output);
     createTemporalSimulationElement(row, column, composedWave, hex, isInput, changeNext);
 }
@@ -1435,7 +1437,7 @@ void BewavedDolphin::on_actionTemporalSimulation_toggled(const bool checked)
     m_isTemporalSimulation = checked;
 }
 
-QPixmap BewavedDolphin::composeWaveParts(const QVector<bool> waveparts, const bool isInput)
+QPixmap BewavedDolphin::composeWaveParts(const QVector<bool> waveparts, std::optional<bool> previousWaveEnd, const bool isInput)
 {
     int partWidth = 64;
     int partHeight = 38;
@@ -1469,11 +1471,19 @@ QPixmap BewavedDolphin::composeWaveParts(const QVector<bool> waveparts, const bo
 
         if (i == 0) {
             if (waveparts[i] == true) {
-                painter.drawPixmap(x, 0, high);
+                if (previousWaveEnd == false) {
+                    painter.drawPixmap(x, 0, rising);
+                } else {
+                    painter.drawPixmap(x, 0, high);
+                }
                 previousIsLow = false;
                 previousIsHigh = true;
             } else {
-                painter.drawPixmap(x, 0, low);
+                if (previousWaveEnd == true) {
+                    painter.drawPixmap(x, 0, falling);
+                } else {
+                    painter.drawPixmap(x, 0, low);
+                }
                 previousIsLow = true;
                 previousIsHigh = false;
             }
