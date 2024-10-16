@@ -1,4 +1,4 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "recentfiles.h"
@@ -28,7 +28,7 @@ RecentFiles::RecentFiles(QObject *parent)
 
 void RecentFiles::addRecentFile(const QString &filePath)
 {
-    qCDebug(three) << tr("Setting recent file to: ") << filePath;
+    qCDebug(three) << "Setting recent file to: " << filePath;
 
     if (!QFile(filePath).exists()) {
         return;

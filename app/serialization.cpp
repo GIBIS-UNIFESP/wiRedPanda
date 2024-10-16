@@ -1,4 +1,4 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "serialization.h"
@@ -39,7 +39,7 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, QMap<quin
 
     while (!stream.atEnd()) {
         int type; stream >> type;
-        qCDebug(three) << tr("Type: ") << type;
+        qCDebug(three) << "Type: " << type;
 
         switch (type) {
         case GraphicElement::Type: {
@@ -52,13 +52,13 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, QMap<quin
         }
 
         case QNEConnection::Type: {
-            qCDebug(three) << tr("Building connection.");
+            qCDebug(three) << "Building connection.";
             auto *conn = new QNEConnection();
 
-            qCDebug(three) << tr("Loading connection.");
+            qCDebug(three) << "Loading connection.";
             conn->load(stream, portMap);
 
-            qCDebug(three) << tr("Appending connection.");
+            qCDebug(three) << "Appending connection.";
             itemList.append(conn);
             break;
         }
@@ -68,13 +68,13 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, QMap<quin
         }
     }
 
-    qCDebug(zero) << tr("Finished deserializing.");
+    qCDebug(zero) << "Finished deserializing.";
     return itemList;
 }
 
 QVersionNumber Serialization::loadVersion(QDataStream &stream)
 {
-    qCDebug(zero) << tr("Loading version.");
+    qCDebug(zero) << "Loading version.";
 
     QString str; stream >> str;
 
@@ -82,10 +82,10 @@ QVersionNumber Serialization::loadVersion(QDataStream &stream)
         throw Pandaception(tr("Invalid file format."));
     }
 
-    qCDebug(zero) << tr("String: ") << str;
+    qCDebug(zero) << "String: " << str;
 
     QVersionNumber version = VERSION(str.remove(QApplication::applicationName(), Qt::CaseInsensitive));
-    qCDebug(zero) << tr("Version: ") << version;
+    qCDebug(zero) << "Version: " << version;
 
     if (version.isNull()) {
         throw Pandaception(tr("Invalid version number."));
