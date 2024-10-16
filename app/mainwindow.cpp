@@ -1113,7 +1113,7 @@ void MainWindow::loadTranslation(const QString &language)
 
     if (language == "es") {
         pandaFile = ":/translations/wpanda_es.qm";
-        //qtFile = ":/translations/qt_es.qm";
+        qtFile = ":/translations/qt_es.qm";
     }
 
     if (!pandaFile.isEmpty()) {
