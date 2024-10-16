@@ -95,7 +95,8 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
 {
     m_ui->setupUi(this);
     m_ui->retranslateUi(this);
-    on_actionTemporalSimulation_toggled(scene->simulation()->isTemporalSimulation());
+
+    m_isTemporalSimulation = scene->simulation()->isTemporalSimulation();
     m_ui->actionTemporalSimulation->setChecked(m_isTemporalSimulation);
 
     setAttribute(Qt::WA_DeleteOnClose);
@@ -1437,6 +1438,7 @@ void BewavedDolphin::on_actionAboutQt_triggered()
 void BewavedDolphin::on_actionTemporalSimulation_toggled(const bool checked)
 {
     m_isTemporalSimulation = checked;
+    run();
 }
 
 QPixmap BewavedDolphin::composeWaveParts(const QVector<bool> waveparts, std::optional<bool> previousWaveEnd, const bool isInput)
