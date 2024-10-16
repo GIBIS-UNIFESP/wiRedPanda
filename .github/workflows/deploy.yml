@@ -1,4 +1,4 @@
-# Copyright 2015 - 2022, GIBIS-Unifesp and the WiRedPanda contributors
+# Copyright 2015 - 2024, GIBIS-Unifesp and the WiRedPanda contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 name: Deploy
@@ -19,27 +19,25 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: recursive
         fetch-depth: 0
 
-    - name: Install Qt 32bit
+    - name: Install Qt5 32bit
       if: matrix.os == 'windows-latest'
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v4
       with:
         version: 5.15.2
         cache: true
-        aqtversion: ==3.1.6
         arch: win32_msvc2019
 
-    - name: Install Qt 64bit
+    - name: Install Qt5 64bit
       if: matrix.os != 'windows-latest'
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v4
       with:
         version: 5.15.2
         cache: true
-        aqtversion: ==3.1.6
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -77,7 +75,7 @@ jobs:
         mv WiRedPanda-4-x86_64.AppImage WiRedPanda-Ubuntu-Qt5.AppImage
 
     - name: Publish Ubuntu
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       if: runner.os == 'Linux'
       with:
         fail_on_unmatched_files: true
@@ -87,7 +85,7 @@ jobs:
 
     - name: Setup MSVC Toolchain
       if: startsWith(matrix.os, 'windows')
-      uses: seanmiddleditch/gha-setup-vsdevenv@v4
+      uses: pbeast/gha-setup-vsdevenv@master
       with:
         arch: x86
 
@@ -119,20 +117,21 @@ jobs:
         Compress-Archive -Path wpanda -DestinationPath WiRedPanda-Windows-Qt5-Portable.zip
 
     - name: Publish Windows
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       if: startsWith(matrix.os, 'windows')
       with:
         fail_on_unmatched_files: true
         files: 'build/app/*.zip'
 
 # =================================
+# https://bugreports.qt.io/browse/QTBUG-117225
 
     - name: Build macOS
       if: runner.os == 'macOS'
       run: |
         mkdir build
         cd build
-        qmake ../WPanda.pro
+        qmake ../WPanda.pro -early QMAKE_DEFAULT_LIBDIRS=$(xcrun -show-sdk-path)/usr/lib
         make -j3
 
     - name: Test macOS
@@ -149,7 +148,7 @@ jobs:
         mv wiredpanda.dmg WiRedPanda-macOS-Qt5.dmg
 
     - name: Publish macOS
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       if: runner.os == 'macOS'
       with:
         fail_on_unmatched_files: true
