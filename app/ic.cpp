@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "ic.h"
@@ -99,7 +99,7 @@ void IC::loadInputs()
     setMaxInputSize(m_icInputs.size());
     setMinInputSize(m_icInputs.size());
     setInputSize(m_icInputs.size());
-    qCDebug(three) << tr("IC ") << m_file << tr(" -> Inputs. min: ") << minInputSize() << tr(", max: ") << maxInputSize() << tr(", current: ") << inputSize() << tr(", m_inputs: ") << m_inputPorts.size();
+    qCDebug(three) << "IC " << m_file << " -> Inputs. min: " << minInputSize() << ", max: " << maxInputSize() << ", current: " << inputSize() << ", m_inputs: " << m_inputPorts.size();
 
     for (int inputIndex = 0; inputIndex < m_icInputs.size(); ++inputIndex) {
         auto *inpPort = inputPort(inputIndex);
@@ -121,12 +121,12 @@ void IC::loadOutputs()
         outPort->setName(m_icOutputLabels.at(outputIndex));
     }
 
-    qCDebug(three) << tr("IC ") << m_file << tr(" -> Outputs. min: ") << minOutputSize() << tr(", max: ") << maxOutputSize() << tr(", current: ") << outputSize() << tr(", m_outputs: ") << m_outputPorts.size();
+    qCDebug(three) << "IC " << m_file << " -> Outputs. min: " << minOutputSize() << ", max: " << maxOutputSize() << ", current: " << outputSize() << ", m_outputs: " << m_outputPorts.size();
 }
 
 void IC::loadFile(const QString &fileName)
 {
-    qCDebug(zero) << QObject::tr("Reading IC.");
+    qCDebug(zero) << "Reading IC.";
 
     m_icInputs.clear();
     m_icOutputs.clear();
@@ -202,7 +202,7 @@ void IC::loadFile(const QString &fileName)
 
     generatePixmap();
 
-    qCDebug(zero) << QObject::tr("Finished reading IC.");
+    qCDebug(zero) << "Finished reading IC.";
 }
 
 void IC::generatePixmap()

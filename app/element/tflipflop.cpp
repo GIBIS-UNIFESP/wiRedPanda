@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "tflipflop.h"
@@ -12,7 +12,7 @@ namespace
 }
 
 TFlipFlop::TFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(ElementType::TFlipFlop, ElementGroup::Memory, pixmapPath(), tr("T-FLIPFLOP"), tr("T-FlipFlop"), 4, 4, 2, 2, parent)
+    : GraphicElement(ElementType::TFlipFlop, ElementGroup::Memory, pixmapPath(), tr("T-FLIP-FLOP"), tr("T-Flip-Flop"), 4, 4, 2, 2, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

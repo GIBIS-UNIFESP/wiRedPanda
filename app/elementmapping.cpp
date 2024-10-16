@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "elementmapping.h"
@@ -13,9 +13,9 @@
 ElementMapping::ElementMapping(const QVector<GraphicElement *> &elements)
     : m_elements(elements)
 {
-    qCDebug(three) << tr("Generate Map.");
+    qCDebug(three) << "Generate Map.";
     generateMap();
-    qCDebug(three) << tr("Connect.");
+    qCDebug(three) << "Connect.";
     connectElements();
 }
 

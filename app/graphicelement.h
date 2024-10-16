@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
@@ -55,7 +55,7 @@ public:
     //! virtual function overloaded by clock element. Other elements have frequency of 0.
     virtual float frequency() const;
 
-    //! Updates the GraphicElement theme according to the dark/light WiRedPanda theme.
+    //! Updates the GraphicElement theme according to the dark/light wiRedPanda theme.
     virtual void updateTheme();
 
     ElementGroup elementGroup() const;

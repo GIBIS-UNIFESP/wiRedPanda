@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "elementeditor.h"
@@ -312,7 +312,7 @@ void ElementEditor::updateElementSkin()
         return;
     }
 
-    qCDebug(zero) << tr("File name: ") << fileName;
+    qCDebug(zero) << "File name: " << fileName;
     m_isUpdatingSkin = true;
     m_skinName = fileName;
     m_isDefaultSkin = false;
@@ -628,7 +628,7 @@ void ElementEditor::selectionChanged()
 
 void ElementEditor::apply()
 {
-    qCDebug(three) << tr("Apply.");
+    qCDebug(three) << "Apply.";
 
     if (m_elements.isEmpty() || !isEnabled()) {
         return;
@@ -687,7 +687,7 @@ void ElementEditor::inputIndexChanged(const int index)
         emit sendCommand(new ChangeInputSizeCommand(m_elements, m_ui->comboBoxInputSize->currentData().toInt(), m_scene));
     }
 
-    qCDebug(zero) << tr("Input size changed to ") << index;
+    qCDebug(zero) << "Input size changed to " << index;
     update();
 }
 
@@ -701,7 +701,7 @@ void ElementEditor::outputIndexChanged(const int index)
         emit sendCommand(new ChangeOutputSizeCommand(m_elements, m_ui->comboBoxOutputSize->currentData().toInt(), m_scene));
     }
 
-    qCDebug(zero) << tr("Output size changed to ") << index;
+    qCDebug(zero) << "Output size changed to " << index;
     update();
 }
 
@@ -740,7 +740,7 @@ void ElementEditor::inputLocked(const bool value)
         }
     }
 
-    qCDebug(zero) << tr("Input locked.");
+    qCDebug(zero) << "Input locked.";
     apply();
 }
 
@@ -778,7 +778,7 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
                 });
 
                 const int elmPos = elements.indexOf(elm);
-                qCDebug(zero) << tr("Pos = ") << elmPos << tr(" from ") << elements.size();
+                qCDebug(zero) << "Pos = " << elmPos << " from " << elements.size();
                 int step = 1;
 
                 if (moveBack) {
@@ -789,7 +789,7 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
                 int pos = (elements.size() + elmPos + step) % elements.size();
 
                 for (; pos != elmPos; pos = ((elements.size() + pos + step) % elements.size())) {
-                    qCDebug(zero) << tr("Pos = ") << pos;
+                    qCDebug(zero) << "Pos = " << pos;
                     elm = elements.at(pos);
 
                     setCurrentElements({elm});
