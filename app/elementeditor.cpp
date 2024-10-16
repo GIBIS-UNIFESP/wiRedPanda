@@ -887,11 +887,9 @@ void ElementEditor::truthTable()
 
     m_table->setHorizontalHeaderLabels(inputLabels);
 
-    // int columnCount = m_ui->truthTable->columnCount();
-
-    for (int i =0; i < pow(2,nInputs); i++) {
-        for (int j =0; j < nInputs; j++) {
-            m_ui->truthTable->setColumnWidth(j,14);
+    for (int i = 0; i < pow(2, nInputs); i++) {
+        for (int j = 0; j < nInputs; j++) {
+            m_table->setColumnWidth(j,14);
             auto newItemValue = QString::number(i, 2);
 
             if (newItemValue.size() < nInputs) {
@@ -940,9 +938,11 @@ void ElementEditor::setTruthTableProposition(const int row, const int column)
         return;
     }
 
-    auto *truthtable = m_elements[0];
+    auto cellItem = m_table->item(row,column);
+    cellItem->setText((cellItem->text() == "0") ? "1" : "0");
 
-    auto *cellItem = m_ui->truthTable->item(row,column);
+    auto truthtable = m_elements[0];
+    const int nInputs = truthtable->inputSize();
 
     const QString newItemValue = (cellItem->text() == "0") ? "1" : "0";
 
