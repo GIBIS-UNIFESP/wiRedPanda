@@ -10,6 +10,18 @@ LogicElement::LogicElement(const int inputSize, const int outputSize)
 {
 }
 
+LogicElement::LogicElement(const int inputSize, const int outputSize, int delayLength)
+    : m_inputValues(inputSize, false)
+    , m_inputPairs(inputSize, {})
+    , m_outputValues(outputSize, false)
+{
+    m_inputBuffer = QVector<QVector<bool>>(delayLength);
+
+    for (int i = 0; i < m_inputBuffer.length(); i++) {
+        m_inputBuffer[i] = QVector<bool>(inputSize, false);
+    }
+}
+
 bool LogicElement::isValid() const
 {
     return m_isValid;
@@ -108,4 +120,33 @@ bool LogicElement::inputValue(const int index) const
     auto *pred = m_inputPairs.at(index).logic;
     int port = m_inputPairs.at(index).port;
     return pred->outputValue(port);
+}
+
+void LogicElement::updateInputBuffer() {
+    /*for (int j = 0; j < m_inputValues.length(); j++) {
+        //m_inputBuffer[0][j] = inputValue(j);
+        for (int i = 1; i < m_inputBuffer.length(); i++) {
+            m_inputBuffer[i][j] = m_inputBuffer[i - 1][j];
+        }
+    }*/
+
+    for (int j = 0; j < m_inputValues.length(); j++) {
+        m_inputBuffer[0][j] = inputValue(j);
+    }
+
+    for (int j = 0; j < m_inputValues.length(); j++) {
+        for (int i = m_inputBuffer.length() - 1; i > 0; i--) {
+            m_inputBuffer[i][j] = m_inputBuffer[i - 1][j];
+        }
+    }
+}
+
+void LogicElement::setTemporalSimulationIsOn(bool isOn)
+{
+    m_TempSimulationIsOn = isOn;
+}
+
+bool LogicElement::isTempSimulationOn()
+{
+    return m_TempSimulationIsOn;
 }

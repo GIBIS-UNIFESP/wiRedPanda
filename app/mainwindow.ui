@@ -168,7 +168,7 @@ QTabWidget::pane {
 </string>
             </property>
             <property name="currentIndex">
-             <number>5</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="io">
              <attribute name="icon">
@@ -196,7 +196,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>562</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -245,7 +245,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>562</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -349,7 +349,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>562</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -398,7 +398,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>524</height>
+                   <height>549</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -449,6 +449,61 @@ QTabWidget::pane {
               </item>
              </layout>
             </widget>
+            <widget class="QWidget" name="truthtable">
+             <attribute name="icon">
+              <iconset resource="resources/basic/basic.qrc">
+               <normaloff>:/basic/truthtable-rotated.svg</normaloff>:/basic/truthtable-rotated.svg</iconset>
+             </attribute>
+             <attribute name="title">
+              <string/>
+             </attribute>
+             <attribute name="toolTip">
+              <string>TruthTable</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_10">
+              <item row="0" column="0">
+               <widget class="QScrollArea" name="scrollArea_Truthtable">
+                <property name="frameShape">
+                 <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="widgetResizable">
+                 <bool>true</bool>
+                </property>
+                <widget class="QWidget" name="scrollAreaWidgetContents_Truthtable">
+                 <property name="geometry">
+                  <rect>
+                   <x>0</x>
+                   <y>0</y>
+                   <width>260</width>
+                   <height>581</height>
+                  </rect>
+                 </property>
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_8">
+                  <item>
+                   <spacer name="verticalSpacer_Truthtable">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>560</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </widget>
+               </widget>
+              </item>
+             </layout>
+            </widget>
             <widget class="QWidget" name="misc">
              <attribute name="icon">
               <iconset resource="resources/misc/misc.qrc">
@@ -475,7 +530,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>562</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -520,7 +575,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>258</width>
-                   <height>560</height>
+                   <height>579</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -610,6 +665,7 @@ QTabWidget::pane {
    <addaction name="actionPlay"/>
    <addaction name="actionRestart"/>
    <addaction name="actionWaveform"/>
+   <addaction name="actionTemporalSimulation"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QMenuBar" name="menuBar">
@@ -618,7 +674,7 @@ QTabWidget::pane {
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>27</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -725,6 +781,7 @@ QTabWidget::pane {
     <addaction name="actionRestart"/>
     <addaction name="actionWaveform"/>
     <addaction name="actionMute"/>
+    <addaction name="actionTemporalSimulation"/>
    </widget>
    <widget class="QMenu" name="menuExamples">
     <property name="title">
@@ -1209,12 +1266,22 @@ QTabWidget::pane {
     <string>Restart simulation.</string>
    </property>
   </action>
-  <action name="actionHotkeysAndTips">
+  <action name="actionTemporalSimulation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="icon">
-    <iconset theme="help-about"/>
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/timerRed.svg</normaloff>:/toolbar/timerRed.svg</iconset>
    </property>
    <property name="text">
-    <string>Hotkeys and tips</string>
+    <string>Temporal Simulation</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
    </property>
   </action>
   <action name="actionShortcutsAndTips">

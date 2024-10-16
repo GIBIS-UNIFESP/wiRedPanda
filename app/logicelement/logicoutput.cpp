@@ -17,4 +17,6 @@ void LogicOutput::updateLogic()
     for (int index = 0; index < m_inputValues.size(); ++index) {
         setOutputValue(index, m_inputValues.at(index));
     }
+
 }
+

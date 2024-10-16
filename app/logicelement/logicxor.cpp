@@ -3,10 +3,11 @@
 
 #include "logicxor.h"
 
+#include <cmath>
 #include <functional>
 
 LogicXor::LogicXor(const int inputSize)
-    : LogicElement(inputSize, 1)
+    : LogicElement(inputSize, 1, std::pow(2, inputSize - 1) + 3)
 {
 }
 
@@ -16,6 +17,12 @@ void LogicXor::updateLogic()
         return;
     }
 
-    const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), false, std::bit_xor<>());
-    setOutputValue(result);
+    if (isTempSimulationOn()) {
+        const auto result = std::accumulate(m_inputBuffer.last().cbegin(), m_inputBuffer.last().cend(), false, std::bit_xor<>());
+        setOutputValue(result);
+        updateInputBuffer();
+    } else {
+        const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), false, std::bit_xor<>());
+        setOutputValue(result);
+    }
 }

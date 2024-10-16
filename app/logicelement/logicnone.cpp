@@ -8,7 +8,12 @@ LogicNone::LogicNone()
 {
 }
 
-void LogicNone::_updateLogic(const std::vector<bool> &inputs)
+void LogicNone::updateLogic()
 {
-    Q_UNUSED(inputs);
+}
+
+void LogicNone::notifyNextElement(){
+    // for (auto *next : getSuccessors()) {
+    //     next->setReady(true);
+    // }
 }

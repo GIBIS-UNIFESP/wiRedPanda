@@ -14,6 +14,7 @@
 class GraphicsView;
 class GraphicElement;
 class QNEConnection;
+class InputButton;
 
 class Scene : public QGraphicsScene
 {
@@ -33,6 +34,7 @@ public:
     QUndoStack *undoStack();
     Simulation *simulation();
     bool eventFilter(QObject *watched, QEvent *event) override;
+    bool isMousePositionInBorder(QPointF mousePos);
     const QList<GraphicElement *> selectedElements() const;
     const QVector<GraphicElement *> elements() const;
     const QVector<GraphicElement *> elements(const QRectF &rect) const;
@@ -114,12 +116,14 @@ private:
     QAction *m_undoAction;
     QElapsedTimer m_timer;
     QGraphicsRectItem m_selectionRect;
+    QGraphicsRectItem m_subRect;
     QList<GraphicElement *> m_movedElements;
     QList<QPointF> m_oldPositions;
     QPen m_dots;
     QPointF m_mousePos;
     QPointF m_selectionStartPoint;
     QUndoStack m_undoStack;
+    QVector<InputButton *> m_inputsButtonsInScene;
     Simulation m_simulation;
     bool m_autosaveRequired = false;
     bool m_draggingElement = false;

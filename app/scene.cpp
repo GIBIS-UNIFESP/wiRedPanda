@@ -12,6 +12,7 @@
 #include "graphicelementinput.h"
 #include "graphicsview.h"
 #include "ic.h"
+#include "inputbutton.h"
 #include "qneconnection.h"
 #include "serialization.h"
 #include "thememanager.h"
@@ -205,7 +206,7 @@ void Scene::resizeScene()
 
     auto *item = itemAt(m_mousePos);
 
-    if (item && (m_timer.elapsed() > 100) && m_draggingElement) {
+    if (item && (m_timer.elapsed() > 70)/* && m_draggingElement*/) {
         // FIXME: sometimes this goes into a infinite loop and crashes
         item->ensureVisible();
         m_timer.restart();
@@ -1100,12 +1101,27 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsScene::mousePressEvent(event);
 }
 
+bool Scene::isMousePositionInBorder(QPointF mousePos)
+{
+    const auto visibleRect = m_view->mapToScene(m_view->viewport()->geometry()).boundingRect();
+    int margin = 10;
+
+    if (mousePos.x() <= visibleRect.left() + margin || mousePos.x() >= visibleRect.right() - margin ||
+        mousePos.y() <= visibleRect.top() + margin || mousePos.y() >= visibleRect.bottom() - margin) {
+            m_view->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+            return true;
+    } else {
+        m_view->setTransformationAnchor(QGraphicsView::AnchorViewCenter);
+        return false;
+    }
+}
+
 void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     m_mousePos = event->scenePos();
     handleHoverPort();
 
-    if (m_draggingElement) {
+    if (m_draggingElement && isMousePositionInBorder(m_mousePos)) {
         resizeScene();
     }
 
@@ -1152,6 +1168,13 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
         m_draggingElement = false;
         m_movedElements.clear();
+    }
+
+    if (!m_inputsButtonsInScene.empty()) {
+        for (int index = 0; index < m_inputsButtonsInScene.length(); index++) {
+            m_inputsButtonsInScene[index]->setOff();
+            event->accept();
+        }
     }
 
     m_selectionRect.hide();
