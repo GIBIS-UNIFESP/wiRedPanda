@@ -1,4 +1,4 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
@@ -71,7 +71,7 @@ private:
     bool checkSave();
     int sectionFirstColumn(const QItemSelection &ranges);
     int sectionFirstRow(const QItemSelection &ranges);
-    void associateToWiredPanda(const QString &fileName);
+    void associateTowiRedPanda(const QString &fileName);
     void copy(const QItemSelection &ranges, QDataStream &stream);
     void createElement(const int row, const int col, const int value, const bool isInput = true, const bool changeNext = true);
     void createOneElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
