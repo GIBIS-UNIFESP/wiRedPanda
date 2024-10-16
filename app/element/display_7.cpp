@@ -1,4 +1,8 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
+
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+
+
+
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "display_7.h"
@@ -36,7 +40,7 @@ Display7::Display7(QGraphicsItem *parent)
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);
 
-    qCDebug(three) << tr("Allocating pixmaps.");
+    qCDebug(three) << "Allocating pixmaps.";
     a =  QVector<QPixmap>(5, m_defaultSkins.at(1));
     b =  QVector<QPixmap>(5, m_defaultSkins.at(2));
     c =  QVector<QPixmap>(5, m_defaultSkins.at(3));
@@ -46,7 +50,7 @@ Display7::Display7(QGraphicsItem *parent)
     g =  QVector<QPixmap>(5, m_defaultSkins.at(7));
     dp = QVector<QPixmap>(5, m_defaultSkins.at(8));
 
-    qCDebug(three) << tr("Converting segments to other colors.");
+    qCDebug(three) << "Converting segments to other colors.";
     convertAllColors(a);
     convertAllColors(b);
     convertAllColors(c);
@@ -166,7 +170,7 @@ void Display7::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, cons
      */
 
     if (version < VERSION("1.6")) {
-        qCDebug(zero) << tr("Remapping inputs.");
+        qCDebug(zero) << "Remapping inputs.";
         QVector<int> order{2, 1, 4, 5, 0, 7, 3, 6};
         QVector<QNEInputPort *> aux = inputs();
 
@@ -179,7 +183,7 @@ void Display7::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, cons
     }
 
     if (version < VERSION("1.7")) {
-        qCDebug(zero) << tr("Remapping inputs.");
+        qCDebug(zero) << "Remapping inputs.";
         QVector<int> order{2, 5, 4, 0, 7, 3, 6, 1};
         QVector<QNEInputPort *> aux = inputs();
 

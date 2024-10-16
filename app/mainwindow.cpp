@@ -1,4 +1,8 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
+
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+
+
+
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "mainwindow.h"
@@ -45,22 +49,22 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     : QMainWindow(parent)
     , m_ui(new Ui::MainWindow)
 {
-    qCDebug(zero) << tr("WiRedPanda Version = ") << APP_VERSION << tr(" OR ") << GlobalProperties::version;
+    qCDebug(zero) << "wiRedPanda Version = " << APP_VERSION << " OR " << GlobalProperties::version;
     m_ui->setupUi(this);
 
-    qCDebug(zero) << tr("Settings fileName: ") << Settings::fileName();
+    qCDebug(zero) << "Settings fileName: " << Settings::fileName();
     loadTranslation(Settings::value("language").toString());
 
     connect(m_ui->tab, &QTabWidget::currentChanged,    this, &MainWindow::tabChanged);
     connect(m_ui->tab, &QTabWidget::tabCloseRequested, this, &MainWindow::closeTab);
 
-    qCDebug(zero) << tr("Restoring geometry and setting zoom controls.");
+    qCDebug(zero) << "Restoring geometry and setting zoom controls.";
     restoreGeometry(Settings::value("MainWindow/geometry").toByteArray());
     restoreState(Settings::value("MainWindow/windowState").toByteArray());
     m_ui->splitter->restoreGeometry(Settings::value("MainWindow/splitter/geometry").toByteArray());
     m_ui->splitter->restoreState(Settings::value("MainWindow/splitter/state").toByteArray());
 
-    qCDebug(zero) << tr("Preparing theme and UI modes.");
+    qCDebug(zero) << "Preparing theme and UI modes.";
     auto *themeGroup = new QActionGroup(this);
     const auto actions = m_ui->menuTheme->actions();
 
@@ -75,7 +79,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     m_ui->actionLabelsUnderIcons->setChecked(Settings::value("labelsUnderIcons").toBool());
     m_ui->mainToolBar->setToolButtonStyle(Settings::value("labelsUnderIcons").toBool() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
 
-    qCDebug(zero) << tr("Setting left side menus.");
+    qCDebug(zero) << "Setting left side menus.";
     auto *shortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
     connect(shortcut, &QShortcut::activated, m_ui->lineEditSearch, qOverload<>(&QWidget::setFocus));
     populateLeftMenu();
@@ -86,32 +90,32 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     m_ui->tabElements->setTabIcon(4, QIcon(":/misc/text.png"));
     m_ui->tabElements->setTabEnabled(5, false);
 
-    qCDebug(zero) << tr("Loading recent file list.");
+    qCDebug(zero) << "Loading recent file list.";
     m_recentFiles = new RecentFiles(this);
     connect(this, &MainWindow::addRecentFile, m_recentFiles, &RecentFiles::addRecentFile);
     createRecentFileActions();
     connect(m_recentFiles, &RecentFiles::recentFilesUpdated, this, &MainWindow::updateRecentFileActions);
 
-    qCDebug(zero) << tr("Checking playing simulation.");
+    qCDebug(zero) << "Checking playing simulation.";
     m_ui->actionPlay->setChecked(true);
 
-    qCDebug(zero) << tr("Window title.");
-    setWindowTitle("WiRedPanda " + QString(APP_VERSION));
+    qCDebug(zero) << "Window title.";
+    setWindowTitle("wiRedPanda " + QString(APP_VERSION));
 
-    qCDebug(zero) << tr("Building a new tab.");
+    qCDebug(zero) << "Building a new tab.";
     createNewTab();
 
-    qCDebug(zero) << tr("Opening file if not empty.");
+    qCDebug(zero) << "Opening file if not empty.";
     if (!fileName.isEmpty()) {
         loadPandaFile(fileName);
     }
 
-    qCDebug(zero) << tr("Disabling Arduino export.");
+    qCDebug(zero) << "Disabling Arduino export.";
     m_ui->actionExportToArduino->setEnabled(false);
 
     QPixmapCache::setCacheLimit(100'000);
 
-    qCDebug(zero) << tr("Adding examples to menu");
+    qCDebug(zero) << "Adding examples to menu";
     QDir examplesDir("examples");
 
     if (examplesDir.exists()) {
@@ -133,7 +137,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
         m_ui->menuExamples->menuAction()->setVisible(false);
     }
 
-    qCDebug(zero) << tr("Setting connections");
+    qCDebug(zero) << "Setting connections";
     connect(m_ui->actionAbout,            &QAction::triggered,        this,                &MainWindow::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,          &QAction::triggered,        this,                &MainWindow::on_actionAboutQt_triggered);
     connect(m_ui->actionAboutThisVersion, &QAction::triggered,        this,                &MainWindow::aboutThisVersion);
@@ -186,13 +190,13 @@ void MainWindow::loadAutosaveFiles()
 {
     QStringList autosaves(Settings::value("autosaveFile").toStringList());
 
-    qCDebug(zero) << tr("All autosave files: ") << autosaves;
+    qCDebug(zero) << "All autosave files: " << autosaves;
 
     for (auto it = autosaves.begin(); it != autosaves.end();) {
         QFile file(*it);
 
         if (!file.exists()) {
-            qCDebug(zero) << tr("Removing from config the autosave file that does not exist.");
+            qCDebug(zero) << "Removing from config the autosave file that does not exist.";
             it = autosaves.erase(it);
             continue;
         }
@@ -201,7 +205,7 @@ void MainWindow::loadAutosaveFiles()
             loadPandaFile(*it);
         } catch (const std::exception &e) {
             QMessageBox::critical(nullptr, tr("Error!"), e.what());
-            qCDebug(zero) << tr("Removing autosave file that is corrupted.");
+            qCDebug(zero) << "Removing autosave file that is corrupted.";
             it = autosaves.erase(it);
             continue;
         }
@@ -216,7 +220,7 @@ void MainWindow::loadAutosaveFiles()
 
 void MainWindow::createNewTab()
 {
-    qCDebug(zero) << tr("Creating new workspace.");
+    qCDebug(zero) << "Creating new workspace.";
     auto *workspace = new WorkSpace(this);
 
     connect(workspace, &WorkSpace::fileChanged, this, &MainWindow::setCurrentFile);
@@ -224,13 +228,13 @@ void MainWindow::createNewTab()
     workspace->view()->setFastMode(m_ui->actionFastMode->isChecked());
     workspace->scene()->updateTheme();
 
-    qCDebug(zero) << tr("Adding tab. #tabs: ") << m_ui->tab->count() << tr(", current tab: ") << m_tabIndex;
+    qCDebug(zero) << "Adding tab. #tabs: " << m_ui->tab->count() << ", current tab: " << m_tabIndex;
     m_ui->tab->addTab(workspace, tr("New Project"));
 
-    qCDebug(zero) << tr("Selecting the newly created tab.");
+    qCDebug(zero) << "Selecting the newly created tab.";
     m_ui->tab->setCurrentIndex(m_ui->tab->count() - 1);
 
-    qCDebug(zero) << tr("Finished #tabs: ") << m_ui->tab->count() << tr(", current tab: ") << m_tabIndex;
+    qCDebug(zero) << "Finished #tabs: " << m_ui->tab->count() << ", current tab: " << m_tabIndex;
 }
 
 void MainWindow::removeUndoRedoMenu()
@@ -282,13 +286,13 @@ void MainWindow::show()
         aboutThisVersion();
     }
 
-    qCDebug(zero) << tr("Checking for autosave file recovery.");
+    qCDebug(zero) << "Checking for autosave file recovery.";
     loadAutosaveFiles();
 }
 
 void MainWindow::aboutThisVersion()
 {
-    qCDebug(zero) << tr("'hideV4Warning' message box.");
+    qCDebug(zero) << "'hideV4Warning' message box.";
 
     auto *checkBox = new QCheckBox(tr("Don't show this again."));
 
@@ -296,13 +300,13 @@ void MainWindow::aboutThisVersion()
     msgBox.setParent(this);
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.setIcon(QMessageBox::Icon::Information);
-    msgBox.setWindowTitle("WiRedPanda " + QString(APP_VERSION));
+    msgBox.setWindowTitle("wiRedPanda " + QString(APP_VERSION));
     msgBox.setText(
-        tr("This version is not 100% compatible with previous versions of WiRedPanda.\n"
+        tr("This version is not 100% compatible with previous versions of wiRedPanda.\n"
            "To open old version projects containing ICs (or boxes), skins, and/or "
            "beWavedDolphin simulations, their files must be moved to the same directory "
            "as the main project file.\n"
-           "WiRedPanda %1 will automatically list all other .panda files located "
+           "wiRedPanda %1 will automatically list all other .panda files located "
            "in the same directory of the current project as ICs in the editor tab.\n"
            "You have to save new projects before accessing ICs and skins, or running "
            "beWavedDolphin simulations.")
@@ -381,7 +385,7 @@ void MainWindow::on_actionRotateLeft_triggered()
 void MainWindow::loadPandaFile(const QString &fileName)
 {
     createNewTab();
-    qCDebug(zero) << tr("Loading in editor.");
+    qCDebug(zero) << "Loading in editor.";
     m_currentTab->load(fileName);
     updateICList();
     m_ui->statusBar->showMessage(tr("File loaded successfully."), 4000);
@@ -445,8 +449,8 @@ void MainWindow::on_actionAbout_triggered()
 {
     QMessageBox::about(
         this,
-        "WiRedPanda",
-        tr("<p>WiRedPanda is a software developed by the students of the Federal University of São Paulo."
+        "wiRedPanda",
+        tr("<p>wiRedPanda is a software developed by the students of the Federal University of São Paulo."
            " This project was created in order to help students learn about logic circuits.</p>"
            "<p>Software version: %1</p>"
            "<p><strong>Creators:</strong></p>"
@@ -456,7 +460,7 @@ void MainWindow::on_actionAbout_triggered()
            "<li> Rodrigo Torres </li>"
            "<li> Prof. Fábio Cappabianco, Ph.D. </li>"
            "</ul>"
-           "<p> WiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.</p>"
+           "<p> wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.</p>"
            "<p> Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.</p>"
            "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
             .arg(QApplication::applicationVersion()));
@@ -557,7 +561,7 @@ void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
 
     m_ui->tab->setTabText(m_tabIndex, text);
 
-    qCDebug(zero) << tr("Adding file to recent files.");
+    qCDebug(zero) << "Adding file to recent files.";
     emit addRecentFile(fileInfo.absoluteFilePath());
 }
 
@@ -585,7 +589,7 @@ void MainWindow::updateICList()
     }
 
     if (m_currentFile.exists()) {
-        qCDebug(zero) << tr("Show files.");
+        qCDebug(zero) << "Show files.";
         QDir directory(m_currentFile.absoluteDir());
         QStringList files = directory.entryList({"*.panda", "*.PANDA"}, QDir::Files);
         files.removeAll(m_currentFile.fileName());
@@ -596,7 +600,7 @@ void MainWindow::updateICList()
             }
         }
 
-        qCDebug(zero) << tr("Files: ") << files.join(", ");
+        qCDebug(zero) << "Files: " << files.join(", ");
         for (const QString &file : qAsConst(files)) {
             QPixmap pixmap(":/basic/ic-panda.svg");
 
@@ -613,10 +617,10 @@ void MainWindow::updateICList()
 
 bool MainWindow::closeTab(const int tabIndex)
 {
-    qCDebug(zero) << tr("Closing tab ") << tabIndex + 1 << tr(", #tabs: ") << m_ui->tab->count();
+    qCDebug(zero) << "Closing tab " << tabIndex + 1 << ", #tabs: " << m_ui->tab->count();
     m_ui->tab->setCurrentIndex(tabIndex);
 
-    qCDebug(zero) << tr("Checking if needs to save file.");
+    qCDebug(zero) << "Checking if needs to save file.";
 
     if (!m_currentTab->scene()->undoStack()->isClean()) {
         const int selectedButton = confirmSave(false);
@@ -638,11 +642,11 @@ bool MainWindow::closeTab(const int tabIndex)
         }
     }
 
-    qCDebug(zero) << tr("Deleting tab.");
+    qCDebug(zero) << "Deleting tab.";
     m_currentTab->deleteLater();
     m_ui->tab->removeTab(tabIndex);
 
-    qCDebug(zero) << tr("Closed tab ") << tabIndex << tr(", #tabs: ") << m_ui->tab->count() << tr(", current tab: ") << m_tabIndex;
+    qCDebug(zero) << "Closed tab " << tabIndex << ", #tabs: " << m_ui->tab->count() << ", current tab: " << m_tabIndex;
 
     return true;
 }
@@ -655,13 +659,13 @@ void MainWindow::disconnectTab()
 
     m_ui->elementEditor->setScene(nullptr);
 
-    qCDebug(zero) << tr("Stopping simulation.");
+    qCDebug(zero) << "Stopping simulation.";
     m_currentTab->simulation()->stop();
 
-    qCDebug(zero) << tr("Disconnecting zoom from UI.");
+    qCDebug(zero) << "Disconnecting zoom from UI.";
     disconnect(m_currentTab->view(), &GraphicsView::zoomChanged, this, &MainWindow::zoomChanged);
 
-    qCDebug(zero) << tr("Removing undo and redo actions from UI menu.");
+    qCDebug(zero) << "Removing undo and redo actions from UI menu.";
     removeUndoRedoMenu();
 
     disconnect(m_ui->actionClearSelection, &QAction::triggered,         m_currentTab->scene(), &Scene::clearSelection);
@@ -674,15 +678,15 @@ void MainWindow::disconnectTab()
 
 void MainWindow::connectTab()
 {
-    qCDebug(zero) << tr("Connecting undo and redo functions to UI menu.");
+    qCDebug(zero) << "Connecting undo and redo functions to UI menu.";
     addUndoRedoMenu();
 
-    qCDebug(zero) << tr("Setting Panda file info.");
+    qCDebug(zero) << "Setting Panda file info.";
     m_currentFile = m_currentTab->fileInfo();
 
     updateICList();
 
-    qCDebug(zero) << tr("Connecting current tab to element editor menu in UI.");
+    qCDebug(zero) << "Connecting current tab to element editor menu in UI.";
     m_ui->elementEditor->setScene(m_currentTab->scene());
 
     connect(m_currentTab->view(),       &GraphicsView::zoomChanged, this,                  &MainWindow::zoomChanged);
@@ -693,7 +697,7 @@ void MainWindow::connectTab()
     connect(m_ui->actionPaste,          &QAction::triggered,        m_currentTab->scene(), &Scene::pasteAction);
 
     if (m_ui->actionPlay->isChecked()) {
-        qCDebug(zero) << tr("Restarting simulation.");
+        qCDebug(zero) << "Restarting simulation.";
         m_currentTab->simulation()->start();
         m_currentTab->scene()->clearSelection();
     }
@@ -715,9 +719,9 @@ void MainWindow::tabChanged(const int newTabIndex)
     }
 
     m_currentTab = qobject_cast<WorkSpace *>(m_ui->tab->currentWidget());
-    qCDebug(zero) << tr("Selecting tab: ") << newTabIndex;
+    qCDebug(zero) << "Selecting tab: " << newTabIndex;
     connectTab();
-    qCDebug(zero) << tr("New tab selected. Dolphin fileName: ") << m_currentTab->dolphinFileName();
+    qCDebug(zero) << "New tab selected. Dolphin fileName: " << m_currentTab->dolphinFileName();
 }
 
 void MainWindow::on_lineEditSearch_textChanged(const QString &text)
@@ -827,7 +831,7 @@ void MainWindow::exportToArduino(QString fileName)
     auto elements = m_currentTab->scene()->elements();
 
     if (elements.isEmpty()) {
-        throw Pandaception(tr("The panda file is empty."));
+        throw Pandaception(tr("The .panda file is empty."));
     }
 
     SimulationBlocker simulationBlocker(m_currentTab->simulation());
@@ -842,7 +846,7 @@ void MainWindow::exportToArduino(QString fileName)
     arduino.generate();
     m_ui->statusBar->showMessage(tr("Arduino code successfully generated."), 4000);
 
-    qCDebug(zero) << tr("Arduino code successfully generated.");
+    qCDebug(zero) << "Arduino code successfully generated.";
 }
 
 void MainWindow::exportToWaveFormFile(const QString &fileName)
@@ -1109,14 +1113,14 @@ void MainWindow::loadTranslation(const QString &language)
 
     if (language == "es") {
         pandaFile = ":/translations/wpanda_es.qm";
-        qtFile = ":/translations/qt_es.qm";
+        //qtFile = ":/translations/qt_es.qm";
     }
 
     if (!pandaFile.isEmpty()) {
         m_pandaTranslator = new QTranslator(this);
 
         if (!m_pandaTranslator->load(pandaFile) || !qApp->installTranslator(m_pandaTranslator)) {
-            throw Pandaception(tr("Error loading WiRedPanda translation!"));
+            throw Pandaception(tr("Error loading wiRedPanda translation!"));
         }
     }
 
@@ -1202,7 +1206,7 @@ void MainWindow::on_actionWaveform_triggered()
         return;
     }
 
-    qCDebug(zero) << tr("BD fileName: ") << m_currentTab->dolphinFileName();
+    qCDebug(zero) << "BD fileName: " << m_currentTab->dolphinFileName();
     auto *bewavedDolphin = new BewavedDolphin(m_currentTab->scene(), true, this);
     bewavedDolphin->createWaveform(m_currentTab->dolphinFileName());
     bewavedDolphin->show();

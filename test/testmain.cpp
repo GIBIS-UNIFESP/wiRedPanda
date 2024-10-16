@@ -1,4 +1,8 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
+
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+
+
+
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common.h"
@@ -18,7 +22,7 @@ int main(int argc, char **argv)
 
     QApplication app(argc, argv);
     app.setOrganizationName("GIBIS-UNIFESP");
-    app.setApplicationName("WiRedPanda");
+    app.setApplicationName("wiRedPanda");
     app.setApplicationVersion(APP_VERSION);
 
     int status = 0;
