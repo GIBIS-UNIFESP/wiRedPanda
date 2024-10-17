@@ -1146,7 +1146,6 @@ void MainWindow::on_actionSpanish_triggered()
     loadTranslation("es");
 }
 
-
 void MainWindow::on_actionPlay_toggled(const bool checked)
 {
     if (!m_currentTab) {
