@@ -1143,6 +1143,12 @@ void BewavedDolphin::save(QDataStream &stream)
     stream << static_cast<qint64>(m_inputPorts);
     stream << static_cast<qint64>(m_model->columnCount());
 
+    if (m_isTemporalSimulation) {
+        stream << static_cast<qint64>(1);
+    } else {
+        stream << static_cast<qint64>(0);
+    }
+
     for (int col = 0; col < m_model->columnCount(); ++col) {
         for (int row = 0; row < m_inputPorts; ++row) {
             const int val = m_model->index(row, col).data().toInt();
@@ -1157,6 +1163,12 @@ void BewavedDolphin::save(QSaveFile &file)
     file.write(",");
     file.write(QString::number(m_model->columnCount()).toUtf8());
     file.write(",\n");
+
+    if (m_isTemporalSimulation) {
+        file.write("1,\n");
+    } else {
+        file.write("0,\n");
+    }
 
     for (int row = 0; row < m_model->rowCount(); ++row) {
         for (int col = 0; col < m_model->columnCount(); ++col) {
@@ -1274,6 +1286,7 @@ void BewavedDolphin::load(QDataStream &stream)
 
     qint64 rows; stream >> rows;
     qint64 cols; stream >> cols;
+    qint64 isTemporalSimulation; stream >> isTemporalSimulation;
 
     if (rows > m_inputPorts) {
         rows = m_inputPorts;
@@ -1285,6 +1298,9 @@ void BewavedDolphin::load(QDataStream &stream)
 
     setLength(static_cast<int>(cols), false);
     qCDebug(zero) << "Update table.";
+
+    if (isTemporalSimulation)
+        on_actionTemporalSimulation_toggled(true);
 
     for (int col = 0; col < cols; ++col) {
         for (int row = 0; row < rows; ++row) {
@@ -1302,6 +1318,7 @@ void BewavedDolphin::load(QFile &file)
     const auto wordList(content.split(','));
     int rows = wordList.at(0).toInt();
     const int cols = wordList.at(1).toInt();
+    qint8 isTemporalSimulation = wordList.at(2).toInt();
 
     if (rows > m_inputPorts) {
         rows = m_inputPorts;
@@ -1315,9 +1332,12 @@ void BewavedDolphin::load(QFile &file)
 
     qCDebug(zero) << "Update table.";
 
+    if (isTemporalSimulation)
+        on_actionTemporalSimulation_toggled(true);
+
     for (int row = 0; row < rows; ++row) {
         for (int col = 0; col < cols; ++col) {
-            int value = wordList.at(2 + col + row * cols).toInt();
+            int value = wordList.at(3 + col + row * cols).toInt();
             createElement(row, col, value);
         }
     }
@@ -1436,6 +1456,7 @@ void BewavedDolphin::on_actionAboutQt_triggered()
 void BewavedDolphin::on_actionTemporalSimulation_toggled(const bool checked)
 {
     m_isTemporalSimulation = checked;
+    m_ui->actionTemporalSimulation->setChecked(m_isTemporalSimulation);
     run();
 }
 
