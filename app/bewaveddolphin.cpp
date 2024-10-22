@@ -474,6 +474,8 @@ void BewavedDolphin::run2()
                 }
 
                 m_simulation->update();
+                m_simulation->update();
+                m_simulation->update();
             }
 
             row = m_inputPorts;
@@ -486,6 +488,8 @@ void BewavedDolphin::run2()
         }
         else {
             qCDebug(four) << tr("Updating the values of the circuit logic based on current input values.");
+            m_simulation->update();
+            m_simulation->update();
             m_simulation->update();
 
             qCDebug(four) << tr("Setting the computed output values to the waveform results.");
@@ -546,8 +550,7 @@ void BewavedDolphin::resizeScene()
         throw Pandaception(tr("Waveform would be too big! Resetting zoom."));
     }
 
-    m_signalTableView->resize(newWidth / (m_scale * 0.8),
-                              newHeight / (m_scale * 0.8));
+    m_signalTableView->resize(newWidth, newHeight);
     m_scene->setSceneRect(m_scene->itemsBoundingRect());
 }
 
@@ -610,12 +613,18 @@ void BewavedDolphin::createZeroElement(const int row, const int col, const bool 
         const bool isPreviousHigh = hasPreviousItem ? previousIndex.data().toInt() == 1 : false;
 
         if (isInput) {
+            QPixmap pixmap = hasPreviousItem && isPreviousHigh ? m_fallingBlue : m_lowBlue;
             m_model->setData(index,
-                             hasPreviousItem && isPreviousHigh ? m_fallingBlue : m_lowBlue,
+                             pixmap.scaled(m_signalTableView->columnWidth(col),
+                                           m_signalTableView->rowHeight(row),
+                                           Qt::IgnoreAspectRatio, Qt::FastTransformation),
                              Qt::DecorationRole);
         } else {
+            QPixmap pixmap = hasPreviousItem && isPreviousHigh ? m_fallingGreen : m_lowGreen;
             m_model->setData(index,
-                             hasPreviousItem && isPreviousHigh ? m_fallingGreen : m_lowGreen,
+                             pixmap.scaled(m_signalTableView->columnWidth(col),
+                                           m_signalTableView->rowHeight(row),
+                                           Qt::IgnoreAspectRatio, Qt::FastTransformation),
                              Qt::DecorationRole);
         }
 
@@ -654,12 +663,18 @@ void BewavedDolphin::createOneElement(const int row, const int col, const bool i
         const bool isPreviousLow = hasPreviousItem ? previousIndex.data().toInt() == 0 : false;
 
         if (isInput) {
+            QPixmap pixmap = hasPreviousItem && isPreviousLow ? m_risingBlue : m_highBlue;
             m_model->setData(index,
-                             hasPreviousItem && isPreviousLow ? m_risingBlue : m_highBlue,
+                             pixmap.scaled(m_signalTableView->columnWidth(col),
+                                           m_signalTableView->rowHeight(row),
+                                           Qt::IgnoreAspectRatio, Qt::FastTransformation),
                              Qt::DecorationRole);
         } else {
+            QPixmap pixmap = hasPreviousItem && isPreviousLow ? m_risingGreen : m_highGreen;
             m_model->setData(index,
-                             hasPreviousItem && isPreviousLow ? m_risingGreen : m_highGreen,
+                             pixmap.scaled(m_signalTableView->columnWidth(col),
+                                           m_signalTableView->rowHeight(row),
+                                           Qt::IgnoreAspectRatio, Qt::FastTransformation),
                              Qt::DecorationRole);
         }
 
@@ -925,6 +940,21 @@ void BewavedDolphin::on_actionZoomOut_triggered()
 {
     m_scale *= m_scaleFactor;
     m_ui->graphicsView->zoomOut();
+    m_ui->graphicsView->scale(1.25, 1.25);
+    for(int col = 0; col < m_model->columnCount(); col++) {
+        int newWidth = m_signalTableView->columnWidth(col) / (m_scale * 1.25) + 1;
+        m_signalTableView->horizontalHeader()->resizeSection(col, newWidth);
+
+        for(int row = 0; row < m_model->rowCount(); row++) {
+            QModelIndex index = m_model->index(row, col);
+            QPixmap pixmap = m_model->data(index, Qt::DecorationRole).value<QPixmap>();
+            m_model->setData(index,
+                             pixmap.scaled(newWidth,
+                                           m_signalTableView->rowHeight(row),
+                                           Qt::IgnoreAspectRatio, Qt::SmoothTransformation),
+                             Qt::DecorationRole);
+        }
+    }
     resizeScene();
     zoomChanged();
 }
@@ -933,6 +963,21 @@ void BewavedDolphin::on_actionZoomIn_triggered()
 {
     m_scale /= m_scaleFactor;
     m_ui->graphicsView->zoomIn();
+    m_ui->graphicsView->scale(0.8,0.8);
+    for(int col = 0; col < m_model->columnCount(); col++) {
+        int newWidth = m_scale * m_signalTableView->columnWidth(col) - 1;
+        m_signalTableView->horizontalHeader()->resizeSection(col, newWidth);
+
+        for(int row = 0; row < m_model->rowCount(); row++) {
+            QModelIndex index = m_model->index(row, col);
+            QPixmap pixmap = m_model->data(index, Qt::DecorationRole).value<QPixmap>();
+            m_model->setData(index,
+                             pixmap.scaled(newWidth,
+                                           m_signalTableView->rowHeight(row),
+                                           Qt::IgnoreAspectRatio, Qt::FastTransformation),
+                             Qt::DecorationRole);
+        }
+    }
     resizeScene();
     zoomChanged();
 }
@@ -941,6 +986,19 @@ void BewavedDolphin::on_actionResetZoom_triggered()
 {
     m_ui->graphicsView->resetZoom();
     m_scale = 1.25;
+    for(int col = 0; col < m_model->columnCount(); col++) {
+        m_signalTableView->horizontalHeader()->resizeSection(col, 38);
+
+        for(int row = 0; row < m_model->rowCount(); row++) {
+            QModelIndex index = m_model->index(row, col);
+            QPixmap pixmap = m_model->data(index, Qt::DecorationRole).value<QPixmap>();
+            m_model->setData(index,
+                             pixmap.scaled(100,
+                                           38,
+                                           Qt::IgnoreAspectRatio, Qt::FastTransformation),
+                             Qt::DecorationRole);
+        }
+    }
     resizeScene();
     zoomChanged();
 }
