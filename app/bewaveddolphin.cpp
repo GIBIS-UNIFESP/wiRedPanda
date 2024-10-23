@@ -118,20 +118,6 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
 
     m_ui->mainToolBar->setToolButtonStyle(Settings::value("labelsUnderIcons").toBool() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
 
-    QSlider *slider = new QSlider(Qt::Horizontal);
-    QSize sliderSize(130, 30);
-    slider->setFixedSize(sliderSize);
-    slider->setRange(0, 64);
-
-    QList<QAction*> actions = m_ui->mainToolBar->actions();
-
-    for (int i = 0; i < actions.size(); ++i) {
-        if (actions[i] == m_ui->actionZoomOut) {
-            m_ui->mainToolBar->insertWidget(actions[i], slider);
-            break;
-        }
-    }
-
     loadPixmaps();
 
     connect(m_ui->actionAbout,         &QAction::triggered,            this, &BewavedDolphin::on_actionAbout_triggered);
@@ -951,7 +937,7 @@ void BewavedDolphin::on_actionZoomOut_triggered()
             m_model->setData(index,
                              pixmap.scaled(newWidth,
                                            m_signalTableView->rowHeight(row),
-                                           Qt::IgnoreAspectRatio, Qt::SmoothTransformation),
+                                           Qt::IgnoreAspectRatio, Qt::FastTransformation),
                              Qt::DecorationRole);
         }
     }
@@ -965,7 +951,7 @@ void BewavedDolphin::on_actionZoomIn_triggered()
     m_ui->graphicsView->zoomIn();
     m_ui->graphicsView->scale(0.8,0.8);
     for(int col = 0; col < m_model->columnCount(); col++) {
-        int newWidth = m_scale * m_signalTableView->columnWidth(col) - 1;
+        int newWidth = m_scale * m_signalTableView->columnWidth(col);
         m_signalTableView->horizontalHeader()->resizeSection(col, newWidth);
 
         for(int row = 0; row < m_model->rowCount(); row++) {
