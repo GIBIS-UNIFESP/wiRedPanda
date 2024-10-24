@@ -55,6 +55,8 @@ class DolphinGraphicsView : public GraphicsView
 public:
     explicit DolphinGraphicsView(QWidget *parent = nullptr);
     bool canZoomOut() const;
+    void zoomIn();
+    void zoomOut();
 
     inline static bool canNavigateWithArrowKeys = true;
 

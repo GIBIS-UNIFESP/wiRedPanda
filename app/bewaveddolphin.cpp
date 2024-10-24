@@ -72,6 +72,18 @@ bool DolphinGraphicsView::canZoomOut() const
     return m_zoomLevel > 0;
 }
 
+void DolphinGraphicsView::zoomIn()
+{
+    m_zoomLevel++;
+    emit zoomChanged();
+}
+
+void DolphinGraphicsView::zoomOut()
+{
+    m_zoomLevel--;
+    emit zoomChanged();
+}
+
 void DolphinGraphicsView::wheelEvent(QWheelEvent *event)
 {
     const int zoomDirection = event->angleDelta().y();
@@ -926,7 +938,6 @@ void BewavedDolphin::on_actionZoomOut_triggered()
 {
     m_scale *= m_scaleFactor;
     m_ui->graphicsView->zoomOut();
-    m_ui->graphicsView->scale(1.25, 1.25);
     for(int col = 0; col < m_model->columnCount(); col++) {
         int newWidth = m_signalTableView->columnWidth(col) / (m_scale * 1.25) + 1;
         m_signalTableView->horizontalHeader()->resizeSection(col, newWidth);
@@ -949,7 +960,6 @@ void BewavedDolphin::on_actionZoomIn_triggered()
 {
     m_scale /= m_scaleFactor;
     m_ui->graphicsView->zoomIn();
-    m_ui->graphicsView->scale(0.8,0.8);
     for(int col = 0; col < m_model->columnCount(); col++) {
         int newWidth = m_scale * m_signalTableView->columnWidth(col);
         m_signalTableView->horizontalHeader()->resizeSection(col, newWidth);
