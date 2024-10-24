@@ -426,7 +426,6 @@ void BewavedDolphin::run()
     SimulationBlocker simulationBlocker(m_simulation);
 
     int nPorts = 0;
-    std::optional<bool> previousWaveEnd = NULL;
 
     for (auto *output : qAsConst(m_outputs)) {
         nPorts += output->inputSize();
@@ -475,10 +474,16 @@ void BewavedDolphin::run()
             }
 
             row = m_inputPorts;
+            bool lastOutput;
 
             for (const auto& output : output_values) {
-                createComposedWaveFormElement(row, column, output, previousWaveEnd, false);
-                previousWaveEnd = output.last();
+                const auto lastIndex = m_model->index(row, column - 1);
+
+                if (!lastIndex.isValid())
+                    createComposedWaveFormElement(row, column, output, NULL, false);
+                else
+                    createComposedWaveFormElement(row, column, output, lastOutput, false);
+                lastOutput = output.last();
                 row++;
             }
         }
@@ -1517,64 +1522,32 @@ QPixmap BewavedDolphin::composeWaveParts(const QVector<bool> waveparts, std::opt
     composedPixmap.fill(Qt::transparent);
 
     QPainter painter(&composedPixmap);
-    bool previousIsLow;
-    bool previousIsHigh;
 
-    QPixmap falling;
-    QPixmap high;
-    QPixmap low;
-    QPixmap rising;
+    const QPixmap &falling = isInput ? m_smallFallingBlue : m_smallFallingGreen;
+    const QPixmap &high = isInput ? m_smallHighBlue : m_smallHighGreen;
+    const QPixmap &low = isInput ? m_smallLowBlue : m_smallLowGreen;
+    const QPixmap &rising = isInput ? m_smallRisingBlue : m_smallRisingGreen;
 
-    if (isInput) {
-        falling = m_smallFallingBlue;
-        high = m_smallHighBlue;
-        low = m_smallLowBlue;
-        rising = m_smallRisingBlue;
-    }
-    else {
-        falling = m_smallFallingGreen;
-        high = m_smallHighGreen;
-        low = m_smallLowGreen;
-        rising = m_smallRisingGreen;
+    std::optional<bool> previousState;
+
+    if (previousWaveEnd.has_value()) {
+        previousState = previousWaveEnd.value();
+    } else {
+        previousState = NULL;
     }
 
     for (int i = 0; i < waveparts.length(); i++) {
         int x = i * (partWidth / 8);
+        bool currentState = waveparts[i];
 
-        if (i == 0) {
-            if (waveparts[i] == true) {
-                if (previousWaveEnd == false) {
-                    painter.drawPixmap(x, 0, rising);
-                } else {
-                    painter.drawPixmap(x, 0, high);
-                }
-                previousIsLow = false;
-                previousIsHigh = true;
-            }
-            else {
-                if (previousWaveEnd == true) {
-                    painter.drawPixmap(x, 0, falling);
-                } else {
-                    painter.drawPixmap(x, 0, low);
-                }
-                previousIsLow = true;
-                previousIsHigh = false;
-            }
-        }
-        else if (waveparts[i] == true) {
-            (previousIsLow) ? painter.drawPixmap(x, 0, rising)
-                            : painter.drawPixmap(x, 0, high);
+        const QPixmap &currentPixmap = (previousState == currentState)
+                                           ? (currentState ? high : low)
+                                           : (currentState ? rising : falling);
 
-            previousIsLow = false;
-            previousIsHigh = true;
-        }
-        else if (waveparts[i] == false) {
-            (previousIsHigh) ? painter.drawPixmap(x, 0, falling)
-                             : painter.drawPixmap(x, 0, low);
+        painter.drawPixmap(x, 0, currentPixmap);
 
-            previousIsLow = true;
-            previousIsHigh = false;
-        }
+
+        previousState = currentState;
     }
 
     painter.end();

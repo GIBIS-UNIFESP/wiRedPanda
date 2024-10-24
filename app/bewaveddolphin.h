@@ -94,7 +94,7 @@ private:
      * creates an image composed of eight parts, following the pattern given by the vector of booleans.
      * @param waveparts contains the values useds to create the final waveform.
      * @param isInput is used to knows if the color will be blue (if is True) or green (if is False).
-     * @param lastValue is used to knows the last state to create the first state of the current waveform.
+     * @param previousWaveEnd is the bool of the last position in the last cell.
      * @return a Pixmap containing the waveform image 64x38 pixels.
     */
     QPixmap composeWaveParts(const QVector<bool> waveparts, std::optional<bool> previousWaveEnd, const bool isInput = true);
@@ -219,4 +219,5 @@ private:
     int m_clockPeriod = 0;
     int m_inputPorts = 0;
     int m_length = 32;
+    std::optional<bool> previousWaveEnd;
 };
