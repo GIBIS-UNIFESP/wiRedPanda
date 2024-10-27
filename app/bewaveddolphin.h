@@ -174,7 +174,6 @@ private:
     void resizeScene();
     void restoreInputs();
     void run();
-    void run2();
     void save(QDataStream &stream);
     void save(QSaveFile &file);
     void save(const QString &fileName);
