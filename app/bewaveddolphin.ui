@@ -87,9 +87,9 @@
    <addaction name="actionSetClockWave"/>
    <addaction name="actionTemporalSimulation"/>
    <addaction name="separator"/>
-   <addaction name="actionZoomIn"/>
-   <addaction name="actionZoomOut"/>
    <addaction name="actionResetZoom"/>
+   <addaction name="actionZoomOut"/>
+   <addaction name="actionZoomIn"/>
    <addaction name="actionSetLength"/>
    <addaction name="separator"/>
    <addaction name="actionExit"/>
@@ -100,7 +100,7 @@
      <x>0</x>
      <y>0</y>
      <width>833</width>
-     <height>22</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -472,10 +472,10 @@
  </customwidgets>
  <resources>
   <include location="resources/basic/basic.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/dolphin/dolphin.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/input/input.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>
 </ui>
