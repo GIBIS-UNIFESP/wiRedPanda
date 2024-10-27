@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>886</width>
+    <width>1550</width>
     <height>765</height>
    </rect>
   </property>
@@ -504,6 +504,61 @@ QTabWidget::pane {
               </item>
              </layout>
             </widget>
+            <widget class="QWidget" name="truthtable">
+             <attribute name="icon">
+              <iconset resource="resources/basic/basic.qrc">
+               <normaloff>:/basic/truthtable-rotated.svg</normaloff>:/basic/truthtable-rotated.svg</iconset>
+             </attribute>
+             <attribute name="title">
+              <string/>
+             </attribute>
+             <attribute name="toolTip">
+              <string>TruthTable</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_10">
+              <item row="0" column="0">
+               <widget class="QScrollArea" name="scrollArea_Truthtable">
+                <property name="frameShape">
+                 <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="widgetResizable">
+                 <bool>true</bool>
+                </property>
+                <widget class="QWidget" name="scrollAreaWidgetContents_Truthtable">
+                 <property name="geometry">
+                  <rect>
+                   <x>0</x>
+                   <y>0</y>
+                   <width>260</width>
+                   <height>562</height>
+                  </rect>
+                 </property>
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_8">
+                  <item>
+                   <spacer name="verticalSpacer_Truthtable">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>560</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </widget>
+               </widget>
+              </item>
+             </layout>
+            </widget>
             <widget class="QWidget" name="misc">
              <attribute name="icon">
               <iconset resource="resources/misc/misc.qrc">
@@ -658,9 +713,9 @@ QTabWidget::pane {
    <addaction name="actionPaste"/>
    <addaction name="actionDelete"/>
    <addaction name="separator"/>
-   <addaction name="actionZoomIn"/>
-   <addaction name="actionZoomOut"/>
    <addaction name="actionResetZoom"/>
+   <addaction name="actionZoomOut"/>
+   <addaction name="actionZoomIn"/>
    <addaction name="separator"/>
    <addaction name="actionPlay"/>
    <addaction name="actionRestart"/>
@@ -673,7 +728,7 @@ QTabWidget::pane {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>886</width>
+     <width>1550</width>
      <height>27</height>
     </rect>
    </property>
@@ -1307,12 +1362,12 @@ QTabWidget::pane {
  </tabstops>
  <resources>
   <include location="resources/basic/basic.qrc"/>
+  <include location="resources/memory/light/memory_light.qrc"/>
+  <include location="resources/misc/misc.qrc"/>
   <include location="resources/output/output.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/memory/light/memory_light.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/input/input.qrc"/>
-  <include location="resources/misc/misc.qrc"/>
  </resources>
  <connections/>
 </ui>

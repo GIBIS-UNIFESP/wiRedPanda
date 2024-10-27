@@ -70,20 +70,6 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
         themeGroup->addAction(action);
     }
 
-    QSlider *slider = new QSlider(Qt::Horizontal);
-    QSize sliderSize(130, 30);
-    slider->setFixedSize(sliderSize);
-    slider->setRange(0, 64);
-
-    QList<QAction*> toolBarActions = m_ui->mainToolBar->actions();
-
-    for (int i = 0; i < toolBarActions.size(); ++i) {
-        if (toolBarActions[i] == m_ui->actionZoomOut) {
-            m_ui->mainToolBar->insertWidget(toolBarActions[i], slider);
-            break;
-        }
-    }
-
     themeGroup->setExclusive(true);
     connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, &MainWindow::updateTheme);
     updateTheme();
