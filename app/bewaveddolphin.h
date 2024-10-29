@@ -54,7 +54,10 @@ class DolphinGraphicsView : public GraphicsView
 
 public:
     explicit DolphinGraphicsView(QWidget *parent = nullptr);
+    bool canZoomIn() const;
     bool canZoomOut() const;
+    void zoomIn();
+    void zoomOut();
 
     inline static bool canNavigateWithArrowKeys = true;
 
@@ -212,8 +215,7 @@ private:
     bool m_edited = false;
     bool m_isTemporalSimulation = false;
     const bool m_askConnection;
-    const double m_scaleFactor = 0.8;
-    double m_scale = 1.25;
+    double m_scale = 0.8;
     int m_clockPeriod = 0;
     int m_inputPorts = 0;
     int m_length = 32;
