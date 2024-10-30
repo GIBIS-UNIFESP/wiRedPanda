@@ -477,8 +477,6 @@ void BewavedDolphin::run()
             row = m_inputPorts;
 
             for (const auto& output : output_values) {
-
-                qDebug() << output;
                 createComposedWaveFormElement(row, column, output, previousWaveEnd, false);
                 previousWaveEnd = output.last();
                 row++;
@@ -992,7 +990,7 @@ void BewavedDolphin::on_actionResetZoom_triggered()
             QModelIndex index = m_model->index(row, col);
             QPixmap pixmap = m_model->data(index, Qt::DecorationRole).value<QPixmap>();
             m_model->setData(index,
-                             pixmap.scaled(38,
+                             pixmap.scaled(m_signalTableView->columnWidth(col),
                                            pixmap.height(),
                                            Qt::IgnoreAspectRatio, Qt::FastTransformation),
                              Qt::DecorationRole);
