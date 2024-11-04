@@ -95,10 +95,9 @@ private:
      * @param row is the number of the line that you want to plot.
      * @param col is the number of the column that you want to plot.
      * @param output contains the values useds to create the final waveform in composeWaveParts().
-     * @param lastValue is used to knows the last state to create the first state of the current waveform.
-     * @param changeNext is True if you want to change next value in the row, and False if you don't.
+     * @param previousWaveEnd is used to knows the last state to create the first state of the current waveform.
     */
-    void createComposedWaveFormElement(const int row, const int column, QVector<bool> output, std::optional<bool> previousWaveEnd, const bool changeNext = true);
+    void createComposedWaveFormElement(const int row, const int column, QVector<bool> output, std::optional<bool> previousWaveEnd);
 
     void createElement(const int row, const int col, const int value, const bool isInput = true, const bool changeNext = true);
     void createOneElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
@@ -108,9 +107,8 @@ private:
      * @param row is the number of the line that you want to plot.
      * @param col is the number of the column that you want to plot.
      * @param composedWaveform is the pixmap that will be ploted.
-     * @param changeNext is True if you want to change next value in the row, and False if you don't.
     */
-    void createTemporalSimulationElement(const int row, const int col, QPixmap composedWaveForm, const QString hex, const bool changeNext = true);
+    void createTemporalSimulationElement(const int row, const int col, QPixmap composedWaveForm, const QString hex);
 
     void createZeroElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
     void cut(const QItemSelection &ranges, QDataStream &stream);
