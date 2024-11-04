@@ -187,11 +187,6 @@ void BewavedDolphin::loadPixmaps()
     m_smallHighGreen = QPixmap(":/dolphin/high_green_1_8_cut.svg").scaled(8, 38);
     m_smallFallingGreen = QPixmap(":/dolphin/falling_green_1_8_cut.svg").scaled(8, 38);
     m_smallRisingGreen = QPixmap(":/dolphin/rising_green_1_8_cut.svg").scaled(8, 38);
-
-    m_smallLowBlue = QPixmap(":/dolphin/low_blue_1_8_cut.svg").scaled(12, 38);
-    m_smallHighBlue = QPixmap(":/dolphin/high_blue_1_8_cut.svg").scaled(12, 38);
-    m_smallFallingBlue = QPixmap(":/dolphin/falling_blue_1_8_cut.svg").scaled(12, 38);
-    m_smallRisingBlue = QPixmap(":/dolphin/rising_blue_1_8_cut.svg").scaled(12, 38);
 }
 
 void BewavedDolphin::createWaveform(const QString &fileName)
