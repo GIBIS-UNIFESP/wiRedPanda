@@ -96,7 +96,7 @@ private:
      * @param previousWaveEnd is the bool of the last position in the last cell.
      * @return a Pixmap containing the waveform image 64x38 pixels.
     */
-    QPixmap composeWaveParts(const QVector<bool> waveparts, std::optional<bool> previousWaveEnd);
+    QPixmap composeWaveParts(const QVector<bool> waveparts, const int previousWaveEnd);
 
     /**
      * This function converts a boolean vector into a string of hexadecimal values.
@@ -106,6 +106,13 @@ private:
     std::string convertBinaryToHex(const QVector<bool> binaryVector) const;
 
     bool checkSave();
+
+    /**
+     * This function converts a hexadecimal string into a integer.
+     * @param hexString is the hexadecimal string.
+     * @return returns the integer based on hexString.
+    */
+    int convertHexToInt(const std::string &hexString) const;
     int sectionFirstColumn(const QItemSelection &ranges);
     int sectionFirstRow(const QItemSelection &ranges);
     void associateToWiredPanda(const QString &fileName);
@@ -122,15 +129,6 @@ private:
     void createTemporalSimulationElement(const int row, const int col, QPixmap composedWaveForm, const std::string hex);
 
     void createZeroElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
-
-    /**
-     * Calls the composeWaveParts to create the composed waveform, then calls the CreateTemporalSimulationElement to plot the pixmap corretly.
-     * @param row is the number of the line that you want to plot.
-     * @param col is the number of the column that you want to plot.
-     * @param output contains the values useds to create the final waveform in composeWaveParts().
-     * @param previousWaveEnd is used to knows the last state to create the first state of the current waveform.
-    */
-    void createComposedWaveFormElement(const int row, const int column, QVector<bool> output, std::optional<bool> previousWaveEnd);
 
     void cut(const QItemSelection &ranges, QDataStream &stream);
     void load(QDataStream &stream);
