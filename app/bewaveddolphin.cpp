@@ -468,11 +468,11 @@ void BewavedDolphin::run()
     restoreInputs();
 }
 
-void BewavedDolphin::createComposedWaveFormElement(const int row, const int column, QVector<bool> output, std::optional<bool> previousWaveEnd, const bool isInput, const bool changeNext)
+void BewavedDolphin::createComposedWaveFormElement(const int row, const int column, QVector<bool> output, std::optional<bool> previousWaveEnd, const bool changeNext)
 {
-    QPixmap composedWave = composeWaveParts(output, previousWaveEnd, isInput);
+    QPixmap composedWave = composeWaveParts(output, previousWaveEnd);
     const QString hex = convertBinaryToHex(output);
-    createTemporalSimulationElement(row, column, composedWave, hex, isInput, changeNext);
+    createTemporalSimulationElement(row, column, composedWave, hex, changeNext);
 }
 
 void BewavedDolphin::restoreInputs()
@@ -1425,7 +1425,7 @@ void BewavedDolphin::on_actionTemporalSimulation_toggled(const bool checked)
     run();
 }
 
-QPixmap BewavedDolphin::composeWaveParts(const QVector<bool> waveparts, std::optional<bool> previousWaveEnd, const bool isInput)
+QPixmap BewavedDolphin::composeWaveParts(const QVector<bool> waveparts, std::optional<bool> previousWaveEnd)
 {
     int partWidth = 64;
     int partHeight = 38;
@@ -1435,10 +1435,10 @@ QPixmap BewavedDolphin::composeWaveParts(const QVector<bool> waveparts, std::opt
 
     QPainter painter(&composedPixmap);
 
-    const QPixmap &falling = isInput ? m_smallFallingBlue : m_smallFallingGreen;
-    const QPixmap &high = isInput ? m_smallHighBlue : m_smallHighGreen;
-    const QPixmap &low = isInput ? m_smallLowBlue : m_smallLowGreen;
-    const QPixmap &rising = isInput ? m_smallRisingBlue : m_smallRisingGreen;
+    const QPixmap &falling = m_smallFallingGreen;
+    const QPixmap &high = m_smallHighGreen;
+    const QPixmap &low = m_smallLowGreen;
+    const QPixmap &rising = m_smallRisingGreen;
 
     std::optional<bool> previousState;
 
@@ -1466,11 +1466,9 @@ QPixmap BewavedDolphin::composeWaveParts(const QVector<bool> waveparts, std::opt
     return composedPixmap;
 }
 
-void BewavedDolphin::createTemporalSimulationElement(const int row, const int col, QPixmap composedWaveForm, const QString hex, const bool isInput, const bool changeNext)
+void BewavedDolphin::createTemporalSimulationElement(const int row, const int col, QPixmap composedWaveForm, const QString hex, const bool changeNext)
 {
     const auto index = m_model->index(row, col);
-
-    const int currentValue = index.data().toInt();
 
     qCDebug(three) << tr("Changing current item.");
     m_model->setData(index, hex, Qt::DisplayRole);
@@ -1487,13 +1485,6 @@ void BewavedDolphin::createTemporalSimulationElement(const int row, const int co
 
         if (!changeNext) {
             return;
-        }
-
-        const auto nextIndex = m_model->index(row, col + 1);
-
-        if (nextIndex.isValid() && (currentValue == 1)) {
-            createComposedWaveFormElement(row, col + 1, m_output_values[row], isInput, false);
-
         }
     }
 }
