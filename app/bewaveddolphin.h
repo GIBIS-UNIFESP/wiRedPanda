@@ -191,13 +191,9 @@ private:
     QPixmap m_lowGreen;
     QPixmap m_risingBlue;
     QPixmap m_risingGreen;
-    QPixmap m_smallFallingBlue;
     QPixmap m_smallFallingGreen;
-    QPixmap m_smallHighBlue;
     QPixmap m_smallHighGreen;
-    QPixmap m_smallLowBlue;
     QPixmap m_smallLowGreen;
-    QPixmap m_smallRisingBlue;
     QPixmap m_smallRisingGreen;
     QStandardItemModel *m_model = nullptr;
     QTableView *m_signalTableView = new QTableView();
