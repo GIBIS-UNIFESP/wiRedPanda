@@ -119,8 +119,14 @@ void QNEConnection::updatePosFromPorts()
     updatePath();
 }
 
+void QNEConnection::setWireless(const bool isWireless){
+    m_wireless = isWireless;
+}
+
 void QNEConnection::updatePath()
 {
+
+    if(m_wireless) return;
     QPainterPath path;
 
     path.moveTo(m_startPos);
@@ -166,13 +172,18 @@ void QNEConnection::save(QDataStream &stream) const
 {
     stream << reinterpret_cast<quint64>(m_startPort);
     stream << reinterpret_cast<quint64>(m_endPort);
+    stream << m_wireless;
+    stream << this->mapId();
 }
 
 void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap)
 {
     quint64 ptr1; stream >> ptr1;
     quint64 ptr2; stream >> ptr2;
-
+    bool isWireless; stream >> isWireless;
+    int mapId; stream >> mapId;
+    m_wireless = isWireless;
+    m_mapId = mapId;
     if (portMap.isEmpty()) {
         qCDebug(three) << tr("Empty port map.");
         auto *port1 = reinterpret_cast<QNEPort *>(ptr1);
@@ -264,11 +275,20 @@ void QNEConnection::updateTheme()
     m_selectedColor = theme.m_connectionSelected;
 }
 
+void QNEConnection::setMapId(const int mapId){
+    m_mapId = mapId;
+}
+
+int QNEConnection::mapId() const{
+    if(m_mapId == -1) return this->id();
+    return m_mapId;
+}
+
 void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(widget)
     Q_UNUSED(option)
-
+    if(m_wireless) return;
     if (m_highLight) {
         painter->save();
         painter->setPen(QPen(Qt::blue, 10));

@@ -33,6 +33,11 @@ void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &
     }
 }
 
+void Serialization::saveNodeMappings(const QMap<int, QSet<QPair<int,int>>> map, QDataStream &stream){
+    stream << map;
+}
+
+
 QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, QMap<quint64, QNEPort *> portMap, const QVersionNumber version)
 {
     QList<QGraphicsItem *> itemList;
@@ -118,4 +123,10 @@ QRectF Serialization::loadRect(QDataStream &stream, const QVersionNumber version
     }
 
     return rect;
+}
+
+QMap<int, QSet<QPair<int,int>>> Serialization::loadNodeMappings(QDataStream &stream){
+    QMap<int, QSet<QPair<int,int>>> map;
+    stream >> map;
+    return map;
 }

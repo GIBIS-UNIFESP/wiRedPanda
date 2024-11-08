@@ -183,6 +183,11 @@ bool QNEPort::isRequired() const
     return m_required;
 }
 
+bool QNEPort::wirelessConnection() const
+{
+    return m_hasWirelessConnection;
+}
+
 void QNEPort::setRequired(const bool required)
 {
     m_required = required;
@@ -202,6 +207,11 @@ GraphicElement *QNEPort::graphicElement() const
 void QNEPort::setGraphicElement(GraphicElement *graphicElement)
 {
     m_graphicElement = graphicElement;
+}
+
+void QNEPort::setHasWirelessConnection(const bool hasWirelessConnection)
+{
+    m_hasWirelessConnection = hasWirelessConnection;
 }
 
 void QNEPort::hoverLeave()

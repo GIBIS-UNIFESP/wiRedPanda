@@ -10,6 +10,7 @@
 #include <QGraphicsScene>
 #include <QMimeData>
 #include <QUndoCommand>
+#include <QMultiMap>
 
 class GraphicsView;
 class GraphicElement;
@@ -34,14 +35,18 @@ public:
     Simulation *simulation();
     bool eventFilter(QObject *watched, QEvent *event) override;
     const QList<GraphicElement *> selectedElements() const;
+    GraphicElement* element(int elementId) const;
+    QNEConnection* connection(int connectionId) const;
     const QVector<GraphicElement *> elements() const;
     const QVector<GraphicElement *> elements(const QRectF &rect) const;
     const QVector<GraphicElement *> visibleElements() const;
+    QMap<int, QSet<QPair<int,int>>> nodeMapping;
     void addItem(QGraphicsItem *item);
     void addItem(QMimeData *mimeData);
     void copyAction();
     void cutAction();
     void deleteAction();
+    void deleteNodeAction(const QList<QGraphicsItem*> items);
     void flipHorizontally();
     void flipVertically();
     void mute(const bool mute = true);
@@ -56,6 +61,13 @@ public:
     void showGates(const bool checked);
     void showWires(const bool checked);
     void updateTheme();
+    void makeConnectionNode(QNEConnection *connection);
+    void makeConnection(QNEConnection *connection);
+    void deleteEditedConnection();
+    void setEditedConnection(QNEConnection *connection);
+    bool isSourceNode(GraphicElement* node);
+    QSet<QPair<int,int>> getNodeSet(QString nodeLabel, QList<int> excludeIds = {});
+    void deleteNodeSetConnections(QSet<QPair<int,int>>* set, int nodeToRemove = -1);
 
 signals:
     void circuitHasChanged();
@@ -84,17 +96,16 @@ private:
     void cloneDrag(const QPointF mousePos);
     void contextMenu(const QPoint screenPos);
     void cut(const QList<QGraphicsItem *> &items, QDataStream &stream);
-    void deleteEditedConnection();
+
     void detachConnection(QNEInputPort *endPort);
     void drawBackground(QPainter *painter, const QRectF &rect) override;
     void handleHoverPort();
-    void makeConnection(QNEConnection *connection);
     void paste(QDataStream &stream);
     void releaseHoverPort();
     void resizeScene();
     void rotate(const int angle);
     void setDots(const QPen &dots);
-    void setEditedConnection(QNEConnection *connection);
+
     void setHoverPort(QNEPort *port);
     void startNewConnection(QNEInputPort *endPort);
     void startNewConnection(QNEOutputPort *startPort);

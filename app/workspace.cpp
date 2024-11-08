@@ -8,7 +8,6 @@
 #include "serialization.h"
 //#include "settings.h"
 #include "simulationblocker.h"
-
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QMessageBox>
@@ -122,6 +121,7 @@ void WorkSpace::save(const QString &fileName)
 void WorkSpace::save(QDataStream &stream)
 {
     Serialization::saveHeader(stream, m_dolphinFileName, m_scene.sceneRect());
+    Serialization::saveNodeMappings(m_scene.nodeMapping, stream);
     Serialization::serialize(m_scene.items(), stream);
 }
 
@@ -173,6 +173,10 @@ void WorkSpace::load(QDataStream &stream)
     qCDebug(zero) << tr("Dolphin name: ") << m_dolphinFileName;
 
     Serialization::loadRect(stream, version);
+
+        auto nodeMap = Serialization::loadNodeMappings(stream);
+        m_scene.nodeMapping = nodeMap;
+
     const auto items = Serialization::deserialize(stream, {}, version);
     qCDebug(zero) << tr("Finished loading items.");
 

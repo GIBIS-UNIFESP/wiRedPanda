@@ -3,7 +3,7 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include "ic.h"
 #include "bewaveddolphin.h"
 #include "codegenerator.h"
 #include "common.h"
@@ -34,6 +34,8 @@
 #include <QShortcut>
 #include <QTemporaryFile>
 #include <QTranslator>
+#include <QMultiMap>
+#include <QPair>
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #define SKIPEMPTYPARTS QString::SkipEmptyParts
@@ -215,7 +217,7 @@ void MainWindow::loadAutosaveFiles()
     //Settings::setValue("autosaveFile", autosaves);
 }
 
-void MainWindow::createNewTab()
+WorkSpace* MainWindow::createNewTab()
 {
     qCDebug(zero) << tr("Creating new workspace.");
     auto *workspace = new WorkSpace(this);
@@ -232,6 +234,8 @@ void MainWindow::createNewTab()
     m_ui->tab->setCurrentIndex(m_ui->tab->count() - 1);
 
     qCDebug(zero) << tr("Finished #tabs: ") << m_ui->tab->count() << tr(", current tab: ") << m_tabIndex;
+
+    return workspace;
 }
 
 void MainWindow::removeUndoRedoMenu()
@@ -269,8 +273,24 @@ void MainWindow::save(const QString &fileName)
     if (!m_currentTab) {
         return;
     }
-
-    m_currentTab->save(fileName);
+    auto c_tab = m_currentTab;
+    if(c_tab->m_EmbeddedIc){
+             while(1){
+                auto fatherICs = m_icsTabTree.keys(c_tab);
+                if(fatherICs.size() != 1) break;
+                auto fatherIC = fatherICs.at(0);
+                c_tab->m_EmbeddedIc->m_fileData.clear();
+                QDataStream stream(&c_tab->m_EmbeddedIc->m_fileData, QIODevice::ReadWrite);
+                c_tab->scene()->undoStack()->setClean();
+                c_tab->save(stream);
+                c_tab->m_EmbeddedIc->reload();
+                c_tab = fatherIC.second;
+                c_tab->scene()->simulation()->restart();
+            }
+    }
+    else{
+        m_currentTab->save(fileName);
+    }
     updateICList();
     m_ui->statusBar->showMessage(tr("File saved successfully."), 4000);
 }
@@ -388,28 +408,42 @@ void MainWindow::loadPandaFile(const QString &fileName)
     updateICList();
     m_ui->statusBar->showMessage(tr("File loaded successfully."), 4000);
 }
+void MainWindow::loadEmbeddedIC(const QString &fileName, IC *source_ic)
+{
+    //Check if already has an open tab
+    auto c_tab = m_currentTab;
+    auto fatherTabs = m_icsTabTree.keys();
+    for(auto v: fatherTabs){
+        if (v.first == source_ic){
+            auto f_tab = m_icsTabTree.value(v);
+            m_ui->tab->setCurrentIndex(m_ui->tab->indexOf(f_tab));
+            return;
+        }
+    }
+    m_icsTabTree.insert(QPair<IC*, WorkSpace*>(source_ic, c_tab), createNewTab()); // Initially, no children
+    qCDebug(zero) << tr("Loading in editor.");
+    m_currentTab->m_EmbeddedIc = source_ic;
+    m_currentTab->load(fileName);
+    updateICList();
+    m_ui->statusBar->showMessage(tr("File loaded successfully."), 4000);
+}
+
+WorkSpace* MainWindow::getCurrentTab(){
+    return m_currentTab;
+}
 
 void MainWindow::on_actionOpen_triggered()
 {
     const QString path = m_currentFile.exists() ? "" : "./examples";
     const QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), path, tr("Panda files (*.panda)"));
 
-    auto fileContentReady = [](const QString &fileName, const QByteArray &fileContent) {
-        if (fileName.isEmpty()) {
-            // No file was selected
-        } else {
-            // Use fileName and fileContent
-        }
-    };
-    QFileDialog::getOpenFileContent("Images (*.png *.xpm *.jpg)",  fileContentReady);
-
     if (fileName.isEmpty()) {
         return;
     }
 
-    //loadPandaFile(fileName);
-
+    loadPandaFile(fileName);
 }
+
 
 void MainWindow::on_actionSave_triggered()
 {
@@ -561,7 +595,12 @@ void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
 {
     m_currentFile = fileInfo;
 
+
+    auto IC = m_icsTabTree.keys(m_currentTab);
+
     QString text = fileInfo.exists() ? fileInfo.fileName() : tr("New Project");
+
+    if(!IC.empty()) text = IC.at(0).first->label() != "" ? IC.at(0).first->label() : text;
 
     if (!m_currentTab->scene()->undoStack()->isClean()) {
         text += "*";
@@ -578,10 +617,18 @@ void MainWindow::on_actionSelectAll_triggered()
     m_currentTab->scene()->selectAll();
 }
 
-void MainWindow::updateICList()
+void MainWindow::updateICList(QString dirPath)
 {
     m_ui->scrollAreaWidgetContents_IC->layout()->removeItem(m_ui->verticalSpacer_IC);
 
+    QFileInfo file;
+    auto c_tab = m_currentTab;
+
+    while(!m_icsTabTree.keys(c_tab).empty()) {
+        file = m_icsTabTree.keys(c_tab).at(0).second->fileInfo();
+        c_tab = m_icsTabTree.keys(c_tab).at(0).second;
+    }
+    if(c_tab == m_currentTab) file = m_currentFile;
     const auto items = m_ui->scrollAreaWidgetContents_IC->findChildren<ElementLabel *>();
 
     for (auto *item : items) {
@@ -596,11 +643,11 @@ void MainWindow::updateICList()
         }
     }
 
-    if (m_currentFile.exists()) {
+    if (file.exists()) {
         qCDebug(zero) << tr("Show files.");
-        QDir directory(m_currentFile.absoluteDir());
+        QDir directory(file.absoluteDir());
         QStringList files = directory.entryList({"*.panda", "*.PANDA"}, QDir::Files);
-        files.removeAll(m_currentFile.fileName());
+        files.removeAll(file.fileName());
 
         for (int i = files.size() - 1; i >= 0; --i) {
             if (files.at(i).at(0) == '.') {
@@ -625,10 +672,15 @@ void MainWindow::updateICList()
 
 bool MainWindow::closeTab(const int tabIndex)
 {
+    auto fatherTab = m_icsTabTree.keys(m_currentTab);
+
+    if(fatherTab.size() > 0 && m_icsTabTree.remove(fatherTab.at(0), m_currentTab) != 1) return false;
+
     qCDebug(zero) << tr("Closing tab ") << tabIndex + 1 << tr(", #tabs: ") << m_ui->tab->count();
     m_ui->tab->setCurrentIndex(tabIndex);
 
     qCDebug(zero) << tr("Checking if needs to save file.");
+
 
     if (!m_currentTab->scene()->undoStack()->isClean()) {
         const int selectedButton = confirmSave(false);

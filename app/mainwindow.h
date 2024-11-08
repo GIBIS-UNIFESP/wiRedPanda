@@ -7,7 +7,9 @@
 #include <QMainWindow>
 #include <QSpacerItem>
 #include <QTranslator>
-
+#include <QMultiMap>
+#include <QPair>
+#include "ic.h"
 class ElementLabel;
 class RecentFiles;
 class WorkSpace;
@@ -26,7 +28,7 @@ public:
     ~MainWindow() override;
 
     //! Creates a new tab with the given tab_name. Used by new and load actions.
-    void createNewTab();
+    WorkSpace* createNewTab();
 
     //! Saves the project to a .panda file. Removes the autosave file in the process.
     void save(const QString &fileName = {});
@@ -53,6 +55,8 @@ public:
     //! Loads a .panda file
     void loadPandaFile(const QString &fileName);
 
+    void loadEmbeddedIC(const QString &fileName, IC *source_ic);
+    WorkSpace* getCurrentTab();
     //! Opens a message box asking the user if he wishes to save his progress
     int confirmSave(const bool multiple = true);
 
@@ -122,7 +126,7 @@ private:
     void populateLeftMenu();
     void removeICFile(const QString &icFileName);
     void tabChanged(const int newTabIndex);
-    void updateICList();
+    void updateICList(QString dirPath = "");
     void updateRecentFileActions();
     void updateSettings();
     void updateTheme();
@@ -149,6 +153,7 @@ private:
 
     QFileInfo m_currentFile;
     WorkSpace *m_currentTab = nullptr;
+    QMultiMap<QPair<IC*, WorkSpace*>, WorkSpace*> m_icsTabTree;
     int m_tabIndex = -1;
 
     int m_lastTabIndex = -1;

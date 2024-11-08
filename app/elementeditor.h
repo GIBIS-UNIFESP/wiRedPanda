@@ -41,6 +41,8 @@ private:
         Q_DISABLE_COPY(ElementEditor)
 
     void apply();
+    void mapNode();
+    void connectNode(const QString newText);
     void defaultSkin();
     void inputIndexChanged(const int index);
     void inputLocked(const bool value);
@@ -96,6 +98,7 @@ private:
     bool m_hasTrigger = false;
     bool m_isDefaultSkin = true;
     bool m_isUpdatingSkin = false;
+    bool m_hasNodeConnection = false;
     unsigned int m_hasTruthTable = 0;
 
 };

@@ -51,6 +51,7 @@ public:
     Status status() const;
     bool isConnected(QNEPort *otherPort);
     bool isRequired() const;
+    bool wirelessConnection() const;
     const QList<QNEConnection *> &connections() const;
     int index() const;
     int portFlags() const;
@@ -65,6 +66,7 @@ public:
     void setCurrentBrush(const QBrush &currentBrush);
     void setDefaultStatus(const Status defaultStatus);
     void setGraphicElement(GraphicElement *graphicElement);
+    void setHasWirelessConnection(const bool hasWirelessConnection);
     void setIndex(const int index);
     void setName(const QString &name);
     void setPtr(const quint64 ptr);
@@ -88,6 +90,7 @@ protected:
     int m_portFlags = 0; // change this to std::bitset?
     int m_radius = 5;
     quint64 m_ptr = 0;
+    bool m_hasWirelessConnection = false;
 };
 
 class QNEInputPort : public QNEPort

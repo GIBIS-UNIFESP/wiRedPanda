@@ -5,7 +5,7 @@
 
 #include "graphicsview.h"
 #include "scene.h"
-
+#include "ic.h"
 #include <QFileInfo>
 #include <QTemporaryFile>
 #include <QUndoStack>
@@ -31,14 +31,15 @@ public:
     void save(const QString &fileName);
     void setAutosaveFile();
     void setDolphinFileName(const QString &fileName);
-
+    IC* m_EmbeddedIc = nullptr;
+    WorkSpace* fatherTab = nullptr;
+    QFileInfo* fatherFileInfo = nullptr;
 signals:
     void fileChanged(const QFileInfo &fileInfo);
 
 private:
     void autosave();
     void setAutosaveFileName();
-
     GraphicsView m_view;
     QFileInfo m_fileInfo;
     QString m_dolphinFileName;

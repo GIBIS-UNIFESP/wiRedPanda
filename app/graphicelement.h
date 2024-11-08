@@ -78,6 +78,7 @@ public:
     bool hasDelay() const;
     bool hasLabel() const;
     bool hasTruthTable() const;
+    bool hasNodeConnection() const;
     bool hasTrigger() const;
     bool isRotatable() const;
     bool isValid();
@@ -115,7 +116,10 @@ public:
     void setPriority(const int value);
     void setRotation(const qreal angle);
     void setTrigger(const QKeySequence &trigger);
+    void setIsWireless(const bool isWireless);
     void updateLabel();
+    void setMapId(const int Id);
+    int mapId() const;
 
 protected:
     QPixmap pixmap() const;
@@ -135,7 +139,7 @@ protected:
     void setMinInputSize(const int minInputSize);
     void setMinOutputSize(const int minOutputSize);
     void setRotatable(const bool rotatable);
-
+    void setHasNodeConnection(const bool hasNodeConnection);
 
     //! Path to all default skins. The default skin is in a resource file.
     QStringList m_defaultSkins;
@@ -205,9 +209,12 @@ private:
     bool m_hasLabel = false;
     bool m_hasTrigger = false;
     bool m_rotatable = true;
+    bool m_hasNodeConnection = false;
     bool m_selected = false;
     bool m_hasTruthTable = false;
     bool m_hasDelay = false;
+    bool m_isWireless = false;
+    int m_mapId = -1;
     qreal m_angle = 0;
     quint64 m_maxInputSize = 0;
     quint64 m_maxOutputSize = 0;

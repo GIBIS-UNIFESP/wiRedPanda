@@ -31,7 +31,9 @@ public:
     void loadFile(const QString &fileName);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void refresh() override;
+    void reload();
     void save(QDataStream &stream) const override;
+    QByteArray m_fileData;
 
 protected:
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
