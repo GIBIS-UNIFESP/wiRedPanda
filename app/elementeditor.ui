@@ -40,103 +40,24 @@
       <string>Title</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="16" column="0">
-       <widget class="QLabel" name="labelTrigger">
-        <property name="text">
-         <string>Trigger:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="comboBoxInputSize"/>
-      </item>
-      <item row="17" column="0">
-       <widget class="QLabel" name="labelPriority">
-        <property name="text">
-         <string>Priority:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="14" column="0">
-       <widget class="QLabel" name="labelAudio">
-        <property name="text">
-         <string>Audio:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="14" column="1">
-       <widget class="QComboBox" name="comboBoxAudio">
-        <item>
-         <property name="text">
-          <string>C6</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D6</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>E6</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>F6</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>G6</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>A7</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>B7</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>C7</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="19" column="0" colspan="2">
-       <widget class="QTableWidget" name="truthTable">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="17" column="1">
-       <widget class="QSpinBox" name="spinBoxPriority">
-        <property name="maximum">
-         <number>9</number>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="1">
-       <widget class="QCheckBox" name="checkBoxLocked">
-        <property name="text">
-         <string>Label:</string>
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QComboBox" name="comboBoxOutputSize"/>
-      </item>
-      <item row="11" column="1">
+      <item row="13" column="2">
        <widget class="QComboBox" name="comboBoxColor">
         <property name="currentText">
          <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="0">
+       <widget class="QLabel" name="labelColor">
+        <property name="text">
+         <string>Color:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="21" column="2">
+       <widget class="QSpinBox" name="spinBoxPriority">
+        <property name="maximum">
+         <number>9</number>
         </property>
        </widget>
       </item>
@@ -147,19 +68,48 @@
         </property>
        </widget>
       </item>
-      <item row="19" column="0">
-       <widget class="QLabel" name="labelPriority">
+      <item row="8" column="2">
+       <widget class="QCheckBox" name="checkBoxLocked">
         <property name="text">
-         <string>Priority:</string>
+         <string/>
         </property>
        </widget>
-      <item row="18" column="0" colspan="2">
+      </item>
+      <item row="11" column="0">
+       <widget class="QLabel" name="labelFrequency">
+        <property name="text">
+         <string>Frequency:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0">
+       <widget class="QLabel" name="labelDelay">
+        <property name="text">
+         <string>Delay:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="15" column="0">
+       <widget class="QLabel" name="labelAudio">
+        <property name="text">
+         <string>Audio:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="17" column="2">
+       <widget class="QLabel" name="labelCurrentAudioBox">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="23" column="0" colspan="3">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <property name="spacing">
          <number>6</number>
         </property>
         <property name="sizeConstraint">
-         <enum>QLayout::SetNoConstraint</enum>
+         <enum>QLayout::SetDefaultConstraint</enum>
         </property>
         <item>
          <widget class="QPushButton" name="pushButtonTruthTable">
@@ -206,130 +156,27 @@
         </item>
        </layout>
       </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="labelOutputs">
+      <item row="1" column="2">
+       <widget class="QComboBox" name="comboBoxNode"/>
+      </item>
+      <item row="16" column="0" colspan="3">
+       <widget class="QPushButton" name="pushButtonAudioBox">
         <property name="text">
-         <string>Output Ports:</string>
+         <string>Browse Audio</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="comboBoxInputSize"/>
-      </item>
-      <item row="19" column="1">
-       <widget class="QSpinBox" name="spinBoxPriority">
-        <property name="maximum">
-         <number>9</number>
-        </property>
-       </widget>
-      </item>
-      <item row="18" column="1">
+      <item row="20" column="2">
        <widget class="QLineEdit" name="lineEditTrigger"/>
       </item>
-      <item row="11" column="0">
-       <widget class="QLabel" name="labelColor">
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelNode">
         <property name="text">
-         <string>Color:</string>
+         <string>Node:</string>
         </property>
        </widget>
       </item>
-      <item row="13" column="0">
-       <widget class="QLabel" name="labelAudio">
-        <property name="text">
-         <string>Audio:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="15" column="0">
-       <widget class="QLabel" name="labelAudioBox">
-        <property name="text">
-         <string>Audio:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="1">
-       <widget class="QCheckBox" name="checkBoxLocked">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="lineEditElementLabel"/>
-      </item>
-      <item row="13" column="1">
-       <widget class="QComboBox" name="comboBoxAudio">
-        <item>
-         <property name="text">
-          <string>C6</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D6</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>E6</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>F6</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>G6</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>A7</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>B7</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>C7</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="18" column="0">
-       <widget class="QLabel" name="labelTrigger">
-        <property name="text">
-         <string>Trigger:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="0">
-       <widget class="QLabel" name="labelFrequency">
-        <property name="text">
-         <string>Frequency:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QComboBox" name="comboBoxValue"/>
-      </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="labelLocked">
-        <property name="text">
-         <string>Locked:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="1">
-      <item row="16" column="1">
-       <widget class="QLineEdit" name="lineEditTrigger"/>
-      </item>
-      <item row="10" column="1">
+      <item row="11" column="2">
        <widget class="QDoubleSpinBox" name="doubleSpinBoxFrequency">
         <property name="specialValueText">
          <string/>
@@ -351,31 +198,28 @@
         </property>
        </widget>
       </item>
-      <item row="14" column="0" colspan="2">
-       <widget class="QPushButton" name="pushButtonAudioBox">
-      <item row="12" column="1">
-       <widget class="QComboBox" name="comboBoxColor">
-        <property name="currentText">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="1">
-       <widget class="QDoubleSpinBox" name="doubleSpinBoxDelay">
-        <property name="suffix">
-         <string> Hz</string>
-        </property>
-        <property name="decimals">
-         <number>1</number>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="labelValue">
+      <item row="4" column="0">
+       <widget class="QLabel" name="labelOutputs">
         <property name="text">
-         <string>Value:</string>
+         <string>Output Ports:</string>
         </property>
        </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QComboBox" name="comboBoxOutputSize"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLineEdit" name="lineEditElementLabel"/>
+      </item>
+      <item row="17" column="0">
+       <widget class="QLabel" name="labelAudioBox">
+        <property name="text">
+         <string>Audio:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QComboBox" name="comboBoxInputSize"/>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="labelLabels">
@@ -384,102 +228,22 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="1">
+      <item row="20" column="0">
+       <widget class="QLabel" name="labelTrigger">
+        <property name="text">
+         <string>Trigger:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="2">
        <widget class="QComboBox" name="comboBoxValue"/>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="labelOutputs">
-        <property name="text">
-         <string>Output Ports:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="lineEditElementLabel"/>
-      </item>
-      <item row="12" column="0">
-       <widget class="QLabel" name="labelColor">
-        <property name="text">
-         <string>Browse Audio</string>
-        </property>
-       </widget>
-      </item>
-      <item row="15" column="1">
-       <widget class="QLabel" name="labelCurrentAudioBox">
-      <item row="9" column="0">
-       <widget class="QLabel" name="labelDelay">
-        <property name="text">
-         <string>Delay:</string>
-         <string/>
-        </property>
-       </widget>
       </item>
       <item row="6" column="0">
        <widget class="QLabel" name="labelValue">
-      <item row="10" column="0">
-       <widget class="QLabel" name="labelFrequency">
         <property name="text">
          <string>Value:</string>
         </property>
        </widget>
-      </item>
-      <item row="21" column="0" colspan="2">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <property name="spacing">
-         <number>6</number>
-         <string>Frequency:</string>
-        </property>
-        <property name="sizeConstraint">
-         <enum>QLayout::SizeConstraint::SetNoConstraint</enum>
-        </property>
-        <item>
-         <widget class="QPushButton" name="pushButtonTruthTable">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>TruthTable</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonChangeSkin">
-          <property name="text">
-           <string>Change skin to ...</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonDefaultSkin">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="toolTip">
-           <string>Default</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="resources/toolbar/toolbar.qrc">
-            <normaloff>:/toolbar/default.svg</normaloff>:/toolbar/default.svg</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>16</width>
-            <height>16</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-       </layout>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QComboBox" name="comboBoxOutputSize"/>
       </item>
       <item row="8" column="0">
        <widget class="QLabel" name="labelLocked">
@@ -488,13 +252,64 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
-       <widget class="QComboBox" name="comboBoxNode"/>
-      </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="labelNode">
+      <item row="21" column="0">
+       <widget class="QLabel" name="labelPriority">
         <property name="text">
-         <string>Node:</string>
+         <string>Priority:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="15" column="2">
+       <widget class="QComboBox" name="comboBoxAudio">
+        <item>
+         <property name="text">
+          <string>C6</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>D6</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>E6</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>F6</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>G6</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>A7</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>B7</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>C7</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="9" column="2">
+       <widget class="QDoubleSpinBox" name="doubleSpinBoxDelay">
+        <property name="suffix">
+         <string> Hz</string>
+        </property>
+        <property name="decimals">
+         <number>1</number>
         </property>
        </widget>
       </item>

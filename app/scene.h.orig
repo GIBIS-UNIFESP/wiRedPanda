@@ -42,7 +42,11 @@ public:
     const QVector<GraphicElement *> elements() const;
     const QVector<GraphicElement *> elements(const QRectF &rect) const;
     const QVector<GraphicElement *> visibleElements() const;
+<<<<<<< HEAD
     QMap<int, QSet<QPair<int,int>>> nodeMapping;
+    void addItem(QGraphicsItem *item);
+=======
+>>>>>>> b84dea3783c58ceb87a55307f1543e1941a33432
     void addItem(QMimeData *mimeData);
     void copyAction();
     void cutAction();
