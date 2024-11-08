@@ -26,5 +26,22 @@
         <file>zoomOut.svg</file>
         <file>zoomRange.svg</file>
         <file>zoomReset.svg</file>
+        <file>timerBlue.svg</file>
+        <file>rising_green_1_8.svg</file>
+        <file>rising_blue1_8.svg</file>
+        <file>low_green_1_8.svg</file>
+        <file>low_blue_1_8.svg</file>
+        <file>high_green_1_8.svg</file>
+        <file>high_blue_1_8.svg</file>
+        <file>falling_green_1_8.svg</file>
+        <file>falling_blue_1_8.svg</file>
+        <file>rising_green_1_8_cut.svg</file>
+        <file>low_green_1_8_cut.svg</file>
+        <file>high_green_1_8_cut.svg</file>
+        <file>falling_green_1_8_cut.svg</file>
+        <file>rising_blue_1_8_cut.svg</file>
+        <file>low_blue_1_8_cut.svg</file>
+        <file>high_blue_1_8_cut.svg</file>
+        <file>falling_blue_1_8_cut.svg</file>
     </qresource>
 </RCC>

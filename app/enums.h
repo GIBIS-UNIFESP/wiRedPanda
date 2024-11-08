@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QObject>
-#include <cstdint>
 
 class Enums
 {
@@ -16,6 +15,7 @@ public:
     enum class ElementType {
         And = 5,
         Buzzer = 26,
+        AudioBox = 31,
         Clock = 9,
         DFlipFlop = 17,
         DLatch = 15,
@@ -41,10 +41,10 @@ public:
         SRFlipFlop = 19,
         TFlipFlop = 20,
         Text = 28,
+        TruthTable = 30,
         Unknown = 0,
         Xnor = 11,
         Xor = 10,
-        TruthTable = 30
     };
     Q_ENUM(ElementType)
 
@@ -60,6 +60,9 @@ public:
         Unknown = 0,
     };
     Q_ENUM(ElementGroup)
+
+    static ElementType nextElmType(ElementType type);
+    static ElementType prevElmType(ElementType type);
 };
 
 using Status = Enums::Status;

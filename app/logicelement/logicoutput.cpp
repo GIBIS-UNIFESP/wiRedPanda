@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "logicoutput.h"
@@ -17,4 +17,6 @@ void LogicOutput::updateLogic()
     for (int index = 0; index < m_inputValues.size(); ++index) {
         setOutputValue(index, m_inputValues.at(index));
     }
+
 }
+

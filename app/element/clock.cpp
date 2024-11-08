@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "clock.h"
@@ -138,6 +138,10 @@ float Clock::frequency() const
 
 void Clock::setFrequency(const float freq)
 {
+    if (freq > 10) {
+        return;
+    }
+
     if (qFuzzyIsNull(freq)) {
         return;
     }

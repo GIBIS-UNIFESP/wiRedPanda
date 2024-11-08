@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
@@ -12,7 +12,6 @@
 #include <QPixmapCache>
 #include <QVersionNumber>
 #include <memory>
-#include <QBitArray>
 
 class GraphicElement;
 class QNEInputPort;
@@ -71,15 +70,20 @@ public:
     QPointF pixmapCenter() const;
     QRectF boundingRect() const override;
     QString label() const;
+    QString previousColor() const;
+    QString nextColor() const;
+    QString previousAudio() const;
+    QString nextAudio() const;
     bool canChangeSkin() const;
     bool hasAudio() const;
     bool hasColors() const;
     bool hasFrequency() const;
     bool hasDelay() const;
     bool hasLabel() const;
-    bool hasTruthTable() const;
-    bool hasNodeConnection() const;
     bool hasTrigger() const;
+    bool hasTruthTable() const;
+    bool hasAudioBox() const;
+    bool hasNodeConnection() const;
     bool isRotatable() const;
     bool isValid();
     const QVector<QNEInputPort *> &inputs() const;
@@ -132,8 +136,9 @@ protected:
     void setHasFrequency(const bool hasFrequency);
     void setHasDelay(const bool hasDelay);
     void setHasLabel(const bool hasLabel);
-    void setHasTruthTable(const bool hasTruthTable);
     void setHasTrigger(const bool hasTrigger);
+    void setHasTruthTable(const bool hasTruthTable);
+    void setHasAudioBox(const bool hasAudioBox);
     void setMaxInputSize(const int maxInputSize);
     void setMaxOutputSize(const int maxOutputSize);
     void setMinInputSize(const int minInputSize);
@@ -208,10 +213,11 @@ private:
     bool m_hasFrequency = false;
     bool m_hasLabel = false;
     bool m_hasTrigger = false;
+    bool m_hasTruthTable = false;
+    bool m_hasAudioBox = false;
     bool m_rotatable = true;
     bool m_hasNodeConnection = false;
     bool m_selected = false;
-    bool m_hasTruthTable = false;
     bool m_hasDelay = false;
     bool m_isWireless = false;
     int m_mapId = -1;

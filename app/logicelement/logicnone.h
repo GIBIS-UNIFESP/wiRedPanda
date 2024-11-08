@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
@@ -8,10 +8,11 @@
 class LogicNone : public LogicElement
 {
 public:
-    explicit LogicNone() : LogicElement(0, 0) {}
+    explicit LogicNone();
 
 private:
     Q_DISABLE_COPY(LogicNone)
 
-    void updateLogic() override {}
+    void updateLogic() override;
+    void notifyNextElement();
 };

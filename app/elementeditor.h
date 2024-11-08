@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
@@ -6,6 +6,9 @@
 #include "scene.h"
 
 #include <QWidget>
+#include <QDialog>
+#include <QVBoxLayout>
+#include <QTableWidget>
 
 namespace Ui
 {
@@ -27,18 +30,18 @@ public:
     void renameAction();
     void retranslateUi();
     void setScene(Scene *scene);
+    void truthTable();
     void update();
     void updateElementSkin();
     void updatePriorityAction();
     void updateTheme();
-    void TruthTable();
-
+    void audioBox();
 
 signals:
     void sendCommand(QUndoCommand *cmd);
 
 private:
-        Q_DISABLE_COPY(ElementEditor)
+    Q_DISABLE_COPY(ElementEditor)
 
     void apply();
     void mapNode();
@@ -48,13 +51,12 @@ private:
     void inputLocked(const bool value);
     void outputIndexChanged(const int index);
     void outputValueChanged(const QString &value);
+    void priorityChanged(const int value);
     void selectionChanged();
     void setCurrentElements(const QList<GraphicElement *> &elements);
+    void setTruthTableProposition(const int row, const int column);
     void triggerChanged(const QString &cmd);
-    void priorityChanged(const int value);
     void updateSkins();
-    void SetTruthTableProposition(int row, int column);
-
 
     Ui::ElementEditor *m_ui;
     QList<GraphicElement *> m_elements;
@@ -70,19 +72,23 @@ private:
     QString m_manyTriggers = tr("<Many triggers>");
     QString m_skinName;
     Scene *m_scene = nullptr;
+    QDialog *m_tableBox = new QDialog(this);
+    QVBoxLayout *m_tableLayout = new QVBoxLayout(m_tableBox);
+    QTableWidget *m_table = new QTableWidget(m_tableBox);
     bool m_canChangeInputSize = false;
     bool m_canChangeOutputSize = false;
-    bool m_hasRotarySwitch = false;
     bool m_canChangeSkin = false;
     bool m_canMorph = false;
     bool m_hasAnyProperty = false;
     bool m_hasAudio = false;
+    bool m_hasAudioBox = false;
     bool m_hasColors = false;
     bool m_hasElements = false;
     bool m_hasFrequency = false;
     bool m_hasDelay = false;
     bool m_hasLabel = false;
     bool m_hasOnlyInputs = false;
+    bool m_hasRotarySwitch = false;
     bool m_hasRotation = false;
     bool m_hasSameAudio = false;
     bool m_hasSameColors = false;
@@ -100,5 +106,4 @@ private:
     bool m_isUpdatingSkin = false;
     bool m_hasNodeConnection = false;
     unsigned int m_hasTruthTable = 0;
-
 };

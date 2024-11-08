@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "logicand.h"
@@ -6,7 +6,7 @@
 #include <functional>
 
 LogicAnd::LogicAnd(const int inputSize)
-    : LogicElement(inputSize, 1)
+    : LogicElement(inputSize, 1, inputSize)
 {
 }
 
@@ -16,6 +16,12 @@ void LogicAnd::updateLogic()
         return;
     }
 
-    const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), true, std::bit_and<>());
-    setOutputValue(result);
+    if (isTempSimulationOn())    {
+        const auto result = std::accumulate(m_inputBuffer.last().cbegin(), m_inputBuffer.last().cend(), true, std::bit_and<>());
+        setOutputValue(result);
+        updateInputBuffer();
+    } else {
+        const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), true, std::bit_and<>());
+        setOutputValue(result);
+    }
 }

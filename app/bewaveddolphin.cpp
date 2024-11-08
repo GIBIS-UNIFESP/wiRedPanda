@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "bewaveddolphin.h"
@@ -10,13 +10,17 @@
 #include "globalproperties.h"
 #include "graphicelement.h"
 #include "graphicelementinput.h"
+#include "inputrotary.h"
 #include "lengthdialog.h"
+#include "logicelement.h"
 #include "mainwindow.h"
 //#include "settings.h"
 #include "simulationblocker.h"
 
+#include <QAbstractItemView>
 #include <QClipboard>
 #include <QCloseEvent>
+#include <QDebug>
 #include <QFileDialog>
 #include <QHeaderView>
 #include <QMessageBox>
@@ -24,8 +28,10 @@
 #include <QPrinter>
 #include <QSaveFile>
 #include <QTextStream>
+#include <bitset>
 #include <cmath>
 #include <iostream>
+#include <sstream>
 
 SignalModel::SignalModel(const int inputs, const int rows, const int columns, QObject *parent)
     : QStandardItemModel(rows, columns, parent)
@@ -35,11 +41,12 @@ SignalModel::SignalModel(const int inputs, const int rows, const int columns, QO
 
 Qt::ItemFlags SignalModel::flags(const QModelIndex &index) const
 {
-    Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+    Qt::ItemFlags flags;
 
-    if (index.row() < m_inputCount) {
-        flags |= Qt::ItemIsEditable;
-    }
+    if (index.row() >= m_inputCount)
+        flags = Qt::NoItemFlags;
+    else
+        flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
     return flags;
 }
@@ -56,6 +63,42 @@ void SignalDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
     QItemDelegate::paint(painter, itemOption, index);
 }
 
+DolphinGraphicsView::DolphinGraphicsView(QWidget *parent) : GraphicsView(parent)
+{
+}
+
+bool DolphinGraphicsView::canZoomOut() const
+{
+    return m_zoomLevel > 0;
+}
+
+void DolphinGraphicsView::zoomIn()
+{
+    m_zoomLevel++;
+    emit zoomChanged();
+}
+
+void DolphinGraphicsView::zoomOut()
+{
+    m_zoomLevel--;
+    emit zoomChanged();
+}
+
+void DolphinGraphicsView::wheelEvent(QWheelEvent *event)
+{
+    const int zoomDirection = event->angleDelta().y();
+
+    if (zoomDirection > 0 && canZoomIn()) {
+        emit scaleIn();
+    } else if (zoomDirection < 0 && canZoomOut()) {
+        emit scaleOut();
+    }
+
+    centerOn(QPoint(0, 0));
+
+    event->accept();
+}
+
 BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindow *parent)
     : QMainWindow(parent)
     , m_ui(new Ui::BewavedDolphin)
@@ -65,6 +108,9 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
 {
     m_ui->setupUi(this);
     m_ui->retranslateUi(this);
+
+    m_isTemporalSimulation = scene->simulation()->isTemporalSimulation();
+    m_ui->actionTemporalSimulation->setChecked(m_isTemporalSimulation);
 
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowModality(Qt::WindowModal);
@@ -78,39 +124,40 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
 
     m_scene->addWidget(m_signalTableView);
 
-    m_view.setScene(m_scene);
-    m_view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    m_view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    m_ui->verticalLayout->addWidget(&m_view);
+    m_ui->graphicsView->setScene(m_scene);
+
+    m_ui->actionZoomOut->setEnabled(false);
 
     //m_ui->mainToolBar->setToolButtonStyle(Settings::value("labelsUnderIcons").toBool() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
 
     loadPixmaps();
 
-    connect(m_ui->actionAbout,         &QAction::triggered, this, &BewavedDolphin::on_actionAbout_triggered);
-    connect(m_ui->actionAboutQt,       &QAction::triggered, this, &BewavedDolphin::on_actionAboutQt_triggered);
-    connect(m_ui->actionClear,         &QAction::triggered, this, &BewavedDolphin::on_actionClear_triggered);
-    connect(m_ui->actionCombinational, &QAction::triggered, this, &BewavedDolphin::on_actionCombinational_triggered);
-    connect(m_ui->actionCopy,          &QAction::triggered, this, &BewavedDolphin::on_actionCopy_triggered);
-    connect(m_ui->actionCut,           &QAction::triggered, this, &BewavedDolphin::on_actionCut_triggered);
-    connect(m_ui->actionExit,          &QAction::triggered, this, &BewavedDolphin::on_actionExit_triggered);
-    connect(m_ui->actionExportToPdf,   &QAction::triggered, this, &BewavedDolphin::on_actionExportToPdf_triggered);
-    connect(m_ui->actionExportToPng,   &QAction::triggered, this, &BewavedDolphin::on_actionExportToPng_triggered);
-    connect(m_ui->actionFitScreen,     &QAction::triggered, this, &BewavedDolphin::on_actionFitScreen_triggered);
-    connect(m_ui->actionInvert,        &QAction::triggered, this, &BewavedDolphin::on_actionInvert_triggered);
-    connect(m_ui->actionLoad,          &QAction::triggered, this, &BewavedDolphin::on_actionLoad_triggered);
-    connect(m_ui->actionPaste,         &QAction::triggered, this, &BewavedDolphin::on_actionPaste_triggered);
-    connect(m_ui->actionResetZoom,     &QAction::triggered, this, &BewavedDolphin::on_actionResetZoom_triggered);
-    connect(m_ui->actionSave,          &QAction::triggered, this, &BewavedDolphin::on_actionSave_triggered);
-    connect(m_ui->actionSaveAs,        &QAction::triggered, this, &BewavedDolphin::on_actionSaveAs_triggered);
-    connect(m_ui->actionSetClockWave,  &QAction::triggered, this, &BewavedDolphin::on_actionSetClockWave_triggered);
-    connect(m_ui->actionSetLength,     &QAction::triggered, this, &BewavedDolphin::on_actionSetLength_triggered);
-    connect(m_ui->actionSetTo0,        &QAction::triggered, this, &BewavedDolphin::on_actionSetTo0_triggered);
-    connect(m_ui->actionSetTo1,        &QAction::triggered, this, &BewavedDolphin::on_actionSetTo1_triggered);
-    connect(m_ui->actionShowNumbers,   &QAction::triggered, this, &BewavedDolphin::on_actionShowNumbers_triggered);
-    connect(m_ui->actionShowWaveforms, &QAction::triggered, this, &BewavedDolphin::on_actionShowWaveforms_triggered);
-    connect(m_ui->actionZoomIn,        &QAction::triggered, this, &BewavedDolphin::on_actionZoomIn_triggered);
-    connect(m_ui->actionZoomOut,       &QAction::triggered, this, &BewavedDolphin::on_actionZoomOut_triggered);
+    connect(m_ui->actionAbout,         &QAction::triggered,            this, &BewavedDolphin::on_actionAbout_triggered);
+    connect(m_ui->actionAboutQt,       &QAction::triggered,            this, &BewavedDolphin::on_actionAboutQt_triggered);
+    connect(m_ui->actionClear,         &QAction::triggered,            this, &BewavedDolphin::on_actionClear_triggered);
+    connect(m_ui->actionCombinational, &QAction::triggered,            this, &BewavedDolphin::on_actionCombinational_triggered);
+    connect(m_ui->actionCopy,          &QAction::triggered,            this, &BewavedDolphin::on_actionCopy_triggered);
+    connect(m_ui->actionCut,           &QAction::triggered,            this, &BewavedDolphin::on_actionCut_triggered);
+    connect(m_ui->actionExit,          &QAction::triggered,            this, &BewavedDolphin::on_actionExit_triggered);
+    connect(m_ui->actionExportToPdf,   &QAction::triggered,            this, &BewavedDolphin::on_actionExportToPdf_triggered);
+    connect(m_ui->actionExportToPng,   &QAction::triggered,            this, &BewavedDolphin::on_actionExportToPng_triggered);
+    connect(m_ui->actionInvert,        &QAction::triggered,            this, &BewavedDolphin::on_actionInvert_triggered);
+    connect(m_ui->actionLoad,          &QAction::triggered,            this, &BewavedDolphin::on_actionLoad_triggered);
+    connect(m_ui->actionPaste,         &QAction::triggered,            this, &BewavedDolphin::on_actionPaste_triggered);
+    connect(m_ui->actionResetZoom,     &QAction::triggered,            this, &BewavedDolphin::on_actionResetZoom_triggered);
+    connect(m_ui->actionSave,          &QAction::triggered,            this, &BewavedDolphin::on_actionSave_triggered);
+    connect(m_ui->actionSaveAs,        &QAction::triggered,            this, &BewavedDolphin::on_actionSaveAs_triggered);
+    connect(m_ui->actionSetClockWave,  &QAction::triggered,            this, &BewavedDolphin::on_actionSetClockWave_triggered);
+    connect(m_ui->actionSetLength,     &QAction::triggered,            this, &BewavedDolphin::on_actionSetLength_triggered);
+    connect(m_ui->actionSetTo0,        &QAction::triggered,            this, &BewavedDolphin::on_actionSetTo0_triggered);
+    connect(m_ui->actionSetTo1,        &QAction::triggered,            this, &BewavedDolphin::on_actionSetTo1_triggered);
+    connect(m_ui->actionShowNumbers,   &QAction::triggered,            this, &BewavedDolphin::on_actionShowNumbers_triggered);
+    connect(m_ui->actionShowWaveforms, &QAction::triggered,            this, &BewavedDolphin::on_actionShowWaveforms_triggered);
+    connect(m_ui->actionZoomIn,        &QAction::triggered,            this, &BewavedDolphin::on_actionZoomIn_triggered);
+    connect(m_ui->actionZoomOut,       &QAction::triggered,            this, &BewavedDolphin::on_actionZoomOut_triggered);
+    connect(m_ui->graphicsView,        &DolphinGraphicsView::scaleIn,  this, &BewavedDolphin::on_actionZoomIn_triggered);
+    connect(m_ui->graphicsView,        &DolphinGraphicsView::scaleOut, this, &BewavedDolphin::on_actionZoomOut_triggered);
+    connect(m_ui->actionTemporalSimulation, &QAction::triggered,       this, &BewavedDolphin::on_actionTemporalSimulation_toggled);
 }
 
 BewavedDolphin::~BewavedDolphin()
@@ -130,6 +177,16 @@ void BewavedDolphin::loadPixmaps()
     m_highBlue = QPixmap(":/dolphin/high_blue.svg").scaled(100, 38);
     m_fallingBlue = QPixmap(":/dolphin/falling_blue.svg").scaled(100, 38);
     m_risingBlue = QPixmap(":/dolphin/rising_blue.svg").scaled(100, 38);
+
+    m_smallLowGreen = QPixmap(":/dolphin/low_green_1_8_cut.svg").scaled(8, 38);
+    m_smallHighGreen = QPixmap(":/dolphin/high_green_1_8_cut.svg").scaled(8, 38);
+    m_smallFallingGreen = QPixmap(":/dolphin/falling_green_1_8_cut.svg").scaled(8, 38);
+    m_smallRisingGreen = QPixmap(":/dolphin/rising_green_1_8_cut.svg").scaled(8, 38);
+
+    m_smallLowBlue = QPixmap(":/dolphin/low_blue_1_8_cut.svg").scaled(12, 38);
+    m_smallHighBlue = QPixmap(":/dolphin/high_blue_1_8_cut.svg").scaled(12, 38);
+    m_smallFallingBlue = QPixmap(":/dolphin/falling_blue_1_8_cut.svg").scaled(12, 38);
+    m_smallRisingBlue = QPixmap(":/dolphin/rising_blue_1_8_cut.svg").scaled(12, 38);
 }
 
 void BewavedDolphin::createWaveform(const QString &fileName)
@@ -148,6 +205,7 @@ void BewavedDolphin::createWaveform(const QString &fileName)
         }
 
         load(fileInfo.absoluteFilePath());
+
     }
 
     qCDebug(zero) << tr("Resuming digital circuit main window after waveform simulation is finished.");
@@ -193,7 +251,7 @@ void BewavedDolphin::loadFromTerminal()
 
         for (int col = 0; col < cols; ++col) {
             const int value = wordList2.at(col).toInt();
-            createElement(row, col, value, true);
+            createElement(row, col, value);
         }
     }
 
@@ -282,6 +340,19 @@ void BewavedDolphin::loadNewTable()
     on_actionClear_triggered();
 
     connect(m_signalTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &BewavedDolphin::on_tableView_selectionChanged);
+    connect(m_signalTableView,                   &QAbstractItemView::doubleClicked,      this, &BewavedDolphin::on_tableView_cellDoubleClicked);
+}
+
+void BewavedDolphin::on_tableView_cellDoubleClicked() {
+    const auto indexes = m_signalTableView->selectionModel()->selectedIndexes();
+
+    for (auto index : indexes) {
+        int value = m_model->index(index.row(), index.column(), QModelIndex()).data().toInt();
+        value = (value + 1) % 2;
+        createElement(index.row(), index.column(), value);
+    }
+
+    run();
 }
 
 void BewavedDolphin::on_tableView_selectionChanged()
@@ -347,7 +418,6 @@ void BewavedDolphin::loadSignals(QStringList &inputLabels, QStringList &outputLa
 void BewavedDolphin::run()
 {
     run2();
-    run2();
 }
 
 void BewavedDolphin::run2()
@@ -355,37 +425,93 @@ void BewavedDolphin::run2()
     qCDebug(zero) << tr("Creating class to pause main window simulator while creating waveform.");
     SimulationBlocker simulationBlocker(m_simulation);
 
+    int nPorts = 0;
+    std::optional<bool> previousWaveEnd = NULL;
+
+    for (auto *output : qAsConst(m_outputs)) {
+        nPorts += output->inputSize();
+    }
+
     for (int column = 0; column < m_model->columnCount(); ++column) {
         qCDebug(four) << tr("Itr: ") << column << tr(", inputs: ") << m_inputs.size();
         int row = 0;
 
         for (auto *input : qAsConst(m_inputs)) {
-            for (int port = 0; port < input->outputSize(); ++port) {
-                const bool value = static_cast<bool>(m_model->index(row, column).data().toInt());
-                input->setOn(value, port);
-                ++row;
+            if (dynamic_cast<InputRotary*>(input)) {
+                for (int port = 0; port < input->outputSize(); ++port) {
+                    if (m_model->index(row, column).data().toInt()) {
+                        input->setOn(1, port);
+                    }
+
+                    ++row;
+                }
+            } else {
+                for (int port = 0; port < input->outputSize(); ++port) {
+                    const bool value = static_cast<bool>(m_model->index(row, column).data().toInt());
+                    input->setOn(value, port);
+                    ++row;
+                }
             }
         }
 
-        qCDebug(four) << tr("Updating the values of the circuit logic based on current input values.");
-        m_simulation->update();
-        m_simulation->update();
-        m_simulation->update();
+        output_values = QVector<QVector<bool>>(nPorts);
 
-        qCDebug(four) << tr("Setting the computed output values to the waveform results.");
-        row = m_inputPorts;
+        for (int i = 0; i < output_values.length(); i++) {
+            output_values[i] = QVector<bool>(8);
+        }
 
-        for (auto *output : qAsConst(m_outputs)) {
-            for (int port = 0; port < output->inputSize(); ++port) {
-                const int value = static_cast<int>(output->inputPort(port)->status());
-                createElement(row, column, value, false);
+        if (m_isTemporalSimulation) {
+            for (int delta = 0; delta < 8; delta++) {
+                row = 0;
+
+                for (auto *output : qAsConst(m_outputs)) {
+                    for (int port = 0; port < output->inputSize(); ++port) {
+                        output_values[row][delta] = static_cast<int>(output->inputPort(port)->status());
+                        row++;
+                    }
+                }
+
+                m_simulation->update();
+                m_simulation->update();
+                m_simulation->update();
+            }
+
+            row = m_inputPorts;
+
+            for (const auto& output : output_values) {
+                createComposedWaveFormElement(row, column, output, previousWaveEnd, false);
+                previousWaveEnd = output.last();
                 row++;
+            }
+        }
+        else {
+            qCDebug(four) << tr("Updating the values of the circuit logic based on current input values.");
+            m_simulation->update();
+            m_simulation->update();
+            m_simulation->update();
+
+            qCDebug(four) << tr("Setting the computed output values to the waveform results.");
+            row = m_inputPorts;
+
+            for (auto *output : qAsConst(m_outputs)) {
+                for (int port = 0; port < output->inputSize(); ++port) {
+                    const int value = static_cast<int>(output->inputPort(port)->status());
+                    createElement(row, column, value, false);
+                    row++;
+                }
             }
         }
     }
 
     qCDebug(three) << tr("Setting inputs back to old values.");
     restoreInputs();
+}
+
+void BewavedDolphin::createComposedWaveFormElement(const int row, const int column, QVector<bool> output, std::optional<bool> previousWaveEnd, const bool isInput, const bool changeNext)
+{
+    QPixmap composedWave = composeWaveParts(output, previousWaveEnd, isInput);
+    const std::string hex = convertBinaryToHex(output);
+    createTemporalSimulationElement(row, column, composedWave, hex, isInput, changeNext);
 }
 
 void BewavedDolphin::restoreInputs()
@@ -485,12 +611,18 @@ void BewavedDolphin::createZeroElement(const int row, const int col, const bool 
         const bool isPreviousHigh = hasPreviousItem ? previousIndex.data().toInt() == 1 : false;
 
         if (isInput) {
+            QPixmap pixmap = hasPreviousItem && isPreviousHigh ? m_fallingBlue : m_lowBlue;
             m_model->setData(index,
-                             hasPreviousItem && isPreviousHigh ? m_fallingBlue : m_lowBlue,
+                             pixmap.scaled(m_signalTableView->columnWidth(col),
+                                           m_signalTableView->rowHeight(row),
+                                           Qt::IgnoreAspectRatio, Qt::FastTransformation),
                              Qt::DecorationRole);
         } else {
+            QPixmap pixmap = hasPreviousItem && isPreviousHigh ? m_fallingGreen : m_lowGreen;
             m_model->setData(index,
-                             hasPreviousItem && isPreviousHigh ? m_fallingGreen : m_lowGreen,
+                             pixmap.scaled(m_signalTableView->columnWidth(col),
+                                           m_signalTableView->rowHeight(row),
+                                           Qt::IgnoreAspectRatio, Qt::FastTransformation),
                              Qt::DecorationRole);
         }
 
@@ -529,12 +661,18 @@ void BewavedDolphin::createOneElement(const int row, const int col, const bool i
         const bool isPreviousLow = hasPreviousItem ? previousIndex.data().toInt() == 0 : false;
 
         if (isInput) {
+            QPixmap pixmap = hasPreviousItem && isPreviousLow ? m_risingBlue : m_highBlue;
             m_model->setData(index,
-                             hasPreviousItem && isPreviousLow ? m_risingBlue : m_highBlue,
+                             pixmap.scaled(m_signalTableView->columnWidth(col),
+                                           m_signalTableView->rowHeight(row),
+                                           Qt::IgnoreAspectRatio, Qt::FastTransformation),
                              Qt::DecorationRole);
         } else {
+            QPixmap pixmap = hasPreviousItem && isPreviousLow ? m_risingGreen : m_highGreen;
             m_model->setData(index,
-                             hasPreviousItem && isPreviousLow ? m_risingGreen : m_highGreen,
+                             pixmap.scaled(m_signalTableView->columnWidth(col),
+                                           m_signalTableView->rowHeight(row),
+                                           Qt::IgnoreAspectRatio, Qt::FastTransformation),
                              Qt::DecorationRole);
         }
 
@@ -608,6 +746,7 @@ void BewavedDolphin::on_actionSetTo0_triggered()
     for (const auto &item : itemList) {
         const int row = item.row();
         const int col = item.column();
+
         qCDebug(zero) << tr("Editing value.");
         createZeroElement(row, col);
     }
@@ -625,6 +764,7 @@ void BewavedDolphin::on_actionSetTo1_triggered()
     for (const auto &item : itemList) {
         const int row = item.row();
         const int col = item.column();
+
         qCDebug(zero) << tr("Editing value.");
         createOneElement(row, col);
     }
@@ -642,6 +782,7 @@ void BewavedDolphin::on_actionInvert_triggered()
     for (const auto &item : itemList) {
         const int row = item.row();
         const int col = item.column();
+
         int value = m_model->index(row, col, QModelIndex()).data().toInt();
         value = (value + 1) % 2;
         qCDebug(zero) << tr("Editing value.");
@@ -706,6 +847,7 @@ void BewavedDolphin::on_actionSetClockWave_triggered()
     for (const auto &item : itemList) {
         const int row = item.row();
         const int col = item.column();
+
         const int value = ((col - firstCol) % clockPeriod < halfClockPeriod ? 0 : 1);
         qCDebug(zero) << tr("Editing value.");
         createElement(row, col, value);
@@ -795,7 +937,21 @@ void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
 void BewavedDolphin::on_actionZoomOut_triggered()
 {
     m_scale *= m_scaleFactor;
-    m_view.zoomOut();
+    m_ui->graphicsView->zoomOut();
+    for(int col = 0; col < m_model->columnCount(); col++) {
+        int newWidth = m_signalTableView->columnWidth(col) / (m_scale * 1.25) + 1;
+        m_signalTableView->horizontalHeader()->resizeSection(col, newWidth);
+
+        for(int row = 0; row < m_model->rowCount(); row++) {
+            QModelIndex index = m_model->index(row, col);
+            QPixmap pixmap = m_model->data(index, Qt::DecorationRole).value<QPixmap>();
+            m_model->setData(index,
+                             pixmap.scaled(newWidth,
+                                           m_signalTableView->rowHeight(row),
+                                           Qt::IgnoreAspectRatio, Qt::FastTransformation),
+                             Qt::DecorationRole);
+        }
+    }
     resizeScene();
     zoomChanged();
 }
@@ -803,33 +959,50 @@ void BewavedDolphin::on_actionZoomOut_triggered()
 void BewavedDolphin::on_actionZoomIn_triggered()
 {
     m_scale /= m_scaleFactor;
-    m_view.zoomIn();
+    m_ui->graphicsView->zoomIn();
+    for(int col = 0; col < m_model->columnCount(); col++) {
+        int newWidth = m_scale * m_signalTableView->columnWidth(col);
+        m_signalTableView->horizontalHeader()->resizeSection(col, newWidth);
+
+        for(int row = 0; row < m_model->rowCount(); row++) {
+            QModelIndex index = m_model->index(row, col);
+            QPixmap pixmap = m_model->data(index, Qt::DecorationRole).value<QPixmap>();
+            m_model->setData(index,
+                             pixmap.scaled(newWidth,
+                                           m_signalTableView->rowHeight(row),
+                                           Qt::IgnoreAspectRatio, Qt::FastTransformation),
+                             Qt::DecorationRole);
+        }
+    }
     resizeScene();
     zoomChanged();
 }
 
 void BewavedDolphin::on_actionResetZoom_triggered()
 {
-    m_view.resetZoom();
-    m_scale = 1.0;
+    m_ui->graphicsView->resetZoom();
+    m_scale = 1.25;
+    for(int col = 0; col < m_model->columnCount(); col++) {
+        m_signalTableView->horizontalHeader()->resizeSection(col, 38);
+
+        for(int row = 0; row < m_model->rowCount(); row++) {
+            QModelIndex index = m_model->index(row, col);
+            QPixmap pixmap = m_model->data(index, Qt::DecorationRole).value<QPixmap>();
+            m_model->setData(index,
+                             pixmap.scaled(100,
+                                           38,
+                                           Qt::IgnoreAspectRatio, Qt::FastTransformation),
+                             Qt::DecorationRole);
+        }
+    }
     resizeScene();
     zoomChanged();
 }
 
 void BewavedDolphin::zoomChanged()
 {
-    m_ui->actionZoomIn->setEnabled(m_view.canZoomIn());
-    m_ui->actionZoomOut->setEnabled(m_view.canZoomOut());
-}
-
-void BewavedDolphin::on_actionFitScreen_triggered()
-{
-    m_view.scale(1.0 / m_scale, 1.0 / m_scale);
-    const double wScale = static_cast<double>(m_view.width()) / (m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0));
-    const double hScale = static_cast<double>(m_view.height()) / (m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0) + 10);
-    m_scale = std::min(wScale, hScale);
-    m_view.scale(1.0 * m_scale, 1.0 * m_scale);
-    resizeScene();
+    m_ui->actionZoomIn->setEnabled(m_ui->graphicsView->canZoomIn());
+    m_ui->actionZoomOut->setEnabled(m_ui->graphicsView->canZoomOut());
 }
 
 void BewavedDolphin::on_actionClear_triggered()
@@ -1183,7 +1356,7 @@ void BewavedDolphin::load(QDataStream &stream)
     for (int col = 0; col < cols; ++col) {
         for (int row = 0; row < rows; ++row) {
             qint64 value; stream >> value;
-            createElement(row, col, static_cast<int>(value), true);
+            createElement(row, col, static_cast<int>(value));
         }
     }
 
@@ -1212,7 +1385,7 @@ void BewavedDolphin::load(QFile &file)
     for (int row = 0; row < rows; ++row) {
         for (int col = 0; col < cols; ++col) {
             int value = wordList.at(2 + col + row * cols).toInt();
-            createElement(row, col, value, true);
+            createElement(row, col, value);
         }
     }
 
@@ -1325,4 +1498,132 @@ void BewavedDolphin::on_actionAbout_triggered()
 void BewavedDolphin::on_actionAboutQt_triggered()
 {
     QMessageBox::aboutQt(this);
+}
+
+void BewavedDolphin::on_actionTemporalSimulation_toggled(const bool checked)
+{
+    m_isTemporalSimulation = checked;
+    run();
+}
+
+QPixmap BewavedDolphin::composeWaveParts(const QVector<bool> waveparts, std::optional<bool> previousWaveEnd, const bool isInput)
+{
+    int partWidth = 64;
+    int partHeight = 38;
+
+    QPixmap composedPixmap(partWidth, partHeight);
+    composedPixmap.fill(Qt::transparent);
+
+    QPainter painter(&composedPixmap);
+    bool previousIsLow;
+    bool previousIsHigh;
+
+    QPixmap falling;
+    QPixmap high;
+    QPixmap low;
+    QPixmap rising;
+
+    if (isInput) {
+        falling = m_smallFallingBlue;
+        high = m_smallHighBlue;
+        low = m_smallLowBlue;
+        rising = m_smallRisingBlue;
+    }
+    else {
+        falling = m_smallFallingGreen;
+        high = m_smallHighGreen;
+        low = m_smallLowGreen;
+        rising = m_smallRisingGreen;
+    }
+
+    for (int i = 0; i < waveparts.length(); i++) {
+        int x = i * (partWidth / 8);
+
+        if (i == 0) {
+            if (waveparts[i] == true) {
+                if (previousWaveEnd == false) {
+                    painter.drawPixmap(x, 0, rising);
+                } else {
+                    painter.drawPixmap(x, 0, high);
+                }
+                previousIsLow = false;
+                previousIsHigh = true;
+            }
+            else {
+                if (previousWaveEnd == true) {
+                    painter.drawPixmap(x, 0, falling);
+                } else {
+                    painter.drawPixmap(x, 0, low);
+                }
+                previousIsLow = true;
+                previousIsHigh = false;
+            }
+        }
+        else if (waveparts[i] == true) {
+            (previousIsLow) ? painter.drawPixmap(x, 0, rising)
+                            : painter.drawPixmap(x, 0, high);
+
+            previousIsLow = false;
+            previousIsHigh = true;
+        }
+        else if (waveparts[i] == false) {
+            (previousIsHigh) ? painter.drawPixmap(x, 0, falling)
+                             : painter.drawPixmap(x, 0, low);
+
+            previousIsLow = true;
+            previousIsHigh = false;
+        }
+    }
+
+    painter.end();
+    return composedPixmap;
+}
+
+void BewavedDolphin::createTemporalSimulationElement(const int row, const int col, QPixmap composedWaveForm, const std::string hex, const bool isInput, const bool changeNext)
+{
+    const auto index = m_model->index(row, col);
+
+    const int currentValue = index.data().toInt();
+
+    qCDebug(three) << tr("Changing current item.");
+    const QString qHex = QString::fromStdString(hex);
+    m_model->setData(index, qHex, Qt::DisplayRole);
+
+
+    if (m_type == PlotType::Number) {
+        m_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
+    }
+
+    if (m_type == PlotType::Line) {
+        m_model->setData(index, Qt::AlignLeft, Qt::TextAlignmentRole);
+
+        m_model->setData(index, composedWaveForm, Qt::DecorationRole);
+        if (!changeNext) {
+            return;
+        }
+
+        const auto nextIndex = m_model->index(row, col + 1);
+
+        if (nextIndex.isValid() && (currentValue == 1)) {
+            createComposedWaveFormElement(row, col + 1, output_values[row], isInput, false);
+
+        }
+    }
+}
+
+std::string BewavedDolphin::convertBinaryToHex(const QVector<bool> binaryVector) const
+{
+    std::string bin;
+
+    for (int i = 0; i < binaryVector.length(); i++) {
+        if (binaryVector[i] == 0)
+            bin.append("0");
+        else
+            bin.append("1");
+    }
+
+    std::bitset<8> bits(bin);
+    std::stringstream res;
+    res << std::hex << std::uppercase << bits.to_ulong();
+    return res.str();
 }

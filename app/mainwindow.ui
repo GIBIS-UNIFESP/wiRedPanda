@@ -91,6 +91,54 @@
         </property>
         <item>
          <layout class="QGridLayout" name="gridLayout">
+          <item row="2" column="0" colspan="3">
+           <widget class="ElementEditor" name="elementEditor" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Search:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="2">
+           <widget class="QLineEdit" name="lineEditSearch">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0" colspan="3">
            <widget class="QTabWidget" name="tabElements">
             <property name="sizePolicy">
@@ -120,7 +168,7 @@ QTabWidget::pane {
 </string>
             </property>
             <property name="currentIndex">
-             <number>4</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="io">
              <attribute name="icon">
@@ -148,7 +196,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>584</height>
+                   <height>582</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -197,7 +245,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>584</height>
+                   <height>582</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -210,6 +258,61 @@ QTabWidget::pane {
                      <size>
                       <width>20</width>
                       <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </widget>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="combinational">
+             <attribute name="icon">
+              <iconset resource="resources/basic/basic.qrc">
+               <normaloff>:/basic/truthtable-rotated.svg</normaloff>:/basic/truthtable-rotated.svg</iconset>
+             </attribute>
+             <attribute name="title">
+              <string/>
+             </attribute>
+             <attribute name="toolTip">
+              <string>Combinational</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_10">
+              <item row="0" column="0">
+               <widget class="QScrollArea" name="scrollArea_Combinational">
+                <property name="frameShape">
+                 <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="widgetResizable">
+                 <bool>true</bool>
+                </property>
+                <widget class="QWidget" name="scrollAreaWidgetContents_Combinational">
+                 <property name="geometry">
+                  <rect>
+                   <x>0</x>
+                   <y>0</y>
+                   <width>260</width>
+                   <height>582</height>
+                  </rect>
+                 </property>
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_8">
+                  <item>
+                   <spacer name="verticalSpacer_Combinational">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>560</height>
                      </size>
                     </property>
                    </spacer>
@@ -246,7 +349,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>584</height>
+                   <height>582</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -295,7 +398,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>552</height>
+                   <height>549</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -347,8 +450,12 @@ QTabWidget::pane {
              </layout>
             </widget>
             <widget class="QWidget" name="truthtable">
+             <attribute name="icon">
+              <iconset resource="resources/basic/basic.qrc">
+               <normaloff>:/basic/truthtable-rotated.svg</normaloff>:/basic/truthtable-rotated.svg</iconset>
+             </attribute>
              <attribute name="title">
-              <string>TruthTable</string>
+              <string/>
              </attribute>
              <attribute name="toolTip">
               <string>TruthTable</string>
@@ -368,7 +475,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>584</height>
+                   <height>582</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -423,7 +530,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>584</height>
+                   <height>582</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -468,7 +575,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>258</width>
-                   <height>582</height>
+                   <height>580</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -491,54 +598,6 @@ QTabWidget::pane {
               </item>
              </layout>
             </widget>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="3">
-           <widget class="ElementEditor" name="elementEditor" native="true">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Search:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QLineEdit" name="lineEditSearch">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="clearButtonEnabled">
-             <bool>true</bool>
-            </property>
            </widget>
           </item>
          </layout>
@@ -599,13 +658,14 @@ QTabWidget::pane {
    <addaction name="actionPaste"/>
    <addaction name="actionDelete"/>
    <addaction name="separator"/>
-   <addaction name="actionZoomIn"/>
-   <addaction name="actionZoomOut"/>
    <addaction name="actionResetZoom"/>
+   <addaction name="actionZoomOut"/>
+   <addaction name="actionZoomIn"/>
    <addaction name="separator"/>
    <addaction name="actionPlay"/>
    <addaction name="actionRestart"/>
    <addaction name="actionWaveform"/>
+   <addaction name="actionTemporalSimulation"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QMenuBar" name="menuBar">
@@ -614,7 +674,7 @@ QTabWidget::pane {
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -680,6 +740,7 @@ QTabWidget::pane {
     <addaction name="actionAbout"/>
     <addaction name="actionAboutQt"/>
     <addaction name="actionAboutThisVersion"/>
+    <addaction name="actionShortcutsAndTips"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -720,6 +781,7 @@ QTabWidget::pane {
     <addaction name="actionRestart"/>
     <addaction name="actionWaveform"/>
     <addaction name="actionMute"/>
+    <addaction name="actionTemporalSimulation"/>
    </widget>
    <widget class="QMenu" name="menuExamples">
     <property name="title">
@@ -1204,6 +1266,32 @@ QTabWidget::pane {
     <string>Restart simulation.</string>
    </property>
   </action>
+  <action name="actionTemporalSimulation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/timerRed.svg</normaloff>:/toolbar/timerRed.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Temporal Simulation</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
+   </property>
+  </action>
+  <action name="actionShortcutsAndTips">
+   <property name="icon">
+    <iconset theme="help-about"/>
+   </property>
+   <property name="text">
+    <string>Shortcuts and Tips</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1228,13 +1316,13 @@ QTabWidget::pane {
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/memory/light/memory_light.qrc"/>
   <include location="resources/misc/misc.qrc"/>
-  <include location="resources/output/output.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
   <include location="resources/basic/basic.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>
 </ui>

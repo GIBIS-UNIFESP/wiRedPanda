@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
@@ -15,6 +15,7 @@
 class GraphicsView;
 class GraphicElement;
 class QNEConnection;
+class InputButton;
 
 class Scene : public QGraphicsScene
 {
@@ -34,6 +35,7 @@ public:
     QUndoStack *undoStack();
     Simulation *simulation();
     bool eventFilter(QObject *watched, QEvent *event) override;
+    bool isMousePositionInBorder(QPointF mousePos);
     const QList<GraphicElement *> selectedElements() const;
     GraphicElement* element(int elementId) const;
     QNEConnection* connection(int connectionId) const;
@@ -68,6 +70,16 @@ public:
     bool isSourceNode(GraphicElement* node);
     QSet<QPair<int,int>> getNodeSet(QString nodeLabel, QList<int> excludeIds = {});
     void deleteNodeSetConnections(QSet<QPair<int,int>>* set, int nodeToRemove = -1);
+
+    // Element shortcuts
+    void prevMainPropShortcut();
+    void nextMainPropShortcut();
+    void prevSecndPropShortcut();
+    void nextSecndPropShortcut();
+    void nextElm();
+    void prevElm();
+    void removeInputPort();
+    void removeOutputPort();
 
 signals:
     void circuitHasChanged();
@@ -116,19 +128,20 @@ private:
     QAction *m_undoAction;
     QElapsedTimer m_timer;
     QGraphicsRectItem m_selectionRect;
+    QGraphicsRectItem m_subRect;
     QList<GraphicElement *> m_movedElements;
     QList<QPointF> m_oldPositions;
     QPen m_dots;
     QPointF m_mousePos;
     QPointF m_selectionStartPoint;
     QUndoStack m_undoStack;
+    QVector<InputButton *> m_inputsButtonsInScene;
     Simulation m_simulation;
     bool m_autosaveRequired = false;
     bool m_draggingElement = false;
     bool m_markingSelectionBox = false;
     bool m_showGates = true;
     bool m_showWires = true;
-    int m_buzzerLabelNumber = 0;
     int m_editedConnectionId = 0;
     int m_hoverPortElmId = 0;
     int m_hoverPortNumber = 0;

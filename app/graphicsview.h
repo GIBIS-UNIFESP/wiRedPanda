@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
@@ -30,10 +30,11 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
 
+    int m_zoomLevel = 0;
+
 private:
     bool m_pan = false;
     bool m_space = false;
     int m_panStartX = 0;
     int m_panStartY = 0;
-    int m_zoomLevel = 0;
 };

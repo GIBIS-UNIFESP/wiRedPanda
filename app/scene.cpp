@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "scene.h"
@@ -12,6 +12,7 @@
 #include "graphicelementinput.h"
 #include "graphicsview.h"
 #include "ic.h"
+#include "inputbutton.h"
 #include "qneconnection.h"
 #include "serialization.h"
 #include "thememanager.h"
@@ -232,7 +233,7 @@ void Scene::resizeScene()
 
     auto *item = itemAt(m_mousePos);
 
-    if (item && (m_timer.elapsed() > 100) && m_draggingElement) {
+    if (item && (m_timer.elapsed() > 70)/* && m_draggingElement*/) {
         // FIXME: sometimes this goes into a infinite loop and crashes
         item->ensureVisible();
         m_timer.restart();
@@ -349,6 +350,168 @@ void Scene::detachConnection(QNEInputPort *endPort)
     if (auto *startPort = connection->startPort()) {
         receiveCommand(new DeleteItemsCommand({connection}, this));
         startNewConnection(startPort);
+    }
+}
+
+void Scene::prevMainPropShortcut()
+{
+    for (auto element : selectedElements()) {
+        switch(element->elementType()) {
+            // Logic Elements
+        case ElementType::And:
+        case ElementType::Or:
+        case ElementType::Nand:
+        case ElementType::Nor:
+        case ElementType::Xor:
+        case ElementType::Xnor:
+            // Output and truthtable
+        case ElementType::Led:
+        case ElementType::TruthTable:
+            if (element->inputSize() > element->minInputSize())
+                receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement* >{element},
+                                                          element->inputSize() - 1, this));
+            break;
+            // Input ports
+        case ElementType::InputRotary:
+            if (element->outputSize() > element->minOutputSize())
+                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement* >{element},
+                                                           element->outputSize() - 1, this));
+            break;
+        case ElementType::Clock:
+            if (element->hasFrequency())
+                element->setFrequency(element->frequency() - 0.5);
+            break;
+        case ElementType::Buzzer:
+            if (element->hasAudio())
+                element->setAudio(element->previousAudio());
+            break;
+        case ElementType::Display14:
+        case ElementType::Display7:
+            if (element->hasColors())
+                element->setColor(element->previousColor());
+            break;
+        default: // Not implemented
+            break;
+        }
+        element->setSelected(false);
+        element->setSelected(true);
+    }
+}
+
+void Scene::nextMainPropShortcut()
+{
+    for (auto element : selectedElements()) {
+        switch(element->elementType()) {
+            // Logic Elements
+        case ElementType::And:
+        case ElementType::Or:
+        case ElementType::Nand:
+        case ElementType::Nor:
+        case ElementType::Xor:
+        case ElementType::Xnor:
+            // Output and truthtable
+        case ElementType::Led:
+        case ElementType::TruthTable:
+            if (element->inputSize() < element->maxInputSize())
+                receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement* >{element},
+                                                          element->inputSize() + 1, this));
+            break;
+            // Input ports
+        case ElementType::InputRotary:
+            if (element->outputSize() < element->maxOutputSize())
+                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement* >{element},
+                                                           element->outputSize() + 1, this));
+            break;
+        case ElementType::Clock:
+            if (element->hasFrequency())
+                element->setFrequency(element->frequency() + 0.5);
+            break;
+        case ElementType::Buzzer:
+            if (element->hasAudio())
+                element->setAudio(element->nextAudio());
+            break;
+        case ElementType::Display14:
+        case ElementType::Display7:
+            if (element->hasColors())
+                element->setColor(element->nextColor());
+            break;
+        default: // Not implemented
+            break;
+        }
+        element->setSelected(false);
+        element->setSelected(true);
+    }
+}
+
+void Scene::prevSecndPropShortcut()
+{
+    for (auto element: selectedElements()) {
+        switch (element->elementType()) {
+        case ElementType::TruthTable:
+            if (element->outputSize() > element->minOutputSize())
+                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
+                                                           element->outputSize() - 1, this));
+            break;
+        case ElementType::Led:
+            if (element->hasColors())
+                element->setColor(element->previousColor());
+            break;
+        default:
+            break;
+        }
+        element->setSelected(false);
+        element->setSelected(true);
+    }
+}
+
+void Scene::nextSecndPropShortcut()
+{
+    for (auto element: selectedElements()) {
+        switch (element->elementType()) {
+        case ElementType::TruthTable:
+            if (element->outputSize() < element->maxOutputSize())
+                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
+                                                           element->outputSize() + 1, this));
+            break;
+        case ElementType::Led:
+            if (element->hasColors())
+                element->setColor(element->nextColor());
+            break;
+        default:
+            break;
+        }
+        element->setSelected(false);
+        element->setSelected(true);
+    }
+}
+
+void Scene::nextElm()
+{
+    for(auto element : selectedElements()) {
+        if (Enums::nextElmType(element->elementType()) == ElementType::Unknown)
+            continue;
+
+        QPointF elmPosition = element->scenePos();
+
+        receiveCommand(new MorphCommand(QList<GraphicElement *>{element},
+                       Enums::nextElmType(element->elementType()), this));
+
+        itemAt(elmPosition)->setSelected(true);
+    }
+}
+
+void Scene::prevElm()
+{
+    for (auto element : selectedElements()) {
+        if (Enums::nextElmType(element->elementType()) == ElementType::Unknown)
+            continue;
+
+        QPointF elmPosition = element->scenePos();
+
+        receiveCommand(new MorphCommand(QList<GraphicElement *>{element},
+                                        Enums::prevElmType(element->elementType()), this));
+
+        itemAt(elmPosition)->setSelected(true);
     }
 }
 
@@ -855,9 +1018,6 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         qCDebug(zero) << type << tr(" at position: ") << pos.x() << tr(", ") << pos.y() << tr(", label: ") << icFileName;
 
         auto *element = ElementFactory::buildElement(type);
-
-
-
         qCDebug(zero) << tr("Valid element.");
 
         if (element->elementType() == ElementType::IC) {
@@ -1024,12 +1184,27 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsScene::mousePressEvent(event);
 }
 
+bool Scene::isMousePositionInBorder(QPointF mousePos)
+{
+    const auto visibleRect = m_view->mapToScene(m_view->viewport()->geometry()).boundingRect();
+    int margin = 10;
+
+    if (mousePos.x() <= visibleRect.left() + margin || mousePos.x() >= visibleRect.right() - margin ||
+        mousePos.y() <= visibleRect.top() + margin || mousePos.y() >= visibleRect.bottom() - margin) {
+            m_view->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+            return true;
+    } else {
+        m_view->setTransformationAnchor(QGraphicsView::AnchorViewCenter);
+        return false;
+    }
+}
+
 void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     m_mousePos = event->scenePos();
     handleHoverPort();
 
-    if (m_draggingElement) {
+    if (m_draggingElement && isMousePositionInBorder(m_mousePos)) {
         resizeScene();
     }
 
@@ -1078,6 +1253,13 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         m_movedElements.clear();
     }
 
+    if (!m_inputsButtonsInScene.empty()) {
+        for (int index = 0; index < m_inputsButtonsInScene.length(); index++) {
+            m_inputsButtonsInScene[index]->setOff();
+            event->accept();
+        }
+    }
+
     m_selectionRect.hide();
     m_markingSelectionBox = false;
 
@@ -1100,15 +1282,6 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
     }
 
     QGraphicsScene::mouseDoubleClickEvent(event);
-}
-
-void Scene::addItem(QGraphicsItem *item)
-{
-    if (auto *element = dynamic_cast<Buzzer *>(item); element && element->label().isEmpty()) {
-        element->setLabel(element->objectName() + "_" + QString::number(++m_buzzerLabelNumber));
-    }
-
-    QGraphicsScene::addItem(item);
 }
 
 void Scene::addItem(QMimeData *mimeData)

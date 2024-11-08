@@ -2,12 +2,15 @@
 <ui version="4.0">
  <class>BewavedDolphin</class>
  <widget class="QMainWindow" name="BewavedDolphin">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>833</width>
+    <height>628</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,6 +43,19 @@
     <property name="bottomMargin">
      <number>0</number>
     </property>
+    <item>
+     <widget class="DolphinGraphicsView" name="graphicsView">
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -69,11 +85,11 @@
    <addaction name="actionSetTo1"/>
    <addaction name="actionInvert"/>
    <addaction name="actionSetClockWave"/>
+   <addaction name="actionTemporalSimulation"/>
    <addaction name="separator"/>
-   <addaction name="actionZoomIn"/>
-   <addaction name="actionZoomOut"/>
    <addaction name="actionResetZoom"/>
-   <addaction name="actionFitScreen"/>
+   <addaction name="actionZoomOut"/>
+   <addaction name="actionZoomIn"/>
    <addaction name="actionSetLength"/>
    <addaction name="separator"/>
    <addaction name="actionExit"/>
@@ -83,8 +99,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
-     <height>21</height>
+     <width>833</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -132,7 +148,6 @@
     <addaction name="actionZoomOut"/>
     <addaction name="actionZoomIn"/>
     <addaction name="actionResetZoom"/>
-    <addaction name="actionFitScreen"/>
     <addaction name="actionSetLength"/>
     <addaction name="separator"/>
     <addaction name="actionShowNumbers"/>
@@ -378,21 +393,6 @@
     <string>Ctrl+-</string>
    </property>
   </action>
-  <action name="actionFitScreen">
-   <property name="icon">
-    <iconset resource="resources/dolphin/dolphin.qrc">
-     <normaloff>:/dolphin/zoomRange.svg</normaloff>:/dolphin/zoomRange.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Fit to screen</string>
-   </property>
-   <property name="toolTip">
-    <string>Fit to screen</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+R</string>
-   </property>
-  </action>
   <action name="actionResetZoom">
    <property name="icon">
     <iconset resource="resources/dolphin/dolphin.qrc">
@@ -439,13 +439,43 @@
     <string>Show Waveforms</string>
    </property>
   </action>
+  <action name="actionTemporalSimulation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/dolphin/dolphin.qrc">
+     <normaloff>:/dolphin/timerBlue.svg</normaloff>
+     <disabledoff>:/dolphin/timerBlue.svg</disabledoff>
+     <disabledon>:/dolphin/timerBlue.svg</disabledon>:/dolphin/timerBlue.svg</iconset>
+   </property>
+   <property name="text">
+    <string>TemporalSimulation</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+  </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>DolphinGraphicsView</class>
+   <extends>QGraphicsView</extends>
+   <header>bewaveddolphin.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
+  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/dolphin/dolphin.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/basic/basic.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>
 </ui>

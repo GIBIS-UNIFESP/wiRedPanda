@@ -194,3 +194,5 @@ RESOURCES += \
     $$PWD/app/resources/output/output.qrc\
     $$PWD/app/resources/toolbar/toolbar.qrc \
     $$PWD/app/resources/translations/translations.qrc
+
+DISTFILES +=

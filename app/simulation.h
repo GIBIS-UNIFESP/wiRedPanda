@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
@@ -25,7 +25,9 @@ public:
 
     bool initialize();
     bool isRunning();
+    bool isTemporalSimulation();
     void restart();
+    void setTemporalSimulation(bool isOn);
     void start();
     void stop();
     void update();
@@ -43,5 +45,6 @@ private:
     QVector<QNEConnection *> m_connections;
     Scene *m_scene;
     bool m_initialized = false;
+    bool m_temporalSimulation = false;
     std::unique_ptr<ElementMapping> m_elmMapping;
 };

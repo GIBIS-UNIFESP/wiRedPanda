@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "mainwindow.h"
@@ -13,6 +13,7 @@
 #include "globalproperties.h"
 #include "graphicsview.h"
 #include "ic.h"
+#include "logicelement.h"
 #include "recentfiles.h"
 //#include "settings.h"
 #include "simulation.h"
@@ -32,6 +33,7 @@
 #include <QPrinter>
 #include <QSaveFile>
 #include <QShortcut>
+#include <QKeySequence>
 #include <QTemporaryFile>
 #include <QTranslator>
 #include <QMultiMap>
@@ -78,15 +80,15 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     //m_ui->mainToolBar->setToolButtonStyle(Settings::value("labelsUnderIcons").toBool() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
 
     qCDebug(zero) << tr("Setting left side menus.");
-    auto *shortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
-    connect(shortcut, &QShortcut::activated, m_ui->lineEditSearch, qOverload<>(&QWidget::setFocus));
+    auto *searchShortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
+    connect(searchShortcut, &QShortcut::activated, m_ui->lineEditSearch, qOverload<>(&QWidget::setFocus));
     populateLeftMenu();
+
     m_ui->tabElements->setTabIcon(0, QIcon(":/input/buttonOff.svg"));
     m_ui->tabElements->setTabIcon(1, QIcon(":/basic/xor.svg"));
-    m_ui->tabElements->setTabIcon(2, QIcon(DFlipFlop::pixmapPath()));
-    m_ui->tabElements->setTabIcon(3, QIcon(":/basic/ic-panda.svg"));
-    m_ui->tabElements->setTabIcon(4, QIcon(":/basic/truthtable-rotated.svg"));
-    m_ui->tabElements->setTabText(4, "");
+    m_ui->tabElements->setTabIcon(2, QIcon(":/basic/truthtable-rotated.svg"));
+    m_ui->tabElements->setTabIcon(3, QIcon(DFlipFlop::pixmapPath()));
+    m_ui->tabElements->setTabIcon(4, QIcon(":/basic/ic-panda.svg"));
     m_ui->tabElements->setTabIcon(5, QIcon(":/misc/text.png"));
     m_ui->tabElements->setTabEnabled(6, false);
 
@@ -137,47 +139,65 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
         m_ui->menuExamples->menuAction()->setVisible(false);
     }
 
+    // Element shortcuts
+    auto *prevMainPropShortcut = new QShortcut(QKeySequence("["), this);
+    auto *nextMainPropShortcut = new QShortcut(QKeySequence("]"), this);
+    auto *prevSecndPropShortcut = new QShortcut(QKeySequence("{"), this);
+    auto *nextSecndPropShortcut = new QShortcut(QKeySequence("}"), this);
+    auto *changePrevElmShortcut = new QShortcut(QKeySequence("<"), this);
+    auto *changeNextElmShortcut = new QShortcut(QKeySequence(">"), this);
+
+    connect(prevMainPropShortcut,         &QShortcut::activated,      m_currentTab->scene(), &Scene::prevMainPropShortcut);
+    connect(nextMainPropShortcut,         &QShortcut::activated,      m_currentTab->scene(), &Scene::nextMainPropShortcut);
+    connect(prevSecndPropShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::prevSecndPropShortcut);
+    connect(nextSecndPropShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::nextSecndPropShortcut);
+    connect(changePrevElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::prevElm);
+    connect(changeNextElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::nextElm);
+    connect(changePrevElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::prevElm);
+
     qCDebug(zero) << tr("Setting connections");
-    connect(m_ui->actionAbout,            &QAction::triggered,        this,                &MainWindow::on_actionAbout_triggered);
-    connect(m_ui->actionAboutQt,          &QAction::triggered,        this,                &MainWindow::on_actionAboutQt_triggered);
-    connect(m_ui->actionAboutThisVersion, &QAction::triggered,        this,                &MainWindow::aboutThisVersion);
-    connect(m_ui->actionChangeTrigger,    &QAction::triggered,        m_ui->elementEditor, &ElementEditor::changeTriggerAction);
-    connect(m_ui->actionDarkTheme,        &QAction::triggered,        this,                &MainWindow::on_actionDarkTheme_triggered);
-    connect(m_ui->actionEnglish,          &QAction::triggered,        this,                &MainWindow::on_actionEnglish_triggered);
-    connect(m_ui->actionExit,             &QAction::triggered,        this,                &MainWindow::on_actionExit_triggered);
-    connect(m_ui->actionExportToArduino,  &QAction::triggered,        this,                &MainWindow::on_actionExportToArduino_triggered);
-    connect(m_ui->actionExportToImage,    &QAction::triggered,        this,                &MainWindow::on_actionExportToImage_triggered);
-    connect(m_ui->actionExportToPdf,      &QAction::triggered,        this,                &MainWindow::on_actionExportToPdf_triggered);
-    connect(m_ui->actionFastMode,         &QAction::triggered,        this,                &MainWindow::on_actionFastMode_triggered);
-    connect(m_ui->actionFlipHorizontally, &QAction::triggered,        this,                &MainWindow::on_actionFlipHorizontally_triggered);
-    connect(m_ui->actionFlipVertically,   &QAction::triggered,        this,                &MainWindow::on_actionFlipVertically_triggered);
-    connect(m_ui->actionFullscreen,       &QAction::triggered,        this,                &MainWindow::on_actionFullscreen_triggered);
-    connect(m_ui->actionGates,            &QAction::triggered,        this,                &MainWindow::on_actionGates_triggered);
-    connect(m_ui->actionLabelsUnderIcons, &QAction::triggered,        this,                &MainWindow::on_actionLabelsUnderIcons_triggered);
-    connect(m_ui->actionLightTheme,       &QAction::triggered,        this,                &MainWindow::on_actionLightTheme_triggered);
-    connect(m_ui->actionMute,             &QAction::triggered,        this,                &MainWindow::on_actionMute_triggered);
-    connect(m_ui->actionNew,              &QAction::triggered,        this,                &MainWindow::on_actionNew_triggered);
-    connect(m_ui->actionOpen,             &QAction::triggered,        this,                &MainWindow::on_actionOpen_triggered);
-    connect(m_ui->actionPlay,             &QAction::toggled,          this,                &MainWindow::on_actionPlay_toggled);
-    connect(m_ui->actionPortuguese,       &QAction::triggered,        this,                &MainWindow::on_actionPortuguese_triggered);
-    connect(m_ui->actionReloadFile,       &QAction::triggered,        this,                &MainWindow::on_actionReloadFile_triggered);
-    connect(m_ui->actionRename,           &QAction::triggered,        m_ui->elementEditor, &ElementEditor::renameAction);
-    connect(m_ui->actionResetZoom,        &QAction::triggered,        this,                &MainWindow::on_actionResetZoom_triggered);
-    connect(m_ui->actionRestart,          &QAction::triggered,        this,                &MainWindow::on_actionRestart_triggered);
-    connect(m_ui->actionRotateLeft,       &QAction::triggered,        this,                &MainWindow::on_actionRotateLeft_triggered);
-    connect(m_ui->actionRotateRight,      &QAction::triggered,        this,                &MainWindow::on_actionRotateRight_triggered);
-    connect(m_ui->actionSave,             &QAction::triggered,        this,                &MainWindow::on_actionSave_triggered);
-    connect(m_ui->actionSaveAs,           &QAction::triggered,        this,                &MainWindow::on_actionSaveAs_triggered);
-    connect(m_ui->actionSelectAll,        &QAction::triggered,        this,                &MainWindow::on_actionSelectAll_triggered);
-    connect(m_ui->actionWaveform,         &QAction::triggered,        this,                &MainWindow::on_actionWaveform_triggered);
-    connect(m_ui->actionWires,            &QAction::triggered,        this,                &MainWindow::on_actionWires_triggered);
-    connect(m_ui->actionZoomIn,           &QAction::triggered,        this,                &MainWindow::on_actionZoomIn_triggered);
-    connect(m_ui->actionZoomOut,          &QAction::triggered,        this,                &MainWindow::on_actionZoomOut_triggered);
-    connect(m_ui->lineEditSearch,         &QLineEdit::returnPressed,  this,                &MainWindow::on_lineEditSearch_returnPressed);
-    connect(m_ui->lineEditSearch,         &QLineEdit::textChanged,    this,                &MainWindow::on_lineEditSearch_textChanged);
-    connect(m_ui->pushButtonAddIC,        &QPushButton::clicked,      this,                &MainWindow::on_pushButtonAddIC_clicked);
-    connect(m_ui->pushButtonRemoveIC,     &QPushButton::clicked,      this,                &MainWindow::on_pushButtonRemoveIC_clicked);
-    connect(m_ui->pushButtonRemoveIC,     &TrashButton::removeICFile, this,                &MainWindow::removeICFile);
+
+    connect(m_ui->actionAbout,              &QAction::triggered,        this,                &MainWindow::on_actionAbout_triggered);
+    connect(m_ui->actionAboutQt,            &QAction::triggered,        this,                &MainWindow::on_actionAboutQt_triggered);
+    connect(m_ui->actionAboutThisVersion,   &QAction::triggered,        this,                &MainWindow::aboutThisVersion);
+    connect(m_ui->actionChangeTrigger,      &QAction::triggered,        m_ui->elementEditor, &ElementEditor::changeTriggerAction);
+    connect(m_ui->actionDarkTheme,          &QAction::triggered,        this,                &MainWindow::on_actionDarkTheme_triggered);
+    connect(m_ui->actionEnglish,            &QAction::triggered,        this,                &MainWindow::on_actionEnglish_triggered);
+    connect(m_ui->actionExit,               &QAction::triggered,        this,                &MainWindow::on_actionExit_triggered);
+    connect(m_ui->actionExportToArduino,    &QAction::triggered,        this,                &MainWindow::on_actionExportToArduino_triggered);
+    connect(m_ui->actionExportToImage,      &QAction::triggered,        this,                &MainWindow::on_actionExportToImage_triggered);
+    connect(m_ui->actionExportToPdf,        &QAction::triggered,        this,                &MainWindow::on_actionExportToPdf_triggered);
+    connect(m_ui->actionFastMode,           &QAction::triggered,        this,                &MainWindow::on_actionFastMode_triggered);
+    connect(m_ui->actionFlipHorizontally,   &QAction::triggered,        this,                &MainWindow::on_actionFlipHorizontally_triggered);
+    connect(m_ui->actionFlipVertically,     &QAction::triggered,        this,                &MainWindow::on_actionFlipVertically_triggered);
+    connect(m_ui->actionFullscreen,         &QAction::triggered,        this,                &MainWindow::on_actionFullscreen_triggered);
+    connect(m_ui->actionGates,              &QAction::triggered,        this,                &MainWindow::on_actionGates_triggered);
+    connect(m_ui->actionLabelsUnderIcons,   &QAction::triggered,        this,                &MainWindow::on_actionLabelsUnderIcons_triggered);
+    connect(m_ui->actionLightTheme,         &QAction::triggered,        this,                &MainWindow::on_actionLightTheme_triggered);
+    connect(m_ui->actionMute,               &QAction::triggered,        this,                &MainWindow::on_actionMute_triggered);
+    connect(m_ui->actionNew,                &QAction::triggered,        this,                &MainWindow::on_actionNew_triggered);
+    connect(m_ui->actionOpen,               &QAction::triggered,        this,                &MainWindow::on_actionOpen_triggered);
+    connect(m_ui->actionPlay,               &QAction::toggled,          this,                &MainWindow::on_actionPlay_toggled);
+    connect(m_ui->actionPortuguese,         &QAction::triggered,        this,                &MainWindow::on_actionPortuguese_triggered);
+    connect(m_ui->actionReloadFile,         &QAction::triggered,        this,                &MainWindow::on_actionReloadFile_triggered);
+    connect(m_ui->actionRename,             &QAction::triggered,        m_ui->elementEditor, &ElementEditor::renameAction);
+    connect(m_ui->actionResetZoom,          &QAction::triggered,        this,                &MainWindow::on_actionResetZoom_triggered);
+    connect(m_ui->actionTemporalSimulation, &QAction::triggered,        this,                &MainWindow::on_actionStartTemporalSimulation_toggled);
+    connect(m_ui->actionRestart,            &QAction::triggered,        this,                &MainWindow::on_actionRestart_triggered);
+    connect(m_ui->actionRotateLeft,         &QAction::triggered,        this,                &MainWindow::on_actionRotateLeft_triggered);
+    connect(m_ui->actionRotateRight,        &QAction::triggered,        this,                &MainWindow::on_actionRotateRight_triggered);
+    connect(m_ui->actionSave,               &QAction::triggered,        this,                &MainWindow::on_actionSave_triggered);
+    connect(m_ui->actionSaveAs,             &QAction::triggered,        this,                &MainWindow::on_actionSaveAs_triggered);
+    connect(m_ui->actionSelectAll,          &QAction::triggered,        this,                &MainWindow::on_actionSelectAll_triggered);
+    connect(m_ui->actionWaveform,           &QAction::triggered,        this,                &MainWindow::on_actionWaveform_triggered);
+    connect(m_ui->actionWires,              &QAction::triggered,        this,                &MainWindow::on_actionWires_triggered);
+    connect(m_ui->actionZoomIn,             &QAction::triggered,        this,                &MainWindow::on_actionZoomIn_triggered);
+    connect(m_ui->actionZoomOut,            &QAction::triggered,        this,                &MainWindow::on_actionZoomOut_triggered);
+    connect(m_ui->lineEditSearch,           &QLineEdit::returnPressed,  this,                &MainWindow::on_lineEditSearch_returnPressed);
+    connect(m_ui->lineEditSearch,           &QLineEdit::textChanged,    this,                &MainWindow::on_lineEditSearch_textChanged);
+    connect(m_ui->pushButtonAddIC,          &QPushButton::clicked,      this,                &MainWindow::on_pushButtonAddIC_clicked);
+    connect(m_ui->pushButtonRemoveIC,       &QPushButton::clicked,      this,                &MainWindow::on_pushButtonRemoveIC_clicked);
+    connect(m_ui->pushButtonRemoveIC,       &TrashButton::removeICFile, this,                &MainWindow::removeICFile);
 }
 
 MainWindow::~MainWindow()
@@ -234,6 +254,7 @@ WorkSpace* MainWindow::createNewTab()
     m_ui->tab->setCurrentIndex(m_ui->tab->count() - 1);
 
     qCDebug(zero) << tr("Finished #tabs: ") << m_ui->tab->count() << tr(", current tab: ") << m_tabIndex;
+    m_ui->actionTemporalSimulation->setChecked(false);
 
     return workspace;
 }
@@ -319,8 +340,7 @@ void MainWindow::aboutThisVersion()
     msgBox.setIcon(QMessageBox::Icon::Information);
     msgBox.setWindowTitle("WiRedPanda " + QString(APP_VERSION));
     msgBox.setText(
-        tr("Version 4.2: NEW: implementation of truth tables."
-           "wiRed Panda version >= 4.0 is not 100% compatible with previous versions.\n"
+        tr("WiRedPanda version >= 4.0 is not 100% compatible with previous versions.\n"
            "To open old version projects containing ICs (or boxes), skins, and/or "
            "beWavedDolphin simulations, their files must be moved to the same directory "
            "as the main project file.\n"
@@ -502,10 +522,38 @@ void MainWindow::on_actionAbout_triggered()
            "<li> Rodrigo Torres </li>"
            "<li> Prof. Fábio Cappabianco, Ph.D. </li>"
            "</ul>"
-           "<p> WiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.</p>"
+           "<p> WiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves e Maycon A. Santana.</p>"
            "<p> Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.</p>"
            "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
             .arg(QApplication::applicationVersion()));
+}
+
+void MainWindow::on_actionShortcuts_and_Tips_triggered()
+{
+    QMessageBox::information(this,
+        tr("Shortcuts and Tips"),
+        tr("<h1>Canvas Shortcuts</h1>"
+           "<ul style=\"list-style:none;\">"
+           "<li> Ctrl+= : Zoom in </li>"
+           "<li> Ctrl+- : Zoom out </li>"
+           "<li> Ctrl+1 : Hide/Show wires </li>"
+           "<li> Ctrl+2 : Hide/Show gates </li>"
+           "<li> Ctrl+F : Search elements </li>"
+           "<li> Ctrl+W : Open beWaveDolphin </li>"
+           "<li> Ctrl+S : Save project </li>"
+           "<li> Ctrl+Q : Exit wiRedPanda </li>"
+           "<li> F5 : Start/Pause simulation </li>"
+           "<li> [ : Previous primary element property </li>"
+           "<li> ] : Next primary element property </li>"
+           "<li> { : Previous secondary element property </li>"
+           "<li> } : Next secondary element property </li>"
+           "<li> &lt; : Morph to previous element </li>"
+           "<li> &gt; : Morph to next element </li>"
+           "</ul>"
+
+           "<h1>General Tips</h1>"
+           "<p>Double click in a wire to create a node</p>"
+        ));
 }
 
 void MainWindow::on_actionAboutQt_triggered()
@@ -782,6 +830,9 @@ void MainWindow::tabChanged(const int newTabIndex)
     qCDebug(zero) << tr("Selecting tab: ") << newTabIndex;
     connectTab();
     qCDebug(zero) << tr("New tab selected. Dolphin fileName: ") << m_currentTab->dolphinFileName();
+
+    auto isTempSimulation = m_currentTab->simulation()->isTemporalSimulation();
+    m_ui->actionTemporalSimulation->setChecked(isTempSimulation);
 }
 
 void MainWindow::on_lineEditSearch_textChanged(const QString &text)
@@ -1207,7 +1258,6 @@ void MainWindow::on_actionPlay_toggled(const bool checked)
     }
 
     auto *simulation = m_currentTab->simulation();
-
     checked ? simulation->start() : simulation->stop();
 }
 
@@ -1218,6 +1268,15 @@ void MainWindow::on_actionRestart_triggered()
     }
 
     m_currentTab->simulation()->restart();
+}
+
+void MainWindow::on_actionStartTemporalSimulation_toggled(const bool checked)
+{
+    if (!m_currentTab) {
+        return;
+    }
+
+    m_currentTab->simulation()->setTemporalSimulation(checked);
 }
 
 void MainWindow::populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout)
@@ -1237,12 +1296,11 @@ void MainWindow::populateMenu(QSpacerItem *spacer, const QStringList &names, QLa
 void MainWindow::populateLeftMenu()
 {
     m_ui->tabElements->setCurrentIndex(0);
-    populateMenu(m_ui->verticalSpacer_InOut, {"InputVcc", "InputGnd", "InputButton", "InputSwitch", "InputRotary", "Clock", "Led", "Display7", "Display14", "Buzzer"}, m_ui->scrollAreaWidgetContents_InOut->layout());
-    populateMenu(m_ui->verticalSpacer_Gates, {"And", "Or", "Not", "Nand", "Nor", "Xor", "Xnor", "Mux", "Demux", "Node"}, m_ui->scrollAreaWidgetContents_Gates->layout());
+    populateMenu(m_ui->verticalSpacer_InOut, {"InputVcc", "InputGnd", "InputButton", "InputSwitch", "InputRotary", "Clock", "Led", "Display7", "Display14", "Buzzer", "AudioBox"}, m_ui->scrollAreaWidgetContents_InOut->layout());
+    populateMenu(m_ui->verticalSpacer_Gates, {"And", "Or", "Not", "Nand", "Nor", "Xor", "Xnor", "Node"}, m_ui->scrollAreaWidgetContents_Gates->layout());
+    populateMenu(m_ui->verticalSpacer_Combinational, {"TruthTable", "Mux", "Demux"}, m_ui->scrollAreaWidgetContents_Combinational->layout());
     populateMenu(m_ui->verticalSpacer_Memory, {"DLatch", "DFlipFlop", "JKFlipFlop", "SRFlipFlop", "TFlipFlop"}, m_ui->scrollAreaWidgetContents_Memory->layout());
     populateMenu(m_ui->verticalSpacer_Misc, {"Text", "Line"}, m_ui->scrollAreaWidgetContents_Misc->layout());
-    populateMenu(m_ui->verticalSpacer_Truthtable, {"TruthTable"}, m_ui->scrollAreaWidgetContents_Truthtable->layout());
-
 }
 
 void MainWindow::on_actionFastMode_triggered(const bool checked)
