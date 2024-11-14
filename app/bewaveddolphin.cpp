@@ -1199,10 +1199,11 @@ void BewavedDolphin::save(QDataStream &stream)
     qCDebug(zero) << tr("Serializing data into data stream.");
     stream << static_cast<qint64>(m_inputPorts);
     stream << static_cast<qint64>(m_model->columnCount());
-
+    qDebug() << "===========";
     for (int col = 0; col < m_model->columnCount(); ++col) {
         for (int row = 0; row < m_inputPorts; ++row) {
             const int val = m_model->index(row, col).data().toInt();
+            qDebug() << val;
             stream << static_cast<qint64>(val);
         }
     }
