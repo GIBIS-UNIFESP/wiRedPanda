@@ -3,16 +3,16 @@
 
 #include "thememanager.h"
 
-//#include "settings.h"
+#include "settings.h"
 
 #include <QDebug>
 
 ThemeManager::ThemeManager(QObject *parent)
     : QObject(parent)
 {
-    /*if (Settings::contains("theme")) {
+    if (Settings::contains("theme")) {
         m_theme = static_cast<Theme>(Settings::value("theme").toInt());
-    }*/
+    }
 
     m_attributes.setTheme(m_theme);
 }
@@ -36,7 +36,7 @@ void ThemeManager::setTheme(const Theme theme)
     }
 
     instance().m_theme = theme;
-    //Settings::setValue("theme", static_cast<int>(theme));
+    Settings::setValue("theme", static_cast<int>(theme));
     emit instance().themeChanged();
 }
 

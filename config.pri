@@ -131,6 +131,7 @@ SOURCES += \
     $$PWD/app/recentfiles.cpp \
     $$PWD/app/scene.cpp \
     $$PWD/app/serialization.cpp \
+    $$PWD/app/settings.cpp \
     $$PWD/app/simulation.cpp \
     $$PWD/app/simulationblocker.cpp \
     $$PWD/app/thememanager.cpp \
@@ -163,7 +164,7 @@ HEADERS += \
     $$PWD/app/recentfiles.h \
     $$PWD/app/scene.h \
     $$PWD/app/serialization.h \
-    #$$PWD/app/settings.h \
+    $$PWD/app/settings.h \
     $$PWD/app/simulation.h \
     $$PWD/app/simulationblocker.h \
     $$PWD/app/thememanager.h \
