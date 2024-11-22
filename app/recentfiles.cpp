@@ -28,7 +28,7 @@ RecentFiles::RecentFiles(QObject *parent)
 
 void RecentFiles::addRecentFile(const QString &filePath)
 {
-    qCDebug(three) << tr("Setting recent file to: ") << filePath;
+    qCDebug(three) << "Setting recent file to: " << filePath;
 
     if (!QFile(filePath).exists()) {
         return;

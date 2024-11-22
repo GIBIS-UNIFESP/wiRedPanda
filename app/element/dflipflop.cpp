@@ -12,7 +12,7 @@ namespace
 }
 
 DFlipFlop::DFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(ElementType::DFlipFlop, ElementGroup::Memory, pixmapPath(), tr("D-FLIPFLOP"), tr("D-FlipFlop"), 4, 4, 2, 2, parent)
+    : GraphicElement(ElementType::DFlipFlop, ElementGroup::Memory, pixmapPath(), tr("D-FLIP-FLOP"), tr("D-Flip-Flop"), 4, 4, 2, 2, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

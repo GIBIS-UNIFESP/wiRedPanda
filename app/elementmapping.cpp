@@ -13,9 +13,9 @@
 ElementMapping::ElementMapping(const QVector<GraphicElement *> &elements)
     : m_elements(elements)
 {
-    qCDebug(three) << tr("Generate Map.");
+    qCDebug(three) << "Generate Map.";
     generateMap();
-    qCDebug(three) << tr("Connect.");
+    qCDebug(three) << "Connect.";
     connectElements();
 }
 

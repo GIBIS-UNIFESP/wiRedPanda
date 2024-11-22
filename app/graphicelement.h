@@ -58,7 +58,7 @@ public:
     //! virtual function overloaded by clock element. Other elements have frequency of 0.
     virtual float delay() const;
 
-    //! Updates the GraphicElement theme according to the dark/light WiRedPanda theme.
+    //! Updates the GraphicElement theme according to the dark/light wiRedPanda theme.
     virtual void updateTheme();
 
     ElementGroup elementGroup() const;

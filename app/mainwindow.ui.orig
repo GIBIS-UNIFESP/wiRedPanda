@@ -197,10 +197,10 @@ QTabWidget::pane {
                    <y>0</y>
                    <width>260</width>
 <<<<<<< HEAD
-                   <height>582</height>
-=======
                    <height>562</height>
->>>>>>> daf3b0528e8b3ca7fc595f38de37e262fb9edd79
+=======
+                   <height>584</height>
+>>>>>>> 02f419dab3f3daf07e49695779fde496dc3bfd4c
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -250,10 +250,10 @@ QTabWidget::pane {
                    <y>0</y>
                    <width>260</width>
 <<<<<<< HEAD
-                   <height>582</height>
-=======
                    <height>562</height>
->>>>>>> daf3b0528e8b3ca7fc595f38de37e262fb9edd79
+=======
+                   <height>584</height>
+>>>>>>> 02f419dab3f3daf07e49695779fde496dc3bfd4c
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -358,10 +358,10 @@ QTabWidget::pane {
                    <y>0</y>
                    <width>260</width>
 <<<<<<< HEAD
-                   <height>582</height>
-=======
                    <height>562</height>
->>>>>>> daf3b0528e8b3ca7fc595f38de37e262fb9edd79
+=======
+                   <height>584</height>
+>>>>>>> 02f419dab3f3daf07e49695779fde496dc3bfd4c
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -410,7 +410,11 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
+<<<<<<< HEAD
                    <height>524</height>
+=======
+                   <height>552</height>
+>>>>>>> 02f419dab3f3daf07e49695779fde496dc3bfd4c
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -487,11 +491,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-<<<<<<< HEAD
-                   <height>582</height>
-=======
                    <height>562</height>
->>>>>>> daf3b0528e8b3ca7fc595f38de37e262fb9edd79
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -547,10 +547,10 @@ QTabWidget::pane {
                    <y>0</y>
                    <width>260</width>
 <<<<<<< HEAD
-                   <height>582</height>
-=======
                    <height>562</height>
->>>>>>> daf3b0528e8b3ca7fc595f38de37e262fb9edd79
+=======
+                   <height>584</height>
+>>>>>>> 02f419dab3f3daf07e49695779fde496dc3bfd4c
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -596,10 +596,10 @@ QTabWidget::pane {
                    <y>0</y>
                    <width>258</width>
 <<<<<<< HEAD
-                   <height>580</height>
-=======
                    <height>560</height>
->>>>>>> daf3b0528e8b3ca7fc595f38de37e262fb9edd79
+=======
+                   <height>582</height>
+>>>>>>> 02f419dab3f3daf07e49695779fde496dc3bfd4c
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -698,12 +698,12 @@ QTabWidget::pane {
      <x>0</x>
      <y>0</y>
 <<<<<<< HEAD
-     <width>886</width>
-     <height>22</height>
-=======
      <width>1550</width>
      <height>27</height>
->>>>>>> daf3b0528e8b3ca7fc595f38de37e262fb9edd79
+=======
+     <width>886</width>
+     <height>20</height>
+>>>>>>> 02f419dab3f3daf07e49695779fde496dc3bfd4c
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -801,6 +801,7 @@ QTabWidget::pane {
     </property>
     <addaction name="actionEnglish"/>
     <addaction name="actionPortuguese"/>
+    <addaction name="actionSpanish"/>
    </widget>
    <widget class="QMenu" name="menuSimulation">
     <property name="title">
@@ -1295,6 +1296,7 @@ QTabWidget::pane {
     <string>Restart simulation.</string>
    </property>
   </action>
+<<<<<<< HEAD
   <action name="actionTemporalSimulation">
    <property name="checkable">
     <bool>true</bool>
@@ -1319,6 +1321,15 @@ QTabWidget::pane {
    </property>
    <property name="text">
     <string>Shortcuts and Tips</string>
+=======
+  <action name="actionSpanish">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/spanish.svg</normaloff>:/toolbar/spanish.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Spanish</string>
+>>>>>>> 02f419dab3f3daf07e49695779fde496dc3bfd4c
    </property>
   </action>
  </widget>
@@ -1346,22 +1357,22 @@ QTabWidget::pane {
  </tabstops>
  <resources>
 <<<<<<< HEAD
-  <include location="resources/output/output.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
   <include location="resources/memory/light/memory_light.qrc"/>
   <include location="resources/misc/misc.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/input/input.qrc"/>
-  <include location="resources/basic/basic.qrc"/>
 =======
-  <include location="resources/basic/basic.qrc"/>
-  <include location="resources/memory/light/memory_light.qrc"/>
-  <include location="resources/misc/misc.qrc"/>
-  <include location="resources/output/output.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/input/input.qrc"/>
->>>>>>> daf3b0528e8b3ca7fc595f38de37e262fb9edd79
+  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/memory/light/memory_light.qrc"/>
+  <include location="resources/misc/misc.qrc"/>
+>>>>>>> 02f419dab3f3daf07e49695779fde496dc3bfd4c
  </resources>
  <connections/>
 </ui>

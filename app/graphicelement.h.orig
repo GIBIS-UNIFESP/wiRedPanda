@@ -1,4 +1,4 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
@@ -55,10 +55,14 @@ public:
     //! virtual function overloaded by clock element. Other elements have frequency of 0.
     virtual float frequency() const;
 
+<<<<<<< HEAD
     //! virtual function overloaded by clock element. Other elements have frequency of 0.
     virtual float delay() const;
 
     //! Updates the GraphicElement theme according to the dark/light WiRedPanda theme.
+=======
+    //! Updates the GraphicElement theme according to the dark/light wiRedPanda theme.
+>>>>>>> 02f419dab3f3daf07e49695779fde496dc3bfd4c
     virtual void updateTheme();
 
     ElementGroup elementGroup() const;
@@ -80,14 +84,10 @@ public:
     bool hasFrequency() const;
     bool hasDelay() const;
     bool hasLabel() const;
-<<<<<<< HEAD
-    bool hasTruthTable() const;
-    bool hasNodeConnection() const;
-=======
->>>>>>> b84dea3783c58ceb87a55307f1543e1941a33432
     bool hasTrigger() const;
     bool hasTruthTable() const;
     bool hasAudioBox() const;
+    bool hasNodeConnection() const;
     bool isRotatable() const;
     bool isValid();
     const QVector<QNEInputPort *> &inputs() const;
@@ -148,10 +148,7 @@ protected:
     void setMinInputSize(const int minInputSize);
     void setMinOutputSize(const int minOutputSize);
     void setRotatable(const bool rotatable);
-<<<<<<< HEAD
     void setHasNodeConnection(const bool hasNodeConnection);
-=======
->>>>>>> b84dea3783c58ceb87a55307f1543e1941a33432
 
     //! Path to all default skins. The default skin is in a resource file.
     QStringList m_defaultSkins;
@@ -225,13 +222,9 @@ private:
     bool m_rotatable = true;
     bool m_hasNodeConnection = false;
     bool m_selected = false;
-<<<<<<< HEAD
-    bool m_hasTruthTable = false;
     bool m_hasDelay = false;
     bool m_isWireless = false;
     int m_mapId = -1;
-=======
->>>>>>> b84dea3783c58ceb87a55307f1543e1941a33432
     qreal m_angle = 0;
     quint64 m_maxInputSize = 0;
     quint64 m_maxOutputSize = 0;

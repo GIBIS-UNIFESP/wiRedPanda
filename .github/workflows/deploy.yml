@@ -24,22 +24,20 @@ jobs:
         submodules: recursive
         fetch-depth: 0
 
-    - name: Install Qt 32bit
+    - name: Install Qt5 32bit
       if: matrix.os == 'windows-latest'
       uses: jurplel/install-qt-action@v4
       with:
         version: 5.15.2
         cache: true
-        aqtversion: ==3.1.*
         arch: win32_msvc2019
 
-    - name: Install Qt 64bit
+    - name: Install Qt5 64bit
       if: matrix.os != 'windows-latest'
       uses: jurplel/install-qt-action@v4
       with:
         version: 5.15.2
         cache: true
-        aqtversion: ==3.1.*
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2

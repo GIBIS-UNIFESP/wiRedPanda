@@ -185,7 +185,7 @@ void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
     m_wireless = isWireless;
     m_mapId = mapId;
     if (portMap.isEmpty()) {
-        qCDebug(three) << tr("Empty port map.");
+        qCDebug(three) << "Empty port map.";
         auto *port1 = reinterpret_cast<QNEPort *>(ptr1);
         auto *port2 = reinterpret_cast<QNEPort *>(ptr2);
 
@@ -205,31 +205,31 @@ void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
             return;
         }
 
-        qCDebug(three) << tr("Port map with elements: ptr1(") << ptr1 << tr("), ptr2(") << ptr2 << ")";
+        qCDebug(three) << "Port map with elements: ptr1(" << ptr1 << "), ptr2(" << ptr2 << ")";
         auto *port1 = portMap.value(ptr1);
         auto *port2 = portMap.value(ptr2);
-        qCDebug(three) << tr("Before if 1.");
+        qCDebug(three) << "Before if 1.";
 
         if (port1 && port2) {
-            qCDebug(three) << tr("Before if 2.");
+            qCDebug(three) << "Before if 2.";
 
             if (port1->isInput() && port2->isOutput()) {
-                qCDebug(three) << tr("Setting start 1.");
+                qCDebug(three) << "Setting start 1.";
                 setStartPort(dynamic_cast<QNEOutputPort *>(port2));
-                qCDebug(three) << tr("Setting end 1.");
+                qCDebug(three) << "Setting end 1.";
                 setEndPort(dynamic_cast<QNEInputPort *>(port1));
             } else if (port1->isOutput() && port2->isInput()) {
-                qCDebug(three) << tr("Setting start 2.");
+                qCDebug(three) << "Setting start 2.";
                 setStartPort(dynamic_cast<QNEOutputPort *>(port1));
-                qCDebug(three) << tr("Setting end 2.");
+                qCDebug(three) << "Setting end 2.";
                 setEndPort(dynamic_cast<QNEInputPort *>(port2));
             }
 
-            qCDebug(three) << tr("After ifs.");
+            qCDebug(three) << "After ifs.";
         }
     }
 
-    qCDebug(three) << tr("Updating pos from ports.");
+    qCDebug(three) << "Updating pos from ports.";
     updatePosFromPorts();
 }
 
@@ -344,7 +344,7 @@ bool QNEConnection::sceneEvent(QEvent *event)
 
 QDataStream &operator<<(QDataStream &stream, const QNEConnection *conn)
 {
-    qCDebug(zero) << QObject::tr("Writing Connection.");
+    qCDebug(zero) << "Writing Connection.";
     stream << conn->type();
     conn->save(stream);
     return stream;

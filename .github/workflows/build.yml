@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        qt_version: [5.12.12, 5.13.2, 5.14.2, 5.15.2, 6.2.4, 6.3.2, 6.4.3, 6.5.3, 6.6.3, 6.7.2]
+        qt_version: [5.12.12, 5.13.2, 5.14.2, 5.15.2, 6.2.4, 6.3.2, 6.4.3, 6.5.3, 6.6.3, 6.7.3]
 
 # =================================
 
@@ -31,7 +31,6 @@ jobs:
       with:
         version: ${{ matrix.qt_version }}
         cache: true
-        aqtversion: ==3.1.*
 
     - name: Install Qt6
       if: startsWith(matrix.qt_version, '6')
@@ -40,7 +39,6 @@ jobs:
         version: ${{ matrix.qt_version }}
         modules: qtmultimedia
         cache: true
-        aqtversion: ==3.1.*
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2

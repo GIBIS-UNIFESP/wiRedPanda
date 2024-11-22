@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 
     Application app(argc, argv);
     app.setOrganizationName("GIBIS-UNIFESP");
-    app.setApplicationName("WiRedPanda");
+    app.setApplicationName("wiRedPanda");
     app.setApplicationVersion(APP_VERSION);
     app.setStyle("Fusion");
     app.setWindowIcon(QIcon(":/toolbar/wpanda.svg"));
@@ -52,19 +52,19 @@ int main(int argc, char *argv[])
 
         QCommandLineOption arduinoFileOption(
             {"a", "arduino-file"},
-            QCoreApplication::translate("main", "Export circuit to <arduino-file>"),
+            QCoreApplication::translate("main", "Exports circuit to <arduino-file>"),
             QCoreApplication::translate("main", "arduino file"));
         parser.addOption(arduinoFileOption);
 
         QCommandLineOption waveformFileOption(
             {"w", "waveform"},
-            QCoreApplication::translate("main", "Export circuit to waveform text file"),
+            QCoreApplication::translate("main", "Exports circuit to waveform text file"),
             QCoreApplication::translate("main", "waveform input text file"));
         parser.addOption(waveformFileOption);
 
         QCommandLineOption terminalFileOption(
             {"c", "terminal"},
-            QCoreApplication::translate("main", "Export circuit to waveform text file, reading input from terminal"));
+            QCoreApplication::translate("main", "Exports circuit to waveform text file, reading input from terminal"));
         parser.addOption(terminalFileOption);
 
         parser.process(app);

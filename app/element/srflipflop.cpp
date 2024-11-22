@@ -12,7 +12,7 @@ namespace
 }
 
 SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(ElementType::SRFlipFlop, ElementGroup::Memory, pixmapPath(), tr("SR-FLIPFLOP"), tr("SR-FlipFlop"), 5, 5, 2, 2, parent)
+    : GraphicElement(ElementType::SRFlipFlop, ElementGroup::Memory, pixmapPath(), tr("SR-FLIP-FLOP"), tr("SR-Flip-Flop"), 5, 5, 2, 2, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

@@ -9,7 +9,7 @@
 SimulationBlocker::SimulationBlocker(Simulation *simulation)
     : m_simulation(simulation)
 {
-    qCDebug(zero) << QObject::tr("Stopping.");
+    qCDebug(zero) << "Stopping.";
 
     if (m_simulation->isRunning()) {
         m_restart = true;
@@ -19,7 +19,7 @@ SimulationBlocker::SimulationBlocker(Simulation *simulation)
 
 SimulationBlocker::~SimulationBlocker()
 {
-    qCDebug(zero) << QObject::tr("Releasing.");
+    qCDebug(zero) << "Releasing.";
 
     if (m_restart) {
         m_simulation->start();

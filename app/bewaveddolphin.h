@@ -115,7 +115,7 @@ private:
     int convertHexToInt(const std::string &hexString) const;
     int sectionFirstColumn(const QItemSelection &ranges);
     int sectionFirstRow(const QItemSelection &ranges);
-    void associateToWiredPanda(const QString &fileName);
+    void associateTowiRedPanda(const QString &fileName);
     void copy(const QItemSelection &ranges, QDataStream &stream);
     void createElement(const int row, const int col, const int value, const bool isInput = true, const bool changeNext = true);
     void createOneElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);

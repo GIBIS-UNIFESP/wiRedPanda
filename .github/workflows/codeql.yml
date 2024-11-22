@@ -30,12 +30,11 @@ jobs:
       with:
         languages: ${{ matrix.language }}
 
-    - name: Install Qt
+    - name: Install Qt5
       uses: jurplel/install-qt-action@v4
       with:
         version: 5.15.2
         cache: true
-        aqtversion: ==3.1.*
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2

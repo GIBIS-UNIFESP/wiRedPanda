@@ -673,8 +673,8 @@ QTabWidget::pane {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1550</width>
-     <height>27</height>
+     <width>886</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -772,6 +772,7 @@ QTabWidget::pane {
     </property>
     <addaction name="actionEnglish"/>
     <addaction name="actionPortuguese"/>
+    <addaction name="actionSpanish"/>
    </widget>
    <widget class="QMenu" name="menuSimulation">
     <property name="title">
@@ -1266,6 +1267,15 @@ QTabWidget::pane {
     <string>Restart simulation.</string>
    </property>
   </action>
+  <action name="actionSpanish">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/spanish.svg</normaloff>:/toolbar/spanish.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Spanish</string>
+   </property>
+  </action>
   <action name="actionTemporalSimulation">
    <property name="checkable">
     <bool>true</bool>
@@ -1317,10 +1327,10 @@ QTabWidget::pane {
  </tabstops>
  <resources>
   <include location="resources/basic/basic.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/output/output.qrc"/>
   <include location="resources/memory/light/memory_light.qrc"/>
   <include location="resources/misc/misc.qrc"/>
-  <include location="resources/output/output.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/input/input.qrc"/>
  </resources>

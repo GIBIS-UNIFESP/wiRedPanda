@@ -79,7 +79,7 @@ QString CodeGenerator::otherPortName(QNEPort *port)
 void CodeGenerator::generate()
 {
     m_stream << "// ==================================================================== //" << endl;
-    m_stream << "// ======= This code was generated automatically by WiRedPanda ======== //" << endl;
+    m_stream << "// ======= This code was generated automatically by wiRedPanda ======== //" << endl;
     m_stream << "// ==================================================================== //" << endl;
     m_stream << endl
              << endl;

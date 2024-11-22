@@ -517,7 +517,7 @@ void Scene::prevElm()
 
 void Scene::updateTheme()
 {
-    qCDebug(zero) << tr("Updating theme.");
+    qCDebug(zero) << "Updating theme.";
     const ThemeAttributes theme = ThemeManager::attributes();
     setBackgroundBrush(theme.m_sceneBgBrush);
     setDots(QPen(theme.m_sceneBgDots));
@@ -532,7 +532,7 @@ void Scene::updateTheme()
         conn->updateTheme();
     }
 
-    qCDebug(zero) << tr("Finished updating theme.");
+    qCDebug(zero) << "Finished updating theme.";
 }
 
 QList<QGraphicsItem *> Scene::items(Qt::SortOrder order) const
@@ -597,7 +597,7 @@ void Scene::showWires(const bool checked)
 
 void Scene::cloneDrag(const QPointF mousePos)
 {
-    qCDebug(zero) << tr("Ctrl + Drag action triggered.");
+    qCDebug(zero) << "Ctrl + Drag action triggered.";
     const auto selectedElements_ = selectedElements();
 
     if (selectedElements_.isEmpty()) {
@@ -1015,10 +1015,10 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         QString icFileName; stream >> icFileName;
 
         QPointF pos = event->scenePos() - offset;
-        qCDebug(zero) << type << tr(" at position: ") << pos.x() << tr(", ") << pos.y() << tr(", label: ") << icFileName;
+        qCDebug(zero) << type << " at position: " << pos.x() << ", " << pos.y() << ", label: " << icFileName;
 
         auto *element = ElementFactory::buildElement(type);
-        qCDebug(zero) << tr("Valid element.");
+        qCDebug(zero) << "Valid element.";
 
         if (element->elementType() == ElementType::IC) {
             if (auto *ic = qobject_cast<IC *>(element)) {
@@ -1026,16 +1026,16 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
             }
         }
 
-        qCDebug(zero) << tr("Adding the element to the scene.");
+        qCDebug(zero) << "Adding the element to the scene.";
         receiveCommand(new AddItemsCommand({element}, this));
 
-        qCDebug(zero) << tr("Cleaning the selection.");
+        qCDebug(zero) << "Cleaning the selection.";
         clearSelection();
 
-        qCDebug(zero) << tr("Setting created element as selected.");
+        qCDebug(zero) << "Setting created element as selected.";
         element->setSelected(true);
 
-        qCDebug(zero) << tr("Adjusting the position of the element.");
+        qCDebug(zero) << "Adjusting the position of the element.";
         element->setPos(pos);
     }
 
@@ -1295,7 +1295,7 @@ void Scene::addItem(QMimeData *mimeData)
     QString icFileName; stream >> icFileName;
 
     auto *element = ElementFactory::buildElement(type);
-    qCDebug(zero) << tr("Valid element.");
+    qCDebug(zero) << "Valid element.";
 
     if (element->elementType() == ElementType::IC) {
         if (auto *ic = qobject_cast<IC *>(element)) {
@@ -1303,13 +1303,13 @@ void Scene::addItem(QMimeData *mimeData)
         }
     }
 
-    qCDebug(zero) << tr("Adding the element to the scene.");
+    qCDebug(zero) << "Adding the element to the scene.";
     receiveCommand(new AddItemsCommand({element}, this));
 
-    qCDebug(zero) << tr("Cleaning the selection.");
+    qCDebug(zero) << "Cleaning the selection.";
     clearSelection();
 
-    qCDebug(zero) << tr("Setting created element as selected.");
+    qCDebug(zero) << "Setting created element as selected.";
     element->setSelected(true);
 
     mimeData->deleteLater();

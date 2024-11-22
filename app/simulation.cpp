@@ -102,7 +102,7 @@ void Simulation::stop()
 
 void Simulation::start()
 {
-    qCDebug(zero) << tr("Starting simulation.");
+    qCDebug(zero) << "Starting simulation.";
 
     if (!m_initialized) {
         initialize();
@@ -110,7 +110,7 @@ void Simulation::start()
 
     m_timer.start();
     m_scene->mute(false);
-    qCDebug(zero) << tr("Simulation started.");
+    qCDebug(zero) << "Simulation started.";
 }
 
 bool Simulation::initialize()
@@ -127,7 +127,7 @@ bool Simulation::initialize()
         return false;
     }
 
-    qCDebug(two) << tr("GENERATING SIMULATION LAYER.");
+    qCDebug(two) << "GENERATING SIMULATION LAYER.";
 
     for (auto *item : items) {
         if (item->type() == QNEConnection::Type) {
@@ -157,21 +157,21 @@ bool Simulation::initialize()
         return a->priority() > b->priority();
     });
 
-    qCDebug(zero) << tr("Elements read: ") << elements.size();
+    qCDebug(zero) << "Elements read: " << elements.size();
 
     if (elements.empty()) {
         return false;
     }
 
-    qCDebug(two) << tr("Recreating mapping for simulation.");
+    qCDebug(two) << "Recreating mapping for simulation.";
     m_elmMapping = std::make_unique<ElementMapping>(elements);
 
-    qCDebug(two) << tr("Sorting.");
+    qCDebug(two) << "Sorting.";
     m_elmMapping->sort();
 
     m_initialized = true;
 
-    qCDebug(zero) << tr("Finished simulation layer.");
+    qCDebug(zero) << "Finished simulation layer.";
     return true;
 }
 

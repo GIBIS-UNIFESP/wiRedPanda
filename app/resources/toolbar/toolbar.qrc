@@ -40,6 +40,7 @@
         <file>zoomIn.svg</file>
         <file>zoomOut.svg</file>
         <file>zoomReset.svg</file>
+        <file>spanish.svg</file>
         <file>timer.svg</file>
         <file>timerRed.svg</file>
     </qresource>
