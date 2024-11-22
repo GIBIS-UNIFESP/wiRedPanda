@@ -471,11 +471,18 @@
   </customwidget>
  </customwidgets>
  <resources>
+<<<<<<< HEAD
+=======
   <include location="resources/basic/basic.qrc"/>
+>>>>>>> daf3b0528e8b3ca7fc595f38de37e262fb9edd79
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/dolphin/dolphin.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/input/input.qrc"/>
+<<<<<<< HEAD
+  <include location="resources/basic/basic.qrc"/>
+=======
+>>>>>>> daf3b0528e8b3ca7fc595f38de37e262fb9edd79
  </resources>
  <connections/>
 </ui>

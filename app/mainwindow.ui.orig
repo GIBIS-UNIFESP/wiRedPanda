@@ -196,7 +196,11 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
+<<<<<<< HEAD
+                   <height>582</height>
+=======
                    <height>562</height>
+>>>>>>> daf3b0528e8b3ca7fc595f38de37e262fb9edd79
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -245,7 +249,11 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
+<<<<<<< HEAD
+                   <height>582</height>
+=======
                    <height>562</height>
+>>>>>>> daf3b0528e8b3ca7fc595f38de37e262fb9edd79
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -349,7 +357,11 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
+<<<<<<< HEAD
+                   <height>582</height>
+=======
                    <height>562</height>
+>>>>>>> daf3b0528e8b3ca7fc595f38de37e262fb9edd79
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -475,7 +487,11 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
+<<<<<<< HEAD
+                   <height>582</height>
+=======
                    <height>562</height>
+>>>>>>> daf3b0528e8b3ca7fc595f38de37e262fb9edd79
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -530,7 +546,11 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
+<<<<<<< HEAD
+                   <height>582</height>
+=======
                    <height>562</height>
+>>>>>>> daf3b0528e8b3ca7fc595f38de37e262fb9edd79
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -575,7 +595,11 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>258</width>
+<<<<<<< HEAD
+                   <height>580</height>
+=======
                    <height>560</height>
+>>>>>>> daf3b0528e8b3ca7fc595f38de37e262fb9edd79
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -673,8 +697,13 @@ QTabWidget::pane {
     <rect>
      <x>0</x>
      <y>0</y>
+<<<<<<< HEAD
+     <width>886</width>
+     <height>22</height>
+=======
      <width>1550</width>
      <height>27</height>
+>>>>>>> daf3b0528e8b3ca7fc595f38de37e262fb9edd79
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1316,6 +1345,15 @@ QTabWidget::pane {
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
+<<<<<<< HEAD
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/memory/light/memory_light.qrc"/>
+  <include location="resources/misc/misc.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
+=======
   <include location="resources/basic/basic.qrc"/>
   <include location="resources/memory/light/memory_light.qrc"/>
   <include location="resources/misc/misc.qrc"/>
@@ -1323,6 +1361,7 @@ QTabWidget::pane {
   <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/input/input.qrc"/>
   <include location="resources/input/input.qrc"/>
+>>>>>>> daf3b0528e8b3ca7fc595f38de37e262fb9edd79
  </resources>
  <connections/>
 </ui>
