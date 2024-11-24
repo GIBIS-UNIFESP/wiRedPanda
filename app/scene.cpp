@@ -203,13 +203,13 @@ void Scene::resizeScene()
 {
     setSceneRect(itemsBoundingRect());
 
-    auto *item = itemAt(m_mousePos);
+    // auto *item = itemAt(m_mousePos);
 
-    if (item && (m_timer.elapsed() > 100) && m_draggingElement) {
-        // FIXME: sometimes this goes into a infinite loop and crashes
-        item->ensureVisible();
-        m_timer.restart();
-    }
+    // if (item && (m_timer.elapsed() > 100) && m_draggingElement) {
+    //     // FIXME: sometimes this goes into a infinite loop and crashes
+    //     item->ensureVisible();
+    //     m_timer.restart();
+    // }
 }
 
 QNEConnection *Scene::editedConnection() const
