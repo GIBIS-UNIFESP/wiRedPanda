@@ -56,6 +56,11 @@ void Scene::checkUpdateRequest()
 
 void Scene::drawBackground(QPainter *painter, const QRectF &rect)
 {
+    // don't draw background if zoomed out
+    if (view() and view()->transform().m11() < 0.3) {
+        return;
+    }
+
     painter->setRenderHint(QPainter::Antialiasing, true);
     QGraphicsScene::drawBackground(painter, rect);
 
