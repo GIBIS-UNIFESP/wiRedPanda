@@ -30,6 +30,7 @@ jobs:
       with:
         version: 5.15.2
         cache: true
+        aqtversion: ==3.1.*
         arch: win32_msvc2019
 
     - name: Install Qt 64bit
@@ -38,6 +39,7 @@ jobs:
       with:
         version: 5.15.2
         cache: true
+        aqtversion: ==3.1.*
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2

@@ -59,8 +59,10 @@ public:
     void updateTheme();
 
     // Element shortcuts
-    void addInputPort();
-    void addOutputPort();
+    void prevMainPropShortcut();
+    void nextMainPropShortcut();
+    void prevSecndPropShortcut();
+    void nextSecndPropShortcut();
     void nextElm();
     void prevElm();
     void removeInputPort();
