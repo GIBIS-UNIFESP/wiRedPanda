@@ -69,5 +69,4 @@ private:
     bool m_TempSimulationIsOn = false;
     int m_priority = -1;
     int m_delayCount = 0;
-    void updateInputsInBuffer();
 };

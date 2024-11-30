@@ -35,12 +35,10 @@ public:
     void updateElementSkin();
     void updatePriorityAction();
     void updateTheme();
-    // void truthTable();
     void audioBox();
 
 signals:
     void sendCommand(QUndoCommand *cmd);
-    void createTT(QList<GraphicElement *>);
 
 private:
     Q_DISABLE_COPY(ElementEditor)

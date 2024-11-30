@@ -168,7 +168,7 @@ QTabWidget::pane {
 </string>
             </property>
             <property name="currentIndex">
-             <number>5</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="io">
              <attribute name="icon">
@@ -295,61 +295,6 @@ QTabWidget::pane {
                    <y>0</y>
                    <width>260</width>
                    <height>562</height>
-                  </rect>
-                 </property>
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_8">
-                  <item>
-                   <spacer name="verticalSpacer_Combinational">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>560</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
-                </widget>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="combinational">
-             <attribute name="icon">
-              <iconset resource="resources/basic/basic.qrc">
-               <normaloff>:/basic/truthtable-rotated.svg</normaloff>:/basic/truthtable-rotated.svg</iconset>
-             </attribute>
-             <attribute name="title">
-              <string/>
-             </attribute>
-             <attribute name="toolTip">
-              <string>Combinational</string>
-             </attribute>
-             <layout class="QGridLayout" name="gridLayout_10">
-              <item row="0" column="0">
-               <widget class="QScrollArea" name="scrollArea_Combinational">
-                <property name="frameShape">
-                 <enum>QFrame::NoFrame</enum>
-                </property>
-                <property name="widgetResizable">
-                 <bool>true</bool>
-                </property>
-                <widget class="QWidget" name="scrollAreaWidgetContents_Combinational">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>0</y>
-                   <width>260</width>
-                   <height>582</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -1321,12 +1266,22 @@ QTabWidget::pane {
     <string>Restart simulation.</string>
    </property>
   </action>
-  <action name="actionHotkeysAndTips">
+  <action name="actionTemporalSimulation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="icon">
-    <iconset theme="help-about"/>
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/timerRed.svg</normaloff>:/toolbar/timerRed.svg</iconset>
    </property>
    <property name="text">
-    <string>Hotkeys and tips</string>
+    <string>Temporal Simulation</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
    </property>
   </action>
   <action name="actionShortcutsAndTips">
