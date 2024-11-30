@@ -66,7 +66,6 @@ public:
     void setDolphinFileName(const QString &fileName);
     void setFastMode(const bool fastMode);
 
-    void on_actionStartTemporalSimulation_toggled(const bool checked);
 signals:
     void addRecentFile(const QString &fileName);
 
@@ -111,6 +110,7 @@ private:
     void on_actionSaveAs_triggered();
     void on_actionSave_triggered();
     void on_actionSelectAll_triggered();
+    void on_actionStartTemporalSimulation_toggled(const bool checked);
     void on_actionShortcuts_and_Tips_triggered();
     void on_actionWaveform_triggered();
     void on_actionWires_triggered(const bool checked);

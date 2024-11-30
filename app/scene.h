@@ -39,7 +39,6 @@ public:
     const QVector<GraphicElement *> elements() const;
     const QVector<GraphicElement *> elements(const QRectF &rect) const;
     const QVector<GraphicElement *> visibleElements() const;
-    // void addItem(QGraphicsItem *item);
     void addItem(QMimeData *mimeData);
     void copyAction();
     void cutAction();
@@ -60,17 +59,15 @@ public:
     void updateTheme();
 
     // Element shortcuts
-    void addInputPort();
-    void addOutputPort();
+    void prevMainPropShortcut();
+    void nextMainPropShortcut();
+    void prevSecndPropShortcut();
+    void nextSecndPropShortcut();
     void nextElm();
     void prevElm();
     void removeInputPort();
     void removeOutputPort();
 
-    void prevMainPropShortcut();
-    void nextMainPropShortcut();
-    void prevSecndPropShortcut();
-    void nextSecndPropShortcut();
 signals:
     void circuitHasChanged();
     void contextMenuPos(QPoint screenPos, QGraphicsItem *itemAtMouse);

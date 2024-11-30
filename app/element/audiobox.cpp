@@ -34,7 +34,7 @@ AudioBox::AudioBox(QGraphicsItem* parent)
     m_label->setPos(64, 34);
 
     setCanChangeSkin(true);
-    // setHasAudioBox(true);
+    setHasAudioBox(true);
     setHasLabel(true);
     setRotatable(true);
 
