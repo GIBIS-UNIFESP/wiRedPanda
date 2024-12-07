@@ -109,7 +109,7 @@ bool QNEPort::isConnected(QNEPort *otherPort)
 
 void QNEPort::updateConnections()
 {
-    for (auto *conn : qAsConst(m_connections)) {
+    for (auto *conn : std::as_const(m_connections)) {
         conn->updatePosFromPorts();
     }
 

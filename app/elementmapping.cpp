@@ -27,7 +27,7 @@ ElementMapping::~ElementMapping()
 
 void ElementMapping::generateMap()
 {
-    for (auto *elm : qAsConst(m_elements)) {
+    for (auto *elm : std::as_const(m_elements)) {
         if (elm->elementType() == ElementType::IC) {
             auto *ic = qobject_cast<IC *>(elm);
             m_logicElms.append(ic->generateMap()->m_logicElms);
@@ -47,7 +47,7 @@ void ElementMapping::generateLogic(GraphicElement *elm)
 
 void ElementMapping::connectElements()
 {
-    for (auto *elm : qAsConst(m_elements)) {
+    for (auto *elm : std::as_const(m_elements)) {
         for (auto *inputPort : elm->inputs()) {
             applyConnection(elm, inputPort);
         }
@@ -96,7 +96,7 @@ void ElementMapping::sort()
 
 void ElementMapping::sortLogicElements()
 {
-    for (auto logic : qAsConst(m_logicElms)) {
+    for (auto logic : std::as_const(m_logicElms)) {
         logic->calculatePriority();
     }
 
@@ -107,7 +107,7 @@ void ElementMapping::sortLogicElements()
 
 void ElementMapping::validateElements()
 {
-    for (auto logic : qAsConst(m_logicElms)) {
+    for (auto logic : std::as_const(m_logicElms)) {
         logic->validate();
     }
 }

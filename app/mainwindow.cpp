@@ -311,7 +311,11 @@ void MainWindow::aboutThisVersion()
     msgBox.setDefaultButton(QMessageBox::Ok);
     msgBox.setCheckBox(checkBox);
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 7, 0)
     connect(checkBox, &QCheckBox::stateChanged, this, [](int state) {
+#else
+    connect(checkBox, &QCheckBox::checkStateChanged, this, [](int state) {
+#endif
         if (static_cast<Qt::CheckState>(state) == Qt::CheckState::Checked) {
             Settings::setValue("hideV4Warning", "true");
         } else {
@@ -597,7 +601,7 @@ void MainWindow::updateICList()
         }
 
         qCDebug(zero) << "Files: " << files.join(", ");
-        for (const QString &file : qAsConst(files)) {
+        for (const QString &file : std::as_const(files)) {
             QPixmap pixmap(":/basic/ic-panda.svg");
 
             auto *item = new ElementLabel(pixmap, ElementType::IC, file, this);
@@ -766,7 +770,7 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
             item->setHidden(true);
         }
 
-        for (auto *item : qAsConst(searchResults)) {
+        for (auto *item : std::as_const(searchResults)) {
             item->setVisible(true);
         }
     }

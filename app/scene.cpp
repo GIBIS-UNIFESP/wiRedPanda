@@ -175,13 +175,13 @@ QGraphicsItem *Scene::itemAt(const QPointF pos)
     auto items_ = items(pos);
     items_.append(itemsAt(pos));
 
-    for (auto *item : qAsConst(items_)) {
+    for (auto *item : std::as_const(items_)) {
         if (item->type() == QNEPort::Type) {
             return item;
         }
     }
 
-    for (auto *item : qAsConst(items_)) {
+    for (auto *item : std::as_const(items_)) {
         if (item->type() > QGraphicsItem::UserType) {
             return item;
         }
@@ -898,7 +898,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             m_movedElements.clear();
             m_oldPositions.clear();
 
-            for (auto *element : qAsConst(selectedElements_)) {
+            for (auto *element : std::as_const(selectedElements_)) {
                 m_movedElements.append(element);
                 m_oldPositions.append(element->pos());
             }

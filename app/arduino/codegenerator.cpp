@@ -244,10 +244,10 @@ void CodeGenerator::declareAuxVariables()
 void CodeGenerator::setup()
 {
     m_stream << "void setup() {" << endl;
-    for (const auto &pin : qAsConst(m_inputMap)) {
+    for (const auto &pin : std::as_const(m_inputMap)) {
         m_stream << "    pinMode(" << pin.m_varName << ", INPUT);" << endl;
     }
-    for (const auto &pin : qAsConst(m_outputMap)) {
+    for (const auto &pin : std::as_const(m_outputMap)) {
         m_stream << "    pinMode(" << pin.m_varName << ", OUTPUT);" << endl;
     }
     m_stream << "}" << endl
@@ -497,7 +497,7 @@ void CodeGenerator::loop()
 {
     m_stream << "void loop() {" << endl;
     m_stream << "    // Reading input data //." << endl;
-    for (const auto &pin : qAsConst(m_inputMap)) {
+    for (const auto &pin : std::as_const(m_inputMap)) {
         m_stream << QString("    %1_val = digitalRead(%1);").arg(pin.m_varName) << endl;
     }
     m_stream << endl;
@@ -518,7 +518,7 @@ void CodeGenerator::loop()
     assignVariablesRec(m_elements);
     m_stream << "\n";
     m_stream << "    // Writing output data. //\n";
-    for (const auto &pin : qAsConst(m_outputMap)) {
+    for (const auto &pin : std::as_const(m_outputMap)) {
         QString varName = otherPortName(pin.m_port);
         if (varName.isEmpty()) {
             varName = highLow(pin.m_port->defaultValue());

@@ -30,12 +30,12 @@ void Simulation::update()
     }
 
     if (m_timer.isActive()) {
-        for (auto *clock : qAsConst(m_clocks)) {
+        for (auto *clock : std::as_const(m_clocks)) {
             clock->updateClock();
         }
     }
 
-    for (auto *inputElm : qAsConst(m_inputs)) {
+    for (auto *inputElm : std::as_const(m_inputs)) {
         inputElm->updateOutputs();
     }
 
@@ -43,11 +43,11 @@ void Simulation::update()
         logic->updateLogic();
     }
 
-    for (auto *connection : qAsConst(m_connections)) {
+    for (auto *connection : std::as_const(m_connections)) {
         updatePort(connection->startPort());
     }
 
-    for (auto *outputElm : qAsConst(m_outputs)) {
+    for (auto *outputElm : std::as_const(m_outputs)) {
         for (auto *inputPort : outputElm->inputs()) {
             updatePort(inputPort);
         }
