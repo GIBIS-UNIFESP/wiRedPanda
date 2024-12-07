@@ -109,7 +109,7 @@ void Display7::updatePortsProperties()
     inputPort(6)->setPos(64, 40);    inputPort(6)->setName("DP (" + tr("dot")         + ")");
     inputPort(7)->setPos(64, 56);    inputPort(7)->setName("C (" +  tr("lower right") + ")");
 
-    for (auto *in : qAsConst(m_inputPorts)) {
+    for (auto *in : std::as_const(m_inputPorts)) {
         in->setRequired(false);
         in->setDefaultStatus(Status::Inactive);
     }

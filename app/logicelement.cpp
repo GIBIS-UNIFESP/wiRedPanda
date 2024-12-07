@@ -17,7 +17,7 @@ bool LogicElement::isValid() const
 
 void LogicElement::clearSucessors()
 {
-    for (const auto &logic : qAsConst(m_successors)) {
+    for (const auto &logic : std::as_const(m_successors)) {
         for (auto &inputPair : logic->m_inputPairs) {
             if (inputPair.logic == this) {
                 inputPair.logic = nullptr;
@@ -64,7 +64,7 @@ void LogicElement::validate()
                             [](auto pair) { return pair.logic != nullptr; });
 
     if (!m_isValid) {
-        for (auto *logic : qAsConst(m_successors)) {
+        for (auto *logic : std::as_const(m_successors)) {
             logic->m_isValid = false;
         }
     }
@@ -88,7 +88,7 @@ int LogicElement::calculatePriority()
     m_beingVisited = true;
     int max = 0;
 
-    for (auto *logic : qAsConst(m_successors)) {
+    for (auto *logic : std::as_const(m_successors)) {
         max = qMax(logic->calculatePriority(), max);
     }
 

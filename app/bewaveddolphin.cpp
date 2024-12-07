@@ -304,7 +304,7 @@ void BewavedDolphin::loadSignals(QStringList &inputLabels, QStringList &outputLa
     QVector<Status> oldValues(m_inputPorts);
     int oldIndex = 0;
 
-    for (auto *input : qAsConst(m_inputs)) {
+    for (auto *input : std::as_const(m_inputs)) {
         QString label = input->label();
 
         if (label.isEmpty()) {
@@ -325,7 +325,7 @@ void BewavedDolphin::loadSignals(QStringList &inputLabels, QStringList &outputLa
 
     qCDebug(zero) << "Getting the name of the outputs. If no label is given, element type is used as a name.";
 
-    for (auto *output : qAsConst(m_outputs)) {
+    for (auto *output : std::as_const(m_outputs)) {
         QString label = output->label();
 
         if (label.isEmpty()) {
@@ -359,7 +359,7 @@ void BewavedDolphin::run2()
         qCDebug(four) << "Itr: " << column << ", inputs: " << m_inputs.size();
         int row = 0;
 
-        for (auto *input : qAsConst(m_inputs)) {
+        for (auto *input : std::as_const(m_inputs)) {
             for (int port = 0; port < input->outputSize(); ++port) {
                 const bool value = static_cast<bool>(m_model->index(row, column).data().toInt());
                 input->setOn(value, port);
@@ -375,7 +375,7 @@ void BewavedDolphin::run2()
         qCDebug(four) << "Setting the computed output values to the waveform results.";
         row = m_inputPorts;
 
-        for (auto *output : qAsConst(m_outputs)) {
+        for (auto *output : std::as_const(m_outputs)) {
             for (int port = 0; port < output->inputSize(); ++port) {
                 const int value = static_cast<int>(output->inputPort(port)->status());
                 createElement(row, column, value, false);

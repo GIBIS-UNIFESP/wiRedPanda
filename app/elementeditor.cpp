@@ -389,7 +389,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     auto *firstInput = qobject_cast<GraphicElementInput *>(firstElement);
     auto elementType = firstElement->elementType();
 
-    for (auto *elm : qAsConst(m_elements)) {
+    for (auto *elm : std::as_const(m_elements)) {
         const auto group = elm->elementGroup();
         const auto firstGroup = firstElement->elementGroup();
 
@@ -638,7 +638,7 @@ void ElementEditor::apply()
     QDataStream stream(&oldData, QIODevice::WriteOnly);
     stream.setVersion(QDataStream::Qt_5_12);
 
-    for (auto *elm : qAsConst(m_elements)) {
+    for (auto *elm : std::as_const(m_elements)) {
         elm->save(stream);
 
         elm->setPriority(m_ui->spinBoxPriority->value());
@@ -713,7 +713,7 @@ void ElementEditor::outputValueChanged(const QString &value)
 
     const int newValue = value.toInt();
 
-    for (auto *elm : qAsConst(m_elements)) {
+    for (auto *elm : std::as_const(m_elements)) {
         if (elm->elementType() == ElementType::InputRotary) {
             if (auto *input = qobject_cast<InputRotary *>(elm)) {
                 input->setOn(true, newValue);
@@ -734,7 +734,7 @@ void ElementEditor::inputLocked(const bool value)
         return;
     }
 
-    for (auto *elm : qAsConst(m_elements)) {
+    for (auto *elm : std::as_const(m_elements)) {
         if (auto *input = qobject_cast<GraphicElementInput *>(elm)) {
             input->setLocked(value);
         }
