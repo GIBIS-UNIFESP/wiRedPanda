@@ -19,6 +19,17 @@ Compiled binaries for Windows, Linux and macOS are available [here](https://gith
 
 ## Building
 
+### On Windows
+
+For Qt5 select this:
+![qt5](https://github.com/user-attachments/assets/e6bfca48-7b4b-444f-9ad3-76c157a9036a)
+
+Or for Qt6 select these:
+![qt6](https://github.com/user-attachments/assets/aedc8749-8b5c-4f4d-9c65-651b703dccea)
+
+Then open WPanda.pro in Qt Creator and press Ctrl+R to build and run.
+
+
 ### On Linux & macOS
 
 #### Dependencies 
@@ -49,27 +60,22 @@ brew install qt5
 
 Qt5 may be installed directly from the [Qt website](https://www.qt.io/download), from unofficial installers such as [aqtinstall](https://github.com/miurahr/aqtinstall), from community-maintained repositories or [built from source](https://wiki.qt.io/Building_Qt_5_from_Git).
 
-Here's how one could use aqtinstall to install Qt 5.15.1 (Python 3 needed) alongside with the necessary plugins on a Debian-based distro.
+Here's how one could use aqtinstall to install Qt 5.15.2 on a Debian-based distro.
 
 ```bash
 sudo apt-get update
-sudo apt-get install build-essential libgl1-mesa-dev libxkbcommon-x11-0 libpulse-dev -y
-python3 -m pip install setuptools wheel
-python3 -m pip install py7zr==0.10.1
-python3 -m pip install aqtinstall==0.9.7
-python3 -m pip install importlib-metadata==2.0.0
-python3 -m aqt install 5.15.1 linux desktop -m qtmultimedia -O ~/Qt
-export Qt5_Dir=~/Qt5/5.15.1
-export Qt5_DIR=~/Qt5/5.15.1
-export QT_PLUGIN_PATH=~/Qt/5.15.1/gcc_64/plugins
-PATH=~/Qt/5.15.1/gcc_64/bin:$PATH
+sudo apt-get install libgl1-mesa-dev libxcb-xinerama0 libpulse-dev git python3 python3-pip python3-venv -y
+python3 -m venv ~/venv
+~/venv/bin/pip install aqtinstall==3.1.*
+~/venv/bin/aqt install-qt linux desktop 5.15.2 --outputdir ~/Qt
+PATH=~/Qt/5.15.2/gcc_64/bin:$PATH
 export PATH
 ```
 
 #### Build process
 
 ```bash
-git clone https://github.com/GIBIS-UNIFESP/wiredpanda.git
+git clone https://github.com/GIBIS-UNIFESP/wiredpanda
 mkdir wiredpanda/build
 cd wiredpanda/build
 qmake ../WPanda.pro
@@ -84,7 +90,7 @@ WiRedPanda is licensed under the [GNU General Public License, Version 3.0](http:
 
 See [`LICENSE`](LICENSE) for the full license text.
   
-    Copyright (C) 2022 - Davi Morales, Fábio Cappabianco, Lucas Lellis, Rodrigo Torres and Vinícius Miguel.
+    Copyright (C) 2024 - Davi Morales, Fábio Cappabianco, Lucas Lellis, Rodrigo Torres and Vinícius Miguel.
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
