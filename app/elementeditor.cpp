@@ -374,10 +374,11 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 
     bool sameCheckState = true;
     m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = true;
-    m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = true;
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = true;
+    m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = true;
     m_canChangeSkin = m_hasSamePriority = true;
     m_hasElements = true;
+
     show();
     setEnabled(false);
     int minimumInputs = 0;
