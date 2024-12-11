@@ -7,6 +7,7 @@
 #include "itemwithid.h"
 #include "logicelement.h"
 
+#include <QBitArray>
 #include <QGraphicsItem>
 #include <QKeySequence>
 #include <QPixmapCache>
@@ -73,6 +74,7 @@ public:
     bool hasFrequency() const;
     bool hasLabel() const;
     bool hasTrigger() const;
+    bool hasTruthTable() const;
     bool isRotatable() const;
     bool isValid();
     const QVector<QNEInputPort *> &inputs() const;
@@ -121,6 +123,7 @@ protected:
     void setHasFrequency(const bool hasFrequency);
     void setHasLabel(const bool hasLabel);
     void setHasTrigger(const bool hasTrigger);
+    void setHasTruthTable(const bool hasTruthTable);
     void setMaxInputSize(const int maxInputSize);
     void setMaxOutputSize(const int maxOutputSize);
     void setMinInputSize(const int minInputSize);
@@ -194,6 +197,7 @@ private:
     bool m_hasFrequency = false;
     bool m_hasLabel = false;
     bool m_hasTrigger = false;
+    bool m_hasTruthTable = false;
     bool m_rotatable = true;
     bool m_selected = false;
     qreal m_angle = 0;

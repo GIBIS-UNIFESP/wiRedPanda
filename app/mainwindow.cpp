@@ -81,10 +81,11 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     populateLeftMenu();
     m_ui->tabElements->setTabIcon(0, QIcon(":/input/buttonOff.svg"));
     m_ui->tabElements->setTabIcon(1, QIcon(":/basic/xor.svg"));
-    m_ui->tabElements->setTabIcon(2, QIcon(DFlipFlop::pixmapPath()));
-    m_ui->tabElements->setTabIcon(3, QIcon(":/basic/ic-panda.svg"));
-    m_ui->tabElements->setTabIcon(4, QIcon(":/misc/text.png"));
-    m_ui->tabElements->setTabEnabled(5, false);
+    m_ui->tabElements->setTabIcon(2, QIcon(":/basic/truthtable-rotated.svg"));
+    m_ui->tabElements->setTabIcon(3, QIcon(DFlipFlop::pixmapPath()));
+    m_ui->tabElements->setTabIcon(4, QIcon(":/basic/ic-panda.svg"));
+    m_ui->tabElements->setTabIcon(5, QIcon(":/misc/text.png"));
+    m_ui->tabElements->setTabEnabled(6, false);
 
     qCDebug(zero) << "Loading recent file list.";
     m_recentFiles = new RecentFiles(this);
@@ -1192,7 +1193,8 @@ void MainWindow::populateLeftMenu()
 {
     m_ui->tabElements->setCurrentIndex(0);
     populateMenu(m_ui->verticalSpacer_InOut, {"InputVcc", "InputGnd", "InputButton", "InputSwitch", "InputRotary", "Clock", "Led", "Display7", "Display14", "Buzzer"}, m_ui->scrollAreaWidgetContents_InOut->layout());
-    populateMenu(m_ui->verticalSpacer_Gates, {"And", "Or", "Not", "Nand", "Nor", "Xor", "Xnor", "Mux", "Demux", "Node"}, m_ui->scrollAreaWidgetContents_Gates->layout());
+    populateMenu(m_ui->verticalSpacer_Gates, {"And", "Or", "Not", "Nand", "Nor", "Xor", "Xnor", "Node"}, m_ui->scrollAreaWidgetContents_Gates->layout());
+    populateMenu(m_ui->verticalSpacer_Combinational, {"TruthTable", "Mux", "Demux"}, m_ui->scrollAreaWidgetContents_Combinational->layout());
     populateMenu(m_ui->verticalSpacer_Memory, {"DLatch", "DFlipFlop", "JKFlipFlop", "SRFlipFlop", "TFlipFlop"}, m_ui->scrollAreaWidgetContents_Memory->layout());
     populateMenu(m_ui->verticalSpacer_Misc, {"Text", "Line"}, m_ui->scrollAreaWidgetContents_Misc->layout());
 }

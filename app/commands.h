@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "elementeditor.h"
 #include "graphicelement.h"
 #include "scene.h"
 
@@ -212,4 +213,21 @@ private:
     QList<int> m_order;
     Scene *m_scene;
     int m_newOutputSize;
+};
+
+class ToggleTruthTableOutputCommand : public QUndoCommand
+{
+    Q_DECLARE_TR_FUNCTIONS(ToggleTruthTableOutputCommand)
+
+public:
+    explicit ToggleTruthTableOutputCommand(GraphicElement *element, int pos, Scene *scene, ElementEditor *ElementEditor, QUndoCommand *parent = nullptr);
+
+    void redo() override;
+    void undo() override;
+
+private:
+    ElementEditor *m_elementeditor;
+    Scene *m_scene;
+    int m_id;
+    int m_pos;
 };

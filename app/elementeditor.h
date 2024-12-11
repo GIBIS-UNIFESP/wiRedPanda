@@ -6,6 +6,9 @@
 #include "scene.h"
 
 #include <QWidget>
+#include <QDialog>
+#include <QVBoxLayout>
+#include <QTableWidget>
 
 namespace Ui
 {
@@ -27,6 +30,7 @@ public:
     void renameAction();
     void retranslateUi();
     void setScene(Scene *scene);
+    void truthTable();
     void update();
     void updateElementSkin();
     void updatePriorityAction();
@@ -47,6 +51,7 @@ private:
     void priorityChanged(const int value);
     void selectionChanged();
     void setCurrentElements(const QList<GraphicElement *> &elements);
+    void setTruthTableProposition(int row, int column);
     void triggerChanged(const QString &cmd);
     void updateSkins();
 
@@ -63,6 +68,8 @@ private:
     QString m_manyTriggers = tr("<Many triggers>");
     QString m_skinName;
     Scene *m_scene = nullptr;
+    QDialog *m_tableBox = nullptr;
+    QTableWidget *m_table = nullptr;
     bool m_canChangeInputSize = false;
     bool m_canChangeOutputSize = false;
     bool m_canChangeSkin = false;
@@ -86,6 +93,7 @@ private:
     bool m_hasSameTrigger = false;
     bool m_hasSameType = false;
     bool m_hasTrigger = false;
+    bool m_hasTruthTable = false;
     bool m_isDefaultSkin = true;
     bool m_isUpdatingSkin = false;
 };
