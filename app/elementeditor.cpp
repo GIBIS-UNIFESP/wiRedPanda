@@ -378,6 +378,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = true;
     m_canChangeSkin = m_hasSamePriority = true;
     m_hasElements = true;
+
     show();
     setEnabled(false);
     int minimumInputs = 0;

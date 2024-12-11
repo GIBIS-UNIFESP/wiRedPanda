@@ -44,10 +44,10 @@ private:
     void inputLocked(const bool value);
     void outputIndexChanged(const int index);
     void outputValueChanged(const QString &value);
+    void priorityChanged(const int value);
     void selectionChanged();
     void setCurrentElements(const QList<GraphicElement *> &elements);
     void triggerChanged(const QString &cmd);
-    void priorityChanged(const int value);
     void updateSkins();
 
     Ui::ElementEditor *m_ui;
