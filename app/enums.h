@@ -41,6 +41,7 @@ public:
         SRFlipFlop = 19,
         TFlipFlop = 20,
         Text = 28,
+        TruthTable = 30,
         Unknown = 0,
         Xnor = 11,
         Xor = 10,
