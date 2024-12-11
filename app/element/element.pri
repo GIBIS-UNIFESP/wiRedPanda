@@ -24,6 +24,7 @@ SOURCES += \
     $$PWD/srflipflop.cpp \
     $$PWD/text.cpp \
     $$PWD/tflipflop.cpp \
+    $$PWD/truth_table.cpp \
     $$PWD/xnor.cpp \
     $$PWD/xor.cpp
 
@@ -53,5 +54,6 @@ HEADERS += \
     $$PWD/srflipflop.h \
     $$PWD/text.h \
     $$PWD/tflipflop.h \
+    $$PWD/truth_table.h \
     $$PWD/xnor.h \
     $$PWD/xor.h
