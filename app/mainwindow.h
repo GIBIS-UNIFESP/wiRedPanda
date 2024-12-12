@@ -91,6 +91,7 @@ private:
     void on_actionExportToArduino_triggered();
     void on_actionExportToImage_triggered();
     void on_actionExportToPdf_triggered();
+    void on_actionHotkeysAndTips_triggered();
     void on_actionFastMode_triggered(const bool checked);
     void on_actionFlipHorizontally_triggered();
     void on_actionFlipVertically_triggered();

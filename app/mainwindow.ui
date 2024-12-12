@@ -626,6 +626,7 @@ QTabWidget::pane {
     <property name="title">
      <string>&amp;Help</string>
     </property>
+    <addaction name="actionHotkeysAndTips"/>
     <addaction name="actionAbout"/>
     <addaction name="actionAboutQt"/>
     <addaction name="actionAboutThisVersion"/>
@@ -1161,6 +1162,14 @@ QTabWidget::pane {
    </property>
    <property name="text">
     <string>Spanish</string>
+   </property>
+  </action>
+  <action name="actionHotkeysAndTips">
+   <property name="icon">
+    <iconset theme="help-about"/>
+   </property>
+   <property name="text">
+    <string>Hotkeys and tips</string>
    </property>
   </action>
  </widget>
