@@ -3,6 +3,7 @@
 
 #include "truth_table.h"
 
+#include "common.h"
 #include "globalproperties.h"
 #include "qneport.h"
 
@@ -81,11 +82,11 @@ void TruthTable::generatePixmap()
 {
     // make pixmap
     const QSize size = portsBoundingRect().united(QRectF(0, 0, 64, 64)).size().toSize();
-    qDebug() << "portBounding size: " << portsBoundingRect();
-    qDebug() << "size: " << size;
+    qCDebug(zero) << "portBounding size: " << portsBoundingRect();
+    qCDebug(zero) << "size: " << size;
 
     QPixmap tempPixmap(size);
-    qDebug() << "tempPixmap size: " << tempPixmap;
+    qCDebug(zero) << "tempPixmap size: " << tempPixmap;
     tempPixmap.fill(Qt::transparent);
 
     QPainter tmpPainter(&tempPixmap);
@@ -144,7 +145,7 @@ void TruthTable::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 
     generatePixmap();
     painter->drawPixmap(boundingRect().topLeft(), pixmap());
-    qDebug() << "painter->drawRoundedRect size: " << painter;
+    qCDebug(zero) << "painter->drawRoundedRect size: " << painter;
 }
 
 QBitArray &TruthTable::key()
