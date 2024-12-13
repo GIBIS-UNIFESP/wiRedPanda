@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="pt_BR">
 <context>
-    <name>AddItemsCommand</name>
-    <message>
-        <source>Add %1 elements</source>
-        <translation type="vanished">Adicionar%1 portas</translation>
-    </message>
-</context>
-<context>
     <name>And</name>
     <message>
         <location filename="../../element/and.cpp" line="14"/>
@@ -316,117 +309,9 @@
         <translation>Não foi possível carregar elementos suficientes para a simulação.</translation>
     </message>
     <message>
-        <source>Changing current item.</source>
-        <translation type="vanished">Alterando o item atual.</translation>
-    </message>
-    <message>
-        <source>Restoring old values to inputs, prior to simulation.</source>
-        <translation type="vanished">Restaurando valores antigos para entradas, antes da simulação.</translation>
-    </message>
-    <message>
-        <source>Updating the values of the circuit logic based on current input values.</source>
-        <translation type="vanished">Atualizando os valores da lógica do circuito com base nos valores de entrada atuais.</translation>
-    </message>
-    <message>
-        <source>Setting the computed output values to the waveform results.</source>
-        <translation type="vanished">Configurando os valores de saída calculados para os resultados da forma de onda.</translation>
-    </message>
-    <message>
-        <source>Setting inputs back to old values.</source>
-        <translation type="vanished">Definindo as entradas de volta aos valores antigos.</translation>
-    </message>
-    <message>
-        <source>Creating class to pause main window simulator while creating waveform.</source>
-        <translation type="vanished">Criando classe para pausar o simulador da janela principal durante a criação da forma de onda.</translation>
-    </message>
-    <message>
-        <source>Inputs: </source>
-        <translation type="vanished">Entradas: </translation>
-    </message>
-    <message>
-        <source>, outputs: </source>
-        <translation type="vanished">, saídas: </translation>
-    </message>
-    <message>
-        <source>Getting the name of the outputs. If no label is given, element type is used as a name.</source>
-        <translation type="vanished">Obtendo o nome das saídas. Se nenhum rótulo for fornecido, o tipo de elemento será usado como nome.</translation>
-    </message>
-    <message>
-        <source>Updating window name with current: </source>
-        <translation type="vanished">Atualizando o nome da janela com o atual: </translation>
-    </message>
-    <message>
-        <source>Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.</source>
-        <translation type="vanished">Carregando elementos. Todos os elementos inicialmente no vetor de elementos. Então, entradas e saídas são extraídas dele.</translation>
-    </message>
-    <message>
-        <source>Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation. Not saving memory states though...</source>
-        <translation type="vanished">Obtendo o valor inicial das entradas e gravando-os em valores antigos. Usado para salvar o estado atual das entradas e restaurá-lo após a simulação. Não salvando estados de memória embora ...</translation>
-    </message>
-    <message>
-        <source>Loading initial data into the table.</source>
-        <translation type="vanished">Carregando dados iniciais na tabela.</translation>
-    </message>
-    <message>
-        <source>Resuming digital circuit main window after waveform simulation is finished.</source>
-        <translation type="vanished">Retomar a janela principal do circuito digital após a conclusão da simulação da forma de onda.</translation>
-    </message>
-    <message>
-        <source>, inputs: </source>
-        <translation type="vanished">, entradas: </translation>
-    </message>
-    <message>
-        <source>Getting table dimensions.</source>
-        <translation type="vanished">Obtendo as dimensões da tabela.</translation>
-    </message>
-    <message>
-        <source>Pressed 0.</source>
-        <translation type="vanished">Pressionado 0.</translation>
-    </message>
-    <message>
-        <source>Editing value.</source>
-        <translation type="vanished">Editando valor.</translation>
-    </message>
-    <message>
-        <source>Running simulation.</source>
-        <translation type="vanished">Rodando simulação.</translation>
-    </message>
-    <message>
-        <source>Pressed Not.</source>
-        <translation type="vanished">Pressionado Not.</translation>
-    </message>
-    <message>
-        <source>Getting first column.</source>
-        <translation type="vanished">Obtendo a primeira coluna.</translation>
-    </message>
-    <message>
         <location filename="../../bewaveddolphin.cpp" line="688"/>
         <source>No cells selected.</source>
         <translation>Nenhuma célula selecionada.</translation>
-    </message>
-    <message>
-        <source>Setting the signal according to its column and clock period.</source>
-        <translation type="vanished">Configurando o sinal de acordo com sua coluna e período de clock.</translation>
-    </message>
-    <message>
-        <source>Setting the signal according to its columns and clock period.</source>
-        <translation type="vanished">Configurando o sinal de acordo com suas colunas e período de clock.</translation>
-    </message>
-    <message>
-        <source>Setting the simulation length.</source>
-        <translation type="vanished">Configurando a duração da simulação.</translation>
-    </message>
-    <message>
-        <source>Reducing or keeping the simulation length.</source>
-        <translation type="vanished">Reduzir ou manter a duração da simulação.</translation>
-    </message>
-    <message>
-        <source>Increasing the simulation length.</source>
-        <translation type="vanished">Aumentando a duração da simulação.</translation>
-    </message>
-    <message>
-        <source>Serializing data into data stream.</source>
-        <translation type="vanished">Serializando dados em fluxo de dados.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1073"/>
@@ -477,20 +362,12 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1312"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for the wiRedPanda software developed by the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;beWavedDolphin é um simulador de forma de onda para o software wiRedPanda desenvolvido pela Universidade Federal de São Paulo. Este projeto foi criado para ajudar os alunos a aprender sobre circuitos lógicos.&lt;/p&gt;&lt;p&gt;Versão do software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Criadores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin é atualmente mantido pelo Prof. Fábio Cappabianco, Ph.D. e seus alunos&lt;/p&gt;&lt;p&gt; Por favor, registre um relatório em nossa página do GitHub se forem encontrados bugs ou se você deseja que uma nova funcionalidade seja implementada.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1015"/>
         <source>Error opening file: </source>
         <translation>Erro ao abrir arquivo: </translation>
-    </message>
-    <message>
-        <source>Saving dolphin file.</source>
-        <translation type="vanished">Salvando arquivo dolphin.</translation>
-    </message>
-    <message>
-        <source>Saving CSV file.</source>
-        <translation type="vanished">Salvando arquivo CSV.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1029"/>
@@ -504,50 +381,14 @@
         <translation>O arquivo &quot;%1&quot; não existe!</translation>
     </message>
     <message>
-        <source>Also getting the name of the inputs. If no label is given, the element type is used as a name.</source>
-        <translation type="vanished">Obtendo também o nome das entradas. Se nenhum rótulo for fornecido, o tipo de elemento será usado como um nome.</translation>
-    </message>
-    <message>
-        <source>File exists.</source>
-        <translation type="vanished">O arquivo existe.</translation>
-    </message>
-    <message>
         <location filename="../../bewaveddolphin.cpp" line="1133"/>
         <source>Could not open file in ReadOnly mode: </source>
         <translation>Não foi possível abrir o arquivo no modo ReadOnly: </translation>
     </message>
     <message>
-        <source>Dolphin file opened.</source>
-        <translation type="vanished">Arquivo Dolphin aberto.</translation>
-    </message>
-    <message>
-        <source>Current file set.</source>
-        <translation type="vanished">Configurado arquivo atual.</translation>
-    </message>
-    <message>
-        <source>Loading in editor.</source>
-        <translation type="vanished">Carregando no editor.</translation>
-    </message>
-    <message>
-        <source>Getting current value to check if need to refresh next cell</source>
-        <translation type="vanished">Obtendo o valor atual para verificar se é necessário atualizar a próxima célula</translation>
-    </message>
-    <message>
-        <source>Changing next item.</source>
-        <translation type="vanished">Alterando o próximo item.</translation>
-    </message>
-    <message>
-        <source>CSV file opened.</source>
-        <translation type="vanished">Arquivo CSV aberto.</translation>
-    </message>
-    <message>
         <location filename="../../bewaveddolphin.cpp" line="1152"/>
         <source>Format not supported. Could not open file: </source>
         <translation>Formato não suportado. Não pode abrir arquivo: </translation>
-    </message>
-    <message>
-        <source>Closing file.</source>
-        <translation type="vanished">Fechando arquivo.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1166"/>
@@ -559,10 +400,6 @@
         <location filename="../../bewaveddolphin.cpp" line="1205"/>
         <source>Invalid number of columns.</source>
         <translation>Número inválido de colunas.</translation>
-    </message>
-    <message>
-        <source>Update table.</source>
-        <translation type="vanished">Atualizar tabela.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1258"/>
@@ -583,10 +420,6 @@
         <location filename="../../bewaveddolphin.cpp" line="1301"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Não foi possível imprimir este circuito em PDF.</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;beWavedDolphin is a waveform simulator for the wiRedPanda software developed by the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="vanished">&lt;p&gt;beWavedDolphin é um simulador de forma de onda para o software wiRedPanda desenvolvido pela Universidade Federal de São Paulo. Este projeto foi criado para ajudar os alunos a aprender sobre circuitos lógicos.&lt;/p&gt;&lt;p&gt;Versão do software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Criadores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt; li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin é atualmente mantido pelo Prof. Fábio Cappabianco, Ph.D. e Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Envie um relatório em nossa página do GitHub se forem encontrados bugs ou se desejar que uma nova funcionalidade seja implementada.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="71"/>
@@ -614,20 +447,6 @@
         <location filename="../../element/buzzer.cpp" line="24"/>
         <source>BUZZER</source>
         <translation>CAMPAINHA</translation>
-    </message>
-</context>
-<context>
-    <name>ChangeInputSizeCommand</name>
-    <message>
-        <source>Change input size to %1</source>
-        <translation type="vanished">Mudar número de entradas para %1</translation>
-    </message>
-</context>
-<context>
-    <name>ChangeOutputSizeCommand</name>
-    <message>
-        <source>Change input size to %1</source>
-        <translation type="vanished">Mudar número de entradas para %1</translation>
     </message>
 </context>
 <context>
@@ -687,22 +506,14 @@
 <context>
     <name>DFlipFlop</name>
     <message>
-        <source>D-FlipFlop</source>
-        <translation type="vanished">FlipFlop-D</translation>
-    </message>
-    <message>
-        <source>D-FLIPFLOP</source>
-        <translation type="vanished">FLIPFLOP-D</translation>
-    </message>
-    <message>
         <location filename="../../element/dflipflop.cpp" line="15"/>
         <source>D-FLIP-FLOP</source>
-        <translation type="unfinished"></translation>
+        <translation>FLIP-FLOP-D</translation>
     </message>
     <message>
         <location filename="../../element/dflipflop.cpp" line="15"/>
         <source>D-Flip-Flop</source>
-        <translation type="unfinished"></translation>
+        <translation>Flip-Flop-D</translation>
     </message>
 </context>
 <context>
@@ -716,13 +527,6 @@
         <location filename="../../element/dlatch.cpp" line="15"/>
         <source>D-LATCH</source>
         <translation>LATCH-D</translation>
-    </message>
-</context>
-<context>
-    <name>DeleteItemsCommand</name>
-    <message>
-        <source>Delete %1 elements</source>
-        <translation type="vanished">Remover %1 portas(s)</translation>
     </message>
 </context>
 <context>
@@ -839,14 +643,6 @@
         <translation>Display de 7 segmentos</translation>
     </message>
     <message>
-        <source>Allocating pixmaps.</source>
-        <translation type="vanished">Alocando pixmaps.</translation>
-    </message>
-    <message>
-        <source>Converting segments to other colors.</source>
-        <translation type="vanished">Convertendo segmentos para outras cores.</translation>
-    </message>
-    <message>
         <location filename="../../element/display_7.cpp" line="103"/>
         <source>middle</source>
         <translation>centro</translation>
@@ -886,10 +682,6 @@
         <source>lower right</source>
         <translation>inferior direito</translation>
     </message>
-    <message>
-        <source>Remapping inputs.</source>
-        <translation type="vanished">Remapeando entradas.</translation>
-    </message>
 </context>
 <context>
     <name>ElementEditor</name>
@@ -902,10 +694,6 @@
         <location filename="../../elementeditor.ui" line="81"/>
         <source>Frequency:</source>
         <translation>Frequência:</translation>
-    </message>
-    <message>
-        <source>Input Ports:</source>
-        <translation type="vanished">Entradas:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="88"/>
@@ -951,14 +739,6 @@
         <location filename="../../elementeditor.cpp" line="343"/>
         <source>White</source>
         <translation>Branco</translation>
-    </message>
-    <message>
-        <source>Apply.</source>
-        <translation type="vanished">Aplicar.</translation>
-    </message>
-    <message>
-        <source>Input locked.</source>
-        <translation type="vanished">Entrada bloqueada.</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="95"/>
@@ -1037,22 +817,6 @@
         <translation>Recortar</translation>
     </message>
     <message>
-        <source>File name: </source>
-        <translation type="vanished">Nome do arquivo: </translation>
-    </message>
-    <message>
-        <source>Input size changed to </source>
-        <translation type="vanished">Número de entradas alterado para </translation>
-    </message>
-    <message>
-        <source>Output size changed to </source>
-        <translation type="vanished">Número de saídas alterado para </translation>
-    </message>
-    <message>
-        <source> from </source>
-        <translation type="vanished"> de </translation>
-    </message>
-    <message>
         <location filename="../../elementeditor.ui" line="121"/>
         <source>F6</source>
         <translation>F6</translation>
@@ -1096,7 +860,7 @@
     <message>
         <location filename="../../elementeditor.ui" line="46"/>
         <source>Inputs:</source>
-        <translation type="unfinished"></translation>
+        <translation>Entradas:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="67"/>
@@ -1106,7 +870,7 @@
     <message>
         <location filename="../../elementeditor.ui" line="74"/>
         <source>Outputs:</source>
-        <translation type="unfinished"></translation>
+        <translation>Saídas:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="111"/>
@@ -1164,10 +928,6 @@
         <translation>Colocar aparência padrão</translation>
     </message>
     <message>
-        <source>Output Ports:</source>
-        <translation type="vanished">Portas de Saída:</translation>
-    </message>
-    <message>
         <location filename="../../elementeditor.ui" line="53"/>
         <source>Value:</source>
         <translation>Valor:</translation>
@@ -1208,69 +968,11 @@
     </message>
 </context>
 <context>
-    <name>ElementMapping</name>
-    <message>
-        <source>Generate Map.</source>
-        <translation type="vanished">Gerar Mapa.</translation>
-    </message>
-    <message>
-        <source>Connect.</source>
-        <translation type="vanished">Conectar.</translation>
-    </message>
-</context>
-<context>
-    <name>FlipCommand</name>
-    <message>
-        <source>Flip %1 elements in axis %2</source>
-        <translation type="vanished">Espelhando %1 portas no eixo %2</translation>
-    </message>
-</context>
-<context>
     <name>GraphicElement</name>
-    <message>
-        <source>Setting flags of elements.</source>
-        <translation type="vanished">Configurando flags dos elementos.</translation>
-    </message>
-    <message>
-        <source>Setting attributes.</source>
-        <translation type="vanished">Configurando atributos.</translation>
-    </message>
-    <message>
-        <source>Including input and output ports.</source>
-        <translation type="vanished">Incluindo portas de entrada e saída.</translation>
-    </message>
     <message>
         <location filename="../../graphicelement.cpp" line="106"/>
         <source>Couldn&apos;t load pixmap.</source>
         <translation>Não foi possível carregar o pixmap.</translation>
-    </message>
-    <message>
-        <source>Problem loading pixmapPath: </source>
-        <translation type="vanished">Problema ao carregar pixmapPath: </translation>
-    </message>
-    <message>
-        <source>Saving element. Type: </source>
-        <translation type="vanished">Salvando elemento. Tipo: </translation>
-    </message>
-    <message>
-        <source>Finished saving element.</source>
-        <translation type="vanished">Concluído salvamento do elemento.</translation>
-    </message>
-    <message>
-        <source>Loading element. Type: </source>
-        <translation type="vanished">Carregando elemento. Tipo: </translation>
-    </message>
-    <message>
-        <source>Updating port positions.</source>
-        <translation type="vanished">Atualizando posição das portas.</translation>
-    </message>
-    <message>
-        <source>Finished loading element.</source>
-        <translation type="vanished">Concluído carregamento do elemento.</translation>
-    </message>
-    <message>
-        <source>Loading input ports.</source>
-        <translation type="vanished">Carregando portas de entrada.</translation>
     </message>
     <message>
         <location filename="../../graphicelement.cpp" line="441"/>
@@ -1280,45 +982,9 @@
         <translation>DataStream corrompido!</translation>
     </message>
     <message>
-        <source>Loading output ports.</source>
-        <translation type="vanished">Carregando portas de saída.</translation>
-    </message>
-    <message>
         <location filename="../../graphicelement.cpp" line="549"/>
         <source>Loading pixmap skin names.</source>
         <translation>Carregando nome das skins dos pixmaps.</translation>
-    </message>
-    <message>
-        <source>Could not load some of the skins.</source>
-        <translation type="vanished">Não foi possível carregar algumas das skins.</translation>
-    </message>
-    <message>
-        <source>Setting input at </source>
-        <translation type="vanished">Configurando entrada em </translation>
-    </message>
-    <message>
-        <source>Setting output at </source>
-        <translation type="vanished">Configurando saída em </translation>
-    </message>
-    <message>
-        <source>New port.</source>
-        <translation type="vanished">Nova porta.</translation>
-    </message>
-    <message>
-        <source>Updating port positions that belong to the IC.</source>
-        <translation type="vanished">Atualizando posição das portas que pertencem ao CI.</translation>
-    </message>
-    <message>
-        <source>Align to grid.</source>
-        <translation type="vanished">Alinhar à grade.</translation>
-    </message>
-    <message>
-        <source>Moves wires.</source>
-        <translation type="vanished">Move os fios.</translation>
-    </message>
-    <message>
-        <source>Checking if the element has the required signals to compute its value.</source>
-        <translation type="vanished">Verificando se o elemento possui os sinais necessários para calcular seu valor.</translation>
     </message>
 </context>
 <context>
@@ -1338,22 +1004,6 @@
         <location filename="../../ic.cpp" line="409"/>
         <source>Error copying file: </source>
         <translation>Erro copiando arquivo: </translation>
-    </message>
-    <message>
-        <source>IC </source>
-        <translation type="vanished">CI </translation>
-    </message>
-    <message>
-        <source> -&gt; Inputs. min: </source>
-        <translation type="vanished"> -&gt; Entradas. min: </translation>
-    </message>
-    <message>
-        <source>, current: </source>
-        <translation type="vanished">, atual: </translation>
-    </message>
-    <message>
-        <source> -&gt; Outputs. min: </source>
-        <translation type="vanished"> -&gt; Saídas. min: </translation>
     </message>
     <message>
         <location filename="../../ic.cpp" line="144"/>
@@ -1424,22 +1074,14 @@
 <context>
     <name>JKFlipFlop</name>
     <message>
-        <source>JK-FlipFlop</source>
-        <translation type="vanished">FlipFlop-JK</translation>
-    </message>
-    <message>
-        <source>JK-FLIPFLOP</source>
-        <translation type="vanished">FLIPFLOP-JK</translation>
-    </message>
-    <message>
         <location filename="../../element/jkflipflop.cpp" line="15"/>
         <source>JK-FLIP-FLOP</source>
-        <translation type="unfinished"></translation>
+        <translation>FLIP-FLOP-JK</translation>
     </message>
     <message>
         <location filename="../../element/jkflipflop.cpp" line="15"/>
         <source>JK-Flip-Flop</source>
-        <translation type="unfinished"></translation>
+        <translation>Flip-Flop-JK</translation>
     </message>
 </context>
 <context>
@@ -1604,92 +1246,16 @@
         <translation>&amp;Sair</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="393"/>
-        <location filename="../../mainwindow.cpp" line="409"/>
-        <location filename="../../mainwindow.cpp" line="431"/>
+        <location filename="../../mainwindow.cpp" line="397"/>
+        <location filename="../../mainwindow.cpp" line="413"/>
+        <location filename="../../mainwindow.cpp" line="435"/>
         <source>Panda files (*.panda)</source>
         <translation>Arquivos Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="387"/>
+        <location filename="../../mainwindow.cpp" line="391"/>
         <source>File loaded successfully.</source>
         <translation>Arquivo carregado com sucesso.</translation>
-    </message>
-    <message>
-        <source>Restoring geometry and setting zoom controls.</source>
-        <translation type="vanished">Restaurando a geometria e configurando os controles de zoom.</translation>
-    </message>
-    <message>
-        <source>Preparing theme and UI modes.</source>
-        <translation type="vanished">Preparando o tema e os modos de interface do usuário.</translation>
-    </message>
-    <message>
-        <source>Setting left side menus.</source>
-        <translation type="vanished">Configurando menus do lado esquerdo.</translation>
-    </message>
-    <message>
-        <source>Loading recent file list.</source>
-        <translation type="vanished">Carregando lista de arquivos recentes.</translation>
-    </message>
-    <message>
-        <source>Checking playing simulation.</source>
-        <translation type="vanished">Marcando botão de play.</translation>
-    </message>
-    <message>
-        <source>Adding examples to menu</source>
-        <translation type="vanished">Adicionando exemplos ao menu</translation>
-    </message>
-    <message>
-        <source>Setting connections</source>
-        <translation type="vanished">Configurando conexões</translation>
-    </message>
-    <message>
-        <source>Window title.</source>
-        <translation type="vanished">Título da janela.</translation>
-    </message>
-    <message>
-        <source>Building a new tab.</source>
-        <translation type="vanished">Construindo uma nova aba.</translation>
-    </message>
-    <message>
-        <source>Opening file if not empty.</source>
-        <translation type="vanished">Abrindo o arquivo se não estiver vazio.</translation>
-    </message>
-    <message>
-        <source>Disabling Arduino export.</source>
-        <translation type="vanished">Desativando a exportação do Arduino.</translation>
-    </message>
-    <message>
-        <source>All autosave files: </source>
-        <translation type="vanished">Todos os arquivos de salvamento automático: </translation>
-    </message>
-    <message>
-        <source>Removing from config the autosave file that does not exist.</source>
-        <translation type="vanished">Removendo da configuração o arquivo de salvamento automático que não existe.</translation>
-    </message>
-    <message>
-        <source>Removing autosave file that is corrupted.</source>
-        <translation type="vanished">Removendo o arquivo de salvamento automático que está corrompido.</translation>
-    </message>
-    <message>
-        <source>Creating new workspace.</source>
-        <translation type="vanished">Criando novo espaço de trabalho.</translation>
-    </message>
-    <message>
-        <source>Adding tab. #tabs: </source>
-        <translation type="vanished">Adicionando guia. #guias: </translation>
-    </message>
-    <message>
-        <source>, current tab: </source>
-        <translation type="vanished">, guia atual: </translation>
-    </message>
-    <message>
-        <source>Selecting the newly created tab.</source>
-        <translation type="vanished">Selecionando a guia recém-criada.</translation>
-    </message>
-    <message>
-        <source>Finished #tabs: </source>
-        <translation type="vanished">#guias concluídas: </translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="274"/>
@@ -1697,191 +1263,103 @@
         <translation>Arquivo salvo com sucesso.</translation>
     </message>
     <message>
-        <source>Checking for autosave file recovery.</source>
-        <translation type="vanished">Verificando a recuperação de arquivo de salvamento automático.</translation>
-    </message>
-    <message>
-        <source>&apos;hideV4Warning&apos; message box.</source>
-        <translation type="vanished">caixa de mensagem &apos;hideV4Warning&apos;.</translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="349"/>
+        <location filename="../../mainwindow.cpp" line="353"/>
         <source> has been modified. 
 Do you want to save your changes?</source>
         <translation> foi modificado. 
 Você quer salvar suas alterações?</translation>
     </message>
     <message>
-        <source>Loading in editor.</source>
-        <translation type="vanished">Carregando no editor.</translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="393"/>
-        <location filename="../../mainwindow.cpp" line="1328"/>
+        <location filename="../../mainwindow.cpp" line="397"/>
+        <location filename="../../mainwindow.cpp" line="1335"/>
         <source>Open File</source>
         <translation>Abrir arquivo</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="409"/>
-        <location filename="../../mainwindow.cpp" line="431"/>
+        <location filename="../../mainwindow.cpp" line="413"/>
+        <location filename="../../mainwindow.cpp" line="435"/>
         <source>Save File as ...</source>
         <translation>Salvar Arquivo como...</translation>
     </message>
     <message>
-        <source>Adding file to recent files.</source>
-        <translation type="vanished">Adicionando arquivo a arquivos recentes.</translation>
-    </message>
-    <message>
-        <source>Show files.</source>
-        <translation type="vanished">Mostrar arquivos.</translation>
-    </message>
-    <message>
-        <source>Files: </source>
-        <translation type="vanished">Arquivos: </translation>
-    </message>
-    <message>
-        <source>Closing tab </source>
-        <translation type="vanished">Fechando aba </translation>
-    </message>
-    <message>
-        <source>, #tabs: </source>
-        <translation type="vanished">, #guias: </translation>
-    </message>
-    <message>
-        <source>Checking if needs to save file.</source>
-        <translation type="vanished">Verificando se precisa salvar o arquivo.</translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="632"/>
+        <location filename="../../mainwindow.cpp" line="640"/>
         <source>Error</source>
         <translation>Erro</translation>
     </message>
     <message>
-        <source>Deleting tab.</source>
-        <translation type="vanished">Excluindo guia.</translation>
-    </message>
-    <message>
-        <source>Closed tab </source>
-        <translation type="vanished">Aba fechada </translation>
-    </message>
-    <message>
-        <source>Stopping simulation.</source>
-        <translation type="vanished">Parando a simulação.</translation>
-    </message>
-    <message>
-        <source>Disconnecting zoom from UI.</source>
-        <translation type="vanished">Desconectando o zoom da interface do usuário.</translation>
-    </message>
-    <message>
-        <source>Removing undo and redo actions from UI menu.</source>
-        <translation type="vanished">Removendo ações de desfazer e refazer do menu da interface do usuário.</translation>
-    </message>
-    <message>
-        <source>Connecting undo and redo functions to UI menu.</source>
-        <translation type="vanished">Conectando as funções de desfazer e refazer ao menu da interface do usuário.</translation>
-    </message>
-    <message>
-        <source>Setting Panda file info.</source>
-        <translation type="vanished">Configurando as informações do arquivo Panda.</translation>
-    </message>
-    <message>
-        <source>Connecting current tab to element editor menu in UI.</source>
-        <translation type="vanished">Conectando a guia atual ao menu do editor de elementos na interface do usuário.</translation>
-    </message>
-    <message>
-        <source>Restarting simulation.</source>
-        <translation type="vanished">Reiniciando a simulação.</translation>
-    </message>
-    <message>
-        <source>Selecting tab: </source>
-        <translation type="vanished">Selecionando a aba: </translation>
-    </message>
-    <message>
-        <source>New tab selected. Dolphin fileName: </source>
-        <translation type="vanished">Nova guia selecionada. Nome do arquivo Dolphin: </translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="824"/>
-        <location filename="../../mainwindow.cpp" line="851"/>
+        <location filename="../../mainwindow.cpp" line="832"/>
+        <location filename="../../mainwindow.cpp" line="859"/>
         <source>Missing file name.</source>
         <translation>Falta o nome do arquivo.</translation>
     </message>
     <message>
-        <source>The panda file is empty.</source>
-        <translation type="vanished">O arquivo panda está vazio.</translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="843"/>
+        <location filename="../../mainwindow.cpp" line="851"/>
         <source>Arduino code successfully generated.</source>
         <translation>Código de Arduino gerado com sucesso.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="878"/>
+        <location filename="../../mainwindow.cpp" line="886"/>
         <source>Generate Arduino Code</source>
         <translation>Gerar código para Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="878"/>
+        <location filename="../../mainwindow.cpp" line="886"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arquivo Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="980"/>
+        <location filename="../../mainwindow.cpp" line="988"/>
         <source>Export to PDF</source>
         <translation>Exportar para PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="980"/>
+        <location filename="../../mainwindow.cpp" line="988"/>
         <source>PDF files (*.pdf)</source>
         <translation>Arquivos PDF(*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="998"/>
+        <location filename="../../mainwindow.cpp" line="1006"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Não foi possível imprimir este circuito no PDF.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1119"/>
+        <location filename="../../mainwindow.cpp" line="1127"/>
         <source>Error loading wiRedPanda translation!</source>
         <translation>Erro ao carregar a tradução do wiRedPanda!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1127"/>
+        <location filename="../../mainwindow.cpp" line="1135"/>
         <source>Error loading Qt translation!</source>
         <translation>Erro ao carregar a tradução do Qt!</translation>
     </message>
     <message>
-        <source>BD fileName: </source>
-        <translation type="vanished">Nome do arquivo BD: </translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="1324"/>
+        <location filename="../../mainwindow.cpp" line="1331"/>
         <source>Save file first.</source>
         <translation>Salve o arquivo primeiro.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1330"/>
+        <location filename="../../mainwindow.cpp" line="1337"/>
         <source>Panda (*.panda)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1342"/>
-        <location filename="../../mainwindow.cpp" line="1353"/>
+        <location filename="../../mainwindow.cpp" line="1349"/>
+        <location filename="../../mainwindow.cpp" line="1360"/>
         <source>Info</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1342"/>
+        <location filename="../../mainwindow.cpp" line="1349"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>Os arquivos selecionados (e suas dependências) serão copiados para a pasta de arquivos atual.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1353"/>
+        <location filename="../../mainwindow.cpp" line="1360"/>
         <source>Drag here to remove.</source>
         <translation>Arraste aqui para remover.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1376"/>
+        <location filename="../../mainwindow.cpp" line="1383"/>
         <source>Error removing file: </source>
         <translation>Erro removendo arquivo: </translation>
     </message>
@@ -2073,31 +1551,31 @@ Você quer salvar suas alterações?</translation>
     <message>
         <location filename="../../mainwindow.ui" line="1151"/>
         <source>&amp;Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Reiniciar</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1154"/>
         <source>Restart simulation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Reiniciar simulação.</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1163"/>
         <source>Spanish</source>
-        <translation type="unfinished"></translation>
+        <translation>Espanhol</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1024"/>
+        <location filename="../../mainwindow.cpp" line="1032"/>
         <source>Export to Image</source>
         <translation>Exportar para Imagem</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1024"/>
+        <location filename="../../mainwindow.cpp" line="1032"/>
         <source>PNG files (*.png)</source>
         <translation>Arquivos PNG (*.png)</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1123"/>
-        <location filename="../../mainwindow.cpp" line="1287"/>
+        <location filename="../../mainwindow.cpp" line="1294"/>
         <source>Mute</source>
         <translation>Silenciar</translation>
     </message>
@@ -2242,29 +1720,17 @@ Você quer salvar suas alterações?</translation>
         <translation>Ativa e desativa som das campanhias do cuicuito</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1287"/>
+        <location filename="../../mainwindow.cpp" line="1294"/>
         <source>Unmute</source>
         <translation>Ativar som</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="228"/>
-        <location filename="../../mainwindow.cpp" line="347"/>
-        <location filename="../../mainwindow.cpp" line="552"/>
-        <location filename="../../mainwindow.cpp" line="1064"/>
+        <location filename="../../mainwindow.cpp" line="351"/>
+        <location filename="../../mainwindow.cpp" line="560"/>
+        <location filename="../../mainwindow.cpp" line="1072"/>
         <source>New Project</source>
         <translation>Projeto Novo</translation>
-    </message>
-    <message>
-        <source>wiRedPanda Version = </source>
-        <translation type="vanished">Versão wiRedPanda = </translation>
-    </message>
-    <message>
-        <source> OR </source>
-        <translation type="vanished"> OU </translation>
-    </message>
-    <message>
-        <source>Settings fileName: </source>
-        <translation type="vanished">Nome do arquivo de configurações: </translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="203"/>
@@ -2272,28 +1738,28 @@ Você quer salvar suas alterações?</translation>
         <translation>Erro!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="330"/>
+        <location filename="../../mainwindow.cpp" line="334"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>Arquivo não foi salvo. Fechar mesmo assim?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="449"/>
+        <location filename="../../mainwindow.cpp" line="453"/>
         <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;wiRedPanda é um software desenvolvido pelos alunos da Universidade Federal de São Paulo. Este projeto foi criado para ajudar os alunos a aprender sobre circuitos lógicos.&lt;/p&gt;&lt;p&gt;Versão do software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Criadores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda é atualmente mantido pelo Prof. Fábio Cappabianco, Ph.D. e seus alunos.&lt;/p&gt;&lt;p&gt; Por favor, registre um relatório em nossa página do GitHub se forem encontrados bugs ou se você deseja que uma nova funcionalidade seja implementada.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="487"/>
+        <location filename="../../mainwindow.cpp" line="491"/>
         <source>Exit </source>
         <translation>Sair do </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="830"/>
+        <location filename="../../mainwindow.cpp" line="838"/>
         <source>The .panda file is empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>O arquivo .panda está vazio.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1005"/>
-        <location filename="../../mainwindow.cpp" line="1043"/>
+        <location filename="../../mainwindow.cpp" line="1013"/>
+        <location filename="../../mainwindow.cpp" line="1051"/>
         <source>Exported file successfully.</source>
         <translation>Arquivo exportado com sucesso.</translation>
     </message>
@@ -2308,10 +1774,6 @@ Você quer salvar suas alterações?</translation>
         <translation>Sobre esta versão</translation>
     </message>
     <message>
-        <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="vanished">&lt;p&gt;wiRedPanda é um software desenvolvido por estudantes da Universidade Federal de São Paulo. Este projeto foi desenvolvido para ajudar os estudantes a aprenderem mais sobre circuitos digitais.&lt;/p&gt;&lt;p&gt;Versão do software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Desenvolvedores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda atualmente é mantido por Prof. Fábio Cappabianco, Ph.D. e Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Por favor, informe em nossa página do GitHub sobre eventuais bugs encontrados ou se deseja uma nova funcionalidade.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
-    </message>
-    <message>
         <location filename="../../mainwindow.cpp" line="301"/>
         <source>This version is not 100% compatible with previous versions of wiRedPanda.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
@@ -2323,23 +1785,9 @@ wiRedPanda %1 listará automaticamente todos os outros arquivos .panda localizad
 Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar simulações beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="488"/>
+        <location filename="../../mainwindow.cpp" line="492"/>
         <source>Are you sure?</source>
         <translation>Tem certeza?</translation>
-    </message>
-</context>
-<context>
-    <name>MorphCommand</name>
-    <message>
-        <source>Morph %1 elements to %2</source>
-        <translation type="vanished">Transformar %1 portas em %2</translation>
-    </message>
-</context>
-<context>
-    <name>MoveCommand</name>
-    <message>
-        <source>Move elements</source>
-        <translation type="vanished">Mover portas</translation>
     </message>
 </context>
 <context>
@@ -2421,49 +1869,6 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
     </message>
 </context>
 <context>
-    <name>QNEConnection</name>
-    <message>
-        <source>Empty port map.</source>
-        <translation type="vanished">Mapa das portas vazio.</translation>
-    </message>
-    <message>
-        <source>Port map with elements: ptr1(</source>
-        <translation type="vanished">Mapa das portas com elementos: ptr1(</translation>
-    </message>
-    <message>
-        <source>Before if 1.</source>
-        <translation type="vanished">Antes do if 1.</translation>
-    </message>
-    <message>
-        <source>Before if 2.</source>
-        <translation type="vanished">Antes do if 2.</translation>
-    </message>
-    <message>
-        <source>Setting start 1.</source>
-        <translation type="vanished">Setando começo 1.</translation>
-    </message>
-    <message>
-        <source>Setting end 1.</source>
-        <translation type="vanished">Setando fim 1.</translation>
-    </message>
-    <message>
-        <source>Setting start 2.</source>
-        <translation type="vanished">Setando começo 2.</translation>
-    </message>
-    <message>
-        <source>Setting end 2.</source>
-        <translation type="vanished">Setando fim 2.</translation>
-    </message>
-    <message>
-        <source>After ifs.</source>
-        <translation type="vanished">Depois dos ifs.</translation>
-    </message>
-    <message>
-        <source>Updating pos from ports.</source>
-        <translation type="vanished">Atualizando pos das portas.</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <location filename="../../commands.cpp" line="108"/>
@@ -2486,69 +1891,23 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <translation>Erro!</translation>
     </message>
     <message>
-        <source>Reading IC.</source>
-        <translation type="vanished">Lendo CI.</translation>
-    </message>
-    <message>
         <location filename="../../ic.cpp" line="156"/>
         <location filename="../../ic.cpp" line="415"/>
         <source>Error opening file: </source>
         <translation>Erro ao abrir o arquivo: </translation>
     </message>
-    <message>
-        <source>Finished reading IC.</source>
-        <translation type="vanished">Concluído leitura do CI.</translation>
-    </message>
-    <message>
-        <source>Writing Connection.</source>
-        <translation type="vanished">Escrevendo conexão.</translation>
-    </message>
-    <message>
-        <source>Stopping.</source>
-        <translation type="vanished">Parando.</translation>
-    </message>
-    <message>
-        <source>Releasing.</source>
-        <translation type="vanished">Liberando.</translation>
-    </message>
-    <message>
-        <source>Writing element.</source>
-        <translation type="vanished">Escrevendo elemento.</translation>
-    </message>
-</context>
-<context>
-    <name>RecentFiles</name>
-    <message>
-        <source>Setting recent file to: </source>
-        <translation type="vanished">Setando arquivo recente para: </translation>
-    </message>
-</context>
-<context>
-    <name>RotateCommand</name>
-    <message>
-        <source>Rotate %1 degrees</source>
-        <translation type="vanished">Girar %1 graus</translation>
-    </message>
 </context>
 <context>
     <name>SRFlipFlop</name>
     <message>
-        <source>SR-FlipFlop</source>
-        <translation type="vanished">FlipFlop-SR</translation>
-    </message>
-    <message>
-        <source>SR-FLIPFLOP</source>
-        <translation type="vanished">FLIPFLOP-SR</translation>
-    </message>
-    <message>
         <location filename="../../element/srflipflop.cpp" line="15"/>
         <source>SR-FLIP-FLOP</source>
-        <translation type="unfinished"></translation>
+        <translation>FLIP-FLOP-SR</translation>
     </message>
     <message>
         <location filename="../../element/srflipflop.cpp" line="15"/>
         <source>SR-Flip-Flop</source>
-        <translation type="unfinished"></translation>
+        <translation>Flip-Flop-SR</translation>
     </message>
 </context>
 <context>
@@ -2564,90 +1923,22 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <translation>&amp;Refazer</translation>
     </message>
     <message>
-        <source>Updating theme.</source>
-        <translation type="vanished">Atualizando tema.</translation>
-    </message>
-    <message>
-        <source>Finished updating theme.</source>
-        <translation type="vanished">Concluído atualização do tema.</translation>
-    </message>
-    <message>
-        <source>Ctrl + Drag action triggered.</source>
-        <translation type="vanished">Ação Ctrl + Arrastar acionada.</translation>
-    </message>
-    <message>
-        <location filename="../../scene.cpp" line="582"/>
+        <location filename="../../scene.cpp" line="585"/>
         <source>Paste</source>
         <translation>Colar</translation>
-    </message>
-    <message>
-        <source> at position: </source>
-        <translation type="vanished"> na posição: </translation>
-    </message>
-    <message>
-        <source>, label: </source>
-        <translation type="vanished">, rótulo: </translation>
-    </message>
-    <message>
-        <source>Valid element.</source>
-        <translation type="vanished">Elemento válido.</translation>
-    </message>
-    <message>
-        <source>Adding the element to the scene.</source>
-        <translation type="vanished">Adicionando o elemento para o cenário.</translation>
-    </message>
-    <message>
-        <source>Cleaning the selection.</source>
-        <translation type="vanished">Limpando a seleção.</translation>
-    </message>
-    <message>
-        <source>Setting created element as selected.</source>
-        <translation type="vanished">Setando elemento criado como selecionado.</translation>
-    </message>
-    <message>
-        <source>Adjusting the position of the element.</source>
-        <translation type="vanished">Ajustando a posição do elemento.</translation>
     </message>
 </context>
 <context>
     <name>Serialization</name>
-    <message>
-        <source>Type: </source>
-        <translation type="vanished">Tipo: </translation>
-    </message>
-    <message>
-        <source>Building connection.</source>
-        <translation type="vanished">Criando conexão.</translation>
-    </message>
-    <message>
-        <source>Loading connection.</source>
-        <translation type="vanished">Carregando conexão.</translation>
-    </message>
-    <message>
-        <source>Appending connection.</source>
-        <translation type="vanished">Anexando conexão.</translation>
-    </message>
     <message>
         <location filename="../../serialization.cpp" line="67"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>Tipo inválido. Os dados estão possivelmente corrompidos.</translation>
     </message>
     <message>
-        <source>Finished deserializing.</source>
-        <translation type="vanished">Desserialização concluída.</translation>
-    </message>
-    <message>
-        <source>Loading version.</source>
-        <translation type="vanished">Carregando versão.</translation>
-    </message>
-    <message>
         <location filename="../../serialization.cpp" line="82"/>
         <source>Invalid file format.</source>
         <translation>Formato de arquivo inválido.</translation>
-    </message>
-    <message>
-        <source>Version: </source>
-        <translation type="vanished">Versão: </translation>
     </message>
     <message>
         <location filename="../../serialization.cpp" line="91"/>
@@ -2656,42 +1947,7 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
     </message>
 </context>
 <context>
-    <name>Simulation</name>
-    <message>
-        <source>Starting simulation.</source>
-        <translation type="vanished">Iniciando simulação.</translation>
-    </message>
-    <message>
-        <source>Simulation started.</source>
-        <translation type="vanished">Simulação iniciada.</translation>
-    </message>
-    <message>
-        <source>GENERATING SIMULATION LAYER.</source>
-        <translation type="vanished">GERANDO CAMADA DA SIMULAÇÃO.</translation>
-    </message>
-    <message>
-        <source>Elements read: </source>
-        <translation type="vanished">Elementos lidos: </translation>
-    </message>
-    <message>
-        <source>Recreating mapping for simulation.</source>
-        <translation type="vanished">Recriando mapa para simulação.</translation>
-    </message>
-    <message>
-        <source>Sorting.</source>
-        <translation type="vanished">Ordenando.</translation>
-    </message>
-    <message>
-        <source>Finished simulation layer.</source>
-        <translation type="vanished">Camada de simulação finalizada.</translation>
-    </message>
-</context>
-<context>
     <name>SplitCommand</name>
-    <message>
-        <source>Wire split</source>
-        <translation type="vanished">Dividir fio</translation>
-    </message>
     <message>
         <location filename="../../commands.cpp" line="469"/>
         <source>Error trying to redo </source>
@@ -2706,22 +1962,14 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>TFlipFlop</name>
     <message>
-        <source>T-FlipFlop</source>
-        <translation type="vanished">FlipFlop-T</translation>
-    </message>
-    <message>
-        <source>T-FLIPFLOP</source>
-        <translation type="vanished">FLIPFLOP-T</translation>
-    </message>
-    <message>
         <location filename="../../element/tflipflop.cpp" line="15"/>
         <source>T-FLIP-FLOP</source>
-        <translation type="unfinished"></translation>
+        <translation>FLIP-FLOP-T</translation>
     </message>
     <message>
         <location filename="../../element/tflipflop.cpp" line="15"/>
         <source>T-Flip-Flop</source>
-        <translation type="unfinished"></translation>
+        <translation>Flip-Flop-T</translation>
     </message>
 </context>
 <context>
@@ -2746,34 +1994,7 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
     </message>
 </context>
 <context>
-    <name>UpdateCommand</name>
-    <message>
-        <source>Update %1 elements</source>
-        <translation type="vanished">Atualizar %1 porta(s)</translation>
-    </message>
-</context>
-<context>
     <name>WorkSpace</name>
-    <message>
-        <source>Getting autosave settings info.</source>
-        <translation type="vanished">Obtendo informações de configurações de salvamento automático.</translation>
-    </message>
-    <message>
-        <source>FileName: </source>
-        <translation type="vanished">Nome do arquivo: </translation>
-    </message>
-    <message>
-        <source>All auto save file names before save: </source>
-        <translation type="vanished">Todos os nomes de arquivo de salvamento automático antes de salvar: </translation>
-    </message>
-    <message>
-        <source>Checking if it is an autosave file or a new project, and ask for a fileName.</source>
-        <translation type="vanished">Verificando se é um arquivo de salvamento automático ou um novo projeto, e peça um nome de arquivo.</translation>
-    </message>
-    <message>
-        <source>Should open window.</source>
-        <translation type="vanished">Deve abrir janela.</translation>
-    </message>
     <message>
         <location filename="../../workspace.cpp" line="71"/>
         <source>Save File</source>
@@ -2795,78 +2016,14 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <translation>Não foi possível salvar o arquivo: </translation>
     </message>
     <message>
-        <source>Remove from autosave list recovered file that has been saved.</source>
-        <translation type="vanished">Remova da lista de salvamento automático o arquivo recuperado que foi salvo.</translation>
-    </message>
-    <message>
-        <source>All auto save file names after removing recovered: </source>
-        <translation type="vanished">Todos os nomes de arquivos de salvamento automático após a remoção recuperados: </translation>
-    </message>
-    <message>
-        <source>Remove autosave from settings and delete it.</source>
-        <translation type="vanished">Remova o salvamento automático das configurações e exclua-o.</translation>
-    </message>
-    <message>
-        <source>All auto save file names after removing autosave: </source>
-        <translation type="vanished">Todos os nomes de arquivo de salvamento automático após a remoção do salvamento automático: </translation>
-    </message>
-    <message>
         <location filename="../../workspace.cpp" line="134"/>
         <source>This file does not exist: </source>
         <translation>Este arquivo não existe: </translation>
     </message>
     <message>
-        <source>File exists.</source>
-        <translation type="vanished">O arquivo existe.</translation>
-    </message>
-    <message>
         <location filename="../../workspace.cpp" line="144"/>
         <source>Could not open file: </source>
         <translation>Não pode abrir arquivo: </translation>
-    </message>
-    <message>
-        <source>Version: </source>
-        <translation type="vanished">Versão: </translation>
-    </message>
-    <message>
-        <source>Dolphin name: </source>
-        <translation type="vanished">Nome Dolphin: </translation>
-    </message>
-    <message>
-        <source>Autosavepath: </source>
-        <translation type="vanished">Caminho de salvamento automático: </translation>
-    </message>
-    <message>
-        <source>Setting current file to random file.</source>
-        <translation type="vanished">Configurando o arquivo atual para arquivo aleatório.</translation>
-    </message>
-    <message>
-        <source>All auto save file names before autosaving: </source>
-        <translation type="vanished">Todos os nomes de arquivo de salvamento automático antes do salvamento automático: </translation>
-    </message>
-    <message>
-        <source>All auto save file names after possibly removing autosave: </source>
-        <translation type="vanished">Todos os nomes de arquivo de salvamento automático após possivelmente remover o salvamento automático: </translation>
-    </message>
-    <message>
-        <source> of </source>
-        <translation type="vanished"> de </translation>
-    </message>
-    <message>
-        <source>Setting current file to: </source>
-        <translation type="vanished">Configurando o arquivo atual para: </translation>
-    </message>
-    <message>
-        <source>All auto save file names after adding autosave: </source>
-        <translation type="vanished">Todos os nomes de arquivo de salvamento automático após adicionar o salvamento automático: </translation>
-    </message>
-    <message>
-        <source>Loading file.</source>
-        <translation type="vanished">Carregando arquivo.</translation>
-    </message>
-    <message>
-        <source>Stopped simulation.</source>
-        <translation type="vanished">Simulação interrompida.</translation>
     </message>
     <message>
         <location filename="../../workspace.cpp" line="164"/>
@@ -2891,58 +2048,6 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <location filename="../../workspace.cpp" line="166"/>
         <source>Old version file.</source>
         <translation>Arquivo de versão antiga.</translation>
-    </message>
-    <message>
-        <source>Finished loading items.</source>
-        <translation type="vanished">Concluído carregamento dos itens.</translation>
-    </message>
-    <message>
-        <source>Finished loading file.</source>
-        <translation type="vanished">Concluído carregamento do arquivo.</translation>
-    </message>
-    <message>
-        <source>Defining autosave path.</source>
-        <translation type="vanished">Definindo o caminho de salvamento automático.</translation>
-    </message>
-    <message>
-        <source>Starting autosave.</source>
-        <translation type="vanished">Iniciando o salvamento automático.</translation>
-    </message>
-    <message>
-        <source>Checking if autosave file exists and if it contains current project file. If so, remove autosave file from it.</source>
-        <translation type="vanished">Verificando se o arquivo de salvamento automático existe e se contém o arquivo de projeto atual. Em caso afirmativo, remova o arquivo de salvamento automático dele.</translation>
-    </message>
-    <message>
-        <source>Removing current autosave file name.</source>
-        <translation type="vanished">Removendo o nome do arquivo de salvamento automático atual.</translation>
-    </message>
-    <message>
-        <source>If autosave exists and undo stack is clean, remove it.</source>
-        <translation type="vanished">Se o salvamento automático existir e a pilha de desfazer estiver limpa, remova-a.</translation>
-    </message>
-    <message>
-        <source>Undo stack element: </source>
-        <translation type="vanished">Elemento da pilha de desfazer: </translation>
-    </message>
-    <message>
-        <source>Undo stack is clean.</source>
-        <translation type="vanished">A pilha de desfazer está limpa.</translation>
-    </message>
-    <message>
-        <source>Undo is !clean. Must set autosave file.</source>
-        <translation type="vanished">Desfazer é !limpo. Deve definir o arquivo de salvamento automático.</translation>
-    </message>
-    <message>
-        <source>Default value not set yet.</source>
-        <translation type="vanished">Valor padrão ainda não definido.</translation>
-    </message>
-    <message>
-        <source>Autosave path set to the current file&apos;s directory, if there is one.</source>
-        <translation type="vanished">Caminho de salvamento automático definido para o diretório do arquivo atual, se houver.</translation>
-    </message>
-    <message>
-        <source>Writing to autosave file.</source>
-        <translation type="vanished">Gravando no arquivo de salvamento automático.</translation>
     </message>
     <message>
         <location filename="../../workspace.cpp" line="261"/>
@@ -2996,21 +2101,17 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
     <message>
         <location filename="../../main.cpp" line="55"/>
         <source>Exports circuit to &lt;arduino-file&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta circuito para &lt;arquivo arduino&gt;</translation>
     </message>
     <message>
         <location filename="../../main.cpp" line="61"/>
         <source>Exports circuit to waveform text file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta circuito para arquivo de texto de forma de onda</translation>
     </message>
     <message>
         <location filename="../../main.cpp" line="67"/>
         <source>Exports circuit to waveform text file, reading input from terminal</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Export circuit to &lt;arduino-file&gt;</source>
-        <translation type="vanished">Exportar circuito para &lt;arquivo arduino&gt;</translation>
+        <translation>Exporta circuito para arquivo de texto de forma de onda, lendo entrada do terminal</translation>
     </message>
     <message>
         <location filename="../../main.cpp" line="56"/>
@@ -3018,17 +2119,9 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <translation>arquivo arduino</translation>
     </message>
     <message>
-        <source>Export circuit to waveform text file</source>
-        <translation type="vanished">Exportar circuito em arquivo forma de onda textual</translation>
-    </message>
-    <message>
         <location filename="../../main.cpp" line="62"/>
         <source>waveform input text file</source>
         <translation>arquivo de forma de onda textual de entrada</translation>
-    </message>
-    <message>
-        <source>Export circuit to waveform text file, reading input from terminal</source>
-        <translation type="vanished">Exportar circuito em arquivo forma de onda textual, lendo a entrada do console</translation>
     </message>
 </context>
 </TS>
