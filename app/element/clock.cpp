@@ -53,10 +53,10 @@ void Clock::updateClock()
         return;
     }
 
-    const auto duration = std::chrono::duration<float, std::micro>(std::chrono::steady_clock::now() - m_timePoint);
+    m_elapsed += std::chrono::duration<double, std::milli>(1);
 
-    if (duration > m_interval) {
-        m_timePoint = std::chrono::steady_clock::now();
+    if (m_elapsed > m_interval) {
+        m_elapsed -= m_interval;
         setOn(!m_isOn);
     }
 }
@@ -146,7 +146,7 @@ void Clock::setFrequency(const float freq)
         return;
     }
 
-    std::chrono::duration<float, std::milli> auxInterval = 1s / (2 * freq);
+    std::chrono::duration<double, std::milli> auxInterval = 1s / (2 * freq);
 
     if (auxInterval.count() <= 0) {
         return;
@@ -154,7 +154,7 @@ void Clock::setFrequency(const float freq)
 
     m_interval = auxInterval;
     m_frequency = static_cast<double>(freq);
-    m_timePoint = std::chrono::steady_clock::now();
+    m_elapsed = std::chrono::duration<double, std::milli>{0};
     m_reset = true;
 }
 
@@ -174,8 +174,8 @@ void Clock::resetClock()
 
     setOn();
     auto delay_ms = static_cast<uint>(m_delay * 1000);
-    m_timePoint = std::chrono::steady_clock::now();
-    m_timePoint += std::chrono::milliseconds(delay_ms);
+    m_elapsed = std::chrono::duration<double, std::milli>{0};
+    m_elapsed += std::chrono::milliseconds(delay_ms);
     m_reset = false;
 }
 

@@ -56,22 +56,25 @@ void Scene::checkUpdateRequest()
 
 void Scene::drawBackground(QPainter *painter, const QRectF &rect)
 {
+    // don't draw background if zoomed out
+    if (view() and view()->transform().m11() < 0.3) {
+        return;
+    }
+
     painter->setRenderHint(QPainter::Antialiasing, true);
     QGraphicsScene::drawBackground(painter, rect);
 
     const int gridSize = GlobalProperties::gridSize;
     const int left = static_cast<int>(rect.left()) - (static_cast<int>(rect.left()) % gridSize);
     const int top = static_cast<int>(rect.top()) - (static_cast<int>(rect.top()) % gridSize);
-    QVector<QPoint> points;
+    painter->setPen(m_dots);
 
+    // TODO: replace this with a QPixmap for better performance
     for (int x = left; x < rect.right(); x += gridSize) {
         for (int y = top; y < rect.bottom(); y += gridSize) {
-            points.append(QPoint(x, y));
+            painter->drawPoint(x, y);
         }
     }
-
-    painter->setPen(m_dots);
-    painter->drawPoints(points.data(), points.size());
 }
 
 void Scene::setDots(const QPen &dots)
@@ -231,13 +234,13 @@ void Scene::resizeScene()
 {
     setSceneRect(itemsBoundingRect());
 
-    auto *item = itemAt(m_mousePos);
+    // auto *item = itemAt(m_mousePos);
 
-    if (item && (m_timer.elapsed() > 70)/* && m_draggingElement*/) {
-        // FIXME: sometimes this goes into a infinite loop and crashes
-        item->ensureVisible();
-        m_timer.restart();
-    }
+    // if (item && (m_timer.elapsed() > 70)/* && m_draggingElement*/) {
+    //     // FIXME: sometimes this goes into a infinite loop and crashes
+    //     item->ensureVisible();
+    //     m_timer.restart();
+    // }
 }
 
 QNEConnection *Scene::editedConnection() const
