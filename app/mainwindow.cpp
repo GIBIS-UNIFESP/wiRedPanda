@@ -551,6 +551,10 @@ QDir MainWindow::currentDir() const
 
 void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
 {
+    if (!m_currentTab) {
+        return;
+    }
+
     m_currentFile = fileInfo;
 
     QString text = fileInfo.exists() ? fileInfo.fileName() : tr("New Project");
