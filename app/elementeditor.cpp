@@ -11,6 +11,7 @@
 #include "scene.h"
 #include "thememanager.h"
 #include "truth_table.h"
+#include "audiobox.h"
 
 #include <QDebug>
 #include <QFileDialog>
@@ -49,6 +50,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     tableLayout->addWidget(m_table);
     m_tableBox->setLayout(tableLayout);
 
+    connect(m_table,                      &QTableWidget::cellDoubleClicked,                 this, &ElementEditor::setTruthTableProposition);
     connect(m_ui->checkBoxLocked,         &QCheckBox::clicked,                              this, &ElementEditor::inputLocked);
     connect(m_ui->comboBoxAudio,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
     connect(m_ui->comboBoxColor,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
@@ -58,11 +60,11 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->doubleSpinBoxFrequency, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &ElementEditor::apply);
     connect(m_ui->lineEditElementLabel,   &QLineEdit::textChanged,                          this, &ElementEditor::apply);
     connect(m_ui->lineEditTrigger,        &QLineEdit::textChanged,                          this, &ElementEditor::triggerChanged);
+    connect(m_ui->pushButtonAudioBox,     &QPushButton::clicked,                            this, &ElementEditor::audioBox);
     connect(m_ui->pushButtonChangeSkin,   &QPushButton::clicked,                            this, &ElementEditor::updateElementSkin);
     connect(m_ui->pushButtonDefaultSkin,  &QPushButton::clicked,                            this, &ElementEditor::defaultSkin);
     connect(m_ui->pushButtonTruthTable,   &QPushButton::clicked,                            this, &ElementEditor::truthTable);
     connect(m_ui->spinBoxPriority,        qOverload<int>(&QSpinBox::valueChanged),          this, &ElementEditor::priorityChanged);
-    connect(m_table,                      &QTableWidget::cellDoubleClicked,                 this, &ElementEditor::setTruthTableProposition);
 }
 
 ElementEditor::~ElementEditor()
@@ -372,7 +374,7 @@ void ElementEditor::retranslateUi()
 void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 {
     m_elements = elements;
-    m_hasTruthTable = m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = false;
+    m_hasAudioBox = m_hasTruthTable = m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = false;
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = false;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = false;
     m_canChangeSkin = m_hasSamePriority = false;
@@ -390,6 +392,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = true;
     m_canChangeSkin = m_hasSamePriority = true;
     m_hasElements = true;
+    m_hasAudioBox = true;
 
     show();
     setEnabled(false);
@@ -411,6 +414,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         m_canChangeSkin &= elm->canChangeSkin();
         m_hasColors &= elm->hasColors();
         m_hasAudio &= elm->hasAudio();
+        m_hasAudioBox &= elm->hasAudioBox();
         m_hasFrequency &= elm->hasFrequency();
         minimumInputs = std::max(minimumInputs, elm->minInputSize());
         maximumInputs = std::min(maximumInputs, elm->maxInputSize());
@@ -625,6 +629,20 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 
     if (m_hasTrigger) {
         m_ui->lineEditTrigger->setText(m_hasSameTrigger ? firstElement->trigger().toString() : m_manyTriggers);
+    }
+
+    /* AudioBox */
+    m_ui->pushButtonAudioBox->setVisible(m_hasAudioBox);
+    m_ui->pushButtonAudioBox->setEnabled(m_hasAudioBox);
+    m_ui->labelAudioBox->setVisible(m_hasAudioBox);
+    m_ui->lineCurrentAudioBox->setVisible(m_hasAudioBox);
+
+    if (m_hasAudioBox) {
+        if (elements.size() > 1) {
+            m_ui->lineCurrentAudioBox->setText(m_manyAudios);
+        }
+
+        m_ui->lineCurrentAudioBox->setText(elements[0]->audio());
     }
 
     /* TruthTable */
@@ -932,6 +950,16 @@ void ElementEditor::setTruthTableProposition(int row, int column)
     m_scene->setCircuitUpdateRequired();
 
     return;
+}
+
+void ElementEditor::audioBox() {
+    auto *audiobox = dynamic_cast<AudioBox *>(m_elements[0]);
+
+    const QString filePath = QFileDialog::getOpenFileName(this, tr("Select any audio"),
+                                                    QString(), tr("Audio (*.mp3 *.mp4 *.wav *.ogg)"));
+
+    audiobox->setAudio(filePath);
+    m_ui->lineCurrentAudioBox->setText(QFileInfo(filePath).fileName());
 }
 
 void ElementEditor::defaultSkin()

@@ -160,6 +160,7 @@ std::shared_ptr<LogicElement> ElementFactory::buildLogicElement(GraphicElement *
     case ElementType::InputRotary:
     case ElementType::InputSwitch: return std::make_shared<LogicInput>(false, elm->outputSize());
 
+    case ElementType::AudioBox:
     case ElementType::Buzzer:
     case ElementType::Display14:
     case ElementType::Display7:

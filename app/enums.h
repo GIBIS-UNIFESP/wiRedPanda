@@ -15,6 +15,7 @@ public:
 
     enum class ElementType {
         And = 5,
+        AudioBox = 31,
         Buzzer = 26,
         Clock = 9,
         DFlipFlop = 17,

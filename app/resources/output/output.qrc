@@ -51,5 +51,8 @@
         <file>led/WhiteLed.png</file>
         <file>led/WhiteLed.svg</file>
         <file>led/YellowLed.png</file>
+        <file>audiobox/audioboxOff.svg</file>
+        <file>audiobox/audioboxOn.svg</file>
+        <file>audio/wiredpanda.wav</file>
     </qresource>
 </RCC>

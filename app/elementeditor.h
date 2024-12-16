@@ -24,6 +24,7 @@ public:
     ~ElementEditor() override;
 
     bool eventFilter(QObject *obj, QEvent *event) override;
+    void audioBox();
     void changeTriggerAction();
     void contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse);
     void fillColorComboBox();
@@ -76,6 +77,7 @@ private:
     bool m_canMorph = false;
     bool m_hasAnyProperty = false;
     bool m_hasAudio = false;
+    bool m_hasAudioBox = false;
     bool m_hasColors = false;
     bool m_hasElements = false;
     bool m_hasFrequency = false;
