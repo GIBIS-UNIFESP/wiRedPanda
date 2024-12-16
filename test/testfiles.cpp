@@ -10,9 +10,12 @@
 #include <QTemporaryFile>
 #include <QTest>
 
+#define QUOTE(string) _QUOTE(string)
+#define _QUOTE(string) #string
+
 void TestFiles::testFiles()
 {
-    const QDir examplesDir(QString(CURRENTDIR) + "/../examples/");
+    const QDir examplesDir(QString(QUOTE(CURRENTDIR)) + "/../examples/");
     const auto files = examplesDir.entryInfoList(QStringList("*.panda"));
     QVERIFY(!files.empty());
 
