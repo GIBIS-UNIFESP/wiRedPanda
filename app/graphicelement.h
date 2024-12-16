@@ -70,6 +70,7 @@ public:
     QString label() const;
     bool canChangeSkin() const;
     bool hasAudio() const;
+    bool hasAudioBox() const;
     bool hasColors() const;
     bool hasFrequency() const;
     bool hasLabel() const;
@@ -119,6 +120,7 @@ protected:
     bool sceneEvent(QEvent *event) override;
     void setCanChangeSkin(const bool canChangeSkin);
     void setHasAudio(const bool hasAudio);
+    void setHasAudioBox(const bool hasAudioBox);
     void setHasColors(const bool hasColors);
     void setHasFrequency(const bool hasFrequency);
     void setHasLabel(const bool hasLabel);
@@ -193,6 +195,7 @@ private:
     QString m_labelText;
     bool m_canChangeSkin = false;
     bool m_hasAudio = false;
+    bool m_hasAudioBox = false;
     bool m_hasColors = false;
     bool m_hasFrequency = false;
     bool m_hasLabel = false;

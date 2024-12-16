@@ -1,5 +1,6 @@
 SOURCES += \
     $$PWD/and.cpp \
+    $$PWD/audiobox.cpp \
     $$PWD/buzzer.cpp \
     $$PWD/clock.cpp \
     $$PWD/demux.cpp \
@@ -30,6 +31,7 @@ SOURCES += \
 
 HEADERS += \
     $$PWD/and.h \
+    $$PWD/audiobox.h \
     $$PWD/buzzer.h \
     $$PWD/clock.h \
     $$PWD/demux.h \
