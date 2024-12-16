@@ -27,6 +27,9 @@
 
 #include <QTest>
 
+#define QUOTE(string) _QUOTE(string)
+#define _QUOTE(string) #string
+
 void TestElements::init()
 {
     for (int i = 0; i < connections.size(); ++i) {
@@ -202,8 +205,8 @@ void TestElements::testICData(IC *ic)
 
 void TestElements::testIC()
 {
-    const QString icFile = QString(CURRENTDIR) + "/../examples/jkflipflop.panda";
-    GlobalProperties::currentDir = QString(CURRENTDIR) + "/../examples/";
+    const QString icFile = QString(QUOTE(CURRENTDIR)) + "/../examples/jkflipflop.panda";
+    GlobalProperties::currentDir = QString(QUOTE(CURRENTDIR)) + "/../examples/";
 
     auto *ic = new IC();
     ic->loadFile(icFile);
@@ -299,7 +302,7 @@ void TestElements::testIC()
 
 void TestElements::testICs()
 {
-    const QDir examplesDir(QString(CURRENTDIR) + "/../examples/");
+    const QDir examplesDir(QString(QUOTE(CURRENTDIR)) + "/../examples/");
     const auto files = examplesDir.entryInfoList(QStringList{"*.panda"});
 
     for (const auto &fileInfo : files) {

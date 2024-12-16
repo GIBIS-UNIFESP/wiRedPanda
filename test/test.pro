@@ -6,7 +6,7 @@ CONFIG += testcase
 
 TARGET = WPanda-test
 
-DEFINES += CURRENTDIR=\\\"$$_PRO_FILE_PWD_\\\"
+DEFINES += CURRENTDIR=\"$$_PRO_FILE_PWD_\"
 
 SOURCES += \
     testmain.cpp \

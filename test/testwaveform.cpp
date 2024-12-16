@@ -9,11 +9,14 @@
 #include <QTemporaryFile>
 #include <QTest>
 
+#define QUOTE(string) _QUOTE(string)
+#define _QUOTE(string) #string
+
 void TestWaveForm::testDisplay4Bits()
 {
     WorkSpace workspace;
 
-    const QDir examplesDir(QString(CURRENTDIR) + "/../examples/");
+    const QDir examplesDir(QString(QUOTE(CURRENTDIR)) + "/../examples/");
     const QString fileName = examplesDir.absoluteFilePath("display-4bits.panda");
 
     QFile pandaFile(fileName);
