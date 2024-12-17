@@ -147,7 +147,7 @@ private:
     bool m_edited = false;
     const bool m_askConnection;
     const double m_scaleFactor = 0.8;
-    double m_scale = 1.0;
+    double m_scale = 1.25;
     int m_clockPeriod = 0;
     int m_inputPorts = 0;
     int m_length = 32;
