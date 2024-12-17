@@ -1019,15 +1019,6 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsScene::mouseDoubleClickEvent(event);
 }
 
-void Scene::addItem(QGraphicsItem *item)
-{
-    if (auto *element = dynamic_cast<Buzzer *>(item); element && element->label().isEmpty()) {
-        element->setLabel(element->objectName() + "_" + QString::number(++m_buzzerLabelNumber));
-    }
-
-    QGraphicsScene::addItem(item);
-}
-
 void Scene::addItem(QMimeData *mimeData)
 {
     QByteArray itemData = mimeData->data("wpanda/x-dnditemdata");
