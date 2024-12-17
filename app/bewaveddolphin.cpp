@@ -437,7 +437,8 @@ void BewavedDolphin::resizeScene()
         throw Pandaception(tr("Waveform would be too big! Resetting zoom."));
     }
 
-    m_signalTableView->resize(newWidth, newHeight);
+    m_signalTableView->resize(newWidth / (m_scale * 0.8),
+                              newHeight / (m_scale * 0.8));
     m_scene->setSceneRect(m_scene->itemsBoundingRect());
 }
 
@@ -826,7 +827,7 @@ void BewavedDolphin::on_actionZoomIn_triggered()
 void BewavedDolphin::on_actionResetZoom_triggered()
 {
     m_view.resetZoom();
-    m_scale = 1.0;
+    m_scale = 1.25;
     resizeScene();
     zoomChanged();
 }
