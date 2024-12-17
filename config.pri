@@ -99,6 +99,7 @@ msvc {
 
 mac {
     CONFIG += sdk_no_version_check
+    QMAKE_LFLAGS += -ld_classic
 }
 
 MOC_DIR        = build_files/moc
