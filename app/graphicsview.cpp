@@ -99,15 +99,30 @@ void GraphicsView::keyReleaseEvent(QKeyEvent *event)
 
 void GraphicsView::wheelEvent(QWheelEvent *event)
 {
-    if (QApplication::keyboardModifiers() == Qt::ControlModifier) {
-        double deltaY = event->angleDelta().y();
-        (deltaY > 0) ? m_zoomLevel++ : m_zoomLevel--;
-        double factor = (deltaY > 0) ? 1.25 : 0.8;
-        scale(factor, factor);
-        return;
+    const int zoomDirection = event->angleDelta().y();
+
+    if (zoomDirection > 0 && canZoomIn()) {
+        if (m_redirectZoom) {
+            emit scaleIn();
+        } else {
+            zoomIn();
+        }
+    } else if (zoomDirection < 0 && canZoomOut()) {
+        if (m_redirectZoom) {
+            emit scaleOut();
+        } else {
+            zoomOut();
+        }
     }
 
-    QGraphicsView::wheelEvent(event);
+    centerOn(QCursor::pos());
+
+    event->accept();
+}
+
+void GraphicsView::setRedirectZoom(const bool value)
+{
+    m_redirectZoom = value;
 }
 
 void GraphicsView::setFastMode(const bool fastMode)
