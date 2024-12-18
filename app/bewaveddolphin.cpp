@@ -10,6 +10,7 @@
 #include "globalproperties.h"
 #include "graphicelement.h"
 #include "graphicelementinput.h"
+#include "inputrotary.h"
 #include "lengthdialog.h"
 #include "mainwindow.h"
 #include "settings.h"
@@ -359,11 +360,16 @@ void BewavedDolphin::run2()
         qCDebug(four) << "Itr: " << column << ", inputs: " << m_inputs.size();
         int row = 0;
 
-        for (auto *input : std::as_const(m_inputs)) {
+        for (auto *input : qAsConst(m_inputs)) {
+            const bool isRotary = dynamic_cast<InputRotary*>(input);
             for (int port = 0; port < input->outputSize(); ++port) {
-                const bool value = static_cast<bool>(m_model->index(row, column).data().toInt());
-                input->setOn(value, port);
-                ++row;
+                const bool value = m_model->index(row++, column).data().toBool();
+
+                if (isRotary && value) {
+                    input->setOn(1, port);
+                } else if (!isRotary) {
+                    input->setOn(value, port);
+                }
             }
         }
 
