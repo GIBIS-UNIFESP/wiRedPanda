@@ -307,7 +307,7 @@ void RotateCommand::redo()
     for (auto *elm : elements) {
         cx += elm->pos().x();
         cy += elm->pos().y();
-        sz++;
+        ++sz;
     }
 
     if (sz != 0) {

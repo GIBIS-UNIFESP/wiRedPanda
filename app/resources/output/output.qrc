@@ -8,6 +8,9 @@
         <file>audio/E6.wav</file>
         <file>audio/F6.wav</file>
         <file>audio/G6.wav</file>
+        <file>audio/wiredpanda.wav</file>
+        <file>audiobox/audioboxOff.svg</file>
+        <file>audiobox/audioboxOn.svg</file>
         <file>buzzer/BuzzerOff.svg</file>
         <file>buzzer/BuzzerOn.svg</file>
         <file>counter/counter_14_off.svg</file>
@@ -51,8 +54,5 @@
         <file>led/WhiteLed.png</file>
         <file>led/WhiteLed.svg</file>
         <file>led/YellowLed.png</file>
-        <file>audiobox/audioboxOff.svg</file>
-        <file>audiobox/audioboxOn.svg</file>
-        <file>audio/wiredpanda.wav</file>
     </qresource>
 </RCC>

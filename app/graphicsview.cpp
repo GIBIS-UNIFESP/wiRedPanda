@@ -135,7 +135,7 @@ void GraphicsView::setFastMode(const bool fastMode)
 void GraphicsView::zoomIn()
 {
     scale(1.25, 1.25);
-    m_zoomLevel++;
+    ++m_zoomLevel;
     emit zoomChanged();
 }
 

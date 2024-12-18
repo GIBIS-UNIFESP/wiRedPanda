@@ -206,9 +206,7 @@ void Scene::resizeScene()
 {
     setSceneRect(itemsBoundingRect());
 
-    // auto *item = itemAt(m_mousePos);
-
-    // if (item && (m_timer.elapsed() > 100) && m_draggingElement) {
+    // if (auto *item = itemAt(m_mousePos); item && (m_timer.elapsed() > 100) && m_draggingElement) {
     //     // FIXME: sometimes this goes into a infinite loop and crashes
     //     item->ensureVisible();
     //     m_timer.restart();
@@ -639,7 +637,7 @@ void Scene::copy(const QList<QGraphicsItem *> &items, QDataStream &stream)
     for (auto *item : items) {
         if (item->type() == GraphicElement::Type) {
             center += item->pos();
-            itemsQuantity++;
+            ++itemsQuantity;
         }
     }
 

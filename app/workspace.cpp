@@ -168,8 +168,7 @@ void WorkSpace::load(QDataStream &stream)
                          "Please check for updates if the file does not load correctly.")
                           .arg(progVersion, fileVersion);
             QMessageBox::warning(this, tr("Newer version file."), message);
-        }
-        else if (version < VERSION("4.0")) {
+        } else if (version < VERSION("4.0")) {
             const QString message = tr("Warning! This is an old version wiRedPanda project file (version < 4.0). "
                          "To open it correctly, save all the ICs and skins in the main project directory.");
             QMessageBox::warning(this, tr("Old version file."), message);

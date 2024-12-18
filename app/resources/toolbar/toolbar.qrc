@@ -30,6 +30,7 @@
         <file>rotateR.svg</file>
         <file>save.svg</file>
         <file>selectAll.svg</file>
+        <file>spanish.svg</file>
         <file>stop.svg</file>
         <file>trashcan.svg</file>
         <file>undo.svg</file>
@@ -40,6 +41,5 @@
         <file>zoomIn.svg</file>
         <file>zoomOut.svg</file>
         <file>zoomReset.svg</file>
-        <file>spanish.svg</file>
     </qresource>
 </RCC>

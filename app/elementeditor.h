@@ -52,7 +52,7 @@ private:
     void priorityChanged(const int value);
     void selectionChanged();
     void setCurrentElements(const QList<GraphicElement *> &elements);
-    void setTruthTableProposition(int row, int column);
+    void setTruthTableProposition(const int row, const int column);
     void triggerChanged(const QString &cmd);
     void updateSkins();
 
