@@ -161,9 +161,18 @@ void WorkSpace::load(QDataStream &stream)
 
     if (GlobalProperties::verbose) {
         if (version > GlobalProperties::version) {
-            QMessageBox::warning(this, tr("Newer version file."), tr("Warning! Your wiRedPanda is possibly out of date.\n The file you are opening was saved in a newer version.\n Please check for updates."));
-        } else if (version < VERSION("4.0")) {
-            QMessageBox::warning(this, tr("Old version file."), tr("Warning! This is an old version wiRedPanda project file (version < 4.0). To open it correctly, save all the ICs and skins in the main project directory."));
+            const QString progVersion = GlobalProperties::version.toString();
+            const QString fileVersion = version.toString();
+            const QString message = tr("Warning! Your wiRedPanda (Version: %1) is possibly out of date.\n"
+                         "The file you are opening was saved with version (%2).\n"
+                         "Please check for updates if the file does not load correctly.")
+                          .arg(progVersion, fileVersion);
+            QMessageBox::warning(this, tr("Newer version file."), message);
+        }
+        else if (version < VERSION("4.0")) {
+            const QString message = tr("Warning! This is an old version wiRedPanda project file (version < 4.0). "
+                         "To open it correctly, save all the ICs and skins in the main project directory.");
+            QMessageBox::warning(this, tr("Old version file."), message);
         }
     }
 
