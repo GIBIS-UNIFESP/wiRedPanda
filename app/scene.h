@@ -11,8 +11,8 @@
 #include <QMimeData>
 #include <QUndoCommand>
 
-class GraphicsView;
 class GraphicElement;
+class GraphicsView;
 class QNEConnection;
 
 class Scene : public QGraphicsScene

@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
@@ -17,6 +17,6 @@ public:
 private:
     Q_DISABLE_COPY(LogicTruthTable)
 
-    QBitArray proposition;
-    int nOutputs;
+    QBitArray m_proposition;
+    int m_nOutputs;
 };

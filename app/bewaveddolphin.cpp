@@ -372,7 +372,7 @@ void BewavedDolphin::run2()
         qCDebug(four) << "Itr: " << column << ", inputs: " << m_inputs.size();
         int row = 0;
 
-        for (auto *input : qAsConst(m_inputs)) {
+        for (auto *input : std::as_const(m_inputs)) {
             const bool isRotary = dynamic_cast<InputRotary*>(input);
             for (int port = 0; port < input->outputSize(); ++port) {
                 const bool value = m_model->index(row++, column).data().toBool();
@@ -397,7 +397,7 @@ void BewavedDolphin::run2()
             for (int port = 0; port < output->inputSize(); ++port) {
                 const int value = static_cast<int>(output->inputPort(port)->status());
                 createElement(row, column, value, false);
-                row++;
+                ++row;
             }
         }
     }
@@ -1020,7 +1020,7 @@ void BewavedDolphin::on_actionSaveAs_triggered()
 
     save(fileName);
     m_currentFile = QFileInfo(fileName);
-    associateTowiRedPanda(fileName);
+    associateToWiRedPanda(fileName);
     setWindowTitle(tr("beWavedDolphin Simulator") + " [" + m_currentFile.fileName() + "]");
     m_ui->statusbar->showMessage(tr("Saved file successfully."), 4000);
     m_edited = false;
@@ -1082,7 +1082,7 @@ void BewavedDolphin::save(QSaveFile &file)
     }
 }
 
-void BewavedDolphin::associateTowiRedPanda(const QString &fileName)
+void BewavedDolphin::associateToWiRedPanda(const QString &fileName)
 {
     if ((m_mainWindow->dolphinFileName() != fileName) && GlobalProperties::verbose) {
         const auto reply =
@@ -1173,7 +1173,7 @@ void BewavedDolphin::load(const QString &fileName)
 
     qCDebug(zero) << "Closing file.";
     file.close();
-    associateTowiRedPanda(fileName);
+    associateToWiRedPanda(fileName);
     setWindowTitle(tr("beWavedDolphin Simulator") + " [" + m_currentFile.fileName() + "]");
 }
 

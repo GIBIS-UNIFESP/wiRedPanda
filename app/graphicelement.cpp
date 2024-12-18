@@ -18,7 +18,6 @@
 #include <QPixmap>
 #include <QStyleOptionGraphicsItem>
 #include <cmath>
-#include <iostream>
 
 namespace
 {
@@ -306,7 +305,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
 
         portMap[ptr] = m_inputPorts.value(port);
 
-        port++;
+        ++port;
     }
 
     removeSurplusInputs(inputMap.size(), portMap);
@@ -332,7 +331,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
 
         portMap[ptr] = m_outputPorts.value(port);
 
-        port++;
+        ++port;
     }
 
     removeSurplusOutputs(outputMap.size(), portMap);
@@ -349,7 +348,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
             m_alternativeSkins[skin] = name;
         }
 
-        skin++;
+        ++skin;
     }
 
     m_usingDefaultSkin = (m_defaultSkins == m_alternativeSkins);

@@ -1,4 +1,4 @@
-// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "truth_table.h"
@@ -7,7 +7,6 @@
 #include "globalproperties.h"
 #include "qneport.h"
 
-#include <QDebug>
 #include <QPainter>
 
 namespace
@@ -53,7 +52,7 @@ void TruthTable::updatePortsProperties()
             y += step * 2;
 
             port->setName(QChar::fromLatin1('A' + index));
-            index++;
+            ++index;
         }
     }
 
@@ -73,7 +72,7 @@ void TruthTable::updatePortsProperties()
             y += step * 2;
 
             port->setName("S" + QString::number(index));
-            index++;
+            ++index;
         }
     }
 }
@@ -82,11 +81,9 @@ void TruthTable::generatePixmap()
 {
     // make pixmap
     const QSize size = portsBoundingRect().united(QRectF(0, 0, 64, 64)).size().toSize();
-    qCDebug(zero) << "portBounding size: " << portsBoundingRect();
-    qCDebug(zero) << "size: " << size;
 
     QPixmap tempPixmap(size);
-    qCDebug(zero) << "tempPixmap size: " << tempPixmap;
+
     tempPixmap.fill(Qt::transparent);
 
     QPainter tmpPainter(&tempPixmap);
@@ -116,10 +113,6 @@ void TruthTable::generatePixmap()
     shadowRect.adjust(0, -3, 0, 0);
     tmpPainter.drawRoundedRect(shadowRect, 3, 3);
 
-    // draw semicircle
-    /*QRectF topCenter = QRectF(finalRect.topLeft() + QPointF(18, -12), QSize(24, 24));
-    tmpPainter.drawChord(topCenter, 0, -180 * 16);*/
-
     m_pixmap = std::make_unique<QPixmap>(tempPixmap);
 
     GraphicElement::update();
@@ -145,7 +138,6 @@ void TruthTable::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 
     generatePixmap();
     painter->drawPixmap(boundingRect().topLeft(), pixmap());
-    qCDebug(zero) << "painter->drawRoundedRect size: " << painter;
 }
 
 QBitArray &TruthTable::key()

@@ -4,6 +4,7 @@
 #include "elementeditor.h"
 #include "ui_elementeditor.h"
 
+#include "audiobox.h"
 #include "commands.h"
 #include "common.h"
 #include "elementfactory.h"
@@ -11,7 +12,6 @@
 #include "scene.h"
 #include "thememanager.h"
 #include "truth_table.h"
-#include "audiobox.h"
 
 #include <QDebug>
 #include <QFileDialog>
@@ -587,7 +587,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 
     if (m_hasOnlyInputs) {
         if (maxCurrentOutputSize == 1) {
-            maxCurrentOutputSize++;
+            ++maxCurrentOutputSize;
         }
 
         for (int val = 0; val < maxCurrentOutputSize; ++val) {
@@ -857,7 +857,7 @@ void ElementEditor::truthTable()
 {
     if (!m_hasTruthTable) return;
 
-    auto *truthtable = dynamic_cast<class TruthTable *>(m_elements[0]);
+    auto *truthtable = dynamic_cast<TruthTable *>(m_elements[0]);
 
     // Assuming only one element selected for now...
 
@@ -866,39 +866,29 @@ void ElementEditor::truthTable()
 
     QStringList inputLabels;
     m_table->setColumnCount(nInputs + nOutputs);
-    m_table->setRowCount(pow(2,nInputs));
+    m_table->setRowCount(std::pow(2, nInputs));
 
-    for (int i = 0; i < nInputs; ++i)
-    {
-        auto nextLabel = new QString(QChar::fromLatin1('A' + i));
-        inputLabels.append(*nextLabel);
+    for (int i = 0; i < nInputs; ++i) {
+        inputLabels.append(QChar::fromLatin1('A' + i));
     }
 
-    for (int i = 0; i < truthtable->outputSize(); ++i)
-    {
+    for (int i = 0; i < truthtable->outputSize(); ++i) {
         inputLabels.append("S"+QString::number(i));
-        m_table->setColumnWidth(nInputs + i,14);
+        m_table->setColumnWidth(nInputs + i, 14);
     }
 
     m_table->setHorizontalHeaderLabels(inputLabels);
 
-    // int columnCount = m_ui->truthTable->columnCount();
-
-    // if (m_ui->truthTable->columnCount() != 0 && m_ui->truthTable->columnCount() - 1 != m_elements[0]->inputSize()) hasInputPortsChange = true;
-
-    for (int i = 0; i < pow(2, nInputs); ++i)
-    {
-        for (int j = 0; j < nInputs; ++j)
-        {
+    for (int i = 0; i < std::pow(2, nInputs); ++i) {
+        for (int j = 0; j < nInputs; ++j) {
             m_table->setColumnWidth(j, 14);
             auto newItemValue = QString::number(i, 2);
 
-            if (newItemValue.size() < nInputs){
+            if (newItemValue.size() < nInputs) {
                 newItemValue = newItemValue.rightJustified(nInputs, '0');
             }
 
-            if (m_table->item(i, j) == nullptr)
-            {
+            if (m_table->item(i, j) == nullptr) {
                 auto *newItem = new QTableWidgetItem(newItemValue.at(j), QTableWidgetItem::Type);
                 newItem->setTextAlignment(Qt::AlignCenter);
                 m_table->setItem(i, j, newItem);
@@ -908,11 +898,10 @@ void ElementEditor::truthTable()
             m_table->item(i, j)->setText(newItemValue.at(j));
         }
 
-        auto arr = truthtable->key();
+        auto bitArray = truthtable->key();
 
-        for (int z = 0; z < nOutputs; ++z)
-        {
-            int output = arr.at(256 * z + i);
+        for (int z = 0; z < nOutputs; ++z) {
+            const int output = bitArray.at(256 * z + i);
 
             if (m_table->item(i, nInputs + z) == nullptr) {
                 auto *newOutItem = new QTableWidgetItem(QString(QChar::fromLatin1('0' + output)));
@@ -928,7 +917,7 @@ void ElementEditor::truthTable()
     m_tableBox->show();
 }
 
-void ElementEditor::setTruthTableProposition(int row, int column)
+void ElementEditor::setTruthTableProposition(const int row, const int column)
 {
     if (m_elements.size() > 1) return;
 
@@ -948,8 +937,6 @@ void ElementEditor::setTruthTableProposition(int row, int column)
     update();
 
     m_scene->setCircuitUpdateRequired();
-
-    return;
 }
 
 void ElementEditor::audioBox() {

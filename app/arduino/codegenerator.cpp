@@ -116,7 +116,7 @@ void CodeGenerator::declareInputs()
             m_inputMap.append(MappedPin(elm, m_availablePins.constFirst(), varName, elm->outputPort(0), 0));
             m_availablePins.removeFirst();
             m_varMap[elm->outputPort()] = varName + QString("_val");
-            counter++;
+            ++counter;
         }
     }
 
@@ -145,7 +145,7 @@ void CodeGenerator::declareOutputs()
                 m_availablePins.removeFirst();
             }
         }
-        counter++;
+        ++counter;
     }
     m_stream << endl;
 }
