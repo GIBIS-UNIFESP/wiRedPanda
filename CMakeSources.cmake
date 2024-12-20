@@ -53,6 +53,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/app/element/not.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/element/or.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/element/srflipflop.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/app/element/srlatch.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/element/text.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/element/tflipflop.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/element/truth_table.cpp
@@ -73,6 +74,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logicor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logicoutput.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logicsrflipflop.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logicsrlatch.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logictflipflop.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logictruthtable.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logicxnor.cpp
@@ -136,6 +138,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/app/element/not.h
     ${CMAKE_CURRENT_LIST_DIR}/app/element/or.h
     ${CMAKE_CURRENT_LIST_DIR}/app/element/srflipflop.h
+    ${CMAKE_CURRENT_LIST_DIR}/app/element/srlatch.h
     ${CMAKE_CURRENT_LIST_DIR}/app/element/text.h
     ${CMAKE_CURRENT_LIST_DIR}/app/element/tflipflop.h
     ${CMAKE_CURRENT_LIST_DIR}/app/element/truth_table.h
@@ -157,6 +160,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logicor.h
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logicoutput.h
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logicsrflipflop.h
+    ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logicsrlatch.h
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logictflipflop.h
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logictruthtable.h
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logicxnor.h

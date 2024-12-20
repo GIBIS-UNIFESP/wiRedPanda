@@ -23,6 +23,7 @@ SOURCES += \
     $$PWD/not.cpp \
     $$PWD/or.cpp \
     $$PWD/srflipflop.cpp \
+    $$PWD/srlatch.cpp \
     $$PWD/text.cpp \
     $$PWD/tflipflop.cpp \
     $$PWD/truth_table.cpp \
@@ -54,6 +55,7 @@ HEADERS += \
     $$PWD/not.h \
     $$PWD/or.h \
     $$PWD/srflipflop.h \
+    $$PWD/srlatch.h \
     $$PWD/text.h \
     $$PWD/tflipflop.h \
     $$PWD/truth_table.h \

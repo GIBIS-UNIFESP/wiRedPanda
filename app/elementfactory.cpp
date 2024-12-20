@@ -21,6 +21,7 @@
 #include "logicor.h"
 #include "logicoutput.h"
 #include "logicsrflipflop.h"
+#include "logicsrlatch.h"
 #include "logictflipflop.h"
 #include "logictruthtable.h"
 #include "logicxnor.h"
@@ -180,6 +181,7 @@ std::shared_ptr<LogicElement> ElementFactory::buildLogicElement(GraphicElement *
     case ElementType::Not:         return std::make_shared<LogicNot>();
     case ElementType::Or:          return std::make_shared<LogicOr>(elm->inputSize());
     case ElementType::SRFlipFlop:  return std::make_shared<LogicSRFlipFlop>();
+    case ElementType::SRLatch:     return std::make_shared<LogicSRLatch>();
     case ElementType::TFlipFlop:   return std::make_shared<LogicTFlipFlop>();
     case ElementType::TruthTable:  return std::make_shared<LogicTruthTable>(elm->inputSize(), elm->outputSize(), (dynamic_cast<TruthTable*>(elm))->key());
     case ElementType::Xnor:        return std::make_shared<LogicXnor>(elm->inputSize());
