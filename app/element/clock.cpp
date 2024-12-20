@@ -159,7 +159,7 @@ void Clock::resetClock(const std::chrono::steady_clock::time_point &globalTime)
     setOn();
     auto delay_ms = static_cast<uint>(m_delay * 1000);
     m_startTime = globalTime;
-    m_startTime += std::chrono::milliseconds(delay_ms);
+    m_startTime -= std::chrono::milliseconds(delay_ms);
 }
 
 QString Clock::genericProperties()
