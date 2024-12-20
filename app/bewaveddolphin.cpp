@@ -428,17 +428,21 @@ void BewavedDolphin::run()
             }
 
             row = m_inputPorts;
-            bool lastOutput;
 
             for (const auto &output : m_output_values) {
                 const auto lastIndex = m_model->index(row, column - 1);
+                const QString currentValue = lastIndex.data().toString();
+                const int lastValue = convertHexToInt(currentValue);
+                QPixmap composedWave;
 
                 if (!lastIndex.isValid()) {
-                    createComposedWaveFormElement(row, column, output, std::nullopt);
+                    composedWave = composeWaveParts(output, -1);
                 } else {
-                    createComposedWaveFormElement(row, column, output, lastOutput);
+                    composedWave = composeWaveParts(output, lastValue);
                 }
-                lastOutput = output.last();
+
+                const QString hex = convertBinaryToHex(output);
+                createTemporalSimulationElement(row, column, composedWave, hex);
                 ++row;
             }
         } else {
@@ -461,13 +465,6 @@ void BewavedDolphin::run()
 
     qCDebug(three) << "Setting inputs back to old values.";
     restoreInputs();
-}
-
-void BewavedDolphin::createComposedWaveFormElement(const int row, const int column, QVector<bool> output, std::optional<bool> previousWaveEnd)
-{
-    QPixmap composedWave = composeWaveParts(output, previousWaveEnd);
-    const QString hex = convertBinaryToHex(output);
-    createTemporalSimulationElement(row, column, composedWave, hex);
 }
 
 void BewavedDolphin::restoreInputs()
@@ -1420,11 +1417,16 @@ void BewavedDolphin::on_actionTemporalSimulation_toggled(const bool checked)
     m_ui->actionTemporalSimulation->setChecked(checked);
     m_simulation->setTemporalSimulation(checked);
 
-    on_actionShowNumbers_triggered();
-    on_actionShowWaveforms_triggered();
+    if (m_type == PlotType::Line) {
+        on_actionShowNumbers_triggered();
+        on_actionShowWaveforms_triggered();
+    } else {
+        on_actionShowNumbers_triggered();
+    }
+
 }
 
-QPixmap BewavedDolphin::composeWaveParts(const QVector<bool> waveparts, std::optional<bool> previousWaveEnd)
+QPixmap BewavedDolphin::composeWaveParts(const QVector<bool> waveparts, const int previousWaveEnd)
 {
     int partWidth = 64;
     int partHeight = 38;
@@ -1433,20 +1435,29 @@ QPixmap BewavedDolphin::composeWaveParts(const QVector<bool> waveparts, std::opt
     composedPixmap.fill(Qt::transparent);
     QPainter painter(&composedPixmap);
 
-    std::optional<bool> previousState;
-    previousState = previousWaveEnd.value();
+    int previousState;
+
+    if (previousWaveEnd == -1) {
+        previousState = -1;
+    } else {
+        previousState = previousWaveEnd % 2;
+    }
 
     for (int i = 0; i < waveparts.length(); i++) {
         int x = i * (partWidth / 8);
         bool currentState = waveparts[i];
+        QPixmap currentPixmap;
 
-        const QPixmap &currentPixmap = (previousState == currentState)
-                                           ? (currentState ? m_smallHighGreen : m_smallLowGreen)
-                                           : (currentState ? m_smallRisingGreen : m_smallFallingGreen);
+        if (previousState == -1) {
+            currentPixmap = (currentState) ? m_smallHighGreen : m_smallLowGreen;
+        } else {
+            currentPixmap = (static_cast<bool>(previousState) == currentState)
+                                ? (currentState ? m_smallHighGreen : m_smallLowGreen)
+                                : (currentState ? m_smallRisingGreen : m_smallFallingGreen);
+        }
 
         painter.drawPixmap(x, 0, currentPixmap);
-
-        previousState = currentState;
+        previousState = static_cast<int>(currentState);
     }
 
     painter.end();
@@ -1491,4 +1502,17 @@ QString BewavedDolphin::convertBinaryToHex(const QVector<bool> &binaryVector) co
     QString hexValue = QString::number(decimalValue, 16).toUpper(); // Convert decimal to hex (uppercase)
 
     return hexValue;
+}
+
+int BewavedDolphin::convertHexToInt(const QString &hexString) const
+{
+    bool ok = false;
+    int intValue = hexString.toInt(&ok, 16); // Convert hex string to int with base 16
+
+    if (!ok) {
+        qWarning() << "Failed to convert hex string to int:" << hexString;
+        return 0; // Or handle the error as needed
+    }
+
+    return intValue;
 }
