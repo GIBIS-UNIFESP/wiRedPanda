@@ -162,11 +162,11 @@ float Clock::delay() const
 {
     return static_cast<float>(m_delay);
 }
+
 void Clock::setDelay(const float delay)
 {
     m_delay = static_cast<double>(delay);
     m_reset = true;
-
 }
 
 void Clock::resetClock()
@@ -175,7 +175,7 @@ void Clock::resetClock()
     setOn();
     auto delay_ms = static_cast<uint>(m_delay * 1000);
     m_elapsed = std::chrono::duration<double, std::milli>{0};
-    m_elapsed += std::chrono::milliseconds(delay_ms);
+    m_elapsed -= std::chrono::milliseconds(delay_ms);
     m_reset = false;
 }
 
