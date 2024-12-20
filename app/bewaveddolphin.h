@@ -75,7 +75,7 @@ private:
      * @param previousWaveEnd is the bool of the last position in the last cell.
      * @return a Pixmap containing the waveform image 64x38 pixels.
     */
-    QPixmap composeWaveParts(const QVector<bool> waveparts, std::optional<bool> previousWaveEnd);
+    QPixmap composeWaveParts(const QVector<bool> waveparts, const int previousWaveEnd);
 
     /**
      * This function converts a boolean vector into a string of hexadecimal values.
@@ -85,6 +85,14 @@ private:
     QString convertBinaryToHex(const QVector<bool> &binaryVector) const;
 
     bool checkSave();
+
+    /**
+     * This function converts a hexadecimal string into a integer.
+     * @param hexString is the hexadecimal string.
+     * @return returns the integer based on hexString.
+    */
+    int convertHexToInt(const QString &hexString) const;
+
     int sectionFirstColumn(const QItemSelection &ranges);
     int sectionFirstRow(const QItemSelection &ranges);
     void associateToWiRedPanda(const QString &fileName);
