@@ -61,7 +61,7 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, QMap<quin
             auto *conn = new QNEConnection();
 
             qCDebug(three) << "Loading connection.";
-            conn->load(stream, portMap);
+            conn->load(stream, portMap, version);
 
             qCDebug(three) << "Appending connection.";
             itemList.append(conn);

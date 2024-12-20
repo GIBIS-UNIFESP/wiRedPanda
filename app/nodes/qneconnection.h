@@ -27,7 +27,8 @@
 
 #include "enums.h"
 #include "itemwithid.h"
-
+#include "QVersionNumber"
+#include "globalproperties.h"
 #include <QCoreApplication>
 #include <QGraphicsPathItem>
 
@@ -52,9 +53,10 @@ public:
     QNEPort *otherPort(const QNEPort *port) const;
     QRectF boundingRect() const override;
     Status status() const;
+    void setStatus(const Status status);
     bool highLight();
     double angle();
-    void load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap = {});
+    void load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap = {}, const QVersionNumber version = VERSION("4.2"));
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void save(QDataStream &stream) const;
     void setEndPort(QNEInputPort *port);
@@ -62,7 +64,6 @@ public:
     void setHighLight(const bool highLight);
     void setStartPort(QNEOutputPort *port);
     void setStartPos(const QPointF point);
-    void setStatus(const Status status);
     void setWireless(const bool isWireless);
     void updatePath();
     void updatePosFromPorts();

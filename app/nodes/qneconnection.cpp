@@ -28,7 +28,7 @@
 #include "common.h"
 #include "qneport.h"
 #include "thememanager.h"
-
+#include "globalproperties.h"
 #include <QBrush>
 #include <QDebug>
 #include <QGraphicsScene>
@@ -176,14 +176,19 @@ void QNEConnection::save(QDataStream &stream) const
     stream << this->mapId();
 }
 
-void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap)
+void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
 {
     quint64 ptr1; stream >> ptr1;
     quint64 ptr2; stream >> ptr2;
-    bool isWireless; stream >> isWireless;
-    int mapId; stream >> mapId;
-    m_wireless = isWireless;
-    m_mapId = mapId;
+
+
+    if (version >= VERSION("4.2")) {
+        bool isWireless; stream >> isWireless;
+        int mapId; stream >> mapId;
+        m_wireless = isWireless;
+        m_mapId = mapId;
+    }
+
     if (portMap.isEmpty()) {
         qCDebug(three) << "Empty port map.";
         auto *port1 = reinterpret_cast<QNEPort *>(ptr1);
