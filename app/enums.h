@@ -13,7 +13,7 @@ public:
     enum class Status { Invalid = -1, Inactive = 0, Active = 1 };
     Q_ENUM(Status)
 
-    enum class ElementType {
+    enum class ElementType { // last element is 32
         And = 5,
         AudioBox = 31,
         Buzzer = 26,
@@ -40,7 +40,7 @@ public:
         Not = 4,
         Or = 6,
         SRFlipFlop = 19,
-        SRLatch = 30,
+        SRLatch = 32,
         TFlipFlop = 20,
         Text = 28,
         TruthTable = 30,

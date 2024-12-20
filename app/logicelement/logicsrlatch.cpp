@@ -18,48 +18,24 @@ void LogicSRLatch::updateLogic()
         return;
     }
 
-    if (isTempSimulationOn()) {
-        bool q0 = outputValue(0);
-        bool q1 = outputValue(1);
-        const bool S = m_inputBuffer.last()[0];
-        const bool R = m_inputBuffer.last()[1];
+    bool q0 = outputValue(0);
+    bool q1 = outputValue(1);
+    const bool S = m_inputValues.at(0);
+    const bool R = m_inputValues.at(1);
 
-        if (S && R){
-            q0 = !S;
-            q1 = !S;
-        }
-        else if (S) {
-            q0 = !R;
-            q1 = R;
-        }
-        else if (R) {
-            q0 = S;
-            q1 = !S;
-        }
-
-        setOutputValue(0, q0);
-        setOutputValue(1, q1);
-        updateInputBuffer();
-    } else {
-        bool q0 = outputValue(0);
-        bool q1 = outputValue(1);
-        const bool S = m_inputValues.at(0);
-        const bool R = m_inputValues.at(1);
-
-        if (S && R){
-            q0 = !S;
-            q1 = !S;
-        }
-        else if (S) {
-            q0 = !R;
-            q1 = R;
-        }
-        else if (R) {
-            q0 = S;
-            q1 = !S;
-        }
-
-        setOutputValue(0, q0);
-        setOutputValue(1, q1);
+    if (S && R){
+        q0 = !S;
+        q1 = !S;
     }
+    else if (S) {
+        q0 = !R;
+        q1 = R;
+    }
+    else if (R) {
+        q0 = S;
+        q1 = !S;
+    }
+
+    setOutputValue(0, q0);
+    setOutputValue(1, q1);
 }

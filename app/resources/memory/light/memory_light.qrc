@@ -7,6 +7,6 @@
         <file>D-latch.svg</file>
         <file>T-latch.svg</file>
         <file>JK-latch.svg</file>
-        <file>../../../../../wiRedPanda-master/app/resources/memory/light/SR-latch.svg</file>
+        <file>SR-latch.svg</file>
     </qresource>
 </RCC>

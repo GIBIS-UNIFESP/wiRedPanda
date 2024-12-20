@@ -3,18 +3,23 @@
 
 #pragma once
 
-#include "logicelement.h"
+#include "graphicelement.h"
+#include "thememanager.h"
 
-// Muda nome
-class LogicSRLatch : public LogicElement
+class SRLatch : public GraphicElement
 {
+    Q_OBJECT
+
 public:
-    // Muda nome
-    explicit LogicSRLatch();
+    explicit SRLatch(QGraphicsItem *parent = nullptr);
 
-    void updateLogic() override;
+    static QString pixmapPath()
+    {
+        return ":/memory/" + ThemeManager::themePath() + "/SR-latch.svg";
+    }
 
-private:
-    // Muda nome
-    Q_DISABLE_COPY(LogicSRLatch)
+    void updatePortsProperties() override;
+    void updateTheme() override;
 };
+
+Q_DECLARE_METATYPE(SRLatch)
