@@ -13,6 +13,7 @@ SOURCES += \
     $$PWD/logicor.cpp \
     $$PWD/logicoutput.cpp \
     $$PWD/logicsrflipflop.cpp \
+    $$PWD/logicsrlatch.cpp \
     $$PWD/logictflipflop.cpp \
     $$PWD/logictruthtable.cpp \
     $$PWD/logicxnor.cpp \
@@ -34,6 +35,7 @@ HEADERS += \
     $$PWD/logicor.h \
     $$PWD/logicoutput.h \
     $$PWD/logicsrflipflop.h \
+    $$PWD/logicsrlatch.h \
     $$PWD/logictflipflop.h \
     $$PWD/logictruthtable.h \
     $$PWD/logicxnor.h \

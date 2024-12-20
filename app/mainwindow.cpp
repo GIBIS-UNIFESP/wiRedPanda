@@ -1260,7 +1260,7 @@ void MainWindow::populateLeftMenu()
     populateMenu(m_ui->verticalSpacer_InOut, {"InputVcc", "InputGnd", "InputButton", "InputSwitch", "InputRotary", "Clock", "Led", "Display7", "Display14", "Buzzer", "AudioBox"}, m_ui->scrollAreaWidgetContents_InOut->layout());
     populateMenu(m_ui->verticalSpacer_Gates, {"And", "Or", "Not", "Nand", "Nor", "Xor", "Xnor", "Node"}, m_ui->scrollAreaWidgetContents_Gates->layout());
     populateMenu(m_ui->verticalSpacer_Combinational, {"TruthTable", "Mux", "Demux"}, m_ui->scrollAreaWidgetContents_Combinational->layout());
-    populateMenu(m_ui->verticalSpacer_Memory, {"DLatch", "DFlipFlop", "JKFlipFlop", "SRFlipFlop", "TFlipFlop"}, m_ui->scrollAreaWidgetContents_Memory->layout());
+    populateMenu(m_ui->verticalSpacer_Memory, {"DLatch", "SRLatch", "DFlipFlop", "JKFlipFlop", "TFlipFlop"}, m_ui->scrollAreaWidgetContents_Memory->layout());
     populateMenu(m_ui->verticalSpacer_Misc, {"Text", "Line"}, m_ui->scrollAreaWidgetContents_Misc->layout());
 }
 
