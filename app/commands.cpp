@@ -216,7 +216,7 @@ AddItemsCommand::AddItemsCommand(const QList<QGraphicsItem *> &items, Scene *sce
     SimulationBlocker blocker(m_scene->simulation());
     const auto items_ = loadList(items, m_ids, m_otherIds);
     addItems(m_scene, items_);
-    setText(QString("Add %1 elements").arg(items_.size()));
+    setText(tr("Add %1 elements").arg(items_.size()));
 }
 
 void AddItemsCommand::undo()
@@ -243,7 +243,7 @@ DeleteItemsCommand::DeleteItemsCommand(const QList<QGraphicsItem *> &items, Scen
 {
     SimulationBlocker blocker(m_scene->simulation());
     const auto items_ = loadList(items, m_ids, m_otherIds);
-    setText(QString("Delete %1 elements").arg(items_.size()));
+    setText(tr("Delete %1 elements").arg(items_.size()));
 }
 
 void DeleteItemsCommand::undo()
@@ -269,7 +269,7 @@ RotateCommand::RotateCommand(const QList<GraphicElement *> &items, const int ang
     , m_angle(angle)
     , m_scene(scene)
 {
-    setText(QString("Rotate %1 degrees").arg(m_angle));
+    setText(tr("Rotate %1 degrees").arg(m_angle));
     m_ids.reserve(items.size());
     m_positions.reserve(items.size());
 
@@ -341,7 +341,7 @@ MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPoint
         m_newPositions.append(elm->pos());
     }
 
-    setText(QString("Move elements"));
+    setText(tr("Move elements"));
 }
 
 void MoveCommand::undo()
@@ -382,7 +382,7 @@ UpdateCommand::UpdateCommand(const QList<GraphicElement *> &elements, const QByt
         m_ids.append(elm->id());
     }
 
-    setText(QString("Update %1 elements").arg(elements.size()));
+    setText(tr("Update %1 elements").arg(elements.size()));
 }
 
 void UpdateCommand::undo()
@@ -444,7 +444,7 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
 
     m_nodeId = node->id();
 
-    setText(QString("Wire split"));
+    setText(tr("Wire split"));
 }
 
 void SplitCommand::redo()
@@ -526,7 +526,7 @@ MorphCommand::MorphCommand(const QList<GraphicElement *> &elements, ElementType 
         m_types.append(oldElm->elementType());
     }
 
-    setText(QString("Morph %1 elements to %2").arg(elements.size()).arg(elements.constFirst()->objectName()));
+    setText(tr("Morph %1 elements to %2").arg(elements.size()).arg(elements.constFirst()->objectName()));
 }
 
 void MorphCommand::undo()
@@ -632,7 +632,7 @@ FlipCommand::FlipCommand(const QList<GraphicElement *> &items, const int axis, S
         return;
     }
 
-    setText(QString("Flip %1 elements in axis %2").arg(items.size(), axis));
+    setText(tr("Flip %1 elements in axis %2").arg(items.size(), axis));
     m_ids.reserve(items.size());
     m_positions.reserve(items.size());
     double xmin = items.constFirst()->pos().rx();
@@ -689,7 +689,7 @@ ChangeInputSizeCommand::ChangeInputSizeCommand(const QList<GraphicElement *> &el
         m_ids.append(elm->id());
     }
 
-    setText(QString("Change input size to %1").arg(newInputSize));
+    setText(tr("Change input size to %1").arg(newInputSize));
 }
 
 void ChangeInputSizeCommand::redo()
@@ -779,7 +779,7 @@ ChangeOutputSizeCommand::ChangeOutputSizeCommand(const QList<GraphicElement *> &
         m_ids.append(elm->id());
     }
 
-    setText(QString("Change input size to %1").arg(newOutputSize));
+    setText(tr("Change input size to %1").arg(newOutputSize));
 }
 
 void ChangeOutputSizeCommand::redo()
