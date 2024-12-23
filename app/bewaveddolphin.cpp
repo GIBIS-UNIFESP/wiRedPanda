@@ -40,8 +40,14 @@ SignalModel::SignalModel(const int inputs, const int rows, const int columns, QO
 
 Qt::ItemFlags SignalModel::flags(const QModelIndex &index) const
 {
-    Q_UNUSED(index)
-    return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+    Qt::ItemFlags flags;
+
+    if (index.row() >= m_inputCount)
+        flags = Qt::ItemIsEnabled;
+    else
+        flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+
+    return flags;
 }
 
 SignalDelegate::SignalDelegate(QObject *parent)
