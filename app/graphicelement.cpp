@@ -797,9 +797,11 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
 
 bool GraphicElement::sceneEvent(QEvent *event)
 {
-    if (auto mouseEvent = dynamic_cast<QGraphicsSceneMouseEvent *>(event)) {
-        if (mouseEvent->modifiers().testFlag(Qt::ControlModifier)) {
-            return true;
+    if (event->type() == QEvent::GraphicsSceneMousePress || event->type() == QEvent::GraphicsSceneMouseRelease) {
+        if (auto mouseEvent = dynamic_cast<QGraphicsSceneMouseEvent *>(event)) {
+            if (mouseEvent->modifiers().testFlag(Qt::ControlModifier)) {
+                return true;
+            }
         }
     }
 
