@@ -30,8 +30,10 @@ void Simulation::update()
     }
 
     if (m_timer.isActive()) {
+        const auto globalTime = std::chrono::steady_clock::now();
+
         for (auto *clock : std::as_const(m_clocks)) {
-            clock->updateClock();
+            clock->updateClock(globalTime);
         }
     }
 
@@ -128,6 +130,8 @@ bool Simulation::initialize()
 
     qCDebug(two) << "GENERATING SIMULATION LAYER.";
 
+    const auto globalTime = std::chrono::steady_clock::now();
+
     for (auto *item : items) {
         if (item->type() == QNEConnection::Type) {
             m_connections.append(qgraphicsitem_cast<QNEConnection *>(item));
@@ -139,7 +143,7 @@ bool Simulation::initialize()
 
             if (element->elementType() == ElementType::Clock) {
                 m_clocks.append(qobject_cast<Clock *>(element));
-                m_clocks.constLast()->resetClock();
+                m_clocks.constLast()->resetClock(globalTime);
             }
 
             if (element->elementGroup() == ElementGroup::Input) {

@@ -16,21 +16,20 @@ public:
     bool isOn(const int port = 0) const override;
     float frequency() const override;
     void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
-    void resetClock();
+    void resetClock(const std::chrono::steady_clock::time_point &globalTime);
     void save(QDataStream &stream) const override;
     void setFrequency(const float freq) override;
     void setOff() override;
     void setOn() override;
     void setOn(const bool value, const int port = 0) override;
     void setSkin(const bool defaultSkin, const QString &fileName) override;
-    void updateClock();
+    void updateClock(const std::chrono::steady_clock::time_point &globalTime);
 
 private:
     bool m_isOn = false;
-    bool m_reset = true;
     double m_frequency = 0;
-    std::chrono::duration<double, std::milli> m_elapsed{0};
-    std::chrono::duration<double, std::milli> m_interval{};
+    std::chrono::microseconds m_interval;
+    std::chrono::steady_clock::time_point m_startTime;
 };
 
 Q_DECLARE_METATYPE(Clock)
