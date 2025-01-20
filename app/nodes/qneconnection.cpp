@@ -262,6 +262,7 @@ void QNEConnection::updateTheme()
     m_inactiveColor = theme.m_connectionInactive;
     m_activeColor = theme.m_connectionActive;
     m_selectedColor = theme.m_connectionSelected;
+    update();
 }
 
 void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
