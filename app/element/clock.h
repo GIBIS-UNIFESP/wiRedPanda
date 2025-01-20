@@ -14,10 +14,12 @@ public:
 
     QString genericProperties() override;
     bool isOn(const int port = 0) const override;
+    float delay() const override;
     float frequency() const override;
     void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
     void resetClock(const std::chrono::steady_clock::time_point &globalTime);
     void save(QDataStream &stream) const override;
+    void setDelay(const float delay) override;
     void setFrequency(const float freq) override;
     void setOff() override;
     void setOn() override;
@@ -27,6 +29,7 @@ public:
 
 private:
     bool m_isOn = false;
+    double m_delay = 0;
     double m_frequency = 0;
     std::chrono::microseconds m_interval;
     std::chrono::steady_clock::time_point m_startTime;

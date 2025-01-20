@@ -61,6 +61,7 @@ private:
     QList<GraphicElement *> m_elements;
     QString m_manyAudios = tr("<Many sounds>");
     QString m_manyColors = tr("<Many colors>");
+    QString m_manyDelay = tr("<Many values>");
     QString m_manyFreq = tr("<Many values>");
     QString m_manyIS = tr("<Many values>");
     QString m_manyLabels = tr("<Many labels>");
@@ -79,6 +80,7 @@ private:
     bool m_hasAudio = false;
     bool m_hasAudioBox = false;
     bool m_hasColors = false;
+    bool m_hasDelay = false;
     bool m_hasElements = false;
     bool m_hasFrequency = false;
     bool m_hasLabel = false;
@@ -86,6 +88,7 @@ private:
     bool m_hasRotation = false;
     bool m_hasSameAudio = false;
     bool m_hasSameColors = false;
+    bool m_hasSameDelay = false;
     bool m_hasSameFrequency = false;
     bool m_hasSameInputSize = false;
     bool m_hasSameLabel = false;
