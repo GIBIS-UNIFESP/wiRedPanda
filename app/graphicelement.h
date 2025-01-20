@@ -56,6 +56,9 @@ public:
     //! virtual function overloaded by clock element. Other elements have frequency of 0.
     virtual float frequency() const;
 
+    //! virtual function overloaded by clock element. Other elements have frequency of 0.
+    virtual float delay() const;
+
     //! Updates the GraphicElement theme according to the dark/light wiRedPanda theme.
     virtual void updateTheme();
 
@@ -76,6 +79,7 @@ public:
     bool hasAudio() const;
     bool hasAudioBox() const;
     bool hasColors() const;
+    bool hasDelay() const;
     bool hasFrequency() const;
     bool hasLabel() const;
     bool hasTrigger() const;
@@ -98,6 +102,7 @@ public:
     virtual void refresh();
     virtual void setAudio(const QString &audio);
     virtual void setColor(const QString &color);
+    virtual void setDelay(const float delay);
     virtual void setFrequency(const float freq);
     virtual void setSkin(const bool defaultSkin, const QString &fileName);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
@@ -126,6 +131,7 @@ protected:
     void setHasAudio(const bool hasAudio);
     void setHasAudioBox(const bool hasAudioBox);
     void setHasColors(const bool hasColors);
+    void setHasDelay(const bool hasDelay);
     void setHasFrequency(const bool hasFrequency);
     void setHasLabel(const bool hasLabel);
     void setHasTrigger(const bool hasTrigger);
@@ -201,6 +207,7 @@ private:
     bool m_hasAudio = false;
     bool m_hasAudioBox = false;
     bool m_hasColors = false;
+    bool m_hasDelay = false;
     bool m_hasFrequency = false;
     bool m_hasLabel = false;
     bool m_hasTrigger = false;
