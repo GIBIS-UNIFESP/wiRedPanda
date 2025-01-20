@@ -737,7 +737,7 @@ void BewavedDolphin::on_actionSetClockWave_triggered()
 
 void BewavedDolphin::on_actionCombinational_triggered()
 {
-    const int truthTableSize = std::pow(2, m_inputPorts);
+    const int truthTableSize = std::min(2048., std::pow(2, m_inputPorts));
 
     if (m_length < truthTableSize) {
         setLength(truthTableSize, false);
@@ -797,7 +797,7 @@ void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
     m_model->setColumnCount(simLength);
 
     for (int row = 0; row < m_inputPorts; ++row) {
-        for (int col = oldLength; col < m_model->columnCount(); ++col) {
+        for (int col = oldLength; col < simLength; ++col) {
             createZeroElement(row, col, true, false);
         }
     }
