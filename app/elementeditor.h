@@ -5,10 +5,10 @@
 
 #include "scene.h"
 
-#include <QWidget>
 #include <QDialog>
-#include <QVBoxLayout>
 #include <QTableWidget>
+#include <QVBoxLayout>
+#include <QWidget>
 
 namespace Ui
 {

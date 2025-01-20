@@ -8,7 +8,8 @@
 
 class LogicElement;
 
-struct InputPair {
+struct InputPair
+{
     LogicElement *logic = nullptr;
     int port = 0;
 };

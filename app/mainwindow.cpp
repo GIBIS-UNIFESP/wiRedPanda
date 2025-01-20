@@ -126,7 +126,8 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
             connect(action, &QAction::triggered, this, [this] {
                 if (auto *action = qobject_cast<QAction *>(sender())) {
                     loadPandaFile("examples/" + action->text());
-                }});
+                }
+            });
 
             m_ui->menuExamples->addAction(action);
         }
@@ -425,7 +426,7 @@ void MainWindow::on_actionOpen_triggered()
             loadPandaFile(fileName);
         }
     };
-    QFileDialog::getOpenFileContent("Panda files (*.panda)",  fileContentReady);
+    QFileDialog::getOpenFileContent("Panda files (*.panda)", fileContentReady);
 #else
     const QString path = m_currentFile.exists() ? "" : "./examples";
     const QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), path, tr("Panda files (*.panda)"));

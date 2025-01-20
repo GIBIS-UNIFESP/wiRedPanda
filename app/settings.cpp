@@ -4,8 +4,7 @@ QSettings *Settings::settings = nullptr;
 
 QSettings *Settings::settingsInstance()
 {
-    if (!settings)
-    {
+    if (!settings) {
         settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, "GIBIS-UNIFESP", "wiRedPanda");
     }
     return settings;

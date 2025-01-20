@@ -873,7 +873,7 @@ void ElementEditor::truthTable()
     }
 
     for (int i = 0; i < truthtable->outputSize(); ++i) {
-        inputLabels.append("S"+QString::number(i));
+        inputLabels.append("S" + QString::number(i));
         m_table->setColumnWidth(nInputs + i, 14);
     }
 
@@ -907,7 +907,7 @@ void ElementEditor::truthTable()
                 auto *newOutItem = new QTableWidgetItem(QString(QChar::fromLatin1('0' + output)));
                 newOutItem->setTextAlignment(Qt::AlignCenter);
                 m_table->setItem(i, nInputs + z, newOutItem);
-                m_table->item(i,nInputs + z)->setFlags(Qt::ItemIsEnabled);
+                m_table->item(i, nInputs + z)->setFlags(Qt::ItemIsEnabled);
             }
 
             m_table->item(i, nInputs + z)->setText(QString::number(output));
@@ -923,7 +923,7 @@ void ElementEditor::setTruthTableProposition(const int row, const int column)
 
     if (column < m_elements[0]->inputSize()) return;
 
-    auto cellItem = m_table->item(row,column);
+    auto cellItem = m_table->item(row, column);
     cellItem->setText((cellItem->text() == "0") ? "1" : "0");
 
     auto truthtable = m_elements[0];
@@ -939,7 +939,8 @@ void ElementEditor::setTruthTableProposition(const int row, const int column)
     m_scene->setCircuitUpdateRequired();
 }
 
-void ElementEditor::audioBox() {
+void ElementEditor::audioBox()
+{
     auto *audiobox = dynamic_cast<AudioBox *>(m_elements[0]);
 
     const QString filePath = QFileDialog::getOpenFileName(this, tr("Select any audio"),

@@ -24,7 +24,7 @@ public:
     explicit ElementMapping(const QVector<GraphicElement *> &elements);
     ~ElementMapping();
 
-    const QVector<std::shared_ptr<LogicElement> > &logicElms() const;
+    const QVector<std::shared_ptr<LogicElement>> &logicElms() const;
     void sort();
 
 private:

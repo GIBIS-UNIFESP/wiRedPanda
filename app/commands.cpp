@@ -869,7 +869,8 @@ ToggleTruthTableOutputCommand::ToggleTruthTableOutputCommand(GraphicElement *ele
     setText(tr("Toggle TruthTable Output at position: %1").arg(m_pos));
 }
 
-void ToggleTruthTableOutputCommand::redo(){
+void ToggleTruthTableOutputCommand::redo()
+{
     qCDebug(zero) << text();
 
     auto *truthtable = dynamic_cast<TruthTable *>(findElm(m_id));
@@ -882,7 +883,8 @@ void ToggleTruthTableOutputCommand::redo(){
     m_elementeditor->truthTable();
 }
 
-void ToggleTruthTableOutputCommand::undo(){
+void ToggleTruthTableOutputCommand::undo()
+{
     qCDebug(zero) << text();
 
     auto *truthtable = dynamic_cast<TruthTable *>(findElm(m_id));
