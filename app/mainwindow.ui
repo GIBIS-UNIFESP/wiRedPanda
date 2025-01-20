@@ -726,6 +726,8 @@ QTabWidget::pane {
     <addaction name="actionRestart"/>
     <addaction name="actionWaveform"/>
     <addaction name="actionMute"/>
+    <addaction name="separator"/>
+    <addaction name="actionBackground_Simulation"/>
    </widget>
    <widget class="QMenu" name="menuExamples">
     <property name="title">
@@ -1208,6 +1210,17 @@ QTabWidget::pane {
    </property>
    <property name="toolTip">
     <string>Restart simulation.</string>
+   </property>
+  </action>
+  <action name="actionBackground_Simulation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset theme="media-playlist-repeat"/>
+   </property>
+   <property name="text">
+    <string>Background Simluation</string>
    </property>
   </action>
   <action name="actionSpanish">

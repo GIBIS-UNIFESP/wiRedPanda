@@ -82,6 +82,7 @@ private:
     bool hasModifiedFiles();
     int closeTabAnyway();
     void aboutThisVersion();
+    void backgroundSimulation();
     void createRecentFileActions();
     void loadAutosaveFiles();
     void on_actionAboutQt_triggered();
