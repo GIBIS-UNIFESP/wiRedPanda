@@ -34,7 +34,6 @@
 #include <QFontMetrics>
 #include <QGraphicsScene>
 #include <QPen>
-#include <iostream>
 
 namespace
 {
