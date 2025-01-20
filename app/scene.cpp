@@ -314,7 +314,7 @@ void Scene::detachConnection(QNEInputPort *endPort)
 void Scene::prevMainPropShortcut()
 {
     for (auto *element : selectedElements()) {
-        switch(element->elementType()) {
+        switch (element->elementType()) {
         // Logic Elements
         case ElementType::And:
         case ElementType::Or:
@@ -365,7 +365,7 @@ void Scene::prevMainPropShortcut()
 void Scene::nextMainPropShortcut()
 {
     for (auto *element : selectedElements()) {
-        switch(element->elementType()) {
+        switch (element->elementType()) {
         // Logic Elements
         case ElementType::And:
         case ElementType::Or:
@@ -415,7 +415,7 @@ void Scene::nextMainPropShortcut()
 
 void Scene::prevSecndPropShortcut()
 {
-    for (auto *element: selectedElements()) {
+    for (auto *element : selectedElements()) {
         switch (element->elementType()) {
         case ElementType::TruthTable:
             if (element->outputSize() > element->minOutputSize())
@@ -439,7 +439,7 @@ void Scene::prevSecndPropShortcut()
 
 void Scene::nextSecndPropShortcut()
 {
-    for (auto *element: selectedElements()) {
+    for (auto *element : selectedElements()) {
         switch (element->elementType()) {
         case ElementType::TruthTable:
             if (element->outputSize() < element->maxOutputSize())

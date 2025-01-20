@@ -3,8 +3,8 @@
 
 #include "common.h"
 #include "graphicelement.h"
-#include "qneport.h"
 #include "qneconnection.h"
+#include "qneport.h"
 
 Q_LOGGING_CATEGORY(zero,  "0")
 Q_LOGGING_CATEGORY(one,   "1")
