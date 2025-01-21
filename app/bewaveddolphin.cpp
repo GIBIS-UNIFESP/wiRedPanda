@@ -1506,6 +1506,10 @@ QString BewavedDolphin::convertBinaryToHex(const QVector<bool> &binaryVector) co
 
 int BewavedDolphin::convertHexToInt(const QString &hexString) const
 {
+    if (hexString == "") {
+        return 0;
+    }
+
     bool ok = false;
     int intValue = hexString.toInt(&ok, 16); // Convert hex string to int with base 16
 
