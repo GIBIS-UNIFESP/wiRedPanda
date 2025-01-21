@@ -173,7 +173,7 @@ void IC::loadFile(const QString &fileName)
 
         auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
 
-        switch(elm->elementGroup()){
+        switch (elm->elementGroup()) {
         case ElementGroup::Input:  loadInputElement(elm);    break;
         case ElementGroup::Output: loadOutputElement(elm);   break;
         default:                   m_icElements.append(elm); break;

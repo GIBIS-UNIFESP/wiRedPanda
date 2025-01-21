@@ -17,7 +17,7 @@ class AudioBox : public GraphicElement
     Q_OBJECT
 
 public:
-    explicit AudioBox(QGraphicsItem* parent = nullptr);
+    explicit AudioBox(QGraphicsItem *parent = nullptr);
     AudioBox(const AudioBox &other) : AudioBox(other.parentItem()) {}
 
     QString audio() const override;
