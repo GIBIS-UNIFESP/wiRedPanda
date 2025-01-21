@@ -469,7 +469,7 @@ bool BewavedDolphin::checkSave()
                 tr("Save simulation before closing?"),
                 QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
 
-    switch(reply){
+    switch (reply) {
     case QMessageBox::Save:    on_actionSave_triggered(); return (!m_edited);
     case QMessageBox::Discard: return true;
     case QMessageBox::Cancel:  return false;

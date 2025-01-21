@@ -57,6 +57,7 @@ private:
     void updateSkins();
 
     Ui::ElementEditor *m_ui;
+    QDialog *m_tableBox = nullptr;
     QList<GraphicElement *> m_elements;
     QString m_manyAudios = tr("<Many sounds>");
     QString m_manyColors = tr("<Many colors>");
@@ -68,9 +69,8 @@ private:
     QString m_manyPriorities = tr("<Many priorities>");
     QString m_manyTriggers = tr("<Many triggers>");
     QString m_skinName;
-    Scene *m_scene = nullptr;
-    QDialog *m_tableBox = nullptr;
     QTableWidget *m_table = nullptr;
+    Scene *m_scene = nullptr;
     bool m_canChangeInputSize = false;
     bool m_canChangeOutputSize = false;
     bool m_canChangeSkin = false;

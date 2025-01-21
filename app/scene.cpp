@@ -326,14 +326,14 @@ void Scene::prevMainPropShortcut()
         case ElementType::Led:
         case ElementType::TruthTable:
             if (element->inputSize() > element->minInputSize())
-                receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement* >{element},
+                receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement *>{element},
                                                           element->inputSize() - 1, this));
             break;
 
         // Input ports
         case ElementType::InputRotary:
             if (element->outputSize() > element->minOutputSize())
-                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement* >{element},
+                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
                                                            element->outputSize() - 1, this));
             break;
 
@@ -377,14 +377,14 @@ void Scene::nextMainPropShortcut()
         case ElementType::Led:
         case ElementType::TruthTable:
             if (element->inputSize() < element->maxInputSize())
-                receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement* >{element},
+                receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement *>{element},
                                                           element->inputSize() + 1, this));
             break;
 
         // Input ports
         case ElementType::InputRotary:
             if (element->outputSize() < element->maxOutputSize())
-                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement* >{element},
+                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
                                                            element->outputSize() + 1, this));
             break;
 

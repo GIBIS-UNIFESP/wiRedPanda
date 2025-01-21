@@ -506,7 +506,7 @@ void CodeGenerator::loop()
         if (elm->elementType() == ElementType::Clock) {
             const auto elmOutputs = elm->outputs();
             QString varName = m_varMap.value(elmOutputs.constFirst());
-            m_stream << QString("    if (%1_elapsed > %1_interval){").arg(varName) << endl;
+            m_stream << QString("    if (%1_elapsed > %1_interval) {").arg(varName) << endl;
             m_stream << QString("        %1_elapsed = 0;").arg(varName) << endl;
             m_stream << QString("        %1 = ! %1;").arg(varName) << endl;
             m_stream << QString("    }") << endl;

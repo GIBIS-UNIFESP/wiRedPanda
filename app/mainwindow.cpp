@@ -548,6 +548,7 @@ bool MainWindow::closeFiles()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     bool closeWindow = false;
+
     if (!hasModifiedFiles()) {
         auto reply =
             QMessageBox::question(
