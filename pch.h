@@ -39,7 +39,6 @@
 #include <QPushButton>
 #include <QRegularExpression>
 #include <QScrollBar>
-#include <QSet>
 #include <QSettings>
 #include <QShortcut>
 #include <QStandardItemModel>
