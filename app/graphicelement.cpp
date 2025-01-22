@@ -1060,8 +1060,8 @@ int GraphicElement::inputSize() const
 void GraphicElement::setInputSize(const int size)
 {
     if ((size >= minInputSize()) && (size <= maxInputSize())) {
-        if (inputSize() < size) {
-            while (inputSize() < size) {
+        if (size > inputSize()) {
+            while (size > inputSize()) {
                 addInputPort();
             }
         } else {
@@ -1086,8 +1086,8 @@ int GraphicElement::priority() const
 void GraphicElement::setOutputSize(const int size)
 {
     if ((size >= minOutputSize()) && (size <= maxOutputSize())) {
-        if (outputSize() < size) {
-            for (int port = outputSize(); port < size; ++port) {
+        if (size > outputSize()) {
+            while (size > outputSize()) {
                 addOutputPort();
             }
         } else {
