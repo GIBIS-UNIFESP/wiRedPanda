@@ -186,10 +186,10 @@ void IC::loadFile(const QString &fileName)
     m_icOutputLabels = QVector<QString>(m_icOutputs.size());
     sortPorts(m_icInputs);
     sortPorts(m_icOutputs);
-    loadInputsLabels();
-    loadOutputsLabels();
     loadInputs();
     loadOutputs();
+    loadInputsLabels();
+    loadOutputsLabels();
 
     // ----------------------------------------------
 
