@@ -11,10 +11,12 @@
 #include "qneport.h"
 #include "scene.h"
 #include "serialization.h"
+#include "workspace.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
+#include <QTemporaryFile>
 
 namespace
 {
@@ -46,7 +48,9 @@ void IC::save(QDataStream &stream) const
     GraphicElement::save(stream);
 
     QMap<QString, QVariant> map;
-    map.insert("fileName", QFileInfo(m_file).fileName());
+    // Instead of saving the file name, save the content of the file in a byte array.
+
+    map.insert("fileData", m_fileData);
 
     stream << map;
 }
@@ -55,27 +59,22 @@ void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVer
 {
     GraphicElement::load(stream, portMap, version);
 
-    if ((VERSION("1.2") <= version) && (version < VERSION("4.1"))) {
-        stream >> m_file;
-
-        if (IC::needToCopyFiles) {
-            copyFile();
-        }
-
-        loadFile(m_file);
-    }
-
     if (version >= VERSION("4.1")) {
         QMap<QString, QVariant> map; stream >> map;
 
-        if (map.contains("fileName")) {
-            m_file = map.value("fileName").toString();
+        if (map.contains("fileData")) {
+            // Instead of loading the file name and copying it, load the data directly from the byte array.
+            QByteArray data = map.value("fileData").toByteArray();
+            QTemporaryFile tempFile;
 
-            if (IC::needToCopyFiles) {
-                copyFile();
+            if (tempFile.open()) {
+                tempFile.write(data);
+                tempFile.close();
+                m_file = tempFile.fileName();
+                loadFile(m_file);
+            } else {
+                throw Pandaception(tr("Error creating temporary file: ") + tempFile.errorString());
             }
-
-            loadFile(m_file);
         }
     }
 }
@@ -137,32 +136,26 @@ void IC::loadFile(const QString &fileName)
 
     // ----------------------------------------------
 
-    QFileInfo fileInfo;
-    fileInfo.setFile(GlobalProperties::currentDir, QFileInfo(fileName).fileName());
-
-    if (!fileInfo.exists() || !fileInfo.isFile()) {
-        throw Pandaception(fileInfo.absoluteFilePath() + tr(" not found."));
-    }
-
-    m_fileWatcher.addPath(fileInfo.absoluteFilePath());
-    m_file = fileInfo.absoluteFilePath();
-    setToolTip(m_file);
-
-    // ----------------------------------------------
-
-    QFile file(fileInfo.absoluteFilePath());
+    QFile file(fileName);
 
     if (!file.open(QIODevice::ReadOnly)) {
         throw Pandaception(QObject::tr("Error opening file: ") + file.errorString());
     }
 
-    QDataStream stream(&file);
+    m_fileData = file.readAll(); // Save contents to byte array
+    file.close();
+
+    QDataStream stream(&m_fileData,  QIODevice::ReadOnly); // use the byte array for streaming
     stream.setVersion(QDataStream::Qt_5_12);
 
     const QVersionNumber version = Serialization::loadVersion(stream);
 
     Serialization::loadDolphinFileName(stream, version);
     Serialization::loadRect(stream, version);
+
+    if (version >= VERSION("4.2")) {
+        Serialization::loadNodeMappings(stream);
+    }
 
     const auto items = Serialization::deserialize(stream, {}, version);
 
@@ -194,7 +187,7 @@ void IC::loadFile(const QString &fileName)
     // ----------------------------------------------
 
     if (label().isEmpty()) {
-        setLabel(fileInfo.baseName().toUpper());
+       // setLabel(fileInfo.baseName().toUpper());
     }
 
     const qreal bottom = portsBoundingRect().united(QRectF(0, 0, 64, 64)).bottom();
@@ -249,7 +242,14 @@ void IC::generatePixmap()
 void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     event->accept();
-    qApp->mainWindow()->loadPandaFile(m_file);
+    QTemporaryFile tempFile;
+
+    if (tempFile.open()) {
+        tempFile.write(m_fileData);
+        tempFile.close();
+        m_file = tempFile.fileName();
+        qApp->mainWindow()->loadEmbeddedIC(m_file, this);
+    }
 }
 
 void IC::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -394,6 +394,20 @@ ElementMapping *IC::generateMap() const
     return new ElementMapping(m_icElements);
 }
 
+void IC::reload()
+{
+    QTemporaryFile tempFile;
+
+    if (tempFile.open()) {
+        tempFile.write(m_fileData);
+        tempFile.close();
+        m_file = tempFile.fileName();
+        loadFile(m_file);
+    } else {
+        throw Pandaception(tr("Error creating temporary file: ") + tempFile.errorString());
+    }
+}
+
 void IC::refresh()
 {
 }
@@ -422,6 +436,10 @@ void IC::copyFiles(const QFileInfo &srcFile)
 
     Serialization::loadDolphinFileName(stream, version);
     Serialization::loadRect(stream, version);
+
+    if (version >= VERSION("4.2")) {
+        Serialization::loadNodeMappings(stream);
+    }
 
     IC::path = srcFile.absolutePath();
     Serialization::deserialize(stream, {}, version);

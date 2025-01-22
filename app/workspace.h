@@ -4,6 +4,7 @@
 #pragma once
 
 #include "graphicsview.h"
+#include "ic.h"
 #include "scene.h"
 
 #include <QFileInfo>
@@ -31,6 +32,10 @@ public:
     void save(const QString &fileName);
     void setAutosaveFile();
     void setDolphinFileName(const QString &fileName);
+
+    IC *m_EmbeddedIc = nullptr;
+    QFileInfo *fatherFileInfo = nullptr;
+    WorkSpace *fatherTab = nullptr;
 
 signals:
     void fileChanged(const QFileInfo &fileInfo);

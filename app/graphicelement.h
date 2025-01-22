@@ -78,6 +78,7 @@ public:
     bool hasColors() const;
     bool hasFrequency() const;
     bool hasLabel() const;
+    bool hasNodeConnection() const;
     bool hasTrigger() const;
     bool hasTruthTable() const;
     bool isRotatable() const;
@@ -85,6 +86,7 @@ public:
     const QVector<QNEInputPort *> &inputs() const;
     const QVector<QNEOutputPort *> &outputs() const;
     int inputSize() const;
+    int mapId() const;
     int maxInputSize() const;
     int maxOutputSize() const;
     int minInputSize() const;
@@ -105,8 +107,10 @@ public:
     void rotatePorts(const qreal angle);
     void setInputSize(const int size);
     void setInputs(const QVector<QNEInputPort *> &inputs);
+    void setIsWireless(const bool isWireless);
     void setLabel(const QString &label);
     void setLogic(LogicElement *newLogic);
+    void setMapId(const int Id);
     void setOutputSize(const int size);
     void setOutputs(const QVector<QNEOutputPort *> &outputs);
     void setPixmap(const QString &pixmapPath);
@@ -128,6 +132,7 @@ protected:
     void setHasColors(const bool hasColors);
     void setHasFrequency(const bool hasFrequency);
     void setHasLabel(const bool hasLabel);
+    void setHasNodeConnection(const bool hasNodeConnection);
     void setHasTrigger(const bool hasTrigger);
     void setHasTruthTable(const bool hasTruthTable);
     void setMaxInputSize(const int maxInputSize);
@@ -203,10 +208,13 @@ private:
     bool m_hasColors = false;
     bool m_hasFrequency = false;
     bool m_hasLabel = false;
+    bool m_hasNodeConnection = false;
     bool m_hasTrigger = false;
     bool m_hasTruthTable = false;
+    bool m_isWireless = false;
     bool m_rotatable = true;
     bool m_selected = false;
+    int m_mapId = -1;
     qreal m_angle = 0;
     quint64 m_maxInputSize = 0;
     quint64 m_maxOutputSize = 0;

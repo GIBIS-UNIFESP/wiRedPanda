@@ -31,16 +31,19 @@ public:
     void loadFile(const QString &fileName);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void refresh() override;
+    void reload();
     void save(QDataStream &stream) const override;
+
+    QByteArray m_fileData;
 
 protected:
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
+    inline static QString path;
+    inline static bool needToCopyFiles = false;
     static bool comparePorts(QNEPort *port1, QNEPort *port2);
     static void sortPorts(QVector<QNEPort *> &map);
-    inline static bool needToCopyFiles = false;
-    inline static QString path;
 
     void copyFile();
     void generatePixmap();

@@ -3,8 +3,12 @@
 
 #pragma once
 
+#include "ic.h"
+
 #include <QDir>
 #include <QMainWindow>
+#include <QMultiMap>
+#include <QPair>
 #include <QSpacerItem>
 #include <QTranslator>
 
@@ -26,7 +30,7 @@ public:
     ~MainWindow() override;
 
     //! Creates a new tab with the given tab_name. Used by new and load actions.
-    void createNewTab();
+    WorkSpace *createNewTab();
 
     //! Saves the project to a .panda file. Removes the autosave file in the process.
     void save(const QString &fileName = {});
@@ -57,9 +61,11 @@ public:
     int confirmSave(const bool multiple = true);
 
     QString dolphinFileName();
+    WorkSpace *getCurrentTab();
     bool closeFiles();
     bool event(QEvent *event) override;
     void exportToWaveFormTerminal();
+    void loadEmbeddedIC(const QString &fileName, IC *source_ic);
     void loadTranslation(const QString &language);
     void populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout);
     void retranslateUi();
@@ -124,7 +130,7 @@ private:
     void populateLeftMenu();
     void removeICFile(const QString &icFileName);
     void tabChanged(const int newTabIndex);
-    void updateICList();
+    void updateICList(QString dirPath = "");
     void updateRecentFileActions();
     void updateSettings();
     void updateTheme();
@@ -150,6 +156,7 @@ private:
     RecentFiles *m_recentFiles = nullptr;
 
     QFileInfo m_currentFile;
+    QMultiMap<QPair<IC*, WorkSpace*>, WorkSpace*> m_icsTabTree;
     WorkSpace *m_currentTab = nullptr;
     int m_tabIndex = -1;
 

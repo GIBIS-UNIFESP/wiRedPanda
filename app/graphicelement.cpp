@@ -143,6 +143,8 @@ void GraphicElement::save(QDataStream &stream) const
     map.insert("maxOutputSize", m_maxOutputSize);
     map.insert("trigger", m_trigger);
     map.insert("priority", m_priority);
+    map.insert("isWireless", m_isWireless);
+    map.insert("mapId", this->mapId());
 
     stream << map;
 
@@ -264,6 +266,9 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
     const quint64 minOutputSize = map.value("minOutputSize").toULongLong();
     const quint64 maxOutputSize = map.value("maxOutputSize").toULongLong();
 
+    m_isWireless = map.value("isWireless").toBool();
+    m_mapId = map.value("mapId").toInt();
+
     if ((m_minInputSize != m_maxInputSize) || (m_minInputSize <= maxInputSize)) {
         m_minInputSize = minInputSize;
         m_maxInputSize = maxInputSize;
@@ -295,6 +300,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
 
         if (port < m_inputPorts.size()) {
             m_inputPorts.value(port)->setPtr(ptr);
+            m_inputPorts.value(port)->setHasWirelessConnection(m_isWireless);
 
             if (elementType() == ElementType::IC) {
                 m_inputPorts.value(port)->setName(name);
@@ -321,6 +327,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
 
         if (port < m_outputPorts.size()) {
             m_outputPorts.value(port)->setPtr(ptr);
+            m_outputPorts.value(port)->setHasWirelessConnection(m_isWireless);
 
             if (elementType() == ElementType::IC) {
                 m_outputPorts.value(port)->setName(name);
@@ -849,6 +856,17 @@ void GraphicElement::updateLabel()
     }
 }
 
+void GraphicElement::setMapId(const int mapId)
+{
+    m_mapId = mapId;
+}
+
+int GraphicElement::mapId() const
+{
+    if (m_mapId == -1) { return this->id(); }
+    return m_mapId;
+}
+
 void GraphicElement::setLabel(const QString &label)
 {
     m_labelText = label;
@@ -1026,6 +1044,11 @@ bool GraphicElement::hasAudioBox() const
     return m_hasAudioBox;
 }
 
+bool GraphicElement::hasNodeConnection() const
+{
+    return m_hasNodeConnection;
+}
+
 bool GraphicElement::canChangeSkin() const
 {
     return m_canChangeSkin;
@@ -1045,6 +1068,11 @@ bool GraphicElement::isRotatable() const
 void GraphicElement::setRotatable(const bool rotatable)
 {
     m_rotatable = rotatable;
+}
+
+void GraphicElement::setHasNodeConnection(const bool hasNodeConnection)
+{
+    m_hasNodeConnection = hasNodeConnection;
 }
 
 int GraphicElement::minOutputSize() const
@@ -1112,6 +1140,11 @@ void GraphicElement::setFrequency(const float freq)
 void GraphicElement::setMinOutputSize(const int minOutputSize)
 {
     m_minOutputSize = minOutputSize;
+}
+
+void GraphicElement::setIsWireless(const bool isWireless)
+{
+    m_isWireless = isWireless;
 }
 
 int GraphicElement::minInputSize() const
