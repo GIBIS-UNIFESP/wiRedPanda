@@ -254,7 +254,6 @@ void TestElements::testIC()
         prstButton->setOff();
         simulation.update();
         simulation.update();
-        simulation.update();
 
         QCOMPARE(ic->inputPort(2)->status(), Status::Inactive);
 
@@ -267,7 +266,6 @@ void TestElements::testIC()
         prstButton->setOn();
         simulation.update();
         simulation.update();
-        simulation.update();
 
         QCOMPARE(ic->inputPort(2)->status(), Status::Inactive);
 
@@ -279,7 +277,6 @@ void TestElements::testIC()
         clkButton->setOff();
         simulation.update();
         simulation.update();
-        simulation.update();
 
         QCOMPARE(ic->inputPort(2)->status(), Status::Inactive);
 
@@ -289,7 +286,6 @@ void TestElements::testIC()
         // -------------------------------
 
         clkButton->setOn();
-        simulation.update();
         simulation.update();
         simulation.update();
 
