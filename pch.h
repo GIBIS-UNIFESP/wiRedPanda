@@ -51,7 +51,4 @@
 #include <QVector>
 #include <QWidget>
 #include <QtGlobal>
-#include <cmath>
-#include <memory>
-#include <stdexcept>
 #endif
