@@ -18,6 +18,9 @@ public:
     //! Serializes the list of QGraphicItems through a binary data stream.
     static void serialize(const QList<QGraphicsItem *> &items, QDataStream &stream);
 
+    // Serializes the scene node mappings
+    static void saveNodeMappings(const QMap<int, QSet<QPair<int,int>>> map, QDataStream &stream);
+
     /**
      * @brief deserialize: Deserializes a list of QGraphicItems coming through a binary data stream. It stops at the end of the stream.
      * @return the list of deserialized items.
@@ -28,6 +31,7 @@ public:
     //! returns the canvas pose from the last saved session.
     static QRectF loadRect(QDataStream &stream, const QVersionNumber version);
 
+    static QMap<int, QSet<QPair<int,int>>> loadNodeMappings(QDataStream &stream);
     static QString loadDolphinFileName(QDataStream &stream, const QVersionNumber version);
     static QString typeName(const int type);
     static QVersionNumber readHeaderPanda(QDataStream &stream);
