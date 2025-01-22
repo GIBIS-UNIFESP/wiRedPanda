@@ -3,7 +3,6 @@
 
 #pragma once
 
-#include <QSet>
 #include <QVector>
 
 class LogicElement;
@@ -41,7 +40,7 @@ protected:
 private:
     Q_DISABLE_COPY(LogicElement)
 
-    QSet<LogicElement *> m_successors;
+    QVector<LogicElement *> m_successors;
     QVector<InputPair> m_inputPairs;
     QVector<bool> m_outputValues;
     bool m_beingVisited = false;

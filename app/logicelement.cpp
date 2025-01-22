@@ -45,7 +45,10 @@ bool LogicElement::updateInputs()
 void LogicElement::connectPredecessor(const int index, LogicElement *logic, const int port)
 {
     m_inputPairs[index] = {logic, port};
-    logic->m_successors.insert(this);
+
+    if (!logic->m_successors.contains(this)) {
+        logic->m_successors.push_back(this);
+    }
 }
 
 void LogicElement::setOutputValue(const int index, const bool value)
