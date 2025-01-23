@@ -14,7 +14,7 @@
 ;General
 
   ;Name and file
-  !define MUI_PRODUCT "WiRedPanda"
+  !define MUI_PRODUCT "wiRedPanda"
   !define MUI_FILE "wpanda"
   # These three must be integers
   !define VERSIONMAJOR 4
@@ -23,7 +23,7 @@
   !define MUI_VERSION "${VERSIONMAJOR}.{VERSIONMINOR}"
   !define MUI_BRANDINGTEXT "${MUI_PRODUCT} ${MUI_VERSION}"
   !define COMPANYNAME "UNIFESP"
-  !define DESCRIPTION "WiRedPanda is a software designed to help students learn about logic circuits and simulate them in an easy and friendly way."
+  !define DESCRIPTION "wiRedPanda is a software designed to help students learn about logic circuits and simulate them in an easy and friendly way."
   !define FILEICON "pandaFile.ico"
   !define BUILD_DIR "Build/release"
   CRCCheck On
@@ -84,7 +84,7 @@
 
 ;--------------------------------
 ;Installer Sections
-Section "WiRedPanda" Installationinfo
+Section "wiRedPanda" Installationinfo
 
 ;Add files
   SetOutPath "$INSTDIR"
@@ -102,8 +102,8 @@ Section "WiRedPanda" Installationinfo
 ;Register .panda File Association
   # ${registerExtension}  ".panda" "" ""
 
-  !insertmacro APP_ASSOCIATE "panda" "wiredpanda.pandafile" "WiRedPanda File" \
-  "$INSTDIR\${FILEICON}" "Open with WiRedPanda" "$INSTDIR\${MUI_FILE}.exe $\"%1$\""
+  !insertmacro APP_ASSOCIATE "panda" "wiredpanda.pandafile" "wiRedPanda File" \
+  "$INSTDIR\${FILEICON}" "Open with wiRedPanda" "$INSTDIR\${MUI_FILE}.exe $\"%1$\""
 ;write uninstall information to the registry
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}" "DisplayName" "${MUI_PRODUCT} (remove only)"
 	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}" "UninstallString" "$INSTDIR\uninstall.exe"
@@ -131,7 +131,7 @@ SectionEnd
 ;Descriptions
 
   ;Language strings
-  LangString DESC_InstInfo ${LANG_ENGLISH} "Install WiRedPanda."
+  LangString DESC_InstInfo ${LANG_ENGLISH} "Install wiRedPanda."
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
@@ -159,7 +159,7 @@ Section "Uninstall"
 ;Delete Uninstaller And Unistall Registry Entries
   DeleteRegKey HKEY_LOCAL_MACHINE "SOFTWARE\${MUI_PRODUCT}"
   DeleteRegKey HKEY_LOCAL_MACHINE "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}"
-  # ${unregisterExtension} ".panda" "WiRedPanda File"
+  # ${unregisterExtension} ".panda" "wiRedPanda File"
   !insertmacro APP_UNASSOCIATE "panda" "wiredpanda.pandafile"
 SectionEnd
 
