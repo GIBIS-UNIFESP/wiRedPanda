@@ -1,4 +1,4 @@
-# Copyright 2015 - 2025, GIBIS-Unifesp and the WiRedPanda contributors
+# Copyright 2015 - 2025, GIBIS-Unifesp and the wiRedPanda contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 name: Deploy
@@ -72,7 +72,7 @@ jobs:
         chmod +x ./linuxdeployqt-continuous-x86_64.AppImage
         VERSION=4 ./linuxdeployqt-continuous-x86_64.AppImage appimage/wiredpanda -appimage
         rm ./linuxdeployqt-continuous-x86_64.AppImage
-        mv WiRedPanda-4-x86_64.AppImage WiRedPanda-Ubuntu-Qt5.AppImage
+        mv wiRedPanda-4-x86_64.AppImage wiRedPanda-Ubuntu-Qt5.AppImage
 
     - name: Publish Ubuntu
       uses: softprops/action-gh-release@v2
@@ -114,7 +114,7 @@ jobs:
         rm wiredpanda_pch.pch
         cd ..
         ren release wpanda
-        Compress-Archive -Path wpanda -DestinationPath WiRedPanda-Windows-Qt5-Portable.zip
+        Compress-Archive -Path wpanda -DestinationPath wiRedPanda-Windows-Qt5-Portable.zip
 
     - name: Publish Windows
       uses: softprops/action-gh-release@v2
@@ -145,7 +145,7 @@ jobs:
       run: |
         cd build/app
         macdeployqt wiredpanda.app -dmg
-        mv wiredpanda.dmg WiRedPanda-macOS-Qt5.dmg
+        mv wiredpanda.dmg wiRedPanda-macOS-Qt5.dmg
 
     - name: Publish macOS
       uses: softprops/action-gh-release@v2

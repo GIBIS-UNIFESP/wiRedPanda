@@ -9,7 +9,7 @@ Homepage: gibis-unifesp.github.io/wiRedPanda
 Architecture: amd64
 Priority: standard
 Description: Learn about logic circuits and simulate them in an easy and friendly way.
- WiRedPanda is a free software designed to help students to learn about logic circuits.
+ wiRedPanda is a free software designed to help students to learn about logic circuits.
  It was developed by the students of the Federal University of São Paulo.
 
 <</CTRL>>
@@ -757,7 +757,7 @@ Public License instead of this License.  But first, please read
 <</COPYRIGHT>>
 <<MENU>>
 1
-Name=WiRedPanda
+Name=wiRedPanda
 Version=1.0
 Exec=/bin/sh /usr/local/bin/wpanda.sh %f
 Comment=Learn about logic circuits in an easy and friendly way.
@@ -767,7 +767,7 @@ Terminal=false
 StartupNotify=false
 Encoding=UTF-8
 Categories=Utility;Application;
-GenericName=WiRedPanda
+GenericName=wiRedPanda
 MimeType=application/x-wpanda;
 <</MENU>>
 <<BUILD>>

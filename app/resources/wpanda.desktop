@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
-Name=WiRedPanda
-GenericName=WiRedPanda
+Name=wiRedPanda
+GenericName=wiRedPanda
 Comment=Learn about logic circuits in an easy and friendly way.
 Icon=wpanda_icon
 Exec=wpanda
