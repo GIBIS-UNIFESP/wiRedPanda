@@ -24,6 +24,10 @@ jobs:
         submodules: recursive
         fetch-depth: 0
 
+    - name: Extract Version
+      run: echo "VERSION=$(echo $GITHUB_REF | sed 's|refs/tags/||')" >> $GITHUB_ENV
+      shell: bash
+    
     - name: Install Qt5 32bit
       if: matrix.os == 'windows-latest'
       uses: jurplel/install-qt-action@v4
@@ -70,9 +74,9 @@ jobs:
         cp build/app/wiredpanda appimage
         wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
         chmod +x ./linuxdeployqt-continuous-x86_64.AppImage
-        VERSION=4 ./linuxdeployqt-continuous-x86_64.AppImage appimage/wiredpanda -appimage
+        VERSION=$VERSION ./linuxdeployqt-continuous-x86_64.AppImage appimage/wiredpanda -appimage
         rm ./linuxdeployqt-continuous-x86_64.AppImage
-        mv wiRedPanda-4-x86_64.AppImage wiRedPanda-Ubuntu-Qt5.AppImage
+        mv wiRedPanda-$VERSION-x86_64.AppImage wiRedPanda-$VERSION-Ubuntu-Qt5.AppImage
 
     - name: Publish Ubuntu
       uses: softprops/action-gh-release@v2
@@ -113,8 +117,8 @@ jobs:
         rm wiredpanda_pch.obj
         rm wiredpanda_pch.pch
         cd ..
-        ren release wpanda
-        Compress-Archive -Path wpanda -DestinationPath wiRedPanda-Windows-Qt5-Portable.zip
+        ren release wiredpanda-$env:VERSION
+        Compress-Archive -Path wiredpanda-$env:VERSION -DestinationPath wiRedPanda-$env:VERSION-Windows-Qt5-Portable.zip
 
     - name: Publish Windows
       uses: softprops/action-gh-release@v2
@@ -145,7 +149,7 @@ jobs:
       run: |
         cd build/app
         macdeployqt wiredpanda.app -dmg
-        mv wiredpanda.dmg wiRedPanda-macOS-Qt5.dmg
+        mv wiredpanda.dmg wiRedPanda-$VERSION-macOS-Qt5.dmg
 
     - name: Publish macOS
       uses: softprops/action-gh-release@v2
