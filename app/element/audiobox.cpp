@@ -88,6 +88,10 @@ void AudioBox::setAudio(const QString &audioPath)
     m_player->setSource(QUrl(audioPath));
     m_player->setLoops(QMediaPlayer::Infinite);
 #endif
+
+    if (m_isPlaying) {
+        m_player->play();
+    }
 }
 
 QString AudioBox::audio() const
