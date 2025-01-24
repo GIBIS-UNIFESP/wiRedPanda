@@ -3,6 +3,7 @@
 
 #include "elementeditor.h"
 #include "ui_elementeditor.h"
+#include "audiobox.h"
 #include "qneconnection.h"
 #include "commands.h"
 #include "common.h"
@@ -12,7 +13,6 @@
 #include "scene.h"
 #include "thememanager.h"
 #include "truth_table.h"
-#include "audiobox.h"
 
 #include <QDebug>
 #include <QFileDialog>
@@ -43,6 +43,15 @@ ElementEditor::ElementEditor(QWidget *parent)
     m_ui->lineEditTrigger->installEventFilter(this);
     m_ui->spinBoxPriority->installEventFilter(this);
 
+    m_tableBox = new QDialog(this);
+    m_tableBox->setWindowFlags(Qt::Window);
+    m_tableBox->setWindowTitle(tr("Truth Table"));
+    m_tableBox->setModal(true);
+    auto *tableLayout = new QGridLayout(m_tableBox);
+    m_table = new QTableWidget;
+    tableLayout->addWidget(m_table);
+    m_tableBox->setLayout(tableLayout);
+
     connect(m_ui->checkBoxLocked,         &QCheckBox::clicked,                              this, &ElementEditor::inputLocked);
     connect(m_ui->comboBoxAudio,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
     connect(m_ui->comboBoxColor,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
@@ -59,8 +68,6 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->pushButtonDefaultSkin,  &QPushButton::clicked,                            this, &ElementEditor::defaultSkin);
     connect(m_ui->pushButtonTruthTable,   &QPushButton::clicked,                            this, &ElementEditor::truthTable);
     connect(m_ui->spinBoxPriority,        qOverload<int>(&QSpinBox::valueChanged),          this, &ElementEditor::priorityChanged);
-    connect(m_table,                      &QTableWidget::cellDoubleClicked,                 this, &ElementEditor::setTruthTableProposition);
-    connect(m_ui->pushButtonAudioBox,     &QPushButton::clicked,                            this, &ElementEditor::audioBox);
 }
 
 ElementEditor::~ElementEditor()
@@ -614,38 +621,26 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_ui->comboBoxOutputSize->setEnabled(m_canChangeOutputSize);
 
     if (m_canChangeOutputSize) {
-        if (!m_hasRotarySwitch) {
-            m_ui->comboBoxOutputSize->addItem("1", 1);
-        }
 
         m_ui->comboBoxOutputSize->addItem("2", 2);
         m_ui->comboBoxOutputSize->addItem("3", 3);
         m_ui->comboBoxOutputSize->addItem("4", 4);
-        m_ui->comboBoxOutputSize->addItem("5", 5);
         m_ui->comboBoxOutputSize->addItem("6", 6);
-        m_ui->comboBoxOutputSize->addItem("7", 7);
         m_ui->comboBoxOutputSize->addItem("8", 8);
 
-        if (m_hasRotarySwitch) {
-            m_ui->comboBoxOutputSize->addItem("10", 10);
-            m_ui->comboBoxOutputSize->addItem("12", 12);
-            m_ui->comboBoxOutputSize->addItem("16", 16);
-        }
     }
 
     if (m_ui->comboBoxOutputSize->findText(m_manyOS) == -1) {
         m_ui->comboBoxOutputSize->addItem(m_manyOS);
     }
 
-    if (m_canChangeOutputSize) {
-        if (!m_hasRotarySwitch || m_hasTruthTable == 0) {
-            if (m_hasSameOutputSize) {
-                m_ui->comboBoxOutputSize->removeItem(m_ui->comboBoxOutputSize->findText(m_manyOS));
-                QString outputSize = QString::number(firstElement->outputSize());
-                m_ui->comboBoxOutputSize->setCurrentText(outputSize);
-            } else {
-                m_ui->comboBoxOutputSize->setCurrentText(m_manyOS);
-            }
+    if (m_canChangeOutputSize && !m_hasTruthTable) {
+        if (m_hasSameOutputSize) {
+            m_ui->comboBoxOutputSize->removeItem(m_ui->comboBoxOutputSize->findText(m_manyOS));
+            QString outputSize = QString::number(firstElement->outputSize());
+            m_ui->comboBoxOutputSize->setCurrentText(outputSize);
+        } else {
+            m_ui->comboBoxOutputSize->setCurrentText(m_manyOS);
         }
     }
 
@@ -657,7 +652,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 
     if (m_hasOnlyInputs) {
         if (maxCurrentOutputSize == 1) {
-            maxCurrentOutputSize++;
+            ++maxCurrentOutputSize;
         }
 
         for (int val = 0; val < maxCurrentOutputSize; ++val) {
@@ -873,7 +868,7 @@ void ElementEditor::apply()
     QDataStream stream(&oldData, QIODevice::WriteOnly);
     stream.setVersion(QDataStream::Qt_5_12);
 
-    for (auto *elm : qAsConst(m_elements)) {
+    for (auto *elm : std::as_const(m_elements)) {
         elm->save(stream);
 
         elm->setPriority(m_ui->spinBoxPriority->value());
@@ -952,7 +947,7 @@ void ElementEditor::outputValueChanged(const QString &value)
 
     const int newValue = value.toInt();
 
-    for (auto *elm : qAsConst(m_elements)) {
+    for (auto *elm : std::as_const(m_elements)) {
         if (elm->elementType() == ElementType::InputRotary) {
             if (auto *input = qobject_cast<InputRotary *>(elm)) {
                 input->setOn(true, newValue);
@@ -1058,35 +1053,34 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
 
 void ElementEditor::truthTable()
 {
-    if (!m_hasTruthTable) {
-        return;
-    }
+    if (!m_hasTruthTable) return;
+
 
     auto *truthtable = dynamic_cast<TruthTable *>(m_elements[0]);
 
     //Assuming only one element selected for now...
 
-    const int nInputs  = truthtable->inputSize();
-    const int nOutputs = truthtable->outputSize();
+    int nInputs = truthtable->inputSize();
+    int nOutputs = truthtable->outputSize();
 
     QStringList inputLabels;
     m_table->setColumnCount(nInputs + nOutputs);
-    m_table->setRowCount(pow(2, nInputs));
+    m_table->setRowCount(std::pow(2, nInputs));
 
-    for (int i = 0; i < nInputs; i++) {
+    for (int i = 0; i < nInputs; ++i) {
         inputLabels.append(QChar::fromLatin1('A' + i));
     }
 
-    for (int i = 0; i < truthtable->outputSize(); i++) {
-        inputLabels.append("S"+QString::number(i));
-        m_table->setColumnWidth(nInputs + i,14);
+    for (int i = 0; i < truthtable->outputSize(); ++i) {
+        inputLabels.append("S" + QString::number(i));
+        m_table->setColumnWidth(nInputs + i, 14);
     }
 
     m_table->setHorizontalHeaderLabels(inputLabels);
 
-    for (int i = 0; i < pow(2, nInputs); i++) {
-        for (int j = 0; j < nInputs; j++) {
-            m_table->setColumnWidth(j,14);
+    for (int i = 0; i < std::pow(2, nInputs); ++i) {
+        for (int j = 0; j < nInputs; ++j) {
+            m_table->setColumnWidth(j, 14);
             auto newItemValue = QString::number(i, 2);
 
             if (newItemValue.size() < nInputs) {
@@ -1097,7 +1091,7 @@ void ElementEditor::truthTable()
                 auto *newItem = new QTableWidgetItem(newItemValue.at(j), QTableWidgetItem::Type);
                 newItem->setTextAlignment(Qt::AlignCenter);
                 m_table->setItem(i, j, newItem);
-                m_table->item(i,j)->setFlags(Qt::ItemIsEnabled);
+                m_table->item(i, j)->setFlags(Qt::ItemIsEnabled);
             }
 
             m_table->item(i,j)->setText(newItemValue.at(j));
@@ -1105,45 +1099,36 @@ void ElementEditor::truthTable()
 
         auto bitArray = truthtable->key();
 
-        for (int z = 0; z < nOutputs; z++) {
+        for (int z = 0; z < nOutputs; ++z) {
             const int output = bitArray.at(256 * z + i);
 
             if (m_table->item(i, nInputs + z) == nullptr) {
                 auto *newOutItem = new QTableWidgetItem(QString(QChar::fromLatin1('0' + output)));
                 newOutItem->setTextAlignment(Qt::AlignCenter);
                 m_table->setItem(i, nInputs + z, newOutItem);
-                m_table->item(i,nInputs + z)->setFlags(Qt::ItemIsEnabled);
+                m_table->item(i, nInputs + z)->setFlags(Qt::ItemIsEnabled);
             }
 
             m_table->item(i, nInputs + z)->setText(QString::number(output));
         }
     }
 
-    m_tableLayout->addWidget(m_table);
-    m_tableBox->setLayout(m_tableLayout);
-    m_tableBox->setWindowTitle(tr("Truth Table"));
-    m_tableBox->exec();
+    m_tableBox->show();
 }
 
 void ElementEditor::setTruthTableProposition(const int row, const int column)
 {
-    if (m_elements.size() > 1) {
-        return;
-    }
+    if (m_elements.size() > 1) return;
 
-    if (column < m_elements[0]->inputSize()) {
-        return;
-    }
+
+    if (column < m_elements[0]->inputSize()) return;
+
 
     auto cellItem = m_table->item(row,column);
     cellItem->setText((cellItem->text() == "0") ? "1" : "0");
 
     auto truthtable = m_elements[0];
     const int nInputs = truthtable->inputSize();
-
-    const QString newItemValue = (cellItem->text() == "0") ? "1" : "0";
-
-    cellItem->setText(newItemValue);
 
     const int positionToChange = 256 * (column - nInputs) + row;
 
@@ -1156,13 +1141,15 @@ void ElementEditor::setTruthTableProposition(const int row, const int column)
     m_scene->setCircuitUpdateRequired();
 }
 
-void ElementEditor::audioBox() {
+void ElementEditor::audioBox()
+{
     auto *audiobox = dynamic_cast<AudioBox *>(m_elements[0]);
 
-    QString filePath = QFileDialog::getOpenFileName(this, tr("Select any audio"),
+    const QString filePath = QFileDialog::getOpenFileName(this, tr("Select any audio"),
                                                     QString(), tr("Audio (*.mp3 *.mp4 *.wav *.ogg)"));
 
     audiobox->setAudio(filePath);
+    m_ui->lineCurrentAudioBox->setText(QFileInfo(filePath).fileName());
 }
 
 void ElementEditor::defaultSkin()
