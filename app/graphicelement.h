@@ -84,7 +84,6 @@ public:
     bool hasLabel() const;
     bool hasTrigger() const;
     bool hasTruthTable() const;
-    bool hasAudioBox() const;
     bool hasNodeConnection() const;
     bool isRotatable() const;
     bool isValid();

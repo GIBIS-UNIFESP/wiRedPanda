@@ -16,7 +16,6 @@ public:
         And = 5,
         AudioBox = 31,
         Buzzer = 26,
-        AudioBox = 31,
         Clock = 9,
         DFlipFlop = 17,
         DLatch = 15,

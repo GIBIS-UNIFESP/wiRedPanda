@@ -8,11 +8,10 @@
 class LogicNone : public LogicElement
 {
 public:
-    explicit LogicNone();
+    explicit LogicNone() : LogicElement(0, 0) {}
 
 private:
     Q_DISABLE_COPY(LogicNone)
 
-    void updateLogic() override;
-    void notifyNextElement();
+    void updateLogic() override {}
 };

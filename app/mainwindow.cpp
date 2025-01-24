@@ -13,7 +13,6 @@
 #include "globalproperties.h"
 #include "graphicsview.h"
 #include "ic.h"
-#include "logicelement.h"
 #include "recentfiles.h"
 #include "settings.h"
 #include "simulation.h"
@@ -240,7 +239,6 @@ WorkSpace* MainWindow::createNewTab()
     m_ui->tab->setCurrentIndex(m_ui->tab->count() - 1);
 
     qCDebug(zero) << "Finished #tabs: " << m_ui->tab->count() << ", current tab: " << m_tabIndex;
-    m_ui->actionTemporalSimulation->setChecked(false);
 
     return workspace;
 }
@@ -1312,15 +1310,6 @@ void MainWindow::on_actionRestart_triggered()
     }
 
     m_currentTab->simulation()->restart();
-}
-
-void MainWindow::on_actionStartTemporalSimulation_toggled(const bool checked)
-{
-    if (!m_currentTab) {
-        return;
-    }
-
-    m_currentTab->simulation()->setTemporalSimulation(checked);
 }
 
 void MainWindow::populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout)

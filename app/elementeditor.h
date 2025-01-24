@@ -39,7 +39,6 @@ public:
     void updateElementSkin();
     void updatePriorityAction();
     void updateTheme();
-    void audioBox();
 
 signals:
     void sendCommand(QUndoCommand *cmd);
@@ -78,9 +77,7 @@ private:
     QString m_skinName;
     QTableWidget *m_table = nullptr;
     Scene *m_scene = nullptr;
-    QDialog *m_tableBox = new QDialog(this);
     QVBoxLayout *m_tableLayout = new QVBoxLayout(m_tableBox);
-    QTableWidget *m_table = new QTableWidget(m_tableBox);
     bool m_canChangeInputSize = false;
     bool m_canChangeOutputSize = false;
     bool m_canChangeSkin = false;
@@ -112,5 +109,4 @@ private:
     bool m_isDefaultSkin = true;
     bool m_isUpdatingSkin = false;
     bool m_hasNodeConnection = false;
-    unsigned int m_hasTruthTable = 0;
 };

@@ -77,12 +77,6 @@ public:
     void deleteNodeSetConnections(QSet<QPair<int,int>>* set, int nodeToRemove = -1);
 
     // Element shortcuts
-    void prevMainPropShortcut();
-    void nextMainPropShortcut();
-    void prevSecndPropShortcut();
-    void nextSecndPropShortcut();
-    void nextElm();
-    void prevElm();
     void removeInputPort();
     void removeOutputPort();
 

@@ -151,6 +151,15 @@ void Clock::setFrequency(const float freq)
     m_frequency = static_cast<double>(freq);
 }
 
+float Clock::delay() const
+{
+    return static_cast<float>(m_delay);
+}
+
+void Clock::setDelay(const float delay) {
+    m_delay = static_cast<double>(delay);;
+}
+
 void Clock::resetClock(const std::chrono::steady_clock::time_point &globalTime)
 {
 
