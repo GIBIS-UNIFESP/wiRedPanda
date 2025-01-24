@@ -35,4 +35,5 @@ public:
     static QRectF loadRect(QDataStream &stream, const QVersionNumber version);
 
     static QString loadDolphinFileName(QDataStream &stream, const QVersionNumber version);
+    static QString typeName(const int type);
 };

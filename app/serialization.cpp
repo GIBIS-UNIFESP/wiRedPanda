@@ -39,7 +39,7 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, QMap<quin
 
     while (!stream.atEnd()) {
         int type; stream >> type;
-        qCDebug(three) << "Type: " << type;
+        qCDebug(three) << "Type: " << typeName(type);
 
         switch (type) {
         case GraphicElement::Type: {
@@ -118,4 +118,14 @@ QRectF Serialization::loadRect(QDataStream &stream, const QVersionNumber version
     }
 
     return rect;
+}
+
+QString Serialization::typeName(const int type) {
+    static const QHash<int, QString> typeMap = {
+        { QGraphicsItem::UserType + 1, "QNEPort" },
+        { QGraphicsItem::UserType + 2, "QNEConnection" },
+        { QGraphicsItem::UserType + 3, "GraphicElement" },
+    };
+
+    return typeMap.value(type, "UnknownType");
 }
