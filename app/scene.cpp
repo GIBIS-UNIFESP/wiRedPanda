@@ -909,6 +909,10 @@ void Scene::deleteNodeAction(const QList<QGraphicsItem *> items)
         if (item->type() == GraphicElement::Type) {
             auto elm = qgraphicsitem_cast<GraphicElement *>(item);
             if (elm->elementType() == ElementType::Node) Nodes.append(elm);
+        } else if (item->type() == QNEConnection::Type) {
+            auto conn = qgraphicsitem_cast<QNEConnection *>(item);
+            conn->startPort()->setHasWirelessConnection(false);
+            conn->endPort()->setHasWirelessConnection(false);
         }
     }
 
@@ -929,6 +933,10 @@ void Scene::deleteNodeAction(const QList<QGraphicsItem *> items)
 
     for (auto &sourceNode : Nodes) {
         if (isSourceNode(sourceNode)) {
+            for (auto &conn : sourceNode->outputPort()->connections()) {
+                conn->endPort()->setHasWirelessConnection(false);
+            }
+
             for (auto pair : nodeMapping.value(sourceNode->mapId())) {
                 int childNodeId = pair.second;
                 auto childNode = element(childNodeId);
