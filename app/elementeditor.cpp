@@ -593,14 +593,18 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
                 }
             }
         }
-        m_ui->labelNode->setVisible(m_hasNodeConnection && !isSourceNode && bNodeHasOutput);
-        m_ui->comboBoxNode->setVisible(m_hasNodeConnection && !isSourceNode && bNodeHasOutput);
-        m_ui->comboBoxNode->setEnabled(m_hasNodeConnection && !isSourceNode && bNodeHasOutput);
+        m_ui->labelNode->setVisible(!isSourceNode && bNodeHasOutput);
+        m_ui->comboBoxNode->setVisible(!isSourceNode && bNodeHasOutput);
+        m_ui->comboBoxNode->setEnabled(!isSourceNode && bNodeHasOutput);
         m_ui->comboBoxNode->addItem(QString(""));
         m_ui->lineEditElementLabel->setEnabled(!hasFoundConnection && bNodeHasInput && (isSourceNode || !bNodeHasOutput));
         if(!hasFoundConnection){
             m_ui->comboBoxNode->setCurrentText("");
         }
+    }else {
+        m_ui->labelNode->setVisible(false);
+        m_ui->comboBoxNode->setVisible(false);
+        m_ui->comboBoxNode->setEnabled(false);
     }
 
     /* Output size */
