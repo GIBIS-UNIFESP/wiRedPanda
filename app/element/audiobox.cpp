@@ -45,11 +45,11 @@ AudioBox::AudioBox(QGraphicsItem *parent)
 #endif
 
     if (m_hasOutputDevice) {
-        m_player = new QMediaPlayer;
+        m_player = new QMediaPlayer(this);
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        m_playlist = new QMediaPlaylist;
+        m_playlist = new QMediaPlaylist(this);
 #else
-        m_audioOutput = new QAudioOutput;
+        m_audioOutput = new QAudioOutput(this);
 #endif
         m_audio = new QFileInfo();
         AudioBox::setAudio("qrc:/output/audio/wiredpanda.wav");
