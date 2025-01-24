@@ -222,7 +222,7 @@ void WorkSpace::setAutosaveFileName()
 void WorkSpace::autosave()
 {
     qCDebug(two) << "Starting autosave.";
-    QStringList autosaves =Settings::value("autosaveFile").toStringList();
+    QStringList autosaves = Settings::value("autosaveFile").toStringList();
     qCDebug(three) << "All auto save file names before autosaving: " << autosaves;
 
     qCDebug(zero) << "Checking if autosave file exists and if it contains current project file. If so, remove autosave file from it.";

@@ -53,7 +53,6 @@ public:
     QNEPort *otherPort(const QNEPort *port) const;
     QRectF boundingRect() const override;
     Status status() const;
-    void setStatus(const Status status);
     bool highLight();
     double angle();
     void load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap = {}, const QVersionNumber version = VERSION("4.2"));
@@ -64,6 +63,7 @@ public:
     void setHighLight(const bool highLight);
     void setStartPort(QNEOutputPort *port);
     void setStartPos(const QPointF point);
+    void setStatus(const Status status);
     void setWireless(const bool isWireless);
     void updatePath();
     void updatePosFromPorts();

@@ -25,9 +25,7 @@ public:
 
     bool initialize();
     bool isRunning();
-    bool isTemporalSimulation();
     void restart();
-    void setTemporalSimulation(bool isOn);
     void start();
     void stop();
     void update();
@@ -45,6 +43,5 @@ private:
     QVector<QNEConnection *> m_connections;
     Scene *m_scene;
     bool m_initialized = false;
-    bool m_temporalSimulation = false;
     std::unique_ptr<ElementMapping> m_elmMapping;
 };

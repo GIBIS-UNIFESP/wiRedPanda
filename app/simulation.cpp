@@ -43,7 +43,6 @@ void Simulation::update()
 
     for (auto logic : m_elmMapping->logicElms()) {
         logic->updateLogic();
-        logic->setTemporalSimulationIsOn(m_temporalSimulation);
     }
 
     for (auto *connection : std::as_const(m_connections)) {
@@ -177,14 +176,4 @@ bool Simulation::initialize()
 
     qCDebug(zero) << "Finished simulation layer.";
     return true;
-}
-
-void Simulation::setTemporalSimulation(bool isOn)
-{
-    m_temporalSimulation = isOn;
-}
-
-bool Simulation::isTemporalSimulation()
-{
-    return m_temporalSimulation;
 }
