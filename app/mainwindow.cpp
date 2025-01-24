@@ -299,7 +299,10 @@ void MainWindow::save(const QString &fileName)
     if(c_tab->m_EmbeddedIc){
              while(1){
                 auto fatherICs = m_icsTabTree.keys(c_tab);
-                if(fatherICs.size() != 1) break;
+                if(fatherICs.size() != 1) {
+                    c_tab->save(c_tab->fileInfo().fileName());
+                    break;
+                };
                 auto fatherIC = fatherICs.at(0);
                 c_tab->m_EmbeddedIc->m_fileData.clear();
                 QDataStream stream(&c_tab->m_EmbeddedIc->m_fileData, QIODevice::ReadWrite);
@@ -392,6 +395,18 @@ int MainWindow::confirmSave(const bool multiple)
     msgBox.setText(fileName + tr(" has been modified. \nDo you want to save your changes?"));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Yes);
+    return msgBox.exec();
+}
+
+int MainWindow::warnAboutOpenChildIcs(){
+    QMessageBox msgBox;
+    msgBox.setParent(this);
+
+    msgBox.setStandardButtons(QMessageBox::Ok);
+
+    msgBox.setText(tr("This workspace has open child ICs, please close them first!"));
+    msgBox.setWindowModality(Qt::WindowModal);
+    msgBox.setDefaultButton(QMessageBox::Ok);
     return msgBox.exec();
 }
 
@@ -721,9 +736,23 @@ void MainWindow::updateICList(QString dirPath)
 
 bool MainWindow::closeTab(const int tabIndex)
 {
-    auto fatherTab = m_icsTabTree.keys(m_currentTab);
 
-    if(fatherTab.size() > 0 && m_icsTabTree.remove(fatherTab.at(0), m_currentTab) != 1) return false;
+    auto tabToClose = qobject_cast<WorkSpace *>(m_ui->tab->widget(tabIndex));
+    auto fatherTab = m_icsTabTree.keys(tabToClose);
+
+    //Check if there is an open child tab
+
+    for (auto &tab: m_icsTabTree.keys()) {
+        if(tab.second == tabToClose){
+            warnAboutOpenChildIcs();
+            return false;
+        }
+    }
+
+    if(fatherTab.size() > 0 && m_icsTabTree.remove(fatherTab.at(0), tabToClose) != 1) return false;
+
+
+
 
     qCDebug(zero) << "Closing tab " << tabIndex + 1 << ", #tabs: " << m_ui->tab->count();
     m_ui->tab->setCurrentIndex(tabIndex);
