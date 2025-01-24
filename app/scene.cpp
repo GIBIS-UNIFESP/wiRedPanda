@@ -631,6 +631,8 @@ void Scene::cloneDrag(const QPointF mousePos)
 
 void Scene::copy(const QList<QGraphicsItem *> &items, QDataStream &stream)
 {
+    stream << GlobalProperties::version.toString();
+
     QPointF center(0.0, 0.0);
     int itemsQuantity = 0;
 
@@ -825,11 +827,20 @@ void Scene::paste(QDataStream &stream)
 {
     clearSelection();
 
-    QPointF ctr; stream >> ctr;
+    QVersionNumber version;
+    qint64 originalPos = stream.device()->pos();
 
-    const QVersionNumber version = GlobalProperties::version;
+    try {
+        stream >> version;
+    } catch (std::bad_alloc) {
+        stream.device()->seek(originalPos);
+        version = QVersionNumber(4, 1);
+    }
+
+    QPointF center; stream >> center;
+
     const auto itemList = Serialization::deserialize(stream, {}, version);
-    const QPointF offset = m_mousePos - ctr - QPointF(32.0, 32.0);
+    const QPointF offset = m_mousePos - center - QPointF(32.0, 32.0);
 
     receiveCommand(new AddItemsCommand(itemList, this));
 
