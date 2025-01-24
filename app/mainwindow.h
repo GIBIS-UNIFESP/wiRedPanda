@@ -64,6 +64,7 @@ public:
     WorkSpace *getCurrentTab();
     bool closeFiles();
     bool event(QEvent *event) override;
+    int warnAboutOpenChildIcs();
     void exportToWaveFormTerminal();
     void loadEmbeddedIC(const QString &fileName, IC *source_ic);
     void loadTranslation(const QString &language);
