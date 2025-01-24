@@ -1,10 +1,13 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
 
 #include "scene.h"
 
+#include <QDialog>
+#include <QTableWidget>
+#include <QVBoxLayout>
 #include <QWidget>
 #include <QDialog>
 #include <QVBoxLayout>
@@ -24,6 +27,7 @@ public:
     ~ElementEditor() override;
 
     bool eventFilter(QObject *obj, QEvent *event) override;
+    void audioBox();
     void changeTriggerAction();
     void contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse);
     void fillColorComboBox();
@@ -59,6 +63,7 @@ private:
     void updateSkins();
 
     Ui::ElementEditor *m_ui;
+    QDialog *m_tableBox = nullptr;
     QList<GraphicElement *> m_elements;
     QString m_manyAudios = tr("<Many sounds>");
     QString m_manyColors = tr("<Many colors>");
@@ -71,6 +76,7 @@ private:
     QString m_manyPriorities = tr("<Many priorities>");
     QString m_manyTriggers = tr("<Many triggers>");
     QString m_skinName;
+    QTableWidget *m_table = nullptr;
     Scene *m_scene = nullptr;
     QDialog *m_tableBox = new QDialog(this);
     QVBoxLayout *m_tableLayout = new QVBoxLayout(m_tableBox);
@@ -102,6 +108,7 @@ private:
     bool m_hasSameTrigger = false;
     bool m_hasSameType = false;
     bool m_hasTrigger = false;
+    bool m_hasTruthTable = false;
     bool m_isDefaultSkin = true;
     bool m_isUpdatingSkin = false;
     bool m_hasNodeConnection = false;

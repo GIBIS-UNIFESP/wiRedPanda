@@ -2,7 +2,8 @@
 
 #include <QDataStream>
 
-ElementType Enums::nextElmType(ElementType type) {
+ElementType Enums::nextElmType(ElementType type)
+{
     switch (type) {
         // Not and Node
         case ElementType::Not:         return ElementType::Node;
@@ -36,12 +37,12 @@ ElementType Enums::nextElmType(ElementType type) {
         case ElementType::Buzzer:      return ElementType::AudioBox;
         case ElementType::AudioBox:    return ElementType::Led;
 
-        // Other Cases
         default:                       return ElementType::Unknown;
     }
 }
 
-ElementType Enums::prevElmType(ElementType type) {
+ElementType Enums::prevElmType(ElementType type)
+{
     switch (type) {
         // Not and Node
         case ElementType::Not:         return ElementType::Node;
@@ -75,7 +76,6 @@ ElementType Enums::prevElmType(ElementType type) {
         case ElementType::AudioBox:    return ElementType::Buzzer;
         case ElementType::Buzzer:      return ElementType::Led;
 
-        // Other Cases
         default:                       return ElementType::Unknown;
     }
 }

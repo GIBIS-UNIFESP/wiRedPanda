@@ -1,11 +1,9 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
 
 #include "graphicelement.h"
-
-#include <QBitArray>
 
 class TruthTable : public GraphicElement
 {
@@ -14,14 +12,13 @@ class TruthTable : public GraphicElement
 public:
     explicit TruthTable(QGraphicsItem *parent = nullptr);
 
+    QBitArray &key();
     void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void save(QDataStream &stream) const override;
-    void setkey(const QBitArray& key);
+    void setkey(const QBitArray &key);
     void update();
     void updatePortsProperties() override;
-
-    QBitArray& key();
 
 private:
     void generatePixmap();

@@ -1,27 +1,36 @@
 #include "settings.h"
 
+QSettings *Settings::settings = nullptr;
+
+QSettings *Settings::settingsInstance()
+{
+    if (!settings) {
+        settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, "GIBIS-UNIFESP", "wiRedPanda");
+    }
+    return settings;
+}
+
 QString Settings::fileName()
 {
-    return settings->fileName();
+    return settingsInstance()->fileName();
 }
 
 QVariant Settings::value(const QString &key)
 {
-    return settings->value(key);
+    return settingsInstance()->value(key);
 }
 
 bool Settings::contains(const QString &key)
 {
-    return settings->contains(key);
+    return settingsInstance()->contains(key);
 }
 
 void Settings::remove(const QString &key)
 {
-    settings->remove(key);
+    settingsInstance()->remove(key);
 }
 
 void Settings::setValue(const QString &key, const QVariant &value)
 {
-    settings->setValue(key, value);
-    settings->sync();
+    settingsInstance()->setValue(key, value);
 }

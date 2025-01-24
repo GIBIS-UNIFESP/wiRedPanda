@@ -1276,24 +1276,6 @@ QTabWidget::pane {
     <string>Spanish</string>
    </property>
   </action>
-  <action name="actionTemporalSimulation">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/timerRed.svg</normaloff>:/toolbar/timerRed.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Temporal Simulation</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+T</string>
-   </property>
-  </action>
   <action name="actionShortcutsAndTips">
    <property name="icon">
     <iconset theme="help-about"/>
@@ -1327,12 +1309,11 @@ QTabWidget::pane {
  </tabstops>
  <resources>
   <include location="resources/basic/basic.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
-  <include location="resources/output/output.qrc"/>
+  <include location="resources/input/input.qrc"/>
   <include location="resources/memory/light/memory_light.qrc"/>
   <include location="resources/misc/misc.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>
 </ui>

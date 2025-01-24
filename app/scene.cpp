@@ -1,4 +1,4 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "scene.h"
@@ -203,13 +203,13 @@ QGraphicsItem *Scene::itemAt(const QPointF pos)
     auto items_ = items(pos);
     items_.append(itemsAt(pos));
 
-    for (auto *item : qAsConst(items_)) {
+    for (auto *item : std::as_const(items_)) {
         if (item->type() == QNEPort::Type) {
             return item;
         }
     }
 
-    for (auto *item : qAsConst(items_)) {
+    for (auto *item : std::as_const(items_)) {
         if (item->type() > QGraphicsItem::UserType) {
             return item;
         }
@@ -234,9 +234,7 @@ void Scene::resizeScene()
 {
     setSceneRect(itemsBoundingRect());
 
-    // auto *item = itemAt(m_mousePos);
-
-    // if (item && (m_timer.elapsed() > 70)/* && m_draggingElement*/) {
+    // if (auto *item = itemAt(m_mousePos); item && (m_timer.elapsed() > 100) && m_draggingElement) {
     //     // FIXME: sometimes this goes into a infinite loop and crashes
     //     item->ensureVisible();
     //     m_timer.restart();
@@ -358,44 +356,50 @@ void Scene::detachConnection(QNEInputPort *endPort)
 
 void Scene::prevMainPropShortcut()
 {
-    for (auto element : selectedElements()) {
-        switch(element->elementType()) {
-            // Logic Elements
+    for (auto *element : selectedElements()) {
+        switch (element->elementType()) {
+        // Logic Elements
         case ElementType::And:
         case ElementType::Or:
         case ElementType::Nand:
         case ElementType::Nor:
         case ElementType::Xor:
         case ElementType::Xnor:
-            // Output and truthtable
+        // Output and truthtable
         case ElementType::Led:
         case ElementType::TruthTable:
             if (element->inputSize() > element->minInputSize())
-                receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement* >{element},
+                receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement *>{element},
                                                           element->inputSize() - 1, this));
             break;
-            // Input ports
+
+        // Input ports
         case ElementType::InputRotary:
             if (element->outputSize() > element->minOutputSize())
-                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement* >{element},
+                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
                                                            element->outputSize() - 1, this));
             break;
+
         case ElementType::Clock:
             if (element->hasFrequency())
                 element->setFrequency(element->frequency() - 0.5);
             break;
+
         case ElementType::Buzzer:
             if (element->hasAudio())
                 element->setAudio(element->previousAudio());
             break;
+
         case ElementType::Display14:
         case ElementType::Display7:
             if (element->hasColors())
                 element->setColor(element->previousColor());
             break;
+
         default: // Not implemented
             break;
         }
+
         element->setSelected(false);
         element->setSelected(true);
     }
@@ -403,44 +407,50 @@ void Scene::prevMainPropShortcut()
 
 void Scene::nextMainPropShortcut()
 {
-    for (auto element : selectedElements()) {
-        switch(element->elementType()) {
-            // Logic Elements
+    for (auto *element : selectedElements()) {
+        switch (element->elementType()) {
+        // Logic Elements
         case ElementType::And:
         case ElementType::Or:
         case ElementType::Nand:
         case ElementType::Nor:
         case ElementType::Xor:
         case ElementType::Xnor:
-            // Output and truthtable
+        // Output and truthtable
         case ElementType::Led:
         case ElementType::TruthTable:
             if (element->inputSize() < element->maxInputSize())
-                receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement* >{element},
+                receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement *>{element},
                                                           element->inputSize() + 1, this));
             break;
-            // Input ports
+
+        // Input ports
         case ElementType::InputRotary:
             if (element->outputSize() < element->maxOutputSize())
-                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement* >{element},
+                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
                                                            element->outputSize() + 1, this));
             break;
+
         case ElementType::Clock:
             if (element->hasFrequency())
                 element->setFrequency(element->frequency() + 0.5);
             break;
+
         case ElementType::Buzzer:
             if (element->hasAudio())
                 element->setAudio(element->nextAudio());
             break;
+
         case ElementType::Display14:
         case ElementType::Display7:
             if (element->hasColors())
                 element->setColor(element->nextColor());
             break;
+
         default: // Not implemented
             break;
         }
+
         element->setSelected(false);
         element->setSelected(true);
     }
@@ -448,20 +458,23 @@ void Scene::nextMainPropShortcut()
 
 void Scene::prevSecndPropShortcut()
 {
-    for (auto element: selectedElements()) {
+    for (auto *element : selectedElements()) {
         switch (element->elementType()) {
         case ElementType::TruthTable:
             if (element->outputSize() > element->minOutputSize())
                 receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
                                                            element->outputSize() - 1, this));
             break;
+
         case ElementType::Led:
             if (element->hasColors())
                 element->setColor(element->previousColor());
             break;
+
         default:
             break;
         }
+
         element->setSelected(false);
         element->setSelected(true);
     }
@@ -469,20 +482,23 @@ void Scene::prevSecndPropShortcut()
 
 void Scene::nextSecndPropShortcut()
 {
-    for (auto element: selectedElements()) {
+    for (auto *element : selectedElements()) {
         switch (element->elementType()) {
         case ElementType::TruthTable:
             if (element->outputSize() < element->maxOutputSize())
                 receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
                                                            element->outputSize() + 1, this));
             break;
+
         case ElementType::Led:
             if (element->hasColors())
                 element->setColor(element->nextColor());
             break;
+
         default:
             break;
         }
+
         element->setSelected(false);
         element->setSelected(true);
     }
@@ -490,11 +506,11 @@ void Scene::nextSecndPropShortcut()
 
 void Scene::nextElm()
 {
-    for(auto element : selectedElements()) {
-        if (Enums::nextElmType(element->elementType()) == ElementType::Unknown)
-            continue;
+    for (auto *element : selectedElements()) {
+        const QPointF elmPosition = element->scenePos();
+        auto nextType = Enums::nextElmType(element->elementType());
 
-        QPointF elmPosition = element->scenePos();
+        if (nextType == ElementType::Unknown) { continue; }
 
         receiveCommand(new MorphCommand(QList<GraphicElement *>{element},
                        Enums::nextElmType(element->elementType()), this));
@@ -505,11 +521,11 @@ void Scene::nextElm()
 
 void Scene::prevElm()
 {
-    for (auto element : selectedElements()) {
-        if (Enums::nextElmType(element->elementType()) == ElementType::Unknown)
-            continue;
+    for (auto *element : selectedElements()) {
+        const QPointF elmPosition = element->scenePos();
+        auto prevType = Enums::prevElmType(element->elementType());
 
-        QPointF elmPosition = element->scenePos();
+        if (prevType == ElementType::Unknown) { continue; }
 
         receiveCommand(new MorphCommand(QList<GraphicElement *>{element},
                                         Enums::prevElmType(element->elementType()), this));
@@ -664,7 +680,7 @@ void Scene::copy(const QList<QGraphicsItem *> &items, QDataStream &stream)
     for (auto *item : items) {
         if (item->type() == GraphicElement::Type) {
             center += item->pos();
-            itemsQuantity++;
+            ++itemsQuantity;
         }
     }
 
@@ -1152,7 +1168,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             m_movedElements.clear();
             m_oldPositions.clear();
 
-            for (auto *element : qAsConst(selectedElements_)) {
+            for (auto *element : std::as_const(selectedElements_)) {
                 m_movedElements.append(element);
                 m_oldPositions.append(element->pos());
             }

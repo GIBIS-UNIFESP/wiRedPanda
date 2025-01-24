@@ -1,4 +1,4 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "testelements.h"
@@ -26,6 +26,9 @@
 #include "tflipflop.h"
 
 #include <QTest>
+
+#define QUOTE(string) _QUOTE(string)
+#define _QUOTE(string) #string
 
 void TestElements::init()
 {
@@ -202,8 +205,8 @@ void TestElements::testICData(IC *ic)
 
 void TestElements::testIC()
 {
-    const QString icFile = QString(CURRENTDIR) + "/../examples/jkflipflop.panda";
-    GlobalProperties::currentDir = QString(CURRENTDIR) + "/../examples/";
+    const QString icFile = QString(QUOTE(CURRENTDIR)) + "/../examples/jkflipflop.panda";
+    GlobalProperties::currentDir = QString(QUOTE(CURRENTDIR)) + "/../examples/";
 
     auto *ic = new IC();
     ic->loadFile(icFile);
@@ -251,7 +254,6 @@ void TestElements::testIC()
         prstButton->setOff();
         simulation.update();
         simulation.update();
-        simulation.update();
 
         QCOMPARE(ic->inputPort(2)->status(), Status::Inactive);
 
@@ -264,7 +266,6 @@ void TestElements::testIC()
         prstButton->setOn();
         simulation.update();
         simulation.update();
-        simulation.update();
 
         QCOMPARE(ic->inputPort(2)->status(), Status::Inactive);
 
@@ -274,7 +275,6 @@ void TestElements::testIC()
         // -------------------------------
 
         clkButton->setOff();
-        simulation.update();
         simulation.update();
         simulation.update();
 
@@ -288,7 +288,6 @@ void TestElements::testIC()
         clkButton->setOn();
         simulation.update();
         simulation.update();
-        simulation.update();
 
         QCOMPARE(ic->inputPort(2)->status(), Status::Active);
 
@@ -299,7 +298,7 @@ void TestElements::testIC()
 
 void TestElements::testICs()
 {
-    const QDir examplesDir(QString(CURRENTDIR) + "/../examples/");
+    const QDir examplesDir(QString(QUOTE(CURRENTDIR)) + "/../examples/");
     const auto files = examplesDir.entryInfoList(QStringList{"*.panda"});
 
     for (const auto &fileInfo : files) {

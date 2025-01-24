@@ -1,24 +1,24 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "audiobox.h"
 
 #include "globalproperties.h"
 #include "qneport.h"
+
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QAudioDeviceInfo>
 #else
 #include <QAudioDevice>
 #include <QMediaDevices>
 #endif
-#include <QMessageBox>
 
 namespace
 {
     int id = qRegisterMetaType<AudioBox>();
 }
 
-AudioBox::AudioBox(QGraphicsItem* parent)
+AudioBox::AudioBox(QGraphicsItem *parent)
     : GraphicElement(ElementType::AudioBox, ElementGroup::Output, ":output/audiobox/audioboxOff.svg", tr("Audio Box"), tr("Audio Box"), 1, 1, 0, 0, parent)
 {
     if (GlobalProperties::skipInit)
@@ -46,11 +46,11 @@ AudioBox::AudioBox(QGraphicsItem* parent)
 
     if (m_hasOutputDevice) {
         m_player = new QMediaPlayer;
-        #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-            m_playlist = new QMediaPlaylist;
-        #else
-            m_audioOutput = new QAudioOutput;
-        #endif
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        m_playlist = new QMediaPlaylist;
+#else
+        m_audioOutput = new QAudioOutput;
+#endif
         m_audio = new QFileInfo();
         AudioBox::setAudio("qrc:/output/audio/wiredpanda.wav");
     }
@@ -68,7 +68,6 @@ void AudioBox::refresh()
     (inputValue == Status::Active) ? play() : stop();
 }
 
-
 void AudioBox::setAudio(const QString &audioPath)
 {
     if (audioPath.isEmpty() || !m_hasOutputDevice) {
@@ -79,6 +78,7 @@ void AudioBox::setAudio(const QString &audioPath)
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     m_player->setVolume(50);
+    m_playlist->clear();
     m_playlist->addMedia(QUrl(audioPath));
     m_playlist->setPlaybackMode(QMediaPlaylist::Loop);
     m_player->setPlaylist(m_playlist);
@@ -88,7 +88,6 @@ void AudioBox::setAudio(const QString &audioPath)
     m_player->setSource(QUrl(audioPath));
     m_player->setLoops(QMediaPlayer::Infinite);
 #endif
-
 }
 
 QString AudioBox::audio() const

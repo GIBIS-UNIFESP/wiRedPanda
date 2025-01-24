@@ -1,4 +1,4 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "simulation.h"
@@ -30,12 +30,14 @@ void Simulation::update()
     }
 
     if (m_timer.isActive()) {
-        for (auto *clock : qAsConst(m_clocks)) {
-            clock->updateClock();
+        const auto globalTime = std::chrono::steady_clock::now();
+
+        for (auto *clock : std::as_const(m_clocks)) {
+            clock->updateClock(globalTime);
         }
     }
 
-    for (auto *inputElm : qAsConst(m_inputs)) {
+    for (auto *inputElm : std::as_const(m_inputs)) {
         inputElm->updateOutputs();
     }
 
@@ -44,11 +46,11 @@ void Simulation::update()
         logic->setTemporalSimulationIsOn(m_temporalSimulation);
     }
 
-    for (auto *connection : qAsConst(m_connections)) {
+    for (auto *connection : std::as_const(m_connections)) {
         updatePort(connection->startPort());
     }
 
-    for (auto *outputElm : qAsConst(m_outputs)) {
+    for (auto *outputElm : std::as_const(m_outputs)) {
         for (auto *inputPort : outputElm->inputs()) {
             updatePort(inputPort);
         }
@@ -129,6 +131,8 @@ bool Simulation::initialize()
 
     qCDebug(two) << "GENERATING SIMULATION LAYER.";
 
+    const auto globalTime = std::chrono::steady_clock::now();
+
     for (auto *item : items) {
         if (item->type() == QNEConnection::Type) {
             m_connections.append(qgraphicsitem_cast<QNEConnection *>(item));
@@ -140,7 +144,7 @@ bool Simulation::initialize()
 
             if (element->elementType() == ElementType::Clock) {
                 m_clocks.append(qobject_cast<Clock *>(element));
-                m_clocks.constLast()->resetClock();
+                m_clocks.constLast()->resetClock(globalTime);
             }
 
             if (element->elementGroup() == ElementGroup::Input) {

@@ -1,4 +1,4 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "ic.h"
@@ -161,7 +161,7 @@ void IC::loadFile(const QString &fileName)
 
         auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
 
-        switch(elm->elementGroup()){
+        switch (elm->elementGroup()) {
         case ElementGroup::Input:  loadInputElement(elm);    break;
         case ElementGroup::Output: loadOutputElement(elm);   break;
         default:                   m_icElements.append(elm); break;

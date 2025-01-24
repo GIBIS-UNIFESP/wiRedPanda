@@ -1,4 +1,4 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
@@ -24,7 +24,7 @@ public:
     explicit ElementMapping(const QVector<GraphicElement *> &elements);
     ~ElementMapping();
 
-    const QVector<std::shared_ptr<LogicElement> > &logicElms() const;
+    const QVector<std::shared_ptr<LogicElement>> &logicElms() const;
     void sort();
 
 private:

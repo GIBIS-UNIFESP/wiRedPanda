@@ -1,4 +1,4 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
@@ -116,7 +116,6 @@ private:
     void on_actionSaveAs_triggered();
     void on_actionSave_triggered();
     void on_actionSelectAll_triggered();
-    void on_actionStartTemporalSimulation_toggled(const bool checked);
     void on_actionShortcuts_and_Tips_triggered();
     void on_actionSpanish_triggered();
     void on_actionWaveform_triggered();

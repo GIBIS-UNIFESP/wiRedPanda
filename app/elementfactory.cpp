@@ -1,4 +1,4 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "elementfactory.h"
@@ -160,6 +160,7 @@ std::shared_ptr<LogicElement> ElementFactory::buildLogicElement(GraphicElement *
     case ElementType::InputRotary:
     case ElementType::InputSwitch: return std::make_shared<LogicInput>(false, elm->outputSize());
 
+    case ElementType::AudioBox:
     case ElementType::Buzzer:
     case ElementType::AudioBox:
     case ElementType::Display14:
@@ -168,6 +169,7 @@ std::shared_ptr<LogicElement> ElementFactory::buildLogicElement(GraphicElement *
 
     case ElementType::And:         return std::make_shared<LogicAnd>(elm->inputSize());
     case ElementType::DFlipFlop:   return std::make_shared<LogicDFlipFlop>();
+    case ElementType::DLatch:      return std::make_shared<LogicDLatch>();
     case ElementType::Demux:       return std::make_shared<LogicDemux>();
     case ElementType::InputGnd:    return std::make_shared<LogicInput>(false);
     case ElementType::InputVcc:    return std::make_shared<LogicInput>(true);
@@ -183,7 +185,6 @@ std::shared_ptr<LogicElement> ElementFactory::buildLogicElement(GraphicElement *
     case ElementType::TruthTable:  return std::make_shared<LogicTruthTable>(elm->inputSize(), elm->outputSize(), (dynamic_cast<TruthTable*>(elm))->key());
     case ElementType::Xnor:        return std::make_shared<LogicXnor>(elm->inputSize());
     case ElementType::Xor:         return std::make_shared<LogicXor>(elm->inputSize());
-    case ElementType::DLatch:      return std::make_shared<LogicDLatch>();
 
     case ElementType::Line:
     case ElementType::Text:        return std::make_shared<LogicNone>();

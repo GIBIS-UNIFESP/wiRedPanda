@@ -1,13 +1,12 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
+
+#include "truth_table.h"
 
 #include "common.h"
 #include "globalproperties.h"
 #include "qneport.h"
-#include "QPainter"
-#include "truth_table.h"
 
-#include <QDebug>
 #include <QPainter>
 
 namespace
@@ -16,7 +15,7 @@ namespace
 }
 
 TruthTable::TruthTable(QGraphicsItem *parent)
-    : GraphicElement(ElementType::TruthTable, ElementGroup::IC, ":/basic/truthtable-rotated.svg", tr("Truth Table"), tr("Truth Table"), 2, 8, 1, 8, parent)
+    : GraphicElement(ElementType::TruthTable, ElementGroup::IC, ":/basic/truthtable-rotated.svg", tr("TRUTH TABLE"), tr("Truth Table"), 2, 8, 1, 8, parent)
 {
     if (GlobalProperties::skipInit) {
         return;
@@ -42,7 +41,7 @@ void TruthTable::updatePortsProperties()
     if (!m_inputPorts.isEmpty()) {
         int y = 32 - (m_inputPorts.size() * step) + step;
 
-        for (auto *port : qAsConst(m_inputPorts)) {
+        for (auto *port : std::as_const(m_inputPorts)) {
 
             if (!isRotatable()) {
                 port->setRotation(0);
@@ -53,7 +52,7 @@ void TruthTable::updatePortsProperties()
             y += step * 2;
 
             port->setName(QChar::fromLatin1('A' + index));
-            index++;
+            ++index;
         }
     }
 
@@ -62,7 +61,7 @@ void TruthTable::updatePortsProperties()
     if (!m_outputPorts.isEmpty()) {
         int y = 32 - (m_outputPorts.size() * step) + step;
 
-        for (auto *port : qAsConst(m_outputPorts)) {
+        for (auto *port : std::as_const(m_outputPorts)) {
 
             if (!isRotatable()) {
                 port->setRotation(0);
@@ -73,7 +72,7 @@ void TruthTable::updatePortsProperties()
             y += step * 2;
 
             port->setName("S" + QString::number(index));
-            index++;
+            ++index;
         }
     }
 }
@@ -141,7 +140,7 @@ void TruthTable::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     painter->drawPixmap(boundingRect().topLeft(), pixmap());
 }
 
-QBitArray& TruthTable::key()
+QBitArray &TruthTable::key()
 {
     return m_key;
 }
@@ -171,4 +170,3 @@ void TruthTable::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, co
         }
     }
 }
-

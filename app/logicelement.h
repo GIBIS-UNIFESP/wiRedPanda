@@ -1,14 +1,14 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
 
-#include <QSet>
 #include <QVector>
 
 class LogicElement;
 
-struct InputPair {
+struct InputPair
+{
     LogicElement *logic = nullptr;
     int port = 0;
 };
@@ -61,7 +61,7 @@ protected:
 private:
     Q_DISABLE_COPY(LogicElement)
 
-    QSet<LogicElement *> m_successors;
+    QVector<LogicElement *> m_successors;
     QVector<InputPair> m_inputPairs;
     QVector<bool> m_outputValues;
     bool m_beingVisited = false;

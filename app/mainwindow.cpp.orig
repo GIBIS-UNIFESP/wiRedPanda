@@ -1,4 +1,8 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+<<<<<<< HEAD
+// Copyright 2015 - 2022, GIBIS-UNIFESP and the WiRedPanda contributors
+=======
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
+>>>>>>> 298cc964fc3e902184070c9e243d9ac5459c14a7
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "mainwindow.h"
@@ -38,6 +42,10 @@
 #include <QTranslator>
 #include <QMultiMap>
 #include <QPair>
+
+#ifdef Q_OS_WASM
+#include <emscripten/emscripten.h>
+#endif
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #define SKIPEMPTYPARTS QString::SkipEmptyParts
@@ -79,15 +87,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     m_ui->actionLabelsUnderIcons->setChecked(Settings::value("labelsUnderIcons").toBool());
     m_ui->mainToolBar->setToolButtonStyle(Settings::value("labelsUnderIcons").toBool() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
 
-<<<<<<< HEAD
-    qCDebug(zero) << tr("Setting left side menus.");
-    auto *searchShortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
-    connect(searchShortcut, &QShortcut::activated, m_ui->lineEditSearch, qOverload<>(&QWidget::setFocus));
-=======
     qCDebug(zero) << "Setting left side menus.";
-    auto *shortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
-    connect(shortcut, &QShortcut::activated, m_ui->lineEditSearch, qOverload<>(&QWidget::setFocus));
->>>>>>> 02f419dab3f3daf07e49695779fde496dc3bfd4c
     populateLeftMenu();
 
     m_ui->tabElements->setTabIcon(0, QIcon(":/input/buttonOff.svg"));
@@ -135,7 +135,8 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
             connect(action, &QAction::triggered, this, [this] {
                 if (auto *action = qobject_cast<QAction *>(sender())) {
                     loadPandaFile("examples/" + action->text());
-                }});
+                }
+            });
 
             m_ui->menuExamples->addAction(action);
         }
@@ -147,6 +148,10 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 
 <<<<<<< HEAD
     // Element shortcuts
+=======
+    // Shortcuts
+    auto *searchShortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
+>>>>>>> 298cc964fc3e902184070c9e243d9ac5459c14a7
     auto *prevMainPropShortcut = new QShortcut(QKeySequence("["), this);
     auto *nextMainPropShortcut = new QShortcut(QKeySequence("]"), this);
     auto *prevSecndPropShortcut = new QShortcut(QKeySequence("{"), this);
@@ -154,15 +159,20 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     auto *changePrevElmShortcut = new QShortcut(QKeySequence("<"), this);
     auto *changeNextElmShortcut = new QShortcut(QKeySequence(">"), this);
 
+<<<<<<< HEAD
+=======
+    connect(searchShortcut,               &QShortcut::activated,      m_ui->lineEditSearch,  qOverload<>(&QWidget::setFocus));
+>>>>>>> 298cc964fc3e902184070c9e243d9ac5459c14a7
     connect(prevMainPropShortcut,         &QShortcut::activated,      m_currentTab->scene(), &Scene::prevMainPropShortcut);
     connect(nextMainPropShortcut,         &QShortcut::activated,      m_currentTab->scene(), &Scene::nextMainPropShortcut);
     connect(prevSecndPropShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::prevSecndPropShortcut);
     connect(nextSecndPropShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::nextSecndPropShortcut);
     connect(changePrevElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::prevElm);
     connect(changeNextElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::nextElm);
+<<<<<<< HEAD
     connect(changePrevElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::prevElm);
 
-    qCDebug(zero) << tr("Setting connections");
+    qCDebug(zero) << "Setting connections";
 
     connect(m_ui->actionAbout,              &QAction::triggered,        this,                &MainWindow::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,            &QAction::triggered,        this,                &MainWindow::on_actionAboutQt_triggered);
@@ -196,16 +206,8 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->actionSave,               &QAction::triggered,        this,                &MainWindow::on_actionSave_triggered);
     connect(m_ui->actionSaveAs,             &QAction::triggered,        this,                &MainWindow::on_actionSaveAs_triggered);
     connect(m_ui->actionSelectAll,          &QAction::triggered,        this,                &MainWindow::on_actionSelectAll_triggered);
-    connect(m_ui->actionWaveform,           &QAction::triggered,        this,                &MainWindow::on_actionWaveform_triggered);
-    connect(m_ui->actionWires,              &QAction::triggered,        this,                &MainWindow::on_actionWires_triggered);
-    connect(m_ui->actionZoomIn,             &QAction::triggered,        this,                &MainWindow::on_actionZoomIn_triggered);
-    connect(m_ui->actionZoomOut,            &QAction::triggered,        this,                &MainWindow::on_actionZoomOut_triggered);
-    connect(m_ui->lineEditSearch,           &QLineEdit::returnPressed,  this,                &MainWindow::on_lineEditSearch_returnPressed);
-    connect(m_ui->lineEditSearch,           &QLineEdit::textChanged,    this,                &MainWindow::on_lineEditSearch_textChanged);
-    connect(m_ui->pushButtonAddIC,          &QPushButton::clicked,      this,                &MainWindow::on_pushButtonAddIC_clicked);
-    connect(m_ui->pushButtonRemoveIC,       &QPushButton::clicked,      this,                &MainWindow::on_pushButtonRemoveIC_clicked);
-    connect(m_ui->pushButtonRemoveIC,       &TrashButton::removeICFile, this,                &MainWindow::removeICFile);
 =======
+
     qCDebug(zero) << "Setting connections";
     connect(m_ui->actionAbout,            &QAction::triggered,        this,                &MainWindow::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,          &QAction::triggered,        this,                &MainWindow::on_actionAboutQt_triggered);
@@ -238,17 +240,18 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->actionSave,             &QAction::triggered,        this,                &MainWindow::on_actionSave_triggered);
     connect(m_ui->actionSaveAs,           &QAction::triggered,        this,                &MainWindow::on_actionSaveAs_triggered);
     connect(m_ui->actionSelectAll,        &QAction::triggered,        this,                &MainWindow::on_actionSelectAll_triggered);
+    connect(m_ui->actionShortcutsAndTips, &QAction::triggered,        this,                &MainWindow::on_actionShortcuts_and_Tips_triggered);
+>>>>>>> 298cc964fc3e902184070c9e243d9ac5459c14a7
     connect(m_ui->actionSpanish,          &QAction::triggered,        this,                &MainWindow::on_actionSpanish_triggered);
-    connect(m_ui->actionWaveform,         &QAction::triggered,        this,                &MainWindow::on_actionWaveform_triggered);
-    connect(m_ui->actionWires,            &QAction::triggered,        this,                &MainWindow::on_actionWires_triggered);
-    connect(m_ui->actionZoomIn,           &QAction::triggered,        this,                &MainWindow::on_actionZoomIn_triggered);
-    connect(m_ui->actionZoomOut,          &QAction::triggered,        this,                &MainWindow::on_actionZoomOut_triggered);
-    connect(m_ui->lineEditSearch,         &QLineEdit::returnPressed,  this,                &MainWindow::on_lineEditSearch_returnPressed);
-    connect(m_ui->lineEditSearch,         &QLineEdit::textChanged,    this,                &MainWindow::on_lineEditSearch_textChanged);
-    connect(m_ui->pushButtonAddIC,        &QPushButton::clicked,      this,                &MainWindow::on_pushButtonAddIC_clicked);
-    connect(m_ui->pushButtonRemoveIC,     &QPushButton::clicked,      this,                &MainWindow::on_pushButtonRemoveIC_clicked);
-    connect(m_ui->pushButtonRemoveIC,     &TrashButton::removeICFile, this,                &MainWindow::removeICFile);
->>>>>>> 02f419dab3f3daf07e49695779fde496dc3bfd4c
+    connect(m_ui->actionWaveform,           &QAction::triggered,        this,                &MainWindow::on_actionWaveform_triggered);
+    connect(m_ui->actionWires,              &QAction::triggered,        this,                &MainWindow::on_actionWires_triggered);
+    connect(m_ui->actionZoomIn,             &QAction::triggered,        this,                &MainWindow::on_actionZoomIn_triggered);
+    connect(m_ui->actionZoomOut,            &QAction::triggered,        this,                &MainWindow::on_actionZoomOut_triggered);
+    connect(m_ui->lineEditSearch,           &QLineEdit::returnPressed,  this,                &MainWindow::on_lineEditSearch_returnPressed);
+    connect(m_ui->lineEditSearch,           &QLineEdit::textChanged,    this,                &MainWindow::on_lineEditSearch_textChanged);
+    connect(m_ui->pushButtonAddIC,          &QPushButton::clicked,      this,                &MainWindow::on_pushButtonAddIC_clicked);
+    connect(m_ui->pushButtonRemoveIC,       &QPushButton::clicked,      this,                &MainWindow::on_pushButtonRemoveIC_clicked);
+    connect(m_ui->pushButtonRemoveIC,       &TrashButton::removeICFile, this,                &MainWindow::removeICFile);
 }
 
 MainWindow::~MainWindow()
@@ -304,14 +307,10 @@ WorkSpace* MainWindow::createNewTab()
     qCDebug(zero) << "Selecting the newly created tab.";
     m_ui->tab->setCurrentIndex(m_ui->tab->count() - 1);
 
-<<<<<<< HEAD
-    qCDebug(zero) << tr("Finished #tabs: ") << m_ui->tab->count() << tr(", current tab: ") << m_tabIndex;
+    qCDebug(zero) << "Finished #tabs: " << m_ui->tab->count() << ", current tab: " << m_tabIndex;
     m_ui->actionTemporalSimulation->setChecked(false);
 
     return workspace;
-=======
-    qCDebug(zero) << "Finished #tabs: " << m_ui->tab->count() << ", current tab: " << m_tabIndex;
->>>>>>> 02f419dab3f3daf07e49695779fde496dc3bfd4c
 }
 
 void MainWindow::removeUndoRedoMenu()
@@ -353,7 +352,10 @@ void MainWindow::save(const QString &fileName)
     if(c_tab->m_EmbeddedIc){
              while(1){
                 auto fatherICs = m_icsTabTree.keys(c_tab);
-                if(fatherICs.size() != 1) break;
+                if(fatherICs.size() != 1) {
+                    c_tab->save(c_tab->fileInfo().fileName());
+                    break;
+                };
                 auto fatherIC = fatherICs.at(0);
                 c_tab->m_EmbeddedIc->m_fileData.clear();
                 QDataStream stream(&c_tab->m_EmbeddedIc->m_fileData, QIODevice::ReadWrite);
@@ -395,11 +397,7 @@ void MainWindow::aboutThisVersion()
     msgBox.setIcon(QMessageBox::Icon::Information);
     msgBox.setWindowTitle("wiRedPanda " + QString(APP_VERSION));
     msgBox.setText(
-<<<<<<< HEAD
-        tr("WiRedPanda version >= 4.0 is not 100% compatible with previous versions.\n"
-=======
-        tr("This version is not 100% compatible with previous versions of wiRedPanda.\n"
->>>>>>> 02f419dab3f3daf07e49695779fde496dc3bfd4c
+        tr("wiRedPanda version >= 4.0 is not 100% compatible with previous versions.\n"
            "To open old version projects containing ICs (or boxes), skins, and/or "
            "beWavedDolphin simulations, their files must be moved to the same directory "
            "as the main project file.\n"
@@ -412,7 +410,11 @@ void MainWindow::aboutThisVersion()
     msgBox.setDefaultButton(QMessageBox::Ok);
     msgBox.setCheckBox(checkBox);
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 7, 0)
     connect(checkBox, &QCheckBox::stateChanged, this, [](int state) {
+#else
+    connect(checkBox, &QCheckBox::checkStateChanged, this, [](int state) {
+#endif
         if (static_cast<Qt::CheckState>(state) == Qt::CheckState::Checked) {
             Settings::setValue("hideV4Warning", "true");
         } else {
@@ -450,6 +452,18 @@ int MainWindow::confirmSave(const bool multiple)
     msgBox.setText(fileName + tr(" has been modified. \nDo you want to save your changes?"));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Yes);
+    return msgBox.exec();
+}
+
+int MainWindow::warnAboutOpenChildIcs(){
+    QMessageBox msgBox;
+    msgBox.setParent(this);
+
+    msgBox.setStandardButtons(QMessageBox::Ok);
+
+    msgBox.setText(tr("This workspace has open child ICs, please close them first!"));
+    msgBox.setWindowModality(Qt::WindowModal);
+    msgBox.setDefaultButton(QMessageBox::Ok);
     return msgBox.exec();
 }
 
@@ -513,6 +527,19 @@ WorkSpace* MainWindow::getCurrentTab(){
 
 void MainWindow::on_actionOpen_triggered()
 {
+#ifdef Q_OS_WASM
+    auto fileContentReady = [this](const QString &fileName, const QByteArray &fileContent) {
+        if (!fileName.isEmpty()) {
+            // Write file content to a temporary file
+            QFile file(fileName);
+            file.open(QIODevice::WriteOnly);
+            file.write(fileContent);
+            file.close();
+            loadPandaFile(fileName);
+        }
+    };
+    QFileDialog::getOpenFileContent("Panda files (*.panda)", fileContentReady);
+#else
     const QString path = m_currentFile.exists() ? "" : "./examples";
     const QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), path, tr("Panda files (*.panda)"));
 
@@ -521,6 +548,7 @@ void MainWindow::on_actionOpen_triggered()
     }
 
     loadPandaFile(fileName);
+#endif
 }
 
 
@@ -581,11 +609,7 @@ void MainWindow::on_actionAbout_triggered()
            "<li> Rodrigo Torres </li>"
            "<li> Prof. Fábio Cappabianco, Ph.D. </li>"
            "</ul>"
-<<<<<<< HEAD
-           "<p> WiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves e Maycon A. Santana.</p>"
-=======
-           "<p> wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.</p>"
->>>>>>> 02f419dab3f3daf07e49695779fde496dc3bfd4c
+           "<p> wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves e Maycon A. Santana.</p>"
            "<p> Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.</p>"
            "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
             .arg(QApplication::applicationVersion()));
@@ -637,6 +661,7 @@ bool MainWindow::closeFiles()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     bool closeWindow = false;
+
     if (!hasModifiedFiles()) {
         auto reply =
             QMessageBox::question(
@@ -704,6 +729,10 @@ QDir MainWindow::currentDir() const
 
 void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
 {
+    if (!m_currentTab) {
+        return;
+    }
+
     m_currentFile = fileInfo;
 
 
@@ -754,15 +783,9 @@ void MainWindow::updateICList(QString dirPath)
         }
     }
 
-<<<<<<< HEAD
     if (file.exists()) {
-        qCDebug(zero) << tr("Show files.");
-        QDir directory(file.absoluteDir());
-=======
-    if (m_currentFile.exists()) {
         qCDebug(zero) << "Show files.";
-        QDir directory(m_currentFile.absoluteDir());
->>>>>>> 02f419dab3f3daf07e49695779fde496dc3bfd4c
+        QDir directory(file.absoluteDir());
         QStringList files = directory.entryList({"*.panda", "*.PANDA"}, QDir::Files);
         files.removeAll(file.fileName());
 
@@ -773,7 +796,7 @@ void MainWindow::updateICList(QString dirPath)
         }
 
         qCDebug(zero) << "Files: " << files.join(", ");
-        for (const QString &file : qAsConst(files)) {
+        for (const QString &file : std::as_const(files)) {
             QPixmap pixmap(":/basic/ic-panda.svg");
 
             auto *item = new ElementLabel(pixmap, ElementType::IC, file, this);
@@ -789,19 +812,28 @@ void MainWindow::updateICList(QString dirPath)
 
 bool MainWindow::closeTab(const int tabIndex)
 {
-<<<<<<< HEAD
-    auto fatherTab = m_icsTabTree.keys(m_currentTab);
 
-    if(fatherTab.size() > 0 && m_icsTabTree.remove(fatherTab.at(0), m_currentTab) != 1) return false;
+    auto tabToClose = qobject_cast<WorkSpace *>(m_ui->tab->widget(tabIndex));
+    auto fatherTab = m_icsTabTree.keys(tabToClose);
 
-    qCDebug(zero) << tr("Closing tab ") << tabIndex + 1 << tr(", #tabs: ") << m_ui->tab->count();
-=======
+    //Check if there is an open child tab
+
+    for (auto &tab: m_icsTabTree.keys()) {
+        if(tab.second == tabToClose){
+            warnAboutOpenChildIcs();
+            return false;
+        }
+    }
+
+    if(fatherTab.size() > 0 && m_icsTabTree.remove(fatherTab.at(0), tabToClose) != 1) return false;
+
+
+
+
     qCDebug(zero) << "Closing tab " << tabIndex + 1 << ", #tabs: " << m_ui->tab->count();
->>>>>>> 02f419dab3f3daf07e49695779fde496dc3bfd4c
     m_ui->tab->setCurrentIndex(tabIndex);
 
     qCDebug(zero) << "Checking if needs to save file.";
-
 
     if (!m_currentTab->scene()->undoStack()->isClean()) {
         const int selectedButton = confirmSave(false);
@@ -902,14 +934,7 @@ void MainWindow::tabChanged(const int newTabIndex)
     m_currentTab = qobject_cast<WorkSpace *>(m_ui->tab->currentWidget());
     qCDebug(zero) << "Selecting tab: " << newTabIndex;
     connectTab();
-<<<<<<< HEAD
-    qCDebug(zero) << tr("New tab selected. Dolphin fileName: ") << m_currentTab->dolphinFileName();
-
-    auto isTempSimulation = m_currentTab->simulation()->isTemporalSimulation();
-    m_ui->actionTemporalSimulation->setChecked(isTempSimulation);
-=======
     qCDebug(zero) << "New tab selected. Dolphin fileName: " << m_currentTab->dolphinFileName();
->>>>>>> 02f419dab3f3daf07e49695779fde496dc3bfd4c
 }
 
 void MainWindow::on_lineEditSearch_textChanged(const QString &text)
@@ -958,7 +983,7 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
             item->setHidden(true);
         }
 
-        for (auto *item : qAsConst(searchResults)) {
+        for (auto *item : std::as_const(searchResults)) {
             item->setVisible(true);
         }
     }

@@ -1,4 +1,4 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "graphicsview.h"
@@ -30,7 +30,7 @@ bool GraphicsView::canZoomIn() const
 
 bool GraphicsView::canZoomOut() const
 {
-    return m_zoomLevel > -5;
+    return m_zoomLevel > -9;
 }
 
 void GraphicsView::mousePressEvent(QMouseEvent *event)
@@ -100,17 +100,30 @@ void GraphicsView::keyReleaseEvent(QKeyEvent *event)
 
 void GraphicsView::wheelEvent(QWheelEvent *event)
 {
-    int zoomDirection = event->angleDelta().y();
+    const int zoomDirection = event->angleDelta().y();
 
     if (zoomDirection > 0 && canZoomIn()) {
-        zoomIn();
+        if (m_redirectZoom) {
+            emit scaleIn();
+        } else {
+            zoomIn();
+        }
     } else if (zoomDirection < 0 && canZoomOut()) {
-        zoomOut();
+        if (m_redirectZoom) {
+            emit scaleOut();
+        } else {
+            zoomOut();
+        }
     }
 
     centerOn(QCursor::pos());
 
     event->accept();
+}
+
+void GraphicsView::setRedirectZoom(const bool value)
+{
+    m_redirectZoom = value;
 }
 
 void GraphicsView::setFastMode(const bool fastMode)
@@ -123,7 +136,7 @@ void GraphicsView::setFastMode(const bool fastMode)
 void GraphicsView::zoomIn()
 {
     scale(1.25, 1.25);
-    m_zoomLevel++;
+    ++m_zoomLevel;
     emit zoomChanged();
 }
 

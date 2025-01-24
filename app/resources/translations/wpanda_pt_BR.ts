@@ -4,8 +4,9 @@
 <context>
     <name>AddItemsCommand</name>
     <message>
+        <location filename="../../commands.cpp" line="219"/>
         <source>Add %1 elements</source>
-        <translation type="vanished">Adicionar%1 portas</translation>
+        <translation>Adicionar %1 elementos</translation>
     </message>
 </context>
 <context>
@@ -34,17 +35,7 @@
     <message>
         <location filename="../../element/audiobox.cpp" line="22"/>
         <source>Audio Box</source>
-        <translation>Caixa de Som</translation>
-    </message>
-    <message>
-        <location filename="../../element/audiobox.cpp" line="112"/>
-        <source>Warning!</source>
-        <translation>Atenção!</translation>
-    </message>
-    <message>
-        <location filename="../../element/audiobox.cpp" line="113"/>
-        <source>File not exists in the current path, maybe you don&apos;t selected the audio. Setting default audio.</source>
-        <translation>Arquivo inexistente no endereço atual, provavelmente você não selecionou o áudio. Inserindo áudio padrão</translation>
+        <translation>Caixa de áudio</translation>
     </message>
 </context>
 <context>
@@ -120,8 +111,8 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="211"/>
-        <location filename="../../bewaveddolphin.cpp" line="1309"/>
+        <location filename="../../bewaveddolphin.ui" line="200"/>
+        <location filename="../../bewaveddolphin.cpp" line="1301"/>
         <source>Export to PDF</source>
         <translation>Exportar para PDF</translation>
     </message>
@@ -316,7 +307,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="486"/>
+        <location filename="../../bewaveddolphin.cpp" line="468"/>
         <source>Save simulation before closing?</source>
         <translation>Salvar a simulação antes de sair?</translation>
     </message>
@@ -327,289 +318,129 @@
         <translation>Não foi possível carregar elementos suficientes para a simulação.</translation>
     </message>
     <message>
-        <source>Changing current item.</source>
-        <translation type="vanished">Alterando o item atual.</translation>
-    </message>
-    <message>
-        <source>Restoring old values to inputs, prior to simulation.</source>
-        <translation type="vanished">Restaurando valores antigos para entradas, antes da simulação.</translation>
-    </message>
-    <message>
-        <source>Updating the values of the circuit logic based on current input values.</source>
-        <translation type="vanished">Atualizando os valores da lógica do circuito com base nos valores de entrada atuais.</translation>
-    </message>
-    <message>
-        <source>Setting the computed output values to the waveform results.</source>
-        <translation type="vanished">Configurando os valores de saída calculados para os resultados da forma de onda.</translation>
-    </message>
-    <message>
-        <source>Setting inputs back to old values.</source>
-        <translation type="vanished">Definindo as entradas de volta aos valores antigos.</translation>
-    </message>
-    <message>
-        <source>Creating class to pause main window simulator while creating waveform.</source>
-        <translation type="vanished">Criando classe para pausar o simulador da janela principal durante a criação da forma de onda.</translation>
-    </message>
-    <message>
-        <source>Inputs: </source>
-        <translation type="vanished">Entradas: </translation>
-    </message>
-    <message>
-        <source>, outputs: </source>
-        <translation type="vanished">, saídas: </translation>
-    </message>
-    <message>
-        <source>Getting the name of the outputs. If no label is given, element type is used as a name.</source>
-        <translation type="vanished">Obtendo o nome das saídas. Se nenhum rótulo for fornecido, o tipo de elemento será usado como nome.</translation>
-    </message>
-    <message>
-        <source>Updating window name with current: </source>
-        <translation type="vanished">Atualizando o nome da janela com o atual: </translation>
-    </message>
-    <message>
-        <source>Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.</source>
-        <translation type="vanished">Carregando elementos. Todos os elementos inicialmente no vetor de elementos. Então, entradas e saídas são extraídas dele.</translation>
-    </message>
-    <message>
-        <source>Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation. Not saving memory states though...</source>
-        <translation type="vanished">Obtendo o valor inicial das entradas e gravando-os em valores antigos. Usado para salvar o estado atual das entradas e restaurá-lo após a simulação. Não salvando estados de memória embora ...</translation>
-    </message>
-    <message>
-        <source>Loading initial data into the table.</source>
-        <translation type="vanished">Carregando dados iniciais na tabela.</translation>
-    </message>
-    <message>
-        <source>Resuming digital circuit main window after waveform simulation is finished.</source>
-        <translation type="vanished">Retomar a janela principal do circuito digital após a conclusão da simulação da forma de onda.</translation>
-    </message>
-    <message>
-        <source>, inputs: </source>
-        <translation type="vanished">, entradas: </translation>
-    </message>
-    <message>
-        <source>Getting table dimensions.</source>
-        <translation type="vanished">Obtendo as dimensões da tabela.</translation>
-    </message>
-    <message>
-        <source>Pressed 0.</source>
-        <translation type="vanished">Pressionado 0.</translation>
-    </message>
-    <message>
-        <source>Editing value.</source>
-        <translation type="vanished">Editando valor.</translation>
-    </message>
-    <message>
-        <source>Running simulation.</source>
-        <translation type="vanished">Rodando simulação.</translation>
-    </message>
-    <message>
-        <source>Pressed Not.</source>
-        <translation type="vanished">Pressionado Not.</translation>
-    </message>
-    <message>
-        <source>Getting first column.</source>
-        <translation type="vanished">Obtendo a primeira coluna.</translation>
-    </message>
-    <message>
-        <location filename="../../bewaveddolphin.cpp" line="725"/>
+        <location filename="../../bewaveddolphin.cpp" line="707"/>
         <source>No cells selected.</source>
         <translation>Nenhuma célula selecionada.</translation>
     </message>
     <message>
-        <source>Setting the signal according to its column and clock period.</source>
-        <translation type="vanished">Configurando o sinal de acordo com sua coluna e período de clock.</translation>
-    </message>
-    <message>
-        <source>Setting the signal according to its columns and clock period.</source>
-        <translation type="vanished">Configurando o sinal de acordo com suas colunas e período de clock.</translation>
-    </message>
-    <message>
-        <source>Setting the simulation length.</source>
-        <translation type="vanished">Configurando a duração da simulação.</translation>
-    </message>
-    <message>
-        <source>Reducing or keeping the simulation length.</source>
-        <translation type="vanished">Reduzir ou manter a duração da simulação.</translation>
-    </message>
-    <message>
-        <source>Increasing the simulation length.</source>
-        <translation type="vanished">Aumentando a duração da simulação.</translation>
-    </message>
-    <message>
-        <source>Serializing data into data stream.</source>
-        <translation type="vanished">Serializando dados em fluxo de dados.</translation>
-    </message>
-    <message>
-        <location filename="../../bewaveddolphin.cpp" line="1073"/>
+        <location filename="../../bewaveddolphin.cpp" line="1092"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>Deseja vincular este arquivo beWavedDolphin ao seu arquivo wiRedPanda atual e salvá-lo?</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="999"/>
+        <location filename="../../bewaveddolphin.cpp" line="991"/>
         <source>Save File as...</source>
         <translation>Salvar arquivo como...</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1002"/>
+        <location filename="../../bewaveddolphin.cpp" line="994"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>Arquivos CSV (*.csv);;Arquivos Dolphin (*.dolphin);;Todos os arquivos suportados (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1003"/>
+        <location filename="../../bewaveddolphin.cpp" line="995"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Arquivos Dolphin (*.dolphin);;Arquivos CSV (*.csv);;Todos os arquivos suportados (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="458"/>
+        <location filename="../../bewaveddolphin.cpp" line="440"/>
         <source>Waveform would be too big! Resetting zoom.</source>
         <translation>A forma de onda seria muito grande! Redefinindo o zoom.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="990"/>
-        <location filename="../../bewaveddolphin.cpp" line="1033"/>
+        <location filename="../../bewaveddolphin.cpp" line="982"/>
+        <location filename="../../bewaveddolphin.cpp" line="1025"/>
         <source>Saved file successfully.</source>
         <translation>Arquivo salvo com sucesso.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1127"/>
+        <location filename="../../bewaveddolphin.cpp" line="1119"/>
         <source>Open File</source>
         <translation>Abrir arquivo</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1129"/>
+        <location filename="../../bewaveddolphin.cpp" line="1121"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>Todos os arquivos suportados (*.dolphin *.csv);;Arquivos Dolphin (*.dolphin);;Arquivos CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1145"/>
+        <location filename="../../bewaveddolphin.cpp" line="1137"/>
         <source>File loaded successfully.</source>
         <translation>Arquivo carregado com sucesso.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1312"/>
+        <location filename="../../bewaveddolphin.cpp" line="1331"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for the wiRedPanda software developed by the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;beWavedDolphin é um simulador de forma de onda para o software wiRedPanda desenvolvido pela Universidade Federal de São Paulo. Este projeto foi criado para ajudar os alunos a aprender sobre circuitos lógicos.&lt;/p&gt;&lt;p&gt;Versão do software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Criadores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin é atualmente mantido pelo Prof. Fábio Cappabianco, Ph.D. e seus alunos&lt;/p&gt;&lt;p&gt; Por favor, registre um relatório em nossa página do GitHub se forem encontrados bugs ou se você deseja que uma nova funcionalidade seja implementada.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1015"/>
+        <location filename="../../bewaveddolphin.cpp" line="1034"/>
         <source>Error opening file: </source>
         <translation>Erro ao abrir arquivo: </translation>
     </message>
     <message>
-        <source>Saving dolphin file.</source>
-        <translation type="vanished">Salvando arquivo dolphin.</translation>
-    </message>
-    <message>
-        <source>Saving CSV file.</source>
-        <translation type="vanished">Salvando arquivo CSV.</translation>
-    </message>
-    <message>
-        <location filename="../../bewaveddolphin.cpp" line="1056"/>
+        <location filename="../../bewaveddolphin.cpp" line="1048"/>
         <source>Error saving file: </source>
         <translation>Erro ao salvar arquivo: </translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="169"/>
-        <location filename="../../bewaveddolphin.cpp" line="1153"/>
+        <location filename="../../bewaveddolphin.cpp" line="146"/>
+        <location filename="../../bewaveddolphin.cpp" line="1145"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>O arquivo &quot;%1&quot; não existe!</translation>
     </message>
     <message>
-        <source>Also getting the name of the inputs. If no label is given, the element type is used as a name.</source>
-        <translation type="vanished">Obtendo também o nome das entradas. Se nenhum rótulo for fornecido, o tipo de elemento será usado como um nome.</translation>
-    </message>
-    <message>
-        <source>File exists.</source>
-        <translation type="vanished">O arquivo existe.</translation>
-    </message>
-    <message>
-        <location filename="../../bewaveddolphin.cpp" line="1133"/>
+        <location filename="../../bewaveddolphin.cpp" line="1152"/>
         <source>Could not open file in ReadOnly mode: </source>
         <translation>Não foi possível abrir o arquivo no modo ReadOnly: </translation>
     </message>
     <message>
-        <source>Dolphin file opened.</source>
-        <translation type="vanished">Arquivo Dolphin aberto.</translation>
-    </message>
-    <message>
-        <source>Current file set.</source>
-        <translation type="vanished">Configurado arquivo atual.</translation>
-    </message>
-    <message>
-        <source>Loading in editor.</source>
-        <translation type="vanished">Carregando no editor.</translation>
-    </message>
-    <message>
-        <source>Getting current value to check if need to refresh next cell</source>
-        <translation type="vanished">Obtendo o valor atual para verificar se é necessário atualizar a próxima célula</translation>
-    </message>
-    <message>
-        <source>Changing next item.</source>
-        <translation type="vanished">Alterando o próximo item.</translation>
-    </message>
-    <message>
-        <source>CSV file opened.</source>
-        <translation type="vanished">Arquivo CSV aberto.</translation>
-    </message>
-    <message>
-        <location filename="../../bewaveddolphin.cpp" line="1152"/>
+        <location filename="../../bewaveddolphin.cpp" line="1171"/>
         <source>Format not supported. Could not open file: </source>
         <translation>Formato não suportado. Não pode abrir arquivo: </translation>
     </message>
     <message>
-        <source>Closing file.</source>
-        <translation type="vanished">Fechando arquivo.</translation>
-    </message>
-    <message>
-        <location filename="../../bewaveddolphin.cpp" line="1193"/>
+        <location filename="../../bewaveddolphin.cpp" line="1185"/>
         <source>Invalid file format. Starts with: </source>
         <translation>Formato de arquivo inválido. Começa com: </translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1204"/>
-        <location filename="../../bewaveddolphin.cpp" line="1232"/>
+        <location filename="../../bewaveddolphin.cpp" line="1196"/>
+        <location filename="../../bewaveddolphin.cpp" line="1224"/>
         <source>Invalid number of columns.</source>
         <translation>Número inválido de colunas.</translation>
     </message>
     <message>
-        <source>Update table.</source>
-        <translation type="vanished">Atualizar tabela.</translation>
-    </message>
-    <message>
-        <location filename="../../bewaveddolphin.cpp" line="1285"/>
+        <location filename="../../bewaveddolphin.cpp" line="1277"/>
         <source>Export to Image</source>
         <translation>Exportar para Imagem</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1285"/>
+        <location filename="../../bewaveddolphin.cpp" line="1277"/>
         <source>PNG files (*.png)</source>
         <translation>Arquivos PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1309"/>
+        <location filename="../../bewaveddolphin.cpp" line="1301"/>
         <source>PDF files (*.pdf)</source>
         <translation>Arquivos PDF(*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1328"/>
+        <location filename="../../bewaveddolphin.cpp" line="1320"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Não foi possível imprimir este circuito em PDF.</translation>
     </message>
     <message>
-        <source>&lt;p&gt;beWavedDolphin is a waveform simulator for the wiRedPanda software developed by the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="vanished">&lt;p&gt;beWavedDolphin é um simulador de forma de onda para o software wiRedPanda desenvolvido pela Universidade Federal de São Paulo. Este projeto foi criado para ajudar os alunos a aprender sobre circuitos lógicos.&lt;/p&gt;&lt;p&gt;Versão do software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Criadores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt; li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin é atualmente mantido pelo Prof. Fábio Cappabianco, Ph.D. e Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Envie um relatório em nossa página do GitHub se forem encontrados bugs ou se desejar que uma nova funcionalidade seja implementada.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="../../bewaveddolphin.cpp" line="94"/>
-        <location filename="../../bewaveddolphin.cpp" line="163"/>
-        <location filename="../../bewaveddolphin.cpp" line="1032"/>
-        <location filename="../../bewaveddolphin.cpp" line="1185"/>
+        <location filename="../../bewaveddolphin.cpp" line="68"/>
+        <location filename="../../bewaveddolphin.cpp" line="140"/>
+        <location filename="../../bewaveddolphin.cpp" line="1024"/>
+        <location filename="../../bewaveddolphin.cpp" line="1177"/>
         <source>beWavedDolphin Simulator</source>
         <translation>Simulador beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="448"/>
-        <location filename="../../bewaveddolphin.cpp" line="1072"/>
+        <location filename="../../bewaveddolphin.cpp" line="467"/>
+        <location filename="../../bewaveddolphin.cpp" line="1091"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
@@ -630,15 +461,17 @@
 <context>
     <name>ChangeInputSizeCommand</name>
     <message>
+        <location filename="../../commands.cpp" line="692"/>
         <source>Change input size to %1</source>
-        <translation type="vanished">Mudar número de entradas para %1</translation>
+        <translation>Alterar tamanho de entrada para %1</translation>
     </message>
 </context>
 <context>
     <name>ChangeOutputSizeCommand</name>
     <message>
+        <location filename="../../commands.cpp" line="782"/>
         <source>Change input size to %1</source>
-        <translation type="vanished">Mudar número de entradas para %1</translation>
+        <translation>Alterar tamanho de entrada para %1</translation>
     </message>
 </context>
 <context>
@@ -698,22 +531,14 @@
 <context>
     <name>DFlipFlop</name>
     <message>
-        <source>D-FlipFlop</source>
-        <translation type="vanished">FlipFlop-D</translation>
-    </message>
-    <message>
-        <source>D-FLIPFLOP</source>
-        <translation type="vanished">FLIPFLOP-D</translation>
-    </message>
-    <message>
         <location filename="../../element/dflipflop.cpp" line="15"/>
         <source>D-FLIP-FLOP</source>
-        <translation type="unfinished"></translation>
+        <translation>FLIP-FLOP-D</translation>
     </message>
     <message>
         <location filename="../../element/dflipflop.cpp" line="15"/>
         <source>D-Flip-Flop</source>
-        <translation type="unfinished"></translation>
+        <translation>Flip-Flop-D</translation>
     </message>
 </context>
 <context>
@@ -732,8 +557,9 @@
 <context>
     <name>DeleteItemsCommand</name>
     <message>
+        <location filename="../../commands.cpp" line="246"/>
         <source>Delete %1 elements</source>
-        <translation type="vanished">Remover %1 portas(s)</translation>
+        <translation>Excluir %1 elementos</translation>
     </message>
 </context>
 <context>
@@ -850,14 +676,6 @@
         <translation>Display de 7 segmentos</translation>
     </message>
     <message>
-        <source>Allocating pixmaps.</source>
-        <translation type="vanished">Alocando pixmaps.</translation>
-    </message>
-    <message>
-        <source>Converting segments to other colors.</source>
-        <translation type="vanished">Convertendo segmentos para outras cores.</translation>
-    </message>
-    <message>
         <location filename="../../element/display_7.cpp" line="103"/>
         <source>middle</source>
         <translation>centro</translation>
@@ -897,10 +715,6 @@
         <source>lower right</source>
         <translation>inferior direito</translation>
     </message>
-    <message>
-        <source>Remapping inputs.</source>
-        <translation type="vanished">Remapeando entradas.</translation>
-    </message>
 </context>
 <context>
     <name>ElementEditor</name>
@@ -910,208 +724,185 @@
         <translation>Editor de Portas Lógicas</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="271"/>
-        <source>Browse Audio</source>
-        <translation>Procurar áudio</translation>
+        <location filename="../../elementeditor.ui" line="56"/>
+        <source>Inputs:</source>
+        <translation>Entradas:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="285"/>
+        <location filename="../../elementeditor.ui" line="100"/>
         <source>Frequency:</source>
         <translation>Frequência:</translation>
     </message>
     <message>
-        <source>Input Ports:</source>
-        <translation type="vanished">Entradas:</translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="264"/>
+        <location filename="../../elementeditor.ui" line="46"/>
         <source>Label:</source>
         <translation>Rótulo:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="346"/>
+        <location filename="../../elementeditor.cpp" line="360"/>
         <source>Blue</source>
         <translation>Azul</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="345"/>
+        <location filename="../../elementeditor.cpp" line="359"/>
         <source>Green</source>
         <translation>Verde</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="82"/>
+        <location filename="../../elementeditor.cpp" line="46"/>
+        <source>Truth Table</source>
+        <translation>Tabela Verdade</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.cpp" line="96"/>
         <source>Rotate left</source>
         <translation>Rotacionar à esquerda</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="83"/>
+        <location filename="../../elementeditor.cpp" line="97"/>
         <source>Rotate right</source>
         <translation>Rotacionar à direita</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="276"/>
+        <location filename="../../elementeditor.cpp" line="290"/>
         <source>Unknown context menu option.</source>
         <translation>Opção de menu de contexto desconhecida.</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="347"/>
+        <location filename="../../elementeditor.cpp" line="361"/>
         <source>Purple</source>
         <translation>Roxo</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="344"/>
+        <location filename="../../elementeditor.cpp" line="946"/>
+        <source>Select any audio</source>
+        <translation>Selecione qualquer áudio</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.cpp" line="947"/>
+        <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
+        <translation>Áudio (*.mp3 *.mp4 *.wav *.ogg)</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.cpp" line="358"/>
         <source>Red</source>
         <translation>Vermelho</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="343"/>
+        <location filename="../../elementeditor.cpp" line="357"/>
         <source>White</source>
         <translation>Branco</translation>
     </message>
     <message>
-        <source>Apply.</source>
-        <translation type="vanished">Aplicar.</translation>
-    </message>
-    <message>
-        <source>Input locked.</source>
-        <translation type="vanished">Entrada bloqueada.</translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="96"/>
+        <location filename="../../elementeditor.ui" line="129"/>
         <source>Color:</source>
         <translation>Cor:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="59"/>
+        <location filename="../../elementeditor.h" line="65"/>
         <source>&lt;Many labels&gt;</source>
         <translation>&lt;Vários rótulos&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="56"/>
+        <location filename="../../elementeditor.h" line="62"/>
         <source>&lt;Many colors&gt;</source>
         <translation>&lt;Várias cores&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="57"/>
-        <location filename="../../elementeditor.h" line="58"/>
-        <location filename="../../elementeditor.h" line="60"/>
-        <location filename="../../elementeditor.h" line="61"/>
+        <location filename="../../elementeditor.h" line="63"/>
+        <location filename="../../elementeditor.h" line="64"/>
+        <location filename="../../elementeditor.h" line="66"/>
+        <location filename="../../elementeditor.h" line="67"/>
         <source>&lt;Many values&gt;</source>
         <translation>&lt;Vários valores&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="62"/>
+        <location filename="../../elementeditor.h" line="68"/>
         <source>&lt;Many priorities&gt;</source>
         <translation>&lt;Várias prioridades&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="63"/>
+        <location filename="../../elementeditor.h" line="69"/>
         <source>&lt;Many triggers&gt;</source>
         <translation>&lt;Vários atalhos&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="80"/>
+        <location filename="../../elementeditor.cpp" line="94"/>
         <source>Rename</source>
         <translation>Renomear</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="206"/>
-        <location filename="../../elementeditor.cpp" line="272"/>
+        <location filename="../../elementeditor.cpp" line="220"/>
+        <location filename="../../elementeditor.cpp" line="286"/>
         <source>Delete</source>
         <translation>Remover</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="85"/>
+        <location filename="../../elementeditor.cpp" line="92"/>
         <source>Morph to...</source>
         <translation>Transformar em...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="84"/>
+        <location filename="../../elementeditor.cpp" line="91"/>
         <source>Change frequency</source>
         <translation>Mudar frequência</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="84"/>
+        <location filename="../../elementeditor.cpp" line="98"/>
         <source>Change trigger</source>
         <translation>Mudar atalho</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="79"/>
+        <location filename="../../elementeditor.cpp" line="93"/>
         <source>Change priority</source>
         <translation>Mudar prioridade</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="199"/>
-        <location filename="../../elementeditor.cpp" line="272"/>
+        <location filename="../../elementeditor.cpp" line="213"/>
+        <location filename="../../elementeditor.cpp" line="286"/>
         <source>Copy</source>
         <translation>Copiar</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="200"/>
-        <location filename="../../elementeditor.cpp" line="272"/>
+        <location filename="../../elementeditor.cpp" line="214"/>
+        <location filename="../../elementeditor.cpp" line="286"/>
         <source>Cut</source>
         <translation>Recortar</translation>
     </message>
     <message>
-        <source>File name: </source>
-        <translation type="vanished">Nome do arquivo: </translation>
-    </message>
-    <message>
-        <source>Input size changed to </source>
-        <translation type="vanished">Número de entradas alterado para </translation>
-    </message>
-    <message>
-        <source>Output size changed to </source>
-        <translation type="vanished">Número de saídas alterado para </translation>
-    </message>
-    <message>
-        <source> from </source>
-        <translation type="vanished"> de </translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="964"/>
-        <source>Select any audio</source>
-        <translation>Selecione qualquer arquivo de áudio</translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="965"/>
-        <source>Audio (*.mp3 *.wav *.mp4)</source>
-        <translation>Áudio (*.mp3 *.wav *.mp4)</translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="189"/>
+        <location filename="../../elementeditor.ui" line="166"/>
         <source>F6</source>
         <translation>F6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="300"/>
+        <location filename="../../elementeditor.cpp" line="314"/>
         <source>Open File</source>
         <translation>Abrir arquivo</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="121"/>
-        <location filename="../../elementeditor.cpp" line="82"/>
+        <location filename="../../elementeditor.ui" line="273"/>
+        <location filename="../../elementeditor.cpp" line="89"/>
         <source>Change skin to ...</source>
         <translation>Alterar aparência para ...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="134"/>
+        <location filename="../../elementeditor.ui" line="286"/>
         <source>Default</source>
         <translation>Original</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="63"/>
+        <location filename="../../elementeditor.ui" line="110"/>
         <source> Hz</source>
         <translation> Hz</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="174"/>
+        <location filename="../../elementeditor.ui" line="151"/>
         <source>C6</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="46"/>
-        <location filename="../../elementeditor.ui" line="163"/>
+        <location filename="../../elementeditor.ui" line="143"/>
+        <location filename="../../elementeditor.ui" line="194"/>
         <source>Audio:</source>
         <translation></translation>
     </message>
@@ -1121,91 +912,87 @@
         <translation>Título</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="46"/>
-        <source>Inputs:</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../elementeditor.ui" line="222"/>
+        <source>...</source>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="67"/>
+        <location filename="../../elementeditor.ui" line="231"/>
         <source>Trigger:</source>
         <translation>Gatilho:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="74"/>
+        <location filename="../../elementeditor.ui" line="66"/>
         <source>Outputs:</source>
-        <translation type="unfinished"></translation>
+        <translation>Saídas:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="111"/>
+        <location filename="../../elementeditor.ui" line="266"/>
+        <source>TruthTable</source>
+        <translation>TabelaVerdade</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="156"/>
         <source>D6</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="114"/>
-        <source>TruthTable</source>
-        <translation>Tabela Verdade</translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="184"/>
+        <location filename="../../elementeditor.ui" line="161"/>
         <source>E6</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="194"/>
+        <location filename="../../elementeditor.ui" line="171"/>
         <source>G6</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="199"/>
+        <location filename="../../elementeditor.ui" line="176"/>
         <source>A7</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="204"/>
+        <location filename="../../elementeditor.ui" line="181"/>
         <source>B7</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="209"/>
+        <location filename="../../elementeditor.ui" line="186"/>
         <source>C7</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="223"/>
+        <location filename="../../elementeditor.ui" line="86"/>
         <source>Locked:</source>
         <translation>Travado:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="53"/>
+        <location filename="../../elementeditor.ui" line="241"/>
         <source>Priority:</source>
         <translation>Prioridade:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="55"/>
+        <location filename="../../elementeditor.h" line="61"/>
         <source>&lt;Many sounds&gt;</source>
         <translation>&lt;Muitos sons&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="83"/>
+        <location filename="../../elementeditor.cpp" line="90"/>
         <source>Change color to...</source>
         <translation>Alterar cor para...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="81"/>
+        <location filename="../../elementeditor.cpp" line="95"/>
         <source>Set skin to default</source>
         <translation>Colocar aparência padrão</translation>
     </message>
     <message>
-        <source>Output Ports:</source>
-        <translation type="vanished">Portas de Saída:</translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="257"/>
+        <location filename="../../elementeditor.ui" line="76"/>
         <source>Value:</source>
         <translation>Valor:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="302"/>
+        <location filename="../../elementeditor.cpp" line="316"/>
         <source>Images (*.png *.gif *.jpg *.jpeg)</source>
         <translation>Imagens (*.png *.gif *.jpg *.jpeg)</translation>
     </message>
@@ -1234,75 +1021,25 @@
         <translation>Tipo desconhecido: </translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="192"/>
+        <location filename="../../elementfactory.cpp" line="191"/>
         <source>Not implemented yet: </source>
         <translation>Ainda não implementado: </translation>
     </message>
 </context>
 <context>
-    <name>ElementMapping</name>
-    <message>
-        <source>Generate Map.</source>
-        <translation type="vanished">Gerar Mapa.</translation>
-    </message>
-    <message>
-        <source>Connect.</source>
-        <translation type="vanished">Conectar.</translation>
-    </message>
-</context>
-<context>
     <name>FlipCommand</name>
     <message>
+        <location filename="../../commands.cpp" line="635"/>
         <source>Flip %1 elements in axis %2</source>
-        <translation type="vanished">Espelhando %1 portas no eixo %2</translation>
+        <translation>Inverter %1 elementos no eixo %2</translation>
     </message>
 </context>
 <context>
     <name>GraphicElement</name>
     <message>
-        <source>Setting flags of elements.</source>
-        <translation type="vanished">Configurando flags dos elementos.</translation>
-    </message>
-    <message>
-        <source>Setting attributes.</source>
-        <translation type="vanished">Configurando atributos.</translation>
-    </message>
-    <message>
-        <source>Including input and output ports.</source>
-        <translation type="vanished">Incluindo portas de entrada e saída.</translation>
-    </message>
-    <message>
         <location filename="../../graphicelement.cpp" line="100"/>
         <source>Couldn&apos;t load pixmap.</source>
         <translation>Não foi possível carregar o pixmap.</translation>
-    </message>
-    <message>
-        <source>Problem loading pixmapPath: </source>
-        <translation type="vanished">Problema ao carregar pixmapPath: </translation>
-    </message>
-    <message>
-        <source>Saving element. Type: </source>
-        <translation type="vanished">Salvando elemento. Tipo: </translation>
-    </message>
-    <message>
-        <source>Finished saving element.</source>
-        <translation type="vanished">Concluído salvamento do elemento.</translation>
-    </message>
-    <message>
-        <source>Loading element. Type: </source>
-        <translation type="vanished">Carregando elemento. Tipo: </translation>
-    </message>
-    <message>
-        <source>Updating port positions.</source>
-        <translation type="vanished">Atualizando posição das portas.</translation>
-    </message>
-    <message>
-        <source>Finished loading element.</source>
-        <translation type="vanished">Concluído carregamento do elemento.</translation>
-    </message>
-    <message>
-        <source>Loading input ports.</source>
-        <translation type="vanished">Carregando portas de entrada.</translation>
     </message>
     <message>
         <location filename="../../graphicelement.cpp" line="435"/>
@@ -1312,45 +1049,9 @@
         <translation>DataStream corrompido!</translation>
     </message>
     <message>
-        <source>Loading output ports.</source>
-        <translation type="vanished">Carregando portas de saída.</translation>
-    </message>
-    <message>
         <location filename="../../graphicelement.cpp" line="543"/>
         <source>Loading pixmap skin names.</source>
         <translation>Carregando nome das skins dos pixmaps.</translation>
-    </message>
-    <message>
-        <source>Could not load some of the skins.</source>
-        <translation type="vanished">Não foi possível carregar algumas das skins.</translation>
-    </message>
-    <message>
-        <source>Setting input at </source>
-        <translation type="vanished">Configurando entrada em </translation>
-    </message>
-    <message>
-        <source>Setting output at </source>
-        <translation type="vanished">Configurando saída em </translation>
-    </message>
-    <message>
-        <source>New port.</source>
-        <translation type="vanished">Nova porta.</translation>
-    </message>
-    <message>
-        <source>Updating port positions that belong to the IC.</source>
-        <translation type="vanished">Atualizando posição das portas que pertencem ao CI.</translation>
-    </message>
-    <message>
-        <source>Align to grid.</source>
-        <translation type="vanished">Alinhar à grade.</translation>
-    </message>
-    <message>
-        <source>Moves wires.</source>
-        <translation type="vanished">Move os fios.</translation>
-    </message>
-    <message>
-        <source>Checking if the element has the required signals to compute its value.</source>
-        <translation type="vanished">Verificando se o elemento possui os sinais necessários para calcular seu valor.</translation>
     </message>
 </context>
 <context>
@@ -1370,22 +1071,6 @@
         <location filename="../../ic.cpp" line="409"/>
         <source>Error copying file: </source>
         <translation>Erro copiando arquivo: </translation>
-    </message>
-    <message>
-        <source>IC </source>
-        <translation type="vanished">CI </translation>
-    </message>
-    <message>
-        <source> -&gt; Inputs. min: </source>
-        <translation type="vanished"> -&gt; Entradas. min: </translation>
-    </message>
-    <message>
-        <source>, current: </source>
-        <translation type="vanished">, atual: </translation>
-    </message>
-    <message>
-        <source> -&gt; Outputs. min: </source>
-        <translation type="vanished"> -&gt; Saídas. min: </translation>
     </message>
     <message>
         <location filename="../../ic.cpp" line="144"/>
@@ -1456,22 +1141,14 @@
 <context>
     <name>JKFlipFlop</name>
     <message>
-        <source>JK-FlipFlop</source>
-        <translation type="vanished">FlipFlop-JK</translation>
-    </message>
-    <message>
-        <source>JK-FLIPFLOP</source>
-        <translation type="vanished">FLIPFLOP-JK</translation>
-    </message>
-    <message>
         <location filename="../../element/jkflipflop.cpp" line="15"/>
         <source>JK-FLIP-FLOP</source>
-        <translation type="unfinished"></translation>
+        <translation>FLIP-FLOP-JK</translation>
     </message>
     <message>
         <location filename="../../element/jkflipflop.cpp" line="15"/>
         <source>JK-Flip-Flop</source>
-        <translation type="unfinished"></translation>
+        <translation>Flip-Flop-JK</translation>
     </message>
 </context>
 <context>
@@ -1536,426 +1213,283 @@
         <translation>Memória</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="587"/>
+        <location filename="../../mainwindow.ui" line="531"/>
         <source>Search:</source>
         <translation>Buscar:</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="571"/>
+        <location filename="../../mainwindow.ui" line="626"/>
         <source>&amp;File</source>
         <translation>&amp;Arquivo</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="606"/>
+        <location filename="../../mainwindow.ui" line="661"/>
         <source>&amp;Edit</source>
         <translation>&amp;Editar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="627"/>
+        <location filename="../../mainwindow.ui" line="682"/>
         <source>&amp;Help</source>
         <translation>&amp;Ajuda</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="635"/>
+        <location filename="../../mainwindow.ui" line="691"/>
         <source>&amp;View</source>
         <translation>&amp;Exibir</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="693"/>
+        <location filename="../../mainwindow.ui" line="749"/>
         <source>&amp;Open...</source>
         <translation>&amp;Abrir...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="696"/>
+        <location filename="../../mainwindow.ui" line="752"/>
         <source>Open</source>
         <translation>Abrir</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="708"/>
+        <location filename="../../mainwindow.ui" line="764"/>
         <source>&amp;Save</source>
         <translation>&amp;Salvar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="720"/>
+        <location filename="../../mainwindow.ui" line="776"/>
         <source>Save &amp;As...</source>
         <translation>Salvar &amp;Como...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="732"/>
+        <location filename="../../mainwindow.ui" line="788"/>
         <source>Cu&amp;t</source>
         <translation>Recor&amp;tar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="744"/>
+        <location filename="../../mainwindow.ui" line="800"/>
         <source>&amp;Copy</source>
         <translation>&amp;Copiar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="756"/>
+        <location filename="../../mainwindow.ui" line="812"/>
         <source>&amp;Paste</source>
         <translation>Co&amp;lar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="769"/>
+        <location filename="../../mainwindow.ui" line="825"/>
         <source>&amp;Delete</source>
         <translation>&amp;Remover</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="781"/>
+        <location filename="../../mainwindow.ui" line="837"/>
         <source>&amp;New</source>
         <translation>&amp;Novo projeto</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="793"/>
+        <location filename="../../mainwindow.ui" line="849"/>
         <source>Zoom &amp;in</source>
         <translation>A&amp;mpliar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="805"/>
+        <location filename="../../mainwindow.ui" line="861"/>
         <source>Zoom &amp;out</source>
         <translation>Red&amp;uzir</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="823"/>
+        <location filename="../../mainwindow.ui" line="879"/>
         <source>&amp;Wires</source>
         <translation>&amp;Fios</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="841"/>
+        <location filename="../../mainwindow.ui" line="897"/>
         <source>&amp;Gates</source>
         <translation>Portas &amp;Lógicas</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="853"/>
+        <location filename="../../mainwindow.ui" line="909"/>
         <source>&amp;About</source>
         <translation>&amp;Sobre</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="865"/>
+        <location filename="../../mainwindow.ui" line="921"/>
         <source>&amp;Exit</source>
         <translation>&amp;Sair</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="393"/>
-        <location filename="../../mainwindow.cpp" line="409"/>
         <location filename="../../mainwindow.cpp" line="431"/>
+        <location filename="../../mainwindow.cpp" line="448"/>
+        <location filename="../../mainwindow.cpp" line="470"/>
         <source>Panda files (*.panda)</source>
         <translation>Arquivos Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="387"/>
+        <location filename="../../mainwindow.cpp" line="412"/>
         <source>File loaded successfully.</source>
         <translation>Arquivo carregado com sucesso.</translation>
     </message>
     <message>
-        <source>Restoring geometry and setting zoom controls.</source>
-        <translation type="vanished">Restaurando a geometria e configurando os controles de zoom.</translation>
-    </message>
-    <message>
-        <source>Preparing theme and UI modes.</source>
-        <translation type="vanished">Preparando o tema e os modos de interface do usuário.</translation>
-    </message>
-    <message>
-        <source>Setting left side menus.</source>
-        <translation type="vanished">Configurando menus do lado esquerdo.</translation>
-    </message>
-    <message>
-        <source>Loading recent file list.</source>
-        <translation type="vanished">Carregando lista de arquivos recentes.</translation>
-    </message>
-    <message>
-        <source>Checking playing simulation.</source>
-        <translation type="vanished">Marcando botão de play.</translation>
-    </message>
-    <message>
-        <source>Adding examples to menu</source>
-        <translation type="vanished">Adicionando exemplos ao menu</translation>
-    </message>
-    <message>
-        <source>Setting connections</source>
-        <translation type="vanished">Configurando conexões</translation>
-    </message>
-    <message>
-        <source>Window title.</source>
-        <translation type="vanished">Título da janela.</translation>
-    </message>
-    <message>
-        <source>Building a new tab.</source>
-        <translation type="vanished">Construindo uma nova aba.</translation>
-    </message>
-    <message>
-        <source>Opening file if not empty.</source>
-        <translation type="vanished">Abrindo o arquivo se não estiver vazio.</translation>
-    </message>
-    <message>
-        <source>Disabling Arduino export.</source>
-        <translation type="vanished">Desativando a exportação do Arduino.</translation>
-    </message>
-    <message>
-        <source>All autosave files: </source>
-        <translation type="vanished">Todos os arquivos de salvamento automático: </translation>
-    </message>
-    <message>
-        <source>Removing from config the autosave file that does not exist.</source>
-        <translation type="vanished">Removendo da configuração o arquivo de salvamento automático que não existe.</translation>
-    </message>
-    <message>
-        <source>Removing autosave file that is corrupted.</source>
-        <translation type="vanished">Removendo o arquivo de salvamento automático que está corrompido.</translation>
-    </message>
-    <message>
-        <source>Creating new workspace.</source>
-        <translation type="vanished">Criando novo espaço de trabalho.</translation>
-    </message>
-    <message>
-        <source>Adding tab. #tabs: </source>
-        <translation type="vanished">Adicionando guia. #guias: </translation>
-    </message>
-    <message>
-        <source>, current tab: </source>
-        <translation type="vanished">, guia atual: </translation>
-    </message>
-    <message>
-        <source>Selecting the newly created tab.</source>
-        <translation type="vanished">Selecionando a guia recém-criada.</translation>
-    </message>
-    <message>
-        <source>Finished #tabs: </source>
-        <translation type="vanished">#guias concluídas: </translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="274"/>
+        <location filename="../../mainwindow.cpp" line="295"/>
         <source>File saved successfully.</source>
         <translation>Arquivo salvo com sucesso.</translation>
     </message>
     <message>
-        <source>Checking for autosave file recovery.</source>
-        <translation type="vanished">Verificando a recuperação de arquivo de salvamento automático.</translation>
+        <location filename="../../mainwindow.cpp" line="322"/>
+        <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
+To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
+wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
+You have to save new projects before accessing ICs and skins, or running beWavedDolphin simulations.</source>
+        <translation>A versão wiRedPanda &gt;= 4.0 não é 100% compatível com versões anteriores.
+Para abrir projetos de versões antigas contendo ICs (ou caixas), skins e/ou simulações beWavedDolphin, seus arquivos devem ser movidos para o mesmo diretório do arquivo do projeto principal.
+O wiRedPanda %1 listará automaticamente todos os outros arquivos .panda localizados no mesmo diretório do projeto atual como ICs na aba do editor.
+Você precisa salvar novos projetos antes de acessar ICs e skins ou executar simulações beWavedDolphin.</translation>
     </message>
     <message>
-        <source>&apos;hideV4Warning&apos; message box.</source>
-        <translation type="vanished">caixa de mensagem &apos;hideV4Warning&apos;.</translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="349"/>
+        <location filename="../../mainwindow.cpp" line="374"/>
         <source> has been modified. 
 Do you want to save your changes?</source>
         <translation> foi modificado. 
 Você quer salvar suas alterações?</translation>
     </message>
     <message>
-        <source>Loading in editor.</source>
-        <translation type="vanished">Carregando no editor.</translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="393"/>
-        <location filename="../../mainwindow.cpp" line="1328"/>
+        <location filename="../../mainwindow.cpp" line="431"/>
+        <location filename="../../mainwindow.cpp" line="1399"/>
         <source>Open File</source>
         <translation>Abrir arquivo</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="409"/>
-        <location filename="../../mainwindow.cpp" line="431"/>
+        <location filename="../../mainwindow.cpp" line="448"/>
+        <location filename="../../mainwindow.cpp" line="470"/>
         <source>Save File as ...</source>
         <translation>Salvar Arquivo como...</translation>
     </message>
     <message>
-        <source>Adding file to recent files.</source>
-        <translation type="vanished">Adicionando arquivo a arquivos recentes.</translation>
+        <location filename="../../mainwindow.cpp" line="488"/>
+        <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves e Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;wiRedPanda é um software desenvolvido pelos alunos da Universidade Federal de São Paulo. Este projeto foi criado para ajudar os alunos a aprender sobre circuitos lógicos.&lt;/p&gt;&lt;p&gt;Versão do software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Criadores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda é atualmente mantido pelo Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves e Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Por favor, registre um relatório em nossa página do GitHub se forem encontrados bugs ou se você deseja que uma nova funcionalidade seja implementada.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <source>Show files.</source>
-        <translation type="vanished">Mostrar arquivos.</translation>
+        <location filename="../../mainwindow.cpp" line="508"/>
+        <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</source>
+        <translation>&lt;h1&gt;Atalhos do Canvas&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Aumentar o zoom &lt;/li&gt;&lt;li&gt; Ctrl+- : Diminuir o zoom &lt;/li&gt;&lt;li&gt; Ctrl+1 : Ocultar/Mostrar fios &lt;/li&gt;&lt;li&gt; Ctrl+2 : Ocultar/Mostrar portas &lt;/li&gt;&lt;li&gt; Ctrl+F : Pesquisar elementos &lt;/li&gt;&lt;li&gt; Ctrl+W : Abrir beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Salvar projeto &lt;/li&gt;&lt;li&gt; Ctrl+Q : Sair do wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Iniciar/Pausar simulação &lt;/li&gt;&lt;li&gt; [ : Propriedade do elemento primário anterior &lt;/li&gt;&lt;li&gt; ] : Próxima propriedade do elemento primário &lt;/li&gt;&lt;li&gt; { : Propriedade do elemento secundário anterior &lt;/li&gt;&lt;li&gt; } : Próxima propriedade do elemento secundário &lt;/li&gt;&lt;li&gt; &amp;lt; : Transformar para o elemento anterior &lt;/li&gt;&lt;li&gt; &amp;gt; : Transformar para o próximo elemento &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Dicas gerais&lt;/h1&gt;&lt;p&gt;Clique duas vezes em um fio para criar um nó&lt;/p&gt;</translation>
     </message>
     <message>
-        <source>Files: </source>
-        <translation type="vanished">Arquivos: </translation>
-    </message>
-    <message>
-        <source>Closing tab </source>
-        <translation type="vanished">Fechando aba </translation>
-    </message>
-    <message>
-        <source>, #tabs: </source>
-        <translation type="vanished">, #guias: </translation>
-    </message>
-    <message>
-        <source>Checking if needs to save file.</source>
-        <translation type="vanished">Verificando se precisa salvar o arquivo.</translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="632"/>
+        <location filename="../../mainwindow.cpp" line="703"/>
         <source>Error</source>
         <translation>Erro</translation>
     </message>
     <message>
-        <source>Deleting tab.</source>
-        <translation type="vanished">Excluindo guia.</translation>
-    </message>
-    <message>
-        <source>Closed tab </source>
-        <translation type="vanished">Aba fechada </translation>
-    </message>
-    <message>
-        <source>Stopping simulation.</source>
-        <translation type="vanished">Parando a simulação.</translation>
-    </message>
-    <message>
-        <source>Disconnecting zoom from UI.</source>
-        <translation type="vanished">Desconectando o zoom da interface do usuário.</translation>
-    </message>
-    <message>
-        <source>Removing undo and redo actions from UI menu.</source>
-        <translation type="vanished">Removendo ações de desfazer e refazer do menu da interface do usuário.</translation>
-    </message>
-    <message>
-        <source>Connecting undo and redo functions to UI menu.</source>
-        <translation type="vanished">Conectando as funções de desfazer e refazer ao menu da interface do usuário.</translation>
-    </message>
-    <message>
-        <source>Setting Panda file info.</source>
-        <translation type="vanished">Configurando as informações do arquivo Panda.</translation>
-    </message>
-    <message>
-        <source>Connecting current tab to element editor menu in UI.</source>
-        <translation type="vanished">Conectando a guia atual ao menu do editor de elementos na interface do usuário.</translation>
-    </message>
-    <message>
-        <source>Restarting simulation.</source>
-        <translation type="vanished">Reiniciando a simulação.</translation>
-    </message>
-    <message>
-        <source>Selecting tab: </source>
-        <translation type="vanished">Selecionando a aba: </translation>
-    </message>
-    <message>
-        <source>New tab selected. Dolphin fileName: </source>
-        <translation type="vanished">Nova guia selecionada. Nome do arquivo Dolphin: </translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="824"/>
-        <location filename="../../mainwindow.cpp" line="851"/>
+        <location filename="../../mainwindow.cpp" line="895"/>
+        <location filename="../../mainwindow.cpp" line="922"/>
         <source>Missing file name.</source>
         <translation>Falta o nome do arquivo.</translation>
     </message>
     <message>
-        <source>The panda file is empty.</source>
-        <translation type="vanished">O arquivo panda está vazio.</translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="843"/>
+        <location filename="../../mainwindow.cpp" line="914"/>
         <source>Arduino code successfully generated.</source>
         <translation>Código de Arduino gerado com sucesso.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="878"/>
+        <location filename="../../mainwindow.cpp" line="949"/>
         <source>Generate Arduino Code</source>
         <translation>Gerar código para Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="878"/>
+        <location filename="../../mainwindow.cpp" line="949"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arquivo Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="980"/>
+        <location filename="../../mainwindow.cpp" line="1051"/>
         <source>Export to PDF</source>
         <translation>Exportar para PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="980"/>
+        <location filename="../../mainwindow.cpp" line="1051"/>
         <source>PDF files (*.pdf)</source>
         <translation>Arquivos PDF(*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="998"/>
+        <location filename="../../mainwindow.cpp" line="1069"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Não foi possível imprimir este circuito no PDF.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1119"/>
+        <location filename="../../mainwindow.cpp" line="1190"/>
         <source>Error loading wiRedPanda translation!</source>
         <translation>Erro ao carregar a tradução do wiRedPanda!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1127"/>
+        <location filename="../../mainwindow.cpp" line="1198"/>
         <source>Error loading Qt translation!</source>
         <translation>Erro ao carregar a tradução do Qt!</translation>
     </message>
     <message>
-        <source>BD fileName: </source>
-        <translation type="vanished">Nome do arquivo BD: </translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="1324"/>
+        <location filename="../../mainwindow.cpp" line="1395"/>
         <source>Save file first.</source>
         <translation>Salve o arquivo primeiro.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1330"/>
+        <location filename="../../mainwindow.cpp" line="1401"/>
         <source>Panda (*.panda)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1342"/>
-        <location filename="../../mainwindow.cpp" line="1353"/>
+        <location filename="../../mainwindow.cpp" line="1413"/>
+        <location filename="../../mainwindow.cpp" line="1424"/>
         <source>Info</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1342"/>
+        <location filename="../../mainwindow.cpp" line="1413"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>Os arquivos selecionados (e suas dependências) serão copiados para a pasta de arquivos atual.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1353"/>
+        <location filename="../../mainwindow.cpp" line="1424"/>
         <source>Drag here to remove.</source>
         <translation>Arraste aqui para remover.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1376"/>
+        <location filename="../../mainwindow.cpp" line="1447"/>
         <source>Error removing file: </source>
         <translation>Erro removendo arquivo: </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="856"/>
+        <location filename="../../mainwindow.ui" line="912"/>
         <source>F1</source>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="995"/>
+        <location filename="../../mainwindow.ui" line="1051"/>
         <source>Play or Pause simulation.</source>
         <translation>Iniciar ou Pausar simulação.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="998"/>
+        <location filename="../../mainwindow.ui" line="1054"/>
         <source>F5</source>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1010"/>
+        <location filename="../../mainwindow.ui" line="1066"/>
         <source>F2</source>
         <translation>F2</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1022"/>
+        <location filename="../../mainwindow.ui" line="1078"/>
         <source>F3</source>
         <translation>F3</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1034"/>
+        <location filename="../../mainwindow.ui" line="1090"/>
         <source>Esc</source>
         <translation>Esc</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="581"/>
+        <location filename="../../mainwindow.ui" line="636"/>
         <source>&amp;Recent files:</source>
         <translation>&amp;Arquivos recentes:</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="232"/>
         <source>Combinational</source>
-        <translation>Combinacionais</translation>
+        <translation>Combinacional</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="379"/>
@@ -1968,293 +1502,299 @@ Você quer salvar suas alterações?</translation>
         <translation>Remover CI</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="639"/>
+        <location filename="../../mainwindow.ui" line="695"/>
         <source>&amp;Theme</source>
         <translation>&amp;Tema</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="659"/>
+        <location filename="../../mainwindow.ui" line="715"/>
         <source>&amp;Language</source>
         <translation>&amp;Idioma</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="667"/>
+        <location filename="../../mainwindow.ui" line="723"/>
         <source>Sim&amp;ulation</source>
         <translation>&amp;Simulação</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="676"/>
+        <location filename="../../mainwindow.ui" line="732"/>
         <source>Examples</source>
         <translation>Exemplos</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="796"/>
+        <location filename="../../mainwindow.ui" line="852"/>
         <source>Ctrl+=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="877"/>
+        <location filename="../../mainwindow.ui" line="933"/>
         <source>R&amp;otate right</source>
         <translation>Girar à &amp;direita</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="889"/>
+        <location filename="../../mainwindow.ui" line="945"/>
         <source>Rotate &amp;left</source>
         <translation>Girar à &amp;esquerda</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="901"/>
+        <location filename="../../mainwindow.ui" line="957"/>
         <source>About &amp;Qt</source>
         <translation>Sobre o &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="910"/>
+        <location filename="../../mainwindow.ui" line="966"/>
         <source>&amp;Select all</source>
         <translation>Selecionar &amp;tudo</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="922"/>
+        <location filename="../../mainwindow.ui" line="978"/>
         <source>Re&amp;load File</source>
         <translation>Recarregar &amp;Arquivo</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="934"/>
+        <location filename="../../mainwindow.ui" line="990"/>
         <source>E&amp;xport to Arduino</source>
         <translation>Exportar para &amp;Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="946"/>
+        <location filename="../../mainwindow.ui" line="1002"/>
         <source>&amp;Reset Zoom</source>
         <translation>&amp;Zoom Padrão</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="958"/>
+        <location filename="../../mainwindow.ui" line="1014"/>
         <source>Export to &amp;PDF</source>
         <translation>Exportar para &amp;PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="970"/>
+        <location filename="../../mainwindow.ui" line="1026"/>
         <source>&amp;English</source>
         <translation>&amp;Inglês</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="979"/>
+        <location filename="../../mainwindow.ui" line="1035"/>
         <source>&amp;Portuguese</source>
         <translation>&amp;Português</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="992"/>
+        <location filename="../../mainwindow.ui" line="1048"/>
         <source>&amp;Play/Pause</source>
         <translation>&amp;Play/Pause</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1007"/>
+        <location filename="../../mainwindow.ui" line="1063"/>
         <source>&amp;Rename</source>
         <translation>&amp;Renomear</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1019"/>
+        <location filename="../../mainwindow.ui" line="1075"/>
         <source>Cha&amp;nge Trigger</source>
         <translation>&amp;Alterar atalho</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1031"/>
+        <location filename="../../mainwindow.ui" line="1087"/>
         <source>Cl&amp;ear selection</source>
         <translation>&amp;Limpar seleção</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1046"/>
+        <location filename="../../mainwindow.ui" line="1102"/>
         <source>&amp;Fast Mode</source>
         <translation>&amp;Modo Rápido</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1057"/>
+        <location filename="../../mainwindow.ui" line="1113"/>
         <source>&amp;Panda Light</source>
         <translation>Panda &amp;Claro</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1065"/>
+        <location filename="../../mainwindow.ui" line="1121"/>
         <source>Panda &amp;Dark</source>
         <translation>Panda &amp;Escuro</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1074"/>
+        <location filename="../../mainwindow.ui" line="1130"/>
         <source>&amp;Waveform</source>
         <translation>&amp;Forma de Onda</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1086"/>
+        <location filename="../../mainwindow.ui" line="1142"/>
         <source>Export to &amp;Image</source>
         <translation>Exportar para &amp;Imagem</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1094"/>
+        <location filename="../../mainwindow.ui" line="1150"/>
         <source>&amp;Flip horizontally</source>
         <translation>Espelhar &amp;horizontalmente</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1102"/>
+        <location filename="../../mainwindow.ui" line="1158"/>
         <source>Flip &amp;vertically</source>
         <translation>Espelhar &amp;verticalmente</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1107"/>
+        <location filename="../../mainwindow.ui" line="1163"/>
         <source>F&amp;ullscreen</source>
         <translation>&amp;Tela cheia</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1110"/>
+        <location filename="../../mainwindow.ui" line="1166"/>
         <source>F11</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1151"/>
+        <location filename="../../mainwindow.ui" line="1207"/>
         <source>&amp;Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Reiniciar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1154"/>
+        <location filename="../../mainwindow.ui" line="1210"/>
         <source>Restart simulation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Reiniciar simulação.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1163"/>
+        <location filename="../../mainwindow.ui" line="1219"/>
         <source>Spanish</source>
-        <translation type="unfinished"></translation>
+        <translation>Espanhol</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1024"/>
+        <location filename="../../mainwindow.ui" line="1227"/>
+        <location filename="../../mainwindow.cpp" line="507"/>
+        <source>Shortcuts and Tips</source>
+        <translation>Atalhos e Dicas</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="1095"/>
         <source>Export to Image</source>
         <translation>Exportar para Imagem</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1024"/>
+        <location filename="../../mainwindow.cpp" line="1095"/>
         <source>PNG files (*.png)</source>
         <translation>Arquivos PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1123"/>
-        <location filename="../../mainwindow.cpp" line="1287"/>
+        <location filename="../../mainwindow.ui" line="1179"/>
+        <location filename="../../mainwindow.cpp" line="1358"/>
         <source>Mute</source>
         <translation>Silenciar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1137"/>
+        <location filename="../../mainwindow.ui" line="1193"/>
         <source>Labels under icons</source>
         <translation>Nomes abaixo dos ícones</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="699"/>
+        <location filename="../../mainwindow.ui" line="755"/>
         <source>Ctrl+O</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="711"/>
+        <location filename="../../mainwindow.ui" line="767"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="723"/>
+        <location filename="../../mainwindow.ui" line="779"/>
         <source>Ctrl+Shift+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="735"/>
+        <location filename="../../mainwindow.ui" line="791"/>
         <source>Ctrl+X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="747"/>
+        <location filename="../../mainwindow.ui" line="803"/>
         <source>Ctrl+C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="759"/>
+        <location filename="../../mainwindow.ui" line="815"/>
         <source>Ctrl+V</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="772"/>
+        <location filename="../../mainwindow.ui" line="828"/>
         <source>Del</source>
         <translation>Del</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="784"/>
+        <location filename="../../mainwindow.ui" line="840"/>
         <source>Ctrl+N</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="808"/>
+        <location filename="../../mainwindow.ui" line="864"/>
         <source>Ctrl+-</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="826"/>
+        <location filename="../../mainwindow.ui" line="882"/>
         <source>Ctrl+1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="844"/>
+        <location filename="../../mainwindow.ui" line="900"/>
         <source>Ctrl+2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="868"/>
+        <location filename="../../mainwindow.ui" line="924"/>
         <source>Ctrl+Q</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="880"/>
+        <location filename="../../mainwindow.ui" line="936"/>
         <source>Ctrl+R</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="892"/>
+        <location filename="../../mainwindow.ui" line="948"/>
         <source>Ctrl+Shift+R</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="913"/>
+        <location filename="../../mainwindow.ui" line="969"/>
         <source>Ctrl+A</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="925"/>
+        <location filename="../../mainwindow.ui" line="981"/>
         <source>Ctrl+F5</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="937"/>
+        <location filename="../../mainwindow.ui" line="993"/>
         <source>Ctrl+Alt+I</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="949"/>
+        <location filename="../../mainwindow.ui" line="1005"/>
         <source>Ctrl+0</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="961"/>
+        <location filename="../../mainwindow.ui" line="1017"/>
         <source>Ctrl+Shift+P</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1077"/>
+        <location filename="../../mainwindow.ui" line="1133"/>
         <source>Ctrl+W</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1089"/>
+        <location filename="../../mainwindow.ui" line="1145"/>
         <source>Ctrl+E</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1097"/>
+        <location filename="../../mainwindow.ui" line="1153"/>
         <source>Ctrl+H</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1129"/>
+        <location filename="../../mainwindow.ui" line="1185"/>
         <source>Ctrl+M</source>
         <translation></translation>
     </message>
@@ -2264,7 +1804,7 @@ Você quer salvar suas alterações?</translation>
         <translation>Entradas/Saídas</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="469"/>
+        <location filename="../../mainwindow.ui" line="413"/>
         <source>Miscellaneous</source>
         <translation>Diversos</translation>
     </message>
@@ -2274,93 +1814,61 @@ Você quer salvar suas alterações?</translation>
         <translation>Circuitos Integrados</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1126"/>
+        <location filename="../../mainwindow.ui" line="1182"/>
         <source>Mutes and unmutes circuit buzzers</source>
         <translation>Ativa e desativa som das campanhias do cuicuito</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1287"/>
+        <location filename="../../mainwindow.cpp" line="1358"/>
         <source>Unmute</source>
         <translation>Ativar som</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="228"/>
-        <location filename="../../mainwindow.cpp" line="347"/>
-        <location filename="../../mainwindow.cpp" line="552"/>
-        <location filename="../../mainwindow.cpp" line="1064"/>
+        <location filename="../../mainwindow.cpp" line="249"/>
+        <location filename="../../mainwindow.cpp" line="372"/>
+        <location filename="../../mainwindow.cpp" line="623"/>
+        <location filename="../../mainwindow.cpp" line="1135"/>
         <source>New Project</source>
         <translation>Projeto Novo</translation>
     </message>
     <message>
-        <source>wiRedPanda Version = </source>
-        <translation type="vanished">Versão wiRedPanda = </translation>
-    </message>
-    <message>
-        <source> OR </source>
-        <translation type="vanished"> OU </translation>
-    </message>
-    <message>
-        <source>Settings fileName: </source>
-        <translation type="vanished">Nome do arquivo de configurações: </translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="203"/>
+        <location filename="../../mainwindow.cpp" line="224"/>
         <source>Error!</source>
         <translation>Erro!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="330"/>
+        <location filename="../../mainwindow.cpp" line="355"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>Arquivo não foi salvo. Fechar mesmo assim?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="449"/>
-        <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="487"/>
+        <location filename="../../mainwindow.cpp" line="554"/>
         <source>Exit </source>
         <translation>Sair do </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="830"/>
+        <location filename="../../mainwindow.cpp" line="901"/>
         <source>The .panda file is empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>O arquivo .panda está vazio.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1005"/>
-        <location filename="../../mainwindow.cpp" line="1043"/>
+        <location filename="../../mainwindow.cpp" line="1076"/>
+        <location filename="../../mainwindow.cpp" line="1114"/>
         <source>Exported file successfully.</source>
         <translation>Arquivo exportado com sucesso.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="293"/>
+        <location filename="../../mainwindow.cpp" line="314"/>
         <source>Don&apos;t show this again.</source>
         <translation>Não mostrar novamente.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1142"/>
+        <location filename="../../mainwindow.ui" line="1198"/>
         <source>About this version</source>
         <translation>Sobre esta versão</translation>
     </message>
     <message>
-        <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D. and Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="vanished">&lt;p&gt;wiRedPanda é um software desenvolvido por estudantes da Universidade Federal de São Paulo. Este projeto foi desenvolvido para ajudar os estudantes a aprenderem mais sobre circuitos digitais.&lt;/p&gt;&lt;p&gt;Versão do software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Desenvolvedores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda atualmente é mantido por Prof. Fábio Cappabianco, Ph.D. e Vinícius R. Miguel.&lt;/p&gt;&lt;p&gt; Por favor, informe em nossa página do GitHub sobre eventuais bugs encontrados ou se deseja uma nova funcionalidade.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="301"/>
-        <source>This version is not 100% compatible with previous versions of wiRedPanda.
-To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
-wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
-You have to save new projects before accessing ICs and skins, or running beWavedDolphin simulations.</source>
-        <translation>Esta versão não é 100% compatível com as versões anteriores do wiRedPanda.
-Para abrir projetos de versão antiga contendo ICs (ou caixas), skins e/ou simulações beWavedDolphin, seus arquivos devem ser movidos para o mesmo diretório do arquivo principal do projeto.
-wiRedPanda %1 listará automaticamente todos os outros arquivos .panda localizados no mesmo diretório do projeto atual como ICs na guia do editor.
-Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar simulações beWavedDolphin.</translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="488"/>
+        <location filename="../../mainwindow.cpp" line="555"/>
         <source>Are you sure?</source>
         <translation>Tem certeza?</translation>
     </message>
@@ -2368,15 +1876,17 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>MorphCommand</name>
     <message>
+        <location filename="../../commands.cpp" line="529"/>
         <source>Morph %1 elements to %2</source>
-        <translation type="vanished">Transformar %1 portas em %2</translation>
+        <translation>Transformar %1 elementos em %2</translation>
     </message>
 </context>
 <context>
     <name>MoveCommand</name>
     <message>
+        <location filename="../../commands.cpp" line="344"/>
         <source>Move elements</source>
-        <translation type="vanished">Mover portas</translation>
+        <translation>Mover elementos</translation>
     </message>
 </context>
 <context>
@@ -2458,49 +1968,6 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
     </message>
 </context>
 <context>
-    <name>QNEConnection</name>
-    <message>
-        <source>Empty port map.</source>
-        <translation type="vanished">Mapa das portas vazio.</translation>
-    </message>
-    <message>
-        <source>Port map with elements: ptr1(</source>
-        <translation type="vanished">Mapa das portas com elementos: ptr1(</translation>
-    </message>
-    <message>
-        <source>Before if 1.</source>
-        <translation type="vanished">Antes do if 1.</translation>
-    </message>
-    <message>
-        <source>Before if 2.</source>
-        <translation type="vanished">Antes do if 2.</translation>
-    </message>
-    <message>
-        <source>Setting start 1.</source>
-        <translation type="vanished">Setando começo 1.</translation>
-    </message>
-    <message>
-        <source>Setting end 1.</source>
-        <translation type="vanished">Setando fim 1.</translation>
-    </message>
-    <message>
-        <source>Setting start 2.</source>
-        <translation type="vanished">Setando começo 2.</translation>
-    </message>
-    <message>
-        <source>Setting end 2.</source>
-        <translation type="vanished">Setando fim 2.</translation>
-    </message>
-    <message>
-        <source>After ifs.</source>
-        <translation type="vanished">Depois dos ifs.</translation>
-    </message>
-    <message>
-        <source>Updating pos from ports.</source>
-        <translation type="vanished">Atualizando pos das portas.</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <location filename="../../commands.cpp" line="109"/>
@@ -2523,69 +1990,31 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <translation>Erro!</translation>
     </message>
     <message>
-        <source>Reading IC.</source>
-        <translation type="vanished">Lendo CI.</translation>
-    </message>
-    <message>
         <location filename="../../ic.cpp" line="156"/>
         <location filename="../../ic.cpp" line="415"/>
         <source>Error opening file: </source>
         <translation>Erro ao abrir o arquivo: </translation>
     </message>
-    <message>
-        <source>Finished reading IC.</source>
-        <translation type="vanished">Concluído leitura do CI.</translation>
-    </message>
-    <message>
-        <source>Writing Connection.</source>
-        <translation type="vanished">Escrevendo conexão.</translation>
-    </message>
-    <message>
-        <source>Stopping.</source>
-        <translation type="vanished">Parando.</translation>
-    </message>
-    <message>
-        <source>Releasing.</source>
-        <translation type="vanished">Liberando.</translation>
-    </message>
-    <message>
-        <source>Writing element.</source>
-        <translation type="vanished">Escrevendo elemento.</translation>
-    </message>
-</context>
-<context>
-    <name>RecentFiles</name>
-    <message>
-        <source>Setting recent file to: </source>
-        <translation type="vanished">Setando arquivo recente para: </translation>
-    </message>
 </context>
 <context>
     <name>RotateCommand</name>
     <message>
+        <location filename="../../commands.cpp" line="272"/>
         <source>Rotate %1 degrees</source>
-        <translation type="vanished">Girar %1 graus</translation>
+        <translation>Girar %1 graus</translation>
     </message>
 </context>
 <context>
     <name>SRFlipFlop</name>
     <message>
-        <source>SR-FlipFlop</source>
-        <translation type="vanished">FlipFlop-SR</translation>
-    </message>
-    <message>
-        <source>SR-FLIPFLOP</source>
-        <translation type="vanished">FLIPFLOP-SR</translation>
-    </message>
-    <message>
         <location filename="../../element/srflipflop.cpp" line="15"/>
         <source>SR-FLIP-FLOP</source>
-        <translation type="unfinished"></translation>
+        <translation>FLIP-FLOP-SR</translation>
     </message>
     <message>
         <location filename="../../element/srflipflop.cpp" line="15"/>
         <source>SR-Flip-Flop</source>
-        <translation type="unfinished"></translation>
+        <translation>Flip-Flop-SR</translation>
     </message>
 </context>
 <context>
@@ -2601,90 +2030,22 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <translation>&amp;Refazer</translation>
     </message>
     <message>
-        <source>Updating theme.</source>
-        <translation type="vanished">Atualizando tema.</translation>
-    </message>
-    <message>
-        <source>Finished updating theme.</source>
-        <translation type="vanished">Concluído atualização do tema.</translation>
-    </message>
-    <message>
-        <source>Ctrl + Drag action triggered.</source>
-        <translation type="vanished">Ação Ctrl + Arrastar acionada.</translation>
-    </message>
-    <message>
-        <location filename="../../scene.cpp" line="582"/>
+        <location filename="../../scene.cpp" line="765"/>
         <source>Paste</source>
         <translation>Colar</translation>
-    </message>
-    <message>
-        <source> at position: </source>
-        <translation type="vanished"> na posição: </translation>
-    </message>
-    <message>
-        <source>, label: </source>
-        <translation type="vanished">, rótulo: </translation>
-    </message>
-    <message>
-        <source>Valid element.</source>
-        <translation type="vanished">Elemento válido.</translation>
-    </message>
-    <message>
-        <source>Adding the element to the scene.</source>
-        <translation type="vanished">Adicionando o elemento para o cenário.</translation>
-    </message>
-    <message>
-        <source>Cleaning the selection.</source>
-        <translation type="vanished">Limpando a seleção.</translation>
-    </message>
-    <message>
-        <source>Setting created element as selected.</source>
-        <translation type="vanished">Setando elemento criado como selecionado.</translation>
-    </message>
-    <message>
-        <source>Adjusting the position of the element.</source>
-        <translation type="vanished">Ajustando a posição do elemento.</translation>
     </message>
 </context>
 <context>
     <name>Serialization</name>
-    <message>
-        <source>Type: </source>
-        <translation type="vanished">Tipo: </translation>
-    </message>
-    <message>
-        <source>Building connection.</source>
-        <translation type="vanished">Criando conexão.</translation>
-    </message>
-    <message>
-        <source>Loading connection.</source>
-        <translation type="vanished">Carregando conexão.</translation>
-    </message>
-    <message>
-        <source>Appending connection.</source>
-        <translation type="vanished">Anexando conexão.</translation>
-    </message>
     <message>
         <location filename="../../serialization.cpp" line="67"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>Tipo inválido. Os dados estão possivelmente corrompidos.</translation>
     </message>
     <message>
-        <source>Finished deserializing.</source>
-        <translation type="vanished">Desserialização concluída.</translation>
-    </message>
-    <message>
-        <source>Loading version.</source>
-        <translation type="vanished">Carregando versão.</translation>
-    </message>
-    <message>
         <location filename="../../serialization.cpp" line="82"/>
         <source>Invalid file format.</source>
         <translation>Formato de arquivo inválido.</translation>
-    </message>
-    <message>
-        <source>Version: </source>
-        <translation type="vanished">Versão: </translation>
     </message>
     <message>
         <location filename="../../serialization.cpp" line="91"/>
@@ -2693,41 +2054,11 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
     </message>
 </context>
 <context>
-    <name>Simulation</name>
-    <message>
-        <source>Starting simulation.</source>
-        <translation type="vanished">Iniciando simulação.</translation>
-    </message>
-    <message>
-        <source>Simulation started.</source>
-        <translation type="vanished">Simulação iniciada.</translation>
-    </message>
-    <message>
-        <source>GENERATING SIMULATION LAYER.</source>
-        <translation type="vanished">GERANDO CAMADA DA SIMULAÇÃO.</translation>
-    </message>
-    <message>
-        <source>Elements read: </source>
-        <translation type="vanished">Elementos lidos: </translation>
-    </message>
-    <message>
-        <source>Recreating mapping for simulation.</source>
-        <translation type="vanished">Recriando mapa para simulação.</translation>
-    </message>
-    <message>
-        <source>Sorting.</source>
-        <translation type="vanished">Ordenando.</translation>
-    </message>
-    <message>
-        <source>Finished simulation layer.</source>
-        <translation type="vanished">Camada de simulação finalizada.</translation>
-    </message>
-</context>
-<context>
     <name>SplitCommand</name>
     <message>
+        <location filename="../../commands.cpp" line="447"/>
         <source>Wire split</source>
-        <translation type="vanished">Dividir fio</translation>
+        <translation>Fio dividido</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="470"/>
@@ -2743,22 +2074,14 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>TFlipFlop</name>
     <message>
-        <source>T-FlipFlop</source>
-        <translation type="vanished">FlipFlop-T</translation>
-    </message>
-    <message>
-        <source>T-FLIPFLOP</source>
-        <translation type="vanished">FLIPFLOP-T</translation>
-    </message>
-    <message>
         <location filename="../../element/tflipflop.cpp" line="15"/>
         <source>T-FLIP-FLOP</source>
-        <translation type="unfinished"></translation>
+        <translation>FLIP-FLOP-T</translation>
     </message>
     <message>
         <location filename="../../element/tflipflop.cpp" line="15"/>
         <source>T-Flip-Flop</source>
-        <translation type="unfinished"></translation>
+        <translation>Flip-Flop-T</translation>
     </message>
 </context>
 <context>
@@ -2779,7 +2102,7 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
     <message>
         <location filename="../../commands.cpp" line="869"/>
         <source>Toggle TruthTable Output at position: %1</source>
-        <translation>Alternar a saída da tabela de verdade na posição</translation>
+        <translation>Alternar saída da TabelaVerdade na posição: %1</translation>
     </message>
 </context>
 <context>
@@ -2793,11 +2116,12 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>TruthTable</name>
     <message>
-        <source>TruthTable</source>
-        <translation type="vanished">Tabela Verdade</translation>
+        <location filename="../../element/truth_table.cpp" line="18"/>
+        <source>TRUTH TABLE</source>
+        <translation>TABELA VERDADE</translation>
     </message>
     <message>
-        <location filename="../../element/truth_table.cpp" line="17"/>
+        <location filename="../../element/truth_table.cpp" line="18"/>
         <source>Truth Table</source>
         <translation>Tabela Verdade</translation>
     </message>
@@ -2805,32 +2129,13 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
 <context>
     <name>UpdateCommand</name>
     <message>
+        <location filename="../../commands.cpp" line="385"/>
         <source>Update %1 elements</source>
-        <translation type="vanished">Atualizar %1 porta(s)</translation>
+        <translation>Atualizar %1 elementos</translation>
     </message>
 </context>
 <context>
     <name>WorkSpace</name>
-    <message>
-        <source>Getting autosave settings info.</source>
-        <translation type="vanished">Obtendo informações de configurações de salvamento automático.</translation>
-    </message>
-    <message>
-        <source>FileName: </source>
-        <translation type="vanished">Nome do arquivo: </translation>
-    </message>
-    <message>
-        <source>All auto save file names before save: </source>
-        <translation type="vanished">Todos os nomes de arquivo de salvamento automático antes de salvar: </translation>
-    </message>
-    <message>
-        <source>Checking if it is an autosave file or a new project, and ask for a fileName.</source>
-        <translation type="vanished">Verificando se é um arquivo de salvamento automático ou um novo projeto, e peça um nome de arquivo.</translation>
-    </message>
-    <message>
-        <source>Should open window.</source>
-        <translation type="vanished">Deve abrir janela.</translation>
-    </message>
     <message>
         <location filename="../../workspace.cpp" line="71"/>
         <source>Save File</source>
@@ -2852,29 +2157,9 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <translation>Não foi possível salvar o arquivo: </translation>
     </message>
     <message>
-        <source>Remove from autosave list recovered file that has been saved.</source>
-        <translation type="vanished">Remova da lista de salvamento automático o arquivo recuperado que foi salvo.</translation>
-    </message>
-    <message>
-        <source>All auto save file names after removing recovered: </source>
-        <translation type="vanished">Todos os nomes de arquivos de salvamento automático após a remoção recuperados: </translation>
-    </message>
-    <message>
-        <source>Remove autosave from settings and delete it.</source>
-        <translation type="vanished">Remova o salvamento automático das configurações e exclua-o.</translation>
-    </message>
-    <message>
-        <source>All auto save file names after removing autosave: </source>
-        <translation type="vanished">Todos os nomes de arquivo de salvamento automático após a remoção do salvamento automático: </translation>
-    </message>
-    <message>
         <location filename="../../workspace.cpp" line="134"/>
         <source>This file does not exist: </source>
         <translation>Este arquivo não existe: </translation>
-    </message>
-    <message>
-        <source>File exists.</source>
-        <translation type="vanished">O arquivo existe.</translation>
     </message>
     <message>
         <location filename="../../workspace.cpp" line="144"/>
@@ -2882,48 +2167,13 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <translation>Não pode abrir arquivo: </translation>
     </message>
     <message>
-        <source>Version: </source>
-        <translation type="vanished">Versão: </translation>
-    </message>
-    <message>
-        <source>Dolphin name: </source>
-        <translation type="vanished">Nome Dolphin: </translation>
-    </message>
-    <message>
-        <source>Autosavepath: </source>
-        <translation type="vanished">Caminho de salvamento automático: </translation>
-    </message>
-    <message>
-        <source>Setting current file to random file.</source>
-        <translation type="vanished">Configurando o arquivo atual para arquivo aleatório.</translation>
-    </message>
-    <message>
-        <source>All auto save file names before autosaving: </source>
-        <translation type="vanished">Todos os nomes de arquivo de salvamento automático antes do salvamento automático: </translation>
-    </message>
-    <message>
-        <source>All auto save file names after possibly removing autosave: </source>
-        <translation type="vanished">Todos os nomes de arquivo de salvamento automático após possivelmente remover o salvamento automático: </translation>
-    </message>
-    <message>
-        <source> of </source>
-        <translation type="vanished"> de </translation>
-    </message>
-    <message>
-        <source>Setting current file to: </source>
-        <translation type="vanished">Configurando o arquivo atual para: </translation>
-    </message>
-    <message>
-        <source>All auto save file names after adding autosave: </source>
-        <translation type="vanished">Todos os nomes de arquivo de salvamento automático após adicionar o salvamento automático: </translation>
-    </message>
-    <message>
-        <source>Loading file.</source>
-        <translation type="vanished">Carregando arquivo.</translation>
-    </message>
-    <message>
-        <source>Stopped simulation.</source>
-        <translation type="vanished">Simulação interrompida.</translation>
+        <location filename="../../workspace.cpp" line="166"/>
+        <source>Warning! Your wiRedPanda (Version: %1) is possibly out of date.
+The file you are opening was saved with version (%2).
+Please check for updates if the file does not load correctly.</source>
+        <translation>Aviso! Seu wiRedPanda (Versão: %1) possivelmente está desatualizado.
+O arquivo que você está abrindo foi salvo com a versão (%2).
+Verifique se há atualizações se o arquivo não carregar corretamente.</translation>
     </message>
     <message>
         <location filename="../../workspace.cpp" line="170"/>
@@ -2931,75 +2181,14 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <translation>Arquivo de versão mais nova.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="164"/>
-        <source>Warning! Your wiRedPanda is possibly out of date.
- The file you are opening was saved in a newer version.
- Please check for updates.</source>
-        <translation>Aviso! Seu wiRedPanda possivelmente está desatualizado.
- O arquivo que você está abrindo foi salvo em uma versão mais recente.
- Por favor, verifique se há atualizações.</translation>
-    </message>
-    <message>
-        <location filename="../../workspace.cpp" line="166"/>
+        <location filename="../../workspace.cpp" line="172"/>
         <source>Warning! This is an old version wiRedPanda project file (version &lt; 4.0). To open it correctly, save all the ICs and skins in the main project directory.</source>
         <translation>Aviso! Este é um arquivo de projeto wiRedPanda da versão antiga (versão &lt; 4.0). Para abri-lo corretamente, salve todos os ICs e skins no diretório principal do projeto.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="172"/>
+        <location filename="../../workspace.cpp" line="174"/>
         <source>Old version file.</source>
         <translation>Arquivo de versão antiga.</translation>
-    </message>
-    <message>
-        <source>Finished loading items.</source>
-        <translation type="vanished">Concluído carregamento dos itens.</translation>
-    </message>
-    <message>
-        <source>Finished loading file.</source>
-        <translation type="vanished">Concluído carregamento do arquivo.</translation>
-    </message>
-    <message>
-        <source>Defining autosave path.</source>
-        <translation type="vanished">Definindo o caminho de salvamento automático.</translation>
-    </message>
-    <message>
-        <source>Starting autosave.</source>
-        <translation type="vanished">Iniciando o salvamento automático.</translation>
-    </message>
-    <message>
-        <source>Checking if autosave file exists and if it contains current project file. If so, remove autosave file from it.</source>
-        <translation type="vanished">Verificando se o arquivo de salvamento automático existe e se contém o arquivo de projeto atual. Em caso afirmativo, remova o arquivo de salvamento automático dele.</translation>
-    </message>
-    <message>
-        <source>Removing current autosave file name.</source>
-        <translation type="vanished">Removendo o nome do arquivo de salvamento automático atual.</translation>
-    </message>
-    <message>
-        <source>If autosave exists and undo stack is clean, remove it.</source>
-        <translation type="vanished">Se o salvamento automático existir e a pilha de desfazer estiver limpa, remova-a.</translation>
-    </message>
-    <message>
-        <source>Undo stack element: </source>
-        <translation type="vanished">Elemento da pilha de desfazer: </translation>
-    </message>
-    <message>
-        <source>Undo stack is clean.</source>
-        <translation type="vanished">A pilha de desfazer está limpa.</translation>
-    </message>
-    <message>
-        <source>Undo is !clean. Must set autosave file.</source>
-        <translation type="vanished">Desfazer é !limpo. Deve definir o arquivo de salvamento automático.</translation>
-    </message>
-    <message>
-        <source>Default value not set yet.</source>
-        <translation type="vanished">Valor padrão ainda não definido.</translation>
-    </message>
-    <message>
-        <source>Autosave path set to the current file&apos;s directory, if there is one.</source>
-        <translation type="vanished">Caminho de salvamento automático definido para o diretório do arquivo atual, se houver.</translation>
-    </message>
-    <message>
-        <source>Writing to autosave file.</source>
-        <translation type="vanished">Gravando no arquivo de salvamento automático.</translation>
     </message>
     <message>
         <location filename="../../workspace.cpp" line="269"/>
@@ -3053,21 +2242,17 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
     <message>
         <location filename="../../main.cpp" line="55"/>
         <source>Exports circuit to &lt;arduino-file&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta circuito para &lt;arquivo arduino&gt;</translation>
     </message>
     <message>
         <location filename="../../main.cpp" line="61"/>
         <source>Exports circuit to waveform text file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta circuito para arquivo de texto de forma de onda</translation>
     </message>
     <message>
         <location filename="../../main.cpp" line="67"/>
         <source>Exports circuit to waveform text file, reading input from terminal</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Export circuit to &lt;arduino-file&gt;</source>
-        <translation type="vanished">Exportar circuito para &lt;arquivo arduino&gt;</translation>
+        <translation>Exporta circuito para arquivo de texto de forma de onda, lendo entrada do terminal</translation>
     </message>
     <message>
         <location filename="../../main.cpp" line="56"/>
@@ -3075,17 +2260,9 @@ Você precisa salvar novos projetos antes de acessar ICs e skins, ou executar si
         <translation>arquivo arduino</translation>
     </message>
     <message>
-        <source>Export circuit to waveform text file</source>
-        <translation type="vanished">Exportar circuito em arquivo forma de onda textual</translation>
-    </message>
-    <message>
         <location filename="../../main.cpp" line="62"/>
         <source>waveform input text file</source>
         <translation>arquivo de forma de onda textual de entrada</translation>
-    </message>
-    <message>
-        <source>Export circuit to waveform text file, reading input from terminal</source>
-        <translation type="vanished">Exportar circuito em arquivo forma de onda textual, lendo a entrada do console</translation>
     </message>
 </context>
 </TS>

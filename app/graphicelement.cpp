@@ -1,4 +1,4 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "graphicelement.h"
@@ -60,13 +60,8 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QStri
     setInputSize(minInputSize);
     setOutputSize(minOutputSize);
     qCDebug(four) << "Including input and output ports.";
-    for (int i = 0; i < minInputSize; ++i) {
-        addInputPort();
-    }
-
-    for (int i = 0; i < minOutputSize; ++i) {
-        addOutputPort();
-    }
+    setInputSize(minInputSize);
+    setOutputSize(minOutputSize);
 
     GraphicElement::updatePortsProperties();
     GraphicElement::updateTheme();
@@ -301,7 +296,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
     QList<QMap<QString, QVariant>> inputMap; stream >> inputMap;
     int port = 0;
 
-    for (const auto &input : qAsConst(inputMap)) {
+    for (const auto &input : std::as_const(inputMap)) {
         const quint64 ptr = input.value("ptr").toULongLong();
         const QString name = input.value("name").toString();
 
@@ -318,7 +313,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
 
         portMap[ptr] = m_inputPorts.value(port);
 
-        port++;
+        ++port;
     }
 
     removeSurplusInputs(inputMap.size(), portMap);
@@ -328,7 +323,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
     QList<QMap<QString, QVariant>> outputMap; stream >> outputMap;
     port = 0;
 
-    for (const auto &output : qAsConst(outputMap)) {
+    for (const auto &output : std::as_const(outputMap)) {
         const quint64 ptr = output.value("ptr").toULongLong();
         const QString name = output.value("name").toString();
 
@@ -344,7 +339,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
 
         portMap[ptr] = m_outputPorts.value(port);
 
-        port++;
+        ++port;
     }
 
     removeSurplusOutputs(outputMap.size(), portMap);
@@ -354,14 +349,14 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
     QList<QMap<QString, QVariant>> skinsMap; stream >> skinsMap;
     int skin = 0;
 
-    for (const auto &skinName : qAsConst(skinsMap)) {
+    for (const auto &skinName : std::as_const(skinsMap)) {
         const QString name = skinName.value("skinName").toString();
 
         if (!name.startsWith(":/")) {
             m_alternativeSkins[skin] = name;
         }
 
-        skin++;
+        ++skin;
     }
 
     m_usingDefaultSkin = (m_defaultSkins == m_alternativeSkins);
@@ -690,13 +685,13 @@ void GraphicElement::setRotation(const qreal angle)
 
 void GraphicElement::rotatePorts(const qreal angle)
 {
-    for (auto *port : qAsConst(m_inputPorts)) {
+    for (auto *port : std::as_const(m_inputPorts)) {
         port->setTransformOriginPoint(mapToItem(port, pixmapCenter()));
         port->setRotation(angle);
         port->updateConnections();
     }
 
-    for (auto *port : qAsConst(m_outputPorts)) {
+    for (auto *port : std::as_const(m_outputPorts)) {
         port->setTransformOriginPoint(mapToItem(port, pixmapCenter()));
         port->setRotation(angle);
         port->updateConnections();
@@ -729,7 +724,7 @@ void GraphicElement::updatePortsProperties()
     if (!m_inputPorts.isEmpty()) {
         int y = 32 - (m_inputPorts.size() * step) + step;
 
-        for (auto *port : qAsConst(m_inputPorts)) {
+        for (auto *port : std::as_const(m_inputPorts)) {
             qCDebug(five) << "Setting input at " << 0 << ", " << y;
 
             if (!isRotatable()) {
@@ -750,7 +745,7 @@ void GraphicElement::updatePortsProperties()
     if (!m_outputPorts.isEmpty()) {
         int y = 32 - (m_outputPorts.size() * step) + step;
 
-        for (auto *port : qAsConst(m_outputPorts)) {
+        for (auto *port : std::as_const(m_outputPorts)) {
             qCDebug(five) << "Setting output at " << 64 << ", " << y;
 
             if (!isRotatable()) {
@@ -791,11 +786,11 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
 
     if ((change == ItemScenePositionHasChanged) || (change == ItemRotationHasChanged) || (change == ItemTransformHasChanged)) {
         qCDebug(four) << "Moves wires.";
-        for (auto *port : qAsConst(m_outputPorts)) {
+        for (auto *port : std::as_const(m_outputPorts)) {
             port->updateConnections();
         }
 
-        for (auto *port : qAsConst(m_inputPorts)) {
+        for (auto *port : std::as_const(m_inputPorts)) {
             port->updateConnections();
         }
     }
@@ -810,9 +805,11 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
 
 bool GraphicElement::sceneEvent(QEvent *event)
 {
-    if (auto mouseEvent = dynamic_cast<QGraphicsSceneMouseEvent *>(event)) {
-        if (mouseEvent->modifiers().testFlag(Qt::ControlModifier)) {
-            return true;
+    if (event->type() == QEvent::GraphicsSceneMousePress || event->type() == QEvent::GraphicsSceneMouseRelease) {
+        if (auto mouseEvent = dynamic_cast<QGraphicsSceneMouseEvent *>(event)) {
+            if (mouseEvent->modifiers().testFlag(Qt::ControlModifier)) {
+                return true;
+            }
         }
     }
 
@@ -933,11 +930,11 @@ void GraphicElement::updateTheme()
     m_selectionBrush = theme.m_selectionBrush;
     m_selectionPen = theme.m_selectionPen;
 
-    for (auto *input : qAsConst(m_inputPorts)) {
+    for (auto *input : std::as_const(m_inputPorts)) {
         input->updateTheme();
     }
 
-    for (auto *output : qAsConst(m_outputPorts)) {
+    for (auto *output : std::as_const(m_outputPorts)) {
         output->updateTheme();
     }
 
@@ -951,7 +948,7 @@ bool GraphicElement::isValid()
                                    [](auto *input) { return input->isValid(); });
 
     if (!valid) {
-        for (auto *output : qAsConst(m_outputPorts)) {
+        for (auto *output : std::as_const(m_outputPorts)) {
             for (auto *conn : output->connections()) {
                 conn->setStatus(Status::Invalid);
 
@@ -1096,8 +1093,8 @@ int GraphicElement::inputSize() const
 void GraphicElement::setInputSize(const int size)
 {
     if ((size >= minInputSize()) && (size <= maxInputSize())) {
-        if (inputSize() < size) {
-            while (inputSize() < size) {
+        if (size > inputSize()) {
+            while (size > inputSize()) {
                 addInputPort();
             }
         } else {
@@ -1122,8 +1119,8 @@ int GraphicElement::priority() const
 void GraphicElement::setOutputSize(const int size)
 {
     if ((size >= minOutputSize()) && (size <= maxOutputSize())) {
-        if (outputSize() < size) {
-            for (int port = outputSize(); port < size; ++port) {
+        if (size > outputSize()) {
+            while (size > outputSize()) {
                 addOutputPort();
             }
         } else {
@@ -1195,15 +1192,15 @@ void GraphicElement::highlight(const bool isSelected)
 {
     QVector<QNEPort *> ports;
 
-    for (auto *port : qAsConst(m_inputPorts)) {
+    for (auto *port : std::as_const(m_inputPorts)) {
         ports << port;
     }
 
-    for (auto *port : qAsConst(m_outputPorts)) {
+    for (auto *port : std::as_const(m_outputPorts)) {
         ports << port;
     }
 
-    for (auto *port : qAsConst(ports)) {
+    for (auto *port : std::as_const(ports)) {
         for (auto *connection : port->connections()) {
             if (connection->highLight() == isSelected) {
                 continue;

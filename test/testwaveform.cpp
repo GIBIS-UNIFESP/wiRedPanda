@@ -1,4 +1,4 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "testwaveform.h"
@@ -9,11 +9,14 @@
 #include <QTemporaryFile>
 #include <QTest>
 
+#define QUOTE(string) _QUOTE(string)
+#define _QUOTE(string) #string
+
 void TestWaveForm::testDisplay4Bits()
 {
     WorkSpace workspace;
 
-    const QDir examplesDir(QString(CURRENTDIR) + "/../examples/");
+    const QDir examplesDir(QString(QUOTE(CURRENTDIR)) + "/../examples/");
     const QString fileName = examplesDir.absoluteFilePath("display-4bits.panda");
 
     QFile pandaFile(fileName);

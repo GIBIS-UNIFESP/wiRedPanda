@@ -1,4 +1,4 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "codegenerator.h"
@@ -116,7 +116,7 @@ void CodeGenerator::declareInputs()
             m_inputMap.append(MappedPin(elm, m_availablePins.constFirst(), varName, elm->outputPort(0), 0));
             m_availablePins.removeFirst();
             m_varMap[elm->outputPort()] = varName + QString("_val");
-            counter++;
+            ++counter;
         }
     }
 
@@ -145,7 +145,7 @@ void CodeGenerator::declareOutputs()
                 m_availablePins.removeFirst();
             }
         }
-        counter++;
+        ++counter;
     }
     m_stream << endl;
 }
@@ -244,10 +244,10 @@ void CodeGenerator::declareAuxVariables()
 void CodeGenerator::setup()
 {
     m_stream << "void setup() {" << endl;
-    for (const auto &pin : qAsConst(m_inputMap)) {
+    for (const auto &pin : std::as_const(m_inputMap)) {
         m_stream << "    pinMode(" << pin.m_varName << ", INPUT);" << endl;
     }
-    for (const auto &pin : qAsConst(m_outputMap)) {
+    for (const auto &pin : std::as_const(m_outputMap)) {
         m_stream << "    pinMode(" << pin.m_varName << ", OUTPUT);" << endl;
     }
     m_stream << "}" << endl
@@ -497,7 +497,7 @@ void CodeGenerator::loop()
 {
     m_stream << "void loop() {" << endl;
     m_stream << "    // Reading input data //." << endl;
-    for (const auto &pin : qAsConst(m_inputMap)) {
+    for (const auto &pin : std::as_const(m_inputMap)) {
         m_stream << QString("    %1_val = digitalRead(%1);").arg(pin.m_varName) << endl;
     }
     m_stream << endl;
@@ -506,7 +506,7 @@ void CodeGenerator::loop()
         if (elm->elementType() == ElementType::Clock) {
             const auto elmOutputs = elm->outputs();
             QString varName = m_varMap.value(elmOutputs.constFirst());
-            m_stream << QString("    if (%1_elapsed > %1_interval){").arg(varName) << endl;
+            m_stream << QString("    if (%1_elapsed > %1_interval) {").arg(varName) << endl;
             m_stream << QString("        %1_elapsed = 0;").arg(varName) << endl;
             m_stream << QString("        %1 = ! %1;").arg(varName) << endl;
             m_stream << QString("    }") << endl;
@@ -518,7 +518,7 @@ void CodeGenerator::loop()
     assignVariablesRec(m_elements);
     m_stream << "\n";
     m_stream << "    // Writing output data. //\n";
-    for (const auto &pin : qAsConst(m_outputMap)) {
+    for (const auto &pin : std::as_const(m_outputMap)) {
         QString varName = otherPortName(pin.m_port);
         if (varName.isEmpty()) {
             varName = highLow(pin.m_port->defaultValue());

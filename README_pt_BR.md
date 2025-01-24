@@ -1,7 +1,7 @@
-# WiRedPanda ![GitHub All Releases](https://img.shields.io/github/downloads/gibis-unifesp/wiredpanda/total?style=flat-square) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/gibis-unifesp/wiredpanda?style=flat-square) ![GitHub](https://img.shields.io/github/license/gibis-unifesp/wiredpanda?style=flat-square) [![codecov](https://codecov.io/gh/GIBIS-UNIFESP/wiRedPanda/branch/master/graph/badge.svg?token=5YBYB4J705)](https://codecov.io/gh/GIBIS-UNIFESP/wiRedPanda)
+# wiRedPanda ![GitHub All Releases](https://img.shields.io/github/downloads/gibis-unifesp/wiredpanda/total?style=flat-square) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/gibis-unifesp/wiredpanda?style=flat-square) ![GitHub](https://img.shields.io/github/license/gibis-unifesp/wiredpanda?style=flat-square) [![codecov](https://codecov.io/gh/GIBIS-UNIFESP/wiRedPanda/branch/master/graph/badge.svg?token=5YBYB4J705)](https://codecov.io/gh/GIBIS-UNIFESP/wiRedPanda)
 
 
-WiRedPanda é um software gratuito projetado para ajudar os alunos a aprender sobre circuitos lógicos e simulá-los de maneira fácil e amigável.
+wiRedPanda é um software gratuito projetado para ajudar os alunos a aprender sobre circuitos lógicos e simulá-los de maneira fácil e amigável.
 
 As principais características do software são:
   - Funciona em Windows, macOS e Linux;
@@ -18,6 +18,17 @@ _Read me in [english](README.md). Léame en [español](README_es.md)._
 Binários compilados para Windows, Linux e macOS estão disponíveis [aqui](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
 
 ## Compilação
+
+### No Windows
+
+Para Qt5 selecione isso:
+![qt5](https://github.com/user-attachments/assets/e6bfca48-7b4b-444f-9ad3-76c157a9036a)
+
+Ou para Qt6 selecione esses:
+![qt6](https://github.com/user-attachments/assets/aedc8749-8b5c-4f4d-9c65-651b703dccea)
+
+Em seguida, abra o WPanda.pro no Qt Creator e pressione Ctrl+R para compilar e executar.
+
 
 ### No Linux e macOS
 
@@ -49,20 +60,15 @@ brew install qt5
 
 Qt5 pode ser instalado diretamente do [site Qt](https://www.qt.io/download), de instaladores não oficiais como [aqtinstall](https://github.com/miurahr/aqtinstall), de repositórios mantidos pela comunidade ou [construídos a partir da fonte](https://wiki.qt.io/Building_Qt_5_from_Git).
 
-Aqui está como alguém pode usar o aqtinstall para instalar o Qt 5.15.1 (Python 3 necessário) junto com os plugins necessários em uma distribuição baseada no Debian.
+Aqui está como alguém pode usar o aqtinstall para instalar o Qt 5.15.2 em uma distribuição baseada no Debian.
 
 ```bash
 sudo apt-get update
-sudo apt-get install build-essential libgl1-mesa-dev libxkbcommon-x11-0 libpulse-dev -y
-python3 -m pip install setuptools wheel
-python3 -m pip install py7zr==0.10.1
-python3 -m pip install aqtinstall==0.9.7
-python3 -m pip install importlib-metadata==2.0.0
-python3 -m aqt install 5.15.1 linux desktop -m qtmultimedia -O ~/Qt
-export Qt5_Dir=~/Qt5/5.15.1
-export Qt5_DIR=~/Qt5/5.15.1
-export QT_PLUGIN_PATH=~/Qt/5.15.1/gcc_64/plugins
-PATH=~/Qt/5.15.1/gcc_64/bin:$PATH
+sudo apt-get install libgl1-mesa-dev libxcb-xinerama0 libpulse-dev git python3 python3-pip python3-venv -y
+python3 -m venv ~/venv
+~/venv/bin/pip install aqtinstall==3.1.*
+~/venv/bin/aqt install-qt linux desktop 5.15.2 --outputdir ~/Qt
+PATH=~/Qt/5.15.2/gcc_64/bin:$PATH
 export PATH
 ```
 
@@ -80,11 +86,11 @@ Este processo pode demorar um pouco. Uma vez concluído, o binário estará loca
 
 ## Licença
 
-WiRedPanda está licenciado sob a [GNU General Public License, Versão 3.0](http://www.gnu.org/licenses/).
+wiRedPanda está licenciado sob a [GNU General Public License, Versão 3.0](http://www.gnu.org/licenses/).
 
 Consulte [`LICENSE`](LICENSE) para obter o texto completo da licença.
   
-    Copyright (C) 2022 - Davi Morales, Fábio Cappabianco, Lucas Lellis, Rodrigo Torres e Vinícius Miguel.
+    Copyright (C) 2025 - Davi Morales, Fábio Cappabianco, Lucas Lellis, Rodrigo Torres e Vinícius Miguel.
     
     Este programa é um software livre: você pode redistribuí-lo e/ou modificá-lo
     sob os termos da Licença Pública Geral GNU conforme publicada pela 

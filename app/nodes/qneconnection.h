@@ -32,9 +32,9 @@
 #include <QCoreApplication>
 #include <QGraphicsPathItem>
 
-class QNEPort;
 class QNEInputPort;
 class QNEOutputPort;
+class QNEPort;
 
 class QNEConnection : public QGraphicsPathItem, public ItemWithId
 {

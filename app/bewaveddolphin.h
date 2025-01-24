@@ -1,4 +1,4 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
@@ -115,7 +115,7 @@ private:
     int convertHexToInt(const std::string &hexString) const;
     int sectionFirstColumn(const QItemSelection &ranges);
     int sectionFirstRow(const QItemSelection &ranges);
-    void associateTowiRedPanda(const QString &fileName);
+    void associateToWiRedPanda(const QString &fileName);
     void copy(const QItemSelection &ranges, QDataStream &stream);
     void createElement(const int row, const int col, const int value, const bool isInput = true, const bool changeNext = true);
     void createOneElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
@@ -204,7 +204,8 @@ private:
     bool m_edited = false;
     bool m_isTemporalSimulation = false;
     const bool m_askConnection;
-    double m_scale = 0.8;
+    const double m_scaleFactor = 0.8;
+    double m_scale = 1.25;
     int m_clockPeriod = 0;
     int m_inputPorts = 0;
     int m_length = 32;

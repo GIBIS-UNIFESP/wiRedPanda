@@ -1,4 +1,4 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "logicelement.h"
@@ -29,7 +29,7 @@ bool LogicElement::isValid() const
 
 void LogicElement::clearSucessors()
 {
-    for (const auto &logic : qAsConst(m_successors)) {
+    for (const auto &logic : std::as_const(m_successors)) {
         for (auto &inputPair : logic->m_inputPairs) {
             if (inputPair.logic == this) {
                 inputPair.logic = nullptr;
@@ -57,7 +57,10 @@ bool LogicElement::updateInputs()
 void LogicElement::connectPredecessor(const int index, LogicElement *logic, const int port)
 {
     m_inputPairs[index] = {logic, port};
-    logic->m_successors.insert(this);
+
+    if (!logic->m_successors.contains(this)) {
+        logic->m_successors.push_back(this);
+    }
 }
 
 void LogicElement::setOutputValue(const int index, const bool value)
@@ -76,7 +79,7 @@ void LogicElement::validate()
                             [](auto pair) { return pair.logic != nullptr; });
 
     if (!m_isValid) {
-        for (auto *logic : qAsConst(m_successors)) {
+        for (auto *logic : std::as_const(m_successors)) {
             logic->m_isValid = false;
         }
     }
@@ -100,7 +103,7 @@ int LogicElement::calculatePriority()
     m_beingVisited = true;
     int max = 0;
 
-    for (auto *logic : qAsConst(m_successors)) {
+    for (auto *logic : std::as_const(m_successors)) {
         max = qMax(logic->calculatePriority(), max);
     }
 

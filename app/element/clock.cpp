@@ -1,4 +1,4 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "clock.h"
@@ -42,21 +42,16 @@ Clock::Clock(QGraphicsItem *parent)
     Clock::setOff();
 }
 
-void Clock::updateClock()
+void Clock::updateClock(const std::chrono::steady_clock::time_point &globalTime)
 {
     if (m_locked) {
         return;
     }
 
-    if (m_reset) {
-        resetClock();
-        return;
-    }
+    const auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(globalTime - m_startTime);
 
-    m_elapsed += std::chrono::duration<double, std::milli>(1);
-
-    if (m_elapsed > m_interval) {
-        m_elapsed -= m_interval;
+    if (elapsed > m_interval) {
+        m_startTime += m_interval;
         setOn(!m_isOn);
     }
 }
@@ -146,7 +141,7 @@ void Clock::setFrequency(const float freq)
         return;
     }
 
-    std::chrono::duration<double, std::milli> auxInterval = 1s / (2 * freq);
+    std::chrono::microseconds auxInterval = std::chrono::duration_cast<std::chrono::microseconds>(1s / (2 * freq));
 
     if (auxInterval.count() <= 0) {
         return;
@@ -154,29 +149,13 @@ void Clock::setFrequency(const float freq)
 
     m_interval = auxInterval;
     m_frequency = static_cast<double>(freq);
-    m_elapsed = std::chrono::duration<double, std::milli>{0};
-    m_reset = true;
 }
 
-float Clock::delay() const
-{
-    return static_cast<float>(m_delay);
-}
-
-void Clock::setDelay(const float delay)
-{
-    m_delay = static_cast<double>(delay);
-    m_reset = true;
-}
-
-void Clock::resetClock()
+void Clock::resetClock(const std::chrono::steady_clock::time_point &globalTime)
 {
 
     setOn();
-    auto delay_ms = static_cast<uint>(m_delay * 1000);
-    m_elapsed = std::chrono::duration<double, std::milli>{0};
-    m_elapsed -= std::chrono::milliseconds(delay_ms);
-    m_reset = false;
+    m_startTime = globalTime;
 }
 
 QString Clock::genericProperties()

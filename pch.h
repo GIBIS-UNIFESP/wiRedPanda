@@ -39,7 +39,6 @@
 #include <QPushButton>
 #include <QRegularExpression>
 #include <QScrollBar>
-#include <QSet>
 #include <QShortcut>
 #include <QStandardItemModel>
 #include <QString>
@@ -50,7 +49,4 @@
 #include <QVector>
 #include <QWidget>
 #include <QtGlobal>
-#include <cmath>
-#include <memory>
-#include <stdexcept>
 #endif

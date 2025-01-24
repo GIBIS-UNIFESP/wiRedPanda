@@ -1,4 +1,4 @@
-// Copyright 2015 - 2024, GIBIS-UNIFESP and the wiRedPanda contributors
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
@@ -12,8 +12,8 @@
 #include <QUndoCommand>
 #include <QMultiMap>
 
-class GraphicsView;
 class GraphicElement;
+class GraphicsView;
 class QNEConnection;
 class InputButton;
 
@@ -51,7 +51,13 @@ public:
     void flipHorizontally();
     void flipVertically();
     void mute(const bool mute = true);
+    void nextElm();
+    void nextMainPropShortcut();
+    void nextSecndPropShortcut();
     void pasteAction();
+    void prevElm();
+    void prevMainPropShortcut();
+    void prevSecndPropShortcut();
     void receiveCommand(QUndoCommand *cmd);
     void rotateLeft();
     void rotateRight();

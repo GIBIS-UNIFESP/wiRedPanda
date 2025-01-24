@@ -10,7 +10,7 @@ equals(QT_MAJOR_VERSION, 6) : !versionAtLeast(QT_VERSION, 6.2.0) {
     error("QtMultimedia is not installed. Please install with Qt Maintenance Tool or with system repository")
 }
 
-VERSION = 4.2
+VERSION = 4.2.0
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
 QT += core gui printsupport multimedia widgets svg
@@ -19,6 +19,10 @@ CONFIG += c++17 warn_on strict_c strict_c++
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 DEFINES += QT_MESSAGELOGCONTEXT
+
+wasm {
+    QMAKE_LFLAGS += -sASYNCIFY -Os
+}
 
 linux {
     MOLD_BIN = $$system(which mold)
@@ -94,6 +98,7 @@ msvc {
 
 mac {
     CONFIG += sdk_no_version_check
+    QMAKE_LFLAGS += -ld_classic
 }
 
 MOC_DIR        = build_files/moc
