@@ -157,7 +157,7 @@ float Clock::delay() const
 }
 
 void Clock::setDelay(const float delay) {
-    m_delay = static_cast<double>(delay);;
+    m_delay = static_cast<double>(delay);
 }
 
 void Clock::resetClock(const std::chrono::steady_clock::time_point &globalTime)

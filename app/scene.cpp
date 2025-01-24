@@ -1211,27 +1211,12 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsScene::mousePressEvent(event);
 }
 
-bool Scene::isMousePositionInBorder(QPointF mousePos)
-{
-    const auto visibleRect = m_view->mapToScene(m_view->viewport()->geometry()).boundingRect();
-    int margin = 10;
-
-    if (mousePos.x() <= visibleRect.left() + margin || mousePos.x() >= visibleRect.right() - margin ||
-        mousePos.y() <= visibleRect.top() + margin || mousePos.y() >= visibleRect.bottom() - margin) {
-            m_view->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-            return true;
-    } else {
-        m_view->setTransformationAnchor(QGraphicsView::AnchorViewCenter);
-        return false;
-    }
-}
-
 void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     m_mousePos = event->scenePos();
     handleHoverPort();
 
-    if (m_draggingElement && isMousePositionInBorder(m_mousePos)) {
+    if (m_draggingElement) {
         resizeScene();
     }
 
@@ -1278,13 +1263,6 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
         m_draggingElement = false;
         m_movedElements.clear();
-    }
-
-    if (!m_inputsButtonsInScene.empty()) {
-        for (int index = 0; index < m_inputsButtonsInScene.length(); index++) {
-            m_inputsButtonsInScene[index]->setOff();
-            event->accept();
-        }
     }
 
     m_selectionRect.hide();
