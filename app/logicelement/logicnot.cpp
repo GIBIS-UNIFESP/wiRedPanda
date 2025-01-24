@@ -4,7 +4,7 @@
 #include "logicnot.h"
 
 LogicNot::LogicNot()
-    : LogicElement(1, 1, 1)
+    : LogicElement(1, 1)
 {
 }
 
@@ -14,10 +14,5 @@ void LogicNot::updateLogic()
         return;
     }
 
-    if (isTempSimulationOn()) {
-        setOutputValue(!m_inputBuffer.last()[0]);
-        updateInputBuffer();
-    } else {
-        setOutputValue(!m_inputValues.at(0));
-    }
+    setOutputValue(!m_inputValues.at(0));
 }

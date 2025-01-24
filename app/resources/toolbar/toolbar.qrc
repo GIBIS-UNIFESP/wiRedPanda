@@ -1,0 +1,45 @@
+<RCC>
+    <qresource prefix="/toolbar">
+        <file>arduino.svg</file>
+        <file>brasil.svg</file>
+        <file>clearSelection.svg</file>
+        <file>copy.svg</file>
+        <file>cut.svg</file>
+        <file>default.svg</file>
+        <file>delete.svg</file>
+        <file>dolphin_icon.svg</file>
+        <file>exit.svg</file>
+        <file>fast.svg</file>
+        <file>folder.svg</file>
+        <file>help.svg</file>
+        <file>helpQt.svg</file>
+        <file>mute.svg</file>
+        <file>new.svg</file>
+        <file>panelBox.svg</file>
+        <file>paste.svg</file>
+        <file>pause.svg</file>
+        <file>pdf.svg</file>
+        <file>play.svg</file>
+        <file>png.svg</file>
+        <file>recentFiles.svg</file>
+        <file>redo.svg</file>
+        <file>reloadFile.svg</file>
+        <file>rename.svg</file>
+        <file>reset.svg</file>
+        <file>rotateL.svg</file>
+        <file>rotateR.svg</file>
+        <file>save.svg</file>
+        <file>selectAll.svg</file>
+        <file>spanish.svg</file>
+        <file>stop.svg</file>
+        <file>trashcan.svg</file>
+        <file>undo.svg</file>
+        <file>usa.svg</file>
+        <file>wavyIcon.svg</file>
+        <file>wires.svg</file>
+        <file>wpanda.svg</file>
+        <file>zoomIn.svg</file>
+        <file>zoomOut.svg</file>
+        <file>zoomReset.svg</file>
+    </qresource>
+</RCC>

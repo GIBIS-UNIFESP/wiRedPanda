@@ -6,7 +6,7 @@
 #include <functional>
 
 LogicAnd::LogicAnd(const int inputSize)
-    : LogicElement(inputSize, 1, inputSize)
+    : LogicElement(inputSize, 1)
 {
 }
 
@@ -16,12 +16,6 @@ void LogicAnd::updateLogic()
         return;
     }
 
-    if (isTempSimulationOn())    {
-        const auto result = std::accumulate(m_inputBuffer.last().cbegin(), m_inputBuffer.last().cend(), true, std::bit_and<>());
-        setOutputValue(result);
-        updateInputBuffer();
-    } else {
-        const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), true, std::bit_and<>());
-        setOutputValue(result);
-    }
+    const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), true, std::bit_and<>());
+    setOutputValue(result);
 }

@@ -16,6 +16,7 @@ DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 QT += core gui printsupport multimedia widgets svg
 
 CONFIG += c++17 warn_on strict_c strict_c++
+
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 DEFINES += QT_MESSAGELOGCONTEXT
@@ -199,5 +200,3 @@ RESOURCES += \
     $$PWD/app/resources/output/output.qrc\
     $$PWD/app/resources/toolbar/toolbar.qrc \
     $$PWD/app/resources/translations/translations.qrc
-
-DISTFILES +=

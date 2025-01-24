@@ -4,7 +4,6 @@
 #include "graphicsview.h"
 
 #include <QApplication>
-#include <QCursor>
 #include <QDebug>
 #include <QKeyEvent>
 #include <QScrollBar>

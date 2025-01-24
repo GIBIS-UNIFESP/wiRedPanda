@@ -46,67 +46,67 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="61"/>
+        <location filename="../../bewaveddolphin.ui" line="48"/>
         <source>toolBar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="104"/>
+        <location filename="../../bewaveddolphin.ui" line="92"/>
         <source>File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="117"/>
+        <location filename="../../bewaveddolphin.ui" line="105"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="124"/>
+        <location filename="../../bewaveddolphin.ui" line="112"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="142"/>
+        <location filename="../../bewaveddolphin.ui" line="130"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="163"/>
+        <location filename="../../bewaveddolphin.ui" line="152"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="166"/>
+        <location filename="../../bewaveddolphin.ui" line="155"/>
         <source>Ctrl+H</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="175"/>
+        <location filename="../../bewaveddolphin.ui" line="164"/>
         <source>Load</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="178"/>
+        <location filename="../../bewaveddolphin.ui" line="167"/>
         <source>Ctrl+L</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="187"/>
+        <location filename="../../bewaveddolphin.ui" line="176"/>
         <source>Exit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="190"/>
+        <location filename="../../bewaveddolphin.ui" line="179"/>
         <source>Ctrl+W</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="199"/>
+        <location filename="../../bewaveddolphin.ui" line="188"/>
         <source>Combinational</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="202"/>
+        <location filename="../../bewaveddolphin.ui" line="191"/>
         <source>Alt+C</source>
         <translation type="unfinished"></translation>
     </message>
@@ -117,188 +117,199 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="214"/>
+        <location filename="../../bewaveddolphin.ui" line="203"/>
         <source>Ctrl+P</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="223"/>
+        <location filename="../../bewaveddolphin.ui" line="212"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="226"/>
+        <location filename="../../bewaveddolphin.ui" line="215"/>
         <source>Ctrl+S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="235"/>
+        <location filename="../../bewaveddolphin.ui" line="224"/>
         <source>Save As...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="238"/>
+        <location filename="../../bewaveddolphin.ui" line="227"/>
         <source>Ctrl+Shift+S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="247"/>
+        <location filename="../../bewaveddolphin.ui" line="236"/>
         <source>Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="250"/>
+        <location filename="../../bewaveddolphin.ui" line="239"/>
         <source>Ctrl+C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="259"/>
+        <location filename="../../bewaveddolphin.ui" line="248"/>
         <source>Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="262"/>
+        <location filename="../../bewaveddolphin.ui" line="251"/>
         <source>Ctrl+V</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="271"/>
+        <location filename="../../bewaveddolphin.ui" line="260"/>
         <source>Set to 0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="274"/>
+        <location filename="../../bewaveddolphin.ui" line="263"/>
         <source>0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="286"/>
+        <location filename="../../bewaveddolphin.ui" line="275"/>
         <source>1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="313"/>
+        <location filename="../../bewaveddolphin.ui" line="302"/>
         <source>Space</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="430"/>
+        <location filename="../../bewaveddolphin.ui" line="387"/>
+        <location filename="../../bewaveddolphin.ui" line="390"/>
+        <source>Fit to screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.ui" line="434"/>
         <source>Show Numbers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="435"/>
+        <location filename="../../bewaveddolphin.ui" line="439"/>
         <source>Show Waveforms</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="283"/>
+        <location filename="../../bewaveddolphin.ui" line="272"/>
         <source>Set to 1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="295"/>
-        <location filename="../../bewaveddolphin.ui" line="298"/>
+        <location filename="../../bewaveddolphin.ui" line="284"/>
+        <location filename="../../bewaveddolphin.ui" line="287"/>
         <source>Set clock frequency</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="301"/>
+        <location filename="../../bewaveddolphin.ui" line="290"/>
         <source>Alt+W</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="310"/>
+        <location filename="../../bewaveddolphin.ui" line="299"/>
         <source>Invert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="321"/>
+        <location filename="../../bewaveddolphin.ui" line="310"/>
         <source>Merge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="329"/>
+        <location filename="../../bewaveddolphin.ui" line="318"/>
         <source>Split</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="338"/>
+        <location filename="../../bewaveddolphin.ui" line="327"/>
         <source>Export to PNG</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="341"/>
+        <location filename="../../bewaveddolphin.ui" line="330"/>
         <source>Ctrl+Shift+P</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="350"/>
+        <location filename="../../bewaveddolphin.ui" line="339"/>
         <source>Set Length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="353"/>
+        <location filename="../../bewaveddolphin.ui" line="342"/>
         <source>Alt+L</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="362"/>
+        <location filename="../../bewaveddolphin.ui" line="351"/>
         <source>About Qt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="365"/>
+        <location filename="../../bewaveddolphin.ui" line="354"/>
         <source>Ctrl+Shift+H</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="374"/>
+        <location filename="../../bewaveddolphin.ui" line="363"/>
         <source>Zoom In</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="377"/>
+        <location filename="../../bewaveddolphin.ui" line="366"/>
         <source>Ctrl+=</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="386"/>
+        <location filename="../../bewaveddolphin.ui" line="375"/>
         <source>Zoom Out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="389"/>
+        <location filename="../../bewaveddolphin.ui" line="378"/>
         <source>Ctrl+-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="398"/>
+        <location filename="../../bewaveddolphin.ui" line="393"/>
+        <source>Ctrl+Shift+R</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.ui" line="402"/>
         <source>Reset Zoom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="401"/>
+        <location filename="../../bewaveddolphin.ui" line="405"/>
         <source>Ctrl+Home</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="410"/>
+        <location filename="../../bewaveddolphin.ui" line="414"/>
         <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="413"/>
+        <location filename="../../bewaveddolphin.ui" line="417"/>
         <source>Alt+X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="422"/>
+        <location filename="../../bewaveddolphin.ui" line="426"/>
         <source>Cut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="425"/>
+        <location filename="../../bewaveddolphin.ui" line="429"/>
         <source>Ctrl+X</source>
         <translation type="unfinished"></translation>
     </message>

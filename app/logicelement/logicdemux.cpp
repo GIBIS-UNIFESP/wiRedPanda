@@ -4,7 +4,7 @@
 #include "logicdemux.h"
 
 LogicDemux::LogicDemux()
-    : LogicElement(2, 2, 3)
+    : LogicElement(2, 2)
 {
 }
 
@@ -14,37 +14,18 @@ void LogicDemux::updateLogic()
         return;
     }
 
-    if (isTempSimulationOn()) {
-        const bool data = m_inputBuffer.last().at(0);
-        const bool choice = m_inputBuffer.last().at(1);
+    const bool data = m_inputValues.at(0);
+    const bool choice = m_inputValues.at(1);
 
-        bool out0 = false;
-        bool out1 = false;
+    bool out0 = false;
+    bool out1 = false;
 
-        if (!choice) {
-            out0 = data;
-        } else {
-            out1 = data;
-        }
-
-        setOutputValue(0, out0);
-        setOutputValue(1, out1);
-        updateInputBuffer();
+    if (!choice) {
+        out0 = data;
+    } else {
+        out1 = data;
     }
-    else {
-        const bool data = m_inputValues.at(0);
-        const bool choice = m_inputValues.at(1);
 
-        bool out0 = false;
-        bool out1 = false;
-
-        if (!choice) {
-            out0 = data;
-        } else {
-            out1 = data;
-        }
-
-        setOutputValue(0, out0);
-        setOutputValue(1, out1);
-    }
+    setOutputValue(0, out0);
+    setOutputValue(1, out1);
 }
