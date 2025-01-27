@@ -16,8 +16,8 @@ jobs:
 # =================================
 
     runs-on: ${{ matrix.os }}
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
 
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
 
     steps:
     - uses: actions/checkout@v4
@@ -43,14 +43,13 @@ jobs:
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: ${{ matrix.os }}
+        key: ${{ matrix.os }}-${{ matrix.qt_version }}
 
 # =================================
 
     - name: Build Ubuntu
       if: runner.os == 'Linux'
       run: |
-        sudo apt install libgstreamer-gl1.0-0
         mkdir build
         cd build
         qmake ../WPanda.pro
@@ -84,13 +83,13 @@ jobs:
         jom check
 
 # =================================
-# https://bugreports.qt.io/browse/QTBUG-117225
 
     - name: Build macOS
       if: runner.os == 'macOS'
       run: |
         mkdir build
         cd build
+        # workaround for https://bugreports.qt.io/browse/QTBUG-117225
         qmake ../WPanda.pro -early QMAKE_DEFAULT_LIBDIRS=$(xcrun -show-sdk-path)/usr/lib
         make -j3
 
