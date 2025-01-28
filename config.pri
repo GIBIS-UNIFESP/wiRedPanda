@@ -64,21 +64,19 @@ linux-clang {
 
 unix: QMAKE_RPATHDIR += ${ORIGIN}/lib
 
-linux {
+linux | mac {
     CCACHE_BIN = $$system(which ccache)
+}
 
-    !isEmpty(CCACHE_BIN) {
-        QMAKE_CC = ccache $$QMAKE_CC
-        QMAKE_CXX = ccache $$QMAKE_CXX
-    } else {
-        PRECOMPILED_HEADER = $$PWD/pch.h
-        CONFIG += precompile_header
+win32 {
+    !msvc {
+        CCACHE_BIN = $$system(where ccache)
     }
 }
 
-!linux {
-    PRECOMPILED_HEADER = $$PWD/pch.h
-    CONFIG += precompile_header
+!isEmpty(CCACHE_BIN) {
+    QMAKE_CC = ccache $$QMAKE_CC
+    QMAKE_CXX = ccache $$QMAKE_CXX
 }
 
 msvc {
@@ -87,6 +85,9 @@ msvc {
     QMAKE_CXXFLAGS_DEBUG += /Ob1
     QMAKE_CXXFLAGS_RELEASE += /GL
     QMAKE_LFLAGS_RELEASE += /LTCG
+
+    PRECOMPILED_HEADER = $$PWD/pch.h
+    CONFIG += precompile_header
 }
 
 mac {
