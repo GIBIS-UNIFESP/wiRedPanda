@@ -89,14 +89,6 @@ msvc {
     QMAKE_LFLAGS_RELEASE += /LTCG
 }
 
-*-g++ {
-    QMAKE_CXXFLAGS += -Wno-deprecated-copy -Wno-deprecated-enum-enum-conversion # can be removed after migrating to Qt6
-}
-
-*-clang {
-    QMAKE_CXXFLAGS += -Wno-deprecated-enum-enum-conversion # can be removed after migrating to Qt6
-}
-
 mac {
     CONFIG += sdk_no_version_check
     QMAKE_LFLAGS += -ld_classic
@@ -111,6 +103,13 @@ RCC_DIR        = build_files/rcc
 
 include(app/element/element.pri)
 include(app/logicelement/logicelement.pri)
+
+INCLUDEPATH += \
+    $$PWD/app \
+    $$PWD/app/arduino \
+    $$PWD/app/element \
+    $$PWD/app/logicelement \
+    $$PWD/app/nodes
 
 SOURCES += \
     $$PWD/app/application.cpp \
@@ -176,13 +175,6 @@ HEADERS += \
     $$PWD/app/trashbutton.h \
     $$PWD/app/workspace.h
 
-INCLUDEPATH += \
-    $$PWD/app \
-    $$PWD/app/arduino \
-    $$PWD/app/element \
-    $$PWD/app/logicelement \
-    $$PWD/app/nodes
-
 FORMS += \
     $$PWD/app/bewaveddolphin.ui \
     $$PWD/app/clockdialog.ui \
@@ -193,10 +185,10 @@ FORMS += \
 RESOURCES += \
     $$PWD/app/resources/basic/basic.qrc \
     $$PWD/app/resources/dolphin/dolphin.qrc \
-    $$PWD/app/resources/input/input.qrc\
+    $$PWD/app/resources/input/input.qrc \
     $$PWD/app/resources/memory/dark/memory_dark.qrc \
     $$PWD/app/resources/memory/light/memory_light.qrc \
     $$PWD/app/resources/misc/misc.qrc \
-    $$PWD/app/resources/output/output.qrc\
+    $$PWD/app/resources/output/output.qrc \
     $$PWD/app/resources/toolbar/toolbar.qrc \
     $$PWD/app/resources/translations/translations.qrc

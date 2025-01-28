@@ -832,7 +832,7 @@ void Scene::paste(QDataStream &stream)
 
     try {
         stream >> version;
-    } catch (std::bad_alloc) {
+    } catch (std::bad_alloc &) {
         stream.device()->seek(originalPos);
         version = QVersionNumber(4, 1);
     }
