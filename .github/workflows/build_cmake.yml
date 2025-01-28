@@ -1,12 +1,12 @@
 # Copyright 2015 - 2025, GIBIS-Unifesp and the wiRedPanda contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-name: Build qmake
+name: Build CMake
 
 on: [push]
 
 jobs:
-  build:
+  build_cmake:
     strategy:
       fail-fast: false
       matrix:
@@ -48,16 +48,16 @@ jobs:
     - name: Build Ubuntu
       if: runner.os == 'Linux'
       run: |
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j2
+        cmake -S . -B build \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
+        cmake --build build -- -j2
 
     - name: Test Ubuntu
       if: runner.os == 'Linux'
       run: |
-        cd build/test
-        ./WPanda-test -platform offscreen
+        cd build
+        ./test -platform offscreen
 
 # =================================
 
@@ -68,31 +68,28 @@ jobs:
     - name: Build Windows
       if: runner.os == 'Windows'
       run: |
-        choco install jom
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        jom
+        cmake -S . -B build `
+          -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
+        cmake --build build
 
     - name: Test Windows
       if: runner.os == 'Windows'
       run: |
-        cd build
-        jom check
+        cd build/Debug
+        ./test.exe
 
 # =================================
 
     - name: Build macOS
       if: runner.os == 'macOS'
       run: |
-        mkdir build
-        cd build
-        # workaround for https://bugreports.qt.io/browse/QTBUG-117225
-        qmake ../WPanda.pro -early QMAKE_DEFAULT_LIBDIRS=$(xcrun -show-sdk-path)/usr/lib
-        make -j3
+        cmake -S . -B build \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
+        cmake --build build -- -j3
 
     - name: Test macOS
       if: runner.os == 'macOS'
       run: |
         cd build
-        make check
+        ./test
