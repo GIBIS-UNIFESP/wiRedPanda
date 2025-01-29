@@ -74,7 +74,10 @@ win32 {
     }
 }
 
-!isEmpty(CCACHE_BIN) {
+isEmpty(CCACHE_BIN) {
+    PRECOMPILED_HEADER = $$PWD/pch.h
+    CONFIG += precompile_header
+} else {
     QMAKE_CC = ccache $$QMAKE_CC
     QMAKE_CXX = ccache $$QMAKE_CXX
 }
@@ -85,9 +88,6 @@ msvc {
     QMAKE_CXXFLAGS_DEBUG += /Ob1
     QMAKE_CXXFLAGS_RELEASE += /GL
     QMAKE_LFLAGS_RELEASE += /LTCG
-
-    PRECOMPILED_HEADER = $$PWD/pch.h
-    CONFIG += precompile_header
 }
 
 mac {
