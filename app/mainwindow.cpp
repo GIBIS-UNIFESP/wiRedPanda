@@ -26,6 +26,7 @@
 #include <QDebug>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QKeySequence>
 #include <QLoggingCategory>
 #include <QMessageBox>
 #include <QMultiMap>
@@ -58,7 +59,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     loadTranslation(Settings::value("language").toString());
 
     connect(m_ui->tab, &QTabWidget::currentChanged,    this, &MainWindow::tabChanged);
-    connect(m_ui->tab, &QTabWidget::tabCloseRequested, this, &MainWindow::closeTab);
+    connect(m_ui->tab, &QTabWidget::tabCloseRequested, [=](int index) {this->MainWindow::closeTab(index);});
 
     qCDebug(zero) << "Restoring geometry and setting zoom controls.";
     restoreGeometry(Settings::value("MainWindow/geometry").toByteArray());
@@ -301,14 +302,13 @@ void MainWindow::save(const QString &fileName)
         while (true) {
             auto fatherICs = m_icsTabTree.keys(c_tab);
 
-            if (fatherICs.size() != 1) { break; }
+            if (fatherICs.size() != 1) {
+                c_tab->save(c_tab->fileInfo().fileName());
+                break;
+            };
 
+            c_tab->saveEmbeddedIc();
             auto fatherIC = fatherICs.at(0);
-            c_tab->m_EmbeddedIc->m_fileData.clear();
-            QDataStream stream(&c_tab->m_EmbeddedIc->m_fileData, QIODevice::ReadWrite);
-            c_tab->scene()->undoStack()->setClean();
-            c_tab->save(stream);
-            c_tab->m_EmbeddedIc->reload();
             c_tab = fatherIC.second;
             c_tab->scene()->simulation()->restart();
         }
@@ -397,6 +397,19 @@ int MainWindow::confirmSave(const bool multiple)
     const QString fileName = m_currentFile.fileName().isEmpty() ? tr("New Project") : m_currentFile.fileName();
 
     msgBox.setText(fileName + tr(" has been modified. \nDo you want to save your changes?"));
+    msgBox.setWindowModality(Qt::WindowModal);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+    return msgBox.exec();
+}
+
+int MainWindow::warnAboutOpenChildIcs()
+{
+    QMessageBox msgBox;
+    msgBox.setParent(this);
+
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+
+    msgBox.setText(tr("This workspace has open child ICs, do you wish to save and close?"));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Yes);
     return msgBox.exec();
@@ -698,15 +711,15 @@ void MainWindow::updateICList()
 {
     m_ui->scrollAreaWidgetContents_IC->layout()->removeItem(m_ui->verticalSpacer_IC);
 
-    QFileInfo fileInfo;
+    QFileInfo file;
     auto c_tab = m_currentTab;
 
     while (!m_icsTabTree.keys(c_tab).empty()) {
-        fileInfo = m_icsTabTree.keys(c_tab).at(0).second->fileInfo();
+        file = m_icsTabTree.keys(c_tab).at(0).second->fileInfo();
         c_tab = m_icsTabTree.keys(c_tab).at(0).second;
     }
 
-    if (c_tab == m_currentTab) fileInfo = m_currentFile;
+    if (c_tab == m_currentTab) file = m_currentFile;
 
     const auto items = m_ui->scrollAreaWidgetContents_IC->findChildren<ElementLabel *>();
 
@@ -722,11 +735,11 @@ void MainWindow::updateICList()
         }
     }
 
-    if (fileInfo.exists()) {
+    if (file.exists()) {
         qCDebug(zero) << "Show files.";
-        QDir directory(fileInfo.absoluteDir());
+        QDir directory(file.absoluteDir());
         QStringList files = directory.entryList({"*.panda", "*.PANDA"}, QDir::Files);
-        files.removeAll(fileInfo.fileName());
+        files.removeAll(file.fileName());
 
         for (int i = files.size() - 1; i >= 0; --i) {
             if (files.at(i).at(0) == '.') {
@@ -749,11 +762,29 @@ void MainWindow::updateICList()
     m_ui->scrollAreaWidgetContents_IC->layout()->addItem(m_ui->verticalSpacer_IC);
 }
 
-bool MainWindow::closeTab(const int tabIndex)
+bool MainWindow::closeTab(const int tabIndex, const bool signalFromFather)
 {
-    auto fatherTab = m_icsTabTree.keys(m_currentTab);
+    auto tabToClose = qobject_cast<WorkSpace *>(m_ui->tab->widget(tabIndex));
+    auto fatherTab = m_icsTabTree.keys(tabToClose);
 
-    if (fatherTab.size() > 0 && m_icsTabTree.remove(fatherTab.at(0), m_currentTab) != 1) { return false; }
+    // Check if there is an open child tab
+
+    for (auto &tab : m_icsTabTree.keys()) {
+        if (tab.second == tabToClose) {
+            bool shoudCloseRecursive = signalFromFather;
+
+            if (signalFromFather == false) {
+                auto dialogCode = warnAboutOpenChildIcs();
+                shoudCloseRecursive =  dialogCode == QMessageBox::StandardButton::Yes;
+            }
+
+            auto childTab = m_icsTabTree.value(tab);
+            int childTabIndex = m_ui->tab->indexOf(childTab);
+            closeTab(childTabIndex, shoudCloseRecursive);
+        }
+    }
+
+    if (fatherTab.size() > 0 && m_icsTabTree.remove(fatherTab.at(0), tabToClose) != 1) { return false; }
 
     qCDebug(zero) << "Closing tab " << tabIndex + 1 << ", #tabs: " << m_ui->tab->count();
     m_ui->tab->setCurrentIndex(tabIndex);
@@ -869,7 +900,7 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
     if (text.isEmpty()) {
         m_ui->tabElements->tabBar()->show();
         m_ui->tabElements->setCurrentIndex(m_lastTabIndex);
-        m_ui->tabElements->setTabEnabled(5, false);
+        m_ui->tabElements->setTabEnabled(6, false);
 
         m_lastTabIndex = -1;
     } else {
@@ -878,8 +909,8 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
         }
 
         m_ui->tabElements->tabBar()->hide();
-        m_ui->tabElements->setCurrentIndex(5);
-        m_ui->tabElements->setTabEnabled(5, true);
+        m_ui->tabElements->setCurrentIndex(6);
+        m_ui->tabElements->setTabEnabled(6, true);
 
         const auto allItems = m_ui->scrollArea_Search->findChildren<ElementLabel *>();
 
