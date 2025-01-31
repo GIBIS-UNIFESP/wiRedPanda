@@ -63,6 +63,7 @@ public:
     WorkSpace *currentTab() const;
     bool closeFiles();
     bool event(QEvent *event) override;
+    int warnAboutOpenChildIcs();
     void exportToWaveFormTerminal();
     void loadEmbeddedIC(const QString &fileName, IC *source_ic);
     void loadTranslation(const QString &language);
@@ -83,7 +84,7 @@ private:
     static void on_actionDarkTheme_triggered();
     static void on_actionLightTheme_triggered();
 
-    bool closeTab(const int tabIndex);
+    bool closeTab(const int tabIndex, const bool signalFromFather = false);
     bool hasModifiedFiles();
     int closeTabAnyway();
     void aboutThisVersion();

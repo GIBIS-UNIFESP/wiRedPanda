@@ -5,6 +5,7 @@
 
 #include "common.h"
 #include "globalproperties.h"
+#include "ic.h"
 #include "serialization.h"
 #include "settings.h"
 #include "simulationblocker.h"
@@ -125,6 +126,15 @@ void WorkSpace::save(QDataStream &stream)
     stream << m_dolphinFileName;
     stream << m_scene.sceneRect();
     Serialization::serialize(m_scene.items(), stream);
+}
+
+void WorkSpace::saveEmbeddedIc()
+{
+    m_EmbeddedIc->m_fileData.clear();
+    QDataStream stream(&m_EmbeddedIc->m_fileData, QIODevice::ReadWrite);
+    scene()->undoStack()->setClean();
+    save(stream);
+    m_EmbeddedIc->reload();
 }
 
 void WorkSpace::load(const QString &fileName)
