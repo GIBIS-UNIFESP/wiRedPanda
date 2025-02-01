@@ -43,7 +43,6 @@ jobs:
 
     - name: Build
       run: |
-        sudo apt install libgstreamer-gl1.0-0
         mkdir build
         cd build
         qmake ../WPanda.pro
