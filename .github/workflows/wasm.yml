@@ -19,7 +19,7 @@ jobs:
         fetch-depth: 0
 
     # doesn't work with WASM 6.7.*, must wait for aqtinstall fix
-    - name: Setup Qt for Wasm
+    - name: Setup Qt for WASM
       uses: jurplel/install-qt-action@v4
       with:
         version: 6.6.3
@@ -39,7 +39,7 @@ jobs:
       with:
         key: wasm-ubuntu-6.6.3
 
-    - name: Build and Test (Wasm)
+    - name: Build WASM
       run: |
         source ./emsdk/emsdk_env.sh
         mkdir build
