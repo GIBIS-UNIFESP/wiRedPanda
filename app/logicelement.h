@@ -19,12 +19,12 @@ class LogicElement
 public:
     explicit LogicElement(const int inputSize, const int outputSize);
     virtual ~LogicElement() = default;
-    bool operator>(const LogicElement &other) const;
 
     bool inputValue(const int index = 0) const;
     bool isValid() const;
     bool outputValue(const int index = 0) const;
     int calculatePriority();
+    int priority() const;
     virtual void updateLogic() = 0;
     void clearSucessors();
     void connectPredecessor(const int index, LogicElement *logic, const int port);

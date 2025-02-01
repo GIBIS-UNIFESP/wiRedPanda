@@ -42,6 +42,11 @@ bool LogicElement::updateInputs()
     return true;
 }
 
+int LogicElement::priority() const
+{
+    return m_priority;
+}
+
 void LogicElement::connectPredecessor(const int index, LogicElement *logic, const int port)
 {
     m_inputPairs[index] = {logic, port};
@@ -71,11 +76,6 @@ void LogicElement::validate()
             logic->m_isValid = false;
         }
     }
-}
-
-bool LogicElement::operator>(const LogicElement &other) const
-{
-    return (m_priority > other.m_priority);
 }
 
 int LogicElement::calculatePriority()
