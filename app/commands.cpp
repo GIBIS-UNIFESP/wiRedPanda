@@ -145,6 +145,8 @@ void saveItems(QByteArray &itemData, const QList<QGraphicsItem *> &items, const 
     itemData.clear();
     QDataStream stream(&itemData, QIODevice::WriteOnly);
     stream.setVersion(QDataStream::Qt_5_12);
+    stream << GlobalProperties::version;
+
     const auto others = findElements(otherIds);
 
     for (auto *elm : others) {
@@ -175,8 +177,19 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
 
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     stream.setVersion(QDataStream::Qt_5_12);
+
+    QVersionNumber version;
+    qint64 originalPos = stream.device()->pos();
+
+    try {
+        stream >> version;
+    } catch (std::bad_alloc &) {
+        // before 4.2 no QVersionNumber were set in the stream
+        version = QVersionNumber(4, 1);
+        stream.device()->seek(originalPos);
+    }
+
     QMap<quint64, QNEPort *> portMap;
-    const QVersionNumber version = GlobalProperties::version;
 
     for (auto *elm : findElements(otherIds)) {
         elm->load(stream, portMap, version);
@@ -409,8 +422,19 @@ void UpdateCommand::loadData(QByteArray &itemData)
 
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     stream.setVersion(QDataStream::Qt_5_12);
+
+    QVersionNumber version;
+    qint64 originalPos = stream.device()->pos();
+
+    try {
+        stream >> version;
+    } catch (std::bad_alloc &) {
+        // before 4.2 no QVersionNumber were set in the stream
+        version = QVersionNumber(4, 1);
+        stream.device()->seek(originalPos);
+    }
+
     QMap<quint64, QNEPort *> portMap;
-    const QVersionNumber version = GlobalProperties::version;
 
     for (auto *elm : elements) {
         elm->load(stream, portMap, version);

@@ -4,6 +4,7 @@
 #include "elementlabel.h"
 
 #include "elementfactory.h"
+#include "globalproperties.h"
 
 #include <QDrag>
 #include <QFileInfo>
@@ -86,6 +87,7 @@ void ElementLabel::startDrag()
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
     stream.setVersion(QDataStream::Qt_5_12);
+    stream << GlobalProperties::version;
     stream << offset << m_elementType << m_icFileName;
 
     auto *mimeData = new QMimeData();
@@ -108,6 +110,7 @@ QMimeData *ElementLabel::mimeData()
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
     stream.setVersion(QDataStream::Qt_5_12);
+    stream << GlobalProperties::version;
     stream << offset << m_elementType << m_icFileName;
 
     auto *mimeData = new QMimeData();

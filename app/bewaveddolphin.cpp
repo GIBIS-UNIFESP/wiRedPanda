@@ -876,6 +876,7 @@ void BewavedDolphin::on_actionCopy_triggered()
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
     stream.setVersion(QDataStream::Qt_5_12);
+    stream << GlobalProperties::version;
     copy(ranges, stream);
 
     auto *mimeData = new QMimeData();
@@ -914,6 +915,7 @@ void BewavedDolphin::on_actionCut_triggered()
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
     stream.setVersion(QDataStream::Qt_5_12);
+    stream << GlobalProperties::version;
     cut(ranges, stream);
 
     auto *mimeData = new QMimeData();
@@ -952,6 +954,17 @@ void BewavedDolphin::on_actionPaste_triggered()
 
 void BewavedDolphin::paste(const QItemSelection &ranges, QDataStream &stream)
 {
+    QVersionNumber version;
+    qint64 originalPos = stream.device()->pos();
+
+    try {
+        stream >> version;
+    } catch (std::bad_alloc &) {
+        // before 4.2 no QVersionNumber were set in the stream
+        version = QVersionNumber(4, 1);
+        stream.device()->seek(originalPos);
+    }
+
     const int firstCol = sectionFirstColumn(ranges);
     const int firstRow = sectionFirstRow(ranges);
     quint64 itemListSize; stream >> itemListSize;
