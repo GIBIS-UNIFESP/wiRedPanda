@@ -45,7 +45,7 @@ jobs:
         mkdir build
         cd build
         qmake ../app/app.pro
-        make -j$(nproc)
+        make -j4
         rm -rf ./build_files
         cp wiredpanda.html index.html
         wget https://github.com/gzuidhof/coi-serviceworker/raw/master/coi-serviceworker.min.js

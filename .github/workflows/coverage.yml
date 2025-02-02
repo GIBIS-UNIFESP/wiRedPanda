@@ -9,7 +9,7 @@ on:
      - 'master'
 
 jobs:
-  Ubuntu-Qt5_12_12-Code_Coverage:
+  Ubuntu-Qt5_15_2-Code_Coverage:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,7 +21,7 @@ jobs:
     - name: Install Qt5
       uses: jurplel/install-qt-action@v4
       with:
-        version: 5.12.12
+        version: 5.15.2
         cache: true
 
     - name: ccache
@@ -34,7 +34,7 @@ jobs:
         mkdir build
         cd build
         qmake ../WPanda.pro CONFIG+=coverage
-        make -j2
+        make -j4
         
     - name: Test
       run: |
