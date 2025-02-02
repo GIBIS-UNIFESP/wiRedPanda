@@ -615,6 +615,7 @@ void Scene::cloneDrag(const QPointF mousePos)
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
     stream.setVersion(QDataStream::Qt_5_12);
+    stream << GlobalProperties::version;
     stream << mousePos;
     copy(selectedItems(), stream);
 
@@ -631,8 +632,6 @@ void Scene::cloneDrag(const QPointF mousePos)
 
 void Scene::copy(const QList<QGraphicsItem *> &items, QDataStream &stream)
 {
-    stream << GlobalProperties::version.toString();
-
     QPointF center(0.0, 0.0);
     int itemsQuantity = 0;
 
@@ -785,6 +784,7 @@ void Scene::copyAction()
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
     stream.setVersion(QDataStream::Qt_5_12);
+    stream << GlobalProperties::version;
     copy(selectedItems(), stream);
 
     auto *mimeData = new QMimeData();
@@ -803,6 +803,7 @@ void Scene::cutAction()
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
     stream.setVersion(QDataStream::Qt_5_12);
+    stream << GlobalProperties::version;
     cut(selectedItems(), stream);
 
     auto *mimeData = new QMimeData();
@@ -833,8 +834,9 @@ void Scene::paste(QDataStream &stream)
     try {
         stream >> version;
     } catch (std::bad_alloc &) {
-        stream.device()->seek(originalPos);
+        // before 4.2 no QVersionNumber were set in the stream
         version = QVersionNumber(4, 1);
+        stream.device()->seek(originalPos);
     }
 
     QPointF center; stream >> center;
@@ -956,6 +958,17 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         QDataStream stream(&itemData, QIODevice::ReadOnly);
         stream.setVersion(QDataStream::Qt_5_12);
 
+        QVersionNumber version;
+        qint64 originalPos = stream.device()->pos();
+
+        try {
+            stream >> version;
+        } catch (std::bad_alloc &) {
+            // before 4.2 no QVersionNumber were set in the stream
+            version = QVersionNumber(4, 1);
+            stream.device()->seek(originalPos);
+        }
+
         QPoint offset;      stream >> offset;
         ElementType type;   stream >> type;
         QString icFileName; stream >> icFileName;
@@ -990,11 +1003,21 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         QDataStream stream(&itemData, QIODevice::ReadOnly);
         stream.setVersion(QDataStream::Qt_5_12);
 
+        QVersionNumber version;
+        qint64 originalPos = stream.device()->pos();
+
+        try {
+            stream >> version;
+        } catch (std::bad_alloc &) {
+            // before 4.2 no QVersionNumber were set in the stream
+            version = QVersionNumber(4, 1);
+            stream.device()->seek(originalPos);
+        }
+
         QPointF offset; stream >> offset;
         QPointF ctr;    stream >> ctr;
         offset = event->scenePos() - offset;
 
-        const QVersionNumber version = GlobalProperties::version;
         const auto itemList = Serialization::deserialize(stream, {}, version);
 
         receiveCommand(new AddItemsCommand(itemList, this));
@@ -1213,6 +1236,17 @@ void Scene::addItem(QMimeData *mimeData)
     QByteArray itemData = mimeData->data("wpanda/x-dnditemdata");
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     stream.setVersion(QDataStream::Qt_5_12);
+
+    QVersionNumber version;
+    qint64 originalPos = stream.device()->pos();
+
+    try {
+        stream >> version;
+    } catch (std::bad_alloc &) {
+        // before 4.2 no QVersionNumber were set in the stream
+        version = QVersionNumber(4, 1);
+        stream.device()->seek(originalPos);
+    }
 
     QPoint offset;      stream >> offset;
     ElementType type;   stream >> type;
