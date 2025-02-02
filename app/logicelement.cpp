@@ -95,10 +95,9 @@ int LogicElement::calculatePriority()
         max = qMax(logic->calculatePriority(), max);
     }
 
-    const int priority = max + 1;
-    m_priority = priority;
     m_beingVisited = false;
-    return priority;
+    m_priority = max + 1;
+    return m_priority;
 }
 
 bool LogicElement::outputValue(const int index) const
