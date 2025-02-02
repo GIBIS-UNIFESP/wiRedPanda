@@ -3,6 +3,9 @@
 
 #include "logicelement.h"
 
+#include <QHash>
+#include <QStack>
+
 LogicElement::LogicElement(const int inputSize, const int outputSize)
     : m_inputValues(inputSize, false)
     , m_inputPairs(inputSize, {})
@@ -80,23 +83,44 @@ void LogicElement::validate()
 
 int LogicElement::calculatePriority()
 {
-    if (m_beingVisited) {
-        return 0;
+    QStack<LogicElement *> stack;
+    QHash<LogicElement *, bool> inStack;
+    QHash<LogicElement *, int> maxPriority;
+
+    stack.push(this);
+    inStack[this] = true;
+
+    while (!stack.isEmpty()) {
+        auto *current = stack.top();
+
+        if (current->m_priority != -1) {
+            stack.pop();
+            inStack[current] = false;
+            continue;
+        }
+
+        bool allProcessed = true;
+        int maxSuccessorPriority = 0;
+
+        for (auto *logic : std::as_const(current->m_successors)) {
+            if (logic->m_priority == -1) {
+                if (!inStack[logic]) {
+                    stack.push(logic);
+                    inStack[logic] = true;
+                    allProcessed = false;
+                }
+            }
+
+            maxSuccessorPriority = qMax(maxSuccessorPriority, logic->m_priority);
+        }
+
+        if (allProcessed) {
+            current->m_priority = maxSuccessorPriority + 1;
+            stack.pop();
+            inStack[current] = false;
+        }
     }
 
-    if (m_priority != -1) {
-        return m_priority;
-    }
-
-    m_beingVisited = true;
-    int max = 0;
-
-    for (auto *logic : std::as_const(m_successors)) {
-        max = qMax(logic->calculatePriority(), max);
-    }
-
-    m_beingVisited = false;
-    m_priority = max + 1;
     return m_priority;
 }
 
