@@ -46,7 +46,7 @@ jobs:
         mkdir build
         cd build
         qmake ../WPanda.pro
-        make -j2
+        make -j4
 
     - name: Test
       run: |

@@ -51,7 +51,7 @@ jobs:
         cmake -S . -B build \
           -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
-        cmake --build build -- -j2
+        cmake --build build
 
     - name: Test Ubuntu
       if: runner.os == 'Linux'
@@ -86,7 +86,7 @@ jobs:
         cmake -S . -B build \
           -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
-        cmake --build build -- -j3
+        cmake --build build
 
     - name: Test macOS
       if: runner.os == 'macOS'
