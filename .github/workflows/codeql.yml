@@ -18,8 +18,6 @@ jobs:
 
     strategy:
       fail-fast: false
-      matrix:
-        language: [ 'cpp' ]
 
     steps:
     - name: Checkout repository
@@ -28,7 +26,7 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
-        languages: ${{ matrix.language }}
+        languages: cpp
 
     - name: Install Qt5
       uses: jurplel/install-qt-action@v4
@@ -39,7 +37,7 @@ jobs:
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: ${{ matrix.os }}
+        key: ubuntu-latest-5.15.2
 
     - name: Build
       run: |
