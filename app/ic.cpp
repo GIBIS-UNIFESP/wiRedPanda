@@ -146,7 +146,7 @@ void IC::loadFile(const QString &fileName)
 
     m_fileWatcher.addPath(fileInfo.absoluteFilePath());
     m_file = fileInfo.absoluteFilePath();
-    setToolTip(m_file);
+    setToolTip(fileInfo.fileName());
 
     // ----------------------------------------------
 
