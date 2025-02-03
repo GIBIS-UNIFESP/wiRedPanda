@@ -880,7 +880,7 @@ void BewavedDolphin::on_actionCopy_triggered()
     copy(ranges, stream);
 
     auto *mimeData = new QMimeData();
-    mimeData->setData("bdolphin/copydata", itemData);
+    mimeData->setData("application/x-bewaveddolphin-waveform", itemData);
 
     QApplication::clipboard()->setMimeData(mimeData);
 }
@@ -918,7 +918,7 @@ void BewavedDolphin::on_actionCut_triggered()
     cut(ranges, stream);
 
     auto *mimeData = new QMimeData();
-    mimeData->setData("bdolphin/copydata", itemData);
+    mimeData->setData("application/x-bewaveddolphin-waveform", itemData);
 
     QApplication::clipboard()->setMimeData(mimeData);
 
@@ -940,15 +940,22 @@ void BewavedDolphin::on_actionPaste_triggered()
     }
 
     const auto *mimeData = QApplication::clipboard()->mimeData();
+    QByteArray itemData;
 
     if (mimeData->hasFormat("bdolphin/copydata")) {
-        QByteArray itemData = mimeData->data("bdolphin/copydata");
+        itemData = mimeData->data("bdolphin/copydata");
+    }
+
+    if (mimeData->hasFormat("application/x-bewaveddolphin-waveform")) {
+        itemData = mimeData->data("application/x-bewaveddolphin-waveform");
+    }
+
+    if (!itemData.isEmpty()) {
         QDataStream stream(&itemData, QIODevice::ReadOnly);
         Serialization::readHeaderDolphin(stream);
         paste(ranges, stream);
+        m_edited = true;
     }
-
-    m_edited = true;
 }
 
 void BewavedDolphin::paste(const QItemSelection &ranges, QDataStream &stream)

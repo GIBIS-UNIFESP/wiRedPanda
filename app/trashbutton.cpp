@@ -16,14 +16,16 @@ TrashButton::TrashButton(QWidget *parent)
 
 void TrashButton::dragEnterEvent(QDragEnterEvent *event)
 {
-    if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")) {
+    if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")
+        || event->mimeData()->hasFormat("application/x-wiredpanda-dragdrop")) {
         event->acceptProposedAction();
     }
 }
 
 void TrashButton::dropEvent(QDropEvent *event)
 {
-    if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")) {
+    if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")
+        || event->mimeData()->hasFormat("application/x-wiredpanda-dragdrop")) {
         QMessageBox msgBox;
         msgBox.setParent(this);
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
@@ -36,7 +38,16 @@ void TrashButton::dropEvent(QDropEvent *event)
             return;
         }
 
-        QByteArray itemData = event->mimeData()->data("wpanda/x-dnditemdata");
+        QByteArray itemData;
+
+        if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")) {
+            itemData = event->mimeData()->data("wpanda/x-dnditemdata");
+        }
+
+        if (event->mimeData()->hasFormat("application/x-wiredpanda-dragdrop")) {
+            itemData = event->mimeData()->data("application/x-wiredpanda-dragdrop");
+        }
+
         QDataStream stream(&itemData, QIODevice::ReadOnly);
         Serialization::readHeaderPanda(stream);
 
