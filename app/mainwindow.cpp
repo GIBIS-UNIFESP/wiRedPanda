@@ -629,6 +629,7 @@ void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
     }
 
     m_ui->tab->setTabText(m_tabIndex, text);
+    m_ui->tab->setTabToolTip(m_tabIndex, fileInfo.absoluteFilePath());
 
     qCDebug(zero) << "Adding file to recent files.";
     emit addRecentFile(fileInfo.absoluteFilePath());
