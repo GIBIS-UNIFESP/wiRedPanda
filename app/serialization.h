@@ -15,9 +15,6 @@ class Serialization
     Q_DECLARE_TR_FUNCTIONS(Serialization)
 
 public:
-    //! Saves the following header information into the .panda file, in this order: app name, app version, associated dolphin fileName, scene rectangle.
-    static void saveHeader(QDataStream &stream, const QString &dolphinFileName, const QRectF &rect);
-
     //! Serializes the list of QGraphicItems through a binary data stream.
     static void serialize(const QList<QGraphicsItem *> &items, QDataStream &stream);
 
@@ -28,12 +25,16 @@ public:
      */
     static QList<QGraphicsItem *> deserialize(QDataStream &stream, QMap<quint64, QNEPort *> portMap, const QVersionNumber version);
 
-    //! Checks if it is a wiRedPanda project file and reads its version.
-    static QVersionNumber loadVersion(QDataStream &stream);
-
     //! returns the canvas pose from the last saved session.
     static QRectF loadRect(QDataStream &stream, const QVersionNumber version);
 
     static QString loadDolphinFileName(QDataStream &stream, const QVersionNumber version);
     static QString typeName(const int type);
+    static QVersionNumber readHeaderPanda(QDataStream &stream);
+    static void readHeaderDolphin(QDataStream &stream);
+    static void writeHeaderDolphin(QDataStream &stream);
+    static void writeHeaderPanda(QDataStream &stream);
+
+    constexpr static quint32 MAGIC_HEADER_CIRCUIT = 0x57504346; // "WPCF" (wiRedPanda Circuit File)
+    constexpr static quint32 MAGIC_HEADER_WAVEFORM = 0x57505746; // "WPWF" (wiRedPanda Waveform File)
 };

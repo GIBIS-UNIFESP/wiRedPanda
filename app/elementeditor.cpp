@@ -10,6 +10,7 @@
 #include "elementfactory.h"
 #include "inputrotary.h"
 #include "scene.h"
+#include "serialization.h"
 #include "thememanager.h"
 #include "truth_table.h"
 
@@ -672,7 +673,7 @@ void ElementEditor::apply()
 
     QByteArray oldData;
     QDataStream stream(&oldData, QIODevice::WriteOnly);
-    stream.setVersion(QDataStream::Qt_5_12);
+    Serialization::writeHeaderPanda(stream);
 
     for (auto *elm : std::as_const(m_elements)) {
         elm->save(stream);

@@ -13,6 +13,7 @@
 #include "inputrotary.h"
 #include "lengthdialog.h"
 #include "mainwindow.h"
+#include "serialization.h"
 #include "settings.h"
 #include "simulationblocker.h"
 
@@ -875,8 +876,7 @@ void BewavedDolphin::on_actionCopy_triggered()
 
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
-    stream.setVersion(QDataStream::Qt_5_12);
-    stream << GlobalProperties::version;
+    Serialization::writeHeaderDolphin(stream);
     copy(ranges, stream);
 
     auto *mimeData = new QMimeData();
@@ -914,8 +914,7 @@ void BewavedDolphin::on_actionCut_triggered()
 
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
-    stream.setVersion(QDataStream::Qt_5_12);
-    stream << GlobalProperties::version;
+    Serialization::writeHeaderDolphin(stream);
     cut(ranges, stream);
 
     auto *mimeData = new QMimeData();
@@ -945,7 +944,7 @@ void BewavedDolphin::on_actionPaste_triggered()
     if (mimeData->hasFormat("bdolphin/copydata")) {
         QByteArray itemData = mimeData->data("bdolphin/copydata");
         QDataStream stream(&itemData, QIODevice::ReadOnly);
-        stream.setVersion(QDataStream::Qt_5_12);
+        Serialization::readHeaderDolphin(stream);
         paste(ranges, stream);
     }
 
@@ -954,17 +953,6 @@ void BewavedDolphin::on_actionPaste_triggered()
 
 void BewavedDolphin::paste(const QItemSelection &ranges, QDataStream &stream)
 {
-    QVersionNumber version;
-    qint64 originalPos = stream.device()->pos();
-
-    try {
-        stream >> version;
-    } catch (std::bad_alloc &) {
-        // before 4.2 no QVersionNumber were set in the stream
-        version = QVersionNumber(4, 1);
-        stream.device()->seek(originalPos);
-    }
-
     const int firstCol = sectionFirstColumn(ranges);
     const int firstRow = sectionFirstRow(ranges);
     quint64 itemListSize; stream >> itemListSize;
@@ -1050,7 +1038,7 @@ void BewavedDolphin::save(const QString &fileName)
     if (fileName.endsWith(".dolphin")) {
         qCDebug(zero) << "Saving dolphin file.";
         QDataStream stream(&file);
-        stream.setVersion(QDataStream::Qt_5_12);
+        Serialization::writeHeaderDolphin(stream);
         save(stream);
     } else {
         qCDebug(zero) << "Saving CSV file.";
@@ -1064,7 +1052,6 @@ void BewavedDolphin::save(const QString &fileName)
 
 void BewavedDolphin::save(QDataStream &stream)
 {
-    stream << QString("beWavedDolphin 1.0");
     qCDebug(zero) << "Serializing data into data stream.";
     stream << static_cast<qint64>(m_inputPorts);
     stream << static_cast<qint64>(m_model->columnCount());
@@ -1168,7 +1155,7 @@ void BewavedDolphin::load(const QString &fileName)
     if (fileName.endsWith(".dolphin")) {
         qCDebug(zero) << "Dolphin file opened.";
         QDataStream stream(&file);
-        stream.setVersion(QDataStream::Qt_5_12);
+        Serialization::readHeaderDolphin(stream);
         qCDebug(zero) << "Loading in editor.";
         load(stream);
         qCDebug(zero) << "Current file set.";
@@ -1192,12 +1179,6 @@ void BewavedDolphin::load(const QString &fileName)
 
 void BewavedDolphin::load(QDataStream &stream)
 {
-    QString str; stream >> str;
-
-    if (!str.startsWith("beWavedDolphin")) {
-        throw Pandaception(tr("Invalid file format. Starts with: ") + str);
-    }
-
     qint64 rows; stream >> rows;
     qint64 cols; stream >> cols;
 

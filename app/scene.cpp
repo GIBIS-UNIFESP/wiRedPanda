@@ -614,8 +614,7 @@ void Scene::cloneDrag(const QPointF mousePos)
 
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
-    stream.setVersion(QDataStream::Qt_5_12);
-    stream << GlobalProperties::version;
+    Serialization::writeHeaderPanda(stream);
     stream << mousePos;
     copy(selectedItems(), stream);
 
@@ -783,8 +782,7 @@ void Scene::copyAction()
 
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
-    stream.setVersion(QDataStream::Qt_5_12);
-    stream << GlobalProperties::version;
+    Serialization::writeHeaderPanda(stream);
     copy(selectedItems(), stream);
 
     auto *mimeData = new QMimeData();
@@ -802,8 +800,7 @@ void Scene::cutAction()
 
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
-    stream.setVersion(QDataStream::Qt_5_12);
-    stream << GlobalProperties::version;
+    Serialization::writeHeaderPanda(stream);
     cut(selectedItems(), stream);
 
     auto *mimeData = new QMimeData();
@@ -819,25 +816,14 @@ void Scene::pasteAction()
     if (mimeData->hasFormat("wpanda/copydata")) {
         QByteArray itemData = mimeData->data("wpanda/copydata");
         QDataStream stream(&itemData, QIODevice::ReadOnly);
-        stream.setVersion(QDataStream::Qt_5_12);
-        paste(stream);
+        QVersionNumber version = Serialization::readHeaderPanda(stream);
+        paste(stream, version);
     }
 }
 
-void Scene::paste(QDataStream &stream)
+void Scene::paste(QDataStream &stream, QVersionNumber version)
 {
     clearSelection();
-
-    QVersionNumber version;
-    qint64 originalPos = stream.device()->pos();
-
-    try {
-        stream >> version;
-    } catch (std::bad_alloc &) {
-        // before 4.2 no QVersionNumber were set in the stream
-        version = QVersionNumber(4, 1);
-        stream.device()->seek(originalPos);
-    }
 
     QPointF center; stream >> center;
 
@@ -956,18 +942,7 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
     if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")) {
         QByteArray itemData = event->mimeData()->data("wpanda/x-dnditemdata");
         QDataStream stream(&itemData, QIODevice::ReadOnly);
-        stream.setVersion(QDataStream::Qt_5_12);
-
-        QVersionNumber version;
-        qint64 originalPos = stream.device()->pos();
-
-        try {
-            stream >> version;
-        } catch (std::bad_alloc &) {
-            // before 4.2 no QVersionNumber were set in the stream
-            version = QVersionNumber(4, 1);
-            stream.device()->seek(originalPos);
-        }
+        Serialization::readHeaderPanda(stream);
 
         QPoint offset;      stream >> offset;
         ElementType type;   stream >> type;
@@ -1001,18 +976,7 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
     if (event->mimeData()->hasFormat("wpanda/ctrlDragData")) {
         QByteArray itemData = event->mimeData()->data("wpanda/ctrlDragData");
         QDataStream stream(&itemData, QIODevice::ReadOnly);
-        stream.setVersion(QDataStream::Qt_5_12);
-
-        QVersionNumber version;
-        qint64 originalPos = stream.device()->pos();
-
-        try {
-            stream >> version;
-        } catch (std::bad_alloc &) {
-            // before 4.2 no QVersionNumber were set in the stream
-            version = QVersionNumber(4, 1);
-            stream.device()->seek(originalPos);
-        }
+        QVersionNumber version = Serialization::readHeaderPanda(stream);
 
         QPointF offset; stream >> offset;
         QPointF ctr;    stream >> ctr;
@@ -1235,18 +1199,7 @@ void Scene::addItem(QMimeData *mimeData)
 {
     QByteArray itemData = mimeData->data("wpanda/x-dnditemdata");
     QDataStream stream(&itemData, QIODevice::ReadOnly);
-    stream.setVersion(QDataStream::Qt_5_12);
-
-    QVersionNumber version;
-    qint64 originalPos = stream.device()->pos();
-
-    try {
-        stream >> version;
-    } catch (std::bad_alloc &) {
-        // before 4.2 no QVersionNumber were set in the stream
-        version = QVersionNumber(4, 1);
-        stream.device()->seek(originalPos);
-    }
+    Serialization::readHeaderPanda(stream);
 
     QPoint offset;      stream >> offset;
     ElementType type;   stream >> type;

@@ -25,7 +25,7 @@ public:
     QString dolphinFileName();
     Scene *scene();
     Simulation *simulation();
-    void load(QDataStream &stream);
+    void load(QDataStream &stream, QVersionNumber number);
     void load(const QString &fileName);
     void save(QDataStream &stream);
     void save(const QString &fileName);

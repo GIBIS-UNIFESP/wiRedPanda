@@ -10,12 +10,84 @@
 #include "qneconnection.h"
 
 #include <QApplication>
+#include <QIODevice>
 
-void Serialization::saveHeader(QDataStream &stream, const QString &dolphinFileName, const QRectF &rect)
+void Serialization::writeHeaderPanda(QDataStream &stream)
 {
-    stream << QApplication::applicationName() + " " + GlobalProperties::version.toString();
-    stream << dolphinFileName;
-    stream << rect;
+    stream.setVersion(QDataStream::Qt_5_12);
+    stream << MAGIC_HEADER_CIRCUIT;
+    stream << GlobalProperties::version;
+}
+
+QVersionNumber Serialization::readHeaderPanda(QDataStream &stream)
+{
+    stream.setVersion(QDataStream::Qt_5_12);
+
+    qint64 originalPos = stream.device()->pos();
+    quint32 magicHeader;
+    stream >> magicHeader;
+
+    QVersionNumber version;
+
+    if (magicHeader == MAGIC_HEADER_CIRCUIT) {
+        stream >> version;
+    } else {
+        stream.device()->seek(originalPos);
+
+        QString appName;
+        stream >> appName; // "WiredPanda 1.1"
+
+        if (appName.isEmpty()) { // copy/paste stream, no header
+            stream.device()->seek(originalPos);
+
+            QPointF center;
+            stream >> center;
+
+            if (center.isNull()) {
+                throw Pandaception(tr("Invalid file format."));
+            }
+
+            stream.device()->seek(originalPos);
+            version = QVersionNumber(4, 1); // no version in stream, assume 4.1
+        } else if (appName.startsWith("wiRedPanda", Qt::CaseInsensitive)) {
+            QStringList split = appName.split(" ");
+            version = QVersionNumber::fromString(split.at(1));
+        } else {
+            throw Pandaception(tr("Invalid file format."));
+        }
+    }
+
+    return version;
+ }
+
+void Serialization::writeHeaderDolphin(QDataStream &stream)
+{
+    stream.setVersion(QDataStream::Qt_5_12);
+    stream << MAGIC_HEADER_WAVEFORM;
+    stream << GlobalProperties::version;
+}
+
+void Serialization::readHeaderDolphin(QDataStream &stream)
+{
+    stream.setVersion(QDataStream::Qt_5_12);
+
+    qint64 originalPos = stream.device()->pos();
+    quint32 magicHeader;
+    stream >> magicHeader;
+
+    if (magicHeader == MAGIC_HEADER_WAVEFORM) {
+        QVersionNumber version;
+        stream >> version;
+    } else {
+        stream.device()->seek(originalPos);
+
+        QString appName;
+        stream >> appName;
+
+        if (!appName.startsWith("beWavedDolphin")) {
+            throw Pandaception(tr("Invalid file format."));
+        }
+    }
 }
 
 void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &stream)
@@ -72,41 +144,19 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, QMap<quin
     return itemList;
 }
 
-QVersionNumber Serialization::loadVersion(QDataStream &stream)
-{
-    qCDebug(zero) << "Loading version.";
-
-    QString str; stream >> str;
-
-    if (!str.startsWith(QApplication::applicationName(), Qt::CaseInsensitive)) {
-        throw Pandaception(tr("Invalid file format."));
-    }
-
-    qCDebug(zero) << "String: " << str;
-
-    QVersionNumber version = VERSION(str.remove(QApplication::applicationName(), Qt::CaseInsensitive));
-    qCDebug(zero) << "Version: " << version;
-
-    if (version.isNull()) {
-        throw Pandaception(tr("Invalid version number."));
-    }
-
-    return version;
-}
-
 QString Serialization::loadDolphinFileName(QDataStream &stream, const QVersionNumber version)
 {
-    QString str;
+    QString filename;
 
     if (version >= VERSION("3.0")) {
-        stream >> str;
+        stream >> filename;
 
-        if ((version < VERSION("3.3")) && (str == "none")) {
-            str.clear();
+        if ((version < VERSION("3.3")) && (filename == "none")) {
+            filename.clear();
         }
     }
 
-    return str;
+    return filename;
 }
 
 QRectF Serialization::loadRect(QDataStream &stream, const QVersionNumber version)

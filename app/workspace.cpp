@@ -92,7 +92,7 @@ void WorkSpace::save(const QString &fileName)
     m_scene.setSceneRect(m_scene.itemsBoundingRect());
 
     QDataStream stream(&saveFile);
-    stream.setVersion(QDataStream::Qt_5_12);
+    Serialization::writeHeaderPanda(stream);
     save(stream);
 
     if (!saveFile.commit()) {
@@ -121,7 +121,8 @@ void WorkSpace::save(const QString &fileName)
 
 void WorkSpace::save(QDataStream &stream)
 {
-    Serialization::saveHeader(stream, m_dolphinFileName, m_scene.sceneRect());
+    stream << m_dolphinFileName;
+    stream << m_scene.sceneRect();
     Serialization::serialize(m_scene.items(), stream);
 }
 
@@ -145,18 +146,17 @@ void WorkSpace::load(const QString &fileName)
     }
 
     QDataStream stream(&file);
-    stream.setVersion(QDataStream::Qt_5_12);
-    load(stream);
+    QVersionNumber version = Serialization::readHeaderPanda(stream);
+    load(stream, version);
 
     emit fileChanged(m_fileInfo);
 }
 
-void WorkSpace::load(QDataStream &stream)
+void WorkSpace::load(QDataStream &stream, QVersionNumber version)
 {
     qCDebug(zero) << "Loading file.";
     SimulationBlocker simulationBlocker(m_scene.simulation());
     qCDebug(zero) << "Stopped simulation.";
-    const QVersionNumber version = Serialization::loadVersion(stream);
     qCDebug(zero) << "Version: " << version;
 
     if (GlobalProperties::verbose) {
@@ -274,7 +274,7 @@ void WorkSpace::autosave()
 
     qCDebug(three) << "Writing to autosave file.";
     QDataStream stream(&m_autosaveFile);
-    stream.setVersion(QDataStream::Qt_5_12);
+    Serialization::writeHeaderPanda(stream);
     save(stream);
     m_autosaveFile.close();
 

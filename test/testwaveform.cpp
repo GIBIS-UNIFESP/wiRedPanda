@@ -4,6 +4,7 @@
 #include "testwaveform.h"
 
 #include "bewaveddolphin.h"
+#include "serialization.h"
 #include "workspace.h"
 
 #include <QTemporaryFile>
@@ -22,8 +23,8 @@ void TestWaveForm::testDisplay4Bits()
     QFile pandaFile(fileName);
     QVERIFY(pandaFile.open(QIODevice::ReadOnly));
     QDataStream stream(&pandaFile);
-    stream.setVersion(QDataStream::Qt_5_12);
-    workspace.load(stream);
+    QVersionNumber version = Serialization::readHeaderPanda(stream);
+    workspace.load(stream, version);
 
     BewavedDolphin bewavedDolphin(workspace.scene(), false);
     bewavedDolphin.createWaveform("");
