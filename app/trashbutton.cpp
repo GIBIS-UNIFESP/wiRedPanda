@@ -1,6 +1,7 @@
 #include "trashbutton.h"
 
 #include "enums.h"
+#include "serialization.h"
 
 #include <QDragEnterEvent>
 #include <QMessageBox>
@@ -37,18 +38,7 @@ void TrashButton::dropEvent(QDropEvent *event)
 
         QByteArray itemData = event->mimeData()->data("wpanda/x-dnditemdata");
         QDataStream stream(&itemData, QIODevice::ReadOnly);
-        stream.setVersion(QDataStream::Qt_5_12);
-
-        QVersionNumber version;
-        qint64 originalPos = stream.device()->pos();
-
-        try {
-            stream >> version;
-        } catch (std::bad_alloc &) {
-            // before 4.2 no QVersionNumber were set in the stream
-            version = QVersionNumber(4, 1);
-            stream.device()->seek(originalPos);
-        }
+        Serialization::readHeaderPanda(stream);
 
         QPoint offset;      stream >> offset;
         ElementType type;   stream >> type;

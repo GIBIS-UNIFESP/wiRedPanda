@@ -157,10 +157,7 @@ void IC::loadFile(const QString &fileName)
     }
 
     QDataStream stream(&file);
-    stream.setVersion(QDataStream::Qt_5_12);
-
-    const QVersionNumber version = Serialization::loadVersion(stream);
-
+    QVersionNumber version = Serialization::readHeaderPanda(stream);
     Serialization::loadDolphinFileName(stream, version);
     Serialization::loadRect(stream, version);
 
@@ -416,10 +413,7 @@ void IC::copyFiles(const QFileInfo &srcFile)
     }
 
     QDataStream stream(&file);
-    stream.setVersion(QDataStream::Qt_5_12);
-
-    const QVersionNumber version = Serialization::loadVersion(stream);
-
+    QVersionNumber version = Serialization::readHeaderPanda(stream);
     Serialization::loadDolphinFileName(stream, version);
     Serialization::loadRect(stream, version);
 

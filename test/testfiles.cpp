@@ -5,6 +5,7 @@
 
 #include "qneconnection.h"
 #include "scene.h"
+#include "serialization.h"
 #include "workspace.h"
 
 #include <QTemporaryFile>
@@ -26,8 +27,8 @@ void TestFiles::testFiles()
         QVERIFY(pandaFile.exists());
         QVERIFY(pandaFile.open(QIODevice::ReadOnly));
         QDataStream stream(&pandaFile);
-        stream.setVersion(QDataStream::Qt_5_12);
-        workspace.load(stream);
+        QVersionNumber version = Serialization::readHeaderPanda(stream);
+        workspace.load(stream, version);
         const auto items = workspace.scene()->items();
 
         for (auto *item : items) {
@@ -41,14 +42,14 @@ void TestFiles::testFiles()
         QTemporaryFile tempFile;
         QVERIFY(tempFile.open());
         QDataStream stream2(&tempFile);
-        stream2.setVersion(QDataStream::Qt_5_12);
+        Serialization::writeHeaderPanda(stream2);
         workspace.save(stream2);
         tempFile.close();
         QFile pandaFile2(tempFile.fileName());
         QVERIFY(pandaFile2.open(QIODevice::ReadOnly));
 
         QDataStream stream3(&pandaFile2);
-        stream3.setVersion(QDataStream::Qt_5_12);
-        workspace.load(stream3);
+        QVersionNumber version3 = Serialization::readHeaderPanda(stream3);
+        workspace.load(stream3, version3);
     }
 }

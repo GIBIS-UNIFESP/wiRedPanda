@@ -10,6 +10,7 @@
 #include <QGraphicsScene>
 #include <QMimeData>
 #include <QUndoCommand>
+#include <QVersionNumber>
 
 class GraphicElement;
 class GraphicsView;
@@ -94,7 +95,7 @@ private:
     void drawBackground(QPainter *painter, const QRectF &rect) override;
     void handleHoverPort();
     void makeConnection(QNEConnection *connection);
-    void paste(QDataStream &stream);
+    void paste(QDataStream &stream, QVersionNumber version);
     void releaseHoverPort();
     void resizeScene();
     void rotate(const int angle);
