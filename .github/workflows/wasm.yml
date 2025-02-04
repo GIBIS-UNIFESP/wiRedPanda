@@ -24,7 +24,7 @@ jobs:
       with:
         version: 6.6.3
         arch: wasm_multithread
-        modules: qtmultimedia
+        modules: qtmultimedia qtimageformats
         cache: true
         
     - name: Setup emscripten
