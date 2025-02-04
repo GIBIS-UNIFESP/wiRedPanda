@@ -16,6 +16,7 @@
 
 #include <QDebug>
 #include <QFileDialog>
+#include <QImageReader>
 #include <QKeyEvent>
 #include <QMenu>
 #include <cmath>
@@ -314,7 +315,7 @@ void ElementEditor::updateElementSkin()
     QFileDialog fileDialog;
     fileDialog.setObjectName(tr("Open File"));
     fileDialog.setFileMode(QFileDialog::ExistingFile);
-    fileDialog.setNameFilter(tr("Images (*.png *.gif *.jpg *.jpeg)"));
+    fileDialog.setNameFilter(tr("Images") + " (*." + QImageReader::supportedImageFormats().join(" *.") + ")");
 
     if (fileDialog.exec() == QDialog::Rejected) {
         return;
