@@ -40,7 +40,7 @@ DISTNAME      = wiredpanda.js4.2.0
 DISTDIR = /home/runner/work/wiRedPanda/wiRedPanda/build/build_files/obj/wiredpanda.js4.2.0
 LINK          = em++
 LFLAGS        = -s ASYNCIFY_IMPORTS=qt_asyncify_suspend_js,qt_asyncify_resume_js -s WASM=1 -s MAX_WEBGL_VERSION=2 -s ERROR_ON_UNDEFINED_SYMBOLS=1 --bind -s FETCH=1 -s MODULARIZE=1 -s EXPORT_NAME=createQtAppInstance -s WASM_BIGINT=1 -s STACK_SIZE=5MB -sASYNCIFY -Os -O2 -s EXPORTED_RUNTIME_METHODS=UTF16ToString,stringToUTF16,JSEvents,specialHTMLTargets,FS -pthread -s PTHREAD_POOL_SIZE=4 -sALLOW_MEMORY_GROWTH -s INITIAL_MEMORY=50MB /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6BundledFreetype.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6BundledLibpng.a
-LIBS          = $(SUBLIBS) /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/Multimedia_resources_1/.rcc/qrc_qtmultimedia_shaders.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/Multimedia_resources_2/.rcc/qrc_qtmultimedia_shaders_linear.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/Multimedia_resources_3/.rcc/qrc_qtmultimedia_shaders_gl_macos.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/Multimedia_resources_4/.rcc/qrc_qtmultimedia_shaders_gl_macos_linear.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/plugins/multimedia/libwasmmediaplugin.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/QWasmIntegrationPlugin_resources_1/.rcc/qrc_wasmfonts.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/QWasmIntegrationPlugin_resources_2/.rcc/qrc_wasmwindow.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/Gui_resources_1/.rcc/qrc_qpdf.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/Gui_resources_2/.rcc/qrc_gui_shaders.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/plugins/platforms/libqwasm.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6OpenGL.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/plugins/iconengines/libqsvgicon.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/plugins/imageformats/libqgif.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/plugins/imageformats/libqico.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/plugins/imageformats/libqjpeg.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6BundledLibjpeg.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/plugins/imageformats/libqsvg.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/plugins/tls/libqcertonlybackend.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/PrintSupport_resources_1/.rcc/qrc_qprintdialog.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/PrintSupport_resources_2/.rcc/qrc_qprintdialog1.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/Widgets_resources_1/.rcc/qrc_qstyle.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/Widgets_resources_2/.rcc/qrc_qstyle1.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/Widgets_resources_3/.rcc/qrc_qmessagebox.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6PrintSupport.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6Widgets.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6Multimedia.a -lopenal /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6Svg.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6Gui.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6BundledHarfbuzz.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6BundledFreetype.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6BundledLibpng.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6Network.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6Core.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6BundledZLIB.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6BundledPcre2.a -lembind   
+LIBS          = $(SUBLIBS) /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/Multimedia_resources_1/.rcc/qrc_qtmultimedia_shaders.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/Multimedia_resources_2/.rcc/qrc_qtmultimedia_shaders_linear.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/Multimedia_resources_3/.rcc/qrc_qtmultimedia_shaders_gl_macos.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/Multimedia_resources_4/.rcc/qrc_qtmultimedia_shaders_gl_macos_linear.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/plugins/multimedia/libwasmmediaplugin.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/QWasmIntegrationPlugin_resources_1/.rcc/qrc_wasmfonts.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/QWasmIntegrationPlugin_resources_2/.rcc/qrc_wasmwindow.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/Gui_resources_1/.rcc/qrc_qpdf.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/Gui_resources_2/.rcc/qrc_gui_shaders.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/plugins/platforms/libqwasm.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6OpenGL.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/plugins/iconengines/libqsvgicon.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/plugins/imageformats/libqgif.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/plugins/imageformats/libqicns.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/plugins/imageformats/libqico.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/plugins/imageformats/libqjpeg.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6BundledLibjpeg.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/plugins/imageformats/libqsvg.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/plugins/imageformats/libqtga.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/plugins/imageformats/libqtiff.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/plugins/imageformats/libqwbmp.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/plugins/imageformats/libqwebp.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/plugins/tls/libqcertonlybackend.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/PrintSupport_resources_1/.rcc/qrc_qprintdialog.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/PrintSupport_resources_2/.rcc/qrc_qprintdialog1.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/Widgets_resources_1/.rcc/qrc_qstyle.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/Widgets_resources_2/.rcc/qrc_qstyle1.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/objects-Release/Widgets_resources_3/.rcc/qrc_qmessagebox.cpp.o /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6PrintSupport.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6Widgets.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6Multimedia.a -lopenal /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6Svg.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6Gui.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6BundledHarfbuzz.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6BundledFreetype.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6BundledLibpng.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6Network.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6Core.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6BundledZLIB.a /home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/lib/libQt6BundledPcre2.a -lembind   
 AR            = emar cqs
 RANLIB        = 
 SED           = sed
@@ -468,6 +468,7 @@ DIST          = ../app/resources/postinst \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_lib_zlib_private.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qcertonlybackend.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qgif.pri \
+		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qicns.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qico.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qjpeg.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qmldbg_debugger.pri \
@@ -484,9 +485,13 @@ DIST          = ../app/resources/postinst \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qsqlite.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qsvg.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qsvgicon.pri \
+		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qtga.pri \
+		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qtiff.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qtuiotouchplugin.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_quicklintplugin.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qwasm.pri \
+		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qwbmp.pri \
+		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qwebp.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_wasmmediaplugin.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/features/qt_functions.prf \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/features/qt_config.prf \
@@ -833,6 +838,7 @@ Makefile: ../app/app.pro ../../Qt/6.6.3/wasm_multithread/mkspecs/wasm-emscripten
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_lib_zlib_private.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qcertonlybackend.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qgif.pri \
+		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qicns.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qico.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qjpeg.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qmldbg_debugger.pri \
@@ -849,9 +855,13 @@ Makefile: ../app/app.pro ../../Qt/6.6.3/wasm_multithread/mkspecs/wasm-emscripten
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qsqlite.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qsvg.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qsvgicon.pri \
+		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qtga.pri \
+		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qtiff.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qtuiotouchplugin.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_quicklintplugin.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qwasm.pri \
+		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qwbmp.pri \
+		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qwebp.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_wasmmediaplugin.pri \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/features/qt_functions.prf \
 		../../Qt/6.6.3/wasm_multithread/mkspecs/features/qt_config.prf \
@@ -899,9 +909,14 @@ Makefile: ../app/app.pro ../../Qt/6.6.3/wasm_multithread/mkspecs/wasm-emscripten
 		../../Qt/6.6.3/wasm_multithread/plugins/platforms/libqwasm.prl \
 		../../Qt/6.6.3/wasm_multithread/plugins/iconengines/libqsvgicon.prl \
 		../../Qt/6.6.3/wasm_multithread/plugins/imageformats/libqgif.prl \
+		../../Qt/6.6.3/wasm_multithread/plugins/imageformats/libqicns.prl \
 		../../Qt/6.6.3/wasm_multithread/plugins/imageformats/libqico.prl \
 		../../Qt/6.6.3/wasm_multithread/plugins/imageformats/libqjpeg.prl \
 		../../Qt/6.6.3/wasm_multithread/plugins/imageformats/libqsvg.prl \
+		../../Qt/6.6.3/wasm_multithread/plugins/imageformats/libqtga.prl \
+		../../Qt/6.6.3/wasm_multithread/plugins/imageformats/libqtiff.prl \
+		../../Qt/6.6.3/wasm_multithread/plugins/imageformats/libqwbmp.prl \
+		../../Qt/6.6.3/wasm_multithread/plugins/imageformats/libqwebp.prl \
 		../../Qt/6.6.3/wasm_multithread/plugins/tls/libqcertonlybackend.prl \
 		../../Qt/6.6.3/wasm_multithread/lib/libQt6PrintSupport.prl \
 		../../Qt/6.6.3/wasm_multithread/lib/libQt6Widgets.prl \
@@ -1057,6 +1072,7 @@ Makefile: ../app/app.pro ../../Qt/6.6.3/wasm_multithread/mkspecs/wasm-emscripten
 ../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_lib_zlib_private.pri:
 ../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qcertonlybackend.pri:
 ../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qgif.pri:
+../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qicns.pri:
 ../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qico.pri:
 ../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qjpeg.pri:
 ../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qmldbg_debugger.pri:
@@ -1073,9 +1089,13 @@ Makefile: ../app/app.pro ../../Qt/6.6.3/wasm_multithread/mkspecs/wasm-emscripten
 ../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qsqlite.pri:
 ../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qsvg.pri:
 ../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qsvgicon.pri:
+../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qtga.pri:
+../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qtiff.pri:
 ../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qtuiotouchplugin.pri:
 ../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_quicklintplugin.pri:
 ../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qwasm.pri:
+../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qwbmp.pri:
+../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_qwebp.pri:
 ../../Qt/6.6.3/wasm_multithread/mkspecs/modules/qt_plugin_wasmmediaplugin.pri:
 ../../Qt/6.6.3/wasm_multithread/mkspecs/features/qt_functions.prf:
 ../../Qt/6.6.3/wasm_multithread/mkspecs/features/qt_config.prf:
@@ -1123,9 +1143,14 @@ Makefile: ../app/app.pro ../../Qt/6.6.3/wasm_multithread/mkspecs/wasm-emscripten
 ../../Qt/6.6.3/wasm_multithread/plugins/platforms/libqwasm.prl:
 ../../Qt/6.6.3/wasm_multithread/plugins/iconengines/libqsvgicon.prl:
 ../../Qt/6.6.3/wasm_multithread/plugins/imageformats/libqgif.prl:
+../../Qt/6.6.3/wasm_multithread/plugins/imageformats/libqicns.prl:
 ../../Qt/6.6.3/wasm_multithread/plugins/imageformats/libqico.prl:
 ../../Qt/6.6.3/wasm_multithread/plugins/imageformats/libqjpeg.prl:
 ../../Qt/6.6.3/wasm_multithread/plugins/imageformats/libqsvg.prl:
+../../Qt/6.6.3/wasm_multithread/plugins/imageformats/libqtga.prl:
+../../Qt/6.6.3/wasm_multithread/plugins/imageformats/libqtiff.prl:
+../../Qt/6.6.3/wasm_multithread/plugins/imageformats/libqwbmp.prl:
+../../Qt/6.6.3/wasm_multithread/plugins/imageformats/libqwebp.prl:
 ../../Qt/6.6.3/wasm_multithread/plugins/tls/libqcertonlybackend.prl:
 ../../Qt/6.6.3/wasm_multithread/lib/libQt6PrintSupport.prl:
 ../../Qt/6.6.3/wasm_multithread/lib/libQt6Widgets.prl:
