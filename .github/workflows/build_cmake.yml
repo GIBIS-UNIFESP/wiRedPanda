@@ -35,7 +35,7 @@ jobs:
       uses: jurplel/install-qt-action@v4
       with:
         version: ${{ matrix.qt_version }}
-        modules: qtmultimedia
+        modules: qtmultimedia qtimageformats
         cache: true
 
     - name: ccache
