@@ -76,6 +76,7 @@ SOURCES       = ../app/element/and.cpp \
 		../app/element/not.cpp \
 		../app/element/or.cpp \
 		../app/element/srflipflop.cpp \
+		../app/element/srlatch.cpp \
 		../app/element/text.cpp \
 		../app/element/tflipflop.cpp \
 		../app/element/truth_table.cpp \
@@ -95,6 +96,7 @@ SOURCES       = ../app/element/and.cpp \
 		../app/logicelement/logicor.cpp \
 		../app/logicelement/logicoutput.cpp \
 		../app/logicelement/logicsrflipflop.cpp \
+		../app/logicelement/logicsrlatch.cpp \
 		../app/logicelement/logictflipflop.cpp \
 		../app/logicelement/logictruthtable.cpp \
 		../app/logicelement/logicxnor.cpp \
@@ -162,6 +164,7 @@ SOURCES       = ../app/element/and.cpp \
 		build_files/moc/moc_not.cpp \
 		build_files/moc/moc_or.cpp \
 		build_files/moc/moc_srflipflop.cpp \
+		build_files/moc/moc_srlatch.cpp \
 		build_files/moc/moc_text.cpp \
 		build_files/moc/moc_tflipflop.cpp \
 		build_files/moc/moc_truth_table.cpp \
@@ -210,6 +213,7 @@ OBJECTS       = build_files/obj/and.o \
 		build_files/obj/not.o \
 		build_files/obj/or.o \
 		build_files/obj/srflipflop.o \
+		build_files/obj/srlatch.o \
 		build_files/obj/text.o \
 		build_files/obj/tflipflop.o \
 		build_files/obj/truth_table.o \
@@ -229,6 +233,7 @@ OBJECTS       = build_files/obj/and.o \
 		build_files/obj/logicor.o \
 		build_files/obj/logicoutput.o \
 		build_files/obj/logicsrflipflop.o \
+		build_files/obj/logicsrlatch.o \
 		build_files/obj/logictflipflop.o \
 		build_files/obj/logictruthtable.o \
 		build_files/obj/logicxnor.o \
@@ -297,6 +302,7 @@ OBJECTS       = build_files/obj/and.o \
 		build_files/obj/moc_not.o \
 		build_files/obj/moc_or.o \
 		build_files/obj/moc_srflipflop.o \
+		build_files/obj/moc_srlatch.o \
 		build_files/obj/moc_text.o \
 		build_files/obj/moc_tflipflop.o \
 		build_files/obj/moc_truth_table.o \
@@ -549,6 +555,7 @@ DIST          = ../app/resources/postinst \
 		../app/element/not.h \
 		../app/element/or.h \
 		../app/element/srflipflop.h \
+		../app/element/srlatch.h \
 		../app/element/text.h \
 		../app/element/tflipflop.h \
 		../app/element/truth_table.h \
@@ -569,6 +576,7 @@ DIST          = ../app/resources/postinst \
 		../app/logicelement/logicor.h \
 		../app/logicelement/logicoutput.h \
 		../app/logicelement/logicsrflipflop.h \
+		../app/logicelement/logicsrlatch.h \
 		../app/logicelement/logictflipflop.h \
 		../app/logicelement/logictruthtable.h \
 		../app/logicelement/logicxnor.h \
@@ -627,6 +635,7 @@ DIST          = ../app/resources/postinst \
 		../app/element/not.cpp \
 		../app/element/or.cpp \
 		../app/element/srflipflop.cpp \
+		../app/element/srlatch.cpp \
 		../app/element/text.cpp \
 		../app/element/tflipflop.cpp \
 		../app/element/truth_table.cpp \
@@ -646,6 +655,7 @@ DIST          = ../app/resources/postinst \
 		../app/logicelement/logicor.cpp \
 		../app/logicelement/logicoutput.cpp \
 		../app/logicelement/logicsrflipflop.cpp \
+		../app/logicelement/logicsrlatch.cpp \
 		../app/logicelement/logictflipflop.cpp \
 		../app/logicelement/logictruthtable.cpp \
 		../app/logicelement/logicxnor.cpp \
@@ -1175,8 +1185,8 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../app/resources/basic/basic.qrc ../app/resources/dolphin/dolphin.qrc ../app/resources/input/input.qrc ../app/resources/memory/dark/memory_dark.qrc ../app/resources/memory/light/memory_light.qrc ../app/resources/misc/misc.qrc ../app/resources/output/output.qrc ../app/resources/toolbar/toolbar.qrc ../app/resources/translations/translations.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents ../../Qt/6.6.3/wasm_multithread/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../app/element/and.h ../app/element/audiobox.h ../app/element/buzzer.h ../app/element/clock.h ../app/element/demux.h ../app/element/dflipflop.h ../app/element/display_14.h ../app/element/display_7.h ../app/element/dlatch.h ../app/element/inputbutton.h ../app/element/inputgnd.h ../app/element/inputrotary.h ../app/element/inputswitch.h ../app/element/inputvcc.h ../app/element/jkflipflop.h ../app/element/led.h ../app/element/line.h ../app/element/mux.h ../app/element/nand.h ../app/element/node.h ../app/element/nor.h ../app/element/not.h ../app/element/or.h ../app/element/srflipflop.h ../app/element/text.h ../app/element/tflipflop.h ../app/element/truth_table.h ../app/element/xnor.h ../app/element/xor.h ../app/logicelement/logicand.h ../app/logicelement/logicdemux.h ../app/logicelement/logicdflipflop.h ../app/logicelement/logicdlatch.h ../app/logicelement/logicinput.h ../app/logicelement/logicjkflipflop.h ../app/logicelement/logicmux.h ../app/logicelement/logicnand.h ../app/logicelement/logicnode.h ../app/logicelement/logicnone.h ../app/logicelement/logicnor.h ../app/logicelement/logicnot.h ../app/logicelement/logicor.h ../app/logicelement/logicoutput.h ../app/logicelement/logicsrflipflop.h ../app/logicelement/logictflipflop.h ../app/logicelement/logictruthtable.h ../app/logicelement/logicxnor.h ../app/logicelement/logicxor.h ../app/application.h ../app/arduino/codegenerator.h ../app/bewaveddolphin.h ../app/clockdialog.h ../app/commands.h ../app/common.h ../app/elementeditor.h ../app/elementfactory.h ../app/elementlabel.h ../app/elementmapping.h ../app/enums.h ../app/globalproperties.h ../app/graphicelement.h ../app/graphicelementinput.h ../app/graphicsview.h ../app/ic.h ../app/itemwithid.h ../app/lengthdialog.h ../app/logicelement.h ../app/mainwindow.h ../app/nodes/qneconnection.h ../app/nodes/qneport.h ../app/recentfiles.h ../app/scene.h ../app/serialization.h ../app/settings.h ../app/simulation.h ../app/simulationblocker.h ../app/thememanager.h ../app/trashbutton.h ../app/workspace.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../app/element/and.cpp ../app/element/audiobox.cpp ../app/element/buzzer.cpp ../app/element/clock.cpp ../app/element/demux.cpp ../app/element/dflipflop.cpp ../app/element/display_14.cpp ../app/element/display_7.cpp ../app/element/dlatch.cpp ../app/element/inputbutton.cpp ../app/element/inputgnd.cpp ../app/element/inputrotary.cpp ../app/element/inputswitch.cpp ../app/element/inputvcc.cpp ../app/element/jkflipflop.cpp ../app/element/led.cpp ../app/element/line.cpp ../app/element/mux.cpp ../app/element/nand.cpp ../app/element/node.cpp ../app/element/nor.cpp ../app/element/not.cpp ../app/element/or.cpp ../app/element/srflipflop.cpp ../app/element/text.cpp ../app/element/tflipflop.cpp ../app/element/truth_table.cpp ../app/element/xnor.cpp ../app/element/xor.cpp ../app/logicelement/logicand.cpp ../app/logicelement/logicdemux.cpp ../app/logicelement/logicdflipflop.cpp ../app/logicelement/logicdlatch.cpp ../app/logicelement/logicinput.cpp ../app/logicelement/logicjkflipflop.cpp ../app/logicelement/logicmux.cpp ../app/logicelement/logicnand.cpp ../app/logicelement/logicnode.cpp ../app/logicelement/logicnor.cpp ../app/logicelement/logicnot.cpp ../app/logicelement/logicor.cpp ../app/logicelement/logicoutput.cpp ../app/logicelement/logicsrflipflop.cpp ../app/logicelement/logictflipflop.cpp ../app/logicelement/logictruthtable.cpp ../app/logicelement/logicxnor.cpp ../app/logicelement/logicxor.cpp ../app/application.cpp ../app/arduino/codegenerator.cpp ../app/bewaveddolphin.cpp ../app/clockdialog.cpp ../app/commands.cpp ../app/common.cpp ../app/elementeditor.cpp ../app/elementfactory.cpp ../app/elementlabel.cpp ../app/elementmapping.cpp ../app/enums.cpp ../app/graphicelement.cpp ../app/graphicsview.cpp ../app/ic.cpp ../app/itemwithid.cpp ../app/lengthdialog.cpp ../app/logicelement.cpp ../app/mainwindow.cpp ../app/nodes/qneconnection.cpp ../app/nodes/qneport.cpp ../app/recentfiles.cpp ../app/scene.cpp ../app/serialization.cpp ../app/settings.cpp ../app/simulation.cpp ../app/simulationblocker.cpp ../app/thememanager.cpp ../app/trashbutton.cpp ../app/workspace.cpp ../app/main.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../app/element/and.h ../app/element/audiobox.h ../app/element/buzzer.h ../app/element/clock.h ../app/element/demux.h ../app/element/dflipflop.h ../app/element/display_14.h ../app/element/display_7.h ../app/element/dlatch.h ../app/element/inputbutton.h ../app/element/inputgnd.h ../app/element/inputrotary.h ../app/element/inputswitch.h ../app/element/inputvcc.h ../app/element/jkflipflop.h ../app/element/led.h ../app/element/line.h ../app/element/mux.h ../app/element/nand.h ../app/element/node.h ../app/element/nor.h ../app/element/not.h ../app/element/or.h ../app/element/srflipflop.h ../app/element/srlatch.h ../app/element/text.h ../app/element/tflipflop.h ../app/element/truth_table.h ../app/element/xnor.h ../app/element/xor.h ../app/logicelement/logicand.h ../app/logicelement/logicdemux.h ../app/logicelement/logicdflipflop.h ../app/logicelement/logicdlatch.h ../app/logicelement/logicinput.h ../app/logicelement/logicjkflipflop.h ../app/logicelement/logicmux.h ../app/logicelement/logicnand.h ../app/logicelement/logicnode.h ../app/logicelement/logicnone.h ../app/logicelement/logicnor.h ../app/logicelement/logicnot.h ../app/logicelement/logicor.h ../app/logicelement/logicoutput.h ../app/logicelement/logicsrflipflop.h ../app/logicelement/logicsrlatch.h ../app/logicelement/logictflipflop.h ../app/logicelement/logictruthtable.h ../app/logicelement/logicxnor.h ../app/logicelement/logicxor.h ../app/application.h ../app/arduino/codegenerator.h ../app/bewaveddolphin.h ../app/clockdialog.h ../app/commands.h ../app/common.h ../app/elementeditor.h ../app/elementfactory.h ../app/elementlabel.h ../app/elementmapping.h ../app/enums.h ../app/globalproperties.h ../app/graphicelement.h ../app/graphicelementinput.h ../app/graphicsview.h ../app/ic.h ../app/itemwithid.h ../app/lengthdialog.h ../app/logicelement.h ../app/mainwindow.h ../app/nodes/qneconnection.h ../app/nodes/qneport.h ../app/recentfiles.h ../app/scene.h ../app/serialization.h ../app/settings.h ../app/simulation.h ../app/simulationblocker.h ../app/thememanager.h ../app/trashbutton.h ../app/workspace.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../app/element/and.cpp ../app/element/audiobox.cpp ../app/element/buzzer.cpp ../app/element/clock.cpp ../app/element/demux.cpp ../app/element/dflipflop.cpp ../app/element/display_14.cpp ../app/element/display_7.cpp ../app/element/dlatch.cpp ../app/element/inputbutton.cpp ../app/element/inputgnd.cpp ../app/element/inputrotary.cpp ../app/element/inputswitch.cpp ../app/element/inputvcc.cpp ../app/element/jkflipflop.cpp ../app/element/led.cpp ../app/element/line.cpp ../app/element/mux.cpp ../app/element/nand.cpp ../app/element/node.cpp ../app/element/nor.cpp ../app/element/not.cpp ../app/element/or.cpp ../app/element/srflipflop.cpp ../app/element/srlatch.cpp ../app/element/text.cpp ../app/element/tflipflop.cpp ../app/element/truth_table.cpp ../app/element/xnor.cpp ../app/element/xor.cpp ../app/logicelement/logicand.cpp ../app/logicelement/logicdemux.cpp ../app/logicelement/logicdflipflop.cpp ../app/logicelement/logicdlatch.cpp ../app/logicelement/logicinput.cpp ../app/logicelement/logicjkflipflop.cpp ../app/logicelement/logicmux.cpp ../app/logicelement/logicnand.cpp ../app/logicelement/logicnode.cpp ../app/logicelement/logicnor.cpp ../app/logicelement/logicnot.cpp ../app/logicelement/logicor.cpp ../app/logicelement/logicoutput.cpp ../app/logicelement/logicsrflipflop.cpp ../app/logicelement/logicsrlatch.cpp ../app/logicelement/logictflipflop.cpp ../app/logicelement/logictruthtable.cpp ../app/logicelement/logicxnor.cpp ../app/logicelement/logicxor.cpp ../app/application.cpp ../app/arduino/codegenerator.cpp ../app/bewaveddolphin.cpp ../app/clockdialog.cpp ../app/commands.cpp ../app/common.cpp ../app/elementeditor.cpp ../app/elementfactory.cpp ../app/elementlabel.cpp ../app/elementmapping.cpp ../app/enums.cpp ../app/graphicelement.cpp ../app/graphicsview.cpp ../app/ic.cpp ../app/itemwithid.cpp ../app/lengthdialog.cpp ../app/logicelement.cpp ../app/mainwindow.cpp ../app/nodes/qneconnection.cpp ../app/nodes/qneport.cpp ../app/recentfiles.cpp ../app/scene.cpp ../app/serialization.cpp ../app/settings.cpp ../app/simulation.cpp ../app/simulationblocker.cpp ../app/thememanager.cpp ../app/trashbutton.cpp ../app/workspace.cpp ../app/main.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../app/bewaveddolphin.ui ../app/clockdialog.ui ../app/elementeditor.ui ../app/lengthdialog.ui ../app/mainwindow.ui $(DISTDIR)/
 	$(COPY_FILE) --parents resources/translations/wpanda_en.ts resources/translations/wpanda_pt_BR.ts resources/translations/wpanda_es.ts $(DISTDIR)/
 
@@ -1880,6 +1890,7 @@ build_files/rcc/qrc_memory_dark.cpp: ../app/resources/memory/dark/memory_dark.qr
 		../../Qt/6.6.3/gcc_64/libexec/rcc \
 		../app/resources/memory/dark/SR-flipflop.svg \
 		../app/resources/memory/dark/T-latch.svg \
+		../app/resources/memory/dark/SR-latch.svg \
 		../app/resources/memory/dark/JK-latch.svg \
 		../app/resources/memory/dark/D-latch.svg \
 		../app/resources/memory/dark/T-flipflop.svg \
@@ -1891,6 +1902,7 @@ build_files/rcc/qrc_memory_light.cpp: ../app/resources/memory/light/memory_light
 		../../Qt/6.6.3/gcc_64/libexec/rcc \
 		../app/resources/memory/light/SR-flipflop.svg \
 		../app/resources/memory/light/T-latch.svg \
+		../app/resources/memory/light/SR-latch.svg \
 		../app/resources/memory/light/JK-latch.svg \
 		../app/resources/memory/light/D-latch.svg \
 		../app/resources/memory/light/T-flipflop.svg \
@@ -2023,9 +2035,9 @@ build_files/moc/moc_predefs.h: ../../Qt/6.6.3/wasm_multithread/mkspecs/features/
 		build_files/obj/wiredpanda.js.pch/c++.pch
 	em++ -pipe -O2 -std=c++1z -Wall -Wextra -pthread -dM -E -o build_files/moc/moc_predefs.h ../../Qt/6.6.3/wasm_multithread/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: build_files/moc/moc_and.cpp build_files/moc/moc_audiobox.cpp build_files/moc/moc_buzzer.cpp build_files/moc/moc_clock.cpp build_files/moc/moc_demux.cpp build_files/moc/moc_dflipflop.cpp build_files/moc/moc_display_14.cpp build_files/moc/moc_display_7.cpp build_files/moc/moc_dlatch.cpp build_files/moc/moc_inputbutton.cpp build_files/moc/moc_inputgnd.cpp build_files/moc/moc_inputrotary.cpp build_files/moc/moc_inputswitch.cpp build_files/moc/moc_inputvcc.cpp build_files/moc/moc_jkflipflop.cpp build_files/moc/moc_led.cpp build_files/moc/moc_line.cpp build_files/moc/moc_mux.cpp build_files/moc/moc_nand.cpp build_files/moc/moc_node.cpp build_files/moc/moc_nor.cpp build_files/moc/moc_not.cpp build_files/moc/moc_or.cpp build_files/moc/moc_srflipflop.cpp build_files/moc/moc_text.cpp build_files/moc/moc_tflipflop.cpp build_files/moc/moc_truth_table.cpp build_files/moc/moc_xnor.cpp build_files/moc/moc_xor.cpp build_files/moc/moc_application.cpp build_files/moc/moc_bewaveddolphin.cpp build_files/moc/moc_clockdialog.cpp build_files/moc/moc_elementeditor.cpp build_files/moc/moc_elementfactory.cpp build_files/moc/moc_elementlabel.cpp build_files/moc/moc_enums.cpp build_files/moc/moc_graphicelement.cpp build_files/moc/moc_graphicelementinput.cpp build_files/moc/moc_graphicsview.cpp build_files/moc/moc_ic.cpp build_files/moc/moc_lengthdialog.cpp build_files/moc/moc_mainwindow.cpp build_files/moc/moc_recentfiles.cpp build_files/moc/moc_scene.cpp build_files/moc/moc_simulation.cpp build_files/moc/moc_thememanager.cpp build_files/moc/moc_trashbutton.cpp build_files/moc/moc_workspace.cpp
+compiler_moc_header_make_all: build_files/moc/moc_and.cpp build_files/moc/moc_audiobox.cpp build_files/moc/moc_buzzer.cpp build_files/moc/moc_clock.cpp build_files/moc/moc_demux.cpp build_files/moc/moc_dflipflop.cpp build_files/moc/moc_display_14.cpp build_files/moc/moc_display_7.cpp build_files/moc/moc_dlatch.cpp build_files/moc/moc_inputbutton.cpp build_files/moc/moc_inputgnd.cpp build_files/moc/moc_inputrotary.cpp build_files/moc/moc_inputswitch.cpp build_files/moc/moc_inputvcc.cpp build_files/moc/moc_jkflipflop.cpp build_files/moc/moc_led.cpp build_files/moc/moc_line.cpp build_files/moc/moc_mux.cpp build_files/moc/moc_nand.cpp build_files/moc/moc_node.cpp build_files/moc/moc_nor.cpp build_files/moc/moc_not.cpp build_files/moc/moc_or.cpp build_files/moc/moc_srflipflop.cpp build_files/moc/moc_srlatch.cpp build_files/moc/moc_text.cpp build_files/moc/moc_tflipflop.cpp build_files/moc/moc_truth_table.cpp build_files/moc/moc_xnor.cpp build_files/moc/moc_xor.cpp build_files/moc/moc_application.cpp build_files/moc/moc_bewaveddolphin.cpp build_files/moc/moc_clockdialog.cpp build_files/moc/moc_elementeditor.cpp build_files/moc/moc_elementfactory.cpp build_files/moc/moc_elementlabel.cpp build_files/moc/moc_enums.cpp build_files/moc/moc_graphicelement.cpp build_files/moc/moc_graphicelementinput.cpp build_files/moc/moc_graphicsview.cpp build_files/moc/moc_ic.cpp build_files/moc/moc_lengthdialog.cpp build_files/moc/moc_mainwindow.cpp build_files/moc/moc_recentfiles.cpp build_files/moc/moc_scene.cpp build_files/moc/moc_simulation.cpp build_files/moc/moc_thememanager.cpp build_files/moc/moc_trashbutton.cpp build_files/moc/moc_workspace.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) build_files/moc/moc_and.cpp build_files/moc/moc_audiobox.cpp build_files/moc/moc_buzzer.cpp build_files/moc/moc_clock.cpp build_files/moc/moc_demux.cpp build_files/moc/moc_dflipflop.cpp build_files/moc/moc_display_14.cpp build_files/moc/moc_display_7.cpp build_files/moc/moc_dlatch.cpp build_files/moc/moc_inputbutton.cpp build_files/moc/moc_inputgnd.cpp build_files/moc/moc_inputrotary.cpp build_files/moc/moc_inputswitch.cpp build_files/moc/moc_inputvcc.cpp build_files/moc/moc_jkflipflop.cpp build_files/moc/moc_led.cpp build_files/moc/moc_line.cpp build_files/moc/moc_mux.cpp build_files/moc/moc_nand.cpp build_files/moc/moc_node.cpp build_files/moc/moc_nor.cpp build_files/moc/moc_not.cpp build_files/moc/moc_or.cpp build_files/moc/moc_srflipflop.cpp build_files/moc/moc_text.cpp build_files/moc/moc_tflipflop.cpp build_files/moc/moc_truth_table.cpp build_files/moc/moc_xnor.cpp build_files/moc/moc_xor.cpp build_files/moc/moc_application.cpp build_files/moc/moc_bewaveddolphin.cpp build_files/moc/moc_clockdialog.cpp build_files/moc/moc_elementeditor.cpp build_files/moc/moc_elementfactory.cpp build_files/moc/moc_elementlabel.cpp build_files/moc/moc_enums.cpp build_files/moc/moc_graphicelement.cpp build_files/moc/moc_graphicelementinput.cpp build_files/moc/moc_graphicsview.cpp build_files/moc/moc_ic.cpp build_files/moc/moc_lengthdialog.cpp build_files/moc/moc_mainwindow.cpp build_files/moc/moc_recentfiles.cpp build_files/moc/moc_scene.cpp build_files/moc/moc_simulation.cpp build_files/moc/moc_thememanager.cpp build_files/moc/moc_trashbutton.cpp build_files/moc/moc_workspace.cpp
+	-$(DEL_FILE) build_files/moc/moc_and.cpp build_files/moc/moc_audiobox.cpp build_files/moc/moc_buzzer.cpp build_files/moc/moc_clock.cpp build_files/moc/moc_demux.cpp build_files/moc/moc_dflipflop.cpp build_files/moc/moc_display_14.cpp build_files/moc/moc_display_7.cpp build_files/moc/moc_dlatch.cpp build_files/moc/moc_inputbutton.cpp build_files/moc/moc_inputgnd.cpp build_files/moc/moc_inputrotary.cpp build_files/moc/moc_inputswitch.cpp build_files/moc/moc_inputvcc.cpp build_files/moc/moc_jkflipflop.cpp build_files/moc/moc_led.cpp build_files/moc/moc_line.cpp build_files/moc/moc_mux.cpp build_files/moc/moc_nand.cpp build_files/moc/moc_node.cpp build_files/moc/moc_nor.cpp build_files/moc/moc_not.cpp build_files/moc/moc_or.cpp build_files/moc/moc_srflipflop.cpp build_files/moc/moc_srlatch.cpp build_files/moc/moc_text.cpp build_files/moc/moc_tflipflop.cpp build_files/moc/moc_truth_table.cpp build_files/moc/moc_xnor.cpp build_files/moc/moc_xor.cpp build_files/moc/moc_application.cpp build_files/moc/moc_bewaveddolphin.cpp build_files/moc/moc_clockdialog.cpp build_files/moc/moc_elementeditor.cpp build_files/moc/moc_elementfactory.cpp build_files/moc/moc_elementlabel.cpp build_files/moc/moc_enums.cpp build_files/moc/moc_graphicelement.cpp build_files/moc/moc_graphicelementinput.cpp build_files/moc/moc_graphicsview.cpp build_files/moc/moc_ic.cpp build_files/moc/moc_lengthdialog.cpp build_files/moc/moc_mainwindow.cpp build_files/moc/moc_recentfiles.cpp build_files/moc/moc_scene.cpp build_files/moc/moc_simulation.cpp build_files/moc/moc_thememanager.cpp build_files/moc/moc_trashbutton.cpp build_files/moc/moc_workspace.cpp
 build_files/moc/moc_and.cpp: ../app/element/and.h \
 		../app/graphicelement.h \
 		../app/enums.h \
@@ -6076,6 +6088,231 @@ build_files/moc/moc_srflipflop.cpp: ../app/element/srflipflop.h \
 		build_files/moc/moc_predefs.h \
 		../../Qt/6.6.3/gcc_64/libexec/moc
 	/home/runner/work/wiRedPanda/Qt/6.6.3/gcc_64/libexec/moc $(DEFINES) --include /home/runner/work/wiRedPanda/wiRedPanda/build/build_files/moc/moc_predefs.h -I/home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/mkspecs/wasm-emscripten -I/home/runner/work/wiRedPanda/wiRedPanda/app -I/home/runner/work/wiRedPanda/wiRedPanda/app -I/home/runner/work/wiRedPanda/wiRedPanda/app/arduino -I/home/runner/work/wiRedPanda/wiRedPanda/app/element -I/home/runner/work/wiRedPanda/wiRedPanda/app/logicelement -I/home/runner/work/wiRedPanda/wiRedPanda/app/nodes -I/home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/include -I/home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/include/QtPrintSupport -I/home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/include/QtWidgets -I/home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/include/QtMultimedia -I/home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/include/QtSvg -I/home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/include/QtGui -I/home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/include/QtNetwork -I/home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/include/QtCore -I. ../app/element/srflipflop.h -o build_files/moc/moc_srflipflop.cpp
+
+build_files/moc/moc_srlatch.cpp: ../app/element/srlatch.h \
+		../app/graphicelement.h \
+		../app/enums.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QObject \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qobject.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qobjectdefs.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qnamespace.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qglobal.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtversionchecks.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtconfiginclude.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qconfig.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtcore-config.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtconfigmacros.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtcoreexports.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcompilerdetection.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qsystemdetection.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qprocessordetection.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtdeprecationmarkers.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtpreprocessorsupport.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qassert.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtnoop.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtypes.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtversion.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtclasshelpermacros.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtypeinfo.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcontainerfwd.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qsysinfo.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qlogging.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qflags.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcompare_impl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qatomic.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qbasicatomic.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qatomic_cxx11.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qgenericatomic.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qconstructormacros.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qdarwinhelpers.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qexceptionhandling.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qforeach.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qttypetraits.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qfunctionpointer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qglobalstatic.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qmalloc.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qminmax.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qnumeric.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qoverload.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qswap.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtenvironmentvariables.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtresource.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qttranslation.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qversiontagging.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtmetamacros.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qobjectdefs_impl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qfunctionaltools_impl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstring.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qchar.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringview.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qbytearray.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qrefcount.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qarraydata.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qpair.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qarraydatapointer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qarraydataops.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcontainertools_impl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qxptype_traits.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/q20functional.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/q20memory.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qbytearrayalgorithms.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qbytearrayview.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringfwd.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/q20type_traits.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringliteral.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringalgorithms.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qlatin1stringview.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qanystringview.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qutf8stringview.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringtokenizer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringbuilder.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qlist.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qhashfunctions.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qiterator.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qbytearraylist.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringlist.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qalgorithms.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringmatcher.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcoreevent.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qscopedpointer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qmetatype.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcompare.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qdatastream.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qiodevicebase.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qfloat16.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qmath.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qiterable.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qmetacontainer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcontainerinfo.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtaggedpointer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qscopeguard.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qobject_impl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qbindingstorage.h \
+		../app/itemwithid.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QtGlobal \
+		../app/logicelement.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QVector \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qvector.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QBitArray \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qbitarray.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/QGraphicsItem \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qgraphicsitem.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qtwidgetsglobal.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qtguiglobal.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qtgui-config.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qtguiexports.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qtwidgets-config.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qtwidgetsexports.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qvariant.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qdebug.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtextstream.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringconverter_base.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcontiguouscache.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qsharedpointer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qshareddata.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qmap.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qshareddata_impl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qset.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qhash.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qvarlengtharray.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/q23utility.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qrect.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qmargins.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qsize.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qpoint.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qpainterpath.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qtransform.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qpolygon.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qregion.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qwindowdefs.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qline.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qpixmap.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qpaintdevice.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qcolor.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qrgb.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qrgba64.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qimage.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qpixelformat.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/QKeySequence \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qkeysequence.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/QPixmapCache \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qpixmapcache.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QVersionNumber \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qversionnumber.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtyperevision.h \
+		../app/thememanager.h \
+		../app/application.h \
+		../app/mainwindow.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QDir \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qdir.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qfile.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qfiledevice.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qiodevice.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qfileinfo.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qdatetime.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcalendar.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qlocale.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtimezone.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/QMainWindow \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qmainwindow.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qwidget.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qaction.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qicon.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qpalette.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qbrush.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qfont.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qfontmetrics.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qfontinfo.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qsizepolicy.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qcursor.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qbitmap.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qevent.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qpointer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qurl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qeventpoint.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qvector2d.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qvectornd.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qpointingdevice.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qinputdevice.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qscreen.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QList \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QRect \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QSize \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QSizeF \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/QTransform \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qnativeinterface.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qtabwidget.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/QSpacerItem \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qlayoutitem.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QTranslator \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtranslator.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/QApplication \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qapplication.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcoreapplication.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qeventloop.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcoreapplication_platform.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qfuture.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qfutureinterface.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qmutex.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qdeadlinetimer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qelapsedtimer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtsan_impl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qresultstore.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qfuture_impl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qthreadpool.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qthread.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qrunnable.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qexception.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qpromise.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qguiapplication.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qinputmethod.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qguiapplication_platform.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/QColor \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/QPalette \
+		build_files/moc/moc_predefs.h \
+		../../Qt/6.6.3/gcc_64/libexec/moc
+	/home/runner/work/wiRedPanda/Qt/6.6.3/gcc_64/libexec/moc $(DEFINES) --include /home/runner/work/wiRedPanda/wiRedPanda/build/build_files/moc/moc_predefs.h -I/home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/mkspecs/wasm-emscripten -I/home/runner/work/wiRedPanda/wiRedPanda/app -I/home/runner/work/wiRedPanda/wiRedPanda/app -I/home/runner/work/wiRedPanda/wiRedPanda/app/arduino -I/home/runner/work/wiRedPanda/wiRedPanda/app/element -I/home/runner/work/wiRedPanda/wiRedPanda/app/logicelement -I/home/runner/work/wiRedPanda/wiRedPanda/app/nodes -I/home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/include -I/home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/include/QtPrintSupport -I/home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/include/QtWidgets -I/home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/include/QtMultimedia -I/home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/include/QtSvg -I/home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/include/QtGui -I/home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/include/QtNetwork -I/home/runner/work/wiRedPanda/Qt/6.6.3/wasm_multithread/include/QtCore -I. ../app/element/srlatch.h -o build_files/moc/moc_srlatch.cpp
 
 build_files/moc/moc_text.cpp: ../app/element/text.h \
 		../app/graphicelement.h \
@@ -14895,6 +15132,235 @@ build_files/obj/srflipflop.o: ../app/element/srflipflop.cpp ../app/element/srfli
 		build_files/obj/wiredpanda.js.pch/c++.pch
 	$(CXX) -c -Xclang -include-pch -Xclang build_files/obj/wiredpanda.js.pch/c++.pch $(CXXFLAGS) $(INCPATH) -o build_files/obj/srflipflop.o ../app/element/srflipflop.cpp
 
+build_files/obj/srlatch.o: ../app/element/srlatch.cpp ../app/element/srlatch.h \
+		../app/graphicelement.h \
+		../app/enums.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QObject \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qobject.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qobjectdefs.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qnamespace.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qglobal.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtversionchecks.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtconfiginclude.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qconfig.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtcore-config.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtconfigmacros.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtcoreexports.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcompilerdetection.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qsystemdetection.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qprocessordetection.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtdeprecationmarkers.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtpreprocessorsupport.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qassert.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtnoop.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtypes.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtversion.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtclasshelpermacros.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtypeinfo.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcontainerfwd.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qsysinfo.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qlogging.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qflags.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcompare_impl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qatomic.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qbasicatomic.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qatomic_cxx11.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qgenericatomic.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qconstructormacros.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qdarwinhelpers.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qexceptionhandling.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qforeach.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qttypetraits.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qfunctionpointer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qglobalstatic.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qmalloc.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qminmax.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qnumeric.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qoverload.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qswap.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtenvironmentvariables.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtresource.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qttranslation.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qversiontagging.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtmetamacros.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qobjectdefs_impl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qfunctionaltools_impl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstring.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qchar.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringview.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qbytearray.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qrefcount.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qarraydata.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qpair.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qarraydatapointer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qarraydataops.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcontainertools_impl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qxptype_traits.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/q20functional.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/q20memory.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qbytearrayalgorithms.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qbytearrayview.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringfwd.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/q20type_traits.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringliteral.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringalgorithms.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qlatin1stringview.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qanystringview.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qutf8stringview.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringtokenizer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringbuilder.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qlist.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qhashfunctions.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qiterator.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qbytearraylist.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringlist.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qalgorithms.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringmatcher.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcoreevent.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qscopedpointer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qmetatype.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcompare.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qdatastream.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qiodevicebase.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qfloat16.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qmath.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qiterable.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qmetacontainer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcontainerinfo.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtaggedpointer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qscopeguard.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qobject_impl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qbindingstorage.h \
+		../app/itemwithid.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QtGlobal \
+		../app/logicelement.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QVector \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qvector.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QBitArray \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qbitarray.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/QGraphicsItem \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qgraphicsitem.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qtwidgetsglobal.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qtguiglobal.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qtgui-config.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qtguiexports.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qtwidgets-config.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qtwidgetsexports.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qvariant.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qdebug.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtextstream.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringconverter_base.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcontiguouscache.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qsharedpointer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qshareddata.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qmap.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qshareddata_impl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qset.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qhash.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qvarlengtharray.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/q23utility.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qrect.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qmargins.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qsize.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qpoint.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qpainterpath.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qtransform.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qpolygon.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qregion.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qwindowdefs.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qline.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qpixmap.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qpaintdevice.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qcolor.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qrgb.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qrgba64.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qimage.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qpixelformat.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/QKeySequence \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qkeysequence.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/QPixmapCache \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qpixmapcache.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QVersionNumber \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qversionnumber.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtyperevision.h \
+		../app/thememanager.h \
+		../app/application.h \
+		../app/mainwindow.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QDir \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qdir.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qfile.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qfiledevice.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qiodevice.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qfileinfo.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qdatetime.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcalendar.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qlocale.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtimezone.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/QMainWindow \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qmainwindow.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qwidget.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qaction.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qicon.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qpalette.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qbrush.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qfont.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qfontmetrics.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qfontinfo.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qsizepolicy.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qcursor.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qbitmap.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qevent.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qpointer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qurl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qeventpoint.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qvector2d.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qvectornd.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qpointingdevice.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qinputdevice.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qscreen.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QList \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QRect \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QSize \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QSizeF \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/QTransform \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qnativeinterface.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qtabwidget.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/QSpacerItem \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qlayoutitem.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QTranslator \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtranslator.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/QApplication \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qapplication.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcoreapplication.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qeventloop.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcoreapplication_platform.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qfuture.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qfutureinterface.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qmutex.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qdeadlinetimer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qelapsedtimer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtsan_impl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qresultstore.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qfuture_impl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qthreadpool.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qthread.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qrunnable.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qexception.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qpromise.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qguiapplication.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qinputmethod.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qguiapplication_platform.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/QColor \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/QPalette \
+		../app/globalproperties.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QString \
+		../app/nodes/qneport.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/QBrush \
+		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/QGraphicsPathItem \
+		build_files/obj/wiredpanda.js.pch/c++.pch
+	$(CXX) -c -Xclang -include-pch -Xclang build_files/obj/wiredpanda.js.pch/c++.pch $(CXXFLAGS) $(INCPATH) -o build_files/obj/srlatch.o ../app/element/srlatch.cpp
+
 build_files/obj/text.o: ../app/element/text.cpp ../app/element/text.h \
 		../app/graphicelement.h \
 		../app/enums.h \
@@ -16928,6 +17394,89 @@ build_files/obj/logicsrflipflop.o: ../app/logicelement/logicsrflipflop.cpp ../ap
 		build_files/obj/wiredpanda.js.pch/c++.pch
 	$(CXX) -c -Xclang -include-pch -Xclang build_files/obj/wiredpanda.js.pch/c++.pch $(CXXFLAGS) $(INCPATH) -o build_files/obj/logicsrflipflop.o ../app/logicelement/logicsrflipflop.cpp
 
+build_files/obj/logicsrlatch.o: ../app/logicelement/logicsrlatch.cpp ../app/logicelement/logicsrlatch.h \
+		../app/logicelement.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/QVector \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qvector.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qlist.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qarraydatapointer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qarraydataops.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qarraydata.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qpair.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qglobal.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtversionchecks.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtconfiginclude.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qconfig.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtcore-config.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtconfigmacros.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtcoreexports.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcompilerdetection.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qsystemdetection.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qprocessordetection.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtdeprecationmarkers.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtpreprocessorsupport.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qassert.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtnoop.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtypes.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtversion.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtclasshelpermacros.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtypeinfo.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcontainerfwd.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qsysinfo.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qlogging.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qflags.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcompare_impl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qatomic.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qbasicatomic.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qatomic_cxx11.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qgenericatomic.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qconstructormacros.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qdarwinhelpers.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qexceptionhandling.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qforeach.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qttypetraits.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qfunctionpointer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qglobalstatic.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qmalloc.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qminmax.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qnumeric.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qoverload.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qswap.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtenvironmentvariables.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtresource.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qttranslation.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qversiontagging.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcontainertools_impl.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qxptype_traits.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/q20functional.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/q20memory.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qnamespace.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qtmetamacros.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qhashfunctions.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstring.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qchar.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringview.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qbytearray.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qrefcount.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qbytearrayalgorithms.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qbytearrayview.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringfwd.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/q20type_traits.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringliteral.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringalgorithms.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qlatin1stringview.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qanystringview.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qutf8stringview.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringtokenizer.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringbuilder.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qiterator.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qbytearraylist.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringlist.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qalgorithms.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qstringmatcher.h \
+		build_files/obj/wiredpanda.js.pch/c++.pch
+	$(CXX) -c -Xclang -include-pch -Xclang build_files/obj/wiredpanda.js.pch/c++.pch $(CXXFLAGS) $(INCPATH) -o build_files/obj/logicsrlatch.o ../app/logicelement/logicsrlatch.cpp
+
 build_files/obj/logictflipflop.o: ../app/logicelement/logictflipflop.cpp ../app/logicelement/logictflipflop.h \
 		../app/logicelement.h \
 		../../Qt/6.6.3/wasm_multithread/include/QtCore/QVector \
@@ -18861,6 +19410,18 @@ build_files/obj/elementeditor.o: ../app/elementeditor.cpp ../app/elementeditor.h
 		../../Qt/6.6.3/wasm_multithread/include/QtCore/QDebug \
 		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/QFileDialog \
 		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qfiledialog.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/QImageReader \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qimagereader.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qimageiohandler.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qplugin.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qjsonobject.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qjsonvalue.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcborvalue.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qcborcommon.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/quuid.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qendian.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/q20algorithm.h \
+		../../Qt/6.6.3/wasm_multithread/include/QtCore/qfactoryinterface.h \
 		../../Qt/6.6.3/wasm_multithread/include/QtGui/QKeyEvent \
 		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/QMenu \
 		../../Qt/6.6.3/wasm_multithread/include/QtWidgets/qmenu.h \
@@ -19039,6 +19600,7 @@ build_files/obj/elementfactory.o: ../app/elementfactory.cpp ../app/elementfactor
 		../app/logicelement/logicor.h \
 		../app/logicelement/logicoutput.h \
 		../app/logicelement/logicsrflipflop.h \
+		../app/logicelement/logicsrlatch.h \
 		../app/logicelement/logictflipflop.h \
 		../app/logicelement/logictruthtable.h \
 		../app/logicelement/logicxnor.h \
@@ -23672,6 +24234,9 @@ build_files/obj/moc_or.o: build_files/moc/moc_or.cpp build_files/obj/wiredpanda.
 
 build_files/obj/moc_srflipflop.o: build_files/moc/moc_srflipflop.cpp build_files/obj/wiredpanda.js.pch/c++.pch
 	$(CXX) -c -Xclang -include-pch -Xclang build_files/obj/wiredpanda.js.pch/c++.pch $(CXXFLAGS) $(INCPATH) -o build_files/obj/moc_srflipflop.o build_files/moc/moc_srflipflop.cpp
+
+build_files/obj/moc_srlatch.o: build_files/moc/moc_srlatch.cpp build_files/obj/wiredpanda.js.pch/c++.pch
+	$(CXX) -c -Xclang -include-pch -Xclang build_files/obj/wiredpanda.js.pch/c++.pch $(CXXFLAGS) $(INCPATH) -o build_files/obj/moc_srlatch.o build_files/moc/moc_srlatch.cpp
 
 build_files/obj/moc_text.o: build_files/moc/moc_text.cpp build_files/obj/wiredpanda.js.pch/c++.pch
 	$(CXX) -c -Xclang -include-pch -Xclang build_files/obj/wiredpanda.js.pch/c++.pch $(CXXFLAGS) $(INCPATH) -o build_files/obj/moc_text.o build_files/moc/moc_text.cpp
