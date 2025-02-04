@@ -8,7 +8,7 @@ wiRedPanda is a free software designed to help students learn about logic circui
 
 The main features of the software are:
 
-- Works on Windows, OSX and Linux (Thanks Qt :D)
+- Works on Windows, macOS and Linux (Thanks Qt :D)
 - Real-time logic simulation.
 - User-friendly interface.
 - It's intuitive and easy to use.
