@@ -48,7 +48,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     m_tableBox->setWindowTitle(tr("Truth Table"));
     m_tableBox->setModal(true);
     auto *tableLayout = new QGridLayout(m_tableBox);
-    m_table = new QTableWidget;
+    m_table = new QTableWidget(this);
     tableLayout->addWidget(m_table);
     m_tableBox->setLayout(tableLayout);
 
