@@ -240,7 +240,7 @@ void IC::generatePixmap()
     QRectF topCenter = QRectF(finalRect.topLeft() + QPointF(18, -12), QSize(24, 24));
     tmpPainter.drawChord(topCenter, 0, -180 * 16);
 
-    m_pixmap = std::make_unique<QPixmap>(tempPixmap);
+    m_pixmap = tempPixmap;
 }
 
 void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
@@ -386,9 +386,10 @@ void IC::loadOutputsLabels()
     }
 }
 
-ElementMapping *IC::generateMap() const
+const QVector<std::shared_ptr<LogicElement>> IC::generateMap() const
 {
-    return new ElementMapping(m_icElements);
+    ElementMapping mapping(m_icElements);
+    return mapping.logicElms();
 }
 
 void IC::refresh()

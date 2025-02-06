@@ -113,7 +113,7 @@ void TruthTable::generatePixmap()
     shadowRect.adjust(0, -3, 0, 0);
     tmpPainter.drawRoundedRect(shadowRect, 3, 3);
 
-    m_pixmap = std::make_unique<QPixmap>(tempPixmap);
+    m_pixmap = tempPixmap;
 
     GraphicElement::update();
 }

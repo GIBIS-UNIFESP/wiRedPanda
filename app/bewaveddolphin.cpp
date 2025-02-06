@@ -290,7 +290,7 @@ void BewavedDolphin::on_tableView_cellDoubleClicked()
 {
     const auto indexes = m_signalTableView->selectionModel()->selectedIndexes();
 
-    for (auto index : indexes) {
+    for (auto &index : indexes) {
         int value = m_model->index(index.row(), index.column(), QModelIndex()).data().toInt();
         value = (value + 1) % 2;
         createElement(index.row(), index.column(), value);
@@ -305,7 +305,7 @@ void BewavedDolphin::on_tableView_selectionChanged()
 
     const auto indexes = m_signalTableView->selectionModel()->selectedIndexes();
 
-    for (auto index : indexes) {
+    for (auto &index : indexes) {
         if (index.row() < m_inputs.size()) {
             m_inputs.at(index.row())->setSelected(true);
         }

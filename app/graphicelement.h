@@ -149,7 +149,7 @@ protected:
     QVector<QNEOutputPort *> m_outputPorts;
 
     //! Current pixmap displayed for this GraphicElement.
-    std::unique_ptr<QPixmap> m_pixmap = std::make_unique<QPixmap>();
+    QPixmap m_pixmap;
 
     QColor m_selectionBrush;
     QColor m_selectionPen;

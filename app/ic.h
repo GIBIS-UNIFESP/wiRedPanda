@@ -9,8 +9,6 @@
 #include <QFileInfo>
 #include <QFileSystemWatcher>
 
-class ICPrototype;
-
 class IC : public GraphicElement
 {
     Q_OBJECT
@@ -24,7 +22,7 @@ public:
 
     static void copyFiles(const QFileInfo &srcFile);
 
-    ElementMapping *generateMap() const;
+    const QVector<std::shared_ptr<LogicElement>> generateMap() const;
     LogicElement *inputLogic(const int index);
     LogicElement *outputLogic(const int index);
     void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;

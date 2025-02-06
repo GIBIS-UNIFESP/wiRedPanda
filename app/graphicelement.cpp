@@ -79,7 +79,7 @@ ElementGroup GraphicElement::elementGroup() const
 
 QPixmap GraphicElement::pixmap() const
 {
-    return m_pixmap ? *m_pixmap : QPixmap();
+    return m_pixmap;
 }
 
 void GraphicElement::setPixmap(const int index)
@@ -93,14 +93,10 @@ void GraphicElement::setPixmap(const QString &pixmapPath)
         return;
     }
 
-    if (!QPixmapCache::find(pixmapPath, m_pixmap.get())) {
-        if (!m_pixmap->load(pixmapPath)) {
-            m_pixmap->load(m_defaultSkins.constFirst());
-            qCDebug(zero) << "Problem loading pixmapPath: " << pixmapPath;
-            throw Pandaception(tr("Couldn't load pixmap."));
-        }
-
-        QPixmapCache::insert(pixmapPath, *m_pixmap);
+    if (!m_pixmap.load(pixmapPath)) {
+        m_pixmap.load(m_defaultSkins.constFirst());
+        qCDebug(zero) << "Problem loading pixmapPath: " << pixmapPath;
+        throw Pandaception(tr("Couldn't load pixmap."));
     }
 
     setTransformOriginPoint(pixmapCenter());
