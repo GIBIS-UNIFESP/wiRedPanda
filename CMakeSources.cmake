@@ -105,6 +105,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/app/nodes/qneconnection.h
     ${CMAKE_CURRENT_LIST_DIR}/app/nodes/qneport.h
     ${CMAKE_CURRENT_LIST_DIR}/app/recentfiles.h
+    ${CMAKE_CURRENT_LIST_DIR}/app/registertypes.h
     ${CMAKE_CURRENT_LIST_DIR}/app/scene.h
     ${CMAKE_CURRENT_LIST_DIR}/app/serialization.h
     ${CMAKE_CURRENT_LIST_DIR}/app/settings.h

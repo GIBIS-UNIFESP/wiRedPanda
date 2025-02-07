@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common.h"
+#include "registertypes.h"
 #include "testcommands.h"
 #include "testelements.h"
 #include "testfiles.h"
@@ -14,6 +15,8 @@
 
 int main(int argc, char **argv)
 {
+    registerTypes();
+
     Comment::setVerbosity(-1);
 
     QApplication app(argc, argv);
