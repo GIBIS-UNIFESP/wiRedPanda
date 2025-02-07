@@ -23463,6 +23463,8 @@ build_files/obj/thememanager.o: ../app/thememanager.cpp ../app/thememanager.h \
 		../../Qt/6.6.3/wasm_multithread/include/QtCore/QSettings \
 		../../Qt/6.6.3/wasm_multithread/include/QtCore/qsettings.h \
 		../../Qt/6.6.3/wasm_multithread/include/QtCore/QDebug \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/QStyleHints \
+		../../Qt/6.6.3/wasm_multithread/include/QtGui/qstylehints.h \
 		build_files/obj/wiredpanda.js.pch/c++.pch
 	$(CXX) -c -Xclang -include-pch -Xclang build_files/obj/wiredpanda.js.pch/c++.pch $(CXXFLAGS) $(INCPATH) -o build_files/obj/thememanager.o ../app/thememanager.cpp
 
