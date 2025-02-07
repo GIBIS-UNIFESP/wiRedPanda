@@ -65,17 +65,24 @@ include_directories(
     app/nodes
 )
 
-# ========= APP ===================================
+# ========= LIB ===================================
 
-add_executable(wiredpanda
-    app/main.cpp
+add_library(wiredpanda_lib STATIC
     ${SOURCES}
     ${HEADERS}
     ${FORMS}
-    ${RESOURCES_RCC}
 )
 
-target_link_libraries(wiredpanda PRIVATE ${QT_LIBS})
+target_link_libraries(wiredpanda_lib PUBLIC ${QT_LIBS})
+
+if(MSVC)
+    target_precompile_headers(wiredpanda_lib PRIVATE pch.h)
+endif()
+
+# ========= APP ===================================
+
+add_executable(wiredpanda app/main.cpp ${RESOURCES_RCC})
+target_link_libraries(wiredpanda PRIVATE wiredpanda_lib)
 
 if(WIN32)
     set(WINDOWS_APP_NAME "wiRedPanda - Logic Circuit Simulator")
@@ -91,26 +98,13 @@ if(WIN32)
     endif()
 endif()
 
-if(MSVC)
-    target_precompile_headers(wiredpanda PRIVATE pch.h)
-endif()
-
 # ========= TESTS ===================================
 
 file(GLOB_RECURSE TEST_SOURCES "test/*.cpp")
 file(GLOB_RECURSE TEST_HEADERS "test/*.h")
 
-add_executable(test
-    ${TEST_SOURCES}
-    ${TEST_HEADERS}
-    ${SOURCES}
-    ${HEADERS}
-    ${FORMS}
-    ${RESOURCES_RCC}
-)
-
-target_link_libraries(test PRIVATE ${QT_LIBS})
-target_precompile_headers(test PRIVATE pch.h)
+add_executable(test ${TEST_SOURCES} ${TEST_HEADERS} ${RESOURCES_RCC})
+target_link_libraries(test PRIVATE wiredpanda_lib)
 target_compile_definitions(test PRIVATE CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/test)
 
 if(MSVC)

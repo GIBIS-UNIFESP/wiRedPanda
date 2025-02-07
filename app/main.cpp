@@ -5,6 +5,7 @@
 #include "common.h"
 #include "globalproperties.h"
 #include "mainwindow.h"
+#include "registertypes.h"
 
 #include <QCommandLineParser>
 #include <QMessageBox>
@@ -15,6 +16,8 @@
 
 int main(int argc, char *argv[])
 {
+    registerTypes();
+
     Comment::setVerbosity(-1);
 
 #ifdef Q_OS_WIN
