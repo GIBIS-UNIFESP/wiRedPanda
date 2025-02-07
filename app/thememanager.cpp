@@ -6,6 +6,9 @@
 #include "settings.h"
 
 #include <QDebug>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#include <QStyleHints>
+#endif
 
 ThemeManager::ThemeManager(QObject *parent)
     : QObject(parent)
@@ -49,6 +52,10 @@ void ThemeAttributes::setTheme(const Theme theme)
 {
     switch (theme) {
     case Theme::Light: {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+        qApp->styleHints()->setColorScheme(Qt::ColorScheme::Light);
+#endif
+
         m_sceneBgBrush = QColor(255, 255, 230);
         m_sceneBgDots = QColor(Qt::darkGray);
 
@@ -72,6 +79,10 @@ void ThemeAttributes::setTheme(const Theme theme)
     }
 
     case Theme::Dark: {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+        qApp->styleHints()->setColorScheme(Qt::ColorScheme::Dark);
+#endif
+
         m_sceneBgBrush = QColor(64, 69, 82);
         m_sceneBgDots = QColor(Qt::lightGray);
 
