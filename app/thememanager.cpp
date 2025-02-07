@@ -99,7 +99,6 @@ void ThemeAttributes::setTheme(const Theme theme)
         darkPalette.setColor(QPalette::Link, QColor(42, 130, 218));
 
         darkPalette.setColor(QPalette::Highlight, QColor(42, 130, 218));
-        darkPalette.setColor(QPalette::HighlightedText, Qt::black);
 
         darkPalette.setColor(QPalette::Disabled, QPalette::ButtonText, QColor(120, 120, 120));
         darkPalette.setColor(QPalette::Disabled, QPalette::Base, QColor(120, 120, 120));
