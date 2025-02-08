@@ -5,7 +5,8 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ "master" ]
+    branches: 
+      - master
     
 jobs:
   analyze:
@@ -33,6 +34,7 @@ jobs:
       with:
         version: 5.15.2
         cache: true
+        aqtversion: ==3.2.*
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
