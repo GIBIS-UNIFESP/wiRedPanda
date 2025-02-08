@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        qt_version: [5.12.12, 5.13.2, 5.14.2, 5.15.2, 6.2.4, 6.3.2, 6.4.3, 6.5.3, 6.6.3, 6.7.3, 6.8.2]
+        qt_version: [5.12.12, 5.13.2, 5.14.2, 5.15.2, 6.2.4, 6.3.2, 6.4.3, 6.5.3, 6.6.3, 6.7.3, 6.8.2, 6.9.0]
 
 # =================================
 
@@ -29,6 +29,7 @@ jobs:
       with:
         version: ${{ matrix.qt_version }}
         cache: true
+        aqtversion: ==3.2.*
 
     - name: Install Qt6
       if: startsWith(matrix.qt_version, '6')
@@ -37,6 +38,7 @@ jobs:
         version: ${{ matrix.qt_version }}
         modules: qtmultimedia qtimageformats
         cache: true
+        aqtversion: ==3.2.*
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -87,7 +89,6 @@ jobs:
       run: |
         mkdir build
         cd build
-        # workaround for https://bugreports.qt.io/browse/QTBUG-117225
         qmake ../WPanda.pro -early QMAKE_DEFAULT_LIBDIRS=$(xcrun -show-sdk-path)/usr/lib
         make -j3
 
