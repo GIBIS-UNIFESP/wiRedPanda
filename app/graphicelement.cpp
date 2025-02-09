@@ -342,7 +342,10 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
         ++skin;
     }
 
-    m_usingDefaultSkin = (m_defaultSkins == m_alternativeSkins);
+    m_usingDefaultSkin = std::equal(
+        m_defaultSkins.begin(), m_defaultSkins.end(),
+        m_alternativeSkins.begin(), m_alternativeSkins.end()
+        );
 
     refresh();
 }
@@ -542,7 +545,10 @@ void GraphicElement::loadPixmapSkinNames(QDataStream &stream, const QVersionNumb
             loadPixmapSkinName(stream, static_cast<int>(skin));
         }
 
-        m_usingDefaultSkin = (m_defaultSkins == m_alternativeSkins);
+        m_usingDefaultSkin = std::equal(
+            m_defaultSkins.begin(), m_defaultSkins.end(),
+            m_alternativeSkins.begin(), m_alternativeSkins.end()
+            );
 
         refresh();
     }

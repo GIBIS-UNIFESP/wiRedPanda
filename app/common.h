@@ -16,11 +16,11 @@ Q_DECLARE_LOGGING_CATEGORY(five)
 #undef qCDebug // to add noquote() and nospace()
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 3, 0)
-#define qCDebug(category, ...) \
+#define qCDebug(category) \
     for (bool qt_category_enabled = category().isDebugEnabled(); qt_category_enabled; qt_category_enabled = false) \
-        QMessageLogger(QT_MESSAGELOG_FILE, QT_MESSAGELOG_LINE, QT_MESSAGELOG_FUNC, category().categoryName()).debug(__VA_ARGS__).noquote().nospace()
+        QMessageLogger(QT_MESSAGELOG_FILE, QT_MESSAGELOG_LINE, QT_MESSAGELOG_FUNC, category().categoryName()).debug().noquote().nospace()
 #else
-#define qCDebug(category, ...) QT_MESSAGE_LOGGER_COMMON(category, QtDebugMsg).debug(__VA_ARGS__).noquote().nospace()
+#define qCDebug(category) QT_MESSAGE_LOGGER_COMMON(category, QtDebugMsg).debug().noquote().nospace()
 #endif
 
 class Comment
