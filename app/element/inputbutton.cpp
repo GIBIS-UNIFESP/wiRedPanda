@@ -8,11 +8,6 @@
 
 #include <QGraphicsSceneMouseEvent>
 
-namespace
-{
-    int id = qRegisterMetaType<InputButton>();
-}
-
 InputButton::InputButton(QGraphicsItem *parent)
     : GraphicElementInput(ElementType::InputButton, ElementGroup::Input, ":/input/buttonOff.svg", tr("PUSH BUTTON"), tr("Push Button"), 0, 0, 1, 1, parent)
 {

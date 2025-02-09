@@ -9,11 +9,6 @@
 
 #include <QPainter>
 
-namespace
-{
-    int id = qRegisterMetaType<TruthTable>();
-}
-
 TruthTable::TruthTable(QGraphicsItem *parent)
     : GraphicElement(ElementType::TruthTable, ElementGroup::IC, ":/basic/truthtable-rotated.svg", tr("TRUTH TABLE"), tr("Truth Table"), 2, 8, 1, 8, parent)
 {

@@ -15,11 +15,6 @@
 #endif
 #include <QDebug>
 
-namespace
-{
-    int id = qRegisterMetaType<Buzzer>();
-}
-
 Buzzer::Buzzer(QGraphicsItem *parent)
     : GraphicElement(ElementType::Buzzer, ElementGroup::Output, ":/output/buzzer/BuzzerOff.svg", tr("BUZZER"), tr("Buzzer"), 1, 1, 0, 0, parent)
 {

@@ -16,11 +16,6 @@
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
-namespace
-{
-    int id = qRegisterMetaType<IC>();
-}
-
 IC::IC(QGraphicsItem *parent)
     : GraphicElement(ElementType::IC, ElementGroup::IC, "", tr("INTEGRATED CIRCUIT"), tr("IC"), 0, 0, 0, 0, parent)
 {

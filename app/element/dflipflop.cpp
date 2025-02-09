@@ -6,11 +6,6 @@
 #include "globalproperties.h"
 #include "qneport.h"
 
-namespace
-{
-    int id = qRegisterMetaType<DFlipFlop>();
-}
-
 DFlipFlop::DFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::DFlipFlop, ElementGroup::Memory, pixmapPath(), tr("D-FLIP-FLOP"), tr("D-Flip-Flop"), 4, 4, 2, 2, parent)
 {

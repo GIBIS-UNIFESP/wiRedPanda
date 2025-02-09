@@ -6,11 +6,6 @@
 #include "globalproperties.h"
 #include "qneport.h"
 
-namespace
-{
-    int id = qRegisterMetaType<InputVcc>();
-}
-
 InputVcc::InputVcc(QGraphicsItem *parent)
     : GraphicElement(ElementType::InputVcc, ElementGroup::StaticInput, ":/input/1.svg", tr("VCC"), tr("VCC"), 0, 0, 1, 1, parent)
 {

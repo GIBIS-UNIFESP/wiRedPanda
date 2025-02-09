@@ -13,11 +13,6 @@
 #include <QMediaDevices>
 #endif
 
-namespace
-{
-    int id = qRegisterMetaType<AudioBox>();
-}
-
 AudioBox::AudioBox(QGraphicsItem *parent)
     : GraphicElement(ElementType::AudioBox, ElementGroup::Output, ":output/audiobox/audioboxOff.svg", tr("Audio Box"), tr("Audio Box"), 1, 1, 0, 0, parent)
 {

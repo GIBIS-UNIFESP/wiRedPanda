@@ -10,11 +10,6 @@
 
 using namespace std::chrono_literals;
 
-namespace
-{
-    int id = qRegisterMetaType<Clock>();
-}
-
 Clock::Clock(QGraphicsItem *parent)
     : GraphicElementInput(ElementType::Clock, ElementGroup::Input, ":/input/clock1.svg", tr("CLOCK SIGNAL"), tr("Clock"), 0, 0, 1, 1, parent)
 {

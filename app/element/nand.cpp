@@ -5,11 +5,6 @@
 
 #include "globalproperties.h"
 
-namespace
-{
-    int id = qRegisterMetaType<Nand>();
-}
-
 Nand::Nand(QGraphicsItem *parent)
     : GraphicElement(ElementType::Nand, ElementGroup::Gate, ":/basic/nand.svg", tr("NAND"), tr("Nand"), 2, 8, 1, 1, parent)
 {

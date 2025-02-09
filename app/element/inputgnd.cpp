@@ -5,11 +5,6 @@
 
 #include "globalproperties.h"
 
-namespace
-{
-    int id = qRegisterMetaType<InputGnd>();
-}
-
 InputGnd::InputGnd(QGraphicsItem *parent)
     : GraphicElement(ElementType::InputGnd, ElementGroup::StaticInput, ":/input/0.svg", tr("GROUND"), tr("GND"), 0, 0, 1, 1, parent)
 {

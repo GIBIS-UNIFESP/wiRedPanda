@@ -5,11 +5,6 @@
 
 #include "globalproperties.h"
 
-namespace
-{
-    int id = qRegisterMetaType<And>();
-}
-
 And::And(QGraphicsItem *parent)
     : GraphicElement(ElementType::And, ElementGroup::Gate, ":/basic/and.svg", tr("AND"), tr("And"), 2, 8, 1, 1, parent)
 {

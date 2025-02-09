@@ -10,11 +10,6 @@
 #include <QPainter>
 #include <QPixmap>
 
-namespace
-{
-    int id = qRegisterMetaType<Display7>();
-}
-
 Display7::Display7(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display7, ElementGroup::Output, ":/output/counter/counter_on.svg", tr("7-SEGMENT DISPLAY"), tr("7-Segment Display"), 8, 8, 0, 0, parent)
 {

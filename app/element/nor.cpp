@@ -5,11 +5,6 @@
 
 #include "globalproperties.h"
 
-namespace
-{
-    int id = qRegisterMetaType<Nor>();
-}
-
 Nor::Nor(QGraphicsItem *parent)
     : GraphicElement(ElementType::Nor, ElementGroup::Gate, ":/basic/nor.svg", tr("NOR"), tr("Nor"), 2, 8, 1, 1, parent)
 {
