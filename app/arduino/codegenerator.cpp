@@ -11,7 +11,7 @@
 
 #include <QRegularExpression>
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
 #define endl Qt::endl
 #endif
 

@@ -88,6 +88,8 @@ msvc {
     QMAKE_CXXFLAGS_DEBUG += /Ob1
     QMAKE_CXXFLAGS_RELEASE += /GL
     QMAKE_LFLAGS_RELEASE += /LTCG
+} else {
+    QMAKE_CXXFLAGS += -Wall -Wextra -Wpedantic
 }
 
 mac {
