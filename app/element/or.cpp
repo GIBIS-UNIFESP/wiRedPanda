@@ -5,11 +5,6 @@
 
 #include "globalproperties.h"
 
-namespace
-{
-    int id = qRegisterMetaType<Or>();
-}
-
 Or::Or(QGraphicsItem *parent)
     : GraphicElement(ElementType::Or, ElementGroup::Gate, ":/basic/or.svg", tr("OR"), tr("Or"), 2, 8, 1, 1, parent)
 {

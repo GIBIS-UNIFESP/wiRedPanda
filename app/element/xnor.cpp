@@ -5,11 +5,6 @@
 
 #include "globalproperties.h"
 
-namespace
-{
-    int id = qRegisterMetaType<Xnor>();
-}
-
 Xnor::Xnor(QGraphicsItem *parent)
     : GraphicElement(ElementType::Xnor, ElementGroup::Gate, ":/basic/xnor.svg", tr("XNOR"), tr("Xnor"), 2, 8, 1, 1, parent)
 {

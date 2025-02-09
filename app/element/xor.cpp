@@ -5,11 +5,6 @@
 
 #include "globalproperties.h"
 
-namespace
-{
-    int id = qRegisterMetaType<Xor>();
-}
-
 Xor::Xor(QGraphicsItem *parent)
     : GraphicElement(ElementType::Xor, ElementGroup::Gate, ":/basic/xor.svg", tr("XOR"), tr("Xor"), 2, 8, 1, 1, parent)
 {

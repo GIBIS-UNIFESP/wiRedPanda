@@ -6,11 +6,6 @@
 #include "globalproperties.h"
 #include "qneport.h"
 
-namespace
-{
-    int id = qRegisterMetaType<SRLatch>();
-}
-
 SRLatch::SRLatch(QGraphicsItem *parent)
     : GraphicElement(ElementType::SRLatch, ElementGroup::Memory, pixmapPath(), tr("SR-LATCH"), tr("SR-Latch"), 2, 2, 2, 2, parent)
 {

@@ -6,11 +6,6 @@
 #include "globalproperties.h"
 #include "qneport.h"
 
-namespace
-{
-    int id = qRegisterMetaType<JKFlipFlop>();
-}
-
 JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::JKFlipFlop, ElementGroup::Memory, pixmapPath(), tr("JK-FLIP-FLOP"), tr("JK-Flip-Flop"), 5, 5, 2, 2, parent)
 {

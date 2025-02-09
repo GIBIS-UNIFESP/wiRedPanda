@@ -6,11 +6,6 @@
 #include "globalproperties.h"
 #include "qneport.h"
 
-namespace
-{
-    int id = qRegisterMetaType<Node>();
-}
-
 Node::Node(QGraphicsItem *parent)
     : GraphicElement(ElementType::Node, ElementGroup::Gate, ":/basic/node.svg", tr("NODE"), tr("Node"), 1, 1, 1, 1, parent)
 {

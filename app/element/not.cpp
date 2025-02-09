@@ -5,11 +5,6 @@
 
 #include "globalproperties.h"
 
-namespace
-{
-    int id = qRegisterMetaType<Not>();
-}
-
 Not::Not(QGraphicsItem *parent)
     : GraphicElement(ElementType::Not, ElementGroup::Gate, ":/basic/not.svg", tr("NOT"), tr("Not"), 1, 1, 1, 1, parent)
 {

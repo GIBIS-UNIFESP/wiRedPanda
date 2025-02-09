@@ -6,11 +6,6 @@
 #include "globalproperties.h"
 #include "qneport.h"
 
-namespace
-{
-    int id = qRegisterMetaType<Demux>();
-}
-
 Demux::Demux(QGraphicsItem *parent)
     : GraphicElement(ElementType::Demux, ElementGroup::Mux, ":/basic/demux.svg", tr("DEMULTIPLEXER"), tr("Demux"), 2, 2, 2, 2, parent)
 {

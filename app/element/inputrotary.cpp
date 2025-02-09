@@ -9,11 +9,6 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 
-namespace
-{
-    int id = qRegisterMetaType<InputRotary>();
-}
-
 InputRotary::InputRotary(QGraphicsItem *parent)
     : GraphicElementInput(ElementType::InputRotary, ElementGroup::Input, ":/input/rotary_icon.svg", tr("ROTARY SWITCH"), tr("Rotary Switch"), 0, 0, 2, 16, parent)
 {

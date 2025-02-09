@@ -6,11 +6,6 @@
 #include "globalproperties.h"
 #include "qneport.h"
 
-namespace
-{
-    int id = qRegisterMetaType<SRFlipFlop>();
-}
-
 SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::SRFlipFlop, ElementGroup::Memory, pixmapPath(), tr("SR-FLIP-FLOP"), tr("SR-Flip-Flop"), 5, 5, 2, 2, parent)
 {
