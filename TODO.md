@@ -30,3 +30,4 @@
 - [ ] Add support to custom image backgrounds..
 - [ ] ~~Create separate modules for execution and edition.~~
 - [ ] Bugs and Warnings highlights.
+
