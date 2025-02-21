@@ -758,7 +758,7 @@ void MainWindow::updateICList(QString dirPath)
     m_ui->scrollAreaWidgetContents_IC->layout()->addItem(m_ui->verticalSpacer_IC);
 }
 
-bool MainWindow::closeTab(const int tabIndex, const bool signalFromFather)
+bool MainWindow::closeTab(const int tabIndex, const bool signalFromFather, const bool shouldSave)
 {
 
     auto tabToClose = qobject_cast<WorkSpace *>(m_ui->tab->widget(tabIndex));
@@ -767,6 +767,7 @@ bool MainWindow::closeTab(const int tabIndex, const bool signalFromFather)
     //Check if there is an open child tab
 
     bool shoudCloseRecursive = signalFromFather;
+    bool shouldSaveRecursive = shouldSave;
     for (auto &tab: m_icsTabTree.keys()) {
         if(tab.second == tabToClose){
             int dialogResult = QMessageBox::StandardButton::No;
@@ -780,6 +781,8 @@ bool MainWindow::closeTab(const int tabIndex, const bool signalFromFather)
                     shoudCloseRecursive = true;
                 break;
                 case QMessageBox::StandardButton::No:
+                    shoudCloseRecursive = true;
+                    shouldSaveRecursive = false;
                 break;
                 case QMessageBox::StandardButton::Cancel:
                     return false;
@@ -788,7 +791,7 @@ bool MainWindow::closeTab(const int tabIndex, const bool signalFromFather)
 
             auto childTab = m_icsTabTree.value(tab);
             int childTabIndex = m_ui->tab->indexOf(childTab);
-            closeTab(childTabIndex, shoudCloseRecursive);
+            closeTab(childTabIndex, shoudCloseRecursive, shouldSaveRecursive);
         }
     }
 
@@ -801,9 +804,9 @@ bool MainWindow::closeTab(const int tabIndex, const bool signalFromFather)
     qCDebug(zero) << "Checking if needs to save file.";
 
     if (!m_currentTab->scene()->undoStack()->isClean()) {
-        if(signalFromFather == true) {
+        if(signalFromFather == true && shouldSaveRecursive) {
             tabToClose->saveEmbeddedIc();
-        }else {
+        }else if(shouldSaveRecursive) {
             const int selectedButton = confirmSave(false);
 
             if (selectedButton == QMessageBox::Cancel) {
@@ -831,7 +834,7 @@ bool MainWindow::closeTab(const int tabIndex, const bool signalFromFather)
 
     if(tabToClose->m_EmbeddedIc){
         tabToClose->saveEmbeddedIc();
-    }else {
+    }else if(shouldSaveRecursive) {
         save();
     }
 
