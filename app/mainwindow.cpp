@@ -290,7 +290,7 @@ void MainWindow::on_actionExit_triggered()
     close();
 }
 
-void MainWindow::save(const QString &fileName)
+void MainWindow::save(const QString &fileName, const bool saveAs)
 {
     if (!m_currentTab) {
         return;
@@ -298,7 +298,7 @@ void MainWindow::save(const QString &fileName)
 
     auto c_tab = m_currentTab;
 
-    if (c_tab->m_EmbeddedIc) {
+    if (c_tab->m_EmbeddedIc && !saveAs) {
         while (true) {
             auto fatherICs = m_icsTabTree.keys(c_tab);
 
@@ -542,7 +542,7 @@ void MainWindow::on_actionSaveAs_triggered()
         fileName.append(".panda");
     }
 
-    save(fileName);
+    save(fileName, true);
 }
 
 void MainWindow::on_actionAbout_triggered()

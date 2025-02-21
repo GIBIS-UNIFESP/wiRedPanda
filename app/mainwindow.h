@@ -32,7 +32,7 @@ public:
     WorkSpace *createNewTab();
 
     //! Saves the project to a .panda file. Removes the autosave file in the process.
-    void save(const QString &fileName = {});
+    void save(const QString &fileName = {}, const bool saveAs = false);
 
     //! Sets the main window as visible, as well as its child widgets. Cleans the editor.
     void show();
