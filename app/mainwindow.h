@@ -84,7 +84,7 @@ private:
     static void on_actionDarkTheme_triggered();
     static void on_actionLightTheme_triggered();
 
-    bool closeTab(const int tabIndex, const bool signalFromFather = false);
+    bool closeTab(const int tabIndex, const bool signalFromFather = false, const bool shouldSave = true);
     bool hasModifiedFiles();
     int closeTabAnyway();
     void aboutThisVersion();
