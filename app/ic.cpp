@@ -235,7 +235,8 @@ void IC::generatePixmap()
 void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     event->accept();
-    QTemporaryFile tempFile;
+    auto currentTabFileName = qApp->mainWindow()->currentFile().fileName();
+    QTemporaryFile tempFile(currentTabFileName);
 
     if (tempFile.open()) {
         tempFile.write(m_fileData);
