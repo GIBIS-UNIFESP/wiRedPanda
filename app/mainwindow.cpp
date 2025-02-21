@@ -296,12 +296,15 @@ void MainWindow::save(const QString &fileName, const bool saveAs)
     if (!m_currentTab) {
         return;
     }
+    int tabIndex = 0;
     auto c_tab = m_currentTab;
     if(c_tab->m_EmbeddedIc && !saveAs){
              while(1){
+                tabIndex = m_ui->tab->indexOf(c_tab);
+                m_ui->tab->setTabText(tabIndex,  m_ui->tab->tabText(tabIndex).replace("*",""));
                 auto fatherICs = m_icsTabTree.keys(c_tab);
                 if(fatherICs.size() != 1) {
-                    c_tab->save(c_tab->fileInfo().fileName());
+                    c_tab->save(c_tab->fileInfo().fileName(), true);
                     break;
                 };
                 c_tab->saveEmbeddedIc();
@@ -311,6 +314,8 @@ void MainWindow::save(const QString &fileName, const bool saveAs)
             }
     }
     else{
+        tabIndex = m_ui->tab->indexOf(c_tab);
+        m_ui->tab->setTabText(tabIndex,  m_ui->tab->tabText(tabIndex).replace("*",""));
         m_currentTab->save(fileName);
     }
     updateICList();
@@ -405,7 +410,7 @@ int MainWindow::warnAboutOpenChildIcs(){
 
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
 
-    msgBox.setText(tr("This workspace has open child ICs, do you wish to save and close?"));
+    msgBox.setText(tr("This workspace has open tabs with child ICs, do you wish to save them before closing?"));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Yes);
     return msgBox.exec();
@@ -684,8 +689,7 @@ void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
 
     QString text = fileInfo.exists() ? fileInfo.fileName() : tr("New Project");
 
-    if(!IC.empty()) text = IC.at(0).first->label() != "" ? IC.at(0).first->label() : text;
-
+    if(!IC.empty()) text = IC.at(0).first->label() != "" ? text.left(text.indexOf('.') + 1) + IC.at(0).first->label() + QString(".panda") : text;
     if (!m_currentTab->scene()->undoStack()->isClean()) {
         text += "*";
     }
@@ -762,20 +766,32 @@ bool MainWindow::closeTab(const int tabIndex, const bool signalFromFather)
 
     //Check if there is an open child tab
 
+    bool shoudCloseRecursive = signalFromFather;
     for (auto &tab: m_icsTabTree.keys()) {
         if(tab.second == tabToClose){
-            bool shoudCloseRecursive = signalFromFather;
+            int dialogResult = QMessageBox::StandardButton::No;
+
             if(signalFromFather == false){
-                auto dialogCode = warnAboutOpenChildIcs();
-                shoudCloseRecursive =  dialogCode == QMessageBox::StandardButton::Yes;
+                dialogResult = warnAboutOpenChildIcs();
             }
+
+            switch(dialogResult) {
+                case QMessageBox::StandardButton::Yes:
+                    shoudCloseRecursive = true;
+                break;
+                case QMessageBox::StandardButton::No:
+                break;
+                case QMessageBox::StandardButton::Cancel:
+                    return false;
+                break;
+            }
+
             auto childTab = m_icsTabTree.value(tab);
             int childTabIndex = m_ui->tab->indexOf(childTab);
             closeTab(childTabIndex, shoudCloseRecursive);
         }
     }
 
-    //if(tabToClose->m_EmbeddedIc) tabToClose->saveEmbeddedIc();
     if(fatherTab.size() > 0 && m_icsTabTree.remove(fatherTab.at(0), tabToClose) != 1) return false;
 
 
@@ -785,23 +801,38 @@ bool MainWindow::closeTab(const int tabIndex, const bool signalFromFather)
     qCDebug(zero) << "Checking if needs to save file.";
 
     if (!m_currentTab->scene()->undoStack()->isClean()) {
-        const int selectedButton = confirmSave(false);
+        if(signalFromFather == true) {
+            tabToClose->saveEmbeddedIc();
+        }else {
+            const int selectedButton = confirmSave(false);
 
-        if (selectedButton == QMessageBox::Cancel) {
-            return false;
-        }
+            if (selectedButton == QMessageBox::Cancel) {
+                return false;
+            }
 
-        if (selectedButton == QMessageBox::Yes) {
-            try {
-                save();
-            } catch (const std::exception &e) {
-                QMessageBox::critical(this, tr("Error"), e.what());
+            if (selectedButton == QMessageBox::Yes) {
+                try {
+                    if(tabToClose->m_EmbeddedIc){
+                        tabToClose->saveEmbeddedIc();
+                    }else{
+                        save();
+                    }
 
-                if (closeTabAnyway() == QMessageBox::No) {
-                    return false;
+                } catch (const std::exception &e) {
+                    QMessageBox::critical(this, tr("Error"), e.what());
+
+                    if (closeTabAnyway() == QMessageBox::No) {
+                        return false;
+                    }
                 }
             }
         }
+    }
+
+    if(tabToClose->m_EmbeddedIc){
+        tabToClose->saveEmbeddedIc();
+    }else {
+        save();
     }
 
     qCDebug(zero) << "Deleting tab.";
