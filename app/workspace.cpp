@@ -52,7 +52,7 @@ QFileInfo WorkSpace::fileInfo()
     return m_fileInfo;
 }
 
-void WorkSpace::save(const QString &fileName)
+void WorkSpace::save(const QString &fileName, const bool embeddedIcSave)
 {
     QString fileName_ = fileName.isEmpty() ? m_fileInfo.absoluteFilePath() : fileName;
 
@@ -118,7 +118,7 @@ void WorkSpace::save(const QString &fileName)
         qCDebug(zero) << "All auto save file names after removing autosave: " << autosaves;
     }
 
-    emit fileChanged(m_fileInfo);
+    if (!embeddedIcSave) emit fileChanged(m_fileInfo);
 }
 
 void WorkSpace::save(QDataStream &stream)
