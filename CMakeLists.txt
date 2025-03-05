@@ -82,6 +82,19 @@ if(NOT CCACHE_BIN)
     target_precompile_headers(wiredpanda_lib PRIVATE pch.h)
 endif()
 
+find_path(SENTRY_INCLUDE_DIR NAMES sentry.h PATHS thirdparty/sentry/include)
+
+if (SENTRY_INCLUDE_DIR)
+    message(STATUS "Sentry found: Enabling HAVE_SENTRY")
+    add_definitions(-DHAVE_SENTRY)
+
+    include_directories(${SENTRY_INCLUDE_DIR})
+    link_directories(thirdparty/sentry/lib)
+    target_link_libraries(wiredpanda_lib PUBLIC sentry)
+else()
+    message(STATUS "Sentry not found: Disabling HAVE_SENTRY")
+endif()
+
 # ========= APP ===================================
 
 add_executable(wiredpanda app/main.cpp ${RESOURCES_RCC})

@@ -27,6 +27,24 @@ jobs:
     - name: Extract Version
       run: echo "VERSION=$(echo $GITHUB_REF | sed 's|refs/tags/||')" >> $GITHUB_ENV
       shell: bash
+
+    - name: Install Sentry CLI
+      run: |
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          LATEST_VERSION=$(curl -s https://api.github.com/repos/getsentry/sentry-cli/releases/latest | jq -r .tag_name)
+          curl -LO "https://github.com/getsentry/sentry-cli/releases/download/$LATEST_VERSION/sentry-cli-Windows-x86_64.exe"
+          mv sentry-cli-Windows-x86_64.exe sentry-cli.exe
+          
+          ACTUAL_VERSION=$(./sentry-cli.exe -V 2>&1 | tr -d '\r')
+
+          if [[ ! "$ACTUAL_VERSION" =~ ^sentry-cli ]]; then
+            echo "Downloaded Sentry CLI binary is invalid!" >&2
+            exit 1
+          fi
+        else
+          curl -sL https://sentry.io/get-cli/ | bash
+        fi
+      shell: bash
     
     - name: Install Qt5 32bit
       if: matrix.os == 'windows-latest'
@@ -52,6 +70,17 @@ jobs:
 
 # =================================
 
+    - name: Compile Sentry SDK
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt install libcurl4-openssl-dev
+        git clone --recursive https://github.com/getsentry/sentry-native.git
+        mkdir -p sentry-native/build
+        cd sentry-native/build
+        cmake .. -B build -D SENTRY_BACKEND=crashpad -D CMAKE_BUILD_TYPE=RelWithDebInfo
+        cmake --build build --parallel
+        cmake --install build --prefix ../../thirdparty/sentry
+
     - name: Build Ubuntu
       if: runner.os == 'Linux'
       run: |
@@ -60,6 +89,10 @@ jobs:
         cd build
         qmake ../WPanda.pro
         make -j4
+        mkdir -p app/lib test/lib
+        cp ../thirdparty/sentry/bin/crashpad_handler app/
+        cp ../thirdparty/sentry/lib/libsentry.so app/lib/
+        cp ../thirdparty/sentry/lib/libsentry.so test/lib/
 
     - name: Test Ubuntu
       if: runner.os == 'Linux'
@@ -70,15 +103,26 @@ jobs:
     - name: linuxdeployqt
       if: runner.os == 'Linux'
       run: |
-        mkdir appimage
+        mkdir -p appimage appimage/lib
         cp app/resources/wpanda.desktop appimage/wpanda.desktop
         cp app/resources/wpanda.svg appimage/wpanda_icon.svg
         cp build/app/wiredpanda appimage
+        cp thirdparty/sentry/lib/libsentry.so appimage/lib/
         wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
         chmod +x ./linuxdeployqt-continuous-x86_64.AppImage
         VERSION=$VERSION ./linuxdeployqt-continuous-x86_64.AppImage appimage/wiredpanda -appimage
         rm ./linuxdeployqt-continuous-x86_64.AppImage
         mv wiRedPanda-$VERSION-x86_64.AppImage wiRedPanda-$VERSION-Ubuntu-Qt5.AppImage
+
+    - name: Upload Debug Symbols to Sentry
+      if: runner.os == 'Linux'
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      run: |
+        sentry-cli login --auth-token "$SENTRY_AUTH_TOKEN"
+        sentry-cli releases new "wiredpanda@$VERSION" -p wiredpanda
+        sentry-cli debug-files upload --include-sources -p wiredpanda build/app/
+        sentry-cli releases set-commits --auto "wiredpanda@$VERSION" --log-level=debug
 
     - name: Publish Ubuntu
       uses: softprops/action-gh-release@v2
@@ -95,6 +139,16 @@ jobs:
       with:
         arch: x86
 
+    - name: Compile Sentry SDK
+      if: runner.os == 'Windows'
+      run: |
+        git clone --recursive https://github.com/getsentry/sentry-native.git
+        mkdir -p sentry-native/build
+        cd sentry-native/build
+        cmake .. -B build -G "Visual Studio 17 2022" -A Win32
+        cmake --build build --config RelWithDebInfo
+        cmake --install build --prefix ../../thirdparty/sentry --config RelWithDebInfo
+
     - name: Build Windows
       if: runner.os == 'Windows'
       run: |
@@ -103,6 +157,10 @@ jobs:
         cd build
         qmake ../WPanda.pro
         jom
+        cp ../thirdparty/sentry/bin/crashpad_handler.exe app/release/
+        cp ../thirdparty/sentry/bin/sentry.dll app/release/
+        cp ../thirdparty/sentry/bin/crashpad_wer.dll app/release/
+        cp ../thirdparty/sentry/bin/sentry.dll test/release/
 
     - name: Test Windows
       if: runner.os == 'Windows'
@@ -122,6 +180,16 @@ jobs:
         ren release wiredpanda-$env:VERSION
         Compress-Archive -Path wiredpanda-$env:VERSION -DestinationPath wiRedPanda-$env:VERSION-Windows-Qt5-Portable.zip
 
+    - name: Upload Debug Symbols to Sentry
+      if: runner.os == 'Windows'
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      run: |
+        ./sentry-cli.exe login --auth-token "$SENTRY_AUTH_TOKEN"
+        ./sentry-cli.exe releases new "wiredpanda@$VERSION" -p wiredpanda
+        ./sentry-cli.exe debug-files upload --include-sources -p wiredpanda build/app/
+        ./sentry-cli.exe releases set-commits --auto "wiredpanda@$VERSION" --log-level=debug
+
     - name: Publish Windows
       uses: softprops/action-gh-release@v2
       if: startsWith(matrix.os, 'windows')
@@ -131,6 +199,16 @@ jobs:
 
 # =================================
 
+    - name: Compile Sentry SDK
+      if: runner.os == 'macOS'
+      run: |
+        git clone --recursive https://github.com/getsentry/sentry-native.git
+        mkdir -p sentry-native/build
+        cd sentry-native/build
+        cmake .. -B build -D SENTRY_BACKEND=crashpad -D CMAKE_BUILD_TYPE=RelWithDebInfo -D CMAKE_OSX_ARCHITECTURES="x86_64;arm64"
+        cmake --build build --parallel
+        cmake --install build --prefix ../../thirdparty/sentry
+
     - name: Build macOS
       if: runner.os == 'macOS'
       run: |
@@ -138,6 +216,13 @@ jobs:
         cd build
         qmake ../WPanda.pro
         make -j3
+        mkdir -p app/wiredpanda.app/Contents/MacOS
+        mkdir -p app/wiredpanda.app/Contents/Frameworks
+        cp ../thirdparty/sentry/bin/crashpad_handler app/wiredpanda.app/Contents/MacOS/
+        cp ../thirdparty/sentry/lib/libsentry.dylib app/wiredpanda.app/Contents/Frameworks/
+        mkdir -p test/WPanda-test.app/Contents/MacOS
+        mkdir -p test/WPanda-test.app/Contents/Frameworks
+        cp ../thirdparty/sentry/lib/libsentry.dylib test/WPanda-test.app/Contents/Frameworks/
 
     - name: Test macOS
       if: runner.os == 'macOS'
@@ -151,6 +236,16 @@ jobs:
         cd build/app
         macdeployqt wiredpanda.app -dmg
         mv wiredpanda.dmg wiRedPanda-$VERSION-macOS-Qt5.dmg
+
+    - name: Upload Debug Symbols to Sentry
+      if: runner.os == 'macOS'
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      run: |
+        sentry-cli login --auth-token "$SENTRY_AUTH_TOKEN"
+        sentry-cli releases new "wiredpanda@$VERSION" -p wiredpanda
+        sentry-cli debug-files upload --include-sources -p wiredpanda build/app/
+        sentry-cli releases set-commits --auto "wiredpanda@$VERSION" --log-level=debug
 
     - name: Publish macOS
       uses: softprops/action-gh-release@v2
