@@ -98,7 +98,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        qmake ../WPanda.pro -early QMAKE_DEFAULT_LIBDIRS=$(xcrun -show-sdk-path)/usr/lib
+        qmake ../WPanda.pro
         make -j3
 
     - name: Test macOS
