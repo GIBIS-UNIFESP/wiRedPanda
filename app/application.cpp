@@ -14,7 +14,7 @@ bool Application::notify(QObject *receiver, QEvent *event)
     try {
         done = QApplication::notify(receiver, event);
     } catch (const std::exception &e) {
-        QMessageBox::critical(nullptr, tr("Error!"), e.what());
+        QMessageBox::critical(mainWindow(), tr("Error!"), e.what());
     }
 
     return done;
