@@ -49,7 +49,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     : QMainWindow(parent)
     , m_ui(new Ui::MainWindow)
 {
-    qCDebug(zero) << "wiRedPanda Version = " << APP_VERSION << " OR " << GlobalProperties::version;
+    qCDebug(zero) << "wiRedPanda Version = " APP_VERSION " OR" << GlobalProperties::version;
     m_ui->setupUi(this);
 
     qCDebug(zero) << "Settings fileName: " << Settings::fileName();
@@ -99,7 +99,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     m_ui->actionPlay->setChecked(true);
 
     qCDebug(zero) << "Window title.";
-    setWindowTitle("wiRedPanda " + QString(APP_VERSION));
+    setWindowTitle("wiRedPanda " APP_VERSION);
 
     qCDebug(zero) << "Building a new tab.";
     createNewTab();
@@ -318,17 +318,16 @@ void MainWindow::aboutThisVersion()
     msgBox.setParent(this);
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.setIcon(QMessageBox::Icon::Information);
-    msgBox.setWindowTitle("wiRedPanda " + QString(APP_VERSION));
+    msgBox.setWindowTitle("wiRedPanda " APP_VERSION);
     msgBox.setText(
         tr("wiRedPanda version >= 4.0 is not 100% compatible with previous versions.\n"
            "To open old version projects containing ICs (or boxes), skins, and/or "
            "beWavedDolphin simulations, their files must be moved to the same directory "
            "as the main project file.\n"
-           "wiRedPanda %1 will automatically list all other .panda files located "
+           "wiRedPanda " APP_VERSION " will automatically list all other .panda files located "
            "in the same directory of the current project as ICs in the editor tab.\n"
            "You have to save new projects before accessing ICs and skins, or running "
-           "beWavedDolphin simulations.")
-            .arg(APP_VERSION));
+           "beWavedDolphin simulations."));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Ok);
     msgBox.setCheckBox(checkBox);

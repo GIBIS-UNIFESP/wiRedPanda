@@ -14,7 +14,7 @@ public:
     inline static QString currentDir = {};
     inline static bool skipInit = false;
     inline static bool verbose = true;
-    inline static const QVersionNumber version = VERSION(QString(APP_VERSION));
+    inline static const QVersionNumber version = VERSION(APP_VERSION);
     inline static const int gridSize = 16;
     inline static const int maxRecentFiles = 10;
 };
