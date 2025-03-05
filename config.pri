@@ -21,6 +21,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 DEFINES += QT_MESSAGELOGCONTEXT
 
+exists(thirdparty/sentry/include/sentry.h) {
+    message("Sentry found: Enabling HAVE_SENTRY")
+    DEFINES += HAVE_SENTRY
+
+    INCLUDEPATH += $$PWD/thirdparty/sentry/include
+    LIBS += -L$$PWD/thirdparty/sentry/lib -lsentry
+} else {
+    message("Sentry not found: Disabling HAVE_SENTRY")
+}
+
 wasm {
     QMAKE_LFLAGS += -sASYNCIFY -Os
 }
@@ -92,9 +102,17 @@ msvc {
     QMAKE_CXXFLAGS += -Wall -Wextra -Wpedantic
 }
 
+linux | mac {
+    QMAKE_CXXFLAGS_RELEASE += -g
+    QMAKE_LFLAGS_RELEASE += -g
+}
+
 mac {
     CONFIG += sdk_no_version_check
     QMAKE_LFLAGS += -ld_classic
+
+    QMAKE_LFLAGS_RELEASE += -Wl,-dead_strip_dylibs
+    QMAKE_CXXFLAGS_RELEASE += -gdwarf-2
 }
 
 MOC_DIR        = build_files/moc
