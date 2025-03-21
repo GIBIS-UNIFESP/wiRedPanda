@@ -30,7 +30,7 @@ public:
     void load(const QString &fileName);
     void save(QDataStream &stream);
     void save(const QString &fileName, const bool embeddedIcSave = false);
-    void saveEmbeddedIc();
+    void saveEmbeddedIc(const bool reload = true);
     void setAutosaveFile();
     void setDolphinFileName(const QString &fileName);
 
