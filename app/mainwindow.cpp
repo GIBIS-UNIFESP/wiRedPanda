@@ -314,9 +314,15 @@ void MainWindow::save(const QString &fileName, const bool saveAs)
             }
     }
     else{
+
         tabIndex = m_ui->tab->indexOf(c_tab);
         m_ui->tab->setTabText(tabIndex,  m_ui->tab->tabText(tabIndex).replace("*",""));
         m_currentTab->save(fileName);
+        auto fatherTab = m_icsTabTree.keys(c_tab);
+        if(!fatherTab.empty()){
+            m_icsTabTree.remove(fatherTab.at(0), c_tab);
+        }
+
     }
     updateICList();
     m_ui->statusBar->showMessage(tr("File saved successfully."), 4000);
@@ -780,7 +786,8 @@ void MainWindow::updateICList(QString dirPath)
     m_ui->scrollAreaWidgetContents_IC->layout()->addItem(m_ui->verticalSpacer_IC);
 }
 
-bool MainWindow::closeTab(const int tabIndex, const bool signalFromFather, const bool shouldSave)
+bool MainWindow::
+    closeTab(const int tabIndex, const bool signalFromFather, const bool shouldSave)
 {
 
     auto tabToClose = qobject_cast<WorkSpace *>(m_ui->tab->widget(tabIndex));
