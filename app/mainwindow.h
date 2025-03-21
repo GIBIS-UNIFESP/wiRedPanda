@@ -60,6 +60,7 @@ public:
     //! Opens a message box asking the user if he wishes to save his progress
     int confirmSave(const bool multiple = true);
     int warnAboutOpenChildIcs();
+    int warnAboutOpenChildIcsSaveAs();
 
 
     QString dolphinFileName();
