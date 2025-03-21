@@ -64,6 +64,7 @@ public:
     bool closeFiles();
     bool event(QEvent *event) override;
     int warnAboutOpenChildIcs();
+    int warnAboutOpenChildIcsSaveAs();
     void exportToWaveFormTerminal();
     void loadEmbeddedIC(const QString &fileName, IC *source_ic);
     void loadTranslation(const QString &language);
