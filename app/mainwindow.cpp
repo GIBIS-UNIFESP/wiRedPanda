@@ -319,6 +319,11 @@ void MainWindow::save(const QString &fileName, const bool saveAs)
         tabIndex = m_ui->tab->indexOf(c_tab);
         m_ui->tab->setTabText(tabIndex, m_ui->tab->tabText(tabIndex).replace("*", ""));
         m_currentTab->save(fileName);
+        auto fatherTab = m_icsTabTree.keys(c_tab);
+
+        if (!fatherTab.empty()) {
+            m_icsTabTree.remove(fatherTab.at(0), c_tab);
+        }
     }
 
     updateICList();
