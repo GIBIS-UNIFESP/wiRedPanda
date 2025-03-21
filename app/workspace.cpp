@@ -128,13 +128,13 @@ void WorkSpace::save(QDataStream &stream)
     Serialization::serialize(m_scene.items(), stream);
 }
 
-void WorkSpace::saveEmbeddedIc()
+void WorkSpace::saveEmbeddedIc(const bool reload)
 {
     m_EmbeddedIc->m_fileData.clear();
     QDataStream stream(&m_EmbeddedIc->m_fileData, QIODevice::ReadWrite);
     scene()->undoStack()->setClean();
     save(stream);
-    m_EmbeddedIc->reload();
+    if (reload) m_EmbeddedIc->reload();
 }
 
 void WorkSpace::load(const QString &fileName)
