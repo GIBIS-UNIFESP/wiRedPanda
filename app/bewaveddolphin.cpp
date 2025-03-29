@@ -54,6 +54,55 @@ void SignalDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
     QItemDelegate::paint(painter, itemOption, index);
 }
 
+DolphinGraphicsView::DolphinGraphicsView(QWidget *parent)
+    : GraphicsView(parent) {}
+
+bool DolphinGraphicsView::canZoomOut() const
+{
+    return m_zoomLevel > 0;
+}
+
+void DolphinGraphicsView::zoomIn()
+{
+    ++m_zoomLevel;
+    emit zoomChanged();
+}
+
+void DolphinGraphicsView::zoomOut()
+{
+    --m_zoomLevel;
+    emit zoomChanged();
+}
+
+void DolphinGraphicsView::resetZoom()
+{
+    m_zoomLevel = 0;
+    emit zoomChanged();
+}
+
+void DolphinGraphicsView::wheelEvent(QWheelEvent *event)
+{
+    const int zoomDirection = event->angleDelta().y();
+
+    if (zoomDirection > 0 && canZoomIn()) {
+        if (m_redirectZoom) {
+            emit scaleIn();
+        } else {
+            zoomIn();
+        }
+    } else if (zoomDirection < 0 && canZoomOut()) {
+        if (m_redirectZoom) {
+            emit scaleOut();
+        } else {
+            zoomOut();
+        }
+    }
+
+    centerOn(QCursor::pos());
+
+    event->accept();
+}
+
 BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindow *parent)
     : QMainWindow(parent)
     , m_ui(new Ui::BewavedDolphin)
@@ -86,8 +135,8 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
 
     loadPixmaps();
 
-    connect(&m_view,                   &GraphicsView::scaleIn,  this, &BewavedDolphin::on_actionZoomIn_triggered);
-    connect(&m_view,                   &GraphicsView::scaleOut, this, &BewavedDolphin::on_actionZoomOut_triggered);
+    connect(&m_view,                   &DolphinGraphicsView::scaleIn,  this, &BewavedDolphin::on_actionZoomIn_triggered);
+    connect(&m_view,                   &DolphinGraphicsView::scaleOut, this, &BewavedDolphin::on_actionZoomOut_triggered);
     connect(m_ui->actionAbout,         &QAction::triggered,     this, &BewavedDolphin::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,       &QAction::triggered,     this, &BewavedDolphin::on_actionAboutQt_triggered);
     connect(m_ui->actionClear,         &QAction::triggered,     this, &BewavedDolphin::on_actionClear_triggered);
@@ -814,16 +863,23 @@ void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
 
 void BewavedDolphin::on_actionZoomOut_triggered()
 {
-    m_scale *= m_scaleFactor;
     m_view.zoomOut();
+    for (int col = 0; col < m_signalTableView->model()->columnCount(); ++col) {
+        m_signalTableView->setColumnWidth(col,
+                                          m_signalTableView->columnWidth(col) / m_scale);
+
+    }
     resizeScene();
     zoomChanged();
 }
 
 void BewavedDolphin::on_actionZoomIn_triggered()
 {
-    m_scale /= m_scaleFactor;
     m_view.zoomIn();
+    for (int col = 0; col < m_signalTableView->model()->columnCount(); ++col) {
+        m_signalTableView->setColumnWidth(col,
+                                          m_signalTableView->columnWidth(col) * m_scale);
+    }
     resizeScene();
     zoomChanged();
 }
@@ -832,6 +888,9 @@ void BewavedDolphin::on_actionResetZoom_triggered()
 {
     m_view.resetZoom();
     m_scale = 1.25;
+    for (int col = 0; col < m_signalTableView->model()->columnCount(); ++col) {
+        m_signalTableView->setColumnWidth(col, 49);
+    }
     resizeScene();
     zoomChanged();
 }
