@@ -26,5 +26,6 @@
         <file>zoomOut.svg</file>
         <file>zoomRange.svg</file>
         <file>zoomReset.svg</file>
+        <file>autoCrop.svg</file>
     </qresource>
 </RCC>
