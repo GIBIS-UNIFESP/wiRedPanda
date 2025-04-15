@@ -81,7 +81,7 @@ GraphicElement *ElementFactory::buildElement(const ElementType type)
     qCDebug(four) << type;
 
     if (type == ElementType::Unknown) {
-        throw Pandaception(tr("Unknown type: ") + typeToText(type));
+        throw Pandaception(tr("Unknown type 1: ") + typeToText(type));
     }
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -96,7 +96,7 @@ GraphicElement *ElementFactory::buildElement(const ElementType type)
     const auto metaType = QMetaType::fromName(typeToText(type).toLatin1());
 
     if (!metaType.isValid() || (metaType.id() == QMetaType::UnknownType)) {
-        throw Pandaception(tr("Unknown type: ") + typeToText(type));
+        throw Pandaception(tr("Unknown type 2: ") + typeToText(type));
     }
 
     auto *elm = static_cast<GraphicElement *>(metaType.create());
@@ -151,6 +151,7 @@ std::shared_ptr<LogicElement> ElementFactory::buildLogicElement(GraphicElement *
     case ElementType::AudioBox:
     case ElementType::Buzzer:
     case ElementType::Display14:
+    case ElementType::Display16:
     case ElementType::Display7:
     case ElementType::Led:         return std::make_shared<LogicOutput>(elm->inputSize());
 

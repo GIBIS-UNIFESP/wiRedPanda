@@ -5,6 +5,7 @@
 #include "demux.h"
 #include "dflipflop.h"
 #include "display_14.h"
+#include "display_16.h"
 #include "display_7.h"
 #include "dlatch.h"
 #include "ic.h"
@@ -41,6 +42,7 @@ inline void registerTypes() {
     qRegisterMetaType<DLatch>();
     qRegisterMetaType<Demux>();
     qRegisterMetaType<Display14>();
+    qRegisterMetaType<Display16>();
     qRegisterMetaType<Display7>();
     qRegisterMetaType<GraphicElement>();
     qRegisterMetaType<IC>();
