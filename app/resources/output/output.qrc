@@ -54,5 +54,11 @@
         <file>led/WhiteLed.png</file>
         <file>led/WhiteLed.svg</file>
         <file>led/YellowLed.png</file>
+        <file>counter/counter_d1.svg</file>
+        <file>counter/counter_a1.svg</file>
+        <file>counter/counter_a2.svg</file>
+        <file>counter/counter_16_on.svg</file>
+        <file>counter/counter_16_off.svg</file>
+        <file>counter/counter_d2.svg</file>
     </qresource>
 </RCC>

@@ -347,6 +347,7 @@ void Scene::prevMainPropShortcut()
                 element->setAudio(element->previousAudio());
             break;
 
+        case ElementType::Display16:
         case ElementType::Display14:
         case ElementType::Display7:
             if (element->hasColors())
