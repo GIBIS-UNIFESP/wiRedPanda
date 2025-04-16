@@ -152,6 +152,8 @@ void CodeGenerator::declareOutputs()
 
 void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox)
 {
+    int counter = 0;
+
     for (auto *elm : elements) {
         if (elm->elementType() == ElementType::IC) {
             //      IC *ic = qgraphicsitem_cast<IC *>(elm);
@@ -167,7 +169,7 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
             //        }
             //      }
         } else {
-            QString varName = QString("aux_%1_%2").arg(removeForbiddenChars(elm->objectName()), m_globalCounter++);
+            QString varName = QString("aux_%1_%2").arg(removeForbiddenChars(elm->objectName()), QString::number(counter++));
             const auto outputs = elm->outputs();
 
             if (outputs.size() == 1) {
