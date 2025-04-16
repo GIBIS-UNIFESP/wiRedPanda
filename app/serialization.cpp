@@ -125,9 +125,9 @@ QRectF Serialization::loadRect(QDataStream &stream, const QVersionNumber version
     return rect;
 }
 
-QMap<int, QSet<QPair<int,int>>> Serialization::loadNodeMappings(QDataStream &stream)
+QMap<int, QSet<QPair<int, int>>> Serialization::loadNodeMappings(QDataStream &stream)
 {
-    QMap<int, QSet<QPair<int,int>>> map;
+    QMap<int, QSet<QPair<int, int>>> map;
     stream >> map;
     return map;
 }

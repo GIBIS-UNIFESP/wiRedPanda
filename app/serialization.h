@@ -39,5 +39,5 @@ public:
 
     static QString loadDolphinFileName(QDataStream &stream, const QVersionNumber version);
 
-    static QMap<int, QSet<QPair<int,int>>> loadNodeMappings(QDataStream &stream);
+    static QMap<int, QSet<QPair<int, int>>> loadNodeMappings(QDataStream &stream);
 };

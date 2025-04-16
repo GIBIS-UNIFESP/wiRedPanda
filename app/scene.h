@@ -32,9 +32,9 @@ public:
     QList<QGraphicsItem *> items(Qt::SortOrder order = Qt::SortOrder(-1)) const;
     QList<QGraphicsItem *> items(const QPointF &pos, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape, Qt::SortOrder order = Qt::SortOrder(-1), const QTransform &deviceTransform = QTransform()) const;
     QList<QGraphicsItem *> items(const QRectF &rect, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape, Qt::SortOrder order = Qt::SortOrder(-1), const QTransform &deviceTransform = QTransform()) const;
-    QMap<int, QSet<QPair<int,int>>> nodeMapping;
+    QMap<int, QSet<QPair<int, int>>> nodeMapping;
     QNEConnection *connection(int connectionId) const;
-    QSet<QPair<int,int>> getNodeSet(QString nodeLabel, QList<int> excludeIds = {});
+    QSet<QPair<int, int>> getNodeSet(QString nodeLabel, QList<int> excludeIds = {});
     QUndoStack *undoStack();
     Simulation *simulation();
     bool eventFilter(QObject *watched, QEvent *event) override;
@@ -49,7 +49,7 @@ public:
     void deleteAction();
     void deleteEditedConnection();
     void deleteNodeAction(const QList<QGraphicsItem*> items);
-    void deleteNodeSetConnections(QSet<QPair<int,int>> *set, int nodeToRemove = -1);
+    void deleteNodeSetConnections(QSet<QPair<int, int>> *set, int nodeToRemove = -1);
     void flipHorizontally();
     void flipVertically();
     void makeConnection(QNEConnection *connection);

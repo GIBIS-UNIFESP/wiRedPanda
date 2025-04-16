@@ -116,7 +116,7 @@ void WorkSpace::save(const QString &fileName, const bool embeddedIcSave)
         qCDebug(zero) << "All auto save file names after removing autosave: " << autosaves;
     }
 
-    if(!embeddedIcSave) emit fileChanged(m_fileInfo);
+    if (!embeddedIcSave) { emit fileChanged(m_fileInfo); }
 }
 
 void WorkSpace::save(QDataStream &stream)
@@ -131,7 +131,8 @@ void WorkSpace::saveEmbeddedIc(const bool reload){
     QDataStream stream(&m_EmbeddedIc->m_fileData, QIODevice::ReadWrite);
     scene()->undoStack()->setClean();
     save(stream);
-    if(reload) m_EmbeddedIc->reload();
+
+    if (reload) { m_EmbeddedIc->reload(); }
 }
 
 void WorkSpace::load(const QString &fileName)

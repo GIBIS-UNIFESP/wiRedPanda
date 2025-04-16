@@ -863,8 +863,7 @@ void GraphicElement::setMapId(const int mapId)
 
 int GraphicElement::mapId() const
 {
-    if (m_mapId == -1) { return this->id(); }
-    return m_mapId;
+    return m_mapId == -1 ? this->id() : m_mapId;
 }
 
 void GraphicElement::setLabel(const QString &label)

@@ -1318,9 +1318,9 @@ bool Scene::isSourceNode(GraphicElement *node)
     return nodeMapping.contains(node->mapId());
 }
 
-QSet<QPair<int,int>>Scene::getNodeSet(QString nodeLabel, QList<int> excludeIds)
+QSet<QPair<int, int>>Scene::getNodeSet(QString nodeLabel, QList<int> excludeIds)
 {
-    QSet<QPair<int,int>>set;
+    QSet<QPair<int, int>>set;
 
     for (auto &sourceNodeId : nodeMapping.keys()) {
         if (!excludeIds.contains(sourceNodeId) && element(sourceNodeId)->label() == nodeLabel) {

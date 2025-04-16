@@ -711,23 +711,22 @@ void ElementEditor::mapNode()
         return;
     }
 
-    auto selectedNode = m_elements[0];
-    if (selectedNode->elementType() != ElementType::Node) return;
+    auto *selectedNode = m_elements[0];
+
+    if (selectedNode->elementType() != ElementType::Node) { return; }
+
     // If source node already exists and the new label is different, remove and insert new.
-    auto lblText = m_ui->lineEditElementLabel->text();
-
+    QString lblText = m_ui->lineEditElementLabel->text();
     auto thisNodeSet = m_scene->nodeMapping.value(selectedNode->mapId());
-
     auto nodeSet = m_scene->getNodeSet(lblText, {selectedNode->mapId()});
-
     bool bIsSourceNode = m_scene->isSourceNode(selectedNode);
-
     bool bIsSourceNodeLabelTaken = nodeSet.size() != 0;
 
     if (bIsSourceNodeLabelTaken) {
         if (thisNodeSet != nodeSet) {
             m_ui->lineEditElementLabel->setStyleSheet("QLineEdit {color: red}");
         }
+
         return;
     }
 
@@ -743,11 +742,11 @@ void ElementEditor::mapNode()
 
     if (bIsSourceNode) {
         selectedNode->setLabel(lblText);
-        auto childNodesSet = m_scene->nodeMapping.value(selectedNode->mapId());
+        const auto childNodesSet = m_scene->nodeMapping.value(selectedNode->mapId());
 
         for (auto &childNodesPair : childNodesSet.values()) {
-            int childNodeId = childNodesPair.second;
-            auto childNode = m_scene->element(childNodeId);
+            const int childNodeId = childNodesPair.second;
+            auto *childNode = m_scene->element(childNodeId);
             childNode->setLabel(lblText);
         }
 
@@ -810,7 +809,7 @@ void ElementEditor::connectNode(const QString newText)
     }
 
     m_scene->nodeMapping.remove(nextSourceNodeId);
-    nextNodeSet.insert(QPair<int,int>(-1, selectedNode->mapId()));
+    nextNodeSet.insert(QPair<int, int>(-1, selectedNode->mapId()));
 
     for (auto pair : nextNodeSet) {
         auto *node = qobject_cast<Node *>(m_scene->element(pair.second));
@@ -824,7 +823,7 @@ void ElementEditor::connectNode(const QString newText)
             m_scene->makeConnectionNode(connection);
 
             node->inputPort()->setHasWirelessConnection(true);
-            int nodeId = pair.second;
+            const int nodeId = pair.second;
             nextNodeSet.remove(pair);
             node->setIsWireless(true);
             nextNodeSet.insert(QPair<int, int>(connection->mapId(), nodeId));

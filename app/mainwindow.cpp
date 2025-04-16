@@ -3,7 +3,7 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "ic.h"
+
 #include "bewaveddolphin.h"
 #include "codegenerator.h"
 #include "common.h"
@@ -26,17 +26,17 @@
 #include <QDebug>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QKeySequence>
 #include <QLoggingCategory>
 #include <QMessageBox>
+#include <QMultiMap>
+#include <QPair>
 #include <QPdfWriter>
 #include <QPrinter>
 #include <QSaveFile>
 #include <QShortcut>
-#include <QKeySequence>
 #include <QTemporaryFile>
 #include <QTranslator>
-#include <QMultiMap>
-#include <QPair>
 
 #ifdef Q_OS_WASM
 #include <emscripten/emscripten.h>
@@ -59,7 +59,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     loadTranslation(Settings::value("language").toString());
 
     connect(m_ui->tab, &QTabWidget::currentChanged,    this, &MainWindow::tabChanged);
-    connect(m_ui->tab, &QTabWidget::tabCloseRequested, [=](int index) {this->MainWindow::closeTab(index);});
+    connect(m_ui->tab, &QTabWidget::tabCloseRequested, [=](int index) { this->MainWindow::closeTab(index); });
 
     qCDebug(zero) << "Restoring geometry and setting zoom controls.";
     restoreGeometry(Settings::value("MainWindow/geometry").toByteArray());
@@ -84,7 +84,6 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 
     qCDebug(zero) << "Setting left side menus.";
     populateLeftMenu();
-
     m_ui->tabElements->setTabIcon(0, QIcon(":/input/buttonOff.svg"));
     m_ui->tabElements->setTabIcon(1, QIcon(":/basic/xor.svg"));
     m_ui->tabElements->setTabIcon(2, QIcon(":/basic/truthtable-rotated.svg"));
@@ -240,7 +239,7 @@ void MainWindow::loadAutosaveFiles()
     Settings::setValue("autosaveFile", autosaves);
 }
 
-WorkSpace* MainWindow::createNewTab()
+WorkSpace *MainWindow::createNewTab()
 {
     qCDebug(zero) << "Creating new workspace.";
     auto *workspace = new WorkSpace(this);
@@ -296,34 +295,37 @@ void MainWindow::save(const QString &fileName, const bool saveAs)
     if (!m_currentTab) {
         return;
     }
+
     int tabIndex = 0;
     auto c_tab = m_currentTab;
-    if(c_tab->m_EmbeddedIc && !saveAs){
-             while(1){
-                tabIndex = m_ui->tab->indexOf(c_tab);
-                m_ui->tab->setTabText(tabIndex,  m_ui->tab->tabText(tabIndex).replace("*",""));
-                auto fatherICs = m_icsTabTree.keys(c_tab);
-                if(fatherICs.size() != 1) {
-                    c_tab->save(c_tab->fileInfo().fileName(), true);
-                    break;
-                };
-                c_tab->saveEmbeddedIc();
-                auto fatherIC = fatherICs.at(0);
-                c_tab = fatherIC.second;
-                c_tab->scene()->simulation()->restart();
-            }
-    }
-    else{
 
+    if (c_tab->m_EmbeddedIc && !saveAs) {
+        while (1) {
+            tabIndex = m_ui->tab->indexOf(c_tab);
+            m_ui->tab->setTabText(tabIndex, m_ui->tab->tabText(tabIndex).replace("*",""));
+            auto fatherICs = m_icsTabTree.keys(c_tab);
+
+            if (fatherICs.size() != 1) {
+                c_tab->save(c_tab->fileInfo().fileName(), true);
+                break;
+            }
+
+            c_tab->saveEmbeddedIc();
+            auto fatherIC = fatherICs.at(0);
+            c_tab = fatherIC.second;
+            c_tab->scene()->simulation()->restart();
+        }
+    } else {
         tabIndex = m_ui->tab->indexOf(c_tab);
-        m_ui->tab->setTabText(tabIndex,  m_ui->tab->tabText(tabIndex).replace("*",""));
+        m_ui->tab->setTabText(tabIndex, m_ui->tab->tabText(tabIndex).replace("*",""));
         m_currentTab->save(fileName);
         auto fatherTab = m_icsTabTree.keys(c_tab);
-        if(!fatherTab.empty()){
+
+        if (!fatherTab.empty()) {
             m_icsTabTree.remove(fatherTab.at(0), c_tab);
         }
-
     }
+
     updateICList();
     m_ui->statusBar->showMessage(tr("File saved successfully."), 4000);
 }
@@ -470,18 +472,21 @@ void MainWindow::loadPandaFile(const QString &fileName)
     updateICList();
     m_ui->statusBar->showMessage(tr("File loaded successfully."), 4000);
 }
+
 void MainWindow::loadEmbeddedIC(const QString &fileName, IC *source_ic)
 {
-    //Check if already has an open tab
+    // Check if already has an open tab
     auto c_tab = m_currentTab;
     auto fatherTabs = m_icsTabTree.keys();
-    for(auto v: fatherTabs){
-        if (v.first == source_ic){
+
+    for (auto v : fatherTabs) {
+        if (v.first == source_ic) {
             auto f_tab = m_icsTabTree.value(v);
             m_ui->tab->setCurrentIndex(m_ui->tab->indexOf(f_tab));
             return;
         }
     }
+
     m_icsTabTree.insert(QPair<IC*, WorkSpace*>(source_ic, c_tab), createNewTab()); // Initially, no children
     qCDebug(zero) << tr("Loading in editor.");
     m_currentTab->m_EmbeddedIc = source_ic;
@@ -490,7 +495,8 @@ void MainWindow::loadEmbeddedIC(const QString &fileName, IC *source_ic)
     m_ui->statusBar->showMessage(tr("File loaded successfully."), 4000);
 }
 
-WorkSpace* MainWindow::getCurrentTab(){
+WorkSpace *MainWindow::getCurrentTab()
+{
     return m_currentTab;
 }
 
@@ -520,7 +526,6 @@ void MainWindow::on_actionOpen_triggered()
 #endif
 }
 
-
 void MainWindow::on_actionSave_triggered()
 {
     // TODO: if current file is autosave ask for filename
@@ -546,8 +551,8 @@ void MainWindow::on_actionSaveAs_triggered()
 {
     QString path;
 
-    for(auto &key: m_icsTabTree.keys()){
-        if(m_currentTab == key.second){
+    for (auto &key : m_icsTabTree.keys()) {
+        if (m_currentTab == key.second) {
             warnAboutOpenChildIcsSaveAs();
             return;
         }
@@ -566,7 +571,6 @@ void MainWindow::on_actionSaveAs_triggered()
     if (!fileName.endsWith(".panda")) {
         fileName.append(".panda");
     }
-
 
     save(fileName, true);
 }
@@ -712,12 +716,18 @@ void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
 
     m_currentFile = fileInfo;
 
-
     auto IC = m_icsTabTree.keys(m_currentTab);
 
     QString text = fileInfo.exists() ? fileInfo.fileName() : tr("New Project");
 
-    if(!IC.empty()) text = IC.at(0).first->label() != "" ? text.left(text.indexOf('.') + 1) + IC.at(0).first->label() + QString(".panda") : text;
+    if (!IC.empty()) {
+        const QString label = IC.at(0).first->label();
+
+        if (!label.isEmpty()) {
+            text = text.left(text.indexOf('.') + 1) + label + ".panda";
+        }
+    }
+
     if (!m_currentTab->scene()->undoStack()->isClean()) {
         text += "*";
     }
@@ -738,13 +748,17 @@ void MainWindow::updateICList(QString dirPath)
     m_ui->scrollAreaWidgetContents_IC->layout()->removeItem(m_ui->verticalSpacer_IC);
 
     QFileInfo file;
-    auto c_tab = m_currentTab;
+    auto *c_tab = m_currentTab;
 
-    while(!m_icsTabTree.keys(c_tab).empty()) {
+    while (!m_icsTabTree.keys(c_tab).empty()) {
         file = m_icsTabTree.keys(c_tab).at(0).second->fileInfo();
         c_tab = m_icsTabTree.keys(c_tab).at(0).second;
     }
-    if(c_tab == m_currentTab) file = m_currentFile;
+
+    if (c_tab == m_currentTab) {
+        file = m_currentFile;
+    }
+
     const auto items = m_ui->scrollAreaWidgetContents_IC->findChildren<ElementLabel *>();
 
     for (auto *item : items) {
@@ -772,13 +786,14 @@ void MainWindow::updateICList(QString dirPath)
         }
 
         qCDebug(zero) << "Files: " << files.join(", ");
-        for (const QString &file : std::as_const(files)) {
+
+        for (const QString &file_ : std::as_const(files)) {
             QPixmap pixmap(":/basic/ic-panda.svg");
 
-            auto *item = new ElementLabel(pixmap, ElementType::IC, file, this);
+            auto *item = new ElementLabel(pixmap, ElementType::IC, file_, this);
             m_ui->scrollAreaWidgetContents_IC->layout()->addWidget(item);
 
-            auto *item2 = new ElementLabel(pixmap, ElementType::IC, file, this);
+            auto *item2 = new ElementLabel(pixmap, ElementType::IC, file_, this);
             m_ui->scrollAreaWidgetContents_Search->layout()->addWidget(item2);
         }
     }
@@ -786,22 +801,20 @@ void MainWindow::updateICList(QString dirPath)
     m_ui->scrollAreaWidgetContents_IC->layout()->addItem(m_ui->verticalSpacer_IC);
 }
 
-bool MainWindow::
-    closeTab(const int tabIndex, const bool signalFromFather, const bool shouldSave)
+bool MainWindow::closeTab(const int tabIndex, const bool signalFromFather, const bool shouldSave)
 {
-
     auto tabToClose = qobject_cast<WorkSpace *>(m_ui->tab->widget(tabIndex));
     auto fatherTab = m_icsTabTree.keys(tabToClose);
 
-    //Check if there is an open child tab
-
+    // Check if there is an open child tab
     bool shoudCloseRecursive = signalFromFather;
     bool shouldSaveRecursive = shouldSave;
     int dialogResult = QMessageBox::StandardButton::No;
     bool hasDialogResult = false;
+
     for (auto &tab: m_icsTabTree.keys()) {
-        if(tab.second == tabToClose){
-            if(signalFromFather == false && hasDialogResult == false){
+        if (tab.second == tabToClose) {
+            if (signalFromFather == false && hasDialogResult == false) {
                 dialogResult = warnAboutOpenChildIcs();
                 hasDialogResult = true;
             }
@@ -810,10 +823,12 @@ bool MainWindow::
                 case QMessageBox::StandardButton::Yes:
                     shoudCloseRecursive = true;
                 break;
+
                 case QMessageBox::StandardButton::No:
                     shoudCloseRecursive = true;
                     shouldSaveRecursive = false;
                 break;
+
                 case QMessageBox::StandardButton::Cancel:
                     return false;
                 break;
@@ -825,11 +840,9 @@ bool MainWindow::
         }
     }
 
-    if(fatherTab.size() > 0 && m_icsTabTree.remove(fatherTab.at(0), tabToClose) != 1) {
+    if (fatherTab.size() > 0 && m_icsTabTree.remove(fatherTab.at(0), tabToClose) != 1) {
         return false;
     }
-
-
 
     qCDebug(zero) << "Closing tab " << tabIndex + 1 << ", #tabs: " << m_ui->tab->count();
     m_ui->tab->setCurrentIndex(tabIndex);
@@ -837,14 +850,15 @@ bool MainWindow::
     qCDebug(zero) << "Checking if needs to save file.";
 
     if (!m_currentTab->scene()->undoStack()->isClean()) {
-        if(signalFromFather == true && shouldSaveRecursive) {
+        if (signalFromFather == true && shouldSaveRecursive) {
             tabToClose->saveEmbeddedIc(false);
-        }else if(shouldSaveRecursive) {
+        } else if (shouldSaveRecursive) {
             const int selectedButton = confirmSave(false);
 
             if (selectedButton == QMessageBox::Cancel) {
                 return false;
             }
+
             if (selectedButton == QMessageBox::Yes) {
                 try {
                     save();
@@ -855,7 +869,7 @@ bool MainWindow::
                         return false;
                     }
                 }
-            }else{
+            } else {
                 qCDebug(zero) << "Deleting tab.";
                 m_currentTab->deleteLater();
                 m_ui->tab->removeTab(tabIndex);
@@ -864,14 +878,11 @@ bool MainWindow::
         }
     }
 
-    if(tabToClose->m_EmbeddedIc){
+    if (tabToClose->m_EmbeddedIc) {
         tabToClose->saveEmbeddedIc(false);
-    }
-    else if(shouldSaveRecursive) {
+    } else if (shouldSaveRecursive) {
         save();
     }
-
-
 
     qCDebug(zero) << "Deleting tab.";
     m_currentTab->deleteLater();
@@ -1388,6 +1399,7 @@ void MainWindow::on_actionPlay_toggled(const bool checked)
     }
 
     auto *simulation = m_currentTab->simulation();
+
     checked ? simulation->start() : simulation->stop();
 }
 
