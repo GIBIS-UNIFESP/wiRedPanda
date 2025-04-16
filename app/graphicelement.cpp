@@ -1043,11 +1043,6 @@ bool GraphicElement::hasAudioBox() const
     return m_hasAudioBox;
 }
 
-bool GraphicElement::hasNodeConnection() const
-{
-    return m_hasNodeConnection;
-}
-
 bool GraphicElement::canChangeSkin() const
 {
     return m_canChangeSkin;
@@ -1067,11 +1062,6 @@ bool GraphicElement::isRotatable() const
 void GraphicElement::setRotatable(const bool rotatable)
 {
     m_rotatable = rotatable;
-}
-
-void GraphicElement::setHasNodeConnection(const bool hasNodeConnection)
-{
-    m_hasNodeConnection = hasNodeConnection;
 }
 
 int GraphicElement::minOutputSize() const

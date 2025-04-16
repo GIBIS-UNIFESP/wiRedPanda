@@ -183,7 +183,7 @@ void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
     quint64 ptr1; stream >> ptr1;
     quint64 ptr2; stream >> ptr2;
 
-    if (version >= VERSION("4.2")) {
+    if (version >= VERSION("4.3")) {
         bool isWireless; stream >> isWireless;
         int mapId; stream >> mapId;
         m_wireless = isWireless;

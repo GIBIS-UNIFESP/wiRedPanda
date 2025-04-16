@@ -132,7 +132,7 @@ private:
     void populateLeftMenu();
     void removeICFile(const QString &icFileName);
     void tabChanged(const int newTabIndex);
-    void updateICList(QString dirPath = "");
+    void updateICList();
     void updateRecentFileActions();
     void updateSettings();
     void updateTheme();

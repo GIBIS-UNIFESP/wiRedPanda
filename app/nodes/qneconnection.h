@@ -26,7 +26,6 @@
 #pragma once
 
 #include "enums.h"
-#include "globalproperties.h"
 #include "itemwithid.h"
 
 #include <QCoreApplication>
@@ -57,7 +56,7 @@ public:
     bool highLight();
     double angle();
     int mapId() const;
-    void load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap = {}, const QVersionNumber version = VERSION("4.2"));
+    void load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap, const QVersionNumber version);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void save(QDataStream &stream) const;
     void setEndPort(QNEInputPort *port);

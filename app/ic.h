@@ -61,6 +61,8 @@ private:
     QVector<QNEPort *> m_icOutputs;
     QVector<QString> m_icInputLabels;
     QVector<QString> m_icOutputLabels;
+
+    QVersionNumber m_version;
 };
 
 Q_DECLARE_METATYPE(IC)

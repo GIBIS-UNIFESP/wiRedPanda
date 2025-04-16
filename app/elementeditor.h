@@ -84,7 +84,7 @@ private:
     bool m_hasElements = false;
     bool m_hasFrequency = false;
     bool m_hasLabel = false;
-    bool m_hasNodeConnection = false;
+    bool m_hasNode = false;
     bool m_hasOnlyInputs = false;
     bool m_hasRotation = false;
     bool m_hasSameAudio = false;

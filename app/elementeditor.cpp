@@ -378,7 +378,7 @@ void ElementEditor::retranslateUi()
 void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 {
     m_elements = elements;
-    m_hasAudioBox = m_hasTruthTable = m_hasNodeConnection = m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = false;
+    m_hasAudioBox = m_hasTruthTable = m_hasNode = m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = false;
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = false;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = false;
     m_canChangeSkin = m_hasSamePriority = false;
@@ -391,7 +391,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     }
 
     bool sameCheckState = true;
-    m_hasNodeConnection = m_hasTruthTable = m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = true;
+    m_hasNode = m_hasTruthTable = m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = true;
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameAudio = m_hasOnlyInputs = true;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = true;
     m_canChangeSkin = m_hasSamePriority = true;
@@ -413,7 +413,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         const auto group = elm->elementGroup();
         const auto firstGroup = firstElement->elementGroup();
 
-        m_hasNodeConnection &= elm->hasNodeConnection();
+        m_hasNode &= elm->elementType() == ElementType::Node;
         m_hasTruthTable &= elm->hasTruthTable();
         m_hasLabel &= elm->hasLabel();
         m_canChangeSkin &= elm->canChangeSkin();
@@ -553,7 +553,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         }
     }
 
-    if (m_hasNodeConnection) {
+    if (m_hasNode) {
         m_ui->comboBoxNode->clear();
         bool hasFoundConnection = false;
         bool isSourceNode = m_scene->nodeMapping.contains(firstElement->mapId());
@@ -580,9 +580,9 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
             }
         }
 
-        m_ui->labelNode->setVisible(m_hasNodeConnection && !isSourceNode && bNodeHasOutput);
-        m_ui->comboBoxNode->setVisible(m_hasNodeConnection && !isSourceNode && bNodeHasOutput);
-        m_ui->comboBoxNode->setEnabled(m_hasNodeConnection && !isSourceNode && bNodeHasOutput);
+        m_ui->labelNode->setVisible(m_hasNode && !isSourceNode && bNodeHasOutput);
+        m_ui->comboBoxNode->setVisible(m_hasNode && !isSourceNode && bNodeHasOutput);
+        m_ui->comboBoxNode->setEnabled(m_hasNode && !isSourceNode && bNodeHasOutput);
         m_ui->comboBoxNode->addItem(QString(""));
         m_ui->lineEditElementLabel->setEnabled(!hasFoundConnection && bNodeHasInput && (isSourceNode || !bNodeHasOutput));
 

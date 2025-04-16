@@ -743,7 +743,7 @@ void MainWindow::on_actionSelectAll_triggered()
     m_currentTab->scene()->selectAll();
 }
 
-void MainWindow::updateICList(QString dirPath)
+void MainWindow::updateICList()
 {
     m_ui->scrollAreaWidgetContents_IC->layout()->removeItem(m_ui->verticalSpacer_IC);
 

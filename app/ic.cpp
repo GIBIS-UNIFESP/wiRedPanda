@@ -48,8 +48,6 @@ void IC::save(QDataStream &stream) const
     GraphicElement::save(stream);
 
     QMap<QString, QVariant> map;
-    // Instead of saving the file name, save the content of the file in a byte array.
-
     map.insert("fileData", m_fileData);
 
     stream << map;
@@ -57,24 +55,48 @@ void IC::save(QDataStream &stream) const
 
 void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
 {
+    m_version = version;
+
     GraphicElement::load(stream, portMap, version);
+
+    if ((VERSION("1.2") <= version) && (version < VERSION("4.1"))) {
+        stream >> m_file;
+
+        if (IC::needToCopyFiles) {
+            copyFile();
+        }
+
+        loadFile(m_file);
+    }
 
     if (version >= VERSION("4.1")) {
         QMap<QString, QVariant> map; stream >> map;
 
+        if (map.contains("fileName")) {
+            m_file = map.value("fileName").toString();
+
+            if (IC::needToCopyFiles) {
+                copyFile();
+            }
+
+            loadFile(m_file);
+        }
+
         if (map.contains("fileData")) {
-            // Instead of loading the file name and copying it, load the data directly from the byte array.
-            QByteArray data = map.value("fileData").toByteArray();
+            const QByteArray data = map.value("fileData").toByteArray();
             QTemporaryFile tempFile;
 
-            if (tempFile.open()) {
-                tempFile.write(data);
-                tempFile.close();
-                m_file = tempFile.fileName();
-                loadFile(m_file);
-            } else {
+            if (!tempFile.open()) {
                 throw Pandaception(tr("Error creating temporary file: ") + tempFile.errorString());
             }
+
+            if (!tempFile.write(data)) {
+                throw Pandaception(tr("Error writing to temporary file: ") + tempFile.errorString());
+            }
+
+            tempFile.close();
+            m_file = tempFile.fileName();
+            loadFile(m_file);
         }
     }
 }
@@ -134,30 +156,57 @@ void IC::loadFile(const QString &fileName)
     qDeleteAll(m_icElements);
     m_icElements.clear();
 
-    // ----------------------------------------------
+    QByteArray fileData;
+    QString resolvedPath;
 
-    QFile file(fileName);
+    if (m_version <= VERSION("4.2")) {
+        QFileInfo fileInfo(GlobalProperties::currentDir, QFileInfo(fileName).fileName());
 
-    if (!file.open(QIODevice::ReadOnly)) {
-        throw Pandaception(QObject::tr("Error opening file: ") + file.errorString());
+        if (!fileInfo.exists() || !fileInfo.isFile()) {
+            throw Pandaception(fileInfo.absoluteFilePath() + tr(" not found."));
+        }
+
+        m_fileWatcher.addPath(fileInfo.absoluteFilePath());
+        m_file = fileInfo.absoluteFilePath();
+        setToolTip(m_file);
+
+        // ----------------------------------------------
+
+        QFile file(fileInfo.absoluteFilePath());
+
+        if (!file.open(QIODevice::ReadOnly)) {
+            throw Pandaception(QObject::tr("Error opening file: ") + file.errorString());
+        }
+
+        fileData = file.readAll();
+        file.close();
+        resolvedPath = fileInfo.baseName();
     }
 
-    m_fileData = file.readAll(); // Save contents to byte array
-    file.close();
+    if (m_version >= VERSION("4.3")) {
+        QFile file(fileName);
 
-    QDataStream stream(&m_fileData,  QIODevice::ReadOnly); // use the byte array for streaming
+        if (!file.open(QIODevice::ReadOnly)) {
+            throw Pandaception(QObject::tr("Error opening file: ") + file.errorString());
+        }
+
+        fileData = file.readAll();
+        file.close();
+        resolvedPath = QFileInfo(file).baseName();
+    }
+
+    QDataStream stream(&fileData, QIODevice::ReadOnly);
     stream.setVersion(QDataStream::Qt_5_12);
 
-    const QVersionNumber version = Serialization::loadVersion(stream);
+    Serialization::loadVersion(stream);
+    Serialization::loadDolphinFileName(stream, m_version);
+    Serialization::loadRect(stream, m_version);
 
-    Serialization::loadDolphinFileName(stream, version);
-    Serialization::loadRect(stream, version);
-
-    if (version >= VERSION("4.2")) {
+    if (m_version >= VERSION("4.3")) {
         Serialization::loadNodeMappings(stream);
     }
 
-    const auto items = Serialization::deserialize(stream, {}, version);
+    const auto items = Serialization::deserialize(stream, {}, m_version);
 
     for (auto *item : items) {
         if (item->type() != GraphicElement::Type) {
@@ -173,8 +222,6 @@ void IC::loadFile(const QString &fileName)
         }
     }
 
-    file.close();
-
     m_icInputLabels = QVector<QString>(m_icInputs.size());
     m_icOutputLabels = QVector<QString>(m_icOutputs.size());
     sortPorts(m_icInputs);
@@ -184,10 +231,8 @@ void IC::loadFile(const QString &fileName)
     loadInputsLabels();
     loadOutputsLabels();
 
-    // ----------------------------------------------
-
-    if (label().isEmpty()) {
-       // setLabel(fileInfo.baseName().toUpper());
+    if (label().isEmpty() && m_version <= VERSION("4.2")) {
+        setLabel(resolvedPath.toUpper());
     }
 
     const qreal bottom = portsBoundingRect().united(QRectF(0, 0, 64, 64)).bottom();
@@ -243,14 +288,22 @@ void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     event->accept();
     auto currentTabFileName = qApp->mainWindow()->currentFile().fileName();
-    QTemporaryFile tempFile(currentTabFileName);
 
-    if (tempFile.open()) {
-        tempFile.write(m_fileData);
+    if (m_version <= VERSION("4.2")) {
+        qApp->mainWindow()->loadPandaFile(m_file);
+    } else {
+        QTemporaryFile tempFile(currentTabFileName); // TODO: this will get removed when the scope ends, will this work?
+
+        if (!tempFile.open()) {
+            throw Pandaception(tr("Error creating temporary file: ") + tempFile.errorString());
+        }
+
+        if (!tempFile.write(m_fileData)) {
+            throw Pandaception(tr("Error writing to temporary file: ") + tempFile.errorString());
+        }
+
         tempFile.close();
-
         m_file = tempFile.fileName();
-
         qApp->mainWindow()->loadEmbeddedIC(m_file, this);
     }
 }
@@ -440,7 +493,7 @@ void IC::copyFiles(const QFileInfo &srcFile)
     Serialization::loadDolphinFileName(stream, version);
     Serialization::loadRect(stream, version);
 
-    if (version >= VERSION("4.2")) {
+    if (version >= VERSION("4.3")) {
         Serialization::loadNodeMappings(stream);
     }
 

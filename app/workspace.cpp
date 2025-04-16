@@ -190,7 +190,7 @@ void WorkSpace::load(QDataStream &stream)
 
     Serialization::loadRect(stream, version);
 
-    if (version >= VERSION("4.2")) {
+    if (version >= VERSION("4.3")) {
         auto nodeMap = Serialization::loadNodeMappings(stream);
         m_scene.nodeMapping = nodeMap;
     }
