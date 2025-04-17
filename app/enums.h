@@ -12,7 +12,7 @@ public:
     enum class Status { Invalid = -1, Inactive = 0, Active = 1 };
     Q_ENUM(Status)
 
-    enum class ElementType { // last element is 32
+    enum class ElementType { // last element is 33
         And = 5,
         AudioBox = 31,
         Buzzer = 26,
@@ -21,6 +21,7 @@ public:
         DLatch = 15,
         Demux = 25,
         Display14 = 27,
+        Display16 = 33,
         Display7 = 14,
         IC = 22,
         InputButton = 1,
