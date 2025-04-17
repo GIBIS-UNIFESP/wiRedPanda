@@ -23,7 +23,7 @@ void TestWaveForm::testDisplay4Bits()
     QFile pandaFile(fileName);
     QVERIFY(pandaFile.open(QIODevice::ReadOnly));
     QDataStream stream(&pandaFile);
-    QVersionNumber version = Serialization::readHeaderPanda(stream);
+    QVersionNumber version = Serialization::readPandaHeader(stream);
     workspace.load(stream, version);
 
     BewavedDolphin bewavedDolphin(workspace.scene(), false);

@@ -876,7 +876,7 @@ void BewavedDolphin::on_actionCopy_triggered()
 
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
-    Serialization::writeHeaderDolphin(stream);
+    Serialization::writeDolphinHeader(stream);
     copy(ranges, stream);
 
     auto *mimeData = new QMimeData();
@@ -914,7 +914,7 @@ void BewavedDolphin::on_actionCut_triggered()
 
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
-    Serialization::writeHeaderDolphin(stream);
+    Serialization::writeDolphinHeader(stream);
     cut(ranges, stream);
 
     auto *mimeData = new QMimeData();
@@ -952,7 +952,7 @@ void BewavedDolphin::on_actionPaste_triggered()
 
     if (!itemData.isEmpty()) {
         QDataStream stream(&itemData, QIODevice::ReadOnly);
-        Serialization::readHeaderDolphin(stream);
+        Serialization::readDolphinHeader(stream);
         paste(ranges, stream);
         m_edited = true;
     }
@@ -1045,7 +1045,7 @@ void BewavedDolphin::save(const QString &fileName)
     if (fileName.endsWith(".dolphin")) {
         qCDebug(zero) << "Saving dolphin file.";
         QDataStream stream(&file);
-        Serialization::writeHeaderDolphin(stream);
+        Serialization::writeDolphinHeader(stream);
         save(stream);
     } else {
         qCDebug(zero) << "Saving CSV file.";
@@ -1162,7 +1162,7 @@ void BewavedDolphin::load(const QString &fileName)
     if (fileName.endsWith(".dolphin")) {
         qCDebug(zero) << "Dolphin file opened.";
         QDataStream stream(&file);
-        Serialization::readHeaderDolphin(stream);
+        Serialization::readDolphinHeader(stream);
         qCDebug(zero) << "Loading in editor.";
         load(stream);
         qCDebug(zero) << "Current file set.";
