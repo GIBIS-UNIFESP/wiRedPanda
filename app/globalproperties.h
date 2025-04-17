@@ -6,7 +6,7 @@
 #include <QString>
 #include <QVersionNumber>
 
-#define VERSION(string) QVersionNumber::fromString(string)
+#define VERSION(string) QVersionNumber::fromString(string).normalized()
 
 class GlobalProperties
 {
