@@ -1,0 +1,8 @@
+# Add patterns to ignore here, one per line
+# Example:
+# *.log
+# tmp/
+*.xpm
+*.svg
+*.ts
+installer/
