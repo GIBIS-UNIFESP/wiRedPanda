@@ -185,10 +185,10 @@ jobs:
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       run: |
-        ./sentry-cli.exe login --auth-token "$SENTRY_AUTH_TOKEN"
-        ./sentry-cli.exe releases new "wiredpanda@$VERSION" -p wiredpanda
+        ./sentry-cli.exe login --auth-token $env:SENTRY_AUTH_TOKEN
+        ./sentry-cli.exe releases new wiredpanda@$env:VERSION -p wiredpanda
         ./sentry-cli.exe debug-files upload --include-sources -p wiredpanda build/app/
-        ./sentry-cli.exe releases set-commits --auto "wiredpanda@$VERSION" --log-level=debug
+        ./sentry-cli.exe releases set-commits --auto wiredpanda@$env:VERSION --log-level=debug
 
     - name: Publish Windows
       uses: softprops/action-gh-release@v2
