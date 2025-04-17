@@ -57,7 +57,7 @@ QVersionNumber Serialization::readPandaHeader(QDataStream &stream)
         }
     }
 
-    return version;
+    return version.normalized();
  }
 
 void Serialization::writeDolphinHeader(QDataStream &stream)
