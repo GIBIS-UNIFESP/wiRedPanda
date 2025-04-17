@@ -694,7 +694,7 @@ void ElementEditor::apply()
 
     QByteArray oldData;
     QDataStream stream(&oldData, QIODevice::WriteOnly);
-    Serialization::writeHeaderPanda(stream);
+    Serialization::writePandaHeader(stream);
 
     for (auto *elm : std::as_const(m_elements)) {
         elm->save(stream);

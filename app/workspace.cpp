@@ -92,7 +92,7 @@ void WorkSpace::save(const QString &fileName)
     m_scene.setSceneRect(m_scene.itemsBoundingRect());
 
     QDataStream stream(&saveFile);
-    Serialization::writeHeaderPanda(stream);
+    Serialization::writePandaHeader(stream);
     save(stream);
 
     if (!saveFile.commit()) {
@@ -146,7 +146,7 @@ void WorkSpace::load(const QString &fileName)
     }
 
     QDataStream stream(&file);
-    QVersionNumber version = Serialization::readHeaderPanda(stream);
+    QVersionNumber version = Serialization::readPandaHeader(stream);
     load(stream, version);
 
     emit fileChanged(m_fileInfo);
@@ -274,7 +274,7 @@ void WorkSpace::autosave()
 
     qCDebug(three) << "Writing to autosave file.";
     QDataStream stream(&m_autosaveFile);
-    Serialization::writeHeaderPanda(stream);
+    Serialization::writePandaHeader(stream);
     save(stream);
     m_autosaveFile.close();
 

@@ -30,10 +30,10 @@ public:
 
     static QString loadDolphinFileName(QDataStream &stream, const QVersionNumber version);
     static QString typeName(const int type);
-    static QVersionNumber readHeaderPanda(QDataStream &stream);
-    static void readHeaderDolphin(QDataStream &stream);
-    static void writeHeaderDolphin(QDataStream &stream);
-    static void writeHeaderPanda(QDataStream &stream);
+    static QVersionNumber readPandaHeader(QDataStream &stream);
+    static void readDolphinHeader(QDataStream &stream);
+    static void writeDolphinHeader(QDataStream &stream);
+    static void writePandaHeader(QDataStream &stream);
 
     constexpr static quint32 MAGIC_HEADER_CIRCUIT = 0x57504346; // "WPCF" (wiRedPanda Circuit File)
     constexpr static quint32 MAGIC_HEADER_WAVEFORM = 0x57505746; // "WPWF" (wiRedPanda Waveform File)
