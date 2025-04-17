@@ -26,6 +26,7 @@
 #include "qneconnection.h"
 
 #include "common.h"
+#include "globalproperties.h"
 #include "qneport.h"
 #include "thememanager.h"
 
@@ -116,6 +117,8 @@ void QNEConnection::updatePosFromPorts()
 
 void QNEConnection::updatePath()
 {
+    if (m_wireless) { return; }
+
     QPainterPath path;
 
     path.moveTo(m_startPos);
@@ -161,12 +164,19 @@ void QNEConnection::save(QDataStream &stream) const
 {
     stream << reinterpret_cast<quint64>(m_startPort);
     stream << reinterpret_cast<quint64>(m_endPort);
+    stream << m_wireless;
+    stream << this->mapId();
 }
 
-void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap)
+void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
 {
     quint64 ptr1; stream >> ptr1;
     quint64 ptr2; stream >> ptr2;
+
+    if (version >= VERSION("4.3")) {
+        stream >> m_wireless;
+        stream >> m_mapId;
+    }
 
     if (portMap.isEmpty()) {
         qCDebug(three) << "Empty port map.";
@@ -265,6 +275,8 @@ void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
     Q_UNUSED(widget)
     Q_UNUSED(option)
 
+    if (m_wireless) { return; }
+
     if (m_highLight) {
         painter->save();
         painter->setPen(QPen(Qt::blue, 10));
@@ -316,6 +328,21 @@ bool QNEConnection::sceneEvent(QEvent *event)
     }
 
     return QGraphicsPathItem::sceneEvent(event);
+}
+
+void QNEConnection::setWireless(const bool isWireless)
+{
+    m_wireless = isWireless;
+}
+
+void QNEConnection::setMapId(const int mapId)
+{
+    m_mapId = mapId;
+}
+
+int QNEConnection::mapId() const
+{
+    return m_mapId == -1 ? this->id() : m_mapId;
 }
 
 QDataStream &operator<<(QDataStream &stream, const QNEConnection *conn)

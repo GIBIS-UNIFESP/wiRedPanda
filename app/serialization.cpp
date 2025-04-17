@@ -44,7 +44,7 @@ QVersionNumber Serialization::readPandaHeader(QDataStream &stream)
             stream >> center;
 
             if (center.isNull()) {
-                throw Pandaception(tr("Invalid file format."));
+                throw Pandaception(tr("1Invalid file format."));
             }
 
             stream.device()->seek(originalPos);
@@ -53,7 +53,7 @@ QVersionNumber Serialization::readPandaHeader(QDataStream &stream)
             QStringList split = appName.split(" ");
             version = QVersionNumber::fromString(split.at(1));
         } else {
-            throw Pandaception(tr("Invalid file format."));
+            throw Pandaception(tr("2Invalid file format."));
         }
     }
 
@@ -85,9 +85,21 @@ void Serialization::readDolphinHeader(QDataStream &stream)
         stream >> appName;
 
         if (!appName.startsWith("beWavedDolphin")) {
-            throw Pandaception(tr("Invalid file format."));
+            throw Pandaception(tr("3Invalid file format."));
         }
     }
+}
+
+void Serialization::saveNodeMappings(const QMap<int, QSet<QPair<int, int>>> map, QDataStream &stream)
+{
+    stream << map;
+}
+
+QMap<int, QSet<QPair<int, int>>> Serialization::loadNodeMappings(QDataStream &stream)
+{
+    QMap<int, QSet<QPair<int, int>>> map;
+    stream >> map;
+    return map;
 }
 
 void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &stream)
@@ -128,7 +140,7 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, QMap<quin
             auto *conn = new QNEConnection();
 
             qCDebug(three) << "Loading connection.";
-            conn->load(stream, portMap);
+            conn->load(stream, portMap, version);
 
             qCDebug(three) << "Appending connection.";
             itemList.append(conn);

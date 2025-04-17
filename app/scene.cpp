@@ -12,6 +12,7 @@
 #include "graphicelementinput.h"
 #include "graphicsview.h"
 #include "ic.h"
+#include "node.h"
 #include "qneconnection.h"
 #include "serialization.h"
 #include "thememanager.h"
@@ -111,6 +112,21 @@ const QVector<GraphicElement *> Scene::visibleElements() const
     return elements(visibleRect);
 }
 
+GraphicElement *Scene::element(const int elementId) const
+{
+    GraphicElement *elm = nullptr;
+    const auto items_ = items();
+
+    for (auto *item : items_) {
+        if (item->type() == GraphicElement::Type && qgraphicsitem_cast<GraphicElement *>(item)->mapId() == elementId) {
+            elm = qgraphicsitem_cast<GraphicElement *>(item);
+            break;
+        }
+    }
+
+    return elm;
+}
+
 const QVector<GraphicElement *> Scene::elements() const
 {
     const auto items_ = items();
@@ -139,6 +155,19 @@ const QVector<GraphicElement *> Scene::elements(const QRectF &rect) const
     }
 
     return elements_;
+}
+
+QNEConnection *Scene::connection(const int connectionId) const
+{
+    const auto items_ = items();
+
+    for (auto *item : items_) {
+        if (item->type() == QNEConnection::Type && qgraphicsitem_cast<QNEConnection *>(item)->mapId() == connectionId) {
+            return qgraphicsitem_cast<QNEConnection *>(item);
+        }
+    }
+
+    return nullptr;
 }
 
 const QVector<QNEConnection *> Scene::connections()
@@ -263,6 +292,20 @@ void Scene::startNewConnection(QNEOutputPort *startPort)
 QUndoStack *Scene::undoStack()
 {
     return &m_undoStack;
+}
+
+void Scene::makeConnectionNode(QNEConnection *connection)
+{
+    /* The mouse is released over a QNEPort. */
+    QNEOutputPort *startPort = connection->startPort();
+    QNEInputPort *endPort = connection->endPort();
+
+    /* Verifying if the connection is valid. */
+    /* Making connection. */
+    connection->setStartPort(startPort);
+    connection->setEndPort(endPort);
+    receiveCommand(new AddItemsCommand({connection}, this));
+    setEditedConnection(nullptr);
 }
 
 void Scene::makeConnection(QNEConnection *connection)
@@ -660,7 +703,9 @@ void Scene::handleHoverPort()
         releaseHoverPort();
         setHoverPort(port);
 
-        if (editedConn && editedConn->startPort() && (editedConn->startPort()->isOutput() == port->isOutput())) {
+        if ((editedConn && editedConn->startPort()
+             && (editedConn->startPort()->isOutput() == port->isOutput())) || port->wirelessConnection()
+        ) {
             m_view->viewport()->setCursor(Qt::ForbiddenCursor);
         }
     }
@@ -857,10 +902,53 @@ void Scene::cut(const QList<QGraphicsItem *> &items, QDataStream &stream)
     deleteAction();
 }
 
+void Scene::deleteNodeAction(const QList<QGraphicsItem *> items)
+{
+    // Need to delete nodes separately to account for wirelessNodes
+    QList<GraphicElement *> nodes;
+
+    for (auto &item : items) {
+        if (item->type() == GraphicElement::Type) {
+            auto elm = qgraphicsitem_cast<GraphicElement *>(item);
+
+            if (elm->elementType() == ElementType::Node) nodes.append(elm);
+        }
+    }
+
+    for (auto &childNode : nodes) {
+        if (!isSourceNode(childNode)) {
+            for (auto &set : nodeMapping.values()) {
+                for (auto &pair: set) {
+                    if (pair.second == childNode->mapId()) {
+                        auto key = nodeMapping.key(set);
+                        nodeMapping.remove(nodeMapping.key(set));
+                        set.remove(pair);
+                        nodeMapping.insert(key, set);
+                    }
+                }
+            }
+        }
+    }
+
+    for (auto &sourceNode : nodes) {
+        if (isSourceNode(sourceNode)) {
+            for (auto pair : nodeMapping.value(sourceNode->mapId())) {
+                const int childNodeId = pair.second;
+                auto childNode = element(childNodeId);
+                childNode->setLabel("");
+            }
+
+            nodeMapping.remove(sourceNode->mapId());
+        }
+    }
+}
+
 void Scene::deleteAction()
 {
     const auto selectedItems_ = selectedItems();
     clearSelection();
+
+    deleteNodeAction(selectedItems_);
 
     if (!selectedItems_.isEmpty()) {
         receiveCommand(new DeleteItemsCommand(selectedItems_, this));
@@ -1116,7 +1204,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             }
         }
 
-        if (item->type() == QNEPort::Type) {
+        if (item->type() == QNEPort::Type && !qgraphicsitem_cast<QNEPort *>(item)->wirelessConnection()) {
             /* When the mouse is pressed over an connected input port, the line
              * is disconnected and can be connected to another port. */
             if (auto *connection = editedConnection()) {
@@ -1260,4 +1348,45 @@ void Scene::addItem(QMimeData *mimeData)
     element->setSelected(true);
 
     mimeData->deleteLater();
+}
+
+bool Scene::isSourceNode(GraphicElement *node)
+{
+    return nodeMapping.contains(node->mapId());
+}
+
+QSet<QPair<int, int>> Scene::getNodeSet(const QString &nodeLabel, QList<int> excludeIds)
+{
+    QSet<QPair<int, int>> set;
+
+    for (auto &sourceNodeId : nodeMapping.keys()) {
+        if (!excludeIds.contains(sourceNodeId) && element(sourceNodeId)->label() == nodeLabel) {
+            set = nodeMapping.value(sourceNodeId);
+        }
+    }
+
+    return set;
+}
+
+void Scene::deleteNodeSetConnections(QSet<QPair<int, int>> *set, const int nodeToRemove)
+{
+    QSet<QPair<int, int>> toRemove;
+
+    for (const auto &pair : *set) {
+        if (auto *node = qobject_cast<Node *>(element(pair.second))) {
+            if (node->inputPort()->connections().size() == 1 &&
+                (nodeToRemove == -1 || nodeToRemove == node->mapId())
+            ) {
+                auto connection = this->connection(pair.first);
+                node->setLabel("");
+                receiveCommand(new DeleteItemsCommand({connection}, this));
+                simulation()->restart();
+                node->inputPort()->setHasWirelessConnection(false);
+                node->setIsWireless(false);
+                toRemove.insert(pair);
+            }
+        }
+    }
+
+    set->subtract(toRemove);
 }

@@ -127,6 +127,8 @@ void WorkSpace::save(QDataStream &stream)
 {
     stream << m_dolphinFileName;
     stream << m_scene.sceneRect();
+
+    Serialization::saveNodeMappings(m_scene.nodeMapping, stream);
     Serialization::serialize(m_scene.items(), stream);
 }
 
@@ -183,6 +185,12 @@ void WorkSpace::load(QDataStream &stream, QVersionNumber version)
     qCDebug(zero) << "Dolphin name: " << m_dolphinFileName;
 
     Serialization::loadRect(stream, version);
+
+    if (version >= VERSION("4.3")) {
+        auto nodeMap = Serialization::loadNodeMappings(stream);
+        m_scene.nodeMapping = nodeMap;
+    }
+
     const auto items = Serialization::deserialize(stream, {}, version);
     qCDebug(zero) << "Finished loading items.";
 

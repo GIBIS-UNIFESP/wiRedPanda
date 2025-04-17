@@ -9,6 +9,8 @@
 #include "common.h"
 #include "elementfactory.h"
 #include "inputrotary.h"
+#include "node.h"
+#include "qneconnection.h"
 #include "scene.h"
 #include "serialization.h"
 #include "thememanager.h"
@@ -58,10 +60,12 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->comboBoxAudio,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
     connect(m_ui->comboBoxColor,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
     connect(m_ui->comboBoxInputSize,      qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::inputIndexChanged);
+    connect(m_ui->comboBoxNode,           &QComboBox::currentTextChanged,                   this, &ElementEditor::connectNode);
     connect(m_ui->comboBoxOutputSize,     qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::outputIndexChanged);
     connect(m_ui->comboBoxValue,          &QComboBox::currentTextChanged,                   this, &ElementEditor::outputValueChanged);
     connect(m_ui->doubleSpinBoxDelay,     qOverload<double>(&QDoubleSpinBox::valueChanged), this, &ElementEditor::apply);
     connect(m_ui->doubleSpinBoxFrequency, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &ElementEditor::apply);
+    connect(m_ui->lineEditElementLabel,   &QLineEdit::editingFinished,                      this, &ElementEditor::mapNode);
     connect(m_ui->lineEditElementLabel,   &QLineEdit::textChanged,                          this, &ElementEditor::apply);
     connect(m_ui->lineEditTrigger,        &QLineEdit::textChanged,                          this, &ElementEditor::triggerChanged);
     connect(m_ui->pushButtonAudioBox,     &QPushButton::clicked,                            this, &ElementEditor::audioBox);
@@ -379,7 +383,7 @@ void ElementEditor::retranslateUi()
 void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 {
     m_elements = elements;
-    m_hasAudioBox = m_hasTruthTable = m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_hasDelay = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = false;
+    m_hasAudioBox = m_hasTruthTable = m_hasNode = m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_hasDelay = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = false;
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameDelay = m_hasSameAudio = m_hasOnlyInputs = false;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = false;
     m_canChangeSkin = m_hasSamePriority = false;
@@ -392,7 +396,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     }
 
     bool sameCheckState = true;
-    m_hasTruthTable = m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_hasDelay = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = true;
+    m_hasNode = m_hasTruthTable = m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_hasDelay = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = true;
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameDelay = m_hasSameAudio = m_hasOnlyInputs = true;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = true;
     m_canChangeSkin = m_hasSamePriority = true;
@@ -414,6 +418,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         const auto group = elm->elementGroup();
         const auto firstGroup = firstElement->elementGroup();
 
+        m_hasNode &= elm->elementType() == ElementType::Node;
         m_hasTruthTable &= elm->hasTruthTable();
         m_hasLabel &= elm->hasLabel();
         m_canChangeSkin &= elm->canChangeSkin();
@@ -568,6 +573,44 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
             m_ui->comboBoxInputSize->setCurrentText(inputSize);
         } else {
             m_ui->comboBoxInputSize->setCurrentText(m_manyIS);
+        }
+    }
+
+    if (m_hasNode) {
+        m_ui->comboBoxNode->clear();
+        bool hasFoundConnection = false;
+        bool isSourceNode = m_scene->nodeMapping.contains(firstElement->mapId());
+        bool bNodeHasOutput = firstElement->outputPort()->connections().size() > 0;
+        bool bNodeHasInput = firstElement->inputPort()->connections().size() > 0;
+        // Search if node is already wireless conected to source node.
+        // If so, set combobox text to source node label.
+        // If it is a source node, don't show combobox.
+
+        for (auto key : m_scene->nodeMapping.keys()) {
+            m_ui->comboBoxNode->addItem(m_scene->element(key)->label());
+        }
+
+        auto set = m_scene->getNodeSet(firstElement->label());
+
+        if (set.size() > 0) {
+            for (auto item : set) {
+                if (item.second == firstElement->mapId()) {
+                    auto newLabel = firstElement->label();
+                    m_ui->comboBoxNode->setCurrentText(newLabel);
+                    hasFoundConnection = true;
+                    break;
+                }
+            }
+        }
+
+        m_ui->labelNode->setVisible(m_hasNode && !isSourceNode && bNodeHasOutput);
+        m_ui->comboBoxNode->setVisible(m_hasNode && !isSourceNode && bNodeHasOutput);
+        m_ui->comboBoxNode->setEnabled(m_hasNode && !isSourceNode && bNodeHasOutput);
+        m_ui->comboBoxNode->addItem(QString(""));
+        m_ui->lineEditElementLabel->setEnabled(!hasFoundConnection && bNodeHasInput && (isSourceNode || !bNodeHasOutput));
+
+        if (!hasFoundConnection) {
+            m_ui->comboBoxNode->setCurrentText("");
         }
     }
 
@@ -1005,4 +1048,135 @@ void ElementEditor::updateTheme()
             "}";
 
     m_ui->groupBox->setStyleSheet(styleSheet.arg(borderColor));
+}
+
+void ElementEditor::mapNode()
+{
+    if (m_elements.isEmpty() || !isEnabled()) {
+        return;
+    }
+
+    auto *selectedNode = m_elements[0];
+
+    if (selectedNode->elementType() != ElementType::Node) { return; }
+
+    // If source node already exists and the new label is different, remove and insert new.
+    const QString label = m_ui->lineEditElementLabel->text();
+    auto thisNodeSet = m_scene->nodeMapping.value(selectedNode->mapId());
+    auto nodeSet = m_scene->getNodeSet(label, {selectedNode->mapId()});
+    const bool isSourceNode = m_scene->isSourceNode(selectedNode);
+    const bool isSourceNodeLabelTaken = nodeSet.size() != 0;
+
+    if (isSourceNodeLabelTaken) {
+        if (thisNodeSet != nodeSet) {
+            m_ui->lineEditElementLabel->setStyleSheet("QLineEdit {color: red}");
+        }
+
+        return;
+    }
+
+    m_ui->lineEditElementLabel->setStyleSheet("");
+
+    // If new souceNodeText is empty and label is empty, destroy the connection
+    if (isSourceNode && label == "") {
+        m_scene->nodeMapping.remove(selectedNode->mapId());
+        m_scene->deleteNodeSetConnections(&thisNodeSet);
+        m_scene->nodeMapping.insert(selectedNode->mapId(), thisNodeSet);
+        return;
+    }
+
+    if (isSourceNode) {
+        selectedNode->setLabel(label);
+        const auto childNodesSet = m_scene->nodeMapping.value(selectedNode->mapId());
+
+        for (auto &childNodesPair : childNodesSet.values()) {
+            const int childNodeId = childNodesPair.second;
+            auto *childNode = m_scene->element(childNodeId);
+            childNode->setLabel(label);
+        }
+
+        return;
+    }
+
+    QSet<QPair<int, int>> set;
+
+    if (selectedNode->inputPort()->connections().size() > 0) {
+        m_scene->nodeMapping.insert(selectedNode->mapId(), set);
+    }
+
+    setCurrentElements({selectedNode});
+}
+
+void ElementEditor::connectNode(const QString label)
+{
+    if (m_elements.isEmpty() || !isEnabled()) {
+        return;
+    }
+
+    auto selectedNode = m_elements[0];
+
+    if (label != "" && selectedNode->label() == label) {
+        setCurrentElements({selectedNode});
+        return;
+    }
+
+    auto currentNodeSet = m_scene->getNodeSet(selectedNode->label());
+    auto nextNodeSet = m_scene->getNodeSet(label);
+    int currentSourceNodeId = -1;
+    int nextSourceNodeId = -1;
+
+    for (auto sourceNodeId : m_scene->nodeMapping.keys()) {
+        if (m_scene->element(sourceNodeId)->label() == label) {
+            nextSourceNodeId = sourceNodeId;
+        }
+
+        if (m_scene->element(sourceNodeId)->label() == selectedNode->label()) {
+            currentSourceNodeId = sourceNodeId;
+        }
+    }
+
+    // auto nodeIds = m_scene->nodeMapping.keys();
+
+    // In the case below, need to destroy connection
+    if (selectedNode->label() != "" && (label == "" || label != selectedNode->label())) {
+        if (currentNodeSet.size()) {
+            m_scene->nodeMapping.remove(currentSourceNodeId);
+            m_scene->deleteNodeSetConnections(&currentNodeSet, selectedNode->mapId());
+            m_scene->nodeMapping.insert(currentSourceNodeId, currentNodeSet);
+        }
+
+        if (label == "") {
+            m_ui->comboBoxNode->setCurrentText("");
+            selectedNode->setLabel("");
+            setCurrentElements({selectedNode});
+            return;
+        }
+    }
+
+    m_scene->nodeMapping.remove(nextSourceNodeId);
+    nextNodeSet.insert(QPair<int, int>(-1, selectedNode->mapId()));
+
+    for (auto pair : nextNodeSet) {
+        auto *node = qobject_cast<Node *>(m_scene->element(pair.second));
+        auto *sourceNode = qobject_cast<Node *>(m_scene->element(nextSourceNodeId));
+
+        if (node->inputPort()->connections().size() == 0) {
+            auto *connection = new QNEConnection();
+            connection->setWireless(true);
+            connection->setStartPort(sourceNode->outputPort());
+            connection->setEndPort(node->inputPort());
+            m_scene->makeConnectionNode(connection);
+
+            node->inputPort()->setHasWirelessConnection(true);
+            const int nodeId = pair.second;
+            nextNodeSet.remove(pair);
+            node->setIsWireless(true);
+            nextNodeSet.insert(QPair<int, int>(connection->mapId(), nodeId));
+
+            selectedNode->setLabel(label);
+        }
+    }
+
+    m_scene->nodeMapping.insert(nextSourceNodeId, nextNodeSet);
+    setCurrentElements({selectedNode});
 }

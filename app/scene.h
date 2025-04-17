@@ -9,6 +9,8 @@
 #include <QElapsedTimer>
 #include <QGraphicsScene>
 #include <QMimeData>
+#include <QMultiMap>
+#include <QSet>
 #include <QUndoCommand>
 #include <QVersionNumber>
 
@@ -25,15 +27,20 @@ public:
 
     explicit Scene(QObject *parent = nullptr);
 
+    GraphicElement *element(const int elementId) const;
     GraphicsView *view() const;
     QAction *redoAction() const;
     QAction *undoAction() const;
     QList<QGraphicsItem *> items(Qt::SortOrder order = Qt::SortOrder(-1)) const;
     QList<QGraphicsItem *> items(const QPointF &pos, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape, Qt::SortOrder order = Qt::SortOrder(-1), const QTransform &deviceTransform = QTransform()) const;
     QList<QGraphicsItem *> items(const QRectF &rect, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape, Qt::SortOrder order = Qt::SortOrder(-1), const QTransform &deviceTransform = QTransform()) const;
+    QMap<int, QSet<QPair<int, int>>> nodeMapping;
+    QNEConnection *connection(const int connectionId) const;
+    QSet<QPair<int, int>> getNodeSet(const QString &nodeLabel, QList<int> excludeIds = {});
     QUndoStack *undoStack();
     Simulation *simulation();
     bool eventFilter(QObject *watched, QEvent *event) override;
+    bool isSourceNode(GraphicElement *node);
     const QList<GraphicElement *> selectedElements() const;
     const QVector<GraphicElement *> elements() const;
     const QVector<GraphicElement *> elements(const QRectF &rect) const;
@@ -42,8 +49,13 @@ public:
     void copyAction();
     void cutAction();
     void deleteAction();
+    void deleteEditedConnection();
+    void deleteNodeAction(const QList<QGraphicsItem *> items);
+    void deleteNodeSetConnections(QSet<QPair<int, int>> *set, const int nodeToRemove = -1);
     void flipHorizontally();
     void flipVertically();
+    void makeConnection(QNEConnection *connection);
+    void makeConnectionNode(QNEConnection *connection);
     void mute(const bool mute = true);
     void nextElm();
     void nextMainPropShortcut();
@@ -58,6 +70,7 @@ public:
     void selectAll();
     void setAutosaveRequired();
     void setCircuitUpdateRequired();
+    void setEditedConnection(QNEConnection *connection);
     void setView(GraphicsView *view);
     void showGates(const bool checked);
     void showWires(const bool checked);
@@ -90,17 +103,14 @@ private:
     void cloneDrag(const QPointF mousePos);
     void contextMenu(const QPoint screenPos);
     void cut(const QList<QGraphicsItem *> &items, QDataStream &stream);
-    void deleteEditedConnection();
     void detachConnection(QNEInputPort *endPort);
     void drawBackground(QPainter *painter, const QRectF &rect) override;
     void handleHoverPort();
-    void makeConnection(QNEConnection *connection);
     void paste(QDataStream &stream, QVersionNumber version);
     void releaseHoverPort();
     void resizeScene();
     void rotate(const int angle);
     void setDots(const QPen &dots);
-    void setEditedConnection(QNEConnection *connection);
     void setHoverPort(QNEPort *port);
     void startNewConnection(QNEInputPort *endPort);
     void startNewConnection(QNEOutputPort *startPort);

@@ -760,7 +760,7 @@ void ChangeInputSizeCommand::undo()
     for (auto *elm : m_elements) {
         for (int in = m_newInputSize; in < elm->inputSize(); ++in) {
             auto *conn = new QNEConnection();
-            conn->load(stream, portMap);
+            conn->load(stream, portMap, version);
             m_scene->addItem(conn);
         }
 
@@ -852,7 +852,7 @@ void ChangeOutputSizeCommand::undo()
     for (auto *elm : elements) {
         for (int out = m_newOutputSize; out < elm->outputSize(); ++out) {
             auto *conn = new QNEConnection;
-            conn->load(stream, portMap);
+            conn->load(stream, portMap, version);
             m_scene->addItem(conn);
         }
 

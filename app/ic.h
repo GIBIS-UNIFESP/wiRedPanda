@@ -37,8 +37,9 @@ protected:
 private:
     static bool comparePorts(QNEPort *port1, QNEPort *port2);
     static void sortPorts(QVector<QNEPort *> &map);
-    inline static bool needToCopyFiles = false;
+
     inline static QString path;
+    inline static bool needToCopyFiles = false;
 
     void copyFile();
     void generatePixmap();

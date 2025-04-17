@@ -51,6 +51,7 @@ public:
     Status status() const;
     bool isConnected(QNEPort *otherPort);
     bool isRequired() const;
+    bool wirelessConnection() const;
     const QList<QNEConnection *> &connections() const;
     int index() const;
     int portFlags() const;
@@ -65,6 +66,7 @@ public:
     void setCurrentBrush(const QBrush &currentBrush);
     void setDefaultStatus(const Status defaultStatus);
     void setGraphicElement(GraphicElement *graphicElement);
+    void setHasWirelessConnection(const bool hasWirelessConnection);
     void setIndex(const int index);
     void setName(const QString &name);
     void setPtr(const quint64 ptr);
@@ -82,6 +84,7 @@ protected:
     QString m_name;
     Status m_defaultStatus = Status::Invalid;
     Status m_status = Status::Inactive;
+    bool m_hasWirelessConnection = false;
     bool m_required = true;
     int m_index = 0;
     int m_margin = 2;
