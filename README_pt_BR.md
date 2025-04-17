@@ -36,18 +36,18 @@ Em seguida, abra o WPanda.pro no Qt Creator e pressione Ctrl+R para compilar e e
 
 Qt 5.12.0+ ou 6.2.0+ e o módulo QtMultimedia são necessários para compilar.
 
-Em distribuições como Arch Linux, Gentoo, Manjaro, Debian Testing, etc., o Qt 5.12+ pode ser instalado a partir dos repositórios padrão.
+Em distribuições como Arch Linux, Gentoo, Manjaro, Debian, etc., o Qt 5.12+ pode ser instalado a partir dos repositórios padrão.
 
-* Debian Testing
+* Debian/Ubuntu
 
 ```bash
-sudo apt install qtbase5-dev qt5-make qtbase5-dev-tools qtchooser libqt5multimedia5-dev
+sudo apt install build-essential qtbase5-dev qtmultimedia5-dev libqt5svg5-dev
 ```
 
 * Baseado em Arch Linux
 
 ```bash
-sudo pacman -S qt5-base qt5-multimedia
+sudo pacman -S base-devel qt5-base qt5-multimedia qt5-svg
 ```
 
 * macOS
@@ -66,7 +66,7 @@ Aqui está como alguém pode usar o aqtinstall para instalar o Qt 5.15.2 em uma 
 sudo apt-get update
 sudo apt-get install libgl1-mesa-dev libxcb-xinerama0 libpulse-dev git python3 python3-pip python3-venv -y
 python3 -m venv ~/venv
-~/venv/bin/pip install aqtinstall==3.1.*
+~/venv/bin/pip install aqtinstall==3.2.*
 ~/venv/bin/aqt install-qt linux desktop 5.15.2 --outputdir ~/Qt
 PATH=~/Qt/5.15.2/gcc_64/bin:$PATH
 export PATH
