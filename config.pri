@@ -27,8 +27,6 @@ exists(thirdparty/sentry/include/sentry.h) {
 
     INCLUDEPATH += $$PWD/thirdparty/sentry/include
     LIBS += -L$$PWD/thirdparty/sentry/lib -lsentry
-} else {
-    message("Sentry not found: Disabling HAVE_SENTRY")
 }
 
 wasm {

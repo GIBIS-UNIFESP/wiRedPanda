@@ -91,8 +91,6 @@ if (SENTRY_INCLUDE_DIR)
     include_directories(${SENTRY_INCLUDE_DIR})
     link_directories(thirdparty/sentry/lib)
     target_link_libraries(wiredpanda_lib PUBLIC sentry)
-else()
-    message(STATUS "Sentry not found: Disabling HAVE_SENTRY")
 endif()
 
 # ========= APP ===================================
