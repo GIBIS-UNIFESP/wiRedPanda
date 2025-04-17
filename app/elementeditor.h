@@ -44,9 +44,11 @@ private:
     Q_DISABLE_COPY(ElementEditor)
 
     void apply();
+    void connectNode(const QString label);
     void defaultSkin();
     void inputIndexChanged(const int index);
     void inputLocked(const bool value);
+    void mapNode();
     void outputIndexChanged(const int index);
     void outputValueChanged(const QString &value);
     void priorityChanged(const int value);
@@ -84,6 +86,7 @@ private:
     bool m_hasElements = false;
     bool m_hasFrequency = false;
     bool m_hasLabel = false;
+    bool m_hasNode = false;
     bool m_hasOnlyInputs = false;
     bool m_hasRotation = false;
     bool m_hasSameAudio = false;

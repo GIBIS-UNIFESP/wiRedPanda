@@ -327,3 +327,13 @@ void QNEOutputPort::updateTheme()
     setPen(theme.m_portOutputPen);
     setCurrentBrush(theme.m_portOutputBrush);
 }
+
+bool QNEPort::wirelessConnection() const
+{
+    return m_hasWirelessConnection;
+}
+
+void QNEPort::setHasWirelessConnection(const bool hasWirelessConnection)
+{
+    m_hasWirelessConnection = hasWirelessConnection;
+}

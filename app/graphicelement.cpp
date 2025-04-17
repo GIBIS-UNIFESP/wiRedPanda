@@ -134,6 +134,8 @@ void GraphicElement::save(QDataStream &stream) const
     map.insert("maxOutputSize", m_maxOutputSize);
     map.insert("trigger", m_trigger);
     map.insert("priority", m_priority);
+    map.insert("isWireless", m_isWireless);
+    map.insert("mapId", this->mapId());
 
     stream << map;
 
@@ -275,6 +277,14 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
         setPriority(map.value("priority").toULongLong());
     }
 
+    if (map.contains("isWireless")) {
+        m_isWireless = map.value("isWireless").toBool();
+    }
+
+    if (map.contains("mapId")) {
+        m_mapId = map.value("mapId").toInt();
+    }
+
     // -------------------------------------------
 
     QList<QMap<QString, QVariant>> inputMap; stream >> inputMap;
@@ -286,6 +296,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
 
         if (port < m_inputPorts.size()) {
             m_inputPorts.value(port)->setPtr(ptr);
+            m_inputPorts.value(port)->setHasWirelessConnection(m_isWireless);
 
             if (elementType() == ElementType::IC) {
                 m_inputPorts.value(port)->setName(name);
@@ -312,6 +323,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
 
         if (port < m_outputPorts.size()) {
             m_outputPorts.value(port)->setPtr(ptr);
+            m_outputPorts.value(port)->setHasWirelessConnection(m_isWireless);
 
             if (elementType() == ElementType::IC) {
                 m_outputPorts.value(port)->setName(name);
@@ -1190,6 +1202,21 @@ void GraphicElement::retranslate()
 
     setPortName(m_translatedName);
     setToolTip(m_translatedName);
+}
+
+void GraphicElement::setMapId(const int mapId)
+{
+    m_mapId = mapId;
+}
+
+int GraphicElement::mapId() const
+{
+    return m_mapId == -1 ? this->id() : m_mapId;
+}
+
+void GraphicElement::setIsWireless(const bool isWireless)
+{
+    m_isWireless = isWireless;
 }
 
 QDataStream &operator<<(QDataStream &stream, const GraphicElement *item)

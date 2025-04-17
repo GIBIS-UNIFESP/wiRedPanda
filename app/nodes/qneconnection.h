@@ -30,6 +30,7 @@
 
 #include <QCoreApplication>
 #include <QGraphicsPathItem>
+#include <QVersionNumber>
 
 class QNEInputPort;
 class QNEOutputPort;
@@ -54,15 +55,18 @@ public:
     Status status() const;
     bool highLight();
     double angle();
-    void load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap = {});
+    int mapId() const;
+    void load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap, const QVersionNumber version);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void save(QDataStream &stream) const;
     void setEndPort(QNEInputPort *port);
     void setEndPos(const QPointF point);
     void setHighLight(const bool highLight);
+    void setMapId(const int mapId);
     void setStartPort(QNEOutputPort *port);
     void setStartPos(const QPointF point);
     void setStatus(const Status status);
+    void setWireless(const bool isWireless);
     void updatePath();
     void updatePosFromPorts();
     void updateTheme();
@@ -82,6 +86,8 @@ private:
     QPointF m_startPos;
     Status m_status = Status::Invalid;
     bool m_highLight = false;
+    bool m_wireless = false;
+    int m_mapId = -1;
 };
 
 Q_DECLARE_METATYPE(QNEConnection)

@@ -18,6 +18,7 @@ Node::Node(QGraphicsItem *parent)
     setPixmap(0);
 
     setCanChangeSkin(true);
+    setHasLabel(true);
     inputPort()->setRequired(true);
 
     Node::updatePortsProperties();

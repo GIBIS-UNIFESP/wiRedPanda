@@ -156,6 +156,10 @@ void IC::loadFile(const QString &fileName)
     Serialization::loadDolphinFileName(stream, version);
     Serialization::loadRect(stream, version);
 
+    if (version >= VERSION("4.3")) {
+        Serialization::loadNodeMappings(stream);
+    }
+
     const auto items = Serialization::deserialize(stream, {}, version);
 
     for (auto *item : items) {
@@ -412,6 +416,10 @@ void IC::copyFiles(const QFileInfo &srcFile)
     QVersionNumber version = Serialization::readPandaHeader(stream);
     Serialization::loadDolphinFileName(stream, version);
     Serialization::loadRect(stream, version);
+
+    if (version >= VERSION("4.3")) {
+        Serialization::loadNodeMappings(stream);
+    }
 
     IC::path = srcFile.absolutePath();
     Serialization::deserialize(stream, {}, version);
