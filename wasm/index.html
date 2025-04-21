@@ -1,3 +1,8 @@
+<!--
+Copyright (C) 2024 The Qt Company Ltd.
+SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+-->
+
 <!doctype html>
 <html lang="en-us">
   <head>
@@ -57,7 +62,7 @@
                                 exitData.text !== undefined ? ` (${exitData.text})` : '';
                             showUi(spinner);
                         },
-                        entryFunction: window.createQtAppInstance,
+                        entryFunction: window.wiredpanda_entry,
                         containerElements: [screen],
                         
                     }

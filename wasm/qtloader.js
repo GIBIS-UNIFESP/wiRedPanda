@@ -23,7 +23,8 @@
  * - fontDpi: number
  *      Specifies font DPI for the instance
  * - onLoaded: () => void
- *      Called when the module has loaded.
+ *      Called when the module has loaded, at the point in time where any loading placeholder
+ *      should be hidden and the application window should be shown.
  * - entryFunction: (emscriptenConfig: object) => Promise<EmscriptenModule>
  *      Qt always uses emscripten's MODULARIZE option. This is the MODULARIZE entry function.
  * - module: Promise<WebAssembly.Module>
@@ -51,15 +52,19 @@
  *
  *      $QTDIR may be used as a placeholder for the "qtdir" configuration property (see @qtdir), for instance:
  *          "source": "$QTDIR/plugins/imageformats/libqjpeg.so"
+ *  - localFonts.requestPermission: bool
+ *       Whether Qt should request for local fonts access permission on startup (default false).
+ *  - localFonts.familiesCollection string
+ *       Specifies a collection of local fonts to load. Possible values are:
+ *          "NoFontFamilies"      : Don't load any font families
+ *          "DefaultFontFamilies" : A subset of available font families; currently the "web-safe" fonts (default).
+ *          "AllFontFamilies"     : All local font families (not reccomended)
+ *  - localFonts.extraFamilies: [string]
+ *       Adds additional font families to be loaded at startup.
  *
- * @return Promise<{
- *             instance: EmscriptenModule,
- *             exitStatus?: { text: string, code?: number, crashed: bool }
- *         }>
+ * @return Promise<instance: EmscriptenModule>
  *      The promise is resolved when the module has been instantiated and its main function has been
- *      called. The returned exitStatus is defined if the application crashed or exited immediately
- *      after its entry function has been called. Otherwise, config.onExit will get called at a
- *      later time when (and if) the application exits.
+ *      called.
  *
  * @see https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/emscripten for
  *      EmscriptenModule
@@ -68,22 +73,15 @@ async function qtLoad(config)
 {
     const throwIfEnvUsedButNotExported = (instance, config) =>
     {
-        const environment = config.environment;
+        const environment = config.qt.environment;
         if (!environment || Object.keys(environment).length === 0)
             return;
-        const isEnvExported = typeof instance.ENV === 'object';
-        if (!isEnvExported)
-            throw new Error('ENV must be exported if environment variables are passed');
-    };
-
-    const throwIfFsUsedButNotExported = (instance, config) =>
-    {
-        const environment = config.environment;
-        if (!environment || Object.keys(environment).length === 0)
-            return;
-        const isFsExported = typeof instance.FS === 'object';
-        if (!isFsExported)
-            throw new Error('FS must be exported if preload is used');
+        const descriptor = Object.getOwnPropertyDescriptor(instance, 'ENV');
+        const isEnvExported = typeof descriptor.value === 'object';
+        if (!isEnvExported) {
+            throw new Error('ENV must be exported if environment variables are passed, ' +
+                            'add it to the QT_WASM_EXTRA_EXPORTED_METHODS CMake target property');
+        }
     };
 
     if (typeof config !== 'object')
@@ -91,7 +89,7 @@ async function qtLoad(config)
     if (typeof config.qt !== 'object')
         throw new Error('config.qt is required, expected an object');
     if (typeof config.qt.entryFunction !== 'function')
-        config.qt.entryFunction = window.createQtAppInstance;
+        throw new Error('config.qt.entryFunction is required, expected a function');
 
     config.qt.qtdir ??= 'qt';
     config.qt.preload ??= [];
@@ -100,6 +98,12 @@ async function qtLoad(config)
     delete config.qt.containerElements;
     config.qtFontDpi = config.qt.fontDpi;
     delete config.qt.fontDpi;
+
+    // Make Emscripten not call main(); this gives us more control over
+    // the startup sequence.
+    const originalNoInitialRun = config.noInitialRun;
+    const originalArguments = config.arguments;
+    config.noInitialRun = true;
 
     // Used for rejecting a failed load's promise where emscripten itself does not allow it,
     // like in instantiateWasm below. This allows us to throw in case of a load error instead of
@@ -120,14 +124,20 @@ async function qtLoad(config)
             }
         }
     }
-
+    const preloadFetchHelper = async (path) => {
+        const response = await fetch(path);
+        if (!response.ok)
+            throw new Error("Could not fetch preload file: " + path);
+        return response.json();
+    }
+    const filesToPreload = (await Promise.all(config.qt.preload.map(preloadFetchHelper))).flat();
     const qtPreRun = (instance) => {
         // Copy qt.environment to instance.ENV
         throwIfEnvUsedButNotExported(instance, config);
         for (const [name, value] of Object.entries(config.qt.environment ?? {}))
             instance.ENV[name] = value;
 
-        // Copy self.preloadData to MEMFS
+        // Preload files from qt.preload
         const makeDirs = (FS, filePath) => {
             const parts = filePath.split("/");
             let path = "/";
@@ -145,64 +155,73 @@ async function qtLoad(config)
                 }
             }
         }
-        throwIfFsUsedButNotExported(instance, config);
-        for ({destination, data} of self.preloadData) {
-            makeDirs(instance.FS, destination);
-            instance.FS.writeFile(destination, new Uint8Array(data));
+
+        const extractFilenameAndDir = (path) => {
+            const parts = path.split('/');
+            const filename = parts.pop();
+            const dir = parts.join('/');
+            return {
+                filename: filename,
+                dir: dir
+            };
         }
+        const preloadFile = (file) => {
+            makeDirs(instance.FS, file.destination);
+            const source = file.source.replace('$QTDIR', config.qt.qtdir);
+            const filenameAndDir = extractFilenameAndDir(file.destination);
+            instance.FS.createPreloadedFile(filenameAndDir.dir, filenameAndDir.filename, source, true, true);
+        }
+        const isFsExported = typeof instance.FS === 'object';
+        if (!isFsExported)
+            throw new Error('FS must be exported if preload is used');
+        filesToPreload.forEach(preloadFile);
     }
 
     if (!config.preRun)
         config.preRun = [];
     config.preRun.push(qtPreRun);
 
-    config.onRuntimeInitialized = () => config.qt.onLoaded?.();
+    const originalOnRuntimeInitialized = config.onRuntimeInitialized;
+    config.onRuntimeInitialized = () => {
+        originalOnRuntimeInitialized?.();
+        config.qt.onLoaded?.();
+    }
 
     const originalLocateFile = config.locateFile;
-    config.locateFile = filename =>
-    {
+    config.locateFile = filename => {
         const originalLocatedFilename = originalLocateFile ? originalLocateFile(filename) : filename;
         if (originalLocatedFilename.startsWith('libQt6'))
             return `${config.qt.qtdir}/lib/${originalLocatedFilename}`;
         return originalLocatedFilename;
     }
 
+    let onExitCalled = false;
     const originalOnExit = config.onExit;
     config.onExit = code => {
         originalOnExit?.();
-        config.qt.onExit?.({
-            code,
-            crashed: false
-        });
+
+        if (!onExitCalled) {
+            onExitCalled = true;
+            config.qt.onExit?.({
+                code,
+                crashed: false
+            });
+        }
     }
 
     const originalOnAbort = config.onAbort;
     config.onAbort = text =>
     {
         originalOnAbort?.();
-
-        aborted = true;
-        config.qt.onExit?.({
-            text,
-            crashed: true
-        });
-    };
-
-    const fetchPreloadFiles = async () => {
-        const fetchJson = async path => (await fetch(path)).json();
-        const fetchArrayBuffer = async path => (await fetch(path)).arrayBuffer();
-        const loadFiles = async (paths) => {
-            const source = paths['source'].replace('$QTDIR', config.qt.qtdir);
-            return {
-                destination: paths['destination'],
-                data: await fetchArrayBuffer(source)
-            };
+        
+        if (!onExitCalled) {
+            onExitCalled = true;
+            config.qt.onExit?.({
+                text,
+                crashed: true
+            });
         }
-        const fileList = (await Promise.all(config.qt.preload.map(fetchJson))).flat();
-        self.preloadData = (await Promise.all(fileList.map(loadFiles))).flat();
-    }
-
-    await fetchPreloadFiles();
+    };
 
     // Call app/emscripten module entry function. It may either come from the emscripten
     // runtime script or be customized as needed.
@@ -210,11 +229,25 @@ async function qtLoad(config)
     try {
         instance = await Promise.race(
             [circuitBreaker, config.qt.entryFunction(config)]);
+
+        // Call main after creating the instance. We've opted into manually
+        // calling main() by setting noInitialRun in the config. Thie Works around
+        // issue where Emscripten suppresses all exceptions thrown during main.
+        if (!originalNoInitialRun)
+            instance.callMain(originalArguments);
     } catch (e) {
-        config.qt.onExit?.({
-            text: e.message,
-            crashed: true
-        });
+        // If this is the exception thrown by app.exec() then that is a normal
+        // case and we suppress it.
+        if (e == "unwind") // not much to go on
+            return;
+
+        if (!onExitCalled) {
+            onExitCalled = true;
+            config.qt.onExit?.({
+                text: e.message,
+                crashed: true
+            });
+        }
         throw e;
     }
 
