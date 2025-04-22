@@ -142,6 +142,25 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
         m_ui->menuExamples->menuAction()->setVisible(false);
     }
 
+    //Start File Watching Global IC Files, Init cache with info
+
+    auto globalFilePaths = Settings::value("GlobalICs").toStringList();
+
+    QDir directory(m_currentFile.dir());
+    auto localFileInfos = directory.entryInfoList({"*.panda", "*.PANDA"}, QDir::Files);
+    QStringList localFilePaths;
+    for(auto &fileInfo: localFileInfos) {
+        localFilePaths.append(fileInfo.absoluteFilePath());
+    }
+    auto filePaths = globalFilePaths + localFilePaths;
+
+    for(auto &filePath: filePaths){
+        updateFileStatCache(filePath);
+        m_IcFileWatcher.addPath(filePath);
+    }
+    connect(&m_IcFileWatcher, &QFileSystemWatcher::fileChanged, this, &MainWindow::updateFileStatCache);
+
+
     // Shortcuts
     auto *searchShortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
     auto *prevMainPropShortcut = new QShortcut(QKeySequence("["), this);
@@ -800,6 +819,8 @@ void MainWindow::updateGlobalICList(const QStringList& filePaths){
                 QLabel* item2Label = item2->getNameLabel();
                 itemLabel->setStyleSheet("QLabel  { color: red; }");
                 item2Label->setStyleSheet("QLabel { color: red; }");
+            }else {
+                item->setToolTip(m_fileStatCache[filename]);
             }
 
             m_ui->scrollAreaWidgetContents_Global_IC->layout()->addWidget(item);
@@ -809,7 +830,6 @@ void MainWindow::updateGlobalICList(const QStringList& filePaths){
 
     m_ui->scrollAreaWidgetContents_Global_IC->layout()->addItem(m_ui->verticalSpacer_Global_IC);
 }
-
 
 
 void MainWindow::updateLocalICList(QString dirPath)
@@ -841,7 +861,8 @@ void MainWindow::updateLocalICList(QString dirPath)
     if (file.exists()) {
         qCDebug(zero) << "Show files.";
         QDir directory(file.absoluteDir());
-        QStringList files = directory.entryList({"*.panda", "*.PANDA"}, QDir::Files);
+        auto fileInfos = directory.entryInfoList({"*.panda", "*.PANDA"}, QDir::Files);
+        QStringList files = directory.entryList( {"*.panda", "*.PANDA"}, QDir::Files);
         files.removeAll(file.fileName());
 
         for (int i = files.size() - 1; i >= 0; --i) {
@@ -851,15 +872,19 @@ void MainWindow::updateLocalICList(QString dirPath)
         }
 
         qCDebug(zero) << "Files: " << files.join(", ");
-        for (const QString &filename : std::as_const(files)) {
+        for (const QFileInfo &fileInfo : std::as_const(fileInfos)) {
             QPixmap pixmap(":/basic/ic-panda.svg");
+            auto fileName = fileInfo.fileName();
+            auto *item = new ElementLabel(pixmap, ElementType::IC, fileName, this);
 
-            auto *item = new ElementLabel(pixmap, ElementType::IC, filename, this);
+            item->setToolTip(m_fileStatCache[fileInfo.absoluteFilePath()]);
 
             m_ui->scrollAreaWidgetContents_Local_IC->layout()->addWidget(item);
 
-            auto *item2 = new ElementLabel(pixmap, ElementType::IC, filename, this);
+            auto *item2 = new ElementLabel(pixmap, ElementType::IC, fileName, this);
             m_ui->scrollAreaWidgetContents_Search->layout()->addWidget(item2);
+
+
         }
     }
 
@@ -1674,4 +1699,20 @@ void MainWindow::removeGlobalICFile(const QString &icFileName)
     Settings::setValue("GlobalICs", files);
 
     updateGlobalICList();
+}
+
+QString fileStat(const QFile& file) {
+    auto fileInfo = QFileInfo(file);
+    return QString("\
+    Path: %1<br>\
+    Last Modified: %2<br>\
+    Size: %3<br>\
+    ").arg(fileInfo.absoluteFilePath(), fileInfo.lastModified().toString(), QString::number(fileInfo.size()));
+}
+
+
+void MainWindow::updateFileStatCache(const QString filePath){
+    auto file = QFile(filePath);
+    auto fileInfo = QFileInfo(file);
+    m_fileStatCache[fileInfo.absoluteFilePath()] = fileStat(file);
 }

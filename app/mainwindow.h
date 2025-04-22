@@ -135,6 +135,7 @@ private:
     void updateLocalICList(QString dirPath = "");
     void updateRecentFileActions();
     void updateSettings();
+    void updateFileStatCache(const QString filePath);
     void updateTheme();
     void zoomChanged();
 
@@ -156,6 +157,10 @@ private:
     QTranslator *m_qtTranslator = nullptr;
 
     RecentFiles *m_recentFiles = nullptr;
+
+    QFileSystemWatcher m_IcFileWatcher;
+
+    QMap<QString, QString> m_fileStatCache;
 
     QFileInfo m_currentFile;
     WorkSpace *m_currentTab = nullptr;
