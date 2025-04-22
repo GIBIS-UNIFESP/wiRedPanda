@@ -804,8 +804,10 @@ void MainWindow::updateGlobalICList(const QStringList& filePaths){
                 files.removeAt(i);
             }
         }
+    }
 
         qCDebug(zero) << "Files: " << files.join(", ");
+        //filename is actually absolute file path here.
         for (const QString &filename : std::as_const(files)) {
             QPixmap pixmap(":/basic/ic-panda.svg");
 
@@ -820,13 +822,13 @@ void MainWindow::updateGlobalICList(const QStringList& filePaths){
                 itemLabel->setStyleSheet("QLabel  { color: red; }");
                 item2Label->setStyleSheet("QLabel { color: red; }");
             }else {
+                updateFileStatCache(filename);
                 item->setToolTip(m_fileStatCache[filename]);
             }
 
             m_ui->scrollAreaWidgetContents_Global_IC->layout()->addWidget(item);
             m_ui->scrollAreaWidgetContents_Search->layout()->addWidget(item2);
         }
-    }
 
     m_ui->scrollAreaWidgetContents_Global_IC->layout()->addItem(m_ui->verticalSpacer_Global_IC);
 }
@@ -877,6 +879,7 @@ void MainWindow::updateLocalICList(QString dirPath)
             auto fileName = fileInfo.fileName();
             auto *item = new ElementLabel(pixmap, ElementType::IC, fileName, this);
 
+            updateFileStatCache(fileInfo.absoluteFilePath());
             item->setToolTip(m_fileStatCache[fileInfo.absoluteFilePath()]);
 
             m_ui->scrollAreaWidgetContents_Local_IC->layout()->addWidget(item);
@@ -1679,6 +1682,7 @@ void MainWindow::on_pushButtonAddIC_clicked()
         return;
     }
 
+    for(auto &file: files) updateFileStatCache(file);
     updateGlobalICList(files);
     //updateICList();
 }
