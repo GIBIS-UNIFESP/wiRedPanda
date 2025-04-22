@@ -17,6 +17,7 @@ public:
     explicit ElementLabel(const QPixmap *pixmap, ElementType type, const QString &icFileName, QWidget *parent = nullptr);
     explicit ElementLabel(const QPixmap &pixmap, ElementType type, const QString &icFileName, QWidget *parent = nullptr);
 
+    QLabel *getNameLabel();
     QMimeData *mimeData();
     QString icFileName() const;
     QString name() const;

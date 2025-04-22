@@ -130,9 +130,10 @@ private:
     void on_pushButtonRemoveIC_clicked();
     void openRecentFile();
     void populateLeftMenu();
-    void removeICFile(const QString &icFileName);
+    void removeGlobalICFile(const QString &icFileName);
     void tabChanged(const int newTabIndex);
-    void updateICList();
+    void updateGlobalICList(const QStringList &filePaths = {});
+    void updateLocalICList();
     void updateRecentFileActions();
     void updateSettings();
     void updateTheme();

@@ -10,7 +10,7 @@ public:
     explicit TrashButton(QWidget *parent = nullptr);
 
 signals:
-    void removeICFile(const QString &icFileName);
+    void removeGlobalICFile(const QString &icFileName);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
