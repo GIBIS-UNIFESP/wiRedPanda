@@ -121,3 +121,7 @@ void ElementLabel::updateTheme()
     m_pixmap = ElementFactory::pixmap(m_elementType);
     m_iconLabel.setPixmap(m_pixmap);
 }
+
+QLabel* ElementLabel::getNameLabel() {
+    return &m_nameLabel;
+}

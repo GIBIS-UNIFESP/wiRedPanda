@@ -25,6 +25,7 @@ public:
     void startDrag();
     void updateName();
     void updateTheme();
+    QLabel* getNameLabel();
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;

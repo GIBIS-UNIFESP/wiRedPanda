@@ -90,8 +90,9 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     m_ui->tabElements->setTabIcon(2, QIcon(":/basic/truthtable-rotated.svg"));
     m_ui->tabElements->setTabIcon(3, QIcon(DFlipFlop::pixmapPath()));
     m_ui->tabElements->setTabIcon(4, QIcon(":/basic/ic-panda.svg"));
-    m_ui->tabElements->setTabIcon(5, QIcon(":/misc/text.png"));
-    m_ui->tabElements->setTabEnabled(6, false);
+    m_ui->tabElements->setTabIcon(5, QIcon(":/basic/ic-panda.svg"));
+    m_ui->tabElements->setTabIcon(6, QIcon(":/misc/text.png"));
+    m_ui->tabElements->setTabEnabled(7, false);
 
     qCDebug(zero) << "Loading recent file list.";
     m_recentFiles = new RecentFiles(this);
@@ -198,9 +199,9 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->actionZoomOut,          &QAction::triggered,        this,                &MainWindow::on_actionZoomOut_triggered);
     connect(m_ui->lineEditSearch,         &QLineEdit::returnPressed,  this,                &MainWindow::on_lineEditSearch_returnPressed);
     connect(m_ui->lineEditSearch,         &QLineEdit::textChanged,    this,                &MainWindow::on_lineEditSearch_textChanged);
-    connect(m_ui->pushButtonAddIC,        &QPushButton::clicked,      this,                &MainWindow::on_pushButtonAddIC_clicked);
-    connect(m_ui->pushButtonRemoveIC,     &QPushButton::clicked,      this,                &MainWindow::on_pushButtonRemoveIC_clicked);
-    connect(m_ui->pushButtonRemoveIC,     &TrashButton::removeICFile, this,                &MainWindow::removeICFile);
+    connect(m_ui->pushButtonAddGlobalIC,        &QPushButton::clicked,      this,                &MainWindow::on_pushButtonAddIC_clicked);
+    connect(m_ui->pushButtonRemoveGlobalIC,     &QPushButton::clicked,      this,                &MainWindow::on_pushButtonRemoveIC_clicked);
+    connect(m_ui->pushButtonRemoveGlobalIC,     &TrashButton::removeGlobalICFile, this,                &MainWindow::removeGlobalICFile);
 }
 
 MainWindow::~MainWindow()
@@ -324,7 +325,8 @@ void MainWindow::save(const QString &fileName, const bool saveAs)
         }
 
     }
-    updateICList();
+    updateLocalICList();
+    updateGlobalICList(Settings::value("GlobalICs").toStringList());
     m_ui->statusBar->showMessage(tr("File saved successfully."), 4000);
 }
 
@@ -467,7 +469,8 @@ void MainWindow::loadPandaFile(const QString &fileName)
     createNewTab();
     qCDebug(zero) << "Loading in editor.";
     m_currentTab->load(fileName);
-    updateICList();
+    updateLocalICList();
+    updateGlobalICList(Settings::value("GlobalICs").toStringList());
     m_ui->statusBar->showMessage(tr("File loaded successfully."), 4000);
 }
 void MainWindow::loadEmbeddedIC(const QString &fileName, IC *source_ic)
@@ -486,7 +489,8 @@ void MainWindow::loadEmbeddedIC(const QString &fileName, IC *source_ic)
     qCDebug(zero) << tr("Loading in editor.");
     m_currentTab->m_EmbeddedIc = source_ic;
     m_currentTab->load(fileName);
-    updateICList();
+    updateLocalICList();
+    updateGlobalICList(Settings::value("GlobalICs").toStringList());
     m_ui->statusBar->showMessage(tr("File loaded successfully."), 4000);
 }
 
@@ -733,9 +737,84 @@ void MainWindow::on_actionSelectAll_triggered()
     m_currentTab->scene()->selectAll();
 }
 
-void MainWindow::updateICList(QString dirPath)
+
+void MainWindow::updateGlobalICList(const QStringList& filePaths){
+    auto ICList = Settings::value("GlobalICs").toStringList();
+
+    auto paths = ICList + filePaths;
+
+    auto globalIcsSet = QSet<QString>(paths.begin(), paths.end());
+
+    QStringList globalIcs = QStringList(globalIcsSet.begin(), globalIcsSet.end());
+
+    Settings::setValue("GlobalICs", globalIcs);
+
+    QStringList files = globalIcs;
+
+    QFileInfo file;
+
+    m_ui->scrollAreaWidgetContents_Global_IC->layout()->removeItem(m_ui->verticalSpacer_Global_IC);
+
+    auto c_tab = m_currentTab;
+
+    while(!m_icsTabTree.keys(c_tab).empty()) {
+        file = m_icsTabTree.keys(c_tab).at(0).second->fileInfo();
+        c_tab = m_icsTabTree.keys(c_tab).at(0).second;
+    }
+
+    if(c_tab == m_currentTab) file = m_currentFile;
+    const auto items = m_ui->scrollAreaWidgetContents_Global_IC->findChildren<ElementLabel *>();
+
+    for (auto *item : items) {
+        item->deleteLater();
+    }
+
+    const auto items2 = m_ui->scrollAreaWidgetContents_Search->findChildren<ElementLabel *>();
+
+    for (auto *item : items2) {
+        if (item->elementType() == ElementType::IC) {
+            item->deleteLater();
+        }
+    }
+    if (file.exists()) {
+        qCDebug(zero) << "Show files.";
+        files.removeAll(file.fileName());
+
+        for (int i = files.size() - 1; i >= 0; --i) {
+            if (files.at(i).at(0) == '.') {
+                files.removeAt(i);
+            }
+        }
+
+        qCDebug(zero) << "Files: " << files.join(", ");
+        for (const QString &filename : std::as_const(files)) {
+            QPixmap pixmap(":/basic/ic-panda.svg");
+
+            auto *item = new ElementLabel(pixmap, ElementType::IC, filename, this);
+            auto *item2 = new ElementLabel(pixmap, ElementType::IC, filename, this);
+
+            bool exists = QFile::exists(filename);
+
+            if(!exists){
+                QLabel* itemLabel = item->getNameLabel();
+                QLabel* item2Label = item2->getNameLabel();
+                itemLabel->setStyleSheet("QLabel  { color: red; }");
+                item2Label->setStyleSheet("QLabel { color: red; }");
+            }
+
+            m_ui->scrollAreaWidgetContents_Global_IC->layout()->addWidget(item);
+            m_ui->scrollAreaWidgetContents_Search->layout()->addWidget(item2);
+        }
+    }
+
+    m_ui->scrollAreaWidgetContents_Global_IC->layout()->addItem(m_ui->verticalSpacer_Global_IC);
+}
+
+
+
+void MainWindow::updateLocalICList(QString dirPath)
 {
-    m_ui->scrollAreaWidgetContents_IC->layout()->removeItem(m_ui->verticalSpacer_IC);
+    m_ui->scrollAreaWidgetContents_Local_IC->layout()->removeItem(m_ui->verticalSpacer_Local_IC);
 
     QFileInfo file;
     auto c_tab = m_currentTab;
@@ -745,7 +824,7 @@ void MainWindow::updateICList(QString dirPath)
         c_tab = m_icsTabTree.keys(c_tab).at(0).second;
     }
     if(c_tab == m_currentTab) file = m_currentFile;
-    const auto items = m_ui->scrollAreaWidgetContents_IC->findChildren<ElementLabel *>();
+    const auto items = m_ui->scrollAreaWidgetContents_Local_IC->findChildren<ElementLabel *>();
 
     for (auto *item : items) {
         item->deleteLater();
@@ -772,18 +851,19 @@ void MainWindow::updateICList(QString dirPath)
         }
 
         qCDebug(zero) << "Files: " << files.join(", ");
-        for (const QString &file : std::as_const(files)) {
+        for (const QString &filename : std::as_const(files)) {
             QPixmap pixmap(":/basic/ic-panda.svg");
 
-            auto *item = new ElementLabel(pixmap, ElementType::IC, file, this);
-            m_ui->scrollAreaWidgetContents_IC->layout()->addWidget(item);
+            auto *item = new ElementLabel(pixmap, ElementType::IC, filename, this);
 
-            auto *item2 = new ElementLabel(pixmap, ElementType::IC, file, this);
+            m_ui->scrollAreaWidgetContents_Local_IC->layout()->addWidget(item);
+
+            auto *item2 = new ElementLabel(pixmap, ElementType::IC, filename, this);
             m_ui->scrollAreaWidgetContents_Search->layout()->addWidget(item2);
         }
     }
 
-    m_ui->scrollAreaWidgetContents_IC->layout()->addItem(m_ui->verticalSpacer_IC);
+    m_ui->scrollAreaWidgetContents_Local_IC->layout()->addItem(m_ui->verticalSpacer_Local_IC);
 }
 
 bool MainWindow::
@@ -915,7 +995,8 @@ void MainWindow::connectTab()
     qCDebug(zero) << "Setting Panda file info.";
     m_currentFile = m_currentTab->fileInfo();
 
-    updateICList();
+    updateLocalICList();
+    updateGlobalICList(Settings::value("GlobalICs").toStringList());
 
     qCDebug(zero) << "Connecting current tab to element editor menu in UI.";
     m_ui->elementEditor->setScene(m_currentTab->scene());
@@ -962,7 +1043,7 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
     if (text.isEmpty()) {
         m_ui->tabElements->tabBar()->show();
         m_ui->tabElements->setCurrentIndex(m_lastTabIndex);
-        m_ui->tabElements->setTabEnabled(6, false);
+        m_ui->tabElements->setTabEnabled(7, false);
 
         m_lastTabIndex = -1;
     } else {
@@ -971,8 +1052,8 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
         }
 
         m_ui->tabElements->tabBar()->hide();
-        m_ui->tabElements->setCurrentIndex(6);
-        m_ui->tabElements->setTabEnabled(6, true);
+        m_ui->tabElements->setCurrentIndex(7);
+        m_ui->tabElements->setTabEnabled(7, true);
 
         const auto allItems = m_ui->scrollArea_Search->findChildren<ElementLabel *>();
 
@@ -1573,13 +1654,8 @@ void MainWindow::on_pushButtonAddIC_clicked()
         return;
     }
 
-    QMessageBox::information(this, tr("Info"), tr("Selected files (and their dependencies) will be copied to current file folder."));
-
-    for (const auto &file : files) {
-        IC::copyFiles(QFileInfo(file));
-    }
-
-    updateICList();
+    updateGlobalICList(files);
+    //updateICList();
 }
 
 void MainWindow::on_pushButtonRemoveIC_clicked()
@@ -1587,29 +1663,15 @@ void MainWindow::on_pushButtonRemoveIC_clicked()
     QMessageBox::information(this, tr("Info"), tr("Drag here to remove."));
 }
 
-void MainWindow::removeICFile(const QString &icFileName)
+void MainWindow::removeGlobalICFile(const QString &icFileName)
 {
     if (!m_currentTab) {
         return;
     }
 
-    SimulationBlocker blocker(m_currentTab->simulation());
+    auto files = Settings::value("GlobalICs").toStringList();
+    files.removeAll(icFileName);
+    Settings::setValue("GlobalICs", files);
 
-    auto elements = m_currentTab->scene()->elements();
-
-    for (auto it = elements.rbegin(); it != elements.rend(); ++it) {
-        if ((*it)->elementType() == ElementType::IC && (*it)->label().append(".panda").toLower() == icFileName) {
-            m_currentTab->scene()->removeItem(*it);
-            delete *it;
-        }
-    }
-
-    QFile file(GlobalProperties::currentDir + "/" + icFileName);
-
-    if (!file.remove()) {
-        throw Pandaception(tr("Error removing file: ") + file.errorString());
-    }
-
-    updateICList();
-    on_actionSave_triggered();
+    updateGlobalICList();
 }
