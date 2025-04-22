@@ -105,6 +105,9 @@
               <height>0</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
             <property name="styleSheet">
              <string notr="true">QTabBar::tab:disabled {
 	 width: 0;
@@ -148,7 +151,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>584</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -197,7 +200,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>584</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -246,7 +249,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>582</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -301,7 +304,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>584</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -324,6 +327,54 @@ QTabWidget::pane {
               </item>
              </layout>
             </widget>
+            <widget class="QWidget" name="local_ic">
+             <attribute name="icon">
+              <iconset resource="resources/basic/basic.qrc">
+               <normaloff>:/basic/ic-panda.svg</normaloff>:/basic/ic-panda.svg</iconset>
+             </attribute>
+             <attribute name="title">
+              <string/>
+             </attribute>
+             <attribute name="toolTip">
+              <string>Local Integrated Circuits</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_7">
+              <item row="0" column="0">
+               <widget class="QWidget" name="scrollAreaWidgetContents_Local_IC" native="true">
+                <property name="autoFillBackground">
+                 <bool>true</bool>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_9">
+                 <property name="leftMargin">
+                  <number>9</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>9</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>9</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>9</number>
+                 </property>
+                 <item>
+                  <spacer name="verticalSpacer_Local_IC">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
             <widget class="QWidget" name="ic">
              <attribute name="icon">
               <iconset resource="resources/basic/basic.qrc">
@@ -333,7 +384,7 @@ QTabWidget::pane {
               <string/>
              </attribute>
              <attribute name="toolTip">
-              <string>Integrated Circuits</string>
+              <string>Global Integrated Circuits</string>
              </attribute>
              <layout class="QGridLayout" name="gridLayout_4">
               <item row="1" column="0">
@@ -344,18 +395,18 @@ QTabWidget::pane {
                 <property name="widgetResizable">
                  <bool>true</bool>
                 </property>
-                <widget class="QWidget" name="scrollAreaWidgetContents_IC">
+                <widget class="QWidget" name="scrollAreaWidgetContents_Global_IC">
                  <property name="geometry">
                   <rect>
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>552</height>
+                   <height>549</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
                   <item>
-                   <spacer name="verticalSpacer_IC">
+                   <spacer name="verticalSpacer_Global_IC">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
                     </property>
@@ -374,14 +425,14 @@ QTabWidget::pane {
               <item row="0" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout">
                 <item>
-                 <widget class="QPushButton" name="pushButtonAddIC">
+                 <widget class="QPushButton" name="pushButtonAddGlobalIC">
                   <property name="text">
                    <string>Add IC files</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="TrashButton" name="pushButtonRemoveIC">
+                 <widget class="TrashButton" name="pushButtonRemoveGlobalIC">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -427,7 +478,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>584</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -472,7 +523,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>258</width>
-                   <height>582</height>
+                   <height>579</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -618,7 +669,7 @@ QTabWidget::pane {
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

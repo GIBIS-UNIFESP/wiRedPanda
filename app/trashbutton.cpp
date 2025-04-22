@@ -42,6 +42,6 @@ void TrashButton::dropEvent(QDropEvent *event)
         ElementType type;   stream >> type;
         QString icFileName; stream >> icFileName;
 
-        emit removeICFile(icFileName);
+        emit removeGlobalICFile(icFileName);
     }
 }
