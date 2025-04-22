@@ -132,6 +132,7 @@ private:
     void populateLeftMenu();
     void removeGlobalICFile(const QString &icFileName);
     void tabChanged(const int newTabIndex);
+    void updateFileStatCache(const QString filePath);
     void updateGlobalICList(const QStringList &filePaths = {});
     void updateLocalICList();
     void updateRecentFileActions();
@@ -157,6 +158,9 @@ private:
     QTranslator *m_qtTranslator = nullptr;
 
     RecentFiles *m_recentFiles = nullptr;
+
+    QFileSystemWatcher m_IcFileWatcher;
+    QMap<QString, QString> m_fileStatCache;
 
     QFileInfo m_currentFile;
     QMultiMap<QPair<IC *, WorkSpace *>, WorkSpace *> m_icsTabTree;
