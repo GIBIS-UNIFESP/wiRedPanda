@@ -137,7 +137,7 @@ void ElementFactory::updateItemId(ItemWithId *item, const int newId)
 
 int ElementFactory::nextId()
 {
-    return m_lastId++;
+    return ++m_lastId;
 }
 
 std::shared_ptr<LogicElement> ElementFactory::buildLogicElement(GraphicElement *elm)
