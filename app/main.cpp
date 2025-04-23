@@ -6,6 +6,7 @@
 #include "globalproperties.h"
 #include "mainwindow.h"
 #include "registertypes.h"
+#include "workspace.h"
 
 #include <QCommandLineParser>
 #include <QMessageBox>
@@ -74,20 +75,25 @@ int main(int argc, char *argv[])
 
         QCommandLineOption arduinoFileOption(
             {"a", "arduino-file"},
-            QCoreApplication::translate("main", "Exports circuit to <arduino-file>"),
+            QCoreApplication::translate("main", "Exports circuit to <arduino-file>."),
             QCoreApplication::translate("main", "arduino file"));
         parser.addOption(arduinoFileOption);
 
         QCommandLineOption waveformFileOption(
             {"w", "waveform"},
-            QCoreApplication::translate("main", "Exports circuit to waveform text file"),
+            QCoreApplication::translate("main", "Exports circuit to waveform text file."),
             QCoreApplication::translate("main", "waveform input text file"));
         parser.addOption(waveformFileOption);
 
         QCommandLineOption terminalFileOption(
             {"c", "terminal"},
-            QCoreApplication::translate("main", "Exports circuit to waveform text file, reading input from terminal"));
+            QCoreApplication::translate("main", "Exports circuit to waveform text file, reading input from terminal."));
         parser.addOption(terminalFileOption);
+
+        QCommandLineOption blockTruthTableOption(
+            {"btt", "blockTruthTable"},
+            QCoreApplication::translate("main", "When used with -c/--terminal, block execution if the circuit contains Truth Tables."));
+        parser.addOption(blockTruthTableOption);
 
         parser.process(app);
 
@@ -122,6 +128,24 @@ int main(int argc, char *argv[])
                 GlobalProperties::verbose = false;
                 MainWindow window;
                 window.loadPandaFile(args.at(0));
+
+                if (parser.isSet(blockTruthTableOption)) {
+                    bool containsTruthTable = false;
+                    auto elements = window.currentTab()->scene()->elements();
+
+                    for (const auto *element : elements) {
+                        if (element->elementType() == ElementType::TruthTable) {
+                            containsTruthTable = true;
+                            break;
+                        }
+                    }
+
+                    if (containsTruthTable) {
+                        QTextStream(stderr) << QCoreApplication::translate("main", "Error: Circuit contains Truth Table elements.");
+                        exit(1);
+                    }
+                }
+
                 window.exportToWaveFormTerminal();
             }
             exit(0);

@@ -776,6 +776,11 @@ void MainWindow::connectTab()
     m_ui->actionZoomOut->setEnabled(m_currentTab->view()->canZoomOut());
 }
 
+WorkSpace *MainWindow::currentTab() const
+{
+    return m_currentTab;
+}
+
 void MainWindow::tabChanged(const int newTabIndex)
 {
     disconnectTab(); // disconnect previously selected tab
