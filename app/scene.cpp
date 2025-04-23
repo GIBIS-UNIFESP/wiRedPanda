@@ -917,7 +917,7 @@ void Scene::deleteNodeAction(const QList<QGraphicsItem *> items)
         if (!isSourceNode(childNode)) {
             for (auto &set : nodeMapping.values()) {
                 for (auto &pair: set) {
-                    if (pair.second == childNode->id()) {
+                    if (pair.nodeId == childNode->id()) {
                         auto key = nodeMapping.key(set);
                         nodeMapping.remove(nodeMapping.key(set));
                         set.remove(pair);
@@ -931,7 +931,7 @@ void Scene::deleteNodeAction(const QList<QGraphicsItem *> items)
     for (auto &sourceNode : nodes) {
         if (isSourceNode(sourceNode)) {
             for (auto pair : nodeMapping.value(sourceNode->id())) {
-                const int childNodeId = pair.second;
+                const int childNodeId = pair.nodeId;
                 auto childNode = element(childNodeId);
                 childNode->setLabel("");
             }
@@ -1353,9 +1353,9 @@ bool Scene::isSourceNode(GraphicElement *node)
     return nodeMapping.contains(node->id());
 }
 
-QSet<QPair<int, int>> Scene::getNodeSet(const QString &nodeLabel, QList<int> excludeIds)
+QSet<Destination> Scene::getNodeSet(const QString &nodeLabel, QList<int> excludeIds)
 {
-    QSet<QPair<int, int>> set;
+    QSet<Destination> set;
 
     for (auto &sourceNodeId : nodeMapping.keys()) {
         if (!excludeIds.contains(sourceNodeId) && element(sourceNodeId)->label() == nodeLabel) {
@@ -1366,16 +1366,16 @@ QSet<QPair<int, int>> Scene::getNodeSet(const QString &nodeLabel, QList<int> exc
     return set;
 }
 
-void Scene::deleteNodeSetConnections(QSet<QPair<int, int>> *set, const int nodeToRemove)
+void Scene::deleteNodeSetConnections(QSet<Destination> *set, const int nodeToRemove)
 {
-    QSet<QPair<int, int>> toRemove;
+    QSet<Destination> toRemove;
 
     for (const auto &pair : *set) {
-        if (auto *node = qobject_cast<Node *>(element(pair.second))) {
+        if (auto *node = qobject_cast<Node *>(element(pair.nodeId))) {
             if (node->inputPort()->connections().size() == 1 &&
                 (nodeToRemove == -1 || nodeToRemove == node->id())
             ) {
-                auto connection = this->connection(pair.first);
+                auto connection = this->connection(pair.connectionId);
                 node->setLabel("");
                 receiveCommand(new DeleteItemsCommand({connection}, this));
                 simulation()->restart();

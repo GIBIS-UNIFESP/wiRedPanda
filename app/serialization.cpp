@@ -90,14 +90,14 @@ void Serialization::readDolphinHeader(QDataStream &stream)
     }
 }
 
-void Serialization::saveNodeMappings(const QMap<int, QSet<QPair<int, int>>> map, QDataStream &stream)
+void Serialization::saveNodeMappings(const QMap<int, QSet<Destination>> map, QDataStream &stream)
 {
     stream << map;
 }
 
-QMap<int, QSet<QPair<int, int>>> Serialization::loadNodeMappings(QDataStream &stream)
+QMap<int, QSet<Destination>> Serialization::loadNodeMappings(QDataStream &stream)
 {
-    QMap<int, QSet<QPair<int, int>>> map;
+    QMap<int, QSet<Destination>> map;
     stream >> map;
     return map;
 }

@@ -6,6 +6,7 @@
 #include "qneport.h"
 #include "simulation.h"
 
+#include <QDebug>
 #include <QElapsedTimer>
 #include <QGraphicsScene>
 #include <QMimeData>
@@ -17,6 +18,35 @@
 class GraphicElement;
 class GraphicsView;
 class QNEConnection;
+
+struct Destination {
+    int connectionId;
+    int nodeId;
+
+    bool operator==(const Destination &other) const {
+        return connectionId == other.connectionId && nodeId == other.nodeId;
+    }
+};
+
+inline uint qHash(const Destination &d, uint seed = 0) {
+    return qHash(QPair<int, int>(d.connectionId, d.nodeId), seed);
+}
+
+inline QDataStream &operator<<(QDataStream &out, const Destination &d) {
+    out << d.connectionId << d.nodeId;
+    return out;
+}
+
+inline QDataStream &operator>>(QDataStream &in, Destination &d) {
+    in >> d.connectionId >> d.nodeId;
+    return in;
+}
+
+inline QDebug operator<<(QDebug debug, const Destination &d) {
+    QDebugStateSaver saver(debug);
+    debug.nospace() << "Destination(connectionId=" << d.connectionId << ", nodeId=" << d.nodeId << ")";
+    return debug;
+}
 
 class Scene : public QGraphicsScene
 {
@@ -34,9 +64,9 @@ public:
     QList<QGraphicsItem *> items(Qt::SortOrder order = Qt::SortOrder(-1)) const;
     QList<QGraphicsItem *> items(const QPointF &pos, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape, Qt::SortOrder order = Qt::SortOrder(-1), const QTransform &deviceTransform = QTransform()) const;
     QList<QGraphicsItem *> items(const QRectF &rect, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape, Qt::SortOrder order = Qt::SortOrder(-1), const QTransform &deviceTransform = QTransform()) const;
-    QMap<int, QSet<QPair<int, int>>> nodeMapping;
+    QMap<int, QSet<Destination>> nodeMapping;
     QNEConnection *connection(const int connectionId) const;
-    QSet<QPair<int, int>> getNodeSet(const QString &nodeLabel, QList<int> excludeIds = {});
+    QSet<Destination> getNodeSet(const QString &nodeLabel, QList<int> excludeIds = {});
     QUndoStack *undoStack();
     Simulation *simulation();
     bool eventFilter(QObject *watched, QEvent *event) override;
@@ -51,7 +81,7 @@ public:
     void deleteAction();
     void deleteEditedConnection();
     void deleteNodeAction(const QList<QGraphicsItem *> items);
-    void deleteNodeSetConnections(QSet<QPair<int, int>> *set, const int nodeToRemove = -1);
+    void deleteNodeSetConnections(QSet<Destination> *set, const int nodeToRemove = -1);
     void flipHorizontally();
     void flipVertically();
     void makeConnection(QNEConnection *connection);

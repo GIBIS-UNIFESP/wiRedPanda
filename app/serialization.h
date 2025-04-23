@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "scene.h"
+
 #include <QCoreApplication>
 #include <QMap>
 #include <QVersionNumber>
@@ -28,12 +30,12 @@ public:
     //! returns the canvas pose from the last saved session.
     static QRectF loadRect(QDataStream &stream, const QVersionNumber version);
 
-    static QMap<int, QSet<QPair<int, int>>> loadNodeMappings(QDataStream &stream);
+    static QMap<int, QSet<Destination>> loadNodeMappings(QDataStream &stream);
     static QString loadDolphinFileName(QDataStream &stream, const QVersionNumber version);
     static QString typeName(const int type);
     static QVersionNumber readPandaHeader(QDataStream &stream);
     static void readDolphinHeader(QDataStream &stream);
-    static void saveNodeMappings(const QMap<int, QSet<QPair<int, int>>> map, QDataStream &stream);
+    static void saveNodeMappings(const QMap<int, QSet<Destination>> map, QDataStream &stream);
     static void writeDolphinHeader(QDataStream &stream);
     static void writePandaHeader(QDataStream &stream);
 
