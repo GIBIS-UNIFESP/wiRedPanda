@@ -22911,6 +22911,11 @@ build_files/obj/itemwithid.o: ../app/itemwithid.cpp ../app/itemwithid.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtGui/qrgba64.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtGui/qimage.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtGui/qpixelformat.h \
+		../app/globalproperties.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QString \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QVersionNumber \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qversionnumber.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtyperevision.h \
 		build_files/obj/wiredpanda.js.pch/c++.pch
 	$(CXX) -c -Xclang -include-pch -Xclang build_files/obj/wiredpanda.js.pch/c++.pch $(CXXFLAGS) $(INCPATH) -o build_files/obj/itemwithid.o ../app/itemwithid.cpp
 
@@ -26361,6 +26366,30 @@ build_files/obj/main.o: ../app/main.cpp ../app/application.h \
 		../app/element/truth_table.h \
 		../app/element/xnor.h \
 		../app/element/xor.h \
+		../app/workspace.h \
+		../app/graphicsview.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/QGraphicsView \
+		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qgraphicsview.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtGui/qpainter.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtGui/qtextoption.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtGui/qpen.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qscrollarea.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qabstractscrollarea.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qframe.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qgraphicsscene.h \
+		../app/scene.h \
+		../app/simulation.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QTimer \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtimer.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QElapsedTimer \
+		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/QGraphicsScene \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QMimeData \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qmimedata.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtGui/QUndoCommand \
+		../../Qt/6.9.0/wasm_multithread/include/QtGui/qundostack.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QTemporaryFile \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtemporaryfile.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtGui/QUndoStack \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/QCommandLineParser \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcommandlineparser.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcommandlineoption.h \
