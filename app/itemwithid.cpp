@@ -3,9 +3,14 @@
 
 #include "itemwithid.h"
 #include "elementfactory.h"
+#include "globalproperties.h"
 
 ItemWithId::ItemWithId()
 {
+    if (GlobalProperties::skipInit) {
+        return;
+    }
+
     ElementFactory::addItem(this);
 }
 
