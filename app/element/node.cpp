@@ -17,6 +17,8 @@ Node::Node(QGraphicsItem *parent)
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);
 
+    m_label->setPos(0, 32);
+
     setCanChangeSkin(true);
     setHasLabel(true);
     inputPort()->setRequired(true);
