@@ -1164,20 +1164,20 @@ void ElementEditor::connectNode(const QString label)
     nextNodeSet.insert(Destination{-1, selectedNode->id()});
 
     for (auto pair : nextNodeSet) {
-        auto *node = qobject_cast<Node *>(m_scene->element(pair.nodeId));
         auto *sourceNode = qobject_cast<Node *>(m_scene->element(nextSourceNodeId));
+        auto *destNode = qobject_cast<Node *>(m_scene->element(pair.nodeId));
 
-        if (node->inputPort()->connections().size() == 0) {
+        if (destNode->inputPort()->connections().size() == 0) {
             auto *connection = new QNEConnection();
             connection->setWireless(true);
             connection->setStartPort(sourceNode->outputPort());
-            connection->setEndPort(node->inputPort());
+            connection->setEndPort(destNode->inputPort());
             m_scene->makeConnectionNode(connection);
 
-            node->inputPort()->setHasWirelessConnection(true);
+            destNode->inputPort()->setHasWirelessConnection(true); // why this since connection itself stores isWireless?
             const int nodeId = pair.nodeId;
             nextNodeSet.remove(pair);
-            node->setIsWireless(true);
+            destNode->setIsWireless(true);
             nextNodeSet.insert(Destination{connection->id(), nodeId});
 
             selectedNode->setLabel(label);

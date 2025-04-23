@@ -1362,7 +1362,7 @@ QSet<Destination> Scene::getNodeSet(const QString &nodeLabel, QList<int> exclude
 
     for (auto &sourceNodeId : nodeMapping.keys()) {
         if (!excludeIds.contains(sourceNodeId) && element(sourceNodeId)->label() == nodeLabel) {
-            set = nodeMapping.value(sourceNodeId);
+            set = nodeMapping.value(sourceNodeId); // add break?
         }
     }
 
