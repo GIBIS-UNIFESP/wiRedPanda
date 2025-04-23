@@ -112,19 +112,17 @@ const QVector<GraphicElement *> Scene::visibleElements() const
     return elements(visibleRect);
 }
 
-GraphicElement *Scene::element(const int elementId) const
+GraphicElement *Scene::element(const int id) const
 {
-    GraphicElement *elm = nullptr;
     const auto items_ = items();
 
     for (auto *item : items_) {
-        if (item->type() == GraphicElement::Type && qgraphicsitem_cast<GraphicElement *>(item)->mapId() == elementId) {
-            elm = qgraphicsitem_cast<GraphicElement *>(item);
-            break;
+        if (item->type() == GraphicElement::Type && qgraphicsitem_cast<GraphicElement *>(item)->id() == id) {
+            return qgraphicsitem_cast<GraphicElement *>(item);
         }
     }
 
-    return elm;
+    return nullptr;
 }
 
 const QVector<GraphicElement *> Scene::elements() const
@@ -162,7 +160,7 @@ QNEConnection *Scene::connection(const int connectionId) const
     const auto items_ = items();
 
     for (auto *item : items_) {
-        if (item->type() == QNEConnection::Type && qgraphicsitem_cast<QNEConnection *>(item)->mapId() == connectionId) {
+        if (item->type() == QNEConnection::Type && qgraphicsitem_cast<QNEConnection *>(item)->id() == connectionId) {
             return qgraphicsitem_cast<QNEConnection *>(item);
         }
     }
@@ -919,7 +917,7 @@ void Scene::deleteNodeAction(const QList<QGraphicsItem *> items)
         if (!isSourceNode(childNode)) {
             for (auto &set : nodeMapping.values()) {
                 for (auto &pair: set) {
-                    if (pair.second == childNode->mapId()) {
+                    if (pair.second == childNode->id()) {
                         auto key = nodeMapping.key(set);
                         nodeMapping.remove(nodeMapping.key(set));
                         set.remove(pair);
@@ -932,13 +930,13 @@ void Scene::deleteNodeAction(const QList<QGraphicsItem *> items)
 
     for (auto &sourceNode : nodes) {
         if (isSourceNode(sourceNode)) {
-            for (auto pair : nodeMapping.value(sourceNode->mapId())) {
+            for (auto pair : nodeMapping.value(sourceNode->id())) {
                 const int childNodeId = pair.second;
                 auto childNode = element(childNodeId);
                 childNode->setLabel("");
             }
 
-            nodeMapping.remove(sourceNode->mapId());
+            nodeMapping.remove(sourceNode->id());
         }
     }
 }
@@ -1352,7 +1350,7 @@ void Scene::addItem(QMimeData *mimeData)
 
 bool Scene::isSourceNode(GraphicElement *node)
 {
-    return nodeMapping.contains(node->mapId());
+    return nodeMapping.contains(node->id());
 }
 
 QSet<QPair<int, int>> Scene::getNodeSet(const QString &nodeLabel, QList<int> excludeIds)
@@ -1375,7 +1373,7 @@ void Scene::deleteNodeSetConnections(QSet<QPair<int, int>> *set, const int nodeT
     for (const auto &pair : *set) {
         if (auto *node = qobject_cast<Node *>(element(pair.second))) {
             if (node->inputPort()->connections().size() == 1 &&
-                (nodeToRemove == -1 || nodeToRemove == node->mapId())
+                (nodeToRemove == -1 || nodeToRemove == node->id())
             ) {
                 auto connection = this->connection(pair.first);
                 node->setLabel("");

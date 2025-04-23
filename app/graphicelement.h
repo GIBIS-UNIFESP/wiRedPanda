@@ -89,7 +89,6 @@ public:
     const QVector<QNEInputPort *> &inputs() const;
     const QVector<QNEOutputPort *> &outputs() const;
     int inputSize() const;
-    int mapId() const;
     int maxInputSize() const;
     int maxOutputSize() const;
     int minInputSize() const;
@@ -114,7 +113,6 @@ public:
     void setIsWireless(const bool isWireless);
     void setLabel(const QString &label);
     void setLogic(LogicElement *newLogic);
-    void setMapId(const int Id);
     void setOutputSize(const int size);
     void setOutputs(const QVector<QNEOutputPort *> &outputs);
     void setPixmap(const QString &pixmapPath);
@@ -218,7 +216,6 @@ private:
     bool m_isWireless = false;
     bool m_rotatable = true;
     bool m_selected = false;
-    int m_mapId = -1;
     qreal m_angle = 0;
     quint64 m_maxInputSize = 0;
     quint64 m_maxOutputSize = 0;

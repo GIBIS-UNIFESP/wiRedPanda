@@ -165,7 +165,6 @@ void QNEConnection::save(QDataStream &stream) const
     stream << reinterpret_cast<quint64>(m_startPort);
     stream << reinterpret_cast<quint64>(m_endPort);
     stream << m_wireless;
-    stream << this->mapId();
 }
 
 void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
@@ -175,7 +174,6 @@ void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
 
     if (version >= VERSION("4.3")) {
         stream >> m_wireless;
-        stream >> m_mapId;
     }
 
     if (portMap.isEmpty()) {
@@ -333,16 +331,6 @@ bool QNEConnection::sceneEvent(QEvent *event)
 void QNEConnection::setWireless(const bool isWireless)
 {
     m_wireless = isWireless;
-}
-
-void QNEConnection::setMapId(const int mapId)
-{
-    m_mapId = mapId;
-}
-
-int QNEConnection::mapId() const
-{
-    return m_mapId == -1 ? this->id() : m_mapId;
 }
 
 QDataStream &operator<<(QDataStream &stream, const QNEConnection *conn)

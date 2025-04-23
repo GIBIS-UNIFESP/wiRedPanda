@@ -27,7 +27,7 @@ public:
 
     explicit Scene(QObject *parent = nullptr);
 
-    GraphicElement *element(const int elementId) const;
+    GraphicElement *element(const int id) const;
     GraphicsView *view() const;
     QAction *redoAction() const;
     QAction *undoAction() const;
