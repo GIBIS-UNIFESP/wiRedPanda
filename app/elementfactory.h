@@ -13,6 +13,12 @@ class ItemWithId;
 class LogicElement;
 class QNEConnection;
 
+struct ElementStaticProperties {
+    QString pixmapPath;
+    QString titleText;
+    QString translatedName;
+};
+
 class ElementFactory : public QObject
 {
     Q_OBJECT
@@ -28,11 +34,11 @@ public:
     static GraphicElement *buildElement(const ElementType type);
     static ItemWithId *itemById(const int id);
     static QPixmap pixmap(const ElementType type);
-    static QString property(const ElementType type, const QString &property);
     static QString translatedName(const ElementType type);
     static QString typeToText(const ElementType type);
     static QString typeToTitleText(const ElementType type);
     static bool contains(const int id);
+    static const ElementStaticProperties& getStaticProperties(ElementType type);
     static std::shared_ptr<LogicElement> buildLogicElement(GraphicElement *elm);
     static void addItem(ItemWithId *item);
     static void removeItem(ItemWithId *item);
@@ -43,4 +49,7 @@ private:
 
     QMap<int, ItemWithId *> m_map;
     int m_lastId = 0;
+
+    QMap<ElementType, ElementStaticProperties> m_propertyCache;
+    const ElementStaticProperties& ensurePropertiesCached(ElementType type);
 };
