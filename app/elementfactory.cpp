@@ -117,8 +117,10 @@ bool ElementFactory::contains(const int id)
 
 void ElementFactory::addItem(ItemWithId *item)
 {
+    qDebug() << "ElementFactory::addItem";
     if (item) {
         item->setId(instance().nextId());
+        qDebug() << "nextId: " << item->id();
         instance().m_map[item->id()] = item;
     }
 }

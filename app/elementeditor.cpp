@@ -582,6 +582,13 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         bool isSourceNode = m_scene->nodeMapping.contains(firstElement->id());
         bool bNodeHasOutput = firstElement->outputPort()->connections().size() > 0;
         bool bNodeHasInput = firstElement->inputPort()->connections().size() > 0;
+
+        qDebug() << "elm: " << firstElement;
+        qDebug() << "nodeMapping: " << m_scene->nodeMapping;
+        qDebug() << "firstElm id: " << firstElement->id();
+        qDebug() << "isSourceNode: " << isSourceNode;
+        qDebug() << "======================";
+
         // Search if node is already wireless conected to source node.
         // If so, set combobox text to source node label.
         // If it is a source node, don't show combobox.

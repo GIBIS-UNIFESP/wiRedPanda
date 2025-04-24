@@ -114,14 +114,17 @@ const QVector<GraphicElement *> Scene::visibleElements() const
 
 GraphicElement *Scene::element(const int id) const
 {
+    qDebug() << "elementId: " << id;
     const auto items_ = items();
 
     for (auto *item : items_) {
         if (item->type() == GraphicElement::Type && qgraphicsitem_cast<GraphicElement *>(item)->id() == id) {
+            qDebug() << "returning elm";
             return qgraphicsitem_cast<GraphicElement *>(item);
         }
     }
 
+    qDebug() << "returning nullptr";
     return nullptr;
 }
 
