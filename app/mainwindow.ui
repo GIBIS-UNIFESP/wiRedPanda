@@ -91,6 +91,54 @@
         </property>
         <item>
          <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Search:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="3">
+           <widget class="ElementEditor" name="elementEditor" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="2">
+           <widget class="QLineEdit" name="lineEditSearch">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0" colspan="3">
            <widget class="QTabWidget" name="tabElements">
             <property name="sizePolicy">
@@ -339,8 +387,8 @@ QTabWidget::pane {
               <string>Local Integrated Circuits</string>
              </attribute>
              <layout class="QGridLayout" name="gridLayout_7">
-              <item row="0" column="0">
-               <widget class="QWidget" name="scrollAreaWidgetContents_Local_IC" native="true">
+              <item row="1" column="0">
+               <widget class="QWidget" name="scrollAreaWidgetContents_IC" native="true">
                 <property name="autoFillBackground">
                  <bool>true</bool>
                 </property>
@@ -358,97 +406,73 @@ QTabWidget::pane {
                   <number>9</number>
                  </property>
                  <item>
-                  <spacer name="verticalSpacer_Local_IC">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>40</height>
-                    </size>
-                   </property>
-                  </spacer>
+                  <layout class="QHBoxLayout" name="horizontalLayout_IC" stretch="1,0,1">
+                   <item>
+                    <widget class="QWidget" name="local_Ics_P" native="true">
+                     <layout class="QVBoxLayout" name="verticalLayout_Local_IC" stretch="0,0">
+                      <item>
+                       <spacer name="verticalSpacer_Local_IC">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item alignment="Qt::AlignHCenter|Qt::AlignTop">
+                       <widget class="QLabel" name="localIcLabel">
+                        <property name="frameShape">
+                         <enum>QFrame::NoFrame</enum>
+                        </property>
+                        <property name="text">
+                         <string>Local ICs</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="Line" name="lineSeparator">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QWidget" name="global_Ics_P" native="true">
+                     <layout class="QVBoxLayout" name="verticalLayout_Global_IC" stretch="0,0">
+                      <item>
+                       <spacer name="verticalSpacer_Global_IC">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item alignment="Qt::AlignHCenter|Qt::AlignTop">
+                       <widget class="QLabel" name="globalIcLabel">
+                        <property name="text">
+                         <string>Global ICs</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                  </layout>
                  </item>
                 </layout>
                </widget>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="ic">
-             <attribute name="icon">
-              <iconset resource="resources/basic/basic.qrc">
-               <normaloff>:/basic/ic-panda.svg</normaloff>:/basic/ic-panda.svg</iconset>
-             </attribute>
-             <attribute name="title">
-              <string/>
-             </attribute>
-             <attribute name="toolTip">
-              <string>Global Integrated Circuits</string>
-             </attribute>
-             <layout class="QGridLayout" name="gridLayout_4">
-              <item row="1" column="0">
-               <widget class="QScrollArea" name="scrollArea_Box">
-                <property name="frameShape">
-                 <enum>QFrame::NoFrame</enum>
-                </property>
-                <property name="widgetResizable">
-                 <bool>true</bool>
-                </property>
-                <widget class="QWidget" name="scrollAreaWidgetContents_Global_IC">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>0</y>
-                   <width>260</width>
-                   <height>549</height>
-                  </rect>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_4">
-                  <item>
-                   <spacer name="verticalSpacer_Global_IC">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
-                </widget>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <layout class="QHBoxLayout" name="horizontalLayout">
-                <item>
-                 <widget class="QPushButton" name="pushButtonAddGlobalIC">
-                  <property name="text">
-                   <string>Add IC files</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="TrashButton" name="pushButtonRemoveGlobalIC">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text">
-                   <string>Remove IC</string>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="resources/toolbar/toolbar.qrc">
-                    <normaloff>:/toolbar/trashcan.svg</normaloff>:/toolbar/trashcan.svg</iconset>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
               </item>
              </layout>
             </widget>
@@ -546,54 +570,6 @@ QTabWidget::pane {
               </item>
              </layout>
             </widget>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="3">
-           <widget class="ElementEditor" name="elementEditor" native="true">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Search:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QLineEdit" name="lineEditSearch">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="clearButtonEnabled">
-             <bool>true</bool>
-            </property>
            </widget>
           </item>
          </layout>
@@ -1300,18 +1276,12 @@ QTabWidget::pane {
    <header>elementeditor.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>TrashButton</class>
-   <extends>QPushButton</extends>
-   <header>trashbutton.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>lineEditSearch</tabstop>
   <tabstop>tabElements</tabstop>
   <tabstop>scrollAreaInOut</tabstop>
   <tabstop>scrollAreaMemory</tabstop>
-  <tabstop>scrollArea_Box</tabstop>
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
