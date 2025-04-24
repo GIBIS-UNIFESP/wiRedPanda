@@ -15,11 +15,13 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/app/ic.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/itemwithid.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/lengthdialog.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/app/locateicbutton.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/mainwindow.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/nodes/qneconnection.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/nodes/qneport.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/recentfiles.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/app/removeicbutton.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/scene.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/serialization.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/settings.cpp
@@ -101,11 +103,13 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/app/ic.h
     ${CMAKE_CURRENT_LIST_DIR}/app/itemwithid.h
     ${CMAKE_CURRENT_LIST_DIR}/app/lengthdialog.h
+    ${CMAKE_CURRENT_LIST_DIR}/app/locateicbutton.h
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement.h
     ${CMAKE_CURRENT_LIST_DIR}/app/mainwindow.h
     ${CMAKE_CURRENT_LIST_DIR}/app/nodes/qneconnection.h
     ${CMAKE_CURRENT_LIST_DIR}/app/nodes/qneport.h
     ${CMAKE_CURRENT_LIST_DIR}/app/recentfiles.h
+    ${CMAKE_CURRENT_LIST_DIR}/app/removeicbutton.h
     ${CMAKE_CURRENT_LIST_DIR}/app/registertypes.h
     ${CMAKE_CURRENT_LIST_DIR}/app/scene.h
     ${CMAKE_CURRENT_LIST_DIR}/app/serialization.h
