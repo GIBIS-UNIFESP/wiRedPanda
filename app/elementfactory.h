@@ -24,12 +24,6 @@ class ElementFactory : public QObject
     Q_OBJECT
 
 public:
-    static ElementFactory &instance()
-    {
-        static ElementFactory instance;
-        return instance;
-    }
-
     static ElementType textToType(const QString &text);
     static GraphicElement *buildElement(const ElementType type);
     static ItemWithId *itemById(const int id);
@@ -46,6 +40,12 @@ public:
     static void updateItemId(ItemWithId *item, const int newId);
 
 private:
+    static ElementFactory &instance()
+    {
+        static ElementFactory instance;
+        return instance;
+    }
+
     int nextId();
 
     QMap<int, ItemWithId *> m_map;
