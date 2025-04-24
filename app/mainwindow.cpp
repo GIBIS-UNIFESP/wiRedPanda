@@ -160,6 +160,9 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
         m_IcFileWatcher.addPath(filePath);
     }
     connect(&m_IcFileWatcher, &QFileSystemWatcher::fileChanged, this, &MainWindow::updateFileStatCache);
+    connect(&m_IcFileWatcher, &QFileSystemWatcher::fileChanged, this, [this](const QString &path) {
+        updateGlobalICList(QStringList{path});
+    });
 
 
     // Shortcuts
@@ -857,9 +860,12 @@ void MainWindow::updateGlobalICList(const QStringList& filePaths){
             QHBoxLayout* buttonsHorizontalLayout = new QHBoxLayout();
 
             if(!exists){
-                auto searchIcButton = new LocateIcButton(nullptr);
-                connect(searchIcButton,        &QPushButton::clicked,      this,                &MainWindow::on_pushButtonAddIC_clicked);
-                buttonsVerticalLayout->addWidget(searchIcButton);
+                auto locateIcButton = new LocateIcButton(nullptr);
+                connect(locateIcButton,        &QPushButton::clicked,      this,                [=](){
+                    removeGlobalICFile(filename);
+                    on_pushButtonAddIC_clicked();
+                });
+                buttonsVerticalLayout->addWidget(locateIcButton);
             }
 
             buttonsVerticalLayout->addWidget(deleteIcButton);
@@ -1714,9 +1720,13 @@ void MainWindow::on_pushButtonAddIC_clicked()
         return;
     }
 
-    for(auto &file: files) updateFileStatCache(file);
+
+
+    for(auto &filePath: files) {
+        m_IcFileWatcher.addPath(filePath);
+        updateFileStatCache(filePath);
+    }
     updateGlobalICList(files);
-    //updateICList();
 }
 
 void MainWindow::on_pushButtonRemoveIC_clicked()
