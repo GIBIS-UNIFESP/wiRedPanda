@@ -384,7 +384,7 @@ QTabWidget::pane {
               <string/>
              </attribute>
              <attribute name="toolTip">
-              <string>Local Integrated Circuits</string>
+              <string>Integrated Circuits</string>
              </attribute>
              <layout class="QGridLayout" name="gridLayout_7">
               <item row="1" column="0">
@@ -1289,13 +1289,13 @@ QTabWidget::pane {
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/misc/misc.qrc"/>
-  <include location="resources/memory/light/memory_light.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
   <include location="resources/basic/basic.qrc"/>
+  <include location="resources/misc/misc.qrc"/>
   <include location="resources/output/output.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/input/input.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/memory/light/memory_light.qrc"/>
  </resources>
  <connections/>
 </ui>
