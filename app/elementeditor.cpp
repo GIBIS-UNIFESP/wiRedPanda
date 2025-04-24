@@ -1065,6 +1065,8 @@ void ElementEditor::mapNode()
 
     auto *selectedNode = m_elements[0];
 
+    qDebug() << "mapNode selected: " << selectedNode;
+
     if (selectedNode->elementType() != ElementType::Node) { return; }
 
     // If source node already exists and the new label is different, remove and insert new.
@@ -1162,6 +1164,8 @@ void ElementEditor::connectNode(const QString label)
 
     m_scene->nodeMapping.remove(nextSourceNodeId);
     nextNodeSet.insert(Destination{-1, selectedNode->id()});
+
+    qDebug() << "nextNodeSet: " << nextNodeSet;
 
     for (auto pair : nextNodeSet) {
         auto *sourceNode = qobject_cast<Node *>(m_scene->element(nextSourceNodeId));
