@@ -129,11 +129,13 @@ SOURCES += \
     $$PWD/app/ic.cpp \
     $$PWD/app/itemwithid.cpp \
     $$PWD/app/lengthdialog.cpp \
+    $$PWD/app/locateicbutton.cpp \
     $$PWD/app/logicelement.cpp \
     $$PWD/app/mainwindow.cpp \
     $$PWD/app/nodes/qneconnection.cpp \
     $$PWD/app/nodes/qneport.cpp \
     $$PWD/app/recentfiles.cpp \
+    $$PWD/app/removeicbutton.cpp \
     $$PWD/app/scene.cpp \
     $$PWD/app/serialization.cpp \
     $$PWD/app/settings.cpp \
@@ -162,11 +164,13 @@ HEADERS += \
     $$PWD/app/ic.h \
     $$PWD/app/itemwithid.h \
     $$PWD/app/lengthdialog.h \
+    $$PWD/app/locateicbutton.h \
     $$PWD/app/logicelement.h \
     $$PWD/app/mainwindow.h \
     $$PWD/app/nodes/qneconnection.h \
     $$PWD/app/nodes/qneport.h \
     $$PWD/app/recentfiles.h \
+    $$PWD/app/removeicbutton.h \
     $$PWD/app/scene.h \
     $$PWD/app/serialization.h \
     $$PWD/app/settings.h \

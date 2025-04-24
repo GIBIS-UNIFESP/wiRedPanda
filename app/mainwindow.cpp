@@ -13,7 +13,9 @@
 #include "globalproperties.h"
 #include "graphicsview.h"
 #include "ic.h"
+#include "locateicbutton.h"
 #include "recentfiles.h"
+#include "removeicbutton.h"
 #include "settings.h"
 #include "simulation.h"
 #include "simulationblocker.h"
@@ -219,7 +221,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->actionZoomOut,          &QAction::triggered,        this,                &MainWindow::on_actionZoomOut_triggered);
     connect(m_ui->lineEditSearch,         &QLineEdit::returnPressed,  this,                &MainWindow::on_lineEditSearch_returnPressed);
     connect(m_ui->lineEditSearch,         &QLineEdit::textChanged,    this,                &MainWindow::on_lineEditSearch_textChanged);
-    // connect(m_ui->pushButtonAddGlobalIC,        &QPushButton::clicked,      this,                &MainWindow::on_pushButtonAddIC_clicked);
+    connect(m_ui->pushButtonAddGlobalIC,        &QPushButton::clicked,      this,                &MainWindow::on_pushButtonAddIC_clicked);
     // connect(m_ui->pushButtonRemoveGlobalIC,     &QPushButton::clicked,      this,                &MainWindow::on_pushButtonRemoveIC_clicked);
     // connect(m_ui->pushButtonRemoveGlobalIC,     &TrashButton::removeGlobalICFile, this,                &MainWindow::removeGlobalICFile);
 }
@@ -789,9 +791,29 @@ void MainWindow::updateGlobalICList(const QStringList& filePaths)
 
     if (c_tab == m_currentTab) file = m_currentFile;
 
-    const auto items = m_ui->global_Ics_P->findChildren<QHBoxLayout *>();
 
-    for (auto *item : items) {
+    const auto icItems = m_ui->global_Ics_P->findChildren<ElementLabel *>();
+
+    for (auto *item : icItems) {
+        item->deleteLater();
+    }
+
+    const auto removeButtonItems = m_ui->global_Ics_P->findChildren<RemoveIcButton *>();
+
+    for (auto *item : removeButtonItems) {
+        item->deleteLater();
+
+    }
+    const auto locateButtonItems = m_ui->global_Ics_P->findChildren<LocateIcButton *>();
+
+    for (auto *item : locateButtonItems) {
+        item->deleteLater();
+
+    }
+
+    const auto hBoxlayoutItems = m_ui->global_Ics_P->findChildren<QHBoxLayout *>();
+
+    for (auto *item : hBoxlayoutItems) {
         item->deleteLater();
     }
 
@@ -834,15 +856,17 @@ void MainWindow::updateGlobalICList(const QStringList& filePaths)
             item->setToolTip(m_fileStatCache[filename]);
         }
 
-        auto *deleteIcButton = new QPushButton(QIcon(":/toolbar/trashcan.svg"), "");
+        auto *deleteIcButton = new RemoveIcButton(nullptr);
 
-        connect(deleteIcButton, &QPushButton::clicked, this, &MainWindow::on_pushButtonRemoveIC_clicked);
+        connect(deleteIcButton, &QPushButton::clicked, this,               [=](){
+ removeGlobalICFile(filename);
+            });
 
         auto *buttonsVerticalLayout = new QVBoxLayout();
         auto *buttonsHorizontalLayout = new QHBoxLayout();
 
         if (!exists) {
-            auto searchIcButton = new QPushButton(QIcon(":/toolbar/folder.svg"), "");
+            auto searchIcButton = new LocateIcButton(nullptr);
             connect(searchIcButton, &QPushButton::clicked, this, &MainWindow::on_pushButtonAddIC_clicked);
             buttonsVerticalLayout->addWidget(searchIcButton);
         }
@@ -1677,14 +1701,6 @@ bool MainWindow::event(QEvent *event)
 
 void MainWindow::on_pushButtonAddIC_clicked()
 {
-    if (!m_currentTab) {
-        return;
-    }
-
-    if (!m_currentTab->fileInfo().isReadable()) {
-        throw Pandaception(tr("Save file first."));
-    }
-
     QFileDialog fileDialog;
     fileDialog.setObjectName(tr("Open File"));
     fileDialog.setFileMode(QFileDialog::ExistingFile);
@@ -1712,10 +1728,6 @@ void MainWindow::on_pushButtonRemoveIC_clicked()
 
 void MainWindow::removeGlobalICFile(const QString &icFileName)
 {
-    if (!m_currentTab) {
-        return;
-    }
-
     auto files = Settings::value("GlobalICs").toStringList();
     files.removeAll(icFileName);
     Settings::setValue("GlobalICs", files);
