@@ -42,6 +42,7 @@ public:
     static std::shared_ptr<LogicElement> buildLogicElement(GraphicElement *elm);
     static void addItem(ItemWithId *item);
     static void removeItem(ItemWithId *item);
+    static void setLastId(const int newLastId);
     static void updateItemId(ItemWithId *item, const int newId);
 
 private:

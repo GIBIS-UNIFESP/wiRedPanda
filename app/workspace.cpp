@@ -4,7 +4,9 @@
 #include "workspace.h"
 
 #include "common.h"
+#include "elementfactory.h"
 #include "globalproperties.h"
+#include "graphicelement.h"
 #include "serialization.h"
 #include "settings.h"
 #include "simulationblocker.h"
@@ -28,6 +30,8 @@ WorkSpace::WorkSpace(QWidget *parent)
     connect(&m_scene, &Scene::circuitHasChanged, this, &WorkSpace::autosave);
 
     setAutosaveFileName();
+
+    ElementFactory::setLastId(m_lastId);
 }
 
 Scene *WorkSpace::scene()
@@ -184,7 +188,13 @@ void WorkSpace::load(QDataStream &stream, QVersionNumber version)
 
     for (auto *item : items) {
         m_scene.addItem(item);
+
+        if (auto *ge = qgraphicsitem_cast<GraphicElement *>(item)) {
+            m_lastId = qMax(m_lastId, ge->id());
+        }
     }
+
+    ElementFactory::setLastId(m_lastId);
 
     m_scene.setSceneRect(m_scene.itemsBoundingRect());
 
@@ -213,6 +223,16 @@ void WorkSpace::setAutosaveFileName()
     qCDebug(zero) << "Autosavepath: " << autosavePath.absolutePath();
     m_autosaveFile.setFileTemplate(autosavePath.absoluteFilePath(".XXXXXX.panda"));
     qCDebug(zero) << "Setting current file to random file.";
+}
+
+int WorkSpace::lastId() const
+{
+    return m_lastId;
+}
+
+void WorkSpace::setLastId(int newLastId)
+{
+    m_lastId = newLastId;
 }
 
 void WorkSpace::autosave()

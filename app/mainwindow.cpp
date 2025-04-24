@@ -774,6 +774,8 @@ void MainWindow::connectTab()
     m_currentTab->view()->setFastMode(m_ui->actionFastMode->isChecked());
     m_ui->actionZoomIn->setEnabled(m_currentTab->view()->canZoomIn());
     m_ui->actionZoomOut->setEnabled(m_currentTab->view()->canZoomOut());
+
+    ElementFactory::setLastId(m_currentTab->lastId());
 }
 
 WorkSpace *MainWindow::currentTab() const

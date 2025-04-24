@@ -140,6 +140,11 @@ int ElementFactory::nextId()
     return ++m_lastId;
 }
 
+void ElementFactory::setLastId(const int newLastId)
+{
+    instance().m_lastId = newLastId;
+}
+
 std::shared_ptr<LogicElement> ElementFactory::buildLogicElement(GraphicElement *elm)
 {
     switch (elm->elementType()) {
