@@ -59,6 +59,7 @@ public:
     static void addItem(ItemWithId *item);
     static void clearCache();
     static void removeItem(ItemWithId *item);
+    static void setLastId(const int newLastId);
     static void updateItemId(ItemWithId *item, const int newId);
 
 private:
