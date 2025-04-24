@@ -384,7 +384,7 @@ QTabWidget::pane {
               <string/>
              </attribute>
              <attribute name="toolTip">
-              <string>Local Integrated Circuits</string>
+              <string>Integrated Circuits</string>
              </attribute>
              <layout class="QGridLayout" name="gridLayout_7">
               <item row="1" column="0">
