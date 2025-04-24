@@ -36,6 +36,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/app/element/demux.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/element/dflipflop.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/element/display_14.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/app/element/display_16.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/element/display_7.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/element/dlatch.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/element/inputbutton.cpp
@@ -122,6 +123,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/app/element/demux.h
     ${CMAKE_CURRENT_LIST_DIR}/app/element/dflipflop.h
     ${CMAKE_CURRENT_LIST_DIR}/app/element/display_14.h
+    ${CMAKE_CURRENT_LIST_DIR}/app/element/display_16.h
     ${CMAKE_CURRENT_LIST_DIR}/app/element/display_7.h
     ${CMAKE_CURRENT_LIST_DIR}/app/element/dlatch.h
     ${CMAKE_CURRENT_LIST_DIR}/app/element/inputbutton.h
