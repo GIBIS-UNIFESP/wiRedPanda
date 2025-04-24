@@ -90,9 +90,8 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     m_ui->tabElements->setTabIcon(2, QIcon(":/basic/truthtable-rotated.svg"));
     m_ui->tabElements->setTabIcon(3, QIcon(DFlipFlop::pixmapPath()));
     m_ui->tabElements->setTabIcon(4, QIcon(":/basic/ic-panda.svg"));
-    m_ui->tabElements->setTabIcon(5, QIcon(":/basic/ic-panda.svg"));
-    m_ui->tabElements->setTabIcon(6, QIcon(":/misc/text.png"));
-    m_ui->tabElements->setTabEnabled(7, false);
+    m_ui->tabElements->setTabIcon(5, QIcon(":/misc/text.png"));
+    m_ui->tabElements->setTabEnabled(6, false);
 
     qCDebug(zero) << "Loading recent file list.";
     m_recentFiles = new RecentFiles(this);
@@ -218,9 +217,9 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->actionZoomOut,          &QAction::triggered,        this,                &MainWindow::on_actionZoomOut_triggered);
     connect(m_ui->lineEditSearch,         &QLineEdit::returnPressed,  this,                &MainWindow::on_lineEditSearch_returnPressed);
     connect(m_ui->lineEditSearch,         &QLineEdit::textChanged,    this,                &MainWindow::on_lineEditSearch_textChanged);
-    connect(m_ui->pushButtonAddGlobalIC,        &QPushButton::clicked,      this,                &MainWindow::on_pushButtonAddIC_clicked);
-    connect(m_ui->pushButtonRemoveGlobalIC,     &QPushButton::clicked,      this,                &MainWindow::on_pushButtonRemoveIC_clicked);
-    connect(m_ui->pushButtonRemoveGlobalIC,     &TrashButton::removeGlobalICFile, this,                &MainWindow::removeGlobalICFile);
+    //connect(m_ui->pushButtonAddGlobalIC,        &QPushButton::clicked,      this,                &MainWindow::on_pushButtonAddIC_clicked);
+    //connect(m_ui->pushButtonRemoveGlobalIC,     &QPushButton::clicked,      this,                &MainWindow::on_pushButtonRemoveIC_clicked);
+    //connect(m_ui->pushButtonRemoveGlobalIC,     &TrashButton::removeGlobalICFile, this,                &MainWindow::removeGlobalICFile);
 }
 
 MainWindow::~MainWindow()
@@ -772,7 +771,7 @@ void MainWindow::updateGlobalICList(const QStringList& filePaths){
 
     QFileInfo file;
 
-    m_ui->scrollAreaWidgetContents_Global_IC->layout()->removeItem(m_ui->verticalSpacer_Global_IC);
+    m_ui->verticalLayout_Global_IC->removeItem(m_ui->verticalSpacer_Global_IC);
 
     auto c_tab = m_currentTab;
 
@@ -782,7 +781,7 @@ void MainWindow::updateGlobalICList(const QStringList& filePaths){
     }
 
     if(c_tab == m_currentTab) file = m_currentFile;
-    const auto items = m_ui->scrollAreaWidgetContents_Global_IC->findChildren<ElementLabel *>();
+    const auto items = m_ui->global_Ics_P->findChildren<QHBoxLayout *>();
 
     for (auto *item : items) {
         item->deleteLater();
@@ -826,17 +825,34 @@ void MainWindow::updateGlobalICList(const QStringList& filePaths){
                 item->setToolTip(m_fileStatCache[filename]);
             }
 
-            m_ui->scrollAreaWidgetContents_Global_IC->layout()->addWidget(item);
+            auto deleteIcButton = new QPushButton(QIcon(":/toolbar/trashcan.svg"), "");
+
+            connect(deleteIcButton,        &QPushButton::clicked,      this,                &MainWindow::on_pushButtonRemoveIC_clicked);
+
+            QVBoxLayout* buttonsVerticalLayout = new QVBoxLayout();
+            QHBoxLayout* buttonsHorizontalLayout = new QHBoxLayout();
+
+            if(!exists){
+                auto searchIcButton = new QPushButton(QIcon(":/toolbar/folder.svg"), "");
+                connect(searchIcButton,        &QPushButton::clicked,      this,                &MainWindow::on_pushButtonAddIC_clicked);
+                buttonsVerticalLayout->addWidget(searchIcButton);
+            }
+
+            buttonsVerticalLayout->addWidget(deleteIcButton);
+            buttonsHorizontalLayout->addWidget(item);
+            buttonsHorizontalLayout->addLayout(buttonsVerticalLayout);
+
+            m_ui->verticalLayout_Global_IC->addLayout(buttonsHorizontalLayout);
             m_ui->scrollAreaWidgetContents_Search->layout()->addWidget(item2);
         }
 
-    m_ui->scrollAreaWidgetContents_Global_IC->layout()->addItem(m_ui->verticalSpacer_Global_IC);
+    m_ui->verticalLayout_Global_IC->addItem(m_ui->verticalSpacer_Global_IC);
 }
 
 
 void MainWindow::updateLocalICList(QString dirPath)
 {
-    m_ui->scrollAreaWidgetContents_Local_IC->layout()->removeItem(m_ui->verticalSpacer_Local_IC);
+    m_ui->verticalLayout_Local_IC->removeItem(m_ui->verticalSpacer_Local_IC);
 
     QFileInfo file;
     auto c_tab = m_currentTab;
@@ -846,7 +862,7 @@ void MainWindow::updateLocalICList(QString dirPath)
         c_tab = m_icsTabTree.keys(c_tab).at(0).second;
     }
     if(c_tab == m_currentTab) file = m_currentFile;
-    const auto items = m_ui->scrollAreaWidgetContents_Local_IC->findChildren<ElementLabel *>();
+    const auto items = m_ui->local_Ics_P->findChildren<ElementLabel *>();
 
     for (auto *item : items) {
         item->deleteLater();
@@ -882,7 +898,7 @@ void MainWindow::updateLocalICList(QString dirPath)
             updateFileStatCache(fileInfo.absoluteFilePath());
             item->setToolTip(m_fileStatCache[fileInfo.absoluteFilePath()]);
 
-            m_ui->scrollAreaWidgetContents_Local_IC->layout()->addWidget(item);
+            m_ui->local_Ics_P->layout()->addWidget(item);
 
             auto *item2 = new ElementLabel(pixmap, ElementType::IC, fileName, this);
             m_ui->scrollAreaWidgetContents_Search->layout()->addWidget(item2);
@@ -891,7 +907,7 @@ void MainWindow::updateLocalICList(QString dirPath)
         }
     }
 
-    m_ui->scrollAreaWidgetContents_Local_IC->layout()->addItem(m_ui->verticalSpacer_Local_IC);
+    m_ui->verticalLayout_Local_IC->addItem(m_ui->verticalSpacer_Local_IC);
 }
 
 bool MainWindow::
@@ -1071,7 +1087,7 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
     if (text.isEmpty()) {
         m_ui->tabElements->tabBar()->show();
         m_ui->tabElements->setCurrentIndex(m_lastTabIndex);
-        m_ui->tabElements->setTabEnabled(7, false);
+        m_ui->tabElements->setTabEnabled(6, false);
 
         m_lastTabIndex = -1;
     } else {
@@ -1080,8 +1096,8 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
         }
 
         m_ui->tabElements->tabBar()->hide();
-        m_ui->tabElements->setCurrentIndex(7);
-        m_ui->tabElements->setTabEnabled(7, true);
+        m_ui->tabElements->setCurrentIndex(6);
+        m_ui->tabElements->setTabEnabled(6, true);
 
         const auto allItems = m_ui->scrollArea_Search->findChildren<ElementLabel *>();
 
@@ -1710,8 +1726,8 @@ QString fileStat(const QFile& file) {
     return QString("\
     Path: %1<br>\
     Last Modified: %2<br>\
-    Size: %3<br>\
-    ").arg(fileInfo.absoluteFilePath(), fileInfo.lastModified().toString(), QString::number(fileInfo.size()));
+    Size: %3 Kb<br>\
+    ").arg(fileInfo.absoluteFilePath(), fileInfo.lastModified().toString(), QString::number(fileInfo.size() / 1000));
 }
 
 

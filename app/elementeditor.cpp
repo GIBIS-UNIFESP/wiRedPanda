@@ -718,7 +718,7 @@ void ElementEditor::mapNode()
 
     auto thisNodeSet = m_scene->nodeMapping.value(selectedNode->mapId());
 
-    auto nodeSet = m_scene->getNodeSet(lblText, {selectedNode->mapId()});
+    auto nodeSet = m_scene->getNodeSet(lblText, {selectedNode->  mapId()});
 
     bool bIsSourceNode = m_scene->isSourceNode(selectedNode);
 
