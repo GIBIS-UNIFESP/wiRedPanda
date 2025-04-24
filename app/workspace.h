@@ -41,6 +41,9 @@ public:
     void setAutosaveFile();
     void setDolphinFileName(const QString &fileName);
 
+    int lastId() const;
+    void setLastId(int newLastId);
+
 signals:
     void fileChanged(const QFileInfo &fileInfo);
 
@@ -53,4 +56,5 @@ private:
     QString m_dolphinFileName;
     QTemporaryFile m_autosaveFile;
     Scene m_scene;
+    int m_lastId = 0;
 };
