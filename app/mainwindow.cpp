@@ -25,6 +25,7 @@
 #include <QActionGroup>
 #include <QCheckBox>
 #include <QCloseEvent>
+#include <QDateTime>
 #include <QDebug>
 #include <QDesktopServices>
 #include <QFileDialog>
