@@ -55,7 +55,7 @@ QString ElementFactory::typeToTitleText(const ElementType type)
         return tr("MULTIPLE TYPES");
     }
 
-    return property(type, "titleText");
+    return instance().getStaticProperties(type).titleText;
 }
 
 QString ElementFactory::translatedName(const ElementType type)
@@ -64,7 +64,7 @@ QString ElementFactory::translatedName(const ElementType type)
         return tr("Unknown");
     }
 
-    return property(type, "translatedName");
+    return instance().getStaticProperties(type).translatedName;
 }
 
 QPixmap ElementFactory::pixmap(const ElementType type)
@@ -73,7 +73,7 @@ QPixmap ElementFactory::pixmap(const ElementType type)
         return {};
     }
 
-    return QPixmap{property(type, "pixmapPath")};
+    return QPixmap{instance().getStaticProperties(type).pixmapPath};
 }
 
 GraphicElement *ElementFactory::buildElement(const ElementType type)
@@ -103,19 +103,6 @@ GraphicElement *ElementFactory::buildElement(const ElementType type)
 #endif
 
     return elm;
-}
-
-QString ElementFactory::property(const ElementType type, const QString &property)
-{
-    GlobalProperties::skipInit = true;
-    auto *elm = buildElement(type);
-    GlobalProperties::skipInit = false;
-
-    QString value = elm->property(property.toUtf8()).toString();
-
-    delete elm;
-
-    return value;
 }
 
 ItemWithId *ElementFactory::itemById(const int id)
@@ -150,7 +137,7 @@ void ElementFactory::updateItemId(ItemWithId *item, const int newId)
 
 int ElementFactory::nextId()
 {
-    return m_lastId++;
+    return ++m_lastId;
 }
 
 std::shared_ptr<LogicElement> ElementFactory::buildLogicElement(GraphicElement *elm)
@@ -192,4 +179,29 @@ std::shared_ptr<LogicElement> ElementFactory::buildLogicElement(GraphicElement *
 
     default:                       throw Pandaception(tr("Not implemented yet: ") + elm->objectName());
     }
+}
+
+const ElementStaticProperties& ElementFactory::getStaticProperties(ElementType type) {
+    return instance().ensurePropertiesCached(type);
+}
+
+const ElementStaticProperties& ElementFactory::ensurePropertiesCached(ElementType type) {
+    if (auto it = m_propertyCache.find(type); it != m_propertyCache.end()) {
+        return it.value();
+    }
+
+    GlobalProperties::skipInit = true;
+    auto *elm = buildElement(type);
+    GlobalProperties::skipInit = false;
+
+    ElementStaticProperties props;
+    props.pixmapPath = elm->property("pixmapPath").toString();
+    props.titleText = elm->property("titleText").toString();
+    props.translatedName = elm->property("translatedName").toString();
+
+    delete elm;
+
+    m_propertyCache[type] = props;
+
+    return m_propertyCache.find(type).value();
 }

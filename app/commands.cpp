@@ -144,7 +144,7 @@ void saveItems(QByteArray &itemData, const QList<QGraphicsItem *> &items, const 
 {
     itemData.clear();
     QDataStream stream(&itemData, QIODevice::WriteOnly);
-    Serialization::writeHeaderPanda(stream);
+    Serialization::writePandaHeader(stream);
 
     const auto others = findElements(otherIds);
 
@@ -175,7 +175,7 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
     }
 
     QDataStream stream(&itemData, QIODevice::ReadOnly);
-    QVersionNumber version = Serialization::readHeaderPanda(stream);
+    QVersionNumber version = Serialization::readPandaHeader(stream);
 
     QMap<quint64, QNEPort *> portMap;
 
@@ -376,7 +376,7 @@ UpdateCommand::UpdateCommand(const QList<GraphicElement *> &elements, const QByt
 {
     m_ids.reserve(elements.size());
     QDataStream stream(&m_newData, QIODevice::WriteOnly);
-    Serialization::writeHeaderPanda(stream);
+    Serialization::writePandaHeader(stream);
 
     for (auto *elm : elements) {
         elm->save(stream);
@@ -409,7 +409,7 @@ void UpdateCommand::loadData(QByteArray &itemData)
     }
 
     QDataStream stream(&itemData, QIODevice::ReadOnly);
-    QVersionNumber version = Serialization::readHeaderPanda(stream);
+    QVersionNumber version = Serialization::readPandaHeader(stream);
 
     QMap<quint64, QNEPort *> portMap;
 
@@ -703,7 +703,7 @@ void ChangeInputSizeCommand::redo()
     m_oldData.clear();
 
     QDataStream stream(&m_oldData, QIODevice::WriteOnly);
-    Serialization::writeHeaderPanda(stream);
+    Serialization::writePandaHeader(stream);
 
     for (auto *elm : m_elements) {
         elm->save(stream);
@@ -749,7 +749,7 @@ void ChangeInputSizeCommand::undo()
     const auto serializationOrder = findElements(m_order);
 
     QDataStream stream(&m_oldData, QIODevice::ReadOnly);
-    QVersionNumber version = Serialization::readHeaderPanda(stream);
+    QVersionNumber version = Serialization::readPandaHeader(stream);
 
     QMap<quint64, QNEPort *> portMap;
 
@@ -794,7 +794,7 @@ void ChangeOutputSizeCommand::redo()
     m_oldData.clear();
 
     QDataStream stream(&m_oldData, QIODevice::WriteOnly);
-    Serialization::writeHeaderPanda(stream);
+    Serialization::writePandaHeader(stream);
 
     for (auto *elm : m_elements) {
         elm->save(stream);
@@ -841,7 +841,7 @@ void ChangeOutputSizeCommand::undo()
     const auto serializationOrder = findElements(m_order);
 
     QDataStream stream(&m_oldData, QIODevice::ReadOnly);
-    QVersionNumber version = Serialization::readHeaderPanda(stream);
+    QVersionNumber version = Serialization::readPandaHeader(stream);
 
     QMap<quint64, QNEPort *> portMap;
 

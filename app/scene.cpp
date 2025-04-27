@@ -614,7 +614,7 @@ void Scene::cloneDrag(const QPointF mousePos)
 
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
-    Serialization::writeHeaderPanda(stream);
+    Serialization::writePandaHeader(stream);
     stream << mousePos;
     copy(selectedItems(), stream);
 
@@ -782,7 +782,7 @@ void Scene::copyAction()
 
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
-    Serialization::writeHeaderPanda(stream);
+    Serialization::writePandaHeader(stream);
     copy(selectedItems(), stream);
 
     auto *mimeData = new QMimeData();
@@ -800,7 +800,7 @@ void Scene::cutAction()
 
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
-    Serialization::writeHeaderPanda(stream);
+    Serialization::writePandaHeader(stream);
     cut(selectedItems(), stream);
 
     auto *mimeData = new QMimeData();
@@ -825,7 +825,7 @@ void Scene::pasteAction()
 
     if (!itemData.isEmpty()) {
         QDataStream stream(&itemData, QIODevice::ReadOnly);
-        QVersionNumber version = Serialization::readHeaderPanda(stream);
+        QVersionNumber version = Serialization::readPandaHeader(stream);
         paste(stream, version);
     }
 }
@@ -967,7 +967,7 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         }
 
         QDataStream stream(&itemData, QIODevice::ReadOnly);
-        Serialization::readHeaderPanda(stream);
+        Serialization::readPandaHeader(stream);
 
         QPoint offset;      stream >> offset;
         ElementType type;   stream >> type;
@@ -1011,7 +1011,7 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         }
 
         QDataStream stream(&itemData, QIODevice::ReadOnly);
-        QVersionNumber version = Serialization::readHeaderPanda(stream);
+        QVersionNumber version = Serialization::readPandaHeader(stream);
 
         QPointF offset; stream >> offset;
         QPointF ctr;    stream >> ctr;
@@ -1234,7 +1234,7 @@ void Scene::addItem(QMimeData *mimeData)
 {
     QByteArray itemData = mimeData->data("wpanda/x-dnditemdata");
     QDataStream stream(&itemData, QIODevice::ReadOnly);
-    Serialization::readHeaderPanda(stream);
+    Serialization::readPandaHeader(stream);
 
     QPoint offset;      stream >> offset;
     ElementType type;   stream >> type;

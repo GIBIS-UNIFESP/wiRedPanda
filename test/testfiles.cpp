@@ -27,7 +27,7 @@ void TestFiles::testFiles()
         QVERIFY(pandaFile.exists());
         QVERIFY(pandaFile.open(QIODevice::ReadOnly));
         QDataStream stream(&pandaFile);
-        QVersionNumber version = Serialization::readHeaderPanda(stream);
+        QVersionNumber version = Serialization::readPandaHeader(stream);
         workspace.load(stream, version);
         const auto items = workspace.scene()->items();
 
@@ -42,14 +42,14 @@ void TestFiles::testFiles()
         QTemporaryFile tempFile;
         QVERIFY(tempFile.open());
         QDataStream stream2(&tempFile);
-        Serialization::writeHeaderPanda(stream2);
+        Serialization::writePandaHeader(stream2);
         workspace.save(stream2);
         tempFile.close();
         QFile pandaFile2(tempFile.fileName());
         QVERIFY(pandaFile2.open(QIODevice::ReadOnly));
 
         QDataStream stream3(&pandaFile2);
-        QVersionNumber version3 = Serialization::readHeaderPanda(stream3);
+        QVersionNumber version3 = Serialization::readPandaHeader(stream3);
         workspace.load(stream3, version3);
     }
 }

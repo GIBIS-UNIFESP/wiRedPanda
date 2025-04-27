@@ -97,9 +97,7 @@ void Clock::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const Q
 
     if (version < VERSION("4.1")) {
         float freq; stream >> freq;
-        float delay; stream >> delay;
         setFrequency(freq);
-        setDelay(delay);
 
         if (version >= VERSION("3.1")) {
             stream >> m_locked;

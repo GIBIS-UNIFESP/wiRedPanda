@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(wiredpanda VERSION 4.2.1 LANGUAGES CXX)
+project(wiredpanda VERSION 4.2.2 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -91,8 +91,6 @@ if (SENTRY_INCLUDE_DIR)
     include_directories(${SENTRY_INCLUDE_DIR})
     link_directories(thirdparty/sentry/lib)
     target_link_libraries(wiredpanda_lib PUBLIC sentry)
-else()
-    message(STATUS "Sentry not found: Disabling HAVE_SENTRY")
 endif()
 
 # ========= APP ===================================

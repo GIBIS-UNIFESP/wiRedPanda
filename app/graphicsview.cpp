@@ -115,7 +115,11 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
         }
     }
 
-    centerOn(QCursor::pos());
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    centerOn(mapToScene(event->position().toPoint()));
+#else
+    centerOn(mapToScene(event->pos()));
+#endif
 
     event->accept();
 }

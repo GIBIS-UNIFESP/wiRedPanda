@@ -57,6 +57,7 @@ public:
     int confirmSave(const bool multiple = true);
 
     QString dolphinFileName();
+    WorkSpace *currentTab() const;
     bool closeFiles();
     bool event(QEvent *event) override;
     void exportToWaveFormTerminal();

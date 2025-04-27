@@ -49,7 +49,7 @@ void TrashButton::dropEvent(QDropEvent *event)
         }
 
         QDataStream stream(&itemData, QIODevice::ReadOnly);
-        Serialization::readHeaderPanda(stream);
+        Serialization::readPandaHeader(stream);
 
         QPoint offset;      stream >> offset;
         ElementType type;   stream >> type;

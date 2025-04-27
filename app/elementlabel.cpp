@@ -87,7 +87,7 @@ void ElementLabel::startDrag()
 #endif
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
-    Serialization::writeHeaderPanda(stream);
+    Serialization::writePandaHeader(stream);
     stream << offset << m_elementType << m_icFileName;
 
     auto *mimeData = new QMimeData();
@@ -109,7 +109,7 @@ QMimeData *ElementLabel::mimeData()
 #endif
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
-    Serialization::writeHeaderPanda(stream);
+    Serialization::writePandaHeader(stream);
     stream << offset << m_elementType << m_icFileName;
 
     auto *mimeData = new QMimeData();

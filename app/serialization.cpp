@@ -12,14 +12,14 @@
 #include <QApplication>
 #include <QIODevice>
 
-void Serialization::writeHeaderPanda(QDataStream &stream)
+void Serialization::writePandaHeader(QDataStream &stream)
 {
     stream.setVersion(QDataStream::Qt_5_12);
     stream << MAGIC_HEADER_CIRCUIT;
     stream << GlobalProperties::version;
 }
 
-QVersionNumber Serialization::readHeaderPanda(QDataStream &stream)
+QVersionNumber Serialization::readPandaHeader(QDataStream &stream)
 {
     stream.setVersion(QDataStream::Qt_5_12);
 
@@ -57,17 +57,17 @@ QVersionNumber Serialization::readHeaderPanda(QDataStream &stream)
         }
     }
 
-    return version;
+    return version.normalized();
  }
 
-void Serialization::writeHeaderDolphin(QDataStream &stream)
+void Serialization::writeDolphinHeader(QDataStream &stream)
 {
     stream.setVersion(QDataStream::Qt_5_12);
     stream << MAGIC_HEADER_WAVEFORM;
     stream << GlobalProperties::version;
 }
 
-void Serialization::readHeaderDolphin(QDataStream &stream)
+void Serialization::readDolphinHeader(QDataStream &stream)
 {
     stream.setVersion(QDataStream::Qt_5_12);
 
