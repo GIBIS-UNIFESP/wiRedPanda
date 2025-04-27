@@ -83,7 +83,7 @@ void CodeGenerator::generate()
     m_stream << "// ==================================================================== //" << endl;
     m_stream << endl
              << endl;
-    m_stream << "#include <elapsedMillis.h>" << endl;
+    // m_stream << "#include <elapsedMillis.h>" << endl;
     /* Declaring input and output pins; */
     declareInputs();
     declareOutputs();
@@ -211,8 +211,11 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
                 case ElementType::Clock: {
                     if (!isBox) {
                         auto *clk = qgraphicsitem_cast<Clock *>(elm);
-                        m_stream << "elapsedMillis " << varName2 << "_elapsed = 0;" << endl;
-                        m_stream << "int " << varName2 << "_interval = " << 1000 / clk->frequency() << ";" << endl;
+                        // m_stream << "elapsedMillis " << varName2 << "_elapsed = 0;" << endl;
+                        // m_stream << "int " << varName2 << "_interval = " << 1000 / clk->frequency() << ";" << endl;
+
+                        m_stream << "unsigned long " << varName2 << "_lastTime = 0;" << endl;
+                        m_stream << "const unsigned long " << varName2 << "_interval = " << 1000UL / clk->frequency() << ";" << endl;
                     }
                     break;
                 }
@@ -508,10 +511,16 @@ void CodeGenerator::loop()
         if (elm->elementType() == ElementType::Clock) {
             const auto elmOutputs = elm->outputs();
             QString varName = m_varMap.value(elmOutputs.constFirst());
-            m_stream << QString("    if (%1_elapsed > %1_interval) {").arg(varName) << endl;
-            m_stream << QString("        %1_elapsed = 0;").arg(varName) << endl;
-            m_stream << QString("        %1 = ! %1;").arg(varName) << endl;
-            m_stream << QString("    }") << endl;
+            // m_stream << QString("    if (%1_elapsed > %1_interval) {").arg(varName) << endl;
+            // m_stream << QString("        %1_elapsed = 0;").arg(varName) << endl;
+            // m_stream << QString("        %1 = ! %1;").arg(varName) << endl;
+            // m_stream << QString("    }") << endl;
+
+            m_stream << QString("    unsigned long now = millis();") << endl;
+            m_stream << QString("    if (now - %1_lastTime >= %1_interval) {").arg(varName) << endl;
+            m_stream << QString("        %1_lastTime = now;").arg(varName) << endl;
+            m_stream << QString("        %1 = !%1;").arg(varName) << endl;
+            m_stream << "    }" << endl;
         }
     }
     /* Aux variables. */
