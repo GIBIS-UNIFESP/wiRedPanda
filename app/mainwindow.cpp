@@ -850,14 +850,33 @@ void MainWindow::updateGlobalICList(const QStringList& filePaths)
 
         bool exists = QFile::exists(filename);
 
+        auto *itemLabel = item->getNameLabel();
+        auto *item2Label = item2->getNameLabel();
+
         if (!exists) {
-            auto *itemLabel = item->getNameLabel();
-            auto *item2Label = item2->getNameLabel();
+
             itemLabel->setStyleSheet("QLabel  { color: red; }");
             item2Label->setStyleSheet("QLabel { color: red; }");
         } else {
-            updateFileStatCache(filename);
-            item->setToolTip(m_fileStatCache[filename]);
+            //Check if file is corrupted
+            //Hacky solution, we try to load the file
+            //if a exception is thrown we assume it's
+            //corrupted
+            bool corrupted = false;
+            WorkSpace dummyWorkspace;
+            try {
+                dummyWorkspace.load(filename);
+            }
+            catch(...) {
+                itemLabel->setStyleSheet("QLabel  { color: gray; }");
+                item2Label->setStyleSheet("QLabel { color: gray; }");
+                corrupted = true;
+            }
+            if(corrupted == false) {
+                updateFileStatCache(filename);
+                item->setToolTip(m_fileStatCache[filename]);
+            }
+
         }
 
         auto *deleteIcButton = new RemoveIcButton(nullptr);
@@ -932,16 +951,45 @@ void MainWindow::updateLocalICList()
 
         qCDebug(zero) << "Files: " << files.join(", ");
         for (const QFileInfo &fileInfo : std::as_const(fileInfos)) {
-            QPixmap pixmap(":/basic/ic-panda.svg");
+            //Do not add temporary files to local.
             auto fileName = fileInfo.fileName();
-            auto *item = new ElementLabel(pixmap, ElementType::IC, fileName, this);
+            auto filePath = fileInfo.absoluteFilePath();
+            if(fileName.contains("wp_temp_")) break;
 
-            updateFileStatCache(fileInfo.absoluteFilePath());
-            item->setToolTip(m_fileStatCache[fileInfo.absoluteFilePath()]);
+            QPixmap pixmap(":/basic/ic-panda.svg");
+
+
+            // do not show temporary files
+
+
+            auto *item = new ElementLabel(pixmap, ElementType::IC, fileName, this);
+            auto *item2 = new ElementLabel(pixmap, ElementType::IC, fileName, this);
+
+
+            auto *itemLabel = item->getNameLabel();
+            auto *item2Label = item2->getNameLabel();
+
+            //Check if file is corrupted
+            //Hacky solution, we try to load the file
+            //if a exception is thrown we assume it's
+            //corrupted
+            bool corrupted = false;
+            WorkSpace dummyWorkspace;
+            try {
+                dummyWorkspace.load(fileName);
+            }
+            catch(...) {
+                itemLabel->setStyleSheet("QLabel  { color: gray; }");
+                item2Label->setStyleSheet("QLabel { color: gray; }");
+                corrupted = true;
+            }
+            if(corrupted == false) {
+                updateFileStatCache(filePath);
+                item->setToolTip(m_fileStatCache[filePath]);
+            }
 
             m_ui->local_Ics_P->layout()->addWidget(item);
 
-            auto *item2 = new ElementLabel(pixmap, ElementType::IC, fileName, this);
             m_ui->scrollAreaWidgetContents_Search->layout()->addWidget(item2);
         }
     }
