@@ -386,7 +386,7 @@ const QVector<std::shared_ptr<LogicElement>> IC::generateMap()
 
 void IC::reload()
 {
-    QTemporaryFile tempFile;
+    QTemporaryFile tempFile("wp_tmp_XXXXXX");
 
     if (tempFile.open()) {
         tempFile.write(m_fileData);

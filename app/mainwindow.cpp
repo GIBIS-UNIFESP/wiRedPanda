@@ -954,7 +954,7 @@ void MainWindow::updateLocalICList()
             //Do not add temporary files to local.
             auto fileName = fileInfo.fileName();
             auto filePath = fileInfo.absoluteFilePath();
-            if(fileName.contains("wp_temp_")) break;
+            if(fileName.at(0) == '.') break;
 
             QPixmap pixmap(":/basic/ic-panda.svg");
 
