@@ -169,7 +169,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     }
 
     connect(&m_IcFileWatcher, &QFileSystemWatcher::fileChanged, this, &MainWindow::updateFileStatCache);
-    connect(&m_IcFileWatcher, &QFileSystemWatcher::fileChanged, this, [this](const QString &path) { updateGlobalICList(QStringList{path}); });
+    connect(&m_IcFileWatcher, &QFileSystemWatcher::fileChanged, this, [this](const QString &path) { updateGlobalICList(); });
 
     // Shortcuts
     auto *searchShortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
@@ -358,7 +358,7 @@ void MainWindow::save(const QString &fileName, const bool saveAs)
     }
 
     updateLocalICList();
-    updateGlobalICList(Settings::value("GlobalICs").toStringList());
+    updateGlobalICList();
     m_ui->statusBar->showMessage(tr("File saved successfully."), 4000);
 }
 
@@ -501,7 +501,7 @@ void MainWindow::loadPandaFile(const QString &fileName)
     qCDebug(zero) << "Loading in editor.";
     m_currentTab->load(fileName);
     updateLocalICList();
-    updateGlobalICList(Settings::value("GlobalICs").toStringList());
+    updateGlobalICList();
     m_ui->statusBar->showMessage(tr("File loaded successfully."), 4000);
 }
 
@@ -524,7 +524,7 @@ void MainWindow::loadEmbeddedIC(const QString &fileName, IC *source_ic)
     m_currentTab->m_EmbeddedIc = source_ic;
     m_currentTab->load(fileName);
     updateLocalICList();
-    updateGlobalICList(Settings::value("GlobalICs").toStringList());
+    updateGlobalICList();
     m_ui->statusBar->showMessage(tr("File loaded successfully."), 4000);
 }
 
@@ -768,8 +768,8 @@ void MainWindow::on_actionSelectAll_triggered()
     m_currentTab->scene()->selectAll();
 }
 
-void MainWindow::updateGlobalICList(const QStringList& filePaths)
-{
+
+void MainWindow::addGlobalIcToSettings(const QStringList& filePaths){
     auto ICList = Settings::value("GlobalICs").toStringList();
 
     auto paths = ICList + filePaths;
@@ -779,8 +779,12 @@ void MainWindow::updateGlobalICList(const QStringList& filePaths)
     QStringList globalIcs = QStringList(globalIcsSet.begin(), globalIcsSet.end());
 
     Settings::setValue("GlobalICs", globalIcs);
+}
 
-    QStringList files = globalIcs;
+
+void MainWindow::updateGlobalICList()
+{
+    QStringList files = Settings::value("GlobalICs").toStringList();
 
     QFileInfo file;
 
@@ -1120,7 +1124,7 @@ void MainWindow::connectTab()
     m_currentFile = m_currentTab->fileInfo();
 
     updateLocalICList();
-    updateGlobalICList(Settings::value("GlobalICs").toStringList());
+    updateGlobalICList();
 
     qCDebug(zero) << "Connecting current tab to element editor menu in UI.";
     m_ui->elementEditor->setScene(m_currentTab->scene());
@@ -1783,8 +1787,8 @@ void MainWindow::on_pushButtonAddIC_clicked()
         m_IcFileWatcher.addPath(filePath);
         updateFileStatCache(filePath);
     }
-
-    updateGlobalICList(files);
+    addGlobalIcToSettings(files);
+    updateGlobalICList();
 }
 
 void MainWindow::on_pushButtonRemoveIC_clicked()

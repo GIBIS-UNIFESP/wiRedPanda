@@ -133,7 +133,8 @@ private:
     void removeGlobalICFile(const QString &icFileName);
     void tabChanged(const int newTabIndex);
     void updateFileStatCache(const QString filePath);
-    void updateGlobalICList(const QStringList &filePaths = {});
+    void addGlobalIcToSettings(const QStringList& filePaths);
+    void updateGlobalICList();
     void updateLocalICList();
     void updateRecentFileActions();
     void updateSettings();
