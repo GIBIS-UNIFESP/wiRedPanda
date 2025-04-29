@@ -1749,7 +1749,7 @@ void MainWindow::removeGlobalICFile(const QString &icFileName)
     auto files = Settings::value("GlobalICs").toStringList();
     files.removeAll(icFileName);
     Settings::setValue("GlobalICs", files);
-
+    m_IcFileWatcher.removePath(icFileName);
     updateGlobalICList();
 }
 

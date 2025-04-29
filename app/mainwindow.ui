@@ -171,7 +171,7 @@ QTabWidget::pane {
 </string>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>4</number>
             </property>
             <widget class="QWidget" name="io">
              <attribute name="icon">
@@ -445,22 +445,88 @@ QTabWidget::pane {
                    </item>
                    <item>
                     <widget class="QWidget" name="global_Ics_P" native="true">
-                     <layout class="QVBoxLayout" name="verticalLayout_Global_IC" stretch="0,0,0">
-                      <item alignment="Qt::AlignHCenter|Qt::AlignTop">
-                       <widget class="QPushButton" name="pushButtonAddGlobalIC">
-                        <property name="maximumSize">
-                         <size>
-                          <width>80</width>
-                          <height>16777215</height>
-                         </size>
+                     <layout class="QVBoxLayout" name="verticalLayout_Global_IC" stretch="0,0">
+                      <item>
+                       <widget class="QWidget" name="horizontalWidget" native="true">
+                        <property name="styleSheet">
+                         <string notr="true"/>
                         </property>
-                        <property name="text">
-                         <string>Add IC</string>
-                        </property>
-                        <property name="icon">
-                         <iconset resource="resources/toolbar/toolbar.qrc">
-                          <normaloff>:/toolbar/new.svg</normaloff>:/toolbar/new.svg</iconset>
-                        </property>
+                        <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,0">
+                         <property name="sizeConstraint">
+                          <enum>QLayout::SetMaximumSize</enum>
+                         </property>
+                         <property name="leftMargin">
+                          <number>100</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>80</number>
+                         </property>
+                         <property name="bottomMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="verticalSpacing">
+                          <number>0</number>
+                         </property>
+                         <item row="0" column="0" alignment="Qt::AlignHCenter|Qt::AlignTop">
+                          <widget class="QLabel" name="globalIcLabel">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="text">
+                            <string>Global ICs</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="1" alignment="Qt::AlignLeft">
+                          <widget class="QPushButton" name="pushButtonAddGlobalIC">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Ignored">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="minimumSize">
+                            <size>
+                             <width>24</width>
+                             <height>16</height>
+                            </size>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>80</width>
+                             <height>16777215</height>
+                            </size>
+                           </property>
+                           <property name="layoutDirection">
+                            <enum>Qt::LeftToRight</enum>
+                           </property>
+                           <property name="styleSheet">
+                            <string notr="true">background-color: transparent; border: none;</string>
+                           </property>
+                           <property name="text">
+                            <string/>
+                           </property>
+                           <property name="icon">
+                            <iconset resource="resources/dolphin/dolphin.qrc">
+                             <normaloff>:/dolphin/zoomIn.svg</normaloff>:/dolphin/zoomIn.svg</iconset>
+                           </property>
+                           <property name="iconSize">
+                            <size>
+                             <width>16</width>
+                             <height>16</height>
+                            </size>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                        <zorder>globalIcLabel</zorder>
+                        <zorder>pushButtonAddGlobalIC</zorder>
                        </widget>
                       </item>
                       <item>
@@ -475,13 +541,6 @@ QTabWidget::pane {
                          </size>
                         </property>
                        </spacer>
-                      </item>
-                      <item alignment="Qt::AlignHCenter|Qt::AlignTop">
-                       <widget class="QLabel" name="globalIcLabel">
-                        <property name="text">
-                         <string>Global ICs</string>
-                        </property>
-                       </widget>
                       </item>
                      </layout>
                     </widget>
@@ -1302,12 +1361,14 @@ QTabWidget::pane {
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/basic/basic.qrc"/>
-  <include location="resources/input/input.qrc"/>
-  <include location="resources/memory/light/memory_light.qrc"/>
-  <include location="resources/misc/misc.qrc"/>
-  <include location="resources/output/output.qrc"/>
   <include location="resources/toolbar/toolbar.qrc"/>
+  <include location="resources/output/output.qrc"/>
+  <include location="resources/basic/basic.qrc"/>
+  <include location="resources/misc/misc.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/input/input.qrc"/>
+  <include location="resources/dolphin/dolphin.qrc"/>
+  <include location="resources/memory/light/memory_light.qrc"/>
  </resources>
  <connections/>
 </ui>
