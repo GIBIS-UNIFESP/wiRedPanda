@@ -33,11 +33,12 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
 
+    bool m_redirectZoom = false;
+    int m_zoomLevel = 0;
+
 private:
     bool m_pan = false;
-    bool m_redirectZoom = false;
     bool m_space = false;
     int m_panStartX = 0;
     int m_panStartY = 0;
-    int m_zoomLevel = 0;
 };
