@@ -1,0 +1,60 @@
+/* Common global styles */
+
+@import "open-props/style";
+@import "open-props/normalize";
+@import "open-props/buttons";
+@import "open-props/indigo";
+@import "open-props/easings";
+@import "open-props/animations";
+@import "open-props/sizes";
+@import "open-props/gradients";
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+}
+
+li {
+  list-style-type: none;
+}
+
+.content {
+  margin: 100px 200px;
+  display: flex;
+  flex-direction: column;
+  text-align: justify;
+}
+
+.content * {
+  min-width: 100%;
+  text-align: justify;
+}
+
+.content h2,
+.content h3 {
+  text-align: center;
+  padding: 1.5em;
+}
+
+a {
+  color: white;
+}
+
+a:hover {
+  text-decoration: none;
+  font-size: 1.2rem;
+  transition: font-size 0.1s;
+}
+
+.content img {
+  width: 40vw;
+  margin: 100px auto;
+  box-shadow: var(--shadow-6);
+  border-radius: 10px;
+}

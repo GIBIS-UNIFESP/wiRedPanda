@@ -1,0 +1,29 @@
+---
+import { Icon } from 'astro-icon/components';
+
+const { platform, platformName, installCommand } = Astro.props;
+---
+
+<div>
+  <div>
+    <Icon name=`platforms/${platform}`/>
+    <span>{platformName}</span>
+  </div>
+  <code>$ {installCommand}</code>
+</div>
+
+<script>
+  const codes = document.querySelectorAll('code');
+
+  codes.forEach((code) => {
+    code.addEventListener('click', () => {
+      navigator.clipboard.writeText(code.innerText).then(() => {
+        const text = code.innerText;
+        code.innerText = 'Copied!'
+        setTimeout(() => {
+          code.innerText = text;
+        }, 500);
+      });
+    })
+  });
+</script>

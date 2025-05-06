@@ -1,0 +1,17 @@
+{
+  "name": "panda-site",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^4.16.18",
+    "astro-icon": "^1.1.1",
+    "open-props": "^1.7.15"
+  }
+}

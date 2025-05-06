@@ -1,0 +1,62 @@
+---
+import { Icon } from 'astro-icon/components';
+
+import Base from '../layouts/Base.astro';
+
+import DownloadPlatform from '../components/DownloadPlatform.astro';
+---
+
+<Base pageTitle="Download">
+  <section class="content">
+    <h2>Download the software</h2>
+    
+    <p>Here you can download the latest version of wiRedPanda binaries for:</p>
+
+    <div class="download-container">
+      <div class="download-icon">
+        <a href="https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v4.1.12/WiRedPanda-4.1.12-Windows-Qt5-Portable.zip">
+          <Icon name="platforms/windows" class="icon" />
+          <span>Windows</span>
+        </a>
+      </div>
+      <div>
+        <a href="https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v4.1.12/WiRedPanda-4.1.12-Ubuntu-Qt5.AppImage">
+          <Icon name="platforms/linux" class="icon" />
+          <span>Linux</span>
+        </a>
+      </div>
+      <div>
+        <a href="https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v4.1.12/WiRedPanda-4.1.12-macOS-Qt5.dmg">
+          <Icon name="platforms/macos" class="icon" />
+          <span>Mac OS</span>
+        </a>
+      </div>
+    </div>
+    
+    <h2>Other Options</h2>
+
+    <div>
+      <DownloadPlatform platform="arch" platformName="Arch-based" installCommand="yay -S wiredpanda" />
+      <DownloadPlatform platform="debian" platformName="Debian-based" installCommand="apt-get install wiredpanda" />
+    </div>
+  </section>
+</Base>
+
+<style>
+
+.download-container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.icon {
+  width: 70px;
+  height: 70px;
+}
+
+.dowonload-icon {
+  display: flex;
+  align-items: center;
+}
+
+</style>

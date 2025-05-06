@@ -1,0 +1,117 @@
+---
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+
+import pandaLogo from '../images/wpanda.svg';
+---
+
+<header>
+  <div class="logo-container">
+    <Image src={pandaLogo} class="panda-header-logo" alt="wiRedPanda Logo" width={80} loading="eager"/>
+    <span class="logo-text">wiRedPanda</span>
+  </div>
+  <nav aria-label="Main navigation">
+    <ul class="nav-menu">
+      <li><a href="/wiRedPanda/">Home</a></li>
+      <li><a href="/wiRedPanda/about">About</a></li>
+      <li><a href="/wiRedPanda/download">Download</a></li>
+      <li><a href="https://gibis-unifesp.github.io/wiRedPanda/wasm/">Try out</a></li>
+      <li>
+        <a href="https://github.com/GIBIS-UNIFESP/wiRedPanda" target="_blank" rel="noopener noreferrer" aria-label="GitHub Repository"
+          class="github-link">
+          <Icon name="github"/>
+          <span id="star-count"></span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<script>
+// Image logo logic
+document.addEventListener('DOMContentLoaded', function() {
+  const scrollImage = document.getElementsByClassName('panda-header-logo')[0];
+  const threshold = 300;
+
+  window.addEventListener('scroll', function() {
+    const scrollTop = window.scrollY;
+
+    if (scrollTop > threshold) {
+      scrollImage.classList.add('show');
+    } else {
+      scrollImage.classList.remove('show');
+    }
+  });
+});
+
+const owner = 'GIBIS-UNIFESP';
+const repo = 'wiRedPanda';
+
+fetch(`https://api.github.com/repos/${owner}/${repo}`)
+  .then(response => response.json())
+  .then(data => {
+    const starCount = data.stargazers_count;
+    document.getElementById('star-count').textContent = `${starCount} ⭐`;
+  })
+  .catch(error => {
+    console.error('Error fetching star count:', error);
+    document.getElementById('star-count').textContent = 'Error loading star count';
+  });
+</script>
+
+<style>
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 50px;
+  min-width: 100vw;
+  z-index: 2;
+  position: fixed;
+  top: 0;
+  left: 0;
+  backdrop-filter: blur(7px);
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.logo-container span {
+  font-weight: var(--font-weight-5);
+  font-size: var(--font-size-4);
+}
+
+.panda-header-logo {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.panda-header-logo.show {
+  opacity: 1;
+}
+
+ul {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+}
+
+li {
+  margin: 10px;
+}
+
+.github-link {
+  display: flex;
+  gap: 10px;
+  background-color: var(--blue-7);
+  padding: 8px;
+  border-radius: 7px;
+  box-shadow: var(--shadow-3);
+}
+
+</style>
