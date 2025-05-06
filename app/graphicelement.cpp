@@ -89,9 +89,16 @@ void GraphicElement::setPixmap(const QString &pixmapPath)
     }
 
     if (!m_pixmap.load(pixmapPath)) {
+        const QFileInfo info(pixmapPath);
+        const QString reason = !info.exists()
+                                   ? tr("File does not exist")
+                                   : !info.isReadable()
+                                         ? tr("File is not readable")
+                                         : tr("Unknown reason");
+
         m_pixmap.load(m_defaultSkins.constFirst());
         qCDebug(zero) << "Problem loading pixmapPath: " << pixmapPath;
-        throw Pandaception(tr("Couldn't load pixmap."));
+        throw Pandaception(tr("Couldn't load pixmap: %1 (%2)").arg(pixmapPath, reason));
     }
 
     setTransformOriginPoint(pixmapCenter());
