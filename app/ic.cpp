@@ -343,7 +343,7 @@ LogicElement *IC::outputLogic(const int index)
 
 void IC::loadInputsLabels()
 {
-    for (int portIndex = 0; portIndex < inputSize(); ++portIndex) {
+    for (int portIndex = 0; portIndex < m_icInputs.size(); ++portIndex) {
         auto *inputPort = m_icInputs.at(portIndex);
         auto *elm = inputPort->graphicElement();
         QString lb = elm->label();
@@ -363,7 +363,7 @@ void IC::loadInputsLabels()
 
 void IC::loadOutputsLabels()
 {
-    for (int portIndex = 0; portIndex < outputSize(); ++portIndex) {
+    for (int portIndex = 0; portIndex < m_icOutputs.size(); ++portIndex) {
         auto *outputPort = m_icOutputs.at(portIndex);
         auto *elm = outputPort->graphicElement();
         QString label = elm->label();
