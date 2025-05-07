@@ -94,13 +94,13 @@ msvc {
     QMAKE_CXXFLAGS_WARN_ON ~= s/-W3/-W4
     QMAKE_CXXFLAGS += /permissive- /external:I $$[QT_INSTALL_PREFIX] /external:W0
     QMAKE_CXXFLAGS_DEBUG += /Ob1
-    QMAKE_CXXFLAGS_RELEASE += /GL
-    QMAKE_LFLAGS_RELEASE += /LTCG
+    QMAKE_CXXFLAGS_RELEASE += /GL /Zi
+    QMAKE_LFLAGS_RELEASE += /LTCG /DEBUG
 } else {
     QMAKE_CXXFLAGS += -Wall -Wextra -Wpedantic
 }
 
-linux | mac {
+linux | mac | win32-g++ {
     QMAKE_CXXFLAGS_RELEASE += -g
     QMAKE_LFLAGS_RELEASE += -g
 }
