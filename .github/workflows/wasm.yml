@@ -53,12 +53,34 @@ jobs:
         wget https://github.com/gzuidhof/coi-serviceworker/raw/master/coi-serviceworker.min.js
         sed -i '/<script src="wiredpanda.js"><\/script>/a <script src="coi-serviceworker.min.js"><\/script>' index.html
 
-    - name: Deploy to GitHub Pages
+    - name: Commit to site branch
       if: success()
-      uses: peaceiris/actions-gh-pages@v4
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./build
-        destination_dir: wasm
-        enable_jekyll: true
+      run: |
+        # Configure Git with your user details
+        git config --global user.name "Rodrigo Torres"
+        git config --global user.email "5768540+darktorres@users.noreply.github.com"
+
+        # Checkout the site branch
+        git checkout site
+
+        # Copy the built files to the public folder
+        mkdir -p ./public/wasm
+        cp -r ./build/* ./public/wasm/
+
+        # Stage and commit the changes
+        git add ./public/wasm/
+        git commit -m "Deploy WASM files"
+
+        # Push changes to the site branch
+        git push origin site
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Trigger site deployment workflow
+      run: |
+        curl -X POST \
+          https://api.github.com/repos/${{ github.repository }}/actions/workflows/site.yml/dispatches \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github+json" \
+          -d '{"ref": "site"}'
 
