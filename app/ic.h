@@ -17,12 +17,12 @@ class IC : public GraphicElement
 
 public:
     explicit IC(QGraphicsItem *parent = nullptr);
-    ~IC() override = default;
+    ~IC() override;
     IC(const IC &other) : IC(other.parentItem()) {}
 
     static void copyFiles(const QFileInfo &srcFile);
 
-    const QVector<std::shared_ptr<LogicElement>> generateMap() const;
+    const QVector<std::shared_ptr<LogicElement>> generateMap();
     LogicElement *inputLogic(const int index);
     LogicElement *outputLogic(const int index);
     void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
@@ -49,6 +49,7 @@ private:
     void loadOutputs();
     void loadOutputsLabels();
 
+    ElementMapping *mapping = nullptr;
     QFileSystemWatcher m_fileWatcher;
     QString m_file;
     QVector<GraphicElement *> m_icElements;
