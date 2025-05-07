@@ -111,6 +111,8 @@ mac {
 
     QMAKE_LFLAGS_RELEASE += -Wl,-dead_strip_dylibs
     QMAKE_CXXFLAGS_RELEASE += -gdwarf-2
+
+    greaterThan(QT_MAJOR_VERSION, 5): QMAKE_APPLE_DEVICE_ARCHS = x86_64 arm64
 }
 
 MOC_DIR        = build_files/moc
