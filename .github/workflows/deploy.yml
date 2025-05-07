@@ -13,6 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-22.04, windows-latest, macos-latest]
+        qt: [5.15.2, 6.9.0]
 
 # =================================
 
@@ -46,27 +47,19 @@ jobs:
         fi
       shell: bash
     
-    - name: Install Qt5 32bit
-      if: matrix.os == 'windows-latest'
+    - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
-        version: 5.15.2
-        cache: true
-        arch: win32_msvc2019
-        aqtversion: ==3.2.*
-
-    - name: Install Qt5 64bit
-      if: matrix.os != 'windows-latest'
-      uses: jurplel/install-qt-action@v4
-      with:
-        version: 5.15.2
+        version: ${{ matrix.qt }}
+        arch: ${{ matrix.os == 'windows-latest' && matrix.qt == '5.15.2' && 'win32_msvc2019' || '' }}
         cache: true
         aqtversion: ==3.2.*
+        modules: ${{ startsWith(matrix.qt, '6') && 'qtmultimedia qtimageformats' || '' }}
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: ${{ matrix.os }}-5.15.2
+        key: ${{ matrix.os }}-${{ matrix.qt }}
 
 # =================================
 
@@ -112,7 +105,7 @@ jobs:
         chmod +x ./linuxdeployqt-continuous-x86_64.AppImage
         VERSION=$VERSION ./linuxdeployqt-continuous-x86_64.AppImage appimage/wiredpanda -appimage
         rm ./linuxdeployqt-continuous-x86_64.AppImage
-        mv wiRedPanda-$VERSION-x86_64.AppImage wiRedPanda-$VERSION-Ubuntu-Qt5.AppImage
+        mv wiRedPanda-$VERSION-x86_64.AppImage wiRedPanda-$VERSION-Ubuntu-Qt${{ matrix.qt }}.AppImage
 
     - name: Upload Debug Symbols to Sentry
       if: runner.os == 'Linux'
@@ -137,7 +130,7 @@ jobs:
       if: startsWith(matrix.os, 'windows')
       uses: pbeast/gha-setup-vsdevenv@master
       with:
-        arch: x86
+        arch: ${{ startsWith(matrix.qt, '5') && 'x86' || 'x64' }}
 
     - name: Compile Sentry SDK
       if: runner.os == 'Windows'
@@ -145,7 +138,7 @@ jobs:
         git clone --recursive https://github.com/getsentry/sentry-native.git
         mkdir -p sentry-native/build
         cd sentry-native/build
-        cmake .. -B build -G "Visual Studio 17 2022" -A Win32
+        cmake .. -B build -G "Visual Studio 17 2022" ${{ matrix.qt == '5.15.2' && '-A Win32' || '' }}
         cmake --build build --config RelWithDebInfo
         cmake --install build --prefix ../../thirdparty/sentry --config RelWithDebInfo
 
@@ -178,7 +171,7 @@ jobs:
         rm wiredpanda_pch.pch
         cd ..
         ren release wiredpanda-$env:VERSION
-        Compress-Archive -Path wiredpanda-$env:VERSION -DestinationPath wiRedPanda-$env:VERSION-Windows-Qt5-Portable.zip
+        Compress-Archive -Path wiredpanda-$env:VERSION -DestinationPath wiRedPanda-$env:VERSION-Windows-Qt${{ matrix.qt }}-Portable.zip
 
     - name: Upload Debug Symbols to Sentry
       if: runner.os == 'Windows'
@@ -235,7 +228,7 @@ jobs:
       run: |
         cd build/app
         macdeployqt wiredpanda.app -dmg
-        mv wiredpanda.dmg wiRedPanda-$VERSION-macOS-Qt5.dmg
+        mv wiredpanda.dmg wiRedPanda-$VERSION-macOS-Qt${{ matrix.qt }}.dmg
 
     - name: Upload Debug Symbols to Sentry
       if: runner.os == 'macOS'
