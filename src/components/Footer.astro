@@ -3,17 +3,26 @@ import { Image } from "astro:assets";
 
 import unifespLogo from '../images/unifesp_white.png';
 import gibisLogo from '../images/gibis.webp';
+
+const buildTimeYear = new Date().getFullYear(); // fallback value
 ---
 
 <footer class="is-flex is-flex-direction-row is-justify-content-space-around is-align-items-center background-color">
   <a href="https://www.unifesp.br/" target="_blank">
     <Image src={unifespLogo} alt="Unifesp logo" width={120} />
   </a>
-  <span>wiRedPanda Team &copy; { new Date().getFullYear() }</span>
+  <span>wiRedPanda Team © <span id="copyright-year">{buildTimeYear}</span></span>
   <a href="http://gibis.unifesp.br/" target="_blank">
     <Image src={gibisLogo} alt="GIBIS logo" width={90} />
   </a>
 </footer>
+
+<script is:inline>
+  const yearElement = document.getElementById('copyright-year');
+  if (yearElement) {
+    yearElement.textContent = new Date().getFullYear();
+  }
+</script>
 
 <style>
 footer {
