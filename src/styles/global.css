@@ -1,16 +1,19 @@
-/* Common global styles */
+@import "https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css";
+@import url('https://fonts.googleapis.com/css2?family=Moderustic:wght@300..800&display=swap');
 
-@import "open-props/style";
-@import "open-props/normalize";
-@import "open-props/buttons";
-@import "open-props/indigo";
-@import "open-props/easings";
-@import "open-props/animations";
-@import "open-props/sizes";
-@import "open-props/gradients";
+@import './tiltin-animation.css';
+@import './flicker-animation.css';
+@import './jello-animation.css';
+@import './infinite-background.css';
 
-:root {
-  color-scheme: dark;
+* {
+  font-family: "Moderustic", Helvetica, sans-serif;
+  font-size: 22px;
+}
+
+*::selection {
+  color: white;
+  background-color: #BD2812;
 }
 
 body {
@@ -20,41 +23,6 @@ body {
   min-height: 100vh;
 }
 
-li {
-  list-style-type: none;
-}
-
-.content {
-  margin: 100px 200px;
-  display: flex;
-  flex-direction: column;
-  text-align: justify;
-}
-
-.content * {
-  min-width: 100%;
-  text-align: justify;
-}
-
-.content h2,
-.content h3 {
-  text-align: center;
-  padding: 1.5em;
-}
-
-a {
-  color: white;
-}
-
-a:hover {
-  text-decoration: none;
-  font-size: 1.2rem;
-  transition: font-size 0.1s;
-}
-
-.content img {
-  width: 40vw;
-  margin: 100px auto;
-  box-shadow: var(--shadow-6);
-  border-radius: 10px;
+.background-color {
+  background-color: #134074;
 }

@@ -10,8 +10,9 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^4.16.18",
-    "astro-icon": "^1.1.1",
-    "open-props": "^1.7.15"
+    "@astrojs/check": "^0.9.4",
+    "astro": "^5.7.12",
+    "astro-icon": "^1.1.5",
+    "typescript": "^5.8.3"
   }
 }

@@ -5,7 +5,7 @@ import unifespLogo from '../images/unifesp_white.png';
 import gibisLogo from '../images/gibis.webp';
 ---
 
-<footer>
+<footer class="is-flex is-flex-direction-row is-justify-content-space-around is-align-items-center background-color">
   <a href="https://www.unifesp.br/" target="_blank">
     <Image src={unifespLogo} alt="Unifesp logo" width={120} />
   </a>
@@ -16,17 +16,13 @@ import gibisLogo from '../images/gibis.webp';
 </footer>
 
 <style>
-
 footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  min-height: 20vh;
-  background-color: var(--blue-8);
+  padding: 10px;
+  box-shadow: 0px 5px 35px black;
+  border-top: 3px inset #2DA6F4;
 }
 
 span {
-  font-size: var(--font-size-3);
+  color: white;
 }
-
 </style>

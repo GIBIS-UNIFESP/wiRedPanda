@@ -12,33 +12,35 @@ const formerDevs = [
 ---
 
 <Base pageTitle="About">
-  <section class="content">
-    <h2>About the project</h2>
+  <section class="container content">
+    <h2 class="title is-1 has-text-centered my-6">About the project</h2>
 
-    <p>The project was born in 2015 with Dr. Fábio Cappabianco, Davi Morales, Lucas Lellis and Rodrigo Torres, with the aim of having a software program capable of making the subject of logic circuits easy to learn, 100% free and cross-platform. Built to be easy to use, today the software is used to teach digital circuits at UNIFESP, as well as in other university project that teaches digital logic to high school students in São José dos Campos public schools.</p>
+    <p class="has-text-justified pb-6">The project was born in 2015 with Dr. Fábio Cappabianco, Davi Morales, Lucas Lellis and Rodrigo Torres, with the aim of having a software program capable of making the subject of logic circuits easy to learn, 100% free and cross-platform. Built to be easy to use, today the software is used to teach digital circuits at UNIFESP, as well as in other university project that teaches digital logic to high school students in São José dos Campos public schools.</p>
   
-    <div>
+    <div class="has-text-centered">
       <Image
         src={campusUnifesp} alt="Unifesp campus" width="600" loading="eager"
+        class="image is-inline-block"
+        style="border-radius: 10px; border: 1.8px solid #134074; box-shadow: 1px 1px 15px black;" 
       />
     </div>
 
-    <p>We're in active development, so if you want to report bugs or share with us new ideas, please open a discussion on GitHub! Surely we can improve the software with your help.</p>
+    <p class="pt-6">We're in active development, so if you want to report bugs or share with us new ideas, please open a discussion on GitHub! Surely we can improve the software with your help.</p>
 
-      <h3>wiRedPanda Team</h3>
-      <ul>
+      <h3 class="title has-text-centered is-2">wiRedPanda Team</h3>
+      <ul class="has-text-centered mb-6 pr-6">
         <li>João Pedro Oliveira</li>
         <li>Matheus Esteves</li>
         <li>Maycon Santana</li>
         <li>Rodrigo Torres</li>
         <li>Prof. Fábio Cappabianco, Ph.D.</li>
-      </ul>
+    </ul>
 
-    <h3>Former Developers</h3>
-    <div>
-      <ul>
+    <h3 class="title has-text-centered is-3">Former Developers</h3>
+    <div class="fixed-grid my-6">
+      <ul class="grid content">
         { formerDevs.map((dev) => (
-          <li>{dev}</li>
+          <li class="cell has-text-centered p-2">{dev}</li>
         ))}
       </ul>
     </div>
@@ -47,10 +49,6 @@ const formerDevs = [
 
 <style>
 ul {
-  padding-left: 0px;
-}
-
-ul li {
-  text-align: center;
+  list-style-type: none;
 }
 </style>

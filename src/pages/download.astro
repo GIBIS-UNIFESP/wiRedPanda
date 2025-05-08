@@ -7,35 +7,38 @@ import DownloadPlatform from '../components/DownloadPlatform.astro';
 ---
 
 <Base pageTitle="Download">
-  <section class="content">
+  <section class="content container has-text-centered">
     <h2>Download the software</h2>
     
     <p>Here you can download the latest version of wiRedPanda binaries for:</p>
 
-    <div class="download-container">
-      <div class="download-icon">
-        <a href="https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v4.1.12/WiRedPanda-4.1.12-Windows-Qt5-Portable.zip">
-          <Icon name="platforms/windows" class="icon" />
-          <span>Windows</span>
+    <div class="box is-flex is-justify-content-space-around p-6 my-6">
+      <div>
+        <a class="is-flex is-flex-direction-column is-align-items-center"
+          href="https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v4.1.12/WiRedPanda-4.1.12-Windows-Qt5-Portable.zip">
+          <Icon name="platforms/windows" class='icon' />
+          <span class="pt-3">Windows</span>
         </a>
       </div>
       <div>
-        <a href="https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v4.1.12/WiRedPanda-4.1.12-Ubuntu-Qt5.AppImage">
-          <Icon name="platforms/linux" class="icon" />
-          <span>Linux</span>
+        <a class="is-flex is-flex-direction-column is-align-items-center" 
+          href="https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v4.1.12/WiRedPanda-4.1.12-Ubuntu-Qt5.AppImage">
+          <Icon name="platforms/linux" class='icon' />
+          <span class="pt-3">Linux</span>
         </a>
       </div>
       <div>
-        <a href="https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v4.1.12/WiRedPanda-4.1.12-macOS-Qt5.dmg">
-          <Icon name="platforms/macos" class="icon" />
-          <span>Mac OS</span>
+        <a class="is-flex is-flex-direction-column is-align-items-center"
+          href="https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/v4.1.12/WiRedPanda-4.1.12-macOS-Qt5.dmg">
+          <Icon name="platforms/macos" class='icon' />
+          <span class="pt-3">Mac OS</span>
         </a>
       </div>
     </div>
     
     <h2>Other Options</h2>
 
-    <div>
+    <div class="box is-inline-block m-6">
       <DownloadPlatform platform="arch" platformName="Arch-based" installCommand="yay -S wiredpanda" />
       <DownloadPlatform platform="debian" platformName="Debian-based" installCommand="apt-get install wiredpanda" />
     </div>
@@ -43,20 +46,22 @@ import DownloadPlatform from '../components/DownloadPlatform.astro';
 </Base>
 
 <style>
-
-.download-container {
-  display: flex;
-  justify-content: space-around;
-}
-
 .icon {
-  width: 70px;
-  height: 70px;
+  width: 70px; 
+  height: 70px; 
+  color: #ddd;
 }
 
-.dowonload-icon {
-  display: flex;
-  align-items: center;
+.icon:hover {
+  color: #BD2812;
 }
-
+.box {
+  border: 1.4px solid #134074;
+  border-radius: 20px;
+  background-color: rgba(1,1,1, 0.1);
+  backdrop-filter: blur(6px);
+  padding: 10px;
+  margin-bottom: 20px;
+  box-shadow: 1px 1px 50px black;"
+}
 </style>

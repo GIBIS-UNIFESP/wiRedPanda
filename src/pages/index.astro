@@ -6,114 +6,68 @@ import FeatureCard from "../components/FeatureCard.astro";
 
 import panda1 from '../images/panda/panda1.png';
 import panda2 from '../images/panda/panda2.png';
-import pandaLogo from '../images/wpanda.svg';
 ---
 
 <Base pageTitle="Home">
-  <section class="hero">
-    <div class="nothing"></div>
-    <div class="hero-container">
-      <Image src={pandaLogo} alt="wiRedPanda Logo" width={300} loading="eager"/>
-      <div>
-        <h1>A fun and easy way to learn logic circuits</h1>
-        <span>We are proud to present you the new software of your logic circuits class.</span>
-      </div>
+  <section class="hero is-fullheight">
+    <div class="hero-body is-flex is-flex-direction-column is-justify-content-center is-align-items-start content">
+      <h1 class="title text-flicker-in-glow main">A fun and easy way to learn logic circuits</h1>
+      <span class="subtitle is-4">We are proud to present you the new software of your logic circuits class.</span>
     </div>
-    <img class="arrow" src="/wiRedPanda/arrow.svg" />
   </section>
 
-  <section class="content">
-    <p>wiRedPanda is a powerful and intuitive tool designed to help students, educators and enthusiasts on their journey of learning about digital circuits. With a user-friendly interface and advanced features, wiRedPanda transforms the process of understanding and creating circuits into an interactive and engaging experience.</p>
+  <section class="container has-text-justified my-6">
+    <p class="my-6">wiRedPanda is a powerful and intuitive tool designed to help students, educators and enthusiasts on their journey of learning about digital circuits. With a user-friendly interface and advanced features, wiRedPanda transforms the process of understanding and creating circuits into an interactive and engaging experience.</p>
 
-    <h2>Main features</h2>
-    <div>
-      <ul class="features">
-        <li class="feature">
+    <h2 class="title is-1 has-text-centered">Main features</h2>
+    <div class="fixed-grid my-6 py-6">
+      <ul class="grid">
+        <li class="cell">
           <FeatureCard title="Real-Time Simulation" content="See your circuits come to life instantly as you make adjustments and experiment with different configurations." />
         </li>
-        <li class="feature">
+        <li class="cell">
           <FeatureCard title="Intuitive Interface" content="Drag and drop elements, connect wires and build your circuits simply and efficiently." />
         </li>
-        <li class="feature">
+        <li class="cell">
           <FeatureCard title="Detailed Analysis" content="Analyze your circuit with beWavedDolphin waveform simulator, identify and correct problems in your circuits." />
         </li>
-        <li class="feature">
+        <li class="cell">
           <FeatureCard title="Cross-Platform" content="Available for Windows, macOS and Linux, ensuring that you can work on your project on any device." />
         </li>
       </ul>
     </div>
   
-    <video autoplay muted loop>
-      <source src="/wiRedPanda/demo.mp4" type="video/mp4" />
-    </video>
+    <center>
+      <video autoplay muted loop class="my-6">
+        <source src={`${import.meta.env.BASE_URL}demo.mp4`} type="video/mp4" />
+      </video>
+    </center>
    
-    <div class="display-1">
-      <p>We believe that technology education should be accessible, engaging and practical. Our software has been developed to simplify the learning process and allow you to focus on what really matters: understanding and creating digital circuits.</p>
-      <Image src={panda1} alt="Gif of wiRedPanda running" sizes="{max-width: 48rem} 100vw, 50vw" class="img" />
+    <div class="is-flex mt-6">
+      <p class="is-align-content-center">We believe that technology education should be accessible, engaging and practical. Our software has been developed to simplify the learning process and allow you to focus on what really matters: understanding and creating digital circuits.</p>
+      <Image src={panda1} alt="Gif of wiRedPanda running" width="600" height="500" style="margin-left: 40px; margin-bottom: 30px; border-radius: 10px; border: 1.4px solid #134074; box-shadow: 1px 1px 15px black;" loading="eager" />
     </div>
-    <div>
-      <Image src={panda2} alt="Gif of wiRedPanda running" />
-      <p>Download wiRedPanda now and start exploring the world of digital circuits. Try out all our features and see how we can help you achieve your goals. Already in use at Federal University of São Paulo, and maybe in your logic circuits class too!</p>
+    <div class="is-flex">
+      <Image src={panda2} alt="Gif of wiRedPanda running" width="500" height="500" style="margin-right: 40px; margin-top: 30px; border-radius: 10px; border: 1.4px solid #134074; box-shadow: 1px 1px 15px black;" />
+      <p class="is-align-content-center">Download wiRedPanda now and start exploring the world of digital circuits. Try out all our features and see how we can help you achieve your goals. Already in use at Federal University of São Paulo, and maybe in your logic circuits class too!</p>
     </div>
 
   </section>
 </Base>
 
 <style>
-
-.hero {
-  min-height: 100vh;
-  min-width: 100vw;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
+.main {
+  font-size: 4rem;
 }
 
-.hero-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 100px;
-}
-
-.arrow {
-  width: 5%;
-  animation: var(--animation-float);
-}
-
-.features {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--size-4)
-}
-
-.feature {
-  padding: var(--size-3);
+ul {
+  list-style-type: none;
 }
 
 video {
-  text-align: center;
-  margin: 100px auto;
-  box-shadow: var(--shadow-6);
-  border-radius: 5px;
+  width: 65vw;
+  border-radius: 10px;
+  border: 1.4px solid #134074;
+  box-shadow: 1px 1px 15px black;
 }
-
-.display-1 {
-  display: flex;
-  max-width: 100%;
-
-  p {
-    align-content: center;
-    flex: 1;
-  }
-
-  .image {
-    flex: 1;
-    width: 50%;
-
-  }
-}
-
-
 </style>

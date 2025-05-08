@@ -4,13 +4,48 @@ import { Icon } from 'astro-icon/components';
 const { platform, platformName, installCommand } = Astro.props;
 ---
 
-<div>
-  <div>
-    <Icon name=`platforms/${platform}`/>
-    <span>{platformName}</span>
+<div class="is-flex is-align-items-center is-justify-content-space-between p-5">
+  <div class="platform is-flex is-flex-direction-column is-align-items-center">
+    <Icon name=`platforms/${platform}` class='icon'/>
+    <span class="pt-3">{platformName}</span>
   </div>
-  <code>$ {installCommand}</code>
+  <code class="p-3 is-flex is-justify-content-space-between">$ {installCommand} </code>
 </div>
+
+<style>
+.icon {
+  width: 70px; 
+  height: 70px; 
+  color: #ddd;
+}
+
+.icon:hover {
+  color: #BD2812;
+}
+
+.platform {
+  width: 15vw;
+}
+
+code {
+  width: 19vw;
+  margin-left: 30px; 
+  border-radius: 10px; 
+  color: white; 
+  font-family: monospace; 
+  font-size: large;
+  font-style: italic;
+  text-align: left;
+  background-color: rgba(0.1, 0.1, 0.1, 0.4);
+  backdrop-filter: blur(5px);
+}
+
+code:hover {
+  cursor: pointer;
+  font-weight: 500;
+}
+
+</style>
 
 <script>
   const codes = document.querySelectorAll('code');

@@ -2,19 +2,14 @@
 const { title, content } = Astro.props;
 ---
 
-<div>
-  <h3>{title}</h3>
+<div class="box">
+  <h3 class="title is-3">{title}</h3>
   <span>{content}</span>
 </div>
 
 <style>
-
-div {
-  padding: 10px;
-  inline-size: var(--size-14);
-  border: var(--blue-7) var(--border-size-3) solid;
-  border-radius: var(--radius-drawn-3);
-  text-align: justify;
+.box:hover {
+  transition: box-shadow 0.5s;
+  box-shadow: 5px 5px 15px #BD2812;
 }
-
 </style>
