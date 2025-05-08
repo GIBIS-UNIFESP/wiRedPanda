@@ -28,7 +28,7 @@ CMakeLists.txt.user
 
 *.autosave
 
-#QtCtreator Qml
+# QtCtreator Qml
 *.qmlproject.user
 *.qmlproject.user.*
 /.project
@@ -50,3 +50,8 @@ _site
 
 Deploy/*
 *.info
+
+# GH Pages
+/.astro
+/dist
+/node_modules
