@@ -35,6 +35,12 @@
 #include <QTemporaryFile>
 #include <QTranslator>
 
+#include <QSvgRenderer>
+
+void ensureSvgUsage() {
+    QSvgRenderer dummy; // for macdeployqt to add libqsvg.dylib
+}
+
 #ifdef Q_OS_WASM
 #include <emscripten/emscripten.h>
 #endif
