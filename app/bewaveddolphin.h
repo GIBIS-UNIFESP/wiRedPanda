@@ -75,7 +75,7 @@ private:
      * @param previousWaveEnd is the bool of the last position in the last cell.
      * @return a Pixmap containing the waveform image 64x38 pixels.
     */
-    QPixmap composeWaveParts(const QVector<bool> waveparts, const int previousWaveEnd);
+    QPixmap composeWaveParts(const QVector<bool> waveparts, int previousWaveEnd);
 
     /**
      * This function converts a boolean vector into a string of hexadecimal values.
@@ -167,6 +167,8 @@ private:
     void setLength(const int simLength, const bool runSimulation);
     void zoomChanged();
 
+    QVector<bool> convertHexToBinaryVector(const QString &hexString) const;
+
     Ui::BewavedDolphin *m_ui;
     GraphicsView m_view;
     MainWindow *m_mainWindow = nullptr;
@@ -201,5 +203,6 @@ private:
     int m_clockPeriod = 0;
     int m_inputPorts = 0;
     int m_length = 32;
+    int m_lastValue;
     std::optional<bool> m_previousWaveEnd;
 };
