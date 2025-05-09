@@ -380,12 +380,6 @@ void BewavedDolphin::loadSignals(QStringList &inputLabels, QStringList &outputLa
 
 void BewavedDolphin::run()
 {
-    run2();
-    run2();
-}
-
-void BewavedDolphin::run2()
-{
     qCDebug(zero) << "Creating class to pause main window simulator while creating waveform.";
     SimulationBlocker simulationBlocker(m_simulation);
 
@@ -435,20 +429,15 @@ void BewavedDolphin::run2()
 
             row = m_inputPorts;
 
+
             for (const auto &output : m_output_values) {
-                const auto lastIndex = m_model->index(row, column - 1);
-                const QString currentValue = lastIndex.data().toString();
-                const int lastValue = convertHexToInt(currentValue);
-                QPixmap composedWave;
-
-                if (!lastIndex.isValid()) {
-                    composedWave = composeWaveParts(output, -1);
-                } else {
-                    composedWave = composeWaveParts(output, lastValue);
-                }
-
+                int lastValue = -1;
+                QPixmap composedWave = composeWaveParts(output, lastValue);
                 const QString hex = convertBinaryToHex(output);
                 createTemporalSimulationElement(row, column, composedWave, hex);
+
+                lastValue = output.last();
+                qDebug() << lastValue;
                 ++row;
             }
         } else {
@@ -580,6 +569,9 @@ void BewavedDolphin::createZeroElement(const int row, const int col, const bool 
                              Qt::DecorationRole);
         }
 
+        m_signalTableView->setRowHeight(row, 38);
+        m_signalTableView->setColumnWidth(col, 64);
+
         if (!changeNext) {
             return;
         }
@@ -623,6 +615,9 @@ void BewavedDolphin::createOneElement(const int row, const int col, const bool i
                              hasPreviousItem && isPreviousLow ? m_risingGreen : m_highGreen,
                              Qt::DecorationRole);
         }
+
+        m_signalTableView->setRowHeight(row, 38);
+        m_signalTableView->setColumnWidth(col, 64);
 
         if (!changeNext) {
             return;
@@ -1432,7 +1427,7 @@ void BewavedDolphin::on_actionTemporalSimulation_toggled(const bool checked)
 
 }
 
-QPixmap BewavedDolphin::composeWaveParts(const QVector<bool> waveparts, const int previousWaveEnd)
+QPixmap BewavedDolphin::composeWaveParts(const QVector<bool> waveparts, int previousWaveEnd)
 {
     int partWidth = 64;
     int partHeight = 38;
@@ -1441,31 +1436,24 @@ QPixmap BewavedDolphin::composeWaveParts(const QVector<bool> waveparts, const in
     composedPixmap.fill(Qt::transparent);
     QPainter painter(&composedPixmap);
 
-    int previousState;
-
-    if (previousWaveEnd == -1) {
-        previousState = -1;
-    } else {
-        previousState = previousWaveEnd % 2;
-    }
-
     for (int i = 0; i < waveparts.length(); i++) {
         int x = i * (partWidth / 8);
         bool currentState = waveparts[i];
         QPixmap currentPixmap;
 
-        if (previousState == -1) {
+        if (previousWaveEnd == -1) {
             currentPixmap = (currentState) ? m_smallHighGreen : m_smallLowGreen;
         } else {
-            currentPixmap = (static_cast<bool>(previousState) == currentState)
+            currentPixmap = (static_cast<bool>(previousWaveEnd) == currentState)
                                 ? (currentState ? m_smallHighGreen : m_smallLowGreen)
                                 : (currentState ? m_smallRisingGreen : m_smallFallingGreen);
         }
 
         painter.drawPixmap(x, 0, currentPixmap);
-        previousState = static_cast<int>(currentState);
+        previousWaveEnd = static_cast<int>(currentState);
     }
 
+    m_lastValue = previousWaveEnd;
     painter.end();
     return composedPixmap;
 }
@@ -1477,16 +1465,17 @@ void BewavedDolphin::createTemporalSimulationElement(const int row, const int co
     qCDebug(three) << tr("Changing current item.");
     m_model->setData(index, hex, Qt::DisplayRole);
 
-
     if (m_type == PlotType::Number) {
         m_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
     }
 
     if (m_type == PlotType::Line) {
         m_model->setData(index, Qt::AlignLeft, Qt::TextAlignmentRole);
-
         m_model->setData(index, composedWaveForm, Qt::DecorationRole);
 
+        // Definir manualmente o tamanho da célula
+        m_signalTableView->setRowHeight(row, 38);
+        m_signalTableView->setColumnWidth(col, 64);
     }
 }
 
@@ -1526,3 +1515,29 @@ int BewavedDolphin::convertHexToInt(const QString &hexString) const
 
     return intValue;
 }
+
+QVector<bool> BewavedDolphin::convertHexToBinaryVector(const QString &hexString) const
+{
+    QVector<bool> bits;
+
+    if (hexString.isEmpty()) {
+        return bits;
+    }
+
+    bool ok = false;
+    // Converte a string hexadecimal para inteiro
+    int intValue = hexString.toInt(&ok, 16);
+    if (!ok) {
+        qWarning() << "Failed to convert hex string to int:" << hexString;
+        return bits;
+    }
+
+    // Agora converte o inteiro para bits
+    for (int i = (hexString.length() * 4) - 1; i >= 0; --i) {
+        bool bit = (intValue >> i) & 1;
+        bits.append(bit);
+    }
+
+    return bits;
+}
+
