@@ -54,7 +54,7 @@ jobs:
         arch: ${{ matrix.os == 'windows-latest' && matrix.qt == '5.15.2' && 'win32_msvc2019' || '' }}
         cache: true
         aqtversion: ==3.2.*
-        modules: ${{ startsWith(matrix.qt, '6') && 'qtmultimedia qtimageformats' || '' }}
+        modules: ${{ startsWith(matrix.qt, '6') && 'qtmultimedia qtimageformats debug_info' || 'debug_info' }}
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -115,6 +115,7 @@ jobs:
         sentry-cli login --auth-token "$SENTRY_AUTH_TOKEN"
         sentry-cli releases new "wiredpanda@$VERSION" -p wiredpanda
         sentry-cli debug-files upload --include-sources -p wiredpanda build/app/
+        sentry-cli debug-files upload --include-sources -p wiredpanda $QT_ROOT_DIR
         sentry-cli releases set-commits --auto "wiredpanda@$VERSION" --log-level=debug
 
     - name: Publish Ubuntu
@@ -181,6 +182,7 @@ jobs:
         ./sentry-cli.exe login --auth-token $env:SENTRY_AUTH_TOKEN
         ./sentry-cli.exe releases new wiredpanda@$env:VERSION -p wiredpanda
         ./sentry-cli.exe debug-files upload --include-sources -p wiredpanda build/app/
+        ./sentry-cli.exe debug-files upload --include-sources -p wiredpanda D:/a/wiRedPanda/Qt/
         ./sentry-cli.exe releases set-commits --auto wiredpanda@$env:VERSION --log-level=debug
 
     - name: Publish Windows
@@ -217,6 +219,12 @@ jobs:
         mkdir -p test/WPanda-test.app/Contents/Frameworks
         cp ../thirdparty/sentry/lib/libsentry.dylib test/WPanda-test.app/Contents/Frameworks/
 
+    - name: Generate dSYM Symbols
+      if: runner.os == 'macOS'
+      run: |
+        cd build/app
+        dsymutil wiredpanda.app/Contents/MacOS/wiredpanda -o wiredpanda.app.dSYM
+
     - name: Test macOS
       if: runner.os == 'macOS'
       run: |
@@ -238,6 +246,7 @@ jobs:
         sentry-cli login --auth-token "$SENTRY_AUTH_TOKEN"
         sentry-cli releases new "wiredpanda@$VERSION" -p wiredpanda
         sentry-cli debug-files upload --include-sources -p wiredpanda build/app/
+        sentry-cli debug-files upload --include-sources -p wiredpanda $QT_ROOT_DIR
         sentry-cli releases set-commits --auto "wiredpanda@$VERSION" --log-level=debug
 
     - name: Publish macOS
