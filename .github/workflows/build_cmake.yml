@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        qt_version: [5.12.12, 5.13.2, 5.14.2, 5.15.2, 6.2.4, 6.3.2, 6.4.3, 6.5.3, 6.6.3, 6.7.3, 6.8.3, 6.9.0]
+        qt: [5.12.12, 5.13.2, 5.14.2, 5.15.2, 6.2.4, 6.3.2, 6.4.3, 6.5.3, 6.6.3, 6.7.3, 6.8.3, 6.9.0]
 
 # =================================
 
@@ -33,31 +33,22 @@ jobs:
         submodules: recursive
         fetch-depth: 0
 
-    - name: Install Qt5
-      if: startsWith(matrix.qt_version, '5')
-      uses: jurplel/install-qt-action@v4
-      with:
-        version: ${{ matrix.qt_version }}
-        cache: true
-        aqtversion: ==3.2.*
-
     - name: Install CUPS dependency for Qt 6.7.*
-      if: matrix.os == 'ubuntu-latest' && startsWith(matrix.qt_version, '6.7')
+      if: matrix.os == 'ubuntu-latest' && startsWith(matrix.qt, '6.7')
       run: sudo apt update && sudo apt install -y libcups2-dev
 
-    - name: Install Qt6
-      if: startsWith(matrix.qt_version, '6')
+    - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
-        version: ${{ matrix.qt_version }}
-        modules: qtmultimedia qtimageformats
+        version: ${{ matrix.qt }}
         cache: true
         aqtversion: ==3.2.*
+        modules: ${{ startsWith(matrix.qt, '6') && 'qtmultimedia qtimageformats' || '' }}
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: ${{ matrix.os }}-${{ matrix.qt_version }}
+        key: ${{ matrix.os }}-${{ matrix.qt }}
 
 # =================================
 
