@@ -107,7 +107,6 @@ linux | mac | win32-g++ {
 
 mac {
     CONFIG += sdk_no_version_check
-    QMAKE_LFLAGS += -ld_classic
 
     QMAKE_LFLAGS_RELEASE += -Wl,-dead_strip_dylibs
     QMAKE_CXXFLAGS_RELEASE += -gdwarf-2
