@@ -13,6 +13,7 @@
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QSaveFile>
+#include <QStandardPaths>
 #include <QTemporaryFile>
 
 WorkSpace::WorkSpace(QWidget *parent)
@@ -204,7 +205,7 @@ QString WorkSpace::dolphinFileName()
 void WorkSpace::setAutosaveFileName()
 {
     qCDebug(zero) << "Defining autosave path.";
-    QDir autosavePath(QDir::currentPath() + "/autosaves");
+    QDir autosavePath(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/autosaves");
 
     if (!autosavePath.exists()) {
         autosavePath.mkpath(autosavePath.absolutePath());
@@ -248,7 +249,7 @@ void WorkSpace::autosave()
 
     if (m_fileInfo.fileName().isEmpty()) {
         qCDebug(three) << "Default value not set yet.";
-        path.setPath(QDir::currentPath() + "/autosaves");
+        path.setPath(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/autosaves");
 
         if (!path.exists()) {
             path.mkpath(path.absolutePath());
