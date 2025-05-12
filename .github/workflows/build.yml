@@ -59,12 +59,11 @@ jobs:
     - name: Test Ubuntu
       if: runner.os == 'Linux'
       run: |
-        cd build/test
-        ./WPanda-test -platform offscreen
+        ./build/test/WPanda-test -platform offscreen
 
 # =================================
 
-    - name: Setup MSVC Toolchain
+    - name: Setup Windows MSVC Toolchain
       if: runner.os == 'Windows'
       uses: pbeast/gha-setup-vsdevenv@master
 
