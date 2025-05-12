@@ -34,8 +34,12 @@ jobs:
         fetch-depth: 0
 
     - name: Install CUPS dependency for Qt 6.7.*
-      if: matrix.os == 'ubuntu-latest' && startsWith(matrix.qt, '6.7')
-      run: sudo apt update && sudo apt install -y libcups2-dev
+      if: runner.os == 'Linux' && startsWith(matrix.qt, '6.7')
+      run: sudo apt-get update && sudo apt-get install -y libcups2-dev
+
+    - name: Install Ninja on Ubuntu
+      if: runner.os == 'Linux'
+      run: sudo apt-get update && sudo apt-get install -y ninja-build
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
@@ -55,7 +59,7 @@ jobs:
     - name: Build Ubuntu
       if: runner.os == 'Linux'
       run: |
-        cmake -S . -B build \
+        cmake -S . -B build -G Ninja \
           -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
         cmake --build build
@@ -63,34 +67,32 @@ jobs:
     - name: Test Ubuntu
       if: runner.os == 'Linux'
       run: |
-        cd build
-        ./test -platform offscreen
+        ./build/test -platform offscreen
 
 # =================================
 
-    - name: Setup MSVC Toolchain
+    - name: Setup Windows MSVC Toolchain
       if: runner.os == 'Windows'
       uses: pbeast/gha-setup-vsdevenv@master
 
     - name: Build Windows
       if: runner.os == 'Windows'
       run: |
-        cmake -S . -B build `
+        cmake -S . -B build -G Ninja `
           -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
         cmake --build build
 
     - name: Test Windows
       if: runner.os == 'Windows'
       run: |
-        cd build/Debug
-        ./test.exe
+        ./build/test.exe
 
 # =================================
 
     - name: Build macOS
       if: runner.os == 'macOS'
       run: |
-        cmake -S . -B build \
+        cmake -S . -B build -G Ninja \
           -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
         cmake --build build
@@ -98,5 +100,4 @@ jobs:
     - name: Test macOS
       if: runner.os == 'macOS'
       run: |
-        cd build
-        ./test
+        ./build/test
