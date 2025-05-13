@@ -19,61 +19,6 @@ Los binarios compilados para Windows, Linux y macOS están disponibles [aquí](h
 
 ## Compilando
 
-### En Windows
-
-Para Qt5 seleccione esto:
-![qt5](https://github.com/user-attachments/assets/e6bfca48-7b4b-444f-9ad3-76c157a9036a)
-
-O para Qt6 selecciona estos:
-![qt6](https://github.com/user-attachments/assets/aedc8749-8b5c-4f4d-9c65-651b703dccea)
-
-Luego abra WPanda.pro en Qt Creator y presione Ctrl+R para compilar y ejecutar.
-
-
-### En Linux y macOS
-
-#### Dependencias
-
-Se necesita Qt 5.12.0+ o 6.2.0+ y el módulo QtMultimedia para compilar.
-
-En distribuciones como Arch Linux, Gentoo, Manjaro, Debian, etc., Qt 5.12+ se puede instalar desde los repositorios estándar.
-
-* Debian/Ubuntu
-
-```bash
-sudo apt install build-essential qtbase5-dev qtmultimedia5-dev libqt5svg5-dev
-```
-
-* Basado en Arch Linux
-
-```bash
-sudo pacman -S base-devel qt5-base qt5-multimedia qt5-svg
-```
-
-* macOS
-
-```bash
-brew install qt5
-```
-
-* Otros
-
-Qt5 se puede instalar directamente desde el [sitio web de Qt] (https://www.qt.io/download), desde instaladores no oficiales como [aqtinstall] (https://github.com/miurahr/aqtinstall), desde repositorios mantenidos por la comunidad o [construidos desde la fuente] (https://wiki.qt.io/Building_Qt_5_from_Git).
-
-Así es como se podría usar aqtinstall para instalar Qt 5.15.2 en una distribución basada en Debian.
-
-```bash
-sudo apt-get update
-sudo apt-get install libgl1-mesa-dev libxcb-xinerama0 libpulse-dev git python3 python3-pip python3-venv -y
-python3 -m venv ~/venv
-~/venv/bin/pip install aqtinstall==3.2.*
-~/venv/bin/aqt install-qt linux desktop 5.15.2 --outputdir ~/Qt
-PATH=~/Qt/5.15.2/gcc_64/bin:$PATH
-export PATH
-```
-
-#### Proceso de compilación
-
 ```bash
 git clone https://github.com/GIBIS-UNIFESP/wiredpanda.git
 mkdir wiredpanda/build
@@ -83,6 +28,8 @@ make -j
 ```
 
 Este proceso podría llevar un tiempo. Una vez concluido, el binario se ubicará en `wiredpanda/build/app/wiredpanda`, en Linux, y en `wiredpanda/build/app/wiredpanda.app/Contents/MacOS/wiredpanda` en macOS.
+
+Para obtener instrucciones de compilación detalladas, consulte [BUILD.md](BUILD.md) o visite la [wiki](https://github.com/GIBIS-UNIFESP/wiRedPanda/wiki/How-to-setup-environment).
 
 ## Traducción
 
