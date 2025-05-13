@@ -12,7 +12,7 @@ As principais características do software são:
   - É intuitivo e fácil de usar;
   - Exporte seu trabalho como imagem ou PDF.
 
-![Tela principal](https://gibis-unifesp.github.io/wiRedPanda/images/demo.gif)
+![Tela principal](https://gibis-unifesp.github.io/wiRedPanda/demo.gif)
 
 ## Downloads
 Binários compilados para Windows, Linux e macOS estão disponíveis [aqui](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
