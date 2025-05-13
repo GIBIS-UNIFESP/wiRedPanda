@@ -1,4 +1,4 @@
-# wiRedPanda ![GitHub All Releases](https://img.shields.io/github/downloads/gibis-unifesp/wiredpanda/total?style=flat-square) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/gibis-unifesp/wiredpanda?style=flat-square) ![GitHub](https://img.shields.io/github/license/gibis-unifesp/wiredpanda?style=flat-square) [![codecov](https://codecov.io/gh/GIBIS-UNIFESP/wiRedPanda/branch/master/graph/badge.svg?token=5YBYB4J705)](https://codecov.io/gh/GIBIS-UNIFESP/wiRedPanda)
+# wiRedPanda ![GitHub All Releases](https://img.shields.io/github/downloads/gibis-unifesp/wiredpanda/total?style=flat-square) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/gibis-unifesp/wiredpanda?style=flat-square) ![GitHub](https://img.shields.io/github/license/gibis-unifesp/wiredpanda?style=flat-square) [![codecov](https://codecov.io/gh/GIBIS-UNIFESP/wiRedPanda/branch/master/graph/badge.svg?token=5YBYB4J705)](https://codecov.io/gh/GIBIS-UNIFESP/wiRedPanda) <a href="https://hosted.weblate.org/engage/wiredpanda/"><img src="https://hosted.weblate.org/widget/wiredpanda/svg-badge.svg" alt="Translation status" /></a>
 
 
 wiRedPanda is a free software designed to help students learn about logic circuits and simulate them in an easy and friendly way.
@@ -83,6 +83,18 @@ make -j
 ```
 
 This process could take a while. Once concluded, the binary will be located at `wiredpanda/build/app/wiredpanda`, on Linux, and at `wiredpanda/build/app/wiredpanda.app/Contents/MacOS/wiredpanda` on macOS.
+
+## Translation
+
+You can help translate wiRedPanda into other languages. We use the [Weblate](https://hosted.weblate.org/projects/wiredpanda/wiredpanda) platform to manage translations.
+
+Alternatively, you can also contribute by forking this repository and adding translations manually.
+
+The translations are located in the [app/resources/translations](https://github.com/GIBIS-UNIFESP/wiRedPanda/tree/master/app/resources/translations) directory.
+
+<a href="https://hosted.weblate.org/engage/wiredpanda/">
+<img src="https://hosted.weblate.org/widget/wiredpanda/wiredpanda/multi-auto.svg" alt="Translation status" />
+</a>
 
 ## Licensing
 
