@@ -1,3 +1,5 @@
+_Read me in [english](README.md). Léame en [español](README_es.md)._
+
 # wiRedPanda ![GitHub All Releases](https://img.shields.io/github/downloads/gibis-unifesp/wiredpanda/total?style=flat-square) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/gibis-unifesp/wiredpanda?style=flat-square) ![GitHub](https://img.shields.io/github/license/gibis-unifesp/wiredpanda?style=flat-square) [![codecov](https://codecov.io/gh/GIBIS-UNIFESP/wiRedPanda/branch/master/graph/badge.svg?token=5YBYB4J705)](https://codecov.io/gh/GIBIS-UNIFESP/wiRedPanda) <a href="https://hosted.weblate.org/engage/wiredpanda/"><img src="https://hosted.weblate.org/widget/wiredpanda/svg-badge.svg" alt="Status da tradução" /></a>
 
 
@@ -9,8 +11,6 @@ As principais características do software são:
   - Interface amigável;
   - É intuitivo e fácil de usar;
   - Exporte seu trabalho como imagem ou PDF.
-
-_Read me in [english](README.md). Léame en [español](README_es.md)._
 
 ![Tela principal](https://gibis-unifesp.github.io/wiRedPanda/images/demo.gif)
 
