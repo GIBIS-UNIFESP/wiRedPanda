@@ -10,7 +10,7 @@ equals(QT_MAJOR_VERSION, 6) : !versionAtLeast(QT_VERSION, 6.2.0) {
     error("QtMultimedia is not installed. Please install with Qt Maintenance Tool or with system repository")
 }
 
-VERSION = 4.3.0
+VERSION = 4.2.4
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
 QT += core gui printsupport multimedia widgets svg
@@ -94,23 +94,24 @@ msvc {
     QMAKE_CXXFLAGS_WARN_ON ~= s/-W3/-W4
     QMAKE_CXXFLAGS += /permissive- /external:I $$[QT_INSTALL_PREFIX] /external:W0
     QMAKE_CXXFLAGS_DEBUG += /Ob1
-    QMAKE_CXXFLAGS_RELEASE += /GL
-    QMAKE_LFLAGS_RELEASE += /LTCG
+    QMAKE_CXXFLAGS_RELEASE += /GL /Zi
+    QMAKE_LFLAGS_RELEASE += /LTCG /DEBUG
 } else {
     QMAKE_CXXFLAGS += -Wall -Wextra -Wpedantic
 }
 
-linux | mac {
+linux | mac | win32-g++ {
     QMAKE_CXXFLAGS_RELEASE += -g
     QMAKE_LFLAGS_RELEASE += -g
 }
 
 mac {
     CONFIG += sdk_no_version_check
-    QMAKE_LFLAGS += -ld_classic
 
-    QMAKE_LFLAGS_RELEASE += -Wl,-dead_strip_dylibs
-    QMAKE_CXXFLAGS_RELEASE += -gdwarf-2
+    QMAKE_CXXFLAGS_RELEASE += -g
+    QMAKE_LFLAGS_RELEASE += -Wl,-dead_strip_dylibs -g
+
+    greaterThan(QT_MAJOR_VERSION, 5): QMAKE_APPLE_DEVICE_ARCHS = x86_64 arm64
 }
 
 MOC_DIR        = build_files/moc

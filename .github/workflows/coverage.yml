@@ -39,8 +39,7 @@ jobs:
         
     - name: Test
       run: |
-        cd build/test
-        ./WPanda-test -platform offscreen
+        ./build/test/WPanda-test -platform offscreen
         
     - name: Upload coverage data
       run: |

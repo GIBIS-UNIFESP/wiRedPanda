@@ -41,6 +41,12 @@
 #include <QTemporaryFile>
 #include <QTranslator>
 
+#include <QSvgRenderer>
+
+void ensureSvgUsage() {
+    QSvgRenderer dummy; // for macdeployqt to add libqsvg.dylib
+}
+
 #ifdef Q_OS_WASM
 #include <emscripten/emscripten.h>
 #endif
@@ -55,7 +61,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     : QMainWindow(parent)
     , m_ui(new Ui::MainWindow)
 {
-    qCDebug(zero) << "wiRedPanda Version = " APP_VERSION " OR" << GlobalProperties::version;
+    qCDebug(zero) << "wiRedPanda Version = " APP_VERSION " OR " << GlobalProperties::version;
     m_ui->setupUi(this);
 
     qCDebug(zero) << "Settings fileName: " << Settings::fileName();

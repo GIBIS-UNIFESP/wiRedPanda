@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/dolphin">
+        <file>autoCrop.svg</file>
         <file>cut.svg</file>
         <file>delete.svg</file>
         <file>exit.svg</file>

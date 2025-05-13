@@ -38,6 +38,11 @@ IC::IC(QGraphicsItem *parent)
     });
 }
 
+IC::~IC()
+{
+    delete mapping;
+}
+
 void IC::save(QDataStream &stream) const
 {
     GraphicElement::save(stream);
@@ -164,10 +169,10 @@ void IC::loadFile(const QString &fileName)
     m_icOutputLabels = QVector<QString>(m_icOutputs.size());
     sortPorts(m_icInputs);
     sortPorts(m_icOutputs);
-    loadInputs();
-    loadOutputs();
     loadInputsLabels();
     loadOutputsLabels();
+    loadInputs();
+    loadOutputs();
 
     // ----------------------------------------------
 
@@ -337,7 +342,7 @@ LogicElement *IC::outputLogic(const int index)
 
 void IC::loadInputsLabels()
 {
-    for (int portIndex = 0; portIndex < inputSize(); ++portIndex) {
+    for (int portIndex = 0; portIndex < m_icInputs.size(); ++portIndex) {
         auto *inputPort = m_icInputs.at(portIndex);
         auto *elm = inputPort->graphicElement();
         QString lb = elm->label();
@@ -357,7 +362,7 @@ void IC::loadInputsLabels()
 
 void IC::loadOutputsLabels()
 {
-    for (int portIndex = 0; portIndex < outputSize(); ++portIndex) {
+    for (int portIndex = 0; portIndex < m_icOutputs.size(); ++portIndex) {
         auto *outputPort = m_icOutputs.at(portIndex);
         auto *elm = outputPort->graphicElement();
         QString label = elm->label();
@@ -375,10 +380,10 @@ void IC::loadOutputsLabels()
     }
 }
 
-const QVector<std::shared_ptr<LogicElement>> IC::generateMap() const
+const QVector<std::shared_ptr<LogicElement>> IC::generateMap()
 {
-    ElementMapping mapping(m_icElements);
-    return mapping.logicElms();
+    mapping = new ElementMapping(m_icElements);
+    return mapping->logicElms();
 }
 
 void IC::reload()

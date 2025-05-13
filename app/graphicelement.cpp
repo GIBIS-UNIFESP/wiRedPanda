@@ -88,10 +88,23 @@ void GraphicElement::setPixmap(const QString &pixmapPath)
         return;
     }
 
-    if (!m_pixmap.load(pixmapPath)) {
+    QString path = pixmapPath;
+
+    if (not path.startsWith(":/")) {
+        path.prepend(GlobalProperties::currentDir + "/");
+    }
+
+    if (!m_pixmap.load(path)) {
+        const QFileInfo info(path);
+        const QString reason = !info.exists()
+                                   ? tr("File does not exist")
+                                   : !info.isReadable()
+                                         ? tr("File is not readable")
+                                         : tr("Unknown reason");
+
         m_pixmap.load(m_defaultSkins.constFirst());
-        qCDebug(zero) << "Problem loading pixmapPath: " << pixmapPath;
-        throw Pandaception(tr("Couldn't load pixmap."));
+        qCDebug(zero) << "Problem loading pixmapPath: " << path;
+        throw Pandaception(tr("Couldn't load pixmap: %1 (%2)").arg(path, reason));
     }
 
     setTransformOriginPoint(pixmapCenter());
@@ -172,15 +185,13 @@ void GraphicElement::save(QDataStream &stream) const
     QList<QMap<QString, QVariant>> skinsMap;
 
     for (const auto &skinName : m_alternativeSkins) {
+        QFileInfo fileInfo(skinName);
         QString skinName2 = skinName;
-        QFileInfo fileInfo(skinName2);
 
-        if (!skinName2.startsWith(":/") && (fileInfo.absoluteDir() != GlobalProperties::currentDir)) {
+        if (!skinName.startsWith(":/") && (fileInfo.absoluteDir() != GlobalProperties::currentDir)) {
             const QString newFile = GlobalProperties::currentDir + "/" + fileInfo.fileName();
-
-            QFile::copy(skinName2, newFile);
-
-            skinName2 = newFile;
+            QFile::copy(skinName, newFile);
+            skinName2 = fileInfo.fileName();
         }
 
         // -------------------------------------------

@@ -69,6 +69,7 @@
    <addaction name="actionSetTo1"/>
    <addaction name="actionInvert"/>
    <addaction name="actionSetClockWave"/>
+   <addaction name="actionAutoCrop"/>
    <addaction name="separator"/>
    <addaction name="actionZoomIn"/>
    <addaction name="actionZoomOut"/>
@@ -84,7 +85,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -437,6 +438,24 @@
   <action name="actionShowWaveforms">
    <property name="text">
     <string>Show Waveforms</string>
+   </property>
+  </action>
+  <action name="actionAutoCrop">
+   <property name="icon">
+    <iconset resource="resources/dolphin/dolphin.qrc">
+     <normaloff>:/dolphin/autoCrop.svg</normaloff>:/dolphin/autoCrop.svg</iconset>
+   </property>
+   <property name="text">
+    <string>AutoCrop</string>
+   </property>
+   <property name="toolTip">
+    <string>AutoCrop</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
  </widget>

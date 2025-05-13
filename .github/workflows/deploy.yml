@@ -12,13 +12,69 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        qt: [5.15.2, 6.9.0]
 
 # =================================
 
     runs-on: ${{ matrix.os }}
+    container: ${{ matrix.os == 'ubuntu-latest' && 'ubuntu:20.04' || '' }}
 
     steps:
+    - name: Install Ubuntu dependencies
+      if: runner.os == 'Linux'
+      run: |
+        export DEBIAN_FRONTEND=noninteractive
+        apt-get update
+        apt-get install -y \
+          build-essential \
+          cmake \
+          git \
+          jq \
+          libasound2 \
+          libcups2 \
+          libcurl4-openssl-dev \
+          libfontconfig1-dev \
+          libfreetype6-dev \
+          libfuse2 \
+          libgstreamer-gl1.0-0 \
+          libx11-dev \
+          libx11-xcb-dev \
+          libxcb-cursor0 \
+          libxcb-glx0-dev \
+          libxcb-icccm4-dev \
+          libxcb-image0-dev \
+          libxcb-keysyms1-dev \
+          libxcb-randr0-dev \
+          libxcb-render-util0-dev \
+          libxcb-shape0-dev \
+          libxcb-shm0-dev \
+          libxcb-sync0-dev \
+          libxcb-xfixes0-dev \
+          libxcb1-dev \
+          libxext-dev \
+          libxfixes-dev \
+          libxi-dev \
+          libxkbcommon-dev \
+          libxkbcommon-x11-dev \
+          libxrandr2 \
+          libxrender-dev \
+          ninja-build \
+          sudo \
+          wget
+
+    - name: Install Ubuntu Python
+      if: runner.os == 'Linux'
+      run: |
+        apt-get install -y software-properties-common
+        add-apt-repository ppa:deadsnakes/ppa
+        apt-get update
+        apt-get install -y curl python3.10
+        ln -sf /usr/bin/python3.10 /usr/bin/python3
+        curl -sS https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+        python3 get-pip.py
+        python3 -m pip install --no-cache-dir --upgrade pip setuptools wheel
+
     - uses: actions/checkout@v4
       with:
         submodules: recursive
@@ -45,46 +101,37 @@ jobs:
           curl -sL https://sentry.io/get-cli/ | bash
         fi
       shell: bash
-    
-    - name: Install Qt5 32bit
-      if: matrix.os == 'windows-latest'
-      uses: jurplel/install-qt-action@v4
-      with:
-        version: 5.15.2
-        cache: true
-        arch: win32_msvc2019
-        aqtversion: ==3.2.*
 
-    - name: Install Qt5 64bit
-      if: matrix.os != 'windows-latest'
+    - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
-        version: 5.15.2
+        version: ${{ matrix.qt }}
+        arch: ${{ matrix.os == 'windows-latest' && matrix.qt == '5.15.2' && 'win32_msvc2019' || '' }}
         cache: true
         aqtversion: ==3.2.*
+        modules: ${{ startsWith(matrix.qt, '6') && 'qtmultimedia qtimageformats debug_info' || 'debug_info' }}
+        setup-python: ${{ matrix.os == 'ubuntu-latest' && 'false' || 'true' }}
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: ${{ matrix.os }}-5.15.2
+        key: ${{ matrix.os }}-${{ matrix.qt }}
 
 # =================================
 
-    - name: Compile Sentry SDK
+    - name: Compile Ubuntu Sentry SDK
       if: runner.os == 'Linux'
       run: |
-        sudo apt install libcurl4-openssl-dev
         git clone --recursive https://github.com/getsentry/sentry-native.git
         mkdir -p sentry-native/build
         cd sentry-native/build
-        cmake .. -B build -D SENTRY_BACKEND=crashpad -D CMAKE_BUILD_TYPE=RelWithDebInfo
-        cmake --build build --parallel
+        cmake .. -B build -D SENTRY_BACKEND=crashpad -D CMAKE_BUILD_TYPE=RelWithDebInfo -G Ninja
+        cmake --build build
         cmake --install build --prefix ../../thirdparty/sentry
 
     - name: Build Ubuntu
       if: runner.os == 'Linux'
       run: |
-        sudo apt install libgstreamer-gl1.0-0 libfuse2 libfontconfig1-dev libfreetype6-dev libx11-dev libx11-xcb-dev libxext-dev libxfixes-dev libxi-dev libxrender-dev libxcb1-dev libxcb-glx0-dev libxcb-keysyms1-dev libxcb-image0-dev libxcb-shm0-dev libxcb-icccm4-dev libxcb-sync0-dev libxcb-xfixes0-dev libxcb-shape0-dev libxcb-randr0-dev libxcb-render-util0-dev libxkbcommon-dev libxkbcommon-x11-dev
         mkdir build
         cd build
         qmake ../WPanda.pro
@@ -97,8 +144,7 @@ jobs:
     - name: Test Ubuntu
       if: runner.os == 'Linux'
       run: |
-        cd build/test
-        ./WPanda-test -platform offscreen
+        ./build/test/WPanda-test -platform offscreen
 
     - name: linuxdeployqt
       if: runner.os == 'Linux'
@@ -110,18 +156,21 @@ jobs:
         cp thirdparty/sentry/lib/libsentry.so appimage/lib/
         wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
         chmod +x ./linuxdeployqt-continuous-x86_64.AppImage
-        VERSION=$VERSION ./linuxdeployqt-continuous-x86_64.AppImage appimage/wiredpanda -appimage
+        ./linuxdeployqt-continuous-x86_64.AppImage --appimage-extract
+        VERSION=$VERSION ./squashfs-root/usr/bin/linuxdeployqt ./appimage/wiredpanda -appimage
         rm ./linuxdeployqt-continuous-x86_64.AppImage
-        mv wiRedPanda-$VERSION-x86_64.AppImage wiRedPanda-$VERSION-Ubuntu-Qt5.AppImage
+        mv wiRedPanda-$VERSION-x86_64.AppImage wiRedPanda-$VERSION-Ubuntu-Qt${{ matrix.qt }}.AppImage
 
-    - name: Upload Debug Symbols to Sentry
+    - name: Upload Ubuntu Debug Symbols to Sentry
       if: runner.os == 'Linux'
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       run: |
+        git config --global --add safe.directory '*'
         sentry-cli login --auth-token "$SENTRY_AUTH_TOKEN"
         sentry-cli releases new "wiredpanda@$VERSION" -p wiredpanda
         sentry-cli debug-files upload --include-sources -p wiredpanda build/app/
+        sentry-cli debug-files upload --include-sources -p wiredpanda $QT_ROOT_DIR
         sentry-cli releases set-commits --auto "wiredpanda@$VERSION" --log-level=debug
 
     - name: Publish Ubuntu
@@ -133,21 +182,21 @@ jobs:
 
 # =================================
 
-    - name: Setup MSVC Toolchain
-      if: startsWith(matrix.os, 'windows')
+    - name: Setup Windows MSVC Toolchain
+      if: runner.os == 'Windows'
       uses: pbeast/gha-setup-vsdevenv@master
       with:
-        arch: x86
+        arch: ${{ startsWith(matrix.qt, '5') && 'x86' || 'x64' }}
 
-    - name: Compile Sentry SDK
+    - name: Compile Windows Sentry SDK
       if: runner.os == 'Windows'
       run: |
         git clone --recursive https://github.com/getsentry/sentry-native.git
         mkdir -p sentry-native/build
         cd sentry-native/build
-        cmake .. -B build -G "Visual Studio 17 2022" -A Win32
-        cmake --build build --config RelWithDebInfo
-        cmake --install build --prefix ../../thirdparty/sentry --config RelWithDebInfo
+        cmake .. -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo -G Ninja
+        cmake --build build
+        cmake --install build --prefix ../../thirdparty/sentry
 
     - name: Build Windows
       if: runner.os == 'Windows'
@@ -178,9 +227,9 @@ jobs:
         rm wiredpanda_pch.pch
         cd ..
         ren release wiredpanda-$env:VERSION
-        Compress-Archive -Path wiredpanda-$env:VERSION -DestinationPath wiRedPanda-$env:VERSION-Windows-Qt5-Portable.zip
+        Compress-Archive -Path wiredpanda-$env:VERSION -DestinationPath wiRedPanda-$env:VERSION-Windows-Qt${{ matrix.qt }}-Portable.zip
 
-    - name: Upload Debug Symbols to Sentry
+    - name: Upload Windows Debug Symbols to Sentry
       if: runner.os == 'Windows'
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
@@ -188,25 +237,26 @@ jobs:
         ./sentry-cli.exe login --auth-token $env:SENTRY_AUTH_TOKEN
         ./sentry-cli.exe releases new wiredpanda@$env:VERSION -p wiredpanda
         ./sentry-cli.exe debug-files upload --include-sources -p wiredpanda build/app/
+        ./sentry-cli.exe debug-files upload --include-sources -p wiredpanda D:/a/wiRedPanda/Qt/
         ./sentry-cli.exe releases set-commits --auto wiredpanda@$env:VERSION --log-level=debug
 
     - name: Publish Windows
+      if: runner.os == 'Windows'
       uses: softprops/action-gh-release@v2
-      if: startsWith(matrix.os, 'windows')
       with:
         fail_on_unmatched_files: true
         files: 'build/app/*.zip'
 
 # =================================
 
-    - name: Compile Sentry SDK
+    - name: Compile macOS Sentry SDK
       if: runner.os == 'macOS'
       run: |
         git clone --recursive https://github.com/getsentry/sentry-native.git
         mkdir -p sentry-native/build
         cd sentry-native/build
-        cmake .. -B build -D SENTRY_BACKEND=crashpad -D CMAKE_BUILD_TYPE=RelWithDebInfo -D CMAKE_OSX_ARCHITECTURES="x86_64;arm64"
-        cmake --build build --parallel
+        cmake .. -B build -D SENTRY_BACKEND=crashpad -D CMAKE_BUILD_TYPE=RelWithDebInfo -D CMAKE_OSX_ARCHITECTURES="x86_64;arm64" -G Ninja
+        cmake --build build
         cmake --install build --prefix ../../thirdparty/sentry
 
     - name: Build macOS
@@ -224,6 +274,12 @@ jobs:
         mkdir -p test/WPanda-test.app/Contents/Frameworks
         cp ../thirdparty/sentry/lib/libsentry.dylib test/WPanda-test.app/Contents/Frameworks/
 
+    - name: Generate macOS dSYM Symbols
+      if: runner.os == 'macOS'
+      run: |
+        cd build/app
+        dsymutil wiredpanda.app/Contents/MacOS/wiredpanda -o wiredpanda.app.dSYM
+
     - name: Test macOS
       if: runner.os == 'macOS'
       run: |
@@ -235,9 +291,9 @@ jobs:
       run: |
         cd build/app
         macdeployqt wiredpanda.app -dmg
-        mv wiredpanda.dmg wiRedPanda-$VERSION-macOS-Qt5.dmg
+        mv wiredpanda.dmg wiRedPanda-$VERSION-macOS-Qt${{ matrix.qt }}.dmg
 
-    - name: Upload Debug Symbols to Sentry
+    - name: Upload macOS Debug Symbols to Sentry
       if: runner.os == 'macOS'
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
@@ -245,11 +301,12 @@ jobs:
         sentry-cli login --auth-token "$SENTRY_AUTH_TOKEN"
         sentry-cli releases new "wiredpanda@$VERSION" -p wiredpanda
         sentry-cli debug-files upload --include-sources -p wiredpanda build/app/
+        sentry-cli debug-files upload --include-sources -p wiredpanda $QT_ROOT_DIR
         sentry-cli releases set-commits --auto "wiredpanda@$VERSION" --log-level=debug
 
     - name: Publish macOS
-      uses: softprops/action-gh-release@v2
       if: runner.os == 'macOS'
+      uses: softprops/action-gh-release@v2
       with:
         fail_on_unmatched_files: true
         files: 'build/app/*.dmg'
