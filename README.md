@@ -96,6 +96,16 @@ The translations are located in the [app/resources/translations](https://github.
 <img src="https://hosted.weblate.org/widget/wiredpanda/wiredpanda/multi-auto.svg" alt="Translation status" />
 </a>
 
+## Stars
+
+<a href="https://www.star-history.com/#GIBIS-UNIFESP/wiRedPanda&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=GIBIS-UNIFESP/wiRedPanda&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=GIBIS-UNIFESP/wiRedPanda&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=GIBIS-UNIFESP/wiRedPanda&type=Date" />
+ </picture>
+</a>
+
 ## Licensing
 
 wiRedPanda is licensed under the [GNU General Public License, Version 3.0](http://www.gnu.org/licenses/).
