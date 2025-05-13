@@ -1,4 +1,4 @@
-# wiRedPanda ![Todos los lanzamientos de GitHub](https://img.shields.io/github/downloads/gibis-unifesp/wiredpanda/total?style=flat-square) ![Lanzamiento de GitHub (último por fecha)](https://img.shields.io/github/v/release/gibis-unifesp/wiredpanda?style=flat-square) ![GitHub](https://img.shields.io/github/license/gibis-unifesp/wiredpanda?style=flat-square) [![codecov](https://codecov.io/gh/GIBIS-UNIFESP/wiRedPanda/branch/master/graph/badge.svg?token=5YBYB4J705)](https://codecov.io/gh/GIBIS-UNIFESP/wiRedPanda)
+# wiRedPanda ![Todos los lanzamientos de GitHub](https://img.shields.io/github/downloads/gibis-unifesp/wiredpanda/total?style=flat-square) ![Lanzamiento de GitHub (último por fecha)](https://img.shields.io/github/v/release/gibis-unifesp/wiredpanda?style=flat-square) ![GitHub](https://img.shields.io/github/license/gibis-unifesp/wiredpanda?style=flat-square) [![codecov](https://codecov.io/gh/GIBIS-UNIFESP/wiRedPanda/branch/master/graph/badge.svg?token=5YBYB4J705)](https://codecov.io/gh/GIBIS-UNIFESP/wiRedPanda) <a href="https://hosted.weblate.org/engage/wiredpanda/"><img src="https://hosted.weblate.org/widget/wiredpanda/svg-badge.svg" alt="Estado de la traducción" /></a>
 
 
 wiRedPanda es un software gratuito diseñado para ayudar a los estudiantes a aprender sobre circuitos lógicos y simularlos de una manera fácil y amigable.
@@ -83,6 +83,18 @@ make -j
 ```
 
 Este proceso podría llevar un tiempo. Una vez concluido, el binario se ubicará en `wiredpanda/build/app/wiredpanda`, en Linux, y en `wiredpanda/build/app/wiredpanda.app/Contents/MacOS/wiredpanda` en macOS.
+
+## Traducción
+
+Puedes ayudar a traducir wiRedPanda a otros idiomas. Utilizamos la plataforma [Weblate](https://hosted.weblate.org/projects/wiredpanda/wiredpanda) para gestionar las traducciones.
+
+También puedes contribuir bifurcando este repositorio y añadiendo las traducciones manualmente.
+
+Las traducciones se encuentran en el directorio [app/resources/translations](https://github.com/GIBIS-UNIFESP/wiRedPanda/tree/master/app/resources/translations).
+
+<a href="https://hosted.weblate.org/engage/wiredpanda/">
+<img src="https://hosted.weblate.org/widget/wiredpanda/wiredpanda/multi-auto.svg" alt="Estado de la traducción" />
+</a>
 
 ## Licencia
 
