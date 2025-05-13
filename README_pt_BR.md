@@ -106,6 +106,8 @@ As traduções estão localizadas no diretório [app/resources/translations](htt
 </imagem>
 </a>
 
+[![Status do pacote](https://repology.org/badge/vertical-allrepos/wiredpanda.svg)](https://repology.org/project/wiredpanda/versions)
+
 ## Licença
 
 wiRedPanda está licenciado sob a [GNU General Public License, Versão 3.0](http://www.gnu.org/licenses/).
