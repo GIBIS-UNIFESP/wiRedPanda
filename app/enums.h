@@ -3,7 +3,7 @@
 #include <QObject>
 
 /**
- * @brief Preferred way to indicate the element types and groups(input, output, etc)
+ * @brief Preferred way to indicate the element types and groups (input, output, etc)
  */
 class Enums
 {
