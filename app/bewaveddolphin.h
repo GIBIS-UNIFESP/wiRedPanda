@@ -67,7 +67,7 @@ public:
  * @brief Custom GraphicsView for the waveform display
  *
  * Extends GraphicsView to provide special zooming behavior and wheel
- * event handling specific to the waveform editor(like Quartus Prime zooming).
+ * event handling specific to the waveform editor (like Quartus Prime zooming).
  */
 class DolphinGraphicsView : public GraphicsView
 {
