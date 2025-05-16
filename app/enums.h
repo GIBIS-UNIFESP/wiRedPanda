@@ -2,6 +2,9 @@
 
 #include <QObject>
 
+/**
+ * @brief Preferred way to indicate the element types and groups(input, output, etc)
+ */
 class Enums
 {
     Q_GADGET

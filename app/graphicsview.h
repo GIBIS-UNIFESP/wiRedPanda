@@ -5,6 +5,15 @@
 
 #include <QGraphicsView>
 
+/*!
+ * @class GraphicsView
+ * @brief Extended QGraphicsView with enhanced navigation capabilities
+ *
+ * GraphicsView extends the QGraphicsView class to provide additional
+ * functionality for zooming, panning, and keyboard navigation. It includes
+ * signals to notify when zoom operations occur and supports redirect zoom
+ * mode for delegating zoom operations to parent components.
+ */
 class GraphicsView : public QGraphicsView
 {
     Q_OBJECT

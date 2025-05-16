@@ -24,6 +24,14 @@ class BewavedDolphin;
 
 enum class PlotType { Number, Line };
 
+/*!
+ * @class SignalModel
+ * @brief Data model for digital signals in the waveform editor
+ *
+ * The SignalModel class extends QStandardItemModel to manage the data representation
+ * of digital signals in the waveform editor table. It handles the editable/non-editable
+ * state of cells based on whether they represent input or output signals.
+ */
 class SignalModel : public QStandardItemModel
 {
     Q_OBJECT
@@ -37,6 +45,13 @@ private:
     const int m_inputCount;
 };
 
+/*!
+ * @class SignalDelegate
+ * @brief Custom drawing delegate for waveform signal cells
+ *
+ * This class handles the visual representation of signal cells in the
+ * waveform table and provide custom drawing for digital signal states.
+ */
 class SignalDelegate : public QItemDelegate
 {
     Q_OBJECT
@@ -47,6 +62,13 @@ public:
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 };
 
+/*!
+ * @class DolphinGraphicsView
+ * @brief Custom GraphicsView for the waveform display
+ *
+ * Extends GraphicsView to provide special zooming behavior and wheel
+ * event handling specific to the waveform editor(like Quartus Prime zooming).
+ */
 class DolphinGraphicsView : public GraphicsView
 {
     Q_OBJECT
@@ -64,6 +86,14 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
 };
 
+/*!
+ * @class BewavedDolphin
+ * @brief Main waveform editor window
+ *
+ * beWavedDolphin is the main class for the waveform editor component.
+ * It provides functionality to create, edit, visualize, and export digital
+ * waveforms, integrating with wiRedPanda circuit simulations.
+ */
 class BewavedDolphin : public QMainWindow
 {
     Q_OBJECT
