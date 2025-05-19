@@ -25,6 +25,7 @@ jobs:
       - name: Run lupdate
         run: |
           lupdate WPanda.pro
+          lrelease WPanda.pro
 
       - name: Commit and push if translation files changed
         run: |
