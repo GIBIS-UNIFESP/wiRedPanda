@@ -6,7 +6,7 @@
     <message>
         <location filename="../../commands.cpp" line="220"/>
         <source>Add %1 elements</source>
-        <translation>Agregar %1 elementos</translation>
+        <translation type="unfinished">Agregar %1 elementos</translation>
     </message>
 </context>
 <context>
