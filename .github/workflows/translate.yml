@@ -34,7 +34,7 @@ jobs:
           if ! git diff --quiet; then
             git add app/resources/translations/*.ts
             git commit -m "Update translation files via lupdate"
-            git push origin HEAD:${{ github.head_ref }}
+            git push origin HEAD:${{ github.head_ref }} --force
           else
             echo "No translation updates needed"
           fi
