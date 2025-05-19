@@ -98,7 +98,7 @@ void Display14::updatePortsProperties()
     inputPort(11)->setPos(64,  56);    inputPort(11)->setName("K (" + tr("upper right diagonal")    + ")");
     inputPort(12)->setPos(64,  72);    inputPort(12)->setName("L (" + tr("lower right diagonal")    + ")");
     inputPort(13)->setPos(64,  88);    inputPort(13)->setName("M (" + tr("lower center vertical")   + ")");
-    inputPort(14)->setPos(64, 104);    inputPort(14)->setName("N (" + tr("lower left diagonals")    + ")");
+    inputPort(14)->setPos(64, 104);    inputPort(14)->setName("N (" + tr("lower left diagonal")    + ")");
 
     for (auto *port : std::as_const(m_inputPorts)) {
         port->setRequired(false);

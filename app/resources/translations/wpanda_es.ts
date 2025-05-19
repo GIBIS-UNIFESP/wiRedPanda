@@ -317,12 +317,12 @@
         <location filename="../../bewaveddolphin.ui" line="449"/>
         <location filename="../../bewaveddolphin.ui" line="452"/>
         <source>AutoCrop</source>
-        <translation type="unfinished"></translation>
+        <translation>Recorte automático</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="455"/>
         <source>Ctrl+A</source>
-        <translation type="unfinished">Ctrl+A</translation>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="142"/>
@@ -425,10 +425,6 @@
         <location filename="../../bewaveddolphin.cpp" line="1270"/>
         <source>Format not supported. Could not open file: </source>
         <translation>Formato no compatible. No se pudo abrir el archivo: </translation>
-    </message>
-    <message>
-        <source>Invalid file format. Starts with: </source>
-        <translation type="vanished">Formato de archivo no válido. Comienza con: </translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1289"/>
@@ -607,74 +603,62 @@
     <message>
         <location filename="../../element/display_14.cpp" line="87"/>
         <source>middle left horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>centro izquierdo horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="88"/>
         <source>upper left vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>vertical superior izquierda</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="89"/>
         <source>lower left vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>vertical inferior izquierda</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="92"/>
         <source>upper right vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>vertical superior derecha</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="94"/>
         <source>lower right vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>vertical inferior derecha</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="95"/>
         <source>middle right horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>centro derecho horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="96"/>
         <source>upper left diagonal</source>
-        <translation type="unfinished"></translation>
+        <translation>diagonal superior izquierda</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="97"/>
         <source>upper center vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>vertical central superior</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="98"/>
         <source>upper right diagonal</source>
-        <translation type="unfinished"></translation>
+        <translation>diagonal superior derecha</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="99"/>
         <source>lower right diagonal</source>
-        <translation type="unfinished"></translation>
+        <translation>diagonal inferior derecha</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="100"/>
         <source>lower center vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>centro inferior vertical</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="101"/>
-        <source>lower left diagonals</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>middle left</source>
-        <translation type="vanished">centro izquierda</translation>
-    </message>
-    <message>
-        <source>upper left</source>
-        <translation type="vanished">superior izquierda</translation>
-    </message>
-    <message>
-        <source>lower left</source>
-        <translation type="vanished">inferior izquierda</translation>
+        <source>lower left diagonal</source>
+        <translation>diagonal inferior izquierda</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="90"/>
@@ -687,45 +671,9 @@
         <translation>superior</translation>
     </message>
     <message>
-        <source>upper right</source>
-        <translation type="vanished">superior derecha</translation>
-    </message>
-    <message>
         <location filename="../../element/display_14.cpp" line="93"/>
         <source>dot</source>
         <translation>punto</translation>
-    </message>
-    <message>
-        <source>lower right</source>
-        <translation type="vanished">inferior derecha</translation>
-    </message>
-    <message>
-        <source>middle right</source>
-        <translation type="vanished">centro derecha</translation>
-    </message>
-    <message>
-        <source>middle upper left</source>
-        <translation type="vanished">centro superior izquierda</translation>
-    </message>
-    <message>
-        <source>middle top</source>
-        <translation type="vanished">centro superior</translation>
-    </message>
-    <message>
-        <source>middle upper right</source>
-        <translation type="vanished">centro superior derecha</translation>
-    </message>
-    <message>
-        <source>middle lower right</source>
-        <translation type="vanished">medio inferior derecha</translation>
-    </message>
-    <message>
-        <source>middle bottom</source>
-        <translation type="vanished">medio inferior</translation>
-    </message>
-    <message>
-        <source>middle lower left</source>
-        <translation type="vanished">medio inferior izquierda</translation>
     </message>
 </context>
 <context>
@@ -733,141 +681,93 @@
     <message>
         <location filename="../../element/display_16.cpp" line="13"/>
         <source>16-SEGMENT DISPLAY</source>
-        <translation type="unfinished"></translation>
+        <translation>PANTALLA DE 16 SEGMENTOS</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="13"/>
         <source>16-Segment Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Pantalla de 16 segmentos</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="93"/>
         <source>middle left horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>centro izquierdo horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="94"/>
         <source>upper left vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>vertical superior izquierda</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="95"/>
         <location filename="../../element/display_16.cpp" line="109"/>
         <source>lower left vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>vertical inferior izquierda</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="96"/>
         <source>bottom left horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Abajo a la izquierda horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="97"/>
         <source>bottom right horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Abajo a la derecha horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="98"/>
         <source>top left horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>arriba a la izquierda horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="99"/>
         <source>top right horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>arriba a la derecha horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="100"/>
         <source>upper right vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>vertical superior derecha</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="102"/>
         <source>lower right vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>vertical inferior derecha</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="103"/>
         <source>middle right horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>centro derecho horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="104"/>
         <source>upper left diagonal</source>
-        <translation type="unfinished"></translation>
+        <translation>diagonal superior izquierda</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="105"/>
         <source>upper center vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>vertical central superior</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="106"/>
         <source>upper right diagonal</source>
-        <translation type="unfinished"></translation>
+        <translation>diagonal superior derecha</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="107"/>
         <source>lower right diagonal</source>
-        <translation type="unfinished"></translation>
+        <translation>diagonal inferior derecha</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="108"/>
         <source>lower center vertical</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>middle left</source>
-        <translation type="obsolete">centro izquierda</translation>
-    </message>
-    <message>
-        <source>upper left</source>
-        <translation type="obsolete">superior izquierda</translation>
-    </message>
-    <message>
-        <source>lower left</source>
-        <translation type="obsolete">inferior izquierda</translation>
-    </message>
-    <message>
-        <source>upper right</source>
-        <translation type="obsolete">superior derecha</translation>
+        <translation>centro inferior vertical</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="101"/>
         <source>dot</source>
-        <translation type="unfinished">punto</translation>
-    </message>
-    <message>
-        <source>lower right</source>
-        <translation type="obsolete">inferior derecha</translation>
-    </message>
-    <message>
-        <source>middle right</source>
-        <translation type="obsolete">centro derecha</translation>
-    </message>
-    <message>
-        <source>middle upper left</source>
-        <translation type="obsolete">centro superior izquierda</translation>
-    </message>
-    <message>
-        <source>middle top</source>
-        <translation type="obsolete">centro superior</translation>
-    </message>
-    <message>
-        <source>middle upper right</source>
-        <translation type="obsolete">centro superior derecha</translation>
-    </message>
-    <message>
-        <source>middle lower right</source>
-        <translation type="obsolete">medio inferior derecha</translation>
-    </message>
-    <message>
-        <source>middle bottom</source>
-        <translation type="obsolete">medio inferior</translation>
-    </message>
-    <message>
-        <source>middle lower left</source>
-        <translation type="obsolete">medio inferior izquierda</translation>
+        <translation>punto</translation>
     </message>
 </context>
 <context>
@@ -1035,7 +935,7 @@
     <message>
         <location filename="../../elementeditor.ui" line="308"/>
         <source>Delay:</source>
-        <translation type="unfinished"></translation>
+        <translation>Demora:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="129"/>
@@ -1139,11 +1039,7 @@
     <message>
         <location filename="../../elementeditor.cpp" line="321"/>
         <source>Images</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Images (*.png *.gif *.jpg *.jpeg)</source>
-        <translation type="vanished">Imágenes (*.png *.gif *.jpg *.jpeg)</translation>
+        <translation>Imágenes</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="362"/>
@@ -1230,7 +1126,7 @@
     <message>
         <location filename="../../elementfactory.cpp" line="84"/>
         <source>Unknown type 1: </source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo desconocido 1: </translation>
     </message>
     <message>
         <location filename="../../elementfactory.cpp" line="91"/>
@@ -1240,7 +1136,7 @@
     <message>
         <location filename="../../elementfactory.cpp" line="99"/>
         <source>Unknown type 2: </source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo desconocido 2: </translation>
     </message>
     <message>
         <location filename="../../elementfactory.cpp" line="181"/>
@@ -1259,28 +1155,24 @@
 <context>
     <name>GraphicElement</name>
     <message>
-        <source>Couldn&apos;t load pixmap.</source>
-        <translation type="vanished">No se pudo cargar el mapa de píxeles.</translation>
-    </message>
-    <message>
         <location filename="../../graphicelement.cpp" line="100"/>
         <source>File does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>El archivo no existe</translation>
     </message>
     <message>
         <location filename="../../graphicelement.cpp" line="102"/>
         <source>File is not readable</source>
-        <translation type="unfinished"></translation>
+        <translation>El archivo no es legible</translation>
     </message>
     <message>
         <location filename="../../graphicelement.cpp" line="103"/>
         <source>Unknown reason</source>
-        <translation type="unfinished"></translation>
+        <translation>Razón desconocida</translation>
     </message>
     <message>
         <location filename="../../graphicelement.cpp" line="107"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo cargar el mapa de píxeles: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../graphicelement.cpp" line="440"/>
@@ -1907,7 +1799,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="1223"/>
         <source>Background Simulation</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulación en segundo plano</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1232"/>
@@ -2267,12 +2159,12 @@ Debe guardar los proyectos nuevos antes de acceder a circuitos integrados y más
     <message>
         <location filename="../../element/srlatch.cpp" line="10"/>
         <source>SR-LATCH</source>
-        <translation type="unfinished"></translation>
+        <translation>SR-LATCH</translation>
     </message>
     <message>
         <location filename="../../element/srlatch.cpp" line="10"/>
         <source>SR-Latch</source>
-        <translation type="unfinished"></translation>
+        <translation>SR-Latch</translation>
     </message>
 </context>
 <context>
@@ -2306,10 +2198,6 @@ Debe guardar los proyectos nuevos antes de acceder a circuitos integrados y más
         <location filename="../../serialization.cpp" line="88"/>
         <source>Invalid file format.</source>
         <translation>Formato de archivo no válido.</translation>
-    </message>
-    <message>
-        <source>Invalid version number.</source>
-        <translation type="vanished">Número de versión no válida.</translation>
     </message>
 </context>
 <context>
@@ -2501,34 +2389,22 @@ Compruebe si hay actualizaciones si el archivo no se carga correctamente.</trans
     <message>
         <location filename="../../main.cpp" line="78"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta el circuito a &lt;archivo-arduino&gt;.</translation>
     </message>
     <message>
         <location filename="../../main.cpp" line="90"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta el circuito a un archivo de texto en forma de onda, leyendo la entrada desde la terminal.</translation>
     </message>
     <message>
         <location filename="../../main.cpp" line="95"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cuando se utiliza con -c/--terminal, bloquea la ejecución si el circuito contiene tablas de verdad.</translation>
     </message>
     <message>
         <location filename="../../main.cpp" line="144"/>
         <source>Error: Circuit contains Truth Table elements.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Exports circuit to &lt;arduino-file&gt;</source>
-        <translation type="vanished">Exporta circuito a &lt;archivo-arduino&gt;</translation>
-    </message>
-    <message>
-        <source>Exports circuit to waveform text file</source>
-        <translation type="vanished">Exporta circuito a archivo de texto de forma de onda</translation>
-    </message>
-    <message>
-        <source>Exports circuit to waveform text file, reading input from terminal</source>
-        <translation type="vanished">Exporta circuito a archivo de texto de forma de onda, leyendo la entrada desde el terminal</translation>
+        <translation>Error: El circuito contiene elementos de tabla de verdad.</translation>
     </message>
     <message>
         <location filename="../../main.cpp" line="79"/>
@@ -2538,7 +2414,7 @@ Compruebe si hay actualizaciones si el archivo no se carga correctamente.</trans
     <message>
         <location filename="../../main.cpp" line="84"/>
         <source>Exports circuit to waveform text file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta el circuito a un archivo de texto en forma de onda.</translation>
     </message>
     <message>
         <location filename="../../main.cpp" line="85"/>
