@@ -1,9 +1,10 @@
 name: Update Qt Translations
 
 on:
-  push:
+  pull_request:
     branches:
       - master
+    types: [opened, synchronize, reopened]
 
 jobs:
   update-translations:
@@ -25,11 +26,15 @@ jobs:
         run: |
           lupdate WPanda.pro
 
-      - name: Force push to master (bypass protection)
+      - name: Commit and push if translation files changed
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GH_PAT_BYPASS }}@github.com/${{ github.repository }}
-          git add app/resources/translations/*.ts
-          git commit -m "Update translation source files via lupdate" || echo "No changes"
-          git push origin HEAD:master --force
+
+          if ! git diff --quiet; then
+            git add app/resources/translations/*.ts
+            git commit -m "Update translation files via lupdate"
+            git push origin HEAD:${{ github.head_ref }}
+          else
+            echo "No translation updates needed"
+          fi
