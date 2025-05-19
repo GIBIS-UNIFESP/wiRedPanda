@@ -1802,8 +1802,8 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1223"/>
-        <source>Background Simluation</source>
-        <translation>Background Simluation</translation>
+        <source>Background Simulation</source>
+        <translation>Background Simulation</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1232"/>
