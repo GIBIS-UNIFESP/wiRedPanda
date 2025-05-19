@@ -602,18 +602,75 @@
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="87"/>
-        <source>middle left</source>
-        <translation>middle left</translation>
+        <source>middle left horizontal</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="88"/>
-        <source>upper left</source>
-        <translation>upper left</translation>
+        <source>upper left vertical</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="89"/>
+        <source>lower left vertical</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../element/display_14.cpp" line="92"/>
+        <source>upper right vertical</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../element/display_14.cpp" line="94"/>
+        <source>lower right vertical</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../element/display_14.cpp" line="95"/>
+        <source>middle right horizontal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../element/display_14.cpp" line="96"/>
+        <source>upper left diagonal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../element/display_14.cpp" line="97"/>
+        <source>upper center vertical</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../element/display_14.cpp" line="98"/>
+        <source>upper right diagonal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../element/display_14.cpp" line="99"/>
+        <source>lower right diagonal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../element/display_14.cpp" line="100"/>
+        <source>lower center vertical</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../element/display_14.cpp" line="101"/>
+        <source>lower left diagonals</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>middle left</source>
+        <translation type="vanished">middle left</translation>
+    </message>
+    <message>
+        <source>upper left</source>
+        <translation type="vanished">upper left</translation>
+    </message>
+    <message>
         <source>lower left</source>
-        <translation>lower left</translation>
+        <translation type="vanished">lower left</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="90"/>
@@ -626,9 +683,8 @@
         <translation>top</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="92"/>
         <source>upper right</source>
-        <translation>upper right</translation>
+        <translation type="vanished">upper right</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="93"/>
@@ -636,44 +692,36 @@
         <translation>dot</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="94"/>
         <source>lower right</source>
-        <translation>lower right</translation>
+        <translation type="vanished">lower right</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="95"/>
         <source>middle right</source>
-        <translation>middle right</translation>
+        <translation type="vanished">middle right</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="96"/>
         <source>middle upper left</source>
-        <translation>middle upper left</translation>
+        <translation type="vanished">middle upper left</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="97"/>
         <source>middle top</source>
-        <translation>middle top</translation>
+        <translation type="vanished">middle top</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="98"/>
         <source>middle upper right</source>
-        <translation>middle upper right</translation>
+        <translation type="vanished">middle upper right</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="99"/>
         <source>middle lower right</source>
-        <translation>middle lower right</translation>
+        <translation type="vanished">middle lower right</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="100"/>
         <source>middle bottom</source>
-        <translation>middle bottom</translation>
+        <translation type="vanished">middle bottom</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="101"/>
         <source>middle lower left</source>
-        <translation>middle lower left</translation>
+        <translation type="vanished">middle lower left</translation>
     </message>
 </context>
 <context>
@@ -690,43 +738,111 @@
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="93"/>
-        <source>middle left</source>
-        <translation>middle left</translation>
+        <source>middle left horizontal</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="94"/>
-        <source>upper left</source>
-        <translation>upper left</translation>
+        <source>upper left vertical</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="95"/>
-        <source>lower left</source>
-        <translation>lower left</translation>
+        <location filename="../../element/display_16.cpp" line="109"/>
+        <source>lower left vertical</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="96"/>
-        <source>bottom left</source>
-        <translation>bottom left</translation>
+        <source>bottom left horizontal</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="97"/>
-        <source>bottom right</source>
-        <translation>bottom right</translation>
+        <source>bottom right horizontal</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="98"/>
-        <source>top left</source>
-        <translation>top left</translation>
+        <source>top left horizontal</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="99"/>
-        <source>top right</source>
-        <translation>top right</translation>
+        <source>top right horizontal</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="100"/>
+        <source>upper right vertical</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="102"/>
+        <source>lower right vertical</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="103"/>
+        <source>middle right horizontal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="104"/>
+        <source>upper left diagonal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="105"/>
+        <source>upper center vertical</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="106"/>
+        <source>upper right diagonal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="107"/>
+        <source>lower right diagonal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="108"/>
+        <source>lower center vertical</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>middle left</source>
+        <translation type="vanished">middle left</translation>
+    </message>
+    <message>
+        <source>upper left</source>
+        <translation type="vanished">upper left</translation>
+    </message>
+    <message>
+        <source>lower left</source>
+        <translation type="vanished">lower left</translation>
+    </message>
+    <message>
+        <source>bottom left</source>
+        <translation type="vanished">bottom left</translation>
+    </message>
+    <message>
+        <source>bottom right</source>
+        <translation type="vanished">bottom right</translation>
+    </message>
+    <message>
+        <source>top left</source>
+        <translation type="vanished">top left</translation>
+    </message>
+    <message>
+        <source>top right</source>
+        <translation type="vanished">top right</translation>
+    </message>
+    <message>
         <source>upper right</source>
-        <translation>upper right</translation>
+        <translation type="vanished">upper right</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="101"/>
@@ -734,44 +850,36 @@
         <translation>dot</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="102"/>
         <source>lower right</source>
-        <translation>lower right</translation>
+        <translation type="vanished">lower right</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="103"/>
         <source>middle right</source>
-        <translation>middle right</translation>
+        <translation type="vanished">middle right</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="104"/>
         <source>middle upper left</source>
-        <translation>middle upper left</translation>
+        <translation type="vanished">middle upper left</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="105"/>
         <source>middle top</source>
-        <translation>middle top</translation>
+        <translation type="vanished">middle top</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="106"/>
         <source>middle upper right</source>
-        <translation>middle upper right</translation>
+        <translation type="vanished">middle upper right</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="107"/>
         <source>middle lower right</source>
-        <translation>middle lower right</translation>
+        <translation type="vanished">middle lower right</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="108"/>
         <source>middle bottom</source>
-        <translation>middle bottom</translation>
+        <translation type="vanished">middle bottom</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="109"/>
         <source>middle lower left</source>
-        <translation>middle lower left</translation>
+        <translation type="vanished">middle lower left</translation>
     </message>
 </context>
 <context>
@@ -1840,11 +1948,10 @@
         <translation>Don&apos;t show this again.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="329"/>
         <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 wiRedPanda </source>
-        <translation>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
+        <translation type="vanished">wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 wiRedPanda </translation>
     </message>
@@ -1903,6 +2010,14 @@ Do you want to save your changes?</translation>
         <location filename="../../mainwindow.cpp" line="494"/>
         <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves e Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves e Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="329"/>
+        <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
+To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
+wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
+You have to save new projects before accessing ICs and skins, or running beWavedDolphin simulations.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="514"/>
