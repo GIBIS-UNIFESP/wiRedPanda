@@ -33,7 +33,7 @@ jobs:
           git config user.email "actions@github.com"
 
           if ! git diff --quiet; then
-            git add app/resources/translations/*.ts
+            git add app/resources/translations/*
             git commit -m "Update translation files via lupdate"
             git fetch origin ${{ github.head_ref }}
             git rebase origin/${{ github.head_ref }}
