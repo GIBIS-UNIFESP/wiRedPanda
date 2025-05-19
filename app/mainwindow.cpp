@@ -330,10 +330,10 @@ void MainWindow::aboutThisVersion()
            "To open old version projects containing ICs (or boxes), skins, and/or "
            "beWavedDolphin simulations, their files must be moved to the same directory "
            "as the main project file.\n"
-           "wiRedPanda " APP_VERSION " will automatically list all other .panda files located "
+           "wiRedPanda %1 will automatically list all other .panda files located "
            "in the same directory of the current project as ICs in the editor tab.\n"
            "You have to save new projects before accessing ICs and skins, or running "
-           "beWavedDolphin simulations."));
+           "beWavedDolphin simulations.").arg(APP_VERSION));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Ok);
     msgBox.setCheckBox(checkBox);
