@@ -1220,7 +1220,7 @@ QTabWidget::pane {
     <iconset theme="media-playlist-repeat"/>
    </property>
    <property name="text">
-    <string>Background Simluation</string>
+    <string>Background Simulation</string>
    </property>
   </action>
   <action name="actionSpanish">

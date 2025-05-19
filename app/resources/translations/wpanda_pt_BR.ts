@@ -1805,7 +1805,7 @@ Você quer salvar suas alterações?</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1223"/>
-        <source>Background Simluation</source>
+        <source>Background Simulation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
