@@ -84,21 +84,21 @@ void Display14::refresh()
 
 void Display14::updatePortsProperties()
 {
-    inputPort( 0)->setPos( 0,  -8);    inputPort(0)->setName("G1 (" + tr("middle left")        + ")");
-    inputPort( 1)->setPos( 0,   8);    inputPort(1)->setName("F (" +  tr("upper left")         + ")");
-    inputPort( 2)->setPos( 0,  24);    inputPort(2)->setName("E (" +  tr("lower left")         + ")");
-    inputPort( 3)->setPos( 0,  40);    inputPort(3)->setName("D (" +  tr("bottom")             + ")");
-    inputPort( 4)->setPos(64,  -8);    inputPort(4)->setName("A (" +  tr("top")                + ")");
-    inputPort( 5)->setPos(64,   8);    inputPort(5)->setName("B (" +  tr("upper right")        + ")");
-    inputPort( 6)->setPos(64,  24);    inputPort(6)->setName("DP (" + tr("dot")                + ")");
-    inputPort( 7)->setPos(64,  40);    inputPort(7)->setName("C (" +  tr("lower right")        + ")");
-    inputPort( 8)->setPos( 0,  56);    inputPort(8)->setName("G2 (" + tr("middle right")       + ")");
-    inputPort( 9)->setPos( 0,  72);    inputPort(9)->setName("H (" +  tr("middle upper left")  + ")");
-    inputPort(10)->setPos( 0,  88);    inputPort(10)->setName("J (" + tr("middle top")         + ")");
-    inputPort(11)->setPos(64,  56);    inputPort(11)->setName("K (" + tr("middle upper right") + ")");
-    inputPort(12)->setPos(64,  72);    inputPort(12)->setName("L (" + tr("middle lower right") + ")");
-    inputPort(13)->setPos(64,  88);    inputPort(13)->setName("M (" + tr("middle bottom")      + ")");
-    inputPort(14)->setPos(64, 104);    inputPort(14)->setName("N (" + tr("middle lower left")  + ")");
+    inputPort( 0)->setPos( 0,  -8);    inputPort(0)->setName("G1 (" + tr("middle left horizontal")  + ")");
+    inputPort( 1)->setPos( 0,   8);    inputPort(1)->setName("F (" +  tr("upper left vertical")     + ")");
+    inputPort( 2)->setPos( 0,  24);    inputPort(2)->setName("E (" +  tr("lower left vertical")     + ")");
+    inputPort( 3)->setPos( 0,  40);    inputPort(3)->setName("D (" +  tr("bottom")                  + ")");
+    inputPort( 4)->setPos(64,  -8);    inputPort(4)->setName("A (" +  tr("top")                     + ")");
+    inputPort( 5)->setPos(64,   8);    inputPort(5)->setName("B (" +  tr("upper right vertical")    + ")");
+    inputPort( 6)->setPos(64,  24);    inputPort(6)->setName("DP (" + tr("dot")                     + ")");
+    inputPort( 7)->setPos(64,  40);    inputPort(7)->setName("C (" +  tr("lower right vertical")    + ")");
+    inputPort( 8)->setPos( 0,  56);    inputPort(8)->setName("G2 (" + tr("middle right horizontal") + ")");
+    inputPort( 9)->setPos( 0,  72);    inputPort(9)->setName("H (" +  tr("upper left diagonal")     + ")");
+    inputPort(10)->setPos( 0,  88);    inputPort(10)->setName("J (" + tr("upper center vertical")   + ")");
+    inputPort(11)->setPos(64,  56);    inputPort(11)->setName("K (" + tr("upper right diagonal")    + ")");
+    inputPort(12)->setPos(64,  72);    inputPort(12)->setName("L (" + tr("lower right diagonal")    + ")");
+    inputPort(13)->setPos(64,  88);    inputPort(13)->setName("M (" + tr("lower center vertical")   + ")");
+    inputPort(14)->setPos(64, 104);    inputPort(14)->setName("N (" + tr("lower left diagonals")    + ")");
 
     for (auto *port : std::as_const(m_inputPorts)) {
         port->setRequired(false);
