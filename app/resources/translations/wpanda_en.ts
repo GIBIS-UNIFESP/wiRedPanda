@@ -657,20 +657,8 @@
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="101"/>
-        <source>lower left diagonals</source>
+        <source>lower left diagonal</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>middle left</source>
-        <translation type="vanished">middle left</translation>
-    </message>
-    <message>
-        <source>upper left</source>
-        <translation type="vanished">upper left</translation>
-    </message>
-    <message>
-        <source>lower left</source>
-        <translation type="vanished">lower left</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="90"/>
@@ -683,45 +671,9 @@
         <translation>top</translation>
     </message>
     <message>
-        <source>upper right</source>
-        <translation type="vanished">upper right</translation>
-    </message>
-    <message>
         <location filename="../../element/display_14.cpp" line="93"/>
         <source>dot</source>
         <translation>dot</translation>
-    </message>
-    <message>
-        <source>lower right</source>
-        <translation type="vanished">lower right</translation>
-    </message>
-    <message>
-        <source>middle right</source>
-        <translation type="vanished">middle right</translation>
-    </message>
-    <message>
-        <source>middle upper left</source>
-        <translation type="vanished">middle upper left</translation>
-    </message>
-    <message>
-        <source>middle top</source>
-        <translation type="vanished">middle top</translation>
-    </message>
-    <message>
-        <source>middle upper right</source>
-        <translation type="vanished">middle upper right</translation>
-    </message>
-    <message>
-        <source>middle lower right</source>
-        <translation type="vanished">middle lower right</translation>
-    </message>
-    <message>
-        <source>middle bottom</source>
-        <translation type="vanished">middle bottom</translation>
-    </message>
-    <message>
-        <source>middle lower left</source>
-        <translation type="vanished">middle lower left</translation>
     </message>
 </context>
 <context>
@@ -813,73 +765,9 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>middle left</source>
-        <translation type="vanished">middle left</translation>
-    </message>
-    <message>
-        <source>upper left</source>
-        <translation type="vanished">upper left</translation>
-    </message>
-    <message>
-        <source>lower left</source>
-        <translation type="vanished">lower left</translation>
-    </message>
-    <message>
-        <source>bottom left</source>
-        <translation type="vanished">bottom left</translation>
-    </message>
-    <message>
-        <source>bottom right</source>
-        <translation type="vanished">bottom right</translation>
-    </message>
-    <message>
-        <source>top left</source>
-        <translation type="vanished">top left</translation>
-    </message>
-    <message>
-        <source>top right</source>
-        <translation type="vanished">top right</translation>
-    </message>
-    <message>
-        <source>upper right</source>
-        <translation type="vanished">upper right</translation>
-    </message>
-    <message>
         <location filename="../../element/display_16.cpp" line="101"/>
         <source>dot</source>
         <translation>dot</translation>
-    </message>
-    <message>
-        <source>lower right</source>
-        <translation type="vanished">lower right</translation>
-    </message>
-    <message>
-        <source>middle right</source>
-        <translation type="vanished">middle right</translation>
-    </message>
-    <message>
-        <source>middle upper left</source>
-        <translation type="vanished">middle upper left</translation>
-    </message>
-    <message>
-        <source>middle top</source>
-        <translation type="vanished">middle top</translation>
-    </message>
-    <message>
-        <source>middle upper right</source>
-        <translation type="vanished">middle upper right</translation>
-    </message>
-    <message>
-        <source>middle lower right</source>
-        <translation type="vanished">middle lower right</translation>
-    </message>
-    <message>
-        <source>middle bottom</source>
-        <translation type="vanished">middle bottom</translation>
-    </message>
-    <message>
-        <source>middle lower left</source>
-        <translation type="vanished">middle lower left</translation>
     </message>
 </context>
 <context>
@@ -1946,14 +1834,6 @@
         <location filename="../../mainwindow.cpp" line="321"/>
         <source>Don&apos;t show this again.</source>
         <translation>Don&apos;t show this again.</translation>
-    </message>
-    <message>
-        <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
-To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
-wiRedPanda </source>
-        <translation type="vanished">wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
-To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
-wiRedPanda </translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="361"/>
