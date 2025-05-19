@@ -28,13 +28,14 @@ jobs:
           lrelease WPanda.pro
 
       - name: Commit and push if translation files changed
+        if: github.event.pull_request.head.repo.full_name == github.repository
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
 
           if ! git diff --quiet; then
             git add app/resources/translations/*
-            git commit -m "Update translation files via lupdate"
+            git commit -m "Update translation files via lupdate/lrelease"
             git fetch origin ${{ github.head_ref }}
             git rebase origin/${{ github.head_ref }}
             git push origin HEAD:${{ github.head_ref }}
