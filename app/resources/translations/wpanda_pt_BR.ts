@@ -6,7 +6,7 @@
     <message>
         <location filename="../../commands.cpp" line="220"/>
         <source>Add %1 elements</source>
-        <translation>Adicionar %1 elementos</translation>
+        <translation type="unfinished">Adicionar %1 elementos</translation>
     </message>
 </context>
 <context>
@@ -201,12 +201,12 @@
         <location filename="../../bewaveddolphin.ui" line="449"/>
         <location filename="../../bewaveddolphin.ui" line="452"/>
         <source>AutoCrop</source>
-        <translation type="unfinished"></translation>
+        <translation>Corte Automático</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="455"/>
         <source>Ctrl+A</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ctrl+A</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="273"/>
@@ -685,12 +685,12 @@
     <message>
         <location filename="../../element/display_16.cpp" line="13"/>
         <source>16-SEGMENT DISPLAY</source>
-        <translation type="unfinished"></translation>
+        <translation>DISPLAY DE 16 SEGMENTOS</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="13"/>
         <source>16-Segment Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Display de 16 segmentos</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="93"/>
@@ -710,27 +710,27 @@
     <message>
         <location filename="../../element/display_16.cpp" line="96"/>
         <source>bottom left</source>
-        <translation type="unfinished"></translation>
+        <translation>inferior esquerdo</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="97"/>
         <source>bottom right</source>
-        <translation type="unfinished"></translation>
+        <translation>inferior direito</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="98"/>
         <source>top left</source>
-        <translation type="unfinished"></translation>
+        <translation>superior esquerdo</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="99"/>
         <source>top right</source>
-        <translation type="unfinished"></translation>
+        <translation>superior direito</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="100"/>
         <source>upper right</source>
-        <translation type="unfinished"></translation>
+        <translation>superior direito</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="101"/>
@@ -886,7 +886,7 @@
     <message>
         <location filename="../../elementeditor.cpp" line="321"/>
         <source>Images</source>
-        <translation type="unfinished"></translation>
+        <translation>Imagens</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="366"/>
@@ -1091,7 +1091,7 @@
     <message>
         <location filename="../../elementeditor.ui" line="308"/>
         <source>Delay:</source>
-        <translation type="unfinished"></translation>
+        <translation>Atraso:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="267"/>
@@ -1142,7 +1142,7 @@
     <message>
         <location filename="../../elementfactory.cpp" line="84"/>
         <source>Unknown type 1: </source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo desconhecido 1: </translation>
     </message>
     <message>
         <location filename="../../elementfactory.cpp" line="91"/>
@@ -1152,7 +1152,7 @@
     <message>
         <location filename="../../elementfactory.cpp" line="99"/>
         <source>Unknown type 2: </source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo desconhecido 2: </translation>
     </message>
     <message>
         <location filename="../../elementfactory.cpp" line="181"/>
@@ -1177,22 +1177,22 @@
     <message>
         <location filename="../../graphicelement.cpp" line="100"/>
         <source>File does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivo não existe</translation>
     </message>
     <message>
         <location filename="../../graphicelement.cpp" line="102"/>
         <source>File is not readable</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivo não é legível</translation>
     </message>
     <message>
         <location filename="../../graphicelement.cpp" line="103"/>
         <source>Unknown reason</source>
-        <translation type="unfinished"></translation>
+        <translation>Motivo desconhecido</translation>
     </message>
     <message>
         <location filename="../../graphicelement.cpp" line="107"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível carregar o pixmap: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../graphicelement.cpp" line="440"/>
@@ -1806,7 +1806,7 @@ Você quer salvar suas alterações?</translation>
     <message>
         <location filename="../../mainwindow.ui" line="1223"/>
         <source>Background Simluation</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulação em Segundo Plano</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1232"/>
