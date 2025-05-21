@@ -446,6 +446,10 @@ void MainWindow::on_actionOpen_triggered()
 
 void MainWindow::on_actionSave_triggered()
 {
+    if (!m_currentTab) {
+        return;
+    }
+
     // TODO: if current file is autosave ask for filename
 
     QString fileName = m_currentFile.absoluteFilePath();
@@ -467,6 +471,10 @@ void MainWindow::on_actionSave_triggered()
 
 void MainWindow::on_actionSaveAs_triggered()
 {
+    if (!m_currentTab) {
+        return;
+    }
+
     QString path;
 
     if (!m_currentFile.fileName().isEmpty()) {
