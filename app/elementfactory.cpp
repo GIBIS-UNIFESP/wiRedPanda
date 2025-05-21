@@ -135,6 +135,11 @@ void ElementFactory::updateItemId(ItemWithId *item, const int newId)
     item->setId(newId);
 }
 
+void ElementFactory::clearCache()
+{
+    instance().m_propertyCache.clear();
+}
+
 int ElementFactory::nextId()
 {
     return ++m_lastId;

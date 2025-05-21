@@ -57,6 +57,7 @@ public:
     static const ElementStaticProperties& getStaticProperties(ElementType type);
     static std::shared_ptr<LogicElement> buildLogicElement(GraphicElement *elm);
     static void addItem(ItemWithId *item);
+    static void clearCache();
     static void removeItem(ItemWithId *item);
     static void updateItemId(ItemWithId *item, const int newId);
 

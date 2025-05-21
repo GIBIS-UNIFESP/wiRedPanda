@@ -1131,6 +1131,7 @@ void MainWindow::on_actionExportToImage_triggered()
 
 void MainWindow::retranslateUi()
 {
+    ElementFactory::clearCache();
     m_ui->retranslateUi(this);
     m_ui->elementEditor->retranslateUi();
 
