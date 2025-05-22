@@ -475,13 +475,7 @@ void MainWindow::on_actionSaveAs_triggered()
         return;
     }
 
-    QString path;
-
-    if (!m_currentFile.fileName().isEmpty()) {
-        path = m_currentFile.absoluteFilePath();
-    }
-
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File as ..."), path, tr("Panda files (*.panda)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File as ..."), m_currentFile.absoluteFilePath(), tr("Panda files (*.panda)"));
 
     if (fileName.isEmpty()) {
         return;
