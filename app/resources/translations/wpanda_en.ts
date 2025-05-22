@@ -1200,13 +1200,13 @@
         <translation>INTEGRATED CIRCUIT</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="93"/>
-        <location filename="../../ic.cpp" line="407"/>
+        <location filename="../../ic.cpp" line="91"/>
+        <location filename="../../ic.cpp" line="404"/>
         <source>Error copying file: </source>
         <translation>Error copying file: </translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="144"/>
+        <location filename="../../ic.cpp" line="142"/>
         <source> not found.</source>
         <translation> not found.</translation>
     </message>
@@ -1762,7 +1762,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1181"/>
-        <location filename="../../mainwindow.cpp" line="1372"/>
+        <location filename="../../mainwindow.cpp" line="1376"/>
         <source>Mute</source>
         <translation>Mute</translation>
     </message>
@@ -1808,7 +1808,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1240"/>
-        <location filename="../../mainwindow.cpp" line="513"/>
+        <location filename="../../mainwindow.cpp" line="517"/>
         <source>Shortcuts and Tips</source>
         <translation>Shortcuts and Tips</translation>
     </message>
@@ -1820,8 +1820,8 @@
     <message>
         <location filename="../../mainwindow.cpp" line="256"/>
         <location filename="../../mainwindow.cpp" line="378"/>
-        <location filename="../../mainwindow.cpp" line="630"/>
-        <location filename="../../mainwindow.cpp" line="1149"/>
+        <location filename="../../mainwindow.cpp" line="634"/>
+        <location filename="../../mainwindow.cpp" line="1153"/>
         <source>New Project</source>
         <translation>New Project</translation>
     </message>
@@ -1854,40 +1854,40 @@ Do you want to save your changes?</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="437"/>
-        <location filename="../../mainwindow.cpp" line="1415"/>
+        <location filename="../../mainwindow.cpp" line="1419"/>
         <source>Open File</source>
         <translation>Open File</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="437"/>
-        <location filename="../../mainwindow.cpp" line="454"/>
-        <location filename="../../mainwindow.cpp" line="476"/>
+        <location filename="../../mainwindow.cpp" line="458"/>
+        <location filename="../../mainwindow.cpp" line="478"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda files (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="454"/>
-        <location filename="../../mainwindow.cpp" line="476"/>
+        <location filename="../../mainwindow.cpp" line="458"/>
+        <location filename="../../mainwindow.cpp" line="478"/>
         <source>Save File as ...</source>
         <translation>Save File as ...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="561"/>
+        <location filename="../../mainwindow.cpp" line="565"/>
         <source>Exit </source>
         <translation>Exit </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="562"/>
+        <location filename="../../mainwindow.cpp" line="566"/>
         <source>Are you sure?</source>
         <translation>Are you sure?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="711"/>
+        <location filename="../../mainwindow.cpp" line="715"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="494"/>
+        <location filename="../../mainwindow.cpp" line="498"/>
         <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves e Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves e Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
@@ -1900,110 +1900,110 @@ You have to save new projects before accessing ICs and skins, or running beWaved
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="514"/>
+        <location filename="../../mainwindow.cpp" line="518"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="908"/>
-        <location filename="../../mainwindow.cpp" line="935"/>
+        <location filename="../../mainwindow.cpp" line="912"/>
+        <location filename="../../mainwindow.cpp" line="939"/>
         <source>Missing file name.</source>
         <translation>Missing file name.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="914"/>
+        <location filename="../../mainwindow.cpp" line="918"/>
         <source>The .panda file is empty.</source>
         <translation>The .panda file is empty.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="927"/>
+        <location filename="../../mainwindow.cpp" line="931"/>
         <source>Arduino code successfully generated.</source>
         <translation>Arduino code successfully generated.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="962"/>
+        <location filename="../../mainwindow.cpp" line="966"/>
         <source>Generate Arduino Code</source>
         <translation>Generate Arduino Code</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="962"/>
+        <location filename="../../mainwindow.cpp" line="966"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arduino file (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1064"/>
+        <location filename="../../mainwindow.cpp" line="1068"/>
         <source>Export to PDF</source>
         <translation>Export to PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1064"/>
+        <location filename="../../mainwindow.cpp" line="1068"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF files (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1082"/>
+        <location filename="../../mainwindow.cpp" line="1086"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Could not print this circuit to PDF.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1089"/>
-        <location filename="../../mainwindow.cpp" line="1127"/>
+        <location filename="../../mainwindow.cpp" line="1093"/>
+        <location filename="../../mainwindow.cpp" line="1131"/>
         <source>Exported file successfully.</source>
         <translation>Exported file successfully.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1108"/>
+        <location filename="../../mainwindow.cpp" line="1112"/>
         <source>Export to Image</source>
         <translation>Export to Image</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1108"/>
+        <location filename="../../mainwindow.cpp" line="1112"/>
         <source>PNG files (*.png)</source>
         <translation>PNG files (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1204"/>
+        <location filename="../../mainwindow.cpp" line="1208"/>
         <source>Error loading wiRedPanda translation!</source>
         <translation>Error loading wiRedPanda translation!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1212"/>
+        <location filename="../../mainwindow.cpp" line="1216"/>
         <source>Error loading Qt translation!</source>
         <translation>Error loading Qt translation!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1372"/>
+        <location filename="../../mainwindow.cpp" line="1376"/>
         <source>Unmute</source>
         <translation>Unmute</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1411"/>
+        <location filename="../../mainwindow.cpp" line="1415"/>
         <source>Save file first.</source>
         <translation>Save file first.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1417"/>
+        <location filename="../../mainwindow.cpp" line="1421"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1429"/>
-        <location filename="../../mainwindow.cpp" line="1440"/>
+        <location filename="../../mainwindow.cpp" line="1433"/>
+        <location filename="../../mainwindow.cpp" line="1445"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1429"/>
+        <location filename="../../mainwindow.cpp" line="1433"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>Selected files (and their dependencies) will be copied to current file folder.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1440"/>
+        <location filename="../../mainwindow.cpp" line="1445"/>
         <source>Drag here to remove.</source>
         <translation>Drag here to remove.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1463"/>
+        <location filename="../../mainwindow.cpp" line="1468"/>
         <source>Error removing file: </source>
         <translation>Error removing file: </translation>
     </message>
@@ -2125,8 +2125,8 @@ You have to save new projects before accessing ICs and skins, or running beWaved
         <translation>One or more elements were not found on scene. Expected %1, found %2.</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="156"/>
-        <location filename="../../ic.cpp" line="413"/>
+        <location filename="../../ic.cpp" line="154"/>
+        <location filename="../../ic.cpp" line="410"/>
         <source>Error opening file: </source>
         <translation>Error opening file: </translation>
     </message>
