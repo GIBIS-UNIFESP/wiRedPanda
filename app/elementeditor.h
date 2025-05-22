@@ -15,6 +15,15 @@ namespace Ui
 class ElementEditor;
 }
 
+/*!
+ * @class ElementEditor
+ * @brief Widget for editing the element properties of a circuit
+ *
+ * The ElementEditor class provides a user interface for editing properties
+ * of circuit elements. It dynamically adapts to show appropriate controls
+ * based on the selected element types, handling both single and multiple
+ * element selections.
+ */
 class ElementEditor : public QWidget
 {
     Q_OBJECT

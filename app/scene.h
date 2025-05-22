@@ -16,6 +16,16 @@ class GraphicElement;
 class GraphicsView;
 class QNEConnection;
 
+/*!
+ * @class Scene
+ * @brief Main circuit editing scene
+ *
+ * The Scene class extends QGraphicsScene to provide the main circuit editing
+ * environment. It manages circuit elements and their connections, handles user
+ * interactions like selection, copying, pasting and rotation. Scene also implements
+ * undo/redo functionality and handles various user interface events like drag-and-drop,
+ * keyboard shortcuts, and mouse operations.
+ */
 class Scene : public QGraphicsScene
 {
     Q_OBJECT

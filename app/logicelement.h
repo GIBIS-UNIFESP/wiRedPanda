@@ -13,7 +13,10 @@ struct InputPair
     int port = 0;
 };
 
-//! Represent logic elements in the simulation layer
+/*!
+ * @class LogicElement
+ * @brief Represent logic elements in the simulation layer
+ */
 class LogicElement
 {
 public:
