@@ -6,8 +6,9 @@
 #include <QFileSystemWatcher>
 #include <QObject>
 
-/**
- * Class to hold the list of recent open files
+/*!
+ * @class RecentFiles
+ * @brief Class to hold the list of recent open files
  */
 class RecentFiles : public QObject
 {

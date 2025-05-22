@@ -13,6 +13,15 @@
 class GraphicsView;
 class Simulation;
 
+/*!
+ * @class WorkSpace
+ * @brief A widget containing a complete circuit editing environment
+ *
+ * WorkSpace serves as a container for all components needed for circuit editing,
+ * including the GraphicsView for visualization and interaction, Scene for element
+ * management, and Simulation for circuit simulation. It also handles file operations
+ * like loading, saving, and autosaving.
+ */
 class WorkSpace : public QWidget
 {
     Q_OBJECT

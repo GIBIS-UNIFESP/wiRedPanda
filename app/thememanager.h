@@ -11,6 +11,14 @@
 
 enum class Theme { Light, Dark };
 
+/*!
+ * \class ThemeAttributes
+ * \brief Contains all color attributes for a theme
+ *
+ * This class holds all the color-related attributes used throughout the
+ * application UI, including colors for the scene background, selection
+ * indicators, connections, ports, and other UI elements.
+ */
 class ThemeAttributes
 {
 public:
@@ -45,6 +53,14 @@ private:
     QPalette const m_defaultPalette = qApp->palette();
 };
 
+/*!
+ * @class ThemeManager
+ * @brief Singleton class for managing application themes
+ *
+ * ThemeManager provides a central point for accessing and changing the
+ * application theme. It maintains the current theme setting and notifies
+ * the application when the theme changes.
+ */
 class ThemeManager : public QObject
 {
     Q_OBJECT

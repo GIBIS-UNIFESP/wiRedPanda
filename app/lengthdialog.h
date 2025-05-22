@@ -10,6 +10,14 @@ namespace Ui
 class LengthDialog;
 }
 
+/*!
+ * @class LengthDialog
+ * @brief Dialog for setting a numeric length value
+ *
+ * The LengthDialog class provides a simple dialog with a numeric input
+ * for setting length values. It is used for configuring
+ * simulation length inside beWavedDolphin.
+ */
 class LengthDialog : public QDialog
 {
     Q_OBJECT

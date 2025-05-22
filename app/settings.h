@@ -5,6 +5,14 @@
 
 #include <QSettings>
 
+/*!
+ * @class Settings
+ * @brief Static utility class for managing the application settings
+ *
+ * The Settings class provides a static interface to the Qt settings system,
+ * allowing application settings to be stored and retrieved in a consistent
+ * manner. It also acts as a central point for accessing configuration values.
+ */
 class Settings
 {
 public:
