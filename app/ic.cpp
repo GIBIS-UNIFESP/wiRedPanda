@@ -82,15 +82,13 @@ void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVer
 
 void IC::copyFile()
 {
-    QFileInfo fileInfo;
-    fileInfo.setFile(GlobalProperties::currentDir, QFileInfo(m_file).fileName());
+    const QString srcPath = IC::srcPath_ + "/" + m_file;
+    const QString destPath = IC::destPath_ + "/" + m_file;
 
-    const QString srcFile = IC::path + "/" + m_file;
-    const QString destFile = GlobalProperties::currentDir + "/" + fileInfo.fileName();
-    QFile file;
+    QFile destFile;
 
-    if (!file.exists(destFile) && !file.copy(srcFile, destFile)) {
-        throw Pandaception(tr("Error copying file: ") + file.errorString());
+    if (!QFile::exists(destPath) && !destFile.copy(srcPath, destPath)) {
+        throw Pandaception(tr("Error copying file: ") + destFile.errorString());
     }
 }
 
@@ -396,31 +394,32 @@ void IC::refresh()
 {
 }
 
-void IC::copyFiles(const QFileInfo &srcFile)
+void IC::copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath)
 {
     IC::needToCopyFiles = true;
 
-    const QString destFile = GlobalProperties::currentDir + "/" + srcFile.fileName();
-    QFile file;
+    QFile destFile;
 
-    if (!file.exists(destFile) && !file.copy(srcFile.absoluteFilePath(), destFile)) {
-        throw Pandaception(tr("Error copying file: ") + file.errorString());
+    if (!QFile::exists(destPath.absoluteFilePath()) && !destFile.copy(srcPath.absoluteFilePath(), destPath.absoluteFilePath())) {
+        throw Pandaception(tr("Error copying file: ") + destFile.errorString());
     }
 
-    file.setFileName(destFile);
+    destFile.setFileName(destPath.absoluteFilePath());
 
-    if (!file.open(QIODevice::ReadOnly)) {
-        throw Pandaception(QObject::tr("Error opening file: ") + file.errorString());
+    if (!destFile.open(QIODevice::ReadOnly)) {
+        throw Pandaception(QObject::tr("Error opening file: ") + destFile.errorString());
     }
 
-    QDataStream stream(&file);
+    QDataStream stream(&destFile);
     QVersionNumber version = Serialization::readPandaHeader(stream);
     Serialization::loadDolphinFileName(stream, version);
     Serialization::loadRect(stream, version);
 
-    IC::path = srcFile.absolutePath();
+    IC::srcPath_ = srcPath.absolutePath();
+    IC::destPath_ = destPath.absolutePath();
     Serialization::deserialize(stream, {}, version);
 
     IC::needToCopyFiles = false;
-    IC::path.clear();
+    IC::srcPath_.clear();
+    IC::destPath_.clear();
 }

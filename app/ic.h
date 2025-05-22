@@ -20,7 +20,7 @@ public:
     ~IC() override;
     IC(const IC &other) : IC(other.parentItem()) {}
 
-    static void copyFiles(const QFileInfo &srcFile);
+    static void copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath);
 
     const QVector<std::shared_ptr<LogicElement>> generateMap();
     LogicElement *inputLogic(const int index);
@@ -38,7 +38,8 @@ private:
     static bool comparePorts(QNEPort *port1, QNEPort *port2);
     static void sortPorts(QVector<QNEPort *> &map);
 
-    inline static QString path;
+    inline static QString destPath_;
+    inline static QString srcPath_;
     inline static bool needToCopyFiles = false;
 
     void copyFile();

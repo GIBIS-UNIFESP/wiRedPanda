@@ -485,7 +485,9 @@ void MainWindow::on_actionSaveAs_triggered()
         fileName.append(".panda");
     }
 
-    save(fileName);
+    IC::copyFiles(QFileInfo(m_currentFile), QFileInfo(fileName));
+
+    loadPandaFile(fileName);
 }
 
 void MainWindow::on_actionAbout_triggered()
@@ -1431,7 +1433,8 @@ void MainWindow::on_pushButtonAddIC_clicked()
     QMessageBox::information(this, tr("Info"), tr("Selected files (and their dependencies) will be copied to current file folder."));
 
     for (const auto &file : files) {
-        IC::copyFiles(QFileInfo(file));
+        QFileInfo destPath(GlobalProperties::currentDir + "/" + QFileInfo(file).fileName());
+        IC::copyFiles(QFileInfo(file), destPath);
     }
 
     updateICList();
