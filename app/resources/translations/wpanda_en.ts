@@ -1077,36 +1077,36 @@
         <translation>White</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="62"/>
+        <location filename="../../elementeditor.h" line="71"/>
         <source>&lt;Many sounds&gt;</source>
         <translation>&lt;Many sounds&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="63"/>
+        <location filename="../../elementeditor.h" line="72"/>
         <source>&lt;Many colors&gt;</source>
         <translation>&lt;Many colors&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="64"/>
-        <location filename="../../elementeditor.h" line="65"/>
-        <location filename="../../elementeditor.h" line="66"/>
-        <location filename="../../elementeditor.h" line="68"/>
-        <location filename="../../elementeditor.h" line="69"/>
+        <location filename="../../elementeditor.h" line="73"/>
+        <location filename="../../elementeditor.h" line="74"/>
+        <location filename="../../elementeditor.h" line="75"/>
+        <location filename="../../elementeditor.h" line="77"/>
+        <location filename="../../elementeditor.h" line="78"/>
         <source>&lt;Many values&gt;</source>
         <translation>&lt;Many values&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="67"/>
+        <location filename="../../elementeditor.h" line="76"/>
         <source>&lt;Many labels&gt;</source>
         <translation>&lt;Many labels&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="70"/>
+        <location filename="../../elementeditor.h" line="79"/>
         <source>&lt;Many priorities&gt;</source>
         <translation>&lt;Many priorities&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="71"/>
+        <location filename="../../elementeditor.h" line="80"/>
         <source>&lt;Many triggers&gt;</source>
         <translation>&lt;Many triggers&gt;</translation>
     </message>
@@ -1139,7 +1139,7 @@
         <translation>Unknown type 2: </translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="181"/>
+        <location filename="../../elementfactory.cpp" line="186"/>
         <source>Not implemented yet: </source>
         <translation>Not implemented yet: </translation>
     </message>
@@ -1762,7 +1762,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1181"/>
-        <location filename="../../mainwindow.cpp" line="1371"/>
+        <location filename="../../mainwindow.cpp" line="1372"/>
         <source>Mute</source>
         <translation>Mute</translation>
     </message>
@@ -1821,7 +1821,7 @@
         <location filename="../../mainwindow.cpp" line="256"/>
         <location filename="../../mainwindow.cpp" line="378"/>
         <location filename="../../mainwindow.cpp" line="630"/>
-        <location filename="../../mainwindow.cpp" line="1148"/>
+        <location filename="../../mainwindow.cpp" line="1149"/>
         <source>New Project</source>
         <translation>New Project</translation>
     </message>
@@ -1854,7 +1854,7 @@ Do you want to save your changes?</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="437"/>
-        <location filename="../../mainwindow.cpp" line="1414"/>
+        <location filename="../../mainwindow.cpp" line="1415"/>
         <source>Open File</source>
         <translation>Open File</translation>
     </message>
@@ -1962,48 +1962,48 @@ You have to save new projects before accessing ICs and skins, or running beWaved
         <translation>PNG files (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1203"/>
+        <location filename="../../mainwindow.cpp" line="1204"/>
         <source>Error loading wiRedPanda translation!</source>
         <translation>Error loading wiRedPanda translation!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1211"/>
+        <location filename="../../mainwindow.cpp" line="1212"/>
         <source>Error loading Qt translation!</source>
         <translation>Error loading Qt translation!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1371"/>
+        <location filename="../../mainwindow.cpp" line="1372"/>
         <source>Unmute</source>
         <translation>Unmute</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1410"/>
+        <location filename="../../mainwindow.cpp" line="1411"/>
         <source>Save file first.</source>
         <translation>Save file first.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1416"/>
+        <location filename="../../mainwindow.cpp" line="1417"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1428"/>
-        <location filename="../../mainwindow.cpp" line="1439"/>
+        <location filename="../../mainwindow.cpp" line="1429"/>
+        <location filename="../../mainwindow.cpp" line="1440"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1428"/>
+        <location filename="../../mainwindow.cpp" line="1429"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>Selected files (and their dependencies) will be copied to current file folder.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1439"/>
+        <location filename="../../mainwindow.cpp" line="1440"/>
         <source>Drag here to remove.</source>
         <translation>Drag here to remove.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1462"/>
+        <location filename="../../mainwindow.cpp" line="1463"/>
         <source>Error removing file: </source>
         <translation>Error removing file: </translation>
     </message>
