@@ -911,31 +911,31 @@
         <translation>Cor:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="67"/>
+        <location filename="../../elementeditor.h" line="76"/>
         <source>&lt;Many labels&gt;</source>
         <translation>&lt;Vários rótulos&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="63"/>
+        <location filename="../../elementeditor.h" line="72"/>
         <source>&lt;Many colors&gt;</source>
         <translation>&lt;Várias cores&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="64"/>
-        <location filename="../../elementeditor.h" line="65"/>
-        <location filename="../../elementeditor.h" line="66"/>
-        <location filename="../../elementeditor.h" line="68"/>
-        <location filename="../../elementeditor.h" line="69"/>
+        <location filename="../../elementeditor.h" line="73"/>
+        <location filename="../../elementeditor.h" line="74"/>
+        <location filename="../../elementeditor.h" line="75"/>
+        <location filename="../../elementeditor.h" line="77"/>
+        <location filename="../../elementeditor.h" line="78"/>
         <source>&lt;Many values&gt;</source>
         <translation>&lt;Vários valores&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="70"/>
+        <location filename="../../elementeditor.h" line="79"/>
         <source>&lt;Many priorities&gt;</source>
         <translation>&lt;Várias prioridades&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="71"/>
+        <location filename="../../elementeditor.h" line="80"/>
         <source>&lt;Many triggers&gt;</source>
         <translation>&lt;Vários atalhos&gt;</translation>
     </message>
@@ -1091,7 +1091,7 @@
         <translation>Prioridade:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="62"/>
+        <location filename="../../elementeditor.h" line="71"/>
         <source>&lt;Many sounds&gt;</source>
         <translation>&lt;Muitos sons&gt;</translation>
     </message>
@@ -1139,7 +1139,7 @@
         <translation>Tipo desconhecido 2: </translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="181"/>
+        <location filename="../../elementfactory.cpp" line="186"/>
         <source>Not implemented yet: </source>
         <translation>Ainda não implementado: </translation>
     </message>
@@ -1482,7 +1482,7 @@ Você quer salvar suas alterações?</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="437"/>
-        <location filename="../../mainwindow.cpp" line="1414"/>
+        <location filename="../../mainwindow.cpp" line="1415"/>
         <source>Open File</source>
         <translation>Abrir arquivo</translation>
     </message>
@@ -1544,43 +1544,43 @@ Você quer salvar suas alterações?</translation>
         <translation>Não foi possível imprimir este circuito no PDF.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1203"/>
+        <location filename="../../mainwindow.cpp" line="1204"/>
         <source>Error loading wiRedPanda translation!</source>
         <translation>Erro ao carregar a tradução do wiRedPanda!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1211"/>
+        <location filename="../../mainwindow.cpp" line="1212"/>
         <source>Error loading Qt translation!</source>
         <translation>Erro ao carregar a tradução do Qt!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1410"/>
+        <location filename="../../mainwindow.cpp" line="1411"/>
         <source>Save file first.</source>
         <translation>Salve o arquivo primeiro.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1416"/>
+        <location filename="../../mainwindow.cpp" line="1417"/>
         <source>Panda (*.panda)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1428"/>
-        <location filename="../../mainwindow.cpp" line="1439"/>
+        <location filename="../../mainwindow.cpp" line="1429"/>
+        <location filename="../../mainwindow.cpp" line="1440"/>
         <source>Info</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1428"/>
+        <location filename="../../mainwindow.cpp" line="1429"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>Os arquivos selecionados (e suas dependências) serão copiados para a pasta de arquivos atual.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1439"/>
+        <location filename="../../mainwindow.cpp" line="1440"/>
         <source>Drag here to remove.</source>
         <translation>Arraste aqui para remover.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1462"/>
+        <location filename="../../mainwindow.cpp" line="1463"/>
         <source>Error removing file: </source>
         <translation>Erro removendo arquivo: </translation>
     </message>
@@ -1812,7 +1812,7 @@ Você quer salvar suas alterações?</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1181"/>
-        <location filename="../../mainwindow.cpp" line="1371"/>
+        <location filename="../../mainwindow.cpp" line="1372"/>
         <source>Mute</source>
         <translation>Silenciar</translation>
     </message>
@@ -1957,7 +1957,7 @@ Você quer salvar suas alterações?</translation>
         <translation>Ativa e desativa som das campanhias do cuicuito</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1371"/>
+        <location filename="../../mainwindow.cpp" line="1372"/>
         <source>Unmute</source>
         <translation>Ativar som</translation>
     </message>
@@ -1965,7 +1965,7 @@ Você quer salvar suas alterações?</translation>
         <location filename="../../mainwindow.cpp" line="256"/>
         <location filename="../../mainwindow.cpp" line="378"/>
         <location filename="../../mainwindow.cpp" line="630"/>
-        <location filename="../../mainwindow.cpp" line="1148"/>
+        <location filename="../../mainwindow.cpp" line="1149"/>
         <source>New Project</source>
         <translation>Projeto Novo</translation>
     </message>
