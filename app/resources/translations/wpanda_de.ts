@@ -206,12 +206,12 @@
         <location filename="../../bewaveddolphin.ui" line="284"/>
         <location filename="../../bewaveddolphin.ui" line="287"/>
         <source>Set clock frequency</source>
-        <translation>Taktfrequenz</translation>
+        <translation>Taktfrequenz festlegen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="290"/>
         <source>Alt+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+W</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="299"/>
