@@ -433,7 +433,7 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1301"/>
         <source>PDF files (*.pdf)</source>
-        <translation>PDF Dateien (*.pdf)</translation>
+        <translation>PDF-Dateien (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1320"/>
