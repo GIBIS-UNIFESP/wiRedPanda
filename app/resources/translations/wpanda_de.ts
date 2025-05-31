@@ -206,7 +206,7 @@
         <location filename="../../bewaveddolphin.ui" line="284"/>
         <location filename="../../bewaveddolphin.ui" line="287"/>
         <source>Set clock frequency</source>
-        <translation type="unfinished"></translation>
+        <translation>Taktfrequenz</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="290"/>
