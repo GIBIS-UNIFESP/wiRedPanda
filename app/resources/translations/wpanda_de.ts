@@ -43,7 +43,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="14"/>
         <source>MainWindow</source>
-        <translation>Hauptfenster</translation>
+        <translation>HauptFenster</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="48"/>
@@ -68,7 +68,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="130"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Ansicht</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="152"/>
