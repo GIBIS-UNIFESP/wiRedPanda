@@ -83,7 +83,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="164"/>
         <source>Load</source>
-        <translation>Last</translation>
+        <translation>Laden</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="167"/>
@@ -93,7 +93,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="176"/>
         <source>Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>Beenden</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="179"/>
@@ -108,18 +108,18 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="191"/>
         <source>Alt+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+C</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="200"/>
         <location filename="../../bewaveddolphin.cpp" line="1301"/>
         <source>Export to PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Als PDF exportieren</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="203"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+P</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="212"/>
@@ -129,7 +129,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="215"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+S</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="224"/>
@@ -139,12 +139,12 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="227"/>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+Umschalt+S</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="236"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopieren</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="239"/>
@@ -154,7 +154,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="248"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Einfügen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="251"/>
