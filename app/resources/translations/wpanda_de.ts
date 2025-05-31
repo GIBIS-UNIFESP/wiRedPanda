@@ -418,12 +418,12 @@
         <location filename="../../bewaveddolphin.cpp" line="1196"/>
         <location filename="../../bewaveddolphin.cpp" line="1224"/>
         <source>Invalid number of columns.</source>
-        <translation>Ungültige Anzahl von Spalten.</translation>
+        <translation>Ungültige Anzahl an Spalten.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1277"/>
         <source>Export to Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Als Bild exportieren</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1277"/>
