@@ -449,7 +449,7 @@
         <location filename="../../bewaveddolphin.cpp" line="146"/>
         <location filename="../../bewaveddolphin.cpp" line="1145"/>
         <source>File &quot;%1&quot; does not exist!</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei &quot;%1&quot; existiert nicht!</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="455"/>
