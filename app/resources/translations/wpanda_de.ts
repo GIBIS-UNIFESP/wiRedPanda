@@ -73,7 +73,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="152"/>
         <source>About</source>
-        <translation>Über uns</translation>
+        <translation>Über</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="155"/>
