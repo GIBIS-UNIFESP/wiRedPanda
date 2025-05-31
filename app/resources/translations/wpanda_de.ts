@@ -164,12 +164,12 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="260"/>
         <source>Set to 0</source>
-        <translation>Auf 0 setzen</translation>
+        <translation>Auf 0 festlegen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="263"/>
         <source>0</source>
-        <translation type="unfinished"></translation>
+        <translation>0</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="275"/>
@@ -185,7 +185,7 @@
         <location filename="../../bewaveddolphin.ui" line="387"/>
         <location filename="../../bewaveddolphin.ui" line="390"/>
         <source>Fit to screen</source>
-        <translation type="unfinished"></translation>
+        <translation>An Bildschirm anpassen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="434"/>
