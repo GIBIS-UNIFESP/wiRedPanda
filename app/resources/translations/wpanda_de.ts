@@ -251,7 +251,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="351"/>
         <source>About Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Über Qt</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="354"/>
@@ -372,7 +372,7 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="707"/>
         <source>No cells selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Zellen ausgewählt.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1034"/>
@@ -387,7 +387,7 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1119"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei öffnen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1121"/>
@@ -397,7 +397,7 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1137"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei erfolgreich geladen.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1152"/>
@@ -418,7 +418,7 @@
         <location filename="../../bewaveddolphin.cpp" line="1196"/>
         <location filename="../../bewaveddolphin.cpp" line="1224"/>
         <source>Invalid number of columns.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige Anzahl von Spalten.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1277"/>
