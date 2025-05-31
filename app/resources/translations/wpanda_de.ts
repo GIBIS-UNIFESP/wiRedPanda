@@ -6,7 +6,7 @@
     <message>
         <location filename="../../commands.cpp" line="219"/>
         <source>Add %1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Elemente hinzufügen</translation>
     </message>
 </context>
 <context>
@@ -14,12 +14,12 @@
     <message>
         <location filename="../../element/and.cpp" line="14"/>
         <source>And</source>
-        <translation type="unfinished"></translation>
+        <translation>Und</translation>
     </message>
     <message>
         <location filename="../../element/and.cpp" line="14"/>
         <source>AND</source>
-        <translation type="unfinished"></translation>
+        <translation>UND</translation>
     </message>
 </context>
 <context>
@@ -27,7 +27,7 @@
     <message>
         <location filename="../../application.cpp" line="17"/>
         <source>Error!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler!</translation>
     </message>
 </context>
 <context>
@@ -43,7 +43,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="14"/>
         <source>MainWindow</source>
-        <translation type="unfinished"></translation>
+        <translation>HauptFenster</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="48"/>
@@ -53,52 +53,52 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="92"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="105"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilfe</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="112"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="130"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Ansicht</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="152"/>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation>Über</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="155"/>
         <source>Ctrl+H</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+H</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="164"/>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Laden</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="167"/>
         <source>Ctrl+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+L</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="176"/>
         <source>Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>Beenden</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="179"/>
         <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+W</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="188"/>
@@ -108,73 +108,73 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="191"/>
         <source>Alt+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+C</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="200"/>
         <location filename="../../bewaveddolphin.cpp" line="1301"/>
         <source>Export to PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Als PDF exportieren</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="203"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+P</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="212"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichern</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="215"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+S</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="224"/>
         <source>Save As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichern als...</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="227"/>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+Umschalt+S</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="236"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopieren</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="239"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+C</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="248"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Einfügen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="251"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+V</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="260"/>
         <source>Set to 0</source>
-        <translation type="unfinished"></translation>
+        <translation>Auf 0 festlegen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="263"/>
         <source>0</source>
-        <translation type="unfinished"></translation>
+        <translation>0</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="275"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="302"/>
@@ -185,78 +185,78 @@
         <location filename="../../bewaveddolphin.ui" line="387"/>
         <location filename="../../bewaveddolphin.ui" line="390"/>
         <source>Fit to screen</source>
-        <translation type="unfinished"></translation>
+        <translation>An Bildschirm anpassen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="434"/>
         <source>Show Numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>Zahlen anzeigen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="439"/>
         <source>Show Waveforms</source>
-        <translation type="unfinished"></translation>
+        <translation>Wellenformen anzeigen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="272"/>
         <source>Set to 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Auf 1 festgelegt</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="284"/>
         <location filename="../../bewaveddolphin.ui" line="287"/>
         <source>Set clock frequency</source>
-        <translation type="unfinished"></translation>
+        <translation>Taktfrequenz festlegen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="290"/>
         <source>Alt+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+W</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="299"/>
         <source>Invert</source>
-        <translation type="unfinished"></translation>
+        <translation>Invertieren</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="310"/>
         <source>Merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Zusammenführen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="318"/>
         <source>Split</source>
-        <translation type="unfinished"></translation>
+        <translation>Aufteilen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="327"/>
         <source>Export to PNG</source>
-        <translation type="unfinished"></translation>
+        <translation>Als PNG exportieren</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="330"/>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+Umschalt+P</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="339"/>
         <source>Set Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Länge festlegen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="342"/>
         <source>Alt+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+L</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="351"/>
         <source>About Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Über Qt</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="354"/>
         <source>Ctrl+Shift+H</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+Umschalt+H</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="363"/>
@@ -266,7 +266,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="366"/>
         <source>Ctrl+=</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+=</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="375"/>
@@ -276,22 +276,22 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="378"/>
         <source>Ctrl+-</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+-</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="393"/>
         <source>Ctrl+Shift+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+Umschalt+R</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="402"/>
         <source>Reset Zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom zurücksetzen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="405"/>
         <source>Ctrl+Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+Pos1</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="414"/>
@@ -301,17 +301,17 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="417"/>
         <source>Alt+X</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+X</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="426"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausschneiden</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="429"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+X</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="68"/>
@@ -330,7 +330,7 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="468"/>
         <source>Save simulation before closing?</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulation vor dem Schließen speichern?</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1092"/>
@@ -340,23 +340,23 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="991"/>
         <source>Save File as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei speichern als...</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="994"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV-Dateien (*.csv);;Dolphin-Dateien (*.dolphin);;Alle unterstützten Dateien (*.dolphin *.csv)</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="995"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>Dolphin-Dateien (*.dolphin);;CSV-Dateien (*.csv);;Alle unterstützten Dateien (*.dolphin *.csv)</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="982"/>
         <location filename="../../bewaveddolphin.cpp" line="1025"/>
         <source>Saved file successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei erfolgreich gespeichert.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="224"/>
@@ -372,7 +372,7 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="707"/>
         <source>No cells selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Zellen ausgewählt.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1034"/>
@@ -387,17 +387,17 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1119"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei öffnen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1121"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle unterstützten Dateien (*.dolphin *.csv);;Dolphin-Dateien (*.dolphin);;CSV-Dateien (*.csv)</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1137"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei erfolgreich geladen.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1152"/>
@@ -418,22 +418,22 @@
         <location filename="../../bewaveddolphin.cpp" line="1196"/>
         <location filename="../../bewaveddolphin.cpp" line="1224"/>
         <source>Invalid number of columns.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige Anzahl an Spalten.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1277"/>
         <source>Export to Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Als Bild exportieren</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1277"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished"></translation>
+        <translation>PNG-Dateien (*.png)</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1301"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF-Dateien (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1320"/>
@@ -449,7 +449,12 @@
         <location filename="../../bewaveddolphin.cpp" line="146"/>
         <location filename="../../bewaveddolphin.cpp" line="1145"/>
         <source>File &quot;%1&quot; does not exist!</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei &quot;%1&quot; existiert nicht!</translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.ui" line="455"/>
+        <source>Ctrl+A</source>
+        <translation>Strg+A</translation>
     </message>
 </context>
 <context>
