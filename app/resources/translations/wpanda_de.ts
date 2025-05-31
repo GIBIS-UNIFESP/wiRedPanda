@@ -195,12 +195,12 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="439"/>
         <source>Show Waveforms</source>
-        <translation>Waveforms anzeigen</translation>
+        <translation>Wellenformen anzeigen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="272"/>
         <source>Set to 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Auf 1 festgelegt</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="284"/>
@@ -450,6 +450,11 @@
         <location filename="../../bewaveddolphin.cpp" line="1145"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.ui" line="455"/>
+        <source>Ctrl+A</source>
+        <translation>Strg+A</translation>
     </message>
 </context>
 <context>
