@@ -216,7 +216,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="299"/>
         <source>Invert</source>
-        <translation type="unfinished"></translation>
+        <translation>Invert</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="310"/>
