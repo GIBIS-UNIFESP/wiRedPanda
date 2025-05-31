@@ -88,7 +88,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="167"/>
         <source>Ctrl+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+L</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="176"/>
@@ -98,7 +98,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="179"/>
         <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+W</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="188"/>
@@ -124,7 +124,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="212"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichern</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="215"/>
@@ -134,7 +134,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="224"/>
         <source>Save As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichern als...</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="227"/>
@@ -149,7 +149,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="239"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+C</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="248"/>
@@ -159,12 +159,12 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="251"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+V</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="260"/>
         <source>Set to 0</source>
-        <translation type="unfinished"></translation>
+        <translation>Auf 0 setzen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="263"/>
