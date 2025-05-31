@@ -216,37 +216,37 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="299"/>
         <source>Invert</source>
-        <translation>Invert</translation>
+        <translation>Invertieren</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="310"/>
         <source>Merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Zusammenführen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="318"/>
         <source>Split</source>
-        <translation type="unfinished"></translation>
+        <translation>Aufteilen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="327"/>
         <source>Export to PNG</source>
-        <translation type="unfinished"></translation>
+        <translation>Als PNG exportieren</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="330"/>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+Umschalt+P</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="339"/>
         <source>Set Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Länge festlegen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="342"/>
         <source>Alt+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+L</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="351"/>
@@ -256,7 +256,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="354"/>
         <source>Ctrl+Shift+H</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+Umschalt+H</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="363"/>
@@ -266,7 +266,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="366"/>
         <source>Ctrl+=</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+=</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="375"/>
@@ -276,22 +276,22 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="378"/>
         <source>Ctrl+-</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+-</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="393"/>
         <source>Ctrl+Shift+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+Umschalt+R</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="402"/>
         <source>Reset Zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom zurücksetzen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="405"/>
         <source>Ctrl+Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+Pos1</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="414"/>
@@ -301,17 +301,17 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="417"/>
         <source>Alt+X</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+X</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="426"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausschneiden</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="429"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+X</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="68"/>
@@ -330,7 +330,7 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="468"/>
         <source>Save simulation before closing?</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulation vor dem Schließen speichern?</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1092"/>
@@ -340,23 +340,23 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="991"/>
         <source>Save File as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei speichern als...</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="994"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV-Dateien (*.csv);;Dolphin-Dateien (*.dolphin);;Alle unterstützten Dateien (*.dolphin *.csv)</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="995"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>Dolphin-Dateien (*.dolphin);;CSV-Dateien (*.csv);;Alle unterstützten Dateien (*.dolphin *.csv)</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="982"/>
         <location filename="../../bewaveddolphin.cpp" line="1025"/>
         <source>Saved file successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei erfolgreich gespeichert.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="224"/>
@@ -392,7 +392,7 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1121"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle unterstützten Dateien (*.dolphin *.csv);;Dolphin-Dateien (*.dolphin);;CSV-Dateien (*.csv)</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1137"/>
