@@ -428,12 +428,12 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1277"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished"></translation>
+        <translation>PNG-Dateien (*.png)</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1301"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF Dateien (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1320"/>
