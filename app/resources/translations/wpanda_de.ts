@@ -78,12 +78,12 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="155"/>
         <source>Ctrl+H</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+H</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="164"/>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Last</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="167"/>
