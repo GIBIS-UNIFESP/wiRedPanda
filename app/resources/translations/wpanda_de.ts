@@ -6,7 +6,7 @@
     <message>
         <location filename="../../commands.cpp" line="219"/>
         <source>Add %1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Elemente hinzufügen</translation>
     </message>
 </context>
 <context>
@@ -14,12 +14,12 @@
     <message>
         <location filename="../../element/and.cpp" line="14"/>
         <source>And</source>
-        <translation type="unfinished"></translation>
+        <translation>Und</translation>
     </message>
     <message>
         <location filename="../../element/and.cpp" line="14"/>
         <source>AND</source>
-        <translation type="unfinished"></translation>
+        <translation>UND</translation>
     </message>
 </context>
 <context>
@@ -27,7 +27,7 @@
     <message>
         <location filename="../../application.cpp" line="17"/>
         <source>Error!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler!</translation>
     </message>
 </context>
 <context>
@@ -43,7 +43,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="14"/>
         <source>MainWindow</source>
-        <translation type="unfinished"></translation>
+        <translation>Hauptfenster</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="48"/>
