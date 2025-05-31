@@ -174,7 +174,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="275"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="302"/>
@@ -190,12 +190,12 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="434"/>
         <source>Show Numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>Zahlen anzeigen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="439"/>
         <source>Show Waveforms</source>
-        <translation type="unfinished"></translation>
+        <translation>Waveforms anzeigen</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="272"/>
