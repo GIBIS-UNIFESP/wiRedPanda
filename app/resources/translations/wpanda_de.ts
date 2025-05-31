@@ -53,17 +53,17 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="92"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="105"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilfe</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="112"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="130"/>
@@ -73,7 +73,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="152"/>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation>Über uns</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="155"/>
