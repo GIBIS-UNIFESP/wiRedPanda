@@ -10,6 +10,7 @@
 #include "qneport.h"
 #include "logictruthtable.h"
 #include "truth_table.h"
+#include "buzzer.h"
 
 #include <QRegularExpression>
 
@@ -167,12 +168,16 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
 
         if (elm->elementType() == ElementType::TruthTable && !outputs.isEmpty()) {
             QNEPort *outputPort = outputs.constFirst();
-            QString ttVarName = QString("tt_%1_output").arg(removeForbiddenChars(elm->objectName()));
+            QString ttVarName = QString("%1_output").arg(removeForbiddenChars(elm->objectName()));
             m_varMap[outputPort] = ttVarName;
             m_stream << "boolean " << ttVarName << " = LOW;" << endl;
 
             continue;
         }
+
+        // if (elm->elementType() == ElementType::Buzzer) {
+        //     continue;
+        // }
 
         // Lógica geral
         if (outputs.size() == 1) {
@@ -417,7 +422,7 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             const int nInputs = elm->inputSize();
             const int rows = 1 << nInputs;
 
-            QString tableNameConst = QString("truth_table_%1").arg(removeForbiddenChars(elm->objectName()));
+            QString tableNameConst = QString("%1").arg(removeForbiddenChars(elm->objectName()));
 
             QStringList inputSignalNames;
             for (int i = 0; i < nInputs; ++i) {
@@ -440,13 +445,13 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
                 throw Pandaception(tr("Output variable not mapped for TruthTable: ") + elm->objectName());
             }
 
-            m_stream << QString("const uint8_t %1[%2] = {\n").arg(tableNameConst).arg(rows);
+            m_stream << QString("    const uint8_t %1[%2] = {\n").arg(tableNameConst).arg(rows);
             for (int i = 0; i < rows; ++i) {
-                m_stream << "    " << (propositions.testBit(i) ? "1" : "0");
+                m_stream << "        " << (propositions.testBit(i) ? "1" : "0");
                 if (i != rows - 1) m_stream << ",";
                 m_stream << " // entrada " << QString::number(i, 2).rightJustified(nInputs, '0') << "\n";
             }
-            m_stream << "};\n\n";
+            m_stream << "    };\n\n";
 
             QStringList bitExpressions;
             for (int i = 0; i < nInputs; ++i) {
@@ -462,6 +467,8 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             m_stream << QString("    %1 = %2[index];").arg(outputVarName, tableNameConst) << endl;
             break;
         }
+
+        // case ElementType::Display7: {}
 
         case ElementType::And:
         case ElementType::Or:
@@ -568,6 +575,45 @@ void CodeGenerator::loop()
             m_stream << QString("        %1 = !%1;").arg(varName) << endl;
             m_stream << "    }" << endl;
         }
+
+        if (elm->elementType() == ElementType::Buzzer) {
+            auto *buzzer = qgraphicsitem_cast<Buzzer *>(elm);
+            QString inputSignal = otherPortName(buzzer->inputPort(0));
+
+            QString buzzerPinName;
+            for (const auto &pin : std::as_const(m_outputMap)) {
+                if (pin.m_elm == elm) {
+                    buzzerPinName = pin.m_varName;
+                    break;
+                }
+            }
+
+            if (buzzerPinName.isEmpty()) {
+                throw Pandaception(tr("Buzzer output pin not found for: ") + elm->objectName());
+            }
+
+            QString note = buzzer->audio();
+
+            // qDebug() << "Nota de áudio lida do Buzzer:" << note;
+
+            int frequency = 0;
+            if (note == "C6") frequency = 1047;
+            else if (note == "D6") frequency = 1175;
+            else if (note == "E6") frequency = 1319;
+            else if (note == "F6") frequency = 1397;
+            else if (note == "G6") frequency = 1568;
+            else if (note == "A7") frequency = 3520;
+            else if (note == "B7") frequency = 3951;
+            else if (note == "C7") frequency = 2093;
+            else frequency = 1047;
+
+            m_stream << QString("    // Buzzer: %1 //").arg(elm->objectName()) << endl;
+            m_stream << QString("    if (%1 == HIGH) {").arg(inputSignal) << endl;
+            m_stream << QString("        tone(%1, %2);").arg(buzzerPinName).arg(frequency) << endl;
+            m_stream << QString("    } else {") << endl;
+            m_stream << QString("        noTone(%1);").arg(buzzerPinName) << endl;
+            m_stream << QString("    }") << endl;
+        }
     }
     /* Aux variables. */
     m_stream << endl;
@@ -576,6 +622,10 @@ void CodeGenerator::loop()
     m_stream << "\n";
     m_stream << "    // Writing output data. //\n";
     for (const auto &pin : std::as_const(m_outputMap)) {
+        if (pin.m_elm->elementType() == ElementType::Buzzer) {
+            continue;
+        }
+
         QString varName = otherPortName(pin.m_port);
         if (varName.isEmpty()) {
             varName = highLow(pin.m_port->defaultValue());

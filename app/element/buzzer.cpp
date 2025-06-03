@@ -45,6 +45,8 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     if (m_hasOutputDevice) {
         m_audio = new QSoundEffect(this);
     }
+
+    m_note = "C6";
 }
 
 void Buzzer::refresh()
