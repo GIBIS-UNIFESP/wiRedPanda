@@ -134,7 +134,14 @@ void CodeGenerator::declareOutputs()
         if (elm->elementGroup() == ElementGroup::Output) {
             QString label = elm->label();
             for (int i = 0; i < elm->inputs().size(); ++i) {
-                QString varName = elm->objectName() + QString::number(counter);
+                QString varName = elm->objectName();
+
+                if(elm->elementType() == ElementType::Display7) {
+                    varName.replace("7", "seven");
+                }
+
+                varName += QString::number(counter);
+
                 if (!label.isEmpty()) {
                     varName = QString("%1_%2").arg(varName, label);
                 }
