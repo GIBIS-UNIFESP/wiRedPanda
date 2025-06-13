@@ -46,6 +46,7 @@ public:
 
     //! Exports the current simulation to an
     void exportToArduino(QString fileName);
+    void exportToVerilog(QString fileName);
 
     //! Saves the current beWavedDolphin (waveform simulator) file
     void exportToWaveFormFile(const QString &fileName);
@@ -72,6 +73,9 @@ signals:
 
 protected:
     void closeEvent(QCloseEvent *event) override;
+
+private slots:
+    void on_actionExport_to_Verilog_triggered();
 
 private:
     Q_DISABLE_COPY(MainWindow)

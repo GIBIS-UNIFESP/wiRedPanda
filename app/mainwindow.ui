@@ -24,7 +24,7 @@
     <normaloff>:/toolbar/wpanda.svg</normaloff>:/toolbar/wpanda.svg</iconset>
   </property>
   <property name="toolButtonStyle">
-   <enum>Qt::ToolButtonTextBesideIcon</enum>
+   <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
   </property>
   <property name="unifiedTitleAndToolBarOnMac">
    <bool>true</bool>
@@ -40,7 +40,7 @@
        </sizepolicy>
       </property>
       <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
+       <enum>QFrame::Shape::NoFrame</enum>
       </property>
       <property name="lineWidth">
        <number>1</number>
@@ -49,7 +49,7 @@
        <number>2</number>
       </property>
       <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+       <enum>Qt::Orientation::Horizontal</enum>
       </property>
       <property name="opaqueResize">
        <bool>false</bool>
@@ -137,7 +137,7 @@ QTabWidget::pane {
               <item row="0" column="0">
                <widget class="QScrollArea" name="scrollAreaInOut">
                 <property name="frameShape">
-                 <enum>QFrame::NoFrame</enum>
+                 <enum>QFrame::Shape::NoFrame</enum>
                 </property>
                 <property name="widgetResizable">
                  <bool>true</bool>
@@ -148,14 +148,14 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>584</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
                   <item>
                    <spacer name="verticalSpacer_InOut">
                     <property name="orientation">
-                     <enum>Qt::Vertical</enum>
+                     <enum>Qt::Orientation::Vertical</enum>
                     </property>
                     <property name="sizeHint" stdset="0">
                      <size>
@@ -186,7 +186,7 @@ QTabWidget::pane {
               <item row="0" column="1">
                <widget class="QScrollArea" name="scrollAreaGates">
                 <property name="frameShape">
-                 <enum>QFrame::NoFrame</enum>
+                 <enum>QFrame::Shape::NoFrame</enum>
                 </property>
                 <property name="widgetResizable">
                  <bool>true</bool>
@@ -197,14 +197,14 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>584</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
                   <item>
                    <spacer name="verticalSpacer_Gates">
                     <property name="orientation">
-                     <enum>Qt::Vertical</enum>
+                     <enum>Qt::Orientation::Vertical</enum>
                     </property>
                     <property name="sizeHint" stdset="0">
                      <size>
@@ -235,7 +235,7 @@ QTabWidget::pane {
               <item row="0" column="0">
                <widget class="QScrollArea" name="scrollArea_Combinational">
                 <property name="frameShape">
-                 <enum>QFrame::NoFrame</enum>
+                 <enum>QFrame::Shape::NoFrame</enum>
                 </property>
                 <property name="widgetResizable">
                  <bool>true</bool>
@@ -246,7 +246,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>582</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -259,7 +259,7 @@ QTabWidget::pane {
                   <item>
                    <spacer name="verticalSpacer_Combinational">
                     <property name="orientation">
-                     <enum>Qt::Vertical</enum>
+                     <enum>Qt::Orientation::Vertical</enum>
                     </property>
                     <property name="sizeHint" stdset="0">
                      <size>
@@ -290,7 +290,7 @@ QTabWidget::pane {
               <item row="0" column="1">
                <widget class="QScrollArea" name="scrollAreaMemory">
                 <property name="frameShape">
-                 <enum>QFrame::NoFrame</enum>
+                 <enum>QFrame::Shape::NoFrame</enum>
                 </property>
                 <property name="widgetResizable">
                  <bool>true</bool>
@@ -301,14 +301,14 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>584</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
                   <item>
                    <spacer name="verticalSpacer_Memory">
                     <property name="orientation">
-                     <enum>Qt::Vertical</enum>
+                     <enum>Qt::Orientation::Vertical</enum>
                     </property>
                     <property name="sizeHint" stdset="0">
                      <size>
@@ -339,7 +339,7 @@ QTabWidget::pane {
               <item row="1" column="0">
                <widget class="QScrollArea" name="scrollArea_Box">
                 <property name="frameShape">
-                 <enum>QFrame::NoFrame</enum>
+                 <enum>QFrame::Shape::NoFrame</enum>
                 </property>
                 <property name="widgetResizable">
                  <bool>true</bool>
@@ -350,14 +350,14 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>552</height>
+                   <height>549</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
                   <item>
                    <spacer name="verticalSpacer_IC">
                     <property name="orientation">
-                     <enum>Qt::Vertical</enum>
+                     <enum>Qt::Orientation::Vertical</enum>
                     </property>
                     <property name="sizeHint" stdset="0">
                      <size>
@@ -416,7 +416,7 @@ QTabWidget::pane {
               <item row="0" column="0">
                <widget class="QScrollArea" name="scrollArea_Misc">
                 <property name="frameShape">
-                 <enum>QFrame::NoFrame</enum>
+                 <enum>QFrame::Shape::NoFrame</enum>
                 </property>
                 <property name="widgetResizable">
                  <bool>true</bool>
@@ -427,7 +427,7 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>584</height>
+                   <height>581</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -440,7 +440,7 @@ QTabWidget::pane {
                   <item>
                    <spacer name="verticalSpacer_Misc">
                     <property name="orientation">
-                     <enum>Qt::Vertical</enum>
+                     <enum>Qt::Orientation::Vertical</enum>
                     </property>
                     <property name="sizeHint" stdset="0">
                      <size>
@@ -472,14 +472,14 @@ QTabWidget::pane {
                    <x>0</x>
                    <y>0</y>
                    <width>258</width>
-                   <height>582</height>
+                   <height>579</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_7">
                   <item>
                    <spacer name="verticalSpacer_Search">
                     <property name="orientation">
-                     <enum>Qt::Vertical</enum>
+                     <enum>Qt::Orientation::Vertical</enum>
                     </property>
                     <property name="sizeHint" stdset="0">
                      <size>
@@ -581,10 +581,10 @@ QTabWidget::pane {
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="contextMenuPolicy">
-    <enum>Qt::PreventContextMenu</enum>
+    <enum>Qt::ContextMenuPolicy::PreventContextMenu</enum>
    </property>
    <property name="toolButtonStyle">
-    <enum>Qt::ToolButtonFollowStyle</enum>
+    <enum>Qt::ToolButtonStyle::ToolButtonFollowStyle</enum>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -618,7 +618,7 @@ QTabWidget::pane {
      <x>0</x>
      <y>0</y>
      <width>886</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -650,6 +650,7 @@ QTabWidget::pane {
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
     <addaction name="actionExportToArduino"/>
+    <addaction name="actionExport_to_Verilog"/>
     <addaction name="actionExportToPdf"/>
     <addaction name="actionExportToImage"/>
     <addaction name="separator"/>
@@ -1240,6 +1241,18 @@ QTabWidget::pane {
     <string>Shortcuts and Tips</string>
    </property>
   </action>
+  <action name="actionExport_to_Verilog">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/verilog.svg</normaloff>:/toolbar/verilog.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Export to Verilog</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+O</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1264,12 +1277,13 @@ QTabWidget::pane {
   <tabstop>scrollAreaGates</tabstop>
  </tabstops>
  <resources>
+  <include location="resources/memory/light/memory_light.qrc"/>
+  <include location="resources/toolbar/toolbar.qrc"/>
   <include location="resources/basic/basic.qrc"/>
   <include location="resources/input/input.qrc"/>
-  <include location="resources/memory/light/memory_light.qrc"/>
+  <include location="resources/input/input.qrc"/>
   <include location="resources/misc/misc.qrc"/>
   <include location="resources/output/output.qrc"/>
-  <include location="resources/toolbar/toolbar.qrc"/>
  </resources>
  <connections/>
 </ui>

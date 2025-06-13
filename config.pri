@@ -160,6 +160,7 @@ SOURCES += \
     $$PWD/app/simulationblocker.cpp \
     $$PWD/app/thememanager.cpp \
     $$PWD/app/trashbutton.cpp \
+    $$PWD/app/verilog/codegeneratorverilog.cpp \
     $$PWD/app/workspace.cpp
 
 HEADERS += \
@@ -193,6 +194,7 @@ HEADERS += \
     $$PWD/app/simulationblocker.h \
     $$PWD/app/thememanager.h \
     $$PWD/app/trashbutton.h \
+    $$PWD/app/verilog/codegeneratorverilog.h \
     $$PWD/app/workspace.h
 
 FORMS += \

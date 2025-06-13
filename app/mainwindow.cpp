@@ -41,6 +41,8 @@ void ensureSvgUsage() {
     QSvgRenderer dummy; // for macdeployqt to add libqsvg.dylib
 }
 
+#include <verilog/codegeneratorverilog.h>
+
 #ifdef Q_OS_WASM
 #include <emscripten/emscripten.h>
 #endif
@@ -116,7 +118,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     }
 
     qCDebug(zero) << "Disabling Arduino export.";
-    m_ui->actionExportToArduino->setEnabled(false);
+    m_ui->actionExportToArduino->setEnabled(true);
 
     QPixmapCache::setCacheLimit(100'000);
 
@@ -1470,4 +1472,54 @@ void MainWindow::removeICFile(const QString &icFileName)
 
     updateICList();
     on_actionSave_triggered();
+}
+
+void MainWindow::on_actionExport_to_Verilog_triggered()
+{
+    if (!m_currentTab) {
+        return;
+    }
+
+    QString path;
+
+    if (m_currentFile.exists()) {
+        path = m_currentFile.absolutePath();
+    }
+
+    const QString fileName = QFileDialog::getSaveFileName(this, tr("Generate Verilog Code"), path, tr("Verilog file (*.v)"));
+
+    if (!fileName.isEmpty()) {
+        exportToVerilog(fileName);
+    }
+}
+
+void MainWindow::exportToVerilog(QString fileName)
+{
+    if (!m_currentTab) {
+        return;
+    }
+
+    if (fileName.isEmpty()) {
+        throw Pandaception(tr("Missing file name."));
+    }
+
+    auto elements = m_currentTab->scene()->elements();
+
+    if (elements.isEmpty()) {
+        throw Pandaception(tr("The .panda file is empty."));
+    }
+
+    SimulationBlocker simulationBlocker(m_currentTab->simulation());
+
+    if (!fileName.endsWith(".v")) {
+        fileName.append(".v");
+    }
+
+    elements = Common::sortGraphicElements(elements);
+
+    CodeGeneratorVerilog verilog(QDir::home().absoluteFilePath(fileName), elements);
+    verilog.generate();
+    m_ui->statusBar->showMessage(tr("Verilog code successfully generated."), 4000);
+
+    qCDebug(zero) << "Verilog code successfully generated.";
 }
