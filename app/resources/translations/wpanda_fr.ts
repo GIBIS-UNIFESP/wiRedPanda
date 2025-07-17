@@ -1222,12 +1222,12 @@
     <message>
         <location filename="../../lengthdialog.ui" line="60"/>
         <source>2048</source>
-        <translation type="unfinished"></translation>
+        <translation>2048</translation>
     </message>
     <message>
         <location filename="../../lengthdialog.cpp" line="15"/>
         <source>Simulation Length Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélection de longueur de simulation</translation>
     </message>
 </context>
 <context>
