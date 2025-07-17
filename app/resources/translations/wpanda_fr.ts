@@ -356,7 +356,7 @@
         <location filename="../../bewaveddolphin.cpp" line="982"/>
         <location filename="../../bewaveddolphin.cpp" line="1025"/>
         <source>Saved file successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier sauvegardé avec succès.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="224"/>
