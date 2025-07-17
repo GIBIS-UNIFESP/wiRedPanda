@@ -1818,7 +1818,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../mainwindow.cpp" line="901"/>
         <source>The .panda file is empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier .panda est vide.</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="914"/>
@@ -1828,7 +1828,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../mainwindow.cpp" line="949"/>
         <source>Generate Arduino Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Générer le Code Arduino</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="949"/>
