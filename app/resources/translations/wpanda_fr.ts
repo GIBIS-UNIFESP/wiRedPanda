@@ -286,7 +286,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="402"/>
         <source>Reset Zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="405"/>
