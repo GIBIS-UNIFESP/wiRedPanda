@@ -1843,7 +1843,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../mainwindow.cpp" line="1051"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers PDF (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="1069"/>
@@ -1864,7 +1864,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../mainwindow.cpp" line="1095"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers PNG (*.png)</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="1190"/>
@@ -1889,23 +1889,23 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../mainwindow.cpp" line="1401"/>
         <source>Panda (*.panda)</source>
-        <translation type="unfinished"></translation>
+        <translation>Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="1413"/>
         <location filename="../../mainwindow.cpp" line="1424"/>
         <source>Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Info</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="1413"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les fichiers sélectionnés (et leurs dépendances) seront copiés dans le dossier de fichier actuel.</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="1424"/>
         <source>Drag here to remove.</source>
-        <translation type="unfinished"></translation>
+        <translation>Faites glisser ici pour enlever.</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="1447"/>
@@ -1926,7 +1926,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../commands.cpp" line="344"/>
         <source>Move elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Déplacer les éléments</translation>
     </message>
 </context>
 <context>
@@ -1999,12 +1999,12 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../element/or.cpp" line="14"/>
         <source>Or</source>
-        <translation type="unfinished"></translation>
+        <translation>Ou</translation>
     </message>
     <message>
         <location filename="../../element/or.cpp" line="14"/>
         <source>OR</source>
-        <translation type="unfinished"></translation>
+        <translation>OU</translation>
     </message>
 </context>
 <context>
@@ -2012,12 +2012,12 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../main.cpp" line="117"/>
         <source>Error!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur&#x202f;!</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="109"/>
         <source>One or more items was not found on the scene.</source>
-        <translation type="unfinished"></translation>
+        <translation>Un ou plusieurs articles n&apos;ont pas été trouvés sur la scène.</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="127"/>
