@@ -923,12 +923,12 @@
         <location filename="../../elementeditor.cpp" line="220"/>
         <location filename="../../elementeditor.cpp" line="286"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="290"/>
         <source>Unknown context menu option.</source>
-        <translation type="unfinished"></translation>
+        <translation>Option de menu contextuel inconnu.</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="314"/>
