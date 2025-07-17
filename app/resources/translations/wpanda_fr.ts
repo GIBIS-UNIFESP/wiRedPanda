@@ -1553,7 +1553,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="1017"/>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1026"/>
