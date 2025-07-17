@@ -2080,12 +2080,12 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../serialization.cpp" line="67"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Type invalide. Les données peuvent être corrompues.</translation>
     </message>
     <message>
         <location filename="../../serialization.cpp" line="82"/>
         <source>Invalid file format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Format de fichier invalide.</translation>
     </message>
     <message>
         <location filename="../../serialization.cpp" line="91"/>
@@ -2129,7 +2129,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../element/text.cpp" line="14"/>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Texte</translation>
     </message>
     <message>
         <location filename="../../element/text.cpp" line="14"/>
@@ -2150,7 +2150,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../trashbutton.cpp" line="28"/>
         <source>File will be deleted. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier sera supprimé. Tu es sûr&#x202f;?</translation>
     </message>
 </context>
 <context>
