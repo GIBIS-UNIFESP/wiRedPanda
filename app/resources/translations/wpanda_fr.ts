@@ -933,7 +933,7 @@
     <message>
         <location filename="../../elementeditor.cpp" line="314"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir le fichier</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="316"/>
@@ -943,12 +943,12 @@
     <message>
         <location filename="../../elementeditor.cpp" line="359"/>
         <source>Green</source>
-        <translation type="unfinished"></translation>
+        <translation>Vert</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="360"/>
         <source>Blue</source>
-        <translation type="unfinished"></translation>
+        <translation>Bleu</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="361"/>
@@ -958,22 +958,22 @@
     <message>
         <location filename="../../elementeditor.cpp" line="946"/>
         <source>Select any audio</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionnez un audio</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="947"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Audio (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="358"/>
         <source>Red</source>
-        <translation type="unfinished"></translation>
+        <translation>Rouge</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="357"/>
         <source>White</source>
-        <translation type="unfinished"></translation>
+        <translation>Blanc</translation>
     </message>
     <message>
         <location filename="../../elementeditor.h" line="61"/>
@@ -1013,6 +1013,11 @@
         <source>Delay:</source>
         <translation>Retard&#xa0;:</translation>
     </message>
+    <message>
+        <location filename="../../elementeditor.cpp" line="321"/>
+        <source>Images</source>
+        <translation>Images</translation>
+    </message>
 </context>
 <context>
     <name>ElementFactory</name>
@@ -1024,19 +1029,24 @@
     <message>
         <location filename="../../elementfactory.cpp" line="63"/>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Inconnu</translation>
     </message>
     <message>
         <location filename="../../elementfactory.cpp" line="83"/>
         <location filename="../../elementfactory.cpp" line="90"/>
         <location filename="../../elementfactory.cpp" line="98"/>
         <source>Unknown type: </source>
-        <translation type="unfinished"></translation>
+        <translation>Type inconnu: </translation>
     </message>
     <message>
         <location filename="../../elementfactory.cpp" line="191"/>
         <source>Not implemented yet: </source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../elementfactory.cpp" line="84"/>
+        <source>Unknown type 1: </source>
+        <translation>Type inconnu 1: </translation>
     </message>
 </context>
 <context>
