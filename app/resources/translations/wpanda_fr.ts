@@ -311,7 +311,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="429"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="68"/>
@@ -330,7 +330,7 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="468"/>
         <source>Save simulation before closing?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauver la simulation avant de fermer&#x202f;?</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1092"/>
