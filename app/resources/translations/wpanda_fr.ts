@@ -2022,7 +2022,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../commands.cpp" line="127"/>
         <source>One or more elements was not found on the scene.</source>
-        <translation type="unfinished"></translation>
+        <translation>Un ou plusieurs éléments n&apos;ont pas été trouvés sur les lieux.</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="190"/>
