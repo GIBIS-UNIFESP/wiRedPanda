@@ -236,7 +236,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="330"/>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="339"/>
