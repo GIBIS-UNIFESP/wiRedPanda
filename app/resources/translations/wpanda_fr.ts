@@ -1048,6 +1048,11 @@
         <source>Unknown type 1: </source>
         <translation>Type inconnu 1: </translation>
     </message>
+    <message>
+        <location filename="../../elementfactory.cpp" line="99"/>
+        <source>Unknown type 2: </source>
+        <translation>Type inconnu 2: </translation>
+    </message>
 </context>
 <context>
     <name>FlipCommand</name>
