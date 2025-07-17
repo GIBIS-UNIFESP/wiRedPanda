@@ -1348,7 +1348,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="755"/>
         <source>Ctrl+O</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="764"/>
@@ -1368,7 +1368,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="779"/>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="788"/>
