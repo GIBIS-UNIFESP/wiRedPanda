@@ -149,7 +149,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="239"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="248"/>
@@ -159,7 +159,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="251"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="260"/>
@@ -169,17 +169,17 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="263"/>
         <source>0</source>
-        <translation type="unfinished"></translation>
+        <translation>0</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="275"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="302"/>
         <source>Space</source>
-        <translation type="unfinished"></translation>
+        <translation>Espace</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="387"/>
@@ -190,7 +190,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="434"/>
         <source>Show Numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les chiffres</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="439"/>
@@ -211,12 +211,12 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="290"/>
         <source>Alt+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+W</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="299"/>
         <source>Invert</source>
-        <translation type="unfinished"></translation>
+        <translation>Inverse</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="310"/>
@@ -450,6 +450,11 @@
         <location filename="../../bewaveddolphin.cpp" line="1145"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.ui" line="455"/>
+        <source>Ctrl+A</source>
+        <translation>Ctrl+A</translation>
     </message>
 </context>
 <context>
