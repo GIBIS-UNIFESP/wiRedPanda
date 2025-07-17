@@ -834,7 +834,7 @@
     <message>
         <location filename="../../elementeditor.ui" line="110"/>
         <source> Hz</source>
-        <translation type="unfinished"></translation>
+        <translation> Hz</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="273"/>
@@ -1007,6 +1007,11 @@
         <location filename="../../elementeditor.h" line="69"/>
         <source>&lt;Many triggers&gt;</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="308"/>
+        <source>Delay:</source>
+        <translation>Retard&#xa0;:</translation>
     </message>
 </context>
 <context>
