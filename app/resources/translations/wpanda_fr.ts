@@ -1833,12 +1833,12 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../mainwindow.cpp" line="949"/>
         <source>Arduino file (*.ino)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier Arduino (*.ino)</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="1051"/>
         <source>Export to PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportation au PDF</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="1051"/>
