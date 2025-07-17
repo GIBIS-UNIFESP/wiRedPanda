@@ -1199,7 +1199,7 @@
     <message>
         <location filename="../../element/led.cpp" line="17"/>
         <source>LED</source>
-        <translation type="unfinished"></translation>
+        <translation>LED</translation>
     </message>
 </context>
 <context>
