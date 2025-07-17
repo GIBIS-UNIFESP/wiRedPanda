@@ -372,7 +372,7 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="707"/>
         <source>No cells selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de cellules sélectionnées.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1034"/>
@@ -387,12 +387,12 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1119"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir le fichier</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1121"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tous les fichiers supportés (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1137"/>
