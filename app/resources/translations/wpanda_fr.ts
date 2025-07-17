@@ -6,7 +6,7 @@
     <message>
         <location filename="../../commands.cpp" line="219"/>
         <source>Add %1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter %1 éléments</translation>
     </message>
 </context>
 <context>
@@ -14,12 +14,12 @@
     <message>
         <location filename="../../element/and.cpp" line="14"/>
         <source>And</source>
-        <translation type="unfinished"></translation>
+        <translation>Et</translation>
     </message>
     <message>
         <location filename="../../element/and.cpp" line="14"/>
         <source>AND</source>
-        <translation type="unfinished"></translation>
+        <translation>ET</translation>
     </message>
 </context>
 <context>
@@ -27,7 +27,7 @@
     <message>
         <location filename="../../application.cpp" line="17"/>
         <source>Error!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur&#x202f;!</translation>
     </message>
 </context>
 <context>
@@ -35,7 +35,7 @@
     <message>
         <location filename="../../element/audiobox.cpp" line="22"/>
         <source>Audio Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Boîte audio</translation>
     </message>
 </context>
 <context>
@@ -43,7 +43,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="14"/>
         <source>MainWindow</source>
-        <translation type="unfinished"></translation>
+        <translation>MainWindow</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="48"/>
@@ -53,12 +53,12 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="92"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="105"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Aide</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="112"/>
@@ -73,12 +73,12 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="152"/>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation>À propos</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="155"/>
         <source>Ctrl+H</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+H</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="164"/>
@@ -88,7 +88,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="167"/>
         <source>Ctrl+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+L</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="176"/>
@@ -98,7 +98,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="179"/>
         <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+W</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="188"/>
@@ -108,7 +108,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="191"/>
         <source>Alt+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+C</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="200"/>
@@ -119,7 +119,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="203"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="212"/>
@@ -129,7 +129,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="215"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="224"/>
@@ -139,7 +139,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="227"/>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="236"/>
