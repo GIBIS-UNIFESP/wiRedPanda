@@ -2204,7 +2204,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../workspace.cpp" line="144"/>
         <source>Could not open file: </source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir le dossier&#xa0;: </translation>
     </message>
     <message>
         <location filename="../../workspace.cpp" line="166"/>
@@ -2216,7 +2216,7 @@ Please check for updates if the file does not load correctly.</source>
     <message>
         <location filename="../../workspace.cpp" line="170"/>
         <source>Newer version file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau fichier de version.</translation>
     </message>
     <message>
         <location filename="../../workspace.cpp" line="174"/>
