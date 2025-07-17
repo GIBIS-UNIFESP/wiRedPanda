@@ -1118,7 +1118,7 @@
     <message>
         <location filename="../../ic.cpp" line="144"/>
         <source> not found.</source>
-        <translation type="unfinished"></translation>
+        <translation> pas trouvé.</translation>
     </message>
 </context>
 <context>
