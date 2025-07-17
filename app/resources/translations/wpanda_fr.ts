@@ -1498,7 +1498,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="948"/>
         <source>Ctrl+Shift+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="957"/>
