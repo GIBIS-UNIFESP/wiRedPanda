@@ -1738,7 +1738,7 @@
     <message>
         <location filename="../../mainwindow.cpp" line="314"/>
         <source>Don&apos;t show this again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne montre pas ça.</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="355"/>
