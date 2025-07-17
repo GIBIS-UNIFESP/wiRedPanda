@@ -1633,7 +1633,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="1133"/>
         <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+W</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1142"/>
@@ -1643,7 +1643,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="1145"/>
         <source>Ctrl+E</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+E</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1150"/>
@@ -1653,7 +1653,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="1153"/>
         <source>Ctrl+H</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+H</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1158"/>
@@ -1668,13 +1668,13 @@
     <message>
         <location filename="../../mainwindow.ui" line="1166"/>
         <source>F11</source>
-        <translation type="unfinished"></translation>
+        <translation>F11</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1179"/>
         <location filename="../../mainwindow.cpp" line="1358"/>
         <source>Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Mute</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1182"/>
