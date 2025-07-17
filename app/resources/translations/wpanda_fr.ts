@@ -428,12 +428,12 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1277"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers PNG (*.png)</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1301"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers PDF (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1320"/>
@@ -449,7 +449,7 @@
         <location filename="../../bewaveddolphin.cpp" line="146"/>
         <location filename="../../bewaveddolphin.cpp" line="1145"/>
         <source>File &quot;%1&quot; does not exist!</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier &quot;%1&quot; n&apos;existe pas&#x202f;!</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="455"/>
