@@ -1749,7 +1749,8 @@
         <location filename="../../mainwindow.cpp" line="374"/>
         <source> has been modified. 
 Do you want to save your changes?</source>
-        <translation type="unfinished"></translation>
+        <translation> a été modifié.
+Tu veux sauver tes changements&#x202f;?</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="412"/>
