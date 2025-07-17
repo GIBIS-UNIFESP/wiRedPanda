@@ -144,7 +144,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="236"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Copie</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="239"/>
